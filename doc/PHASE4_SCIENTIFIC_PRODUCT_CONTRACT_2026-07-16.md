@@ -86,7 +86,9 @@ operational product. It passes `phase4.1-beammap-products-v2` with 14/14
 products classified, including a
 `citlali-reduction-restart-checkpoint-v1` checkpoint. This V2 contract is
 candidate evidence for a successor profile; it does not replace or weaken the
-active historical Beammap V1 profile.
+active historical Beammap V1 profile. The checker retains that historical
+schema and also recognizes schema v2, requiring its processed-timestream
+policy and weight-validation state identities.
 
 ## Failure Policy
 

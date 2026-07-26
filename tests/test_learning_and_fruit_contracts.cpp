@@ -15,6 +15,8 @@
 #include <filesystem>
 #include <fstream>
 #include <map>
+#include <memory>
+#include <mutex>
 #include <string>
 #include <vector>
 
@@ -123,6 +125,24 @@ struct RestartLifecycleLogger {
     void info(const char *, Args &&...) const {}
 };
 
+struct RestartWeightValidationProcessor {
+    int weight_validation_current_iter = 0;
+    int weight_validation_accumulated_iters = 0;
+    int weight_validation_current_iter_contribution_count = 0;
+    bool weight_validation_finalized = false;
+    Eigen::VectorXd weight_validation_ratio_penalty_sum;
+    Eigen::VectorXd weight_validation_ratio_value_sum;
+    Eigen::VectorXi weight_validation_ratio_value_count;
+    Eigen::VectorXi weight_validation_ratio_count;
+    Eigen::VectorXd weight_validation_atm_penalty_sum;
+    Eigen::VectorXd weight_validation_atm_corr_sum;
+    Eigen::VectorXi weight_validation_atm_count;
+    Eigen::VectorXd weight_validation_detector_penalty;
+    Eigen::VectorXi weight_validation_detector_validated;
+    std::shared_ptr<std::mutex> weight_validation_mutex =
+        std::make_shared<std::mutex>();
+};
+
 struct RestartLifecycleEngine {
     struct {
         citlali::config::TimestreamConfig timestream;
@@ -137,6 +157,7 @@ struct RestartLifecycleEngine {
     struct {
         std::vector<std::string> obsnums;
     } omb;
+    RestartWeightValidationProcessor ptcproc;
 };
 
 citlali::config::TimestreamLearningConfig restart_learning_config() {
@@ -156,6 +177,49 @@ ReductionLearningState restart_learning_state(
     ReductionLearningState state;
     citlali::pipeline::adapt_learning_config_one_way(config, state);
     return state;
+}
+
+citlali::config::ProcessedTimeChunkConfig restart_processed_config() {
+    citlali::config::ProcessedTimeChunkConfig config;
+    config.weighting.validation.enabled = true;
+    config.weighting.validation.accumulation_iters = 2;
+    config.weighting.validation.apply_start_iter = 2;
+    return config;
+}
+
+citlali::pipeline::WeightValidationRestartState
+restart_weight_validation_state() {
+    return citlali::pipeline::WeightValidationRestartState{
+        2,
+        true,
+        {1.0, 2.0, 3.0},
+        {4.0, 5.0, 6.0},
+        {1, 2, 3},
+        {2, 3, 4},
+        {7.0, 8.0, 9.0},
+        {10.0, 11.0, 12.0},
+        {3, 4, 5},
+        {0.5, 0.75, 1.05},
+        {1, 1, 0},
+    };
+}
+
+void expect_same_weight_validation_state(
+    const citlali::pipeline::WeightValidationRestartState &left,
+    const citlali::pipeline::WeightValidationRestartState &right) {
+    EXPECT_EQ(left.accumulated_iterations, right.accumulated_iterations);
+    EXPECT_EQ(left.finalized, right.finalized);
+    EXPECT_EQ(left.ratio_penalty_sum, right.ratio_penalty_sum);
+    EXPECT_EQ(left.ratio_value_sum, right.ratio_value_sum);
+    EXPECT_EQ(left.ratio_value_count, right.ratio_value_count);
+    EXPECT_EQ(left.ratio_count, right.ratio_count);
+    EXPECT_EQ(left.atmospheric_penalty_sum,
+              right.atmospheric_penalty_sum);
+    EXPECT_EQ(left.atmospheric_correlation_sum,
+              right.atmospheric_correlation_sum);
+    EXPECT_EQ(left.atmospheric_count, right.atmospheric_count);
+    EXPECT_EQ(left.detector_penalty, right.detector_penalty);
+    EXPECT_EQ(left.detector_validated, right.detector_validated);
 }
 
 void execute_synthetic_learning_iteration(ReductionLearningState &state,
@@ -265,6 +329,8 @@ TEST(ReductionLearningState, DetectorPenaltyEventsDeduplicateInEffectiveState) {
 TEST(ReductionRestartCheckpoint, RoundTripsEffectiveLearningState) {
     RestartCheckpointDirectory directory;
     const auto config = restart_learning_config();
+    const auto processed_config = restart_processed_config();
+    const auto weight_validation = restart_weight_validation_state();
     auto original = restart_learning_state(config);
     execute_synthetic_learning_iteration(original, 0);
     original.record_learned_sample_mask(
@@ -275,12 +341,13 @@ TEST(ReductionRestartCheckpoint, RoundTripsEffectiveLearningState) {
 
     citlali::pipeline::write_reduction_restart_checkpoint(
         directory.path, 4, "coadd/raw", {"152390", "152433"}, config,
-        original);
+        processed_config, original, weight_validation);
     auto restored = restart_learning_state(config);
+    citlali::pipeline::WeightValidationRestartState restored_weight_validation;
     const auto summary =
         citlali::pipeline::load_reduction_restart_checkpoint(
             directory.path, "coadd/raw", {"152390", "152433"}, config,
-            restored);
+            processed_config, restored, restored_weight_validation);
 
     EXPECT_EQ(summary.completed_iteration, 4);
     EXPECT_EQ(summary.next_iteration, 5);
@@ -290,39 +357,105 @@ TEST(ReductionRestartCheckpoint, RoundTripsEffectiveLearningState) {
               original.effective_sample_mask_interval_count());
     EXPECT_EQ(summary.effective_detector_penalties,
               original.effective_detector_penalty_records().size());
+    EXPECT_EQ(summary.weight_validation_detector_slots, 3U);
+    EXPECT_EQ(summary.weight_validation_accumulated_iterations, 2);
+    EXPECT_TRUE(summary.weight_validation_finalized);
     expect_same_effective_learning_state(original, restored, 5);
+    expect_same_weight_validation_state(weight_validation,
+                                        restored_weight_validation);
     EXPECT_EQ(restored.effective_sample_masks_for(
                   "152433", 4, false, 5)
                   .size(),
               1U);
 }
 
+TEST(ReductionRestartCheckpoint,
+     RoundTripsPartiallyAccumulatedWeightValidationState) {
+    RestartCheckpointDirectory directory;
+    const auto config = restart_learning_config();
+    const auto processed_config = restart_processed_config();
+    auto learning = restart_learning_state(config);
+    execute_synthetic_learning_iteration(learning, 0);
+    auto weight_validation = restart_weight_validation_state();
+    weight_validation.accumulated_iterations = 1;
+    weight_validation.finalized = false;
+
+    citlali::pipeline::write_reduction_restart_checkpoint(
+        directory.path, 0, "coadd/raw", {"152390"}, config,
+        processed_config, learning, weight_validation);
+
+    auto restored_learning = restart_learning_state(config);
+    citlali::pipeline::WeightValidationRestartState
+        restored_weight_validation;
+    const auto summary =
+        citlali::pipeline::load_reduction_restart_checkpoint(
+            directory.path, "coadd/raw", {"152390"}, config,
+            processed_config, restored_learning,
+            restored_weight_validation);
+
+    EXPECT_EQ(summary.weight_validation_accumulated_iterations, 1);
+    EXPECT_FALSE(summary.weight_validation_finalized);
+    expect_same_weight_validation_state(weight_validation,
+                                        restored_weight_validation);
+}
+
 TEST(ReductionRestartCheckpoint, RejectsObservationAndPolicyMismatch) {
     RestartCheckpointDirectory directory;
     const auto config = restart_learning_config();
+    const auto processed_config = restart_processed_config();
+    const auto weight_validation = restart_weight_validation_state();
     auto original = restart_learning_state(config);
     execute_synthetic_learning_iteration(original, 0);
     citlali::pipeline::write_reduction_restart_checkpoint(
-        directory.path, 0, "coadd/raw", {"152390"}, config, original);
+        directory.path, 0, "coadd/raw", {"152390"}, config,
+        processed_config, original, weight_validation);
 
     auto restored = restart_learning_state(config);
+    citlali::pipeline::WeightValidationRestartState restored_weight_validation;
     EXPECT_THROW(citlali::pipeline::load_reduction_restart_checkpoint(
                      directory.path, "coadd/raw", {"152433"}, config,
-                     restored),
+                     processed_config, restored,
+                     restored_weight_validation),
                  std::runtime_error);
 
     auto changed_config = config;
     changed_config.apply_max_new_flagged_fraction = 0.04;
     EXPECT_THROW(citlali::pipeline::load_reduction_restart_checkpoint(
                      directory.path, "coadd/raw", {"152390"},
-                     changed_config, restored),
+                     changed_config, processed_config, restored,
+                     restored_weight_validation),
                  std::runtime_error);
+
+    auto changed_processed_config = processed_config;
+    changed_processed_config.weighting.validation.min_factor = 0.25;
+    EXPECT_THROW(citlali::pipeline::load_reduction_restart_checkpoint(
+                     directory.path, "coadd/raw", {"152390"}, config,
+                     changed_processed_config, restored,
+                     restored_weight_validation),
+                 std::runtime_error);
+}
+
+TEST(ReductionRestartCheckpoint, RejectsMalformedWeightValidationState) {
+    RestartCheckpointDirectory directory;
+    const auto config = restart_learning_config();
+    const auto processed_config = restart_processed_config();
+    auto learning = restart_learning_state(config);
+    auto weight_validation = restart_weight_validation_state();
+    weight_validation.ratio_count.pop_back();
+
+    EXPECT_THROW(
+        citlali::pipeline::write_reduction_restart_checkpoint(
+            directory.path, 0, "coadd/raw", {"152390"}, config,
+            processed_config, learning, weight_validation),
+        std::invalid_argument);
 }
 
 TEST(ReductionRestartCheckpoint,
      FivePlusTwoRestartMatchesSevenUninterruptedIterations) {
     RestartCheckpointDirectory directory;
     const auto config = restart_learning_config();
+    const auto processed_config = restart_processed_config();
+    const citlali::pipeline::WeightValidationRestartState weight_validation;
 
     auto uninterrupted = restart_learning_state(config);
     for (int iteration = 0; iteration <= 6; ++iteration) {
@@ -334,12 +467,16 @@ TEST(ReductionRestartCheckpoint,
         execute_synthetic_learning_iteration(first_run, iteration);
     }
     citlali::pipeline::write_reduction_restart_checkpoint(
-        directory.path, 4, "coadd/raw", {"152390"}, config, first_run);
+        directory.path, 4, "coadd/raw", {"152390"}, config,
+        processed_config, first_run, weight_validation);
 
     auto restarted = restart_learning_state(config);
+    citlali::pipeline::WeightValidationRestartState
+        restarted_weight_validation;
     const auto summary =
         citlali::pipeline::load_reduction_restart_checkpoint(
-            directory.path, "coadd/raw", {"152390"}, config, restarted);
+            directory.path, "coadd/raw", {"152390"}, config,
+            processed_config, restarted, restarted_weight_validation);
     for (int iteration = summary.next_iteration; iteration <= 6;
          ++iteration) {
         execute_synthetic_learning_iteration(restarted, iteration);
@@ -355,13 +492,15 @@ TEST(ReductionRestartCheckpoint,
      LifecycleRestoresAbsoluteIterationAndSelectsRestartMapOnce) {
     RestartCheckpointDirectory directory;
     const auto config = restart_learning_config();
+    const auto processed_config = restart_processed_config();
+    const auto weight_validation = restart_weight_validation_state();
     auto checkpoint_state = restart_learning_state(config);
     for (int iteration = 0; iteration <= 4; ++iteration) {
         execute_synthetic_learning_iteration(checkpoint_state, iteration);
     }
     citlali::pipeline::write_reduction_restart_checkpoint(
         directory.path, 4, "coadd/raw", {"152390", "152433"}, config,
-        checkpoint_state);
+        processed_config, checkpoint_state, weight_validation);
 
     RestartLifecycleEngine engine;
     auto &fruit = engine.typed_config.timestream.fruit_loops;
@@ -374,6 +513,7 @@ TEST(ReductionRestartCheckpoint,
     fruit.injected_source_test.array_amplitude_mjy_beam =
         {1000.0, 2000.0, 3000.0};
     engine.typed_config.timestream.learning = config;
+    engine.typed_config.timestream.processed_time_chunk = processed_config;
     engine.processed_timestream_plan =
         citlali::pipeline::make_processed_timestream_execution_plan(
             engine.typed_config.timestream);
@@ -407,6 +547,10 @@ TEST(ReductionRestartCheckpoint,
         citlali::pipeline::should_load_previous_fruit_loop_maps(engine));
     EXPECT_EQ(citlali::pipeline::initial_fruit_loop_map_dir(engine),
               (directory.path / "coadded/raw/").string());
+    expect_same_weight_validation_state(
+        weight_validation,
+        citlali::pipeline::snapshot_weight_validation_restart_state(
+            engine.ptcproc));
 
     engine.iteration.fruit_iter = 6;
     EXPECT_FALSE(citlali::pipeline::first_restarted_iteration(engine));

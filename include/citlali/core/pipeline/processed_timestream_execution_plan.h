@@ -42,6 +42,9 @@ struct ProcessedTimestreamEffectiveResolutionRecord {
         int next_iteration = -1;
         std::size_t effective_sample_mask_intervals = 0;
         std::size_t effective_detector_penalties = 0;
+        std::size_t weight_validation_detector_slots = 0;
+        int weight_validation_accumulated_iterations = 0;
+        bool weight_validation_finalized = false;
     };
     std::optional<FruitLoopRestartResolution> fruit_loop_restart;
 };

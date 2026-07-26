@@ -356,26 +356,67 @@ def validate_netcdf(
             missing_vars = missing_patterns(variables, required_variables)
             if missing_vars:
                 errors.append(f"missing NetCDF variables {missing_vars}")
-            for name, expected in checks.get("scalar_equals", {}).items():
+            scalar_values: dict[str, Any] = {}
+
+            def scalar_value(name: str) -> Any | None:
+                if name in scalar_values:
+                    return scalar_values[name]
                 if name not in dataset.variables:
-                    errors.append(f"missing NetCDF scalar variable {name!r}")
-                    continue
+                    errors.append(
+                        f"missing NetCDF scalar variable {name!r}"
+                    )
+                    return None
                 values = dataset.variables[name][...]
                 if values.size != 1:
                     errors.append(
                         f"NetCDF variable {name!r} has {values.size} values; "
                         "expected one"
                     )
-                    continue
+                    return None
                 actual = values.reshape(-1)[0]
                 if hasattr(actual, "item"):
                     actual = actual.item()
                 if isinstance(actual, bytes):
                     actual = actual.decode("utf-8")
+                scalar_values[name] = actual
+                return actual
+
+            for name, expected in checks.get("scalar_equals", {}).items():
+                actual = scalar_value(name)
+                if actual is None:
+                    continue
                 if actual != expected:
                     errors.append(
                         f"NetCDF scalar {name!r}={actual!r}; "
                         f"expected {expected!r}"
+                    )
+            for name, expected_values in checks.get(
+                "scalar_one_of", {}
+            ).items():
+                actual = scalar_value(name)
+                if actual is None:
+                    continue
+                if actual not in expected_values:
+                    errors.append(
+                        f"NetCDF scalar {name!r}={actual!r}; "
+                        f"expected one of {expected_values!r}"
+                    )
+            for name, variants in checks.get(
+                "required_variables_by_scalar", {}
+            ).items():
+                actual = scalar_value(name)
+                if actual is None:
+                    continue
+                conditional = expanded_names(
+                    variants.get(actual, []), arrays
+                )
+                missing_conditional = missing_patterns(
+                    variables, conditional
+                )
+                if missing_conditional:
+                    errors.append(
+                        f"NetCDF scalar {name!r}={actual!r} requires "
+                        f"variables {missing_conditional}"
                     )
             for name in checks.get("positive_dimensions", []):
                 matches = [

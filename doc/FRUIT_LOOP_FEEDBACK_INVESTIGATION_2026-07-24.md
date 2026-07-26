@@ -2,10 +2,13 @@
 
 Date: 2026-07-24
 
-Status: active; both controlled Unity matrices are complete. The evidence
-favors stable transfer-function recovery driven by PTC cleaning rather than a
-feedback arithmetic fault. A full-PTC injected-source test remains required
-before accepting or changing a production policy.
+Status: active; both controlled Unity matrices are complete. The first
+full-PTC injected-source pair completed, but its exact-restart control gate
+failed because checkpoint schema v1 omitted retained processed-weight
+validation state. That pair is quarantined. Checkpoint schema v2 and a
+mandatory uninterrupted-versus-restarted control gate are implemented
+locally; a corrected Unity pair remains required before accepting or changing
+a production policy.
 
 ## Question
 
@@ -366,13 +369,75 @@ iteration identity from the map FITS header, since a restarted run in a fresh
 output root writes absolute iteration 9 to `redu00`, and rejects paired config
 drift beyond the output root and injection enable switch.
 
+## First Injected-source Pair: Quarantined
+
+The first control/injected pair completed absolute iterations 9--13 with
+executable `v4.0.0-3594-ga5fcad29`. Both branches loaded the same iteration-8
+checkpoint, completed without error-level messages, and the injected branch
+projected 465,874 nonzero model samples in every pass.
+
+The required continuation control nevertheless failed. The restarted control
+at absolute iteration 9 differs materially from the uninterrupted iteration-9
+product generated immediately after the checkpoint source:
+
+| Array | Signal relative RMS | Kernel relative RMS | Weight relative RMS |
+|---|---:|---:|---:|
+| a1100 | 16.5% | 0.62% | 21.4% |
+| a1400 | 26.6% | 2.43% | 49.7% |
+| a2000 | 4.61% | 0.87% | 8.35% |
+
+The configs differ only by the expected new output root, absolute stop
+iteration, restart path, and disabled injected-source diagnostic. Threads,
+inputs, and all scientific settings are otherwise unchanged. The executable
+between the uninterrupted and restarted products differs only by
+documentation/tooling and the inactive injection path.
+
+The root cause is missing operational checkpoint state. Validated PTC
+weighting learns detector factors once and retains these fields in `PTCProc`
+across fruit-loop iterations:
+
+- accumulated/finalized identity;
+- ratio and atmospheric sums and counts; and
+- final detector penalty and validation vectors.
+
+Schema v1 stored reduction-learning masks and detector exclusions, but none of
+these processed-weight validation fields. A fresh process resumed at iteration
+9 with empty state, omitted the established validation factors for that pass,
+and then relearned different factors from iteration 9. The observed detector
+weight and map differences are the direct result. This disproves the v1
+checkpoint's claim of exact continuation for validated weighting.
+
+The paired subtraction still produced a stable-looking trajectory: recovered
+PSF widths approached the propagated kernel, centroids remained within 0.05
+arcsec, successive changes shrank, and iteration-13 amplitudes reached about
+85.0%, 83.5%, and 89.7% of the injected a1100, a1400, and a2000 truth.
+Those numbers are not scientifically authoritative because both branches
+started from the wrong realized weighting state and then learned
+branch-dependent replacements.
+
+Checkpoint schema v2 now stores and validates the complete retained
+weight-validation state plus a canonical processed-timestream policy
+snapshot. Version-1 checkpoints fail closed. The comparator now requires an
+uninterrupted continuation reference and demands exact signal, kernel, and
+weight image identity before measuring injected-source transfer.
+
+The corrected Unity sequence is:
+
+1. run one uninterrupted ten-iteration control with the v2 executable;
+2. restart a control and injected branch from its `redu08` checkpoint;
+3. require restarted control iteration 9 to equal uninterrupted `redu09`
+   exactly; and
+4. only then interpret the injected-minus-control transfer trajectory.
+
 ## Local Verification
 
-The investigation code passes the local `citlali_cli` and `citlali_test`
-builds. CTest passes all 512 enabled tests; one unrelated lifecycle test
-remains disabled. The complete config preflight passes 123 Python unit tests,
-all four mode kits, compact compatibility, schema generation, and every typed
-authority audit.
+The investigation and schema-v2 repair pass the local `citlali_cli` and
+`citlali_test` builds. All 514 enabled CTests pass; one unrelated lifecycle
+test remains disabled. Six focused restart tests cover finalized and
+partially accumulated weight state, malformed state, policy mismatch, split
+learning state, and lifecycle restoration. The complete config preflight
+passes 123 Python unit tests, all four mode kits, compact compatibility, schema
+generation, and every typed authority audit.
 
 The ablation generator accepts the downloaded frozen obsnum 133410 low-level
 config and can produce either the completed initial matrix or the independent
@@ -380,9 +445,9 @@ follow-up matrix. The comparison tool reproduces all array/iteration records
 and feedback-support measurements and now discovers runs longer than five
 iterations.
 
-The full-PTC injected-source implementation and local test seam are complete;
-the paired Unity run remains open. Existing evidence establishes stable
-PSF-shape and amplitude transfer recovery whose size scales with cleaner
-strength. It does not demonstrate a production fruit-loop fault, nor does it
-establish absolute amplitude correctness. Production defaults remain
-unchanged.
+The full-PTC injected-source implementation and local test seam are complete,
+but the first Unity pair is invalidated by the v1 restart defect. Existing
+ablation evidence establishes stable PSF-shape and amplitude transfer recovery
+whose size scales with cleaner strength. It does not demonstrate a production
+fruit-loop fault, nor does it establish absolute amplitude correctness.
+Production defaults remain unchanged.

@@ -83,12 +83,25 @@ auditable.
 
 ## Supersession
 
-A successor schema is required to change state identity or compatibility
-rules. It should add a canonical digest of all non-runtime effective science
-configuration if Citlali gains one stable cross-domain serialization. The
-long-term nested run/iteration layout tracked as retained debt D10 may change
-artifact location, but must preserve the explicit checkpoint contract and
-TolTECA-facing final-product compatibility.
+Schema version 1 was superseded on 2026-07-25 after its first real split-run
+control demonstrated that validated PTC detector-weight factors were retained
+across in-process iterations but absent from the checkpoint. A resumed
+iteration therefore relearned weights and did not match uninterrupted
+execution.
+
+Schema version 2 additionally contains the complete accumulated/finalized PTC
+weight-validation state and a canonical snapshot of the processed-timestream
+policy that produced it. Version-1 checkpoints are rejected rather than
+silently treated as exact. Restart provenance records the restored
+weight-validation cardinality and phase. An injected-source transfer
+experiment must also demonstrate exact image identity between an
+uninterrupted iteration and its restarted control before interpreting branch
+differences.
+
+A successor schema remains required for any further change to state identity
+or compatibility rules. The long-term nested run/iteration layout tracked as
+retained debt D10 may change artifact location, but must preserve the explicit
+checkpoint contract and TolTECA-facing final-product compatibility.
 
 ## Evidence
 

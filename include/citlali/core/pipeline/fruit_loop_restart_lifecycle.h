@@ -8,6 +8,7 @@
 #include <citlali/core/pipeline/reduction_restart_checkpoint.h>
 
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace citlali::pipeline {
@@ -85,7 +86,12 @@ void initialize_fruit_loop_restart_if_requested(
                           fruit_loops_config(engine).type,
                           reduction_restart_observation_ids(engine),
                           learning_config(engine),
-                          engine.learning);
+                          processed_time_chunk_config(engine),
+                          engine.learning,
+                          std::declval<WeightValidationRestartState &>());
+                      restore_weight_validation_restart_state(
+                          engine.ptcproc,
+                          std::declval<const WeightValidationRestartState &>());
                   }) {
         throw citlali::error::runtime(
             "exact fruit-loop restart is unavailable for this reduction engine");
@@ -93,10 +99,14 @@ void initialize_fruit_loop_restart_if_requested(
     else {
         const auto observation_ids =
             reduction_restart_observation_ids(engine);
+        WeightValidationRestartState weight_validation;
         auto summary = load_reduction_restart_checkpoint(
             fruit_loops_config(engine).restart_path,
             fruit_loops_config(engine).type, observation_ids,
-            learning_config(engine), engine.learning);
+            learning_config(engine), processed_time_chunk_config(engine),
+            engine.learning, weight_validation);
+        restore_weight_validation_restart_state(
+            engine.ptcproc, weight_validation);
         if (summary.next_iteration >= fruit_loops_config(engine).max_iters) {
             throw citlali::error::runtime(
                 "fruit-loop restart checkpoint next iteration " +
@@ -128,13 +138,20 @@ void initialize_fruit_loop_restart_if_requested(
                     summary.next_iteration,
                     summary.effective_sample_mask_intervals,
                     summary.effective_detector_penalties,
+                    summary.weight_validation_detector_slots,
+                    summary.weight_validation_accumulated_iterations,
+                    summary.weight_validation_finalized,
                 };
         logger->info(
-            "loaded exact fruit-loop restart: checkpoint={} completed_iteration={} next_iteration={} effective_sample_mask_intervals={} effective_detector_penalties={} creator_version={}",
+            "loaded exact fruit-loop restart: checkpoint={} completed_iteration={} next_iteration={} effective_sample_mask_intervals={} effective_detector_penalties={} weight_validation_detector_slots={} weight_validation_accumulated_iterations={} weight_validation_finalized={} creator_version={}",
             summary.checkpoint_path.string(), summary.completed_iteration,
             summary.next_iteration,
             summary.effective_sample_mask_intervals,
-            summary.effective_detector_penalties, summary.creator_version);
+            summary.effective_detector_penalties,
+            summary.weight_validation_detector_slots,
+            summary.weight_validation_accumulated_iterations,
+            summary.weight_validation_finalized,
+            summary.creator_version);
     }
 }
 
@@ -152,14 +169,19 @@ void write_iteration_restart_checkpoint_if_needed(
                           fruit_loops_config(engine).type,
                           reduction_restart_observation_ids(engine),
                           learning_config(engine),
-                          engine.learning);
+                          processed_time_chunk_config(engine),
+                          engine.learning,
+                          snapshot_weight_validation_restart_state(
+                              engine.ptcproc));
                   }) {
         const auto observation_ids =
             reduction_restart_observation_ids(engine);
         write_reduction_restart_checkpoint(
             engine.output_paths.redu_dir_name, engine.iteration.fruit_iter,
             fruit_loops_config(engine).type, observation_ids,
-            learning_config(engine), engine.learning);
+            learning_config(engine), processed_time_chunk_config(engine),
+            engine.learning,
+            snapshot_weight_validation_restart_state(engine.ptcproc));
         logger->info(
             "fruit-loop restart checkpoint: {}",
             reduction_restart_checkpoint_path(

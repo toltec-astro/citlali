@@ -181,11 +181,50 @@ def fit_table(redu: Path, obsnum: int) -> Table:
     )
 
 
+def require_exact_restart_control(
+    reference: Path, control: Path, obsnum: int, iteration: int,
+) -> None:
+    reference_product = product_path(reference, obsnum, ARRAYS[0])
+    with fits.open(reference_product, memmap=True) as hdul:
+        reference_iteration = int(hdul[0].header["FRUITLOOPS_ITER"])
+    if reference_iteration != iteration:
+        raise ValueError(
+            "uninterrupted continuation reference has iteration "
+            f"{reference_iteration}, expected {iteration}"
+        )
+
+    for array in ARRAYS:
+        reference_path = product_path(reference, obsnum, array)
+        control_path = product_path(control, obsnum, array)
+        for extension in ("signal_I", "kernel_I", "weight_I"):
+            expected = image(reference_path, extension)
+            actual = image(control_path, extension)
+            if np.array_equal(expected, actual, equal_nan=True):
+                continue
+            difference = actual - expected
+            expected_rms = rms(expected)
+            relative_rms = (
+                rms(difference) / expected_rms
+                if expected_rms > 0.0 else math.nan
+            )
+            raise ValueError(
+                "restarted control differs from uninterrupted continuation: "
+                f"iteration={iteration} array={array} "
+                f"extension={extension} relative_rms={relative_rms:.8g}"
+            )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--control", required=True, type=Path)
     parser.add_argument("--injected", required=True, type=Path)
     parser.add_argument("--manifest", required=True, type=Path)
+    parser.add_argument(
+        "--continuation-reference",
+        required=True,
+        type=Path,
+        help="uninterrupted reduNN directory for the first paired iteration",
+    )
     parser.add_argument("--obsnum", required=True, type=int)
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
@@ -208,6 +247,12 @@ def main() -> int:
             f"paired iterations differ from manifest: expected={expected} "
             f"actual={iterations}"
         )
+    require_exact_restart_control(
+        args.continuation_reference,
+        control_dirs[iterations[0]],
+        args.obsnum,
+        iterations[0],
+    )
 
     rows = []
     previous_transfer: dict[str, np.ndarray] = {}
@@ -323,6 +368,8 @@ def main() -> int:
     report_path = args.output.with_suffix(".md")
     lines = [
         "# Fruit-loop Injected-source Transfer",
+        "",
+        "Exact restart control: PASS",
         "",
         "| Iter | Array | Amp recovery | FWHM/kernel major | "
         "Centroid error (arcsec) | Successive relative RMS |",

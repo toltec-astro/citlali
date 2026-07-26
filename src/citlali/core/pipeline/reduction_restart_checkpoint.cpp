@@ -9,6 +9,7 @@
 #include <yaml-cpp/yaml.h>
 
 #include <algorithm>
+#include <cmath>
 #include <cstdint>
 #include <limits>
 #include <map>
@@ -237,6 +238,66 @@ FlatCheckpointState flatten_effective_state(
     return flat;
 }
 
+std::string weight_validation_state_error(
+    const WeightValidationRestartState &state,
+    const citlali::config::ProcessedTimeChunkConfig &config) {
+    const auto size = state.ratio_penalty_sum.size();
+    if (state.ratio_value_sum.size() != size ||
+        state.ratio_value_count.size() != size ||
+        state.ratio_count.size() != size ||
+        state.atmospheric_penalty_sum.size() != size ||
+        state.atmospheric_correlation_sum.size() != size ||
+        state.atmospheric_count.size() != size ||
+        state.detector_penalty.size() != size ||
+        state.detector_validated.size() != size) {
+        return "weight-validation vectors do not share one detector-slot size";
+    }
+    const int accumulation_iters =
+        config.weighting.validation.accumulation_iters;
+    if (state.accumulated_iterations < 0 ||
+        state.accumulated_iterations > accumulation_iters) {
+        return "weight-validation accumulated iteration count is outside the configured range";
+    }
+    if (state.accumulated_iterations > 0 && size == 0) {
+        return "accumulated weight-validation state has no detector slots";
+    }
+    if (state.finalized &&
+        (size == 0 ||
+         state.accumulated_iterations < accumulation_iters)) {
+        return "finalized weight-validation state is incomplete";
+    }
+    const auto all_finite = [](const auto &values) {
+        return std::all_of(values.begin(), values.end(),
+                           [](const auto value) {
+                               return std::isfinite(
+                                   static_cast<double>(value));
+                           });
+    };
+    if (!all_finite(state.ratio_penalty_sum) ||
+        !all_finite(state.ratio_value_sum) ||
+        !all_finite(state.atmospheric_penalty_sum) ||
+        !all_finite(state.atmospheric_correlation_sum) ||
+        !all_finite(state.detector_penalty)) {
+        return "weight-validation state contains a non-finite value";
+    }
+    const auto all_nonnegative = [](const auto &values) {
+        return std::all_of(values.begin(), values.end(),
+                           [](const auto value) { return value >= 0; });
+    };
+    if (!all_nonnegative(state.ratio_value_count) ||
+        !all_nonnegative(state.ratio_count) ||
+        !all_nonnegative(state.atmospheric_count)) {
+        return "weight-validation state contains a negative sample count";
+    }
+    if (!std::all_of(
+            state.detector_validated.begin(),
+            state.detector_validated.end(),
+            [](const int value) { return value == 0 || value == 1; })) {
+        return "weight-validation detector-validity state is not boolean";
+    }
+    return {};
+}
+
 }  // namespace
 
 std::filesystem::path reduction_restart_checkpoint_path(
@@ -249,12 +310,19 @@ std::string learning_restart_policy_snapshot(
     return YAML::Dump(learning_config_node(config));
 }
 
+std::string processed_time_chunk_restart_policy_snapshot(
+    const citlali::config::ProcessedTimeChunkConfig &config) {
+    return YAML::Dump(processed_time_chunk_config_node(config));
+}
+
 void write_reduction_restart_checkpoint(
     const std::filesystem::path &reduction_dir, int completed_iteration,
     const std::string &fruit_loops_type,
     const std::vector<std::string> &observation_ids,
     const citlali::config::TimestreamLearningConfig &learning_config,
-    const ReductionLearningState &learning) {
+    const citlali::config::ProcessedTimeChunkConfig &processed_config,
+    const ReductionLearningState &learning,
+    const WeightValidationRestartState &weight_validation) {
     if (completed_iteration < 0) {
         throw std::invalid_argument(
             "restart checkpoint completed iteration must be nonnegative");
@@ -262,6 +330,11 @@ void write_reduction_restart_checkpoint(
     if (observation_ids.empty()) {
         throw std::invalid_argument(
             "restart checkpoint requires at least one observation identity");
+    }
+    if (const auto error =
+            weight_validation_state_error(weight_validation, processed_config);
+        !error.empty()) {
+        throw std::invalid_argument("invalid restart checkpoint " + error);
     }
     const auto obs_index = observation_index(observation_ids);
     const auto flat = flatten_effective_state(learning, obs_index);
@@ -276,6 +349,9 @@ void write_reduction_restart_checkpoint(
         add_netcdf_var(file, "fruit_loops_type", fruit_loops_type);
         add_netcdf_var(file, "learning_policy_yaml",
                        learning_restart_policy_snapshot(learning_config));
+        add_netcdf_var(
+            file, "processed_time_chunk_policy_yaml",
+            processed_time_chunk_restart_policy_snapshot(processed_config));
         add_netcdf_var(file, "observation_count",
                        static_cast<long long>(observation_ids.size()));
         add_netcdf_var(
@@ -284,6 +360,16 @@ void write_reduction_restart_checkpoint(
         add_netcdf_var(
             file, "effective_detector_penalty_count",
             static_cast<long long>(flat.penalty_iteration.size()));
+        add_netcdf_var(
+            file, "weight_validation_detector_slot_count",
+            static_cast<long long>(
+                weight_validation.ratio_penalty_sum.size()));
+        add_netcdf_var(
+            file, "weight_validation_accumulated_iterations",
+            weight_validation.accumulated_iterations);
+        add_netcdf_var(
+            file, "weight_validation_finalized",
+            weight_validation.finalized ? 1 : 0);
 
         const auto observation_dim =
             file.addDim("observation", observation_ids.size());
@@ -339,6 +425,47 @@ void write_reduction_restart_checkpoint(
             write_numeric_vector(file, "penalty_scan_local", netCDF::ncInt,
                                  dim, flat.penalty_scan_local);
         }
+
+        if (!weight_validation.ratio_penalty_sum.empty()) {
+            const auto dim = file.addDim(
+                "weight_validation_detector_slot",
+                weight_validation.ratio_penalty_sum.size());
+            write_numeric_vector(
+                file, "weight_validation_ratio_penalty_sum",
+                netCDF::ncDouble, dim,
+                weight_validation.ratio_penalty_sum);
+            write_numeric_vector(
+                file, "weight_validation_ratio_value_sum",
+                netCDF::ncDouble, dim,
+                weight_validation.ratio_value_sum);
+            write_numeric_vector(
+                file, "weight_validation_ratio_value_count",
+                netCDF::ncInt, dim,
+                weight_validation.ratio_value_count);
+            write_numeric_vector(
+                file, "weight_validation_ratio_count",
+                netCDF::ncInt, dim, weight_validation.ratio_count);
+            write_numeric_vector(
+                file, "weight_validation_atmospheric_penalty_sum",
+                netCDF::ncDouble, dim,
+                weight_validation.atmospheric_penalty_sum);
+            write_numeric_vector(
+                file, "weight_validation_atmospheric_correlation_sum",
+                netCDF::ncDouble, dim,
+                weight_validation.atmospheric_correlation_sum);
+            write_numeric_vector(
+                file, "weight_validation_atmospheric_count",
+                netCDF::ncInt, dim,
+                weight_validation.atmospheric_count);
+            write_numeric_vector(
+                file, "weight_validation_detector_penalty",
+                netCDF::ncDouble, dim,
+                weight_validation.detector_penalty);
+            write_numeric_vector(
+                file, "weight_validation_detector_validated",
+                netCDF::ncInt, dim,
+                weight_validation.detector_validated);
+        }
     });
 }
 
@@ -347,7 +474,9 @@ ReductionRestartCheckpointSummary load_reduction_restart_checkpoint(
     const std::string &expected_fruit_loops_type,
     const std::vector<std::string> &expected_observation_ids,
     const citlali::config::TimestreamLearningConfig &expected_learning_config,
-    ReductionLearningState &learning) {
+    const citlali::config::ProcessedTimeChunkConfig &expected_processed_config,
+    ReductionLearningState &learning,
+    WeightValidationRestartState &weight_validation) {
     const auto input_path =
         reduction_restart_checkpoint_path(source_reduction_dir);
     if (!std::filesystem::is_directory(source_reduction_dir)) {
@@ -389,6 +518,15 @@ ReductionRestartCheckpointSummary load_reduction_restart_checkpoint(
             input_path,
             "timestream.learning policy differs from the checkpoint; exact restart requires the same learning configuration");
     }
+    const auto processed_policy = read_scalar_string(
+        file, input_path, "processed_time_chunk_policy_yaml");
+    if (processed_policy !=
+        processed_time_chunk_restart_policy_snapshot(
+            expected_processed_config)) {
+        checkpoint_error(
+            input_path,
+            "timestream.processed_time_chunk policy differs from the checkpoint; exact restart requires the same processed-timestream configuration");
+    }
 
     const auto observation_count_ll =
         read_scalar<long long>(file, input_path, "observation_count");
@@ -396,14 +534,31 @@ ReductionRestartCheckpointSummary load_reduction_restart_checkpoint(
         file, input_path, "effective_sample_mask_interval_count");
     const auto penalty_count_ll = read_scalar<long long>(
         file, input_path, "effective_detector_penalty_count");
+    const auto weight_validation_slot_count_ll =
+        read_scalar<long long>(
+            file, input_path,
+            "weight_validation_detector_slot_count");
+    const int weight_validation_accumulated_iterations =
+        read_scalar<int>(
+            file, input_path,
+            "weight_validation_accumulated_iterations");
+    const int weight_validation_finalized =
+        read_scalar<int>(
+            file, input_path, "weight_validation_finalized");
     if (observation_count_ll <= 0 || mask_count_ll < 0 ||
-        penalty_count_ll < 0) {
+        penalty_count_ll < 0 ||
+        weight_validation_slot_count_ll < 0 ||
+        (weight_validation_finalized != 0 &&
+         weight_validation_finalized != 1)) {
         checkpoint_error(input_path, "negative or empty record cardinality");
     }
     const auto observation_count =
         static_cast<std::size_t>(observation_count_ll);
     const auto mask_count = static_cast<std::size_t>(mask_count_ll);
     const auto penalty_count = static_cast<std::size_t>(penalty_count_ll);
+    const auto weight_validation_slot_count =
+        static_cast<std::size_t>(
+            weight_validation_slot_count_ll);
     const auto observation_ids = read_string_vector(
         file, input_path, "observation_id", observation_count);
     if (observation_ids != expected_observation_ids) {
@@ -522,11 +677,58 @@ ReductionRestartCheckpointSummary load_reduction_restart_checkpoint(
         }
     }
 
+    WeightValidationRestartState restored_weight_validation{
+        weight_validation_accumulated_iterations,
+        weight_validation_finalized != 0,
+        read_numeric_vector<double>(
+            file, input_path,
+            "weight_validation_ratio_penalty_sum",
+            weight_validation_slot_count),
+        read_numeric_vector<double>(
+            file, input_path,
+            "weight_validation_ratio_value_sum",
+            weight_validation_slot_count),
+        read_numeric_vector<int>(
+            file, input_path,
+            "weight_validation_ratio_value_count",
+            weight_validation_slot_count),
+        read_numeric_vector<int>(
+            file, input_path,
+            "weight_validation_ratio_count",
+            weight_validation_slot_count),
+        read_numeric_vector<double>(
+            file, input_path,
+            "weight_validation_atmospheric_penalty_sum",
+            weight_validation_slot_count),
+        read_numeric_vector<double>(
+            file, input_path,
+            "weight_validation_atmospheric_correlation_sum",
+            weight_validation_slot_count),
+        read_numeric_vector<int>(
+            file, input_path,
+            "weight_validation_atmospheric_count",
+            weight_validation_slot_count),
+        read_numeric_vector<double>(
+            file, input_path,
+            "weight_validation_detector_penalty",
+            weight_validation_slot_count),
+        read_numeric_vector<int>(
+            file, input_path,
+            "weight_validation_detector_validated",
+            weight_validation_slot_count),
+    };
+    if (const auto error = weight_validation_state_error(
+            restored_weight_validation, expected_processed_config);
+        !error.empty()) {
+        checkpoint_error(input_path, error);
+    }
+
     {
         std::lock_guard<std::mutex> lock(*learning.mutex);
         learning.effective_sample_masks = std::move(masks);
         learning.effective_detector_penalties = std::move(penalties);
     }
+    weight_validation = std::move(restored_weight_validation);
 
     return ReductionRestartCheckpointSummary{
         input_path,
@@ -538,6 +740,9 @@ ReductionRestartCheckpointSummary load_reduction_restart_checkpoint(
         observation_ids,
         mask_count,
         penalty_count,
+        weight_validation_slot_count,
+        weight_validation_accumulated_iterations,
+        weight_validation_finalized != 0,
     };
 }
 

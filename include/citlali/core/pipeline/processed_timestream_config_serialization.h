@@ -549,6 +549,12 @@ inline YAML::Node fruit_loop_restart_resolution_node(
         resolution.effective_sample_mask_intervals;
     node["effective_detector_penalties"] =
         resolution.effective_detector_penalties;
+    node["weight_validation_detector_slots"] =
+        resolution.weight_validation_detector_slots;
+    node["weight_validation_accumulated_iterations"] =
+        resolution.weight_validation_accumulated_iterations;
+    node["weight_validation_finalized"] =
+        resolution.weight_validation_finalized;
     return node;
 }
 

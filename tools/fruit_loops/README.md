@@ -85,6 +85,10 @@ size and off-source fraction of the flux-selected feedback model.
 
 ## Full-PTC injected-source pair
 
+This test requires a version-2 restart checkpoint. Version 1 omitted the
+processed-timestream weight-validation state and cannot provide an exact
+continuation.
+
 The final transfer test starts from one converged restart checkpoint and runs
 two otherwise identical branches:
 
@@ -136,6 +140,8 @@ $HOME/tolteca/bin/python \
   --control /path/to/run/control/reduced \
   --injected /path/to/run/injected/reduced \
   --manifest /path/to/injected_source_setup/manifest.yaml \
+  --continuation-reference \
+    /path/to/full_policy_10_iters/reduced/redu09 \
   --obsnum 133410 \
   --output /path/to/injected_source_metrics.csv
 ```
@@ -145,6 +151,11 @@ control-subtracted source amplitude, amplitude recovery fraction, source and
 kernel widths, centroid separation, iteration-to-iteration transfer-map
 change, kernel difference, weight difference, and ordinary pointing-fit
 metrics.
+
+Before measuring the injected source, the comparator requires every signal,
+kernel, and weight image in the restarted control's first iteration to be
+exactly identical to the uninterrupted continuation reference. A mismatch
+invalidates the experiment rather than being reported as a transfer result.
 
 This is a diagnostic-only mode. Startup rejects it unless:
 

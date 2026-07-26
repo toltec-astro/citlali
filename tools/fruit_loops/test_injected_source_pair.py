@@ -12,6 +12,23 @@ from tools.fruit_loops import compare_injected_source_pair as compare
 
 
 class InjectedSourcePairTest(unittest.TestCase):
+    @staticmethod
+    def write_map_product(
+        path: Path, iteration: int, value: float,
+    ) -> None:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        primary = fits.PrimaryHDU()
+        primary.header["HIERARCH FRUITLOOPS_ITER"] = iteration
+        hdus = [primary]
+        for extension in ("signal_I", "kernel_I", "weight_I"):
+            hdus.append(
+                fits.ImageHDU(
+                    np.full((4, 5), value, dtype=float),
+                    name=extension,
+                )
+            )
+        fits.HDUList(hdus).writeto(path)
+
     def test_discovers_absolute_iteration_from_fits_header(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -28,6 +45,37 @@ class InjectedSourcePairTest(unittest.TestCase):
                 compare.iteration_dirs(root, 133410),
                 {9: root / "redu00", 10: root / "redu01"},
             )
+
+    def test_exact_restart_control_gate(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            reference = root / "reference"
+            control = root / "control"
+            for array in compare.ARRAYS:
+                self.write_map_product(
+                    compare.product_path(reference, 133410, array),
+                    9, 3.0,
+                )
+                self.write_map_product(
+                    compare.product_path(control, 133410, array),
+                    9, 3.0,
+                )
+
+            compare.require_exact_restart_control(
+                reference, control, 133410, 9,
+            )
+
+            with fits.open(
+                compare.product_path(control, 133410, "a1400"),
+                mode="update",
+            ) as hdul:
+                hdul["weight_I"].data[0, 0] = 4.0
+            with self.assertRaisesRegex(
+                ValueError, "restarted control differs",
+            ):
+                compare.require_exact_restart_control(
+                    reference, control, 133410, 9,
+                )
 
     def test_pair_contract_allows_only_output_and_enable_difference(self) -> None:
         manifest = {

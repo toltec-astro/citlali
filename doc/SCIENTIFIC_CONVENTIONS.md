@@ -149,15 +149,17 @@ timing. Current housekeeping cadence can be approximately 60 seconds, so the
 published sample age is part of the scientific interpretation and must not be
 discarded by downstream QA.
 
-The fruit-loop restart checkpoint stores operational learned state, not QA
-history. Its sample masks are the canonical disjoint interval union keyed by
+The fruit-loop restart checkpoint stores operational state, not QA history.
+Its sample masks are the canonical disjoint interval union keyed by
 observation, zero-based scan, application stage, and detector UID. Its detector
-penalties retain their scientific identity and effective value. Bounded event
-vectors, housekeeping matches, summaries, and dropped-diagnostic counters do
-not affect later flags or weights and are intentionally not restored. Exact
-continuation requires unchanged inputs and science configuration; version 1
-mechanically rejects mismatched ordered observations, fruit-loop map type, and
-learning policy and records the remaining configuration for audit.
+penalties retain their scientific identity and effective value. Schema v2 also
+stores accumulated/finalized PTC weight-validation sums, counts, detector
+factors, and validity flags, and rejects a changed processed-timestream policy.
+Bounded event vectors, housekeeping matches, summaries, and
+dropped-diagnostic counters do not affect later flags or weights and are
+intentionally not restored. Exact continuation requires unchanged inputs and
+science configuration; schema v1 is rejected because it omitted retained
+weight-validation state.
 
 Map products are collections of two-dimensional spatial planes. Array,
 frequency, and Stokes identity are represented by product grouping, FITS

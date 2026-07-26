@@ -264,6 +264,47 @@ class ValidateProductContractTest(unittest.TestCase):
             any("expected 'test-schema-v1'" in error for error in result["errors"])
         )
 
+    @unittest.skipIf(product_contract.netCDF4 is None, "netCDF4 is unavailable")
+    def test_checks_schema_variant_required_variables(self) -> None:
+        import netCDF4
+
+        path = self.reduction / "product.nc"
+        with netCDF4.Dataset(path, "w") as dataset:
+            dim = dataset.createDimension("schema", 1)
+            schema = dataset.createVariable(
+                "schema_version", str, (dim.name,)
+            )
+            schema[0] = "test-schema-v2"
+
+        checks = {
+            "scalar_one_of": {
+                "schema_version": [
+                    "test-schema-v1",
+                    "test-schema-v2",
+                ],
+            },
+            "required_variables_by_scalar": {
+                "schema_version": {
+                    "test-schema-v2": ["v2_state"],
+                },
+            },
+        }
+        result = self.validate(
+            [self.entry(pattern="product.nc", checks=checks)]
+        )
+        self.assertFalse(result["passed"])
+        self.assertTrue(
+            any("requires variables ['v2_state']" in error
+                for error in result["errors"])
+        )
+
+        with netCDF4.Dataset(path, "a") as dataset:
+            dataset.createVariable("v2_state", "i4")
+        result = self.validate(
+            [self.entry(pattern="product.nc", checks=checks)]
+        )
+        self.assertTrue(result["passed"], result["errors"])
+
 
 if __name__ == "__main__":
     unittest.main()

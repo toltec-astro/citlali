@@ -40,10 +40,14 @@ branch. The exact validated tree will remain available for forensic review.
   pair is now implemented locally: restart-matched control and injected
   branches differ only by adding a declared source through the pristine unit
   kernel before model subtraction, and the comparator fits their difference
-  through every saved iteration. Its local CLI/test builds, all 512 enabled
-  CTests, synthetic analysis-tool recovery, and complete config preflight
-  pass.
-  The paired Unity run remains the final policy gate. Production defaults
+  through every saved iteration. The first paired Unity run exposed an exact-
+  restart defect: checkpoint v1 omitted retained PTC weight-validation state,
+  so its control continuation diverged from the uninterrupted trajectory.
+  Checkpoint v2 now stores and restores that state, rejects v1 checkpoints,
+  and requires an exact uninterrupted-control gate before transfer metrics
+  are interpreted. Its local CLI/test builds, all 514 enabled CTests,
+  synthetic analysis-tool recovery, and complete config preflight pass. A
+  fresh v2 paired Unity run remains the final policy gate. Production defaults
   remain unchanged. See the
   [investigation record](FRUIT_LOOP_FEEDBACK_INVESTIGATION_2026-07-24.md).
 - A 2026-07-24 reliability investigation is active for two long
@@ -254,6 +258,19 @@ preflight, and all 108 baseline-tool tests (including 60 reduction-audit
 tests) pass. A matched Unity split versus
 uninterrupted science run is still required; the already-running older binary
 cannot create this new checkpoint.
+
+The first real exact-restart control, performed for the full-PTC
+injected-source experiment on 2026-07-25, invalidated checkpoint schema v1.
+Restarted absolute iteration 9 differed from uninterrupted iteration 9 by
+4.6--26.6% relative RMS in signal maps and 8.3--49.7% in weight maps. The
+missing state was the validated PTC weighting accumulator and finalized
+detector-factor vectors retained in `PTCProc` across in-process iterations.
+Schema v2 now stores those vectors and their phase, records a canonical
+processed-timestream policy snapshot, and rejects v1 checkpoints. Focused
+restart tests, the 500-test `citlali_test` binary, the local CLI build, and the
+complete 123-test config preflight pass. A new uninterrupted v2 trajectory
+plus exact restarted control is required before the injected-source transfer
+experiment can be interpreted.
 
 The completed older-binary continuation then exposed an invalid-success
 boundary in lowpass-only kernel filtering. The latest radial `a1400` template
