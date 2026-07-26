@@ -89,6 +89,24 @@ This test requires a version-2 restart checkpoint. Version 1 omitted the
 processed-timestream weight-validation state and cannot provide an exact
 continuation.
 
+First prepare and run a fresh uninterrupted ten-iteration reference with the
+same v2 executable that will run the pair:
+
+```bash
+$HOME/tolteca/bin/python \
+  tools/fruit_loops/prepare_injected_source_reference.py \
+  --input /path/to/full_policy_10_iters_config.yaml \
+  --output-dir /path/to/injected_source_v2/setup_reference \
+  --runtime-output-root /path/to/injected_source_v2/obs133410
+
+/path/to/citlali -l info \
+  /path/to/injected_source_v2/setup_reference/citlali_injected_source_reference.yaml
+```
+
+The reference must start from raw inputs. The utility clears both map and
+restart paths, keeps all ten iterations, and writes them under
+`reference/reduced/redu00` through `redu09`.
+
 The final transfer test starts from one converged restart checkpoint and runs
 two otherwise identical branches:
 
