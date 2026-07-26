@@ -213,8 +213,16 @@ same-SHA matrix is running.
 
 ## Current Disposition
 
-The v4.x implementation is not yet available for review. CMake targets,
-dependency fetching, presets, CI build lanes, install/export rules, and
-cluster build helpers therefore remain unchanged. Compilation-dependent
-criteria 6, 7, and 10 in the Phase 4 closeout census remain deferred, not
-waived.
+The first v4.x Conan 2 implementation became available on 2026-07-26 and was
+reviewed at the exact revisions recorded in
+`TOLTECA_BUILD_INTEGRATION_REVIEW_2026-07-26.md`. The project selected the
+**Adapt** path. The Tula/Conan 2 architecture is accepted as the foundation,
+but the current Citlali milestone builds only a five-source static library and
+does not include the production CLI, full dependency/API surface, generated
+provenance, or complete validation gates.
+
+Existing build behavior remains unchanged while the bounded adaptation is
+designed and tested. Compilation-dependent criteria 6, 7, and 10 in the Phase
+4 closeout census are now active integration work rather than unavailable
+external evidence; they remain open until the full application and Unity lane
+pass the recorded gates.

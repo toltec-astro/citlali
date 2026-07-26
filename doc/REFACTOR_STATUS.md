@@ -17,6 +17,35 @@ The project will improve the existing tree incrementally. It will not restart
 as a broad rewrite and will not rewrite the granular history of the validated
 branch. The exact validated tree will remain available for forensic review.
 
+## 2026-07-26 Conan 2 Build Review
+
+The previously deferred TolTECA build implementation is now available and has
+received an initial architecture review. Exact evidence, requirement
+dispositions, compatibility gaps, and the bounded integration sequence are
+recorded in
+`doc/TOLTECA_BUILD_INTEGRATION_REVIEW_2026-07-26.md`.
+
+The project selected the **Adapt** path. Tula CMake's typed Conan 2 feature
+registry, generated-preset workflow, explicit first-party package graph, and
+compiler matrix are accepted as the foundation for the successor build. The
+reviewed `citlali/v4.x_conan2` target is not a drop-in application build: it
+intentionally contains only a five-source static-library slice, 41 headers,
+and the Gaussian-model test, with no production CLI or generated source
+identity.
+
+The full refactored application still requires 709 Citlali headers, eight
+active compiled library sources, the CLI, more than 500 focused CTests,
+embedded default configuration, and source/dependency provenance. Kidscpp v3
+also omits the active TolTEC raw-data adapter and the presently constructed
+but apparently unused sweep fitter. Direct HDF5 and Zlib ownership must be
+made explicit.
+
+Phase 5 build integration is therefore unblocked but not complete. The next
+work is a bounded compatibility and target adaptation, followed by the full
+local gate, a Unity point smoke run, and the frozen same-SHA four-mode matrix.
+The existing build remains available until the new path proves all of those
+gates. No numerical algorithm changes are part of this integration.
+
 ## Current Snapshot
 
 - A 2026-07-24 pointing fruit-loop investigation is active. Five controlled

@@ -6,20 +6,22 @@ Read these documents before making architectural changes:
 2. `doc/PHASE5_PREPARATION_AND_INTEGRATION_PLAN_2026-07-16.md` - active
    compilation-independent closeout lane and final-candidate discipline.
 3. `doc/TOLTECA_BUILD_INTEGRATION_REQUIREMENTS_2026-07-23.md` - required
-   outcomes and evidence for the deferred build/integration review.
-4. `doc/PHASE4_1_TOLTECA_CONFIG_STRUCTURE_PLAN_2026-07-16.md` - completed
+   outcomes and evidence for the build/integration review.
+4. `doc/TOLTECA_BUILD_INTEGRATION_REVIEW_2026-07-26.md` - reviewed Conan 2
+   evidence, Adapt decision, compatibility gaps, and bounded integration path.
+5. `doc/PHASE4_1_TOLTECA_CONFIG_STRUCTURE_PLAN_2026-07-16.md` - completed
    four-mode numbered-YAML authoring work and gates.
-5. `doc/PHASE4_2_TECHNIQUE_PERFORMANCE_REVIEW_PLAN_2026-07-16.md` - completed
+6. `doc/PHASE4_2_TECHNIQUE_PERFORMANCE_REVIEW_PLAN_2026-07-16.md` - completed
    whole-code review rubric, evidence labels, priorities, and stop rules.
-6. `doc/ARCHITECTURE.md` - active components, ownership, dependencies,
+7. `doc/ARCHITECTURE.md` - active components, ownership, dependencies,
    compatibility boundaries, and extension rules.
-7. `doc/SCIENTIFIC_CONVENTIONS.md` - identities, units, frames, validity, and
+8. `doc/SCIENTIFIC_CONVENTIONS.md` - identities, units, frames, validity, and
    validation routing.
-8. `doc/RETAINED_DEBT.md` - deliberate limitations, owners, triggers, and exit
+9. `doc/RETAINED_DEBT.md` - deliberate limitations, owners, triggers, and exit
    conditions.
-9. `handoff/EXTERNAL_REFACTOR_ARCHITECTURE_REVIEW_2026-07-10.md` - adopted
+10. `handoff/EXTERNAL_REFACTOR_ARCHITECTURE_REVIEW_2026-07-10.md` - adopted
    independent review and completion criteria.
-10. `doc/STRUCTURAL_REFACTOR_PLAN_2026-06-29.md` - original goals and history.
+11. `doc/STRUCTURAL_REFACTOR_PLAN_2026-06-29.md` - original goals and history.
 
 The living status document governs sequencing when these documents differ.
 Durable architecture decisions are indexed in `doc/adr/README.md`.
@@ -30,10 +32,13 @@ The refactor follows the roadmap in `doc/REFACTOR_STATUS.md`. Project-owner
 additions Phase 4.1 and Phase 4.2 are complete. The accepted four-mode TolTECA
 numbered-config kits remain opt-in through TolPROJ's `--refactor` path, and the
 whole-code review's untriggered optimization candidates remain governed by the
-retained-debt register. Formal Phase 5 integration and compilation-side changes
-remain deferred pending review of TolTECA's revised C++ integration approach.
-Compilation-independent validation-contract and integration-packet preparation
-may continue; open-ended header subdivision remains paused.
+retained-debt register. The TolTECA Conan 2 implementation has now been
+reviewed and the project selected the bounded **Adapt** path. Phase 5 build
+integration may proceed under
+`doc/TOLTECA_BUILD_INTEGRATION_REVIEW_2026-07-26.md`: preserve the full
+refactored CLI and validation surface, keep the existing build available until
+the successor passes its gates, and do not combine build integration with
+numerical algorithm changes. Open-ended header subdivision remains paused.
 
 Do not broaden mature RTC, PTC, JINC, or Wiener-filter algorithms while fixing
 their contracts. Preserve numerical behavior unless a change is named,

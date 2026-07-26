@@ -1,5 +1,18 @@
 # Phase 5 Preparation And Integration Plan - 2026-07-16
 
+## 2026-07-26 Status Update
+
+The external build implementation is now available and the entry review has
+occurred. The project selected the **Adapt** path recorded in
+`TOLTECA_BUILD_INTEGRATION_REVIEW_2026-07-26.md`. The preparation restrictions
+below remain the historical boundary that protected the project before that
+review; they no longer prohibit the bounded Conan 2 adaptation authorized by
+the review.
+
+The existing build remains the operational fallback. Final candidate freeze
+still requires the complete adapted CLI, local gates, Unity point smoke run,
+and same-SHA four-mode matrix defined below.
+
 ## Purpose And Boundary
 
 The TolTECA build owner is unavailable until the week following 2026-07-16.
