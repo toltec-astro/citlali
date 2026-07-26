@@ -145,6 +145,25 @@ class InjectedSourcePairTest(unittest.TestCase):
             delta=1.0e-4,
         )
 
+    def test_projects_transfer_onto_realized_kernel(self) -> None:
+        kernel = np.arange(1.0, 13.0).reshape(3, 4)
+        truth = 4000.0
+        transfer = 0.92 * truth * kernel
+
+        metrics = compare.kernel_projection_metrics(
+            transfer, kernel, truth,
+        )
+
+        self.assertAlmostEqual(metrics["scale_mjy_beam"], 0.92 * truth)
+        self.assertAlmostEqual(metrics["recovery_fraction"], 0.92)
+        self.assertAlmostEqual(metrics["residual_relative_rms"], 0.0)
+
+    def test_kernel_projection_rejects_zero_kernel(self) -> None:
+        with self.assertRaisesRegex(ValueError, "zero kernel"):
+            compare.kernel_projection_metrics(
+                np.ones((3, 4)), np.zeros((3, 4)), 4000.0,
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

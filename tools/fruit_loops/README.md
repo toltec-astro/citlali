@@ -165,7 +165,8 @@ $HOME/tolteca/bin/python \
 ```
 
 The comparator writes CSV and Markdown summaries containing the
-control-subtracted source amplitude, amplitude recovery fraction, source and
+control-subtracted source amplitude, raw and realized-kernel-normalized
+amplitude recovery, a full-map kernel-projection recovery metric, source and
 kernel widths, centroid separation, iteration-to-iteration transfer-map
 change, kernel difference, weight difference, and ordinary pointing-fit
 metrics.

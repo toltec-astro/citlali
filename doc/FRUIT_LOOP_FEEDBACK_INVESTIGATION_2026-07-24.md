@@ -3,12 +3,14 @@
 Date: 2026-07-24
 
 Status: active; both controlled Unity matrices are complete. The first
-full-PTC injected-source pair completed, but its exact-restart control gate
-failed because checkpoint schema v1 omitted retained processed-weight
-validation state. That pair is quarantined. Checkpoint schema v2 and a
-mandatory uninterrupted-versus-restarted control gate are implemented
-locally; a corrected Unity pair remains required before accepting or changing
-a production policy.
+full-PTC injected-source pair is quarantined because checkpoint schema v1
+omitted retained processed-weight validation state. The corrected schema-v2
+pair passes exact uninterrupted-versus-restarted continuation. Its known
+source recovers monotonically with shrinking changes and a PSF converging to
+the realized kernel, strongly favoring transfer-function recovery over
+unstable feedback. Five paired passes do not yet establish whether the
+kernel-normalized amplitude reaches unity or retains a small stable
+attenuation. Production policy remains unchanged pending an extended pair.
 
 ## Question
 
@@ -109,7 +111,7 @@ cause.
 | PTC cleaning | Dominant driver. Seed attenuation and feedback correction increase strongly with PCA depth. This is expected transfer-function behavior, not by itself a fault. |
 | Projection/mapmaking | Secondary. Bilinear and historical projection variants change final amplitudes by at most 2.7%; naive mapmaking retains a similar growth pattern. |
 | Kernel normalization | Tracks the recovered PSF and much of the amplitude transfer. Real-source endpoints do not equal the matched-APT flux, but cleaner-free fits are farther from that reference, so this does not isolate a kernel fault. |
-| Interaction | No production fault is demonstrated by the real-source matrices. The full-PTC injected-source test is the remaining authority for absolute amplitude and PSF recovery. |
+| Interaction | The schema-v2 injected-source pair is stable and moves toward the known source rather than running away. An extended pair is needed to distinguish convergence to unity from a residual few-percent attenuation. |
 
 No production default has changed.
 
@@ -429,6 +431,52 @@ The corrected Unity sequence is:
    exactly; and
 4. only then interpret the injected-minus-control transfer trajectory.
 
+## Corrected Schema-v2 Injected-source Pair
+
+The uninterrupted ten-iteration reference and corrected paired run used
+executable `v4.0.0-3595-g7d8fd23f`. The reference produced checkpoint v2 with
+5,429 finalized weight-validation detector slots. Its scientific FITS and
+pointing-fit products are exact against the earlier uninterrupted trajectory
+at every iteration, so the schema change does not alter the uninterrupted
+science path.
+
+Both branches loaded the same `redu08` checkpoint and completed absolute
+iterations 9--13 without error-level messages. Most importantly, restarted
+control iteration 9 is exactly identical to uninterrupted reference iteration
+9 in every signal, kernel, and weight image. This closes the checkpoint-v1
+confounder and validates the v2 restart repair.
+
+The known injected source evolves as follows:
+
+| Iteration | Array | Raw amplitude recovery | Kernel-normalized amplitude recovery | Full-map kernel projection | Major FWHM / kernel | Centroid error (arcsec) | Successive relative map change |
+|---:|---|---:|---:|---:|---:|---:|---:|
+| 9 | a1100 | 0.587 | 0.661 | 0.516 | 0.846 | 0.037 | -- |
+| 9 | a1400 | 0.385 | 0.433 | 0.372 | 0.900 | 0.176 | -- |
+| 9 | a2000 | 0.548 | 0.604 | 0.496 | 0.893 | 0.190 | -- |
+| 13 | a1100 | 0.851 | 0.952 | 0.920 | 0.979 | 0.019 | 0.046 |
+| 13 | a1400 | 0.837 | 0.919 | 0.895 | 0.990 | 0.049 | 0.077 |
+| 13 | a2000 | 0.893 | 0.975 | 0.962 | 0.999 | 0.049 | 0.036 |
+
+This is the signature expected from transfer-function recovery: the first
+cleaned map is attenuated, each feedback pass restores more of the source,
+the recovered PSF approaches the propagated kernel, centroids remain stable,
+and iteration-to-iteration changes contract. There is no overshoot,
+oscillation, or accelerating growth.
+
+The result is not yet a complete absolute-amplitude proof. At iteration 13 the
+kernel-normalized Gaussian amplitude is within 2.5--8.1% of unity, and the
+full-map kernel projection is within 3.8--10.5%. All metrics are still moving
+toward unity, especially a1400. A ten-pass pair from the same iteration-8
+checkpoint will determine whether the residual closes or approaches a stable
+non-unit response.
+
+The downloaded `injected/redu03` omitted its copied low-level YAML even though
+the Unity log records the copy operation. The setup YAML and the copies in
+the other four injected iterations are byte-identical. The metrics above were
+generated through a temporary analysis overlay using that identical setup
+copy; the archived directory should be re-synchronized before final
+acceptance.
+
 ## Local Verification
 
 The investigation and schema-v2 repair pass the local `citlali_cli` and
@@ -445,9 +493,8 @@ follow-up matrix. The comparison tool reproduces all array/iteration records
 and feedback-support measurements and now discovers runs longer than five
 iterations.
 
-The full-PTC injected-source implementation and local test seam are complete,
-but the first Unity pair is invalidated by the v1 restart defect. Existing
-ablation evidence establishes stable PSF-shape and amplitude transfer recovery
-whose size scales with cleaner strength. It does not demonstrate a production
-fruit-loop fault, nor does it establish absolute amplitude correctness.
-Production defaults remain unchanged.
+The full-PTC injected-source implementation, exact restart gate, and
+realized-kernel-normalized analysis are complete. The first Unity pair remains
+invalidated by the v1 restart defect; the corrected v2 pair demonstrates
+stable transfer recovery but does not yet establish its asymptotic absolute
+amplitude. Production defaults remain unchanged.

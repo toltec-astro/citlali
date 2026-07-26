@@ -46,8 +46,13 @@ branch. The exact validated tree will remain available for forensic review.
   Checkpoint v2 now stores and restores that state, rejects v1 checkpoints,
   and requires an exact uninterrupted-control gate before transfer metrics
   are interpreted. Its local CLI/test builds, all 514 enabled CTests,
-  synthetic analysis-tool recovery, and complete config preflight pass. A
-  fresh v2 paired Unity run remains the final policy gate. Production defaults
+  synthetic analysis-tool recovery, and complete config preflight pass. The
+  corrected v2 Unity pair now passes exact continuation. The injected source
+  recovers monotonically through iterations 9--13, its PSF converges to the
+  realized kernel, centroids remain stable, and successive map changes shrink.
+  Final kernel-normalized amplitude recovery is 95.2%, 91.9%, and 97.5% for
+  a1100, a1400, and a2000. An extended pair is required to distinguish
+  convergence to unity from stable residual attenuation. Production defaults
   remain unchanged. See the
   [investigation record](FRUIT_LOOP_FEEDBACK_INVESTIGATION_2026-07-24.md).
 - A 2026-07-24 reliability investigation is active for two long

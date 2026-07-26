@@ -67,6 +67,29 @@ def rms(values: np.ndarray) -> float:
     return float(np.sqrt(np.mean(np.square(values[finite]))))
 
 
+def kernel_projection_metrics(
+    transfer: np.ndarray, kernel: np.ndarray, truth: float,
+) -> dict[str, float]:
+    finite = np.isfinite(transfer) & np.isfinite(kernel)
+    if not finite.any():
+        raise ValueError("cannot compare entirely non-finite transfer/kernel")
+    transfer_values = transfer[finite]
+    kernel_values = kernel[finite]
+    kernel_power = float(np.dot(kernel_values, kernel_values))
+    if kernel_power <= 0.0:
+        raise ValueError("cannot project onto a zero kernel")
+    scale = float(np.dot(kernel_values, transfer_values) / kernel_power)
+    residual = transfer_values - scale * kernel_values
+    transfer_rms = rms(transfer_values)
+    return {
+        "scale_mjy_beam": scale,
+        "recovery_fraction": scale / truth if truth > 0.0 else math.nan,
+        "residual_relative_rms":
+            rms(residual) / transfer_rms
+            if transfer_rms > 0.0 else math.nan,
+    }
+
+
 def gaussian_fit(
     values: np.ndarray, pixel_size_arcsec: float,
 ) -> dict[str, float]:
@@ -287,9 +310,13 @@ def main() -> int:
             injected_weight = image(
                 product_path(injected, args.obsnum, array), "weight_I"
             )
+            truth = float(amplitudes[array])
             transfer = injected_map - control_map
             transfer_fit = gaussian_fit(transfer, pixel_size)
             kernel_fit = gaussian_fit(injected_kernel, pixel_size)
+            kernel_projection = kernel_projection_metrics(
+                transfer, injected_kernel, truth,
+            )
             previous = previous_transfer.get(array)
             successive_rms = (
                 rms(transfer - previous) if previous is not None else math.nan
@@ -305,7 +332,6 @@ def main() -> int:
             positive_injected_weight = injected_weight[
                 np.isfinite(injected_weight) & (injected_weight > 0.0)
             ]
-            truth = float(amplitudes[array])
             centroid_error = math.hypot(
                 transfer_fit["x_arcsec"] - kernel_fit["x_arcsec"],
                 transfer_fit["y_arcsec"] - kernel_fit["y_arcsec"],
@@ -320,6 +346,17 @@ def main() -> int:
                     "amplitude_recovery_fraction":
                         transfer_fit["amplitude"] / truth
                         if truth > 0.0 else math.nan,
+                    "kernel_fit_amplitude": kernel_fit["amplitude"],
+                    "kernel_normalized_amplitude_recovery_fraction":
+                        transfer_fit["amplitude"]
+                        / (truth * kernel_fit["amplitude"])
+                        if truth > 0.0
+                        and kernel_fit["amplitude"] > 0.0
+                        else math.nan,
+                    "kernel_projection_recovery_fraction":
+                        kernel_projection["recovery_fraction"],
+                    "kernel_projection_residual_relative_rms":
+                        kernel_projection["residual_relative_rms"],
                     "transfer_major_fwhm_arcsec":
                         transfer_fit["major_fwhm_arcsec"],
                     "transfer_minor_fwhm_arcsec":
@@ -371,14 +408,17 @@ def main() -> int:
         "",
         "Exact restart control: PASS",
         "",
-        "| Iter | Array | Amp recovery | FWHM/kernel major | "
+        "| Iter | Array | Raw amp recovery | Kernel-normalized amp | "
+        "Kernel projection | FWHM/kernel major | "
         "Centroid error (arcsec) | Successive relative RMS |",
-        "| ---: | --- | ---: | ---: | ---: | ---: |",
+        "| ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: |",
     ]
     for row in rows:
         lines.append(
             f"| {row['iteration']} | {row['array']} | "
             f"{row['amplitude_recovery_fraction']:.6f} | "
+            f"{row['kernel_normalized_amplitude_recovery_fraction']:.6f} | "
+            f"{row['kernel_projection_recovery_fraction']:.6f} | "
             f"{row['major_fwhm_over_kernel']:.6f} | "
             f"{row['centroid_error_arcsec']:.6f} | "
             f"{row['successive_transfer_delta_relative_rms']:.6g} |"
