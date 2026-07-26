@@ -13,6 +13,8 @@ import yaml
 from astropy.io import fits
 from astropy.table import Table
 
+from tools.fruit_loops.compare_injected_source_pair import gaussian_fit
+
 
 ARRAY_NAMES = {0: "a1100", 1: "a1400", 2: "a2000"}
 
@@ -27,6 +29,30 @@ def rms(values: np.ndarray) -> float:
     if not finite.any():
         return math.nan
     return float(np.sqrt(np.mean(np.square(values[finite]))))
+
+
+def robust_background_sigma(
+    values: np.ndarray, center_y: float, center_x: float,
+    pixel_size_arcsec: float, inner_arcsec: float = 40.0,
+    outer_arcsec: float = 100.0,
+) -> float:
+    rows, cols = np.indices(values.shape, dtype=float)
+    radius_arcsec = np.hypot(
+        rows - center_y, cols - center_x,
+    ) * pixel_size_arcsec
+    selected = (
+        np.isfinite(values)
+        & (radius_arcsec >= inner_arcsec)
+        & (radius_arcsec <= outer_arcsec)
+    )
+    samples = values[selected]
+    if samples.size < 10:
+        samples = values[np.isfinite(values)]
+    if samples.size == 0:
+        return math.nan
+    median = float(np.median(samples))
+    mad = float(np.median(np.abs(samples - median)))
+    return 1.4826 * mad
 
 
 def iteration_config(reduction_dir: Path, fallback: Path | None = None) -> dict:
@@ -162,6 +188,11 @@ def reduction_rows(label: str, reduced: Path, obsnum: int) -> list[dict]:
             signal = scalar_image(map_path, "signal_I")
             kernel = scalar_image(map_path, "kernel_I")
             weight = scalar_image(map_path, "weight_I")
+            with fits.open(map_path, memmap=True) as hdul:
+                absolute_iteration = int(
+                    hdul[0].header.get("FRUITLOOPS_ITER", iteration)
+                )
+                source = str(hdul[0].header.get("SOURCE", "unknown"))
             finite_weight = weight[np.isfinite(weight) & (weight > 0.0)]
             delta = (
                 signal - previous_maps[array_name]
@@ -173,23 +204,66 @@ def reduction_rows(label: str, reduced: Path, obsnum: int) -> list[dict]:
                 if array_name in previous_maps
                 else math.nan
             )
+            signal_rms = rms(signal)
+            kernel_fit = gaussian_fit(kernel, pixel_size_arcsec)
+            fitted_a_fwhm = abs(float(fit["a_fwhm"]))
+            fitted_b_fwhm = abs(float(fit["b_fwhm"]))
+            signal_peak = np.unravel_index(
+                np.nanargmax(signal), signal.shape
+            )
+            background_sigma = robust_background_sigma(
+                signal, float(signal_peak[0]), float(signal_peak[1]),
+                pixel_size_arcsec,
+            )
+            kernel_amplitude = kernel_fit["amplitude"]
             rows.append(
                 {
                     "variant": label,
-                    "iteration": iteration,
+                    "obsnum": obsnum,
+                    "source": source,
+                    "iteration": absolute_iteration,
                     "array": array_name,
                     "amplitude": float(fit["amp"]),
-                    "a_fwhm_arcsec": float(fit["a_fwhm"]),
-                    "b_fwhm_arcsec": float(fit["b_fwhm"]),
+                    "a_fwhm_arcsec": fitted_a_fwhm,
+                    "b_fwhm_arcsec": fitted_b_fwhm,
+                    "major_fwhm_arcsec": max(
+                        fitted_a_fwhm, fitted_b_fwhm
+                    ),
+                    "minor_fwhm_arcsec": min(
+                        fitted_a_fwhm, fitted_b_fwhm
+                    ),
                     "sig2noise": float(fit["sig2noise"]),
                     "x_t_arcsec": float(fit["x_t"]),
                     "y_t_arcsec": float(fit["y_t"]),
                     "kernel_peak": float(np.nanmax(kernel)),
+                    "kernel_fit_amplitude": kernel_amplitude,
+                    "kernel_major_fwhm_arcsec":
+                        kernel_fit["major_fwhm_arcsec"],
+                    "kernel_minor_fwhm_arcsec":
+                        kernel_fit["minor_fwhm_arcsec"],
+                    "kernel_x_arcsec": kernel_fit["x_arcsec"],
+                    "kernel_y_arcsec": kernel_fit["y_arcsec"],
+                    "kernel_normalized_amplitude":
+                        float(fit["amp"]) / kernel_amplitude
+                        if kernel_amplitude > 0.0 else math.nan,
+                    "major_fwhm_over_kernel":
+                        max(fitted_a_fwhm, fitted_b_fwhm)
+                        / kernel_fit["major_fwhm_arcsec"],
+                    "minor_fwhm_over_kernel":
+                        min(fitted_a_fwhm, fitted_b_fwhm)
+                        / kernel_fit["minor_fwhm_arcsec"],
                     "map_weight_median": (
                         float(np.median(finite_weight))
                         if finite_weight.size
                         else math.nan
                     ),
+                    "map_weight_mean": (
+                        float(np.mean(finite_weight))
+                        if finite_weight.size
+                        else math.nan
+                    ),
+                    "map_rms": signal_rms,
+                    "map_background_sigma": background_sigma,
                     "successive_map_delta_rms": rms(delta),
                     "successive_map_delta_relative_rms": (
                         rms(delta) / previous_rms

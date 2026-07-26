@@ -184,3 +184,29 @@ This is a diagnostic-only mode. Startup rejects it unless:
 - the start iteration is at least one and below `max_iters`; and
 - exactly three finite nonnegative amplitudes are supplied in
   `[a1100, a1400, a2000]` order.
+
+## Calibration-reference evidence package
+
+After all local products are present, build the dated inventory, expanded real
+and injected iteration tables, threshold assessment, pointing/science status
+table, proposed Unity matrix, and convergence plots with:
+
+```bash
+MPLCONFIGDIR=/tmp/citlali-fruitloop-mpl \
+  $HOME/tolteca/bin/python \
+  tools/fruit_loops/analyze_calibration_reference.py \
+  --project-root /path/to/2026-ENG-hero-multiyear-pointings-v1 \
+  --output /path/to/evidence \
+  --legacy-metrics /path/to/archived/iteration_metrics.csv \
+  --legacy-reproduction /path/to/regenerated/iteration_metrics.csv
+```
+
+When both legacy files are supplied, the analyzer requires byte-for-byte
+equality. The checkpoint-v2 injected comparison independently enforces exact
+uninterrupted-versus-restarted equality before producing transfer metrics.
+The generated pointing/science table reports the current unmeasured state
+rather than substituting pointing recovery for science recovery.
+
+The interpretation, bounded science-injection design, and launch handoff are
+in
+`doc/FRUIT_LOOP_CALIBRATION_REFERENCE_INVESTIGATION_2026-07-26.md`.

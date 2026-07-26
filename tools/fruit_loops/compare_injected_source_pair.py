@@ -237,27 +237,19 @@ def require_exact_restart_control(
             )
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--control", required=True, type=Path)
-    parser.add_argument("--injected", required=True, type=Path)
-    parser.add_argument("--manifest", required=True, type=Path)
-    parser.add_argument(
-        "--continuation-reference",
-        required=True,
-        type=Path,
-        help="uninterrupted reduNN directory for the first paired iteration",
-    )
-    parser.add_argument("--obsnum", required=True, type=int)
-    parser.add_argument("--output", required=True, type=Path)
-    args = parser.parse_args()
-
-    manifest = yaml.safe_load(args.manifest.read_text())
+def comparison_rows(
+    control_root: Path,
+    injected_root: Path,
+    manifest_path: Path,
+    continuation_reference: Path,
+    obsnum: int,
+) -> list[dict[str, float | int | str]]:
+    manifest = yaml.safe_load(manifest_path.read_text())
     amplitudes = dict(
         zip(manifest["array_order"], manifest["array_amplitude_mjy_beam"])
     )
-    control_dirs = iteration_dirs(args.control, args.obsnum)
-    injected_dirs = iteration_dirs(args.injected, args.obsnum)
+    control_dirs = iteration_dirs(control_root, obsnum)
+    injected_dirs = iteration_dirs(injected_root, obsnum)
     iterations = sorted(set(control_dirs) & set(injected_dirs))
     expected = list(
         range(
@@ -271,13 +263,13 @@ def main() -> int:
             f"actual={iterations}"
         )
     require_exact_restart_control(
-        args.continuation_reference,
+        continuation_reference,
         control_dirs[iterations[0]],
-        args.obsnum,
+        obsnum,
         iterations[0],
     )
 
-    rows = []
+    rows: list[dict[str, float | int | str]] = []
     previous_transfer: dict[str, np.ndarray] = {}
     for iteration in iterations:
         control = control_dirs[iteration]
@@ -288,27 +280,27 @@ def main() -> int:
         pixel_size = float(injected_config["mapmaking"]["pixel_size_arcsec"])
         if control_config["mapmaking"]["pixel_size_arcsec"] != pixel_size:
             raise ValueError("control/injected pixel sizes differ")
-        control_table = fit_table(control, args.obsnum)
-        injected_table = fit_table(injected, args.obsnum)
+        control_table = fit_table(control, obsnum)
+        injected_table = fit_table(injected, obsnum)
 
         for array_index, array in enumerate(ARRAYS):
             control_map = image(
-                product_path(control, args.obsnum, array), "signal_I"
+                product_path(control, obsnum, array), "signal_I"
             )
             injected_map = image(
-                product_path(injected, args.obsnum, array), "signal_I"
+                product_path(injected, obsnum, array), "signal_I"
             )
             control_kernel = image(
-                product_path(control, args.obsnum, array), "kernel_I"
+                product_path(control, obsnum, array), "kernel_I"
             )
             injected_kernel = image(
-                product_path(injected, args.obsnum, array), "kernel_I"
+                product_path(injected, obsnum, array), "kernel_I"
             )
             control_weight = image(
-                product_path(control, args.obsnum, array), "weight_I"
+                product_path(control, obsnum, array), "weight_I"
             )
             injected_weight = image(
-                product_path(injected, args.obsnum, array), "weight_I"
+                product_path(injected, obsnum, array), "weight_I"
             )
             truth = float(amplitudes[array])
             transfer = injected_map - control_map
@@ -395,10 +387,36 @@ def main() -> int:
                 }
             )
             previous_transfer[array] = transfer
+    return rows
 
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--control", required=True, type=Path)
+    parser.add_argument("--injected", required=True, type=Path)
+    parser.add_argument("--manifest", required=True, type=Path)
+    parser.add_argument(
+        "--continuation-reference",
+        required=True,
+        type=Path,
+        help="uninterrupted reduNN directory for the first paired iteration",
+    )
+    parser.add_argument("--obsnum", required=True, type=int)
+    parser.add_argument("--output", required=True, type=Path)
+    args = parser.parse_args()
+
+    rows = comparison_rows(
+        args.control,
+        args.injected,
+        args.manifest,
+        args.continuation_reference,
+        args.obsnum,
+    )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with args.output.open("w", newline="") as stream:
-        writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
+        writer = csv.DictWriter(
+            stream, fieldnames=list(rows[0]), lineterminator="\n"
+        )
         writer.writeheader()
         writer.writerows(rows)
 

@@ -1,0 +1,36 @@
+{
+  "schema_version": "citlali-fruit-loop-calibration-reference-analysis-v1",
+  "project_root": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1",
+  "real_metric_rows": 105,
+  "injected_metric_rows": 30,
+  "exact_restart_gate": "PASS",
+  "legacy_metrics_reproduced_byte_for_byte": true,
+  "legacy_metrics_path": "../tolapt/outputs/hero-pointing-comparison/fruitloops5-rc1-convergence/analysis/iteration_metrics.csv",
+  "legacy_reproduction_path": "/tmp/fruitloop-repro.MboquN/iteration_metrics.csv",
+  "legacy_reproduction_sha256": "3f6ce63535d0fabff7b82610780ac05c90ecdf4babf22f1f7a883c5b13a1bbc3",
+  "legacy_metrics_sha256": "3f6ce63535d0fabff7b82610780ac05c90ecdf4babf22f1f7a883c5b13a1bbc3",
+  "retained_binary_sha256": {
+    "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/diagnostics/fruitloops5_rc1_ablation/obs133410/bin/5eba09a081bb4a4d0a6b97eb1eebb99477be1470cb3a994e674c2e8733255d3e/citlali": "5eba09a081bb4a4d0a6b97eb1eebb99477be1470cb3a994e674c2e8733255d3e",
+    "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/diagnostics/fruitloops5_rc1_injected_source/obs133410/bin/citlali-a5fcad296": "0cbbc42b31ae796a0ddfbe0959cbb136223ae29c16a424e688ef59442cac207f",
+    "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/diagnostics/fruitloops5_rc1_injected_source_v2/obs133410/bin/citlali-7d8fd23f6": "7a83eb5e7fb221413d69bdff2b36e2f7462ce6982ed437c694fc6175321fb6ed"
+  },
+  "production_defaults_changed": false,
+  "science_transfer_status": "not_measured; requires approved science injection seam and associated science observation",
+  "files": [
+    "convergence_threshold_assessment.csv",
+    "injected_obs133410_convergence.png",
+    "injected_source_iteration_metrics.csv",
+    "injected_trajectory_summary.csv",
+    "manifest.json",
+    "observation_inventory.csv",
+    "planned_unity_run_matrix.csv",
+    "pointing_science_transfer_comparison.csv",
+    "real_iteration_metrics.csv",
+    "real_obs133410_convergence.png",
+    "real_obs144176_convergence.png",
+    "real_obs148434_convergence.png",
+    "real_obs151718_convergence.png",
+    "real_obs153481_convergence.png",
+    "run_inventory.csv"
+  ]
+}

@@ -86,8 +86,19 @@ gates. No numerical algorithm changes are part of this integration.
   resolved as stable recovery of cleaner-suppressed signal, not runaway
   feedback. The remaining 1.7--5.1% attenuation is a measured scientific
   limitation and not an automatic correctness fix. Production defaults
-  remain unchanged. See the
-  [investigation record](FRUIT_LOOP_FEEDBACK_INVESTIGATION_2026-07-24.md).
+  remain unchanged. A 2026-07-26 calibration-reference assessment now
+  separates the use cases: the existing products support qualified relative
+  astrometry and effective processed-PSF use, do not support absolute
+  photometric/transfer calibration, and cannot yet predict associated science
+  response because no local pointing/science association or science-mode
+  injection exists. The iteration-18 amplitude/shape plateau does not pass the
+  all-array 1%, 2%, or 5% two-transition whole-map criterion; no production
+  stopping policy was adopted. A minimum checkpoint-v2 Unity matrix and a
+  bounded science-injection design await owner selection/approval; no new
+  reductions have been requested. See the
+  [feedback investigation](FRUIT_LOOP_FEEDBACK_INVESTIGATION_2026-07-24.md)
+  and
+  [calibration-reference assessment](FRUIT_LOOP_CALIBRATION_REFERENCE_INVESTIGATION_2026-07-26.md).
 - A 2026-07-24 reliability investigation is active for two long
   108-observation pointing jobs that received `SIGBUS` on the same a1400 Ceres
   solve after 45 completed observations. The fitter code is unchanged across
