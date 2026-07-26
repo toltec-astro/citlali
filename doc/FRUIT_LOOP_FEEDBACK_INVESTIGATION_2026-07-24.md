@@ -2,15 +2,16 @@
 
 Date: 2026-07-24
 
-Status: active; both controlled Unity matrices are complete. The first
+Status: primary question resolved; both controlled Unity matrices are complete. The first
 full-PTC injected-source pair is quarantined because checkpoint schema v1
 omitted retained processed-weight validation state. The corrected schema-v2
 pair passes exact uninterrupted-versus-restarted continuation. Its known
 source recovers monotonically with shrinking changes and a PSF converging to
 the realized kernel, strongly favoring transfer-function recovery over
-unstable feedback. Five paired passes do not yet establish whether the
-kernel-normalized amplitude reaches unity or retains a small stable
-attenuation. Production policy remains unchanged pending an extended pair.
+unstable feedback. The extended pair reaches a stable endpoint with
+kernel-normalized amplitude recovery of 94.9--98.3%. The remaining bounded
+attenuation is retained as a measured transfer limitation, not a positive
+feedback fault. Production policy remains unchanged.
 
 ## Question
 
@@ -463,12 +464,33 @@ the recovered PSF approaches the propagated kernel, centroids remain stable,
 and iteration-to-iteration changes contract. There is no overshoot,
 oscillation, or accelerating growth.
 
-The result is not yet a complete absolute-amplitude proof. At iteration 13 the
-kernel-normalized Gaussian amplitude is within 2.5--8.1% of unity, and the
-full-map kernel projection is within 3.8--10.5%. All metrics are still moving
-toward unity, especially a1400. A ten-pass pair from the same iteration-8
-checkpoint will determine whether the residual closes or approaches a stable
-non-unit response.
+At iteration 13 the kernel-normalized Gaussian amplitude is within 2.5--8.1%
+of unity, and the full-map kernel projection is within 3.8--10.5%. All metrics
+are still moving toward unity, especially a1400.
+
+An extended pair repeated the same exact iteration-8 restart and continued
+through absolute iteration 18:
+
+| Iteration | Array | Raw amplitude recovery | Kernel-normalized amplitude recovery | Full-map kernel projection | Major FWHM / kernel | Centroid error (arcsec) | Successive relative map change |
+|---:|---|---:|---:|---:|---:|---:|---:|
+| 18 | a1100 | 0.857 | 0.958 | 0.957 | 1.001 | 0.010 | 0.010 |
+| 18 | a1400 | 0.865 | 0.949 | 0.956 | 1.014 | 0.012 | 0.017 |
+| 18 | a2000 | 0.900 | 0.983 | 0.987 | 1.009 | 0.035 | 0.011 |
+
+The extended run again passes the exact restart gate. Source shape and
+centroid have converged, and successive whole-map changes have contracted to
+1.0--1.7%. Both independent amplitude measures now agree that the endpoint
+retains approximately 1.3--5.1% attenuation after accounting for the realized
+kernel. This bounded residual can arise from the nonlinear cleaner, finite
+feedback model, or map/projection closure; it is not the signature of unstable
+positive feedback.
+
+The experiment therefore resolves the original concern: the large monotonic
+growth in real pointing sources is predominantly recovery of signal
+suppressed by production timestream cleaning. The recurrence is stable and
+does not overshoot or run away. Any future attempt to remove the remaining
+few-percent attenuation must be treated as an intentional scientific behavior
+change with its own injected-source validation, not as a correctness repair.
 
 The downloaded `injected/redu03` omitted its copied low-level YAML even though
 the Unity log records the copy operation. The setup YAML and the copies in
@@ -495,6 +517,6 @@ iterations.
 
 The full-PTC injected-source implementation, exact restart gate, and
 realized-kernel-normalized analysis are complete. The first Unity pair remains
-invalidated by the v1 restart defect; the corrected v2 pair demonstrates
-stable transfer recovery but does not yet establish its asymptotic absolute
-amplitude. Production defaults remain unchanged.
+invalidated by the v1 restart defect; the corrected and extended v2 pairs
+demonstrate stable transfer recovery and measure the bounded residual response.
+Production defaults remain unchanged.

@@ -50,9 +50,13 @@ branch. The exact validated tree will remain available for forensic review.
   corrected v2 Unity pair now passes exact continuation. The injected source
   recovers monotonically through iterations 9--13, its PSF converges to the
   realized kernel, centroids remain stable, and successive map changes shrink.
-  Final kernel-normalized amplitude recovery is 95.2%, 91.9%, and 97.5% for
-  a1100, a1400, and a2000. An extended pair is required to distinguish
-  convergence to unity from stable residual attenuation. Production defaults
+  The extended pair through iteration 18 again passes exact restart and
+  converges to kernel-normalized recovery of 95.8%, 94.9%, and 98.3% for
+  a1100, a1400, and a2000, with stable centroids, kernel-matched widths, and
+  1.0--1.7% final map changes. The original monotonic growth is therefore
+  resolved as stable recovery of cleaner-suppressed signal, not runaway
+  feedback. The remaining 1.7--5.1% attenuation is a measured scientific
+  limitation and not an automatic correctness fix. Production defaults
   remain unchanged. See the
   [investigation record](FRUIT_LOOP_FEEDBACK_INVESTIGATION_2026-07-24.md).
 - A 2026-07-24 reliability investigation is active for two long
