@@ -104,9 +104,9 @@ auto mapFitter::ceres_fit(const Model &model,
         sspv.push_back(limits.rows()-1);
         // mark parameter as constant
         if (sspv.size() > 0 ){
-            ceres::SubsetParameterization *pcssp
-                    = new ceres::SubsetParameterization(limits.rows(), sspv);
-            problem->SetParameterization(params.data(), pcssp);
+            auto *subset =
+                new ceres::SubsetManifold(limits.rows(), sspv);
+            problem->SetManifold(params.data(), subset);
         }
     }
 

@@ -1,184 +1,173 @@
 Citlali
 =======
 
-Citlali is the official data reduction pipeline engine for
-`TolTEC <http://toltec.astro.umass.edu>`_.
+Citlali is the TolTEC data-reduction pipeline engine. This branch,
+``v4.x_conan2``, is the Conan 2 port of the v4 library and is based directly
+on ``v4.x``.
 
-It is developed as part of TolTECA, the TolTEC data analysis software suite.
+Current scope
+-------------
 
-While citlali is developed targeting LMT/TolTEC, it can also be adapted to
-with other telescope/detectors that shares similar architectural properties.
+The verified GCC 13 slice builds the same five library sources selected by the
+v4 CMake project:
 
+* calibration;
+* telescope data handling;
+* mapmaking;
+* PTC sensitivity;
+* Gaussian models.
 
-System requirements
--------------------
+The package consumes ``kidscpp/3.1.0``, which consumes ``tula/3.1.0``. Public
+headers and libraries propagate through Conan package metadata; sibling source
+directories are not build inputs.
 
-Citlali requires a C++20 compiler and CMake 3.20+ to build.
+Citlali adds Conan-backed Spectra, Boost, FFTW, CCfits, and Ceres features.
+Their versions and normalized CMake targets are owned by the ``tula_cmake``
+registry. Ceres uses dense QR for the current fitting path, so generated Schur
+specializations are disabled to reduce compile-time memory.
 
-
-The software is fully tested for the following
-platform/operating system/compilers:
-
-* x86_64 macOS 11 (Big Sur); LLVM 13+
-
-* x86_64 Ubuntu 20.04; GCC 10+
-
-Build on other Linux-like operating systems should also work, given a C++20
-capable compiler and the required dependencies.
-
-
-x86_64 macOS 11 (Big Sur)
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Homebrew is required to install the compiler, build tools, and some
-optional dependencies.
-
-To install the compiler and build tools:
-
-.. code-block::
-
-    $ brew install git cmake llvm libomp python conan
-
-The package :code:`libomp` and :code:`python` are not required, but highly recommended.
-
-:code:`conan` can be installed either through :code:`brew` or :code:`python`.
-
-By default, the installed LLVM compiler is in :code:`/usr/local/opt/llvm/bin`. If
-not sure, consult :code:`brew info llvm`.
-
-Optionally, the following packages can be installed via Homebrew, and be made
-available to the build system via the CMake variables :code:`USE_INSTALLED_*`
-(see section below for details of the CMake configuration):
-
-.. code-block::
-
-    $ brew install fmt spdlog gflags glog gtest benchmark boost cfitsio ccfits netcdf numpy
-
-
-x86_64 Linux (Ubuntu 20.04)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-The following package are required to build citlali:
-
-.. code-block::
-
-    $ sudo apt install build-essential gcc-10 g++-10
-
-
-By default, citlali requires a CMake version that is newer than what the APT
-repo would provide. To install the latest version of CMake, follow the
-instruction here: https://apt.kitware.com.
-
-Optionally, the following packages can be installed and be made available to
-the build system via the CMake variables :code:`USE_INSTALLED_*`:
-
-.. code-block::
-
-    $ sudo apt install libnetcdf-dev python3-pip python3-dev libboost-all-dev
-
-
-Intel OneAPI toolkit
-^^^^^^^^^^^^^^^^^^^^
-
-For additional performance with Intel CPUs, the `Intel OneAPI toolkit (MKL) <https://software.intel.com/content/www/us/en/develop/tools/oneapi/all-toolkits.html>`_
-may be installed. The instruction can be found in the official website.
-
-
-Build
------
-
-First, clone the repo or download the source code from the github page:
-
-.. code-block::
-
-    $ git clone https://github.com/toltec-astro/citlali.git
-    $ cd citlali
-
-To build, go into the source directory:
-
-.. code-block::
-
-    // in the cloned citlali directory:
-    $ mkdir build
-    $ cd build
-    $ cmake .. -DCMAKE_BUILD_TYPE=Release [more options...]
-    $ make citlali_cli
-
-To customize the build, add options like :code:`-D<key>=<value>` to the cmake command
-line. Some options to set are:
-
-* :code:`CMAKE_BUILD_TYPE`: The build type, can be :code:`Release` or :code:`Debug`.
-
-* :code:`CMAKE_C_COMPILER` and :code:`CMAKE_CXX_COMPILER`: The compiler to use, if they
-  are not in the default location. For example, macOS users would need to
-  specify the LLVM compiler paths as::
-
-  -DCMAKE_C_COMPILER=/usr/local/opt/llvm/bin/clang -DCMAKE_CXX_COMPILER=/usr/local/opt/llvm/bin/clang++
-
-* :code:`USE_INTEL_ONEAPI`: This can be set to :code:`ON` to use the Intel OneAPI toolkit
-  (MKL) for additional performance.
-
-The build dependencies are managed by the CMake super-build scripts provided
-in the `tula_cmake` folder. The following dependencies are managed in this way:
-
-  * :code:`Boost`
-  * :code:`Ceres`
-  * :code:`Clipp`
-  * :code:`Csv`
-  * :code:`Eigen3`
-  * :code:`Enum`
-  * :code:`Grppi`
-  * :code:`MXX`
-  * :code:`NetCDF`
-  * :code:`NetCDFCXX4`
-  * :code:`Re2`
-  * :code:`Spectra`
-  * :code:`Yaml`
-  * :code:`logging`
-  * :code:`testing`
-  * :code:`perflibs`
-
-Each dependency comes with three CMake options to configure how it is
-integrated:
-
-* :code:`USE_INSTALLED_{dep}`: Use the dependency installed in the system via brew or apt.
-
-* :code:`CONAN_INSTALL_{dep}`: Use `Conan <https://conan.io>`_ to install the dependency
-  automatically. To use this option, the Python package :code:`conan` has to be installed::
-
-     $ python3 -m pip install conan
-
-* :code:`FETCH_{dep}`: Use CMake :code:`FetchContent` to download the source code of the
-  package and build the dependency inline.
-
-By default, most of the dependencies above are set to use the
-:code:`CONAN_INSTALL_*` option whenever they are available in the Conan Index,
-otherwise :code:`FETCH_*` is used.
-
-
-Usage
------
-
-Once successfully built, the created executables will be available in
-:code:`build/bin`.
-
-To check the version of the program:
-
-.. code-block::
-
-    // In the build directory:
-    $ ./bin/citlali --version
-
-To show the help screen of the commandline interface:
-
-.. code-block::
-
-    // In the build directory:
-    $ ./bin/citlali --help
-
-Please see the `API documentation
-<https://toltec-astro.github.io/citlali>`_ for details.
-
+Quick start on a fresh machine
+------------------------------
+
+The currently verified platform is 64-bit Linux with GCC 13. Citlali is a
+static C++ library at this milestone, so "install" means creating
+``citlali/4.0.0`` and its dependency graph in the local Conan cache. It does
+not yet install a command-line program into ``PATH``.
+
+Prerequisites
+^^^^^^^^^^^^^
+
+Install GCC 13, Git, CMake 3.25 or newer, Ninja, Python 3.11 or newer, the
+NetCDF C and C++ development packages, and `uv <https://docs.astral.sh/uv/>`_.
+For example, on a Debian-derived GCC 13 system:
+
+.. code-block:: console
+
+   sudo apt-get update
+   sudo apt-get install \
+       cmake g++-13 git libnetcdf-c++4-dev libnetcdf-dev ninja-build \
+       python3 python3-venv
+   curl -LsSf https://astral.sh/uv/install.sh | sh
+
+OpenMP and Threads are supplied by the GCC toolchain. NetCDF is deliberately
+resolved from the operating system in the current feature selection.
+
+Released workflow
+^^^^^^^^^^^^^^^^^
+
+Once the TolTEC packages and shared Conan configuration are published, the
+complete source-build interface is:
+
+.. code-block:: console
+
+   git clone --branch v4.x_conan2 https://github.com/toltec-astro/citlali.git
+   cd citlali
+   ./build
+
+The launcher obtains the pinned ``tula_cmake`` CLI from its GitHub tag. The
+CLI installs the shared Conan configuration, resolves the package graph,
+generates CMake presets, configures, and builds. Tula and kidscpp are not Git
+submodules or FetchContent projects.
+
+The final organization configuration source may be supplied without changing
+the repository:
+
+.. code-block:: console
+
+   TULA_CONAN_CONFIG_SOURCE=https://example.org/toltec-conan-config.zip \
+       ./build
+
+The URL is intentionally a placeholder until the TolTEC Conan service is
+deployed.
+
+Local pre-publication workflow
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Before that remote exists, developers need the four sibling repositories at
+their local release branches:
+
+.. code-block:: text
+
+   tula_cmake  v3.x_conan2
+   tula        v3.x
+   kidscpp     v3.x
+   citlali     v4.x_conan2
+
+The workspace ``just citlali`` gate exports ``tula-cmake/3.1.0`` and creates
+Tula, kidscpp, then Citlali in one isolated Conan home. To exercise the
+release-facing launcher against the local CLI, set:
+
+.. code-block:: console
+
+   TULA_CMAKE_DEV_PROJECT=../tula_cmake ./build
+
+Where dependencies come from
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :header-rows: 1
+   :widths: 24 30 46
+
+   * - Dependency
+     - Retrieval
+     - Current behavior
+   * - ``tula_cmake/3.1.0``
+     - TolTEC Conan remote
+     - Recipe infrastructure; exported locally only before publication.
+   * - ``tula/3.1.0``
+     - TolTEC Conan remote
+     - Header package; created locally only before publication.
+   * - ``kidscpp/3.1.0``
+     - TolTEC Conan remote
+     - Static library; created locally only before publication.
+   * - ``citlali/4.0.0``
+     - Local source or TolTEC remote
+     - Current static library and the target of this quick start.
+   * - Conan dependencies
+     - ConanCenter
+     - Includes fmt, spdlog, yaml-cpp, Eigen, Spectra, Boost, FFTW,
+       CCfits, Ceres, and their transitive dependencies.
+   * - CPM dependencies
+     - Upstream source archives
+     - Downloaded by CMake using versions and checksums from the
+       ``tula_cmake`` registry.
+   * - System dependencies
+     - Operating-system packages
+     - NetCDF C/C++, Threads, and the GCC OpenMP runtime.
+
+There is no hidden sibling-source lookup during a package build. After each
+``conan create``, downstream packages resolve Tula and kidscpp from
+``$CONAN_HOME`` through ordinary Conan requirements.
+
+A downstream CMake project normally declares
+``self.requires("citlali/4.0.0")`` in its own recipe. Conan then retrieves the
+complete internal and third-party graph from the configured virtual remote.
+
+Build and test
+--------------
+
+The workspace development gate runs the complete package chain in the GCC 13
+dev container:
+
+.. code-block:: console
+
+   just citlali
+
+The recipe creates Tula, kidscpp, and Citlali in a fresh Conan home, compiles
+``libcitlali.a``, and runs the Gaussian-model CTests. Set
+``CITLALI_CONAN_HOME`` to a disposable cache directory only when iterating
+locally; the default gate remains isolated.
+
+The old CLI is not part of this library milestone. It depends on kidscpp sweep
+APIs and generated version headers that are outside the trimmed kidscpp v3
+contract. Its product boundary will be decided separately instead of being
+silently carried into the port.
+
+Reference policy
+----------------
+
+``refs/citlali`` is read-only evidence for the previous production
+implementation. Changes belong in this active repository.
 
 License
 -------

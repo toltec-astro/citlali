@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+source_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+
+if [[ -n "${TULA_CMAKE_DEV_PROJECT:-}" ]]; then
+    exec uv run --project "${TULA_CMAKE_DEV_PROJECT}" \
+        tula-cmake build "${source_dir}" "$@"
+fi
+
+tula_cmake_source="${TULA_CMAKE_SOURCE:-git+https://github.com/toltec-astro/tula_cmake.git@v3.1.0}"
+exec uvx --from "${tula_cmake_source}" tula-cmake build "${source_dir}" "$@"

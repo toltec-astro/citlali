@@ -1,7 +1,8 @@
 #include <boost/algorithm/string/trim.hpp>
 
-#include <tula/logging.h>
 #include <tula/algorithm/ei_stats.h>
+#include <tula/formatter/matrix.h>
+#include <tula/logging.h>
 
 #include <citlali/core/engine/telescope.h>
 #include <citlali/core/utils/utils.h>
