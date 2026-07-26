@@ -1,0 +1,4 @@
+quality_stratum,observations,quality_rank_min,quality_rank_max,quality_score_min,quality_score_median,quality_score_max,existing_fruit_loop_observations,sources
+normal,54,1,54,0.041121495327102804,0.2934579439252336,0.4990654205607477,4,3c273;3c279;3c84;Neptune;Uranus
+marginal,38,55,92,0.5065420560747663,0.6616822429906543,0.8093457943925234,1,3c273;3c345;Neptune;Uranus
+stress,16,93,108,0.8093457943925235,0.894392523364486,0.994392523364486,0,3c273;3c84;Neptune;Uranus

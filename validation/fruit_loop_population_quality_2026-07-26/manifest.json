@@ -1,0 +1,34 @@
+{
+  "schema_version": "citlali-fruit-loop-quality-stratification-v1",
+  "hero_metrics_path": "../tolapt/outputs/hero-pointing-comparison/v4-vs-modeled-frequency-rc1-multiyear-full108/hero_reduction_metrics.ecsv",
+  "hero_metrics_sha256": "4d68d48976fab6e75781cdc43cafe4ea3d213a4badab47e1fb8c3bf46765534c",
+  "kernel_metrics_path": "../tolapt/outputs/hero-pointing-comparison/v4-vs-modeled-frequency-rc1-multiyear-kernels/kernel_metrics.ecsv",
+  "kernel_metrics_sha256": "4bf962df77b67de9adf03a150e494e111b622c0818e3ac60659a1b2a870bffb0",
+  "observation_count": 108,
+  "array_row_count": 324,
+  "quality_definition": {
+    "array_components": [
+      "low_fit_s2n_badness",
+      "low_amplitude_to_background_badness",
+      "high_roughness_badness",
+      "fwhm_kernel_mismatch_badness",
+      "axis_ratio_departure_badness"
+    ],
+    "array_component_weighting": "equal",
+    "map_quality_badness": "0.5 * median array badness + 0.5 * worst array badness",
+    "quality_score": "0.8 * map-quality rank + 0.2 * cross-array-centroid scatter rank",
+    "strata": "rank quantiles: first 50% normal, next 35% marginal, last 15% stress",
+    "interpretation": "descriptive experiment-design labels, not data rejection"
+  },
+  "existing_fruit_loop_observation_count": 5,
+  "files": [
+    "array_quality_metrics.csv",
+    "manifest.json",
+    "observation_quality_inventory.csv",
+    "population_run_matrix.csv",
+    "quality_component_heatmap.png",
+    "quality_plane.png",
+    "quality_rank_by_source.png",
+    "quality_stratum_summary.csv"
+  ]
+}

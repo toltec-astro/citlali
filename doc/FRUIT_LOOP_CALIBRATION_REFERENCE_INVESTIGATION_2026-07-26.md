@@ -5,6 +5,11 @@ Date: 2026-07-26
 Status: existing evidence analyzed; additional Unity reductions proposed but
 not requested
 
+Population extension: the subsequent
+[108-observation quality-stratified plan](FRUIT_LOOP_POPULATION_EXTENSION_PLAN_2026-07-26.md)
+supersedes the small R0 real-observation subset below. The controlled
+amplitude, position, and science-transfer experiments remain applicable.
+
 ## Outcome
 
 The iteration-18 checkpoint-v2 result is a stable point-source-response

@@ -95,10 +95,20 @@ gates. No numerical algorithm changes are part of this integration.
   all-array 1%, 2%, or 5% two-transition whole-map criterion; no production
   stopping policy was adopted. A minimum checkpoint-v2 Unity matrix and a
   bounded science-injection design await owner selection/approval; no new
-  reductions have been requested. See the
+  reductions have been requested. The follow-on 108-observation extension now
+  has an independent, frozen quality baseline from all 324 RC1 array maps and
+  processed kernels: 54 observations are labeled normal, 38 marginal, and 16
+  stress for experiment design. The original five contain four normal, one
+  marginal, and no stress observations. A two-stage plan therefore starts
+  with 16 common-binary ten-iteration sentinels before the remaining 92, with
+  exact injected-source pairs reserved for one representative of each quality
+  stratum. These are descriptive strata, not data rejection or production
+  policy. See the
   [feedback investigation](FRUIT_LOOP_FEEDBACK_INVESTIGATION_2026-07-24.md)
   and
-  [calibration-reference assessment](FRUIT_LOOP_CALIBRATION_REFERENCE_INVESTIGATION_2026-07-26.md).
+  [calibration-reference assessment](FRUIT_LOOP_CALIBRATION_REFERENCE_INVESTIGATION_2026-07-26.md),
+  plus the
+  [population extension plan](FRUIT_LOOP_POPULATION_EXTENSION_PLAN_2026-07-26.md).
 - A 2026-07-24 reliability investigation is active for two long
   108-observation pointing jobs that received `SIGBUS` on the same a1400 Ceres
   solve after 45 completed observations. The fitter code is unchanged across

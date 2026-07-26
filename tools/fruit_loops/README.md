@@ -210,3 +210,25 @@ rather than substituting pointing recovery for science recovery.
 The interpretation, bounded science-injection design, and launch handoff are
 in
 `doc/FRUIT_LOOP_CALIBRATION_REFERENCE_INVESTIGATION_2026-07-26.md`.
+
+## Population quality stratification
+
+Before extending fruit-loop reductions across the full 108-observation
+multiyear sample, rank the existing fruit-loop-disabled RC1 maps with:
+
+```bash
+MPLCONFIGDIR=/tmp/citlali-fruitloop-mpl \
+  $HOME/tolteca/bin/python \
+  tools/fruit_loops/stratify_pointing_quality.py \
+  --hero-metrics /path/to/hero_reduction_metrics.ecsv \
+  --kernel-metrics /path/to/kernel_metrics.ecsv \
+  --output /path/to/population-quality-evidence
+```
+
+The tool uses only pre-fruit-loop map and processed-kernel diagnostics. Its
+normal, marginal, and stress labels are fixed quantile strata for experiment
+design, not data-rejection decisions. It writes all 108 observation ranks,
+324 array rows, plots, and an ordered sentinel/population Unity matrix.
+
+The governing extension plan is
+`doc/FRUIT_LOOP_POPULATION_EXTENSION_PLAN_2026-07-26.md`.
