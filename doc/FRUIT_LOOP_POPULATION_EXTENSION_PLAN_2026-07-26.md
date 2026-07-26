@@ -2,8 +2,8 @@
 
 Date: 2026-07-26
 
-Status: independent quality baseline complete; Unity fruit-loop reductions not
-yet requested
+Status: independent quality baseline complete; 16-observation Unity Stage A
+launch bundle prepared but not uploaded or submitted
 
 ## Immediate finding
 
@@ -207,7 +207,13 @@ insufficient.
 
 ## Unity handoff
 
-No Unity job is requested by this document. When the owner approves Stage A:
+The owner-run Stage A bundle is now prepared at
+`validation/fruit_loop_population_stage_a_2026-07-26/`. The exact upload,
+immutable-binary snapshot, preflight, Slurm-array launch, monitoring, download,
+and cleanup commands are recorded in
+`handoff/FRUIT_LOOP_POPULATION_STAGE_A_UNITY_HANDOFF_2026-07-26.md`.
+
+The bundle implements the following launch contract:
 
 1. freeze one current Citlali executable and record version/SHA256;
 2. generate 16 single-observation configs from the frozen RC1 input entries
