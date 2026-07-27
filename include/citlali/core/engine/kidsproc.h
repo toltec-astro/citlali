@@ -1,13 +1,12 @@
 #pragma once
 
-#include <kids/core/kidsdata.h>
-#include <kids/sweep/fitter.h>
 #include <kids/timestream/solver.h>
-#include <kids/toltec/toltec.h>
-#include <kidscpp_config/gitversion.h>
+#include <kids/toltec/timestream.h>
 
 #include <tula/datatable.h>
+#include <tula/filename.h>
 
+#include <citlali/core/utils/fits_io.h>
 #include <citlali/core/engine/io.h>
 
 /**
@@ -15,10 +14,10 @@
  * This wraps around the kids config
  */
 
-bool extra_output = 0;
 struct KidsDataProc : ConfigMapper<KidsDataProc> {
     using Base = ConfigMapper<KidsDataProc>;
-    using Fitter = kids::SweepFitter;
+    using RawTimeStream = kids::toltec::RawTimeStream;
+    using RawTimeStreamMeta = kids::toltec::RawTimeStreamMeta;
     using Solver = kids::TimeStreamSolver;
 
     // get logger
@@ -26,16 +25,10 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
 
     KidsDataProc(config_t config)
         : Base{std::move(config)},
-          m_fitter{Fitter::Config{
-              {"weight_window_type", this->config().get_str(std::tuple{
-                                         "fitter", "weight_window", "type"})},
-              {"weight_window_fwhm", this->config().get_typed<double>(
-                   std::tuple{"fitter", "weight_window", "fwhm_Hz"})},
-              {"modelspec", config.get_str(std::tuple{"fitter", "modelspec"})}}},
-           m_solver{Solver::Config{
+          m_solver{Solver::Config{
               {"fitreportdir", this->config().get_str(std::tuple{"solver", "fitreportdir"})},
               {"exmode", this->config().get_str(std::tuple{"solver", "parallel_policy"})},
-              {"extra_output", extra_output},
+              {"extra_output", false},
           }} {}
 
     static auto check_config(const config_t &config)
@@ -45,9 +38,6 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
 
         std::vector<std::string> missing_keys;
         logger->debug("check kids data proc config\n{}", config);
-        if (!config.has("fitter")) {
-            missing_keys.push_back("fitter");
-        }
         if (!config.has("solver")) {
             missing_keys.push_back("solver");
         }
@@ -61,7 +51,7 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
     auto get_data_item_meta(const RawObs::DataItem &);
 
     // get meta data from rawobs
-    std::vector<kids::KidsData<>::meta_t> get_rawobs_meta(const RawObs &);
+    std::vector<RawTimeStreamMeta> get_rawobs_meta(const RawObs &);
 
     // populate rtc meta data
     auto populate_rtc_meta(const RawObs &);
@@ -108,35 +98,27 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
                           Eigen::DenseBase<DerivedD>&,
                           const int, const int, const std::string);
 
-    // TODO fix the const correctness
-    Fitter &fitter() { return m_fitter; }
     Solver &solver() { return m_solver; }
 
-    const Fitter &fitter() const { return m_fitter; }
     const Solver &solver() const { return m_solver; }
 
     template <typename OStream>
     friend OStream &operator<<(OStream &os, const KidsDataProc &kidsproc) {
-        return os << fmt::format("KidsDataProc(fitter={}, solver={})",
-                                 kidsproc.fitter().config.pformat(),
+        return os << fmt::format("KidsDataProc(solver={})",
                                  kidsproc.solver().config.pformat());
     }
 
 private:
-    // fitter and solver
-    Fitter m_fitter;
     Solver m_solver;
 };
 
 auto KidsDataProc::get_data_item_meta(const RawObs::DataItem &data_item) {
-    namespace kidsdata = predefs::kidsdata;
-    auto source = data_item.filepath();
-    auto [kind, meta] = kidsdata::get_meta<>(source);
-    return meta;
+    return kids::toltec::get_raw_timestream_meta(data_item.filepath());
 }
 
-std::vector<kids::KidsData<>::meta_t> KidsDataProc::get_rawobs_meta(const RawObs &rawobs) {
-    std::vector<kids::KidsData<>::meta_t> result;
+std::vector<KidsDataProc::RawTimeStreamMeta>
+KidsDataProc::get_rawobs_meta(const RawObs &rawobs) {
+    std::vector<RawTimeStreamMeta> result;
     for (const auto &data_item : rawobs.kidsdata()) {
         result.push_back(get_data_item_meta(data_item));
     }
@@ -144,7 +126,7 @@ std::vector<kids::KidsData<>::meta_t> KidsDataProc::get_rawobs_meta(const RawObs
 }
 
 auto KidsDataProc::populate_rtc_meta(const RawObs &rawobs) {
-    std::vector<kids::KidsData<>::meta_t> result;
+    std::vector<RawTimeStreamMeta> result;
     for (const auto &data_item : rawobs.kidsdata()) {
         result.push_back(get_data_item_meta(data_item));
     }
@@ -155,15 +137,10 @@ auto KidsDataProc::reduce_data_item(const RawObs::DataItem &data_item,
                                     const tula::container_utils::Slice<int> &slice) {
     logger->debug("kids reduce data_item {}", data_item);
     // read data
-    namespace kidsdata = predefs::kidsdata;
     auto source = data_item.filepath();
-    auto [kind, meta] = kidsdata::get_meta<>(source);
-    if (!(kind & kids::KidsDataKind::TimeStream)) {
-        throw std::runtime_error(
-            fmt::format("wrong type of kids data {}", kind));
-    }
-    auto rts = kidsdata::read_data_slice<kids::KidsDataKind::RawTimeStream>(
-        source, slice);
+    auto rts = kids::toltec::read_raw_timestream_slice(
+        source,
+        {std::get<0>(slice), std::get<1>(slice), std::get<2>(slice)});
     auto result = this->solver()(rts, Solver::Config{});
     return result;
 }
@@ -182,16 +159,10 @@ auto KidsDataProc::load_data_item(const RawObs::DataItem &data_item,
                                   const tula::container_utils::Slice<int> &slice) {
     logger->debug("kids reduce data_item {}", data_item);
     // read data
-    namespace kidsdata = predefs::kidsdata;
     auto source = data_item.filepath();
-    auto [kind, meta] = kidsdata::get_meta<>(source);
-    if (!(kind & kids::KidsDataKind::TimeStream)) {
-        throw std::runtime_error(
-            fmt::format("wrong type of kids data {}", kind));
-    }
-    auto rts = kidsdata::read_data_slice<kids::KidsDataKind::RawTimeStream>(
-        source, slice);
-    return rts;
+    return kids::toltec::read_raw_timestream_slice(
+        source,
+        {std::get<0>(slice), std::get<1>(slice), std::get<2>(slice)});
 }
 
 auto KidsDataProc::load_fit_report(const RawObs &rawobs) {
@@ -225,7 +196,7 @@ auto KidsDataProc::load_fit_report(const RawObs &rawobs) {
         //std::vector<std::string> header;
         header.clear();
         Eigen::MatrixXd table;
-        using meta_t = kids::KidsData<>::meta_t;
+        using meta_t = RawTimeStreamMeta;
         meta_t meta_cal{};
 
         try {
@@ -274,7 +245,7 @@ auto KidsDataProc::load_rawobs(const RawObs &rawobs, const Eigen::Index scan,
                                std::vector<Eigen::Index> &start_indices,
                                std::vector<Eigen::Index> &end_indices) {
 
-    std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> result;
+    std::vector<RawTimeStream> result;
     Eigen::Index i = 0;
     for (const auto &data_item : rawobs.kidsdata()) {
         // get slice of data for current scan
@@ -298,8 +269,7 @@ auto KidsDataProc::populate_rtc(loaded_t &loaded,
 
     Eigen::Index i = 0;
     // loop through raw timestream objects
-    for (std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>::
-         iterator it = loaded.begin(); it != loaded.end(); ++it) {
+    for (auto it = loaded.begin(); it != loaded.end(); ++it) {
         // run the solver
         auto result = this->solver()(*it, Solver::Config{});
         // get number of rows
@@ -349,7 +319,7 @@ auto KidsDataProc::load_rawobs_gaps(const RawObs &rawobs, const Eigen::Index sca
                                     std::vector<DerivedC>& times,
                                     const double tol) {
 
-    std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> result;
+    std::vector<RawTimeStream> result;
 
     double t0 = t_common(scan_indices(2, scan));
     double t1 = t_common(scan_indices(3, scan));
@@ -407,8 +377,7 @@ auto KidsDataProc::populate_rtc_gaps(LoadedType &loaded, Eigen::DenseBase<Derive
 
     Eigen::Index i = 0, j = 0;
     // loop through raw timestream objects
-    for (std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>::
-         iterator it = loaded.begin(); it != loaded.end(); ++it) {
+    for (auto it = loaded.begin(); it != loaded.end(); ++it) {
         // run the solver
         auto result = this->solver()(*it, Solver::Config{});
         // get number of rows

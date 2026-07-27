@@ -33,12 +33,7 @@ interface_sync_offset: # manual timing offsets for each nw/hwpr (in seconds)
   - toltec11: 0
   - toltec12: 0
   - hwpr: 0
-kids: # kids fitting parameters
-  fitter:
-    modelspec: gainlintrend
-    weight_window:
-      fwhm_Hz: 1.5e4
-      type: lorentz
+kids: # KIDs timestream solving parameters
   solver:
     fitreportdir: /path/to/fit/report/directory/ # directory to grab fit report from
     parallel_policy: seq # parallel policy for kids solver (independent of citlali parallel_policy)

@@ -21,6 +21,18 @@ The package consumes ``kidscpp/3.1.0``, which consumes ``tula/3.1.0``. Public
 headers and libraries propagate through Conan package metadata; sibling source
 directories are not build inputs.
 
+The ``citlali`` reduction CLI is built and installed with the library. It
+retains the v4 configuration and observation workflow, but calls the explicit
+Kidscpp raw-reader and timestream-solver APIs. Citlali does not build or expose
+the former Kidscpp multipurpose CLI.
+
+Raw TolTEC NetCDF ingestion remains a Kidscpp responsibility. Citlali chooses
+observation files and sample slices, then calls
+``kids::toltec::get_raw_timestream_meta`` and
+``kids::toltec::read_raw_timestream_slice`` before invoking
+``kids::TimeStreamSolver``. Citlali does not carry a duplicate file parser,
+and the removed Kidscpp sweep fitter and multipurpose CLI are not restored.
+
 Citlali adds Conan-backed Spectra, Boost, FFTW, CCfits, and Ceres features.
 Their versions and normalized CMake targets are owned by the ``tula_cmake``
 registry. Ceres uses dense QR for the current fitting path, so generated Schur
@@ -29,10 +41,10 @@ specializations are disabled to reduce compile-time memory.
 Quick start on a fresh machine
 ------------------------------
 
-The currently verified platform is 64-bit Linux with GCC 13. Citlali is a
-static C++ library at this milestone, so "install" means creating
-``citlali/4.0.0`` and its dependency graph in the local Conan cache. It does
-not yet install a command-line program into ``PATH``.
+The currently verified platform is 64-bit Linux with GCC 13. Creating
+``citlali/4.0.0`` installs both ``libcitlali.a`` and ``bin/citlali`` into the
+package. A Conan ``VirtualRunEnv`` places the packaged executable on ``PATH``
+for a consuming environment.
 
 Prerequisites
 ^^^^^^^^^^^^^
@@ -154,14 +166,15 @@ dev container:
    just citlali
 
 The recipe creates Tula, kidscpp, and Citlali in a fresh Conan home, compiles
-``libcitlali.a``, and runs the Gaussian-model CTests. Set
+``libcitlali.a`` and ``citlali``, then runs the library, CLI, and real-data
+adapter CTests. Set
 ``CITLALI_CONAN_HOME`` to a disposable cache directory only when iterating
 locally; the default gate remains isolated.
 
-The old CLI is not part of this library milestone. It depends on kidscpp sweep
-APIs and generated version headers that are outside the trimmed kidscpp v3
-contract. Its product boundary will be decided separately instead of being
-silently carried into the port.
+The package consumer also runs ``citlali --version`` and
+``citlali --dump_config`` from the installed Conan package. The active RTC
+adapter is tested against a real TolTEC NetCDF slice and compared sample by
+sample with the direct Kidscpp reader/solver path, including matching NaNs.
 
 Reference policy
 ----------------

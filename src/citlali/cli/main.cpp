@@ -1,12 +1,10 @@
-#include <citlali_config/config.h>
-#include <citlali_config/gitversion.h>
-#include <citlali_config/default_config.h>
+#include <citlali/config.h>
+#include <citlali/default_config.h>
+#include <kids/config.h>
 #include <kids/core/kidsdata.h>
-#include <kids/sweep/fitter.h>
 #include <kids/timestream/solver.h>
-#include <kids/toltec/toltec.h>
-#include <kidscpp_config/gitversion.h>
-#include <tula_config/gitversion.h>
+#include <kids/toltec/timestream.h>
+#include <tula/config.h>
 #include <tula/cli.h>
 #include <tula/config/core.h>
 #include <tula/config/flatconfig.h>
@@ -39,10 +37,8 @@ auto parse_args(int argc, char *argv[]) {
     using namespace tula::cli::clipp_builder;
 
     // some of the option specs
-    auto ver_str =
-        fmt::format("{} ({})", CITLALI_GIT_VERSION, CITLALI_BUILD_TIMESTAMP);
-    auto kids_ver_str = fmt::format("kids {} ({})", KIDSCPP_GIT_VERSION,
-                                    KIDSCPP_BUILD_TIMESTAMP);
+    auto ver_str = std::string{CITLALI_VERSION};
+    auto kids_ver_str = fmt::format("kids {}", KIDSCPP_VERSION);
     constexpr auto level_names = tula::logging::active_level_names;
     auto default_level_name = []() {
         auto v = spdlog::level::info;
@@ -56,8 +52,8 @@ auto parse_args(int argc, char *argv[]) {
     auto parse = config_parser<rc_t, tula::config::FlatConfig>{};
     auto screen = tula::cli::screen{
     // =======================================================================
-                      "citlali" , CITLALI_PROJECT_NAME, ver_str,
-                                  CITLALI_PROJECT_DESCRIPTION};
+                      "citlali" , "citlali", ver_str,
+                                  "TolTEC data reduction pipeline engine"};
     auto [cli, rc, cc] = parse([&](auto &r, auto &c) { return (
     // rc -- runtime config
     // cc -- cli config
@@ -102,8 +98,6 @@ auto parse_args(int argc, char *argv[]) {
 // @brief Run citlali reduction.
 /// @param rc The runtime config.
 int run(const rc_t &rc) {
-    using kids::KidsData;
-    using kids::KidsDataKind;
     using tula::logging::timeit;
 
     // get current level
@@ -137,7 +131,9 @@ int run(const rc_t &rc) {
     // set pattern for logger
     //spdlog::set_pattern("[%H:%M:%S %z] [%s] %v");
 
-    logger->info("use KIDs data spec: {}", predefs::kidsdata::name);
+    logger->info(
+        "use KIDs data spec: {}",
+        kids::toltec::raw_timestream_spec);
 
     std::vector<std::string> config_filepaths;
 
@@ -1001,7 +997,7 @@ int main(int argc, char *argv[]) {
         clipp::option("--dump_config").call([&exit_dump_config] () {
             auto preamble = fmt::format(
                 "# Default config.yaml of Citlali {} ({})",
-                CITLALI_GIT_VERSION, CITLALI_BUILD_TIMESTAMP
+                CITLALI_VERSION, "configured build"
                 );
             fmt::print("{}\n{}", preamble, citlali::citlali_default_config_content);
             exit_dump_config = true;

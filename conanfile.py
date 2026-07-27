@@ -1,3 +1,5 @@
+import os
+
 from conan import ConanFile
 from conan.tools.cmake import CMake
 
@@ -21,6 +23,7 @@ class CitlaliRecipe(ConanFile):
         "ceres-solver/*:use_schur_specializations": False,
         "fftw/*:precision_single": False,
         "fftw/*:precision_longdouble": False,
+        "fftw/*:threads": True,
         "kidscpp/*:logging": "conan",
         "kidscpp/*:yaml_cpp": "conan",
         "kidscpp/*:csv_parser": "cpm",
@@ -58,9 +61,16 @@ class CitlaliRecipe(ConanFile):
         "fftw": "conan",
         "ccfits": "conan",
         "ceres": "conan",
+        "clipp": "conan",
     }
     tula_public_features = tuple(tula_default_options)
-    exports_sources = "CMakeLists.txt", "include/*", "src/*", "tests/*"
+    exports_sources = (
+        "CMakeLists.txt",
+        "data/*",
+        "include/*",
+        "src/*",
+        "tests/*",
+    )
 
     def requirements(self) -> None:
         super().requirements()
@@ -88,3 +98,7 @@ class CitlaliRecipe(ConanFile):
         self.cpp_info.set_property("cmake_file_name", "citlali")
         self.cpp_info.set_property("cmake_target_name", "citlali::citlali")
         self.cpp_info.libs = ["citlali"]
+        self.runenv_info.prepend_path(
+            "PATH", os.path.join(self.package_folder, "bin")
+        )
+        super().package_info()

@@ -12,15 +12,13 @@
 
 #include <Eigen/Core>
 
-#include <citlali_config/config.h>
-#include <citlali_config/gitversion.h>
-#include <citlali_config/default_config.h>
+#include <citlali/config.h>
+#include <citlali/default_config.h>
+#include <kids/config.h>
 #include <kids/core/kidsdata.h>
-#include <kids/sweep/fitter.h>
 #include <kids/timestream/solver.h>
-#include <kids/toltec/toltec.h>
-#include <kidscpp_config/gitversion.h>
-#include <tula_config/gitversion.h>
+#include <kids/toltec/timestream.h>
+#include <tula/config.h>
 #include <tula/cli.h>
 #include <tula/config/core.h>
 #include <tula/config/flatconfig.h>
@@ -1148,9 +1146,9 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var(fo, "HWPR", calib.run_hwpr);
         add_netcdf_var<std::string>(fo, "TELESCOP", "LMT");
         add_netcdf_var<std::string>(fo, "PIPELINE", "CITLALI");
-        add_netcdf_var<std::string>(fo, "VERSION", CITLALI_GIT_VERSION);
-        add_netcdf_var<std::string>(fo, "KIDS", KIDSCPP_GIT_VERSION);
-        add_netcdf_var<std::string>(fo, "TULA", TULA_GIT_VERSION);
+        add_netcdf_var<std::string>(fo, "VERSION", CITLALI_VERSION);
+        add_netcdf_var<std::string>(fo, "KIDS", KIDSCPP_VERSION);
+        add_netcdf_var<std::string>(fo, "TULA", TULA_VERSION);
         add_netcdf_var<std::string>(fo, "PROJID", telescope.project_id);
         add_netcdf_var<std::string>(fo, "GOAL", redu_type);
         add_netcdf_var<std::string>(fo, "OBSGOAL", telescope.obs_goal);
@@ -1564,8 +1562,8 @@ void Engine::write_chunk_summary(TCData<tc_t, Eigen::MatrixXd> &in) {
     f.open (obsnum_dir_name+"/logs/" + filename + ".log");
 
     f << "Summary file for scan " << in.index.data << "\n";
-    f << "-Citlali version: " << CITLALI_GIT_VERSION << "\n";
-    f << "-Kidscpp version: " << KIDSCPP_GIT_VERSION << "\n";
+    f << "-Citlali version: " << CITLALI_VERSION << "\n";
+    f << "-Kidscpp version: " << KIDSCPP_VERSION << "\n";
     f << "-Time of time chunk creation: " + in.creation_time + "\n";
     f << "-Time of file writing: " << engine_utils::current_date_time() << "\n";
 
@@ -1617,8 +1615,8 @@ void Engine::write_map_summary(map_buffer_t &mb) {
     f.open (obsnum_dir_name+"/logs/" + filename + ".log");
 
     f << "Summary file for maps\n";
-    f << "-Citlali version: " << CITLALI_GIT_VERSION << "\n";
-    f << "-Kidscpp version: " << KIDSCPP_GIT_VERSION << "\n";
+    f << "-Citlali version: " << CITLALI_VERSION << "\n";
+    f << "-Kidscpp version: " << KIDSCPP_VERSION << "\n";
     f << "-Time of file writing: " << engine_utils::current_date_time() << "\n";
 
     f << "-Reduction type: " << redu_type << "\n";
@@ -1886,11 +1884,11 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     // add pipeline
     fits_io->at(i).pfits->pHDU().addKey("PIPELINE", "CITLALI", "Redu pipeline");
     // add citlali version
-    fits_io->at(i).pfits->pHDU().addKey("VERSION", CITLALI_GIT_VERSION, "CITLALI_GIT_VERSION");
+    fits_io->at(i).pfits->pHDU().addKey("VERSION", CITLALI_VERSION, "CITLALI_VERSION");
     // add kids version
-    fits_io->at(i).pfits->pHDU().addKey("KIDS", KIDSCPP_GIT_VERSION, "KIDSCPP_GIT_VERSION");
+    fits_io->at(i).pfits->pHDU().addKey("KIDS", KIDSCPP_VERSION, "KIDSCPP_VERSION");
     // add kids version
-    fits_io->at(i).pfits->pHDU().addKey("TULA", TULA_GIT_VERSION, "TULA_GIT_VERSION");
+    fits_io->at(i).pfits->pHDU().addKey("TULA", TULA_VERSION, "TULA_VERSION");
     // project id
     fits_io->at(i).pfits->pHDU().addKey("PROJID", telescope.project_id, "Project ID");
     // add redu type

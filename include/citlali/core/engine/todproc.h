@@ -1475,11 +1475,11 @@ void TimeOrderedDataProc<EngineType>::make_index_file(std::string filepath) {
     // datetime when file is created
     node["date"].push_back(engine_utils::current_date_time());
     // citlali version
-    node["citlali_version"].push_back(CITLALI_GIT_VERSION);
+    node["citlali_version"].push_back(CITLALI_VERSION);
     // kids version
-    node["kids_version"].push_back(KIDSCPP_GIT_VERSION);
+    node["kids_version"].push_back(KIDSCPP_VERSION);
     // tula version
-    node["tula_version"].push_back(TULA_GIT_VERSION);
+    node["tula_version"].push_back(TULA_VERSION);
 
     // call make_index_file recursively if current object is directory
     for (const auto & entry : sorted_by_name) {

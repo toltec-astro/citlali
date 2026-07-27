@@ -31,3 +31,5 @@ class CitlaliTestPackage(ConanFile):
                 "citlali_package_test",
             )
             self.run(executable, env="conanrun")
+            self.run("citlali --version", env="conanrun")
+            self.run("citlali --dump_config", env="conanrun")
