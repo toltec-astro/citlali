@@ -200,7 +200,7 @@
       "failure_policy": "Fatal when PTC timestream output is enabled."
     },
     "pointing_fit_table": {
-      "scientific_identity": "Per-array pointing-source amplitude, offset, beam-shape, angle, uncertainty, and signal-to-noise fits.",
+      "scientific_identity": "Per-array pointing-source amplitude, offset, beam-shape, angle, uncertainty, explicitly defined formal-fit significance, and retained legacy peak-over-full-map-RMS dynamic range.",
       "coordinate_frame": "Telescope azimuth/elevation tangent-plane offsets.",
       "axes": [
         "array"
@@ -622,6 +622,27 @@
         "angle",
         "angle_err",
         "sig2noise"
+      ]
+    },
+    "pointing_table_v2": {
+      "row_count": "array_count",
+      "required_columns": [
+        "array",
+        "amp",
+        "amp_err",
+        "x_t",
+        "x_t_err",
+        "y_t",
+        "y_t_err",
+        "a_fwhm",
+        "a_fwhm_err",
+        "b_fwhm",
+        "b_fwhm_err",
+        "angle",
+        "angle_err",
+        "sig2noise",
+        "peak_over_full_map_rms",
+        "fit_sig2noise"
       ]
     },
     "beammap_detector_map": {

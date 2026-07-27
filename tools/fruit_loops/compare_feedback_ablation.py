@@ -216,6 +216,16 @@ def reduction_rows(label: str, reduced: Path, obsnum: int) -> list[dict]:
                 pixel_size_arcsec,
             )
             kernel_amplitude = kernel_fit["amplitude"]
+            amplitude = float(fit["amp"])
+            amplitude_error = float(fit["amp_err"])
+            legacy_peak_over_full_map_rms = float(fit["sig2noise"])
+            fit_sig2noise = (
+                amplitude / amplitude_error
+                if math.isfinite(amplitude)
+                and math.isfinite(amplitude_error)
+                and amplitude_error > 0.0
+                else math.nan
+            )
             rows.append(
                 {
                     "variant": label,
@@ -223,7 +233,8 @@ def reduction_rows(label: str, reduced: Path, obsnum: int) -> list[dict]:
                     "source": source,
                     "iteration": absolute_iteration,
                     "array": array_name,
-                    "amplitude": float(fit["amp"]),
+                    "amplitude": amplitude,
+                    "amplitude_error": amplitude_error,
                     "a_fwhm_arcsec": fitted_a_fwhm,
                     "b_fwhm_arcsec": fitted_b_fwhm,
                     "major_fwhm_arcsec": max(
@@ -232,7 +243,14 @@ def reduction_rows(label: str, reduced: Path, obsnum: int) -> list[dict]:
                     "minor_fwhm_arcsec": min(
                         fitted_a_fwhm, fitted_b_fwhm
                     ),
-                    "sig2noise": float(fit["sig2noise"]),
+                    # Retain the historical field for reproducibility. The
+                    # pointing writer defines it as amplitude divided by the
+                    # full-map standard deviation, so it is a dynamic-range
+                    # diagnostic rather than statistical significance.
+                    "sig2noise": legacy_peak_over_full_map_rms,
+                    "legacy_peak_over_full_map_rms":
+                        legacy_peak_over_full_map_rms,
+                    "fit_sig2noise": fit_sig2noise,
                     "x_t_arcsec": float(fit["x_t"]),
                     "y_t_arcsec": float(fit["y_t"]),
                     "kernel_peak": float(np.nanmax(kernel)),

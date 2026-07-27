@@ -382,8 +382,16 @@ def comparison_rows(
                         float(control_fit["amp"]),
                     "injected_fit_amplitude_mjy_beam":
                         float(injected_fit["amp"]),
-                    "control_fit_s2n": float(control_fit["sig2noise"]),
-                    "injected_fit_s2n": float(injected_fit["sig2noise"]),
+                    "control_legacy_peak_over_full_map_rms":
+                        float(control_fit["sig2noise"]),
+                    "injected_legacy_peak_over_full_map_rms":
+                        float(injected_fit["sig2noise"]),
+                    "control_fit_sig2noise":
+                        float(control_fit["amp"])
+                        / float(control_fit["amp_err"]),
+                    "injected_fit_sig2noise":
+                        float(injected_fit["amp"])
+                        / float(injected_fit["amp_err"]),
                 }
             )
             previous_transfer[array] = transfer

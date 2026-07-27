@@ -15,7 +15,6 @@ import re
 import stat
 
 import numpy as np
-import yaml
 from astropy.io import fits
 from scipy.stats import median_abs_deviation
 
@@ -31,6 +30,11 @@ POINTING_FWHM_UPPER_ARCSEC = {
 CROSS_ARRAY_ASSOCIATION_LIMIT_ARCSEC = 9.5
 TOLERANCES = (0.01, 0.02, 0.05, 0.10)
 CENTROID_STEP_LIMIT_ARCSEC = 0.1
+BACKGROUND_INNER_RADIUS_ARCSEC = 40.0
+BACKGROUND_OUTER_RADIUS_ARCSEC = 120.0
+MINIMUM_BACKGROUND_PIXELS = 100
+MINIMUM_BLANK_SKY_FITS = 12
+GAUSSIAN_FWHM_FACTOR = 2.0 * math.sqrt(2.0 * math.log(2.0))
 TERMINAL_PROVENANCE_FILES = (
     "astrometry_provenance.yaml",
     "coadd_provenance.yaml",
@@ -46,10 +50,12 @@ TERMINAL_PROVENANCE_FILES = (
 )
 CORE_FIELDS = (
     "amplitude",
+    "amplitude_error",
     "kernel_normalized_amplitude",
     "major_fwhm_over_kernel",
     "minor_fwhm_over_kernel",
-    "sig2noise",
+    "legacy_peak_over_full_map_rms",
+    "fit_sig2noise",
     "x_t_arcsec",
     "y_t_arcsec",
     "map_weight_median",
@@ -118,9 +124,171 @@ def map_path(stage_root: Path, obsnum: int, iteration: int, array: str) -> Path:
     )
 
 
-def pixel_roughness_metrics(
+def weighted_gaussian_amplitude(
+    signal: np.ndarray,
+    weight: np.ndarray,
+    valid: np.ndarray,
+    xx_arcsec: np.ndarray,
+    yy_arcsec: np.ndarray,
+    *,
+    center_x_arcsec: float,
+    center_y_arcsec: float,
+    fwhm_arcsec: float,
+) -> tuple[float, float]:
+    """Fit a fixed circular Gaussian amplitude plus a constant background."""
+    if not math.isfinite(fwhm_arcsec) or fwhm_arcsec <= 0.0:
+        return math.nan, math.nan
+    sigma_arcsec = fwhm_arcsec / GAUSSIAN_FWHM_FACTOR
+    radius2 = (
+        np.square(xx_arcsec - center_x_arcsec)
+        + np.square(yy_arcsec - center_y_arcsec)
+    )
+    selected = valid & (radius2 <= (3.0 * fwhm_arcsec) ** 2)
+    if int(selected.sum()) < 12:
+        return math.nan, math.nan
+    template = np.exp(-0.5 * radius2[selected] / sigma_arcsec**2)
+    values = signal[selected]
+    weights = weight[selected]
+    sum_weight = float(np.sum(weights))
+    sum_template = float(np.sum(weights * template))
+    sum_template2 = float(np.sum(weights * template * template))
+    sum_signal = float(np.sum(weights * values))
+    sum_template_signal = float(np.sum(weights * template * values))
+    determinant = (
+        sum_template2 * sum_weight - sum_template * sum_template
+    )
+    if (
+        not math.isfinite(determinant)
+        or determinant <= 0.0
+        or sum_weight <= 0.0
+    ):
+        return math.nan, math.nan
+    amplitude = (
+        sum_template_signal * sum_weight - sum_signal * sum_template
+    ) / determinant
+    formal_uncertainty = math.sqrt(sum_weight / determinant)
+    return float(amplitude), float(formal_uncertainty)
+
+
+def empirical_blank_sky_point_source_metrics(
+    signal: np.ndarray,
+    weight: np.ndarray,
+    valid: np.ndarray,
+    xx_arcsec: np.ndarray,
+    yy_arcsec: np.ndarray,
+    *,
+    fit_x_arcsec: float,
+    fit_y_arcsec: float,
+    kernel_major_fwhm_arcsec: float,
+    kernel_minor_fwhm_arcsec: float,
+) -> dict[str, float | int]:
+    """Calibrate fixed-PSF amplitude uncertainty with blank-sky fits.
+
+    Blank fits use the same fixed circular Gaussian estimator as the source.
+    Their formal-weight-standardized amplitudes empirically calibrate the
+    source uncertainty, retaining the local weight dependence while absorbing
+    correlated-map-noise scale errors.
+    """
+    fwhm_arcsec = math.sqrt(
+        kernel_major_fwhm_arcsec * kernel_minor_fwhm_arcsec
+    )
+    source_amplitude, source_formal_uncertainty = (
+        weighted_gaussian_amplitude(
+            signal,
+            weight,
+            valid,
+            xx_arcsec,
+            yy_arcsec,
+            center_x_arcsec=fit_x_arcsec,
+            center_y_arcsec=fit_y_arcsec,
+            fwhm_arcsec=fwhm_arcsec,
+        )
+    )
+    step_arcsec = max(2.5 * fwhm_arcsec, 4.0)
+    x_values = np.arange(
+        float(np.nanmin(xx_arcsec)) + 3.0 * fwhm_arcsec,
+        float(np.nanmax(xx_arcsec)) - 3.0 * fwhm_arcsec
+        + 0.5 * step_arcsec,
+        step_arcsec,
+    )
+    y_values = np.arange(
+        float(np.nanmin(yy_arcsec)) + 3.0 * fwhm_arcsec,
+        float(np.nanmax(yy_arcsec)) - 3.0 * fwhm_arcsec
+        + 0.5 * step_arcsec,
+        step_arcsec,
+    )
+    standardized_blank_amplitudes: list[float] = []
+    for center_y in y_values:
+        for center_x in x_values:
+            radius = math.hypot(
+                center_x - fit_x_arcsec, center_y - fit_y_arcsec
+            )
+            if not (
+                BACKGROUND_INNER_RADIUS_ARCSEC
+                <= radius
+                <= BACKGROUND_OUTER_RADIUS_ARCSEC
+            ):
+                continue
+            amplitude, formal_uncertainty = weighted_gaussian_amplitude(
+                signal,
+                weight,
+                valid,
+                xx_arcsec,
+                yy_arcsec,
+                center_x_arcsec=float(center_x),
+                center_y_arcsec=float(center_y),
+                fwhm_arcsec=fwhm_arcsec,
+            )
+            if (
+                math.isfinite(amplitude)
+                and math.isfinite(formal_uncertainty)
+                and formal_uncertainty > 0.0
+            ):
+                standardized_blank_amplitudes.append(
+                    amplitude / formal_uncertainty
+                )
+    count = len(standardized_blank_amplitudes)
+    if (
+        count < MINIMUM_BLANK_SKY_FITS
+        or not math.isfinite(source_amplitude)
+        or not math.isfinite(source_formal_uncertainty)
+        or source_formal_uncertainty <= 0.0
+    ):
+        return {
+            "empirical_psf_amplitude_mjy_beam": source_amplitude,
+            "empirical_psf_amplitude_uncertainty_mjy_beam": math.nan,
+            "empirical_point_source_sig2noise": math.nan,
+            "empirical_blank_sky_fit_count": count,
+            "empirical_blank_sky_standardized_center": math.nan,
+            "empirical_blank_sky_standardized_sigma": math.nan,
+        }
+    blank = np.asarray(standardized_blank_amplitudes, dtype=float)
+    blank_center = float(np.median(blank))
+    blank_sigma = float(median_abs_deviation(blank, scale="normal"))
+    if not math.isfinite(blank_sigma) or blank_sigma <= 0.0:
+        empirical_uncertainty = math.nan
+        empirical_sig2noise = math.nan
+    else:
+        empirical_uncertainty = source_formal_uncertainty * blank_sigma
+        empirical_sig2noise = (
+            source_amplitude / source_formal_uncertainty - blank_center
+        ) / blank_sigma
+    return {
+        "empirical_psf_amplitude_mjy_beam": source_amplitude,
+        "empirical_psf_amplitude_uncertainty_mjy_beam":
+            empirical_uncertainty,
+        "empirical_point_source_sig2noise": empirical_sig2noise,
+        "empirical_blank_sky_fit_count": count,
+        "empirical_blank_sky_standardized_center": blank_center,
+        "empirical_blank_sky_standardized_sigma": blank_sigma,
+    }
+
+
+def source_free_map_metrics(
     path: Path, *, fit_x_arcsec: float, fit_y_arcsec: float,
-) -> dict[str, float]:
+    kernel_major_fwhm_arcsec: float,
+    kernel_minor_fwhm_arcsec: float,
+) -> dict[str, float | int]:
     with fits.open(path, memmap=True) as hdul:
         signal = np.asarray(hdul["signal_I"].data, dtype=float).squeeze()
         weight = np.asarray(hdul["weight_I"].data, dtype=float).squeeze()
@@ -138,8 +306,12 @@ def pixel_roughness_metrics(
     xx, yy = np.meshgrid(x, y)
     radius = np.hypot(xx - fit_x_arcsec, yy - fit_y_arcsec)
     valid = coverage & np.isfinite(signal) & np.isfinite(weight) & (weight > 0)
-    background = valid & (radius >= 40.0) & (radius <= 120.0)
-    if int(background.sum()) < 100:
+    background = (
+        valid
+        & (radius >= BACKGROUND_INNER_RADIUS_ARCSEC)
+        & (radius <= BACKGROUND_OUTER_RADIUS_ARCSEC)
+    )
+    if int(background.sum()) < MINIMUM_BACKGROUND_PIXELS:
         raise ValueError(f"{path}: insufficient background pixels")
     values = signal[background]
     background_sigma = float(
@@ -155,7 +327,7 @@ def pixel_roughness_metrics(
     pixel_roughness = float(
         median_abs_deviation(differences, scale="normal") / np.sqrt(2.0)
     )
-    return {
+    result: dict[str, float | int] = {
         "map_background_median_mjy": float(np.median(values)),
         "map_background_sigma_mjy": background_sigma,
         "map_pixel_roughness_mjy": pixel_roughness,
@@ -164,6 +336,20 @@ def pixel_roughness_metrics(
             if background_sigma > 0.0 else math.nan
         ),
     }
+    result.update(
+        empirical_blank_sky_point_source_metrics(
+            signal,
+            weight,
+            valid,
+            xx,
+            yy,
+            fit_x_arcsec=fit_x_arcsec,
+            fit_y_arcsec=fit_y_arcsec,
+            kernel_major_fwhm_arcsec=kernel_major_fwhm_arcsec,
+            kernel_minor_fwhm_arcsec=kernel_minor_fwhm_arcsec,
+        )
+    )
+    return result
 
 
 def finite_ratio(numerator: float, denominator: float) -> float:
@@ -226,23 +412,34 @@ def load_iteration_metrics(
             }
         )
         row.update(
-            pixel_roughness_metrics(
+            source_free_map_metrics(
                 map_path(
                     stage_root, obsnum, int(row["iteration"]),
                     str(row["array"]),
                 ),
                 fit_x_arcsec=float(row["x_t_arcsec"]),
                 fit_y_arcsec=float(row["y_t_arcsec"]),
+                kernel_major_fwhm_arcsec=float(
+                    row["kernel_major_fwhm_arcsec"]
+                ),
+                kernel_minor_fwhm_arcsec=float(
+                    row["kernel_minor_fwhm_arcsec"]
+                ),
             )
         )
         groups.setdefault((obsnum, str(row["array"])), []).append(row)
 
     ratio_fields = (
         "amplitude",
+        "amplitude_error",
         "kernel_normalized_amplitude",
         "major_fwhm_over_kernel",
         "minor_fwhm_over_kernel",
-        "sig2noise",
+        "legacy_peak_over_full_map_rms",
+        "fit_sig2noise",
+        "empirical_psf_amplitude_mjy_beam",
+        "empirical_psf_amplitude_uncertainty_mjy_beam",
+        "empirical_point_source_sig2noise",
         "map_weight_median",
         "map_background_sigma_mjy",
         "map_pixel_roughness_mjy",
@@ -402,14 +599,35 @@ def build_transition_metrics(iteration_rows: list[dict]) -> list[dict]:
                     current["centroid_shift_from_seed_arcsec"],
                 "successive_map_relative_rms":
                     current["successive_map_delta_relative_rms"],
-                "sig2noise_change_fraction": abs(
+                "legacy_peak_over_full_map_rms_change_fraction": abs(
                     finite_ratio(
-                        float(current["sig2noise"]),
-                        float(previous["sig2noise"]),
+                        float(current["legacy_peak_over_full_map_rms"]),
+                        float(previous["legacy_peak_over_full_map_rms"]),
                     ) - 1.0
                 ),
-                "sig2noise_ratio_seed": finite_ratio(
-                    float(current["sig2noise"]), float(seed["sig2noise"])
+                "legacy_peak_over_full_map_rms_ratio_seed": finite_ratio(
+                    float(current["legacy_peak_over_full_map_rms"]),
+                    float(seed["legacy_peak_over_full_map_rms"]),
+                ),
+                "fit_sig2noise_change_fraction": abs(
+                    finite_ratio(
+                        float(current["fit_sig2noise"]),
+                        float(previous["fit_sig2noise"]),
+                    ) - 1.0
+                ),
+                "fit_sig2noise_ratio_seed": finite_ratio(
+                    float(current["fit_sig2noise"]),
+                    float(seed["fit_sig2noise"]),
+                ),
+                "empirical_point_source_sig2noise_change_fraction": abs(
+                    finite_ratio(
+                        float(current["empirical_point_source_sig2noise"]),
+                        float(previous["empirical_point_source_sig2noise"]),
+                    ) - 1.0
+                ),
+                "empirical_point_source_sig2noise_ratio_seed": finite_ratio(
+                    float(current["empirical_point_source_sig2noise"]),
+                    float(seed["empirical_point_source_sig2noise"]),
                 ),
                 "map_weight_change_fraction": abs(
                     finite_ratio(
@@ -450,7 +668,6 @@ def build_transition_metrics(iteration_rows: list[dict]) -> list[dict]:
                 "maximum_fwhm_change_fraction",
                 "centroid_step_arcsec",
                 "successive_map_relative_rms",
-                "sig2noise_change_fraction",
             )
             row["metric_finite"] = bool(
                 all(math.isfinite(float(row[key])) for key in required)
@@ -460,6 +677,17 @@ def build_transition_metrics(iteration_rows: list[dict]) -> list[dict]:
                 and row["source_association_valid"]
                 and row["psf_interpretable"]
                 and row["metric_finite"]
+            )
+            row["noise_metrics_finite"] = bool(
+                all(
+                    math.isfinite(float(row[key]))
+                    for key in (
+                        "background_sigma_change_fraction",
+                        "roughness_change_fraction",
+                        "fit_sig2noise_change_fraction",
+                        "empirical_point_source_sig2noise_change_fraction",
+                    )
+                )
             )
             failure_reasons = []
             if not row["fit_valid"] or not row["metric_finite"]:
@@ -521,7 +749,6 @@ def first_combined_pass(
             and float(row["centroid_step_arcsec"])
             < CENTROID_STEP_LIMIT_ARCSEC
             and float(row["successive_map_relative_rms"]) < tolerance
-            and float(row["sig2noise_change_fraction"]) < tolerance
             for row in pair
         )
         if passed:
@@ -578,11 +805,23 @@ def convergence_assessment(
                 maximum=tolerance,
                 eligibility_field="metric_finite",
             )
-            snr_first = first_two_transition_pass(
+            background_first = first_two_transition_pass(
                 transitions,
-                field="sig2noise_change_fraction",
+                field="background_sigma_change_fraction",
                 maximum=tolerance,
-                eligibility_field="source_association_valid",
+                eligibility_field="noise_metrics_finite",
+            )
+            fit_snr_first = first_two_transition_pass(
+                transitions,
+                field="fit_sig2noise_change_fraction",
+                maximum=tolerance,
+                eligibility_field="noise_metrics_finite",
+            )
+            empirical_snr_first = first_two_transition_pass(
+                transitions,
+                field="empirical_point_source_sig2noise_change_fraction",
+                maximum=tolerance,
+                eligibility_field="noise_metrics_finite",
             )
             combined_first = first_combined_pass(
                 transitions, tolerance=tolerance
@@ -596,7 +835,6 @@ def convergence_assessment(
                 and float(row["centroid_step_arcsec"])
                 < CENTROID_STEP_LIMIT_ARCSEC
                 and float(row["successive_map_relative_rms"]) < tolerance
-                and float(row["sig2noise_change_fraction"]) < tolerance
                 for row in tail
             )
             endpoint_amplitude_pass = all(
@@ -622,9 +860,23 @@ def convergence_assessment(
                 and float(row["successive_map_relative_rms"]) < tolerance
                 for row in tail
             )
-            endpoint_snr_pass = all(
-                bool(row["source_association_valid"])
-                and float(row["sig2noise_change_fraction"]) < tolerance
+            endpoint_background_pass = all(
+                bool(row["noise_metrics_finite"])
+                and float(row["background_sigma_change_fraction"]) < tolerance
+                for row in tail
+            )
+            endpoint_fit_snr_pass = all(
+                bool(row["noise_metrics_finite"])
+                and float(row["fit_sig2noise_change_fraction"]) < tolerance
+                for row in tail
+            )
+            endpoint_empirical_snr_pass = all(
+                bool(row["noise_metrics_finite"])
+                and float(
+                    row[
+                        "empirical_point_source_sig2noise_change_fraction"
+                    ]
+                ) < tolerance
                 for row in tail
             )
             result.append(
@@ -652,14 +904,20 @@ def convergence_assessment(
                     "first_fwhm_stable_iteration": fwhm_first,
                     "first_centroid_stable_iteration": centroid_first,
                     "first_map_stable_iteration": map_first,
-                    "first_snr_stable_iteration": snr_first,
+                    "first_background_stable_iteration": background_first,
+                    "first_fit_snr_stable_iteration": fit_snr_first,
+                    "first_empirical_snr_stable_iteration":
+                        empirical_snr_first,
                     "first_all_candidate_stable_iteration": combined_first,
                     "endpoint_two_transition_pass": endpoint_pass,
                     "endpoint_amplitude_pass": endpoint_amplitude_pass,
                     "endpoint_fwhm_pass": endpoint_fwhm_pass,
                     "endpoint_centroid_pass": endpoint_centroid_pass,
                     "endpoint_map_pass": endpoint_map_pass,
-                    "endpoint_snr_pass": endpoint_snr_pass,
+                    "endpoint_background_pass": endpoint_background_pass,
+                    "endpoint_fit_snr_pass": endpoint_fit_snr_pass,
+                    "endpoint_empirical_snr_pass":
+                        endpoint_empirical_snr_pass,
                     "tail_max_amplitude_change_fraction": max(
                         float(row[
                             "kernel_normalized_amplitude_change_fraction"
@@ -677,8 +935,20 @@ def convergence_assessment(
                         float(row["successive_map_relative_rms"])
                         for row in tail
                     ),
-                    "tail_max_snr_change_fraction": max(
-                        float(row["sig2noise_change_fraction"])
+                    "tail_max_background_sigma_change_fraction": max(
+                        float(row["background_sigma_change_fraction"])
+                        for row in tail
+                    ),
+                    "tail_max_fit_snr_change_fraction": max(
+                        float(row["fit_sig2noise_change_fraction"])
+                        for row in tail
+                    ),
+                    "tail_max_empirical_snr_change_fraction": max(
+                        float(
+                            row[
+                                "empirical_point_source_sig2noise_change_fraction"
+                            ]
+                        )
                         for row in tail
                     ),
                     "endpoint_kernel_normalized_amplitude_ratio_seed":
@@ -691,10 +961,34 @@ def convergence_assessment(
                         endpoint["minor_fwhm_over_kernel"],
                     "endpoint_centroid_shift_from_seed_arcsec":
                         endpoint["centroid_shift_from_seed_arcsec"],
-                    "endpoint_sig2noise_ratio_seed":
-                        endpoint["sig2noise_ratio_seed"],
-                    "minimum_sig2noise_ratio_seed": min(
-                        float(row["sig2noise_ratio_seed"])
+                    "endpoint_legacy_peak_over_full_map_rms_ratio_seed":
+                        endpoint[
+                            "legacy_peak_over_full_map_rms_ratio_seed"
+                        ],
+                    "minimum_legacy_peak_over_full_map_rms_ratio_seed": min(
+                        float(
+                            row[
+                                "legacy_peak_over_full_map_rms_ratio_seed"
+                            ]
+                        )
+                        for row in iterations
+                    ),
+                    "endpoint_fit_sig2noise_ratio_seed":
+                        endpoint["fit_sig2noise_ratio_seed"],
+                    "minimum_fit_sig2noise_ratio_seed": min(
+                        float(row["fit_sig2noise_ratio_seed"])
+                        for row in iterations
+                    ),
+                    "endpoint_empirical_point_source_sig2noise_ratio_seed":
+                        endpoint[
+                            "empirical_point_source_sig2noise_ratio_seed"
+                        ],
+                    "minimum_empirical_point_source_sig2noise_ratio_seed": min(
+                        float(
+                            row[
+                                "empirical_point_source_sig2noise_ratio_seed"
+                            ]
+                        )
                         for row in iterations
                     ),
                 }
@@ -764,12 +1058,20 @@ def diagnostic_yield_summary(array_rows: list[dict]) -> list[dict]:
                 "map_endpoint_pass_count": sum(
                     bool(row["endpoint_map_pass"]) for row in rows
                 ),
-                "snr_ever_pass_count": sum(
-                    row["first_snr_stable_iteration"] is not None
+                "background_ever_pass_count": sum(
+                    row["first_background_stable_iteration"] is not None
                     for row in source_eligible
                 ),
-                "snr_endpoint_pass_count": sum(
-                    bool(row["endpoint_snr_pass"])
+                "background_endpoint_pass_count": sum(
+                    bool(row["endpoint_background_pass"])
+                    for row in source_eligible
+                ),
+                "fit_snr_endpoint_pass_count": sum(
+                    bool(row["endpoint_fit_snr_pass"])
+                    for row in source_eligible
+                ),
+                "empirical_snr_endpoint_pass_count": sum(
+                    bool(row["endpoint_empirical_snr_pass"])
                     for row in source_eligible
                 ),
                 "combined_ever_pass_count": sum(
@@ -779,8 +1081,24 @@ def diagnostic_yield_summary(array_rows: list[dict]) -> list[dict]:
                 "combined_endpoint_pass_count": sum(
                     bool(row["endpoint_two_transition_pass"]) for row in rows
                 ),
-                "minimum_endpoint_snr_ratio_seed": min(
-                    float(row["endpoint_sig2noise_ratio_seed"])
+                "minimum_endpoint_legacy_dynamic_range_ratio_seed": min(
+                    float(
+                        row[
+                            "endpoint_legacy_peak_over_full_map_rms_ratio_seed"
+                        ]
+                    )
+                    for row in source_eligible
+                ),
+                "minimum_endpoint_fit_snr_ratio_seed": min(
+                    float(row["endpoint_fit_sig2noise_ratio_seed"])
+                    for row in source_eligible
+                ),
+                "minimum_endpoint_empirical_snr_ratio_seed": min(
+                    float(
+                        row[
+                            "endpoint_empirical_point_source_sig2noise_ratio_seed"
+                        ]
+                    )
                     for row in source_eligible
                 ),
                 "maximum_endpoint_centroid_shift_from_seed_arcsec": max(
@@ -850,8 +1168,24 @@ def observation_assessment(array_rows: list[dict]) -> list[dict]:
                     ),
                     default=None,
                 ),
-                "worst_endpoint_sig2noise_ratio_seed": min(
-                    float(row["endpoint_sig2noise_ratio_seed"])
+                "worst_endpoint_legacy_dynamic_range_ratio_seed": min(
+                    float(
+                        row[
+                            "endpoint_legacy_peak_over_full_map_rms_ratio_seed"
+                        ]
+                    )
+                    for row in rows
+                ),
+                "worst_endpoint_fit_snr_ratio_seed": min(
+                    float(row["endpoint_fit_sig2noise_ratio_seed"])
+                    for row in rows
+                ),
+                "worst_endpoint_empirical_snr_ratio_seed": min(
+                    float(
+                        row[
+                            "endpoint_empirical_point_source_sig2noise_ratio_seed"
+                        ]
+                    )
                     for row in rows
                 ),
                 "maximum_endpoint_centroid_shift_from_seed_arcsec": max(
@@ -906,8 +1240,20 @@ def stratum_summary(observation_rows: list[dict]) -> list[dict]:
                     int(row["arrays_passing_endpoint_window"]) for row in rows
                 ),
                 "array_count": len(rows) * len(ARRAYS),
-                "minimum_endpoint_snr_ratio_seed": min(
-                    float(row["worst_endpoint_sig2noise_ratio_seed"])
+                "minimum_endpoint_legacy_dynamic_range_ratio_seed": min(
+                    float(
+                        row[
+                            "worst_endpoint_legacy_dynamic_range_ratio_seed"
+                        ]
+                    )
+                    for row in rows
+                ),
+                "minimum_endpoint_fit_snr_ratio_seed": min(
+                    float(row["worst_endpoint_fit_snr_ratio_seed"])
+                    for row in rows
+                ),
+                "minimum_endpoint_empirical_snr_ratio_seed": min(
+                    float(row["worst_endpoint_empirical_snr_ratio_seed"])
                     for row in rows
                 ),
                 "maximum_endpoint_centroid_shift_from_seed_arcsec": max(
@@ -1144,7 +1490,7 @@ def build_gate(
             and all(bool(row["metric_finite"]) for row in transition_rows),
     }
     return {
-        "schema_version": "citlali-fruit-loop-population-stage-a-gate-v1",
+        "schema_version": "citlali-fruit-loop-population-stage-a-gate-v2",
         "checks": checks,
         "stage_b_gate_pass": all(checks.values()),
         "source_associated_observations_by_stratum":
@@ -1183,12 +1529,18 @@ def plot_observation(
         ),
         ("fwhm", "FWHM / realized kernel"),
         ("centroid_shift_from_seed_arcsec", "Centroid shift from seed (arcsec)"),
-        ("sig2noise_ratio_seed", "Fitted S/N / seed"),
+        (
+            "empirical_point_source_sig2noise_ratio_seed",
+            "Empirical point-source S/N / seed",
+        ),
         (
             "successive_map_delta_relative_rms",
             "Successive whole-map relative RMS",
         ),
-        ("map_roughness_fraction_ratio_seed", "Map roughness fraction / seed"),
+        (
+            "map_background_sigma_mjy_ratio_seed",
+            "Source-free background sigma / seed",
+        ),
     )
     fig, axes = plt.subplots(3, 2, figsize=(10.5, 10.5))
     colors = dict(zip(ARRAYS, ("tab:blue", "tab:orange", "tab:green")))
@@ -1334,12 +1686,12 @@ def markdown_report(
         float(row["centroid_shift_from_seed_arcsec"])
         for row in source_endpoints
     )
-    snr_loss_over_ten_percent = sum(
-        float(row["sig2noise_ratio_seed"]) < 0.9
+    legacy_dynamic_range_loss_over_ten_percent = sum(
+        float(row["legacy_peak_over_full_map_rms_ratio_seed"]) < 0.9
         for row in source_endpoints
     )
-    snr_loss_over_twenty_percent = sum(
-        float(row["sig2noise_ratio_seed"]) < 0.8
+    legacy_dynamic_range_loss_over_twenty_percent = sum(
+        float(row["legacy_peak_over_full_map_rms_ratio_seed"]) < 0.8
         for row in source_endpoints
     )
     warning_summary = "; ".join(
@@ -1412,8 +1764,8 @@ def markdown_report(
             "",
             "## Diagnostic endpoint yield",
             "",
-            "| Tolerance | Amplitude | FWHM | Whole map | Stepwise S/N | "
-            "Combined |",
+            "| Tolerance | Amplitude | FWHM | Whole map | Background sigma | "
+            "Combined (no S/N) |",
             "|---:|---:|---:|---:|---:|---:|",
         ]
     )
@@ -1425,7 +1777,7 @@ def markdown_report(
             f"{total(tolerance, 'fwhm_endpoint_pass_count')}/"
             f"{psf_trajectory_count} | "
             f"{total(tolerance, 'map_endpoint_pass_count')}/48 | "
-            f"{total(tolerance, 'snr_endpoint_pass_count')}/"
+            f"{total(tolerance, 'background_endpoint_pass_count')}/"
             f"{source_trajectory_count} | "
             f"{total(tolerance, 'combined_endpoint_pass_count')}/48 |"
         )
@@ -1466,15 +1818,19 @@ def markdown_report(
             "cross-array source mismatch are retained as classified failures, "
             "not converted into false convergence. This does not select a "
             "stopping tolerance. The "
-            "strict combined diagnostic includes whole-map change and "
-            "stepwise S/N, so it is intentionally more demanding than fitted "
-            "source stability alone.",
+            "combined candidate includes source amplitude, shape, centroid, "
+            "and successive whole-map change. Statistical S/N, background "
+            "noise, and the legacy dynamic-range diagnostic are reported "
+            "separately and do not gate convergence.",
             "",
-            "Cumulative S/N is a separate guard: "
-            f"`{snr_loss_over_ten_percent}/{source_trajectory_count}` "
-            "source-associated trajectories lose more than 10% from seed to "
-            f"iteration 9, including `{snr_loss_over_twenty_percent}` that "
-            "lose more than 20%.",
+            "The historical pointing-table `sig2noise` is amplitude divided "
+            "by full-map RMS, not statistical significance. As a retained "
+            "dynamic-range diagnostic, "
+            f"`{legacy_dynamic_range_loss_over_ten_percent}/"
+            f"{source_trajectory_count}` source-associated trajectories "
+            "decrease by more than 10% from seed to iteration 9, including "
+            f"`{legacy_dynamic_range_loss_over_twenty_percent}` that decrease "
+            "by more than 20%. These changes are not called S/N loss.",
             "",
             f"At 1%, `{len(unresolved)}/16` observations do not have all "
             "three arrays satisfy the combined two-transition diagnostic by "
@@ -1545,7 +1901,7 @@ def main() -> int:
     )
     manifest = {
         "schema_version":
-            "citlali-fruit-loop-population-stage-a-analysis-v1",
+            "citlali-fruit-loop-population-stage-a-analysis-v2",
         "stage_root": str(args.stage_root.resolve()),
         "run_matrix": str(args.run_matrix.resolve()),
         "run_matrix_sha256": sha256(args.run_matrix),
@@ -1563,6 +1919,29 @@ def main() -> int:
             CROSS_ARRAY_ASSOCIATION_LIMIT_ARCSEC,
         "pointing_fwhm_upper_bounds_arcsec":
             POINTING_FWHM_UPPER_ARCSEC,
+        "legacy_pointing_sig2noise_identity":
+            "fitted_amplitude_over_full_map_standard_deviation",
+        "legacy_pointing_sig2noise_used_for_convergence": False,
+        "background_annulus_arcsec": [
+            BACKGROUND_INNER_RADIUS_ARCSEC,
+            BACKGROUND_OUTER_RADIUS_ARCSEC,
+        ],
+        "empirical_point_source_snr_estimator": {
+            "name": "blank_sky_formal_weight_calibrated_fixed_psf_v1",
+            "template": (
+                "circular Gaussian with geometric-mean realized-kernel FWHM"
+            ),
+            "fit": "amplitude plus constant background",
+            "blank_sky_region_arcsec": [
+                BACKGROUND_INNER_RADIUS_ARCSEC,
+                BACKGROUND_OUTER_RADIUS_ARCSEC,
+            ],
+            "minimum_blank_fits": MINIMUM_BLANK_SKY_FITS,
+            "noise_scale": (
+                "normal-scaled MAD of blank fitted amplitudes divided by "
+                "their formal-weight uncertainties"
+            ),
+        },
         "stage_b_gate_pass": gate["stage_b_gate_pass"],
         "production_defaults_changed": False,
         "files": {},

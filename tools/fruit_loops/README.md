@@ -79,9 +79,12 @@ $HOME/tolteca/bin/python tools/fruit_loops/compare_feedback_ablation.py \
   --output /path/to/fruit_loop_ablation_metrics.csv
 ```
 
-The table records fitted source amplitude, widths, S/N, centroid, kernel peak,
-median map weight, absolute and relative successive-map RMS changes, and the
-size and off-source fraction of the flux-selected feedback model.
+The table records fitted source amplitude and uncertainty, widths, formal fit
+S/N, the retained legacy peak-over-full-map-RMS dynamic range, centroid,
+kernel peak, median map weight, absolute and relative successive-map RMS
+changes, and the size and off-source fraction of the flux-selected feedback
+model. The legacy pointing-table `sig2noise` value is not statistical
+significance.
 
 ## Full-PTC injected-source pair
 

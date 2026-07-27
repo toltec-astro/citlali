@@ -38,7 +38,9 @@ public:
         "b_fwhm_err",
         "angle",
         "angle_err",
-        "sig2noise"
+        "sig2noise",
+        "peak_over_full_map_rms",
+        "fit_sig2noise"
     };
 
     // ppt header units

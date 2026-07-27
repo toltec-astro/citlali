@@ -153,9 +153,12 @@ It is not sufficient evidence for strict whole-product convergence:
 | 10% | pass | pass | pass | pass |
 
 This table uses the last two transitions, 16→17 and 17→18, and requires
-amplitude, both FWHM axes, ordinary injected-map S/N, and whole-map relative
-RMS below the stated tolerance, plus centroid error below 0.1 arcsec. The a1400
-map changes are 6.50% and 1.69%; the endpoint alone must not erase the prior
+amplitude, both FWHM axes, and whole-map relative RMS below the stated
+tolerance, plus centroid error below 0.1 arcsec. The historical pointing-table
+`sig2noise` value has been removed from the combined rule because it is fitted
+amplitude divided by full-map RMS, not statistical significance. Removing it
+does not change this table: the a1400 map changes of 6.50% and 1.69% determine
+the failed strict candidates, and the endpoint alone must not erase the prior
 failed transition.
 
 The real maps reinforce the distinction. At iteration 4 the five-observation
@@ -166,11 +169,13 @@ the final kernel-normalized amplitude changes are −0.043%, −0.005%, and
 +0.006%, and FWHM changes are below 0.46%, but whole-map changes remain
 1.04–1.69%.
 
-Ordinary fitted S/N is not a monotone convergence objective: from iteration 9
-to 18 it decreases by 14.2%, 16.3%, and 8.1% in the injected branch, while the
-corresponding control decreases by 3.1%, 1.9%, and 1.2%. The final two S/N
-steps are below 1%, but the cumulative loss is scientifically material enough
-to retain as a separate guard.
+The legacy peak-over-full-map-RMS dynamic range is not a monotone convergence
+objective: from iteration 9 to 18 it decreases by 14.2%, 16.3%, and 8.1% in
+the injected branch, while the corresponding control decreases by 3.1%, 1.9%,
+and 1.2%. These changes are retained for historical reproducibility but are
+not called S/N loss or used as a scientific guard. Formal fit significance,
+source-free background noise, and empirical blank-sky point-source
+significance are separate diagnostics in the successor analysis.
 
 ## Candidate stopping policy
 
@@ -185,17 +190,19 @@ for every array across at least two successive transitions:
    is the current test value, not an adopted requirement);
 4. successive transfer-map relative RMS is below `epsilon` on a frozen,
    documented support mask as well as on the whole map;
-5. fitted S/N step and two-transition slope show no scientifically material
-   continuing degradation;
+5. robust source-free background and empirical point-source uncertainty show
+   no scientifically material degradation; formal fit significance is
+   reported separately and is not required to become constant;
 6. all required products exist, the exact-restart gate passes, and logs contain
    zero unexpected error-level messages.
 
-Use `epsilon` = 1%, 2%, 5%, and 10% in the report, regardless of which value is
-eventually selected. Continue by three iterations when the rule fails but the
-trajectory still changes materially. Stop as “measured plateau but criterion
-not met” when amplitude and shape increments contract for two blocks while a
-different diagnostic remains systematically above tolerance. Always retain a
-predeclared maximum-iteration safety cap.
+Use separate 1%, 2%, 5%, and 10% candidate reports while the metric-specific
+limits are being selected; do not require one `epsilon` to govern amplitude,
+shape, centroid, map residual, and noise health. Continue by three iterations
+when the rule fails but the trajectory still changes materially. Stop as
+“measured plateau but criterion not met” when amplitude and shape increments
+contract for two blocks while a different diagnostic remains systematically
+above tolerance. Always retain a predeclared maximum-iteration safety cap.
 
 The missing generality across amplitude, position, conditions, and science
 processing is why this remains a diagnostic recommendation rather than a

@@ -260,6 +260,33 @@ statistical-significance map. The phase-4 v1 product snapshots predate this
 truthfulness rule and are retained as historical contract debt rather than
 silently reinterpreted.
 
+### Pointing-Fit Significance And Dynamic Range
+
+Pointing-table schema `citlali-pointing-fit-v2` makes three formerly conflated
+quantities explicit:
+
+- `sig2noise` is retained only for backward compatibility. Its historical
+  pointing-table definition is fitted amplitude divided by the standard
+  deviation of the complete map. Because a bright recovered source contributes
+  to that denominator, this is a dynamic-range diagnostic and is not
+  statistical significance.
+- `peak_over_full_map_rms` carries that same historical value under its
+  truthful name.
+- `fit_sig2noise` is the fitted amplitude divided by the fitted
+  amplitude uncertainty. It is a formal fit-significance diagnostic and does
+  not by itself establish an empirical uncertainty in the presence of
+  correlated map noise.
+
+Population fruit-loop analysis calibrates a separate empirical point-source
+significance by applying one fixed-PSF amplitude estimator to the source and
+source-free blank-sky positions. The normal-scaled MAD of blank fitted
+amplitudes, standardized by their formal weight uncertainties, calibrates the
+source amplitude uncertainty. The estimator version, source-free region,
+minimum blank-fit count, units, and validity are recorded in the analysis
+manifest. Neither the legacy dynamic range nor a point-source S/N value is a
+fruit-loop convergence criterion: convergence keeps amplitude, shape,
+centroid, map change, and noise health as separate facts.
+
 ## Validity, Missing Data, And Non-Finite Values
 
 Required configuration scalars and vector elements are finite unless the

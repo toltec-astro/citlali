@@ -111,9 +111,27 @@ gates. No numerical algorithm changes are part of this integration.
   convergence. Astrometry is therefore qualified per source-associated stable
   trajectory, effective-PSF use is qualified only for uncensored fits,
   photometric calibration remains unsupported, and science response remains
-  unmeasured. No stopping policy is adopted. The remaining 92-observation
-  Stage B bundle is prepared with the exact Stage A executable SHA256, the
-  unchanged policy, and a post-run copied-config permission/checksum audit.
+  unmeasured. No stopping policy is adopted. The 92-observation Stage B array
+  is running under the exact Stage A executable and unchanged policy. As of
+  the 2026-07-27 local snapshot, 50 Stage B observations have complete
+  ten-iteration products available for preliminary analysis; the snapshot is
+  order-biased and is not a final 108-observation census. That analysis
+  exposed a product-semantic defect in the historical pointing-table
+  `sig2noise`: it is fitted amplitude divided by full-map RMS, so recovered
+  source structure makes it a dynamic-range diagnostic rather than
+  statistical significance. The population analyzer now excludes that legacy
+  quantity from convergence, reports formal `amp / amp_err`, source-free
+  background and roughness, and a versioned blank-sky empirical PSF S/N
+  separately. A backward-compatible pointing-table v2 appends truthful
+  `peak_over_full_map_rms` and `fit_sig2noise` columns while retaining the
+  legacy column. The partial population supports a discussion candidate of 3%
+  kernel-normalized amplitude change, no evaluation before iteration 6, and
+  two consecutive all-array passes; separate PSF, centroid, map, support,
+  learning, and noise criteria remain unapproved. See the
+  [convergence-criteria discussion](FRUIT_LOOP_CONVERGENCE_CRITERIA_DISCUSSION_2026-07-27.md).
+  The local implementation snapshot passes the `citlali_cli` build, all 517
+  enabled CTests, all 135 baseline-tool tests, the complete 123-test config
+  preflight and strict audits, and all 26 fruit-loop tool tests.
   Exact injected-source pairs remain reserved for one representative of each
   quality stratum. These are descriptive strata, not data rejection or
   production policy. See the

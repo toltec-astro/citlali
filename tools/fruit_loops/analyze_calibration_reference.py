@@ -382,8 +382,8 @@ def add_real_step_metrics(rows: list[dict]) -> None:
         ).append(row)
     ratio_fields = (
         "amplitude", "kernel_normalized_amplitude", "major_fwhm_arcsec",
-        "minor_fwhm_arcsec", "sig2noise", "map_background_sigma",
-        "map_weight_median",
+        "minor_fwhm_arcsec", "legacy_peak_over_full_map_rms",
+        "fit_sig2noise", "map_background_sigma", "map_weight_median",
     )
     for group in groups.values():
         group.sort(key=lambda item: int(item["iteration"]))
@@ -547,9 +547,9 @@ def threshold_assessment(rows: list[dict]) -> list[dict]:
                     "map": float(
                         current["successive_transfer_delta_relative_rms"]
                     ),
-                    "s2n": abs(
-                        float(current["injected_fit_s2n"])
-                        / float(previous["injected_fit_s2n"])
+                    "fit_snr": abs(
+                        float(current["injected_fit_sig2noise"])
+                        / float(previous["injected_fit_sig2noise"])
                         - 1.0
                     ),
                     "centroid": float(current["centroid_error_arcsec"]),
@@ -565,7 +565,9 @@ def threshold_assessment(rows: list[dict]) -> list[dict]:
                 for item in tail
             )
             map_pass = all(item["map"] < tolerance for item in tail)
-            snr_pass = all(item["s2n"] < tolerance for item in tail)
+            fit_snr_pass = all(
+                item["fit_snr"] < tolerance for item in tail
+            )
             centroid_pass = all(
                 item["centroid"] < 0.1 for item in tail
             )
@@ -581,13 +583,12 @@ def threshold_assessment(rows: list[dict]) -> list[dict]:
                     "fwhm_two_step_pass": fwhm_pass,
                     "centroid_below_0p1_arcsec_pass": centroid_pass,
                     "successive_map_two_step_pass": map_pass,
-                    "s2n_two_step_pass": snr_pass,
+                    "fit_snr_two_step_pass": fit_snr_pass,
                     "all_candidate_diagnostics_pass":
                         amplitude_pass
                         and fwhm_pass
                         and centroid_pass
-                        and map_pass
-                        and snr_pass,
+                        and map_pass,
                     "maximum_amplitude_change_fraction": max(
                         item["amplitude"] for item in tail
                     ),
@@ -601,8 +602,8 @@ def threshold_assessment(rows: list[dict]) -> list[dict]:
                     "maximum_successive_map_relative_rms": max(
                         item["map"] for item in tail
                     ),
-                    "maximum_s2n_change_fraction": max(
-                        item["s2n"] for item in tail
+                    "maximum_fit_snr_change_fraction": max(
+                        item["fit_snr"] for item in tail
                     ),
                 }
             )
@@ -788,7 +789,10 @@ def plot_real_observation(
         ("kernel_normalized_amplitude_ratio_seed", "Kernel-normalized amp / seed"),
         ("major_fwhm_over_kernel", "Major FWHM / kernel"),
         ("centroid_shift_from_seed_arcsec", "Centroid shift from seed (arcsec)"),
-        ("sig2noise_ratio_seed", "S/N / seed"),
+        (
+            "legacy_peak_over_full_map_rms_ratio_seed",
+            "Legacy peak / full-map RMS, relative to seed",
+        ),
         ("successive_map_delta_relative_rms", "Successive whole-map relative RMS"),
         ("map_background_sigma_ratio_seed", "Background sigma / seed"),
     )
@@ -833,7 +837,7 @@ def plot_injected(rows: list[dict], output: Path) -> None:
             "successive_transfer_delta_relative_rms",
             "Successive transfer-map relative RMS",
         ),
-        ("injected_fit_s2n", "Ordinary injected-map fitted S/N"),
+        ("injected_fit_sig2noise", "Formal injected-map fit S/N"),
     )
     fig, axes = plt.subplots(3, 2, figsize=(10.5, 10.5))
     for axis, (field, ylabel) in zip(axes.flat, panels, strict=True):

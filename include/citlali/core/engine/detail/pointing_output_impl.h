@@ -3,17 +3,36 @@
 // Implementation detail included by pointing.h.
 
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/pointing_fit_table_metrics.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 
 Eigen::MatrixXf Pointing::make_pointing_ppt_table(mapmaking::MapBuffer *mb) {
-    Eigen::MatrixXf ppt_table(map_indices.n_maps,
-                              2 * map_fitter.n_params + 2);
+    Eigen::MatrixXf ppt_table(
+        map_indices.n_maps,
+        citlali::pipeline::pointing_fit_table_column_count(
+            map_fitter.n_params));
 
     for (Eigen::Index i = 0; i < map_indices.n_maps; ++i) {
         ppt_table(i, 0) = map_indices.maps_to_arrays(i);
-        double map_std_dev = engine_utils::calc_std_dev(mb->signal[i]);
-        ppt_table(i, 2 * map_fitter.n_params + 1) =
-            params(i, 0) / map_std_dev;
+        const double map_std_dev =
+            engine_utils::calc_std_dev(mb->signal[i]);
+        const auto metrics =
+            citlali::pipeline::pointing_fit_table_metrics(
+                params(i, 0), perrors(i, 0), map_std_dev);
+        ppt_table(
+            i,
+            citlali::pipeline::
+                pointing_fit_table_legacy_sig2noise_column(
+                    map_fitter.n_params)) = metrics.legacy_sig2noise;
+        ppt_table(
+            i,
+            citlali::pipeline::
+                pointing_fit_table_peak_over_full_map_rms_column(
+                    map_fitter.n_params)) = metrics.peak_over_full_map_rms;
+        ppt_table(
+            i,
+            citlali::pipeline::pointing_fit_table_fit_sig2noise_column(
+                map_fitter.n_params)) = metrics.fit_sig2noise;
     }
 
     Eigen::Index j = 0;
@@ -134,8 +153,12 @@ void Pointing::output(
     // directory name
     std::string dir_name;
 
-    // matrix to hold pointing fit values and errors (n_params + 2 for array and S/N)
-    Eigen::MatrixXf ppt_table(map_indices.n_maps, 2 * map_fitter.n_params + 2);
+    // Matrix holds array identity, fit values/errors, the legacy dynamic-range
+    // field, and explicit dynamic-range/formal-fit significance fields.
+    Eigen::MatrixXf ppt_table(
+        map_indices.n_maps,
+        citlali::pipeline::pointing_fit_table_column_count(
+            map_fitter.n_params));
 
     // determine pointers and directory name based on map_type
     if constexpr (map_type == mapmaking::RawObs || map_type == mapmaking::FilteredObs) {

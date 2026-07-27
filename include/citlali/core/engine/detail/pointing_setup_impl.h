@@ -34,7 +34,9 @@ void Pointing::setup(citlali::pipeline::StageProfileCollector &stage_profile) {
         {"b_fwhm_err", "arcsec"},
         {"angle", "rad"},
         {"angle_err", "rad"},
-        {"sig2noise", "N/A"}
+        {"sig2noise", "N/A"},
+        {"peak_over_full_map_rms", "N/A"},
+        {"fit_sig2noise", "N/A"}
     };
 
     /* populate ppt meta information */
@@ -89,6 +91,13 @@ void Pointing::setup(citlali::pipeline::StageProfileCollector &stage_profile) {
         std::string(citlali::config::to_string(
             pointing_config.source_strategy));
     ppt_meta["pointing_fit_gaussian_enabled"] = pointing_config.fit_gaussian;
+    ppt_meta["pointing_fit_schema"] = "citlali-pointing-fit-v2";
+    ppt_meta["sig2noise_estimator"] =
+        "legacy_fitted_amplitude_over_full_map_rms";
+    ppt_meta["peak_over_full_map_rms_estimator"] =
+        "fitted_amplitude_over_full_map_rms";
+    ppt_meta["fit_sig2noise_estimator"] =
+        "fitted_amplitude_over_fitted_amplitude_uncertainty";
     ppt_meta["fruitloops_source_center_mode"] =
         std::string(citlali::config::to_string(
             pointing_config.fruitloops_center_mode));
@@ -105,8 +114,25 @@ void Pointing::setup(citlali::pipeline::StageProfileCollector &stage_profile) {
     // populate ppt meta information
     for (const auto &[param,unit]: ppt_header_units) {
         ppt_meta[param].push_back("units: " + unit);
-        // description from apt
-        auto description = calib.apt_header_description[unit];
+        std::string description;
+        if (param == "sig2noise") {
+            description =
+                "legacy dynamic range: fitted amplitude divided by "
+                "full-map RMS; not statistical significance";
+        }
+        else if (param == "peak_over_full_map_rms") {
+            description =
+                "fitted amplitude divided by full-map RMS";
+        }
+        else if (param == "fit_sig2noise") {
+            description =
+                "fitted amplitude divided by fitted amplitude "
+                "uncertainty";
+        }
+        else {
+            // Preserve the established metadata lookup for legacy columns.
+            description = calib.apt_header_description[unit];
+        }
         ppt_meta[param].push_back(description);
     }
 

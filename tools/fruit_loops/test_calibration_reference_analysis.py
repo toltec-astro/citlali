@@ -28,7 +28,7 @@ class CalibrationReferenceAnalysisTest(unittest.TestCase):
                         "minor_fwhm_over_kernel": 1.0,
                         "successive_transfer_delta_relative_rms":
                             map_change,
-                        "injected_fit_s2n": 20.0,
+                        "injected_fit_sig2noise": 20.0,
                         "centroid_error_arcsec": 0.02,
                     }
                 )

@@ -159,7 +159,8 @@ retaining the full per-observation table. At minimum report:
 - amplitude and kernel-normalized amplitude trajectory;
 - major/minor FWHM relative to the processed kernel;
 - per-step and cumulative centroid change;
-- ordinary fit S/N and cumulative degradation;
+- legacy peak-over-full-map-RMS dynamic range, formal fit S/N, and empirical
+  blank-sky-calibrated point-source S/N as separate quantities;
 - weights, robust background, roughness, and whole-map relative RMS; and
 - relationships with the independently frozen quality score.
 
