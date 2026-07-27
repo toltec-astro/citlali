@@ -287,6 +287,22 @@ manifest. Neither the legacy dynamic range nor a point-source S/N value is a
 fruit-loop convergence criterion: convergence keeps amplitude, shape,
 centroid, map change, and noise health as separate facts.
 
+### Source Morphology In Pointing Convergence
+
+An unresolved calibrator is assessed against the realized point-source kernel
+for its array and iteration. A resolved planetary calibrator is not assigned
+that point-source identity. Population convergence analysis convolves the
+realized kernel with an observation-epoch, observer-specific uniform disk and
+fits the resulting template after recentering its measured kernel centroid.
+The disk angular diameter and ephemeris provenance are retained with the
+analysis. This construction is a shape and within-observation convergence
+model, not an absolute planetary brightness or flux-calibration model.
+
+Planet and unresolved-source yields remain separate. A fitted width censored
+at the pointing fitter's upper bound is not made interpretable by stable
+iteration-to-iteration motion or by disk normalization; it remains a
+measurement-limited PSF result.
+
 ## Validity, Missing Data, And Non-Finite Values
 
 Required configuration scalars and vector elements are finite unless the

@@ -288,6 +288,7 @@ def source_free_map_metrics(
     path: Path, *, fit_x_arcsec: float, fit_y_arcsec: float,
     kernel_major_fwhm_arcsec: float,
     kernel_minor_fwhm_arcsec: float,
+    include_empirical_point_source_snr: bool = True,
 ) -> dict[str, float | int]:
     with fits.open(path, memmap=True) as hdul:
         signal = np.asarray(hdul["signal_I"].data, dtype=float).squeeze()
@@ -336,19 +337,31 @@ def source_free_map_metrics(
             if background_sigma > 0.0 else math.nan
         ),
     }
-    result.update(
-        empirical_blank_sky_point_source_metrics(
-            signal,
-            weight,
-            valid,
-            xx,
-            yy,
-            fit_x_arcsec=fit_x_arcsec,
-            fit_y_arcsec=fit_y_arcsec,
-            kernel_major_fwhm_arcsec=kernel_major_fwhm_arcsec,
-            kernel_minor_fwhm_arcsec=kernel_minor_fwhm_arcsec,
+    if include_empirical_point_source_snr:
+        result.update(
+            empirical_blank_sky_point_source_metrics(
+                signal,
+                weight,
+                valid,
+                xx,
+                yy,
+                fit_x_arcsec=fit_x_arcsec,
+                fit_y_arcsec=fit_y_arcsec,
+                kernel_major_fwhm_arcsec=kernel_major_fwhm_arcsec,
+                kernel_minor_fwhm_arcsec=kernel_minor_fwhm_arcsec,
+            )
         )
-    )
+    else:
+        result.update(
+            {
+                "empirical_psf_amplitude_mjy_beam": math.nan,
+                "empirical_psf_amplitude_uncertainty_mjy_beam": math.nan,
+                "empirical_point_source_sig2noise": math.nan,
+                "empirical_blank_sky_fit_count": 0,
+                "empirical_blank_sky_standardized_center": math.nan,
+                "empirical_blank_sky_standardized_sigma": math.nan,
+            }
+        )
     return result
 
 
@@ -377,6 +390,8 @@ def fit_is_valid(row: dict) -> bool:
 
 def load_iteration_metrics(
     stage_root: Path, matrix_rows: list[dict],
+    *,
+    include_empirical_point_source_snr: bool = True,
 ) -> list[dict]:
     metadata = {int(row["obsnum"]): row for row in matrix_rows}
     rows: list[dict] = []
@@ -425,6 +440,8 @@ def load_iteration_metrics(
                 kernel_minor_fwhm_arcsec=float(
                     row["kernel_minor_fwhm_arcsec"]
                 ),
+                include_empirical_point_source_snr=
+                    include_empirical_point_source_snr,
             )
         )
         groups.setdefault((obsnum, str(row["array"])), []).append(row)
@@ -1287,7 +1304,23 @@ def audit_stage(
     stage_root: Path, matrix_rows: list[dict],
 ) -> tuple[list[dict], dict]:
     setup = stage_root / "setup"
-    jobs_path = setup / "stage_a_jobs.tsv"
+    job_tables = [
+        path
+        for path in (
+            setup / "stage_a_jobs.tsv",
+            setup / "stage_b_jobs.tsv",
+        )
+        if path.is_file()
+    ]
+    if len(job_tables) != 1:
+        raise ValueError(
+            f"{setup}: expected exactly one stage_a_jobs.tsv or "
+            "stage_b_jobs.tsv"
+        )
+    jobs_path = job_tables[0]
+    slurm_prefix = (
+        "flpop-a" if jobs_path.name == "stage_a_jobs.tsv" else "flpop-b"
+    )
     with jobs_path.open(newline="", encoding="utf-8") as stream:
         jobs = list(csv.DictReader(stream, delimiter="\t"))
     if {int(row["obsnum"]) for row in jobs} != {
@@ -1391,7 +1424,9 @@ def audit_stage(
                     warning_messages[message] += 1
                     all_warning_messages[message] += 1
         slurm_matches = sorted(
-            (stage_root / "logs").glob(f"flpop-a-*_{job['task']}.out")
+            (stage_root / "logs").glob(
+                f"{slurm_prefix}-*_{job['task']}.out"
+            )
         )
         slurm_complete = False
         if len(slurm_matches) == 1:

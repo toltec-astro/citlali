@@ -2,7 +2,8 @@
 
 Date: 2026-07-27
 
-Status: discussion draft; no production stopping policy adopted
+Status: complete 108-observation evidence analyzed; no production stopping
+policy adopted
 
 ## Immediate Decisions
 
@@ -76,6 +77,97 @@ The nonzero maximum residual after a two-pass rule demonstrates that amplitude
 alone is insufficient. A temporary small increment can be followed by renewed
 motion, especially before learning state is demonstrably stable.
 
+## Complete 108-Observation Evidence
+
+The final analysis includes all 108 observations, 324 array trajectories, and
+3,240 saved array maps through iteration 9. Stage A passes 16/16 job audits and
+Stage B passes 92/92. The analysis includes empirical blank-sky point-source
+S/N and one convergence plot per observation. No production policy changed.
+
+Radio sources and planets are evaluated separately. The 75 unresolved radio
+observations use each iteration's realized point-source kernel. The 33 Uranus
+and Neptune observations use that kernel convolved with an observation-epoch
+JPL Horizons uniform disk. This changes the expected planet FWHM materially:
+
+| Array | Median planet-template major-axis broadening | Maximum |
+|---|---:|---:|
+| a1100 | 5.20% | 8.38% |
+| a1400 | 3.07% | 5.72% |
+| a2000 | 1.88% | 2.58% |
+
+The morphology-aware amplitude-only two-transition simulation gives:
+
+| Morphology | Tolerance | Resolved trajectories | P90 residual to iteration 9 | Maximum residual |
+|---|---:|---:|---:|---:|
+| Unresolved | 2% | 211/225 | 1.24% | 3.57% |
+| Unresolved | 2.5% | 221/225 | 1.64% | 3.57% |
+| Unresolved | 3% | 225/225 | 1.87% | 3.57% |
+| Unresolved | 5% | 225/225 | 3.39% | 7.12% |
+| Planet disk | 2% | 54/99 | 1.45% | 3.08% |
+| Planet disk | 2.5% | 66/99 | 2.24% | 3.13% |
+| Planet disk | 3% | 77/99 | 2.47% | 4.38% |
+| Planet disk | 5% | 95/99 | 5.74% | 7.94% |
+
+Three percent remains the best current amplitude candidate for unresolved
+sources: it resolves every radio-source array trajectory while keeping the
+P90 residual below 2% and the worst residual below 4%. Five percent is too
+loose. The planet result does not justify loosening the global tolerance:
+planet amplitudes are still moving at iteration 9 and require their own
+continuation assessment.
+
+The complete candidate V0 rule resolves 57/108 observations by iteration 9:
+51/75 unresolved sources and 6/33 planetary disks. For these simulated stops,
+the stopped-to-iteration-9 source-aperture residual is 1.35% at the median,
+2.84% at P90, and 4.28% at maximum. Its median and P90 values in units of the
+final source-free background sigma are 0.77 and 2.67. No stopped observation
+exceeds the provisional 5% aperture-residual guard.
+
+A strict-state variant that also requires exactly unchanged effective
+sample-mask and detector-penalty counts resolves only 39/108, with median stop
+iteration 8. Exact count equality is retained as a sensitivity analysis, not
+silently promoted to the core rule: the scientific guard is stable realized
+map support and weights while learning is in the `apply` phase. The
+continuation blocks should determine whether changing event counts can remain
+scientifically immaterial under those realized-state guards.
+
+The unresolved population is not one undifferentiated continuation set:
+
+- 57 observations satisfy V0;
+- 23 are measurement-limited, primarily because the pointing Gaussian width
+  is censored at its upper bound; and
+- 28 have individually measurable but unresolved trajectories: 15 unresolved
+  radio sources and 13 planetary disks.
+
+More fruit-loop iterations are appropriate only for the 28 trajectory cases.
+The 23 measurement-limited cases first need estimator review; repeating the
+same censored fit does not establish a PSF.
+
+The historical apparent S/N loss is not present in the scientific diagnostics.
+At iteration 9 the median empirical point-source S/N ratios to the seed are
+1.96, 2.88, and 3.07 for unresolved-source a1100, a1400, and a2000 maps. The
+corresponding planet values are 2.78, 3.83, and 3.67. Background sigma is not
+monotonically increasing and its median endpoint ratios are at or below 0.99
+in every array/morphology group. The legacy peak/full-map-RMS ratio may still
+fall because the growing source changes the denominator.
+
+The calibration-reference conclusions remain separate:
+
+1. **Astrometry:** qualified after the centroid gate. All 75 unresolved-source
+   observations and 28/33 planets obtain two all-array centroid steps below
+   0.1 arcsec; 107/108 obtain stable source association. The remaining five
+   planets require trajectory or fit review.
+2. **Effective PSF:** qualified only where the fit is interpretable. FWHM
+   change alone becomes small in 108/108, but only 85/108 obtain two
+   all-array, uncensored PSF assessments. A stable bound-hit is not a measured
+   beam.
+3. **Photometric amplitude:** real-source iteration convergence is established
+   for the unresolved sample at 3%, but absolute photometric transfer is not.
+   The controlled injected-source attenuation and external flux uncertainty
+   remain separate error-budget terms.
+4. **Associated science response:** still unmeasured. No pointing-derived
+   correction is approved until an exact pointing/science injection shows
+   predictive transfer under the science configuration.
+
 ## Candidate V0 Rule For Full-Population Simulation
 
 Evaluate this rule offline against every retained iteration; do not enable
@@ -94,8 +186,9 @@ runtime early stopping yet.
 8. Evaluate successive source-aperture and whole-map change separately. Test a
    5% whole-map candidate while developing a source-aperture residual
    normalized by empirical background noise.
-9. Require stable valid support, weights, and learning state in the `apply`
-   phase.
+9. Require quantitatively stable valid support and weights while learning is
+   in the `apply` phase. Report a strict-state sensitivity variant that also
+   requires unchanged effective mask/penalty counts.
 10. Treat robust source-free background sigma and pixel roughness as health
     diagnostics. A provisional guard is no more than a 10% increase relative
     to the seed and no unexplained late rising trend; their S/N ratio is not a
@@ -125,11 +218,11 @@ population.
 
 ## Evidence Needed Before Production
 
-1. Complete all 108 real-source trajectories and repeat the tables by array,
-   source, and frozen quality stratum.
-2. Simulate each candidate stop and compare the stopped product with iteration
-   9, including amplitude, centroid, PSF, source-aperture residual, and
-   empirical noise.
+1. Continue the 28 trajectory-unresolved observations in three-iteration
+   checkpoint-v2 blocks; do not spend continuation runtime on the 23
+   measurement-limited cases without changing the measurement.
+2. Review the PSF estimator and planetary fit treatment for the 23
+   measurement-limited observations.
 3. Run the exact control/injected transfer subset for normal, marginal, and
    stress observations.
 4. Decide the acceptable fraction of the photometric and pointing error

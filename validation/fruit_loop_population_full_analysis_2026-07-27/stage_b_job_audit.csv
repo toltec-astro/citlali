@@ -1,0 +1,93 @@
+task,obsnum,source,quality_rank,quality_stratum,iteration_directory_count,missing_iteration_directories,missing_or_empty_product_count,missing_or_empty_products,config_content_mismatch_count,error_level_message_count,warning_message_count,warning_messages,slurm_log_count,slurm_process_finished,audit_pass
+1,137759,Neptune,1,normal,10,,0,,0,0,0,,1,True,True
+2,134783,3c273,2,normal,10,,0,,0,0,0,,1,True,True
+3,134785,3c273,3,normal,10,,0,,0,0,0,,1,True,True
+4,143121,Uranus,4,normal,10,,0,,0,0,0,,1,True,True
+5,130156,3c273,5,normal,10,,0,,0,0,0,,1,True,True
+6,153141,3c279,6,normal,10,,0,,0,0,0,,1,True,True
+7,148717,Uranus,8,normal,10,,0,,0,0,0,,1,True,True
+8,129688,3c273,11,normal,10,,0,,0,0,0,,1,True,True
+9,153143,3c279,12,normal,10,,0,,0,0,10,10x gaps found in obnsum 153143 data file timing!,1,True,True
+10,148436,Uranus,13,normal,10,,0,,0,0,0,,1,True,True
+11,130338,3c273,14,normal,10,,0,,0,0,0,,1,True,True
+12,151599,3c273,15,normal,10,,0,,0,0,0,,1,True,True
+13,129079,3c273,16,normal,10,,0,,0,0,0,,1,True,True
+14,130336,3c273,17,normal,10,,0,,0,0,0,,1,True,True
+15,149970,Uranus,18,normal,10,,0,,0,0,0,,1,True,True
+16,129686,3c273,19,normal,10,,0,,0,0,10,10x gaps found in obnsum 129686 data file timing!,1,True,True
+17,143139,Uranus,21,normal,10,,0,,0,0,0,,1,True,True
+18,151592,3c273,22,normal,10,,0,,0,0,0,,1,True,True
+19,153017,3c279,23,normal,10,,0,,0,0,10,10x gaps found in obnsum 153017 data file timing!,1,True,True
+20,134915,3c273,24,normal,10,,0,,0,0,0,,1,True,True
+21,143441,Uranus,25,normal,10,,0,,0,0,0,,1,True,True
+22,137390,Neptune,26,normal,10,,0,,0,0,0,,1,True,True
+23,153015,3c279,27,normal,10,,0,,0,0,0,,1,True,True
+24,137218,Neptune,29,normal,10,,0,,0,0,0,,1,True,True
+25,152545,3c273,30,normal,10,,0,,0,0,0,,1,True,True
+26,136278,3c273,31,normal,10,,0,,0,0,0,,1,True,True
+27,153483,3c279,32,normal,10,,0,,0,0,0,,1,True,True
+28,134644,3c273,33,normal,10,,0,,0,0,0,,1,True,True
+29,149124,3c273,34,normal,10,,0,,0,0,0,,1,True,True
+30,151125,3c273,35,normal,10,,0,,0,0,0,,1,True,True
+31,149968,Uranus,36,normal,10,,0,,0,0,0,,1,True,True
+32,152306,3c273,37,normal,10,,0,,0,0,0,,1,True,True
+33,130153,3c273,38,normal,10,,0,,0,0,0,,1,True,True
+34,131926,3c273,40,normal,10,,0,,0,0,0,,1,True,True
+35,131090,3c273,41,normal,10,,0,,0,0,0,,1,True,True
+36,131920,3c273,42,normal,10,,0,,0,0,0,,1,True,True
+37,148669,3c273,43,normal,10,,0,,0,0,0,,1,True,True
+38,133673,3c273,44,normal,10,,0,,0,0,10,10x gaps found in obnsum 133673 data file timing!,1,True,True
+39,151949,3c273,45,normal,10,,0,,0,0,10,10x gaps found in obnsum 151949 data file timing!,1,True,True
+40,148671,3c273,46,normal,10,,0,,0,0,0,,1,True,True
+41,152450,3c273,48,normal,10,,0,,0,0,0,,1,True,True
+42,128578,3c273,49,normal,10,,0,,0,0,0,,1,True,True
+43,134917,3c273,50,normal,10,,0,,0,0,0,,1,True,True
+44,152881,3c273,51,normal,10,,0,,0,0,10,10x gaps found in obnsum 152881 data file timing!,1,True,True
+45,152308,3c273,52,normal,10,,0,,0,0,0,,1,True,True
+46,134087,3c273,53,normal,10,,0,,0,0,0,,1,True,True
+47,131088,3c273,55,marginal,10,,0,,0,0,0,,1,True,True
+48,135396,3c273,56,marginal,10,,0,,0,0,0,,1,True,True
+49,149126,3c273,57,marginal,10,,0,,0,0,0,,1,True,True
+50,134642,3c273,58,marginal,10,,0,,0,0,0,,1,True,True
+51,134085,3c273,59,marginal,10,,0,,0,0,0,,1,True,True
+52,152547,3c273,62,marginal,10,,0,,0,0,0,,1,True,True
+53,133544,3c273,63,marginal,10,,0,,0,0,0,,1,True,True
+54,135718,3c273,64,marginal,10,,0,,0,0,10,10x gaps found in obnsum 135718 data file timing!,1,True,True
+55,137554,Neptune,65,marginal,10,,0,,0,0,0,,1,True,True
+56,150911,3c273,66,marginal,10,,0,,0,0,0,,1,True,True
+57,135173,3c273,67,marginal,10,,0,,0,0,0,,1,True,True
+58,151720,3c273,68,marginal,10,,0,,0,0,0,,1,True,True
+59,144178,Neptune,69,marginal,10,,0,,0,0,0,,1,True,True
+60,151127,3c273,70,marginal,10,,0,,0,0,0,,1,True,True
+61,133412,3c273,71,marginal,10,,0,,0,0,10,10x gaps found in obnsum 133412 data file timing!,1,True,True
+62,134232,3c273,72,marginal,10,,0,,0,0,0,,1,True,True
+63,148835,Uranus,73,marginal,10,,0,,0,0,0,,1,True,True
+64,151601,3c273,76,marginal,10,,0,,0,0,0,,1,True,True
+65,123602,Neptune,77,marginal,10,,0,,0,0,0,,1,True,True
+66,134234,3c273,78,marginal,10,,0,,0,0,0,,1,True,True
+67,138150,Neptune,79,marginal,10,,0,,0,0,0,,1,True,True
+68,137372,Neptune,80,marginal,10,,0,,0,0,0,,1,True,True
+69,135736,3c273,81,marginal,10,,0,,0,0,10,10x gaps found in obnsum 135736 data file timing!,1,True,True
+70,123650,Neptune,82,marginal,10,,0,,0,0,50,50x PCA covariance has only 0 active detector(s); skipping eigen solve,1,True,True
+71,134548,3c345,83,marginal,10,,0,,0,0,10,10x gaps found in obnsum 134548 data file timing!,1,True,True
+72,148438,Uranus,84,marginal,10,,0,,0,0,0,,1,True,True
+73,135398,3c273,85,marginal,10,,0,,0,0,0,,1,True,True
+74,150913,3c273,86,marginal,10,,0,,0,0,0,,1,True,True
+75,138168,Neptune,88,marginal,10,,0,,0,0,0,,1,True,True
+76,131228,3c273,89,marginal,10,,0,,0,0,0,,1,True,True
+77,151725,3c273,90,marginal,10,,0,,0,0,0,,1,True,True
+78,137574,Neptune,91,marginal,10,,0,,0,0,0,,1,True,True
+79,137741,Neptune,92,marginal,10,,0,,0,0,0,,1,True,True
+80,148728,Uranus,93,stress,10,,0,,0,0,0,,1,True,True
+81,148837,Uranus,94,stress,10,,0,,0,0,0,,1,True,True
+82,142610,Uranus,96,stress,10,,0,,0,0,0,,1,True,True
+83,143459,Uranus,97,stress,10,,0,,0,0,0,,1,True,True
+84,151727,3c273,98,stress,10,,0,,0,0,0,,1,True,True
+85,137188,Neptune,99,stress,10,,0,,0,0,0,,1,True,True
+86,136280,3c273,100,stress,10,,0,,0,0,0,,1,True,True
+87,152452,3c273,102,stress,10,,0,,0,0,0,,1,True,True
+88,152992,3c84,103,stress,10,,0,,0,0,10,10x gaps found in obnsum 152992 data file timing!,1,True,True
+89,152883,3c273,104,stress,10,,0,,0,0,10,10x gaps found in obnsum 152883 data file timing!,1,True,True
+90,123424,Neptune,105,stress,10,,0,,0,0,0,,1,True,True
+91,150820,3c273,107,stress,10,,0,,0,0,0,,1,True,True
+92,148730,Uranus,108,stress,10,,0,,0,0,0,,1,True,True

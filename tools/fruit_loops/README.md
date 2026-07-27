@@ -279,3 +279,33 @@ yield at 1%, 2%, 5%, and 10%, per-observation plots, a machine-readable gate,
 and a checksummed manifest. Individual diagnostics retain their own
 eligibility rules so a censored PSF fit does not invalidate an otherwise
 source-associated centroid trajectory.
+
+Analyze the combined Stage A and Stage B population with epoch-specific
+planet-disk templates after every expected observation and Slurm log is
+downloaded:
+
+```bash
+XDG_CACHE_HOME=/tmp/citlali-fontconfig \
+MPLCONFIGDIR=/tmp/citlali-fruitloop-full-mpl \
+  $HOME/tolteca/bin/python \
+  tools/fruit_loops/analyze_population_full.py \
+  --stage-a-root /path/to/downloaded/stage_a \
+  --stage-b-root /path/to/downloaded/stage_b \
+  --run-matrix \
+    validation/fruit_loop_population_quality_2026-07-26/population_run_matrix.csv \
+  --planet-ephemerides \
+    validation/fruit_loop_planet_ephemerides_2026-07-27/ephemerides.csv \
+  --output /path/to/full_population_analysis \
+  --workers 4
+```
+
+The full analyzer requires all 108 observations unless
+`--allow-incomplete` is supplied for an explicitly provisional pass. Radio
+sources use each iteration's realized point-source kernel. Uranus and Neptune
+use that kernel convolved with the observation-epoch JPL Horizons uniform
+disk. The output retains iteration and transition metrics, amplitude-only
+tolerance simulations, the multi-metric V0 stopping simulation, criterion
+failure classification, stopped-versus-iteration-9 residuals, quality/source
+yield breakdowns, separate continuation and measurement-limited tables, one
+convergence plot per observation, and a recursive checksummed manifest. It
+does not change the production stopping policy.

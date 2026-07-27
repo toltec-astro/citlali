@@ -1,0 +1,20 @@
+{
+  "schema_version": "citlali-fruit-loop-planet-ephemerides-v1",
+  "retrieved_at_utc": "2026-07-27T18:50:07Z",
+  "provider": "JPL Horizons",
+  "client": "astroquery.jplhorizons.Horizons",
+  "observer": {
+    "name": "LMT/TolTEC",
+    "longitude_degrees_east": -97.3148,
+    "latitude_degrees_north": 18.985,
+    "elevation_m": 4600.0
+  },
+  "epoch_conversion": "inventory UTC MJD converted to TDB Julian date by astropy.time.Time",
+  "targets": {
+    "Uranus": "799",
+    "Neptune": "899"
+  },
+  "quantity": "Horizons observer ephemeris ang_width in arcsec",
+  "observation_count": 33,
+  "use": "Analysis-only uniform-disk convolution of each realized map kernel; not an absolute flux model."
+}

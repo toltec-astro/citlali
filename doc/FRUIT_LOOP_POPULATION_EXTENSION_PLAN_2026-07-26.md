@@ -2,8 +2,8 @@
 
 Date: 2026-07-26
 
-Status: Stage A complete and gate passed; 92-observation Stage B Unity bundle
-prepared but not uploaded or submitted
+Status: complete; Stage A 16/16 and Stage B 92/92 audited, with all 108
+observations analyzed through iteration 9
 
 ## Immediate finding
 
@@ -207,6 +207,28 @@ without scientifically material S/N loss. Median convergence alone is
 insufficient.
 
 ## Unity handoff
+
+### Final population result
+
+All 108 observations completed with the same immutable executable SHA256 and
+ten-iteration policy. Stage B array task 81 (`obs148837`) failed in the
+original array, was rerun alone, and then passed the same product, log,
+config-checksum, and provenance audit. The final evidence is in
+`validation/fruit_loop_population_full_analysis_2026-07-27/`.
+
+The morphology-aware V0 simulation resolves 57/108 observations. Of the
+remaining 51, 23 are measurement-limited and 28 retain measurable but
+unresolved trajectories. The latter—not the entire failed set—are the
+appropriate checkpoint-v2 continuation population. The exact sets are
+`trajectory_continuation_candidates.csv` and
+`measurement_limited_observations.csv` in the final evidence directory.
+Planet disks are modeled with observation-epoch JPL Horizons diameters
+convolved with each realized kernel; a bare point-source PSF is not used for
+planetary convergence.
+
+No production stopping policy or photometric correction is adopted. The
+complete evidence and current threshold discussion are recorded in
+`doc/FRUIT_LOOP_CONVERGENCE_CRITERIA_DISCUSSION_2026-07-27.md`.
 
 Stage A completed all 16 jobs with the frozen executable SHA256
 `0f7685ad2b89cc2fc2cbe330c9e5ed75fc8972dc1bf60ab37e3a4b9209965330`.

@@ -2,13 +2,16 @@
 
 Date: 2026-07-26
 
-Status: existing evidence analyzed; additional Unity reductions proposed but
-not requested
+Status: calibration-reference evidence analyzed; 108-observation real-source
+population complete; controlled transfer extensions remain proposed
 
 Population extension: the subsequent
 [108-observation quality-stratified plan](FRUIT_LOOP_POPULATION_EXTENSION_PLAN_2026-07-26.md)
-supersedes the small R0 real-observation subset below. The controlled
-amplitude, position, and science-transfer experiments remain applicable.
+supersedes the small R0 real-observation subset below. All 108 real-source
+trajectories are now analyzed in
+[`validation/fruit_loop_population_full_analysis_2026-07-27/`](../validation/fruit_loop_population_full_analysis_2026-07-27/).
+The controlled amplitude, position, and science-transfer experiments remain
+applicable.
 
 ## Outcome
 
@@ -30,6 +33,15 @@ The calibration-reference verdicts are deliberately separate:
 | Prediction of associated science-observation response | **Not determined; current products are insufficient** | No associated science observation/configuration was recorded in the local project, and the injected-source seam is currently accepted only for pointing/OOF reductions. The decisive pointing-versus-science paired injection has therefore not been measured. |
 
 These verdicts do not change production defaults.
+
+The complete population strengthens but does not merge these verdicts.
+All 75 unresolved-source observations satisfy the morphology-aware 3%
+amplitude-only rule by iteration 9, while the complete V0 multi-metric rule
+resolves 51/75 unresolved sources and 6/33 planet disks. Twenty-three
+observations are measurement-limited and 28 retain measurable but unresolved
+trajectories. Real-source convergence still cannot replace injected truth,
+independent absolute flux authority, or the unmeasured pointing-versus-science
+transfer test.
 
 ## Evidence set and reproducibility
 
