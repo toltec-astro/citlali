@@ -136,3 +136,44 @@ def test_rejects_missing_observation(tmp_path: Path) -> None:
         assert "missing obsnum 999" in str(error)
     else:
         raise AssertionError("missing observation unexpectedly accepted")
+
+
+def test_writes_stage_b_scripts_with_frozen_binary_gate(
+    tmp_path: Path,
+) -> None:
+    source_path = tmp_path / "source.yaml"
+    source_path.write_text(yaml.safe_dump(source_config(), sort_keys=False))
+    matrix = tmp_path / "matrix.csv"
+    matrix.write_text(
+        "obsnum,source,quality_rank,quality_stratum,phase,selection_reason\n"
+        "101,Neptune,2,normal,remaining,complete_population\n"
+    )
+    output = tmp_path / "setup"
+    required_sha = "a" * 64
+    frozen_source = "/project/stage_a/setup/bin/citlali-" + required_sha
+
+    write_stage_package(
+        source_path=source_path,
+        run_matrix_path=matrix,
+        output_dir=output,
+        runtime_output_root="/project/diagnostics/stage_b",
+        fitreport_dir="/project/data",
+        phase="remaining",
+        iterations=10,
+        stage_name="stage_b",
+        min_free_kib=367_001_600,
+        binary_source=frozen_source,
+        expected_binary_sha256=required_sha,
+    )
+
+    assert (output / "stage_b_jobs.tsv").is_file()
+    submit = (output / "submit_stage_b.sh").read_text()
+    assert '--array="1-1%${ARRAY_CONCURRENCY}"' in submit
+    snapshot = (output / "snapshot_binary.sh").read_text()
+    assert frozen_source in snapshot
+    assert required_sha in snapshot
+    run = (output / "run_stage_b_task.sh").read_text()
+    assert 'chmod --reference="${SETUP_DIR}/${config}"' in run
+    manifest = yaml.safe_load((output / "manifest.yaml").read_text())
+    assert manifest["stage_name"] == "stage_b"
+    assert manifest["policy"]["required_binary_sha256"] == required_sha

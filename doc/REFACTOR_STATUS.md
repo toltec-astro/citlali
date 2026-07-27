@@ -99,11 +99,24 @@ gates. No numerical algorithm changes are part of this integration.
   has an independent, frozen quality baseline from all 324 RC1 array maps and
   processed kernels: 54 observations are labeled normal, 38 marginal, and 16
   stress for experiment design. The original five contain four normal, one
-  marginal, and no stress observations. A two-stage plan therefore starts
-  with 16 common-binary ten-iteration sentinels before the remaining 92, with
-  exact injected-source pairs reserved for one representative of each quality
-  stratum. These are descriptive strata, not data rejection or production
-  policy. See the
+  marginal, and no stress observations. The 16 common-binary ten-iteration
+  Stage A sentinels are now complete and downloaded: all 480 iteration metrics
+  are finite, all 432 transitions are measurable or explicitly classified,
+  and the predeclared Stage B gate passes with 8 normal, 5 marginal, and 2
+  stress observations retaining all three source associations. At the strict
+  combined endpoint gate, 7/48 array trajectories pass at 1%, 21/48 at 2%,
+  36/48 at 5%, and 40/48 at 10%. One stress a2000 trajectory follows a
+  cross-array-inconsistent source and eight trajectories have FWHM fits
+  censored at the pointing fitter's upper bound; neither is counted as
+  convergence. Astrometry is therefore qualified per source-associated stable
+  trajectory, effective-PSF use is qualified only for uncensored fits,
+  photometric calibration remains unsupported, and science response remains
+  unmeasured. No stopping policy is adopted. The remaining 92-observation
+  Stage B bundle is prepared with the exact Stage A executable SHA256, the
+  unchanged policy, and a post-run copied-config permission/checksum audit.
+  Exact injected-source pairs remain reserved for one representative of each
+  quality stratum. These are descriptive strata, not data rejection or
+  production policy. See the
   [feedback investigation](FRUIT_LOOP_FEEDBACK_INVESTIGATION_2026-07-24.md)
   and
   [calibration-reference assessment](FRUIT_LOOP_CALIBRATION_REFERENCE_INVESTIGATION_2026-07-26.md),

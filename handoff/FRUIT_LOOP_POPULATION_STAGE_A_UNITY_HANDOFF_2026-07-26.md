@@ -2,8 +2,13 @@
 
 Date: 2026-07-26
 
-Status: setup prepared and locally validated; no upload, Unity snapshot, or
-Slurm submission has been performed
+Status: completed, downloaded, and analyzed; Stage A gate passed; retained as
+the binary and scientific-evidence authority for Stage B
+
+The completed analysis is
+`validation/fruit_loop_population_stage_a_analysis_2026-07-26/report.md`.
+Stage B launch commands are in
+`handoff/FRUIT_LOOP_POPULATION_STAGE_B_UNITY_HANDOFF_2026-07-26.md`.
 
 ## Frozen run
 

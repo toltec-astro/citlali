@@ -1,0 +1,17 @@
+task,obsnum,source,quality_rank,quality_stratum,iteration_directory_count,missing_iteration_directories,missing_or_empty_product_count,missing_or_empty_products,config_content_mismatch_count,error_level_message_count,warning_message_count,warning_messages,slurm_log_count,slurm_process_finished,audit_pass
+1,153481,3c279,7,normal,10,,0,,0,0,0,,1,True,True
+2,129081,3c273,9,normal,10,,0,,0,0,0,,1,True,True
+3,148434,Uranus,10,normal,10,,0,,0,0,0,,1,True,True
+4,144176,Neptune,20,normal,10,,0,,0,0,0,,1,True,True
+5,151594,3c273,28,normal,10,,0,,0,0,0,,1,True,True
+6,133410,3c273,39,normal,10,,0,,0,0,10,10x gaps found in obnsum 133410 data file timing!,1,True,True
+7,133542,3c273,47,normal,10,,0,,0,0,10,10x gaps found in obnsum 133542 data file timing!,1,True,True
+8,152990,3c84,54,normal,10,,0,,0,0,0,,1,True,True
+9,151718,3c273,60,marginal,10,,0,,0,0,0,,1,True,True
+10,130921,3c273,61,marginal,10,,0,,0,0,10,10x gaps found in obnsum 130921 data file timing!,1,True,True
+11,150818,3c273,74,marginal,10,,0,,0,0,0,,1,True,True
+12,134546,3c345,75,marginal,10,,0,,0,0,10,10x gaps found in obnsum 134546 data file timing!,1,True,True
+13,148719,Uranus,87,marginal,10,,0,,0,0,0,,1,True,True
+14,151951,3c273,95,stress,10,,0,,0,0,0,,1,True,True
+15,142578,Uranus,101,stress,10,,0,,0,0,0,,1,True,True
+16,123426,Neptune,106,stress,10,,0,,0,0,0,,1,True,True

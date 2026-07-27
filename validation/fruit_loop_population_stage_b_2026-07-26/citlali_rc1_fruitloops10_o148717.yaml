@@ -1,0 +1,622 @@
+beammap:
+  convergence_radius_arcsec: 10.0
+  derotate: true
+  detector_weighting:
+    mode: const
+  fitting:
+    fit_radius_fwhm: 0.0
+  flagging:
+    array_lower_fwhm_arcsec:
+    - 4.0
+    - 5.0
+    - 8.0
+    array_lower_sig2noise:
+    - 5
+    - 5
+    - 5
+    array_max_dist_arcsec:
+    - 120
+    - 120
+    - 120
+    array_network_robust_z:
+    - 0
+    - 0
+    - 0
+    array_upper_fwhm_arcsec:
+    - 10
+    - 12
+    - 15
+    array_upper_sig2noise:
+    - 0
+    - 0
+    - 0
+    max_prior_d2: 0.0
+    sens_factors:
+    - 0
+    - 0
+  iter_max: 10
+  iter_tolerance: 0.02
+  phase_strategy:
+    enabled: true
+    locator_iter: 0
+    measurement_start_iter: 1
+  reference_det: -99
+  sens_psd_limits_Hz:
+  - 0
+  - 0
+  subtract_reference_det: true
+coadd:
+  enabled: false
+inputs:
+- cal_items:
+  - beammap_source:
+      fluxes:
+      - array_name: a1100
+        uncertainty_mJy: 0.05
+        value_mJy: 2329
+      - array_name: a1400
+        uncertainty_mJy: 0.05
+        value_mJy: 2800
+      - array_name: a2000
+        uncertainty_mJy: 0.05
+        value_mJy: 1923
+    type: photometry
+  - pointing_offsets:
+    - axes_name: az
+      value_arcsec:
+      - 0
+    - axes_name: alt
+      value_arcsec:
+      - 0
+    type: astrometry
+  - filepath: /work/toltec/commissioning2025-test/2026-ENG-hero-multiyear-pointings-v1/apts/hero_rc1/apt_148717_matched.ecsv
+    meta:
+      interface: apt
+    type: array_prop_table
+  data_items:
+  - filepath: /work/toltec/commissioning2025-test/2026-ENG-hero-multiyear-pointings-v1/pointings_rc1/reduced/tel_toltec_2026-01-14_148717_00_0002_recomputed.nc
+    meta:
+      interface: lmt
+  - filepath: /work/toltec/commissioning2025-test/beammaps/data/toltec0_148717_000_0002_2026_01_14_04_57_51.nc
+    meta:
+      interface: toltec0
+  - filepath: /work/toltec/commissioning2025-test/beammaps/data/toltec1_148717_000_0002_2026_01_14_04_57_51.nc
+    meta:
+      interface: toltec1
+  - filepath: /work/toltec/commissioning2025-test/beammaps/data/toltec2_148717_000_0002_2026_01_14_04_57_51.nc
+    meta:
+      interface: toltec2
+  - filepath: /work/toltec/commissioning2025-test/beammaps/data/toltec3_148717_000_0002_2026_01_14_04_57_51.nc
+    meta:
+      interface: toltec3
+  - filepath: /work/toltec/commissioning2025-test/beammaps/data/toltec4_148717_000_0002_2026_01_14_04_57_51.nc
+    meta:
+      interface: toltec4
+  - filepath: /work/toltec/commissioning2025-test/beammaps/data/toltec5_148717_000_0002_2026_01_14_04_57_51.nc
+    meta:
+      interface: toltec5
+  - filepath: /work/toltec/commissioning2025-test/beammaps/data/toltec7_148717_000_0002_2026_01_14_04_57_51.nc
+    meta:
+      interface: toltec7
+  - filepath: /work/toltec/commissioning2025-test/beammaps/data/toltec8_148717_000_0002_2026_01_14_04_57_51.nc
+    meta:
+      interface: toltec8
+  - filepath: /work/toltec/commissioning2025-test/beammaps/data/toltec9_148717_000_0002_2026_01_14_04_57_51.nc
+    meta:
+      interface: toltec9
+  - filepath: /work/toltec/commissioning2025-test/beammaps/data/toltec11_148717_000_0002_2026_01_14_04_57_51.nc
+    meta:
+      interface: toltec11
+  - filepath: /work/toltec/commissioning2025-test/beammaps/data/toltec12_148717_000_0002_2026_01_14_04_57_51.nc
+    meta:
+      interface: toltec12
+  meta:
+    name: '148717_0_2'
+interface_sync_offset:
+- toltec0: 0
+- toltec1: 0
+- toltec2: 0
+- toltec3: 0
+- toltec4: 0
+- toltec5: 0
+- toltec6: 0
+- toltec7: 0
+- toltec8: 0
+- toltec9: 0
+- toltec10: 0
+- toltec11: 0
+- toltec12: 0
+- hwpr: 0
+kids:
+  fitter:
+    modelspec: gainlintrend
+    weight_window:
+      fwhm_Hz: 1.5e4
+      type: lorentz
+  solver:
+    extra_output: false
+    fitreportdir: /work/toltec/commissioning2025-test/2026-ENG-hero-multiyear-pointings-v1/data
+    parallel_policy: seq
+mapmaking:
+  coverage_cut: 0.1
+  crpix1: 0
+  crpix2: 0
+  crval1_J2000: 0
+  crval2_J2000: 0
+  cunit: mJy/beam
+  enabled: true
+  grouping: auto
+  jinc_filter:
+    r_max: 1.5
+    shape_params:
+      a1100:
+      - 1.1
+      - 1.67
+      - 2.0
+      a1400:
+      - 1.1
+      - 2.17
+      - 2.0
+      a2000:
+      - 1.1
+      - 3.17
+      - 2.0
+    subpixel_n: 1
+  maximum_likelihood:
+    max_iterations: 50
+    tolerance: 1e-20
+  method: jinc
+  pixel_axes: altaz
+  pixel_size_arcsec: 1.0
+  tan_dec: 0
+  tan_ra: 0
+  x_size_pix: 0
+  y_size_pix: 0
+noise_maps:
+  enabled: true
+  n_noise_maps: 5
+  products:
+    apply_empirical_weights: true
+    enabled: true
+  randomize_dets: false
+  write_realizations: false
+pointing:
+  source_strategy:
+    fit_gaussian: true
+    fruitloops_center_mode: auto
+    header_max_radius_arcsec: 40.0
+    header_require_coverage: true
+    mode: standard
+post_processing:
+  map_filtering:
+    edge_guard:
+      enabled: true
+      fill_mode: core_median
+      guard_radius_fwhm: 1.0
+      hits_core_fraction: 0.15
+      hits_threshold_mode: core_median_fraction
+      taper_min_fraction: 0.25
+      taper_mode: none
+      weight_threshold_mode: coverage_cut
+    enabled: false
+    normalize_errors: false
+    type: wiener_filter
+  map_histogram_n_bins: 50
+  source_finding:
+    enabled: false
+    mode: default
+    source_sigma: 5.0
+    source_window_arcsec: 10.0
+  source_fitting:
+    bounding_box_arcsec: 30
+    fitting_radius_arcsec: 40
+    gauss_model:
+      amp_limit_factors:
+      - 0.0
+      - 0.0
+      fit_rotation_angle: false
+      fwhm_limit_factors:
+      - 0.0
+      - 0.0
+    model: gaussian
+runtime:
+  interp_over_gaps: true
+  meta:
+    version: tolteca...
+  n_threads: 6
+  output_dir: /work/toltec/commissioning2025-test/2026-ENG-hero-multiyear-pointings-v1/diagnostics/fruitloop_population_v1/stage_b/obs148717/reduced/
+  parallel_policy: omp
+  reduction_type: pointing
+  use_subdir: true
+  verbose: true
+source:
+  map_regime: source_dominant
+timestream:
+  chunking:
+    chunk_mode: duration
+    force_chunking: false
+    value: 5
+  enabled: true
+  fruit_loops:
+    adaptive_support_radius_arcsec: 18.0
+    adaptive_support_radius_fwhm: 1.5
+    array_flux_limit:
+    - 12
+    - 18
+    - 10
+    center_keep_radius_arcsec: 40.0
+    enabled: true
+    interp_mode_override: auto
+    legacy_center: false
+    local_sigma_edge_guard_arcsec: 5.0
+    local_sigma_inner_fwhm: 1.5
+    local_sigma_inner_radius_arcsec: 10.0
+    local_sigma_min_pixels: 50
+    local_sigma_outer_fwhm: 4.0
+    local_sigma_outer_radius_arcsec: 35.0
+    local_snr_floor: 0.0
+    max_iters: 10
+    mode: upper
+    path: null
+    peak_fraction_limit: 0.0
+    recompute_weights_after_addback: false
+    save_all_iters: true
+    sig2noise_limit: 100
+    type: obsnum/raw
+    weight_feedback:
+      enabled: true
+      high_relative_weight: 0.1
+      low_relative_weight: 0.02
+      reference: p95
+    restart_path: null
+    diagnostics_enabled: true
+    injected_source_test:
+      enabled: false
+      start_iteration: 1
+      array_amplitude_mjy_beam:
+      - 0.0
+      - 0.0
+      - 0.0
+  learning:
+    apply_max_new_flagged_fraction: 0.02
+    apply_sample_masks_enabled: true
+    apply_start_iter: 2
+    busy_detector_exclusion_enabled: true
+    diagnostics_enabled: true
+    enabled: true
+    learn_iters: 2
+    map_pixel_outlier_contributor_diagnostics_enabled: false
+    map_pixel_outlier_detector_exclusion_enabled: true
+    map_pixel_outlier_detector_exclusion_min_pixels: 4
+    map_pixel_outlier_diagnostics_enabled: true
+    map_pixel_outlier_min_abs_z: 8.0
+    map_pixel_outlier_min_n_eff: 4.0
+    map_pixel_outlier_source_radius_arcsec: 30.0
+    map_pixel_outlier_targeted_contributor_diagnostics_enabled: true
+    map_pixel_outlier_targeted_contributor_max_pixels: 32
+    map_pixel_outlier_top_n: 8
+    max_records_per_type: 200000
+    scan_network_pathology_apply_pre_mapmaking: false
+    scan_network_pathology_apply_pre_ptc: false
+    scan_network_pathology_apply_pre_rtc: false
+    scan_network_pathology_enabled: true
+    scan_network_pathology_max_new_flagged_fraction: 0.35
+    scan_network_pathology_min_candidate_clusters: 4
+    scan_network_pathology_min_candidate_events: 100
+    scan_network_pathology_min_max_residual_z: 25.0
+    scan_network_pathology_severe_candidate_events: 250
+    scan_network_pathology_severe_max_residual_z: 50.0
+  output:
+    stats:
+      eigenvalues: false
+    subdir_name: null
+  polarimetry:
+    enabled: false
+    grouping: fg
+    ignore_hwpr: auto
+  precompute_pointing: false
+  processed_time_chunk:
+    clean:
+      adaptive_selector:
+        candidate_offsets:
+        - -2
+        - 0
+        - 2
+        - 4
+        clip_z: 50.0
+        enabled: false
+        grouping: []
+        log_candidates: false
+        low_band_Hz:
+        - 0.05
+        - 0.5
+        low_weight: 1.0
+        max_det: 120
+        max_pairs: 2000
+        max_samples: 1024
+        mid_band_Hz:
+        - 0.5
+        - 2.0
+        min_good_frac: 0.7
+        reg_weight: 0.3
+        seed: 12345
+        tail_weight: 0.0
+        topmode_weight: 0.1
+      enabled: true
+      grouping:
+      - nw
+      marchenko_pastur:
+        band_high_Hz: 0.0
+        band_low_Hz: 0.0
+        bulk_keep_frac: 0.8
+        clip_z: 12.0
+        enabled: false
+        grouping: []
+        max_modes: 64
+        max_samples: 20000
+        min_good_frac: 0.8
+        q_grid_size: 64
+      mask_radius_arcsec: 0.0
+      null_model:
+        enabled: false
+        max_modes: 64
+        max_samples: 20000
+        min_good_frac: 0.8
+        n_surrogates: 16
+        quantile: 0.99
+        seed: 12345
+      standard_pca:
+        enabled: true
+        n_calc: 64
+        n_eig_to_cut:
+          a1100:
+          - 5
+          a1400:
+          - 5
+          a2000:
+          - 5
+        stddev_limit: 0.0
+      tau: 0.0
+    flagging:
+      lower_tod_inv_var_factor: 0.0
+      second_pass_local:
+        baseline_window_sec: 0.25
+        cluster_events_sec: 0.08
+        delta_half_peak_frac: 0.5
+        delta_max_width_sec: 0.1
+        delta_sigma_scale: 0.75
+        delta_window_sec: 0.12
+        enabled: true
+        high_score_cluster_override: 9.0
+        high_score_event_override: 20.0
+        max_auto_flag_clusters_per_network: 3
+        max_step_shift_z: 3.0
+        merge_within_detector_sec: 0.08
+        min_cluster_detectors: 3
+        min_good_frac: 0.5
+        min_spike_sigma: 8.0
+        raw_candidate_rel_sigma_scale: 1.0
+        raw_half_peak_frac: 0.5
+        raw_max_width_sec: 0.18
+        raw_window_sec: 0.18
+        selective_busy_network_acceptance_enabled: true
+        sigma_scale: 0.75
+        source_protection:
+          enabled: true
+          radius_arcsec: 20.0
+      upper_tod_inv_var_factor: 10
+    output:
+      enabled: true
+      indices: all
+      mode: mini
+    weighting:
+      busy_row_suppression:
+        enabled: false
+        factor: 0.0
+        min_candidate_clusters: 5
+        min_max_unflagged_residual_z: 25.0
+        require_busy_veto: true
+      corr_penalty:
+        cm_el_corr:
+          enabled: false
+          ref: 0.05
+          span: 0.25
+          weight: 0.5
+        cm_low_mid_ratio:
+          enabled: false
+          low_band_Hz:
+          - 0.05
+          - 0.5
+          mid_band_Hz:
+          - 0.5
+          - 2.0
+          ref: 0.6
+          span: 2.0
+          weight: 0.5
+        enabled: false
+        exponent: 2.0
+        floor: 0.05
+        max_pairs: 4000
+        max_samples: 20000
+        min_good_frac: 0.7
+        min_overlap: 200
+        pair_corr:
+          enabled: true
+          ref: 0.05
+          span: 0.15
+          weight: 1.0
+        seed: 12345
+      hybrid_correction_max_factor: 2.0
+      hybrid_correction_min_factor: 0.5
+      lower_map_weight_factor: 0.0
+      median_map_weight_factor: 10
+      source_mask_radius_arcsec: 30.0
+      type: validated
+      upper_map_weight_factor: 11
+      validation:
+        accumulation_iters: 1
+        apply_start_iter: 1
+        atmospheric_correlation_enabled: true
+        atmospheric_grouping: array
+        atmospheric_min_detectors: 8
+        atmospheric_power: 1.0
+        atmospheric_ref: 0.0
+        atmospheric_span: 0.15
+        enabled: true
+        high_weight_apply_caps: true
+        high_weight_cap_median_factor: 4.0
+        high_weight_grouping: array
+        high_weight_log_robust_z: 6.0
+        high_weight_max_median_factor: 8.0
+        high_weight_min_group_detectors: 20
+        high_weight_min_validated_factor: 0.95
+        high_weight_validation_enabled: true
+        max_samples: 5000
+        min_factor: 0.1
+        min_good_frac: 0.5
+        min_overlap: 200
+        min_valid_scans: 2
+        ratio_power: 1.0
+        require_fruitloops_model: true
+        transient_ratio_enabled: false
+        transient_ratio_power: 1.0
+        unvalidated_factor: 1.0
+        upward_enabled: true
+        upward_max_factor: 1.1
+        upward_min_atmospheric_factor: 0.9
+        upward_min_base_factor: 0.95
+        upward_power: 1.0
+        upward_require_atmospheric: true
+  raw_time_chunk:
+    IIR_filter:
+      enabled: false
+      freq_Hz: 0.1
+      order: 1
+      zero_phase: false
+    despike:
+      enabled: true
+      legacy:
+        enabled: false
+      local_residual:
+        compact_delta_gate:
+          enabled: true
+          half_peak_frac: 0.5
+          max_step_shift_z: 3.0
+          max_width_sec: 0.1
+          window_sec: 0.12
+        compact_raw_gate:
+          candidate_rel_sigma_scale: 1.0
+          enabled: true
+          half_peak_frac: 0.5
+          max_step_shift_z: 3.0
+          max_width_sec: 0.18
+          window_sec: 0.18
+        delta_sigma_scale: 0.75
+        enabled: true
+        event_padding_sec: 0.25
+        expand_with_filter: false
+        high_score_event_override: 20.0
+        max_added_flagged_fraction: 0.25
+        sigma_scale: 0.75
+        window_sec: 0.25
+      min_spike_sigma: 8.0
+      source_protection:
+        enabled: true
+        radius_arcsec: 20.0
+      time_constant_sec: 0.015
+      window_size: 32
+    downsample:
+      downsampled_freq_Hz: 0
+      enabled: true
+      factor: 2
+    extinction_correction:
+      enabled: false
+    filter:
+      a_gibbs: 50.0
+      edge_guard:
+        apply_downsample: true
+        apply_dynamic_notch: true
+        apply_fir: true
+        apply_iir_highpass: true
+        apply_notch: true
+        combine: sum
+        enabled: true
+        extra_samples: 0
+        iir_settle_attenuation: 0.01
+        max_samples: 128
+        min_samples: 0
+        mode: flag
+      enabled: true
+      freq_high_Hz: 20.0
+      freq_low_Hz: 0.0
+      n_terms: 32
+      notch:
+        delta_f_Hz:
+        - 1.0
+        enabled: false
+        freqs_Hz:
+        - 10.5
+    flagging:
+      delta_f_min_Hz: 60e3
+      impulsive_capture:
+        enabled: false
+        max_events_per_network: 3
+        min_event_z: 6.0
+        min_good_frac: 0.8
+        near_event_z: 4.0
+        snippet_post_window_sec: 0.25
+        snippet_pre_window_sec: 0.25
+      impulsive_coincidence:
+        cluster_tol_sec: 0.03
+        enabled: false
+        event_score_thresh: 6.0
+        high_score_min_networks_aligned: 0
+        high_score_override_thresh: 0.0
+        mask_post_window_sec: 0.03
+        mask_pre_window_sec: 0.03
+        max_flagged_fraction: 0.1
+        min_alignment_frac: 0.5
+        min_det_used: 32
+        min_good_frac: 0.8
+        min_impulsive_det_frac: 0.05
+        min_networks_aligned: 3
+      lower_tod_inv_var_factor: 0.0
+      network_step_mask:
+        cluster_tol_sec: 0.25
+        enabled: false
+        mask_half_width_sec: 0.5
+        max_flagged_fraction: 0.3
+        min_alignment_frac: 0.5
+        min_det_used: 32
+        min_good_frac: 0.8
+        min_step_det_frac: 0.05
+        step_score_thresh: 2.5
+        step_window_sec: 0.5
+      upper_tod_inv_var_factor: 10
+    flux_calibration:
+      enabled: true
+    kernel:
+      enabled: true
+      filepath: null
+      fwhm_arcsec: 0
+      image_ext_name: signal
+      type: gaussian
+    output:
+      enabled: true
+      indices: all
+      mode: mini
+      outer_context_samples: 0
+  type: xs
+wiener_filter:
+  denom_check_iters: 0
+  denom_rel_tol: 0.0001
+  kernel_template_tail_mode: zero
+  lowpass_only: false
+  max_denom_iters: 0
+  max_loops: 500
+  tail_frac_tol: 0.05
+  template_fwhm_arcsec:
+    a1100: 2.5
+    a1400: 3.5
+    a2000: 5.0
+  template_type: gaussian

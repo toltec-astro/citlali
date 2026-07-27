@@ -232,3 +232,47 @@ design, not data-rejection decisions. It writes all 108 observation ranks,
 
 The governing extension plan is
 `doc/FRUIT_LOOP_POPULATION_EXTENSION_PLAN_2026-07-26.md`.
+
+## Population stage setup and analysis
+
+Generate a stage-specific one-observation-per-task package with
+`prepare_population_stage.py`. Stage B can be pinned to an already frozen
+Stage A binary:
+
+```bash
+$HOME/tolteca/bin/python tools/fruit_loops/prepare_population_stage.py \
+  --input /path/to/108-observation-low-level.yaml \
+  --run-matrix /path/to/population_run_matrix.csv \
+  --output-dir /path/to/stage_b_bundle \
+  --runtime-output-root /unity/project/diagnostics/stage_b \
+  --fitreport-dir /unity/project/data \
+  --phase population_after_sentinel_gate \
+  --stage-name stage_b \
+  --iterations 10 \
+  --binary-source /unity/project/stage_a/setup/bin/citlali-SHA256 \
+  --expected-binary-sha256 SHA256 \
+  --min-free-kib 367001600
+```
+
+The generated task wrapper sets a conventional umask and, after a successful
+reduction, restores the setup config's mode, verifies owner readability, and
+checks every copied config against the setup checksum.
+
+Analyze a downloaded 16-observation sentinel stage with:
+
+```bash
+MPLCONFIGDIR=/tmp/citlali-fruitloop-mpl \
+  $HOME/tolteca/bin/python \
+  tools/fruit_loops/analyze_population_stage.py \
+  --stage-root /path/to/downloaded/stage_a \
+  --run-matrix /path/to/population_run_matrix.csv \
+  --output /path/to/stage_a_analysis
+```
+
+The analyzer audits products, logs, config content and modes, terminal
+provenance files, source association, and FWHM-bound censoring. It writes
+iteration and transition tables, separate diagnostic and combined convergence
+yield at 1%, 2%, 5%, and 10%, per-observation plots, a machine-readable gate,
+and a checksummed manifest. Individual diagnostics retain their own
+eligibility rules so a censored PSF fit does not invalidate an otherwise
+source-associated centroid trajectory.

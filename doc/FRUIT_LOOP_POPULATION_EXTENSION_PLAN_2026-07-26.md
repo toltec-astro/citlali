@@ -2,8 +2,8 @@
 
 Date: 2026-07-26
 
-Status: independent quality baseline complete; 16-observation Unity Stage A
-launch bundle prepared but not uploaded or submitted
+Status: Stage A complete and gate passed; 92-observation Stage B Unity bundle
+prepared but not uploaded or submitted
 
 ## Immediate finding
 
@@ -207,17 +207,33 @@ insufficient.
 
 ## Unity handoff
 
-The owner-run Stage A bundle is now prepared at
-`validation/fruit_loop_population_stage_a_2026-07-26/`. The exact upload,
-immutable-binary snapshot, preflight, Slurm-array launch, monitoring, download,
-and cleanup commands are recorded in
-`handoff/FRUIT_LOOP_POPULATION_STAGE_A_UNITY_HANDOFF_2026-07-26.md`.
+Stage A completed all 16 jobs with the frozen executable SHA256
+`0f7685ad2b89cc2fc2cbe330c9e5ed75fc8972dc1bf60ab37e3a4b9209965330`.
+All 480 iteration metrics are finite, all 432 transitions are measurable or
+explicitly classified, every stratum retains at least two source-associated
+observations, and the predeclared Stage B gate passes. The evidence is in
+`validation/fruit_loop_population_stage_a_analysis_2026-07-26/`.
 
-The bundle implements the following launch contract:
+The Stage A result does not approve a stopping tolerance. Only 7 of 48 array
+trajectories pass the strict combined 1% endpoint window; 40 of 48 pass at
+10%. One stress-observation a2000 fit follows a different source and eight
+array trajectories have FWHM fits censored at the pointing fitter's upper
+bound. These are retained as population failures rather than interpreted as
+convergence.
+
+The owner-run Stage B bundle is prepared at
+`validation/fruit_loop_population_stage_b_2026-07-26/`. It contains the
+remaining 92 observations, requires the exact Stage A binary SHA256, preserves
+the unchanged ten-iteration policy, and adds an owner-read/checksum audit for
+every copied config. Upload, preflight, Slurm launch, monitoring, and download
+commands are recorded in
+`handoff/FRUIT_LOOP_POPULATION_STAGE_B_UNITY_HANDOFF_2026-07-26.md`.
+
+The two bundles jointly implement the following launch contract:
 
 1. freeze one current Citlali executable and record version/SHA256;
-2. generate 16 single-observation configs from the frozen RC1 input entries
-   and fruit-loop policy;
+2. generate one single-observation config for each of all 108 frozen RC1 input
+   entries and fruit-loop policy;
 3. set `max_iters: 10`, `save_all_iters: true`, diagnostics and kernel output
    on, no restart path, and injection disabled;
 4. give every observation an independent output workspace;

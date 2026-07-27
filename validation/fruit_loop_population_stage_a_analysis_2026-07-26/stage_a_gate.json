@@ -1,0 +1,21 @@
+{
+  "schema_version": "citlali-fruit-loop-population-stage-a-gate-v1",
+  "checks": {
+    "frozen_binary_checksum_pass": true,
+    "sixteen_jobs_complete": true,
+    "zero_error_level_messages": true,
+    "all_480_iteration_metrics_finite_or_classified": true,
+    "all_432_transitions_finite_or_classified": true,
+    "at_least_two_interpretable_observations_per_stratum": true,
+    "all_four_tolerances_assessed": true,
+    "no_quality_dependent_setup_or_measurement_failure": true
+  },
+  "stage_b_gate_pass": true,
+  "source_associated_observations_by_stratum": {
+    "normal": 8,
+    "marginal": 5,
+    "stress": 2
+  },
+  "interpretation": "Stage B eligibility is structural and interpretability-based. It does not assert that every sentinel converged by iteration 9 or approve a production stopping tolerance.",
+  "operational_exception": "2 config copies arrived with modes differing from their setup configs. In this run the two affected redu01 copies arrived mode 0200 on Unity; the owner restored owner-read permission, and both local copies are byte-identical to the checksummed setup configs. This was not quality-dependent and did not affect scientific products."
+}

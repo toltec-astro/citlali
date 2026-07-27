@@ -8,6 +8,7 @@ import copy
 import csv
 import hashlib
 from pathlib import Path
+import re
 
 import yaml
 
@@ -100,144 +101,180 @@ def prepare_observation_config(
     return config
 
 
-def shell_scripts() -> dict[str, str]:
+def shell_scripts(
+    *,
+    stage_name: str,
+    job_count: int,
+    min_free_kib: int,
+    binary_source: str,
+    expected_binary_sha256: str | None,
+) -> dict[str, str]:
+    if not re.fullmatch(r"stage_[a-z0-9]+", stage_name):
+        raise ValueError(f"invalid stage name {stage_name!r}")
+    stage_suffix = stage_name.removeprefix("stage_")
+    slurm_name = f"flpop-{stage_suffix}"
+    jobs_name = f"{stage_name}_jobs.tsv"
+    expected_sha = expected_binary_sha256 or ""
     return {
-        "snapshot_binary.sh": """#!/bin/bash
+        "snapshot_binary.sh": f"""#!/bin/bash
 set -euo pipefail
 
-PROJECT_ROOT="${PROJECT_ROOT:-/work/toltec/commissioning2025-test/2026-ENG-hero-multiyear-pointings-v1}"
-OUTPUT_ROOT="${OUTPUT_ROOT:-${PROJECT_ROOT}/diagnostics/fruitloop_population_v1/stage_a}"
-SETUP_DIR="${SETUP_DIR:-${OUTPUT_ROOT}/setup}"
-CITLALI_SOURCE="${CITLALI_SOURCE:-/work/toltec/citlali_dev/citlali_refactor/build/bin/citlali}"
-BIN_DIR="${SETUP_DIR}/bin"
+PROJECT_ROOT="${{PROJECT_ROOT:-/work/toltec/commissioning2025-test/2026-ENG-hero-multiyear-pointings-v1}}"
+OUTPUT_ROOT="${{OUTPUT_ROOT:-${{PROJECT_ROOT}}/diagnostics/fruitloop_population_v1/{stage_name}}}"
+SETUP_DIR="${{SETUP_DIR:-${{OUTPUT_ROOT}}/setup}}"
+CITLALI_SOURCE="${{CITLALI_SOURCE:-{binary_source}}}"
+EXPECTED_CITLALI_SHA256="${{EXPECTED_CITLALI_SHA256:-{expected_sha}}}"
+BIN_DIR="${{SETUP_DIR}}/bin"
 
-test -x "${CITLALI_SOURCE}"
-mkdir -p "${BIN_DIR}"
-source_sha="$(sha256sum "${CITLALI_SOURCE}" | awk '{print $1}')"
-snapshot="${BIN_DIR}/citlali-${source_sha}"
-if test ! -e "${snapshot}"; then
-    install -m 0755 "${CITLALI_SOURCE}" "${snapshot}"
+test -x "${{CITLALI_SOURCE}}"
+mkdir -p "${{BIN_DIR}}"
+source_sha="$(sha256sum "${{CITLALI_SOURCE}}" | awk '{{print $1}}')"
+if test -n "${{EXPECTED_CITLALI_SHA256}}" &&
+   test "${{source_sha}}" != "${{EXPECTED_CITLALI_SHA256}}"; then
+    echo "Citlali SHA256 mismatch: expected ${{EXPECTED_CITLALI_SHA256}}, got ${{source_sha}}" >&2
+    exit 1
 fi
-echo "${source_sha}  ${snapshot}" | sha256sum -c -
-"${snapshot}" --version >"${BIN_DIR}/citlali-${source_sha}.version.txt" 2>&1 || true
+snapshot="${{BIN_DIR}}/citlali-${{source_sha}}"
+if test ! -e "${{snapshot}}"; then
+    install -m 0755 "${{CITLALI_SOURCE}}" "${{snapshot}}"
+fi
+echo "${{source_sha}}  ${{snapshot}}" | sha256sum -c -
+"${{snapshot}}" --version >"${{BIN_DIR}}/citlali-${{source_sha}}.version.txt" 2>&1 || true
 printf 'CITLALI_SNAPSHOT=%s\\nCITLALI_SHA256=%s\\n' \
-    "${snapshot}" "${source_sha}" >"${SETUP_DIR}/binary.env"
-echo "Frozen Citlali ${source_sha} at ${snapshot}"
+    "${{snapshot}}" "${{source_sha}}" >"${{SETUP_DIR}}/binary.env"
+echo "Frozen Citlali ${{source_sha}} at ${{snapshot}}"
 """,
-        "preflight_stage_a.sh": """#!/bin/bash
+        f"preflight_{stage_name}.sh": f"""#!/bin/bash
 set -euo pipefail
 
-PROJECT_ROOT="${PROJECT_ROOT:-/work/toltec/commissioning2025-test/2026-ENG-hero-multiyear-pointings-v1}"
-OUTPUT_ROOT="${OUTPUT_ROOT:-${PROJECT_ROOT}/diagnostics/fruitloop_population_v1/stage_a}"
-SETUP_DIR="${SETUP_DIR:-${OUTPUT_ROOT}/setup}"
-JOBS="${SETUP_DIR}/stage_a_jobs.tsv"
-MIN_FREE_KIB="${MIN_FREE_KIB:-31457280}"
+PROJECT_ROOT="${{PROJECT_ROOT:-/work/toltec/commissioning2025-test/2026-ENG-hero-multiyear-pointings-v1}}"
+OUTPUT_ROOT="${{OUTPUT_ROOT:-${{PROJECT_ROOT}}/diagnostics/fruitloop_population_v1/{stage_name}}}"
+SETUP_DIR="${{SETUP_DIR:-${{OUTPUT_ROOT}}/setup}}"
+JOBS="${{SETUP_DIR}}/{jobs_name}"
+MIN_FREE_KIB="${{MIN_FREE_KIB:-{min_free_kib}}}"
 
-test -f "${SETUP_DIR}/binary.env"
-source "${SETUP_DIR}/binary.env"
-test -x "${CITLALI_SNAPSHOT}"
-echo "${CITLALI_SHA256}  ${CITLALI_SNAPSHOT}" | sha256sum -c -
-(cd "${SETUP_DIR}" && sha256sum -c config_checksums.sha256)
-test -d "${PROJECT_ROOT}/apts/hero_rc1"
-test -d "${PROJECT_ROOT}/data"
-free_kib="$(df -Pk "${OUTPUT_ROOT}" | awk 'NR == 2 {print $4}')"
-if test -z "${free_kib}" || test "${free_kib}" -lt "${MIN_FREE_KIB}"; then
-    echo "Refusing launch with less than ${MIN_FREE_KIB} KiB free at ${OUTPUT_ROOT}" >&2
+test -f "${{SETUP_DIR}}/binary.env"
+source "${{SETUP_DIR}}/binary.env"
+test -x "${{CITLALI_SNAPSHOT}}"
+echo "${{CITLALI_SHA256}}  ${{CITLALI_SNAPSHOT}}" | sha256sum -c -
+if test -n "{expected_sha}"; then
+    test "${{CITLALI_SHA256}}" = "{expected_sha}"
+fi
+(cd "${{SETUP_DIR}}" && sha256sum -c config_checksums.sha256)
+test -d "${{PROJECT_ROOT}}/apts/hero_rc1"
+test -d "${{PROJECT_ROOT}}/data"
+free_kib="$(df -Pk "${{OUTPUT_ROOT}}" | awk 'NR == 2 {{print $4}}')"
+if test -z "${{free_kib}}" || test "${{free_kib}}" -lt "${{MIN_FREE_KIB}}"; then
+    echo "Refusing launch with less than ${{MIN_FREE_KIB}} KiB free at ${{OUTPUT_ROOT}}" >&2
     exit 1
 fi
 
 n_jobs=0
 while IFS=$'\\t' read -r task obsnum config output apt rank stratum source; do
-    test "${task}" = "$((n_jobs + 1))"
-    test -f "${SETUP_DIR}/${config}"
-    test -f "${apt}"
+    test "${{task}}" = "$((n_jobs + 1))"
+    test -f "${{SETUP_DIR}}/${{config}}"
+    test -r "${{SETUP_DIR}}/${{config}}"
+    test -f "${{apt}}"
     while read -r input_path; do
-        test -f "${input_path}"
-    done < <(awk '/^[[:space:]]*- filepath: / {print $3}' "${SETUP_DIR}/${config}")
-    if find "${output}" -mindepth 1 -print -quit 2>/dev/null | grep -q .; then
-        echo "Refusing nonempty output for obs ${obsnum}: ${output}" >&2
+        test -f "${{input_path}}"
+    done < <(awk '/^[[:space:]]*- filepath: / {{print $3}}' "${{SETUP_DIR}}/${{config}}")
+    if find "${{output}}" -mindepth 1 -print -quit 2>/dev/null | grep -q .; then
+        echo "Refusing nonempty output for obs ${{obsnum}}: ${{output}}" >&2
         exit 1
     fi
     n_jobs=$((n_jobs + 1))
-done < <(tail -n +2 "${JOBS}")
+done < <(tail -n +2 "${{JOBS}}")
 
-test "${n_jobs}" -eq 16
-mkdir -p "${OUTPUT_ROOT}/logs"
-echo "Stage A preflight passed for ${n_jobs} jobs; ${free_kib} KiB free."
+test "${{n_jobs}}" -eq {job_count}
+mkdir -p "${{OUTPUT_ROOT}}/logs"
+echo "{stage_name} preflight passed for ${{n_jobs}} jobs; ${{free_kib}} KiB free."
 """,
-        "run_stage_a_task.sh": """#!/bin/bash
+        f"run_{stage_name}_task.sh": f"""#!/bin/bash
 set -euo pipefail
+umask 0022
 
-PROJECT_ROOT="${PROJECT_ROOT:-/work/toltec/commissioning2025-test/2026-ENG-hero-multiyear-pointings-v1}"
-OUTPUT_ROOT="${OUTPUT_ROOT:-${PROJECT_ROOT}/diagnostics/fruitloop_population_v1/stage_a}"
-SETUP_DIR="${SETUP_DIR:-${OUTPUT_ROOT}/setup}"
-JOBS="${SETUP_DIR}/stage_a_jobs.tsv"
-task_id="${SLURM_ARRAY_TASK_ID:?SLURM_ARRAY_TASK_ID is required}"
+PROJECT_ROOT="${{PROJECT_ROOT:-/work/toltec/commissioning2025-test/2026-ENG-hero-multiyear-pointings-v1}}"
+OUTPUT_ROOT="${{OUTPUT_ROOT:-${{PROJECT_ROOT}}/diagnostics/fruitloop_population_v1/{stage_name}}}"
+SETUP_DIR="${{SETUP_DIR:-${{OUTPUT_ROOT}}/setup}}"
+JOBS="${{SETUP_DIR}}/{jobs_name}"
+task_id="${{SLURM_ARRAY_TASK_ID:?SLURM_ARRAY_TASK_ID is required}}"
 
-source "${SETUP_DIR}/binary.env"
-line="$(sed -n "$((task_id + 1))p" "${JOBS}")"
-test -n "${line}"
-IFS=$'\\t' read -r task obsnum config output apt rank stratum source <<<"${line}"
-test "${task}" = "${task_id}"
-test -f "${SETUP_DIR}/${config}"
-test -f "${apt}"
-echo "${CITLALI_SHA256}  ${CITLALI_SNAPSHOT}" | sha256sum -c -
-if find "${output}" -mindepth 1 -print -quit 2>/dev/null | grep -q .; then
-    echo "Refusing nonempty output for obs ${obsnum}: ${output}" >&2
+source "${{SETUP_DIR}}/binary.env"
+line="$(sed -n "$((task_id + 1))p" "${{JOBS}}")"
+test -n "${{line}}"
+IFS=$'\\t' read -r task obsnum config output apt rank stratum source <<<"${{line}}"
+test "${{task}}" = "${{task_id}}"
+test -f "${{SETUP_DIR}}/${{config}}"
+test -f "${{apt}}"
+echo "${{CITLALI_SHA256}}  ${{CITLALI_SNAPSHOT}}" | sha256sum -c -
+if test -n "{expected_sha}"; then
+    test "${{CITLALI_SHA256}}" = "{expected_sha}"
+fi
+if find "${{output}}" -mindepth 1 -print -quit 2>/dev/null | grep -q .; then
+    echo "Refusing nonempty output for obs ${{obsnum}}: ${{output}}" >&2
     exit 1
 fi
-echo "Starting obs=${obsnum} rank=${rank} stratum=${stratum} binary=${CITLALI_SHA256}"
-exec "${CITLALI_SNAPSHOT}" -l info "${SETUP_DIR}/${config}"
+echo "Starting obs=${{obsnum}} rank=${{rank}} stratum=${{stratum}} binary=${{CITLALI_SHA256}}"
+"${{CITLALI_SNAPSHOT}}" -l info "${{SETUP_DIR}}/${{config}}"
+
+for copied_config in "${{output}}"/redu??/"${{config}}"; do
+    test -f "${{copied_config}}"
+    chmod --reference="${{SETUP_DIR}}/${{config}}" "${{copied_config}}"
+    test -r "${{copied_config}}"
+    expected="$(awk -v file="${{config}}" '$2 == file {{print $1}}' "${{SETUP_DIR}}/config_checksums.sha256")"
+    test -n "${{expected}}"
+    echo "${{expected}}  ${{copied_config}}" | sha256sum -c -
+done
 """,
-        "submit_stage_a.sh": """#!/bin/bash
+        f"submit_{stage_name}.sh": f"""#!/bin/bash
 set -euo pipefail
 
-PROJECT_ROOT="${PROJECT_ROOT:-/work/toltec/commissioning2025-test/2026-ENG-hero-multiyear-pointings-v1}"
-OUTPUT_ROOT="${OUTPUT_ROOT:-${PROJECT_ROOT}/diagnostics/fruitloop_population_v1/stage_a}"
-SETUP_DIR="${SETUP_DIR:-${OUTPUT_ROOT}/setup}"
-ARRAY_CONCURRENCY="${ARRAY_CONCURRENCY:-4}"
+PROJECT_ROOT="${{PROJECT_ROOT:-/work/toltec/commissioning2025-test/2026-ENG-hero-multiyear-pointings-v1}}"
+OUTPUT_ROOT="${{OUTPUT_ROOT:-${{PROJECT_ROOT}}/diagnostics/fruitloop_population_v1/{stage_name}}}"
+SETUP_DIR="${{SETUP_DIR:-${{OUTPUT_ROOT}}/setup}}"
+ARRAY_CONCURRENCY="${{ARRAY_CONCURRENCY:-4}}"
 
-"${SETUP_DIR}/preflight_stage_a.sh"
+"${{SETUP_DIR}}/preflight_{stage_name}.sh"
 sbatch \
-    --job-name=flpop-a \
-    --array="1-16%${ARRAY_CONCURRENCY}" \
-    --output="${OUTPUT_ROOT}/logs/flpop-a-%A_%a.out" \
+    --job-name={slurm_name} \
+    --array="1-{job_count}%${{ARRAY_CONCURRENCY}}" \
+    --output="${{OUTPUT_ROOT}}/logs/{slurm_name}-%A_%a.out" \
     --time=24:00:00 \
     --mem=64G \
     --cpus-per-task=6 \
     --partition=toltec-cpu \
-    --chdir="${PROJECT_ROOT}" \
-    "${SETUP_DIR}/run_stage_a_task.sh"
+    --chdir="${{PROJECT_ROOT}}" \
+    "${{SETUP_DIR}}/run_{stage_name}_task.sh"
 """,
-        "status_stage_a.sh": """#!/bin/bash
+        f"status_{stage_name}.sh": f"""#!/bin/bash
 set -euo pipefail
 
-PROJECT_ROOT="${PROJECT_ROOT:-/work/toltec/commissioning2025-test/2026-ENG-hero-multiyear-pointings-v1}"
-OUTPUT_ROOT="${OUTPUT_ROOT:-${PROJECT_ROOT}/diagnostics/fruitloop_population_v1/stage_a}"
-SETUP_DIR="${SETUP_DIR:-${OUTPUT_ROOT}/setup}"
-JOBS="${SETUP_DIR}/stage_a_jobs.tsv"
+PROJECT_ROOT="${{PROJECT_ROOT:-/work/toltec/commissioning2025-test/2026-ENG-hero-multiyear-pointings-v1}}"
+OUTPUT_ROOT="${{OUTPUT_ROOT:-${{PROJECT_ROOT}}/diagnostics/fruitloop_population_v1/{stage_name}}}"
+SETUP_DIR="${{SETUP_DIR:-${{OUTPUT_ROOT}}/setup}}"
+JOBS="${{SETUP_DIR}}/{jobs_name}"
 
-squeue -u "${USER}" -n flpop-a || true
+squeue -u "${{USER}}" -n {slurm_name} || true
 printf 'obsnum\\trank\\tstratum\\titerations\\tstate\\n'
 while IFS=$'\\t' read -r task obsnum config output apt rank stratum source; do
     iterations=0
-    if test -d "${output}"; then
-        iterations="$(find "${output}" -mindepth 1 -maxdepth 1 -type d -name 'redu??' | wc -l | tr -d ' ')"
+    if test -d "${{output}}"; then
+        iterations="$(find "${{output}}" -mindepth 1 -maxdepth 1 -type d -name 'redu??' | wc -l | tr -d ' ')"
     fi
     state=not_started
-    if test "${iterations}" -eq 10; then
+    if test "${{iterations}}" -eq 10; then
         state=products_present
-    elif test "${iterations}" -gt 0; then
+    elif test "${{iterations}}" -gt 0; then
         state=partial
     fi
     printf '%s\\t%s\\t%s\\t%s\\t%s\\n' \
-        "${obsnum}" "${rank}" "${stratum}" "${iterations}" "${state}"
-done < <(tail -n +2 "${JOBS}")
+        "${{obsnum}}" "${{rank}}" "${{stratum}}" "${{iterations}}" "${{state}}"
+done < <(tail -n +2 "${{JOBS}}")
 
 echo
 echo "Potential error-level log lines:"
 grep -EHi '(^|[^[:alpha:]])(error|fatal)([^[:alpha:]]|$)' \
-    "${OUTPUT_ROOT}"/logs/flpop-a-*.out 2>/dev/null || true
+    "${{OUTPUT_ROOT}}"/logs/{slurm_name}-*.out 2>/dev/null || true
 """,
     }
 
@@ -251,6 +288,12 @@ def write_stage_package(
     fitreport_dir: str,
     phase: str,
     iterations: int,
+    stage_name: str = "stage_a",
+    min_free_kib: int = 31_457_280,
+    binary_source: str = (
+        "/work/toltec/citlali_dev/citlali_refactor/build/bin/citlali"
+    ),
+    expected_binary_sha256: str | None = None,
 ) -> list[dict]:
     source = yaml.safe_load(source_path.read_text(encoding="utf-8"))
     if not isinstance(source, dict):
@@ -318,7 +361,8 @@ def write_stage_package(
 
     fields = ("task", "obsnum", "config", "output", "apt", "rank",
               "stratum", "source")
-    with (output_dir / "stage_a_jobs.tsv").open(
+    jobs_name = f"{stage_name}_jobs.tsv"
+    with (output_dir / jobs_name).open(
         "w", newline="", encoding="utf-8"
     ) as stream:
         writer = csv.DictWriter(
@@ -338,6 +382,7 @@ def write_stage_package(
         "run_matrix": str(run_matrix_path.resolve()),
         "run_matrix_sha256": sha256(run_matrix_path),
         "phase": phase,
+        "stage_name": stage_name,
         "observation_count": len(observations),
         "iterations": iterations,
         "fitreport_dir": fitreport_dir,
@@ -350,13 +395,20 @@ def write_stage_package(
             "restart_path": None,
             "injected_source_test_enabled": False,
             "immutable_binary_snapshot_required": True,
+            "required_binary_sha256": expected_binary_sha256,
         },
         "observations": observations,
     }
     (output_dir / "manifest.yaml").write_text(
         yaml.safe_dump(manifest, sort_keys=False), encoding="utf-8"
     )
-    for name, content in shell_scripts().items():
+    for name, content in shell_scripts(
+        stage_name=stage_name,
+        job_count=len(observations),
+        min_free_kib=min_free_kib,
+        binary_source=binary_source,
+        expected_binary_sha256=expected_binary_sha256,
+    ).items():
         path = output_dir / name
         path.write_text(content, encoding="utf-8")
         path.chmod(0o755)
@@ -372,6 +424,15 @@ def main() -> int:
     parser.add_argument("--fitreport-dir", required=True)
     parser.add_argument("--phase", default="sentinel_extension_first")
     parser.add_argument("--iterations", type=int, default=10)
+    parser.add_argument("--stage-name", default="stage_a")
+    parser.add_argument("--min-free-kib", type=int, default=31_457_280)
+    parser.add_argument(
+        "--binary-source",
+        default=(
+            "/work/toltec/citlali_dev/citlali_refactor/build/bin/citlali"
+        ),
+    )
+    parser.add_argument("--expected-binary-sha256")
     args = parser.parse_args()
     observations = write_stage_package(
         source_path=args.input,
@@ -381,6 +442,10 @@ def main() -> int:
         fitreport_dir=args.fitreport_dir,
         phase=args.phase,
         iterations=args.iterations,
+        stage_name=args.stage_name,
+        min_free_kib=args.min_free_kib,
+        binary_source=args.binary_source,
+        expected_binary_sha256=args.expected_binary_sha256,
     )
     print(
         f"wrote {len(observations)} single-observation jobs "
