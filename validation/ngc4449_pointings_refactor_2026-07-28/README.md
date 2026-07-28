@@ -53,7 +53,7 @@ Set the project path and verify the authoritative plan:
 PROJECT_ROOT="$HOME/c2025t/2025-C1-COM-01"
 test -f "$PROJECT_ROOT/project.yaml"
 cd "$PROJECT_ROOT"
-"$HOME/tolteca/bin/python" -c \
+python -c \
   "from importlib.metadata import version; print(version('tolproj'))"
 tolproj config preflight
 ```
@@ -96,10 +96,10 @@ tolproj setup-pointing-reductions "$PROJECT_ROOT" \
 Copy `configure_generated_pointing.py` from this bundle to Unity, then run:
 
 ```bash
-"$HOME/tolteca/bin/python" ./configure_generated_pointing.py \
+python ./configure_generated_pointing.py \
   "$PROJECT_ROOT/pointings-refactor"
 
-"$HOME/tolteca/bin/python" ./configure_generated_pointing.py \
+python ./configure_generated_pointing.py \
   "$PROJECT_ROOT/pointings-refactor" --write
 ```
 
