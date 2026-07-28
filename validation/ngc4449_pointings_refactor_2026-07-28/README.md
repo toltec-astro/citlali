@@ -72,27 +72,20 @@ do
 done
 ```
 
-Preserve the previous Citlali reduction by moving the complete old pointing
-workspace out of TolProj's canonical path:
+Keep the previous Citlali reduction in the canonical `pointings/` directory
+and require a fresh isolated refactor workspace:
 
 ```bash
-OLD_POINTINGS="$PROJECT_ROOT/pointings"
-POINTINGS_ARCHIVE="$PROJECT_ROOT/pointings_legacy_citlali_20260728"
-
-test -d "$OLD_POINTINGS"
-test ! -e "$POINTINGS_ARCHIVE"
-mv -- "$OLD_POINTINGS" "$POINTINGS_ARCHIVE"
+test -d "$PROJECT_ROOT/pointings"
+test ! -e "$PROJECT_ROOT/pointings-refactor"
 ```
-
-This is a same-filesystem rename, not a deletion. Restore it with the inverse
-move if setup is abandoned before the new canonical directory is used.
 
 Generate a fresh refactor pointing workspace:
 
 ```bash
 tolproj setup-pointing-reductions "$PROJECT_ROOT" \
   --source NGC4449 \
-  --pointings-dir pointings \
+  --pointings-dir pointings-refactor \
   --apt-dir apts/hero \
   --refactor \
   --time 48:00:00 \
@@ -104,10 +97,10 @@ Copy `configure_generated_pointing.py` from this bundle to Unity, then run:
 
 ```bash
 "$HOME/tolteca/bin/python" ./configure_generated_pointing.py \
-  "$PROJECT_ROOT/pointings"
+  "$PROJECT_ROOT/pointings-refactor"
 
 "$HOME/tolteca/bin/python" ./configure_generated_pointing.py \
-  "$PROJECT_ROOT/pointings" --write
+  "$PROJECT_ROOT/pointings-refactor" --write
 ```
 
 The first invocation is a dry run. Both invocations fail unless the installed
@@ -117,27 +110,28 @@ and every observation uses its explicit `<project>/apts/hero` APT.
 Validate the generated reduction and inspect the final operator-facing values:
 
 ```bash
-tolproj validate-reduction "$PROJECT_ROOT/pointings"
+tolproj validate-reduction "$PROJECT_ROOT/pointings-refactor"
 
 grep -n -E \
   'path:|fruit_loops:|enabled:|max_iters:|save_all_iters:|output:' \
-  "$PROJECT_ROOT/pointings/71_pointing_runtime.yaml" \
-  "$PROJECT_ROOT/pointings/72_pointing_observation.yaml" \
-  "$PROJECT_ROOT/pointings/81_pointing_defaults.yaml" \
-  "$PROJECT_ROOT/pointings/82_pointing_products.yaml"
+  "$PROJECT_ROOT/pointings-refactor/71_pointing_runtime.yaml" \
+  "$PROJECT_ROOT/pointings-refactor/72_pointing_observation.yaml" \
+  "$PROJECT_ROOT/pointings-refactor/81_pointing_defaults.yaml" \
+  "$PROJECT_ROOT/pointings-refactor/82_pointing_products.yaml"
 ```
 
 Submit through TolProj so the selected Citlali executable is frozen while the
 job is queued:
 
 ```bash
-tolproj submit-reduction "$PROJECT_ROOT/pointings"
+tolproj submit-reduction "$PROJECT_ROOT/pointings-refactor"
 ```
 
 Do not rerun the NGC4449 science reduction until the new pointing products
-have passed QA and `tolproj calibrate-pointing-flxscale` has regenerated the
-flux-calibrated APTs from the new canonical `pointings/reduced/redu00`
-products.
+have passed QA. The current `tolproj calibrate-pointing-flxscale` command reads
+only the canonical `pointings/reduced/...` tree; it cannot yet select
+`pointings-refactor`. Handle that downstream association explicitly rather
+than moving or replacing the original pointing workspace during this run.
 
 ## Local upload command
 
