@@ -53,7 +53,8 @@ Set the project path and verify the authoritative plan:
 PROJECT_ROOT="$HOME/c2025t/2025-C1-COM-01"
 test -f "$PROJECT_ROOT/project.yaml"
 cd "$PROJECT_ROOT"
-tolproj --version
+"$HOME/tolteca/bin/python" -c \
+  "from importlib.metadata import version; print(version('tolproj'))"
 tolproj config preflight
 ```
 
