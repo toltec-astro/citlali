@@ -171,7 +171,7 @@ def _verify_kit(path: Path) -> None:
         "schema_version": "tolproj-installed-citlali-refactor-kit-v2",
         "kit_version": "phase4.1-v2.1",
         "bundle": "phase4_1_v2_1",
-        "mode": "pointing",
+        "mode": "point",
         "observation_filename": "72_pointing_observation.yaml",
     }
     mismatches = {
