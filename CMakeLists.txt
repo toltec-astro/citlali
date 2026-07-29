@@ -10,6 +10,9 @@ project(
 
 include(TulaProject)
 tula_resolve_features()
+if(NOT TARGET OpenMP::OpenMP_CXX)
+    message(FATAL_ERROR "Citlali requires the C++ OpenMP runtime")
+endif()
 find_package(kidscpp CONFIG REQUIRED)
 tula_add_config_header(
     TARGET citlali_config
@@ -46,6 +49,9 @@ target_link_libraries(
     citlali
     PUBLIC
         kids::kids
+        # Keep Conan-owned headers ahead of broad system include roots (notably
+        # Homebrew's /opt/homebrew/include supplied by NetCDF).
+        tula::ceres
         tula::logging
         tula::yaml_cpp
         tula::csv_parser
@@ -59,7 +65,6 @@ target_link_libraries(
         tula::boost
         tula::fftw
         tula::ccfits
-        tula::ceres
         citlali::config
 )
 add_library(citlali::citlali ALIAS citlali)

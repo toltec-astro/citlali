@@ -1,6 +1,8 @@
 #pragma once
 
+#include <functional>
 #include <mutex>
+#include <utility>
 
 #include <citlali/core/engine/engine.h>
 
@@ -13,6 +15,10 @@ using timestream::TCDataKind;
 
 class Lali: public Engine {
 public:
+    using run_input_t = TCData<TCDataKind::RTC, Eigen::MatrixXd>;
+    using run_transform_t = std::function<void(run_input_t &)>;
+    using run_stage_t = grppi::farm_t<run_transform_t>;
+
     // initial setup for each obs
     void setup();
 
@@ -21,11 +27,12 @@ public:
     void pipeline(KidsProc &, RawObs &);
 
     // run the reduction for the obs
-    auto run();
+    run_stage_t run();
 
     // output files
     template <mapmaking::MapType map_type>
     void output();
+
 };
 
 void Lali::setup() {
@@ -145,10 +152,8 @@ void Lali::pipeline(KidsProc &kidsproc, RawObs &rawobs) {
     }
 }
 
-auto Lali::run() {
-    using input_t = TCData<TCDataKind::RTC, Eigen::MatrixXd>;
-
-    auto farm = grppi::farm(n_threads,[&](input_t &rtcdata) {
+Lali::run_stage_t Lali::run() {
+    run_transform_t transform = [&](run_input_t &rtcdata) {
         // starting index for scan
         Eigen::Index si = rtcdata.scan_indices.data(2);
         // current length of outer scans
@@ -331,9 +336,9 @@ auto Lali::run() {
         // increment number of completed scans
         n_scans_done++;
         logger->info("done with scan {}. {}/{} scans completed", ptcdata.index.data + 1, n_scans_done, telescope.scan_indices.cols());
-    });
+    };
 
-    return farm;
+    return grppi::farm(n_threads, std::move(transform));
 }
 
 template <mapmaking::MapType map_type>

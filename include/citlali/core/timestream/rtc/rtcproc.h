@@ -120,8 +120,8 @@ void RTCProc::get_config(config_t &config, std::vector<std::vector<std::string>>
             auto img_ext_name_node = config.get_node(std::tuple{"timestream","raw_time_chunk","kernel", "image_ext_names"});
             // get images
             for (Eigen::Index i=0; i<img_ext_name_node.size(); ++i) {
-                std::string img_ext_name = config.template get_str(std::tuple{"timestream","raw_time_chunk","kernel", "image_ext_names",
-                                                                              i, std::to_string(i)});
+                std::string img_ext_name = config.get_str(std::tuple{"timestream","raw_time_chunk","kernel", "image_ext_names",
+                                                                     i, std::to_string(i)});
                 kernel.img_ext_names.push_back(img_ext_name);
             }
         }

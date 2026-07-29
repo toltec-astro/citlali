@@ -32,6 +32,7 @@ class CitlaliRecipe(ConanFile):
         "kidscpp/*:bitmask": "cpm",
         "kidscpp/*:meta_enum": "cpm",
         "kidscpp/*:perflibs": "system",
+        "kidscpp/*:perflibs_openmp": "required",
         "kidscpp/*:eigen": "conan",
         "kidscpp/*:grppi": "cpm",
         "tula/*:logging": "conan",
@@ -42,6 +43,7 @@ class CitlaliRecipe(ConanFile):
         "tula/*:bitmask": "cpm",
         "tula/*:meta_enum": "cpm",
         "tula/*:perflibs": "system",
+        "tula/*:perflibs_openmp": "required",
         "tula/*:eigen": "conan",
         "tula/*:grppi": "cpm",
     }
@@ -54,6 +56,7 @@ class CitlaliRecipe(ConanFile):
         "bitmask": "cpm",
         "meta_enum": "cpm",
         "perflibs": "system",
+        "perflibs_openmp": "required",
         "eigen": "conan",
         "grppi": "cpm",
         "spectra": "conan",
@@ -61,9 +64,26 @@ class CitlaliRecipe(ConanFile):
         "fftw": "conan",
         "ccfits": "conan",
         "ceres": "conan",
-        "clipp": "conan",
+        "clipp": "cpm",
     }
-    tula_public_features = tuple(tula_default_options)
+    tula_public_features = (
+        "logging",
+        "yaml_cpp",
+        "csv_parser",
+        "netcdf_c",
+        "netcdf_cxx4",
+        "bitmask",
+        "meta_enum",
+        "perflibs",
+        "eigen",
+        "grppi",
+        "spectra",
+        "boost",
+        "fftw",
+        "ccfits",
+        "ceres",
+        "clipp",
+    )
     exports_sources = (
         "CMakeLists.txt",
         "data/*",

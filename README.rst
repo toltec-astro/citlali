@@ -64,6 +64,11 @@ For example, on a Debian-derived GCC 13 system:
 OpenMP and Threads are supplied by the GCC toolchain. NetCDF is deliberately
 resolved from the operating system in the current feature selection.
 
+On macOS, install ``llvm``, ``libomp``, ``netcdf``, and ``netcdf-cxx`` with
+Homebrew. Use the generated ``macos-brew-llvm-debug`` profile; the supported
+macOS gate intentionally uses Homebrew ``clang++`` with libc++, not native
+AppleClang.
+
 Released workflow
 ^^^^^^^^^^^^^^^^^
 
@@ -145,7 +150,8 @@ Where dependencies come from
        ``tula_cmake`` registry.
    * - System dependencies
      - Operating-system packages
-     - NetCDF C/C++, Threads, and the GCC OpenMP runtime.
+     - NetCDF C/C++, Threads, and the selected compiler's OpenMP runtime
+       (GNU on Linux or Homebrew ``libomp`` with Homebrew LLVM on macOS).
 
 There is no hidden sibling-source lookup during a package build. After each
 ``conan create``, downstream packages resolve Tula and kidscpp from
