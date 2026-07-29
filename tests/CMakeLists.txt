@@ -28,6 +28,7 @@ target_sources(citlali_test
         test_output_root_lease.cpp
         test_pointing_fit_table_metrics.cpp
         test_process_resource_snapshot.cpp
+        test_rawobs_adc_snap.cpp
         test_reduction_session.cpp
         test_session_failure_boundaries.cpp
         test_tod_output_selection_config.cpp

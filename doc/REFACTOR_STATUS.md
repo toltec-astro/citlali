@@ -388,6 +388,21 @@ tool tests pass. An NGC4449 full-Wiener Unity successor remains required
 before acceptance; all filtered `a1400` products from the lowpass-only
 NGC4449 series remain quarantined.
 
+The follow-up raw-readout investigation on 2026-07-29 established the
+producer-confirmed schema of `Header.Toltec.AdcSnapData`: shape `[2,4096]`,
+with index `0` representing the beginning of the raw data file, index `1` the
+end, and signed 12-bit ADC counts in `[-2048,2047]` stored in a NetCDF
+`short`. The current input reader now names that boundary ordering and count
+domain without changing numerical behavior. In the eight downloaded NGC4449
+pointings, nw9 reaches both rails at both file boundaries in every
+observation; nw3/nw4 have low headroom with sparse rail contact; and nw1,
+nw2, and nw8 exhibit late map pathology without ADC saturation. ADC
+utilization does not acquire the broader pathology's 152420 onset, so clipping
+is a real nw9 validity problem but not its common cause. Retained debt D17 now
+requires a cold-boundary saturation validator and explicit persisted
+severity, while leaving warning, network-exclusion, and reduction-failure
+thresholds unapproved pending representative validation.
+
 ## Active Phase
 
 **Phase 4.1 - TolTECA operator config structure** is complete as of 2026-07-23,

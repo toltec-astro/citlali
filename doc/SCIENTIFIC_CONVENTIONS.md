@@ -149,6 +149,16 @@ timing. Current housekeeping cadence can be approximately 60 seconds, so the
 published sample age is part of the scientific interpretation and must not be
 discarded by downstream QA.
 
+Raw TolTEC KIDs files carry the ADC snapshot variable
+`Header.Toltec.AdcSnapData` with shape `[2, 4096]`. The first axis is the
+producer-confirmed file-boundary axis: index `0` is the beginning of the data
+file and index `1` is the end. The second axis contains 4096 raw ADC samples.
+It is not an ADC-channel axis. Values are signed 12-bit ADC counts stored in an
+`int16`/NetCDF `short` container, with valid count domain `[-2048, 2047]`;
+no division by 16 is part of this input contract. The schema constants and
+boundary enum live in
+`include/citlali/core/pipeline/rawobs_adc_snap.h`.
+
 The fruit-loop restart checkpoint stores operational state, not QA history.
 Its sample masks are the canonical disjoint interval union keyed by
 observation, zero-based scan, application stage, and detector UID. Its detector
@@ -226,6 +236,7 @@ Units belong to values and products, not to variable names alone.
 | Coverage | seconds |
 | Coverage mask, standardized signal, and signal-to-noise | dimensionless |
 | TOD signal | the recorded `signal_unit`/`BUNIT` |
+| Raw ADC snapshots | signed 12-bit ADC counts, `[-2048, 2047]` |
 | PTC weights | inverse square of the recorded signal unit |
 | Flags, IDs, counts, categories | dimensionless or `N/A` metadata |
 | Frequencies | Hz |
@@ -434,6 +445,9 @@ The following are not silently resolved by this document:
   Beammap prior/flux, or source-protection inputs;
 - the enabled polarimetry and HWPR scientific contract;
 - the measured R-channel contract; and
+- the action policy for raw ADC saturation or low headroom (detection,
+  severity, persistence, network exclusion, and reduction failure), tracked as
+  retained debt D17; and
 - whether OOF should eventually become a distinct public execution type rather
   than a distinct intent routed through pointing execution.
 
