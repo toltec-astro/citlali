@@ -49,25 +49,25 @@ for a consuming environment.
 Prerequisites
 ^^^^^^^^^^^^^
 
-Install GCC 13, Git, CMake 3.25 or newer, Ninja, Python 3.11 or newer, the
-NetCDF C and C++ development packages, and `uv <https://docs.astral.sh/uv/>`_.
+Install GCC 13, Git, CMake 3.25 or newer, Ninja, Python 3.11 or newer, and
+`uv <https://docs.astral.sh/uv/>`_.
 For example, on a Debian-derived GCC 13 system:
 
 .. code-block:: console
 
    sudo apt-get update
    sudo apt-get install \
-       cmake g++-13 git libnetcdf-c++4-dev libnetcdf-dev ninja-build \
-       python3 python3-venv
+       cmake g++-13 git ninja-build python3 python3-venv
    curl -LsSf https://astral.sh/uv/install.sh | sh
 
-OpenMP and Threads are supplied by the GCC toolchain. NetCDF is deliberately
-resolved from the operating system in the current feature selection.
+OpenMP and Threads are supplied by the GCC toolchain. The release graph obtains
+NetCDF C and C++ from Conan; no system NetCDF development package is required
+for the default provider selection.
 
-On macOS, install ``llvm``, ``libomp``, ``netcdf``, and ``netcdf-cxx`` with
-Homebrew. Use the generated ``macos-brew-llvm-debug`` profile; the supported
-macOS gate intentionally uses Homebrew ``clang++`` with libc++, not native
-AppleClang.
+On macOS, install ``llvm@20`` and ``libomp`` with Homebrew. Use the generated
+``macos-brew-llvm-debug`` profile; it resolves the versioned keg, rejects a
+compiler that is not major 20, and intentionally uses Homebrew ``clang++`` with
+libc++, not native AppleClang.
 
 Released workflow
 ^^^^^^^^^^^^^^^^^
@@ -110,8 +110,9 @@ their local release branches:
    kidscpp     v3.x
    citlali     v4.x_conan2
 
-The workspace ``just citlali`` gate exports ``tula-cmake/3.1.0`` and creates
-Tula, kidscpp, then Citlali in one isolated Conan home. To exercise the
+The workspace ``just citlali`` gate exports ``tula-cmake/3.1.0``, runs
+``tula-cmake bootstrap`` to export the bundled ``netcdf-cxx4/4.3.1`` recipe,
+and creates Tula, kidscpp, then Citlali in one isolated Conan home. To exercise the
 release-facing launcher against the local CLI, set:
 
 .. code-block:: console
@@ -143,15 +144,18 @@ Where dependencies come from
    * - Conan dependencies
      - ConanCenter
      - Includes fmt, spdlog, yaml-cpp, Eigen, Spectra, Boost, FFTW,
-       CCfits, Ceres, and their transitive dependencies.
+       CCfits, Ceres, NetCDF C, and their transitive dependencies.
+   * - ``netcdf-cxx4/4.3.1``
+     - TolTEC Conan remote; bundled recipe before publication
+     - Packages the upstream C++ headers/library and propagates NetCDF C.
    * - CPM dependencies
      - Upstream source archives
      - Downloaded by CMake using versions and checksums from the
        ``tula_cmake`` registry.
    * - System dependencies
      - Operating-system packages
-     - NetCDF C/C++, Threads, and the selected compiler's OpenMP runtime
-       (GNU on Linux or Homebrew ``libomp`` with Homebrew LLVM on macOS).
+     - Threads and the selected compiler's OpenMP runtime (GNU on Linux or
+       Homebrew ``libomp`` with Homebrew LLVM 20 on macOS).
 
 There is no hidden sibling-source lookup during a package build. After each
 ``conan create``, downstream packages resolve Tula and kidscpp from
