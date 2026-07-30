@@ -82,16 +82,24 @@ physics as primary explanations. It also disfavors a simple whole-rack power
 disturbance: the same selected networks recur across two racks while adjacent
 networks remain quiet.
 
-The evidence is consistent with a shared trigger reaching multiple readout
-chains whose susceptibility is network dependent. The leading common paths to
-test are:
+The evidence is consistent with a shared physical or timing disturbance
+reaching multiple readout chains whose susceptibility is network dependent.
+The remaining common paths to test are:
 
-- observatory-derived 10 MHz/PPS distribution or a synchronized digital/control
-  action;
+- observatory-derived 10 MHz/PPS distribution;
 - the power supply common to the LNA-bias circuits, followed by
   network-dependent LNA/detector/readout response; and
-- a control-software state transition shared in time but expressed differently
-  by each tuned network.
+- a cryogenic operating-point change that alters network susceptibility.
+
+The project owner clarified on 2026-07-30 that LMTMC configures TolTEC through
+explicit observing-script actions and then commands only the telescope. TolTEC
+is passive during an ordinary observation; state changes require an explicit
+script command such as Tune or atypical manual TolTEC MC intervention.
+Therefore a synchronized mid-observation control action is not a viable
+ordinary-night explanation. The NetCDF headers are the available setup record.
+The instrument does not collect synchronized timestream telemetry for the
+suggested timing, LNA-bias, electronics-temperature, or FPGA/control-status
+signals.
 
 This survey establishes the raw-I/Q phenotype and its population structure; it
 does not yet distinguish those mechanisms.
@@ -116,15 +124,16 @@ scan-network CSV, event-cluster CSV, population CSV, and summary PNG.
 
 ## Next Discriminator
 
-Use the absolute event times in the scan-network CSV to request and join the
-smallest available observatory/readout telemetry set:
+The available cryostat thermometry is worth treating as an observation-scale
+susceptibility variable, not as an event trigger. Its approximately 60-second
+cadence cannot resolve the subsecond raw-I/Q events. A bounded next analysis
+should compare per-observation event incidence against focal-plane and
+dilution-fridge temperature levels and slopes across a larger pointing
+population, while controlling explicitly for observation order and time since
+Tune.
 
-1. 10 MHz/PPS lock and distribution status;
-2. shared LNA-bias power-supply voltage/current or fault telemetry;
-3. per-network IF/MUSIC/ROACH temperatures and lock/status transitions; and
-4. synchronized readout/control commands.
-
-The most informative comparison is event clusters with four or more networks
-against matched quiet intervals in the same observations. This keeps the next
-test causal and avoids returning to telescope-trajectory correlations that the
-existing event cutouts do not support.
+Within an observation, compare event-rich and event-poor halves only when more
+than two valid temperature samples are available. With the current two-sample
+pointing files, that comparison is descriptive rather than statistical. This
+keeps the next test within the telemetry actually recorded and avoids
+overinterpreting telescope-trajectory or unavailable readout-status data.
