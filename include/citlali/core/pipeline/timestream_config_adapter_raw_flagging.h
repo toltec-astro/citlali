@@ -59,6 +59,10 @@ void adapt_raw_flagging_config_one_way(
     const auto &flagging = raw.flagging;
     rtcproc.coherent_iq_mode_observer_enabled =
         raw.coherent_iq_mode_observer.enabled;
+    rtcproc.coherent_iq_mode_candidate_step_score_min =
+        raw.coherent_iq_mode_observer.candidate_step_score_min;
+    rtcproc.coherent_iq_mode_candidate_impulsive_score_min =
+        raw.coherent_iq_mode_observer.candidate_impulsive_score_min;
     rtcproc.delta_f_min_Hz = flagging.delta_f_min_Hz;
     rtcproc.lower_inv_var_factor = flagging.lower_tod_inv_var_factor;
     rtcproc.upper_inv_var_factor = flagging.upper_tod_inv_var_factor;

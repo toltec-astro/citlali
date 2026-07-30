@@ -67,8 +67,17 @@ gates. No numerical algorithm changes are part of this integration.
   sidecar clusters RTC-seeded shared epochs and attempts a bounded raw-I/Q
   score for every raw network present, including networks that did not seed
   the event. It writes explicit template and compatibility status and changes
-  no samples, flags, weights, learning state, or maps. Unity corpus validation
-  and same-input enabled/disabled output identity remain the next gate;
+  no samples, flags, weights, learning state, or maps. The first bounded Unity
+  smoke at `91f99bde` loaded all 11 templates and wrote a schema-valid
+  sidecar, but exposed a lifecycle defect: standard RTC diagnostic output
+  cleared detailed scan summaries before the observation-level sidecar read
+  them, producing zero candidates. The corrected path now copies only
+  threshold-passing seeds into a compact scan-keyed cache before detailed QA
+  cleanup and clears that cache after sidecar publication. Its CLI build,
+  14 focused tests, all 532 enabled CTests, and the full 123-test config
+  preflight pass. A corrected observation-152433 Unity smoke, broader corpus
+  validation, and same-input enabled/disabled output identity remain the next
+  gates;
   coherent masking and subtraction remain disabled. See
   `handoff/COHERENT_RAW_IQ_MODE_OBSERVE_ONLY_ARCHITECTURE_2026-07-30.md`.
 - A 2026-07-24 pointing fruit-loop investigation is active. Five controlled

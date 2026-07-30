@@ -26,9 +26,9 @@ EXCLUDED_FILES = {
     "include/citlali/core/pipeline/timestream_config_adapter_raw_flagging.h",
     "include/citlali/core/pipeline/timestream_config_adapter_raw_line_audit.h",
 }
-EXPECTED_RECORD_COUNT = 43
+EXPECTED_RECORD_COUNT = 45
 EXPECTED_RECORD_SHA256 = (
-    "25e17cf00c8211a221e95a53fc9eccc14eecb3f2435883e0505c14917df6b2c4"
+    "82dfdacc88d17ee673533c1dc649b0a9af143ebdece9f09f3bc635218389bd4f"
 )
 
 EXECUTOR_OPERATIONS = {
@@ -52,6 +52,8 @@ EXECUTOR_OPERATIONS = {
     "remove_flagged_dets",
     "remove_nearby_tones",
     "run",
+    "reset_coherent_iq_mode_candidates",
+    "snapshot_coherent_iq_mode_candidates",
     "snapshot_detector_diag_summary",
     "snapshot_source_protection_diag_summary",
 }

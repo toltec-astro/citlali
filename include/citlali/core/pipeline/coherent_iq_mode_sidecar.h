@@ -247,14 +247,13 @@ std::vector<CoherentIqCandidate> collect_coherent_iq_candidates(
         }
         const double scan_start_time = tel_time(outer_start);
         const auto diagnostics =
-            engine.rtcproc.snapshot_detector_diag_summary(scan);
+            engine.rtcproc.snapshot_coherent_iq_mode_candidates(scan);
         std::map<int, std::vector<CoherentIqCandidatePoint>> by_network;
         for (const auto &row : diagnostics) {
-            if (row.det < 0 || row.det >= engine.calib.n_dets) {
+            if (row.det < 0 || row.nw < 0) {
                 continue;
             }
-            const int network =
-                static_cast<int>(engine.calib.apt["nw"](row.det));
+            const int network = static_cast<int>(row.nw);
             if (row.step_sample !=
                 coherent_iq_unavailable_sample &&
                 std::isfinite(row.step_score) &&
@@ -557,7 +556,8 @@ struct supports_coherent_iq_mode_sidecar<
         decltype(std::declval<Engine &>().telescope.scan_indices),
         decltype(std::declval<Engine &>().telescope.tel_data),
         decltype(std::declval<Engine &>().rtcproc
-                     .snapshot_detector_diag_summary(Eigen::Index{})),
+                     .snapshot_coherent_iq_mode_candidates(
+                         Eigen::Index{})),
         decltype(std::declval<Engine &>().calib.nw_limits),
         decltype(std::declval<Engine &>().calib.apt),
         decltype(std::declval<Engine &>().observation_identity.obsnum),
@@ -749,6 +749,7 @@ std::filesystem::path write_coherent_iq_mode_sidecar_supported(
         "{} network scores, {} templates, {} raw networks)",
         output_path.string(), candidates.size(), records.size(),
         templates.size(), raw_files.size());
+    engine.rtcproc.reset_coherent_iq_mode_candidates();
     return output_path;
 }
 

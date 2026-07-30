@@ -109,8 +109,9 @@ representation mismatch.
 
 The production implementation is an observation-local post-RTC sidecar:
 
-1. retain the existing bounded RTC detector summaries when the observer is
-   enabled, without enabling either network mask;
+1. copy only threshold-passing step/impulsive seeds into a compact scan-keyed
+   cache immediately after RTC computes them, before ordinary detailed
+   diagnostic cleanup, without enabling either network mask;
 2. cluster the strongest detector step and impulsive summaries within each
    network and then cluster coincident candidates across networks;
 3. treat each resulting time as one shared candidate and attempt a score for
@@ -140,6 +141,14 @@ normal science path and avoids adding mutable cross-cutting state to
 appropriate for this first opt-in diagnostic because compute time is
 acceptable and scientific isolation is more important than optimizing the
 observer before its value is established.
+
+The compact candidate cache is separate from the detailed RTC QA cache.
+Standard `rtcdiag` publication is allowed to clear its detector-level state
+after every scan; the observation sidecar consumes the compact seeds and then
+clears that observer-owned cache. This lifecycle was added after the first
+Unity smoke run exposed that reading the detailed cache only after observation
+completion necessarily yielded zero candidates whenever RTC diagnostic
+products were enabled.
 
 The candidate thresholds control which shared epochs are examined; they do
 not classify a network as pathological. At every selected shared epoch, all
@@ -416,10 +425,12 @@ The sidecar is written atomically as
 the CLI; an enabled observer never reports a successful reduction without its
 diagnostic product.
 
-The local implementation gate passed with 14 focused C++ tests, eight Python
-classifier tests, all 531 enabled CTests, the `citlali_cli` build, and the
-full required configuration preflight. One pre-existing map-fitter lifecycle
-test remains explicitly disabled by the test registration.
+The corrected local implementation gate passed with 14 focused C++ tests,
+eight Python classifier tests, all 532 enabled CTests, the `citlali_cli`
+build, and the full 123-test required configuration preflight. The lifecycle
+regression explicitly proves that compact candidate seeds survive standard
+detailed RTC diagnostic cleanup. One pre-existing map-fitter lifecycle test
+remains explicitly disabled by the test registration.
 
 ## Artifacts
 
@@ -447,8 +458,16 @@ The generated files belong under the project artifact directory
 
 ## Next production step
 
-Run the sidecar on the existing NGC4449 pointing/science corpus with all 11
-currently available network templates. Networks 6 and 10 must appear
+Repeat the bounded observation-152433 Unity smoke test with the compact
+candidate-lifecycle correction. The first smoke at `91f99bde` loaded and
+hash-verified all 11 templates and wrote a schema-valid required sidecar, but
+reported zero candidates because standard RTC diagnostic output had cleared
+the detailed scan cache before the observation-level writer ran. That result
+is an integration failure, not a quiet-observation measurement.
+
+After the corrected smoke contains nonzero seeds, run the sidecar on the
+existing NGC4449 pointing/science corpus with all 11 currently available
+network templates. Networks 6 and 10 must appear
 explicitly as unavailable if they are present in a reduction without a
 template; there is no network allow-list. Use nw8 as the positive benchmark
 and nw0/nw5/nw7/nw11/nw12 as control behavior. Compare the sidecar with the

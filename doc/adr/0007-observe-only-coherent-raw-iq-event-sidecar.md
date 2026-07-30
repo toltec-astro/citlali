@@ -26,8 +26,9 @@ observe-only sidecar.
 
 When enabled, the sidecar:
 
-- retains the existing RTC step and impulsive summaries without enabling
-  their masking paths;
+- copies threshold-passing RTC step and impulsive seeds into a compact
+  observation-local cache before standard detailed-diagnostic cleanup,
+  without enabling their masking paths;
 - clusters those summaries into shared candidate epochs;
 - attempts a raw-I/Q mode score for every network present at every shared
   epoch, regardless of which networks seeded the candidate;
@@ -49,6 +50,11 @@ The implementation adds bounded raw-file I/O and diagnostic computation when
 explicitly enabled. This cost is accepted for the initial validation phase
 because it keeps the science path isolated and avoids adding mutable
 cross-cutting state to `Engine`.
+
+The compact seed cache is owned by RTC diagnostics and cleared after the
+required observation sidecar is written. It is deliberately independent of
+the detailed per-detector QA cache, which remains free to publish and clear
+scan by scan.
 
 Candidate selection remains dependent on existing RTC step/impulsive
 summaries. Expanding every shared candidate across all present networks lets

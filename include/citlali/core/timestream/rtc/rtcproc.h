@@ -92,6 +92,18 @@ public:
     };
     ImpulsiveCaptureOptions impulsive_capture;
     bool coherent_iq_mode_observer_enabled = false;
+    double coherent_iq_mode_candidate_step_score_min = 2.5;
+    double coherent_iq_mode_candidate_impulsive_score_min = 4.0;
+
+    struct RTCCoherentIqModeCandidateSummary {
+        Eigen::Index det = -1;
+        Eigen::Index nw = -1;
+        int step_sample = kTransientFillInt;
+        double step_score = std::numeric_limits<double>::quiet_NaN();
+        int impulsive_event_sample = kTransientFillInt;
+        double impulsive_event_score =
+            std::numeric_limits<double>::quiet_NaN();
+    };
 
     struct ImpulsiveCoincidenceOptions {
         bool enabled = false;
@@ -371,6 +383,10 @@ public:
     std::map<Eigen::Index, std::map<Eigen::Index, std::vector<RTCImpulsiveSnippetSummary>>> rtc_impulsive_summary_by_scan;
     std::map<Eigen::Index, RTCSourceProtectionDiagSummary> rtc_source_protection_summary_by_scan;
     std::shared_ptr<std::mutex> diag_summary_mutex = std::make_shared<std::mutex>();
+    std::map<Eigen::Index, std::vector<RTCCoherentIqModeCandidateSummary>>
+        coherent_iq_mode_candidates_by_scan;
+    std::shared_ptr<std::mutex> coherent_iq_mode_candidate_mutex =
+        std::make_shared<std::mutex>();
 
     std::vector<RTCDetectorDiagSummary> snapshot_detector_diag_summary(Eigen::Index scan_id) {
         std::lock_guard<std::mutex> lock(*diag_summary_mutex);
@@ -379,6 +395,28 @@ public:
             return {};
         }
         return it->second;
+    }
+
+    std::vector<RTCCoherentIqModeCandidateSummary>
+    snapshot_coherent_iq_mode_candidates(Eigen::Index scan_id) {
+        std::lock_guard<std::mutex> lock(
+            *coherent_iq_mode_candidate_mutex);
+        const auto it =
+            coherent_iq_mode_candidates_by_scan.find(scan_id);
+        if (it == coherent_iq_mode_candidates_by_scan.end()) {
+            return {};
+        }
+        return it->second;
+    }
+
+    template <typename calib_t>
+    void capture_coherent_iq_mode_candidates(
+        Eigen::Index scan_id, const calib_t &calib);
+
+    void reset_coherent_iq_mode_candidates() {
+        std::lock_guard<std::mutex> lock(
+            *coherent_iq_mode_candidate_mutex);
+        coherent_iq_mode_candidates_by_scan.clear();
     }
 
     RTCSourceProtectionDiagSummary snapshot_source_protection_diag_summary(Eigen::Index scan_id) {
@@ -1281,6 +1319,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         coherent_iq_mode_observer_enabled) {
         capture_rtc_diagnostics(out, calib, false, false);
     }
+    capture_coherent_iq_mode_candidates(out.index.data, calib);
 
     // empty rtcdata
     in.scans.data.resize(0,0);
@@ -1298,6 +1337,56 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
     in.noise.data.resize(0,0);
 
     return map_indices;
+}
+
+template <typename calib_t>
+void RTCProc::capture_coherent_iq_mode_candidates(
+    Eigen::Index scan_id, const calib_t &calib) {
+    if (!coherent_iq_mode_observer_enabled) {
+        return;
+    }
+    const auto diagnostics =
+        snapshot_detector_diag_summary(scan_id);
+    std::vector<RTCCoherentIqModeCandidateSummary> candidates;
+    candidates.reserve(diagnostics.size());
+    for (const auto &row : diagnostics) {
+        if (row.det < 0 ||
+            row.det >= calib.apt.at("nw").size()) {
+            continue;
+        }
+        const bool has_step =
+            row.step_sample != kTransientFillInt &&
+            std::isfinite(row.step_score) &&
+            row.step_score >=
+                coherent_iq_mode_candidate_step_score_min;
+        const bool has_impulsive =
+            row.impulsive_event_sample != kTransientFillInt &&
+            std::isfinite(row.impulsive_event_score) &&
+            row.impulsive_event_score >=
+                coherent_iq_mode_candidate_impulsive_score_min;
+        if (!has_step && !has_impulsive) {
+            continue;
+        }
+        RTCCoherentIqModeCandidateSummary candidate;
+        candidate.det = row.det;
+        candidate.nw = static_cast<Eigen::Index>(
+            calib.apt.at("nw")(row.det));
+        if (has_step) {
+            candidate.step_sample = row.step_sample;
+            candidate.step_score = row.step_score;
+        }
+        if (has_impulsive) {
+            candidate.impulsive_event_sample =
+                row.impulsive_event_sample;
+            candidate.impulsive_event_score =
+                row.impulsive_event_score;
+        }
+        candidates.push_back(std::move(candidate));
+    }
+    std::lock_guard<std::mutex> lock(
+        *coherent_iq_mode_candidate_mutex);
+    coherent_iq_mode_candidates_by_scan[scan_id] =
+        std::move(candidates);
 }
 
 template <typename apt_t>

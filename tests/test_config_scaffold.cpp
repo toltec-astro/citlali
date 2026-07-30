@@ -8450,15 +8450,66 @@ TEST(config_scaffold, validates_coherent_iq_observer_fail_closed) {
 TEST(config_scaffold, coherent_iq_observer_adapter_enables_diagnostics_only) {
     citlali::config::RawTimeChunkConfig request;
     request.coherent_iq_mode_observer.enabled = true;
+    request.coherent_iq_mode_observer.candidate_step_score_min = 3.5;
+    request.coherent_iq_mode_observer.candidate_impulsive_score_min = 5.5;
     timestream::RTCProc rtcproc;
 
     citlali::pipeline::adapt_raw_timestream_config_one_way(
         request, rtcproc, 1.0, 1.0);
 
     EXPECT_TRUE(rtcproc.coherent_iq_mode_observer_enabled);
+    EXPECT_DOUBLE_EQ(
+        rtcproc.coherent_iq_mode_candidate_step_score_min, 3.5);
+    EXPECT_DOUBLE_EQ(
+        rtcproc.coherent_iq_mode_candidate_impulsive_score_min, 5.5);
     EXPECT_FALSE(rtcproc.network_step_mask.enabled);
     EXPECT_FALSE(rtcproc.impulsive_coincidence.enabled);
     EXPECT_FALSE(rtcproc.impulsive_capture.enabled);
+}
+
+TEST(config_scaffold,
+     coherent_iq_compact_candidates_survive_detailed_cleanup) {
+    timestream::RTCProc rtcproc;
+    rtcproc.coherent_iq_mode_observer_enabled = true;
+    rtcproc.coherent_iq_mode_candidate_step_score_min = 2.5;
+    rtcproc.coherent_iq_mode_candidate_impulsive_score_min = 4.0;
+
+    std::vector<timestream::RTCProc::RTCDetectorDiagSummary> diagnostics(3);
+    for (Eigen::Index det = 0; det < 3; ++det) {
+        diagnostics[static_cast<std::size_t>(det)].det = det;
+    }
+    diagnostics[0].step_sample = 100;
+    diagnostics[0].step_score = 5.0;
+    diagnostics[1].impulsive_event_sample = 200;
+    diagnostics[1].impulsive_event_score = 3.9;
+    diagnostics[2].impulsive_event_sample = 300;
+    diagnostics[2].impulsive_event_score = 6.0;
+    rtcproc.rtc_detector_summary_by_scan[0] = diagnostics;
+
+    struct CandidateCalib {
+        std::map<std::string, Eigen::VectorXd> apt;
+    } calib;
+    calib.apt["nw"] = Eigen::Vector3d(1.0, 2.0, 8.0);
+    rtcproc.capture_coherent_iq_mode_candidates(0, calib);
+
+    const auto before_cleanup =
+        rtcproc.snapshot_coherent_iq_mode_candidates(0);
+    ASSERT_EQ(before_cleanup.size(), 2U);
+    EXPECT_EQ(before_cleanup[0].det, 0);
+    EXPECT_EQ(before_cleanup[0].nw, 1);
+    EXPECT_EQ(before_cleanup[0].step_sample, 100);
+    EXPECT_EQ(before_cleanup[1].det, 2);
+    EXPECT_EQ(before_cleanup[1].nw, 8);
+    EXPECT_EQ(before_cleanup[1].impulsive_event_sample, 300);
+
+    rtcproc.clear_cached_diagnostics(0);
+    EXPECT_TRUE(rtcproc.snapshot_detector_diag_summary(0).empty());
+    EXPECT_EQ(
+        rtcproc.snapshot_coherent_iq_mode_candidates(0).size(), 2U);
+
+    rtcproc.reset_coherent_iq_mode_candidates();
+    EXPECT_TRUE(
+        rtcproc.snapshot_coherent_iq_mode_candidates(0).empty());
 }
 
 TEST(config_scaffold, resets_raw_observation_and_realized_state) {
