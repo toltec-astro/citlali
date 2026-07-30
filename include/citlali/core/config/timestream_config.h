@@ -169,6 +169,19 @@ struct RawTimeChunkImpulsiveCoincidenceConfig {
     double max_flagged_fraction = 0.10;
 };
 
+struct RawTimeChunkCoherentIqModeObserverConfig {
+    bool enabled = false;
+    std::vector<std::string> template_paths;
+    double candidate_step_score_min = 2.5;
+    double candidate_impulsive_score_min = 4.0;
+    double candidate_cluster_tolerance_sec = 0.25;
+    double pre_window_sec = 0.20;
+    double guard_window_sec = 0.05;
+    double post_window_sec = 0.20;
+    double cross_network_tolerance_sec = 0.35;
+    int max_candidates_per_scan_per_network = 8;
+};
+
 struct RawTimeChunkFlaggingConfig {
     double delta_f_min_Hz = 60.e3;
     double lower_tod_inv_var_factor = 0.0;
@@ -261,6 +274,7 @@ struct RawTimeChunkConfig {
     RawTimeChunkFilterConfig filter;
     RawTimeChunkIirFilterConfig iir_filter;
     RawTimeChunkFlaggingConfig flagging;
+    RawTimeChunkCoherentIqModeObserverConfig coherent_iq_mode_observer;
     RawTimeChunkKernelConfig kernel;
     RawTimeChunkAltAzDestripeConfig altaz_destripe;
     RawTimeChunkLineAuditConfig line_audit;

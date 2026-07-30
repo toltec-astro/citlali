@@ -314,6 +314,49 @@ inline void validate(const RawTimeChunkFlaggingConfig &config,
     validate(config.impulsive_coincidence, report);
 }
 
+inline void validate(
+    const RawTimeChunkCoherentIqModeObserverConfig &config,
+    ValidationReport &report) {
+    if (!config.enabled) {
+        return;
+    }
+    const ConfigPath path{
+        "timestream", "raw_time_chunk", "coherent_iq_mode_observer"};
+    if (config.template_paths.empty()) {
+        report.add_error(
+            append_config_path(path, {"template_paths"}),
+            "must contain at least one versioned template when enabled");
+    }
+    check_minimum(
+        config.candidate_step_score_min, 0.0,
+        append_config_path(path, {"candidate_step_score_min"}), report);
+    check_minimum(
+        config.candidate_impulsive_score_min, 0.0,
+        append_config_path(path, {"candidate_impulsive_score_min"}), report);
+    check_minimum(
+        config.candidate_cluster_tolerance_sec, 0.0,
+        append_config_path(path, {"candidate_cluster_tolerance_sec"}),
+        report);
+    check_minimum(config.pre_window_sec, 0.0,
+                  append_config_path(path, {"pre_window_sec"}), report);
+    check_minimum(config.guard_window_sec, 0.0,
+                  append_config_path(path, {"guard_window_sec"}), report);
+    check_minimum(config.post_window_sec, 0.0,
+                  append_config_path(path, {"post_window_sec"}), report);
+    if (config.pre_window_sec <= 0.0 || config.post_window_sec <= 0.0) {
+        report.add_error(
+            path, "pre_window_sec and post_window_sec must both be positive");
+    }
+    check_minimum(
+        config.cross_network_tolerance_sec, 0.0,
+        append_config_path(path, {"cross_network_tolerance_sec"}), report);
+    check_minimum(
+        config.max_candidates_per_scan_per_network, 1,
+        append_config_path(
+            path, {"max_candidates_per_scan_per_network"}),
+        report);
+}
+
 inline void validate(const RawTimeChunkKernelConfig &, ValidationReport &) {}
 
 inline void validate(const RawTimeChunkAltAzDestripeConfig &config,
@@ -513,6 +556,7 @@ inline void validate(const RawTimeChunkConfig &config, ValidationReport &report)
     validate(config.filter, report);
     validate(config.iir_filter, report);
     validate(config.flagging, report);
+    validate(config.coherent_iq_mode_observer, report);
     validate(config.kernel, report);
     validate(config.altaz_destripe, report);
     validate(config.line_audit, report);

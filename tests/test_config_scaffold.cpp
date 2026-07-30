@@ -8308,6 +8308,17 @@ timestream:
       min_spike_sigma: 11.0
     flagging:
       delta_f_min_Hz: 65000.0
+    coherent_iq_mode_observer:
+      enabled: true
+      template_paths: [/templates/nw0.json, /templates/nw8.json]
+      candidate_step_score_min: 3.5
+      candidate_impulsive_score_min: 5.5
+      candidate_cluster_tolerance_sec: 0.3
+      pre_window_sec: 0.25
+      guard_window_sec: 0.06
+      post_window_sec: 0.35
+      cross_network_tolerance_sec: 0.4
+      max_candidates_per_scan_per_network: 12
     line_audit:
       enabled: false
       line_min_hz: 2.0
@@ -8333,6 +8344,26 @@ timestream:
     EXPECT_FALSE(raw.despike.enabled);
     EXPECT_DOUBLE_EQ(raw.despike.min_spike_sigma, 11.0);
     EXPECT_DOUBLE_EQ(raw.flagging.delta_f_min_Hz, 65000.0);
+    EXPECT_TRUE(raw.coherent_iq_mode_observer.enabled);
+    EXPECT_EQ(raw.coherent_iq_mode_observer.template_paths.size(), 2U);
+    EXPECT_DOUBLE_EQ(
+        raw.coherent_iq_mode_observer.candidate_step_score_min, 3.5);
+    EXPECT_DOUBLE_EQ(
+        raw.coherent_iq_mode_observer.candidate_impulsive_score_min, 5.5);
+    EXPECT_DOUBLE_EQ(
+        raw.coherent_iq_mode_observer.candidate_cluster_tolerance_sec, 0.3);
+    EXPECT_DOUBLE_EQ(
+        raw.coherent_iq_mode_observer.pre_window_sec, 0.25);
+    EXPECT_DOUBLE_EQ(
+        raw.coherent_iq_mode_observer.guard_window_sec, 0.06);
+    EXPECT_DOUBLE_EQ(
+        raw.coherent_iq_mode_observer.post_window_sec, 0.35);
+    EXPECT_DOUBLE_EQ(
+        raw.coherent_iq_mode_observer.cross_network_tolerance_sec, 0.4);
+    EXPECT_EQ(
+        raw.coherent_iq_mode_observer
+            .max_candidates_per_scan_per_network,
+        12);
     EXPECT_FALSE(raw.line_audit.enabled);
     EXPECT_DOUBLE_EQ(raw.line_audit.line_min_hz, 2.0);
     EXPECT_DOUBLE_EQ(raw.line_audit.line_max_hz, 55.0);
@@ -8360,6 +8391,9 @@ TEST(config_scaffold, serializes_raw_request_without_observation_state) {
     request.iir_filter.freq_Hz = 0.4;
     request.downsample.factor = 0;
     request.line_audit.fixed_notch_widths_hz = {0.2, 0.3};
+    request.coherent_iq_mode_observer.enabled = true;
+    request.coherent_iq_mode_observer.template_paths = {
+        "/templates/nw0.json", "/templates/nw8.json"};
     request.extinction_correction_enabled = true;
     request.extinction_model = "observation-derived-model";
 
@@ -8384,8 +8418,47 @@ TEST(config_scaffold, serializes_raw_request_without_observation_state) {
     EXPECT_DOUBLE_EQ(node["IIR_filter"]["freq_Hz"].as<double>(), 0.4);
     EXPECT_EQ(node["downsample"]["factor"].as<int>(), 0);
     EXPECT_EQ(node["line_audit"]["fixed_notch_widths_hz"].size(), 2U);
+    EXPECT_TRUE(
+        node["coherent_iq_mode_observer"]["enabled"].as<bool>());
+    EXPECT_EQ(
+        node["coherent_iq_mode_observer"]["template_paths"].size(), 2U);
     EXPECT_TRUE(node["extinction_correction"]["enabled"].as<bool>());
     EXPECT_FALSE(node["extinction_correction"]["model"].IsDefined());
+}
+
+TEST(config_scaffold, validates_coherent_iq_observer_fail_closed) {
+    citlali::config::RawTimeChunkCoherentIqModeObserverConfig config;
+    config.enabled = true;
+    config.pre_window_sec = -0.5;
+    config.post_window_sec = -1.0;
+    config.max_candidates_per_scan_per_network = 0;
+    citlali::config::ValidationReport report;
+
+    citlali::config::validate(config, report);
+
+    EXPECT_FALSE(report.ok());
+    EXPECT_EQ(report.error_count(), 5U);
+    const auto diagnostic = report.format_for_cli();
+    EXPECT_NE(diagnostic.find("template_paths"), std::string::npos);
+    EXPECT_NE(diagnostic.find("pre_window_sec"), std::string::npos);
+    EXPECT_NE(diagnostic.find("post_window_sec"), std::string::npos);
+    EXPECT_NE(
+        diagnostic.find("max_candidates_per_scan_per_network"),
+        std::string::npos);
+}
+
+TEST(config_scaffold, coherent_iq_observer_adapter_enables_diagnostics_only) {
+    citlali::config::RawTimeChunkConfig request;
+    request.coherent_iq_mode_observer.enabled = true;
+    timestream::RTCProc rtcproc;
+
+    citlali::pipeline::adapt_raw_timestream_config_one_way(
+        request, rtcproc, 1.0, 1.0);
+
+    EXPECT_TRUE(rtcproc.coherent_iq_mode_observer_enabled);
+    EXPECT_FALSE(rtcproc.network_step_mask.enabled);
+    EXPECT_FALSE(rtcproc.impulsive_coincidence.enabled);
+    EXPECT_FALSE(rtcproc.impulsive_capture.enabled);
 }
 
 TEST(config_scaffold, resets_raw_observation_and_realized_state) {

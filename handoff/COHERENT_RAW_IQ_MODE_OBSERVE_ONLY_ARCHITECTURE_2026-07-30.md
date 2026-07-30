@@ -2,7 +2,8 @@
 
 Date: 2026-07-30
 
-Status: implemented offline; production mutation disabled
+Status: production observe-only sidecar implemented; Unity validation pending;
+production mutation disabled
 
 Investigate evidence: commit `422f25f5f`, integrated on this branch as
 `ad842d6cf`
@@ -106,18 +107,21 @@ representation mismatch.
 
 ## Narrow integration point
 
-The production integration should be an observation-local sidecar at the raw
-KIDs solve boundary:
+The production implementation is an observation-local post-RTC sidecar:
 
-1. receive simultaneous raw `I` and `Q`, receive time, network ID, tone slot,
-   APT UID, signed digital tone offset, and declared readout compatibility
-   metadata;
-2. compute a bounded mode-projection score trace or candidate list before the
-   complex vector is discarded;
-3. persist compact scan/network event diagnostics;
-4. after RTC, correlate those event times with detector-local and network RTC
-   summaries for comparison only; and
-5. leave the primary RTC matrix and all flags unchanged.
+1. retain the existing bounded RTC detector summaries when the observer is
+   enabled, without enabling either network mask;
+2. cluster the strongest detector step and impulsive summaries within each
+   network and then cluster coincident candidates across networks;
+3. treat each resulting time as one shared candidate and attempt a score for
+   every raw network present in the observation, including networks that did
+   not independently seed that candidate;
+4. reopen only the short pre/post raw `I`/`Q` windows needed for each score,
+   join raw tone slots to APT UIDs, and validate signed digital tone offsets
+   against the network template;
+5. persist compact event, network-score, template, compatibility, and
+   provenance records; and
+6. leave the primary RTC matrix and all flags unchanged.
 
 The sidecar has no network allow-list. It attempts every network present in
 the observation. Each network uses its own compatible template and emits an
@@ -130,10 +134,44 @@ cross-cutting mutable state on `Engine`. The generator currently processes raw
 scans sequentially before the scan farm, so it can produce deterministic
 scan-keyed diagnostics without process-lifetime state.
 
-Using only the current RTC candidate time would require retaining raw-I/Q
-vectors or snippets until after `rtcproc.run`. Computing the bounded
-observe-only projection while raw I/Q is already present avoids that memory
-growth and can still be correlated with RTC candidates by time.
+This placement avoids retaining observation-length raw-I/Q vectors in the
+normal science path and avoids adding mutable cross-cutting state to
+`Engine`. The cost is bounded extra raw-file I/O after RTC. That trade is
+appropriate for this first opt-in diagnostic because compute time is
+acceptable and scientific isolation is more important than optimizing the
+observer before its value is established.
+
+The candidate thresholds control which shared epochs are examined; they do
+not classify a network as pathological. At every selected shared epoch, all
+present networks are attempted. A missing template, incompatible metadata,
+incompatible tone coordinates, inadequate tone coverage, or incomplete raw
+window produces an explicit status rather than silently dropping the
+network.
+
+The opt-in low-level configuration is:
+
+```yaml
+timestream:
+  raw_time_chunk:
+    coherent_iq_mode_observer:
+      enabled: true
+      template_paths:
+        - /absolute/path/coherent_mode_template_nw0.json
+        - /absolute/path/coherent_mode_template_nw1.json
+        # Continue with every available network-specific template.
+      candidate_step_score_min: 2.5
+      candidate_impulsive_score_min: 4.0
+      candidate_cluster_tolerance_sec: 0.25
+      pre_window_sec: 0.20
+      guard_window_sec: 0.05
+      post_window_sec: 0.20
+      cross_network_tolerance_sec: 0.35
+      max_candidates_per_scan_per_network: 8
+```
+
+Template paths should be absolute on the reduction host. Enabling the
+observer with no templates is a configuration error. Multiple templates for
+one network are rejected rather than resolved by file order.
 
 ## Template contract
 
@@ -367,16 +405,34 @@ The synthetic suite covers:
 - non-mutation of template and input arrays; and
 - deterministic compact records.
 
-The seven focused tests pass.
+The focused C++ tests cover the classifier, strict template loading,
+cross-network candidate clustering, typed configuration,
+serialization/validation, and the diagnostic-only RTC adapter. The existing
+Python classifier/evaluation tests remain the independent offline reference.
+
+The sidecar is written atomically as
+`<observation-output>/raw/coherent_iq_mode_events.yaml` and conforms to
+`citlali-coherent-iq-mode-sidecar-v1`. A required write failure propagates to
+the CLI; an enabled observer never reports a successful reduction without its
+diagnostic product.
+
+The local implementation gate passed with 14 focused C++ tests, eight Python
+classifier tests, all 531 enabled CTests, the `citlali_cli` build, and the
+full required configuration preflight. One pre-existing map-fitter lifecycle
+test remains explicitly disabled by the test registration.
 
 ## Artifacts
 
 Repository:
 
+- `include/citlali/core/pipeline/coherent_iq_mode_observer.h`;
+- `include/citlali/core/pipeline/coherent_iq_mode_sidecar.h`;
+- `include/citlali/core/pipeline/coherent_iq_mode_config_read.h`;
 - `tools/diagnostics/coherent_iq_mode_observer.py`;
 - `tools/diagnostics/coherent_iq_mode_evaluation.py`;
 - `tools/diagnostics/test_coherent_iq_mode_observer.py`;
-- `validation/coherent_iq_mode_template.schema.json`.
+- `validation/coherent_iq_mode_template.schema.json`;
+- `validation/coherent_iq_mode_sidecar.schema.json`.
 
 Generated evaluation:
 
@@ -391,11 +447,12 @@ The generated files belong under the project artifact directory
 
 ## Next production step
 
-Implement only the observation-local raw-I/Q sidecar and required diagnostic
-writer. Run it for every network present in the observation, with one
-versioned network-compatible template per score and explicit unavailable or
-incompatible records. Use nw8 as the positive benchmark and nw0/nw5/nw7/nw11/
-nw12 as control behavior, but do not encode either group as an allow-list.
-Correlate scores with RTC events and prove byte-identical flags, weights, and
-maps with the observer enabled versus disabled. Do not add masking in the same
-change.
+Run the sidecar on the existing NGC4449 pointing/science corpus with all 11
+currently available network templates. Networks 6 and 10 must appear
+explicitly as unavailable if they are present in a reduction without a
+template; there is no network allow-list. Use nw8 as the positive benchmark
+and nw0/nw5/nw7/nw11/nw12 as control behavior. Compare the sidecar with the
+offline 52-event evaluation and perform enabled/disabled same-input map
+comparisons. Required acceptance evidence is byte-identical flags, weights,
+and maps, plus stable event times and scores within the declared windowing
+contract. Do not add masking in the same change.

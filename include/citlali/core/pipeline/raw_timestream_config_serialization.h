@@ -162,6 +162,26 @@ inline YAML::Node raw_flagging_request_node(
     return node;
 }
 
+inline YAML::Node coherent_iq_mode_observer_request_node(
+    const citlali::config::RawTimeChunkCoherentIqModeObserverConfig &config) {
+    YAML::Node node;
+    node["enabled"] = config.enabled;
+    node["template_paths"] = config.template_paths;
+    node["candidate_step_score_min"] = config.candidate_step_score_min;
+    node["candidate_impulsive_score_min"] =
+        config.candidate_impulsive_score_min;
+    node["candidate_cluster_tolerance_sec"] =
+        config.candidate_cluster_tolerance_sec;
+    node["pre_window_sec"] = config.pre_window_sec;
+    node["guard_window_sec"] = config.guard_window_sec;
+    node["post_window_sec"] = config.post_window_sec;
+    node["cross_network_tolerance_sec"] =
+        config.cross_network_tolerance_sec;
+    node["max_candidates_per_scan_per_network"] =
+        config.max_candidates_per_scan_per_network;
+    return node;
+}
+
 inline YAML::Node raw_kernel_request_node(
     const citlali::config::RawTimeChunkKernelConfig &config) {
     YAML::Node node;
@@ -271,6 +291,9 @@ inline YAML::Node raw_timestream_request_node(
     node["filter"] = raw_filter_request_node(config.filter);
     node["IIR_filter"] = raw_iir_filter_request_node(config.iir_filter);
     node["flagging"] = raw_flagging_request_node(config.flagging);
+    node["coherent_iq_mode_observer"] =
+        coherent_iq_mode_observer_request_node(
+            config.coherent_iq_mode_observer);
     node["kernel"] = raw_kernel_request_node(config.kernel);
     node["altaz_destripe"] =
         raw_altaz_destripe_request_node(config.altaz_destripe);

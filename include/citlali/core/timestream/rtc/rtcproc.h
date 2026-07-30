@@ -91,6 +91,7 @@ public:
         double snippet_post_window_sec = 0.25;
     };
     ImpulsiveCaptureOptions impulsive_capture;
+    bool coherent_iq_mode_observer_enabled = false;
 
     struct ImpulsiveCoincidenceOptions {
         bool enabled = false;
@@ -1262,7 +1263,8 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         rtc_impulsive_summary_by_scan.erase(out.index.data);
     }
 
-    if (network_step_mask.enabled || impulsive_coincidence.enabled) {
+    if (network_step_mask.enabled || impulsive_coincidence.enabled ||
+        coherent_iq_mode_observer_enabled) {
         capture_rtc_diagnostics(out, calib, true, true);
     }
 
@@ -1275,7 +1277,8 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
 
     apply_altaz_destripe(out, calib);
 
-    if (network_step_mask.enabled || impulsive_coincidence.enabled) {
+    if (network_step_mask.enabled || impulsive_coincidence.enabled ||
+        coherent_iq_mode_observer_enabled) {
         capture_rtc_diagnostics(out, calib, false, false);
     }
 

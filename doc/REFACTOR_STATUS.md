@@ -49,26 +49,27 @@ gates. No numerical algorithm changes are part of this integration.
 ## Current Snapshot
 
 - A 2026-07-30 coherent raw-I/Q event investigation has produced the first
-  mode-aware observe-only architecture slice. The current RTC/PTC learning
+  mode-aware observe-only production slice. The current RTC/PTC learning
   path records accepted intervals per detector UID and compacts only within
   that UID, so a physical network event loses its tone-vector identity and
   fans out into many records. A versioned, fail-closed template schema,
-  non-mutating classifier, alternating-half evaluation, and seven focused
-  synthetic tests are now in place. At a descriptive absolute-cosine 0.6 and
-  5 mrad operating point, the classifier recognizes 167/212 independently
-  participating network/event pairs and 0/660 fixed quiet-scan epochs; it also
-  surfaces 52/100 below-trigger responses at shared event times. The extended
-  evaluation now scores all 11 networks present in the corpus: 572
+  non-mutating classifier, alternating-half evaluation, typed configuration,
+  strict template loader, all-network observation sidecar, and focused C++/
+  Python tests are now in place. The extended evaluation scores all 11
+  networks present in the corpus: 572
   event/network vectors and 1,210 quiet epochs. The same descriptive point
   selects 167/216 independently participating responses and 0/1,210 quiet
-  epochs. Stable high-cosine but low-amplitude control modes show that cosine
-  alone is not a pathology trigger. nw8 remains the positive benchmark and
-  nw9 explicitly fails a single-mode stability gate, but neither result forms
-  a runtime network allow-list. No flags, weights, learning state, or maps are
-  changed. The production next step is an all-present-network,
-  observation-local raw-I/Q diagnostic sidecar with
-  byte-identical enabled/disabled map outputs; coherent masking and
-  subtraction remain disabled. See
+  epochs and surfaces 52/356 responses at shared epochs that did not
+  independently trigger. Stable high-cosine but low-amplitude control modes
+  show that cosine alone is not a pathology trigger. nw8 remains the positive
+  benchmark and nw9 explicitly fails a single-mode stability gate, but
+  neither result forms a runtime network allow-list. The opt-in production
+  sidecar clusters RTC-seeded shared epochs and attempts a bounded raw-I/Q
+  score for every raw network present, including networks that did not seed
+  the event. It writes explicit template and compatibility status and changes
+  no samples, flags, weights, learning state, or maps. Unity corpus validation
+  and same-input enabled/disabled output identity remain the next gate;
+  coherent masking and subtraction remain disabled. See
   `handoff/COHERENT_RAW_IQ_MODE_OBSERVE_ONLY_ARCHITECTURE_2026-07-30.md`.
 - A 2026-07-24 pointing fruit-loop investigation is active. Five controlled
   observations have exact no-feedback seeds but monotonically brighter and

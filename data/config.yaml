@@ -258,6 +258,17 @@ timestream: # timestream reduction parameters
       freq_Hz: 0.1 # highpass cutoff frequency in Hz
       order: 1 # number of cascaded first-order highpass sections
       zero_phase: false # run forward-backward to remove phase delay
+    coherent_iq_mode_observer: # observe-only raw-I/Q classification of coherent network events
+      enabled: false # write diagnostics only; never change samples, flags, weights, maps, or learning state
+      template_paths: [] # versioned mode-template JSON/YAML files; one compatible template per network
+      candidate_step_score_min: 2.5 # minimum existing RTC detector step score admitted as a candidate
+      candidate_impulsive_score_min: 4.0 # minimum existing RTC detector impulsive score admitted as a candidate
+      candidate_cluster_tolerance_sec: 0.25 # merge detector candidate times within a network
+      pre_window_sec: 0.20 # raw-I/Q averaging interval before the event guard
+      guard_window_sec: 0.05 # exclude samples immediately around the candidate transition
+      post_window_sec: 0.20 # raw-I/Q averaging interval after the event guard
+      cross_network_tolerance_sec: 0.35 # merge network seeds into shared epochs and annotate scored coincidences
+      max_candidates_per_scan_per_network: 8 # deterministic cap on compact event records
     kernel: # make synthetic timestreams for reduction characterization
       enabled: false # enable or disable kernel generation
       filepath: null # filepath to FITS file with kernel

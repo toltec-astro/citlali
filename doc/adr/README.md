@@ -19,6 +19,7 @@ duplicate changing implementation inventories or validation snapshots.
 | [0004](0004-compiled-boundary-and-header-policy.md) | Accepted | Evidence-driven compiled boundaries and header/hot-path policy |
 | [0005](0005-defer-measured-r-channel-execution.md) | Accepted | Preserve measured R-channel structure while deferring execution until its contract is approved |
 | [0006](0006-fruit-loop-restart-checkpoint.md) | Accepted | Resume fruit loops from a required state-complete iteration checkpoint with absolute iteration identity and fail-closed compatibility checks |
+| [0007](0007-observe-only-coherent-raw-iq-event-sidecar.md) | Accepted | Score versioned network-specific coherent raw-I/Q modes for every present network at shared RTC-seeded epochs without changing science data |
 
 Numbers are never reused. A materially different decision adds a new ADR and
 marks the old record superseded; do not rewrite the historical rationale.
