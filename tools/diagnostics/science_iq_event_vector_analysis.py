@@ -51,7 +51,7 @@ from tools.diagnostics.science_iq_temperature_survey import (  # noqa: E402
 )
 
 
-SCHEMA_VERSION = "citlali-science-iq-event-vector-v1"
+SCHEMA_VERSION = "citlali-science-iq-event-vector-v2"
 DEFAULT_OBSNUMS = (152390, 152392, 152419, 152431, 152433)
 DEFAULT_AFFECTED_NETWORKS = (1, 2, 3, 4, 8, 9)
 DEFAULT_CONTROL_NETWORKS = (0, 5, 7, 11, 12)
@@ -62,6 +62,8 @@ DEFAULT_SAMPLE_MODULI = (8, 16, 32, 64, 128, 256)
 class SweepModel:
     network: int
     path: Path
+    lo_center_frequency_hz: float
+    tone_offset_frequency_hz: np.ndarray
     probe_frequency_hz: np.ndarray
     z_at_probe: np.ndarray
     dz_df: np.ndarray
@@ -422,6 +424,8 @@ def _load_sweep_model(
     return SweepModel(
         network=int(network),
         path=sweep_path,
+        lo_center_frequency_hz=raw_lo,
+        tone_offset_frequency_hz=raw_tone,
         probe_frequency_hz=probe,
         z_at_probe=z_at_probe,
         dz_df=derivative,
@@ -1206,12 +1210,13 @@ def main() -> None:
                             out=frequency_direction,
                             where=np.abs(z_pre_equivalent) > 0.0,
                         )
-                        fit_mask = (
-                            event_vector.responsive
+                        model_valid = (
+                            event_vector.valid
                             & sweep.valid
                             & np.isfinite(frequency_direction.real)
                             & np.isfinite(frequency_direction.imag)
                         )
+                        fit_mask = event_vector.responsive & model_valid
                         n_valid_event = int(
                             np.count_nonzero(event_vector.valid)
                         )
@@ -1252,6 +1257,7 @@ def main() -> None:
                     except (ValueError, FloatingPointError) as error:
                         event_vector = None
                         frequency_direction = np.asarray([], dtype=complex)
+                        model_valid = np.asarray([], dtype=bool)
                         fit_mask = np.asarray([], dtype=bool)
                         fit_population = "unavailable"
                         modes = {}
@@ -1304,7 +1310,7 @@ def main() -> None:
                     }
                     fit_rows.append(fit_record)
                     if event_vector is not None:
-                        for tone in np.flatnonzero(fit_mask):
+                        for tone in np.flatnonzero(model_valid):
                             tone_rows.append(
                                 {
                                     "schema_version": SCHEMA_VERSION,
@@ -1314,12 +1320,19 @@ def main() -> None:
                                     "network": network,
                                     "tone_slot_zero_based": int(tone),
                                     "uid": int(data.uid[tone]),
+                                    "lo_center_frequency_hz": float(
+                                        sweep.lo_center_frequency_hz
+                                    ),
+                                    "tone_offset_frequency_hz": float(
+                                        sweep.tone_offset_frequency_hz[tone]
+                                    ),
                                     "probe_frequency_hz": float(
                                         sweep.probe_frequency_hz[tone]
                                     ),
                                     "apt_tone_frequency_hz": float(
                                         data.tone_frequency_hz[tone]
                                     ),
+                                    "network_fit_status": fit_status,
                                     "phase_responsive": bool(
                                         event_vector.responsive[tone]
                                     ),
@@ -1486,6 +1499,12 @@ def main() -> None:
             "model_r2": (
                 "Zero-baseline explained complex-change energy on the stated "
                 "fit population; descriptive, not statistical significance"
+            ),
+            "tone_vectors": (
+                "One row per event/network/model-valid APT tone; "
+                "phase_responsive marks membership in the thresholded fit "
+                "population; tone_offset_frequency_hz is the signed digital "
+                "tone offset from lo_center_frequency_hz"
             ),
             "timing_tests": (
                 "Exploratory circular concentration tests. PPS telemetry and "

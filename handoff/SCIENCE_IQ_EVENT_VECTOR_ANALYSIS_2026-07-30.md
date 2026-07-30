@@ -145,24 +145,17 @@ failure from "Citlali step pathology" to a real, synchronized raw-complex
 disturbance upstream of Citlali calibration, with strong network-dependent
 susceptibility.
 
-## Next Bounded Discriminator
+## Follow-up Discriminator
 
-Use the saved tone-level event vectors to test response versus readout
-frequency, tone slot, and event sign within each affected network. The useful
-questions are:
+The bounded tone-susceptibility analysis is complete and is documented in
+`handoff/SCIENCE_IQ_TONE_SUSCEPTIBILITY_ANALYSIS_2026-07-30.md`.
 
-- Does the frequency-like projection occupy the whole network or contiguous
-  readout-frequency bands?
-- Do the same detector/tone identities respond from event to event?
-- Are the network-2 and network-8 opposite equivalent-frequency signs stable
-  on the same event?
-- Does the residual after the combined model retain coherent frequency
-  structure?
-
-A banded or tone-slot-fixed response would point toward an IF/readout transfer
-path. A detector-fixed response following the sweep derivative would favor a
-resonator/loading perturbation. A network-wide common-complex residual would
-strengthen an amplifier, mixer, LO, attenuation, or bias-path explanation.
+It finds highly repeatable UID susceptibility and strong banding versus the
+signed digital tone offset from each network LO. A pure delay/sample-slip
+model is weak, while an event-amplitude times stable tone-transfer model is
+especially strong in network 8 and substantial in networks 1 through 4.
+The next bounded discriminator is therefore to map the digital tone offset to
+the authoritative ROACH/PFB and analog signal-path coordinates.
 
 For a future instrument test, the decisive missing telemetry is time-resolved
 LNA-bias voltage/current, IF power or gain state, and ADC statistics recorded
@@ -177,7 +170,10 @@ The complete artifact set is stored locally at:
 It includes the scan selection, every raw network candidate, clustered event
 times, network-level fits, tone-level complex vectors, timing tests, two
 figures, a manifest carrying thresholds and input identities, and two
-sweep-window sensitivity audit tables.
+sweep-window sensitivity audit tables. The schema-v2 tone table retains every
+model-valid tone at every event, including nonresponders, and records APT UID,
+observation-local tone slot, LO center, signed digital tone offset, and probe
+frequency.
 
 ## Reproduction
 
