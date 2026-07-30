@@ -179,16 +179,20 @@ transfer. The present data do not uniquely choose among them.
 
 ## Next Bounded Discriminator
 
-Map `tone_offset_frequency_hz` to the actual ROACH/PFB channel, bin edge,
-sideband, DAC lane, and ADC/firmware signal-path coordinates. Then ask whether
-the response trough and rank-1 loading align in that hardware coordinate
-across networks and whether the same structure appears in healthy control
-networks or another observing night.
+The electronics-coordinate localization is complete and is documented in
+`handoff/SCIENCE_IQ_ELECTRONICS_LOCALIZATION_2026-07-30.md`.
 
-Do not infer that mapping from tone slot alone: tone slot is
-observation-local, while UID is the detector identity. The next analysis
-requires an authoritative description of the firmware/channel mapping or a
-controlled readout test.
+It finds that the response mode remains with UID/tone-frequency identity when
+53% to 94% of common UIDs change observation-local tone-list slot. Held-out
+UID models also beat list-slot models on exactly the same tones. The slot
+coordinate is therefore rejected.
+
+The inspected raw files and APTs do not contain authoritative PFB-bin, lane,
+or channelizer-path metadata. LO is constant and common UIDs move no more than
+0.300 MHz, so UID, tone offset, and absolute RF remain confounded. The minimal
+next discriminator is an A/B/A LO-retune experiment that keeps the same UIDs
+on resonance while moving them by several broad susceptibility-bin widths in
+digital offset.
 
 Future instrument tests should record time-resolved LNA-bias voltage/current,
 IF power or gain state, and ADC statistics through the event. Those signals

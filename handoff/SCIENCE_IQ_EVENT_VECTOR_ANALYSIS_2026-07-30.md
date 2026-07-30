@@ -154,8 +154,14 @@ It finds highly repeatable UID susceptibility and strong banding versus the
 signed digital tone offset from each network LO. A pure delay/sample-slip
 model is weak, while an event-amplitude times stable tone-transfer model is
 especially strong in network 8 and substantial in networks 1 through 4.
-The next bounded discriminator is therefore to map the digital tone offset to
-the authoritative ROACH/PFB and analog signal-path coordinates.
+The subsequent electronics-coordinate localization is complete and is
+documented in
+`handoff/SCIENCE_IQ_ELECTRONICS_LOCALIZATION_2026-07-30.md`. It rejects
+ownership by the observation-local tone-list slot, but the available
+observations do not move UID independently of tone offset or absolute RF.
+They therefore cannot distinguish detector/RF identity from a
+frequency-dependent analog or digital coordinate. An A/B/A LO-retune test is
+the minimal next discriminator.
 
 For a future instrument test, the decisive missing telemetry is time-resolved
 LNA-bias voltage/current, IF power or gain state, and ADC statistics recorded
