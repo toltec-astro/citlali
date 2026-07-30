@@ -150,21 +150,18 @@ The new evidence changes the priority of the failure hypotheses:
    the map expression of the events, but it is not creating the underlying
    late-night phase disturbances.
 
-## Next Bounded Analysis
+## Follow-up Analysis
 
-Perform a controlled pairwise comparison of the 152418 and 152419 tune/setup
-products for every network, preserving affected/control identities. At
-minimum, compare:
+The next analysis followed the raw-I/Q event physics rather than interpreting
+target-sweep quality. The target sweeps were used only as empirical
+`d(I + iQ) / df` measurements at the matching raw tone slots. The resulting
+complex-vector and timing analysis is recorded in
+`handoff/SCIENCE_IQ_EVENT_VECTOR_ANALYSIS_2026-07-30.md`.
 
-- fitted resonance-frequency displacement and target-sweep repeatability;
-- I/Q-to-x/r scale and rotation changes;
-- resonator depth, width/Q, fit residual, and per-tone validity;
-- drive and sense attenuation plus any recorded readout gain state; and
-- the number and identity of tones crossing fit or usability gates.
-
-The decisive signature is not merely a large global change. It is a
-discontinuity at 152419 that is concentrated in networks 1–4, 8, and 9 while
-networks 0, 5, 7, 11, and 12 remain stable.
+It confirms synchronized cross-rack events in the late observations, finds a
+mixed common-complex and resonance-slope-aligned response that differs by
+network, and finds no robust PPS or tested sample-boundary alignment. This
+supersedes the tune/setup comparison as the immediate diagnostic priority.
 
 ## Reproduction
 
