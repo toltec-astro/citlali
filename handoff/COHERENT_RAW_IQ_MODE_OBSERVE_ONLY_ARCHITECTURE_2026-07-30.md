@@ -9,16 +9,16 @@ Investigate evidence: commit `422f25f5f`, integrated on this branch as
 
 ## Decision
 
-Mode projection is useful enough to become a first-class diagnostic event, but
-the evidence does not support automatic subtraction or a single production
-template for every affected network.
+Mode projection is useful enough to become a first-class all-network
+diagnostic event, but the evidence does not support automatic subtraction or
+interchangeable templates between networks.
 
 At the descriptive operating point of absolute cosine at least 0.6 and
 absolute projected amplitude at least 5 mrad, alternating-half
-cross-validation recognizes 167 of 212 network/event pairs that independently
-participated in the 52 synchronized event clusters (78.8% recall). It selects
-none of 660 fixed epochs in selected scans of the quiet observations 152390
-and 152392. It also identifies 52 of 100 network responses measured at a
+cross-validation recognizes 167 of 216 network/event pairs that independently
+participated in the 52 synchronized event clusters (77.3% recall). It selects
+none of 1,210 fixed epochs in selected scans of the quiet observations 152390
+and 152392. It also identifies 52 of 356 network responses measured at a
 shared event epoch that were below the original independent network trigger.
 
 Those numbers answer the immediate architectural question:
@@ -29,8 +29,9 @@ Those numbers answer the immediate architectural question:
   protections;
 - current null evidence is promising but not a production false-positive
   bound; and
-- nw8 is ready for further observe-only trials, while nw9 is not adequately
-  represented by one stable rank-one template.
+- every network represented in the raw corpus should participate in further
+  observe-only trials; nw8 is the strongest benchmark, while nw9 is not
+  adequately represented by one stable rank-one template.
 
 No code in this slice changes raw data, RTC/PTC flags, detector weights,
 learning state, map inputs, or maps.
@@ -118,6 +119,12 @@ KIDs solve boundary:
    summaries for comparison only; and
 5. leave the primary RTC matrix and all flags unchanged.
 
+The sidecar has no network allow-list. It attempts every network present in
+the observation. Each network uses its own compatible template and emits an
+explicit `template_unavailable` or compatibility status when it cannot be
+scored. Template quality changes the interpretation of a score; it does not
+silently suppress observe-only acquisition.
+
 This state should be owned by the observation pipeline, not added as new
 cross-cutting mutable state on `Engine`. The generator currently processes raw
 scans sequentially before the scan farm, so it can produce deterministic
@@ -202,31 +209,33 @@ epoch but not independently triggering is retained as an ambiguous
 low-amplitude class, not silently relabeled positive.
 
 The null set contains five fixed epochs in each selected quiet scan for every
-affected network, for 660 network/epoch examples. Those samples include real
+evaluated network. The first affected-network evaluation contained 660
+network/epoch examples. The all-network extension contains 1,210. Those
+samples include real
 sky, atmosphere, tune state, and telescope scan motion. They are not a
 continuous all-night scan and do not test another night, firmware state, or IF
-configuration. Zero false positives in 660 samples corresponds to an
-approximate 95% binomial upper bound of 0.45% overall; the per-network null
+configuration. Zero false positives in 1,210 samples corresponds to an
+approximate 95% binomial upper bound of 0.25% overall; the per-network null
 sample is only 110.
 
 ### Descriptive confusion table
 
 | Actual class | Selected | Not selected | Total |
 | --- | ---: | ---: | ---: |
-| Independent cluster-member response | 167 | 45 | 212 |
-| Quiet-scan fixed epoch | 0 | 660 | 660 |
+| Independent cluster-member response | 167 | 49 | 216 |
+| Quiet-scan fixed epoch | 0 | 1,210 | 1,210 |
 
 This table uses absolute cosine at least 0.6 and absolute amplitude at least
 5 mrad. It is a descriptive review point, not accepted production policy.
 
 The threshold grid shows the expected trade:
 
-- cosine 0.5, amplitude 2 mrad: 83.96% recall, 0/660 null selections;
-- cosine 0.6, amplitude 5 mrad: 78.77% recall, 0/660 null selections;
-- cosine 0.7, amplitude 5 mrad: 74.53% recall, 0/660 null selections; and
-- cosine 0.6, amplitude 10 mrad: 62.26% recall, 0/660 null selections.
+- cosine 0.5, amplitude 2 mrad: 84.26% recall, 3/1,210 null selections;
+- cosine 0.6, amplitude 5 mrad: 77.31% recall, 0/1,210 null selections;
+- cosine 0.7, amplitude 5 mrad: 73.15% recall, 0/1,210 null selections; and
+- cosine 0.6, amplitude 10 mrad: 61.11% recall, 0/1,210 null selections.
 
-The 0.6/5 mrad point also selects 52 of 100 shared-epoch nonmember network
+The 0.6/5 mrad point also selects 52 of 356 shared-epoch nonmember network
 responses. These are candidates for the “below the old threshold but aligned
 in time” population; they require by-eye review before being counted as
 recovered events.
@@ -252,7 +261,46 @@ nw9 is qualitatively different:
 
 The reasonable event-level nw9 cosine does not rescue the unstable loading
 estimate. A rank-two, state-conditioned, or separate event-family model should
-be tested before nw9 receives any masking authority.
+be tested before nw9 receives any masking authority. nw9 should still be
+scored and persisted in observe-only mode.
+
+### All-network extension
+
+The evaluation now infers and scores every network represented in the
+event-tone corpus:
+
+`nw0, nw1, nw2, nw3, nw4, nw5, nw7, nw8, nw9, nw11, nw12`.
+
+Networks 6 and 10 have no raw/event-tone rows in this dataset and are reported
+as unavailable. They are not excluded by policy.
+
+The extension contains:
+
+- 572 event/network vectors at the 52 shared event epochs;
+- 216 independently threshold-triggering cluster-member responses;
+- 356 measured shared-epoch nonmember responses; and
+- 1,210 fixed quiet-scan network/epoch samples.
+
+At the same descriptive cosine 0.6 / amplitude 5 mrad point, 167/216
+cluster-member responses are selected (77.3%) and 0/1,210 quiet epochs are
+selected. The four additional cluster-member responses come from nw12 and
+remain below the 5 mrad amplitude floor.
+
+The nominal control networks demonstrate why both shape and amplitude belong
+in the diagnostic:
+
+- nw7 has a cross-validated median quiet-epoch absolute cosine of 0.680 and
+  60% of its quiet epochs exceed cosine 0.6, but its median projected
+  amplitude is only 0.20 mrad and none exceed the joint 0.6/5 mrad point;
+- nw11 has a stable loading (split-half cosine 0.996) and a median shared-epoch
+  cosine of 0.952, but median amplitude is only 1.62 mrad and none pass the
+  joint point; and
+- nw12 has a stable loading (split-half cosine 0.998) and high shared-epoch
+  cosine, but median amplitude is 3.08 mrad and no response passes 5 mrad.
+
+These modes may represent repeatable low-level atmosphere/readout response,
+not the destructive pathology. They are scientifically useful controls. A
+high cosine by itself must never be called a pathology detection.
 
 ## Coherent masking design — disabled
 
@@ -344,7 +392,10 @@ The generated files belong under the project artifact directory
 ## Next production step
 
 Implement only the observation-local raw-I/Q sidecar and required diagnostic
-writer. Start with nw8, load a versioned template through explicit
-configuration, compute scores, correlate them with RTC events, and prove
-byte-identical flags, weights, and maps with the observer enabled versus
-disabled. Do not add masking in the same change.
+writer. Run it for every network present in the observation, with one
+versioned network-compatible template per score and explicit unavailable or
+incompatible records. Use nw8 as the positive benchmark and nw0/nw5/nw7/nw11/
+nw12 as control behavior, but do not encode either group as an allow-list.
+Correlate scores with RTC events and prove byte-identical flags, weights, and
+maps with the observer enabled versus disabled. Do not add masking in the same
+change.

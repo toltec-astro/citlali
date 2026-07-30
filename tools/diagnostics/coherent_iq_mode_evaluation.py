@@ -31,7 +31,6 @@ from tools.diagnostics.coherent_iq_mode_observer import (
 
 
 SCHEMA_VERSION = "citlali-coherent-iq-mode-evaluation-v1"
-DEFAULT_NETWORKS = (1, 2, 3, 4, 8, 9)
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -148,6 +147,28 @@ def _score_group(
     return score.as_dict()
 
 
+def _template_mode_by_uid(
+    template: dict[str, Any], mode_id: str = "phase_mode_1"
+) -> dict[int, float]:
+    return {
+        int(row["uid"]): float(row["loadings"][mode_id])
+        for row in template["tone_coordinate"]["tones"]
+    }
+
+
+def _template_loading_cosine(
+    left: dict[str, Any], right: dict[str, Any]
+) -> float:
+    left_mode = _template_mode_by_uid(left)
+    right_mode = _template_mode_by_uid(right)
+    uids = sorted(set(left_mode) & set(right_mode))
+    if len(uids) < 3:
+        return math.nan
+    x = np.asarray([left_mode[uid] for uid in uids], dtype=float)
+    y = np.asarray([right_mode[uid] for uid in uids], dtype=float)
+    return float(np.dot(x, y) / math.sqrt(np.dot(x, x) * np.dot(y, y)))
+
+
 def _cluster_members(clusters: list[dict[str, str]]) -> dict[str, set[int]]:
     return {
         row["event_cluster_id"]: {
@@ -183,6 +204,14 @@ def cross_validated_event_scores(
         }
         full_templates[network] = _template_from_training(
             groups, event_ids, network=network, fold="all"
+        )
+        full_templates[network]["validation"].update(
+            {
+                "alternating_half_loading_cosine": _template_loading_cosine(
+                    templates[0], templates[1]
+                ),
+                "cross_validation_event_count": len(event_ids),
+            }
         )
         for fold, test_ids in folds.items():
             for event_id in test_ids:
@@ -534,7 +563,9 @@ def threshold_rows(
 
 
 def network_summary(
-    scores: list[dict[str, Any]], rank_summary: list[dict[str, str]]
+    scores: list[dict[str, Any]],
+    rank_summary: list[dict[str, str]],
+    templates: dict[int, dict[str, Any]],
 ) -> list[dict[str, Any]]:
     rank_by_network = {int(row["network"]): row for row in rank_summary}
     result = []
@@ -560,6 +591,7 @@ def network_summary(
                 [float(row["absolute_cosine_similarity"]) for row in scored]
             )
             rank = rank_by_network.get(network, {})
+            template = templates[network]
             result.append(
                 {
                     "schema_version": SCHEMA_VERSION,
@@ -588,10 +620,14 @@ def network_summary(
                         else math.nan
                     ),
                     "training_rank1_energy_fraction": rank.get(
-                        "phase_rank1_energy_fraction", ""
+                        "phase_rank1_energy_fraction",
+                        template["training"]["rank_energy_fractions"][0],
                     ),
                     "split_half_loading_cosine": rank.get(
-                        "phase_rank1_split_half_loading_cosine", ""
+                        "phase_rank1_split_half_loading_cosine",
+                        template["validation"][
+                            "alternating_half_loading_cosine"
+                        ],
                     ),
                 }
             )
@@ -604,6 +640,15 @@ def main() -> None:
     parser.add_argument("--tone-susceptibility-dir", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--epochs-per-null-scan", type=int, default=5)
+    parser.add_argument(
+        "--networks",
+        type=int,
+        nargs="+",
+        help=(
+            "network IDs to evaluate; default is every network represented "
+            "in the event-tone corpus"
+        ),
+    )
     args = parser.parse_args()
     args.output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -617,9 +662,23 @@ def main() -> None:
     )
     with (args.event_vector_dir / "manifest.json").open(encoding="utf-8") as handle:
         source_manifest = json.load(handle)
+    available_networks = tuple(
+        sorted({int(row["network"]) for row in tone_rows})
+    )
+    networks = (
+        tuple(dict.fromkeys(args.networks))
+        if args.networks
+        else available_networks
+    )
+    unavailable_networks = sorted(set(networks) - set(available_networks))
+    if unavailable_networks:
+        raise ValueError(
+            "requested networks absent from tone-vector corpus: "
+            + " ".join(map(str, unavailable_networks))
+        )
 
     event_scores, templates = cross_validated_event_scores(
-        tone_rows, clusters, DEFAULT_NETWORKS
+        tone_rows, clusters, networks
     )
     _rtc_scan_record_metrics(source_manifest, event_scores)
     null_scores = quiet_scan_scores(
@@ -630,7 +689,7 @@ def main() -> None:
     )
     all_scores = event_scores + null_scores
     thresholds = threshold_rows(event_scores, null_scores)
-    summaries = network_summary(all_scores, rank_summary)
+    summaries = network_summary(all_scores, rank_summary, templates)
 
     write_csv(args.output_dir / "coherent_mode_scores.csv", all_scores)
     write_csv(args.output_dir / "coherent_mode_threshold_grid.csv", thresholds)
@@ -665,6 +724,11 @@ def main() -> None:
             "not_production_policy": True,
         },
         "counts": {
+            "available_networks": list(available_networks),
+            "evaluated_networks": list(networks),
+            "instrument_networks_not_in_corpus": sorted(
+                set(range(13)) - set(available_networks)
+            ),
             "event_network_scores": len(event_scores),
             "cluster_member_positive_scores": sum(
                 row["example_class"] == "cluster_member"

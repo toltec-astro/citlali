@@ -442,9 +442,19 @@ def score_event(
     if offset_scale > 0.0:
         x = (tone_offset - float(np.mean(tone_offset))) / offset_scale
         design = np.column_stack([np.ones(y.size), x])
-        delay_coefficients, _, _, _ = np.linalg.lstsq(design, y, rcond=None)
-        delay_prediction = design @ delay_coefficients
-        delay_r2 = _zero_baseline_r2(y, delay_prediction)
+        if np.all(np.isfinite(design)):
+            delay_coefficients, _, _, _ = np.linalg.lstsq(
+                design, y, rcond=None
+            )
+            with np.errstate(over="ignore", invalid="ignore", divide="ignore"):
+                delay_prediction = design @ delay_coefficients
+            delay_r2 = (
+                _zero_baseline_r2(y, delay_prediction)
+                if np.all(np.isfinite(delay_prediction))
+                else math.nan
+            )
+        else:
+            delay_r2 = math.nan
     else:
         delay_r2 = math.nan
 

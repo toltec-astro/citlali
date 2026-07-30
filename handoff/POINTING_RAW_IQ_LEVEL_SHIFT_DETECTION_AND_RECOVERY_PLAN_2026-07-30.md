@@ -386,6 +386,15 @@ response vector. They do not yet freeze a corroboration threshold.
 - nw8 passes the proof-of-concept gate (44/44 member events; split-half loading
   cosine 0.985); nw9 does not pass a one-mode stability gate (23/37 at the
   descriptive point; split-half loading cosine 0.329).
+- Extended the observer to every network represented in the corpus:
+  nw0--nw5, nw7--nw9, nw11, and nw12. Networks 6 and 10 are absent from this
+  dataset, not excluded by policy.
+- The all-network comparison contains 572 event/network vectors and 1,210
+  quiet epochs. The same descriptive 0.6 cosine / 5 mrad point selects
+  167/216 independently participating responses and 0/1,210 quiet epochs.
+- Stable, high-cosine but low-amplitude modes in nw7, nw11, and nw12 prove that
+  cosine alone is not a pathology trigger. All networks remain useful
+  observe-only controls.
 - The existing RTC accepted-event fanout has an estimated median of 150.5
   per coherent event, demonstrating the compact-record benefit.
 - Recorded the audit, schema, evaluation, masking design, and subtraction
@@ -401,5 +410,5 @@ Continue Milestone 2 by labeling a stratified event set:
 3. all events with broad, overlapping, or visibly non-step morphology;
 4. representative high-support, multi-seed events.
 
-Then apply the same diagnostic to selected early- and middle-night quiet and
-pathological pointing observations before tuning any threshold.
+Then apply the same all-network diagnostic to selected early- and middle-night
+quiet and pathological pointing observations before tuning any threshold.

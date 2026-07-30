@@ -57,10 +57,16 @@ gates. No numerical algorithm changes are part of this integration.
   synthetic tests are now in place. At a descriptive absolute-cosine 0.6 and
   5 mrad operating point, the classifier recognizes 167/212 independently
   participating network/event pairs and 0/660 fixed quiet-scan epochs; it also
-  surfaces 52/100 below-trigger responses at shared event times. nw8 is the
-  stable proof of concept, while nw9 explicitly fails a single-mode stability
-  gate. No flags, weights, learning state, or maps are changed. The production
-  next step is an observation-local raw-I/Q diagnostic sidecar with
+  surfaces 52/100 below-trigger responses at shared event times. The extended
+  evaluation now scores all 11 networks present in the corpus: 572
+  event/network vectors and 1,210 quiet epochs. The same descriptive point
+  selects 167/216 independently participating responses and 0/1,210 quiet
+  epochs. Stable high-cosine but low-amplitude control modes show that cosine
+  alone is not a pathology trigger. nw8 remains the positive benchmark and
+  nw9 explicitly fails a single-mode stability gate, but neither result forms
+  a runtime network allow-list. No flags, weights, learning state, or maps are
+  changed. The production next step is an all-present-network,
+  observation-local raw-I/Q diagnostic sidecar with
   byte-identical enabled/disabled map outputs; coherent masking and
   subtraction remain disabled. See
   `handoff/COHERENT_RAW_IQ_MODE_OBSERVE_ONLY_ARCHITECTURE_2026-07-30.md`.
