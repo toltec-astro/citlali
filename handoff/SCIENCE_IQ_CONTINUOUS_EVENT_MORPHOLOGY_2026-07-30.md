@@ -241,6 +241,12 @@ Generating exact matched APTs for the five excluded pointings would then
 close the chronology gap, provided the APT provenance and matching validation
 are acceptable.
 
+That hidden-state follow-up is now complete. See
+`handoff/SCIENCE_IQ_HIDDEN_STATE_ANALYSIS_2026-07-30.md`. It finds a
+baseline plus two broad cross-rack response modes, with an approximate
+nw1/nw2/nw9 versus nw3/nw4/nw8 partition rather than one identical state
+shared by all networks.
+
 ## Outputs
 
 The artifact set is stored locally at:
