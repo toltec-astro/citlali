@@ -124,16 +124,14 @@ scan-network CSV, event-cluster CSV, population CSV, and summary PNG.
 
 ## Next Discriminator
 
-The available cryostat thermometry is worth treating as an observation-scale
-susceptibility variable, not as an event trigger. Its approximately 60-second
-cadence cannot resolve the subsecond raw-I/Q events. A bounded next analysis
-should compare per-observation event incidence against focal-plane and
-dilution-fridge temperature levels and slopes across a larger pointing
-population, while controlling explicitly for observation order and time since
-Tune.
+Completed on 2026-07-30 using the five approximately 20-minute science
+observations plus the reduced pointing chronology. See
+`handoff/SCIENCE_IQ_TEMPERATURE_SURVEY_2026-07-30.md`.
 
-Within an observation, compare event-rich and event-poor halves only when more
-than two valid temperature samples are available. With the current two-sample
-pointing files, that comparison is descriptive rather than statistical. This
-keeps the next test within the telemetry actually recorded and avoids
-overinterpreting telescope-trajectory or unavailable readout-status data.
+The recorded array and mixing-chamber temperatures do not show a spike that
+explains the event onset. The network-selective transition is sharply
+bracketed by the clean 152418 pointing and affected 152419 science
+observation. Warm-stage channels drift upward with time of night and remain
+possible susceptibility variables, but they do not isolate the trigger. The
+next discriminator is therefore a controlled affected-versus-control
+comparison of the 152418 and 152419 tune/setup products.
