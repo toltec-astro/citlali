@@ -165,12 +165,12 @@ science dataset.
 - No time-resolved internal readout, bias, clock, or electronics-temperature
   telemetry exists to identify the trigger.
 
-The strongest next test using only data in hand is a held-out two-mode
-detector: learn the two network center patterns from part of one rich
-observation, detect their occupancy without using catalog boundaries, and
-test transfer to the remaining observations. That would determine whether
-the mode partition independently predicts the event catalog and would remove
-the main conditioning limitation of this analysis.
+That held-out test is now complete. A three-state model trained without
+catalog times on the first half of observation 152431 recovers 96.2% of
+catalog events in the held-out half after target-intrinsic shape
+normalization, and transfers with 78.3% and 81.1% recall to observations
+152419 and 152433. See
+`handoff/SCIENCE_IQ_HELD_OUT_MODE_DETECTION_2026-07-30.md`.
 
 ## Outputs
 

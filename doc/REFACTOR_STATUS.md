@@ -63,11 +63,23 @@ gates. No numerical algorithm changes are part of this integration.
   independently trigger. Stable high-cosine but low-amplitude control modes
   show that cosine alone is not a pathology trigger. nw8 remains the positive
   benchmark and nw9 explicitly fails a single-mode stability gate, but
-  neither result forms a runtime network allow-list. The opt-in production
-  sidecar clusters RTC-seeded shared epochs and attempts a bounded raw-I/Q
-  score for every raw network present, including networks that did not seed
-  the event. It writes explicit template and compatibility status and changes
-  no samples, flags, weights, learning state, or maps. The first bounded Unity
+  neither result forms a runtime network allow-list. A catalog-time-blind
+  three-state HMM trained on the first half of science observation 152431 now
+  independently recovers 96.2% of catalog events in the held-out half and
+  transfers with 78.3% and 81.1% recall to observations 152419 and 152433
+  after unlabeled target-intrinsic shape normalization. All matched
+  transitions have the expected direction and exceed 200 circular-shift null
+  trials, while two quiet controls have zero catalog matches. Frozen-scale
+  decoding exposes strong nonstationarity, including a 10.9-fold nw3 scale
+  increase within 152431; shape evidence and absolute severity must therefore
+  remain distinct. This is forensic validation, not an automatic flagger.
+  See
+  `handoff/SCIENCE_IQ_HELD_OUT_MODE_DETECTION_2026-07-30.md`. The opt-in
+  production sidecar clusters RTC-seeded shared epochs and attempts a bounded
+  raw-I/Q score for every raw network present, including networks that did not
+  seed the event. It writes explicit template and compatibility status and
+  changes no samples, flags, weights, learning state, or maps. The first
+  bounded Unity
   smoke at `91f99bde` loaded all 11 templates and wrote a schema-valid
   sidecar, but exposed a lifecycle defect: standard RTC diagnostic output
   cleared detailed scan summaries before the observation-level sidecar read
