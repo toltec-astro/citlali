@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://toltec.astro.umass.edu/schemas/citlali-coherent-iq-mode-template-v1.json",
+  "title": "Citlali coherent raw-I/Q mode template",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "template_id",
+    "template_version",
+    "created_at_utc",
+    "lifecycle_state",
+    "identity",
+    "tone_coordinate",
+    "normalization",
+    "modes",
+    "training",
+    "compatibility",
+    "validation",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": {"const": "citlali-coherent-iq-mode-template-v1"},
+    "template_id": {"type": "string", "minLength": 1},
+    "template_version": {"type": "string", "minLength": 1},
+    "created_at_utc": {"type": "string", "format": "date-time"},
+    "lifecycle_state": {"enum": ["observe_only", "experimental"]},
+    "identity": {
+      "type": "object",
+      "required": ["network", "readout_id", "readout_coordinate_system"],
+      "properties": {
+        "network": {"type": "integer", "minimum": 0},
+        "readout_id": {"type": "string", "minLength": 1},
+        "readout_coordinate_system": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": true
+    },
+    "tone_coordinate": {
+      "type": "object",
+      "required": [
+        "identity_field",
+        "ordering",
+        "frequency_field",
+        "frequency_meaning",
+        "tones"
+      ],
+      "properties": {
+        "identity_field": {"const": "uid"},
+        "ordering": {"const": "uid_ascending"},
+        "frequency_field": {"const": "tone_offset_frequency_hz"},
+        "frequency_meaning": {"type": "string"},
+        "tones": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "uid",
+              "tone_slot_zero_based",
+              "tone_offset_frequency_hz",
+              "probe_frequency_hz",
+              "loadings"
+            ],
+            "properties": {
+              "uid": {"type": "integer"},
+              "tone_slot_zero_based": {"type": "integer", "minimum": 0},
+              "tone_offset_frequency_hz": {"type": "number"},
+              "probe_frequency_hz": {"type": "number"},
+              "loadings": {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": {"type": "number"}
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "normalization": {
+      "type": "object",
+      "required": [
+        "kind",
+        "sign_rule",
+        "anchor_uids",
+        "projection_amplitude_unit"
+      ],
+      "additionalProperties": true
+    },
+    "modes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["mode_id", "rank", "anchor_uid"],
+        "additionalProperties": true
+      }
+    },
+    "training": {"type": "object"},
+    "compatibility": {
+      "type": "object",
+      "required": [
+        "tone_offset_tolerance_hz",
+        "minimum_compatible_tone_fraction",
+        "required_metadata",
+        "partial_match_policy",
+        "unresolved_metadata"
+      ],
+      "properties": {
+        "tone_offset_tolerance_hz": {"type": "number", "minimum": 0},
+        "minimum_compatible_tone_fraction": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1
+        },
+        "required_metadata": {"type": "object"},
+        "partial_match_policy": {
+          "const": "explicit_coverage_or_fail_closed"
+        },
+        "unresolved_metadata": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      },
+      "additionalProperties": true
+    },
+    "validation": {"type": "object"},
+    "provenance": {"type": "object"}
+  }
+}

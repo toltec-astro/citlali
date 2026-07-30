@@ -48,6 +48,22 @@ gates. No numerical algorithm changes are part of this integration.
 
 ## Current Snapshot
 
+- A 2026-07-30 coherent raw-I/Q event investigation has produced the first
+  mode-aware observe-only architecture slice. The current RTC/PTC learning
+  path records accepted intervals per detector UID and compacts only within
+  that UID, so a physical network event loses its tone-vector identity and
+  fans out into many records. A versioned, fail-closed template schema,
+  non-mutating classifier, alternating-half evaluation, and seven focused
+  synthetic tests are now in place. At a descriptive absolute-cosine 0.6 and
+  5 mrad operating point, the classifier recognizes 167/212 independently
+  participating network/event pairs and 0/660 fixed quiet-scan epochs; it also
+  surfaces 52/100 below-trigger responses at shared event times. nw8 is the
+  stable proof of concept, while nw9 explicitly fails a single-mode stability
+  gate. No flags, weights, learning state, or maps are changed. The production
+  next step is an observation-local raw-I/Q diagnostic sidecar with
+  byte-identical enabled/disabled map outputs; coherent masking and
+  subtraction remain disabled. See
+  `handoff/COHERENT_RAW_IQ_MODE_OBSERVE_ONLY_ARCHITECTURE_2026-07-30.md`.
 - A 2026-07-24 pointing fruit-loop investigation is active. Five controlled
   observations have exact no-feedback seeds but monotonically brighter and
   broader fitted sources through four feedback passes. Production
