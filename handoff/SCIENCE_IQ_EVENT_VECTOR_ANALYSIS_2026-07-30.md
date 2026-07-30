@@ -145,6 +145,18 @@ failure from "Citlali step pathology" to a real, synchronized raw-complex
 disturbance upstream of Citlali calibration, with strong network-dependent
 susceptibility.
 
+## Full-Duration Temporal Follow-up
+
+The RTC chunk-selection limitation is now removed for observations with exact
+matched APTs. The continuous catalog and temporal analysis are documented in
+`handoff/SCIENCE_IQ_CONTINUOUS_EVENT_MORPHOLOGY_2026-07-30.md`.
+
+It finds 83, 334, and 328 primary cross-rack events in science observations
+152419, 152431, and 152433. The continuous detector independently recovers 49
+of the 52 RTC-guided events. Successive raw-projection transitions are mostly
+opposite-signed and the projected level persists between events, giving a
+telegraph-like rather than independent-impulse morphology.
+
 ## Follow-up Discriminator
 
 The bounded tone-susceptibility analysis is complete and is documented in

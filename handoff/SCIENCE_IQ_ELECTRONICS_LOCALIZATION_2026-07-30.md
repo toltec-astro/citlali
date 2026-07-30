@@ -207,6 +207,23 @@ Citlali/mapmaking is excluded as the origin because the disturbance is in raw
 I/Q. A tune failure, telescope motion, or a recorded cryostat-temperature
 spike is not supported as the trigger by the preceding analyses.
 
+## Full-Duration Temporal Follow-up
+
+The full-duration UID-template catalog is complete and documented in
+`handoff/SCIENCE_IQ_CONTINUOUS_EVENT_MORPHOLOGY_2026-07-30.md`.
+
+It finds 745 primary cross-rack events in the three event-rich science
+observations, compared with the 52-event RTC-guided sample. The two worst
+observations contain about 16 transitions per minute. Participating networks
+have unanimous sign within each event, while successive directions alternate
+77% to 85% of the time. A direct projected-phase trace visibly switches
+between broad levels.
+
+This strengthens the shared-trigger, network-dependent-transfer conclusion
+and changes the temporal description from sparse impulses to persistent,
+bidirectional, telegraph-like state transitions. It does not break the
+remaining UID-versus-frequency-coordinate degeneracy.
+
 ## Minimal Controlled Retune
 
 The smallest decisive experiment is an A/B/A LO retune that moves the same
