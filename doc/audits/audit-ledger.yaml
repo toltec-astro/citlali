@@ -1,0 +1,1006 @@
+format_version: 1
+program: citlali-scientific-contract-audits
+repository: /Users/gwilson/GitHub/citlali-refactor
+inventory_branch: codex/refactor-mainline
+inventory_governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+inventory_date: 2026-07-31
+maintenance: hand_edited_no_schema_or_validator
+inventory_dependency_detail: >-
+  An upstream record containing only package_id and status is an
+  inventory-only edge. Before that package audit is dispatched, the
+  coordinator must add the exact required contract fact and the consequence
+  while it remains open.
+
+controlled_vocabulary:
+  tiers: [A, B, C]
+  contract_status:
+    - not_started
+    - independent_draft_frozen
+    - proposed
+    - approved
+    - superseded
+  implementation_status:
+    - not_assessed
+    - conformant
+    - conditionally_conformant
+    - nonconformant
+  validation_status:
+    - not_started
+    - planned
+    - in_progress
+    - external_pending
+    - complete
+    - failed
+  production_status:
+    - fail_closed
+    - existing_use_only
+    - restricted_use
+    - approved
+    - retired
+  verdict:
+    - pending
+    - retain
+    - amend
+    - split
+    - supersede
+    - reject
+  finding_class:
+    - implementation_defect
+    - contract_gap
+    - scientific_policy_decision
+    - evidence_gap
+    - dependency_gap
+  evidence_basis: [observed, derived, suspected, owner_decision]
+  finding_status: [open, addressed_pending_reaudit, closed, superseded]
+  severity: [P0, P1, P2, P3]
+  confidence: [low, medium, high]
+  dependency_status: [open, conditioned, satisfied, superseded]
+  re_audit_status: [not_started, not_required, required, in_progress, complete]
+
+packages:
+  - id: SCI-MAP-001
+    name: Shared and naive mapmaking plus observation coaddition
+    tier: A
+    queue_wave: first_new_audit
+    scientific_scope: >-
+      The shared map-product contract, naive weighted gridding, normalization,
+      signal, formal weight, kernel, hits/coverage, validity, and centered
+      inverse-variance observation coaddition.
+    known_code_areas:
+      - include/citlali/core/mapmaking/naive_mm.h
+      - include/citlali/core/mapmaking/map.h
+      - src/citlali/core/mapmaking/map.cpp
+      - include/citlali/core/pipeline/mapmaking_execution_plan.h
+      - include/citlali/core/pipeline/observation_coadd_accumulation.h
+    inputs:
+      - calibrated processed samples and sample/detector eligibility
+      - detector weights and timestream covariance assumptions
+      - pointing/pixel operator and sample duration
+    outputs:
+      - observation and coadd signal maps
+      - formal map weight, kernel, hits/coverage, and validity
+    upstream_dependencies:
+      - package_id: SCI-CAL-001
+        status: open
+        required_contract: >-
+          Calibrated processed-sample identity, units, multiplicative response,
+          and calibration-uncertainty terms at the mapmaker input.
+        consequence: >-
+          Map amplitude, units, and calibration covariance remain conditional.
+      - package_id: SCI-AST-001
+        status: open
+        required_contract: >-
+          Per-sample projection/pointing operator, coordinate frame, pixel
+          convention, and astrometric-response uncertainty.
+        consequence: >-
+          Spatial response, WCS, and astrometric covariance remain conditional.
+      - package_id: SCI-PTC-001
+        status: open
+        required_contract: >-
+          Processed-sample weighting or covariance identity, normalization,
+          and any correlations retained after timestream conditioning.
+        consequence: >-
+          A gridding denominator cannot be authorized as formal inverse
+          variance without this contract.
+      - package_id: SCI-VAL-001
+        status: open
+        required_contract: >-
+          Sample/detector eligibility, flag, non-finite, and zero-support
+          semantics presented to accumulation and coaddition.
+        consequence: >-
+          Map validity, hits, coverage, and consumer eligibility remain
+          conditional.
+    downstream_consumers:
+      - SCI-MAP-002
+      - SCI-NOI-001
+      - SCI-NOI-002
+      - SCI-FLT-001
+      - SCI-FLT-002
+      - SCI-SRC-001
+      - SCI-MODE-001
+      - SCI-BEAM-001
+      - SCI-FRUIT-001
+    governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+    governing_sha_role: inventory_snapshot
+    audit_branch: null
+    audit_commit: null
+    independent_derivation: {status: not_started, sha256: null}
+    contract_status: not_started
+    implementation_status: not_assessed
+    validation_status: not_started
+    production_status: existing_use_only
+    verdict: pending
+    open_findings: []
+    unresolved_scientific_decisions: []
+    local_evidence: []
+    requested_unity_evidence: []
+    supplied_external_evidence: []
+    remediation_branch: null
+    remediation_commit: null
+    re_audit_status: not_started
+
+  - id: SCI-ALIGN-001
+    name: Sample alignment, scan slicing, and gap interpolation
+    tier: A
+    queue_wave: foundation_1
+    scientific_scope: >-
+      Construction of the common detector/telescope/HWPR sample axis,
+      interface time offsets, scan bounds, timing-gap interpolation, and gap
+      masks before scientific conditioning.
+    known_code_areas:
+      - include/citlali/core/engine/detail/todproc_alignment_impl.h
+      - include/citlali/core/engine/detail/kidsproc_gaps_impl.h
+      - include/citlali/core/pipeline/timestream_scan_generation.h
+    inputs: [raw detector and telescope samples, timestamps, interface offsets]
+    outputs: [aligned samples, scan windows, timing-gap values and masks]
+    upstream_dependencies: []
+    downstream_consumers: [SCI-CAL-001, SCI-AST-001, SCI-RTC-001, SCI-VAL-001]
+    governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+    governing_sha_role: inventory_snapshot
+    audit_branch: null
+    audit_commit: null
+    independent_derivation: {status: not_started, sha256: null}
+    contract_status: not_started
+    implementation_status: not_assessed
+    validation_status: not_started
+    production_status: existing_use_only
+    verdict: pending
+    open_findings: []
+    unresolved_scientific_decisions: []
+    local_evidence: []
+    requested_unity_evidence: []
+    supplied_external_evidence: []
+    remediation_branch: null
+    remediation_commit: null
+    re_audit_status: not_started
+
+  - id: SCI-CAL-001
+    name: Detector calibration, extinction, and map-unit transfer
+    tier: A
+    queue_wave: foundation_1
+    scientific_scope: >-
+      Detector/APT calibration, flux scaling, atmospheric extinction, target
+      map-unit conversion, beam/photometric identity, and propagated
+      calibration uncertainty.
+    known_code_areas:
+      - include/citlali/core/engine/calib.h
+      - src/citlali/core/engine/calib.cpp
+      - include/citlali/core/timestream/rtc/calibrate.h
+      - include/citlali/core/pipeline/flux_calibration.h
+    inputs: [APT calibration, tau and elevation, raw detector signal, target unit]
+    outputs: [calibrated TOD, calibration factors, map and photometric unit identity]
+    upstream_dependencies:
+      - package_id: SCI-ALIGN-001
+        status: open
+    downstream_consumers: [SCI-RTC-001, SCI-MAP-001, SCI-FLT-001, SCI-MODE-001, SCI-BEAM-001]
+    governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+    governing_sha_role: inventory_snapshot
+    audit_branch: null
+    audit_commit: null
+    independent_derivation: {status: not_started, sha256: null}
+    contract_status: not_started
+    implementation_status: not_assessed
+    validation_status: not_started
+    production_status: existing_use_only
+    verdict: pending
+    open_findings: []
+    unresolved_scientific_decisions: []
+    local_evidence: []
+    requested_unity_evidence: []
+    supplied_external_evidence: []
+    remediation_branch: null
+    remediation_commit: null
+    re_audit_status: not_started
+
+  - id: SCI-AST-001
+    name: Pointing, astrometry, detector coordinates, and WCS
+    tier: A
+    queue_wave: foundation_1
+    scientific_scope: >-
+      Observation pointing corrections, telescope and detector coordinates,
+      interpolation/support policy, coordinate frames, map projection, WCS,
+      and astrometric uncertainty/response.
+    known_code_areas:
+      - include/citlali/core/pipeline/astrometry_execution_plan.h
+      - include/citlali/core/pipeline/observation_calibration_config.h
+      - include/citlali/core/pipeline/telescope_pointing_operations.h
+      - include/citlali/core/engine/detail/todproc_pointing_impl.h
+    inputs: [aligned telescope data, pointing support, detector offsets, frame and center]
+    outputs: [per-sample coordinates, map projection and WCS, realized correction]
+    upstream_dependencies:
+      - package_id: SCI-ALIGN-001
+        status: open
+    downstream_consumers: [SCI-RTC-001, SCI-PTC-001, SCI-MAP-001, SCI-SRC-001, SCI-MODE-001, SCI-BEAM-001]
+    governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+    governing_sha_role: inventory_snapshot
+    audit_branch: null
+    audit_commit: null
+    independent_derivation: {status: not_started, sha256: null}
+    contract_status: not_started
+    implementation_status: not_assessed
+    validation_status: not_started
+    production_status: existing_use_only
+    verdict: pending
+    open_findings: []
+    unresolved_scientific_decisions: []
+    local_evidence: []
+    requested_unity_evidence: []
+    supplied_external_evidence: []
+    remediation_branch: null
+    remediation_commit: null
+    re_audit_status: not_started
+
+  - id: ENG-STATE-001
+    name: Scientific state, provenance, required products, and failure flow
+    tier: C
+    queue_wave: parallel_foundation
+    scientific_scope: >-
+      Requested/effective/observation-resolved/realized authority, lifecycle
+      ownership, exact-SHA provenance, required-product publication,
+      reproducibility, and failure propagation without redefining estimators.
+    known_code_areas:
+      - include/citlali/core/session
+      - include/citlali/core/pipeline
+      - validation/product_contracts.json
+      - validation/accepted_runs.json
+      - tools/baseline/audit_reduction_run.py
+    inputs: [validated requests, execution plans, lifecycle events, product results]
+    outputs: [provenance, completion state, required products, structured failure]
+    upstream_dependencies: []
+    downstream_consumers: [all scientific audit packages and external evidence reviewers]
+    governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+    governing_sha_role: inventory_snapshot
+    audit_branch: null
+    audit_commit: null
+    independent_derivation: {status: not_started, sha256: null}
+    contract_status: not_started
+    implementation_status: not_assessed
+    validation_status: not_started
+    production_status: existing_use_only
+    verdict: pending
+    open_findings: []
+    unresolved_scientific_decisions: []
+    local_evidence: []
+    requested_unity_evidence: []
+    supplied_external_evidence: []
+    remediation_branch: null
+    remediation_commit: null
+    re_audit_status: not_started
+
+  - id: SCI-RTC-001
+    name: Raw-timestream conditioning interface and temporal response
+    tier: B
+    queue_wave: foundation_2
+    scientific_scope: >-
+      Mature RTC calibration invocation, despiking/replacement, FIR/IIR/notch
+      filtering, edge guards, downsampling, source masks, flags, and temporal
+      transfer at its input/output interface.
+    known_code_areas:
+      - include/citlali/core/timestream/rtc/rtcproc.h
+      - include/citlali/core/pipeline/raw_timestream_execution_plan.h
+      - include/citlali/core/pipeline/raw_timestream_provenance.h
+    inputs: [aligned raw TOD, calibration, coordinates, configuration, flags]
+    outputs: [conditioned TOD and kernels, flags, transfer and diagnostics]
+    upstream_dependencies:
+      - package_id: SCI-ALIGN-001
+        status: open
+      - package_id: SCI-CAL-001
+        status: open
+      - package_id: SCI-AST-001
+        status: open
+    downstream_consumers: [SCI-PTC-001, SCI-VAL-001, SCI-BEAM-001]
+    governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+    governing_sha_role: inventory_snapshot
+    audit_branch: null
+    audit_commit: null
+    independent_derivation: {status: not_started, sha256: null}
+    contract_status: not_started
+    implementation_status: not_assessed
+    validation_status: not_started
+    production_status: existing_use_only
+    verdict: pending
+    open_findings: []
+    unresolved_scientific_decisions: []
+    local_evidence: []
+    requested_unity_evidence: []
+    supplied_external_evidence: []
+    remediation_branch: null
+    remediation_commit: null
+    re_audit_status: not_started
+
+  - id: SCI-PTC-001
+    name: Correlated-mode cleaning and detector-weight interface
+    tier: B
+    queue_wave: foundation_2
+    scientific_scope: >-
+      Mature PTC mean/common-mode/PCA cleaning, source masking, second-pass
+      selection, detector weighting, flags, and the transfer and covariance
+      claims of the cleaned-TOD/mapmaking interface.
+    known_code_areas:
+      - include/citlali/core/timestream/ptc/ptcproc.h
+      - include/citlali/core/timestream/ptc/clean.h
+      - include/citlali/core/pipeline/processed_timestream_execution_plan.h
+      - include/citlali/core/pipeline/processed_timestream_provenance.h
+    inputs: [RTC TOD and kernels, flags, APT identity, source masks]
+    outputs: [cleaned TOD and kernels, evolved flags, detector weights, diagnostics]
+    upstream_dependencies:
+      - package_id: SCI-RTC-001
+        status: open
+      - package_id: SCI-AST-001
+        status: open
+    downstream_consumers: [SCI-VAL-001, SCI-MAP-001, SCI-NOI-001, SCI-BEAM-001]
+    governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+    governing_sha_role: inventory_snapshot
+    audit_branch: null
+    audit_commit: null
+    independent_derivation: {status: not_started, sha256: null}
+    contract_status: not_started
+    implementation_status: not_assessed
+    validation_status: not_started
+    production_status: existing_use_only
+    verdict: pending
+    open_findings: []
+    unresolved_scientific_decisions: []
+    local_evidence: []
+    requested_unity_evidence: []
+    supplied_external_evidence: []
+    remediation_branch: null
+    remediation_commit: null
+    re_audit_status: not_started
+
+  - id: SCI-VAL-001
+    name: Sample and detector validity, flags, and map eligibility
+    tier: A
+    queue_wave: foundation_2
+    scientific_scope: >-
+      Cross-stage semantics of timing-gap masks, RTC/PTC flags, detector/APT
+      flags, non-finite values, edge guards, and the exact eligibility/support
+      operator presented to mapmaking and downstream estimators.
+    known_code_areas:
+      - include/citlali/core/timestream/rtc/rtcproc.h
+      - include/citlali/core/timestream/ptc/ptcproc.h
+      - include/citlali/core/mapmaking/naive_mm.h
+      - include/citlali/core/mapmaking/jinc_mm.h
+    inputs: [gap masks, sample flags, detector flags, non-finite state, selection policy]
+    outputs: [explicit sample/detector eligibility and validity/support semantics]
+    upstream_dependencies:
+      - package_id: SCI-ALIGN-001
+        status: open
+      - package_id: SCI-RTC-001
+        status: open
+      - package_id: SCI-PTC-001
+        status: open
+    downstream_consumers: [SCI-MAP-001, SCI-MAP-002, SCI-NOI-001, SCI-BEAM-001]
+    governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+    governing_sha_role: inventory_snapshot
+    audit_branch: null
+    audit_commit: null
+    independent_derivation: {status: not_started, sha256: null}
+    contract_status: not_started
+    implementation_status: not_assessed
+    validation_status: not_started
+    production_status: existing_use_only
+    verdict: pending
+    open_findings: []
+    unresolved_scientific_decisions: []
+    local_evidence: []
+    requested_unity_evidence: []
+    supplied_external_evidence: []
+    remediation_branch: null
+    remediation_commit: null
+    re_audit_status: not_started
+
+  - id: SCI-MAP-002
+    name: JINC gridding interface, normalization, and response
+    tier: B
+    queue_wave: map_successor
+    scientific_scope: >-
+      The mature JINC deposition interface, footprint/subpixel response,
+      normalization, support, edge behavior, sequential/parallel equivalence,
+      and conformity to the shared map-product contract.
+    known_code_areas:
+      - include/citlali/core/mapmaking/jinc_mm.h
+      - include/citlali/core/pipeline/mapmaking_dispatch.h
+      - include/citlali/core/pipeline/mapmaking_method_config.h
+    inputs: [SCI-MAP-001 abstract inputs, JINC kernel and subpixel policy]
+    outputs: [SCI-MAP-001-compatible map products and response]
+    upstream_dependencies:
+      - package_id: SCI-MAP-001
+        status: open
+      - package_id: SCI-VAL-001
+        status: open
+    downstream_consumers: [SCI-NOI-001, SCI-NOI-002, SCI-FLT-001, SCI-FLT-002]
+    governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+    governing_sha_role: inventory_snapshot
+    audit_branch: null
+    audit_commit: null
+    independent_derivation: {status: not_started, sha256: null}
+    contract_status: not_started
+    implementation_status: not_assessed
+    validation_status: not_started
+    production_status: existing_use_only
+    verdict: pending
+    open_findings: []
+    unresolved_scientific_decisions: []
+    local_evidence: []
+    requested_unity_evidence: []
+    supplied_external_evidence: []
+    remediation_branch: null
+    remediation_commit: null
+    re_audit_status: not_started
+
+  - id: SCI-NOI-001
+    name: Noise and jackknife realization construction and propagation
+    tier: A
+    queue_wave: uncertainty_3
+    scientific_scope: >-
+      Random-sign/jackknife construction, random engine and seed identity,
+      conditioning assumptions, and propagation of realizations through the
+      selected gridding, coadd, and filtering operators.
+    known_code_areas:
+      - include/citlali/core/pipeline/timestream_scan_generation.h
+      - include/citlali/core/pipeline/noise_execution_plan.h
+      - include/citlali/core/mapmaking/naive_mm.h
+      - include/citlali/core/mapmaking/jinc_mm.h
+      - include/citlali/core/pipeline/observation_coadd_accumulation.h
+    inputs: [processed TOD, flags, randomization policy and seed, selected operators]
+    outputs: [observation, coadd, and filtered noise realizations with provenance]
+    upstream_dependencies:
+      - package_id: SCI-PTC-001
+        status: open
+      - package_id: SCI-VAL-001
+        status: open
+      - package_id: SCI-MAP-001
+        status: open
+    downstream_consumers: [SCI-NOI-002, SCI-FLT-001, SCI-FLT-002]
+    governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+    governing_sha_role: inventory_snapshot
+    audit_branch: null
+    audit_commit: null
+    independent_derivation: {status: not_started, sha256: null}
+    contract_status: not_started
+    implementation_status: not_assessed
+    validation_status: not_started
+    production_status: existing_use_only
+    verdict: pending
+    open_findings: []
+    unresolved_scientific_decisions: []
+    local_evidence: []
+    requested_unity_evidence: []
+    supplied_external_evidence: []
+    remediation_branch: null
+    remediation_commit: null
+    re_audit_status: not_started
+
+  - id: SCI-NOI-002
+    name: Empirical variance, covariance, calibrated weight, and S/N
+    tier: A
+    queue_wave: uncertainty_3
+    scientific_scope: >-
+      Formal-versus-empirical map uncertainty, jackknife moments, output-pixel
+      covariance, empirical calibration, inverse-variance products,
+      standardized signal/S/N, metadata, and consumer interpretation.
+    known_code_areas:
+      - src/citlali/core/mapmaking/map.cpp
+      - include/citlali/core/pipeline/map_noise_products.h
+      - include/citlali/core/pipeline/noise_weight_policy.h
+      - include/citlali/core/pipeline/map_image_output_helpers.h
+    inputs: [formal map weights, noise realizations, support and calibration region]
+    outputs: [empirical variance/covariance claims, calibrated weights, S/N products]
+    upstream_dependencies:
+      - package_id: SCI-NOI-001
+        status: open
+      - package_id: SCI-MAP-001
+        status: open
+    downstream_consumers: [SCI-FLT-001, SCI-FLT-002, SCI-SRC-001, SCI-MODE-001, SCI-FRUIT-001]
+    governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+    governing_sha_role: inventory_snapshot
+    audit_branch: null
+    audit_commit: null
+    independent_derivation: {status: not_started, sha256: null}
+    contract_status: not_started
+    implementation_status: not_assessed
+    validation_status: not_started
+    production_status: existing_use_only
+    verdict: pending
+    open_findings: []
+    unresolved_scientific_decisions: []
+    local_evidence: []
+    requested_unity_evidence: []
+    supplied_external_evidence: []
+    remediation_branch: null
+    remediation_commit: null
+    re_audit_status: not_started
+
+  - id: SCI-FLT-001
+    name: Map-domain convolve signal, uncertainty, response, and support
+    tier: A
+    queue_wave: existing_audit_amend_and_reaudit_4
+    scientific_scope: >-
+      Fixed globally normalized map convolution, binary edge window,
+      data-derived exterior fill, conditional formal and empirical variance,
+      response/support/photometric semantics, products, metadata, and
+      downstream-use restrictions. JINC and Wiener are separate packages.
+    known_code_areas:
+      - include/citlali/core/mapmaking/wiener_filter.h
+      - include/citlali/core/mapmaking/wiener_filter_omp.h
+      - src/citlali/core/mapmaking/map.cpp
+      - include/citlali/core/pipeline/noise_weight_policy.h
+      - include/citlali/core/pipeline/map_image_output_helpers.h
+      - validation/product_contracts.json
+    inputs:
+      - map signal, formal inverse variance, coverage, validity, and kernel image
+      - normalized convolution kernel, edge/guard policy, and cov_cut policy
+      - filtered noise or jackknife realizations
+    outputs:
+      - signal_I and convolved-amplitude compatibility aliases
+      - weight_formal_I, noise_variance_I, weight_I, and S/N products
+      - coverage_I, coverage_bool_I, kernel_I, and edge diagnostics
+    upstream_dependencies:
+      - package_id: SCI-MAP-001
+        status: open
+        required_contract: >-
+          Map signal, formal weight, hits/coverage, validity, and normalization.
+        consequence: >-
+          Candidate variance conformity and response/support interpretation
+          remain conditional, and no new filtered consumer is authorized.
+      - package_id: SCI-NOI-002
+        status: open
+        required_contract: >-
+          Noise/covariance, jackknife, empirical calibration, and S/N semantics.
+        consequence: >-
+          Empirical weight and standardized-signal products remain restricted
+          and cannot establish calibrated significance.
+      - package_id: SCI-CAL-001
+        status: open
+        required_contract: >-
+          Map unit, beam/template, and photometric meaning after smoothing.
+        consequence: >-
+          Convolved-amplitude aliases cannot be interpreted as validated
+          point-source or integrated photometry.
+    downstream_consumers:
+      - package_id: SCI-SRC-001
+        restriction: filtered estimates require response/support validation
+      - package_id: SCI-FRUIT-001
+        restriction: unaudited filtered amplitude and weight remain fail_closed
+    governing_sha: 02a198cbfb379eaf6ab279c5a3d44ee73ff90435
+    governing_sha_role: audited_unapproved_candidate
+    comparison_baseline_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+    candidate_stack:
+      - fa8f8a5b939aa8e78f1b2fc0affc86857f2b2f9c
+      - 02a198cbfb379eaf6ab279c5a3d44ee73ff90435
+    audit_branch: codex/convolve-contract-audit
+    audit_commit: 800e8ae433f87d3fb7521fcb1a7fdf1d32532949
+    audit_parent_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+    audit_artifact_at_commit: doc/CONVOLVE_SIGNAL_UNCERTAINTY_AND_RESPONSE_CONTRACT.tex
+    final_audit_artifact_sha256: 8d336242bbc260273c4f8f2819a13f3150091a44cd6bb6692fca92abd2f6ae60
+    independent_derivation:
+      status: independently_drafted_before_source_inspection
+      sha256: null
+      note: >-
+        The pilot document records the independence sequence, but no
+        pre-inspection digest of frozen core bytes was committed. The final
+        artifact digest above must not be misrepresented as that earlier hash.
+    contract_status: proposed
+    implementation_status: conditionally_conformant
+    validation_status: in_progress
+    production_status: fail_closed
+    comparison_baseline_production_status: existing_use_only
+    verdict: amend
+    implementation_assessment:
+      mainline_baseline: nonconformant
+      candidate_numerical_core: conditionally_correct
+      exact_condition: >-
+        Binary-window convolve with fractional taper disabled, fixed globally
+        unit-sum kernel, diagonal input covariance, every finite positive input
+        weight included, and realized data-derived window and same-map median
+        fill conditioned upon.
+      production_note: >-
+        Existing mainline behavior is not revoked by this ledger. The candidate
+        is not production-approved and must not be integrated unchanged.
+    open_findings:
+      - id: SCI-FLT-001-F004
+        class: contract_gap
+        severity: P1
+        evidence_basis: derived
+        confidence: high
+        status: open
+        owner: scientific_owner
+        closure_gate: >-
+          Record whether to propagate, bound, or replace the same-map fill;
+          implement the accepted estimator and verify its covariance in local
+          fixtures and returned same-SHA evidence.
+        summary: >-
+          The exterior fill is a nonlinear same-map median, but its variance
+          and signal/fill cross-covariance are omitted.
+      - id: SCI-FLT-001-F005
+        class: scientific_policy_decision
+        severity: P1
+        evidence_basis: owner_decision
+        confidence: high
+        status: open
+        owner: scientific_owner
+        closure_gate: >-
+          Approve named response and absolute-support definitions, floors,
+          products, and metadata, then pass pre-registered blank and injection
+          gates.
+        summary: >-
+          Response template/normalization, absolute support metric and floor,
+          and persisted response/support products are undecided.
+      - id: SCI-FLT-001-F006
+        class: scientific_policy_decision
+        severity: P1
+        evidence_basis: owner_decision
+        confidence: high
+        status: open
+        owner: scientific_owner
+        closure_gate: >-
+          Approve the post-smoothing photometric convention and any corrected
+          estimator, align units and aliases, and pass injection plus named
+          astronomical-recovery gates.
+        summary: >-
+          Smoothed mJy/beam photometric meaning and any true point-source or
+          integrated-flux estimator are undecided.
+      - id: SCI-FLT-001-F007
+        class: contract_gap
+        severity: P2
+        evidence_basis: derived
+        confidence: high
+        status: open
+        owner: scientific_owner
+        closure_gate: >-
+          Approve and validate a covariance representation or explicitly
+          restrict every multi-pixel consumer that requires it.
+        summary: >-
+          A variance plane omits filter-induced output-pixel covariance needed
+          by multi-pixel significance and morphology.
+      - id: SCI-FLT-001-F008
+        class: evidence_gap
+        severity: P1
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: external_evidence_owner
+        closure_gate: >-
+          Return and audit a complete same-SHA, clean-commit all-array bundle
+          covering blanks, injections, and named astronomical recovery against
+          pre-registered tolerances.
+        summary: >-
+          Same-SHA all-array Unity, blank-control, injection/recovery, and
+          astronomical recovery evidence remain outstanding.
+      - id: SCI-FLT-001-F009
+        class: dependency_gap
+        severity: P1
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: audit_coordinator
+        closure_gate: >-
+          Close or explicitly condition SCI-MAP-001, SCI-NOI-002, and
+          SCI-CAL-001 through their package audits and propagate the resulting
+          restrictions into the convolve contract.
+        dependencies: [SCI-MAP-001, SCI-NOI-002, SCI-CAL-001]
+        summary: >-
+          Map-weight, noise/covariance, and photometric input contracts remain
+          unresolved.
+    addressed_findings:
+      - id: SCI-FLT-001-F001
+        class: implementation_defect
+        evidence_basis: derived
+        confidence: high
+        status: addressed_pending_reaudit
+        owner: re_auditor
+        closure_gate: >-
+          Verify the accepted successor at its exact SHA against the frozen
+          estimator and focused variance fixtures.
+        summary: >-
+          Baseline divided propagated variance by local kernel-square support
+          without the corresponding signal normalization.
+      - id: SCI-FLT-001-F002
+        class: implementation_defect
+        evidence_basis: derived
+        confidence: high
+        status: addressed_pending_reaudit
+        owner: re_auditor
+        closure_gate: >-
+          Verify all positive-weight signal terms contribute the matching
+          variance term at the accepted successor SHA.
+        summary: >-
+          Baseline and Candidate 1 omitted below-cov_cut variance terms that
+          remained in the signal operator; 02a198cbf corrects the candidate.
+      - id: SCI-FLT-001-F003
+        class: implementation_defect
+        evidence_basis: derived
+        confidence: high
+        status: addressed_pending_reaudit
+        owner: re_auditor
+        closure_gate: >-
+          Confirm fractional taper remains rejected, or audit and validate a
+          separately approved successor estimator before enabling it.
+        summary: >-
+          Dormant fractional taper uses inconsistent weight powers; accepted
+          convolve configurations now reject that mode.
+    unresolved_scientific_decisions:
+      - propagate, bound, or replace the same-map median-fill covariance
+      - choose and normalize response and absolute-support products and floors
+      - define mJy/beam photometry after smoothing and any corrected estimator
+      - retain a global empirical scale or adopt a spatial empirical model
+      - define downstream representation or calibration of filtered covariance
+    local_evidence:
+      - independent mathematical derivation and source trace in audit commit 800e8ae
+      - analytic limiting cases and candidate focused-test inventory
+      - conditional correctness of the candidate variance core and N-1 update
+    requested_unity_evidence:
+      status: outstanding
+      requirements:
+        - exact amended candidate SHA, clean state, compiler and dependency identity
+        - complete low-level config, observation identity, and all three arrays
+        - named noise counts/seeds, formal and empirical products, and provenance
+        - variable-coverage interior and edge regions with no skipped required data
+        - blank covariance, false-S/N, and edge false-support measurements
+        - compact, beam-shaped, resolved, and extended injection/recovery
+        - named astronomical calibrator/source recovery with pre-registered amplitude, shape, and unit tolerances
+        - pre-registered comparison metrics and tolerances
+    supplied_external_evidence: []
+    downstream_policy:
+      - do not use filtered amplitude or weight as fruit-loop feedback amplitude, confidence, or gain
+      - no filtered product is authorized for production fruit-loop support selection
+      - do not call convolved-amplitude aliases response-corrected photometry
+      - keep fractional taper rejected unless a successor estimator is audited
+    remediation_branch: codex/convolve-noise-correction
+    remediation_commit: 02a198cbfb379eaf6ab279c5a3d44ee73ff90435
+    remediation_role: pre_audit_candidate_requires_amendment
+    re_audit_status: required
+
+  - id: SCI-FLT-002
+    name: Wiener and lowpass map-filter interface and response
+    tier: B
+    queue_wave: product_4
+    scientific_scope: >-
+      Mature Wiener/lowpass filtering input/output contract, noise/template
+      assumptions, normalization, spatial/photometric response, edges,
+      effective state, products, metadata, and consumers.
+    known_code_areas:
+      - include/citlali/core/mapmaking/wiener_filter.h
+      - include/citlali/core/mapmaking/wiener_filter_omp.h
+      - include/citlali/core/pipeline/map_filtering_loop.h
+      - include/citlali/core/pipeline/post_processing_execution_plan.h
+    inputs: [map and kernel, formal and empirical noise, filter/template policy]
+    outputs: [Wiener and lowpass filtered maps, uncertainty and response metadata]
+    upstream_dependencies:
+      - package_id: SCI-MAP-001
+        status: open
+      - package_id: SCI-NOI-001
+        status: open
+      - package_id: SCI-NOI-002
+        status: open
+    downstream_consumers: [SCI-SRC-001, SCI-FRUIT-001]
+    governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+    governing_sha_role: inventory_snapshot
+    audit_branch: null
+    audit_commit: null
+    independent_derivation: {status: not_started, sha256: null}
+    contract_status: not_started
+    implementation_status: not_assessed
+    validation_status: not_started
+    production_status: existing_use_only
+    verdict: pending
+    open_findings: []
+    unresolved_scientific_decisions: []
+    local_evidence: []
+    requested_unity_evidence: []
+    supplied_external_evidence: []
+    remediation_branch: null
+    remediation_commit: null
+    re_audit_status: not_started
+
+  - id: SCI-SRC-001
+    name: Generic source finding, fitting, and source-table products
+    tier: A
+    queue_wave: product_4
+    scientific_scope: >-
+      Map-domain threshold detection, candidate selection, Gaussian fitting,
+      parameter uncertainties, validity, significance, WCS/units, and science
+      source-table products. Pointing/OOF and Beammap fits are separate.
+    known_code_areas:
+      - src/citlali/core/mapmaking/map.cpp
+      - include/citlali/core/engine/detail/source_finding_execution_impl.h
+      - include/citlali/core/engine/detail/source_table_output_impl.h
+      - include/citlali/core/pipeline/map_source_fit_results.h
+    inputs: [raw or filtered maps, uncertainty and support, WCS, source policy]
+    outputs: [source candidates, fit values/errors/validity, source tables]
+    upstream_dependencies:
+      - package_id: SCI-MAP-001
+        status: open
+      - package_id: SCI-NOI-002
+        status: open
+      - package_id: SCI-AST-001
+        status: open
+      - package_id: SCI-FLT-001
+        status: open
+      - package_id: SCI-FLT-002
+        status: open
+    downstream_consumers: [scientific catalogs, SCI-FRUIT-001]
+    governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+    governing_sha_role: inventory_snapshot
+    audit_branch: null
+    audit_commit: null
+    independent_derivation: {status: not_started, sha256: null}
+    contract_status: not_started
+    implementation_status: not_assessed
+    validation_status: not_started
+    production_status: existing_use_only
+    verdict: pending
+    open_findings: []
+    unresolved_scientific_decisions: []
+    local_evidence: []
+    requested_unity_evidence: []
+    supplied_external_evidence: []
+    remediation_branch: null
+    remediation_commit: null
+    re_audit_status: not_started
+
+  - id: SCI-MODE-001
+    name: Pointing and OOF inference and products
+    tier: A
+    queue_wave: mode_4
+    scientific_scope: >-
+      Pointing/OOF map fitting, amplitude/centroid/shape estimators, fit
+      uncertainty and significance, OOF routing, astrometric interpretation,
+      validity, products, and consumers.
+    known_code_areas:
+      - include/citlali/core/engine/detail/pointing_fit_maps_impl.h
+      - include/citlali/core/engine/detail/pointing_output_impl.h
+      - include/citlali/core/pipeline/pointing_execution_plan.h
+      - include/citlali/core/pipeline/phdu_oof.h
+    inputs: [Pointing or OOF maps and uncertainty, WCS, calibration, fit policy]
+    outputs: [fit amplitudes/errors, centroid and FWHM, validity, Pointing/OOF products]
+    upstream_dependencies:
+      - package_id: SCI-MAP-001
+        status: open
+      - package_id: SCI-NOI-002
+        status: open
+      - package_id: SCI-AST-001
+        status: open
+      - package_id: SCI-CAL-001
+        status: open
+    downstream_consumers: [pointing calibration, OOF analysis, SCI-FRUIT-001]
+    governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+    governing_sha_role: inventory_snapshot
+    audit_branch: null
+    audit_commit: null
+    independent_derivation: {status: not_started, sha256: null}
+    contract_status: not_started
+    implementation_status: not_assessed
+    validation_status: not_started
+    production_status: existing_use_only
+    verdict: pending
+    open_findings: []
+    unresolved_scientific_decisions: []
+    local_evidence: []
+    requested_unity_evidence: []
+    supplied_external_evidence: []
+    remediation_branch: null
+    remediation_commit: null
+    re_audit_status: not_started
+
+  - id: SCI-BEAM-001
+    name: Beammap detector fits, calibration, QC, and products
+    tier: A
+    queue_wave: mode_4
+    scientific_scope: >-
+      Beammap detector-map iteration, priors/alignment, per-detector fitting,
+      convergence, flux/sensitivity calibration, flags/QC, final APT, detector
+      TOD, and split products. Its internal loop is not a science fruit loop.
+    known_code_areas:
+      - include/citlali/core/engine/beammap.h
+      - include/citlali/core/engine/detail/beammap_*
+      - include/citlali/core/pipeline/beammap_execution_plan.h
+      - include/citlali/core/pipeline/beammap_provenance.h
+    inputs: [detector maps and TOD, calibrator flux, priors, APT, mode policy]
+    outputs: [detector fits/errors, convergence, flags/QC, sensitivity, APT and products]
+    upstream_dependencies:
+      - package_id: SCI-CAL-001
+        status: open
+      - package_id: SCI-AST-001
+        status: open
+      - package_id: SCI-RTC-001
+        status: open
+      - package_id: SCI-PTC-001
+        status: open
+      - package_id: SCI-VAL-001
+        status: open
+      - package_id: SCI-MAP-001
+        status: open
+    downstream_consumers: [TolAPT and downstream detector calibration]
+    governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+    governing_sha_role: inventory_snapshot
+    audit_branch: null
+    audit_commit: null
+    independent_derivation: {status: not_started, sha256: null}
+    contract_status: not_started
+    implementation_status: not_assessed
+    validation_status: not_started
+    production_status: existing_use_only
+    verdict: pending
+    open_findings: []
+    unresolved_scientific_decisions: []
+    local_evidence: []
+    requested_unity_evidence: []
+    supplied_external_evidence: []
+    remediation_branch: null
+    remediation_commit: null
+    re_audit_status: not_started
+
+  - id: SCI-FRUIT-001
+    name: Fruit-loop feedback, state, and convergence
+    tier: A
+    queue_wave: last
+    scientific_scope: >-
+      Science/pointing map-to-TOD feedback amplitude and support, source-model
+      subtraction/add-back, iteration state, convergence/termination, learning
+      interaction, restart identity, diagnostics, and final consumer policy.
+    known_code_areas:
+      - include/citlali/core/engine/detail/lali_fruitloop_impl.h
+      - include/citlali/core/engine/detail/pointing_fruitloop_impl.h
+      - include/citlali/core/pipeline/fruit_loop_iteration_policy.h
+      - include/citlali/core/pipeline/reduction_restart_checkpoint.h
+    inputs: [prior maps and validity, current PTC state, feedback and convergence policy]
+    outputs: [projected/subtracted TOD model, next iteration state, checkpoint and diagnostics]
+    upstream_dependencies:
+      - package_id: SCI-MAP-001
+        status: open
+      - package_id: SCI-NOI-002
+        status: open
+      - package_id: SCI-FLT-001
+        status: open
+      - package_id: SCI-FLT-002
+        status: open
+      - package_id: SCI-SRC-001
+        status: open
+      - package_id: SCI-MODE-001
+        status: open
+    downstream_consumers: [final iterative science and pointing reductions]
+    governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+    governing_sha_role: inventory_snapshot
+    audit_branch: null
+    audit_commit: null
+    independent_derivation: {status: not_started, sha256: null}
+    contract_status: not_started
+    implementation_status: not_assessed
+    validation_status: not_started
+    production_status: existing_use_only
+    verdict: pending
+    open_findings: []
+    unresolved_scientific_decisions:
+      - approved convergence statistic and scientific tolerances
+      - allowed identity of feedback amplitude, support, weight, and gain
+    local_evidence: []
+    requested_unity_evidence: []
+    supplied_external_evidence: []
+    downstream_policy:
+      - existing accepted feedback behavior only
+      - unaudited filtered amplitudes and weights are fail_closed for feedback
+    remediation_branch: null
+    remediation_commit: null
+    re_audit_status: not_started

@@ -1,0 +1,319 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,booktabs,longtable,array,enumitem,hyperref,xcolor}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\setlength{\emergencystretch}{3em}
+\setlength{\tabcolsep}{3.5pt}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\code}[1]{\nolinkurl{#1}}
+
+% Replace these fields before an audit begins.
+\newcommand{\AuditPackageID}{PACKAGE-ID}
+\newcommand{\AuditPackageName}{Package scientific-contract audit}
+\newcommand{\AuditTier}{A}
+\newcommand{\AuditGoverningSHA}{TO-COMPLETE}
+\newcommand{\AuditBranch}{TO-COMPLETE}
+\newcommand{\AuditWorktree}{TO-COMPLETE}
+\newcommand{\AuditCorePath}{TO-COMPLETE}
+\newcommand{\AuditCoreSHA}{TO-COMPLETE}
+\newcommand{\AuditCoreFreezeCommit}{TO-COMPLETE}
+\newcommand{\AuditDate}{TO-COMPLETE}
+
+\title{\AuditPackageName\\
+\large Citlali scientific-contract audit: \AuditPackageID}
+\author{Independent package auditor}
+\date{\AuditDate}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+State the claimed estimator, the exact implementation assessed, the strongest
+conclusion supported by the evidence, and the production restriction in no
+more than one paragraph. This template is intentionally compact; use the
+optional appendices only when the evidence requires them.
+\end{abstract}
+
+\section{Executive summary and bounded scope}
+
+\begin{description}[style=nextline]
+\item[Package] \AuditPackageID: \AuditPackageName.
+\item[Tier] \AuditTier.
+\item[Included transformation] State the single bounded estimator or
+engineering contract.
+\item[Explicit exclusions] Name adjacent packages and implementation paths
+that are not being audited.
+\item[Claimed result] State the audit conclusion without implying production
+approval.
+\item[Consumer policy] State the allowlist, restricted uses, and fail-closed
+uses.
+\end{description}
+
+\section{Authority and independence record}
+
+\begin{longtable}{L{0.27\linewidth}L{0.65\linewidth}}
+\toprule
+Field & Exact value\\
+\midrule
+Governing source SHA & \code{\AuditGoverningSHA}\\
+Audit branch & \code{\AuditBranch}\\
+Audit worktree & \code{\AuditWorktree}\\
+Independent-core bytes & \code{\AuditCorePath}\\
+Independent-core SHA-256 & \code{\AuditCoreSHA}\\
+Freeze commit & \code{\AuditCoreFreezeCommit}\\
+First package-source inspection & Record timestamp, command or source, and
+confirmation that it followed the freeze.\\
+Prior implementation exposure & List unavoidable prior knowledge or write
+``none known''; explain how its influence was bounded.\\
+\bottomrule
+\end{longtable}
+
+Identify the project-level scientific authorities used before the freeze and
+the implementation files quarantined until afterward. The digest must cover
+the exact independent mathematical core, not this evolving whole document.
+
+\section{Input contract and variable classification}
+
+State scientific identity, shape, ordering, units, coordinate frame, index
+base, validity, missing/non-finite policy, and upstream assumptions for every
+input.
+
+\begin{longtable}{L{0.14\linewidth}L{0.18\linewidth}L{0.15\linewidth}L{0.17\linewidth}L{0.24\linewidth}}
+\toprule
+Quantity & Identity and shape & Units/frame & Classification & Assumption or
+conditioning\\
+\midrule
+\endfirsthead
+\toprule
+Quantity & Identity and shape & Units/frame & Classification & Assumption or
+conditioning\\
+\midrule
+\endhead
+\(x\) & Input data & complete & random & complete\\
+\(\theta\) & Policy or parameter & complete & fixed, fitted, selected, or
+data-derived & complete\\
+\bottomrule
+\end{longtable}
+
+Use only these classifications unless a package-specific term is defined:
+random, fixed, fitted, selected, data-derived, and conditioned upon.
+
+\section{Independently claimed estimator}
+\label{sec:independent-core}
+
+This section, together with any explicitly named companion core file, is the
+content frozen before implementation inspection. Select the applicable form
+and give a specific rationale for the others being not applicable.
+
+\subsection{Affine form}
+
+\begin{align}
+  \boldsymbol y &= A\boldsymbol x+\boldsymbol c,
+  \label{eq:affine}\\
+  \E[\boldsymbol y] &= A\E[\boldsymbol x]+\boldsymbol c,
+  \label{eq:affine-mean}\\
+  C_y &= A C_x A^{\mathsf T}.
+  \label{eq:affine-cov}
+\end{align}
+
+Define every coefficient and state whether \(A\) and \(\boldsymbol c\) are
+fixed or data-derived. If a fitted or selected quantity is conditioned upon,
+derive the conditional result and identify the omitted unconditional terms.
+
+\subsection{Nonlinear or data-dependent form}
+
+\begin{equation}
+  \boldsymbol y=F(\boldsymbol x,\boldsymbol\theta).
+  \label{eq:nonlinear}
+\end{equation}
+
+State the distributional target, fitted/selected state, linearization or
+resampling method, and conditions under which uncertainty claims hold.
+
+\subsection{Iterative or stateful form}
+
+\begin{align}
+  \boldsymbol s_{n+1} &= G(\boldsymbol s_n,\boldsymbol x),
+  \label{eq:state-update}\\
+  \boldsymbol y_n &= H(\boldsymbol s_n,\boldsymbol x).
+  \label{eq:state-output}
+\end{align}
+
+Define initialization, absolute iteration identity, stopping rule, fixed point
+or terminal estimator, restart state, and propagation of uncertainty between
+iterations.
+
+\section{Response and normalization}
+
+Derive every applicable temporal, spatial, beam/template, extended-mode,
+photometric, and iteration-to-iteration response. Distinguish DC, peak,
+integrated, template, and matched-filter normalization. For a named template
+\(\boldsymbol p\), a useful generic definition is
+\begin{equation}
+  R(\boldsymbol p)=\frac{\partial \E[\boldsymbol y]}
+                         {\partial \alpha}
+  \quad\hbox{for}\quad
+  \E[\boldsymbol x]=\alpha\boldsymbol p+\boldsymbol\mu_0.
+  \label{eq:template-response}
+\end{equation}
+State edge behavior, conditioning, and response uncertainty.
+
+\section{Uncertainty and covariance}
+
+Treat full covariance as the mathematical object and identify every diagonal,
+independence, stationarity, or fixed-selection approximation. Address:
+
+\begin{itemize}
+\item formal variance and full covariance of the named estimator;
+\item empirical or jackknife variance and its degrees of freedom;
+\item calibration/systematic and response uncertainty;
+\item covariance introduced by filtering, selection, fitting, or feedback;
+\item the exact meaning and units of every inverse-variance product; and
+\item what the stored uncertainty does not represent.
+\end{itemize}
+
+Never use inverse variance, support, validity, hits, coverage, confidence, or
+response as synonyms.
+
+\section{Support, validity, identity, and state}
+
+Define support and invalidity operators separately from uncertainty. Record
+units, frames, normalization, shapes, index bases, missing/non-finite behavior,
+and detector/array/network/map identity.
+
+\begin{longtable}{L{0.19\linewidth}L{0.19\linewidth}L{0.24\linewidth}L{0.26\linewidth}}
+\toprule
+State & Value represented & Resolution rule & Provenance/output\\
+\midrule
+Requested & Immutable accepted request & complete & complete\\
+Effective & Context-free policy & complete & complete\\
+Observation-resolved & Data-context choice & complete & complete\\
+Realized & Applied/produced result & complete & complete\\
+\bottomrule
+\end{longtable}
+
+\section{Implementation conformity trace}
+
+Complete this section only after the independent-core freeze. Trace signal,
+formal uncertainty, empirical/noise realizations, masks, simulations,
+sequential/OpenMP paths, output writers, metadata, and consumers at the exact
+governing SHA.
+
+\begin{longtable}{L{0.27\linewidth}L{0.15\linewidth}L{0.23\linewidth}L{0.23\linewidth}}
+\toprule
+Source path & Lines/symbol & Contract equation & Conformity/evidence\\
+\midrule
+\endfirsthead
+\toprule
+Source path & Lines/symbol & Contract equation & Conformity/evidence\\
+\midrule
+\endhead
+complete & complete & Equation~\eqref{eq:affine} or N/A & complete\\
+\bottomrule
+\end{longtable}
+
+\section{Product and consumer matrix}
+
+\begin{longtable}{L{0.13\linewidth}L{0.14\linewidth}L{0.15\linewidth}L{0.09\linewidth}L{0.18\linewidth}L{0.19\linewidth}}
+\toprule
+Input & Operator & Estimator or product & Units & Metadata and validity & Consumer and
+authorization\\
+\midrule
+\endfirsthead
+\toprule
+Input & Operator & Estimator or product & Units & Metadata and validity & Consumer and
+authorization\\
+\midrule
+\endhead
+complete & complete & complete & complete & complete &
+allowed, restricted, or fail-closed\\
+\bottomrule
+\end{longtable}
+
+For each persisted product state extension/variable/table identity,
+normalization, support, covariance assumptions, authoritative/derived status,
+producer, current and recommended metadata, and applicable tests.
+
+\section{Falsifiable validation matrix}
+
+\begin{longtable}{L{0.22\linewidth}L{0.25\linewidth}L{0.20\linewidth}L{0.21\linewidth}}
+\toprule
+Evidence method & Claim tested & Exact fixture/artifact & Gate or N/A rationale\\
+\midrule
+\endfirsthead
+\toprule
+Evidence method & Claim tested & Exact fixture/artifact & Gate or N/A rationale\\
+\midrule
+\endhead
+Analytic limiting cases & complete & complete & complete\\
+Small deterministic fixtures & complete & complete & complete\\
+Synthetic injections & complete & complete & complete\\
+Blank controls & complete & complete & complete\\
+Sequential/OpenMP equivalence & complete & complete & complete\\
+Same-SHA Unity reduction & complete & complete & complete\\
+Astronomical recovery & complete & complete & complete\\
+\bottomrule
+\end{longtable}
+
+Acceptance tolerances are specified before looking at candidate results and
+are derived from analytic precision, finite-sample behavior, repeatability,
+or an explicit scientific decision. A required-data skip is not a pass.
+
+\section{Findings, dependencies, and scientific decisions}
+
+\begin{longtable}{L{0.15\linewidth}L{0.15\linewidth}L{0.08\linewidth}L{0.12\linewidth}L{0.38\linewidth}}
+\toprule
+Stable ID & Class & Priority & Basis/conf. & Finding, owner, and closure gate\\
+\midrule
+\endfirsthead
+\toprule
+Stable ID & Class & Priority & Basis/conf. & Finding, owner, and closure gate\\
+\midrule
+\endhead
+\AuditPackageID-F001 & finding class & P0--P3 & derived, high & Describe finding,
+owner, and closure gate.\\
+\bottomrule
+\end{longtable}
+
+List every upstream package dependency by stable ID, the exact required fact,
+its status, and the consequence while open. Keep implementation defects,
+contract gaps, scientific-policy decisions, evidence gaps, and dependency gaps
+separate.
+
+\section{Verdict and production disposition}
+
+\begin{description}[style=nextline]
+\item[Contract status] TO-COMPLETE.
+\item[Implementation status] TO-COMPLETE at \code{\AuditGoverningSHA}.
+\item[Validation status] TO-COMPLETE.
+\item[Production status] TO-COMPLETE, with an explicit scope.
+\item[Verdict] Pending, retain, amend, split, supersede, or reject.
+\item[Allowed consumers] TO-COMPLETE.
+\item[Restricted/fail-closed consumers] TO-COMPLETE.
+\item[Repair and re-audit trigger] TO-COMPLETE.
+\end{description}
+
+\section{Machine-readable ledger proposal}
+
+Include a YAML fragment matching \code{doc/audits/audit-ledger.yaml}. It is a
+proposal for coordinator review, not permission to modify the canonical ledger
+from a parallel audit branch.
+
+\appendix
+\section{Optional extended source trace}
+
+Use this appendix for longer code tables, derivations, or historical
+comparisons. Delete it when it adds no review value.
+
+\section{Optional returned evidence inventory}
+
+List exact artifact paths/hashes, commands, configurations, comparator
+versions/options, tolerances, skips, and provenance. Do not embed bulky
+reduction products in Git.
+
+\end{document}
