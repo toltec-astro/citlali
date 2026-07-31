@@ -15,7 +15,6 @@ EXPECTED_PACKAGES = {
     "kidscpp": ("3.1.0", "toltec.kidscpp"),
     "tula": ("3.1.0", "toltec.tula"),
     "tula-perflibs": ("0.1.0", "toltec.citlali"),
-    "llvm-openmp": ("20.1.8", "builtin"),
     "cfitsio": ("4.3.0", "builtin"),
     "hdf5": ("1.14.6", "builtin"),
 }
@@ -56,7 +55,12 @@ def process_environment(spack_python: Path) -> dict[str, str]:
     return environment
 
 
-def validate_concrete_graph(environment_path: Path) -> tuple[str, str]:
+def validate_concrete_graph(
+    environment_path: Path,
+    *,
+    root_compiler_term: str = "%cxx=clang@20.1.8",
+    required_graph_packages: Sequence[str] = ("llvm-openmp",),
+) -> tuple[str, str]:
     """Validate the accepted full-app graph and return root hash and spec."""
     lock_path = environment_path / "spack.lock"
     if not lock_path.is_file():
@@ -75,7 +79,7 @@ def validate_concrete_graph(environment_path: Path) -> tuple[str, str]:
         "citlali@4.0.0",
         "+tests",
         "+wiener_openmp",
-        "%cxx=clang@20.1.8",
+        root_compiler_term,
     )
     missing = [term for term in required_root_terms if term not in root_spec]
     if not root_hash or missing:
@@ -96,6 +100,9 @@ def validate_concrete_graph(environment_path: Path) -> tuple[str, str]:
                 f"unexpected {name} identity: {actual}; "
                 f"expected {(version, namespace)}"
             )
+    for name in required_graph_packages:
+        if name not in packages:
+            raise RuntimeError(f"concrete graph is missing {name}")
     return root_hash, root_spec
 
 

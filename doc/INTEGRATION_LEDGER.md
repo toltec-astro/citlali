@@ -56,7 +56,10 @@ new exact commits before importing subsequent upstream work.
   source dirty state and concrete Spack DAG identity.
 - Identify an accessible real-data fixture and publish an immutable manifest.
 - Add a user-owned Unity environment based on user-supplied
-  Spack/compiler/module facts.
+  Spack/compiler/module facts. The first inventory identifies Ubuntu 24.04,
+  GCC 13.3, CMake 3.30, Python 3.12, no Ninja, and no user-callable Spack.
+  A user-owned Spack 1.2.2 `unity-gcc13` profile and prerequisite gate are now
+  prepared; concretization and execution evidence remain pending.
 - The macOS graph builds CFITSIO 4.3.0 from source and declares Homebrew FFTW
   plus GCC 15 Fortran as checked host externals; all C/C++ application code is
   LLVM 20.

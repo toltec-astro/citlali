@@ -36,6 +36,11 @@ class SpackCitlaliGraphTest(unittest.TestCase):
                 "version": version,
                 "namespace": namespace,
             }
+        concrete_specs["macos-openmp"] = {
+            "name": "llvm-openmp",
+            "version": "20.1.8",
+            "namespace": "builtin",
+        }
         payload = {
             "roots": [
                 {
@@ -67,6 +72,26 @@ class SpackCitlaliGraphTest(unittest.TestCase):
         lock_path.write_text(json.dumps(payload))
         with self.assertRaisesRegex(RuntimeError, "kidscpp identity"):
             validate_concrete_graph(self.environment)
+
+    def test_accepts_unity_graph_without_llvm_openmp_package(self) -> None:
+        self._write_lock(
+            "citlali@4.0.0+tests+wiener_openmp %cxx=gcc@13.3.0"
+        )
+        lock_path = self.environment / "spack.lock"
+        payload = json.loads(lock_path.read_text())
+        payload["concrete_specs"] = {
+            key: value
+            for key, value in payload["concrete_specs"].items()
+            if value["name"] != "llvm-openmp"
+        }
+        lock_path.write_text(json.dumps(payload))
+
+        root_hash, _ = validate_concrete_graph(
+            self.environment,
+            root_compiler_term="%cxx=gcc@13.3.0",
+            required_graph_packages=(),
+        )
+        self.assertEqual(root_hash, "a" * 32)
 
 
 if __name__ == "__main__":
