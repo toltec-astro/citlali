@@ -1,0 +1,1200 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,longtable,array,enumitem,hyperref,xcolor}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\setlength{\emergencystretch}{3em}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\code}[1]{\nolinkurl{#1}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcommand{\invalid}{\mathrm{invalid}}
+
+\title{Independent Derivation and Audit of the Citlali\\
+\texttt{convolve} Signal, Uncertainty, Response, and Support Contract}
+\author{Citlali scientific-contract audit}
+\date{2026-07-31}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This document derives the statistical contract for
+\code{post-processing.map-filter.type: convolve} independently of the
+candidate implementation.  Its starting point is an affine estimator, not a
+particular C++ formula.  The derivation separates stored filtered amplitude,
+response-corrected sky or template amplitude, statistical inverse variance,
+and dimensionless support or confidence.  It then audits the baseline
+application and the two-commit correction candidate, identifies the remaining
+scientific choices, recommends a product contract, and specifies the evidence
+required before integration or fruit-loop use.
+\end{abstract}
+
+\tableofcontents
+
+\section{Executive summary}
+\label{sec:summary}
+
+For a deterministic affine filter
+\begin{equation}
+  \boldsymbol y = A\boldsymbol x+\boldsymbol c,
+  \label{eq:affine}
+\end{equation}
+the stored filtered amplitude has covariance
+\begin{equation}
+  C_y=A C_x A^{\mathsf T}.
+  \label{eq:affine-cov}
+\end{equation}
+For independent input pixels with formal variances $V_j$, its diagonal is
+\begin{equation}
+  V_{y,i}=\sum_j A_{ij}^2V_j.
+  \label{eq:diagonal-propagation}
+\end{equation}
+Every input that enters the signal with a nonzero stochastic coefficient must
+therefore enter formal variance with the square of that same coefficient.
+Low positive input weight means high variance; it does not mean invalid
+support.
+
+For a fixed, globally unit-sum convolution with a binary edge window $T_j$ and
+deterministic fill $b_j$, the independently derived stored product is
+\begin{align}
+ y_i &= \sum_j k_{ij}\{T_jx_j+(1-T_j)b_j\},
+ \label{eq:fixed-edge-signal}\\
+ V_{y,i} &= \sum_j k_{ij}^2T_jV_j,
+ \label{eq:fixed-edge-var}\\
+ W_{y,i} &= V_{y,i}^{-1}\quad(V_{y,i}>0\hbox{ and valid}).
+ \label{eq:fixed-edge-weight}
+\end{align}
+This is a fixed filtered amplitude, not a locally normalized sky estimator.
+Near an edge, its response and fill contribution must be exposed rather than
+hidden in a quantity called weight.  A response-corrected estimator for a
+specified template $p$ is a different product,
+\begin{equation}
+ \widehat\alpha_i={y_i-c_i\over R_i(p)},\qquad
+ \Var(\widehat\alpha_i)={V_{y,i}\over R_i(p)^2},
+ \label{eq:response-corrected-summary}
+\end{equation}
+where $R_i(p)=\sum_jA_{ij}p_j$ and $c_i$ is the deterministic affine fill.
+
+The recommended Citlali contract is therefore the combination of options A,
+D, and E in the audit request: retain the fixed, globally normalized filtered
+amplitude; mask it below an explicitly justified support threshold; and keep
+formal variance, empirical variance, response, support, and any confidence or
+feedback gain as distinct products.  If photometric correction is required,
+add a separately named template-specific estimator rather than relabeling the
+fixed smoothing output as point-source flux.
+
+\section{Scope, status labels, and terminology}
+\label{sec:scope}
+
+The document uses the following evidence labels.
+\begin{description}[style=nextline]
+\item[Independent contract] A result derived from probability and estimator
+definitions before examination of commits \code{fa8f8a5b9} and
+\code{02a198cbf}.
+\item[Citlali approximation] A bounded simplification, principally diagonal
+input covariance and a stored variance plane rather than full output
+covariance.
+\item[Baseline] Behavior at canonical application mainline
+\code{9aae0e669384c5c0c0dda93debc194d6b8dac787}.
+\item[Candidate 1] Commit \code{fa8f8a5b939aa8e78f1b2fc0affc86857f2b2f9c}.
+\item[Candidate stack] Candidate 1 followed by
+\code{02a198cbfb379eaf6ab279c5a3d44ee73ff90435}.
+\item[Recommendation] The proposed contract; it is not accepted science until
+review and validation are complete.
+\end{description}
+
+Four terms are deliberately not interchangeable:
+\begin{enumerate}
+\item \emph{stored filtered amplitude}: the numerical output of the filtering
+operator;
+\item \emph{response-corrected estimator}: an estimate of a named sky or
+template amplitude after correcting the realized filter response;
+\item \emph{statistical inverse variance}: the reciprocal variance of one
+explicitly named estimator; and
+\item \emph{support, validity, or confidence}: a mask, fractional geometric
+support, response guard, heuristic confidence, or feedback gain.
+\end{enumerate}
+The unqualified word ``weight'' is avoided whenever one of these meanings can
+be stated instead.
+
+\section{Notation}
+\label{sec:notation}
+
+Input map pixels are $x_j$; output pixels are $y_i$.  Their expectations are
+$\mu_j$ and $\mu_{y,i}$.  $C_x$ and $C_y$ are full covariance matrices.
+When the diagonal approximation is invoked, $V_j=(C_x)_{jj}$ and
+$V_{y,i}=(C_y)_{ii}$.  A finite positive formal input inverse variance is
+$w_j>0$ and
+\begin{equation}
+ V_j={1\over w_j}.
+ \label{eq:input-weight-to-var}
+\end{equation}
+$k_{ij}$ is the fixed convolution coefficient from input $j$ to output $i$.
+$T_j\in\{0,1\}$ is a binary input validity/edge window.  $t_j$ and $a_i$ are
+fractional input and output tapers.  $b_j$ is an exterior fill.  $p_j$ is a
+specified sky template of unit amplitude and $\alpha$ its amplitude.
+
+\section{General affine estimator and covariance propagation}
+\label{sec:general}
+
+From Equation~\eqref{eq:affine}, for deterministic $A$ and $\boldsymbol c$,
+\begin{align}
+ \E[\boldsymbol y] &= A\E[\boldsymbol x]+\boldsymbol c,
+ \label{eq:affine-mean}\\
+ C_y &= \E[(\boldsymbol y-\E\boldsymbol y)
+                 (\boldsymbol y-\E\boldsymbol y)^{\mathsf T}]
+      =A C_x A^{\mathsf T}.
+ \label{eq:affine-cov-expanded}
+\end{align}
+Under $C_x=\diag(V_j)$,
+\begin{align}
+ \Var(y_i)&=\sum_j A_{ij}^2V_j,
+ \label{eq:affine-diag-var}\\
+ \Cov(y_i,y_\ell)&=\sum_j A_{ij}A_{\ell j}V_j.
+ \label{eq:affine-output-cov}
+\end{align}
+Equation~\eqref{eq:affine-output-cov} is essential: convolution correlates
+output pixels even when the input covariance is diagonal.  A persisted
+variance plane is only $\diag(C_y)$ and cannot encode the covariance needed
+for exact aperture, connected-region, or multi-pixel template significance.
+
+If an exterior fill $\boldsymbol b$ is random rather than deterministic, write
+\begin{equation}
+ \boldsymbol y=A\boldsymbol x+D\boldsymbol b,
+ \label{eq:random-fill-model}
+\end{equation}
+where $A=KT$ and $D=K(I-T)$.  Then
+\begin{equation}
+ C_y=A C_xA^{\mathsf T}+D C_bD^{\mathsf T}
+     +A C_{xb}D^{\mathsf T}+D C_{bx}A^{\mathsf T}.
+ \label{eq:random-fill-cov}
+\end{equation}
+Omitting the last three terms is justified only when the fill is fixed and
+known, or when its uncertainty and cross-covariance are demonstrably
+negligible.  If $\boldsymbol b=H\boldsymbol x+\boldsymbol d$ is estimated
+linearly from the same map, the effective stochastic operator is
+$A+DH$ and the exact covariance is
+\begin{equation}
+ C_y=(A+DH)C_x(A+DH)^{\mathsf T}.
+ \label{eq:data-derived-fill-cov}
+\end{equation}
+
+\section{Interior fixed convolution}
+\label{sec:interior}
+
+For a fully supported fixed kernel,
+\begin{equation}
+ y_i=\sum_jk_{ij}x_j,
+ \label{eq:interior-signal}
+\end{equation}
+so under diagonal input covariance
+\begin{align}
+ V_{y,i}&=\sum_jk_{ij}^2V_j,
+ \label{eq:interior-var}\\
+ \Cov(y_i,y_\ell)&=\sum_jk_{ij}k_{\ell j}V_j.
+ \label{eq:interior-cov}
+\end{align}
+For translation-invariant $k$ and uniform white input variance $\sigma^2$,
+\begin{equation}
+ V_y=\sigma^2\sum_jk_j^2.
+ \label{eq:white-var}
+\end{equation}
+If $\sum_jk_j=1$, constant fields are preserved, while
+\begin{align}
+ {\sigma_{\rm out}\over\sigma_{\rm in}}&=
+      \sqrt{\sum_jk_j^2},
+ \label{eq:white-rms-ratio}\\
+ {W_{\rm out}\over W_{\rm in}}&={1\over\sum_jk_j^2}.
+ \label{eq:white-weight-ratio}
+\end{align}
+These statements concern the stored filtered amplitude.  Unit DC gain does
+not imply unit response to a delta function, a beam template, or integrated
+point-source flux.
+
+\section{Validity, low formal weight, and variable coverage}
+\label{sec:validity}
+
+Equation~\eqref{eq:input-weight-to-var} gives the decisive distinction:
+$0<w_j\ll1$ is a valid, high-variance input.  If the signal coefficient
+$A_{ij}$ is nonzero, its variance contribution is $A_{ij}^2/w_j$.  Retaining
+the sample in signal while omitting that term is a signal/variance operator
+mismatch and overstates significance.
+
+If a policy threshold deliberately rejects a low-weight pixel, define
+$M_j=\mathbf1(w_j\geq w_{\min})$ and change the complete stochastic operator:
+\begin{align}
+ y_i&=\sum_jA_{ij}M_jx_j+c_i,
+ \label{eq:thresholded-signal}\\
+ V_{y,i}&=\sum_jA_{ij}^2M_jV_j,
+ \label{eq:thresholded-var}\\
+ R_i(p)&=\sum_jA_{ij}M_jp_j.
+ \label{eq:thresholded-response}
+\end{align}
+Support must be computed from the same $M_j$.  A threshold may instead define
+a displayed coverage diagnostic, but then it must not silently change only
+formal variance or only output validity.
+
+\section{Binary edge support and deterministic background fill}
+\label{sec:edges}
+
+Define
+\begin{equation}
+ x_j^*=T_jx_j+(1-T_j)b_j
+ \label{eq:edge-input}
+\end{equation}
+and apply the globally fixed kernel:
+\begin{align}
+ y_i&=\sum_jk_{ij}x_j^*
+     =\sum_j k_{ij}T_jx_j+c_i,
+ \label{eq:edge-stored}\\
+ A_{ij}&=k_{ij}T_j,
+ \label{eq:edge-A}\\
+ c_i&=\sum_jk_{ij}(1-T_j)b_j.
+ \label{eq:edge-c}
+\end{align}
+For deterministic fill and diagonal input covariance,
+\begin{align}
+ V_{y,i}&=\sum_jk_{ij}^2T_jV_j,
+ \label{eq:edge-var}\\
+ \Cov(y_i,y_\ell)&=\sum_jk_{ij}k_{\ell j}T_jV_j.
+ \label{eq:edge-cov}
+\end{align}
+
+For a globally unit-sum kernel define the realized constant-sky response
+\begin{equation}
+ r_i=\sum_jk_{ij}T_j.
+ \label{eq:edge-response}
+\end{equation}
+If the true sky and fill are constants $s$ and $b$,
+\begin{equation}
+ \E[y_i]=r_i s+(1-r_i)b=b+(s-b)r_i.
+ \label{eq:constant-edge-mean}
+\end{equation}
+Thus zero fill attenuates a constant sky by $r_i$; correct fill ($b=s$)
+preserves it; and the edge bias relative to $s$ is
+\begin{equation}
+ \E[y_i]-s=(1-r_i)(b-s).
+ \label{eq:edge-bias}
+\end{equation}
+For a compact template $p$, its stochastic response is
+\begin{equation}
+ R_i(p)=\sum_jk_{ij}T_jp_j.
+ \label{eq:edge-template-response}
+\end{equation}
+Fill is an additive offset, not template response, and must be subtracted if a
+response-corrected template amplitude is formed.
+
+Full support gives $T_j=1$, $c_i=0$, and the interior equations.  Partial
+support gives spatially varying response, variance, and covariance.  One valid
+input $q$ gives $y_i=k_{iq}x_q+c_i$ and
+$V_{y,i}=k_{iq}^2V_q$.  Zero valid support gives deterministic $y_i=c_i$ and
+zero stochastic variance; it is nevertheless scientifically invalid, not an
+infinitely precise measurement.  This proves that validity cannot be inferred
+from inverse variance alone.
+
+\subsection{Support metrics}
+
+For a nonnegative unit-sum kernel, $r_i$ in
+Equation~\eqref{eq:edge-response} is also a useful fractional kernel support.
+For a signed kernel, cancellation makes $\sum kT$ unsuitable as a geometric
+support metric.  Two explicit alternatives are
+\begin{align}
+ q_i^{(|k|)}&={\sum_j|k_{ij}|T_j\over\sum_j|k_{ij}|},
+ \label{eq:l1-support}\\
+ q_i^{(k^2)}&={\sum_jk_{ij}^2T_j\over\sum_jk_{ij}^2}.
+ \label{eq:l2-support}
+\end{align}
+$q^{(|k|)}$ measures retained absolute operator mass; $q^{(k^2)}$ measures
+retained variance leverage under uniform input variance.  A binary-footprint
+fraction measures geometry but ignores coefficient importance.  None is a
+statistical inverse variance.  The recommendation is to store a dimensionless
+$q^{(|k|)}$ support plane when support varies, store the signed template/DC
+response separately, and document the chosen validity floor and kernel-sign
+domain.
+
+\section{Locally normalized alternative}
+\label{sec:local-normalization}
+
+For $r_i=\sum_jk_{ij}T_j\ne0$, a locally normalized estimator is
+\begin{equation}
+ y_i^{\rm LN}={\sum_jk_{ij}T_jx_j\over r_i}.
+ \label{eq:local-signal}
+\end{equation}
+Its diagonal variance and covariance are
+\begin{align}
+ V_{i}^{\rm LN}&={\sum_jk_{ij}^2T_jV_j\over r_i^2},
+ \label{eq:local-var}\\
+ \Cov(y_i^{\rm LN},y_\ell^{\rm LN})
+ &= {\sum_jk_{ij}k_{\ell j}T_jV_j\over r_ir_\ell}.
+ \label{eq:local-cov}
+\end{align}
+It preserves a constant sky where $r_i$ is well conditioned, but changes the
+operator, noise, compact-source response, and covariance with position.  Near
+small or cancellation-dominated $r_i$, its variance can diverge.
+
+The expression
+\begin{equation}
+ {\sum_jk_{ij}^2T_jV_j\over\sum_jk_{ij}^2T_j}
+ \label{eq:k2-mask-ratio}
+\end{equation}
+is not the variance of Equation~\eqref{eq:local-signal}: its denominator lacks
+the square of $\sum kT$.  It would equal the variance of an estimator with
+coefficients $kT/\sqrt{\sum k^2T}$, but only if the signal were normalized by
+that same square-root factor.  Dividing only variance by $k^2$ support therefore
+has no matching signal estimator and is a definite operator mismatch.
+
+\section{Fractional taper or apodization}
+\label{sec:taper}
+
+For deterministic input taper $t_j$ and output taper $a_i$,
+\begin{align}
+ y_i&=a_i\sum_jk_{ij}t_jx_j,
+ \label{eq:taper-signal}\\
+ A_{ij}&=a_ik_{ij}t_j,
+ \label{eq:taper-A}\\
+ V_{y,i}&=a_i^2\sum_jk_{ij}^2t_j^2V_j,
+ \label{eq:taper-var}\\
+ W_{y,i}&={1\over a_i^2\sum_jk_{ij}^2t_j^2V_j}
+ \quad\hbox{when valid}.
+ \label{eq:taper-weight}
+\end{align}
+The powers are fixed by the signal coefficients: input taper is squared inside
+the sum and output taper is squared outside.  Applying a taper once in signal
+but once, twice, or with a reciprocal heuristic in weight space cannot be
+formal inverse variance unless it reduces algebraically to
+Equation~\eqref{eq:taper-weight}.
+
+For template $p$,
+\begin{equation}
+ R_i^{(t,a)}(p)=a_i\sum_jk_{ij}t_jp_j,
+ \label{eq:taper-response}
+\end{equation}
+and the response-corrected variance is
+\begin{equation}
+ \Var(\widehat\alpha_i)=
+ {a_i^2\sum_jk_{ij}^2t_j^2V_j
+  \over[a_i\sum_jk_{ij}t_jp_j]^2}.
+ \label{eq:taper-response-var}
+\end{equation}
+For nonzero $a_i$, it cancels.  Deterministic output taper scales amplitude and
+uncertainty together and creates no information.  Input taper changes the
+relative coefficients and generally does not cancel.  Tapering, discarding
+samples, locally renormalizing a truncated kernel, masking an output, and
+multiplying by heuristic confidence are five distinct operations.
+
+Until a single estimator, response product, and formal variance with the exact
+powers above are specified and tested, fractional taper should remain rejected
+for accepted \code{convolve} configurations.  A redesigned future mode should
+store taper, response, and support independently rather than encoding them in
+formal inverse variance.
+
+\section{Response normalization and photometric interpretation}
+\label{sec:response}
+
+For $\E[x_j]=\alpha p_j+\mu_{0,j}$, define
+\begin{equation}
+ R_i(p)=\sum_jA_{ij}p_j.
+ \label{eq:template-response}
+\end{equation}
+After subtracting the deterministic affine offset and any named baseline
+response, a local estimator is
+\begin{align}
+ \widehat\alpha_i&={y_i-c_i-(A\boldsymbol\mu_0)_i\over R_i(p)},
+ \label{eq:alpha-hat}\\
+ \Var(\widehat\alpha_i)&={V_{y,i}\over R_i(p)^2}.
+ \label{eq:alpha-var}
+\end{align}
+This is meaningful only when $p$, its alignment, the local baseline, and a
+well-conditioned nonzero response are defined.  When the template occupies
+multiple correlated output pixels, the appropriate generalized least-squares
+estimator is
+\begin{align}
+ \widehat\alpha&={\boldsymbol r^{\mathsf T}C_y^{-1}
+      (\boldsymbol y-\boldsymbol c-\boldsymbol\mu_{y,0})
+      \over \boldsymbol r^{\mathsf T}C_y^{-1}\boldsymbol r},
+ \label{eq:gls-alpha}\\
+ \Var(\widehat\alpha)&={1\over
+      \boldsymbol r^{\mathsf T}C_y^{-1}\boldsymbol r},
+ \label{eq:gls-alpha-var}
+\end{align}
+where $\boldsymbol r=A\boldsymbol p$.  A diagonal variance plane alone is
+insufficient for the exact form.
+
+Response identities must name the template:
+\begin{itemize}
+\item DC normalization is $R(\boldsymbol1)$; a unit-sum interior kernel gives
+one.
+\item Delta peak response is the appropriate kernel coefficient, commonly
+$k_0$, not $\sum k$.
+\item A beam-template peak response is $(k*p)$ evaluated at the chosen center.
+\item Integrated response depends on pixel solid angle, map unit convention,
+and aperture or template normalization.
+\item Matched-filter normalization is set by the template and noise covariance,
+not by unit DC gain.
+\end{itemize}
+Thus \code{mJy/beam} amplitude and \code{mJy} integrated flux are not
+interchangeable.  A unit-sum smoother preserves a constant field in the
+interior but generally lowers the peak of a point source.
+
+For any nonzero deterministic response correction $R$,
+\begin{equation}
+ {y/R\over\sqrt{V_y/R^2}}={y\over\sqrt{V_y}}
+ \label{eq:snr-response-invariance}
+\end{equation}
+up to the sign convention for $R$.  Correcting both amplitude and uncertainty
+does not improve S/N.
+
+\section{Formal and empirical uncertainty products}
+\label{sec:uncertainty}
+
+Within the diagonal approximation, a formal inverse variance must be derived
+from one named variance:
+\begin{equation}
+ W_i^{\rm formal}=
+ \begin{cases}
+ 1/V_{y,i},&V_{y,i}>0\hbox{ finite and output valid},\\
+ \invalid,&\hbox{otherwise}.
+ \end{cases}
+ \label{eq:formal-weight}
+\end{equation}
+Then
+\begin{align}
+ \sigma_i^{\rm formal}&=\sqrt{V_{y,i}},
+ \label{eq:formal-sigma}\\
+ Z_i^{\rm formal}&={y_i\over\sqrt{V_{y,i}}}.
+ \label{eq:formal-standardized}
+\end{align}
+The latter is a formal standardized amplitude, not automatically an
+empirically calibrated significance.
+
+For $N\ge2$ jackknife realizations $z_i^{(n)}$ filtered with the same operator,
+fixed support, fixed fill, and fixed weights,
+\begin{align}
+ \bar z_i&={1\over N}\sum_{n=1}^Nz_i^{(n)},
+ \label{eq:jackknife-mean}\\
+ s_i^2&={1\over N-1}\sum_{n=1}^N(z_i^{(n)}-\bar z_i)^2.
+ \label{eq:jackknife-var}
+\end{align}
+This is a diagonal empirical variance conditional on the realized filtering
+policy.  It does not capture coherent artifacts common to every realization,
+and spatial covariance remains unrepresented.  If realization masks, weights,
+support, fill, or normalization change, the $z^{(n)}$ are not samples of one
+common estimator without further modeling.
+
+A globally calibrated formal spatial pattern may be defined explicitly as
+\begin{align}
+ \gamma&=\operatorname{Calibrate}\!\left(
+   \{s_i^2,V_{y,i}^{\rm formal}\}_{i\in\mathcal Q}\right),
+ \label{eq:global-calibration}\\
+ V_i^{\rm calibrated}&=\gamma V_{y,i}^{\rm formal},\qquad
+ W_i^{\rm calibrated}={W_i^{\rm formal}\over\gamma}.
+ \label{eq:calibrated-weight}
+\end{align}
+It is not pixelwise $1/s_i^2$ unless that is explicitly the chosen definition.
+The product name and metadata must state which pattern is formal, which scalar
+is empirical, the calibration region $\mathcal Q$, and the estimator to which
+it applies.
+
+\section{Product-by-product recommended contract}
+\label{sec:products}
+
+Table~\ref{tab:recommended-products} is the implementation-independent target.
+Exact baseline and candidate extension names, producers, metadata, and test
+dispositions are added in the implementation audit.
+
+\begin{longtable}{L{0.19\linewidth}L{0.17\linewidth}L{0.21\linewidth}L{0.30\linewidth}}
+\caption{Recommended product meanings.}\label{tab:recommended-products}\\
+\toprule
+Product concept & Units & Defining equation & Contract \\
+\midrule
+\endfirsthead
+\toprule
+Product concept & Units & Defining equation & Contract \\
+\midrule
+\endhead
+Stored signal & map unit & \eqref{eq:edge-stored} & Fixed globally normalized filtered amplitude, including named deterministic fill.\\
+Formal variance & map unit$^2$ & \eqref{eq:edge-var} & Diagonal variance of the stored amplitude under the stated input-covariance approximation.\\
+Formal inverse variance & map unit$^{-2}$ & \eqref{eq:formal-weight} & Reciprocal formal variance only on valid support.\\
+Empirical variance & map unit$^2$ & \eqref{eq:jackknife-var} & $N-1$ sample variance of identically filtered realizations; $N\ge2$.\\
+Calibrated inverse variance & map unit$^{-2}$ & \eqref{eq:calibrated-weight} & Formal spatial pattern times a documented empirical calibration, if that policy is chosen.\\
+Stored-amplitude S/N & dimensionless & \eqref{eq:formal-standardized} or empirical analog & Name whether formal-standardized or empirical.\\
+Template response & dimensionless under matching template convention & \eqref{eq:template-response} & Template-specific signed response, separate from support.\\
+Absolute support & dimensionless & \eqref{eq:l1-support} & Fractional retained absolute operator mass; never inverse variance.\\
+Coverage & seconds & producer exposure equation & Exposure diagnostic; a \code{cov_cut} display threshold must not alter only variance.\\
+Kernel & current kernel map unit by repository convention & \eqref{eq:interior-signal} & Realized fixed kernel plus normalization and template identity metadata.\\
+Point-source amplitude alias & map unit & \eqref{eq:edge-stored} & Compatibility alias only unless a beam/template response correction is actually applied.\\
+Point-source uncertainty alias & map unit & \eqref{eq:edge-var} & Square root of variance of the same aliased amplitude.\\
+Point-source S/N alias & dimensionless & \eqref{eq:snr-response-invariance} & Ratio of the two compatible aliases; not absolute photometry.\\
+Confidence/gain & dimensionless & policy-specific & Separate optional heuristic; cannot be named weight or variance.\\
+\bottomrule
+\end{longtable}
+
+Invalid output requires an explicit validity authority.  Zero stochastic
+variance at zero support is invalid, not infinite inverse variance.  Where
+response or support varies spatially, both should be explicit dimensionless
+planes.  A response plane must identify its template; a support plane must
+identify its coefficient norm and validity floor.
+
+\section{Analytic limiting cases}
+\label{sec:cases}
+
+All cases below follow from the preceding equations and were written before
+inspection of the candidate implementation.
+
+\subsection{Identity, boxcar, and uniform white noise}
+
+For $k=(1)$, $y=x$, $V_y=V$, $W_y=w$, response and support are one.
+For an $m$-pixel boxcar $k_j=1/m$ with full support and uniform variance
+$\sigma^2$,
+\begin{equation}
+ y={1\over m}\sum_jx_j,\quad V_y={\sigma^2\over m},\quad
+ W_y=mW_{\rm in}.
+ \label{eq:case-boxcar}
+\end{equation}
+For $m=4$, $\sum k^2=1/4$, so the output RMS is one half the input RMS and the
+inverse variance is four times the input inverse variance.
+
+\subsection{Nonuniform variance and a low-weight valid input}
+
+For $k=(1/2,1/2)$, $V_1=1$, and $V_2=100$,
+\begin{equation}
+ y={x_1+x_2\over2},\qquad V_y={1\over4}(1+100)=25.25,
+ \quad\sigma_y\simeq5.0249,\quad W_y\simeq0.039604.
+ \label{eq:case-low-weight}
+\end{equation}
+The second input has formal weight $0.01$ but remains valid.  Omitting it only
+from variance would report $V_y=0.25$, understate uncertainty by a factor
+$\sqrt{101}\simeq10.05$, and overstate $|$S/N$|$ by the same factor while the
+signal still depends equally on $x_2$.
+
+\subsection{Constant sky and binary edge support}
+
+Take $k=(1/2,1/2)$, true constant sky $s=10$, and
+$T=(1,0)$, so $r=1/2$.  With zero fill, $y=5$, $c=0$, and the fixed-amplitude
+response to the constant sky is $1/2$.  With fill $b=4$, $y=7$, $c=2$, and
+Equation~\eqref{eq:constant-edge-mean} gives
+$4+(10-4)/2=7$.  With correct fill $b=s=10$, $y=10$ despite partial stochastic
+support.  If the retained input variance is $V_1=4$, formal variance is
+$V_y=(1/2)^2 4=1$ in all three deterministic-fill cases.  The response-corrected
+constant-sky estimate is $(y-c)/r=10$ with variance $1/r^2=4$.
+
+Full support $T=(1,1)$ gives $r=1$ and the interior estimator.  One valid
+contributor gives the result above.  Zero support $T=(0,0)$ gives only the fill
+contribution and zero stochastic variance but must be marked invalid.
+
+\subsection{Delta and beam-shaped sources}
+
+For a unit delta at input $q$ and zero fill,
+\begin{equation}
+ y_i=k_{iq}T_q,\qquad R_i(\delta_q)=k_{iq}T_q.
+ \label{eq:case-delta}
+\end{equation}
+The peak is $k_{qq}$ for a centered translation-invariant kernel, not one in
+general.  For a unit-amplitude beam template $p$, the output is $k*p$ and the
+central peak response is $R_0(p)=\sum_jk_{0j}p_j$.  A beam-shaped source is
+therefore broadened and its peak generally changed even though DC response is
+one.  Integrated-flux preservation additionally depends on map units, pixel
+solid angle, beam convention, and aperture; it does not follow from the peak
+or DC response alone.
+
+\subsection{Fractional tapers}
+
+With $k=(1/2,1/2)$, $t=(1,1/2)$, $a=1$, and equal variance $V=4$,
+\begin{equation}
+ y={1\over2}x_1+{1\over4}x_2,qquad
+ V_y=4\left({1\over4}+{1\over16}\right)=1.25.
+ \label{eq:case-input-taper}
+\end{equation}
+An output taper $a=1/2$ changes this to $y/2$ and $V_y/4=0.3125$; formal
+inverse variance rises from $0.8$ to $3.2$ solely because the stored amplitude
+unit scale changed.  The response-corrected estimator and its information are
+unchanged because the output taper cancels as in
+Equation~\eqref{eq:taper-response-var}.  Applying both tapers uses both stated
+powers; it is not a sample-count correction.
+
+\subsection{Support with nonnegative and signed kernels}
+
+For nonnegative $k=(1/4,1/2,1/4)$ and $T=(1,1,0)$,
+$r=q^{(|k|)}=3/4$, while $q^{(k^2)}=(1/16+1/4)/(3/8)=5/6$.
+They answer different questions.  For signed $k=(-1,1,1)$ normalized to sum
+one and $T=(1,1,0)$, the signed mask convolution is zero even though two thirds
+of the footprint and two thirds of the absolute operator mass are present:
+$q^{(|k|)}=2/3$.  Signed response zero is real for a constant template, but it
+is not zero geometric support.
+
+\subsection{Empirical $N=2$ and rejection at $N=1$}
+
+For filtered realizations $z^{(1)}=2$ and $z^{(2)}=6$, $\bar z=4$ and
+\begin{equation}
+ s^2={(-2)^2+2^2\over2-1}=8.
+ \label{eq:case-N2}
+\end{equation}
+Any stable online central-moment accumulation must return exactly this value
+within arithmetic precision.  At $N=1$, Equation~\eqref{eq:jackknife-var} is
+undefined; any persisted empirical variance, uncertainty, empirical weight,
+or empirical S/N request must fail closed rather than emit zero, infinity, or
+a formal substitute under an empirical label.
+
+\section{Implementation audit}
+\label{sec:implementation}
+
+This section was written only after the independent draft through
+Section~\ref{sec:cases} was complete and its SHA-256 digest had been recorded
+as
+\begin{center}
+\small\code{c7c10e902bcc0f5355af513ccc8782dbbf2b0bb63fdfd0828191b3e32f78c28e}.
+\end{center}
+Line references identify the stated Git object, because later source movement
+must not change the evidence being audited.
+
+\subsection{Exact shared signal and edge operator}
+
+Both baseline and candidate use an FFT convolution, hence a periodic/circular
+discrete operator $K$ on the finite map.  The filter template is required to
+have a sufficiently conditioned nonzero sum and is divided by that sum.  Let
+$h$ denote this globally unit-sum kernel.  The edge science region is selected
+from positive formal weight above the \code{cov_cut}-derived threshold and,
+when available, positive coverage above a fraction of its core median.  The
+region is circularly dilated by
+\begin{equation}
+ d=\max\{1,\lceil f_{\rm guard}\max({\rm FWHM}_{\rm pix},1)\rceil\}
+ \label{eq:implemented-guard-radius}
+\end{equation}
+to create the accepted binary window $T$.  Thus a pixel below \code{cov_cut}
+may still have $T=1$ because it lies in the guardband.
+
+The exterior fill is not a configured constant.  It is
+\begin{equation}
+ b(\boldsymbol x)=\operatorname{median}\{x_j:j\hbox{ is finite and in the
+ science region}\},
+ \label{eq:implemented-background}
+\end{equation}
+with zero as the empty-set fallback.  The exact stored signal is
+\begin{equation}
+ \boldsymbol y=D_TK\{D_T\boldsymbol x+(I-D_T)b(\boldsymbol x)\boldsymbol1\},
+ \label{eq:implemented-signal}
+\end{equation}
+where $D_T=\diag(T)$.  The final $D_T$ is an output mask applied after
+convolution.  The mapmaking kernel image is pre- and post-multiplied in the
+same manner, but it is a data product being filtered, not the convolution
+template $h$ itself.
+
+Equation~\eqref{eq:implemented-signal} is nonlinear because the median and the
+weight/coverage-derived window depend on realized data products.  Conditional
+on the realized $T$ and $b$, its stochastic signal operator is
+\begin{equation}
+ A_{\rm cond}=D_TKD_T,
+ \qquad
+ \boldsymbol c_{\rm cond}=D_TK(I-D_T)b\boldsymbol1.
+ \label{eq:implemented-conditional-operator}
+\end{equation}
+The candidate formal calculation treats both as fixed.  It therefore omits
+the fill covariance and cross-covariance in
+Equation~\eqref{eq:random-fill-cov}, and also conditions on the realized
+window.  This may be a defensible approximation after measurement, but it is
+not an unconditional formal covariance and is currently undocumented and
+unvalidated.
+
+Noise realizations use
+\begin{equation}
+ \boldsymbol z^{(n)}_{\rm out}=D_TKD_T\boldsymbol z^{(n)}_{\rm in}.
+ \label{eq:implemented-noise-operator}
+\end{equation}
+They reuse science-derived $T$ and do not re-estimate or add $b$.  They
+therefore sample the conditional stochastic operator in
+Equation~\eqref{eq:implemented-conditional-operator}, but not median-fill
+uncertainty, realization-dependent masks, or artifacts common to all
+jackknives.
+
+\subsection{Baseline mainline}
+
+Define $M_j=1$ only where the post-edge input weight is finite, positive, and
+at least the \code{cov_cut}-derived threshold, and zero otherwise.  Baseline
+forms two circular convolutions with $h^2$ and reports, on output-window
+support,
+\begin{align}
+ \widetilde V_i&=sum_j h_{ij}^2M_jV_j,
+ \label{eq:baseline-var-numerator}\\
+ m_i&=\sum_j h_{ij}^2M_j,
+ \label{eq:baseline-k2-mask}\\
+ W^{\rm base}_i&={m_i\over\widetilde V_i}\,T_i^2.
+ \label{eq:baseline-weight}
+\end{align}
+Its implied variance is Equation~\eqref{eq:k2-mask-ratio}.  The signal in
+Equation~\eqref{eq:implemented-signal} is divided by neither $m_i$ nor
+$\sqrt{m_i}$, and guardband inputs below \code{cov_cut} still enter signal.
+Baseline therefore has two definite mathematical defects: the $k^2$-support
+division has no matching stored signal estimator, and a low positive-weight
+input can enter signal while being omitted from formal variance.  In a
+uniform, fully supported interior, the first defect cancels the expected
+variance reduction and leaves formal inverse variance equal to its input
+value instead of Equation~\eqref{eq:white-weight-ratio}.
+
+\code{cov_cut} consequently has several distinct roles: it seeds the edge
+science mask; it defines the final displayed \code{coverage_bool_I} from the
+current output weight; it selects pixels for empirical global calibration;
+and, only in baseline and Candidate~1, it incorrectly removes variance terms
+without changing the signal.  It is not a single scientific support
+definition.
+
+\subsection{Candidate 1: \texttt{fa8f8a5b9}}
+
+Candidate~1 removes the division by $m_i$ and intends to implement
+Equation~\eqref{eq:edge-var}, adds a relative validity floor, requires
+$N\ge2$ for central empirical variance, applies the $N/(N-1)$ correction to
+its accumulated central moment, and changes the point-source compatibility
+metadata.  However, it retains $M_j$'s \code{cov_cut} criterion while the
+signal retains all positive-weight inputs allowed by $T$.  It therefore
+implements
+\begin{equation}
+ V_i^{(1)}=T_i^2\sum_jh_{ij}^2M_jV_j,
+ \label{eq:candidate1-var}
+\end{equation}
+which remains a signal/variance operator mismatch.  Its difference-of-moments
+accumulation is also unnecessarily vulnerable to cancellation for large
+offsets.  The commit is a useful but internally incomplete correction.
+
+\subsection{Candidate successor and combined stack}
+
+Commit \code{02a198cbf} removes \code{cov_cut} from the input variance mask,
+uses every finite positive input weight that the binary window passes, and
+replaces difference-of-moments accumulation with Welford's stable central
+moment.  For the accepted binary mode it implements
+\begin{align}
+ V_i^{\rm cand}&=T_i^2\sum_{j:w_j>0}h_{ij}^2T_jV_j,
+ \label{eq:candidate-var}\\
+ q_i^{\rm valid}&={\sum_{j:w_j>0}h_{ij}^2T_j\over\sum_jh_{ij}^2},
+ \label{eq:candidate-valid-support}\\
+ W_i^{\rm cand}&=
+ \begin{cases}
+ 1/V_i^{\rm cand},&q_i^{\rm valid}>10^{-6},\ V_i^{\rm cand}>0
+                    \hbox{ finite},\ T_i=1,\\
+ 0,&\hbox{otherwise}.
+ \end{cases}
+ \label{eq:candidate-weight}
+\end{align}
+The floor is a dimensionless fraction of total $h^2$ mass and remains valid
+for signed kernels.  It controls only whether the formal output weight is
+zero; it neither renormalizes signal nor variance and is not persisted as a
+support plane.  Conditional on $T$ and $b$, Equations~\eqref{eq:candidate-var}
+and \eqref{eq:candidate-weight} are the correct diagonal variance and inverse
+variance of the stored amplitude in Equation~\eqref{eq:implemented-signal}.
+The unresolved data-derived-fill covariance remains.
+
+The successor also rejects the dormant cosine taper for accepted
+\code{convolve} and Wiener \code{lowpass_only}; fixes output-policy routing so
+the effective typed configuration, rather than a product-output side effect,
+controls empirical normalization; records \code{NNOISE},
+\code{VAREST=central_sample_variance}, \code{VARDDOF=1}, and
+\code{MEANSUB=true}; and makes convolve point-source aliases
+\code{TYPE=convolved_amplitude} without \code{RESPNORM}.  It tests exact
+$N=2$, $N=1$ rejection, and large-offset stability.  The known-zero-mean
+second-moment path remains a separate estimator.
+
+The serial and OpenMP implementations follow the same intended sequence.
+Existing focused and regression gates establish code-path consistency, not
+scientific acceptance.  In particular, they do not establish median-fill
+negligibility, edge response, covariance, S/N calibration, or astronomical
+recovery.
+
+\subsection{Dormant fractional taper}
+
+The dormant path replaces $x$ by $b+(x-b)t$, multiplies input weight by
+$t^2$, convolves, and then multiplies output signal by $a$ and output weight
+by $a^2$.  Formal propagation begins from the already tapered weight, hence
+uses $1/(w t^2)=V/t^2$ inside the $h^2$ convolution, followed by multiplication
+of inverse variance by $a^2$.  These are the reciprocal of the required input
+power and the wrong output power for Equation~\eqref{eq:taper-var}.  It is a
+definite signal/variance mismatch for stored tapered amplitude.  Rejecting
+this path for the accepted modes is correct; redesign would require a new
+explicit estimator rather than a small weight-space patch.
+
+\subsection{Empirical and calibrated products}
+
+For central empirical products the successor computes
+Equation~\eqref{eq:jackknife-var} with Welford accumulation.  On calibration
+pixels $\mathcal Q$ selected by positive formal weight, positive empirical
+variance, and the \code{cov_cut} threshold, it then computes
+\begin{align}
+ \rho&=\operatorname{median}_{i\in\mathcal Q}
+        \left(W^{\rm formal}_i s_i^2\right),
+ \label{eq:implemented-median-ratio}\\
+ g&={1\over\rho},
+ \label{eq:implemented-emp-scale}\\
+ W_i^{\rm empirical}&=gW_i^{\rm formal}.
+ \label{eq:implemented-emp-weight}
+\end{align}
+When empirical normalization is enabled, \code{weight_I} is replaced by
+Equation~\eqref{eq:implemented-emp-weight}.  It is a formal spatial pattern
+with one empirical scalar, not pixelwise $1/s_i^2$, and generally
+\begin{equation}
+ W_i^{\rm empirical}\ne{1\over s_i^2}.
+ \label{eq:empirical-weight-not-pixelwise}
+\end{equation}
+The two empirical ratios written by the candidate are consequently
+\begin{align}
+ Z_i^{\rm pixel}&=y_i\sqrt{W_i^{\rm empirical}},
+ \label{eq:implemented-pixel-snr}\\
+ \sigma_i^{\rm direct}&=\sqrt{s_i^2},
+ \label{eq:implemented-direct-sigma}\\
+ Z_i^{\rm direct}&=
+ \begin{cases}y_i/\sigma_i^{\rm direct},&s_i^2>0,\\0,&\hbox{otherwise}.
+ \end{cases}
+ \label{eq:implemented-direct-snr}
+\end{align}
+They are different estimators: the first retains the formal spatial pattern
+and a robust global scale, while the second uses each pixel's direct sample
+variance.  Neither represents a response-corrected point-source flux.
+
+\subsection{Kernel-square reproduction for retained TolTEC fixtures}
+
+The accepted science artifact at source SHA \code{a7a35a00} contains raw
+kernel maps for all three arrays.  An independent checker reconstructed the
+convolution template using the baseline radial-binning and spline algorithm,
+with the retained WCS (405 by 465 pixels, 2 arcsec per pixel) and
+\code{kernel_template_tail_mode=constant}.  No candidate value was used.
+Table~\ref{tab:kernel-squares} reports double-precision sums after global
+unit-sum normalization.
+
+\begin{table}[htbp]
+\centering
+\caption{Independently reproduced accepted-fixture kernel norms.}
+\label{tab:kernel-squares}
+\begin{tabular}{lrrrr}
+\toprule
+Array & raw $\sum h$ & raw $\sum|h|$ & normalized $\sum h^2$
+      & $W_{\rm out}/W_{\rm in}$\\
+\midrule
+a1100 & 4.189623968 & 19.728602743 & 0.288086271 & 3.471182426\\
+a1400 & -3.018860815 & 32.472567725 & 0.706692773 & 1.415042063\\
+a2000 & 16.106367298 & 36.406942802 & 0.047908208 & 20.873249926\\
+\bottomrule
+\end{tabular}
+\end{table}
+The raw a1400 template is signed and has negative DC sum; global division
+still gives unit DC gain, but the small ratio $|\sum h|/\sum|h|$ (0.093)
+demonstrates strong cancellation and reinforces the need to separate signed
+response from absolute support.  These values verify
+Equations~\eqref{eq:white-rms-ratio} and \eqref{eq:white-weight-ratio} for the
+reconstructed fixture; a same-SHA reduction must confirm the realized runtime
+template before acceptance.
+
+\subsection{Defect classification and verdict}
+
+The audit classifications are:
+\begin{enumerate}
+\item \textbf{Definite mathematical error:} baseline divides propagated
+variance by local $h^2$ support without applying the corresponding
+square-root normalization to signal
+(Equation~\eqref{eq:baseline-weight}).
+\item \textbf{Signal/variance operator mismatch:} baseline and Candidate~1
+omit below-\code{cov_cut} variance contributions that remain in signal.
+\item \textbf{Signal/variance operator mismatch:} dormant fractional taper
+uses reciprocal input-taper variance powers and the wrong output-weight power.
+\item \textbf{Product naming/metadata error:} baseline labels unnormalized
+convolved-amplitude aliases as point-source products and claims
+\code{RESPNORM=1}; the successor corrects this.
+\item \textbf{Diagonal-covariance approximation:} every variance plane omits
+Equation~\eqref{eq:affine-output-cov}; no output covariance product exists.
+\item \textbf{Unresolved approximation:} $b$ is a nonlinear same-map median,
+but its variance and cross-covariance are absent; $T$ is also treated as fixed.
+\item \textbf{Inverse-variance versus support risk:} the $h^2$ validity floor,
+edge window, and \code{coverage_bool_I} are distinct policies, but no explicit
+edge-support or response plane is persisted.
+\item \textbf{Scientifically defensible convention:} fixed globally
+normalized amplitude, conditional diagonal propagation, binary masking, and
+global empirical calibration are coherent when named honestly and validated.
+\end{enumerate}
+
+The two-commit stack should be \textbf{amended}: retain its numerical core as
+one coherent conditional stored-amplitude correction, with the successor
+superseding Candidate~1's low-weight and accumulation details, but amend the
+contract, metadata, support/response product decision, and validation evidence
+before integration.  The commits need not be split on scientific grounds;
+neither should be integrated unchanged, and no integration is performed here.
+
+\section{Recommended Citlali contract}
+\label{sec:recommendation}
+
+The recommended estimator is the fixed affine operator in
+Equations~\eqref{eq:edge-stored}--\eqref{eq:edge-cov}, accompanied by distinct
+response and support products.  Specifically:
+\begin{enumerate}
+\item Normalize a scientifically admissible smoothing kernel globally and
+record its normalization and sign/conditioning policy.
+\item Apply one binary validity/edge window consistently to signal, formal
+variance, response, empirical realizations, and support.  A valid low-weight
+input remains in both signal and variance.
+\item Treat background fill as a named deterministic affine contribution.  If
+it is data-derived, either propagate Equation~\eqref{eq:random-fill-cov} or
+state and validate the omitted uncertainty approximation.
+\item Store the fixed filtered amplitude, its formal variance/inverse variance,
+the $N-1$ empirical variance when $N\ge2$, and any calibrated weight with
+truthful estimator metadata.
+\item Store dimensionless signed response for each claimed template and
+dimensionless absolute support where either varies spatially.  Apply a
+documented minimum-support validity mask; do not encode support as inverse
+variance.
+\item Retain historical point-source extension names only as explicitly marked
+\code{convolved_amplitude} compatibility aliases.  Add actual photometric
+products only with a named beam/template, response correction, units, and
+validation.
+\item Continue rejecting fractional taper in accepted \code{convolve} and
+Wiener \code{lowpass_only} configurations until it is redesigned around
+Equations~\eqref{eq:taper-signal}--\eqref{eq:taper-response-var}.
+\end{enumerate}
+
+This chooses fixed behavior over silent local normalization.  A future local
+estimator may be scientifically useful, but it must be a separate named mode
+implementing both Equations~\eqref{eq:local-signal} and
+\eqref{eq:local-var}, with response and conditioning gates.
+
+The review must still decide (i) whether the same-map median-fill covariance
+is propagated, bounded as negligible, or replaced by a deterministic policy;
+(ii) the scientific template and normalization of any response plane;
+(iii) whether $q^{(|k|)}$, $q^{(k^2)}$, or both are exposed and what evidence
+sets their validity floors; (iv) whether empirical calibration remains a
+single robust scale or becomes a modeled spatial correction; (v) the intended
+photometric interpretation of \code{mJy/beam} after smoothing; and (vi) how
+filtered covariance is represented or supplied to downstream multi-pixel
+analyses.  Those are product/science decisions, not implementation details.
+
+\section{Consequences for fruit-loop feedback}
+\label{sec:fruitloop}
+
+Pending external validation, the frozen fruit-loop spatial estimator must
+remain fail-closed.  The inspected draft consumer correctly proposes raw
+coadd amplitude for feedback and uses filtered maps only to select spatial
+support, but it currently relies on \code{coverage_bool_I}, which is a
+final-weight threshold mask rather than an edge-response or absolute-support
+plane.  Under the recommended contract:
+\begin{itemize}
+\item Credible support may use an explicit validity mask plus the explicit
+support plane; neither is amplitude or inverse variance.
+\item Local thresholding may use an empirically calibrated stored-amplitude
+S/N only where its operator, support, fill, and covariance limitations are
+accepted.  Formal-standardized amplitude is not a substitute under an
+empirical S/N label.
+\item Morphological selection may consume a threshold mask but must calibrate
+connected-component sizes and dilation under the filter-induced covariance of
+Equation~\eqref{eq:affine-output-cov}.
+\item Feedback weighting and gain are separate policy quantities.  Neither
+formal inverse variance nor support automatically defines a stable feedback
+gain.
+\item The amplitude projected into the timestream should remain the explicitly
+chosen raw coadd amplitude unless a separately reviewed filtered/response-
+corrected amplitude contract is adopted.  Detection support must not silently
+replace feedback amplitude.
+\end{itemize}
+After the required validation, \code{sig2noise_point_source_I}---despite its
+legacy extension name---is the closest current product for local thresholding
+because Candidate~2 truthfully identifies it as
+\code{TYPE=convolved_amplitude} and it uses the direct pixelwise jackknife
+variance in Equation~\eqref{eq:implemented-direct-snr}.  It must be
+intersected with raw-map validity and a new explicit response/support policy.
+\code{sig2noise_pixel_I} is a useful secondary diagnostic of the globally
+calibrated formal spatial pattern, not an interchangeable estimate.
+\code{weight_I}, \code{weight_formal_I}, \code{coverage_bool_I}, and the
+filtered amplitude aliases are not presently safe as confidence, gain, or
+direct feedback amplitude.  Therefore no filtered product is yet safe for
+production fruit-loop support selection.
+Correlated filtered pixels reduce the number of independent threshold trials,
+inflate connected regions relative to independent-pixel intuition, couple
+dilation to the kernel scale, and can create edge-adjacent false support where
+response or fill bias is not guarded.  Blank controls and injections must
+calibrate these effects before filtered products select production feedback.
+
+\section{Validation plan}
+\label{sec:validation}
+
+\subsection{Mathematical unit tests}
+Tests must implement every limiting case in Section~\ref{sec:cases}, nonuniform
+variance, low positive weight, full/partial/one/zero support, deterministic
+fill, response correction, signed-kernel support, and exact input/output taper
+powers.  Additional matrix tests should compare the complete small-matrix
+$AC_xA^{\mathsf T}$ to diagonal and off-diagonal outputs.
+
+\subsection{Implementation and regression tests}
+Require sequential/OpenMP equality, kernel normalization and conditioning,
+formal variance/weight reciprocity, identical science/jackknife operators,
+support-floor invalidity, metadata truthfulness, exact $N=2$ sample variance,
+$N=1$ rejection, and configuration rejection of unsupported fractional taper.
+Product-contract tests must check every extension's \code{TYPE}, \code{BUNIT},
+response, support, and empirical-estimator metadata.
+
+\subsection{Same-SHA Unity validation}
+The authorized human should build and run the exact candidate SHA on Unity
+using the SSH alias \code{unity_toltec}; Codex must not connect directly.
+The generated evidence should identify source SHA, dependency/compiler
+identity, complete low-level YAML, input identities, dirty state, and all
+TolTEC arrays.  The run must enable \code{convolve}, formal outputs, empirical
+noise outputs, and at least two (preferably several) realizations, and must
+include variable coverage plus interior and guarded-edge regions.  Run the
+normal product inventory, log-error, provenance, configuration, and numerical
+comparators without required-data skips.
+
+\subsection{Blank controls}
+Measure pixelwise empirical variance, ratios/residuals against formal and
+calibrated variance, spatial correlation functions or covariance kernels,
+edge-distance dependence, false S/N exceedances, and false morphological
+support.  Acceptance bounds should be chosen from the finite-sample sampling
+distribution, the number of effectively independent filtered modes, and
+repeat/control variability---not invented after viewing one result.
+
+\subsection{Injection and recovery}
+Inject compact, beam-shaped, resolved, and extended templates over multiple
+amplitudes and edge distances in all arrays.  Measure stored filtered amplitude
+against the exact applied operator, any proposed response-corrected amplitude,
+uncertainty coverage, S/N calibration, centroid/morphology bias, and support
+selection completeness/false discovery.  Pre-register acceptable deviations
+from analytic operator predictions and derive empirical tolerances from blank
+controls and repeated injections.
+
+\section{Conclusions}
+\label{sec:conclusions}
+
+The mathematical authority is the estimator and its full covariance.  In the
+diagonal approximation, formal variance is obtained only by squaring the exact
+signal coefficients.  Response correction, support, and confidence are
+separate deterministic or policy transformations and cannot be folded into
+inverse variance without changing its meaning.  The implementation verdict is
+completed in Section~\ref{sec:implementation} after independent derivation.
+
+\appendix
+\section{Implementation source references}
+\label{app:sources}
+
+All baseline references are to
+\code{9aae0e669384c5c0c0dda93debc194d6b8dac787}; candidate references are to
+\code{02a198cbfb379eaf6ab279c5a3d44ee73ff90435} unless explicitly labeled
+Candidate~1.
+
+\begin{longtable}{L{0.37\linewidth}L{0.17\linewidth}L{0.37\linewidth}}
+\caption{Audited source locations.}\label{tab:sources}\\
+\toprule
+File & Lines & Evidence\\
+\midrule
+\endfirsthead
+\toprule
+File & Lines & Evidence\\
+\midrule
+\endhead
+\code{include/citlali/core/mapmaking/wiener_filter.h} & 947--980 & FFT/circular convolution and normalized template.\\
+same, baseline and candidate & 1055--1311 & Edge science/coverage masks, dilation, same-map median fill, taper/window, pre-filter signal/weight/kernel operations.\\
+same, baseline & 1314--1467 & Signal convolution, thresholded $h^2$ variance, erroneous support division, and output window.\\
+same, Candidate 1 & 1378--1458 & Removal of support division but retained \code{cov_cut} input exclusion.\\
+same, candidate stack & 1378--1468 & All-positive-weight $h^2V$ propagation, relative $h^2$ floor, reciprocal variance, output window.\\
+same, candidate stack & 1475--1515 & Fixed-window filtering of each noise realization.\\
+\code{include/citlali/core/mapmaking/wiener_filter_omp.h} & 254--720, 837--864 & OpenMP edge/filter/noise sequence and convolution counterpart.\\
+\code{src/citlali/core/mapmaking/map.cpp} & 766--950 & Welford $N-1$ variance, global median scale, final empirical weight, two S/N definitions, direct uncertainty.\\
+\code{include/citlali/core/config/post_processing_config_validation.h} & 28--42 & Candidate rejection of cosine taper for unit-sum convolution modes.\\
+\code{include/citlali/core/pipeline/noise_weight_policy.h} & 7--17 & Formal-versus-empirical filtered normalization policy.\\
+\code{include/citlali/core/pipeline/output_policy.h} & 95--135, 175--180 & Noise/product enablement and effective-config normalization lifecycle.\\
+\code{include/citlali/core/engine/detail/map_image_output_impl.h} & 60--107 & Filtered-output classification and response-normalization flag passed to writers.\\
+\code{include/citlali/core/pipeline/map_image_output_helpers.h} & 12--219 & All audited FITS image producers, empirical keys, aliases, and failure checks.\\
+\code{include/citlali/core/pipeline/fits_image_metadata_keys.h} & 53--85, 107--221 & Current scalar keys, units/types/descriptions, estimator and point-alias metadata.\\
+\code{include/citlali/core/pipeline/fits_image_units_kernels.h} & 5--67, 108--170 & Unit construction and exact TYPE/DESCRIP strings.\\
+\code{include/citlali/core/pipeline/fits_image_hdu_names_wcs.h} & 5--68 & Exact image extension names.\\
+\code{validation/product_contracts.json} & 448--476 & Candidate filtered-map HDU inventory.\\
+\code{tests/test_utils.cpp} & 316--493 & Kernel conditioning, fixed variance, partial support, low weight, $N-1$, stability, $N=1$, and metadata tests.\\
+\code{tests/test_config_scaffold.cpp} & 3792--3811, 4608--4651 & $N\ge2$ configuration policy and taper availability tests.\\
+\bottomrule
+\end{longtable}
+
+The frozen consumer was inspected read-only only after derivation.  At the
+mainline parent \code{9aae0e669} plus its uncommitted draft,
+\code{include/citlali/core/timestream/timestream.h}, lines 2161--2250, validates
+filtered selector HDUs and fails closed if the corrected contract is absent;
+lines 2664--2746 combine pixel/direct S/N, \code{coverage_bool_I}, raw-map
+validity, morphology, and raw feedback amplitude.  This consumer is evidence
+of intended use, not authority for the equations.
+
+\section{Product and test matrix}
+\label{app:matrix}
+
+In Table~\ref{tab:products-current}, ``candidate pass'' means only that the
+value is coherent with the conditional stored-amplitude diagonal contract; it
+does not waive the fill, response, covariance, or external-validation gaps.
+The common map unit in the accepted fixture is \code{mJy/beam}.
+
+\small
+\begin{longtable}{L{0.15\linewidth}L{0.25\linewidth}L{0.29\linewidth}L{0.20\linewidth}}
+\caption{Current product-by-product contract and audit disposition.}
+\label{tab:products-current}\\
+\toprule
+Extension or concept & Value and estimator & Current metadata and producer & Disposition\\
+\midrule
+\endfirsthead
+\toprule
+Extension or concept & Value and estimator & Current metadata and producer & Disposition\\
+\midrule
+\endhead
+\code{signal_I} & Equation~\eqref{eq:implemented-signal}; stored fixed convolved amplitude, circular operator, output zero outside $T$; map unit. & \code{UNIT/BUNIT=mJy/beam}, generic DESCRIP; helper 19--22, filter 1055--1468.  No TYPE, response template, fill, support, or covariance policy. & Baseline and candidate same signal.  Add fixed-convolved-amplitude TYPE, filter/kernel identity, circular boundary, fill/window policy.  Never direct fruit-loop feedback under the current design.\\
+\code{weight_formal_I} & Candidate Equation~\eqref{eq:candidate-weight}; inverse conditional diagonal variance of stored amplitude; map-unit$^{-2}$.  Written when empirical products are expected. & \code{TYPE=formal}, BUNIT, generic formal description; helper 62--67. & Baseline fails Equations~\eqref{eq:baseline-weight}; candidate passes conditionally.  Add estimator ID and conditioning declarations.  Not confidence, support, or gain.\\
+\code{noise_variance_I} & Equation~\eqref{eq:jackknife-var}; direct per-pixel sample variance of identically filtered conditional amplitudes; map-unit$^2$. & BUNIT/DESCRIP, \code{NNOISE}, \code{VAREST=central_sample_variance}, \code{VARDDOF=1}, \code{MEANSUB=true}; helper 68--80, map 766--870. & Baseline central divisor is wrong; candidate passes $N-1$/stability.  State conditional fixed-mask/fill and diagonal-only.  Closest uncertainty for local selection after validation.\\
+\code{weight_I} & Formal weight, or Equation~\eqref{eq:implemented-emp-weight} when normalization applies; not generally $1/s_i^2$; map-unit$^{-2}$. & \code{TYPE=formal} or \code{empirical}; empirical case adds N keys, \code{EMP_SCALE}, \code{WVARMED}; helper 24--50, map 872--940. & Describe as a globally jackknife-calibrated formal pattern and state its calibration region.  Candidate algebra coherent.  Unsafe as support, confidence, or gain.\\
+\code{sig2noise_I} & Exact legacy alias of Equation~\eqref{eq:implemented-pixel-snr}; dimensionless. & \code{TYPE=pixel}, N keys, legacy-alias DESCRIP; helper 143--159. & Candidate coherent but name ambiguous.  Retain only as deprecated alias.  Not primary fruit-loop selector.\\
+\code{sig2noise_pixel_I} & Equation~\eqref{eq:implemented-pixel-snr}; global-calibrated formal-pattern standardized amplitude; dimensionless. & \code{TYPE=pixel}, N keys; helper 153--159. & Does not equal direct-jackknife S/N generally.  Useful secondary diagnostic after validation, not confidence or feedback gain.\\
+\code{point_source_flux_I} & Exact alias of \code{signal_I}; no response correction for convolve; map unit. & Candidate \code{TYPE=convolved_amplitude}, no \code{RESPNORM}; helper 186--196. Baseline point-source description plus \code{RESPNORM=1}. & Baseline metadata definite error; candidate truthful compatibility alias.  Prefer a non-photometric name; never treat as mJy integrated flux or direct feedback amplitude.\\
+\code{point_source_uncertainty_I} & Equation~\eqref{eq:implemented-direct-sigma}; uncertainty of the same stored convolved amplitude; map unit. & Candidate \code{TYPE=convolved_amplitude} plus all N keys; helper 198--207. & Candidate truthful, conditional, diagonal.  Not uncertainty of response-corrected photometry.  May support selection only with response/support gates.\\
+\code{sig2noise_point_source_I} & Equation~\eqref{eq:implemented-direct-snr}; stored amplitude divided by direct jackknife uncertainty; dimensionless. & Candidate \code{TYPE=convolved_amplitude}, N keys, no \code{RESPNORM}; helper 209--217. & Legacy name misleading, but ratio is coherent.  Closest local-threshold product after blank/injection validation and explicit response/support intersection; currently fail-closed.\\
+\code{coverage_I} & Original effective integration time; seconds; not filtered response. & \code{UNIT/BUNIT=sec}, DESCRIP; helper 116--120. & Authoritative exposure diagnostic.  Do not use as inverse variance or edge response.\\
+\code{coverage_bool_I} & $\mathbf1(W_i\ge\tau_{\rm cov})$ from final \code{weight_I}; dimensionless binary display mask, with threshold found using \code{cov_cut}. & \code{BUNIT=N/A}, \code{WTTHRESH}, support-mask DESCRIP; helper 121--132. & Not the stored edge window and not $q^{(|k|)}$ or response.  Depends on formal/empirical weight policy.  Insufficient alone for fruit-loop edge support.\\
+\code{kernel_I} & Convolved mapmaking kernel image, not necessarily the filter template $h$ or a response plane; repository currently assigns map unit. & \code{TYPE=} raw kernel type, BUNIT, FWHM, DESCRIP; helper 84--103. & Add identity of both input kernel and applied convolution.  Do not infer point-source or absolute support without template conventions.\\
+edge window $T$ & Binary science-plus-dilated-guard window in memory; Equation~\eqref{eq:implemented-conditional-operator}. & No FITS image extension in the inspected producer or product contract; scalar diagnostic state records thresholds/counts/radii/background. & Persist a named validity/window policy or sufficient reproducible provenance.  Binary validity is not inverse variance.\\
+$h^2$ validity support & Equation~\eqref{eq:candidate-valid-support}; used only against $10^{-6}$. & Not stored and no image metadata. & Correct numerical floor mechanism, but not an adequate exposed geometric support contract.\\
+response, absolute support, taper, confidence & No corresponding convolve FITS planes.  Accepted taper is binary. & Absent from helpers and product contract. & Add template-specific response and $q^{(|k|)}$ when spatially varying; keep any confidence/gain separately named.\\
+empirical scale & Scalar $g$ and median ratio $\rho$ in Equations~\eqref{eq:implemented-median-ratio}--\eqref{eq:implemented-emp-scale}. & \code{EMP_SCALE} and \code{WVARMED} on empirically calibrated \code{weight_I}. & Correctly scalar, but add calibration-region/policy identity and usable-pixel count.  Never feedback gain.\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+All image products also require producer SHA/version, observation/grouping,
+array and wavelength, Stokes and iteration, effective filter type, applied
+kernel identity, boundary convention, and response, support, and fill policy at a level
+sufficient to reproduce the estimator.  Existing FITS/WCS and product
+provenance provide some of these identities, but none currently expresses the
+complete convolve statistical contract.
+
+\small
+\begin{longtable}{L{0.25\linewidth}L{0.31\linewidth}L{0.34\linewidth}}
+\caption{Equation-to-test and validation matrix.}\label{tab:tests}\\
+\toprule
+Contract & Existing candidate evidence & Required additional gate\\
+\midrule
+\endfirsthead
+\toprule
+Contract & Existing candidate evidence & Required additional gate\\
+\midrule
+\endhead
+Unit-sum interior, Equations~\eqref{eq:white-var}--\eqref{eq:white-weight-ratio} & \code{unit_sum_convolution_preserves_well_conditioned_behavior}; \code{convolve_propagates_uniform_diagonal_variance}. & Fixture-runtime $\sum h^2$ assertion for each array and independent small-matrix covariance test.\\
+Fixed partial support, Equations~\eqref{eq:edge-stored}--\eqref{eq:edge-cov} & \code{convolve_does_not_renormalize_variance_by_valid_support}. & Explicit signal, fill, output-mask, one-support, zero-support, and off-diagonal covariance cases; sequential/OpenMP equality.\\
+Low positive weight, Equations~\eqref{eq:input-weight-to-var} and \eqref{eq:candidate-var} & \code{convolve_variance_includes_all_positive_weight_inputs}. & Test nonuniform signal and variance together, including guardband input below \code{cov_cut}.\\
+Median fill, Equations~\eqref{eq:random-fill-cov}--\eqref{eq:data-derived-fill-cov} & None. & Bootstrap/analytic or injection evidence bounding omitted median-fill variance/cross-covariance; record conditionality.\\
+Taper, Equations~\eqref{eq:taper-signal}--\eqref{eq:taper-var} & Configuration rejects cosine for convolve and lowpass-only. & Keep rejection; add a dormant-path algebra regression if the code remains reachable, or redesign before enabling.\\
+Empirical variance, Equation~\eqref{eq:jackknife-var} & Exact $N=2$, large-offset stability, $N=1$ rejection, known-zero-mean distinction, and metadata tests. & Same-SHA multi-realization runs and direct numerical comparison to an independent sample-variance calculation.\\
+Global calibration, Equations~\eqref{eq:implemented-median-ratio}--\eqref{eq:implemented-emp-weight} & Focused helper/map tests and reported regression suite. & Test exact median region, empty/invalid region, scale identity, and prove \code{weight_I} metadata/product inventory on real output.\\
+Response, Equations~\eqref{eq:template-response}--\eqref{eq:alpha-var} & Candidate removes false convolve \code{RESPNORM} and changes TYPE. & Delta, beam, compact, resolved, and extended injection/recovery at interior and multiple edge distances.\\
+Support, Equations~\eqref{eq:l1-support}--\eqref{eq:l2-support} & Internal $h^2$ floor only. & Decide product/floor from blank and injection evidence; signed-kernel tests; verify edge false support.\\
+Filtered covariance, Equation~\eqref{eq:affine-output-cov} & No covariance product. & Blank-map spatial correlation/covariance by array and coverage/edge bin; calibrate threshold trials, component sizes, and dilation.\\
+FITS contract & Candidate metadata/unit tests and \code{product_contracts.json}. & Same-SHA all-array product inventory, exact metadata, no unexpected error-level logs, and no skipped required data.\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\section{Independent-derivation record}
+\label{app:independence}
+
+Sections~\ref{sec:general}--\ref{sec:cases}, the recommended estimator in
+Section~\ref{sec:recommendation}, and the pre-audit fruit-loop consequences
+were drafted on branch \code{codex/convolve-contract-audit} from mainline
+\code{9aae0e669384c5c0c0dda93debc194d6b8dac787} before inspecting the diffs or
+source contents of candidate commits \code{fa8f8a5b9} and
+\code{02a198cbf}.  Candidate code is treated only as evidence against the
+numbered equations.
+
+\end{document}
