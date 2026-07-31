@@ -123,6 +123,15 @@ GCC 13 belongs to the upstream GCC 14/LLVM 20 matrix. Concretization, install,
 compiled tests, package-consumer acceptance, and reduction validation remain
 pending on Unity.
 
+The first Unity concretization now passes with lock SHA-256
+`02e5dddbd3775e4335d4d5ddd4c72a45493562fe531180f225b206467073f6ac`.
+The concrete root enables tests and OpenMP Wiener filtering, uses GCC 13.3 for
+all compiled nodes, and resolves only GCC and glibc as system externals. All
+first-party packages use the controlled sibling checkouts. A checked Slurm
+acceptance script now owns source install, persistent build, complete CTest,
+installed-consumer verification, and final executable provenance. Execution
+of that job remains pending.
+
 ## 2026-07-26 Conan 2 Build Review
 
 The previously deferred TolTECA build implementation is now available and has

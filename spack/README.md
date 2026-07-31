@@ -219,32 +219,26 @@ Concretize and inspect before installing anything:
 ENV="$WORKSPACE/citlali/spack/environments/citlali-unity-gcc13"
 spack -e "$ENV" concretize --force
 spack -e "$ENV" find -cvl
-spack -e "$ENV" spec -Il citlali
 ```
 
 The concrete root must report `citlali@4.0.0+tests+wiener_openmp` with
 `%cxx=gcc@13.3.0`. Stop if it selects a second C/C++ compiler, an external
 first-party package, or a package outside the declared sibling checkouts.
 
-After graph review, install and exercise both development and packaged
-surfaces:
+After graph review, create the log directory and submit the checked acceptance
+script from the Citlali checkout. The submission captures the exact source SHA
+and refuses to run if the checkout or any reviewed sibling revision drifts:
 
 ```console
-spack -e "$ENV" install -y --show-log-on-error citlali
-
-"$SPACK_PYTHON" tools/build/run_spack_citlali_dev.py all \
-  --profile unity-gcc13 \
-  --spack "$SPACK_ROOT/bin/spack" \
-  --spack-python "$SPACK_PYTHON" \
-  --fresh
-
-"$SPACK_PYTHON" tools/build/test_spack_citlali.py \
-  --profile unity-gcc13 \
-  --spack "$SPACK_ROOT/bin/spack" \
-  --spack-python "$SPACK_PYTHON"
+cd "$WORKSPACE/citlali"
+mkdir -p logs
+EXPECTED_CITLALI_SHA="$(git rev-parse HEAD)"
+sbatch --export=ALL,WORKSPACE="$WORKSPACE",EXPECTED_CITLALI_SHA="$EXPECTED_CITLALI_SHA" \
+  tools/build/run_unity_spack_acceptance.sh
 ```
 
-Only after those commands pass should the installed executable be snapshotted
-through TolProj and used for a point smoke reduction. Record the source SHA,
-Spack DAG hash, compiler, package prefix, executable SHA-256, and full
-`--version` output before submission.
+The job source-builds and installs the graph, configures the persistent
+developer tree, runs all enabled CTests, tests the installed CLI and independent
+consumer, and writes a provenance manifest under `logs/`. Only after that job
+passes should the installed executable be snapshotted through TolProj and used
+for a point smoke reduction.
