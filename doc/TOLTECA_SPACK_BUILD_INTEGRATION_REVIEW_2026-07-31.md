@@ -22,6 +22,28 @@ The reconciled design authority is the `design/` directory in the reviewed
 Tula CMake branch. The earlier Conan 2 review remains historical evidence but
 no longer governs the package-manager choice.
 
+## Build-Owner Intent Clarification
+
+The build owner supplied the following intended operating model after the
+initial review:
+
+- the developer workspace is four sibling checkouts, with workflow recipes in
+  the Tula CMake `Justfile`; the private development container is not an
+  exported project deliverable;
+- native macOS is intended to be supported, and Homebrew LLVM 20 is a tested
+  compiler;
+- Spack may consume documented system packages or build dependencies from
+  source;
+- Unity releases will be installed in user-owned space, matching current
+  operational practice;
+- the large real-data fixture, release composition, and release locking are
+  not yet settled; and
+- existing provenance may be retained initially, with improvements reviewed
+  where they materially strengthen reproducibility.
+
+Project policy further requires native macOS development. Containers may be
+used for CI or troubleshooting, but are not required for local development.
+
 ## Decision
 
 Use Spack for dependency resolution, variants, compiler identity,
@@ -93,16 +115,17 @@ On the review Mac:
   LLVM 20.1.8 rather than AppleClang.
 
 The complete production matrix was not independently reproduced locally. The
-review Mac has neither Docker nor a pre-existing Spack installation, and the
-four repositories do not contain the documented workspace `.devcontainer` or
-identify the source and immutable revision of `tolteca_test_data`.
+review Mac has no pre-existing Spack installation. The intended four-sibling-
+checkout workflow has not yet been reproduced from a clean native macOS
+environment, and the repositories do not identify an accessible immutable
+revision of `tolteca_test_data`. Docker is not a prerequisite for acceptance.
 
 A fresh native Spack concretization also fails because the Citlali recipe pins
 `cfitsio@4.3.1`, while the current builtin repository does not provide that
 version. The reported container satisfies it only through a hardcoded Ubuntu
 `/usr` external. This does not invalidate the measured container build, but it
-means the documented end-user fallback to building the same graph from source
-is not yet true outside that environment.
+means the build owner's intended system-or-source policy is not yet expressed
+by a portable concrete graph.
 
 ## Requirement Assessment
 
@@ -113,7 +136,8 @@ is not yet true outside that environment.
 | Installed package consumers | Pass for upstream slice | Tula, Kidscpp, and Citlali installed consumers are reported in both compiler lanes. |
 | NetCDF C++ propagation | Pass for upstream slice | Dedicated adapter package and installed file-I/O consumer replace the failed CPM export. |
 | Compiler matrix | Partial | GCC 14 and LLVM 20 pass in Ubuntu; native macOS and Unity profiles remain unmeasured. |
-| Fresh-machine bootstrap | Partial | Workflow is documented, but the referenced workspace devcontainer is not among the four pushed repositories. |
+| Native developer bootstrap | Partial | Four sibling checkouts and Tula CMake `Justfile` recipes are the intended workflow; a clean native macOS setup is not yet demonstrated. |
+| Real-data fixtures | Partial | Upstream reports real-data tests, but the large fixture has no accessible immutable manifest for collaborators. |
 | Release source identity | Fail | First-party recipes provide versions without immutable source URLs/checksums and rely on local `develop` paths. |
 | Portable lock | Planned | Local locks are intentionally ignored; no release environment lock exists. |
 | Full refactored application | Fail pending adaptation | Upstream Citlali has 42 headers and five compiled library sources, not the full refactor graph. |
@@ -129,12 +153,13 @@ is not yet true outside that environment.
 
 ### A. Make The Environment Reconstructible
 
-1. Identify and pin the workspace devcontainer source.
-2. Identify and pin the real-data fixture repository and manifest.
-3. Add a supported native macOS LLVM 20 environment or explicitly remove
-   native macOS from the development contract.
-4. Add a Unity environment using the installed Spack/compiler/module facts
-   retrieved by the user.
+1. Document and reproduce the four-sibling-checkout workflow through the Tula
+   CMake `Justfile`; keep any container workflow optional.
+2. Identify an accessible real-data fixture and record an immutable manifest.
+3. Add and verify the required native macOS environment using exact Homebrew
+   LLVM 20 and a compatible OpenMP runtime.
+4. Add a user-owned Unity environment using the installed
+   Spack/compiler/module facts retrieved by the user.
 5. Add immutable release sources/checksums and a portable release lock.
 6. Ensure dependencies such as CFITSIO can build from the declared graph or
    are explicitly documented as required environment externals.
@@ -177,8 +202,8 @@ is not yet true outside that environment.
 
 Do not remove or weaken the existing build until:
 
-1. the full refactor builds through the Spack path locally or in its declared
-   supported development environment;
+1. the full refactor builds through the native macOS Spack path with exact
+   Homebrew LLVM 20;
 2. all required local gates pass;
 3. installed package consumers pass;
 4. provenance is truthful and sufficient to reproduce the graph;
@@ -190,18 +215,18 @@ Do not combine this adaptation with RTC, PTC, mapmaking, Wiener, JINC,
 fruit-loop, fitting, or calibration algorithm changes. Kidscpp compatibility
 changes are isolated and require product validation.
 
-## Information Required From The Build Owner
+## Remaining Open Evidence
 
-1. Repository and exact commit for the documented workspace `.devcontainer`,
-   root orchestration, and post-create setup.
-2. Repository/manifest and immutable identity for `tolteca_test_data`.
-3. Whether exact dependencies such as `cfitsio@4.3.1` are intentionally
-   external-only or must be source-buildable for the end-user workflow.
-4. Intended native macOS support after the Spack reset.
-5. Intended source revision, dirty-state, and concrete-DAG provenance exposed
+1. Reproduce and document the native four-checkout Mac bootstrap.
+2. Identify the real-data fixture and publish an immutable manifest without
+   requiring the large payload to live in Git.
+3. Demonstrate that exact dependencies such as `cfitsio@4.3.1` are either
+   source-buildable or explicitly selected as platform externals.
+4. Define the exact source, dirty-state, and concrete-DAG provenance exposed
    to Citlali.
-6. Intended release repository composition, immutable sources, lock, and
+5. Define release repository composition, immutable sources, lock, and
    buildcache trust policy.
+6. Demonstrate the user-owned Unity environment and reduction workflow.
 
-These questions bound deployment and reproducibility. They do not invalidate
-the selected Spack architecture.
+These are implementation and acceptance gaps, not unresolved policy questions
+and not reasons to require a local container.

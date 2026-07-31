@@ -41,10 +41,13 @@ new exact commits before importing subsequent upstream work.
 
 ### Spack Adaptation Entry
 
-- Identify and pin the workspace devcontainer and real-data fixture sources.
-- Add a native macOS LLVM 20 environment or explicitly remove it from the
-  supported development contract.
-- Add a Unity environment based on user-supplied Spack/compiler/module facts.
+- Reproduce and document the four-sibling-checkout workflow through the Tula
+  CMake `Justfile`; local containers are optional.
+- Identify an accessible real-data fixture and publish an immutable manifest.
+- Add the required native macOS environment with exact Homebrew LLVM 20 and a
+  compatible OpenMP runtime.
+- Add a user-owned Unity environment based on user-supplied
+  Spack/compiler/module facts.
 - Make the declared dependency graph source-buildable or explicitly record
   environment-required externals such as `cfitsio@4.3.1`.
 - Define immutable release sources, a portable lock, and provenance identity.

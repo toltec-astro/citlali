@@ -52,6 +52,15 @@ explicit HDF5/Zlib ownership, provide native Mac and Unity environments, or
 define immutable release sources and a portable lock. The existing build
 remains the operational path until those gates pass.
 
+The build owner subsequently confirmed the intended deployment contract. The
+developer workspace is four sibling repositories orchestrated through the
+Tula CMake `Justfile`; native macOS is supported; and Unity installation is in
+user-owned space. Project policy makes exact Homebrew LLVM 20 the initial Mac
+gate and treats containers as optional CI/troubleshooting infrastructure, not
+a local prerequisite. Real-data fixture identity, portable system-versus-
+source dependency resolution, provenance improvements, and release locking
+remain implementation work.
+
 ## 2026-07-26 Conan 2 Build Review
 
 The previously deferred TolTECA build implementation is now available and has
