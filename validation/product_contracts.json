@@ -80,7 +80,7 @@
         "frequency",
         "Stokes"
       ],
-      "units_policy": "BUNIT and ESTTYPE are authoritative per HDU: signal/kernel in mJy/beam, weights in inverse squared signal units, noise variance in squared signal units, coverage in seconds, and masks/standardized products dimensionless. sig2noise names require empirical jackknife calibration.",
+      "units_policy": "BUNIT and TYPE are authoritative per HDU: signal/kernel in mJy/beam, weights in inverse squared signal units, noise variance in squared signal units, coverage in seconds, and masks/standardized products dimensionless. sig2noise names require empirical jackknife calibration.",
       "indexing_policy": "FITS/WCS pixel coordinates are one-based; diagnostic row/column indices are zero-based.",
       "missing_value_policy": "Signal-like pixels may be non-finite where coverage/weight is invalid; coverage_bool identifies supported pixels.",
       "failure_policy": "Fatal when the map family is enabled in the active profile."
@@ -94,7 +94,7 @@
         "frequency",
         "Stokes"
       ],
-      "units_policy": "BUNIT and ESTTYPE are authoritative per HDU: signal/kernel in mJy/beam, weights in inverse squared signal units, coverage in seconds, and masks/standardized products dimensionless. sig2noise names require empirical jackknife calibration.",
+      "units_policy": "BUNIT and TYPE are authoritative per HDU: signal/kernel in mJy/beam, weights in inverse squared signal units, coverage in seconds, and masks/standardized products dimensionless. sig2noise names require empirical jackknife calibration.",
       "indexing_policy": "FITS/WCS pixel coordinates are one-based; diagnostic row/column indices are zero-based.",
       "missing_value_policy": "Signal-like pixels may be non-finite where coverage/weight is invalid; coverage_bool identifies supported pixels.",
       "failure_policy": "Fatal when the map family is enabled in the active profile."

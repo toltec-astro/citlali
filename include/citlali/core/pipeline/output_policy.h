@@ -129,6 +129,13 @@ bool map_filter_enabled(const Engine &engine) {
 }
 
 template <class Engine>
+bool filtered_error_normalization_enabled(const Engine &engine) {
+    return noise_maps_enabled(engine) && map_filter_enabled(engine) &&
+           effective_post_processing_config(engine)
+               .map_filtering.normalize_errors;
+}
+
+template <class Engine>
 bool source_finding_enabled(const Engine &engine) {
     return citlali::config::source_finding_active(
         effective_post_processing_config(engine));
@@ -167,8 +174,9 @@ bool filtered_maps_written_during_filtering(const Engine &engine) {
 
 template <class Engine>
 bool should_calculate_filtered_noise_products(const Engine &engine) {
-    return noise_product_outputs_enabled(engine) &&
-           noise_maps_enabled(engine) &&
+    return noise_maps_enabled(engine) &&
+           (noise_product_outputs_enabled(engine) ||
+            filtered_error_normalization_enabled(engine)) &&
            !filtered_maps_written_during_filtering(engine);
 }
 

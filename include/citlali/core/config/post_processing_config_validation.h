@@ -30,6 +30,16 @@ inline void validate(const MapFilterConfig &config, ValidationReport &report) {
         return;
     }
     validate(config.edge_guard, report);
+    const bool uses_unit_sum_convolution =
+        config.type == MapFilterType::convolve ||
+        (config.type == MapFilterType::wiener_filter && config.lowpass_only);
+    if (uses_unit_sum_convolution && config.edge_guard.enabled &&
+        config.edge_guard.taper_mode == MapFilterEdgeTaperMode::cosine) {
+        report.add_error(
+            {"post_processing", "map_filtering", "edge_guard", "taper_mode"},
+            "cosine is unavailable for convolve and Wiener lowpass_only until "
+            "fractional-response variance and output-support semantics are explicit");
+    }
     check_minimum(config.denom_rel_tol, 0.0,
                   {"wiener_filter", "denom_rel_tol"}, report);
     check_maximum(config.denom_rel_tol, 1.0,

@@ -88,6 +88,8 @@ struct CalibrationFixture {
 struct MetadataHdu {
     std::map<std::string, std::string> string_keys;
     std::map<std::string, double> double_keys;
+    std::map<std::string, long long> integer_keys;
+    std::map<std::string, bool> bool_keys;
 
     void addKey(const std::string &name, const std::string &value,
                 const std::string &) {
@@ -97,6 +99,21 @@ struct MetadataHdu {
     void addKey(const std::string &name, double value,
                 const std::string &) {
         double_keys[name] = value;
+    }
+
+    void addKey(const std::string &name, long long value,
+                const std::string &) {
+        integer_keys[name] = value;
+    }
+
+    void addKey(const std::string &name, int value,
+                const std::string &) {
+        integer_keys[name] = value;
+    }
+
+    void addKey(const std::string &name, bool value,
+                const std::string &) {
+        bool_keys[name] = value;
     }
 };
 
@@ -382,6 +399,33 @@ TEST(wiener_filter, convolve_does_not_renormalize_variance_by_valid_support) {
     EXPECT_LT((map.weight[0].array() - 32.0).abs().maxCoeff(), 1e-10);
 }
 
+TEST(wiener_filter, convolve_variance_includes_all_positive_weight_inputs) {
+    mapmaking::WienerFilter filter;
+    filter.logger = ensure_citlali_logger();
+    filter.n_rows = 2;
+    filter.n_cols = 2;
+    filter.filter_type = "convolve";
+    filter.template_type = "gaussian";
+    filter.edge_guard_enabled = false;
+    filter.filter_template = Eigen::MatrixXd::Ones(2, 2);
+
+    mapmaking::MapBuffer map{"convolve-cov-cut-test"};
+    map.n_rows = 2;
+    map.n_cols = 2;
+    map.cov_cut = 0.5;
+    map.signal = {Eigen::MatrixXd::Zero(2, 2)};
+    map.weight = {Eigen::MatrixXd::Constant(2, 2, 100.0)};
+    map.weight[0](1, 1) = 1.0;
+
+    filter.filter_maps(map, 0);
+
+    // The low-weight sample is still part of the convolution, so its
+    // variance must be propagated even though it is below cov_cut * max(W).
+    // Var_out=(1/16)(3/100 + 1), hence W_out=16/1.03.
+    EXPECT_LT((map.weight[0].array() - (16.0 / 1.03)).abs().maxCoeff(),
+              1e-10);
+}
+
 TEST(map_noise_products, mean_subtracted_variance_uses_n_minus_one) {
     auto map = make_noise_product_map({1.0, 3.0});
 
@@ -391,6 +435,15 @@ TEST(map_noise_products, mean_subtracted_variance_uses_n_minus_one) {
     EXPECT_NEAR(map.noise_variance[0](0, 0), 2.0, 1e-12);
     EXPECT_NEAR(map.point_source_uncertainty[0](0, 0), std::sqrt(2.0),
                 1e-12);
+}
+
+TEST(map_noise_products, mean_subtracted_variance_is_stable_at_large_offset) {
+    auto map = make_noise_product_map({1.0e12 + 1.0, 1.0e12 + 3.0});
+
+    map.calc_noise_products(false);
+
+    EXPECT_DOUBLE_EQ(map.noise_mean[0](0, 0), 1.0e12 + 2.0);
+    EXPECT_NEAR(map.noise_variance[0](0, 0), 2.0, 1e-12);
 }
 
 TEST(map_noise_products, mean_subtracted_products_require_two_realizations) {
@@ -427,6 +480,17 @@ TEST(map_noise_products, convolved_amplitude_metadata_is_not_photometric) {
               "convolved_amplitude");
     EXPECT_EQ(snr_hdu.string_keys["BUNIT"], "N/A");
     EXPECT_EQ(snr_hdu.string_keys["TYPE"], "convolved_amplitude");
+}
+
+TEST(map_noise_products, empirical_variance_metadata_records_estimator) {
+    MetadataHdu hdu;
+
+    citlali::pipeline::add_empirical_variance_estimator_keys(hdu, 17);
+
+    EXPECT_EQ(hdu.integer_keys["NNOISE"], 17);
+    EXPECT_EQ(hdu.string_keys["VAREST"], "central_sample_variance");
+    EXPECT_EQ(hdu.integer_keys["VARDDOF"], 1);
+    EXPECT_TRUE(hdu.bool_keys["MEANSUB"]);
 }
 
 TEST(timestream_filter, notch_settle_samples_are_positive_for_narrow_notches) {

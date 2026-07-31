@@ -66,6 +66,19 @@ void add_weight_variance_median_key(Hdu &hdu, double median_ratio) {
 }
 
 template <class Hdu>
+void add_empirical_variance_estimator_keys(Hdu &hdu,
+                                           long long n_noise) {
+    hdu.addKey("NNOISE", n_noise,
+               "Noise realizations used by empirical estimator");
+    hdu.addKey("VAREST", std::string{"central_sample_variance"},
+               "Empirical variance estimator");
+    hdu.addKey("VARDDOF", 1,
+               "Variance delta degrees of freedom (divisor N-1)");
+    hdu.addKey("MEANSUB", true,
+               "Noise-realization mean subtracted before variance");
+}
+
+template <class Hdu>
 void add_point_source_response_norm_key(Hdu &hdu, double response_norm) {
     hdu.addKey("RESPNORM", response_norm,
                "Point-source response normalization applied");

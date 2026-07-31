@@ -838,19 +838,35 @@ void MapBuffer::calc_noise_products(Eigen::Index i, bool apply_empirical_weight_
     for (Eigen::Index j=0; j<n_noise; ++j) {
         Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(
             noise[i].data() + j * n_rows * n_cols, n_rows, n_cols);
-        noise_mean[static_cast<size_t>(i)].array() += noise_matrix.array();
-        noise_variance[static_cast<size_t>(i)].array() += noise_matrix.array().square();
+        const double count = static_cast<double>(j + 1);
+        const Eigen::MatrixXd delta =
+            noise_matrix.array() -
+            noise_mean[static_cast<size_t>(i)].array();
+        noise_mean[static_cast<size_t>(i)].array() += delta.array() / count;
+        if (mean_subtract) {
+            // Matrix-valued Welford accumulation avoids the cancellation in
+            // E[n^2] - E[n]^2 while producing the central sample variance.
+            const Eigen::MatrixXd delta_after_mean =
+                noise_matrix.array() -
+                noise_mean[static_cast<size_t>(i)].array();
+            noise_variance[static_cast<size_t>(i)].array() +=
+                delta.array() * delta_after_mean.array();
+        }
+        else {
+            // This is the distinct known-zero-mean second moment.
+            noise_variance[static_cast<size_t>(i)].array() +=
+                noise_matrix.array().square();
+        }
     }
-    noise_mean[static_cast<size_t>(i)].array() /= static_cast<double>(n_noise);
-    noise_variance[static_cast<size_t>(i)].array() /= static_cast<double>(n_noise);
     if (mean_subtract) {
-        noise_variance[static_cast<size_t>(i)].array() -=
-            noise_mean[static_cast<size_t>(i)].array().square();
+        noise_variance[static_cast<size_t>(i)].array() /=
+            static_cast<double>(n_noise - 1);
         noise_variance[static_cast<size_t>(i)] =
             noise_variance[static_cast<size_t>(i)].array().max(0.0).matrix();
-        noise_variance[static_cast<size_t>(i)].array() *=
-            static_cast<double>(n_noise) /
-            static_cast<double>(n_noise - 1);
+    }
+    else {
+        noise_variance[static_cast<size_t>(i)].array() /=
+            static_cast<double>(n_noise);
     }
 
     double weight_threshold = 0.0;

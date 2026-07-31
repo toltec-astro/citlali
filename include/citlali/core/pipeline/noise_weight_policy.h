@@ -13,7 +13,7 @@ bool unfiltered_noise_products_apply_empirical_weights(
 template <class Engine>
 bool filtered_noise_products_apply_empirical_weights(const Engine &engine) {
     return empirical_noise_weights_enabled(engine) ||
-           engine.wiener_filter.normalize_error;
+           filtered_error_normalization_enabled(engine);
 }
 
 }  // namespace citlali::pipeline

@@ -589,18 +589,16 @@ public:
                     Eigen::MatrixXd var_map(n_rows, n_cols);
                     Eigen::MatrixXd mask_map(n_rows, n_cols);
 
-                    double weight_threshold = 0.0;
-                    if (mb.cov_cut > 0.0) {
-                        weight_threshold = engine_utils::find_weight_threshold(weight_input, mb.cov_cut);
-                    }
-                    if (!std::isfinite(weight_threshold) || weight_threshold < 0.0) {
-                        weight_threshold = 0.0;
-                    }
-
                     for (Eigen::Index i=0; i<n_rows; ++i) {
                         for (Eigen::Index j=0; j<n_cols; ++j) {
                             double w = weight_input(i,j);
-                            if (w > 0.0 && std::isfinite(w) && w >= weight_threshold) {
+                            // Every finite positive-weight sample passed to the
+                            // signal/noise convolution must contribute to the
+                            // propagated variance.  A coverage-cut threshold
+                            // may classify output support, but it cannot
+                            // silently remove noise from an input that still
+                            // enters the fixed convolution.
+                            if (w > 0.0 && std::isfinite(w)) {
                                 var_map(i,j) = 1.0 / w;
                                 mask_map(i,j) = 1.0;
                             }

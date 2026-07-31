@@ -60,8 +60,19 @@ Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_
         const bool is_beammap =
             citlali::pipeline::runtime_reduction_type(*this) ==
             citlali::config::ReductionType::beammap;
+        const bool is_filtered_output =
+            citlali::pipeline::is_filtered_map_output(
+                fits_io, map_fits_outputs.filtered_obs,
+                map_fits_outputs.filtered_coadd);
+        const auto &map_filter_config =
+            citlali::pipeline::effective_post_processing_config(*this)
+                .map_filtering;
+        const bool filtered_error_normalization =
+            is_filtered_output &&
+            citlali::pipeline::filtered_error_normalization_enabled(*this);
         const bool empirical_weight_calibration =
-            citlali::pipeline::empirical_weight_calibration_enabled(*this);
+            citlali::pipeline::empirical_weight_calibration_enabled(*this) ||
+            filtered_error_normalization;
         const bool empirical_noise_products_expected =
             citlali::pipeline::noise_maps_enabled(*this) &&
             citlali::pipeline::noise_product_outputs_enabled(*this);
@@ -82,11 +93,6 @@ Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_
         }
 
         /* coverage bool and signal-to-noise maps */
-        const bool is_filtered_output =
-            citlali::pipeline::is_filtered_map_output(
-                fits_io, map_fits_outputs.filtered_obs, map_fits_outputs.filtered_coadd);
-        const auto &map_filter_config =
-            citlali::pipeline::post_processing_config(*this).map_filtering;
         const bool uses_unit_sum_convolution =
             map_filter_config.type == citlali::config::MapFilterType::convolve ||
             (map_filter_config.type ==

@@ -27,12 +27,17 @@ void add_primary_map_image_hdus(
     const std::string weight_unit = map_weight_unit(mb->sig_unit);
     add_weight_map_metadata(
         *fits_entry.hdus.back(), weight_unit, empirical_weight_calibration);
-    if (empirical_noise_products_expected &&
+    if (empirical_weight_calibration) {
+        add_empirical_variance_estimator_keys(
+            *fits_entry.hdus.back(),
+            static_cast<long long>(mb->n_noise));
+    }
+    if (empirical_weight_calibration &&
         i < mb->noise_weight_scale.size()) {
         add_empirical_weight_scale_key(
             *fits_entry.hdus.back(), mb->noise_weight_scale(i));
     }
-    if (empirical_noise_products_expected &&
+    if (empirical_weight_calibration &&
         i < mb->noise_weight_median_ratio.size()) {
         add_weight_variance_median_key(
             *fits_entry.hdus.back(), mb->noise_weight_median_ratio(i));
@@ -66,6 +71,9 @@ void add_primary_map_image_hdus(
         const std::string variance_unit = map_variance_unit(mb->sig_unit);
         add_noise_variance_map_metadata(
             *fits_entry.hdus.back(), variance_unit);
+        add_empirical_variance_estimator_keys(
+            *fits_entry.hdus.back(),
+            static_cast<long long>(mb->n_noise));
         if (i < mb->median_rms.size() && std::isfinite(mb->median_rms(i))) {
             add_image_median_rms_key(
                 *fits_entry.hdus.back(), mb->median_rms(i), mb->sig_unit);
@@ -138,11 +146,17 @@ void add_coverage_support_image_hdus(
             fits_entry, legacy_pixel_snr_map_hdu_name(map_name, stokes_suffix),
             sig2noise, wcs, source_epoch);
         add_legacy_pixel_snr_map_metadata(*fits_entry.hdus.back());
+        add_empirical_variance_estimator_keys(
+            *fits_entry.hdus.back(),
+            static_cast<long long>(mb->n_noise));
 
         add_map_hdu_with_wcs(
             fits_entry, pixel_snr_map_hdu_name(map_name, stokes_suffix),
             sig2noise, wcs, source_epoch);
         add_pixel_snr_map_metadata(*fits_entry.hdus.back());
+        add_empirical_variance_estimator_keys(
+            *fits_entry.hdus.back(),
+            static_cast<long long>(mb->n_noise));
     }
     else {
         Eigen::MatrixXd formal_standardized_signal =
@@ -188,6 +202,9 @@ void add_coverage_support_image_hdus(
         add_point_source_uncertainty_map_metadata(
             *fits_entry.hdus.back(), mb->sig_unit,
             point_source_response_normalized);
+        add_empirical_variance_estimator_keys(
+            *fits_entry.hdus.back(),
+            static_cast<long long>(mb->n_noise));
 
         add_map_hdu_with_wcs(
             fits_entry, point_source_snr_map_hdu_name(
@@ -195,6 +212,9 @@ void add_coverage_support_image_hdus(
             mb->sig2noise_point_source[i], wcs, source_epoch);
         add_point_source_snr_map_metadata(
             *fits_entry.hdus.back(), point_source_response_normalized);
+        add_empirical_variance_estimator_keys(
+            *fits_entry.hdus.back(),
+            static_cast<long long>(mb->n_noise));
     }
 }
 

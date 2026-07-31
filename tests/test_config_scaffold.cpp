@@ -4605,6 +4605,52 @@ TEST(config_scaffold, validates_map_filter_config_values) {
     EXPECT_EQ(report.error_count(), 10U);
 }
 
+TEST(config_scaffold, rejects_cosine_edge_taper_for_convolution) {
+    citlali::config::MapFilterConfig config;
+    config.enabled = true;
+    config.type = citlali::config::MapFilterType::convolve;
+    config.edge_guard.taper_mode =
+        citlali::config::MapFilterEdgeTaperMode::cosine;
+
+    citlali::config::ValidationReport report;
+    citlali::config::validate(config, report);
+
+    ASSERT_FALSE(report.ok());
+    ASSERT_EQ(report.error_count(), 1U);
+    EXPECT_NE(report.format_for_cli().find(
+                  "post_processing.map_filtering.edge_guard.taper_mode"),
+              std::string::npos);
+}
+
+TEST(config_scaffold, rejects_cosine_edge_taper_for_wiener_lowpass) {
+    citlali::config::MapFilterConfig config;
+    config.enabled = true;
+    config.type = citlali::config::MapFilterType::wiener_filter;
+    config.lowpass_only = true;
+    config.edge_guard.taper_mode =
+        citlali::config::MapFilterEdgeTaperMode::cosine;
+
+    citlali::config::ValidationReport report;
+    citlali::config::validate(config, report);
+
+    ASSERT_FALSE(report.ok());
+    EXPECT_EQ(report.error_count(), 1U);
+}
+
+TEST(config_scaffold, permits_cosine_edge_taper_for_full_wiener_filter) {
+    citlali::config::MapFilterConfig config;
+    config.enabled = true;
+    config.type = citlali::config::MapFilterType::wiener_filter;
+    config.lowpass_only = false;
+    config.edge_guard.taper_mode =
+        citlali::config::MapFilterEdgeTaperMode::cosine;
+
+    citlali::config::ValidationReport report;
+    citlali::config::validate(config, report);
+
+    EXPECT_TRUE(report.ok()) << report.format_for_cli();
+}
+
 TEST(config_scaffold, validates_source_finding_config_values) {
     citlali::config::SourceFindingConfig config;
     config.enabled = true;
@@ -6925,7 +6971,10 @@ TEST(pipeline_execution, writes_filtered_observation_outputs) {
     todproc.engine().typed_config.noise.enabled = true;
     citlali::config::set_source_finding_enabled(
         todproc.engine().typed_config.post_processing, true);
-    todproc.engine().wiener_filter.normalize_error = true;
+    citlali::config::set_map_filtering_enabled(
+        todproc.engine().typed_config.post_processing, true);
+    todproc.engine().typed_config.post_processing.map_filtering
+        .normalize_errors = true;
     citlali::pipeline::StageProfileCollector stage_profile;
     auto logger = std::make_shared<FakeLogger>();
 
@@ -6942,6 +6991,29 @@ TEST(pipeline_execution, writes_filtered_observation_outputs) {
     EXPECT_EQ(todproc.engine().find_sources_calls, 1);
     EXPECT_EQ(todproc.engine().fit_maps_calls, 0);
     EXPECT_EQ(todproc.engine().output_calls, 1);
+}
+
+TEST(pipeline_execution,
+     normalizes_filtered_observation_errors_without_noise_product_outputs) {
+    FakeCoaddTodProc todproc;
+    auto &engine = todproc.engine();
+    engine.typed_config.runtime.reduction_type =
+        citlali::config::ReductionType::pointing;
+    sync_fake_runtime_provenance(engine);
+    engine.typed_config.noise.enabled = true;
+    engine.typed_config.noise.products_enabled = false;
+    citlali::config::set_map_filtering_enabled(
+        engine.typed_config.post_processing, true);
+    engine.typed_config.post_processing.map_filtering.normalize_errors = true;
+    citlali::pipeline::StageProfileCollector stage_profile;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::write_filtered_observation_outputs<
+        FakeMapType::FilteredObs, false>(todproc, stage_profile, logger);
+
+    EXPECT_EQ(engine.omb.calc_noise_products_calls, 1);
+    EXPECT_TRUE(engine.omb.last_apply_empirical_noise_weights);
+    EXPECT_EQ(engine.output_calls, 1);
 }
 
 TEST(pipeline_execution, fits_filtered_observation_maps_when_requested) {
@@ -7415,7 +7487,10 @@ TEST(pipeline_execution, writes_filtered_coadd_outputs) {
     sync_fake_runtime_provenance(todproc.engine());
     citlali::config::set_source_finding_enabled(
         todproc.engine().typed_config.post_processing, true);
-    todproc.engine().wiener_filter.normalize_error = true;
+    citlali::config::set_map_filtering_enabled(
+        todproc.engine().typed_config.post_processing, true);
+    todproc.engine().typed_config.post_processing.map_filtering
+        .normalize_errors = true;
     citlali::pipeline::StageProfileCollector stage_profile;
     auto logger = std::make_shared<FakeLogger>();
 
@@ -7431,6 +7506,29 @@ TEST(pipeline_execution, writes_filtered_coadd_outputs) {
     EXPECT_EQ(todproc.engine().cmb.calc_median_rms_calls, 1);
     EXPECT_EQ(todproc.engine().find_sources_calls, 1);
     EXPECT_EQ(todproc.engine().output_calls, 1);
+}
+
+TEST(pipeline_execution,
+     normalizes_filtered_coadd_errors_without_noise_product_outputs) {
+    FakeCoaddTodProc todproc;
+    auto &engine = todproc.engine();
+    engine.typed_config.runtime.reduction_type =
+        citlali::config::ReductionType::pointing;
+    sync_fake_runtime_provenance(engine);
+    engine.typed_config.noise.enabled = true;
+    engine.typed_config.noise.products_enabled = false;
+    citlali::config::set_map_filtering_enabled(
+        engine.typed_config.post_processing, true);
+    engine.typed_config.post_processing.map_filtering.normalize_errors = true;
+    citlali::pipeline::StageProfileCollector stage_profile;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::write_filtered_coadd_outputs<
+        FakeMapType::FilteredCoadd>(todproc, stage_profile, logger);
+
+    EXPECT_EQ(engine.cmb.calc_noise_products_calls, 1);
+    EXPECT_TRUE(engine.cmb.last_apply_empirical_noise_weights);
+    EXPECT_EQ(engine.output_calls, 1);
 }
 
 TEST(pipeline_execution, skips_post_filter_coadd_output_for_science) {
