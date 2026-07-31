@@ -1,5 +1,6 @@
 /build_*/
 /build/
+/build-darwin-*
 .DS_Store
 __pycache__/
 *.py[cod]

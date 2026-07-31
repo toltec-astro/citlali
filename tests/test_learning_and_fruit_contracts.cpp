@@ -10,6 +10,7 @@
 #include <citlali/core/pipeline/reduction_restart_checkpoint.h>
 
 #include <gtest/gtest.h>
+#include <spdlog/spdlog.h>
 
 #include <chrono>
 #include <filesystem>

@@ -22,6 +22,7 @@
 #include <unsupported/Eigen/CXX11/Tensor>
 
 #include <CCfits/CCfits>
+#include <netcdf>
 
 #include <tula/enum.h>
 #include <tula/nddata/labelmapper.h>

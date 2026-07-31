@@ -25,10 +25,8 @@
 #include <citlali_config/config.h>
 #include <citlali_config/gitversion.h>
 #include <citlali_config/default_config.h>
-#include <kids/core/kidsdata.h>
-#include <kids/sweep/fitter.h>
+#include <citlali/core/compat/kidscpp_raw_timestream.h>
 #include <kids/timestream/solver.h>
-#include <kids/toltec/toltec.h>
 #include <kidscpp_config/gitversion.h>
 #include <tula_config/gitversion.h>
 #include <tula/cli.h>

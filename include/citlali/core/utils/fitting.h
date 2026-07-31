@@ -7,6 +7,7 @@
 
 #include <Eigen/Core>
 #include <Eigen/QR>
+#include <ceres/version.h>
 
 #include <tula/algorithm/ei_stats.h>
 
@@ -301,11 +302,18 @@ auto mapFitter::ceres_fit(const Model &model,
         if (sspv.size() > 0 ){
             logger->debug("ceres_fit checkpoint: SubsetParameterization start constant_index={}", sspv.front());
             flush_logger();
-            ceres::SubsetParameterization *pcssp
-                    = new ceres::SubsetParameterization(limits.rows(), sspv);
-            logger->debug("ceres_fit checkpoint: SubsetParameterization constructed ptr={}", static_cast<const void*>(pcssp));
+#if CERES_VERSION_MAJOR >= 2
+            auto *pcssp = new ceres::SubsetManifold(limits.rows(), sspv);
+#else
+            auto *pcssp = new ceres::SubsetParameterization(limits.rows(), sspv);
+#endif
+            logger->debug("ceres_fit checkpoint: subset constraint constructed ptr={}", static_cast<const void*>(pcssp));
             flush_logger();
+#if CERES_VERSION_MAJOR >= 2
+            problem.SetManifold(params.data(), pcssp);
+#else
             problem.SetParameterization(params.data(), pcssp);
+#endif
             logger->debug("ceres_fit angle fixed via subset parameterization");
             flush_logger();
         }

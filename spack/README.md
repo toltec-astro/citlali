@@ -82,11 +82,9 @@ Eigen 3.4 private test failures against macOS 26 libc++ are not failures of the
 libraries or Citlali contracts. Third-party private test compatibility is not
 a Citlali gate.
 
-The production environment and full Citlali recipe will land with the parallel
-CMake package-consumer path. OpenMP remains a separate required gate because
-Homebrew LLVM 20 does not bundle `libomp`, and the current Tula perflibs recipe
-does not declare the separate LLVM OpenMP runtime as a package dependency on
-macOS.
+OpenMP remains a separate required gate because Homebrew LLVM 20 does not
+bundle `libomp`, and the upstream Tula perflibs recipe does not declare the
+separate LLVM OpenMP runtime as a package dependency on macOS.
 
 ## Kidscpp Environment
 
@@ -119,3 +117,60 @@ reason. The local real-reader consumer is the current macOS data-path evidence
 until that historical fixture has an accessible immutable manifest. Solver,
 Welch, and synthetic metadata tests compile and run under the same LLVM 20 and
 OpenMP graph.
+
+## Full Citlali Environment
+
+The full environment carries the refactored library, production CLI, complete
+compiled test surface, direct HDF5/Zlib ownership, and the OpenMP Wiener build
+identity:
+
+```console
+spack -e spack/environments/citlali-macos-llvm20 concretize --force
+spack -e spack/environments/citlali-macos-llvm20 \
+  install --show-log-on-error
+```
+
+This is the packaging and release-candidate gate. Do not use repeated
+`spack install` calls as the ordinary edit/build loop: a development package
+is restaged and its header-heavy CLI translation unit can dominate the
+rebuild.
+
+Use the persistent native build tree instead:
+
+```console
+$HOME/tolteca/bin/python tools/build/run_spack_citlali_dev.py all --fresh
+```
+
+After the first configure, the normal cycle is:
+
+```console
+$HOME/tolteca/bin/python tools/build/run_spack_citlali_dev.py build
+$HOME/tolteca/bin/python tools/build/run_spack_citlali_dev.py test
+```
+
+The script validates the concrete graph before every action, runs CMake/Ninja
+inside the exact Citlali dependency environment, and embeds the concrete root
+DAG hash in the CLI. It does not reinstall dependencies or the Citlali
+package. The first native checkpoint passed all 533 enabled CTests; the sole
+disabled lifecycle test remains explicitly reported by CTest. A measured
+no-op invocation completed in 0.82 seconds.
+
+After installing a candidate, run the installed-artifact gate:
+
+```console
+$HOME/tolteca/bin/python tools/build/test_spack_citlali.py
+```
+
+The gate rejects graph drift, checks the installed CLI version and full help
+surface, requires a clean exact-HEAD source plus
+source/build/compiler/variant/DAG identity in `--version`,
+builds and tests an independent `find_package(citlali)` consumer, and reruns
+the complete compiled suite from the persistent developer tree. The
+`--skip-developer-ctest` option is only for diagnosing packaging in isolation;
+it is not a complete acceptance result.
+
+The current macOS graph deliberately uses Homebrew FFTW and a Homebrew GCC 15
+Fortran compiler as declared externals. All Citlali, Kidscpp, Tula, and other
+C/C++ compilation remains exact Homebrew LLVM 20. The prerequisite checker
+verifies both host externals rather than allowing them to be selected
+silently.

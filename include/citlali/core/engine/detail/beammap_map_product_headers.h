@@ -4,7 +4,10 @@
 
 #include <citlali/core/engine/detail/beammap_apt_keys.h>
 
+#include <Eigen/Core>
+
 #include <cmath>
+#include <string>
 
 namespace beammap_map_product_headers {
 

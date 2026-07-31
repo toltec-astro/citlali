@@ -3,16 +3,15 @@
 // Implementation detail included by kidsproc.h.
 
 auto KidsDataProc::get_data_item_meta(const RawObs::DataItem &data_item) {
-    namespace kidsdata = predefs::kidsdata;
     auto source = data_item.filepath();
     predefs::suppress_hdf5_diagnostics_for_this_thread();
     std::lock_guard<std::mutex> lock(predefs::netcdf_io_mutex());
-    auto [kind, meta] = kidsdata::get_meta<>(source);
-    return meta;
+    return citlali::compat::kidscpp::get_raw_timestream_meta(source);
 }
 
-std::vector<kids::KidsData<>::meta_t> KidsDataProc::get_rawobs_meta(const RawObs &rawobs) {
-    std::vector<kids::KidsData<>::meta_t> result;
+std::vector<KidsDataProc::RawTimeStreamMeta>
+KidsDataProc::get_rawobs_meta(const RawObs &rawobs) {
+    std::vector<RawTimeStreamMeta> result;
     for (const auto &data_item : rawobs.kidsdata()) {
         result.push_back(get_data_item_meta(data_item));
     }
@@ -20,7 +19,7 @@ std::vector<kids::KidsData<>::meta_t> KidsDataProc::get_rawobs_meta(const RawObs
 }
 
 auto KidsDataProc::populate_rtc_meta(const RawObs &rawobs) {
-    std::vector<kids::KidsData<>::meta_t> result;
+    std::vector<RawTimeStreamMeta> result;
     for (const auto &data_item : rawobs.kidsdata()) {
         result.push_back(get_data_item_meta(data_item));
     }
@@ -31,26 +30,26 @@ auto KidsDataProc::reduce_data_item(const RawObs::DataItem &data_item,
                                     const tula::container_utils::Slice<int> &slice) {
     logger->debug("kids reduce data_item {}", data_item);
     // read data
-    namespace kidsdata = predefs::kidsdata;
     auto source = data_item.filepath();
+#if !defined(CITLALI_KIDSCPP_V3)
+    namespace kidsdata = predefs::kidsdata;
     kids::KidsDataKind kind;
-    kids::KidsData<>::meta_t meta;
     {
         predefs::suppress_hdf5_diagnostics_for_this_thread();
         std::lock_guard<std::mutex> lock(predefs::netcdf_io_mutex());
         auto km = kidsdata::get_meta<>(source);
         kind = km.first;
-        meta = std::move(km.second);
     }
     if (!(kind & kids::KidsDataKind::TimeStream)) {
         throw std::runtime_error(
             fmt::format("wrong type of kids data {}", kind));
     }
-    kids::KidsData<kids::KidsDataKind::RawTimeStream> rts;
+#endif
+    RawTimeStream rts;
     try {
         predefs::suppress_hdf5_diagnostics_for_this_thread();
         std::lock_guard<std::mutex> lock(predefs::netcdf_io_mutex());
-        rts = kidsdata::read_data_slice<kids::KidsDataKind::RawTimeStream>(
+        rts = citlali::compat::kidscpp::read_raw_timestream_slice(
             source, slice);
     } catch (const std::exception &e) {
         throw std::runtime_error(fmt::format(
@@ -75,8 +74,9 @@ auto KidsDataProc::load_data_item(const RawObs::DataItem &data_item,
                                   const tula::container_utils::Slice<int> &slice) {
     logger->debug("kids reduce data_item {}", data_item);
     // read data
-    namespace kidsdata = predefs::kidsdata;
     auto source = data_item.filepath();
+#if !defined(CITLALI_KIDSCPP_V3)
+    namespace kidsdata = predefs::kidsdata;
     kids::KidsDataKind kind;
     if (auto it = m_data_item_kind_cache.find(source); it != m_data_item_kind_cache.end()) {
         kind = it->second;
@@ -92,11 +92,12 @@ auto KidsDataProc::load_data_item(const RawObs::DataItem &data_item,
         throw std::runtime_error(
             fmt::format("wrong type of kids data {}", kind));
     }
-    kids::KidsData<kids::KidsDataKind::RawTimeStream> rts;
+#endif
+    RawTimeStream rts;
     try {
         predefs::suppress_hdf5_diagnostics_for_this_thread();
         std::lock_guard<std::mutex> lock(predefs::netcdf_io_mutex());
-        rts = kidsdata::read_data_slice<kids::KidsDataKind::RawTimeStream>(
+        rts = citlali::compat::kidscpp::read_raw_timestream_slice(
             source, slice);
     } catch (const std::exception &e) {
         throw std::runtime_error(fmt::format(
@@ -137,7 +138,7 @@ auto KidsDataProc::load_fit_report(const RawObs &rawobs) {
         //std::vector<std::string> header;
         header.clear();
         Eigen::MatrixXd table;
-        using meta_t = kids::KidsData<>::meta_t;
+        using meta_t = RawTimeStreamMeta;
         meta_t meta_cal{};
 
         try {
@@ -179,4 +180,3 @@ auto KidsDataProc::load_fit_report(const RawObs &rawobs) {
 
     return std::tuple{std::move(kids_models), std::move(header)};
 }
-

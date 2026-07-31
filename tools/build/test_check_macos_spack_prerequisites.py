@@ -32,6 +32,9 @@ class MacosSpackPrerequisiteTest(unittest.TestCase):
         self.llvm_prefix = self.root / "llvm@20"
         (self.llvm_prefix / "bin").mkdir(parents=True)
         (self.llvm_prefix / "bin/clang++").touch()
+        self.fftw_prefix = self.root / "fftw"
+        (self.fftw_prefix / "lib").mkdir(parents=True)
+        (self.fftw_prefix / "lib/libfftw3.dylib").touch()
         self.spack = self.root / "spack/bin/spack"
         self.spack.parent.mkdir(parents=True)
         self.spack.touch()
@@ -45,8 +48,12 @@ class MacosSpackPrerequisiteTest(unittest.TestCase):
     def _runner(self, command: list[str]) -> str:
         if command[-2:] == ["--prefix", "llvm@20"]:
             return str(self.llvm_prefix)
+        if command[-2:] == ["--prefix", "fftw"]:
+            return str(self.fftw_prefix)
         if command[0].endswith("clang++"):
             return "Homebrew clang version 20.1.8"
+        if command[0].endswith("gfortran"):
+            return "GNU Fortran (Homebrew GCC 15.2.0) 15.2.0"
         if command[0].endswith("cmake"):
             return "cmake version 4.3.0"
         if command[0].endswith("ninja"):
@@ -122,6 +129,22 @@ class MacosSpackPrerequisiteTest(unittest.TestCase):
             result for result in results if result.name == "repository.kidscpp"
         )
         self.assertEqual(kidscpp.status, "fail")
+
+    def test_reports_missing_fftw_library(self) -> None:
+        os.remove(self.fftw_prefix / "lib/libfftw3.dylib")
+        results = self._inspect()
+        fftw = next(result for result in results if result.name == "homebrew.fftw")
+        self.assertEqual(fftw.status, "fail")
+
+    def test_rejects_wrong_fortran_compiler(self) -> None:
+        def runner(command: list[str]) -> str:
+            if command[0].endswith("gfortran"):
+                return "GNU Fortran 14.3.0"
+            return self._runner(command)
+
+        results = self._inspect(runner=runner)
+        fortran = next(result for result in results if result.name == "fortran")
+        self.assertEqual(fortran.status, "fail")
 
 
 if __name__ == "__main__":

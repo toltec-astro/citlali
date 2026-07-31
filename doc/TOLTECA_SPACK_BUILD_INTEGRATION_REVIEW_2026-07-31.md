@@ -114,8 +114,9 @@ On the review Mac:
 - the fixture and its downstream consumer compile and run with exact Homebrew
   LLVM 20.1.8 rather than AppleClang.
 - the native prerequisite checker passes with Spack 1.2.2, CMake 4.3, Ninja
-  1.13, all sibling package repositories, and no globally forced Homebrew
-  `libomp`; its six focused tests pass;
+  1.13, declared Homebrew FFTW and GCC 15 Fortran externals, all sibling
+  package repositories, and no globally forced Homebrew `libomp`; its eight
+  focused tests pass;
 - a concrete native macOS environment source-builds the Tula component closure
   with explicit NetCDF-C, NetCDF C++, HDF5, Szip, and Zstandard identities;
 - all 14 enabled Tula root tests pass under LLVM 20; and
@@ -128,7 +129,19 @@ On the review Mac:
   CTest against that installed graph; and
 - a second independent reader consumer opens a current raw TolTEC pointing
   file, reads a two-sample I/Q slice, and records fixture SHA-256
-  `cc44075693ab19161eaac390a84b8bc82ab3cf18bdbff7b76ff8d4c02e531edc`.
+  `cc44075693ab19161eaac390a84b8bc82ab3cf18bdbff7b76ff8d4c02e531edc`;
+- the full refactored application builds all eight active compiled sources,
+  generated configuration/version headers, production CLI, and complete test
+  targets through the native Spack graph under C++23 and exact LLVM 20;
+- all 533 enabled CTests pass, with the one intentionally disabled lifecycle
+  test reported explicitly;
+- the full 123-test/four-mode config preflight passes;
+- the installed CLI preserves the complete operational help surface and an
+  independent installed `find_package(citlali)` consumer passes; and
+- the CLI reports source dirty state, Kidscpp version, build type, compiler
+  family, Wiener variant, and concrete Spack root DAG hash. A persistent Ninja
+  tree provides a measured 0.82-second no-op build without restaging the
+  development package.
 
 The native reproduction exposed two portability defects that the reported
 Ubuntu external-package lane did not exercise. NetCDF-C's CMake build can
@@ -145,10 +158,9 @@ ECSV integration matrix and Tula advanced to fix ECSV table-view lifetimes
 with a focused regression test. Those bounded changes were reviewed and are
 the revisions now recorded above. Kidscpp and upstream Citlali did not move.
 
-The complete production matrix was not independently reproduced locally. The
-four-sibling workflow is now reproduced through Tula, OpenMP, and Kidscpp, but
-it deliberately stops below the full refactored Citlali application. The
-repositories do not identify an accessible immutable revision of
+The complete production reduction matrix was not independently reproduced
+locally. The four-sibling workflow now reaches the full refactored Citlali
+application. The repositories do not identify an accessible immutable revision of
 `tolteca_test_data`. A native Kidscpp package-test rebuild therefore ran six
 of seven discovered tests successfully but failed the historical real-file
 test at its missing path. Because an empty CMake-provided
@@ -158,12 +170,11 @@ recorded rather than counted as a green package suite. The separate current-
 file reader gate above is valid data-path evidence, not a substitute for an
 immutable shared fixture. Docker is not a prerequisite for acceptance.
 
-A fresh native Spack concretization also fails because the Citlali recipe pins
-`cfitsio@4.3.1`, while the current builtin repository does not provide that
-version. The reported container satisfies it only through a hardcoded Ubuntu
-`/usr` external. This does not invalidate the measured container build, but it
-means the build owner's intended system-or-source policy is not yet expressed
-by a portable concrete graph.
+The local Citlali recipe uses source-buildable `cfitsio@4.3.0`, the version
+available in the current builtin Spack repository, rather than relying on the
+upstream Ubuntu `/usr` external for unavailable `4.3.1`. The macOS environment
+declares Homebrew FFTW and GCC 15 Fortran as checked host externals. All
+Citlali, Kidscpp, Tula, and other C/C++ application nodes remain exact LLVM 20.
 
 ## Requirement Assessment
 
@@ -171,21 +182,21 @@ by a portable concrete graph.
 | --- | --- | --- |
 | Dependency ownership | Pass | Spack owns one concrete graph; Tula CMake is CMake-only. |
 | First-party package identity | Pass in development | Tula CMake, Tula, Kidscpp, and Citlali are explicit decentralized packages. |
-| Installed package consumers | Pass through local Kidscpp layer | Native Tula and Kidscpp installed consumers pass; upstream Citlali consumers remain reported evidence pending the full refactor port. |
+| Installed package consumers | Pass locally | Native Tula, Kidscpp, and full refactored Citlali installed consumers pass. |
 | NetCDF C++ propagation | Pass with bounded adapter | Source-built 4.3.1 lacks the pkg-config metadata required by upstream Tula; the local target adapter and installed consumer pass. |
-| Compiler matrix | Partial | GCC 14 and LLVM 20 pass in Ubuntu, and native macOS LLVM 20 passes through Kidscpp; Unity remains unmeasured. |
-| Native developer bootstrap | Partial through Kidscpp | Exact LLVM 20/Spack host gate, source-built Tula closure, 14 root tests, explicit OpenMP runtime, Kidscpp install, and both Kidscpp consumers pass; full Citlali remains. |
+| Compiler matrix | Partial | GCC 14 and LLVM 20 pass in Ubuntu, and native macOS LLVM 20 passes through the full application; Unity remains unmeasured. |
+| Native developer bootstrap | Pass locally | Exact LLVM 20/Spack host gate, source-built full graph, persistent Ninja workflow, and installed-artifact gate pass. |
 | Real-data fixtures | Partial | A current pointing file passes the independent reader gate with recorded SHA-256, but the shared historical fixture has no accessible immutable manifest. |
 | Release source identity | Fail | First-party recipes provide versions without immutable source URLs/checksums and rely on local `develop` paths. |
 | Portable lock | Planned | Local locks are intentionally ignored; no release environment lock exists. |
-| Full refactored application | Fail pending adaptation | Upstream Citlali has 42 headers and five compiled library sources, not the full refactor graph. |
-| Full CLI and config | Pass only for upstream slice | Upstream CLI runs, but refactor compiled sources, config gates, and operational behavior are not ported. |
-| Source/dependency provenance | Fail pending adaptation | Semantic versions exist; exact source, dirty state, package DAG, and lock identity are not published by Citlali products. |
-| Direct dependencies | Partial | Full refactor uses HDF5 and Zlib directly; they are not explicit Citlali recipe/CMake edges. |
-| Kidscpp compatibility | Partial | V3 owns the required raw reader, but its API replaces legacy `kids/toltec/toltec.h` and removes `SweepFitter`. |
-| Full tests | Fail pending adaptation | The upstream 16/7/6 matrix does not include the refactor's complete CTest, config, baseline, and ledger gates. |
+| Full refactored application | Pass locally | All eight active compiled sources, full header surface, generated inputs, library, CLI, and tests build through Spack. |
+| Full CLI and config | Pass locally | Full operational CLI/help and complete 123-test/four-mode config preflight pass. |
+| Source/dependency provenance | Partial | Source/dirty state, compiler, build type, Wiener variant, semantic package versions, and concrete DAG hash are published; exact first-party dependency source revisions and portable release lock remain open. |
+| Direct dependencies | Pass | HDF5 and Zlib are explicit Citlali recipe and CMake target edges. |
+| Kidscpp compatibility | Pass pending product validation | A bounded V3 raw-timestream adapter compiles and is tested; legacy config remains accepted and the unused sweep fitter is omitted only in V3. Unity product validation remains. |
+| Full tests | Pass locally | All 533 enabled CTests and complete config preflight pass; baseline/ledger/exit gates remain part of final acceptance. |
 | Unity operation | Not demonstrated | Existing Spack/module availability is promising but no Citlali environment or reduction has been tested there. |
-| Build timing | Not demonstrated | No clean, incremental, or no-op timing evidence was supplied. |
+| Build timing | Partial | Persistent no-op build is 0.82 seconds; clean and representative incremental timing still need a formal campaign. |
 
 ## Required Adaptation Work
 
@@ -255,17 +266,15 @@ changes are isolated and require product validation.
 
 ## Remaining Open Evidence
 
-1. Extend the proven native Mac foundation through the full refactored
-   Citlali application.
-2. Identify the real-data fixture and publish an immutable manifest without
+1. Identify the real-data fixture and publish an immutable manifest without
    requiring the large payload to live in Git.
-3. Demonstrate that exact dependencies such as `cfitsio@4.3.1` are either
-   source-buildable or explicitly selected as platform externals.
-4. Define the exact source, dirty-state, and concrete-DAG provenance exposed
-   to Citlali.
-5. Define release repository composition, immutable sources, lock, and
+2. Define exact first-party dependency source revisions in addition to the
+   concrete DAG identity already exposed by Citlali.
+3. Define release repository composition, immutable sources, lock, and
    buildcache trust policy.
-6. Demonstrate the user-owned Unity environment and reduction workflow.
+4. Measure clean and representative incremental builds in addition to the
+   accepted no-op timing.
+5. Demonstrate the user-owned Unity environment and reduction workflow.
 
 These are implementation and acceptance gaps, not unresolved policy questions
 and not reasons to require a local container.

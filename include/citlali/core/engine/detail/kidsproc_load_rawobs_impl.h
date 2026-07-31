@@ -8,7 +8,7 @@ auto KidsDataProc::load_rawobs(const RawObs &rawobs, const Eigen::Index scan,
                                std::vector<Eigen::Index> &start_indices,
                                std::vector<Eigen::Index> &end_indices) {
 
-    std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> result;
+    std::vector<RawTimeStream> result;
     Eigen::Index i = 0;
     for (const auto &data_item : rawobs.kidsdata()) {
         // get slice of data for current scan
@@ -32,8 +32,7 @@ auto KidsDataProc::populate_rtc(loaded_t &loaded,
 
     Eigen::Index i = 0;
     // loop through raw timestream objects
-    for (std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>::
-         iterator it = loaded.begin(); it != loaded.end(); ++it) {
+    for (auto it = loaded.begin(); it != loaded.end(); ++it) {
         // run the solver
         auto result = this->solver()(*it, Solver::Config{});
         Eigen::Index n_cols = 0;

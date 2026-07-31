@@ -1,9 +1,10 @@
 #pragma once
 
-#include <kids/core/kidsdata.h>
+#include <citlali/core/compat/kidscpp_raw_timestream.h>
+#if !defined(CITLALI_KIDSCPP_V3)
 #include <kids/sweep/fitter.h>
+#endif
 #include <kids/timestream/solver.h>
-#include <kids/toltec/toltec.h>
 #include <kidscpp_config/gitversion.h>
 
 #include <tula/datatable.h>
@@ -24,20 +25,28 @@
 
 struct KidsDataProc : ConfigMapper<KidsDataProc> {
     using Base = ConfigMapper<KidsDataProc>;
+#if !defined(CITLALI_KIDSCPP_V3)
     using Fitter = kids::SweepFitter;
+#endif
+    using RawTimeStream = citlali::compat::kidscpp::RawTimeStream;
+    using RawTimeStreamMeta = citlali::compat::kidscpp::RawTimeStreamMeta;
     using Solver = kids::TimeStreamSolver;
 
     // get logger
     std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
 
     KidsDataProc(config_t config)
-        : Base{std::move(config)},
+        : Base{std::move(config)}
+#if !defined(CITLALI_KIDSCPP_V3)
+          ,
           m_fitter{Fitter::Config{
               {"weight_window_type", this->config().get_str(std::tuple{
                                          "fitter", "weight_window", "type"})},
               {"weight_window_fwhm", this->config().get_typed<double>(
                    std::tuple{"fitter", "weight_window", "fwhm_Hz"})},
-              {"modelspec", config.get_str(std::tuple{"fitter", "modelspec"})}}},
+              {"modelspec", config.get_str(std::tuple{"fitter", "modelspec"})}}}
+#endif
+          ,
            m_solver{Solver::Config{
               {"fitreportdir", this->config().get_str(std::tuple{"solver", "fitreportdir"})},
               {"exmode", this->config().get_str(std::tuple{"solver", "parallel_policy"})},
@@ -68,7 +77,7 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
     auto get_data_item_meta(const RawObs::DataItem &);
 
     // get meta data from rawobs
-    std::vector<kids::KidsData<>::meta_t> get_rawobs_meta(const RawObs &);
+    std::vector<RawTimeStreamMeta> get_rawobs_meta(const RawObs &);
 
     // populate rtc meta data
     auto populate_rtc_meta(const RawObs &);
@@ -125,26 +134,34 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
                           const int, const int,
                           citlali::config::TodType);
 
-    // TODO fix the const correctness
+#if !defined(CITLALI_KIDSCPP_V3)
     Fitter &fitter() { return m_fitter; }
-    Solver &solver() { return m_solver; }
-
     const Fitter &fitter() const { return m_fitter; }
+#endif
+    Solver &solver() { return m_solver; }
     const Solver &solver() const { return m_solver; }
 
     template <typename OStream>
     friend OStream &operator<<(OStream &os, const KidsDataProc &kidsproc) {
+#if defined(CITLALI_KIDSCPP_V3)
+        return os << fmt::format("KidsDataProc(solver={})",
+                                 kidsproc.solver().config.pformat());
+#else
         return os << fmt::format("KidsDataProc(fitter={}, solver={})",
                                  kidsproc.fitter().config.pformat(),
                                  kidsproc.solver().config.pformat());
+#endif
     }
 
 private:
-    // fitter and solver
+#if !defined(CITLALI_KIDSCPP_V3)
     Fitter m_fitter;
+#endif
     Solver m_solver;
+#if !defined(CITLALI_KIDSCPP_V3)
     // cache data kind lookup by filepath to avoid repeated metadata reads
     std::unordered_map<std::string, kids::KidsDataKind> m_data_item_kind_cache;
+#endif
 };
 
 

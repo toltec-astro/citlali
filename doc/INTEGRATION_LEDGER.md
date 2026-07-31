@@ -50,14 +50,18 @@ new exact commits before importing subsequent upstream work.
   installed consumer passes, and a separate reader consumer opens a current
   raw TolTEC file and reads a two-sample I/Q slice. The historical upstream
   real-data fixture still needs an accessible immutable manifest.
-- Extend the proven foundation through the full refactored Citlali
-  application.
+- The full refactored Citlali library, production CLI, 533 enabled CTests,
+  complete config preflight, installed CLI, and independent installed package
+  consumer now pass natively under exact Homebrew LLVM 20. The CLI records its
+  source dirty state and concrete Spack DAG identity.
 - Identify an accessible real-data fixture and publish an immutable manifest.
 - Add a user-owned Unity environment based on user-supplied
   Spack/compiler/module facts.
-- Make the remaining application dependency graph source-buildable or
-  explicitly record environment-required externals such as CFITSIO.
-- Define immutable release sources, a portable lock, and provenance identity.
+- The macOS graph builds CFITSIO 4.3.0 from source and declares Homebrew FFTW
+  plus GCC 15 Fortran as checked host externals; all C/C++ application code is
+  LLVM 20.
+- Define immutable release sources, a portable lock, and exact first-party
+  dependency source provenance.
 
 ### Spack Adaptation Exit
 

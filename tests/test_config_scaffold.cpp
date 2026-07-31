@@ -86,7 +86,6 @@
 #include <citlali/core/pipeline/timestream_run_context.h>
 #include <citlali/core/pipeline/tod_output_state.h>
 #include <citlali/core/utils/fits_io.h>
-#include <kids/toltec/toltec.h>
 #include <citlali/core/timestream/rtc/rtcproc.h>
 
 #include <gtest/gtest.h>

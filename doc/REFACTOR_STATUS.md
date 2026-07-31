@@ -83,9 +83,32 @@ consumer opens a current raw pointing file and reads a two-sample I/Q slice.
 The upstream historical real-file test remains fixture-gated and currently
 handles an empty fixture root incorrectly, so it is not counted as a complete
 native package-suite pass. An accessible immutable fixture manifest remains
-open. These checkpoints prove the dependency and Kidscpp package layers, not
-the full application: the refactored Citlali package, compatibility port, and
-CLI remain open.
+open.
+
+The full native-Mac application checkpoint is now complete locally. The
+parallel Spack CMake project builds all eight active refactor implementation
+sources, the production CLI, generated default/config/version headers, and the
+complete compiled test surface under exact Homebrew LLVM 20 and C++23. Direct
+HDF5 and Zlib ownership is explicit. A bounded Kidscpp V3 adapter preserves the
+TolTEC raw-timestream boundary while the legacy build path remains available;
+the constructed but unused sweep fitter is excluded only in the V3 lane.
+Ceres 2, Tula 3 ECSV, and public-header isolation differences are handled by
+localized compatibility code rather than algorithm changes.
+
+All 533 enabled CTests pass in the persistent native build tree; the one
+disabled map-fitter lifecycle test remains explicitly reported. The complete
+123-test/four-mode config preflight passes. The installed CLI exposes the full
+operational help surface, and an independent installed
+`find_package(citlali)` consumer configures, links, and passes. The CLI reports
+Citlali commit/dirty state, Kidscpp version, build type, exact compiler,
+Wiener variant, and concrete Spack DAG hash. A persistent Ninja workflow now
+separates ordinary incremental development from the slower `spack install`
+packaging gate; a measured no-op build takes 0.82 seconds.
+
+Phase 5 is still not complete. Immutable release sources, a portable release
+lock, exact first-party dependency source revisions, the user-owned Unity
+environment, point smoke run, and same-SHA four-mode validation matrix remain
+open. The legacy build therefore remains the operational fallback.
 
 ## 2026-07-26 Conan 2 Build Review
 

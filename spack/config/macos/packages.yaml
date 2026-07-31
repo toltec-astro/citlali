@@ -9,6 +9,15 @@ packages:
             cxx: /opt/homebrew/opt/llvm@20/bin/clang++
     buildable: false
 
+  gcc:
+    externals:
+      - spec: gcc@15.2.0 languages=fortran
+        prefix: /opt/homebrew/opt/gcc
+        extra_attributes:
+          compilers:
+            fortran: /opt/homebrew/bin/gfortran
+    buildable: false
+
   cmake:
     externals:
       - spec: cmake@4.3.0
@@ -25,4 +34,10 @@ packages:
     externals:
       - spec: pkgconf@2.5.1
         prefix: /opt/homebrew/opt/pkgconf
+    buildable: false
+
+  fftw:
+    externals:
+      - spec: fftw@3.3.10~mpi~openmp
+        prefix: /opt/homebrew/opt/fftw
     buildable: false

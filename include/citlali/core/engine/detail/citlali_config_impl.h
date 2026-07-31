@@ -51,7 +51,8 @@ void Engine::get_citlali_config(CT &config) {
     citlali::pipeline::kids_external_plan(*this) =
         citlali::pipeline::make_kids_external_config_plan(
             config, timestream_config.type,
-            std::string{predefs::kidsdata::name}, KIDSCPP_GIT_VERSION);
+            std::string{citlali::compat::kidscpp::data_spec},
+            KIDSCPP_GIT_VERSION);
     const auto source_protection_resolution =
         citlali::pipeline::resolve_source_protection(
             runtime_config.reduction_type, timestream_config);

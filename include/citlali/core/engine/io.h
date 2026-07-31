@@ -13,6 +13,7 @@
 #include <tula/switch_invoke.h>
 
 #include <mutex>
+#include <regex>
 
 #if defined(__has_include)
 #if __has_include(<hdf5.h>)
@@ -44,7 +45,9 @@ using shape_t = Eigen::Matrix<index_t, 2, 1>;
 using data_t = double;
 
 // IO spec
+#if !defined(CITLALI_KIDSCPP_V3)
 namespace kidsdata = kids::toltec;
+#endif
 
 // TcData is the data structure of which RTCData and PTCData are a part
 using timestream::TCData;

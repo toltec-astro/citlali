@@ -105,6 +105,16 @@ def inspect_prerequisites(
             llvm_prefix = None
             results.append(_fail("homebrew", f"cannot resolve llvm@20: {error}"))
 
+        try:
+            fftw_prefix = Path(runner([brew, "--prefix", "fftw"]))
+            fftw_library = fftw_prefix / "lib/libfftw3.dylib"
+            if fftw_library.is_file():
+                results.append(_pass("homebrew.fftw", str(fftw_library)))
+            else:
+                results.append(_fail("homebrew.fftw", f"missing {fftw_library}"))
+        except (OSError, subprocess.CalledProcessError) as error:
+            results.append(_fail("homebrew.fftw", f"cannot resolve fftw: {error}"))
+
     clangxx = llvm_prefix / "bin/clang++" if llvm_prefix else None
     if clangxx is None or not clangxx.is_file():
         results.append(_fail("compiler", "Homebrew llvm@20 clang++ is missing"))
@@ -134,6 +144,28 @@ def inspect_prerequisites(
                 )
         except (OSError, subprocess.CalledProcessError) as error:
             results.append(_fail("compiler", f"cannot execute {clangxx}: {error}"))
+
+    gfortran = shutil.which("gfortran")
+    if gfortran is None:
+        results.append(_fail("fortran", "Homebrew gfortran is not on PATH"))
+    else:
+        try:
+            compiler_text = runner([gfortran, "--version"])
+            compiler_version = _version_tuple(compiler_text)
+            if compiler_version is not None and compiler_version[0] == 15:
+                results.append(
+                    _pass("fortran", f"{gfortran} reports GCC 15")
+                )
+            else:
+                results.append(
+                    _fail(
+                        "fortran",
+                        "expected Homebrew GCC 15, got "
+                        + compiler_text.splitlines()[0],
+                    )
+                )
+        except (OSError, subprocess.CalledProcessError) as error:
+            results.append(_fail("fortran", f"cannot execute {gfortran}: {error}"))
 
     for tool, minimum in (("cmake", (3, 25)), ("ninja", (1, 10))):
         executable = shutil.which(tool)
