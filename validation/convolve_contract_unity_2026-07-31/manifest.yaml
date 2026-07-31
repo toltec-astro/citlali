@@ -31,7 +31,7 @@ fixture:
   retained_predecessor_local: /Users/gwilson/work_toltec/local_data/2026-refactor/point/refactor/reduced/redu64
 overlays:
   noise_products_overlay.yaml: 879fc58ebb5501ed4b8834009b4b613262ce7266dfd4e31bdcaac5460939e44e
-  disable_filter_overlay.yaml: 83fb1ce3962c9b39fa36fd86544ce23ae70aa4081ead684184bca3708bf786e8
+  disable_filter_overlay.yaml: 6c00b652a5768385c3a0da49a1644375797e5800ca2c3e8677d71b2f411d05b2
 randomization:
   engine: boost_mt19937
   fixed_internal_seed: 5489
@@ -47,6 +47,8 @@ ordered_runs:
       - noise_products_overlay.yaml
       - disable_filter_overlay.yaml
     expected_filtering: disabled
+    expected_source_finding: disabled
+    expected_pointing_raw_source_fitting: enabled
     output_reduction_id: record_at_execution
     output_unity_path: record_at_execution
   - role: unit_sum_convolve_candidate

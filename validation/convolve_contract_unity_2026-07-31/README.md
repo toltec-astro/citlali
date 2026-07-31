@@ -26,9 +26,11 @@ CITLALI_EXE BASE_CONFIG noise_products_overlay.yaml
 ```
 
 The first is the raw control and the second is the unit-sum convolve
-candidate. The retained base config has `runtime.use_subdir: yes`; confirm
-that each invocation acquires a new reduction directory and record both exact
-IDs and paths. Never overwrite `redu64` or another retained reduction.
+candidate. The control overlay disables both map filtering and its dependent
+source-finding stage; pointing-mode source fitting remains active on the raw
+map. The retained base config has `runtime.use_subdir: yes`; confirm that each
+invocation acquires a new reduction directory and record both exact IDs and
+paths. Never overwrite `redu64` or another retained reduction.
 
 ## Exact implementation checks
 
