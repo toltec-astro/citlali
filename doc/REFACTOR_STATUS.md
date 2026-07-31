@@ -61,6 +61,14 @@ a local prerequisite. Real-data fixture identity, portable system-versus-
 source dependency resolution, provenance improvements, and release locking
 remain implementation work.
 
+The first native-Mac entry checkpoint is complete on the build-adaptation
+branch. A tested preflight accepts exact Homebrew LLVM 20.1.8, Spack 1.2.2,
+CMake 4.3, Ninja 1.13, the three sibling package repositories, and the current
+Citlali build worktree while rejecting AppleClang, wrong Spack releases,
+missing repositories, and globally forced unversioned Homebrew `libomp`.
+This establishes the host contract only; it does not yet claim that the full
+refactor installs through Spack.
+
 ## 2026-07-26 Conan 2 Build Review
 
 The previously deferred TolTECA build implementation is now available and has

@@ -13,8 +13,8 @@ The review used isolated checkouts at the exact pushed revisions:
 
 | Repository | Branch | Commit |
 | --- | --- | --- |
-| `toltec-astro/tula_cmake` | `v3.x_spack` | `dd5fe1c901f3e97016595fff8565563d18458387` |
-| `toltec-astro/tula` | `v3.x_spack` | `42ec4c4652ccc6dae8d2e9f2e9508afe8e030b14` |
+| `toltec-astro/tula_cmake` | `v3.x_spack` | `1ea93f600055e14248b2dbfcf1c16c5487a7b757` |
+| `toltec-astro/tula` | `v3.x_spack` | `61f862c9cc08f335e946a4f55c5aa5cf35401bb0` |
 | `toltec-astro/kidscpp` | `v3.x_spack` | `e3c05ebc75da42151a450bbc8c1b27f1e2e5e61b` |
 | `toltec-astro/citlali` | `v3.x_spack` | `8a1be68354d78110c0c3e0f1d4ee5fd3cea20864` |
 
@@ -106,13 +106,21 @@ Conan milestone provided.
 
 On the review Mac:
 
-- all four checked-out revisions match the reported commits;
+- all four checked-out revisions match their recorded commits;
 - every project-owned Spack recipe passes Python syntax compilation;
 - Spack 1.2.2 loads all four package API v2 repositories and the Citlali
   recipe with its declared dependency graph;
 - Tula CMake configures and its installed producer/consumer fixture passes;
 - the fixture and its downstream consumer compile and run with exact Homebrew
   LLVM 20.1.8 rather than AppleClang.
+- the native prerequisite checker passes with Spack 1.2.2, CMake 4.3, Ninja
+  1.13, all sibling package repositories, and no globally forced Homebrew
+  `libomp`; its five focused tests pass.
+
+After the original review, Tula CMake advanced only to add the accepted Tlaloc
+ECSV integration matrix and Tula advanced to fix ECSV table-view lifetimes
+with a focused regression test. Those bounded changes were reviewed and are
+the revisions now recorded above. Kidscpp and upstream Citlali did not move.
 
 The complete production matrix was not independently reproduced locally. The
 review Mac has no pre-existing Spack installation. The intended four-sibling-

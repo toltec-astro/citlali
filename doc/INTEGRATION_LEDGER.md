@@ -21,8 +21,8 @@ Latest isolated review completed 2026-07-31:
 
 | Repository | Branch | Reviewed commit | Disposition |
 | --- | --- | --- | --- |
-| `tula_cmake` | `v3.x_spack` | `dd5fe1c901f3e97016595fff8565563d18458387` | Accepted Spack/CMake foundation; installed fixture independently passes with LLVM 20 |
-| `tula` | `v3.x_spack` | `42ec4c4652ccc6dae8d2e9f2e9508afe8e030b14` | Explicit component package graph reported in GCC 14 and LLVM 20 matrices |
+| `tula_cmake` | `v3.x_spack` | `1ea93f600055e14248b2dbfcf1c16c5487a7b757` | Accepted Spack/CMake foundation plus bounded Tlaloc ECSV matrix; installed fixture independently passes with LLVM 20 |
+| `tula` | `v3.x_spack` | `61f862c9cc08f335e946a4f55c5aa5cf35401bb0` | Explicit component graph plus reviewed ECSV table-view lifetime repair and regression test |
 | `kidscpp` | `v3.x_spack` | `e3c05ebc75da42151a450bbc8c1b27f1e2e5e61b` | Raw-reader and solver package tests reported against real TolTEC data |
 | `citlali` | `v3.x_spack` | `8a1be68354d78110c0c3e0f1d4ee5fd3cea20864` | Installed upstream CLI and 123-scan real-data run reported; full refactor port remains required |
 
