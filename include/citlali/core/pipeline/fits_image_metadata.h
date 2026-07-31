@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include <limits>
 #include <string>
+#include <string_view>
 #include <tuple>
 
 #include <citlali/core/pipeline/required_output_failure.h>

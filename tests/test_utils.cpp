@@ -11,6 +11,7 @@
 #endif
 #include "citlali/core/mapmaking/map.h"
 #include "citlali/core/pipeline/fits_image_metadata.h"
+#include "citlali/core/pipeline/map_image_output_helpers.h"
 #include "citlali/core/timestream/rtc/calibrate.h"
 #include "citlali/core/utils/pointing.h"
 #include "citlali/core/utils/utils.h"
@@ -115,6 +116,21 @@ struct MetadataHdu {
                 const std::string &) {
         bool_keys[name] = value;
     }
+};
+
+struct MetadataFitsEntry {
+    std::string filepath = "metadata-test.fits";
+    std::vector<std::string> hdu_names;
+    std::vector<std::shared_ptr<MetadataHdu>> hdus;
+
+    template <class Data>
+    void add_hdu(const std::string &name, Data &) {
+        hdu_names.push_back(name);
+        hdus.push_back(std::make_shared<MetadataHdu>());
+    }
+
+    template <class Hdu, class Wcs>
+    void add_wcs(Hdu &, const Wcs &, double) {}
 };
 
 mapmaking::MapBuffer make_source_finder_map(const Eigen::MatrixXd &signal) {
@@ -352,6 +368,69 @@ TEST(wiener_filter, unit_sum_convolution_preserves_well_conditioned_behavior) {
     EXPECT_LT((filter.nume.array() - 3.0).abs().maxCoeff(), 1e-12);
 }
 
+TEST(wiener_filter, convolve_delta_kernel_is_signal_and_variance_identity) {
+    mapmaking::WienerFilter filter;
+    filter.logger = ensure_citlali_logger();
+    filter.n_rows = 2;
+    filter.n_cols = 2;
+    filter.filter_type = "convolve";
+    filter.template_type = "gaussian";
+    filter.edge_guard_enabled = false;
+    filter.filter_template = Eigen::MatrixXd::Zero(2, 2);
+    filter.filter_template(0, 0) = 1.0;
+
+    mapmaking::MapBuffer map{"convolve-delta-test"};
+    map.n_rows = 2;
+    map.n_cols = 2;
+    map.cov_cut = 0.9;
+    Eigen::MatrixXd signal(2, 2);
+    signal << 1.0, 2.0, 3.0, 4.0;
+    Eigen::MatrixXd weight(2, 2);
+    weight << 1.0, 2.0, 4.0, 8.0;
+    map.signal = {signal};
+    map.weight = {weight};
+
+    filter.filter_maps(map, 0);
+
+    EXPECT_LT((map.signal[0] - signal).cwiseAbs().maxCoeff(), 1e-12);
+    EXPECT_LT((map.weight[0] - weight).cwiseAbs().maxCoeff(), 1e-12);
+}
+
+TEST(wiener_filter, convolve_matches_hand_nonuniform_signal_and_variance) {
+    mapmaking::WienerFilter filter;
+    filter.logger = ensure_citlali_logger();
+    filter.n_rows = 2;
+    filter.n_cols = 2;
+    filter.filter_type = "convolve";
+    filter.template_type = "gaussian";
+    filter.edge_guard_enabled = false;
+    filter.filter_template = Eigen::MatrixXd::Zero(2, 2);
+    filter.filter_template(0, 0) = 1.0;
+    filter.filter_template(0, 1) = 1.0;
+
+    mapmaking::MapBuffer map{"convolve-nonuniform-test"};
+    map.n_rows = 2;
+    map.n_cols = 2;
+    map.cov_cut = 0.0;
+    map.signal.resize(1);
+    map.signal[0].resize(2, 2);
+    map.signal[0] << 2.0, 6.0, 10.0, 14.0;
+    map.weight.resize(1);
+    map.weight[0].resize(2, 2);
+    map.weight[0] << 1.0, 0.25, 4.0, 1.0;
+
+    filter.filter_maps(map, 0);
+
+    Eigen::MatrixXd expected_signal(2, 2);
+    expected_signal << 4.0, 4.0, 12.0, 12.0;
+    Eigen::MatrixXd expected_weight(2, 2);
+    expected_weight << 0.8, 0.8, 3.2, 3.2;
+    EXPECT_LT((map.signal[0] - expected_signal).cwiseAbs().maxCoeff(),
+              1e-12);
+    EXPECT_LT((map.weight[0] - expected_weight).cwiseAbs().maxCoeff(),
+              1e-12);
+}
+
 TEST(wiener_filter, convolve_propagates_uniform_diagonal_variance) {
     mapmaking::WienerFilter filter;
     filter.logger = ensure_citlali_logger();
@@ -414,16 +493,205 @@ TEST(wiener_filter, convolve_variance_includes_all_positive_weight_inputs) {
     map.n_cols = 2;
     map.cov_cut = 0.5;
     map.signal = {Eigen::MatrixXd::Zero(2, 2)};
+    map.signal[0](1, 1) = 8.0;
     map.weight = {Eigen::MatrixXd::Constant(2, 2, 100.0)};
     map.weight[0](1, 1) = 1.0;
 
     filter.filter_maps(map, 0);
 
+    // The below-cov_cut sample enters the fixed signal operator too:
+    // every periodic output is (1/4) * 8 = 2.
+    EXPECT_LT((map.signal[0].array() - 2.0).abs().maxCoeff(), 1e-12);
     // The low-weight sample is still part of the convolution, so its
     // variance must be propagated even though it is below cov_cut * max(W).
     // Var_out=(1/16)(3/100 + 1), hence W_out=16/1.03.
     EXPECT_LT((map.weight[0].array() - (16.0 / 1.03)).abs().maxCoeff(),
               1e-10);
+}
+
+TEST(wiener_filter, convolve_zero_weight_value_is_conditioned_as_fixed) {
+    mapmaking::WienerFilter filter;
+    filter.logger = ensure_citlali_logger();
+    filter.n_rows = 2;
+    filter.n_cols = 2;
+    filter.filter_type = "convolve";
+    filter.template_type = "gaussian";
+    filter.edge_guard_enabled = false;
+    filter.filter_template = Eigen::MatrixXd::Ones(2, 2);
+
+    mapmaking::MapBuffer map{"convolve-zero-weight-test"};
+    map.n_rows = 2;
+    map.n_cols = 2;
+    map.cov_cut = 0.0;
+    map.signal = {Eigen::MatrixXd::Zero(2, 2)};
+    map.signal[0](1, 1) = 8.0;
+    map.weight = {Eigen::MatrixXd::Constant(2, 2, 2.0)};
+    map.weight[0](1, 1) = 0.0;
+
+    filter.filter_maps(map, 0);
+
+    // Low-level filtering retains the deterministic value in the affine
+    // signal offset, so every periodic output is 2.  Formal covariance has
+    // no variance model for weight zero and therefore includes only the
+    // three stochastic W=2 contributors: V=3*(1/16)*(1/2)=3/32.
+    EXPECT_LT((map.signal[0].array() - 2.0).abs().maxCoeff(), 1e-12);
+    EXPECT_LT((map.weight[0].array() - (32.0 / 3.0)).abs().maxCoeff(),
+              1e-10);
+}
+
+TEST(wiener_filter, convolve_core_median_fill_and_output_mask_match_equation) {
+    mapmaking::WienerFilter filter;
+    filter.logger = ensure_citlali_logger();
+    filter.n_rows = 3;
+    filter.n_cols = 3;
+    filter.filter_type = "convolve";
+    filter.template_type = "gaussian";
+    filter.edge_guard_enabled = true;
+    filter.edge_guard_radius_fwhm = 1.0;
+    filter.init_fwhm = 1.0;
+    filter.edge_taper_mode = "none";
+    filter.edge_fill_mode = "core_median";
+    filter.filter_template = Eigen::MatrixXd::Ones(3, 3);
+
+    mapmaking::MapBuffer map{"convolve-edge-fill-test"};
+    map.n_rows = 3;
+    map.n_cols = 3;
+    map.cov_cut = 0.5;
+    map.signal.resize(1);
+    map.signal[0].resize(3, 3);
+    map.signal[0] << 100.0, 2.0, 101.0,
+                     3.0, 10.0, 4.0,
+                     102.0, 5.0, 103.0;
+    map.weight = {Eigen::MatrixXd::Zero(3, 3)};
+    map.weight[0](1, 1) = 4.0;
+
+    filter.filter_maps(map, 0);
+
+    // The science median is 10.  Radius-one binary support is the center
+    // plus its four axial neighbors.  Corners are filled with 10 before the
+    // global 3x3 circular mean, giving (10+2+3+4+5+4*10)/9=64/9, then the
+    // same binary window masks output corners.
+    Eigen::MatrixXd expected_signal = Eigen::MatrixXd::Zero(3, 3);
+    expected_signal(0, 1) = 64.0 / 9.0;
+    expected_signal(1, 0) = 64.0 / 9.0;
+    expected_signal(1, 1) = 64.0 / 9.0;
+    expected_signal(1, 2) = 64.0 / 9.0;
+    expected_signal(2, 1) = 64.0 / 9.0;
+    Eigen::MatrixXd expected_weight = Eigen::MatrixXd::Zero(3, 3);
+    expected_weight(0, 1) = 324.0;
+    expected_weight(1, 0) = 324.0;
+    expected_weight(1, 1) = 324.0;
+    expected_weight(1, 2) = 324.0;
+    expected_weight(2, 1) = 324.0;
+    EXPECT_DOUBLE_EQ(map.edge_guard_background_level[0], 10.0);
+    EXPECT_LT((map.signal[0] - expected_signal).cwiseAbs().maxCoeff(),
+              1e-10);
+    EXPECT_LT((map.weight[0] - expected_weight).cwiseAbs().maxCoeff(),
+              1e-8);
+}
+
+TEST(wiener_filter, convolve_zero_fill_is_deterministic_and_output_masked) {
+    mapmaking::WienerFilter filter;
+    filter.logger = ensure_citlali_logger();
+    filter.n_rows = 3;
+    filter.n_cols = 3;
+    filter.filter_type = "convolve";
+    filter.template_type = "gaussian";
+    filter.edge_guard_enabled = true;
+    filter.edge_guard_radius_fwhm = 1.0;
+    filter.init_fwhm = 1.0;
+    filter.edge_taper_mode = "none";
+    filter.edge_fill_mode = "zero";
+    filter.filter_template = Eigen::MatrixXd::Ones(3, 3);
+
+    mapmaking::MapBuffer map{"convolve-zero-fill-test"};
+    map.n_rows = 3;
+    map.n_cols = 3;
+    map.cov_cut = 0.5;
+    map.signal.resize(1);
+    map.signal[0].resize(3, 3);
+    map.signal[0] << 100.0, 2.0, 101.0,
+                     3.0, 10.0, 4.0,
+                     102.0, 5.0, 103.0;
+    map.weight = {Eigen::MatrixXd::Zero(3, 3)};
+    map.weight[0](1, 1) = 4.0;
+
+    filter.filter_maps(map, 0);
+
+    // Exterior values are deterministically replaced by zero, so the global
+    // mean is (2+3+10+4+5)/9=8/3 before output masking.
+    Eigen::MatrixXd expected_signal = Eigen::MatrixXd::Zero(3, 3);
+    expected_signal(0, 1) = 8.0 / 3.0;
+    expected_signal(1, 0) = 8.0 / 3.0;
+    expected_signal(1, 1) = 8.0 / 3.0;
+    expected_signal(1, 2) = 8.0 / 3.0;
+    expected_signal(2, 1) = 8.0 / 3.0;
+    EXPECT_DOUBLE_EQ(map.edge_guard_background_level[0], 0.0);
+    EXPECT_LT((map.signal[0] - expected_signal).cwiseAbs().maxCoeff(),
+              1e-10);
+}
+
+TEST(wiener_filter, convolve_noise_uses_the_same_binary_stochastic_operator) {
+    mapmaking::WienerFilter filter;
+    filter.logger = ensure_citlali_logger();
+    filter.n_rows = 3;
+    filter.n_cols = 3;
+    filter.filter_type = "convolve";
+    filter.template_type = "gaussian";
+    filter.filter_template = Eigen::MatrixXd::Ones(3, 3);
+
+    mapmaking::MapBuffer map{"convolve-noise-edge-test"};
+    map.n_rows = 3;
+    map.n_cols = 3;
+    map.n_noise = 1;
+    map.noise.emplace_back(3, 3, 1);
+    Eigen::MatrixXd input(3, 3);
+    input << 100.0, 2.0, 101.0,
+             3.0, 10.0, 4.0,
+             102.0, 5.0, 103.0;
+    for (Eigen::Index r = 0; r < 3; ++r) {
+        for (Eigen::Index c = 0; c < 3; ++c) {
+            map.noise[0](r, c, 0) = input(r, c);
+        }
+    }
+    Eigen::MatrixXd edge_window = Eigen::MatrixXd::Zero(3, 3);
+    edge_window(0, 1) = 1.0;
+    edge_window(1, 0) = 1.0;
+    edge_window(1, 1) = 1.0;
+    edge_window(1, 2) = 1.0;
+    edge_window(2, 1) = 1.0;
+    map.edge_guard_window = {edge_window};
+
+    filter.filter_noise(map, 0, 0);
+
+    // Noise uses O C_k T n.  It is not given the signal map's deterministic
+    // median fill, so the retained cross sums to 24 and the circular 3x3
+    // mean is 8/3 before the same output window is applied.
+    Eigen::MatrixXd expected = Eigen::MatrixXd::Zero(3, 3);
+    expected(0, 1) = 8.0 / 3.0;
+    expected(1, 0) = 8.0 / 3.0;
+    expected(1, 1) = 8.0 / 3.0;
+    expected(1, 2) = 8.0 / 3.0;
+    expected(2, 1) = 8.0 / 3.0;
+    Eigen::Map<Eigen::MatrixXd> actual(map.noise[0].data(), 3, 3);
+    EXPECT_LT((actual - expected).cwiseAbs().maxCoeff(), 1e-10);
+}
+
+TEST(wiener_filter, numerical_support_floor_is_strict_and_not_scientific) {
+    constexpr double kernel_square_sum = 0.25;
+    const double boundary =
+        mapmaking::convolve_numerical_support_floor(kernel_square_sum);
+
+    EXPECT_FALSE(mapmaking::convolve_has_numerical_variance_support(
+        boundary, kernel_square_sum));
+    EXPECT_TRUE(mapmaking::convolve_has_numerical_variance_support(
+        std::nextafter(boundary, std::numeric_limits<double>::infinity()),
+        kernel_square_sum));
+    EXPECT_FALSE(mapmaking::convolve_has_numerical_variance_support(
+        std::numeric_limits<double>::quiet_NaN(), kernel_square_sum));
+    EXPECT_DOUBLE_EQ(
+        boundary / kernel_square_sum,
+        mapmaking::convolve_numerical_support_fraction_floor);
 }
 
 TEST(map_noise_products, mean_subtracted_variance_uses_n_minus_one) {
@@ -480,6 +748,220 @@ TEST(map_noise_products, convolved_amplitude_metadata_is_not_photometric) {
               "convolved_amplitude");
     EXPECT_EQ(snr_hdu.string_keys["BUNIT"], "N/A");
     EXPECT_EQ(snr_hdu.string_keys["TYPE"], "convolved_amplitude");
+}
+
+TEST(map_noise_products, convolved_products_record_conditional_contract) {
+    MetadataHdu hdu;
+
+    citlali::pipeline::add_signal_map_metadata(
+        hdu, "mJy/beam", true);
+    citlali::pipeline::add_filtered_map_operator_identity_key(
+        hdu, "unit_sum_convolution");
+    citlali::pipeline::add_convolved_map_contract_keys(
+        hdu, true, true, "core_median", true);
+
+    EXPECT_EQ(hdu.string_keys["BUNIT"], "mJy/beam");
+    EXPECT_EQ(hdu.string_keys["TYPE"], "convolved_amplitude");
+    EXPECT_EQ(hdu.string_keys["BOUNDARY"], "circular");
+    EXPECT_EQ(hdu.string_keys["FILLMODE"], "core_median");
+    EXPECT_EQ(hdu.string_keys["FILTEROP"], "unit_sum_convolution");
+    EXPECT_TRUE(hdu.bool_keys["CONDMASK"]);
+    EXPECT_TRUE(hdu.bool_keys["CONDFILL"]);
+    EXPECT_TRUE(hdu.bool_keys["ZEROWFIX"]);
+    EXPECT_TRUE(hdu.bool_keys["COVDIAG"]);
+    EXPECT_FALSE(hdu.bool_keys["RESPCORR"]);
+    EXPECT_FALSE(hdu.bool_keys["FLFBACK"]);
+    EXPECT_EQ(hdu.string_keys["FLWHY"],
+              "support_contract_unresolved");
+}
+
+TEST(map_noise_products, weight_metadata_distinguishes_formal_and_calibrated) {
+    MetadataHdu formal_hdu;
+    MetadataHdu calibrated_hdu;
+
+    citlali::pipeline::add_formal_weight_map_metadata(
+        formal_hdu, "1/(mJy/beam)^2");
+    citlali::pipeline::add_formal_weight_provenance_key(formal_hdu);
+    citlali::pipeline::add_weight_map_metadata(
+        calibrated_hdu, "1/(mJy/beam)^2", true);
+    citlali::pipeline::add_empirical_weight_calibration_model_key(
+        calibrated_hdu);
+
+    EXPECT_EQ(formal_hdu.string_keys["TYPE"], "formal");
+    EXPECT_EQ(formal_hdu.string_keys["WPROV"],
+              "stage_input_snapshot");
+    EXPECT_THAT(formal_hdu.string_keys["DESCRIP"],
+                HasSubstr("conditional diagonal"));
+    EXPECT_EQ(calibrated_hdu.string_keys["TYPE"], "empirical");
+    EXPECT_EQ(calibrated_hdu.string_keys["CALMODEL"],
+              "global_scalar");
+    EXPECT_THAT(calibrated_hdu.string_keys["DESCRIP"],
+                HasSubstr("global jackknife scalar"));
+}
+
+TEST(map_noise_products, coverage_mask_metadata_disclaims_support) {
+    MetadataHdu hdu;
+
+    citlali::pipeline::add_coverage_mask_map_metadata(hdu);
+
+    EXPECT_EQ(hdu.string_keys["BUNIT"], "N/A");
+    EXPECT_THAT(hdu.string_keys["DESCRIP"],
+                HasSubstr("not convolution support"));
+    EXPECT_THAT(hdu.string_keys["DESCRIP"],
+                HasSubstr("not complete validity"));
+}
+
+TEST(map_noise_products, formal_standardized_signal_uses_formal_weight_snapshot) {
+    mapmaking::MapBuffer map{"formal-standardized-signal-test"};
+    map.n_rows = 1;
+    map.n_cols = 2;
+    map.signal = {Eigen::MatrixXd::Constant(1, 2, 3.0)};
+    map.weight = {Eigen::MatrixXd::Constant(1, 2, 4.0)};
+    map.weight_formal = {Eigen::MatrixXd::Ones(1, 2)};
+
+    const auto &formal_weight =
+        citlali::pipeline::formal_weight_for_standardized_signal(map, 0);
+    const Eigen::MatrixXd standardized =
+        citlali::pipeline::standardized_signal_from_weight(
+            map.signal[0], formal_weight);
+
+    EXPECT_EQ(&formal_weight, &map.weight_formal[0]);
+    EXPECT_TRUE(standardized.isApprox(map.signal[0]));
+}
+
+TEST(map_noise_products, formal_standardized_signal_falls_back_to_current_weight) {
+    mapmaking::MapBuffer map{"formal-standardized-signal-fallback-test"};
+    map.n_rows = 1;
+    map.n_cols = 1;
+    map.signal = {Eigen::MatrixXd::Constant(1, 1, 3.0)};
+    map.weight = {Eigen::MatrixXd::Constant(1, 1, 4.0)};
+
+    const auto &formal_weight =
+        citlali::pipeline::formal_weight_for_standardized_signal(map, 0);
+    const Eigen::MatrixXd standardized =
+        citlali::pipeline::standardized_signal_from_weight(
+            map.signal[0], formal_weight);
+
+    EXPECT_EQ(&formal_weight, &map.weight[0]);
+    EXPECT_DOUBLE_EQ(standardized(0, 0), 6.0);
+}
+
+TEST(fruit_loop_feedback, explicit_product_withholding_is_enforced) {
+    EXPECT_THROW(
+        citlali::pipeline::require_filtered_fruit_loop_feedback_product_contract(
+            true, false, true, "unit_sum_convolution", "signal_I"),
+        citlali::error::Error);
+    EXPECT_NO_THROW(
+        citlali::pipeline::require_filtered_fruit_loop_feedback_product_contract(
+            true, true, true, "wiener_filter", "signal_I"));
+    EXPECT_THROW(
+        citlali::pipeline::require_filtered_fruit_loop_feedback_product_contract(
+            false, false, true, "unit_sum_convolution", "signal_I"),
+        citlali::error::Error);
+    EXPECT_NO_THROW(
+        citlali::pipeline::require_filtered_fruit_loop_feedback_product_contract(
+            false, false, true, "wiener_filter", "signal_I"));
+    EXPECT_THROW(
+        citlali::pipeline::require_filtered_fruit_loop_feedback_product_contract(
+            false, false, true, "destripe", "signal_I"),
+        citlali::error::Error);
+    EXPECT_THROW(
+        citlali::pipeline::require_filtered_fruit_loop_feedback_product_contract(
+            false, false, false, "", "legacy_signal_I"),
+        citlali::error::Error);
+}
+
+TEST(map_noise_products, filtered_operator_identity_is_writer_routing_fact) {
+    EXPECT_TRUE(citlali::pipeline::filtered_map_operator_identity(
+                    false, false, "wiener_filter")
+                    .empty());
+    EXPECT_EQ(citlali::pipeline::filtered_map_operator_identity(
+                  true, true, "convolve"),
+              "unit_sum_convolution");
+    EXPECT_EQ(citlali::pipeline::filtered_map_operator_identity(
+                  true, true, "wiener_filter"),
+              "unit_sum_convolution");
+    EXPECT_EQ(citlali::pipeline::filtered_map_operator_identity(
+                  true, false, "wiener_filter"),
+              "wiener_filter");
+}
+
+TEST(map_noise_products, primary_writer_routes_filtered_operator_contract) {
+    auto map = std::make_shared<mapmaking::MapBuffer>("writer-routing-test");
+    map->n_rows = 1;
+    map->n_cols = 1;
+    map->n_noise = 0;
+    map->sig_unit = "mJy/beam";
+    map->signal = {Eigen::MatrixXd::Constant(1, 1, 2.0)};
+    map->weight = {Eigen::MatrixXd::Constant(1, 1, 4.0)};
+    map->median_err = Eigen::VectorXd::Zero(1);
+    const int unused_wcs = 0;
+
+    MetadataFitsEntry convolved_entry;
+    citlali::pipeline::add_primary_map_image_hdus(
+        convolved_entry, map, 0, "", "I", unused_wcs, 2000.0,
+        false, false, false, "unit_sum_convolution",
+        citlali::pipeline::ConvolvedMapOutputContract{
+            true, false, false, "none"},
+        ensure_citlali_logger());
+    ASSERT_EQ(convolved_entry.hdus.size(), 2);
+    EXPECT_EQ(convolved_entry.hdu_names[0], "signal_I");
+    EXPECT_EQ(convolved_entry.hdus[0]->string_keys["FILTEROP"],
+              "unit_sum_convolution");
+    EXPECT_FALSE(convolved_entry.hdus[0]->bool_keys["FLFBACK"]);
+
+    MetadataFitsEntry full_wiener_entry;
+    citlali::pipeline::add_primary_map_image_hdus(
+        full_wiener_entry, map, 0, "", "I", unused_wcs, 2000.0,
+        false, false, false, "wiener_filter",
+        citlali::pipeline::ConvolvedMapOutputContract{},
+        ensure_citlali_logger());
+    ASSERT_EQ(full_wiener_entry.hdus.size(), 2);
+    EXPECT_EQ(full_wiener_entry.hdus[0]->string_keys["FILTEROP"],
+              "wiener_filter");
+    EXPECT_EQ(full_wiener_entry.hdus[0]->bool_keys.count("FLFBACK"), 0);
+}
+
+TEST(map_noise_products, coverage_bool_is_exact_legacy_weight_comparison) {
+    Eigen::MatrixXd weight(1, 3);
+    weight << 0.0, std::numeric_limits<double>::quiet_NaN(), 1.0;
+
+    const Eigen::MatrixXd at_zero =
+        citlali::pipeline::coverage_mask_from_weight(weight, 0.0);
+    const Eigen::MatrixXd at_half =
+        citlali::pipeline::coverage_mask_from_weight(weight, 0.5);
+
+    EXPECT_DOUBLE_EQ(at_zero(0, 0), 1.0);
+    EXPECT_DOUBLE_EQ(at_zero(0, 1), 1.0);
+    EXPECT_DOUBLE_EQ(at_zero(0, 2), 1.0);
+    EXPECT_DOUBLE_EQ(at_half(0, 0), 0.0);
+    EXPECT_DOUBLE_EQ(at_half(0, 1), 1.0);
+    EXPECT_DOUBLE_EQ(at_half(0, 2), 1.0);
+}
+
+TEST(map_noise_products, noise_realization_metadata_has_physical_unit) {
+    MetadataHdu hdu;
+
+    citlali::pipeline::add_noise_image_summary_keys(
+        hdu, "mJy/beam", 2.5);
+
+    EXPECT_EQ(hdu.string_keys["UNIT"], "mJy/beam");
+    EXPECT_EQ(hdu.string_keys["BUNIT"], "mJy/beam");
+    EXPECT_EQ(hdu.string_keys["TYPE"], "noise_realization");
+    EXPECT_DOUBLE_EQ(hdu.double_keys["MEDRMS"], 2.5);
+}
+
+TEST(map_noise_products, point_source_flux_compatibility_alias_is_exact) {
+    mapmaking::MapBuffer map{"convolved-alias-test"};
+    map.signal.resize(1);
+    map.signal[0].resize(2, 2);
+    map.signal[0] << 1.0, 2.0, 3.0, 4.0;
+
+    auto &alias =
+        citlali::pipeline::convolved_amplitude_compatibility_alias(map, 0);
+
+    EXPECT_EQ(&alias, &map.signal[0]);
+    EXPECT_LT((alias - map.signal[0]).cwiseAbs().maxCoeff(), 1e-15);
 }
 
 TEST(map_noise_products, empirical_variance_metadata_records_estimator) {

@@ -99,6 +99,34 @@ Eigen::MatrixXd standardized_signal_from_weight(const Matrix &signal,
     return signal.array() * weight.array().sqrt();
 }
 
+template <class MapBuffer>
+const auto &formal_weight_for_standardized_signal(
+    const MapBuffer &mb, Eigen::Index map_index) {
+    if (has_map_image_slot(
+            mb.weight_formal, map_index, mb.n_rows, mb.n_cols)) {
+        return mb.weight_formal[map_index];
+    }
+    return mb.weight[map_index];
+}
+
+inline std::string filtered_map_operator_identity(
+    bool is_filtered_output, bool uses_unit_sum_convolution,
+    std::string_view configured_filter_type) {
+    if (!is_filtered_output) {
+        return {};
+    }
+    if (uses_unit_sum_convolution) {
+        return "unit_sum_convolution";
+    }
+    return std::string{configured_filter_type};
+}
+
+template <class MapBuffer>
+auto &convolved_amplitude_compatibility_alias(MapBuffer &mb,
+                                               Eigen::Index map_index) {
+    return mb.signal[map_index];
+}
+
 template <class NoiseList, class FitsIo>
 bool should_write_noise_maps(const NoiseList &noise,
                              const FitsIo &noise_fits_io) {

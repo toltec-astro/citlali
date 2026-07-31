@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/mapmaking/convolve_variance_contract.h>
+
 #include <string>
 #include <complex>
 #include <cmath>
@@ -1405,7 +1407,7 @@ void WienerFilter::filter_maps(MB &mb, const int map_index) {
                         // classify output support, but it cannot silently
                         // remove noise from an input that still enters the
                         // fixed convolution.
-                        if (w > 0.0 && std::isfinite(w)) {
+                        if (mapmaking::convolve_stochastic_input_weight(w)) {
                             var_map(i,j) = 1.0 / w;
                             mask_map(i,j) = 1.0;
                         }
@@ -1428,11 +1430,11 @@ void WienerFilter::filter_maps(MB &mb, const int map_index) {
                 run_convolve(false);
                 Eigen::MatrixXd mask_smooth = nume;
 
-                const double mask_floor = 1e-6 * kernel_sq_sum;
                 for (Eigen::Index i=0; i<n_rows; ++i) {
                     for (Eigen::Index j=0; j<n_cols; ++j) {
                         double m = mask_smooth(i,j);
-                        if (m > mask_floor && std::isfinite(m)) {
+                        if (mapmaking::convolve_has_numerical_variance_support(
+                                m, kernel_sq_sum)) {
                             // The signal is a fixed unit-sum convolution; it
                             // is not renormalized by the locally valid kernel
                             // support.  Its diagonal input-noise variance is

@@ -76,10 +76,33 @@ Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_
         const bool empirical_noise_products_expected =
             citlali::pipeline::noise_maps_enabled(*this) &&
             citlali::pipeline::noise_product_outputs_enabled(*this);
+        const bool uses_unit_sum_convolution =
+            is_filtered_output &&
+            citlali::config::map_filter_uses_unit_sum_convolution(
+                map_filter_config);
+        const bool edge_window_conditioned =
+            uses_unit_sum_convolution && map_filter_config.edge_guard.enabled;
+        const bool median_fill_conditioned =
+            edge_window_conditioned &&
+            map_filter_config.edge_guard.fill_mode == "core_median";
+        const std::string filtered_operator_identity =
+            citlali::pipeline::filtered_map_operator_identity(
+                is_filtered_output, uses_unit_sum_convolution,
+                citlali::config::to_string(map_filter_config.type));
+        const citlali::pipeline::ConvolvedMapOutputContract
+            convolved_contract{
+                uses_unit_sum_convolution,
+                edge_window_conditioned,
+                median_fill_conditioned,
+                edge_window_conditioned
+                    ? map_filter_config.edge_guard.fill_mode
+                    : std::string{"none"}};
         citlali::pipeline::add_primary_map_image_hdus(
             fits_io->at(map_index), mb, i, map_name, stokes_suffix, mb->wcs,
             source_epoch, empirical_weight_calibration,
-            empirical_noise_products_expected, is_beammap, logger);
+            empirical_noise_products_expected, is_beammap,
+            filtered_operator_identity,
+            convolved_contract, logger);
 
         // kernel map
         if (citlali::pipeline::raw_kernel_enabled(*this)) {
@@ -93,18 +116,13 @@ Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_
         }
 
         /* coverage bool and signal-to-noise maps */
-        const bool uses_unit_sum_convolution =
-            map_filter_config.type == citlali::config::MapFilterType::convolve ||
-            (map_filter_config.type ==
-                 citlali::config::MapFilterType::wiener_filter &&
-             map_filter_config.lowpass_only);
         const bool point_source_response_normalized =
             !is_filtered_output || !uses_unit_sum_convolution;
         citlali::pipeline::add_coverage_support_image_hdus(
             fits_io->at(map_index), mb, i, map_name, stokes_suffix, mb->wcs,
             source_epoch, is_filtered_output,
             empirical_noise_products_expected,
-            point_source_response_normalized, logger);
+            point_source_response_normalized, convolved_contract, logger);
 
         // write noise maps
         if (citlali::pipeline::should_write_noise_maps(mb->noise,
@@ -117,7 +135,7 @@ Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_
                     noise_fits_io->at(map_index).filepath, logger);
             citlali::pipeline::add_noise_realization_image_hdus(
                 noise_fits_io->at(map_index), mb, i, map_name, stokes_suffix,
-                mb->wcs, source_epoch, median_rms);
+                mb->wcs, source_epoch, median_rms, convolved_contract);
         }
         return first_hdu_index;
     } catch (const CCfits::FitsException &e) {

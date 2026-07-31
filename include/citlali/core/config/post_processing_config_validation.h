@@ -30,10 +30,8 @@ inline void validate(const MapFilterConfig &config, ValidationReport &report) {
         return;
     }
     validate(config.edge_guard, report);
-    const bool uses_unit_sum_convolution =
-        config.type == MapFilterType::convolve ||
-        (config.type == MapFilterType::wiener_filter && config.lowpass_only);
-    if (uses_unit_sum_convolution && config.edge_guard.enabled &&
+    if (map_filter_uses_unit_sum_convolution(config) &&
+        config.edge_guard.enabled &&
         config.edge_guard.taper_mode == MapFilterEdgeTaperMode::cosine) {
         report.add_error(
             {"post_processing", "map_filtering", "edge_guard", "taper_mode"},

@@ -195,6 +195,13 @@ inline bool map_filtering_active(const PostProcessingConfig &config) {
     return config.map_filtering.enabled;
 }
 
+inline bool map_filter_uses_unit_sum_convolution(
+    const MapFilterConfig &config) {
+    return config.type == MapFilterType::convolve ||
+           (config.type == MapFilterType::wiener_filter &&
+            config.lowpass_only);
+}
+
 inline void set_source_finding_enabled(PostProcessingConfig &config,
                                        bool enabled) {
     config.source_finding_enabled = enabled;

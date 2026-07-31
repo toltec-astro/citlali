@@ -9,17 +9,43 @@
 
 namespace citlali::pipeline {
 
+struct ConvolvedMapOutputContract {
+    bool active = false;
+    bool edge_window_conditioned = false;
+    bool median_fill_conditioned = false;
+    std::string fill_mode = "none";
+};
+
+template <class Hdu>
+void add_convolved_map_output_contract(
+    Hdu &hdu, const ConvolvedMapOutputContract &contract) {
+    if (!contract.active) {
+        return;
+    }
+    add_convolved_map_contract_keys(
+        hdu, contract.edge_window_conditioned,
+        contract.median_fill_conditioned, contract.fill_mode, true);
+}
+
 template <class FitsEntry, class MapBuffer, class Wcs, class Logger>
 void add_primary_map_image_hdus(
     FitsEntry &fits_entry, MapBuffer &mb, Eigen::Index i,
     const std::string &map_name, const std::string &stokes_suffix,
     const Wcs &wcs, double source_epoch, bool empirical_weight_calibration,
     bool empirical_noise_products_expected, bool is_beammap,
+    const std::string &filtered_operator_identity,
+    const ConvolvedMapOutputContract &convolved_contract,
     const Logger &logger) {
     add_map_hdu_with_wcs(
         fits_entry, signal_map_hdu_name(map_name, stokes_suffix),
         mb->signal[i], wcs, source_epoch);
-    add_signal_map_metadata(*fits_entry.hdus.back(), mb->sig_unit);
+    add_signal_map_metadata(
+        *fits_entry.hdus.back(), mb->sig_unit,
+        convolved_contract.active);
+    add_filtered_map_operator_identity_key(
+        *fits_entry.hdus.back(), filtered_operator_identity);
+    add_convolved_map_output_contract(
+        *fits_entry.hdus.back(), convolved_contract);
 
     add_map_hdu_with_wcs(
         fits_entry, weight_map_hdu_name(map_name, stokes_suffix),
@@ -27,7 +53,11 @@ void add_primary_map_image_hdus(
     const std::string weight_unit = map_weight_unit(mb->sig_unit);
     add_weight_map_metadata(
         *fits_entry.hdus.back(), weight_unit, empirical_weight_calibration);
+    add_convolved_map_output_contract(
+        *fits_entry.hdus.back(), convolved_contract);
     if (empirical_weight_calibration) {
+        add_empirical_weight_calibration_model_key(
+            *fits_entry.hdus.back());
         add_empirical_variance_estimator_keys(
             *fits_entry.hdus.back(),
             static_cast<long long>(mb->n_noise));
@@ -64,6 +94,9 @@ void add_primary_map_image_hdus(
             fits_entry, formal_weight_map_hdu_name(map_name, stokes_suffix),
             mb->weight_formal[i], wcs, source_epoch);
         add_formal_weight_map_metadata(*fits_entry.hdus.back(), weight_unit);
+        add_formal_weight_provenance_key(*fits_entry.hdus.back());
+        add_convolved_map_output_contract(
+            *fits_entry.hdus.back(), convolved_contract);
 
         add_map_hdu_with_wcs(
             fits_entry, noise_variance_map_hdu_name(map_name, stokes_suffix),
@@ -71,6 +104,8 @@ void add_primary_map_image_hdus(
         const std::string variance_unit = map_variance_unit(mb->sig_unit);
         add_noise_variance_map_metadata(
             *fits_entry.hdus.back(), variance_unit);
+        add_convolved_map_output_contract(
+            *fits_entry.hdus.back(), convolved_contract);
         add_empirical_variance_estimator_keys(
             *fits_entry.hdus.back(),
             static_cast<long long>(mb->n_noise));
@@ -108,7 +143,9 @@ void add_coverage_support_image_hdus(
     const std::string &map_name, const std::string &stokes_suffix,
     const Wcs &wcs, double source_epoch, bool is_filtered_output,
     bool empirical_noise_products_expected,
-    bool point_source_response_normalized, const Logger &logger) {
+    bool point_source_response_normalized,
+    const ConvolvedMapOutputContract &convolved_contract,
+    const Logger &logger) {
     if (mb->coverage.empty()) {
         return;
     }
@@ -129,6 +166,9 @@ void add_coverage_support_image_hdus(
         fits_entry, coverage_mask_map_hdu_name(map_name, stokes_suffix),
         coverage_bool, wcs, source_epoch);
     add_coverage_mask_map_metadata(*fits_entry.hdus.back());
+    if (convolved_contract.active) {
+        add_convolved_feedback_withheld_keys(*fits_entry.hdus.back());
+    }
     add_image_weight_threshold_key(*fits_entry.hdus.back(), weight_threshold);
 
     const bool empirical_snr_available = has_map_image_slot(
@@ -146,6 +186,8 @@ void add_coverage_support_image_hdus(
             fits_entry, legacy_pixel_snr_map_hdu_name(map_name, stokes_suffix),
             sig2noise, wcs, source_epoch);
         add_legacy_pixel_snr_map_metadata(*fits_entry.hdus.back());
+        add_convolved_map_output_contract(
+            *fits_entry.hdus.back(), convolved_contract);
         add_empirical_variance_estimator_keys(
             *fits_entry.hdus.back(),
             static_cast<long long>(mb->n_noise));
@@ -154,13 +196,17 @@ void add_coverage_support_image_hdus(
             fits_entry, pixel_snr_map_hdu_name(map_name, stokes_suffix),
             sig2noise, wcs, source_epoch);
         add_pixel_snr_map_metadata(*fits_entry.hdus.back());
+        add_convolved_map_output_contract(
+            *fits_entry.hdus.back(), convolved_contract);
         add_empirical_variance_estimator_keys(
             *fits_entry.hdus.back(),
             static_cast<long long>(mb->n_noise));
     }
     else {
+        const auto &formal_weight =
+            formal_weight_for_standardized_signal(*mb, i);
         Eigen::MatrixXd formal_standardized_signal =
-            standardized_signal_from_weight(mb->signal[i], mb->weight[i]);
+            standardized_signal_from_weight(mb->signal[i], formal_weight);
         add_map_hdu_with_wcs(
             fits_entry,
             formal_standardized_signal_map_hdu_name(
@@ -168,6 +214,8 @@ void add_coverage_support_image_hdus(
             formal_standardized_signal, wcs, source_epoch);
         add_formal_standardized_signal_map_metadata(
             *fits_entry.hdus.back());
+        add_convolved_map_output_contract(
+            *fits_entry.hdus.back(), convolved_contract);
     }
 
     const bool point_source_products_available =
@@ -187,10 +235,13 @@ void add_coverage_support_image_hdus(
         add_map_hdu_with_wcs(
             fits_entry, point_source_flux_map_hdu_name(
                 map_name, stokes_suffix),
-            mb->signal[i], wcs, source_epoch);
+            convolved_amplitude_compatibility_alias(*mb, i),
+            wcs, source_epoch);
         add_point_source_flux_map_metadata(
             *fits_entry.hdus.back(), mb->sig_unit,
             point_source_response_normalized);
+        add_convolved_map_output_contract(
+            *fits_entry.hdus.back(), convolved_contract);
         if (point_source_response_normalized) {
             add_point_source_response_norm_key(*fits_entry.hdus.back(), 1.0);
         }
@@ -202,6 +253,8 @@ void add_coverage_support_image_hdus(
         add_point_source_uncertainty_map_metadata(
             *fits_entry.hdus.back(), mb->sig_unit,
             point_source_response_normalized);
+        add_convolved_map_output_contract(
+            *fits_entry.hdus.back(), convolved_contract);
         add_empirical_variance_estimator_keys(
             *fits_entry.hdus.back(),
             static_cast<long long>(mb->n_noise));
@@ -212,6 +265,8 @@ void add_coverage_support_image_hdus(
             mb->sig2noise_point_source[i], wcs, source_epoch);
         add_point_source_snr_map_metadata(
             *fits_entry.hdus.back(), point_source_response_normalized);
+        add_convolved_map_output_contract(
+            *fits_entry.hdus.back(), convolved_contract);
         add_empirical_variance_estimator_keys(
             *fits_entry.hdus.back(),
             static_cast<long long>(mb->n_noise));
@@ -222,7 +277,8 @@ template <class FitsEntry, class MapBuffer, class Wcs>
 void add_noise_realization_image_hdus(
     FitsEntry &fits_entry, MapBuffer &mb, Eigen::Index i,
     const std::string &map_name, const std::string &stokes_suffix,
-    const Wcs &wcs, double source_epoch, double median_rms) {
+    const Wcs &wcs, double source_epoch, double median_rms,
+    const ConvolvedMapOutputContract &convolved_contract) {
     for (Eigen::Index n = 0; n < mb->n_noise; ++n) {
         Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>>
             noise_matrix(
@@ -234,6 +290,8 @@ void add_noise_realization_image_hdus(
             noise_matrix, wcs, source_epoch);
         add_noise_image_summary_keys(
             *fits_entry.hdus.back(), mb->sig_unit, median_rms);
+        add_convolved_map_output_contract(
+            *fits_entry.hdus.back(), convolved_contract);
     }
 }
 

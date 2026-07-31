@@ -816,7 +816,7 @@ public:
     // create a map buffer from a citlali reduction directory
     template <class calib_t>
     void load_mb(std::string, std::string, calib_t &, const std::string &,
-                 const std::string & = "", double = 0.0);
+                 const std::string & = "", double = 0.0, bool = false);
     template <class mb_t, class calib_t>
     void configure_fruit_loops_adaptive_gate(mb_t &, calib_t &, const std::string &, bool = true);
     double fruit_loops_jinc_func(double, double, double, double, double, double);
@@ -870,7 +870,8 @@ public:
 template <class calib_t>
 void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &calib,
                      const std::string &expected_map_grouping, const std::string &expected_pixel_axes,
-                     double expected_pixel_size_rad) {
+                     double expected_pixel_size_rad,
+                     bool require_filtered_feedback_provenance) {
 
     namespace fs = std::filesystem;
 
@@ -999,6 +1000,43 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
         return false;
     };
 
+    auto read_optional_bool_key = [&](CCfits::ExtHDU &ext,
+                                      const std::string &key,
+                                      bool &out) {
+        try {
+            ext.readKey(key, out);
+            return true;
+        } catch (const CCfits::HDU::NoSuchKeyword &) {
+            return false;
+        } catch (const CCfits::Keyword::WrongKeywordValueType &) {
+            std::string tmp;
+            try {
+                ext.readKey(key, tmp);
+            } catch (const CCfits::FitsException &error) {
+                citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                    "failed to read optional logical header key '{}': {}",
+                    key, error.message()));
+            }
+            const auto value = to_lower(tmp);
+            if (value == "t" || value == "true" || value == "1") {
+                out = true;
+                return true;
+            }
+            if (value == "f" || value == "false" || value == "0") {
+                out = false;
+                return true;
+            }
+            citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                "optional logical header key '{}' has invalid value '{}'",
+                key, tmp));
+        } catch (const CCfits::FitsException &error) {
+            citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                "failed to read optional logical header key '{}': {}",
+                key, error.message()));
+        }
+        return false;
+    };
+
     auto read_key_string = [&](CCfits::ExtHDU &ext, const std::string &key, std::string &out) {
         try {
             ext.readKey(key, out);
@@ -1015,6 +1053,22 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
             citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
                 "failed to read header key '{}': {}", key, e.message()));
         }
+    };
+
+    auto read_optional_string_key = [&](CCfits::ExtHDU &ext,
+                                        const std::string &key,
+                                        std::string &out) {
+        try {
+            ext.readKey(key, out);
+            return true;
+        } catch (const CCfits::HDU::NoSuchKeyword &) {
+            return false;
+        } catch (const CCfits::FitsException &error) {
+            citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
+                "failed to read optional string header key '{}': {}",
+                key, error.message()));
+        }
+        return false;
     };
 
     const auto grouping = to_lower(expected_map_grouping);
@@ -1347,6 +1401,22 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                 if (extName.rfind("signal_", 0) == 0) {
                     auto map_index = parse_map_index(extName, "signal", arr);
                     if (map_index) {
+                        if (require_filtered_feedback_provenance) {
+                            bool feedback_approved = false;
+                            const bool feedback_contract_present =
+                                read_optional_bool_key(
+                                    ext, "FLFBACK", feedback_approved);
+                            std::string filter_operator;
+                            const bool filter_operator_present =
+                                read_optional_string_key(
+                                    ext, "FILTEROP", filter_operator);
+                            citlali::pipeline::
+                                require_filtered_fruit_loop_feedback_product_contract(
+                                    feedback_contract_present,
+                                    feedback_approved,
+                                    filter_operator_present,
+                                    filter_operator, extName);
+                        }
                         if (signal_maps[*map_index].has_value()) {
                             citlali::pipeline::fail_fruit_loop_map_input(fmt::format(
                                 "duplicate signal map index {} in '{}'",

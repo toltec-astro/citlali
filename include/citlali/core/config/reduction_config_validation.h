@@ -52,6 +52,17 @@ inline ValidationReport validate(const ReductionConfig &config) {
             {"timestream", "fruit_loops", "injected_source_test", "enabled"},
             "is diagnostic-only and supported only by pointing/OOF reductions");
     }
+    if (config.timestream.fruit_loops.enabled &&
+        is_filtered_fruit_loops_type(config.timestream.fruit_loops.type) &&
+        map_filtering_active(config.post_processing) &&
+        map_filter_uses_unit_sum_convolution(
+            config.post_processing.map_filtering)) {
+        report.add_error(
+            {"timestream", "fruit_loops", "type"},
+            "unit-sum convolved maps are withheld from fruit-loop feedback "
+            "until their support and response contract passes production "
+            "validation; use obsnum/raw or coadd/raw feedback");
+    }
     if (config.beammap.detector_tod_output.enabled &&
         config.mapmaking.grouping != MapGrouping::detector) {
         report.add_error(

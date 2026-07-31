@@ -60,6 +60,60 @@ void add_empirical_weight_scale_key(Hdu &hdu, double scale) {
 }
 
 template <class Hdu>
+void add_empirical_weight_calibration_model_key(Hdu &hdu) {
+    hdu.addKey("CALMODEL", std::string{"global_scalar"},
+               "Empirical calibration model applied to formal pattern");
+}
+
+template <class Hdu>
+void add_formal_weight_provenance_key(Hdu &hdu) {
+    hdu.addKey("WPROV", std::string{"stage_input_snapshot"},
+               "Formal-weight input provenance");
+}
+
+template <class Hdu>
+void add_filtered_map_operator_identity_key(
+    Hdu &hdu, const std::string &filter_operator) {
+    if (!filter_operator.empty()) {
+        hdu.addKey("FILTEROP", filter_operator,
+                   "Producer filtered-map operator identity");
+    }
+}
+
+template <class Hdu>
+void add_convolved_map_contract_keys(
+    Hdu &hdu, bool edge_window_conditioned,
+    bool median_fill_conditioned, const std::string &fill_mode,
+    bool covariance_diagonal) {
+    hdu.addKey("BOUNDARY", std::string{"circular"},
+               "Convolution boundary condition");
+    hdu.addKey("CONDMASK", edge_window_conditioned,
+               "Estimator conditioned on realized edge window");
+    hdu.addKey("CONDFILL", median_fill_conditioned,
+               "Estimator conditioned on data-derived fill");
+    hdu.addKey("FILLMODE", fill_mode,
+               "Convolution edge-fill policy");
+    hdu.addKey("ZEROWFIX", true,
+               "Zero/non-finite-weight inputs carry no stochastic term");
+    hdu.addKey("RESPCORR", false,
+               "Template-response correction applied");
+    hdu.addKey("COVDIAG", covariance_diagonal,
+               "Persisted uncertainty is covariance diagonal only");
+    hdu.addKey("FLFBACK", false,
+               "Product approved for fruit-loop feedback");
+    hdu.addKey("FLWHY", std::string{"support_contract_unresolved"},
+               "Reason fruit-loop feedback is withheld");
+}
+
+template <class Hdu>
+void add_convolved_feedback_withheld_keys(Hdu &hdu) {
+    hdu.addKey("FLFBACK", false,
+               "Product approved for fruit-loop feedback");
+    hdu.addKey("FLWHY", std::string{"support_contract_unresolved"},
+               "Reason fruit-loop feedback is withheld");
+}
+
+template <class Hdu>
 void add_weight_variance_median_key(Hdu &hdu, double median_ratio) {
     hdu.addKey("WVARMED", median_ratio,
                "Median formal weight times jackknife variance");
@@ -92,7 +146,10 @@ void add_kernel_fwhm_key(Hdu &hdu, double fwhm_arcsec) {
 template <class Hdu>
 void add_noise_image_summary_keys(Hdu &hdu, const std::string &unit,
                                   double median_rms) {
-    hdu.addKey("UNIT", unit, "Unit of map");
+    add_image_unit_type_description_keys(
+        hdu, unit, noise_realization_estimator_type(),
+        noise_realization_type_comment(),
+        noise_realization_map_description());
     hdu.addKey("MEDRMS", median_rms, "Median RMS of noise maps");
 }
 
@@ -104,7 +161,15 @@ void add_image_unit_description_keys(Hdu &hdu, const std::string &unit,
 }
 
 template <class Hdu>
-void add_signal_map_metadata(Hdu &hdu, const std::string &signal_unit) {
+void add_signal_map_metadata(Hdu &hdu, const std::string &signal_unit,
+                             bool convolved_amplitude = false) {
+    if (convolved_amplitude) {
+        add_image_unit_type_description_keys(
+            hdu, signal_unit, convolved_amplitude_estimator_type(),
+            filtered_amplitude_estimator_type_comment(),
+            convolved_signal_map_description());
+        return;
+    }
     add_image_unit_description_keys(hdu, signal_unit,
                                     signal_map_description());
 }

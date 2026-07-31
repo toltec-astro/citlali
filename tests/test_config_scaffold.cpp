@@ -463,14 +463,18 @@ struct FakeEngine {
         int finalize_weight_validation_iter = -1;
         std::string loaded_filepath;
         std::string loaded_noise_filepath;
+        bool require_filtered_feedback_provenance = false;
 
         template <class Calib, class PixelAxes>
         void load_mb(const std::string &filepath,
                      const std::string &noise_filepath, Calib &,
-                     const std::string &, const PixelAxes &, double) {
+                     const std::string &, const PixelAxes &, double,
+                     bool require_feedback_provenance) {
             ++load_mb_calls;
             loaded_filepath = filepath;
             loaded_noise_filepath = noise_filepath;
+            require_filtered_feedback_provenance =
+                require_feedback_provenance;
         }
 
         void begin_weight_validation_iteration(int iter) {
@@ -3821,6 +3825,79 @@ TEST(config_scaffold, filtered_error_normalization_requires_noise_maps) {
 
     EXPECT_FALSE(report.ok());
     EXPECT_EQ(report.error_count(), 1U);
+}
+
+TEST(config_scaffold, withholds_convolved_obsnum_filtered_fruit_feedback) {
+    citlali::config::ReductionConfig config;
+    config.timestream.fruit_loops.enabled = true;
+    config.timestream.fruit_loops.type = "obsnum/filtered";
+    citlali::config::set_map_filtering_enabled(
+        config.post_processing, true);
+    config.post_processing.map_filtering.type =
+        citlali::config::MapFilterType::convolve;
+
+    const auto report = citlali::config::validate(config);
+
+    ASSERT_FALSE(report.ok());
+    EXPECT_EQ(report.error_count(), 1U);
+    EXPECT_NE(report.format_for_cli().find(
+                  "timestream.fruit_loops.type"),
+              std::string::npos);
+    EXPECT_NE(report.format_for_cli().find("obsnum/raw"),
+              std::string::npos);
+}
+
+TEST(config_scaffold, withholds_lowpass_coadd_filtered_fruit_feedback) {
+    citlali::config::ReductionConfig config;
+    config.timestream.fruit_loops.enabled = true;
+    config.timestream.fruit_loops.type = "coadd/filtered";
+    citlali::config::set_map_filtering_enabled(
+        config.post_processing, true);
+    config.post_processing.map_filtering.type =
+        citlali::config::MapFilterType::wiener_filter;
+    config.post_processing.map_filtering.lowpass_only = true;
+
+    const auto report = citlali::config::validate(config);
+
+    ASSERT_FALSE(report.ok());
+    EXPECT_EQ(report.error_count(), 1U);
+}
+
+TEST(config_scaffold, permits_raw_fruit_feedback_with_convolution) {
+    citlali::config::ReductionConfig config;
+    config.timestream.fruit_loops.enabled = true;
+    config.timestream.fruit_loops.type = "obsnum/raw";
+    citlali::config::set_map_filtering_enabled(
+        config.post_processing, true);
+    config.post_processing.map_filtering.type =
+        citlali::config::MapFilterType::convolve;
+
+    EXPECT_TRUE(citlali::config::validate(config).ok());
+}
+
+TEST(config_scaffold, preserves_full_wiener_filtered_fruit_feedback) {
+    citlali::config::ReductionConfig config;
+    config.timestream.fruit_loops.enabled = true;
+    config.timestream.fruit_loops.type = "obsnum/filtered";
+    citlali::config::set_map_filtering_enabled(
+        config.post_processing, true);
+    config.post_processing.map_filtering.type =
+        citlali::config::MapFilterType::wiener_filter;
+    config.post_processing.map_filtering.lowpass_only = false;
+
+    EXPECT_TRUE(citlali::config::validate(config).ok());
+}
+
+TEST(config_scaffold, disabled_fruit_feedback_does_not_trigger_convolve_guard) {
+    citlali::config::ReductionConfig config;
+    config.timestream.fruit_loops.enabled = false;
+    config.timestream.fruit_loops.type = "obsnum/filtered";
+    citlali::config::set_map_filtering_enabled(
+        config.post_processing, true);
+    config.post_processing.map_filtering.type =
+        citlali::config::MapFilterType::convolve;
+
+    EXPECT_TRUE(citlali::config::validate(config).ok());
 }
 
 TEST(config_scaffold, accepts_checked_low_level_config_schema) {
@@ -10071,6 +10148,40 @@ TEST(pipeline_execution, skips_initial_fruit_loop_map_without_path) {
     citlali::pipeline::load_initial_fruit_loop_maps_if_requested(engine);
 
     EXPECT_EQ(engine.ptcproc.load_mb_calls, 0);
+}
+
+TEST(pipeline_execution, runtime_guard_rejects_convolved_filtered_feedback) {
+    FakeEngine engine;
+    auto &fruit_loops = engine.typed_config.timestream.fruit_loops;
+    fruit_loops.enabled = true;
+    fruit_loops.type = "obsnum/filtered";
+    citlali::config::set_map_filtering_enabled(
+        engine.typed_config.post_processing, true);
+    engine.typed_config.post_processing.map_filtering.type =
+        citlali::config::MapFilterType::convolve;
+
+    EXPECT_THROW(
+        citlali::pipeline::load_fruit_loop_maps(
+            engine, "/data/filtered"),
+        citlali::error::Error);
+    EXPECT_EQ(engine.ptcproc.load_mb_calls, 0);
+}
+
+TEST(pipeline_execution, runtime_guard_preserves_full_wiener_feedback) {
+    FakeEngine engine;
+    auto &fruit_loops = engine.typed_config.timestream.fruit_loops;
+    fruit_loops.enabled = true;
+    fruit_loops.type = "obsnum/filtered";
+    citlali::config::set_map_filtering_enabled(
+        engine.typed_config.post_processing, true);
+    engine.typed_config.post_processing.map_filtering.type =
+        citlali::config::MapFilterType::wiener_filter;
+    engine.typed_config.post_processing.map_filtering.lowpass_only = false;
+
+    EXPECT_NO_THROW(citlali::pipeline::load_fruit_loop_maps(
+        engine, "/data/filtered"));
+    EXPECT_EQ(engine.ptcproc.load_mb_calls, 1);
+    EXPECT_TRUE(engine.ptcproc.require_filtered_feedback_provenance);
 }
 
 TEST(pipeline_execution, loads_previous_saved_fruit_loop_map) {

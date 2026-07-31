@@ -231,10 +231,10 @@ Units belong to values and products, not to variable names alone.
 | Quantity | Current convention |
 | --- | --- |
 | Accepted map signal and kernel | `mJy/beam` |
-| Map weight | inverse square of the associated signal unit |
+| Map weight | inverse square of the associated signal unit; `formal` is current-stage pre-calibration provenance and `empirical` is a globally calibrated formal spatial pattern |
 | Map noise variance | square of the associated signal unit |
 | Coverage | seconds |
-| Coverage mask, standardized signal, and signal-to-noise | dimensionless |
+| Legacy `coverage_bool`, standardized signal, and signal-to-noise | dimensionless; `coverage_bool` is a final-weight threshold classification, not support or complete validity |
 | TOD signal | the recorded `signal_unit`/`BUNIT` |
 | Raw ADC snapshots | signed 12-bit ADC counts, `[-2048, 2047]` |
 | PTC weights | inverse square of the recorded signal unit |
@@ -277,16 +277,78 @@ zero-mean second moment with divisor `N` remains a distinct library-level
 calculation only when zero mean is an explicit estimator assumption; it is not
 the uncertainty estimator used by persisted empirical noise products.
 
-`convolve` and Wiener `lowpass_only` filtering are fixed, unit-integral
-smoothing operations. They preserve the associated map signal unit and do not
-by themselves define or apply a point-source response normalization. The
-historical `point_source_flux`, `point_source_uncertainty`, and
-`sig2noise_point_source` extension names remain compatibility aliases in the
-current product shape. For these smoothing modes their metadata identifies a
-`convolved_amplitude` estimator: amplitude and uncertainty retain the map
-signal unit, their ratio is dimensionless, and no `RESPNORM` value is claimed.
-They must not be interpreted as absolute point-source photometry without a
-separately defined and applied response calibration.
+### Unit-Sum Convolution Stored Estimator Contract
+
+This bounded contract applies only to `convolve` and to Wiener filtering with
+`lowpass_only=true`. Full Wiener filtering with `lowpass_only=false` retains
+its existing response-normalized products and filtered fruit-loop
+compatibility.
+
+Let `h` be the globally normalized unit-sum kernel, `x_stage` the realized
+edge-window/fill-conditioned current-stage map presented to the filter, and
+`O` the realized binary output window. The stored amplitude is the fixed
+circular convolution
+
+`y_i = O_i sum_j(h_ij x_stage_j)`.
+
+It is not divided by locally valid kernel support. The edge fill is a named
+deterministic affine contribution; `core_median` is conditioned on as the
+realized fill value. No fill-estimation uncertainty or off-diagonal output
+covariance is stored. `signal_I` contains `y`. When present,
+`point_source_flux_I` is an exact compatibility alias of that same plane.
+Both use the map signal unit and `TYPE=convolved_amplitude`; no
+template-response correction or `RESPNORM` is claimed.
+
+Let `W_stage_j` be the current-stage input inverse-variance weight, let `M_j`
+be one only for finite, positive `W_stage_j`, and define `V_stage_j` as
+`1 / W_stage_j` where `M_j=1` and zero otherwise. Conditional on the realized
+edge window and deterministic fill, the propagated formal covariance diagonal
+is
+
+`V_formal_i = O_i^2 sum_j(h_ij^2 V_stage_j)`.
+
+A zero- or non-finite-weight input carries no modeled stochastic term, even if
+its conditioned value contributes to the stored amplitude. The output formal
+weight is `1 / V_formal_i` only when the variance is finite and positive and
+the eligible squared-kernel overlap is strictly greater than
+`1e-6 sum_j(h_ij^2)`; otherwise it is zero. That strict floor is a numerical
+publication guard. It is not a scientific-support definition and is not
+persisted as a support plane.
+
+`weight_formal_I` snapshots the weight entering empirical calibration at the
+current stage and records `WPROV=stage_input_snapshot`. Here `formal` means
+pre-calibration at this stage, not necessarily the original uncalibrated
+mapmaker weight: the spatial pattern can inherit an upstream scalar
+calibration. An empirically calibrated `weight_I` is this formal spatial
+pattern multiplied by one global jackknife scalar and records
+`TYPE=empirical` and `CALMODEL=global_scalar`; it is not a pixelwise inverse
+of the empirical sample-variance plane.
+
+Filtered jackknife realizations use the same conditional unit-sum operator.
+`noise_variance_I` is their per-pixel central sample variance with divisor
+`N - 1`; it and the formal propagated uncertainty describe only the covariance
+diagonal. `sig2noise_I` and `sig2noise_pixel_I` standardize the stored
+amplitude with the globally calibrated formal-weight pattern. None of these
+planes is convolution support, signed response, confidence, or feedback gain.
+
+The current inventory intentionally contains no unit-sum-convolution support
+plane and no signed DC or template-response plane. Metadata records the
+circular boundary, realized edge/fill conditioning, zero-weight stochastic
+assumption, diagonal-covariance limitation, absence of response correction,
+and withheld feedback. These scalar declarations do not create a missing
+response or support image.
+
+Filtered fruit-loop feedback through `obsnum/filtered` or `coadd/filtered`
+fails closed when the active filter uses this unit-sum contract. Both typed
+configuration validation and the runtime map loader reject it until explicit
+support and response products receive production validation. Filtered signal
+HDUs persist the neutral producer identity `FILTEROP`; unit-sum products use
+`FILTEROP=unit_sum_convolution`, while full Wiener uses
+`FILTEROP=wiener_filter`. The loader rejects explicit `FLFBACK=false`, the
+unit-sum identity, and filtered legacy products missing both producer identity
+and explicit approval. Raw feedback remains available. This provenance guard
+does not convert existing full-Wiener compatibility into a scientific
+approval claim.
 
 ### Pointing-Fit Significance And Dynamic Range
 
@@ -342,9 +404,14 @@ Persisted scientific products use these current validity rules:
 
 - Timestream flags identify invalid samples. Detector/APT flags identify
   unusable detectors.
-- Map signal-like pixels may be non-finite outside valid support. Positive
-  weight and coverage, together with `coverage_bool` where present, define
-  usable map support.
+- Map signal-like pixels may be non-finite outside the scientifically usable
+  region. Finite positive weight is necessary where an inverse-variance
+  interpretation is used, but each estimator's own conditioning and validity
+  rules remain required. `coverage_bool` is exactly the legacy comparison
+  zero when final weight is less than `WTTHRESH` and one otherwise. It has no
+  separate finite or positive check, so zero weight at zero threshold and NaN
+  weight can be marked one. It is not the edge window, convolution support,
+  response, or complete validity.
 - Fit-table numerical values may be non-finite when the corresponding fit is
   invalid. `flag`, `flag2`, `good_fit`, `converged`, and fit-quality fields are
   the validity authority for their respective tables.

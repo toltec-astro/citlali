@@ -27,7 +27,17 @@
     ],
     "map_indexing": "FITS/WCS pixel coordinates are one-based in headers; in-memory and diagnostic row/column indices are zero-based unless a product explicitly states otherwise.",
     "polarimetry": "Only Stokes I is validated. Enabled polarimetry is a planned-unavailable capability and is rejected before execution.",
-    "nonfinite_policy": "Map signal-like planes may be non-finite outside valid coverage. Coverage and weight planes define validity. Fit tables use flag/convergence fields to identify invalid fit values."
+    "nonfinite_policy": "Map signal-like planes may be non-finite outside the scientifically usable region. Finite positive weight and product-specific validity rules are required; coverage_bool is only the legacy final-weight threshold comparison and is not a complete validity or convolution-support plane. Fit tables use flag/convergence fields to identify invalid fit values.",
+    "unit_sum_convolution_contract": {
+      "scope": "Applies only to enabled post_processing.map_filtering type convolve and to wiener_filter with lowpass_only=true. Full Wiener filtering with lowpass_only=false retains its existing response-normalized products and filtered fruit-loop compatibility.",
+      "stored_amplitude": "Let h be the globally normalized unit-sum kernel, x_stage the realized edge-window/fill-conditioned current-stage map presented to the circular convolution, and O the realized binary output window. The stored filtered amplitude is y_i = O_i * sum_j(h_ij * x_stage_j). It is not divided by local valid-kernel support and no template-response correction is applied. signal_I stores this amplitude; point_source_flux_I is an exact compatibility alias when present. Both remain in the map signal unit and use TYPE=convolved_amplitude.",
+      "formal_diagonal_variance": "Let W_stage_j be the current-stage input inverse-variance weight, M_j=1 only when W_stage_j is finite and positive, and V_stage_j=1/W_stage_j where M_j=1 but zero otherwise. Conditional on the realized edge window and deterministic fill, the stored formal covariance diagonal is V_formal_i = O_i^2 * sum_j(h_ij^2 * V_stage_j). Inputs with zero or non-finite weight carry no modeled stochastic term even if their conditioned value contributes to the stored amplitude. The output formal weight is 1/V_formal_i only when V_formal_i is finite and positive and sum_j(h_ij^2*M_j) is strictly greater than 1e-6*sum_j(h_ij^2); otherwise it is zero. The 1e-6 test is a numerical publication guard, not scientific support. Off-diagonal covariance and uncertainty in data-derived fill are not stored.",
+      "formal_weight_provenance": "weight_formal_I is the snapshot of the weight entering the current stage's empirical calibration, identified by WPROV=stage_input_snapshot. Formal therefore means pre-calibration at this stage, not necessarily the original uncalibrated mapmaker weight; the spatial pattern may inherit an upstream scalar calibration. When weight_I is empirically calibrated, it is that formal spatial pattern times one global jackknife scalar, identified by TYPE=empirical and CALMODEL=global_scalar.",
+      "empirical_products": "Filtered noise realizations use the same conditional unit-sum operator. noise_variance_I is their per-pixel central sample variance with divisor N-1 and is a covariance-diagonal product only. sig2noise_I and sig2noise_pixel_I standardize the stored amplitude with the globally calibrated formal-weight pattern; they do not supply support, response, confidence, or gain.",
+      "coverage_bool": "coverage_bool_I is exactly the legacy comparison 0 when final weight_I < WTTHRESH and 1 otherwise. Because that comparison has no separate finite or positive test, a zero weight at zero threshold and a NaN weight can be marked 1. It is not the edge window, convolution support, response, or complete scientific validity.",
+      "feedback_policy": "Filtered fruit-loop feedback through obsnum/filtered or coadd/filtered fails closed for unit-sum convolution. Filtered signal HDUs persist neutral producer identity FILTEROP: unit_sum_convolution for this contract and wiener_filter for full Wiener. The runtime loader rejects explicit FLFBACK=false, unit_sum_convolution, and filtered legacy products missing both producer identity and explicit approval; it does not infer producer identity from the current run. Raw feedback remains available. Full-Wiener compatibility is not a scientific approval claim.",
+      "unclaimed_planes": "The current product inventory contains no unit-sum-convolution support plane and no signed DC or template-response plane. FILTEROP=unit_sum_convolution is producer identity only. BOUNDARY=circular, CONDMASK, CONDFILL, FILLMODE, ZEROWFIX=true, RESPCORR=false, COVDIAG=true, FLFBACK=false, and FLWHY=support_contract_unresolved describe the bounded conditional estimator; none claims a missing support or response image."
+    }
   },
   "known_contract_debt": [
     {
@@ -82,7 +92,7 @@
       ],
       "units_policy": "BUNIT and TYPE are authoritative per HDU: signal/kernel in mJy/beam, weights in inverse squared signal units, noise variance in squared signal units, coverage in seconds, and masks/standardized products dimensionless. sig2noise names require empirical jackknife calibration.",
       "indexing_policy": "FITS/WCS pixel coordinates are one-based; diagnostic row/column indices are zero-based.",
-      "missing_value_policy": "Signal-like pixels may be non-finite where coverage/weight is invalid; coverage_bool identifies supported pixels.",
+      "missing_value_policy": "Signal-like pixels may be non-finite outside the scientifically usable region. Finite positive weight and the estimator-specific conditions are required. coverage_bool is the legacy final-weight threshold comparison only; it does not establish convolution support, response, or complete validity.",
       "failure_policy": "Fatal when the map family is enabled in the active profile."
     },
     "map_cube_celestial": {
@@ -96,7 +106,7 @@
       ],
       "units_policy": "BUNIT and TYPE are authoritative per HDU: signal/kernel in mJy/beam, weights in inverse squared signal units, coverage in seconds, and masks/standardized products dimensionless. sig2noise names require empirical jackknife calibration.",
       "indexing_policy": "FITS/WCS pixel coordinates are one-based; diagnostic row/column indices are zero-based.",
-      "missing_value_policy": "Signal-like pixels may be non-finite where coverage/weight is invalid; coverage_bool identifies supported pixels.",
+      "missing_value_policy": "Signal-like pixels may be non-finite outside the scientifically usable region. Finite positive weight and the estimator-specific conditions are required. coverage_bool is the legacy final-weight threshold comparison only; it does not establish convolution support, response, or complete validity.",
       "failure_policy": "Fatal when the map family is enabled in the active profile."
     },
     "map_histogram": {

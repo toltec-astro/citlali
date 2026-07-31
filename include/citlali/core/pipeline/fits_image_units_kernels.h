@@ -22,8 +22,8 @@ inline const char *weight_calibration_type(bool empirical_calibration) {
 
 inline const char *weight_map_description(bool empirical_calibration) {
     return empirical_calibration
-        ? "Jackknife-calibrated inverse variance weight map"
-        : "Formal mapmaker inverse variance weight map";
+        ? "Formal inverse-variance spatial pattern with global jackknife scalar calibration"
+        : "Current-stage formal inverse variance weight map";
 }
 
 inline const char *not_applicable_image_unit() {
@@ -46,6 +46,10 @@ inline const char *point_source_snr_estimator_type() {
     return "point_source";
 }
 
+inline const char *noise_realization_estimator_type() {
+    return "noise_realization";
+}
+
 inline const char *convolved_amplitude_estimator_type() {
     return "convolved_amplitude";
 }
@@ -60,6 +64,10 @@ inline const char *kernel_type_comment() {
 
 inline const char *snr_estimator_type_comment() {
     return "S/N estimator type";
+}
+
+inline const char *noise_realization_type_comment() {
+    return "Noise realization estimator type";
 }
 
 inline const char *filtered_amplitude_estimator_type_comment() {
@@ -109,12 +117,20 @@ inline const char *signal_map_description() {
     return "Signal map in map units";
 }
 
+inline const char *convolved_signal_map_description() {
+    return "Fixed unit-sum circularly convolved map amplitude; no template-response correction";
+}
+
 inline const char *formal_weight_map_description() {
-    return "Formal mapmaker inverse variance before empirical calibration";
+    return "Current-stage conditional diagonal inverse variance before empirical calibration";
 }
 
 inline const char *noise_variance_map_description() {
-    return "Per-pixel variance estimated from jackknife noise maps";
+    return "Per-pixel sample variance from jackknife maps; covariance diagonal only";
+}
+
+inline const char *noise_realization_map_description() {
+    return "Jackknife noise realization in map-amplitude units";
 }
 
 inline const char *kernel_map_description() {
@@ -126,7 +142,7 @@ inline const char *coverage_map_description() {
 }
 
 inline const char *coverage_mask_map_description() {
-    return "Boolean valid-coverage support mask";
+    return "Legacy final-weight threshold mask; not convolution support; not complete validity";
 }
 
 inline const char *legacy_pixel_snr_map_description() {

@@ -535,6 +535,11 @@ inline bool is_coadd_filtered_fruit_loops_type(std::string_view value) {
     return value == fruit_loops_coadd_filtered_type();
 }
 
+inline bool is_filtered_fruit_loops_type(std::string_view value) {
+    return is_obsnum_filtered_fruit_loops_type(value) ||
+           is_coadd_filtered_fruit_loops_type(value);
+}
+
 inline bool is_fruit_loops_mode(FruitLoopsMode value,
                                 FruitLoopsMode mode) {
     return value == mode;
