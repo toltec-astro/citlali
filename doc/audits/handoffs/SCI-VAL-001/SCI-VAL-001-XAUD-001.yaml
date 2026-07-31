@@ -1,0 +1,104 @@
+format_version: 1
+id: SCI-VAL-001-XAUD-001
+created_date: 2026-07-31
+
+source:
+  package_id: SCI-MAP-001
+  role: auditor
+  audit_branch: codex/audit-sci-map-001
+  audit_commit: b9e1e9a9b2fe492c402d8c7b0cf7e5a36c136a53
+  governing_or_evidence_sha: b9e1e9a9b2fe492c402d8c7b0cf7e5a36c136a53
+  finding_ids:
+    - SCI-MAP-001-F010
+
+target:
+  package_id: SCI-VAL-001
+
+priority: P1
+evidence_basis: owner_decision
+review_phase: pre_core_authority
+arrival: before_dispatch
+status: submitted
+
+summary: >-
+  The approved MAP contract keeps upstream eligibility, estimator
+  contribution, exposure, two support decisions, and authoritative science
+  validity separate.
+claim: >-
+  SCI-MAP-001 requires SCI-VAL-001 to provide authoritative sample and
+  detector eligibility semantics while MAP separately persists geometric and
+  contributing hits, coadd-observation count, upstream-eligible and retained
+  exposure, normalization support, science-policy support, and authoritative
+  science validity.
+supports:
+  - >-
+    The approved MAP contract distinguishes the geometric projection set G_p,
+    upstream-eligible set E_p, and estimator-contribution set I_p rather than
+    treating hits, eligibility, and contribution as synonyms.
+  - >-
+    Normalization support and science-policy support are separate versioned
+    decisions with separate algorithm, input, threshold, and comparison
+    identities.
+  - >-
+    Authoritative science validity requires normalization support,
+    science-policy support, finite signal and every required companion, and
+    admitted product identity including WCS, frame, units, and response.
+  - >-
+    Retained low-confidence numerical population is distinct from science
+    validity, and an operator-local computability mask may never promote a
+    science-invalid input.
+does_not_establish:
+  - the upstream flag, replacement, eligibility, or missing-data policy owned by SCI-VAL-001
+  - a JINC-specific signed-contribution predicate owned by SCI-MAP-002
+  - serialized product names proposed outside the approved F010 logical contract
+  - implementation conformance, filtering validity, or a downstream estimator contract
+
+requested_actions:
+  - add_or_update_dependency
+  - add_interface_test
+affected_target_findings: []
+related_handoffs: []
+
+authority_for_pre_core_review:
+  authority_kind: approved_contract_owner_decision
+  contract_status: approved
+  approval_date: 2026-07-31
+  owner_decision_commit: b9e1e9a9b2fe492c402d8c7b0cf7e5a36c136a53
+  approved_contract: >-
+    Persist and distinguish geometric hits, contributing hits, coadd
+    observation count, upstream-eligible exposure, retained exposure,
+    normalization support, science-policy support, and authoritative science
+    validity; validity is the conjunction of both supports, finite signal and
+    required companions, and admitted product identity.
+  artifact_path: >-
+    doc/audits/packages/SCI-MAP-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+  artifact_sha256: 6c8decef93f5607bc9e8dfc84e31aee67f45fa5c695fc80563c7e7064f78d556
+  relevant_sections:
+    - >-
+      Response, hits, exposure, support, and validity, equations
+      eq:audit-hits through eq:audit-validity
+    - Project-owner decisions and bounded handoff / F010
+
+evidence:
+  - id: completed-map-audit-owner-decision
+    availability: repository_path
+    path: >-
+      doc/audits/packages/SCI-MAP-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: 6c8decef93f5607bc9e8dfc84e31aee67f45fa5c695fc80563c7e7064f78d556
+    note: >-
+      Approved SCI-MAP-001 contract at the exact source.audit_commit; only the
+      cited approved equations and F010 owner decision are pre-core authority.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: not_applicable
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null
