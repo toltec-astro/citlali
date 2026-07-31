@@ -28,6 +28,8 @@
 \newcommand{\AuditCoreFreezeCommit}{\gitsha{c28f18ed}{089657da}{e278caba}{2d6d6d65}{c7ec72f4}}
 \newcommand{\AuditInitialFinalCommit}{\gitsha{0cfdba5e}{d08c0ad6}{c491afcd}{56972a31}{d68cfabf}}
 \newcommand{\AuditInitialFinalSHA}{\digest{6a3703a1}{f86be060}{c034f586}{7c136d82}{4a11a18a}{4fc59bf1}{07270a39}{3f7116f3}}
+\newcommand{\AuditRawValidityAmendmentCommit}{\gitsha{681aeec9}{9c4d1c47}{62ecb8c4}{dae63c85}{99638678}}
+\newcommand{\AuditRawValidityAmendmentSHA}{\digest{7d133f52}{f517a226}{2eeebca8}{fe62f7a6}{fbc3ed52}{09687022}{0cdb84bd}{af33cb44}}
 \newcommand{\AuditDate}{2026-07-31}
 
 \title{\AuditPackageName\\
@@ -61,8 +63,13 @@ strict convolve control/candidate comparison while a later filtered product
 admitted extreme guard-band standardized amplitudes outside a reconstructed
 raw science-valid region.  That evidence establishes no raw mapmaking
 regression and closes no finding.  It does make the missing authoritative,
-reproducible raw-validity handoff in F002/F007/F008/F010 a demonstrated
-consumer risk; the filtered estimator itself remains outside this audit.
+reproducible raw-validity handoff a demonstrated consumer risk; the filtered
+estimator itself remains outside this audit.  The project owner subsequently
+accepted the \texttt{amend} verdict and approved the bounded F009/F010
+specializations recorded here.  The contract is therefore \texttt{approved},
+while implementation remains \texttt{nonconformant}, F009/F010 remain
+\texttt{addressed\_pending\_reaudit}, and all repair and evidence gates remain
+open.
 \end{abstract}
 
 \section{Executive result and bounded scope}
@@ -95,6 +102,17 @@ Equation~\eqref{eq:audit-coadd-map}, regardless of observation correlation.
 That weighted mean is scientifically admissible only for common map identity,
 WCS, unit, response, and support; \(Q^c\) is inverse variance only when the
 weights are marginal precisions and observation errors are independent.
+The approved successor admits observations strictly by product identity,
+unit, response, and full-precision WCS before mutation; permits only the
+current centered integer common-grid embedding; sets signal centering to
+identity; and retains the normalized mean with nonprecision gridding
+coefficients by default.  General reprojection/interpolation and correlated
+GLS are not approved.
+\item[Owner decision] On 2026-07-31 the project owner accepted the
+\texttt{amend} verdict and approved the exact F009/F010 choices in
+Section~\ref{sec:owner-decisions}.  This approves the bounded scientific
+contract, not the governing implementation or its evidence.  No repair was
+performed on this audit branch.
 \item[Consumer policy] Existing operation is limited to the active accepted-run
 profiles at the governing SHA: \code{phase4-point-152389-v1},
 \code{phase4-oof-152385-152387-v1},
@@ -138,8 +156,11 @@ Audit branch and worktree & \AuditBranch; \AuditWorktree.\\
 Audit branch base/core-freeze parent & \AuditGoverningSHA.\\
 Original final-audit parent & \AuditCoreFreezeCommit.\\
 Initial final-audit commit and bytes & \AuditInitialFinalCommit; TeX SHA-256
-\AuditInitialFinalSHA.  This post-freeze amendment changes only the final audit
-artifact and has that commit as its parent.\\
+\AuditInitialFinalSHA.\\
+Raw-validity cross-audit amendment & \AuditRawValidityAmendmentCommit; final
+audit TeX SHA-256 \AuditRawValidityAmendmentSHA.  The owner-decision amendment
+has that commit as its parent, changes only the evolving final audit plus the
+dated audit-package handoff, and leaves the frozen core unchanged.\\
 Independent-core bytes & \AuditCorePath.\\
 Independent-core SHA-256 & \AuditCoreSHA.\\
 Freeze timestamp & \code{2026-07-31T17:38:43Z}
@@ -345,28 +366,42 @@ Constant, delta, beam/template, resolved, extended, variable-coverage, and edge
 responses are distinct tests; normalized gridding preserves a constant only
 where the selected operator has unit row sum and no upstream null removes it.
 
-Let \(E_p\) be the upstream-eligible, finite projection/exposure set before any
-signal-specific support decision.  Keep the following objects separate:
+Let \(G_p\) be the finite, in-bounds geometric projection set, \(E_p\subseteq
+G_p\) the upstream-eligible projection/exposure set, and \(I_p\subseteq E_p\)
+the terms admitted by the estimator's named contribution predicate.  The
+approved contract keeps the following objects separate:
 \begin{align}
- h_p &= \sum_{(t,d)\in E_p}{\bf1}[P_{ptd}\ne0],
- &h^{(w)}_p&=\sum_{(t,d)\in I_p}{\bf1}[q_{ptd}>0],
+ h^{\rm geom}_p &= \sum_{(t,d)\in G_p}{\bf1}[P_{ptd}\ne0],
+ &h^{\rm contrib}_p&=\sum_{(t,d)\in I_p}{\bf1}[q_{ptd}>0],
  \label{eq:audit-hits}\\
- x_p &= \sum_{(t,d)\in E_p}G^{(x)}_{ptd}\Delta t_{td},
- &S_p&={\bf1}[D_p\text{ finite and }D_p>0]\,S^{\rm policy}_p,
+ x^{\rm eligible}_p &=
+   \sum_{(t,d)\in E_p}G^{(x)}_{ptd}\Delta t_{td},
+ &x^{\rm retained}_p&=S^{\rm norm}_p
+   \sum_{(t,d)\in I_p}G^{(x)}_{ptd}\Delta t_{td},
  \label{eq:audit-coverage}\\
- V_p &= S_p\,{\bf1}[\widehat m_p\text{ finite}]
+ S^{\rm norm}_p&={\cal S}_{\rm norm}(D,p),
+ &S^{\rm science}_p&={\cal S}_{\rm science}(D,p),
+ \label{eq:audit-support-axes}\\
+ V_p &= S^{\rm norm}_p S^{\rm science}_p
+       {\bf1}[\widehat m_p\text{ finite}]
        {\bf1}[\text{all required companions finite}]\nonumber\\
      &\quad{}\times{\bf1}[\text{identity/WCS/unit/response valid}].
  \label{eq:audit-validity}
 \end{align}
-Exposure may be positive where policy support is false.  Support may be true
-without a formal variance claim.  Validity additionally requires finite values
-and compatible identity.
+For the ordinary estimator, the contribution predicate is finite positive
+\(q\); a different JINC predicate remains owned by \code{SCI-MAP-002} and is
+not silently selected here.  The two \({\cal S}\) functions have separate
+versioned algorithms, inputs, thresholds, and comparison conventions.
+Eligible exposure may be positive where no contribution is retained, retained
+exposure may be positive where science-policy support is false, and either
+support Boolean may be true without a formal-variance claim.  Validity
+additionally requires finite values and an admitted bundle identity.
 
 \subsection{Observation coaddition}
 
-Let \(\chi_{op}\) be the admissible contribution indicator after applying
-registration \(J_o\), optional centering \(L_o\), and validity, and let
+Let \(\chi_{op}\) be the admissible numerical-contribution indicator after
+strict bundle admission and application of registration \(J_o\), centering
+\(L_o\), normalization support, and the finite-input policy, and let
 \(O_p=\{o:\chi_{op}=1\}\).  Invalid values are excluded from \(O_p\), never
 multiplied by zero.  The current ordinary target is
 \begin{align}
@@ -379,6 +414,28 @@ multiplied by zero.  The current ordinary target is
  \end{cases}
  \label{eq:audit-coadd-map}
 \end{align}
+The owner-approved specialization requires whole-observation admission before
+any numerical, identity, membership, exposure, or provenance mutation.
+\(J_o\) is only centered integer common-grid embedding: coadd-minus-observation
+row and column differences are nonnegative and even, their halves are the
+integer offsets, and the full-precision WCS agrees after that offset.  No
+reprojection, interpolation, fractional shift, or source recentering is
+permitted.  Geometric embedding is distinct from signal centering:
+\(L_o=I\), with no implicit mean or null-mode subtraction.  On
+\(\chi_{op}=1\), \(\widehat m_{op}\), \(u_{op}\), and every required numerical
+companion are finite and \(u_{op}>0\); an unexpected violation fails before
+mutation.  An explicitly invalid term is skipped before its values are
+evaluated.  A normalization-retained but science-policy-rejected term may
+remain numerically contributable; coadd science-policy support and
+Equation~\eqref{eq:audit-validity} are evaluated and persisted separately, so
+numerical population never silently promotes science validity.
+
+The accepted \(u_{op}\) is a nonprecision gridding coefficient by default.
+The normalized mean in Equations~\eqref{eq:audit-coadd-num}--
+\eqref{eq:audit-coadd-map} is retained without a precision or significance
+claim.  Equation~\eqref{eq:audit-coadd-precision} remains conditional on
+\code{SCI-PTC-001}; the correlated estimator in
+Equation~\eqref{eq:audit-correlated-coadd} is explanatory only and is deferred.
 With stacked observation vector \(\boldsymbol z_m\), realized linear operator
 \(B\), and full observation-map covariance \(C_m\),
 \begin{align}
@@ -402,12 +459,14 @@ coadd is instead
    ({\boldsymbol1}^{\mathsf T}C_p^{-1}\boldsymbol1)^{-1}.
  \label{eq:audit-correlated-coadd}
 \end{equation}
-The companion kernel/response shares \(\chi,J\) and a declared \(L\) wherever
-that centering operator is part of the signal response, on \(Q^c_p>0\):
-\(\widehat k^c_p=\sum_{o\in O_p}u(JL\widehat k_o)_p/Q^c_p\).  Exposure shares the
-contribution and registration decisions \(\chi,J\), but never a signal-centering
-operator: \(x^c_p=\sum_{o\in O_p}(Jx_o)_p\).  A contributing-observation count is a
-hits product, not \(Q^c\) or \(x^c\).
+The companion kernel/response shares \(\chi,J\) and \(L=I\), on \(Q^c_p>0\):
+\(\widehat k^c_p=\sum_{o\in O_p}u(J\widehat k_o)_p/Q^c_p\).  Retained exposure
+shares the contribution and registration decisions \(\chi,J\), but never a
+signal-centering operator:
+\(x^{c,\rm retained}_p=\sum_{o\in O_p}(Jx^{\rm retained}_o)_p\).  The coadd
+observation count
+\(h^{c,\rm obs}_p=\sum_o{\bf1}[\chi_{op}=1]\) is a separate persisted count,
+not \(Q^c\), exposure, or validity.
 
 \subsection{Noise-realization boundary}
 
@@ -706,19 +765,33 @@ Equation~\eqref{eq:audit-template-response} is validated.\\
 \code{coverage_I} & exposure diagnostic & Accepted positive-weight
 detector-sample dwell; coadd sum; erased outside normalization support & s &
 Described as effective integration time; absent for detector grouping because
-coverage is not allocated. & Rename/describe as detector-seconds or change
-estimator; retain exposure separately from support and record absence.\\
+coverage is not allocated. & Preserve only as a bitwise compatibility alias
+for canonical retained detector-seconds; separate it from upstream-eligible
+exposure and both support masks, and record applicability/absence.\\
 No hits HDU & absent support diagnostic & Geometric hits, positive-weight hits,
 and contributing-observation count are not persisted & unitless & Some
-diagnostics infer sample count as coverage times sample rate. & Absence must be
-explicit; do not use weight or coverage as synonym.\\
+diagnostics infer sample count as coverage times sample rate. & Persist
+geometric hits, estimator-admitted contributing hits, and coadd-observation
+count as distinct products; do not use weight or exposure as synonyms.\\
+No upstream-eligible exposure HDU & absent exposure state & Upstream-eligible
+and retained detector-seconds collapse into the post-normalization
+\code{coverage_I} plane & s & Pre-floor eligibility cannot be recovered from
+the output. & Persist both exposure states; keep \code{coverage_I} only as the
+retained-exposure alias.\\
 \code{coverage_bool_I} & derived support/validity diagnostic &
 \(\neg(w<t)\), with full \code{coverage_cut} threshold & unitless & Called
 Boolean valid coverage; at \(t=0\), zero, NaN, and positive infinity select
 valid; threshold differs from normalize floor.  Absent for detector grouping
-because the coverage helper returns early. & Fail closed as validity authority
-or exact downstream input-mask reconstruction until repaired and separately
-defined/tested.\\
+because the coverage helper returns early. & Deprecate as a validity authority.
+If retained, declare/test its exact compatibility relationship to canonical
+science-policy support and require finite-positive comparison.\\
+No dedicated support or validity HDUs & absent contract state &
+Normalization support, science-policy support, and authoritative validity are
+not separately persisted & unitless & Writer recomputes one threshold Boolean;
+identity and required companions are not conjoined. & Persist both support
+planes and a dedicated science-valid product; the last alone is authoritative
+raw science validity under Equation~\eqref{eq:audit-validity}.  The handoff
+proposes, but the owner decision does not fix, its serialized spelling.\\
 \code{formal_standardized_signal_I} & diagnostic &
 \(m\sqrt{w}\) without empirical products & unitless & Correctly described as
 not statistical significance; negative/non-finite weights propagate through
@@ -790,7 +863,8 @@ Permissible conclusion & A downstream operator can compute a value where the
 raw input is not scientifically valid, and the current product vocabulary did
 not give that operator an authoritative distinction between raw validity and
 its own numerical computability.  The observation is a concrete consumer
-consequence of open F007/F008/F010 and a reason F002 matters; it does not prove
+consequence of open F007/F008 under the addressed-pending-re-audit F010
+decision, and a reason F002 matters; it does not prove
 that the raw mask implementation caused this particular pixel.\\
 Scope limit & No filtering boundary rule, filtered variance policy, variance
 floor, response normalization, source statistic, or fruit-loop admission rule
@@ -836,38 +910,37 @@ finite/positive and bundle-validity conjunction.
 \raggedright
 
 \item \textbf{Exact condition for scientific validity.}
-The proposed contract's exact condition is \(V_p=1\) in
-Equation~\eqref{eq:audit-validity}: finite positive denominator, approved
-science-support policy, finite \code{signal_I} and every profile-required
-companion, and valid map/array identity, WCS/frame, units, and response.  For
-an array-grouped current-style bundle, a reconstructible instantiation would
-at least require finite \code{signal_I}, finite-positive support-carrying
-\code{weight_I}, finite-positive \code{coverage_I}, and the intended threshold
-predicate, with \(t\) equal to the exact \code{WTTHRESH} header value,
-\(H^{\rm intended}_p={\bf1}[w_p\text{ finite}]{\bf1}[w_p>0]
-{\bf1}[w_p\ge t]\), in an admitted bundle.  If a formal precision
-is consumed, its separate finiteness and \code{SCI-PTC-001} conditions also
-apply.  F010 and \code{SCI-VAL-001} must approve the profile-required companion
-set and science-support policy, so this rule is proposed, not an already
-approved current contract.
+The owner-approved exact condition is \(V_p=1\) in
+Equation~\eqref{eq:audit-validity}: numerical-normalization support,
+science-policy support, finite \code{signal_I} and every declared required
+companion, and admitted map/array identity, WCS/frame, units, and response.
+The required-companion inventory is versioned per product profile.  If a
+formal precision is consumed, its separate finiteness and
+\code{SCI-PTC-001} conditions also apply.  Upstream eligibility remains
+conditional on \code{SCI-VAL-001}, but F010 no longer leaves the map-level
+validity conjunction undecided.
 
-\emph{Disposition:} not already explicit/correct; missing policy and
-documentation/provenance, plus the existing in-scope F002 Boolean
-implementation defect.  The cross-audit adds no raw regression finding.
-Until approval, NOI and FLT must prohibit promotion of \(w>0\), exposure,
-\code{coverage_bool_I}, or a finite/populated signal to science validity.
+\emph{Disposition:} the successor contract is explicit and approved; the
+governing products do not implement it.  F002 is the existing Boolean
+implementation defect, F007 is the missing product/metadata contract, and F008
+is the missing reproducible provenance.  The cross-audit adds no raw
+regression finding.  Until repair and re-audit, NOI and FLT must prohibit
+promotion of \(w>0\), exposure, \code{coverage_bool_I}, or a finite/populated
+signal to science validity.
 
 \item \textbf{Product carrying the condition.}
 No single current raw product carries \(V_p\), and the present combination is
 not a self-describing authority.  \code{coverage_bool_I} carries only
 Equation~\eqref{eq:audit-current-coverage-bool}; \code{signal_I}, weights, and
 \code{coverage_I} carry estimator, normalizer, and exposure facts separately.
-A successor contract must either persist a dedicated, versioned raw
-\code{science_valid_I} (with separately named retained support) or declare an
-exact versioned conjunction of authoritative planes and bundle-level identity.
+The approved successor must persist a dedicated, versioned raw science-valid
+product (the handoff proposes \code{science_valid_I}), with normalization
+support, science-policy support, retained exposure, and bundle identity
+separately named and persisted.
 
 \emph{Disposition:} F002 is an implementation defect; the missing dedicated
-or conjunctive contract is F007/F010, and its reproducibility is F008.  A
+product is open F007 under the addressed F010 decision, and its reproducibility
+is F008.  A
 filtered HDU that reuses an extension name is a stage output, not carriage of
 the raw state.  NOI/FLT must retain an exact raw-parent identity and may not
 reinterpret their own \code{coverage_bool_I} as raw validity.
@@ -881,9 +954,10 @@ lost.  The existing Boolean is incorrectly described as valid coverage and is
 absent for detector grouping.
 
 \emph{Disposition:} not a documentation-only issue: the persisted predicate is
-wrong in allowed states (F002), while the absent state/product semantics are
-F007/F010.  NOI and FLT must treat raw science validity as unavailable for new
-claims until a repaired/versioned product or exact conjunction is accepted.
+wrong in allowed states (F002), while the absent products/metadata are F007
+under the accepted F010 hierarchy.  NOI and FLT must treat raw science
+validity as unavailable for new claims until the repaired/versioned product is
+accepted.
 
 \item \textbf{Exact reconstruction and provenance.}
 Current \code{weight_I} bytes plus \code{WTTHRESH} reproduce
@@ -898,10 +972,10 @@ recover some behavior, but that is not a stable self-contained product
 contract.
 
 \emph{Disposition:} the current mask bytes are reproducible; science validity
-is not.  This is principally provenance/documentation gap F008 plus policy
-F010, with F002/F007 where the persisted product itself is nonconformant or
-absent.  NOI/FLT must not substitute a locally guessed threshold, comparison,
-rounded configuration value, or stage-local mask.
+is not.  This is principally open provenance/documentation gap F008 under the
+addressed F010 decision, with F002/F007 where the persisted product itself is
+nonconformant or absent.  NOI/FLT must not substitute a locally guessed
+threshold, comparison, rounded configuration value, or stage-local mask.
 
 \item \textbf{Precise estimator meanings.}
 The source-traced meanings are:
@@ -950,10 +1024,10 @@ raw-science-invalid combination.
 At the governing SHA, the \(c/10\) normalization floor and full-\(c\) Boolean
 threshold create two algorithmic regions, but the product contract neither
 names the retained-low-confidence state nor persists both decisions exactly.
-Thus the distinction is proposed and diagnostically inferable, not already
-explicit/correct (F007/F010, with F002 for the Boolean).  NOI/FLT must keep
-science validity and operator computability as separate masks and may never
-let finite output promote invalid input.
+The distinction is now owner-approved but remains only diagnostically
+inferable in governing products (open F007 under addressed F010, with F002 for
+the Boolean).  NOI/FLT must keep science validity and operator computability as
+separate masks and may never let finite output promote invalid input.
 
 \item \textbf{Legitimate downstream use.}
 \code{signal_I} is an amplitude estimator only on an approved \(V_p\) and
@@ -966,9 +1040,9 @@ QA.  No current Boolean is authoritative science-valid support;
 \code{coverage_bool_I} can at most be audited against its stage-local threshold
 after explicit finite-positive checks.
 
-\emph{Disposition:} conditional formal-weight arithmetic is already explicit
-in the proposed contract, but current inverse-variance metadata is F006 and
-support/validity semantics are F002/F007/F010.  NOI must prohibit significance
+\emph{Disposition:} conditional formal-weight arithmetic is explicit in the
+approved contract, but current inverse-variance metadata is F006 and
+support/validity implementation is F002/F007 under addressed F010.  NOI must prohibit significance
 or calibration outside an approved raw domain and must establish covariance;
 FLT must intersect its separately defined numerical support with authoritative
 raw validity rather than replace the latter.
@@ -980,9 +1054,10 @@ and reproducibly from the current self-described product contract.  In
 particular, a finite filtered value or filtered \code{coverage_bool=true} says
 nothing about raw validity.
 
-\emph{Disposition:} this is the combined open F002/F007/F008/F010 contract;
-F006 governs any precision use and F011 governs its missing end-to-end truth
-test.  It is a mapmaking product-contract defect/gap within this audit, not a
+\emph{Disposition:} this is the combined open F002/F007/F008 implementation,
+product, and provenance gap under addressed F010; F006 governs any precision
+use and F011 governs its missing end-to-end truth test.  It is a mapmaking
+product-contract defect/gap within this audit, not a
 finding about convolve, jackknife reliability, source response, or fruit-loop
 behavior.  NOI receives the domain/weight/covariance dependency; FLT receives
 the raw-validity-versus-numerical-support dependency.  Both remain fail closed
@@ -1007,6 +1082,96 @@ Boundary treatment, covariance propagation, and point/extended-source response
 remain wholly in \code{SCI-FLT-001/002}.  Fruit loops receive only the existing
 fail-closed dependency: no filtered amplitude, confidence, support, or gain may
 enter feedback before the MAP, NOI, and FLT contracts are accepted.
+
+\section{Project-owner decisions and bounded handoff}
+\label{sec:owner-decisions}
+
+On 2026-07-31 the project owner accepted this audit's \texttt{amend} verdict
+and approved the following bounded successor contract without numerical-
+algorithm broadening.
+
+\subsection{F009: coadd admission, embedding, and estimator}
+
+Admission is strict across product identity, unit, response, and
+full-precision WCS, and it occurs for the complete observation bundle before
+any coadd accumulator, WCS/grouping, membership, observation number, exposure,
+count, inventory, or provenance state is mutated.  The sole approved
+registration \(J_o\) is the current centered integer common-grid embedding.
+Coadd-minus-observation dimensions must be nonnegative and even; their halves
+are the exact row/column offsets, and world coordinates must agree after that
+offset.  General reprojection, interpolation, fractional registration, and
+implicit source recentering are not approved.  The geometric embedding is not
+signal centering: \(L_o=I\), with no implicit mean or null-mode subtraction.
+
+Equations~\eqref{eq:audit-coadd-num}--\eqref{eq:audit-coadd-map} remain the
+approved normalized weighted mean.  The actual \(u_{op}\) values are
+nonprecision gridding coefficients by default.  A precision interpretation
+requires \code{SCI-PTC-001} proof of the applicable marginal-precision and
+independence/covariance conditions; correlated GLS is deferred.  The coadd
+consumes the authoritative F010 normalization, policy, and validity states; it
+must not reconstruct them from \(w>0\), finite signal, exposure, or a legacy
+Boolean.  Explicitly invalid pixels are skipped without evaluating or zero-
+multiplying their values.  A normalization-retained, science-policy-rejected
+pixel may remain numerically contributable, but the resulting coadd science
+support and validity are independently evaluated and persisted.  Unexpected
+non-finite signal, coefficient, or required numerical companion on a declared
+contribution is a pre-mutation required failure.  No coadd precision,
+uncertainty, standardized-signal, S/N, or significance claim is authorized
+while covariance remains unresolved.
+
+\subsection{F010: persisted support and validity hierarchy}
+
+The approved raw/coadd contract persists and distinguishes eight facts:
+
+\begin{enumerate}[leftmargin=*,label=\arabic*.]
+\item geometric sample/detector hits;
+\item contributions actually admitted by the named estimator predicate;
+\item admitted coadd-observation count;
+\item upstream-eligible detector-seconds;
+\item retained detector-seconds;
+\item numerical-normalization support;
+\item science-policy support; and
+\item authoritative science validity.
+\end{enumerate}
+
+The authoritative mask is exactly Equation~\eqref{eq:audit-validity}:
+normalization support, science-policy support, finite signal and every declared
+required companion, and admitted product identity are all required.
+Normalization and science-policy thresholds are separate algorithms with
+separate roles.  Their algorithm/version identifiers, input coefficient and
+lifecycle stage, full-precision requested/realized cuts and thresholds,
+order-statistic and comparison conventions, finite/positive policy, and
+result counts are required realized provenance.  The current numerical roles
+remain the softer \code{coverage_cut/10} normalization floor and the full
+\code{coverage_cut} science-policy threshold; this decision does not authorize
+a new quantile, ratio, or comparison.
+
+\code{coverage_I} is retained solely as a documented, bitwise compatibility
+alias for retained detector-seconds.  It is not inverse variance, wall-clock
+time, support, confidence, or validity.  \code{coverage_bool_I} is deprecated
+as a validity authority; if retained, its exact compatibility relationship to
+science-policy support must be declared and tested.  The canonical science-
+valid product remains separate.  Every downstream operator must preserve raw
+science validity and raw-parent identity independently from its operator-local
+numerical support, window, response, covariance, and output validity.
+
+{\raggedright The exact bounded repair and fresh re-audit instructions are in
+\code{doc/audits/packages/SCI-MAP-001_BOUNDED_REPAIR_REAUDIT_HANDOFF_2026-07-31.md}.
+That handoff proposes serialization names but does not treat those engineering
+spellings as additional owner decisions.  It prohibits NOI, FLT, source,
+Beammap, and fruit-loop estimator changes, general registration, GLS, and
+repair on this audit branch.\par}
+
+\subsection{Finding disposition}
+
+{\raggedright F009 and F010 retain their stable IDs, P1 severity, owner-decision basis, and
+high confidence.  Their policy choices are resolved, so the scientific
+contract is now \texttt{approved}; their status is
+\texttt{addressed\_pending\_reaudit}, not \texttt{closed}, until a separate
+repair implements the accepted choices, the named fixtures/provenance gates
+pass, and a fresh auditor accepts the exact repair SHA.  F001--F008 and
+F011--F013 remain open.  Implementation, validation, production, verdict, and
+re-audit status otherwise do not change.\par}
 
 \section{Consumer matrix and authorization}
 
@@ -1175,7 +1340,8 @@ regression evidence, not this contract.  No complete
 
 \section{Findings by controlled class}
 
-Every finding is open.  ``Observed'' means directly present in source or
+Eleven findings remain open; F009/F010 are
+\code{addressed_pending_reaudit}.  ``Observed'' means directly present in source or
 artifacts; ``derived'' means the consequence follows from the displayed
 operator.  P0 follows the framework definition of correctness,
 data-corruption, or invalid-success risk; it is not a claim about observed
@@ -1208,17 +1374,18 @@ The exact predicate \(\neg(w<t)\) marks zero-weight pixels valid at the default
 by a separate support floor.  The cross-audit guard-band result demonstrates
 the downstream cost of lacking an authoritative raw-valid handoff, but does not
 prove that this predicate caused the reported pixel or that raw bytes regressed.
-Owner: map/product implementation.  Gate: approve distinct
-exposure/retained-support/science-validity definitions; implement finite
-positive selection; pass zero/negative/NaN/infinity and positive-threshold FITS
-round trips; re-audit direct consumers in their owning packages.\\
+Owner: map/product implementation.  Gate: implement the approved distinct
+exposure/support/science-validity definitions and finite-positive selection;
+pass zero/negative/NaN/infinity and positive-threshold FITS round trips;
+re-audit direct consumers in their owning packages.\\
 \code{SCI-MAP-001-F003} & P0 & observed + derived; high &
 \textbf{Coadd WCS and map identity are not admitted fail-closed.}  Shape-centered
 slot accumulation can silently mix different source centers or map identities;
 the last observation can determine output WCS/labels.  Owner: coadd
-implementation.  Gate: immutable common identity and WCS comparison or an
-approved reprojection \(J\), rejection before mutation, mismatched-order/center
-fixtures, all-array two-observation proof, and re-audit.\\
+implementation.  Gate: immutable full-precision common identity/WCS admission
+with only centered integer embedding \(J\), rejection before mutation,
+mismatched-order/center/odd-offset fixtures, all-array two-observation proof,
+and re-audit.\\
 \code{SCI-MAP-001-F004} & P0 & observed + derived; high &
 \textbf{Naive coadd noise/product handling does not realize one publishable
 signal operator.}  Noise enters the coadd before the per-observation support
@@ -1226,8 +1393,8 @@ floor; signal and weight enter after it.  Moreover, naive+coadd suppresses the
 observation noise cube, so requesting empirical products leaves required
 formal-weight/noise-variance slots empty and raw observation output throws
 before coadd accumulation.  Owner: map/noise boundary implementation.  Gate:
-one realized \(B\) for signal/kernel/noise or an explicitly different approved
-estimator; a supported publishable product policy; the two-observation masked
+one accepted realized \(B\) for signal/kernel/noise, without a new estimator;
+a supported publishable product policy; the two-observation masked
 fixture and empirical covariance tests; then \code{SCI-NOI-001/002} and a fresh
 re-audit must accept the boundary.\\
 \code{SCI-MAP-001-F005} & P0 & observed + derived; high &
@@ -1259,9 +1426,9 @@ assigns inverse-squared signal units and inverse-variance meaning;
 \code{weight_I} may also be one globally empirical-scaled version while
 \code{weight_formal_I} is only a conditional snapshot.  No
 cross-pixel/cross-observation covariance or explicit unavailable state exists.
-Owner: scientific owner with PTC/NOI owners.  Gate: approve conditional weight
-types and covariance representation/omission; align BUNIT/TYPE/description;
-pass direct \(AC_nA^T\), coadd, and consumer tests.\\
+Owner: scientific owner with PTC/NOI owners.  Gate: apply the approved
+nonprecision-default and conditional weight/covariance types; align
+BUNIT/TYPE/description; pass direct \(AC_nA^T\), coadd, and consumer tests.\\
 \code{SCI-MAP-001-F007} & P1 & observed + derived; high &
 \textbf{Response, hits, exposure, support, and product metadata are incomplete.}
 Kernel is a tracer without operator/template identity; coverage is
@@ -1272,9 +1439,9 @@ computability are not separate persisted facts;
 detector grouping omits coverage, persisted support, and standardized/SNR
 planes without a bundle-level absence declaration; the registry calls
 \code{ESTTYPE} authoritative while code writes \code{TYPE}.
-Owner: scientific/product owner.  Gate: approve and version the complete bundle,
-including a dedicated validity product or exact reconstructible conjunction;
-make absence explicit, align registry/writer, and pass injection plus FITS
+Owner: scientific/product owner.  Gate: version and persist the approved
+complete bundle, including dedicated support and validity products; make
+absence explicit, align registry/writer, and pass injection plus FITS
 round-trip gates.\\
 \code{SCI-MAP-001-F008} & P1 & observed, high &
 \textbf{Requested/effective/observation-resolved/realized provenance cannot
@@ -1292,7 +1459,7 @@ returned sidecars.\\
 \bottomrule
 \end{longtable}
 
-\subsection{Scientific-policy decisions}
+\subsection{Scientific-policy decisions addressed pending re-audit}
 
 \begin{longtable}{L{0.20\linewidth}L{0.06\linewidth}L{0.15\linewidth}L{0.49\linewidth}}
 \toprule
@@ -1304,26 +1471,29 @@ ID & Pri. & Basis/conf. & Decision, owner, and closure gate\\
 \midrule
 \endhead
 \code{SCI-MAP-001-F009} & P1 & owner decision, high &
-\textbf{Choose coadd admission/registration and the estimator as two
-decisions.}  First decide identity admission, response/unit compatibility, and
-whether \(J_o\) is identity or an approved registration with covariance
-transport.  Then, on that chosen common frame, select a normalized mean with
-declared nonprecision gridding coefficients and no precision claim, an
-independent-marginal-precision mean, or correlated GLS.  Specify centering,
-cross-observation covariance, and failure behavior for the selected pair.
-Owner: scientific owner.  Gate: signed decision selecting equations and exact
-consumer restrictions before repair; corresponding correlated/registered
-fixtures and re-audit.\\
+\textbf{Addressed pending re-audit.}  The owner adopted strict pre-mutation
+identity/unit/response/full-precision-WCS admission; only centered integer
+common-grid embedding \(J_o\); signal centering \(L_o=I\); the normalized mean
+with nonprecision gridding coefficients; explicit invalid-pixel exclusion; and
+required failure for unexpected non-finite valid inputs.  Precision remains
+conditional on \code{SCI-PTC-001}; correlated GLS, general registration, and
+coadd significance are deferred/prohibited.  Owner: scientific owner.
+Remaining gate: implement atomically on a separate repair branch; pass
+identity/WCS/finite/unequal-coefficient/no-centering and unchanged-compatible-
+control fixtures; fresh exact-SHA re-audit.\\
 \code{SCI-MAP-001-F010} & P1 & owner decision, high &
-\textbf{Choose the exposure/hits/support/validity hierarchy.}  Decide whether
-coverage is raw eligible detector-seconds or only retained-support exposure,
-which hits products exist, the two threshold roles, and what authoritative
-validity means.  Keep the raw scientific state
-(invalid, retained-low-confidence, science-valid) separate from each
-downstream operator's numerical-computability Boolean.  Owner: scientific and product owners with
-\code{SCI-VAL-001}.  Gate: signed definitions, versioned product names and
-units, exact edge/zero-support behavior, dedicated masks or an exact
-reconstructible conjunction, and downstream migration/restriction.\\
+\textbf{Addressed pending re-audit.}  The owner adopted distinct persisted
+geometric hits, contributing hits, coadd-observation count, upstream-eligible
+and retained exposure, normalization and science-policy support, and
+authoritative science validity.  Validity requires both supports, finite
+signal/required companions, and admitted identity.  Threshold algorithms and
+full-precision realized provenance remain separate; \code{coverage_I} is only
+a retained-exposure compatibility alias; \code{coverage_bool_I} is deprecated
+as validity authority; downstream raw validity stays separate from local
+computability.  Owner: scientific/product owner with \code{SCI-VAL-001}.
+Remaining gate: implement/version products, units, aliases, provenance,
+edge/non-finite behavior, and consumer interface; pass exact reconstruction
+and round-trip fixtures; fresh exact-SHA re-audit.\\
 \bottomrule
 \end{longtable}
 
@@ -1424,8 +1594,11 @@ observation, coadd, or feedback bundle is newly authorized as valid.\\
 \section{Verdict and production disposition}
 
 \begin{description}[style=nextline]
-\item[Contract status] \texttt{proposed}.  The independent bytes are frozen;
-scientific-owner approval and F009/F010 decisions remain outstanding.
+\item[Contract status] \texttt{approved}.  The independent bytes remain frozen;
+on 2026-07-31 the project owner accepted the \texttt{amend} verdict and adopted
+the bounded F009/F010 specializations in Section~\ref{sec:owner-decisions}.
+Approval does not imply implementation conformance, completed evidence, or
+production expansion.
 \item[Implementation status] \texttt{nonconformant} at
 \AuditGoverningSHA, due to F001--F005.  This status is independent of
 whether an accepted production profile happens not to activate every path.
@@ -1447,8 +1620,10 @@ conditional weight semantics.\par}
 \item[Restricted consumers] Noise, JINC shared vocabulary, filtering, sources,
 Pointing/OOF, Beammap, diagnostics, and fruit loops remain restricted exactly as
 listed in the consumer matrix.
-\item[Fail-closed uses] Naive detector+OMP; any coadd without proven common
-identity/WCS; raw \code{coverage_bool_I}, \code{weight_I}, or
+\item[Fail-closed uses] Naive detector+OMP; any coadd without strict admitted
+identity/unit/response/full-precision WCS and centered integer embedding;
+general reprojection/interpolation, implicit coadd signal centering, or GLS;
+raw \code{coverage_bool_I}, \code{weight_I}, or
 \code{coverage_I} alone as authoritative science validity; naive-coadd noise
 for empirical calibration; naive+coadd with empirical products as a successful
 publishable bundle; new inverse-variance/significance/full-covariance claims;
@@ -1457,10 +1632,12 @@ direct finite-realization filtered pixelwise S/N as calibrated significance or
 eligibility; integration/production use of the b294802 candidate; new response-corrected
 photometry/astrometry; or fruit-loop eligibility, amplitude, confidence,
 support, or gain from those filtered products.
-\item[Repair and re-audit trigger] Scientific owner first resolves F009/F010.
-A separate repair branch addresses only accepted changes.  A fresh auditor then
-assesses the exact repair SHA, all F001--F013 gates, dependencies, and returned
-same-SHA evidence.  \code{re_audit_status=required}.
+\item[Repair and re-audit trigger] F009/F010 policy choices are resolved and
+recorded as \code{addressed_pending_reaudit}.  A separate repair branch may
+address only the accepted bounded changes in the dated handoff; this audit
+branch remains documentation-only.  A fresh auditor then assesses the exact
+repair SHA, all F001--F013 gates, dependencies, and returned same-SHA evidence.
+\code{re_audit_status=required}; no repair or re-audit is yet in progress.
 \end{description}
 
 \section{Machine-readable ledger proposal}
@@ -1480,7 +1657,7 @@ than self-embedded, so the coordinator substitutes the two marked values exactly
   governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
   audit_branch: codex/audit-sci-map-001
   audit_commit: COORDINATOR_SET_FROM_RETURNED_FINAL_AUDIT_COMMIT
-  audit_parent_sha: 0cfdba5ed08c0ad6c491afcd56972a31d68cfabf
+  audit_parent_sha: 681aeec99c4d1c4762ecb8c4dae63c8599638678
   audit_artifact_at_commit: >-
     doc/audits/packages/SCI-MAP-001_SCIENTIFIC_CONTRACT_AUDIT.tex
   final_audit_artifact_sha256: >-
@@ -1489,6 +1666,10 @@ than self-embedded, so the coordinator substitutes the two marked values exactly
     commit: 0cfdba5ed08c0ad6c491afcd56972a31d68cfabf
     artifact_sha256: >-
       6a3703a1f86be060c034f5867c136d824a11a18a4fc59bf107270a393f7116f3
+  raw_validity_amendment:
+    commit: 681aeec99c4d1c4762ecb8c4dae63c8599638678
+    artifact_sha256: >-
+      7d133f52f517a2262eeebca8fe62f7a6fbc3ed52096870220cdb84bdaf33cb44
   independent_derivation:
     status: independent_draft_frozen
     path: doc/audits/packages/SCI-MAP-001_INDEPENDENT_CORE.tex
@@ -1496,11 +1677,23 @@ than self-embedded, so the coordinator substitutes the two marked values exactly
     freeze_commit: c28f18ed089657dae278caba2d6d6d65c7ec72f4
     freeze_timestamp_utc: 2026-07-31T17:38:43Z
     first_source_inspection_utc: 2026-07-31T17:39:22Z
-  contract_status: proposed
+  contract_status: approved
   implementation_status: nonconformant
   validation_status: in_progress
   production_status: existing_use_only
   verdict: amend
+  contract_approval:
+    authority: project_owner
+    date: 2026-07-31
+    scope: bounded_F009_F010_specialization
+    effect: >-
+      Approves the centered-integer nonprecision coadd and explicit raw-validity
+      successor contract; does not approve the governing implementation,
+      complete validation, production expansion, or a precision claim.
+  repair_handoff:
+    authorization: bounded_proposal_only_no_audit_branch_repair
+    path: >-
+      doc/audits/packages/SCI-MAP-001_BOUNDED_REPAIR_REAUDIT_HANDOFF_2026-07-31.md
   implementation_assessment:
     governing_source: nonconformant
     existing_profile_note: >-
@@ -1533,8 +1726,8 @@ than self-embedded, so the coordinator substitutes the two marked values exactly
         allowed states, differs from normalization support, and is not a
         complete raw science-validity product.
       closure_gate: >-
-        Approve distinct exposure/retained-support/science-validity semantics,
-        implement finite-positive selection, and pass threshold/non-finite FITS
+        Implement the approved distinct exposure/support/science-validity
+        semantics and finite-positive selection; pass threshold/non-finite FITS
         round trips plus consumer re-audit in owning packages.
     - id: SCI-MAP-001-F003
       class: implementation_defect
@@ -1547,8 +1740,9 @@ than self-embedded, so the coordinator substitutes the two marked values exactly
         Coadd does not admit common WCS and map identity before mutation and can
         label output from the last observation.
       closure_gate: >-
-        Implement immutable identity/WCS admission or approved registration,
-        reject before mutation, pass mismatch/all-array fixtures, and re-audit.
+        Implement immutable full-precision identity/WCS admission with only
+        centered integer embedding, reject before mutation, pass
+        mismatch/all-array fixtures, and re-audit.
     - id: SCI-MAP-001-F004
       class: implementation_defect
       severity: P0
@@ -1588,8 +1782,9 @@ than self-embedded, so the coordinator substitutes the two marked values exactly
         described as inverse variance without approved PTC/NOI covariance
         claims.
       closure_gate: >-
-        Approve conditional weight/covariance types, align metadata, and pass
-        direct propagated-covariance, coadd, and consumer tests.
+        Apply the approved nonprecision-default and conditional
+        weight/covariance types, align metadata, and pass direct
+        propagated-covariance, coadd, and consumer tests.
     - id: SCI-MAP-001-F007
       class: contract_gap
       severity: P1
@@ -1602,9 +1797,9 @@ than self-embedded, so the coordinator substitutes the two marked values exactly
         operator-computability, grouping absences, and estimator metadata are
         incomplete or inconsistent.
       closure_gate: >-
-        Approve/version the complete bundle with dedicated masks or an exact
-        reconstructible conjunction, make absences explicit, align registry
-        and writer, and pass injection plus FITS round-trip gates.
+        Version and persist the approved complete bundle with dedicated support
+        and validity products, make absences explicit, align registry and
+        writer, and pass injection plus FITS round-trip gates.
     - id: SCI-MAP-001-F008
       class: contract_gap
       severity: P1
@@ -1620,33 +1815,6 @@ than self-embedded, so the coordinator substitutes the two marked values exactly
         Add versioned one-way lifecycle state for every named fact, enforce
         physical cardinality, pass exact serialization, and return same-SHA
         sidecars.
-    - id: SCI-MAP-001-F009
-      class: scientific_policy_decision
-      severity: P1
-      evidence_basis: owner_decision
-      confidence: high
-      status: open
-      owner: scientific_owner
-      summary: >-
-        Identity admission/registration and the subsequent mean, precision
-        mean, or GLS estimator require separate owner decisions.
-      closure_gate: >-
-        Record a signed equation-level choice, covariance/centering/failure
-        policy, consumer restrictions, corresponding fixtures, and re-audit.
-    - id: SCI-MAP-001-F010
-      class: scientific_policy_decision
-      severity: P1
-      evidence_basis: owner_decision
-      confidence: high
-      status: open
-      owner: scientific_product_owner
-      summary: >-
-        The exposure, hits, normalization/retained support, science-validity,
-        and operator-computability hierarchy is not scientifically approved.
-      closure_gate: >-
-        Sign the two-axis definitions and versioned product names/units, fix
-        exact edge/zero-support behavior and persisted-versus-reconstructed
-        validity, and migrate or restrict consumers.
     - id: SCI-MAP-001-F011
       class: evidence_gap
       severity: P1
@@ -1688,17 +1856,68 @@ than self-embedded, so the coordinator substitutes the two marked values exactly
       closure_gate: >-
         Audit each dependency, pass its named interface test, propagate its
         restrictions, and re-audit every conditional map/coadd conclusion.
-  unresolved_scientific_decisions:
-    - choose identity admission and identity/approved-registration transform
-    - choose, after registration, nonprecision mean, precision mean, or GLS
-    - define coadd centering, covariance, response, and failure policy
-    - define coverage, hits, normalization/retained support, science validity,
-      operator computability, thresholds, and product names
+  addressed_findings:
+    - id: SCI-MAP-001-F009
+      class: scientific_policy_decision
+      severity: P1
+      evidence_basis: owner_decision
+      confidence: high
+      status: addressed_pending_reaudit
+      owner: scientific_owner
+      decision_date: 2026-07-31
+      decision: >-
+        Adopt strict identity, unit, response, and full-precision WCS admission
+        before mutation with only the current centered integer common-grid
+        embedding. Set signal centering to identity; prohibit general
+        reprojection/interpolation. Retain the normalized weighted mean and
+        treat its weights as nonprecision gridding coefficients by default.
+        Precision requires SCI-PTC-001 independence/covariance proof;
+        correlated GLS is deferred. Exclude explicitly invalid pixels and fail
+        on unexpected non-finite valid inputs. Authorize no coadd precision or
+        significance claim while covariance is unresolved.
+      summary: >-
+        Coadd admission, registration, centering, estimator, coefficient,
+        finite-input, covariance, and consumer policy are owner-approved.
+      closure_gate: >-
+        Implement the decision atomically on a separate repair branch; pass
+        identity/WCS/response/unit, centered-embedding, invalid/non-finite,
+        unequal-coefficient, no-centering, unchanged-compatible-control, and
+        provenance fixtures; fresh exact-repair-SHA re-audit.
+    - id: SCI-MAP-001-F010
+      class: scientific_policy_decision
+      severity: P1
+      evidence_basis: owner_decision
+      confidence: high
+      status: addressed_pending_reaudit
+      owner: scientific_product_owner
+      decision_date: 2026-07-31
+      decision: >-
+        Persist and distinguish geometric hits, contributing hits, coadd
+        observation count, upstream-eligible exposure, retained exposure,
+        normalization support, science-policy support, and authoritative
+        science validity. Require numerical support, science-policy support,
+        finite signal and required companions, and admitted product identity
+        for validity. Keep normalization and science-policy thresholds separate
+        with versioned algorithms and full-precision realized provenance.
+        Retain coverage_I only as a retained-exposure compatibility alias;
+        deprecate coverage_bool_I as validity authority; require downstream
+        raw science validity to remain separate from operator-local support.
+      summary: >-
+        The exposure, hits, support, validity, alias, provenance, and downstream
+        separation hierarchy is owner-approved.
+      closure_gate: >-
+        Implement/version every product and exact absence rule, alias,
+        deprecation, companion/identity conjunction, threshold/provenance
+        field, and downstream interface; pass exact persisted reconstruction,
+        boundary, full-precision round-trip, and fresh re-audit gates.
+  unresolved_scientific_decisions: []
   local_evidence:
     - frozen independent core and exact SHA-256/commit/timestamps
     - successful independent-core TeX compile and all-page render inspection
     - exact governing-source/equation/product/consumer trace
     - bounded hashed b294802 Point cross-audit characterization
+    - project-owner F009/F010 decision dated 2026-07-31
+    - bounded repair and re-audit handoff with no audit-branch repair
   requested_unity_evidence:
     - status: outstanding
       request_id: SCI-MAP-001-UNITY-001
@@ -1772,7 +1991,9 @@ than self-embedded, so the coordinator substitutes the two marked values exactly
       - formal-standardized amplitude only with explicit conditional semantics
     fail_closed_uses:
       - naive detector-grouped OpenMP mapmaking
-      - coadd without proven common identity and WCS or approved registration
+      - coadd without strict admitted identity, unit, response, and WCS
+      - coadd reprojection, interpolation, fractional registration, implicit
+        signal centering, or GLS
       - raw coverage_bool_I, weight_I, or coverage_I alone as science validity
       - naive-coadd noise for empirical calibration
       - naive coadd plus empirical products as a successful published bundle
@@ -1793,10 +2014,11 @@ The patch preserves the canonical sequence shape for
 \code{requested_unity_evidence}, supplies a summary and closure gate for every
 finding, records one scope-limited cross-audit characterization plus its
 downstream handoffs, and preserves the four-profile allowlist and fail-closed
-restrictions in \code{downstream_policy}.  No finding status, canonical scope,
-upstream dependency, or owning-package boundary changes.  As a merge patch, it
-leaves all unlisted canonical fields intact; the coordinator must not apply it
-as a whole-record replacement.
+restrictions in \code{downstream_policy}.  It records owner approval, moves
+only F009/F010 from open to \code{addressed_pending_reaudit}, and leaves every
+other finding, canonical scope, upstream dependency, and owning-package
+boundary unchanged.  As a merge patch, it leaves all unlisted canonical fields
+intact; the coordinator must not apply it as a whole-record replacement.
 
 \appendix
 \section{Launch worktree and branch inventory}
@@ -2072,8 +2294,8 @@ including zero, NaN, and both infinities.  The signal/exposure intersection
 \(F\) remains solely the independently recomputed blank-analysis domain.
 Neither \(F\) nor \(H_{\rm intended}\) is silently promoted to approved
 Equation~\eqref{eq:audit-validity} science validity; they are diagnostics that
-characterize the open F010 decision and the reconstruction evidence needed to
-close it.
+characterize the governing implementation and the reconstruction evidence
+needed to verify the addressed F010 decision after repair.
 
 For each P and S-E observation map/noise pair and each S-C coadd map/noise pair,
 first treat every origin-zero C-order image pixel \(p\in\Omega\).  If all 64
@@ -2956,7 +3178,7 @@ credited toward \code{SCI-MAP-001-UNITY-001}; the separate
 
 \section{Compile and review evidence inventory}
 
-Cached Tectonic produced a warning-free 52-page letter audit PDF; the unchanged
+Cached Tectonic produced a warning-free 57-page letter audit PDF; the unchanged
 frozen core remains a warning-free 20-page letter PDF.  All amended audit pages
 passed visual inspection after rendering; the frozen core hash remained
 \AuditCoreSHA.  PDFs are non-authoritative validation artifacts.
