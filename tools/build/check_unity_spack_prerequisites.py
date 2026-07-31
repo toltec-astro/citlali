@@ -102,6 +102,7 @@ def inspect_prerequisites(
     )
     check_version("gcc", Path("/usr/bin/gcc"), EXPECTED_GCC_VERSION)
     check_version("g++", Path("/usr/bin/g++"), EXPECTED_GCC_VERSION)
+    check_version("gfortran", Path("/usr/bin/gfortran"), EXPECTED_GCC_VERSION)
     check_version("cmake", Path(shutil.which("cmake") or ""), MINIMUM_CMAKE, minimum=True)
     check_version("make", Path(shutil.which("make") or ""), MINIMUM_MAKE, minimum=True)
     check_version("python", python, MINIMUM_PYTHON, minimum=True)

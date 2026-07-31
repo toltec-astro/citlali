@@ -183,10 +183,12 @@ therefore uses an isolated Spack 1.2.2 checkout and install tree in user-owned
 space. It does not modify the cluster module tree or the existing Citlali
 build.
 
-The measured host compiler is Ubuntu GCC 13.3.0. This profile treats GCC 13 as
-a new Unity acceptance lane; it does not relabel it as part of the upstream
-GCC 14/LLVM 20 matrix. All compiled tests and real reductions remain required
-evidence.
+The measured host compiler is Ubuntu GCC 13.3.0, including matching GCC, G++,
+and GFortran frontends. GFortran is registered because OpenBLAS requires a
+Fortran compiler internally even when its public Fortran interface is
+disabled. This profile treats GCC 13 as a new Unity acceptance lane; it does
+not relabel it as part of the upstream GCC 14/LLVM 20 matrix. All compiled
+tests and real reductions remain required evidence.
 
 Bootstrap Spack once in the sibling-checkout workspace:
 

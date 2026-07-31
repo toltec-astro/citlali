@@ -111,12 +111,14 @@ environment, point smoke run, and same-SHA four-mode validation matrix remain
 open. The legacy build therefore remains the operational fallback.
 
 The first user-supplied Unity inventory is now recorded operational evidence:
-Ubuntu 24.04 x86_64 exposes GCC 13.3 and Clang 18.1, CMake 3.30 through the
+Ubuntu 24.04 x86_64 exposes GCC/G++/GFortran 13.3 and Clang 18.1, CMake 3.30 through the
 TolTECA environment, Python 3.12, and no user-callable Spack or Ninja command.
 Cluster modules are generated under Spack paths but do not provide the package
 manager itself. A versioned `unity-gcc13` profile now uses system GCC/libgomp,
 Unix Makefiles, and a user-owned Spack 1.2.2 checkout while source-building the
-declared dependency graph. This is an acceptance candidate, not a claim that
+declared dependency graph. Matching GFortran is registered for OpenBLAS's
+internal build requirement without enabling public Fortran interfaces. This
+is an acceptance candidate, not a claim that
 GCC 13 belongs to the upstream GCC 14/LLVM 20 matrix. Concretization, install,
 compiled tests, package-consumer acceptance, and reduction validation remain
 pending on Unity.

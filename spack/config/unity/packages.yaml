@@ -1,12 +1,13 @@
 packages:
   gcc:
     externals:
-      - spec: gcc@13.3.0 languages:='c,c++'
+      - spec: gcc@13.3.0 languages:='c,c++,fortran'
         prefix: /usr
         extra_attributes:
           compilers:
             c: /usr/bin/gcc
             cxx: /usr/bin/g++
+            fortran: /usr/bin/gfortran
     buildable: false
 
   c:
