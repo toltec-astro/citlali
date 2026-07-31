@@ -45,8 +45,13 @@ new exact commits before importing subsequent upstream work.
   LLVM 20.1.8 and Spack 1.2.2. Its source-built Tula closure passes 14 package
   tests and an independent installed consumer. Local containers remain
   optional.
-- Resolve the remaining OpenMP runtime edge and extend the proven foundation
-  through Kidscpp and the full refactored Citlali application.
+- The native Kidscpp environment now includes an explicit Spack
+  `llvm-openmp@20.1.8` edge. Kidscpp installs from source, its independent
+  installed consumer passes, and a separate reader consumer opens a current
+  raw TolTEC file and reads a two-sample I/Q slice. The historical upstream
+  real-data fixture still needs an accessible immutable manifest.
+- Extend the proven foundation through the full refactored Citlali
+  application.
 - Identify an accessible real-data fixture and publish an immutable manifest.
 - Add a user-owned Unity environment based on user-supplied
   Spack/compiler/module facts.

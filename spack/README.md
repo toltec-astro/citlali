@@ -87,3 +87,35 @@ CMake package-consumer path. OpenMP remains a separate required gate because
 Homebrew LLVM 20 does not bundle `libomp`, and the current Tula perflibs recipe
 does not declare the separate LLVM OpenMP runtime as a package dependency on
 macOS.
+
+## Kidscpp Environment
+
+The next environment extends the foundation with Kidscpp and OpenMP:
+
+```console
+spack -e spack/environments/kidscpp-macos-llvm20 concretize --force
+spack -e spack/environments/kidscpp-macos-llvm20 \
+  install --show-log-on-error
+$HOME/tolteca/bin/python tools/build/test_spack_kidscpp.py \
+  --require-real-data --fixture /path/to/raw-timestream.nc
+```
+
+The repository-local `tula-perflibs` recipe adds the missing macOS dependency
+on exact `llvm-openmp@20.1.8`. It does not fork the Tula CMake target or change
+its behavior. Remove the override once the upstream recipe declares the
+runtime required by `find_package(OpenMP)` on macOS.
+
+The acceptance tool first builds the Kidscpp repository's independent
+installed-package consumer. With `--require-real-data`, it also builds a
+separate reader consumer, records the fixture SHA-256, opens the supplied raw
+TolTEC NetCDF file, and reads a two-sample I/Q slice. Omitting the fixture is
+useful for a fast API check but is not a complete Kidscpp gate.
+
+The upstream native test suite currently assumes a historical file under
+`TOLTECA_TEST_DATA_ROOT`. Its CMake configuration exports an empty environment
+value when that root is unavailable, so the test does not skip and fails on
+the missing path; the invalid-stride companion can then pass for the wrong
+reason. The local real-reader consumer is the current macOS data-path evidence
+until that historical fixture has an accessible immutable manifest. Solver,
+Welch, and synthetic metadata tests compile and run under the same LLVM 20 and
+OpenMP graph.

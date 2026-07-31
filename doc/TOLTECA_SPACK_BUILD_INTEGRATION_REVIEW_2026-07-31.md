@@ -121,6 +121,14 @@ On the review Mac:
 - all 14 enabled Tula root tests pass under LLVM 20; and
 - an independent installed Tula consumer configures, builds, and passes CTest
   against the concrete dependency graph.
+- a concrete Kidscpp environment source-builds with an explicit
+  `llvm-openmp@20.1.8` dependency supplied by a bounded local
+  `tula-perflibs` recipe adaptation;
+- the independent installed Kidscpp consumer configures, links, and passes
+  CTest against that installed graph; and
+- a second independent reader consumer opens a current raw TolTEC pointing
+  file, reads a two-sample I/Q slice, and records fixture SHA-256
+  `cc44075693ab19161eaac390a84b8bc82ab3cf18bdbff7b76ff8d4c02e531edc`.
 
 The native reproduction exposed two portability defects that the reported
 Ubuntu external-package lane did not exercise. NetCDF-C's CMake build can
@@ -138,10 +146,17 @@ with a focused regression test. Those bounded changes were reviewed and are
 the revisions now recorded above. Kidscpp and upstream Citlali did not move.
 
 The complete production matrix was not independently reproduced locally. The
-four-sibling foundation workflow is now reproduced from a native macOS
-environment, but it deliberately stops below Kidscpp and Citlali and does not
-yet exercise OpenMP. The repositories do not identify an accessible immutable
-revision of `tolteca_test_data`. Docker is not a prerequisite for acceptance.
+four-sibling workflow is now reproduced through Tula, OpenMP, and Kidscpp, but
+it deliberately stops below the full refactored Citlali application. The
+repositories do not identify an accessible immutable revision of
+`tolteca_test_data`. A native Kidscpp package-test rebuild therefore ran six
+of seven discovered tests successfully but failed the historical real-file
+test at its missing path. Because an empty CMake-provided
+`TOLTECA_TEST_DATA_ROOT` is treated as present, that test does not skip and its
+invalid-stride companion can pass for the wrong reason. This limitation is
+recorded rather than counted as a green package suite. The separate current-
+file reader gate above is valid data-path evidence, not a substitute for an
+immutable shared fixture. Docker is not a prerequisite for acceptance.
 
 A fresh native Spack concretization also fails because the Citlali recipe pins
 `cfitsio@4.3.1`, while the current builtin repository does not provide that
@@ -156,11 +171,11 @@ by a portable concrete graph.
 | --- | --- | --- |
 | Dependency ownership | Pass | Spack owns one concrete graph; Tula CMake is CMake-only. |
 | First-party package identity | Pass in development | Tula CMake, Tula, Kidscpp, and Citlali are explicit decentralized packages. |
-| Installed package consumers | Pass for upstream slice | Tula, Kidscpp, and Citlali installed consumers are reported in both compiler lanes. |
+| Installed package consumers | Pass through local Kidscpp layer | Native Tula and Kidscpp installed consumers pass; upstream Citlali consumers remain reported evidence pending the full refactor port. |
 | NetCDF C++ propagation | Pass with bounded adapter | Source-built 4.3.1 lacks the pkg-config metadata required by upstream Tula; the local target adapter and installed consumer pass. |
-| Compiler matrix | Partial | GCC 14 and LLVM 20 pass in Ubuntu; native macOS and Unity profiles remain unmeasured. |
-| Native developer bootstrap | Partial, foundation passed | Exact LLVM 20/Spack host gate, source-built Tula closure, 14 root tests, and installed consumer pass; OpenMP, Kidscpp, and full Citlali remain. |
-| Real-data fixtures | Partial | Upstream reports real-data tests, but the large fixture has no accessible immutable manifest for collaborators. |
+| Compiler matrix | Partial | GCC 14 and LLVM 20 pass in Ubuntu, and native macOS LLVM 20 passes through Kidscpp; Unity remains unmeasured. |
+| Native developer bootstrap | Partial through Kidscpp | Exact LLVM 20/Spack host gate, source-built Tula closure, 14 root tests, explicit OpenMP runtime, Kidscpp install, and both Kidscpp consumers pass; full Citlali remains. |
+| Real-data fixtures | Partial | A current pointing file passes the independent reader gate with recorded SHA-256, but the shared historical fixture has no accessible immutable manifest. |
 | Release source identity | Fail | First-party recipes provide versions without immutable source URLs/checksums and rely on local `develop` paths. |
 | Portable lock | Planned | Local locks are intentionally ignored; no release environment lock exists. |
 | Full refactored application | Fail pending adaptation | Upstream Citlali has 42 headers and five compiled library sources, not the full refactor graph. |
@@ -240,8 +255,8 @@ changes are isolated and require product validation.
 
 ## Remaining Open Evidence
 
-1. Extend the proven native Mac foundation through OpenMP, Kidscpp, and full
-   Citlali.
+1. Extend the proven native Mac foundation through the full refactored
+   Citlali application.
 2. Identify the real-data fixture and publish an immutable manifest without
    requiring the large payload to live in Git.
 3. Demonstrate that exact dependencies such as `cfitsio@4.3.1` are either

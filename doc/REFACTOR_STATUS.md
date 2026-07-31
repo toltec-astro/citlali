@@ -75,8 +75,16 @@ Szip, and Zstandard edges after an undeclared Homebrew-header/Spack-library
 ABI mix was reproduced and eliminated. A bounded local NetCDF C++ target
 adapter is required because NetCDF C++ 4.3.1 installs neither the pkg-config
 metadata expected by the upstream Tula adapter nor a complete CMake target.
-This proves the Tula foundation, not the full application: a compatible
-OpenMP runtime edge, Kidscpp adaptation, and the refactored Citlali package and
+
+The native Kidscpp checkpoint is also complete. A bounded local
+`tula-perflibs` recipe declares exact `llvm-openmp@20.1.8`; Kidscpp installs
+from source, its independent installed consumer passes, and a separate reader
+consumer opens a current raw pointing file and reads a two-sample I/Q slice.
+The upstream historical real-file test remains fixture-gated and currently
+handles an empty fixture root incorrectly, so it is not counted as a complete
+native package-suite pass. An accessible immutable fixture manifest remains
+open. These checkpoints prove the dependency and Kidscpp package layers, not
+the full application: the refactored Citlali package, compatibility port, and
 CLI remain open.
 
 ## 2026-07-26 Conan 2 Build Review
