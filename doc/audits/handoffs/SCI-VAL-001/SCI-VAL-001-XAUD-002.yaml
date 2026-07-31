@@ -1,0 +1,119 @@
+format_version: 1
+id: SCI-VAL-001-XAUD-002
+created_date: 2026-07-31
+
+source:
+  package_id: SCI-MAP-001
+  role: auditor
+  audit_branch: codex/audit-sci-map-001
+  audit_commit: b9e1e9a9b2fe492c402d8c7b0cf7e5a36c136a53
+  governing_or_evidence_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+  finding_ids:
+    - SCI-MAP-001-F002
+    - SCI-MAP-001-F005
+    - SCI-MAP-001-F007
+    - SCI-MAP-001-F008
+    - SCI-MAP-001-F011
+    - SCI-MAP-001-F013
+
+target:
+  package_id: SCI-VAL-001
+
+priority: P0
+evidence_basis: observed
+review_phase: post_core_evidence
+arrival: before_dispatch
+status: submitted
+
+summary: >-
+  MAP source tracing found Boolean, threshold, non-finite, product,
+  provenance, and reconstruction defects and gaps relevant to the upstream
+  validity interface.
+claim: >-
+  At the audited governing SHA, the raw product bundle does not persist an
+  authoritative, exactly reconstructible science-valid region, and allowed
+  Boolean and non-finite states can disagree with the approved eligibility,
+  support, and validity distinctions.
+supports:
+  - >-
+    SCI-MAP-001-F002 records that coverage_bool_I uses the predicate
+    !(w < t), which admits zero at the default t=0 and also admits NaN and
+    positive infinity, while normalization uses a separate support floor.
+  - >-
+    SCI-MAP-001-F005 records that non-finite coordinates, kernels,
+    multiplicative masks, and coadd inputs can poison output because the
+    governing implementation lacks complete finite checks and explicit
+    valid-set selection.
+  - >-
+    SCI-MAP-001-F007 records that hits, the retained-low-confidence state,
+    normalization support, science-policy support, authoritative science
+    validity, and operator-local computability are absent or conflated in the
+    persisted product contract.
+  - >-
+    SCI-MAP-001-F008 records that provenance does not preserve both threshold
+    algorithms, coefficient stages, full-precision realized thresholds,
+    comparison and finite policies, required companions, bundle identity, or
+    the raw-parent product digest needed for exact reconstruction.
+  - >-
+    SCI-MAP-001-F011 records that end-to-end persisted pixel, finite-state,
+    threshold-boundary, cross-HDU identity, and validity/provenance round-trip
+    tests are absent; F013 leaves upstream eligibility and validity semantics
+    conditioned on SCI-VAL-001.
+  - >-
+    Related handoff SCI-MAP-001-XAUD-001 shows a downstream-computable
+    guard-band manifestation of the missing distinction between raw science
+    validity and operator-local numerical support.
+does_not_establish:
+  - a raw mapmaking numerical regression
+  - that the governing raw Boolean caused the reported guard-band pixel
+  - correctness or failure of any SCI-VAL-001 implementation, because none was inspected
+  - an upstream flag, replacement, eligibility, or missing-data policy
+  - a filtering, noise-realization, variance, response, source, or fruit-loop contract
+  - closure of any MAP finding, repaired science validity, or production authorization
+
+requested_actions:
+  - add_or_update_dependency
+  - add_or_update_finding
+  - add_interface_test
+  - restrict_consumer
+affected_target_findings: []
+related_handoffs:
+  - SCI-MAP-001-XAUD-001
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: completed-map-audit-source-trace
+    availability: repository_path
+    path: >-
+      doc/audits/packages/SCI-MAP-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: 6c8decef93f5607bc9e8dfc84e31aee67f45fa5c695fc80563c7e7064f78d556
+    note: >-
+      Exact findings F002, F005, F007, F008, F011, and F013 and their
+      limitations at governing source
+      9aae0e669384c5c0c0dda93debc194d6b8dac787. This evidence remains closed
+      until the SCI-VAL-001 independent core freezes.
+  - id: related-guard-band-handoff
+    availability: repository_path
+    path: >-
+      doc/audits/handoffs/SCI-MAP-001/SCI-MAP-001-XAUD-001.yaml
+    sha256: bc4d3c7b4ecf2ac21051d00e7bebd2ba910b6920ab8a5af63638b3cec3fbb206
+    note: >-
+      Canonical record at framework commit
+      fba342020e5c241fb06320e3c929d4c4bb050a2f. It is downstream consequence
+      evidence only and explicitly does not establish a raw regression or a
+      filtering contract.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: not_applicable
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

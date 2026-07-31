@@ -1,0 +1,104 @@
+format_version: 1
+id: SCI-PTC-001-XAUD-001
+created_date: 2026-07-31
+
+source:
+  package_id: SCI-MAP-001
+  role: auditor
+  audit_branch: codex/audit-sci-map-001
+  audit_commit: b9e1e9a9b2fe492c402d8c7b0cf7e5a36c136a53
+  governing_or_evidence_sha: b9e1e9a9b2fe492c402d8c7b0cf7e5a36c136a53
+  finding_ids:
+    - SCI-MAP-001-F009
+
+target:
+  package_id: SCI-PTC-001
+
+priority: P1
+evidence_basis: owner_decision
+review_phase: pre_core_authority
+arrival: before_dispatch
+status: submitted
+
+summary: >-
+  The approved MAP contract treats map and coadd weights as nonprecision
+  gridding coefficients unless PTC proves the conditions needed for a
+  precision interpretation.
+claim: >-
+  SCI-MAP-001 requires SCI-PTC-001 to identify the selected weighting or
+  covariance object, its normalization and lifecycle, and retained temporal,
+  detector, pixel, and cross-observation correlations before a map or coadd
+  denominator may be interpreted as inverse variance.
+supports:
+  - >-
+    The ordinary map denominator D_p is a normalization or gridding weight by
+    default. It is marginal precision only for one-hot projection, independent
+    selected samples, and w_td equal to sigma_td^-2.
+  - >-
+    The coadd coefficient u_op is a nonprecision gridding coefficient by
+    default. Q_p^c is inverse variance only when registered observation errors
+    are mutually independent and u_op equals the applicable marginal
+    precision.
+  - >-
+    Precision interpretation requires SCI-PTC-001 proof of the applicable
+    weighting, normalization, marginal-precision, independence, and covariance
+    conditions. Correlated GLS is deferred, and no coadd precision or
+    significance claim is authorized while covariance is unresolved.
+does_not_establish:
+  - a PTC estimator, correlation model, detector-weight construction, or normalization
+  - that any governing map or coadd weight is an inverse variance
+  - that map, pixel, detector, temporal, or cross-observation covariance is diagonal
+  - an approved GLS implementation, covariance approximation, uncertainty, or significance claim
+
+requested_actions:
+  - add_or_update_dependency
+  - add_interface_test
+affected_target_findings: []
+related_handoffs: []
+
+authority_for_pre_core_review:
+  authority_kind: approved_contract_owner_decision
+  contract_status: approved
+  approval_date: 2026-07-31
+  owner_decision_commit: b9e1e9a9b2fe492c402d8c7b0cf7e5a36c136a53
+  approved_contract: >-
+    Map and coadd weights are nonprecision gridding coefficients by default;
+    precision requires SCI-PTC-001 proof of the applicable weighting,
+    normalization, marginal-precision, independence, and covariance
+    conditions, while correlated GLS remains deferred.
+  artifact_path: >-
+    doc/audits/packages/SCI-MAP-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+  artifact_sha256: 6c8decef93f5607bc9e8dfc84e31aee67f45fa5c695fc80563c7e7064f78d556
+  relevant_sections:
+    - >-
+      Ordinary naive normalized gridding, equations
+      eq:audit-naive-num through eq:audit-formal-weight
+    - >-
+      Observation coaddition, equations eq:audit-coadd-num,
+      eq:audit-coadd-map, eq:audit-coadd-cov, and
+      eq:audit-coadd-precision
+    - Project-owner decisions and bounded handoff / F009
+
+evidence:
+  - id: completed-map-audit-owner-decision
+    availability: repository_path
+    path: >-
+      doc/audits/packages/SCI-MAP-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: 6c8decef93f5607bc9e8dfc84e31aee67f45fa5c695fc80563c7e7064f78d556
+    note: >-
+      Approved SCI-MAP-001 contract at the exact source.audit_commit; only the
+      cited approved equations and F009 owner decision are pre-core authority.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: not_applicable
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

@@ -1,0 +1,94 @@
+format_version: 1
+id: SCI-PTC-001-XAUD-002
+created_date: 2026-07-31
+
+source:
+  package_id: SCI-MAP-001
+  role: auditor
+  audit_branch: codex/audit-sci-map-001
+  audit_commit: b9e1e9a9b2fe492c402d8c7b0cf7e5a36c136a53
+  governing_or_evidence_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+  finding_ids:
+    - SCI-MAP-001-F006
+    - SCI-MAP-001-F008
+    - SCI-MAP-001-F011
+    - SCI-MAP-001-F013
+
+target:
+  package_id: SCI-PTC-001
+
+priority: P1
+evidence_basis: derived
+review_phase: post_core_evidence
+arrival: before_dispatch
+status: submitted
+
+summary: >-
+  MAP source tracing found conditional-weight, covariance, provenance, and
+  validation gaps whose interpretation depends on the future PTC contract.
+claim: >-
+  At the audited governing SHA, map and coadd denominators and optionally
+  empirical-scaled weight planes lack the PTC covariance authority,
+  reproducible lifecycle identity, and validation needed for an inverse-
+  variance or significance interpretation.
+supports:
+  - >-
+    SCI-MAP-001-F006 records that formal and optionally globally
+    empirical-scaled gridding weights are described as inverse variance even
+    though no approved PTC/NOI covariance conditions make that claim
+    unconditional.
+  - >-
+    SCI-MAP-001-F008 records that realized provenance does not preserve the
+    weighting or covariance identity, coefficient lifecycle stage,
+    per-observation coadd coefficients, retained correlations, or an explicit
+    unavailable state needed to reproduce the interpretation.
+  - >-
+    SCI-MAP-001-F011 records the absence of direct small-matrix A C_n A^T,
+    unequal-weight, controlled-correlation, coadd, and persisted
+    coefficient/provenance truth tests.
+  - >-
+    SCI-MAP-001-F013 leaves the PTC weighting/covariance input fact conditioned
+    and requires independent diagonal-noise, constant-weight, and correlated
+    small-matrix interface tests before MAP precision conclusions can be
+    re-audited.
+does_not_establish:
+  - a defect in any SCI-PTC-001 implementation, because none was inspected
+  - the correct PTC estimator, correlation model, weight construction, or normalization
+  - the magnitude, stationarity, sparsity, or diagonal form of any covariance
+  - that empirical scaling creates a precision or calibrates significance
+  - an approved GLS solver, map uncertainty product, or production expansion
+
+requested_actions:
+  - add_or_update_dependency
+  - add_or_update_finding
+  - add_interface_test
+  - restrict_consumer
+affected_target_findings: []
+related_handoffs: []
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: completed-map-audit-source-trace
+    availability: repository_path
+    path: >-
+      doc/audits/packages/SCI-MAP-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: 6c8decef93f5607bc9e8dfc84e31aee67f45fa5c695fc80563c7e7064f78d556
+    note: >-
+      Exact findings F006, F008, F011, and F013 and their limitations at
+      governing source 9aae0e669384c5c0c0dda93debc194d6b8dac787. This
+      evidence remains closed until the SCI-PTC-001 independent core freezes.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: not_applicable
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null
