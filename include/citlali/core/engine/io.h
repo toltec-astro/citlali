@@ -333,7 +333,7 @@ struct formatter<std::reference_wrapper<T>>
     template <typename FormatContext>
     auto format(const std::reference_wrapper<T> &ref,
                 FormatContext &ctx) const noexcept -> decltype(ctx.out()) {
-        return format_to(ctx.out(), "{}", ref.get());
+        return fmt::format_to(ctx.out(), "{}", ref.get());
     }
 };
 
@@ -343,8 +343,8 @@ struct formatter<RawObs>
     template <typename FormatContext>
     auto format(const RawObs &obs, FormatContext &ctx) const noexcept
         -> decltype(ctx.out()) {
-        return format_to(ctx.out(), "RawObs(name={}, n_data_items={})",
-                         obs.name(), obs.n_data_items());
+        return fmt::format_to(ctx.out(), "RawObs(name={}, n_data_items={})",
+                              obs.name(), obs.n_data_items());
     }
 };
 
@@ -354,8 +354,8 @@ struct formatter<RawObs::DataItem>
     template <typename FormatContext>
     auto format(const RawObs::DataItem &item, FormatContext &ctx) const noexcept
         -> decltype(ctx.out()) {
-        return format_to(ctx.out(), "DataItem(interface={}, filepath={})",
-                         item.interface(), item.filepath());
+        return fmt::format_to(ctx.out(), "DataItem(interface={}, filepath={})",
+                              item.interface(), item.filepath());
     }
 };
 
@@ -365,8 +365,8 @@ struct formatter<RawObs::CalItem>
     template <typename FormatContext>
     auto format(const RawObs::CalItem &item, FormatContext &ctx) const noexcept
         -> decltype(ctx.out()) {
-        return format_to(ctx.out(), "CalItem(typestr={})",
-                         item.typestr());
+        return fmt::format_to(ctx.out(), "CalItem(typestr={})",
+                              item.typestr());
     }
 };
 
@@ -376,8 +376,8 @@ struct formatter<RawObs::ArrayPropTable>
     template <typename FormatContext>
     auto format(const RawObs::ArrayPropTable &apt, FormatContext &ctx) const noexcept
         -> decltype(ctx.out()) {
-        return format_to(ctx.out(), "ArrayPropTable(filepath={})",
-                         apt.filepath());
+        return fmt::format_to(ctx.out(), "ArrayPropTable(filepath={})",
+                              apt.filepath());
     }
 };
 

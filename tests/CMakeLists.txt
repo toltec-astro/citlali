@@ -13,6 +13,9 @@ foreach(_name gauss_models kidsproc)
         "citlali_test_${_name}"
         TEST_PREFIX "citlali::"
         DISCOVERY_MODE PRE_TEST
+        PROPERTIES
+            ENVIRONMENT
+                "TOLTECA_TEST_DATA_ROOT=${TOLTECA_TEST_DATA_ROOT}"
     )
 endforeach()
 

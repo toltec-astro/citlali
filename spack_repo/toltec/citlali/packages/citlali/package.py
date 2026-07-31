@@ -1,0 +1,54 @@
+"""Spack package for the Citlali data-reduction pipeline."""
+
+from spack.package import (
+    depends_on,
+    on_package_attributes,
+    run_after,
+    version,
+    working_dir,
+)
+from spack.util.executable import Executable
+from spack_repo.builtin.build_systems.cmake import CMakePackage
+
+
+class Citlali(CMakePackage):
+    """Build the Citlali library, CLI, and behavior tests."""
+
+    homepage = "https://github.com/toltec-astro/citlali"
+
+    version("4.0.0")
+
+    depends_on("cmake@3.25:", type="build")
+    depends_on("cxx", type="build")
+    depends_on("pkgconf", type="build")
+    depends_on("tula-cmake@3.2.0", type="build")
+    depends_on("kidscpp@3.1.0", type=("build", "link"))
+    depends_on(
+        "tula@3.1.0+ecsv+netcdf+enum+cli+grppi+openmp",
+        type=("build", "link"),
+    )
+    depends_on("ceres-solver@2.2.0", type=("build", "link"))
+    depends_on("boost@1.83.0", type=("build", "link"))
+    depends_on("spectra@1.0.1", type=("build", "link"))
+    depends_on("fftw@3.3.10", type=("build", "link"))
+    depends_on("ccfits@2.6", type=("build", "link"))
+    depends_on("cfitsio@4.3.1", type=("build", "link"))
+    depends_on("googletest@1.14:~shared", type=("build", "test"))
+
+    def cmake_args(self) -> list[str]:
+        """Build the production CLI and enable tests when requested."""
+        return [
+            self.define("CITLALI_BUILD_CLI", True),
+            self.define("CITLALI_BUILD_TESTS", self.run_tests),
+        ]
+
+    @run_after("build")
+    @on_package_attributes(run_tests=True)
+    def check(self) -> None:
+        """Run library behavior and CLI smoke tests before installation."""
+        with working_dir(self.build_directory):
+            ctest = Executable("ctest")
+            listing = ctest("-N", output=str)
+            if "Total Tests: 0" in listing:
+                raise RuntimeError("Citlali configured without tests")
+            ctest("--output-on-failure")
