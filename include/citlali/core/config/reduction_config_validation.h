@@ -27,6 +27,25 @@ inline ValidationReport validate(const ReductionConfig &config) {
     validate(config.beammap, report);
     validate(config.beammap_photometry, report);
     validate(config.astrometry, report);
+    const bool filtered_noise_products_requested =
+        map_filtering_active(config.post_processing) &&
+        config.post_processing.map_filtering.normalize_errors;
+    const bool empirical_noise_products_requested =
+        config.noise.enabled && config.noise.products_enabled;
+    if (filtered_noise_products_requested && !config.noise.enabled) {
+        report.add_error(
+            {"post_processing", "map_filtering", "normalize_errors"},
+            "requires noise_maps.enabled=true");
+    }
+    if (config.noise.enabled &&
+        (empirical_noise_products_requested ||
+         filtered_noise_products_requested) &&
+        config.noise.n_noise_maps >= 0 &&
+        config.noise.n_noise_maps < 2) {
+        report.add_error(
+            {"noise_maps", "n_noise_maps"},
+            "must be at least 2 when empirical uncertainty products are requested");
+    }
     if (config.timestream.fruit_loops.injected_source_test.enabled &&
         config.runtime.reduction_type != ReductionType::pointing) {
         report.add_error(

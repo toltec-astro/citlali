@@ -271,6 +271,23 @@ statistical-significance map. The phase-4 v1 product snapshots predate this
 truthfulness rule and are retained as historical contract debt rather than
 silently reinterpreted.
 
+Mean-subtracted empirical map variance is the central sample variance with
+divisor `N - 1` and therefore requires at least two noise realizations. A
+zero-mean second moment with divisor `N` remains a distinct library-level
+calculation only when zero mean is an explicit estimator assumption; it is not
+the uncertainty estimator used by persisted empirical noise products.
+
+`convolve` and Wiener `lowpass_only` filtering are fixed, unit-integral
+smoothing operations. They preserve the associated map signal unit and do not
+by themselves define or apply a point-source response normalization. The
+historical `point_source_flux`, `point_source_uncertainty`, and
+`sig2noise_point_source` extension names remain compatibility aliases in the
+current product shape. For these smoothing modes their metadata identifies a
+`convolved_amplitude` estimator: amplitude and uncertainty retain the map
+signal unit, their ratio is dimensionless, and no `RESPNORM` value is claimed.
+They must not be interpreted as absolute point-source photometry without a
+separately defined and applied response calibration.
+
 ### Pointing-Fit Significance And Dynamic Range
 
 Pointing-table schema `citlali-pointing-fit-v2` makes three formerly conflated

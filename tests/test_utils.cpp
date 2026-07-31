@@ -4,8 +4,13 @@
 #include <tula/algorithm/ei_iterclip.h>
 #include <tula/algorithm/index.h>
 #include <tula/formatter/matrix.h>
+#if defined(CITLALI_USE_WIENER_FILTER_OMP)
+#include "citlali/core/mapmaking/wiener_filter_omp.h"
+#else
 #include "citlali/core/mapmaking/wiener_filter.h"
+#endif
 #include "citlali/core/mapmaking/map.h"
+#include "citlali/core/pipeline/fits_image_metadata.h"
 #include "citlali/core/timestream/rtc/calibrate.h"
 #include "citlali/core/utils/pointing.h"
 #include "citlali/core/utils/utils.h"
@@ -80,6 +85,21 @@ struct CalibrationFixture {
     std::map<std::string, Eigen::VectorXd> apt;
 };
 
+struct MetadataHdu {
+    std::map<std::string, std::string> string_keys;
+    std::map<std::string, double> double_keys;
+
+    void addKey(const std::string &name, const std::string &value,
+                const std::string &) {
+        string_keys[name] = value;
+    }
+
+    void addKey(const std::string &name, double value,
+                const std::string &) {
+        double_keys[name] = value;
+    }
+};
+
 mapmaking::MapBuffer make_source_finder_map(const Eigen::MatrixXd &signal) {
     mapmaking::MapBuffer map{"source-finder-test"};
     map.n_rows = signal.rows();
@@ -93,6 +113,22 @@ mapmaking::MapBuffer make_source_finder_map(const Eigen::MatrixXd &signal) {
     map.n_sources = {0};
     map.row_source_locs.resize(1);
     map.col_source_locs.resize(1);
+    return map;
+}
+
+mapmaking::MapBuffer make_noise_product_map(
+    const std::vector<double> &realizations) {
+    mapmaking::MapBuffer map{"noise-product-test"};
+    map.n_rows = 1;
+    map.n_cols = 1;
+    map.n_noise = static_cast<Eigen::Index>(realizations.size());
+    map.cov_cut = 0.0;
+    map.signal = {Eigen::MatrixXd::Ones(1, 1)};
+    map.weight = {Eigen::MatrixXd::Ones(1, 1)};
+    map.noise.emplace_back(1, 1, map.n_noise);
+    for (Eigen::Index i = 0; i < map.n_noise; ++i) {
+        map.noise[0](0, 0, i) = realizations[static_cast<std::size_t>(i)];
+    }
     return map;
 }
 
@@ -297,6 +333,100 @@ TEST(wiener_filter, unit_sum_convolution_preserves_well_conditioned_behavior) {
 
     ASSERT_NO_THROW(filter.run_convolve());
     EXPECT_LT((filter.nume.array() - 3.0).abs().maxCoeff(), 1e-12);
+}
+
+TEST(wiener_filter, convolve_propagates_uniform_diagonal_variance) {
+    mapmaking::WienerFilter filter;
+    filter.logger = ensure_citlali_logger();
+    filter.n_rows = 2;
+    filter.n_cols = 2;
+    filter.filter_type = "convolve";
+    filter.template_type = "gaussian";
+    filter.edge_guard_enabled = false;
+    filter.filter_template = Eigen::MatrixXd::Ones(2, 2);
+
+    mapmaking::MapBuffer map{"convolve-weight-test"};
+    map.n_rows = 2;
+    map.n_cols = 2;
+    map.cov_cut = 0.0;
+    map.signal = {Eigen::MatrixXd::Zero(2, 2)};
+    map.weight = {Eigen::MatrixXd::Constant(2, 2, 2.0)};
+
+    filter.filter_maps(map, 0);
+
+    // Unit-sum 2x2 kernel: sum(k^2)=1/4, so W_out=W_in/sum(k^2)=8.
+    EXPECT_LT((map.weight[0].array() - 8.0).abs().maxCoeff(), 1e-10);
+}
+
+TEST(wiener_filter, convolve_does_not_renormalize_variance_by_valid_support) {
+    mapmaking::WienerFilter filter;
+    filter.logger = ensure_citlali_logger();
+    filter.n_rows = 2;
+    filter.n_cols = 2;
+    filter.filter_type = "convolve";
+    filter.template_type = "gaussian";
+    filter.edge_guard_enabled = false;
+    filter.filter_template = Eigen::MatrixXd::Ones(2, 2);
+
+    mapmaking::MapBuffer map{"convolve-support-test"};
+    map.n_rows = 2;
+    map.n_cols = 2;
+    map.cov_cut = 0.0;
+    map.signal = {Eigen::MatrixXd::Zero(2, 2)};
+    map.weight = {Eigen::MatrixXd::Zero(2, 2)};
+    map.weight[0](0, 0) = 2.0;
+
+    filter.filter_maps(map, 0);
+
+    // Each periodic output receives k^2 Var = (1/16)(1/2), so W_out=32.
+    EXPECT_LT((map.weight[0].array() - 32.0).abs().maxCoeff(), 1e-10);
+}
+
+TEST(map_noise_products, mean_subtracted_variance_uses_n_minus_one) {
+    auto map = make_noise_product_map({1.0, 3.0});
+
+    map.calc_noise_products(false);
+
+    EXPECT_DOUBLE_EQ(map.noise_mean[0](0, 0), 2.0);
+    EXPECT_NEAR(map.noise_variance[0](0, 0), 2.0, 1e-12);
+    EXPECT_NEAR(map.point_source_uncertainty[0](0, 0), std::sqrt(2.0),
+                1e-12);
+}
+
+TEST(map_noise_products, mean_subtracted_products_require_two_realizations) {
+    auto map = make_noise_product_map({3.0});
+
+    EXPECT_THROW(map.calc_noise_products(false), std::invalid_argument);
+}
+
+TEST(map_noise_products, known_zero_mean_second_moment_allows_one_realization) {
+    auto map = make_noise_product_map({3.0});
+
+    ASSERT_NO_THROW(map.calc_noise_products(false, false));
+    EXPECT_DOUBLE_EQ(map.noise_mean[0](0, 0), 3.0);
+    EXPECT_DOUBLE_EQ(map.noise_variance[0](0, 0), 9.0);
+}
+
+TEST(map_noise_products, convolved_amplitude_metadata_is_not_photometric) {
+    MetadataHdu flux_hdu;
+    MetadataHdu uncertainty_hdu;
+    MetadataHdu snr_hdu;
+
+    citlali::pipeline::add_point_source_flux_map_metadata(
+        flux_hdu, "mJy/beam", false);
+    citlali::pipeline::add_point_source_uncertainty_map_metadata(
+        uncertainty_hdu, "mJy/beam", false);
+    citlali::pipeline::add_point_source_snr_map_metadata(snr_hdu, false);
+
+    EXPECT_EQ(flux_hdu.string_keys["BUNIT"], "mJy/beam");
+    EXPECT_EQ(flux_hdu.string_keys["TYPE"], "convolved_amplitude");
+    EXPECT_THAT(flux_hdu.string_keys["DESCRIP"],
+                HasSubstr("no point-source response normalization"));
+    EXPECT_EQ(uncertainty_hdu.string_keys["BUNIT"], "mJy/beam");
+    EXPECT_EQ(uncertainty_hdu.string_keys["TYPE"],
+              "convolved_amplitude");
+    EXPECT_EQ(snr_hdu.string_keys["BUNIT"], "N/A");
+    EXPECT_EQ(snr_hdu.string_keys["TYPE"], "convolved_amplitude");
 }
 
 TEST(timestream_filter, notch_settle_samples_are_positive_for_narrow_notches) {

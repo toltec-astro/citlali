@@ -78,6 +78,21 @@ freeze the application mainline.
 
 ## Current Snapshot
 
+- A bounded 2026-07-31 numerical topic on
+  `codex/convolve-noise-correction`, based on canonical application mainline
+  `9aae0e669`, corrects post-processing noise contracts without touching the
+  Conan 2 adaptation lane. Fixed unit-sum convolution now propagates diagonal
+  input variance as `k^2` convolved with variance, without dividing by local
+  valid-kernel support. Mean-subtracted jackknife variance uses `N - 1`, and
+  empirical uncertainty products require at least two realizations. The
+  historical convolve `point_source_*` aliases remain shape-compatible but
+  are labeled as unnormalized convolved amplitudes in map units rather than
+  calibrated photometry. Sequential and OpenMP CLI builds and focused
+  synthetic tests pass, as do all 541 enabled CTests in each build mode, all
+  135 baseline-tool tests, the complete 123-test config preflight, and both
+  validation-ledger checks. An affected-mode Unity convolve-plus-noise run is
+  still required before mainline integration and science-change-ledger acceptance.
+  See `doc/CONVOLVE_NOISE_PRODUCT_CORRECTION_2026-07-31.md`.
 - A 2026-07-30 coherent raw-I/Q event investigation has produced the first
   mode-aware observe-only production slice. The current RTC/PTC learning
   path records accepted intervals per detector UID and compacts only within

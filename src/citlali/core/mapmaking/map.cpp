@@ -770,6 +770,10 @@ void MapBuffer::calc_noise_products(bool apply_empirical_weight_scale, bool mean
     if (n_maps <= 0 || noise.empty() || n_noise <= 0) {
         return;
     }
+    if (mean_subtract && n_noise < 2) {
+        throw std::invalid_argument(
+            "mean-subtracted empirical noise products require at least two noise maps");
+    }
 
     weight_formal.resize(static_cast<size_t>(n_maps));
     noise_mean.resize(static_cast<size_t>(n_maps));
@@ -795,6 +799,10 @@ void MapBuffer::calc_noise_products(Eigen::Index i, bool apply_empirical_weight_
     const Eigen::Index n_maps = static_cast<Eigen::Index>(weight.size());
     if (i < 0 || i >= n_maps || i >= static_cast<Eigen::Index>(noise.size()) || n_noise <= 0) {
         return;
+    }
+    if (mean_subtract && n_noise < 2) {
+        throw std::invalid_argument(
+            "mean-subtracted empirical noise products require at least two noise maps");
     }
 
     auto ensure_matrix_vec = [&](std::vector<Eigen::MatrixXd> &vec) {
@@ -840,6 +848,9 @@ void MapBuffer::calc_noise_products(Eigen::Index i, bool apply_empirical_weight_
             noise_mean[static_cast<size_t>(i)].array().square();
         noise_variance[static_cast<size_t>(i)] =
             noise_variance[static_cast<size_t>(i)].array().max(0.0).matrix();
+        noise_variance[static_cast<size_t>(i)].array() *=
+            static_cast<double>(n_noise) /
+            static_cast<double>(n_noise - 1);
     }
 
     double weight_threshold = 0.0;

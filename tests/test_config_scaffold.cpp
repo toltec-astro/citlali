@@ -3789,6 +3789,40 @@ TEST(config_scaffold, validates_top_level_config_values) {
     EXPECT_EQ(report.error_count(), 8U);
 }
 
+TEST(config_scaffold, empirical_noise_products_require_two_realizations) {
+    citlali::config::ReductionConfig config;
+    config.noise.enabled = true;
+    config.noise.products_enabled = true;
+    config.noise.n_noise_maps = 1;
+
+    auto report = citlali::config::validate(config);
+
+    EXPECT_FALSE(report.ok());
+    EXPECT_EQ(report.error_count(), 1U);
+}
+
+TEST(config_scaffold, realization_only_noise_allows_one_realization) {
+    citlali::config::ReductionConfig config;
+    config.noise.enabled = true;
+    config.noise.products_enabled = false;
+    config.noise.n_noise_maps = 1;
+
+    EXPECT_TRUE(citlali::config::validate(config).ok());
+}
+
+TEST(config_scaffold, filtered_error_normalization_requires_noise_maps) {
+    citlali::config::ReductionConfig config;
+    citlali::config::set_map_filtering_enabled(
+        config.post_processing, true);
+    config.post_processing.map_filtering.normalize_errors = true;
+    config.noise.enabled = false;
+
+    auto report = citlali::config::validate(config);
+
+    EXPECT_FALSE(report.ok());
+    EXPECT_EQ(report.error_count(), 1U);
+}
+
 TEST(config_scaffold, accepts_checked_low_level_config_schema) {
     const auto config = tula::config::YamlConfig::from_str(
         citlali::citlali_default_config_content);

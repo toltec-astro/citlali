@@ -46,6 +46,10 @@ inline const char *point_source_snr_estimator_type() {
     return "point_source";
 }
 
+inline const char *convolved_amplitude_estimator_type() {
+    return "convolved_amplitude";
+}
+
 inline const char *weight_calibration_type_comment() {
     return "Weight calibration type";
 }
@@ -56,6 +60,10 @@ inline const char *kernel_type_comment() {
 
 inline const char *snr_estimator_type_comment() {
     return "S/N estimator type";
+}
+
+inline const char *filtered_amplitude_estimator_type_comment() {
+    return "Filtered amplitude estimator type";
 }
 
 inline const char *standardized_signal_estimator_type_comment() {
@@ -147,4 +155,16 @@ inline const char *point_source_uncertainty_map_description() {
 
 inline const char *point_source_snr_map_description() {
     return "Point-source S/N from flux divided by jackknife uncertainty";
+}
+
+inline const char *convolved_amplitude_map_description() {
+    return "Compatibility alias of convolved map amplitude; no point-source response normalization";
+}
+
+inline const char *convolved_amplitude_uncertainty_map_description() {
+    return "Jackknife 1-sigma uncertainty of unnormalized convolved map amplitude";
+}
+
+inline const char *convolved_amplitude_snr_map_description() {
+    return "Convolved map amplitude divided by its jackknife uncertainty";
 }

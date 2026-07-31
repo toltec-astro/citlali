@@ -1431,12 +1431,17 @@ void WienerFilter::filter_maps(MB &mb, const int map_index) {
                 run_convolve(false);
                 Eigen::MatrixXd mask_smooth = nume;
 
-                constexpr double mask_floor = 1e-6;
+                const double mask_floor = 1e-6 * kernel_sq_sum;
                 for (Eigen::Index i=0; i<n_rows; ++i) {
                     for (Eigen::Index j=0; j<n_cols; ++j) {
                         double m = mask_smooth(i,j);
                         if (m > mask_floor && std::isfinite(m)) {
-                            double v = var_smooth(i,j) / m;
+                            // The signal is a fixed unit-sum convolution; it
+                            // is not renormalized by the locally valid kernel
+                            // support.  Its diagonal input-noise variance is
+                            // therefore sum(k^2 * variance), not the support-
+                            // normalized average variance.
+                            double v = var_smooth(i,j);
                             if (v > 0.0 && std::isfinite(v)) {
                                 mb.weight[map_index](i,j) = 1.0 / v;
                             }

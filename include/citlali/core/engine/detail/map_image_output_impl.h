@@ -85,10 +85,20 @@ Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_
         const bool is_filtered_output =
             citlali::pipeline::is_filtered_map_output(
                 fits_io, map_fits_outputs.filtered_obs, map_fits_outputs.filtered_coadd);
+        const auto &map_filter_config =
+            citlali::pipeline::post_processing_config(*this).map_filtering;
+        const bool uses_unit_sum_convolution =
+            map_filter_config.type == citlali::config::MapFilterType::convolve ||
+            (map_filter_config.type ==
+                 citlali::config::MapFilterType::wiener_filter &&
+             map_filter_config.lowpass_only);
+        const bool point_source_response_normalized =
+            !is_filtered_output || !uses_unit_sum_convolution;
         citlali::pipeline::add_coverage_support_image_hdus(
             fits_io->at(map_index), mb, i, map_name, stokes_suffix, mb->wcs,
             source_epoch, is_filtered_output,
-            empirical_noise_products_expected, logger);
+            empirical_noise_products_expected,
+            point_source_response_normalized, logger);
 
         // write noise maps
         if (citlali::pipeline::should_write_noise_maps(mb->noise,

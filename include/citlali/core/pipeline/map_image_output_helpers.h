@@ -99,7 +99,8 @@ void add_coverage_support_image_hdus(
     FitsEntry &fits_entry, MapBuffer &mb, Eigen::Index i,
     const std::string &map_name, const std::string &stokes_suffix,
     const Wcs &wcs, double source_epoch, bool is_filtered_output,
-    bool empirical_noise_products_expected, const Logger &logger) {
+    bool empirical_noise_products_expected,
+    bool point_source_response_normalized, const Logger &logger) {
     if (mb->coverage.empty()) {
         return;
     }
@@ -174,21 +175,26 @@ void add_coverage_support_image_hdus(
                 map_name, stokes_suffix),
             mb->signal[i], wcs, source_epoch);
         add_point_source_flux_map_metadata(
-            *fits_entry.hdus.back(), mb->sig_unit);
-        add_point_source_response_norm_key(*fits_entry.hdus.back(), 1.0);
+            *fits_entry.hdus.back(), mb->sig_unit,
+            point_source_response_normalized);
+        if (point_source_response_normalized) {
+            add_point_source_response_norm_key(*fits_entry.hdus.back(), 1.0);
+        }
 
         add_map_hdu_with_wcs(
             fits_entry, point_source_uncertainty_map_hdu_name(
                 map_name, stokes_suffix),
             mb->point_source_uncertainty[i], wcs, source_epoch);
         add_point_source_uncertainty_map_metadata(
-            *fits_entry.hdus.back(), mb->sig_unit);
+            *fits_entry.hdus.back(), mb->sig_unit,
+            point_source_response_normalized);
 
         add_map_hdu_with_wcs(
             fits_entry, point_source_snr_map_hdu_name(
                 map_name, stokes_suffix),
             mb->sig2noise_point_source[i], wcs, source_epoch);
-        add_point_source_snr_map_metadata(*fits_entry.hdus.back());
+        add_point_source_snr_map_metadata(
+            *fits_entry.hdus.back(), point_source_response_normalized);
     }
 }
 

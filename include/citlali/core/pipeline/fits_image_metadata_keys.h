@@ -164,20 +164,45 @@ void add_formal_standardized_signal_map_metadata(Hdu &hdu) {
 
 template <class Hdu>
 void add_point_source_flux_map_metadata(Hdu &hdu,
-                                        const std::string &signal_unit) {
-    add_image_unit_description_keys(hdu, signal_unit,
-                                    point_source_flux_map_description());
+                                        const std::string &signal_unit,
+                                        bool response_normalized = true) {
+    if (response_normalized) {
+        add_image_unit_description_keys(hdu, signal_unit,
+                                        point_source_flux_map_description());
+        return;
+    }
+    add_image_unit_type_description_keys(
+        hdu, signal_unit, convolved_amplitude_estimator_type(),
+        filtered_amplitude_estimator_type_comment(),
+        convolved_amplitude_map_description());
 }
 
 template <class Hdu>
 void add_point_source_uncertainty_map_metadata(
-    Hdu &hdu, const std::string &signal_unit) {
-    add_image_unit_description_keys(
-        hdu, signal_unit, point_source_uncertainty_map_description());
+    Hdu &hdu, const std::string &signal_unit,
+    bool response_normalized = true) {
+    if (response_normalized) {
+        add_image_unit_description_keys(
+            hdu, signal_unit, point_source_uncertainty_map_description());
+        return;
+    }
+    add_image_unit_type_description_keys(
+        hdu, signal_unit, convolved_amplitude_estimator_type(),
+        filtered_amplitude_estimator_type_comment(),
+        convolved_amplitude_uncertainty_map_description());
 }
 
 template <class Hdu>
-void add_point_source_snr_map_metadata(Hdu &hdu) {
+void add_point_source_snr_map_metadata(
+    Hdu &hdu, bool response_normalized = true) {
+    if (!response_normalized) {
+        add_image_unit_type_description_keys(
+            hdu, not_applicable_image_unit(),
+            convolved_amplitude_estimator_type(),
+            snr_estimator_type_comment(),
+            convolved_amplitude_snr_map_description());
+        return;
+    }
     add_image_unit_type_description_keys(
         hdu, not_applicable_image_unit(), point_source_snr_estimator_type(),
         snr_estimator_type_comment(), point_source_snr_map_description());
