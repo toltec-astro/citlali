@@ -1,0 +1,15 @@
+format_version: 1
+target_package: TO_SET_TARGET_PACKAGE
+created_date: TO_SET_YYYY-MM-DD
+coordinator_registry_commit: TO_SET_FULL_SHA
+manifest_status: frozen_for_dispatch
+
+handoffs:
+  - id: TO_SET_TARGET_PACKAGE-XAUD-TO_SET_NNN
+    path: >-
+      doc/audits/handoffs/TO_SET_TARGET_PACKAGE/TO_SET_TARGET_PACKAGE-XAUD-TO_SET_NNN.yaml
+    sha256: TO_SET_64_HEX
+    review_phase: TO_SET_PRE_CORE_AUTHORITY_OR_POST_CORE_EVIDENCE
+
+pre_core_authority_ids: []
+post_core_evidence_ids: []

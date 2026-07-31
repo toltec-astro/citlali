@@ -1,0 +1,57 @@
+format_version: 1
+id: TO_SET_TARGET_PACKAGE-XAUD-TO_SET_NNN
+created_date: TO_SET_YYYY-MM-DD
+
+source:
+  package_id: TO_SET_SOURCE_PACKAGE
+  role: TO_SET_AUDITOR_REAUDITOR_REPAIRER_COORDINATOR_OR_OWNER
+  audit_branch: TO_SET_OR_NULL
+  audit_commit: TO_SET_FULL_SHA_OR_NULL
+  governing_or_evidence_sha: TO_SET_FULL_SHA_OR_NULL
+  finding_ids: []
+
+target:
+  package_id: TO_SET_TARGET_PACKAGE
+
+priority: TO_SET_P0_P1_P2_OR_P3
+evidence_basis: TO_SET_OBSERVED_DERIVED_SUSPECTED_OR_OWNER_DECISION
+review_phase: TO_SET_PRE_CORE_AUTHORITY_OR_POST_CORE_EVIDENCE
+arrival: TO_SET_BEFORE_DISPATCH_LATE_ACTIVE_AUDIT_OR_AFTER_AUDIT_COMPLETION
+status: submitted
+
+summary: >-
+  TO_SET_ONE_SENTENCE_HANDOFF_SUMMARY
+claim: >-
+  TO_SET_BOUNDED_CLAIM_FOR_RECIPIENT_CONSIDERATION
+supports:
+  - TO_SET_SUPPORTED_INFERENCE
+does_not_establish:
+  - TO_SET_EXPLICIT_SCOPE_LIMIT
+
+requested_actions:
+  - TO_SET_CONTROLLED_REQUESTED_ACTION
+affected_target_findings: []
+related_handoffs: []
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: TO_SET_ARTIFACT_ID
+    availability: TO_SET_REPOSITORY_PATH_HASH_ONLY_EXTERNAL_REFERENCE_OR_MISSING
+    path: null
+    sha256: TO_SET_64_HEX_OR_NULL
+    note: TO_SET
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: TO_SET_NOT_APPLICABLE_HELD_FOR_REAUDIT_DATED_AMENDMENT_OR_EXTERNAL_RESTRICTION
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

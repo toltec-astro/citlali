@@ -17,6 +17,10 @@ Audit package:
 - audit branch: `codex/audit-TO_SET_PACKAGE_SLUG`
 - suggested isolated worktree: `/private/tmp/citlali-audit-TO_SET_PACKAGE_SLUG`
 - coordinator ledger snapshot/commit: `TO_SET_FULL_SHA`
+- coordinator handoff-registry commit: `TO_SET_FULL_SHA`
+- frozen inbound-handoff manifest path and SHA-256: `TO_SET`
+- pre-core authority handoff IDs: `TO_SET_LIST_OR_NONE`
+- post-core evidence handoff IDs: `TO_SET_LIST_OR_NONE`
 
 The audit package is one scientific transformation, not a source directory.
 Its included scope is:
@@ -47,13 +51,17 @@ until the independent core is frozen:
 3. Create a fresh isolated audit worktree from the exact governing SHA. Do not
    move an existing branch or reuse an implementation worktree.
 4. Do not inspect the contents or diffs of the quarantined package
-   implementation paths until the independent-core freeze described below.
-   Repository-level architecture, scientific conventions, product intentions,
-   and upstream contract documents may be read first. Record any unavoidable
-   prior implementation exposure.
+   implementation paths or any `post_core_evidence` handoff until the
+   independent-core freeze described below. Repository-level architecture,
+   scientific conventions, product intentions, upstream contract documents,
+   and coordinator-approved `pre_core_authority` handoffs may be read first.
+   Record every handoff opened before the freeze and any unavoidable prior
+   implementation or post-core evidence exposure.
 5. Do not modify Citlali application code, tests, build files, production
    documentation, candidate branches, other audit branches, or dirty
-   worktrees. Audit documents and audit-specific evidence manifests only.
+   worktrees. Audit documents, audit-specific evidence manifests, and proposed
+   cross-audit handoff records only. Do not edit the canonical handoff registry
+   from the package-audit branch.
 6. Do not push, merge, rebase, cherry-pick a candidate, install/download
    software, or use the network unless Grant separately authorizes it.
 7. Unity is human-mediated external infrastructure. Prepare an exact evidence
@@ -72,6 +80,11 @@ upstream abstractions. Use one or more of:
 - affine: `y = A x + c`;
 - nonlinear/data-dependent: `y = F(x, theta)`; or
 - iterative/stateful: `s_(n+1) = G(s_n, x)`, `y = H(s_n, x)`.
+
+Verify the frozen inbox manifest before derivation. Open only the listed
+`pre_core_authority` records, and verify that each names an approved contract,
+owner decision, or canonical dependency fact at an exact commit. Do not open a
+post-core handoff merely because its filename or source package looks relevant.
 
 Create an exact companion file such as
 `doc/audits/packages/TO_SET_PACKAGE_ID_INDEPENDENT_CORE.tex`. Before opening any
@@ -112,8 +125,9 @@ what prompted each change.
 
 ## Phase 2: implementation and evidence audit
 
-Only now inspect source at the exact governing SHA. Trace the complete package
-through:
+Only now open the frozen `post_core_evidence` handoffs and inspect source at the
+exact governing SHA. Record the first-open event for both. Trace the complete
+package through:
 
 - science signal and every alternate/parallel operator;
 - formal variance/covariance and inverse-variance paths;
@@ -135,6 +149,14 @@ falsifiable test. A known mismatch is `nonconformant`, not conditional.
 Classify findings independently as `implementation_defect`, `contract_gap`,
 `scientific_policy_decision`, `evidence_gap`, or `dependency_gap`. Use P0-P3,
 `observed`/`derived`/`suspected`/`owner_decision`, and confidence separately.
+
+Disposition every inbound handoff in the dispatch manifest. A handoff can
+sharpen a dependency, finding, restriction, test, amendment, or re-audit
+trigger, but it cannot close a finding or authorize production by itself. For
+each material fact that another stable package should consider, create one
+proposed record per target from
+`doc/audits/templates/CROSS_AUDIT_HANDOFF_TEMPLATE.yaml`. Keep submission
+claims and limitations bounded to the available evidence.
 
 ## Required audit artifact
 
@@ -161,13 +183,16 @@ The audit must include:
   closure gates;
 - exact Unity/external evidence request with pre-registered comparisons and
   tolerances;
+- the frozen handoff manifest, pre/post-core exposure record, recipient
+  disposition for every inbound handoff, and every proposed outbound handoff;
 - downstream allowlist, restrictions, and fail-closed uses;
 - the four independent status axes and one verdict; and
 - a final machine-readable YAML proposal matching the package record in
   `doc/audits/audit-ledger.yaml`.
 
-The YAML is a proposal for coordinator review. Do not edit the canonical
-ledger from a parallel package-audit branch.
+The YAML is a proposal for coordinator review. Include `incoming_handoffs` and
+`outgoing_handoffs` summaries keyed by stable IDs. Do not edit the canonical
+ledger or handoff registry from a parallel package-audit branch.
 
 ## Status and verdict vocabulary
 
@@ -191,8 +216,9 @@ offline checks. Report:
 5. every finding, unresolved decision, and dependency;
 6. contract, implementation, validation, production statuses and verdict;
 7. local evidence and the exact unsupplied external evidence;
-8. allowed, restricted, and fail-closed consumers; and
-9. confirmation that no application code, frozen worktree, external lane,
+8. allowed, restricted, and fail-closed consumers;
+9. inbound handoff dispositions and proposed outbound handoff IDs; and
+10. confirmation that no application code, frozen worktree, external lane,
    mainline, or canonical ledger was modified or integrated.
 
 Stop after the report. Do not repair the implementation, launch another

@@ -91,6 +91,9 @@ Every audit addresses the following dimensions or gives an explicit, specific
     policy.
 14. Findings, unresolved assumptions, dependencies, scientific decisions,
     verdict, and proposed ledger update.
+15. Every inbound cross-audit handoff in the frozen dispatch manifest, its
+    permitted review phase and recipient disposition, plus every outbound
+    handoff proposed for another stable package ID.
 
 An omission is never justified only by the package tier. For example, a Tier B
 audit may mark an astronomical injection study not applicable when the
@@ -195,18 +198,23 @@ gap into a software defect.
 ## Package lifecycle and role separation
 
 1. The **coordinator** fixes the package ID, scope, tier, dependencies,
-   governing SHA, and initial consumer policy. The coordinator owns canonical
-   ledger integration but does not derive the estimator or repair code.
+   governing SHA, initial consumer policy, and exact handoff-inbox manifest.
+   The coordinator owns canonical ledger and handoff integration but does not
+   derive the estimator or repair code.
 2. A fresh **auditor** worktree and thread verify repository state, read
    governing project-level authorities, and quarantine identified package
-   implementation sources. The auditor drafts the mathematical core in a
-   separate exact file or byte range, records all prior exposure, computes its
-   SHA-256 digest, and makes those bytes immutable before opening package
-   source.
-3. The auditor traces implementation, products, metadata, simulations,
-   parallel paths, and consumers; writes falsifiable gates; records findings,
-   verdict, and a machine-readable ledger proposal; and changes no application
-   code.
+   implementation sources and every handoff classified as
+   `post_core_evidence`. Only coordinator-approved `pre_core_authority`
+   handoffs may be opened before the core freeze. The auditor drafts the
+   mathematical core in a separate exact file or byte range, records all prior
+   exposure, computes its SHA-256 digest, and makes those bytes immutable
+   before opening package source or post-core handoffs.
+3. The auditor opens the frozen post-core handoff set, records that first
+   exposure, then traces implementation, products, metadata, simulations,
+   parallel paths, and consumers. The auditor writes falsifiable gates,
+   records a disposition for every inbound handoff, proposes any outbound
+   handoffs, records findings and verdict, and changes no application code or
+   canonical handoff.
 4. The scientific owner approves, amends, supersedes, or rejects the proposed
    contract and resolves policy decisions needed for repair.
 5. A separate **repairer** worktree and thread implement only accepted
@@ -245,6 +253,69 @@ with an open dependency may produce a useful audit, but its dependent
 production consumer stays restricted or fail-closed. Cycles must be broken by
 splitting estimator stages or by making iteration state explicit; they are not
 hidden in prose.
+
+## Cross-audit handoffs
+
+Cross-audit communication is durable, package-addressed, evidence-bound, and
+coordinator-integrated. It does not occur by editing another audit's report or
+worktree, and it does not promote a sender's conclusion into the recipient's
+scientific contract. The canonical protocol and records live under
+`doc/audits/handoffs/`; the reusable record is
+`doc/audits/templates/CROSS_AUDIT_HANDOFF_TEMPLATE.yaml`.
+
+Each record has exactly one source package and one target package. A message to
+several packages is represented by separate records sharing related-handoff or
+evidence identifiers, so each recipient can disposition its own message. The
+target package ID determines the inbox directory and stable ID:
+
+```text
+doc/audits/handoffs/<TARGET-PACKAGE-ID>/<TARGET-PACKAGE-ID>-XAUD-NNN.yaml
+```
+
+The source audit proposes a complete record on its own branch and lists the ID
+in its ledger proposal. The coordinator checks identity, scope, hashes, and
+review phase before integrating it into the canonical handoff registry. The
+recipient proposes a disposition on its own audit or re-audit branch; only the
+coordinator updates the canonical record. Submission fields are immutable.
+Corrections create a successor record and use `supersedes`/`superseded_by`.
+
+Handoffs have two review phases:
+
+- `pre_core_authority` is limited to an already approved scientific contract,
+  owner decision, or canonical dependency fact. The coordinator must identify
+  the exact authority and commit that permit pre-freeze exposure.
+- `post_core_evidence` covers observations, downstream manifestations,
+  suspected or derived defects, questions, and unapproved contract proposals.
+  Its content remains quarantined until the independent core is frozen.
+
+Before dispatch, the coordinator freezes a manifest containing every inbound
+handoff ID, file SHA-256, review phase, and canonical commit. Late handoffs do
+not silently enter an active audit. The coordinator either holds them for
+re-audit, authorizes a dated amendment with explicit exposure, or records an
+urgent production restriction independently of the scientific derivation.
+
+Every resolved recipient disposition names one or more controlled actions and
+links the resulting finding, dependency, contract section, restriction, test,
+or re-audit trigger. `not_applicable` requires a scope-based rationale. A
+handoff may sharpen or reopen work, but it cannot close a finding or authorize
+production by itself. Evidence remains authoritative only for the bounded
+claim its identity and limitations support.
+
+```mermaid
+flowchart LR
+    source["Source audit proposes one bounded record"]
+    coordinator["Coordinator verifies and integrates"]
+    inbox["Target package inbox"]
+    core["Independent core freeze"]
+    trace["Implementation and evidence audit"]
+    disposition["Recipient proposes disposition"]
+
+    source --> coordinator --> inbox
+    inbox -->|"pre_core_authority only"| core
+    core -->|"open post_core_evidence"| trace
+    inbox -->|"post_core_evidence after freeze"| trace
+    trace --> disposition --> coordinator
+```
 
 ## Process and dependency graph
 

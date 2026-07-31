@@ -70,6 +70,12 @@ First package-source inspection & Record timestamp, command or source, and
 confirmation that it followed the freeze.\\
 Prior implementation exposure & List unavoidable prior knowledge or write
 ``none known''; explain how its influence was bounded.\\
+Frozen handoff manifest & Record canonical registry commit, manifest path,
+SHA-256, and every inbound handoff ID/review phase.\\
+Pre-core handoff exposure & List only coordinator-approved
+\code{pre_core_authority} records opened before the freeze.\\
+First post-core handoff exposure & Record timestamp, handoff ID, and
+confirmation that opening followed the independent-core freeze.\\
 \bottomrule
 \end{longtable}
 
@@ -239,6 +245,35 @@ For each persisted product state extension/variable/table identity,
 normalization, support, covariance assumptions, authoritative/derived status,
 producer, current and recommended metadata, and applicable tests.
 
+\section{Cross-audit handoffs}
+
+Verify the frozen dispatch manifest and disposition every inbound record.
+Submission claims remain the source package's bounded evidence; this audit
+owns only its recipient disposition. Propose one separate outbound record per
+target package and do not edit the canonical registry from this branch.
+
+\begin{longtable}{L{0.17\linewidth}L{0.14\linewidth}L{0.15\linewidth}L{0.18\linewidth}L{0.26\linewidth}}
+\toprule
+Handoff ID & Source/target & Review phase & Status/action & Audit effect and
+rationale\\
+\midrule
+\endfirsthead
+\toprule
+Handoff ID & Source/target & Review phase & Status/action & Audit effect and
+rationale\\
+\midrule
+\endhead
+TO-COMPLETE & TO-COMPLETE & \code{pre_core_authority} or
+\code{post_core_evidence} & TO-COMPLETE & Link the affected finding,
+dependency, contract section, restriction, test, or re-audit trigger.\\
+\bottomrule
+\end{longtable}
+
+For every outbound proposal state the exact claim, supported inference,
+explicit limitations, evidence identities/hashes, requested action, and
+related handoff IDs. A handoff cannot close a finding or authorize production
+by itself.
+
 \section{Falsifiable validation matrix}
 
 \begin{longtable}{L{0.22\linewidth}L{0.25\linewidth}L{0.20\linewidth}L{0.21\linewidth}}
@@ -300,9 +335,10 @@ separate.
 
 \section{Machine-readable ledger proposal}
 
-Include a YAML fragment matching \code{doc/audits/audit-ledger.yaml}. It is a
-proposal for coordinator review, not permission to modify the canonical ledger
-from a parallel audit branch.
+Include a YAML fragment matching \code{doc/audits/audit-ledger.yaml}, including
+\code{incoming_handoffs} and \code{outgoing_handoffs}. It is a proposal for
+coordinator review, not permission to modify the canonical ledger or handoff
+registry from a parallel audit branch.
 
 \appendix
 \section{Optional extended source trace}

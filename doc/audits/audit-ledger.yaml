@@ -10,6 +10,15 @@ inventory_dependency_detail: >-
   inventory-only edge. Before that package audit is dispatched, the
   coordinator must add the exact required contract fact and the consequence
   while it remains open.
+handoff_protocol:
+  format_version: 1
+  registry_root: doc/audits/handoffs
+  template: doc/audits/templates/CROSS_AUDIT_HANDOFF_TEMPLATE.yaml
+  manifest_template: >-
+    doc/audits/templates/CROSS_AUDIT_INBOX_MANIFEST_TEMPLATE.yaml
+  ownership: coordinator_integrated_source_and_recipient_proposals
+  dispatch_rule: frozen_id_digest_phase_manifest
+  late_arrival_rule: explicit_amendment_reaudit_or_external_restriction
 
 controlled_vocabulary:
   tiers: [A, B, C]
@@ -56,6 +65,32 @@ controlled_vocabulary:
   confidence: [low, medium, high]
   dependency_status: [open, conditioned, satisfied, superseded]
   re_audit_status: [not_started, not_required, required, in_progress, complete]
+  handoff_review_phase: [pre_core_authority, post_core_evidence]
+  handoff_arrival: [before_dispatch, late_active_audit, after_audit_completion]
+  handoff_late_route:
+    - not_applicable
+    - held_for_reaudit
+    - dated_amendment
+    - external_restriction
+  handoff_status: [submitted, acknowledged, resolved, superseded]
+  handoff_requested_action:
+    - consider_contract_amendment
+    - add_or_update_dependency
+    - add_or_update_finding
+    - add_interface_test
+    - restrict_consumer
+    - trigger_reaudit
+    - informational_only
+  handoff_disposition:
+    - incorporated
+    - dependency_recorded
+    - finding_opened
+    - re_audit_triggered
+    - deferred_to_successor
+    - restrict_consumer
+    - add_interface_test
+    - informational_only
+    - not_applicable
 
 packages:
   - id: SCI-MAP-001
@@ -120,6 +155,15 @@ packages:
       - SCI-MODE-001
       - SCI-BEAM-001
       - SCI-FRUIT-001
+    incoming_handoffs:
+      - id: SCI-MAP-001-XAUD-001
+        path: >-
+          doc/audits/handoffs/SCI-MAP-001/SCI-MAP-001-XAUD-001.yaml
+        source_package: SCI-FLT-001
+        review_phase: post_core_evidence
+        arrival: after_audit_completion
+        status: resolved
+    outgoing_handoffs: []
     governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
     governing_sha_role: inventory_snapshot
     audit_branch: null
@@ -583,6 +627,15 @@ packages:
         restriction: filtered estimates require response/support validation
       - package_id: SCI-FRUIT-001
         restriction: unaudited filtered amplitude and weight remain fail_closed
+    incoming_handoffs: []
+    outgoing_handoffs:
+      - id: SCI-MAP-001-XAUD-001
+        path: >-
+          doc/audits/handoffs/SCI-MAP-001/SCI-MAP-001-XAUD-001.yaml
+        target_package: SCI-MAP-001
+        review_phase: post_core_evidence
+        arrival: after_audit_completion
+        status: resolved
     governing_sha: 02a198cbfb379eaf6ab279c5a3d44ee73ff90435
     governing_sha_role: audited_unapproved_candidate
     comparison_baseline_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787

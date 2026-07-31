@@ -1,0 +1,118 @@
+format_version: 1
+id: SCI-MAP-001-XAUD-001
+created_date: 2026-07-31
+
+source:
+  package_id: SCI-FLT-001
+  role: downstream_package_evidence_owner
+  audit_branch: codex/convolve-contract-audit
+  audit_commit: 800e8ae433f87d3fb7521fcb1a7fdf1d32532949
+  governing_or_evidence_sha: b294802a5e339f9ba5e0e323980cec3a4bd00249
+  finding_ids: []
+
+target:
+  package_id: SCI-MAP-001
+
+priority: P1
+evidence_basis: observed
+review_phase: post_core_evidence
+arrival: after_audit_completion
+status: resolved
+
+summary: >-
+  A reproducible convolve characterization exposed a downstream-computable
+  guard-band pixel outside the reconstructed raw science-valid region.
+claim: >-
+  The current raw-map product vocabulary did not give the downstream operator
+  an authoritative, reproducible distinction between raw scientific validity
+  and operator-local numerical computability.
+supports:
+  - >-
+    The filtering-disabled control and filtering-enabled candidate had 15
+    common raw products with zero changed, zero skipped, and no set difference
+    under a strict bitwise comparison that included timestreams.
+  - >-
+    In a2000, a filtered pixel outside the reconstructed raw science-valid
+    region but inside convolution support had direct empirical S/N about
+    -165.7 and filtered coverage_bool true.
+  - >-
+    Eight of the nine a2000 pixels with direct filtered absolute S/N above 5
+    were in that guard band.
+  - >-
+    A downstream operator can be numerically computable where its raw input is
+    not scientifically valid, so those states require separate contracts.
+does_not_establish:
+  - a raw mapmaking numerical regression
+  - correctness of the raw estimator, mask, weight, covariance, or coadd
+  - validity of the filtering or empirical-noise estimator
+  - an approved filtering boundary, response, variance floor, or source statistic
+  - closure of any SCI-MAP-001 finding or production authorization
+
+requested_actions:
+  - consider_contract_amendment
+  - restrict_consumer
+  - add_interface_test
+affected_target_findings:
+  - SCI-MAP-001-F002
+  - SCI-MAP-001-F007
+  - SCI-MAP-001-F008
+  - SCI-MAP-001-F010
+related_handoffs: []
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: supplied-cross-audit-summary
+    availability: hash_only_supplied_to_target_auditor
+    path: null
+    sha256: 4bbfb3767e064de5a77e96c6177fd02f6b6adcec6c2bf1732b7115edcdac829b
+    note: Bounded scope and handoff summary supplied after the MAP core freeze.
+  - id: strict-raw-comparison-transcript
+    availability: hash_only_supplied_to_target_auditor
+    path: null
+    sha256: 2e777a955c5127f1a1e4c6c5a0e025f424a38be8d16b8e0a803c5c76e95ed5dc
+    note: Strict candidate/control raw-product comparison transcript.
+  - id: candidate-run-audit-transcript
+    availability: hash_only_supplied_to_target_auditor
+    path: null
+    sha256: 295016e96c15ddd0968f44c97b7cda32e171729bbd5e4b5034f3359914bf2b6d
+    note: Candidate run characterization transcript.
+  - id: control-run-audit-transcript
+    availability: hash_only_supplied_to_target_auditor
+    path: null
+    sha256: b6ef7883c1cf7e504dc13f0eeccead84dc011519f8e7b7afd3642909c8de98ef
+    note: Control run characterization transcript.
+
+recipient_disposition:
+  status: resolved
+  late_arrival_route: dated_amendment
+  actions:
+    - incorporated
+    - restrict_consumer
+    - add_interface_test
+  rationale: >-
+    SCI-MAP-001 incorporated the evidence as a bounded post-freeze amendment.
+    It strengthened the demonstrated consumer consequence of existing raw-map
+    validity, product, and provenance findings without creating a filtering
+    finding or treating the evidence as proof of a raw numerical regression.
+  target_audit_branch: codex/audit-sci-map-001
+  target_audit_commit: 681aeec99c4d1c4762ecb8c4dae63c8599638678
+  affected_findings:
+    - SCI-MAP-001-F002
+    - SCI-MAP-001-F007
+    - SCI-MAP-001-F008
+    - SCI-MAP-001-F010
+  affected_dependencies:
+    - SCI-NOI-001
+    - SCI-NOI-002
+    - SCI-FLT-001
+    - SCI-FLT-002
+    - SCI-FRUIT-001
+  contract_or_report_locations:
+    - >-
+      doc/audits/packages/SCI-MAP-001_SCIENTIFIC_CONTRACT_AUDIT.tex at commit
+      681aeec99c4d1c4762ecb8c4dae63c8599638678, SHA-256
+      7d133f52f517a2262eeebca8fe62f7a6fbc3ed52096870220cdb84bdaf33cb44
+
+supersedes: null
+superseded_by: null
