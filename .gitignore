@@ -5,3 +5,7 @@ __pycache__/
 *.py[cod]
 foo/
 tests/cmake_test_discovery_*.json
+spack/environments/**/.spack-env/
+spack/environments/**/.spack-view/
+spack/environments/**/spack.lock
+spack/compat/**/build-*

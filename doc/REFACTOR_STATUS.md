@@ -61,13 +61,23 @@ a local prerequisite. Real-data fixture identity, portable system-versus-
 source dependency resolution, provenance improvements, and release locking
 remain implementation work.
 
-The first native-Mac entry checkpoint is complete on the build-adaptation
+The native-Mac foundation checkpoint is complete on the build-adaptation
 branch. A tested preflight accepts exact Homebrew LLVM 20.1.8, Spack 1.2.2,
-CMake 4.3, Ninja 1.13, the three sibling package repositories, and the current
-Citlali build worktree while rejecting AppleClang, wrong Spack releases,
-missing repositories, and globally forced unversioned Homebrew `libomp`.
-This establishes the host contract only; it does not yet claim that the full
-refactor installs through Spack.
+CMake 4.3, Ninja 1.13, the supported Spack Python launcher, the three sibling
+package repositories, and the current Citlali build worktree while rejecting
+AppleClang, wrong Spack releases, missing repositories, and globally forced
+unversioned Homebrew `libomp`.
+
+The source-built Tula component closure now installs through a concrete
+macOS Spack environment. Fourteen Tula tests and an independent installed
+consumer pass under LLVM 20. NetCDF-C is constrained to explicit Spack HDF5,
+Szip, and Zstandard edges after an undeclared Homebrew-header/Spack-library
+ABI mix was reproduced and eliminated. A bounded local NetCDF C++ target
+adapter is required because NetCDF C++ 4.3.1 installs neither the pkg-config
+metadata expected by the upstream Tula adapter nor a complete CMake target.
+This proves the Tula foundation, not the full application: a compatible
+OpenMP runtime edge, Kidscpp adaptation, and the refactored Citlali package and
+CLI remain open.
 
 ## 2026-07-26 Conan 2 Build Review
 

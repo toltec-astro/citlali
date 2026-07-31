@@ -1,0 +1,20 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+find_dependency(netCDF CONFIG)
+
+find_path(NETCDF_CXX4_INCLUDE_DIR NAMES netcdf REQUIRED)
+find_library(NETCDF_CXX4_LIBRARY NAMES netcdf-cxx4 REQUIRED)
+
+if(NOT TARGET netcdf_cxx4_vendor)
+    add_library(netcdf_cxx4_vendor SHARED IMPORTED)
+    set_target_properties(
+        netcdf_cxx4_vendor
+        PROPERTIES
+            IMPORTED_LOCATION "${NETCDF_CXX4_LIBRARY}"
+            INTERFACE_INCLUDE_DIRECTORIES "${NETCDF_CXX4_INCLUDE_DIR}"
+    )
+endif()
+
+include("${CMAKE_CURRENT_LIST_DIR}/TulaNetcdfCxx4Targets.cmake")
+check_required_components(TulaNetcdfCxx4)

@@ -35,6 +35,9 @@ class MacosSpackPrerequisiteTest(unittest.TestCase):
         self.spack = self.root / "spack/bin/spack"
         self.spack.parent.mkdir(parents=True)
         self.spack.touch()
+        self.spack_python = self.root / "tolteca/bin/python"
+        self.spack_python.parent.mkdir(parents=True)
+        self.spack_python.touch()
 
     def tearDown(self) -> None:
         self.tempdir.cleanup()
@@ -50,6 +53,8 @@ class MacosSpackPrerequisiteTest(unittest.TestCase):
             return "1.13.2"
         if command[0] == str(self.spack):
             return "1.2.2"
+        if command[0] == str(self.spack_python):
+            return "Python 3.13.2"
         raise AssertionError(command)
 
     def _inspect(self, **overrides):
@@ -57,6 +62,7 @@ class MacosSpackPrerequisiteTest(unittest.TestCase):
             "workspace_root": self.workspace,
             "citlali_source": self.citlali,
             "spack_executable": self.spack,
+            "spack_python": self.spack_python,
             "runner": self._runner,
             "system_name": "Darwin",
             "machine": "arm64",
@@ -90,6 +96,13 @@ class MacosSpackPrerequisiteTest(unittest.TestCase):
         results = self._inspect(runner=runner)
         spack = next(result for result in results if result.name == "spack")
         self.assertEqual(spack.status, "fail")
+
+    def test_rejects_missing_spack_python(self) -> None:
+        results = self._inspect(spack_python=None)
+        spack_python = next(
+            result for result in results if result.name == "spack_python"
+        )
+        self.assertEqual(spack_python.status, "fail")
 
     def test_rejects_global_unversioned_libomp_flags(self) -> None:
         results = self._inspect(

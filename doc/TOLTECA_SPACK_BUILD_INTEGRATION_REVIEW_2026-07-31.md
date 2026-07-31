@@ -115,7 +115,22 @@ On the review Mac:
   LLVM 20.1.8 rather than AppleClang.
 - the native prerequisite checker passes with Spack 1.2.2, CMake 4.3, Ninja
   1.13, all sibling package repositories, and no globally forced Homebrew
-  `libomp`; its five focused tests pass.
+  `libomp`; its six focused tests pass;
+- a concrete native macOS environment source-builds the Tula component closure
+  with explicit NetCDF-C, NetCDF C++, HDF5, Szip, and Zstandard identities;
+- all 14 enabled Tula root tests pass under LLVM 20; and
+- an independent installed Tula consumer configures, builds, and passes CTest
+  against the concrete dependency graph.
+
+The native reproduction exposed two portability defects that the reported
+Ubuntu external-package lane did not exercise. NetCDF-C's CMake build can
+auto-detect undeclared Homebrew compression libraries, mixing Homebrew HDF5 2
+headers with the declared Spack HDF5 1.14 library. The environment now uses
+explicit shared NetCDF, HDF5, Szip, and Zstandard constraints, eliminating
+that mixed ABI. NetCDF C++ 4.3.1 also installs neither the
+`netcdf-cxx4.pc` file expected by the upstream Tula adapter nor a complete
+CMake imported target. A bounded local compatibility adapter preserves
+`tula_deps::netcdf_cxx4` until the upstream package boundary is corrected.
 
 After the original review, Tula CMake advanced only to add the accepted Tlaloc
 ECSV integration matrix and Tula advanced to fix ECSV table-view lifetimes
@@ -123,9 +138,9 @@ with a focused regression test. Those bounded changes were reviewed and are
 the revisions now recorded above. Kidscpp and upstream Citlali did not move.
 
 The complete production matrix was not independently reproduced locally. The
-review Mac has no pre-existing Spack installation. The intended four-sibling-
-checkout workflow has not yet been reproduced from a clean native macOS
-environment, and the repositories do not identify an accessible immutable
+four-sibling foundation workflow is now reproduced from a native macOS
+environment, but it deliberately stops below Kidscpp and Citlali and does not
+yet exercise OpenMP. The repositories do not identify an accessible immutable
 revision of `tolteca_test_data`. Docker is not a prerequisite for acceptance.
 
 A fresh native Spack concretization also fails because the Citlali recipe pins
@@ -142,9 +157,9 @@ by a portable concrete graph.
 | Dependency ownership | Pass | Spack owns one concrete graph; Tula CMake is CMake-only. |
 | First-party package identity | Pass in development | Tula CMake, Tula, Kidscpp, and Citlali are explicit decentralized packages. |
 | Installed package consumers | Pass for upstream slice | Tula, Kidscpp, and Citlali installed consumers are reported in both compiler lanes. |
-| NetCDF C++ propagation | Pass for upstream slice | Dedicated adapter package and installed file-I/O consumer replace the failed CPM export. |
+| NetCDF C++ propagation | Pass with bounded adapter | Source-built 4.3.1 lacks the pkg-config metadata required by upstream Tula; the local target adapter and installed consumer pass. |
 | Compiler matrix | Partial | GCC 14 and LLVM 20 pass in Ubuntu; native macOS and Unity profiles remain unmeasured. |
-| Native developer bootstrap | Partial | Four sibling checkouts and Tula CMake `Justfile` recipes are the intended workflow; a clean native macOS setup is not yet demonstrated. |
+| Native developer bootstrap | Partial, foundation passed | Exact LLVM 20/Spack host gate, source-built Tula closure, 14 root tests, and installed consumer pass; OpenMP, Kidscpp, and full Citlali remain. |
 | Real-data fixtures | Partial | Upstream reports real-data tests, but the large fixture has no accessible immutable manifest for collaborators. |
 | Release source identity | Fail | First-party recipes provide versions without immutable source URLs/checksums and rely on local `develop` paths. |
 | Portable lock | Planned | Local locks are intentionally ignored; no release environment lock exists. |
@@ -225,7 +240,8 @@ changes are isolated and require product validation.
 
 ## Remaining Open Evidence
 
-1. Reproduce and document the native four-checkout Mac bootstrap.
+1. Extend the proven native Mac foundation through OpenMP, Kidscpp, and full
+   Citlali.
 2. Identify the real-data fixture and publish an immutable manifest without
    requiring the large payload to live in Git.
 3. Demonstrate that exact dependencies such as `cfitsio@4.3.1` are either

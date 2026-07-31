@@ -1,0 +1,28 @@
+packages:
+  llvm:
+    externals:
+      - spec: llvm@20.1.8+clang~flang~lld~lldb
+        prefix: /opt/homebrew/opt/llvm@20
+        extra_attributes:
+          compilers:
+            c: /opt/homebrew/opt/llvm@20/bin/clang
+            cxx: /opt/homebrew/opt/llvm@20/bin/clang++
+    buildable: false
+
+  cmake:
+    externals:
+      - spec: cmake@4.3.0
+        prefix: /opt/homebrew/opt/cmake
+    buildable: false
+
+  ninja:
+    externals:
+      - spec: ninja@1.13.2
+        prefix: /opt/homebrew/opt/ninja
+    buildable: false
+
+  pkgconf:
+    externals:
+      - spec: pkgconf@2.5.1
+        prefix: /opt/homebrew/opt/pkgconf
+    buildable: false

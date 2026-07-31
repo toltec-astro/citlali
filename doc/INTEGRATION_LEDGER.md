@@ -41,15 +41,17 @@ new exact commits before importing subsequent upstream work.
 
 ### Spack Adaptation Entry
 
-- Reproduce and document the four-sibling-checkout workflow through the Tula
-  CMake `Justfile`; local containers are optional.
+- The native macOS foundation environment is reproduced with exact Homebrew
+  LLVM 20.1.8 and Spack 1.2.2. Its source-built Tula closure passes 14 package
+  tests and an independent installed consumer. Local containers remain
+  optional.
+- Resolve the remaining OpenMP runtime edge and extend the proven foundation
+  through Kidscpp and the full refactored Citlali application.
 - Identify an accessible real-data fixture and publish an immutable manifest.
-- Add the required native macOS environment with exact Homebrew LLVM 20 and a
-  compatible OpenMP runtime.
 - Add a user-owned Unity environment based on user-supplied
   Spack/compiler/module facts.
-- Make the declared dependency graph source-buildable or explicitly record
-  environment-required externals such as `cfitsio@4.3.1`.
+- Make the remaining application dependency graph source-buildable or
+  explicitly record environment-required externals such as CFITSIO.
 - Define immutable release sources, a portable lock, and provenance identity.
 
 ### Spack Adaptation Exit

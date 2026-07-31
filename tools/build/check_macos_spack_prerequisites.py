@@ -17,6 +17,7 @@ from typing import Callable, Sequence
 
 EXPECTED_LLVM_MAJOR = 20
 EXPECTED_SPACK_VERSION = (1, 2, 2)
+MINIMUM_SPACK_PYTHON = (3, 9)
 REPOSITORY_MARKERS = {
     "tula_cmake": Path("spack_repo/toltec/tula_cmake/repo.yaml"),
     "tula": Path("spack_repo/toltec/tula/repo.yaml"),
@@ -69,6 +70,7 @@ def inspect_prerequisites(
     workspace_root: Path,
     citlali_source: Path,
     spack_executable: Path | None,
+    spack_python: Path | None,
     runner: CommandRunner = _run,
     system_name: str | None = None,
     machine: str | None = None,
@@ -149,6 +151,40 @@ def inspect_prerequisites(
                 )
         except (OSError, subprocess.CalledProcessError) as error:
             results.append(_fail(tool, f"cannot execute {executable}: {error}"))
+
+    if spack_python is None:
+        results.append(
+            _fail(
+                "spack_python",
+                "set SPACK_PYTHON or pass --spack-python",
+            )
+        )
+    elif not spack_python.is_file():
+        results.append(
+            _fail("spack_python", f"missing interpreter {spack_python}")
+        )
+    else:
+        try:
+            output = runner([str(spack_python), "--version"])
+            version = _version_tuple(output)
+            if version is not None and version >= MINIMUM_SPACK_PYTHON:
+                results.append(
+                    _pass(
+                        "spack_python",
+                        f"{spack_python} version={version}",
+                    )
+                )
+            else:
+                results.append(
+                    _fail(
+                        "spack_python",
+                        f"requires >= {MINIMUM_SPACK_PYTHON}, found {version}",
+                    )
+                )
+        except (OSError, subprocess.CalledProcessError) as error:
+            results.append(
+                _fail("spack_python", f"cannot execute {spack_python}: {error}")
+            )
 
     if spack_executable is None:
         results.append(
@@ -233,6 +269,16 @@ def _resolve_spack(argument: Path | None) -> Path | None:
     return Path(executable).resolve() if executable else None
 
 
+def _resolve_spack_python(argument: Path | None) -> Path | None:
+    if argument is not None:
+        return argument.expanduser().resolve()
+    configured = os.environ.get("SPACK_PYTHON")
+    if configured:
+        return Path(configured).expanduser().resolve()
+    candidate = Path.home() / "tolteca/bin/python"
+    return candidate.resolve() if candidate.is_file() else None
+
+
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     source_root = Path(__file__).resolve().parents[2]
     parser = argparse.ArgumentParser(description=__doc__)
@@ -249,6 +295,11 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         help="Citlali build-adaptation source checkout",
     )
     parser.add_argument("--spack", type=Path, help="Path to Spack executable")
+    parser.add_argument(
+        "--spack-python",
+        type=Path,
+        help="Python interpreter used by the Spack launcher",
+    )
     parser.add_argument("--json", action="store_true", help="Emit JSON")
     return parser.parse_args(argv)
 
@@ -259,6 +310,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         workspace_root=args.workspace_root.expanduser().resolve(),
         citlali_source=args.citlali_source.expanduser().resolve(),
         spack_executable=_resolve_spack(args.spack),
+        spack_python=_resolve_spack_python(args.spack_python),
     )
     if args.json:
         print(json.dumps([asdict(result) for result in results], indent=2))
