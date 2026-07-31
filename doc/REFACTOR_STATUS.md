@@ -117,11 +117,24 @@ freeze the application mainline.
   threshold-passing seeds into a compact scan-keyed cache before detailed QA
   cleanup and clears that cache after sidecar publication. Its CLI build,
   14 focused tests, all 532 enabled CTests, and the full 123-test config
-  preflight pass. A corrected observation-152433 Unity smoke, broader corpus
-  validation, and same-input enabled/disabled output identity remain the next
-  gates;
-  coherent masking and subtraction remain disabled. See
-  `handoff/COHERENT_RAW_IQ_MODE_OBSERVE_ONLY_ARCHITECTURE_2026-07-30.md`.
+  preflight pass. The corrected observation-152433 Unity smoke at `41ff5d64`
+  completed across all 11 raw networks: 1,128 unique RTC-seeded candidates
+  produced 12,408/12,408 valid network scores without exceeding the workload
+  budget. A reproducible comparison with independent offline evidence finds
+  16/19 curated events within 0.35 s and 250/328 primary continuous events;
+  the latter exceeds 1,000 circular-shift trials. Candidate centers are,
+  however, typically 0.221 s early. Runtime signed amplitude tracks offline
+  amplitude (Spearman 0.849), but absolute-cosine transfer is weak (Spearman
+  0.391), and the runtime descriptive operating point recovers only 24/61
+  offline-selected network responses. The production observer is therefore
+  operational, but score equivalence has not passed. Candidate-time
+  refinement, followed by re-scoring the frozen smoke, is the next repair
+  gate. Same-input enabled/disabled output identity is delegated to the
+  separate nondeterminism audit and is not reinterpreted here. Coherent
+  masking and subtraction remain disabled. See
+  `handoff/COHERENT_RAW_IQ_MODE_OBSERVE_ONLY_ARCHITECTURE_2026-07-30.md`
+  and
+  `handoff/COHERENT_IQ_SIDECAR_VALIDATION_2026-07-31.md`.
 - A 2026-07-24 pointing fruit-loop investigation is active. Five controlled
   observations have exact no-feedback seeds but monotonically brighter and
   broader fitted sources through four feedback passes. Production
