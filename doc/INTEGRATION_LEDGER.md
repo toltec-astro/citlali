@@ -10,7 +10,7 @@ ADRs, and validation records.
 | Workstream | Authority | Purpose | Integration rule | State |
 | --- | --- | --- | --- | --- |
 | Refactored application | `codex/refactor-mainline` | Canonical source, tests, configuration, operational behavior, and validation history | Normal application changes land here after their affected gates | Active |
-| Successor build adaptation | `codex/build-adaptation` | Port the full application into the accepted Tula CMake/Spack architecture | Incorporate mainline regularly; return only after all build-integration gates pass | Active in `/Users/gwilson/GitHub/citlali-refactor-conan2` |
+| Successor build adaptation | `codex/build-adaptation` | Port the full application into the accepted Tula CMake/Spack architecture | Incorporate mainline regularly; return only after all build-integration gates pass | Active in `/Users/gwilson/GitHub/citlali-refactor-build` |
 | Historical Conan 2 adaptation | `codex/conan2-adaptation` at `9aae0e669` | Preserved pointer to the superseded package-manager lane name | Do not resume; successor work moved without source changes | Frozen remotely |
 | Historical structural refactor | `codex/structural-refactor` at `171487196` | Forensic pointer to the pre-follow-on integration tree | Do not resume as an application authority | Frozen |
 | Historical fruit-loop/raw-IQ topic | `codex/fruit-loop-calibration-reference` at `b02fef613` | Forensic pointer to the topic-named branch before mainline normalization | Do not resume as an application authority | Frozen locally; its existing remote remains historical |
