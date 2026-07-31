@@ -88,6 +88,15 @@ therefore makes the accepted bounded-reread language concrete through
 network-batched I/O, event-keyed coincidence, progress, and a global budget;
 it does not change event selection or score meaning.
 
+The first completed scaling-repair smoke processed 12,408 network-event
+scores with 11 raw-file opens and 11 receive-time-vector reads, validating the
+new I/O lifecycle. All scores initially reported `incompatible_tone_map`
+because the matched runtime APT preserves flagged unmatched raw-tone rows with
+placeholder UID zero. These rows are required to preserve raw column order but
+do not carry usable detector identity. The scoring join therefore excludes
+rows with no finite usable phase before checking UID uniqueness. A duplicate
+among usable rows remains an explicit fail-closed incompatibility.
+
 This decision should be revisited if continuous raw-I/Q projection is shown to
 recover materially important events missed by RTC seeding, or if the bounded
 reread becomes a demonstrated runtime bottleneck. Any masking or subtraction

@@ -206,6 +206,34 @@ TEST(coherent_iq_mode_observer, incompatible_tone_map_fails_closed) {
     EXPECT_EQ(incompatible.status, "insufficient_compatible_tones");
 }
 
+TEST(coherent_iq_mode_observer,
+     duplicate_placeholder_uids_do_not_poison_usable_tone_identity) {
+    auto mode_template = make_template();
+    mode_template.tones.front().uid = 0;
+    auto candidate_uids = uids(mode_template);
+    auto candidate_offsets = offsets(mode_template);
+    auto phase = mode_vector(mode_template, 0, 4.0);
+
+    // Matched runtime APTs retain flagged, unmatched raw tones with UID zero.
+    // Their sidecar phase values are non-finite, so they are not identities
+    // participating in the score. The legitimate usable UID zero remains.
+    candidate_uids.push_back(0);
+    candidate_offsets.push_back(9.0e6);
+    phase.push_back(std::numeric_limits<double>::quiet_NaN());
+    const auto placeholder =
+        citlali::pipeline::score_coherent_iq_mode_event(
+            mode_template, 8, candidate_uids, candidate_offsets, phase);
+    EXPECT_EQ(placeholder.status, "scored");
+    EXPECT_NEAR(placeholder.projection_amplitude_mrad, 4.0, 1.0e-12);
+
+    // A second usable row with the same UID is still an ambiguous tone map.
+    phase.back() = 1.0;
+    const auto ambiguous =
+        citlali::pipeline::score_coherent_iq_mode_event(
+            mode_template, 8, candidate_uids, candidate_offsets, phase);
+    EXPECT_EQ(ambiguous.status, "incompatible_tone_map");
+}
+
 TEST(coherent_iq_mode_observer, distinguishes_local_common_and_delay_models) {
     const auto mode_template = make_template();
     auto local = std::vector<double>(8, 0.0);
