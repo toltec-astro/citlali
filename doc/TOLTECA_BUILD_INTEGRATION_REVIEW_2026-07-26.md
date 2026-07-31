@@ -7,6 +7,48 @@ reviewed implementation is a strong foundation for the successor build, but
 its current Citlali target is a deliberately limited library milestone rather
 than the full production reduction application.
 
+## 2026-07-31 Upstream Retest
+
+The updated upstream branches were retested in isolated checkouts at:
+
+| Repository | Branch | Commit |
+| --- | --- | --- |
+| `toltec-astro/tula_cmake` | `v3.x_conan2` | `998c229dba3abc178ffae5d45c777bb2e371304f` |
+| `toltec-astro/tula` | `v3.x` | `04aef8a02c0d29b9baa0a3a7f5262c0d4a38597e` |
+| `toltec-astro/kidscpp` | `v3.x` | `6d256fb8f266ee20268d49ade4a2c6728da2c6f7` |
+| `toltec-astro/citlali` | `v4.x_conan2` | `ec8965b9075a23ad6d23317db5a9a7fd9672b014` |
+
+Using Homebrew LLVM 20.1.8, C++23, Conan 2.31.1, Ninja, and an isolated Conan
+home:
+
+- Tula built, all 13 C++ tests passed, and its downstream package consumer
+  passed.
+- Kidscpp built, three synthetic tests passed, and its downstream package
+  consumer passed. Two real TolTEC reader tests skipped because the fixture
+  root was unavailable; that is an evidence gap rather than a successful
+  required-data gate.
+- Citlali built its static library and operational CLI. Six registered tests
+  passed or completed as expected: Gaussian-model, CLI help, CLI version, and
+  config-dump coverage passed; the real KIDs reader test skipped for missing
+  data.
+- The packaged Citlali executable runs and reports Citlali 4.0.0 and Kids
+  3.1.0.
+- Citlali's installed-package consumer fails to compile because public
+  `tula/nc.h` includes `<netcdf>`, while the CPM-provided NetCDF C++ headers
+  and library are available only inside the Tula package build and are not
+  exported to consumers.
+
+The updated implementation therefore proves the full upstream milestone CLI,
+but not a valid installed Citlali development package. Before adaptation, the
+NetCDF C++ dependency needs a packageable and transitive provider contract.
+The macOS profile must also select or validate LLVM major version 20 rather
+than using unversioned `brew --prefix llvm`; that command selected LLVM 19 on
+the review host even though `llvm@20` was installed. One Tula CMake Python
+workflow test is launcher-fragile because it assumes the command starts with a
+standalone `conan` executable instead of also accepting `python -m conan`.
+
+These findings refine, but do not change, the **Adapt** decision below.
+
 ## Reviewed Evidence
 
 The review used isolated checkouts at these exact revisions:

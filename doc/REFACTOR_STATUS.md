@@ -17,6 +17,25 @@ The project will improve the existing tree incrementally. It will not restart
 as a broad rewrite and will not rewrite the granular history of the validated
 branch. The exact validated tree will remain available for forensic review.
 
+## Current Integration Model
+
+As of 2026-07-31, `codex/refactor-mainline` is the canonical application
+integration branch. Continued scientific, diagnostic, configuration, and
+operational development remains active there. The previous
+`codex/structural-refactor` and `codex/fruit-loop-calibration-reference`
+branches are retained as historical pointers rather than competing
+application authorities.
+
+The successor build proceeds independently on `codex/conan2-adaptation` in a
+separate worktree created from the application mainline. It incorporates
+mainline regularly and may return only after the bounded Adapt gates pass. It
+does not wholesale-merge `citlali/v4.x_conan2`, replace the refactored
+application, or mix numerical algorithm changes into build integration.
+
+The live branch, upstream revision, gate, and import policy are recorded in
+[`INTEGRATION_LEDGER.md`](INTEGRATION_LEDGER.md). The durable rationale is
+[ADR 0008](adr/0008-application-mainline-and-build-adaptation-lanes.md).
+
 ## 2026-07-26 Conan 2 Build Review
 
 The previously deferred TolTECA build implementation is now available and has
@@ -45,6 +64,17 @@ work is a bounded compatibility and target adaptation, followed by the full
 local gate, a Unity point smoke run, and the frozen same-SHA four-mode matrix.
 The existing build remains available until the new path proves all of those
 gates. No numerical algorithm changes are part of this integration.
+
+A 2026-07-31 isolated retest of the latest upstream revisions materially
+improved this disposition: Tula, Kidscpp, and the Citlali CLI build under exact
+Homebrew LLVM 20 and C++23, and their available in-tree tests pass. The
+installed Citlali package-consumer test still fails because CPM-provided
+NetCDF C++ headers and library metadata do not propagate through the exported
+Tula package. The bundled macOS profile also resolves unversioned Homebrew
+`llvm` rather than enforcing LLVM 20, one Tula CMake Python test assumes a
+specific Conan launcher form, and the real TolTEC reader tests remain skipped
+without fixtures. These are adaptation entry gates, not reasons to replace or
+freeze the application mainline.
 
 ## Current Snapshot
 
