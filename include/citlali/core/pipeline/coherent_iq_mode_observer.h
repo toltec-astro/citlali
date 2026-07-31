@@ -329,9 +329,19 @@ inline CoherentIqModeScore score_coherent_iq_mode_event(
     }
     std::map<int, std::size_t> candidate_by_uid;
     for (std::size_t index = 0; index < uids.size(); ++index) {
+        // Runtime APTs retain unmatched/flagged raw-tone rows so their row
+        // ordering continues to match the raw I/Q columns. Those rows have
+        // no usable phase measurement and may share a placeholder UID (zero
+        // in current matched APTs). Exclude them before enforcing uniqueness;
+        // two usable rows with the same UID must still fail closed.
+        if (!std::isfinite(tone_offsets_hz[index]) ||
+            !std::isfinite(phase_change_mrad[index])) {
+            continue;
+        }
         if (!candidate_by_uid.emplace(uids[index], index).second) {
             result.status = "incompatible_tone_map";
-            result.compatibility_note = "candidate UIDs are not unique";
+            result.compatibility_note =
+                "usable candidate UIDs are not unique";
             return result;
         }
     }

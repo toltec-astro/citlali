@@ -125,6 +125,14 @@ freeze the application mainline.
   coincidence matching with shared-event grouping, adds progress and an
   observation-wide score budget, records realized I/O lifecycle, and runs the
   observer only after required science outputs and raw provenance are written.
+  The completed `b1747a1f` Unity rerun confirmed the operational repair:
+  10,595 network seeds formed 1,128 shared candidates and all 12,408 projected
+  network-event records completed with only 11 raw-file opens and 11 receive-
+  time-vector reads. It also exposed an independent tone-identity integration
+  defect: matched runtime APTs retain flagged unmatched rows with placeholder
+  UID zero, so checking uniqueness across all raw-tone rows rejected every
+  score. The observer now excludes rows without a finite usable phase before
+  enforcing UID uniqueness, while duplicate usable UIDs still fail closed.
   Focused classifier/config tests and the full 123-test config preflight pass;
   a same-tree CLI syntax gate passes. A complete local build is currently
   impeded by unrelated legacy-build dependency/toolchain drift and remains a

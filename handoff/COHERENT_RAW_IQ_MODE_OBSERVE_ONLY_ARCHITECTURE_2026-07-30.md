@@ -478,6 +478,16 @@ order-dependent truncation. Required science products and raw provenance are
 written before the opt-in observer runs. None of these changes alter candidate
 thresholds, score semantics, samples, flags, weights, learning, or maps.
 
+The completed `b1747a1f` observation-152433 rerun validated that bound: 10,595
+network seeds formed 1,128 shared candidates, all 12,408 projected scores were
+processed, and the observer opened 11 raw network files and read 11 complete
+receive-time vectors. It also found that every score failed compatibility
+because the runtime APT includes flagged unmatched raw-tone rows with the
+placeholder UID zero. The tone join now ignores rows without a finite usable
+phase before checking UID uniqueness. This preserves the legitimate unflagged
+nw0 detector UID zero and still fails closed for genuinely duplicated usable
+detector identities.
+
 Repeat the bounded observation-152433 Unity smoke test with the compact
 candidate-lifecycle correction. The first smoke at `91f99bde` loaded and
 hash-verified all 11 templates and wrote a schema-valid required sidecar, but
