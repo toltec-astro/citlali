@@ -269,6 +269,8 @@ timestream: # timestream reduction parameters
       post_window_sec: 0.20 # raw-I/Q averaging interval after the event guard
       cross_network_tolerance_sec: 0.35 # merge network seeds into shared epochs and annotate scored coincidences
       max_candidates_per_scan_per_network: 8 # deterministic cap on compact event records
+      max_network_event_scores: 20000 # skip raw-I/Q scoring rather than exceed this observation-wide candidate-by-network budget
+      progress_interval_scores: 250 # log observer progress after this many network-event scores; 0 disables interval logs
     kernel: # make synthetic timestreams for reduction characterization
       enabled: false # enable or disable kernel generation
       filepath: null # filepath to FITS file with kernel

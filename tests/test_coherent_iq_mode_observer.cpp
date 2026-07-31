@@ -7,6 +7,7 @@
 #include <cmath>
 #include <filesystem>
 #include <fstream>
+#include <limits>
 #include <vector>
 
 namespace {
@@ -347,6 +348,44 @@ TEST(coherent_iq_mode_observer, cross_network_candidates_seed_one_shared_event) 
     EXPECT_EQ(events[0].seed_network_count, 3);
     EXPECT_EQ(events[0].seed_networks, "1 2 8");
     EXPECT_EQ(events[1].scan_one_based, 3);
+}
+
+TEST(coherent_iq_mode_observer, workload_budget_is_global_and_overflow_safe) {
+    using citlali::pipeline::plan_coherent_iq_sidecar_workload;
+    const auto accepted = plan_coherent_iq_sidecar_workload(1107, 11, 20000);
+    EXPECT_EQ(accepted.projected_network_event_scores, 12177U);
+    EXPECT_FALSE(accepted.budget_exceeded);
+    const auto rejected = plan_coherent_iq_sidecar_workload(2000, 11, 20000);
+    EXPECT_TRUE(rejected.budget_exceeded);
+    const auto overflow = plan_coherent_iq_sidecar_workload(
+        std::numeric_limits<std::size_t>::max(), 2, 20000);
+    EXPECT_EQ(overflow.projected_network_event_scores,
+              std::numeric_limits<std::size_t>::max());
+    EXPECT_TRUE(overflow.budget_exceeded);
+}
+
+TEST(coherent_iq_mode_observer, coincidence_is_attached_by_shared_event) {
+    using citlali::pipeline::CoherentIqSidecarRecord;
+    std::vector<CoherentIqSidecarRecord> records(5);
+    records[0].shared_candidate_index = 0;
+    records[0].candidate.network = 1;
+    records[0].mode_score.status = "scored";
+    records[1].shared_candidate_index = 0;
+    records[1].candidate.network = 2;
+    records[1].mode_score.status = "scored";
+    records[2].shared_candidate_index = 0;
+    records[2].candidate.network = 8;
+    records[2].mode_score.status = "template_unavailable";
+    records[3].shared_candidate_index = 1;
+    records[3].candidate.network = 2;
+    records[3].mode_score.status = "scored";
+    records[4].shared_candidate_index = 1;
+    records[4].candidate.network = 8;
+    records[4].mode_score.status = "scored";
+    citlali::pipeline::attach_coherent_iq_cross_network_coincidence(records);
+    EXPECT_EQ(records[0].cross_network_coincident_networks, "1 2");
+    EXPECT_EQ(records[2].cross_network_coincident_count, 2);
+    EXPECT_EQ(records[3].cross_network_coincident_networks, "2 8");
 }
 
 TEST(coherent_iq_mode_observer, template_loader_enforces_versioned_contract) {

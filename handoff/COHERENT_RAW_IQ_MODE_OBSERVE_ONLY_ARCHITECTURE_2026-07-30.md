@@ -176,6 +176,8 @@ timestream:
       post_window_sec: 0.20
       cross_network_tolerance_sec: 0.35
       max_candidates_per_scan_per_network: 8
+      max_network_event_scores: 20000
+      progress_interval_scores: 250
 ```
 
 Template paths should be absolute on the reduction host. Enabling the
@@ -457,6 +459,24 @@ The generated files belong under the project artifact directory
 `docs/coherent-iq-mode-evaluation-20260730`.
 
 ## Next production step
+
+### 2026-07-31 scaling correction
+
+The corrected 152433 smoke populated 1,107 shared candidates and projected
+12,177 network-event records, but the event-major implementation reopened the
+network file and reread its complete receive-time vector for each record. The
+cancelled job accumulated 2.46 TB of logical reads and stalled after the TOD
+profile stage. The sidecar is now network-major: one raw reader, receive-time
+vector, tone-coordinate vector, and APT join per present network, followed by
+bounded I/Q window reads for that network's candidates. Coincidence annotation
+uses the shared-candidate identity rather than an all-record pairwise search.
+
+The observer logs its projected workload, per-network progress, and periodic
+score progress. `max_network_event_scores` is an observation-wide budget; an
+excess writes an explicit `skipped_workload_budget` diagnostic with no
+order-dependent truncation. Required science products and raw provenance are
+written before the opt-in observer runs. None of these changes alter candidate
+thresholds, score semantics, samples, flags, weights, learning, or maps.
 
 Repeat the bounded observation-152433 Unity smoke test with the compact
 candidate-lifecycle correction. The first smoke at `91f99bde` loaded and

@@ -10,6 +10,7 @@ ADRs, and validation records.
 | Workstream | Authority | Purpose | Integration rule | State |
 | --- | --- | --- | --- | --- |
 | Refactored application | `codex/refactor-mainline` | Canonical source, tests, configuration, operational behavior, and validation history | Normal application changes land here after their affected gates | Active |
+| Coherent-IQ sidecar scaling | `codex/coherent-iq-sidecar-scaling` | Bound and batch the observe-only raw-I/Q sidecar after the 152433 smoke produced 2.46 TB of logical reads and did not complete | Keep diagnostic-only behavior; run focused/config/CTest gates and repeat the bounded Unity smoke before returning to mainline | Active in `/private/tmp/citlali-coherent-iq-sidecar-scaling` |
 | Conan 2 adaptation | `codex/conan2-adaptation` | Port the full application into the accepted Tula/Conan 2 architecture | Incorporate mainline regularly; return only after all build-integration gates pass | Active in `/Users/gwilson/GitHub/citlali-refactor-conan2` |
 | Historical structural refactor | `codex/structural-refactor` at `171487196` | Forensic pointer to the pre-follow-on integration tree | Do not resume as an application authority | Frozen |
 | Historical fruit-loop/raw-IQ topic | `codex/fruit-loop-calibration-reference` at `b02fef613` | Forensic pointer to the topic-named branch before mainline normalization | Do not resume as an application authority | Frozen locally; its existing remote remains historical |

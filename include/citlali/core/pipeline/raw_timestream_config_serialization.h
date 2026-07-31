@@ -179,6 +179,8 @@ inline YAML::Node coherent_iq_mode_observer_request_node(
         config.cross_network_tolerance_sec;
     node["max_candidates_per_scan_per_network"] =
         config.max_candidates_per_scan_per_network;
+    node["max_network_event_scores"] = config.max_network_event_scores;
+    node["progress_interval_scores"] = config.progress_interval_scores;
     return node;
 }
 

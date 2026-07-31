@@ -355,6 +355,12 @@ inline void validate(
         append_config_path(
             path, {"max_candidates_per_scan_per_network"}),
         report);
+    check_minimum(
+        config.max_network_event_scores, 1,
+        append_config_path(path, {"max_network_event_scores"}), report);
+    check_minimum(
+        config.progress_interval_scores, 0,
+        append_config_path(path, {"progress_interval_scores"}), report);
 }
 
 inline void validate(const RawTimeChunkKernelConfig &, ValidationReport &) {}
