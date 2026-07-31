@@ -181,6 +181,22 @@ inline YAML::Node coherent_iq_mode_observer_request_node(
         config.max_candidates_per_scan_per_network;
     node["max_network_event_scores"] = config.max_network_event_scores;
     node["progress_interval_scores"] = config.progress_interval_scores;
+    auto refinement = node["time_refinement"];
+    refinement["enabled"] = config.time_refinement.enabled;
+    refinement["search_half_width_sec"] =
+        config.time_refinement.search_half_width_sec;
+    refinement["smoothing_window_sec"] =
+        config.time_refinement.smoothing_window_sec;
+    refinement["minimum_derivative_snr"] =
+        config.time_refinement.minimum_derivative_snr;
+    refinement["minimum_peak_ratio"] =
+        config.time_refinement.minimum_peak_ratio;
+    refinement["peak_exclusion_sec"] =
+        config.time_refinement.peak_exclusion_sec;
+    refinement["minimum_networks"] =
+        config.time_refinement.minimum_networks;
+    refinement["consensus_tolerance_sec"] =
+        config.time_refinement.consensus_tolerance_sec;
     return node;
 }
 

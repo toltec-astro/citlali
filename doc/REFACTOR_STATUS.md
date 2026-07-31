@@ -144,8 +144,17 @@ freeze the application mainline.
   (Spearman 0.849), but absolute-cosine transfer is weak (Spearman 0.391), and
   the runtime descriptive operating point recovers only 24/61 offline-selected
   network responses. The production observer is therefore operational, but
-  score equivalence has not passed. Candidate-time refinement, followed by
-  re-scoring the frozen smoke, is the next repair gate. Same-input
+  score equivalence has not passed. An opt-in version-two candidate-time
+  refinement is now implemented locally: each compatible network searches a
+  bounded template-projected raw-I/Q window for one unique transition, and a
+  refined score is produced only when a configured multi-network consensus
+  succeeds. The original RTC seed and seed-centered score remain separate
+  provenance. Boundary, weak, ambiguous, under-supported, and inconsistent
+  cases fail closed; no network allow-list or science-path action was added.
+  All 539 enabled local CTests, the 123-test config preflight, focused Python
+  tests, and v1/v2 schema checks pass. A bounded Unity 152433 refinement smoke
+  and frozen-corpus seed-versus-refined comparison are the next repair gate.
+  Same-input
   enabled/disabled output identity is delegated to the separate nondeterminism
   audit and is not reinterpreted here. Coherent masking and subtraction remain
   disabled. See

@@ -8321,6 +8321,15 @@ timestream:
       max_candidates_per_scan_per_network: 12
       max_network_event_scores: 12345
       progress_interval_scores: 125
+      time_refinement:
+        enabled: true
+        search_half_width_sec: 0.45
+        smoothing_window_sec: 0.07
+        minimum_derivative_snr: 6.5
+        minimum_peak_ratio: 1.4
+        peak_exclusion_sec: 0.09
+        minimum_networks: 3
+        consensus_tolerance_sec: 0.06
     line_audit:
       enabled: false
       line_min_hz: 2.0
@@ -8368,6 +8377,35 @@ timestream:
         12);
     EXPECT_EQ(raw.coherent_iq_mode_observer.max_network_event_scores, 12345);
     EXPECT_EQ(raw.coherent_iq_mode_observer.progress_interval_scores, 125);
+    EXPECT_TRUE(
+        raw.coherent_iq_mode_observer.time_refinement.enabled);
+    EXPECT_DOUBLE_EQ(
+        raw.coherent_iq_mode_observer.time_refinement
+            .search_half_width_sec,
+        0.45);
+    EXPECT_DOUBLE_EQ(
+        raw.coherent_iq_mode_observer.time_refinement
+            .smoothing_window_sec,
+        0.07);
+    EXPECT_DOUBLE_EQ(
+        raw.coherent_iq_mode_observer.time_refinement
+            .minimum_derivative_snr,
+        6.5);
+    EXPECT_DOUBLE_EQ(
+        raw.coherent_iq_mode_observer.time_refinement
+            .minimum_peak_ratio,
+        1.4);
+    EXPECT_DOUBLE_EQ(
+        raw.coherent_iq_mode_observer.time_refinement
+            .peak_exclusion_sec,
+        0.09);
+    EXPECT_EQ(
+        raw.coherent_iq_mode_observer.time_refinement.minimum_networks,
+        3);
+    EXPECT_DOUBLE_EQ(
+        raw.coherent_iq_mode_observer.time_refinement
+            .consensus_tolerance_sec,
+        0.06);
     EXPECT_FALSE(raw.line_audit.enabled);
     EXPECT_DOUBLE_EQ(raw.line_audit.line_min_hz, 2.0);
     EXPECT_DOUBLE_EQ(raw.line_audit.line_max_hz, 55.0);
@@ -8400,6 +8438,8 @@ TEST(config_scaffold, serializes_raw_request_without_observation_state) {
         "/templates/nw0.json", "/templates/nw8.json"};
     request.coherent_iq_mode_observer.max_network_event_scores = 12345;
     request.coherent_iq_mode_observer.progress_interval_scores = 125;
+    request.coherent_iq_mode_observer.time_refinement.enabled = true;
+    request.coherent_iq_mode_observer.time_refinement.minimum_networks = 3;
     request.extinction_correction_enabled = true;
     request.extinction_model = "observation-derived-model";
 
@@ -8434,6 +8474,14 @@ TEST(config_scaffold, serializes_raw_request_without_observation_state) {
     EXPECT_EQ(
         node["coherent_iq_mode_observer"]["progress_interval_scores"].as<int>(),
         125);
+    EXPECT_TRUE(
+        node["coherent_iq_mode_observer"]["time_refinement"]["enabled"]
+            .as<bool>());
+    EXPECT_EQ(
+        node["coherent_iq_mode_observer"]["time_refinement"]
+            ["minimum_networks"]
+                .as<int>(),
+        3);
     EXPECT_TRUE(node["extinction_correction"]["enabled"].as<bool>());
     EXPECT_FALSE(node["extinction_correction"]["model"].IsDefined());
 }
@@ -8461,6 +8509,44 @@ TEST(config_scaffold, validates_coherent_iq_observer_fail_closed) {
         std::string::npos);
     EXPECT_NE(diagnostic.find("max_network_event_scores"), std::string::npos);
     EXPECT_NE(diagnostic.find("progress_interval_scores"), std::string::npos);
+}
+
+TEST(config_scaffold, validates_coherent_iq_time_refinement_fail_closed) {
+    citlali::config::RawTimeChunkCoherentIqModeObserverConfig config;
+    config.enabled = true;
+    config.template_paths = {"template.json"};
+    config.time_refinement.enabled = true;
+    config.time_refinement.search_half_width_sec = 0.1;
+    config.time_refinement.smoothing_window_sec = 0.2;
+    config.time_refinement.minimum_derivative_snr = -1.0;
+    config.time_refinement.minimum_peak_ratio = 0.9;
+    config.time_refinement.peak_exclusion_sec = 0.2;
+    config.time_refinement.minimum_networks = 0;
+    config.time_refinement.consensus_tolerance_sec = 0.0;
+    citlali::config::ValidationReport report;
+
+    citlali::config::validate(config, report);
+
+    EXPECT_FALSE(report.ok());
+    const auto diagnostic = report.format_for_cli();
+    EXPECT_NE(diagnostic.find("time_refinement"), std::string::npos);
+    EXPECT_NE(diagnostic.find("smoothing_window_sec"), std::string::npos);
+    EXPECT_NE(diagnostic.find("minimum_derivative_snr"), std::string::npos);
+    EXPECT_NE(diagnostic.find("minimum_peak_ratio"), std::string::npos);
+    EXPECT_NE(diagnostic.find("peak_exclusion_sec"), std::string::npos);
+    EXPECT_NE(diagnostic.find("minimum_networks"), std::string::npos);
+    EXPECT_NE(
+        diagnostic.find("consensus_tolerance_sec"), std::string::npos);
+
+    citlali::config::RawTimeChunkCoherentIqModeObserverConfig inactive;
+    inactive.time_refinement.enabled = true;
+    citlali::config::ValidationReport inactive_report;
+    citlali::config::validate(inactive, inactive_report);
+    EXPECT_FALSE(inactive_report.ok());
+    EXPECT_NE(
+        inactive_report.format_for_cli().find(
+            "requires the coherent-IQ mode observer"),
+        std::string::npos);
 }
 
 TEST(config_scaffold, coherent_iq_observer_adapter_enables_diagnostics_only) {

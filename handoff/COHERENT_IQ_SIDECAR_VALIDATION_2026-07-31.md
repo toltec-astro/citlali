@@ -59,21 +59,47 @@ points to candidate-window alignment. Both implementations use the same
 0.20 s pre-window, 0.05 s guard, and 0.20 s post-window, but center those
 windows on different candidate-time estimates.
 
+## Candidate-time refinement implementation
+
+An opt-in, observe-only refinement is now implemented on
+`codex/coherent-iq-sidecar-validation`. It preserves the RTC seed and original
+seed-centered `mode_score`. For every compatible network it projects a bounded
+raw-I/Q window onto the versioned template modes, smooths the projected phase,
+and finds the strongest local absolute derivative. It rejects boundary peaks,
+weak derivatives, and separated comparable peaks. A shared time is accepted
+only when at least the configured number of networks agree within the
+configured tolerance. The sidecar records each local result, the shared
+consensus, and a separate `refined_mode_score` evaluated at that shared time.
+
+The feature is disabled by default and does not contain a network allow-list.
+It does not change samples, flags, weights, maps, or learning state. The
+version-one schema remains available as
+`validation/coherent_iq_mode_sidecar_v1.schema.json`; new output uses the
+version-two schema.
+
+Local validation passed the complete 540-test CTest suite (539 enabled, one
+pre-existing disabled), the 123-test configuration preflight, focused C++ and
+Python tests, public-header syntax, and v1/v2 schema checks. The exact Unity
+science corpus is not available locally, so scientific acceptance remains
+pending.
+
 ## Required next gate
 
-Implement and test event-time refinement before the raw-I/Q mode score is
-calculated. The bounded design should:
+Run the bounded observation-152433 Unity smoke with refinement enabled and:
 
-1. preserve the original RTC seed time and kind as provenance;
-2. search a configured local interval for the transition supported by the
-   raw-I/Q coherent response;
-3. report the refined time, displacement from the seed, boundary/ambiguity
-   status, and refinement method;
-4. fail closed when no unique stable transition can be localized;
-5. re-score this frozen 152433 sidecar corpus and require materially improved
-   transfer without merely widening thresholds;
-6. continue reporting shape score, absolute amplitude, displaced-state
-   occupancy, and dwell duration as separate quantities.
+1. require completed execution without exceeding the existing global work
+   budget;
+2. inspect the distribution of local rejection reasons, shared support, time
+   displacement, and network-time span;
+3. compare the preserved seed scores and refined scores independently against
+   the same frozen curated and continuous catalogs;
+4. require materially improved timing and score transfer without widening the
+   matching or descriptive score thresholds; and
+5. confirm that the added second network pass remains operationally bounded.
+
+Shape score and absolute amplitude remain separate quantities. Displaced-state
+occupancy, settling, and stable dwell boundaries are not supplied by this
+change and remain the next design layer before masking is considered.
 
 A success here still advances only observe-only diagnostics. Stable dwell
 boundaries and astronomical signal-bias tests are separate gates before any

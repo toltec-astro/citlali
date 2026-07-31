@@ -29,7 +29,10 @@ import yaml
 
 
 SCHEMA_VERSION = "citlali-coherent-iq-sidecar-validation-v1"
-SIDECAR_SCHEMA_VERSION = "citlali-coherent-iq-mode-sidecar-v1"
+SIDECAR_SCHEMA_VERSIONS = {
+    "citlali-coherent-iq-mode-sidecar-v1",
+    "citlali-coherent-iq-mode-sidecar-v2",
+}
 
 
 @dataclass(frozen=True)
@@ -80,13 +83,20 @@ def _boolean_series(values: pd.Series) -> pd.Series:
 def load_sidecar(
     path: Path,
     *,
+    score_source: str = "seed",
     minimum_absolute_cosine: float,
     minimum_absolute_amplitude_mrad: float,
 ) -> tuple[dict[str, Any], pd.DataFrame, pd.DataFrame]:
     loader = getattr(yaml, "CSafeLoader", yaml.SafeLoader)
     payload = yaml.load(path.read_text(encoding="utf-8"), Loader=loader)
-    if payload.get("schema_version") != SIDECAR_SCHEMA_VERSION:
+    if payload.get("schema_version") not in SIDECAR_SCHEMA_VERSIONS:
         raise ValueError(f"unsupported sidecar schema in {path}")
+    if score_source not in {"seed", "refined"}:
+        raise ValueError(f"unsupported score source: {score_source}")
+    if score_source == "refined" and payload.get("schema_version") == (
+        "citlali-coherent-iq-mode-sidecar-v1"
+    ):
+        raise ValueError("refined scores require a v2 sidecar")
     obsnum = int(payload["observation"]["obsnum"])
     score_rows: list[dict[str, Any]] = []
     candidate_metadata: dict[tuple[int, float], dict[str, Any]] = {}
@@ -110,7 +120,10 @@ def load_sidecar(
             raise ValueError(
                 f"candidate metadata differs across networks for {key}"
             )
-        score = event["mode_score"]
+        score = event[
+            "mode_score" if score_source == "seed" else "refined_mode_score"
+        ]
+        shared_refinement = event.get("shared_time_refinement", {})
         amplitude = score.get("projection_amplitude_mrad")
         absolute_cosine = score.get("absolute_cosine_similarity")
         selected = (
@@ -125,6 +138,15 @@ def load_sidecar(
                 "obsnum": obsnum,
                 "scan_one_based": scan,
                 "event_time_unix_sec": event_time,
+                "score_source": score_source,
+                "scoring_time_unix_sec": (
+                    event_time
+                    if score_source == "seed"
+                    else shared_refinement.get("refined_time_unix_sec")
+                ),
+                "shared_time_refinement_status": str(
+                    shared_refinement.get("status", "not_available")
+                ),
                 "network": int(event["network"]),
                 "status": str(score.get("status", "")),
                 "template_id": str(score.get("template_id", "")),
@@ -545,6 +567,7 @@ def render_report(result: dict[str, Any]) -> str:
         f"- Observation: `{result['obsnum']}`",
         f"- Sidecar: `{result['inputs']['sidecar']['path']}`",
         f"- Candidate tolerance: `{result['parameters']['match_tolerance_sec']}` s",
+        f"- Score source: `{result['parameters']['score_source']}`",
         f"- Runtime candidates: `{result['candidate_count']}`",
         f"- Network-event scores: `{result['network_event_score_count']}`",
         f"- Observer status: `{execution.get('status')}`",
@@ -592,6 +615,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--offline-scores", type=Path, required=True)
     parser.add_argument("--continuous-events", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument(
+        "--score-source", choices=("seed", "refined"), default="seed"
+    )
     parser.add_argument("--match-tolerance-sec", type=float, default=0.35)
     parser.add_argument("--minimum-absolute-cosine", type=float, default=0.6)
     parser.add_argument(
@@ -608,6 +634,7 @@ def main() -> None:
         raise ValueError("match tolerance must be positive")
     payload, candidates, scores = load_sidecar(
         args.sidecar,
+        score_source=args.score_source,
         minimum_absolute_cosine=args.minimum_absolute_cosine,
         minimum_absolute_amplitude_mrad=args.minimum_absolute_amplitude_mrad,
     )
@@ -717,6 +744,7 @@ def main() -> None:
         },
         "parameters": {
             "match_tolerance_sec": args.match_tolerance_sec,
+            "score_source": args.score_source,
             "minimum_absolute_cosine": args.minimum_absolute_cosine,
             "minimum_absolute_amplitude_mrad": args.minimum_absolute_amplitude_mrad,
             "null_iterations": args.null_iterations,

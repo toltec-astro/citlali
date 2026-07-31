@@ -9,7 +9,7 @@
 
 namespace citlali::pipeline {
 
-inline constexpr std::array<std::string_view, 12>
+inline constexpr std::array<std::string_view, 20>
     coherent_iq_mode_observer_request_paths{
         "timestream.raw_time_chunk.coherent_iq_mode_observer.enabled",
         "timestream.raw_time_chunk.coherent_iq_mode_observer.template_paths",
@@ -23,6 +23,14 @@ inline constexpr std::array<std::string_view, 12>
         "timestream.raw_time_chunk.coherent_iq_mode_observer.max_candidates_per_scan_per_network",
         "timestream.raw_time_chunk.coherent_iq_mode_observer.max_network_event_scores",
         "timestream.raw_time_chunk.coherent_iq_mode_observer.progress_interval_scores",
+        "timestream.raw_time_chunk.coherent_iq_mode_observer.time_refinement.enabled",
+        "timestream.raw_time_chunk.coherent_iq_mode_observer.time_refinement.search_half_width_sec",
+        "timestream.raw_time_chunk.coherent_iq_mode_observer.time_refinement.smoothing_window_sec",
+        "timestream.raw_time_chunk.coherent_iq_mode_observer.time_refinement.minimum_derivative_snr",
+        "timestream.raw_time_chunk.coherent_iq_mode_observer.time_refinement.minimum_peak_ratio",
+        "timestream.raw_time_chunk.coherent_iq_mode_observer.time_refinement.peak_exclusion_sec",
+        "timestream.raw_time_chunk.coherent_iq_mode_observer.time_refinement.minimum_networks",
+        "timestream.raw_time_chunk.coherent_iq_mode_observer.time_refinement.consensus_tolerance_sec",
     };
 
 template <class Config, class Diagnostics>
@@ -70,6 +78,35 @@ void read_coherent_iq_mode_observer_request_config(
     read_optional_raw_request_value(
         config, key("progress_interval_scores"),
         observer.progress_interval_scores, diagnostics, {}, {0});
+    auto refinement_key = [](const char *name) {
+        return std::tuple{
+            "timestream", "raw_time_chunk", "coherent_iq_mode_observer",
+            "time_refinement", name};
+    };
+    auto &refinement = observer.time_refinement;
+    read_optional_raw_request_value(
+        config, refinement_key("enabled"), refinement.enabled, diagnostics);
+    read_optional_raw_request_value(
+        config, refinement_key("search_half_width_sec"),
+        refinement.search_half_width_sec, diagnostics, {}, {0.0});
+    read_optional_raw_request_value(
+        config, refinement_key("smoothing_window_sec"),
+        refinement.smoothing_window_sec, diagnostics, {}, {0.0});
+    read_optional_raw_request_value(
+        config, refinement_key("minimum_derivative_snr"),
+        refinement.minimum_derivative_snr, diagnostics, {}, {0.0});
+    read_optional_raw_request_value(
+        config, refinement_key("minimum_peak_ratio"),
+        refinement.minimum_peak_ratio, diagnostics, {}, {1.0});
+    read_optional_raw_request_value(
+        config, refinement_key("peak_exclusion_sec"),
+        refinement.peak_exclusion_sec, diagnostics, {}, {0.0});
+    read_optional_raw_request_value(
+        config, refinement_key("minimum_networks"),
+        refinement.minimum_networks, diagnostics, {}, {1});
+    read_optional_raw_request_value(
+        config, refinement_key("consensus_tolerance_sec"),
+        refinement.consensus_tolerance_sec, diagnostics, {}, {0.0});
 }
 
 }  // namespace citlali::pipeline

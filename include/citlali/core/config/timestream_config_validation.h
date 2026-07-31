@@ -317,11 +317,16 @@ inline void validate(const RawTimeChunkFlaggingConfig &config,
 inline void validate(
     const RawTimeChunkCoherentIqModeObserverConfig &config,
     ValidationReport &report) {
-    if (!config.enabled) {
-        return;
-    }
     const ConfigPath path{
         "timestream", "raw_time_chunk", "coherent_iq_mode_observer"};
+    if (!config.enabled) {
+        if (config.time_refinement.enabled) {
+            report.add_error(
+                append_config_path(path, {"time_refinement", "enabled"}),
+                "requires the coherent-IQ mode observer to be enabled");
+        }
+        return;
+    }
     if (config.template_paths.empty()) {
         report.add_error(
             append_config_path(path, {"template_paths"}),
@@ -361,6 +366,76 @@ inline void validate(
     check_minimum(
         config.progress_interval_scores, 0,
         append_config_path(path, {"progress_interval_scores"}), report);
+    if (config.time_refinement.enabled) {
+        const auto refinement_path =
+            append_config_path(path, {"time_refinement"});
+        const auto &refinement = config.time_refinement;
+        check_minimum(
+            refinement.search_half_width_sec, 0.0,
+            append_config_path(
+                refinement_path, {"search_half_width_sec"}),
+            report);
+        check_minimum(
+            refinement.smoothing_window_sec, 0.0,
+            append_config_path(
+                refinement_path, {"smoothing_window_sec"}),
+            report);
+        check_minimum(
+            refinement.minimum_derivative_snr, 0.0,
+            append_config_path(
+                refinement_path, {"minimum_derivative_snr"}),
+            report);
+        check_minimum(
+            refinement.minimum_peak_ratio, 1.0,
+            append_config_path(
+                refinement_path, {"minimum_peak_ratio"}),
+            report);
+        check_minimum(
+            refinement.peak_exclusion_sec, 0.0,
+            append_config_path(
+                refinement_path, {"peak_exclusion_sec"}),
+            report);
+        check_minimum(
+            refinement.minimum_networks, 1,
+            append_config_path(refinement_path, {"minimum_networks"}),
+            report);
+        check_minimum(
+            refinement.consensus_tolerance_sec, 0.0,
+            append_config_path(
+                refinement_path, {"consensus_tolerance_sec"}),
+            report);
+        const auto require_positive =
+            [&report, &refinement_path](double value, const char *name) {
+                if (value <= 0.0) {
+                    report.add_error(
+                        append_config_path(refinement_path, {name}),
+                        "must be positive when time refinement is enabled");
+                }
+            };
+        require_positive(
+            refinement.search_half_width_sec, "search_half_width_sec");
+        require_positive(
+            refinement.smoothing_window_sec, "smoothing_window_sec");
+        require_positive(
+            refinement.peak_exclusion_sec, "peak_exclusion_sec");
+        require_positive(
+            refinement.consensus_tolerance_sec,
+            "consensus_tolerance_sec");
+        if (refinement.smoothing_window_sec >=
+            2.0 * refinement.search_half_width_sec) {
+            report.add_error(
+                append_config_path(
+                    refinement_path, {"smoothing_window_sec"}),
+                "must be smaller than the full search interval");
+        }
+        if (refinement.peak_exclusion_sec >=
+            2.0 * refinement.search_half_width_sec) {
+            report.add_error(
+                append_config_path(
+                    refinement_path, {"peak_exclusion_sec"}),
+                "must be smaller than the full search interval");
+        }
+    }
 }
 
 inline void validate(const RawTimeChunkKernelConfig &, ValidationReport &) {}

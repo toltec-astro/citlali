@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://toltec.astro.umass.edu/schemas/citlali-coherent-iq-mode-sidecar-v1.json",
+  "title": "Citlali observe-only coherent raw-I/Q mode sidecar v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "diagnostic_schema_version",
+    "lifecycle_state",
+    "scientific_effect",
+    "observation",
+    "requested",
+    "network_status",
+    "template_inventory",
+    "events",
+    "realized",
+    "observer_execution"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "citlali-coherent-iq-mode-sidecar-v1"
+    },
+    "diagnostic_schema_version": {
+      "const": "citlali-coherent-iq-mode-diagnostic-v1"
+    },
+    "lifecycle_state": {"const": "observe_only"},
+    "scientific_effect": {
+      "const": "none; samples, flags, weights, maps, and learning state are unchanged"
+    },
+    "observation": {
+      "type": "object",
+      "required": ["obsnum"],
+      "properties": {"obsnum": {"type": ["string", "integer"]}},
+      "additionalProperties": false
+    },
+    "requested": {
+      "type": "object",
+      "required": [
+        "candidate_step_score_min",
+        "candidate_impulsive_score_min",
+        "candidate_cluster_tolerance_sec",
+        "pre_window_sec",
+        "guard_window_sec",
+        "post_window_sec",
+        "cross_network_tolerance_sec",
+        "max_candidates_per_scan_per_network",
+        "max_network_event_scores",
+        "progress_interval_scores"
+      ],
+      "additionalProperties": {"type": ["number", "integer"]}
+    },
+    "network_status": {
+      "type": "object",
+      "additionalProperties": {"type": "object"}
+    },
+    "template_inventory": {
+      "type": "object",
+      "additionalProperties": {"type": "object"}
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "scan_one_based",
+          "network",
+          "event_time_unix_sec",
+          "candidate_kinds",
+          "seed_network_count",
+          "seed_networks",
+          "supporting_detector_events",
+          "maximum_rtc_score",
+          "mode_score",
+          "cross_network_coincident_count",
+          "cross_network_coincident_networks"
+        ],
+        "properties": {
+          "scan_one_based": {"type": "integer", "minimum": 1},
+          "network": {"type": "integer", "minimum": 0},
+          "event_time_unix_sec": {"type": "number"},
+          "candidate_kinds": {"type": "string"},
+          "seed_network_count": {"type": "integer", "minimum": 1},
+          "seed_networks": {"type": ["string", "integer"]},
+          "supporting_detector_events": {"type": "integer", "minimum": 1},
+          "maximum_rtc_score": {"type": "number"},
+          "mode_score": {"$ref": "#/$defs/mode_score"},
+          "cross_network_coincident_count": {"type": "integer", "minimum": 0},
+          "cross_network_coincident_networks": {
+            "type": ["string", "integer"]
+          }
+        }
+      }
+    },
+    "observer_execution": {"$ref": "#/$defs/observer_execution"},
+    "realized": {
+      "type": "object",
+      "required": [
+        "candidate_count",
+        "shared_candidate_count",
+        "network_seed_candidate_count",
+        "network_event_score_count",
+        "projected_network_event_score_count",
+        "raw_network_files_opened",
+        "scored_count",
+        "network_count",
+        "template_count"
+      ],
+      "additionalProperties": {"type": "integer", "minimum": 0}
+    }
+  },
+  "$defs": {
+    "mode_score": {
+      "type": "object",
+      "required": [
+        "status",
+        "template_id",
+        "template_version",
+        "compatible_tone_count",
+        "template_tone_count",
+        "compatible_tone_fraction",
+        "rejected_tone_count",
+        "compatibility_note"
+      ],
+      "additionalProperties": true
+    },
+    "observer_execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "workload_budget_exceeded",
+        "projected_network_event_score_count",
+        "processed_network_event_score_count",
+        "raw_network_files_opened",
+        "raw_time_vectors_read"
+      ],
+      "properties": {
+        "status": {"enum": ["completed", "skipped_workload_budget"]},
+        "workload_budget_exceeded": {"type": "boolean"},
+        "projected_network_event_score_count": {"type": "integer", "minimum": 0},
+        "processed_network_event_score_count": {"type": "integer", "minimum": 0},
+        "raw_network_files_opened": {"type": "integer", "minimum": 0},
+        "raw_time_vectors_read": {"type": "integer", "minimum": 0}
+      }
+    }
+  }
+}

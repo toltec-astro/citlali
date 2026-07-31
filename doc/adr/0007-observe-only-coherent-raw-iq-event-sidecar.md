@@ -41,6 +41,15 @@ When enabled, the sidecar:
   realized counts, template hashes, compatibility status, and network-event
   scores.
 
+The version-two sidecar may also perform an explicitly requested, fail-closed
+candidate-time refinement. Each compatible network projects a bounded raw-I/Q
+window onto its versioned template modes and searches the smoothed projected
+phase derivative for one locally unique transition. A shared refined time is
+accepted only when a configured minimum number of networks agree within a
+configured tolerance. The original RTC seed time and seed-centered score are
+retained; the local refinements, shared consensus, and refined-time score are
+reported separately. No network is preferred or hard-coded.
+
 The observer does not change samples, flags, weights, learned state, or maps.
 It has no network allow-list. Missing or incompatible templates are explicit
 diagnostic outcomes.
@@ -76,6 +85,12 @@ No score threshold has masking authority. Event-level masking may be proposed
 later through the existing source-protected mask proposal path. Model
 subtraction remains experimental until cross-state template validation and
 astronomical signal-injection tests pass.
+
+Time refinement is disabled by default. Boundary peaks, weak derivatives,
+multiple comparable transitions, insufficient network support, and
+inconsistent network times remain explicit non-refined outcomes. A successful
+refinement does not identify stable displaced-state dwell boundaries and does
+not authorize transition-edge masking.
 
 ## Superseding evidence
 

@@ -4,6 +4,7 @@
 #include <citlali/core/config/timestream_config.h>
 #include <citlali/core/pipeline/atomic_yaml_output.h>
 #include <citlali/core/pipeline/coherent_iq_mode_observer.h>
+#include <citlali/core/pipeline/coherent_iq_time_refinement.h>
 #include <citlali/core/pipeline/rawobs_data_items.h>
 #include <citlali/core/pipeline/rawobs_detector_inventory.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
@@ -28,7 +29,7 @@
 namespace citlali::pipeline {
 
 inline constexpr const char *coherent_iq_sidecar_schema_version =
-    "citlali-coherent-iq-mode-sidecar-v1";
+    "citlali-coherent-iq-mode-sidecar-v2";
 inline constexpr const char *coherent_iq_sidecar_filename =
     "coherent_iq_mode_events.yaml";
 inline constexpr int coherent_iq_unavailable_sample = -2147483647;
@@ -53,6 +54,9 @@ struct CoherentIqCandidate {
 struct CoherentIqSidecarRecord {
     CoherentIqCandidate candidate;
     CoherentIqModeScore mode_score;
+    CoherentIqTimeRefinement network_time_refinement;
+    CoherentIqSharedTimeRefinement shared_time_refinement;
+    CoherentIqModeScore refined_mode_score;
     int cross_network_coincident_count = 0;
     std::string cross_network_coincident_networks;
     std::size_t shared_candidate_index = 0;
@@ -510,6 +514,168 @@ class CoherentIqNetworkRawReader {
                                             uids_, tone_offsets_, phase_change);
     }
 
+    CoherentIqTimeRefinement refine_time(
+        const CoherentIqCandidate &candidate,
+        const CoherentIqModeTemplate &mode_template,
+        const citlali::config::RawTimeChunkCoherentIqModeObserverConfig
+            &config) {
+        CoherentIqTimeRefinement result;
+        result.seed_time_unix_sec = candidate.time_unix_sec;
+        result.template_tone_count =
+            static_cast<int>(mode_template.tones.size());
+        if (!config.time_refinement.enabled) {
+            result.status = "disabled";
+            result.note = "time refinement was not requested";
+            return result;
+        }
+        if (candidate.network != network_ ||
+            mode_template.network != network_) {
+            result.status = "wrong_network";
+            result.note = "candidate, template, and raw network differ";
+            return result;
+        }
+
+        std::map<int, std::size_t> raw_by_uid;
+        for (std::size_t tone = 0; tone < n_tones_; ++tone) {
+            if (!apt_usable_[tone] ||
+                !std::isfinite(tone_offsets_[tone])) {
+                continue;
+            }
+            if (!raw_by_uid.emplace(uids_[tone], tone).second) {
+                result.status = "incompatible_tone_map";
+                result.note = "usable raw-tone UIDs are not unique";
+                return result;
+            }
+        }
+        std::vector<std::pair<std::size_t, const CoherentIqModeTone *>>
+            compatible;
+        for (const auto &template_tone : mode_template.tones) {
+            const auto found = raw_by_uid.find(template_tone.uid);
+            if (found == raw_by_uid.end()) {
+                continue;
+            }
+            const auto raw_tone = found->second;
+            if (std::abs(tone_offsets_[raw_tone] -
+                         template_tone.tone_offset_frequency_hz) <=
+                mode_template.tone_offset_tolerance_hz) {
+                compatible.emplace_back(raw_tone, &template_tone);
+            }
+        }
+        result.compatible_tone_count = static_cast<int>(compatible.size());
+        const auto minimum_count = std::max<std::size_t>(
+            3, mode_template.mode_ids.size() + 1);
+        const double compatible_fraction =
+            mode_template.tones.empty()
+                ? 0.0
+                : static_cast<double>(compatible.size()) /
+                      static_cast<double>(mode_template.tones.size());
+        if (compatible.size() < minimum_count ||
+            compatible_fraction <
+                mode_template.minimum_compatible_tone_fraction) {
+            result.status = "insufficient_compatible_tones";
+            result.note =
+                "compatible tone coverage is below template requirement";
+            return result;
+        }
+
+        const auto &refinement = config.time_refinement;
+        const double read_padding =
+            refinement.search_half_width_sec +
+            refinement.smoothing_window_sec;
+        const auto read_begin = std::lower_bound(
+            recv_time_.begin(), recv_time_.end(),
+            candidate.time_unix_sec - read_padding);
+        const auto read_end = std::upper_bound(
+            recv_time_.begin(), recv_time_.end(),
+            candidate.time_unix_sec + read_padding);
+        const auto read_first = static_cast<std::size_t>(
+            read_begin - recv_time_.begin());
+        const auto read_last = static_cast<std::size_t>(
+            read_end - recv_time_.begin());
+        if (read_last - read_first < 7) {
+            result.status = "incomplete_projection_window";
+            result.note = "raw file does not span the refinement search";
+            return result;
+        }
+        const std::size_t n_rows = read_last - read_first;
+        std::vector<double> is(n_rows * n_tones_);
+        std::vector<double> qs(n_rows * n_tones_);
+        is_var_.getVar({read_first, 0}, {n_rows, n_tones_}, is.data());
+        qs_var_.getVar({read_first, 0}, {n_rows, n_tones_}, qs.data());
+        std::vector<double> time(
+            recv_time_.begin() + static_cast<std::ptrdiff_t>(read_first),
+            recv_time_.begin() + static_cast<std::ptrdiff_t>(read_last));
+        const std::size_t n_modes = mode_template.mode_ids.size();
+        std::vector<std::vector<double>> numerator(
+            n_modes, std::vector<double>(n_rows, 0.0));
+        std::vector<std::vector<double>> denominator(
+            n_modes, std::vector<double>(n_rows, 0.0));
+        std::vector<int> valid_tone_count(n_rows, 0);
+        constexpr double two_pi = 2.0 * 3.14159265358979323846;
+        for (const auto &[raw_tone, template_tone] : compatible) {
+            bool have_previous = false;
+            double previous_wrapped = 0.0;
+            double unwrap_offset = 0.0;
+            for (std::size_t row = 0; row < n_rows; ++row) {
+                const std::complex<double> value{
+                    is[row * n_tones_ + raw_tone],
+                    qs[row * n_tones_ + raw_tone]};
+                if (!std::isfinite(value.real()) ||
+                    !std::isfinite(value.imag()) ||
+                    std::abs(value) == 0.0) {
+                    continue;
+                }
+                const double wrapped = std::arg(value);
+                if (have_previous) {
+                    const double delta = wrapped - previous_wrapped;
+                    if (delta > 3.14159265358979323846) {
+                        unwrap_offset -= two_pi;
+                    } else if (delta < -3.14159265358979323846) {
+                        unwrap_offset += two_pi;
+                    }
+                }
+                previous_wrapped = wrapped;
+                have_previous = true;
+                const double phase_mrad =
+                    (wrapped + unwrap_offset) * 1.0e3;
+                ++valid_tone_count[row];
+                for (std::size_t mode = 0; mode < n_modes; ++mode) {
+                    const double loading = template_tone->loadings[mode];
+                    numerator[mode][row] += phase_mrad * loading;
+                    denominator[mode][row] += loading * loading;
+                }
+            }
+        }
+        const double nan = std::numeric_limits<double>::quiet_NaN();
+        std::vector<std::vector<double>> projected(
+            n_modes, std::vector<double>(n_rows, nan));
+        for (std::size_t mode = 0; mode < n_modes; ++mode) {
+            for (std::size_t row = 0; row < n_rows; ++row) {
+                const double row_fraction =
+                    static_cast<double>(valid_tone_count[row]) /
+                    static_cast<double>(mode_template.tones.size());
+                if (valid_tone_count[row] >=
+                        static_cast<int>(minimum_count) &&
+                    row_fraction >=
+                        mode_template.minimum_compatible_tone_fraction &&
+                    denominator[mode][row] > 0.0) {
+                    projected[mode][row] =
+                        numerator[mode][row] / denominator[mode][row];
+                }
+            }
+        }
+        auto refined = refine_coherent_iq_projected_event_time(
+            time, mode_template.mode_ids, projected,
+            candidate.time_unix_sec, refinement.search_half_width_sec,
+            refinement.smoothing_window_sec,
+            refinement.minimum_derivative_snr,
+            refinement.minimum_peak_ratio,
+            refinement.peak_exclusion_sec);
+        refined.compatible_tone_count = result.compatible_tone_count;
+        refined.template_tone_count = result.template_tone_count;
+        return refined;
+    }
+
   private:
     int network_ = -1;
     std::string filepath_;
@@ -597,6 +763,57 @@ inline YAML::Node coherent_iq_score_node(
     return node;
 }
 
+inline YAML::Node coherent_iq_time_refinement_node(
+    const CoherentIqTimeRefinement &refinement) {
+    YAML::Node node;
+    node["status"] = refinement.status;
+    node["method"] = refinement.method;
+    auto assign_finite = [&node](const char *name, double value) {
+        node[name] = std::isfinite(value) ? YAML::Node(value) : YAML::Node();
+    };
+    assign_finite("seed_time_unix_sec", refinement.seed_time_unix_sec);
+    assign_finite(
+        "refined_time_unix_sec", refinement.refined_time_unix_sec);
+    assign_finite(
+        "displacement_from_seed_sec",
+        refinement.displacement_from_seed_sec);
+    node["primary_mode_id"] = refinement.primary_mode_id;
+    assign_finite(
+        "peak_absolute_derivative_mrad_per_sec",
+        refinement.peak_absolute_derivative_mrad_per_sec);
+    assign_finite("derivative_snr", refinement.derivative_snr);
+    assign_finite(
+        "peak_to_second_ratio", refinement.peak_to_second_ratio);
+    node["compatible_tone_count"] = refinement.compatible_tone_count;
+    node["template_tone_count"] = refinement.template_tone_count;
+    node["note"] = refinement.note;
+    return node;
+}
+
+inline YAML::Node coherent_iq_shared_time_refinement_node(
+    const CoherentIqSharedTimeRefinement &refinement) {
+    YAML::Node node;
+    node["status"] = refinement.status;
+    node["method"] = refinement.method;
+    auto assign_finite = [&node](const char *name, double value) {
+        node[name] = std::isfinite(value) ? YAML::Node(value) : YAML::Node();
+    };
+    assign_finite("seed_time_unix_sec", refinement.seed_time_unix_sec);
+    assign_finite(
+        "refined_time_unix_sec", refinement.refined_time_unix_sec);
+    assign_finite(
+        "displacement_from_seed_sec",
+        refinement.displacement_from_seed_sec);
+    node["contributing_network_count"] =
+        refinement.contributing_network_count;
+    node["contributing_networks"] = refinement.contributing_networks;
+    assign_finite(
+        "contributing_network_span_sec",
+        refinement.contributing_network_span_sec);
+    node["note"] = refinement.note;
+    return node;
+}
+
 template <class Engine, class RawObs, class = void>
 struct supports_coherent_iq_mode_sidecar : std::false_type {};
 
@@ -666,7 +883,13 @@ std::filesystem::path write_coherent_iq_mode_sidecar_supported(
         config.max_network_event_scores);
 
     std::vector<CoherentIqSidecarRecord> records;
+    std::vector<std::vector<std::pair<int, CoherentIqTimeRefinement>>>
+        network_refinements_by_candidate(candidates.size());
+    std::vector<CoherentIqSharedTimeRefinement> shared_refinements(
+        candidates.size());
     std::size_t raw_network_files_opened = 0;
+    std::size_t completed_refinements = 0;
+    std::size_t completed_refined_scores = 0;
     if (!workload.budget_exceeded) {
         records.reserve(workload.projected_network_event_scores);
         std::size_t completed_scores = 0;
@@ -689,16 +912,57 @@ std::filesystem::path write_coherent_iq_mode_sidecar_supported(
                 network_candidate.network = network;
                 CoherentIqModeScore score;
                 score.network = network;
+                CoherentIqTimeRefinement time_refinement;
+                time_refinement.seed_time_unix_sec =
+                    network_candidate.time_unix_sec;
+                CoherentIqModeScore refined_score;
+                refined_score.network = network;
                 if (template_it == templates.end()) {
                     score.status = "template_unavailable";
                     score.compatibility_note =
                         "no configured template for this present network";
+                    time_refinement.status = "template_unavailable";
+                    time_refinement.note =
+                        "no configured template for this present network";
+                    refined_score.status = "template_unavailable";
+                    refined_score.compatibility_note =
+                        "no configured template for this present network";
                 } else {
                     score = reader->score(network_candidate,
                                           template_it->second, config);
+                    time_refinement = reader->refine_time(
+                        network_candidate, template_it->second, config);
+                    if (config.time_refinement.enabled) {
+                        ++completed_refinements;
+                    }
+                    refined_score.template_id =
+                        template_it->second.template_id;
+                    refined_score.template_version =
+                        template_it->second.template_version;
+                    refined_score.template_tone_count = static_cast<int>(
+                        template_it->second.tones.size());
+                    refined_score.status =
+                        config.time_refinement.enabled
+                            ? "shared_time_refinement_unavailable"
+                            : "time_refinement_disabled";
+                    refined_score.compatibility_note =
+                        config.time_refinement.enabled
+                            ? "shared refined event time is not yet available"
+                            : "time refinement was not requested";
                 }
-                records.push_back({std::move(network_candidate),
-                                   std::move(score), 0, "", candidate_index});
+                CoherentIqSidecarRecord record;
+                record.candidate = std::move(network_candidate);
+                record.mode_score = std::move(score);
+                record.network_time_refinement =
+                    std::move(time_refinement);
+                record.refined_mode_score = std::move(refined_score);
+                record.shared_candidate_index = candidate_index;
+                if (config.time_refinement.enabled) {
+                    network_refinements_by_candidate[candidate_index]
+                        .emplace_back(
+                            network, record.network_time_refinement);
+                }
+                records.push_back(std::move(record));
                 ++completed_scores;
                 if (config.progress_interval_scores > 0 &&
                     (completed_scores % static_cast<std::size_t>(
@@ -716,6 +980,74 @@ std::filesystem::path write_coherent_iq_mode_sidecar_supported(
                          "network-event scores complete)",
                          network, completed_scores,
                          workload.projected_network_event_scores);
+        }
+        if (config.time_refinement.enabled) {
+            for (std::size_t candidate_index = 0;
+                 candidate_index < candidates.size(); ++candidate_index) {
+                shared_refinements[candidate_index] =
+                    consolidate_coherent_iq_time_refinements(
+                        candidates[candidate_index].time_unix_sec,
+                        network_refinements_by_candidate[candidate_index],
+                        config.time_refinement.minimum_networks,
+                        config.time_refinement.consensus_tolerance_sec);
+            }
+            for (auto &record : records) {
+                record.shared_time_refinement =
+                    shared_refinements[record.shared_candidate_index];
+            }
+
+            for (const auto &[network, filepath] : raw_files) {
+                const auto template_it = templates.find(network);
+                if (template_it == templates.end() || candidates.empty()) {
+                    continue;
+                }
+                const bool has_refined_candidate = std::any_of(
+                    shared_refinements.begin(), shared_refinements.end(),
+                    [](const auto &refinement) {
+                        return refinement.status == "refined";
+                    });
+                if (!has_refined_candidate) {
+                    continue;
+                }
+                CoherentIqNetworkRawReader reader(
+                    network, filepath, engine.calib);
+                ++raw_network_files_opened;
+                for (auto &record : records) {
+                    if (record.candidate.network != network ||
+                        record.shared_time_refinement.status != "refined") {
+                        if (record.candidate.network == network &&
+                            record.shared_time_refinement.status !=
+                                "refined") {
+                            record.refined_mode_score.status =
+                                "shared_time_refinement_" +
+                                record.shared_time_refinement.status;
+                            record.refined_mode_score.compatibility_note =
+                                record.shared_time_refinement.note;
+                        }
+                        continue;
+                    }
+                    auto refined_candidate = record.candidate;
+                    refined_candidate.time_unix_sec =
+                        record.shared_time_refinement
+                            .refined_time_unix_sec;
+                    record.refined_mode_score = reader.score(
+                        refined_candidate, template_it->second, config);
+                    ++completed_refined_scores;
+                }
+            }
+        } else {
+            for (std::size_t candidate_index = 0;
+                 candidate_index < candidates.size(); ++candidate_index) {
+                shared_refinements[candidate_index].status = "disabled";
+                shared_refinements[candidate_index].seed_time_unix_sec =
+                    candidates[candidate_index].time_unix_sec;
+                shared_refinements[candidate_index].note =
+                    "time refinement was not requested";
+            }
+            for (auto &record : records) {
+                record.shared_time_refinement =
+                    shared_refinements[record.shared_candidate_index];
+            }
         }
         attach_coherent_iq_cross_network_coincidence(records);
         std::sort(records.begin(), records.end(),
@@ -761,6 +1093,24 @@ std::filesystem::path write_coherent_iq_mode_sidecar_supported(
         config.max_network_event_scores;
     root["requested"]["progress_interval_scores"] =
         config.progress_interval_scores;
+    auto refinement_request =
+        root["requested"]["time_refinement"];
+    refinement_request["enabled"] =
+        config.time_refinement.enabled;
+    refinement_request["search_half_width_sec"] =
+        config.time_refinement.search_half_width_sec;
+    refinement_request["smoothing_window_sec"] =
+        config.time_refinement.smoothing_window_sec;
+    refinement_request["minimum_derivative_snr"] =
+        config.time_refinement.minimum_derivative_snr;
+    refinement_request["minimum_peak_ratio"] =
+        config.time_refinement.minimum_peak_ratio;
+    refinement_request["peak_exclusion_sec"] =
+        config.time_refinement.peak_exclusion_sec;
+    refinement_request["minimum_networks"] =
+        config.time_refinement.minimum_networks;
+    refinement_request["consensus_tolerance_sec"] =
+        config.time_refinement.consensus_tolerance_sec;
     root["observer_execution"]["status"] =
         workload.budget_exceeded ? "skipped_workload_budget" : "completed";
     root["observer_execution"]["workload_budget_exceeded"] =
@@ -769,6 +1119,10 @@ std::filesystem::path write_coherent_iq_mode_sidecar_supported(
         workload.projected_network_event_scores;
     root["observer_execution"]["processed_network_event_score_count"] =
         records.size();
+    root["observer_execution"]["processed_network_time_refinement_count"] =
+        completed_refinements;
+    root["observer_execution"]["processed_refined_network_event_score_count"] =
+        completed_refined_scores;
     root["observer_execution"]["raw_network_files_opened"] =
         raw_network_files_opened;
     root["observer_execution"]["raw_time_vectors_read"] =
@@ -837,6 +1191,14 @@ std::filesystem::path write_coherent_iq_mode_sidecar_supported(
             record.candidate.maximum_rtc_score;
         node["mode_score"] =
             coherent_iq_score_node(record.mode_score);
+        node["network_time_refinement"] =
+            coherent_iq_time_refinement_node(
+                record.network_time_refinement);
+        node["shared_time_refinement"] =
+            coherent_iq_shared_time_refinement_node(
+                record.shared_time_refinement);
+        node["refined_mode_score"] =
+            coherent_iq_score_node(record.refined_mode_score);
         node["cross_network_coincident_count"] =
             record.cross_network_coincident_count;
         node["cross_network_coincident_networks"] =
@@ -855,6 +1217,16 @@ std::filesystem::path write_coherent_iq_mode_sidecar_supported(
         workload.projected_network_event_scores;
     root["realized"]["raw_network_files_opened"] =
         raw_network_files_opened;
+    root["realized"]["network_time_refinement_count"] =
+        completed_refinements;
+    root["realized"]["shared_time_refined_candidate_count"] =
+        static_cast<int>(std::count_if(
+            shared_refinements.begin(), shared_refinements.end(),
+            [](const auto &refinement) {
+                return refinement.status == "refined";
+            }));
+    root["realized"]["refined_scored_count"] =
+        completed_refined_scores;
     root["realized"]["scored_count"] = static_cast<int>(
         std::count_if(
             records.begin(), records.end(), [](const auto &record) {

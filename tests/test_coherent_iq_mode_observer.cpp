@@ -378,6 +378,73 @@ TEST(coherent_iq_mode_observer, cross_network_candidates_seed_one_shared_event) 
     EXPECT_EQ(events[1].scan_one_based, 3);
 }
 
+TEST(coherent_iq_mode_observer,
+     projected_derivative_refines_a_unique_transition) {
+    std::vector<double> time;
+    std::vector<double> phase;
+    for (int index = 0; index <= 200; ++index) {
+        const double value = 0.01 * static_cast<double>(index);
+        time.push_back(value);
+        phase.push_back(
+            (value >= 1.0 ? 20.0 : 0.0) +
+            0.15 * std::sin(17.0 * value));
+    }
+    const auto result =
+        citlali::pipeline::refine_coherent_iq_projected_event_time(
+            time, {"mode_1"}, {phase}, 0.80, 0.35, 0.05, 5.0,
+            1.2, 0.08);
+    EXPECT_EQ(result.status, "refined");
+    EXPECT_EQ(result.primary_mode_id, "mode_1");
+    EXPECT_NEAR(result.refined_time_unix_sec, 1.0, 0.02);
+    EXPECT_NEAR(result.displacement_from_seed_sec, 0.20, 0.02);
+    EXPECT_GT(result.derivative_snr, 5.0);
+    EXPECT_GT(result.peak_to_second_ratio, 1.2);
+}
+
+TEST(coherent_iq_mode_observer,
+     projected_derivative_rejects_two_separated_equal_transitions) {
+    std::vector<double> time;
+    std::vector<double> phase;
+    for (int index = 0; index <= 200; ++index) {
+        const double value = 0.01 * static_cast<double>(index);
+        time.push_back(value);
+        phase.push_back(
+            (value >= 0.90 ? 15.0 : 0.0) +
+            (value >= 1.10 ? 15.0 : 0.0));
+    }
+    const auto result =
+        citlali::pipeline::refine_coherent_iq_projected_event_time(
+            time, {"mode_1"}, {phase}, 1.0, 0.30, 0.05, 3.0,
+            1.2, 0.08);
+    EXPECT_EQ(result.status, "ambiguous_multiple_peaks");
+    EXPECT_LT(result.peak_to_second_ratio, 1.2);
+}
+
+TEST(coherent_iq_mode_observer,
+     shared_time_refinement_requires_network_consensus) {
+    using citlali::pipeline::CoherentIqTimeRefinement;
+    CoherentIqTimeRefinement nw1;
+    nw1.status = "refined";
+    nw1.refined_time_unix_sec = 10.00;
+    CoherentIqTimeRefinement nw2 = nw1;
+    nw2.refined_time_unix_sec = 10.02;
+    CoherentIqTimeRefinement nw8 = nw1;
+    nw8.refined_time_unix_sec = 10.30;
+    const auto accepted =
+        citlali::pipeline::consolidate_coherent_iq_time_refinements(
+            9.8, {{1, nw1}, {2, nw2}, {8, nw8}}, 2, 0.05);
+    EXPECT_EQ(accepted.status, "refined");
+    EXPECT_NEAR(accepted.refined_time_unix_sec, 10.01, 1.0e-12);
+    EXPECT_EQ(accepted.contributing_network_count, 2);
+    EXPECT_EQ(accepted.contributing_networks, "1 2");
+    EXPECT_NEAR(accepted.contributing_network_span_sec, 0.02, 1.0e-12);
+
+    const auto rejected =
+        citlali::pipeline::consolidate_coherent_iq_time_refinements(
+            9.8, {{1, nw1}, {8, nw8}}, 2, 0.05);
+    EXPECT_EQ(rejected.status, "inconsistent_network_times");
+}
+
 TEST(coherent_iq_mode_observer, workload_budget_is_global_and_overflow_safe) {
     using citlali::pipeline::plan_coherent_iq_sidecar_workload;
     const auto accepted = plan_coherent_iq_sidecar_workload(1107, 11, 20000);

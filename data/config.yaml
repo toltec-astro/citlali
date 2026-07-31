@@ -271,6 +271,15 @@ timestream: # timestream reduction parameters
       max_candidates_per_scan_per_network: 8 # deterministic cap on compact event records
       max_network_event_scores: 20000 # skip raw-I/Q scoring rather than exceed this observation-wide candidate-by-network budget
       progress_interval_scores: 250 # log observer progress after this many network-event scores; 0 disables interval logs
+      time_refinement: # optional network-mode change-point localization; still diagnostic-only
+        enabled: false # preserve seed scores unless an explicit validation run requests refinement
+        search_half_width_sec: 0.35 # search symmetrically around the RTC shared-candidate time
+        smoothing_window_sec: 0.05 # centered boxcar applied before the projected-phase derivative
+        minimum_derivative_snr: 5.0 # robust local derivative S/N required for a network refinement
+        minimum_peak_ratio: 1.2 # strongest derivative divided by the strongest separated alternative
+        peak_exclusion_sec: 0.08 # exclude this interval around the best peak when testing ambiguity
+        minimum_networks: 2 # independent network refinements required for a shared refined time
+        consensus_tolerance_sec: 0.08 # maximum distance from the median network refinement
     kernel: # make synthetic timestreams for reduction characterization
       enabled: false # enable or disable kernel generation
       filepath: null # filepath to FITS file with kernel

@@ -170,6 +170,17 @@ struct RawTimeChunkImpulsiveCoincidenceConfig {
 };
 
 struct RawTimeChunkCoherentIqModeObserverConfig {
+    struct TimeRefinementConfig {
+        bool enabled = false;
+        double search_half_width_sec = 0.35;
+        double smoothing_window_sec = 0.05;
+        double minimum_derivative_snr = 5.0;
+        double minimum_peak_ratio = 1.2;
+        double peak_exclusion_sec = 0.08;
+        int minimum_networks = 2;
+        double consensus_tolerance_sec = 0.08;
+    };
+
     bool enabled = false;
     std::vector<std::string> template_paths;
     double candidate_step_score_min = 2.5;
@@ -182,6 +193,7 @@ struct RawTimeChunkCoherentIqModeObserverConfig {
     int max_candidates_per_scan_per_network = 8;
     int max_network_event_scores = 20000;
     int progress_interval_scores = 250;
+    TimeRefinementConfig time_refinement;
 };
 
 struct RawTimeChunkFlaggingConfig {

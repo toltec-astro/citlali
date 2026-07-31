@@ -3,19 +3,74 @@
 from __future__ import annotations
 
 import unittest
+from pathlib import Path
+from tempfile import TemporaryDirectory
 
 import numpy as np
 import pandas as pd
+import yaml
 
 from tools.diagnostics.coherent_iq_sidecar_validation import (
     _boolean_series,
     closest_unique_matches,
     compare_scores,
+    load_sidecar,
     maximum_match_count,
 )
 
 
 class CoherentIqSidecarValidationTest(unittest.TestCase):
+    def test_v2_refined_score_uses_shared_refined_time(self) -> None:
+        score = {
+            "status": "scored",
+            "template_id": "template",
+            "template_version": "v1",
+            "projection_amplitude_mrad": 4.0,
+            "sign": 1,
+            "absolute_cosine_similarity": 0.8,
+            "compatible_tone_count": 10,
+            "template_tone_count": 10,
+        }
+        payload = {
+            "schema_version": "citlali-coherent-iq-mode-sidecar-v2",
+            "observation": {"obsnum": 152433},
+            "events": [
+                {
+                    "scan_one_based": 1,
+                    "network": 2,
+                    "event_time_unix_sec": 100.0,
+                    "candidate_kinds": "step",
+                    "seed_network_count": 1,
+                    "seed_networks": "2",
+                    "supporting_detector_events": 12,
+                    "maximum_rtc_score": 8.0,
+                    "mode_score": score,
+                    "shared_time_refinement": {
+                        "status": "refined",
+                        "refined_time_unix_sec": 100.2,
+                    },
+                    "refined_mode_score": {
+                        **score,
+                        "projection_amplitude_mrad": 9.0,
+                    },
+                }
+            ],
+        }
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "sidecar.yaml"
+            path.write_text(yaml.safe_dump(payload), encoding="utf-8")
+            _, _, scores = load_sidecar(
+                path,
+                score_source="refined",
+                minimum_absolute_cosine=0.6,
+                minimum_absolute_amplitude_mrad=5.0,
+            )
+
+        self.assertEqual(scores.loc[0, "score_source"], "refined")
+        self.assertEqual(scores.loc[0, "scoring_time_unix_sec"], 100.2)
+        self.assertEqual(scores.loc[0, "projection_amplitude_mrad"], 9.0)
+        self.assertTrue(scores.loc[0, "descriptive_mode_selected"])
+
     def test_boolean_csv_values_are_parsed_by_value(self) -> None:
         parsed = _boolean_series(pd.Series(["True", "False", "1", "0"]))
         self.assertEqual(parsed.tolist(), [True, False, True, False])

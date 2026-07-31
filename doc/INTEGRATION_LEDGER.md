@@ -14,7 +14,7 @@ ADRs, and validation records.
 | Conan 2 adaptation | `codex/conan2-adaptation` | Port the full application into the accepted Tula/Conan 2 architecture | Incorporate mainline regularly; return only after all build-integration gates pass | Active in `/Users/gwilson/GitHub/citlali-refactor-conan2` |
 | Historical structural refactor | `codex/structural-refactor` at `171487196` | Forensic pointer to the pre-follow-on integration tree | Do not resume as an application authority | Frozen |
 | Historical fruit-loop/raw-IQ topic | `codex/fruit-loop-calibration-reference` at `b02fef613` | Forensic pointer to the topic-named branch before mainline normalization | Do not resume as an application authority | Frozen locally; its existing remote remains historical |
-| Coherent-I/Q sidecar validation | `codex/coherent-iq-sidecar-validation` from `codex/refactor-mainline` at `9aae0e669` | Reproducible comparison of the corrected production sidecar with independent offline event evidence | Diagnostic/report-only change; return after focused Python gate and review | Local validation complete; event-time refinement remains blocked from automatic action |
+| Coherent-I/Q sidecar validation and time refinement | `codex/coherent-iq-sidecar-validation` from `codex/refactor-mainline` at `9aae0e669`, with the bounded-I/O and usable-UID prerequisites applied | Reproducible comparison of the corrected production sidecar with independent offline event evidence; opt-in, fail-closed candidate-time refinement | Keep seed and refined scores distinct, retain observe-only behavior, and require a bounded Unity 152433 smoke plus frozen-corpus comparison before return to mainline | Local implementation and gates complete; Unity refinement smoke pending |
 
 ## External Build Inputs
 

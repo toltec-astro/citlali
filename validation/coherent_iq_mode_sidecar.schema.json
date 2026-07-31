@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://toltec.astro.umass.edu/schemas/citlali-coherent-iq-mode-sidecar-v1.json",
-  "title": "Citlali observe-only coherent raw-I/Q mode sidecar",
+  "$id": "https://toltec.astro.umass.edu/schemas/citlali-coherent-iq-mode-sidecar-v2.json",
+  "title": "Citlali observe-only coherent raw-I/Q mode sidecar v2",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -19,7 +19,7 @@
   ],
   "properties": {
     "schema_version": {
-      "const": "citlali-coherent-iq-mode-sidecar-v1"
+      "const": "citlali-coherent-iq-mode-sidecar-v2"
     },
     "diagnostic_schema_version": {
       "const": "citlali-coherent-iq-mode-diagnostic-v1"
@@ -52,8 +52,35 @@
         "cross_network_tolerance_sec",
         "max_candidates_per_scan_per_network",
         "max_network_event_scores",
-        "progress_interval_scores"
+        "progress_interval_scores",
+        "time_refinement"
       ],
+      "properties": {
+        "time_refinement": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "enabled",
+            "search_half_width_sec",
+            "smoothing_window_sec",
+            "minimum_derivative_snr",
+            "minimum_peak_ratio",
+            "peak_exclusion_sec",
+            "minimum_networks",
+            "consensus_tolerance_sec"
+          ],
+          "properties": {
+            "enabled": {"type": "boolean"},
+            "search_half_width_sec": {"type": "number", "exclusiveMinimum": 0},
+            "smoothing_window_sec": {"type": "number", "exclusiveMinimum": 0},
+            "minimum_derivative_snr": {"type": "number", "minimum": 0},
+            "minimum_peak_ratio": {"type": "number", "minimum": 1},
+            "peak_exclusion_sec": {"type": "number", "exclusiveMinimum": 0},
+            "minimum_networks": {"type": "integer", "minimum": 1},
+            "consensus_tolerance_sec": {"type": "number", "exclusiveMinimum": 0}
+          }
+        }
+      },
       "additionalProperties": {
         "type": ["number", "integer"]
       }
@@ -85,6 +112,9 @@
           "supporting_detector_events",
           "maximum_rtc_score",
           "mode_score",
+          "network_time_refinement",
+          "shared_time_refinement",
+          "refined_mode_score",
           "cross_network_coincident_count",
           "cross_network_coincident_networks"
         ],
@@ -94,7 +124,7 @@
           "event_time_unix_sec": {"type": "number"},
           "candidate_kinds": {"type": "string"},
           "seed_network_count": {"type": "integer", "minimum": 1},
-          "seed_networks": {"type": "string"},
+          "seed_networks": {"type": ["string", "integer"]},
           "supporting_detector_events": {
             "type": "integer",
             "minimum": 1
@@ -114,11 +144,33 @@
             ],
             "additionalProperties": true
           },
+          "network_time_refinement": {
+            "$ref": "#/$defs/network_time_refinement"
+          },
+          "shared_time_refinement": {
+            "$ref": "#/$defs/shared_time_refinement"
+          },
+          "refined_mode_score": {
+            "type": "object",
+            "required": [
+              "status",
+              "template_id",
+              "template_version",
+              "compatible_tone_count",
+              "template_tone_count",
+              "compatible_tone_fraction",
+              "rejected_tone_count",
+              "compatibility_note"
+            ],
+            "additionalProperties": true
+          },
           "cross_network_coincident_count": {
             "type": "integer",
             "minimum": 0
           },
-          "cross_network_coincident_networks": {"type": "string"}
+          "cross_network_coincident_networks": {
+            "type": ["string", "integer"]
+          }
         }
       }
     },
@@ -131,7 +183,9 @@
         "projected_network_event_score_count",
         "processed_network_event_score_count",
         "raw_network_files_opened",
-        "raw_time_vectors_read"
+        "raw_time_vectors_read",
+        "processed_network_time_refinement_count",
+        "processed_refined_network_event_score_count"
       ],
       "properties": {
         "status": {
@@ -143,6 +197,14 @@
           "minimum": 0
         },
         "processed_network_event_score_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "processed_network_time_refinement_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "processed_refined_network_event_score_count": {
           "type": "integer",
           "minimum": 0
         },
@@ -167,11 +229,74 @@
         "raw_network_files_opened",
         "scored_count",
         "network_count",
-        "template_count"
+        "template_count",
+        "network_time_refinement_count",
+        "shared_time_refined_candidate_count",
+        "refined_scored_count"
       ],
       "additionalProperties": {
         "type": "integer",
         "minimum": 0
+      }
+    }
+  },
+  "$defs": {
+    "network_time_refinement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "method",
+        "seed_time_unix_sec",
+        "refined_time_unix_sec",
+        "displacement_from_seed_sec",
+        "primary_mode_id",
+        "peak_absolute_derivative_mrad_per_sec",
+        "derivative_snr",
+        "peak_to_second_ratio",
+        "compatible_tone_count",
+        "template_tone_count",
+        "note"
+      ],
+      "properties": {
+        "status": {"type": "string"},
+        "method": {"const": "template_projection_boxcar_derivative_v1"},
+        "seed_time_unix_sec": {"type": ["number", "null"]},
+        "refined_time_unix_sec": {"type": ["number", "null"]},
+        "displacement_from_seed_sec": {"type": ["number", "null"]},
+        "primary_mode_id": {"type": "string"},
+        "peak_absolute_derivative_mrad_per_sec": {"type": ["number", "null"]},
+        "derivative_snr": {"type": ["number", "null"]},
+        "peak_to_second_ratio": {"type": ["number", "null"]},
+        "compatible_tone_count": {"type": "integer", "minimum": 0},
+        "template_tone_count": {"type": "integer", "minimum": 0},
+        "note": {"type": "string"}
+      }
+    },
+    "shared_time_refinement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "method",
+        "seed_time_unix_sec",
+        "refined_time_unix_sec",
+        "displacement_from_seed_sec",
+        "contributing_network_count",
+        "contributing_networks",
+        "contributing_network_span_sec",
+        "note"
+      ],
+      "properties": {
+        "status": {"type": "string"},
+        "method": {"const": "median_network_consensus_v1"},
+        "seed_time_unix_sec": {"type": ["number", "null"]},
+        "refined_time_unix_sec": {"type": ["number", "null"]},
+        "displacement_from_seed_sec": {"type": ["number", "null"]},
+        "contributing_network_count": {"type": "integer", "minimum": 0},
+        "contributing_networks": {"type": ["string", "integer"]},
+        "contributing_network_span_sec": {"type": ["number", "null"]},
+        "note": {"type": "string"}
       }
     }
   }
