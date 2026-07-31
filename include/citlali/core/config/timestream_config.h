@@ -180,6 +180,8 @@ struct RawTimeChunkCoherentIqModeObserverConfig {
     double post_window_sec = 0.20;
     double cross_network_tolerance_sec = 0.35;
     int max_candidates_per_scan_per_network = 8;
+    int max_network_event_scores = 20000;
+    int progress_interval_scores = 250;
 };
 
 struct RawTimeChunkFlaggingConfig {

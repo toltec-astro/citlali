@@ -115,11 +115,22 @@ freeze the application mainline.
   cleared detailed scan summaries before the observation-level sidecar read
   them, producing zero candidates. The corrected path now copies only
   threshold-passing seeds into a compact scan-keyed cache before detailed QA
-  cleanup and clears that cache after sidecar publication. Its CLI build,
-  14 focused tests, all 532 enabled CTests, and the full 123-test config
-  preflight pass. A corrected observation-152433 Unity smoke, broader corpus
-  validation, and same-input enabled/disabled output identity remain the next
-  gates;
+  cleanup and clears that cache after sidecar publication. The first corrected
+  observation-152433 smoke then exposed a separate severe scaling defect: its
+  event-major implementation reopened raw files and reread full receive-time
+  vectors for every network-event score. The cancelled job recorded 2.46 TB
+  of logical reads for 12,177 projected scores and never reached sidecar
+  publication. The active `codex/coherent-iq-sidecar-scaling` repair batches
+  all candidates through one reader per network, replaces quadratic
+  coincidence matching with shared-event grouping, adds progress and an
+  observation-wide score budget, records realized I/O lifecycle, and runs the
+  observer only after required science outputs and raw provenance are written.
+  Focused classifier/config tests and the full 123-test config preflight pass;
+  a same-tree CLI syntax gate passes. A complete local build is currently
+  impeded by unrelated legacy-build dependency/toolchain drift and remains a
+  required owner-build gate. The corrected observation-152433 Unity smoke,
+  broader corpus validation, and same-input enabled/disabled output identity
+  remain the next gates;
   coherent masking and subtraction remain disabled. See
   `handoff/COHERENT_RAW_IQ_MODE_OBSERVE_ONLY_ARCHITECTURE_2026-07-30.md`.
 - A 2026-07-24 pointing fruit-loop investigation is active. Five controlled

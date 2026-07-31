@@ -8319,6 +8319,8 @@ timestream:
       post_window_sec: 0.35
       cross_network_tolerance_sec: 0.4
       max_candidates_per_scan_per_network: 12
+      max_network_event_scores: 12345
+      progress_interval_scores: 125
     line_audit:
       enabled: false
       line_min_hz: 2.0
@@ -8364,6 +8366,8 @@ timestream:
         raw.coherent_iq_mode_observer
             .max_candidates_per_scan_per_network,
         12);
+    EXPECT_EQ(raw.coherent_iq_mode_observer.max_network_event_scores, 12345);
+    EXPECT_EQ(raw.coherent_iq_mode_observer.progress_interval_scores, 125);
     EXPECT_FALSE(raw.line_audit.enabled);
     EXPECT_DOUBLE_EQ(raw.line_audit.line_min_hz, 2.0);
     EXPECT_DOUBLE_EQ(raw.line_audit.line_max_hz, 55.0);
@@ -8394,6 +8398,8 @@ TEST(config_scaffold, serializes_raw_request_without_observation_state) {
     request.coherent_iq_mode_observer.enabled = true;
     request.coherent_iq_mode_observer.template_paths = {
         "/templates/nw0.json", "/templates/nw8.json"};
+    request.coherent_iq_mode_observer.max_network_event_scores = 12345;
+    request.coherent_iq_mode_observer.progress_interval_scores = 125;
     request.extinction_correction_enabled = true;
     request.extinction_model = "observation-derived-model";
 
@@ -8422,6 +8428,12 @@ TEST(config_scaffold, serializes_raw_request_without_observation_state) {
         node["coherent_iq_mode_observer"]["enabled"].as<bool>());
     EXPECT_EQ(
         node["coherent_iq_mode_observer"]["template_paths"].size(), 2U);
+    EXPECT_EQ(
+        node["coherent_iq_mode_observer"]["max_network_event_scores"].as<int>(),
+        12345);
+    EXPECT_EQ(
+        node["coherent_iq_mode_observer"]["progress_interval_scores"].as<int>(),
+        125);
     EXPECT_TRUE(node["extinction_correction"]["enabled"].as<bool>());
     EXPECT_FALSE(node["extinction_correction"]["model"].IsDefined());
 }
@@ -8432,12 +8444,14 @@ TEST(config_scaffold, validates_coherent_iq_observer_fail_closed) {
     config.pre_window_sec = -0.5;
     config.post_window_sec = -1.0;
     config.max_candidates_per_scan_per_network = 0;
+    config.max_network_event_scores = 0;
+    config.progress_interval_scores = -1;
     citlali::config::ValidationReport report;
 
     citlali::config::validate(config, report);
 
     EXPECT_FALSE(report.ok());
-    EXPECT_EQ(report.error_count(), 5U);
+    EXPECT_EQ(report.error_count(), 7U);
     const auto diagnostic = report.format_for_cli();
     EXPECT_NE(diagnostic.find("template_paths"), std::string::npos);
     EXPECT_NE(diagnostic.find("pre_window_sec"), std::string::npos);
@@ -8445,6 +8459,8 @@ TEST(config_scaffold, validates_coherent_iq_observer_fail_closed) {
     EXPECT_NE(
         diagnostic.find("max_candidates_per_scan_per_network"),
         std::string::npos);
+    EXPECT_NE(diagnostic.find("max_network_event_scores"), std::string::npos);
+    EXPECT_NE(diagnostic.find("progress_interval_scores"), std::string::npos);
 }
 
 TEST(config_scaffold, coherent_iq_observer_adapter_enables_diagnostics_only) {

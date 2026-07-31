@@ -17,6 +17,7 @@
 #include <filesystem>
 #include <limits>
 #include <map>
+#include <memory>
 #include <set>
 #include <string>
 #include <tuple>
@@ -54,7 +55,37 @@ struct CoherentIqSidecarRecord {
     CoherentIqModeScore mode_score;
     int cross_network_coincident_count = 0;
     std::string cross_network_coincident_networks;
+    std::size_t shared_candidate_index = 0;
 };
+
+struct CoherentIqSidecarWorkload {
+    std::size_t shared_candidate_count = 0;
+    std::size_t network_count = 0;
+    std::size_t projected_network_event_scores = 0;
+    bool budget_exceeded = false;
+};
+
+inline CoherentIqSidecarWorkload plan_coherent_iq_sidecar_workload(
+    std::size_t shared_candidate_count, std::size_t network_count,
+    std::size_t maximum_network_event_scores) {
+    CoherentIqSidecarWorkload result;
+    result.shared_candidate_count = shared_candidate_count;
+    result.network_count = network_count;
+    if (network_count != 0 &&
+        shared_candidate_count >
+            std::numeric_limits<std::size_t>::max() / network_count) {
+        result.projected_network_event_scores =
+            std::numeric_limits<std::size_t>::max();
+        result.budget_exceeded = true;
+        return result;
+    }
+    result.projected_network_event_scores =
+        shared_candidate_count * network_count;
+    result.budget_exceeded =
+        result.projected_network_event_scores >
+        maximum_network_event_scores;
+    return result;
+}
 
 inline std::vector<CoherentIqCandidate> cluster_coherent_iq_candidates(
     int scan_one_based, int network,
@@ -305,190 +336,210 @@ inline std::vector<double> coherent_iq_read_vector(
     return result;
 }
 
-template <class Calib>
-CoherentIqModeScore score_coherent_iq_candidate_from_file(
-    const CoherentIqCandidate &candidate,
-    const CoherentIqModeTemplate &mode_template,
-    const std::string &filepath, const Calib &calib,
-    const citlali::config::RawTimeChunkCoherentIqModeObserverConfig &config) {
-    using namespace netCDF;
-    NcFile file(filepath, NcFile::read);
-    const auto recv_var = file.getVar("Data.Toltec.RecvTime");
-    const auto is_var = file.getVar("Data.Toltec.Is");
-    const auto qs_var = file.getVar("Data.Toltec.Qs");
-    const auto tone_var = file.getVar("Header.Toltec.ToneFreq");
-    if (recv_var.isNull() || is_var.isNull() || qs_var.isNull() ||
-        tone_var.isNull()) {
-        throw citlali::error::io(
-            "coherent-IQ observer input lacks required raw-I/Q variables: " +
-            filepath);
-    }
-    const auto recv_time = coherent_iq_read_vector(recv_var);
-    const bool invalid_time = std::any_of(
-        recv_time.begin(), recv_time.end(),
-        [](double value) { return !std::isfinite(value); });
-    const bool nonincreasing_time =
-        std::adjacent_find(
-            recv_time.begin(), recv_time.end(),
-            [](double left, double right) { return left >= right; }) !=
-        recv_time.end();
-    if (recv_time.size() < 8 || invalid_time || nonincreasing_time) {
-        throw citlali::error::io(
-            "coherent-IQ observer input has invalid receive time: " +
-            filepath);
-    }
-    const auto is_dims = is_var.getDims();
-    const auto qs_dims = qs_var.getDims();
-    if (is_dims.size() != 2 || qs_dims.size() != 2) {
-        throw citlali::error::io(
-            "coherent-IQ observer I/Q variables are not two-dimensional: " +
-            filepath);
-    }
-    const auto n_tones = is_var.getDim(1).getSize();
-    if (is_var.getDim(0).getSize() != recv_time.size() ||
-        qs_var.getDim(0).getSize() != is_var.getDim(0).getSize() ||
-        qs_var.getDim(1).getSize() != n_tones) {
-        throw citlali::error::io(
-            "coherent-IQ observer I/Q shapes differ: " + filepath);
+class CoherentIqNetworkRawReader {
+  public:
+    template <class Calib>
+    CoherentIqNetworkRawReader(int network, const std::string &filepath,
+                               const Calib &calib)
+        : network_{network}, filepath_{filepath},
+          file_{filepath, netCDF::NcFile::read},
+          recv_var_{file_.getVar("Data.Toltec.RecvTime")},
+          is_var_{file_.getVar("Data.Toltec.Is")},
+          qs_var_{file_.getVar("Data.Toltec.Qs")},
+          tone_var_{file_.getVar("Header.Toltec.ToneFreq")} {
+        using namespace netCDF;
+        if (recv_var_.isNull() || is_var_.isNull() || qs_var_.isNull() ||
+            tone_var_.isNull()) {
+            throw citlali::error::io("coherent-IQ observer input lacks "
+                                     "required raw-I/Q variables: " +
+                                     filepath_);
+        }
+        recv_time_ = coherent_iq_read_vector(recv_var_);
+        const bool invalid_time =
+            std::any_of(recv_time_.begin(), recv_time_.end(),
+                        [](double value) { return !std::isfinite(value); });
+        const bool nonincreasing_time =
+            std::adjacent_find(recv_time_.begin(), recv_time_.end(),
+                               [](double left, double right) {
+                                   return left >= right;
+                               }) != recv_time_.end();
+        if (recv_time_.size() < 8 || invalid_time || nonincreasing_time) {
+            throw citlali::error::io(
+                "coherent-IQ observer input has invalid receive time: " +
+                filepath_);
+        }
+        const auto is_dims = is_var_.getDims();
+        const auto qs_dims = qs_var_.getDims();
+        if (is_dims.size() != 2 || qs_dims.size() != 2) {
+            throw citlali::error::io(
+                "coherent-IQ observer I/Q variables are not two-dimensional: " +
+                filepath_);
+        }
+        n_tones_ = is_var_.getDim(1).getSize();
+        if (is_var_.getDim(0).getSize() != recv_time_.size() ||
+            qs_var_.getDim(0).getSize() != is_var_.getDim(0).getSize() ||
+            qs_var_.getDim(1).getSize() != n_tones_) {
+            throw citlali::error::io(
+                "coherent-IQ observer I/Q shapes differ: " + filepath_);
+        }
+
+        const auto tone_dims = tone_var_.getDims();
+        tone_offsets_.resize(n_tones_);
+        if (tone_dims.size() == 2) {
+            tone_var_.getVar({0, 0}, {1, n_tones_}, tone_offsets_.data());
+        } else if (tone_dims.size() == 1) {
+            tone_var_.getVar(tone_offsets_.data());
+        } else {
+            throw citlali::error::io(
+                "coherent-IQ observer tone-frequency shape is unsupported: " +
+                filepath_);
+        }
+
+        const auto limits = calib.nw_limits.find(network_);
+        if (limits == calib.nw_limits.end()) {
+            throw citlali::error::runtime(
+                "coherent-IQ observer cannot locate network in APT");
+        }
+        const auto [apt_start, apt_end] = limits->second;
+        if (apt_end - apt_start != static_cast<Eigen::Index>(n_tones_)) {
+            throw citlali::error::runtime(
+                "coherent-IQ observer APT/raw tone counts differ");
+        }
+        uids_.resize(n_tones_, -1);
+        apt_usable_.resize(n_tones_, true);
+        for (std::size_t tone = 0; tone < n_tones_; ++tone) {
+            const Eigen::Index det =
+                apt_start + static_cast<Eigen::Index>(tone);
+            uids_[tone] = static_cast<int>(calib.apt.at("uid")(det));
+            apt_usable_[tone] = calib.apt.count("flag") == 0 ||
+                                calib.apt.at("flag")(det) == 0.0;
+        }
     }
 
-    const double event = candidate.time_unix_sec;
-    const auto pre_begin = std::lower_bound(
-        recv_time.begin(), recv_time.end(),
-        event - config.guard_window_sec - config.pre_window_sec);
-    const auto pre_end = std::lower_bound(
-        recv_time.begin(), recv_time.end(),
-        event - config.guard_window_sec);
-    const auto post_begin = std::upper_bound(
-        recv_time.begin(), recv_time.end(),
-        event + config.guard_window_sec);
-    const auto post_end = std::upper_bound(
-        recv_time.begin(), recv_time.end(),
-        event + config.guard_window_sec + config.post_window_sec);
-    const auto pre_first =
-        static_cast<std::size_t>(pre_begin - recv_time.begin());
-    const auto pre_last =
-        static_cast<std::size_t>(pre_end - recv_time.begin());
-    const auto post_first =
-        static_cast<std::size_t>(post_begin - recv_time.begin());
-    const auto post_last =
-        static_cast<std::size_t>(post_end - recv_time.begin());
-    if (pre_last - pre_first < 4 || post_last - post_first < 4) {
-        CoherentIqModeScore result;
-        result.status = "incomplete_raw_window";
-        result.template_id = mode_template.template_id;
-        result.template_version = mode_template.template_version;
-        result.network = candidate.network;
-        result.template_tone_count =
-            static_cast<int>(mode_template.tones.size());
-        result.compatibility_note =
-            "candidate lacks four raw samples in both comparison windows";
-        return result;
-    }
+    CoherentIqModeScore
+    score(const CoherentIqCandidate &candidate,
+          const CoherentIqModeTemplate &mode_template,
+          const citlali::config::RawTimeChunkCoherentIqModeObserverConfig
+              &config) {
+        if (candidate.network != network_) {
+            throw citlali::error::runtime(
+                "coherent-IQ observer candidate/raw network mismatch");
+        }
 
-    const std::size_t read_first = pre_first;
-    const std::size_t read_last = post_last;
-    const std::size_t n_rows = read_last - read_first;
-    std::vector<double> is(n_rows * n_tones);
-    std::vector<double> qs(n_rows * n_tones);
-    is_var.getVar({read_first, 0}, {n_rows, n_tones}, is.data());
-    qs_var.getVar({read_first, 0}, {n_rows, n_tones}, qs.data());
+        const double event = candidate.time_unix_sec;
+        const auto pre_begin = std::lower_bound(
+            recv_time_.begin(), recv_time_.end(),
+            event - config.guard_window_sec - config.pre_window_sec);
+        const auto pre_end =
+            std::lower_bound(recv_time_.begin(), recv_time_.end(),
+                             event - config.guard_window_sec);
+        const auto post_begin =
+            std::upper_bound(recv_time_.begin(), recv_time_.end(),
+                             event + config.guard_window_sec);
+        const auto post_end = std::upper_bound(
+            recv_time_.begin(), recv_time_.end(),
+            event + config.guard_window_sec + config.post_window_sec);
+        const auto pre_first =
+            static_cast<std::size_t>(pre_begin - recv_time_.begin());
+        const auto pre_last =
+            static_cast<std::size_t>(pre_end - recv_time_.begin());
+        const auto post_first =
+            static_cast<std::size_t>(post_begin - recv_time_.begin());
+        const auto post_last =
+            static_cast<std::size_t>(post_end - recv_time_.begin());
+        if (pre_last - pre_first < 4 || post_last - post_first < 4) {
+            CoherentIqModeScore result;
+            result.status = "incomplete_raw_window";
+            result.template_id = mode_template.template_id;
+            result.template_version = mode_template.template_version;
+            result.network = candidate.network;
+            result.template_tone_count =
+                static_cast<int>(mode_template.tones.size());
+            result.compatibility_note =
+                "candidate lacks four raw samples in both comparison windows";
+            return result;
+        }
 
-    const auto tone_dims = tone_var.getDims();
-    std::vector<double> tone_offsets(n_tones);
-    if (tone_dims.size() == 2) {
-        tone_var.getVar({0, 0}, {1, n_tones}, tone_offsets.data());
-    }
-    else if (tone_dims.size() == 1) {
-        tone_var.getVar(tone_offsets.data());
-    }
-    else {
-        throw citlali::error::io(
-            "coherent-IQ observer tone-frequency shape is unsupported: " +
-            filepath);
-    }
+        const std::size_t read_first = pre_first;
+        const std::size_t read_last = post_last;
+        const std::size_t n_rows = read_last - read_first;
+        std::vector<double> is(n_rows * n_tones_);
+        std::vector<double> qs(n_rows * n_tones_);
+        is_var_.getVar({read_first, 0}, {n_rows, n_tones_}, is.data());
+        qs_var_.getVar({read_first, 0}, {n_rows, n_tones_}, qs.data());
 
-    const auto limits = calib.nw_limits.find(candidate.network);
-    if (limits == calib.nw_limits.end()) {
-        throw citlali::error::runtime(
-            "coherent-IQ observer cannot locate network in APT");
-    }
-    const auto [apt_start, apt_end] = limits->second;
-    if (apt_end - apt_start != static_cast<Eigen::Index>(n_tones)) {
-        throw citlali::error::runtime(
-            "coherent-IQ observer APT/raw tone counts differ");
-    }
-
-    std::vector<int> uids(n_tones, -1);
-    std::vector<double> phase_change(n_tones);
-    const double nan = std::numeric_limits<double>::quiet_NaN();
-    for (std::size_t tone = 0; tone < n_tones; ++tone) {
-        const Eigen::Index det =
-            apt_start + static_cast<Eigen::Index>(tone);
-        uids[tone] = static_cast<int>(calib.apt.at("uid")(det));
-        const bool apt_usable =
-            calib.apt.count("flag") == 0 ||
-            calib.apt.at("flag")(det) == 0.0;
-        std::complex<double> pre_sum{0.0, 0.0};
-        std::complex<double> post_sum{0.0, 0.0};
-        int pre_count = 0;
-        int post_count = 0;
-        for (std::size_t raw_row = pre_first; raw_row < pre_last;
-             ++raw_row) {
-            const std::size_t row = raw_row - read_first;
-            const std::complex<double> value{
-                is[row * n_tones + tone],
-                qs[row * n_tones + tone]};
-            if (std::isfinite(value.real()) &&
-                std::isfinite(value.imag())) {
-                pre_sum += value;
-                ++pre_count;
+        std::vector<double> phase_change(n_tones_);
+        const double nan = std::numeric_limits<double>::quiet_NaN();
+        for (std::size_t tone = 0; tone < n_tones_; ++tone) {
+            std::complex<double> pre_sum{0.0, 0.0};
+            std::complex<double> post_sum{0.0, 0.0};
+            int pre_count = 0;
+            int post_count = 0;
+            for (std::size_t raw_row = pre_first; raw_row < pre_last;
+                 ++raw_row) {
+                const std::size_t row = raw_row - read_first;
+                const std::complex<double> value{is[row * n_tones_ + tone],
+                                                 qs[row * n_tones_ + tone]};
+                if (std::isfinite(value.real()) &&
+                    std::isfinite(value.imag())) {
+                    pre_sum += value;
+                    ++pre_count;
+                }
             }
-        }
-        for (std::size_t raw_row = post_first; raw_row < post_last;
-             ++raw_row) {
-            const std::size_t row = raw_row - read_first;
-            const std::complex<double> value{
-                is[row * n_tones + tone],
-                qs[row * n_tones + tone]};
-            if (std::isfinite(value.real()) &&
-                std::isfinite(value.imag())) {
-                post_sum += value;
-                ++post_count;
+            for (std::size_t raw_row = post_first; raw_row < post_last;
+                 ++raw_row) {
+                const std::size_t row = raw_row - read_first;
+                const std::complex<double> value{is[row * n_tones_ + tone],
+                                                 qs[row * n_tones_ + tone]};
+                if (std::isfinite(value.real()) &&
+                    std::isfinite(value.imag())) {
+                    post_sum += value;
+                    ++post_count;
+                }
             }
+            if (!apt_usable_[tone] || pre_count == 0 || post_count == 0 ||
+                std::abs(pre_sum) == 0.0) {
+                phase_change[tone] = nan;
+                continue;
+            }
+            const auto before = pre_sum / static_cast<double>(pre_count);
+            const auto after = post_sum / static_cast<double>(post_count);
+            phase_change[tone] = std::arg(after / before) * 1.0e3;
         }
-        if (!apt_usable || pre_count == 0 || post_count == 0 ||
-            std::abs(pre_sum) == 0.0) {
-            phase_change[tone] = nan;
-            continue;
-        }
-        const auto before =
-            pre_sum / static_cast<double>(pre_count);
-        const auto after =
-            post_sum / static_cast<double>(post_count);
-        phase_change[tone] = std::arg(after / before) * 1.0e3;
+        return score_coherent_iq_mode_event(mode_template, candidate.network,
+                                            uids_, tone_offsets_, phase_change);
     }
-    file.close();
-    return score_coherent_iq_mode_event(
-        mode_template, candidate.network, uids, tone_offsets,
-        phase_change);
-}
+
+  private:
+    int network_ = -1;
+    std::string filepath_;
+    netCDF::NcFile file_;
+    netCDF::NcVar recv_var_;
+    netCDF::NcVar is_var_;
+    netCDF::NcVar qs_var_;
+    netCDF::NcVar tone_var_;
+    std::vector<double> recv_time_;
+    std::size_t n_tones_ = 0;
+    std::vector<double> tone_offsets_;
+    std::vector<int> uids_;
+    std::vector<bool> apt_usable_;
+};
 
 inline void attach_coherent_iq_cross_network_coincidence(
-    std::vector<CoherentIqSidecarRecord> &records,
-    double tolerance_sec) {
-    for (auto &record : records) {
-        std::set<int> networks;
-        for (const auto &other : records) {
-            if (other.mode_score.status == "scored" &&
-                std::abs(other.candidate.time_unix_sec -
-                         record.candidate.time_unix_sec) <=
-                    tolerance_sec) {
-                networks.insert(other.candidate.network);
-            }
+    std::vector<CoherentIqSidecarRecord> &records) {
+    std::map<std::size_t, std::set<int>> networks_by_candidate;
+    for (const auto &record : records) {
+        if (record.mode_score.status == "scored") {
+            networks_by_candidate[record.shared_candidate_index].insert(
+                record.candidate.network);
         }
+    }
+    for (auto &record : records) {
+        const auto &networks =
+            networks_by_candidate[record.shared_candidate_index];
         record.cross_network_coincident_count =
             static_cast<int>(networks.size());
+        record.cross_network_coincident_networks.clear();
         for (const auto network : networks) {
             if (!record.cross_network_coincident_networks.empty()) {
                 record.cross_network_coincident_networks += " ";
@@ -603,31 +654,85 @@ std::filesystem::path write_coherent_iq_mode_sidecar_supported(
     auto candidates = cluster_coherent_iq_candidates_across_networks(
         network_candidates,
         config.cross_network_tolerance_sec);
+    const auto workload = plan_coherent_iq_sidecar_workload(
+        candidates.size(), raw_files.size(),
+        static_cast<std::size_t>(config.max_network_event_scores));
+    logger->info(
+        "observe-only coherent-IQ workload: {} network seeds, {} shared "
+        "candidates, {} raw networks, {} projected network-event scores "
+        "(budget {})",
+        network_candidates.size(), candidates.size(), raw_files.size(),
+        workload.projected_network_event_scores,
+        config.max_network_event_scores);
+
     std::vector<CoherentIqSidecarRecord> records;
-    records.reserve(candidates.size() * raw_files.size());
-    for (const auto &candidate : candidates) {
+    std::size_t raw_network_files_opened = 0;
+    if (!workload.budget_exceeded) {
+        records.reserve(workload.projected_network_event_scores);
+        std::size_t completed_scores = 0;
         for (const auto &[network, filepath] : raw_files) {
-            auto network_candidate = candidate;
-            network_candidate.network = network;
-            CoherentIqModeScore score;
-            score.network = network;
             const auto template_it = templates.find(network);
-            if (template_it == templates.end()) {
-                score.status = "template_unavailable";
-                score.compatibility_note =
-                    "no configured template for this present network";
+            logger->info(
+                "observe-only coherent-IQ scoring network {}: {} shared "
+                "candidates, template {}",
+                network, candidates.size(),
+                template_it == templates.end() ? "unavailable" : "loaded");
+            std::unique_ptr<CoherentIqNetworkRawReader> reader;
+            if (template_it != templates.end() && !candidates.empty()) {
+                reader = std::make_unique<CoherentIqNetworkRawReader>(
+                    network, filepath, engine.calib);
+                ++raw_network_files_opened;
             }
-            else {
-                score = score_coherent_iq_candidate_from_file(
-                    network_candidate, template_it->second, filepath,
-                    engine.calib, config);
+            for (std::size_t candidate_index = 0;
+                 candidate_index < candidates.size(); ++candidate_index) {
+                auto network_candidate = candidates[candidate_index];
+                network_candidate.network = network;
+                CoherentIqModeScore score;
+                score.network = network;
+                if (template_it == templates.end()) {
+                    score.status = "template_unavailable";
+                    score.compatibility_note =
+                        "no configured template for this present network";
+                } else {
+                    score = reader->score(network_candidate,
+                                          template_it->second, config);
+                }
+                records.push_back({std::move(network_candidate),
+                                   std::move(score), 0, "", candidate_index});
+                ++completed_scores;
+                if (config.progress_interval_scores > 0 &&
+                    (completed_scores % static_cast<std::size_t>(
+                                            config.progress_interval_scores) ==
+                         0 ||
+                     completed_scores ==
+                         workload.projected_network_event_scores)) {
+                    logger->info("observe-only coherent-IQ progress: {}/{} "
+                                 "network-event scores",
+                                 completed_scores,
+                                 workload.projected_network_event_scores);
+                }
             }
-            records.push_back(
-                {std::move(network_candidate), std::move(score), 0, ""});
+            logger->info("observe-only coherent-IQ finished network {} ({}/{} "
+                         "network-event scores complete)",
+                         network, completed_scores,
+                         workload.projected_network_event_scores);
         }
+        attach_coherent_iq_cross_network_coincidence(records);
+        std::sort(records.begin(), records.end(),
+                  [](const auto &left, const auto &right) {
+                      return std::tie(left.shared_candidate_index,
+                                      left.candidate.network) <
+                             std::tie(right.shared_candidate_index,
+                                      right.candidate.network);
+                  });
+    } else {
+        logger->warn(
+            "observe-only coherent-IQ scoring skipped: {} projected "
+            "network-event scores exceed configured budget {}. Required "
+            "science products remain unaffected.",
+            workload.projected_network_event_scores,
+            config.max_network_event_scores);
     }
-    attach_coherent_iq_cross_network_coincidence(
-        records, config.cross_network_tolerance_sec);
 
     YAML::Node root;
     root["schema_version"] = coherent_iq_sidecar_schema_version;
@@ -652,6 +757,22 @@ std::filesystem::path write_coherent_iq_mode_sidecar_supported(
         config.cross_network_tolerance_sec;
     root["requested"]["max_candidates_per_scan_per_network"] =
         config.max_candidates_per_scan_per_network;
+    root["requested"]["max_network_event_scores"] =
+        config.max_network_event_scores;
+    root["requested"]["progress_interval_scores"] =
+        config.progress_interval_scores;
+    root["observer_execution"]["status"] =
+        workload.budget_exceeded ? "skipped_workload_budget" : "completed";
+    root["observer_execution"]["workload_budget_exceeded"] =
+        workload.budget_exceeded;
+    root["observer_execution"]["projected_network_event_score_count"] =
+        workload.projected_network_event_scores;
+    root["observer_execution"]["processed_network_event_score_count"] =
+        records.size();
+    root["observer_execution"]["raw_network_files_opened"] =
+        raw_network_files_opened;
+    root["observer_execution"]["raw_time_vectors_read"] =
+        raw_network_files_opened;
     root["events"] = YAML::Node(YAML::NodeType::Sequence);
 
     for (const auto &[network, filepath] : raw_files) {
@@ -730,6 +851,10 @@ std::filesystem::path write_coherent_iq_mode_sidecar_supported(
         static_cast<int>(network_candidates.size());
     root["realized"]["network_event_score_count"] =
         static_cast<int>(records.size());
+    root["realized"]["projected_network_event_score_count"] =
+        workload.projected_network_event_scores;
+    root["realized"]["raw_network_files_opened"] =
+        raw_network_files_opened;
     root["realized"]["scored_count"] = static_cast<int>(
         std::count_if(
             records.begin(), records.end(), [](const auto &record) {
@@ -746,9 +871,10 @@ std::filesystem::path write_coherent_iq_mode_sidecar_supported(
     write_yaml_file_atomic(output_path, root);
     logger->info(
         "observe-only coherent-IQ mode sidecar: {} ({} event candidates, "
-        "{} network scores, {} templates, {} raw networks)",
+        "{} network scores, {} templates, {} raw networks, status {})",
         output_path.string(), candidates.size(), records.size(),
-        templates.size(), raw_files.size());
+        templates.size(), raw_files.size(),
+        workload.budget_exceeded ? "skipped_workload_budget" : "completed");
     engine.rtcproc.reset_coherent_iq_mode_candidates();
     return output_path;
 }

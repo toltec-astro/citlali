@@ -20,8 +20,6 @@ void run_reduction_observation_pipeline(TodProc &todproc, KidsProc &kidsproc,
     load_observation_fruit_loop_maps_if_needed<IsBeammap>(engine, logger);
     setup_and_run_observation_pipeline(
         engine, kidsproc, rawobs, stage_profile, logger);
-    write_coherent_iq_mode_sidecar_if_requested(
-        engine, rawobs, logger);
     write_observation_outputs_and_accumulate<RawObsMap, FilteredObsMap,
                                              FitMaps>(
         todproc, stage_profile, logger);
@@ -30,6 +28,12 @@ void run_reduction_observation_pipeline(TodProc &todproc, KidsProc &kidsproc,
     if (raw_provenance_path) {
         logger->info("raw timestream provenance sidecar: {}",
                      raw_provenance_path->string());
+    }
+    {
+        const auto profile_scope = profile_stage(
+            stage_profile, "observation.coherent_iq_mode_sidecar", logger);
+        write_coherent_iq_mode_sidecar_if_requested(
+            engine, rawobs, logger);
     }
 }
 

@@ -9,7 +9,7 @@
 
 namespace citlali::pipeline {
 
-inline constexpr std::array<std::string_view, 10>
+inline constexpr std::array<std::string_view, 12>
     coherent_iq_mode_observer_request_paths{
         "timestream.raw_time_chunk.coherent_iq_mode_observer.enabled",
         "timestream.raw_time_chunk.coherent_iq_mode_observer.template_paths",
@@ -21,6 +21,8 @@ inline constexpr std::array<std::string_view, 10>
         "timestream.raw_time_chunk.coherent_iq_mode_observer.post_window_sec",
         "timestream.raw_time_chunk.coherent_iq_mode_observer.cross_network_tolerance_sec",
         "timestream.raw_time_chunk.coherent_iq_mode_observer.max_candidates_per_scan_per_network",
+        "timestream.raw_time_chunk.coherent_iq_mode_observer.max_network_event_scores",
+        "timestream.raw_time_chunk.coherent_iq_mode_observer.progress_interval_scores",
     };
 
 template <class Config, class Diagnostics>
@@ -62,6 +64,12 @@ void read_coherent_iq_mode_observer_request_config(
     read_optional_raw_request_value(
         config, key("max_candidates_per_scan_per_network"),
         observer.max_candidates_per_scan_per_network, diagnostics, {}, {1});
+    read_optional_raw_request_value(
+        config, key("max_network_event_scores"),
+        observer.max_network_event_scores, diagnostics, {}, {1});
+    read_optional_raw_request_value(
+        config, key("progress_interval_scores"),
+        observer.progress_interval_scores, diagnostics, {}, {0});
 }
 
 }  // namespace citlali::pipeline
