@@ -78,6 +78,30 @@ freeze the application mainline.
 
 ## Current Snapshot
 
+- A second, derivation-first audit of unit-sum convolve products is complete
+  on the short-lived topic `codex/convolve-contract-implementation`, without
+  modifying the Conan 2 lane or integrating either predecessor branch. Audit
+  commit `1bf77eadd` freezes the pre-comparison derivation; implementation
+  commit `b294802a5` applies the bounded statistical/product corrections. The
+  stored amplitude is the fixed conditioned, circularly convolved map with
+  the output validity window applied; formal diagonal variance propagates the
+  square of those exact signal coefficients, includes every finite positive
+  input weight, and is inverted only after a strict relative numerical guard.
+  Ten-realization central jackknife variance uses `N - 1`. FITS metadata now
+  distinguishes stored convolved amplitude, formal versus empirical
+  uncertainty, filter provenance, conditioning, response status, and weight
+  provenance. Unit-sum filtered fruit-loop feedback is fail-closed, including
+  loaded products with missing or unknown producer identity; full Wiener
+  compatibility remains permitted. Sequential and OpenMP CLI/test builds,
+  39 focused tests in each mode, all 574 enabled CTests in each mode, all 135
+  baseline tests, the complete 123-test config preflight, validation-ledger
+  checks, exit audit, exact retained-product comparison, and full PDF render
+  inspection pass locally. This is implementation/regression evidence only.
+  Same-SHA Unity output, blanks, injections, response/support decisions, and
+  scientific acceptance remain pending under
+  `validation/convolve_contract_unity_2026-07-31/manifest.yaml`; no phase gate
+  or integration approval is claimed.
+
 - A bounded 2026-07-31 numerical topic on
   `codex/convolve-noise-correction`, based on canonical application mainline
   `9aae0e669`, corrects post-processing noise contracts without touching the

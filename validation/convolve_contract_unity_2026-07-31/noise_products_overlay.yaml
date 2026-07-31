@@ -1,0 +1,8 @@
+noise_maps:
+  enabled: yes
+  n_noise_maps: 10
+  products:
+    enabled: yes
+    apply_empirical_weights: yes
+  randomize_dets: no
+  write_realizations: yes

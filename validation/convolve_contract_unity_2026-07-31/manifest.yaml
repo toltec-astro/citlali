@@ -1,0 +1,177 @@
+schema_version: citlali-convolve-contract-unity-v1
+recorded_date: 2026-07-31
+status: pending_human_unity_execution
+purpose: same-SHA implementation and scientific evidence for the unit-sum convolve signal and uncertainty contract
+candidate:
+  branch: codex/convolve-contract-implementation
+  citlali_sha: b294802a5e339f9ba5e0e323980cec3a4bd00249
+  parent_sha: 1bf77eadd7be1d12f285c272bb5f91511a3259f0
+  dirty_required: false
+  build_host: unity
+  access_policy: human_only_via_unity_toltec
+  build_type: Release
+  executable_path: record_at_execution
+  executable_sha256: record_at_execution
+  compiler_identity: record_at_execution
+  cmake_flags: record_at_execution
+  dependency_shas: record_at_execution
+fixture:
+  mode: point
+  obsnum: 152389
+  identity: TolTEC commissioning pointing observation 152389
+  arrays:
+    - a1100
+    - a1400
+    - a2000
+  base_config_unity: /work/toltec/commissioning2025-test/2026-refactor/point/refactor/reduced/redu64/citlali_o152389_0_2_c1.yaml
+  base_config_sha256: b494d8671fb162f47d6eaadc1299755594db5c8c27353d7e8b4ac8ffe8566ed8
+  retained_predecessor_record: point-152389-refactor-6dd0057f-redu64
+  retained_predecessor_sha: 6dd0057f81de8cf606ee0622a52d7c906b7e554a
+  retained_predecessor_unity: /work/toltec/commissioning2025-test/2026-refactor/point/refactor/reduced/redu64
+  retained_predecessor_local: /Users/gwilson/work_toltec/local_data/2026-refactor/point/refactor/reduced/redu64
+overlays:
+  noise_products_overlay.yaml: 879fc58ebb5501ed4b8834009b4b613262ce7266dfd4e31bdcaac5460939e44e
+  disable_filter_overlay.yaml: 83fb1ce3962c9b39fa36fd86544ce23ae70aa4081ead684184bca3708bf786e8
+randomization:
+  engine: boost_mt19937
+  fixed_internal_seed: 5489
+  n_noise_maps: 10
+  randomize_dets: false
+  realization_rule: independent_scan_level_plus_or_minus_one_shared_across_detectors
+  mean_subtracted_estimator_divisor: N_minus_1
+  write_realizations: true
+ordered_runs:
+  - role: raw_control
+    config_precedence:
+      - fixture.base_config_unity
+      - noise_products_overlay.yaml
+      - disable_filter_overlay.yaml
+    expected_filtering: disabled
+    output_reduction_id: record_at_execution
+    output_unity_path: record_at_execution
+  - role: unit_sum_convolve_candidate
+    config_precedence:
+      - fixture.base_config_unity
+      - noise_products_overlay.yaml
+    expected_filtering: unit_sum_convolution
+    expected_edge_guard: inherited_from_base_config
+    output_reduction_id: record_at_execution
+    output_unity_path: record_at_execution
+required_filtered_hdus_per_array:
+  - signal_I
+  - weight_I
+  - weight_formal_I
+  - noise_variance_I
+  - kernel_I
+  - coverage_I
+  - coverage_bool_I
+  - sig2noise_I
+  - sig2noise_pixel_I
+  - point_source_flux_I
+  - point_source_uncertainty_I
+  - sig2noise_point_source_I
+required_noise_realization_hdus_per_array:
+  first: signal_0_I
+  last: signal_9_I
+required_signal_metadata:
+  FILTEROP: unit_sum_convolution
+  BOUNDARY: circular
+  CONDMASK: true
+  CONDFILL: true
+  FILLMODE: core_median
+  ZEROWFIX: true
+  RESPCORR: false
+  COVDIAG: true
+  FLFBACK: false
+  FLWHY: support_contract_unresolved
+required_weight_metadata:
+  weight_I:
+    TYPE: empirical
+    CALMODEL: global_scalar
+  weight_formal_I:
+    TYPE: formal
+    WPROV: stage_input_snapshot
+required_units_and_types:
+  signal_I:
+    BUNIT: mJy/beam
+    TYPE: convolved_amplitude
+  weight_I:
+    BUNIT: 1/(mJy/beam)^2
+  weight_formal_I:
+    BUNIT: 1/(mJy/beam)^2
+  noise_variance_I:
+    BUNIT: (mJy/beam)^2
+  noise_realizations:
+    BUNIT: mJy/beam
+    TYPE: noise_realization
+  point_source_flux_I:
+    BUNIT: mJy/beam
+    TYPE: convolved_amplitude
+  point_source_uncertainty_I:
+    BUNIT: mJy/beam
+    TYPE: convolved_amplitude
+  sig2noise_point_source_I:
+    BUNIT: N/A
+    TYPE: convolved_amplitude
+required_empirical_metadata:
+  NNOISE: 10
+  VAREST: central_sample_variance
+  VARDDOF: 1
+  MEANSUB: true
+required_checks:
+  implementation_regression:
+    - both runs exit_zero_and_finish
+    - no_unexpected_error_level_messages
+    - exact_required_product_inventory
+    - exact_metadata_and_units_contract
+    - point_source_aliases_are_exact_signal_amplitude_aliases
+    - raw_products_match_exactly_between_control_and_candidate
+    - direct_recalculation_of_sample_variance_uses_ddof_1
+    - direct_recalculation_of_formal_variance_uses_squared_signal_coefficients
+    - all_nonfinite_or_nonpositive_stochastic_inputs_are_deterministic_zero_before_filtering
+  scientific_acceptance_pending:
+    - blank_field_formal_to_empirical_variance_residuals_by_array
+    - filtered_spatial_covariance_and_correlation_by_array
+    - interior_and_edge_distance_bins
+    - false_signal_to_noise_exceedances
+    - median_fill_conditionality_and_omitted_fill_covariance
+    - compact_beam_resolved_and_extended_injection_response
+    - response_corrected_estimator_definition
+    - support_or_confidence_plane_definition_and_floor
+    - downstream_multi_pixel_covariance_contract
+required_return_bundle:
+  - exact_candidate_source_sha_and_clean_status
+  - binary_sha256_compiler_cmake_and_dependency_identity
+  - exact_ordered_config_bytes_paths_precedence_and_sha256
+  - merged_effective_and_realized_configuration
+  - input_paths_sizes_and_sha256
+  - complete_command_transcript_and_logs
+  - audit_reduction_run_outputs
+  - compare_reduction_products_outputs
+  - map_inventory_and_all_required_fits_headers
+  - independent_variance_recalculation_tables
+  - per_array_histograms_psds_covariance_and_edge_bin_tables
+  - actual_output_reduction_ids_and_paths
+acceptance_policy:
+  implementation_gate: exact invariants above must pass
+  scientific_gate: no acceptance thresholds are authorized by this manifest; preregister bounds before interpreting blanks or injections
+  integration: forbidden_until_owner_review_of_same_sha_evidence
+  fruit_loop_unit_sum_feedback: fail_closed
+input_sha256:
+  apt:
+    path: /work/toltec/commissioning2025-test/2025-C1-COM-01/apts_orig/apt_152389_matched.ecsv
+    expected_from_local_copy: ac4b6affd73c9d450f4b4151beb67a14960be2f8662fe0493fec9c7062ef48e5
+    unity_verification_required: true
+  hwpr_152389_000_0002_2026_02_19_06_34_38.nc: b2100c4bdf22fb9310d1f842334586dc8195f771418410df0deaf19fa94b5dfa
+  tel_toltec_2026-02-19_152389_00_0002_recomputed.nc: 377a81c754ee8b6516f31d7825323ff590eba3e504ac7144bd5b75e1dfaf3632
+  toltec0_152389_000_0002_2026_02_19_06_34_38.nc: 3c8572ca2e90a4f073840607e07404feff638a8234972f2091974606b7885021
+  toltec1_152389_000_0002_2026_02_19_06_34_38.nc: c720414eb026a0b0469f6d9e35ee42dbd512a433384a1d858fd2ce102ca826a0
+  toltec2_152389_000_0002_2026_02_19_06_34_38.nc: d40b7c781e74c4d011684139da66cb42894c17a1a21768674244031b9c21e135
+  toltec3_152389_000_0002_2026_02_19_06_34_38.nc: f0ca9f455159aa1fa9cab8710020b8622137efdd097c4e7d613bfb043403de88
+  toltec4_152389_000_0002_2026_02_19_06_34_38.nc: ee2acba63d860ac6cdf7711d1b22eeacee3bb3488d652e569e996439054b6e2c
+  toltec5_152389_000_0002_2026_02_19_06_34_38.nc: cc44075693ab19161eaac390a84b8bc82ab3cf18bdbff7b76ff8d4c02e531edc
+  toltec7_152389_000_0002_2026_02_19_06_34_38.nc: e39101741ea0905ba8cec72ce30c4694e06adb651570f8251e2f720053ff4161
+  toltec8_152389_000_0002_2026_02_19_06_34_38.nc: 25331d32a681f13f1b569a6b4643af4cf70fa893a001f2887446407e29ecb77a
+  toltec9_152389_000_0002_2026_02_19_06_34_38.nc: df246227ea42a622dfede7091b7a451498971921f37f3501b781c2f2dfc32945
+  toltec11_152389_000_0002_2026_02_19_06_34_38.nc: 342357bf1420d688095146ad8e78bb569443def60a9b64ed91de1e886fd9b7ac
+  toltec12_152389_000_0002_2026_02_19_06_34_38.nc: 05dd2d11e78f8b1d0e539b8d8370298cc8760642286e85adfa12d99e9ab56760
