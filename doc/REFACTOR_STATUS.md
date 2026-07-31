@@ -36,6 +36,28 @@ The live branch, upstream revision, gate, and import policy are recorded in
 [`INTEGRATION_LEDGER.md`](INTEGRATION_LEDGER.md). The durable rationale is
 [ADR 0008](adr/0008-application-mainline-and-build-adaptation-lanes.md).
 
+## 2026-07-31 SCI-MAP-001 Audit Coordination
+
+The first full scientific-contract package audit is integrated on the
+scientific-audit coordination line. The immutable SCI-MAP-001 decision commit
+is `b9e1e9a9b2fe492c402d8c7b0cf7e5a36c136a53`; its approved contract requires
+a bounded repair but does not approve the governing implementation or expand
+production use. The canonical ledger records the exact audit artifact digest,
+findings, owner decisions, restrictions, and four accepted outbound PTC/VAL
+handoffs. Recipient dispositions remain pending, and target inbox manifests
+will be frozen only when those audits are dispatched.
+
+The repair-base decision selects application SHA
+`9aae0e669384c5c0c0dda93debc194d6b8dac787`. The unapproved convolve/noise
+candidate `02a198cbfb379eaf6ab279c5a3d44ee73ff90435` does not land first; it
+retains its independent amendment, validation, and re-audit path. The next MAP
+stage is a fresh `codex/repair-sci-map-001` worktree from the selected
+application SHA, never from the audit or coordination branch. No repair branch
+has yet been created. See the
+[coordinator decision](audits/packages/SCI-MAP-001_COORDINATOR_DECISION_2026-07-31.md)
+and the
+[bounded repair/re-audit handoff](audits/packages/SCI-MAP-001_BOUNDED_REPAIR_REAUDIT_HANDOFF_2026-07-31.md).
+
 ## 2026-07-26 Conan 2 Build Review
 
 The previously deferred TolTECA build implementation is now available and has

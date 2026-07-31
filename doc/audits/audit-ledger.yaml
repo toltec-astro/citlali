@@ -163,25 +163,415 @@ packages:
         review_phase: post_core_evidence
         arrival: after_audit_completion
         status: resolved
-    outgoing_handoffs: []
+    outgoing_handoffs:
+      - id: SCI-PTC-001-XAUD-001
+        path: >-
+          doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-001.yaml
+        target_package: SCI-PTC-001
+        review_phase: pre_core_authority
+        arrival: before_dispatch
+        status: submitted
+      - id: SCI-PTC-001-XAUD-002
+        path: >-
+          doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-002.yaml
+        target_package: SCI-PTC-001
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted
+      - id: SCI-VAL-001-XAUD-001
+        path: >-
+          doc/audits/handoffs/SCI-VAL-001/SCI-VAL-001-XAUD-001.yaml
+        target_package: SCI-VAL-001
+        review_phase: pre_core_authority
+        arrival: before_dispatch
+        status: submitted
+      - id: SCI-VAL-001-XAUD-002
+        path: >-
+          doc/audits/handoffs/SCI-VAL-001/SCI-VAL-001-XAUD-002.yaml
+        target_package: SCI-VAL-001
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted
     governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
     governing_sha_role: inventory_snapshot
-    audit_branch: null
-    audit_commit: null
-    independent_derivation: {status: not_started, sha256: null}
-    contract_status: not_started
-    implementation_status: not_assessed
-    validation_status: not_started
+    audit_branch: codex/audit-sci-map-001
+    audit_commit: b9e1e9a9b2fe492c402d8c7b0cf7e5a36c136a53
+    audit_parent_sha: 681aeec99c4d1c4762ecb8c4dae63c8599638678
+    audit_artifact_at_commit: >-
+      doc/audits/packages/SCI-MAP-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    final_audit_artifact_sha256: >-
+      6c8decef93f5607bc9e8dfc84e31aee67f45fa5c695fc80563c7e7064f78d556
+    initial_final_audit:
+      commit: 0cfdba5ed08c0ad6c491afcd56972a31d68cfabf
+      artifact_sha256: >-
+        6a3703a1f86be060c034f5867c136d824a11a18a4fc59bf107270a393f7116f3
+    raw_validity_amendment:
+      commit: 681aeec99c4d1c4762ecb8c4dae63c8599638678
+      artifact_sha256: >-
+        7d133f52f517a2262eeebca8fe62f7a6fbc3ed52096870220cdb84bdaf33cb44
+    independent_derivation:
+      status: independent_draft_frozen
+      path: doc/audits/packages/SCI-MAP-001_INDEPENDENT_CORE.tex
+      sha256: 13dd5922bd492e381afcc3b015284216dde1ccc2199ece3d070ee577c7324381
+      freeze_commit: c28f18ed089657dae278caba2d6d6d65c7ec72f4
+      freeze_timestamp_utc: 2026-07-31T17:38:43Z
+      first_source_inspection_utc: 2026-07-31T17:39:22Z
+    coordination:
+      framework_commit: fba342020e5c241fb06320e3c929d4c4bb050a2f
+      audit_integration_commit: 4d75be02ec31b1ee622e9ede7498fb0c1276155f
+      handoff_proposal_commit: a675c2a54a50ed0c67b077e9c5d420933fa11ab0
+      handoff_integration_commit: f230e8bf0a130ea5834aa427e6eacfc318da924b
+      coordinator_decision_path: >-
+        doc/audits/packages/SCI-MAP-001_COORDINATOR_DECISION_2026-07-31.md
+    contract_status: approved
+    implementation_status: nonconformant
+    validation_status: in_progress
     production_status: existing_use_only
-    verdict: pending
-    open_findings: []
+    verdict: amend
+    contract_approval:
+      authority: project_owner
+      date: 2026-07-31
+      scope: bounded_F009_F010_specialization
+      effect: >-
+        Approves the centered-integer nonprecision coadd and explicit
+        raw-validity successor contract; does not approve the governing
+        implementation, complete validation, production expansion, or a
+        precision claim.
+    repair_handoff:
+      authorization: bounded_proposal_only_no_audit_branch_repair
+      path: >-
+        doc/audits/packages/SCI-MAP-001_BOUNDED_REPAIR_REAUDIT_HANDOFF_2026-07-31.md
+    repair_base_decision:
+      authority: project_owner
+      date: 2026-07-31
+      selected_application_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+      convolve_noise_lands_first: false
+      excluded_candidate_sha: 02a198cbfb379eaf6ab279c5a3d44ee73ff90435
+      effect: >-
+        Create the separate MAP repair from the exact audited application
+        baseline; retain convolve/noise on its independent amendment and
+        re-audit path.
+    implementation_assessment:
+      governing_source: nonconformant
+      existing_profile_note: >-
+        Preserve only previously accepted operational use under the four
+        named active Phase 4 profiles; that does not make the audited
+        implementation conformant or authorize expansion.
+    open_findings:
+      - id: SCI-MAP-001-F001
+        class: implementation_defect
+        severity: P0
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: mapmaking_implementation
+        summary: >-
+          Detector-parallel naive accumulation races shared pixel, signal,
+          kernel, and noise scalars.
+        closure_gate: >-
+          Repair separately; pass deterministic supported-profile seq/OMP
+          equality, ThreadSanitizer, and an exact-successor-SHA re-audit.
+      - id: SCI-MAP-001-F002
+        class: implementation_defect
+        severity: P0
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: map_product_implementation
+        summary: >-
+          Persisted coverage_bool validity admits zero and non-finite weight
+          in allowed states, differs from normalization support, and is not a
+          complete raw science-validity product.
+        closure_gate: >-
+          Implement the approved distinct exposure/support/science-validity
+          semantics and finite-positive selection; pass threshold/non-finite
+          FITS round trips plus consumer re-audit in owning packages.
+      - id: SCI-MAP-001-F003
+        class: implementation_defect
+        severity: P0
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: coadd_implementation
+        summary: >-
+          Coadd does not admit common WCS and map identity before mutation and
+          can label output from the last observation.
+        closure_gate: >-
+          Implement immutable full-precision identity/WCS admission with only
+          centered integer embedding, reject before mutation, pass
+          mismatch/all-array fixtures, and re-audit.
+      - id: SCI-MAP-001-F004
+        class: implementation_defect
+        severity: P0
+        evidence_basis: derived
+        confidence: high
+        status: open
+        owner: map_noise_boundary_implementation
+        summary: >-
+          Naive coadd signal and noise do not realize one support operator,
+          and empirical-product publication can fail before coadd
+          accumulation.
+        closure_gate: >-
+          Realize one approved signal/kernel/noise operator and publishable
+          product policy; pass masked two-observation and covariance tests;
+          close NOI boundary review and re-audit.
+      - id: SCI-MAP-001-F005
+        class: implementation_defect
+        severity: P0
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: mapmaking_implementation
+        summary: >-
+          Non-finite coordinates, kernels, multiplicative masks, and coadd
+          inputs can poison supported output.
+        closure_gate: >-
+          Enforce the approved finite input contract at primitive and
+          high-level boundaries and pass exhaustive finite-state and
+          required-failure tests.
+      - id: SCI-MAP-001-F006
+        class: contract_gap
+        severity: P1
+        evidence_basis: derived
+        confidence: high
+        status: open
+        owner: scientific_owner
+        summary: >-
+          Formal and optionally globally empirical-scaled gridding weights
+          are described as inverse variance without approved PTC/NOI
+          covariance claims.
+        closure_gate: >-
+          Apply the approved nonprecision-default and conditional
+          weight/covariance types, align metadata, and pass direct
+          propagated-covariance, coadd, and consumer tests.
+      - id: SCI-MAP-001-F007
+        class: contract_gap
+        severity: P1
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: scientific_product_owner
+        summary: >-
+          Response, hits, exposure, retained support, science validity,
+          operator-computability, grouping absences, and estimator metadata
+          are incomplete or inconsistent.
+        closure_gate: >-
+          Version and persist the approved complete bundle with dedicated
+          support and validity products, make absences explicit, align
+          registry and writer, and pass injection plus FITS round-trip gates.
+      - id: SCI-MAP-001-F008
+        class: contract_gap
+        severity: P1
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: map_coadd_lifecycle_owner
+        summary: >-
+          Requested/effective/observation-resolved/realized provenance cannot
+          reproduce map/coadd admission, coefficients, identity, exact
+          support algorithms/thresholds/comparisons, raw parents, or products.
+        closure_gate: >-
+          Add versioned one-way lifecycle state for every named fact, enforce
+          physical cardinality, pass exact serialization, and return same-SHA
+          sidecars.
+      - id: SCI-MAP-001-F011
+        class: evidence_gap
+        severity: P1
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: validation_implementer
+        summary: >-
+          Required local estimator, covariance, finite-policy, registration,
+          parallel, injection, persisted-pixel, and raw-validity
+          reconstruction truth tests are absent.
+        closure_gate: >-
+          Pass every non-N/A local validation row at an exact successor SHA
+          with no required-data skip and zero unexpected serious record.
+      - id: SCI-MAP-001-F012
+        class: evidence_gap
+        severity: P1
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: external_evidence_owner
+        summary: >-
+          MAP-specific clean same-SHA all-array Point/Science Unity evidence is
+          outstanding; the b294802 Point comparison does not satisfy it.
+        closure_gate: >-
+          Return and audit the complete SCI-MAP-001-UNITY-001 bundle; after
+          any repair, issue a new request for the new exact SHA.
+      - id: SCI-MAP-001-F013
+        class: dependency_gap
+        severity: P1
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: audit_coordinator
+        dependencies: [SCI-CAL-001, SCI-AST-001, SCI-PTC-001, SCI-VAL-001]
+        summary: >-
+          Calibration/response, projection/WCS, covariance/weight, and
+          eligibility/validity input facts remain open.
+        closure_gate: >-
+          Audit each dependency, pass its named interface test, propagate its
+          restrictions, and re-audit every conditional map/coadd conclusion.
+    addressed_findings:
+      - id: SCI-MAP-001-F009
+        class: scientific_policy_decision
+        severity: P1
+        evidence_basis: owner_decision
+        confidence: high
+        status: addressed_pending_reaudit
+        owner: scientific_owner
+        decision_date: 2026-07-31
+        decision: >-
+          Adopt strict identity, unit, response, and full-precision WCS
+          admission before mutation with only the current centered integer
+          common-grid embedding. Set signal centering to identity; prohibit
+          general reprojection/interpolation. Retain the normalized weighted
+          mean and treat its weights as nonprecision gridding coefficients by
+          default. Precision requires SCI-PTC-001 independence/covariance
+          proof; correlated GLS is deferred. Exclude explicitly invalid
+          pixels and fail on unexpected non-finite valid inputs. Authorize no
+          coadd precision or significance claim while covariance is
+          unresolved.
+        summary: >-
+          Coadd admission, registration, centering, estimator, coefficient,
+          finite-input, covariance, and consumer policy are owner-approved.
+        closure_gate: >-
+          Implement the decision atomically on a separate repair branch; pass
+          identity/WCS/response/unit, centered-embedding, invalid/non-finite,
+          unequal-coefficient, no-centering, unchanged-compatible-control,
+          and provenance fixtures; fresh exact-repair-SHA re-audit.
+      - id: SCI-MAP-001-F010
+        class: scientific_policy_decision
+        severity: P1
+        evidence_basis: owner_decision
+        confidence: high
+        status: addressed_pending_reaudit
+        owner: scientific_product_owner
+        decision_date: 2026-07-31
+        decision: >-
+          Persist and distinguish geometric hits, contributing hits, coadd
+          observation count, upstream-eligible exposure, retained exposure,
+          normalization support, science-policy support, and authoritative
+          science validity. Require numerical support, science-policy support,
+          finite signal and required companions, and admitted product identity
+          for validity. Keep normalization and science-policy thresholds
+          separate with versioned algorithms and full-precision realized
+          provenance. Retain coverage_I only as a retained-exposure
+          compatibility alias; deprecate coverage_bool_I as validity
+          authority; require downstream raw science validity to remain
+          separate from operator-local support.
+        summary: >-
+          The exposure, hits, support, validity, alias, provenance, and
+          downstream separation hierarchy is owner-approved.
+        closure_gate: >-
+          Implement/version every product and exact absence rule, alias,
+          deprecation, companion/identity conjunction, threshold/provenance
+          field, and downstream interface; pass exact persisted
+          reconstruction, boundary, full-precision round-trip, and fresh
+          re-audit gates.
     unresolved_scientific_decisions: []
-    local_evidence: []
-    requested_unity_evidence: []
-    supplied_external_evidence: []
+    local_evidence:
+      - frozen independent core and exact SHA-256/commit/timestamps
+      - successful independent-core TeX compile and all-page render inspection
+      - exact governing-source/equation/product/consumer trace
+      - bounded hashed b294802 Point cross-audit characterization
+      - project-owner F009/F010 decision dated 2026-07-31
+      - bounded repair and re-audit handoff with no audit-branch repair
+    requested_unity_evidence:
+      - status: outstanding
+        request_id: SCI-MAP-001-UNITY-001
+        governing_source_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+        cases: [point-152389-products-seq, point-152389-products-omp,
+                science-152390-152392-coadd-seq,
+                science-152390-152392-coadd-omp,
+                science-152390-152392-empirical-seq,
+                science-152390-152392-empirical-omp,
+                science-152390-152392-coadd-products-expected-failure-seq]
+    supplied_external_evidence:
+      - id: SCI-MAP-001-XAUD-001
+        scope: downstream_cross_audit_characterization_only
+        source_package: SCI-FLT-001
+        source_candidate_sha: b294802a5e339f9ba5e0e323980cec3a4bd00249
+        fixture: point-152389
+        comparison_design: >-
+          One b294802 executable, filtering disabled for control and enabled
+          for candidate.
+        supplied_summary_sha256: >-
+          4bbfb3767e064de5a77e96c6177fd02f6b6adcec6c2bf1732b7115edcdac829b
+        strict_raw_comparison_transcript_sha256: >-
+          2e777a955c5127f1a1e4c6c5a0e025f424a38be8d16b8e0a803c5c76e95ed5dc
+        candidate_audit_transcript_sha256: >-
+          295016e96c15ddd0968f44c97b7cda32e171729bbd5e4b5034f3359914bf2b6d
+        control_audit_transcript_sha256: >-
+          b6ef7883c1cf7e504dc13f0eeccead84dc011519f8e7b7afd3642909c8de98ef
+        established:
+          - 15 common raw products, zero changed, zero skipped, no set difference
+          - fixed bounded convolution and squared-kernel propagation reproduce
+          - ten-realization N-1 variance and stored uncertainty/S/N reproduce
+          - direct empirical variance can collapse at a filtered support edge
+          - one a2000 guard-band pixel has direct S/N approximately -165.7
+          - eight of nine a2000 direct absolute-S/N-above-5 pixels are guard-band
+          - filtered coverage_bool mixes numerical support and science confidence
+        limitations:
+          - no immutable guard-band-analysis bundle or exact pixel identity
+          - run-audit identity was not a clean expected-mode/label gate
+          - does not satisfy SCI-MAP-001-UNITY-001
+          - does not validate the raw science-validity contract
+          - does not establish a raw-map defect or close any MAP finding
+          - does not authorize filtered products or candidate integration
+    cross_audit_handoffs:
+      NOI:
+        findings: [SCI-MAP-001-F002, SCI-MAP-001-F006,
+                   SCI-MAP-001-F007, SCI-MAP-001-F008,
+                   SCI-MAP-001-F010, SCI-MAP-001-F011]
+        requirement: >-
+          Use an approved raw-valid domain and prove weight, realization,
+          covariance, finite-sample, and calibration-domain meanings; no
+          regularization or variance-floor formula is selected by MAP.
+      FLT:
+        findings: [SCI-MAP-001-F002, SCI-MAP-001-F006,
+                   SCI-MAP-001-F007, SCI-MAP-001-F008,
+                   SCI-MAP-001-F010, SCI-MAP-001-F011]
+        requirement: >-
+          Identify the exact raw parent and keep raw science validity distinct
+          from filtered numerical support, response, covariance, and
+          confidence.
+      FRUIT:
+        dependency_only: >-
+          Do not treat filtered support or unrestricted finite-realization
+          pixelwise S/N as feedback eligibility without accepted MAP, NOI,
+          and FLT contracts.
+    downstream_policy:
+      allowed_existing_profiles:
+        - phase4-point-152389-v1
+        - phase4-oof-152385-152387-v1
+        - phase4-science-152390-152392-v1
+        - phase4-beammap-148670-v1
+      allowed_uses:
+        - previously accepted operational behavior under those exact profiles
+        - descriptive map inspection
+        - formal-standardized amplitude only with explicit conditional semantics
+      fail_closed_uses:
+        - naive detector-grouped OpenMP mapmaking
+        - coadd without strict admitted identity, unit, response, and WCS
+        - coadd reprojection, interpolation, fractional registration, implicit
+          signal centering, or GLS
+        - raw coverage_bool_I, weight_I, or coverage_I alone as science validity
+        - naive-coadd noise for empirical calibration
+        - naive coadd plus empirical products as a successful published bundle
+        - new inverse-variance, significance, or full-covariance claims
+        - new response-corrected photometry or astrometry
+        - filtered coverage_bool_I or numerical support as science confidence
+        - direct finite-realization filtered pixelwise S/N as significance
+        - integration or production use of b294802
+        - fruit-loop eligibility, amplitude, confidence, support, or gain from
+          those filtered products
     remediation_branch: null
     remediation_commit: null
-    re_audit_status: not_started
+    re_audit_status: required
 
   - id: SCI-ALIGN-001
     name: Sample alignment, scan slicing, and gap interpolation
@@ -393,6 +783,22 @@ packages:
       - package_id: SCI-AST-001
         status: open
     downstream_consumers: [SCI-VAL-001, SCI-MAP-001, SCI-NOI-001, SCI-BEAM-001]
+    incoming_handoffs:
+      - id: SCI-PTC-001-XAUD-001
+        path: >-
+          doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-001.yaml
+        source_package: SCI-MAP-001
+        review_phase: pre_core_authority
+        arrival: before_dispatch
+        status: submitted
+      - id: SCI-PTC-001-XAUD-002
+        path: >-
+          doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-002.yaml
+        source_package: SCI-MAP-001
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted
+    outgoing_handoffs: []
     governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
     governing_sha_role: inventory_snapshot
     audit_branch: null
@@ -435,6 +841,22 @@ packages:
       - package_id: SCI-PTC-001
         status: open
     downstream_consumers: [SCI-MAP-001, SCI-MAP-002, SCI-NOI-001, SCI-BEAM-001]
+    incoming_handoffs:
+      - id: SCI-VAL-001-XAUD-001
+        path: >-
+          doc/audits/handoffs/SCI-VAL-001/SCI-VAL-001-XAUD-001.yaml
+        source_package: SCI-MAP-001
+        review_phase: pre_core_authority
+        arrival: before_dispatch
+        status: submitted
+      - id: SCI-VAL-001-XAUD-002
+        path: >-
+          doc/audits/handoffs/SCI-VAL-001/SCI-VAL-001-XAUD-002.yaml
+        source_package: SCI-MAP-001
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted
+    outgoing_handoffs: []
     governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
     governing_sha_role: inventory_snapshot
     audit_branch: null
