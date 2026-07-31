@@ -1,0 +1,1129 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,booktabs,longtable,array,enumitem,hyperref,xcolor}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\setlength{\emergencystretch}{3em}
+\setlength{\tabcolsep}{3.5pt}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\code}[1]{\nolinkurl{#1}}
+\newcommand{\trans}{\mathsf{T}}
+
+\title{SCI-MAP-001 Independent Mathematical Core\\
+\large Shared and naive mapmaking plus observation coaddition}
+\author{Independent package auditor}
+\date{2026-07-31}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This document freezes a source-independent scientific contract for ordinary
+naive mapmaking and observation coaddition. Conditional on fixed calibration,
+pointing, eligibility, and processed-timestream covariance inputs, both stages
+are linear estimators. Their full covariance is obtained by propagating the
+same linear operators used for the signal. A normalized gridding denominator
+is a normalization product; it equals statistical inverse variance only under
+explicit additional conditions. Observation mapmaking and coaddition can be
+reviewed coherently as one package because the coadd is a second linear
+combination of the same map-product identity, response, covariance, support,
+and validity objects. This draft does not claim implementation conformity,
+validation completion, scientific-owner approval, or new production authority.
+\end{abstract}
+\tableofcontents
+
+\section{Authority, launch identity, and independence}
+
+This core was derived before inspecting the quarantined package implementation.
+The exact launch fields are:
+
+\begin{longtable}{L{0.30\linewidth}L{0.62\linewidth}}
+\toprule
+Field & Value\\
+\midrule
+Repository & \code{/Users/gwilson/GitHub/citlali-refactor}\\
+Inventory snapshot &
+\code{9aae0e669384c5c0c0dda93debc194d6b8dac787}\\
+Governing source SHA &
+\code{9aae0e669384c5c0c0dda93debc194d6b8dac787}\\
+Audit branch & \code{codex/audit-sci-map-001}\\
+Audit worktree & \code{/private/tmp/citlali-audit-sci-map-001}\\
+Coordinator framework/ledger commit &
+\code{7c13e4361ffd00ec75683c62ee7a435a5df97144}\\
+\bottomrule
+\end{longtable}
+
+Before this file was frozen, the audit team used only the assignment,
+repository \code{AGENTS.md}, the TolTEC context routing authorities,
+project-level \code{doc/ARCHITECTURE.md} and
+\code{doc/SCIENTIFIC_CONVENTIONS.md}, the exact governing-SHA product and
+configuration intentions, and the coordinator's audit framework, templates,
+and ledger record. No formula, code body, test body, writer body, or
+implementation diff from a quarantined path was opened.
+
+Git worktree status necessarily exposed path names, including the fact that an
+unrelated dirty worktree had modified
+\code{include/citlali/core/mapmaking/map.h}; neither those bytes nor that diff
+was inspected. A product-contract query was initially made against that dirty
+worktree, recognized as non-governing, excluded from this derivation, and
+repeated from the exact governing Git object before any mathematical choice was
+frozen. A support auditor reviewed an adjacent convolve audit for document
+style; that exposed shared path names and convolve-only semantics, but no
+naive-mapmaking or coadd implementation content.
+
+The quarantined set includes ordinary map primitives and accumulation,
+mapmaking execution-plan and provenance code, observation-coadd accumulation,
+map/coadd writers and metadata, focused tests, and implementation diffs named
+by the assignment. The final audit must record the freeze digest and commit
+and the first post-freeze source-inspection event.
+
+\section{Package boundary and coherence decision}
+
+The package includes the shared map-product identity; ordinary naive
+sample-to-pixel accumulation; pre-normalized and normalized signal and
+response/kernel products; formal covariance and any diagonal weight claim;
+hits, exposure coverage, support, and validity; observation-map identity;
+observation coaddition; and the output contract presented to downstream
+packages. Noise realizations enter only to test whether they traverse the same
+fixed map and coadd operators.
+
+The package excludes RTC/PTC internals, final calibration/astrometric/flagging
+policy, the construction and empirical calibration of noise realizations,
+JINC internal mathematics, maximum-likelihood production implementation,
+post-map filters, source fitting, mode-specific inference, Beammap inference,
+and fruit-loop feedback mathematics.
+
+No split is required by the independent mathematics. For fixed upstream state,
+an observation map is \(\widehat{\boldsymbol m}_o=A_o\boldsymbol y_o\) and a
+coadd is \(\widehat{\boldsymbol s}=B\boldsymbol z\), where
+\(\boldsymbol z=J\widehat{\boldsymbol m}_{\rm stack}\) is the preselected
+finite-valid observation-map stack. Consequently the complete selected-space
+operator is \(BJA_{\rm block}\), with \(A_{\rm block}\) the block-diagonal
+stack of observation operators; its covariance is propagated through the same
+operator, and its response, units, map identity, support, and validity cannot
+be reviewed coherently without the observation-map contract. The two stages
+remain separately identifiable within this one package and can receive
+separate findings or repair gates.
+
+\section{Indices, random quantities, and conditioned inputs}
+
+Let \(o\) index observations, \(t\) samples, \(d\) detectors, \(g\) scientific
+map groups, and \(p\) pixels within a group. Within fixed \(o\), the compound
+candidate-sample index is \(i=(t,d)\). Array ID, network ID, detector UID, group index, map index,
+and container position are distinct identities. A group-to-array,
+group-to-network, group-to-frequency-bin, or group-to-detector mapping must be
+explicit. Only Stokes \(I\) is within the validated capability.
+
+If the underlying processed matrix has sample-by-detector shape, its explicit
+vectorization is \(\boldsymbol d_o\in\mathbb R^{n_o}\). For one map group with
+\(P_g\) pixels and \(r_o\) selected entries,
+\begin{equation*}
+ S_o\in\{0,1\}^{r_o\times n_o},\quad
+ H_o\in\mathbb R^{n_o\times P_g},\quad
+ X_o=S_oH_o\in\mathbb R^{r_o\times P_g},\quad
+ N_o,Q_o\in\mathbb R^{r_o\times r_o},\quad
+ G_o\in\mathbb R^{P_g\times r_o}.
+\end{equation*}
+
+\begin{longtable}{L{0.12\linewidth}L{0.20\linewidth}L{0.15\linewidth}L{0.16\linewidth}L{0.27\linewidth}}
+\toprule
+Symbol & Identity and shape & Units/frame & Classification & Condition or
+required meaning\\
+\midrule
+\endfirsthead
+\toprule
+Symbol & Identity and shape & Units/frame & Classification & Condition or
+required meaning\\
+\midrule
+\endhead
+\(\boldsymbol d_o\) & Vectorization of processed sample-by-detector data for
+one observation and group & Named signal unit \(U_g\) & random & Calibration and
+preprocessing have produced the declared map-input quantity.\\
+\(M_{otd}\) & Eligibility indicator or selector & dimensionless & selected,
+then conditioned upon & Exactly identifies samples and detectors permitted to
+enter the estimator; selection is fixed for conditional formulas.\\
+\(C_{d,o}\) & Conditional covariance of the processed sample error in
+\(\boldsymbol d_o\) & \(U_g^2\) & conditioned upon & Defined at fixed sky and
+complete state; includes correlations retained after preprocessing and is not
+inferred from a weight vector.\\
+\(W_o\) & Analysis weight or inverse covariance & normally \(U_g^{-2}\), or a
+declared gridding unit & fixed or data-derived, then conditioned upon & Its
+statistical meaning and normalization are an upstream fact.\\
+\(H_o\) & Forward sky-to-sample response & sample \(U_g\) per map \(U_g\) &
+fixed, conditioned upon & Includes pointing, pixel convention, calibrated
+response, and any fixed preprocessing response relevant to the claimed sky.\\
+\(G_o\) & Sample-to-pixel gridding coefficients, pixels by selected samples &
+dimensionless unless declared otherwise & fixed, conditioned upon & Nonnegative
+for the normalized-gridding contract; hard assignment and fractional
+projection are distinguished.\\
+\(\Delta t_{oi}\) & Exposure coefficient & seconds & fixed or
+observation-resolved & Represents live sample duration or another explicitly
+named exposure measure.\\
+\(\boldsymbol k_o\) & Sample-domain response/kernel tracer & \(U_g\) for the
+current product convention & fixed or data-derived, conditioned upon & Names
+the source/template normalization and calibration used to create it.\\
+\(\theta_o\) & Calibration, pointing, mask, weight, geometry, and grouping
+state & mixed, explicitly typed & selected or data-derived, then conditioned
+upon & Requested, effective, observation-resolved, and realized fields are not
+interchanged.\\
+\(\boldsymbol m_o\) & True sky coefficients on the chosen observation grid &
+\(U_g\) & fixed unknown or random scientific field & Meaning depends on frame,
+WCS, pixel basis, and response convention.\\
+\bottomrule
+\end{longtable}
+
+Consequential derived quantities are classified separately so that a formula
+does not hide data dependence:
+
+\begin{longtable}{L{0.16\linewidth}L{0.28\linewidth}L{0.22\linewidth}L{0.26\linewidth}}
+\toprule
+Quantity & Role & Classification & Conditioning rule\\
+\midrule
+\endfirsthead
+\toprule
+Quantity & Role & Classification & Conditioning rule\\
+\midrule
+\endhead
+\(Q_o\) & Selected full-matrix analysis precision & fixed or data-derived,
+then conditioned upon & Selected specialization of the declared upstream
+weighting object \(W_o\); it need not equal \(N_o^{-1}\).\\
+\(\Omega_o,\omega_{oi}\) & Selected diagonal gridding weights & fixed or
+data-derived, then conditioned upon & Diagonal specialization of \(W_o\) with
+declared unit and statistical meaning.\\
+\(\boldsymbol q_o,D_o,A_o\) & Realized normalization and selected-sample map
+operator & data-derived from conditioned state & Deterministic after
+\(G_o,\Omega_o,M_o\), and geometry are fixed.\\
+\(R_o\) and \(\boldsymbol\eta,C_\eta\) & Map response and uncertain response/
+calibration parameters & response is data-derived; parameters are fitted,
+selected, or random as declared & Conditional response excludes parameter
+uncertainty; Equation~\eqref{eq:systematic-covariance} adds a stated model.\\
+\(\boldsymbol\mu_{0,o},\boldsymbol b_{m,o},\boldsymbol b_z,
+\boldsymbol b_c\) & Additive sample-, map-, selected-stack-, and coadd-domain
+bias terms & fixed known, estimated, or unknown as declared & Known terms are
+conditioned upon; estimated terms carry uncertainty; unknown terms remain an
+explicit bias or enter named nuisance columns.\\
+\(J,T,C_{\mathrm{obs}}\) & Valid-entry selector, stacked observation
+response/registration, and map covariance & selected, fixed, or data-derived,
+then conditioned upon & Must retain
+cross-pixel and cross-observation blocks relevant to the coadd.\\
+\(u_{op},\chi_{op},B\) & Coadd weight, contribution indicator, and coadd
+operator & fixed/selected or data-derived, then conditioned upon & Their
+meaning and any dependence on the observation maps are explicit.\\
+\(L_o,\boldsymbol a_o\) & Optional centering operator and coefficients & fixed
+or data-derived, then conditioned upon & If active, the same declared operator
+acts on signal, response, covariance, and realizations.\\
+\bottomrule
+\end{longtable}
+
+Define the complete conditioned state as
+\begin{align*}
+ \theta_{\rm map}&=\{M,C_d,W,Q,\Omega,H,X,G,\Delta t,\boldsymbol k,
+ A,R,\boldsymbol\mu_0,\boldsymbol b_m,\boldsymbol\eta,C_\eta,
+ \hbox{identity, geometry}\},\\
+ \theta_{\rm coadd}&=\{\theta_{{\rm map},o}:o=1,\ldots,O;
+ J,T,C_{\rm obs},u,\chi,B,L,\boldsymbol a,
+ \boldsymbol b_z,\boldsymbol b_c\}.
+\end{align*}
+All linear expectations and covariances below are conditional on the applicable
+complete state and on the named true sky or common estimand. Thus the displayed
+formal covariances describe estimator noise for fixed sky, even where
+\(\boldsymbol m\) or \(\boldsymbol s\) is classified as a random scientific
+field. If any conditioned state is estimated or selected from the same samples
+or observation maps, the formulas remain conditional statements. Unconditional
+bias and covariance then also include state uncertainty, sky-field variance,
+and all cross-covariances with the random data; they must be obtained from a
+joint model or resampling experiment rather than silently omitted.
+
+\clearpage
+\section{Stable upstream dependencies}
+
+\begin{longtable}{L{0.13\linewidth}L{0.26\linewidth}L{0.12\linewidth}L{0.22\linewidth}L{0.19\linewidth}}
+\toprule
+Package & Exact assumed fact & Conditional & Interface test &
+Restriction while open\\
+\midrule
+\endfirsthead
+\toprule
+Package & Exact assumed fact & Conditional & Interface test &
+Restriction while open\\
+\midrule
+\endhead
+SCI-CAL-001 & Each accepted \(d_i\) and \(k_i\) has a named unit, calibrated
+multiplicative response, array/detector identity, and calibration covariance or
+explicit omission. & Yes: amplitudes, units, and systematic covariance. &
+Inject zero and two known nonzero amplitudes in every declared unit/array;
+verify zero-input response, linear scale, kernel normalization, complete
+observation-to-observation state replacement, coadd comparability, metadata,
+and the predicted correlated calibration term. & No absolute amplitude,
+photometry, cross-array or cross-observation comparison, or calibration-
+complete covariance claim.\\
+SCI-AST-001 & \(H\) and \(G\) use the declared per-sample pointing, coordinate
+frame, pixel convention, WCS, and astrometric uncertainty. & Yes: spatial
+response and WCS. & Project known pixel centers, subpixel positions, frame
+boundaries, and RA wrapping through forward and inverse coordinate paths; check
+pixel identity and recovered response. & No absolute position, shape, edge
+response, WCS-conformity, or cross-observation coadd-registration claim.\\
+SCI-PTC-001 & \(C_d\) is the processed-sample covariance and \(W\) has an exact
+declared relationship to it, including normalization and retained correlations.
+& Yes: every formal-weight conclusion. & On a small retained sample set,
+compare declared \(W\) with directly formed covariance/inverse covariance and
+compare predicted \(A N A^\trans\) with controlled realizations. & A gridding
+denominator remains a normalization, not authorized inverse variance; formal
+significance and inverse-variance coaddition are fail-closed.\\
+SCI-VAL-001 & \(M\) defines detector/sample eligibility, flag precedence,
+non-finite handling, and zero-support semantics before arithmetic. & Yes:
+support, hits, coverage, and valid consumer domain. & Toggle one state at a
+time for flagged, non-finite, zero-weight, negative-weight, detector-disabled,
+and out-of-bounds inputs; verify exact contribution counts and invalid output.
+& No claim that a pixel, detector map, observation map, or coadd is usable
+solely because a floating value is finite.\\
+\bottomrule
+\end{longtable}
+
+These open dependencies do not prevent writing the estimator. They prevent
+unconditional interpretations that require facts the map package does not own.
+
+\section{General linear and generalized least-squares estimator}
+
+Let \(S_o\) be a row selector that retains exactly the entries allowed by
+\(M_o\). Define
+\begin{align}
+  \boldsymbol y_o &= S_o\boldsymbol d_o,
+  &X_o &= S_oH_o,
+  &N_o &= S_o C_{d,o}S_o^\trans .
+  \label{eq:selected-system}
+\end{align}
+Here
+\(C_{d,o}=\Cov(\boldsymbol d_o-\E[\boldsymbol d_o\mid
+\boldsymbol m_o,\theta]\mid\boldsymbol m_o,\theta)\), and therefore
+\(N_o=\Cov(\boldsymbol y_o-\E[\boldsymbol y_o\mid
+\boldsymbol m_o,\theta]\mid\boldsymbol m_o,\theta)\). These are noise/error
+covariances, not ensemble covariances of a random sky plus noise.
+Selection occurs before covariance inversion; with correlated noise, merely
+multiplying a full inverse covariance by a diagonal mask is not generally the
+precision of the retained samples.
+
+Every displayed \(N_o^{-1}\) requires \(N_o\) to be positive definite on the
+selected stochastic subspace. If fixed preprocessing leaves deterministic
+null modes, the system must first be expressed in a basis of that subspace (or
+the null modes explicitly quotiented out) and covariance inverted there. The
+outer Moore--Penrose inverse of a normal matrix does not make an undefined
+inner covariance inverse valid.
+
+For a fixed positive-definite analysis precision \(Q_o\), the generalized
+linear estimator is
+\begin{align}
+  F_o &= X_o^\trans Q_o X_o,
+  \label{eq:normal-matrix}\\
+  \widehat{\boldsymbol m}_{o,Q}
+    &= F_o^{+}X_o^\trans Q_o\boldsymbol y_o
+     \equiv A_{o,Q}\boldsymbol y_o,
+  \label{eq:general-linear-estimator}
+\end{align}
+where \({}^{+}\) is the Moore--Penrose inverse on the explicitly identifiable
+subspace. Unconstrained null modes are invalid; a pseudoinverse does not turn
+them into measured sky.
+
+The conditional expectation, response, and full covariance are
+\begin{align}
+  \E[\widehat{\boldsymbol m}_{o,Q}\mid\theta]
+    &= A_{o,Q}\E[\boldsymbol y_o\mid\theta],
+  \label{eq:general-mean}\\
+  R_{o,Q} &= A_{o,Q}X_o,
+  \label{eq:general-response}\\
+  C_{m,o,Q}
+    &= A_{o,Q}N_oA_{o,Q}^\trans .
+  \label{eq:general-covariance}
+\end{align}
+Equation~\eqref{eq:general-covariance}, not a diagonal product name, is the
+mathematical noise propagation conditional on fixed \(\boldsymbol m_o\) and
+\(\theta\). If instead a random sky is marginalized with covariance
+\(C_{\rm sky}\), the output ensemble covariance additionally contains
+\(R_{o,Q}C_{\rm sky}R_{o,Q}^\trans\), plus sky--noise cross terms when they are
+correlated. When \(Q_o=N_o^{-1}\),
+the covariance model is correct, and the supported columns of \(X_o\) are
+identifiable, the GLS estimator is
+\begin{align}
+  \widehat{\boldsymbol m}_{o,\mathrm{GLS}}
+    &= (X_o^\trans N_o^{-1}X_o)^{+}
+       X_o^\trans N_o^{-1}\boldsymbol y_o,
+  \label{eq:gls-estimator}\\
+  C_{m,o,\mathrm{GLS}}
+    &= (X_o^\trans N_o^{-1}X_o)^{+}
+  \label{eq:gls-covariance}
+\end{align}
+on that subspace. If \(Q_o\neq N_o^{-1}\), the correct covariance is the
+sandwich in Equation~\eqref{eq:general-covariance}; \(F_o\) is then an analysis
+normalization, not statistical precision.
+
+If upstream preprocessing is a fixed linear operator \(L\), then
+\(C_d=L C_{\rm raw}L^\trans\). Temporal correlation, shared detector modes, and
+preprocessing-induced covariance enter there and propagate through
+Equation~\eqref{eq:general-covariance}.
+
+Calibration, astrometric, or response parameters \(\boldsymbol\eta\) add, to
+first order, a systematic term
+\begin{equation}
+ C_{m,\eta}=J_\eta C_\eta J_\eta^\trans,
+ \qquad
+ J_\eta=\left.
+ \frac{\partial\E[\widehat{\boldsymbol m}]}{\partial\boldsymbol\eta}
+ \right|_{\widehat{\boldsymbol\eta}},
+ \label{eq:systematic-covariance}
+\end{equation}
+plus cross terms when parameter errors and sample noise are correlated. This
+is distinct from the conditional formal covariance.
+
+\section{Ordinary naive normalized gridding}
+
+For one observation and map group, retain only eligible finite samples, write
+\(\boldsymbol k_o\) for the corresponding selected entries of the abstract
+sample-domain kernel tracer, and require the ordinary gridding coefficients
+\(G_o\) to be dimensionless and nonnegative. Then
+let \(\Omega_o=\diag(\omega_{oi})\) contain finite nonnegative gridding
+weights. Define the pre-normalized signal numerator and gridding normalization
+\begin{align}
+  \boldsymbol n_o &= G_o\Omega_o\boldsymbol y_o,
+  \label{eq:naive-numerator}\\
+  \boldsymbol q_o &= G_o\Omega_o\boldsymbol 1,
+  \qquad D_o=\diag(\boldsymbol q_o).
+  \label{eq:naive-denominator}
+\end{align}
+The supported-pixel pseudoinverse \(D_o^{+}\) is defined as \(1/q_{op}\) only
+where the declared validity rule accepts finite \(q_{op}>0\); it is zero in
+the algebraic operator for unsupported pixels, whose persisted signal is
+nevertheless marked invalid rather than interpreted as zero sky. The ordinary
+naive map and its exact fixed-state operator are
+\begin{align}
+  \widehat{\boldsymbol m}_o
+    &=D_o^{+}\boldsymbol n_o
+      =D_o^{+}G_o\Omega_o\boldsymbol y_o
+      \equiv A_o\boldsymbol y_o.
+  \label{eq:naive-map}
+\end{align}
+
+For the response/kernel tracer,
+\begin{align}
+  \boldsymbol n_{k,o} &= G_o\Omega_o\boldsymbol k_o,
+  \label{eq:kernel-numerator}\\
+  \widehat{\boldsymbol k}_{o} &=D_o^{+}\boldsymbol n_{k,o}.
+  \label{eq:normalized-kernel}
+\end{align}
+Signal and kernel must use identical eligibility, projection, gridding weights,
+normalization, grouping, and boundary decisions for a shared map operator. A
+kernel with units \(U_g\) is a named response/template product, not a weight or
+probability. Its source position, amplitude normalization, array/group, WCS,
+iteration, and operator identity are part of the contract.
+
+When the stored kernel is claimed to be the realized response to a declared
+unit-bearing map template \(\boldsymbol\tau\), the required identity is
+\begin{equation}
+ \boldsymbol k_o=X_o\boldsymbol\tau,
+ \qquad
+ \widehat{\boldsymbol k}_o
+ =A_oX_o\boldsymbol\tau
+ =R_o\boldsymbol\tau.
+ \label{eq:kernel-response-identity}
+\end{equation}
+The response matrix \(R_o\) is dimensionless while the realized kernel image
+has the signal unit carried by \(\boldsymbol\tau\). If
+Equation~\eqref{eq:kernel-response-identity} is not established, the stored
+quantity is only a kernel tracer and must not be advertised as the realized
+map response.
+
+\subsection{Relation to diagonal weighted least squares}
+
+Suppose samples obey
+\(\boldsymbol y=X\boldsymbol m+\boldsymbol\epsilon\) with independent
+\(\Var(\epsilon_i)=\sigma_i^2\), let
+\(\omega_i=\sigma_i^{-2}\), and approximate the normal matrix by its diagonal.
+Then
+\begin{align}
+  f_p &=\sum_i X_{ip}^2\omega_i,
+  \label{eq:diagonal-normalization}\\
+  \widehat m_{p,\mathrm{diag\,WLS}}
+    &=\frac{\sum_i X_{ip}\omega_i y_i}
+            {\sum_i X_{ip}^2\omega_i}.
+  \label{eq:diagonal-wls}
+\end{align}
+If \(G_{pi}=X_{ip}\) is one-hot, so \(G_{pi}\in\{0,1\}\) and each accepted
+sample belongs to one pixel, Equations~\eqref{eq:naive-map} and
+\eqref{eq:diagonal-wls} coincide. For fractional projection,
+\(G_{pi}^2\neq G_{pi}\) in general: normalized gridding and diagonal WLS are
+different estimators. The implementation must name which projection and
+denominator it realizes; neither is silently redefined to match a stored field
+name.
+
+\section{Formal covariance, weight, and cross-pixel correlation}
+
+The exact conditional covariance of the naive map is
+\begin{equation}
+ C_{m,o}=D_o^{+}G_o\Omega_o N_o\Omega_o
+ G_o^\trans D_o^{+\trans}.
+ \label{eq:naive-full-covariance}
+\end{equation}
+For independent samples and true inverse-variance weights,
+\(N_o=\diag(\sigma_i^2)\) and \(\omega_i=\sigma_i^{-2}\), this becomes
+\begin{align}
+ \Var(\widehat m_{op}\mid\theta)
+ &=\frac{\sum_iG_{opi}^2\omega_i}
+         {\left(\sum_iG_{opi}\omega_i\right)^2},
+ \label{eq:fractional-map-variance}\\
+ \Cov(\widehat m_{op},\widehat m_{or}\mid\theta)
+ &=\frac{\sum_iG_{opi}G_{ori}\omega_i}
+         {q_{op}q_{or}}.
+ \label{eq:fractional-cross-pixel-covariance}
+\end{align}
+The conditional diagonal formal inverse variance is therefore
+\begin{equation}
+ \phi_{op}=\frac{q_{op}^2}{\sum_iG_{opi}^2\omega_i},
+ \label{eq:formal-diagonal-weight}
+\end{equation}
+where the denominator is finite and positive. The exact algebraic condition
+for \(\phi_{op}=q_{op}\) is
+\begin{equation}
+ \sum_i\omega_i\left(G_{opi}^2-G_{opi}\right)=0.
+ \label{eq:normalization-equals-weight-condition}
+\end{equation}
+For \(0\leq G_{opi}\leq1\) and strictly positive weights, this requires every
+coefficient contributing to pixel \(p\) to be zero or one; ordinary one-hot
+hard assignment is the standard sufficient guarantee. With correlated sample noise,
+shared detector noise, fractional projection, or preprocessing-induced
+correlations, Equation~\eqref{eq:naive-full-covariance} remains authoritative;
+the map precision is not obtained by merely summing per-sample weights.
+
+Accordingly:
+\begin{itemize}
+\item \(q_p\) is always a gridding normalization under this contract;
+\item \(q_p\) may be called formal inverse variance only after
+Equation~\eqref{eq:normalization-equals-weight-condition}, independent sample
+noise, and true inverse-variance sample weights are established;
+\item \(\phi_p=1/[C_m]_{pp}\) is a diagonal inverse variance but does not encode
+the off-diagonal covariance; and
+\item the full precision \(C_m^{+}\), when identifiable, is a matrix and is not
+interchangeable with \(\phi\).
+\end{itemize}
+
+A deterministic counterexample is a single map pixel receiving
+\(G_{p1}=G_{p2}=1/2\) with \(\omega_1=\omega_2=1\):
+\(q_p=1\), but \(\Var(\widehat m_p)=1/2\) and \(\phi_p=2\).
+
+\section{Response and analytic input classes}
+
+Let the conditional selected-sample expectation for a sky map be
+\(\E[\boldsymbol y]=X\boldsymbol m+\boldsymbol\mu_0\). The naive map response
+matrix is
+\begin{align}
+ R_o&=A_oX_o,
+ \label{eq:naive-response}\\
+ \boldsymbol b_{m,o}&=A_o\boldsymbol\mu_{0,o},
+ \qquad
+ \E[\widehat{\boldsymbol m}_o]=
+ R_o\boldsymbol m_o+\boldsymbol b_{m,o},
+ \label{eq:map-affine-mean}\\
+ \frac{\partial\E[\widehat{\boldsymbol m}_o]}{\partial\alpha}
+ &=R_o\boldsymbol\tau
+ \quad\hbox{for}\quad
+ \boldsymbol m=\alpha\boldsymbol\tau+\boldsymbol m_0.
+ \label{eq:template-response}
+\end{align}
+This single expression yields the required cases:
+
+\begin{description}[style=nextline]
+\item[Constant sky.]
+Because numerator and denominator use the same coefficients,
+\(A\boldsymbol1_{\rm sample}=\boldsymbol1_{\rm map}\) on supported pixels:
+the gridder preserves a constant selected-sample vector. Preservation of a
+constant sky is the stronger condition
+\(R\boldsymbol1_{\rm sky}=\boldsymbol1_{\rm map}\), after any additive
+\(\boldsymbol\mu_0\) is removed, and also requires the forward response to map
+that sky mode to the required sample-domain constant. Neither condition alone
+establishes integrated-source or point-source normalization.
+\item[Delta or basis-pixel input.]
+For \(\boldsymbol\tau=\boldsymbol e_{p_0}\), the column
+\(R_{:p_0}\) is the complete pixelized impulse response, including projection,
+preprocessing, beam, and boundary truncation.
+\item[Beam/template source.]
+For a declared template \(\boldsymbol\tau_b\), the recovered response is
+\(R\boldsymbol\tau_b\). Peak amplitude, integrated amplitude, and fitted
+template amplitude are distinct normalizations and require distinct scalar
+functionals of this response.
+\item[Resolved and extended modes.]
+Apply Equation~\eqref{eq:naive-response} to disks, gradients, Fourier modes, or
+other extended templates. A constant-sky pass does not prove preservation of
+nonconstant extended structure, especially after upstream preprocessing.
+\item[Variable coverage.]
+For fixed selection and weights, normalization can preserve a constant input
+while the covariance and response to nonconstant templates vary spatially. If
+selection or weights respond to signal, the fixed-operator result is only
+conditional and selection bias must be measured.
+\item[Boundaries.]
+Truncated projection support changes \(R\), hits, exposure, and covariance.
+Local normalization can preserve a constant field at an edge while changing a
+compact-source peak or integrated response. Out-of-grid samples do not wrap or
+clamp unless that behavior is explicitly part of the astrometric contract.
+\end{description}
+
+A scalar transfer function is justified only after shift invariance is
+demonstrated. Otherwise the response matrix or a position-dependent kernel is
+required. Iteration-to-iteration response is not intrinsic to the one-pass
+mapmaker. Changing only \(\boldsymbol d\) changes the mapped input, not the map
+operator. If fruit-loop feedback changes eligibility, weights, projection or
+response, grouping, geometry, or normalization, each iteration has an explicit
+\(A^{(n)}\); SCI-FRUIT-001 owns that recurrence.
+
+\section{Hits, exposure coverage, support, and validity}
+
+Let \(\mathcal I_o\) be the set of entries selected by \(S_o\) after flags and
+finite-value checks. The following sums iterate that set directly; they do not
+attempt masking through multiplication. These products are intentionally
+different:
+\begin{align}
+ h^{\rm geom}_{op}&=\sum_{i\in\mathcal I_o}\mathbf 1[G_{opi}\neq0],
+ \label{eq:hits}\\
+ h^{\rm wt}_{op}&=\sum_{i\in\mathcal I_o}
+ \mathbf 1[G_{opi}\neq0\ \land\ \omega_{oi}>0],
+ \label{eq:weighted-hits}\\
+ x_{op}&=\sum_{i\in\mathcal I_o}G^{(x)}_{opi}\Delta t_{oi},
+ \qquad [G^{(x)}_{opi}]=1,\quad G^{(x)}_{opi}\geq0,
+ \quad\Delta t_{oi}\geq0,
+ \label{eq:coverage}\\
+ s_{op}&=\mathbf 1[\hbox{all declared support criteria pass}],
+ \label{eq:support}\\
+ v_{op}&=\mathbf 1[s_{op}=1,\ \widehat m_{op}\hbox{ and required companion
+ products satisfy their finite/validity rules}].
+ \label{eq:validity}
+\end{align}
+Both hit quantities are dimensionless. Geometric hits count eligible projected
+incidences; positive-weight hits count actual weighted contributions. A stored
+\code{hits} product must state which definition it realizes and whether a
+fractionally projected sample counts once for every touched pixel. Exposure
+coverage is seconds and uses a named exposure projection \(G^{(x)}\), which
+need not equal the statistical gridding coefficients. Summing sample duration
+over detectors produces detector-seconds, not ordinary elapsed seconds, unless
+the definition explicitly normalizes detector multiplicity. Support is a
+Boolean policy result, potentially including positive normalization, positive
+formal weight, coverage threshold, geometry, or configured coverage cut.
+Validity is the authority for consumer use. None is a confidence level or
+response calibration.
+
+All samples must be screened for flags, detector eligibility, finite signal,
+finite projection, finite exposure, and finite weight before multiply-add
+operations. Multiplication of NaN by zero is not masking. Under the
+normalized-gridding contract:
+\begin{itemize}
+\item a finite zero weight makes no signal or normalization contribution and
+does not create statistical information; it may increment geometric hits but
+must not increment positive-weight hits;
+\item a low positive weight follows an explicit upstream threshold/policy and
+is not silently promoted or rejected by the accumulator;
+\item a negative inverse-variance or ordinary nonnegative-gridding weight is
+invalid; a signed-kernel estimator would require a separately approved
+normalization and covariance;
+\item non-finite signal, weight, projection, or exposure is ineligible and is
+diagnosed according to SCI-VAL-001;
+\item an out-of-bounds projection makes no contribution and must not corrupt a
+neighboring pixel; and
+\item zero or invalid normalization produces weight zero, hits/coverage as
+actually accumulated, support/validity false, and a contract-permitted
+non-finite signal/kernel representation. It is never interpreted as measured
+zero sky.
+\end{itemize}
+
+\section{Units and normalization}
+
+For the dimensionless \(G_o\) required by the ordinary contract, if \(d_i\)
+has signal unit \(U_g\) and \(\omega_i\) has units \(U_g^{-2}\),
+then \(n_p\) has \(U_g^{-1}\), \(q_p\) has \(U_g^{-2}\), and
+\(\widehat m_p\) has \(U_g\). Under the additional conditions of
+Equation~\eqref{eq:formal-diagonal-weight}, formal diagonal weight has
+\(U_g^{-2}\) and covariance has \(U_g^2\). If \(\omega_i\) is instead a
+dimensionless or otherwise scaled gridding weight, \(q_p\) inherits that
+gridding unit and cannot be labeled inverse signal variance, while the
+normalized signal still has \(U_g\).
+
+The current project-level validated product convention is signal and kernel in
+\(\mathrm{mJy/beam}\), formal weight in
+\(1/(\mathrm{mJy/beam})^2\), noise variance in
+\((\mathrm{mJy/beam})^2\), exposure coverage in seconds, and support,
+validity, hits, and standardized products dimensionless. Other accepted
+map-input unit tokens require an explicit cold-boundary conversion and matching
+metadata. A \(\mathrm{Jy/pixel}\) conversion depends on pixel solid angle; a
+\(\mathrm{mJy/beam}\) conversion requires beam identity. A standardized signal
+formed with formal weight is not a calibrated statistical-significance map.
+Empirical significance belongs to SCI-NOI-002.
+
+\section{Observation coaddition}
+
+\subsection{Full covariance estimator}
+
+Stack normalized observation maps into \(\widehat{\boldsymbol m}_{\rm stack}\)
+with complete stacked response \(T_{\rm stack}\) and additive map bias
+\(\boldsymbol b_{m,\rm stack}\). Define the observation-map error and its full
+block covariance, including cross-observation blocks, by
+\begin{equation}
+ \boldsymbol e_{\rm stack}=\widehat{\boldsymbol m}_{\rm stack}
+ -T_{\rm stack}\boldsymbol s-\boldsymbol b_{m,\rm stack},\qquad
+ C_{\rm stack}=\Cov(\boldsymbol e_{\rm stack}\mid
+ \boldsymbol s,\theta).
+ \label{eq:coadd-error-covariance}
+\end{equation}
+This is covariance of observation-map errors at fixed common sky/estimand, not
+an ensemble covariance that counts shared stochastic sky structure as noise.
+Before covariance inversion, let \(J\) select only compatible finite-valid
+observation-pixel entries. Define
+\begin{equation}
+ \boldsymbol z=J\widehat{\boldsymbol m}_{\rm stack},\qquad
+ T=JT_{\rm stack},\qquad
+ C_{\mathrm{obs}}=JC_{\rm stack}J^\trans,
+ \qquad \E[\boldsymbol z]=T\boldsymbol s+\boldsymbol b_z,
+ \quad \boldsymbol b_z=J\boldsymbol b_{m,\rm stack}.
+ \label{eq:selected-coadd-system}
+\end{equation}
+Thus \(T\) includes each observation mapmaker response and any
+registration/resampling. It is a stacked identity only when each observation
+map already estimates the same explicitly named response-convolved (or other)
+common map quantity with unit gain, and its grid, WCS, units, pixel basis,
+validity domain, and centering convention match. The GLS coadd is
+\begin{align}
+ \widehat{\boldsymbol s}_{\mathrm{GLS}}
+ &= (T^\trans C_{\mathrm{obs}}^{-1}T)^{+}
+ T^\trans C_{\mathrm{obs}}^{-1}(\boldsymbol z-\boldsymbol b_z),
+ \label{eq:coadd-gls}\\
+ C_{\mathrm{coadd}}
+ &= (T^\trans C_{\mathrm{obs}}^{-1}T)^{+}
+ \label{eq:coadd-gls-covariance}
+\end{align}
+on the identifiable common subspace. For an arbitrary fixed coadd analysis
+weight, covariance again uses full sandwich propagation.
+The subtraction in Equation~\eqref{eq:coadd-gls} is authorized only when
+\(\boldsymbol b_z\) is known and conditioned upon. If it is unknown, it either
+remains as the explicit propagated bias \(B\boldsymbol b_z\) or enters the
+model through identifiable nuisance columns; it is never silently set to zero.
+Every displayed \(C_{\mathrm{obs}}^{-1}\) likewise requires a positive-
+definite covariance on the selected stochastic subspace; deterministic map or
+centering null modes are removed in an explicit basis before inversion.
+
+\subsection{Pixelwise inverse-variance-like coadd}
+
+For aligned observations, define the preselected contributing set
+\begin{equation}
+ \begin{aligned}
+ \mathcal O_p=\{o:\;&s_{op}=1,\ v_{op}=1,\hbox{ and }u_{op},
+ \widehat m_{op},\widehat k_{op}\\
+ &\hbox{ satisfy their declared finite-valid rules}\},\\
+ \chi_{op}&=\mathbf1[o\in\mathcal O_p].
+ \end{aligned}
+ \label{eq:coadd-contribution-set}
+\end{equation}
+where \(u_{op}\) is a declared finite nonnegative coadd weight. The sums below
+iterate \(\mathcal O_p\) directly; multiplication of invalid values by zero is
+not masking. The accumulated coadd numerator, normalization, and signal are
+\begin{align}
+ n^{c}_p &=\sum_{o\in\mathcal O_p}u_{op}\widehat m_{op},
+ \label{eq:coadd-numerator}\\
+ q^{c}_p &=\sum_{o\in\mathcal O_p}u_{op},
+ \label{eq:coadd-denominator}\\
+ \widehat s_p &=\frac{n^{c}_p}{q^{c}_p}
+ \quad\hbox{for valid }q^{c}_p>0.
+ \label{eq:coadd-map}
+\end{align}
+If the compatible observation maps have unit \(U_c\) and the coadd weights
+have unit \(V\), then \([n^c_p]=V U_c\), \([q^c_p]=V\), and
+\([\widehat s_p]=U_c\). In the inverse-variance specialization
+\(V=U_c^{-2}\), so \([n^c_p]=U_c^{-1}\) and \([q^c_p]=U_c^{-2}\).
+Pixelwise coaddition converts all maps to the common unit before these sums;
+in the full estimator, \(T\) carries any declared unit conversion.
+Let \(B\) be the corresponding fixed, conditioned linear operator from the
+selected vector \(\boldsymbol z\) to the coadd. Its exact conditional
+covariance and response are
+\begin{align}
+ C_{c}&=B C_{\mathrm{obs}}B^\trans,
+ \label{eq:coadd-full-covariance}\\
+ R_c&=B T,
+ \label{eq:coadd-response}\\
+ \boldsymbol b_c&=B\boldsymbol b_z,
+ \qquad \E[B\boldsymbol z]=R_c\boldsymbol s+\boldsymbol b_c.
+ \label{eq:coadd-affine-mean}
+\end{align}
+with the response mapping written for the chosen stack convention.
+
+If observation errors at pixel \(p\) are independent, each map is unbiased for
+the same scalar responded estimand with unit gain, and
+\(u_{op}=\phi_{op}=1/\Var(\widehat m_{op})\), then
+\begin{equation}
+ \Var(\widehat s_p)=\frac{1}{\sum_{o\in\mathcal O_p}\phi_{op}},
+ \qquad \phi^c_p=\sum_{o\in\mathcal O_p}\phi_{op}.
+ \label{eq:coadd-independent-precision}
+\end{equation}
+Thus the coadd weight equals summed observation inverse variance only under
+those conditions. A gridding denominator substituted for \(\phi\) makes
+Equation~\eqref{eq:coadd-map} a normalized weighted average, not an authorized
+inverse-variance estimator.
+
+For a positive-definite cross-observation covariance \(K_p\) on the
+preselected observation set \(\mathcal O_p\), the minimum-variance unbiased
+scalar combination has
+\begin{align}
+ \boldsymbol\alpha_p&=
+ \frac{K_p^{-1}\boldsymbol1}{\boldsymbol1^\trans K_p^{-1}\boldsymbol1},
+ &
+ \phi^c_p&=\boldsymbol1^\trans K_p^{-1}\boldsymbol1.
+ \label{eq:correlated-observation-coadd}
+\end{align}
+This precision is generally not the sum of marginal inverse variances, and
+\(K_p^{-1}\boldsymbol1\) can yield negative coefficients even when \(K_p\) is
+positive definite. Such a solution belongs to the full correlated-GLS branch,
+not the preceding ordinary coadd restricted to nonnegative \(u_{op}\). A
+singular \(K_p\) requires the same explicit stochastic-subspace treatment as
+the full coadd. For two
+observations with variances \(\sigma_1^2,\sigma_2^2\) and covariance \(c\),
+\begin{align}
+ \alpha_1&=\frac{\sigma_2^2-c}{\sigma_1^2+\sigma_2^2-2c},&
+ \alpha_2&=\frac{\sigma_1^2-c}{\sigma_1^2+\sigma_2^2-2c},&
+ \Var(\widehat s)&=
+ \frac{\sigma_1^2\sigma_2^2-c^2}{\sigma_1^2+\sigma_2^2-2c}.
+ \label{eq:two-observation-coadd}
+\end{align}
+When cross-pixel covariance is consequential, the pixelwise formula is itself
+an approximation to Equation~\eqref{eq:coadd-gls}.
+
+The coadd kernel/response, exposure, and hits companions are
+\begin{align}
+ \widehat k^c_p&=
+ \frac{\sum_{o\in\mathcal O_p}u_{op}\widehat k_{op}}{q^c_p},
+ \label{eq:coadd-kernel}\\
+ x^c_p&=\sum_{o\in\mathcal O_p}x_{op},
+ \label{eq:coadd-coverage}\\
+ (h^\star)^c_p&=\sum_{o\in\mathcal O_p}h^\star_{op},
+ \label{eq:coadd-hits}
+\end{align}
+where \(h^\star\) is the explicitly declared geometric or positive-weight hit
+definition. These equations apply only when they are the declared product
+definitions. A count of contributing
+observations is another diagnostic and must not be confused with sample hits.
+Coadd validity requires compatible units, frame/WCS, pixel geometry, map-group
+identity, response convention, finite inputs, and positive normalization.
+
+\subsection{Centering or mean subtraction}
+
+No coadd may silently change the estimand by centering an observation. If a
+fixed centering operator
+\(L_o=I-\boldsymbol1\boldsymbol a_o^\trans\), with
+\(\boldsymbol a_o^\trans\boldsymbol1=1\), is applied, the actual input is
+\(L_o\widehat{\boldsymbol m}_o\), its covariance is
+\(L_oC_{m,o}L_o^\trans\), and its response is \(L_oR_o\). The constant mode
+then lies in the input/response null space because \(L_o\boldsymbol1=0\), and
+the coadd estimates a centered sky, not the absolute map offset. More generally, with
+\(L=\operatorname{blockdiag}(L_1,\ldots,L_O)\),
+\begin{equation}
+ \widehat{\boldsymbol m}'_{\rm stack}=L\widehat{\boldsymbol m}_{\rm stack},
+ \qquad T'_{\rm stack}=LT_{\rm stack},
+ \qquad \boldsymbol b'_{m,\rm stack}=L\boldsymbol b_{m,\rm stack},
+ \qquad C'_{\rm stack}=LC_{\rm stack}L^\trans.
+ \label{eq:stacked-centering}
+\end{equation}
+Thus every cross-observation block becomes
+\(C'_{or}=L_oC_{or}L_r^\trans\). Centered outputs obey
+\(\boldsymbol a_o^\trans\widehat{\boldsymbol m}'_o=0\); for a positive-
+definite uncentered covariance, \(\boldsymbol a_o\) is the corresponding
+covariance null vector because \(L_o^\trans\boldsymbol a_o=0\). Before a
+covariance inverse is attempted, the system is represented in an explicit
+basis for \(\operatorname{range}(L)\). The response-null constant and
+covariance-null \(\boldsymbol a_o\) coincide only for uniform centering.
+Whether centering is requested, effective,
+observation-resolved, or unconditional legacy behavior must be recorded. The
+same operator must apply to signal, kernel/response, covariance, noise
+realizations, and validation predictions.
+
+\section{Noise-realization operator test}
+
+SCI-NOI-001 owns how random realizations are generated and what distribution
+they represent. SCI-MAP-001 supplies a falsifiable same-operator condition.
+For realization \(r\),
+\begin{align}
+ \widehat{\boldsymbol m}^{(r)}_o&=A_o\boldsymbol y^{(r)}_o,
+ \label{eq:noise-map-operator}\\
+ \boldsymbol z^{(r)}&=
+ J(\widehat{\boldsymbol m}^{(r)}_1,\ldots,
+ \widehat{\boldsymbol m}^{(r)}_O)_{\rm stack},
+ \label{eq:noise-selected-stack}\\
+ \widehat{\boldsymbol s}^{(r)}&=B\boldsymbol z^{(r)}.
+ \label{eq:noise-coadd-operator}
+\end{align}
+The realization uses the same map/coadd operator only if eligibility,
+projection, grouping, weights, normalization, centering, support policy, and
+boundary decisions are held fixed or are identically prescribed for signal
+and realization. Re-estimating any of them from randomized data creates
+\(A^{(r)}\) or \(B^{(r)}\), a data-dependent estimator that must be named and
+validated separately. Equality of array shapes or file names is not evidence
+of operator equality.
+
+\clearpage
+\section{Map identity, frame, WCS, and lifecycle state}
+
+Every observation and coadd bundle identifies observation/coadd role, array
+ID/name, network ID when grouped by network, detector UID when grouped by
+detector, frequency group, Stokes component, map index, signal unit,
+coordinate frame, WCS, pixel shape/order, mapmaker, and response version.
+Science maps use the recorded equatorial J2000 TAN WCS with degree spatial
+axes; Point/OOF and Beammap maps use AltAz tangent-plane offsets in arcseconds.
+Persisted FITS coordinates are one-based; in-memory pixel indices are
+zero-based.
+
+\begin{longtable}{L{0.18\linewidth}L{0.24\linewidth}L{0.27\linewidth}L{0.23\linewidth}}
+\toprule
+State & Facts represented & Resolution rule & Required evidence/output\\
+\midrule
+Requested & Enabled flag, method, grouping, unit token, nominal geometry,
+coverage policy, coadd request, and any centering policy. & Immutable accepted low-level request;
+disabled expert values are retained but inactive. & Exact accepted config and
+source identity.\\
+Effective & Executable map/coadd activation, supported method, normalized
+grouping, geometry, and centering policy; compatibility decisions. & Context-free, one-way
+resolution; unavailable methods fail before execution. & Versioned effective
+plan and diagnostics.\\
+Observation-resolved & Present arrays, networks, and detectors; map-group mappings,
+WCS center/extents, sample duration, \(M,W,H,G\), calibration/pointing identity,
+coadd transform/centering, and compatibility. & Recomputed/replaced per observation from approved
+inputs; no inheritance from a prior observation. & Observation identity and
+resolved provenance.\\
+Realized & Executed observations/groups, eligible contributions, accumulated
+normalizations, hits, exposure, support/validity, completed observation and
+coadd maps, response/kernel and covariance/weight types, realized coadd
+coefficients, products, and failures. & One-way snapshot of what ran; never
+rewrites the request. & Product cardinality, required-write completion, exact
+metadata, and failure propagation.\\
+\bottomrule
+\end{longtable}
+
+\clearpage
+\section{Required shared product vocabulary}
+
+\begin{longtable}{L{0.18\linewidth}L{0.22\linewidth}L{0.16\linewidth}L{0.34\linewidth}}
+\toprule
+Product & Mathematical identity & Units & Required interpretation\\
+\midrule
+\endfirsthead
+\toprule
+Product & Mathematical identity & Units & Required interpretation\\
+\midrule
+\endhead
+Signal numerator & Equation~\eqref{eq:naive-numerator} or
+\eqref{eq:coadd-numerator} & depends on weight & Pre-normalized accumulator,
+not a sky estimator.\\
+Normalization denominator & Equation~\eqref{eq:naive-denominator} or
+\eqref{eq:coadd-denominator} & declared gridding/weight unit & Normalization;
+inverse variance only under named conditions.\\
+Normalized signal & Equation~\eqref{eq:naive-map} or \eqref{eq:coadd-map} &
+\(U_g\) & Conditional sky estimator on valid support.\\
+Formal weight & Equation~\eqref{eq:formal-diagonal-weight} or
+\eqref{eq:coadd-independent-precision} & \(U_g^{-2}\) & Conditional marginal
+inverse variance \(1/[C_m]_{pp}\) with omissions named; it is not generally the
+diagonal of \(C_m^+\), support, or empirical significance.\\
+Full covariance & Equations~\eqref{eq:naive-full-covariance} and
+\eqref{eq:coadd-full-covariance} & \(U_g^2\) & Mathematical uncertainty object;
+may be summarized but not silently assumed diagonal.\\
+Kernel image & Equations~\eqref{eq:normalized-kernel},
+\eqref{eq:kernel-response-identity}, and \eqref{eq:coadd-kernel} & current
+convention \(U_g\) & Unit-bearing realized template response, or explicitly
+labeled tracer; not a synthetic measured channel.\\
+Response matrix & Equations~\eqref{eq:naive-response} and
+\eqref{eq:coadd-response} & output unit per input unit; dimensionless here &
+Linear response of the named estimand, including projection and coaddition.\\
+Hits & Equations~\eqref{eq:hits}, \eqref{eq:weighted-hits}, and
+\eqref{eq:coadd-hits} & dimensionless & Eligible-incidence or positive-weight
+contribution diagnostic with explicit fractional-projection counting policy.\\
+Coverage & Equations~\eqref{eq:coverage} and \eqref{eq:coadd-coverage} & seconds
+& Exposure diagnostic, not precision.\\
+Support/validity & Equations~\eqref{eq:support}--\eqref{eq:validity} &
+dimensionless & Authorities for consumer eligibility and non-finite meaning.\\
+Noise realization & Equations~\eqref{eq:noise-map-operator}--
+\eqref{eq:noise-coadd-operator} & \(U_g\) & Randomized input propagated through
+the declared operator; distribution owned by SCI-NOI-001.\\
+\bottomrule
+\end{longtable}
+
+JINC can share this vocabulary without sharing the naive operator: it must
+supply its own numerator/normalization, signal operator, covariance
+approximation, response/kernel, support, and validity definitions under
+SCI-MAP-002.
+
+\section{Exact downstream input contract}
+
+No consumer receives a bare signal array as a scientifically complete map. The
+boundary bundle contains signal; estimator and normalization identity; formal
+diagonal weight and its assumptions; covariance or a declared missing
+covariance state; kernel/response and normalization; hits, exposure, support,
+and validity; additive-bias or nuisance state and its status (known and
+subtracted, estimated with propagated uncertainty, or unknown); centering
+operator, removed/null modes, and absolute-offset observability; units, frame,
+WCS, shape, indexing, map grouping; observation or coadd identity;
+requested/effective/observation-resolved/realized provenance; and
+dependency/contract version. Every allowed input below carries those common
+fields. A consumer that requires an absolute level fails closed for a centered
+map or unknown relevant bias; a centered product is admissible only for an
+explicitly centered/quotient-space estimand whose response and covariance use
+the same null-mode convention.
+
+\begin{longtable}{L{0.16\linewidth}L{0.37\linewidth}L{0.37\linewidth}}
+\toprule
+Consumer & Allowed conditional input & Restriction/fail-closed condition\\
+\midrule
+\endfirsthead
+\toprule
+Consumer & Allowed conditional input & Restriction/fail-closed condition\\
+\midrule
+\endhead
+SCI-NOI-001 & Fixed \(A_o,B\), identities, masks, weights, projection,
+normalization, and response for realization propagation. & Cannot claim the
+same operator if realization-dependent state is recomputed without a declared
+estimator.\\
+SCI-NOI-002 & Realization ensemble plus formal covariance/weight assumptions,
+support, response, and degrees-of-freedom inputs. & Statistical weight and
+significance fail closed until empirical estimator/calibration is approved.\\
+SCI-FLT-001/002 & Valid signal, kernel/response, covariance contract, support,
+units, WCS, and boundary policy. & No uncertainty or photometric claim from a
+signal-only filter path.\\
+SCI-SRC-001 & Valid map, WCS, response/template, and approved empirical or
+formal uncertainty explicitly labeled. & Detection significance and absolute
+photometry fail closed without required uncertainty and response calibration.\\
+SCI-MODE-001 & Point/OOF map identity, AltAz WCS, response/kernel, support, and
+approved fit uncertainty inputs. & No statistical significance or absolute
+astrometry from formal standardized signal alone.\\
+SCI-BEAM-001 & Detector UID/group identity, detector-map response, AltAz WCS,
+support, units, calibration, and validity. & Detector inference fails closed
+for ambiguous row/slot identity or response.\\
+SCI-FRUIT-001 & Per-iteration signal and kernel under the identical operator,
+units, support, map identity, response, and explicit forward/back projection. &
+New feedback interpretations fail closed until response, uncertainty, and
+iteration-state dependencies are approved.\\
+\bottomrule
+\end{longtable}
+
+Existing accepted operational use may continue under its existing-use-only
+disposition while this proposed contract is reviewed. This core authorizes no
+new consumer, significance interpretation, photometric use, or feedback rule.
+
+\section{Pre-registered falsification and evidence plan}
+
+All expected values are formed independently from the equations above. For
+floating reductions, compare to a higher-precision reference with a bound
+derived from operation count and conditioning: for a sum of \(n\) terms use
+\(\gamma_n=n\epsilon/(1-n\epsilon)\) and require the observed absolute error
+not exceed \(8\gamma_n\sum_i|a_i|\), plus exact agreement for integers,
+identity fields, masks, support, and product cardinality. Any broader
+sequential/OpenMP tolerance must be fixed before viewing results and justified
+from a documented reduction order, the active accepted profile, or repeated
+same-SHA evidence; it is not loosened after failure.
+
+\begin{longtable}{L{0.20\linewidth}L{0.30\linewidth}L{0.28\linewidth}L{0.14\linewidth}}
+\toprule
+Evidence & Exact fixture or artifact & Claim and gate & State\\
+\midrule
+\endfirsthead
+\toprule
+Evidence & Exact fixture or artifact & Claim and gate & State\\
+\midrule
+\endhead
+Analytic one-pixel & One sample; repeated uniform samples; unequal true
+inverse variances. & Equations~\eqref{eq:naive-map} and
+\eqref{eq:formal-diagonal-weight}; exact integers and analytic floating bound.
+& required local\\
+Identity projection & One-hot samples over multiple pixels/detectors. & DC,
+delta response, \(q=\phi\) only under stated conditions, no false cross-pixel
+covariance. & required local\\
+Fractional projection & One sample split across pixels plus independent and
+correlated variants. & Distinguish \(q\), diagonal WLS, \(\phi\), and
+off-diagonal covariance. & required local\\
+Eligibility/non-finite & Individually masked, disabled, NaN/Inf signal,
+NaN/Inf/zero/negative weight, out-of-bounds, and zero-support cases. & No
+contamination; exact hits/exposure/support; invalid output semantics. &
+required local\\
+Small matrix & Explicit \(H,G,M,C_d,W\) for one and multiple detectors. &
+Direct comparison of \(A\), conditional mean, \(A N A^\trans\), GLS, and
+response. & required local\\
+Injections & Constant, pixel delta, beam-shaped, resolved disk, gradient or
+Fourier extended mode, variable coverage, and edge locations. & Amplitude,
+shape, integrated/peak response, covariance, and boundary behavior against
+Equation~\eqref{eq:naive-response}. & required local and external\\
+Coadd & Unequal independent variances, one unsupported observation, unequal
+coverage, controlled positive/negative cross-observation covariance, and a
+centered variant. & Equations~\eqref{eq:coadd-map}--
+\eqref{eq:correlated-observation-coadd}; constant-mode loss only when declared.
+& required local\\
+Noise operator & Fixed deterministic realization vectors through signal and
+noise paths. & Coefficient-by-coefficient equality of \(A,B\) or a documented
+data-dependent difference. & required local\\
+Sequential or OpenMP & Identical fixture, thread counts 1 and supported
+multi-thread counts. & Exact output if identical arithmetic and reduction order
+is guaranteed; otherwise
+pre-registered \(\gamma_n\)/accepted-profile bound, exact masks/counts/products.
+& required local and Unity\\
+Blank controls & Source-free maps/realizations with known covariance. &
+Predicted spatial covariance, formal-versus-empirical calibration, and false
+formal/empirical standardized-signal behavior. & required external; owned
+jointly with SCI-NOI-001/002\\
+Same-SHA Unity & Clean governing/candidate SHA; Point and Science; all arrays;
+variable coverage; observation maps and coadds; exact configs, products, WCS,
+units, metadata, provenance, and log audit. & Zero unexpected error-level records,
+zero required-data skips, complete cardinality, and pre-registered numerical
+comparisons. & requested, unsupplied\\
+Astronomical recovery & Compact calibrator and, where available, resolved or
+extended source with independent flux/shape/position reference. & Adds
+end-to-end unit, shape, astrometric, and amplitude evidence beyond synthetic
+fixtures; it cannot override a failed deterministic contract. & required when
+a suitable independent reference exists; otherwise explicit owner-approved
+N/A rationale\\
+\bottomrule
+\end{longtable}
+
+For \(N_r\) independent Gaussian realizations, the pre-registered sampling
+scale for a covariance entry is
+\begin{equation}
+ \Var(\widehat C_{pq})\simeq
+ \frac{C_{pq}^2+C_{pp}C_{qq}}{N_r-1}.
+ \label{eq:empirical-covariance-sampling}
+\end{equation}
+The realization count, tested covariance entries or summary, simultaneous
+error rate, and resulting analytic acceptance band must be frozen before the
+candidate is viewed. False-threshold rates use a pre-registered binomial or
+simulation-calibrated interval. Astronomical amplitude, shape, and position
+bounds use the independent reference uncertainty plus declared repeatability;
+the floating-sum bound alone is not an astronomical acceptance rule.
+
+Maximum-likelihood implementation tests are not applicable because production
+maximum-likelihood mapmaking is excluded/rejected. JINC internal response tests
+are not applicable to this core; SCI-MAP-002 must test its own operator against
+the shared vocabulary. Full jackknife generation and empirical-noise estimator
+tests are not applicable here, except for the same-operator boundary; they
+belong to SCI-NOI-001/002. Post-map filtering, source-fit, Beammap-fit, and
+fruit-loop recurrence tests likewise belong to their named packages, while
+their acceptance of this bundle remains an interface obligation here.
+
+\section{Independent conclusion and provisional disposition}
+
+The independently claimed ordinary map is the normalized gridding estimator
+in Equation~\eqref{eq:naive-map}, with conditional covariance
+Equation~\eqref{eq:naive-full-covariance}. The general benchmark is the GLS
+estimator in Equation~\eqref{eq:gls-estimator}. The independently claimed
+coadd is Equation~\eqref{eq:coadd-map}, with full benchmark
+Equation~\eqref{eq:coadd-gls}; it is an inverse-variance coadd only under the
+conditions of Equation~\eqref{eq:coadd-independent-precision}. Signal,
+normalization, formal precision, covariance, kernel/response, hits, exposure,
+support, and validity are distinct products.
+
+The package is mathematically coherent and therefore has no independent basis
+for verdict \code{split}. Before implementation inspection its contract is an
+independent draft awaiting freeze, conformity is not assessed, validation is
+planned but unsupplied, production remains existing-use-only, and the verdict
+remains pending. The final audit may propose \code{retain}, \code{amend},
+\code{split}, \code{supersede}, or \code{reject} only after comparing the exact
+governing implementation and evidence with these frozen equations.
+
+\end{document}
