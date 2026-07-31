@@ -626,7 +626,21 @@ packages:
     upstream_dependencies:
       - package_id: SCI-ALIGN-001
         status: open
+        required_contract: >-
+          The ordered detector and telescope sample identity presented to
+          calibration, including the common time axis, timestamps, aligned
+          elevation, sample duration where calibration depends on it,
+          timing-gap and interpolation state, and the exact eligibility of
+          original versus synthesized samples.
+        consequence: >-
+          CAL may derive and audit detector, extinction, and unit-transfer
+          equations against those quantities as explicit abstract inputs, but
+          per-sample calibration identity, time/elevation response, propagated
+          uncertainty, and any conclusion that depends on interpolated or
+          misaligned samples remain conditioned on SCI-ALIGN-001.
     downstream_consumers: [SCI-RTC-001, SCI-MAP-001, SCI-FLT-001, SCI-MODE-001, SCI-BEAM-001]
+    incoming_handoffs: []
+    outgoing_handoffs: []
     governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
     governing_sha_role: inventory_snapshot
     audit_branch: null
