@@ -1,0 +1,3186 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.82in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,booktabs,longtable,array,enumitem,hyperref,xcolor}
+\usepackage{etoolbox}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\setlength{\emergencystretch}{4em}
+\setlength{\tabcolsep}{3.2pt}
+\renewcommand{\arraystretch}{1.12}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\AtBeginEnvironment{longtable}{\small}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\code}[1]{\nolinkurl{#1}}
+\newcommand{\gitsha}[5]{\texttt{#1\allowbreak#2\allowbreak#3\allowbreak#4\allowbreak#5}}
+\newcommand{\digest}[8]{\texttt{#1\allowbreak#2\allowbreak#3\allowbreak#4\allowbreak#5\allowbreak#6\allowbreak#7\allowbreak#8}}
+\newcommand{\AuditPackageID}{SCI-MAP-001}
+\newcommand{\AuditPackageName}{Shared and naive mapmaking plus observation coaddition}
+\newcommand{\AuditTier}{A}
+\newcommand{\AuditGoverningSHA}{\gitsha{9aae0e66}{9384c5c0}{c0dda93d}{ebc194d6}{b8dac787}}
+\newcommand{\AuditBranch}{\code{codex/audit-sci-map-001}}
+\newcommand{\AuditWorktree}{\code{/private/tmp/citlali-audit-sci-map-001}}
+\newcommand{\AuditCorePath}{\code{doc/audits/packages/SCI-MAP-001_INDEPENDENT_CORE.tex}}
+\newcommand{\AuditCoreSHA}{\digest{13dd5922}{bd492e38}{1afcc3b0}{15284216}{dde1ccc2}{199ece3d}{070ee577}{c7324381}}
+\newcommand{\AuditCoreFreezeCommit}{\gitsha{c28f18ed}{089657da}{e278caba}{2d6d6d65}{c7ec72f4}}
+\newcommand{\AuditInitialFinalCommit}{\gitsha{0cfdba5e}{d08c0ad6}{c491afcd}{56972a31}{d68cfabf}}
+\newcommand{\AuditInitialFinalSHA}{\digest{6a3703a1}{f86be060}{c034f586}{7c136d82}{4a11a18a}{4fc59bf1}{07270a39}{3f7116f3}}
+\newcommand{\AuditRawValidityAmendmentCommit}{\gitsha{681aeec9}{9c4d1c47}{62ecb8c4}{dae63c85}{99638678}}
+\newcommand{\AuditRawValidityAmendmentSHA}{\digest{7d133f52}{f517a226}{2eeebca8}{fe62f7a6}{fbc3ed52}{09687022}{0cdb84bd}{af33cb44}}
+\newcommand{\AuditDate}{2026-07-31}
+
+\title{\AuditPackageName\\
+\large Citlali scientific-contract audit: \AuditPackageID}
+\author{Independent package auditor}
+\date{\AuditDate}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The independently derived contract identifies ordinary naive mapmaking as a
+selected, normalized linear gridding estimator and observation coaddition as a
+second, conditionally inverse-variance, image-domain weighted mean.  At exact
+source SHA \AuditGoverningSHA, the finite sequential naive signal and
+kernel path conforms to that estimator.  The package as implemented is
+nevertheless \emph{nonconformant}: a supported detector-parallel path contains
+shared-scalar data races; the persisted support mask admits zero and non-finite
+weights in allowed states; coaddition does not fail closed on WCS or map-slot
+identity mismatch; and naive coadd noise can bypass the observation support
+operator applied to signal.  In the same allowed naive-coadd configuration,
+requesting empirical noise products makes raw observation publication fail
+before coadd accumulation.  Formal-weight, response, exposure, lifecycle, and
+covariance claims are also under-specified, and required MAP-specific local and
+Unity evidence remains absent.  Package identity remains coherent, so the verdict is
+\texttt{amend}; existing accepted operation is preserved as
+\code{existing_use_only}, while new significance, covariance, response, or
+feedback interpretations fail closed.
+Post-freeze cross-audit evidence reported bitwise-identical raw products in a
+strict convolve control/candidate comparison while a later filtered product
+admitted extreme guard-band standardized amplitudes outside a reconstructed
+raw science-valid region.  That evidence establishes no raw mapmaking
+regression and closes no finding.  It does make the missing authoritative,
+reproducible raw-validity handoff a demonstrated consumer risk; the filtered
+estimator itself remains outside this audit.  The project owner subsequently
+accepted the \texttt{amend} verdict and approved the bounded F009/F010
+specializations recorded here.  The contract is therefore \texttt{approved},
+while implementation remains \texttt{nonconformant}, F009/F010 remain
+\texttt{addressed\_pending\_reaudit}, and all repair and evidence gates remain
+open.
+\end{abstract}
+
+\section{Executive result and bounded scope}
+
+\begin{description}[style=nextline]
+\raggedright
+\item[Package and tier] \AuditPackageID: \AuditPackageName, Tier \AuditTier.
+\item[Included transformation] Shared map-product identity, ordinary
+nearest-pixel naive accumulation and normalization, observation-map identity,
+pixelwise observation coaddition, and noise realizations only through the
+same-operator boundary.
+\item[Coherence decision] \textbf{Keep one package.}  Observation coaddition is
+a second linear operator on the normalized map bundle.  Its admissibility,
+weight meaning, covariance, response, identity, and validity cannot be reviewed
+without the map contract, and no independently meaningful split was exposed.
+\item[Explicit exclusions] RTC/PTC internals; final calibration, astrometry, and
+flag policy; full jackknife and empirical-noise estimators
+(\code{SCI-NOI-001/002}); JINC mathematics (\code{SCI-MAP-002}); rejected
+maximum-likelihood production mapmaking; convolve and Wiener/low-pass
+(\code{SCI-FLT-001/002}); source, mode, Beammap, and fruit-loop estimators.
+Polarized coaddition is also excluded because current conventions validate only
+Stokes I and the ordinary post-observation coadd helper intentionally skips it.
+\item[Strongest supported conclusion] For finite eligible samples on the
+sequential ordinary path, the implementation realizes Equations
+\eqref{eq:audit-naive-num}--\eqref{eq:audit-naive-map}.  The stored denominator
+is a gridding normalization; it is a marginal precision only under the named
+\code{SCI-PTC-001} diagonal/independence conditions.  For finite positional
+slots, current coadd arithmetic is the \(u=w\) specialization of
+Equation~\eqref{eq:audit-coadd-map}, regardless of observation correlation.
+That weighted mean is scientifically admissible only for common map identity,
+WCS, unit, response, and support; \(Q^c\) is inverse variance only when the
+weights are marginal precisions and observation errors are independent.
+The approved successor admits observations strictly by product identity,
+unit, response, and full-precision WCS before mutation; permits only the
+current centered integer common-grid embedding; sets signal centering to
+identity; and retains the normalized mean with nonprecision gridding
+coefficients by default.  General reprojection/interpolation and correlated
+GLS are not approved.
+\item[Owner decision] On 2026-07-31 the project owner accepted the
+\texttt{amend} verdict and approved the exact F009/F010 choices in
+Section~\ref{sec:owner-decisions}.  This approves the bounded scientific
+contract, not the governing implementation or its evidence.  No repair was
+performed on this audit branch.
+\item[Consumer policy] Existing operation is limited to the active accepted-run
+profiles at the governing SHA: \code{phase4-point-152389-v1},
+\code{phase4-oof-152385-152387-v1},
+\code{phase4-science-152390-152392-v1}, and
+\code{phase4-beammap-148670-v1}.  This allowlist does not authorize an arbitrary
+historical configuration.  New consumers and new interpretations are not
+authorized.  Statistical significance, full covariance, absolute
+photometry/astrometry, response-corrected filtering, and map feedback are
+fail-closed unless the complete bundle and its upstream dependencies are
+approved and the P0 findings are repaired and re-audited.
+\item[Cross-audit routing] The b294802 Point comparison is characterization
+evidence only.  MAP owns the authoritative raw domain and permitted downstream
+assumptions; NOI retains finite-realization uncertainty policy and FLT retains
+filtered boundary, support, covariance, and response.  No conclusion is routed
+to source estimation or fruit loops beyond the stated fail-closed dependency.
+\end{description}
+
+No implementation, test, configuration, build, existing documentation,
+canonical ledger, prior audit, fruit-loop worktree, or Conan-lane file was
+changed by this audit.
+
+\section{Authority and independence record}
+
+\begin{longtable}{L{0.25\linewidth}L{0.68\linewidth}}
+\toprule
+Field & Exact value or event\\
+\midrule
+\endfirsthead
+\toprule
+Field & Exact value or event\\
+\midrule
+\endhead
+Repository & \code{/Users/gwilson/GitHub/citlali-refactor}\\
+Inventory and governing source & Local \code{codex/refactor-mainline} and
+\code{origin/codex/refactor-mainline} both resolved to
+\AuditGoverningSHA.\\
+Coordinator framework & Commit
+\code{7c13e4361ffd00ec75683c62ee7a435a5df97144}, whose parent is the governing
+source SHA; framework worktree was clean.\\
+Audit branch and worktree & \AuditBranch; \AuditWorktree.\\
+Audit branch base/core-freeze parent & \AuditGoverningSHA.\\
+Original final-audit parent & \AuditCoreFreezeCommit.\\
+Initial final-audit commit and bytes & \AuditInitialFinalCommit; TeX SHA-256
+\AuditInitialFinalSHA.\\
+Raw-validity cross-audit amendment & \AuditRawValidityAmendmentCommit; final
+audit TeX SHA-256 \AuditRawValidityAmendmentSHA.  The owner-decision amendment
+has that commit as its parent, changes only the evolving final audit plus the
+dated audit-package handoff, and leaves the frozen core unchanged.\\
+Independent-core bytes & \AuditCorePath.\\
+Independent-core SHA-256 & \AuditCoreSHA.\\
+Freeze timestamp & \code{2026-07-31T17:38:43Z}
+(\code{2026-07-31T13:38:43-0400}).\\
+Freeze commit & \AuditCoreFreezeCommit; commit time
+\code{2026-07-31T13:39:05-04:00}; sole committed path was the core above.\\
+First implementation inspection & \code{2026-07-31T17:39:22Z}, after the
+freeze: \code{nl -ba include/citlali/core/mapmaking/map.h | sed -n
+'1,260p'}.\\
+Pre-freeze authorities & Repository \code{AGENTS.md},
+\code{doc/ARCHITECTURE.md}, \code{doc/SCIENTIFIC_CONVENTIONS.md}, the audit
+framework, and repository-level product/configuration intentions from the exact
+governing Git object.\\
+Quarantine & \code{naive_mm.h}, \code{map.h}, \code{map.cpp}, map/coadd plans
+and provenance, coadd accumulation, writers/metadata, focused tests, and
+implementation diffs remained unopened until the core was frozen.\\
+Prior exposure & Git status necessarily exposed package path names and a dirty
+\code{map.h} in an unrelated fruit-loop worktree, but no bytes or diff were
+opened.  One pre-freeze product-intention query accidentally targeted that
+dirty worktree; it was rejected as non-governing and repeated from the exact
+governing Git object.  A support reviewer saw adjacent convolve-audit structure
+and convolve-only semantics, not map/coadd formulas.\\
+Immutability check & Immediately before this final audit was written,
+\code{shasum -a 256} still returned \AuditCoreSHA, and the audit branch
+was clean at the freeze commit.\\
+Cross-audit amendment & On 2026-07-31 the package received the bounded
+user-supplied summary recorded as \code{SCI-MAP-001-XAUD-001}.  No exact run
+bundle, raw-parent digest, guard-band pixel-analysis program/digest, or exact
+pixel identity was added to this audit worktree.  The control and candidate
+used the executable from source
+\gitsha{b294802a}{5e339f9b}{a5e0e323}{980cec3a}{4bd00249}, with filtering
+disabled/enabled respectively.  The supplied run-audit transcripts do not form
+a clean MAP identity gate: the control's expected-mode check was false and the
+candidate did not assert expected mode/label.  The strict raw comparison
+remains useful on its narrow terms but is not governing-source authority or
+fulfillment of \code{SCI-MAP-001-UNITY-001}.\\
+\bottomrule
+\end{longtable}
+
+The exact launch worktree inventory is retained in
+Appendix~\ref{app:worktrees}.  Dirty unrelated worktrees were read only and
+were not used as source authority.
+
+\section{Input contract and variable classification}
+
+All map conclusions are conditional on the selected state
+\(\Theta=\{C,M,W,P,X,b,K,G,J,L,C_n,C_b,C_P\}\).  Conditional expectations and covariances below
+hold \emph{given} \(\Theta\); they do not include selection, fitted-weight,
+calibration, pointing, or response uncertainty unless explicitly added.
+
+\begin{longtable}{L{0.12\linewidth}L{0.20\linewidth}L{0.17\linewidth}L{0.16\linewidth}L{0.25\linewidth}}
+\toprule
+Quantity & Identity and shape & Units/frame & Classification & Assumption or conditioning\\
+\midrule
+\endfirsthead
+\toprule
+Quantity & Identity and shape & Units/frame & Classification & Assumption or conditioning\\
+\midrule
+\endhead
+\(d_{td}\) & Processed, calibrated map-input sample, time-major by detector &
+Declared map-input unit \(U_g\); detector/telescope time axis & random,
+conditioned upon preprocessing & \code{SCI-CAL-001} fixes the incorporated
+unit/response transform; PTC preprocessing response is not invented here.\\
+\(s\) & Sky/template coefficient vector in the declared basis &
+declared sky-coefficient unit and frame & fixed unknown estimand & Held fixed in
+\(\E[d\mid\Theta,s]\); response and null modes remain
+explicit.\\
+\(n\) & Selected processed-sample noise vector & \(U_g\) &
+zero-mean random & \(\E[n\mid\Theta]=0\) and
+\(\Cov(n\mid\Theta)=C_n\).\\
+\(M_{td}\) & Sample/detector eligibility in \(\{0,1\}\) & dimensionless &
+selected & \code{SCI-VAL-001} fixes flags, non-finite, and replacement policy.\\
+\(W\) or \(w_{td}\) & Selected sample precision/covariance operator or
+nonnegative gridding coefficient & \(U_g^{-2}\) only if true precision;
+otherwise declared gridding unit & fixed, fitted, or data-derived and then
+conditioned upon & \code{SCI-PTC-001} must say which and retain correlations.\\
+\(P_{ptd}\) & Sample-to-pixel projection; rows are output pixels & named tangent
+frame/WCS, in-memory zero-based indices & fixed or selected &
+\code{SCI-AST-001} fixes coordinates, rounding/interpolation, frame, and
+uncertainty.\\
+\(C\) & Calibration/unit transform already incorporated in \(d\) and \(X\) &
+\(U_g\) per upstream raw-signal unit & fitted or fixed, conditioned upon &
+Calibration covariance and beam/photometric meaning remain upstream.\\
+\(X,b\) & Selected sample-domain sky response and additive mean &
+\(X\): \(U_g\) per sky-coefficient unit; \(b\): \(U_g\) & fixed,
+fitted, or data-derived and then conditioned upon & Must include every applied
+calibration/preprocessing response and named additive bias/null-mode model.\\
+\(k_{td}\), \(K\) & Processed kernel/template tracer and its operator & normally
+\(U_g\) for current product; response itself is output/input unit & fixed or
+data-derived, conditioned upon & Must be demonstrated to equal the realized
+response to a named template before being called response.\\
+\(\Delta t_{td}\), \(G\) & Exposure coefficient and exposure projection &
+\(\Delta t\): s; \(G\): dimensionless unless declared otherwise & fixed &
+Detector-sample dwell is distinct from unique wall-clock exposure.\\
+\(o,a,p\) & Observation, map identity
+(array, network, detector, group, or Stokes),
+and pixel & dimensionless identity; WCS attached & selected & Order is never a
+substitute for identity.\\
+\(J_o\) & Observation-to-common-grid registration/embedding & common map frame
+& fixed or selected & Must prove WCS, pixel scale, orientation, shape, unit,
+map identity, response, and validity compatibility.\\
+\(L_o\) & Optional observation-centering operator & dimensionless & selected &
+Identity unless an explicitly named mean/null mode is removed.\\
+\(u_{op}\) & Coadd coefficient for observation \(o\), pixel \(p\) & declared;
+\(U_g^{-2}\) only if precision & fixed or data-derived, conditioned upon &
+Scientific policy authorizes a declared nonprecision coefficient;
+cross-observation covariance determines whether it is a precision/optimal
+coefficient.\\
+\(C_n,C_b,C_P\) & Processed-sample noise, calibration/systematic, and
+pointing/response covariance & squared corresponding units & random-model
+parameters, conditioned upon & Full covariance is the authority even if only a
+diagonal product is persisted.\\
+\bottomrule
+\end{longtable}
+
+Missing/non-finite policy is selection, not multiplication by zero: every
+accepted contribution must have valid identity, projection, finite signal,
+finite response when requested, finite exposure, and an allowed finite weight.
+Zero normalization means unsupported output; negative or non-finite precision
+is invalid, not evidence of negative support.
+
+\section{Independently claimed estimator}
+
+This section restates the minimum numbered equations needed to audit source.
+The complete pre-inspection derivation and limiting cases are in the immutable
+core identified in the authority record above.
+
+\subsection{Selected linear system and generalized least squares}
+
+After eligibility selection, unit conversion, and projection are fixed, write
+\begin{align}
+  \boldsymbol d &= X\boldsymbol s+\boldsymbol b+\boldsymbol n,
+  &\Cov(\boldsymbol n\mid\Theta)&=C_n,
+  \label{eq:audit-selected-system}\\
+  \widehat{\boldsymbol s}_{\rm GLS}
+    &= (X^{\mathsf T}C_n^{-1}X)^{+}
+       X^{\mathsf T}C_n^{-1}(\boldsymbol d-\boldsymbol b),
+  \label{eq:audit-gls}\\
+  C_{\widehat s\mid\Theta}
+    &= (X^{\mathsf T}C_n^{-1}X)^{+}
+       X^{\mathsf T}C_n^{-1}C_n C_n^{-1}X
+       (X^{\mathsf T}C_n^{-1}X)^{+}.
+  \label{eq:audit-gls-cov}
+\end{align}
+The pseudoinverse is on the identifiable subspace.  Null modes, additive bias,
+calibration covariance, and pointing/response covariance remain explicit; a
+diagonal weight plane is not Equation~\eqref{eq:audit-gls-cov}.
+
+\subsection{Ordinary naive normalized gridding}
+
+Let \(I_p\) contain only eligible \((t,d)\) with \(M_{td}=1\), valid projection
+into \(p\), finite required signal/response/exposure coefficients, and an
+allowed finite weight.  Define \(q_{ptd}=P_{ptd}w_{td}\) only on \(I_p\);
+\(M\) is a selector, never an arithmetic zero mask.  The signal numerator,
+denominator, and stored map are
+\begin{align}
+ n_p &= \sum_{(t,d)\in I_p}q_{ptd}d_{td},
+ & D_p &= \sum_{(t,d)\in I_p}q_{ptd},
+ \label{eq:audit-naive-num}\\
+ \widehat m_p &= \begin{cases}n_p/D_p,&D_p\text{ finite and }D_p>0,\\
+                              \text{invalid},&\text{otherwise},
+                 \end{cases}
+ \label{eq:audit-naive-map}\\
+ n^{(k)}_p &= \sum_{(t,d)\in I_p}q_{ptd}k_{td},
+ & \widehat k_p &= n^{(k)}_p/D_p
+      \quad(D_p\text{ finite and }D_p>0).
+ \label{eq:audit-kernel}
+\end{align}
+For fixed selection, the map operator is
+\(A_{p,td}=q_{ptd}/D_p\) on support.  Therefore
+\begin{align}
+  \E[\widehat{\boldsymbol m}\mid\Theta]
+    &=A\E[\boldsymbol d\mid\Theta]
+      =R\boldsymbol s+\boldsymbol b_m,
+  &R&=AX,\qquad \boldsymbol b_m=A\boldsymbol b,
+  \label{eq:audit-response}\\
+  C_{m\mid\Theta}&=A C_n A^{\mathsf T}.
+  \label{eq:audit-naive-cov}
+\end{align}
+If \(P\) is one-hot, selected samples are independent, and
+\(w_{td}=\sigma_{td}^{-2}\), then
+\begin{equation}
+  \Var(\widehat m_p\mid\Theta)=D_p^{-1},\qquad
+  q^{\rm formal}_p=D_p.
+  \label{eq:audit-formal-weight}
+\end{equation}
+Without every condition in Equation~\eqref{eq:audit-formal-weight}, \(D_p\) is
+a normalization/gridding weight, not authorized inverse variance.  Shared
+detector noise, preprocessing, non-one-hot projection, selection, and fitted
+weights generally make Equation~\eqref{eq:audit-naive-cov} non-diagonal.
+
+\subsection{Response, hits, exposure, support, and validity}
+
+For a template \(\boldsymbol\tau\) with amplitude \(\alpha\),
+\begin{equation}
+ R_{\tau}=\frac{\partial\E[\widehat{\boldsymbol m}\mid\Theta]}
+                 {\partial\alpha}=AX\boldsymbol\tau.
+ \label{eq:audit-template-response}
+\end{equation}
+A mapped kernel equals this response only if its input tracer is exactly
+\(X\boldsymbol\tau\) through the same fixed selection and preprocessing.
+Constant, delta, beam/template, resolved, extended, variable-coverage, and edge
+responses are distinct tests; normalized gridding preserves a constant only
+where the selected operator has unit row sum and no upstream null removes it.
+
+Let \(G_p\) be the finite, in-bounds geometric projection set, \(E_p\subseteq
+G_p\) the upstream-eligible projection/exposure set, and \(I_p\subseteq E_p\)
+the terms admitted by the estimator's named contribution predicate.  The
+approved contract keeps the following objects separate:
+\begin{align}
+ h^{\rm geom}_p &= \sum_{(t,d)\in G_p}{\bf1}[P_{ptd}\ne0],
+ &h^{\rm contrib}_p&=\sum_{(t,d)\in I_p}{\bf1}[q_{ptd}>0],
+ \label{eq:audit-hits}\\
+ x^{\rm eligible}_p &=
+   \sum_{(t,d)\in E_p}G^{(x)}_{ptd}\Delta t_{td},
+ &x^{\rm retained}_p&=S^{\rm norm}_p
+   \sum_{(t,d)\in I_p}G^{(x)}_{ptd}\Delta t_{td},
+ \label{eq:audit-coverage}\\
+ S^{\rm norm}_p&={\cal S}_{\rm norm}(D,p),
+ &S^{\rm science}_p&={\cal S}_{\rm science}(D,p),
+ \label{eq:audit-support-axes}\\
+ V_p &= S^{\rm norm}_p S^{\rm science}_p
+       {\bf1}[\widehat m_p\text{ finite}]
+       {\bf1}[\text{all required companions finite}]\nonumber\\
+     &\quad{}\times{\bf1}[\text{identity/WCS/unit/response valid}].
+ \label{eq:audit-validity}
+\end{align}
+For the ordinary estimator, the contribution predicate is finite positive
+\(q\); a different JINC predicate remains owned by \code{SCI-MAP-002} and is
+not silently selected here.  The two \({\cal S}\) functions have separate
+versioned algorithms, inputs, thresholds, and comparison conventions.
+Eligible exposure may be positive where no contribution is retained, retained
+exposure may be positive where science-policy support is false, and either
+support Boolean may be true without a formal-variance claim.  Validity
+additionally requires finite values and an admitted bundle identity.
+
+\subsection{Observation coaddition}
+
+Let \(\chi_{op}\) be the admissible numerical-contribution indicator after
+strict bundle admission and application of registration \(J_o\), centering
+\(L_o\), normalization support, and the finite-input policy, and let
+\(O_p=\{o:\chi_{op}=1\}\).  Invalid values are excluded from \(O_p\), never
+multiplied by zero.  The current ordinary target is
+\begin{align}
+ N^{c}_p &= \sum_{o\in O_p}u_{op}(J_oL_o\widehat m_o)_p,
+ &Q^{c}_p &= \sum_{o\in O_p}u_{op},
+ \label{eq:audit-coadd-num}\\
+ \widehat m^{c}_p&=\begin{cases}
+   N^{c}_p/Q^{c}_p,&Q^{c}_p\text{ finite and }Q^{c}_p>0,\\
+   \text{invalid},&\text{otherwise}.
+ \end{cases}
+ \label{eq:audit-coadd-map}
+\end{align}
+The owner-approved specialization requires whole-observation admission before
+any numerical, identity, membership, exposure, or provenance mutation.
+\(J_o\) is only centered integer common-grid embedding: coadd-minus-observation
+row and column differences are nonnegative and even, their halves are the
+integer offsets, and the full-precision WCS agrees after that offset.  No
+reprojection, interpolation, fractional shift, or source recentering is
+permitted.  Geometric embedding is distinct from signal centering:
+\(L_o=I\), with no implicit mean or null-mode subtraction.  On
+\(\chi_{op}=1\), \(\widehat m_{op}\), \(u_{op}\), and every required numerical
+companion are finite and \(u_{op}>0\); an unexpected violation fails before
+mutation.  An explicitly invalid term is skipped before its values are
+evaluated.  A normalization-retained but science-policy-rejected term may
+remain numerically contributable; coadd science-policy support and
+Equation~\eqref{eq:audit-validity} are evaluated and persisted separately, so
+numerical population never silently promotes science validity.
+
+The accepted \(u_{op}\) is a nonprecision gridding coefficient by default.
+The normalized mean in Equations~\eqref{eq:audit-coadd-num}--
+\eqref{eq:audit-coadd-map} is retained without a precision or significance
+claim.  Equation~\eqref{eq:audit-coadd-precision} remains conditional on
+\code{SCI-PTC-001}; the correlated estimator in
+Equation~\eqref{eq:audit-correlated-coadd} is explanatory only and is deferred.
+With stacked observation vector \(\boldsymbol z_m\), realized linear operator
+\(B\), and full observation-map covariance \(C_m\),
+\begin{align}
+ C_{c\mid\Theta}&=B C_m B^{\mathsf T},
+ &R_c&=B R_m.
+ \label{eq:audit-coadd-cov}
+\end{align}
+Only when registered observation errors are mutually independent and
+\(u_{op}=\Var(\widehat m_{op}\mid\Theta)^{-1}\) does
+\begin{equation}
+ \Var(\widehat m^c_p\mid\Theta)^{-1}=\sum_o u_{op}=Q^c_p.
+ \label{eq:audit-coadd-precision}
+\end{equation}
+For correlated observations with pixel covariance \(C_p\), the scalar GLS
+coadd is instead
+\begin{equation}
+ \widehat m^c_p=\frac{{\boldsymbol1}^{\mathsf T}C_p^{-1}\boldsymbol m_p}
+                       {{\boldsymbol1}^{\mathsf T}C_p^{-1}\boldsymbol1},
+ \qquad
+ \Var(\widehat m^c_p)=
+   ({\boldsymbol1}^{\mathsf T}C_p^{-1}\boldsymbol1)^{-1}.
+ \label{eq:audit-correlated-coadd}
+\end{equation}
+The companion kernel/response shares \(\chi,J\) and \(L=I\), on \(Q^c_p>0\):
+\(\widehat k^c_p=\sum_{o\in O_p}u(J\widehat k_o)_p/Q^c_p\).  Retained exposure
+shares the contribution and registration decisions \(\chi,J\), but never a
+signal-centering operator:
+\(x^{c,\rm retained}_p=\sum_{o\in O_p}(Jx^{\rm retained}_o)_p\).  The coadd
+observation count
+\(h^{c,\rm obs}_p=\sum_o{\bf1}[\chi_{op}=1]\) is a separate persisted count,
+not \(Q^c\), exposure, or validity.
+
+\subsection{Noise-realization boundary}
+
+For realization \(r\), the required same-operator test is
+\begin{equation}
+ \widehat{\boldsymbol m}^{(r)}=A\boldsymbol d^{(r)},\qquad
+ \widehat{\boldsymbol m}^{c,(r)}=B\widehat{\boldsymbol m}^{(r)},
+ \label{eq:audit-noise-operator}
+\end{equation}
+with the same eligibility, projection, weights, denominators, registration,
+support, centering, and observation contribution set as signal, unless a
+different operator is explicitly named and interpreted.  This is only an
+operator-identity test; the randomness, independence, exchangeability, and
+empirical calibration belong to \code{SCI-NOI-001/002}.
+
+\section{Implementation conformity trace}
+
+Line numbers refer to the exact governing source SHA.  ``Conforms'' below is
+bounded to the stated inputs and does not imply package approval.
+
+\begin{longtable}{L{0.27\linewidth}L{0.16\linewidth}L{0.19\linewidth}L{0.29\linewidth}}
+\toprule
+Source path & Lines/symbol & Contract equation & Conformity and evidence\\
+\midrule
+\endfirsthead
+\toprule
+Source path & Lines/symbol & Contract equation & Conformity and evidence\\
+\midrule
+\endhead
+\code{naive_mm.h} & 201--217, 256--265 &
+\eqref{eq:audit-naive-num}, \eqref{eq:audit-validity} & APT detector flag,
+at-least-one unflagged sample, optional active-map gate, sample flag, finite
+signal, finite positive detector weight, nearest-pixel \code{llround}; finite
+coordinates and map index are not universally checked.\\
+\code{naive_mm.h} & 280--305 &
+\eqref{eq:audit-naive-num}--\eqref{eq:audit-kernel},
+\eqref{eq:audit-coverage} & Sequential finite signal accumulates \(wd\), \(w\),
+\(wk\), and \(1/f_s\); kernel finiteness/shape is not checked and coverage is
+positive-weight detector-sample dwell.\\
+\code{naive_mm.h} & 397--435, 444--492 &
+\eqref{eq:audit-noise-operator} & Observation-local noise uses the same sample
+gate, projection, \(w\), and final denominator; sparse scan results merge under
+a mutex, but completion order changes floating-point association.\\
+\code{naive_mm.h} & 528--572, 575--583,
+652--675, 789--826 & same equations & Nonconformant: detector-parallel lambda
+captures shared mutable signal/kernel/noise values, noise pixel indices, and
+eligibility scalar by reference.  Distinct destination maps do not remove the
+C++ data races.\\
+\code{map.cpp} & 102--120, 260--296 &
+\eqref{eq:audit-naive-map}, \eqref{eq:audit-validity} & No-grid-weight branch
+sanitizes the denominator to finite positive values, applies an optional
+\code{coverage_cut/10} support floor, divides signal/kernel/noise, retains
+\(D\) as weight, and also erases exposure outside support.  Multiplication by
+zero does not sanitize an existing NaN.\\
+\code{map.cpp} & 223--259 & shared product vocabulary & JINC's temporary
+denominator and variance accumulator yield \(g^2/v\); compatible vocabulary,
+but JINC mathematics is not reopened here.\\
+\code{observation_coadd_accumulation.h} & 11--49, 79--92 &
+\eqref{eq:audit-coadd-num}--\eqref{eq:audit-coadd-map} & Dimension-centered,
+slot-positional \(Q{+}=w\), \(N{+}=mw\), \(K{+}=kw\), exposure sum.  This is
+\(J\) as integer embedding and \(L=I\), not mean subtraction or reprojection.\\
+\code{observation_coadd_accumulation.h} & 52--76 &
+\eqref{eq:audit-noise-operator} & JINC/observation-local noise is weighted by
+the corresponding observation weight; multiplication masking can propagate
+NaN.\\
+\code{observation_buffer_policy.h}; \code{naive_mm.h} & 19--23; 397--428 &
+\eqref{eq:audit-noise-operator} & Nonconformant for naive coadd: no observation
+noise cube is allocated; noise numerator enters the coadd before the
+observation support floor, while signal reaches it after that floor.\\
+\code{raw_observation_outputs.h};
+\code{map_image_output_helpers.h} & 14--49; 47--55 & product boundary & The
+allowed combination naive+coadd+noise products has no observation noise cube;
+its empirical-product calculation leaves formal-weight/noise-variance slots
+empty, then the required raw observation writer throws before coadd
+accumulation.  Thus this combination cannot publish a successful bundle at the
+governing SHA.\\
+\code{raw_coadd_outputs.h}; \code{map.cpp} & 21--37; 260--296 &
+\eqref{eq:audit-coadd-map} & Final coadd division by summed positive finite
+weight realizes the \(u=w\) positional weighted-mean algebra; scientific
+admissibility is unproven and no full covariance is formed.\\
+\code{todproc_map_geometry_impl.h};
+\code{observation_setup_impl.h} & 149--173; 106--137 &
+\eqref{eq:audit-coadd-cov}, \eqref{eq:audit-validity} & Nonconformant admission:
+coadd geometry is a union of symmetric tangent extents, but each observation
+can overwrite coadd CRVAL.  No WCS/reprojection check exists; a configured
+common center only mitigates the supported default.\\
+\code{todproc_map_count_impl.h};
+\code{todproc_allocation_impl.h} & 11--42; 30--46 &
+\eqref{eq:audit-validity} & Map count/order are recomputed from each observation
+calibration while the coadd is allocated once.  Accumulation compares no
+array/network/detector/Stokes identity and final writers use current/last
+mapping.\\
+\code{fits_image_products.h}; \code{utils.h} & 87--94; 526--595 &
+\eqref{eq:audit-validity} & Nonconformant persisted mask: predicate is
+\(\neg(w<t)\), not a finite \(w\ge t\) test.  All-zero maps have \(t=0\);
+NaN and positive-infinity comparisons are false, so zero, NaN, and
+positive-infinity weights can be emitted as valid.\\
+\code{fits_image_units_kernels.h} & 5--27, 100--122 &
+\eqref{eq:audit-formal-weight}, \eqref{eq:audit-template-response} & Unconditional
+inverse-variance unit/description overclaims \(D\); kernel and exposure
+descriptions omit response identity and detector multiplicity.\\
+\code{mapmaking_execution_plan.h};
+\code{coadd_execution_plan.h} & 18--84; 12--86 & state contract & One-way
+requested/effective and cardinality state is sound but lacks observation-level
+operator/identity/compatibility and realized scientific state.\\
+\code{coadd_provenance.h} & 29--55 & state contract & Records enablement and
+logical output counts only; cannot reproduce or verify \(B\), covariance
+assumptions, contributors, weights, registration, response, support, or WCS.\\
+\code{map_image_output_helpers.h};
+\code{fits_image_metadata_keys.h} & 13--211; 17--27 & product contract & Writers
+propagate failures and assign WCS to each emitted plane, but emit keyword
+\code{TYPE} while the registry declares per-HDU \code{ESTTYPE} authoritative.
+No \code{ESTTYPE} writer exists.\\
+\bottomrule
+\end{longtable}
+
+\subsection{Exact observation-to-coadd call order and mutable state}
+
+The central coadd findings follow this complete source order; no stable identity
+is inferred from a matching vector length.
+
+\begin{enumerate}[leftmargin=*,label=\arabic*.]
+\raggedright
+\item \textbf{Initial pass leaves the last observation current.}
+\code{initial_observation_loop.h:29--48} iterates every input.  For each,
+\code{initial_observation_setup.h:26--38} replaces calibration/telescope state
+and \code{initial_observation_map_dimensions.h:7--22} recalculates map count and
+extent.  There is no restoration after the loop.  Positional array/Stokes
+mappings are built from the then-current calibration by
+\code{map_group_indexing.h:10--39,75--84}.
+
+\item \textbf{The coadd buffer is allocated once per reduction/fruit
+iteration from that current state.}  The iteration entry at
+\code{reduction_iteration_setup.h:17--32} calls
+\code{iteration_buffers.h:9--29}; \code{todproc_allocation_impl.h:30--46}
+sizes \code{cmb} from current \code{map_indices.n_maps}, kernel/grouping, and
+polarization state.  The same entry clears coadd observation numbers and
+exposure through \code{iteration_buffer_state.h:5--14}.  Thus stale numerical
+accumulation is cleared, but no immutable coadd identity is established.
+
+\item \textbf{Every reduction observation replaces current state and its
+observation map.}  \code{reduction_observation.h:27--44} first calls
+\code{reduction_observation_inputs.h:72--98}, which configures current
+calibration, output identity, telescope/pointing, map count, and buffers;
+\code{observation_buffer_allocation.h:32--47} recalculates map count and
+allocates/clears \code{omb}.  The mapping is again positional.  No comparison
+against the already allocated \code{cmb} identity occurs before mutation.
+
+\item \textbf{Normalization/support and raw observation output precede the
+coadd copy.}  The observation pipeline order is fixed by
+\code{reduction_observation_pipeline.h:20--27}.  Map accumulation is normalized
+and its support floor applied at \code{lali_setup_pipeline_impl.h:80--94}; raw
+observation products are then written, and only afterward
+\code{observation_output_execution.h:34--57} dispatches the coadd call at
+\code{todproc_coadd_output_impl.h:11--16}.  This proves F004's asymmetry: naive
+noise numerators have already entered \code{cmb.noise}, whereas signal and
+weight enter through the post-support \code{omb} copy.
+
+\item \textbf{Final coadd labels and headers consume last-current state.}
+\code{lali_output_impl.h:65--85,123--143} binds the numerical \code{cmb} but
+iterates current \code{map_indices}; \code{map_image_output_impl.h:13--31}
+derives extension slots from that mapping, and
+\code{map_phdu_output_helpers.h:51--89,92--118} reads current telescope and
+calibration identity.  At loop exit those are the last reduction observation's
+objects, not immutable coadd-owned objects.  Equal map counts with different
+order can therefore be mislabeled silently; an excess current map count can
+throw, and a smaller count can leave accumulated slots unwritten.
+
+\item \textbf{Plans prove logical completion, not the scientific or physical
+bundle.}  Coadd configuration is one Boolean with an empty validator
+(\code{coadd_config.h:5--10}, \code{coadd_config_read.h:10--17},
+\code{coadd_config_validation.h:6--9}).  \code{coadd_execution_plan.h:12--86}
+has no observation-resolved collection; \code{coadd_provenance.h:29--55} emits
+only enablement and logical counts; and
+\code{reduction_execution.h:260--286} writes those sidecars after logical
+completion.  Separately, \code{lali_output_impl.h:51--57,123--143} treats an
+empty FITS vector as a successful return, while
+\code{todproc_coadd_output_impl.h:19--51} creates physical files from current
+calibration arrays.  Neither path records a fail-closed inventory of files,
+HDUs, identities, or per-pixel contributors.
+\end{enumerate}
+
+\subsection{Finite-state and boundary behavior}
+
+Finite out-of-grid samples are dropped without wrapping or clamping.  Zero,
+negative, and non-finite detector weights and non-finite signal samples are
+skipped by ordinary accumulation.  Low positive weights are accepted, then a
+data-derived policy floor may remove their pixels during normalization.
+Coordinates are not screened before rounding, kernel values are not screened
+before accumulation, and the primitive itself does not validate sample rate;
+the governed high-level path does validate positive finite sample rate.  An
+invalid value multiplied by a zero mask remains invalid, so neither observation
+normalization nor coadd multiplication is a universal non-finite guard.
+
+\subsection{JINC compatibility without internal re-audit}
+
+The shared vocabulary can describe JINC: it has a gridding denominator \(g\),
+a distinct variance accumulator \(v\), normalized signal/kernel divided by
+\(g\), and finalized diagonal weight \(g^2/v\).  This demonstrates vocabulary
+compatibility only.  It neither approves JINC projection/response nor proves
+that \(g^2/v\) is a marginal precision under correlated processed noise.
+\code{SCI-MAP-002} retains ownership of those questions.
+
+\section{Lifecycle and provenance assessment}
+
+\begin{longtable}{L{0.18\linewidth}L{0.27\linewidth}L{0.42\linewidth}}
+\toprule
+State & What exists at the governing SHA & Required amendment\\
+\midrule
+\endfirsthead
+\toprule
+State & What exists at the governing SHA & Required amendment\\
+\midrule
+\endhead
+Requested & Complete typed mapmaking request; coadd request is only
+\code{enabled}. & Name estimator and support/validity policies, weight and
+covariance branch, registration/centering, response/kernel role, and required
+products.\\
+Effective & Grouping and unit resolution; coadd disabled when mapmaking is
+disabled. & Record exact ordinary/JINC branch, conditional formal-weight
+meaning, empirical/formal selection, parallel policy, and fail-closed
+compatibility requirements.\\
+Observation-resolved & The mapmaking plan stores each processed observation's
+index, obsnum, map count, effective pixel size, and logical write count.  The
+coadd plan has no observation-resolved collection. & Add explicit coadd
+membership plus map identity/order, shape, WCS/frame, pixel scale/orientation,
+source center, units, support threshold, response identity,
+offsets/registration, and contributor eligibility.\\
+Realized & Completion booleans and observation/coadd logical cardinality. &
+Add applied operator version, actual numerator/denominator semantics, formal or
+empirical weight state, covariance availability/omissions, support/validity and
+non-finite counts, coverage definition, coadd membership/coefficients,
+centering/null modes, complete physical inventory, and compatibility result.\\
+\bottomrule
+\end{longtable}
+
+Buffers are cleared and coadd exposure/observation numbers are reset per fruit
+iteration, so no stale numerical accumulator was found.  The mapmaking
+provenance lists processed observation entries, but neither it nor coadd
+provenance records an explicit coadd membership decision, compatibility result,
+coadd coefficients, or per-pixel contributors.  Logical cardinality checks
+count map-write events, not physical FITS files, HDUs, noise realizations,
+diagnostics, or map identities.  An empty FITS vector can return without a
+required physical inventory proof; provenance then cannot distinguish a
+scientifically complete bundle from a merely completed control path.
+
+\section{Product matrix}
+
+Names below use array grouping and Stokes I; the same extension identities
+appear in observation and coadd FITS families.  Array grouping has an empty map
+layer name (for example, \code{signal_I}).  Network, frequency-group, and
+detector grouping insert \code{nw_<id>_}, \code{fg_<id>_}, or
+\code{det_<slot>_}; the detector token is a positional map slot, not a detector
+UID.  The realization builder emits
+\code{signal_<map-layer><realization>_I}, for example \code{signal_0_I} for
+array realization zero and \code{signal_nw_3_0_I} for network 3.  Pre-normalized
+quantities are transient and overwritten.
+
+\begin{longtable}{L{0.14\linewidth}L{0.12\linewidth}L{0.17\linewidth}L{0.12\linewidth}L{0.19\linewidth}L{0.17\linewidth}}
+\toprule
+Identity & Class & Meaning & Units & Current validity/metadata & Contract disposition\\
+\midrule
+\endfirsthead
+\toprule
+Identity & Class & Meaning & Units & Current validity/metadata & Contract disposition\\
+\midrule
+\endhead
+Transient \code{MapBuffer::signal} before normalize &
+\eqref{eq:audit-naive-num} or \eqref{eq:audit-coadd-num}; numerator & \(n\) or
+\(N^c\) & weight unit times \(U_g\) & Same variable is later overwritten;
+not persisted or version-labeled. & Internal only; diagnostic access must name
+lifecycle.\\
+Transient \code{weight} before normalize & denominator & \(D\), \(g\), or
+\(Q^c\), method-dependent & declared gridding unit & Overwritten and finalized;
+JINC \code{grid_weight} is destroyed. & Persist numerator/denominator identity
+or record explicit absence.\\
+\code{signal_I} & estimator & Normalized observation/coadd signal
+\eqref{eq:audit-naive-map}/\eqref{eq:audit-coadd-map} & \(U_g\), commonly
+mJy/beam & WCS/BUNIT written; supported pixels can still be poisoned by NaN
+coadd terms. & Existing-use only; new interpretation needs full bundle.\\
+\code{weight_I} & normalizer or conditional precision & Naive \(D\), JINC
+\(g^2/v\), coadd \(Q^c\); may be globally empirically rescaled & labeled
+\(U_g^{-2}\) unconditionally & \code{TYPE=formal|empirical}; description says
+inverse variance. & Call gridding/normalization weight unless
+Equation~\eqref{eq:audit-formal-weight} or \eqref{eq:audit-coadd-precision} is
+proven; never use the plane alone as validity or confidence.\\
+\code{weight_formal_I} & diagnostic snapshot & Weight before optional empirical
+global rescale & labeled \(U_g^{-2}\) & Present only with empirical companion
+products. & Same conditionality as \code{weight_I}; not full covariance.  Exact
+downstream \(k^2\) propagation of this plane cannot prove that its upstream
+quantity was inverse variance.\\
+\code{kernel_I} & response tracer & Weighted normalized processed kernel;
+coadd weighted mean & current \(U_g\) & Generic type, FWHM, unit, and
+description; no operator, template, version, or status. & Do not call realized response until
+Equation~\eqref{eq:audit-template-response} is validated.\\
+\code{coverage_I} & exposure diagnostic & Accepted positive-weight
+detector-sample dwell; coadd sum; erased outside normalization support & s &
+Described as effective integration time; absent for detector grouping because
+coverage is not allocated. & Preserve only as a bitwise compatibility alias
+for canonical retained detector-seconds; separate it from upstream-eligible
+exposure and both support masks, and record applicability/absence.\\
+No hits HDU & absent support diagnostic & Geometric hits, positive-weight hits,
+and contributing-observation count are not persisted & unitless & Some
+diagnostics infer sample count as coverage times sample rate. & Persist
+geometric hits, estimator-admitted contributing hits, and coadd-observation
+count as distinct products; do not use weight or exposure as synonyms.\\
+No upstream-eligible exposure HDU & absent exposure state & Upstream-eligible
+and retained detector-seconds collapse into the post-normalization
+\code{coverage_I} plane & s & Pre-floor eligibility cannot be recovered from
+the output. & Persist both exposure states; keep \code{coverage_I} only as the
+retained-exposure alias.\\
+\code{coverage_bool_I} & derived support/validity diagnostic &
+\(\neg(w<t)\), with full \code{coverage_cut} threshold & unitless & Called
+Boolean valid coverage; at \(t=0\), zero, NaN, and positive infinity select
+valid; threshold differs from normalize floor.  Absent for detector grouping
+because the coverage helper returns early. & Deprecate as a validity authority.
+If retained, declare/test its exact compatibility relationship to canonical
+science-policy support and require finite-positive comparison.\\
+No dedicated support or validity HDUs & absent contract state &
+Normalization support, science-policy support, and authoritative validity are
+not separately persisted & unitless & Writer recomputes one threshold Boolean;
+identity and required companions are not conjoined. & Persist both support
+planes and a dedicated science-valid product; the last alone is authoritative
+raw science validity under Equation~\eqref{eq:audit-validity}.  The handoff
+proposes, but the owner decision does not fix, its serialized spelling.\\
+\code{formal_standardized_signal_I} & diagnostic &
+\(m\sqrt{w}\) without empirical products & unitless & Correctly described as
+not statistical significance; negative/non-finite weights propagate through
+the square root.  Absent for detector grouping because the coverage helper
+returns early. & Allowed only as explicitly named standardized amplitude under
+conditional weight meaning.\\
+\code{noise_variance_I} & empirical diagnostic & Per-pixel realization second
+moment minus squared mean & \(U_g^2\) & No cross-pixel covariance; owned by
+\code{SCI-NOI-002}. & Not audited here except same-operator gate.\\
+\code{sig2noise_I}, \code{sig2noise_pixel_I} & empirical diagnostic & Signal
+times square root of empirically scaled weight & unitless & Emitted when
+empirical products expected. & No calibrated significance claim until NOI and
+same-operator evidence close.\\
+Noise file \code{signal_0_I}, \code{signal_1_I}, \ldots & realization map &
+Randomized sample signal through claimed map/coadd operator & \(U_g\) &
+UNIT/MEDRMS and WCS; naive coadd operator mismatch.  Layer prefixes follow the
+naming rule above. & Restricted to diagnostics; cannot calibrate uncertainty
+until F004 closes.\\
+\bottomrule
+\end{longtable}
+
+The product registry says per-HDU \code{ESTTYPE} is authoritative, while the
+writer emits \code{TYPE}; the registry's validity language also delegates to
+\code{coverage_bool_I}.  These are contract mismatches, not cosmetic keyword
+preferences.  Detector grouping allocates neither observation nor coadd
+coverage, so the writer emits no \code{coverage_I}, \code{coverage_bool_I},
+formal-standardized/SNR, or filtered point-source planes reached through the
+coverage helper.  This is an allowed Beammap-relevant product boundary and must
+be represented explicitly rather than inferred from array-grouped products.
+
+\section{Cross-audit raw-validity amendment}
+\label{sec:cross-audit-validity}
+
+\subsection{Evidence boundary and supported inference}
+
+The following is the exact bounded use of the user-supplied convolve/noise
+cross-audit summary.  It is evidence about the adequacy of the upstream raw-map
+handoff, not an audit of the downstream implementation.
+
+\begin{longtable}{L{0.24\linewidth}L{0.68\linewidth}}
+\toprule
+Evidence item & Recorded fact and permissible inference\\
+\midrule
+\endfirsthead
+\toprule
+Evidence item & Recorded fact and permissible inference\\
+\midrule
+\endhead
+Raw-product comparison & For Point 152389, the returned strict comparison of
+the filtering-disabled control and filtering-enabled candidate at source
+\gitsha{b294802a}{5e339f9b}{a5e0e323}{980cec3a}{4bd00249} used
+\(\mathrm{atol}=\mathrm{rtol}=0\), included timestreams, and reported 15 common
+raw products, zero changed, zero skipped, and no product-set difference.  The
+user reports the raw map products as bitwise identical.  Therefore the
+comparison establishes no raw numerical regression.  It does not validate the
+raw estimator, mask, weight, covariance, coadd, or provenance contract.\\
+Internal downstream reproducibility & The convolution, propagated formal
+variance, and stored ten-realization N--1 jackknife variance were internally
+reproducible.  This is arithmetic isolation only; the statistical estimator,
+covariance, response, and scientific domain remain owned by
+\code{SCI-NOI-001/002} and \code{SCI-FLT-001/002}.\\
+Guard-band manifestation & In a2000, a pixel outside the reconstructed raw
+science-valid region but one pixel inside the convolution's numerical support
+had filtered signal approximately \(-0.2296\) mJy/beam, jackknife uncertainty
+approximately \(0.001386\) mJy/beam, direct empirical S/N approximately
+\(-165.7\), and filtered \code{coverage_bool} true.  Eight of nine a2000
+pixels with direct filtered \(|\mathrm{S/N}|>5\) were in that guard band.\\
+Permissible conclusion & A downstream operator can compute a value where the
+raw input is not scientifically valid, and the current product vocabulary did
+not give that operator an authoritative distinction between raw validity and
+its own numerical computability.  The observation is a concrete consumer
+consequence of open F007/F008 under the addressed-pending-re-audit F010
+decision, and a reason F002 matters; it does not prove
+that the raw mask implementation caused this particular pixel.\\
+Scope limit & No filtering boundary rule, filtered variance policy, variance
+floor, response normalization, source statistic, or fruit-loop admission rule
+is selected here.  No existing finding is closed and no new finding is
+created.\\
+\bottomrule
+\end{longtable}
+
+{\raggedright The locally supplied cross-audit scope/handoff summary has SHA-256
+\digest{4bbfb376}{7e064de5}{a77e96c6}{177fd02f}{6b6adcec}{6c2bf173}{2b7115ed}{cdac829b};
+the strict raw-comparison transcript has
+\digest{2e777a95}{5c5127f1}{a1e4c6c5}{a0e025f4}{24a38be8}{d16b8e0a}{803c5c76}{e95ed5dc};
+and the candidate/control run-audit transcripts have, respectively,
+\digest{295016e9}{6c15ddd0}{968f44c9}{7b7cda32}{e171729b}{bd5e4b50}{34f33599}{14bf2b6d}
+and
+\digest{b6ef7883}{c1cf7e50}{4dc13f0e}{eccead84}{dc011519}{f8e7b7af}{d3642909}{c8de98ef}.
+These bytes identify the narrow raw comparison and run characterization; no
+immutable guard-band-analysis bundle was supplied to SCI-MAP-001.\par}
+
+For clarity, the exact current threshold machinery is as follows.  For the
+strictly positive values of a weight plane, let \(N\) be their count and let
+\(w_{(k)}\) be the zero-based ascending order statistic with
+\(k=\lfloor(\lfloor0.75N\rfloor+N)/2\rfloor\).  The governing source's
+\code{find_weight_threshold(weight,c)} returns zero for \(N=0\) and otherwise
+\(T_c=cw_{(k)}\).  Raw normalization first replaces non-finite or non-positive
+weights by zero, begins with \(w>0\), and, when
+\(T_{c/10}>0\), retains \(w\ge T_{c/10}\), where \(c\) is the
+\code{coverage_cut} configuration value.  The later persisted Boolean instead uses the
+current final weight and full cut,
+\begin{equation}
+ H^{\rm byte}_p=\neg\bigl(w_p<T_c\bigr),
+ \label{eq:audit-current-coverage-bool}
+\end{equation}
+with IEEE comparison semantics.  The FITS HDU stores a realized
+\code{WTTHRESH} scalar, but the product/provenance contract does not version
+the algorithm, identify its input weight state, store the normalization-floor
+threshold, guarantee a full-precision provenance round trip, or state the
+finite/positive and bundle-validity conjunction.
+
+\subsection{Answers to the eight raw-contract questions}
+
+\begin{enumerate}[leftmargin=*,label=\arabic*.]
+\raggedright
+
+\item \textbf{Exact condition for scientific validity.}
+The owner-approved exact condition is \(V_p=1\) in
+Equation~\eqref{eq:audit-validity}: numerical-normalization support,
+science-policy support, finite \code{signal_I} and every declared required
+companion, and admitted map/array identity, WCS/frame, units, and response.
+The required-companion inventory is versioned per product profile.  If a
+formal precision is consumed, its separate finiteness and
+\code{SCI-PTC-001} conditions also apply.  Upstream eligibility remains
+conditional on \code{SCI-VAL-001}, but F010 no longer leaves the map-level
+validity conjunction undecided.
+
+\emph{Disposition:} the successor contract is explicit and approved; the
+governing products do not implement it.  F002 is the existing Boolean
+implementation defect, F007 is the missing product/metadata contract, and F008
+is the missing reproducible provenance.  The cross-audit adds no raw
+regression finding.  Until repair and re-audit, NOI and FLT must prohibit
+promotion of \(w>0\), exposure, \code{coverage_bool_I}, or a finite/populated
+signal to science validity.
+
+\item \textbf{Product carrying the condition.}
+No single current raw product carries \(V_p\), and the present combination is
+not a self-describing authority.  \code{coverage_bool_I} carries only
+Equation~\eqref{eq:audit-current-coverage-bool}; \code{signal_I}, weights, and
+\code{coverage_I} carry estimator, normalizer, and exposure facts separately.
+The approved successor must persist a dedicated, versioned raw science-valid
+product (the handoff proposes \code{science_valid_I}), with normalization
+support, science-policy support, retained exposure, and bundle identity
+separately named and persisted.
+
+\emph{Disposition:} F002 is an implementation defect; the missing dedicated
+product is open F007 under the addressed F010 decision, and its reproducibility
+is F008.  A
+filtered HDU that reuses an extension name is a stage output, not carriage of
+the raw state.  NOI/FLT must retain an exact raw-parent identity and may not
+reinterpret their own \code{coverage_bool_I} as raw validity.
+
+\item \textbf{Explicit persistence.}
+The raw science-valid region is not explicitly persisted.  There is no
+\code{raw_science_valid_I}, retained-support state, raw hits plane, or
+multi-state validity product.  The softer normalization decision is visible
+only indirectly after final weight and coverage have been zeroed; its cause is
+lost.  The existing Boolean is incorrectly described as valid coverage and is
+absent for detector grouping.
+
+\emph{Disposition:} not a documentation-only issue: the persisted predicate is
+wrong in allowed states (F002), while the absent products/metadata are F007
+under the accepted F010 hierarchy.  NOI and FLT must treat raw science
+validity as unavailable for new claims until the repaired/versioned product is
+accepted.
+
+\item \textbf{Exact reconstruction and provenance.}
+Current \code{weight_I} bytes plus \code{WTTHRESH} reproduce
+\(H^{\rm byte}\) exactly and can form \(H^{\rm intended}\); they do not
+reconstruct \(V_p\).  The bundle does not persist the normalization value
+\(T_{c/10}\), the algorithm/version and zero-based order-statistic convention,
+the exact comparison and finite policy, the pre/post-empirical weight stage,
+the distinction between unobserved and floor-rejected pixels, the full
+profile-required conjunction, or a raw-parent product digest in realized
+provenance.  A source SHA and merged configuration let a source-aware auditor
+recover some behavior, but that is not a stable self-contained product
+contract.
+
+\emph{Disposition:} the current mask bytes are reproducible; science validity
+is not.  This is principally open provenance/documentation gap F008 under the
+addressed F010 decision, with F002/F007 where the persisted product itself is
+nonconformant or absent.  NOI/FLT must not substitute a locally guessed
+threshold, comparison, rounded configuration value, or stage-local mask.
+
+\item \textbf{Precise estimator meanings.}
+The source-traced meanings are:
+\begin{itemize}[leftmargin=1.4em]
+\item \code{signal_I}: normalized observation estimator \(n/D\) or coadd
+\(N^c/Q^c\) in map units; zero or NaN is not a validity sentinel.
+\item \code{weight_formal_I}: snapshot of the post-normalization-support map
+weight before optional global empirical rescaling, present only when empirical
+companion products are requested.  It is naive \(D\), JINC's shared-vocabulary
+quantity, or coadd \(Q^c\); it is diagonal precision only under
+Equations~\eqref{eq:audit-formal-weight} or
+\eqref{eq:audit-coadd-precision}, never full covariance.
+\item \code{weight_I}: the same weight when empirical application is absent,
+or that spatial pattern multiplied by one global empirical scale when enabled.
+It is a normalizer/conditional precision, not confidence, response, exposure,
+support, or gain.
+\item \code{coverage_I}: accepted positive-weight detector-sample dwell
+(\(1/f_s\) per accepted sample), subsequently erased outside normalization
+support and summed in coadds.  It is retained detector-seconds, not unique wall
+time, inverse variance, response, or validity; it is absent for detector
+grouping.
+\item \code{coverage_bool_I}: the stage-local final-weight classification in
+Equation~\eqref{eq:audit-current-coverage-bool}, using the full-cut threshold.
+It is not normalization support, scientific validity, edge/window support,
+response, exposure, or confidence.  No other raw validity Boolean is
+persisted.
+\end{itemize}
+
+\emph{Disposition:} the arithmetic meanings are explicit in this audit, but
+the current metadata overclaims or omits them (F006/F007); this is not a new
+numerical implementation defect.  NOI owns empirical-variance and precision
+meaning; FLT must preserve these identities instead of inferring semantics from
+extension names.
+
+\item \textbf{Valid, retained, populated, and invalid states.}
+These are two axes, not one ordered four-state enum.  On the raw scientific
+axis, a pixel is (a) science-valid when \(V_p=1\), (b) retained low-confidence
+when the declared raw normalization domain is populated and all bundle facts
+are valid but the approved science-support policy fails, or (c) invalid when
+normalization, finiteness, companion, or bundle admission fails.  Numerical
+computability/population is a separate operator-local Boolean: raw mapmaking or
+a later stencil may produce a finite number at a science-invalid coordinate.
+The reported a2000 guard-band pixel is exactly such a downstream-computable,
+raw-science-invalid combination.
+
+At the governing SHA, the \(c/10\) normalization floor and full-\(c\) Boolean
+threshold create two algorithmic regions, but the product contract neither
+names the retained-low-confidence state nor persists both decisions exactly.
+The distinction is now owner-approved but remains only diagnostically
+inferable in governing products (open F007 under addressed F010, with F002 for
+the Boolean).  NOI/FLT must keep science validity and operator computability as
+separate masks and may never let finite output promote invalid input.
+
+\item \textbf{Legitimate downstream use.}
+\code{signal_I} is an amplitude estimator only on an approved \(V_p\) and
+matching bundle identity.  No raw plane is unconditional inverse variance:
+\code{weight_formal_I} may be treated as diagonal inverse variance only under
+the named PTC/independence conditions; \code{weight_I} additionally needs an
+approved empirical-scale interpretation and still omits covariance.
+\code{coverage_I} may be treated only as retained detector-seconds for exposure
+QA.  No current Boolean is authoritative science-valid support;
+\code{coverage_bool_I} can at most be audited against its stage-local threshold
+after explicit finite-positive checks.
+
+\emph{Disposition:} conditional formal-weight arithmetic is explicit in the
+approved contract, but current inverse-variance metadata is F006 and
+support/validity implementation is F002/F007 under addressed F010.  NOI must prohibit significance
+or calibration outside an approved raw domain and must establish covariance;
+FLT must intersect its separately defined numerical support with authoritative
+raw validity rather than replace the latter.
+
+\item \textbf{Sufficiency of the current handoff.}
+No: a source-aware auditor can reconstruct provisional regions, but a
+downstream operator cannot construct the raw science-valid input mask exactly
+and reproducibly from the current self-described product contract.  In
+particular, a finite filtered value or filtered \code{coverage_bool=true} says
+nothing about raw validity.
+
+\emph{Disposition:} this is the combined open F002/F007/F008 implementation,
+product, and provenance gap under addressed F010; F006 governs any precision
+use and F011 governs its missing end-to-end truth test.  It is a mapmaking
+product-contract defect/gap within this audit, not a
+finding about convolve, jackknife reliability, source response, or fruit-loop
+behavior.  NOI receives the domain/weight/covariance dependency; FLT receives
+the raw-validity-versus-numerical-support dependency.  Both remain fail closed
+for new scientific claims.
+\end{enumerate}
+
+\subsection{Stable downstream handoff}
+
+The NOI handoff is F002/F006/F007/F008/F010/F011: use an approved raw-valid
+domain; prove the selected weight and same-operator meanings; state diagonal
+and cross-pixel covariance, realization construction, and calibration domain;
+and do not infer reliability from ten internally reproducible realizations.
+The choice of N versus N--1, variance regularization or floors, effective
+realization count, and significance calibration remains wholly in
+\code{SCI-NOI-001/002}.
+
+The FLT handoff is F002/F006/F007/F008/F010/F011 plus one explicit interface
+requirement: consume and identify the exact raw parent and its authoritative
+validity/retained-support state, then persist filtered numerical computability,
+window/support, response, and filtered scientific validity as distinct facts.
+Boundary treatment, covariance propagation, and point/extended-source response
+remain wholly in \code{SCI-FLT-001/002}.  Fruit loops receive only the existing
+fail-closed dependency: no filtered amplitude, confidence, support, or gain may
+enter feedback before the MAP, NOI, and FLT contracts are accepted.
+
+\section{Project-owner decisions and bounded handoff}
+\label{sec:owner-decisions}
+
+On 2026-07-31 the project owner accepted this audit's \texttt{amend} verdict
+and approved the following bounded successor contract without numerical-
+algorithm broadening.
+
+\subsection{F009: coadd admission, embedding, and estimator}
+
+Admission is strict across product identity, unit, response, and
+full-precision WCS, and it occurs for the complete observation bundle before
+any coadd accumulator, WCS/grouping, membership, observation number, exposure,
+count, inventory, or provenance state is mutated.  The sole approved
+registration \(J_o\) is the current centered integer common-grid embedding.
+Coadd-minus-observation dimensions must be nonnegative and even; their halves
+are the exact row/column offsets, and world coordinates must agree after that
+offset.  General reprojection, interpolation, fractional registration, and
+implicit source recentering are not approved.  The geometric embedding is not
+signal centering: \(L_o=I\), with no implicit mean or null-mode subtraction.
+
+Equations~\eqref{eq:audit-coadd-num}--\eqref{eq:audit-coadd-map} remain the
+approved normalized weighted mean.  The actual \(u_{op}\) values are
+nonprecision gridding coefficients by default.  A precision interpretation
+requires \code{SCI-PTC-001} proof of the applicable marginal-precision and
+independence/covariance conditions; correlated GLS is deferred.  The coadd
+consumes the authoritative F010 normalization, policy, and validity states; it
+must not reconstruct them from \(w>0\), finite signal, exposure, or a legacy
+Boolean.  Explicitly invalid pixels are skipped without evaluating or zero-
+multiplying their values.  A normalization-retained, science-policy-rejected
+pixel may remain numerically contributable, but the resulting coadd science
+support and validity are independently evaluated and persisted.  Unexpected
+non-finite signal, coefficient, or required numerical companion on a declared
+contribution is a pre-mutation required failure.  No coadd precision,
+uncertainty, standardized-signal, S/N, or significance claim is authorized
+while covariance remains unresolved.
+
+\subsection{F010: persisted support and validity hierarchy}
+
+The approved raw/coadd contract persists and distinguishes eight facts:
+
+\begin{enumerate}[leftmargin=*,label=\arabic*.]
+\item geometric sample/detector hits;
+\item contributions actually admitted by the named estimator predicate;
+\item admitted coadd-observation count;
+\item upstream-eligible detector-seconds;
+\item retained detector-seconds;
+\item numerical-normalization support;
+\item science-policy support; and
+\item authoritative science validity.
+\end{enumerate}
+
+The authoritative mask is exactly Equation~\eqref{eq:audit-validity}:
+normalization support, science-policy support, finite signal and every declared
+required companion, and admitted product identity are all required.
+Normalization and science-policy thresholds are separate algorithms with
+separate roles.  Their algorithm/version identifiers, input coefficient and
+lifecycle stage, full-precision requested/realized cuts and thresholds,
+order-statistic and comparison conventions, finite/positive policy, and
+result counts are required realized provenance.  The current numerical roles
+remain the softer \code{coverage_cut/10} normalization floor and the full
+\code{coverage_cut} science-policy threshold; this decision does not authorize
+a new quantile, ratio, or comparison.
+
+\code{coverage_I} is retained solely as a documented, bitwise compatibility
+alias for retained detector-seconds.  It is not inverse variance, wall-clock
+time, support, confidence, or validity.  \code{coverage_bool_I} is deprecated
+as a validity authority; if retained, its exact compatibility relationship to
+science-policy support must be declared and tested.  The canonical science-
+valid product remains separate.  Every downstream operator must preserve raw
+science validity and raw-parent identity independently from its operator-local
+numerical support, window, response, covariance, and output validity.
+
+{\raggedright The exact bounded repair and fresh re-audit instructions are in
+\code{doc/audits/packages/SCI-MAP-001_BOUNDED_REPAIR_REAUDIT_HANDOFF_2026-07-31.md}.
+That handoff proposes serialization names but does not treat those engineering
+spellings as additional owner decisions.  It prohibits NOI, FLT, source,
+Beammap, and fruit-loop estimator changes, general registration, GLS, and
+repair on this audit branch.\par}
+
+\subsection{Finding disposition}
+
+{\raggedright F009 and F010 retain their stable IDs, P1 severity, owner-decision basis, and
+high confidence.  Their policy choices are resolved, so the scientific
+contract is now \texttt{approved}; their status is
+\texttt{addressed\_pending\_reaudit}, not \texttt{closed}, until a separate
+repair implements the accepted choices, the named fixtures/provenance gates
+pass, and a fresh auditor accepts the exact repair SHA.  F001--F008 and
+F011--F013 remain open.  Implementation, validation, production, verdict, and
+re-audit status otherwise do not change.\par}
+
+\section{Consumer matrix and authorization}
+
+\begin{longtable}{L{0.18\linewidth}L{0.20\linewidth}L{0.24\linewidth}L{0.28\linewidth}}
+\toprule
+Consumer & Current inputs & Required map contract & Authorization now\\
+\midrule
+\endfirsthead
+\toprule
+Consumer & Current inputs & Required map contract & Authorization now\\
+\midrule
+\endhead
+Noise generation/calibration
+(\code{SCI-NOI-001/002}) & signal, weight, noise cubes; per-pixel moments;
+optional global empirical scale & Same \(A,B\), fixed/declared selection,
+formal-weight condition, authoritative raw-valid domain, realization semantics,
+full covariance omissions & Existing diagnostics only; empirical significance
+fails closed, especially for naive coadds and outside approved raw validity,
+until F002/F004/F006--F008/F010/F011 and NOI contracts close.\\
+JINC (\code{SCI-MAP-002}) & shared signal, weight, kernel, and coverage vocabulary &
+Method-tagged denominator/variance accumulator and response identity &
+Vocabulary allowed; JINC mathematical interpretation not approved here.\\
+Convolve and Wiener/low-pass (\code{SCI-FLT-001/002}) & signal, weight,
+kernel, noise, coverage/support & Exact variance versus normalization meaning,
+full covariance or restriction, raw-parent identity, authoritative raw validity,
+and separately named filtered numerical support/response & Existing accepted
+profiles only; no new filtered precision/response/science-support claim.  A
+stage-local finite value or \code{coverage_bool_I} cannot promote raw-invalid
+input.\\
+Source detection/fits (\code{SCI-SRC-001}) & bare signal/weight; some paths
+use \(m\sqrt w\) and \(1/\sqrt w\) & Approved precision/empirical variance,
+response/photometry, valid WCS/support, correlated-pixel treatment & New source
+significance and photometry fail closed.\\
+Pointing/OOF (\code{SCI-MODE-001}) & signal/weight and Gaussian fits &
+Astrometric WCS/response, finite valid domain, approved fit weights & Existing
+accepted use only; no new absolute astrometric uncertainty claim.\\
+Beammap (\code{SCI-BEAM-001}) & detector maps; signal/weight peaks and fits &
+Deterministic naive/JINC map operator, response, detector identity, support &
+Current accepted JINC profile only.  Naive+detector+OMP fails closed on F001.\\
+Fruit-loop feedback (\code{SCI-FRUIT-001}) & Required FITS signal and weight;
+kernel optional: a complete set is consumed, while an incomplete set warns and
+is discarded; when S/N gating is requested, finite-positive
+\code{noise_variance_*} MEDRMS or legacy realization-file fallback; partial
+WCS checks & Complete compatible product bundle,
+strict finite-positive weight validity, response/kernel identity, signed
+WCS/orientation, and calibrated MEDRMS meaning & Existing accepted paths only;
+the loader does not consume \code{coverage_bool_I}.  Any new map-feedback
+support, amplitude, confidence, or gain interpretation fails closed.\\
+Map diagnostics & signal, weight, coverage; often \(m\sqrt w\) & Explicit
+formal-standardized versus empirical significance identity and support &
+Descriptive diagnostics only; not an independent significance authority.\\
+\bottomrule
+\end{longtable}
+
+Section~\ref{sec:cross-audit-validity} records the later guard-band evidence
+only as a raw-product-contract handoff.  The already-ledgered mainline convolve
+variance discrepancy remains owned by \code{SCI-FLT-001}; this audit neither
+re-audits nor alters it.  Likewise, incomplete fruit-loop WCS/kernel admission
+and any future feedback selector are downstream restrictions, not evidence that
+the raw map bundle is valid.
+
+\section{Falsifiable validation matrix}
+
+\begin{longtable}{L{0.20\linewidth}L{0.25\linewidth}L{0.25\linewidth}L{0.20\linewidth}}
+\toprule
+Method & Claim & Exact fixture/artifact & Gate or N/A rationale\\
+\midrule
+\endfirsthead
+\toprule
+Method & Claim & Exact fixture/artifact & Gate or N/A rationale\\
+\midrule
+\endhead
+Analytic limits & Normalization, response, support & One-pixel identity;
+constant, delta, beam, resolved, Fourier extended mode; uniform/variable
+coverage; edge & Exact rational cases bitwise where representable; otherwise
+\(64\epsilon\) times accumulated absolute scale.  No required case is N/A.\\
+Deterministic fixtures & Eligibility and products & Uniform/unequal weights;
+masked; signal, weight, coordinate, and kernel NaN and infinities; zero/negative
+weight; zero support; boundary; multiple detectors/maps & Exact contribution
+set, numerator, denominator, signal, kernel, hits, exposure, support, and validity;
+unsupported/non-finite outputs must fail closed.\\
+Raw-validity reconstruction & Distinguish normalization, retained
+low-confidence, science-valid, invalid, and operator-computable states & Exact
+weights immediately below/on/above \(T_{c/10}\) and \(T_c\); zero, negative,
+NaN and both infinities; finite/non-finite signal and companions; bundle-identity
+mismatch; array and detector grouping & Reproduce
+Equation~\eqref{eq:audit-current-coverage-bool} byte-for-byte as current
+behavior, then independently reproduce the approved \(V_p\) from product bytes
+and realized provenance alone.  Exact mask equality, state counts, and failure
+causes are required; a source-code guess or downstream-populated value fails.\\
+Small matrix & Mean/covariance & Independently form \(A\), \(A\mu\), and
+\(AC_nA^{\mathsf T}\) with diagonal and correlated \(C_n\) & Relative/absolute
+error \(\le 10^{-12}\) for well-conditioned double fixtures; singular modes
+match the declared pseudoinverse tolerance.\\
+Coadd matrix & Unequal variance, registration, correlation & Two/three maps;
+known \(J\), one masked observation, positive/negative cross-observation
+covariance, map-order and WCS mismatch & Match
+Equations~\eqref{eq:audit-coadd-map}--\eqref{eq:audit-correlated-coadd}; mismatch
+must reject before mutation; ordinary diagonal mode must refuse correlated GLS
+claims.\\
+Noise same-operator & Signal versus realization coefficients & Naive
+two-observation fixture where one observation is removed by the support floor
+and another survives & Contribution coefficients and support are identical;
+current SHA is expected to fail and external evidence cannot waive it.\\
+Sequential/OpenMP & Race freedom and numerical policy & Direct
+naive+detector map primitive plus scan-farm seq/OMP cases & ThreadSanitizer clean;
+direct unique-map results exact after thread-local fix; scan-farm masks exact and
+each result compared to a higher-precision reference within
+\(\gamma_n\sum|a_i|\), or their pairwise difference bounded by
+\(2\gamma_n\sum|a_i|\), with
+\(\gamma_n=n\epsilon/(1-n\epsilon)\).\\
+Persisted FITS round trip & Products/WCS/metadata & Observation and coadd all
+arrays, with zero/non-finite support and mismatched WCS inputs & Pixel equations,
+extension inventory, cross-HDU WCS, BUNIT, estimator keyword, response status,
+provenance, and invalidity exact.\\
+Synthetic injections & Response & Constant, center/edge delta, array beam,
+resolved Gaussian, extended Fourier modes & Recovered amplitude/morphology match
+independently formed \(R\) to \(10^{-12}\) locally; edge attenuation equals the
+declared operator.\\
+Blank controls & Formal versus empirical covariance and false standardized
+signal & Independently recomputed finite-positive support mask plus 64
+fixed-seed realizations & Report per-pixel variance, spatial covariance,
+effective modes, \(|z|>5\), connected regions, and edge dependence.  A
+distributional pass is conditional on \code{SCI-NOI-001/002}: only under an
+approved i.i.d. Gaussian model with true precision \(q_p\) does
+\(R q_p\widehat V_p\sim\chi^2_{R-1}\) for the current
+\(R^{-1}\sum_r(x_r-\bar x)^2\) estimator.  No binomial tail gate is authorized
+without a declared null tail probability and independent-trial model.\\
+Same-SHA Unity & External build/run and product boundary & Request
+\code{SCI-MAP-001-UNITY-001}, point 152389 and science 152390+152392, naive
+seq/OMP, all arrays, observation/coadd, variable coverage & Clean exact source
+SHA, exact configs/digests, no required skips, zero unexpected error/critical/
+fatal records, exact inventory and support masks; numeric seq/OMP comparison
+uses \(\mathrm{atol}=2\times10^{-8}\),
+\(\mathrm{rtol}=10^{-10}\) only as an established regression bound, not as
+scientific truth.\\
+Astronomical recovery & Independent amplitude, shape, unit, and astrometric check &
+N/A for acceptance at this audit: no traceable independent reference catalog,
+shape model, calibration, or uncertainty was supplied & Point 152389 and the
+science pair may be returned descriptively, but no recovered quantity is a
+pass gate.  \code{SCI-CAL-001} and \code{SCI-AST-001} must supply the reference,
+metric, and tolerance; N/A does not waive deterministic response or exact WCS
+identity tests.\\
+\bottomrule
+\end{longtable}
+
+Current local evidence consists of the frozen analytic derivation, exact source
+trace, successful TeX compile/render QA, and the bounded cross-audit evidence in
+Section~\ref{sec:cross-audit-validity}.  That evidence supplies one exact raw
+regression comparison and a downstream guard-band manifestation; it is not a
+local raw-validity truth test or the requested MAP external bundle.  The lone
+test invoking ordinary
+naive accumulation is a one-detector, unit-weight, sequential helper inside a
+fruit-loop recurrence test.  Coadd tests check plans, routing, resets,
+provenance, and call counts, but no test invokes the numerical accumulation
+helpers.  No test covers \code{coverage_mask_from_weight}, direct covariance,
+unequal weights, the detector-parallel primitive, same signal/noise support, or
+WCS/map-identity admission.  Existing focused tests do check the
+formal-standardized name/type/description, and the baseline product validator
+checks synthetic 1-by-1 FITS headers/structure with units/WCS without inspecting
+the numerical pixel value;
+there is no end-to-end pixel-equation, cross-HDU-WCS, validity, or numerical
+round trip.  Historical reductions and the b294802 comparison are different-SHA
+regression evidence, not this contract.  No complete
+\code{SCI-MAP-001-UNITY-001} artifact was supplied.
+
+\section{Findings by controlled class}
+
+Eleven findings remain open; F009/F010 are
+\code{addressed_pending_reaudit}.  ``Observed'' means directly present in source or
+artifacts; ``derived'' means the consequence follows from the displayed
+operator.  P0 follows the framework definition of correctness,
+data-corruption, or invalid-success risk; it is not a claim about observed
+astronomical harm in an accepted run.
+
+\subsection{Implementation defects}
+
+\begin{longtable}{L{0.20\linewidth}L{0.06\linewidth}L{0.15\linewidth}L{0.49\linewidth}}
+\toprule
+ID & Pri. & Basis/conf. & Finding, owner, and closure gate\\
+\midrule
+\endfirsthead
+\toprule
+ID & Pri. & Basis/conf. & Finding, owner, and closure gate\\
+\midrule
+\endhead
+\code{SCI-MAP-001-F001} & P0 & observed + derived; high &
+\textbf{Detector-parallel naive data races.}  Shared scalars captured by
+reference can mix pixel, signal, kernel, and noise across detectors.  The
+eligibility scalar also races, but all supported nonpolarized Stokes-I
+detectors write true; its differing-value effect is latent in the excluded
+polarization branch and is not claimed as current Stokes-I harm.  Owner:
+mapmaking implementation.  Gate: repair in a separate
+branch; direct deterministic sequential/OMP equality for the supported
+naive+detector profile; ThreadSanitizer clean; fresh exact-SHA re-audit.\\
+\code{SCI-MAP-001-F002} & P0 & observed + derived; high &
+\textbf{Persisted validity/support is invalid in allowed states.}
+The exact predicate \(\neg(w<t)\) marks zero-weight pixels valid at the default
+\(t=0\), while NaN and positive infinity also select valid; exposure is erased
+by a separate support floor.  The cross-audit guard-band result demonstrates
+the downstream cost of lacking an authoritative raw-valid handoff, but does not
+prove that this predicate caused the reported pixel or that raw bytes regressed.
+Owner: map/product implementation.  Gate: implement the approved distinct
+exposure/support/science-validity definitions and finite-positive selection;
+pass zero/negative/NaN/infinity and positive-threshold FITS round trips;
+re-audit direct consumers in their owning packages.\\
+\code{SCI-MAP-001-F003} & P0 & observed + derived; high &
+\textbf{Coadd WCS and map identity are not admitted fail-closed.}  Shape-centered
+slot accumulation can silently mix different source centers or map identities;
+the last observation can determine output WCS/labels.  Owner: coadd
+implementation.  Gate: immutable full-precision common identity/WCS admission
+with only centered integer embedding \(J\), rejection before mutation,
+mismatched-order/center/odd-offset fixtures, all-array two-observation proof,
+and re-audit.\\
+\code{SCI-MAP-001-F004} & P0 & observed + derived; high &
+\textbf{Naive coadd noise/product handling does not realize one publishable
+signal operator.}  Noise enters the coadd before the per-observation support
+floor; signal and weight enter after it.  Moreover, naive+coadd suppresses the
+observation noise cube, so requesting empirical products leaves required
+formal-weight/noise-variance slots empty and raw observation output throws
+before coadd accumulation.  Owner: map/noise boundary implementation.  Gate:
+one accepted realized \(B\) for signal/kernel/noise, without a new estimator;
+a supported publishable product policy; the two-observation masked
+fixture and empirical covariance tests; then \code{SCI-NOI-001/002} and a fresh
+re-audit must accept the boundary.\\
+\code{SCI-MAP-001-F005} & P0 & observed + derived; high &
+\textbf{Non-finite projection/kernel/coadd inputs can poison supported output.}
+Coordinates are rounded without finite checks; kernel values are accumulated
+without finite/shape checks; multiplication masking does not sanitize NaN; and
+coadd has no explicit valid-set selection.  Owner: mapmaking implementation.
+Gate: enforce the approved finite input contract at primitive and high-level
+boundaries, reject bad identity/rate/index state, and pass exhaustive finite
+fixtures plus required-output error assertions.\\
+\bottomrule
+\end{longtable}
+
+\subsection{Contract gaps}
+
+\begin{longtable}{L{0.20\linewidth}L{0.06\linewidth}L{0.15\linewidth}L{0.49\linewidth}}
+\toprule
+ID & Pri. & Basis/conf. & Finding, owner, and closure gate\\
+\midrule
+\endfirsthead
+\toprule
+ID & Pri. & Basis/conf. & Finding, owner, and closure gate\\
+\midrule
+\endhead
+\code{SCI-MAP-001-F006} & P1 & observed + derived; high &
+\textbf{Formal-weight and covariance claims are overclaimed.}  Naive stores
+\(D=\sum w\), including supported constant-weight mode, but metadata always
+assigns inverse-squared signal units and inverse-variance meaning;
+\code{weight_I} may also be one globally empirical-scaled version while
+\code{weight_formal_I} is only a conditional snapshot.  No
+cross-pixel/cross-observation covariance or explicit unavailable state exists.
+Owner: scientific owner with PTC/NOI owners.  Gate: apply the approved
+nonprecision-default and conditional weight/covariance types; align
+BUNIT/TYPE/description; pass direct \(AC_nA^T\), coadd, and consumer tests.\\
+\code{SCI-MAP-001-F007} & P1 & observed + derived; high &
+\textbf{Response, hits, exposure, support, and product metadata are incomplete.}
+Kernel is a tracer without operator/template identity; coverage is
+positive-weight detector-seconds but called integration time; hits are absent;
+normalization support and persisted coverage mask use different thresholds;
+raw science validity, retained low-confidence support, and operator-local
+computability are not separate persisted facts;
+detector grouping omits coverage, persisted support, and standardized/SNR
+planes without a bundle-level absence declaration; the registry calls
+\code{ESTTYPE} authoritative while code writes \code{TYPE}.
+Owner: scientific/product owner.  Gate: version and persist the approved
+complete bundle, including dedicated support and validity products; make
+absence explicit, align registry/writer, and pass injection plus FITS
+round-trip gates.\\
+\code{SCI-MAP-001-F008} & P1 & observed, high &
+\textbf{Requested/effective/observation-resolved/realized provenance cannot
+reproduce the estimator.}  Mapmaking provenance lists processed observation
+numbers and logical cardinality, but coadd provenance has no observation-level
+membership collection.  Neither records the compatibility decision,
+per-pixel contributors/coadd coefficients, map identity/WCS, registration,
+weights/covariance, response, both derived support thresholds and their
+algorithm/comparison/stage identity, science-valid policy, non-finite policy,
+raw-parent product digest, centering/null modes, or physical product inventory.
+Owner: map/coadd lifecycle with
+\texttt{ENG-STATE-001}.  Gate: versioned one-way state carrying every listed
+fact, fail-closed physical cardinality, exact serialization tests, and same-SHA
+returned sidecars.\\
+\bottomrule
+\end{longtable}
+
+\subsection{Scientific-policy decisions addressed pending re-audit}
+
+\begin{longtable}{L{0.20\linewidth}L{0.06\linewidth}L{0.15\linewidth}L{0.49\linewidth}}
+\toprule
+ID & Pri. & Basis/conf. & Decision, owner, and closure gate\\
+\midrule
+\endfirsthead
+\toprule
+ID & Pri. & Basis/conf. & Decision, owner, and closure gate\\
+\midrule
+\endhead
+\code{SCI-MAP-001-F009} & P1 & owner decision, high &
+\textbf{Addressed pending re-audit.}  The owner adopted strict pre-mutation
+identity/unit/response/full-precision-WCS admission; only centered integer
+common-grid embedding \(J_o\); signal centering \(L_o=I\); the normalized mean
+with nonprecision gridding coefficients; explicit invalid-pixel exclusion; and
+required failure for unexpected non-finite valid inputs.  Precision remains
+conditional on \code{SCI-PTC-001}; correlated GLS, general registration, and
+coadd significance are deferred/prohibited.  Owner: scientific owner.
+Remaining gate: implement atomically on a separate repair branch; pass
+identity/WCS/finite/unequal-coefficient/no-centering and unchanged-compatible-
+control fixtures; fresh exact-SHA re-audit.\\
+\code{SCI-MAP-001-F010} & P1 & owner decision, high &
+\textbf{Addressed pending re-audit.}  The owner adopted distinct persisted
+geometric hits, contributing hits, coadd-observation count, upstream-eligible
+and retained exposure, normalization and science-policy support, and
+authoritative science validity.  Validity requires both supports, finite
+signal/required companions, and admitted identity.  Threshold algorithms and
+full-precision realized provenance remain separate; \code{coverage_I} is only
+a retained-exposure compatibility alias; \code{coverage_bool_I} is deprecated
+as validity authority; downstream raw validity stays separate from local
+computability.  Owner: scientific/product owner with \code{SCI-VAL-001}.
+Remaining gate: implement/version products, units, aliases, provenance,
+edge/non-finite behavior, and consumer interface; pass exact reconstruction
+and round-trip fixtures; fresh exact-SHA re-audit.\\
+\bottomrule
+\end{longtable}
+
+\subsection{Evidence gaps}
+
+\begin{longtable}{L{0.20\linewidth}L{0.06\linewidth}L{0.15\linewidth}L{0.49\linewidth}}
+\toprule
+ID & Pri. & Basis/conf. & Gap, owner, and closure gate\\
+\midrule
+\endfirsthead
+\toprule
+ID & Pri. & Basis/conf. & Gap, owner, and closure gate\\
+\midrule
+\endhead
+\code{SCI-MAP-001-F011} & P1 & observed, high &
+\textbf{Required local operator evidence is absent.}  No focused naive/coadd
+truth suite covers unequal weights, covariance, finite policy, support,
+registration, numerical coadd, direct parallel primitive, injections, or an
+end-to-end persisted pixel/equation/cross-HDU-WCS/validity and mask-provenance
+round trip.  Existing
+metadata-name and structure-only tests do not close that gap.  Owner: validation
+implementer.  Gate: every
+non-N/A local row in the validation matrix passes at an exact successor SHA,
+with no required-data skips and zero unexpected errors.\\
+\code{SCI-MAP-001-F012} & P1 & observed, high &
+\textbf{MAP-specific same-SHA external evidence is unsupplied.}  No clean governing/successor
+Unity point+science, all-array, variable-coverage, observation/coadd,
+blank/covariance, metadata/provenance, or astronomical bundle was returned.
+The b294802 Point raw equality is one different-SHA, incomplete-identity
+regression datum and does not satisfy this request.
+Owner: Grant/external evidence owner.  Gate: return and audit complete request
+\code{SCI-MAP-001-UNITY-001}; after any code repair issue a new request for the
+new exact SHA.  External output cannot close F001--F005 by plausibility.\\
+\bottomrule
+\end{longtable}
+
+\subsection{Dependency gap}
+
+\begin{longtable}{L{0.20\linewidth}L{0.06\linewidth}L{0.15\linewidth}L{0.49\linewidth}}
+\toprule
+ID & Pri. & Basis/conf. & Gap, owner, and closure gate\\
+\midrule
+\endfirsthead
+\toprule
+ID & Pri. & Basis/conf. & Gap, owner, and closure gate\\
+\midrule
+\endhead
+\code{SCI-MAP-001-F013} & P1 & observed, high &
+\textbf{Four upstream facts remain open.}  \code{SCI-CAL-001},
+\code{SCI-AST-001}, \code{SCI-PTC-001}, and \code{SCI-VAL-001} have not
+approved the exact calibration/unit/response, projection/WCS, covariance/weight,
+and eligibility/validity facts on which this contract conditions.  Owner: audit
+coordinator and upstream scientific owners.  Gate: audit each dependency,
+execute its falsifiable interface test below, propagate its restrictions, and
+re-audit every dependent map/coadd conclusion.\\
+\bottomrule
+\end{longtable}
+
+\section{Dependency records}
+
+\begin{longtable}{L{0.14\linewidth}L{0.28\linewidth}L{0.12\linewidth}L{0.19\linewidth}L{0.18\linewidth}}
+\toprule
+Package & Exact assumed fact & Status & Falsifiable interface test & Restriction while open\\
+\midrule
+\endfirsthead
+\toprule
+Package & Exact assumed fact & Status & Falsifiable interface test & Restriction while open\\
+\midrule
+\endhead
+\code{SCI-CAL-001} & \(d\) has the named unit, multiplicative response and
+beam/photometric identity; calibration uncertainty terms are supplied. &
+conditioned & Apply known scale/unit conversions and injected template; map and
+kernel scale exactly while weight transforms inversely squared only for a true
+precision; propagate calibration covariance. & Amplitude, units, photometry,
+kernel response, and calibration covariance are conditional; absolute claims
+fail closed.\\
+\code{SCI-AST-001} & \(P\), coordinate frame, index convention, WCS,
+pointing correction, and uncertainty are correct for every sample and
+observation. & conditioned & Known tangent samples including half-pixel,
+boundary, non-finite, source-center mismatch, and two-observation registration;
+compare pixel/WCS and astrometric response. & Spatial response, coadd
+registration, source position, and astrometric covariance are conditional.\\
+\code{SCI-PTC-001} & Selected \(W\) is identified as gridding coefficient or
+inverse covariance, with normalization and retained temporal/detector/cross-observation
+correlations. & conditioned & Independent diagonal noise with known
+\(\sigma^{-2}\), constant weights, and correlated small matrices; compare
+\(D\), \(AC_nA^T\), and coadd GLS. & Formal inverse variance, significance,
+precision coadd, and covariance-dependent consumers fail closed.\\
+\code{SCI-VAL-001} & Detector/sample flags, replacements, finite policy,
+zero/negative weights, map identity, and missing-data meaning entering \(M\)
+are authoritative. & conditioned & Toggle one state at a time, including
+non-finite projection/kernel and zero support; assert contributions, hits,
+exposure, support, validity, and structured rejection. & No pixel, map,
+observation, coadd, or feedback bundle is newly authorized as valid.\\
+\bottomrule
+\end{longtable}
+
+\section{Verdict and production disposition}
+
+\begin{description}[style=nextline]
+\item[Contract status] \texttt{approved}.  The independent bytes remain frozen;
+on 2026-07-31 the project owner accepted the \texttt{amend} verdict and adopted
+the bounded F009/F010 specializations in Section~\ref{sec:owner-decisions}.
+Approval does not imply implementation conformance, completed evidence, or
+production expansion.
+\item[Implementation status] \texttt{nonconformant} at
+\AuditGoverningSHA, due to F001--F005.  This status is independent of
+whether an accepted production profile happens not to activate every path.
+\item[Validation status] \code{in_progress}.  Analytic derivation and source
+trace exist, but required local gates and the external request are both open;
+therefore \code{external_pending} would be too strong.
+\item[Production status] \code{existing_use_only}.  Preserve previously
+accepted operational behavior only under the four active Phase~4 profiles named
+below; this audit does not silently revoke them or approve expansion.
+\item[Verdict] \texttt{amend}.  Preserve \AuditPackageID{} as one coherent
+package; make bounded implementation, contract, metadata, lifecycle, and
+evidence corrections.  No numerical-algorithm broadening is authorized.
+\item[Allowed consumers] {\raggedright Uses already accepted under
+\code{phase4-point-152389-v1}, \code{phase4-oof-152385-152387-v1},
+\code{phase4-science-152390-152392-v1}, or
+\code{phase4-beammap-148670-v1}; descriptive map inspection; and
+formal-standardized amplitude only under its explicit label and known
+conditional weight semantics.\par}
+\item[Restricted consumers] Noise, JINC shared vocabulary, filtering, sources,
+Pointing/OOF, Beammap, diagnostics, and fruit loops remain restricted exactly as
+listed in the consumer matrix.
+\item[Fail-closed uses] Naive detector+OMP; any coadd without strict admitted
+identity/unit/response/full-precision WCS and centered integer embedding;
+general reprojection/interpolation, implicit coadd signal centering, or GLS;
+raw \code{coverage_bool_I}, \code{weight_I}, or
+\code{coverage_I} alone as authoritative science validity; naive-coadd noise
+for empirical calibration; naive+coadd with empirical products as a successful
+publishable bundle; new inverse-variance/significance/full-covariance claims;
+filtered \code{coverage_bool_I} or numerical support as scientific confidence;
+direct finite-realization filtered pixelwise S/N as calibrated significance or
+eligibility; integration/production use of the b294802 candidate; new response-corrected
+photometry/astrometry; or fruit-loop eligibility, amplitude, confidence,
+support, or gain from those filtered products.
+\item[Repair and re-audit trigger] F009/F010 policy choices are resolved and
+recorded as \code{addressed_pending_reaudit}.  A separate repair branch may
+address only the accepted bounded changes in the dated handoff; this audit
+branch remains documentation-only.  A fresh auditor then assesses the exact
+repair SHA, all F001--F013 gates, dependencies, and returned same-SHA evidence.
+\code{re_audit_status=required}; no repair or re-audit is yet in progress.
+\end{description}
+
+\section{Machine-readable ledger proposal}
+
+This is a merge/status patch keyed by package \code{id}; it does not replace the
+canonical record and does not modify the ledger on this branch.  The coordinator
+must preserve every unlisted canonical field byte-for-byte, specifically
+\code{name}, \code{tier}, \code{queue_wave}, \code{scientific_scope},
+\code{known_code_areas}, \code{inputs}, \code{outputs}, the complete structured
+\code{upstream_dependencies}, and \code{downstream_consumers}.  The final audit
+commit and artifact digest are necessarily returned alongside these bytes rather
+than self-embedded, so the coordinator substitutes the two marked values exactly.
+
+\begin{small}
+\begin{verbatim}
+- id: SCI-MAP-001
+  governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+  audit_branch: codex/audit-sci-map-001
+  audit_commit: COORDINATOR_SET_FROM_RETURNED_FINAL_AUDIT_COMMIT
+  audit_parent_sha: 681aeec99c4d1c4762ecb8c4dae63c8599638678
+  audit_artifact_at_commit: >-
+    doc/audits/packages/SCI-MAP-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+  final_audit_artifact_sha256: >-
+    COORDINATOR_SET_FROM_RETURNED_FINAL_ARTIFACT_SHA256
+  initial_final_audit:
+    commit: 0cfdba5ed08c0ad6c491afcd56972a31d68cfabf
+    artifact_sha256: >-
+      6a3703a1f86be060c034f5867c136d824a11a18a4fc59bf107270a393f7116f3
+  raw_validity_amendment:
+    commit: 681aeec99c4d1c4762ecb8c4dae63c8599638678
+    artifact_sha256: >-
+      7d133f52f517a2262eeebca8fe62f7a6fbc3ed52096870220cdb84bdaf33cb44
+  independent_derivation:
+    status: independent_draft_frozen
+    path: doc/audits/packages/SCI-MAP-001_INDEPENDENT_CORE.tex
+    sha256: 13dd5922bd492e381afcc3b015284216dde1ccc2199ece3d070ee577c7324381
+    freeze_commit: c28f18ed089657dae278caba2d6d6d65c7ec72f4
+    freeze_timestamp_utc: 2026-07-31T17:38:43Z
+    first_source_inspection_utc: 2026-07-31T17:39:22Z
+  contract_status: approved
+  implementation_status: nonconformant
+  validation_status: in_progress
+  production_status: existing_use_only
+  verdict: amend
+  contract_approval:
+    authority: project_owner
+    date: 2026-07-31
+    scope: bounded_F009_F010_specialization
+    effect: >-
+      Approves the centered-integer nonprecision coadd and explicit raw-validity
+      successor contract; does not approve the governing implementation,
+      complete validation, production expansion, or a precision claim.
+  repair_handoff:
+    authorization: bounded_proposal_only_no_audit_branch_repair
+    path: >-
+      doc/audits/packages/SCI-MAP-001_BOUNDED_REPAIR_REAUDIT_HANDOFF_2026-07-31.md
+  implementation_assessment:
+    governing_source: nonconformant
+    existing_profile_note: >-
+      Preserve only previously accepted operational use under the four named
+      active Phase 4 profiles; that does not make the audited implementation
+      conformant or authorize expansion.
+  open_findings:
+    - id: SCI-MAP-001-F001
+      class: implementation_defect
+      severity: P0
+      evidence_basis: observed
+      confidence: high
+      status: open
+      owner: mapmaking_implementation
+      summary: >-
+        Detector-parallel naive accumulation races shared pixel, signal,
+        kernel, and noise scalars.
+      closure_gate: >-
+        Repair separately; pass deterministic supported-profile seq/OMP
+        equality, ThreadSanitizer, and an exact-successor-SHA re-audit.
+    - id: SCI-MAP-001-F002
+      class: implementation_defect
+      severity: P0
+      evidence_basis: observed
+      confidence: high
+      status: open
+      owner: map_product_implementation
+      summary: >-
+        Persisted coverage_bool validity admits zero and non-finite weight in
+        allowed states, differs from normalization support, and is not a
+        complete raw science-validity product.
+      closure_gate: >-
+        Implement the approved distinct exposure/support/science-validity
+        semantics and finite-positive selection; pass threshold/non-finite FITS
+        round trips plus consumer re-audit in owning packages.
+    - id: SCI-MAP-001-F003
+      class: implementation_defect
+      severity: P0
+      evidence_basis: observed
+      confidence: high
+      status: open
+      owner: coadd_implementation
+      summary: >-
+        Coadd does not admit common WCS and map identity before mutation and can
+        label output from the last observation.
+      closure_gate: >-
+        Implement immutable full-precision identity/WCS admission with only
+        centered integer embedding, reject before mutation, pass
+        mismatch/all-array fixtures, and re-audit.
+    - id: SCI-MAP-001-F004
+      class: implementation_defect
+      severity: P0
+      evidence_basis: derived
+      confidence: high
+      status: open
+      owner: map_noise_boundary_implementation
+      summary: >-
+        Naive coadd signal and noise do not realize one support operator, and
+        empirical-product publication can fail before coadd accumulation.
+      closure_gate: >-
+        Realize one approved signal/kernel/noise operator and publishable
+        product policy; pass masked two-observation and covariance tests; close
+        NOI boundary review and re-audit.
+    - id: SCI-MAP-001-F005
+      class: implementation_defect
+      severity: P0
+      evidence_basis: observed
+      confidence: high
+      status: open
+      owner: mapmaking_implementation
+      summary: >-
+        Non-finite coordinates, kernels, multiplicative masks, and coadd inputs
+        can poison supported output.
+      closure_gate: >-
+        Enforce the approved finite input contract at primitive and high-level
+        boundaries and pass exhaustive finite-state and required-failure tests.
+    - id: SCI-MAP-001-F006
+      class: contract_gap
+      severity: P1
+      evidence_basis: derived
+      confidence: high
+      status: open
+      owner: scientific_owner
+      summary: >-
+        Formal and optionally globally empirical-scaled gridding weights are
+        described as inverse variance without approved PTC/NOI covariance
+        claims.
+      closure_gate: >-
+        Apply the approved nonprecision-default and conditional
+        weight/covariance types, align metadata, and pass direct
+        propagated-covariance, coadd, and consumer tests.
+    - id: SCI-MAP-001-F007
+      class: contract_gap
+      severity: P1
+      evidence_basis: observed
+      confidence: high
+      status: open
+      owner: scientific_product_owner
+      summary: >-
+        Response, hits, exposure, retained support, science validity,
+        operator-computability, grouping absences, and estimator metadata are
+        incomplete or inconsistent.
+      closure_gate: >-
+        Version and persist the approved complete bundle with dedicated support
+        and validity products, make absences explicit, align registry and
+        writer, and pass injection plus FITS round-trip gates.
+    - id: SCI-MAP-001-F008
+      class: contract_gap
+      severity: P1
+      evidence_basis: observed
+      confidence: high
+      status: open
+      owner: map_coadd_lifecycle_owner
+      summary: >-
+        Requested/effective/observation-resolved/realized provenance cannot
+        reproduce map/coadd admission, coefficients, identity, exact support
+        algorithms/thresholds/comparisons, raw parents, or products.
+      closure_gate: >-
+        Add versioned one-way lifecycle state for every named fact, enforce
+        physical cardinality, pass exact serialization, and return same-SHA
+        sidecars.
+    - id: SCI-MAP-001-F011
+      class: evidence_gap
+      severity: P1
+      evidence_basis: observed
+      confidence: high
+      status: open
+      owner: validation_implementer
+      summary: >-
+        Required local estimator, covariance, finite-policy, registration,
+        parallel, injection, persisted-pixel, and raw-validity reconstruction
+        truth tests are absent.
+      closure_gate: >-
+        Pass every non-N/A local validation row at an exact successor SHA with
+        no required-data skip and zero unexpected serious record.
+    - id: SCI-MAP-001-F012
+      class: evidence_gap
+      severity: P1
+      evidence_basis: observed
+      confidence: high
+      status: open
+      owner: external_evidence_owner
+      summary: >-
+        MAP-specific clean same-SHA all-array Point/Science Unity evidence is
+        outstanding; the b294802 Point comparison does not satisfy it.
+      closure_gate: >-
+        Return and audit the complete SCI-MAP-001-UNITY-001 bundle; after any
+        repair, issue a new request for the new exact SHA.
+    - id: SCI-MAP-001-F013
+      class: dependency_gap
+      severity: P1
+      evidence_basis: observed
+      confidence: high
+      status: open
+      owner: audit_coordinator
+      dependencies: [SCI-CAL-001, SCI-AST-001, SCI-PTC-001, SCI-VAL-001]
+      summary: >-
+        Calibration/response, projection/WCS, covariance/weight, and
+        eligibility/validity input facts remain open.
+      closure_gate: >-
+        Audit each dependency, pass its named interface test, propagate its
+        restrictions, and re-audit every conditional map/coadd conclusion.
+  addressed_findings:
+    - id: SCI-MAP-001-F009
+      class: scientific_policy_decision
+      severity: P1
+      evidence_basis: owner_decision
+      confidence: high
+      status: addressed_pending_reaudit
+      owner: scientific_owner
+      decision_date: 2026-07-31
+      decision: >-
+        Adopt strict identity, unit, response, and full-precision WCS admission
+        before mutation with only the current centered integer common-grid
+        embedding. Set signal centering to identity; prohibit general
+        reprojection/interpolation. Retain the normalized weighted mean and
+        treat its weights as nonprecision gridding coefficients by default.
+        Precision requires SCI-PTC-001 independence/covariance proof;
+        correlated GLS is deferred. Exclude explicitly invalid pixels and fail
+        on unexpected non-finite valid inputs. Authorize no coadd precision or
+        significance claim while covariance is unresolved.
+      summary: >-
+        Coadd admission, registration, centering, estimator, coefficient,
+        finite-input, covariance, and consumer policy are owner-approved.
+      closure_gate: >-
+        Implement the decision atomically on a separate repair branch; pass
+        identity/WCS/response/unit, centered-embedding, invalid/non-finite,
+        unequal-coefficient, no-centering, unchanged-compatible-control, and
+        provenance fixtures; fresh exact-repair-SHA re-audit.
+    - id: SCI-MAP-001-F010
+      class: scientific_policy_decision
+      severity: P1
+      evidence_basis: owner_decision
+      confidence: high
+      status: addressed_pending_reaudit
+      owner: scientific_product_owner
+      decision_date: 2026-07-31
+      decision: >-
+        Persist and distinguish geometric hits, contributing hits, coadd
+        observation count, upstream-eligible exposure, retained exposure,
+        normalization support, science-policy support, and authoritative
+        science validity. Require numerical support, science-policy support,
+        finite signal and required companions, and admitted product identity
+        for validity. Keep normalization and science-policy thresholds separate
+        with versioned algorithms and full-precision realized provenance.
+        Retain coverage_I only as a retained-exposure compatibility alias;
+        deprecate coverage_bool_I as validity authority; require downstream
+        raw science validity to remain separate from operator-local support.
+      summary: >-
+        The exposure, hits, support, validity, alias, provenance, and downstream
+        separation hierarchy is owner-approved.
+      closure_gate: >-
+        Implement/version every product and exact absence rule, alias,
+        deprecation, companion/identity conjunction, threshold/provenance
+        field, and downstream interface; pass exact persisted reconstruction,
+        boundary, full-precision round-trip, and fresh re-audit gates.
+  unresolved_scientific_decisions: []
+  local_evidence:
+    - frozen independent core and exact SHA-256/commit/timestamps
+    - successful independent-core TeX compile and all-page render inspection
+    - exact governing-source/equation/product/consumer trace
+    - bounded hashed b294802 Point cross-audit characterization
+    - project-owner F009/F010 decision dated 2026-07-31
+    - bounded repair and re-audit handoff with no audit-branch repair
+  requested_unity_evidence:
+    - status: outstanding
+      request_id: SCI-MAP-001-UNITY-001
+      governing_source_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+      cases: [point-152389-products-seq, point-152389-products-omp,
+              science-152390-152392-coadd-seq,
+              science-152390-152392-coadd-omp,
+              science-152390-152392-empirical-seq,
+              science-152390-152392-empirical-omp,
+              science-152390-152392-coadd-products-expected-failure-seq]
+  supplied_external_evidence:
+    - id: SCI-MAP-001-XAUD-001
+      scope: downstream_cross_audit_characterization_only
+      source_package: SCI-FLT-001
+      source_candidate_sha: b294802a5e339f9ba5e0e323980cec3a4bd00249
+      fixture: point-152389
+      comparison_design: >-
+        One b294802 executable, filtering disabled for control and enabled for
+        candidate.
+      supplied_summary_sha256: >-
+        4bbfb3767e064de5a77e96c6177fd02f6b6adcec6c2bf1732b7115edcdac829b
+      strict_raw_comparison_transcript_sha256: >-
+        2e777a955c5127f1a1e4c6c5a0e025f424a38be8d16b8e0a803c5c76e95ed5dc
+      candidate_audit_transcript_sha256: >-
+        295016e96c15ddd0968f44c97b7cda32e171729bbd5e4b5034f3359914bf2b6d
+      control_audit_transcript_sha256: >-
+        b6ef7883c1cf7e504dc13f0eeccead84dc011519f8e7b7afd3642909c8de98ef
+      established:
+        - 15 common raw products, zero changed, zero skipped, no set difference
+        - fixed bounded convolution and squared-kernel propagation reproduce
+        - ten-realization N-1 variance and stored uncertainty/S/N reproduce
+        - direct empirical variance can collapse at a filtered support edge
+        - one a2000 guard-band pixel has direct S/N approximately -165.7
+        - eight of nine a2000 direct absolute-S/N-above-5 pixels are guard-band
+        - filtered coverage_bool mixes numerical support and science confidence
+      limitations:
+        - no immutable guard-band-analysis bundle or exact pixel identity
+        - run-audit identity was not a clean expected-mode/label gate
+        - does not satisfy SCI-MAP-001-UNITY-001
+        - does not validate the raw science-validity contract
+        - does not establish a raw-map defect or close any MAP finding
+        - does not authorize filtered products or candidate integration
+  cross_audit_handoffs:
+    NOI:
+      findings: [SCI-MAP-001-F002, SCI-MAP-001-F006, SCI-MAP-001-F007,
+                 SCI-MAP-001-F008, SCI-MAP-001-F010, SCI-MAP-001-F011]
+      requirement: >-
+        Use an approved raw-valid domain and prove weight, realization,
+        covariance, finite-sample, and calibration-domain meanings; no
+        regularization or variance-floor formula is selected by MAP.
+    FLT:
+      findings: [SCI-MAP-001-F002, SCI-MAP-001-F006, SCI-MAP-001-F007,
+                 SCI-MAP-001-F008, SCI-MAP-001-F010, SCI-MAP-001-F011]
+      requirement: >-
+        Identify the exact raw parent and keep raw science validity distinct
+        from filtered numerical support, response, covariance, and confidence.
+    FRUIT:
+      dependency_only: >-
+        Do not treat filtered support or unrestricted finite-realization
+        pixelwise S/N as feedback eligibility without accepted MAP, NOI, and
+        FLT contracts.
+  downstream_policy:
+    allowed_existing_profiles:
+      - phase4-point-152389-v1
+      - phase4-oof-152385-152387-v1
+      - phase4-science-152390-152392-v1
+      - phase4-beammap-148670-v1
+    allowed_uses:
+      - previously accepted operational behavior under those exact profiles
+      - descriptive map inspection
+      - formal-standardized amplitude only with explicit conditional semantics
+    fail_closed_uses:
+      - naive detector-grouped OpenMP mapmaking
+      - coadd without strict admitted identity, unit, response, and WCS
+      - coadd reprojection, interpolation, fractional registration, implicit
+        signal centering, or GLS
+      - raw coverage_bool_I, weight_I, or coverage_I alone as science validity
+      - naive-coadd noise for empirical calibration
+      - naive coadd plus empirical products as a successful published bundle
+      - new inverse-variance, significance, or full-covariance claims
+      - new response-corrected photometry or astrometry
+      - filtered coverage_bool_I or numerical support as science confidence
+      - direct finite-realization filtered pixelwise S/N as significance
+      - integration or production use of b294802
+      - fruit-loop eligibility, amplitude, confidence, support, or gain from
+        those filtered products
+  remediation_branch: null
+  remediation_commit: null
+  re_audit_status: required
+\end{verbatim}
+\end{small}
+
+The patch preserves the canonical sequence shape for
+\code{requested_unity_evidence}, supplies a summary and closure gate for every
+finding, records one scope-limited cross-audit characterization plus its
+downstream handoffs, and preserves the four-profile allowlist and fail-closed
+restrictions in \code{downstream_policy}.  It records owner approval, moves
+only F009/F010 from open to \code{addressed_pending_reaudit}, and leaves every
+other finding, canonical scope, upstream dependency, and owning-package
+boundary unchanged.  As a merge patch, it leaves all unlisted canonical fields
+intact; the coordinator must not apply it as a whole-record replacement.
+
+\appendix
+\section{Launch worktree and branch inventory}
+\label{app:worktrees}
+
+The following read-only launch census was taken before/while establishing the
+isolated branch.  ``No upstream'' means no configured tracking ref was reported;
+it does not mean the branch is unrelated to the repository graph.
+
+\begin{longtable}{L{0.49\linewidth}L{0.44\linewidth}}
+\toprule
+Worktree & Branch, exact HEAD, and state\\
+\midrule
+\endfirsthead
+\toprule
+Worktree & Branch, exact HEAD, and state\\
+\midrule
+\endhead
+\code{/Users/gwilson/GitHub/citlali} & Branch \code{gw_dev}; HEAD
+\gitsha{ffc6b907}{0f4744f9}{778f3db7}{1cdc4688}{46d1da89}; clean;
+upstream \code{origin/gw_dev}.\\
+\code{/private/tmp/citlali-audit-sci-map-001} & Branch
+\code{codex/audit-sci-map-001}; initial HEAD \AuditGoverningSHA; core-freeze
+HEAD \AuditCoreFreezeCommit; clean; no upstream.\\
+\code{/private/tmp/citlali-coherent-iq-sidecar-scaling} & Branch
+\code{codex/coherent-iq-sidecar-scaling}; HEAD
+\gitsha{41ff5d64}{1ebf1ad3}{8c12f131}{0f66c535}{6b62acc6}; clean; matching origin.\\
+\code{/private/tmp/citlali-convolve-contract-audit} & Branch
+\code{codex/convolve-contract-audit}; HEAD
+\gitsha{800e8ae4}{33f87d3f}{b7521fcb}{1a7fdf1d}{32532949}; clean; no upstream.\\
+\code{/private/tmp/citlali-convolve-contract-implementation} & Branch
+\code{codex/convolve-contract-implementation}; HEAD
+\gitsha{d6db8ba7}{3fd020db}{73d40f03}{b7dd6098}{b1250dc9}; untracked
+\code{tmp/}; matching origin.\\
+\code{/private/tmp/citlali-fruitloop-feedback-estimator} & Branch
+\code{codex/fruitloop-feedback-estimator}; HEAD \AuditGoverningSHA; 30
+modified, 4 untracked; no upstream; untouched.\\
+\code{/private/tmp/citlali-scientific-audit-framework} & Branch
+\code{codex/scientific-audit-framework}; HEAD
+\gitsha{7c13e436}{1ffd00ec}{75683c62}{ee7a435a}{5df97144}; clean; no upstream.\\
+\code{/private/tmp/citlali-unity-update-hardening} & Branch
+\code{codex/unity-update-hardening}; HEAD
+\gitsha{1919626c}{0ee006bd}{52bf546f}{9216512a}{71c9982a}; clean; no upstream.\\
+\code{/Users/gwilson/.codex/worktrees/4ec9/citlali-refactor} & Detached at
+\gitsha{0a4ae85d}{8c251a00}{a7d20264}{197928fe}{7b73819a}; one modified
+handoff; no upstream.\\
+\code{/Users/gwilson/GitHub/citlali-perf} & Branch
+\code{codex/perf-map-accumulation-noise-lifecycle}; HEAD
+\gitsha{d01ffa59}{81551345}{eeb1c765}{c2412520}{0b896847}; one untracked command
+file; matching origin.\\
+\code{/Users/gwilson/GitHub/citlali-refactor} & Branch
+\code{codex/convolve-noise-correction}; HEAD
+\gitsha{02a198cb}{fb379eaf}{6ab279c5}{a3d44ee7}{3ff90435}; clean; no upstream.\\
+\code{/Users/gwilson/GitHub/citlali-refactor-build} & Branch
+\code{codex/build-adaptation}; HEAD
+\gitsha{af65b887}{d35c9063}{fcb81507}{5360abd0}{7978c69c}; clean; matching origin.\\
+\bottomrule
+\end{longtable}
+
+The current audit worktree was created directly from the governing source
+stated above; the core-freeze commit has that source SHA as its sole parent.
+No merge, rebase, cherry-pick, push, network action, or Unity access occurred.
+
+\section{Exact outstanding Unity request}
+\label{app:unity-request}
+
+\subsection*{Request identity}
+
+\begin{longtable}{L{0.28\linewidth}L{0.64\linewidth}}
+\toprule
+Field & Required value\\
+\midrule
+Request ID & \code{SCI-MAP-001-UNITY-001}\\
+Package/audit identity & \code{SCI-MAP-001}; final audit commit and artifact
+SHA-256 returned with this document; core freeze
+\AuditCoreFreezeCommit.\\
+Governing/candidate source & \AuditGoverningSHA; no moving branch name.\\
+Permitted dirty state & \code{clean} only; reject the run if
+\code{git status --short} is nonempty.\\
+Version/build & Exact \code{citlali --version}; CMake preset
+\code{unity_release}, Release, target \code{citlali_cli}, 8 build jobs; hash
+both tracked preset files and return compiler, full CMake cache/options, and
+resolved kidscpp/tula source SHAs.  Conan identity is explicitly N/A: this exact
+source has neither \code{conanfile.py} nor \code{conan.lock}; its legacy CMake
+FetchContent/package resolution is the dependency authority.\\
+Execution identity & Copy the clean built executable once to the immutable
+request-local path named below, make every case select that path in its expert
+overlay, and verify its recorded SHA-256 inside each allocated job before
+starting \code{02_redu.sh}.  Return the installed TolPROJ executable/version,
+package/source identity, V2-kit manifest identity, and the exact native setup
+command transcripts produced by the fixed commands below.\\
+Runtime & Unity \code{toltec-cpu}; seq cases one CPU/thread; point OMP six
+CPUs/threads; science OMP sixteen CPUs/threads; return node, affinity,
+\code{OMP_*}, Slurm allocation, and peak memory.\\
+Evidence owner & Grant or a named human delegate.\\
+External status & Outstanding and unsupplied.  No item below is evidence until
+the returned immutable bundle is identity/completeness audited.\\
+\bottomrule
+\end{longtable}
+
+If remediation changes source, stop and issue a new request ID for the new full
+SHA.  The governing-SHA request can characterize current behavior but cannot
+close F001--F005.
+
+\subsection*{Exact configurations and observations}
+
+{\raggedright Grant shall create a fresh project directory for each case with
+the exact deployed TolPROJ \texttt{--refactor} duplicate/setup commands below
+and return their complete transcripts.  Point cases merge, in this exact order,
+\code{60_pointing_internal_policy.yaml}, \code{71_pointing_runtime.yaml},
+\code{72_pointing_observation.yaml}, \code{81_pointing_defaults.yaml},
+\code{82_pointing_products.yaml}, \code{90_pointing_advanced_overrides.yaml},
+ \code{99_pointing_expert_overrides.yaml}, and the TolPROJ-generated
+\code{99_zz_tolproj_submission_runtime.yaml}.  Science cases analogously merge
+\code{60_science_internal_policy.yaml}, \code{71_science_runtime.yaml},
+\code{72_science_observation.yaml}, \code{81_science_defaults.yaml},
+\code{82_science_products.yaml}, \code{90_science_advanced_overrides.yaml}, and
+\code{99_science_expert_overrides.yaml}, followed by that same generated
+submission overlay.  The overlay must select the case-local
+\code{.tolproj/citlali-launcher}; the launcher/source files and frozen snapshot
+are hashed below.  No ninth numbered source is permitted.\par}
+
+In each fresh directory, replace only that mode's initially empty
+\code{99_*_expert_overrides.yaml} with the case bytes below.  Before replacement,
+copy the original into the request bundle and record its SHA-256; then preserve
+the materialized bytes and SHA-256 too.  Before execution, record a case-specific
+ordered file manifest, every file SHA-256, the ordered merge report, canonical
+merged digest, generated low-level Citlali input digest, launcher/source bytes,
+and generated-script digest.  The six successful cases must additionally return
+and hash the runtime \code{citlali_merged_config.yaml}; S-X instead preserves the
+pre-run merge and expected absence of that success-only snapshot.  No
+interactive edit is permitted after hashing, and no case may reuse another
+case's project or output directory.
+
+\begin{longtable}{L{0.15\linewidth}L{0.27\linewidth}L{0.25\linewidth}L{0.24\linewidth}}
+\toprule
+Case & Observation/input & Required override & Purpose\\
+\midrule
+\endfirsthead
+\toprule
+Case & Observation/input & Required override & Purpose\\
+\midrule
+\endhead
+\code{P-SEQ} & Point 152389; matched APT/calibration; a1100/a1400/a2000 &
+jobkey \code{sci_map_001_point_seq}; naive; coadd off; coverage cut 0.1; noise
+64, fixed seed 5489, realizations/products on, empirical weight application off;
+filter/source finding/fruit loops off; seq, one thread, verbose & Observation
+map, finite/support/product and blank-region characterization.\\
+\code{P-OMP} & Exactly P-SEQ inputs & Same except jobkey
+\code{sci_map_001_point_omp}; OMP, six threads & Seq/OMP regression and
+external runtime evidence; does not exercise detector-grouped F001.\\
+\code{S-C-SEQ} & Science 152390 and 152392 in that order; exact matched APT,
+calibration, pointing support; all arrays/networks & jobkey
+\code{sci_map_001_science_coadd_seq}; naive; coadd on; coverage cut 0.5; noise
+64, fixed seed 5489, realizations on, empirical products off; filter/source
+finding/fruit loops off; seq, one thread, verbose & Successful observation and
+coadd maps plus coadd realizations; characterize same-operator and identity
+defects without triggering the known publication failure.\\
+\code{S-C-OMP} & Exactly S-C-SEQ inputs/order & Same except jobkey
+\code{sci_map_001_science_coadd_omp}; OMP, sixteen threads & Seq/OMP coadd
+regression and external runtime evidence.\\
+\code{S-E-SEQ} & Exactly S-C-SEQ inputs/order & jobkey
+\code{sci_map_001_science_empirical_seq}; naive; coadd off; coverage cut 0.5;
+noise 64, fixed seed 5489, realizations/products on, empirical weight application
+off; other exclusions unchanged; seq, one thread, verbose & Successful
+observation-resolved empirical products and variable-coverage characterization.\\
+\code{S-E-OMP} & Exactly S-E-SEQ inputs/order & Same except jobkey
+\code{sci_map_001_science_empirical_omp}; OMP, sixteen threads & Seq/OMP
+observation-product regression.\\
+\code{S-X-SEQ} & Exactly S-C-SEQ inputs/order & jobkey
+\code{sci_map_001_science_expected_failure}; naive; coadd on; coverage cut 0.5;
+noise 64, fixed seed 5489, realizations/products on, empirical weight application
+off; other exclusions unchanged; seq, one thread, verbose & Deliberate expected
+failure: require nonzero exit at the first raw observation publication, the exact
+missing formal-weight/noise-variance diagnostic, and no coadd product.\\
+\bottomrule
+\end{longtable}
+
+Required low-level overlay shape for each case is:
+
+\begin{small}
+\begin{verbatim}
+reduce:
+  jobkey: CASE_JOBKEY_FROM_TABLE
+  steps:
+    0:
+      path: /work/toltec/sci-map-001/bin/citlali
+      config:
+        low_level:
+          coadd: {enabled: CASE_COADD_FROM_TABLE}
+          mapmaking:
+            method: naive
+            coverage_cut: CASE_COVERAGE_CUT_FROM_TABLE
+          noise_maps:
+            enabled: true
+            n_noise_maps: 64
+            randomize_dets: false
+            write_realizations: true
+            products:
+              enabled: CASE_PRODUCTS_FROM_TABLE
+              apply_empirical_weights: false
+          post_processing:
+            map_filtering: {enabled: false}
+            source_finding: {enabled: false}
+          runtime:
+            n_threads: CASE_THREADS_FROM_TABLE
+            parallel_policy: CASE_POLICY_FROM_TABLE
+            verbose: true
+          timestream:
+            fruit_loops: {enabled: false}
+\end{verbatim}
+\end{small}
+
+The uppercase tokens have exactly the case substitutions in the table and no
+others, with this lexical normalization: \code{CASE_POLICY_FROM_TABLE} is the
+lowercase parser token \code{seq} or \code{omp}; Boolean substitutions are the
+lowercase YAML scalars \code{true} or \code{false}; threads and coverage cuts are
+the displayed decimal numerals.  The uppercase \code{OMP} labels in the case
+table are display labels, not parser tokens.  Grant returns the materialized
+bytes, not this parameterized display.
+If an installed kit rejects a leaf or the observations lack any required
+array/network/APT/calibration/pointing input, stop and report a gap; do not
+silently delete the leaf or subset the data.
+
+\subsection*{Noise, blanks, injections, and astronomical checks}
+
+All seven cases request Citlali's fixed \code{boost::random::mt19937} seed 5489
+and 64 realizations, with detector randomization disabled.  The six successful
+cases must return realized noise provenance and prove whether masks/weights are
+fixed or realization-dependent.  S-X instead returns pre-run configuration,
+binary/job identity, the complete failure log, and its partial inventory.  It
+must return and classify any early runtime/raw-timestream sidecars, while the
+end-of-success config-source, mapmaking, coadd, noise, and post-processing
+completion sidecars must be absent after the expected early throw.  These
+sign randomizations condition on the observed signal, preprocessing, and
+selected weights and cannot by themselves measure calibration, pointing,
+atmosphere, or arbitrary coherent systematics.
+
+For each P and S-E observation map/noise pair and each S-C coadd map/noise pair,
+freeze before viewing results the independently recomputed background mask
+\(B_p={\bf1}[m_p,q_p,x_p\ \text{finite}]
+{\bf1}[q_p>0]{\bf1}[x_p>0]{\bf1}[d_{\rm edge}\ge5\ \text{pixels}]
+{\bf1}[d_{\rm target}\ge5\,\mathrm{FWHM}_a]\).  The target is the configured
+map center and \(\mathrm{FWHM}_a\) is the exact pre-run array FWHM from the
+hashed input.  This mask never consumes \code{coverage_bool_I}; compare that
+persisted plane against the two exact predicates below as a separate tested
+product.  Report full covariance/correlation and the characterization-only
+participation ratio \(N_{\rm eff}=(\operatorname{tr}C_B)^2/
+\operatorname{tr}(C_B^2)\), not only RMS.  Because residual sky and the
+Rademacher scan-sign distribution are not approved null models, these are
+descriptive controls with no distributional pass/fail claim.
+
+The audit analysis has the following exact numerical convention.  Use
+\code{weight_formal_I} for \(q\) when present and otherwise \code{weight_I}; use
+\code{coverage_I} for \(x\), and require equality of the two weight planes in
+these no-empirical-application cases when both exist.  Define
+\(F={\bf1}[m,q,x\text{ finite}]{\bf1}[q>0]{\bf1}[x>0]\).  Pad \(F\) by one false
+pixel; \(d_{\rm edge}\) is the Euclidean pixel-centre distance to the nearest
+false pixel in that padded mask.  For Point/AltAz maps, the target distance is
+the Euclidean angular distance in the declared tangent-plane axes after
+converting their units consistently; for Science/J2000 maps it is great-circle
+separation in the declared celestial WCS.  Both use origin-zero pixel centres
+and the configured map centre.  Thus \(B=F\cap\{d_{\rm edge}\ge5\}\cap
+\{d_{\rm target}\ge5\mathrm{FWHM}_a\}\), with no persisted mask input.
+Read \(t=\mathrm{WTTHRESH}\) from the matching \code{coverage_bool_I} HDU and
+require it finite and nonnegative.  Interpret that plane as true exactly when
+its finite stored value is nonzero.  First require bitwise Boolean equality to
+the current-byte identity \(H_{\rm current}=\neg(q<t)\), using IEEE comparison
+semantics.  Separately return its full confusion table against the intended
+weight-support predicate
+\(H_{\rm intended}={\bf1}[q\text{ finite}]{\bf1}[q>0]{\bf1}[q\ge t]\),
+including zero, NaN, and both infinities.  The signal/exposure intersection
+\(F\) remains solely the independently recomputed blank-analysis domain.
+Neither \(F\) nor \(H_{\rm intended}\) is silently promoted to approved
+Equation~\eqref{eq:audit-validity} science validity; they are diagnostics that
+characterize the governing implementation and the reconstruction evidence
+needed to verify the addressed F010 decision after repair.
+
+For each P and S-E observation map/noise pair and each S-C coadd map/noise pair,
+first treat every origin-zero C-order image pixel \(p\in\Omega\).  If all 64
+realization values \(y_{rp}\) are finite, define
+\(\bar y_p=64^{-1}\sum_r y_{rp}\) and the population second moment
+\(\widehat V_p=64^{-1}\sum_r(y_{rp}-\bar y_p)^2\).  Otherwise
+\(\widehat V_p\) is undefined: return the complete realization/non-finite mask,
+require the persisted variance to have the identical non-finite support where
+one exists, and never drop or zero-fill an entry.  This full-image
+\(\widehat V\), not a blank-region restriction, is the product-identity
+authority below.
+
+Require \(K=|B|>0\), or classify that Unity case as an evidence gap, and form
+\(Y_B\in\mathbb R^{64\times K}\): realization number is the row and the frozen
+\(B\)-pixel list is the column.  Every entry must be finite.  Return that list
+and \(Y_{B,c}=Y_B-\operatorname{mean}_{r}Y_B\) as a lossless float64 covariance
+factor, with \(C_B=Y_{B,c}^{\mathsf T}Y_{B,c}/64\) and require
+\(\operatorname{diag}C_B=\widehat V|_B\).  Obtain the correlation factor by
+column scaling with \((\widehat V|_B)^{-1/2}\); list zero-variance columns where
+correlation is undefined.  Compute \(N_{\rm eff}\) from these exact factors,
+not a cropped or randomly sampled covariance.  Return raw per-pixel
+\(q\widehat V\), \(z_{\rm formal}=m\sqrt q\), and, where
+\(\widehat V>0\), \(z_{\rm empirical}=m/\sqrt{\widehat V}\).  For each \(z\)
+identity separately, threshold \(|z|>5\) on \(B\), use eight-neighbour
+connectivity, and return pixel count/rate plus every component's size, peak,
+and bounding box.  Edge tables use
+\(F\cap\{d_{\rm target}\ge5\mathrm{FWHM}_a\}\) and bins
+\([0,2),[2,5),[5,10),[10,20),[20,40),[40,\infty)\) pixels, returning
+eligible count, exceedance count/rate, and component count for both \(z\)
+identities.  No program may substitute a scalar RMS for these arrays.
+
+The same program must close the persisted pixel identities, not merely
+inventory their HDUs.  In P/S-E require the full \code{noise_variance_I} plane
+to equal the defined full-image \(\widehat V\), with identical non-finite
+support elsewhere; require \code{weight_I} to equal \code{weight_formal_I}, and
+\code{sig2noise_I} to equal \code{sig2noise_pixel_I}.  From the weight-HDU
+header require finite-positive \code{WVARMED} and \code{EMP_SCALE}, reciprocal
+consistency, and independently recompute \code{WVARMED} as the ordinary median
+of \(q_p\widehat V_p\) over finite \(q_p>0\), \(\widehat V_p>0\), and
+\(q_p\ge t\), taking \(t=\mathrm{WTTHRESH}\) from the matching
+\code{coverage_bool_I} HDU.  Each
+persisted S/N alias must equal
+\(m_p\sqrt{q_p\,\mathrm{EMP\_SCALE}}\); \(m_p/\sqrt{\widehat V_p}\) remains a
+separately labelled audit diagnostic and is not misidentified as either
+persisted alias.  In S-C require
+\code{formal_standardized_signal_I}=\(m_p\sqrt{q_p}\).  Report every residual
+under the pre-registered \(\mathrm{atol}=2\times10^{-8}\),
+\(\mathrm{rtol}=10^{-10}\) policy and fail on any value outside it.
+For every P/S-E array, require finite-positive \code{MEDRMS} on
+\code{noise_variance_I} and exact equality to \code{MEDRMS} on each matching
+realization HDU, including the \code{signal_0_I} legacy-fallback identity
+consumed by the fruit-loop loader.
+
+The repository does contain a fruit-loop-specific injected-source helper
+(\code{fruit_loop_injected_source_test.h:38--115}, called at
+\code{pointing_fruitloop_impl.h:12--24}) that adds a kernel-scaled source to
+processed scans, but it changes the iterative estimand and is excluded from
+this one-pass package.  No Unity injection command
+is therefore authorized for the isolated naive operator at this SHA.
+Constant/delta/beam/resolved/extended/edge injections remain required local
+repair/re-audit gates, not waived tests.  Point 152389 and the science pair may
+be returned as descriptive astronomical context only.  Astronomical amplitude,
+shape, unit, and absolute-astrometric acceptance are N/A until
+\code{SCI-CAL-001}/\code{SCI-AST-001} supply a traceable independent reference,
+metric, and uncertainty; the exact internal cross-HDU/coadd WCS-identity gate
+above remains required.
+
+\subsection*{Required products, comparisons, and tolerances}
+
+{\raggedright For each of the six successful cases, return every raw observation/coadd FITS,
+noise-realization FITS, mapdiag/histogram/PSD output,
+requested/effective/observation-resolved/realized and config-source sidecar,
+complete log, product inventory, and exit status.  S-X instead requires its
+pre-run numbered and merged configuration evidence, frozen binary/job identity,
+complete log and ordered partial inventory, plus the expected absence of
+config-source, mapmaking, coadd, noise, and post-processing completion
+sidecars.  Any early runtime/raw-timestream sidecar is required and classified.
+In
+P and S-E, each array observation map must contain \code{signal_I},
+\code{weight_I}, \code{weight_formal_I}, \code{noise_variance_I},
+\code{kernel_I}, \code{coverage_I}, \code{coverage_bool_I}, both empirical S/N
+names, and a separate noise FITS with exactly \code{signal_0_I} through
+\code{signal_63_I}.  In S-C, each array observation and coadd map must contain
+\code{signal_I}, \code{weight_I}, \code{kernel_I}, \code{coverage_I},
+\code{coverage_bool_I}, and \code{formal_standardized_signal_I}; only the coadd
+noise FITS contains the 64 realization planes.  Formal-weight/noise-variance
+and empirical S/N planes are correctly absent in S-C because products are off.
+S-X has no successful-product requirement: preserve the ordered partial
+inventory and require the exact message
+\code{empirical noise products were requested but map index 0 lacks
+formal-weight or noise-variance data} in the Citlali error and propagated
+top-level critical records.  The Citlali serious-record allowlist is exactly
+those two; any TolTECA/launcher wrapper report is counted and classified
+separately.  Prove that the two Citlali records arise during the first
+raw-observation publication before any later observation publication, require a
+nonzero exit, and require that no file under \code{coadded/} exists.\par}
+
+{\raggedright For every present plane return exact array/map count, shape, cross-HDU WCS,
+units, \code{TYPE}/\code{ESTTYPE}, threshold keys, response
+metadata, observation membership, and SHA-256.  Compare the persisted mask
+both to its exact current-byte predicate and to the intended finite-positive
+threshold predicate defined above.  The active Phase~4
+base contract IDs are \code{phase4-point-products-v1} and
+\code{phase4-science-products-v1}, read from the hashed governing profile,
+product-contract, and accepted-run registries.  The explicit map/noise additions and case-dependent
+absences above form the request-specific union.  The unmodified validator is
+N/A as a pass gate because its closed-world check does not classify the
+required separate realization FITS and rejects them as extra.  Do not report a
+pass from it.  The union is the pre-registered request contract; a missing
+required item is a failure and every additional item must be returned and
+classified.\par}
+
+At the governing SHA every image HDU is expected to lack \code{ESTTYPE}; record
+that registry/writer mismatch against F007 rather than calling it a pass.
+\code{TYPE} is expected only as follows: \code{weight_I} and
+\code{weight_formal_I} are \code{formal}; \code{kernel_I} equals the exact
+configured kernel type; both empirical S/N aliases are \code{pixel}; and
+\code{formal_standardized_signal_I} is
+\code{formal_weight_standardized}.  Signal, noise variance, coverage,
+coverage-bool, and realization HDUs must lack \code{TYPE}.  Each realization
+HDU must carry the exact configured \code{UNIT} and matching finite-positive
+\code{MEDRMS}; \code{BUNIT}, \code{DESCRIP}, \code{TYPE}, and \code{ESTTYPE}
+must be absent.  Detector-grouped
+product omissions are outside these array-grouped Unity cases and remain
+untested here.  The
+audit-specific checker must compare the full WCS card family
+\code{WCSAXES/CRPIX*/CRVAL*/CDELT*/CTYPE*/CUNIT*/PC*/CD*/CROTA*/PV*/PS*},
+\code{LONPOLE}, \code{LATPOLE}, \code{RADESYS}, and \code{EQUINOX}, plus
+origin-zero pixel-to-world transforms at every image corner and centre; the
+coarse baseline comparator is not WCS authority.
+
+For observation shape \((R_o,C_o)\), coadd shape \((R_c,C_c)\), and centred
+offsets \(\Delta_r=\lfloor(R_c-R_o)/2\rfloor\),
+\(\Delta_c=\lfloor(C_c-C_o)/2\rfloor\), the exact no-reprojection WCS identity
+is embedding-aware:
+\[
+  \mathcal W_c(r+\Delta_r,c+\Delta_c)=\mathcal W_o(r,c)
+  \quad\text{for every observation pixel }(r,c).
+\]
+Require identical frame, projection, units, orientation, CRVAL, and applicable
+\code{PC*}, \code{CD*}, \code{CDELT*}, \code{CROTA*}, \code{PV*},
+\code{PS*}, \code{LONPOLE}, \code{LATPOLE}, \code{RADESYS}, and
+\code{EQUINOX} values; require
+\(\mathrm{CRPIX1}_c=\mathrm{CRPIX1}_o+\Delta_c\) and
+\(\mathrm{CRPIX2}_c=\mathrm{CRPIX2}_o+\Delta_r\), using FITS one-based
+coordinates.  NAXIS and those CRPIX values are the only allowed
+observation/coadd shape-related differences.  The card relation is exact and
+the all-pixel sky residual must not exceed \(10^{-12}\) degrees.  Raw WCS-card
+equality remains required among same-grid HDUs; it is not incorrectly required
+between differently shaped observation and coadd grids.
+
+Before any S-C/S-E realization residual is interpreted, prove exact
+realization-index alignment: both runs have the same ordered observation,
+scan, detector, and array membership/counts; each observation initializes the
+same \code{boost::random::mt19937} stream from seed 5489; both request 64
+realizations with \code{randomize_dets=false}; and regenerated per-index scan
+signs are identical.  A mismatch is an evidence gap, not an operator residual.
+Independently recompute from the hashed raw pointing/eligibility inputs the
+pre-support positive-exposure indicator \(G_{op}\), and define the persisted
+post-support indicator
+\(S_{op}={\bf1}[q_{op}\text{ finite}]{\bf1}[q_{op}>0]\).  For the two science
+observations require the true asymmetric support-floor domain
+\[
+ \mathcal A_{\rm floor}
+ =\{p:G_{1p}=G_{2p}=1,\ S_{1p}+S_{2p}=1\}
+\]
+to be nonempty and identical in the seq and OMP pairs.  Report pixels with
+fewer than two pre-support exposures separately as unobserved; they do not
+satisfy this gate.  If \(\mathcal A_{\rm floor}\) is empty or cannot be
+recomputed, the Unity case is an evidence gap and cannot characterize F004.
+
+\begin{longtable}{L{0.17\linewidth}L{0.24\linewidth}L{0.24\linewidth}L{0.25\linewidth}}
+\toprule
+Comparison & Quantity & Metric & Pre-registered bound\\
+\midrule
+Config/inventory & Ordered inputs, merged low-level, outputs/provenance &
+digest/set equality & exact; no extra/missing/skipped required record\\
+P, S-C, S-E seq versus OMP & Every common finite numeric product &
+absolute/relative; support and WCS exact & masks, dimensions, WCS, inventory
+exact;
+\(\mathrm{atol}=2\times10^{-8}\), \(\mathrm{rtol}=10^{-10}\); all differences
+reported, not silently accepted\\
+S-C versus independently recombined S-E & Observation maps and every coadd
+realization for matched seq/seq and OMP/OMP pairs & First require exact
+S-C/S-E observation obsnum/array/HDU identity, signal, weight, kernel,
+coverage, dimensions, and WCS, plus the realization-index proof above; then
+construct the registered post-support weighted recombination & Using the
+embedding and nonempty \(\mathcal A_{\rm floor}\) defined above, with
+\(q_o\) the persisted post-support observation weight, form
+\(Q^c=\sum_oJ_oq_o\), \(N^c=\sum_oJ_o(q_om_o)\),
+\(K^c=\sum_oJ_o(q_ok_o)\), \(x^c=\sum_oJ_ox_o\), and
+\(\widetilde y_r^c=\sum_oJ_o(q_oy_{or})/Q^c\).  Compare \(Q^c\),
+\(N^c/Q^c\), \(K^c/Q^c\), \(x^c\), and every realization on finite
+\(Q^c>0\) to the S-C coadd under the same numeric bound.  Return all residuals,
+separately tabulating \(\mathcal A_{\rm floor}\) and unobserved pixels; this is a
+non-vacuous characterization gate for F004, not presumed conformance.\\
+Formal versus empirical & \(q_p\widehat V_p\) on frozen recomputed background
+domain & median/distribution, spatial covariance, and \(N_{\rm eff}\) & report
+exact values only.  If a later NOI contract proves independent Gaussian
+realizations and true precision, the applicable statistic is
+\(64q_p\widehat V_p\sim\chi^2_{63}\); no such distributional pass is authorized
+here and no scalar scale substitutes for covariance\\
+False standardized signal & \(|z|>5\), connected regions, edge distance &
+count/rate plus spatial pattern & report exactly, characterization only; no
+binomial pass without NOI-approved null tail probability and independent-trial
+model\\
+WCS/coadd & Observation/coadd coordinate transform and map identity &
+embedding-aware card relation and all-pixel sky residual defined above & exact
+card relation and \(10^{-12}\)-degree residual bound for the current
+no-reprojection estimator; any mismatch fails\\
+Expected publication failure & S-X first raw observation output & exit, exact
+diagnostic and ordered partial inventory & nonzero exit; exact error plus
+propagated critical message and no other Citlali serious record; no later
+observation publication, no file under \code{coadded/}, and no end-of-success
+sidecar; any successful completion fails this characterization\\
+Logs/completion & error, critical, fatal, required skips & counts/status & Six
+success cases have zero unexpected serious records, zero silent required-data
+skips, and exit zero only after all required products close; S-X has only the
+pre-registered failure above\\
+\bottomrule
+\end{longtable}
+
+\subsection*{Frozen audit-analysis artifact}
+
+Before any reduction is submitted and before numerical output exists, Grant
+must freeze one read-only program as \code{SCI-MAP-001-analysis.py}, record its
+SHA-256 and freeze timestamp, run its self-check, and return its exact bytes.
+Its \code{materialize-case} subcommand must emit the exact displayed overlay
+with only the registered case substitutions and lexical normalization, and
+must reject an unknown case.  Its \code{preflight-case} subcommand must emit one immutable
+\code{CASE_ID-case-inputs.json} per case without reading any reduction-output
+array.  That manifest maps every raw observation, array/network, APT,
+calibration, and pointing-support path to SHA-256; maps the configured target
+and every array FWHM to the exact hashed source and units; and rejects every
+missing, ambiguous, or inconsistent identity.  It also verifies the installed
+kit marker's schema, mode, bundle, version, observation filename, installed
+filenames, policy digest, record ID, repository, and source commit against the
+hashed TolPROJ vendor and active-bundle manifests and the canonical Citlali
+manifest/policies.  Filename or directory-position inference is forbidden.
+
+After the runs, the same frozen program's \code{build-analysis-inputs}
+subcommand must combine those seven preflight manifests with exact log,
+inventory, successful-product path/HDU, merged-config, and file-digest
+identities into \code{analysis-inputs.json}, without reading numerical array
+payloads.  Freeze that file before \code{run}.  The main subcommand must
+implement the request-specific union/inventory, full WCS comparison, persisted
+numerical identities, independently recomputed masks, covariance factors,
+formal/direct-empirical standardized diagnostics, connected components/edge
+tables, and S-C/S-E recombination specified above.  It must map and hash each
+successful run's manifest-authorized \code{citlali_merged_config.yaml} and
+require the success-only snapshot absent for S-X.
+
+{\raggedright The program must emit \code{request-union.json}, \code{inventory.json},
+\code{wcs.json}, \code{pixel-identities.json}, \code{blank-summary.json},
+lossless per-map covariance-factor NPZ files, \code{false-z-regions.json},
+\code{edge-tables.csv}, \code{coadd-recombination.json}, and
+\code{log-completion.json}, with untruncated per-record lists.  The last file
+must consume each complete stdout/stderr stream, submission and exit record,
+Slurm accounting record, and a path/size/digest/mtime-nanoseconds inventory
+ordered by timestamp then path.  It enforces zero unexpected
+error/critical/fatal records, zero required-data skips, and completion after all
+required products for the six successes.  For S-X it enforces exactly one
+Citlali error followed by exactly one propagated critical record containing the
+registered text, no other Citlali serious record, no later observation
+publication, no success-completion sidecar, and no file under \code{coadded/};
+wrapper records remain separately classified.\par}
+
+{\raggedright The program must invoke the two frozen repository baseline tools rather than
+merely hashing them.  For each of the six successes it runs
+\code{audit_reduction_run.py} with the exact reduction path,
+\code{--top 2147483647}, JSON/report outputs, and this common exact flag set:
+\code{--require-runtime-provenance},
+\code{--require-processed-provenance}, \code{--require-raw-provenance},
+\code{--require-mapmaking-provenance}, \code{--require-coadd-provenance},
+\code{--require-noise-products-provenance},
+\code{--require-post-processing-provenance},
+\code{--require-kids-external-provenance},
+\code{--require-polarimetry-provenance},
+\code{--require-astrometry-provenance}, and
+\code{--require-config-source-manifest}.  P additionally appends
+\code{--require-pointing-provenance}.  The baseline tool's
+\code{--expected-mode}/\code{--expected-label} switches are deliberately N/A:
+they recognize only paths under its hard-coded
+\code{/2026-refactor/MODE/LABEL/reduced/} convention, whereas these isolated
+case-owned roots have a different path by design.  The frozen checker instead
+enforces exact mode, refactor-kit identity, case inputs, and merged config; no
+mode/label check is waived.
+It emits \code{baseline-audit-CASE_ID.json}, \code{.md}, and
+\code{.exit.txt}.  For P, S-C, and S-E seq/OMP pairs it runs
+\code{compare_reduction_products.py} on the exact two reduction roots with the
+matching mode, seq/omp labels, \code{--strict},
+\code{--include-timestream}, \code{--exclude citlali_profile.ecsv},
+\code{--max-array-elements 0}, \code{--max-records 2147483647},
+\code{--top 2147483647}, and the registered absolute/relative tolerances.  It
+emits \code{baseline-compare-P|S-C|S-E.json}, \code{.md}, and
+\code{.exit.txt}.  These coarse tools supplement but do not replace the
+request-specific union, WCS, or recombination authority; every nonzero tool exit
+is retained and classified.\par}
+
+Overall exit 0 means a complete characterization with no scientific violation;
+exit 2 means complete evidence with one or more scientific nonconformances.  Any
+other exit denotes an evidence-execution or contract failure.  Expected
+manifestations of F002/F004/F007 must be classified and may produce exit 2; they
+are never normalized into a pass.  Every output receives a SHA-256.  The
+program may use only already installed modules, must record Python and module
+versions, must perform no stochastic subsampling, and runs its numerical work
+in a bounded \code{toltec-cpu} Slurm job rather than on the login node.
+
+This program is an evidence implementation selected by Grant, as authorized by
+the request protocol; it is not source authority.  Its bytes, digest, exact
+command, input manifest, and outputs are all mandatory returned evidence and
+will be independently audited before any status changes.
+
+\subsection*{Commands Grant should execute}
+
+The commands below intentionally use the required host alias
+\code{unity_toltec}.  They require an already prepared clean checkout at the
+exact SHA; they do not fetch, overlay source, or guess a moving branch.  Grant
+must materialize and hash all seven case expert files before validating the
+generated \code{02_redu.sh}.  Each case is then submitted with an explicit
+\code{toltec-cpu} allocation matching the table; the wrapper records hostname,
+only \code{SLURM_*}/\code{OMP_*} environment, affinity, GNU-time resource
+statistics, Slurm accounting, and exit state.
+
+Native preparation deliberately leaves only input selection external: Grant
+selects one already prepared matched Point project/source/APT directory and one
+already prepared matched Science project/source/pointing reduction.  The
+commands, fixed science APT-product choice, case-owned duplicate destinations,
+\code{--refactor}, resolved default site config, CPU requests, and resource
+limits are exact below.  Every native duplicate/setup command runs under shell
+tracing with combined stdout/stderr and exit status captured.  The original expert file is copied
+before the frozen program materializes and installs the exact replacement.  If
+the native command cannot produce the exact obsnums, support inputs, eight
+numbered sources, or fresh directory, stop and return that gap; do not
+substitute a hand-built project.
+
+\begin{small}
+\begin{verbatim}
+ssh unity_toltec 'set -eu
+  request_root=/work/toltec/sci-map-001
+  audit_source=/home/toltec_umass_edu/work_toltec/citlali_dev/citlali_refactor
+  audit_python=/home/toltec_umass_edu/tolteca/bin/python
+  site_config="$("$audit_python" -c \
+    "from tolproj.config import resolve_config_path; print(resolve_config_path())")"
+  test ! -e "$request_root"
+  test -f "$site_config"
+  install -d "$request_root" "$request_root/bin" \
+    "$request_root/governing" "$request_root/tolproj-kit"
+  cd "$audit_source"
+  test -z "$(git status --porcelain)" &&
+  test "$(git rev-parse HEAD)" = \
+    "9aae0e669384c5c0c0dda93debc194d6b8dac787" &&
+  git rev-parse HEAD > "$request_root/source-head.txt" &&
+  git status --short > "$request_root/source-status.txt" &&
+  git submodule status --recursive > "$request_root/source-submodules.txt" &&
+  sha256sum CMakePresets.json CMakeUserPresets.json \
+    config/tolteca/v2/manifest.yaml \
+    tools/config/config_leaf_contract_resolved.json \
+    validation/validation_profiles.json \
+    validation/product_contracts.json \
+    validation/accepted_runs.json > \
+    "$request_root/source-input-sha256.txt" &&
+  for path in config/tolteca/v2/manifest.yaml \
+    tools/config/config_leaf_contract_resolved.json \
+    validation/validation_profiles.json \
+    validation/product_contracts.json validation/accepted_runs.json; do
+    install -D -m 0444 "$path" "$request_root/governing/$path"
+  done
+  printf "%s\n" "$site_config" > "$request_root/tolproj-site-config-path.txt"
+  sha256sum "$site_config" > "$request_root/tolproj-site-config.sha256"
+  tolproj_path="$(command -v tolproj)"
+  test -x "$tolproj_path"
+  printf "%s\n" "$tolproj_path" > "$request_root/tolproj-path.txt"
+  sha256sum "$tolproj_path" > "$request_root/tolproj-executable.sha256"
+  "$tolproj_path" config show --config "$site_config" > \
+    "$request_root/tolproj-site-config-rendered.txt"
+  "$tolproj_path" --help > "$request_root/tolproj-help.txt"
+  info_code="import importlib.metadata as m, pathlib, tolproj;"
+  info_code="$info_code print(m.version(\"tolproj\"));"
+  info_code="$info_code print(pathlib.Path(tolproj.__file__).resolve())"
+  "$audit_python" -c "$info_code" > "$request_root/tolproj-package.txt"
+  tolproj_dir="$("$audit_python" -c \
+    "import pathlib, tolproj; print(pathlib.Path(tolproj.__file__).resolve().parent)")"
+  find "$tolproj_dir" -type f -name "*.py" -print0 | sort -z | \
+    xargs -0 sha256sum > "$request_root/tolproj-package-sha256.txt"
+  sha256sum -c "$request_root/tolproj-package-sha256.txt"
+  vendor_manifest="$tolproj_dir/templates/citlali_refactor/vendor.yaml"
+  bundle_manifest="$tolproj_dir/templates/citlali_refactor/phase4_1_v2_1/manifest.yaml"
+  test -f "$vendor_manifest" && test -f "$bundle_manifest"
+  install -m 0444 "$vendor_manifest" \
+    "$request_root/tolproj-kit/vendor.yaml"
+  install -m 0444 "$bundle_manifest" \
+    "$request_root/tolproj-kit/phase4_1_v2_1-manifest.yaml"
+  cmp "$vendor_manifest" "$request_root/tolproj-kit/vendor.yaml"
+  cmp "$bundle_manifest" \
+    "$request_root/tolproj-kit/phase4_1_v2_1-manifest.yaml"
+  sha256sum "$request_root/tolproj-kit/vendor.yaml" \
+    "$request_root/tolproj-kit/phase4_1_v2_1-manifest.yaml" > \
+    "$request_root/tolproj-kit-manifests.sha256"
+  if git -C "$tolproj_dir" rev-parse --show-toplevel > \
+      "$request_root/tolproj-git-root.txt" 2>/dev/null; then
+    git -C "$tolproj_dir" rev-parse HEAD > "$request_root/tolproj-git-head.txt"
+    git -C "$tolproj_dir" status --short > \
+      "$request_root/tolproj-git-status.txt"
+  else
+    printf "%s\n" "installed package is not in a Git worktree" > \
+      "$request_root/tolproj-git-status.txt"
+  fi
+  test ! -e conanfile.py && test ! -e conan.lock &&
+  printf "%s\n" "Conan N/A: no conanfile.py or conan.lock at governing SHA" > \
+    "$request_root/dependency-authority.txt"
+  sha256sum -c "$request_root/tolproj-executable.sha256"
+  sha256sum -c "$request_root/tolproj-package-sha256.txt"
+  printf "%s\n" 0 > "$request_root/identity-exit-status.txt"'
+
+ssh unity_toltec 'set -eu
+  request_root=/work/toltec/sci-map-001
+  build_log="$request_root/build-transcript.txt"
+  set +e
+  ( set -eux
+    cd /home/toltec_umass_edu/work_toltec/citlali_dev/citlali_refactor
+    cmake --preset unity_release -DFETCHCONTENT_FULLY_DISCONNECTED=ON \
+      -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+    cmake --build build_unity_release --target citlali_cli -j 8
+    test -x build_unity_release/bin/citlali
+    test ! -e "$request_root/bin/citlali"
+    install -m 0555 build_unity_release/bin/citlali \
+      "$request_root/bin/citlali"
+    cmp build_unity_release/bin/citlali "$request_root/bin/citlali"
+    sha256sum build_unity_release/bin/citlali "$request_root/bin/citlali" > \
+      "$request_root/citlali-binary-sha256.txt"
+    "$request_root/bin/citlali" --version > \
+      "$request_root/citlali-version.txt"
+    cmake -N -LA build_unity_release > \
+      "$request_root/cmake-options-rendered.txt"
+    install -m 0444 build_unity_release/CMakeCache.txt \
+      "$request_root/CMakeCache.txt"
+    install -m 0444 build_unity_release/compile_commands.json \
+      "$request_root/compile_commands.json"
+    sha256sum "$request_root/CMakeCache.txt" \
+      "$request_root/compile_commands.json" > \
+      "$request_root/build-metadata-sha256.txt"
+    compiler_path="$(sed -n \
+      "s/^CMAKE_CXX_COMPILER:[^=]*=//p" build_unity_release/CMakeCache.txt)"
+    test -x "$compiler_path"
+    printf "%s\n" "$compiler_path" > "$request_root/compiler-path.txt"
+    "$compiler_path" --version > "$request_root/compiler.txt"
+    sha256sum "$compiler_path" > "$request_root/compiler-sha256.txt"
+    { for dep in build_unity_release/_deps/kidscpp-src ../tula; do
+        test -d "$dep/.git"
+        test -z "$(git -C "$dep" status --porcelain)"
+        printf "%s " "$dep" && git -C "$dep" rev-parse HEAD
+      done; } > "$request_root/dependency-git.txt"
+  ) > "$build_log" 2>&1
+  rc=$?
+  set -e
+  printf "%s\n" "$rc" > "$request_root/build-exit-status.txt"
+  sha256sum "$build_log" > "$request_root/build-transcript.sha256"
+  test "$rc" -eq 0'
+
+# Grant makes the two allowed deployed-project choices before any case output.
+# The seven-line file records, in order: point project, point source filter,
+# point APT directory, science project, science source directory name,
+# science pointing reduNN, and operator.  The fixed science APT choice is matched.
+ssh unity_toltec 'set -eu
+  request_root=/work/toltec/sci-map-001
+  selection="$request_root/grant-project-selection.txt"
+  test ! -e "$selection"
+  printf "%s" "Absolute matched point TolPROJ project: " >&2
+  IFS= read -r point_project
+  printf "%s" "Point source filter selecting only obsnum 152389: " >&2
+  IFS= read -r point_source
+  printf "%s" "Absolute matched point APT directory: " >&2
+  IFS= read -r point_apt_dir
+  printf "%s" "Absolute matched science TolPROJ project: " >&2
+  IFS= read -r science_project
+  printf "%s" "Science source directory for only 152390,152392: " >&2
+  IFS= read -r science_source
+  printf "%s" "Science pointing reduction name (reduNN): " >&2
+  IFS= read -r science_pointing_redu
+  printf "%s" "Evidence operator name: " >&2
+  IFS= read -r operator
+  test -d "$point_project" && test -d "$point_apt_dir"
+  test -d "$science_project"
+  case "$point_project:$point_apt_dir:$science_project" in
+    /*:/*:/*) :;; *) exit 2;;
+  esac
+  test -n "$point_source" && test -n "$science_source"
+  test "$(basename "$science_source")" = "$science_source"
+  case "$science_pointing_redu" in redu[0-9][0-9]) :;; *) exit 2;; esac
+  test -n "$operator"
+  printf "%s\n" "$point_project" "$point_source" "$point_apt_dir" \
+    "$science_project" "$science_source" "$science_pointing_redu" \
+    "$operator" > "$selection"
+  chmod 0444 "$selection"
+  date -u +%Y-%m-%dT%H:%M:%SZ > "$request_root/selection-time.txt"
+  sha256sum "$selection" > "$request_root/grant-project-selection.sha256"
+  printf "%s\n" 0 > "$request_root/selection-exit-status.txt"'
+
+# Duplicate the selected matched projects and run the exact native setup command
+# once per case.  New case-owned user/pointing directories prevent output reuse.
+ssh unity_toltec 'set -eu
+  request_root=/work/toltec/sci-map-001
+  site_config="$(cat "$request_root/tolproj-site-config-path.txt")"
+  tolproj_path="$(cat "$request_root/tolproj-path.txt")"
+  test -x "$tolproj_path"
+  sha256sum -c "$request_root/tolproj-site-config.sha256"
+  sha256sum -c "$request_root/tolproj-executable.sha256"
+  sha256sum -c "$request_root/tolproj-package-sha256.txt"
+  selection="$request_root/grant-project-selection.txt"
+  projects="$request_root/projects"
+  point_project="$(sed -n "1p" "$selection")"
+  point_source="$(sed -n "2p" "$selection")"
+  point_apt_dir="$(sed -n "3p" "$selection")"
+  science_project="$(sed -n "4p" "$selection")"
+  science_source="$(sed -n "5p" "$selection")"
+  science_pointing_redu="$(sed -n "6p" "$selection")"
+  install -d "$projects"
+  for case_id in P-SEQ P-OMP S-C-SEQ S-C-OMP S-E-SEQ S-E-OMP S-X-SEQ; do
+    case "$case_id" in
+      P-SEQ) case_cpus=1;; P-OMP) case_cpus=6;;
+      S-C-OMP|S-E-OMP) case_cpus=16;; *) case_cpus=1;;
+    esac
+    transcript="$request_root/$case_id-setup-transcript.txt"
+    set +e
+    if case "$case_id" in P-*) true;; *) false;; esac; then
+      ( set -eux
+        "$tolproj_path" duplicate "$point_project" "$case_id" \
+          --destination-root "$projects" --config "$site_config" --refactor
+        test ! -e "$projects/$case_id/audit-pointings"
+        "$tolproj_path" setup-pointing-reductions "$projects/$case_id" \
+          --config "$site_config" --refactor --source "$point_source" \
+          --pointings-dir audit-pointings --apt-dir "$point_apt_dir" \
+          --cpus "$case_cpus" --time 24:00:00 --mem 64G
+      ) > "$transcript" 2>&1
+      rc=$?
+      case_dir="$projects/$case_id/audit-pointings"
+    else
+      ( set -eux
+        "$tolproj_path" duplicate "$science_project" "$case_id" \
+          --destination-root "$projects" --config "$site_config" --refactor
+        test ! -e "$projects/$case_id/sci_map_001"
+        "$tolproj_path" setup-science-reductions "$projects/$case_id" \
+          --config "$site_config" --refactor --user sci_map_001 \
+          --pointing-reduction "$science_pointing_redu" \
+          --apt-product matched --cpus "$case_cpus" \
+          --time 24:00:00 --mem 64G
+      ) > "$transcript" 2>&1
+      rc=$?
+      case_dir="$projects/$case_id/sci_map_001/$science_source"
+    fi
+    set -e
+    printf "%s\n" "$rc" > "$request_root/$case_id-setup-exit.txt"
+    test "$rc" -eq 0
+    test -d "$case_dir" && test -f "$case_dir/02_redu.sh"
+    printf "%s\n" "$case_dir" > "$request_root/$case_id-case-dir.txt"
+    sha256sum "$transcript" "$request_root/$case_id-case-dir.txt" > \
+      "$request_root/$case_id-setup-sha256.txt"
+  done
+  sha256sum -c "$request_root/tolproj-site-config.sha256"
+  sha256sum -c "$request_root/tolproj-executable.sha256"
+  sha256sum -c "$request_root/tolproj-package-sha256.txt"'
+
+# Grant places the requested analysis implementation at this exact path.  Freeze
+# it before materialization or submission; absence is a request-execution gap.
+ssh unity_toltec 'set -eu
+  request_root=/work/toltec/sci-map-001
+  audit_python=/home/toltec_umass_edu/tolteca/bin/python
+  analysis_dir="$request_root/analysis"
+  program="$analysis_dir/SCI-MAP-001-analysis.py"
+  install -d "$analysis_dir"
+  test -f "$program"
+  chmod 0444 "$program"
+  date -u +%Y-%m-%dT%H:%M:%SZ > "$analysis_dir/program-freeze-time.txt"
+  sha256sum "$program" > "$analysis_dir/analysis-program.sha256"
+  "$audit_python" "$program" --self-check > "$analysis_dir/self-check.txt"
+  printf "%s\n" 0 > "$analysis_dir/program-freeze-exit-status.txt"'
+
+# Materialize exact case overlays, freeze the selected executable immediately,
+# then hash/merge/validate the final eight numbered sources before submission.
+ssh unity_toltec 'set -eu
+  request_root=/work/toltec/sci-map-001
+  audit_source=/home/toltec_umass_edu/work_toltec/citlali_dev/citlali_refactor
+  audit_python=/home/toltec_umass_edu/tolteca/bin/python
+  analysis_dir="$request_root/analysis"
+  program="$analysis_dir/SCI-MAP-001-analysis.py"
+  tolproj_path="$(cat "$request_root/tolproj-path.txt")"
+  test -x "$tolproj_path"
+  sha256sum -c "$analysis_dir/analysis-program.sha256"
+  sha256sum -c "$request_root/tolproj-executable.sha256"
+  sha256sum -c "$request_root/tolproj-package-sha256.txt"
+  freeze_code="from pathlib import Path;"
+  freeze_code="$freeze_code from tolproj.reduction_runtime import"
+  freeze_code="$freeze_code freeze_reduction_executable as freeze;"
+  freeze_code="$freeze_code print(freeze(Path(\".\")).snapshot)"
+  sacct_fields=JobIDRaw,JobName,Partition,AllocCPUS,NodeList
+  sacct_fields="$sacct_fields,State,ExitCode,Elapsed,MaxRSS,ReqMem"
+  expected_message="empirical noise products were requested but "
+  expected_message="$expected_message""map index 0 lacks formal-weight or "
+  expected_message="$expected_message""noise-variance data"
+  master_binary="$request_root/bin/citlali"
+  master_digest="$(sha256sum "$master_binary" | awk "{print \$1}")"
+  overall=0
+  for case_id in P-SEQ P-OMP S-C-SEQ S-C-OMP S-E-SEQ S-E-OMP S-X-SEQ; do
+    case_dir="$(cat "$request_root/$case_id-case-dir.txt")"
+    case "$case_id" in
+      P-SEQ) mode=point; case_cpus=1; expert=99_pointing_expert_overrides.yaml;;
+      P-OMP) mode=point; case_cpus=6; expert=99_pointing_expert_overrides.yaml;;
+      S-C-SEQ|S-E-SEQ|S-X-SEQ)
+        mode=science; case_cpus=1; expert=99_science_expert_overrides.yaml;;
+      S-C-OMP|S-E-OMP)
+        mode=science; case_cpus=16; expert=99_science_expert_overrides.yaml;;
+    esac
+    test -s "$request_root/$case_id-setup-transcript.txt"
+    test -d "$case_dir"
+    test -f "$case_dir/$expert"
+    test -f "$case_dir/.citlali_refactor_kit.yaml"
+    install -m 0444 "$case_dir/$expert" \
+      "$request_root/$case_id-expert-original.yaml"
+    "$audit_python" "$program" materialize-case --case-id "$case_id" \
+      --output "$request_root/$case_id-expert-materialized.yaml"
+    chmod 0444 "$request_root/$case_id-expert-materialized.yaml"
+    install -m 0644 "$request_root/$case_id-expert-materialized.yaml" \
+      "$case_dir/$expert"
+    cmp "$request_root/$case_id-expert-materialized.yaml" "$case_dir/$expert"
+    cd "$case_dir"
+    snapshot="$("$audit_python" -c "$freeze_code")"
+    snapshot_digest="$(sha256sum "$snapshot" | awk "{print \$1}")"
+    test "$snapshot_digest" = "$master_digest"
+    test "$(cat .tolproj/citlali-source)" = "$master_binary"
+    test -x .tolproj/citlali-launcher
+    test -f .tolproj/citlali-source
+    test -f 99_zz_tolproj_submission_runtime.yaml
+    grep -F "$case_dir/.tolproj/citlali-launcher" \
+      99_zz_tolproj_submission_runtime.yaml
+    printf "source=%s\nsnapshot=%s\nsha256=%s\n" \
+      "$master_binary" "$snapshot" "$snapshot_digest" > \
+      "$request_root/$case_id-freeze.txt"
+    find . -maxdepth 1 -type f -name "[0-9][0-9]_*.yaml" -print | \
+      sort > "$request_root/$case_id-numbered-files.txt"
+    test "$(wc -l < "$request_root/$case_id-numbered-files.txt" | tr -d " ")" \
+      -eq 8
+    "$audit_python" "$audit_source/tools/config/tolteca_mode_kit.py" merge \
+      --mode "$mode" --mode-dir "$case_dir" \
+      --manifest "$audit_source/config/tolteca/v2/manifest.yaml" \
+      --yaml-out "$request_root/$case_id-merged.yaml" \
+      --json-out "$request_root/$case_id-config-report.json"
+    while IFS= read -r path; do sha256sum "$path"; done < \
+      "$request_root/$case_id-numbered-files.txt" > \
+      "$request_root/$case_id-numbered-sha256.txt"
+    sha256sum "$request_root/$case_id-expert-original.yaml" \
+      "$request_root/$case_id-expert-materialized.yaml" \
+      "$request_root/$case_id-merged.yaml" \
+      "$request_root/$case_id-config-report.json" \
+      "$request_root/$case_id-numbered-files.txt" \
+      "$case_dir/.citlali_refactor_kit.yaml" >> \
+      "$request_root/$case_id-numbered-sha256.txt"
+    "$audit_python" "$program" preflight-case \
+      --case-id "$case_id" --mode "$mode" --case-dir "$case_dir" \
+      --merged "$request_root/$case_id-merged.yaml" \
+      --source-root "$audit_source" \
+      --vendor-manifest "$request_root/tolproj-kit/vendor.yaml" \
+      --bundle-manifest \
+        "$request_root/tolproj-kit/phase4_1_v2_1-manifest.yaml" \
+      --canonical-manifest \
+        "$request_root/governing/config/tolteca/v2/manifest.yaml" \
+      --marker "$case_dir/.citlali_refactor_kit.yaml" \
+      --output "$request_root/$case_id-case-inputs.json"
+    chmod 0444 "$request_root/$case_id-case-inputs.json"
+    sha256sum "$request_root/$case_id-case-inputs.json" >> \
+      "$request_root/$case_id-numbered-sha256.txt"
+    "$tolproj_path" validate-reduction .
+    test -f 02_redu.sh
+    cpu_re="^[[:space:]]*#SBATCH[[:space:]]+"
+    cpu_re="$cpu_re--cpus-per-task(=|[[:space:]])"
+    cpu_re="$cpu_re$case_cpus[[:space:]]*$"
+    grep -Eq "$cpu_re" 02_redu.sh
+    sha256sum "$case_dir/02_redu.sh" > \
+      "$request_root/$case_id-job-script-sha256.txt"
+    find .tolproj -type f -print0 | sort -z | xargs -0 sha256sum > \
+      "$request_root/$case_id-tolproj-runtime-sha256.txt"
+    printf "%s\n" 0 > "$request_root/$case_id-preflight-exit-status.txt"
+  done
+  sha256sum -c "$request_root/tolproj-executable.sha256"
+  sha256sum -c "$request_root/tolproj-package-sha256.txt"
+  overall=0
+  for case_id in P-SEQ P-OMP S-C-SEQ S-C-OMP S-E-SEQ S-E-OMP S-X-SEQ; do
+    case_dir="$(cat "$request_root/$case_id-case-dir.txt")"
+    case "$case_id" in
+      P-SEQ|S-C-SEQ|S-E-SEQ|S-X-SEQ) case_cpus=1;;
+      P-OMP) case_cpus=6;; S-C-OMP|S-E-OMP) case_cpus=16;;
+    esac
+    snapshot="$(sed -n "s/^snapshot=//p" \
+      "$request_root/$case_id-freeze.txt")"
+    snapshot_digest="$(sed -n "s/^sha256=//p" \
+      "$request_root/$case_id-freeze.txt")"
+    test -n "$snapshot" && test -n "$snapshot_digest"
+    set +e
+    TOLPROJ_CITLALI_SNAPSHOT="$snapshot" \
+    TOLPROJ_CITLALI_SHA256="$snapshot_digest" \
+    sbatch --wait --parsable --partition=toltec-cpu --export=ALL \
+      --cpus-per-task="$case_cpus" --mem=64G --time=24:00:00 \
+      --job-name="sci-map-001-$case_id" --chdir="$case_dir" \
+      --output="$request_root/$case_id-slurm-%j.out" \
+      --error="$request_root/$case_id-slurm-%j.err" \
+      --wrap="set -eu; \
+sha256sum -c \"$request_root/$case_id-job-script-sha256.txt\"; \
+sha256sum -c \"$request_root/$case_id-numbered-sha256.txt\"; \
+sha256sum -c \"$request_root/$case_id-tolproj-runtime-sha256.txt\"; \
+printf \"%s  %s\\n\" \"$master_digest\" \"$master_binary\" | sha256sum -c -; \
+printf \"%s  %s\\n\" \"$snapshot_digest\" \"$snapshot\" | sha256sum -c -; \
+hostname; env | grep -E \"^(SLURM|OMP|TOLPROJ)_\" | sort; \
+taskset -pc \$\$; set +e; /usr/bin/time -v bash ./02_redu.sh; run_rc=\$?; \
+set -e; sha256sum -c \"$request_root/$case_id-job-script-sha256.txt\"; \
+sha256sum -c \"$request_root/$case_id-numbered-sha256.txt\"; \
+sha256sum -c \"$request_root/$case_id-tolproj-runtime-sha256.txt\"; \
+printf \"%s  %s\\n\" \"$master_digest\" \"$master_binary\" | sha256sum -c -; \
+printf \"%s  %s\\n\" \"$snapshot_digest\" \"$snapshot\" | sha256sum -c -; \
+exit \$run_rc" \
+      > "$request_root/$case_id-submit.txt" 2>&1
+    rc=$?
+    set -e
+    printf "%s\n" "$rc" > "$request_root/$case_id-exit-status.txt"
+    grep -Eq "^[0-9]+(;.*)?$" "$request_root/$case_id-submit.txt"
+    job_id="$(sed -n "1{s/;.*//;p;}" "$request_root/$case_id-submit.txt")"
+    sacct -j "$job_id" --format="$sacct_fields" -P > \
+      "$request_root/$case_id-sacct.txt"
+    if test "$case_id" = S-X-SEQ; then
+      test "$rc" -ne 0
+      grep -F "$expected_message" \
+        "$request_root/$case_id-slurm-$job_id.out" \
+        "$request_root/$case_id-slurm-$job_id.err" > \
+        "$request_root/$case_id-expected-message-lines.txt"
+      find "$case_dir" -type f -path "*/coadded/*" -print > \
+        "$request_root/$case_id-coadded-files.txt"
+      test ! -s "$request_root/$case_id-coadded-files.txt"
+    else
+      test "$rc" -eq 0 || overall=1
+    fi
+  done
+  test "$overall" -eq 0'
+
+# Build and freeze analysis-inputs.json with the already frozen program without
+# opening numerical array payloads.  The Slurm job then performs every large-array
+# audit and comparison and invokes both exact frozen baseline tools.
+ssh unity_toltec 'set -eu
+  request_root=/work/toltec/sci-map-001
+  audit_source=/home/toltec_umass_edu/work_toltec/citlali_dev/citlali_refactor
+  audit_python=/home/toltec_umass_edu/tolteca/bin/python
+  analysis_dir="$request_root/analysis"
+  program="$analysis_dir/SCI-MAP-001-analysis.py"
+  inputs="$analysis_dir/analysis-inputs.json"
+  outputs="$analysis_dir/outputs"
+  sha256sum -c "$analysis_dir/analysis-program.sha256"
+  test ! -e "$inputs" && test ! -e "$outputs"
+  "$audit_python" "$program" build-analysis-inputs \
+    --request-root "$request_root" \
+    --case-id P-SEQ --case-id P-OMP \
+    --case-id S-C-SEQ --case-id S-C-OMP \
+    --case-id S-E-SEQ --case-id S-E-OMP --case-id S-X-SEQ \
+    --output "$inputs"
+  chmod 0444 "$inputs"
+  install -d "$outputs"
+  sha256sum "$inputs" > "$analysis_dir/analysis-inputs.sha256"
+  sha256sum "$audit_source/tools/baseline/audit_reduction_run.py" \
+    "$audit_source/tools/baseline/compare_reduction_products.py" > \
+    "$analysis_dir/baseline-tools.sha256"
+  "$audit_python" "$program" --self-check > \
+    "$analysis_dir/self-check-post.txt"
+  printf "%s\n" 0 > "$analysis_dir/preparation-exit-status.txt"
+  set +e
+  sbatch --wait --parsable --partition=toltec-cpu \
+    --cpus-per-task=16 --mem=128G --time=24:00:00 \
+    --job-name=sci-map-001-analysis --chdir="$analysis_dir" \
+    --output="$analysis_dir/slurm-%j.out" \
+    --error="$analysis_dir/slurm-%j.err" \
+    --wrap="set -eu; \
+sha256sum -c \"$analysis_dir/analysis-program.sha256\"; \
+sha256sum -c \"$analysis_dir/analysis-inputs.sha256\"; \
+sha256sum -c \"$analysis_dir/baseline-tools.sha256\"; \
+hostname; env | grep -E \"^(SLURM|OMP)_\" | sort; taskset -pc \$\$; \
+/usr/bin/time -v \"$audit_python\" \"$program\" run \
+--request-root \"$request_root\" --inputs \"$inputs\" \
+--source-root \"$audit_source\" \
+--audit-tool \"$audit_source/tools/baseline/audit_reduction_run.py\" \
+--compare-tool \"$audit_source/tools/baseline/compare_reduction_products.py\" \
+--profile-registry \"$request_root/governing/validation/validation_profiles.json\" \
+--product-contracts \"$request_root/governing/validation/product_contracts.json\" \
+--accepted-runs \"$request_root/governing/validation/accepted_runs.json\" \
+--point-contract phase4-point-products-v1 \
+--science-contract phase4-science-products-v1 \
+--realizations 64 --atol 2e-8 --rtol 1e-10 \
+--max-array-elements 0 --max-records 2147483647 \
+--output \"$outputs\"" \
+    > "$analysis_dir/submit.txt" 2>&1
+  rc=$?
+  set -e
+  printf "%s\n" "$rc" > "$analysis_dir/exit-status.txt"
+  grep -Eq "^[0-9]+(;.*)?$" "$analysis_dir/submit.txt"
+  job_id="$(sed -n "1{s/;.*//;p;}" "$analysis_dir/submit.txt")"
+  sacct_fields=JobIDRaw,JobName,Partition,AllocCPUS,NodeList
+  sacct_fields="$sacct_fields,State,ExitCode,Elapsed,MaxRSS,ReqMem"
+  sacct -j "$job_id" --format="$sacct_fields" -P > \
+    "$analysis_dir/sacct.txt"
+  case "$rc" in 0|2) :;; *) exit "$rc";; esac
+  sha256sum -c "$analysis_dir/analysis-program.sha256"
+  sha256sum -c "$analysis_dir/analysis-inputs.sha256"
+  for name in request-union.json inventory.json wcs.json \
+      pixel-identities.json blank-summary.json false-z-regions.json \
+      edge-tables.csv coadd-recombination.json log-completion.json; do
+    test -s "$outputs/$name"
+  done
+  for cid in P-SEQ P-OMP S-C-SEQ S-C-OMP S-E-SEQ S-E-OMP; do
+    for suffix in json md exit.txt; do
+      test -s "$outputs/baseline-audit-$cid.$suffix"
+    done
+  done
+  for pair in P S-C S-E; do
+    for suffix in json md exit.txt; do
+      test -s "$outputs/baseline-compare-$pair.$suffix"
+    done
+  done
+  find "$outputs" -type f -name "*covariance-factor*.npz" -print -quit | \
+    grep -q .
+  find "$outputs" -type f -print0 | sort -z | xargs -0 sha256sum > \
+    "$analysis_dir/outputs.sha256"'
+
+# Re-prove that build and runs did not dirty the source checkout.
+ssh unity_toltec 'request_root=/work/toltec/sci-map-001
+  sha256sum -c "$request_root/tolproj-executable.sha256" &&
+  sha256sum -c "$request_root/tolproj-package-sha256.txt" &&
+  cd /home/toltec_umass_edu/work_toltec/citlali_dev/citlali_refactor &&
+  test -z "$(git status --porcelain)" &&
+  test "$(git rev-parse HEAD)" = \
+    "9aae0e669384c5c0c0dda93debc194d6b8dac787"'
+
+# Bundle only after all exact paths/tokens are resolved and recorded.
+ssh unity_toltec 'cd /work/toltec &&
+  find sci-map-001 -type f -print0 |
+  sort -z | xargs -0 sha256sum > SCI-MAP-001-UNITY-001-MANIFEST.sha256 &&
+  tar -czf SCI-MAP-001-UNITY-001.tar.gz sci-map-001 \
+  SCI-MAP-001-UNITY-001-MANIFEST.sha256 &&
+  sha256sum SCI-MAP-001-UNITY-001.tar.gz'
+\end{verbatim}
+\end{small}
+
+The deployed TolPROJ resolver selects and records its default site-config path,
+SHA-256, and redacted resolved rendering; the setup commands use that original
+provider path so relative leaves retain their meaning.  Raw site-config bytes
+need not enter the returned bundle.  No unresolved config token remains.
+Grant's only native-input choices are the
+two matched project paths and five associated selection fields captured before
+setup in the immutable seven-line file.  The seven setup commands themselves
+are fixed above and their complete traced transcripts are mandatory.  A missing
+or unsuitable selected project, source, APT, pointing reduction, exact obsnum,
+or exact array set is a request-execution gap and stops the run.  All later
+paths are fixed by those records and \code{analysis-inputs.json}.  The active Phase~4 contracts are
+retained as named base inventories but are not invoked as closed-world
+validators for these extra realization files.  Every materialized case is run
+once in its own directory; no manifest or output path is shared or overwritten.
+
+\subsection*{Evidence Grant must return}
+
+{\raggedright Return one immutable bundle containing: request ID; full source SHA and clean
+status; exact Citlali/TolPROJ/site-kit versions and identities; compiler,
+complete CMake cache/options/dependencies, binary/launcher/snapshot hashes;
+complete setup/build/run/analysis commands and exit statuses; ordered numbered
+files, original and materialized expert overlays, generated submission overlay,
+launcher/source, pre-run merge and successful runtime merged bytes/digests;
+frozen analysis-program/input bytes and all analysis outputs; observation,
+array/network, APT, calibration,
+pointing-support, seed and mask/weight identities; complete logs; all products
+and sidecars with sizes and SHA-256; audit/product/comparison JSON and reports;
+blank covariance and false-standardized-signal tables; every missing, extra,
+changed, skipped, invalid, or unreadable record; all pre-registered metrics and
+pass/fail results; durable large-product locations; operator and timestamps;
+and every deviation.  Until that bundle is audited, no evidence entry is
+credited toward \code{SCI-MAP-001-UNITY-001}; the separate
+\code{SCI-MAP-001-XAUD-001} entry remains characterization-only.\par}
+
+\section{Compile and review evidence inventory}
+
+Cached Tectonic produced a warning-free 57-page letter audit PDF; the unchanged
+frozen core remains a warning-free 20-page letter PDF.  All amended audit pages
+passed visual inspection after rendering; the frozen core hash remained
+\AuditCoreSHA.  PDFs are non-authoritative validation artifacts.
+
+\end{document}
