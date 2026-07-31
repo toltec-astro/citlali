@@ -26,15 +26,31 @@ operational development remains active there. The previous
 branches are retained as historical pointers rather than competing
 application authorities.
 
-The successor build proceeds independently on `codex/conan2-adaptation` in a
+The successor build proceeds independently on `codex/build-adaptation` in a
 separate worktree created from the application mainline. It incorporates
 mainline regularly and may return only after the bounded Adapt gates pass. It
-does not wholesale-merge `citlali/v4.x_conan2`, replace the refactored
+does not wholesale-merge an upstream Citlali build branch, replace the refactored
 application, or mix numerical algorithm changes into build integration.
 
 The live branch, upstream revision, gate, and import policy are recorded in
 [`INTEGRATION_LEDGER.md`](INTEGRATION_LEDGER.md). The durable rationale is
-[ADR 0008](adr/0008-application-mainline-and-build-adaptation-lanes.md).
+[ADR 0009](adr/0009-spack-build-foundation.md).
+
+## 2026-07-31 Spack Build Reset
+
+The build owner replaced the Conan 2 implementation with a decentralized
+Spack package graph and reconciled design. The project accepts Spack as the
+successor dependency/environment foundation while retaining the bounded Adapt
+strategy. Exact revisions, reproduced evidence, reported compiler/real-data
+results, requirement dispositions, and entry gates are recorded in
+[`TOLTECA_SPACK_BUILD_INTEGRATION_REVIEW_2026-07-31.md`](TOLTECA_SPACK_BUILD_INTEGRATION_REVIEW_2026-07-31.md).
+
+The new architecture resolves the earlier NetCDF C++ export problem and has
+substantially stronger installed-package and real-data evidence. It does not
+remove the need to port the full refactor, preserve provenance and tests, add
+explicit HDF5/Zlib ownership, provide native Mac and Unity environments, or
+define immutable release sources and a portable lock. The existing build
+remains the operational path until those gates pass.
 
 ## 2026-07-26 Conan 2 Build Review
 

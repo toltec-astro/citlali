@@ -1,6 +1,6 @@
 # ADR 0008: Application Mainline And Build Adaptation Lanes
 
-- **Status:** Accepted
+- **Status:** Superseded in part by ADR 0009; application-lane policy retained
 - **Recorded:** 2026-07-31
 - **Decision owners:** Citlali project owner and engineering
 
@@ -24,7 +24,7 @@ boundary while allowing both workstreams to progress.
 contains the current refactored application, scientific behavior, operational
 contracts, tests, configuration, and accepted validation history.
 
-`codex/conan2-adaptation` is an isolated build-integration branch and worktree
+`codex/conan2-adaptation` was established as an isolated build-integration branch and worktree
 created from the exact application mainline. It may change build definitions,
 dependency ownership, package recipes, compiler profiles, generated build
 metadata, and narrowly required compatibility boundaries. It must not contain
@@ -91,6 +91,9 @@ Review this decision after the Conan 2 successor is the accepted operational
 build and the fallback build has been retired. A future release-branch policy
 may replace the two-lane adaptation workflow, but it must preserve explicit
 application authority and exact validated source identity.
+
+ADR 0009 supersedes the Conan-specific tool and branch identity. The
+application-mainline and isolated-adaptation principles remain accepted.
 
 ## Evidence
 
