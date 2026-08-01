@@ -147,9 +147,9 @@ application-repair commit, Unity evidence, re-audit, or production expansion
 exists. The canonical full-SHA identity correction is recorded at
 `35cc8ce246e8e70c569e650be6c1eae2c91b80ef`.
 
-## 2026-08-01 SCI-AST-001 Prepared Audit Dispatch
+## 2026-08-01 SCI-AST-001 Active Audit
 
-`SCI-AST-001` is the next Foundation Wave 1 critical-path audit. Its canonical
+`SCI-AST-001` is the active Foundation Wave 1 critical-path audit. Its canonical
 ALIGN dependency now states the required aligned-field identity, topology,
 unit/frame, native-source mapping, validity/support, timing residual, origin,
 and eligibility contract plus the consequence while ALIGN remains open. The
@@ -162,8 +162,18 @@ against coordinator registry snapshot
 the prompt digest is
 `7071db6ad57fd23a1b36bdec619ac72bc0d26d8427d91e7abdbf10afbc46713f`,
 and the refreeze artifact commit is
-`bba8beae6c933cda6562fe2c4c3cdf2b6d648c72`. The package is prepared at Ultra
-effort but has not been launched; no AST audit branch or worktree exists.
+`bba8beae6c933cda6562fe2c4c3cdf2b6d648c72`.
+
+The explicitly authorized Ultra task `019fbdd3-5a80-7d33-b3a2-a0a0b539b695`
+is active in the dedicated app worktree
+`/Users/gwilson/.codex/worktrees/bcb5/citlali-refactor`. The worktree was
+verified clean and detached at exact governing SHA
+`9aae0e669384c5c0c0dda93debc194d6b8dac787` before creating the sole permitted
+branch `codex/audit-sci-ast-001`. All frozen identities and absence-of-prior-
+state gates passed. The auditor is now reading only pre-core architecture,
+scientific-convention, and approved upstream authorities; quarantined AST
+implementation paths and post-core handoff evidence remain unopened until the
+independent core is frozen in its own commit.
 
 ## 2026-08-01 SCI-FLT-001 Returned Evidence Review
 

@@ -1216,11 +1216,20 @@ packages:
         status: submitted
     governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
     governing_sha_role: audit_dispatch_snapshot
-    audit_branch: null
+    audit_branch: codex/audit-sci-ast-001
     audit_commit: null
     independent_derivation: {status: not_started, sha256: null}
     dispatch:
-      status: prepared_not_launched
+      status: launched_audit_active
+      launch_date: 2026-08-01
+      launch_authorization: project_owner_explicit
+      task_thread_id: 019fbdd3-5a80-7d33-b3a2-a0a0b539b695
+      task_host_id: local
+      task_worktree: >-
+        /Users/gwilson/.codex/worktrees/bcb5/citlali-refactor
+      launched_from_ref: codex/refactor-mainline
+      launched_head_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+      launched_branch: codex/audit-sci-ast-001
       coordinator_registry_commit: 35cc8ce246e8e70c569e650be6c1eae2c91b80ef
       initial_dispatch_artifact_commit: 3ae69ba15c7f924874426f0a5d1c9a43589897f2
       identity_correction_commit: 35cc8ce246e8e70c569e650be6c1eae2c91b80ef
@@ -1237,9 +1246,11 @@ packages:
         7071db6ad57fd23a1b36bdec619ac72bc0d26d8427d91e7abdbf10afbc46713f
       launch_effort: ultra
       note: >-
-        Corrected registry snapshot, manifest, prompt, and digests are frozen
-        and ready for an explicitly authorized dedicated audit task. No AST
-        audit branch or worktree has been launched.
+        The explicitly authorized dedicated Ultra audit is active. Its clean
+        app-supplied worktree was verified detached at the exact governing SHA
+        before the sole permitted audit branch was created. Frozen prompt,
+        manifest, registry, and handoff identities verified before quarantine-
+        governed pre-core authority review began.
     contract_status: not_started
     implementation_status: not_assessed
     validation_status: not_started
