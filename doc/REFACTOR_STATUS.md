@@ -218,7 +218,8 @@ records `SCI-AST-001-D001` through `D008`. The project owner has approved D001
 and D002 in the
 [partial decision record](audits/packages/SCI-AST-001_COORDINATOR_DECISION_2026-08-01.md).
 The cumulative record was first introduced for D001 at commit
-`0a17d088aded7fc6c18a59522f5b2b2fce9749ad`. D001 preserves the
+`0a17d088aded7fc6c18a59522f5b2b2fce9749ad`; its D002 revision is bound at
+commit `374fd2c2ffda74a651cf7a13d0e7f38758f17789`. D001 preserves the
 demonstrated signs, basis, rotation, handedness, and composition
 that place point sources correctly across approximately one-square-degree maps,
 including at corners; document every stage, use explicit boundary adapters,
