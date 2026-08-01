@@ -1,0 +1,93 @@
+format_version: 1
+id: SCI-VAL-001-XAUD-005
+created_date: 2026-08-01
+
+source:
+  package_id: SCI-AST-001
+  role: auditor
+  audit_branch: codex/audit-sci-ast-001
+  audit_commit: 429e1b5361683ba15c8d897ba22bdc4c4d03bf91
+  governing_or_evidence_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+  finding_ids:
+    - SCI-AST-001-F001
+    - SCI-AST-001-F002
+    - SCI-AST-001-F003
+    - SCI-AST-001-F005
+    - SCI-AST-001-F007
+    - SCI-AST-001-F010
+    - SCI-AST-001-F011
+    - SCI-AST-001-F012
+    - SCI-AST-001-F013
+    - SCI-AST-001-F014
+    - SCI-AST-001-F015
+
+target:
+  package_id: SCI-VAL-001
+
+priority: P0
+evidence_basis: observed
+review_phase: post_core_evidence
+arrival: before_dispatch
+status: submitted
+
+summary: >-
+  Existing AST checks exercise configuration wiring and historical
+  compatibility but omit the numerical coordinate, WCS, validity,
+  uncertainty, identity, simulation, and exact-SHA gates needed for Tier A.
+claim: >-
+  A bounded AST validation suite must test TAN/inverse-TAN domain and
+  round-trip behavior, both wrap directions, support-time precision and
+  monotonicity, detector identity and focal-plane composition, WCS
+  requested-to-realized identity and handedness, per-variable product units,
+  Jacobian/covariance propagation, invalidity propagation, simulations,
+  sequential/OMP equivalence, and clean exact-SHA operational products.
+supports:
+  - Add the frozen AST falsification suite as versioned validation requirements.
+  - Record SCI-AST-001-UNITY-001 as outstanding rather than inferring evidence from historical runs.
+  - Trigger AST re-audit only after every required local and external gate is returned without skips.
+does_not_establish:
+  - This handoff does not define VAL estimator semantics outside the AST boundary.
+  - Passing current config preflight does not establish any omitted numerical claim.
+  - It does not authorize repair, production expansion, or a Unity connection by Codex.
+
+requested_actions:
+  - add_or_update_dependency
+  - add_interface_test
+  - restrict_consumer
+  - trigger_reaudit
+affected_target_findings: []
+related_handoffs:
+  - SCI-RTC-001-XAUD-003
+  - SCI-PTC-001-XAUD-004
+  - SCI-MAP-001-XAUD-003
+  - SCI-SRC-001-XAUD-001
+  - SCI-MODE-001-XAUD-002
+  - SCI-BEAM-001-XAUD-002
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-AST-001-independent-core
+    availability: repository_path
+    path: doc/audits/packages/SCI-AST-001_INDEPENDENT_CORE.tex
+    sha256: ed1fe3bf68ed53974b8c910bd3824717eb0cf5ff11d0b27c0fdf27aa6e606276
+    note: Frozen tests T01-T23 and method dispositions.
+  - id: SCI-AST-001-local-evidence
+    availability: repository_path
+    path: doc/audits/evidence/SCI-AST-001_LOCAL_EVIDENCE_2026-08-01.yaml
+    sha256: e391757e63477fd568a415e8c6b9c4bca6dc98603cd83088c350cbc03a51f986
+    note: Exact local command results, numerical probes, historical limits, and missing compiled/Unity evidence.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: not_applicable
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

@@ -1,0 +1,81 @@
+format_version: 1
+id: SCI-PTC-001-XAUD-004
+created_date: 2026-08-01
+
+source:
+  package_id: SCI-AST-001
+  role: auditor
+  audit_branch: codex/audit-sci-ast-001
+  audit_commit: 429e1b5361683ba15c8d897ba22bdc4c4d03bf91
+  governing_or_evidence_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+  finding_ids:
+    - SCI-AST-001-F001
+    - SCI-AST-001-F002
+    - SCI-AST-001-F004
+    - SCI-AST-001-F012
+    - SCI-AST-001-F013
+
+target:
+  package_id: SCI-PTC-001
+
+priority: P0
+evidence_basis: observed
+review_phase: post_core_evidence
+arrival: before_dispatch
+status: submitted
+
+summary: >-
+  PTC masks, cleaning decisions, and fruit-loop placement consume AST detector
+  coordinates without a complete validity, topology, or detector-identity boundary.
+claim: >-
+  The exact governing AST source can map invalid directions to finite center,
+  mishandle one azimuth wrap direction, and apply APT rows without validating
+  full detector identity and offset finiteness. PTC must not interpret a
+  finite coordinate or a signal flag as AST coordinate validity.
+supports:
+  - Add a distinct AST coordinate-validity input to PTC selection and feedback interfaces.
+  - Exercise singular, wrap, non-finite, detector-order, and seq/OMP interface tests.
+  - Restrict new source-protection and fruit-loop coordinate claims until dependency closure.
+does_not_establish:
+  - This record does not assess mature PTC cleaning algorithms or transfer functions.
+  - It does not establish a numerical regression in an accepted PTC run.
+  - It does not authorize repair.
+
+requested_actions:
+  - add_or_update_dependency
+  - add_or_update_finding
+  - add_interface_test
+  - restrict_consumer
+affected_target_findings: []
+related_handoffs:
+  - SCI-RTC-001-XAUD-003
+  - SCI-MAP-001-XAUD-003
+  - SCI-VAL-001-XAUD-005
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-AST-001-independent-core
+    availability: repository_path
+    path: doc/audits/packages/SCI-AST-001_INDEPENDENT_CORE.tex
+    sha256: ed1fe3bf68ed53974b8c910bd3824717eb0cf5ff11d0b27c0fdf27aa6e606276
+    note: Frozen detector-coordinate validity and response contract.
+  - id: SCI-AST-001-local-evidence
+    availability: repository_path
+    path: doc/audits/evidence/SCI-AST-001_LOCAL_EVIDENCE_2026-08-01.yaml
+    sha256: e391757e63477fd568a415e8c6b9c4bca6dc98603cd83088c350cbc03a51f986
+    note: Exact-source PTC consumers plus projection, wrap, and APT traces.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: not_applicable
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

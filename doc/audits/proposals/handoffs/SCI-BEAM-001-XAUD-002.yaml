@@ -1,0 +1,83 @@
+format_version: 1
+id: SCI-BEAM-001-XAUD-002
+created_date: 2026-08-01
+
+source:
+  package_id: SCI-AST-001
+  role: auditor
+  audit_branch: codex/audit-sci-ast-001
+  audit_commit: 429e1b5361683ba15c8d897ba22bdc4c4d03bf91
+  governing_or_evidence_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+  finding_ids:
+    - SCI-AST-001-F004
+    - SCI-AST-001-F005
+    - SCI-AST-001-F011
+    - SCI-AST-001-F012
+    - SCI-AST-001-F013
+    - SCI-AST-001-F014
+
+target:
+  package_id: SCI-BEAM-001
+
+priority: P0
+evidence_basis: observed
+review_phase: post_core_evidence
+arrival: before_dispatch
+status: submitted
+
+summary: >-
+  Beammap detector coordinates depend on unverified APT row identity and AST
+  coordinate validity, and final TOD metadata can mislabel non-angular telescope fields.
+claim: >-
+  The APT reader requires columns and an altaz label but does not validate
+  x_t/y_t size or finiteness, UID uniqueness, or exact APT-to-raw detector-row
+  identity before index-wise detector pointing. Beammap final TOD rewrites
+  detector positions through the same AST operator, while generic telescope
+  variables are all labeled radians.
+supports:
+  - Add AST/ALIGN detector identity, APT basis, coordinate validity, and product-unit dependencies.
+  - Test APT permutation/duplication/non-finite cases and final TOD coordinate/unit round trips.
+  - Restrict new detector-coordinate or astrometric Beammap claims until re-audit.
+does_not_establish:
+  - This record does not audit Beammap fitting, photometry, priors, or detector selection.
+  - Historical exact Beammap product compatibility is not proof of the missing identity contract.
+  - It does not authorize repair.
+
+requested_actions:
+  - add_or_update_dependency
+  - add_or_update_finding
+  - add_interface_test
+  - restrict_consumer
+affected_target_findings: []
+related_handoffs:
+  - SCI-MODE-001-XAUD-002
+  - SCI-MAP-001-XAUD-003
+  - SCI-VAL-001-XAUD-005
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-AST-001-independent-core
+    availability: repository_path
+    path: doc/audits/packages/SCI-AST-001_INDEPENDENT_CORE.tex
+    sha256: ed1fe3bf68ed53974b8c910bd3824717eb0cf5ff11d0b27c0fdf27aa6e606276
+    note: Frozen detector composition, validity, uncertainty, and identity contract.
+  - id: SCI-AST-001-local-evidence
+    availability: repository_path
+    path: doc/audits/evidence/SCI-AST-001_LOCAL_EVIDENCE_2026-08-01.yaml
+    sha256: e391757e63477fd568a415e8c6b9c4bca6dc98603cd83088c350cbc03a51f986
+    note: Exact APT admission, Beammap pointing consumers, and TOD metadata trace.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: not_applicable
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

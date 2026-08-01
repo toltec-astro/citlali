@@ -1,0 +1,931 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\renewcommand{\sfdefault}{lmr}
+\usepackage[margin=0.72in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,longtable,array,tabularx}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\renewcommand{\mathsf}[1]{\mathrm{#1}}
+
+\definecolor{navy}{RGB}{25,55,88}
+\definecolor{pale}{RGB}{238,244,249}
+\definecolor{warn}{RGB}{125,56,22}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist[itemize]{leftmargin=1.45em,itemsep=1pt,topsep=2pt}
+\setlist[enumerate]{leftmargin=1.65em,itemsep=1pt,topsep=2pt}
+\renewcommand{\arraystretch}{1.15}
+\newcommand{\pkg}{\texttt{SCI-AST-001}}
+\newcommand{\sha}[1]{\texttt{#1}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\T}{\mathsf{T}}
+\newcommand{\Unavailable}{\texttt{unavailable}}
+\newcommand{\Fail}{\texttt{fail\_closed}}
+\newcommand{\Required}{\texttt{required}}
+\newcommand{\NA}{\texttt{not\_applicable}}
+
+\title{\vspace{-1.5em}\textcolor{navy}{\textbf{SCI-AST-001 Independent Scientific Core}}\\
+\large Pointing, astrometry, detector coordinates, projection, and WCS}
+\author{Dedicated independent scientific-contract audit}
+\date{Independent pre-source revision 1, 2026-08-01}
+
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+
+\begin{center}
+\fcolorbox{navy}{pale}{\begin{minipage}{0.94\linewidth}
+\textbf{Immutable identity.}
+Application SHA \sha{9aae0e669384c5c0c0dda93debc194d6b8dac787}; audit branch
+\sha{codex/audit-sci-ast-001}; Tier A; audit only.  This document was derived
+before opening the quarantined AST implementation, AST tests, product
+contracts, validation products, writers, downstream implementation, or the
+post-core handoff \sha{SCI-AST-001-XAUD-001}.  It is a falsifiable scientific
+contract, not a statement that the governing implementation conforms.
+\end{minipage}}
+\end{center}
+
+\tableofcontents
+\newpage
+
+\section{Identity, authority, and independence}
+
+\subsection{Frozen dispatch identities}
+
+The following bytes and repository identities govern this revision.
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.25\linewidth}p{0.69\linewidth}}
+\toprule
+Item & Frozen identity \\
+\midrule
+\endhead
+Application & \sha{9aae0e669384c5c0c0dda93debc194d6b8dac787} on authority ref
+\sha{codex/refactor-mainline} at preflight; branch created only as
+\sha{codex/audit-sci-ast-001}. \\
+Dispatch prompt & \sha{SCI\_AST\_001\_AUDIT\_PROMPT.md}; SHA-256
+\sha{7071db6ad57fd23a1b36bdec619ac72bc0d26d8427d91e7abdbf10afbc46713f}. \\
+Inbox manifest & \sha{SCI-AST-001\_INBOX\_MANIFEST\_2026-08-01.yaml}; SHA-256
+\sha{32f8ec335cfbececc4fb47cbd1f3197c189481f7c9b7e963c4ecbbf4974dca1f}. \\
+Post-core handoff & \sha{SCI-AST-001-XAUD-001}; unopened in this phase; SHA-256
+\sha{ede523dd732f9e14ec9dae44b9e608497819b50b0c97abce6b4124d3602e9d71}. \\
+Framework & Read-only worktree clean at preflight; manifest registry commit
+\sha{35cc8ce246e8e70c569e650be6c1eae2c91b80ef} verified ancestral to framework
+HEAD. \\
+ALIGN authority & Owner decision \sha{ALIGN-OD1} through \sha{ALIGN-OD8} and
+\sha{ALIGN-C001}, read exactly at decision commit
+\sha{4f905f4f353e91847a303f4f3959654f3f03c302}. \\
+\bottomrule
+\end{longtable}
+
+\subsection{Permitted pre-core exposure}
+
+Only the dispatch prompt and manifest, repository \texttt{AGENTS.md}, living
+architecture, scientific conventions, architectural decisions 0001--0003,
+the TolTEC context authority maps and stable summaries, the canonical audit
+ledger entries, and the approved ALIGN owner decision were used.  A heading
+inventory of the living status document exposed the phrases
+``Observation-Resolved Astrometry Candidate'' and existing astrometry gate
+headings, but no associated contents were opened.  The dispatch prompt and
+ledger necessarily exposed names of known implementation paths.  No content,
+diff, history, test, product, writer, consumer, or generated artifact from
+those paths was inspected.  No prior implementation exposure is otherwise
+known to this audit.
+
+This allowed authority constrains meanings and boundaries; it does not supply
+the estimator below.  Equations~\eqref{eq:unit-vector}--\eqref{eq:cov-total}
+are derived from spherical geometry, declared abstract inputs, and explicit
+state semantics.
+
+\subsection{Status at independent freeze}
+
+The four status axes are intentionally independent:
+
+\begin{center}
+\begin{tabular}{lllll}
+\toprule
+Contract & Implementation & Validation & Production & Verdict \\
+\midrule
+\texttt{independent\_draft\_frozen} & \texttt{not\_assessed} &
+\texttt{not\_started} & \texttt{existing\_use\_only} & \texttt{pending} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The freeze does not approve application behavior, a repair, integration,
+production expansion, or external evidence.
+
+\section{Bounded scientific claim}
+
+For observation $o$, detector $d$, and stable detector-reference sample $s$,
+AST accepts an approved astrometric plan and abstract aligned inputs.  It
+returns a realized coordinate record
+\[
+ \mathcal{A}_{ods} =
+ \{\widehat{\boldsymbol r}_{ods}^{F},\,\boldsymbol w_{ods},\,
+   \boldsymbol q_{ods},\,\nu_{ods},\,\mathcal{W}_{o},\,\mathcal{U}_{ods},
+   \mathcal{P}_{ods}\},
+\]
+where $F$ is the declared output frame, $\widehat{\boldsymbol r}$ is a unit
+direction, $\boldsymbol w$ is a continuous tangent-plane coordinate,
+$\boldsymbol q$ is a continuous FITS pixel coordinate, $\nu$ is explicit
+validity and eligibility, $\mathcal W_o$ is immutable persisted WCS identity,
+$\mathcal U$ is the uncertainty/response availability bundle, and
+$\mathcal P$ is provenance.  Discrete map accumulation, source fitting,
+pointing/OOF fitting, Beammap fitting, photometry, filtering, and significance
+are outside this estimator.
+
+TolTECA is authoritative for selecting pointing-support records.  AST may
+validate and apply supplied records; it must not select a calibrator, search
+for replacement records, or reinterpret missing upstream authority as zero.
+
+\section{Abstract input contract}
+
+\subsection{Aligned sample fields}
+
+ALIGN remains nonconformant and validation-in-progress.  Therefore each input
+below is an abstract obligation rather than an implementation assumption.
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.20\linewidth}
+                  >{\raggedright\arraybackslash}p{0.31\linewidth}
+                  >{\raggedright\arraybackslash}p{0.43\linewidth}}
+\toprule
+Input & Required identity & AST admission rule \\
+\midrule
+\endhead
+Sample $s$ & Stable observation and detector-grid slot, MJD or convertible
+time, cadence/phase, native mapping, timing residual, origin, original versus
+synthesized state & Ordered, unique, finite, in observation support.  Timing
+identity and residual must be available for precision claims. \\
+Boresight $\boldsymbol r^B_s$ & Unit, frame, equinox/epoch, reference model,
+unit, circular topology, native source, interpolation operator, validity &
+Finite and normalizable.  A bare ``RA'', ``Dec'', ``Az'', or ``El'' without
+frame/epoch/topology is inadmissible. \\
+Pointing support $\boldsymbol c_k$ & Ordered support identity; two components;
+component topology; arcsec; correction sign; support MJD and covariance
+availability & Normalize at a cold boundary to tangent components.  Reject
+ambiguous sign, coordinate-increment versus tangent-offset meaning, mixed or
+invalid support, and non-finite values. \\
+Detector offset $\boldsymbol f_d$ & Stable detector UID, focal-plane basis,
+orientation convention, angular unit, validity, calibration version and
+covariance availability & Join by UID, never row position across products.
+The map from focal-plane basis to the sky tangent basis must be declared. \\
+Frame operator $\mathsf R_{F\leftarrow H,s}$ & Input/output frames, time scale,
+site, Earth-orientation and atmospheric/refraction policy, version, validity,
+uncertainty availability & Required when an AltAz correction is transformed
+to J2000.  Supplied J2000 boresight may be used only when its identity is
+authoritative and the detector-basis transform is compatible. \\
+Projection plan & Mode, center, center authority, projection, pixel scale,
+axis order/sign/rotation, dimensions, bounds, and output unit & Non-singular,
+finite, immutable per realized product.  Requested, effective, resolved, and
+realized identities remain distinct. \\
+\bottomrule
+\end{longtable}
+
+Each aligned field also declares support, validity, missing/non-finite policy,
+origin, interpolation method, and original/synthesized eligibility.  AST never
+infers those facts from container position or a neighboring field.
+
+\subsection{Fixed, requested, selected, fitted, and derived quantities}
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.18\linewidth}
+                  >{\raggedright\arraybackslash}p{0.31\linewidth}
+                  >{\raggedright\arraybackslash}p{0.45\linewidth}}
+\toprule
+Class & Examples & Contract \\
+\midrule
+\endhead
+Fixed mathematical & Angular periods, unit conversions, spherical
+composition, TAN equations, one-based FITS convention & Versioned equations;
+not learned from the data. \\
+Requested & Supplied correction values, desired center, projection, pixel
+scale, orientation, output families & Preserved losslessly even if inactive
+or superseded by a declared effective rule. \\
+Effective & Normalized units/topology, correction activation, constant/MJD/
+span policy, projection family & Context-free policy only; does not claim an
+observation supplied valid support. \\
+Upstream selected & Pointing support records, observation inputs, detector
+calibration table & Selection authority and exact identities retained; AST
+validates but does not make the selection. \\
+Observation resolved & Actual support bracket, sample span, boresight field,
+frame operator, detector set, WCS center and bounds & Constructed completely
+for one observation before replacing prior state. \\
+Realized/data derived & Per-sample correction, coordinate, projection and
+pixel validity, applied counts, exclusions, actual WCS and published products
+& Records what ran; never mutates the request. \\
+Fitted or inferred outside AST & Source centroid, PSF width, pointing-fit
+offset, source significance, Beammap fit, map-domain coverage & May provide
+compatibility evidence but is not AST input or estimator authority. \\
+\bottomrule
+\end{longtable}
+
+An automatically selected or data-derived projection center must be labeled
+as such, preserve the selection operator and parents, and carry its
+uncertainty or an explicit unavailable term.  It may not be described as a
+fixed requested center.
+
+\section{Spherical coordinate identities}
+
+\subsection{Unit vectors, local basis, and wrap}
+
+For longitude $\ell$ and latitude $b$ in any declared spherical frame, define
+\begin{equation}
+ \boldsymbol r(\ell,b)=
+ \begin{bmatrix}\cos b\cos\ell\\ \cos b\sin\ell\\ \sin b\end{bmatrix},
+ \quad
+ \boldsymbol e_{\ell}=\begin{bmatrix}-\sin\ell\\\cos\ell\\0\end{bmatrix},
+ \quad
+ \boldsymbol e_b=
+ \begin{bmatrix}-\sin b\cos\ell\\-\sin b\sin\ell\\\cos b\end{bmatrix}.
+ \label{eq:unit-vector}
+\end{equation}
+$\boldsymbol e_{\ell}$ points toward increasing longitude at fixed latitude;
+$\boldsymbol e_b$ points toward increasing latitude.  Both are unit tangent
+vectors away from the coordinate pole.  The vector $\boldsymbol r$, not a
+longitude value, remains the identity at a pole.
+
+For period $P$, circular difference and normalized output are
+\begin{equation}
+ \operatorname{wrap}_P(\theta)=
+ \theta-P\left\lfloor\frac{\theta+P/2}{P}\right\rfloor\in[-P/2,P/2),
+ \qquad
+ \operatorname{norm}_P(\theta)=\theta-P\left\lfloor\frac{\theta}{P}\right\rfloor
+ \in[0,P).
+ \label{eq:wrap}
+\end{equation}
+RA and azimuth differences use $P=2\pi$.  Ordinary subtraction across the
+zero meridian is a falsifying implementation.
+
+\subsection{Exact tangent displacement}
+
+For tangent components $\boldsymbol\eta=(\eta_{\ell},\eta_b)^\T$ in radians,
+$\rho=\|\boldsymbol\eta\|$, and
+$\boldsymbol u=(\eta_{\ell}\boldsymbol e_{\ell}+\eta_b\boldsymbol e_b)/\rho$,
+the exact spherical exponential map is
+\begin{equation}
+ \operatorname{Exp}_{\boldsymbol r}(\boldsymbol\eta)=
+ \begin{cases}
+ \cos\rho\,\boldsymbol r+\sin\rho\,\boldsymbol u,&\rho>0,\\
+ \boldsymbol r,&\rho=0.
+ \end{cases}
+ \label{eq:exp-map}
+\end{equation}
+The output is renormalized only to remove floating-point roundoff, never to
+hide non-finite or invalid input.  Directly adding longitude and latitude is a
+small-angle approximation and is not the authority for this contract.
+
+An input called an ``azimuth offset'' or ``RA offset'' must declare whether it
+is a coordinate increment $\Delta\ell$ or an on-sky tangent component
+$\eta_{\ell}$.  The normalization is
+\begin{equation}
+ \eta_{\ell}=\begin{cases}
+  \cos b\,\Delta\ell,&\text{declared coordinate increment},\\
+  \Delta\ell_{\rm tangent},&\text{declared tangent offset}.
+ \end{cases}
+ \label{eq:longitude-topology}
+\end{equation}
+Conflating these cases is an altitude/declination-dependent scale error.
+
+\section{Pointing correction support and sign}
+
+\subsection{Sign and unit}
+
+Let $\kappa=\pi/(180\,3600)$ radians per arcsecond.  After the topology
+normalization in Equation~\eqref{eq:longitude-topology}, the supplied pair
+$\boldsymbol a_k=(a_{\ell,k},a_{b,k})^\T$ in arcsec becomes
+\begin{equation}
+ \boldsymbol c_k=\kappa\boldsymbol a_k.
+ \label{eq:offset-unit}
+\end{equation}
+Positive $c_{\ell}$ moves the corrected direction along increasing declared
+longitude; positive $c_b$ moves it along increasing latitude.  The upstream
+value must be identified as a correction with this sign.  A measured residual
+with the opposite action is not silently negated; it requires an explicit
+adapter and provenance.  Ambiguous sign fails before observation state is
+mutated.
+
+\subsection{Constant and two-support realization}
+
+For a single finite pair, the correction is observation-constant:
+\begin{equation}
+ \boldsymbol c_s=\boldsymbol c_0.
+ \label{eq:constant-offset}
+\end{equation}
+For two support pairs with finite positive MJD $m_0<m_1$, let the aligned
+sample have finite MJD $m_s$.  Bracket-only interpolation is
+\begin{equation}
+ \lambda_s=\frac{m_s-m_0}{m_1-m_0},\qquad
+ \boldsymbol c_s=(1-\lambda_s)\boldsymbol c_0+\lambda_s\boldsymbol c_1,
+ \qquad 0\le\lambda_s\le1.
+ \label{eq:mjd-interpolation}
+\end{equation}
+Every AST-eligible sample must be bracketed.  Clamping $\lambda_s$, choosing
+the nearest endpoint outside support, or extrapolating is forbidden.
+
+The compatibility observation-span fallback is a distinct, explicitly
+resolved policy.  It may be selected only when both support times are
+intentionally absent under the documented legacy boundary and the ordered
+pair is explicitly interpreted as observation endpoints.  With first and
+last eligible detector-reference times $t_-$ and $t_+$,
+\begin{equation}
+ \lambda_s^{\rm span}=\frac{t_s-t_-}{t_+-t_-},\qquad
+ \boldsymbol c_s=(1-\lambda_s^{\rm span})\boldsymbol c_0
+                    +\lambda_s^{\rm span}\boldsymbol c_1,
+ \quad t_-\le t_s\le t_+.
+ \label{eq:span-interpolation}
+\end{equation}
+The realized provenance names \texttt{legacy\_observation\_span}, the exact
+sample identities defining $t_-$ and $t_+$, and why MJD support was absent.
+Mixed positive/nonpositive support, non-finite support, reversed pairs, or
+$t_+=t_-$ with unequal corrections is ambiguous and fails.  A one-sample
+observation is allowed only when the two endpoint corrections are exactly
+equal, reducing to Equation~\eqref{eq:constant-offset}.
+
+\subsection{Support covariance}
+
+Stack $\boldsymbol c_*=(\boldsymbol c_0^\T,\boldsymbol c_1^\T)^\T$ and define
+\begin{equation}
+ \mathsf H_s=\begin{bmatrix}(1-\lambda_s)\mathsf I_2&
+                              \lambda_s\mathsf I_2\end{bmatrix},\qquad
+ \boldsymbol c_s=\mathsf H_s\boldsymbol c_*,\qquad
+ \mathsf C_{c,s}^{\rm formal}=\mathsf H_s\mathsf C_{c,*}\mathsf H_s^\T.
+ \label{eq:support-covariance}
+\end{equation}
+Cross-covariance between supports is retained when supplied.  Treating the
+supports as independent without authority is forbidden.  Interpolation-model,
+selection, and pointing-calibrator systematics remain separate terms.  If an
+input term is unavailable, the corresponding output is \Unavailable, not a
+zero matrix.
+
+\section{Boresight, correction, and detector composition}
+
+\subsection{Order of operations}
+
+Let $\boldsymbol r^H_s$ be the aligned telescope boresight in the local
+horizon frame.  The corrected boresight is
+\begin{equation}
+ \boldsymbol r^{H,c}_s=
+ \operatorname{Exp}_{\boldsymbol r^H_s}(\boldsymbol c_s).
+ \label{eq:corrected-boresight}
+\end{equation}
+Let $\boldsymbol f_d$ be the calibrated detector focal-plane offset and
+$\mathsf B_{ds}$ the declared two-dimensional map from its basis to the local
+tangent basis at $\boldsymbol r^{H,c}_s$.  Then
+\begin{equation}
+ \boldsymbol\xi_{ds}=\mathsf B_{ds}\boldsymbol f_d,
+ \qquad
+ \boldsymbol r^H_{ds}=
+ \operatorname{Exp}_{\boldsymbol r^{H,c}_s}(\boldsymbol\xi_{ds}).
+ \label{eq:detector-composition}
+\end{equation}
+Correction first and detector offset second is the physical AST convention.
+If an upstream detector direction already includes either operation, its
+composition history must declare that fact so the operation is not applied
+twice.  A detector join uses stable UID and the full observation detector
+identity, not a dense position inherited from another product.
+
+The small-angle relation
+\begin{equation}
+ \boldsymbol\eta_{ds}\simeq\boldsymbol c_s+\mathsf B_{ds}\boldsymbol f_d
+ \label{eq:small-angle}
+\end{equation}
+is an analytic limit and a test oracle near the center.  It is not authority
+to replace Equations~\eqref{eq:corrected-boresight} and
+\eqref{eq:detector-composition} without a bounded-error decision.
+
+\subsection{AltAz and J2000 output}
+
+Point, OOF, and Beammap tangent coordinates use $\boldsymbol r^H_{ds}$ and an
+AltAz center.  Science uses an explicitly identified equatorial J2000
+direction
+\begin{equation}
+ \boldsymbol r^{J2000}_{ds}=
+ \mathsf R_{J2000\leftarrow H,s}\boldsymbol r^H_{ds}.
+ \label{eq:frame-transform}
+\end{equation}
+$\mathsf R$ is a proper rotation or a more complete named astrometric
+operator when refraction or non-rotational corrections apply.  Its inputs and
+version include time scale, observatory position, Earth orientation,
+precession/nutation and aberration policy, and refraction policy.  If the
+application instead accepts an authoritative aligned J2000 boresight, the
+provenance must show the equivalent correction and focal-plane-basis path.
+Two competing boresight authorities cannot be silently mixed.
+
+``J2000'', ``ICRS'', apparent place, observed AltAz, and unrefracted AltAz are
+not synonyms.  If the exact equatorial frame or transformation model is
+unavailable, coordinates may remain usable only under an explicitly
+restricted compatibility identity; absolute J2000 precision and its
+covariance fail closed.
+
+\section{Tangent projection, WCS, and pixelization}
+
+\subsection{Gnomonic forward and inverse maps}
+
+For target direction $\boldsymbol r$, center $\boldsymbol r_0$, and the
+center basis $(\boldsymbol e_1,\boldsymbol e_2)$ pointing toward increasing
+longitude and latitude, define
+\begin{equation}
+ D=\boldsymbol r\cdot\boldsymbol r_0,\qquad
+ x=\frac{\boldsymbol r\cdot\boldsymbol e_1}{D},\qquad
+ y=\frac{\boldsymbol r\cdot\boldsymbol e_2}{D},\qquad D>0.
+ \label{eq:tan-forward}
+\end{equation}
+The inverse is
+\begin{equation}
+ \boldsymbol r=
+ \frac{\boldsymbol r_0+x\boldsymbol e_1+y\boldsymbol e_2}
+      {\sqrt{1+x^2+y^2}}.
+ \label{eq:tan-inverse}
+\end{equation}
+For $(\ell,b)$ and center $(\ell_0,b_0)$, use the wrapped
+$\Delta\ell=\operatorname{wrap}_{2\pi}(\ell-\ell_0)$:
+\begin{align}
+ D &= \sin b_0\sin b+\cos b_0\cos b\cos\Delta\ell,\nonumber\\
+ x &= \frac{\cos b\sin\Delta\ell}{D},\qquad
+ y = \frac{\cos b_0\sin b-\sin b_0\cos b\cos\Delta\ell}{D}.
+ \label{eq:tan-lonlat}
+\end{align}
+The center maps exactly to $(0,0)$.  Directions with non-finite $D$ or
+$D\le D_{\min}>0$ are out of the approved projection domain.  They are never
+clamped to an edge pixel.
+
+For Point/OOF and Beammap, the plane values are
+$\boldsymbol w=206264.806247\,(x,y)^\T$ arcsec and the axis identity is
+\texttt{AZOFFSET}, \texttt{ELOFFSET}.  For science,
+$\boldsymbol w=(180/\pi)(x,y)^\T$ degrees and the axes are equatorial
+\texttt{RA---TAN}, \texttt{DEC--TAN}.  The center frame and identity remain
+part of $\mathcal W_o$.
+
+\subsection{Continuous WCS and handedness}
+
+Let FITS pixel coordinates be $\boldsymbol q=(q_1,q_2)^\T$, the one-based
+reference pixel be $\boldsymbol q_0=\mathrm{CRPIX}$, and let $\mathsf M$ be
+the declared non-singular $2\times2$ CD matrix in plane-units per pixel:
+\begin{equation}
+ \boldsymbol w=\mathsf M(\boldsymbol q-\boldsymbol q_0),\qquad
+ \boldsymbol q=\boldsymbol q_0+\mathsf M^{-1}\boldsymbol w.
+ \label{eq:wcs-linear}
+\end{equation}
+The projection center is \texttt{CRVAL}; $\mathsf M$ or an exactly equivalent
+\texttt{PC}$+$\texttt{CDELT} representation fixes scale, rotation, axis order,
+sign, and handedness.  The determinant sign is persisted; consumers use the
+WCS rather than array display orientation.  The canonical north-up,
+east-left science display has $M_{11}<0$, $M_{22}>0$, off-diagonal zeros, and
+$\det\mathsf M<0$.  Any other realized orientation is admissible only when
+requested/effective, explicit in $\mathsf M$, and verified by directional
+tests.  Hidden flips or transposes are defects.
+
+For $N_1$ columns and $N_2$ rows with the projection center at the geometric
+array center,
+\begin{equation}
+ \mathrm{CRPIX}_1=\frac{N_1+1}{2},\qquad
+ \mathrm{CRPIX}_2=\frac{N_2+1}{2}.
+ \label{eq:crpix}
+\end{equation}
+Even dimensions therefore have half-integer reference pixels.  If a different
+reference pixel is realized, Equation~\eqref{eq:wcs-linear} must still place
+\texttt{CRVAL} there exactly and provenance must explain the center policy.
+
+\subsection{Zero-based memory and discrete assignment}
+
+Memory column $j$ and row $i$ are zero-based, while FITS coordinates are
+\begin{equation}
+ q_1=j+1,qquad q_2=i+1
+ \label{eq:index-base}
+\end{equation}
+at pixel centers.  Given continuous $\boldsymbol q$, half-open nearest-center
+assignment is
+\begin{equation}
+ j=\left\lfloor q_1-\tfrac12\right\rfloor,qquad
+ i=\left\lfloor q_2-\tfrac12\right\rfloor,qquad
+ 0\le j<N_1,\quad0\le i<N_2.
+ \label{eq:pixel-assignment}
+\end{equation}
+The lower edge is included and the upper edge excluded.  A different bin
+policy is possible only as an explicitly versioned operator with equivalent
+boundary tests; it cannot be inferred from integer casting.  Continuous WCS
+round trip, discrete in-bounds selection, and map coverage are distinct facts.
+
+\section{Response and uncertainty propagation}
+
+\subsection{Differential response}
+
+For Equation~\eqref{eq:tan-forward}, with
+$a=\boldsymbol r\cdot\boldsymbol e_1$ and
+$b=\boldsymbol r\cdot\boldsymbol e_2$, the direction-to-plane Jacobian is
+\begin{equation}
+ \mathsf J_{w\leftarrow r}=
+ \begin{bmatrix}
+ (D\boldsymbol e_1^\T-a\boldsymbol r_0^\T)/D^2\\
+ (D\boldsymbol e_2^\T-b\boldsymbol r_0^\T)/D^2
+ \end{bmatrix}.
+ \label{eq:projection-jacobian}
+\end{equation}
+The unit conversion multiplies this matrix.  Continuous pixel response is
+\begin{equation}
+ \mathsf J_{q\leftarrow z}=\mathsf M^{-1}
+ \mathsf J_{w\leftarrow r}\mathsf J_{r\leftarrow z},
+ \label{eq:pixel-jacobian}
+\end{equation}
+where $\boldsymbol z$ contains boresight, support corrections, detector
+offsets, basis orientation, frame-transform parameters, and projection center.
+Center uncertainty requires derivatives of $\boldsymbol r_0$ and its basis;
+it is not omitted merely because \texttt{CRVAL} is stored.
+
+The Jacobians of Equations~\eqref{eq:exp-map},
+\eqref{eq:detector-composition}, and \eqref{eq:frame-transform} may be
+implemented analytically, by validated automatic differentiation, or by a
+pre-registered finite-difference oracle.  Their method/version is realized
+provenance.  At zero offset and the projection center, the tangent response
+must approach the identity after declared unit and axis-sign conversions.
+
+\subsection{Covariance and unavailable terms}
+
+Covariance is propagated by the same realized operator:
+\begin{equation}
+ \mathsf C_y^{(k)}=\mathsf J_{y\leftarrow z_k}
+ \mathsf C_{z_k}^{(k)}\mathsf J_{y\leftarrow z_k}^{\T},
+ \label{eq:cov-component}
+\end{equation}
+for each available component $k$.  The reported bundle keeps distinct
+\begin{equation}
+ \mathsf C_y^{\rm formal},\quad
+ \mathsf C_y^{\rm pointing\,cal},\quad
+ \mathsf C_y^{\rm focal\,plane\,cal},\quad
+ \mathsf C_y^{\rm frame/model},\quad
+ \mathsf C_y^{\rm interpolation},\quad
+ \mathsf C_y^{\rm systematic}.
+ \label{eq:cov-total}
+\end{equation}
+A total may be formed only when cross-covariances and combination assumptions
+are declared.  Selection/availability uncertainty is generally a discrete or
+mixture uncertainty and is not converted to Gaussian covariance without an
+approved model.  Pointing-calibrator fit uncertainty is an upstream support
+term; source-fit uncertainty is downstream and must not be substituted for it.
+
+Pixelization response is the deterministic cell operator of
+Equation~\eqref{eq:pixel-assignment}.  If a downstream analysis approximates
+an unknown within-pixel location by the pixel center, the uniform-cell term
+$\mathsf M\mathsf M^\T/12$ is a separately labeled quantization model, not
+formal astrometric covariance.  Projection response, pixel support, validity,
+coverage, calibrator uncertainty, source-fit uncertainty, and map-domain
+significance remain separate quantities.
+
+No full observation covariance is required when its inputs do not exist.
+The availability manifest must say whether each mean, covariance, systematic,
+interpolation, frame-model, selection, projection-response, and pixelization
+term is \texttt{available}, \texttt{available\_conditional},
+\texttt{unavailable\_input}, \NA, or \texttt{not\_persisted\_standard}.
+
+\section{Validity, failure, lifecycle, and provenance}
+
+\subsection{Fail-closed and explicit invalidity rules}
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.30\linewidth}
+                  >{\raggedright\arraybackslash}p{0.64\linewidth}}
+\toprule
+Condition & Required behavior \\
+\midrule
+\endhead
+Missing correction authority & Preserve explicit unavailable/disabled/default
+state.  Zero is legal only as an authoritative requested or schema-default
+zero, never as a missing-value substitute. \\
+Non-finite or ambiguous support & Fail observation resolution before applying
+any correction; no partial update or prior-observation reuse. \\
+Unbracketed MJD support & Fail; no endpoint clamping, nearest support, or
+extrapolation. \\
+Invalid required boresight field & Mark the sample AST-ineligible with no
+coordinate and zero downstream mapped eligibility.  Fail the required product
+when its contract cannot represent or tolerate that explicit invalidity. \\
+Synthesized aligned field & Retain origin and ALIGN eligibility.  A required
+pointing field that ALIGN marks unavailable or ineligible cannot yield an AST-
+eligible sample. \\
+Ambiguous unit/frame/epoch/topology/sign & Fail before numerical application.
+No bare-value inference in a hot processor. \\
+Unknown detector identity or offset basis & Fail affected observation/product;
+never join by an unrelated row or silently use boresight coordinates. \\
+Projection $D\le D_{\min}$ & Mark out-of-domain and exclude; never clamp to
+the map boundary.  A globally invalid center or singular WCS fails setup. \\
+Non-finite continuous coordinate or pixel & Mark invalid and propagate required
+failure/explicit exclusion; never cast non-finite values to integers. \\
+Required WCS/provenance/product write failure & Fail the reduction and
+propagate to the session/CLI; a partial or mislabeled product is not success. \\
+Unavailable uncertainty & Preserve mean only under a restricted nonprecision
+identity and mark the missing term unavailable; never publish zero uncertainty.
+\\
+\bottomrule
+\end{longtable}
+
+\subsection{Observation lifecycle and parallel equivalence}
+
+Observation resolution constructs a complete immutable candidate
+$\mathcal A_o$ off to the side.  Only after all required fields, supports,
+detector joins, frame operators, and WCS checks pass may it atomically replace
+the previous observation state.  At every observation boundary, absent
+optional state is explicitly reset to disabled/unavailable.  Failure leaves no
+candidate usable by the next observation.
+
+Equations~\eqref{eq:mjd-interpolation}--\eqref{eq:pixel-assignment} are pure in
+$(o,d,s)$ and immutable observation state.  Sequential and parallel execution
+must produce the same coordinates, validity, detector identity, discrete
+pixel, counts, and provenance ordering under the declared numerical policy.
+Parallel workers may not update shared AST state, choose a center, or observe a
+partially replaced correction plan.
+
+Simulation and alternate compiled paths use the same equations and state
+machine.  A simulated boresight, detector geometry, or correction is labeled
+synthetic with exact generator/version/seed.  Simulation cannot bypass
+support, wrap, index, validity, or output-failure checks.  An alternate path
+that emits different coordinate meaning is a separate estimator and fails
+this contract until approved.
+
+\subsection{Lossless four-stage provenance}
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.18\linewidth}
+                  >{\raggedright\arraybackslash}p{0.76\linewidth}}
+\toprule
+State & Minimum lossless record \\
+\midrule
+\endhead
+Requested & Exact accepted low-level values and source identity; correction
+pairs and support values; requested center, projection, scale, orientation,
+dimensions, products; inactive expert values retained. \\
+Effective & Activation; normalized units and component topology; correction
+sign adapter if authoritative; constant/MJD/span policy; projection family;
+default source; compatibility decisions. \\
+Observation-resolved & Observation and detector-table identities; sample
+support; chosen support records/bracket; frame/epoch/model; aligned-field
+origins, validity and timing residual availability; detector UID join; center
+authority; exact WCS parameters and bounds; uncertainty availability. \\
+Realized & Applied per-sample correction policy and endpoint identities;
+eligible/invalid/out-of-domain counts; coordinate extrema and wrap events;
+detector/product cardinality; exact WCS serialized; estimator and Jacobian
+versions; unavailable terms; products attempted/completed/failed and digests.
+\\
+\bottomrule
+\end{longtable}
+
+Realized summaries may be compact, but must reconstruct every policy decision
+and map any persisted coordinate or detector product to the exact observation,
+detector UID, WCS, support, and estimator version.  Provenance is evidence, not
+a reverse control path.
+
+\section{Boundary contracts and provisional consumer policy}
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.14\linewidth}
+                  >{\raggedright\arraybackslash}p{0.44\linewidth}
+                  >{\raggedright\arraybackslash}p{0.35\linewidth}}
+\toprule
+Consumer & AST may provide & Fail-closed restriction \\
+\midrule
+\endhead
+RTC & Stable sample/detector identity, corrected direction/elevation and
+validity, frame/unit, exact applied-correction identity & No precise timing,
+astrometric covariance, or synthesized-field claim beyond approved ALIGN
+input; invalid pointing cannot be treated as valid signal. \\
+PTC & The same coordinate identity plus eligibility needed for conditioning
+or source masks & No PTC statistical or source-protection authority; no stale
+or boresight-only substitute for missing detector coordinates. \\
+MAP & Continuous plane/pixel coordinate, discrete pixel and boundary policy,
+validity, WCS identity, projection Jacobian/availability & No map hit for AST-
+ineligible samples; no response-corrected astrometry or covariance claim when
+terms are unavailable. \\
+Source & Persisted WCS and its exact parent product identity & Source centroid,
+fit covariance, and significance are downstream; they cannot retroactively
+validate AST. \\
+Pointing/OOF & AltAz tangent coordinates, correction identity, WCS, support and
+validity & Fit offsets, focus model, source significance, and absolute
+calibrator uncertainty remain outside AST. \\
+Beammap & Per-detector AltAz tangent coordinates, stable UID, WCS, source-
+center identity and validity & Detector fits/APT production and sensitivity
+are outside AST; row slot is not detector identity. \\
+\bottomrule
+\end{longtable}
+
+The provisional allowlist is exact previously accepted nonpolarimetric Point,
+OOF, Science, and Beammap profiles for their established coordinate-placement
+use only.  Until exact-source audit and evidence close the contract, new
+consumers, new profiles, polarimetry, absolute astrometric-precision claims,
+full covariance, significance, source-fit authority, and extrapolated or stale
+pointing are fail closed.  The open ALIGN dependency conditions every precise
+timing, native-source mapping, origin, interpolation, and synthesized-
+eligibility claim.
+
+\section{Numbered falsification suite}
+
+Every test below states a truth condition.  A required-data skip is not a pass.
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.10\linewidth}
+                  >{\raggedright\arraybackslash}p{0.84\linewidth}}
+\toprule
+ID & Falsification test \\
+\midrule
+\endhead
+A01 & \textbf{Zero correction/offset.} With $\boldsymbol c=\boldsymbol f=0$,
+Equations~\eqref{eq:corrected-boresight}--\eqref{eq:detector-composition}
+return the boresight to roundoff; center projects to zero and \texttt{CRPIX}.
+\\
+A02 & \textbf{Constant sign/unit.} Inject $+1$ arcsec in each normalized
+component separately at several altitudes/declinations.  Displacement is
+positive in the declared tangent basis with magnitude $\kappa$; coordinate-
+increment inputs obey Equation~\eqref{eq:longitude-topology}. \\
+A03 & \textbf{MJD interpolation.} Endpoints and midpoint equal
+$\boldsymbol c_0$, $(\boldsymbol c_0+\boldsymbol c_1)/2$, and
+$\boldsymbol c_1$ exactly under Equation~\eqref{eq:mjd-interpolation}; affine
+ramps reproduce. \\
+A04 & \textbf{No extrapolation.} Samples just outside either support, equal/
+reversed MJD, mixed or non-finite support fail.  No output equals a clamped
+endpoint. \\
+A05 & \textbf{Observation-span fallback.} Explicit fallback reproduces both
+observation endpoints and an affine midpoint, retains actual endpoint sample
+IDs, rejects ambiguous/zero span, and never appears as MJD interpolation. \\
+A06 & \textbf{Support covariance.} Correlated two-endpoint fixtures reproduce
+Equation~\eqref{eq:support-covariance}; a shared systematic does not shrink at
+the midpoint. \\
+A07 & \textbf{Composition order.} Non-collinear correction and detector offset
+at finite angle match the sequential exponential maps and differ from reversed
+order by the predicted second-order term. \\
+A08 & \textbf{Detector identity/order.} Permuting APT/detector rows with stable
+UIDs leaves each detector coordinate unchanged; duplicate/missing UID fails.
+\\
+A09 & \textbf{Circular wrap.} Centers and samples on opposite sides of
+$0/2\pi$ yield the short signed separation, continuous projection, and
+normalized output. \\
+A10 & \textbf{Pole topology.} Near both poles, vector direction and round trip
+remain finite while ambiguous longitude-only inputs do not establish a valid
+direction. \\
+A11 & \textbf{TAN center and singularity.} Center maps to $(0,0)$; a direction
+approaching $D_{\min}$ shows the expected response growth; $D\le D_{\min}$ is
+out-of-domain, never an edge pixel. \\
+A12 & \textbf{Forward/inverse round trip.} Random in-domain unit directions in
+AltAz and J2000 satisfy
+$\operatorname{InvTAN}(\operatorname{TAN}(\boldsymbol r))=\boldsymbol r$ to a
+pre-registered angular tolerance. \\
+A13 & \textbf{WCS directional signs.} Positive tangent longitude/latitude
+perturbations land on the column/row direction predicted by $\mathsf M$;
+transpose, hidden flip, or swapped axes fails. \\
+A14 & \textbf{Index base and boundaries.} Pixel centers obey
+Equation~\eqref{eq:index-base}; even/odd centers obey Equation~\eqref{eq:crpix};
+half-open lower/upper edges obey Equation~\eqref{eq:pixel-assignment}. \\
+A15 & \textbf{Pixel dither.} Subpixel dithers produce continuous WCS motion and
+change discrete pixel only at the declared half-open boundary; coverage is not
+misreported as coordinate precision. \\
+A16 & \textbf{Jacobian.} Analytic/AD response agrees with symmetric finite
+differences for correction, focal-plane, center, projection, and pixel
+parameters, including a near-wrap fixture. \\
+A17 & \textbf{Covariance Monte Carlo.} Small correlated Gaussian input draws
+match Equation~\eqref{eq:cov-component} in the linear regime; missing terms
+remain unavailable and are not numerically zero. \\
+A18 & \textbf{Missing/non-finite matrix.} Exhaust every required field with
+missing, NaN, $\pm\infty$, invalid flag, unavailable support, and ambiguous
+topology.  Observe explicit failure/exclusion and zero stale-coordinate use.
+\\
+A19 & \textbf{Observation replacement.} Valid--missing--valid observations
+with different correction modes show no inherited support, offset, detector,
+center, WCS, availability, or product state; recovery after failure is clean.
+\\
+A20 & \textbf{Simulation/alternate path.} Identical abstract inputs through
+real and simulation/compiled paths produce the same estimator output and
+validity; only origin provenance differs. \\
+A21 & \textbf{Sequential/parallel equivalence.} Permuted scheduling and thread
+counts preserve per-UID/per-slot coordinates, pixels, validity, counts,
+serialized WCS, and deterministic provenance order under the declared policy.
+\\
+A22 & \textbf{Required output failure.} Inject WCS, coordinate-product, and
+provenance write failures; each yields unsuccessful reduction state and no
+apparently complete mislabeled product. \\
+A23 & \textbf{Astronomical compatibility, not authority.} At an exact future
+source SHA, preregister tolerances and compare all-array source-crossing times,
+centroids, and PSF widths for representative Point/OOF/Science/Beammap cases.
+These can falsify a regression but cannot define Equations~\eqref{eq:unit-vector}
+--\eqref{eq:pixel-assignment}. \\
+\bottomrule
+\end{longtable}
+
+\section{Validation method disposition}
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.23\linewidth}
+                  >{\raggedright\arraybackslash}p{0.22\linewidth}
+                  >{\raggedright\arraybackslash}p{0.47\linewidth}}
+\toprule
+Method & Disposition & Specific rationale or gate \\
+\midrule
+\endhead
+Dimensional/unit analysis & \Required & Arcsec/radian/degree, MJD/day, plane
+units, and pixel scale checked at every cold boundary. \\
+Analytic limiting cases & \Required & A01--A07 cover zero, constant, affine,
+small-angle, and composition limits. \\
+Property/metamorphic testing & \Required & Wrap invariance, detector-order
+permutation, dither, round trip, and scheduling equivalence in A08--A15/A21.
+\\
+Independent reference implementation & \Required & Implement
+Equations~\eqref{eq:unit-vector}--\eqref{eq:pixel-assignment} outside the
+application and compare exact fixtures. \\
+Finite-difference derivative check & \Required & A16 validates all reported
+Jacobians and response signs. \\
+Monte Carlo uncertainty coverage & \Required & A17 for each covariance term
+that is claimed available. \\
+Adversarial boundary/failure injection & \Required & A04, A10--A11, A14,
+A18--A19, and A22. \\
+Serialization/FITS round trip & \Required & WCS header through an independent
+FITS/WCS reader plus A12--A15. \\
+Real-observation all-array recovery & \Required & Future human-run A23 and the
+exact \texttt{SCI-AST-001-UNITY-001} request; not presently supplied. \\
+Blind source injection/recovery & \NA & Source finding/fitting and map
+accumulation are excluded estimators.  Fixed synthetic directions and WCS
+round trips test AST without importing source-fit authority. \\
+Bootstrap or jackknife estimator error & \NA & AST is a deterministic
+coordinate transform, not a resampled population estimator.  Input-covariance
+Monte Carlo and systematic bounds are the applicable uncertainty methods. \\
+Training/validation split & \NA & No learned model or tuned predictor is in
+the bounded AST estimator. \\
+Iterative convergence study & \NA & Equations are direct and have no iterative
+optimizer.  Downstream Pointing/OOF/Beammap fit convergence is excluded. \\
+Map-domain blank/significance analysis & \NA & Coverage, noise, and
+significance belong to MAP/NOI/FLT/SRC packages and cannot validate coordinate
+truth. \\
+Photometric flux recovery & \NA & Calibration and flux scale are excluded by
+\texttt{SCI-CAL-001}; centroid compatibility does not authorize photometry.
+\\
+Polarization/HWPR science recovery & \NA & Enabled polarimetry is explicitly
+excluded and unavailable.  Optional HWPR timing identity remains an ALIGN
+dependency only. \\
+Performance benchmark & \NA{}\newline core truth & Performance does not establish
+scientific correctness.  A proportional runtime check is required only for a
+future implementation change, outside this audit-only core. \\
+Unity execution in this audit & \NA & Codex is prohibited from Unity access.
+An exact human-run evidence request will be prepared after source audit; no
+external result is claimed here. \\
+\bottomrule
+\end{longtable}
+
+\section{Independent claims and open decisions}
+
+\subsection{Claims frozen for source comparison}
+
+\begin{enumerate}[label=IC\arabic*.]
+\item Pointing correction is a signed, unit-bearing tangent displacement with
+explicit topology; one finite pair is constant and two pairs are either MJD-
+bracketed or explicitly observation-span resolved, never extrapolated.
+\item Corrected detector direction is spherical composition in the order
+boresight, pointing correction, then detector focal-plane displacement, with
+any frame transform explicitly identified.
+\item Circular longitude handling uses vector identity and wrapped differences;
+raw longitude/latitude addition is not the authoritative estimator.
+\item Point/OOF and Beammap use AltAz tangent coordinates in arcsec; Science
+uses equatorial J2000 TAN in degrees under a named frame operator.
+\item Persisted WCS is an immutable observation/product identity with explicit
+center, one-based reference pixel, CD/PC+CDELT handedness, dimensions, axis
+order, units, projection, and validity.
+\item Continuous WCS, discrete zero-based memory assignment, pixel support,
+coverage, and coordinate precision are distinct facts.
+\item Mean, formal covariance, systematic/calibration terms, interpolation and
+projection response, selection/availability uncertainty, and unavailable
+terms remain distinct through the realized record.
+\item Missing, ambiguous, non-finite, unsupported, singular, or out-of-domain
+inputs never become a stale coordinate, clamped endpoint, edge pixel, zero
+uncertainty, or successful mislabeled product.
+\item Observation state is complete-replace and run-local; simulation and
+parallel execution preserve the same estimator and identity.
+\item Exact previously accepted nonpolarimetric use is provisional only; new
+precision, covariance, significance, polarimetry, or consumer claims fail
+closed pending source audit, repair where required, validation, and re-audit.
+\end{enumerate}
+
+\subsection{Scientific-owner decisions that source cannot settle}
+
+The exact-source audit may show implemented choices, but implementation cannot
+approve these policies:
+
+\begin{itemize}
+\item canonical topology of supplied azimuth correction: coordinate angle
+versus on-sky tangent/cross-azimuth;
+\item authoritative sign relationship between selected pointing-fit residuals
+and applied corrections;
+\item exact J2000/ICRS/apparent/refraction model and required external inputs,
+including acceptable uncertainty bounds;
+\item whether the legacy observation-span fallback remains approved for new
+profiles and exactly which absent-support encoding selects it;
+\item canonical map handedness by product family when not explicitly requested;
+\item required $D_{\min}$ and numerical angular/WCS round-trip tolerances;
+\item minimum uncertainty bundle and which covariance/systematic terms must be
+persisted for each consumer; and
+\item per-product policy for partial sample invalidity versus whole-product
+failure.
+\end{itemize}
+
+Until decided, the relevant new claim is fail closed or explicitly restricted,
+not inferred from current code.
+
+\section{Freeze declaration}
+
+This file is the complete independent-core revision 1.  Its SHA-256, freeze
+commit, and UTC commit timestamp are recorded after offline compilation and
+visual review.  Only after that commit may the audit open quarantined source or
+\sha{SCI-AST-001-XAUD-001}.  Any correction to these bytes is a successor
+revision that preserves this original and records its trigger.
+
+\end{document}

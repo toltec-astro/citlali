@@ -1,0 +1,82 @@
+format_version: 1
+id: SCI-MODE-001-XAUD-002
+created_date: 2026-08-01
+
+source:
+  package_id: SCI-AST-001
+  role: auditor
+  audit_branch: codex/audit-sci-ast-001
+  audit_commit: 429e1b5361683ba15c8d897ba22bdc4c4d03bf91
+  governing_or_evidence_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+  finding_ids:
+    - SCI-AST-001-F005
+    - SCI-AST-001-F007
+    - SCI-AST-001-F008
+    - SCI-AST-001-F009
+    - SCI-AST-001-F010
+
+target:
+  package_id: SCI-MODE-001
+
+priority: P1
+evidence_basis: derived
+review_phase: post_core_evidence
+arrival: before_dispatch
+status: submitted
+
+summary: >-
+  Pointing and OOF coordinate means cross the AST inverse-TAN boundary, but
+  positional errors and provenance do not carry the corresponding Jacobian,
+  covariance, support precision, or frame identity.
+claim: >-
+  Current Pointing table columns named x_t/y_t become absolute RA/Dec degrees
+  for RA/Dec maps while their errors receive only arcsecond-to-degree scaling.
+  MODE must distinguish tangent offsets, spherical coordinates, formal fit
+  covariance, and astrometric correction uncertainty.
+supports:
+  - Record an AST dependency for Pointing/OOF coordinate and uncertainty interpretation.
+  - Add declination, wrap, support-time, frame, and covariance interface tests.
+  - Restrict absolute-coordinate precision and coverage claims from current table errors.
+does_not_establish:
+  - This handoff does not audit Pointing/OOF map fitting, focus models, or mode estimators.
+  - Formal fit error is not shown to equal astrometric correction uncertainty.
+  - It does not authorize repair.
+
+requested_actions:
+  - add_or_update_dependency
+  - add_or_update_finding
+  - add_interface_test
+  - restrict_consumer
+affected_target_findings: []
+related_handoffs:
+  - SCI-SRC-001-XAUD-001
+  - SCI-BEAM-001-XAUD-002
+  - SCI-VAL-001-XAUD-005
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-AST-001-independent-core
+    availability: repository_path
+    path: doc/audits/packages/SCI-AST-001_INDEPENDENT_CORE.tex
+    sha256: ed1fe3bf68ed53974b8c910bd3824717eb0cf5ff11d0b27c0fdf27aa6e606276
+    note: Frozen support, inverse-TAN, response, uncertainty, and state contract.
+  - id: SCI-AST-001-local-evidence
+    availability: repository_path
+    path: doc/audits/evidence/SCI-AST-001_LOCAL_EVIDENCE_2026-08-01.yaml
+    sha256: e391757e63477fd568a415e8c6b9c4bca6dc98603cd83088c350cbc03a51f986
+    note: Exact Pointing/source boundary and numerical Jacobian evidence.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: not_applicable
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

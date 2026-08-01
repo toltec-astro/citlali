@@ -1,0 +1,256 @@
+format_version: 1
+evidence_id: SCI-AST-001-LOCAL-001
+package_id: SCI-AST-001
+created_date: 2026-08-01
+role: independent_package_auditor
+scope: >-
+  Audit-only, exact-source local evidence for pointing corrections, telescope
+  and detector coordinates, interpolation support, projection, WCS, product
+  identity, uncertainty boundaries, and downstream propagation. This manifest
+  is evidence, not scientific authority, repair authorization, or production
+  approval.
+
+identity:
+  application_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+  application_sha_role: governing_audit_snapshot
+  authority_ref: codex/refactor-mainline
+  audit_branch: codex/audit-sci-ast-001
+  worktree: /Users/gwilson/.codex/worktrees/bcb5/citlali-refactor
+  core_path: doc/audits/packages/SCI-AST-001_INDEPENDENT_CORE.tex
+  core_sha256: ed1fe3bf68ed53974b8c910bd3824717eb0cf5ff11d0b27c0fdf27aa6e606276
+  core_freeze_commit: 17d683ada3856ecb5f0a5c42eed744cb219a3586
+  core_freeze_timestamp_utc: 2026-08-01T15:19:22Z
+
+frozen_dispatch:
+  prompt:
+    path: /private/tmp/citlali-scientific-audit-framework/doc/audits/prompts/SCI_AST_001_AUDIT_PROMPT.md
+    sha256: 7071db6ad57fd23a1b36bdec619ac72bc0d26d8427d91e7abdbf10afbc46713f
+  inbox_manifest:
+    path: /private/tmp/citlali-scientific-audit-framework/doc/audits/handoffs/SCI-AST-001/SCI-AST-001_INBOX_MANIFEST_2026-08-01.yaml
+    sha256: 32f8ec335cfbececc4fb47cbd1f3197c189481f7c9b7e963c4ecbbf4974dca1f
+    coordinator_registry_commit: 35cc8ce246e8e70c569e650be6c1eae2c91b80ef
+    pre_core_authority_ids: []
+    post_core_evidence_ids: [SCI-AST-001-XAUD-001]
+  post_core_handoff:
+    id: SCI-AST-001-XAUD-001
+    path: /private/tmp/citlali-scientific-audit-framework/doc/audits/handoffs/SCI-AST-001/SCI-AST-001-XAUD-001.yaml
+    sha256: ede523dd732f9e14ec9dae44b9e608497819b50b0c97abce6b4124d3602e9d71
+
+quarantine_chronology:
+  pre_core_application_source_opened: false
+  pre_core_post_core_handoff_opened: false
+  first_post_core_handoff_open_utc: 2026-08-01T15:19:59Z
+  first_application_source_open_utc: 2026-08-01T15:20:08Z
+  ordering_verified: true
+  note: >-
+    The independent-core bytes were hashed and committed before either event.
+    No successor revision of the frozen core was created.
+
+source_trace:
+  - path: include/citlali/core/utils/pointing.h
+    sha256: d342c8369b01ec8ea97e91da014bc471737b0f15b5135aa312cad07ddedc6bc4
+    symbols: [calc_det_pointing, tangent_to_abs, gnomonic_projection]
+  - path: src/citlali/core/engine/telescope.cpp
+    sha256: be518d193154209040196cb47597eeb5c48a6057222723d3432394d7ec1a5f49
+    symbols: [Telescope::get_telescope_data, Telescope::calc_tan_pointing, Telescope::calc_tan_altaz]
+  - path: include/citlali/core/utils/utils.h
+    sha256: 4788813b40a8c0e931b559ca4c27b26ee65fe161f4a6d0e0aa15f001afab17f8
+    symbols: [modified_julian_date_to_unix, fix_periodic_boundary]
+  - path: include/citlali/core/engine/detail/todproc_pointing_impl.h
+    sha256: 1d7df4fa87632c14f9aa0caabcd9e45ee6ae06abd04a0730c5736a382ba822bf
+    symbols: [TimeOrderedDataProc::interp_pointing]
+  - path: include/citlali/core/config/calibration_config_validation.h
+    sha256: 3bdc7ab4331eee56397429cf869915580bce2c30b5693c8edd2b27e5d4b6fe48
+    symbols: [validate_PointingOffsetsConfig]
+  - path: include/citlali/core/pipeline/pointing_offsets_config_read.h
+    sha256: 763046e4b03908b3296342dbb714e6cd041ee98904f8d9bfdc362960b46c8bf5
+    symbols: [read_astrometry_config, require_valid_astrometry_config]
+  - path: include/citlali/core/pipeline/astrometry_execution_plan.h
+    sha256: a904d61e0488b9fd70c858c15bbd78a75d9cb8efcc6961d87bb229b0010eb90c
+    symbols: [resolve_astrometry_application, AstrometryExecutionPlan]
+  - path: include/citlali/core/pipeline/astrometry_provenance.h
+    sha256: d3d51e1baf4192fc151e390612ae4291a01f49b3e7adfdeeeb960e831b80f1f6
+    symbols: [astrometry_provenance_node, write_astrometry_provenance_file]
+  - path: src/citlali/core/engine/calib.cpp
+    sha256: 016a8c180d7d1dab648049e80c1af3d3fdec8fb53e78e12b6fd6c33cf5c8090d
+    symbols: [Calib::get_apt, Calib::setup]
+  - path: include/citlali/core/engine/calib.h
+    sha256: e1c200b800b14f358e2b0ec38b69d17388756beb8368c18d0d4bef70b39ba769
+    symbols: [Calib::apt_header_keys, Calib::apt_header_units]
+  - path: include/citlali/core/mapmaking/map.h
+    sha256: 90bf76f8cc9b2df26cdd30dda0732e18ed2f37ef3d183454036c6a1b4a44a40f
+    symbols: [mapmaking::WCS]
+  - path: include/citlali/core/pipeline/mapmaking_output_config.h
+    sha256: f6ef96755bfea7f1519ce71b0a3502c4990c80ba9e76e278fd9fed3bc73e14e6
+    symbols: [read_mapmaking_output_request_config, adapt_mapmaking_output_config_one_way]
+  - path: include/citlali/core/engine/detail/observation_setup_impl.h
+    sha256: f8d666c823e01c23f66329f8c62cd848c038e6862d799c58687d110c0ad53836
+    symbols: [setup_observation_map_wcs]
+  - path: include/citlali/core/engine/detail/todproc_map_geometry_impl.h
+    sha256: b93a177ab515fcd9c665178f79712b6965605576385eafc9a770ced97005bdc5
+    symbols: [TimeOrderedDataProc::calc_omb_size, TimeOrderedDataProc::calc_cmb_size]
+  - path: include/citlali/core/utils/fits_io.h
+    sha256: 6a1a32acca1c02e2bb7785f343c5fd2a1d8ff93546919225331e3b99e0fa0457
+    symbols: [fitsIO::get_hdu, fitsIO::add_wcs]
+  - path: include/citlali/core/pipeline/fits_image_hdu_names_wcs.h
+    sha256: 63514517ae44a12541d6b7cfe05e2797f2a00618f1d59740ff2fa51a89971ebb
+    symbols: [wcs_source_epoch_or_default]
+  - path: include/citlali/core/pipeline/tod_data_static_metadata_vars.h
+    sha256: a59d1f020c0c4d6c94adccd2da7a3c8cc80801fb6eff94b00c3cf799dc8e06df
+    symbols: [add_telescope_data_vars, add_tod_pointing_offset_vars]
+  - path: include/citlali/core/pipeline/tod_data_core_vars.h
+    sha256: 93607b8040f27fc79c2135ed931fcabfce25360d6e180935741786a39d3571ba
+    symbols: [add_tod_detector_pointing_vars]
+  - path: include/citlali/core/pipeline/map_source_fit_units.h
+    sha256: b520b395176450ab2848dcdf329e6a31d38f04e2f6c92c0eb0db90f3dba2350e
+    symbols: [rescale_source_fit_result, rescale_source_fit_radec_errors]
+  - path: include/citlali/core/timestream/timestream.h
+    sha256: 83418ff0123e64dd8a7807b7e6a480848f422d0443ca302b0762862bacab1b78
+    symbols: [fruit_loop_map_WCS_loading, detector_pointing_output]
+  - path: validation/product_contracts.json
+    sha256: adc0cabc2ebcbd65f5b9496e893f9b158c7cbaa4a90c05c9768402a6c80398c7
+  - path: validation/accepted_runs.json
+    sha256: 4a134dcdd14e0444d96875547f628a3353574cc66574dd9a559bcf59dafb94bb
+
+local_commands:
+  - id: SCI-AST-001-L001
+    command: /Users/gwilson/tolteca/bin/python tools/config/audit_astrometry_boundary.py --repo-root . --fail-on-drift
+    result: pass
+    observed_summary: "plan=True provenance=True drift=False"
+    limitation: Static wiring and token audit; it does not test coordinate equations.
+  - id: SCI-AST-001-L002
+    command: /Users/gwilson/tolteca/bin/python -m pytest -q tools/config/test_audit_astrometry_boundary.py tools/config/test_audit_pointing_boundary.py
+    result: pass
+    observed_summary: 8 passed
+    limitation: Boundary-auditor tests, not compiled astrometric numerical truth.
+  - id: SCI-AST-001-L003
+    command: /Users/gwilson/tolteca/bin/python -m pytest -q tools/baseline/test_audit_reduction_run.py -k astrometry
+    result: pass
+    observed_summary: 3 passed, 60 deselected
+    limitation: Validates the current shallow provenance schema and accepted-run audit semantics.
+  - id: SCI-AST-001-L004
+    command: /Users/gwilson/tolteca/bin/python tools/config/run_config_preflight.py --require-all
+    result: pass
+    observed_summary: >-
+      123 unit tests, four numbered mode kits, eight compatibility checks,
+      100 percent config-leaf coverage, and all registered boundary audits
+      completed with no drift.
+    limitation: Configuration conformance does not establish the scientific coordinate contract.
+
+derived_probes:
+  method: >-
+    Direct double-precision evaluation of the exact source formulas using the
+    project Python environment. These probes are derived evidence, not a
+    compiled-source or Unity claim.
+  results:
+    - id: SCI-AST-001-P001
+      claim: MJD conversion quantizes support to integer Unix seconds.
+      input: "MJD=60000.123456789"
+      exact_unix_seconds: "1677293866.6665695"
+      source_returned_integer_seconds: 1677293866
+      lost_seconds: "0.66656947135925293"
+    - id: SCI-AST-001-P002
+      claim: TAN singular and back-hemisphere directions can become the finite map center.
+      results:
+        quarter_turn_exact_x: "0"
+        quarter_turn_previous_double_x: "3530114321217157.5"
+        quarter_turn_next_double_x: "0"
+        antipode_x: "-1.2246467991473532e-16"
+    - id: SCI-AST-001-P003
+      claim: Negative azimuth-boundary crossing is not wrapped by calc_tan_altaz.
+      input: "TelAzAct=0.1 rad, SourceAz=6.2 rad, elevation=0.8 rad, zero corrections"
+      tangent_longitude_rad: "-4.2499109270177096"
+      tangent_longitude_arcsec: "-876607.05392872554"
+    - id: SCI-AST-001-P004
+      claim: A one-arcsecond tangent-x error is not a one-arcsecond RA error away from the equator.
+      ra_error_arcsec_for_one_arcsec_tangent_x:
+        dec_0_deg: "0.99999999999216516"
+        dec_60_deg: "1.9999999999373212"
+        dec_80_deg: "5.7587704816473346"
+    - id: SCI-AST-001-P005
+      claim: Float WCS storage can erase a sub-arcsecond CRVAL distinction.
+      input_crval_deg: "359.99999"
+      stored_float32_crval_deg: "360"
+      error_arcsec: "0.035999999909108737"
+
+positive_controls:
+  - id: SCI-AST-001-C001
+    observation: >-
+      FITS image writes reverse the internal longitude axis and assign negative
+      CDELT1; reads reverse it back. No corresponding latitude reversal is
+      applied and CDELT2 is positive.
+    conclusion: Conforms to the frozen handedness convention for the traced path.
+  - id: SCI-AST-001-C002
+    observation: >-
+      Internal zero-based CRPIX=(N-1)/2 is written as CRPIX+1, yielding the
+      FITS one-based center (N+1)/2 for required odd dimensions.
+    conclusion: Conforms to the frozen indexing convention for generated maps.
+  - id: SCI-AST-001-C003
+    observation: >-
+      Required WCS/output exceptions and incomplete astrometry provenance
+      propagate rather than being logged and forgotten; provenance is written
+      atomically only after lifecycle completion.
+    conclusion: Conforming failure-flow evidence, while schema completeness remains open.
+  - id: SCI-AST-001-C004
+    observation: >-
+      Per-observation astrometry requests are installed before application and
+      lifecycle completion requires equal nonzero install/application counts.
+    conclusion: Useful replacement/application-count guard, not realized-value proof.
+
+historical_compatibility_evidence:
+  authority: compatibility_only
+  records:
+    - record_id: point-152389-refactor-9ea6d7f0-redu61
+      scope: constant zero offset, single observation, exact products
+      missing_claims: [explicit_MJD_interpolation, cross_observation_state, governing_SHA]
+    - record_id: oof-152385-152387-refactor-9ea6d7f0-redu02
+      scope: three-observation replacement and repeated constant application
+      missing_claims: [positive_MJD_interpolation, complete_authoring_lineage, governing_SHA]
+    - record_id: science-152390-152392-refactor-9ea6d7f0-redu23
+      scope: positive-MJD application through four retained iterations within accepted tolerance
+      missing_claims: [edge_wrap, singular_domain, covariance, complete_authoring_lineage, governing_SHA]
+    - record_id: beammap-148670-refactor-9ea6d7f0-redu05
+      scope: constant application, detector identity/product compatibility, exact products
+      missing_claims: [explicit_MJD_interpolation, AST_detector_mapping_proof, governing_SHA]
+
+build_and_external_evidence:
+  exact_governing_worktree_build_directory: absent
+  local_compiled_path_attempted: false
+  rationale: >-
+    The governing worktree has no build directory. The root legacy configure
+    path can require FetchContent network access, which the frozen prompt
+    prohibits. A build in another worktree is not exact-governing-SHA
+    evidence and was excluded. No install, download, or network access was
+    attempted.
+  unity_request_id: SCI-AST-001-UNITY-001
+  unity_request_status: unsupplied
+  unity_accessed_by_codex: false
+
+finding_support:
+  SCI-AST-001-F001: [SCI-AST-001-P002]
+  SCI-AST-001-F002: [SCI-AST-001-P003]
+  SCI-AST-001-F003: [SCI-AST-001-L004]
+  SCI-AST-001-F004: [SCI-AST-001-XAUD-001]
+  SCI-AST-001-F005: [SCI-AST-001-P001]
+  SCI-AST-001-F006: [SCI-AST-001-LOCAL-001]
+  SCI-AST-001-F007: [SCI-AST-001-P004]
+  SCI-AST-001-F008: [SCI-AST-001-LOCAL-001]
+  SCI-AST-001-F009: [SCI-AST-001-L001, SCI-AST-001-L003]
+  SCI-AST-001-F010: [SCI-AST-001-P005, SCI-AST-001-C001, SCI-AST-001-C002]
+  SCI-AST-001-F011: [SCI-AST-001-XAUD-001]
+  SCI-AST-001-F012: [SCI-AST-001-P002]
+  SCI-AST-001-F013: [SCI-AST-001-XAUD-001]
+  SCI-AST-001-F014: [SCI-AST-001-LOCAL-001]
+  SCI-AST-001-F015: [SCI-AST-001-L001, SCI-AST-001-L002, SCI-AST-001-L003, SCI-AST-001-L004]
+
+scope_guards:
+  application_code_modified: false
+  tests_modified: false
+  build_files_modified: false
+  production_documentation_modified: false
+  canonical_audit_ledger_modified: false
+  canonical_handoff_registry_modified: false
+  unity_accessed: false
+  network_accessed: false
+  software_installed_or_downloaded: false
+  repair_attempted: false

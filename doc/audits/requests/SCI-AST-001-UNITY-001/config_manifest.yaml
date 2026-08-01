@@ -1,0 +1,91 @@
+format_version: 1
+request_id: SCI-AST-001-UNITY-001
+created_date: 2026-08-01
+governing_application_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+status: preregistered_unexecuted
+
+base_configs:
+  point:
+    historical_record_id: point-152389-refactor-9ea6d7f0-redu61
+    unity_path: /work/toltec/commissioning2025-test/2026-refactor/point/refactor/reduced/redu61/citlali_o152389_0_2_c1.yaml
+    sha256: b494d8671fb162f47d6eaadc1299755594db5c8c27353d7e8b4ac8ffe8566ed8
+    obsnums: [152389]
+  oof:
+    historical_record_id: oof-152385-152387-refactor-9ea6d7f0-redu02
+    unity_path: /work/toltec/commissioning2025-test/2026-refactor/oof/refactor/reduced/redu02/citlali_o152385_0_1_c3.yaml
+    sha256: aebfc3b764f4abeca1f7f7cfe60723714f000ca849f60b167cd495294f87bdbc
+    obsnums: [152385, 152386, 152387]
+  science:
+    historical_record_id: science-152390-152392-refactor-9ea6d7f0-redu23
+    unity_path: /work/toltec/commissioning2025-test/2026-refactor/science/refactor/reduced/redu23/citlali_o152390_0_2_c2.yaml
+    sha256: cd860b8b712810f9f8651c325a6f1642e8453aa6148410cf7ff7a7058de286a3
+    obsnums: [152390, 152392]
+  beammap:
+    historical_record_id: beammap-148670-refactor-9ea6d7f0-redu05
+    unity_path: /work/toltec/commissioning2025-test/2026-refactor/beammap/refactor/reduced/redu05/citlali_o148670_0_2_c1.yaml
+    sha256: aa956b28465eaef8b23763e877857b5b8929e95ca4fbdc976db6d7b2a775636d
+    obsnums: [148670]
+
+overlays:
+  point_seq:
+    path: doc/audits/requests/SCI-AST-001-UNITY-001/point_seq_overlay.yaml
+    sha256: d4fcbdc539513acfd230dc48bad970213786082439b12f3d04790a4cf8f25796
+  point_omp:
+    path: doc/audits/requests/SCI-AST-001-UNITY-001/point_omp_overlay.yaml
+    sha256: cbd5552ba406c577bfc304c1feb55fe234e59f7472e9c4fbbc5e06a1d8220b41
+  oof_seq:
+    path: doc/audits/requests/SCI-AST-001-UNITY-001/oof_seq_overlay.yaml
+    sha256: 852c6e3d1655562f3bd5b7c49a104fbae0118fd8490d98623749796acf384581
+  oof_omp:
+    path: doc/audits/requests/SCI-AST-001-UNITY-001/oof_omp_overlay.yaml
+    sha256: 63ba786186eb57d8f22560559b58636792c05850f98fb5600eeaa2d59ca637e2
+  science_seq:
+    path: doc/audits/requests/SCI-AST-001-UNITY-001/science_seq_overlay.yaml
+    sha256: bea974db126d4f4bd82d1c38d27b10888bb775bbd2da1478c6d66f9aeb095c63
+  science_omp:
+    path: doc/audits/requests/SCI-AST-001-UNITY-001/science_omp_overlay.yaml
+    sha256: ae01aa9a6b70aa6bc24c9195924875976fd8ea36c7f51a3982b99089647971c7
+  beammap_seq:
+    path: doc/audits/requests/SCI-AST-001-UNITY-001/beammap_seq_overlay.yaml
+    sha256: 018ecd63ba62ca4060dcc5eb2adb633b7c15261eb7c9f7e881dc6a33ae02eb3c
+  beammap_omp:
+    path: doc/audits/requests/SCI-AST-001-UNITY-001/beammap_omp_overlay.yaml
+    sha256: 1bdc6dee0cb6ae1fefcc7f3993c4ffec9cadeeb82786d31c8e8d06b14c723046
+  point_nondefault_wcs:
+    path: doc/audits/requests/SCI-AST-001-UNITY-001/point_nondefault_wcs_overlay.yaml
+    sha256: 73ea6ff702c83703ee23bea0cffa420c899f2c29ab2bc4728eebb212e20a4ddf
+
+ordered_cases:
+  - case_id: AST-POINT-SEQ
+    ordered_inputs: [point, point_seq]
+    canonical_merged_sha256: UNSUPPLIED_BY_OPERATOR
+  - case_id: AST-POINT-OMP
+    ordered_inputs: [point, point_omp]
+    canonical_merged_sha256: UNSUPPLIED_BY_OPERATOR
+  - case_id: AST-OOF-SEQ
+    ordered_inputs: [oof, oof_seq]
+    canonical_merged_sha256: UNSUPPLIED_BY_OPERATOR
+  - case_id: AST-OOF-OMP
+    ordered_inputs: [oof, oof_omp]
+    canonical_merged_sha256: UNSUPPLIED_BY_OPERATOR
+  - case_id: AST-SCIENCE-SEQ
+    ordered_inputs: [science, science_seq]
+    canonical_merged_sha256: UNSUPPLIED_BY_OPERATOR
+  - case_id: AST-SCIENCE-OMP
+    ordered_inputs: [science, science_omp]
+    canonical_merged_sha256: UNSUPPLIED_BY_OPERATOR
+  - case_id: AST-BEAMMAP-SEQ
+    ordered_inputs: [beammap, beammap_seq]
+    canonical_merged_sha256: UNSUPPLIED_BY_OPERATOR
+  - case_id: AST-BEAMMAP-OMP
+    ordered_inputs: [beammap, beammap_omp]
+    canonical_merged_sha256: UNSUPPLIED_BY_OPERATOR
+  - case_id: AST-POINT-NONDEFAULT-WCS
+    ordered_inputs: [point, point_nondefault_wcs]
+    canonical_merged_sha256: UNSUPPLIED_BY_OPERATOR
+
+execution_gate: >-
+  The human operator must verify every base and overlay digest before running,
+  return the canonical merged digest emitted by the exact governing binary,
+  and reject any missing or mismatched base as unsupplied evidence. No
+  historical merged digest is reused after the audit overlay is applied.
