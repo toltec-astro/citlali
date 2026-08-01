@@ -224,7 +224,8 @@ commit `374fd2c2ffda74a651cf7a13d0e7f38758f17789`, and its D003 revision at
 `4ab0d68277fa9dc644df3f679670e2c3b82e82e2`, and the D005 revision at
 `bb08c021f81681237e3df3e2dbec480bbf83b58b`; the D006 revision is bound at
 `79f013663203191a0456f56b79f5afdacd3d8102`, and the D007 revision at
-`3280a2d87e7261fd8e5462b2aef7eab6dbc04b4a`. D001 preserves the
+`3280a2d87e7261fd8e5462b2aef7eab6dbc04b4a`; the completed D008 revision is
+bound at `8ee5b9fc192877106c4d5d747dfef75646edcfd9`. D001 preserves the
 demonstrated signs, basis, rotation, handedness, and composition
 that place point sources correctly across approximately one-square-degree maps,
 including at corners; document every stage, use explicit boundary adapters,
