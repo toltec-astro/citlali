@@ -1,6 +1,6 @@
 # SCI-ALIGN-001 coordinator and scientific-owner decision — 2026-08-01
 
-Status: partial; `ALIGN-OD1`--`ALIGN-OD5` approved; `OD6`--`OD8` pending
+Status: partial; `ALIGN-OD1`--`ALIGN-OD6` approved; `OD7`--`OD8` pending
 
 Package: `SCI-ALIGN-001`
 
@@ -203,6 +203,45 @@ must be attributable to the named first-post-hold, discarded-remainder,
 short-scan identity, context/science separation, or invalid-window repair; this
 decision is not authority for an unrelated timing or scan-segmentation change.
 
+## ALIGN-OD6 — Synthesized-sample eligibility
+
+Decision: approved as bounded continuity support with zero direct science
+eligibility, acquired exposure, or independent statistical weight.
+
+- Keep original acquisition, continuity availability, science eligibility,
+  and processing-guard state distinct. An approved synthesized detector value
+  is a continuity surrogate, not an acquired sky measurement.
+- A synthesized detector value may be used internally only for the bounded,
+  signal-domain-specific continuity purpose approved by `ALIGN-OD4`. It
+  remains identified as synthesized and contributes no direct map hit,
+  retained science exposure, independent statistical weight, degree of
+  freedom, or significance count.
+- A synthesized value has zero acquired exposure. Preserve distinct compact
+  accounting for acquired-original, valid-original, synthesized, unavailable,
+  processing-guard-excluded, and science-eligible support.
+- A nearby original value affected by a filter guard remains an original
+  acquisition even when a consumer excludes it from a science estimate. The
+  guard must not relabel that value as missing or synthesized.
+- The declared filtering operation may transmit bounded continuity-surrogate
+  influence into neighboring values. Treat that as an intentional processing
+  response requiring validation, never as a new independent observation.
+- Ordinary `ALIGN-OD3`-approved telescope resampling onto detector timestamps
+  is not detector-gap synthesis. An original detector sample remains eligible
+  when all required aligned telescope fields are available and valid; it is
+  ineligible for the affected mapped science when a required pointing field is
+  unavailable or invalid.
+- Any broader use of synthesized values by a future consumer requires its own
+  approved response and covariance contract under `ALIGN-OD7`. No consumer may
+  relabel a synthesized value as original.
+- Use compact counts and exception intervals under `ALIGN-C001`; standard per-
+  sample provenance arrays are not required.
+
+Required tests demonstrate zero direct synthesized hits/exposure/weight,
+correct separation of exact-gap and guard state, preserved original-acquisition
+identity inside a guard, required-pointing validity behavior, bounded filter
+transfer into neighbors, and identical science results whether optional
+detailed provenance is enabled or disabled.
+
 ## ALIGN-C001 — Compact exception identity and measured fallback
 
 Cross-cutting constraint for approved `ALIGN-OD4` and pending `ALIGN-OD7`:
@@ -238,7 +277,6 @@ Citlali timing merely to persist audit detail.
 
 ## Pending decisions
 
-- `ALIGN-OD6`: synthesized eligibility;
 - `ALIGN-OD7`: mapping/covariance/response; and
 - `ALIGN-OD8`: HWPR separation and interim production.
 
