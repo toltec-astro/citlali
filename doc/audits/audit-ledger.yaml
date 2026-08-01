@@ -756,7 +756,7 @@ packages:
             owner_resolved_by_sample_rate_family_compatibility_lattice_and_union_support
           record_path: >-
             doc/audits/packages/SCI-ALIGN-001_PHASE_ZERO_D002_DECISION_2026-08-01.md
-          record_commit: null
+          record_commit: 10981b29c1870e745b7f3c9cabed3c634a46427f
           record_sha256: >-
             7e4e2c02bf2e16035d6a2aceacaa4e07c7c528e08f09fdb2d0a9186d510465cd
           constrained_by:
