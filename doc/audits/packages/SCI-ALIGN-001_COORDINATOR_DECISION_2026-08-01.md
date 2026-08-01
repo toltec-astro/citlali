@@ -113,6 +113,38 @@ period, frame, bounded-versus-circular topology, state transition convention,
 or interpolation span. Ordinary valid samples away from wraps, state
 transitions, invalid rows, and gaps should remain numerically unchanged.
 
+## ALIGN-C001 — Compact exception identity and measured fallback
+
+Cross-cutting constraint for pending `ALIGN-OD4` and `ALIGN-OD7`: approved with
+an `as_requested` fallback when measured cost is disproportionate.
+
+- Do not add standard per-sample or per-detector provenance identifiers. The
+  common observation and integer slot grid supplies implicit sample identity;
+  original-and-valid is the unrecorded default.
+- Preserve semantic correctness in all modes: runtime scope, origin, validity,
+  science eligibility, acquired exposure, and processing-guard behavior must
+  remain distinguishable even when detailed provenance output is disabled.
+- Prefer compact half-open exception intervals or run-length encoding keyed by
+  stream/network/field, with a versioned generative operator. Deterministic
+  regular-grid weights are reconstructed from run endpoints and are not stored
+  per synthesized sample.
+- The always-on standard product may be limited to the effective policy,
+  whether exceptions occurred, compact flags needed by supported consumers,
+  and aggregate counts/actions. A sparse identified run catalog is preferred
+  when its measured cost is negligible.
+- Native endpoint identities and timestamps, source digests, expanded weights,
+  and per-sample mapping expansions are forensic detail and may be
+  `as_requested` from the outset.
+- If representative Science and Beammap evidence shows that even the sparse
+  identified run catalog materially burdens runtime, I/O, or storage, it may
+  also become `as_requested`. The effective tier, measurement, and unavailable
+  detail must be recorded; disabling detail may not change numerical values,
+  flags, eligibility, exposure, or required failure behavior.
+
+The repair design must use the smallest representation that satisfies the
+approved contract and must not introduce a dramatic departure from established
+Citlali timing merely to persist audit detail.
+
 ## Pending decisions
 
 - `ALIGN-OD4`: gap bounds and action;

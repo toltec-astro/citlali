@@ -643,6 +643,10 @@ packages:
           status: approved_with_default_zero_compatibility
         - id: ALIGN-OD3-variable-topology
           status: approved_pending_generated_registry_review
+      approved_constraints:
+        - id: ALIGN-C001-compact-exception-identity
+          applies_to: [ALIGN-OD4, ALIGN-OD7]
+          status: approved_with_as_requested_fallback_on_measured_burden
       pending_decisions:
         - ALIGN-OD4-gap-bounds-and-action
         - ALIGN-OD5-scan-policy-and-identity
