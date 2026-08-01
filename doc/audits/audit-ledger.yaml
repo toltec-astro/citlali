@@ -636,7 +636,7 @@ packages:
       decision_date: 2026-08-01
       record_path: >-
         doc/audits/packages/SCI-ALIGN-001_COORDINATOR_DECISION_2026-08-01.md
-      record_commit: 4f905f4f39461c8f9a86b0bf589880362d0a49f7
+      record_commit: 4f905f4f353e91847a303f4f3959654f3f03c302
       approved_decisions:
         - id: ALIGN-OD1-grid-clock-model
           status: approved_with_compatibility_guard
@@ -687,7 +687,7 @@ packages:
       decision_id: ALIGN-OD8-hwpr-separation-and-interim-production
       selected_option: existing_use_only
       decision_date: 2026-08-01
-      record_commit: 4f905f4f39461c8f9a86b0bf589880362d0a49f7
+      record_commit: 4f905f4f353e91847a303f4f3959654f3f03c302
       note: >-
         Preserve only exact previously accepted nonpolarimetric profiles.
         Polarization, nonzero or unauthoritative HWPR offsets, new consumers
@@ -708,10 +708,14 @@ packages:
       path: >-
         doc/audits/packages/SCI-ALIGN-001_BOUNDED_REPAIR_REAUDIT_HANDOFF_2026-08-01.md
       sha256: >-
-        2231e09c4310e8ddf73b6e25cd52c3c10671234667607b88d3723571dfa7a5f8
+        71f76026cc95ae795f4e2a0cfabc7192d416ed3f8affc45367a0b4dae9807d9b
       record_commit: 0309fd48a973a6e7e136224906ac49c02f0171be
+      identity_correction_status: pending_commit
       proposed_branch: codex/repair-sci-align-001
-      launch_status: not_started
+      launch_status: phase_zero_active
+      task_thread_id: 019fbd95-feaa-7b52-a382-b7bd04effa8e
+      launch_date: 2026-08-01
+      verified_initial_head: 9aae0e669384c5c0c0dda93debc194d6b8dac787
       phase_zero_gate: >-
         Before application-code edits, commit the raw timing/header authority,
         generated telescope/HWPR field registry, cadence/phase/tolerance and
@@ -791,7 +795,7 @@ packages:
         status: addressed_pending_reaudit
         owner: project_timing_science_owners
         decision_date: 2026-08-01
-        decision_commit: 4f905f4f39461c8f9a86b0bf589880362d0a49f7
+        decision_commit: 4f905f4f353e91847a303f4f3959654f3f03c302
         decision_record: >-
           doc/audits/packages/SCI-ALIGN-001_COORDINATOR_DECISION_2026-08-01.md
         summary: >-
@@ -812,7 +816,7 @@ packages:
     requested_unity_evidence:
       - SCI-ALIGN-001-UNITY-001
     supplied_external_evidence: []
-    remediation_branch: null
+    remediation_branch: codex/repair-sci-align-001
     remediation_commit: null
     re_audit_status: required
 
@@ -1181,6 +1185,17 @@ packages:
     upstream_dependencies:
       - package_id: SCI-ALIGN-001
         status: open
+        required_contract: >-
+          AST receives an ordered detector-reference sample identity plus each
+          aligned telescope field's stable identity, native-source mapping,
+          units, frame, topology, validity/support, timing residual, origin,
+          interpolation method, and original-versus-synthesized eligibility.
+        consequence: >-
+          AST may independently derive pointing correction, coordinate,
+          projection, and WCS estimators against those explicit abstract
+          inputs, but implementation conformity and precise astrometric claims
+          remain conditioned until ALIGN supplies and re-audits the approved
+          interface without clamping, stale state, or false units.
     downstream_consumers: [SCI-RTC-001, SCI-PTC-001, SCI-MAP-001, SCI-SRC-001, SCI-MODE-001, SCI-BEAM-001]
     incoming_handoffs:
       - id: SCI-AST-001-XAUD-001
@@ -1196,7 +1211,7 @@ packages:
     audit_commit: null
     independent_derivation: {status: not_started, sha256: null}
     dispatch:
-      status: prepared_not_launched
+      status: refreeze_required_after_identity_correction
       coordinator_registry_commit: 65a0c50ad49f0602a4e20bb39e3f781843ab872d
       dispatch_artifact_commit: 3ae69ba15c7f924874426f0a5d1c9a43589897f2
       manifest_path: >-
@@ -1208,13 +1223,12 @@ packages:
         - SCI-AST-001-XAUD-001
       prompt_path: doc/audits/prompts/SCI_AST_001_AUDIT_PROMPT.md
       prompt_sha256: >-
-        181ee6f89b6ce9172e7ef3fb2407c7ce96f00d52e69bd2d730cae640299ea39e
+        4fb88d5a512fcce2451fca8a41c21b3cdca6257d32d9e6101c52ff16892af5a0
       launch_effort: ultra
       note: >-
-        Dispatch is frozen and ready, but no dedicated audit task, branch, or
-        worktree has been launched. The approved ALIGN contract is available
-        as an abstract upstream authority; its post-core implementation
-        manifestation remains frozen in SCI-AST-001-XAUD-001.
+        Do not launch until the corrected registry snapshot, manifest, prompt,
+        and their digests are re-frozen. No dedicated audit task, branch, or
+        worktree has been launched.
     contract_status: not_started
     implementation_status: not_assessed
     validation_status: not_started

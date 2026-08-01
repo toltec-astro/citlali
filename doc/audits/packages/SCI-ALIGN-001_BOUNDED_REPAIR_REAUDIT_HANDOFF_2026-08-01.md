@@ -18,7 +18,7 @@ Unity work, or launch the required fresh re-audit.
 - Frozen independent core: `SCI-ALIGN-001_INDEPENDENT_CORE.tex`, SHA-256
   `4ee7b7e9cbe883ea626afe2e3d22756b20f556a2e06115d4a2832f2e78469785`.
 - Owner decision: `SCI-ALIGN-001_COORDINATOR_DECISION_2026-08-01.md` at
-  `4f905f4f39461c8f9a86b0bf589880362d0a49f7`.
+  `4f905f4f353e91847a303f4f3959654f3f03c302`.
 - Required repair branch: `codex/repair-sci-align-001`.
 - Required worktree: a fresh Codex app worktree from the exact repair-base
   SHA, never the audit or coordination branch.

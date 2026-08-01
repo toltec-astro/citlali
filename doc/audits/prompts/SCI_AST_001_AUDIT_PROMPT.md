@@ -86,7 +86,7 @@ Do not audit or repair:
 `SCI-ALIGN-001` is an open implementation dependency. Before the independent
 freeze, you may read only its approved owner contract in
 `SCI-ALIGN-001_COORDINATOR_DECISION_2026-08-01.md` at decision commit
-`4f905f4f39461c8f9a86b0bf589880362d0a49f7`, together with the canonical
+`4f905f4f353e91847a303f4f3959654f3f03c302`, together with the canonical
 ledger state. Abstract inputs may therefore declare field identity, topology,
 unit/frame, native-source mapping, timing residual, origin, validity, and
 original/synthesized eligibility. Do not assume the governing implementation
