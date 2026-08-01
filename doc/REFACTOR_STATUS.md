@@ -58,15 +58,33 @@ has yet been created. See the
 and the
 [bounded repair/re-audit handoff](audits/packages/SCI-MAP-001_BOUNDED_REPAIR_REAUDIT_HANDOFF_2026-07-31.md).
 
-In parallel, `SCI-CAL-001` is prepared for an independent Tier A audit at the
-same governing application SHA. Its only upstream dependency, `SCI-ALIGN-001`,
-is an explicit abstract input with calibration conclusions conditioned while
-ALIGN remains open. The frozen CAL inbox contains no pre-core or post-core
-handoffs. The audit is documentation-only and does not modify application
-code, contact Unity, or settle downstream MAP/FLT interpretations. Its
-[dispatch prompt](audits/prompts/SCI_CAL_001_AUDIT_PROMPT.md) and
-[frozen inbox manifest](audits/handoffs/SCI-CAL-001/SCI-CAL-001_INBOX_MANIFEST_2026-07-31.yaml)
-govern the isolated task.
+## 2026-07-31 SCI-CAL-001 Audit Coordination
+
+The independent Tier A `SCI-CAL-001` audit is integrated on the scientific-
+audit coordination line. Its frozen-core commit is
+`1565836282d936b974aeb5b5a7d4554ce55b10bd`; its final audit commit is
+`27b0916e725696597c3ba84fb6a82bf6cf0ea356`; and the final TeX artifact digest
+is `957ed71d1432ad67fe582d6137fbe72c52e82a31f3199331a94ab7b39490d376`.
+The work assessed exact application SHA
+`9aae0e669384c5c0c0dda93debc194d6b8dac787` and preserved the independent-core
+freeze before first CAL source inspection.
+
+The verdict is `amend`: the proposed contract is coherent, but the assessed
+implementation is `nonconformant`. Four P0 defects cover the atmospheric
+exponent, the finite positive low-opacity branch, fail-closed validity, and
+the positional external-APT/TOD binding. Six P1 findings cover covariance,
+photometric policy, provenance, RTC/PTC factor semantics, missing validation,
+and the open `SCI-ALIGN-001` dependency. Seven post-core handoffs are
+integrated for RTC, PTC, VAL, MAP, FLT, MODE, and BEAM; the late MAP and FLT
+arrivals are held for their fresh re-audits.
+
+The audit proposes `restricted_use`, but that operational change is not yet
+authorized. The canonical state remains `existing_use_only` pending
+`CAL-D005`; the proposed narrow allowlist and broader fail-closed matrix are
+recorded in the ledger. Scientific decisions `CAL-D001`--`CAL-D004` and the
+operational decision `CAL-D005` are summarized in the
+[coordinator decision brief](audits/packages/SCI-CAL-001_COORDINATOR_DECISION_BRIEF_2026-07-31.md).
+No repair branch, Unity evidence request, or re-audit has been started.
 
 ## 2026-07-26 Conan 2 Build Review
 

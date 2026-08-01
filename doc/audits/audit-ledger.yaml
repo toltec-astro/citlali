@@ -640,11 +640,23 @@ packages:
           misaligned samples remain conditioned on SCI-ALIGN-001.
     downstream_consumers: [SCI-RTC-001, SCI-MAP-001, SCI-FLT-001, SCI-MODE-001, SCI-BEAM-001]
     incoming_handoffs: []
-    outgoing_handoffs: []
+    outgoing_handoffs:
+      - SCI-RTC-001-XAUD-001
+      - SCI-PTC-001-XAUD-003
+      - SCI-VAL-001-XAUD-003
+      - SCI-MAP-001-XAUD-002
+      - SCI-FLT-001-XAUD-001
+      - SCI-MODE-001-XAUD-001
+      - SCI-BEAM-001-XAUD-001
     governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
     governing_sha_role: audit_dispatch_snapshot
     audit_branch: codex/audit-sci-cal-001
-    audit_commit: null
+    audit_commit: 27b0916e725696597c3ba84fb6a82bf6cf0ea356
+    audit_parent_sha: 1565836282d936b974aeb5b5a7d4554ce55b10bd
+    audit_artifact_at_commit: >-
+      doc/audits/packages/SCI-CAL-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    final_audit_artifact_sha256: >-
+      957ed71d1432ad67fe582d6137fbe72c52e82a31f3199331a94ab7b39490d376
     dispatch:
       status: frozen_for_dispatch
       coordinator_registry_commit: 88741d085a08431790c6eee719b6f20052b459d8
@@ -656,20 +668,170 @@ packages:
       post_core_evidence_ids: []
       prompt_path: doc/audits/prompts/SCI_CAL_001_AUDIT_PROMPT.md
       prompt_sha256: 678d90184ccc84fc52841a4118a124ba087d8ccac889aa19c5aabd37aea49c7d
-    independent_derivation: {status: not_started, sha256: null}
-    contract_status: not_started
-    implementation_status: not_assessed
-    validation_status: not_started
+    independent_derivation:
+      status: independent_draft_frozen
+      path: doc/audits/packages/SCI-CAL-001_INDEPENDENT_CORE.tex
+      sha256: >-
+        106755520b048f601bc60fd04e7b6020e6fa470480ac3105fa7ba269c730a4fe
+      freeze_commit: 1565836282d936b974aeb5b5a7d4554ce55b10bd
+      freeze_timestamp_utc: 2026-08-01T00:18:38Z
+      first_source_inspection_utc: 2026-08-01T00:18:59Z
+    contract_status: proposed
+    implementation_status: nonconformant
+    validation_status: in_progress
     production_status: existing_use_only
-    verdict: pending
-    open_findings: []
-    unresolved_scientific_decisions: []
-    local_evidence: []
-    requested_unity_evidence: []
+    audit_proposed_production_status: restricted_use
+    production_status_decision:
+      status: pending_owner_decision
+      decision_id: CAL-D005
+      note: >-
+        The audit proposes extinction-disabled mJy/beam relative or diagnostic
+        use only after exact raw-column/APT UID identity is independently
+        proven. The canonical production status is not changed until the
+        project owner accepts, narrows, or replaces that proposal.
+    verdict: amend
+    implementation_assessment:
+      governing_source: nonconformant
+      proposed_narrow_use: >-
+        Extinction-disabled mJy/beam relative or diagnostic use only, after
+        exact raw-column/APT UID identity is independently proven.
+      fail_closed_uses:
+        - extinction_enabled_scientific_interpretation
+        - nondefault_units
+        - absolute_or_integrated_photometry
+        - full_covariance_or_significance
+        - beammap_apt_promotion
+        - calibration_dependent_feedback
+    open_findings:
+      - id: SCI-CAL-001-F001
+        class: implementation_defect
+        severity: P0
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: calibration_extinction_implementation
+        summary: >-
+          Extinction applies zenith-equivalent opacity without the
+          airmass-relative exponent or a fixed calibration pivot.
+      - id: SCI-CAL-001-F002
+        class: implementation_defect
+        severity: P0
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: calibration_extinction_implementation
+        summary: >-
+          The q0 branch returns unity for finite positive tau225 below the q25
+          threshold.
+      - id: SCI-CAL-001-F003
+        class: implementation_defect
+        severity: P0
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: calibration_validity_implementation
+        summary: >-
+          Required non-finite, domain, coefficient, and beam failures do not
+          consistently fail closed.
+      - id: SCI-CAL-001-F004
+        class: implementation_defect
+        severity: P0
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: calibration_identity_implementation
+        summary: >-
+          External APT coefficients bind to TOD columns by position without a
+          proven detector UID/header join.
+      - id: SCI-CAL-001-F005
+        class: contract_gap
+        severity: P1
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: calibration_uncertainty_contract
+        summary: >-
+          Detector, common gain, extinction, beam, bandpass, and template
+          systematic covariance is absent.
+      - id: SCI-CAL-001-F006
+        class: scientific_policy_decision
+        severity: P1
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: calibration_photometry_owner
+        summary: >-
+          Output-unit, beam/template, pivot, bandpass/color, and
+          point/extended/integrated meanings require owner approval.
+      - id: SCI-CAL-001-F007
+        class: contract_gap
+        severity: P1
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: calibration_provenance_contract
+        summary: >-
+          Products do not preserve the complete realized calibration identity,
+          factors, validity, response, and covariance.
+      - id: SCI-CAL-001-F008
+        class: contract_gap
+        severity: P1
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: calibration_rtc_ptc_interface
+        summary: >-
+          flxscale, responsivity, sens, and fcf lack one approved unit,
+          reciprocal, normalization, and propagation contract.
+      - id: SCI-CAL-001-F009
+        class: evidence_gap
+        severity: P1
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: calibration_validation
+        summary: >-
+          Full local fixtures, same-SHA Unity evidence, and standard-source
+          recovery are absent.
+      - id: SCI-CAL-001-F010
+        class: dependency_gap
+        severity: P1
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: SCI-ALIGN-001
+        summary: >-
+          Per-sample identity, elevation, gap/interpolation, and eligibility
+          conclusions remain conditioned on open ALIGN.
+    unresolved_scientific_decisions:
+      - CAL-D001
+      - CAL-D002
+      - CAL-D003
+      - CAL-D004
+      - CAL-D005
+    local_evidence:
+      - id: SCI-CAL-001-CORE-001
+        status: accepted_for_independence
+        artifact: doc/audits/packages/SCI-CAL-001_INDEPENDENT_CORE.tex
+        sha256: >-
+          106755520b048f601bc60fd04e7b6020e6fa470480ac3105fa7ba269c730a4fe
+      - id: SCI-CAL-001-SOURCE-TRACE-001
+        status: accepted_for_audit
+        source_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+        scope: operator_identity_units_response_validity_products_consumers
+      - id: SCI-CAL-001-ANALYTIC-001
+        status: failed_current_implementation
+        scope: extinction_airmass_and_q0_limits
+        finding_ids: [SCI-CAL-001-F001, SCI-CAL-001-F002]
+      - id: SCI-CAL-001-TEST-INVENTORY-001
+        status: incomplete
+        finding_ids: [SCI-CAL-001-F009]
+    requested_unity_evidence:
+      - SCI-CAL-001-UNITY-001
     supplied_external_evidence: []
     remediation_branch: null
     remediation_commit: null
-    re_audit_status: not_started
+    re_audit_status: required
 
   - id: SCI-AST-001
     name: Pointing, astrometry, detector coordinates, and WCS

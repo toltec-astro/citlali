@@ -6,7 +6,7 @@ source:
   package_id: SCI-CAL-001
   role: auditor
   audit_branch: codex/audit-sci-cal-001
-  audit_commit: null
+  audit_commit: 27b0916e725696597c3ba84fb6a82bf6cf0ea356
   governing_or_evidence_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
   finding_ids: [SCI-CAL-001-F001, SCI-CAL-001-F004, SCI-CAL-001-F005, SCI-CAL-001-F006]
 
