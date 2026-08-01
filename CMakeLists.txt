@@ -28,14 +28,19 @@ find_package(
         netcdf
         enum
         cli
+        perflibs
         grppi
 )
 find_package(Ceres 2.2 CONFIG REQUIRED)
 find_package(Boost 1.83 CONFIG REQUIRED)
 find_package(spectra 1.0 CONFIG REQUIRED)
 find_package(TulaCcfits 1 CONFIG REQUIRED)
-if(CITLALI_ENABLE_OPENMP)
-    find_package(OpenMP REQUIRED COMPONENTS CXX)
+if(CITLALI_ENABLE_OPENMP AND NOT tula_OPENMP_ENABLED)
+    message(FATAL_ERROR
+        "Citlali requires OpenMP, but tula was built without it")
+elseif(NOT CITLALI_ENABLE_OPENMP AND tula_OPENMP_ENABLED)
+    message(FATAL_ERROR
+        "Citlali disables OpenMP, but tula was built with it")
 endif()
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(FFTW3 REQUIRED IMPORTED_TARGET fftw3)
@@ -90,6 +95,7 @@ target_link_libraries(
         tula::eigen
         tula::netcdf
         tula::enum
+        tula::perflibs
         tula::grppi
         Spectra::Spectra
         Boost::headers
@@ -98,9 +104,6 @@ target_link_libraries(
         tula_deps::ccfits
         citlali::config
 )
-if(CITLALI_ENABLE_OPENMP)
-    target_link_libraries(citlali PUBLIC OpenMP::OpenMP_CXX)
-endif()
 
 option(CITLALI_BUILD_CLI "Build the Citlali data-reduction CLI" ON)
 if(CITLALI_BUILD_CLI)

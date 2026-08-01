@@ -27,9 +27,12 @@ and its CFITSIO C dependency through one `tula_deps::ccfits` target. Spack may s
 the pair from platform externals or build both from source.
 
 OpenMP is the explicit Spack variant `citlali+openmp` (the default). It
-propagates consistently to Kidscpp and Tula. `citlali~openmp` omits both the
-compile/link dependency and the exported CMake dependency, allowing a native
-Homebrew LLVM 20 portability lane without an undeclared OpenMP runtime.
+propagates consistently to Kidscpp, Tula, and `tula-perflibs`. Citlali links
+`tula::perflibs` and does not discover an OpenMP runtime itself. On native
+macOS, the stack pairs Homebrew Clang 20.1.8 with Spack-built
+`llvm-openmp@20.1.8`; Linux uses the matching compiler runtime. The
+`citlali~openmp` graph remains available and consistently removes the
+capability across the transitive package chain.
 
 ## Fresh development machine
 
