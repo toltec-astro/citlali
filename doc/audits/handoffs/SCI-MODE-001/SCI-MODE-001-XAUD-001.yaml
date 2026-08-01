@@ -1,0 +1,69 @@
+format_version: 1
+id: SCI-MODE-001-XAUD-001
+created_date: 2026-07-31
+
+source:
+  package_id: SCI-CAL-001
+  role: auditor
+  audit_branch: codex/audit-sci-cal-001
+  audit_commit: null
+  governing_or_evidence_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+  finding_ids: [SCI-CAL-001-F001, SCI-CAL-001-F002, SCI-CAL-001-F005, SCI-CAL-001-F006]
+
+target:
+  package_id: SCI-MODE-001
+
+priority: P0
+evidence_basis: observed
+review_phase: post_core_evidence
+arrival: before_dispatch
+status: submitted
+
+summary: >-
+  Extinction-enabled OOF and absolute Pointing/OOF amplitudes depend on unresolved CAL correctness and photometric policy.
+claim: >-
+  Active OOF configurations enable the CAL extinction path affected by F001
+  and F002; Pointing/OOF absolute amplitude, significance, and physical
+  interpretation also lack approved calibration covariance and
+  beam/template/unit meaning.
+supports:
+  - Treat extinction, calibrated amplitude, beam/template response, and covariance as explicit MODE dependencies.
+  - Restrict existing extinction-disabled mJy/beam Pointing use to relative/diagnostic interpretation under verified detector identity.
+does_not_establish:
+  - This record does not audit Pointing or OOF fitting estimators.
+  - It does not determine an OOF surface model or astrometric policy.
+
+requested_actions:
+  - Include CAL state and restrictions in the MODE independent input contract.
+  - Test recovered amplitude versus airmass and standard-source prediction after CAL repair.
+  - Fail closed on extinction-enabled and absolute/significance claims while CAL P0/P1 findings remain open.
+affected_target_findings: []
+related_handoffs: [SCI-FLT-001-XAUD-001, SCI-BEAM-001-XAUD-001]
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-CAL-001-FINAL-AUDIT-001
+    availability: repository_path
+    path: doc/audits/packages/SCI-CAL-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: 957ed71d1432ad67fe582d6137fbe72c52e82a31f3199331a94ab7b39490d376
+    note: Consumer trace and findings F001, F002, F005, and F006.
+  - id: SCI-CAL-001-INDEPENDENT-CORE-001
+    availability: repository_path
+    path: doc/audits/packages/SCI-CAL-001_INDEPENDENT_CORE.tex
+    sha256: 106755520b048f601bc60fd04e7b6020e6fa470480ac3105fa7ba269c730a4fe
+    note: Frozen point/extended/integrated response and consumer restrictions.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: not_applicable
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

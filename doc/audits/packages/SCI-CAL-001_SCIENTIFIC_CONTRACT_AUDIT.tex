@@ -1,0 +1,1298 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.82in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,booktabs,longtable,array,enumitem,hyperref,microtype,xcolor}
+\DeclareFontFamily{OMS}{lmsy}{\skewchar\font48 }
+\DeclareFontShape{OMS}{lmsy}{m}{n}{%
+  <-6.5> lmsy7 <6.5-7.5> lmsy7 <7.5-8.5> lmsy8
+  <8.5-9.5> s*[0.9]lmsy10 <9.5-> lmsy10}{}
+\DeclareFontShape{OMS}{lmsy}{b}{n}{<->ssub*lmsy/m/n}{}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\setlength{\emergencystretch}{4em}
+\setlength{\tabcolsep}{3.2pt}
+\renewcommand{\arraystretch}{1.10}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\code}[1]{\nolinkurl{#1}}
+\newcommand{\gitsha}[5]{\texttt{#1\allowbreak#2\allowbreak#3\allowbreak#4\allowbreak#5}}
+\newcommand{\digest}[8]{\texttt{#1\allowbreak#2\allowbreak#3\allowbreak#4\allowbreak#5\allowbreak#6\allowbreak#7\allowbreak#8}}
+\newcommand{\PackageID}{SCI-CAL-001}
+\newcommand{\GoverningSHA}{\gitsha{9aae0e66}{9384c5c0}{c0dda93d}{ebc194d6}{b8dac787}}
+\newcommand{\FrameworkSHA}{\gitsha{2cafb6de}{3a000e2e}{4c40100f}{83348f2f}{45fd44d7}}
+\newcommand{\RegistrySHA}{\gitsha{88741d08}{5a084317}{90c6eee7}{19b6f200}{52b459d8}}
+\newcommand{\CoreFreezeSHA}{\gitsha{15658362}{82d936b9}{74aeb5b5}{a7d4554c}{e55b10bd}}
+\newcommand{\CoreDigest}{\digest{10675552}{0b048f60}{1bc60fd0}{4e7b6020}{e6fa4704}{80ac3105}{fa7ba269}{c730a4fe}}
+\newcommand{\AuditDate}{2026-07-31}
+
+\title{Detector calibration, extinction, and map-unit transfer\\
+\large Citlali scientific-contract audit: \PackageID}
+\author{Independent package auditor}
+\date{\AuditDate}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The frozen independent contract requires a detector-identity join, a declared
+calibration pivot, a line-of-sight extinction operator, explicit target-unit
+and beam/template meaning, and separate statistical and systematic
+calibration covariance.  At exact source SHA \GoverningSHA, the multiplicative
+detector flux-scale path is structurally simple, the Rayleigh--Jeans convention
+is explicitly recorded, and calibration precedes the response kernel and
+subsequent RTC operations.  The assessed implementation is nevertheless
+\emph{nonconformant}.  Its atmospheric factor is the exponential of a
+zenith-equivalent opacity rather than the required opacity times airmass
+relative to a fixed pivot; its lowest-opacity model returns no extinction for
+finite positive 225-GHz opacity; non-finite inputs and factors are not
+consistently rejected; and external APT coefficients are attached to raw TOD
+columns by position without proving detector identity.  Calibration,
+extinction, beam, and common-mode covariance are not propagated, while
+non-default unit/beam meanings and realized provenance remain unapproved or
+incomplete.  The package identity is coherent, so the verdict is
+\code{amend}.  The proposed status is \code{restricted_use}: only explicitly
+extinction-disabled, \code{mJy/beam}, relative or diagnostic use may proceed
+under an independently verified detector/APT identity; extinction-enabled,
+non-default-unit, absolute-photometry, covariance, significance, and feedback
+claims fail closed pending owner decisions, repair, same-SHA evidence, and
+fresh re-audit.  This report proposes a disposition; it is not production
+authorization.
+\end{abstract}
+
+\section{Executive result and bounded scope}
+
+\begin{description}[style=nextline]
+\raggedright
+\item[Package and tier] \PackageID, Detector calibration, extinction, and
+map-unit transfer; Tier A.
+\item[Included transformation] External or observation-resolved APT
+coefficient selection; detector-domain multiplicative calibration;
+atmospheric transmission correction; conversion from \code{mJy/beam} to the
+requested signal unit; the corresponding response, uncertainty, provenance,
+and consumer boundary.
+\item[Coherence decision] \textbf{Keep one package.}  Detector gain,
+extinction, and unit transfer multiply the same detector sample and must share
+one coefficient identity, reference pivot, response, and covariance.  Their
+implementation may remain modular, but splitting the scientific contract
+would make double application and missing common terms harder to exclude.
+\item[Explicit exclusions] Common sample-axis and interpolation construction
+(\code{SCI-ALIGN-001}); pointing/WCS (\code{SCI-AST-001}); RTC/PTC filtering
+estimators; mapmaking and coaddition; noise estimators; map filtering; source,
+Pointing/OOF, and Beammap estimators; and fruit-loop feedback.  Those
+interfaces are traced without absorbing their mathematics.
+\item[Strongest supported conclusion] On the sequential and parallel-neutral
+CAL path, a detector column is multiplied by an APT \code{flxscale}, an
+array-level target-unit factor, and---when enabled---a sample-dependent
+atmospheric factor.  The first two operations have the expected multiplicative
+shape, but the atmospheric exponent and coefficient identity do not satisfy
+the frozen contract.  No implementation branch seen supplies the missing
+calibration covariance.
+\item[Status axes] \code{contract_status=proposed};
+\code{implementation_status=nonconformant};
+\code{validation_status=in_progress};
+\code{production_status=restricted_use}; \code{verdict=amend};
+\code{re_audit_status=required}.
+\item[Consumer disposition] Existing accepted reductions are regression
+evidence only.  They do not validate absolute calibration.  New scientific
+use with extinction enabled, any unit other than \code{mJy/beam}, or any
+absolute flux, integrated flux, surface-brightness, significance, systematic
+covariance, or feedback interpretation is fail-closed.  A narrow
+extinction-disabled relative/diagnostic path is proposed only after the exact
+raw-column/APT UID relation is independently proven for that observation.
+\end{description}
+
+No application code, tests, build files, production documentation, canonical
+ledger, canonical handoff record, other branch, or other worktree was changed.
+No repair, network access, Unity access, build, merge, rebase, push, software
+installation, or second audit was performed.
+
+\section{Authority, isolation, and independence record}
+
+\begin{longtable}{L{0.24\linewidth}L{0.69\linewidth}}
+\toprule
+Field & Exact identity or event\\
+\midrule
+\endfirsthead
+\toprule
+Field & Exact identity or event\\
+\midrule
+\endhead
+Initial supplied worktree &
+\code{/Users/gwilson/.codex/worktrees/13e8/citlali-refactor}; clean detached
+HEAD exactly \GoverningSHA.\\
+Isolation check & Before branch creation, no
+\code{codex/audit-sci-cal-001} ref and no CAL audit worktree existed.  Other,
+unrelated audit worktrees were not modified or used as source authority.\\
+Audit branch & \code{codex/audit-sci-cal-001}, created in the supplied
+worktree at exact \GoverningSHA; no other worktree was created or modified.\\
+Coordination authority & Read-only worktree
+\code{/private/tmp/citlali-scientific-audit-framework}, clean at exact
+\FrameworkSHA.  Registry snapshot \RegistrySHA{} is its verified ancestor.\\
+Authenticated dispatch prompt &
+\code{doc/audits/prompts/SCI_CAL_001_AUDIT_PROMPT.md}; SHA-256
+\digest{678d9018}{4ccc84fc}{52841a41}{18a124ba}{087d8cca}{c889aa19}{c5aabd37}{aea49c7d}.\\
+Frozen inbox manifest &
+\code{doc/audits/handoffs/SCI-CAL-001/SCI-CAL-001_INBOX_MANIFEST_2026-07-31.yaml};
+SHA-256
+\digest{00582bb2}{dc19da7b}{3380502c}{db5f11a3}{dd35f64c}{76e879b6}{57ec2573}{914222b2};
+no pre-core or post-core handoffs.\\
+Approved dependency abstraction & Calibration receives ordered detector and
+telescope sample identity, a common time axis, timestamps, aligned elevation,
+applicable duration, gap/interpolation state, and exact original/synthesized
+eligibility from \code{SCI-ALIGN-001}.  Every dependent conclusion remains
+conditioned on that abstraction.\\
+Independent-core path and digest &
+\code{doc/audits/packages/SCI-CAL-001_INDEPENDENT_CORE.tex}; \CoreDigest.\\
+Core freeze & Dedicated commit \CoreFreezeSHA, parent \GoverningSHA, commit
+time \code{2026-07-31T20:18:38-04:00}; sole committed path was the core.\\
+First CAL source inspection & \code{2026-08-01T00:18:59Z}; exact first
+command and source were \code{sed -n '1,260p'
+include/citlali/core/engine/calib.h}.\\
+Pre-freeze exposure & Only the authenticated dispatch and empty manifest,
+audit process/templates, repository \code{AGENTS.md}, project architecture and
+scientific conventions, and the TolTEC context routing authorities were read.
+No CAL implementation, test, configuration, product, writer, provenance, or
+consumer content was opened before the freeze.\\
+Core rendering & Offline cached Tectonic compilation, Poppler page rendering,
+and visual inspection of all 12 pages.  No downloaded resource or network was
+used; the frozen bytes were not edited after the commit.\\
+\bottomrule
+\end{longtable}
+
+The authenticated prompt and manifest digests were checked before either was
+relied upon.  The framework remained read only; no coordination commit was
+merged or cherry-picked.
+
+\section{Frozen contract and audit equations}
+
+The complete independent derivation is incorporated by reference to the
+frozen path and digest above.  Its identities use observation \(o\), stable
+detector UID \(i\), ordered aligned sample \(t\), and array \(a(i)\).  A
+calibration record is joined by UID, never by row position.  For detector gain
+\(g_{oi}\), target-unit transfer \(q_{oati}\), zenith opacity
+\(\tau_{oat}\), airmass \(X(e_{ot})\), and a fixed coefficient pivot
+\(X^{\rm ref}_{oi}\), the required multiplier is
+\begin{equation}
+ C_{oti}=q_{oati}g_{oi}
+ \exp\!\left[\tau_{oat}\{X(e_{ot})-X^{\rm ref}_{oi}\}\right].
+ \label{eq:audit-required-factor}
+\end{equation}
+The calibrated signal and a synthetic response companion obey
+\begin{align}
+ y_{oti}&=m_{oti}C_{oti}(x_{oti}-b_{oti}),
+ \label{eq:audit-required-signal}\\
+ K_{oti,r}&=m_{oti}C_{oti}k_{oti,r}.
+ \label{eq:audit-required-response}
+\end{align}
+These are the final-audit restatements of the independently numbered
+multiplier, signal-estimator, and kernel-transfer equations in the frozen
+core.  A measured detector channel is not a response kernel.  If the kernel is
+constructed after calibration as a unit source already expressed in the final
+coefficient basis, that alternate ordering is admissible only when its
+Jacobian identity and unit are stated and preserved through every later
+operator.
+
+Conditional sample covariance transforms as
+\begin{equation}
+ \Cov(y\mid C,m)=M C\,\Cov(x\mid C,m)\,C^{\mathsf T}M^{\mathsf T},
+ \label{eq:audit-conditional-covariance}
+\end{equation}
+while the full covariance adds the low-rank and correlated terms induced by
+detector relative gain, array/common absolute scale, extinction, beam,
+bandpass, and template uncertainty.  Frozen-core labels
+\code{eq:log-factor-perturbation} through \code{eq:full-covariance} define
+that decomposition.  Merely relabeling downstream inverse variance
+after multiplying samples does not add calibration-systematic covariance.
+
+The required state lifecycle is one way:
+\begin{equation}
+ \hbox{requested}\longrightarrow\hbox{effective}
+ \longrightarrow\hbox{observation-resolved}\longrightarrow\hbox{realized}.
+ \label{eq:audit-state-lifecycle}
+\end{equation}
+Realized state includes coefficient-table identity and digest, UID join,
+factor decomposition and pivot, tau source and validity interval, airmass
+model, per-sample correction range, target unit, beam/pixel/frequency basis,
+rejected support, covariance components, and response identity.
+
+\section{Implementation conformity trace}
+
+\subsection{Realized operator}
+
+For elevation \(e_t\), the implementation first computes
+\begin{align}
+ A_t &= \sec z_t\left[1-0.0012\{\sec^2 z_t-1\}\right],
+ \qquad z_t=\frac{\pi}{2}-e_t,\\
+ T_{at} &= p_{am}(e_t)\exp(-A_t\tau_{225}),\\
+ \widehat\tau_{at} &= -\frac{\log T_{at}}{A_t}.
+ \label{eq:audit-code-tau}
+\end{align}
+The code then applies \(\exp(\widehat\tau_{at})\), yielding
+\begin{equation}
+ y^{\rm impl}_{ti}=x_{ti}\,f_i\,q_{a(i)}
+ T_{a(i)t}^{-1/A_t},
+ \label{eq:audit-code-signal}
+\end{equation}
+where \(f_i\) is APT \code{flxscale} and \(q_a\) is the requested-unit
+conversion.  For a top-of-atmosphere coefficient the required atmospheric
+factor is \(T^{-1}=\exp(A_t\widehat\tau)\); for a fixed nonzero pivot it is
+\(\exp[\widehat\tau(A_t-X^{\rm ref})]\).  The implemented exponent of one
+therefore implies the impossible sample-dependent pivot
+\(X^{\rm ref}=A_t-1\).  It cannot implement Equation
+\eqref{eq:audit-required-factor} for a fixed calibration reference over a scan.
+
+For the lowest-opacity selection, \code{am_q0}, all three band coefficient
+vectors are identically zero and \code{calc_tau} returns zero without using
+the supplied elevation or positive \(\tau_{225}\).  Model thresholds derived
+from the hard-coded 80-degree reference transmissions are
+\(0,0.0504874,0.0883394,0.1583132,0.3048684\).  Thus every finite
+\(0<\tau_{225}<0.0504874\) selects \code{am_q0} and receives exactly unity
+extinction correction.
+
+\subsection{Source-to-equation trace}
+
+\begin{longtable}{L{0.30\linewidth}L{0.18\linewidth}L{0.40\linewidth}}
+\toprule
+Governing source location & Frozen/final equation & Assessed operation\\
+\midrule
+\endfirsthead
+\toprule
+Governing source location & Frozen/final equation & Assessed operation\\
+\midrule
+\endhead
+\code{src/citlali/core/engine/calib.cpp:27--129} &
+Core gain and flat normalization & Reads APT
+columns, filters rows by interface-derived network number, preserves APT row
+order, reads but does not use raw \code{RoachIndex}, then calls setup.\\
+\code{src/citlali/core/engine/calib.cpp:189--265} & Core unit-transfer
+equations & Creates an array-level
+target-unit multiplier from an arithmetic-mean circular Gaussian beam and,
+for \code{uK}, a nominal array frequency and Rayleigh--Jeans law.\\
+\code{src/citlali/core/engine/calib.cpp:267--414} & Core validity and beam-area
+rules & Checks selected column lengths and contiguous
+group rows, but not coefficient finiteness/nonzero values or positive finite
+beam axes.\\
+\code{include/citlali/core/timestream/rtc/calibrate.h:110--148} & Core
+\code{eq:extinction}, final \eqref{eq:audit-code-tau} & Selects the
+transmission polynomial, evaluates modified secant airmass, and converts
+line-of-sight transmission to zenith-equivalent opacity.\\
+\code{include/citlali/core/timestream/rtc/calibrate.h:150--169} & Core
+multiplier and signal estimator & Multiplies each TOD
+column by target-unit factor and row-position APT \code{flxscale}.\\
+\code{include/citlali/core/timestream/rtc/calibrate.h:172--188} & Core
+\code{eq:extinction}, final \eqref{eq:audit-code-signal} & Applies
+\(\exp(\widehat\tau)\), records only its time mean in \code{fcf}, and omits
+the airmass exponent and fixed pivot.\\
+\code{include/citlali/core/timestream/rtc/rtcproc.h:869--917} & Core signal and
+kernel transfer & Resets \code{fcf},
+calibrates and extinction-corrects signal, then constructs a unit-source
+kernel; later RTC filters act on both signal and kernel.\\
+\code{include/citlali/core/timestream/rtc/rtcproc.h:919--1047} & Core response
+and consumer boundary & Despiking (including responsivity-based replacement)
+and filtering occur after calibration.\\
+\code{include/citlali/core/engine/detail/beammap_flux_conversion_impl.h:27--66} &
+Core gain and response identities & Beammap computes
+\code{flxscale=source_flux/amplitude}, multiplies \code{sens}, and reruns CAL
+setup; fit and source-model uncertainty are not propagated by CAL.\\
+\code{include/citlali/core/engine/detail/tod_file_output_impl.h:24--76} & Core
+\eqref{eq:audit-state-lifecycle} & Writes unit conversions, mean tau, APT
+basename, and optional detector APT columns, but not the complete realized
+factor/covariance identity.\\
+\bottomrule
+\end{longtable}
+
+\subsection{Quantified atmospheric mismatch}
+
+The following deterministic calculation evaluates the hard-coded polynomials
+and compares the implemented factor \(T^{-1/A}\) with the top-of-atmosphere
+factor \(T^{-1}\).  Values are relative under-corrections
+\(100(T^{1-1/A}-1)\) percent; they are not external observational evidence.
+
+\begin{center}
+\begin{tabular}{rrrrr}
+\toprule
+\(\tau_{225}\) & model/elevation & a1100 & a1400 & a2000\\
+\midrule
+0.08 & q25, 30 deg & -9.69\% & -7.24\% & -5.34\%\\
+0.08 & q25, 50 deg & -3.07\% & -2.28\% & -1.67\%\\
+0.08 & q25, 70 deg & -0.65\% & -0.48\% & -0.35\%\\
+0.10 & q50, 30 deg & -12.85\% & -8.83\% & -5.16\%\\
+0.20 & q75, 30 deg & -23.35\% & -17.03\% & -10.61\%\\
+0.35 & q95, 30 deg & -37.90\% & -27.73\% & -16.05\%\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+At \(\tau_{225}=0.03\), the q0 branch returns unity.  Even the 225-GHz
+line-of-sight correction alone would be approximately 1.0616, 1.0399, and
+1.0324 at elevations 30, 50, and 70 degrees respectively.  A TolTEC-band
+correction cannot be inferred from the q0 zero polynomials; this is precisely
+why the unity result needs authority and validation rather than being treated
+as a clear-sky identity.
+
+\section{Units, response, covariance, lifecycle, and provenance}
+
+\subsection{Target-unit and beam transfer}
+
+The accepted tokens are \code{mJy/beam}, \code{MJy/sr}, \code{uK}, and
+\code{Jy/pixel}.  The active numbered configurations request
+\code{mJy/beam}.  The non-default paths use one array-average circularized
+FWHM,
+\begin{equation}
+ \bar\theta_a=\frac{\overline{\theta_{a,\rm major}}+
+ \overline{\theta_{a,\rm minor}}}{2},\qquad
+ \Omega_a^{\rm impl}=2\pi(\bar\theta_a/2.355)^2,
+ \label{eq:audit-impl-beam}
+\end{equation}
+rather than a declared per-detector or effective product beam.  For an
+elliptical Gaussian with axes \(a,b\), this circularization changes the area
+relative to \(2\pi(a/2.355)(b/2.355)\) by
+\((a+b)^2/(4ab)\).  Whether that is an approved product-beam approximation,
+and whether point or integrated photometry may consume it, is an owner
+decision.  The implementation does explicitly label \code{uK} as
+monochromatic Rayleigh--Jeans brightness temperature at the nominal array
+center frequency.  It supplies no bandpass/color correction, thermodynamic
+temperature claim, or associated uncertainty; none may be inferred.
+
+\begin{longtable}{L{0.15\linewidth}L{0.25\linewidth}L{0.23\linewidth}L{0.28\linewidth}}
+\toprule
+Requested unit & Implemented factor from \code{mJy/beam} & Supported narrow
+fact & Missing approval/evidence\\
+\midrule
+\endfirsthead
+\toprule
+Requested unit & Implemented factor from \code{mJy/beam} & Supported narrow
+fact & Missing approval/evidence\\
+\midrule
+\endhead
+\code{mJy/beam} & \(q=1\) & Multiplicative APT scale is left in its declared
+APT unit. & Beam/template identity, coefficient pivot, absolute scale,
+uncertainty, and detector join.\\
+\code{MJy/sr} & \(q\propto1/\Omega_a^{\rm impl}\) & Dimensional conversion is
+consistent with the stored circular Gaussian area. & Effective beam and
+uncertainty; extended-source/bandpass/color policy.\\
+\code{uK} & Rayleigh--Jeans law at nominal array frequency and
+\(\Omega_a^{\rm impl}\) & Metadata accurately states the RJ and monochromatic
+basis. & Bandpass/color correction, product beam, uncertainties, and any CMB
+thermodynamic interpretation.\\
+\code{Jy/pixel} & \(10^{-3}\Omega_{\rm pix}/\Omega_a^{\rm impl}\) &
+Dimensional conversion matches a surface-brightness sample integrated over a
+configured pixel. & Pixel-grid/product response, correlated pixels,
+point-source versus integrated-flux semantics, and beam uncertainty.\\
+\bottomrule
+\end{longtable}
+
+\subsection{Response companion and downstream weighting}
+
+Signal is calibrated and extinction-corrected before a Gaussian, Airy, or
+FITS kernel is created.  The kernel is therefore a final-unit, unit-source
+response convention rather than a raw-domain companion transformed by
+Equation~\eqref{eq:audit-required-response}.  Subsequent RTC filtering treats
+signal and kernel alike.  This ordering can be coherent, but the products do
+not persist the claimed input-template unit, coefficient pivot, or Jacobian;
+the TOD kernel is marked \code{N/A} while map products give it the signal
+unit.  Its numerical meaning is consequently an unapproved interface, not a
+demonstrated physical detector response.
+
+The scalar \code{fcf} carried to PTC contains the unit factor and the mean
+implemented extinction factor, but excludes the detector's applied
+\code{flxscale}.  Approximate/hybrid PTC weighting combines it with APT
+\code{sens}.  That may be coherent only under a stated sensitivity
+normalization and covariance convention.  Separately, RTC despike replacement
+uses APT \code{responsivity} after flux calibration by dividing donor samples
+and multiplying the target replacement; the APT declares no responsivity unit
+or reciprocal convention.  Because replaced samples can influence later
+filters, the ambiguity is material even though RTC's despike estimator remains
+outside CAL.
+
+\subsection{Uncertainty and state assessment}
+
+No assessed CAL object carries uncertainties for \code{flxscale}, common
+absolute scale, tau, model interpolation, beam axes, nominal frequency,
+bandpass/color transfer, or their correlation.  Beammap fit products contain
+shape-error columns, but CAL does not consume them.  The timestream statistical
+weights may be rescaled by downstream logic; that is not the systematic term
+required by frozen-core label \code{eq:full-covariance}.  Absolute
+calibration and significance consumers therefore lack a complete uncertainty
+contract.
+
+Requested/effective booleans and unit tokens are represented, and the
+observation-selected extinction model is mirrored into typed shadow state.
+The realized product record remains incomplete.  TOD output can contain APT
+columns and unit conversion constants and records an APT basename and mean
+tau.  Map primary metadata records the APT basename, requested unit,
+configuration booleans, conversion constants, and \code{MEAN_TAU}.  Neither
+path proves the APT bytes/digest and UID join or records the applied
+per-sample factor range, fixed pivot, exact airmass/model coefficients, q0
+selection consequence, per-observation flux-scale correction, rejected
+support, response identity, or calibration covariance.  Recomputing a mean
+tau at mean elevation is not a lossless record of a time-varying multiplier;
+defaulting failed metadata to a harmless-looking value cannot establish
+valid execution.
+
+\section{Findings by controlled class}
+
+Every finding is open.  An observed finding names behavior present in the
+exact governing source; its consequences may additionally be derived.  No
+finding is closed by historical reductions or this audit.
+
+\subsection{Implementation defects}
+
+\paragraph{SCI-CAL-001-F001 --- P0, observed and derived, high confidence.}
+The extinction application omits the airmass-relative exponent.  The code
+derives zenith-equivalent band opacity as \(-\log(T)/A\) and applies
+\(\exp(\widehat\tau)\), which implies a sample-dependent coefficient pivot
+and cannot equal Equation~\eqref{eq:audit-required-factor} for any fixed pivot
+over a scan.  Under the conventional top-of-atmosphere target, deterministic
+under-corrections range from sub-percent at high elevation to tens of percent
+at low elevation for representative opacities.  This is an invalid-success
+risk in the active extinction-enabled OOF, Science, and Beammap modes.
+
+\emph{Closure gate:} after an owner approves opacity identity, calibration
+pivot, airmass law, and validity domain, repair the factor and its metadata;
+pass analytic elevation/tau grids, signal/kernel/weight propagation, paired
+same-SHA Unity reductions, and an exact-successor re-audit.
+
+\paragraph{SCI-CAL-001-F002 --- P0, observed and derived, high confidence.}
+For every finite \(0<\tau_{225}<0.0504874\), model selection chooses
+\code{am_q0}; \code{calc_tau} then returns three zero vectors and the applied
+extinction factor is exactly one.  Positive opacity and elevation are ignored.
+No scientific authority or validation establishes that all TolTEC-band
+attenuation vanishes in this interval.
+
+\emph{Closure gate:} the calibration/atmosphere owner must approve a continuous
+low-opacity model or an explicitly bounded zero-correction policy.  Test the
+zero limit, both sides of every threshold, continuity/monotonicity, and
+positive low-tau cases before successor re-audit.
+
+\paragraph{SCI-CAL-001-F003 --- P0, observed, high confidence.}
+The CAL boundary does not fail closed on all invalid state.  Setup omits length
+and finite/nonzero checks for \code{flxscale}, \code{sens}, and
+\code{responsivity}; beam averages accept non-finite or nonpositive axes;
+calibration checks coefficient length but not value; the extinction guard
+rejects only \(\tau<0\) at one mean elevation, so NaN passes; per-sample
+elevation, airmass, polynomial transmission, log domain, tau, and applied
+factor are not required finite/in-domain.  Invalid values may propagate into
+TOD, weights, and products rather than making the required operation fail.
+
+\emph{Closure gate:} define validity for every selected coefficient and sample,
+validate before mutation, reject invalid required state with a nonzero CLI
+failure, preserve explicit invalidity in optional outputs, and pass NaN,
+infinity, zero, negative, low-elevation, and nonpositive-transmission fixtures.
+
+\paragraph{SCI-CAL-001-F004 --- P0, observed, high confidence.}
+External APT coefficients are attached to TOD columns by position.  Raw KIDs
+interfaces are sorted numerically and their channel matrices are appended in
+that order; the APT is filtered by network values while preserving its own row
+order.  The code reads every raw \code{Header.Toltec.RoachIndex} into a vector
+but never compares or uses it, and no detector UID is joined to raw columns.
+Count equality and within-group contiguity cannot detect a permuted network or
+detector table.  A same-sized, contiguous but differently ordered APT can
+therefore silently apply the wrong detector calibration.
+
+\emph{Closure gate:} approve and implement one stable detector identity join
+with unique/missing/duplicate checks and explicit network/header constraints;
+make row order a validated consequence rather than authority.  Pass
+permutation, interface/header disagreement, duplicate UID, missing UID, and
+round-trip provenance tests plus successor re-audit.
+
+\subsection{Contract gaps}
+
+\paragraph{SCI-CAL-001-F005 --- P1, observed, high confidence.}
+The package has no model or product for detector-relative, array/common
+absolute-scale, extinction, beam/template, bandpass/color, or cross-sample
+calibration covariance.  Downstream inverse variance therefore represents at
+most conditional statistical uncertainty and cannot support full covariance,
+absolute significance, or combined-array absolute photometry.
+
+\emph{Closure gate:} approve the decomposition from frozen-core labels
+\code{eq:log-factor-perturbation} through \code{eq:full-covariance}, define
+which terms are conditioned versus propagated, persist their provenance and
+correlation scope, and validate analytic and Monte Carlo covariance transfer.
+
+\paragraph{SCI-CAL-001-F007 --- P1, observed, high confidence.}
+Requested, effective, observation-resolved, and realized provenance is not
+reproducible from products.  A basename and optional copied APT columns do not
+identify the exact coefficient bytes or join; \code{MEAN_TAU} does not
+reconstruct time-varying correction; the pivot, factor decomposition,
+flxscale correction, response Jacobian, invalid support, and systematic terms
+are absent.  Map-only outputs are especially insufficient.
+
+\emph{Closure gate:} define a stable, lossless CAL provenance schema and prove
+that a product reader can reconstruct or verify the exact realized multiplier,
+identity join, target-unit basis, response, validity, and covariance inputs.
+
+\paragraph{SCI-CAL-001-F008 --- P1, observed, high confidence.}
+The CAL-to-RTC/PTC interface does not state whether \code{responsivity},
+\code{flxscale}, \code{sens}, and \code{fcf} are gains or reciprocal
+responsivities, their units and normalization populations, which factors each
+contains, or how replacement/filtering and weighting must propagate them.
+The observed implementation applies \code{flxscale} to signal, excludes it
+from \code{fcf}, combines \code{fcf} with \code{sens} in PTC, and uses
+\code{responsivity} in post-calibration despike replacement.  That interface
+may be internally intended, but its scientific identity is not auditable.
+
+\emph{Closure gate:} the CAL, RTC, and PTC owners must approve a factor table
+with units, reciprocal convention, normalization, covariance, lifecycle, and
+response behavior; deterministic donor/target and weight-transfer fixtures
+must match it.
+
+\subsection{Scientific-policy decision}
+
+\paragraph{SCI-CAL-001-F006 --- P1, owner decision, high confidence.}
+The scientific owner must choose the authorized meaning of every output unit
+and response: calibration reference pivot; per-detector versus array/common
+beam; elliptical versus circularized/effective beam area; Gaussian/Airy/FITS
+template normalization; nominal-frequency RJ versus bandpass/color transfer;
+surface brightness, per-pixel value, per-beam amplitude, point-source flux,
+and integrated flux; and how their uncertainties correlate.  More than one
+choice is plausible and each changes consumer meaning.  Source comments or
+current metadata are not approval.
+
+\emph{Decision gate:} approve a bounded unit/beam/template matrix with allowed
+consumers and tolerances.  Until then, non-default units and absolute or
+integrated photometry fail closed.
+
+\subsection{Evidence gap}
+
+\paragraph{SCI-CAL-001-F009 --- P1, observed, high confidence.}
+Existing local tests cover a scalar RJ conversion, a per-detector multiplier,
+negative-tau rejection, configuration/lifecycle parity, and one APT filtering
+case.  They do not test the full extinction operator, q0 threshold behavior,
+finite/domain policy, detector UID/order binding, kernel/weight response,
+uncertainty, all unit modes, or provenance.  Accepted Point, OOF, Science, and
+Beammap reductions are earlier-SHA regression evidence, not same-SHA CAL
+contract evidence.  No same-SHA standard-source recovery or returned Unity
+bundle was supplied.
+
+\emph{Closure gate:} complete the falsifiable matrix in
+Section~\ref{sec:validation}, return the exact external evidence in
+Appendix~\ref{app:unity}, and re-audit the accepted successor SHA.
+
+\subsection{Dependency gap}
+
+\paragraph{SCI-CAL-001-F010 --- P1, observed, high confidence.}
+\code{SCI-ALIGN-001} is open.  CAL is allowed to condition on ordered detector
+and telescope sample identity, timestamps, aligned elevation, duration,
+gap/interpolation state, and original/synthesized eligibility, but their
+implementation and scientific validity are not established here.  Per-sample
+airmass, correction identity, interpolation behavior, and uncertainty cannot
+be promoted beyond that abstraction.
+
+\emph{Closure gate:} an approved \code{SCI-ALIGN-001} contract and evidence
+must supply the exact quantities and eligibility assumed by CAL; CAL must then
+demonstrate timestamp-by-timestamp use and propagation on the same successor
+SHA.
+
+\section{Unresolved owner decisions}
+
+\begin{longtable}{L{0.10\linewidth}L{0.23\linewidth}L{0.37\linewidth}L{0.21\linewidth}}
+\toprule
+ID & Owner & Exact decision & Restriction until resolved\\
+\midrule
+\endfirsthead
+\toprule
+ID & Owner & Exact decision & Restriction until resolved\\
+\midrule
+\endhead
+CAL-D001 & Calibration/atmosphere scientist & Define the physical identity of
+\(\tau_{225}\), each band transmission polynomial, the calibration reference
+pivot, airmass law/domain, low-opacity behavior, and interpolation in tau/time.
+& Extinction-enabled use fails closed.\\
+CAL-D002 & Calibration/APT owner & Define \code{flxscale},
+\code{responsivity}, \code{sens}, and \code{fcf}: units, sign, gain versus
+reciprocal convention, normalization population, UID join, epoch/validity, and
+factor decomposition. & Absolute calibration and PTC weight interpretation
+fail closed; narrow relative use requires an external identity proof.\\
+CAL-D003 & Photometry/beam scientist & Approve the unit/beam/template matrix:
+per-detector versus effective beam, elliptical/circular approximation,
+point/extended/integrated meaning, pixel transfer, RJ/bandpass/color basis,
+kernel normalization, and allowed consumers. & Non-default units and absolute
+or integrated photometry fail closed.\\
+CAL-D004 & Calibration/uncertainty owner & Select the conditional and
+propagated uncertainty decomposition, covariance representation, correlation
+scope, and product schema. & Full covariance and significance claims fail
+closed.\\
+CAL-D005 & Project owner/coordinator & Decide whether the proposed
+\code{restricted_use} allowlist is accepted, narrowed to \code{fail_closed},
+or replaced after an urgent operational assessment. & This audit report itself
+grants no production authorization.\\
+\bottomrule
+\end{longtable}
+
+\section{Falsifiable validation matrix}
+\label{sec:validation}
+
+Every standard method pre-registered in the frozen core remains applicable.
+The source audit discovered failures and gaps; it did not retroactively weaken
+the gates.
+
+\begin{longtable}{L{0.17\linewidth}L{0.15\linewidth}L{0.38\linewidth}L{0.20\linewidth}}
+\toprule
+Method & Current evidence & Pre-registered gate & Disposition\\
+\midrule
+\endfirsthead
+\toprule
+Method & Current evidence & Pre-registered gate & Disposition\\
+\midrule
+\endhead
+Analytic limits & Source equations and an independent numeric grid. &
+Identity and pivot limits; correct scalar/vector scaling; UID-permutation
+invariance; unit round trips; rank-one common-gain covariance; zero remains
+zero. & \textbf{Failed}: F001 and F002 falsify the extinction limits; F004
+violates UID-permutation invariance by construction.\\
+Deterministic local fixtures & Existing tests cover isolated RJ scalar and
+multiplier behavior, one negative tau guard, config parity, and a limited APT
+filter case. & CAL-T1--T6 from the core: elementwise error
+\(64\epsilon\max(1,|y_*|)\); covariance relative Frobenius \(10^{-12}\) and
+absolute \(10^{-14}\); exact identity/flag/cardinality and bitwise parallel
+requirements. & \textbf{Incomplete}; invalid-domain, order, full operator,
+covariance, unit, lifecycle, and response fixtures are missing.\\
+Synthetic injections & None supplied. & Point and uniform templates over at
+least three airmasses; deterministic CAL-T1 tolerance; 1000 noisy realizations
+with mean residual within three Monte Carlo standard errors and covariance
+within five. & \textbf{Planned}; blocked by decisions D001--D004 and repair.\\
+Blank controls & Analytic multiplicative zero only. & Zero/source-free
+Gaussian blanks; mean within three predicted standard errors; residual versus
+airmass slope within three; injected common nuisance recovers dense covariance.
+& \textbf{Planned}; no empirical blank artifact exists.\\
+Sequential/\allowbreak OpenMP equivalence & Source CAL loops are detector-column local,
+but factor resolution and end-to-end consumers are not evidenced. & Fixed
+realized state, all supported paths and two fruit-loop iteration identities;
+signal, kernel, factors, flags, and identities bitwise identical. &
+\textbf{Planned}; no same-SHA comparison returned.\\
+Same-SHA Unity campaign & None supplied; previous accepted runs use earlier
+SHAs and test regression rather than this contract. & Exact source/build,
+configs, APT/tau/beam inputs, logs, products, hashes, zero unexpected errors,
+all arrays, two materially different airmasses, Pointing/OOF, Science, and
+Beammap, with gates in Appendix~\ref{app:unity}. & \textbf{Required and
+missing}; validation remains \code{in_progress}, not
+\code{external_pending}.\\
+Astronomical standard recovery & No independent reference bundle supplied. &
+For each valid measurement, normalized residual magnitude at most three;
+per-array inverse-covariance weighted mean within two standard errors; ratio
+versus airmass slope within two standard errors, including shared reference,
+gain, extinction, and beam covariance. & \textbf{Required and missing};
+cannot begin until source model, bandpass/color, beam, and covariance authority
+are named.\\
+\bottomrule
+\end{longtable}
+
+An internal CAL jackknife/noise estimator and a CAL iterative-convergence test
+are not separate standard methods: CAL propagates a selected multiplier and
+has no calibration feedback iteration.  Empirical noise is owned by
+\code{SCI-NOI}; calibration nuisance injection and propagation remain fully
+applicable above.  Pointing/WCS, map-gridding, filtering, and source-fit bias
+are tested only through separately contracted consumer boundaries.
+
+\section{Dependencies and outbound routing}
+
+\begin{longtable}{L{0.17\linewidth}L{0.13\linewidth}L{0.34\linewidth}L{0.26\linewidth}}
+\toprule
+Package & State & Exact interface fact required & Consequence\\
+\midrule
+\endfirsthead
+\toprule
+Package & State & Exact interface fact required & Consequence\\
+\midrule
+\endhead
+\code{SCI-ALIGN-001} & open/\allowbreak conditioned & The approved abstraction for ordered
+sample/detector identity, aligned elevation and time, duration,
+gap/interpolation state, and eligibility. & F010; all timestamp, elevation,
+and synthesized-sample CAL conclusions remain conditional.\\
+\code{SCI-RTC-001} & outbound proposal & Unit-bearing gain/extinction operator,
+kernel convention, responsivity replacement semantics, validity, and realized
+state. & RTC response and post-calibration replacement cannot be interpreted
+scientifically without the interface.\\
+\code{SCI-PTC-001} & outbound proposal & Exact contents of \code{fcf} and
+\code{sens}, their covariance and normalization, and correct weight transfer.
+& PTC weights are conditional/statistical only; absolute precision claims
+fail closed.\\
+\code{SCI-VAL-001} & outbound proposal & CAL invalid-state propagation and the
+eligibility of non-finite coefficients/factors/samples. & Invalid-success may
+reach map support unless rejected at CAL or carried explicitly.\\
+\code{SCI-MAP-001} & late outbound proposal & Calibrated sample unit, response,
+conditional versus systematic covariance, and provenance. & Existing MAP
+audit cannot promote CAL-dependent absolute/unit/covariance claims.\\
+\code{SCI-FLT-001} & late outbound proposal & Calibrated map unit/response and
+systematic covariance entering filters. & Filtered amplitude, uncertainty,
+and response claims remain CAL-conditional.\\
+\code{SCI-MODE-001} & outbound proposal & Pointing/OOF amplitude unit,
+extinction validity, beam/template meaning, and covariance. & Absolute OOF or
+Pointing photometry/significance fails closed.\\
+\code{SCI-BEAM-001} & outbound proposal & Source-flux model, fitted amplitude,
+flxscale/sensitivity update, beam uncertainty, identity, and lifecycle. &
+Beammap-derived APT promotion and absolute sensitivity claims fail closed.\\
+\bottomrule
+\end{longtable}
+
+The seven complete proposed records are listed in
+Appendix~\ref{app:handoffs}.  They are \code{post_core_evidence}; none is an
+approved pre-core authority.  The coordinator, not this branch, controls
+canonical integration and late-arrival routing.
+
+\section{Consumer matrix and restrictions}
+
+\begin{longtable}{L{0.18\linewidth}L{0.20\linewidth}L{0.47\linewidth}}
+\toprule
+Consumer/use & Proposed status & Exact restriction at this audit state\\
+\midrule
+\endfirsthead
+\toprule
+Consumer/use & Proposed status & Exact restriction at this audit state\\
+\midrule
+\endhead
+CAL diagnostic TOD & restricted use & Only extinction disabled,
+\code{mJy/beam}, exact governing/accepted successor identity, finite factors,
+and an independently verified raw-column/APT UID relation; relative or
+diagnostic interpretation only.\\
+RTC/PTC processing & restricted/fail closed & Execution may be characterized,
+but calibrated response and weights are not total uncertainty.  New scientific
+interpretation fails closed until F001--F005 and F008 are resolved.\\
+Mapmaking/\allowbreak coaddition & fail closed for new CAL claims & Existing regression
+products may be compared on their historical terms.  Absolute calibration,
+non-default unit, response, covariance, and cross-array photometry claims are
+not authorized.\\
+Convolve/\allowbreak Wiener/\allowbreak source products & fail closed & No filtered amplitude,
+significance, upper limit, or source flux may inherit an unresolved CAL unit,
+response, or covariance.\\
+Pointing mode & restricted use & The active extinction-disabled
+\code{mJy/beam} path may be used only for relative/diagnostic pointing under
+the verified identity restriction; not absolute photometry or new
+significance claims.\\
+OOF and Science modes & fail closed for new scientific interpretation &
+Their active extinction-enabled path is affected by F001/F002.  Historical
+accepted runs remain regression evidence, not CAL validation.\\
+Beammap inference/APT update & fail closed for promotion & Detector fit
+outputs may be inspected, but derived \code{flxscale}/\code{sens} must not be
+promoted as calibration authority until beam/source uncertainty, extinction,
+identity, and lifecycle are approved and re-audited.\\
+Fruit-loop feedback & fail closed & Feedback may not consume unresolved
+absolute calibration, response, or uncertainty; no CAL feedback convergence
+claim is made.\\
+Polarimetry or measured R channel & fail closed & Outside the approved CAL
+contract; no kernel or calibrated-response identity is conferred.\\
+\bottomrule
+\end{longtable}
+
+This restriction is intentionally narrower than the canonical inventory's
+\code{existing_use_only} placeholder because the exact governing source
+contains demonstrated P0 mismatches.  Acceptance, modification, or emergency
+operational handling belongs to the project owner/coordinator.  The audit has
+not changed production state.
+
+\section{Verdict and status disposition}
+
+\begin{description}[style=nextline]
+\item[Verdict: \code{amend}] Preserve the package identity and its one-way
+calibration boundary, but amend the extinction operator, low-opacity policy,
+detector identity join, validity rules, uncertainty/provenance contract, and
+consumer interfaces after owner decisions.
+\item[Contract: \code{proposed}] The independent contract is frozen and the
+source comparison is complete, but no project owner has approved D001--D005.
+\item[Implementation: \code{nonconformant}] F001--F004 are known
+implementation/contract mismatches at the exact governing SHA; an open
+dependency cannot convert those mismatches into conditional conformity.
+\item[Validation: \code{in_progress}] Analytic evidence has falsified current
+claims and substantial local and external gates remain.  This is not
+\code{external_pending}.
+\item[Production: proposed \code{restricted_use}] Only the narrow diagnostic
+path in the consumer matrix is proposed.  All broader uses fail closed.  This
+is an audit recommendation, not authorization.
+\item[Re-audit: \code{required}] A fresh re-auditor must assess the exact owner-
+approved repair SHA, local artifacts, returned Unity evidence, all handoff
+dispositions, and the unchanged or explicitly superseded contract.
+\end{description}
+
+\section{Machine-readable ledger proposal}
+
+This is a merge/status patch keyed by package \code{id}; it does not replace
+or edit the canonical record.  The coordinator must preserve every unlisted
+canonical field, set the returned final commit and artifact digest, and decide
+whether to accept the proposed production restriction.
+
+\begin{small}
+\begin{verbatim}
+- id: SCI-CAL-001
+  governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+  audit_branch: codex/audit-sci-cal-001
+  audit_commit: COORDINATOR_SET_FROM_RETURNED_FINAL_AUDIT_COMMIT
+  audit_parent_sha: 1565836282d936b974aeb5b5a7d4554ce55b10bd
+  audit_artifact_at_commit: >-
+    doc/audits/packages/SCI-CAL-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+  final_audit_artifact_sha256: >-
+    COORDINATOR_SET_FROM_RETURNED_FINAL_ARTIFACT_SHA256
+  independent_derivation:
+    status: independent_draft_frozen
+    path: doc/audits/packages/SCI-CAL-001_INDEPENDENT_CORE.tex
+    sha256: >-
+      106755520b048f601bc60fd04e7b6020e6fa470480ac3105fa7ba269c730a4fe
+    freeze_commit: 1565836282d936b974aeb5b5a7d4554ce55b10bd
+    freeze_timestamp_utc: 2026-08-01T00:18:38Z
+    first_source_inspection_utc: 2026-08-01T00:18:59Z
+  contract_status: proposed
+  implementation_status: nonconformant
+  validation_status: in_progress
+  production_status: restricted_use
+  verdict: amend
+  implementation_assessment:
+    governing_source: nonconformant
+    proposed_narrow_use: >-
+      Extinction-disabled mJy/beam relative or diagnostic use only,
+      after exact raw-column/APT UID identity is independently proven.
+    fail_closed_uses:
+      - extinction_enabled_scientific_interpretation
+      - nondefault_units
+      - absolute_or_integrated_photometry
+      - full_covariance_or_significance
+      - beammap_apt_promotion
+      - calibration_dependent_feedback
+  open_findings:
+    - id: SCI-CAL-001-F001
+      class: implementation_defect
+      severity: P0
+      evidence_basis: observed
+      confidence: high
+      status: open
+      owner: calibration_extinction_implementation
+      summary: >-
+        Extinction applies zenith-equivalent opacity without the
+        airmass-relative exponent or a fixed calibration pivot.
+    - id: SCI-CAL-001-F002
+      class: implementation_defect
+      severity: P0
+      evidence_basis: observed
+      confidence: high
+      status: open
+      owner: calibration_extinction_implementation
+      summary: >-
+        The q0 branch returns unity for finite positive tau225 below
+        the q25 threshold.
+    - id: SCI-CAL-001-F003
+      class: implementation_defect
+      severity: P0
+      evidence_basis: observed
+      confidence: high
+      status: open
+      owner: calibration_validity_implementation
+      summary: >-
+        Required non-finite, domain, coefficient, and beam failures
+        do not consistently fail closed.
+    - id: SCI-CAL-001-F004
+      class: implementation_defect
+      severity: P0
+      evidence_basis: observed
+      confidence: high
+      status: open
+      owner: calibration_identity_implementation
+      summary: >-
+        External APT coefficients bind to TOD columns by position
+        without a proven detector UID/header join.
+    - id: SCI-CAL-001-F005
+      class: contract_gap
+      severity: P1
+      evidence_basis: observed
+      confidence: high
+      status: open
+      owner: calibration_uncertainty_contract
+      summary: >-
+        Detector, common gain, extinction, beam, bandpass, and
+        template systematic covariance is absent.
+    - id: SCI-CAL-001-F006
+      class: scientific_policy_decision
+      severity: P1
+      evidence_basis: observed
+      confidence: high
+      status: open
+      owner: calibration_photometry_owner
+      summary: >-
+        Output-unit, beam/template, pivot, bandpass/color, and
+        point/extended/integrated meanings require owner approval.
+    - id: SCI-CAL-001-F007
+      class: contract_gap
+      severity: P1
+      evidence_basis: observed
+      confidence: high
+      status: open
+      owner: calibration_provenance_contract
+      summary: >-
+        Products do not preserve the complete realized calibration
+        identity, factors, validity, response, and covariance.
+    - id: SCI-CAL-001-F008
+      class: contract_gap
+      severity: P1
+      evidence_basis: observed
+      confidence: high
+      status: open
+      owner: calibration_rtc_ptc_interface
+      summary: >-
+        flxscale, responsivity, sens, and fcf lack one approved
+        unit, reciprocal, normalization, and propagation contract.
+    - id: SCI-CAL-001-F009
+      class: evidence_gap
+      severity: P1
+      evidence_basis: observed
+      confidence: high
+      status: open
+      owner: calibration_validation
+      summary: >-
+        Full local fixtures, same-SHA Unity evidence, and standard-
+        source recovery are absent.
+    - id: SCI-CAL-001-F010
+      class: dependency_gap
+      severity: P1
+      evidence_basis: observed
+      confidence: high
+      status: open
+      owner: SCI-ALIGN-001
+      summary: >-
+        Per-sample identity, elevation, gap/interpolation, and
+        eligibility conclusions remain conditioned on open ALIGN.
+  unresolved_scientific_decisions:
+    - CAL-D001
+    - CAL-D002
+    - CAL-D003
+    - CAL-D004
+    - CAL-D005
+  local_evidence:
+    - id: SCI-CAL-001-CORE-001
+      status: accepted_for_independence
+      artifact: >-
+        doc/audits/packages/SCI-CAL-001_INDEPENDENT_CORE.tex
+      sha256: >-
+        106755520b048f601bc60fd04e7b6020e6fa470480ac3105fa7ba269c730a4fe
+    - id: SCI-CAL-001-SOURCE-TRACE-001
+      status: accepted_for_audit
+      source_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+      scope: operator_identity_units_response_validity_products_consumers
+    - id: SCI-CAL-001-ANALYTIC-001
+      status: failed_current_implementation
+      scope: extinction_airmass_and_q0_limits
+      finding_ids: [SCI-CAL-001-F001, SCI-CAL-001-F002]
+    - id: SCI-CAL-001-TEST-INVENTORY-001
+      status: incomplete
+      finding_ids: [SCI-CAL-001-F009]
+  requested_unity_evidence:
+    - SCI-CAL-001-UNITY-001
+  supplied_external_evidence: []
+  outgoing_handoffs:
+    - SCI-RTC-001-XAUD-001
+    - SCI-PTC-001-XAUD-003
+    - SCI-VAL-001-XAUD-003
+    - SCI-MAP-001-XAUD-002
+    - SCI-FLT-001-XAUD-001
+    - SCI-MODE-001-XAUD-001
+    - SCI-BEAM-001-XAUD-001
+  remediation_branch: null
+  remediation_commit: null
+  re_audit_status: required
+\end{verbatim}
+\end{small}
+
+\appendix
+
+\section{Proposed outbound handoffs}
+\label{app:handoffs}
+
+Each path below is a complete proposed YAML record on this audit branch.  Its
+submission is immutable after coordinator integration; recipient disposition
+remains pending.
+
+\begin{longtable}{L{0.22\linewidth}L{0.24\linewidth}L{0.45\linewidth}}
+\toprule
+ID/target & Findings & Bounded claim for recipient consideration\\
+\midrule
+\endfirsthead
+\toprule
+ID/target & Findings & Bounded claim for recipient consideration\\
+\midrule
+\endhead
+\texttt{SCI-RTC-001-\allowbreak{}XAUD-001} & F001, F002, F003, F008 & RTC receives a
+nonconforming extinction factor; its kernel and responsivity-based replacement
+need an approved final-unit response and factor contract.\\
+\texttt{SCI-PTC-001-\allowbreak{}XAUD-003} & F001, F005, F008 & PTC receives \code{fcf}
+without \code{flxscale}, combines it with \code{sens}, and lacks the CAL
+systematic covariance needed for a total-precision interpretation.\\
+\texttt{SCI-VAL-001-\allowbreak{}XAUD-003} & F003, F004 & CAL can admit non-finite factors and
+positionally mismatched coefficients; downstream validity cannot treat finite
+support alone as calibrated eligibility.\\
+\texttt{SCI-MAP-001-\allowbreak{}XAUD-002} & F001, F004, F005, F007 & MAP's calibrated-unit,
+response, covariance, and absolute-photometry assumptions remain conditional
+on a corrected and reproducible CAL bundle.\\
+\texttt{SCI-FLT-001-\allowbreak{}XAUD-001} & F001, F005, F006, F007 & Filtered amplitude,
+response, uncertainty, and significance cannot acquire missing CAL authority
+from a unit label.\\
+\texttt{SCI-MODE-001-\allowbreak{}XAUD-001} & F001, F002, F005, F006 & Extinction-enabled OOF
+and absolute Pointing/OOF amplitudes are affected; mode inference itself is not
+assessed by CAL.\\
+\texttt{SCI-BEAM-001-\allowbreak{}XAUD-001} & F001, F004, F005, F006 & Beammap's
+source-flux/amplitude update requires correct extinction, detector identity,
+beam/template policy, and propagated fit/source uncertainty before APT
+promotion.\\
+\bottomrule
+\end{longtable}
+
+Proposed paths:
+\begin{itemize}[leftmargin=*]
+\item \code{doc/audits/handoffs/SCI-RTC-001/SCI-RTC-001-XAUD-001.yaml}
+\item \code{doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-003.yaml}
+\item \code{doc/audits/handoffs/SCI-VAL-001/SCI-VAL-001-XAUD-003.yaml}
+\item \code{doc/audits/handoffs/SCI-MAP-001/SCI-MAP-001-XAUD-002.yaml}
+\item \code{doc/audits/handoffs/SCI-FLT-001/SCI-FLT-001-XAUD-001.yaml}
+\item \code{doc/audits/handoffs/SCI-MODE-001/SCI-MODE-001-XAUD-001.yaml}
+\item \code{doc/audits/handoffs/SCI-BEAM-001/SCI-BEAM-001-XAUD-001.yaml}
+\end{itemize}
+
+\section{Exact outstanding Unity request}
+\label{app:unity}
+
+\subsection*{Request identity and stop rules}
+
+\begin{longtable}{L{0.24\linewidth}L{0.68\linewidth}}
+\toprule
+Field & Required value\\
+\midrule
+\endfirsthead
+\toprule
+Field & Required value\\
+\midrule
+\endhead
+Request & \code{SCI-CAL-001-UNITY-001}.\\
+Source & Exact full SHA
+\code{9aae0e669384c5c0c0dda93debc194d6b8dac787}; never a moving branch.\\
+Host/partition & Human-run through SSH alias \code{unity_toltec}; computation
+inside \code{toltec-cpu}, never on the login node.\\
+Source worktree & Existing clean checkout
+\code{/home/toltec_umass_edu/work_toltec/citlali_dev/citlali_refactor}.\\
+Request root & New path \code{/work/toltec/sci-cal-001-unity-001}; stop if it
+already exists.  No production output directory may be reused.\\
+Build & Existing installed toolchain only; Release; target
+\code{citlali_cli}; eight build jobs.  Record compiler, CMake cache/options,
+dependency SHAs, executable version, and executable SHA-256.\\
+Owner & Grant or a named human delegate.\\
+Stop rules & Stop without substitution if source is dirty/wrong, the request
+root exists, a numbered configuration is missing, an input identity is
+ambiguous, required data are skipped, or an expected-success case emits any
+unexpected error-level message.  Do not fetch, install, or edit Citlali
+source.\\
+Status & Outstanding and unsupplied.  A bundle is evidence only after identity,
+completeness, and hashes are independently checked.\\
+\bottomrule
+\end{longtable}
+
+\subsection*{Cases and frozen settings}
+
+{\raggedright Every case must use a fresh TolPROJ \code{--refactor} project and the complete
+mode-specific numbered source order
+\code{60_*_internal_policy.yaml}, \code{71_*_runtime.yaml},
+\code{72_*_observation.yaml}, \code{81_*_defaults.yaml},
+\code{82_*_products.yaml}, \code{90_*_advanced_overrides.yaml},
+\code{99_*_expert_overrides.yaml}, followed only by the generated submission
+runtime overlay.  Return the ordered merge report, every source digest,
+canonical merged digest, generated low-level config, generated
+\code{02_redu.sh}, and runtime merged snapshot.  Apart from the named delta,
+paired cases must be byte-identical.\par}
+
+\begin{longtable}{L{0.13\linewidth}L{0.23\linewidth}L{0.33\linewidth}L{0.22\linewidth}}
+\toprule
+Case & Observation & Exact CAL delta & Purpose/gate\\
+\midrule
+\endfirsthead
+\toprule
+Case & Observation & Exact CAL delta & Purpose/gate\\
+\midrule
+\endhead
+\code{P-SEQ} & Point 152389, all available arrays & \code{mJy/beam};
+flux calibration on; extinction, despike, RTC/PTC filtering, downsampling,
+map filtering, source finding, and fruit loops off; raw TOD on; sequential,
+one thread. & CAL identity baseline and deterministic product inventory.\\
+\code{P-OMP} & Exact P-SEQ inputs & Only runtime changes to OpenMP, six
+threads. & Signal, factors, flags, identities, metadata, and products bitwise
+equal to P-SEQ.\\
+\code{S-OFF} & Science 152390 & Same isolated CAL settings as P-SEQ, extinction
+off. & Paired atmospheric control.\\
+\code{S-ON} & Exact S-OFF inputs & Only extinction changes to on. & For every
+finite eligible sample, ratio to S-OFF must equal the owner-approved
+\(\exp[\widehat\tau(A-X^{\rm ref})]\), not \(T^{-1/A}\); factor and elevation
+range recorded.\\
+\code{O-ON} & OOF 152385 and 152387, processed separately & \code{mJy/beam};
+flux calibration and extinction on; other transforms disabled as above. &
+Two observation/airmass identities and no cross-observation CAL state.\\
+\code{B-ON} & Beammap 148670 & \code{mJy/beam}; calibration/extinction on;
+standard Beammap flow, but isolated outputs and no APT promotion. & Source
+recovery and fitted-amplitude/flxscale provenance; diagnostic only.\\
+\code{U-MJY} & Point 152389 & P-SEQ except \code{MJy/sr}. & Ratio to P-SEQ
+equals declared beam conversion to \(10^{-12}\) relative.\\
+\code{U-UK} & Point 152389 & P-SEQ except \code{uK}. & Ratio equals declared
+monochromatic RJ conversion to \(10^{-12}\) relative.\\
+\code{U-JYP} & Point 152389 & P-SEQ except \code{Jy/pixel}. & Ratio equals
+declared pixel/beam conversion to \(10^{-12}\) relative.\\
+\code{X-ORDER} & Point 152389 & P-SEQ with an audit-local APT whose detector
+rows are reversed within each contiguous network, all values and UIDs
+otherwise unchanged. & Required nonzero exit before data mutation; any
+successful product is F004 manifestation, not a pass.\\
+\code{X-NAN} & Point 152389 & P-SEQ with exactly one otherwise unflagged
+\code{flxscale} changed to NaN in an audit-local APT. & Required nonzero exit
+before data mutation; any successful product is F003 manifestation.\\
+\bottomrule
+\end{longtable}
+
+If none of the named observations has
+\(0<\tau_{225}<0.0504874\), q0 behavior remains a deterministic local successor
+fixture and must not be replaced by a different unregistered observation.
+The external campaign must still report each observation's exact tau source,
+value, timestamp/validity interval, elevation range, selected model, and
+applied factor range.
+
+\subsection*{Required analysis and acceptance}
+
+The returned analysis program is frozen before opening outputs and is supplied
+with its SHA-256.  It must:
+\begin{enumerate}[leftmargin=*]
+\item verify source, binary, config, input, APT, tau, product, and log hashes;
+\item join every output detector to raw/APT identity and prove uniqueness,
+completeness, array/network consistency, and order;
+\item independently evaluate Equations~\eqref{eq:audit-required-factor} and
+\eqref{eq:audit-code-tau} from the returned tau/elevation/model inputs;
+\item compare P-SEQ/P-OMP bitwise and every expected unit ratio at relative
+tolerance \(10^{-12}\), with exact flags, cardinality, units, and identities;
+\item require X-ORDER and X-NAN to fail before a required product is written;
+\item verify zero unexpected error-level messages and the exact requested
+product inventory; and
+\item preserve all failures and non-finite counts rather than filtering,
+clipping, or normalizing them into a pass.
+\end{enumerate}
+
+For astronomical evidence, the scientific owner must supply an independent
+standard-source record for Point/OOF or Beammap 148670 containing epoch,
+source model or flux/surface brightness, bandpass/color convention,
+beam/template, and full shared uncertainty.  Each recovered/reference
+normalized residual must have magnitude at most three, the per-array
+inverse-covariance weighted mean residual at most two standard errors, and the
+ratio-versus-airmass slope at most two standard errors from zero.  Without that
+record, astronomical recovery is missing rather than not applicable.
+
+\subsection*{Human-run preparation commands}
+
+These commands are provided for Grant; they were not executed by the auditor.
+They verify identity, build with the already configured environment, and
+freeze a request-local executable.  The human then creates the fresh TolPROJ
+case directories above and submits each generated \code{02_redu.sh} to
+\code{toltec-cpu} with the stated thread count.
+
+\begin{small}
+\begin{verbatim}
+ssh unity_toltec 'set -euo pipefail
+  request_root=/work/toltec/sci-cal-001-unity-001
+  audit_source=/home/toltec_umass_edu/work_toltec/citlali_dev/citlali_refactor
+  test ! -e "$request_root"
+  cd "$audit_source"
+  test -z "$(git status --porcelain)"
+  test "$(git rev-parse HEAD)" = \
+    9aae0e669384c5c0c0dda93debc194d6b8dac787
+  install -d "$request_root/bin" "$request_root/identity"
+  git rev-parse HEAD > "$request_root/identity/source-head.txt"
+  git status --short > "$request_root/identity/source-status.txt"
+  git submodule status --recursive > \
+    "$request_root/identity/source-submodules.txt"
+  cmake --build build --target citlali_cli -j 8 2>&1 | \
+    tee "$request_root/identity/build.log"
+  exe="$(find build -type f -name citlali -perm -0100 -print -quit)"
+  test -n "$exe"
+  install -m 0555 "$exe" "$request_root/bin/citlali"
+  "$request_root/bin/citlali" --version > \
+    "$request_root/identity/citlali-version.txt"
+  sha256sum "$request_root/bin/citlali" > \
+    "$request_root/identity/citlali.sha256"
+  cmake -LA -N build > "$request_root/identity/cmake-cache.txt"
+  env | sed -n "/^OMP_/p;/^SLURM_/p" | sort > \
+    "$request_root/identity/runtime-environment.txt"
+'
+\end{verbatim}
+\end{small}
+
+Each case command, Slurm script/allocation, hostname, affinity, environment,
+wall time, peak memory, exit code, complete stdout/stderr, and accounting
+record must be returned.  Package the immutable request root as
+\code{SCI-CAL-001-UNITY-001.tar.zst}, compute its SHA-256 beside it, and return
+both via a human-controlled transfer such as:
+\begin{small}
+\begin{verbatim}
+scp unity_toltec:/work/toltec/sci-cal-001-unity-001/\
+SCI-CAL-001-UNITY-001.tar.zst .
+scp unity_toltec:/work/toltec/sci-cal-001-unity-001/\
+SCI-CAL-001-UNITY-001.tar.zst.sha256 .
+\end{verbatim}
+\end{small}
+No result closes a finding until a fresh re-auditor verifies the bundle and
+the exact candidate/repair SHA.
+
+\section{Evidence and artifact inventory}
+
+\begin{longtable}{L{0.27\linewidth}L{0.28\linewidth}L{0.36\linewidth}}
+\toprule
+Artifact & SHA-256 or identity & Use and limit\\
+\midrule
+\endfirsthead
+\toprule
+Artifact & SHA-256 or identity & Use and limit\\
+\midrule
+\endhead
+Frozen core & \CoreDigest & Independent scientific derivation; frozen before
+source inspection.\\
+\code{calib.h} &
+\digest{e1c200b8}{00b14f35}{8e2b0ec3}{8b69d173}{88756beb}{8368c18d}{0d4bef70}{b39ba769} &
+APT/calibration state declarations.\\
+\code{calib.cpp} &
+\digest{016a8c18}{0d7d1dab}{648049e8}{0c1af3d3}{fdec8fb5}{3e78e12b}{6fd6c33c}{f5c8090d} &
+APT filtering/setup and unit transfer.\\
+\code{rtc/calibrate.h} &
+\digest{d70a5527}{8227b43c}{dd7de19b}{c67e4ddb}{332524d4}{0e1455c5}{fa7a80ae}{5e2d11ee} &
+Signal and extinction operator.\\
+\code{rtc/rtcproc.h} &
+\digest{41693a63}{85c112bd}{de36f559}{0d8ac10b}{60514c56}{d5449aad}{30962e08}{a64f3549} &
+CAL/kernel/RTC ordering and consumer transit.\\
+\code{rtc/kernel.h} &
+\digest{cda4260e}{3c281cc6}{50c82420}{be219a78}{c60053e6}{e09ba4d8}{97708b04}{be1a0f0b} &
+Synthetic response construction.\\
+\code{rawobs_collection_impl.h} &
+\digest{e01ef684}{9e7c8c19}{4f7ee652}{127834ff}{b91ae03a}{d18304a8}{086649ea}{92d479d3} &
+Raw interface ordering.\\
+\code{kidsproc_direct_rtc_impl.h} &
+\digest{3e488918}{43594840}{ffba172b}{6fe2330f}{728dfa14}{4cb2b13c}{0de827bd}{a98ce962} &
+Raw detector-column concatenation.\\
+\code{beammap_flux_conversion_impl.h} &
+\digest{1922ba53}{f9b52d59}{440c44c6}{091a729b}{a90de58a}{497e0e91}{c28867da}{13a7f12d} &
+Beammap-to-APT calibration update boundary.\\
+Local tests & Exact governing source; no local build directory & Read-only
+test inventory only.  No test executable was claimed, built, or run; absence
+is recorded in F009.\\
+Analytic extinction grid & Independent deterministic calculation using the
+hard-coded coefficients & Supports the bounded numerical consequences in the
+quantification table; it is not external or astronomical validation.\\
+Prior accepted reductions & Earlier source SHAs/profile records & Historical
+regression evidence only; not same-SHA CAL-contract evidence.\\
+\code{SCI-CAL-001-UNITY-001} & missing & Exact external request above; no Unity
+connection occurred.\\
+\bottomrule
+\end{longtable}
+
+The final TeX was compiled with the already cached offline Tectonic toolchain,
+rendered page-by-page with Poppler, and visually inspected.  Its final PDF is a
+rendered audit artifact, not a canonical production document.  Compile logs,
+page PNGs, and contact sheets are kept in the task-specific temporary render
+directory reported with the audit.
+
+\section{Independent audit conclusion}
+
+The observed multiplier path cannot be retained as an approved scientific
+contract.  The atmospheric exponent, low-opacity branch, validity boundary,
+and positional detector binding are correctness failures, while covariance,
+unit/beam policy, provenance, and RTC/PTC interfaces are materially incomplete.
+The package should remain one coherent CAL boundary and be amended only after
+the five owner decisions are explicit.  Until an accepted repair and fresh
+same-SHA re-audit, the narrow diagnostic restriction and broader fail-closed
+consumer matrix above are the only scientifically defensible proposal.
+
+\end{document}

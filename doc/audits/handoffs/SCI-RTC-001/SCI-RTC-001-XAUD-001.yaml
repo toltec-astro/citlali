@@ -1,0 +1,70 @@
+format_version: 1
+id: SCI-RTC-001-XAUD-001
+created_date: 2026-07-31
+
+source:
+  package_id: SCI-CAL-001
+  role: auditor
+  audit_branch: codex/audit-sci-cal-001
+  audit_commit: null
+  governing_or_evidence_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+  finding_ids: [SCI-CAL-001-F001, SCI-CAL-001-F002, SCI-CAL-001-F003, SCI-CAL-001-F008]
+
+target:
+  package_id: SCI-RTC-001
+
+priority: P0
+evidence_basis: observed
+review_phase: post_core_evidence
+arrival: before_dispatch
+status: submitted
+
+summary: >-
+  RTC receives a nonconforming extinction multiplier and an undeclared
+  calibration/responsivity response interface.
+claim: >-
+  At the governing SHA, CAL applies exp(tau_band) after deriving tau_band as a
+  zenith-equivalent opacity, suppresses finite positive low-opacity correction
+  in q0, and then uses undeclared APT responsivity during RTC despike
+  replacement after calibration.
+supports:
+  - Treat the CAL multiplier, kernel convention, and responsivity replacement as explicit RTC dependencies.
+  - Require RTC response and replacement fixtures to use an approved CAL factor table and validity policy.
+does_not_establish:
+  - This record does not audit RTC filtering or despike estimators.
+  - It does not authorize a repair or close any CAL or RTC finding.
+
+requested_actions:
+  - Record the CAL factor/response interface as an RTC dependency before the independent RTC core is frozen.
+  - Test signal, kernel, flags, and responsivity-based replacement under the approved successor CAL contract.
+  - Fail closed on scientific response claims while the CAL P0 findings remain open.
+affected_target_findings: []
+related_handoffs: [SCI-PTC-001-XAUD-003, SCI-VAL-001-XAUD-003]
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-CAL-001-FINAL-AUDIT-001
+    availability: repository_path
+    path: doc/audits/packages/SCI-CAL-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: 957ed71d1432ad67fe582d6137fbe72c52e82a31f3199331a94ab7b39490d376
+    note: Source/equation trace and findings F001, F002, F003, and F008.
+  - id: SCI-CAL-001-INDEPENDENT-CORE-001
+    availability: repository_path
+    path: doc/audits/packages/SCI-CAL-001_INDEPENDENT_CORE.tex
+    sha256: 106755520b048f601bc60fd04e7b6020e6fa470480ac3105fa7ba269c730a4fe
+    note: Frozen independent CAL operator and response contract.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: not_applicable
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null
