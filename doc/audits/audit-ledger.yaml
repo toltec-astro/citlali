@@ -617,11 +617,20 @@ packages:
           alignment, slicing, interpolation, covariance, or validity.
     downstream_consumers: [SCI-CAL-001, SCI-AST-001, SCI-RTC-001, SCI-VAL-001]
     incoming_handoffs: []
-    outgoing_handoffs: []
+    outgoing_handoffs:
+      - SCI-CAL-001-XAUD-001
+      - SCI-AST-001-XAUD-001
+      - SCI-RTC-001-XAUD-002
+      - SCI-VAL-001-XAUD-004
     governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
     governing_sha_role: audit_dispatch_snapshot
     audit_branch: codex/audit-sci-align-001
-    audit_commit: null
+    audit_commit: aeeac7f36e1ab0ab17bfbf3f603364faff02d715
+    audit_identity_commit: 9e234eada67c88feacddfc8b7e1afb0e1cffd818
+    audit_artifact_at_commit: >-
+      doc/audits/packages/SCI-ALIGN-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    final_audit_artifact_sha256: >-
+      6aaed0e6e16e4c37cd24d15b98346f84024ffd7920bd0524e7a170dbc728a393
     dispatch:
       status: frozen_for_dispatch
       coordinator_registry_commit: 99bfa3562ecfa05c0c10de24a255a6a18ff313d2
@@ -633,20 +642,94 @@ packages:
       post_core_evidence_ids: []
       prompt_path: doc/audits/prompts/SCI_ALIGN_001_AUDIT_PROMPT.md
       prompt_sha256: a50ae4e4df8c8917f0c8f09adacacbe80f887bbbd05f8d57f561cc446f37df4b
-    independent_derivation: {status: not_started, sha256: null}
-    contract_status: not_started
-    implementation_status: not_assessed
-    validation_status: not_started
+    independent_derivation:
+      status: independent_draft_frozen
+      path: doc/audits/packages/SCI-ALIGN-001_INDEPENDENT_CORE.tex
+      sha256: >-
+        4ee7b7e9cbe883ea626afe2e3d22756b20f556a2e06115d4a2832f2e78469785
+      freeze_commit: 5bcaa3700a5899bae0eaf4038039445668baa1fb
+      freeze_timestamp_utc: 2026-08-01T02:48:26Z
+      first_source_inspection_utc: 2026-08-01T02:49:18Z
+    contract_status: proposed
+    implementation_status: nonconformant
+    validation_status: in_progress
     production_status: existing_use_only
-    verdict: pending
-    open_findings: []
-    unresolved_scientific_decisions: []
-    local_evidence: []
-    requested_unity_evidence: []
+    verdict: amend
+    implementation_assessment:
+      governing_source: nonconformant
+      fail_closed_claims:
+        - nonzero_or_unauthoritative_offsets
+        - enabled_hwpr_or_polarization_science
+        - synthesized_values_as_acquired_or_independent_samples
+        - exact_original_or_synthesized_eligibility
+        - full_covariance_or_timing_response
+        - significance_or_acquired_exposure
+        - stable_complete_scan_identity
+        - new_downstream_consumer_or_production_profile
+    open_findings:
+      - {id: SCI-ALIGN-001-F001, class: implementation_defect,
+         severity: P0, evidence_basis: derived, confidence: high,
+         status: open, owner: align_hwpr_implementation}
+      - {id: SCI-ALIGN-001-F002, class: implementation_defect,
+         severity: P0, evidence_basis: derived, confidence: high,
+         status: open, owner: align_timing_implementation}
+      - {id: SCI-ALIGN-001-F003, class: implementation_defect,
+         severity: P0, evidence_basis: observed, confidence: high,
+         status: open, owner: align_gap_implementation}
+      - {id: SCI-ALIGN-001-F004, class: implementation_defect,
+         severity: P0, evidence_basis: derived, confidence: high,
+         status: open, owner: telescope_hwpr_alignment_implementation}
+      - {id: SCI-ALIGN-001-F005, class: implementation_defect,
+         severity: P0, evidence_basis: observed, confidence: high,
+         status: open, owner: scan_implementation}
+      - {id: SCI-ALIGN-001-F006, class: implementation_defect,
+         severity: P0, evidence_basis: derived, confidence: high,
+         status: open, owner: align_lifecycle_implementation}
+      - {id: SCI-ALIGN-001-F007, class: contract_gap,
+         severity: P1, evidence_basis: derived, confidence: high,
+         status: open, owner: timing_and_raw_input_owner}
+      - {id: SCI-ALIGN-001-F008, class: implementation_defect,
+         severity: P0, evidence_basis: observed, confidence: high,
+         status: open, owner: align_product_implementation}
+      - {id: SCI-ALIGN-001-F009, class: contract_gap,
+         severity: P1, evidence_basis: derived, confidence: high,
+         status: open, owner: align_product_and_scientific_owner}
+      - {id: SCI-ALIGN-001-F010, class: contract_gap,
+         severity: P1, evidence_basis: derived, confidence: high,
+         status: open, owner: align_uncertainty_response_owner}
+      - {id: SCI-ALIGN-001-F011, class: contract_gap,
+         severity: P1, evidence_basis: observed, confidence: high,
+         status: open, owner: align_exposure_product_owner}
+      - {id: SCI-ALIGN-001-F012, class: evidence_gap,
+         severity: P1, evidence_basis: observed, confidence: high,
+         status: open, owner: validation_owner}
+      - {id: SCI-ALIGN-001-F013, class: scientific_policy_decision,
+         severity: P1, evidence_basis: derived, confidence: high,
+         status: open, owner: project_timing_science_owners}
+      - {id: SCI-ALIGN-001-F014, class: dependency_gap,
+         severity: P1, evidence_basis: derived, confidence: high,
+         status: open, owner: coordinator_and_target_packages}
+    unresolved_scientific_decisions:
+      - ALIGN-OD1-grid-clock-model
+      - ALIGN-OD2-offset-and-header-authority
+      - ALIGN-OD3-variable-topology
+      - ALIGN-OD4-gap-bounds-and-action
+      - ALIGN-OD5-scan-policy-and-identity
+      - ALIGN-OD6-synthesized-eligibility
+      - ALIGN-OD7-mapping-covariance-response
+      - ALIGN-OD8-hwpr-separation-and-interim-production
+    local_evidence:
+      - independent_core_offline_compile_and_13_page_visual_inspection
+      - post_freeze_A1_A19_source_trace_at_governing_sha
+      - application_source_diff_from_governing_sha_empty
+      - yaml_offset_survey_163_files_116_blocks_all_zero
+      - existing_test_surface_inventory
+    requested_unity_evidence:
+      - SCI-ALIGN-001-UNITY-001
     supplied_external_evidence: []
     remediation_branch: null
     remediation_commit: null
-    re_audit_status: not_started
+    re_audit_status: required
 
   - id: SCI-CAL-001
     name: Detector calibration, extinction, and map-unit transfer
@@ -679,7 +762,15 @@ packages:
           uncertainty, and any conclusion that depends on interpolated or
           misaligned samples remain conditioned on SCI-ALIGN-001.
     downstream_consumers: [SCI-RTC-001, SCI-MAP-001, SCI-FLT-001, SCI-MODE-001, SCI-BEAM-001]
-    incoming_handoffs: []
+    incoming_handoffs:
+      - id: SCI-CAL-001-XAUD-001
+        path: >-
+          doc/audits/handoffs/SCI-CAL-001/SCI-CAL-001-XAUD-001.yaml
+        source_package: SCI-ALIGN-001
+        review_phase: post_core_evidence
+        arrival: after_audit_completion
+        status: submitted
+        late_arrival_route: held_for_reaudit
     outgoing_handoffs:
       - SCI-RTC-001-XAUD-001
       - SCI-PTC-001-XAUD-003
@@ -957,6 +1048,14 @@ packages:
       - package_id: SCI-ALIGN-001
         status: open
     downstream_consumers: [SCI-RTC-001, SCI-PTC-001, SCI-MAP-001, SCI-SRC-001, SCI-MODE-001, SCI-BEAM-001]
+    incoming_handoffs:
+      - id: SCI-AST-001-XAUD-001
+        path: >-
+          doc/audits/handoffs/SCI-AST-001/SCI-AST-001-XAUD-001.yaml
+        source_package: SCI-ALIGN-001
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted
     governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
     governing_sha_role: inventory_snapshot
     audit_branch: null
@@ -1035,6 +1134,14 @@ packages:
       - package_id: SCI-AST-001
         status: open
     downstream_consumers: [SCI-PTC-001, SCI-VAL-001, SCI-BEAM-001]
+    incoming_handoffs:
+      - id: SCI-RTC-001-XAUD-002
+        path: >-
+          doc/audits/handoffs/SCI-RTC-001/SCI-RTC-001-XAUD-002.yaml
+        source_package: SCI-ALIGN-001
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted
     governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
     governing_sha_role: inventory_snapshot
     audit_branch: null
@@ -1145,6 +1252,13 @@ packages:
         path: >-
           doc/audits/handoffs/SCI-VAL-001/SCI-VAL-001-XAUD-002.yaml
         source_package: SCI-MAP-001
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted
+      - id: SCI-VAL-001-XAUD-004
+        path: >-
+          doc/audits/handoffs/SCI-VAL-001/SCI-VAL-001-XAUD-004.yaml
+        source_package: SCI-ALIGN-001
         review_phase: post_core_evidence
         arrival: before_dispatch
         status: submitted
