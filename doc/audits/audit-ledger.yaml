@@ -163,6 +163,14 @@ packages:
         review_phase: post_core_evidence
         arrival: after_audit_completion
         status: resolved
+      - id: SCI-MAP-001-XAUD-002
+        path: >-
+          doc/audits/handoffs/SCI-MAP-001/SCI-MAP-001-XAUD-002.yaml
+        source_package: SCI-CAL-001
+        review_phase: post_core_evidence
+        arrival: after_audit_completion
+        status: submitted
+        late_arrival_route: held_for_reaudit
     outgoing_handoffs:
       - id: SCI-PTC-001-XAUD-001
         path: >-
@@ -1313,6 +1321,13 @@ packages:
         review_phase: post_core_evidence
         arrival: before_dispatch
         status: submitted
+      - id: SCI-RTC-001-XAUD-001
+        path: >-
+          doc/audits/handoffs/SCI-RTC-001/SCI-RTC-001-XAUD-001.yaml
+        source_package: SCI-CAL-001
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted
     governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
     governing_sha_role: inventory_snapshot
     audit_branch: null
@@ -1365,6 +1380,13 @@ packages:
         path: >-
           doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-002.yaml
         source_package: SCI-MAP-001
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted
+      - id: SCI-PTC-001-XAUD-003
+        path: >-
+          doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-003.yaml
+        source_package: SCI-CAL-001
         review_phase: post_core_evidence
         arrival: before_dispatch
         status: submitted
@@ -1430,6 +1452,13 @@ packages:
         path: >-
           doc/audits/handoffs/SCI-VAL-001/SCI-VAL-001-XAUD-004.yaml
         source_package: SCI-ALIGN-001
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted
+      - id: SCI-VAL-001-XAUD-003
+        path: >-
+          doc/audits/handoffs/SCI-VAL-001/SCI-VAL-001-XAUD-003.yaml
+        source_package: SCI-CAL-001
         review_phase: post_core_evidence
         arrival: before_dispatch
         status: submitted
@@ -1626,7 +1655,15 @@ packages:
         restriction: filtered estimates require response/support validation
       - package_id: SCI-FRUIT-001
         restriction: unaudited filtered amplitude and weight remain fail_closed
-    incoming_handoffs: []
+    incoming_handoffs:
+      - id: SCI-FLT-001-XAUD-001
+        path: >-
+          doc/audits/handoffs/SCI-FLT-001/SCI-FLT-001-XAUD-001.yaml
+        source_package: SCI-CAL-001
+        review_phase: post_core_evidence
+        arrival: after_audit_completion
+        status: submitted
+        late_arrival_route: held_for_reaudit
     outgoing_handoffs:
       - id: SCI-MAP-001-XAUD-001
         path: >-
@@ -1803,7 +1840,9 @@ packages:
       - analytic limiting cases and candidate focused-test inventory
       - conditional correctness of the candidate variance core and N-1 update
     requested_unity_evidence:
-      status: outstanding
+      status: partially_returned_adverse
+      request_id: SCI-FLT-001-UNITY-001
+      returned_evidence_id: SCI-FLT-001-UNITY-001-PARTIAL
       requirements:
         - exact amended candidate SHA, clean state, compiler and dependency identity
         - complete low-level config, observation identity, and all three arrays
@@ -1813,7 +1852,61 @@ packages:
         - compact, beam-shaped, resolved, and extended injection/recovery
         - named astronomical calibrator/source recovery with pre-registered amplitude, shape, and unit tolerances
         - pre-registered comparison metrics and tolerances
-    supplied_external_evidence: []
+    supplied_external_evidence:
+      - id: SCI-FLT-001-UNITY-001-PARTIAL
+        status: reviewed_partial_return_failed_incomplete_scientific_acceptance
+        source_commit: b294802a5e339f9ba5e0e323980cec3a4bd00249
+        logged_version: v4.0.0-3631-gb294802a
+        observation: point-152389-control-and-candidate
+        local_root: >-
+          /Users/gwilson/work_toltec/local_data/citlali-validation/v1/evidence/convolve_contract_b294802
+        recorded_executable_sha256: >-
+          c199b514efbe2c19b7fd785f7a49e5fa912a5dcf95208513255671c21802fa49
+        executable_bytes_status: absent_from_return_cannot_rehash
+        coordinator_review: >-
+          doc/audits/packages/SCI-FLT-001_RETURNED_EVIDENCE_COORDINATOR_REVIEW_2026-08-01.md
+        coordinator_review_sha256: >-
+          2331c9f4c4809a97d7b3dcc1c187db92470bb14fb96bedc7cd5ab417df4b1357
+        artifact_sha256:
+          candidate_audit_json: >-
+            3f5fd759e1c98ed7f844c9abaa9a6612191c118809b69de50991b4ec4a8a7fe2
+          candidate_audit_md: >-
+            0d5a9cc854ee70ad017b260c55745995857adca155fbfbd706a73e74f81d67a8
+          control_audit_json: >-
+            8fd9269a330c987e4d8aa859c870b39bd1e808423ad87ff72285377e37a74dad
+          control_audit_md: >-
+            a33094643d1aebef25f5628d0f75aef6df97eefd95f35bca1b32fa6687fba07d
+          raw_comparison_json: >-
+            39ddb6d7fcaf976c3dd6c9ce726aa7f92f552cb979d01ee3c2f2e62025e4e556
+          raw_comparison_md: >-
+            ef7827cec5001d20e9442ecdca0a02285d583bebfa29aa15e2b545b7590afa8c
+          citlali_sha256: >-
+            be5968bdc19007f7337b7a5a3601738828b41dce3c040be72e3423792e75d01c
+          tolproj_unity_yaml: >-
+            609934e5c81b9a9afaf17c9564c26fd07011e72bdc919a2590ff8576248b7e30
+        established:
+          - 15 common raw products and 1960 records compared with zero differences
+          - 13 required provenance sidecars per reduction were valid and hash-matched
+          - ten-realization N-1 variance reproduced to floating-point roundoff
+          - direct uncertainty and direct S/N identities reproduced exactly
+          - feedback metadata remained fail-closed
+        adverse_result: >-
+          In a2000, 8 of 9 direct absolute-S/N-above-5 pixels lie in the
+          reconstructed guard band. The most extreme admitted guard pixel has
+          direct S/N -165.71731086416185 while raw science weight is below its
+          threshold. Direct empirical S/N and coverage_bool_I therefore fail
+          scientific acceptance as significance, confidence, support, or
+          feedback eligibility.
+        limitations:
+          - executable bytes absent, so the recorded executable digest cannot be rehashed
+          - incomplete clean-source, compiler, build, and dependency identity
+          - no independent formal-variance table or blank-field covariance analysis
+          - no injection/recovery or named astronomical recovery
+          - unresolved response, support, photometry, fill-covariance, and output-covariance contracts
+          - does not complete SCI-FLT-001-UNITY-001 or authorize candidate integration
+        disposition: >-
+          Keep validation in progress, production fail-closed, verdict amend,
+          and re-audit required. Do not integrate the candidate unchanged.
     downstream_policy:
       - do not use filtered amplitude or weight as fruit-loop feedback amplitude, confidence, or gain
       - no filtered product is authorized for production fruit-loop support selection
@@ -1937,6 +2030,14 @@ packages:
       - package_id: SCI-CAL-001
         status: open
     downstream_consumers: [pointing calibration, OOF analysis, SCI-FRUIT-001]
+    incoming_handoffs:
+      - id: SCI-MODE-001-XAUD-001
+        path: >-
+          doc/audits/handoffs/SCI-MODE-001/SCI-MODE-001-XAUD-001.yaml
+        source_package: SCI-CAL-001
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted
     governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
     governing_sha_role: inventory_snapshot
     audit_branch: null
@@ -1985,6 +2086,14 @@ packages:
       - package_id: SCI-MAP-001
         status: open
     downstream_consumers: [TolAPT and downstream detector calibration]
+    incoming_handoffs:
+      - id: SCI-BEAM-001-XAUD-001
+        path: >-
+          doc/audits/handoffs/SCI-BEAM-001/SCI-BEAM-001-XAUD-001.yaml
+        source_package: SCI-CAL-001
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted
     governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
     governing_sha_role: inventory_snapshot
     audit_branch: null

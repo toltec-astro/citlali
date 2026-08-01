@@ -51,9 +51,15 @@ The repair-base decision selects application SHA
 `9aae0e669384c5c0c0dda93debc194d6b8dac787`. The unapproved convolve/noise
 candidate `02a198cbfb379eaf6ab279c5a3d44ee73ff90435` does not land first; it
 retains its independent amendment, validation, and re-audit path. The next MAP
-stage is a fresh `codex/repair-sci-map-001` worktree from the selected
-application SHA, never from the audit or coordination branch. No repair branch
-has yet been created. See the
+stage was created on `codex/repair-sci-map-001` directly from the selected
+application SHA, never from the audit or coordination branch. The bounded
+F001--F011 repair is locally verified at
+`ed28dafb37f9113c0d3c95297148157129a90886`; it remains an unintegrated repair
+candidate, not a conformity or production decision. Its exact-SHA human-run
+Unity campaign package is being prepared without changing that application
+candidate. External evidence and fresh re-audit have not begun; F009/F010
+remain `addressed_pending_reaudit`, and the named CAL/AST/PTC/VAL dependencies
+remain open. See the
 [coordinator decision](audits/packages/SCI-MAP-001_COORDINATOR_DECISION_2026-07-31.md)
 and the
 [bounded repair/re-audit handoff](audits/packages/SCI-MAP-001_BOUNDED_REPAIR_REAUDIT_HANDOFF_2026-07-31.md).
@@ -105,31 +111,81 @@ floating-point roundoff.
 
 The [bounded repair/re-audit handoff](audits/packages/SCI-CAL-001_BOUNDED_REPAIR_REAUDIT_HANDOFF_2026-07-31.md)
 selects exact repair base `9aae0e669384c5c0c0dda93debc194d6b8dac787` and branch
-`codex/repair-sci-cal-001`. Local repair may run in parallel with ALIGN against
-only the approved abstract aligned-input contract. F010 remains open, and CAL
-external evidence plus fresh re-audit wait for coordinator disposition of the
-ALIGN result. No Unity evidence has been requested and no re-audit has been
-started.
+`codex/repair-sci-cal-001`. Phase zero stopped before application edits at
+evidence commit `ae99be1cef8c390d0e7490835ffca1f31da7ebc0` because every tested
+above-q25 selector boundary is materially discontinuous. A separate
+reproducible atmosphere package at
+`8b2fc27513eabcac1f4862b18026879f94c34d69` recovered digest-bound q25/q50/q75
+raw grids and exact legacy monochromatic fit lineage, with partial
+representation errors below one percent where raw evidence exists. It did not
+recover q95, historical generator/profile authority, preregistered physical
+intermediate-opacity truth, or final spectral/domain decisions. The
+[coordinator review](audits/packages/SCI-CAL-001_ATMOSPHERE_OPERATOR_COORDINATOR_REVIEW_2026-08-01.md)
+therefore holds CAL for owner input before any application-code edit. F010
+remains open on ALIGN; Unity evidence and fresh re-audit have not started.
 
-## 2026-07-31 SCI-ALIGN-001 Audit Dispatch
+## 2026-08-01 SCI-ALIGN-001 Audit And Repair Coordination
 
-The independent Tier A `SCI-ALIGN-001` audit is frozen for dispatch against
-exact application SHA `9aae0e669384c5c0c0dda93debc194d6b8dac787` on
-`codex/refactor-mainline`. Its coordinator registry snapshot is
-`99bfa3562ecfa05c0c10de24a255a6a18ff313d2`. The frozen
-[inbox manifest](audits/handoffs/SCI-ALIGN-001/SCI-ALIGN-001_INBOX_MANIFEST_2026-07-31.yaml)
-contains no handoffs because no currently integrated record is addressed to
-ALIGN; records addressed to other packages are not silently imported. The
-approved CAL owner decision at
-`e8bd929008140e2ea8b44bfdc80b0a531b488765` is recorded separately as a
-bounded downstream consumer requirement, not as ALIGN implementation
-authority.
+The independent Tier A `SCI-ALIGN-001` audit completed at
+`aeeac7f36e1ab0ab17bfbf3f603364faff02d715` against exact application SHA
+`9aae0e669384c5c0c0dda93debc194d6b8dac787`. The final audit artifact digest
+is `6aaed0e6e16e4c37cd24d15b98346f84024ffd7920bd0524e7a170dbc728a393`.
+The project owner approved `ALIGN-OD1`--`ALIGN-OD8` and `ALIGN-C001` at exact
+decision commit `4f905f4f353e91847a303f4f3959654f3f03c302`. Contract is `approved`,
+implementation remains `nonconformant`, validation is `in_progress`,
+production is `existing_use_only`, verdict is `amend`, and re-audit is
+required.
 
-The dedicated [audit prompt](audits/prompts/SCI_ALIGN_001_AUDIT_PROMPT.md)
-requires an independent-core freeze before source inspection, complete
-alignment/scan/gap and uncertainty tracing afterward, and a clean audit-only
-branch. It prohibits application changes, Unity access, repair, production
-authorization, and additional audit launches.
+The corrected
+[bounded repair/re-audit handoff](audits/packages/SCI-ALIGN-001_BOUNDED_REPAIR_REAUDIT_HANDOFF_2026-08-01.md)
+selects the exact audited base and branch `codex/repair-sci-align-001`. The
+dedicated Ultra task is active on that branch at the exact base and is limited
+to phase zero: raw timing/header authority, the complete telescope/HWPR field
+registry, measured cadence/phase/tolerance and jitter, and timing-compatibility
+evidence. It must stop for owner review before application edits. No ALIGN
+application-repair commit, Unity evidence, re-audit, or production expansion
+exists. The canonical full-SHA identity correction is recorded at
+`35cc8ce246e8e70c569e650be6c1eae2c91b80ef`.
+
+## 2026-08-01 SCI-AST-001 Prepared Audit Dispatch
+
+`SCI-AST-001` is the next Foundation Wave 1 critical-path audit. Its canonical
+ALIGN dependency now states the required aligned-field identity, topology,
+unit/frame, native-source mapping, validity/support, timing residual, origin,
+and eligibility contract plus the consequence while ALIGN remains open. The
+frozen inbox contains only post-core handoff `SCI-AST-001-XAUD-001`.
+
+After correcting the ALIGN decision identity, the AST dispatch was re-frozen
+against coordinator registry snapshot
+`35cc8ce246e8e70c569e650be6c1eae2c91b80ef`. The manifest digest is
+`32f8ec335cfbececc4fb47cbd1f3197c189481f7c9b7e963c4ecbbf4974dca1f`,
+the prompt digest is
+`7071db6ad57fd23a1b36bdec619ac72bc0d26d8427d91e7abdbf10afbc46713f`,
+and the refreeze artifact commit is
+`bba8beae6c933cda6562fe2c4c3cdf2b6d648c72`. The package is prepared at Ultra
+effort but has not been launched; no AST audit branch or worktree exists.
+
+## 2026-08-01 SCI-FLT-001 Returned Evidence Review
+
+The human-run point-observation convolve bundle for source commit
+`b294802a5e339f9ba5e0e323980cec3a4bd00249` is recorded as
+`SCI-FLT-001-UNITY-001-PARTIAL`, not as closure of the requested campaign.
+The [coordinator review](audits/packages/SCI-FLT-001_RETURNED_EVIDENCE_COORDINATOR_REVIEW_2026-08-01.md)
+has SHA-256
+`2331c9f4c4809a97d7b3dcc1c187db92470bb14fb96bedc7cd5ab417df4b1357`.
+The bundle verifies exact alias, ten-realization `N-1` variance, direct
+uncertainty/S/N, provenance-sidecar, and raw-product regression identities.
+
+Scientific acceptance failed and remains incomplete. In a2000, eight of nine
+direct absolute-S/N-above-5 pixels occur in the reconstructed guard band; the
+most extreme admitted guard pixel has direct S/N approximately `-165.7` while
+its raw science weight is below threshold. The result keeps the candidate
+fail-closed for significance, confidence, support, feedback, and integration.
+`SCI-FLT-001` remains contract `proposed`, implementation
+`conditionally_conformant` only under the recorded narrow assumptions,
+validation `in_progress`, verdict `amend`, production `fail_closed`, and
+re-audit `required` pending its upstream contracts, owner decisions, complete
+exact-successor-SHA evidence, and a fresh re-audit.
 
 ## 2026-07-26 Conan 2 Build Review
 
