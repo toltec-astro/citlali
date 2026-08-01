@@ -2097,7 +2097,7 @@ packages:
         doc/audits/packages/SCI-AST-001_BOUNDED_REPAIR_REAUDIT_HANDOFF_2026-08-01.md
       sha256: >-
         192d203815af408c5ba6179bfd3a2449a845da1ccb92244f5c0d3b70610dc1c1
-      record_commit: null
+      record_commit: eed77ce561e66df9caa09dccf28611835c3347a5
       proposed_branch: codex/repair-sci-ast-001
       launch_status: held_for_ALIGN_repair_evidence_and_reaudit
       task_thread_id: null
