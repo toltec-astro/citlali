@@ -1,0 +1,70 @@
+{
+  "schema_version": "sci-align-001-phase0-gate-snapshot-v1",
+  "record_status": "normalized immutable record transcribed from the initial read-only Codex task gate before branch creation or source inspection",
+  "historical_prebranch_observation": {
+    "stage": "before branch creation and before application/source inspection",
+    "observation_date_local": "2026-08-01",
+    "supplied_worktree": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor",
+    "requested_repository_identity_path": "/Users/gwilson/GitHub/citlali-refactor",
+    "supplied_worktree_git_common_dir": "/Users/gwilson/GitHub/citlali/.git",
+    "requested_repository_git_common_dir": "/Users/gwilson/GitHub/citlali/.git",
+    "head": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
+    "head_attachment": "detached",
+    "status_porcelain": "",
+    "codex_refactor_mainline": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
+    "repair_branch_lookup": {
+      "argv": [
+        "git",
+        "show-ref",
+        "--verify",
+        "refs/heads/codex/repair-sci-align-001"
+      ],
+      "exit_code": 1,
+      "stdout": "",
+      "meaning": "repair branch absent"
+    },
+    "other_align_repair_worktrees": [],
+    "gate_result": "PASS",
+    "created_branch_after_gate": "codex/repair-sci-align-001",
+    "created_branch_start": "9aae0e669384c5c0c0dda93debc194d6b8dac787"
+  },
+  "historical_coordination_observation": {
+    "repository": "/private/tmp/citlali-scientific-audit-framework",
+    "corrected_frozen_head": "846128c8ee6dc27851bd6c71aeecbe4739e1d24a",
+    "status_porcelain": "",
+    "handoff_record_commit": "0309fd48a973a6e7e136224906ac49c02f0171be",
+    "handoff_record_is_ancestor": true,
+    "handoff_blob_sha256": "2231e09c4310e8ddf73b6e25cd52c3c10671234667607b88d3723571dfa7a5f8",
+    "initial_expanded_dispatch_sha_rejected_as_transcription_error": "846128c8e5dbba1667374537e4885cf7b99f14e4",
+    "gate_result": "PASS"
+  },
+  "gate_time_scoped_refs": {
+    "codex/audit-sci-align-001": "9e234eada67c88feacddfc8b7e1afb0e1cffd818",
+    "codex/audit-sci-cal-001": "27b0916e725696597c3ba84fb6a82bf6cf0ea356",
+    "codex/audit-sci-map-001": "a675c2a54a50ed0c67b077e9c5d420933fa11ab0",
+    "codex/convolve-contract-audit": "800e8ae433f87d3fb7521fcb1a7fdf1d32532949",
+    "codex/convolve-contract-implementation": "2d1fbb4897e1fa416a587847895266abecb43100",
+    "codex/convolve-noise-correction": "02a198cbfb379eaf6ab279c5a3d44ee73ff90435",
+    "codex/perf-map-accumulation-noise-lifecycle": "d01ffa5981551345eeb1c765c24125200b896847",
+    "codex/refactor-mainline": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
+    "codex/repair-sci-cal-001": "ae99be1cef8c390d0e7490835ffca1f31da7ebc0",
+    "codex/repair-sci-map-001": "ed28dafb37f9113c0d3c95297148157129a90886",
+    "codex/scientific-audit-framework": "846128c8ee6dc27851bd6c71aeecbe4739e1d24a"
+  },
+  "gate_time_peer_worktree_heads": {
+    "audit_align": "9e234eada67c88feacddfc8b7e1afb0e1cffd818",
+    "audit_cal": "27b0916e725696597c3ba84fb6a82bf6cf0ea356",
+    "audit_map": "a675c2a54a50ed0c67b077e9c5d420933fa11ab0",
+    "repair_cal": "ae99be1cef8c390d0e7490835ffca1f31da7ebc0",
+    "repair_map": "ed28dafb37f9113c0d3c95297148157129a90886",
+    "coordination": "846128c8ee6dc27851bd6c71aeecbe4739e1d24a",
+    "convolve_audit": "800e8ae433f87d3fb7521fcb1a7fdf1d32532949",
+    "convolve_implementation": "2d1fbb4897e1fa416a587847895266abecb43100",
+    "convolve_noise": "02a198cbfb379eaf6ab279c5a3d44ee73ff90435",
+    "map_noise_performance": "d01ffa5981551345eeb1c765c24125200b896847"
+  },
+  "limitations": [
+    "The original gate ran before this branch and evidence file existed; this is a normalized transcription of that task-local observation, not a claim that the pre-branch status was recaptured later.",
+    "Git reflog and live worktree/ref assertions corroborate branch creation and isolation but cannot independently reconstruct the earlier clean index/worktree state."
+  ]
+}

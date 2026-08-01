@@ -1,0 +1,135 @@
+{
+  "phase0_verdict": "STOP_FOR_OWNER_AUTHORITY",
+  "questions": [
+    {
+      "blocks": [
+        "detector timestamp construction",
+        "rollover correction"
+      ],
+      "id": "Q01",
+      "question": "What producer document or responsible owner freezes the epoch, logical widths, and rollover/modulus semantics of every Data.Toltec.Ts column and PacketCount?"
+    },
+    {
+      "blocks": [
+        "shared slot grid"
+      ],
+      "id": "Q02",
+      "question": "May phase 1 freeze detector cadence at 0.008192 s from FpgaFreq/AccumLen/SampleFreq, and freeze phase to the latest first realized detector timestamp after offsets?"
+    },
+    {
+      "blocks": [
+        "slot acceptance tolerance"
+      ],
+      "id": "Q03",
+      "question": "May phase 1 use strict abs(residual) < 0.004063 s as the measured slot tolerance, or what authoritative tolerance and guard must replace it?"
+    },
+    {
+      "blocks": [
+        "acquisition bounds",
+        "duration",
+        "output support"
+      ],
+      "id": "Q04",
+      "question": "Given ALIGN-OD1 requires detector acquisition support to be retained, should phase 1 use union support with per-interface unavailability for the 38 accepted-pair edge-only rows, or what exact support rule should implement OD1?"
+    },
+    {
+      "blocks": [
+        "offset provenance",
+        "exactly-once application"
+      ],
+      "id": "Q05",
+      "question": "For LMT, each toltec0..toltec12, and HWPR interface, who owns requested, effective, observation-resolved, and realized offsets, including whether an LMT offset is required and the absent-interface policy?"
+    },
+    {
+      "blocks": [
+        "HWPR alignment",
+        "HWPR registry"
+      ],
+      "id": "Q06",
+      "question": "What is the authoritative HWPR input schema and angle transform, including units, epoch, counter widths, rollover, cadence, support, and offset stage?"
+    },
+    {
+      "blocks": [
+        "Hold topology",
+        "state interpolation"
+      ],
+      "id": "Q07",
+      "question": "Is TelescopeBackend.Hold a bitmask state with left-continuous half-open semantics, and what do observed values 0,2,8,10,64,66,72,74 mean?"
+    },
+    {
+      "blocks": [
+        "telescope time registry",
+        "TelUtc unit conflict"
+      ],
+      "id": "Q08",
+      "question": "What are TelTime, TelUtc, TelLst, and PpsTime scientific identities and epochs, and which are exact-only versus half-open step coordinates?"
+    },
+    {
+      "blocks": [
+        "circular topology",
+        "field operator"
+      ],
+      "id": "Q09",
+      "question": "Which telescope angles are circular, in which frames and periods, and may shortest-arc interpolation be used for each?"
+    },
+    {
+      "blocks": [
+        "typed field registry activation"
+      ],
+      "id": "Q10",
+      "question": "What validity rules, missing/nonfinite policy, and maximum interpolation support span apply to every telescope and HWPR field?"
+    },
+    {
+      "blocks": [
+        "RA/Dec alias mapping"
+      ],
+      "id": "Q11",
+      "question": "What is the authoritative precedence and scientific identity for configured TelRaAct/TelDecAct versus observed SourceRaAct/SourceDecAct aliases?"
+    },
+    {
+      "blocks": [
+        "output identity"
+      ],
+      "id": "Q12",
+      "question": "What exact output units, identities, and vector-shape rules implement ALIGN-OD3 for telescope timestamps, state fields, and vector-valued headers?"
+    },
+    {
+      "blocks": [
+        "phase-1 compatibility gate"
+      ],
+      "id": "Q13",
+      "question": "Which owner-approved local fixture or human-mediated Unity run will establish direct timing, source-crossing, centroid, and PSF-width non-degradation?"
+    },
+    {
+      "blocks": [
+        "registry default policy"
+      ],
+      "id": "Q14",
+      "question": "Does the owner approve the fail-closed registry baseline (exact-only, zero support span) until each field-specific authority is supplied?"
+    },
+    {
+      "blocks": [
+        "non-degradation thresholds",
+        "phase-1 validation design"
+      ],
+      "id": "Q15",
+      "question": "What preregistered timing, source-crossing, centroid, and per-array major/minor PSF-width tolerances\u2014derived from existing repeatability or fit uncertainty\u2014must the successor satisfy before its candidate results are viewed?"
+    },
+    {
+      "blocks": [
+        "detector epoch conversion",
+        "timestamp anchor"
+      ],
+      "id": "Q16",
+      "question": "Is the current detector anchor int(Ts[0,0] + Ts[0,5]*1e-9 - 0.5) scientifically authoritative, or what checked epoch conversion and rounding rule must replace it?"
+    },
+    {
+      "blocks": [
+        "boundary validation",
+        "stream identity"
+      ],
+      "id": "Q17",
+      "question": "What fail-closed policy applies to interface/Roach mismatch, invalid or duplicate Roach IDs, malformed Ts shape, nonpositive/nonfinite clock headers, duplicate or rollover packet counters, and nonmonotonic reconstructed time?"
+    }
+  ]
+}

@@ -1,0 +1,252 @@
+{
+  "accepted_beammap": {
+    "accepted_gap_grid_path_enabled": true,
+    "apt_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/beammap/refactor/reduced/redu18/148670/raw/apt_commissioning_beammap_148670_citlali.ecsv",
+    "apt_row_count": 5234,
+    "apt_sha256": "f1dcd7e7ea88eb47d1b494cdfac3d3b365d5a938d87b5393c97b5fcde9b5b25c",
+    "candidate_sha": "398d5127",
+    "config_interface_offsets_sec": {
+      "hwpr": 0.0,
+      "toltec0": 0.0,
+      "toltec1": 0.0,
+      "toltec10": 0.0,
+      "toltec11": 0.0,
+      "toltec12": 0.0,
+      "toltec2": 0.0,
+      "toltec3": 0.0,
+      "toltec4": 0.0,
+      "toltec5": 0.0,
+      "toltec6": 0.0,
+      "toltec7": 0.0,
+      "toltec8": 0.0,
+      "toltec9": 0.0
+    },
+    "config_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/beammap/refactor/reduced/redu18/citlali_o148670_0_2_c1.yaml",
+    "config_sha256": "aa956b28465eaef8b23763e877857b5b8929e95ca4fbdc976db6d7b2a775636d",
+    "flag_zero_fwhm_arcsec": [
+      {
+        "a_median": 5.08284166495785,
+        "a_p16": 4.485159749788851,
+        "a_p84": 5.742108674139099,
+        "array": "a1100",
+        "b_median": 5.990610375393426,
+        "b_p16": 5.500776494590479,
+        "b_p84": 6.531982875567767,
+        "n": 2899
+      },
+      {
+        "a_median": 6.495068419160969,
+        "a_p16": 5.791340017558366,
+        "a_p84": 7.3212474711925095,
+        "array": "a1400",
+        "b_median": 7.016367498061346,
+        "b_p16": 6.541961375599433,
+        "b_p84": 7.511502070797156,
+        "n": 1190
+      },
+      {
+        "a_median": 8.882776611850153,
+        "a_p16": 7.926021093605921,
+        "a_p84": 10.00082914324373,
+        "array": "a2000",
+        "b_median": 9.11748175429919,
+        "b_p16": 8.516088925858853,
+        "b_p84": 9.588357309791261,
+        "n": 891
+      }
+    ],
+    "ledger_comparison": {
+      "changed_records": 6,
+      "common_products": 12,
+      "options": [
+        "--mode",
+        "beammap",
+        "--strict",
+        "--include-timestream",
+        "--max-array-elements",
+        "0",
+        "--exclude",
+        "citlali_profile.ecsv"
+      ],
+      "scientific_products_exact": true,
+      "skipped_records": 0,
+      "tolerances": {
+        "atol": 2e-08,
+        "fraction_floor": 1e-12,
+        "rtol": 1e-10
+      },
+      "tool": "tools/baseline/compare_reduction_products.py",
+      "tool_sha": "c2ec8ae5",
+      "verdict": "accepted_exact_science_with_intended_inactive_metadata_change",
+      "volatile_allowlist": [
+        "citlali_profile.ecsv"
+      ]
+    },
+    "ledger_status": "accepted",
+    "metric_extraction": "parsed from frozen ECSV; flag==0 per array; NumPy quantiles",
+    "offset_provenance_status": "raw_timestream_provenance v1 has no interface_sync_offset nodes",
+    "raw_provenance_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/beammap/refactor/reduced/redu18/148670/raw_timestream_provenance.yaml",
+    "raw_provenance_sha256": "ec6ad70a6583c44aba2a277ee40b93426eee39d67de4285dff318df3d845b610",
+    "record_id": "beammap-148670-refactor-398d5127-redu18",
+    "status": "accepted historical baseline; not a phase-0 successor run"
+  },
+  "accepted_config": {
+    "accepted_gap_grid_path_enabled": true,
+    "config_interface_offsets_sec": {
+      "hwpr": 0.0,
+      "toltec0": 0.0,
+      "toltec1": 0.0,
+      "toltec10": 0.0,
+      "toltec11": 0.0,
+      "toltec12": 0.0,
+      "toltec2": 0.0,
+      "toltec3": 0.0,
+      "toltec4": 0.0,
+      "toltec5": 0.0,
+      "toltec6": 0.0,
+      "toltec7": 0.0,
+      "toltec8": 0.0,
+      "toltec9": 0.0
+    },
+    "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/point/refactor/reduced/redu66/citlali_o152389_0_2_c1.yaml",
+    "role": "accepted redu66 authority",
+    "sha256": "67f6c6e6bade058fdee933fd043cbbba363187c9acbecc0f0a30d04877ce2cd7"
+  },
+  "accepted_pointing": {
+    "accepted_runs_path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/validation/accepted_runs.json",
+    "accepted_runs_sha256": "4a134dcdd14e0444d96875547f628a3353574cc66574dd9a559bcf59dafb94bb",
+    "candidate_sha": "2a974e0dd3b76fca7e406c057026d6c6657b6159",
+    "ledger_comparison": {
+      "changed_records": 0,
+      "common_products": 19,
+      "measured": {
+        "all_requested_products_compared": true,
+        "matched_config_leaf_count": 490,
+        "profile_record_count": 78,
+        "profile_stage_context_multiset_exact": true
+      },
+      "options": [
+        "--mode",
+        "point",
+        "--include-timestream",
+        "--max-array-elements",
+        "0",
+        "--exclude",
+        "citlali_profile.ecsv",
+        "--atol",
+        "0",
+        "--rtol",
+        "0",
+        "--strict"
+      ],
+      "scientific_products_exact": true,
+      "skipped_records": 0,
+      "tolerances": {
+        "atol": 0.0,
+        "fraction_floor": 1e-12,
+        "rtol": 0.0
+      },
+      "tool": "tools/baseline/compare_reduction_products.py",
+      "tool_sha": "2a974e0dd3b76fca7e406c057026d6c6657b6159",
+      "verdict": "accepted_exact",
+      "volatile_allowlist": [
+        "citlali_profile.ecsv"
+      ]
+    },
+    "ledger_status": "accepted",
+    "metric_extraction": "parsed from frozen ECSV columns; not hardcoded",
+    "pointing_rows": [
+      {
+        "a_fwhm_arcsec": 5.496326923370361,
+        "array": "a1100",
+        "b_fwhm_arcsec": 5.564518928527832,
+        "x_t_arcsec": 5.083446025848389,
+        "y_t_arcsec": 0.11662819981575012
+      },
+      {
+        "a_fwhm_arcsec": 6.027350902557373,
+        "array": "a1400",
+        "b_fwhm_arcsec": 6.678722858428955,
+        "x_t_arcsec": 5.05083703994751,
+        "y_t_arcsec": -0.20364180207252502
+      },
+      {
+        "a_fwhm_arcsec": 8.875665664672852,
+        "array": "a2000",
+        "b_fwhm_arcsec": 8.854930877685547,
+        "x_t_arcsec": 4.788776874542236,
+        "y_t_arcsec": -0.3728503882884979
+      }
+    ],
+    "ppt_path": "/Users/gwilson/work_toltec/local_data/2026-refactor/point/refactor/reduced/redu66/152389/raw/ppt_commissioning_pointing_152389_citlali.ecsv",
+    "ppt_sha256": "344c85500d367566b7a1b9463fc46a8cd4d8aef0671f9f7eb3891accfbb53763",
+    "record_id": "point-152389-refactor-2a974e0d-redu66",
+    "status": "accepted historical baseline; not a phase-0 successor run"
+  },
+  "accepted_raw_timestream_provenance": {
+    "offset_state_finding": "requested/effective present; observation/realized offsets absent",
+    "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/point/refactor/reduced/redu66/152389/raw_timestream_provenance.yaml",
+    "sha256": "c5c826f9ed9415a110ce2aff2c51d14dc16e6efab7b0cb8723b6487d7a6cdc44"
+  },
+  "accepted_source_crossing": {
+    "closest_distance_arcsec": [
+      {
+        "array": "a1100",
+        "max": 1.9475405680250357,
+        "median": 0.8566694550057604,
+        "n": 3004,
+        "p95": 1.4235822941316465
+      },
+      {
+        "array": "a1400",
+        "max": 1.7894853384466254,
+        "median": 0.8434819128264393,
+        "n": 1209,
+        "p95": 1.4311246552924919
+      },
+      {
+        "array": "a2000",
+        "max": 1.7479253813728548,
+        "median": 0.8706891604492613,
+        "n": 922,
+        "p95": 1.4361197535859878
+      }
+    ],
+    "detector_count": 5234,
+    "exact_crossing_time_comparison": "UNAVAILABLE: artifact does not retain per-sample time/pointing or closest-approach sample index",
+    "good_fit_count": 5135,
+    "metric_extraction": "parsed from frozen NetCDF; fit_good==1 per array; NumPy quantiles",
+    "path": "/Users/gwilson/work_toltec/local_data/2026-refactor/beammap/refactor/reduced/redu18/148670/raw/source_crossing_tod/toltec_commissioning_beammap_148670_ptc_detector_tod.nc",
+    "sample_rate_hz": 122.0703125,
+    "sha256": "948df213ac88ce516f85cf177ed33495f95ca5d26f85a5afedb5b68f548255ed"
+  },
+  "candidate_evidence": {
+    "centroid_or_psf_degradation_tested": false,
+    "phase0_application_edits": false,
+    "phase0_application_path_delta": [],
+    "reason": "phase 0 forbids application repair and Unity; direct successor products do not exist",
+    "successor_reduction_available": false
+  },
+  "phase0_comparison_config": {
+    "config_interface_offsets_sec": {
+      "hwpr": 0.0,
+      "toltec0": 0.0,
+      "toltec1": 0.0,
+      "toltec10": 0.0,
+      "toltec11": 0.0,
+      "toltec12": 0.0,
+      "toltec2": 0.0,
+      "toltec3": 0.0,
+      "toltec4": 0.0,
+      "toltec5": 0.0,
+      "toltec6": 0.0,
+      "toltec7": 0.0,
+      "toltec8": 0.0,
+      "toltec9": 0.0
+    },
+    "gap_grid_path_enabled": true,
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/point/pointings_v22/reduced/citlali_o152389_0_2_c1.yaml",
+    "role": "newer owner-local ordinary-data comparison input; not accepted redu66",
+    "sha256": "340677ab1e873e735a44dcee84d7da9eba91a7c511f8d9229b044aa29d98f5ba"
+  }
+}

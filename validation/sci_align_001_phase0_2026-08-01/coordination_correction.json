@@ -1,0 +1,17 @@
+{
+  "changed_paths": [
+    "doc/audits/audit-ledger.yaml",
+    "doc/audits/packages/SCI-ALIGN-001_BOUNDED_REPAIR_REAUDIT_HANDOFF_2026-08-01.md",
+    "doc/audits/prompts/SCI_AST_001_AUDIT_PROMPT.md"
+  ],
+  "commit": "35cc8ce246e8e70c569e650be6c1eae2c91b80ef",
+  "correct_owner_decision_commit": "4f905f4f353e91847a303f4f3959654f3f03c302",
+  "handoff_record_is_ancestor_of_frozen_dispatch": true,
+  "interpretation": "owner-decision identity correction plus phase-zero coordination-state update; no SCI-ALIGN scientific-policy change; frozen dispatch remains historical evidence",
+  "owner_decision_is_ancestor_of_correction": true,
+  "parent": "ac89ef7bd79dca09269ed92a4483c7e7d4d19912",
+  "rejected_transcription": "4f905f4f39461c8f9a86b0bf589880362d0a49f7",
+  "scientific_policy_change_status": "none; authoritative coordinator correction states the scientific contract is unchanged",
+  "scientific_policy_change_value_authority": "explicit coordinator correction supplied in this task",
+  "subject": "Correct ALIGN decision identity"
+}

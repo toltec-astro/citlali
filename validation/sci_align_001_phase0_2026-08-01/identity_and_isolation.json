@@ -1,0 +1,14 @@
+{
+  "branch": "codex/repair-sci-align-001",
+  "canonical_correction_commit": "35cc8ce246e8e70c569e650be6c1eae2c91b80ef",
+  "explicitly_rejected_transcription": "4f905f4f39461c8f9a86b0bf589880362d0a49f7",
+  "frozen_coordination_head": "846128c8ee6dc27851bd6c71aeecbe4739e1d24a",
+  "gate_snapshot_sha256": "75b085b8f7bfea3af7dbdc579a1efb8ce17423080ea873d74647c945d0519481",
+  "handoff_record_commit": "0309fd48a973a6e7e136224906ac49c02f0171be",
+  "handoff_sha256_expected": "2231e09c4310e8ddf73b6e25cd52c3c10671234667607b88d3723571dfa7a5f8",
+  "isolation": "dedicated supplied worktree; no merge/rebase/push/Unity; sibling repositories read-only",
+  "owner_decision_commit_corrected": "4f905f4f353e91847a303f4f3959654f3f03c302",
+  "repair_base": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
+  "repair_repository": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor",
+  "scientific_policy_change_status": "none per authoritative coordinator correction in this task"
+}

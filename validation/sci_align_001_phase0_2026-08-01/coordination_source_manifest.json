@@ -1,0 +1,42 @@
+[
+  {
+    "commit": "846128c8ee6dc27851bd6c71aeecbe4739e1d24a",
+    "line_count": 306,
+    "path": "doc/audits/packages/SCI-ALIGN-001_BOUNDED_REPAIR_REAUDIT_HANDOFF_2026-08-01.md",
+    "repository": "/private/tmp/citlali-scientific-audit-framework",
+    "sha256": "2231e09c4310e8ddf73b6e25cd52c3c10671234667607b88d3723571dfa7a5f8",
+    "size_bytes": 17130
+  },
+  {
+    "commit": "4f905f4f353e91847a303f4f3959654f3f03c302",
+    "line_count": 390,
+    "path": "doc/audits/packages/SCI-ALIGN-001_COORDINATOR_DECISION_2026-08-01.md",
+    "repository": "/private/tmp/citlali-scientific-audit-framework",
+    "sha256": "14c8044fe7a26c7ee1af7b8dea3472e9cb604471c91ca58dc93b662a7d3d9895",
+    "size_bytes": 22355
+  },
+  {
+    "commit": "846128c8ee6dc27851bd6c71aeecbe4739e1d24a",
+    "line_count": 737,
+    "path": "doc/audits/packages/SCI-ALIGN-001_SCIENTIFIC_CONTRACT_AUDIT.tex",
+    "repository": "/private/tmp/citlali-scientific-audit-framework",
+    "sha256": "6aaed0e6e16e4c37cd24d15b98346f84024ffd7920bd0524e7a170dbc728a393",
+    "size_bytes": 52862
+  },
+  {
+    "commit": "846128c8ee6dc27851bd6c71aeecbe4739e1d24a",
+    "line_count": 643,
+    "path": "doc/audits/packages/SCI-ALIGN-001_INDEPENDENT_CORE.tex",
+    "repository": "/private/tmp/citlali-scientific-audit-framework",
+    "sha256": "4ee7b7e9cbe883ea626afe2e3d22756b20f556a2e06115d4a2832f2e78469785",
+    "size_bytes": 39413
+  },
+  {
+    "commit": "846128c8ee6dc27851bd6c71aeecbe4739e1d24a",
+    "line_count": 1972,
+    "path": "doc/audits/audit-ledger.yaml",
+    "repository": "/private/tmp/citlali-scientific-audit-framework",
+    "sha256": "749a26fed347ae07b5211e6016eb5b14f267760e6c3e5daaef63948d67666288",
+    "size_bytes": 85918
+  }
+]

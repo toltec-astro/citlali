@@ -1,0 +1,182 @@
+[
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/AGENTS.md",
+    "sha256": "4f6cfb2f198522dc18cf7710a613b574a249af047a92b725a2501d3963572a1f"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/doc/REFACTOR_STATUS.md",
+    "sha256": "e992d5654d867cb578f895bd1485540a15f561007958ae5eea1da11e5d1afa60"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/doc/ARCHITECTURE.md",
+    "sha256": "d78571ab2da351fb2884b966b7dcbbd9e3d68d0c8c692a18f47159c2c7196f31"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/doc/SCIENTIFIC_CONVENTIONS.md",
+    "sha256": "7e3c7c4af55df20cc120b6d0a0423ed4435b232453aae7bf8653b9630de954f3"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/doc/RETAINED_DEBT.md",
+    "sha256": "97a26012d7cd70c18053a7baeffd3933426dc77861f12d658fd2082357a1efdb"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/doc/PHASE5_PREPARATION_AND_INTEGRATION_PLAN_2026-07-16.md",
+    "sha256": "9850d054d6c835bdd7a97945fddbf0d4d2d16575f655ba0fc682a77ea7a1b22e"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/doc/TOLTECA_BUILD_INTEGRATION_REQUIREMENTS_2026-07-23.md",
+    "sha256": "858be96a75ae5bfbcf917420c1636be945d20ef1d4824b8727368929b0bd9df1"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/doc/TOLTECA_BUILD_INTEGRATION_REVIEW_2026-07-26.md",
+    "sha256": "7dcb242ae5fbc9dd7358bd0b5aa6281ee05b7690ef43711eef6e640b179480fd"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/doc/PHASE4_1_TOLTECA_CONFIG_STRUCTURE_PLAN_2026-07-16.md",
+    "sha256": "2550d895719820dfc39806cf61bd4ea5d2d768b95e501bff47b6c4b2dae167d4"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/doc/PHASE4_2_TECHNIQUE_PERFORMANCE_REVIEW_PLAN_2026-07-16.md",
+    "sha256": "2fc115cc2881be65e4111161b297861f590a1a5df3b115cb03cc8322c95492cd"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/handoff/EXTERNAL_REFACTOR_ARCHITECTURE_REVIEW_2026-07-10.md",
+    "sha256": "f08e1e16b5c15fbfb73e724fee2faed5bd9def1d113f1fb9375936475c7620c4"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/doc/STRUCTURAL_REFACTOR_PLAN_2026-06-29.md",
+    "sha256": "8f86cb21749d13710301c04baaca4f0eb237c443b12a6a3708c7e4e7e90650a3"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/doc/adr/README.md",
+    "sha256": "f1f296e683e717910bddd491474fa7ccf50f04297bf65f87ec4976ac070f063f"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/include/citlali/core/engine/telescope.h",
+    "sha256": "f8c419c85161c9fca550b9b3a644c6c65f3e87d7645e2287d9e57f4e265f21a7"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/include/citlali/core/engine/calib.h",
+    "sha256": "e1c200b800b14f358e2b0ec38b69d17388756beb8368c18d0d4bef70b39ba769"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/include/citlali/core/engine/io.h",
+    "sha256": "fbac55e232204bb92babc36e5db0306bb2a56b2e7a6c0b1dc4f5b31de4cf6ccb"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/include/citlali/core/engine/detail/rawobs_collection_impl.h",
+    "sha256": "e01ef6849e7c8c194f7ee652127834ffb91ae03ad18304a8086649ea92d479d3"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/src/citlali/core/engine/telescope.cpp",
+    "sha256": "be518d193154209040196cb47597eeb5c48a6057222723d3432394d7ec1a5f49"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/src/citlali/core/engine/calib.cpp",
+    "sha256": "016a8c180d7d1dab648049e80c1af3d3fdec8fb53e78e12b6fd6c33cf5c8090d"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/include/citlali/core/engine/detail/todproc_alignment_impl.h",
+    "sha256": "dca46d45df1040e147373e735aacdc11692d1884d3fa5b10a45ee07ef64da93c"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/include/citlali/core/engine/detail/kidsproc_gaps_impl.h",
+    "sha256": "1b507ac584f89015ac2f8c161a2220b29bd41a46332587c0bf58ff3f4ae7bec0"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/include/citlali/core/pipeline/timestream_alignment_helpers.h",
+    "sha256": "89ecc30e01f151a2faf105039a9d4bc72775e36b92ec140c283347e98245dfda"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/include/citlali/core/pipeline/telescope_timestream_alignment.h",
+    "sha256": "554d9ada73464df530ec97a0b48524ec7f9c8830ee8fc9f85b4e1f393e1e9c7a"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/include/citlali/core/config/interface_sync_config.h",
+    "sha256": "3b4d151badbc1312860046d505fb6afdba8627f148fb95881041ee6365699bb9"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/include/citlali/core/config/interface_sync_config_validation.h",
+    "sha256": "791fd1f6b0da6872ae6de5ccef9a397fb544595bf34113b7846311516db9725e"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/include/citlali/core/config/reduction_config_validation.h",
+    "sha256": "e6b790c0ee35e446beb5cd6b1f92530e165a0e84d440c269d5c46725e44f56d2"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/include/citlali/core/pipeline/citlali_config_read_sync_offsets.h",
+    "sha256": "01951bf8204a9d04b99449ac250a2b215258d3159e08707e4b7d20fc016baa11"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/include/citlali/core/pipeline/interface_sync_config_adapter.h",
+    "sha256": "4b7ad77f4fa8628f4da7903d26336db976f84ce91f81fceea4bb36a34f538843"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/include/citlali/core/pipeline/raw_timestream_execution_plan.h",
+    "sha256": "255026241c9826963f1a6b7179542247862e52a34f16e9771c57a9086aaff358"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/include/citlali/core/pipeline/raw_timestream_provenance.h",
+    "sha256": "fc05464eb09214d612e86a5816a4e9592573401f80c323a097114e5f19589279"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/include/citlali/core/pipeline/rawobs_adc_snap.h",
+    "sha256": "f79371502fc720fe2d0a2a7de20d08428498f1c774b548404d0c868eed915c7b"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/include/citlali/core/pipeline/rawobs_tone_frequency_inventory.h",
+    "sha256": "c210e1c57ffcff0b4b526c37bedbed53bf5d5636d4a167b4758ef1519a72d747"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/include/citlali/core/pipeline/coherent_iq_mode_sidecar.h",
+    "sha256": "22411f9b8e3c1576af69a3091d0aa93ade0e6207f8034afe5fb6e6433d4c5bb3"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/include/citlali/core/pipeline/tod_data_static_metadata_vars.h",
+    "sha256": "a59d1f020c0c4d6c94adccd2da7a3c8cc80801fb6eff94b00c3cf799dc8e06df"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/include/citlali/core/pipeline/tod_data_optional_vars.h",
+    "sha256": "a40252654cc3734f3547328c305a65b0fb0865935a2125c38de9f8a46caed435"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/include/citlali/core/engine/detail/citlali_config_impl.h",
+    "sha256": "9491add5f41ba055b38f12e0822a045d6b3a61c48d78a55950ae716ef8424ba1"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/include/citlali/core/utils/utils.h",
+    "sha256": "4788813b40a8c0e931b559ca4c27b26ee65fe161f4a6d0e0aa15f001afab17f8"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/tools/config/config_leaf_contract_resolved.json",
+    "sha256": "00389c7a6b303c6b5d9d0327caaf8427b92a445996787d35c70cfde678063ea5"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/tools/diagnostics/generate_sci_align_001_phase0.py",
+    "sha256": "75062801884ac588eb8b8b31f6e77f95da8c20bba4b567059809136dc60e04dd"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/tools/diagnostics/sci_align_001_phase0_gate_snapshot.json",
+    "sha256": "75b085b8f7bfea3af7dbdc579a1efb8ce17423080ea873d74647c945d0519481"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/tools/diagnostics/sci_align_001_phase0_report.md",
+    "sha256": "4ac7c1bb9c67da3ce99ddfe4f96e42799a704bcb5acf89e3fa17cdfda1ef31c8"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/validation/accepted_runs.json",
+    "sha256": "4a134dcdd14e0444d96875547f628a3353574cc66574dd9a559bcf59dafb94bb"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/validation/product_contracts.json",
+    "sha256": "adc0cabc2ebcbd65f5b9496e893f9b158c7cbaa4a90c05c9768402a6c80398c7"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/validation/validation_profiles.json",
+    "sha256": "bc8fe7389a5d3f4ec904e225e27d401cd846cc3c00a24d1d97357116cd822e26"
+  },
+  {
+    "path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/validation/intended_science_changes.json",
+    "sha256": "b6635d5f0e0282f7db716c89dd5cfbae1c4700040b85d410ba724f2a334cd450"
+  }
+]

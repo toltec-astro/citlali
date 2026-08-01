@@ -1,0 +1,68 @@
+{
+  "allowed_path_scope": {
+    "checked_sources": "base..HEAD, index, worktree, and untracked union",
+    "exact": [
+      "tools/diagnostics/generate_sci_align_001_phase0.py",
+      "tools/diagnostics/sci_align_001_phase0_gate_snapshot.json",
+      "tools/diagnostics/sci_align_001_phase0_report.md"
+    ],
+    "prefix": "validation/sci_align_001_phase0_2026-08-01/"
+  },
+  "gate_snapshot_path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/tools/diagnostics/sci_align_001_phase0_gate_snapshot.json",
+  "gate_snapshot_sha256": "75b085b8f7bfea3af7dbdc579a1efb8ce17423080ea873d74647c945d0519481",
+  "historical_coordination_observation": {
+    "corrected_frozen_head": "846128c8ee6dc27851bd6c71aeecbe4739e1d24a",
+    "gate_result": "PASS",
+    "handoff_blob_sha256": "2231e09c4310e8ddf73b6e25cd52c3c10671234667607b88d3723571dfa7a5f8",
+    "handoff_record_commit": "0309fd48a973a6e7e136224906ac49c02f0171be",
+    "handoff_record_is_ancestor": true,
+    "initial_expanded_dispatch_sha_rejected_as_transcription_error": "846128c8e5dbba1667374537e4885cf7b99f14e4",
+    "repository": "/private/tmp/citlali-scientific-audit-framework",
+    "status_porcelain": ""
+  },
+  "historical_prebranch_observation": {
+    "codex_refactor_mainline": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
+    "created_branch_after_gate": "codex/repair-sci-align-001",
+    "created_branch_start": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
+    "gate_result": "PASS",
+    "head": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
+    "head_attachment": "detached",
+    "observation_date_local": "2026-08-01",
+    "other_align_repair_worktrees": [],
+    "repair_branch_lookup": {
+      "argv": [
+        "git",
+        "show-ref",
+        "--verify",
+        "refs/heads/codex/repair-sci-align-001"
+      ],
+      "exit_code": 1,
+      "meaning": "repair branch absent",
+      "stdout": ""
+    },
+    "requested_repository_git_common_dir": "/Users/gwilson/GitHub/citlali/.git",
+    "requested_repository_identity_path": "/Users/gwilson/GitHub/citlali-refactor",
+    "stage": "before branch creation and before application/source inspection",
+    "status_porcelain": "",
+    "supplied_worktree": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor",
+    "supplied_worktree_git_common_dir": "/Users/gwilson/GitHub/citlali/.git"
+  },
+  "independence_conclusion": "repair branch/worktree is distinct from audit, coordination, MAP, CAL, convolve, and noise refs/worktrees; only evidence paths are changed",
+  "live_reflog_and_scope_assertions": {
+    "application_path_delta": [],
+    "branch_creation_reflog_entry": "9aae0e669384c5c0c0dda93debc194d6b8dac787\trefs/heads/codex/repair-sci-align-001@{2026-08-01T09:50:41-04:00}\tbranch: Created from 9aae0e669384c5c0c0dda93debc194d6b8dac787",
+    "current_branch_is_repair_branch": true,
+    "disallowed_path_delta": [],
+    "evidence_only_path_allowlist_passed": true,
+    "frozen_handoff_commit_and_blob_checks_passed": true,
+    "git_common_dir": "/Users/gwilson/GitHub/citlali/.git",
+    "mainline_still_exact_repair_base": true,
+    "other_repair_align_refs": [],
+    "other_repair_align_worktrees": [],
+    "repair_base_is_ancestor_of_head": true,
+    "repair_branch_has_exactly_one_worktree_owner": true,
+    "repair_branch_worktree": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor",
+    "repair_ref_equals_head": true,
+    "supplied_and_requested_paths_share_git_common_dir": true
+  }
+}
