@@ -897,6 +897,27 @@ packages:
           record_commit: 353aaf196ac2cabdd273f2a5760c80bec19cc885f
           record_sha256: >-
             ae295b717da3f9ed7129661e812b05847ff988500bb3d6f159b7ffae45cb2780
+    atmosphere_operator_review:
+      status: verified_evidence_owner_input_required
+      review_date: 2026-08-01
+      record_path: >-
+        doc/audits/packages/SCI-CAL-001_ATMOSPHERE_OPERATOR_COORDINATOR_REVIEW_2026-08-01.md
+      record_sha256: >-
+        277acdaae432094944327a5b2ef71ac42e3791ebf68421669575977156fad9c2
+      evidence_branch: codex/sci-cal-001-atmosphere-operator
+      evidence_commit: 8b2fc27513eabcac1f4862b18026879f94c34d69
+      evidence_parent: ae99be1cef8c390d0e7490835ffca1f31da7ebc0
+      owner_decision_ids:
+        - CAL-ATM-D001
+        - CAL-ATM-D002
+        - CAL-ATM-D003
+        - CAL-ATM-D004
+      effect: >-
+        Accepts the reproducible q25/q50/q75 recovery and continuous-operator
+        analysis as phase-zero evidence only. q95, historical regeneration
+        authority, independent intermediate-opacity truth, spectral lineage,
+        and final operational endpoints remain unresolved; no operator,
+        implementation, Unity evidence, or re-audit is authorized.
     dispatch:
       status: frozen_for_dispatch
       coordinator_registry_commit: 88741d085a08431790c6eee719b6f20052b459d8
@@ -1057,9 +1078,17 @@ packages:
           fail-closed fixtures, and complete a fresh exact-repair-SHA re-audit.
     unresolved_scientific_decisions:
       - >-
-        Select the exact versioned continuous atmosphere operator and declared
-        operational opacity/elevation domain after reproducible model
-        regeneration and withheld-grid validation.
+        CAL-ATM-D001: require and supply q95, historical regeneration
+        authority, and preregistered physical intermediate-opacity runs.
+      - >-
+        CAL-ATM-D002: preserve the recovered monochromatic spectral lineage or
+        authorize a separately versioned band-integrated model.
+      - >-
+        CAL-ATM-D003: approve the piecewise-linear LOS-optical-depth primary,
+        PCHIP challenger, and one-percent withheld-grid selection gate.
+      - >-
+        CAL-ATM-D004: approve the maximum fail-closed domain rule and defer
+        exact operational endpoints until q95 and held-out support pass.
     local_evidence:
       - id: SCI-CAL-001-CORE-001
         status: accepted_for_independence
@@ -1085,11 +1114,28 @@ packages:
           validation/sci_cal_001_phase0_2026-07-31/Q_MODEL_CONTINUITY_REPORT.md
         sha256: >-
           1a5a5cfe057e8871f299c9216e69826e393ac518a6198bdbb44f2a48d11cac00
+      - id: SCI-CAL-001-ATMOSPHERE-OPERATOR-001
+        status: verified_partial_evidence_owner_input_required
+        source_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+        evidence_branch: codex/sci-cal-001-atmosphere-operator
+        evidence_commit: 8b2fc27513eabcac1f4862b18026879f94c34d69
+        artifact: >-
+          validation/sci_cal_001_atmosphere_operator_2026-08-01/OWNER_DECISION_BRIEF.md
+        sha256: >-
+          b3fb2a5c0588bfc3ad12ee0d5bf93e637008d5c402fed8156934f858bf650714
+        established: >-
+          Digest-bound q25/q50/q75 raw recovery, exact legacy monochromatic
+          coefficient lineage, provisional sub-one-percent partial
+          representation checks, and bounded continuous-operator candidates.
+        missing: >-
+          q95 raw artifact, historical generator/profile provenance,
+          preregistered physical intermediate-opacity truth, selected spectral
+          lineage, and exact approved operational endpoints.
     requested_unity_evidence:
       - SCI-CAL-001-UNITY-001
     supplied_external_evidence: []
     repair_dispatch:
-      status: paused_after_phase_zero
+      status: paused_for_atmosphere_owner_input
       selected_base_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
       selected_base_ref: codex/refactor-mainline
       repair_branch: codex/repair-sci-cal-001
@@ -1100,11 +1146,13 @@ packages:
       phase_zero_gate: q_model_continuity_before_application_edit
       phase_zero_stop: owner_scope_decision_for_any_above_q25_discontinuity
       phase_zero_evidence_commit: ae99be1cef8c390d0e7490835ffca1f31da7ebc0
+      atmosphere_evidence_commit: 8b2fc27513eabcac1f4862b18026879f94c34d69
       successor_scope_decision: CAL-D001-ACCURACY-001
       next_gate: >-
-        Regenerate the raw atmosphere-model grid, validate a continuous
-        versioned representation, and obtain coordinator approval of the exact
-        operator and operational domain before any application-code edit.
+        Resolve CAL-ATM-D001 through CAL-ATM-D004, stage and verify the missing
+        q95/regeneration/intermediate-opacity evidence, freeze the candidate
+        validation design, and obtain explicit approval of the exact versioned
+        operator and operational endpoints before any application-code edit.
       parallel_dependency: >-
         After the atmosphere-operator gate is approved, local CAL repair may
         proceed against the approved abstract ALIGN input contract, but F010
