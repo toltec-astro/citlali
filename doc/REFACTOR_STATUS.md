@@ -215,8 +215,8 @@ incorporated without closing the dependency.
 The
 [coordinator decision brief](audits/packages/SCI-AST-001_COORDINATOR_DECISION_BRIEF_2026-08-01.md)
 records `SCI-AST-001-D001` through `D008`. The project owner has approved
-D001--D007 in the
-[partial decision record](audits/packages/SCI-AST-001_COORDINATOR_DECISION_2026-08-01.md).
+D001--D008 in the
+[decision record](audits/packages/SCI-AST-001_COORDINATOR_DECISION_2026-08-01.md).
 The cumulative record was first introduced for D001 at commit
 `0a17d088aded7fc6c18a59522f5b2b2fce9749ad`; its D002 revision is bound at
 commit `374fd2c2ffda74a651cf7a13d0e7f38758f17789`, and its D003 revision at
@@ -273,7 +273,16 @@ simulation parity to supported AltAz and RA/Dec modes using applicable real
 coordinate preparation, and rejects Galactic simulation at admission.
 `SCI-AST-001-F006` and `F014` remain open pending bounded implementation,
 offline reference, compatibility/performance, exact-SHA, and re-audit evidence.
-D008 remains pending.
+D008 uses double precision for compact WCS authorities and fitted/catalog sky
+coordinates, while retaining the large full-TOD coordinate representation only
+if its offline quantization error is astrometrically negligible. It requires
+truthful per-field units, dedicated factorized AST validity, no routine
+detector-by-sample identity or validity arrays, no coordinate expansion of mini
+TOD, and compact atomic four-stage provenance using the ALIGN grid identity and
+admitted detector binding. `SCI-AST-001-F009`--`F012` remain open pending the
+bounded product/provenance implementation, size/runtime and unchanged-science
+evidence, exact-SHA validation, and re-audit. All AST owner decisions are now
+resolved for contract design.
 No AST repair base has been selected, and no repair, Unity request, re-audit,
 application integration, or production expansion is authorized. The
 governing-SHA Unity request remains an unsupplied audit artifact and must not

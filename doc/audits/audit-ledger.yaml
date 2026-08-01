@@ -1472,12 +1472,13 @@ packages:
       note: >-
         The dedicated Ultra audit completed without application changes. Its
         independent core, report, evidence, proposal, and exact identities are
-        integrated; D001-D007 are owner-approved with astrometric, layered
+        integrated; D001-D008 are owner-approved with astrometric, layered
         detector-binding, TAN-invalidity, frame/topology, and proportionate
         pointing-support timing guards plus truthful automatic-only WCS
         controls, a map-center-only uncertainty response, and an offline-bounded
-        small-angle hot path with fail-closed simulation scope; D008 remains
-        pending.
+        small-angle hot path with fail-closed simulation scope, plus compact
+        truthful persisted coordinate products and provenance. Findings remain
+        open pending bounded repair, evidence, and re-audit.
     coordination:
       owner_integration_authorization: explicit_2026-08-01
       authorization_scope: >-
@@ -1520,7 +1521,9 @@ packages:
         confidence: high
         status: open
         owner: ast_projection_implementation
-        related_decisions: [SCI-AST-001-D002]
+        related_decisions:
+          - SCI-AST-001-D002
+          - SCI-AST-001-D008
         summary: >-
           Forward TAN maps a near-zero denominator to finite center and accepts
           the back hemisphere, aliasing invalid directions to valid-looking
@@ -1696,13 +1699,22 @@ packages:
         confidence: high
         status: open
         owner: ast_lifecycle_provenance
+        related_decisions: [SCI-AST-001-D008]
         summary: >-
           Provenance omits resolved and realized values, scientific identity,
           dependencies, product links, validity, uncertainty availability, and
           digests.
         closure_gate: >-
-          Implement lossless four-stage one-way state and exact serialization,
-          physical cardinality, and product-linkage tests.
+          Implement the approved compact atomic four-stage state and exact
+          serialization, physical cardinality, digest, identity-reconstruction,
+          and product-linkage tests without per-sample identity arrays.
+        coordinator_closure_clarification:
+          decision_id: SCI-AST-001-D008
+          status: open_pending_compact_provenance_implementation_evidence_and_reaudit
+          summary: >-
+            Persist requested, effective, observation-resolved, and realized
+            AST identity atomically and one-way. Reuse the ALIGN grid identity
+            and detector binding; do not repeat routine per-sample IDs.
       - id: SCI-AST-001-F010
         class: implementation_defect
         severity: P1
@@ -1710,7 +1722,9 @@ packages:
         confidence: high
         status: open
         owner: wcs_product_consumer_boundary
-        related_decisions: [SCI-AST-001-D003]
+        related_decisions:
+          - SCI-AST-001-D003
+          - SCI-AST-001-D008
         summary: >-
           WCS continuous values use float, frame identity is incomplete or
           nonstandard, epoch defaults without transform, and feedback admission
@@ -1719,14 +1733,18 @@ packages:
           Approve frame/epoch policy, retain precision and handedness, and pass
           FITS/feedback round-trip and precision fixtures.
         coordinator_closure_clarification:
-          decision_id: SCI-AST-001-D003
-          status: open_pending_remaining_decisions_implementation_and_reaudit
+          decision_ids:
+            - SCI-AST-001-D003
+            - SCI-AST-001-D008
+          status: open_pending_bounded_precision_metadata_evidence_and_reaudit
           summary: >-
             Preserve native AltAz for Point/OOF/Beammap and explicit equatorial
             J2000 TAN for Science. Publish FK5/EQUINOX=2000 only when headers
             establish it; preserve or explicitly transform ICRS; never default
-            a missing epoch. Numeric precision and complete product schema
-            remain for D008.
+            a missing epoch. Use double precision for product-level WCS and
+            fitted/catalog sky coordinates. Retain large full-TOD coordinate
+            representation only if its offline quantization bound is
+            astrometrically negligible; otherwise return for owner review.
       - id: SCI-AST-001-F011
         class: implementation_defect
         severity: P1
@@ -1734,12 +1752,21 @@ packages:
         confidence: high
         status: open
         owner: tod_product_schema
+        related_decisions: [SCI-AST-001-D008]
         summary: >-
           Generic TOD output falsely labels every telescope field radians,
           including time, state, and counter data.
         closure_gate: >-
           Use the approved per-variable ALIGN registry and pass unit, topology,
           frame, validity, schema, and reader round trips.
+        coordinator_closure_clarification:
+          decision_id: SCI-AST-001-D008
+          status: open_pending_field_registry_implementation_evidence_and_reaudit
+          summary: >-
+            Give every field its actual units and semantics; remove the generic
+            all-radians attribute. Full TOD carries its coordinate contract;
+            mini TOD does not gain coordinate arrays and declares them
+            unavailable.
       - id: SCI-AST-001-F012
         class: implementation_defect
         severity: P1
@@ -1755,14 +1782,19 @@ packages:
           Implement explicit validity and fail-closed propagation through every
           named consumer, then pass invalid-state tests and recipient re-audits.
         coordinator_closure_clarification:
-          decision_id: SCI-AST-001-D002
+          decision_ids:
+            - SCI-AST-001-D002
+            - SCI-AST-001-D008
           status: open_pending_implementation_evidence_and_reaudit
           summary: >-
             Keep projection invalidity, valid-but-outside-product support, and
             preexisting ineligibility distinct. Block invalid/unsupported
             coordinates before integer conversion; an otherwise eligible
             sample with invalid required TAN coordinates fails the required
-            coordinate-dependent product and reduction.
+            coordinate-dependent product and reduction. Persist dedicated AST
+            validity as a packed sample-grid status plus detector admission
+            where factorization is valid; do not create a routine detector-by-
+            sample matrix.
       - id: SCI-AST-001-F013
         class: implementation_defect
         severity: P0
@@ -1827,12 +1859,9 @@ packages:
         closure_gate: >-
           Pass every non-N/A local gate and a fresh exact-successor-SHA Unity
           campaign without required-data skips, then re-audit.
-    unresolved_scientific_decisions:
-      - id: SCI-AST-001-D008
-        owner: wcs_tod_product_owner
-        question: persisted precision, frame metadata, validity, unit registry, and mini/full products
+    unresolved_scientific_decisions: []
     owner_decision_brief:
-      status: pending_project_owner
+      status: resolved_by_project_owner_decision
       path: >-
         doc/audits/packages/SCI-AST-001_COORDINATOR_DECISION_BRIEF_2026-08-01.md
       record_commit: dbebd17627870963789d142fe385ab05268573da
@@ -1848,13 +1877,12 @@ packages:
         - SCI-AST-001-D007
         - SCI-AST-001-D008
     owner_decision:
-      status: in_progress
+      status: approved
       decision_date: 2026-08-01
       record_path: >-
         doc/audits/packages/SCI-AST-001_COORDINATOR_DECISION_2026-08-01.md
-      record_commit: 3280a2d87e7261fd8e5462b2aef7eab6dbc04b4a
       record_sha256: >-
-        aca64bd4beb9bf74337faf85fd58d4e621e76b0e866ca4f827cb1f0ae6ea8a27
+        c2e8f2c18f2d96a27afd6b6a083408b17562e596ee1e2851a00de3d9c7e5e9d9
       identity_amendment:
         decision_id: CAL-D002-IDENTITY-001
         path: >-
@@ -2005,11 +2033,38 @@ packages:
             centers, edges, and corners. Exact successor offline-bound,
             ordinary-source, compact real/simulation parity, fail-closed, and
             no-material-runtime-regression evidence remains required.
-      pending_decisions:
-        - SCI-AST-001-D008
+        - id: SCI-AST-001-D008
+          status: approved_compact_truthful_products_factorized_validity_and_bounded_precision
+          authority: project_owner
+          evidence_basis: owner_decision
+          affected_findings:
+            - SCI-AST-001-F009
+            - SCI-AST-001-F010
+            - SCI-AST-001-F011
+            - SCI-AST-001-F012
+          policy: >-
+            Use double precision for compact product-level WCS authorities and
+            fitted/catalog sky coordinates. Retain the existing large full-TOD
+            coordinate representation only if its offline quantization bound
+            is negligible against established astrometric performance; a
+            failure returns for owner review. Use exact per-field registry
+            metadata and dedicated factorized AST validity: packed aligned-
+            sample status, detector admission once per detector, and product
+            counts. Do not create detector-by-sample identity/validity arrays.
+            Full TOD carries its coordinate contract; mini TOD adds no
+            coordinate arrays and declares them unavailable. Persist compact
+            atomic four-stage state using ALIGN grid and AST detector identity.
+          compatibility_evidence: >-
+            Project-owner approval conditioned on no wholesale large-array
+            widening, no routine repeated sample IDs or detector-by-sample
+            validity matrix, no mini-TOD expansion, and no material runtime or
+            scientific-product change. Exact successor quantization, WCS,
+            registry, validity, full/mini, provenance, size, runtime, and
+            ordinary-map fixtures remain required.
+      pending_decisions: []
       effect: >-
-        Resolves D001-D007 for contract design without approving the governing
-        implementation, closing F001/F002/F003/F005/F006/F007/F008/F010/F012/F013/F014,
+        Resolves D001-D008 for contract design without approving the governing
+        implementation, closing F001/F002/F003/F005/F006/F007/F008/F009/F010/F011/F012/F013/F014,
         authorizing repair, or expanding production use. D001's identity
         amendment changes the F013 closure contract and also clarifies CAL
         F004; D002 supplies the F001/F012 domain and invalidity policy; D003
@@ -2020,7 +2075,10 @@ packages:
         to one map-center response and explicit unavailability, rejecting
         broader covariance computation; D007 preserves and bounds the
         small-angle hot path offline and limits simulation parity to supported
-        AltAz and RA/Dec while rejecting Galactic simulation.
+        AltAz and RA/Dec while rejecting Galactic simulation; D008 supplies
+        compact truthful precision, per-field metadata, factorized validity,
+        full/mini availability, and four-stage provenance without routine
+        large identity or validity matrices.
     local_evidence:
       - id: SCI-AST-001-LOCAL-001
         path: doc/audits/evidence/SCI-AST-001_LOCAL_EVIDENCE_2026-08-01.yaml

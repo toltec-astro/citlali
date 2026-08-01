@@ -1,6 +1,6 @@
 # SCI-AST-001 coordinator and scientific-owner decision — 2026-08-01
 
-Status: in progress; `SCI-AST-001-D001`--`D007` approved; `D008` pending
+Status: approved; `SCI-AST-001-D001`--`D008` resolved for contract design
 
 Package: `SCI-AST-001`
 
@@ -563,10 +563,114 @@ repair-SHA validation, and fresh re-audit. This decision does not authorize
 repair, Unity work, an exact-spherical production path, Galactic simulation,
 application integration, or production expansion.
 
-## Pending decisions
+## SCI-AST-001-D008 — Persisted precision, metadata, validity, and products
 
-- `SCI-AST-001-D008`: persisted precision, metadata, validity, and products.
+Decision: approved with high precision for compact coordinate authorities,
+measured adequacy for large timestream arrays, factorized validity, truthful
+full/mini availability, and atomic four-stage provenance.
 
-No repair, Unity request, re-audit, application integration, production
-expansion, or composition-framework action is authorized by this partial
-decision record.
+### Issue and owner proportionality judgment
+
+The assessed products do not share one coherent coordinate contract. Key WCS
+values are held as `float`; frame and epoch metadata can be incomplete; the
+generic TOD writer labels time, counters, and state fields as radians; explicit
+coordinate validity is absent; mini TOD omits detector coordinates without a
+complete availability declaration; and AST provenance records modes and
+counts rather than its resolved and realized scientific identity.
+
+These are principally precision-at-authority, schema, validity, and
+reproducibility defects. They do not justify doubling every large coordinate
+timestream, adding detector-by-sample identity arrays, expanding mini TOD, or
+changing map calculations.
+
+### Approved contract
+
+- Store and persist product-level WCS authorities and fitted/catalog sky
+  coordinates in double precision. This includes continuous reference values,
+  pixel scale and orientation/handedness terms needed for an exact WCS
+  round-trip.
+- Do not automatically convert full detector-coordinate timestream arrays to
+  double precision. Retain their existing representation if an offline
+  quantization bound shows negligible angular effect relative to established
+  Point/Beammap centroid, repeatability, and PSF-width tolerances. If that gate
+  fails, stop for owner review before changing the large-product type.
+- Apply the approved frame and epoch policy from `SCI-AST-001-D003`, including
+  truthful standard FITS metadata. Do not default, relabel, or transform an
+  ambiguous coordinate identity.
+- Give each persisted telescope and coordinate field its declared units,
+  topology, frame where applicable, validity role, and indexing semantics from
+  the admitted ALIGN/AST registry. Remove the generic all-radians attribute.
+- Represent coordinate validity with a dedicated compact AST status, distinct
+  from signal flags and coordinate values. Factor it whenever the admitted
+  operator permits: one packed status on the aligned telescope-sample grid,
+  one detector-admission state per detector, and product-level exclusion and
+  failure counts.
+- Do not create a routine detector-by-sample identity array or validity matrix.
+  If an enabled path produces nonfactorable detector-by-sample coordinate
+  invalidity, fail that coordinate product and return for a separately scoped
+  owner decision rather than silently losing state or creating a large product.
+- Full TOD retains its coordinate arrays together with the compact state needed
+  to interpret their validity and scientific identity. Mini TOD does not gain
+  coordinate arrays; it declares those fields unavailable and retains only the
+  compact product identity, availability, and summary counts appropriate to
+  its role.
+- Reuse the admitted ALIGN grid identity and AST detector binding. Do not
+  duplicate per-sample IDs where the ordered grid identity reconstructs the
+  association.
+- Persist requested, effective, observation-resolved, and realized AST state
+  atomically and one-way. Include support mode and sources, frame/WCS identity,
+  approximation envelope, detector binding, validity/uncertainty availability,
+  product links, counts, algorithm/contract versions, and artifact digests.
+- Preserve existing map values, source positions, ordinary data cardinality,
+  and runtime behavior. Metadata and validity state may describe a result more
+  truthfully but must not alter the coordinate operator or science weighting.
+
+### Mandatory compatibility and falsification gates
+
+- Round-trip double-precision WCS and catalog coordinates through the actual
+  FITS/table writers and readers, including CRPIX index conversion, scale sign,
+  handedness, frame, epoch, longitude wrap, and representative center/corner
+  positions.
+- Measure the current full-TOD coordinate quantization error offline over the
+  supported domain and compare it with preregistered existing astrometric
+  performance. A passing representation remains unchanged; a failing one
+  triggers owner review and is not silently widened.
+- Validate the field registry and generated attributes for time, coordinate,
+  pointing-offset, counter, state, and other representative telescope fields.
+  No field may inherit radians merely from the generic writer.
+- Exercise factorized sample validity, detector admission, projection-invalid,
+  valid-but-outside-product, and preexisting-ineligible states through all
+  consumers and the full-TOD round-trip. No coordinate value or signal flag may
+  substitute for AST validity.
+- Verify that mini TOD contains no new coordinate or validity arrays and
+  explicitly reports their unavailability. Full and mini readers must
+  distinguish omitted, unavailable, and present-valid fields.
+- Verify exact ordered-grid and detector-binding reconstruction without a
+  repeated per-sample identity array. Mismatch, reorder, duplicate, and stale
+  identity fail closed.
+- Test atomic provenance success and injected write failure. The four stages,
+  product links, cardinalities, versions, and digests must serialize exactly,
+  with no realized-to-requested backflow.
+- Confirm no material increase in ordinary mini-TOD size or production
+  coordinate-processing runtime, and no change in ordinary map pixels,
+  centroids, source locations, or PSF widths beyond preregistered compatibility
+  tolerances.
+
+### Effect
+
+`SCI-AST-001-D008` is resolved for contract design. It supplies the bounded
+closure policy for `SCI-AST-001-F009`, the remaining product-precision and
+metadata portion of `F010`, the per-variable schema for `F011`, and the
+persisted/factorized validity portion of `F012`. Those findings remain open
+pending implementation, adequacy and schema evidence, exact repair-SHA local
+and operational validation, and fresh re-audit. The full set D001--D008 is now
+owner-approved, but this decision does not itself authorize repair, select a
+repair base, request Unity evidence, launch re-audit, integrate application
+code, or expand production use.
+
+## Decision completion
+
+All `SCI-AST-001` scientific-owner decisions are resolved for contract design.
+The findings and governing implementation remain open. No repair, Unity
+request, re-audit, application integration, production expansion, or
+composition-framework action is authorized by this decision record.
