@@ -710,7 +710,8 @@ packages:
       sha256: >-
         71f76026cc95ae795f4e2a0cfabc7192d416ed3f8affc45367a0b4dae9807d9b
       record_commit: 0309fd48a973a6e7e136224906ac49c02f0171be
-      identity_correction_status: pending_commit
+      identity_correction_status: corrected
+      identity_correction_commit: 35cc8ce246e8e70c569e650be6c1eae2c91b80ef
       proposed_branch: codex/repair-sci-align-001
       launch_status: phase_zero_active
       task_thread_id: 019fbd95-feaa-7b52-a382-b7bd04effa8e
@@ -1211,24 +1212,26 @@ packages:
     audit_commit: null
     independent_derivation: {status: not_started, sha256: null}
     dispatch:
-      status: refreeze_required_after_identity_correction
-      coordinator_registry_commit: 65a0c50ad49f0602a4e20bb39e3f781843ab872d
-      dispatch_artifact_commit: 3ae69ba15c7f924874426f0a5d1c9a43589897f2
+      status: prepared_not_launched
+      coordinator_registry_commit: 35cc8ce246e8e70c569e650be6c1eae2c91b80ef
+      initial_dispatch_artifact_commit: 3ae69ba15c7f924874426f0a5d1c9a43589897f2
+      identity_correction_commit: 35cc8ce246e8e70c569e650be6c1eae2c91b80ef
+      refreeze_artifact_commit: pending_commit
       manifest_path: >-
         doc/audits/handoffs/SCI-AST-001/SCI-AST-001_INBOX_MANIFEST_2026-08-01.yaml
       manifest_sha256: >-
-        369fcbd398437b2fe0c60162577faf41d397c7b32afb45c3c3169ac8c71b8e1c
+        32f8ec335cfbececc4fb47cbd1f3197c189481f7c9b7e963c4ecbbf4974dca1f
       pre_core_authority_ids: []
       post_core_evidence_ids:
         - SCI-AST-001-XAUD-001
       prompt_path: doc/audits/prompts/SCI_AST_001_AUDIT_PROMPT.md
       prompt_sha256: >-
-        4fb88d5a512fcce2451fca8a41c21b3cdca6257d32d9e6101c52ff16892af5a0
+        7071db6ad57fd23a1b36bdec619ac72bc0d26d8427d91e7abdbf10afbc46713f
       launch_effort: ultra
       note: >-
-        Do not launch until the corrected registry snapshot, manifest, prompt,
-        and their digests are re-frozen. No dedicated audit task, branch, or
-        worktree has been launched.
+        Corrected registry snapshot, manifest, prompt, and digests are frozen
+        and ready for an explicitly authorized dedicated audit task. No AST
+        audit branch or worktree has been launched.
     contract_status: not_started
     implementation_status: not_assessed
     validation_status: not_started

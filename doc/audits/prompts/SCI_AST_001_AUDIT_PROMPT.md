@@ -15,11 +15,11 @@ re-audit, integration, production authorization, or Unity work.
 - Read-only coordination framework:
   `/private/tmp/citlali-scientific-audit-framework`.
 - Coordinator registry snapshot recorded by the frozen manifest:
-  `65a0c50ad49f0602a4e20bb39e3f781843ab872d`.
+  `35cc8ce246e8e70c569e650be6c1eae2c91b80ef`.
 - Frozen inbox manifest:
   `doc/audits/handoffs/SCI-AST-001/SCI-AST-001_INBOX_MANIFEST_2026-08-01.yaml`.
 - Frozen manifest SHA-256:
-  `369fcbd398437b2fe0c60162577faf41d397c7b32afb45c3c3169ac8c71b8e1c`.
+  `32f8ec335cfbececc4fb47cbd1f3197c189481f7c9b7e963c4ecbbf4974dca1f`.
 - Pre-core authority handoff IDs: none.
 - Post-core evidence handoff IDs: `SCI-AST-001-XAUD-001` only.
 
