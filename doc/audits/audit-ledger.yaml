@@ -632,7 +632,7 @@ packages:
     final_audit_artifact_sha256: >-
       6aaed0e6e16e4c37cd24d15b98346f84024ffd7920bd0524e7a170dbc728a393
     owner_decision:
-      status: partial
+      status: approved
       decision_date: 2026-08-01
       record_path: >-
         doc/audits/packages/SCI-ALIGN-001_COORDINATOR_DECISION_2026-08-01.md
@@ -651,12 +651,13 @@ packages:
           status: approved_continuity_only_zero_direct_science_weight_exposure
         - id: ALIGN-OD7-mapping-covariance-response
           status: approved_compact_generative_as_requested_detail_no_full_covariance
+        - id: ALIGN-OD8-hwpr-separation-and-interim-production
+          status: approved_hwpr_alignment_only_polarization_unavailable_existing_use_only
       approved_constraints:
         - id: ALIGN-C001-compact-exception-identity
           applies_to: [ALIGN-OD4, ALIGN-OD7]
           status: approved_with_as_requested_fallback_on_measured_burden
-      pending_decisions:
-        - ALIGN-OD8-hwpr-separation-and-interim-production
+      pending_decisions: []
     dispatch:
       status: frozen_for_dispatch
       coordinator_registry_commit: 99bfa3562ecfa05c0c10de24a255a6a18ff313d2
@@ -676,11 +677,30 @@ packages:
       freeze_commit: 5bcaa3700a5899bae0eaf4038039445668baa1fb
       freeze_timestamp_utc: 2026-08-01T02:48:26Z
       first_source_inspection_utc: 2026-08-01T02:49:18Z
-    contract_status: proposed
+    contract_status: approved
     implementation_status: nonconformant
     validation_status: in_progress
     production_status: existing_use_only
+    production_status_decision:
+      status: owner_decided
+      decision_id: ALIGN-OD8-hwpr-separation-and-interim-production
+      selected_option: existing_use_only
+      decision_date: 2026-08-01
+      note: >-
+        Preserve only exact previously accepted nonpolarimetric profiles.
+        Polarization, nonzero or unauthoritative HWPR offsets, new consumers
+        or profiles, and new exact timing, eligibility, exposure, covariance,
+        response, significance, or stable-scan claims fail closed pending
+        bounded repair, validation, exact-repair-SHA evidence, and re-audit.
     verdict: amend
+    contract_approval:
+      authority: project_owner
+      date: 2026-08-01
+      scope: ALIGN-OD1-through-ALIGN-OD8-and-ALIGN-C001
+      effect: >-
+        Approves the amended successor ALIGN contract needed to design a
+        bounded repair; does not approve the governing implementation,
+        complete validation, production expansion, or polarization science.
     implementation_assessment:
       governing_source: nonconformant
       fail_closed_claims:
@@ -729,14 +749,29 @@ packages:
       - {id: SCI-ALIGN-001-F012, class: evidence_gap,
          severity: P1, evidence_basis: observed, confidence: high,
          status: open, owner: validation_owner}
-      - {id: SCI-ALIGN-001-F013, class: scientific_policy_decision,
-         severity: P1, evidence_basis: derived, confidence: high,
-         status: open, owner: project_timing_science_owners}
       - {id: SCI-ALIGN-001-F014, class: dependency_gap,
          severity: P1, evidence_basis: derived, confidence: high,
          status: open, owner: coordinator_and_target_packages}
-    unresolved_scientific_decisions:
-      - ALIGN-OD8-hwpr-separation-and-interim-production
+    addressed_findings:
+      - id: SCI-ALIGN-001-F013
+        class: scientific_policy_decision
+        severity: P1
+        evidence_basis: owner_decision
+        confidence: high
+        status: addressed_pending_reaudit
+        owner: project_timing_science_owners
+        decision_date: 2026-08-01
+        decision_record: >-
+          doc/audits/packages/SCI-ALIGN-001_COORDINATOR_DECISION_2026-08-01.md
+        summary: >-
+          ALIGN-OD1 through ALIGN-OD8 and cross-cutting ALIGN-C001 are
+          explicitly owner-approved with compatibility, compactness,
+          eligibility, HWPR-separation, and interim-production conditions.
+        closure_gate: >-
+          Implement the approved contract on a separate repair branch, pass
+          the required local and exact-repair-SHA evidence gates, and complete
+          a fresh re-audit.
+    unresolved_scientific_decisions: []
     local_evidence:
       - independent_core_offline_compile_and_13_page_visual_inspection
       - post_freeze_A1_A19_source_trace_at_governing_sha

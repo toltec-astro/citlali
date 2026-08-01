@@ -1,6 +1,6 @@
 # SCI-ALIGN-001 coordinator and scientific-owner decision — 2026-08-01
 
-Status: partial; `ALIGN-OD1`--`ALIGN-OD7` approved; `OD8` pending
+Status: complete; `ALIGN-OD1`--`ALIGN-OD8` and `ALIGN-C001` approved
 
 Package: `SCI-ALIGN-001`
 
@@ -335,9 +335,56 @@ The repair design must use the smallest representation that satisfies the
 approved contract and must not introduce a dramatic departure from established
 Citlali timing merely to persist audit detail.
 
-## Pending decisions
+## ALIGN-OD8 — HWPR separation and interim production
 
-- `ALIGN-OD8`: HWPR separation and interim production.
+Decision: approved with HWPR timing identity retained in ALIGN, polarization
+science kept outside ALIGN, and interim production retained as
+`existing_use_only` for exact previously accepted nonpolarimetric profiles.
 
-No repair, Unity request, re-audit, or production change is authorized by this
-partial record.
+- ALIGN owns optional HWPR presence and availability; timestamp identity,
+  epoch, ordering, cadence, support, and typed offset application; circular
+  angle/state alignment under the approved `ALIGN-OD3` registry; validity; and
+  compact mapping identity.
+- Initialize HWPR execution state explicitly for every observation. Apply an
+  authoritative HWPR offset exactly once under `ALIGN-OD2`; reject a requested
+  offset that cannot be applied and verified.
+- Keep optional HWPR support separate from detector acquisition support. An
+  absent, disabled, invalid, or unavailable HWPR stream is explicit and
+  nonfatal for intensity-only Science, Beammap, and Pointing processing; it may
+  not trim detector support or invalidate otherwise eligible intensity
+  samples.
+- When a mode explicitly requires HWPR data, missing, invalid, ambiguously
+  timed, out-of-support, or unsupported state fails closed. Aligned HWPR data
+  may be retained as diagnostic timing/angle output without authorizing a
+  polarization estimator.
+- Polarization demodulation, detector/instrument angle interpretation,
+  polarization efficiency and calibration, and scientific Stokes `Q/U`
+  products remain unavailable pending a separately approved polarimetry
+  contract and validation. A path that does not use the HWPR is not thereby
+  authorized as polarization science.
+
+The interim production status remains `existing_use_only` for the exact
+previously accepted nonpolarimetric profiles. Existing Pointing and Beammap
+evidence supports continuing those bounded operational uses but does not make
+the assessed implementation conformant or authorize a new timing claim.
+Pending repair and fresh re-audit, fail closed for new polarimetric production,
+scientific `Q/U`, nonzero or unauthoritative HWPR offsets, validated HWPR
+timing/angle response claims, new consumers or profiles requiring the approved
+successor interface, and new exact timing, synthesized-exposure, covariance,
+response, significance, or stable-complete-scan claims.
+
+## Decision completion and next coordination step
+
+The owner decisions approve the amended successor ALIGN contract needed to
+prepare a bounded repair. They do not approve the governing implementation,
+close deterministic implementation findings, select a repair-base SHA, create
+a repair branch, request Unity evidence, launch a re-audit, or expand
+production.
+
+The next permissible step is coordinator preparation of a bounded ALIGN
+repair/re-audit handoff and selection of its exact application base. Repair
+must occur in a fresh worktree, never on the audit or coordination branch.
+Until repair, local gates, exact-repair-SHA human-supplied evidence, and fresh
+re-audit succeed, implementation remains `nonconformant`, validation remains
+`in_progress`, production remains `existing_use_only`, verdict remains
+`amend`, and re-audit remains `required`.
