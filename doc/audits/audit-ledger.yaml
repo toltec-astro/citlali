@@ -657,6 +657,13 @@ packages:
       doc/audits/packages/SCI-CAL-001_SCIENTIFIC_CONTRACT_AUDIT.tex
     final_audit_artifact_sha256: >-
       957ed71d1432ad67fe582d6137fbe72c52e82a31f3199331a94ab7b39490d376
+    owner_decision:
+      status: approved
+      decision_date: 2026-07-31
+      record_path: >-
+        doc/audits/packages/SCI-CAL-001_COORDINATOR_DECISION_2026-07-31.md
+      record_commit: e8bd929008140e2ea8b44bfdc80b0a531b488765
+      decision_ids: [CAL-D001, CAL-D002, CAL-D003, CAL-D004, CAL-D005]
     dispatch:
       status: frozen_for_dispatch
       coordinator_registry_commit: 88741d085a08431790c6eee719b6f20052b459d8
@@ -676,19 +683,22 @@ packages:
       freeze_commit: 1565836282d936b974aeb5b5a7d4554ce55b10bd
       freeze_timestamp_utc: 2026-08-01T00:18:38Z
       first_source_inspection_utc: 2026-08-01T00:18:59Z
-    contract_status: proposed
+    contract_status: approved
     implementation_status: nonconformant
     validation_status: in_progress
-    production_status: existing_use_only
+    production_status: fail_closed
     audit_proposed_production_status: restricted_use
     production_status_decision:
-      status: pending_owner_decision
+      status: owner_decided
       decision_id: CAL-D005
+      selected_option: fail_closed
+      decision_date: 2026-07-31
+      record_commit: e8bd929008140e2ea8b44bfdc80b0a531b488765
       note: >-
-        The audit proposes extinction-disabled mJy/beam relative or diagnostic
-        use only after exact raw-column/APT UID identity is independently
-        proven. The canonical production status is not changed until the
-        project owner accepts, narrows, or replaces that proposal.
+        No new CAL-dependent scientific processing is authorized from the
+        assessed implementation. Historical products remain historical and
+        regression evidence only pending repair, validation, and fresh
+        re-audit.
     verdict: amend
     implementation_assessment:
       governing_source: nonconformant
@@ -753,16 +763,6 @@ packages:
         summary: >-
           Detector, common gain, extinction, beam, bandpass, and template
           systematic covariance is absent.
-      - id: SCI-CAL-001-F006
-        class: scientific_policy_decision
-        severity: P1
-        evidence_basis: observed
-        confidence: high
-        status: open
-        owner: calibration_photometry_owner
-        summary: >-
-          Output-unit, beam/template, pivot, bandpass/color, and
-          point/extended/integrated meanings require owner approval.
       - id: SCI-CAL-001-F007
         class: contract_gap
         severity: P1
@@ -803,12 +803,26 @@ packages:
         summary: >-
           Per-sample identity, elevation, gap/interpolation, and eligibility
           conclusions remain conditioned on open ALIGN.
-    unresolved_scientific_decisions:
-      - CAL-D001
-      - CAL-D002
-      - CAL-D003
-      - CAL-D004
-      - CAL-D005
+    addressed_findings:
+      - id: SCI-CAL-001-F006
+        class: scientific_policy_decision
+        severity: P1
+        evidence_basis: owner_decision
+        confidence: high
+        status: addressed_pending_reaudit
+        owner: calibration_photometry_owner
+        decision_date: 2026-07-31
+        decision_commit: e8bd929008140e2ea8b44bfdc80b0a531b488765
+        summary: >-
+          The top-of-atmosphere pivot, initial mJy/beam point-source meaning,
+          calibration-beam versus product-response separation, deferred unit
+          matrix, factor semantics, uncertainty representation, and APT
+          authority/identity chain are owner-approved.
+        closure_gate: >-
+          Implement the approved contract on a separate repair branch, pass
+          exact factor, identity, response, unit, covariance, provenance, and
+          fail-closed fixtures, and complete a fresh exact-repair-SHA re-audit.
+    unresolved_scientific_decisions: []
     local_evidence:
       - id: SCI-CAL-001-CORE-001
         status: accepted_for_independence

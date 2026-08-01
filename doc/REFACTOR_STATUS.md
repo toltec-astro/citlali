@@ -78,13 +78,22 @@ and the open `SCI-ALIGN-001` dependency. Seven post-core handoffs are
 integrated for RTC, PTC, VAL, MAP, FLT, MODE, and BEAM; the late MAP and FLT
 arrivals are held for their fresh re-audits.
 
-The audit proposes `restricted_use`, but that operational change is not yet
-authorized. The canonical state remains `existing_use_only` pending
-`CAL-D005`; the proposed narrow allowlist and broader fail-closed matrix are
-recorded in the ledger. Scientific decisions `CAL-D001`--`CAL-D004` and the
-operational decision `CAL-D005` are summarized in the
-[coordinator decision brief](audits/packages/SCI-CAL-001_COORDINATOR_DECISION_BRIEF_2026-07-31.md).
-No repair branch, Unity evidence request, or re-audit has been started.
+The project owner approved `CAL-D001`--`CAL-D004` and selected `CAL-D005`
+option 2 in the immutable
+[coordinator and scientific-owner decision](audits/packages/SCI-CAL-001_COORDINATOR_DECISION_2026-07-31.md)
+at commit `e8bd929008140e2ea8b44bfdc80b0a531b488765`. The approved contract uses
+top-of-atmosphere Beammap `flxscale`, zenith WVR opacity with full sample
+airmass, explicit Beammap `sens` semantics, the complete Citlali/
+`toltec_beammap`/TolAPT/TolProj APT authority and identity chain, initial
+point-source `mJy/beam` only, and separate conditional weight plus named
+calibration nuisance covariance.
+
+The assessed implementation is now canonically `fail_closed`; the audit's
+earlier narrow `restricted_use` proposal is retained only as audit history.
+Historical products remain historical/regression evidence and are not newly
+authorized calibrated science. The next coordination step is a bounded
+repair/re-audit handoff and exact repair-base decision. No repair branch,
+Unity evidence request, or re-audit has been started.
 
 ## 2026-07-26 Conan 2 Build Review
 

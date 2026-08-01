@@ -156,9 +156,9 @@ proof can be made explicit and retained for each affected observation;
 otherwise choose option 2. Do not treat historical accepted reductions as
 proof of absolute calibration.
 
-Current canonical state: `existing_use_only`. The audit's narrower
-`restricted_use` state is recorded as proposed, not authorized, until this
-decision is made.
+Pre-decision canonical state: `existing_use_only`. The audit proposed
+`restricted_use`; the owner instead selected option 2. The current canonical
+state is `fail_closed` under the authoritative decision record above.
 
 ## What follows after the decisions
 
