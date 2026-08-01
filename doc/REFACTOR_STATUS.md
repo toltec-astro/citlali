@@ -221,7 +221,8 @@ The cumulative record was first introduced for D001 at commit
 `0a17d088aded7fc6c18a59522f5b2b2fce9749ad`; its D002 revision is bound at
 commit `374fd2c2ffda74a651cf7a13d0e7f38758f17789`, and its D003 revision at
 `c7cabc2827d8daab7b5893dd309fda6192df2de2`. The D004 revision is bound at
-`4ab0d68277fa9dc644df3f679670e2c3b82e82e2`. D001 preserves the
+`4ab0d68277fa9dc644df3f679670e2c3b82e82e2`, and the D005 revision at
+`bb08c021f81681237e3df3e2dbec480bbf83b58b`. D001 preserves the
 demonstrated signs, basis, rotation, handedness, and composition
 that place point sources correctly across approximately one-square-degree maps,
 including at corners; document every stage, use explicit boundary adapters,

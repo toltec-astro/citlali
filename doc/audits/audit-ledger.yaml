@@ -1818,6 +1818,7 @@ packages:
       decision_date: 2026-08-01
       record_path: >-
         doc/audits/packages/SCI-AST-001_COORDINATOR_DECISION_2026-08-01.md
+      record_commit: bb08c021f81681237e3df3e2dbec480bbf83b58b
       record_sha256: >-
         b9c5d744fa4a5745f64178eb765d682d91787968728f2fb9a567d46aae66c642
       identity_amendment:
