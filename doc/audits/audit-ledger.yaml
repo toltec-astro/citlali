@@ -588,10 +588,39 @@ packages:
     inputs: [raw detector and telescope samples, timestamps, interface offsets]
     outputs: [aligned samples, scan windows, timing-gap values and masks]
     upstream_dependencies: []
+    external_input_contract:
+      status: open_for_audit
+      required_fact: >-
+        Each raw detector, telescope, and optional HWPR stream presented to
+        ALIGN has a declared observation/interface identity, native ordered
+        sample axis, timestamp or clock origin, cadence, acquisition bounds,
+        and missing/non-finite state; every requested interface offset has a
+        declared sign, unit, reference interface, and application stage.
+      consequence: >-
+        ALIGN may derive its ideal common-axis, scan-window, and interpolation
+        contract against explicit abstract native streams, but implementation
+        conformity and downstream timing claims remain conditional until the
+        exact governing source proves the input/header meanings and rejects or
+        marks unresolved identity, clock, cadence, offset, and support state.
+    downstream_contract_authorities:
+      - package_id: SCI-CAL-001
+        status: approved
+        authority_commit: e8bd929008140e2ea8b44bfdc80b0a531b488765
+        required_contract: >-
+          CAL receives an ordered detector and telescope sample identity,
+          common time axis, timestamps, aligned elevation, applicable sample
+          duration, timing-gap/interpolation state, and exact eligibility of
+          original versus synthesized samples.
+        pre_core_use: >-
+          This approved consumer requirement may constrain the independent
+          ALIGN output contract but does not establish how ALIGN implements
+          alignment, slicing, interpolation, covariance, or validity.
     downstream_consumers: [SCI-CAL-001, SCI-AST-001, SCI-RTC-001, SCI-VAL-001]
+    incoming_handoffs: []
+    outgoing_handoffs: []
     governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
-    governing_sha_role: inventory_snapshot
-    audit_branch: null
+    governing_sha_role: audit_dispatch_snapshot
+    audit_branch: codex/audit-sci-align-001
     audit_commit: null
     independent_derivation: {status: not_started, sha256: null}
     contract_status: not_started
