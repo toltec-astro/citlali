@@ -721,7 +721,7 @@ packages:
           status: owner_resolved_by_restricted_legacy_compatibility
           record_path: >-
             doc/audits/packages/SCI-ALIGN-001_PHASE_ZERO_D001_DECISION_2026-08-01.md
-          record_commit: null
+          record_commit: 86434df2cfb5b85d0ccd306150cb428321abdbb9
           record_sha256: >-
             0efe9d06bf02ceca473c92b00dce4c6d1ec9b6e564f226c9451f444ee5a6d66c
           affected_findings:
