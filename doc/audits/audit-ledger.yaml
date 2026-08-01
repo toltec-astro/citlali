@@ -711,7 +711,7 @@ packages:
         tolerances remain unresolved; phase 1, application repair, Unity
         evidence, and re-audit are not authorized.
     phase_zero_owner_decisions:
-      status: partially_resolved_D001_approved_D002_D005_pending
+      status: partially_resolved_D001_D002_approved_D003_D005_pending
       phase_one_authorization: none
       resolved:
         - id: ALIGN-P0-D001
@@ -748,8 +748,105 @@ packages:
             Resolves D001 for bounded repair design only. F007 and F012 remain
             open; implementation, phase one, Unity evidence, re-audit, and
             production expansion are not approved.
+        - id: ALIGN-P0-D002
+          questions: [Q02, Q03, Q04]
+          authority: project_owner
+          decision_date: 2026-08-01
+          status: >-
+            owner_resolved_by_sample_rate_family_compatibility_lattice_and_union_support
+          record_path: >-
+            doc/audits/packages/SCI-ALIGN-001_PHASE_ZERO_D002_DECISION_2026-08-01.md
+          record_commit: null
+          record_sha256: >-
+            7e4e2c02bf2e16035d6a2aceacaa4e07c7c528e08f09fdb2d0a9186d510465cd
+          constrained_by:
+            - ALIGN-P0-D001
+            - ALIGN-OD1
+            - ALIGN-OD2
+            - ALIGN-C001
+          affected_findings:
+            - SCI-ALIGN-001-F002
+            - SCI-ALIGN-001-F007
+            - SCI-ALIGN-001-F009
+            - SCI-ALIGN-001-F012
+          policy_scope: owner_approved_detector_rate_family
+          production_scope: intersection_with_D001_admitted_existing_profiles
+          sample_rate_family:
+            base_rate_hz: 122.0703125
+            allowed:
+              - multiplier: 0.5
+                rate_hz: 61.03515625
+                cadence_sec: 0.016384
+                exclusive_half_cell_sec: 0.008192
+              - multiplier: 1
+                implicit: true
+                rate_hz: 122.0703125
+                cadence_sec: 0.008192
+                exclusive_half_cell_sec: 0.004096
+              - multiplier: 2
+                rate_hz: 244.140625
+                cadence_sec: 0.004096
+                exclusive_half_cell_sec: 0.002048
+              - multiplier: 4
+                rate_hz: 488.28125
+                cadence_sec: 0.002048
+                exclusive_half_cell_sec: 0.001024
+          profile_selection:
+            policy_authority: project_owner
+            observation_fields:
+              - Header.Toltec.SampleFreq
+              - Header.Toltec.FpgaFreq
+              - Header.Toltec.AccumLen
+            rule: >-
+              All admitted detector interfaces select one allowed family
+              member and SampleFreq equals FpgaFreq divided by AccumLen.
+            implicit_1x: >-
+              Absence of a separate multiplier is allowed only when the
+              required headers select the base profile; headers never default.
+            admission_guard: >-
+              Family membership does not admit a new D001 timing/header or
+              production profile.
+          phase_rule: >-
+            latest_first_valid_D001_admitted_detector_timestamp_after_admitted_offsets
+          phase_semantics: >-
+            compatibility_lattice_not_physical_event_or_support_start
+          slot_operator: round_half_up_floor_q_plus_half
+          slot_acceptance:
+            predicate: strict_abs_residual_less_than_selected_half_cadence
+            inclusive: false
+            exact_half_tie: fail_closed
+            data_tuned_0_004063_sec: rejected_for_1x_and_not_scaled
+          support_rule: union_of_valid_mapped_detector_interface_support
+          per_interface_absence: >-
+            typed_unavailable_no_clamp_extrapolation_or_synthesis
+          persistence: >-
+            compact_implicit_ordinary_mapping_with_exception_intervals
+          measured_phase_zero_coverage:
+            multiplier: 1
+            other_family_members: owner_approved_validation_pending
+          later_beammap_study:
+            id: ALIGN-D002-BEAMMAP-VALIDATION-001
+            route: ALIGN-P0-D005
+            design: preregistered_rate_stratified_multi_beammap_cohort
+            required_strata: [0.5x, 1x, 2x, 4x]
+            purpose: >-
+              Test native-row/slot identity, normalized and absolute residual
+              margin, source-crossing, centroid, and per-array PSF
+              non-degradation separately at each supported native rate.
+            guard: >-
+              Freeze native raw identities, header-selected rate, metrics, and
+              limits before successor inspection; no post-hoc D002 retuning.
+            missing_stratum: >-
+              Use an owner-approved native-rate alternate fixture or keep that
+              profile evidence-pending; resampled 1x is not native-rate evidence.
+            failure_action: stop_for_separate_versioned_owner_amendment
+          effect: >-
+            Resolves D002 for bounded repair design only. The measured no-move
+            result covers 1x; other approved rate-family members remain
+            mandatory validation strata. Findings remain open; D003 through
+            D005, phase one, application repair, Unity evidence, re-audit, and
+            production expansion remain unapproved.
       pending:
-        - ALIGN-P0-D002
         - ALIGN-P0-D003
         - ALIGN-P0-D004
         - ALIGN-P0-D005
@@ -820,8 +917,10 @@ packages:
         doc/audits/packages/SCI-ALIGN-001_PHASE_ZERO_COORDINATOR_REVIEW_2026-08-01.md
       phase_zero_review_commit: dbebd17627870963789d142fe385ab05268573da
       next_gate: >-
-        Resolve ALIGN-P0-D002 through ALIGN-P0-D005 and record the reviewed
-        active-field registry before phase-one fixtures or any application edit.
+        Resolve ALIGN-P0-D003 through ALIGN-P0-D005, including the
+        preregistered rate-stratified multi-Beammap D005 protocol, and record
+        the reviewed active-field registry before phase-one fixtures or any
+        application edit.
     repair_base_decision:
       authority: project_owner
       date: 2026-08-01
@@ -909,19 +1008,34 @@ packages:
           the required local and exact-repair-SHA evidence gates, and complete
           a fresh re-audit.
     unresolved_scientific_decisions:
-      - id: ALIGN-P0-D002
-        questions: [Q02, Q03, Q04]
-        issue: lattice_phase_slot_tolerance_and_union_support
       - id: ALIGN-P0-D003
         questions: [Q05, Q17]
         issue: offset_lifecycle_and_malformed_boundary_policy
-        constrained_by: [ALIGN-P0-D001]
+        constrained_by: [ALIGN-P0-D001, ALIGN-P0-D002]
       - id: ALIGN-P0-D004
         questions: [Q06, Q07, Q08, Q09, Q10, Q11, Q12, Q14]
         issue: HWPR_telescope_registry_aliases_topology_units_and_output_contract
       - id: ALIGN-P0-D005
         questions: [Q13, Q15]
         issue: compatibility_fixtures_and_preregistered_tolerances
+        constrained_by: [ALIGN-P0-D002]
+        validation_directive:
+          source: project_owner
+          date: 2026-08-01
+          study: ALIGN-D002-BEAMMAP-VALIDATION-001
+          design: preregistered_rate_stratified_multi_beammap_cohort
+          required_strata: [0.5x, 1x, 2x, 4x]
+          purpose: >-
+            Preregister and later test D002 native-row/slot identity,
+            normalized and absolute residual margin, source-crossing,
+            centroid, and per-array PSF non-degradation at each native rate.
+          restriction: >-
+            Freeze native inputs, cohort, metrics, and limits before successor
+            inspection; no post-hoc retuning of the approved D002 policy.
+          missing_stratum: >-
+            An owner-approved native-rate alternate fixture is required or the
+            profile remains evidence-pending; resampled 1x is not native-rate
+            evidence.
     local_evidence:
       - independent_core_offline_compile_and_13_page_visual_inspection
       - post_freeze_A1_A19_source_trace_at_governing_sha
@@ -2145,11 +2259,12 @@ packages:
       preparation_date: 2026-08-01
       dependency_hold:
         package_id: SCI-ALIGN-001
-        phase_zero_status: partial_owner_resolution_D001_approved_D002_D005_pending
+        phase_zero_status: >-
+          partial_owner_resolution_D001_D002_approved_D003_D005_pending
         phase_zero_evidence_commit: 53c7154a3633dfe19dc036cfb5a6250f729a897d
         required_completion: exact_accepted_and_reaudited_ALIGN_successor
       next_gate: >-
-        Resolve ALIGN-P0-D002 through D005, complete and locally validate ALIGN
+        Resolve ALIGN-P0-D003 through D005, complete and locally validate ALIGN
         phase one, return the human-run exact-SHA evidence, accept a fresh ALIGN
         re-audit, and only then select and record the exact AST application base.
     repair_base_decision:
