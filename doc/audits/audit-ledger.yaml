@@ -1198,6 +1198,7 @@ packages:
     dispatch:
       status: prepared_not_launched
       coordinator_registry_commit: 65a0c50ad49f0602a4e20bb39e3f781843ab872d
+      dispatch_artifact_commit: 3ae69ba15c7f924874426f0a5d1c9a43589897f2
       manifest_path: >-
         doc/audits/handoffs/SCI-AST-001/SCI-AST-001_INBOX_MANIFEST_2026-08-01.yaml
       manifest_sha256: >-
