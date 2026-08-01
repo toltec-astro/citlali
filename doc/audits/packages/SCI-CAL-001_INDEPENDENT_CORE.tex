@@ -1,0 +1,662 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.85in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,booktabs,longtable,array,enumitem,hyperref,microtype}
+\DeclareFontFamily{OMS}{lmsy}{\skewchar\font48 }
+\DeclareFontShape{OMS}{lmsy}{m}{n}{%
+  <-6.5> lmsy7 <6.5-7.5> lmsy7 <7.5-8.5> lmsy8
+  <8.5-9.5> s*[0.9]lmsy10 <9.5-> lmsy10}{}
+\DeclareFontShape{OMS}{lmsy}{b}{n}{<->ssub*lmsy/m/n}{}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\setlength{\emergencystretch}{3em}
+\setlength{\tabcolsep}{3.5pt}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\code}[1]{\nolinkurl{#1}}
+
+\title{SCI-CAL-001 Independent Scientific Core\\
+\large Detector calibration, extinction, and map-unit transfer}
+\author{Independent package auditor}
+\date{2026-07-31}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This pre-source core defines the calibration transformation independently of
+the Citlali implementation.  It requires one explicit, provenance-bearing
+factorization from detector-domain samples to a declared photometric reference,
+an extinction reference, and a target unit.  It treats sample noise,
+detector-relative uncertainty, array/common calibration uncertainty,
+extinction uncertainty, and beam/template response uncertainty as distinct
+objects.  No implementation, test, writer, configuration, provenance, or
+consumer source specific to SCI-CAL-001 was inspected in deriving these bytes.
+All conclusions involving sample timestamps, aligned elevation, or synthesized
+samples are conditioned on the approved abstract SCI-ALIGN-001 input.
+\end{abstract}
+
+\section{Authority, independence, and bounded scope}
+
+\subsection{Pre-freeze authority and exposure record}
+
+This core was derived for governing source SHA
+\code{9aae0e669384c5c0c0dda93debc194d6b8dac787}.  Before these bytes were
+frozen, the auditor read only the authenticated dispatch prompt and empty inbox
+manifest, the audit process and generic templates in the read-only coordination
+worktree, repository \code{AGENTS.md}, project-level
+\code{doc/ARCHITECTURE.md} and \code{doc/SCIENTIFIC_CONVENTIONS.md}, and the
+TolTEC context routing maps and their stable scientific-convention/software-
+boundary summaries.  No inbound handoff existed.  No CAL-specific source,
+test, generated reference, history, blame, diff, writer, metadata,
+configuration, provenance, or consumer implementation was opened.  Filename
+knowledge of the five explicitly quarantined paths came only from the dispatch
+prompt.  There was no other known prior implementation exposure during this
+task.
+
+The sole approved upstream abstraction is:
+
+\begin{quote}
+Calibration receives an ordered detector and telescope sample identity,
+common time axis, timestamps, aligned elevation, applicable sample duration,
+timing-gap/interpolation state, and exact eligibility of original versus
+synthesized samples.
+\end{quote}
+
+This core neither inspects nor chooses how SCI-ALIGN-001 constructs those
+quantities.  Every per-sample factor and eligibility conclusion below is
+conditional on that abstraction being correct.
+
+\subsection{Included transformation and exclusions}
+
+The included transformation begins with a declared detector sample at the CAL
+boundary and ends with calibrated detector TOD plus corresponding response and
+uncertainty identities.  It includes detector/APT coefficient identity,
+normalization, selection and lifetime; atmospheric extinction; target-unit
+transfer; beam/template conventions needed by per-beam units; statistical and
+systematic covariance; requested/effective/observation-resolved/realized
+state; validity, provenance, failure policy, and consumer restrictions.
+
+The construction of sample alignment and interpolation is owned by
+SCI-ALIGN-001.  Pointing/WCS construction is owned by SCI-AST-001.  RTC/PTC
+filtering, mapmaking/coaddition, noise estimation, map filtering, source
+fitting, Pointing/OOF inference, Beammap inference, and fruit-loop feedback are
+excluded.  This core specifies only the calibration operator those packages
+may consume or must propagate.  It does not confer a scientific contract on
+enabled polarimetry or a measured R/quadrature stream.
+
+\section{Identities, shapes, units, and classifications}
+
+Let \(o\) identify an observation by external observation identity, \(i\)
+identify a detector by stable APT UID, and \(t\) identify a zero-based position
+on the ordered common sample axis for that observation.  The primary TOD has
+shape \(T_o\times D_o\), samples by detectors.  Array ID, network ID, detector
+UID, detector row, and map index are distinct identities.  A calibration-table
+row is joined to a detector by UID, not by row position; array and network
+identities are checked as join constraints.  Exactly one eligible calibration
+record is required for every selected detector.
+
+\begin{longtable}{L{0.12\linewidth}L{0.22\linewidth}L{0.16\linewidth}L{0.17\linewidth}L{0.25\linewidth}}
+\toprule
+Quantity & Identity and shape & Units/frame & Classification & Contract and conditioning\\
+\midrule
+\endfirsthead
+\toprule
+Quantity & Identity and shape & Units/frame & Classification & Contract and conditioning\\
+\midrule
+\endhead
+\(x_{oti}\) & CAL-boundary detector sample, \(T_o\times D_o\) & declared \(U_{x,oi}\) & random & Finite on eligible support; its decoding and any preceding non-CAL operation must be named.\\
+\(b_{oti}\) & explicitly declared reference/baseline, scalar, detector, or sample resolved & \(U_{x,oi}\) & fixed, fitted, or data-derived & Zero unless an upstream contract explicitly supplies it; CAL may not silently absorb RTC baseline estimation.\\
+\(g_{oi}\) & absolute detector responsivity at a declared atmospheric reference & \(U_{\rm ref,oa}/U_{x,oi}\) & selected or fitted, then conditioned upon & Joined by UID; finite and nonzero; sign and reciprocal convention explicit.\\
+\(f_{oi}\) & relative flat-field component when factorized from \(g\) & dimensionless & fitted or selected & Its normalization population, weights, rejected detectors, and reference epoch are explicit.\\
+\(G_{oa}\) & array/common absolute scale when \(g_{oi}=G_{oa}f_{oi}\) & \(U_{\rm ref,oa}/U_{x,oi}\) & selected, fitted, or conditioned upon & Carries common uncertainty and calibrator/model provenance.\\
+\(\tau_{oat}\) & zenith opacity for observation, array, and validity interval & dimensionless & measured, fitted, data-derived, or selected & Nonnegative, finite, timestamped, and never inferred from a bare sentinel.\\
+\(e_{ot}\) & aligned telescope elevation on the common sample axis & rad, AltAz & conditioned upon & Supplied by SCI-ALIGN-001; finite in the model's declared validity range.\\
+\(X(e_{ot})\) & airmass under one named atmospheric model & dimensionless & data-derived & Computed at aligned timestamps; low-elevation guard and maximum valid airmass are explicit.\\
+\(X^{\rm ref}_{oi}\) & airmass already represented by \(g_{oi}\) & dimensionless & selected/fixed & Zero for a top-of-atmosphere gain; one for a zenith reference; another value only with provenance.\\
+\(q_{oat}\) & transfer from \(U_{\rm ref}\) to requested target unit & \(U_{\rm tar}/U_{\rm ref}\) & fixed, selected, or data-derived & Requires target-unit token plus beam, pixel, bandpass, color, and template identities as applicable.\\
+\(m_{oti}\) & eligibility of original/synthesized sample and detector & Boolean, dimensionless & selected or conditioned upon & Flags validity; it is not a statistical weight, coverage, confidence, or response.\\
+\(k_{oti,r}\) & declared raw-domain response companion for response parameter \(\alpha_r\) & \(U_x/U_{\alpha_r}\) & fixed or data-derived & Synthetic/Jacobian identity required; measured R data are not such a kernel.\\
+\(y_{oti}\) & calibrated TOD & declared \(U_{\rm tar}\) & random & Finite where \(m=1\); invalidity is carried explicitly rather than encoded as a scientific zero.\\
+\bottomrule
+\end{longtable}
+
+The sample time coordinate, duration, interpolation state, and original versus
+synthesized identity are not calibration parameters.  They are conditioned
+inputs from SCI-ALIGN-001.  Calibration applies a factor at the timestamp of
+each eligible sample; it must not substitute a neighboring elevation or tau
+without a separately approved interpolation rule.
+
+\section{Independent estimator}
+
+\subsection{Coefficient identity and normalization}
+
+The effective detector coefficient may be represented directly by \(g_{oi}\)
+or factorized as
+\begin{equation}
+  g_{oi}=G_{oa(i)} f_{oi}.
+  \label{eq:gain-factorization}
+\end{equation}
+When a relative-flat normalization is used, its reference population
+\(\mathcal R_{oa}\), weights \(r_{oi}>0\), and convention must be recorded.  A
+permissible convention is
+\begin{equation}
+  \frac{\sum_{i\in\mathcal R_{oa}} r_{oi} f_{oi}}
+       {\sum_{i\in\mathcal R_{oa}} r_{oi}}=1.
+  \label{eq:flat-normalization}
+\end{equation}
+Changing the population or weights changes \(G\) and \(f\), even if their
+product is nominally similar; it is observation-resolved state, not a harmless
+container reorder.  If no factorization is used, Equation~\eqref{eq:flat-normalization}
+is not applicable because the complete, unit-bearing \(g_{oi}\) is the atomic
+calibration coefficient; the implementation must say so rather than imply an
+unknown normalization.
+
+The coefficient sign is not assumed positive: some detector response
+conventions can be signed.  It must be finite and nonzero, and the metadata
+must state whether the stored quantity is gain \(U_{\rm ref}/U_x\) or
+responsivity \(U_x/U_{\rm ref}\).  An inverse is taken only once at a checked
+cold boundary.  Missing, duplicate, disabled, flagged, or ambiguous UID joins
+invalidate the detector; row-order fallback is forbidden.
+
+\subsection{Atmospheric extinction}
+
+For zenith opacity and a named airmass model, define the top-of-reference
+correction
+\begin{equation}
+  E_{oati}=
+  \exp\!\left[\tau_{oat}\{X(e_{ot})-X^{\rm ref}_{oi}\}\right].
+  \label{eq:extinction}
+\end{equation}
+The detector coefficient \(g_{oi}\) is defined at \(X^{\rm ref}_{oi}\).  Thus
+\(X^{\rm ref}=0\) means the gain already targets top-of-atmosphere signal,
+while \(X^{\rm ref}=1\) means it is normalized at zenith.  This explicit pivot
+prevents applying extinction twice.  A coefficient derived from a calibrator
+at some other airmass must record that pivot or be transformed, with
+covariance, to the canonical reference.
+
+The plane-parallel choice \(X(e)=\csc e\) is one possible model, not an
+unstated default.  If selected, its derivative is
+\begin{equation}
+  X'(e)=-\csc e\cot e,
+  \label{eq:airmass-derivative}
+\end{equation}
+and its approximation and low-elevation limit must be declared.  Negative
+opacity, nonfinite elevation, an unbracketed time-dependent opacity, or airmass
+outside the approved model range is invalid.  Clipping airmass silently would
+bias amplitudes and is not allowed.
+
+\subsection{Target-unit transfer}
+
+Let \(U_{\rm ref}\) be the coefficient's declared photometric reference unit
+and \(U_{\rm tar}\) the requested target.  The transfer \(q_{oat}\) is a unit-
+bearing, provenance-bearing factor, not a label substitution.  For the common
+case \(U_{\rm ref}=\mathrm{mJy/beam}\) with effective beam solid angle
+\(\Omega_{\rm eff,oa}\) in sr,
+\begin{align}
+q_{\mathrm{mJy/beam}} &= 1,
+\label{eq:unit-mjybeam}\\
+q_{\mathrm{MJy/sr}} &= \frac{1}{10^{9}\Omega_{\rm eff,oa}},
+\label{eq:unit-mjysr}\\
+q_{\mathrm{Jy/pixel},p} &= 10^{-3}
+     \frac{\Omega_{p}}{\Omega_{\rm eff,oa}},
+\label{eq:unit-jypixel}\\
+q_{\mathrm{uK_{CMB}}} &=
+ \frac{10^{-23}}
+ {\Omega_{\rm eff,oa}\,K_{a}^{\rm CMB}}
+ \quad \frac{\mathrm{uK_{CMB}}}{\mathrm{mJy/beam}},
+\label{eq:unit-uk}
+\end{align}
+where \(\Omega_p\) is the WCS-derived pixel solid angle and
+\(K_a^{\rm CMB}\) is the bandpass/color-convention averaged
+\(\partial B_\nu/\partial T_{\rm CMB}\) in
+\(\mathrm{W\,m^{-2}\,Hz^{-1}\,sr^{-1}\,K^{-1}}\).  Equation
+\eqref{eq:unit-uk} includes \(1\,\mathrm{mJy}=10^{-29}
+\mathrm{W\,m^{-2}\,Hz^{-1}}\) and \(10^6\) microkelvin per kelvin.
+It is invalid without the bandpass, reference spectrum/color convention, and
+beam identity.  A Rayleigh--Jeans temperature is a different target unit and
+must not be labeled \(\mathrm{uK_{CMB}}\).
+
+The pixel transfer in Equation~\eqref{eq:unit-jypixel} is map-pixel dependent
+unless a constant pixel solid angle is explicitly valid for the WCS.  It is
+therefore normally a map-boundary operation, not a detector-TOD scalar.  A TOD
+labeled Jy/pixel without realized pixel geometry has no defined meaning and
+must fail closed.  Likewise, the effective beam is bandpass-, spectrum-,
+epoch-, array-, and template-dependent.  A Gaussian approximation
+\(\Omega=\pi\theta_{\rm maj}\theta_{\rm min}/(4\ln2)\) is permitted only when
+that model is explicitly selected and its uncertainty is propagated.
+
+\subsection{Calibrated signal and response companions}
+
+Define the scalar calibration multiplier
+\begin{equation}
+  a_{oti}=q_{oat}\,E_{oati}\,g_{oi}.
+  \label{eq:multiplier}
+\end{equation}
+The independently claimed affine estimator is
+\begin{equation}
+  y_{oti}=m_{oti}\,a_{oti}\,(x_{oti}-b_{oti}),
+  \label{eq:signal-estimator}
+\end{equation}
+where multiplication by \(m\) is notation for domain restriction, not for
+writing numerical zero into an invalid sample.  If \(b\) is fixed, this is
+\(\boldsymbol y=A\boldsymbol x+\boldsymbol c\), with
+\(A=\diag(m a)\) on valid support and
+\(\boldsymbol c=-A\boldsymbol b\).  If \(g,\tau,X,q\), or \(b\) are fitted or
+derived from the same data, the unconditional estimator is nonlinear/data-
+dependent and the conditional affine equations alone are insufficient.
+
+For a declared additive response companion
+\(k_{oti,r}=\partial x_{oti}/\partial\alpha_r\),
+\begin{equation}
+  k^{(y)}_{oti,r}=m_{oti}a_{oti}k_{oti,r}.
+  \label{eq:kernel-transfer}
+\end{equation}
+The same selection and multiplicative operator must be applied to signal,
+injections, noise realizations, and truly synthetic Jacobian companions.
+Equation~\eqref{eq:kernel-transfer} does not authorize treating another
+measured channel as a kernel.  A companion that is an inverse response,
+variance, weight, or normalized template transforms according to its own
+dimensions, not by blind reuse of this equation.
+
+Conditioned on fixed calibration state,
+\begin{align}
+  \E[\boldsymbol y\mid\boldsymbol\theta]
+    &=A\{\E[\boldsymbol x\mid\boldsymbol\theta]-\boldsymbol b\},
+  \label{eq:conditional-mean}\\
+  C_{y\mid\theta}&=A C_{x\mid\theta}A^{\mathsf T}.
+  \label{eq:conditional-covariance}
+\end{align}
+Here \(\boldsymbol\theta\) contains every calibration, extinction, unit,
+beam/template, and selected-validity quantity.  These equations preserve all
+sample, detector, and observation correlations in \(C_x\).
+
+\section{Response and normalization}
+
+On fixed valid support, the exact local response is
+\begin{equation}
+  \frac{\partial y_{oti}}{\partial x_{o't'i'}}
+  =a_{oti}\,\delta_{oo'}\delta_{tt'}\delta_{ii'}.
+  \label{eq:sample-response}
+\end{equation}
+Calibration is diagonal in the detector/sample basis and introduces no
+temporal convolution, spatial remapping, or edge fill.  A constant \(a\)
+preserves temporal frequency response up to amplitude.  A time-varying
+extinction or unit factor is amplitude modulation; in Fourier space it mixes
+frequencies and cannot be summarized as a stationary scalar transfer
+function.  Any smoothing or interpolation of \(\tau\) is a separately named
+operator with a response and covariance.
+
+For a response template \(p_{oti}\) with source amplitude \(\alpha\),
+\begin{equation}
+ R_{oti}(p)=\frac{\partial\E[y_{oti}]}{\partial\alpha}
+ =m_{oti}a_{oti}p_{oti}.
+ \label{eq:template-response}
+\end{equation}
+Downstream linear operators must propagate Equation~\eqref{eq:template-response}
+with the signal.  CAL does not define their filtering, mapmaking, or fitting
+response.
+
+For a beam \(P_a(\boldsymbol\omega)\) normalized to unit peak,
+\begin{equation}
+ \Omega_{\rm eff,a}=\int P_a(\boldsymbol\omega)\,d\Omega.
+ \label{eq:beam-solid-angle}
+\end{equation}
+A map in mJy/beam then has point-source normalization: an unresolved source of
+flux \(S\) mJy has ideal peak \(S\) mJy/beam, and, on complete support,
+\begin{equation}
+ S_{\rm int}[\mathrm{Jy}]=10^{-3}\sum_p
+ M_p[\mathrm{mJy/beam}]\frac{\Omega_p}{\Omega_{\rm eff}}.
+ \label{eq:integrated-flux}
+\end{equation}
+Surface brightness in MJy/sr, per-pixel integrated flux in Jy/pixel, a
+peak-normalized point-source amplitude, and an integrated extended-source flux
+are not interchangeable.  Extended or resolved-source use requires the
+appropriate beam/template and aperture response, including missing support;
+CAL alone cannot promise its recovery.
+
+There is no iteration-to-iteration calibration estimator in this core.
+Observation-resolved \(g,\tau,X^{\rm ref},q\), and beam identity are immutable
+within an absolute reduction iteration and repeat identically when the same
+observation is revisited.  An implementation that learns or rewrites them from
+fruit-loop output is a different stateful estimator requiring a successor
+contract.  Therefore a state-update equation is not applicable to the claimed
+CAL estimator; exact replay across iterations remains an applicable lifecycle
+test.
+
+\section{Uncertainty and full covariance}
+
+\subsection{Conditional sample covariance and inverse variance}
+
+Equation~\eqref{eq:conditional-covariance} is the formal sample covariance
+conditional on calibration state.  When only diagonal conditional variances
+are retained,
+\begin{equation}
+ v^{(y)}_j=a_j^2v^{(x)}_j,
+ \qquad
+ w^{(y)}_j=\frac{w^{(x)}_j}{a_j^2},
+ \label{eq:variance-weight-transfer}
+\end{equation}
+for compound valid index \(j=(o,t,i)\).  The full precision transformation,
+when invertible on valid support, is
+\begin{equation}
+ W_y=A^{-\mathsf T}W_xA^{-1}.
+ \label{eq:precision-transfer}
+\end{equation}
+An inverse variance has units \(U_{\rm tar}^{-2}\).  It is not support,
+validity, hits, observing-time coverage, confidence, or response.  A zero
+weight may express no statistical precision only under an explicit product
+contract; it does not repair a missing calibration identity.
+
+Empirical/jackknife realizations do not define CAL's coefficient.  If present,
+each realization must receive the identical realized operator and selection
+before SCI-NOI packages estimate empirical covariance.  CAL must not replace
+the full conditional covariance with a diagonal weight merely because a
+downstream product stores only the diagonal.
+
+\subsection{Calibration, extinction, and response covariance}
+
+Let \(z_j=x_j-b_j\), \(\mu_j=\E[y_j\mid\theta]\), and define small factor
+perturbations.  To first order,
+\begin{equation}
+ \delta\ln a_j = \delta\ln g_i+\delta\ln q_j
+ +(X_j-X^{\rm ref}_i)\delta\tau_j
+ +\tau_j\{X'(e_j)\delta e_j-\delta X^{\rm ref}_i\}.
+ \label{eq:log-factor-perturbation}
+\end{equation}
+Beam size, bandpass, color convention, pixel area, and template parameters
+enter through \(\delta\ln q\).  Define
+\(H_{jr}=\partial\ln a_j/\partial\theta_r\).  The calibration/systematic
+contribution is
+\begin{equation}
+ C_{\rm cal}\simeq \diag(\boldsymbol\mu)H C_\theta H^{\mathsf T}
+                    \diag(\boldsymbol\mu).
+ \label{eq:calibration-covariance}
+\end{equation}
+It is generally dense.  A global absolute-scale term produces rank-one
+correlation across all affected samples; an array term correlates detectors
+and times within that array; detector-flat terms correlate all samples for one
+detector; a shared opacity estimate correlates samples according to airmass.
+These terms must not be added independently to every pixel and then inverted
+as though they were white noise.
+
+With uncertain baselines and possible dependence between raw data and fitted
+calibration state, the first-order full covariance is
+\begin{align}
+ C_y \simeq{}& A C_x A^{\mathsf T}
+ +J_\theta C_\theta J_\theta^{\mathsf T}
+ +J_b C_b J_b^{\mathsf T} \\
+ &+A C_{x\theta}J_\theta^{\mathsf T}
+ +J_\theta C_{\theta x}A^{\mathsf T}
+ +\text{baseline and higher-order cross terms},
+ \label{eq:full-covariance}
+\end{align}
+where \(J_\theta=\partial\E[\boldsymbol y]/\partial\boldsymbol\theta\) and
+\(J_b=-A\).  Cross terms may be set to zero only with an explicit independence
+argument.  Large or asymmetric opacity uncertainty requires nonlinear
+propagation or posterior samples because the exponential can make the
+linearized mean and covariance biased.  Selection uncertainty is likewise not
+captured by conditioning on a fixed mask; threshold-sensitive cases require
+resampling or a bounded selection study.
+
+Conditional formal noise, empirical noise, detector-relative calibration
+uncertainty, common absolute scale, extinction uncertainty, and beam/template
+response uncertainty must be published as separable components or as a
+documented covariance/nuisance model.  If only conditional statistical weight
+is available, metadata must say explicitly that it excludes calibration and
+response systematics.
+
+\section{Validity, non-finite policy, and lifecycle}
+
+\subsection{Validity and failure rules}
+
+An output sample is scientifically valid only if all of the following hold:
+
+\begin{enumerate}[leftmargin=*]
+\item SCI-ALIGN-001 marks the sample eligible and supplies a valid timestamp
+and aligned elevation with explicit original/synthesized identity;
+\item the detector is selected, its UID join is unique, and all relevant APT
+and detector flags permit use;
+\item \(x-b\), \(g\), \(\tau\), \(X\), \(X^{\rm ref}\), and \(q\) are finite and
+inside their declared domains;
+\item the opacity validity interval covers the sample and the atmospheric
+model covers the elevation/airmass;
+\item every required beam, bandpass, color, template, and pixel identity for
+the requested unit is resolved; and
+\item the resulting sample and required uncertainty components are finite.
+\end{enumerate}
+
+Missing, disabled, automatic, and unavailable are semantic states, not NaN,
+zero, negative, or stale-value sentinels.  Invalid detectors/samples are
+flagged and excluded; multiplying them to zero would create false sky signal
+and support.  A required observation fails closed when no approved
+calibration/extinction/unit path exists or when remaining support violates a
+predeclared minimum.  The implementation may not inherit coefficients, tau,
+beam state, or source context from a preceding observation.
+
+Interpolated/synthesized samples retain that identity.  Whether they are
+eligible, and which timestamp/elevation they carry, is owned by SCI-ALIGN-001.
+CAL applies the same declared per-sample operator only to those marked
+eligible; it does not erase interpolation provenance or independently invent a
+gap policy.
+
+\subsection{One-way state resolution}
+
+\begin{longtable}{L{0.18\linewidth}L{0.24\linewidth}L{0.27\linewidth}L{0.23\linewidth}}
+\toprule
+State & Values represented & Resolution rule & Required provenance/result\\
+\midrule
+Requested & target unit; calibration/extinction mode; requested sources and expert parameters, including inactive values & immutable accepted low-level request & exact unit token, modes, values, source identity\\
+Effective & context-free activation, legal unit path, atmospheric/beam model choice, coefficient reciprocal/sign convention & validated once; disabled values do not become active & normalized policy and rejection diagnostics\\
+Observation-\newline resolved & UID joins, selected calibration epoch, coefficient normalization population, tau validity, extinction pivot, beam, bandpass, and template, aligned-elevation applicability & replace complete state for each observation; no merge with prior observation & observation ID, array/network/UID identities, source records, factors and covariance versions\\
+Realized & actual valid/invalid detector and sample counts, factor ranges, selected fallbacks, unit conversion, uncertainty components, kernel/realization application, product cardinality & recorded from completed execution without mutating earlier states & per-observation applied identities, flags, extrema, omissions/failures, output unit and systematic scope\\
+\bottomrule
+\end{longtable}
+
+Configuration and provenance flow only from requested to effective to
+observation-resolved to realized.  A legacy adapter may consume effective or
+observation-resolved state; processor values may not synchronize backward into
+the request.  Observation-resolved state has observation lifetime.  Within an
+observation it is immutable for hot loops; a new observation replaces it in
+full.  Reduction-wide catalogs/models may be cached only as immutable source
+objects with explicit identity, never as mutable implicit current state.
+
+\section{Provisional products and consumer restrictions}
+
+The minimum scientific CAL output is not merely an array of numbers.  It is a
+bundle containing calibrated TOD, valid-support identity, detector/array/
+network/observation identities, target signal unit, realized factorization and
+reference convention, coefficient/tau/beam/bandpass provenance, conditional
+statistical uncertainty meaning, available calibration/systematic covariance
+components, and response-companion identity.  Exact persistence format is an
+implementation question to audit after the freeze.
+
+\begin{longtable}{L{0.14\linewidth}L{0.15\linewidth}L{0.20\linewidth}L{0.12\linewidth}L{0.29\linewidth}}
+\toprule
+Input & Operator & Output/estimator & Units & Provisional consumer rule\\
+\midrule
+\(x,b,g,\tau,\)\newline\(e,q,m\) & Equations~\eqref{eq:extinction}--\eqref{eq:signal-estimator} & calibrated TOD plus validity & exact declared \(U_{\rm tar}\) & RTC/PTC or map boundary may consume only with full identity and conditional SCI-ALIGN-001 assumption.\\
+Raw-domain Jacobian \(k\) & Equation~\eqref{eq:kernel-transfer} & calibrated response companion & \(U_{\rm tar}/U_\alpha\) & Only consumers preserving its named synthetic/Jacobian identity; never reinterpret measured R as kernel.\\
+Conditional covariance/weight & Equations~\eqref{eq:conditional-covariance}--\eqref{eq:precision-transfer} & sample covariance or explicitly diagonal approximation & \(U_{\rm tar}^2\) or \(U_{\rm tar}^{-2}\) & Downstream weights must state that calibration/systematic covariance is excluded unless demonstrably included.\\
+Calibration nuisance model & Equations~\eqref{eq:log-factor-perturbation}--\eqref{eq:full-covariance} & correlated uncertainty/response state & fractional plus named units & Coaddition, filtering, and source inference must preserve common terms rather than count them down as independent samples.\\
+Beam-normalized signal & Equations~\eqref{eq:beam-solid-angle}--\eqref{eq:integrated-flux} & peak or integrated photometry & mJy/beam, MJy/sr, Jy/pixel, or uK only as defined & Point/extended consumers restricted to matching beam/template, bandpass, WCS, and source convention.\\
+\bottomrule
+\end{longtable}
+
+Before implementation conformity and evidence are assessed, use is restricted
+to contract review and pre-registered validation.  Eventual downstream use may
+be allowed only for the exact realized unit/model combination with complete
+validity and provenance.  Fail-closed uses include an undeclared unit,
+unresolved beam/pixel/bandpass conversion, unknown gain reciprocal or
+extinction pivot, missing UID join, unsupported interpolated-sample policy,
+enabled polarimetry, measured-R-as-kernel, and any new consumer that treats a
+conditional weight as total uncertainty.
+
+\section{Analytic limits and pre-registered falsification tests}
+
+All seven standard evidence methods are applicable.  None is omitted by tier.
+The tolerances below are fixed before source inspection; a required-data skip
+is not a pass.
+
+\subsection{Analytic limits}
+
+\begin{enumerate}[label=CAL-A\arabic*,leftmargin=*]
+\item With \(g=q=1\), \(\tau=0\), \(b=0\), and all-valid support,
+Equation~\eqref{eq:signal-estimator} is the identity, the covariance is
+unchanged, and a synthetic kernel is unchanged.
+\item At the coefficient's atmospheric pivot \(X=X^{\rm ref}\), extinction is
+exactly one for every finite tau.  With top-of-atmosphere pivot zero and zenith
+airmass one, \(E=\exp(\tau)\).
+\item For constant scalar \(a\), signal and kernel scale by \(a\), variance by
+\(a^2\), and inverse variance by \(a^{-2}\); flags, sample counts, and coverage
+do not change.
+\item Reordering calibration rows while retaining UID identity leaves every
+output invariant.  Duplicating, deleting, or mismatching a UID fails or flags
+the affected detector according to the declared required-support policy.
+\item mJy/beam \(\leftrightarrow\) MJy/sr and mJy/beam
+\(\leftrightarrow\) Jy/pixel round trips are identity to floating-point error
+when the same \(\Omega_{\rm eff}\) and \(\Omega_p\) are used.  Changing beam
+solid angle changes surface brightness and integrated flux but not the
+point-source peak convention.
+\item A single common fractional gain uncertainty \(s\) produces
+\(C_{\rm cal}=s^2\boldsymbol\mu\boldsymbol\mu^{\mathsf T}\), a rank-one matrix;
+it does not decrease with more samples.
+\item Zero input with zero baseline remains zero for all finite multiplicative
+factors.  Calibration creates no additive offset.
+\end{enumerate}
+
+\subsection{Deterministic local fixtures}
+
+\begin{enumerate}[label=CAL-T\arabic*,leftmargin=*]
+\item A \(T=3,D=2\) fixture with nontrivial signed gains, two UID rows supplied
+in reverse order, nonzero baselines, sample-varying elevation, positive tau,
+one invalid original sample, and one eligible synthesized sample must match
+Equations~\eqref{eq:extinction} and \eqref{eq:signal-estimator} elementwise.
+Finite values must satisfy
+\(|y-y_*|\le64\epsilon\max(1,|y_*|)\); identity, flags, and cardinality must
+match exactly.
+\item The same fixture carries a dense positive-definite \(6\times6\) input
+covariance and a synthetic two-column Jacobian kernel.  The output covariance,
+kernel, diagonal variances, and inverse variances must match
+Equations~\eqref{eq:conditional-covariance}, \eqref{eq:kernel-transfer}, and
+\eqref{eq:variance-weight-transfer} to relative Frobenius error \(10^{-12}\)
+and absolute error \(10^{-14}\) near zero.
+\item Duplicate UID, missing UID, array/network mismatch, zero/nonfinite gain,
+negative/nonfinite tau, invalid elevation, opacity outside its validity
+interval, airmass beyond the declared bound, and missing beam/bandpass/pixel
+facts for a requested conversion are separate fixtures.  Each must fail closed
+or explicitly invalidate exactly the documented scope; none may reuse prior
+observation state.
+\item Two observations with deliberately different detector subsets,
+calibration epochs, tau, and beams are processed in both orders.  Results and
+realized provenance for each observation must be order invariant and contain
+no state from the other.
+\item Unit fixtures use an analytic Gaussian beam and known pixel solid angle
+to exercise Equations~\eqref{eq:unit-mjysr}--\eqref{eq:unit-uk} and
+\eqref{eq:integrated-flux}.  Round trips meet \(10^{-12}\) relative tolerance;
+tokens and dimensional metadata match exactly.  Jy/pixel at an unresolved TOD
+boundary is rejected.
+\item Fixed realized state is replayed over two absolute fruit-loop iterations
+and through sequential and every enabled OpenMP path.  For this elementwise
+operator, calibrated signal, kernel, flags, identities, and factors must be
+bitwise identical; any factor-resolution reduction must be completed before
+the parallel loop and itself satisfy the active deterministic policy.
+\end{enumerate}
+
+\subsection{Synthetic injection and blank controls}
+
+A synthetic point-source template and a uniform extended-brightness template
+are attenuated by known array-dependent gains and opacity over at least three
+airmasses, then calibrated.  TOD-domain recovered response must equal
+Equation~\eqref{eq:template-response}; after an independently contracted map
+operator, the point-source peak and extended/integrated meanings must satisfy
+Equations~\eqref{eq:beam-solid-angle}--\eqref{eq:integrated-flux}.  Deterministic
+injections use the CAL-T1 tolerance.  Seeded noisy injections require the
+mean normalized residual over 1000 realizations to be within three Monte Carlo
+standard errors of zero and the covariance Frobenius residual to be within
+five Monte Carlo standard errors of Equation~\eqref{eq:full-covariance}.
+
+Zero-signal and source-free Gaussian blank controls are required because a
+purely multiplicative calibration must not create an offset or airmass trend.
+The fitted mean must be within three predicted standard errors of zero; a
+linear residual-versus-airmass slope must be within three predicted standard
+errors of zero.  Blank empirical covariance is compared separately with the
+conditional sample covariance; injected common calibration nuisances must
+recover the predicted dense covariance rather than being absorbed into white
+weight.
+
+\subsection{Same-SHA external and astronomical evidence}
+
+A human-run Unity campaign is required at the exact governing SHA because
+local analytic fixtures cannot establish external build/runtime behavior or
+astronomical recovery.  It must return immutable input/config identifiers,
+APT/calibration/tau/beam/bandpass sources, observation IDs, timestamps,
+command, build/compiler/runtime identity, thread count, complete logs,
+products, realized provenance, and SHA-256 hashes.  It must include sequential
+and production-thread runs for one Pointing/OOF, one Science, and one Beammap
+case spanning all present arrays and at least two materially different
+airmasses.  Exact product inventory and zero unexpected error-level messages
+are gates; CAL-resolved values, unit metadata, flags, and applicable
+elementwise results must meet the deterministic gates above.
+
+Astronomical recovery uses independently predicted standard-source fluxes or
+surface brightnesses with epoch, bandpass, color, beam/template, and
+uncertainty provenance.  For each valid measurement the normalized residual
+\((S_{\rm rec}-S_{\rm ref})/\sigma_{\rm total}\) must have magnitude at most
+three.  Within each array, the inverse-covariance weighted mean residual must
+have magnitude at most two standard errors, and the recovered/reference ratio
+versus airmass must have a slope consistent with zero within two standard
+errors.  The covariance includes shared reference, array calibration,
+extinction, and beam terms, so correlated standards are not counted as
+independent.  These thresholds do not authorize production; they are
+falsification gates for the claimed response.
+
+\subsection{Specific not-applicable rationales}
+
+No standard validation category is marked not applicable.  Two possible
+methods outside that list are intentionally excluded: (1) an internal CAL
+jackknife/noise estimator is not applicable because CAL only propagates the
+realized operator while SCI-NOI owns empirical estimation; and (2) convergence
+of a CAL state iteration is not applicable because this contract has no
+calibration feedback update.  Their interfaces remain testable as described
+above.  Pointing/WCS accuracy, map-gridding transfer, filtering transfer, and
+source-fit bias are also not CAL estimators; they are tested only insofar as an
+end-to-end fixture conditions on their separately approved contracts.
+
+\section{Pre-source decision and dependency register}
+
+\begin{longtable}{L{0.16\linewidth}L{0.16\linewidth}L{0.29\linewidth}L{0.29\linewidth}}
+\toprule
+ID/type & Status & Exact required fact or owner decision & Consequence while unresolved\\
+\midrule
+SCI-ALIGN-001 & conditioned & ordered identity, timestamps, aligned elevation, duration, gap/interpolation state, and eligibility are correct for every sample & All time/elevation/extinction and synthesized-sample conclusions remain conditional; affected production use is restricted.\\
+CAL-D01 policy & owner decision & canonical gain direction/sign, flat normalization population, absolute-scale decomposition, and atmospheric pivot & Unknown or ambiguous factors fail closed; no numeric calibration interpretation.\\
+CAL-D02 policy & owner decision & approved airmass model, tau source/validity/interpolation, elevation domain, and maximum airmass & Extinction correction fails closed outside an exact approved observation-resolved state.\\
+CAL-D03 policy & owner decision & per-array effective beam/template, bandpass/color convention, and which target units are scientifically supported & Conversions beyond an exact validated identity fail closed; a token alone is insufficient.\\
+CAL-D04 policy & owner decision & required published separation/correlation model for statistical, detector, common, extinction, and beam uncertainties & Conditional statistical weight may be used only with an explicit exclusion warning; total-uncertainty claims fail closed.\\
+\bottomrule
+\end{longtable}
+
+The implementation audit must determine whether these facts already have an
+unambiguous exact-SHA realization; this independent core does not infer them
+from historical behavior.  A known mismatch with any numbered equation will
+be nonconformant, not conditionally conformant.  Conditional conformity is
+available only for the named SCI-ALIGN-001 assumption and a test capable of
+falsifying it.
+
+\section{Independent-core conclusion}
+
+The claimed scientific contract is Equations~\eqref{eq:gain-factorization}
+through \eqref{eq:full-covariance}, with validity and one-way lifecycle rules
+in this document.  Its essential invariant is that signal, response
+companions, conditional covariance, and uncertainty provenance share one exact
+realized calibration operator, while common/systematic terms retain their
+correlations and their distinct meaning.  Until post-freeze source tracing and
+the pre-registered evidence are complete, this is an independent proposal,
+not a statement of implementation conformity, validation completion, or
+production authorization.
+
+\end{document}
