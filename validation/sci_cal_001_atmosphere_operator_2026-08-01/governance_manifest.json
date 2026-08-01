@@ -1,0 +1,80 @@
+{
+  "schema_version": "sci-cal-001-atmosphere-governance-manifest-v1",
+  "package_id": "SCI-CAL-001",
+  "created_date": "2026-08-01",
+  "source_identity": {
+    "repair_base_sha": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
+    "repair_line_evidence_head": "ae99be1cef8c390d0e7490835ffca1f31da7ebc0",
+    "package_branch": "codex/sci-cal-001-atmosphere-operator",
+    "coordination_line_snapshot": "4898477cf2550dd393c81b30be29f4634a2cd6d9"
+  },
+  "owner_approved_records": [
+    {
+      "path": "/private/tmp/citlali-scientific-audit-framework/doc/audits/packages/SCI-CAL-001_ACCURACY_AND_MODEL_SCOPE_AMENDMENT_2026-08-01.md",
+      "sha256": "ae295b717da3f9ed7129661e812b05847ff988500bb3d6f159b7ffae45cb2780",
+      "role": "accuracy targets, model-regeneration scope, and separate validation gates"
+    },
+    {
+      "path": "/private/tmp/citlali-scientific-audit-framework/doc/audits/packages/SCI-CAL-001_OPACITY_DECISION_AMENDMENT_2026-07-31.md",
+      "sha256": "64fd3ae9788c6a8e3db18ac5ea4f04799586b548f9e7ec12cc8c18f9cbf96e09",
+      "role": "zenith tau225, full sample airmass, top-of-atmosphere pivot, low-opacity operator"
+    },
+    {
+      "path": "/private/tmp/citlali-scientific-audit-framework/doc/audits/packages/SCI-CAL-001_COORDINATOR_DECISION_2026-07-31.md",
+      "sha256": "1e2d44b76138734aaae5a7b241ae621deb1510c2de763b74be31a87e106d175c",
+      "role": "coordinator disposition and bounded work authority"
+    },
+    {
+      "path": "/private/tmp/citlali-scientific-audit-framework/doc/audits/packages/SCI-CAL-001_BOUNDED_REPAIR_REAUDIT_HANDOFF_2026-07-31.md",
+      "sha256": "9d2c0ae89244d355070d6b300f431ac1799787b835c7e4cb76c8d7fc51cde106",
+      "role": "repair/re-audit boundary and phase-0 evidence route"
+    }
+  ],
+  "late_open_dependency": {
+    "id": "SCI-CAL-001-XAUD-001",
+    "path": "/private/tmp/citlali-scientific-audit-framework/doc/audits/handoffs/SCI-CAL-001/SCI-CAL-001-XAUD-001.yaml",
+    "sha256": "2248422a507455e972c70c221c214b40fec68566011d27a9d8827952e43087d5",
+    "source_package": "SCI-ALIGN-001",
+    "status": "submitted_late_held_for_cal_reaudit",
+    "constraint": "Aligned elevation requires explicit ordered sample identity, timing gap/interpolation origin, acquired duration, and original-versus-synthesized eligibility.",
+    "scope_effect": "No change to atmosphere equations or regeneration scope."
+  },
+  "frozen_phase0_evidence": [
+    {
+      "path": "validation/sci_cal_001_phase0_2026-07-31/generate_q_model_continuity.py",
+      "sha256": "a46211c007bdc1fa11d1408c6db4c4a68264ca00cd383806fd421ba978fffe78"
+    },
+    {
+      "path": "validation/sci_cal_001_phase0_2026-07-31/Q_MODEL_CONTINUITY_REPORT.md",
+      "sha256": "1a5a5cfe057e8871f299c9216e69826e393ac518a6198bdbb44f2a48d11cac00"
+    },
+    {
+      "path": "validation/sci_cal_001_phase0_2026-07-31/q_model_continuity_table.csv",
+      "sha256": "6de859fbc3e3f91376e2a6ad841f6f4f5d1eac0b773c25b521b8d5fffa5ec50f"
+    },
+    {
+      "path": "validation/sci_cal_001_phase0_2026-07-31/SHA256SUMS",
+      "sha256": "c9db2008c9f9e1b0d27a98c108e6139025ef939c0323d471cce1b9d317b7e6c6"
+    }
+  ],
+  "source_files": [
+    {
+      "path": "include/citlali/core/timestream/rtc/calibrate.h",
+      "sha256": "d70a55278227b43cdd7de19bc67e4ddb332524d40e1455c5fa7a80ae5e2d11ee",
+      "role": "q-model polynomial authority"
+    },
+    {
+      "path": "include/citlali/core/timestream/extinction_model_selection.h",
+      "sha256": "45cf86bbb2318c22514411f6d2a0e0371e22e9e355e61b293d93c628d9f3469d",
+      "role": "selector threshold authority"
+    }
+  ],
+  "scope_guards": [
+    "no Citlali application-code modification",
+    "no Unity access or request",
+    "no repair implementation",
+    "no re-audit",
+    "no coordination-registry edit",
+    "no invented atmosphere profile, bandpass, or generator setting"
+  ]
+}

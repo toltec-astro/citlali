@@ -1,0 +1,307 @@
+{
+  "$schema": "./atmosphere_regeneration_manifest.schema.json",
+  "artifacts": [
+    {
+      "availability": "local_read_only",
+      "bytes": 37201984,
+      "id": "raw-am-q25",
+      "md5_registry_identity": "008d7fa69aff187a9edf419f3d961b4c",
+      "notes": "Complete recovered frequency-by-elevation atmosphere grid; TolTECA datafile ID 454.",
+      "path": "/Users/gwilson/GitHub/toltec_beammap/src/toltec_sensitivity/amLMT25.npz",
+      "repository_commit": "cedd5345e8d29546f4103f149527e09a9c68a412",
+      "role": "raw atmosphere calculation for am_q25",
+      "sha256": "6ddffcd2c68bbc0f6d8f6470eba0d1aa81457dcc2f348fd2d7e44c9dfe48c87b"
+    },
+    {
+      "availability": "local_read_only",
+      "bytes": 37201984,
+      "id": "raw-am-q50",
+      "md5_registry_identity": "6ec393672be8af4dfa06a3f4cf9aa32e",
+      "notes": "Complete recovered frequency-by-elevation atmosphere grid; TolTECA datafile ID 455.",
+      "path": "/Users/gwilson/GitHub/toltec_beammap/src/toltec_sensitivity/amLMT50.npz",
+      "repository_commit": "cedd5345e8d29546f4103f149527e09a9c68a412",
+      "role": "raw atmosphere calculation for am_q50",
+      "sha256": "1fe6dd2ab7a4d65f445e20c5a8f438eb42884836e7932d86f80c30e235710f81"
+    },
+    {
+      "availability": "local_read_only",
+      "bytes": 37201984,
+      "id": "raw-am-q75",
+      "md5_registry_identity": "d6cf4bb27008179ec491864388deac58",
+      "notes": "Complete recovered frequency-by-elevation atmosphere grid; TolTECA datafile ID 456.",
+      "path": "/Users/gwilson/GitHub/toltec_beammap/src/toltec_sensitivity/amLMT75.npz",
+      "repository_commit": "cedd5345e8d29546f4103f149527e09a9c68a412",
+      "role": "raw atmosphere calculation for am_q75",
+      "sha256": "adbb8eb974c4e2744c3efb0f627708565f954c4029d9345e4f434699e8843f8e"
+    },
+    {
+      "availability": "local_read_only",
+      "bytes": 2144,
+      "id": "toltec-sensitivity-atmosphere-loader",
+      "notes": "Names Scott Paine am as generator and historical /data/wilson/am support; does not preserve an executable or input profiles.",
+      "path": "/Users/gwilson/GitHub/toltec_beammap/src/toltec_sensitivity/LMTAtmosphere.py",
+      "repository_commit": "cedd5345e8d29546f4103f149527e09a9c68a412",
+      "role": "raw-grid lineage source",
+      "sha256": "66f580b85ccbfff9152519ec644df363e4571b9263fe06849dc89aa1858e52d0"
+    },
+    {
+      "availability": "local_read_only",
+      "bytes": 1760736,
+      "id": "modeled-passbands-not-used",
+      "md5_registry_identity": "c8cae1089964f1a90ecfee36267d1fcd",
+      "notes": "Available modeled passbands; proved not to be an input to the recovered Citlali coefficient fit.",
+      "path": "/Users/gwilson/GitHub/toltec_beammap/src/toltec_sensitivity/model_passbands.npz",
+      "repository_commit": "cedd5345e8d29546f4103f149527e09a9c68a412",
+      "role": "non-input comparison artifact",
+      "sha256": "861e6ce7af55b18c14a800defaf0b9a11099a16c307da08e391e1d8f79a39765"
+    },
+    {
+      "availability": "repository_revision",
+      "id": "tolteca-atmosphere-registry",
+      "notes": "Registry binds q25/q50/q75 MD5 values and the missing q95 ID 461 with MD5 0ca7b331823237767d26016d19bffb3d.",
+      "path": "tolteca/simu/lmt/__init__.py",
+      "repository_commit": "2791e6a1e6349ad1d3ac549a648f41cbc51b98c7",
+      "role": "static-data registry",
+      "sha256": "f2fbf70dff7a355e70188e11e97f50e059c8104a8fb29953d24de4f1a23235d5"
+    },
+    {
+      "availability": "repository_revision",
+      "id": "tolteca-current-lmt-site-not-proven-historical",
+      "notes": "TolTECA records lon -97d18m52.6s, lat +18d59m10s, height 4640 m. This is an available contemporary convention, not evidence that the raw atmosphere grids used those exact site/geometry inputs.",
+      "path": "tolteca/common/lmt/__init__.py",
+      "repository_commit": "2791e6a1e6349ad1d3ac549a648f41cbc51b98c7",
+      "role": "non-input site comparison artifact",
+      "sha256": "56113ab1ab9326c65ea07a24d8374f1c2ad6bd577ad1ba0785c01fa41d36d5fa"
+    },
+    {
+      "availability": "repository_revision",
+      "id": "tolteca-passband-a1100-v1",
+      "notes": "Versioned passband available for a possible new convention; not used by the legacy fit.",
+      "path": "tolteca/data/cal/toltec_passband/data/a1100_passband.ecsv",
+      "repository_commit": "2791e6a1e6349ad1d3ac549a648f41cbc51b98c7",
+      "role": "non-input successor-passband candidate",
+      "sha256": "13b8fd009bb8d7c375d3c46d21e26d0a779f7f00a949a2a5ccd619d1fe56fd72"
+    },
+    {
+      "availability": "repository_revision",
+      "id": "tolteca-passband-a1400-v1",
+      "notes": "Versioned passband available for a possible new convention; not used by the legacy fit.",
+      "path": "tolteca/data/cal/toltec_passband/data/a1400_passband.ecsv",
+      "repository_commit": "2791e6a1e6349ad1d3ac549a648f41cbc51b98c7",
+      "role": "non-input successor-passband candidate",
+      "sha256": "a7b671d9f659cbc98dad99d3015ce81a3d7a3486c702819d9b3305703e7c682e"
+    },
+    {
+      "availability": "repository_revision",
+      "id": "tolteca-passband-a2000-v1",
+      "notes": "Versioned passband available for a possible new convention; not used by the legacy fit.",
+      "path": "tolteca/data/cal/toltec_passband/data/a2000_passband.ecsv",
+      "repository_commit": "2791e6a1e6349ad1d3ac549a648f41cbc51b98c7",
+      "role": "non-input successor-passband candidate",
+      "sha256": "77e4b33c7bbc2c345ef94d41480d5fee5cb096d789f4fe78e1b4f80a37e0d6ff"
+    },
+    {
+      "availability": "local_read_only",
+      "bytes": 45470492,
+      "id": "mccrackan-dissertation",
+      "notes": "Historical narrative for July 2022 am, MERRA, percentile models, and fitting. Its stated 10--80 degree/10-degree grid conflicts with the recovered 20--80 degree/2-degree arrays and plotted nodes.",
+      "path": "/Users/gwilson/work_toltec/local_data/doc/mmccrackan_dissertation.pdf",
+      "role": "historical provenance narrative",
+      "sha256": "2aa4373aaa0394f1a79e6668047a7aecd07d4914ce162c931f495d5502a49be0"
+    }
+  ],
+  "atmospheric_profiles": {
+    "construction_method": null,
+    "historical_source_evidence": "The local dissertation attributes percentile LMT layers to NASA MERRA constraints, but no product/version, interval, vertical profiles, percentile statistic, or profile bytes survive locally.",
+    "input_artifact_ids": [],
+    "percentile_models": [
+      "am_q25",
+      "am_q50",
+      "am_q75",
+      "am_q95"
+    ],
+    "required_fact_ids": [
+      "PROF-001",
+      "PROF-002"
+    ],
+    "status": "unresolved_owner_input_required"
+  },
+  "band_integration": {
+    "legacy_fit": "none; sample raw atmospheric transmission at one frequency per band and at 225 GHz",
+    "legacy_polynomial_fit": "numpy.polyfit(elevation_radians, atmTtx(nu_band,elevation)/atmTtx(225GHz,elevation), 6) over all 31 elevations; round coefficients to 8 decimal places",
+    "required_fact_ids": [
+      "SPEC-001",
+      "BAND-001-CONDITIONAL"
+    ],
+    "successor_status": "unresolved_owner_input_required"
+  },
+  "bandpasses": {
+    "available_not_used_artifact_ids": [
+      "modeled-passbands-not-used",
+      "tolteca-passband-a1100-v1",
+      "tolteca-passband-a1400-v1",
+      "tolteca-passband-a2000-v1"
+    ],
+    "legacy_fit_usage": "none_monochromatic_sampling",
+    "required_fact_ids": [
+      "SPEC-001",
+      "BAND-001-CONDITIONAL"
+    ],
+    "successor_status": "unresolved_owner_input_required"
+  },
+  "created_date": "2026-08-01",
+  "elevation_and_airmass": {
+    "downstream_airmass_formula": "X(el)=sec(z)*(1-0.0012*(sec(z)^2-1)); zenith tau225 is applied with full sample X(el) and top-of-atmosphere pivot X_ref=0",
+    "published_narrative_discrepancy": "The dissertation text says 10--80 degrees in 10-degree steps; the recovered NPZ arrays and plotted nodes are 20--80 degrees in 2-degree steps. The arrays govern recovered numerical lineage; the discrepancy remains recorded.",
+    "raw_generator_airmass_status": "unresolved_owner_input_required",
+    "recovered_raw_elevation_grid": {
+      "count": 31,
+      "maximum": "8.00000000000000000e+01",
+      "minimum": "2.00000000000000000e+01",
+      "step": "2.00000000000000000e+00",
+      "unit": "degree"
+    },
+    "required_fact_ids": [
+      "SITE-001",
+      "GEN-002"
+    ],
+    "status": "partially_resolved"
+  },
+  "execution": {
+    "acceptance_gate": "Do not select an operator until every supplied input has a SHA-256 identity and the chosen candidate has <=1% absolute fractional extinction-correction error against preregistered raw held-out/intermediate runs throughout an owner-declared opacity/elevation domain; observational accuracy and repeatability are separate gates.",
+    "legacy_fit_reproduction_argv": [
+      "/Users/gwilson/tolteca/bin/python",
+      "validation/sci_cal_001_atmosphere_operator_2026-08-01/recover_legacy_raw_grids.py",
+      "--source-dir",
+      "/Users/gwilson/GitHub/toltec_beammap/src/toltec_sensitivity"
+    ],
+    "operator_analysis_argv": [
+      "/Users/gwilson/tolteca/bin/python",
+      "validation/sci_cal_001_atmosphere_operator_2026-08-01/generate_operator_analysis.py"
+    ],
+    "raw_grid_generation_argv": null,
+    "raw_grid_generation_status": "unresolved_owner_input_required"
+  },
+  "frequency_grid": {
+    "array_layout": "atmFreq, atmTRJ, and atmTtx are float64 arrays shaped [frequency_index=50001, elevation_index=31]",
+    "generator_directive_status": "unresolved_owner_input_required",
+    "quantities": [
+      "atmFreq: GHz",
+      "atmTRJ: Rayleigh-Jeans kelvin",
+      "atmTtx: dimensionless atmospheric transmission"
+    ],
+    "recovered_grid": {
+      "count": 50001,
+      "maximum": "5.00000000000000000e+02",
+      "minimum": "0.00000000000000000e+00",
+      "step": "1.00000000000000002e-02",
+      "unit": "GHz"
+    },
+    "required_fact_ids": [
+      "GRID-001"
+    ],
+    "status": "partially_resolved"
+  },
+  "generator": {
+    "argv": null,
+    "executable_or_source_sha256": null,
+    "historical_release_evidence": "Scott Paine, The am atmospheric model, July 2022, DOI 10.5281/zenodo.6774376; exact installed payload and command are not preserved.",
+    "model_name": "am",
+    "required_fact_ids": [
+      "GEN-001",
+      "GEN-002"
+    ],
+    "status": "unresolved_owner_input_required"
+  },
+  "package_id": "SCI-CAL-001",
+  "operational_domain": {
+    "aligned_elevation_max_deg": null,
+    "aligned_elevation_min_deg": null,
+    "endpoints_inclusive": null,
+    "evidence_support": "The candidate analysis spans 30--80 degrees only as a diagnostic. Recovered q25/q50/q75 raw arrays span 20--80 degrees; q95 and independent intermediate runs are missing. No extrapolation is authorized.",
+    "out_of_domain_behavior": "fail_closed",
+    "required_fact_ids": [
+      "DOMAIN-001"
+    ],
+    "status": "unresolved_owner_input_required",
+    "zenith_tau225_max": null,
+    "zenith_tau225_min": null
+  },
+  "repair_base_sha": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
+  "repair_line_evidence_head": "ae99be1cef8c390d0e7490835ffca1f31da7ebc0",
+  "schema_version": "sci-cal-001-atmosphere-regeneration-manifest-v1",
+  "site_geometry": {
+    "altitude_m": null,
+    "latitude_deg": null,
+    "longitude_deg": null,
+    "raw_model_slant_geometry": null,
+    "required_fact_ids": [
+      "SITE-001"
+    ],
+    "site_name": "Large Millimeter Telescope",
+    "status": "unresolved_owner_input_required"
+  },
+  "spectral_convention": {
+    "legacy_band_frequencies_ghz": {
+      "a1100": "2.72730000000000018e+02",
+      "a1400": "2.14289999999999992e+02",
+      "a2000": "1.50000000000000000e+02"
+    },
+    "legacy_fit_quantity": "atmTtx(nu_band,elevation)/atmTtx(225GHz,elevation)",
+    "legacy_fit_status": "resolved",
+    "reference_frequency_ghz": "2.25000000000000000e+02",
+    "required_fact_ids": [
+      "SPEC-001",
+      "BAND-001-CONDITIONAL"
+    ],
+    "successor_status": "unresolved_owner_input_required"
+  },
+  "status": "partial_recovery_blocked_on_owner_inputs",
+  "tau225_anchors": [
+    {
+      "generation_profile_status": "unresolved_owner_input_required",
+      "model": "am_q25",
+      "raw_grid_artifact_id": "raw-am-q25",
+      "raw_t225_at_80deg": "9.50027500000000025e-01",
+      "selector_anchor_origin": "verified as -log of recovered raw atmTtx at 225 GHz and 80 degrees divided by repair-base X(80 degrees)",
+      "selector_tau225_binary64": "5.04874104674104401e-02"
+    },
+    {
+      "generation_profile_status": "unresolved_owner_input_required",
+      "model": "am_q50",
+      "raw_grid_artifact_id": "raw-am-q50",
+      "raw_t225_at_80deg": "9.14206500000000033e-01",
+      "selector_anchor_origin": "verified as -log of recovered raw atmTtx at 225 GHz and 80 degrees divided by repair-base X(80 degrees)",
+      "selector_tau225_binary64": "8.83393725904400573e-02"
+    },
+    {
+      "generation_profile_status": "unresolved_owner_input_required",
+      "model": "am_q75",
+      "raw_grid_artifact_id": "raw-am-q75",
+      "raw_t225_at_80deg": "8.51505399999999968e-01",
+      "selector_anchor_origin": "verified as -log of recovered raw atmTtx at 225 GHz and 80 degrees divided by repair-base X(80 degrees)",
+      "selector_tau225_binary64": "1.58313198574890929e-01"
+    },
+    {
+      "generation_profile_status": "unresolved_owner_input_required",
+      "model": "am_q95",
+      "raw_grid_artifact_id": null,
+      "raw_t225_at_80deg": null,
+      "selector_anchor_origin": "derived as -log(0.7337698)/X(80 degrees) from the repair-base source literal; not yet verified against q95 raw bytes",
+      "selector_tau225_binary64": "3.04868387190534607e-01"
+    }
+  ],
+  "unresolved_fact_ids": [
+    "GEN-001",
+    "GEN-002",
+    "PROF-001",
+    "PROF-002",
+    "SITE-001",
+    "GRID-001",
+    "Q95-001",
+    "MID-001",
+    "SPEC-001",
+    "BAND-001-CONDITIONAL",
+    "DOMAIN-001"
+  ]
+}

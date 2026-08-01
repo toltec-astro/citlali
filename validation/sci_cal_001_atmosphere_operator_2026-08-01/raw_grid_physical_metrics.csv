@@ -1,0 +1,4 @@
+band,models,raw_elevation_min_deg,raw_elevation_max_deg,finite_nonnegative_los_tau,opacity_monotonicity_violation_cells,minimum_opacity_los_tau_step,elevation_monotonicity_violation_cells,maximum_wrong_way_elevation_los_tau_step,maximum_wrong_way_elevation_correction_excursion_fraction
+a1100,am_q25;am_q50;am_q75,2.00000000000000000e+01,8.00000000000000000e+01,true,0,5.44891873210622407e-02,0,0.00000000000000000e+00,0.00000000000000000e+00
+a1400,am_q25;am_q50;am_q75,2.00000000000000000e+01,8.00000000000000000e+01,true,0,3.57563234287050433e-02,0,0.00000000000000000e+00,0.00000000000000000e+00
+a2000,am_q25;am_q50;am_q75,2.00000000000000000e+01,8.00000000000000000e+01,true,0,1.62630941204372700e-02,0,0.00000000000000000e+00,0.00000000000000000e+00

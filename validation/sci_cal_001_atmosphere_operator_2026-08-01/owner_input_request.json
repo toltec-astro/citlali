@@ -1,0 +1,135 @@
+{
+  "schema_version": "sci-cal-001-owner-input-request-v1",
+  "request_id": "SCI-CAL-001-ATM-INPUT-001",
+  "created_date": "2026-08-01",
+  "package_id": "SCI-CAL-001",
+  "repair_base_sha": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
+  "status": "owner_scientific_input_required",
+  "scope": "Complete raw atmosphere regeneration provenance and obtain independent raw-model validation nodes; do not implement or re-audit Citlali.",
+  "custody_constraints": [
+    "Supply files locally with SHA-256 provenance; Codex must not access Unity.",
+    "Do not substitute a contemporary am release, current LMT site defaults, synthetic profiles, or guessed bandpass weights for the historical inputs.",
+    "Do not fetch the recorded TolTECA HTTP endpoint as part of this package; an owner or data custodian must stage the intended bytes."
+  ],
+  "required_items": [
+    {
+      "id": "Q95-001",
+      "priority": "blocking",
+      "request": "Stage the original am_q95 raw NPZ bytes registered by TolTECA as datafile ID 461, expected MD5 0ca7b331823237767d26016d19bffb3d, and report filename, byte count, SHA-256, and custody source.",
+      "acceptance": [
+        "MD5 exactly equals 0ca7b331823237767d26016d19bffb3d.",
+        "NPZ members and shapes are inventoried without rewriting the file.",
+        "The 225-GHz/80-degree transmission is compared with the repair-base q95 literal 0.7337698; any mismatch is reported rather than normalized."
+      ],
+      "provenance_anchor": {
+        "registry_commit": "2791e6a1e6349ad1d3ac549a648f41cbc51b98c7",
+        "registry_path": "tolteca/simu/lmt/__init__.py",
+        "recorded_endpoint_not_contacted": "http://lmtdv0.astro.umass.edu/api/access/datafile/461"
+      }
+    },
+    {
+      "id": "GEN-001",
+      "priority": "blocking_for_full_regeneration",
+      "request": "Supply the exact Scott Paine am source/release or executable used for these grids, including every local patch, build option, dependency lock, and SHA-256 identity.",
+      "acceptance": [
+        "A clean environment can identify the same executable/source payload by SHA-256.",
+        "The supplied version is tied to the historical production rather than inferred solely from the July 2022 DOI citation."
+      ]
+    },
+    {
+      "id": "GEN-002",
+      "priority": "blocking_for_full_regeneration",
+      "request": "Supply the exact raw-grid generation command as an argv array plus all am configuration/control files, environment variables that affect numerical output, output parser/packer, and the original Mapping-Speed-Calculator source snapshot at gitlink commit 843cb1f44ef5f9ebaa842b296a7328f9bf64b908 or its verified successor containing that generator.",
+      "acceptance": [
+        "No shell-history-only or prose-only command; every referenced input is staged and SHA-256 identified.",
+        "The command declares frequency output, elevation/slant paths, units, precision, and NPZ packing order."
+      ]
+    },
+    {
+      "id": "PROF-001",
+      "priority": "blocking_for_full_regeneration",
+      "request": "Supply the complete q25/q50/q75/q95 atmosphere profile/config files used by am, byte-for-byte with SHA-256 provenance.",
+      "acceptance": [
+        "Every profile layer, constituent, temperature/pressure/humidity quantity, boundary condition, and unit is explicit.",
+        "Profile-to-q-model identity is one-to-one and recorded in the manifest."
+      ]
+    },
+    {
+      "id": "PROF-002",
+      "priority": "blocking_for_full_regeneration",
+      "request": "Supply the MERRA product/version, time range, spatial sampling, variables, vertical-coordinate conversion, quality filtering, and percentile-construction statistic that produced the four profiles.",
+      "acceptance": [
+        "The derivation can be rerun from immutable or digest-identified inputs.",
+        "The meaning of q25/q50/q75/q95 is stated explicitly; it is not inferred from selector tau225 values."
+      ]
+    },
+    {
+      "id": "SITE-001",
+      "priority": "blocking_for_full_regeneration",
+      "request": "Supply the exact LMT latitude, longitude convention, altitude/reference datum, ground or ambient boundary inputs, Earth/atmosphere geometry, refraction/curvature settings, and elevation-to-slant-path directives used by am.",
+      "acceptance": [
+        "Values come from the historical run configuration or an owner-approved replacement explicitly labeled as a new convention.",
+        "The raw-generator slant geometry is kept distinct from Citlali's downstream modified-secant sample-airmass formula."
+      ]
+    },
+    {
+      "id": "GRID-001",
+      "priority": "blocking_for_full_regeneration",
+      "request": "Confirm the generator directives that produced the recovered 0--500 GHz, 0.01-GHz, 50,001-point grid and the 20--80 degree, 2-degree, 31-point grid, including endpoint inclusion, numeric precision, atmTtx direction/reference plane, and atmTRJ definition.",
+      "acceptance": [
+        "A rerun reproduces array names, shapes, coordinate ordering, and units without post hoc resampling.",
+        "The recorded dissertation text discrepancy (10--80 degrees in 10-degree steps versus recovered arrays at 20--80 degrees in 2-degree steps) is resolved by provenance, not silently edited."
+      ]
+    },
+    {
+      "id": "MID-001",
+      "priority": "blocking_for_operator_selection",
+      "request": "Provide independent atmosphere-model calculations at preregistered intermediate zenith tau225 nodes 6.94133915289252557e-02, 1.23326285582665493e-01, and 2.31590792882712782e-01, or approve a different blinded holdout design before generation. Supply the physical profile-construction rule for each node rather than scaling a fitted transmission surface.",
+      "acceptance": [
+        "Runs cover the full proposed operational elevation and spectral grid.",
+        "Candidate fitting does not consume the held-out outputs before the operator definitions and error metric are frozen.",
+        "At least one independent run lies in each q25--q50, q50--q75, and q75--q95 interval."
+      ]
+    },
+    {
+      "id": "SPEC-001",
+      "priority": "owner_scientific_choice",
+      "request": "Choose whether the successor preserves the recovered legacy monochromatic convention (recommended for faithful lineage closure) or intentionally changes to a band-integrated operator. Record the choice as a versioned scientific convention.",
+      "acceptance": [
+        "A monochromatic choice fixes 272.73, 214.29, and 150.00 GHz with 225.00 GHz as the reference.",
+        "A band-integrated choice is labeled a new model version and triggers BAND-001-CONDITIONAL."
+      ]
+    },
+    {
+      "id": "BAND-001-CONDITIONAL",
+      "priority": "blocking_only_if_band_integrated_successor_is_selected",
+      "request": "If SPEC-001 selects band integration, identify exact passband arrays and SHA-256 values, array/detector aggregation, normalization, source spectral weighting convention and reference spectrum, interpolation/quadrature rule, out-of-band handling, and the definition of the band/reference transmission ratio.",
+      "acceptance": [
+        "All three bandpasses and their generator/release are immutable and versioned.",
+        "Integration reproduces a frozen reference table in an independent rerun."
+      ]
+    },
+    {
+      "id": "DOMAIN-001",
+      "priority": "blocking_for_operator_selection",
+      "request": "Approve the operational zenith-tau225 and aligned-elevation domain. The present 30--80 degree analysis is diagnostic only; the recovered raw grid supports 20--80 degrees, and no extrapolation is authorized.",
+      "acceptance": [
+        "Minimum and maximum values, endpoint inclusivity, out-of-domain fail-closed behavior, and any data-quality eligibility rules are explicit.",
+        "The domain is contained in the supplied raw and held-out model support."
+      ]
+    }
+  ],
+  "facts_already_recovered_do_not_request_again": [
+    "Complete q25/q50/q75 NPZ grids and their SHA-256/registry MD5 identities.",
+    "Raw grid coordinates: 0--500 GHz at 0.01 GHz and 20--80 degrees at 2 degrees.",
+    "Legacy nominal samples: 272.73, 214.29, 150.00, and reference 225.00 GHz.",
+    "Legacy fit: numpy.polyfit degree six in elevation radians over 31 nodes, coefficient rounding to eight decimals, and no passband integration.",
+    "Selector zenith-tau225 anchors derived as -log(T225 at 80 degrees)/X(80 degrees); q25/q50/q75 are verified against raw bytes."
+  ],
+  "delivery_layout": {
+    "root": "validation/sci_cal_001_atmosphere_operator_YYYY-MM-DD/inputs/owner_supplied/",
+    "required_manifest": "owner_supplied_manifest.json conforming to atmosphere_regeneration_manifest.schema.json",
+    "digest_file": "SHA256SUMS with paths relative to the delivery root",
+    "immutability": "Preserve original bytes; generated normalized tables are separate derived artifacts."
+  }
+}

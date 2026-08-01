@@ -1,0 +1,954 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://toltec.astro.umass.edu/schemas/sci-cal-001/atmosphere-regeneration-manifest-v1.json",
+  "title": "SCI-CAL-001 atmosphere regeneration manifest",
+  "description": "A fail-closed manifest for reproducing a TolTEC atmosphere grid and deriving an extinction operator without silently filling missing scientific inputs.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "package_id",
+    "created_date",
+    "repair_base_sha",
+    "repair_line_evidence_head",
+    "status",
+    "generator",
+    "atmospheric_profiles",
+    "tau225_anchors",
+    "site_geometry",
+    "frequency_grid",
+    "elevation_and_airmass",
+    "spectral_convention",
+    "bandpasses",
+    "band_integration",
+    "artifacts",
+    "execution",
+    "operational_domain",
+    "unresolved_fact_ids"
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "git_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "f64": {
+      "type": "string",
+      "pattern": "^[+-]?[0-9]\\.[0-9]{17}e[+-][0-9]{2,3}$"
+    },
+    "resolution_status": {
+      "enum": [
+        "resolved",
+        "partially_resolved",
+        "unresolved_owner_input_required",
+        "not_applicable"
+      ]
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "role",
+        "availability",
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "role": {
+          "type": "string",
+          "minLength": 1
+        },
+        "availability": {
+          "enum": [
+            "task_package",
+            "local_read_only",
+            "repository_revision"
+          ]
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "md5_registry_identity": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$"
+        },
+        "repository_commit": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "resolved_grid": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "minimum",
+        "maximum",
+        "step",
+        "count",
+        "unit"
+      ],
+      "properties": {
+        "minimum": {
+          "$ref": "#/$defs/f64"
+        },
+        "maximum": {
+          "$ref": "#/$defs/f64"
+        },
+        "step": {
+          "$ref": "#/$defs/f64"
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  },
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "sci-cal-001-atmosphere-regeneration-manifest-v1"
+    },
+    "package_id": {
+      "const": "SCI-CAL-001"
+    },
+    "created_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "repair_base_sha": {
+      "$ref": "#/$defs/git_sha"
+    },
+    "repair_line_evidence_head": {
+      "$ref": "#/$defs/git_sha"
+    },
+    "status": {
+      "enum": [
+        "complete_regeneration_input",
+        "partial_recovery_blocked_on_owner_inputs"
+      ]
+    },
+    "generator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "model_name",
+        "historical_release_evidence",
+        "executable_or_source_sha256",
+        "argv",
+        "required_fact_ids"
+      ],
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/resolution_status"
+        },
+        "model_name": {
+          "type": "string"
+        },
+        "historical_release_evidence": {
+          "type": "string"
+        },
+        "executable_or_source_sha256": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "argv": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "required_fact_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "atmospheric_profiles": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "historical_source_evidence",
+        "percentile_models",
+        "construction_method",
+        "input_artifact_ids",
+        "required_fact_ids"
+      ],
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/resolution_status"
+        },
+        "historical_source_evidence": {
+          "type": "string"
+        },
+        "percentile_models": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "am_q25",
+              "am_q50",
+              "am_q75",
+              "am_q95"
+            ]
+          },
+          "minItems": 4,
+          "maxItems": 4,
+          "uniqueItems": true
+        },
+        "construction_method": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "input_artifact_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "required_fact_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "tau225_anchors": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "allOf": [
+        {
+          "contains": {
+            "properties": {
+              "model": {
+                "const": "am_q25"
+              }
+            },
+            "required": [
+              "model"
+            ]
+          },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        {
+          "contains": {
+            "properties": {
+              "model": {
+                "const": "am_q50"
+              }
+            },
+            "required": [
+              "model"
+            ]
+          },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        {
+          "contains": {
+            "properties": {
+              "model": {
+                "const": "am_q75"
+              }
+            },
+            "required": [
+              "model"
+            ]
+          },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        {
+          "contains": {
+            "properties": {
+              "model": {
+                "const": "am_q95"
+              }
+            },
+            "required": [
+              "model"
+            ]
+          },
+          "minContains": 1,
+          "maxContains": 1
+        }
+      ],
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "model",
+          "selector_tau225_binary64",
+          "selector_anchor_origin",
+          "raw_t225_at_80deg",
+          "raw_grid_artifact_id",
+          "generation_profile_status"
+        ],
+        "properties": {
+          "model": {
+            "enum": [
+              "am_q25",
+              "am_q50",
+              "am_q75",
+              "am_q95"
+            ]
+          },
+          "selector_tau225_binary64": {
+            "$ref": "#/$defs/f64"
+          },
+          "selector_anchor_origin": {
+            "type": "string"
+          },
+          "raw_t225_at_80deg": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/f64"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "raw_grid_artifact_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "generation_profile_status": {
+            "$ref": "#/$defs/resolution_status"
+          }
+        }
+      }
+    },
+    "site_geometry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "site_name",
+        "latitude_deg",
+        "longitude_deg",
+        "altitude_m",
+        "raw_model_slant_geometry",
+        "required_fact_ids"
+      ],
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/resolution_status"
+        },
+        "site_name": {
+          "type": "string"
+        },
+        "latitude_deg": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "longitude_deg": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "altitude_m": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "raw_model_slant_geometry": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "required_fact_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "frequency_grid": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "recovered_grid",
+        "array_layout",
+        "quantities",
+        "generator_directive_status",
+        "required_fact_ids"
+      ],
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/resolution_status"
+        },
+        "recovered_grid": {
+          "$ref": "#/$defs/resolved_grid"
+        },
+        "array_layout": {
+          "type": "string"
+        },
+        "quantities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "generator_directive_status": {
+          "$ref": "#/$defs/resolution_status"
+        },
+        "required_fact_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "elevation_and_airmass": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "recovered_raw_elevation_grid",
+        "published_narrative_discrepancy",
+        "downstream_airmass_formula",
+        "raw_generator_airmass_status",
+        "required_fact_ids"
+      ],
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/resolution_status"
+        },
+        "recovered_raw_elevation_grid": {
+          "$ref": "#/$defs/resolved_grid"
+        },
+        "published_narrative_discrepancy": {
+          "type": "string"
+        },
+        "downstream_airmass_formula": {
+          "type": "string"
+        },
+        "raw_generator_airmass_status": {
+          "$ref": "#/$defs/resolution_status"
+        },
+        "required_fact_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "spectral_convention": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "legacy_fit_status",
+        "legacy_band_frequencies_ghz",
+        "reference_frequency_ghz",
+        "legacy_fit_quantity",
+        "successor_status",
+        "required_fact_ids"
+      ],
+      "properties": {
+        "legacy_fit_status": {
+          "$ref": "#/$defs/resolution_status"
+        },
+        "legacy_band_frequencies_ghz": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "a1100",
+            "a1400",
+            "a2000"
+          ],
+          "properties": {
+            "a1100": {
+              "$ref": "#/$defs/f64"
+            },
+            "a1400": {
+              "$ref": "#/$defs/f64"
+            },
+            "a2000": {
+              "$ref": "#/$defs/f64"
+            }
+          }
+        },
+        "reference_frequency_ghz": {
+          "$ref": "#/$defs/f64"
+        },
+        "legacy_fit_quantity": {
+          "type": "string"
+        },
+        "successor_status": {
+          "$ref": "#/$defs/resolution_status"
+        },
+        "required_fact_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "bandpasses": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "legacy_fit_usage",
+        "available_not_used_artifact_ids",
+        "successor_status",
+        "required_fact_ids"
+      ],
+      "properties": {
+        "legacy_fit_usage": {
+          "const": "none_monochromatic_sampling"
+        },
+        "available_not_used_artifact_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "successor_status": {
+          "$ref": "#/$defs/resolution_status"
+        },
+        "required_fact_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "band_integration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "legacy_fit",
+        "legacy_polynomial_fit",
+        "successor_status",
+        "required_fact_ids"
+      ],
+      "properties": {
+        "legacy_fit": {
+          "type": "string"
+        },
+        "legacy_polynomial_fit": {
+          "type": "string"
+        },
+        "successor_status": {
+          "$ref": "#/$defs/resolution_status"
+        },
+        "required_fact_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/artifact"
+      },
+      "minItems": 1
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "raw_grid_generation_status",
+        "raw_grid_generation_argv",
+        "legacy_fit_reproduction_argv",
+        "operator_analysis_argv",
+        "acceptance_gate"
+      ],
+      "properties": {
+        "raw_grid_generation_status": {
+          "$ref": "#/$defs/resolution_status"
+        },
+        "raw_grid_generation_argv": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "legacy_fit_reproduction_argv": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "operator_analysis_argv": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "acceptance_gate": {
+          "type": "string"
+        }
+      }
+    },
+    "operational_domain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "zenith_tau225_min",
+        "zenith_tau225_max",
+        "aligned_elevation_min_deg",
+        "aligned_elevation_max_deg",
+        "endpoints_inclusive",
+        "out_of_domain_behavior",
+        "evidence_support",
+        "required_fact_ids"
+      ],
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/resolution_status"
+        },
+        "zenith_tau225_min": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/f64"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "zenith_tau225_max": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/f64"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "aligned_elevation_min_deg": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/f64"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "aligned_elevation_max_deg": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/f64"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "endpoints_inclusive": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "out_of_domain_behavior": {
+          "const": "fail_closed"
+        },
+        "evidence_support": {
+          "type": "string"
+        },
+        "required_fact_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "unresolved_fact_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "complete_regeneration_input"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "generator": {
+            "properties": {
+              "status": {
+                "const": "resolved"
+              },
+              "executable_or_source_sha256": {
+                "$ref": "#/$defs/sha256"
+              },
+              "argv": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1
+              },
+              "required_fact_ids": {
+                "maxItems": 0
+              }
+            }
+          },
+          "atmospheric_profiles": {
+            "properties": {
+              "status": {
+                "const": "resolved"
+              },
+              "construction_method": {
+                "type": "string",
+                "minLength": 1
+              },
+              "input_artifact_ids": {
+                "minItems": 4
+              },
+              "required_fact_ids": {
+                "maxItems": 0
+              }
+            }
+          },
+          "tau225_anchors": {
+            "items": {
+              "properties": {
+                "raw_t225_at_80deg": {
+                  "$ref": "#/$defs/f64"
+                },
+                "raw_grid_artifact_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "generation_profile_status": {
+                  "const": "resolved"
+                }
+              }
+            }
+          },
+          "site_geometry": {
+            "properties": {
+              "status": {
+                "const": "resolved"
+              },
+              "latitude_deg": {
+                "type": "number"
+              },
+              "longitude_deg": {
+                "type": "number"
+              },
+              "altitude_m": {
+                "type": "number"
+              },
+              "raw_model_slant_geometry": {
+                "type": "string",
+                "minLength": 1
+              },
+              "required_fact_ids": {
+                "maxItems": 0
+              }
+            }
+          },
+          "frequency_grid": {
+            "properties": {
+              "status": {
+                "const": "resolved"
+              },
+              "generator_directive_status": {
+                "const": "resolved"
+              },
+              "required_fact_ids": {
+                "maxItems": 0
+              }
+            }
+          },
+          "elevation_and_airmass": {
+            "properties": {
+              "status": {
+                "const": "resolved"
+              },
+              "raw_generator_airmass_status": {
+                "const": "resolved"
+              },
+              "required_fact_ids": {
+                "maxItems": 0
+              }
+            }
+          },
+          "spectral_convention": {
+            "properties": {
+              "legacy_fit_status": {
+                "const": "resolved"
+              },
+              "successor_status": {
+                "const": "resolved"
+              },
+              "required_fact_ids": {
+                "maxItems": 0
+              }
+            }
+          },
+          "bandpasses": {
+            "properties": {
+              "successor_status": {
+                "enum": [
+                  "resolved",
+                  "not_applicable"
+                ]
+              },
+              "required_fact_ids": {
+                "maxItems": 0
+              }
+            }
+          },
+          "band_integration": {
+            "properties": {
+              "successor_status": {
+                "enum": [
+                  "resolved",
+                  "not_applicable"
+                ]
+              },
+              "required_fact_ids": {
+                "maxItems": 0
+              }
+            }
+          },
+          "execution": {
+            "properties": {
+              "raw_grid_generation_status": {
+                "const": "resolved"
+              },
+              "raw_grid_generation_argv": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1
+              }
+            }
+          },
+          "operational_domain": {
+            "properties": {
+              "status": {
+                "const": "resolved"
+              },
+              "zenith_tau225_min": {
+                "$ref": "#/$defs/f64"
+              },
+              "zenith_tau225_max": {
+                "$ref": "#/$defs/f64"
+              },
+              "aligned_elevation_min_deg": {
+                "$ref": "#/$defs/f64"
+              },
+              "aligned_elevation_max_deg": {
+                "$ref": "#/$defs/f64"
+              },
+              "endpoints_inclusive": {
+                "type": "boolean"
+              },
+              "required_fact_ids": {
+                "maxItems": 0
+              }
+            }
+          },
+          "unresolved_fact_ids": {
+            "maxItems": 0
+          }
+        }
+      }
+    }
+  ]
+}

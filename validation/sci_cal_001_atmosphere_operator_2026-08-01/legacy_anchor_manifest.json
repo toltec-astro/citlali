@@ -1,0 +1,237 @@
+{
+  "anchors": [
+    {
+      "coefficients_by_band_source_literals": {
+        "a1100": [
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        "a1400": [
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        "a2000": [
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ]
+      },
+      "model": "am_q0",
+      "reference_225ghz_transmission_literal": "1.0",
+      "tau225_selector_anchor_binary64": "0.00000000000000000e+00",
+      "tau225_selector_anchor_hex": "0x0.0p+0"
+    },
+    {
+      "coefficients_by_band_source_literals": {
+        "a1100": [
+          "-0.12008024",
+          "0.72422015",
+          "-1.81734478",
+          "2.45313012",
+          "-1.92159695",
+          "0.86918801",
+          "0.78604295"
+        ],
+        "a1400": [
+          "0.02619509",
+          "-0.15757661",
+          "0.39400473",
+          "-0.52912696",
+          "0.411213",
+          "-0.18360141",
+          "1.04398466"
+        ],
+        "a2000": [
+          "0.16726241",
+          "-1.00436302",
+          "2.50507317",
+          "-3.35219659",
+          "2.59080373",
+          "-1.14622096",
+          "1.26931683"
+        ]
+      },
+      "model": "am_q25",
+      "reference_225ghz_transmission_literal": "0.9500275",
+      "tau225_selector_anchor_binary64": "5.04874104674104401e-02",
+      "tau225_selector_anchor_hex": "0x1.9d97c61a26f5ep-5"
+    },
+    {
+      "coefficients_by_band_source_literals": {
+        "a1100": [
+          "-0.18770822",
+          "1.13390437",
+          "-2.85173457",
+          "3.8617083",
+          "-3.03996805",
+          "1.38624303",
+          "0.65300169"
+        ],
+        "a1400": [
+          "0.04292884",
+          "-0.25817762",
+          "0.64533115",
+          "-0.86622214",
+          "0.67267823",
+          "-0.29996916",
+          "1.07167603"
+        ],
+        "a2000": [
+          "0.35178447",
+          "-2.10859714",
+          "5.24620825",
+          "-6.9952531",
+          "5.37645792",
+          "-2.35675076",
+          "1.54286813"
+        ]
+      },
+      "model": "am_q50",
+      "reference_225ghz_transmission_literal": "0.9142065",
+      "tau225_selector_anchor_binary64": "8.83393725904400573e-02",
+      "tau225_selector_anchor_hex": "0x1.69d68bc39a014p-4"
+    },
+    {
+      "coefficients_by_band_source_literals": {
+        "a1100": [
+          "-0.28189529",
+          "1.70842347",
+          "-4.31606883",
+          "5.88248549",
+          "-4.67702093",
+          "2.16747228",
+          "0.4393435"
+        ],
+        "a1400": [
+          "0.07581154",
+          "-0.45574885",
+          "1.13852458",
+          "-1.52697451",
+          "1.18425865",
+          "-0.5269455",
+          "1.12531753"
+        ],
+        "a2000": [
+          "0.79869908",
+          "-4.77265095",
+          "11.82393401",
+          "-15.67007557",
+          "11.93052031",
+          "-5.14788907",
+          "2.14595898"
+        ]
+      },
+      "model": "am_q75",
+      "reference_225ghz_transmission_literal": "0.8515054",
+      "tau225_selector_anchor_binary64": "1.58313198574890929e-01",
+      "tau225_selector_anchor_hex": "0x1.4439b5d33c071p-3"
+    },
+    {
+      "coefficients_by_band_source_literals": {
+        "a1100": [
+          "-1.21882233",
+          "6.67068453",
+          "-14.96466875",
+          "17.78045563",
+          "-12.10288687",
+          "4.76050807",
+          "-0.06765066"
+        ],
+        "a1400": [
+          "0.76090502",
+          "-4.05867663",
+          "8.78487281",
+          "-9.90872343",
+          "6.2198602",
+          "-2.13790165",
+          "1.3668983"
+        ],
+        "a2000": [
+          "16.0063036",
+          "-84.30325144",
+          "179.28096414",
+          "-197.05751682",
+          "118.73627425",
+          "-37.99279818",
+          "6.55457576"
+        ]
+      },
+      "model": "am_q95",
+      "reference_225ghz_transmission_literal": "0.7337698",
+      "tau225_selector_anchor_binary64": "3.04868387190534607e-01",
+      "tau225_selector_anchor_hex": "0x1.382f6b22453bfp-2"
+    }
+  ],
+  "candidate_definitions": {
+    "common": "For 0<=tau225<=tau_q25 use the owner-approved exact linear interpolation in LOS optical depth. For tau>tau_q25 evaluate the exact legacy fitted anchor surface at the requested elevation, then interpolate LOS optical depth in tau225. Outside [0,tau_q95] fail closed.",
+    "cubic_through_anchors_los_tau_v0": "One barycentric cubic in tau225 through q25/q50/q75/q95 LOS optical depths; an exact but non-shape-constrained stress candidate; C0 with the fixed low-opacity segment.",
+    "pchip_los_tau_v0": "SciPy PCHIP in tau225 through q25/q50/q75/q95 LOS optical depths; shape preserving in opacity when anchor values are monotone; C0 with the separately fixed low-opacity segment.",
+    "piecewise_linear_los_tau_v0": "Piecewise affine interpolation in tau225 between adjacent q-anchor LOS optical depths; C0 at every anchor."
+  },
+  "diagnostic_domain_not_operational": {
+    "elevation_max_deg": "8.00000000000000000e+01",
+    "elevation_min_deg": "3.00000000000000000e+01",
+    "elevation_step_deg": "1.00000000000000006e-01",
+    "monotonicity_tolerance_los_tau": "9.99999999999999980e-13",
+    "tau225_max": "3.04868387190534607e-01",
+    "tau225_min": "0.00000000000000000e+00",
+    "tau_dense_grid_base_count": 1001
+  },
+  "frozen_inputs": [
+    {
+      "path": "include/citlali/core/timestream/rtc/calibrate.h",
+      "sha256": "d70a55278227b43cdd7de19bc67e4ddb332524d40e1455c5fa7a80ae5e2d11ee"
+    },
+    {
+      "path": "include/citlali/core/timestream/extinction_model_selection.h",
+      "sha256": "45cf86bbb2318c22514411f6d2a0e0371e22e9e355e61b293d93c628d9f3469d"
+    },
+    {
+      "path": "validation/sci_cal_001_phase0_2026-07-31/generate_q_model_continuity.py",
+      "sha256": "a46211c007bdc1fa11d1408c6db4c4a68264ca00cd383806fd421ba978fffe78"
+    }
+  ],
+  "identity": {
+    "evidence_status": "legacy_polynomial_surrogate_not_raw_atmosphere_model",
+    "operator_authorization": "none",
+    "package": "SCI-CAL-001",
+    "repair_base_sha": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
+    "repair_line_evidence_head": "ae99be1cef8c390d0e7490835ffca1f31da7ebc0"
+  },
+  "limitations": [
+    "Raw q25/q50/q75 calculations are evaluated by the companion recovery script, not this legacy-anchor analysis.",
+    "Raw q95 and above-q75/intermediate-opacity atmosphere calculations are not present.",
+    "Selector-derived tau225 anchors may not equal original profile inputs.",
+    "Legacy elevation polynomials are fitted evidence, not approved raw anchors.",
+    "The diagnostic 30--80 degree range is not an operational domain.",
+    "The full-domain provisional one-percent raw-grid correction-error gate is not evaluated."
+  ],
+  "numeric_environment": {
+    "float_mantissa_bits": 53,
+    "float_radix": 2,
+    "numpy": "2.2.3",
+    "python": "3.13.2",
+    "scipy": "1.15.2"
+  },
+  "schema_version": "sci-cal-001-legacy-anchor-manifest-v1",
+  "source_constants": {
+    "degree_divisor_literal": "180.0",
+    "modified_secant_correction_literal": "0.0012",
+    "pi_literal": "3.14159265358979323846",
+    "reference_elevation_deg_literal": "80.0"
+  }
+}

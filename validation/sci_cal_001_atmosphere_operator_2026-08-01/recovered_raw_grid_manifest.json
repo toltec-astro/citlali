@@ -1,0 +1,202 @@
+{
+  "identity": {
+    "package": "SCI-CAL-001",
+    "repair_base_sha": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
+    "repair_line_evidence_head": "ae99be1cef8c390d0e7490835ffca1f31da7ebc0",
+    "status": "partial_raw_recovery_q25_q50_q75_q95_missing"
+  },
+  "missing_q95_request": {
+    "expected_md5": "0ca7b331823237767d26016d19bffb3d",
+    "model": "am_q95",
+    "retrieval_status": "not_present_locally_not_contacted",
+    "tolteca_datafile_id": "461"
+  },
+  "numeric_environment": {
+    "float_mantissa_bits": 53,
+    "float_radix": 2,
+    "numpy": "2.2.3",
+    "python": "3.13.2"
+  },
+  "raw_grid": {
+    "atmosphere_temperature_identity": "rayleigh_jeans_kelvin",
+    "elevation_deg": {
+      "count": 31,
+      "maximum": "8.00000000000000000e+01",
+      "minimum": "2.00000000000000000e+01",
+      "step": "2.00000000000000000e+00"
+    },
+    "frequency_ghz": {
+      "count": 50001,
+      "maximum": "5.00000000000000000e+02",
+      "minimum": "0.00000000000000000e+00",
+      "step": "1.00000000000000002e-02"
+    },
+    "transmission_identity": "dimensionless atmospheric transmission stored as atmTtx; exact reference-plane wording is not embedded"
+  },
+  "raw_sources": [
+    {
+      "filename": "amLMT25.npz",
+      "md5": "008d7fa69aff187a9edf419f3d961b4c",
+      "model": "am_q25",
+      "npz_members": {
+        "atmFreq": {
+          "dtype": "float64",
+          "shape": [
+            50001,
+            31
+          ]
+        },
+        "atmTRJ": {
+          "dtype": "float64",
+          "shape": [
+            50001,
+            31
+          ]
+        },
+        "atmTtx": {
+          "dtype": "float64",
+          "shape": [
+            50001,
+            31
+          ]
+        },
+        "el": {
+          "dtype": "float64",
+          "shape": [
+            31
+          ]
+        }
+      },
+      "path_within_source_directory": "amLMT25.npz",
+      "sha256": "6ddffcd2c68bbc0f6d8f6470eba0d1aa81457dcc2f348fd2d7e44c9dfe48c87b",
+      "tolteca_datafile_id": "454"
+    },
+    {
+      "filename": "amLMT50.npz",
+      "md5": "6ec393672be8af4dfa06a3f4cf9aa32e",
+      "model": "am_q50",
+      "npz_members": {
+        "atmFreq": {
+          "dtype": "float64",
+          "shape": [
+            50001,
+            31
+          ]
+        },
+        "atmTRJ": {
+          "dtype": "float64",
+          "shape": [
+            50001,
+            31
+          ]
+        },
+        "atmTtx": {
+          "dtype": "float64",
+          "shape": [
+            50001,
+            31
+          ]
+        },
+        "el": {
+          "dtype": "float64",
+          "shape": [
+            31
+          ]
+        }
+      },
+      "path_within_source_directory": "amLMT50.npz",
+      "sha256": "1fe6dd2ab7a4d65f445e20c5a8f438eb42884836e7932d86f80c30e235710f81",
+      "tolteca_datafile_id": "455"
+    },
+    {
+      "filename": "amLMT75.npz",
+      "md5": "d6cf4bb27008179ec491864388deac58",
+      "model": "am_q75",
+      "npz_members": {
+        "atmFreq": {
+          "dtype": "float64",
+          "shape": [
+            50001,
+            31
+          ]
+        },
+        "atmTRJ": {
+          "dtype": "float64",
+          "shape": [
+            50001,
+            31
+          ]
+        },
+        "atmTtx": {
+          "dtype": "float64",
+          "shape": [
+            50001,
+            31
+          ]
+        },
+        "el": {
+          "dtype": "float64",
+          "shape": [
+            31
+          ]
+        }
+      },
+      "path_within_source_directory": "amLMT75.npz",
+      "sha256": "adbb8eb974c4e2744c3efb0f627708565f954c4029d9345e4f434699e8843f8e",
+      "tolteca_datafile_id": "456"
+    }
+  ],
+  "recovered_legacy_fit": {
+    "band_frequencies_ghz": {
+      "a1100": "2.72730000000000018e+02",
+      "a1400": "2.14289999999999992e+02",
+      "a2000": "1.50000000000000000e+02"
+    },
+    "coefficient_rounding_decimal_places": 8,
+    "elevation_coordinate": "radians",
+    "fit": "numpy.polyfit over all 31 raw elevation nodes",
+    "passband_integration": "none_monochromatic_sampling",
+    "polynomial_degree": 6,
+    "ratio": "atmTtx(band_frequency,elevation)/atmTtx(225GHz,elevation)",
+    "reference_frequency_ghz": "2.25000000000000000e+02"
+  },
+  "schema_version": "sci-cal-001-recovered-raw-grid-manifest-v1",
+  "source_repository": {
+    "files_are_read_only_inputs": true,
+    "observed_head": "958a2a15f43189846a24556a63ef908da789c7b8",
+    "remote": "git@github.com:toltec-astro/toltec_beammap.git",
+    "source_directory_semantics": "runtime --source-dir is not part of artifact identity; files are located by filename and digest",
+    "vendor_commit": "cedd5345e8d29546f4103f149527e09a9c68a412"
+  },
+  "supporting_sources": [
+    {
+      "path_within_source_directory": "LMTAtmosphere.py",
+      "role": "states am origin and 20--80 degree NPZ support",
+      "sha256": "66f580b85ccbfff9152519ec644df363e4571b9263fe06849dc89aa1858e52d0"
+    },
+    {
+      "path_within_source_directory": "Detector.py",
+      "role": "documents separate modeled passband consumer",
+      "sha256": "82105317865ae1182d88d0874ed96c36a2b8c79c56d7fc6bb1990f008bd81d1a"
+    },
+    {
+      "md5": "c8cae1089964f1a90ecfee36267d1fcd",
+      "path_within_source_directory": "model_passbands.npz",
+      "role": "available modeled passbands not used by recovered Citlali fit",
+      "sha256": "861e6ce7af55b18c14a800defaf0b9a11099a16c307da08e391e1d8f79a39765"
+    }
+  ],
+  "tolteca_registry": {
+    "path": "tolteca/simu/lmt/__init__.py",
+    "repository_ref": "2791e6a1e6349ad1d3ac549a648f41cbc51b98c7",
+    "sha256": "f2fbf70dff7a355e70188e11e97f50e059c8104a8fb29953d24de4f1a23235d5"
+  },
+  "unresolved_generation_provenance": [
+    "exact am version or executable digest",
+    "am command and configuration",
+    "atmospheric profile files and percentile construction",
+    "site and slant-geometry directives used during generation",
+    "origin of the raw frequency/elevation output directives",
+    "q95 raw NPZ bytes"
+  ]
+}

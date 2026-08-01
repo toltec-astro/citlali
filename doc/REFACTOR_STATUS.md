@@ -78,6 +78,23 @@ freeze the application mainline.
 
 ## Current Snapshot
 
+- A 2026-08-01 SCI-CAL-001 repair-line evidence package has recovered and
+  digest-bound the complete q25, q50, and q75 raw atmosphere grids and exactly
+  reconstructed their monochromatic degree-six coefficient lineage. The full
+  owner-required full-sample-airmass anchor reconstruction differs from the
+  recovered nominal-frequency raw nodes by at most 0.427091% in fractional
+  extinction correction over the available 20--80 degree grid, and a post-hoc
+  q50 raw leave-one-model-out check from the q25/q75 anchor reconstructions
+  differs by at most 0.243563%. These are partial numerical-
+  representation results, not observational-accuracy claims or a full-domain
+  gate. q95, the original `am` executable/configuration and atmospheric
+  profiles, independent intermediate-opacity runs, spectral-lineage choice,
+  and an approved operational domain remain missing. Piecewise-linear
+  line-of-sight optical depth is preregistered as the primary candidate and
+  PCHIP as the challenger; no successor operator, domain, repair, or re-audit
+  is authorized. The late SCI-ALIGN-001 sample-identity handoff remains an
+  open dependency for any aligned-elevation consumer. See the
+  [reproducible evidence package](../validation/sci_cal_001_atmosphere_operator_2026-08-01/README.md).
 - A 2026-07-30 coherent raw-I/Q event investigation has produced the first
   mode-aware observe-only production slice. The current RTC/PTC learning
   path records accepted intervals per detector UID and compacts only within
