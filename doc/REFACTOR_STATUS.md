@@ -183,8 +183,18 @@ base. Its checksum-list digest is
 all entries and source identities verify, and no application source changed.
 The
 [phase-zero coordinator review](audits/packages/SCI-ALIGN-001_PHASE_ZERO_COORDINATOR_REVIEW_2026-08-01.md)
-records verdict `STOP_FOR_OWNER_AUTHORITY` and five grouped pending owner
-decisions/questions.
+records the initial verdict `STOP_FOR_OWNER_AUTHORITY` and five grouped owner
+decisions/questions. The project owner has since approved
+`ALIGN-P0-D001` in the
+[phase-zero D001 decision record](audits/packages/SCI-ALIGN-001_PHASE_ZERO_D001_DECISION_2026-08-01.md)
+as an exact, named `legacy_inferred` timestamp adapter for the previously
+accepted nonpolarimetric profiles only. The repair preserves the current
+subtract-half/truncation anchor and `2^32-1` conditional delta without calling
+them producer-authoritative, making a one-tick correction, selecting an
+integration event, or adding an absolute-timing claim. Malformed, duplicate,
+reset/backward, colliding, or nonmonotonic state fails; ordinary forward packet
+gaps route to `ALIGN-OD4`. New profiles or stronger timing claims require a
+versioned producer ICD. `ALIGN-P0-D002`--`D005` remain pending.
 Phase one, application repair, Unity evidence, re-audit, and production
 expansion remain unstarted. The approved contract and existing-use-only
 restriction are unchanged.
@@ -291,7 +301,7 @@ remains the immutable AST comparison anchor, not a usable repair base: it lacks
 the approved typed ALIGN interface. ALIGN phase-zero commit
 `53c7154a3633dfe19dc036cfb5a6250f729a897d` is an evidence-only child with no
 application-source delta and is also not admissible. Resolve
-`ALIGN-P0-D001`--`D005`, complete and locally validate ALIGN phase one, return
+`ALIGN-P0-D002`--`D005`, complete and locally validate ALIGN phase one, return
 the human-run exact-SHA evidence, and accept a fresh ALIGN re-audit before
 selecting the exact accepted ALIGN successor or clean integration SHA as the
 AST repair base. No `codex/repair-sci-ast-001` branch or task is authorized or

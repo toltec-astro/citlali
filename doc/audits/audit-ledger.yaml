@@ -710,6 +710,49 @@ packages:
         clock semantics, owner field policies, and preregistered compatibility
         tolerances remain unresolved; phase 1, application repair, Unity
         evidence, and re-audit are not authorized.
+    phase_zero_owner_decisions:
+      status: partially_resolved_D001_approved_D002_D005_pending
+      phase_one_authorization: none
+      resolved:
+        - id: ALIGN-P0-D001
+          questions: [Q01, Q16]
+          authority: project_owner
+          decision_date: 2026-08-01
+          status: owner_resolved_by_restricted_legacy_compatibility
+          record_path: >-
+            doc/audits/packages/SCI-ALIGN-001_PHASE_ZERO_D001_DECISION_2026-08-01.md
+          record_commit: null
+          record_sha256: >-
+            0efe9d06bf02ceca473c92b00dce4c6d1ec9b6e564f226c9451f444ee5a6d66c
+          affected_findings:
+            - SCI-ALIGN-001-F007
+            - SCI-ALIGN-001-F012
+          producer_authority_status: unavailable
+          semantics_source: legacy_inferred
+          scope: exact_previously_accepted_nonpolarimetric_profiles_only
+          policy: >-
+            Preserve the exact current subtract-half/truncation anchor and
+            conditional 2^32-1 legacy delta only inside a named, versioned
+            legacy-inferred adapter for exact previously accepted
+            nonpolarimetric profiles. Persist unavailable producer epoch,
+            counter, event-anchor, and absolute-precision authority; make no
+            one-tick correction in this repair; fail malformed, duplicate,
+            reset/backward, colliding, or nonmonotonic state; and route
+            ordinary forward PacketCount gaps to ALIGN-OD4.
+          future_trigger: >-
+            New profiles or stronger timing claims require a versioned producer
+            ICD covering field epoch/time scale, logical widths/signedness,
+            exact modulus, reset/rollover/sentinel behavior, PacketCount scope,
+            and sample event semantics.
+          effect: >-
+            Resolves D001 for bounded repair design only. F007 and F012 remain
+            open; implementation, phase one, Unity evidence, re-audit, and
+            production expansion are not approved.
+      pending:
+        - ALIGN-P0-D002
+        - ALIGN-P0-D003
+        - ALIGN-P0-D004
+        - ALIGN-P0-D005
     dispatch:
       status: frozen_for_dispatch
       coordinator_registry_commit: 99bfa3562ecfa05c0c10de24a255a6a18ff313d2
@@ -777,7 +820,7 @@ packages:
         doc/audits/packages/SCI-ALIGN-001_PHASE_ZERO_COORDINATOR_REVIEW_2026-08-01.md
       phase_zero_review_commit: dbebd17627870963789d142fe385ab05268573da
       next_gate: >-
-        Resolve ALIGN-P0-D001 through ALIGN-P0-D005 and record the reviewed
+        Resolve ALIGN-P0-D002 through ALIGN-P0-D005 and record the reviewed
         active-field registry before phase-one fixtures or any application edit.
     repair_base_decision:
       authority: project_owner
@@ -866,15 +909,13 @@ packages:
           the required local and exact-repair-SHA evidence gates, and complete
           a fresh re-audit.
     unresolved_scientific_decisions:
-      - id: ALIGN-P0-D001
-        questions: [Q01, Q16]
-        issue: detector_timestamp_counter_and_anchor_authority
       - id: ALIGN-P0-D002
         questions: [Q02, Q03, Q04]
         issue: lattice_phase_slot_tolerance_and_union_support
       - id: ALIGN-P0-D003
         questions: [Q05, Q17]
         issue: offset_lifecycle_and_malformed_boundary_policy
+        constrained_by: [ALIGN-P0-D001]
       - id: ALIGN-P0-D004
         questions: [Q06, Q07, Q08, Q09, Q10, Q11, Q12, Q14]
         issue: HWPR_telescope_registry_aliases_topology_units_and_output_contract
@@ -2104,11 +2145,11 @@ packages:
       preparation_date: 2026-08-01
       dependency_hold:
         package_id: SCI-ALIGN-001
-        phase_zero_status: owner_authority_required
+        phase_zero_status: partial_owner_resolution_D001_approved_D002_D005_pending
         phase_zero_evidence_commit: 53c7154a3633dfe19dc036cfb5a6250f729a897d
         required_completion: exact_accepted_and_reaudited_ALIGN_successor
       next_gate: >-
-        Resolve ALIGN-P0-D001 through D005, complete and locally validate ALIGN
+        Resolve ALIGN-P0-D002 through D005, complete and locally validate ALIGN
         phase one, return the human-run exact-SHA evidence, accept a fresh ALIGN
         re-audit, and only then select and record the exact AST application base.
     repair_base_decision:
