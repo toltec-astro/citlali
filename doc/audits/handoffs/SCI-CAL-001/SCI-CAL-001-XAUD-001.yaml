@@ -1,0 +1,91 @@
+format_version: 1
+id: SCI-CAL-001-XAUD-001
+created_date: 2026-07-31
+
+source:
+  package_id: SCI-ALIGN-001
+  role: auditor
+  audit_branch: codex/audit-sci-align-001
+  audit_commit: null
+  governing_or_evidence_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+  finding_ids:
+    - SCI-ALIGN-001-F002
+    - SCI-ALIGN-001-F003
+    - SCI-ALIGN-001-F007
+    - SCI-ALIGN-001-F009
+    - SCI-ALIGN-001-F010
+    - SCI-ALIGN-001-F011
+    - SCI-ALIGN-001-F014
+
+target:
+  package_id: SCI-CAL-001
+
+priority: P0
+evidence_basis: observed
+review_phase: post_core_evidence
+arrival: after_audit_completion
+status: submitted
+
+summary: >-
+  The current ALIGN output does not implement the complete ordered sample
+  identity required by the bounded approved CAL consumer decision supplied in
+  the governing ALIGN prompt.
+claim: >-
+  At the governing source SHA, CAL cannot recover exact original detector row
+  identity, trustworthy common timestamps and elevation validity, acquired
+  duration, gap and interpolation origin, or original-versus-synthesized
+  eligibility from the aligned values, binary masks, scan indices, exposure,
+  and provenance that ALIGN supplies.
+supports:
+  - >-
+    CAL should treat the current ALIGN interface as an open scientific
+    dependency, not as a complete approved sample-identity contract.
+  - >-
+    New CAL claims requiring exact ordered identity, acquired duration, or
+    original-only eligibility should remain restricted pending ALIGN repair and
+    re-audit.
+does_not_establish:
+  - This record does not audit or revise any CAL estimator equation.
+  - >-
+    It does not import unrelated CAL operational decisions into ALIGN, close a
+    CAL finding, authorize repair, or change production state.
+  - It does not establish external raw clock or header semantics.
+
+requested_actions:
+  - add_or_update_dependency
+  - add_or_update_finding
+  - add_interface_test
+  - restrict_consumer
+  - trigger_reaudit
+affected_target_findings: []
+related_handoffs: []
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-ALIGN-001-final-report
+    availability: repository_path
+    path: doc/audits/packages/SCI-ALIGN-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: 6aaed0e6e16e4c37cd24d15b98346f84024ffd7920bd0524e7a170dbc728a393
+    note: >-
+      Post-freeze source trace, product matrix, validation request, findings,
+      verdict, and bounded CAL consumer analysis.
+  - id: SCI-ALIGN-001-independent-core
+    availability: repository_path
+    path: doc/audits/packages/SCI-ALIGN-001_INDEPENDENT_CORE.tex
+    sha256: 4ee7b7e9cbe883ea626afe2e3d22756b20f556a2e06115d4a2832f2e78469785
+    note: Independent equations A1-A19 and tests T01-T18 frozen before source inspection.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: held_for_reaudit
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

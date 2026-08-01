@@ -1,0 +1,737 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.72in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,booktabs,longtable,array,enumitem,hyperref,xcolor}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\setlength{\emergencystretch}{4em}
+\setlength{\tabcolsep}{3.2pt}
+\renewcommand{\arraystretch}{1.08}
+\newcolumntype{L}[1]{>{\raggedright\hyphenpenalty=500\exhyphenpenalty=500\hspace{0pt}\arraybackslash}p{#1}}
+\newcommand{\code}[1]{\nolinkurl{#1}}
+\newcommand{\Aeq}[1]{Equation A#1}
+\newcommand{\testid}[1]{\texttt{T#1}}
+
+\newcommand{\AuditPackageID}{SCI-ALIGN-001}
+\newcommand{\AuditPackageName}{Sample alignment, scan slicing, and gap interpolation}
+\newcommand{\AuditTier}{A}
+\newcommand{\AuditGoverningSHA}{9aae0e669384c5c0c0dda93debc194d6b8dac787}
+\newcommand{\AuditGoverningSHAPrint}{\code{9aae0e669384c5c0c0dd}\allowbreak\code{a93debc194d6b8dac787}}
+\newcommand{\AuditBranch}{codex/audit-sci-align-001}
+\newcommand{\AuditWorktree}{/Users/gwilson/.codex/worktrees/3f48/citlali-refactor}
+\newcommand{\AuditCorePath}{doc/audits/packages/SCI-ALIGN-001_INDEPENDENT_CORE.tex}
+\newcommand{\AuditCoreSHA}{4ee7b7e9cbe883ea626afe2e3d22756b20f556a2e06115d4a2832f2e78469785}
+\newcommand{\AuditCoreSHAPrint}{\code{4ee7b7e9cbe883ea626afe2e3d22756b}\allowbreak\code{20f556a2e06115d4a2832f2e78469785}}
+\newcommand{\AuditPromptSHAPrint}{\code{a50ae4e4df8c8917f0c8f09adacacbe8}\allowbreak\code{0f887bbbd05f8d57f561cc446f37df4b}}
+\newcommand{\AuditManifestSHAPrint}{\code{4bad1e6b853a1176c40dfac405fe2a882}\allowbreak\code{14b129d7fba4eed9261f56725a17d89}}
+\newcommand{\AuditCoreFreezeCommit}{5bcaa3700a5899bae0eaf4038039445668baa1fb}
+\newcommand{\AuditDate}{2026-07-31}
+
+\title{\AuditPackageName\\
+\large Citlali scientific-contract audit: \AuditPackageID}
+\author{Independent package auditor}
+\date{\AuditDate}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The independently derived ALIGN contract constructs a detector-led common
+sample identity, typed and bounded alignment operators, half-open scan
+windows, explicit origin/validity state, full mapping response and covariance,
+and original-sample exposure.  The assessed application source at
+\AuditGoverningSHAPrint{} is nonconformant: it contains deterministic
+invalid-success paths in HWPR timing, slot assignment, gap filling,
+telescope-variable interpolation, observation lifecycle, scan slicing, and
+persisted metadata, while the required mapping, uncertainty, provenance, and
+validation evidence are absent.  The proposed contract therefore requires
+amendment and owner approval; production remains existing-use-only, with the
+affected new consumers and interpretations fail-closed.  This report does not
+authorize repair, external execution, or production expansion.
+\end{abstract}
+\section{Executive summary and bounded scope}
+
+\begin{description}[style=nextline]
+\item[Package] \AuditPackageID: \AuditPackageName.
+\item[Tier] \AuditTier.
+\item[Included transformation] Clock normalization, interface offsets,
+detector/telescope/optional-HWPR common sample identity, mapping and
+interpolation, timing-gap detection and fill, scan construction and slicing,
+sample origin/validity, response/covariance consequences, exposure, lifecycle,
+products, provenance, and bounded CAL/AST/RTC/VAL interfaces before scientific
+conditioning.
+\item[Explicit exclusions] CAL estimators and unit transfer; AST coordinate
+construction, corrections, and WCS; RTC/PTC filtering or cleaning mathematics;
+VAL cross-stage selection policy; map, noise, filter, source, mode, Beammap,
+and fruit-loop
+estimators; polarization demodulation or interpretation.
+\item[Claimed result] The frozen core is a proposed successor contract.  The
+governing implementation is \texttt{nonconformant}; seven P0 and seven P1
+findings remain open.  The verdict is \texttt{amend}, followed by bounded
+repair and fresh exact-repair-SHA re-audit.
+\item[Consumer policy] Historical/regression inspection and already accepted
+operational use are not reclassified by this audit.  No new scientific use is
+authorized.  Nonzero/unproven offsets, enabled HWPR/polarimetry, synthesized
+sample eligibility, exact exposure, timing response/covariance, or any consumer
+requiring traceable original-versus-synthesized state fail closed.
+\end{description}
+
+The implementation does have a narrow conditional numerical property: for a
+strictly increasing, finite, unique, uniform detector stream with exactly one
+native row per accepted slot and only internal gaps, its internal scalar fill
+equals \Aeq{7}.  This does not make the package conditionally conformant,
+because known edge, long-gap, half-slot, scan, HWPR, topology, state, and
+metadata mismatches remain.
+
+\section{Authority and independence record}
+
+\begin{longtable}{L{0.25\linewidth}L{0.69\linewidth}}
+\toprule
+Field & Exact value\\
+\midrule
+\endfirsthead
+\toprule
+Field & Exact value\\
+\midrule
+\endhead
+Governing source SHA & \AuditGoverningSHAPrint.  The audit branch differs
+from it only by audit artifacts.\\
+Initial source state & Clean detached HEAD exactly
+\code{9aae0e669384c5c0c0dda93debc194d6b8dac787};
+\code{codex/refactor-mainline} resolved to the same object.  No existing
+\code{codex/audit-sci-align-001} branch or ALIGN audit worktree was found.\\
+Audit branch/worktree & \code{\AuditBranch}; \code{\AuditWorktree}.\\
+Independent-core bytes & \code{\AuditCorePath}.\\
+Independent-core SHA-256 & \AuditCoreSHAPrint.\\
+Freeze commit and parent & \code{\AuditCoreFreezeCommit}, sole parent
+\AuditGoverningSHAPrint.\\
+Freeze timestamp & \code{2026-08-01T02:48:26Z}
+(commit timestamp \code{2026-07-31T22:48:26-04:00}).\\
+Core compilation/inspection & Offline Tectonic compile from the frozen bytes;
+13 pages rendered with Poppler and every page visually inspected before source
+inspection.  No warnings, clipping, overlap, or missing glyphs were observed.\\
+First package-source inspection & \code{2026-08-01T02:49:18Z}: a direct UTC
+timestamp command followed by reading
+\code{include/citlali/core/pipeline/timestream_alignment_state.h}.  This was
+51 seconds after the freeze commit.\\
+Prior implementation exposure & None known.  Filename-only quarantine
+discovery occurred as permitted; no quarantined contents, tests, configs,
+generated references, history, diffs, or consumers were opened before freeze.\\
+Frozen framework identity & Read-only framework was clean at exact dispatch
+commit \code{1a202ccd16ea0edb09c2c429b09508eeb045546d}; registry snapshot
+\code{99bfa3562ecfa05c0c10de24a255a6a18ff313d2} was verified as its ancestor.\\
+Prompt/manifest bytes & Prompt SHA-256
+\AuditPromptSHAPrint;
+manifest SHA-256
+\AuditManifestSHAPrint.\\
+Frozen handoff manifest &
+\code{doc/audits/handoffs/SCI-ALIGN-001/SCI-ALIGN-001_INBOX_MANIFEST_2026-07-31.yaml};
+no \texttt{pre\_core\_authority} or \texttt{post\_core\_evidence} records.\\
+Pre-core handoff exposure & None.  The approved CAL consumer requirement was
+supplied in the governing prompt, not opened from another package inbox.\\
+First post-core handoff exposure & None; the manifest contains no handoffs and
+no record addressed to ALIGN arrived during the audit.\\
+Approved CAL decision check & After freeze, the bounded decision commit
+\code{e8bd929008140e2ea8b44bfdc80b0a531b488765} was inspected at
+\code{2026-08-01T02:57:03Z}.  This report uses only the exact downstream
+sample-identity requirement quoted by the governing prompt; unrelated CAL
+estimator or operational decisions are not ALIGN authority.\\
+Framework advance during audit & After the initial identity check, the live
+read-only framework advanced to
+\code{e6174dd9f49afe9ec57c150a7a97db3f0f4910e0}.  Filename/digest checks showed
+only CAL/status/ledger changes; the ALIGN prompt, manifest, templates, and
+ALIGN inbox were unchanged.  The audit remained bound to dispatch commit
+\code{1a202ccd16ea0edb09c2c429b09508eeb045546d}.\\
+Application modification check &
+\texttt{git diff --quiet 9aae0e6..5bcaa37 -- include src tests config CMakeLists.txt}
+returned success.  No application code, tests, build files, production
+documentation, or coordination files were changed.\\
+\bottomrule
+\end{longtable}
+
+Pre-freeze project authorities were \code{AGENTS.md},
+\code{doc/ARCHITECTURE.md}, \code{doc/SCIENTIFIC_CONVENTIONS.md}, the ADR
+index, the TolTEC context routing references, and the frozen audit process,
+generic prompt, template, package prompt, and empty manifest.  The full list
+of quarantined implementation areas is preserved in the governing prompt.
+The independent core is immutable evidence; this report does not rewrite it.
+
+\section{Input contract and variable classification}
+
+The complete proposed input contract is in the frozen companion core.  The
+following table gives the minimum facts against which implementation was
+assessed.  Index bases are zero unless a separately named persisted one-based
+presentation is declared.
+
+\begin{longtable}{L{0.13\linewidth}L{0.20\linewidth}L{0.15\linewidth}L{0.15\linewidth}L{0.27\linewidth}}
+\toprule
+Quantity & Identity and shape & Unit/frame & Classification & Conditioning/failure rule\\
+\midrule
+\endfirsthead
+\toprule
+Quantity & Identity and shape & Unit/frame & Classification & Conditioning/failure rule\\
+\midrule
+\endhead
+Detector TOD $X_D$ & $N_D\times P$, ordered native row plus stable detector/interface identity & declared signal unit & random & Finite state is explicit; row position is not detector identity.\\
+Detector time & epoch $E_D$, native row $k$, coordinate $u_{Dk}$, bounds and duration & seconds on declared clock & conditioned upon & Comparable epoch, strictly increasing unique coordinates, positive cadence.\\
+Telescope fields $X_{Tv}$ & one ordered vector per named variable $v$ & declared unit and unchanged frame & random & Every field declares scalar, circular, step, or non-interpolable topology and explicit validity.\\
+HWPR fields $X_{Hv}$ & optional ordered time/angle state & seconds and declared angular domain & random & Timing identity only; absence explicit; polarization interpretation unavailable.\\
+Offsets $\delta_i$ & one observation to interface-reference value & seconds & fixed or observation-resolved & Sign, reference, unit, stage, authority, uncertainty, and constant-offset validity required.\\
+Cadence, bounds, duration & declared cadence, bounds, and per-row duration & seconds & conditioned upon & Not inferred from count alone; nonpositive or incomparable state fails.\\
+Slot, gap, scan policy & phase, tolerance, count/time gap bounds, scan policy & seconds, counts, enumerations & fixed or selected & Requested, effective, observation-resolved, and realized values remain distinct.\\
+Mapping $A$ & realized sparse source-to-output operator & dimensionless & data-derived, conditioned upon & Source IDs, weights, residuals, topology, and selection retained.\\
+Quality $Q$ & cellwise origin, validity, method, reason, source IDs, weights & categorical & data-derived & Original, synthesized, unavailable, and original-invalid remain distinct.\\
+Native covariance & joint sample/stream covariance when supplied & signal-unit squared & random model & Missing terms are unavailable, never zero by default.\\
+\bottomrule
+\end{longtable}
+
+The governing source does not establish the required raw clock/header
+semantics.  Its observed field arithmetic is therefore implementation
+evidence, not external clock authority.
+
+\section{Independently claimed estimator}
+
+The exact independently frozen estimator is the companion file identified in
+the authority table; its SHA-256 is \AuditCoreSHAPrint.  It defines numbered
+Equations A1--A19 and tests T01--T18.  In compact form:
+
+\begin{enumerate}[leftmargin=2.2em]
+\item \Aeq{1} maps every native clock to a declared detector reference clock
+with a positive-add seconds offset applied once before alignment.
+\item Equations A2--A3 define a detector-led common grid and an unambiguous
+round-half-up slot map with strict tolerance, unique occupancy, and retained
+native timestamp residual.
+\item Equations A4--A5 distinguish bounded scalar interpolation from shortest-
+arc circular interpolation; state/categorical variables use declared step
+support or exact coincidence, never ordinary linear interpolation.
+\item \Aeq{6} is the realized block selection/interpolation operator
+$\boldsymbol y_q=A_q\boldsymbol x$; \Aeq{7} is bounded internal detector-gap
+linear fill with no edge extrapolation and explicit source weights.
+\item Equations A8--A9 define stable zero-based, half-open, nonoverlapping scan
+windows that retain final partial and short identities.
+\item Equations A10--A11 define conditional template/fractional-delay response;
+Equations A12--A16 define full mapping, timing, model, and selection uncertainty.
+\item \Aeq{17} gives zero acquired exposure to synthesized/unavailable values;
+Equations A18--A19 define $Q$ and strict original-only alignment eligibility.
+\end{enumerate}
+
+ALIGN is one-pass, not iterative.  Its affine representation applies only
+conditional on the realized mapping and away from circular wrap ambiguity;
+circular interpolation is nonlinear with that local affine form.  It performs
+no photometric, spatial, beam, WCS, or polarization estimator.
+
+\section{Response, covariance, and exposure claim}
+
+For fixed realized $A_q$, the proposed mean and full covariance are
+\[
+ \mathrm{E}[\boldsymbol y_q\mid A_q]=A_q\mathrm{E}[\boldsymbol x\mid A_q],
+ \qquad C_{y_q\mid A_q}=A_qC_{x\mid A_q}A_q^{\mathsf T}.
+\]
+Linear interpolation preserves DC and affine ramps but has the fractional-
+delay response in \Aeq{11}; gap fill is nonstationary and row-specific.
+Timing/offset covariance, interpolation-model error, and policy/selection
+uncertainty remain separate terms.  Missing covariance is unavailable, not
+independent white noise.  Synthesized values may provide explicitly bounded
+continuity support but contribute zero acquired detector exposure and no new
+independent weight.  Scan elapsed span, nominal duration, acquired exposure,
+valid-original exposure, and synthesized count are separate products.
+
+The governing implementation retains neither the realized mapping weights nor
+these covariance, response, and exposure components.  Finite synthesized values are
+calibrated and filtered before flags are used for downstream selection, so a
+binary flag does not remove their transfer into neighboring filtered samples.
+
+\section{Implementation conformity trace}
+
+All paths below were inspected after the freeze at governing source SHA
+\AuditGoverningSHAPrint.  Line numbers refer to that source.
+
+\begin{longtable}{L{0.285\linewidth}L{0.18\linewidth}L{0.10\linewidth}L{0.335\linewidth}}
+\toprule
+Source path & Lines/symbol & Core & Conformity/evidence\\
+\midrule
+\endfirsthead
+\toprule
+Source path & Lines/symbol & Core & Conformity/evidence\\
+\midrule
+\endhead
+\code{config/interface_sync_config.h};
+\code{..._validation.h};
+\code{citlali_config_read_sync_offsets.h} & 8--13; 10--20; 35--107 & A1 & Only finite seconds values exist; absent entries become zero.  Sign, reference, epoch, stage, model validity, and uncertainty are absent.\\
+\code{pipeline/timestream_alignment_helpers.h} &
+\code{network_time_from_timestream_matrix}, 260--280 & A1 & Implements
+\(
+\mathrm{int}(sec_0+nsec_0 10^{-9}-0.5)+pps+(msec-pps\_msec)_{wrap}+\delta
+\).
+Positive TolTEC offset is added before overlap; epoch/rounding/rollover semantics are uncontracted.\\
+\code{engine/detail/todproc_alignment_impl.h} & 63--67, 208--212; 85--149, 223--264 & A1, A5 & TolTEC offsets are used.  Configured HWPR offset is never applied; raw HWPR receive time controls bounds and interpolation.  Direct mode can later double-apply a native HWPR start index to already aligned angle.\\
+\code{engine/calib.h}; \code{pipeline/initial_observation_setup.h} & 23--41; 32--36 & A1, A18 & \code{run_hwpr} has no initializer and is read by initial alignment before the reduction-observation HWPR loader can set/clear it: undefined enabled-path selection.\\
+\code{todproc_alignment_impl.h};
+\code{timestream_alignment_helpers.h} & 223--246; 86--110, 160--208 & A2--A3 & Active gap path chooses latest KIDs/optional-HWPR start, earliest end, and regular $1/f_s$ grid.  Optional HWPR trims detector support; telescope is excluded.  No monotonicity, duplicate, collision, or residual validation.\\
+\code{timestream_alignment_helpers.h};
+\code{utils/utils.h} & 190--197; 1206--1235 & A3, A6, A18 & Mask slot uses \code{std::round} (positive half tie right), while numeric snap uses strict-nearest (tie left).  The row can be discarded against the left mask while the right slot remains falsely marked original/unflagged.  Collisions silently last-write-win.\\
+\code{utils/utils.h};
+\code{kidsproc_gaps_impl.h} & \code{interp_data}, 1187--1277; 190--203 & A6--A7 & Internal gaps are linear on nominal slots, but every run is bridged without count/time bound and leading/trailing slots are constant-extrapolated.  Only final numeric finiteness is required.\\
+\code{timestream_alignment_helpers.h} & 211--248 & A4--A5 & One \code{mlinterp} scalar operator is applied to all telescope values (including \code{Hold} and \code{PpsTime}); HWPR angle is also ordinary linear.  No topology, field validity, source weights, or span gate.\\
+\code{src/.../telescope.cpp}; local Tula \code{mlinterp.hpp} & 101--179; 58--65, 145--162 & A4--A5 & Telescope fields are loaded as doubles; a partial heuristic unwrap omits some angles.  The locally inspected dependency clamps out-of-range targets to endpoints.  The exact same-build Tula identity is external evidence still pending.\\
+\code{src/.../telescope.cpp} & \code{calc_scan_indices}, 299--565 & A8--A9 & Inclusive 4-row matrix.  Raster start uses $i+1$, dropping the first post-hold sample.  Duration/number floor division drops final remainders.  Scans shorter than $2f_s$ are deleted and survivors renumbered; later edge trim can shorten them again.\\
+\code{timestream_scan_generation.h};
+\code{kidsproc_direct_rtc_impl.h};
+\code{kidsproc_gaps_impl.h} & 25--31; 6--29; 15--204 & A6, A9 & Inclusive outer bounds become an exclusive C++ slice and a common-grid segment.  Cardinality is consistent only if the preceding scan and alignment state are correct.\\
+\code{timestream_scan_context.h};
+\code{timestream/rtc/rtcproc.h} & 20--119; 849--1050 & A9--A11, A18--A19 & Telescope/HWPR are sliced with detector context.  Missing-slot masks become generic, optionally dilated flags.  Calibration/extinction and filters consume the filled values; filters do not use those flags.  RTC clamps an inconsistent inner length instead of rejecting it.\\
+\code{timestream_alignment_state.h} & 11--32 & A6, A12--A19 & Holds common time, binary masks, network times, packet-gap counts, windows, and HWPR indices only.  Clears are partial.  No mapping, topology, $Q$, duration, exposure, covariance, or uncertainty.\\
+\code{src/.../telescope.cpp};
+\code{simulated_observation_indices.h} & 101--149; 8--22 & A18; T16 & Telescope maps are not cleared before the next observation, so absent later optional fields can retain stale values.  Simulation bypasses alignment, duplicates start-index entries, leaves end/common/mask state empty or stale, while valid config selects the gap population path.\\
+\code{observation_exposure_time.h} & 7--44 & A17 & \code{EXPTIME}=last aligned \code{TelTime}-first and coadds spans.  It omits one sample duration, retained scan support, gap origin, and original-only exposure.\\
+\code{raw_timestream_execution_plan.h};
+\code{raw_timestream_provenance.h} & 14--67; 31--41, 147--166 & A1, A18--A19 & Requested offsets are copied to effective; unit and values are serialized.  Ignored HWPR offset can be claimed effective.  Observation/realized alignment mapping and quality are absent.\\
+\code{timestream_output_provenance.h} & 54--109 & A8, A18--A19 & Requested chunk mode/value are repeated as effective; realized data contain counts/file mapping, not actual rounded windows, drops, pre/post IDs, origin, exposure, or gap action.\\
+\code{tod_data_static_metadata_vars.h};
+\code{tod_data_scan_placeholders.h} & 19--29; 5--34 & A1, A8, A18 & Every telescope field, including \code{TelTime}, \code{TelUTC}, and \code{Hold}, is persisted with unit \code{rad}.  Inclusive/index-base conventions are incomplete; claimed original scan index follows post-rejection compaction.\\
+\code{timing_gap_*}; \code{timestream_alignment_helpers.h} & count 250--258; log writers & A7, A18 & Gap diagnostic is packet-counter transition count, not missing extent.  \code{gaps.log} stores key/count only and its optional write is unchecked; occupancy holes can occur without a counted packet jump.\\
+\code{lali/pointing/beammap*_pipeline_impl.h};
+\code{timestream_scan_generation.h} & generator before \code{grppi::farm}; 9--23 & T17 & The ALIGN operator is shared and generated sequentially before the farm; there is no separate OMP interpolation operator.  Downstream content/order equivalence is untested.\\
+\bottomrule
+\end{longtable}
+
+\section{Exact implemented operators and known mismatches}
+
+In the active real-data path, valid configuration requires timing-gap
+interpolation.  Let $h=1/f_s$, $t_0$ be the maximum first time over KIDs
+and optional raw HWPR streams, and $t_1$ the minimum last time.  The
+implementation constructs
+\[
+ c_i=t_0+ih,\qquad N=\left\lfloor\frac{t_1-t_0}{h}\right\rfloor+1.
+\]
+It marks slot $i=\mathrm{round}[(t-t_0)/h]$ occupied when the residual is at
+most $h/2$.  Scan-local detector rows are independently snapped to the
+nearest common slot, with exact ties going left; multiple rows can overwrite
+one slot.  Every unfilled internal slot is linearly filled between the nearest
+filled common slots, and every leading/trailing slot is constant extrapolated.
+There is no maximum run count or elapsed time.
+
+Separately, the logged gap count is
+\[
+ G=\sum_{k=1}^{N_D-1}\mathbf 1\{Ts_{k,3}-Ts_{k-1,3}>1\},
+\]
+which counts transitions, not missing packets, common slots, elapsed gap
+duration, or gap identity.  The exact half-slot inconsistency makes the mask
+and numeric operator disagree even on their own chosen grid.  These are known
+mismatches, not external-input assumptions that permit conditional conformity.
+
+\section{Product and consumer matrix}
+
+\begin{longtable}{L{0.12\linewidth}L{0.13\linewidth}L{0.15\linewidth}L{0.08\linewidth}L{0.24\linewidth}L{0.20\linewidth}}
+\toprule
+Input & Operator & Product & Unit & Metadata/validity & Consumer/disposition\\
+\midrule
+\endfirsthead
+\toprule
+Input & Operator & Product & Unit & Metadata/validity & Consumer/disposition\\
+\midrule
+\endhead
+KIDs timing & intersection grid & \code{alignment.common_time}, native network times/masks & seconds in code & In-memory only; no epoch/reference/source-row identity, residual, duration, or $Q$. & CAL, AST, RTC, VAL: restricted; not an authorized complete identity.\\
+Native detector TOD & snap/fill & RTC detector matrix & native, then calibrated & Numeric finite gate; binary/dilated generic flag is separate and loses fill method/source weights. & RTC continuity only under successor policy; science eligibility fail-closed.\\
+Telescope fields & generic \code{mlinterp} & aligned telescope vectors and TOD variables & incorrectly all \code{rad} in NetCDF & Native time overwritten; no topology/validity/source weights; wrong units for time/state. & CAL elevation and AST pointing restricted; cannot establish identity or validity.\\
+HWPR time/angle & raw-time generic linear & aligned \code{hwpr} & \code{rad} & Requested offset ignored; enable state can be indeterminate/stale; no circular provenance. & Timing diagnostics only; enabled scientific polarization fail-closed.\\
+Hold and geometry & transition/floor & in-memory 4-by-$n_q$ scan matrix & sample indices & Inclusive rows 0/1 science, 2/3 outer; drops/reindexing not recorded. & RTC/PTC/TOD writers restricted to existing use; no stable complete partition claim.\\
+RTC/PTC scans & output concatenation & \code{raw_scan_indices}, \code{scan_indices}, \code{output_scan_index} & N/A & Partial comments; one-based output index labels compacted survivor as original. & Offline consumers restricted; exact native/common identity unavailable.\\
+Packet counter & jump count & warning and optional \code{gaps.log} & count & No extent, duration, class, action, source rows, or required write failure. & Diagnostics only; not validity/exposure evidence.\\
+Config/plan & copy from request to effective plan & \code{raw_timestream_provenance.yaml} & offsets in seconds & Values recorded, but not application, sign, reference, or mapping; can report ignored HWPR offset effective. & Reproducibility incomplete; not estimator authority.\\
+Chunk config/output state & count/file summary & \code{timestream_output_provenance.yaml} & mixed & No resolved windows, drops, scan-ID lineage, gap/origin/exposure facts. & Output inventory only.\\
+Aligned telescope endpoints & endpoint difference & map, TOD, FITS \code{EXPTIME} & seconds & Elapsed center span, not acquired/original exposure and not exact nominal support. & Exposure, coverage, and science claims fail-closed.\\
+Gap flags & map eligibility manifestation & map coverage/hits & seconds or count, depending on product & Generic flags can exclude gap and guard neighbors, but do not distinguish origin/reason. & VAL owns policy; manifestation is not ALIGN/VAL authority.\\
+\bottomrule
+\end{longtable}
+
+Required successor metadata are the common observation and slot identity,
+reference-clock timestamp and native residual, per-cell $Q$, source rows and
+weights, declared variable units, frames, and topology; gap runs, actions, and extents;
+half-open scan windows and stable IDs; mapping and response identity; conditional
+covariance availability; timing and model uncertainty; and distinct elapsed,
+nominal, acquired-original, valid-original, and synthesized support.
+
+\section{Cross-audit handoffs}
+
+The frozen dispatch manifest was empty.  No inbound disposition exists.  The
+following outbound proposals are one record per affected target; they do not
+edit the canonical registry and do not close findings or authorize production.
+
+\begin{longtable}{L{0.235\linewidth}L{0.13\linewidth}L{0.14\linewidth}L{0.16\linewidth}L{0.215\linewidth}}
+\toprule
+Handoff ID & Source/target & Review phase & Status/action & Bounded audit effect\\
+\midrule
+\endfirsthead
+\toprule
+Handoff ID & Source/target & Review phase & Status/action & Bounded audit effect\\
+\midrule
+\endhead
+\code{SCI-CAL-001-XAUD-001} & ALIGN/CAL & \code{post_core_evidence} & submitted; late, hold for coordinator route & CAL's approved sample-interface requirement is not implemented: exact ordered identity, duration, gap/interpolation state, and original/synthesized eligibility are unavailable.  Requests dependency, finding, test, and restriction updates only.\\
+\code{SCI-AST-001-XAUD-001} & ALIGN/AST & \code{post_core_evidence} & submitted before dispatch & Aligned telescope fields lack topology, frame/unit correctness, validity, and source mapping; generic endpoint-clamped interpolation can feed AST.  Requests dependency and interface tests.\\
+\code{SCI-RTC-001-XAUD-002} & ALIGN/RTC & \code{post_core_evidence} & submitted before dispatch & Unbounded filled values enter calibration/filtering and affect neighbors without mapping, response, covariance, or origin state; scan support can be silently dropped/clamped.\\
+\code{SCI-VAL-001-XAUD-004} & ALIGN/VAL & \code{post_core_evidence} & submitted before dispatch & Binary/dilated flags cannot reconstruct original, synthesized, unavailable, invalid, method, reason, source weights, or original exposure.  Requests explicit eligibility interface and tests.\\
+\bottomrule
+\end{longtable}
+
+The proposed records are stored under
+\code{doc/audits/handoffs/<TARGET>/}.  CAL receives no ALIGN estimator
+authority: the record carries only the bounded facts needed to reassess its
+already approved consumer requirement.  AST, RTC, and VAL manifestations were
+used as downstream evidence, never as authority for ALIGN's estimator.
+
+\section{Falsifiable validation matrix}
+
+The exact pre-registered tolerances and T01--T18 fixtures are in the frozen
+core.  Required-data skips are not passes.
+
+\begin{longtable}{L{0.20\linewidth}L{0.25\linewidth}L{0.24\linewidth}L{0.23\linewidth}}
+\toprule
+Evidence method & Claim tested & Exact fixture/artifact & Gate/status\\
+\midrule
+\endfirsthead
+\toprule
+Evidence method & Claim tested & Exact fixture/artifact & Gate/status\\
+\midrule
+\endhead
+Static equation/source trace & Governing operations correspond to A1--A19 & Paths and symbols in Section 7 at the governing source SHA & Complete; proves deterministic mismatches but not external header meanings.\\
+Analytic limiting cases & Offset, interpolation, wrap, gap, scan, response, covariance, exposure & T01--T14 & Required; no located implementation-level fixtures.  Source proves failures for T05--T10 and T14.\\
+Small deterministic fixtures & Every state/failure branch & T01--T18 & Required before external evidence; absent.\\
+Synthetic injections & Ramp, sinusoid, circular, gaps, jitter, correlated covariance & T01, T03--T13 & Required; absent.\\
+Blank controls & Zero/constant preservation without false exposure/validity & T03, T07--T08, T14 & Required; absent.\\
+Observation lifecycle & No state leakage & two observations/paths with different offsets, gaps, fields, scans & T16 required; source shows partial clears/stale-state paths.\\
+Sequential/parallel equivalence & Same identities, state, cardinality, values, order & T01--T16 under each compiled runtime policy & ALIGN interpolation is shared before farm; downstream content/order T17 remains untested.\\
+Existing unit tests & Config parse/routing/finite failure only & \code{test_config_scaffold.cpp}, \code{test_session_failure_boundaries.cpp}, \code{test_kids_input_validation.cpp}, \code{test_scan_cursor.cpp} & Insufficient: no numerical ALIGN, scan-boundary, $Q$, covariance, exposure, or equivalence gate.\\
+Config corpus survey & Nonzero offset coverage & 163 YAML files under \code{config/tolteca} and \code{validation} & 116 interface-sync blocks, zero nonzero entries, zero parse errors; therefore no nonzero application evidence.\\
+Required product failure & Provenance/mapping write is required & T18 & Missing mapping products are not attempted; optional \code{gaps.log} write unchecked.  Gate absent.\\
+Same-SHA Unity reduction & Raw epoch/header identity, observed cadence/jitter/gap distributions, I/O and path cardinality & \code{SCI-ALIGN-001-}\newline\code{UNITY-001} below & \texttt{external\_pending}; no evidence returned.  Cannot cure deterministic source defects.\\
+Astronomical recovery & Composite source flux/position recovery & N/A & Not applicable as ALIGN acceptance: combines CAL/AST/RTC/map estimators.\\
+Spatial/WCS, beam, photometry, iteration, polarization response & Out-of-scope estimators & N/A & Specific N/A rationales are frozen in the core; temporal alignment response remains applicable.\\
+Document render & Audit artifact completeness/layout & Frozen core and final report TeX/PDF & Complete for documentation only; not scientific implementation evidence.\\
+\bottomrule
+\end{longtable}
+
+The compact local corpus survey was executed with the mandated local Python
+environment and recursively parsed all YAML documents.  It reported exactly:
+\code{yaml_files=163}; \code{blocks=116}; \code{nonzero_entries=0};
+\code{parse_errors=0}.
+
+\subsection{Exact human-run Unity evidence request}
+
+Request ID \code{SCI-ALIGN-001-UNITY-001} is external pending and must be run
+by an authorized human, never by this auditor.  The human must use SSH alias
+\code{unity_toltec}, a clean checkout whose \texttt{git rev-parse HEAD} is
+exactly \AuditGoverningSHAPrint, and record clean status, compiler/build
+type, CMake options, Tula/kidscpp identities, runtime thread policy, raw-file
+hashes, and complete config bytes.
+
+Run one real observation with no native gap, one with short internal gaps, one
+with a long or edge gap, and one with a noninteger detector offset; add an
+HWPR observation only if a valid timing dataset exists.  For each, return:
+
+\begin{enumerate}[leftmargin=2.2em,nosep]
+\item native detector, telescope, and HWPR timestamps; clock, epoch, and header values;
+cadence, acquisition bounds, packet counters, missing and nonfinite state, and
+interface identity;
+\item requested and effective offsets and every authority, sign, reference, and stage
+fact available (explicitly mark absent facts);
+\item realized common timestamps, native-row-to-slot correspondence, mask,
+numeric detector rows, telescope and HWPR aligned values, scan matrix before and
+after short-scan handling, output indices, flags, gaps and logs, and exposure;
+\item RTC and PTC input and output row counts plus TOD, FITS, and YAML alignment metadata;
+\item sequential and every compiled parallel-policy output, compared exactly
+for identities, state, cardinality, and order and at the core's pre-registered
+numeric tolerances; and
+\item all warnings, errors, and required-product outcomes; no missing requested
+artifact may be reported as a pass.
+\end{enumerate}
+
+Also run controlled synthetic raster Hold transitions and forced duration and
+number cases with $N=7,M=3$, a sub-two-second scan, final partial, half-slot
+timestamp, duplicate or collision, internal, edge, or over-limit gap, and missing
+telescope support.  Because the assessed source cannot emit the required
+mapping/$Q$ products and has deterministic P0 defects, returned current-SHA
+evidence can characterize raw semantics and reproduce failures but cannot
+close the audit.  Repair, local T01--T18 gates, and exact-repair-SHA evidence
+must precede re-audit.
+
+\section{Findings, dependencies, and scientific decisions}
+
+Priority follows the audit framework: P0 is correctness/data corruption or
+invalid success; P1 is material scientific ambiguity/reproducibility.  Every
+finding is open.
+
+\begin{longtable}{L{0.21\linewidth}L{0.13\linewidth}L{0.05\linewidth}L{0.11\linewidth}L{0.385\linewidth}}
+\toprule
+Stable ID & Class & Pri. & Basis/conf. & Finding, owner, closure gate\\
+\midrule
+\endfirsthead
+\toprule
+Stable ID & Class & Pri. & Basis/conf. & Finding, owner, closure gate\\
+\midrule
+\endhead
+\code{SCI-ALIGN-001-F001} & implementation defect & P0 & derived/high & HWPR execution state is unsafe and does not realize configuration: \code{run_hwpr} is uninitialized before initial alignment, nonzero HWPR offset is never applied despite being reported effective, and partial indices can be stale/double-applied.  Owner: ALIGN/HWPR implementation.  Gate: explicit initialization/reset, one application of typed offset, bounded circular mapping, T01/T05/T15/T16, enabled/disabled/nonzero-offset fixtures, sanitizer, and re-audit; polarization remains unavailable.\\
+\code{SCI-ALIGN-001-F002} & implementation defect & P0 & derived/high & Common-slot mask and detector-value placement disagree at an exact half slot; the value can be dropped while a different slot is marked original/unflagged.  Duplicates/collisions/nonmonotonic time are not rejected and collisions last-write-win.  Owner: ALIGN timing implementation.  Gate: one shared slot operator with strict tolerance and identity failure, T09, property tests, and re-audit.\\
+\code{SCI-ALIGN-001-F003} & implementation defect & P0 & observed/high & Detector interpolation bridges every internal gap without count/time bound and constant-extrapolates all leading/trailing holes.  Filled values enter calibration/filtering and affect neighbors without response/covariance accounting.  Owner: ALIGN gap implementation.  Gate: approved run policy, no edge extrapolation, no partial long-gap fill, per-cell $Q$/weights, T07--T08/T12--T14, transfer injection, and re-audit.\\
+\code{SCI-ALIGN-001-F004} & implementation defect & P0 & derived/high & Telescope/HWPR alignment treats continuous, circular, state, counter, and time fields as one scalar linear class, permits endpoint clamping, and erases native time coordinates.  Interpolated \code{Hold} can alter scans.  Owner: telescope/HWPR alignment implementation.  Gate: owner-approved field registry, topology-specific bounded operators, no extrapolation, T02/T05/T06/T15, and re-audit.\\
+\code{SCI-ALIGN-001-F005} & implementation defect & P0 & observed/high & Scan construction drops the first post-hold raster sample, drops duration/number remainders, deletes and renumbers short scans, and later trims boundaries; RTC can clamp inconsistent inner support.  Owner: scan implementation.  Gate: approved half-open stable windows, retain final partial/short identities, reject inconsistent cardinality, T10--T11 and all mode boundary fixtures, then re-audit.\\
+\code{SCI-ALIGN-001-F006} & implementation defect & P0 & derived/high & Observation lifecycle is incomplete: telescope maps and alignment/HWPR state are only partially cleared, absent later fields can reuse prior values, and simulation resets duplicated starts while leaving ends/common masks absent or stale even though the gap path remains selected.  Owner: ALIGN lifecycle implementation.  Gate: observation-owned fresh state, complete reset invariants, two-observation real/sim/direct/gap T16 fixtures and sanitizers, then re-audit.\\
+\code{SCI-ALIGN-001-F007} & contract gap & P1 & derived/high & Native clock/header and detector-offset contract lacks epoch, sign/reference/stage authority, cadence/bounds/duration, rounding, drift, and uncertainty; current epoch reconstruction/rollover and silent zero/default-map behavior are unapproved.  Owner: timing/scientific owner plus raw-input owner.  Gate: approve OD1--OD2, version input schema, fail unresolved facts, T01/T09, real-header evidence, and re-audit.\\
+\code{SCI-ALIGN-001-F008} & implementation defect & P0 & observed/high & Persisted alignment metadata is scientifically false or ambiguous: every telescope field including timestamps and state is labeled radians, scan conventions/identity are incomplete, and post-rejection compact indices are called original.  Owner: ALIGN product implementation.  Gate: typed versioned variables and index conventions, exact round-trip T10/T11/T18, consumer checks, and re-audit.\\
+\code{SCI-ALIGN-001-F009} & contract gap & P1 & derived/high & Neither state nor provenance supplies origin, validity, method, reason, native source IDs, weights/residuals, gap extent/action, resolved scan windows, or strict original/synthesized eligibility.  Requested/effective/observation-resolved/realized alignment are incomplete.  Owner: ALIGN product/scientific owner.  Gate: approve and persist A6/A18/A19 bundle, required-write failure T18, and CAL/AST/RTC/VAL interface tests.\\
+\code{SCI-ALIGN-001-F010} & contract gap & P1 & derived/high & Mapping response, full covariance, shared-endpoint correlation, timing/offset covariance, interpolation-model bound/uncertainty, and selection uncertainty are discarded or absent rather than labeled unavailable.  Owner: ALIGN uncertainty/response owner.  Gate: approve compact $A,Q$, conditional covariance representation and missing-term semantics; pass T04/T12/T13 and transfer/covariance injections.\\
+\code{SCI-ALIGN-001-F011} & contract gap & P1 & observed/high & \code{EXPTIME} is elapsed endpoint-center span, coadded arithmetically, and does not represent nominal support, retained scan duration, acquired-original exposure, validity, or synthesized/unavailable slots.  Owner: ALIGN exposure/product owner.  Gate: approve and persist distinct A17 quantities, T14 plus output/map consumer round trips, then re-audit.\\
+\code{SCI-ALIGN-001-F012} & evidence gap & P1 & observed/high & No numerical ALIGN helper, scan boundary, lifecycle, response/covariance, exposure, or seq/parallel equivalence test was located; 116 parsed config/validation offset blocks are all zero; no exact-SHA Unity evidence or exact build dependency identity was supplied.  Owner: validation owner.  Gate: T01--T18 locally, current/repair SHA evidence as applicable, no required skips, and re-audit.\\
+\code{SCI-ALIGN-001-F013} & scientific policy decision & P1 & derived/high & OD1--OD8 (grid/clock, field topology, gap bounds/action, scan policy, synthesized use, uncertainty representation, and HWPR separation) remain unapproved.  Owner: project/timing/science owners.  Gate: explicit dated owner decisions selecting or replacing the frozen proposals before repair design is frozen.\\
+\code{SCI-ALIGN-001-F014} & dependency gap & P1 & derived/high & CAL, AST, RTC, and VAL cannot consume a complete approved ALIGN interface; their estimators remain outside this audit and cannot back-authorize missing ALIGN facts.  Owner: coordinator and target package owners.  Gate: integrate/disposition the four bounded handoffs, update target dependencies/tests/restrictions, approve ALIGN contract, repair, and re-audit.\\
+\bottomrule
+\end{longtable}
+
+There is no upstream audit-package dependency.  The external raw-input
+contract remains open: each native stream must provide explicit identity,
+comparable clock/epoch, cadence, bounds, duration, ordering, and missing/
+nonfinite state.  Missing facts make the corresponding operation unavailable
+or fail closed; historical behavior cannot supply authority.
+
+\subsection{Unresolved owner decisions}
+
+The frozen core's decisions remain the recommended bounded choices, not
+approvals:
+
+\begin{enumerate}[label=OD\arabic*.,leftmargin=2.6em]
+\item Approve or replace detector-led grid identity, phase, cadence tolerance,
+and constant-offset-only timing model.
+\item Approve offset sign/reference/unit/stage, native clock/header authority,
+and uncertainty for each interface.
+\item Approve every telescope/HWPR field's unit, frame, topology, and bounded
+interpolation/hold rule.
+\item Set both count and elapsed-duration gap limits and long/edge/high-gap-
+fraction scan/observation action.
+\item Approve half-open scan source/default, duration rounding, final partial,
+minimum/short/empty policy, and stable IDs.
+\item Decide whether any synthesized detector value is eligible outside
+bounded continuity support; default is original-only with zero synthesized
+exposure.
+\item Approve practical mapping/covariance/response products and required
+timing/interpolation uncertainty; missing terms remain unavailable.
+\item Keep HWPR timing identity separate from unavailable polarization science,
+and choose interim overall production disposition after reviewing P0 findings.
+\end{enumerate}
+
+\section{Verdict and production disposition}
+
+\begin{description}[style=nextline]
+\item[Contract status] \texttt{proposed}.  The independent draft is frozen and
+the source audit supports it as a bounded successor proposal; OD1--OD8 require
+owner approval.
+\item[Implementation status] \texttt{nonconformant} at
+\AuditGoverningSHAPrint.  Known mismatches preclude conditional conformity.
+\item[Validation status] \texttt{in\_progress}.  Static trace and document QA
+are complete; T01--T18 and exact-SHA external evidence are absent.
+\item[Production status] \texttt{existing\_use\_only}.  This preserves the
+canonical snapshot while proposing no expansion or new interpretation.  The
+coordinator/owner must decide whether the P0 set requires a broader operational
+\texttt{fail\_closed} action; this audit itself does not change production.
+\item[Verdict] \texttt{amend}.
+\item[Allowed consumers] Historical/regression evidence and already accepted
+operational use only, without promoting exact timing, original exposure,
+response/covariance, or synthesized eligibility claims.  Diagnostic packet
+counts remain diagnostic only.
+\item[Restricted consumers] CAL/AST/RTC/VAL may use the report as dependency
+evidence, not estimator authority.  Current binary flags may support legacy
+selection but do not prove origin or science eligibility.
+\item[Fail-closed claims] Nonzero or unauthoritative offsets; any
+enabled HWPR/polarization science; new use of filled values as acquired or
+independent samples; exact original/synthesized eligibility; full covariance,
+timing response, significance, exposure, or stable complete scan identity;
+new downstream consumer or production profile.
+\item[Repair/re-audit trigger] Dated OD1--OD8 decisions; separately authorized
+repair branch based on an exact selected SHA; no algorithm broadening outside
+ALIGN; local T01--T18 with no skips; exact-repair-SHA external evidence;
+disposition of four handoffs; fresh independent re-audit.
+\end{description}
+
+No application repair, Unity request execution, merge, rebase, push, or
+production authorization is part of this disposition.
+
+\section{Machine-readable ledger proposal}
+
+This is a coordinator-review proposal matching the frozen registry vocabulary;
+it is not an edit to the canonical ledger.  The final audit commit is filled
+from the audit branch handoff rather than self-referenced inside its own bytes.
+
+\begingroup
+\small
+\begin{verbatim}
+- id: SCI-ALIGN-001
+  name: Sample alignment, scan slicing, and gap interpolation
+  tier: A
+  governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+  governing_sha_role: audit_dispatch_snapshot
+  audit_branch: codex/audit-sci-align-001
+  audit_commit: null
+  audit_artifact_at_commit: >-
+    doc/audits/packages/SCI-ALIGN-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+  independent_derivation:
+    status: independent_draft_frozen
+    path: >-
+      doc/audits/packages/SCI-ALIGN-001_INDEPENDENT_CORE.tex
+    sha256: >-
+      4ee7b7e9cbe883ea626afe2e3d22756b20f556a2e06115d4a2832f2e78469785
+    freeze_commit: 5bcaa3700a5899bae0eaf4038039445668baa1fb
+    freeze_timestamp_utc: 2026-08-01T02:48:26Z
+    first_source_inspection_utc: 2026-08-01T02:49:18Z
+  coordination:
+    frozen_framework_commit: >-
+      1a202ccd16ea0edb09c2c429b09508eeb045546d
+    registry_snapshot: >-
+      99bfa3562ecfa05c0c10de24a255a6a18ff313d2
+    prompt_sha256: >-
+      a50ae4e4df8c8917f0c8f09adacacbe80f887bbbd05f8d57f561cc446f37df4b
+    manifest_sha256: >-
+      4bad1e6b853a1176c40dfac405fe2a88214b129d7fba4eed9261f56725a17d89
+    live_framework_advanced_without_align_arrival: >-
+      e6174dd9f49afe9ec57c150a7a97db3f0f4910e0
+  contract_status: proposed
+  implementation_status: nonconformant
+  validation_status: in_progress
+  production_status: existing_use_only
+  verdict: amend
+  incoming_handoffs: []
+  outgoing_handoffs:
+    - id: SCI-CAL-001-XAUD-001
+      path: doc/audits/handoffs/SCI-CAL-001/SCI-CAL-001-XAUD-001.yaml
+      target_package: SCI-CAL-001
+      review_phase: post_core_evidence
+      arrival: after_audit_completion
+      status: submitted
+    - id: SCI-AST-001-XAUD-001
+      path: doc/audits/handoffs/SCI-AST-001/SCI-AST-001-XAUD-001.yaml
+      target_package: SCI-AST-001
+      review_phase: post_core_evidence
+      arrival: before_dispatch
+      status: submitted
+    - id: SCI-RTC-001-XAUD-002
+      path: doc/audits/handoffs/SCI-RTC-001/SCI-RTC-001-XAUD-002.yaml
+      target_package: SCI-RTC-001
+      review_phase: post_core_evidence
+      arrival: before_dispatch
+      status: submitted
+    - id: SCI-VAL-001-XAUD-004
+      path: doc/audits/handoffs/SCI-VAL-001/SCI-VAL-001-XAUD-004.yaml
+      target_package: SCI-VAL-001
+      review_phase: post_core_evidence
+      arrival: before_dispatch
+      status: submitted
+  open_findings:
+    - {id: SCI-ALIGN-001-F001, class: implementation_defect,
+       severity: P0, evidence_basis: derived, confidence: high,
+       status: open, owner: align_hwpr_implementation}
+    - {id: SCI-ALIGN-001-F002, class: implementation_defect,
+       severity: P0, evidence_basis: derived, confidence: high,
+       status: open, owner: align_timing_implementation}
+    - {id: SCI-ALIGN-001-F003, class: implementation_defect,
+       severity: P0, evidence_basis: observed, confidence: high,
+       status: open, owner: align_gap_implementation}
+    - {id: SCI-ALIGN-001-F004, class: implementation_defect,
+       severity: P0, evidence_basis: derived, confidence: high,
+       status: open, owner: telescope_hwpr_alignment_implementation}
+    - {id: SCI-ALIGN-001-F005, class: implementation_defect,
+       severity: P0, evidence_basis: observed, confidence: high,
+       status: open, owner: scan_implementation}
+    - {id: SCI-ALIGN-001-F006, class: implementation_defect,
+       severity: P0, evidence_basis: derived, confidence: high,
+       status: open, owner: align_lifecycle_implementation}
+    - {id: SCI-ALIGN-001-F007, class: contract_gap,
+       severity: P1, evidence_basis: derived, confidence: high,
+       status: open, owner: timing_and_raw_input_owner}
+    - {id: SCI-ALIGN-001-F008, class: implementation_defect,
+       severity: P0, evidence_basis: observed, confidence: high,
+       status: open, owner: align_product_implementation}
+    - {id: SCI-ALIGN-001-F009, class: contract_gap,
+       severity: P1, evidence_basis: derived, confidence: high,
+       status: open, owner: align_product_and_scientific_owner}
+    - {id: SCI-ALIGN-001-F010, class: contract_gap,
+       severity: P1, evidence_basis: derived, confidence: high,
+       status: open, owner: align_uncertainty_response_owner}
+    - {id: SCI-ALIGN-001-F011, class: contract_gap,
+       severity: P1, evidence_basis: observed, confidence: high,
+       status: open, owner: align_exposure_product_owner}
+    - {id: SCI-ALIGN-001-F012, class: evidence_gap,
+       severity: P1, evidence_basis: observed, confidence: high,
+       status: open, owner: validation_owner}
+    - {id: SCI-ALIGN-001-F013, class: scientific_policy_decision,
+       severity: P1, evidence_basis: derived, confidence: high,
+       status: open, owner: project_timing_science_owners}
+    - {id: SCI-ALIGN-001-F014, class: dependency_gap,
+       severity: P1, evidence_basis: derived, confidence: high,
+       status: open, owner: coordinator_and_target_packages}
+  unresolved_scientific_decisions:
+    - ALIGN-OD1-grid-clock-model
+    - ALIGN-OD2-offset-and-header-authority
+    - ALIGN-OD3-variable-topology
+    - ALIGN-OD4-gap-bounds-and-action
+    - ALIGN-OD5-scan-policy-and-identity
+    - ALIGN-OD6-synthesized-eligibility
+    - ALIGN-OD7-mapping-covariance-response
+    - ALIGN-OD8-hwpr-separation-and-interim-production
+  local_evidence:
+    - independent_core_offline_compile_and_13_page_visual_inspection
+    - post_freeze_A1_A19_source_trace_at_governing_sha
+    - application_source_diff_from_governing_sha_empty
+    - yaml_offset_survey_163_files_116_blocks_all_zero
+    - existing_test_surface_inventory
+  requested_unity_evidence:
+    - SCI-ALIGN-001-UNITY-001
+  supplied_external_evidence: []
+  remediation_branch: null
+  remediation_commit: null
+  re_audit_status: required
+\end{verbatim}
+\endgroup
+
+\appendix
+\section{Returned evidence and command inventory}
+
+\begin{longtable}{L{0.22\linewidth}L{0.68\linewidth}}
+\toprule
+Artifact/check & Exact identity or result\\
+\midrule
+Frozen core & \code{\AuditCorePath}; SHA-256 \AuditCoreSHAPrint; commit
+\code{\AuditCoreFreezeCommit}.\\
+Frozen core render & Tectonic offline cache; 13-page PDF in task-specific
+\code{/private/tmp} scratch; all page PNGs inspected with Poppler rendering.\\
+Prompt & SHA-256
+\AuditPromptSHAPrint.\\
+Manifest & SHA-256
+\AuditManifestSHAPrint; empty.\\
+Config survey & \code{$HOME/tolteca/bin/python} with PyYAML, recursively over
+\code{config/tolteca} and \code{validation}: 163 YAML files, 116 sync-offset
+blocks, zero nonzero entries, zero parse errors.\\
+Dependency observation & Local
+\code{/Users/gwilson/GitHub/tula/include/tula/algorithm/mlinterp/mlinterp.hpp}
+at local checkout HEAD \code{61f862c9cc08f335e946a4f55c5aa5cf35401bb0}
+clamps endpoints.  No current build directory or exact same-build dependency
+identity was available; this is bounded local evidence, not production-build
+identity.  Governing CMake obtains kidscpp via moving tag \code{v1.x}.\\
+Existing test inspection & Config parse/validation/adapter and serialized value
+tests; fake route counts; simulated duplicated-index expectations; endpoint-
+span exposure expectation; missing gap-mask and generic finite input failures;
+ScanCursor enumeration only.  No implementation test was modified or added.\\
+External evidence & None supplied.  \code{SCI-ALIGN-001-UNITY-001} is pending
+human execution and cannot close deterministic source findings.\\
+Network/Unity & Not used.  No software installed or downloaded.\\
+\bottomrule
+\end{longtable}
+
+\section{Coordinator handoff checklist}
+
+The coordinator should verify the final audit commit and TeX SHA-256 from the
+branch, integrate none of the application source, review the proposed ledger
+replacement, assign OD1--OD8, and separately review the four outbound records.
+The next permissible implementation step is only an owner-authorized bounded
+repair/re-audit handoff selecting an exact base SHA.  This audit branch must
+not be used as the repair branch.  External evidence should not begin until
+the deterministic local closure gates and exact repair candidate are defined.
+
+\end{document}

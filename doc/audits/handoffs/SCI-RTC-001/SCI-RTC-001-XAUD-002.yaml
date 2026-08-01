@@ -1,0 +1,90 @@
+format_version: 1
+id: SCI-RTC-001-XAUD-002
+created_date: 2026-07-31
+
+source:
+  package_id: SCI-ALIGN-001
+  role: auditor
+  audit_branch: codex/audit-sci-align-001
+  audit_commit: null
+  governing_or_evidence_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+  finding_ids:
+    - SCI-ALIGN-001-F003
+    - SCI-ALIGN-001-F005
+    - SCI-ALIGN-001-F006
+    - SCI-ALIGN-001-F009
+    - SCI-ALIGN-001-F010
+    - SCI-ALIGN-001-F011
+    - SCI-ALIGN-001-F014
+
+target:
+  package_id: SCI-RTC-001
+
+priority: P0
+evidence_basis: observed
+review_phase: post_core_evidence
+arrival: before_dispatch
+status: submitted
+
+summary: >-
+  RTC receives unbounded synthesized detector values and unstable scan support
+  without the mapping, quality, response, covariance, or exposure needed to
+  interpret their scientific effect.
+claim: >-
+  At the governing source SHA, every internal detector gap is bridged and edge
+  holes are constant-extrapolated; these finite values enter calibration and
+  filtering, whose inspected hot paths do not use the generic gap flags, so
+  synthetic endpoints can influence neighboring retained values. Scan creation
+  also drops or renumbers valid support, while RTC may clamp inconsistent inner
+  cardinality instead of rejecting it.
+supports:
+  - >-
+    RTC should record the realized ALIGN mapping, per-cell origin and validity,
+    gap action, scan identity, response, covariance availability, and exposure
+    as explicit input dependencies.
+  - >-
+    New RTC claims treating filled values as acquired or independent samples, or
+    current scans as a stable complete partition, should remain restricted.
+does_not_establish:
+  - This record does not audit or broaden RTC filtering mathematics.
+  - It does not prove an end-to-end astronomical bias magnitude.
+  - It does not authorize ALIGN or RTC repair or production changes.
+
+requested_actions:
+  - consider_contract_amendment
+  - add_or_update_dependency
+  - add_or_update_finding
+  - add_interface_test
+  - restrict_consumer
+affected_target_findings: []
+related_handoffs: []
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-ALIGN-001-final-report
+    availability: repository_path
+    path: doc/audits/packages/SCI-ALIGN-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: 6aaed0e6e16e4c37cd24d15b98346f84024ffd7920bd0524e7a170dbc728a393
+    note: >-
+      Post-freeze source trace, implemented operators, product matrix, findings
+      F003/F005/F006/F009-F011, and bounded RTC consumer analysis.
+  - id: SCI-ALIGN-001-independent-core
+    availability: repository_path
+    path: doc/audits/packages/SCI-ALIGN-001_INDEPENDENT_CORE.tex
+    sha256: 4ee7b7e9cbe883ea626afe2e3d22756b20f556a2e06115d4a2832f2e78469785
+    note: Independent equations A1-A19 and tests T01-T18 frozen before source inspection.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: not_applicable
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null
