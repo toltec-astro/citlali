@@ -1,6 +1,6 @@
 # SCI-ALIGN-001 coordinator and scientific-owner decision — 2026-08-01
 
-Status: partial; `ALIGN-OD1` and `ALIGN-OD2` approved; `OD3`--`OD8` pending
+Status: partial; `ALIGN-OD1`--`ALIGN-OD3` approved; `OD4`--`OD8` pending
 
 Package: `SCI-ALIGN-001`
 
@@ -87,9 +87,34 @@ reference convention. Synthetic positive, negative, fractional, omitted, and
 ambiguous-offset fixtures plus the OD1 Beammap/Pointing compatibility evidence
 are mandatory.
 
+## ALIGN-OD3 — Telescope and HWPR field topology
+
+Decision: approved with mandatory owner review of the generated field registry
+before repair design is frozen.
+
+- Maintain a versioned per-variable registry naming scientific identity, unit,
+  coordinate frame, topology, validity and missing-data rules, maximum
+  interpolation span, and operator.
+- Classify each field only as a continuous scalar, circular angle with an
+  explicit period and wrap rule, declared step state with half-open hold
+  support, or non-interpolable/exact-only.
+- Never apply ordinary linear interpolation to timestamps, counters, flags,
+  modes, Boolean values, or categorical state.
+- Prohibit extrapolation and interpolation across invalid native rows or source
+  gaps unless a separately approved bounded-gap rule explicitly classifies the
+  resulting value as synthesized.
+- Persist the actual per-variable units and semantics; telescope timestamps and
+  state are not radians merely because they share the telescope-data container.
+
+Before implementation, generate the complete detector/telescope/HWPR field
+registry from authoritative NetCDF metadata and acquisition contracts. Return
+that registry to the scientific owner for review rather than guessing any
+period, frame, bounded-versus-circular topology, state transition convention,
+or interpolation span. Ordinary valid samples away from wraps, state
+transitions, invalid rows, and gaps should remain numerically unchanged.
+
 ## Pending decisions
 
-- `ALIGN-OD3`: telescope/HWPR field topology;
 - `ALIGN-OD4`: gap bounds and action;
 - `ALIGN-OD5`: scan policy and identity;
 - `ALIGN-OD6`: synthesized eligibility;
