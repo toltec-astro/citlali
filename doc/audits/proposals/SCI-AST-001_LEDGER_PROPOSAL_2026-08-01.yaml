@@ -1,0 +1,495 @@
+format_version: 1
+proposal_type: audit_ledger_package_record
+proposal_date: 2026-08-01
+coordinator_action: review_and_integrate_or_supersede
+canonical_ledger_modified: false
+canonical_handoff_registry_modified: false
+
+package:
+  id: SCI-AST-001
+  name: Pointing, astrometry, detector coordinates, and WCS
+  tier: A
+  queue_wave: foundation_1
+  scientific_scope: >-
+    Observation pointing corrections, telescope and detector coordinates,
+    interpolation/support policy, coordinate frames, projection, WCS, and
+    astrometric uncertainty/response.
+  inputs:
+    - stable aligned telescope sample identity and typed fields
+    - selected pointing support with identity, units, basis, sign, times, and validity
+    - detector focal-plane offsets with stable raw/APT mapping
+    - frame, epoch, tangent center, projection domain, and WCS request
+  outputs:
+    - realized per-sample correction and telescope/detector coordinates
+    - explicit coordinate validity, response, and uncertainty availability
+    - immutable WCS and linked coordinate products
+    - lossless requested/effective/observation-resolved/realized provenance
+
+  upstream_dependencies:
+    - package_id: SCI-ALIGN-001
+      status: open
+      required_contract: >-
+        AST receives an ordered detector-reference sample identity plus each
+        aligned telescope field's stable identity, native-source mapping,
+        units, frame, topology, validity/support, timing residual, origin,
+        interpolation method, and original-versus-synthesized eligibility.
+      consequence: >-
+        AST may derive against the approved abstract input, but implementation
+        conformity and precise coordinate/WCS claims remain restricted until
+        ALIGN supplies and re-audits that interface and AST admits it.
+
+  downstream_consumers:
+    - SCI-RTC-001
+    - SCI-PTC-001
+    - SCI-MAP-001
+    - SCI-SRC-001
+    - SCI-MODE-001
+    - SCI-BEAM-001
+
+  governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+  governing_sha_role: audit_dispatch_snapshot
+  audit_branch: codex/audit-sci-ast-001
+  audit_commit: null
+  audit_identity_commit: null
+  audit_parent_sha: 17d683ada3856ecb5f0a5c42eed744cb219a3586
+  audit_artifact_at_commit: doc/audits/packages/SCI-AST-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+  final_audit_artifact_sha256: 0be6771bbe5653bd42e90bc9a8cec1cd69ad84af971e6e7bca3d2fc21ed4bd98
+
+  dispatch:
+    status: audited_proposal_complete_pending_coordinator_review
+    launch_date: 2026-08-01
+    launch_effort: ultra
+    worktree: /Users/gwilson/.codex/worktrees/bcb5/citlali-refactor
+    coordinator_registry_commit: 35cc8ce246e8e70c569e650be6c1eae2c91b80ef
+    prompt_path: doc/audits/prompts/SCI_AST_001_AUDIT_PROMPT.md
+    prompt_sha256: 7071db6ad57fd23a1b36bdec619ac72bc0d26d8427d91e7abdbf10afbc46713f
+    manifest_path: doc/audits/handoffs/SCI-AST-001/SCI-AST-001_INBOX_MANIFEST_2026-08-01.yaml
+    manifest_sha256: 32f8ec335cfbececc4fb47cbd1f3197c189481f7c9b7e963c4ecbbf4974dca1f
+    pre_core_authority_ids: []
+    post_core_evidence_ids: [SCI-AST-001-XAUD-001]
+
+  independent_derivation:
+    status: independent_draft_frozen
+    path: doc/audits/packages/SCI-AST-001_INDEPENDENT_CORE.tex
+    sha256: ed1fe3bf68ed53974b8c910bd3824717eb0cf5ff11d0b27c0fdf27aa6e606276
+    freeze_commit: 17d683ada3856ecb5f0a5c42eed744cb219a3586
+    freeze_timestamp_utc: 2026-08-01T15:19:22Z
+    first_post_core_handoff_open_utc: 2026-08-01T15:19:59Z
+    first_source_inspection_utc: 2026-08-01T15:20:08Z
+    successor_revisions: []
+
+  incoming_handoffs:
+    - id: SCI-AST-001-XAUD-001
+      path: doc/audits/handoffs/SCI-AST-001/SCI-AST-001-XAUD-001.yaml
+      sha256: ede523dd732f9e14ec9dae44b9e608497819b50b0c97abce6b4124d3602e9d71
+      source_package: SCI-ALIGN-001
+      review_phase: post_core_evidence
+      arrival: before_dispatch
+      canonical_status: submitted
+      proposed_recipient_disposition:
+        status: acknowledged
+        late_arrival_route: not_applicable
+        actions:
+          - incorporated
+          - dependency_recorded
+          - finding_opened
+          - add_interface_test
+          - restrict_consumer
+        rationale: >-
+          The bounded ALIGN observations sharpen the open SCI-ALIGN-001
+          dependency, findings F004/F011/F013, interface tests, production
+          restriction, and re-audit requirement. They do not establish AST
+          coordinate construction, close findings, or authorize production.
+        affected_findings:
+          - SCI-AST-001-F004
+          - SCI-AST-001-F011
+          - SCI-AST-001-F013
+        affected_dependencies: [SCI-ALIGN-001]
+        contract_or_report_locations:
+          - final audit sections Cross-audit dependencies and Open findings
+
+  outgoing_handoffs:
+    - id: SCI-MAP-001-XAUD-003
+      target_package: SCI-MAP-001
+      path: doc/audits/proposals/handoffs/SCI-MAP-001-XAUD-003.yaml
+      sha256: f33c316ea9a945b3eb17292e0de3d808774d1d8e87c8c5008e8f7e3e85c6ef35
+      review_phase: post_core_evidence
+      arrival: after_audit_completion
+      status: proposed_unintegrated
+    - id: SCI-RTC-001-XAUD-003
+      target_package: SCI-RTC-001
+      path: doc/audits/proposals/handoffs/SCI-RTC-001-XAUD-003.yaml
+      sha256: 59cf05e87552292b2d222f1ca3c3e2aafd33013d2fc9ee8a0f7dc45ebf12b471
+      review_phase: post_core_evidence
+      arrival: before_dispatch
+      status: proposed_unintegrated
+    - id: SCI-PTC-001-XAUD-004
+      target_package: SCI-PTC-001
+      path: doc/audits/proposals/handoffs/SCI-PTC-001-XAUD-004.yaml
+      sha256: 96eee5cae761c304a1338193f12c2fb6cf64cda5bd0dace7171d8380f52dc513
+      review_phase: post_core_evidence
+      arrival: before_dispatch
+      status: proposed_unintegrated
+    - id: SCI-SRC-001-XAUD-001
+      target_package: SCI-SRC-001
+      path: doc/audits/proposals/handoffs/SCI-SRC-001-XAUD-001.yaml
+      sha256: c8e75bc9e4f76cf75d5d9d56bb2c59a2db170a47f2e21b1b1e9d45e9dadfc51c
+      review_phase: post_core_evidence
+      arrival: before_dispatch
+      status: proposed_unintegrated
+    - id: SCI-MODE-001-XAUD-002
+      target_package: SCI-MODE-001
+      path: doc/audits/proposals/handoffs/SCI-MODE-001-XAUD-002.yaml
+      sha256: a6f8f538e0caa1a17a656abce53c566e17489605af70456bda51959485647221
+      review_phase: post_core_evidence
+      arrival: before_dispatch
+      status: proposed_unintegrated
+    - id: SCI-BEAM-001-XAUD-002
+      target_package: SCI-BEAM-001
+      path: doc/audits/proposals/handoffs/SCI-BEAM-001-XAUD-002.yaml
+      sha256: b81ab8cf0159ba964b3a0a905c85653d6bd28a5ec8ffba86420dfb0529fedbdd
+      review_phase: post_core_evidence
+      arrival: before_dispatch
+      status: proposed_unintegrated
+    - id: SCI-VAL-001-XAUD-005
+      target_package: SCI-VAL-001
+      path: doc/audits/proposals/handoffs/SCI-VAL-001-XAUD-005.yaml
+      sha256: 4fb501f19f4ebb43062abe6d5a950811f4a5d82d9bfc96dd391b4173e8f5a80d
+      review_phase: post_core_evidence
+      arrival: before_dispatch
+      status: proposed_unintegrated
+
+  contract_status: proposed
+  implementation_status: nonconformant
+  validation_status: in_progress
+  production_status: existing_use_only
+  verdict: amend
+
+  implementation_assessment:
+    governing_source: nonconformant
+    positive_controls:
+      - generated FITS x-axis reversal and negative CDELT1 are internally consistent
+      - zero-based internal CRPIX is converted to one-based FITS CRPIX
+      - required WCS/provenance output failures propagate
+      - observation lifecycle enforces nonzero equal install/application counts
+    consequence: >-
+      Positive subcontracts do not compensate for known projection, topology,
+      WCS realization, uncertainty, identity, validity, unit, simulation, and
+      provenance mismatches.
+
+  open_findings:
+    - id: SCI-AST-001-F001
+      class: implementation_defect
+      severity: P0
+      evidence_basis: observed
+      confidence: high
+      status: open
+      owner: ast_projection_implementation
+      summary: >-
+        Forward TAN maps near-zero denominator to finite center and accepts the
+        back hemisphere, aliasing invalid directions to valid-looking coordinates.
+      closure_gate: >-
+        Implement an approved positive-domain/invalidity contract, propagate a
+        coordinate-validity product, pass exhaustive boundary and round-trip
+        tests, and re-audit the exact successor SHA.
+    - id: SCI-AST-001-F002
+      class: implementation_defect
+      severity: P0
+      evidence_basis: observed
+      confidence: high
+      status: open
+      owner: telescope_coordinate_implementation
+      summary: >-
+        AltAz applies only one azimuth wrap correction and can produce a
+        multi-radian tangent displacement for the opposite crossing.
+      closure_gate: >-
+        Use the approved shortest signed topology in both directions and pass
+        wrap, horizon, pole, and ordinary controls at an exact successor SHA.
+    - id: SCI-AST-001-F003
+      class: implementation_defect
+      severity: P0
+      evidence_basis: observed
+      confidence: high
+      status: open
+      owner: wcs_config_product_implementation
+      summary: >-
+        Accepted CRPIX/CRVAL/TAN configuration is overwritten or unused and can
+        succeed without realizing the requested scientific values.
+      closure_gate: >-
+        Owner selects exact implementation or startup rejection/deprecation for
+        every field; pass nondefault requested-to-realized/provenance tests and
+        re-audit.
+    - id: SCI-AST-001-F004
+      class: dependency_gap
+      severity: P0
+      evidence_basis: observed
+      confidence: high
+      status: open
+      owner: sci_align_repair_and_coordinator
+      summary: >-
+        ALIGN does not yet supply the complete typed field, source mapping,
+        topology, frame, validity, timing, interpolation, and eligibility identity AST requires.
+      closure_gate: >-
+        Implement and re-audit the approved ALIGN interface, then pass AST
+        sample/field/detector admission tests.
+    - id: SCI-AST-001-F005
+      class: implementation_defect
+      severity: P1
+      evidence_basis: observed
+      confidence: high
+      status: open
+      owner: ast_support_implementation
+      summary: >-
+        Support resolution permits ambiguous mixed sentinels, truncates MJD to
+        integer seconds, and lacks local strict span-time validation.
+      closure_gate: >-
+        Approve support modes/precision, preserve times losslessly, reject
+        ambiguity/extrapolation/nonmonotonicity, and pass endpoint, mixed, and
+        subsecond tests.
+    - id: SCI-AST-001-F006
+      class: contract_gap
+      severity: P1
+      evidence_basis: derived
+      confidence: high
+      status: open
+      owner: scientific_astrometry_owner
+      summary: >-
+        Correction sign, focal-plane basis/rotation/order, topology, frame/epoch
+        transform, and small-angle validity radius lack authoritative definitions.
+      closure_gate: >-
+        Approve versioned equations and bounds, publish them in typed state,
+        and pass limiting and independent-reference fixtures.
+    - id: SCI-AST-001-F007
+      class: implementation_defect
+      severity: P1
+      evidence_basis: derived
+      confidence: high
+      status: open
+      owner: ast_src_mode_product_boundary
+      summary: >-
+        Point/source means use inverse TAN while positional errors receive only
+        scalar unit conversion, without Jacobian or cross-covariance.
+      closure_gate: >-
+        Propagate full covariance/availability through inverse TAN and pass
+        high-declination, wrap, and cross-term tests plus consumer re-audit.
+    - id: SCI-AST-001-F008
+      class: contract_gap
+      severity: P1
+      evidence_basis: observed
+      confidence: high
+      status: open
+      owner: scientific_astrometry_product_owner
+      summary: >-
+        Correction, alignment, focal-plane, frame, systematic, response and
+        selection uncertainty have no approved covariance/availability product.
+      closure_gate: >-
+        Approve covariance scope and unavailable semantics; implement versioned
+        Jacobian/terms or explicit absence and validate coverage/systematics.
+    - id: SCI-AST-001-F009
+      class: contract_gap
+      severity: P1
+      evidence_basis: observed
+      confidence: high
+      status: open
+      owner: ast_lifecycle_provenance
+      summary: >-
+        Provenance records requests, modes and counts but omits resolved/realized
+        values, scientific identity, dependencies, product links, validity,
+        uncertainty availability, and digests.
+      closure_gate: >-
+        Implement lossless four-stage one-way state and exact serialization,
+        physical cardinality, and product linkage tests.
+    - id: SCI-AST-001-F010
+      class: implementation_defect
+      severity: P1
+      evidence_basis: observed
+      confidence: high
+      status: open
+      owner: wcs_product_consumer_boundary
+      summary: >-
+        WCS continuous values use float, frame identity is incomplete/nonstandard,
+        epoch defaults without transform, and feedback admission discards scale sign.
+      closure_gate: >-
+        Approve frame/epoch policy, retain full precision and handedness, and
+        pass FITS/feedback round-trip and precision fixtures.
+    - id: SCI-AST-001-F011
+      class: implementation_defect
+      severity: P1
+      evidence_basis: observed
+      confidence: high
+      status: open
+      owner: tod_product_schema
+      summary: >-
+        Generic TOD output falsely labels every telescope field radians,
+        including time, state, and counter data.
+      closure_gate: >-
+        Use the approved per-variable ALIGN registry and pass exact unit,
+        topology, frame, validity, schema, and reader round trips.
+    - id: SCI-AST-001-F012
+      class: implementation_defect
+      severity: P1
+      evidence_basis: observed
+      confidence: high
+      status: open
+      owner: ast_boundary_and_consumers
+      summary: >-
+        Coordinate validity is not a first-class product/admission operator, so
+        map geometry, mapmakers, and selection can consume invalid coordinates.
+      closure_gate: >-
+        Implement explicit validity and fail-closed propagation through every
+        named consumer; pass exhaustive invalid-state tests and recipient re-audits.
+    - id: SCI-AST-001-F013
+      class: implementation_defect
+      severity: P0
+      evidence_basis: observed
+      confidence: high
+      status: open
+      owner: ast_cal_detector_identity_boundary
+      summary: >-
+        APT admission does not validate x/y size/finiteness, UID uniqueness, or
+        exact APT-to-raw detector mapping before index-wise coordinate use.
+      closure_gate: >-
+        Admit an immutable one-to-one mapping and basis/version; pass
+        permutation, duplicate, nonfinite, mismatch, subset, and Beammap tests.
+    - id: SCI-AST-001-F014
+      class: implementation_defect
+      severity: P1
+      evidence_basis: observed
+      confidence: high
+      status: open
+      owner: simulation_ast_implementation
+      summary: >-
+        Simulation bypasses time/wrap/frame setup and exposes Galactic use
+        without constructing Galactic tangent coordinates.
+      closure_gate: >-
+        Approve parity scope, implement and validate each enabled frame or fail
+        closed, and pass exact real/simulation fixtures.
+    - id: SCI-AST-001-F015
+      class: evidence_gap
+      severity: P1
+      evidence_basis: observed
+      confidence: high
+      status: open
+      owner: local_validation_and_human_external_evidence_owner
+      summary: >-
+        No exact-governing compiled numerical suite or same-SHA operational
+        bundle covers equations, validity, WCS, covariance, identities, units,
+        simulations, and parallel equivalence.
+      closure_gate: >-
+        Pass every non-N/A local gate and return/audit SCI-AST-001-UNITY-001
+        without required-data skip, then re-audit the exact successor SHA.
+
+  unresolved_scientific_decisions:
+    - id: SCI-AST-001-D001
+      owner: scientific_astrometry_owner
+      question: correction sign, tangent basis, rotation signs, and composition order
+    - id: SCI-AST-001-D002
+      owner: scientific_astrometry_owner
+      question: TAN operational domain, invalid representation, and failure policy
+    - id: SCI-AST-001-D003
+      owner: frame_wcs_owner
+      question: exact celestial frame, epoch/EOP policy, transforms, and longitude topology
+    - id: SCI-AST-001-D004
+      owner: scientific_astrometry_owner
+      question: support modes, sentinel semantics, time precision, order, bracket, and extrapolation
+    - id: SCI-AST-001-D005
+      owner: wcs_config_owner
+      question: implement or reject/deprecate each nondefault WCS control
+    - id: SCI-AST-001-D006
+      owner: scientific_astrometry_product_owner
+      question: covariance, response, systematics, selection, and unavailable semantics
+    - id: SCI-AST-001-D007
+      owner: scientific_astrometry_and_simulation_owner
+      question: small-angle error/radius and enabled simulation parity/fail-closed scope
+    - id: SCI-AST-001-D008
+      owner: wcs_tod_product_owner
+      question: persisted precision, frame metadata, validity, unit registry, and mini/full products
+
+  local_evidence:
+    - id: SCI-AST-001-LOCAL-001
+      path: doc/audits/evidence/SCI-AST-001_LOCAL_EVIDENCE_2026-08-01.yaml
+      sha256: e391757e63477fd568a415e8c6b9c4bca6dc98603cd83088c350cbc03a51f986
+      status: complete_with_explicit_limits
+      commands:
+        - SCI-AST-001-L001
+        - SCI-AST-001-L002
+        - SCI-AST-001-L003
+        - SCI-AST-001-L004
+      conclusion: >-
+        Static/config gates pass and narrow FITS/lifecycle controls conform;
+        derived probes expose projection, wrap, time, Jacobian, and precision
+        failures. Exact compiled numerical evidence is absent.
+
+  historical_compatibility_evidence:
+    source_sha: 9ea6d7f013c0a40e6159b0da1512897ddb6a7c5c
+    records:
+      - point-152389-refactor-9ea6d7f0-redu61
+      - oof-152385-152387-refactor-9ea6d7f0-redu02
+      - science-152390-152392-refactor-9ea6d7f0-redu23
+      - beammap-148670-refactor-9ea6d7f0-redu05
+    authority: compatibility_only_not_contract_or_same_sha
+
+  requested_unity_evidence:
+    - request_id: SCI-AST-001-UNITY-001
+      path: doc/audits/requests/SCI-AST-001-UNITY-001.md
+      sha256: 5b1f8509d8624849cac55656f747c9de92daaa6f6a46e40426007146e84f8125
+      config_manifest_path: doc/audits/requests/SCI-AST-001-UNITY-001/config_manifest.yaml
+      config_manifest_sha256: b8c5defb5f56b693141f901b918fbe36ec1c5dc5e3214fde5586c50277fed3d9
+      source_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+      status: unsupplied
+      executed_by_codex: false
+  supplied_external_evidence: []
+
+  production_disposition:
+    allowed_compatibility_only:
+      - exact retained Point redu61 interpretation
+      - exact retained OOF redu02 interpretation
+      - exact retained Science redu20 through redu23 interpretation
+      - exact retained Beammap redu05 interpretation
+      - generated default FITS handedness and CRPIX indexing without precision expansion
+    restricted:
+      - all new consumers or profiles
+      - wrap, pole, horizon, large-offset, high-declination, singular, or back-hemisphere cases
+      - subsecond support, span fallback, mixed sentinel, or nondefault WCS interpretation
+      - absolute coordinate uncertainty, covariance, response, systematic, or coverage claims
+      - detector coordinates without exact APT/raw mapping
+      - generic reliance on telescope-variable unit attributes
+    fail_closed:
+      - nonfinite or out-of-domain coordinate
+      - unknown topology, frame, epoch, basis, sign, or detector identity
+      - missing coordinate validity or required AST product
+      - Galactic simulation and unvalidated simulation parity
+      - new precise astrometry, WCS, covariance, or production-expansion claim
+    note: >-
+      These are production restrictions; the governing implementation does not
+      yet enforce every proposed fail-closed condition.
+
+  repair_sequence_proposal:
+    audit_branch_repair_authorized: false
+    steps:
+      - approve or supersede decisions D001 through D008
+      - complete and re-audit the ALIGN interface
+      - select a separate exact repair base and repair only AST conformance
+      - pass every non-N/A local deterministic and product gate
+      - freeze and independently re-audit the exact successor SHA
+      - issue a new successor-SHA Unity request and audit the complete return
+      - disposition downstream handoffs and re-audit owning consumer boundaries
+
+  remediation_branch: null
+  remediation_commit: null
+  re_audit_status: required
+
+  scope_guards:
+    application_code_modified: false
+    tests_modified: false
+    build_files_modified: false
+    production_documentation_modified: false
+    canonical_ledger_modified: false
+    canonical_handoff_registry_modified: false
+    unity_accessed: false
+    network_accessed: false
+    software_installed_or_downloaded: false
+    repair_attempted: false
+    integrated: false
+    pushed: false
+    additional_task_launched: false

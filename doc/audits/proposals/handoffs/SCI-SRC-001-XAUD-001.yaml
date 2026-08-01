@@ -1,0 +1,83 @@
+format_version: 1
+id: SCI-SRC-001-XAUD-001
+created_date: 2026-08-01
+
+source:
+  package_id: SCI-AST-001
+  role: auditor
+  audit_branch: codex/audit-sci-ast-001
+  audit_commit: null
+  governing_or_evidence_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+  finding_ids:
+    - SCI-AST-001-F001
+    - SCI-AST-001-F007
+    - SCI-AST-001-F008
+    - SCI-AST-001-F010
+    - SCI-AST-001-F012
+
+target:
+  package_id: SCI-SRC-001
+
+priority: P0
+evidence_basis: derived
+review_phase: post_core_evidence
+arrival: before_dispatch
+status: submitted
+
+summary: >-
+  Source positions are transformed through inverse TAN while their reported
+  coordinate errors are only scalar unit-converted, without the inverse-map
+  Jacobian or cross-covariance.
+claim: >-
+  At map center a one-arcsecond tangent-x error corresponds to about two
+  arcseconds of RA at declination 60 degrees and 5.76 arcseconds at 80
+  degrees, but the traced boundary reports one arcsecond in both cases. The
+  AST projection domain, WCS frame, validity, and covariance availability must
+  therefore remain explicit inputs to source inference.
+supports:
+  - Open a source-position uncertainty/interface finding and AST dependency.
+  - Test inverse-TAN mean and full covariance propagation across declination and wrap.
+  - Restrict precision, uncertainty-coverage, and catalog-coordinate claims using current scalar errors.
+does_not_establish:
+  - This record does not audit source detection, fitting likelihood, photometry, deblending, or completeness.
+  - The one-arcsecond examples are local Jacobian probes, not astronomical recovery evidence.
+  - It does not authorize repair.
+
+requested_actions:
+  - add_or_update_dependency
+  - add_or_update_finding
+  - add_interface_test
+  - restrict_consumer
+affected_target_findings: []
+related_handoffs:
+  - SCI-MODE-001-XAUD-002
+  - SCI-MAP-001-XAUD-003
+  - SCI-VAL-001-XAUD-005
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-AST-001-independent-core
+    availability: repository_path
+    path: doc/audits/packages/SCI-AST-001_INDEPENDENT_CORE.tex
+    sha256: ed1fe3bf68ed53974b8c910bd3824717eb0cf5ff11d0b27c0fdf27aa6e606276
+    note: Frozen inverse-TAN response and covariance equations.
+  - id: SCI-AST-001-local-evidence
+    availability: repository_path
+    path: doc/audits/evidence/SCI-AST-001_LOCAL_EVIDENCE_2026-08-01.yaml
+    sha256: e391757e63477fd568a415e8c6b9c4bca6dc98603cd83088c350cbc03a51f986
+    note: Exact-source error conversion and declination-dependent Jacobian probe.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: not_applicable
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

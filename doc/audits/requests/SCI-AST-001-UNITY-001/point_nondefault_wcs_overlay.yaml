@@ -1,0 +1,12 @@
+mapmaking:
+  crpix1: 7.0
+  crpix2: 9.0
+  crval1_J2000: 123.456789
+  crval2_J2000: -12.345678
+  tan_ra: 2.1547136813421197
+  tan_dec: -0.21547272949102845
+runtime:
+  n_threads: 1
+  output_dir: /work/toltec/commissioning2025-test/2026-scientific-audits/SCI-AST-001-UNITY-001/point-nondefault-wcs/
+  parallel_policy: seq
+  use_subdir: true

@@ -1,0 +1,5 @@
+runtime:
+  n_threads: 1
+  output_dir: /work/toltec/commissioning2025-test/2026-scientific-audits/SCI-AST-001-UNITY-001/science-seq/
+  parallel_policy: seq
+  use_subdir: true

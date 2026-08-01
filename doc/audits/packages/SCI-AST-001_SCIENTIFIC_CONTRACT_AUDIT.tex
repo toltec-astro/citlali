@@ -1,0 +1,774 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[letterpaper,landscape,margin=0.68in]{geometry}
+\usepackage{amsmath,amssymb}
+\DeclareMathSizes{10.95}{10.95}{8}{7}
+\usepackage{booktabs,longtable,array,tabularx}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+
+\definecolor{navy}{RGB}{25,55,88}
+\definecolor{pale}{RGB}{238,244,249}
+\definecolor{warn}{RGB}{125,56,22}
+\definecolor{failred}{RGB}{137,38,38}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlength{\emergencystretch}{3em}
+\setlist[itemize]{leftmargin=1.45em,itemsep=1pt,topsep=2pt}
+\setlist[enumerate]{leftmargin=1.65em,itemsep=1pt,topsep=2pt}
+\renewcommand{\arraystretch}{1.14}
+\setlength{\tabcolsep}{2.5pt}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcommand{\pkg}{\texttt{SCI-AST-001}}
+\newcommand{\code}[1]{\nolinkurl{#1}}
+\newcommand{\status}[1]{\nolinkurl{#1}}
+\newcommand{\breakslash}{/\allowbreak}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\T}{\mathsf{T}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Fail}{\texttt{fail\_closed}}
+
+\title{\vspace{-1.5em}\textcolor{navy}{\textbf{SCI-AST-001 Scientific-Contract Audit}}\\
+\large Pointing corrections, detector coordinates, projection, and WCS}
+\author{Dedicated independent package auditor}
+\date{Final audit proposal, 2026-08-01}
+
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+
+\begin{center}
+\fcolorbox{failred}{pale}{\begin{minipage}{0.94\linewidth}
+\textbf{Verdict: amend; implementation nonconformant.}
+The proposed contract is mathematically well defined, but the exact governing
+source can alias invalid TAN directions to finite map center, mishandles one
+azimuth wrap direction, accepts WCS controls that are not realized, and lacks
+the identity, validity, uncertainty, and provenance needed for precise
+astrometry.  Existing accepted uses remain compatibility-only.  No repair,
+integration, Unity access, or production expansion was performed or authorized.
+\end{minipage}}
+\end{center}
+
+\tableofcontents
+\newpage
+
+\section{Executive decision and bounded scope}
+
+\begin{description}[style=nextline]
+\item[Package] \pkg, Tier A: observation pointing corrections, telescope and
+detector coordinates, interpolation/support, frame transforms, projection,
+WCS, coordinate response and uncertainty, and realized AST identity.
+\item[Exact implementation] Application commit
+\code{9aae0e669384c5c0c0dda93debc194d6b8dac787} on the sole permitted audit
+branch \code{codex/audit-sci-ast-001} in
+\code{/Users/gwilson/.codex/worktrees/bcb5/citlali-refactor}.
+\item[Claimed estimator] A selected two-axis correction is realized on a
+stable observation sample grid, composed with boresight and detector focal-plane
+offsets on the sphere, transformed to one declared output frame, projected by
+a validity-bounded TAN map, and published with immutable WCS, response,
+uncertainty availability, validity, identity, and four-stage provenance.
+\item[Explicit exclusions] Alignment construction (\code{SCI-ALIGN-001}),
+calibration, RTC/PTC numerical kernels, map accumulation/coaddition, source
+detection or fitting likelihoods, Point/OOF/Beammap estimators, photometry,
+polarization, integration, repair, and production operations.
+\item[Strongest conclusion] The independent core is a coherent
+\status{proposed} contract.  The governing implementation is
+\status{nonconformant}, not conditionally conformant, because multiple observed
+source operations contradict required domain, topology, WCS, uncertainty, and
+product semantics.
+\item[Consumer policy] Preserve only the exact previously accepted operational
+profiles under their original interpretations.  New precise pointing,
+astrometric, coordinate-covariance, detector-registration, frame/epoch, or WCS
+claims are restricted or fail closed until owner decisions, repair, local
+gates, exact-successor-SHA evidence, and re-audit complete.
+\end{description}
+
+The audit does not assert that historical products encountered every defect.
+It does establish that the exact source lacks the contract and guards needed to
+exclude them. A plausible map, a successful configuration preflight, and
+historical numerical equality are evidence only; none is mathematical authority.
+
+\section{Authority, identity, and independence record}
+
+\subsection{Frozen identities}
+
+\begin{longtable}{L{0.24\linewidth}L{0.70\linewidth}}
+\toprule
+Field & Exact value and audit consequence \\
+\midrule
+\endhead
+Governing application &
+\code{9aae0e669384c5c0c0dda93debc194d6b8dac787}; authority ref
+\code{codex/refactor-mainline}.  The supplied worktree was clean and detached
+at this SHA before the audit branch was created. \\
+Audit branch/worktree &
+\code{codex/audit-sci-ast-001};
+\code{/Users/gwilson/.codex/worktrees/bcb5/citlali-refactor}.  No preexisting
+branch or worktree with this audit identity was found. \\
+Frozen prompt &
+\code{SCI_AST_001_AUDIT_PROMPT.md}; SHA-256
+\code{7071db6ad57fd23a1b36bdec619ac72bc0d26d8427d91e7abdbf10afbc46713f}. \\
+Frozen inbox &
+\code{SCI-AST-001_INBOX_MANIFEST_2026-08-01.yaml}; SHA-256
+\code{32f8ec335cfbececc4fb47cbd1f3197c189481f7c9b7e963c4ecbbf4974dca1f};
+registry commit \code{35cc8ce246e8e70c569e650be6c1eae2c91b80ef}. \\
+Post-core handoff &
+\code{SCI-AST-001-XAUD-001}; SHA-256
+\code{ede523dd732f9e14ec9dae44b9e608497819b50b0c97abce6b4124d3602e9d71};
+review phase \status{post_core_evidence}. \\
+Independent core &
+\code{doc/audits/packages/SCI-AST-001_INDEPENDENT_CORE.tex}; SHA-256
+\code{ed1fe3bf68ed53974b8c910bd3824717eb0cf5ff11d0b27c0fdf27aa6e606276}. \\
+Freeze commit/time &
+\code{17d683ada3856ecb5f0a5c42eed744cb219a3586};
+\code{2026-08-01T15:19:22Z}. \\
+First post-core handoff open &
+\code{2026-08-01T15:19:59Z}; after the independent-core commit. \\
+First application-source open &
+\code{2026-08-01T15:20:08Z}; after both the core freeze and post-core handoff open. \\
+Local evidence &
+\code{doc/audits/evidence/SCI-AST-001_LOCAL_EVIDENCE_2026-08-01.yaml};
+SHA-256
+\code{e391757e63477fd568a415e8c6b9c4bca6dc98603cd83088c350cbc03a51f986}. \\
+\bottomrule
+\end{longtable}
+
+\subsection{Pre-core authorities and quarantine}
+
+Before the freeze, the audit used only the repository \code{AGENTS.md}, TolTEC
+context authority maps, \code{ARCHITECTURE.md},
+\code{SCIENTIFIC_CONVENTIONS.md}, ADRs 0001--0003, the canonical ledger,
+the frozen dispatch identity, and the project-owner-approved ALIGN decision at
+commit \code{4f905f4f353e91847a303f4f3959654f3f03c302}.  The manifest contained no
+\status{pre_core_authority} handoff.  The ALIGN decision constrained the
+abstract upstream identity required by AST; it did not supply AST equations.
+
+Quarantined implementation, tests, writers, validation products, consumers,
+and \code{SCI-AST-001-XAUD-001} stayed unopened until the independent-core
+bytes were committed.  The only unavoidable prior exposure was a heading
+inventory and filenames named by the dispatch itself, recorded in the frozen
+core. No source content or numerical behavior was used in the independent
+derivation. The core was not changed after source inspection.
+
+\section{Proposed scientific contract}
+
+This section condenses the frozen independent core; that exact file remains the
+mathematical authority for this audit proposal.  Contract approval belongs to
+the project owner and coordinator, not this report.
+
+\subsection{Inputs and variable classification}
+
+For observation $o$, stable detector-reference sample $s$, detector $d$, and
+declared output frame $F$, AST accepts the following objects.
+
+\begin{longtable}{L{0.14\linewidth}L{0.20\linewidth}L{0.20\linewidth}L{0.13\linewidth}L{0.24\linewidth}}
+\toprule
+Quantity & Identity/shape/order & Units/frame/topology & Classification & Required validity and conditioning \\
+\midrule
+\endfirsthead
+\toprule
+Quantity & Identity/shape/order & Units/frame/topology & Classification & Required validity and conditioning \\
+\midrule
+\endhead
+$t_{os}$ & One strictly ordered value per stable aligned sample & SI second on one named clock; non-circular & data-derived, conditioned upon ALIGN & Finite, strictly monotone, original/synthesized and timing residual explicit. \\
+$\widehat{\boldsymbol b}_{os}$ & Unit boresight vector per sample & Named source frame and epoch & data-derived & Finite, normalized, frame transform and source row identified. \\
+$\boldsymbol\delta_o$ & One or two selected az/alt support vectors & Arcsec in declared local tangent basis & selected, then fixed for observation & Sign, basis, source identity, support and uncertainty mandatory; missing is not zero. \\
+$\tau_{ok}$ & Zero, one, or two support times & MJD day converted without precision loss & selected & Strictly ordered two-support case; bracket required; no extrapolation. \\
+$\boldsymbol f_d$ & One focal-plane vector per stable detector ID & Arcsec in altaz tangent basis & fixed calibration input & UID\breakslash order\breakslash source\breakslash basis\breakslash version\breakslash validity and covariance identified. \\
+$T_{A\to F}$ & Frame transform & Exact named frames\breakslash epoch\breakslash EOP policy & fixed or data-derived as declared & Versioned authority; unavailable transforms fail closed. \\
+$\mathcal W_o$ & WCS request/identity & CTYPE\breakslash CUNIT\breakslash CRPIX\breakslash CRVAL\breakslash CD or CDELT\breakslash RADESYS\breakslash EQUINOX & requested then observation-resolved & Full precision, immutable after admission, zero/one-based convention explicit. \\
+$C$ terms & Correction, focal-plane, alignment, frame and response covariance & Coordinate-square units and cross terms & fixed, fitted, or unavailable & Availability and conditioning explicit; never inferred from support/coverage. \\
+\bottomrule
+\end{longtable}
+
+Random detector signal and map noise are not inputs to the coordinate operator.
+Point/OOF/source/Beammap fit parameters are fitted downstream and remain
+conditioned upon AST outputs.  Detector calibration and support selection are
+not re-estimated by AST.
+
+\subsection{Correction support and spherical composition}
+
+The one-support case is constant.  For two valid supports
+$(\tau_0,\boldsymbol\delta_0)$ and
+$(\tau_1,\boldsymbol\delta_1)$, the proposed realization is
+\begin{align}
+ \alpha(t)&=\frac{t-\tau_0}{\tau_1-\tau_0}, &
+ \boldsymbol\delta(t)&=(1-\alpha)\boldsymbol\delta_0+
+                         \alpha\boldsymbol\delta_1,
+ \label{eq:audit-interp}
+\end{align}
+only for $\tau_0\le t\le\tau_1$.  Observation-span interpolation is a distinct
+explicit policy using the first and last valid observation time; a mixed
+sentinel is not a third implicit mode.  The full covariance includes the
+support covariance and, when support time is uncertain, the derivative with
+respect to support time.
+
+Let $\boldsymbol e_E,\boldsymbol e_N$ be the declared local east/north tangent
+basis.  After applying the approved correction sign on the sphere, detector
+composition is
+\begin{align}
+ \widehat{\boldsymbol b}'_{os}
+  &=\operatorname{Exp}_{\widehat{\boldsymbol b}_{os}}
+       \left(J_{\rm corr}\boldsymbol\delta_{os}\right),\\
+ \widehat{\boldsymbol r}_{ods}
+  &=\operatorname{Exp}_{\widehat{\boldsymbol b}'_{os}}
+       \left(R_{\rm fp}(o,s)\boldsymbol f_d\right),
+ \label{eq:audit-compose}
+\end{align}
+followed by the versioned transform $T_{A\to F}$.  A small-angle additive
+implementation is an approximation to Eq.~\eqref{eq:audit-compose}; it requires
+an approved maximum radius and measured error bound.  Composition order,
+correction sign, focal-plane basis, elevation/parallactic rotation signs, and
+longitude topology are scientific identity, not implementation trivia.
+
+\subsection{Projection, WCS, response, and uncertainty}
+
+For center $(\lambda_0,\phi_0)$ and direction $(\lambda,\phi)$,
+\begin{align}
+ D &= \sin\phi\sin\phi_0+
+      \cos\phi\cos\phi_0\cos(\lambda-\lambda_0),\\
+ x &= \frac{\cos\phi\sin(\lambda-\lambda_0)}{D}, &
+ y &= \frac{\cos\phi_0\sin\phi-
+       \sin\phi_0\cos\phi\cos(\lambda-\lambda_0)}{D}.
+ \label{eq:audit-tan}
+\end{align}
+The forward map is valid only on an owner-approved subset of $D>0$; $D\le0$,
+non-finite input, or an out-of-domain radius produces explicit invalidity, not
+$(0,0)$.  Inverse TAN normalizes longitude according to the declared topology.
+
+Internal continuous pixels obey
+\begin{align}
+ q_1 &= q_{1,0}+x/s_1, & q_2 &= q_{2,0}+y/s_2,
+ \label{eq:audit-wcs}
+\end{align}
+with zero-based $q_{k,0}=(N_k-1)/2$ for centered odd maps.  FITS writes add one
+to CRPIX.  The current compatibility orientation stores internal longitude in
+increasing column order, reverses the image x axis on write, and uses negative
+CDELT1; CDELT2 is positive.  These transformations must round-trip together.
+
+The astrometric response is the Jacobian $J=\partial(x,y)/\partial\theta$ (or
+the composition of correction, frame, TAN, and pixel Jacobians).  For any
+available input covariance $C_\theta$,
+\begin{equation}
+ C_q=J_qJ\,C_\theta\,(J_qJ)^{\T}+C_{\rm systematic}+C_{\rm response}.
+ \label{eq:audit-cov}
+\end{equation}
+Selection-conditioning and missing covariance terms remain explicit.
+Formal fit error, correction covariance, support, coordinate validity, hits,
+coverage, confidence, and response are not synonyms.  If covariance is
+unavailable, the product says so; it does not publish an incomplete diagonal as
+the full object.
+
+\subsection{Lifecycle and products}
+
+Requested, effective, observation-resolved, and realized state are distinct:
+
+\begin{longtable}{L{0.18\linewidth}L{0.24\linewidth}L{0.24\linewidth}L{0.25\linewidth}}
+\toprule
+State & AST value represented & Required identity & Required publication \\
+\midrule
+Requested & Immutable accepted support, axes, WCS and policy & Config bytes/digest and source authority & Exact request, including rejected fields. \\
+Effective & Context-free selected mode and defaults & Algorithm/version, sign, basis, units, topology & One-way typed plan; no silent fallback. \\
+Observation-\allowbreak resolved & Sample grid, support realization, center\breakslash frame\breakslash epoch, APT mapping & Observation\breakslash sample\breakslash detector\breakslash raw\breakslash APT identities & Resolved values, validity, precision and dependency status. \\
+Realized & Per-sample corrections, coordinates, WCS and product inventory & Counts plus value/product digests and validity & Atomic sidecar and product linkage after successful completion. \\
+\bottomrule
+\end{longtable}
+
+Repeated fruit-loop application must be an exact reapplication of the same
+observation-resolved operator unless an explicit versioned state transition is
+requested. Sequential and parallel execution must be coordinate-identical.
+
+\section{Exact implementation operator}
+
+\subsection{Pointing-support realization}
+
+The governing source validates one or two finite az/alt values of equal length
+and a two-element finite MJD vector.  One value is expanded over the telescope
+sample count. For two values it chooses explicit-MJD interpolation only when
+both MJD elements are positive; otherwise it silently chooses observation-span
+interpolation. Explicit MJD supports are converted to \code{long long} Unix
+seconds, checked for order and observation bracketing, and passed to
+\code{mlinterp::interp}.  The span path uses the first and last TelTime samples
+without a local strict-monotonicity/nondegeneracy check.
+
+Thus the implemented support operator is
+\begin{equation}
+ \widetilde{\boldsymbol\delta}(t)=
+ \begin{cases}
+  \boldsymbol\delta_0,&n=1,\\
+  \operatorname{mlinterp}(t; t_{\rm first},t_{\rm last},
+       \boldsymbol\delta_0,\boldsymbol\delta_1),&n=2,\ \neg(M_0>0\land M_1>0),\\
+  \operatorname{mlinterp}(t;\lfloor u(M_0)\rfloor,\lfloor u(M_1)\rfloor,
+       \boldsymbol\delta_0,\boldsymbol\delta_1),&n=2,\ M_0>0\land M_1>0,
+ \end{cases}
+ \label{eq:impl-interp}
+\end{equation}
+where $u(M)$ is Unix seconds.  At MJD 60000.123456789 the conversion loses
+0.6665694714 seconds.  Mixed positive/nonpositive support is accepted as the
+span mode rather than rejected as ambiguous. Duplicate axes select the last
+entry with a warning; unknown entries and positional fallbacks are also warning
+paths. These operations do not preserve the proposed authority distinctions.
+
+\subsection{Boresight and detector coordinates}
+
+RA/Dec and Galactic boresight positions use the forward gnomonic formula in
+Eq.~\eqref{eq:audit-tan}.  AltAz instead uses the small-angle approximation
+\begin{align}
+ y_{\rm alt}&=E_{\rm act}-E_{\rm src}-E_{\rm cor},\\
+ x_{\rm az}&=\cos(E_{\rm act}-E_{\rm cor})
+              (A_{\rm act}-A_{\rm src})-A_{\rm cor}.
+ \label{eq:impl-altaz}
+\end{align}
+Before subtraction it corrects only a positive difference larger than
+$0.9\,2\pi$.  The independent periodic preprocessing operates on each series
+only when that series itself spans the boundary.  A constant
+$A_{\rm act}=0.1$, $A_{\rm src}=6.2$, $E=0.8$ control therefore produces
+$x=-4.249910927$ rad, or $-876607.05$ arcsec, rather than the shortest
+angular difference.
+
+APT offsets $(x_t,y_t)$ in arcsec are rotated using elevation and then the
+astrometry correction is added:
+\begin{align}
+ a_d &= \cos E\,x_t-\sin E\,y_t+\delta_{\rm az},\\
+ e_d &= \cos E\,y_t+\sin E\,x_t+\delta_{\rm alt}.
+ \label{eq:impl-fp}
+\end{align}
+RA/Dec and Galactic branches rotate $(a_d,e_d)$ by parallactic or combined
+angles and add them linearly to the tangent boresight coordinates; AltAz adds
+them to Eq.~\eqref{eq:impl-altaz}. This is a useful small-field approximation,
+but the governing contract does not declare its sign, basis, approximation
+radius, error, or covariance.
+
+The APT reader requires a fixed column list and literal \code{Radesys=altaz},
+then filters rows by network while retaining APT order. Setup validates group
+columns, contiguity, and some beam quantities, but not $x_t/y_t$ length or
+finiteness, UID uniqueness, or exact UID/order correspondence with raw detector
+rows. Index $d$ is used directly by all coordinate consumers.
+
+\subsection{TAN domain, inverse map, and validity}
+
+The forward projection tests \code{abs(D) < epsilon}; when true it writes
+$x=y=0$. It accepts every $D<0$. Consequently an exact quarter turn becomes
+the finite center, one adjacent double produces $x=3.5301143212171575\times
+10^{15}$, the next adjacent double again becomes center, and the antipode is
+approximately center. Invalid sky direction and valid source center are thus
+indistinguishable downstream.
+
+The inverse formula is algebraically the standard inverse TAN in ordinary
+finite cases, but it has no explicit finite/domain policy, does not clamp the
+\code{asin} argument, and does not normalize returned longitude. Consumers
+usually test only numerical bounds or finiteness. A singular direction already
+aliased to finite center passes those defenses.
+
+Map geometry takes raw min/max over detector coordinates; mapmakers form
+$q=y/s+(N_y-1)/2$, $q=x/s+(N_x-1)/2$ and call \code{llround} without a common
+AST coordinate-validity mask. Signal flags are not coordinate validity. This
+is a concrete propagation path from AST into RTC/PTC/MAP/source selection,
+Point/OOF, Beammap, and persisted TOD products.
+
+\subsection{WCS and persisted identity}
+
+Map configuration accepts and serializes \code{crpix1}, \code{crpix2},
+\code{crval1_J2000}, \code{crval2_J2000}, \code{tan_ra}, and
+\code{tan_dec}. The adapter copies CRPIX and stores CRVAL in
+\code{crval_config}; geometry later overwrites CRPIX with the centered value,
+observation setup always assigns WCS CRVAL from the telescope source header,
+and the configured CRVAL/TAN fields have no realization path. A finite
+nondefault request can therefore succeed while its scientific values are
+ignored.
+
+The generated WCS has the following positive controls: internal zero-based
+CRPIX is converted to one-based FITS CRPIX, dimensions are made odd, x is
+reversed on FITS write/read, CDELT1 is negative, and CDELT2 positive. Those
+paths conform to the frozen compatibility orientation.
+
+Other WCS identity does not conform. The WCS container stores CDELT/CRPIX/CRVAL
+as \code{float}; 359.99999 degrees rounds to 360 degrees, a 0.036 arcsec
+change. Missing or invalid source epoch warns and defaults to 2000 without a
+coordinate transform. The primary \code{RADESYS} value is the internal pixel
+axis label such as \code{radec}, not a standard celestial system, and image
+extensions do not carry a complete approved frame identity. Fruit-loop map
+admission compares absolute CDELT, discarding handedness, and permits legacy
+missing RADESYS. These are incompatible with a precision WCS claim.
+
+\subsection{Response, covariance, state, products, and simulations}
+
+The AST operator publishes no coordinate Jacobian, correction covariance,
+focal-plane covariance, alignment covariance, frame/systematic term, response
+uncertainty, or selection-conditioning term. Point/source means are converted
+through inverse TAN, but their errors are only multiplied by arcsec-to-degree.
+At the projection center, a one-arcsecond tangent-x error corresponds to
+approximately 2 arcsec of RA at declination 60 degrees and 5.75877 arcsec at
+80 degrees; the implementation reports 1 arcsec. Cross-covariance is not
+persisted.
+
+The astrometry execution plan correctly distinguishes requested/effective
+objects structurally and enforces nonzero matched installation/application
+counts. However effective is a copy of requested, resolution contains only the
+mode and explicit-MJD boolean, and realized state contains only counts. The
+atomic sidecar identifies axes, arcsec, MJD, an algorithm label and authorities,
+but not sign/basis/frame/topology, resolved support/sample values, APT/raw
+identity, coordinate validity, WCS/products, covariance availability, or
+digests. Count equality does not prove value identity.
+
+Full TOD output labels detector coordinates in radians and pointing offsets in
+arcsec. It also labels \emph{every} telescope data variable in radians,
+including time, state, and counter fields. Mini TOD omits detector coordinates.
+There is no coordinate-validity variable. Required output and provenance write
+failures do propagate, which is positive failure-flow evidence.
+
+Simulation skips UTC conversion, periodic preprocessing, and Galactic source
+conversion; manually sets epoch 2000; and does not construct Galactic tangent
+coordinates while Galactic pixel axes remain an exposed mode. Its time/support
+assumptions and parity are not proven. Simulation output cannot validate the
+production coordinate operator in this state.
+
+\section{Source-to-equation conformity trace}
+
+Line numbers refer to exact source SHA
+\code{9aae0e669384c5c0c0dda93debc194d6b8dac787}.  Full file digests are in
+\code{SCI-AST-001_LOCAL_EVIDENCE_2026-08-01.yaml}.
+
+\begin{longtable}{L{0.25\linewidth}L{0.14\linewidth}L{0.18\linewidth}L{0.35\linewidth}}
+\toprule
+Source & Lines/symbol & Contract object & Conformity conclusion \\
+\midrule
+\endfirsthead
+\toprule
+Source & Lines/symbol & Contract object & Conformity conclusion \\
+\midrule
+\endhead
+\code{calibration_config_validation.h} & 11--60 & Input support & Finite/equal one-or-two axes checked; sign, units authority, ordering, topology and mixed-sentinel semantics absent. Partial only. \\
+\code{pointing_offsets_config_read.h} & 34--128 & Requested state & Last duplicate wins, unknown entries warn, positional fallback accepted, absent/nonpositive MJD normalized. Authority distinctions are lossy. \\
+\code{astrometry_execution_plan.h} & 13--51, 81--194 & Four-stage state & Mode/count lifecycle useful; effective values are request copies and realized values are counts only. Nonconformant completeness. \\
+\code{todproc_pointing_impl.h} & 9--97 & Eq.~\eqref{eq:audit-interp} & Constant and linear modes; explicit MJD brackets, but integer-second conversion, mixed fallback and unvalidated span ordering violate support contract. \\
+\code{utils.h} & 180--190 & Time precision & Returns \code{long long}; subsecond support is discarded. Nonconformant. \\
+\code{telescope.cpp} & 163--227 & Frames/simulation & Real path preprocesses selected fields; simulation bypass differs and Galactic simulation is incomplete. Nonconformant/unvalidated. \\
+\code{telescope.cpp} & 229--297 & Eqs.~\eqref{eq:audit-compose}, \eqref{eq:audit-tan} & RA/Dec/Galactic TAN plus approximate AltAz; one-sided wrap and no approximation bound. Nonconformant. \\
+\code{pointing.h} & 18--75 & Detector composition & Implements Eq.~\eqref{eq:impl-fp} and linear tangent addition; no identity/shape/finite/basis/uncertainty guard. Restricted approximation. \\
+\code{calib.cpp}, \code{calib.h} & 27--129, 267--433; 81--184 & Detector/A PT identity & Required columns and altaz label; no x/y/UID/raw-row admission needed for index-wise coordinate authority. Nonconformant. \\
+\code{pointing.h} & 226--249 & Eq.~\eqref{eq:audit-tan} & Formula nominal for $D>0$; maps near-zero $D$ to center and admits $D<0$. P0 nonconformance. \\
+\code{pointing.h} & 195--221 & Inverse TAN & Ordinary formula nominal; missing finite/domain/longitude policy. Partial only. \\
+\code{todproc_map_geometry_impl.h} & 20--125 & AST validity to geometry & Raw coordinate min/max without a validity operator. Nonconformant. \\
+\code{naive_mm.h}, \code{jinc_mm.h}, \code{ml_mm.h} & coordinate-to-\code{llround} sites & Eq.~\eqref{eq:audit-wcs} & Centered assignment is consistent for valid input; common AST validity is absent. Downstream restriction. \\
+\code{mapmaking_output_config.h} & 12--120 & Requested WCS & Reads all named controls; CRVAL/TAN are not installed and CRPIX is later overwritten. P0 nonconformance. \\
+\code{observation_setup_impl.h} & 107--138 & Resolved WCS center & Always derives CRVAL from source header; configured CRVAL has no authority. \\
+\code{map.h} & 24--43 & WCS precision & Stores key continuous WCS quantities as float. Nonconformant for precise AST identity. \\
+\code{fits_io.h} & 105--150 & Handedness/index base & X reversal and CRPIX+1 round trip conform on generated valid maps; required WCS write errors propagate. \\
+\code{fits_image_hdu_names_wcs.h} & 77--93 & Epoch & Missing/invalid epoch defaults to 2000 without transformation. Restricted. \\
+\code{map_source_fit_units.h} & 56--116 & Eq.~\eqref{eq:audit-cov} & Mean inverse TAN, diagonal error scalar conversion only. Nonconformant covariance/response. \\
+\code{tod_data_static_metadata_vars.h} & 19--45 & Product units & Pointing offsets arcsec correct; every telescope series labelled radians is false. Nonconformant. \\
+\code{tod_data_core_vars.h} & 52--78 & Coordinate products & Full TOD has rad coordinates; mini omits them; no coordinate validity/covariance/frame/epoch per variable. Incomplete. \\
+\code{astrometry_provenance.h} & 13--63 & State/provenance & Atomic required sidecar and authority labels positive; scientific identity and realized values incomplete. \\
+\code{timestream.h} & 1200--1339, 1538--1590 & Feedback WCS & Reads one-based to zero-based and checks scale/center loosely; uses absolute CDELT and optional RADESYS. Incomplete handedness/frame admission. \\
+\bottomrule
+\end{longtable}
+
+\section{Product and consumer matrix}
+
+\begin{longtable}{L{0.12\linewidth}L{0.16\linewidth}L{0.16\linewidth}L{0.10\linewidth}L{0.22\linewidth}L{0.17\linewidth}}
+\toprule
+Input & Operator & Estimator/product & Units & Metadata/validity & Consumer/disposition \\
+\midrule
+\endfirsthead
+\toprule
+Input & Operator & Estimator/product & Units & Metadata/validity & Consumer/disposition \\
+\midrule
+\endhead
+Selected az/alt support + TelTime & constant/\code{mlinterp} & per-sample pointing offsets & arcsec & Sidecar has request/mode/counts, not realized values or time precision & All AST paths; existing profiles only, new support claims restricted. \\
+Aligned boresight fields & RA\breakslash Dec or Galactic TAN; approximate AltAz & telescope tangent coordinates & rad & No explicit AST validity\breakslash frame\breakslash epoch per sample & RTC\breakslash PTC\breakslash MAP\breakslash SRC\breakslash MODE\breakslash BEAM; fail closed for invalid domain\breakslash wrap. \\
+APT $x_t,y_t$ + correction & elevation\breakslash parallactic rotations and addition & detector tangent coordinates & rad & APT says arcsec\breakslash altaz; raw-row identity, basis version, validity\breakslash covariance absent & All detector consumers; new detector-registration claim restricted. \\
+Detector tangent + center & inverse TAN & \code{det_ra}, \code{det_dec} & rad & Full TOD only; no coordinate validity\breakslash covariance; RADESYS incomplete & Diagnostics\breakslash Beammap\breakslash tools; existing compatibility only. \\
+Tangent coordinates + pixel scale & centered division\breakslash rounding & map pixel assignment & pixels, zero-based internal & No AST invalid mask; finite-invalid center passes & MAP\breakslash JINC\breakslash ML\breakslash feedback; dependency handoff, no new AST validity inference. \\
+Source header + geometry & WCS adapter\breakslash writer & FITS WCS and images & deg or arcsec & X reversal\breakslash CDELT1\breakslash CRPIX positive; float CRVAL, frame\breakslash epoch and ignored config negative & MAP\breakslash SRC\breakslash MODE\breakslash BEAM\breakslash external FITS; precision claim fail closed. \\
+Point/source fit mean & inverse TAN & \code{x_t}/\code{y_t} columns become RA/Dec for radec & deg & Column names ambiguous; frame/epoch incomplete & MODE/SRC; mean interpretation restricted. \\
+Point/source fit diagonal errors & scalar arcsec-to-degree & positional error columns & deg & No inverse-TAN Jacobian/cross-covariance/systematics & MODE/SRC; uncertainty/coverage claims fail closed. \\
+All telescope series & generic NetCDF writer & named telescope variables & falsely all rad & Field-specific topology/frame/validity absent & External TOD readers/BEAM; units must not be trusted generically. \\
+Request\breakslash effective\breakslash counts & atomic YAML writer & \code{astrometry_provenance.yaml} & mixed typed values & Required and atomic, but no resolved operator\breakslash product linkage & Audit\breakslash reproducibility; useful compatibility evidence, not full AST authority. \\
+Simulation telescope data & bypassed preprocessing + tangent construction & simulated AST coordinates & rad & J2000 forced; Galactic tangent unavailable; parity unproven & Validation/simulation consumers; Galactic and precision uses fail closed. \\
+\bottomrule
+\end{longtable}
+
+\section{Cross-audit dependencies and handoffs}
+
+\subsection{Upstream ALIGN dependency and inbound disposition}
+
+\code{SCI-ALIGN-001} remains an \status{open} stable dependency. AST requires
+an ordered detector-reference sample identity plus each telescope field's
+native-source mapping, units, frame, topology, validity/support, timing
+residual, origin, interpolation method, and original-versus-synthesized
+eligibility. While that interface is absent, AST can be derived against the
+abstract approved input but cannot make a precise implementation-conformity or
+production claim.
+
+The sole frozen inbound record, \code{SCI-AST-001-XAUD-001}, was opened only
+after the core freeze. Its bounded observation is accepted and
+\emph{incorporated} as follows: dependency recorded in F004; AST boundary
+findings F011 and F013 sharpened; interface tests added to the validation and
+Unity requests; new precise consumers restricted; re-audit required. The
+handoff does not establish AST coordinate construction and does not close any
+finding. This is a proposed recipient disposition; the canonical record was
+not edited.
+
+\subsection{Outbound proposals}
+
+Each proposal is outside the canonical registry under
+\code{doc/audits/proposals/handoffs/}. Coordinator integration and recipient
+disposition remain pending.
+
+\begin{longtable}{L{0.20\linewidth}L{0.12\linewidth}L{0.14\linewidth}L{0.46\linewidth}}
+\toprule
+Handoff & Target & Priority/arrival & Bounded action requested \\
+\midrule
+\endhead
+\code{SCI-MAP-001-XAUD-003} & MAP & P0, after completion & Hold for MAP re-audit; record AST validity/WCS dependency, tests, and precision restriction. \\
+\code{SCI-RTC-001-XAUD-003} & RTC & P0, before dispatch & Admit coordinate validity/identity before coordinate-aware masks or kernels; do not reopen mature RTC internals. \\
+\code{SCI-PTC-001-XAUD-004} & PTC & P0, before dispatch & Separate AST validity from signal flags and test source-mask/feedback interfaces; do not reopen mature PTC internals. \\
+\code{SCI-SRC-001-XAUD-001} & SRC & P0, before dispatch & Record inverse-TAN Jacobian/covariance and projection/frame dependency; restrict catalog precision/coverage claims. \\
+\code{SCI-MODE-001-XAUD-002} & MODE & P1, before dispatch & Distinguish tangent offsets, absolute coordinates, fit covariance and AST uncertainty in Point/OOF products. \\
+\code{SCI-BEAM-001-XAUD-002} & BEAM & P0, before dispatch & Admit APT/raw detector identity, coordinate validity and per-variable TOD units before detector-coordinate claims. \\
+\code{SCI-VAL-001-XAUD-005} & VAL & P0, before dispatch & Version the frozen AST falsification suite and exact-SHA evidence gates; trigger re-audit only after complete return. \\
+\bottomrule
+\end{longtable}
+
+\section{Validation and evidence matrix}
+
+\subsection{Local evidence actually obtained}
+
+\begin{longtable}{L{0.18\linewidth}L{0.25\linewidth}L{0.22\linewidth}L{0.27\linewidth}}
+\toprule
+Evidence & Exact result & Claim supported & Explicit limit \\
+\midrule
+\endhead
+Static AST boundary audit & Pass: plan/provenance present, no drift & Current wiring and shallow provenance tokens & No coordinate equation or compiled numerical truth. \\
+Focused config tests & 8 passed & Boundary-auditor stability & No spherical/WCS/uncertainty fixture. \\
+Baseline audit tests & 3 passed, 60 deselected & Current accepted-run astrometry schema & Schema is incomplete under proposed contract. \\
+Full config preflight & 123 unit tests, four mode kits, eight compatibility checks, 100\% config-leaf coverage, no registered drift & Configuration/compatibility gate & No proof of projection domain, wrap, WCS realization, Jacobian or identity. \\
+Double-precision probes & Integer-MJD loss 0.666569 s; singular/backside center alias; wrap error $-4.25$ rad; RA-error scale 2 at $60^\circ$, 5.76 at $80^\circ$; float CRVAL error 0.036 arcsec & Derived consequences of exact source formulas & Not compiled-path or Unity evidence. \\
+Source positive controls & FITS x reversal/CDELT1, CRPIX conversion, atomic failure propagation, lifecycle count guard & Narrow conforming subcontracts & Do not offset known nonconformances. \\
+\bottomrule
+\end{longtable}
+
+No exact-governing worktree build directory exists. The legacy root configure
+can require prohibited network FetchContent. A different-worktree build is not
+same-SHA evidence and was excluded. No install, download, network access, or
+Unity query was attempted.
+
+\subsection{Standard validation methods}
+
+\begin{longtable}{L{0.21\linewidth}L{0.28\linewidth}L{0.20\linewidth}L{0.23\linewidth}}
+\toprule
+Method & AST claim & Status/gate & N/A rationale or missing evidence \\
+\midrule
+\endhead
+Analytic limits & Identity, zero correction, wrap, pole, TAN center/domain, support endpoints, Jacobian & Partial; source/probes expose failures & Applicable and required. \\
+Small deterministic fixtures & Constant/two-support, detector rotations, WCS round trips, invalidity, covariance & Missing compiled exact-SHA fixtures & Applicable and required. \\
+Synthetic coordinate/source injection & Known sky/detector positions through full products & Required for operational propagation & A stochastic signal injection is not needed for pure coordinate algebra, but deterministic injected positions are required. \\
+Blank controls & False detection/map RMS & Not applicable to AST estimator & AST transforms coordinates and has no detection/noise estimator; blank statistics belong to SRC/MAP/NOI. \\
+Sequential/OMP equivalence & Coordinate values, IDs and validity & Source path appears per-detector pure; executable proof missing & Applicable and required. \\
+Simulation parity & Real/sim frames, time, wrap and support & Source divergence observed; fixture missing & Applicable and required for any simulation use. \\
+Same-SHA Unity reductions & Point/OOF/Science/Beammap complete products & \code{SCI-AST-001-UNITY-001} unsupplied & Applicable and required. \\
+Astronomical recovery & Source crossing, centroid, Point/OOF/Beammap position, WCS & Historical different-SHA compatibility only & Applicable cross-check; cannot override analytic failure. \\
+Noise realizations & Coordinate random error distribution & Not applicable to deterministic operator alone & Repeated calibrator/astrometric residuals are instead required to approve systematic covariance. \\
+Beam/template/photometric response & Signal amplitude/flux transfer & Not applicable to AST & AST changes coordinate location, not signal amplitude; owning packages audit photometric response. \\
+Extended-mode response & Spatial signal modes & Not applicable to AST & No signal-domain spatial filtering occurs. \\
+Iteration response & Repeated fruit-loop application of same AST operator & Historical compatibility; exact-SHA value identity missing & Applicable and required. \\
+\bottomrule
+\end{longtable}
+
+\subsection{Historical evidence and exact external request}
+
+The accepted Point \code{redu61}, OOF \code{redu02}, Science
+\code{redu20--redu23}, and Beammap \code{redu05} records demonstrate useful
+compatibility at earlier source SHA \code{9ea6d7f013c0a40e6159b0da1512897ddb6a7c5c}.
+They do not exercise the governing SHA, both azimuth wrap directions, TAN
+singularity/back hemisphere, nondefault WCS controls, full coordinate validity,
+subsecond support, inverse-TAN covariance, or complete provenance. Their raw
+content and original ordered authoring sources are also incomplete. They do not
+authorize a new interpretation.
+
+The exact human-run request is
+\code{doc/audits/requests/SCI-AST-001-UNITY-001.md}. It binds the governing SHA,
+four retained operational datasets, seq/OMP pairs, a nondefault-WCS case,
+config bytes/digests, required products, twelve preregistered comparisons, and
+explicit missing compiled edge fixtures. It uses only the required SSH alias
+\code{unity_toltec}. Its status is \status{unsupplied}; Codex did not execute it.
+
+\section{Open findings}
+
+All findings are open. Priority, evidence basis and confidence are independent.
+
+\begin{longtable}{L{0.14\linewidth}L{0.13\linewidth}L{0.07\linewidth}L{0.11\linewidth}L{0.47\linewidth}}
+\toprule
+ID & Class & Sev. & Basis/conf. & Finding, owner, and closure gate \\
+\midrule
+\endfirsthead
+\toprule
+ID & Class & Sev. & Basis/conf. & Finding, owner, and closure gate \\
+\midrule
+\endhead
+\code{SCI-AST-001-F001} & implementation defect & P0 & observed/high & Forward TAN maps $|D|<\epsilon$ to center and accepts $D<0$, so singular/back-hemisphere directions become finite valid-looking coordinates. Owner: AST projection implementation. Gate: explicit approved domain/invalidity, exhaustive boundary/round-trip tests, product validity propagation, re-audit. \\
+\code{SCI-AST-001-F002} & implementation defect & P0 & observed/high & AltAz applies only one wrap correction; independent per-series preprocessing cannot repair constant opposite-boundary series. Owner: telescope coordinate implementation. Gate: shortest signed topology in both directions, horizon/pole/ordinary controls, exact-SHA re-audit. \\
+\code{SCI-AST-001-F003} & implementation defect & P0 & observed/high & Accepted CRPIX/CRVAL/TAN configuration is copied or serialized but overwritten/unused, permitting silent nonrealization. Owner: WCS config/product implementation. Gate: owner selects implement or reject/deprecate; fail startup or exactly realize/provenance; nondefault tests and re-audit. \\
+\code{SCI-AST-001-F004} & dependency gap & P0 & observed/high & ALIGN does not yet supply complete topology, units, frame, validity, native-source mapping, timing residual, interpolation, or synthesized eligibility. Owner: ALIGN repair/coordinator. Gate: approved interface implemented and re-audited; AST boundary admission tests pass. \\
+\code{SCI-AST-001-F005} & implementation defect & P1 & observed/high & Support mode permits ambiguous mixed sentinels, MJD conversion drops subsecond precision, and span interpolation lacks local strict time validation. Owner: AST support implementation. Gate: owner-approved support policy/precision, lossless times, strict order/bracket, no extrapolation, endpoint/mixed/subsecond tests. \\
+\code{SCI-AST-001-F006} & contract gap & P1 & derived/high & Correction sign, focal-plane basis, rotation signs/order, longitude topology, frame/epoch transform and small-angle validity radius are not authoritative. Owner: scientific astrometry owner. Gate: approve versioned definitions and error bounds, publish in request/effective state, test limiting cases. \\
+\code{SCI-AST-001-F007} & implementation defect & P1 & derived/high & Point/source means use inverse TAN but errors receive scalar unit conversion without Jacobian/cross-covariance. Owner: AST/SRC/MODE product boundary. Gate: propagate full covariance and availability through inverse map; high-declination/cross-term tests and consumer re-audit. \\
+\code{SCI-AST-001-F008} & contract gap & P1 & observed/high & AST correction, alignment, focal-plane, frame, response, systematic and selection uncertainties have no approved covariance/availability product. Owner: scientific astrometry/product owner. Gate: approve covariance scope and unavailable semantics; implement versioned Jacobian/terms or explicit absence; coverage/systematic evidence. \\
+\code{SCI-AST-001-F009} & contract gap & P1 & observed/high & Provenance records modes and counts but not resolved/realized values, sign/basis/frame, APT/raw/sample identity, WCS/products, validity, covariance availability or digests. Owner: AST lifecycle/provenance. Gate: lossless four-stage one-way state and exact serialization/product linkage tests. \\
+\code{SCI-AST-001-F010} & implementation defect & P1 & observed/high & Persisted WCS uses float continuous values, incomplete/nonstandard frame identity, and epoch default without transformation; feedback admission discards scale sign. Owner: WCS product/consumer boundary. Gate: approved frame/epoch policy, full precision identity, strict handedness and FITS round-trip/feedback tests. \\
+\code{SCI-AST-001-F011} & implementation defect & P1 & observed/high & Generic TOD writer labels every telescope field radians, including time/state/counter data. Owner: TOD product schema. Gate: approved per-variable registry from ALIGN, exact units/topology/frame/validity attributes, schema/reader round trips and re-audit. \\
+\code{SCI-AST-001-F012} & implementation defect & P1 & observed/high & Coordinate validity is not a first-class product/admission operator; map geometry, mapmakers and downstream selection can consume finite-invalid or non-finite coordinates. Owner: AST boundary and consumers. Gate: explicit coordinate validity with fail-closed propagation through every named consumer and invalid-state tests. \\
+\code{SCI-AST-001-F013} & implementation defect & P0 & observed/high & APT admission does not validate x/y size/finiteness, UID uniqueness, or exact APT-to-raw detector mapping before index-wise coordinates. Owner: AST/CAL detector identity boundary. Gate: immutable one-to-one mapping and basis/version admission, permutation/duplicate/non-finite/network-subset tests, Beammap re-audit. \\
+\code{SCI-AST-001-F014} & implementation defect & P1 & observed/high & Simulation bypasses time/wrap/frame setup and exposes Galactic use without constructing Galactic tangent coordinates. Owner: simulation/AST implementation. Gate: declare parity contract, implement/validate each enabled frame or fail closed, exact real/sim fixtures and re-audit. \\
+\code{SCI-AST-001-F015} & evidence gap & P1 & observed/high & No exact-governing compiled numerical suite or complete same-SHA operational bundle covers equations, validity, WCS, covariance, units, identities, simulations and parallel equivalence. Owner: local validation implementer plus human external-evidence owner. Gate: all required local rows and \code{SCI-AST-001-UNITY-001} returned with no skip, then exact-successor-SHA re-audit. \\
+\bottomrule
+\end{longtable}
+
+\section{Unresolved scientific-owner decisions}
+
+\begin{longtable}{L{0.18\linewidth}L{0.29\linewidth}L{0.39\linewidth}}
+\toprule
+Decision ID & Owner question & Required recorded outcome before repair \\
+\midrule
+\endhead
+\code{SCI-AST-001-D001} & Correction sign, local tangent basis, elevation/parallactic/Galactic rotation signs and composition order & Versioned equations, axis names, units, allowed legacy adapter, and limiting fixtures. \\
+\code{SCI-AST-001-D002} & TAN operational domain and invalidity & Minimum positive denominator or maximum radius, boundary policy, invalid representation and consumer failure rule. \\
+\code{SCI-AST-001-D003} & Celestial frame, epoch, EOP and longitude topology & Exact ICRS/FK5/J2000 or alternative identities, transform authority, RA/az normalization and missing-header action. \\
+\code{SCI-AST-001-D004} & Time/support modes and precision & Meaning of absent/nonpositive/mixed MJD, span eligibility, minimum precision, monotonicity, bracketing and no-extrapolation policy. \\
+\code{SCI-AST-001-D005} & Nondefault WCS controls & Implement exact semantics or reject/deprecate each of CRPIX/CRVAL/TAN; no accepted ignored field. \\
+\code{SCI-AST-001-D006} & Uncertainty and response scope & Required correction/APT/alignment/frame/systematic/selection covariance, Jacobian publication, unavailable semantics and validation coverage. \\
+\code{SCI-AST-001-D007} & Approximation and simulation scope & Maximum small-angle radius/error, exact-spherical trigger, enabled simulated frames and parity/fail-closed behavior. \\
+\code{SCI-AST-001-D008} & Persisted precision and coordinate product identity & WCS/coordinate numeric precision, RADESYS/EQUINOX schema, validity variable, per-variable unit registry and mini/full product policy. \\
+\bottomrule
+\end{longtable}
+
+These decisions cannot be inferred from the current source or historical
+outputs. The audit proposes choices and gates; it does not make owner decisions.
+
+\section{Verdict, production disposition, and bounded sequence}
+
+\subsection{Independent status axes}
+
+\begin{center}
+\begin{tabular}{lllll}
+\toprule
+Contract & Implementation & Validation & Production & Verdict \\
+\midrule
+\status{proposed} & \status{nonconformant} & \status{in_progress} &
+\status{existing_use_only} & \status{amend} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Contract \status{proposed} means the frozen core plus the implementation trace
+is ready for owner/coordinator decision; it is not approved. Validation is
+\status{in_progress} because useful static/config/historical evidence exists,
+but required compiled fixtures and external evidence are absent. Production
+\status{existing_use_only} preserves compatibility without authorizing new
+interpretation, profile, consumer, precision, or frame.
+
+\subsection{Allowed, restricted, and fail-closed uses}
+
+\textbf{Allowed only as compatibility:}
+
+\begin{itemize}
+\item exact historical Point \code{redu61}, OOF \code{redu02}, Science
+\code{redu20--redu23}, and Beammap \code{redu05} profiles under their retained
+default/near-center, nonpolarimetric interpretations and original tolerances;
+\item the current astrometry sidecar as evidence that configured offsets were
+installed/applied with recorded mode and counts, not as complete astrometric
+provenance; and
+\item generated FITS orientation and CRPIX indexing under the traced default
+WCS path, without a new precision/frame claim.
+\end{itemize}
+
+\textbf{Restricted pending closure:}
+
+\begin{itemize}
+\item all new RTC/PTC/MAP/SRC/MODE/BEAM consumers or profiles depending on AST;
+\item positive-MJD precision below one second, observation-span fallback,
+nondefault WCS controls, high-declination coordinates, wrap crossings, large
+offsets, pole/horizon or near-domain-boundary cases;
+\item absolute Point/OOF/source/Beammap coordinate-error or coverage claims;
+\item detector-coordinate claims without exact APT/raw identity; and
+\item generic external use of telescope-variable unit attributes.
+\end{itemize}
+
+\textbf{Fail closed:}
+
+\begin{itemize}
+\item non-finite input, unknown topology/frame/epoch/basis/sign, $D\le0$ or
+owner-defined out-of-domain TAN coordinates, unresolved detector mapping, or
+missing required AST validity;
+\item new precise astrometry/WCS/covariance/systematic/response assertions;
+\item Galactic simulation or any simulation parity claim not exercised by an
+exact enabled-frame fixture; and
+\item production expansion based only on current config preflight, historical
+compatibility, or an unreturned Unity request.
+\end{itemize}
+
+The current implementation does not enforce every proposed fail-closed rule;
+these are production restrictions, not claims of present behavior.
+
+\subsection{Bounded post-audit sequence}
+
+No step below is authorized on this audit branch.
+
+\begin{enumerate}
+\item Project owner/coordinator dispositions D001--D008 and either approves or
+supersedes the proposed contract. Keep production \status{existing_use_only}.
+\item Complete and re-audit the approved ALIGN interface; bind AST sample,
+field and detector identity at its boundary.
+\item From a separately selected exact base, repair only AST contract
+conformance: domain/validity, wrap, support precision/policy, APT admission,
+WCS realization/frame/precision, covariance/response availability, units,
+state/provenance and simulation fail-closed behavior. Do not combine numerical
+map/filter/source algorithm changes.
+\item Add every non-N/A deterministic, invalidity, round-trip, covariance,
+identity, unit, simulation and seq/OMP gate. Pass full local build/CTest/config
+preflight with zero required-data skip and zero unexpected serious record.
+\item Freeze the successor SHA and perform an independent re-audit. Issue a
+new exact-successor-SHA Unity request; do not reuse this governing-SHA request
+as repair evidence.
+\item Coordinator dispositions outbound handoffs; owning downstream packages
+re-audit their boundaries. Only an explicit owner decision after all gates may
+change production status.
+\end{enumerate}
+
+\section{Machine-readable proposal and audit stop}
+
+The matching machine-readable package proposal is
+\code{doc/audits/proposals/SCI-AST-001_LEDGER_PROPOSAL_2026-08-01.yaml}. It
+contains the four axes, verdict, independent derivation identity, incoming
+disposition, outgoing proposal IDs, findings, decisions, dependency,
+evidence, request, restrictions, and re-audit status. It is a coordinator
+proposal only. The canonical ledger and handoff registry were not edited.
+
+This report is the audit stop. No application code, tests, build files,
+production documentation, other branch/worktree, candidate, external lane,
+mainline, canonical ledger, or canonical handoff registry was changed. No
+repair, integration, merge, rebase, cherry-pick, push, network access, software
+installation/download, Unity connection, or additional task was performed.
+
+\appendix
+\section{Evidence artifact inventory}
+
+\begin{longtable}{L{0.29\linewidth}L{0.61\linewidth}}
+\toprule
+Artifact & Identity/purpose \\
+\midrule
+\endhead
+\code{SCI-AST-001_INDEPENDENT_CORE.tex} & Immutable pre-source mathematical contract; SHA-256 \code{ed1fe3bf68ed53974b8c910bd3824717eb0cf5ff11d0b27c0fdf27aa6e606276}. \\
+\code{SCI-AST-001_LOCAL_EVIDENCE_2026-08-01.yaml} & Exact source hashes, local commands/results, numerical probes, positive controls, historical limits and scope guards; SHA-256 \code{e391757e63477fd568a415e8c6b9c4bca6dc98603cd83088c350cbc03a51f986}. \\
+\code{SCI-AST-001-UNITY-001.md} & Human-run exact-governing-SHA external request; status unsupplied. \\
+\code{SCI-AST-001-UNITY-001/config_manifest.yaml} & Four base config identities and nine exact audit overlays; SHA-256 \code{b8c5defb5f56b693141f901b918fbe36ec1c5dc5e3214fde5586c50277fed3d9}. \\
+\code{doc/audits/proposals/handoffs/*.yaml} & Seven bounded, one-target, post-core handoff proposals; canonical registry unchanged. \\
+\code{SCI-AST-001_LEDGER_PROPOSAL_2026-08-01.yaml} & Machine-readable coordinator proposal; canonical ledger unchanged. \\
+\bottomrule
+\end{longtable}
+
+\end{document}

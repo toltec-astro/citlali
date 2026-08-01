@@ -1,0 +1,5 @@
+runtime:
+  n_threads: 16
+  output_dir: /work/toltec/commissioning2025-test/2026-scientific-audits/SCI-AST-001-UNITY-001/oof-omp/
+  parallel_policy: omp
+  use_subdir: true
