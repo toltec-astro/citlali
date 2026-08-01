@@ -854,7 +854,7 @@ packages:
             owner_resolved_by_bounded_offset_lifecycle_and_setup_admission_with_proportionality_guard
           record_path: >-
             doc/audits/packages/SCI-ALIGN-001_PHASE_ZERO_D003_DECISION_2026-08-01.md
-          record_commit: null
+          record_commit: d500e33da1869bc1e20383a49484daddca9e7ea7
           record_sha256: >-
             a25b46ddec445a4164086aae248e3cbbfc70c7df8cb2c785c4c135d936e92d67
           constrained_by:
