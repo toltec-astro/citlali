@@ -636,6 +636,7 @@ packages:
       decision_date: 2026-08-01
       record_path: >-
         doc/audits/packages/SCI-ALIGN-001_COORDINATOR_DECISION_2026-08-01.md
+      record_commit: 4f905f4f39461c8f9a86b0bf589880362d0a49f7
       approved_decisions:
         - id: ALIGN-OD1-grid-clock-model
           status: approved_with_compatibility_guard
@@ -686,6 +687,7 @@ packages:
       decision_id: ALIGN-OD8-hwpr-separation-and-interim-production
       selected_option: existing_use_only
       decision_date: 2026-08-01
+      record_commit: 4f905f4f39461c8f9a86b0bf589880362d0a49f7
       note: >-
         Preserve only exact previously accepted nonpolarimetric profiles.
         Polarization, nonzero or unauthoritative HWPR offsets, new consumers
@@ -761,6 +763,7 @@ packages:
         status: addressed_pending_reaudit
         owner: project_timing_science_owners
         decision_date: 2026-08-01
+        decision_commit: 4f905f4f39461c8f9a86b0bf589880362d0a49f7
         decision_record: >-
           doc/audits/packages/SCI-ALIGN-001_COORDINATOR_DECISION_2026-08-01.md
         summary: >-
