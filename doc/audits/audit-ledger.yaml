@@ -1472,9 +1472,9 @@ packages:
       note: >-
         The dedicated Ultra audit completed without application changes. Its
         independent core, report, evidence, proposal, and exact identities are
-        integrated; D001-D003 are owner-approved with astrometric, layered
-        detector-binding, TAN-invalidity, and frame/topology guards;
-        D004-D008 remain pending.
+        integrated; D001-D004 are owner-approved with astrometric, layered
+        detector-binding, TAN-invalidity, frame/topology, and proportionate
+        pointing-support timing guards; D005-D008 remain pending.
     coordination:
       owner_integration_authorization: explicit_2026-08-01
       authorization_scope: >-
@@ -1587,12 +1587,23 @@ packages:
         confidence: high
         status: open
         owner: ast_support_implementation
+        related_decisions: [SCI-AST-001-D004]
         summary: >-
           Support resolution permits ambiguous mixed sentinels, truncates MJD
           to integer seconds, and lacks strict local span-time validation.
         closure_gate: >-
           Approve support modes and precision, reject ambiguity, extrapolation,
           and nonmonotonicity, and pass endpoint, mixed, and subsecond tests.
+        coordinator_closure_clarification:
+          decision_id: SCI-AST-001-D004
+          status: open_pending_support_repair_adequacy_evidence_and_reaudit
+          summary: >-
+            Require explicit constant, bracketed-MJD, or both-absent legacy
+            span modes; reject mixed/invalid support and extrapolation. Do not
+            require subsecond preservation for its own sake. Integer-second
+            conversion may remain if its quantified pointing-error bound is
+            negligible against preregistered Point/Beammap astrometric
+            performance; otherwise improve only to the demonstrated need.
       - id: SCI-AST-001-F006
         class: contract_gap
         severity: P1
@@ -1766,9 +1777,6 @@ packages:
           Pass every non-N/A local gate and a fresh exact-successor-SHA Unity
           campaign without required-data skips, then re-audit.
     unresolved_scientific_decisions:
-      - id: SCI-AST-001-D004
-        owner: scientific_astrometry_owner
-        question: support modes, sentinel semantics, time precision, bracket, and extrapolation
       - id: SCI-AST-001-D005
         owner: wcs_config_owner
         question: implement or reject/deprecate each nondefault WCS control
@@ -1802,9 +1810,8 @@ packages:
       decision_date: 2026-08-01
       record_path: >-
         doc/audits/packages/SCI-AST-001_COORDINATOR_DECISION_2026-08-01.md
-      record_commit: c7cabc2827d8daab7b5893dd309fda6192df2de2
       record_sha256: >-
-        15e7bd004664191bace454f320e30c50f84cbdc2faf19f2eabb811ad57d90a54
+        c8fd6f05559e2f62c49fe44404f1c92671f0979fa36630567a7986e355a25c28
       identity_amendment:
         decision_id: CAL-D002-IDENTITY-001
         path: >-
@@ -1873,19 +1880,39 @@ packages:
             conventions and demonstrated end-to-end source locations; exact
             successor frame, wrap, metadata, and transform fixtures remain
             required.
+        - id: SCI-AST-001-D004
+          status: approved_explicit_support_and_scientifically_adequate_time_precision
+          authority: project_owner
+          evidence_basis: owner_decision
+          affected_findings: [SCI-AST-001-F005]
+          policy: >-
+            Use explicit constant, two-present finite strictly increasing
+            bracketed-MJD, or both-absent legacy observation-span modes. Reject
+            mixed, equal, reversed, non-finite, unbracketed, clamped, nearest,
+            extrapolated, or stale support. Judge time precision by the
+            quantified angular effect of actual time quantization and pointing
+            drift against preregistered Point/Beammap performance. Retain
+            integer-second time if adequate; otherwise improve only enough to
+            meet the demonstrated astrometric need without wholesale retiming.
+          compatibility_evidence: >-
+            Project-owner scientific judgment that subsecond timing error does
+            not produce a meaningful fraction-of-an-arcsecond pointing error,
+            conditioned on a preregistered drift-rate bound and established
+            source-crossing, centroid, repeatability, and PSF-width evidence.
       pending_decisions:
-        - SCI-AST-001-D004
         - SCI-AST-001-D005
         - SCI-AST-001-D006
         - SCI-AST-001-D007
         - SCI-AST-001-D008
       effect: >-
-        Resolves D001-D003 for contract design without approving the governing
-        implementation, closing F001/F002/F006/F010/F012/F013, authorizing
-        repair, or expanding production use. D001's identity amendment changes
-        the F013 closure contract and also clarifies CAL F004; D002 supplies
-        the F001/F012 domain and invalidity policy; D003 supplies the F002 and
-        frame/epoch portions of the F006/F010 closure contract.
+        Resolves D001-D004 for contract design without approving the governing
+        implementation, closing F001/F002/F005/F006/F010/F012/F013,
+        authorizing repair, or expanding production use. D001's identity
+        amendment changes the F013 closure contract and also clarifies CAL
+        F004; D002 supplies the F001/F012 domain and invalidity policy; D003
+        supplies the F002 and frame/epoch portions of F006/F010; D004 supplies
+        F005 support semantics and replaces arbitrary subsecond precision with
+        a measured astrometric-adequacy gate.
     local_evidence:
       - id: SCI-AST-001-LOCAL-001
         path: doc/audits/evidence/SCI-AST-001_LOCAL_EVIDENCE_2026-08-01.yaml

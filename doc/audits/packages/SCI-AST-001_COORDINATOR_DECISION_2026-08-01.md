@@ -1,6 +1,6 @@
 # SCI-AST-001 coordinator and scientific-owner decision — 2026-08-01
 
-Status: in progress; `SCI-AST-001-D001`--`D003` approved; `D004`--`D008`
+Status: in progress; `SCI-AST-001-D001`--`D004` approved; `D005`--`D008`
 pending
 
 Package: `SCI-AST-001`
@@ -252,9 +252,89 @@ numeric precision, simulation parity, or uncertainty scope, and it does not
 authorize repair, Unity work, application integration, or production
 expansion.
 
+## SCI-AST-001-D004 — Pointing support modes and time adequacy
+
+Decision: approved with explicit support modes, bracket-only interpolation,
+and a scientifically proportionate time-precision gate.
+
+### Owner authority and issue
+
+The pointing-offset interpolation corrects slow drift in measured pointing
+offsets. The project owner judges that a subsecond timing error will not
+produce a pointing error that is a meaningful fraction of an arcsecond. The
+contract must therefore remove ambiguous mode selection, stale/clamped
+support, and untraceable interpolation without requiring a timing refactor for
+precision that has no material astrometric consequence.
+
+The assessed implementation silently selects observation-span interpolation
+when either of two MJD values is nonpositive, accepts mixed sentinel states,
+and converts MJD to integer Unix seconds. The audit probe demonstrated a
+0.666569-second loss for one value, but did not demonstrate a meaningful
+pointing displacement from that loss.
+
+### Approved contract
+
+- One pointing-correction pair means one constant correction over its admitted
+  observation support. It is not represented as two synthetic endpoints.
+- Two explicitly present, finite MJD supports select time interpolation. The
+  supports must be strictly increasing, use a declared scale compatible with
+  ALIGN, and bracket every otherwise eligible sample. Do not extrapolate,
+  clamp, select the nearest endpoint, or reuse a prior observation's support.
+- Legacy observation-span interpolation is a separate explicit mode and is
+  selected only when both support times are deliberately absent. Mixed
+  present/absent, equal, reversed, non-finite, or otherwise ambiguous support
+  fails before applying a correction.
+- The legacy span uses the exact first and last admitted aligned sample
+  identities and times, requires a finite positive span, and interpolates only
+  within that span. It never masquerades as MJD-supported interpolation.
+- Time representation is governed by astrometric adequacy, not an arbitrary
+  one-microsecond target or a requirement to preserve unused digits. The
+  existing integer-second representation may remain if a preregistered bound
+  using the actual time-quantization error and pointing-correction drift rate
+  shows the resulting pointing error is negligible relative to established
+  Point/Beammap centroid, repeatability, and PSF-width tolerances.
+- If that bound fails, improve time precision only enough to meet the
+  preregistered astrometric tolerance and remain compatible with ALIGN's
+  admitted clock/cadence model. Do not wholesale retime ordinary data.
+- Record the support mode, exact source support records, admitted sample span,
+  time representation and quantization bound, interpolation weights, exclusion
+  or failure counts, and realized correction identity through the four-stage
+  state.
+
+### Mandatory compatibility and falsification gates
+
+- Test constant support; explicit-MJD endpoints and midpoint; samples just
+  inside and outside both endpoints; both-absent legacy span; and mixed,
+  equal, reversed, non-finite, zero-span, and unbracketed cases. No failed case
+  may equal a clamped endpoint or reused prior correction.
+- For representative pointing solutions, calculate the correction drift rate,
+  actual time-quantization bound, and corresponding maximum angular error.
+  Compare that bound to preregistered existing centroid/repeatability and
+  PSF-width tolerances rather than to an arbitrary clock precision.
+- If integer-second time is retained, prove support order, bracketing, and
+  interpolation behavior remain valid after its declared conversion. If not,
+  the minimum adequate higher-precision representation is required.
+- Preserve ordinary Point and Beammap source-crossing times, centroids, and
+  recovered PSF widths. Stop for owner review if ordinary valid samples move
+  materially or established astrometric performance degrades.
+- Sequential and supported parallel execution must produce identical support
+  selection, interpolation weights, correction values, and failure state.
+
+### Effect
+
+`SCI-AST-001-D004` is resolved for contract design. It supplies the support
+mode, sentinel, bracketing, extrapolation, span, and time-adequacy policy for
+`SCI-AST-001-F005`. The ambiguous-mode and support-validation defects remain
+open. Integer-second conversion is not by itself a required repair: it becomes
+accepted compatibility behavior if the preregistered angular-error bound
+passes, and otherwise must be improved only to the demonstrated need. `F005`
+remains open pending that evidence, implementation of the remaining contract,
+exact repair-SHA validation, and fresh re-audit. This decision does not
+authorize repair, Unity work, application integration, production expansion,
+or a broader ALIGN timing change.
+
 ## Pending decisions
 
-- `SCI-AST-001-D004`: support modes and time precision.
 - `SCI-AST-001-D005`: accepted nondefault WCS controls.
 - `SCI-AST-001-D006`: response, covariance, and unavailable semantics.
 - `SCI-AST-001-D007`: approximation bounds and simulation parity.
