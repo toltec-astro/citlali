@@ -29,14 +29,19 @@ claim-specific composition-closure reviews. `SCI-COMP-ALIGN-AST-001` is the
 approved pilot; AST-to-MAP remains a separate seam. No fifth package-wide
 status axis will be added.
 
-This records policy only. `FRAMEWORK-COMP-D005` scientific definitions and
-tolerances and `FRAMEWORK-COMP-D006` authorization for the documentation-only
-framework patch and pilot launch remain held for later owner approval. The
-active AST audit and ALIGN phase-zero task remain unchanged. Return for those
-decisions after the completed committed AST audit and the ALIGN phase-zero
-owner-review package are both available; do not amend the framework README,
-templates, handoff rules, or canonical ledger and do not launch the closure
-task before that authorization.
+This records policy only. The return trigger is now satisfied by the completed
+SCI-AST-001 audit package `e3553bc0fcaa158ed4d986f59e9f25e5e2eeac7a`
+and the verified SCI-ALIGN-001 phase-zero evidence commit
+`53c7154a3633dfe19dc036cfb5a6250f729a897d`. That makes the remaining owner
+review timely; it does not decide it. `FRAMEWORK-COMP-D005` scientific
+definitions and tolerances and `FRAMEWORK-COMP-D006` authorization for the
+documentation-only framework patch and pilot launch remain held. Do not apply
+composition-framework amendments to the README, templates, handoff rules, or
+canonical ledger, and do not launch the closure task before explicit owner
+authorization. The project owner's 2026-08-01 authorization to integrate the
+ordinary AST audit/handoffs and ALIGN phase-zero return applies only to their
+existing package records; it is not approval of D005, D006, a composition
+schema/registry change, or the closure pilot.
 
 ## Current Integration Model
 
@@ -160,41 +165,48 @@ required.
 The corrected
 [bounded repair/re-audit handoff](audits/packages/SCI-ALIGN-001_BOUNDED_REPAIR_REAUDIT_HANDOFF_2026-08-01.md)
 selects the exact audited base and branch `codex/repair-sci-align-001`. The
-dedicated Ultra task is active on that branch at the exact base and is limited
-to phase zero: raw timing/header authority, the complete telescope/HWPR field
-registry, measured cadence/phase/tolerance and jitter, and timing-compatibility
-evidence. It must stop for owner review before application edits. No ALIGN
-application-repair commit, Unity evidence, re-audit, or production expansion
-exists. The canonical full-SHA identity correction is recorded at
-`35cc8ce246e8e70c569e650be6c1eae2c91b80ef`.
+dedicated Ultra task completed phase zero at evidence commit
+`53c7154a3633dfe19dc036cfb5a6250f729a897d`, whose parent is the exact selected
+base. Its checksum-list digest is
+`074aff9deddd062d13a055589714f5d1b52ee18753052286119a184d2dbc08a2`;
+all entries and source identities verify, and no application source changed.
+The
+[phase-zero coordinator review](audits/packages/SCI-ALIGN-001_PHASE_ZERO_COORDINATOR_REVIEW_2026-08-01.md)
+records verdict `STOP_FOR_OWNER_AUTHORITY` and five grouped pending owner
+decisions/questions.
+Phase one, application repair, Unity evidence, re-audit, and production
+expansion remain unstarted. The approved contract and existing-use-only
+restriction are unchanged.
 
-## 2026-08-01 SCI-AST-001 Active Audit
+## 2026-08-01 SCI-AST-001 Audit Coordination
 
-`SCI-AST-001` is the active Foundation Wave 1 critical-path audit. Its canonical
-ALIGN dependency now states the required aligned-field identity, topology,
-unit/frame, native-source mapping, validity/support, timing residual, origin,
-and eligibility contract plus the consequence while ALIGN remains open. The
-frozen inbox contains only post-core handoff `SCI-AST-001-XAUD-001`.
+The dedicated Ultra `SCI-AST-001` audit is complete and integrated. Its
+independent-core commit is
+`17d683ada3856ecb5f0a5c42eed744cb219a3586`, its report-bearing audit commit is
+`429e1b5361683ba15c8d897ba22bdc4c4d03bf91`, and its final identity-binding
+package commit is `e3553bc0fcaa158ed4d986f59e9f25e5e2eeac7a`. The report digest is
+`0be6771bbe5653bd42e90bc9a8cec1cd69ad84af971e6e7bca3d2fc21ed4bd98`.
+The work assessed exact application SHA
+`9aae0e669384c5c0c0dda93debc194d6b8dac787` without application changes.
 
-After correcting the ALIGN decision identity, the AST dispatch was re-frozen
-against coordinator registry snapshot
-`35cc8ce246e8e70c569e650be6c1eae2c91b80ef`. The manifest digest is
-`32f8ec335cfbececc4fb47cbd1f3197c189481f7c9b7e963c4ecbbf4974dca1f`,
-the prompt digest is
-`7071db6ad57fd23a1b36bdec619ac72bc0d26d8427d91e7abdbf10afbc46713f`,
-and the refreeze artifact commit is
-`bba8beae6c933cda6562fe2c4c3cdf2b6d648c72`.
+The verdict is `amend`: contract `proposed`, implementation `nonconformant`,
+validation `in_progress`, production `existing_use_only`, and re-audit
+`required`. Five P0 and ten P1 findings cover TAN invalidity, wrap, ignored WCS
+controls, the open ALIGN interface, detector identity, timing/support,
+uncertainty/response, products, provenance, simulation, and evidence. Seven
+canonical AST handoffs are now submitted to MAP, RTC, PTC, SRC, MODE, BEAM,
+and VAL; MAP's late arrival is held for its re-audit. The immutable VAL
+submission `SCI-VAL-001-XAUD-005` is retained, and corrected successor
+`SCI-VAL-001-XAUD-006` records the actual frozen `A01-A23` suite under the
+registry supersession rule. The incoming ALIGN handoff is acknowledged and
+incorporated without closing the dependency.
 
-The explicitly authorized Ultra task `019fbdd3-5a80-7d33-b3a2-a0a0b539b695`
-is active in the dedicated app worktree
-`/Users/gwilson/.codex/worktrees/bcb5/citlali-refactor`. The worktree was
-verified clean and detached at exact governing SHA
-`9aae0e669384c5c0c0dda93debc194d6b8dac787` before creating the sole permitted
-branch `codex/audit-sci-ast-001`. All frozen identities and absence-of-prior-
-state gates passed. The auditor is now reading only pre-core architecture,
-scientific-convention, and approved upstream authorities; quarantined AST
-implementation paths and post-core handoff evidence remain unopened until the
-independent core is frozen in its own commit.
+The
+[coordinator decision brief](audits/packages/SCI-AST-001_COORDINATOR_DECISION_BRIEF_2026-08-01.md)
+records `SCI-AST-001-D001` through `D008`. No AST repair base has been selected,
+and no repair, Unity request, re-audit, application integration, or production
+expansion is authorized. The governing-SHA Unity request remains an unsupplied
+audit artifact and must not be run as successor evidence.
 
 ## 2026-08-01 SCI-FLT-001 Returned Evidence Review
 

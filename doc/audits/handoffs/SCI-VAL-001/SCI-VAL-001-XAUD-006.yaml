@@ -1,10 +1,10 @@
 format_version: 1
-id: SCI-VAL-001-XAUD-005
+id: SCI-VAL-001-XAUD-006
 created_date: 2026-08-01
 
 source:
   package_id: SCI-AST-001
-  role: auditor
+  role: audit_coordinator
   audit_branch: codex/audit-sci-ast-001
   audit_commit: 429e1b5361683ba15c8d897ba22bdc4c4d03bf91
   governing_or_evidence_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
@@ -57,6 +57,7 @@ requested_actions:
   - trigger_reaudit
 affected_target_findings: []
 related_handoffs:
+  - SCI-VAL-001-XAUD-005
   - SCI-RTC-001-XAUD-003
   - SCI-PTC-001-XAUD-004
   - SCI-MAP-001-XAUD-003
@@ -71,7 +72,7 @@ evidence:
     availability: repository_path
     path: doc/audits/packages/SCI-AST-001_INDEPENDENT_CORE.tex
     sha256: ed1fe3bf68ed53974b8c910bd3824717eb0cf5ff11d0b27c0fdf27aa6e606276
-    note: Frozen tests T01-T23 and method dispositions.
+    note: Frozen tests A01-A23 and method dispositions.
   - id: SCI-AST-001-local-evidence
     availability: repository_path
     path: doc/audits/evidence/SCI-AST-001_LOCAL_EVIDENCE_2026-08-01.yaml
@@ -89,5 +90,5 @@ recipient_disposition:
   affected_dependencies: []
   contract_or_report_locations: []
 
-supersedes: null
+supersedes: SCI-VAL-001-XAUD-005
 superseded_by: null

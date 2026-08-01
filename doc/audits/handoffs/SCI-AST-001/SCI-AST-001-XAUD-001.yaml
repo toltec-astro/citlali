@@ -23,7 +23,7 @@ priority: P0
 evidence_basis: observed
 review_phase: post_core_evidence
 arrival: before_dispatch
-status: submitted
+status: acknowledged
 
 summary: >-
   ALIGN supplies AST with telescope values whose topology, units, frame,
@@ -75,15 +75,32 @@ evidence:
     note: Independent equations A1-A19 and tests T01-T18 frozen before source inspection.
 
 recipient_disposition:
-  status: pending
+  status: acknowledged
   late_arrival_route: not_applicable
-  actions: []
-  rationale: null
-  target_audit_branch: null
-  target_audit_commit: null
-  affected_findings: []
-  affected_dependencies: []
-  contract_or_report_locations: []
+  actions:
+    - incorporated
+    - dependency_recorded
+    - finding_opened
+    - add_interface_test
+    - restrict_consumer
+  rationale: >-
+    The completed AST audit incorporated the bounded ALIGN observations into
+    its open ALIGN dependency, findings F004/F011/F013, interface tests,
+    production restrictions, and re-audit requirement. The handoff does not
+    establish AST coordinate construction, close a finding, or authorize use.
+  target_audit_branch: codex/audit-sci-ast-001
+  target_audit_commit: 429e1b5361683ba15c8d897ba22bdc4c4d03bf91
+  affected_findings:
+    - SCI-AST-001-F004
+    - SCI-AST-001-F011
+    - SCI-AST-001-F013
+  affected_dependencies:
+    - SCI-ALIGN-001
+  contract_or_report_locations:
+    - >-
+      doc/audits/packages/SCI-AST-001_SCIENTIFIC_CONTRACT_AUDIT.tex at commit
+      429e1b5361683ba15c8d897ba22bdc4c4d03bf91, SHA-256
+      0be6771bbe5653bd42e90bc9a8cec1cd69ad84af971e6e7bca3d2fc21ed4bd98
 
 supersedes: null
 superseded_by: null

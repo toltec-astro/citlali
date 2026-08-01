@@ -171,6 +171,16 @@ packages:
         arrival: after_audit_completion
         status: submitted
         late_arrival_route: held_for_reaudit
+      - id: SCI-MAP-001-XAUD-003
+        path: >-
+          doc/audits/handoffs/SCI-MAP-001/SCI-MAP-001-XAUD-003.yaml
+        sha256: >-
+          829ca1e5d9122461d011cae85ce0024d46b3bd67cb494779ea8d003a90c29aee
+        source_package: SCI-AST-001
+        review_phase: post_core_evidence
+        arrival: after_audit_completion
+        status: submitted
+        late_arrival_route: held_for_reaudit
     outgoing_handoffs:
       - id: SCI-PTC-001-XAUD-001
         path: >-
@@ -667,6 +677,38 @@ packages:
           applies_to: [ALIGN-OD4, ALIGN-OD7]
           status: approved_with_as_requested_fallback_on_measured_burden
       pending_decisions: []
+    phase_zero_review:
+      status: verified_evidence_owner_input_required
+      review_date: 2026-08-01
+      owner_integration_authorization: explicit_2026-08-01
+      authorization_scope: ordinary_ALIGN_return_coordination_only
+      record_path: >-
+        doc/audits/packages/SCI-ALIGN-001_PHASE_ZERO_COORDINATOR_REVIEW_2026-08-01.md
+      record_sha256: >-
+        e87f619452f4839241e78ced4b2c6b70efba7735c4f4ff50255bc79a716bd17b
+      evidence_branch: codex/repair-sci-align-001
+      evidence_commit: 53c7154a3633dfe19dc036cfb5a6250f729a897d
+      evidence_parent: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+      package_root: validation/sci_align_001_phase0_2026-08-01
+      report_sha256: >-
+        4ac7c1bb9c67da3ce99ddfe4f96e42799a704bcb5acf89e3fa17cdfda1ef31c8
+      owner_questions_sha256: >-
+        6744ae1310b69f454b42fd9c9472b7e772ca9cfa14b39d112333081246f78669
+      digest_manifest_sha256: >-
+        074aff9deddd062d13a055589714f5d1b52ee18753052286119a184d2dbc08a2
+      application_source_changed: false
+      owner_decision_ids:
+        - ALIGN-P0-D001
+        - ALIGN-P0-D002
+        - ALIGN-P0-D003
+        - ALIGN-P0-D004
+        - ALIGN-P0-D005
+      effect: >-
+        Accepts the reproducible phase-zero census, registry, mapping
+        comparison, and compatibility baselines as evidence only. Producer
+        clock semantics, owner field policies, and preregistered compatibility
+        tolerances remain unresolved; phase 1, application repair, Unity
+        evidence, and re-audit are not authorized.
     dispatch:
       status: frozen_for_dispatch
       coordinator_registry_commit: 99bfa3562ecfa05c0c10de24a255a6a18ff313d2
@@ -721,7 +763,7 @@ packages:
       identity_correction_status: corrected
       identity_correction_commit: 35cc8ce246e8e70c569e650be6c1eae2c91b80ef
       proposed_branch: codex/repair-sci-align-001
-      launch_status: phase_zero_active
+      launch_status: phase_zero_complete_paused_for_owner_authority
       task_thread_id: 019fbd95-feaa-7b52-a382-b7bd04effa8e
       launch_date: 2026-08-01
       verified_initial_head: 9aae0e669384c5c0c0dda93debc194d6b8dac787
@@ -729,6 +771,12 @@ packages:
         Before application-code edits, commit the raw timing/header authority,
         generated telescope/HWPR field registry, cadence/phase/tolerance and
         compatibility evidence, then return for owner review.
+      phase_zero_evidence_commit: 53c7154a3633dfe19dc036cfb5a6250f729a897d
+      phase_zero_review: >-
+        doc/audits/packages/SCI-ALIGN-001_PHASE_ZERO_COORDINATOR_REVIEW_2026-08-01.md
+      next_gate: >-
+        Resolve ALIGN-P0-D001 through ALIGN-P0-D005 and record the reviewed
+        active-field registry before phase-one fixtures or any application edit.
     repair_base_decision:
       authority: project_owner
       date: 2026-08-01
@@ -815,13 +863,46 @@ packages:
           Implement the approved contract on a separate repair branch, pass
           the required local and exact-repair-SHA evidence gates, and complete
           a fresh re-audit.
-    unresolved_scientific_decisions: []
+    unresolved_scientific_decisions:
+      - id: ALIGN-P0-D001
+        questions: [Q01, Q16]
+        issue: detector_timestamp_counter_and_anchor_authority
+      - id: ALIGN-P0-D002
+        questions: [Q02, Q03, Q04]
+        issue: lattice_phase_slot_tolerance_and_union_support
+      - id: ALIGN-P0-D003
+        questions: [Q05, Q17]
+        issue: offset_lifecycle_and_malformed_boundary_policy
+      - id: ALIGN-P0-D004
+        questions: [Q06, Q07, Q08, Q09, Q10, Q11, Q12, Q14]
+        issue: HWPR_telescope_registry_aliases_topology_units_and_output_contract
+      - id: ALIGN-P0-D005
+        questions: [Q13, Q15]
+        issue: compatibility_fixtures_and_preregistered_tolerances
     local_evidence:
       - independent_core_offline_compile_and_13_page_visual_inspection
       - post_freeze_A1_A19_source_trace_at_governing_sha
       - application_source_diff_from_governing_sha_empty
       - yaml_offset_survey_163_files_116_blocks_all_zero
       - existing_test_surface_inventory
+      - id: SCI-ALIGN-001-PHASE0-001
+        status: verified_evidence_owner_input_required
+        source_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+        evidence_branch: codex/repair-sci-align-001
+        evidence_commit: 53c7154a3633dfe19dc036cfb5a6250f729a897d
+        artifact: validation/sci_align_001_phase0_2026-08-01/REPORT.md
+        sha256: >-
+          4ac7c1bb9c67da3ce99ddfe4f96e42799a704bcb5acf89e3fa17cdfda1ef31c8
+        digest_manifest_sha256: >-
+          074aff9deddd062d13a055589714f5d1b52ee18753052286119a184d2dbc08a2
+        established: >-
+          Exact input census, fail-closed generated registry, detector cadence
+          and mapping sensitivity, offset-state trace, and historical
+          compatibility baselines.
+        missing: >-
+          Producer timestamp/anchor authority, approved active-field semantics
+          and support, enabled-HWPR contract, successor products, and
+          preregistered compatibility tolerances.
     requested_unity_evidence:
       - SCI-ALIGN-001-UNITY-001
     supplied_external_evidence: []
@@ -1210,17 +1291,133 @@ packages:
       - id: SCI-AST-001-XAUD-001
         path: >-
           doc/audits/handoffs/SCI-AST-001/SCI-AST-001-XAUD-001.yaml
+        dispatch_sha256: >-
+          ede523dd732f9e14ec9dae44b9e608497819b50b0c97abce6b4124d3602e9d71
+        canonical_sha256: >-
+          20494a19a26273aca21a968d5ebe521dd444675d50763e2ef67ca01022fe9ccd
         source_package: SCI-ALIGN-001
         review_phase: post_core_evidence
         arrival: before_dispatch
+        status: acknowledged
+        recipient_disposition:
+          actions:
+            - incorporated
+            - dependency_recorded
+            - finding_opened
+            - add_interface_test
+            - restrict_consumer
+          affected_findings:
+            - SCI-AST-001-F004
+            - SCI-AST-001-F011
+            - SCI-AST-001-F013
+          affected_dependencies: [SCI-ALIGN-001]
+          target_audit_commit: 429e1b5361683ba15c8d897ba22bdc4c4d03bf91
+    outgoing_handoffs:
+      - id: SCI-MAP-001-XAUD-003
+        target_package: SCI-MAP-001
+        path: >-
+          doc/audits/handoffs/SCI-MAP-001/SCI-MAP-001-XAUD-003.yaml
+        sha256: >-
+          829ca1e5d9122461d011cae85ce0024d46b3bd67cb494779ea8d003a90c29aee
+        review_phase: post_core_evidence
+        arrival: after_audit_completion
         status: submitted
+        late_arrival_route: held_for_reaudit
+      - id: SCI-RTC-001-XAUD-003
+        target_package: SCI-RTC-001
+        path: >-
+          doc/audits/handoffs/SCI-RTC-001/SCI-RTC-001-XAUD-003.yaml
+        sha256: >-
+          5eff0782d3c1057ccccbc613e9304e5410b6c30155ca04a34ae285f26e9f95a8
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted
+      - id: SCI-PTC-001-XAUD-004
+        target_package: SCI-PTC-001
+        path: >-
+          doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-004.yaml
+        sha256: >-
+          3e8f7805b27acffa550b749e3c6970167fc38d9d0d87e807ee43c487b7dfbf6d
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted
+      - id: SCI-SRC-001-XAUD-001
+        target_package: SCI-SRC-001
+        path: >-
+          doc/audits/handoffs/SCI-SRC-001/SCI-SRC-001-XAUD-001.yaml
+        sha256: >-
+          99e7b200c66cc535a99fc77673fb81d40a37b2cf9128ffce713f33892e3f00a8
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted
+      - id: SCI-MODE-001-XAUD-002
+        target_package: SCI-MODE-001
+        path: >-
+          doc/audits/handoffs/SCI-MODE-001/SCI-MODE-001-XAUD-002.yaml
+        sha256: >-
+          64b2001db10390071fc4b589a4c93831bbe780957e08bdef16145c2b020579d7
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted
+      - id: SCI-BEAM-001-XAUD-002
+        target_package: SCI-BEAM-001
+        path: >-
+          doc/audits/handoffs/SCI-BEAM-001/SCI-BEAM-001-XAUD-002.yaml
+        sha256: >-
+          e73e9fe92d3be44b69de665a2ae98014aa856f7148815ee674f0ba8ac8f4b54e
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted
+      - id: SCI-VAL-001-XAUD-005
+        target_package: SCI-VAL-001
+        path: >-
+          doc/audits/handoffs/SCI-VAL-001/SCI-VAL-001-XAUD-005.yaml
+        sha256: >-
+          416d98a12c31eeeb1c82b9ac3c2873e134578e48768398516e1af81ca4cfc357
+        proposal_sha256: >-
+          aed4545e35f717689a0918867afbd9dcac01d497cf6d369bba078711f35006b7
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: superseded
+        superseded_by: SCI-VAL-001-XAUD-006
+      - id: SCI-VAL-001-XAUD-006
+        target_package: SCI-VAL-001
+        path: >-
+          doc/audits/handoffs/SCI-VAL-001/SCI-VAL-001-XAUD-006.yaml
+        sha256: >-
+          7f0244d71780e05ed9d9220fed076bdbfcab558332b5290164343f7e9ae4cdbd
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted
+        supersedes: SCI-VAL-001-XAUD-005
     governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
     governing_sha_role: audit_dispatch_snapshot
     audit_branch: codex/audit-sci-ast-001
-    audit_commit: null
-    independent_derivation: {status: not_started, sha256: null}
+    audit_commit: 429e1b5361683ba15c8d897ba22bdc4c4d03bf91
+    audit_parent_sha: 17d683ada3856ecb5f0a5c42eed744cb219a3586
+    audit_identity_commit: e3553bc0fcaa158ed4d986f59e9f25e5e2eeac7a
+    audit_artifact_at_commit: >-
+      doc/audits/packages/SCI-AST-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    final_audit_artifact_sha256: >-
+      0be6771bbe5653bd42e90bc9a8cec1cd69ad84af971e6e7bca3d2fc21ed4bd98
+    ledger_proposal:
+      path: >-
+        doc/audits/proposals/SCI-AST-001_LEDGER_PROPOSAL_2026-08-01.yaml
+      sha256: >-
+        a9b31ad958f8a91f2725fd2be351fd19e74319f87e1b643cf46e839606fb7ca7
+      artifact_commit: e3553bc0fcaa158ed4d986f59e9f25e5e2eeac7a
+      disposition: integrated_with_coordinator_normalizations
+    independent_derivation:
+      status: independent_draft_frozen
+      path: doc/audits/packages/SCI-AST-001_INDEPENDENT_CORE.tex
+      sha256: >-
+        ed1fe3bf68ed53974b8c910bd3824717eb0cf5ff11d0b27c0fdf27aa6e606276
+      freeze_commit: 17d683ada3856ecb5f0a5c42eed744cb219a3586
+      freeze_timestamp_utc: 2026-08-01T15:19:22Z
+      first_post_core_handoff_open_utc: 2026-08-01T15:19:59Z
+      first_source_inspection_utc: 2026-08-01T15:20:08Z
     dispatch:
-      status: launched_audit_active
+      status: audited_complete_integrated_pending_owner_decisions
       launch_date: 2026-08-01
       launch_authorization: project_owner_explicit
       task_thread_id: 019fbdd3-5a80-7d33-b3a2-a0a0b539b695
@@ -1246,24 +1443,349 @@ packages:
         7071db6ad57fd23a1b36bdec619ac72bc0d26d8427d91e7abdbf10afbc46713f
       launch_effort: ultra
       note: >-
-        The explicitly authorized dedicated Ultra audit is active. Its clean
-        app-supplied worktree was verified detached at the exact governing SHA
-        before the sole permitted audit branch was created. Frozen prompt,
-        manifest, registry, and handoff identities verified before quarantine-
-        governed pre-core authority review began.
-    contract_status: not_started
-    implementation_status: not_assessed
-    validation_status: not_started
+        The dedicated Ultra audit completed without application changes. Its
+        independent core, report, evidence, proposal, and exact identities are
+        integrated; scientific-owner decisions D001-D008 remain pending.
+    coordination:
+      owner_integration_authorization: explicit_2026-08-01
+      authorization_scope: >-
+        Ordinary AST audit/handoff and ALIGN return coordination only; no
+        composition-framework amendment or closure-pilot authorization.
+      audit_package_merge_commit: 83f429f1cbca435a9cd9630b39d3b19e08ab08dc
+      coordinator_review_path: >-
+        doc/audits/packages/SCI-AST-001_COORDINATOR_DECISION_BRIEF_2026-08-01.md
+      coordinator_review_sha256: >-
+        9082395e9dde810bd58b31a7cdb0aa6b11a5ebea85565ff1510a5cff25623114
+      canonical_normalizations:
+        - distinguish_report_commit_from_package_identity_commit
+        - preserve_VAL_005_and_supersede_with_corrected_VAL_006
+        - retain_governing_SHA_Unity_request_as_unsupplied_do_not_execute
+        - hold_unapproved_one_microsecond_tolerance
+        - link_detector_identity_to_existing_CAL_F004_CAL_D002
+    contract_status: proposed
+    implementation_status: nonconformant
+    validation_status: in_progress
     production_status: existing_use_only
-    verdict: pending
-    open_findings: []
-    unresolved_scientific_decisions: []
-    local_evidence: []
-    requested_unity_evidence: []
+    verdict: amend
+    implementation_assessment:
+      governing_source: nonconformant
+      positive_controls:
+        - generated_FITS_x_axis_reversal_and_negative_CDELT1_are_consistent
+        - zero_based_internal_CRPIX_converts_to_one_based_FITS_CRPIX
+        - required_WCS_and_provenance_output_failures_propagate
+        - observation_lifecycle_enforces_nonzero_equal_install_application_counts
+      consequence: >-
+        Positive subcontracts do not compensate for projection, topology, WCS
+        realization, uncertainty, identity, validity, unit, simulation, and
+        provenance mismatches.
+    open_findings:
+      - id: SCI-AST-001-F001
+        class: implementation_defect
+        severity: P0
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: ast_projection_implementation
+        summary: >-
+          Forward TAN maps a near-zero denominator to finite center and accepts
+          the back hemisphere, aliasing invalid directions to valid-looking
+          coordinates.
+        closure_gate: >-
+          Implement the approved positive-domain/invalidity contract, propagate
+          coordinate validity, pass boundary and round-trip tests, and re-audit.
+      - id: SCI-AST-001-F002
+        class: implementation_defect
+        severity: P0
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: telescope_coordinate_implementation
+        summary: >-
+          AltAz applies only one azimuth wrap correction and can produce a
+          multi-radian tangent displacement for the opposite crossing.
+        closure_gate: >-
+          Use the approved shortest signed topology in both directions and pass
+          wrap, horizon, pole, and ordinary controls at an exact successor SHA.
+      - id: SCI-AST-001-F003
+        class: implementation_defect
+        severity: P0
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: wcs_config_product_implementation
+        summary: >-
+          Accepted CRPIX/CRVAL/TAN configuration is overwritten or unused and
+          can succeed without realizing the requested scientific values.
+        closure_gate: >-
+          Apply the owner disposition to every field, pass nondefault
+          requested-to-realized/provenance tests, and re-audit.
+      - id: SCI-AST-001-F004
+        class: dependency_gap
+        severity: P0
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: sci_align_repair_and_coordinator
+        summary: >-
+          ALIGN does not yet supply the complete typed field, source mapping,
+          topology, frame, validity, timing, interpolation, and eligibility
+          identity AST requires.
+        closure_gate: >-
+          Implement and re-audit the approved ALIGN interface, then pass AST
+          sample, field, and detector admission tests.
+      - id: SCI-AST-001-F005
+        class: implementation_defect
+        severity: P1
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: ast_support_implementation
+        summary: >-
+          Support resolution permits ambiguous mixed sentinels, truncates MJD
+          to integer seconds, and lacks strict local span-time validation.
+        closure_gate: >-
+          Approve support modes and precision, reject ambiguity, extrapolation,
+          and nonmonotonicity, and pass endpoint, mixed, and subsecond tests.
+      - id: SCI-AST-001-F006
+        class: contract_gap
+        severity: P1
+        evidence_basis: derived
+        confidence: high
+        status: open
+        owner: scientific_astrometry_owner
+        summary: >-
+          Correction sign, focal-plane basis/rotation/order, topology,
+          frame/epoch transform, and small-angle validity radius lack
+          authoritative definitions.
+        closure_gate: >-
+          Approve versioned equations and bounds, publish them in typed state,
+          and pass limiting and independent-reference fixtures.
+      - id: SCI-AST-001-F007
+        class: implementation_defect
+        severity: P1
+        evidence_basis: derived
+        confidence: high
+        status: open
+        owner: ast_src_mode_product_boundary
+        summary: >-
+          Point/source means use inverse TAN while positional errors receive
+          only scalar unit conversion, without Jacobian or cross-covariance.
+        closure_gate: >-
+          Propagate covariance and availability through inverse TAN and pass
+          high-declination, wrap, cross-term, and consumer re-audit gates.
+      - id: SCI-AST-001-F008
+        class: contract_gap
+        severity: P1
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: scientific_astrometry_product_owner
+        summary: >-
+          Correction, alignment, focal-plane, frame, systematic, response, and
+          selection uncertainty have no approved covariance/availability product.
+        closure_gate: >-
+          Approve covariance scope and unavailable semantics, implement the
+          versioned response/terms or explicit absence, and validate them.
+      - id: SCI-AST-001-F009
+        class: contract_gap
+        severity: P1
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: ast_lifecycle_provenance
+        summary: >-
+          Provenance omits resolved and realized values, scientific identity,
+          dependencies, product links, validity, uncertainty availability, and
+          digests.
+        closure_gate: >-
+          Implement lossless four-stage one-way state and exact serialization,
+          physical cardinality, and product-linkage tests.
+      - id: SCI-AST-001-F010
+        class: implementation_defect
+        severity: P1
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: wcs_product_consumer_boundary
+        summary: >-
+          WCS continuous values use float, frame identity is incomplete or
+          nonstandard, epoch defaults without transform, and feedback admission
+          discards scale sign.
+        closure_gate: >-
+          Approve frame/epoch policy, retain precision and handedness, and pass
+          FITS/feedback round-trip and precision fixtures.
+      - id: SCI-AST-001-F011
+        class: implementation_defect
+        severity: P1
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: tod_product_schema
+        summary: >-
+          Generic TOD output falsely labels every telescope field radians,
+          including time, state, and counter data.
+        closure_gate: >-
+          Use the approved per-variable ALIGN registry and pass unit, topology,
+          frame, validity, schema, and reader round trips.
+      - id: SCI-AST-001-F012
+        class: implementation_defect
+        severity: P1
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: ast_boundary_and_consumers
+        summary: >-
+          Coordinate validity is not a first-class product or admission
+          operator, so consumers can use invalid coordinates.
+        closure_gate: >-
+          Implement explicit validity and fail-closed propagation through every
+          named consumer, then pass invalid-state tests and recipient re-audits.
+      - id: SCI-AST-001-F013
+        class: implementation_defect
+        severity: P0
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: ast_cal_detector_identity_boundary
+        related_findings: [SCI-CAL-001-F004]
+        related_decisions: [CAL-D002]
+        summary: >-
+          APT admission does not validate x/y size and finiteness, UID
+          uniqueness, or the exact APT-to-raw detector mapping before index-wise
+          coordinate use.
+        closure_gate: >-
+          Admit an immutable one-to-one mapping and basis/version, then pass
+          permutation, duplicate, nonfinite, mismatch, subset, and Beammap tests.
+      - id: SCI-AST-001-F014
+        class: implementation_defect
+        severity: P1
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: simulation_ast_implementation
+        summary: >-
+          Simulation bypasses time, wrap, and frame setup and exposes Galactic
+          use without constructing Galactic tangent coordinates.
+        closure_gate: >-
+          Approve parity scope, implement each enabled frame or fail closed,
+          and pass exact real/simulation fixtures.
+      - id: SCI-AST-001-F015
+        class: evidence_gap
+        severity: P1
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: local_validation_and_human_external_evidence_owner
+        summary: >-
+          No exact-governing compiled numerical suite or same-SHA operational
+          bundle covers equations, validity, WCS, covariance, identities, units,
+          simulations, and parallel equivalence.
+        closure_gate: >-
+          Pass every non-N/A local gate and a fresh exact-successor-SHA Unity
+          campaign without required-data skips, then re-audit.
+    unresolved_scientific_decisions:
+      - id: SCI-AST-001-D001
+        owner: scientific_astrometry_owner
+        question: correction sign, tangent basis, rotation signs, and composition order
+      - id: SCI-AST-001-D002
+        owner: scientific_astrometry_owner
+        question: TAN operational domain, invalid representation, and failure policy
+      - id: SCI-AST-001-D003
+        owner: frame_wcs_owner
+        question: exact celestial frame, epoch/EOP policy, transforms, and longitude topology
+      - id: SCI-AST-001-D004
+        owner: scientific_astrometry_owner
+        question: support modes, sentinel semantics, time precision, bracket, and extrapolation
+      - id: SCI-AST-001-D005
+        owner: wcs_config_owner
+        question: implement or reject/deprecate each nondefault WCS control
+      - id: SCI-AST-001-D006
+        owner: scientific_astrometry_product_owner
+        question: covariance, response, systematics, selection, and unavailable semantics
+      - id: SCI-AST-001-D007
+        owner: scientific_astrometry_and_simulation_owner
+        question: small-angle error/radius and enabled simulation parity/fail-closed scope
+      - id: SCI-AST-001-D008
+        owner: wcs_tod_product_owner
+        question: persisted precision, frame metadata, validity, unit registry, and mini/full products
+    owner_decision_brief:
+      status: pending_project_owner
+      path: >-
+        doc/audits/packages/SCI-AST-001_COORDINATOR_DECISION_BRIEF_2026-08-01.md
+      sha256: >-
+        9082395e9dde810bd58b31a7cdb0aa6b11a5ebea85565ff1510a5cff25623114
+      decision_ids:
+        - SCI-AST-001-D001
+        - SCI-AST-001-D002
+        - SCI-AST-001-D003
+        - SCI-AST-001-D004
+        - SCI-AST-001-D005
+        - SCI-AST-001-D006
+        - SCI-AST-001-D007
+        - SCI-AST-001-D008
+    local_evidence:
+      - id: SCI-AST-001-LOCAL-001
+        path: doc/audits/evidence/SCI-AST-001_LOCAL_EVIDENCE_2026-08-01.yaml
+        sha256: >-
+          e391757e63477fd568a415e8c6b9c4bca6dc98603cd83088c350cbc03a51f986
+        status: complete_with_explicit_limits
+        commands:
+          - SCI-AST-001-L001
+          - SCI-AST-001-L002
+          - SCI-AST-001-L003
+          - SCI-AST-001-L004
+        conclusion: >-
+          Static and config gates pass and narrow FITS/lifecycle controls
+          conform; derived probes expose projection, wrap, time, Jacobian, and
+          precision failures. Exact compiled numerical evidence is absent.
+    historical_compatibility_evidence:
+      source_sha: 9ea6d7f013c0a40e6159b0da1512897ddb6a7c5c
+      records:
+        - point-152389-refactor-9ea6d7f0-redu61
+        - oof-152385-152387-refactor-9ea6d7f0-redu02
+        - science-152390-152392-refactor-9ea6d7f0-redu23
+        - beammap-148670-refactor-9ea6d7f0-redu05
+      authority: compatibility_only_not_contract_or_same_sha
+    requested_unity_evidence:
+      - request_id: SCI-AST-001-UNITY-001
+        path: doc/audits/requests/SCI-AST-001-UNITY-001.md
+        sha256: >-
+          2abd889229a1129dee4229f63ee08d0f947c977c7cfb1dc82c8fa235a6394bc0
+        config_manifest_path: >-
+          doc/audits/requests/SCI-AST-001-UNITY-001/config_manifest.yaml
+        config_manifest_sha256: >-
+          b8c5defb5f56b693141f901b918fbe36ec1c5dc5e3214fde5586c50277fed3d9
+        source_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+        status: unsupplied_audit_artifact_do_not_execute
+        executed_by_codex: false
+        successor_requirement: >-
+          Rewrite and issue a fresh exact-repair-SHA request after all local
+          gates pass; the returned complete bundle is then audited in the
+          fresh re-audit. The proposed one-microsecond tolerance is held.
+    production_disposition:
+      allowed_compatibility_only:
+        - exact_retained_Point_redu61_interpretation
+        - exact_retained_OOF_redu02_interpretation
+        - exact_retained_Science_redu20_through_redu23_interpretation
+        - exact_retained_Beammap_redu05_interpretation
+        - generated_default_FITS_handedness_and_CRPIX_indexing_without_precision_expansion
+      restricted:
+        - all_new_consumers_or_profiles
+        - projection_boundary_wrap_pole_horizon_or_large_offset_cases
+        - subsecond_support_span_fallback_mixed_sentinel_or_nondefault_WCS
+        - absolute_coordinate_uncertainty_covariance_or_response_claims
+        - detector_coordinates_without_exact_APT_raw_mapping
+        - generic_telescope_variable_unit_attributes
+      fail_closed:
+        - nonfinite_or_out_of_domain_coordinate
+        - unknown_topology_frame_epoch_basis_sign_or_detector_identity
+        - missing_coordinate_validity_or_required_AST_product
+        - Galactic_simulation_or_unvalidated_simulation_parity
+        - new_precision_WCS_covariance_or_production_expansion_claim
     supplied_external_evidence: []
     remediation_branch: null
     remediation_commit: null
-    re_audit_status: not_started
+    re_audit_status: required
 
   - id: ENG-STATE-001
     name: Scientific state, provenance, required products, and failure flow
@@ -1339,6 +1861,15 @@ packages:
         review_phase: post_core_evidence
         arrival: before_dispatch
         status: submitted
+      - id: SCI-RTC-001-XAUD-003
+        path: >-
+          doc/audits/handoffs/SCI-RTC-001/SCI-RTC-001-XAUD-003.yaml
+        sha256: >-
+          5eff0782d3c1057ccccbc613e9304e5410b6c30155ca04a34ae285f26e9f95a8
+        source_package: SCI-AST-001
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted
     governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
     governing_sha_role: inventory_snapshot
     audit_branch: null
@@ -1401,6 +1932,15 @@ packages:
         review_phase: post_core_evidence
         arrival: before_dispatch
         status: submitted
+      - id: SCI-PTC-001-XAUD-004
+        path: >-
+          doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-004.yaml
+        sha256: >-
+          3e8f7805b27acffa550b749e3c6970167fc38d9d0d87e807ee43c487b7dfbf6d
+        source_package: SCI-AST-001
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted
     outgoing_handoffs: []
     governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
     governing_sha_role: inventory_snapshot
@@ -1443,6 +1983,8 @@ packages:
         status: open
       - package_id: SCI-PTC-001
         status: open
+      - package_id: SCI-AST-001
+        status: open
     downstream_consumers: [SCI-MAP-001, SCI-MAP-002, SCI-NOI-001, SCI-BEAM-001]
     incoming_handoffs:
       - id: SCI-VAL-001-XAUD-001
@@ -1473,6 +2015,28 @@ packages:
         review_phase: post_core_evidence
         arrival: before_dispatch
         status: submitted
+      - id: SCI-VAL-001-XAUD-005
+        path: >-
+          doc/audits/handoffs/SCI-VAL-001/SCI-VAL-001-XAUD-005.yaml
+        sha256: >-
+          416d98a12c31eeeb1c82b9ac3c2873e134578e48768398516e1af81ca4cfc357
+        proposal_sha256: >-
+          aed4545e35f717689a0918867afbd9dcac01d497cf6d369bba078711f35006b7
+        source_package: SCI-AST-001
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: superseded
+        superseded_by: SCI-VAL-001-XAUD-006
+      - id: SCI-VAL-001-XAUD-006
+        path: >-
+          doc/audits/handoffs/SCI-VAL-001/SCI-VAL-001-XAUD-006.yaml
+        sha256: >-
+          7f0244d71780e05ed9d9220fed076bdbfcab558332b5290164343f7e9ae4cdbd
+        source_package: SCI-AST-001
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted
+        supersedes: SCI-VAL-001-XAUD-005
     outgoing_handoffs: []
     governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
     governing_sha_role: inventory_snapshot
@@ -1997,6 +2561,16 @@ packages:
       - package_id: SCI-FLT-002
         status: open
     downstream_consumers: [scientific catalogs, SCI-FRUIT-001]
+    incoming_handoffs:
+      - id: SCI-SRC-001-XAUD-001
+        path: >-
+          doc/audits/handoffs/SCI-SRC-001/SCI-SRC-001-XAUD-001.yaml
+        sha256: >-
+          99e7b200c66cc535a99fc77673fb81d40a37b2cf9128ffce713f33892e3f00a8
+        source_package: SCI-AST-001
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted
     governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
     governing_sha_role: inventory_snapshot
     audit_branch: null
@@ -2046,6 +2620,15 @@ packages:
         path: >-
           doc/audits/handoffs/SCI-MODE-001/SCI-MODE-001-XAUD-001.yaml
         source_package: SCI-CAL-001
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted
+      - id: SCI-MODE-001-XAUD-002
+        path: >-
+          doc/audits/handoffs/SCI-MODE-001/SCI-MODE-001-XAUD-002.yaml
+        sha256: >-
+          64b2001db10390071fc4b589a4c93831bbe780957e08bdef16145c2b020579d7
+        source_package: SCI-AST-001
         review_phase: post_core_evidence
         arrival: before_dispatch
         status: submitted
@@ -2102,6 +2685,15 @@ packages:
         path: >-
           doc/audits/handoffs/SCI-BEAM-001/SCI-BEAM-001-XAUD-001.yaml
         source_package: SCI-CAL-001
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted
+      - id: SCI-BEAM-001-XAUD-002
+        path: >-
+          doc/audits/handoffs/SCI-BEAM-001/SCI-BEAM-001-XAUD-002.yaml
+        sha256: >-
+          e73e9fe92d3be44b69de665a2ae98014aa856f7148815ee674f0ba8ac8f4b54e
+        source_package: SCI-AST-001
         review_phase: post_core_evidence
         arrival: before_dispatch
         status: submitted
