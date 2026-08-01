@@ -1,6 +1,6 @@
 # SCI-AST-001 coordinator and scientific-owner decision — 2026-08-01
 
-Status: in progress; `SCI-AST-001-D001`--`D004` approved; `D005`--`D008`
+Status: in progress; `SCI-AST-001-D001`--`D005` approved; `D006`--`D008`
 pending
 
 Package: `SCI-AST-001`
@@ -333,9 +333,75 @@ exact repair-SHA validation, and fresh re-audit. This decision does not
 authorize repair, Unity work, application integration, production expansion,
 or a broader ALIGN timing change.
 
+## SCI-AST-001-D005 — Accepted nondefault WCS controls
+
+Decision: approved as a narrow truthful-boundary contract: retain the legacy
+automatic-zero path and reject unsupported explicit values.
+
+### Issue
+
+The configuration accepts `crpix1`, `crpix2`, `crval1_J2000`,
+`crval2_J2000`, `tan_ra`, and `tan_dec`, but the assessed application does not
+reliably realize nondefault requests. Geometry replaces CRPIX with the centered
+map value, observation setup obtains CRVAL from the telescope source header,
+and the configured TAN fields have no complete realization path. Silent
+success therefore permits requested and realized WCS identities to disagree.
+
+### Approved contract
+
+- Preserve exact numeric zero in each of the six legacy scalar fields as the
+  current `automatic` compatibility sentinel. In this bounded successor,
+  legacy zero is not interpreted as an explicit pixel or sky coordinate.
+- Under `automatic`, preserve the established centered-map reference pixel,
+  telescope/source-derived sky reference, product-family frame split, and FITS
+  zero-based-to-one-based CRPIX conversion. This decision does not change
+  ordinary generated WCS geometry.
+- Reject every nonzero value for any of the six controls during configuration
+  admission, before observation setup or numerical processing. The error must
+  name the field and state that explicit WCS control is unsupported; warning,
+  silent overwrite, serialization-only acceptance, or later fallback is not
+  allowed.
+- Reject non-finite values independently. Requested state retains the supplied
+  bytes/value and rejection reason; an admitted automatic request resolves to
+  the actual reference pixel, sky center, frame, units, and source authority
+  in effective/observation-resolved/realized provenance.
+- If explicit control is implemented later, introduce a typed `automatic`
+  versus `explicit` representation with versioned field semantics, units,
+  frame, index base, interaction rules, and round-trip tests. Do not continue
+  overloading zero, because zero degrees and an internal zero pixel can be
+  legitimate explicit values.
+- No accepted field may be ignored. The configuration surface and generated
+  templates must describe only the admitted automatic behavior until a
+  separately approved explicit implementation exists.
+
+### Mandatory compatibility and falsification gates
+
+- All-zero legacy configurations must reproduce the existing centered-map and
+  source-header WCS values, handedness, source locations, and FITS CRPIX
+  indexing within preregistered compatibility tolerances.
+- Exercise each of the six fields independently and in combinations with
+  positive, negative, smallest representable nonzero, NaN, and infinity
+  values. Every unsupported or non-finite request must fail at admission and
+  produce no partial reduction or misleading realized WCS.
+- Prove that automatic request, effective mode, resolved reference values, and
+  realized FITS/product metadata round-trip without requested-to-realized
+  backflow or loss of the derivation source.
+- Config serialization, generated profiles, and the full config preflight must
+  preserve legacy zero while identifying it as automatic rather than an
+  explicit scientific coordinate.
+
+### Effect
+
+`SCI-AST-001-D005` is resolved for contract design and supplies the initial
+closure policy for `SCI-AST-001-F003`. `F003` remains open until admission,
+state/provenance, negative tests, exact repair-SHA validation, and fresh
+re-audit pass. This decision deliberately avoids implementing unused WCS
+flexibility and does not settle persisted numeric precision, authorize repair
+or Unity work, expand production use, or approve a future explicit-control
+contract.
+
 ## Pending decisions
 
-- `SCI-AST-001-D005`: accepted nondefault WCS controls.
 - `SCI-AST-001-D006`: response, covariance, and unavailable semantics.
 - `SCI-AST-001-D007`: approximation bounds and simulation parity.
 - `SCI-AST-001-D008`: persisted precision, metadata, validity, and products.

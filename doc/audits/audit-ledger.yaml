@@ -1472,9 +1472,10 @@ packages:
       note: >-
         The dedicated Ultra audit completed without application changes. Its
         independent core, report, evidence, proposal, and exact identities are
-        integrated; D001-D004 are owner-approved with astrometric, layered
+        integrated; D001-D005 are owner-approved with astrometric, layered
         detector-binding, TAN-invalidity, frame/topology, and proportionate
-        pointing-support timing guards; D005-D008 remain pending.
+        pointing-support timing guards plus truthful automatic-only WCS
+        controls; D006-D008 remain pending.
     coordination:
       owner_integration_authorization: explicit_2026-08-01
       authorization_scope: >-
@@ -1560,12 +1561,22 @@ packages:
         confidence: high
         status: open
         owner: wcs_config_product_implementation
+        related_decisions: [SCI-AST-001-D005]
         summary: >-
           Accepted CRPIX/CRVAL/TAN configuration is overwritten or unused and
           can succeed without realizing the requested scientific values.
         closure_gate: >-
           Apply the owner disposition to every field, pass nondefault
           requested-to-realized/provenance tests, and re-audit.
+        coordinator_closure_clarification:
+          decision_id: SCI-AST-001-D005
+          status: open_pending_admission_state_evidence_and_reaudit
+          summary: >-
+            Preserve exact zero as the legacy automatic sentinel for CRPIX,
+            CRVAL_J2000, and TAN controls and preserve current derived WCS
+            behavior. Reject every nonzero or non-finite request at admission;
+            no accepted field may be ignored. Future explicit support requires
+            a separate typed and approved contract.
       - id: SCI-AST-001-F004
         class: dependency_gap
         severity: P0
@@ -1777,9 +1788,6 @@ packages:
           Pass every non-N/A local gate and a fresh exact-successor-SHA Unity
           campaign without required-data skips, then re-audit.
     unresolved_scientific_decisions:
-      - id: SCI-AST-001-D005
-        owner: wcs_config_owner
-        question: implement or reject/deprecate each nondefault WCS control
       - id: SCI-AST-001-D006
         owner: scientific_astrometry_product_owner
         question: covariance, response, systematics, selection, and unavailable semantics
@@ -1810,9 +1818,8 @@ packages:
       decision_date: 2026-08-01
       record_path: >-
         doc/audits/packages/SCI-AST-001_COORDINATOR_DECISION_2026-08-01.md
-      record_commit: 4ab0d68277fa9dc644df3f679670e2c3b82e82e2
       record_sha256: >-
-        c8fd6f05559e2f62c49fe44404f1c92671f0979fa36630567a7986e355a25c28
+        b9c5d744fa4a5745f64178eb765d682d91787968728f2fb9a567d46aae66c642
       identity_amendment:
         decision_id: CAL-D002-IDENTITY-001
         path: >-
@@ -1900,20 +1907,38 @@ packages:
             not produce a meaningful fraction-of-an-arcsecond pointing error,
             conditioned on a preregistered drift-rate bound and established
             source-crossing, centroid, repeatability, and PSF-width evidence.
+        - id: SCI-AST-001-D005
+          status: approved_legacy_zero_automatic_reject_explicit_wcs
+          authority: project_owner
+          evidence_basis: owner_decision
+          affected_findings: [SCI-AST-001-F003]
+          policy: >-
+            Treat exact zero in crpix1/2, crval1/2_J2000, and tan_ra/dec as the
+            legacy automatic sentinel and preserve current centered/source-
+            derived WCS behavior. Reject every nonzero or non-finite value at
+            configuration admission with a field-specific unsupported error;
+            no accepted value may be ignored or overwritten. Any future
+            explicit control requires a typed automatic/explicit contract so
+            legitimate zero coordinates remain representable.
+          compatibility_evidence: >-
+            Project-owner approval plus generated configurations and retained
+            validation profiles using exact zero for all six fields; exact
+            successor admission, provenance, config, WCS, and product fixtures
+            remain required.
       pending_decisions:
-        - SCI-AST-001-D005
         - SCI-AST-001-D006
         - SCI-AST-001-D007
         - SCI-AST-001-D008
       effect: >-
-        Resolves D001-D004 for contract design without approving the governing
-        implementation, closing F001/F002/F005/F006/F010/F012/F013,
+        Resolves D001-D005 for contract design without approving the governing
+        implementation, closing F001/F002/F003/F005/F006/F010/F012/F013,
         authorizing repair, or expanding production use. D001's identity
         amendment changes the F013 closure contract and also clarifies CAL
         F004; D002 supplies the F001/F012 domain and invalidity policy; D003
         supplies the F002 and frame/epoch portions of F006/F010; D004 supplies
         F005 support semantics and replaces arbitrary subsecond precision with
-        a measured astrometric-adequacy gate.
+        a measured astrometric-adequacy gate; D005 supplies the automatic-only
+        WCS admission policy for F003.
     local_evidence:
       - id: SCI-AST-001-LOCAL-001
         path: doc/audits/evidence/SCI-AST-001_LOCAL_EVIDENCE_2026-08-01.yaml

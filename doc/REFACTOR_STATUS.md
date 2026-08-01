@@ -215,7 +215,7 @@ incorporated without closing the dependency.
 The
 [coordinator decision brief](audits/packages/SCI-AST-001_COORDINATOR_DECISION_BRIEF_2026-08-01.md)
 records `SCI-AST-001-D001` through `D008`. The project owner has approved
-D001--D004 in the
+D001--D005 in the
 [partial decision record](audits/packages/SCI-AST-001_COORDINATOR_DECISION_2026-08-01.md).
 The cumulative record was first introduced for D001 at commit
 `0a17d088aded7fc6c18a59522f5b2b2fce9749ad`; its D002 revision is bound at
@@ -249,7 +249,13 @@ subsecond preservation for its own sake: integer-second conversion may remain
 when a preregistered drift-rate and quantization bound shows negligible angular
 effect relative to established Point/Beammap centroids, repeatability, and PSF
 widths. `SCI-AST-001-F005` remains open pending that adequacy evidence, the
-remaining support repair, and re-audit. D005--D008 remain pending.
+remaining support repair, and re-audit. D005 retains exact zero as the legacy
+automatic sentinel for CRPIX, CRVAL_J2000, and TAN configuration controls,
+preserves current centered/source-derived WCS behavior, and rejects every
+nonzero or non-finite request at configuration admission. Future explicit
+control requires a separate typed contract so legitimate zero coordinates are
+representable. `SCI-AST-001-F003` remains open pending implementation, exact
+evidence, and re-audit. D006--D008 remain pending.
 No AST repair base has been selected, and no repair, Unity request, re-audit,
 application integration, or production expansion is authorized. The
 governing-SHA Unity request remains an unsupplied audit artifact and must not
