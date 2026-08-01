@@ -22,8 +22,8 @@ fitter are not rebuilt inside Citlali.
 
 Citlali directly consumes Ceres, Boost, Spectra, FFTW (including the threaded
 library), Kidscpp, and the Tula capabilities used by its public headers. FITS
-I/O uses the `tula-cfitsio` dependency adapter, which supplies the supported
-CFITSIO/CCfits pair through one `tula_deps::cfitsio` target. Spack may satisfy
+I/O uses the `tula-ccfits` dependency adapter, which supplies the CCfits C++ API
+and its CFITSIO C dependency through one `tula_deps::ccfits` target. Spack may satisfy
 the pair from platform externals or build both from source.
 
 OpenMP is the explicit Spack variant `citlali+openmp` (the default). It
@@ -82,7 +82,7 @@ target_link_libraries(my_target PRIVATE citlali::citlali)
 ```
 
 `tests/installed_consumer` verifies this contract from the installed prefix,
-including transitive NetCDF, FFTW threads, the `TulaCfitsio` adapter, Ceres,
+including transitive NetCDF, FFTW threads, the `TulaCcfits` adapter, Ceres,
 Kidscpp, and Tula metadata.
 
 ## Validation

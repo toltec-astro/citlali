@@ -45,7 +45,7 @@ class Citlali(CMakePackage):
     depends_on("boost@1.83.0", type=("build", "link"))
     depends_on("spectra@1.0.1", type=("build", "link"))
     depends_on("fftw@3.3.10", type=("build", "link"))
-    depends_on("tula-cfitsio@1.0.0", type=("build", "link"))
+    depends_on("tula-ccfits@1.0.0", type=("build", "link"))
     depends_on("googletest@1.14:~shared", type=("build", "test"))
 
     def cmake_args(self) -> list[str]:

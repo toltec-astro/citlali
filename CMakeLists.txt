@@ -33,7 +33,7 @@ find_package(
 find_package(Ceres 2.2 CONFIG REQUIRED)
 find_package(Boost 1.83 CONFIG REQUIRED)
 find_package(spectra 1.0 CONFIG REQUIRED)
-find_package(TulaCfitsio 1 CONFIG REQUIRED)
+find_package(TulaCcfits 1 CONFIG REQUIRED)
 if(CITLALI_ENABLE_OPENMP)
     find_package(OpenMP REQUIRED COMPONENTS CXX)
 endif()
@@ -95,7 +95,7 @@ target_link_libraries(
         Boost::headers
         PkgConfig::FFTW3
         FFTW3::Threads
-        tula_deps::cfitsio
+        tula_deps::ccfits
         citlali::config
 )
 if(CITLALI_ENABLE_OPENMP)
