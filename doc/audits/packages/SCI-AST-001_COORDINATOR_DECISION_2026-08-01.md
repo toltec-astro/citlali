@@ -1,7 +1,6 @@
 # SCI-AST-001 coordinator and scientific-owner decision — 2026-08-01
 
-Status: in progress; `SCI-AST-001-D001`--`D006` approved; `D007`--`D008`
-pending
+Status: in progress; `SCI-AST-001-D001`--`D007` approved; `D008` pending
 
 Package: `SCI-AST-001`
 
@@ -479,9 +478,93 @@ re-audit succeed. This decision does not authorize repair, Unity work,
 application integration, production expansion, or any off-center response or
 covariance calculation.
 
+## SCI-AST-001-D007 — Bounded approximation and simulation parity
+
+Decision: approved with preservation of the established small-angle production
+path, an offline astrometric-adequacy bound, and fail-closed simulation scope.
+
+### Issue and owner proportionality judgment
+
+Citlali uses a fast small-angle approximation when combining pointing
+corrections and detector focal-plane offsets. The approximation is
+operationally useful, and the project owner's large-map evidence establishes
+that ordinary approximately one-square-degree products place sources correctly
+at their centers, edges, and corners. The contract nevertheless does not state
+the supported geometry envelope or bound its difference from exact spherical
+composition.
+
+Separately, the assessed simulation path bypasses parts of real-data time,
+longitude-wrap, and frame preparation, forces epoch 2000, and exposes a
+Galactic mode without constructing Galactic tangent coordinates. It therefore
+cannot presently establish parity with the production coordinate operator.
+
+The owner approves bounding the current approximation without replacing it or
+adding exact spherical work to the production hot path. Simulation work is
+limited to truthful parity for already supported AltAz and RA/Dec modes; a new
+Galactic implementation is not approved.
+
+### Approved contract
+
+- Preserve the current small-angle calculation and its established signs,
+  basis, rotation, composition order, and runtime behavior over the validated
+  operational envelope. Do not replace it with per-sample exact spherical
+  composition.
+- Define the envelope from preregistered supported map footprints,
+  focal-plane/detector offsets, and pointing-correction magnitudes. Compare the
+  approximation with an independent exact spherical reference offline across
+  that envelope.
+- Judge adequacy by the maximum angular discrepancy relative to established
+  Point/Beammap centroid, repeatability, and PSF-width tolerances. Do not impose
+  an arbitrary numerical precision threshold or let the candidate result set
+  its own gate.
+- Admit a requested/resolved geometry only within the validated envelope.
+  Configuration or setup outside it fails closed. An unexpected runtime input
+  outside the admitted envelope also fails rather than silently extrapolating.
+- No automatic exact-spherical fallback is authorized. Adding one later
+  requires a separate owner decision with demonstrated scientific need and a
+  performance budget.
+- For simulated AltAz and RA/Dec data, reuse the same applicable coordinate
+  preparation, topology, frame identity, support state, and AST operator as
+  the real-data path. Simulation-specific data generation may remain separate,
+  but it may not bypass the admitted coordinate contract.
+- Reject Galactic simulation during configuration admission until its source
+  conversion, tangent coordinates, frame metadata, and parity are explicitly
+  implemented and approved. Do not advertise or partially execute that mode.
+- Simulation parity is validation behavior. It adds no calculation or
+  allocation to an ordinary real-data production reduction.
+
+### Mandatory compatibility and falsification gates
+
+- Use a compact offline grid covering zero, ordinary, and envelope-boundary
+  combinations of supported footprint, focal-plane offset, and pointing
+  correction. Compare the existing approximation against an independent exact
+  spherical oracle and record the maximum angular discrepancy and its gate.
+- Preserve representative Point, OOF, Beammap, and approximately one-square-
+  degree Science source positions, source-crossing directions, centroids, and
+  PSF widths within preregistered compatibility tolerances.
+- Exercise inputs just inside, at, and outside the approved envelope. Outside
+  requests must fail without partial products; the production hot path must
+  contain no newly introduced exact spherical calculation.
+- For each supported simulated AltAz and RA/Dec fixture, compare real-path and
+  simulation-path prepared coordinates from the same admitted inputs,
+  including zero correction, wrap, and representative support cases.
+- Verify that Galactic simulation and every other unimplemented frame fail at
+  configuration admission with a specific unsupported-mode error.
+- Measure or inspect the changed execution path sufficiently to confirm no
+  material regression in ordinary coordinate-processing timing or allocation.
+
+### Effect
+
+`SCI-AST-001-D007` is resolved for contract design. It completes the
+small-angle scope of `SCI-AST-001-F006` and supplies the parity/fail-closed
+policy for `F014`. Both findings remain open pending the bounded implementation,
+offline reference evidence, compatibility and performance gates, exact
+repair-SHA validation, and fresh re-audit. This decision does not authorize
+repair, Unity work, an exact-spherical production path, Galactic simulation,
+application integration, or production expansion.
+
 ## Pending decisions
 
-- `SCI-AST-001-D007`: approximation bounds and simulation parity.
 - `SCI-AST-001-D008`: persisted precision, metadata, validity, and products.
 
 No repair, Unity request, re-audit, application integration, production

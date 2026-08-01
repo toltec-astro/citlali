@@ -215,7 +215,7 @@ incorporated without closing the dependency.
 The
 [coordinator decision brief](audits/packages/SCI-AST-001_COORDINATOR_DECISION_BRIEF_2026-08-01.md)
 records `SCI-AST-001-D001` through `D008`. The project owner has approved
-D001--D005 in the
+D001--D007 in the
 [partial decision record](audits/packages/SCI-AST-001_COORDINATOR_DECISION_2026-08-01.md).
 The cumulative record was first introduced for D001 at commit
 `0a17d088aded7fc6c18a59522f5b2b2fce9749ad`; its D002 revision is bound at
@@ -263,8 +263,16 @@ reported. Native tangent-plane uncertainty may remain native; unavailable
 terms are not zero. Per-sample, per-detector, per-pixel, response-grid, dense,
 and broadly composed covariance calculations are explicitly outside scope.
 `SCI-AST-001-F007` and `F008` remain open pending the bounded center
-implementation, unchanged-map/performance evidence, and re-audit. D007--D008
-remain pending.
+implementation, unchanged-map/performance evidence, and re-audit. D007
+preserves the current small-angle production hot path and bounds it offline
+against exact spherical geometry over a preregistered supported envelope,
+using established centroid/repeatability/PSF-width tolerances. It adds no
+per-sample exact-spherical work, fails outside the validated envelope, limits
+simulation parity to supported AltAz and RA/Dec modes using applicable real
+coordinate preparation, and rejects Galactic simulation at admission.
+`SCI-AST-001-F006` and `F014` remain open pending bounded implementation,
+offline reference, compatibility/performance, exact-SHA, and re-audit evidence.
+D008 remains pending.
 No AST repair base has been selected, and no repair, Unity request, re-audit,
 application integration, or production expansion is authorized. The
 governing-SHA Unity request remains an unsupplied audit artifact and must not

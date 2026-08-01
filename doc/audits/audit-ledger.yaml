@@ -1472,10 +1472,11 @@ packages:
       note: >-
         The dedicated Ultra audit completed without application changes. Its
         independent core, report, evidence, proposal, and exact identities are
-        integrated; D001-D006 are owner-approved with astrometric, layered
+        integrated; D001-D007 are owner-approved with astrometric, layered
         detector-binding, TAN-invalidity, frame/topology, and proportionate
         pointing-support timing guards plus truthful automatic-only WCS
-        controls and a map-center-only uncertainty response; D007-D008 remain
+        controls, a map-center-only uncertainty response, and an offline-bounded
+        small-angle hot path with fail-closed simulation scope; D008 remains
         pending.
     coordination:
       owner_integration_authorization: explicit_2026-08-01
@@ -1626,13 +1627,23 @@ packages:
         related_decisions:
           - SCI-AST-001-D001
           - SCI-AST-001-D003
+          - SCI-AST-001-D007
         summary: >-
           Correction sign, focal-plane basis/rotation/order, topology,
           frame/epoch transform, and small-angle validity radius lack
           authoritative definitions.
         closure_gate: >-
-          Approve versioned equations and bounds, publish them in typed state,
-          and pass limiting and independent-reference fixtures.
+          Preserve the approved realized transform, bound the small-angle path
+          offline against an exact spherical reference over the preregistered
+          envelope, and pass limiting, compatibility, and performance gates.
+        coordinator_closure_clarification:
+          decision_id: SCI-AST-001-D007
+          status: open_pending_offline_bound_compatibility_evidence_and_reaudit
+          summary: >-
+            Retain the production small-angle hot path within its validated
+            operational envelope. Do not add per-sample exact spherical work;
+            fail closed outside the envelope unless a future owner decision
+            approves a measured fallback.
       - id: SCI-AST-001-F007
         class: implementation_defect
         severity: P1
@@ -1787,12 +1798,21 @@ packages:
         confidence: high
         status: open
         owner: simulation_ast_implementation
+        related_decisions: [SCI-AST-001-D007]
         summary: >-
           Simulation bypasses time, wrap, and frame setup and exposes Galactic
           use without constructing Galactic tangent coordinates.
         closure_gate: >-
-          Approve parity scope, implement each enabled frame or fail closed,
-          and pass exact real/simulation fixtures.
+          Reuse applicable real coordinate preparation for supported AltAz and
+          RA/Dec simulation, reject Galactic simulation at admission, and pass
+          exact compact parity fixtures without production overhead.
+        coordinator_closure_clarification:
+          decision_id: SCI-AST-001-D007
+          status: open_pending_supported_mode_parity_evidence_and_reaudit
+          summary: >-
+            Simulation parity is limited to supported AltAz and RA/Dec modes.
+            Galactic simulation is not approved for implementation and must
+            fail at configuration admission until separately decided.
       - id: SCI-AST-001-F015
         class: evidence_gap
         severity: P1
@@ -1808,9 +1828,6 @@ packages:
           Pass every non-N/A local gate and a fresh exact-successor-SHA Unity
           campaign without required-data skips, then re-audit.
     unresolved_scientific_decisions:
-      - id: SCI-AST-001-D007
-        owner: scientific_astrometry_and_simulation_owner
-        question: small-angle error/radius and enabled simulation parity/fail-closed scope
       - id: SCI-AST-001-D008
         owner: wcs_tod_product_owner
         question: persisted precision, frame metadata, validity, unit registry, and mini/full products
@@ -1835,9 +1852,8 @@ packages:
       decision_date: 2026-08-01
       record_path: >-
         doc/audits/packages/SCI-AST-001_COORDINATOR_DECISION_2026-08-01.md
-      record_commit: 79f013663203191a0456f56b79f5afdacd3d8102
       record_sha256: >-
-        5de93d7dde4d7a76091c51ae751b0918156bfbef67401d71e4c4ab3ada651882
+        aca64bd4beb9bf74337faf85fd58d4e621e76b0e866ca4f827cb1f0ae6ea8a27
       identity_amendment:
         decision_id: CAL-D002-IDENTITY-001
         path: >-
@@ -1965,12 +1981,34 @@ packages:
             making the realized map-center response operationally adequate.
             Exact successor center-reference, availability, unchanged-map, and
             no-hot-path-work fixtures remain required.
+        - id: SCI-AST-001-D007
+          status: approved_preserved_hot_path_offline_bound_and_fail_closed_simulation
+          authority: project_owner
+          evidence_basis: owner_decision
+          affected_findings:
+            - SCI-AST-001-F006
+            - SCI-AST-001-F014
+          policy: >-
+            Preserve the existing small-angle production operator and bound it
+            offline against an independent exact spherical reference over a
+            preregistered envelope of supported map footprints, focal-plane
+            offsets, and pointing corrections. Judge its discrepancy against
+            established centroid, repeatability, and PSF-width tolerances;
+            fail outside the envelope and add no production exact-spherical
+            fallback. Supported AltAz and RA/Dec simulation must reuse the
+            applicable real coordinate preparation. Galactic simulation is
+            rejected at admission until separately implemented and approved.
+          compatibility_evidence: >-
+            Project-owner approval plus evidence that representative
+            approximately one-square-degree maps place sources correctly at
+            centers, edges, and corners. Exact successor offline-bound,
+            ordinary-source, compact real/simulation parity, fail-closed, and
+            no-material-runtime-regression evidence remains required.
       pending_decisions:
-        - SCI-AST-001-D007
         - SCI-AST-001-D008
       effect: >-
-        Resolves D001-D006 for contract design without approving the governing
-        implementation, closing F001/F002/F003/F005/F006/F007/F008/F010/F012/F013,
+        Resolves D001-D007 for contract design without approving the governing
+        implementation, closing F001/F002/F003/F005/F006/F007/F008/F010/F012/F013/F014,
         authorizing repair, or expanding production use. D001's identity
         amendment changes the F013 closure contract and also clarifies CAL
         F004; D002 supplies the F001/F012 domain and invalidity policy; D003
@@ -1979,7 +2017,9 @@ packages:
         a measured astrometric-adequacy gate; D005 supplies the automatic-only
         WCS admission policy for F003; D006 limits inverse-TAN uncertainty work
         to one map-center response and explicit unavailability, rejecting
-        broader covariance computation.
+        broader covariance computation; D007 preserves and bounds the
+        small-angle hot path offline and limits simulation parity to supported
+        AltAz and RA/Dec while rejecting Galactic simulation.
     local_evidence:
       - id: SCI-AST-001-LOCAL-001
         path: doc/audits/evidence/SCI-AST-001_LOCAL_EVIDENCE_2026-08-01.yaml
