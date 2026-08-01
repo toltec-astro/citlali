@@ -214,8 +214,8 @@ incorporated without closing the dependency.
 
 The
 [coordinator decision brief](audits/packages/SCI-AST-001_COORDINATOR_DECISION_BRIEF_2026-08-01.md)
-records `SCI-AST-001-D001` through `D008`. The project owner has approved D001
-and D002 in the
+records `SCI-AST-001-D001` through `D008`. The project owner has approved
+D001--D003 in the
 [partial decision record](audits/packages/SCI-AST-001_COORDINATOR_DECISION_2026-08-01.md).
 The cumulative record was first introduced for D001 at commit
 `0a17d088aded7fc6c18a59522f5b2b2fce9749ad`; its D002 revision is bound at
@@ -233,7 +233,14 @@ projection invalidity explicitly, blocks invalid or unsupported coordinates
 before integer conversion, and does not impose a new fixed radius. Existing
 ordinary approximately one-square-degree astrometry remains the compatibility
 reference. `SCI-AST-001-F001` and `F012` remain open pending implementation,
-exact evidence, and re-audit. D003--D008 remain pending.
+exact evidence, and re-audit. D003 preserves native AltAz tangent coordinates
+for Point/OOF/Beammap and explicit equatorial J2000 TAN for Science, requires
+header-proven frame and epoch identity, forbids silent epoch defaulting, and
+uses canonical shortest-signed longitude differences in both wrap directions.
+Ordinary native-coordinate paths do not add an EOP/refraction transform; any
+new transform requires named authority and complete inputs. `SCI-AST-001-F002`
+and the frame/epoch portions of `F006` and `F010` remain open pending
+implementation, exact evidence, and re-audit. D004--D008 remain pending.
 No AST repair base has been selected, and no repair, Unity request, re-audit,
 application integration, or production expansion is authorized. The
 governing-SHA Unity request remains an unsupplied audit artifact and must not

@@ -1472,9 +1472,9 @@ packages:
       note: >-
         The dedicated Ultra audit completed without application changes. Its
         independent core, report, evidence, proposal, and exact identities are
-        integrated; D001 and D002 are owner-approved with astrometric,
-        layered detector-binding, and explicit TAN-invalidity guards;
-        D003-D008 remain pending.
+        integrated; D001-D003 are owner-approved with astrometric, layered
+        detector-binding, TAN-invalidity, and frame/topology guards;
+        D004-D008 remain pending.
     coordination:
       owner_integration_authorization: explicit_2026-08-01
       authorization_scope: >-
@@ -1539,12 +1539,20 @@ packages:
         confidence: high
         status: open
         owner: telescope_coordinate_implementation
+        related_decisions: [SCI-AST-001-D003]
         summary: >-
           AltAz applies only one azimuth wrap correction and can produce a
           multi-radian tangent displacement for the opposite crossing.
         closure_gate: >-
           Use the approved shortest signed topology in both directions and pass
           wrap, horizon, pole, and ordinary controls at an exact successor SHA.
+        coordinator_closure_clarification:
+          decision_id: SCI-AST-001-D003
+          status: open_pending_implementation_evidence_and_reaudit
+          summary: >-
+            Normalize persisted longitude to [0, 2*pi), use one canonical
+            shortest-signed difference in [-pi, pi) in both directions, and
+            apply the same topology after inverse TAN and at every adapter.
       - id: SCI-AST-001-F003
         class: implementation_defect
         severity: P0
@@ -1592,6 +1600,9 @@ packages:
         confidence: high
         status: open
         owner: scientific_astrometry_owner
+        related_decisions:
+          - SCI-AST-001-D001
+          - SCI-AST-001-D003
         summary: >-
           Correction sign, focal-plane basis/rotation/order, topology,
           frame/epoch transform, and small-angle validity radius lack
@@ -1646,6 +1657,7 @@ packages:
         confidence: high
         status: open
         owner: wcs_product_consumer_boundary
+        related_decisions: [SCI-AST-001-D003]
         summary: >-
           WCS continuous values use float, frame identity is incomplete or
           nonstandard, epoch defaults without transform, and feedback admission
@@ -1653,6 +1665,15 @@ packages:
         closure_gate: >-
           Approve frame/epoch policy, retain precision and handedness, and pass
           FITS/feedback round-trip and precision fixtures.
+        coordinator_closure_clarification:
+          decision_id: SCI-AST-001-D003
+          status: open_pending_remaining_decisions_implementation_and_reaudit
+          summary: >-
+            Preserve native AltAz for Point/OOF/Beammap and explicit equatorial
+            J2000 TAN for Science. Publish FK5/EQUINOX=2000 only when headers
+            establish it; preserve or explicitly transform ICRS; never default
+            a missing epoch. Numeric precision and complete product schema
+            remain for D008.
       - id: SCI-AST-001-F011
         class: implementation_defect
         severity: P1
@@ -1745,9 +1766,6 @@ packages:
           Pass every non-N/A local gate and a fresh exact-successor-SHA Unity
           campaign without required-data skips, then re-audit.
     unresolved_scientific_decisions:
-      - id: SCI-AST-001-D003
-        owner: frame_wcs_owner
-        question: exact celestial frame, epoch/EOP policy, transforms, and longitude topology
       - id: SCI-AST-001-D004
         owner: scientific_astrometry_owner
         question: support modes, sentinel semantics, time precision, bracket, and extrapolation
@@ -1784,9 +1802,8 @@ packages:
       decision_date: 2026-08-01
       record_path: >-
         doc/audits/packages/SCI-AST-001_COORDINATOR_DECISION_2026-08-01.md
-      record_commit: 374fd2c2ffda74a651cf7a13d0e7f38758f17789
       record_sha256: >-
-        2fb2e25ec6f495e9d0a0ddb3c4cb36d6c0192a2d3e6a866908d41fb6d37d41d4
+        15e7bd004664191bace454f320e30c50f84cbdc2faf19f2eabb811ad57d90a54
       identity_amendment:
         decision_id: CAL-D002-IDENTITY-001
         path: >-
@@ -1832,19 +1849,42 @@ packages:
             Project-owner approval of the coordinator recommendation plus the
             demonstrated ordinary approximately one-square-degree astrometric
             domain; exact successor fixtures remain required.
+        - id: SCI-AST-001-D003
+          status: approved_product_frame_split_explicit_epoch_and_shortest_topology
+          authority: project_owner
+          evidence_basis: owner_decision
+          affected_findings:
+            - SCI-AST-001-F002
+            - SCI-AST-001-F006
+            - SCI-AST-001-F010
+          policy: >-
+            Preserve native AltAz tangent coordinates for Point, OOF, and
+            Beammap and explicit equatorial J2000 TAN for Science. Publish
+            FK5/EQUINOX=2000 only when headers establish that identity;
+            preserve ICRS or use one named transform. Never silently default a
+            missing epoch. Normalize persisted longitude to [0, 2*pi), use a
+            canonical shortest-signed difference in [-pi, pi), and require
+            named authority and inputs for any new EOP/refraction/frame
+            transformation. Legacy ambiguous identity is restricted and
+            cannot support a new precision claim.
+          compatibility_evidence: >-
+            Project-owner approval plus established product-family frame
+            conventions and demonstrated end-to-end source locations; exact
+            successor frame, wrap, metadata, and transform fixtures remain
+            required.
       pending_decisions:
-        - SCI-AST-001-D003
         - SCI-AST-001-D004
         - SCI-AST-001-D005
         - SCI-AST-001-D006
         - SCI-AST-001-D007
         - SCI-AST-001-D008
       effect: >-
-        Resolves D001 and D002 for contract design without approving the
-        governing implementation, closing F001/F006/F012/F013, authorizing
+        Resolves D001-D003 for contract design without approving the governing
+        implementation, closing F001/F002/F006/F010/F012/F013, authorizing
         repair, or expanding production use. D001's identity amendment changes
         the F013 closure contract and also clarifies CAL F004; D002 supplies
-        the F001/F012 domain and invalidity closure policy.
+        the F001/F012 domain and invalidity policy; D003 supplies the F002 and
+        frame/epoch portions of the F006/F010 closure contract.
     local_evidence:
       - id: SCI-AST-001-LOCAL-001
         path: doc/audits/evidence/SCI-AST-001_LOCAL_EVIDENCE_2026-08-01.yaml

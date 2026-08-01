@@ -1,6 +1,6 @@
 # SCI-AST-001 coordinator and scientific-owner decision — 2026-08-01
 
-Status: in progress; `SCI-AST-001-D001` and `D002` approved; `D003`--`D008`
+Status: in progress; `SCI-AST-001-D001`--`D003` approved; `D004`--`D008`
 pending
 
 Package: `SCI-AST-001`
@@ -173,9 +173,87 @@ This decision does not select a repair base or authorize repair, Unity work,
 application integration, production expansion, or a tighter approximation
 radius.
 
+## SCI-AST-001-D003 — Frames, epochs, transforms, and longitude topology
+
+Decision: approved with the established product-family frame split, explicit
+frame/epoch authority, canonical circular longitude topology, and no implicit
+new transformation.
+
+### Issue
+
+Point, OOF, Beammap, and Science do not use the same coordinate role. The
+existing numerical paths can be operationally self-consistent while persisted
+metadata is incomplete or nonstandard, a missing epoch silently defaults to
+2000 without a transform, and AltAz corrects only one wrap direction. This can
+mislabel otherwise correct coordinates or turn a boundary crossing into a
+multi-radian displacement.
+
+### Approved contract
+
+- Preserve native AltAz tangent coordinates for Point, OOF, and Beammap.
+  Citlali consumes the admitted telescope azimuth/elevation coordinates as
+  supplied and does not independently reapply refraction, EOP, precession, or
+  another sky-frame transformation on these ordinary paths.
+- Preserve equatorial J2000 TAN for Science. Where admitted headers establish
+  FK5 J2000, publish standard `RADESYS=FK5` and `EQUINOX=2000.0`. Where inputs
+  explicitly establish ICRS, preserve ICRS or apply one named, versioned
+  transformation; never relabel ICRS as FK5 or vice versa.
+- Any other requested conversion, including apparent/of-date or AltAz to
+  equatorial, must name its source and target frames, epoch/time scale, site,
+  transformation implementation/version, and required EOP/refraction inputs.
+  Missing required authority or inputs fails before numerical application.
+- Do not silently default a missing or invalid epoch to 2000. Existing
+  compatibility products without sufficient frame/epoch authority may be
+  retained only as explicitly `legacy_unverified` and may not support a new
+  precision, frame, or transformation claim. New precise coordinate products
+  fail admission when frame or epoch identity is ambiguous.
+- Normalize persisted RA and azimuth longitudes to `[0, 2*pi)` internally and
+  `[0, 360)` where written in degrees. Compute longitude differences through
+  one canonical shortest-signed operator in `[-pi, pi)`, in both wrap
+  directions. At the exact antipodal tie the `-pi` convention is deterministic
+  and the forward TAN remains invalid under `SCI-AST-001-D002`.
+- Apply the same circular topology after inverse TAN and at every coordinate
+  adapter. Independent preprocessing of two longitude series is not a
+  substitute for taking their shortest signed difference.
+- Record the admitted source frame, epoch, native-coordinate source,
+  transformation or explicit no-transform policy, EOP/refraction authority or
+  non-applicability, and realized output frame through the four-stage state.
+- Preserve the demonstrated end-to-end source locations and handedness from
+  `SCI-AST-001-D001`; metadata must describe the realized operator rather than
+  change it.
+
+### Mandatory compatibility and falsification gates
+
+- Preserve representative Point, OOF, and Beammap source crossings in native
+  AltAz and Science source locations at the center, edges, and corners of
+  approximately one-square-degree J2000 maps.
+- Test constant and varying longitude series across `0/2*pi` in both
+  directions, adjacent boundary values, the exact `pi` tie, horizon and polar
+  cases, inverse-TAN normalization, and sequential/parallel equivalence.
+- Prove that explicit FK5/J2000 and ICRS fixtures retain their identities and
+  round-trip through standard FITS metadata without relabeling. A named
+  transform must pass an independent reference fixture and record its inputs
+  and version.
+- Exercise missing, invalid, contradictory, and legacy frame/epoch headers.
+  New precision paths must fail; retained compatibility paths must be visibly
+  `legacy_unverified`, never silently defaulted.
+- Verify that ordinary native-coordinate paths request no unavailable EOP or
+  refraction input and apply no extra transform. Any enabled conversion path
+  must fail when a required authority or input is absent.
+
+### Effect
+
+`SCI-AST-001-D003` is resolved for contract design. It supplies the longitude
+topology and frame/epoch policy needed by `SCI-AST-001-F002`, and the relevant
+parts of `F006` and `F010`. Those findings remain open pending implementation,
+full-precision product decisions, exact repair-SHA validation, and fresh
+re-audit. This decision does not settle nondefault WCS controls, persisted
+numeric precision, simulation parity, or uncertainty scope, and it does not
+authorize repair, Unity work, application integration, or production
+expansion.
+
 ## Pending decisions
 
-- `SCI-AST-001-D003`: frames, epoch, transforms, and longitude topology.
 - `SCI-AST-001-D004`: support modes and time precision.
 - `SCI-AST-001-D005`: accepted nondefault WCS controls.
 - `SCI-AST-001-D006`: response, covariance, and unavailable semantics.
