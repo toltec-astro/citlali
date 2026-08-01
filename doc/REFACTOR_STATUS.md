@@ -120,6 +120,15 @@ airmass, explicit Beammap `sens` semantics, the complete Citlali/
 point-source `mJy/beam` only, and separate conditional weight plus named
 calibration nuisance covariance.
 
+The project owner has clarified the APT identity portion of `CAL-D002` in the
+[APT identity decision amendment](audits/packages/SCI-CAL-001_APT_IDENTITY_DECISION_AMENDMENT_2026-08-01.md).
+A validated target acquisition-row spine is an allowed compatibility binding;
+it is distinct from the imperfect cross-observation source-Beammap association
+and optional design-catalog identity. No universal UID or 100-percent design
+match is claimed or required for ordinary use of measured Beammap quantities.
+`SCI-CAL-001-F004` remains open pending exact admission and falsification
+evidence; this clarification supersedes only its earlier closure wording.
+
 The assessed implementation is now canonically `fail_closed`; the audit's
 earlier narrow `restricted_use` proposal is retained only as audit history.
 Historical products remain historical/regression evidence and are not newly
@@ -203,10 +212,21 @@ incorporated without closing the dependency.
 
 The
 [coordinator decision brief](audits/packages/SCI-AST-001_COORDINATOR_DECISION_BRIEF_2026-08-01.md)
-records `SCI-AST-001-D001` through `D008`. No AST repair base has been selected,
-and no repair, Unity request, re-audit, application integration, or production
-expansion is authorized. The governing-SHA Unity request remains an unsupplied
-audit artifact and must not be run as successor evidence.
+records `SCI-AST-001-D001` through `D008`. The project owner has approved D001
+with an end-to-end astrometric self-consistency guard in the
+[partial decision record](audits/packages/SCI-AST-001_COORDINATOR_DECISION_2026-08-01.md):
+preserve the demonstrated signs, basis, rotation, handedness, and composition
+that place point sources correctly across approximately one-square-degree maps,
+including at corners; document every stage, use explicit boundary adapters,
+and retain a validated layered detector binding. Verified target row order is
+allowed when its observation, network, count, tone order, and artifact
+provenance are admitted; source-Beammap and optional design matches remain
+separate and may not be presented as certain. This does not preserve audited
+invalid-domain, wrap, metadata, or identity defects. D002--D008 remain pending.
+No AST repair base has been selected, and no repair, Unity request, re-audit,
+application integration, or production expansion is authorized. The
+governing-SHA Unity request remains an unsupplied audit artifact and must not
+be run as successor evidence.
 
 ## 2026-08-01 SCI-FLT-001 Returned Evidence Review
 

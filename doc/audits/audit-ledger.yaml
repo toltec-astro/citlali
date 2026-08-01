@@ -993,6 +993,22 @@ packages:
           record_commit: 353aaf196ac2cabdd273f2a5760c80bec19cc885f
           record_sha256: >-
             ae295b717da3f9ed7129661e812b05847ff988500bb3d6f159b7ffae45cb2780
+        - decision_id: CAL-D002-IDENTITY-001
+          status: approved_owner_clarification
+          decision_date: 2026-08-01
+          record_path: >-
+            doc/audits/packages/SCI-CAL-001_APT_IDENTITY_DECISION_AMENDMENT_2026-08-01.md
+          record_sha256: >-
+            d40def5bb1450446abc858d2acfc1924c2f65276f8f48eec89cf05a171cdcf6a
+          applies_to:
+            - SCI-CAL-001-F004
+            - SCI-AST-001-D001
+            - SCI-AST-001-F013
+          effect: >-
+            Allows a rigorously admitted target acquisition-row binding,
+            separates it from imperfect source-Beammap and optional design
+            matches, and supersedes any requirement for a fictitious
+            universal UID or perfect design match. Findings remain open.
     atmosphere_operator_review:
       status: verified_evidence_owner_input_required
       review_date: 2026-08-01
@@ -1104,6 +1120,14 @@ packages:
         summary: >-
           External APT coefficients bind to TOD columns by position without a
           proven detector UID/header join.
+        coordinator_closure_clarification:
+          amendment_id: CAL-D002-IDENTITY-001
+          status: open_pending_validated_layered_binding
+          summary: >-
+            Closure may use verified target-row order or an explicit keyed
+            acquisition binding. Source-Beammap and design matching remain
+            distinct provenance-bearing associations and need not be claimed
+            100 percent correct.
       - id: SCI-CAL-001-F005
         class: contract_gap
         severity: P1
@@ -1447,7 +1471,8 @@ packages:
       note: >-
         The dedicated Ultra audit completed without application changes. Its
         independent core, report, evidence, proposal, and exact identities are
-        integrated; scientific-owner decisions D001-D008 remain pending.
+        integrated; D001 is owner-approved with astrometric and layered
+        detector-binding compatibility guards and D002-D008 remain pending.
     coordination:
       owner_integration_authorization: explicit_2026-08-01
       authorization_scope: >-
@@ -1652,7 +1677,10 @@ packages:
         status: open
         owner: ast_cal_detector_identity_boundary
         related_findings: [SCI-CAL-001-F004]
-        related_decisions: [CAL-D002]
+        related_decisions:
+          - CAL-D002
+          - CAL-D002-IDENTITY-001
+          - SCI-AST-001-D001
         summary: >-
           APT admission does not validate x/y size and finiteness, UID
           uniqueness, or the exact APT-to-raw detector mapping before index-wise
@@ -1660,6 +1688,15 @@ packages:
         closure_gate: >-
           Admit an immutable one-to-one mapping and basis/version, then pass
           permutation, duplicate, nonfinite, mismatch, subset, and Beammap tests.
+        coordinator_closure_clarification:
+          amendment_id: CAL-D002-IDENTITY-001
+          status: open_pending_validated_layered_binding
+          summary: >-
+            Closure may use a verified target acquisition-row mode or explicit
+            keyed mode while keeping source-Beammap and design associations
+            distinct. Unkeyed row reorder must fail; explicit-key mode must be
+            permutation invariant; perfect design matching is neither required
+            nor claimed.
       - id: SCI-AST-001-F014
         class: implementation_defect
         severity: P1
@@ -1688,9 +1725,6 @@ packages:
           Pass every non-N/A local gate and a fresh exact-successor-SHA Unity
           campaign without required-data skips, then re-audit.
     unresolved_scientific_decisions:
-      - id: SCI-AST-001-D001
-        owner: scientific_astrometry_owner
-        question: correction sign, tangent basis, rotation signs, and composition order
       - id: SCI-AST-001-D002
         owner: scientific_astrometry_owner
         question: TAN operational domain, invalid representation, and failure policy
@@ -1728,6 +1762,50 @@ packages:
         - SCI-AST-001-D006
         - SCI-AST-001-D007
         - SCI-AST-001-D008
+    owner_decision:
+      status: in_progress
+      decision_date: 2026-08-01
+      record_path: >-
+        doc/audits/packages/SCI-AST-001_COORDINATOR_DECISION_2026-08-01.md
+      record_sha256: >-
+        9585a287cb302c8998293e3d598776671f58724d90ff3599c5b1016bfae5e8b4
+      identity_amendment:
+        decision_id: CAL-D002-IDENTITY-001
+        path: >-
+          doc/audits/packages/SCI-CAL-001_APT_IDENTITY_DECISION_AMENDMENT_2026-08-01.md
+        sha256: >-
+          d40def5bb1450446abc858d2acfc1924c2f65276f8f48eec89cf05a171cdcf6a
+      approved_decisions:
+        - id: SCI-AST-001-D001
+          status: approved_with_astrometric_and_layered_identity_compatibility_guards
+          authority: project_owner
+          evidence_basis: owner_decision
+          policy: >-
+            Preserve the demonstrated end-to-end sign, basis, rotation,
+            handedness, and composition behavior; document each stage and use
+            explicit boundary adapters without moving correctly located
+            sources. Admit a proven target acquisition-row or explicit keyed
+            binding while keeping source-Beammap and optional design matches
+            distinct; do not claim a universal stable UID or perfect match.
+          compatibility_evidence: >-
+            Project-owner statement that approximately one-square-degree maps
+            place point sources correctly, including at map corners; local
+            read-only evidence of exact same-observation/target-row spines and
+            imperfect cross-observation matching; exact repair-base artifacts
+            remain required for repair and re-audit validation.
+      pending_decisions:
+        - SCI-AST-001-D002
+        - SCI-AST-001-D003
+        - SCI-AST-001-D004
+        - SCI-AST-001-D005
+        - SCI-AST-001-D006
+        - SCI-AST-001-D007
+        - SCI-AST-001-D008
+      effect: >-
+        Resolves D001 for contract design without approving the governing
+        implementation, closing F006/F013, authorizing repair, or expanding
+        production use. The identity amendment changes the F013 closure
+        contract and also clarifies CAL F004.
     local_evidence:
       - id: SCI-AST-001-LOCAL-001
         path: doc/audits/evidence/SCI-AST-001_LOCAL_EVIDENCE_2026-08-01.yaml
