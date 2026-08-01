@@ -1,6 +1,6 @@
 # SCI-ALIGN-001 coordinator and scientific-owner decision — 2026-08-01
 
-Status: partial; `ALIGN-OD1`--`ALIGN-OD3` approved; `OD4`--`OD8` pending
+Status: partial; `ALIGN-OD1`--`ALIGN-OD4` approved; `OD5`--`OD8` pending
 
 Package: `SCI-ALIGN-001`
 
@@ -113,6 +113,51 @@ period, frame, bounded-versus-circular topology, state transition convention,
 or interpolation span. Ordinary valid samples away from wraps, state
 transitions, invalid rows, and gaps should remain numerically unchanged.
 
+## ALIGN-OD4 — Typed gap bounds and scoped chunk action
+
+Decision: approved with typed gap semantics and a strict greater-than-25-percent
+affected-scope chunk rule.
+
+- Distinguish ordinary alignment resampling from acquisition-gap repair and
+  processing-guard flagging. Original invalid values are not reclassified as
+  missing acquisition rows.
+- Detect gaps on the observation-wide grid before chunk slicing. The effective
+  chunk is the realized half-open time-processing chunk, or the realized scan
+  when time chunking is inactive.
+- Evaluate both the longest contiguous missing run and cumulative missing
+  support within each chunk, in sample count and elapsed duration. Exactly 25
+  percent does not trigger the full-chunk rule; any measure strictly greater
+  than 25 percent does.
+- For a bounded internal detector-network gap at or below the threshold,
+  construct only an approved signal-domain continuity surrogate, flag the
+  exact missing samples for every detector in that network, and separately
+  flag any required filter-context guard. Preserve usable samples elsewhere in
+  that network and all unaffected networks.
+- If either the longest run or cumulative missing support is greater than 25
+  percent, flag every detector in the affected network for the full chunk.
+  Do not flag unrelated networks and do not falsely relabel acquired rows as
+  synthesized; the full-chunk flag records unusability of that network-chunk.
+- A per-detector invalid interval retains detector scope. A genuine required
+  pointing-field gap has all-detector pointing scope. A missing optional HWPR
+  field affects polarization eligibility but not intensity-only processing.
+  An ambiguous `Hold` or scan-state transition is not governed by the fraction
+  threshold and may invalidate scan construction even when short.
+- Never extrapolate observation-edge absence. Ordinary topology-approved
+  telescope resampling inside adjacent valid support remains resampling, not a
+  gap.
+- Gap identity and fraction are acquisition facts independent of selected
+  `xs`, `rs`, `is`, or `qs`; the numerical surrogate and its approval remain
+  signal-domain-specific. Support for one channel does not authorize another.
+
+Historically observed UDP packet gaps were typically less than approximately
+one second. Durations above one second are therefore recorded and warned as
+atypical, but one second is not a separate hard rejection threshold. Required
+tests cover exact 25-percent and just-over-25-percent boundaries, a single run
+versus cumulative shorter runs, cross-chunk runs, network isolation, pointing
+scope, state ambiguity, optional HWPR, signal type, guard expansion, and
+preservation of unrelated data. Compact/as-requested identity follows
+`ALIGN-C001`.
+
 ## ALIGN-C001 — Compact exception identity and measured fallback
 
 Cross-cutting constraint for pending `ALIGN-OD4` and `ALIGN-OD7`: approved with
@@ -147,7 +192,6 @@ Citlali timing merely to persist audit detail.
 
 ## Pending decisions
 
-- `ALIGN-OD4`: gap bounds and action;
 - `ALIGN-OD5`: scan policy and identity;
 - `ALIGN-OD6`: synthesized eligibility;
 - `ALIGN-OD7`: mapping/covariance/response; and

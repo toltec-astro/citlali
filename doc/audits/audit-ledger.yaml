@@ -643,12 +643,13 @@ packages:
           status: approved_with_default_zero_compatibility
         - id: ALIGN-OD3-variable-topology
           status: approved_pending_generated_registry_review
+        - id: ALIGN-OD4-gap-bounds-and-action
+          status: approved_typed_scope_with_strict_gt_25pct_chunk_rule
       approved_constraints:
         - id: ALIGN-C001-compact-exception-identity
           applies_to: [ALIGN-OD4, ALIGN-OD7]
           status: approved_with_as_requested_fallback_on_measured_burden
       pending_decisions:
-        - ALIGN-OD4-gap-bounds-and-action
         - ALIGN-OD5-scan-policy-and-identity
         - ALIGN-OD6-synthesized-eligibility
         - ALIGN-OD7-mapping-covariance-response
@@ -732,7 +733,6 @@ packages:
          severity: P1, evidence_basis: derived, confidence: high,
          status: open, owner: coordinator_and_target_packages}
     unresolved_scientific_decisions:
-      - ALIGN-OD4-gap-bounds-and-action
       - ALIGN-OD5-scan-policy-and-identity
       - ALIGN-OD6-synthesized-eligibility
       - ALIGN-OD7-mapping-covariance-response
