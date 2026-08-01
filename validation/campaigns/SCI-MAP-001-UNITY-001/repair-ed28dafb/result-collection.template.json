@@ -1,0 +1,27 @@
+{
+  "schema_version": "sci-map-001-result-collection-v1",
+  "request_id": "SCI-MAP-001-UNITY-001",
+  "revision": "repair-sha-ed28dafb-2026-08-01",
+  "candidate_sha": "ed28dafb37f9113c0d3c95297148157129a90886",
+  "request_root": null,
+  "independent_reconstruction_inputs": {
+    "point-152389-a1100": null,
+    "point-152389-a1400": null,
+    "point-152389-a2000": null,
+    "science-152390-a1100": null,
+    "science-152390-a1400": null,
+    "science-152390-a2000": null,
+    "science-152392-a1100": null,
+    "science-152392-a1400": null,
+    "science-152392-a2000": null
+  },
+  "cases": [
+    {"case_id": "P-SEQ", "reduction_root": null, "exit_status_path": null, "merged_config": null, "raw_input_manifest": null, "raw_input_manifest_sha256": null, "logs": null, "sample_ledgers": null, "preflight_manifest": null, "submit_record": null, "stdout": null, "stderr": null, "exit_record": null, "slurm_accounting": null},
+    {"case_id": "P-OMP", "reduction_root": null, "exit_status_path": null, "merged_config": null, "raw_input_manifest": null, "raw_input_manifest_sha256": null, "logs": null, "sample_ledgers": null, "preflight_manifest": null, "submit_record": null, "stdout": null, "stderr": null, "exit_record": null, "slurm_accounting": null},
+    {"case_id": "S-C-SEQ", "reduction_root": null, "exit_status_path": null, "merged_config": null, "raw_input_manifest": null, "raw_input_manifest_sha256": null, "logs": null, "sample_ledgers": null, "preflight_manifest": null, "submit_record": null, "stdout": null, "stderr": null, "exit_record": null, "slurm_accounting": null},
+    {"case_id": "S-C-OMP", "reduction_root": null, "exit_status_path": null, "merged_config": null, "raw_input_manifest": null, "raw_input_manifest_sha256": null, "logs": null, "sample_ledgers": null, "preflight_manifest": null, "submit_record": null, "stdout": null, "stderr": null, "exit_record": null, "slurm_accounting": null},
+    {"case_id": "S-E-SEQ", "reduction_root": null, "exit_status_path": null, "merged_config": null, "raw_input_manifest": null, "raw_input_manifest_sha256": null, "logs": null, "sample_ledgers": null, "preflight_manifest": null, "submit_record": null, "stdout": null, "stderr": null, "exit_record": null, "slurm_accounting": null},
+    {"case_id": "S-E-OMP", "reduction_root": null, "exit_status_path": null, "merged_config": null, "raw_input_manifest": null, "raw_input_manifest_sha256": null, "logs": null, "sample_ledgers": null, "preflight_manifest": null, "submit_record": null, "stdout": null, "stderr": null, "exit_record": null, "slurm_accounting": null},
+    {"case_id": "S-X-SEQ", "reduction_root": null, "exit_status_path": null, "merged_config": null, "raw_input_manifest": null, "raw_input_manifest_sha256": null, "logs": null, "sample_ledgers": null, "preflight_manifest": null, "submit_record": null, "stdout": null, "stderr": null, "exit_record": null, "slurm_accounting": null}
+  ]
+}

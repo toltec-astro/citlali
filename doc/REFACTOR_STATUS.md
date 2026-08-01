@@ -107,6 +107,27 @@ on `SCI-CAL-001`, `SCI-AST-001`, `SCI-PTC-001`, and `SCI-VAL-001`. A fresh
 `codex/reaudit-sci-map-001` worktree must assess the committed repair and the
 returned external bundle before findings or production disposition can change.
 
+On 2026-08-01 the versioned human-run campaign package for exact candidate
+`ed28dafb37f9113c0d3c95297148157129a90886` was prepared under
+`validation/campaigns/SCI-MAP-001-UNITY-001/repair-ed28dafb/`. It pins all
+seven repaired-success cases, successor product contracts, explicit owner
+deployment values, native TolProj/TolTECA source ordering, independent F010
+reconstruction inputs, collection manifests, and frozen analysis. Package
+preparation did not access Unity and supplies no external evidence; F012
+remains outstanding. The package also records ALIGN-OD1 through ALIGN-OD8 and
+ALIGN-C001 as owner-approved at record commit
+`4f905f4f353e91847a303f4f3959654f3f03c302`, with canonical identity correction
+at `35cc8ce246e8e70c569e650be6c1eae2c91b80ef`, and the bounded repair/re-audit
+handoff at coordination commit
+`0309fd48a973a6e7e136224906ac49c02f0171be`, and clean coordination-ledger HEAD
+`846128c8ee6dc27851bd6c71aeecbe4739e1d24a`. The dedicated ALIGN phase-0 repair
+is active from base `9aae0e669384c5c0c0dda93debc194d6b8dac787`, but no ALIGN
+application-repair commit or re-audit exists. ALIGN implementation therefore
+remains nonconformant, validation is in progress, and production remains
+`existing_use_only`. A MAP campaign result cannot close ALIGN, CAL, AST, PTC,
+or VAL; F013 remains conditioned until the ALIGN repair, exact-repair-SHA
+evidence, and fresh re-audit succeed.
+
 ## 2026-07-26 Conan 2 Build Review
 
 The previously deferred TolTECA build implementation is now available and has

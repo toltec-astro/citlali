@@ -57,6 +57,18 @@ new exact commits before importing subsequent upstream work.
 - Issue `SCI-MAP-001-UNITY-001` for the exact committed repair SHA to the human
   evidence owner. F012 remains outstanding until the complete returned bundle
   is audited; Codex does not access Unity.
+- The versioned local owner package is
+  `validation/campaigns/SCI-MAP-001-UNITY-001/repair-ed28dafb/`. It prepares
+  the exact `ed28dafb37f9113c0d3c95297148157129a90886` campaign but is not
+  external evidence. Its manifest records ALIGN-OD1 through ALIGN-OD8 and
+  ALIGN-C001 as owner-approved at record commit
+  `4f905f4f353e91847a303f4f3959654f3f03c302`, with its expanded-identity
+  correction at `35cc8ce246e8e70c569e650be6c1eae2c91b80ef`, the bounded handoff at
+  `0309fd48a973a6e7e136224906ac49c02f0171be`, and coordination-ledger HEAD
+  `846128c8ee6dc27851bd6c71aeecbe4739e1d24a`. ALIGN implementation remains
+  nonconformant, validation is in progress, production remains
+  `existing_use_only`, and MAP evidence closes none of ALIGN, CAL, AST, PTC,
+  or VAL.
 - Keep F013 conditioned on `SCI-CAL-001`, `SCI-AST-001`, `SCI-PTC-001`, and
   `SCI-VAL-001`. A fresh `codex/reaudit-sci-map-001` worktree assesses F001-F013,
   independently reconstructs the persisted map facts, audits the exact-SHA

@@ -1,0 +1,221 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "sci-map-001-raw-input-manifest-v1",
+  "title": "SCI-MAP-001 independent raw-input authority",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "request_id", "candidate_sha", "mode",
+    "observations", "arrays", "producer", "source_records", "memberships"
+  ],
+  "properties": {
+    "schema_version": {"const": "sci-map-001-raw-input-manifest-v1"},
+    "request_id": {"const": "SCI-MAP-001-UNITY-001"},
+    "candidate_sha": {"const": "ed28dafb37f9113c0d3c95297148157129a90886"},
+    "mode": {"enum": ["point", "science"]},
+    "observations": {
+      "type": "array", "minItems": 1, "maxItems": 2,
+      "items": {"type": "integer"}, "uniqueItems": true
+    },
+    "arrays": {
+      "const": ["a1100", "a1400", "a2000"]
+    },
+    "producer": {"$ref": "#/$defs/producer"},
+    "source_records": {
+      "type": "array", "minItems": 9,
+      "items": {"$ref": "#/$defs/source_record"}
+    },
+    "memberships": {
+      "type": "array", "minItems": 3, "maxItems": 6,
+      "items": {"$ref": "#/$defs/membership"}
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"mode": {"const": "point"}}},
+      "then": {
+        "properties": {
+          "observations": {"const": [152389]},
+          "memberships": {"minItems": 3, "maxItems": 3}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"mode": {"const": "science"}}},
+      "then": {
+        "properties": {
+          "observations": {"const": [152390, 152392]},
+          "memberships": {"minItems": 6, "maxItems": 6}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "absolute_path": {"type": "string", "pattern": "^/[^\\n\\r]+$"},
+    "identifier": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"},
+    "exact_float": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["numeric", "hex", "encoding"],
+      "properties": {
+        "numeric": {"type": "string", "minLength": 1},
+        "hex": {"type": "string", "pattern": "^-?0x[0-9a-f]+(?:\\.[0-9a-f]*)?p[+-][0-9]+$"},
+        "encoding": {"const": "binary64-max-digits10-and-c99-hexfloat"}
+      }
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["identity", "program_path", "program_sha256", "invocation"],
+      "properties": {
+        "identity": {"type": "string", "minLength": 1, "maxLength": 256},
+        "program_path": {"$ref": "#/$defs/absolute_path"},
+        "program_sha256": {"$ref": "#/$defs/sha256"},
+        "invocation": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+      }
+    },
+    "source_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "role", "path", "size_bytes", "sha256",
+        "obsnums", "arrays", "networks"
+      ],
+      "properties": {
+        "id": {"$ref": "#/$defs/identifier"},
+        "role": {
+          "enum": [
+            "raw_timestream", "kids_fit_report", "apt", "calibration",
+            "pointing_support", "projection_authority",
+            "sample_rate_authority", "fwhm_authority", "target_authority"
+          ]
+        },
+        "path": {"$ref": "#/$defs/absolute_path"},
+        "size_bytes": {"type": "integer", "minimum": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "obsnums": {
+          "type": "array", "minItems": 1, "items": {"type": "integer"},
+          "uniqueItems": true
+        },
+        "arrays": {
+          "type": "array", "minItems": 1,
+          "items": {"enum": ["a1100", "a1400", "a2000"]},
+          "uniqueItems": true
+        },
+        "networks": {
+          "type": "array", "minItems": 1,
+          "items": {"type": "integer", "minimum": 0}, "uniqueItems": true
+        }
+      }
+    },
+    "source_refs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "raw_timestream", "kids_fit_report", "apt", "calibration",
+        "pointing_support", "projection_authority", "sample_rate_authority",
+        "fwhm_authority", "target_authority"
+      ],
+      "properties": {
+        "raw_timestream": {"$ref": "#/$defs/reference_list"},
+        "kids_fit_report": {"$ref": "#/$defs/reference_list"},
+        "apt": {"$ref": "#/$defs/reference_list"},
+        "calibration": {"$ref": "#/$defs/reference_list"},
+        "pointing_support": {"$ref": "#/$defs/reference_list"},
+        "projection_authority": {"$ref": "#/$defs/reference_list"},
+        "sample_rate_authority": {"$ref": "#/$defs/reference_list"},
+        "fwhm_authority": {"$ref": "#/$defs/reference_list"},
+        "target_authority": {"$ref": "#/$defs/reference_list"}
+      }
+    },
+    "reference_list": {
+      "type": "array", "minItems": 1,
+      "items": {"$ref": "#/$defs/identifier"}, "uniqueItems": true
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["frame", "axis1", "axis2", "unit"],
+      "properties": {
+        "frame": {"enum": ["altaz", "fk5"]},
+        "axis1": {"$ref": "#/$defs/exact_float"},
+        "axis2": {"$ref": "#/$defs/exact_float"},
+        "unit": {"const": "deg"}
+      }
+    },
+    "projection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "identity_digest", "grouping", "stokes", "frame", "map_rows",
+        "map_cols", "sample_rate_hz", "fwhm_arcsec", "target"
+      ],
+      "properties": {
+        "identity_digest": {
+          "type": "string",
+          "pattern": "^canonical-hexfloat-sha256-v1:[0-9a-f]{64}$"
+        },
+        "grouping": {"const": "array"},
+        "stokes": {"const": "I"},
+        "frame": {"enum": ["altaz", "fk5"]},
+        "map_rows": {"type": "integer", "minimum": 1},
+        "map_cols": {"type": "integer", "minimum": 1},
+        "sample_rate_hz": {"$ref": "#/$defs/exact_float"},
+        "fwhm_arcsec": {"$ref": "#/$defs/exact_float"},
+        "target": {"$ref": "#/$defs/target"}
+      }
+    },
+    "membership": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "obsnum", "array", "networks", "record_order",
+        "projection_record_count", "scan_order", "detector_order", "source_refs",
+        "projection"
+      ],
+      "properties": {
+        "obsnum": {"type": "integer"},
+        "array": {"enum": ["a1100", "a1400", "a2000"]},
+        "networks": {
+          "type": "array", "minItems": 1,
+          "items": {"type": "integer", "minimum": 0}, "uniqueItems": true
+        },
+        "record_order": {
+          "const": "scan-major-detector-major-sample-minor-cartesian-v1"
+        },
+        "projection_record_count": {"type": "integer", "minimum": 1},
+        "scan_order": {
+          "type": "array", "minItems": 1,
+          "items": {"$ref": "#/$defs/scan_identity"}
+        },
+        "detector_order": {
+          "type": "array", "minItems": 1,
+          "items": {"$ref": "#/$defs/detector_identity"}
+        },
+        "source_refs": {"$ref": "#/$defs/source_refs"},
+        "projection": {"$ref": "#/$defs/projection"}
+      }
+    },
+    "scan_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scan_index", "identity", "sample_count"],
+      "properties": {
+        "scan_index": {"type": "integer", "minimum": 0},
+        "identity": {"type": "string", "minLength": 1, "maxLength": 256},
+        "sample_count": {"type": "integer", "minimum": 1}
+      }
+    },
+    "detector_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["detector_index", "detector_uid", "network"],
+      "properties": {
+        "detector_index": {"type": "integer", "minimum": 0},
+        "detector_uid": {"type": "string", "minLength": 1, "maxLength": 256},
+        "network": {"type": "integer", "minimum": 0}
+      }
+    }
+  }
+}

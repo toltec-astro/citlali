@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "sci-map-001-result-collection-v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "request_id", "revision", "candidate_sha",
+    "request_root", "independent_reconstruction_inputs", "cases"
+  ],
+  "properties": {
+    "schema_version": {"const": "sci-map-001-result-collection-v1"},
+    "request_id": {"const": "SCI-MAP-001-UNITY-001"},
+    "revision": {"const": "repair-sha-ed28dafb-2026-08-01"},
+    "candidate_sha": {"const": "ed28dafb37f9113c0d3c95297148157129a90886"},
+    "request_root": {"$ref": "#/$defs/absolute_path"},
+    "independent_reconstruction_inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "point-152389-a1100", "point-152389-a1400", "point-152389-a2000",
+        "science-152390-a1100", "science-152390-a1400", "science-152390-a2000",
+        "science-152392-a1100", "science-152392-a1400", "science-152392-a2000"
+      ],
+      "properties": {
+        "point-152389-a1100": {"$ref": "#/$defs/absolute_file"},
+        "point-152389-a1400": {"$ref": "#/$defs/absolute_file"},
+        "point-152389-a2000": {"$ref": "#/$defs/absolute_file"},
+        "science-152390-a1100": {"$ref": "#/$defs/absolute_file"},
+        "science-152390-a1400": {"$ref": "#/$defs/absolute_file"},
+        "science-152390-a2000": {"$ref": "#/$defs/absolute_file"},
+        "science-152392-a1100": {"$ref": "#/$defs/absolute_file"},
+        "science-152392-a1400": {"$ref": "#/$defs/absolute_file"},
+        "science-152392-a2000": {"$ref": "#/$defs/absolute_file"}
+      }
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "prefixItems": [
+        {"$ref": "#/$defs/p_seq"}, {"$ref": "#/$defs/p_omp"},
+        {"$ref": "#/$defs/sc_seq"}, {"$ref": "#/$defs/sc_omp"},
+        {"$ref": "#/$defs/se_seq"}, {"$ref": "#/$defs/se_omp"},
+        {"$ref": "#/$defs/sx_seq"}
+      ],
+      "items": false
+    }
+  },
+  "$defs": {
+    "absolute_path": {"type": "string", "minLength": 2, "pattern": "^/"},
+    "absolute_file": {"$ref": "#/$defs/absolute_path"},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "ledger_arrays": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["152389", "152390", "152392"],
+      "properties": {
+        "152389": {"$ref": "#/$defs/array_paths"},
+        "152390": {"$ref": "#/$defs/array_paths"},
+        "152392": {"$ref": "#/$defs/array_paths"}
+      }
+    },
+    "array_paths": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["a1100", "a1400", "a2000"],
+      "properties": {
+        "a1100": {"$ref": "#/$defs/absolute_file"},
+        "a1400": {"$ref": "#/$defs/absolute_file"},
+        "a2000": {"$ref": "#/$defs/absolute_file"}
+      }
+    },
+    "case_common": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "case_id", "reduction_root", "exit_status_path", "merged_config",
+        "raw_input_manifest", "raw_input_manifest_sha256", "logs",
+        "sample_ledgers", "preflight_manifest", "submit_record", "stdout",
+        "stderr", "exit_record", "slurm_accounting"
+      ],
+      "properties": {
+        "case_id": {"type": "string"},
+        "reduction_root": {"$ref": "#/$defs/absolute_path"},
+        "exit_status_path": {"$ref": "#/$defs/absolute_file"},
+        "merged_config": {"$ref": "#/$defs/absolute_file"},
+        "raw_input_manifest": {"$ref": "#/$defs/absolute_file"},
+        "raw_input_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "logs": {"type": "array", "minItems": 7, "items": {"$ref": "#/$defs/absolute_file"}, "uniqueItems": true},
+        "sample_ledgers": {"$ref": "#/$defs/ledger_arrays"},
+        "preflight_manifest": {"$ref": "#/$defs/absolute_file"},
+        "submit_record": {"$ref": "#/$defs/absolute_file"},
+        "stdout": {"$ref": "#/$defs/absolute_file"},
+        "stderr": {"$ref": "#/$defs/absolute_file"},
+        "exit_record": {"$ref": "#/$defs/absolute_file"},
+        "slurm_accounting": {"$ref": "#/$defs/absolute_file"}
+      }
+    },
+    "p_seq": {"allOf": [{"$ref": "#/$defs/case_common"}, {"properties": {"case_id": {"const": "P-SEQ"}}}]},
+    "p_omp": {"allOf": [{"$ref": "#/$defs/case_common"}, {"properties": {"case_id": {"const": "P-OMP"}}}]},
+    "sc_seq": {"allOf": [{"$ref": "#/$defs/case_common"}, {"properties": {"case_id": {"const": "S-C-SEQ"}}}]},
+    "sc_omp": {"allOf": [{"$ref": "#/$defs/case_common"}, {"properties": {"case_id": {"const": "S-C-OMP"}}}]},
+    "se_seq": {"allOf": [{"$ref": "#/$defs/case_common"}, {"properties": {"case_id": {"const": "S-E-SEQ"}}}]},
+    "se_omp": {"allOf": [{"$ref": "#/$defs/case_common"}, {"properties": {"case_id": {"const": "S-E-OMP"}}}]},
+    "sx_seq": {"allOf": [{"$ref": "#/$defs/case_common"}, {"properties": {"case_id": {"const": "S-X-SEQ"}}}]}
+  }
+}

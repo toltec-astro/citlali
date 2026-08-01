@@ -1,0 +1,62 @@
+{
+  "schema_version": "sci-map-001-independent-sample-ledger-v1",
+  "purpose": "Independent observation F010 reconstruction input; it is not a Citlali product and cannot be inferred from final FITS planes.",
+  "container": "NumPy NPZ with allow_pickle=False",
+  "record_order": "exact scan-major-detector-major-sample-minor-cartesian-v1 order bound by the matching raw-input manifest; every authorized tuple appears once",
+  "raw_manifest_membership_authority": {
+    "scan_order": "ordered records with contiguous zero-based scan_index, unique immutable identity, and positive sample_count",
+    "detector_order": "ordered records with contiguous zero-based detector_index, unique detector_uid, and declared network",
+    "projection_record_count": "exact sum(scan.sample_count) * detector_count",
+    "ledger_tuple_gate": "the ledger tuples must equal the complete Cartesian sequence for each scan, then detector, then sample index 0..sample_count-1; no omitted, fabricated, repeated, or reordered term is accepted",
+    "cross_array_scan_gate": "the three array memberships for one observation must declare an identical scan order"
+  },
+  "required_scalar_members": {
+    "schema_version": "exact string sci-map-001-independent-sample-ledger-v1",
+    "candidate_sha": "exact string ed28dafb37f9113c0d3c95297148157129a90886",
+    "raw_input_manifest_sha256": "64 lowercase hexadecimal characters binding the ledger to the exact point or science manifest",
+    "producer_identity": "nonempty <=256-character frozen program/source SHA and invocation identity",
+    "bundle_identity_digest": "canonical-hexfloat-sha256-v1:<64 lowercase hexadecimal characters>",
+    "obsnum": "integer 152389, 152390, or 152392",
+    "array": "exact string a1100, a1400, or a2000",
+    "map_rows": "positive integer",
+    "map_cols": "positive integer",
+    "sample_rate_hz_numeric": "binary64-compatible decimal string or scalar for the exact positive d_fsmp",
+    "sample_rate_hz_hex": "C99/Python hexadecimal rendering of the same binary64 d_fsmp",
+    "sample_rate_hz_encoding": "exact string binary64-max-digits10-and-c99-hexfloat"
+  },
+  "required_array_members": {
+    "row": "int64[n_terms]; rounded map row when projection is finite, including an out-of-range value for finite out-of-bounds projections; -1 may represent nonfinite projection",
+    "col": "int64[n_terms]; rounded map column under the same rule as row",
+    "detector_index": "int64[n_terms] in the frozen detector ordering",
+    "sample_index": "int64[n_terms] in the frozen per-scan sample ordering",
+    "scan_index": "int64[n_terms], zero-based index into the frozen ordered scan manifest and realization_signs",
+    "geometric_in_bounds": "uint8[n_terms], binary finite in-bounds projection before detector/sample eligibility",
+    "upstream_eligible": "uint8[n_terms], binary detector/APT flag clear, sample flag clear, and geometric_in_bounds",
+    "coefficient": "float64[n_terms] at the ordinary primitive contribution stage",
+    "sample_signal": "float64[n_terms] at the ordinary primitive contribution stage",
+    "sample_kernel": "float64[n_terms] for the campaign-required kernel companion",
+    "sample_interval_s": "float64[n_terms], every value bit-equal to 1/sample_rate_hz_numeric",
+    "realization_signs": "int8[n_scans,64], each value exactly -1 or +1, one scan sign shared across detectors because randomize_dets=false"
+  },
+  "reconstruction_rule": {
+    "geometric_hits": "add one for every geometric_in_bounds term before detector/sample eligibility",
+    "upstream_eligible_exposure": "add sample_interval_s for upstream_eligible terms",
+    "explicit_invalid": "flagged detector/sample or nonpositive finite coefficient does not contribute; geometric and eligible facts retain their defined earlier-stage meanings",
+    "valid_nonfinite": "an eligible nonfinite coefficient, or a positive-coefficient nonfinite signal/kernel/realization, is a fail-closed execution inconsistency for a successful campaign",
+    "retained_exposure": "add sample_interval_s for contributing terms, then zero outside normalization support",
+    "noise": "add realization_signs[scan_index,r] * coefficient * sample_signal for every contributing term"
+  },
+  "minimum_raw_manifest_binding": [
+    "exact ordered observation, scan, detector, array, and network membership",
+    "raw, KIDs, APT, calibration, pointing-support, FWHM, and target-center source paths with SHA-256",
+    "exact sample rate and projection/map-index authority",
+    "producer source SHA, executable/module identities, and complete invocation"
+  ],
+  "external_parallel_limit": {
+    "status": "not_applicable_to_exact_gamma_from_normalized_outputs",
+    "reason": "The exact 2*gamma_n*sum(abs(per-scan-plane)) lane requires run-produced pre-normalization binary64 per-scan accumulator planes and final commit order. The independent pre-run ledger reconstructs F010 and realization products but normalized signal_I times weight_I is not that authority.",
+    "unity_gate": "Seq/OpenMP inventory, support, WCS, and every persisted numeric product are still compared under the registered atol=2e-8 and rtol=1e-10 bounds.",
+    "local_authority": "The candidate local F011 truth suite remains the exact scan-farm policy gate."
+  },
+  "fail_closed": "A missing member, noncanonical identity, unordered or repeated term, sample-rate mismatch, nonfinite successful-run inconsistency, or digest mismatch is an evidence gap. Published F010 planes must never be substituted as their own independent reconstruction source."
+}

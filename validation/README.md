@@ -116,3 +116,15 @@ refactor workdirs; TolTECA merges it after the lower-numbered `NN*.yaml` files.
 Before accepting a pair, confirm that the merged low-level configs differ only
 in expected executable/output paths and run the mode-appropriate product and
 provenance audits.
+
+## Human-run audit campaigns
+
+`campaigns/SCI-MAP-001-UNITY-001/repair-ed28dafb/` is the frozen owner package
+for exact repair candidate `ed28dafb37f9113c0d3c95297148157129a90886`.
+It contains the seven-case manifest, explicit deployment-value and result
+schemas, raw-source/scan/detector/sample authority schema, deterministic
+expert-overlay generator, input/hash preflight, allocation wrappers, and
+request-specific analyzer. The package has no Unity results and is not an
+accepted validation record. Follow its owner runbook; missing independent
+processed-term ledgers are evidence gaps, not values to infer from final FITS
+products.

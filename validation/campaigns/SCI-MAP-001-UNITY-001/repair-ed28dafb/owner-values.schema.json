@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "sci-map-unity-owner-values-v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "unity_host_alias",
+    "unity_source_checkout",
+    "request_root",
+    "deployed_campaign_path",
+    "unity_python",
+    "tolproj_executable",
+    "tolproj_site_config",
+    "point_project",
+    "point_source_filter",
+    "point_apt_dir",
+    "science_project",
+    "science_source_basename",
+    "science_pointing_reduction",
+    "evidence_operator",
+    "slurm_account",
+    "slurm_qos",
+    "slurm_constraint",
+    "slurm_reservation",
+    "kidscpp_source_dir",
+    "tula_source_dir",
+    "local_retrieval_destination"
+  ],
+  "properties": {
+    "schema_version": {"const": "sci-map-unity-owner-values-v1"},
+    "unity_host_alias": {"const": "unity_toltec"},
+    "unity_source_checkout": {"$ref": "#/$defs/absolute_path"},
+    "request_root": {"$ref": "#/$defs/absolute_path"},
+    "deployed_campaign_path": {"$ref": "#/$defs/absolute_path"},
+    "unity_python": {"$ref": "#/$defs/absolute_path"},
+    "tolproj_executable": {"$ref": "#/$defs/absolute_path"},
+    "tolproj_site_config": {"$ref": "#/$defs/absolute_path"},
+    "point_project": {"$ref": "#/$defs/absolute_path"},
+    "point_source_filter": {"type": "string", "minLength": 1},
+    "point_apt_dir": {"$ref": "#/$defs/absolute_path"},
+    "science_project": {"$ref": "#/$defs/absolute_path"},
+    "science_source_basename": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[^/]+$"
+    },
+    "science_pointing_reduction": {
+      "type": "string",
+      "pattern": "^redu[0-9][0-9]$"
+    },
+    "evidence_operator": {"type": "string", "minLength": 1},
+    "slurm_account": {"type": "string", "minLength": 1},
+    "slurm_qos": {"type": "string"},
+    "slurm_constraint": {"type": "string"},
+    "slurm_reservation": {"type": "string"},
+    "kidscpp_source_dir": {"$ref": "#/$defs/absolute_path"},
+    "tula_source_dir": {"$ref": "#/$defs/absolute_path"},
+    "local_retrieval_destination": {"$ref": "#/$defs/absolute_path"}
+  },
+  "$defs": {
+    "absolute_path": {
+      "type": "string",
+      "minLength": 2,
+      "pattern": "^/(?:[^/]+/)*[^/]+$"
+    }
+  }
+}

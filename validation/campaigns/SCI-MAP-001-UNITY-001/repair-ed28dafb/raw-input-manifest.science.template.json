@@ -1,0 +1,23 @@
+{
+  "schema_version": "sci-map-001-raw-input-manifest-v1",
+  "request_id": "SCI-MAP-001-UNITY-001",
+  "candidate_sha": "ed28dafb37f9113c0d3c95297148157129a90886",
+  "mode": "science",
+  "observations": [152390, 152392],
+  "arrays": ["a1100", "a1400", "a2000"],
+  "producer": {
+    "identity": null,
+    "program_path": null,
+    "program_sha256": null,
+    "invocation": []
+  },
+  "source_records": [],
+  "memberships": [
+    {"obsnum": 152390, "array": "a1100", "networks": [], "record_order": "scan-major-detector-major-sample-minor-cartesian-v1", "projection_record_count": null, "scan_order": [], "detector_order": [], "source_refs": {}, "projection": {}},
+    {"obsnum": 152390, "array": "a1400", "networks": [], "record_order": "scan-major-detector-major-sample-minor-cartesian-v1", "projection_record_count": null, "scan_order": [], "detector_order": [], "source_refs": {}, "projection": {}},
+    {"obsnum": 152390, "array": "a2000", "networks": [], "record_order": "scan-major-detector-major-sample-minor-cartesian-v1", "projection_record_count": null, "scan_order": [], "detector_order": [], "source_refs": {}, "projection": {}},
+    {"obsnum": 152392, "array": "a1100", "networks": [], "record_order": "scan-major-detector-major-sample-minor-cartesian-v1", "projection_record_count": null, "scan_order": [], "detector_order": [], "source_refs": {}, "projection": {}},
+    {"obsnum": 152392, "array": "a1400", "networks": [], "record_order": "scan-major-detector-major-sample-minor-cartesian-v1", "projection_record_count": null, "scan_order": [], "detector_order": [], "source_refs": {}, "projection": {}},
+    {"obsnum": 152392, "array": "a2000", "networks": [], "record_order": "scan-major-detector-major-sample-minor-cartesian-v1", "projection_record_count": null, "scan_order": [], "detector_order": [], "source_refs": {}, "projection": {}}
+  ]
+}
