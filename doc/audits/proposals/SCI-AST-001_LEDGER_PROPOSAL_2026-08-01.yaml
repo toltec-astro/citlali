@@ -49,8 +49,8 @@ package:
   governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
   governing_sha_role: audit_dispatch_snapshot
   audit_branch: codex/audit-sci-ast-001
-  audit_commit: null
-  audit_identity_commit: null
+  audit_commit: 429e1b5361683ba15c8d897ba22bdc4c4d03bf91
+  audit_identity_commit: 429e1b5361683ba15c8d897ba22bdc4c4d03bf91
   audit_parent_sha: 17d683ada3856ecb5f0a5c42eed744cb219a3586
   audit_artifact_at_commit: doc/audits/packages/SCI-AST-001_SCIENTIFIC_CONTRACT_AUDIT.tex
   final_audit_artifact_sha256: 0be6771bbe5653bd42e90bc9a8cec1cd69ad84af971e6e7bca3d2fc21ed4bd98
@@ -112,49 +112,49 @@ package:
     - id: SCI-MAP-001-XAUD-003
       target_package: SCI-MAP-001
       path: doc/audits/proposals/handoffs/SCI-MAP-001-XAUD-003.yaml
-      sha256: f33c316ea9a945b3eb17292e0de3d808774d1d8e87c8c5008e8f7e3e85c6ef35
+      sha256: 829ca1e5d9122461d011cae85ce0024d46b3bd67cb494779ea8d003a90c29aee
       review_phase: post_core_evidence
       arrival: after_audit_completion
       status: proposed_unintegrated
     - id: SCI-RTC-001-XAUD-003
       target_package: SCI-RTC-001
       path: doc/audits/proposals/handoffs/SCI-RTC-001-XAUD-003.yaml
-      sha256: 59cf05e87552292b2d222f1ca3c3e2aafd33013d2fc9ee8a0f7dc45ebf12b471
+      sha256: 5eff0782d3c1057ccccbc613e9304e5410b6c30155ca04a34ae285f26e9f95a8
       review_phase: post_core_evidence
       arrival: before_dispatch
       status: proposed_unintegrated
     - id: SCI-PTC-001-XAUD-004
       target_package: SCI-PTC-001
       path: doc/audits/proposals/handoffs/SCI-PTC-001-XAUD-004.yaml
-      sha256: 96eee5cae761c304a1338193f12c2fb6cf64cda5bd0dace7171d8380f52dc513
+      sha256: 3e8f7805b27acffa550b749e3c6970167fc38d9d0d87e807ee43c487b7dfbf6d
       review_phase: post_core_evidence
       arrival: before_dispatch
       status: proposed_unintegrated
     - id: SCI-SRC-001-XAUD-001
       target_package: SCI-SRC-001
       path: doc/audits/proposals/handoffs/SCI-SRC-001-XAUD-001.yaml
-      sha256: c8e75bc9e4f76cf75d5d9d56bb2c59a2db170a47f2e21b1b1e9d45e9dadfc51c
+      sha256: 99e7b200c66cc535a99fc77673fb81d40a37b2cf9128ffce713f33892e3f00a8
       review_phase: post_core_evidence
       arrival: before_dispatch
       status: proposed_unintegrated
     - id: SCI-MODE-001-XAUD-002
       target_package: SCI-MODE-001
       path: doc/audits/proposals/handoffs/SCI-MODE-001-XAUD-002.yaml
-      sha256: a6f8f538e0caa1a17a656abce53c566e17489605af70456bda51959485647221
+      sha256: 64b2001db10390071fc4b589a4c93831bbe780957e08bdef16145c2b020579d7
       review_phase: post_core_evidence
       arrival: before_dispatch
       status: proposed_unintegrated
     - id: SCI-BEAM-001-XAUD-002
       target_package: SCI-BEAM-001
       path: doc/audits/proposals/handoffs/SCI-BEAM-001-XAUD-002.yaml
-      sha256: b81ab8cf0159ba964b3a0a905c85653d6bd28a5ec8ffba86420dfb0529fedbdd
+      sha256: e73e9fe92d3be44b69de665a2ae98014aa856f7148815ee674f0ba8ac8f4b54e
       review_phase: post_core_evidence
       arrival: before_dispatch
       status: proposed_unintegrated
     - id: SCI-VAL-001-XAUD-005
       target_package: SCI-VAL-001
       path: doc/audits/proposals/handoffs/SCI-VAL-001-XAUD-005.yaml
-      sha256: 4fb501f19f4ebb43062abe6d5a950811f4a5d82d9bfc96dd391b4173e8f5a80d
+      sha256: aed4545e35f717689a0918867afbd9dcac01d497cf6d369bba078711f35006b7
       review_phase: post_core_evidence
       arrival: before_dispatch
       status: proposed_unintegrated
@@ -432,7 +432,7 @@ package:
   requested_unity_evidence:
     - request_id: SCI-AST-001-UNITY-001
       path: doc/audits/requests/SCI-AST-001-UNITY-001.md
-      sha256: 5b1f8509d8624849cac55656f747c9de92daaa6f6a46e40426007146e84f8125
+      sha256: 2abd889229a1129dee4229f63ee08d0f947c977c7cfb1dc82c8fa235a6394bc0
       config_manifest_path: doc/audits/requests/SCI-AST-001-UNITY-001/config_manifest.yaml
       config_manifest_sha256: b8c5defb5f56b693141f901b918fbe36ec1c5dc5e3214fde5586c50277fed3d9
       source_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787

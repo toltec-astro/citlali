@@ -6,7 +6,7 @@ source:
   package_id: SCI-AST-001
   role: auditor
   audit_branch: codex/audit-sci-ast-001
-  audit_commit: null
+  audit_commit: 429e1b5361683ba15c8d897ba22bdc4c4d03bf91
   governing_or_evidence_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
   finding_ids:
     - SCI-AST-001-F005

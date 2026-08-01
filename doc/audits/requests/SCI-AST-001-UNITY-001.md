@@ -12,7 +12,7 @@ before any row below can become evidence.
 | --- | --- |
 | Request ID | `SCI-AST-001-UNITY-001` |
 | Package ID | `SCI-AST-001` |
-| Audit specification commit | `17d683ada3856ecb5f0a5c42eed744cb219a3586` plus this request's final report-bearing commit, to be recorded before dispatch |
+| Audit specification commit | `429e1b5361683ba15c8d897ba22bdc4c4d03bf91` |
 | Governing source SHA | `9aae0e669384c5c0c0dda93debc194d6b8dac787` |
 | Source role | Exact audited implementation; no repair or candidate substitution |
 | Permitted dirty state | Clean only; any `git status --short` output rejects the run as same-SHA evidence |
