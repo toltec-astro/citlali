@@ -1191,10 +1191,29 @@ packages:
         arrival: before_dispatch
         status: submitted
     governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
-    governing_sha_role: inventory_snapshot
+    governing_sha_role: audit_dispatch_snapshot
     audit_branch: null
     audit_commit: null
     independent_derivation: {status: not_started, sha256: null}
+    dispatch:
+      status: prepared_not_launched
+      coordinator_registry_commit: 65a0c50ad49f0602a4e20bb39e3f781843ab872d
+      manifest_path: >-
+        doc/audits/handoffs/SCI-AST-001/SCI-AST-001_INBOX_MANIFEST_2026-08-01.yaml
+      manifest_sha256: >-
+        369fcbd398437b2fe0c60162577faf41d397c7b32afb45c3c3169ac8c71b8e1c
+      pre_core_authority_ids: []
+      post_core_evidence_ids:
+        - SCI-AST-001-XAUD-001
+      prompt_path: doc/audits/prompts/SCI_AST_001_AUDIT_PROMPT.md
+      prompt_sha256: >-
+        181ee6f89b6ce9172e7ef3fb2407c7ce96f00d52e69bd2d730cae640299ea39e
+      launch_effort: ultra
+      note: >-
+        Dispatch is frozen and ready, but no dedicated audit task, branch, or
+        worktree has been launched. The approved ALIGN contract is available
+        as an abstract upstream authority; its post-core implementation
+        manifestation remains frozen in SCI-AST-001-XAUD-001.
     contract_status: not_started
     implementation_status: not_assessed
     validation_status: not_started

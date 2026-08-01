@@ -1,0 +1,16 @@
+format_version: 1
+target_package: SCI-AST-001
+created_date: 2026-08-01
+coordinator_registry_commit: 65a0c50ad49f0602a4e20bb39e3f781843ab872d
+manifest_status: frozen_for_dispatch
+
+handoffs:
+  - id: SCI-AST-001-XAUD-001
+    path: >-
+      doc/audits/handoffs/SCI-AST-001/SCI-AST-001-XAUD-001.yaml
+    sha256: ede523dd732f9e14ec9dae44b9e608497819b50b0c97abce6b4124d3602e9d71
+    review_phase: post_core_evidence
+
+pre_core_authority_ids: []
+post_core_evidence_ids:
+  - SCI-AST-001-XAUD-001
