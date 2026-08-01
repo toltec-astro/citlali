@@ -1,6 +1,6 @@
 # SCI-ALIGN-001 coordinator and scientific-owner decision — 2026-08-01
 
-Status: partial; `ALIGN-OD1`--`ALIGN-OD4` approved; `OD5`--`OD8` pending
+Status: partial; `ALIGN-OD1`--`ALIGN-OD5` approved; `OD6`--`OD8` pending
 
 Package: `SCI-ALIGN-001`
 
@@ -158,10 +158,56 @@ scope, state ambiguity, optional HWPR, signal type, guard expansion, and
 preservation of unrelated data. Compact/as-requested identity follows
 `ALIGN-C001`.
 
+## ALIGN-OD5 — Scan policy and identity
+
+Decision: approved with distinct physical-scan, processing-chunk, science-
+window, context-window, and output-selection identities.
+
+- Represent all internal windows as half-open `[start, stop)` intervals on the
+  detector-reference sample grid.
+- A physical scan is an authoritative telescope phase, such as a valid
+  non-hold raster leg after the `ALIGN-OD3` state registry is approved. A
+  processing chunk is a requested computational subdivision. Neither a
+  filter-context window nor an output subset silently becomes a new physical
+  scan.
+- Preserve authoritative raster segmentation and include the first valid
+  post-hold sample. For continuous scan modes, use the full observation unless
+  an explicit processing-chunk request applies.
+- Fixed-duration chunking uses round-half-up to a positive integer number of
+  detector samples and records both requested and effective durations. Number-
+  based chunking distributes all samples deterministically with chunk sizes
+  differing by at most one. Retain every final partial chunk; neither mode may
+  discard a remainder.
+- Preserve stable zero-based full-observation identities through output
+  selection, rejection, and diagnostics. Continue any separately established
+  one-based output scan-number convention through an explicit adapter rather
+  than renumbering the internal identity.
+- Never silently delete or renumber a short scan. Retain its identity and
+  record `short`, `empty`, or `unusable` state as applicable. There is no
+  universal two-second science minimum: a downstream numerical consumer may
+  decline a recorded short window only under its declared minimum-support
+  contract.
+- Reject invalid overlapping requested windows. A legitimate empty window
+  produced by later alignment or selection retains identity but is not passed
+  to numerical processors.
+- A science window is immutable once realized. A context window may expand or
+  clip separately, but missing filter context may change consumer eligibility
+  or flags, not the acquired samples assigned to the science window.
+- Store this identity as compact integer interval and status records. Do not
+  introduce standard per-sample or per-detector scan identifiers.
+
+The repair must preserve ordinary valid Beammap and Pointing timing behavior.
+Validation compares old and new boundaries, source crossings, centroids, and
+PSF widths under the `ALIGN-OD1` compatibility guard. Every changed boundary
+must be attributable to the named first-post-hold, discarded-remainder,
+short-scan identity, context/science separation, or invalid-window repair; this
+decision is not authority for an unrelated timing or scan-segmentation change.
+
 ## ALIGN-C001 — Compact exception identity and measured fallback
 
-Cross-cutting constraint for pending `ALIGN-OD4` and `ALIGN-OD7`: approved with
-an `as_requested` fallback when measured cost is disproportionate.
+Cross-cutting constraint for approved `ALIGN-OD4` and pending `ALIGN-OD7`:
+approved with an `as_requested` fallback when measured cost is
+disproportionate.
 
 - Do not add standard per-sample or per-detector provenance identifiers. The
   common observation and integer slot grid supplies implicit sample identity;
@@ -192,7 +238,6 @@ Citlali timing merely to persist audit detail.
 
 ## Pending decisions
 
-- `ALIGN-OD5`: scan policy and identity;
 - `ALIGN-OD6`: synthesized eligibility;
 - `ALIGN-OD7`: mapping/covariance/response; and
 - `ALIGN-OD8`: HWPR separation and interim production.
