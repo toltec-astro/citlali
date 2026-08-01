@@ -711,7 +711,7 @@ packages:
         tolerances remain unresolved; phase 1, application repair, Unity
         evidence, and re-audit are not authorized.
     phase_zero_owner_decisions:
-      status: partially_resolved_D001_D002_approved_D003_D005_pending
+      status: partially_resolved_D001_D003_approved_D004_D005_pending
       phase_one_authorization: none
       resolved:
         - id: ALIGN-P0-D001
@@ -846,8 +846,77 @@ packages:
             mandatory validation strata. Findings remain open; D003 through
             D005, phase one, application repair, Unity evidence, re-audit, and
             production expansion remain unapproved.
+        - id: ALIGN-P0-D003
+          questions: [Q05, Q17]
+          authority: project_owner
+          decision_date: 2026-08-01
+          status: >-
+            owner_resolved_by_bounded_offset_lifecycle_and_setup_admission_with_proportionality_guard
+          record_path: >-
+            doc/audits/packages/SCI-ALIGN-001_PHASE_ZERO_D003_DECISION_2026-08-01.md
+          record_commit: null
+          record_sha256: >-
+            a25b46ddec445a4164086aae248e3cbbfc70c7df8cb2c785c4c135d936e92d67
+          constrained_by:
+            - ALIGN-P0-D001
+            - ALIGN-P0-D002
+            - ALIGN-OD2
+            - ALIGN-OD8
+            - ALIGN-C001
+          affected_findings:
+            - SCI-ALIGN-001-F001
+            - SCI-ALIGN-001-F002
+            - SCI-ALIGN-001-F006
+            - SCI-ALIGN-001-F007
+            - SCI-ALIGN-001-F009
+            - SCI-ALIGN-001-F012
+          scope: bounded_existing_use_setup_only
+          lifecycle:
+            interfaces: [lmt, toltec0_through_toltec12, hwpr]
+            requested_authority: immutable_supplied_configuration
+            effective_authority: typed_Citlali_configuration
+            observation_resolved_authority: observation_setup
+            realized_authority: ALIGN_applied_once_evidence
+            direction: one_way_no_realized_back_sync
+          default_zero:
+            source: schema_default_zero
+            present_interface: once_only_numerical_noop_before_ordering
+            absent_optional_interface: not_applicable_not_applied
+            authority_claim: compatibility_only_not_measured_or_header_derived
+          nonzero_policy: >-
+            Comparable clock, epoch, sign, unit, and application-stage
+            authority are required; absent, unsupported, or unauthoritative
+            nonzero values fail closed rather than being ignored.
+          identity_admission: >-
+            Reconcile supplied toltecN with scalar RoachIndex N in 0 through
+            12 and reject unknown, conflicting, or duplicate interface claims
+            within one alignment input set.
+          malformed_boundary: >-
+            Reuse D001 timing/counter and D002 rate/cadence/slot admission.
+            Required malformed selected streams fail observation setup;
+            absent detector networks and absent or disabled optional HWPR are
+            nonfatal not_applicable states; ordinary forward packet gaps route
+            to ALIGN-OD4.
+          standard_persistence: >-
+            One compact observation/interface lifecycle record; uncertainty or
+            producer authority remains explicitly unavailable when absent.
+          proportionality_guard:
+            stage: observation_setup_or_existing_input_traversal
+            no_avoidable_second_full_data_pass: true
+            no_per_sample_or_per_detector_provenance_arrays: true
+            no_generalized_timing_or_drift_framework: true
+            no_new_hot_path_allocation_or_dynamic_abstraction: true
+            required_behavior: >-
+              Preserve conforming zero-offset native timestamps, phase, slots,
+              support, source crossings, centroids, and PSF behavior exactly.
+            performance_gate: >-
+              No repeatable measurable Pointing or Beammap timing regression;
+              simplify or return for owner direction if burden is material.
+          effect: >-
+            Resolves D003 for bounded repair design only. Findings remain open;
+            D004 and D005, phase one, application repair, Unity evidence,
+            re-audit, and production expansion remain unapproved.
       pending:
-        - ALIGN-P0-D003
         - ALIGN-P0-D004
         - ALIGN-P0-D005
     dispatch:
@@ -917,7 +986,7 @@ packages:
         doc/audits/packages/SCI-ALIGN-001_PHASE_ZERO_COORDINATOR_REVIEW_2026-08-01.md
       phase_zero_review_commit: dbebd17627870963789d142fe385ab05268573da
       next_gate: >-
-        Resolve ALIGN-P0-D003 through ALIGN-P0-D005, including the
+        Resolve ALIGN-P0-D004 and ALIGN-P0-D005, including the
         preregistered rate-stratified multi-Beammap D005 protocol, and record
         the reviewed active-field registry before phase-one fixtures or any
         application edit.
@@ -1008,17 +1077,14 @@ packages:
           the required local and exact-repair-SHA evidence gates, and complete
           a fresh re-audit.
     unresolved_scientific_decisions:
-      - id: ALIGN-P0-D003
-        questions: [Q05, Q17]
-        issue: offset_lifecycle_and_malformed_boundary_policy
-        constrained_by: [ALIGN-P0-D001, ALIGN-P0-D002]
       - id: ALIGN-P0-D004
         questions: [Q06, Q07, Q08, Q09, Q10, Q11, Q12, Q14]
         issue: HWPR_telescope_registry_aliases_topology_units_and_output_contract
+        constrained_by: [ALIGN-P0-D003]
       - id: ALIGN-P0-D005
         questions: [Q13, Q15]
         issue: compatibility_fixtures_and_preregistered_tolerances
-        constrained_by: [ALIGN-P0-D002]
+        constrained_by: [ALIGN-P0-D002, ALIGN-P0-D003]
         validation_directive:
           source: project_owner
           date: 2026-08-01
@@ -2260,11 +2326,11 @@ packages:
       dependency_hold:
         package_id: SCI-ALIGN-001
         phase_zero_status: >-
-          partial_owner_resolution_D001_D002_approved_D003_D005_pending
+          partial_owner_resolution_D001_D003_approved_D004_D005_pending
         phase_zero_evidence_commit: 53c7154a3633dfe19dc036cfb5a6250f729a897d
         required_completion: exact_accepted_and_reaudited_ALIGN_successor
       next_gate: >-
-        Resolve ALIGN-P0-D003 through D005, complete and locally validate ALIGN
+        Resolve ALIGN-P0-D004 and D005, complete and locally validate ALIGN
         phase one, return the human-run exact-SHA evidence, accept a fresh ALIGN
         re-audit, and only then select and record the exact AST application base.
     repair_base_decision:

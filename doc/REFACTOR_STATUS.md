@@ -200,13 +200,23 @@ It freezes the owner-authorized native detector sample-rate family at 0.5x,
 1x, 2x, and 4x the `122.0703125 Hz` reference rate; cadence and the exclusive
 strict half-cell boundary are derived per rate. All interfaces in an
 observation must select one consistent header-backed family member. The
-latest-first compatibility
-phase, shared round-half-up operator, union detector support, typed edge
-unavailability, and compact ordinary representation are approved. Phase-zero
+latest-first compatibility phase, shared round-half-up operator, union
+detector support, typed edge unavailability, and compact ordinary
+representation are approved. Phase-zero
 measured compatibility covers 1x only. A rate-stratified multi-Beammap study
 is deferred to D005 and must be preregistered before successor inspection;
 resampled 1x data cannot substitute for native-rate evidence.
-`ALIGN-P0-D003`--`D005` remain pending.
+The owner has also approved `ALIGN-P0-D003` in the
+[phase-zero D003 decision record](audits/packages/SCI-ALIGN-001_PHASE_ZERO_D003_DECISION_2026-08-01.md).
+It freezes the requested/effective/observation-resolved/realized offset
+lifecycle for LMT, TolTEC, and optional HWPR; explicit `schema_default_zero`;
+setup-time interface/header reconciliation; and fail-closed selected malformed
+inputs while absent optional interfaces remain `not_applicable`. The owner's
+overkill concern is a binding proportionality guard: reuse existing input
+passes, persist only one compact observation/interface record, add no
+per-sample state or generalized timing/drift machinery, and preserve conforming
+zero-offset timestamps, slots, source crossings, centroids, PSFs, and measured
+runtime. `ALIGN-P0-D004` and `D005` remain pending.
 Phase one, application repair, Unity evidence, re-audit, and production
 expansion remain unstarted. The approved contract and existing-use-only
 restriction are unchanged.
@@ -313,7 +323,8 @@ remains the immutable AST comparison anchor, not a usable repair base: it lacks
 the approved typed ALIGN interface. ALIGN phase-zero commit
 `53c7154a3633dfe19dc036cfb5a6250f729a897d` is an evidence-only child with no
 application-source delta and is also not admissible. Resolve
-`ALIGN-P0-D003`--`D005`, complete and locally validate ALIGN phase one, return
+`ALIGN-P0-D004` and `D005`, complete and locally validate ALIGN phase one,
+return
 the human-run exact-SHA evidence, and accept a fresh ALIGN re-audit before
 selecting the exact accepted ALIGN successor or clean integration SHA as the
 AST repair base. No `codex/repair-sci-ast-001` branch or task is authorized or
