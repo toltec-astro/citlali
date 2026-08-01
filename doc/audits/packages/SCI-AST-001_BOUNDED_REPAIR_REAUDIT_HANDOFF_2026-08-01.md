@@ -98,8 +98,9 @@ coordinator must record all of the following:
    without required-data skips.
 4. The human-run exact-ALIGN-repair-SHA evidence has been returned and a fresh
    ALIGN re-audit has accepted the interface consumed by AST.
-5. The coordinator has reviewed the ALIGN-to-AST interface and applicable
-   handoffs, including `SCI-AST-001-XAUD-001`, against the final AST decisions.
+5. The coordinator has reviewed the ALIGN-to-AST interface and its new or
+   superseding final return handoff against the final AST decisions; the
+   pre-repair `SCI-AST-001-XAUD-001` alone is not sufficient.
 6. The exact AST base SHA and ref are recorded, the future worktree is clean,
    and no `codex/repair-sci-ast-001` branch or other AST repair worktree already
    exists.
@@ -107,9 +108,11 @@ coordinator must record all of the following:
    branches and does not silently absorb unfinished MAP, CAL, convolve/noise,
    or unrelated implementation work.
 8. A fresh repair-dispatch manifest is frozen with the selected application
-   SHA, accepted ALIGN return, final AST owner-decision digest, CAL identity
-   amendment, and every still-applicable incoming handoff. The audit inbox
-   manifest is not reused as a repair manifest.
+   SHA, accepted final ALIGN return handoff, final AST owner-decision digest,
+   CAL identity amendment, and every still-applicable incoming handoff. The
+   accepted ALIGN return must supersede or explicitly disposition the
+   pre-repair `SCI-AST-001-XAUD-001`; the audit inbox manifest is not reused as
+   a repair manifest.
 
 Any failed or ambiguous gate keeps launch status `held_for_ALIGN_interface`.
 
@@ -172,6 +175,9 @@ The following is the maximum future repair surface.
   product-level counts. Do not emit a routine detector-by-sample validity
   matrix. A nonfactorable enabled case fails the affected coordinate product
   and returns for owner review.
+- Limit downstream work to AST input admission, product-boundary checks, and
+  required-failure propagation. Do not change a downstream estimator in this
+  lane; its owning package retains the recipient re-audit.
 
 ### F001 and F002 — TAN domain and longitude topology
 
@@ -218,12 +224,18 @@ The following is the maximum future repair surface.
   observation provenance, network order, per-network count/tone order, and
   unique acquisition keys; unkeyed reorder fails. Explicit-key mode is
   permutation invariant.
+- Require exact matching x/y counts, finite measured positions, and unique
+  admitted acquisition keys or UIDs when that identity is present. Duplicate,
+  missing, conflicting, non-finite, or out-of-lifecycle binding fails before
+  coordinate use.
 - Keep target acquisition identity, selected measured Beammap row and matcher
   edge, and optional design identity distinct. Perfect design matching is not
   required or claimed; design identity must not change measured-geometry
   coordinates.
 - Retain the small-angle production hot path inside the phase-zero validated
-  envelope. Fail outside it; do not add a production exact-spherical fallback.
+  envelope. Test just inside, exactly at, and just outside its declared
+  boundary; fail outside it and do not add a production exact-spherical
+  fallback.
 
 ### F007 and F008 — map-center uncertainty only
 
@@ -248,6 +260,15 @@ The following is the maximum future repair surface.
 - Use double precision for compact product-level WCS authorities and
   fitted/catalog sky coordinates, preserving FITS index base, scale sign,
   handedness, frame, epoch, and longitude topology.
+- Preserve native AltAz tangent coordinates for Point, OOF, and Beammap, and
+  explicit equatorial J2000 TAN coordinates for Science. Publish
+  `FK5`/`EQUINOX=2000` only when headers prove that identity; otherwise
+  preserve ICRS or apply one named approved transform. Never default a missing
+  epoch. Mark ambiguous retained products `legacy_unverified`; they cannot
+  support a new precision claim.
+- Feedback and fruit-loop boundary admission preserves signed `CDELT`,
+  handedness, and frame identity. Never erase a scale sign with an absolute-
+  value comparison.
 - Retain the existing full-TOD coordinate representation only if the frozen
   quantization gate passes. Do not widen the large arrays without a new owner
   disposition.
@@ -277,9 +298,9 @@ The following is the maximum future repair surface.
 - Add focused equation, boundary, identity, validity, WCS, product,
   provenance, simulation, sequential/parallel, compatibility, storage, and
   performance gates tied to the exact repair SHA.
-- Prepare but do not execute a successor `SCI-AST-001-UNITY-001` request after
-  all local gates pass. The governing-SHA request is an unsupplied audit
-  artifact and must not be reused.
+- Prepare but do not execute a successor `SCI-AST-001-UNITY-002` request after
+  all local gates pass. The governing-SHA `SCI-AST-001-UNITY-001` request is an
+  unsupplied immutable audit artifact and must not be reused.
 
 ## Prohibited scope
 
@@ -324,11 +345,14 @@ records, return at least:
    failures and the frozen time-adequacy bound.
 5. Stage-by-stage sign/basis/rotation/handedness/composition fixtures and
    approximately one-square-degree center/edge/corner source recovery.
-6. Verified-row and explicit-key detector-binding fixtures for reorder,
-   permutation, duplicate, missing, conflicting, non-finite, network subset,
-   measured-versus-design identity, and lifecycle reset.
-7. Offline small-angle versus exact-spherical envelope results and explicit
-   proof that ordinary production executes no new exact spherical work.
+6. Fixtures for each detector-binding mode the candidate actually supports;
+   require the selected verified-row or explicit-key mode, and test both only
+   if both are implemented. Cover x/y count and finiteness, key/UID uniqueness,
+   reorder or permutation as applicable, duplicate, missing, conflicting,
+   network subset, measured-versus-design identity, and lifecycle reset.
+7. Offline small-angle versus exact-spherical results just inside, exactly at,
+   and just outside the declared envelope, plus explicit proof that ordinary
+   production executes no new exact spherical work.
 8. Map-center inverse-TAN covariance fixtures at representative declinations
    and wrap, with cross term, unit, symmetry, availability, no fabricated
    total, and no off-center/dense allocation.
@@ -336,9 +360,10 @@ records, return at least:
    bound, including scale sign, CRPIX indexing, handedness, frame, and epoch.
 10. ALIGN field-registry admission and exact per-field unit/topology/frame/
     validity attributes; false generic radians must be absent.
-11. Factorized validity and every named consumer, including projection-invalid,
-    product-unsupported, upstream-ineligible, detector-invalid, and required-
-    product failure; no matrix product is introduced.
+11. Factorized validity and every named AST admission/product boundary,
+    including projection-invalid, product-unsupported, upstream-ineligible,
+    detector-invalid, and required-product failure; no matrix product or
+    downstream estimator change is introduced.
 12. Full/mini TOD schema and reader round trips proving present versus
     unavailable coordinate products and no mini-TOD size expansion.
 13. Atomic four-stage provenance and tamper/write-failure tests for every
@@ -371,7 +396,7 @@ independent-core proposal when the owner decision supersedes it.
 ## External evidence and fresh re-audit
 
 After all local gates pass, prepare a new human-run
-`SCI-AST-001-UNITY-001` request against the exact repair SHA. It must use the
+`SCI-AST-001-UNITY-002` request against the exact repair SHA. It must use the
 SSH alias `unity_toltec`, bind build/dependency/raw/config/product identities,
 exercise Point, OOF, Science, and Beammap compatibility plus relevant invalid
 and product cases, and return exact artifacts and timings. Codex does not
