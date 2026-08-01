@@ -1472,10 +1472,11 @@ packages:
       note: >-
         The dedicated Ultra audit completed without application changes. Its
         independent core, report, evidence, proposal, and exact identities are
-        integrated; D001-D005 are owner-approved with astrometric, layered
+        integrated; D001-D006 are owner-approved with astrometric, layered
         detector-binding, TAN-invalidity, frame/topology, and proportionate
         pointing-support timing guards plus truthful automatic-only WCS
-        controls; D006-D008 remain pending.
+        controls and a map-center-only uncertainty response; D007-D008 remain
+        pending.
     coordination:
       owner_integration_authorization: explicit_2026-08-01
       authorization_scope: >-
@@ -1639,12 +1640,22 @@ packages:
         confidence: high
         status: open
         owner: ast_src_mode_product_boundary
+        related_decisions: [SCI-AST-001-D006]
         summary: >-
           Point/source means use inverse TAN while positional errors receive
           only scalar unit conversion, without Jacobian or cross-covariance.
         closure_gate: >-
-          Propagate covariance and availability through inverse TAN and pass
-          high-declination, wrap, cross-term, and consumer re-audit gates.
+          Correct the map-center inverse-TAN positional covariance and
+          availability and pass center, high-declination, wrap, cross-term,
+          unchanged-map, no-hot-path-work, and consumer re-audit gates.
+        coordinator_closure_clarification:
+          decision_id: SCI-AST-001-D006
+          status: open_pending_bounded_center_implementation_evidence_and_reaudit
+          summary: >-
+            Apply one product-level inverse-TAN response at the realized map
+            center when equatorial uncertainty is reported. Do not add
+            per-sample, per-detector, per-pixel, grid, dense, or broadly
+            composed covariance work.
       - id: SCI-AST-001-F008
         class: contract_gap
         severity: P1
@@ -1652,12 +1663,21 @@ packages:
         confidence: high
         status: open
         owner: scientific_astrometry_product_owner
+        related_decisions: [SCI-AST-001-D006]
         summary: >-
           Correction, alignment, focal-plane, frame, systematic, response, and
           selection uncertainty have no approved covariance/availability product.
         closure_gate: >-
-          Approve covariance scope and unavailable semantics, implement the
-          versioned response/terms or explicit absence, and validate them.
+          Implement the approved map-center response and explicit
+          unavailability without fabricating a total, then validate the
+          bounded product and absence of broader computation.
+        coordinator_closure_clarification:
+          decision_id: SCI-AST-001-D006
+          status: open_pending_bounded_center_implementation_evidence_and_reaudit
+          summary: >-
+            Missing or unmodeled terms remain unavailable, never zero. No
+            broader correction, ALIGN, focal-plane, frame, interpolation,
+            selection, or systematic covariance composition is approved.
       - id: SCI-AST-001-F009
         class: contract_gap
         severity: P1
@@ -1788,9 +1808,6 @@ packages:
           Pass every non-N/A local gate and a fresh exact-successor-SHA Unity
           campaign without required-data skips, then re-audit.
     unresolved_scientific_decisions:
-      - id: SCI-AST-001-D006
-        owner: scientific_astrometry_product_owner
-        question: covariance, response, systematics, selection, and unavailable semantics
       - id: SCI-AST-001-D007
         owner: scientific_astrometry_and_simulation_owner
         question: small-angle error/radius and enabled simulation parity/fail-closed scope
@@ -1818,9 +1835,8 @@ packages:
       decision_date: 2026-08-01
       record_path: >-
         doc/audits/packages/SCI-AST-001_COORDINATOR_DECISION_2026-08-01.md
-      record_commit: bb08c021f81681237e3df3e2dbec480bbf83b58b
       record_sha256: >-
-        b9c5d744fa4a5745f64178eb765d682d91787968728f2fb9a567d46aae66c642
+        5de93d7dde4d7a76091c51ae751b0918156bfbef67401d71e4c4ab3ada651882
       identity_amendment:
         decision_id: CAL-D002-IDENTITY-001
         path: >-
@@ -1926,20 +1942,43 @@ packages:
             validation profiles using exact zero for all six fields; exact
             successor admission, provenance, config, WCS, and product fixtures
             remain required.
+        - id: SCI-AST-001-D006
+          status: approved_map_center_response_only_broader_covariance_rejected
+          authority: project_owner
+          evidence_basis: owner_decision
+          affected_findings:
+            - SCI-AST-001-F007
+            - SCI-AST-001-F008
+          policy: >-
+            Evaluate the inverse-TAN 2x2 response only once at the realized
+            map/WCS tangent center when equatorial positional uncertainty is
+            reported, and apply it to the available map-center covariance.
+            Preserve native tangent-plane uncertainty without unnecessary
+            conversion. Missing terms remain explicitly unavailable, never
+            zero, and no incomplete synthetic total or new precision claim is
+            allowed. Per-sample, per-detector, per-pixel, response-grid, dense,
+            or broadly composed covariance calculations are not approved.
+          compatibility_evidence: >-
+            Project-owner scientific judgment that offset-pointing sources
+            have the same or very similar declination as their science targets,
+            making the realized map-center response operationally adequate.
+            Exact successor center-reference, availability, unchanged-map, and
+            no-hot-path-work fixtures remain required.
       pending_decisions:
-        - SCI-AST-001-D006
         - SCI-AST-001-D007
         - SCI-AST-001-D008
       effect: >-
-        Resolves D001-D005 for contract design without approving the governing
-        implementation, closing F001/F002/F003/F005/F006/F010/F012/F013,
+        Resolves D001-D006 for contract design without approving the governing
+        implementation, closing F001/F002/F003/F005/F006/F007/F008/F010/F012/F013,
         authorizing repair, or expanding production use. D001's identity
         amendment changes the F013 closure contract and also clarifies CAL
         F004; D002 supplies the F001/F012 domain and invalidity policy; D003
         supplies the F002 and frame/epoch portions of F006/F010; D004 supplies
         F005 support semantics and replaces arbitrary subsecond precision with
         a measured astrometric-adequacy gate; D005 supplies the automatic-only
-        WCS admission policy for F003.
+        WCS admission policy for F003; D006 limits inverse-TAN uncertainty work
+        to one map-center response and explicit unavailability, rejecting
+        broader covariance computation.
     local_evidence:
       - id: SCI-AST-001-LOCAL-001
         path: doc/audits/evidence/SCI-AST-001_LOCAL_EVIDENCE_2026-08-01.yaml

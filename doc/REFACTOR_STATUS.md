@@ -256,7 +256,14 @@ preserves current centered/source-derived WCS behavior, and rejects every
 nonzero or non-finite request at configuration admission. Future explicit
 control requires a separate typed contract so legitimate zero coordinates are
 representable. `SCI-AST-001-F003` remains open pending implementation, exact
-evidence, and re-audit. D006--D008 remain pending.
+evidence, and re-audit. D006 approves only one inverse-TAN uncertainty response
+at the realized map center when an equatorial positional uncertainty is
+reported. Native tangent-plane uncertainty may remain native; unavailable
+terms are not zero. Per-sample, per-detector, per-pixel, response-grid, dense,
+and broadly composed covariance calculations are explicitly outside scope.
+`SCI-AST-001-F007` and `F008` remain open pending the bounded center
+implementation, unchanged-map/performance evidence, and re-audit. D007--D008
+remain pending.
 No AST repair base has been selected, and no repair, Unity request, re-audit,
 application integration, or production expansion is authorized. The
 governing-SHA Unity request remains an unsupplied audit artifact and must not

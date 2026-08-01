@@ -1,6 +1,6 @@
 # SCI-AST-001 coordinator and scientific-owner decision — 2026-08-01
 
-Status: in progress; `SCI-AST-001-D001`--`D005` approved; `D006`--`D008`
+Status: in progress; `SCI-AST-001-D001`--`D006` approved; `D007`--`D008`
 pending
 
 Package: `SCI-AST-001`
@@ -400,9 +400,87 @@ flexibility and does not settle persisted numeric precision, authorize repair
 or Unity work, expand production use, or approve a future explicit-control
 contract.
 
+## SCI-AST-001-D006 — Map-center response and uncertainty
+
+Decision: approved only for a single map-center response calculation; broader
+per-sample, per-detector, per-pixel, or dense covariance work is rejected as
+unnecessary and wasteful.
+
+### Owner authority and proportionality judgment
+
+The project owner states that offset-pointing sources are observed at the same
+or very similar declination as the science target. The projection response at
+the realized map center is therefore an adequate operational representation
+for the relevant pointing and source-position uncertainty. Calculating a
+response across the map, timestream, detector set, or observation is not
+approved.
+
+This is a scientific and operational scope decision. It replaces the broader
+coordinator recommendation for a reconstructible detailed AST response and
+conditional composition of all available correction, APT, ALIGN, frame, and
+inverse-projection covariance terms.
+
+### Approved contract
+
+- When a product reports positional uncertainty in equatorial sky
+  coordinates, evaluate the local inverse-TAN 2x2 response once at the
+  realized map/WCS tangent center and use it to transform the available
+  map-center positional covariance, including its cross term.
+- If the product reports only native tangent-plane offsets and uncertainties,
+  preserve those values and units; do not perform an unnecessary sky-frame
+  propagation merely to create an additional product.
+- Treat the center response as a product-level quantity. It may be stored
+  directly or reconstructed from the realized center, frame, projection, and
+  convention. Do not calculate or store response matrices per sample, time,
+  detector, source-map pixel, or science-map pixel.
+- Do not construct a dense observation covariance, a response grid, or a
+  composed covariance spanning pointing correction, ALIGN, APT/focal-plane,
+  frame/model, interpolation, selection, and systematic terms. Such work is
+  outside the approved scope.
+- Preserve explicit availability for the map-center uncertainty and its input
+  terms. A missing or unmodeled term is `unavailable`, not zero. Do not publish
+  a synthetic total or a new precision claim from incomplete inputs.
+- Preserve the existing mean-coordinate and mapmaking calculations. This
+  decision adds no sample eligibility, weighting, or mapmaking operation and
+  must not move a source or change an ordinary science pixel value.
+- A future request for spatially varying, per-sample, per-detector, or composed
+  covariance requires a new owner decision supported by a demonstrated
+  scientific need and performance budget; it is not latent repair scope.
+
+### Mandatory compatibility and falsification gates
+
+- Verify the center response against an independent analytic or finite-
+  difference inverse-TAN reference at the equator and representative target
+  declinations, including the audited high-declination cases and longitude
+  wrap. This is a small fixture suite, not an observation-wide calculation.
+- Demonstrate that the transformed center covariance has the expected units,
+  symmetry, finite values, and cross term when the required input covariance
+  is available. Missing input must produce explicit unavailability rather
+  than a zero matrix or fabricated total.
+- Confirm that an offset-pointing source at the map center retains its
+  established fitted position and tangent-plane errors, and that any reported
+  equatorial uncertainty uses the center response rather than scalar unit
+  conversion alone.
+- Verify that the implementation creates no per-sample, per-detector,
+  per-pixel, response-grid, or dense-covariance allocation or hot-path work.
+  Ordinary runtime and numerical map products must remain unchanged within
+  preregistered compatibility tolerances.
+
+### Effect
+
+`SCI-AST-001-D006` is resolved for contract design with a deliberately narrow
+map-center uncertainty product. It revises the closure scope for
+`SCI-AST-001-F007` and `F008`: the scalar inverse-TAN error conversion must be
+corrected at map center, and unavailable terms must be represented truthfully,
+but no broader covariance propagation or response materialization is
+required. Both findings remain open until the bounded implementation,
+fixtures, performance confirmation, exact repair-SHA evidence, and fresh
+re-audit succeed. This decision does not authorize repair, Unity work,
+application integration, production expansion, or any off-center response or
+covariance calculation.
+
 ## Pending decisions
 
-- `SCI-AST-001-D006`: response, covariance, and unavailable semantics.
 - `SCI-AST-001-D007`: approximation bounds and simulation parity.
 - `SCI-AST-001-D008`: persisted precision, metadata, validity, and products.
 
