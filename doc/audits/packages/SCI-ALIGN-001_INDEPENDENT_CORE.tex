@@ -1,0 +1,643 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.82in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,booktabs,longtable,array,enumitem,hyperref,xcolor}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\setlength{\emergencystretch}{3em}
+\setlength{\tabcolsep}{3.5pt}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\code}[1]{\nolinkurl{#1}}
+\newcommand{\state}[1]{\mathrm{#1}}
+\renewcommand{\theequation}{A\arabic{equation}}
+
+\title{SCI-ALIGN-001 Independent Scientific Core\\
+\large Sample alignment, scan slicing, and gap interpolation}
+\author{Independent package auditor}
+\date{2026-07-31}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This document independently specifies a proposed scientific contract for
+constructing a detector-led common sample identity from detector, telescope,
+and optional HWPR native streams.  It defines clock-offset sign and units,
+fractional-time interpolation, timing-gap identity and bounded fill, half-open
+scan slices, validity and provenance, response, covariance, and exposure.  It
+was derived from abstract stream identities and project-level authorities,
+before inspection of quarantined SCI-ALIGN-001 implementation, tests,
+configuration, products, metadata, or consumers.  It is a frozen independent
+draft for falsification, not an approved production contract.
+\end{abstract}
+
+\section{Authority, independence, and bounded purpose}
+
+\begin{description}[style=multiline,leftmargin=0.28\linewidth,labelwidth=0.25\linewidth]
+\raggedright
+\item[Governing source] {\small\code{9aae0e669384c5c0c0dda93debc194d6b8dac787}}.
+\item[Dedicated branch] {\small\code{codex/audit-sci-align-001}}.
+\item[Frozen dispatch] {\small\code{1a202ccd16ea0edb09c2c429b09508eeb045546d}}.
+\item[Registry snapshot] {\small\code{99bfa3562ecfa05c0c10de24a255a6a18ff313d2}}, verified as an ancestor.
+\item[Manifest SHA-256] {\small\code{4bad1e6b853a1176c40dfac405fe2a88214b129d7fba4eed9261f56725a17d89}}; the manifest contains no handoffs.
+\end{description}
+
+Before these bytes were drafted, the auditor read only the dispatch prompt,
+empty manifest, audit process/templates, repository agent instructions, the
+TolTEC context routing authorities, and the project architecture and
+scientific-conventions documents.  No quarantined ALIGN implementation,
+tests, configuration, writer, metadata, provenance, generated references,
+history, diffs, blame, or downstream manifestation was opened.  No handoff
+addressed to another package was opened.  No unavoidable prior implementation
+exposure is known.
+
+The sole approved downstream fact used here is the bounded SCI-CAL-001
+consumer requirement supplied verbatim in the dispatch: CAL needs ordered
+detector and telescope sample identity, a common time axis and timestamps,
+aligned elevation, applicable duration, timing-gap/interpolation state, and
+exact eligibility of original versus synthesized samples.  This requirement
+does not establish an ALIGN implementation or estimator.
+
+The proposed operator constructs values and facts before scientific
+conditioning.  It does not calibrate detector signal, construct or correct
+coordinates, demodulate polarization, clean/filter timestreams, choose
+cross-stage science eligibility, make maps, or infer sources.  It never
+assigns a physical meaning to an undocumented external clock or header.
+
+\section{Symbols, identities, and variable classification}
+
+Let one observation have stable identity \(o\).  Native interface
+\(i\in\{D,T,H\}\) denotes detector, telescope, and optional HWPR respectively;
+\(r=D\) is the proposed common-clock reference.  Every native stream provides
+an interface identity, an ordered zero-based native row \(k\), a named epoch
+\(E_i\), a native time coordinate \(u_{ik}\), nominal cadence \(h_i>0\),
+sample support or duration \(d_{ik}\geq0\), half-open acquisition bounds
+\([B_i^-,B_i^+)\), and explicit presence, finiteness, and validity state.
+Epoch differences and all offsets must be convertible to seconds without
+guessing.
+
+\begin{longtable}{L{0.14\linewidth}L{0.23\linewidth}L{0.17\linewidth}L{0.16\linewidth}L{0.21\linewidth}}
+\toprule
+Quantity & Identity and shape & Unit or frame & Classification & Contract role\\
+\midrule
+\endfirsthead
+\toprule
+Quantity & Identity and shape & Unit or frame & Classification & Contract role\\
+\midrule
+\endhead
+\(X_D\) & \(N_D\times P\), ordered detector rows by stable detector identity & declared detector signal unit & random & Native measured values; row position is not detector identity.\\
+\(X_{Tv}\) & \(N_T\) for each named telescope variable \(v\) & declared unit and unchanged named frame & random & Native measured scalar, circular, or state variable.\\
+\(X_{Hv}\) & \(N_H\) for each optional HWPR variable \(v\) & declared unit; angle domain when applicable & random & Native measured auxiliary values; no polarization interpretation.\\
+\(E_i,u_{ik}\) & epoch identity and ordered native coordinate & seconds after checked conversion & conditioned upon & Timestamp observations defining alignment coordinates.\\
+\(h_i,d_{ik},B_i^\pm\) & cadence, exposure/support, acquisition bounds & seconds & conditioned upon & Input timing facts, not inferred from row count alone.\\
+\(\delta_i\) & one offset for interface \(i\) relative to \(r\) & seconds & fixed or observation-resolved & Applied once with the sign in Equation~\eqref{eq:clock}.\\
+\(\phi_D,\epsilon_{\rm slot}\) & detector grid phase and assignment tolerance & seconds & fixed or observation-resolved & Defines common detector slots; \(0\leq\epsilon_{\rm slot}<h_D/2\).\\
+\(g_{\max,i}\) & maximum fillable run length and/or duration & count and seconds & fixed & Both count and duration gates are explicit; no hidden default.\\
+\(c_v\) & variable class for each telescope/HWPR field & enum plus unit/frame & fixed & One of linear scalar, circular angle, declared step state, or non-interpolable.\\
+\(\theta_{\rm scan}\) & full-observation or fixed-duration scan policy & seconds/count & selected & Resolves to stable half-open index windows.\\
+\(A\) & realized selection/interpolation matrix & dimensionless & data-derived, conditioned upon & Fixed only conditional on timestamps, states, offsets, and policy.\\
+\(Q\) & origin, validity, method, and reason arrays & categorical & data-derived & Never encoded only by a floating-point sentinel.\\
+\bottomrule
+\end{longtable}
+
+Random values and their timestamp uncertainties may be jointly distributed.
+Policy values are fixed only after requested, effective, and
+observation-resolved state is recorded.  The realized matrix (A), scan
+windows, and masks are data-derived; formal equations conditional on them do
+not include selection uncertainty unless stated explicitly.
+
+\section{Clock normalization and the common detector grid}
+
+\subsection{Offset sign, stage, and failure conditions}
+
+The checked conversion of native interface time to the reference-clock
+coordinate is
+\begin{equation}
+ t_{ik}^{(r)}=(E_i-E_r)_{\rm sec}+u_{ik}+\delta_{i\rightarrow r},
+ \qquad \delta_{r\rightarrow r}=0.
+ \label{eq:clock}
+\end{equation}
+A positive offset is added: it places a native sample later on the reference
+clock than the same uncorrected coordinate.  Acquisition bounds are mapped by
+the same transformation.  The offset is never rounded to an integer number
+of samples and is applied exactly once, before ordering checks, slot
+assignment, gap detection, scan slicing, or interpolation.  Its source,
+reference interface, unit, resolution state, and uncertainty are provenance.
+An offset with only a magnitude, an unknown sign, an unknown unit, an
+incomparable epoch, or an implicit application stage is invalid and fails
+closed.  A constant-offset model does not silently absorb clock drift.
+
+Corrected native coordinates must be strictly increasing within each
+interface.  Reordering, duplicate timestamps, or a cadence residual outside
+the accepted timing model fails rather than silently changing native sample
+identity.
+
+\subsection{Detector-led common identity}
+
+The proposed common axis preserves detector sample identity and does not trim
+it merely because telescope or HWPR support is missing.  Let the detector
+phase \(\phi_D\) be the expected center of slot zero in reference-clock
+seconds.  Centers and the set inside mapped detector acquisition bounds are
+\begin{align}
+ t_n &= \phi_D+n h_D,\notag\\
+ n_{\min} &= \left\lceil\frac{B_D^- -\phi_D}{h_D}\right\rceil,
+ &n_{\max}&=\left\lceil\frac{B_D^+ -\phi_D}{h_D}\right\rceil-1,
+ \qquad \mathcal N=\{n_{\min},\ldots,n_{\max}\}.
+ \label{eq:grid}
+\end{align}
+The local common index is \(j=n-n_{\min}\), zero-based and stable for the
+observation.  Its identity is \((o,n)\), not merely the row position \(j\).
+An empty \(\mathcal N\) is an invalid observation for this package.
+
+Each original detector row is assigned by the explicit round-half-up rule
+\begin{equation}
+ n(k)=\left\lfloor
+ \frac{t_{Dk}^{(r)}-\phi_D}{h_D}+\frac12
+ \right\rfloor,\qquad
+ \left|t_{Dk}^{(r)}-t_{n(k)}\right|\leq\epsilon_{\rm slot}<\frac{h_D}{2}.
+ \label{eq:slot}
+\end{equation}
+Exactly one original row may occupy a slot.  A tie at the upper half-slot
+maps to the later slot; in normal operation the strict tolerance excludes
+such a tie.  Two rows assigned to one slot, or a row outside the detector
+acquisition support, fails closed.  The actual corrected native timestamp and
+the residual \(t_{Dk}^{(r)}-t_{n(k)}\) remain available; the nominal center
+does not erase jitter.
+
+For every common row, the contract carries at least:
+
+\begin{itemize}[nosep]
+\item observation \(o\), global detector slot \(n\), local row \(j\), nominal
+timestamp \(t_n\), and native timestamp when present;
+\item nominal cell support
+\(I_n=[t_n-h_D/2,t_n+h_D/2)\) clipped by detector acquisition bounds;
+\item native detector row identity or an explicit absence;
+\item per-stream/per-variable origin, validity, method, and reason; and
+\item nominal duration, acquired detector exposure, and any interpolation
+weights and source-row identities.
+\end{itemize}
+
+The fundamental origin state is one of \(\state{original}\),
+\(\state{synthesized}\), or \(\state{unavailable}\).  Validity is a separate
+axis, so an original non-finite datum is \(\state{original}\) and invalid, not
+a timing gap.  The method refines origin (exact, linear, circular, held, or
+none); a reason explains invalidity or unavailability.
+
+\section{Per-stream alignment and interpolation operators}
+
+\subsection{Exact and linear scalar variables}
+
+For a common time \(t_n\), an exact valid source coordinate yields a one-hot
+copy and origin \(\state{original}\).  Otherwise a continuous scalar variable
+may be interpolated only between adjacent valid native rows \(a,b\) in one
+unbroken valid run, with
+\begin{align}
+ \lambda_n&=\frac{t_n-t_a}{t_b-t_a},\qquad 0<\lambda_n<1,\notag\\
+ y_n&=(1-\lambda_n)x_a+\lambda_n x_b.
+ \label{eq:linear}
+\end{align}
+Both coordinates and values must be finite, units and frame must match, and
+the bracket must satisfy the stream's explicit maximum-span policy.  No
+extrapolation is permitted.  The endpoints themselves are included exactly;
+outside the closed bracket the value is unavailable.  Invalid rows are
+barriers: an implementation may not skip across them and describe the result
+as an ordinary adjacent interpolation.
+
+\subsection{Circular and angular variables}
+
+Every angular field declares both unit and topology.  A bounded non-wrapping
+angle may use Equation~\eqref{eq:linear} after checked unit conversion.  A
+circular field with period \(P\) uses the signed shortest difference
+\(d_P(a,b)\in(-P/2,P/2]\):
+\begin{equation}
+ y_n=\operatorname{wrap}_P\!\left(x_a+\lambda_n d_P(x_a,x_b)\right).
+ \label{eq:circular}
+\end{equation}
+An exactly antipodal bracket is ambiguous and unavailable unless a separately
+declared unwrap state resolves it.  Coordinate/frame conversion and pointing
+correction are excluded: ALIGN preserves the named input frame and only
+interpolates a variable whose topology is declared.
+
+\subsection{Step state and non-interpolable variables}
+
+A categorical, Boolean, counter, mode, flag, or hardware state is never
+linearly interpolated.  It may be held on an explicitly declared validity
+interval \([t_k,t_{k+1})\), with a final interval bounded by acquisition end,
+only when its producer contract identifies it as a step process.  A held
+value at a non-native common time is \(\state{synthesized}\) with method
+\(\state{held}\).  Otherwise exact coincidence is required and the value is
+unavailable between samples.  Timestamps and identities are coordinates, not
+interpolated measurements.
+
+\subsection{Block operator}
+
+For fixed realized mapping and scalar variables, let \(G_D\) insert or fill
+detector slots, \(I_T\) and \(I_H\) align telescope and optional HWPR fields,
+and \(S_q\) select scan \(q\).  The numerical output is
+\begin{equation}
+ \boldsymbol y_q=
+ \begin{bmatrix}
+ S_qG_D&0&0\\
+ 0&S_qI_T&0\\
+ 0&0&S_qI_H
+ \end{bmatrix}
+ \begin{bmatrix}\boldsymbol x_D\\\boldsymbol x_T\\\boldsymbol x_H\end{bmatrix}
+ \equiv A_q\boldsymbol x.
+ \label{eq:block}
+\end{equation}
+Absent HWPR produces an explicitly unavailable channel/state, not fabricated
+zeros.  Circular interpolation is the corresponding nonlinear map
+\(\boldsymbol y=F(\boldsymbol x,\theta)\); Equation~\eqref{eq:block} is its
+local linearization away from wrap ambiguity.  ALIGN is not iterative and has
+no fixed-point estimator.
+
+\section{Timing-gap identity and bounded fill}
+
+A detector timing gap is a maximal nonempty run of unoccupied expected slots
+inside \(\mathcal N\).  Its stable identity is
+\((o,D,n_{\rm start},n_{\rm stop})\), where
+\([n_{\rm start},n_{\rm stop})\) is half-open.  Consecutive absent slots form
+one gap.  Native rows whose values are non-finite do not become timing gaps;
+they retain original row identity and invalidity.
+
+For an internal gap of \(g\) missing slots between adjacent original slots
+with values \(x_0,x_{g+1}\), detector column \(p\) may be filled only when
+both endpoints are finite and valid and both the count and elapsed-duration
+limits are accepted.  The unique proposed fill is
+\begin{equation}
+ \widehat x_{j,p}=\left(1-\frac{j}{g+1}\right)x_{0,p}
+ +\frac{j}{g+1}x_{g+1,p},\qquad j=1,\ldots,g.
+ \label{eq:gap}
+\end{equation}
+Each filled cell is \(\state{synthesized}\) with both endpoint identities and
+weights.  If either endpoint for a detector is invalid, that detector's gap
+cell is unavailable even if other detector columns can be filled.
+
+Leading or trailing gaps are never extrapolated.  A gap exceeding either
+limit is not partially filled; every missing slot in the run remains
+unavailable.  A gap touching an observation boundary is clipped only for
+identity/reporting, not converted into an internal gap.  Every run records
+extent in slots and seconds, classification (internal, leading, trailing,
+long, or invalid-endpoint), action, and realized counts.  Whether a long gap
+must fail the whole observation is a scientific policy decision; regardless,
+unavailable samples must fail closed for any consumer requiring a value.
+
+Telescope/HWPR source gaps are defined per variable as maximal invalid or
+missing native brackets.  Equation~\eqref{eq:linear} may not bridge a source
+gap unless the same explicit bounded-gap policy classifies and records the
+result as synthesized.
+
+\section{Scan construction and slicing}
+
+The scan contract is a partition of the common detector slots, not a second
+time coordinate.  The default policy creates one scan over all of
+\(\mathcal N\).  A requested fixed duration \(L>0\) resolves to
+\begin{equation}
+ M=\left\lfloor\frac{L}{h_D}+\frac12\right\rfloor\geq1,\qquad
+ J_q=[qM,\min\{(q+1)M,N\}),\quad q=0,\ldots,\left\lceil\frac NM\right\rceil-1.
+ \label{eq:scans}
+\end{equation}
+The same round-half-up rule is used and the effective duration \(Mh_D\) is
+recorded.  Scan index \(q\) is zero-based and stable in the full observation.
+A processing subset preserves original \(q\); it does not renumber scans.
+Any persisted one-based presentation is a separately named representation,
+not a change to internal identity.
+
+Every interval is half-open.  A boundary slot belongs only to the later
+scan.  Windows do not overlap, every selected common slot occurs exactly
+once, and the final partial scan is retained.  A short scan is marked short
+with its realized sample count and duration; it is not padded or silently
+dropped.  If a future explicit-window authority produces an empty window, its
+stable scan identity is retained with status \(\state{empty}\), but no numerical
+processor is invoked.  Overlapping windows are rejected unless a successor
+contract explicitly defines multiple membership and downstream exposure.
+Truncation at observation bounds is explicit and preserves the final sample
+whose center lies below the half-open stop.
+
+The selection matrix in Equation~\eqref{eq:block} is
+\begin{equation}
+ (S_q)_{a j}=\mathbf 1\{j=qM+a\},\qquad j\in J_q.
+ \label{eq:selection}
+\end{equation}
+Slicing changes support and window response but not sample units or origin.
+
+\section{Response and normalization}
+
+For fixed \(A_q\) and a temporal template \(\boldsymbol p\), the conditional
+response is
+\begin{equation}
+ R_q(\boldsymbol p)=\frac{\partial\E[\boldsymbol y_q\mid A_q]}
+ {\partial\alpha}=A_q\boldsymbol p,
+ \quad\text{when }\E[\boldsymbol x]=\alpha\boldsymbol p+\boldsymbol\mu_0.
+ \label{eq:response}
+\end{equation}
+Exact copy and linear interpolation preserve a constant (DC) signal.
+Equation~\eqref{eq:gap} also reproduces an affine function of time exactly
+when timestamps are on the claimed grid.  It does not preserve arbitrary
+high-frequency structure.
+
+For uniform samples and a fractional target \((k+\alpha)h\), \(0\leq\alpha\leq1\),
+linear interpolation has response relative to an ideal fractional delay
+\begin{equation}
+ H_{\alpha}(\omega)=e^{-i\omega\alpha h}
+ \left[(1-\alpha)+\alpha e^{i\omega h}\right].
+ \label{eq:fractional-response}
+\end{equation}
+Thus \(H_{\alpha}(0)=1\), while amplitude and phase depend on frequency and
+fractional position.  Gap filling is nonstationary: each filled row has the
+two endpoint weights in Equation~\eqref{eq:gap}, so it needs a row-specific
+response rather than one global transfer function.  Scan slicing multiplies
+the common stream by a rectangular support window; it introduces no amplitude
+renormalization but affects any later temporal-frequency estimator.
+
+ALIGN performs no unit or photometric calibration.  Constant-signal
+preservation is its photometric/DC statement; attenuation of varying signals
+is the temporal interpolation response and must not be advertised as unity.
+Spatial, WCS, beam/template, extended-source, and iteration-to-iteration
+responses are not ALIGN estimators and are addressed explicitly in
+Section~\ref{sec:na}.
+
+\section{Formal covariance and uncertainty}
+
+For a fixed realized affine mapping and full joint native covariance \(C_x\),
+including cross-detector, cross-time, and cross-stream terms when known,
+\begin{align}
+ \E[\boldsymbol y_q\mid A_q]&=A_q\E[\boldsymbol x\mid A_q],\notag\\
+ C_{y_q\mid A_q}&=A_qC_{x\mid A_q}A_q^{\mathsf T}.
+ \label{eq:covariance}
+\end{align}
+For Equation~\eqref{eq:linear}, one scalar variance is
+\begin{equation}
+ \Var(y_n)=(1-\lambda_n)^2\Var(x_a)+\lambda_n^2\Var(x_b)
+ +2\lambda_n(1-\lambda_n)\Cov(x_a,x_b).
+ \label{eq:linear-variance}
+\end{equation}
+Adjacent outputs that share endpoints are correlated.  Interpolated detector
+columns also retain native cross-detector covariance.  Neither smaller
+diagonal variance nor smooth appearance means new independent information.
+If input covariance is unavailable, ALIGN must say so; it may not invent an
+independent white-noise model or an inverse variance.
+
+Uncertain offsets, epochs, clock drift, and jitter contribute timing
+uncertainty.  For differentiable signals and timing parameter vector
+\(\boldsymbol\eta\), the first-order term is
+\begin{equation}
+ C_{\rm timing}=J_{\eta}C_{\eta}J_{\eta}^{\mathsf T},
+ \qquad (J_{\eta})_{ab}=\frac{\partial y_a}{\partial\eta_b}.
+ \label{eq:timing-covariance}
+\end{equation}
+This is systematic/response uncertainty, not detector noise.  The full
+reported target is
+\begin{equation}
+ C_y=C_{y\mid A}+C_{\rm timing}+C_{\rm interp.model}
+ +C_{\rm policy/selection},
+ \label{eq:full-uncertainty}
+\end{equation}
+with absent terms labeled unavailable rather than zero.  The final term is
+needed for unconditional claims when mapping or selection is data-derived;
+conditional products must say that it was conditioned upon.
+
+For twice differentiable scalar truth \(f\) on a bracket of width
+\(\Delta=t_b-t_a\), linear interpolation has the deterministic bound
+\begin{equation}
+ |f(t)-I f(t)|\leq\frac{\Delta^2}{8}
+ \sup_{s\in[t_a,t_b]}|f''(s)|.
+ \label{eq:interp-bound}
+\end{equation}
+This bounds interpolation model error only when the curvature bound is
+scientifically justified.  Otherwise \(C_{\rm interp.model}\) is unknown.
+Circular interpolation uses the local unwrapped derivative away from the
+antipodal ambiguity.
+
+ALIGN does not estimate empirical variance, confidence, statistical weight,
+or detector calibration uncertainty.  It supplies mapping and state needed
+for owners to propagate them.  Variance, inverse variance, sample support,
+validity, hit count, exposure/coverage, confidence, and response remain
+distinct quantities.
+
+\section{Duration, exposure, and support}
+
+Each common slot has nominal cell duration
+\(\Delta_n=|I_n|\).  Its acquired detector exposure is
+\begin{equation}
+ e_{np}=\begin{cases}
+ |I_n\cap I^{\rm native}_{kp}|,&\text{one valid original detector sample }k,\\
+ 0,&\text{synthesized or unavailable detector value.}
+ \end{cases}
+ \label{eq:exposure}
+\end{equation}
+If detector exposure is not detector-specific, the \(p\) index is omitted.
+A synthesized value occupies a target slot and may support continuity, but it
+does not add acquired integration time, a hit, or independent statistical
+weight.  Telescope/HWPR interpolation likewise creates no detector exposure.
+Downstream coverage may sum only explicitly eligible acquired exposure; it
+must not sum nominal cell widths for synthesized samples by convenience.
+
+Scan duration, elapsed span, acquired exposure, valid original exposure, and
+synthesized slot count are separately reported.  Overlap is prohibited by the
+base scan contract precisely so exposure is not double counted.
+
+\section{Validity, eligibility facts, and failure policy}
+
+For each output cell the contract carries the product state
+\begin{equation}
+ Q=(\text{origin},\text{validity},\text{method},\text{reason},
+ \text{source IDs},\text{weights}).
+ \label{eq:quality}
+\end{equation}
+An available numeric value requires finite inputs and a permitted operator.
+NaN, zero, or a negative number is never the sole encoding of missing,
+disabled, unavailable, or invalid.  Original versus synthesized is always
+queryable independently of finiteness.
+
+ALIGN owns only alignment validity: whether a value is present, mathematically
+defined under the selected operator, and traceable to native samples.  It does
+not absorb CAL/AST/RTC/VAL science-selection policy.  For a consumer requiring
+detector value and aligned telescope variable set \(\mathcal V\), the strict
+alignment fact is
+\begin{equation}
+ a_{np}^{\rm strict}=
+ \mathbf1\{D_{np}\text{ is original and valid}\}
+ \prod_{v\in\mathcal V}\mathbf1\{T_{vn}\text{ is available and valid}\}.
+ \label{eq:strict-eligibility}
+\end{equation}
+This is a supplied fact, not authorization for a downstream estimator.
+Synthesized detector values are excluded from strict eligibility by default;
+any scientific use requires an explicit consumer contract that accounts for
+response, covariance, and zero acquired exposure.  A separate
+\(\state{continuity\_available}\) fact may include valid synthesized values for
+a bounded algorithmic purpose, but it may not be relabeled original or
+science-eligible.
+
+The following fail before scientific conditioning: invalid/ambiguous offset
+unit, sign, reference, or stage; incomparable epochs; nonpositive cadence;
+nonmonotonic/duplicate time identity; ambiguous detector-slot assignment;
+multiple original rows in a slot; undeclared interpolation topology; invalid
+scan overlap; or inability to publish required realized provenance.  Missing
+optional HWPR is explicit and nonfatal while polarimetric interpretation stays
+unavailable.  Missing required telescope variables or all-unavailable common
+support fail any consumer that requires them.  Long-gap whole-observation
+failure versus marked unavailability remains an owner policy, but invalid
+success is never allowed.
+
+\section{Requested, effective, observation-resolved, and realized state}
+
+\begin{longtable}{L{0.17\linewidth}L{0.27\linewidth}L{0.26\linewidth}L{0.22\linewidth}}
+\toprule
+State & Contents & Resolution rule & Required provenance\\
+\midrule
+Requested & Interface offsets with unit/sign/reference/stage; grid and slot tolerance; gap count/time limits; variable classes; scan policy; HWPR requirement. & Immutable accepted request, including inactive values. & Exact accepted fields and source identity.\\
+Effective & Normalized seconds/radians; selected detector reference; active interpolation/fill modes; resolved rounding rules; inactive optional paths. & Context-free validation and policy only. & Normalized values, disabled/enabled state, policy version.\\
+Observation-resolved & Comparable epochs, mapped bounds, phase/cadence, per-variable availability/class, target slots, effective offset values and uncertainties, scan slot count. & Uses only named observation identities and stream facts. & Observation and interface IDs, native counts/bounds, resolved parameters and reasons.\\
+Realized & Original-slot mapping, jitter residuals, every interpolation row/weight/source, gap records/actions, scan windows/counts/durations, availability and origin masks, exposure sums, failures and diagnostics. & What was actually applied and produced; never writes backward. & Complete counts and identities sufficient to audit \(A_q\), \(Q\), and exposure.\\
+\bottomrule
+\end{longtable}
+
+State is owned per reduction request and replaced per observation.  Scan
+state is bounded to one observation/scan and may not leak into the next.
+Sequential repeated runs reconstruct fresh state.  Parallel execution may
+partition rows but must produce the same slot assignment, gap identity,
+weights, states, ordering, and diagnostics under the stated numerical gate.
+
+\section{Consumer allowlist and restrictions}
+
+\begin{longtable}{L{0.13\linewidth}L{0.24\linewidth}L{0.24\linewidth}L{0.29\linewidth}}
+\toprule
+Consumer & Allowed input from ALIGN & Required restriction & Fail-closed condition\\
+\midrule
+SCI-CAL-001 & Ordered detector/telescope identity, common timestamps, aligned elevation, duration/exposure, \(Q\), and strict/origin facts. & Original and synthesized remain distinguishable; synthetic use needs approved CAL policy and covariance/response handling. & Missing elevation, ambiguous identity, or undocumented synthesized eligibility.\\
+SCI-AST-001 & Valid aligned telescope variables with unchanged units/frame and source weights. & ALIGN does no coordinate conversion, wrap policy beyond declared topology, pointing correction, or WCS. & Missing frame/topology or extrapolated/invalid coordinates.\\
+SCI-RTC-001 & Ordered detector common axis, timing state, gaps, and continuity facts. & Synthesized values may support only an explicitly contracted filtering purpose and stay masked from original exposure. & Consumer assumes filled values are acquired samples or ignores nonstationary response.\\
+SCI-VAL-001 & Complete origin, validity, method, reason, gap, and exposure facts. & VAL owns cross-stage eligibility; it may not erase ALIGN provenance. & Missing origin/validity distinction or untraceable gap action.\\
+Polarimetry and HWPR science & Timing identity only. & Demodulation and scientific polarization interpretation are unavailable. & Any enabled scientific interpretation without a separately approved contract.\\
+Other/new consumer & None by implication. & Requires explicit contract review and allowlist update. & Unknown unit, frame, origin, covariance, response, or eligibility semantics.\\
+\bottomrule
+\end{longtable}
+
+\section{Analytic limits and pre-registered falsification tests}
+
+All categorical identities, counts, memberships, and masks compare exactly.
+For deterministic double-precision fixtures, finite scalar values compare to
+the analytic result at relative tolerance \(10^{-12}\) and absolute tolerance
+\(64\epsilon_{\rm mach}\max(1,h_D)\) in the declared unit; circular results
+compare by wrapped distance at \(10^{-12}\) rad.  Covariance compares at
+relative tolerance \(10^{-12}\) with exact sparsity/source-weight identity.
+Any implementation using lower precision must declare and justify a
+successor tolerance before results are examined.
+
+\begin{longtable}{L{0.055\linewidth}L{0.28\linewidth}L{0.55\linewidth}}
+\toprule
+ID & Fixture & Pre-registered gate\\
+\midrule
+T01 & Offset sign and subsample shift: telescope times \(0,1,2\) s, values \(0,1,2\), \(\delta_T=+0.25\) s, detector target \(1\) s. & Corrected source coordinates are \(0.25,1.25,2.25\) s and aligned value is \(0.75\), with weights \(0.25,0.75\); no integer rounding.  Reversing sign must fail this value.\\
+T02 & Exact coincidence and endpoints. & One-hot weights, unchanged value/unit/frame, origin original; no extrapolation before first or after last coordinate.\\
+T03 & Constant and affine ramps on coincident and fractional grids. & Constants and affine functions reproduce analytically; DC response is one.\\
+T04 & Sinusoidal injection at several fractions/frequencies including near Nyquist. & Complex amplitude/phase match Equation~\eqref{eq:fractional-response}; no claim of unity away from DC.\\
+T05 & Circular pair \(359^\circ,1^\circ\) at midpoint and an antipodal pair. & Midpoint wraps to \(0^\circ\), not \(180^\circ\); antipodal case is unavailable without explicit unwrap state.\\
+T06 & Categorical and step variables. & Linear interpolation is rejected; declared step state uses half-open hold interval and synthesized/held provenance.\\
+T07 & One, two, and maximum-length internal detector gaps in constant and ramp signals. & One maximal run per consecutive gap; Equation~\eqref{eq:gap} exact; source IDs/weights and synthesized state exact.\\
+T08 & Leading, trailing, over-limit, and invalid-endpoint gaps. & No extrapolation or partial long-gap fill; unavailable state/reason exact; native non-finite row remains original-invalid.\\
+T09 & Grid jitter, half-slot edge, duplicate and nonmonotonic timestamps. & Within-tolerance rows keep residuals; ambiguous/duplicate/nonmonotonic cases fail before conditioning.\\
+T10 & \(N=7,M=3\) scan construction plus an exact boundary slot. & Windows are \([0,3),[3,6),[6,7)\); final sample retained; boundary has one membership; indices stay zero-based.\\
+T11 & Short/empty/subset scans and overlap proposal. & Short and empty identities are recorded without padding/renumbering; overlap is rejected; subset preserves full-observation scan IDs.\\
+T12 & Two interpolated outputs sharing source endpoints with correlated input. & Full \(A C A^{\mathsf T}\), diagonal variance in Equation~\eqref{eq:linear-variance}, and nonzero cross-output covariance match exactly.\\
+T13 & Nonzero offset covariance on a known ramp and curvature-bounded quadratic. & Timing term matches Equation~\eqref{eq:timing-covariance}; interpolation error obeys Equation~\eqref{eq:interp-bound}.\\
+T14 & Exposure accounting with original, synthesized, unavailable, and scan slicing. & Synthesized/unavailable exposure is zero; valid original exposure sums once; nominal span and exposure stay distinct.\\
+T15 & Missing telescope support and absent HWPR. & Detector grid is not silently trimmed; telescope cells are unavailable; absent HWPR is explicit and no polarization output is authorized.\\
+T16 & Two observations and two sequential runs with different offsets/gaps/scans. & No state leakage; all identities, counts, windows, and mappings reconstruct from each observation/run.\\
+T17 & Sequential versus every compiled alternate/parallel path over T01--T16. & Integer/state/provenance output exact; finite values meet the same pre-registered tolerance and ordering.  A required path skip is not a pass.\\
+T18 & Required provenance/output failure injection. & Missing required mapping/state diagnostics or write failure propagates as unsuccessful reduction; no log-and-continue success.\\
+\bottomrule
+\end{longtable}
+
+\section{Validation-method applicability}
+\label{sec:na}
+
+\begin{longtable}{L{0.22\linewidth}L{0.16\linewidth}L{0.53\linewidth}}
+\toprule
+Method/dimension & Disposition & Specific rationale or required gate\\
+\midrule
+Analytic limits & applicable & T01--T14 test exact offset, interpolation, boundaries, response, covariance, and exposure.\\
+Small deterministic fixtures & applicable & T01--T18 isolate every state and failure branch without external semantics.\\
+Synthetic injections & applicable & Ramp, sinusoid, wrap, gap, jitter, and correlated-noise fixtures test amplitude, phase, and covariance.\\
+Blank controls & applicable & Zero/constant streams with gaps and offsets must remain zero/constant and must not acquire exposure or spurious validity.\\
+Sequential/parallel equivalence & applicable when alternate path is compiled & T17 is mandatory for each compiled path; if the governing source has no alternate operator, absence must be demonstrated and the method becomes not applicable for that exact SHA.\\
+Same-SHA Unity reduction & applicable, external pending & Local fixtures cannot establish real raw epoch/header identities, observed cadence/jitter/gap distributions, path cardinality, or production I/O/provenance.  An exact human-run request is required after source tracing.\\
+Astronomical recovery & not applicable as an ALIGN acceptance estimator & Source flux/position recovery is a composite CAL/AST/RTC/map result and cannot isolate ALIGN correctness.  Real-observation timing/state evidence remains required through the same-SHA gate; a downstream astronomical test may corroborate but cannot replace it.\\
+Spatial/WCS response & not applicable & ALIGN does not construct coordinates, WCS, or spatial pixels; it preserves declared frame identity.  Temporal interpolation response is applicable and tested.\\
+Beam/template response & not applicable & ALIGN applies no beam or source template.  A time-domain injected template is covered by Equation~\eqref{eq:response}.\\
+Extended-mode response & not applicable & No map-domain or extended-source estimator is in scope; the nonstationary temporal response is explicitly derived.\\
+Photometric calibration & not applicable as calibration & ALIGN changes no units or flux scale.  DC and time-varying amplitude response are applicable and tested.\\
+Iteration response & not applicable & ALIGN is a one-pass observation transformation with no update/fixed point.  T16 instead requires fresh deterministic state across repeated calls.\\
+Empirical variance estimator & not applicable as an ALIGN product & ALIGN does not infer noise from realizations.  It must propagate available formal covariance/mapping and label missing model/selection terms; residual tests validate interpolation error.\\
+Polarization response & not applicable/unavailable & HWPR timing identity is in scope, but demodulation and scientific polarization interpretation lack a separately approved contract.\\
+\bottomrule
+\end{longtable}
+
+\section{Pre-registered real-data evidence request}
+
+After source tracing identifies exact executable fields and products, an
+authorized human should run the governing SHA on one observation with no
+native gap, one with short internal gaps, one with a long or edge gap, and one
+with noninteger interface offset if available.  The returned evidence must
+contain immutable raw-file identities/hashes, exact low-level configuration,
+software SHA/build/compiler/library/thread identities, native detector,
+telescope, and optional HWPR timestamp/validity arrays with units and epoch
+metadata, every resolved offset and source, realized common timestamps,
+native-row/slot mapping, interpolation source rows/weights, gap records, scan
+windows, origin/validity masks, durations/exposures, logs, required
+provenance, and products for sequential and available parallel execution.
+The comparison is pre-registered as exact for identities/states/cardinality
+and against Equations A1--A19 at the numeric tolerances above.  No required
+data or product may be skipped.  The auditor will not connect to Unity.
+
+\section{Open scientific-owner decisions and restrictions}
+
+This independent draft deliberately exposes decisions instead of guessing:
+
+\begin{enumerate}[label=OD\arabic*.,leftmargin=2.5em]
+\item Approve or replace the detector-led common-grid identity and explicit
+phase/cadence tolerance, including the constant-offset-only clock model.
+\item Approve offset sign/reference/unit/application-stage semantics and an
+authority/uncertainty source for each interface.
+\item Approve per-variable telescope/HWPR topology and interpolation class;
+no filename or plausible numeric range may supply this authority.
+\item Set count and elapsed-duration gap limits and decide whether long,
+edge, or high-fraction gaps mark samples, fail a scan, or fail an observation.
+\item Approve scan source/default, duration rounding, minimum-short-scan
+consumer policy, and stable empty-scan representation.
+\item Decide whether any synthesized detector value is scientifically
+eligible outside continuity support.  Default strict eligibility is original
+only and synthesized exposure is zero.
+\item Approve a practical covariance/mapping representation and the required
+offset/interpolation-model uncertainty; absence may not be reported as zero.
+\item Keep optional HWPR timing structure separate from unavailable
+polarization science until a successor contract is approved.
+\end{enumerate}
+
+There is no upstream audit-package dependency.  The external-input assumption
+is falsifiable: each stream must supply the abstract identity, comparable
+timing coordinate, cadence/bounds/duration, ordering, and explicit state
+listed in Section 2.  If governing inputs do not supply one, the corresponding
+operation is unavailable or fails closed; source code or historical output
+cannot silently invent it.
+
+Until owner approval and implementation/evidence assessment, the proposed
+contract status is \(\state{independent\_draft\_frozen}\), implementation is
+\(\state{not\_assessed}\), validation is \(\state{planned}\), production is
+\(\state{existing\_use\_only}\), and the provisional verdict is
+\(\state{pending}\).  No new consumer or interpretation is authorized.
+
+\section{Freeze declaration}
+
+These exact bytes are intended to be compiled and visually inspected, hashed
+with SHA-256, and committed alone before the first package-source inspection.
+The final audit will record the digest, freeze commit, UTC timestamp, compile
+and render commands, and the exact first implementation-inspection event.
+Any correction prompted after source inspection must be a successor document
+or explicit amendment; these frozen bytes must not be rewritten.
+
+\end{document}
