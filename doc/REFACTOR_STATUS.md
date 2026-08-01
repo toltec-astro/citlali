@@ -58,6 +58,16 @@ has yet been created. See the
 and the
 [bounded repair/re-audit handoff](audits/packages/SCI-MAP-001_BOUNDED_REPAIR_REAUDIT_HANDOFF_2026-07-31.md).
 
+In parallel, `SCI-CAL-001` is prepared for an independent Tier A audit at the
+same governing application SHA. Its only upstream dependency, `SCI-ALIGN-001`,
+is an explicit abstract input with calibration conclusions conditioned while
+ALIGN remains open. The frozen CAL inbox contains no pre-core or post-core
+handoffs. The audit is documentation-only and does not modify application
+code, contact Unity, or settle downstream MAP/FLT interpretations. Its
+[dispatch prompt](audits/prompts/SCI_CAL_001_AUDIT_PROMPT.md) and
+[frozen inbox manifest](audits/handoffs/SCI-CAL-001/SCI-CAL-001_INBOX_MANIFEST_2026-07-31.yaml)
+govern the isolated task.
+
 ## 2026-07-26 Conan 2 Build Review
 
 The previously deferred TolTECA build implementation is now available and has

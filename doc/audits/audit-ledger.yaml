@@ -642,9 +642,20 @@ packages:
     incoming_handoffs: []
     outgoing_handoffs: []
     governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
-    governing_sha_role: inventory_snapshot
-    audit_branch: null
+    governing_sha_role: audit_dispatch_snapshot
+    audit_branch: codex/audit-sci-cal-001
     audit_commit: null
+    dispatch:
+      status: frozen_for_dispatch
+      coordinator_registry_commit: 88741d085a08431790c6eee719b6f20052b459d8
+      manifest_path: >-
+        doc/audits/handoffs/SCI-CAL-001/SCI-CAL-001_INBOX_MANIFEST_2026-07-31.yaml
+      manifest_sha256: >-
+        00582bb2dc19da7b3380502cdb5f11a3dd35f64c76e879b657ec2573914222b2
+      pre_core_authority_ids: []
+      post_core_evidence_ids: []
+      prompt_path: doc/audits/prompts/SCI_CAL_001_AUDIT_PROMPT.md
+      prompt_sha256: 678d90184ccc84fc52841a4118a124ba087d8ccac889aa19c5aabd37aea49c7d
     independent_derivation: {status: not_started, sha256: null}
     contract_status: not_started
     implementation_status: not_assessed

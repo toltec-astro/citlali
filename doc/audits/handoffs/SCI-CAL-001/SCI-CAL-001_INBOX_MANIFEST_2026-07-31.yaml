@@ -1,0 +1,10 @@
+format_version: 1
+target_package: SCI-CAL-001
+created_date: 2026-07-31
+coordinator_registry_commit: 88741d085a08431790c6eee719b6f20052b459d8
+manifest_status: frozen_for_dispatch
+
+handoffs: []
+
+pre_core_authority_ids: []
+post_core_evidence_ids: []
