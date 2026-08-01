@@ -13,6 +13,18 @@ Final audit commit: `27b0916e725696597c3ba84fb6a82bf6cf0ea356`
 Final audit artifact SHA-256:
 `957ed71d1432ad67fe582d6137fbe72c52e82a31f3199331a94ab7b39490d376`
 
+## Owner disposition
+
+All five decisions were resolved by the project owner on 2026-07-31. D001
+through D004 adopt the recommended bounded scientific contract, including the
+full cross-repository APT authority and identity chain. D005 selects option 2:
+the assessed implementation is `fail_closed` pending an approved repair,
+validation, and fresh re-audit.
+
+The authoritative wording is the
+[coordinator and scientific-owner decision](SCI-CAL-001_COORDINATOR_DECISION_2026-07-31.md).
+The remaining sections preserve the pre-decision rationale and alternatives.
+
 ## Why a decision is required
 
 The independent audit is complete, but the package is not scientifically or
