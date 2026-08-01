@@ -704,6 +704,15 @@ packages:
         doc/audits/packages/SCI-CAL-001_COORDINATOR_DECISION_2026-07-31.md
       record_commit: e8bd929008140e2ea8b44bfdc80b0a531b488765
       decision_ids: [CAL-D001, CAL-D002, CAL-D003, CAL-D004, CAL-D005]
+      amendments:
+        - decision_id: CAL-D001-OPACITY-001
+          status: approved
+          decision_date: 2026-07-31
+          record_path: >-
+            doc/audits/packages/SCI-CAL-001_OPACITY_DECISION_AMENDMENT_2026-07-31.md
+          record_commit: 4dabc750de69d53c852317ab77c735febd00a1b5
+          record_sha256: >-
+            64fd3ae9788c6a8e3db18ac5ea4f04799586b548f9e7ec12cc8c18f9cbf96e09
     dispatch:
       status: frozen_for_dispatch
       coordinator_registry_commit: 88741d085a08431790c6eee719b6f20052b459d8
@@ -883,6 +892,21 @@ packages:
     requested_unity_evidence:
       - SCI-CAL-001-UNITY-001
     supplied_external_evidence: []
+    repair_dispatch:
+      status: frozen_for_dispatch
+      selected_base_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+      selected_base_ref: codex/refactor-mainline
+      repair_branch: codex/repair-sci-cal-001
+      handoff_path: >-
+        doc/audits/packages/SCI-CAL-001_BOUNDED_REPAIR_REAUDIT_HANDOFF_2026-07-31.md
+      handoff_sha256: >-
+        9d2c0ae89244d355070d6b300f431ac1799787b835c7e4cb76c8d7fc51cde106
+      phase_zero_gate: q_model_continuity_before_application_edit
+      phase_zero_stop: owner_scope_decision_for_any_above_q25_discontinuity
+      parallel_dependency: >-
+        Local CAL repair may proceed against the approved abstract ALIGN input
+        contract, but F010 remains open and external evidence plus re-audit
+        wait for coordinator disposition of SCI-ALIGN-001.
     remediation_branch: null
     remediation_commit: null
     re_audit_status: required

@@ -91,9 +91,25 @@ calibration nuisance covariance.
 The assessed implementation is now canonically `fail_closed`; the audit's
 earlier narrow `restricted_use` proposal is retained only as audit history.
 Historical products remain historical/regression evidence and are not newly
-authorized calibrated science. The next coordination step is a bounded
-repair/re-audit handoff and exact repair-base decision. No repair branch,
-Unity evidence request, or re-audit has been started.
+authorized calibrated science.
+
+The project owner has now specialized the low-opacity contract in the
+[opacity decision amendment](audits/packages/SCI-CAL-001_OPACITY_DECISION_AMENDMENT_2026-07-31.md)
+at commit `4dabc750de69d53c852317ab77c735febd00a1b5`. From zero through the exact q25
+reference opacity, band transmission is the geometric interpolation between
+unity and the existing q25 anchor at full sample airmass. Endpoint equality,
+finite positive domains, and fail-closed behavior are required. Before any
+application edit, the repair must evaluate every q-model boundary on the exact
+base and stop for owner scope if a discontinuity above q25 exceeds documented
+floating-point roundoff.
+
+The [bounded repair/re-audit handoff](audits/packages/SCI-CAL-001_BOUNDED_REPAIR_REAUDIT_HANDOFF_2026-07-31.md)
+selects exact repair base `9aae0e669384c5c0c0dda93debc194d6b8dac787` and branch
+`codex/repair-sci-cal-001`. Local repair may run in parallel with ALIGN against
+only the approved abstract aligned-input contract. F010 remains open, and CAL
+external evidence plus fresh re-audit wait for coordinator disposition of the
+ALIGN result. No Unity evidence has been requested and no re-audit has been
+started.
 
 ## 2026-07-31 SCI-ALIGN-001 Audit Dispatch
 
