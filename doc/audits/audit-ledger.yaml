@@ -639,8 +639,9 @@ packages:
       approved_decisions:
         - id: ALIGN-OD1-grid-clock-model
           status: approved_with_compatibility_guard
+        - id: ALIGN-OD2-offset-and-header-authority
+          status: approved_with_default_zero_compatibility
       pending_decisions:
-        - ALIGN-OD2-offset-and-header-authority
         - ALIGN-OD3-variable-topology
         - ALIGN-OD4-gap-bounds-and-action
         - ALIGN-OD5-scan-policy-and-identity
@@ -726,7 +727,6 @@ packages:
          severity: P1, evidence_basis: derived, confidence: high,
          status: open, owner: coordinator_and_target_packages}
     unresolved_scientific_decisions:
-      - ALIGN-OD2-offset-and-header-authority
       - ALIGN-OD3-variable-topology
       - ALIGN-OD4-gap-bounds-and-action
       - ALIGN-OD5-scan-policy-and-identity

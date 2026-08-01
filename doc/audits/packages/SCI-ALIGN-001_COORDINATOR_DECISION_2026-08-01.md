@@ -1,7 +1,6 @@
 # SCI-ALIGN-001 coordinator and scientific-owner decision — 2026-08-01
 
-Status: partial; `ALIGN-OD1` approved with compatibility guard; `OD2`--`OD8`
-pending
+Status: partial; `ALIGN-OD1` and `ALIGN-OD2` approved; `OD3`--`OD8` pending
 
 Package: `SCI-ALIGN-001`
 
@@ -56,9 +55,40 @@ existing empirical repeatability/fit uncertainty rather than selected after
 viewing candidate results. Exact equality is not required where the current
 path is one of the audited invalid-success cases.
 
+## ALIGN-OD2 — Offset and header authority
+
+Decision: approved with an explicit default-zero compatibility policy.
+
+- The detector clock is the reference interface. For interface `i`, the
+  corrected coordinate is the checked epoch conversion plus
+  `delta_(i->detector)`.
+- Offsets are floating-point seconds. A positive offset is added to the native
+  coordinate and therefore places it later on the detector-reference clock.
+- An offset is applied exactly once before ordering checks, common-slot
+  assignment, gap detection, scan construction, or interpolation. It is not
+  rounded to an integer number of samples.
+- Requested, effective, observation-resolved, and realized state records the
+  value, source, sign, unit, reference interface, application stage,
+  uncertainty or bound, and whether the correction was actually applied.
+- An omitted authoring value may resolve at the typed configuration boundary
+  to zero with source `schema_default_zero`. This preserves existing ordinary
+  zero-offset reductions but does not represent the value as measured or
+  header-derived.
+- A nonzero offset requires authoritative comparable clock/epoch and native
+  timestamp/header semantics. An ambiguous sign, reference, unit, epoch, or
+  application stage fails closed.
+- A requested HWPR offset must either be applied under this same contract or be
+  rejected as unavailable; it may not be reported effective while ignored.
+
+Before repair, inventory the exact detector, telescope, and HWPR timestamp and
+header fields, their epochs, rollover behavior, units, and acquisition bounds.
+Return for owner review if this evidence conflicts with the approved sign or
+reference convention. Synthetic positive, negative, fractional, omitted, and
+ambiguous-offset fixtures plus the OD1 Beammap/Pointing compatibility evidence
+are mandatory.
+
 ## Pending decisions
 
-- `ALIGN-OD2`: offset and header authority;
 - `ALIGN-OD3`: telescope/HWPR field topology;
 - `ALIGN-OD4`: gap bounds and action;
 - `ALIGN-OD5`: scan policy and identity;
