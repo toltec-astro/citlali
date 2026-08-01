@@ -284,6 +284,18 @@ admitted detector binding. `SCI-AST-001-F009`--`F012` remain open pending the
 bounded product/provenance implementation, size/runtime and unchanged-science
 evidence, exact-SHA validation, and re-audit. All AST owner decisions are now
 resolved for contract design.
+The
+[bounded AST repair/re-audit handoff](audits/packages/SCI-AST-001_BOUNDED_REPAIR_REAUDIT_HANDOFF_2026-08-01.md)
+is prepared but held. The audited `9aae0e669384c5c0c0dda93debc194d6b8dac787`
+remains the immutable AST comparison anchor, not a usable repair base: it lacks
+the approved typed ALIGN interface. ALIGN phase-zero commit
+`53c7154a3633dfe19dc036cfb5a6250f729a897d` is an evidence-only child with no
+application-source delta and is also not admissible. Resolve
+`ALIGN-P0-D001`--`D005`, complete and locally validate ALIGN phase one, return
+the human-run exact-SHA evidence, and accept a fresh ALIGN re-audit before
+selecting the exact accepted ALIGN successor or clean integration SHA as the
+AST repair base. No `codex/repair-sci-ast-001` branch or task is authorized or
+created by the prepared handoff.
 No AST repair base has been selected, and no repair, Unity request, re-audit,
 application integration, or production expansion is authorized. The
 governing-SHA Unity request remains an unsupplied audit artifact and must not

@@ -1444,7 +1444,7 @@ packages:
       first_post_core_handoff_open_utc: 2026-08-01T15:19:59Z
       first_source_inspection_utc: 2026-08-01T15:20:08Z
     dispatch:
-      status: audited_complete_integrated_pending_owner_decisions
+      status: audited_complete_integrated_owner_decisions_resolved
       launch_date: 2026-08-01
       launch_authorization: project_owner_explicit
       task_thread_id: 019fbdd3-5a80-7d33-b3a2-a0a0b539b695
@@ -1497,7 +1497,16 @@ packages:
         - retain_governing_SHA_Unity_request_as_unsupplied_do_not_execute
         - hold_unapproved_one_microsecond_tolerance
         - link_detector_identity_to_existing_CAL_F004_CAL_D002
-    contract_status: proposed
+    contract_status: approved
+    contract_approval:
+      authority: project_owner
+      date: 2026-08-01
+      scope: SCI-AST-001-D001-through-D008
+      effect: >-
+        Approves the bounded successor AST contract needed to prepare a repair
+        handoff. It does not approve the governing implementation, close a
+        finding, select a presently usable repair SHA, launch repair, complete
+        validation, authorize production expansion, or authorize Unity work.
     implementation_status: nonconformant
     validation_status: in_progress
     production_status: existing_use_only
@@ -1774,7 +1783,9 @@ packages:
         confidence: high
         status: open
         owner: ast_boundary_and_consumers
-        related_decisions: [SCI-AST-001-D002]
+        related_decisions:
+          - SCI-AST-001-D002
+          - SCI-AST-001-D008
         summary: >-
           Coordinate validity is not a first-class product or admission
           operator, so consumers can use invalid coordinates.
@@ -2080,6 +2091,48 @@ packages:
         compact truthful precision, per-field metadata, factorized validity,
         full/mini availability, and four-stage provenance without routine
         large identity or validity matrices.
+    repair_handoff:
+      authorization: prepared_held_no_AST_launch
+      path: >-
+        doc/audits/packages/SCI-AST-001_BOUNDED_REPAIR_REAUDIT_HANDOFF_2026-08-01.md
+      sha256: >-
+        192d203815af408c5ba6179bfd3a2449a845da1ccb92244f5c0d3b70610dc1c1
+      record_commit: null
+      proposed_branch: codex/repair-sci-ast-001
+      launch_status: held_for_ALIGN_repair_evidence_and_reaudit
+      task_thread_id: null
+      preparation_date: 2026-08-01
+      dependency_hold:
+        package_id: SCI-ALIGN-001
+        phase_zero_status: owner_authority_required
+        phase_zero_evidence_commit: 53c7154a3633dfe19dc036cfb5a6250f729a897d
+        required_completion: exact_accepted_and_reaudited_ALIGN_successor
+      next_gate: >-
+        Resolve ALIGN-P0-D001 through D005, complete and locally validate ALIGN
+        phase one, return the human-run exact-SHA evidence, accept a fresh ALIGN
+        re-audit, and only then select and record the exact AST application base.
+    repair_base_decision:
+      authority: coordinator_dependency_gate
+      date: 2026-08-01
+      status: deferred_no_admissible_exact_sha
+      selected_application_sha: null
+      audit_comparison_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+      audit_comparison_role: immutable_AST_audit_anchor_not_repair_base
+      examined_candidates:
+        - sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+          disposition: lacks_accepted_ALIGN_interface
+        - sha: 53c7154a3633dfe19dc036cfb5a6250f729a897d
+          disposition: ALIGN_phase_zero_evidence_only_no_application_delta
+        - sha: 02a198cbfb379eaf6ab279c5a3d44ee73ff90435
+          disposition: unrelated_unfinished_convolve_noise_lane
+      future_selection_rule: >-
+        Select the exact accepted and re-audited ALIGN successor application
+        commit, or an exact clean integration commit containing only that
+        reviewed interface and other explicitly accepted dependencies.
+      effect: >-
+        Coordination and fixture design may continue, but no AST application
+        branch, edit, Unity request, or re-audit begins while the ALIGN
+        dependency hold remains active.
     local_evidence:
       - id: SCI-AST-001-LOCAL-001
         path: doc/audits/evidence/SCI-AST-001_LOCAL_EVIDENCE_2026-08-01.yaml
