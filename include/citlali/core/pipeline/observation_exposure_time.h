@@ -1,5 +1,6 @@
 #pragma once
 
+#include <citlali/core/pipeline/map_buffer_allocation.h>
 #include <citlali/core/pipeline/output_policy.h>
 
 namespace citlali::pipeline {
@@ -21,21 +22,13 @@ auto calculate_observation_exposure_time(Engine &engine) {
 }
 
 template <class Engine>
-bool should_accumulate_coadd_exposure_time(const Engine &engine) {
-    return coadd_outputs_enabled(engine);
-}
-
-template <class Engine>
-void accumulate_coadd_exposure_time(Engine &engine) {
-    engine.cmb.exposure_time =
-        engine.cmb.exposure_time + engine.omb.exposure_time;
-}
-
-template <class Engine>
 void update_observation_exposure_time(Engine &engine) {
     engine.omb.exposure_time = calculate_observation_exposure_time(engine);
-    if (should_accumulate_coadd_exposure_time(engine)) {
-        accumulate_coadd_exposure_time(engine);
+    if (coadd_outputs_enabled(engine) &&
+        !science_map_v1_profile_available(engine)) {
+        // Preserve the legacy direct/polarized coadd lifecycle. Supported v1
+        // profiles commit exposure atomically with the observation bundle.
+        engine.cmb.exposure_time += engine.omb.exposure_time;
     }
 }
 

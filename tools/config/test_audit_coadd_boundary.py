@@ -61,6 +61,45 @@ class CoaddBoundaryAuditTest(unittest.TestCase):
         )
         self.assertFalse(state["exact"])
 
+    def test_accepts_science_lifecycle_surface(self) -> None:
+        source = "\n".join(
+            [
+                "struct CoaddScienceState {};",
+                "common_identity common_identity common_identity common_identity common_identity",
+                "realized_maps realized_maps realized_maps realized_maps realized_maps",
+                "admissions admissions admissions admissions admissions admissions admissions",
+                "void record_science_state() {}",
+                "void record_admission() { validate_admission(); }",
+                "void validate_admission() {}",
+                '"centered-integer-common-grid-embedding-v1"',
+                '"L-identity-v1"',
+                "observation_raw_parent_digests",
+                "normalization_support_policy",
+                "science_policy_support_policy",
+            ]
+        )
+
+        self.assertTrue(audit.science_lifecycle_state(source)["exact"])
+
+    def test_rejects_lifecycle_without_raw_parent_identity(self) -> None:
+        source = "\n".join(
+            [
+                "struct CoaddScienceState {};",
+                "common_identity common_identity common_identity common_identity common_identity",
+                "realized_maps realized_maps realized_maps realized_maps realized_maps",
+                "admissions admissions admissions admissions admissions admissions admissions",
+                "void record_science_state() {}",
+                "void record_admission() { validate_admission(); }",
+                "void validate_admission() {}",
+                '"centered-integer-common-grid-embedding-v1"',
+                '"L-identity-v1"',
+                "normalization_support_policy",
+                "science_policy_support_policy",
+            ]
+        )
+
+        self.assertFalse(audit.science_lifecycle_state(source)["exact"])
+
 
 if __name__ == "__main__":
     unittest.main()

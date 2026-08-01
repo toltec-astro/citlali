@@ -52,7 +52,7 @@ template <class AddDouble>
 void add_mapdiag_map_double_vars(
     const AddDouble &add_double, const MapdiagMapDoubleValues &values) {
     add_double("map_median_err",
-               "median error derived from the map weight product",
+               "legacy reciprocal-sqrt normalization-coefficient scale; not an uncertainty unless SCI-PTC-001 precision conditions are established",
                values.median_err);
     add_double("map_median_rms",
                "median RMS of the map noise realization or background estimator",
@@ -76,16 +76,16 @@ void add_mapdiag_map_double_vars(
                "median coverage over the core support; NaN if no coverage map exists",
                values.coverage_median_core);
     add_double("map_empirical_to_formal_noise_ratio",
-               "ratio of map_median_rms to map_median_err over the core support",
+               "ratio of empirical map RMS to the legacy reciprocal-sqrt coefficient scale; not an uncertainty calibration claim",
                values.empirical_to_formal_noise_ratio);
     add_double("map_noise_weight_median_ratio",
-               "median of formal weight times jackknife variance over the valid support",
+               "median of the nonprecision normalization coefficient times jackknife variance over the valid support",
                values.noise_weight_median_ratio);
     add_double("map_noise_weight_scale",
                "empirical scalar applied to formal weights",
                values.noise_weight_scale);
     add_double("map_noise_products_s2n_sigma",
-               "standard deviation of jackknife noise multiplied by sqrt(formal weight)",
+               "standard deviation of jackknife noise multiplied by sqrt(nonprecision normalization coefficient); not calibrated significance",
                values.noise_products_s2n_sigma);
     add_double("map_noise_products_valid_pixels",
                "number of pixels used for empirical noise-product calibration",
@@ -93,10 +93,10 @@ void add_mapdiag_map_double_vars(
     add_double("map_peak_signal", "maximum signal value in the map",
                values.peak_signal);
     add_double("map_peak_abs_sig2noise",
-               "maximum absolute signal-to-noise value in the map",
+               "maximum absolute legacy coefficient-standardized amplitude; not a signal-to-noise or significance claim",
                values.peak_abs_sig2noise);
     add_double("map_core_peak_abs_sig2noise",
-               "maximum absolute signal-to-noise value over pixels with weight >= map_weight_threshold",
+               "maximum absolute legacy coefficient-standardized amplitude over core support; not a signal-to-noise or significance claim",
                values.core_peak_abs_sig2noise);
     add_double("map_noise_rms_p16",
                "16th percentile of core RMS values across noise realizations",
@@ -105,13 +105,13 @@ void add_mapdiag_map_double_vars(
                "84th percentile of core RMS values across noise realizations",
                values.noise_rms_p84);
     add_double("map_core_tail_fraction_abs_gt3",
-               "fraction of core sig2noise pixels with |robust-z| >= 3",
+               "fraction of core legacy coefficient-standardized amplitudes with |robust-z| >= 3",
                values.core_tail_frac_abs3);
     add_double("map_core_tail_fraction_pos_gt3",
-               "fraction of core sig2noise pixels with robust-z >= 3",
+               "fraction of core legacy coefficient-standardized amplitudes with robust-z >= 3",
                values.core_tail_frac_pos3);
     add_double("map_core_tail_fraction_neg_lt3",
-               "fraction of core sig2noise pixels with robust-z <= -3",
+               "fraction of core legacy coefficient-standardized amplitudes with robust-z <= -3",
                values.core_tail_frac_neg3);
     add_double("map_core_tail_excess_abs_gt3",
                "ratio of map_core_tail_fraction_abs_gt3 to Gaussian expectation",
@@ -123,7 +123,7 @@ void add_mapdiag_map_double_vars(
                "ratio of map_core_tail_fraction_neg_lt3 to Gaussian expectation",
                values.core_tail_excess_neg3);
     add_double("map_core_sig2noise_skew",
-               "mean robust-z^3 of core sig2noise pixels",
+               "mean robust-z^3 of core legacy coefficient-standardized amplitudes",
                values.core_sig2noise_skew);
     add_double("map_noise_tail_fraction_abs_gt3",
                "median fraction across noise realizations with |robust-z| >= 3 in the core support",
@@ -144,7 +144,7 @@ void add_mapdiag_map_double_vars(
                "median ratio across noise realizations of negative tail fraction to Gaussian expectation",
                values.noise_tail_excess_neg3);
     add_double("map_noise_sig2noise_skew",
-               "median mean robust-z^3 across noise realizations in the core support",
+               "median mean robust-z^3 of legacy coefficient-standardized amplitudes across noise realizations in core support",
                values.noise_sig2noise_skew);
     add_double("map_edge_guard_weight_threshold",
                "runtime weight threshold used by the filter edge guard; NaN when not applied",
@@ -191,4 +191,3 @@ inline void add_mapdiag_map_double_vars(
     };
     add_mapdiag_map_double_vars(add_double, values);
 }
-

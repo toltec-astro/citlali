@@ -105,6 +105,37 @@ bool should_write_noise_maps(const NoiseList &noise,
     return !noise.empty() && !noise_fits_io->empty();
 }
 
+template <class SignalList, class WeightList, class Logger>
+void require_primary_map_image_shapes(
+    const SignalList &signal, const WeightList &weight, Eigen::Index map_i,
+    Eigen::Index rows, Eigen::Index cols, const Logger &logger) {
+    if (!has_map_image_slot(signal, map_i, rows, cols) ||
+        !has_map_image_slot(weight, map_i, rows, cols)) {
+        fail_required_output(logger, fmt::format(
+            "write_maps primary image shape mismatch: map_i={} "
+            "expected=({},{})",
+            static_cast<long long>(map_i), static_cast<long long>(rows),
+            static_cast<long long>(cols)));
+    }
+}
+
+template <class Wcs, class Logger>
+void require_map_wcs_cardinality(const Wcs &wcs,
+                                 std::size_t minimum_axes,
+                                 const Logger &logger) {
+    const auto axes = wcs.ctype.size();
+    if (axes < minimum_axes || wcs.cunit.size() != axes ||
+        wcs.crval.size() != axes || wcs.cdelt.size() != axes ||
+        wcs.crpix.size() != axes || wcs.naxis.size() < 2) {
+        fail_required_output(logger, fmt::format(
+            "write_maps inconsistent WCS cardinality: "
+            "ctype={} cunit={} crval={} cdelt={} crpix={} naxis={} "
+            "minimum_axes={}",
+            axes, wcs.cunit.size(), wcs.crval.size(), wcs.cdelt.size(),
+            wcs.crpix.size(), wcs.naxis.size(), minimum_axes));
+    }
+}
+
 template <class FitsIo>
 bool has_noise_fits_slot(const FitsIo &noise_fits_io,
                          Eigen::Index map_index) {
@@ -133,6 +164,37 @@ void require_noise_map_write_slots(
             "write_maps noise map index out of range: i={} noise_size={}",
             static_cast<long long>(map_i),
             static_cast<long long>(noise.size())));
+    }
+}
+
+template <class NoiseList, class Logger>
+void require_noise_map_tensor_shape(
+    const NoiseList &noise, Eigen::Index map_i, Eigen::Index rows,
+    Eigen::Index cols, Eigen::Index n_noise, const Logger &logger) {
+    if (n_noise < 0) {
+        fail_required_output(logger, fmt::format(
+            "write_maps invalid noise realization count: n_noise={} map_i={}",
+            static_cast<long long>(n_noise),
+            static_cast<long long>(map_i)));
+    }
+    if (!has_noise_map_slot(noise, map_i)) {
+        fail_required_output(logger, fmt::format(
+            "write_maps noise map index out of range: i={} noise_size={}",
+            static_cast<long long>(map_i),
+            static_cast<long long>(noise.size())));
+    }
+    const auto &tensor = noise[map_i];
+    if (tensor.dimension(0) != rows || tensor.dimension(1) != cols ||
+        tensor.dimension(2) != n_noise) {
+        fail_required_output(logger, fmt::format(
+            "write_maps noise tensor shape mismatch: map_i={} "
+            "actual=({},{},{}) expected=({},{},{})",
+            static_cast<long long>(map_i),
+            static_cast<long long>(tensor.dimension(0)),
+            static_cast<long long>(tensor.dimension(1)),
+            static_cast<long long>(tensor.dimension(2)),
+            static_cast<long long>(rows), static_cast<long long>(cols),
+            static_cast<long long>(n_noise)));
     }
 }
 

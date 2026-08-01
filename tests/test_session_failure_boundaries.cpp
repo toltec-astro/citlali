@@ -18,6 +18,7 @@
 #include <gtest/gtest.h>
 
 #include <Eigen/Core>
+#include <unsupported/Eigen/CXX11/Tensor>
 
 #include <limits>
 #include <map>
@@ -57,6 +58,15 @@ struct FlagData {
 
 struct RtcFlagData {
     FlagData flags;
+};
+
+struct BoundaryWcs {
+    std::vector<std::string> ctype;
+    std::vector<std::string> cunit;
+    std::vector<double> crval;
+    std::vector<double> cdelt;
+    std::vector<double> crpix;
+    std::vector<int> naxis;
 };
 
 template <class Action>
@@ -344,6 +354,22 @@ TEST(session_failure_boundaries, accepts_valid_required_output_slots) {
 
     EXPECT_NO_THROW(citlali::pipeline::require_map_data_slots(
         0, 1, 1, logger));
+    const std::vector<Eigen::MatrixXd> signal{
+        Eigen::MatrixXd::Zero(2, 3)};
+    const std::vector<Eigen::MatrixXd> weight{
+        Eigen::MatrixXd::Ones(2, 3)};
+    EXPECT_NO_THROW(citlali::pipeline::require_primary_map_image_shapes(
+        signal, weight, 0, 2, 3, logger));
+    BoundaryWcs wcs{
+        {"A", "B", "FREQ", "STOKES"},
+        {"u", "u", "Hz", "1"},
+        {0.0, 0.0, 1.0, 0.0},
+        {1.0, 1.0, 1.0, 1.0},
+        {0.0, 0.0, 0.0, 0.0},
+        {3, 2},
+    };
+    EXPECT_NO_THROW(citlali::pipeline::require_map_wcs_cardinality(
+        wcs, 4, logger));
     EXPECT_NO_THROW(citlali::pipeline::require_map_write_index_slots(
         0, 0, 1, 0, 1, 0, logger));
     EXPECT_DOUBLE_EQ(citlali::pipeline::require_array_fwhm_for_id(
@@ -351,6 +377,10 @@ TEST(session_failure_boundaries, accepts_valid_required_output_slots) {
                      5.0);
     EXPECT_NO_THROW(citlali::pipeline::require_noise_map_write_slots(
         noise, noise_fits, 0, 0, logger));
+    std::vector<Eigen::Tensor<double, 3>> noise_tensors(1);
+    noise_tensors[0].resize(2, 3, 4);
+    EXPECT_NO_THROW(citlali::pipeline::require_noise_map_tensor_shape(
+        noise_tensors, 0, 2, 3, 4, logger));
     EXPECT_NO_THROW(citlali::pipeline::require_phdu_output_slots(
         0, 1, 1, logger));
 }
@@ -363,6 +393,26 @@ TEST(session_failure_boundaries, classifies_required_output_slot_failures) {
 
     expect_output_failure([&] {
         citlali::pipeline::require_map_data_slots(1, 1, 1, logger);
+    });
+    const std::vector<Eigen::MatrixXd> signal{
+        Eigen::MatrixXd::Zero(2, 3)};
+    const std::vector<Eigen::MatrixXd> wrong_weight{
+        Eigen::MatrixXd::Ones(3, 2)};
+    expect_output_failure([&] {
+        citlali::pipeline::require_primary_map_image_shapes(
+            signal, wrong_weight, 0, 2, 3, logger);
+    });
+    BoundaryWcs uneven_wcs{
+        {"A", "B", "FREQ", "STOKES", "EXTRA"},
+        {"u", "u", "Hz", "1"},
+        {0.0, 0.0, 1.0, 0.0},
+        {1.0, 1.0, 1.0, 1.0},
+        {0.0, 0.0, 0.0, 0.0},
+        {3, 2},
+    };
+    expect_output_failure([&] {
+        citlali::pipeline::require_map_wcs_cardinality(
+            uneven_wcs, 4, logger);
     });
     expect_output_failure([&] {
         citlali::pipeline::require_map_write_index_slots(
@@ -387,6 +437,20 @@ TEST(session_failure_boundaries, classifies_required_output_slot_failures) {
     expect_output_failure([&] {
         citlali::pipeline::require_noise_map_write_slots(
             noise, noise_fits, 0, 1, logger);
+    });
+    std::vector<Eigen::Tensor<double, 3>> noise_tensors(1);
+    noise_tensors[0].resize(2, 3, 4);
+    expect_output_failure([&] {
+        citlali::pipeline::require_noise_map_tensor_shape(
+            noise_tensors, 0, 2, 3, -1, logger);
+    });
+    expect_output_failure([&] {
+        citlali::pipeline::require_noise_map_tensor_shape(
+            noise_tensors, 1, 2, 3, 4, logger);
+    });
+    expect_output_failure([&] {
+        citlali::pipeline::require_noise_map_tensor_shape(
+            noise_tensors, 0, 2, 3, 5, logger);
     });
     expect_output_failure([&] {
         citlali::pipeline::require_phdu_output_slots(1, 1, 1, logger);

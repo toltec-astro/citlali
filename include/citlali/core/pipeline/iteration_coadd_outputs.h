@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/pipeline/filtered_coadd_outputs.h>
+#include <citlali/core/pipeline/coadd_provenance_lifecycle.h>
 #include <citlali/core/pipeline/mapmaking_provenance_lifecycle.h>
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/raw_coadd_outputs.h>
@@ -24,6 +25,7 @@ void write_iteration_coadd_outputs_if_needed(TodProc &todproc,
     write_raw_coadd_outputs<RawCoaddMap>(todproc, stage_profile, logger);
     write_filtered_coadd_outputs_if_needed<FilteredCoaddMap>(
         todproc, stage_profile, logger);
+    record_coadd_realized_maps_if_available(engine);
     complete_mapmaking_coadd_if_available(engine);
 }
 

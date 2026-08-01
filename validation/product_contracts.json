@@ -1,5 +1,5 @@
 {
-  "schema_version": "citlali-product-contract-registry-v1",
+  "schema_version": "citlali-product-contract-registry-v2",
   "policy": {
     "scope": "Scientific products, diagnostic tables/cubes, and explicitly required operational state products are classified here. Run indexes, logs, merged configuration, and provenance sidecars remain governed by the reduction audit and validation profile.",
     "required_output_failure": "fatal",
@@ -27,7 +27,7 @@
     ],
     "map_indexing": "FITS/WCS pixel coordinates are one-based in headers; in-memory and diagnostic row/column indices are zero-based unless a product explicitly states otherwise.",
     "polarimetry": "Only Stokes I is validated. Enabled polarimetry is a planned-unavailable capability and is rejected before execution.",
-    "nonfinite_policy": "Map signal-like planes may be non-finite outside valid coverage. Coverage and weight planes define validity. Fit tables use flag/convergence fields to identify invalid fit values."
+    "nonfinite_policy": "Historical accepted contracts retain their recorded coverage/weight conventions. In SCI-MAP-001 successor contracts, only science_valid_I is authoritative raw science validity; finite values, weight, exposure, support planes, and compatibility aliases cannot promote a raw-invalid pixel. Fit tables use flag/convergence fields to identify invalid fit values."
   },
   "known_contract_debt": [
     {
@@ -70,7 +70,206 @@
       "disposition": "Keep the immutable v1 checks for accepted historical artifacts. Current writers reserve sig2noise names for jackknife-calibrated products and emit formal_standardized_signal otherwise; successor profiles must use the v2 checks."
     }
   ],
+  "science_map_contracts": {
+    "sci-map-001-f010-v1": {
+      "schema_version": "citlali-science-map-contract-v1",
+      "audit_state": "addressed_pending_reaudit",
+      "planes": [
+        {
+          "name": "geometric_hits_I",
+          "logical_fact": "Finite in-bounds sample/detector projections before upstream eligibility and mapmaker contribution selection.",
+          "dtype": "int64",
+          "bitpix": 64,
+          "unit": "count",
+          "applicability": "Ordinary naive observation and coadd array-grouped maps in this v1 repair contract.",
+          "absence_policy": "Explicitly unavailable for JINC and detector-grouped products in v1; never inferred from exposure or coefficients."
+        },
+        {
+          "name": "contributing_hits_I",
+          "logical_fact": "Terms admitted to numerator and denominator by the named estimator contribution predicate.",
+          "dtype": "int64",
+          "bitpix": 64,
+          "unit": "count",
+          "applicability": "Ordinary naive observation and coadd array-grouped maps in this v1 repair contract.",
+          "absence_policy": "Explicitly unavailable for JINC pending SCI-MAP-002 approval of a signed contribution predicate, and unavailable for detector grouping."
+        },
+        {
+          "name": "coadd_observation_count_I",
+          "logical_fact": "Admitted observation maps contributing to each coadd pixel.",
+          "dtype": "int64",
+          "bitpix": 64,
+          "unit": "count",
+          "applicability": "Ordinary naive array-grouped coadd maps only.",
+          "absence_policy": "Explicitly not applicable to observation maps and unavailable for JINC or detector grouping in v1."
+        },
+        {
+          "name": "upstream_eligible_exposure_I",
+          "logical_fact": "Detector-seconds projected from samples eligible under the upstream validity contract before mapmaker contribution and normalization retention.",
+          "dtype": "float64",
+          "bitpix": -64,
+          "unit": "detector s",
+          "applicability": "Ordinary naive observation and coadd array-grouped maps in this v1 repair contract.",
+          "absence_policy": "Explicitly unavailable for JINC and detector-grouped products in v1; never reconstructed from retained exposure."
+        },
+        {
+          "name": "retained_exposure_I",
+          "logical_fact": "Detector-seconds retained after contribution and normalization-support decisions using admitted coadd membership and embedding.",
+          "dtype": "float64",
+          "bitpix": -64,
+          "unit": "detector s",
+          "applicability": "Ordinary naive observation and coadd array-grouped maps in this v1 repair contract.",
+          "absence_policy": "Explicitly unavailable where the method-specific contribution predicate is unavailable, including JINC and detector grouping in v1."
+        },
+        {
+          "name": "normalization_support_I",
+          "logical_fact": "Boolean authorization for numerical division/population under the named normalization-support algorithm.",
+          "dtype": "uint8",
+          "bitpix": 8,
+          "unit": "1",
+          "applicability": "Ordinary naive observation and coadd array-grouped maps in this v1 repair contract.",
+          "absence_policy": "Explicitly unavailable for JINC and detector-grouped products in v1; it never authorizes science use."
+        },
+        {
+          "name": "science_policy_support_I",
+          "logical_fact": "Boolean result of the separately versioned full-cut science-support threshold policy.",
+          "dtype": "uint8",
+          "bitpix": 8,
+          "unit": "1",
+          "applicability": "Ordinary naive observation and coadd array-grouped maps in this v1 repair contract.",
+          "absence_policy": "Explicitly unavailable for JINC and detector-grouped products in v1; it is not validity by itself."
+        },
+        {
+          "name": "science_valid_I",
+          "logical_fact": "Authoritative raw science validity: normalization support, science-policy support, finite signal and declared companions, and admitted identity.",
+          "dtype": "uint8",
+          "bitpix": 8,
+          "unit": "1",
+          "applicability": "Ordinary naive observation and coadd array-grouped maps in this v1 repair contract.",
+          "absence_policy": "Explicitly unavailable where required inputs or a method-specific contribution predicate are unavailable, including JINC and detector grouping in v1."
+        }
+      ],
+      "aliases": {
+        "coverage_I": {
+          "canonical": "retained_exposure_I",
+          "relationship": "bitwise_equal",
+          "dtype": "float64",
+          "bitpix": -64,
+          "unit": "detector s",
+          "deprecated": false,
+          "validity_authority": false,
+          "meaning": "Compatibility alias only; not wall-clock time, inverse variance, support, confidence, or validity."
+        },
+        "coverage_bool_I": {
+          "canonical": "science_policy_support_I",
+          "relationship": "bitwise_equal",
+          "dtype": "uint8",
+          "bitpix": 8,
+          "unit": "1",
+          "deprecated": true,
+          "validity_authority": false,
+          "meaning": "Deprecated threshold-diagnostic compatibility alias; never authoritative science validity."
+        }
+      },
+      "coefficient_contract": {
+        "product": "weight_I",
+        "default_role": "nonprecision_normalization_coefficient",
+        "realized_lifecycle_stages": {
+          "observation_normalization_input": "pre-observation-normalization-accumulated-coefficient",
+          "observation_unscaled": "post-observation-normalization-no-empirical-rescale",
+          "observation_empirical": "post-observation-normalization-global-empirical-rescale-applied",
+          "coadd_normalization_input": "pre-coadd-normalization-sum-of-admitted-observation-coefficients",
+          "coadd_unscaled": "post-coadd-normalization-no-empirical-rescale",
+          "coadd_empirical": "post-coadd-normalization-global-empirical-rescale-applied"
+        },
+        "unit": "1/(signal unit)^2",
+        "precision_status": "conditional",
+        "precision_conditions": [
+          "SCI-PTC-001 establishes the upstream coefficient calibration and independence/covariance assumptions",
+          "the declared response and any empirical scale preserve those conditions"
+        ],
+        "coadd_precision_status": "not established while cross-observation and cross-pixel covariance are unavailable",
+        "forbidden_default_claims": [
+          "inverse variance",
+          "uncertainty",
+          "standardized statistical significance",
+          "science validity"
+        ]
+      },
+      "validity_formula": "normalization_support_I AND science_policy_support_I AND finite signal_I and every declared required companion AND admitted product identity",
+      "required_companion_policy": "Realized provenance enumerates required companions; a missing, undeclared, or non-finite required companion makes science_valid_I false or required publication fail according to the versioned failure policy.",
+      "jinc_absence_policy": "This v1 repair does not select a JINC signed-contribution predicate. JINC F010 planes are explicitly unavailable rather than inferred or populated by an ordinary q>0 rule.",
+      "detector_grouping_absence_policy": "Detector-grouped products explicitly omit the F010 plane bundle and compatibility aliases in this v1 contract.",
+      "non_array_grouping_absence_policy": "Network, frequency-group, detector, and unresolved non-array profiles explicitly omit the F010 plane bundle and compatibility aliases in this v1 contract; they retain the established pre-successor arithmetic lane without an F009/F010 claim.",
+      "parallel_equivalence_policy": {
+        "identity": "within-scan-exact-scan-farm-2gamma-n-sumabs-v1",
+        "within_scan": "Sequential and requested-parallel ordinary detector/sample accumulation are exact because they share one ordered primitive.",
+        "scan_farm": "Mutex-protected scan commits may arrive in different orders; each binary64 plane is bounded against a long-double sum of per-scan planes by 2*gamma_n*sum(abs(scan_value)), gamma_n=n*epsilon/(1-n*epsilon). Integer fact planes remain exact."
+      },
+      "filtered_raw_parent_carriage": "Before a filter mutates map-domain planes, the validated raw F010 authority is frozen as an immutable input. Filtered signal, weight, F010 planes, and compatibility aliases carry RAWSTATE=immutable_input and one identical lossless RAWPDGST value; filtered empirical recalculation cannot rewrite the raw products or digest.",
+      "covariance_policy": "No GLS, covariance regularization, coadd uncertainty, inverse-variance, or significance claim is authorized; precision remains conditional on SCI-PTC-001 and named covariance evidence."
+    }
+  },
   "families": {
+    "science_map_cube_altaz_v1": {
+      "scientific_identity": "SCI-MAP-001 v1 array-grouped raw Stokes-I estimator bundle with nonprecision normalization coefficients and typed hit, exposure, support, validity, response, and alias products when the selected method supports them.",
+      "coordinate_frame": "AltAz tangent-plane azimuth/elevation offsets around the admitted configured map center; every image plane has identical full WCS cards and shape.",
+      "axes": [
+        "azimuth offset",
+        "elevation offset",
+        "frequency",
+        "Stokes"
+      ],
+      "units_policy": "Per-HDU BUNIT, ESTTYPE, DATTYP, and validity/alias metadata are authoritative. weight_I is a nonprecision normalization coefficient by default; count, detector-second, and binary-mask planes use their frozen F010 units.",
+      "indexing_policy": "FITS/WCS pixel coordinates are one-based; in-memory and diagnostic row/column indices are zero-based.",
+      "missing_value_policy": "Only science_valid_I is authoritative raw science validity. Explicitly unavailable method/grouping facts are absent and explained in realized provenance; unsupported pixels cannot be promoted by finite values, coefficients, exposure, or compatibility aliases.",
+      "failure_policy": "Required ordinary-naive array-grouped bundle or metadata failure is fatal; unavailable JINC or non-array-grouping facts must be explicit and may not be synthesized.",
+      "science_map_contract_id": "sci-map-001-f010-v1"
+    },
+    "science_map_cube_celestial_v1": {
+      "scientific_identity": "SCI-MAP-001 v1 array-grouped raw Stokes-I estimator bundle with nonprecision normalization coefficients and typed hit, exposure, support, validity, response, and alias products when the selected method supports them.",
+      "coordinate_frame": "Equatorial J2000 TAN projection centered on the admitted science field; every image plane has identical full WCS cards and shape.",
+      "axes": [
+        "right ascension",
+        "declination",
+        "frequency",
+        "Stokes"
+      ],
+      "units_policy": "Per-HDU BUNIT, ESTTYPE, DATTYP, and validity/alias metadata are authoritative. weight_I is a nonprecision normalization coefficient by default; count, detector-second, and binary-mask planes use their frozen F010 units.",
+      "indexing_policy": "FITS/WCS pixel coordinates are one-based; in-memory and diagnostic row/column indices are zero-based.",
+      "missing_value_policy": "Only science_valid_I is authoritative raw science validity. Explicitly unavailable method/grouping facts are absent and explained in realized provenance; unsupported pixels cannot be promoted by finite values, coefficients, exposure, or compatibility aliases.",
+      "failure_policy": "Required ordinary-naive array-grouped bundle or metadata failure is fatal; unavailable JINC or non-array-grouping facts must be explicit and may not be synthesized.",
+      "science_map_contract_id": "sci-map-001-f010-v1"
+    },
+    "science_map_filtered_altaz_v1": {
+      "scientific_identity": "Existing filtered AltAz map products with raw-parent science validity kept separate from operator-local numerical support, response, covariance, and output validity.",
+      "coordinate_frame": "AltAz tangent plane inherited from the admitted raw parent.",
+      "axes": ["azimuth offset", "elevation offset", "frequency", "Stokes"],
+      "units_policy": "Signal/kernel and optional empirical products retain their established units. weight_I remains a nonprecision normalization coefficient; no inverse-variance or significance claim is implied.",
+      "indexing_policy": "FITS/WCS pixels are one-based.",
+      "missing_value_policy": "A finite filtered value or local coverage diagnostic cannot promote a raw-invalid pixel. SCI-FLT-001 governs future filtered validity products.",
+      "failure_policy": "Fatal when filtered output is enabled; this contract does not alter the filter estimator.",
+      "science_map_contract_id": "sci-map-001-f010-v1"
+    },
+    "science_map_filtered_celestial_v1": {
+      "scientific_identity": "Existing filtered celestial map products with raw-parent science validity kept separate from operator-local numerical support, response, covariance, and output validity.",
+      "coordinate_frame": "Equatorial J2000 TAN projection inherited from the admitted raw parent.",
+      "axes": ["right ascension", "declination", "frequency", "Stokes"],
+      "units_policy": "Signal/kernel and optional empirical products retain their established units. weight_I remains a nonprecision normalization coefficient; no inverse-variance or significance claim is implied.",
+      "indexing_policy": "FITS/WCS pixels are one-based.",
+      "missing_value_policy": "A finite filtered value or local coverage diagnostic cannot promote a raw-invalid pixel. SCI-FLT-001 governs future filtered validity products.",
+      "failure_policy": "Fatal when filtered output is enabled; this contract does not alter the filter estimator.",
+      "science_map_contract_id": "sci-map-001-f010-v1"
+    },
+    "science_map_detector_group_v1": {
+      "scientific_identity": "Detector-grouped map cube preserving the existing Beammap estimator while explicitly omitting the SCI-MAP-001 F010 plane bundle and aliases.",
+      "coordinate_frame": "AltAz tangent-plane azimuth/elevation offsets around the Beammap source.",
+      "axes": ["azimuth offset", "elevation offset", "frequency", "Stokes"],
+      "units_policy": "Signal/kernel use map signal units and weight_I is a nonprecision normalization coefficient; F010 count/exposure/mask units are not applicable because those planes are absent.",
+      "indexing_policy": "FITS/WCS pixels are one-based; detector identity remains linked through the APT uid contract.",
+      "missing_value_policy": "The eight F010 planes plus coverage_I and coverage_bool_I are explicitly absent for detector grouping in this v1 contract; no omitted plane may be inferred.",
+      "failure_policy": "Fatal for required Beammap output; emitting a forbidden F010 or compatibility plane is a contract failure.",
+      "science_map_contract_id": "sci-map-001-f010-v1"
+    },
     "map_cube_altaz": {
       "scientific_identity": "Per-array Stokes-I map planes with signal, weights, kernel, coverage, and estimator-explicit standardized products: jackknife-calibrated signal-to-noise when empirical noise products exist, otherwise explicitly labeled formal-weight-standardized signal.",
       "coordinate_frame": "AltAz tangent-plane azimuth/elevation offsets around the configured map center.",
@@ -309,6 +508,370 @@
     }
   },
   "checks": {
+    "sci_map_common_altaz_v1": {
+      "min_hdus": 4,
+      "primary_bunit": "mJy/beam",
+      "required_extnames": ["signal_I", "weight_I", "kernel_I"],
+      "required_ext_bitpix": {
+        "signal_I": -64,
+        "weight_I": -64,
+        "kernel_I": -64
+      },
+      "required_ext_dtypes": {
+        "signal_I": "float64",
+        "weight_I": "float64",
+        "kernel_I": "float64"
+      },
+      "ext_bunits": {
+        "signal_I": "mJy/beam",
+        "weight_I": "1/(mJy/beam)^2",
+        "kernel_I": "mJy/beam"
+      },
+      "required_ext_headers": {
+        "weight_I": {
+          "ESTTYPE": "nonprecision_normalization_coefficient",
+          "TYPE": "nonprecision_normalization_coefficient",
+          "PRECSTAT": "not_established",
+          "COVSTAT": "unavailable"
+        }
+      },
+      "required_ext_header_one_of": {
+        "weight_I": {
+          "CALTYPE": ["formal", "empirical"]
+        }
+      },
+      "same_shape_extnames": ["signal_I", "weight_I", "kernel_I"],
+      "same_wcs_extnames": ["signal_I", "weight_I", "kernel_I"],
+      "axis_types": ["AZOFFSET", "ELOFFSET", "FREQ", "STOKES"],
+      "axis_units": ["arcsec", "arcsec", "Hz", null]
+    },
+    "sci_map_common_celestial_v1": {
+      "min_hdus": 4,
+      "primary_bunit": "mJy/beam",
+      "required_extnames": ["signal_I", "weight_I", "kernel_I"],
+      "required_ext_bitpix": {
+        "signal_I": -64,
+        "weight_I": -64,
+        "kernel_I": -64
+      },
+      "required_ext_dtypes": {
+        "signal_I": "float64",
+        "weight_I": "float64",
+        "kernel_I": "float64"
+      },
+      "ext_bunits": {
+        "signal_I": "mJy/beam",
+        "weight_I": "1/(mJy/beam)^2",
+        "kernel_I": "mJy/beam"
+      },
+      "required_ext_headers": {
+        "weight_I": {
+          "ESTTYPE": "nonprecision_normalization_coefficient",
+          "TYPE": "nonprecision_normalization_coefficient",
+          "PRECSTAT": "not_established",
+          "COVSTAT": "unavailable"
+        }
+      },
+      "required_ext_header_one_of": {
+        "weight_I": {
+          "CALTYPE": ["formal", "empirical"]
+        }
+      },
+      "same_shape_extnames": ["signal_I", "weight_I", "kernel_I"],
+      "same_wcs_extnames": ["signal_I", "weight_I", "kernel_I"],
+      "axis_types": ["RA---TAN", "DEC--TAN", "FREQ", "STOKES"],
+      "axis_units": ["deg", "deg", "Hz", null]
+    },
+    "sci_map_filtered_raw_parent_v1": {
+      "required_ext_headers": {
+        "signal_I": {"RAWSTATE": "immutable_input"},
+        "weight_I": {"RAWSTATE": "immutable_input"},
+        "geometric_hits_I": {"RAWSTATE": "immutable_input"},
+        "contributing_hits_I": {"RAWSTATE": "immutable_input"},
+        "coadd_observation_count_I": {"RAWSTATE": "immutable_input"},
+        "upstream_eligible_exposure_I": {"RAWSTATE": "immutable_input"},
+        "retained_exposure_I": {"RAWSTATE": "immutable_input"},
+        "normalization_support_I": {"RAWSTATE": "immutable_input"},
+        "science_policy_support_I": {"RAWSTATE": "immutable_input"},
+        "science_valid_I": {"RAWSTATE": "immutable_input"},
+        "coverage_I": {"RAWSTATE": "immutable_input"},
+        "coverage_bool_I": {"RAWSTATE": "immutable_input"}
+      },
+      "required_ext_headers_present": {
+        "signal_I": ["RAWPDGST"],
+        "weight_I": ["RAWPDGST"],
+        "geometric_hits_I": ["RAWPDGST"],
+        "contributing_hits_I": ["RAWPDGST"],
+        "coadd_observation_count_I": ["RAWPDGST"],
+        "upstream_eligible_exposure_I": ["RAWPDGST"],
+        "retained_exposure_I": ["RAWPDGST"],
+        "normalization_support_I": ["RAWPDGST"],
+        "science_policy_support_I": ["RAWPDGST"],
+        "science_valid_I": ["RAWPDGST"],
+        "coverage_I": ["RAWPDGST"],
+        "coverage_bool_I": ["RAWPDGST"]
+      },
+      "same_ext_header_values": {
+        "RAWPDGST": [
+          "signal_I", "weight_I", "geometric_hits_I",
+          "contributing_hits_I", "coadd_observation_count_I",
+          "upstream_eligible_exposure_I", "retained_exposure_I",
+          "normalization_support_I", "science_policy_support_I",
+          "science_valid_I", "coverage_I", "coverage_bool_I"
+        ]
+      }
+    },
+    "sci_map_filtered_no_raw_parent_v1": {
+      "forbidden_ext_headers": {
+        "signal_I": ["RAWSTATE", "RAWPDGST"],
+        "weight_I": ["RAWSTATE", "RAWPDGST"]
+      }
+    },
+    "sci_map_naive_observation_v1": {
+      "required_extnames": [
+        "geometric_hits_I",
+        "contributing_hits_I",
+        "upstream_eligible_exposure_I",
+        "retained_exposure_I",
+        "normalization_support_I",
+        "science_policy_support_I",
+        "science_valid_I",
+        "coverage_I",
+        "coverage_bool_I"
+      ],
+      "forbidden_extnames": ["coadd_observation_count_I"],
+      "required_ext_bitpix": {
+        "geometric_hits_I": 64,
+        "contributing_hits_I": 64,
+        "upstream_eligible_exposure_I": -64,
+        "retained_exposure_I": -64,
+        "normalization_support_I": 8,
+        "science_policy_support_I": 8,
+        "science_valid_I": 8,
+        "coverage_I": -64,
+        "coverage_bool_I": 8
+      },
+      "required_ext_dtypes": {
+        "geometric_hits_I": "int64",
+        "contributing_hits_I": "int64",
+        "upstream_eligible_exposure_I": "float64",
+        "retained_exposure_I": "float64",
+        "normalization_support_I": "uint8",
+        "science_policy_support_I": "uint8",
+        "science_valid_I": "uint8",
+        "coverage_I": "float64",
+        "coverage_bool_I": "uint8"
+      },
+      "ext_bunits": {
+        "geometric_hits_I": "count",
+        "contributing_hits_I": "count",
+        "upstream_eligible_exposure_I": "detector s",
+        "retained_exposure_I": "detector s",
+        "normalization_support_I": "1",
+        "science_policy_support_I": "1",
+        "science_valid_I": "1",
+        "coverage_I": "detector s",
+        "coverage_bool_I": "1"
+      },
+      "required_ext_headers": {
+        "geometric_hits_I": {"ESTTYPE": "geometric_hit_count", "TYPE": "geometric_hit_count", "DATTYP": "int64", "VALAUTH": "false"},
+        "contributing_hits_I": {"ESTTYPE": "estimator_contribution_count", "TYPE": "estimator_contribution_count", "DATTYP": "int64", "VALAUTH": "false"},
+        "upstream_eligible_exposure_I": {"ESTTYPE": "upstream_eligible_detector_seconds", "TYPE": "upstream_eligible_detector_seconds", "DATTYP": "float64", "VALAUTH": "false"},
+        "retained_exposure_I": {"ESTTYPE": "retained_detector_seconds", "TYPE": "retained_detector_seconds", "DATTYP": "float64", "VALAUTH": "false"},
+        "normalization_support_I": {"ESTTYPE": "normalization_support", "TYPE": "normalization_support", "DATTYP": "uint8", "VALAUTH": "false"},
+        "science_policy_support_I": {"ESTTYPE": "science_policy_support", "TYPE": "science_policy_support", "DATTYP": "uint8", "VALAUTH": "false"},
+        "science_valid_I": {"ESTTYPE": "authoritative_raw_science_validity", "TYPE": "authoritative_raw_science_validity", "DATTYP": "uint8", "VALAUTH": "true"},
+        "coverage_I": {"ESTTYPE": "retained_detector_seconds", "TYPE": "retained_detector_seconds", "DATTYP": "float64", "ALIASOF": "retained_exposure_I", "DEPRCATD": "false", "VALAUTH": "false"},
+        "coverage_bool_I": {"ESTTYPE": "science_policy_support", "TYPE": "science_policy_support", "DATTYP": "uint8", "ALIASOF": "science_policy_support_I", "DEPRCATD": "true", "VALAUTH": "false"}
+      },
+      "binary_extnames": [
+        "normalization_support_I",
+        "science_policy_support_I",
+        "science_valid_I",
+        "coverage_bool_I"
+      ],
+      "exact_aliases": {
+        "retained_exposure_I": "coverage_I",
+        "science_policy_support_I": "coverage_bool_I"
+      },
+      "same_shape_extnames": [
+        "geometric_hits_I", "contributing_hits_I",
+        "upstream_eligible_exposure_I", "retained_exposure_I",
+        "normalization_support_I", "science_policy_support_I",
+        "science_valid_I", "coverage_I", "coverage_bool_I"
+      ],
+      "same_wcs_extnames": [
+        "geometric_hits_I", "contributing_hits_I",
+        "upstream_eligible_exposure_I", "retained_exposure_I",
+        "normalization_support_I", "science_policy_support_I",
+        "science_valid_I", "coverage_I", "coverage_bool_I"
+      ]
+    },
+    "sci_map_naive_coadd_v1": {
+      "required_extnames": [
+        "geometric_hits_I",
+        "contributing_hits_I",
+        "coadd_observation_count_I",
+        "upstream_eligible_exposure_I",
+        "retained_exposure_I",
+        "normalization_support_I",
+        "science_policy_support_I",
+        "science_valid_I",
+        "coverage_I",
+        "coverage_bool_I"
+      ],
+      "required_ext_bitpix": {
+        "geometric_hits_I": 64,
+        "contributing_hits_I": 64,
+        "coadd_observation_count_I": 64,
+        "upstream_eligible_exposure_I": -64,
+        "retained_exposure_I": -64,
+        "normalization_support_I": 8,
+        "science_policy_support_I": 8,
+        "science_valid_I": 8,
+        "coverage_I": -64,
+        "coverage_bool_I": 8
+      },
+      "required_ext_dtypes": {
+        "geometric_hits_I": "int64",
+        "contributing_hits_I": "int64",
+        "coadd_observation_count_I": "int64",
+        "upstream_eligible_exposure_I": "float64",
+        "retained_exposure_I": "float64",
+        "normalization_support_I": "uint8",
+        "science_policy_support_I": "uint8",
+        "science_valid_I": "uint8",
+        "coverage_I": "float64",
+        "coverage_bool_I": "uint8"
+      },
+      "ext_bunits": {
+        "geometric_hits_I": "count",
+        "contributing_hits_I": "count",
+        "coadd_observation_count_I": "count",
+        "upstream_eligible_exposure_I": "detector s",
+        "retained_exposure_I": "detector s",
+        "normalization_support_I": "1",
+        "science_policy_support_I": "1",
+        "science_valid_I": "1",
+        "coverage_I": "detector s",
+        "coverage_bool_I": "1"
+      },
+      "required_ext_headers": {
+        "geometric_hits_I": {"ESTTYPE": "geometric_hit_count", "TYPE": "geometric_hit_count", "DATTYP": "int64", "VALAUTH": "false"},
+        "contributing_hits_I": {"ESTTYPE": "estimator_contribution_count", "TYPE": "estimator_contribution_count", "DATTYP": "int64", "VALAUTH": "false"},
+        "coadd_observation_count_I": {"ESTTYPE": "coadd_observation_count", "TYPE": "coadd_observation_count", "DATTYP": "int64", "VALAUTH": "false"},
+        "upstream_eligible_exposure_I": {"ESTTYPE": "upstream_eligible_detector_seconds", "TYPE": "upstream_eligible_detector_seconds", "DATTYP": "float64", "VALAUTH": "false"},
+        "retained_exposure_I": {"ESTTYPE": "retained_detector_seconds", "TYPE": "retained_detector_seconds", "DATTYP": "float64", "VALAUTH": "false"},
+        "normalization_support_I": {"ESTTYPE": "normalization_support", "TYPE": "normalization_support", "DATTYP": "uint8", "VALAUTH": "false"},
+        "science_policy_support_I": {"ESTTYPE": "science_policy_support", "TYPE": "science_policy_support", "DATTYP": "uint8", "VALAUTH": "false"},
+        "science_valid_I": {"ESTTYPE": "authoritative_raw_science_validity", "TYPE": "authoritative_raw_science_validity", "DATTYP": "uint8", "VALAUTH": "true"},
+        "coverage_I": {"ESTTYPE": "retained_detector_seconds", "TYPE": "retained_detector_seconds", "DATTYP": "float64", "ALIASOF": "retained_exposure_I", "DEPRCATD": "false", "VALAUTH": "false"},
+        "coverage_bool_I": {"ESTTYPE": "science_policy_support", "TYPE": "science_policy_support", "DATTYP": "uint8", "ALIASOF": "science_policy_support_I", "DEPRCATD": "true", "VALAUTH": "false"}
+      },
+      "binary_extnames": [
+        "normalization_support_I", "science_policy_support_I",
+        "science_valid_I", "coverage_bool_I"
+      ],
+      "exact_aliases": {
+        "retained_exposure_I": "coverage_I",
+        "science_policy_support_I": "coverage_bool_I"
+      },
+      "same_shape_extnames": [
+        "geometric_hits_I", "contributing_hits_I", "coadd_observation_count_I",
+        "upstream_eligible_exposure_I", "retained_exposure_I",
+        "normalization_support_I", "science_policy_support_I",
+        "science_valid_I", "coverage_I", "coverage_bool_I"
+      ],
+      "same_wcs_extnames": [
+        "geometric_hits_I", "contributing_hits_I", "coadd_observation_count_I",
+        "upstream_eligible_exposure_I", "retained_exposure_I",
+        "normalization_support_I", "science_policy_support_I",
+        "science_valid_I", "coverage_I", "coverage_bool_I"
+      ]
+    },
+    "sci_map_jinc_explicit_absence_v1": {
+      "forbidden_extnames": [
+        "geometric_hits_I", "contributing_hits_I",
+        "coadd_observation_count_I", "upstream_eligible_exposure_I",
+        "retained_exposure_I", "normalization_support_I",
+        "science_policy_support_I", "science_valid_I",
+        "coverage_I", "coverage_bool_I"
+      ]
+    },
+    "sci_map_empirical_products_v1": {
+      "required_extnames": [
+        "weight_formal_I", "noise_variance_I",
+        "sig2noise_I", "sig2noise_pixel_I"
+      ],
+      "forbidden_extnames": ["formal_standardized_signal_I"],
+      "required_ext_headers": {
+        "weight_formal_I": {
+          "ESTTYPE": "formal_normalization_coefficient_snapshot",
+          "TYPE": "formal_normalization_coefficient_snapshot",
+          "PRECSTAT": "conditional_SCI-PTC-001",
+          "COVSTAT": "unavailable"
+        }
+      }
+    },
+    "sci_map_filtered_empirical_products_v1": {
+      "required_extnames": [
+        "weight_formal_I", "noise_variance_I",
+        "sig2noise_I", "sig2noise_pixel_I",
+        "point_source_flux_I", "point_source_uncertainty_I",
+        "sig2noise_point_source_I"
+      ],
+      "forbidden_extnames": ["formal_standardized_signal_I"],
+      "required_ext_headers": {
+        "weight_formal_I": {
+          "ESTTYPE": "formal_normalization_coefficient_snapshot",
+          "TYPE": "formal_normalization_coefficient_snapshot",
+          "PRECSTAT": "conditional_SCI-PTC-001",
+          "COVSTAT": "unavailable"
+        }
+      }
+    },
+    "sci_map_formal_standardized_only_v1": {
+      "required_extnames": ["formal_standardized_signal_I"],
+      "forbidden_extnames": [
+        "weight_formal_I", "noise_variance_I",
+        "sig2noise_I", "sig2noise_pixel_I"
+      ],
+      "required_ext_headers": {
+        "formal_standardized_signal_I": {
+          "ESTTYPE": "formal_weight_standardized",
+          "TYPE": "formal_weight_standardized"
+        }
+      }
+    },
+    "sci_map_detector_group_v1": {
+      "min_hdus": 4,
+      "primary_bunit": "mJy/beam",
+      "required_extname_prefixes": ["signal_det_", "weight_det_", "kernel_det_"],
+      "required_prefix_headers": {
+        "weight_det_": {
+          "ESTTYPE": "nonprecision_normalization_coefficient",
+          "TYPE": "nonprecision_normalization_coefficient",
+          "PRECSTAT": "not_established",
+          "COVSTAT": "unavailable"
+        }
+      },
+      "required_prefix_header_one_of": {
+        "weight_det_": {
+          "CALTYPE": ["formal", "empirical"]
+        }
+      },
+      "forbidden_extname_prefixes": [
+        "geometric_hits_", "contributing_hits_",
+        "coadd_observation_count_", "upstream_eligible_exposure_",
+        "retained_exposure_", "normalization_support_",
+        "science_policy_support_", "science_valid_",
+        "coverage_", "coverage_bool_",
+        "formal_standardized_signal_", "sig2noise_",
+        "point_source_flux_", "point_source_uncertainty_"
+      ],
+      "axis_types": ["AZOFFSET", "ELOFFSET", "FREQ", "STOKES"],
+      "axis_units": ["arcsec", "arcsec", "Hz", null]
+    },
     "basic_altaz_map": {
       "min_hdus": 8,
       "primary_bunit": "mJy/beam",
@@ -1656,6 +2219,124 @@
           "max_matches": null
         }
       ]
+    },
+    {
+      "contract_id": "sci-map-001-point-products-v1",
+      "profile_id": "sci-map-001-point-152389-v1",
+      "extends_contract_id": "phase4-point-products-v1",
+      "entry_overrides": {
+        "raw-maps": {
+          "family_id": "science_map_cube_altaz_v1",
+          "check_id": "sci_map_common_altaz_v1",
+          "checks_by_config": [
+            {"when": {"path": "mapmaking.method", "equals": "naive"}, "check_id": "sci_map_naive_observation_v1"},
+            {"when": {"path": "mapmaking.method", "equals": "jinc"}, "check_id": "sci_map_jinc_explicit_absence_v1"},
+            {"when": {"path": "noise_maps.products.enabled", "equals": true}, "check_id": "sci_map_empirical_products_v1"},
+            {"when": {"path": "noise_maps.products.enabled", "equals": false}, "check_id": "sci_map_formal_standardized_only_v1"}
+          ],
+          "required_config_check_matches": 2
+        },
+        "filtered-maps": {
+          "family_id": "science_map_filtered_altaz_v1",
+          "check_id": "sci_map_common_altaz_v1",
+          "checks_by_config": [
+            {"when": {"path": "mapmaking.method", "equals": "naive"}, "check_id": "sci_map_naive_observation_v1"},
+            {"when": {"path": "mapmaking.method", "equals": "jinc"}, "check_id": "sci_map_jinc_explicit_absence_v1"},
+            {"when": {"path": "mapmaking.method", "equals": "naive"}, "check_id": "sci_map_filtered_raw_parent_v1"},
+            {"when": {"path": "mapmaking.method", "equals": "jinc"}, "check_id": "sci_map_filtered_no_raw_parent_v1"},
+            {"when": {"path": "noise_maps.products.enabled", "equals": true}, "check_id": "sci_map_filtered_empirical_products_v1"},
+            {"when": {"path": "noise_maps.products.enabled", "equals": false}, "check_id": "sci_map_formal_standardized_only_v1"}
+          ],
+          "required_config_check_matches": 3
+        }
+      }
+    },
+    {
+      "contract_id": "sci-map-001-oof-products-v1",
+      "profile_id": "sci-map-001-oof-152385-152387-v1",
+      "extends_contract_id": "phase5-oof-products-v2",
+      "entry_overrides": {
+        "raw-maps": {
+          "family_id": "science_map_cube_altaz_v1",
+          "check_id": "sci_map_common_altaz_v1",
+          "checks_by_config": [
+            {"when": {"path": "mapmaking.method", "equals": "naive"}, "check_id": "sci_map_naive_observation_v1"},
+            {"when": {"path": "mapmaking.method", "equals": "jinc"}, "check_id": "sci_map_jinc_explicit_absence_v1"},
+            {"when": {"path": "noise_maps.products.enabled", "equals": true}, "check_id": "sci_map_empirical_products_v1"},
+            {"when": {"path": "noise_maps.products.enabled", "equals": false}, "check_id": "sci_map_formal_standardized_only_v1"}
+          ],
+          "required_config_check_matches": 2
+        }
+      }
+    },
+    {
+      "contract_id": "sci-map-001-science-products-v1",
+      "profile_id": "sci-map-001-science-152390-152392-v1",
+      "extends_contract_id": "phase4-science-products-v1",
+      "entry_overrides": {
+        "observation-raw-maps": {
+          "family_id": "science_map_cube_celestial_v1",
+          "check_id": "sci_map_common_celestial_v1",
+          "checks_by_config": [
+            {"when": {"path": "mapmaking.method", "equals": "naive"}, "check_id": "sci_map_naive_observation_v1"},
+            {"when": {"path": "mapmaking.method", "equals": "jinc"}, "check_id": "sci_map_jinc_explicit_absence_v1"},
+            {"when": {"path": "noise_maps.products.enabled", "equals": true}, "check_id": "sci_map_empirical_products_v1"},
+            {"when": {"path": "noise_maps.products.enabled", "equals": false}, "check_id": "sci_map_formal_standardized_only_v1"}
+          ],
+          "required_config_check_matches": 2
+        },
+        "coadded-raw-maps": {
+          "family_id": "science_map_cube_celestial_v1",
+          "check_id": "sci_map_common_celestial_v1",
+          "checks_by_config": [
+            {"when": {"path": "mapmaking.method", "equals": "naive"}, "check_id": "sci_map_naive_coadd_v1"},
+            {"when": {"path": "mapmaking.method", "equals": "jinc"}, "check_id": "sci_map_jinc_explicit_absence_v1"}
+          ],
+          "required_config_check_matches": 1,
+          "checks": {
+            "forbidden_extnames": [
+              "weight_formal_I", "noise_variance_I",
+              "formal_standardized_signal_I", "sig2noise_I",
+              "sig2noise_pixel_I", "point_source_flux_I",
+              "point_source_uncertainty_I", "sig2noise_point_source_I"
+            ]
+          }
+        },
+        "coadded-filtered-maps": {
+          "family_id": "science_map_filtered_celestial_v1",
+          "check_id": "sci_map_common_celestial_v1",
+          "checks_by_config": [
+            {"when": {"path": "mapmaking.method", "equals": "naive"}, "check_id": "sci_map_naive_coadd_v1"},
+            {"when": {"path": "mapmaking.method", "equals": "jinc"}, "check_id": "sci_map_jinc_explicit_absence_v1"},
+            {"when": {"path": "mapmaking.method", "equals": "naive"}, "check_id": "sci_map_filtered_raw_parent_v1"},
+            {"when": {"path": "mapmaking.method", "equals": "jinc"}, "check_id": "sci_map_filtered_no_raw_parent_v1"}
+          ],
+          "required_config_check_matches": 2,
+          "checks": {
+            "forbidden_extnames": [
+              "weight_formal_I", "noise_variance_I",
+              "formal_standardized_signal_I", "sig2noise_I",
+              "sig2noise_pixel_I", "point_source_flux_I",
+              "point_source_uncertainty_I", "sig2noise_point_source_I"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "contract_id": "sci-map-001-beammap-products-v1",
+      "profile_id": "sci-map-001-beammap-148670-v1",
+      "extends_contract_id": "phase4.1-beammap-products-v2",
+      "entry_overrides": {
+        "good-detector-maps": {
+          "family_id": "science_map_detector_group_v1",
+          "check_id": "sci_map_detector_group_v1"
+        },
+        "bad-detector-maps": {
+          "family_id": "science_map_detector_group_v1",
+          "check_id": "sci_map_detector_group_v1"
+        }
+      }
     }
   ]
 }

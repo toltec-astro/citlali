@@ -10,6 +10,9 @@ template <auto FilteredCoaddMap, class Engine, class Logger>
 void filter_coadd_maps(Engine &engine,
                        StageProfileCollector &stage_profile,
                        const Logger &logger) {
+    if constexpr (requires { engine.cmb.freeze_raw_science_parent(); }) {
+        engine.cmb.freeze_raw_science_parent();
+    }
     filter_maps<FilteredCoaddMap>(
         engine, engine.cmb, stage_profile, logger, "filtering coadded maps");
     record_post_processing_filter_completed_if_available(

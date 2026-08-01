@@ -2,6 +2,7 @@
 
 #include <citlali/core/pipeline/atomic_yaml_output.h>
 #include <citlali/core/pipeline/coadd_execution_plan.h>
+#include <citlali/core/pipeline/science_map_provenance_serialization.h>
 
 #include <yaml-cpp/yaml.h>
 
@@ -12,7 +13,7 @@
 namespace citlali::pipeline {
 
 inline constexpr const char *coadd_provenance_schema_version =
-    "citlali-coadd-provenance-v1";
+    "citlali-coadd-provenance-v2";
 inline constexpr const char *coadd_provenance_filename =
     "coadd_provenance.yaml";
 
@@ -41,6 +42,34 @@ inline YAML::Node coadd_provenance_node(
         plan.effective_resolution.effective_enabled;
     root["effective"]["resolution"]["disabled_by_mapmaking"] =
         plan.effective_resolution.disabled_by_mapmaking;
+    root["science_contract"] = science_map_policy_contract_node();
+    root["science_contract"]["cuts"]["requested"] =
+        science_map_optional_exact_double_node(
+            plan.science.requested_coverage_cut);
+    root["science_contract"]["cuts"]["effective"] =
+        science_map_optional_exact_double_node(
+            plan.science.effective_coverage_cut);
+    const bool science_state_available =
+        plan.science.common_identity.has_value() &&
+        !plan.science.realized_maps.empty() &&
+        plan.science.common_identity->ordered_slots.size() ==
+            plan.science.realized_maps.size();
+    root["observation_resolved"]["available"] =
+        science_state_available;
+    root["observation_resolved"]["common_identity"] =
+        science_map_optional_bundle_identity_node(
+            plan.science.common_identity,
+            plan.science.absence_reason);
+    root["observation_resolved"]["realized_maps"] =
+        science_map_realized_maps_node(plan.science.realized_maps);
+    root["observation_resolved"]["admissions"] =
+        science_map_coadd_admissions_node(plan.science.admissions);
+    root["observation_resolved"]["admitted_observation_count"] =
+        plan.science.admissions.size();
+    if (!science_state_available) {
+        root["observation_resolved"]["absence_reason"] =
+            plan.science.absence_reason;
+    }
     root["realized"]["reduction_completed"] =
         plan.realized.reduction_completed;
     root["realized"]["coadd_executed"] =

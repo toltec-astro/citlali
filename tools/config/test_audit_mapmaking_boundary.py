@@ -94,6 +94,70 @@ class MapmakingBoundaryAuditTest(unittest.TestCase):
             )
         self.assertFalse(state["exact"])
 
+    def test_accepts_science_map_product_contract_surface(self) -> None:
+        registry = {
+            "schema_version": audit.EXPECTED_PRODUCT_REGISTRY_SCHEMA,
+            "science_map_contracts": {
+                audit.EXPECTED_SCIENCE_MAP_CONTRACT: {
+                    "audit_state": "addressed_pending_reaudit",
+                    "planes": [
+                        {"name": name}
+                        for name in sorted(audit.EXPECTED_SCIENCE_MAP_PLANES)
+                    ],
+                    "aliases": {
+                        "coverage_I": {
+                            "canonical": "retained_exposure_I",
+                            "relationship": "bitwise_equal",
+                        },
+                        "coverage_bool_I": {
+                            "canonical": "science_policy_support_I",
+                            "relationship": "bitwise_equal",
+                            "deprecated": True,
+                            "validity_authority": False,
+                        },
+                    },
+                }
+            },
+            "contracts": [
+                {"contract_id": contract_id}
+                for contract_id in audit.EXPECTED_SUCCESSOR_PRODUCT_CONTRACTS
+            ],
+        }
+
+        self.assertTrue(audit.product_contract_state(registry)["exact"])
+
+    def test_rejects_science_map_alias_promotion(self) -> None:
+        registry = {
+            "schema_version": audit.EXPECTED_PRODUCT_REGISTRY_SCHEMA,
+            "science_map_contracts": {
+                audit.EXPECTED_SCIENCE_MAP_CONTRACT: {
+                    "audit_state": "addressed_pending_reaudit",
+                    "planes": [
+                        {"name": name}
+                        for name in sorted(audit.EXPECTED_SCIENCE_MAP_PLANES)
+                    ],
+                    "aliases": {
+                        "coverage_I": {
+                            "canonical": "retained_exposure_I",
+                            "relationship": "bitwise_equal",
+                        },
+                        "coverage_bool_I": {
+                            "canonical": "science_policy_support_I",
+                            "relationship": "bitwise_equal",
+                            "deprecated": True,
+                            "validity_authority": True,
+                        },
+                    },
+                }
+            },
+            "contracts": [
+                {"contract_id": contract_id}
+                for contract_id in audit.EXPECTED_SUCCESSOR_PRODUCT_CONTRACTS
+            ],
+        }
+
+        self.assertFalse(audit.product_contract_state(registry)["exact"])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <citlali/core/pipeline/map_buffer_allocation.h>
 #include <citlali/core/pipeline/obsnum_format.h>
 #include <citlali/core/pipeline/output_policy.h>
 
@@ -25,24 +26,17 @@ void set_observation_map_output_obsnum(Engine &engine) {
 }
 
 template <class Engine>
-bool should_record_coadd_output_obsnum(const Engine &engine) {
-    return coadd_outputs_enabled(engine);
-}
-
-template <class Engine>
-void record_coadd_output_obsnum(Engine &engine) {
-    engine.cmb.obsnums.push_back(engine.observation_identity.obsnum);
-}
-
-template <class Engine>
 void configure_observation_output_layout(Engine &engine, int obsnum) {
     set_observation_output_obsnum(engine, obsnum);
     set_observation_output_dir_name(engine);
 
     set_observation_map_output_obsnum(engine);
 
-    if (should_record_coadd_output_obsnum(engine)) {
-        record_coadd_output_obsnum(engine);
+    if (coadd_outputs_enabled(engine) &&
+        !science_map_v1_profile_available(engine)) {
+        // Polarized and other non-v1 profiles retain their pre-repair
+        // membership path; v1 membership is part of atomic F009 admission.
+        engine.cmb.obsnums.push_back(engine.observation_identity.obsnum);
     }
 }
 

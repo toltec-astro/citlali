@@ -128,10 +128,7 @@ inline void record_noise_run_completed(
         observation_map_count += observation.map_count;
     }
     const bool coadd_available = mapmaking_plan.coadd.has_value();
-    const bool observation_noise_generated =
-        !coadd_available ||
-        citlali::config::is_jinc_map_method(
-            mapmaking_plan.effective.method);
+    const bool observation_noise_generated = true;
     const std::size_t coadd_map_count = coadd_available
         ? mapmaking_plan.coadd->map_count
         : std::size_t{0};

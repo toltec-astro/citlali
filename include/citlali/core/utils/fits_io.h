@@ -3,7 +3,16 @@
 #include <citlali/core/error/error.h>
 
 #include <CCfits/CCfits>
+#include <Eigen/Core>
+#include <spdlog/spdlog.h>
+#include <cstdint>
+#include <memory>
 #include <stdexcept>
+#include <string>
+#include <type_traits>
+#include <utility>
+#include <valarray>
+#include <vector>
 
 enum file_type_enum {
     read_fits = 0,
@@ -58,22 +67,49 @@ public:
     }
 
     template <typename Derived>
-    void add_hdu(std::string hdu_name, Eigen::DenseBase<Derived> &data) {
+    void add_hdu(std::string hdu_name,
+                 const Eigen::DenseBase<Derived> &data) {
+        using scalar_type =
+            std::remove_cv_t<typename Derived::Scalar>;
+
+        if constexpr (std::is_same_v<scalar_type, double>) {
+            add_typed_hdu<double>(std::move(hdu_name), DOUBLE_IMG, data);
+        }
+        else if constexpr (std::is_same_v<scalar_type, std::int64_t>) {
+            add_typed_hdu<long long>(std::move(hdu_name), LONGLONG_IMG, data);
+        }
+        else if constexpr (std::is_same_v<scalar_type, std::uint8_t>) {
+            add_typed_hdu<unsigned char>(std::move(hdu_name), BYTE_IMG, data);
+        }
+        else {
+            static_assert(std::is_same_v<scalar_type, double> ||
+                              std::is_same_v<scalar_type, std::int64_t> ||
+                              std::is_same_v<scalar_type, std::uint8_t>,
+                          "fitsIO::add_hdu supports only double, signed int64, "
+                          "and uint8 image planes");
+        }
+    }
+
+private:
+    template <typename FitsScalar, typename Derived>
+    void add_typed_hdu(std::string hdu_name, int image_type,
+                       const Eigen::DenseBase<Derived> &data) {
         try {
             // axes in reverse order (cols, rows, pol, freq)
             std::vector<long> naxes{data.cols(), data.rows(), 1, 1};
 
             // add an extension hdu to vector
-            hdus.push_back((pfits->addImage(hdu_name,DOUBLE_IMG,naxes)));
+            hdus.push_back((pfits->addImage(hdu_name, image_type, naxes)));
 
             // valarray to copy data into (seems to be necessary)
-            std::valarray<double> temp_data(data.size());
+            std::valarray<FitsScalar> temp_data(data.size());
 
             // copy the data (flip in x direction)
             int k = 0;
             for (int i=0; i<data.rows(); ++i){
                 for (int j=0; j<data.cols(); ++j) {
-                    temp_data[k] = data(i, data.cols() - j - 1);
+                    temp_data[k] = static_cast<FitsScalar>(
+                        data(i, data.cols() - j - 1));
                     k++;
                 }
             }
@@ -88,6 +124,8 @@ public:
                 "failed to add/write FITS HDU '" + hdu_name + "' in " + filepath + ": " + e.message());
         }
     }
+
+public:
 
     auto get_hdu(std::string hdu_name) {
         try {

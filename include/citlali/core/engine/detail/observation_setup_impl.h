@@ -7,9 +7,11 @@
 #include <citlali/core/config/config_value.h>
 #include <citlali/core/pipeline/observation_setup_validation.h>
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/map_buffer_allocation.h>
 #include <citlali/core/pipeline/raw_timestream_observation_shadow.h>
 #include <citlali/core/pipeline/raw_timestream_policy.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
+#include <citlali/core/pipeline/science_map_identity.h>
 #include <citlali/core/pipeline/stage_profile.h>
 #include <citlali/core/pipeline/timestream_output_provenance.h>
 
@@ -105,6 +107,9 @@ void setup_observation_timestream_processors(EngineT &engine) {
 
 template <class EngineT>
 void setup_observation_map_wcs(EngineT &engine) {
+    const bool retain_legacy_coadd_metadata =
+        citlali::pipeline::coadd_outputs_enabled(engine) &&
+        !citlali::pipeline::science_map_v1_profile_available(engine);
     // set map wcs crvals to source ra/dec
     if (citlali::config::is_radec_map_pixel_axes(engine.telescope.pixel_axes)) {
         engine.omb.wcs.crval[0] =
@@ -112,12 +117,11 @@ void setup_observation_map_wcs(EngineT &engine) {
         engine.omb.wcs.crval[1] =
             engine.telescope.tel_header["Header.Source.Dec"](0)*RAD_TO_DEG;
 
-        if (citlali::pipeline::coadd_outputs_enabled(engine)) {
-            engine.cmb.wcs.crval[0] =
-                engine.telescope.tel_header["Header.Source.Ra"](0)*RAD_TO_DEG;
-            engine.cmb.wcs.crval[1] =
-                engine.telescope.tel_header["Header.Source.Dec"](0)*RAD_TO_DEG;
+        if (retain_legacy_coadd_metadata) {
+            engine.cmb.wcs.crval[0] = engine.omb.wcs.crval[0];
+            engine.cmb.wcs.crval[1] = engine.omb.wcs.crval[1];
         }
+
     }
 
     // set map wcs crvals to source l/b
@@ -128,13 +132,14 @@ void setup_observation_map_wcs(EngineT &engine) {
         engine.omb.wcs.crval[1] =
             engine.telescope.tel_header["Header.Source.B"](0)*RAD_TO_DEG;
 
-        if (citlali::pipeline::coadd_outputs_enabled(engine)) {
-            engine.cmb.wcs.crval[0] =
-                engine.telescope.tel_header["Header.Source.L"](0)*RAD_TO_DEG;
-            engine.cmb.wcs.crval[1] =
-                engine.telescope.tel_header["Header.Source.B"](0)*RAD_TO_DEG;
+        if (retain_legacy_coadd_metadata) {
+            engine.cmb.wcs.crval[0] = engine.omb.wcs.crval[0];
+            engine.cmb.wcs.crval[1] = engine.omb.wcs.crval[1];
         }
+
     }
+
+    citlali::pipeline::configure_observation_science_map_identity(engine);
 }
 
 template <class EngineT>

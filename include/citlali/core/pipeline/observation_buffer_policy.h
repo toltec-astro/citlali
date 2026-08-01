@@ -17,10 +17,10 @@ void configure_observation_pixel_contribution_targets(Engine &engine) {
 
 template <class Engine>
 bool should_allocate_observation_noise_maps(const Engine &engine) {
-    return noise_maps_enabled(engine) &&
-           (!coadd_outputs_enabled(engine) ||
-            mapmaking_config(engine).method ==
-                citlali::config::MapMethod::jinc);
+    // Noise realizations are observation-owned until the whole normalized map
+    // bundle passes SCI-MAP-001 coadd admission. This keeps signal, kernel, and
+    // realizations on one accepted map-operator boundary.
+    return noise_maps_enabled(engine);
 }
 
 }  // namespace citlali::pipeline

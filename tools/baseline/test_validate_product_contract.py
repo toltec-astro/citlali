@@ -1,3 +1,4 @@
+import copy
 import json
 import tempfile
 import unittest
@@ -171,6 +172,80 @@ class ValidateProductContractTest(unittest.TestCase):
         with self.assertRaisesRegex(product_contract.ContractError, "units_policy"):
             product_contract.load_registry(path)
 
+    def test_materializes_successor_contract_without_mutating_predecessor(self) -> None:
+        registry = self.registry([self.entry()])
+        registry["contracts"].append(  # type: ignore[union-attr]
+            {
+                "contract_id": "successor",
+                "profile_id": "successor-profile",
+                "extends_contract_id": "contract",
+                "entry_overrides": {
+                    "test-entry": {"pattern": "successor.csv"}
+                },
+            }
+        )
+
+        loaded = product_contract.load_registry(self.write_registry(registry))
+        predecessor = product_contract.contract_by_id(loaded, "contract")
+        successor = product_contract.contract_by_id(loaded, "successor")
+
+        self.assertEqual(predecessor["entries"][0]["pattern"], "product.csv")
+        self.assertEqual(successor["entries"][0]["pattern"], "successor.csv")
+        self.assertEqual(successor["mode"], predecessor["mode"])
+
+    def test_science_map_schema_rejects_alias_semantic_drift(self) -> None:
+        checked = (
+            Path(__file__).resolve().parents[2]
+            / "validation/product_contracts.json"
+        )
+        registry = copy.deepcopy(json.loads(checked.read_text(encoding="utf-8")))
+        registry["science_map_contracts"]["sci-map-001-f010-v1"]["aliases"][
+            "coverage_bool_I"
+        ]["validity_authority"] = True
+
+        with self.assertRaisesRegex(product_contract.ContractError, "does not freeze"):
+            product_contract.load_registry(self.write_registry(registry))
+
+    def test_science_map_schema_rejects_alias_type_drift(self) -> None:
+        checked = (
+            Path(__file__).resolve().parents[2]
+            / "validation/product_contracts.json"
+        )
+        registry = copy.deepcopy(json.loads(checked.read_text(encoding="utf-8")))
+        registry["science_map_contracts"]["sci-map-001-f010-v1"]["aliases"][
+            "coverage_I"
+        ]["unit"] = "s"
+
+        with self.assertRaisesRegex(product_contract.ContractError, "does not freeze"):
+            product_contract.load_registry(self.write_registry(registry))
+
+    def test_science_map_schema_requires_nonarray_absence_and_parallel_policy(
+        self,
+    ) -> None:
+        checked = (
+            Path(__file__).resolve().parents[2]
+            / "validation/product_contracts.json"
+        )
+        registry = copy.deepcopy(json.loads(checked.read_text(encoding="utf-8")))
+        science = registry["science_map_contracts"]["sci-map-001-f010-v1"]
+        del science["non_array_grouping_absence_policy"]
+
+        with self.assertRaisesRegex(
+            product_contract.ContractError,
+            "non_array_grouping_absence_policy",
+        ):
+            product_contract.load_registry(self.write_registry(registry))
+
+        registry = copy.deepcopy(json.loads(checked.read_text(encoding="utf-8")))
+        registry["science_map_contracts"]["sci-map-001-f010-v1"][
+            "parallel_equivalence_policy"
+        ]["identity"] = "unbounded"
+        with self.assertRaisesRegex(
+            product_contract.ContractError,
+            "parallel_equivalence_policy.identity",
+        ):
+            product_contract.load_registry(self.write_registry(registry))
+
     @unittest.skipIf(product_contract.fits is None, "astropy is unavailable")
     def test_checks_fits_structure_without_reading_pixels(self) -> None:
         from astropy.io import fits
@@ -204,6 +279,381 @@ class ValidateProductContractTest(unittest.TestCase):
         )
 
         self.assertTrue(result["passed"], result["errors"])
+
+    @unittest.skipIf(product_contract.fits is None, "astropy is unavailable")
+    def test_detector_contract_rejects_new_significance_product_family(
+        self,
+    ) -> None:
+        import numpy as np
+        from astropy.io import fits
+
+        checked = (
+            Path(__file__).resolve().parents[2]
+            / "validation/product_contracts.json"
+        )
+        registry = product_contract.load_registry(checked)
+        checks = registry["checks"]["sci_map_detector_group_v1"]
+        header = fits.Header(
+            {
+                "CTYPE1": "AZOFFSET",
+                "CTYPE2": "ELOFFSET",
+                "CTYPE3": "FREQ",
+                "CTYPE4": "STOKES",
+                "CUNIT1": "arcsec",
+                "CUNIT2": "arcsec",
+                "CUNIT3": "Hz",
+                "CUNIT4": "",
+            }
+        )
+        weight_header = header.copy()
+        weight_header.update(
+            {
+                "ESTTYPE": "nonprecision_normalization_coefficient",
+                "TYPE": "nonprecision_normalization_coefficient",
+                "PRECSTAT": "not_established",
+                "COVSTAT": "unavailable",
+                "CALTYPE": "formal",
+            }
+        )
+        data = np.ones((1, 1, 1, 1), dtype=np.float64)
+        fits.HDUList(
+            [
+                fits.PrimaryHDU(
+                    header=fits.Header({"BUNIT": "mJy/beam"})
+                ),
+                fits.ImageHDU(
+                    data=data, header=header, name="signal_det_0_I"
+                ),
+                fits.ImageHDU(
+                    data=data, header=weight_header, name="weight_det_0_I"
+                ),
+                fits.ImageHDU(
+                    data=data, header=header, name="kernel_det_0_I"
+                ),
+                fits.ImageHDU(
+                    data=data,
+                    header=header,
+                    name="formal_standardized_signal_det_0_I",
+                ),
+            ]
+        ).writeto(self.reduction / "detector.fits")
+
+        errors = product_contract.validate_fits(
+            self.reduction / "detector.fits", checks
+        )
+
+        self.assertTrue(
+            any(
+                "forbidden FITS extension prefixes" in error
+                and "formal_standardized_signal_" in error
+                for error in errors
+            ),
+            errors,
+        )
+
+    @unittest.skipIf(product_contract.fits is None, "astropy is unavailable")
+    def test_checks_typed_masks_aliases_headers_shape_and_wcs(self) -> None:
+        import numpy as np
+        from astropy.io import fits
+
+        def header(estimator: str) -> fits.Header:
+            return fits.Header(
+                {
+                    "BUNIT": "1",
+                    "ESTTYPE": estimator,
+                    "CTYPE1": "AZOFFSET",
+                    "CTYPE2": "ELOFFSET",
+                    "CUNIT1": "arcsec",
+                    "CUNIT2": "arcsec",
+                    "CRPIX1": 1.0,
+                    "CRPIX2": 1.0,
+                    "CRVAL1": 0.0,
+                    "CRVAL2": 0.0,
+                    "CDELT1": -1.0,
+                    "CDELT2": 1.0,
+                    "EQUINOX": 2000.0,
+                }
+            )
+
+        retained = np.array([[1.25, 0.0]], dtype=np.float64)
+        policy = np.array([[1, 0]], dtype=np.uint8)
+        hdus = fits.HDUList(
+            [
+                fits.PrimaryHDU(),
+                fits.ImageHDU(
+                    data=np.array([[2, 0]], dtype=np.int64),
+                    header=header("count"),
+                    name="geometric_hits_I",
+                ),
+                fits.ImageHDU(
+                    data=retained,
+                    header=header("retained_exposure"),
+                    name="retained_exposure_I",
+                ),
+                fits.ImageHDU(
+                    data=retained.copy(),
+                    header=header("retained_exposure_alias"),
+                    name="coverage_I",
+                ),
+                fits.ImageHDU(
+                    data=policy,
+                    header=header("science_policy_support"),
+                    name="science_policy_support_I",
+                ),
+                fits.ImageHDU(
+                    data=policy.copy(),
+                    header=header("deprecated_policy_alias"),
+                    name="coverage_bool_I",
+                ),
+                fits.ImageHDU(
+                    data=policy.copy(),
+                    header=header("science_validity"),
+                    name="science_valid_I",
+                ),
+            ]
+        )
+        hdus.writeto(self.reduction / "product.fits")
+        names = [
+            "geometric_hits_I",
+            "retained_exposure_I",
+            "coverage_I",
+            "science_policy_support_I",
+            "coverage_bool_I",
+            "science_valid_I",
+        ]
+        result = self.validate(
+            [
+                self.entry(
+                    pattern="product.fits",
+                    checks={
+                        "required_extnames": names,
+                        "required_ext_bitpix": {
+                            "geometric_hits_I": 64,
+                            "retained_exposure_I": -64,
+                            "science_policy_support_I": 8,
+                            "science_valid_I": 8,
+                        },
+                        "required_ext_dtypes": {
+                            "geometric_hits_I": "int64",
+                            "retained_exposure_I": "float64",
+                            "science_policy_support_I": "uint8",
+                            "science_valid_I": "uint8",
+                        },
+                        "binary_extnames": [
+                            "science_policy_support_I",
+                            "coverage_bool_I",
+                            "science_valid_I",
+                        ],
+                        "exact_aliases": {
+                            "retained_exposure_I": "coverage_I",
+                            "science_policy_support_I": "coverage_bool_I",
+                        },
+                        "required_ext_headers": {
+                            "science_valid_I": {
+                                "BUNIT": "1",
+                                "ESTTYPE": "science_validity",
+                            }
+                        },
+                        "same_shape_extnames": names,
+                        "same_wcs_extnames": names,
+                    },
+                )
+            ]
+        )
+
+        self.assertTrue(result["passed"], result["errors"])
+
+    @unittest.skipIf(product_contract.fits is None, "astropy is unavailable")
+    def test_checks_filtered_raw_parent_header_carriage(self) -> None:
+        import numpy as np
+        from astropy.io import fits
+
+        digest = "sha256:" + "0123456789abcdef" * 4
+
+        def raw_header() -> fits.Header:
+            return fits.Header(
+                {"RAWSTATE": "immutable_input", "RAWPDGST": digest}
+            )
+
+        fits.HDUList(
+            [
+                fits.PrimaryHDU(),
+                fits.ImageHDU(
+                    data=np.array([[1.0]], dtype=np.float64),
+                    header=raw_header(),
+                    name="signal_I",
+                ),
+                fits.ImageHDU(
+                    data=np.array([[2.0]], dtype=np.float64),
+                    header=raw_header(),
+                    name="weight_I",
+                ),
+                fits.ImageHDU(
+                    data=np.array([[1]], dtype=np.uint8),
+                    header=raw_header(),
+                    name="science_valid_I",
+                ),
+            ]
+        ).writeto(self.reduction / "product.fits")
+        checks = {
+            "required_extnames": [
+                "signal_I",
+                "weight_I",
+                "science_valid_I",
+            ],
+            "required_ext_headers": {
+                name: {"RAWSTATE": "immutable_input"}
+                for name in ["signal_I", "weight_I", "science_valid_I"]
+            },
+            "required_ext_headers_present": {
+                name: ["RAWPDGST"]
+                for name in ["signal_I", "weight_I", "science_valid_I"]
+            },
+            "same_ext_header_values": {
+                "RAWPDGST": ["signal_I", "weight_I", "science_valid_I"]
+            },
+        }
+
+        result = self.validate(
+            [self.entry(pattern="product.fits", checks=checks)]
+        )
+
+        self.assertTrue(result["passed"], result["errors"])
+
+        with fits.open(self.reduction / "product.fits", mode="update") as hdus:
+            hdus["weight_I"].header["RAWPDGST"] = "sha256:drifted"
+        result = self.validate(
+            [self.entry(pattern="product.fits", checks=checks)]
+        )
+        self.assertFalse(result["passed"])
+        self.assertTrue(
+            any(
+                "cross-HDU RAWPDGST values differ" in error
+                for error in result["errors"]
+            )
+        )
+
+        with fits.open(self.reduction / "product.fits", mode="update") as hdus:
+            del hdus["science_valid_I"].header["RAWPDGST"]
+        result = self.validate(
+            [self.entry(pattern="product.fits", checks=checks)]
+        )
+        self.assertFalse(result["passed"])
+        self.assertTrue(
+            any(
+                "missing required FITS headers" in error
+                for error in result["errors"]
+            )
+        )
+
+    @unittest.skipIf(product_contract.fits is None, "astropy is unavailable")
+    def test_rejects_nonbinary_alias_and_cross_hdu_wcs_drift(self) -> None:
+        import numpy as np
+        from astropy.io import fits
+
+        canonical_header = fits.Header(
+            {"CTYPE1": "AZOFFSET", "CRPIX1": 1.0, "CDELT1": 1.0}
+        )
+        drifted_header = canonical_header.copy()
+        drifted_header["CRPIX1"] = 2.0
+        fits.HDUList(
+            [
+                fits.PrimaryHDU(),
+                fits.ImageHDU(
+                    data=np.array([[1]], dtype=np.uint8),
+                    header=canonical_header,
+                    name="science_policy_support_I",
+                ),
+                fits.ImageHDU(
+                    data=np.array([[2]], dtype=np.uint8),
+                    header=drifted_header,
+                    name="coverage_bool_I",
+                ),
+            ]
+        ).writeto(self.reduction / "product.fits")
+        result = self.validate(
+            [
+                self.entry(
+                    pattern="product.fits",
+                    checks={
+                        "required_extnames": [
+                            "science_policy_support_I",
+                            "coverage_bool_I",
+                        ],
+                        "binary_extnames": ["coverage_bool_I"],
+                        "exact_aliases": {
+                            "science_policy_support_I": "coverage_bool_I"
+                        },
+                        "same_wcs_extnames": [
+                            "science_policy_support_I",
+                            "coverage_bool_I",
+                        ],
+                    },
+                )
+            ]
+        )
+
+        self.assertFalse(result["passed"])
+        joined = "\n".join(result["errors"])
+        self.assertIn("not a binary 0/1 mask", joined)
+        self.assertIn("not bitwise equal", joined)
+        self.assertIn("cross-HDU WCS cards differ", joined)
+
+    @unittest.skipIf(product_contract.fits is None, "astropy is unavailable")
+    def test_rejects_missing_cross_hdu_wcs_inventory(self) -> None:
+        from astropy.io import fits
+
+        fits.HDUList(
+            [
+                fits.PrimaryHDU(),
+                fits.ImageHDU(data=[[1.0]], name="signal_I"),
+                fits.ImageHDU(data=[[1.0]], name="weight_I"),
+            ]
+        ).writeto(self.reduction / "product.fits")
+        result = self.validate(
+            [
+                self.entry(
+                    pattern="product.fits",
+                    checks={
+                        "required_extnames": ["signal_I", "weight_I"],
+                        "same_wcs_extnames": ["signal_I", "weight_I"],
+                    },
+                )
+            ]
+        )
+
+        self.assertFalse(result["passed"])
+        self.assertTrue(
+            any("no WCS-card inventory" in error for error in result["errors"])
+        )
+
+    @unittest.skipIf(product_contract.fits is None, "astropy is unavailable")
+    def test_selects_method_specific_fits_checks_from_config(self) -> None:
+        from astropy.io import fits
+
+        fits.HDUList(
+            [fits.PrimaryHDU(), fits.ImageHDU(data=[[1.0]], name="signal_I")]
+        ).writeto(self.reduction / "product.fits")
+        entry = self.entry(
+            pattern="product.fits",
+            checks_by_config=[
+                {
+                    "when": {"path": "mapmaking.method", "equals": "naive"},
+                    "checks": {"required_extnames": ["science_valid_I"]},
+                },
+                {
+                    "when": {"path": "mapmaking.method", "equals": "jinc"},
+                    "checks": {"forbidden_extnames": ["science_valid_I"]},
+                },
+            ],
+            require_matching_config_check=True,
+        )
+
+        naive = self.validate([entry], {"mapmaking": {"method": "naive"}})
+        jinc = self.validate([entry], {"mapmaking": {"method": "jinc"}})
+
+        self.assertFalse(naive["passed"])
+        self.assertTrue(jinc["passed"], jinc["errors"])
 
     @unittest.skipIf(product_contract.netCDF4 is None, "netCDF4 is unavailable")
     def test_checks_netcdf_identity_dimensions_and_variables(self) -> None:

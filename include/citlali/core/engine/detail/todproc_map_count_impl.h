@@ -3,8 +3,10 @@
 // Implementation detail included by todproc.h.
 
 #include <citlali/core/pipeline/map_group_indexing.h>
+#include <citlali/core/pipeline/map_buffer_allocation.h>
 #include <citlali/core/pipeline/map_grouping_policy.h>
 #include <citlali/core/pipeline/mapmaking_config_policy.h>
+#include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 
 template <class EngineType>
@@ -26,7 +28,12 @@ void TimeOrderedDataProc<EngineType>::calc_map_num() {
     const auto map_grouping_name =
         citlali::pipeline::active_map_grouping_name(engine());
     engine().omb.map_grouping = map_grouping_name;
-    engine().cmb.map_grouping = map_grouping_name;
+    if (!citlali::pipeline::coadd_outputs_enabled(engine()) ||
+        !citlali::pipeline::science_map_v1_profile_available(engine())) {
+        // Profiles outside SCI-MAP-001 v1 retain the pre-repair metadata
+        // lifecycle. The v1 coadd receives this fact only on atomic admission.
+        engine().cmb.map_grouping = map_grouping_name;
+    }
     engine().rtcproc.kernel.map_grouping = map_grouping_name;
 
     const auto n_maps = citlali::pipeline::apply_polarization_map_count(

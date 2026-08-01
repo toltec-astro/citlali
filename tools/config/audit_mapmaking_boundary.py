@@ -22,12 +22,31 @@ PROVENANCE_SOURCE = "include/citlali/core/pipeline/mapmaking_provenance.h"
 CLI_SOURCE = "include/citlali/core/cli/reduction_execution.h"
 MAP_HEADER_SOURCE = "include/citlali/core/mapmaking/map.h"
 MAP_IMPLEMENTATION_SOURCE = "src/citlali/core/mapmaking/map.cpp"
+PRODUCT_CONTRACT_SOURCE = "validation/product_contracts.json"
 EXPECTED_MANIFEST_SCHEMA = "citlali-frozen-mapmaking-config-paths-v1"
 EXPECTED_PATH_COUNT = 22
 EXPECTED_PATH_SHA256 = (
     "fe72da6e9e0b6af1d63ad0cc465a0d00950332899d7938559276c0d873a54460"
 )
-EXPECTED_PROVENANCE_SCHEMA = "citlali-mapmaking-provenance-v2"
+EXPECTED_PROVENANCE_SCHEMA = "citlali-mapmaking-provenance-v3"
+EXPECTED_PRODUCT_REGISTRY_SCHEMA = "citlali-product-contract-registry-v2"
+EXPECTED_SCIENCE_MAP_CONTRACT = "sci-map-001-f010-v1"
+EXPECTED_SCIENCE_MAP_PLANES = {
+    "geometric_hits_I",
+    "contributing_hits_I",
+    "coadd_observation_count_I",
+    "upstream_eligible_exposure_I",
+    "retained_exposure_I",
+    "normalization_support_I",
+    "science_policy_support_I",
+    "science_valid_I",
+}
+EXPECTED_SUCCESSOR_PRODUCT_CONTRACTS = {
+    "sci-map-001-point-products-v1",
+    "sci-map-001-oof-products-v1",
+    "sci-map-001-science-products-v1",
+    "sci-map-001-beammap-products-v1",
+}
 
 CORE_PATHS = {
     "mapmaking.enabled",
@@ -219,12 +238,101 @@ def provenance_state(repo_root: Path) -> dict[str, object]:
     schema_count = provenance.count(EXPECTED_PROVENANCE_SCHEMA)
     write_count = call_count(cli, "write_mapmaking_provenance_file")
     completion_count = call_count(cli, "record_mapmaking_run_completed")
-    exact = schema_count == 1 and write_count == 1 and completion_count == 1
+    science_contract_counts = {
+        name: call_count(provenance, name)
+        for name in (
+            "science_map_policy_contract_node",
+            "mapmaking_observations_provenance_node",
+        )
+    }
+    # The observation helper names the exact identity and realized product
+    # inventory explicitly; count these in source even though they are nested
+    # below the top-level serializer.
+    science_surface = {
+        "exact_cut_count": call_count(provenance, "science_map_exact_double_node"),
+        "bundle_identity_count": call_count(
+            provenance, "science_map_optional_bundle_identity_node"
+        ),
+        "realized_maps_count": call_count(
+            provenance, "science_map_realized_maps_node"
+        ),
+        "science_state_key_count": provenance.count('node["science_state"]'),
+    }
+    exact = bool(
+        schema_count == 1
+        and write_count == 1
+        and completion_count == 1
+        and science_contract_counts["science_map_policy_contract_node"] == 1
+        and science_contract_counts["mapmaking_observations_provenance_node"]
+        == 2
+        and science_surface["exact_cut_count"] == 2
+        and science_surface["bundle_identity_count"] == 1
+        and science_surface["realized_maps_count"] == 1
+        and science_surface["science_state_key_count"] >= 3
+    )
     return {
         "schema_version": EXPECTED_PROVENANCE_SCHEMA,
         "schema_count": schema_count,
         "cli_write_count": write_count,
         "cli_completion_count": completion_count,
+        "science_contract_counts": science_contract_counts,
+        "science_surface": science_surface,
+        "exact": exact,
+    }
+
+
+def product_contract_state(registry: dict[str, object]) -> dict[str, object]:
+    contracts = registry.get("science_map_contracts")
+    science_contract = (
+        contracts.get(EXPECTED_SCIENCE_MAP_CONTRACT)
+        if isinstance(contracts, dict)
+        else None
+    )
+    planes = (
+        science_contract.get("planes")
+        if isinstance(science_contract, dict)
+        else None
+    )
+    plane_names = {
+        plane.get("name")
+        for plane in planes
+        if isinstance(plane, dict) and isinstance(plane.get("name"), str)
+    } if isinstance(planes, list) else set()
+    aliases = (
+        science_contract.get("aliases")
+        if isinstance(science_contract, dict)
+        else None
+    )
+    product_contract_ids = {
+        contract.get("contract_id")
+        for contract in registry.get("contracts", [])
+        if isinstance(contract, dict)
+    } if isinstance(registry.get("contracts"), list) else set()
+    exact = bool(
+        registry.get("schema_version") == EXPECTED_PRODUCT_REGISTRY_SCHEMA
+        and isinstance(science_contract, dict)
+        and science_contract.get("audit_state") == "addressed_pending_reaudit"
+        and plane_names == EXPECTED_SCIENCE_MAP_PLANES
+        and isinstance(aliases, dict)
+        and aliases.get("coverage_I", {}).get("canonical")
+        == "retained_exposure_I"
+        and aliases.get("coverage_I", {}).get("relationship")
+        == "bitwise_equal"
+        and aliases.get("coverage_bool_I", {}).get("canonical")
+        == "science_policy_support_I"
+        and aliases.get("coverage_bool_I", {}).get("relationship")
+        == "bitwise_equal"
+        and aliases.get("coverage_bool_I", {}).get("deprecated") is True
+        and aliases.get("coverage_bool_I", {}).get("validity_authority") is False
+        and EXPECTED_SUCCESSOR_PRODUCT_CONTRACTS <= product_contract_ids
+    )
+    return {
+        "source": PRODUCT_CONTRACT_SOURCE,
+        "science_map_contract_id": EXPECTED_SCIENCE_MAP_CONTRACT,
+        "plane_names": sorted(plane_names),
+        "successor_contract_ids": sorted(
+            EXPECTED_SUCCESSOR_PRODUCT_CONTRACTS & product_contract_ids
+        ),
         "exact": exact,
     }
 
@@ -237,12 +345,16 @@ def audit(repo_root: Path) -> dict[str, object]:
     retired = retired_parser_state(repo_root)
     boundary = authority_boundary((repo_root / BOUNDARY_SOURCE).read_text())
     provenance = provenance_state(repo_root)
+    products = product_contract_state(
+        json.loads((repo_root / PRODUCT_CONTRACT_SOURCE).read_text())
+    )
     drift = not (
         manifest["exact"]
         and readers["complete"]
         and retired["retired"]
         and boundary["exact"]
         and provenance["exact"]
+        and products["exact"]
     )
     return {
         "manifest": manifest,
@@ -250,6 +362,7 @@ def audit(repo_root: Path) -> dict[str, object]:
         "retired_parser": retired,
         "authority_boundary": boundary,
         "provenance": provenance,
+        "science_product_contract": products,
         "drift": drift,
     }
 
@@ -270,6 +383,8 @@ def markdown_report(result: dict[str, object]) -> str:
             f"{result['authority_boundary']['exact']}`",
             f"- Versioned provenance exact: `"
             f"{result['provenance']['exact']}`",
+            f"- SCI-MAP product contract exact: `"
+            f"{result['science_product_contract']['exact']}`",
             "",
         ]
     )
@@ -307,6 +422,7 @@ def main() -> int:
         f"{EXPECTED_PATH_COUNT} "
         f"parser_retired={result['retired_parser']['retired']} "
         f"provenance={result['provenance']['exact']} "
+        f"science_products={result['science_product_contract']['exact']} "
         f"drift={result['drift']}"
     )
     return 1 if args.fail_on_drift and result["drift"] else 0

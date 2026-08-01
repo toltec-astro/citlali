@@ -10,6 +10,7 @@ ADRs, and validation records.
 | Workstream | Authority | Purpose | Integration rule | State |
 | --- | --- | --- | --- | --- |
 | Refactored application | `codex/refactor-mainline` | Canonical source, tests, configuration, operational behavior, and validation history | Normal application changes land here after their affected gates | Active |
+| SCI-MAP-001 bounded repair | `codex/repair-sci-map-001` from `9aae0e669384c5c0c0dda93debc194d6b8dac787` | Isolated F001-F011 implementation, product/provenance contract, and local truth suite | Fresh exact-repair-SHA re-audit and the required external disposition precede any application-mainline integration; do not merge audit, coordination, or convolve/noise candidates into this lane | Active isolated candidate; not application authority |
 | Conan 2 adaptation | `codex/conan2-adaptation` | Port the full application into the accepted Tula/Conan 2 architecture | Incorporate mainline regularly; return only after all build-integration gates pass | Active in `/Users/gwilson/GitHub/citlali-refactor-conan2` |
 | Historical structural refactor | `codex/structural-refactor` at `171487196` | Forensic pointer to the pre-follow-on integration tree | Do not resume as an application authority | Frozen |
 | Historical fruit-loop/raw-IQ topic | `codex/fruit-loop-calibration-reference` at `b02fef613` | Forensic pointer to the topic-named branch before mainline normalization | Do not resume as an application authority | Frozen locally; its existing remote remains historical |
@@ -37,6 +38,29 @@ new exact commits before importing subsequent upstream work.
   validation required by the behavior touched.
 - Record intentional scientific changes separately from refactoring and build
   integration.
+
+### SCI-MAP-001 Bounded Repair
+
+- Preserve ordinary compatible numerical behavior and the exact approved
+  F009/F010 contract in ADR 0009; do not broaden the prohibited algorithms or
+  production defaults.
+- Preserve the frozen raw-parent snapshot and matching `RAWPDGST` carriage for
+  filtered successor products. Keep unsupported profiles on their explicit
+  pre-successor legacy arithmetic lane without an F009/F010 claim.
+- Pass the contract-derived focused truth suite, affected CTests, baseline
+  tools, complete config preflight, and touched provenance/output validators at
+  one exact committed repair SHA with no required-data skip or unexpected
+  error-level record.
+- Keep F009 and F010 `addressed_pending_reaudit`, package verdict `amend`, and
+  production `existing_use_only`; this lane cannot declare conformance or
+  close findings.
+- Issue `SCI-MAP-001-UNITY-001` for the exact committed repair SHA to the human
+  evidence owner. F012 remains outstanding until the complete returned bundle
+  is audited; Codex does not access Unity.
+- Keep F013 conditioned on `SCI-CAL-001`, `SCI-AST-001`, `SCI-PTC-001`, and
+  `SCI-VAL-001`. A fresh `codex/reaudit-sci-map-001` worktree assesses F001-F013,
+  independently reconstructs the persisted map facts, audits the exact-SHA
+  Unity bundle, and issues the next disposition.
 
 ### Conan 2 Adaptation Entry
 
@@ -73,6 +97,9 @@ The exit gates remain those in the build integration review:
 - Do not resolve build conflicts by deleting mainline tests, generated config,
   provenance, CLI behavior, or validated application sources.
 - Do not combine numerical algorithm changes with build integration commits.
+- Do not import the isolated SCI-MAP-001 repair directly into the Conan 2 lane.
+  It becomes eligible for ordinary synchronization only after the required
+  independent disposition and application-mainline integration.
 
 ## Repository Hygiene
 

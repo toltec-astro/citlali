@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/pipeline/beammap_provenance_lifecycle.h>
+#include <citlali/core/pipeline/coadd_provenance_lifecycle.h>
 #include <citlali/core/pipeline/fruit_loop_iteration_state.h>
 #include <citlali/core/pipeline/fruit_loop_iteration_policy.h>
 #include <citlali/core/pipeline/fruit_loop_restart_lifecycle.h>
@@ -23,6 +24,7 @@ void begin_reduction_iteration(TodProc &todproc,
 
     begin_fruit_loop_iteration(engine, logger);
     begin_mapmaking_iteration_if_available(engine);
+    begin_coadd_iteration_if_available(engine);
     begin_pointing_iteration_if_available(engine);
     begin_post_processing_iteration_if_available(engine);
     begin_beammap_run_if_available(engine);

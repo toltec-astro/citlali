@@ -1,6 +1,7 @@
 #pragma once
 
 #include <limits>
+#include <memory>
 #include <string>
 #include <tuple>
 #include <utility>
@@ -11,6 +12,7 @@
 
 #include <citlali/core/utils/utils.h>
 #include <citlali/core/utils/fitting.h>
+#include <citlali/core/mapmaking/science_map_contract.h>
 
 namespace mapmaking {
 
@@ -74,8 +76,19 @@ public:
     // exposure time
     double exposure_time = 0;
 
-    // maps (n_rows, n_cols) of length n_maps
+    // maps (n_rows, n_cols) of length n_maps. `weight` is the realized
+    // normalization coefficient, not a precision by default. `coverage` is a
+    // compatibility alias of science_products.retained_exposure.
     std::vector<Eigen::MatrixXd> signal, weight, kernel, coverage;
+
+    // SCI-MAP-001 typed hit/exposure/support/validity products and immutable
+    // full-precision bundle identity. This state is owned by the map buffer
+    // lifecycle rather than synchronized through Engine.
+    ScienceMapProducts science_products;
+    // Once a downstream filter is about to mutate map-domain planes, this
+    // const snapshot carries the already-validated raw F010 authority and raw
+    // parent identities. Filtered computation never rewrites it.
+    std::shared_ptr<const ScienceMapProducts> raw_science_parent;
 
     // empirical noise products derived from jackknife noise maps
     std::vector<Eigen::MatrixXd> weight_formal, noise_mean, noise_variance,
@@ -197,8 +210,14 @@ public:
     MapBuffer();
     MapBuffer(std::string);
 
-    // normalize accumulated maps and finalize inverse-variance weights
+    // Normalize accumulated maps and finalize the numerical coefficient and
+    // the distinct normalization/science-policy/validity products.
     void normalize_maps(const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps = nullptr);
+    // Refresh the post-normalization support/provenance authority after the
+    // existing optional global empirical coefficient rescale. This never
+    // divides or otherwise renormalizes signal, kernel, or realizations.
+    void refresh_science_products_after_coefficient_rescale(Eigen::Index);
+    void freeze_raw_science_parent();
     void ensure_contribution_diag(Eigen::Index);
     void clear_contribution_diag();
     void set_contribution_targets(

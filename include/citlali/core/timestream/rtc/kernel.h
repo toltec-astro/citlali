@@ -71,6 +71,11 @@ public:
 };
 
 void Kernel::setup(Eigen::Index n_maps) {
+    // Observation setup rebuilds the effective response inventory. Retaining
+    // FITS images from a prior observation would make an otherwise identical
+    // response acquire a different bundle identity and could apply stale
+    // response planes.
+    images.clear();
     if (type == "fits") {
         if (img_ext_names.size()!=n_maps && img_ext_names.size()!=1) {
             SPDLOG_INFO("mismatch for number of kernel images");

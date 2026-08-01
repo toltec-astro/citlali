@@ -16,7 +16,39 @@ void add_image_description_key(Hdu &hdu, const std::string &description) {
 template <class Hdu>
 void add_image_type_key(Hdu &hdu, const std::string &type,
                         const std::string &comment) {
+    hdu.addKey("ESTTYPE", type, comment + " (authoritative)");
     hdu.addKey("TYPE", type, comment);
+}
+
+template <class Hdu>
+void add_image_data_type_key(Hdu &hdu, const std::string &data_type) {
+    hdu.addKey("DATTYP", data_type, "Logical image scalar type");
+}
+
+template <class Hdu>
+void add_image_validity_authority_key(Hdu &hdu, bool is_authority) {
+    hdu.addKey("VALAUTH", is_authority ? std::string{"true"}
+                                       : std::string{"false"},
+               "Authoritative raw science-validity mask");
+}
+
+template <class Hdu>
+void add_raw_parent_identity_keys(Hdu &hdu,
+                                  const std::string &raw_parent_digest) {
+    hdu.addKey("RAWSTATE", std::string{"immutable_input"},
+               "Relationship to raw science-map authority");
+    hdu.addKey("RAWPDGST", raw_parent_digest,
+               "Exact raw-parent/product digest", true);
+}
+
+template <class Hdu>
+void add_image_alias_keys(Hdu &hdu, const std::string &canonical_name,
+                          bool deprecated) {
+    hdu.addKey("ALIASOF", canonical_name, "Canonical image product");
+    hdu.addKey("DEPRCATD", deprecated ? std::string{"true"}
+                                      : std::string{"false"},
+               "Compatibility alias is deprecated");
+    add_image_validity_authority_key(hdu, false);
 }
 
 template <class Hdu>
@@ -100,18 +132,31 @@ template <class Hdu>
 void add_weight_map_metadata(Hdu &hdu, const std::string &weight_unit,
                              bool empirical_weight_calibration) {
     add_image_unit_type_description_keys(
-        hdu, weight_unit,
-        weight_calibration_type(empirical_weight_calibration),
-        weight_calibration_type_comment(),
+        hdu, weight_unit, normalization_coefficient_estimator_type(),
+        "Coefficient estimator type",
         weight_map_description(empirical_weight_calibration));
+    hdu.addKey("CALTYPE",
+               std::string{weight_calibration_type(
+                   empirical_weight_calibration)},
+               "Coefficient calibration type");
+    hdu.addKey("PRECSTAT", std::string{"not_established"},
+               "Marginal-precision interpretation");
+    hdu.addKey("COVSTAT", std::string{"unavailable"},
+               "Cross-pixel/observation covariance status");
 }
 
 template <class Hdu>
 void add_formal_weight_map_metadata(Hdu &hdu,
-                                    const std::string &weight_unit) {
+    const std::string &weight_unit) {
     add_image_unit_type_description_keys(
-        hdu, weight_unit, formal_weight_calibration_type(),
-        weight_calibration_type_comment(), formal_weight_map_description());
+        hdu, weight_unit, formal_coefficient_snapshot_estimator_type(),
+        "Coefficient estimator type", formal_weight_map_description());
+    hdu.addKey("CALTYPE", std::string{formal_weight_calibration_type()},
+               "Coefficient calibration type");
+    hdu.addKey("PRECSTAT", std::string{"conditional_SCI-PTC-001"},
+               "Marginal-precision interpretation");
+    hdu.addKey("COVSTAT", std::string{"unavailable"},
+               "Cross-pixel/observation covariance status");
 }
 
 template <class Hdu>
@@ -128,15 +173,95 @@ void add_kernel_map_metadata(Hdu &hdu, const std::string &signal_unit) {
 }
 
 template <class Hdu>
-void add_coverage_map_metadata(Hdu &hdu) {
-    add_image_unit_description_keys(hdu, coverage_time_unit(),
-                                    coverage_map_description());
+void add_coverage_map_metadata(
+    Hdu &hdu,
+    const std::string &canonical_name = "retained_exposure_I") {
+    add_image_unit_type_description_keys(
+        hdu, coverage_time_unit(), retained_exposure_estimator_type(),
+        "Exposure estimator type", coverage_map_description());
+    add_image_data_type_key(hdu, "float64");
+    add_image_alias_keys(hdu, canonical_name, false);
 }
 
 template <class Hdu>
-void add_coverage_mask_map_metadata(Hdu &hdu) {
-    add_image_unit_description_keys(hdu, not_applicable_image_unit(),
-                                    coverage_mask_map_description());
+void add_coverage_mask_map_metadata(
+    Hdu &hdu,
+    const std::string &canonical_name = "science_policy_support_I") {
+    add_image_unit_type_description_keys(
+        hdu, science_map_mask_unit(), science_policy_support_estimator_type(),
+        "Support estimator type", coverage_mask_map_description());
+    add_image_data_type_key(hdu, "uint8");
+    add_image_alias_keys(hdu, canonical_name, true);
+}
+
+template <class Hdu>
+void add_science_map_product_metadata(
+    Hdu &hdu, const std::string &unit, const std::string &estimator_type,
+    const std::string &description, const std::string &data_type,
+    bool is_validity_authority = false) {
+    add_image_unit_type_description_keys(
+        hdu, unit, estimator_type, "Science-map product estimator type",
+        description);
+    add_image_data_type_key(hdu, data_type);
+    add_image_validity_authority_key(hdu, is_validity_authority);
+}
+
+template <class Hdu>
+void add_geometric_hits_map_metadata(Hdu &hdu) {
+    add_science_map_product_metadata(
+        hdu, science_map_count_unit(), geometric_hits_estimator_type(),
+        geometric_hits_map_description(), "int64");
+}
+
+template <class Hdu>
+void add_contributing_hits_map_metadata(Hdu &hdu) {
+    add_science_map_product_metadata(
+        hdu, science_map_count_unit(), contributing_hits_estimator_type(),
+        contributing_hits_map_description(), "int64");
+}
+
+template <class Hdu>
+void add_coadd_observation_count_map_metadata(Hdu &hdu) {
+    add_science_map_product_metadata(
+        hdu, science_map_count_unit(),
+        coadd_observation_count_estimator_type(),
+        coadd_observation_count_map_description(), "int64");
+}
+
+template <class Hdu>
+void add_upstream_eligible_exposure_map_metadata(Hdu &hdu) {
+    add_science_map_product_metadata(
+        hdu, coverage_time_unit(),
+        upstream_eligible_exposure_estimator_type(),
+        upstream_eligible_exposure_map_description(), "float64");
+}
+
+template <class Hdu>
+void add_retained_exposure_map_metadata(Hdu &hdu) {
+    add_science_map_product_metadata(
+        hdu, coverage_time_unit(), retained_exposure_estimator_type(),
+        retained_exposure_map_description(), "float64");
+}
+
+template <class Hdu>
+void add_normalization_support_map_metadata(Hdu &hdu) {
+    add_science_map_product_metadata(
+        hdu, science_map_mask_unit(), normalization_support_estimator_type(),
+        normalization_support_map_description(), "uint8");
+}
+
+template <class Hdu>
+void add_science_policy_support_map_metadata(Hdu &hdu) {
+    add_science_map_product_metadata(
+        hdu, science_map_mask_unit(), science_policy_support_estimator_type(),
+        science_policy_support_map_description(), "uint8");
+}
+
+template <class Hdu>
+void add_science_valid_map_metadata(Hdu &hdu) {
+    add_science_map_product_metadata(
+        hdu, science_map_mask_unit(), science_valid_estimator_type(),
+        science_valid_map_description(), "uint8", true);
 }
 
 template <class Hdu>

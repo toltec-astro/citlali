@@ -11,6 +11,14 @@ void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map
     auto& omb = engine().omb;
     const auto &mapmaking_settings =
         citlali::pipeline::mapmaking_config(engine());
+    const bool allocate_science_products =
+        citlali::pipeline::science_map_v1_profile_available(
+            mapmaking_settings.method, mapmaking_settings.grouping,
+            engine().rtcproc.run_polarization);
+    const std::string science_product_absence_reason =
+        citlali::pipeline::science_map_v1_profile_absence_reason(
+            mapmaking_settings.method, mapmaking_settings.grouping,
+            engine().rtcproc.run_polarization);
 
     citlali::pipeline::clear_map_matrix_products(omb);
     citlali::pipeline::apply_observation_map_geometry(
@@ -19,7 +27,8 @@ void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map
         omb, engine().map_indices.n_maps,
         mapmaking_settings.method == citlali::config::MapMethod::jinc,
         citlali::pipeline::raw_kernel_enabled(engine()),
-        mapmaking_settings.grouping != citlali::config::MapGrouping::detector);
+        mapmaking_settings.grouping != citlali::config::MapGrouping::detector,
+        allocate_science_products, science_product_absence_reason);
     citlali::pipeline::allocate_polarization_pointing_matrices(
         omb, engine().map_indices.n_maps,
         static_cast<Eigen::Index>(
@@ -33,12 +42,21 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb() {
     auto& cmb = engine().cmb;
     const auto &mapmaking_settings =
         citlali::pipeline::mapmaking_config(engine());
+    const bool allocate_science_products =
+        citlali::pipeline::science_map_v1_profile_available(
+            mapmaking_settings.method, mapmaking_settings.grouping,
+            engine().rtcproc.run_polarization);
+    const std::string science_product_absence_reason =
+        citlali::pipeline::science_map_v1_profile_absence_reason(
+            mapmaking_settings.method, mapmaking_settings.grouping,
+            engine().rtcproc.run_polarization);
 
     citlali::pipeline::clear_map_matrix_products(cmb);
     citlali::pipeline::allocate_map_matrices(
         cmb, engine().map_indices.n_maps, false,
         citlali::pipeline::raw_kernel_enabled(engine()),
-        mapmaking_settings.grouping != citlali::config::MapGrouping::detector);
+        mapmaking_settings.grouping != citlali::config::MapGrouping::detector,
+        allocate_science_products, science_product_absence_reason);
     citlali::pipeline::allocate_polarization_pointing_matrices(
         cmb, engine().map_indices.n_maps,
         static_cast<Eigen::Index>(

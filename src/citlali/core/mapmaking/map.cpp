@@ -76,6 +76,43 @@ MapBuffer::MapBuffer(std::string _n): name(_n) {}
 void MapBuffer::normalize_maps(const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps) {
     // vectors for maps
     const bool use_grid_weight = grid_weight.size() == signal.size();
+    const bool realize_science_products =
+        science_products.initialized && !science_products.normalization_support.empty();
+    if (realize_science_products) {
+        const auto &products = science_products;
+        if (!products.identity_admitted || !products.bundle_identity ||
+            products.bundle_identity->rows != n_rows ||
+            products.bundle_identity->cols != n_cols ||
+            products.bundle_identity->ordered_slots.size() != signal.size()) {
+            throw std::runtime_error(
+                "science-map normalization requires an admitted complete bundle identity");
+        }
+        std::vector<std::string> expected_companions;
+        if (!kernel.empty()) {
+            if (kernel.size() != signal.size()) {
+                throw std::runtime_error(
+                    "science-map normalization kernel inventory mismatch");
+            }
+            expected_companions.push_back("kernel_I");
+        }
+        if (!noise.empty()) {
+            if (noise.size() != signal.size() || n_noise < 0) {
+                throw std::runtime_error(
+                    "science-map normalization realization inventory mismatch");
+            }
+            for (Eigen::Index realization = 0; realization < n_noise;
+                 ++realization) {
+                expected_companions.push_back(
+                    "noise_realization_" + std::to_string(realization) +
+                    "_I");
+            }
+        }
+        if (products.bundle_identity->required_companions !=
+            expected_companions) {
+            throw std::runtime_error(
+                "science-map normalization declared-companion inventory mismatch");
+        }
+    }
     normalize_support_diag.assign(signal.size(), NormalizeSupportDiag{});
     if (active_maps == nullptr) {
         map_in_vec.resize(signal.size());
@@ -102,22 +139,24 @@ void MapBuffer::normalize_maps(const Eigen::Matrix<bool, Eigen::Dynamic, 1> *act
     // normalize science and kernel mpas
     grppi::map(tula::grppi_utils::dyn_ex(parallel_policy), map_in_vec, map_out_vec, [&](auto i) {
         Eigen::ArrayXXd mask(n_rows, n_cols);
+        Eigen::ArrayXXd science_policy_mask(n_rows, n_cols);
         Eigen::MatrixXd finalized_weight = Eigen::MatrixXd::Zero(n_rows, n_cols);
+        engine_utils::WeightThresholdSelection normalization_selection;
+        engine_utils::WeightThresholdSelection science_policy_selection;
 
-        auto apply_weight_threshold = [&](Eigen::MatrixXd &weight_map) {
-            mask = (weight_map.array() > 0.0).template cast<double>();
-            double weight_threshold = 0.0;
-            if (cov_cut > 0.0) {
-                // Use a softer support floor than the science coverage cut so
-                // low-level kernel wings survive while unsupported edge pixels
-                // are still removed before normalization.
-                double support_cov_cut = cov_cut / 10.0;
-                weight_threshold = engine_utils::find_weight_threshold(weight_map, support_cov_cut);
-                if (weight_threshold > 0.0) {
-                    mask *= (weight_map.array() >= weight_threshold).template cast<double>();
-                }
-            }
-            return weight_threshold;
+        auto apply_normalization_threshold =
+            [&](const Eigen::MatrixXd &weight_map) {
+            // Preserve the historical pre-normalization coverage_cut/10 role
+            // while making its predicate finite-positive even at zero cut.
+            normalization_selection =
+                engine_utils::find_weight_threshold_selection(
+                    weight_map, cov_cut / 10.0);
+            const auto finite_positive =
+                weight_map.array().isFinite() && (weight_map.array() > 0.0);
+            mask = (finite_positive &&
+                    (weight_map.array() >= normalization_selection.threshold))
+                       .template cast<double>();
+            return normalization_selection.threshold;
         };
 
         auto classify_masked_cause = [](bool has_accum_weight,
@@ -233,7 +272,8 @@ void MapBuffer::normalize_maps(const Eigen::Matrix<bool, Eigen::Dynamic, 1> *act
                  valid_support.template cast<double>()).matrix();
             const Eigen::ArrayXXd pre_threshold_support =
                 (finalized_weight.array() > 0.0).template cast<double>();
-            const double support_weight_threshold = apply_weight_threshold(finalized_weight);
+            const double support_weight_threshold =
+                apply_normalization_threshold(finalized_weight);
             record_support_diag(raw_signal,
                                 accum_weight_valid.template cast<double>(),
                                 denom_valid.template cast<double>(),
@@ -241,21 +281,25 @@ void MapBuffer::normalize_maps(const Eigen::Matrix<bool, Eigen::Dynamic, 1> *act
                                 support_weight_threshold,
                                 true);
 
-            signal[i] = ((signal[i].array() / safe_denom) * mask).matrix();
+            signal[i] = (mask > 0.0)
+                .select(signal[i].array() / safe_denom, 0.0).matrix();
 
             if (!kernel.empty()) {
-                kernel[i] = ((kernel[i].array() / safe_denom) * mask).matrix();
+                kernel[i] = (mask > 0.0)
+                    .select(kernel[i].array() / safe_denom, 0.0).matrix();
             }
 
             if (!noise.empty()) {
                 for (Eigen::Index n = 0; n < n_noise; ++n) {
                     Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(
                         noise[i].data() + n * n_rows * n_cols, n_rows, n_cols);
-                    noise_matrix = ((noise_matrix.array() / safe_denom) * mask).matrix();
+                    noise_matrix = (mask > 0.0)
+                        .select(noise_matrix.array() / safe_denom, 0.0).matrix();
                 }
             }
 
-            weight[i] = (finalized_weight.array() * mask).matrix();
+            weight[i] = (mask > 0.0)
+                .select(finalized_weight.array(), 0.0).matrix();
         }
         else {
             const Eigen::MatrixXd raw_signal = signal[i];
@@ -264,7 +308,8 @@ void MapBuffer::normalize_maps(const Eigen::Matrix<bool, Eigen::Dynamic, 1> *act
                     .select(weight[i].array(), 0.0).matrix();
             const Eigen::ArrayXXd pre_threshold_support =
                 (finalized_weight.array() > 0.0).template cast<double>();
-            const double support_weight_threshold = apply_weight_threshold(finalized_weight);
+            const double support_weight_threshold =
+                apply_normalization_threshold(finalized_weight);
             record_support_diag(raw_signal,
                                 pre_threshold_support,
                                 Eigen::ArrayXXd::Ones(n_rows, n_cols),
@@ -274,25 +319,129 @@ void MapBuffer::normalize_maps(const Eigen::Matrix<bool, Eigen::Dynamic, 1> *act
             const Eigen::ArrayXXd safe_weight = (finalized_weight.array() > 0.0)
                                                     .select(finalized_weight.array(), 1.0);
 
-            signal[i] = ((signal[i].array() / safe_weight) * mask).matrix();
+            signal[i] = (mask > 0.0)
+                .select(signal[i].array() / safe_weight, 0.0).matrix();
 
             if (!kernel.empty()) {
-                kernel[i] = ((kernel[i].array() / safe_weight) * mask).matrix();
+                kernel[i] = (mask > 0.0)
+                    .select(kernel[i].array() / safe_weight, 0.0).matrix();
             }
 
             if (!noise.empty()) {
                 for (Eigen::Index n = 0; n < n_noise; ++n) {
                     Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> noise_matrix(
                         noise[i].data() + n * n_rows * n_cols, n_rows, n_cols);
-                    noise_matrix = ((noise_matrix.array() / safe_weight) * mask).matrix();
+                    noise_matrix = (mask > 0.0)
+                        .select(noise_matrix.array() / safe_weight, 0.0).matrix();
                 }
             }
 
-            weight[i] = (finalized_weight.array() * mask).matrix();
+            weight[i] = (mask > 0.0)
+                .select(finalized_weight.array(), 0.0).matrix();
         }
 
-        if (!coverage.empty()) {
-            coverage[i] = (coverage[i].array() * mask).matrix();
+        // The science-policy role historically consumes the finalized
+        // post-normalization coefficient plane. A later positive global
+        // empirical rescale refreshes this threshold and its exact provenance
+        // without renormalizing any map plane.
+        science_policy_selection =
+            engine_utils::find_weight_threshold_selection(weight[i], cov_cut);
+        const auto final_finite_positive =
+            weight[i].array().isFinite() && (weight[i].array() > 0.0);
+        science_policy_mask =
+            (final_finite_positive &&
+             (weight[i].array() >= science_policy_selection.threshold))
+                .template cast<double>();
+
+        if (realize_science_products) {
+            auto &products = science_products;
+            auto &record = products.realized.at(static_cast<std::size_t>(i));
+            products.normalization_support.at(static_cast<std::size_t>(i)) =
+                (mask > 0.0).template cast<std::uint8_t>().matrix();
+            products.science_policy_support.at(static_cast<std::size_t>(i)) =
+                (science_policy_mask > 0.0)
+                    .template cast<std::uint8_t>().matrix();
+
+            auto &retained =
+                products.retained_exposure.at(static_cast<std::size_t>(i));
+            retained = (mask > 0.0).select(retained.array(), 0.0).matrix();
+            if (!coverage.empty()) {
+                coverage.at(static_cast<std::size_t>(i)) = retained;
+            }
+
+            Eigen::ArrayXX<bool> companions_finite =
+                signal.at(static_cast<std::size_t>(i)).array().isFinite() &&
+                weight.at(static_cast<std::size_t>(i)).array().isFinite() &&
+                (weight.at(static_cast<std::size_t>(i)).array() > 0.0);
+            if (!kernel.empty()) {
+                companions_finite =
+                    companions_finite &&
+                    kernel.at(static_cast<std::size_t>(i)).array().isFinite();
+            }
+            if (!noise.empty()) {
+                for (Eigen::Index realization = 0; realization < n_noise;
+                     ++realization) {
+                    Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic,
+                                             Eigen::Dynamic>> noise_matrix(
+                        noise.at(static_cast<std::size_t>(i)).data() +
+                            realization * n_rows * n_cols,
+                        n_rows, n_cols);
+                    companions_finite =
+                        companions_finite && noise_matrix.array().isFinite();
+                }
+            }
+            if (((mask > 0.0) && !companions_finite).any()) {
+                throw std::runtime_error(
+                    "science-map normalization produced a non-finite declared companion on numerical support");
+            }
+            const bool identity_available =
+                products.identity_admitted && products.bundle_identity.has_value();
+            if (identity_available) {
+                products.science_valid.at(static_cast<std::size_t>(i)) =
+                    ((mask > 0.0) && (science_policy_mask > 0.0) &&
+                     companions_finite)
+                        .template cast<std::uint8_t>().matrix();
+            }
+            else {
+                products.science_valid.at(static_cast<std::size_t>(i)).setZero();
+            }
+
+            auto populate_threshold = [&](ScienceMapThresholdRealization &target,
+                                          const auto &selection,
+                                          const char *algorithm,
+                                          const char *coefficient_stage,
+                                          double cut) {
+                target.support_algorithm = algorithm;
+                target.coefficient_stage = coefficient_stage;
+                target.requested_cut = cut;
+                target.realized_cut = cut;
+                target.realized_threshold = selection.threshold;
+                target.selected_positive_value =
+                    selection.selected_positive_value;
+                target.positive_value_count = selection.positive_value_count;
+                target.selected_zero_based_index =
+                    selection.selected_zero_based_index;
+                target.selected_index_available =
+                    selection.selected_index_available;
+            };
+            populate_threshold(
+                record.normalization, normalization_selection,
+                science_map_normalization_support_version,
+                products.is_coadd
+                    ? science_map_coadd_normalization_coefficient_stage
+                    : science_map_observation_normalization_coefficient_stage,
+                cov_cut / 10.0);
+            populate_threshold(
+                record.science_policy, science_policy_selection,
+                science_map_policy_support_version,
+                products.coefficient_stage.c_str(), cov_cut);
+
+            science_map_finalize_realized_product_facts(
+                *this, static_cast<std::size_t>(i));
+        }
+        else if (!coverage.empty()) {
+            coverage[i] = (mask > 0.0)
+                .select(coverage[i].array(), 0.0).matrix();
         }
         return 0;
     });
@@ -300,6 +449,139 @@ void MapBuffer::normalize_maps(const Eigen::Matrix<bool, Eigen::Dynamic, 1> *act
     if (use_grid_weight) {
         std::vector<Eigen::MatrixXd>().swap(grid_weight);
     }
+}
+
+void MapBuffer::freeze_raw_science_parent() {
+    if (raw_science_parent) {
+        return;
+    }
+    if (!science_products.initialized) {
+        return;
+    }
+    const bool any_product_available = std::any_of(
+        science_products.realized.begin(), science_products.realized.end(),
+        [](const auto &record) {
+            return std::any_of(record.product_available.begin(),
+                               record.product_available.end(),
+                               [](bool available) { return available; });
+        });
+    if (!any_product_available) {
+        return;
+    }
+    if (!science_products.identity_admitted ||
+        !science_products.bundle_identity ||
+        science_products.bundle_identity->rows != n_rows ||
+        science_products.bundle_identity->cols != n_cols ||
+        science_products.bundle_identity->ordered_slots.size() !=
+            signal.size() ||
+        science_products.realized.size() != signal.size()) {
+        throw std::runtime_error(
+            "cannot freeze an incomplete raw science-map parent identity");
+    }
+    for (std::size_t slot = 0; slot < signal.size(); ++slot) {
+        bool coverage_alias_equal =
+            slot < coverage.size() &&
+            slot < science_products.retained_exposure.size() &&
+            coverage[slot].rows() ==
+                science_products.retained_exposure[slot].rows() &&
+            coverage[slot].cols() ==
+                science_products.retained_exposure[slot].cols();
+        if (coverage_alias_equal) {
+            for (Eigen::Index index = 0; index < coverage[slot].size();
+                 ++index) {
+                if (!science_map_exact_double_equal(
+                        coverage[slot].data()[index],
+                        science_products.retained_exposure[slot]
+                            .data()[index])) {
+                    coverage_alias_equal = false;
+                    break;
+                }
+            }
+        }
+        if (!science_map_realized_product_facts_match(*this, slot) ||
+            science_products.realized[slot].raw_parent_digest !=
+                science_map_raw_parent_digest(*this, slot) ||
+            !coverage_alias_equal) {
+            throw std::runtime_error(
+                "cannot freeze a stale raw science-map product bundle");
+        }
+    }
+    raw_science_parent =
+        std::make_shared<const ScienceMapProducts>(science_products);
+}
+
+void MapBuffer::refresh_science_products_after_coefficient_rescale(
+    Eigen::Index map_index) {
+    if (raw_science_parent || !science_products.initialized ||
+        map_index < 0 ||
+        map_index >= static_cast<Eigen::Index>(signal.size()) ||
+        map_index >= static_cast<Eigen::Index>(weight.size()) ||
+        map_index >= static_cast<Eigen::Index>(science_products.realized.size())) {
+        return;
+    }
+    const auto slot = static_cast<std::size_t>(map_index);
+    auto &products = science_products;
+    auto &record = products.realized[slot];
+    if (!record.initialized ||
+        slot >= products.normalization_support.size() ||
+        slot >= products.science_policy_support.size() ||
+        slot >= products.science_valid.size()) {
+        return;
+    }
+
+    const auto selection = engine_utils::find_weight_threshold_selection(
+        weight[slot], cov_cut);
+    const auto finite_positive =
+        weight[slot].array().isFinite() && (weight[slot].array() > 0.0);
+    products.science_policy_support[slot] =
+        (finite_positive &&
+         (weight[slot].array() >= selection.threshold))
+            .template cast<std::uint8_t>().matrix();
+
+    Eigen::ArrayXX<bool> companions_finite =
+        signal[slot].array().isFinite() && finite_positive;
+    if (!kernel.empty()) {
+        companions_finite = companions_finite && kernel.at(slot).array().isFinite();
+    }
+    if (!noise.empty()) {
+        for (Eigen::Index realization = 0; realization < n_noise;
+             ++realization) {
+            Eigen::Map<const Eigen::Matrix<double, Eigen::Dynamic,
+                                           Eigen::Dynamic>> noise_matrix(
+                noise.at(slot).data() + realization * n_rows * n_cols,
+                n_rows, n_cols);
+            companions_finite =
+                companions_finite && noise_matrix.array().isFinite();
+        }
+    }
+    if (products.identity_admitted && products.bundle_identity) {
+        products.science_valid[slot] =
+            ((products.normalization_support[slot].array() != 0) &&
+             (products.science_policy_support[slot].array() != 0) &&
+             companions_finite)
+                .template cast<std::uint8_t>().matrix();
+    }
+    else {
+        products.science_valid[slot].setZero();
+    }
+
+    auto &threshold = record.science_policy;
+    threshold.order_statistic_algorithm = science_map_order_statistic_version;
+    threshold.support_algorithm = science_map_policy_support_version;
+    threshold.coefficient_product = "weight_I";
+    threshold.coefficient_stage = products.coefficient_stage;
+    threshold.requested_cut = cov_cut;
+    threshold.realized_cut = cov_cut;
+    threshold.realized_threshold = selection.threshold;
+    threshold.selected_positive_value = selection.selected_positive_value;
+    threshold.positive_value_count = selection.positive_value_count;
+    threshold.selected_zero_based_index = selection.selected_zero_based_index;
+    threshold.selected_index_available = selection.selected_index_available;
+    threshold.finite_convention = "coefficient must be finite";
+    threshold.positivity_convention = "coefficient > 0";
+    threshold.comparison_convention = ">=";
+
+    science_map_finalize_realized_product_facts(*this, slot);
 }
 
 void MapBuffer::ensure_contribution_diag(Eigen::Index n_maps) {
@@ -904,12 +1186,28 @@ void MapBuffer::calc_noise_products(Eigen::Index i, bool apply_empirical_weight_
         }
     }
 
+    if (!std::isfinite(scale) || scale <= 0.0) {
+        throw std::runtime_error(
+            "empirical coefficient rescale is non-finite or nonpositive");
+    }
+
     noise_weight_scale(i) = scale;
     weight_empirical[static_cast<size_t>(i)] =
         weight_formal[static_cast<size_t>(i)] * scale;
+    if (!weight_empirical[static_cast<size_t>(i)].array().isFinite().all()) {
+        throw std::runtime_error(
+            "empirical coefficient rescale produced a non-finite plane");
+    }
 
     if (apply_empirical_weight_scale) {
+        if (science_products.initialized && !raw_science_parent) {
+            science_products.coefficient_stage =
+                science_products.is_coadd
+                    ? science_map_coadd_empirical_coefficient_stage
+                    : science_map_observation_empirical_coefficient_stage;
+        }
         weight[i] = weight_empirical[static_cast<size_t>(i)];
+        refresh_science_products_after_coefficient_rescale(i);
     }
 
     sig2noise_pixel[static_cast<size_t>(i)] =

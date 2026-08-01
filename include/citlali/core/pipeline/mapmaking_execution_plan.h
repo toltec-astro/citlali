@@ -3,6 +3,7 @@
 #include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/config/runtime_config.h>
 #include <citlali/core/config/timestream_config.h>
+#include <citlali/core/mapmaking/science_map_contract.h>
 #include <citlali/core/pipeline/mapmaking_resolution.h>
 
 #include <algorithm>
@@ -59,6 +60,10 @@ struct MapmakingObservationState {
     double effective_pixel_size_rad = 0.0;
     std::size_t required_map_write_count = 0;
     bool outputs_completed = false;
+    std::optional<mapmaking::ScienceMapBundleIdentity> bundle_identity;
+    std::vector<mapmaking::ScienceMapRealizedMap> realized_maps;
+    std::string science_state_absence_reason =
+        "science-map observation state not recorded";
 };
 
 struct MapmakingCoaddState {
@@ -120,10 +125,78 @@ struct MapmakingExecutionPlan {
         if (!initialized) {
             throw std::logic_error("mapmaking plan is not initialized");
         }
-        observations.push_back(MapmakingObservationState{
-            observation_index, std::move(obsnum), map_count,
-            effective_pixel_size_rad, required_map_write_count, false});
+        MapmakingObservationState observation;
+        observation.observation_index = observation_index;
+        observation.obsnum = std::move(obsnum);
+        observation.map_count = map_count;
+        observation.effective_pixel_size_rad = effective_pixel_size_rad;
+        observation.required_map_write_count = required_map_write_count;
+        observations.push_back(std::move(observation));
         return observations.back();
+    }
+
+    void record_observation_science_state(
+        mapmaking::ScienceMapBundleIdentity bundle_identity,
+        std::vector<mapmaking::ScienceMapRealizedMap> realized_maps) {
+        if (observations.empty()) {
+            throw std::logic_error(
+                "cannot record science-map state before observation begins");
+        }
+        auto &observation = observations.back();
+        if (observation.outputs_completed) {
+            throw std::logic_error(
+                "cannot change science-map state after observation output");
+        }
+        if (observation.bundle_identity ||
+            !observation.realized_maps.empty()) {
+            throw std::logic_error(
+                "science-map observation state is already recorded");
+        }
+        if (realized_maps.size() != observation.map_count ||
+            bundle_identity.ordered_slots.size() != observation.map_count) {
+            throw std::logic_error(
+                "science-map identity/record cardinality differs from observation map count");
+        }
+        auto next = observation;
+        next.bundle_identity = std::move(bundle_identity);
+        next.realized_maps = std::move(realized_maps);
+        next.science_state_absence_reason.clear();
+        observation = std::move(next);
+    }
+
+    void record_observation_science_absence(
+        std::vector<mapmaking::ScienceMapRealizedMap> realized_maps,
+        std::string absence_reason) {
+        if (observations.empty()) {
+            throw std::logic_error(
+                "cannot record science-map absence before observation begins");
+        }
+        auto &observation = observations.back();
+        if (observation.outputs_completed) {
+            throw std::logic_error(
+                "cannot change science-map absence after observation output");
+        }
+        if (observation.bundle_identity ||
+            !observation.realized_maps.empty()) {
+            throw std::logic_error(
+                "science-map observation state is already recorded");
+        }
+        if (absence_reason.empty() ||
+            realized_maps.size() != observation.map_count ||
+            std::any_of(
+                realized_maps.begin(), realized_maps.end(),
+                [](const auto &record) {
+                    return !mapmaking::
+                        science_map_realized_map_has_explicit_product_absence(
+                            record);
+                })) {
+            throw std::logic_error(
+                "science-map observation absence inventory is incomplete");
+        }
+        auto next = observation;
+        next.realized_maps = std::move(realized_maps);
+        next.science_state_absence_reason = std::move(absence_reason);
+        observation = std::move(next);
     }
 
     MapmakingCoaddState &begin_coadd(

@@ -522,77 +522,62 @@ static double pivot_select(std::vector<double> input, int index) {
     }
 }
 
+struct WeightThresholdSelection {
+    double requested_cut = 0.0;
+    double selected_positive_value = 0.0;
+    double threshold = 0.0;
+    std::size_t positive_value_count = 0;
+    std::size_t selected_zero_based_index = 0;
+    bool selected_index_available = false;
+};
+
 template <typename Derived>
-double find_weight_threshold(Eigen::DenseBase<Derived> &weight, double cov) {
-
-    // find number of non-zero elements in weights
-    Eigen::Index n_non_zero = (weight.derived().array() > 0).count();
-
-    // if all values are zero, set coverage limit to zero
-    if (n_non_zero==0) {
-        return 0;
+WeightThresholdSelection find_weight_threshold_selection(
+    const Eigen::DenseBase<Derived> &weight, double cov) {
+    if (!std::isfinite(cov) || cov < 0.0) {
+        throw std::invalid_argument(
+            "coverage threshold cut must be finite and nonnegative");
     }
 
-    // vector to hold non-zero elements
-    //Eigen::VectorXd non_zero_weights;
-    //non_zero_weights.setZero();
-
-    std::vector<double> non_zero_weights_vec;
-
-    // check if weights are all constant
-    int diff = 0;
-    bool constant = false;
-
-    Eigen::Index k = 0;
-    // populate vector with non-zero elements
-    for (Eigen::Index i=0; i<weight.rows(); ++i) {
-        for (Eigen::Index j=0; j<weight.cols(); ++j) {
-            if (weight(i,j) > 0) {
-                //non_zero_weights(k) = weight(i,j);
-                non_zero_weights_vec.push_back(weight(i,j));
-                if (k==0) {
-                    diff = weight(i,j);
-                }
-                else if (weight(i,j)!=diff) {
-                    constant = true;
-                }
-                k++;
+    WeightThresholdSelection selection;
+    selection.requested_cut = cov;
+    std::vector<double> positive_values;
+    positive_values.reserve(static_cast<std::size_t>(weight.size()));
+    for (Eigen::Index row = 0; row < weight.rows(); ++row) {
+        for (Eigen::Index col = 0; col < weight.cols(); ++col) {
+            const double value = static_cast<double>(weight(row, col));
+            if (std::isfinite(value) && value > 0.0) {
+                positive_values.push_back(value);
             }
         }
     }
 
-    // value of weight at coverage limit value
-    double weight_val;
-
-    // if all weight values are constant, pivot search doesn't work
-    if (constant) {
-        Eigen::VectorXd non_zero_weights = Eigen::Map<Eigen::VectorXd>(non_zero_weights_vec.data(),
-                                                                       non_zero_weights_vec.size());
-        // sort in ascending order
-        std::sort(non_zero_weights.data(), non_zero_weights.data() + non_zero_weights.size(),
-                  [](double lhs, double rhs){return rhs > lhs;});
-
-        // find index of upper 25 % of weights
-        Eigen::Index cov_limit_index = 0.75*non_zero_weights.size();
-
-        // get weight value at cov_limit_index + size/2
-        Eigen::Index weight_index = std::floor((cov_limit_index + non_zero_weights.size())/2.);
-        weight_val = non_zero_weights(weight_index);
+    selection.positive_value_count = positive_values.size();
+    if (positive_values.empty()) {
+        return selection;
     }
 
-    // sort using pivot selection
-    else {
-        // find index of upper 25 % of weights
-        Eigen::Index cov_limit_index = 0.75*non_zero_weights_vec.size();
-        // get weight value at cov_limit_index + size/2
-        //weight_val = pivot_select(non_zero_weights_vec, cov_limit_index);
-        // get weight index
-        Eigen::Index weight_index = floor((cov_limit_index + non_zero_weights_vec.size())/2.);
-        weight_val = pivot_select(non_zero_weights_vec, weight_index);
+    std::sort(positive_values.begin(), positive_values.end());
+    const std::size_t upper_quartile_floor =
+        static_cast<std::size_t>(
+            std::floor(0.75 * static_cast<double>(positive_values.size())));
+    selection.selected_zero_based_index =
+        (upper_quartile_floor + positive_values.size()) / 2U;
+    selection.selected_index_available = true;
+    selection.selected_positive_value =
+        positive_values.at(selection.selected_zero_based_index);
+    selection.threshold = selection.selected_positive_value * cov;
+    if (!std::isfinite(selection.threshold)) {
+        throw std::overflow_error(
+            "coverage threshold multiplication produced a non-finite value");
     }
+    return selection;
+}
 
-    // return weight value x coverage cut
-    return weight_val*cov;
+template <typename Derived>
+double find_weight_threshold(const Eigen::DenseBase<Derived> &weight,
+                             double cov) {
+    return find_weight_threshold_selection(weight, cov).threshold;
 }
 
 template <typename Derived>

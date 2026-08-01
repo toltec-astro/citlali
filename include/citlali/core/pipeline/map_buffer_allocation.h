@@ -1,10 +1,49 @@
 #pragma once
 
+#include <citlali/core/config/mapmaking_config.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
+
 #include <Eigen/Core>
 
+#include <string>
+#include <utility>
 #include <vector>
 
 namespace citlali::pipeline {
+
+inline bool science_map_v1_profile_available(
+    citlali::config::MapMethod method,
+    citlali::config::MapGrouping grouping, bool polarization_enabled) {
+    return method == citlali::config::MapMethod::naive &&
+           grouping == citlali::config::MapGrouping::array &&
+           !polarization_enabled;
+}
+
+template <class Engine>
+bool science_map_v1_profile_available(const Engine &engine) {
+    const auto &config = mapmaking_config(engine);
+    return science_map_v1_profile_available(
+        config.method, config.grouping, engine.rtcproc.run_polarization);
+}
+
+inline std::string science_map_v1_profile_absence_reason(
+    citlali::config::MapMethod method,
+    citlali::config::MapGrouping grouping, bool polarization_enabled) {
+    if (science_map_v1_profile_available(method, grouping,
+                                         polarization_enabled)) {
+        return {};
+    }
+    if (polarization_enabled) {
+        return "polarization science-map product profile is unavailable";
+    }
+    if (method != citlali::config::MapMethod::naive) {
+        return "method-specific contribution predicate unavailable";
+    }
+    if (grouping == citlali::config::MapGrouping::detector) {
+        return "detector-grouping science-map product profile is unavailable";
+    }
+    return "non-array map-grouping science-map product profile is unavailable";
+}
 
 template <class MapBuffer>
 void clear_map_matrix_products(MapBuffer &buffer) {
@@ -14,6 +53,8 @@ void clear_map_matrix_products(MapBuffer &buffer) {
     std::vector<Eigen::MatrixXd>().swap(buffer.coverage);
     std::vector<Eigen::MatrixXd>().swap(buffer.grid_weight);
     std::vector<Eigen::MatrixXd>().swap(buffer.pointing);
+    buffer.science_products.clear();
+    buffer.raw_science_parent.reset();
     buffer.clear_contribution_diag();
 }
 
@@ -34,7 +75,9 @@ void apply_observation_map_geometry(MapBuffer &buffer,
 template <class MapBuffer>
 void allocate_map_matrices(MapBuffer &buffer, Eigen::Index n_maps,
                            bool allocate_grid_weight, bool allocate_kernel,
-                           bool allocate_coverage) {
+                           bool allocate_coverage,
+                           bool allocate_science_products = true,
+                           std::string science_product_absence_reason = {}) {
     const Eigen::MatrixXd zero_matrix =
         Eigen::MatrixXd::Zero(buffer.n_rows, buffer.n_cols);
 
@@ -48,10 +91,16 @@ void allocate_map_matrices(MapBuffer &buffer, Eigen::Index n_maps,
         if (allocate_kernel) {
             buffer.kernel.push_back(zero_matrix);
         }
-        if (allocate_coverage) {
+        if (allocate_coverage || allocate_science_products) {
             buffer.coverage.push_back(zero_matrix);
         }
     }
+
+    buffer.science_products.allocate(
+        n_maps, buffer.n_rows, buffer.n_cols, buffer.name == "cmb",
+        allocate_science_products && !allocate_grid_weight,
+        allocate_science_products,
+        std::move(science_product_absence_reason));
 }
 
 template <class MapBuffer>

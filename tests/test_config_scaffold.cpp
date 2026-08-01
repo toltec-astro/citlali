@@ -25,6 +25,7 @@
 #include <citlali/core/pipeline/interface_sync_config_adapter.h>
 #include <citlali/core/pipeline/map_geometry.h>
 #include <citlali/core/pipeline/map_index_state.h>
+#include <citlali/core/pipeline/map_buffer_allocation.h>
 #include <citlali/core/pipeline/mapmaking_execution_plan.h>
 #include <citlali/core/pipeline/mapmaking_method_config.h>
 #include <citlali/core/pipeline/mapmaking_output_config.h>
@@ -1421,6 +1422,27 @@ TEST(config_scaffold, parses_existing_mapmaking_enum_values) {
               citlali::config::MapMethod::maximum_likelihood);
 }
 
+TEST(config_scaffold, limits_science_map_v1_products_to_naive_array_stokes_i) {
+    using citlali::config::MapGrouping;
+    using citlali::config::MapMethod;
+
+    EXPECT_TRUE(citlali::pipeline::science_map_v1_profile_available(
+        MapMethod::naive, MapGrouping::array, false));
+    EXPECT_FALSE(citlali::pipeline::science_map_v1_profile_available(
+        MapMethod::naive, MapGrouping::network, false));
+    EXPECT_FALSE(citlali::pipeline::science_map_v1_profile_available(
+        MapMethod::naive, MapGrouping::frequency_group, false));
+    EXPECT_FALSE(citlali::pipeline::science_map_v1_profile_available(
+        MapMethod::naive, MapGrouping::detector, false));
+    EXPECT_FALSE(citlali::pipeline::science_map_v1_profile_available(
+        MapMethod::jinc, MapGrouping::array, false));
+    EXPECT_FALSE(citlali::pipeline::science_map_v1_profile_available(
+        MapMethod::naive, MapGrouping::array, true));
+    EXPECT_EQ(citlali::pipeline::science_map_v1_profile_absence_reason(
+                  MapMethod::naive, MapGrouping::network, false),
+              "non-array map-grouping science-map product profile is unavailable");
+}
+
 TEST(config_scaffold, reads_and_adapts_typed_jinc_filter_config) {
     ensure_citlali_test_logger();
     auto root = YAML::Load(citlali::citlali_default_config_content);
@@ -2378,7 +2400,7 @@ TEST(config_scaffold, records_full_observation_noise_outputs) {
     EXPECT_EQ(*noise.realized.realization_image_write_count, 12U);
 }
 
-TEST(config_scaffold, records_non_jinc_coadd_noise_cardinality) {
+TEST(config_scaffold, records_naive_coadd_observation_and_coadd_noise_cardinality) {
     citlali::config::MapmakingConfig mapmaking_request;
     mapmaking_request.method = citlali::config::MapMethod::naive;
     citlali::pipeline::MapmakingExecutionPlan mapmaking;
@@ -2399,11 +2421,11 @@ TEST(config_scaffold, records_non_jinc_coadd_noise_cardinality) {
     citlali::pipeline::record_noise_run_completed(
         noise, mapmaking, false);
 
-    EXPECT_EQ(*noise.realized.observation_scientific_map_count, 0U);
-    EXPECT_EQ(*noise.realized.observation_noise_realization_count, 0U);
+    EXPECT_EQ(*noise.realized.observation_scientific_map_count, 3U);
+    EXPECT_EQ(*noise.realized.observation_noise_realization_count, 6U);
     EXPECT_EQ(*noise.realized.coadd_noise_realization_count, 6U);
-    EXPECT_EQ(*noise.realized.total_noise_realization_count, 6U);
-    EXPECT_EQ(*noise.realized.empirical_product_map_count, 3U);
+    EXPECT_EQ(*noise.realized.total_noise_realization_count, 12U);
+    EXPECT_EQ(*noise.realized.empirical_product_map_count, 6U);
 }
 
 TEST(config_scaffold, rejects_noise_completion_before_mapmaking) {
@@ -2581,7 +2603,7 @@ TEST(config_scaffold, serializes_versioned_mapmaking_provenance) {
         citlali::pipeline::mapmaking_provenance_node(plan);
 
     EXPECT_EQ(node["schema_version"].as<std::string>(),
-              "citlali-mapmaking-provenance-v2");
+              "citlali-mapmaking-provenance-v3");
     EXPECT_TRUE(node["initialized"].as<bool>());
     EXPECT_EQ(node["requested"]["grouping"].as<std::string>(),
               "auto");
@@ -2723,7 +2745,7 @@ TEST(config_scaffold, atomically_writes_mapmaking_provenance) {
     EXPECT_FALSE(std::filesystem::exists(output_path.string() + ".tmp"));
     const auto stored = YAML::LoadFile(output_path.string());
     EXPECT_EQ(stored["schema_version"].as<std::string>(),
-              "citlali-mapmaking-provenance-v2");
+              "citlali-mapmaking-provenance-v3");
     std::filesystem::remove_all(output_dir);
 }
 
@@ -2764,7 +2786,7 @@ TEST(config_scaffold, serializes_versioned_coadd_provenance) {
     const auto node = citlali::pipeline::coadd_provenance_node(plan);
 
     EXPECT_EQ(node["schema_version"].as<std::string>(),
-              "citlali-coadd-provenance-v1");
+              "citlali-coadd-provenance-v2");
     EXPECT_TRUE(node["requested"]["enabled"].as<bool>());
     EXPECT_TRUE(node["effective"]["config"]["enabled"].as<bool>());
     EXPECT_FALSE(node["effective"]["resolution"]
@@ -2798,7 +2820,7 @@ TEST(config_scaffold, atomically_writes_coadd_provenance) {
     EXPECT_FALSE(std::filesystem::exists(output_path.string() + ".tmp"));
     const auto stored = YAML::LoadFile(output_path.string());
     EXPECT_EQ(stored["schema_version"].as<std::string>(),
-              "citlali-coadd-provenance-v1");
+              "citlali-coadd-provenance-v2");
     std::filesystem::remove_all(output_dir);
 }
 
@@ -5961,7 +5983,23 @@ TEST(pipeline_preflight, updates_observation_exposure_time) {
     EXPECT_DOUBLE_EQ(engine.cmb.exposure_time, 0.0);
 }
 
-TEST(pipeline_preflight, accumulates_observation_exposure_time_for_coadd) {
+TEST(pipeline_preflight, defers_coadd_exposure_until_atomic_admission) {
+    FakeEngine engine;
+    engine.typed_config.coadd.enabled = true;
+    engine.typed_config.mapmaking.method =
+        citlali::config::MapMethod::naive;
+    engine.typed_config.mapmaking.grouping =
+        citlali::config::MapGrouping::array;
+    engine.cmb.exposure_time = 3.0;
+    engine.telescope.tel_data["TelTime"].values = {10.0, 12.5, 14.0};
+
+    citlali::pipeline::update_observation_exposure_time(engine);
+
+    EXPECT_DOUBLE_EQ(engine.omb.exposure_time, 4.0);
+    EXPECT_DOUBLE_EQ(engine.cmb.exposure_time, 3.0);
+}
+
+TEST(pipeline_preflight, retains_legacy_coadd_exposure_outside_v1_profile) {
     FakeEngine engine;
     engine.typed_config.coadd.enabled = true;
     engine.cmb.exposure_time = 3.0;
@@ -5970,6 +6008,22 @@ TEST(pipeline_preflight, accumulates_observation_exposure_time_for_coadd) {
     citlali::pipeline::update_observation_exposure_time(engine);
 
     EXPECT_DOUBLE_EQ(engine.omb.exposure_time, 4.0);
+    EXPECT_DOUBLE_EQ(engine.cmb.exposure_time, 7.0);
+}
+
+TEST(pipeline_preflight, retains_polarized_direct_coadd_exposure_path) {
+    FakeEngine engine;
+    engine.typed_config.coadd.enabled = true;
+    engine.typed_config.mapmaking.method =
+        citlali::config::MapMethod::naive;
+    engine.typed_config.mapmaking.grouping =
+        citlali::config::MapGrouping::array;
+    engine.rtcproc.run_polarization = true;
+    engine.cmb.exposure_time = 3.0;
+    engine.telescope.tel_data["TelTime"].values = {10.0, 12.5, 14.0};
+
+    citlali::pipeline::update_observation_exposure_time(engine);
+
     EXPECT_DOUBLE_EQ(engine.cmb.exposure_time, 7.0);
 }
 
@@ -6665,7 +6719,7 @@ TEST(pipeline_execution, allocates_observation_map_buffers) {
     EXPECT_EQ(logger->info_calls, 3);
 }
 
-TEST(pipeline_execution, skips_observation_noise_for_non_jinc_coadd) {
+TEST(pipeline_execution, allocates_observation_noise_for_naive_coadd) {
     FakeObservationMapTodProc todproc;
     todproc.engine().typed_config.coadd.enabled = true;
     todproc.engine().typed_config.mapmaking.method =
@@ -6679,8 +6733,8 @@ TEST(pipeline_execution, skips_observation_noise_for_non_jinc_coadd) {
 
     EXPECT_EQ(todproc.calc_map_num_calls, 1);
     EXPECT_EQ(todproc.allocate_omb_calls, 1);
-    EXPECT_EQ(todproc.allocate_nmb_calls, 0);
-    EXPECT_EQ(logger->info_calls, 2);
+    EXPECT_EQ(todproc.allocate_nmb_calls, 1);
+    EXPECT_EQ(logger->info_calls, 3);
 }
 
 TEST(pipeline_execution, allocates_observation_map_buffers_by_index) {
@@ -6783,6 +6837,51 @@ TEST(pipeline_execution, prepares_reduction_observation_inputs) {
     EXPECT_EQ(todproc.engine().observation_dates.date_obs,
               (std::vector<std::string>{"2026-01-01T00:00:00"}));
     EXPECT_DOUBLE_EQ(todproc.engine().omb.exposure_time, 1.0);
+}
+
+TEST(pipeline_execution,
+     production_input_policy_records_legacy_coadd_metadata_once) {
+    FakeInitialObservationTodProc todproc;
+    todproc.engine().typed_config.coadd.enabled = true;
+    FakeRawObs rawobs;
+    rawobs.tel.path = "/data/tel.nc";
+    std::vector<FakeRawObsMeta> rawobs_kids_meta = {{122.0, 102}};
+    std::vector<int> map_extents = {11};
+    std::vector<int> map_coords = {22};
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_TEMPLATE_TRUE(citlali::pipeline::prepare_reduction_observation_inputs<false>(
+        todproc, rawobs, rawobs_kids_meta, true, map_extents, map_coords, 0,
+        [](auto &) { return std::string{"2026-01-01T00:00:00"}; },
+        logger));
+
+    EXPECT_EQ(todproc.engine().cmb.obsnums,
+              (std::vector<std::string>{"000102"}));
+    EXPECT_DOUBLE_EQ(todproc.engine().cmb.exposure_time, 1.0);
+}
+
+TEST(pipeline_execution,
+     production_input_policy_defers_v1_coadd_metadata_to_admission) {
+    FakeInitialObservationTodProc todproc;
+    todproc.engine().typed_config.coadd.enabled = true;
+    todproc.engine().typed_config.mapmaking.method =
+        citlali::config::MapMethod::naive;
+    todproc.engine().typed_config.mapmaking.grouping =
+        citlali::config::MapGrouping::array;
+    FakeRawObs rawobs;
+    rawobs.tel.path = "/data/tel.nc";
+    std::vector<FakeRawObsMeta> rawobs_kids_meta = {{122.0, 102}};
+    std::vector<int> map_extents = {11};
+    std::vector<int> map_coords = {22};
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_TEMPLATE_TRUE(citlali::pipeline::prepare_reduction_observation_inputs<false>(
+        todproc, rawobs, rawobs_kids_meta, true, map_extents, map_coords, 0,
+        [](auto &) { return std::string{"2026-01-01T00:00:00"}; },
+        logger));
+
+    EXPECT_TRUE(todproc.engine().cmb.obsnums.empty());
+    EXPECT_DOUBLE_EQ(todproc.engine().cmb.exposure_time, 0.0);
 }
 
 TEST(pipeline_execution,
@@ -10062,15 +10161,45 @@ TEST(pipeline_output_layout, configures_observation_output_layout) {
     EXPECT_TRUE(engine.cmb.obsnums.empty());
 }
 
-TEST(pipeline_output_layout, adds_observation_number_to_coadd_layout) {
+TEST(pipeline_output_layout, defers_coadd_observation_number_until_admission) {
+    FakeEngine engine;
+    engine.typed_config.coadd.enabled = true;
+    engine.typed_config.mapmaking.method =
+        citlali::config::MapMethod::naive;
+    engine.typed_config.mapmaking.grouping =
+        citlali::config::MapGrouping::array;
+    engine.cmb.obsnums = {"000001"};
+
+    citlali::pipeline::configure_observation_output_layout(engine, 42);
+
+    ASSERT_EQ(engine.cmb.obsnums.size(), 1U);
+    EXPECT_EQ(engine.cmb.obsnums.front(), "000001");
+}
+
+TEST(pipeline_output_layout, retains_legacy_coadd_membership_outside_v1_profile) {
     FakeEngine engine;
     engine.typed_config.coadd.enabled = true;
     engine.cmb.obsnums = {"000001"};
 
     citlali::pipeline::configure_observation_output_layout(engine, 42);
 
-    ASSERT_EQ(engine.cmb.obsnums.size(), 2U);
-    EXPECT_EQ(engine.cmb.obsnums.back(), "000042");
+    EXPECT_EQ(engine.cmb.obsnums,
+              (std::vector<std::string>{"000001", "000042"}));
+}
+
+TEST(pipeline_output_layout, retains_polarized_direct_coadd_membership_path) {
+    FakeEngine engine;
+    engine.typed_config.coadd.enabled = true;
+    engine.typed_config.mapmaking.method =
+        citlali::config::MapMethod::naive;
+    engine.typed_config.mapmaking.grouping =
+        citlali::config::MapGrouping::array;
+    engine.rtcproc.run_polarization = true;
+
+    citlali::pipeline::configure_observation_output_layout(engine, 42);
+
+    EXPECT_EQ(engine.cmb.obsnums,
+              (std::vector<std::string>{"000042"}));
 }
 
 TEST(pipeline_output_layout, reads_obsnum_from_rawobs_meta) {

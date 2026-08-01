@@ -37,6 +37,46 @@ inline std::string coverage_mask_map_hdu_name(
     return "coverage_bool_" + map_name + stokes_suffix;
 }
 
+inline std::string geometric_hits_map_hdu_name(
+    const std::string &map_name, const std::string &stokes_suffix) {
+    return "geometric_hits_" + map_name + stokes_suffix;
+}
+
+inline std::string contributing_hits_map_hdu_name(
+    const std::string &map_name, const std::string &stokes_suffix) {
+    return "contributing_hits_" + map_name + stokes_suffix;
+}
+
+inline std::string coadd_observation_count_map_hdu_name(
+    const std::string &map_name, const std::string &stokes_suffix) {
+    return "coadd_observation_count_" + map_name + stokes_suffix;
+}
+
+inline std::string upstream_eligible_exposure_map_hdu_name(
+    const std::string &map_name, const std::string &stokes_suffix) {
+    return "upstream_eligible_exposure_" + map_name + stokes_suffix;
+}
+
+inline std::string retained_exposure_map_hdu_name(
+    const std::string &map_name, const std::string &stokes_suffix) {
+    return "retained_exposure_" + map_name + stokes_suffix;
+}
+
+inline std::string normalization_support_map_hdu_name(
+    const std::string &map_name, const std::string &stokes_suffix) {
+    return "normalization_support_" + map_name + stokes_suffix;
+}
+
+inline std::string science_policy_support_map_hdu_name(
+    const std::string &map_name, const std::string &stokes_suffix) {
+    return "science_policy_support_" + map_name + stokes_suffix;
+}
+
+inline std::string science_valid_map_hdu_name(
+    const std::string &map_name, const std::string &stokes_suffix) {
+    return "science_valid_" + map_name + stokes_suffix;
+}
+
 inline std::string legacy_pixel_snr_map_hdu_name(
     const std::string &map_name, const std::string &stokes_suffix) {
     return "sig2noise_" + map_name + stokes_suffix;
@@ -93,13 +133,19 @@ double wcs_source_epoch_or_default(const HeaderMap &tel_header,
 }
 
 template <class ArrayFreqMap>
-double map_wcs_frequency(ArrayFreqMap &array_freq_map,
+double map_wcs_frequency(const ArrayFreqMap &array_freq_map,
                          Eigen::Index array_id) {
-    return array_freq_map[array_id];
+    const auto it = array_freq_map.find(array_id);
+    if (it == array_freq_map.end() || !std::isfinite(it->second)) {
+        throw std::runtime_error(
+            "map WCS requires a declared finite array frequency");
+    }
+    return it->second;
 }
 
 template <class Wcs, class ArrayFreqMap>
-void assign_map_wcs_spectral_axes(Wcs &wcs, ArrayFreqMap &array_freq_map,
+void assign_map_wcs_spectral_axes(Wcs &wcs,
+                                  const ArrayFreqMap &array_freq_map,
                                   Eigen::Index array_id,
                                   Eigen::Index stokes_index) {
     wcs.crval[2] = map_wcs_frequency(array_freq_map, array_id);
@@ -109,7 +155,7 @@ void assign_map_wcs_spectral_axes(Wcs &wcs, ArrayFreqMap &array_freq_map,
 template <class ImageList>
 bool has_map_image_slot(const ImageList &images, Eigen::Index i,
                         Eigen::Index n_rows, Eigen::Index n_cols) {
-    return i < static_cast<Eigen::Index>(images.size()) &&
+    return i >= 0 && i < static_cast<Eigen::Index>(images.size()) &&
            images[i].rows() == n_rows &&
            images[i].cols() == n_cols;
 }

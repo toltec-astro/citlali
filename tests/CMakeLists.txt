@@ -31,7 +31,11 @@ target_sources(citlali_test
         test_process_resource_snapshot.cpp
         test_rawobs_adc_snap.cpp
         test_reduction_session.cpp
+        test_science_map_provenance.cpp
+        test_science_map_contract.cpp
+        test_science_map_truth_suite.cpp
         test_session_failure_boundaries.cpp
+        test_science_map_fits_products.cpp
         test_tod_output_selection_config.cpp
         test_utils.cpp
 )
@@ -48,6 +52,50 @@ gtest_discover_tests(
         TEST_PREFIX "citlali::"
         DISCOVERY_MODE PRE_TEST
     )
+
+add_executable(citlali_science_map_truth_test EXCLUDE_FROM_ALL
+    test_science_map_contract.cpp
+    test_science_map_provenance.cpp
+    test_science_map_truth_suite.cpp
+)
+set_target_properties(citlali_science_map_truth_test
+    PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+)
+target_link_libraries(citlali_science_map_truth_test
+    PRIVATE
+        citlali::citlali
+        GTest::gtest_main
+)
+
+# SCI-MAP-001-F001: the repaired ordinary primitive is a header-instantiated
+# template, so this focused target instruments the primitive and its
+# concurrent shared-map commit directly. It is intentionally excluded from
+# the default build and ordinary CTest discovery; run it explicitly to retain
+# the sanitizer report as exact-SHA evidence.
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
+    add_executable(citlali_science_map_tsan_test EXCLUDE_FROM_ALL
+        test_science_map_truth_suite.cpp
+    )
+    set_target_properties(citlali_science_map_tsan_test
+        PROPERTIES
+            RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+    )
+    target_link_libraries(citlali_science_map_tsan_test
+        PRIVATE
+            citlali::citlali
+            GTest::gtest_main
+    )
+    target_compile_options(citlali_science_map_tsan_test
+        PRIVATE
+            -fsanitize=thread
+            -fno-omit-frame-pointer
+    )
+    target_link_options(citlali_science_map_tsan_test
+        PRIVATE
+            -fsanitize=thread
+    )
+endif()
 
 add_executable(citlali_safety_test EXCLUDE_FROM_ALL)
 set_target_properties(citlali_safety_test

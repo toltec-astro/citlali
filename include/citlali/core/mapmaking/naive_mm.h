@@ -41,12 +41,13 @@ public:
         {3,3*pi/4}
     };
 
-    template <typename Derived>
-    void add_sparse_to_dense(std::vector<Eigen::Triplet<double>> &triplets, Eigen::DenseBase<Derived> &dense_matrix) {
-        Eigen::SparseMatrix<double> sparse_matrix(dense_matrix.rows(),dense_matrix.cols());
+    template <typename Scalar, typename Derived>
+    void add_sparse_to_dense(std::vector<Eigen::Triplet<Scalar>> &triplets,
+                             Eigen::DenseBase<Derived> &dense_matrix) {
+        Eigen::SparseMatrix<Scalar> sparse_matrix(dense_matrix.rows(),dense_matrix.cols());
         sparse_matrix.setFromTriplets(triplets.begin(), triplets.end());
         dense_matrix += sparse_matrix;
-        std::vector<Eigen::Triplet<double>>().swap(triplets);
+        std::vector<Eigen::Triplet<Scalar>>().swap(triplets);
     }
 
     // run polarization?
@@ -67,6 +68,19 @@ public:
     void populate_maps_naive_parallel(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, map_buffer_t &, map_buffer_t &,
                                       Eigen::DenseBase<Derived> &, std::string &, apt_t &, double, bool, bool,
                                       const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps = nullptr);
+
+    // SCI-MAP-001 ordinary Stokes-I primitive. Contributions are gathered in
+    // deterministic detector/sample order within each scan and committed
+    // under the existing merge lock. Sequential and requested-parallel entry
+    // points share the same race-free implementation and arithmetic; the
+    // existing farm's cross-scan completion order remains a declared bounded
+    // floating-equivalence boundary.
+    template<class map_buffer_t, typename Derived, typename apt_t>
+    void populate_maps_naive_science_contract(
+        TCData<TCDataKind::PTC, Eigen::MatrixXd> &, map_buffer_t &,
+        map_buffer_t &, Eigen::DenseBase<Derived> &, std::string &, apt_t &,
+        double, bool, bool,
+        const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps = nullptr);
 };
 
 template <class map_buffer_t>
@@ -95,11 +109,360 @@ void NaiveMapmaker::allocate_pointing(map_buffer_t &mb, double weight, double co
 }
 
 template<class map_buffer_t, typename Derived, typename apt_t>
+void NaiveMapmaker::populate_maps_naive_science_contract(
+    TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, map_buffer_t &omb,
+    map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices,
+    std::string &pixel_axes, apt_t &apt, double d_fsmp, bool run_omb,
+    bool run_noise,
+    const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps) {
+    using DoubleTriplet = Eigen::Triplet<double>;
+    using CountTriplet = Eigen::Triplet<std::int64_t>;
+    struct ContributionRecord {
+        Eigen::Index map_index;
+        Eigen::Index row;
+        Eigen::Index col;
+        double signal;
+        double coefficient;
+        int detector_uid;
+        int scan;
+        int sample;
+    };
+
+    if (!std::isfinite(d_fsmp) || d_fsmp <= 0.0) {
+        throw std::runtime_error(
+            "ordinary naive mapmaking requires a finite positive sample rate");
+    }
+    if (in.scans.data.rows() != in.flags.data.rows() ||
+        in.scans.data.cols() != in.flags.data.cols() ||
+        map_indices.size() != in.scans.data.cols()) {
+        throw std::runtime_error(
+            "ordinary naive mapmaking input shape mismatch");
+    }
+
+    const Eigen::Index n_pts = in.scans.data.rows();
+    const Eigen::Index n_dets = in.scans.data.cols();
+    const bool run_kernel = run_omb && !omb.kernel.empty();
+    const bool run_coverage = run_omb && !omb.coverage.empty();
+    const bool science_products =
+        run_omb && omb.science_products.initialized &&
+        !omb.science_products.geometric_hits.empty();
+    const bool use_omb_noise = !omb.noise.empty();
+    const bool use_cmb_noise = !cmb.noise.empty() && !use_omb_noise;
+    map_buffer_t *nmb = use_omb_noise ? &omb :
+                        (use_cmb_noise ? &cmb : nullptr);
+
+    if (run_kernel &&
+        (in.kernel.data.rows() != n_pts ||
+         in.kernel.data.cols() != n_dets)) {
+        throw std::runtime_error(
+            "ordinary naive required kernel shape differs from samples");
+    }
+
+    if (run_noise && nmb == nullptr) {
+        throw std::runtime_error(
+            "ordinary naive noise mapping requires an observation-owned noise buffer");
+    }
+    if (run_noise && (nmb->n_noise < 0 ||
+                      static_cast<Eigen::Index>(nmb->noise.size()) !=
+                          static_cast<Eigen::Index>(omb.signal.size()))) {
+        throw std::runtime_error(
+            "ordinary naive noise-map inventory differs from map inventory");
+    }
+
+    const auto n_maps = static_cast<Eigen::Index>(omb.signal.size());
+    if (run_omb && omb.contribution_diag_enabled) {
+        std::scoped_lock<std::mutex> lock(*naive_mutex);
+        omb.ensure_contribution_diag(n_maps);
+    }
+    std::vector<std::vector<DoubleTriplet>> signals(
+        static_cast<std::size_t>(n_maps));
+    std::vector<std::vector<DoubleTriplet>> weights(
+        static_cast<std::size_t>(n_maps));
+    std::vector<std::vector<DoubleTriplet>> kernels(
+        run_kernel ? static_cast<std::size_t>(n_maps) : 0U);
+    std::vector<std::vector<DoubleTriplet>> coverages(
+        run_coverage ? static_cast<std::size_t>(n_maps) : 0U);
+    std::vector<std::vector<CountTriplet>> geometric_hits(
+        science_products ? static_cast<std::size_t>(n_maps) : 0U);
+    std::vector<std::vector<CountTriplet>> contributing_hits(
+        science_products ? static_cast<std::size_t>(n_maps) : 0U);
+    std::vector<std::vector<DoubleTriplet>> eligible_exposure(
+        science_products ? static_cast<std::size_t>(n_maps) : 0U);
+    std::vector<std::vector<DoubleTriplet>> retained_exposure(
+        science_products ? static_cast<std::size_t>(n_maps) : 0U);
+    std::vector<ContributionRecord> contribution_records;
+
+    std::vector<Eigen::Tensor<double, 3>> noise_delta;
+    if (run_noise) {
+        noise_delta.reserve(nmb->noise.size());
+        for (std::size_t slot = 0; slot < nmb->noise.size(); ++slot) {
+            if (nmb->noise[slot].dimension(0) != nmb->n_rows ||
+                nmb->noise[slot].dimension(1) != nmb->n_cols ||
+                nmb->noise[slot].dimension(2) != nmb->n_noise) {
+                throw std::runtime_error(
+                    "ordinary naive noise-map shape mismatch");
+            }
+            noise_delta.emplace_back(nmb->n_rows, nmb->n_cols,
+                                     nmb->n_noise);
+            noise_delta.back().setZero();
+        }
+    }
+
+    const double sample_seconds = 1.0 / d_fsmp;
+    for (Eigen::Index det = 0; det < n_dets; ++det) {
+        const Eigen::Index map_index = map_indices(det);
+        if (map_index < 0 || map_index >= n_maps) {
+            throw std::runtime_error(
+                "ordinary naive map index is outside the allocated bundle");
+        }
+        if (active_maps != nullptr &&
+            (map_index >= active_maps->size() || !(*active_maps)(map_index))) {
+            continue;
+        }
+        int detector_uid = static_cast<int>(det);
+        const auto uid_it = apt.find("uid");
+        if (uid_it != apt.end() && det < uid_it->second.size() &&
+            std::isfinite(uid_it->second(det))) {
+            detector_uid =
+                static_cast<int>(std::llround(uid_it->second(det)));
+        }
+
+        auto [lat, lon] = engine_utils::calc_det_pointing(
+            in.tel_data.data, apt["x_t"](det), apt["y_t"](det), pixel_axes,
+            in.pointing_offsets_arcsec.data, omb.map_grouping);
+        if (lat.size() != n_pts || lon.size() != n_pts) {
+            throw std::runtime_error(
+                "ordinary naive projection cardinality differs from samples");
+        }
+
+        const Eigen::VectorXd omb_irow =
+            lat.array() / omb.pixel_size_rad + (omb.n_rows - 1) / 2.0;
+        const Eigen::VectorXd omb_icol =
+            lon.array() / omb.pixel_size_rad + (omb.n_cols - 1) / 2.0;
+        Eigen::VectorXd cmb_irow;
+        Eigen::VectorXd cmb_icol;
+        if (use_cmb_noise) {
+            cmb_irow =
+                lat.array() / cmb.pixel_size_rad + (cmb.n_rows - 1) / 2.0;
+            cmb_icol =
+                lon.array() / cmb.pixel_size_rad + (cmb.n_cols - 1) / 2.0;
+        }
+
+        const bool detector_eligible = apt["flag"](det) == 0;
+        for (Eigen::Index sample = 0; sample < n_pts; ++sample) {
+            const bool projection_finite =
+                std::isfinite(omb_irow(sample)) &&
+                std::isfinite(omb_icol(sample));
+            Eigen::Index omb_row = -1;
+            Eigen::Index omb_col = -1;
+            bool omb_in_bounds = false;
+            if (projection_finite) {
+                omb_row = static_cast<Eigen::Index>(
+                    std::llround(omb_irow(sample)));
+                omb_col = static_cast<Eigen::Index>(
+                    std::llround(omb_icol(sample)));
+                omb_in_bounds = omb_row >= 0 && omb_row < omb.n_rows &&
+                                omb_col >= 0 && omb_col < omb.n_cols;
+                if (science_products && omb_in_bounds) {
+                    geometric_hits[static_cast<std::size_t>(map_index)]
+                        .emplace_back(omb_row, omb_col, 1);
+                }
+            }
+
+            // Detector/sample flags are the upstream explicit-invalid
+            // authority. Do not inspect a flagged sample's payload.
+            if (!detector_eligible || in.flags.data(sample, det)) {
+                continue;
+            }
+            if (!projection_finite) {
+                throw std::runtime_error(
+                    "eligible ordinary naive sample has non-finite projection");
+            }
+            if (run_omb && !omb_in_bounds) {
+                continue;
+            }
+            if (science_products && omb_in_bounds) {
+                eligible_exposure[static_cast<std::size_t>(map_index)]
+                    .emplace_back(omb_row, omb_col, sample_seconds);
+            }
+
+            if (det >= in.weights.data.size()) {
+                throw std::runtime_error(
+                    "eligible ordinary naive detector lacks a coefficient");
+            }
+            const double coefficient = in.weights.data(det);
+            if (!std::isfinite(coefficient)) {
+                throw std::runtime_error(
+                    "eligible ordinary naive coefficient is non-finite");
+            }
+            if (coefficient <= 0.0) {
+                continue;
+            }
+
+            const double sample_signal = in.scans.data(sample, det);
+            if (!std::isfinite(sample_signal)) {
+                throw std::runtime_error(
+                    "contributing ordinary naive signal is non-finite");
+            }
+            const double weighted_signal = sample_signal * coefficient;
+            if (!std::isfinite(weighted_signal)) {
+                throw std::runtime_error(
+                    "ordinary naive weighted signal overflowed");
+            }
+
+            double weighted_kernel = 0.0;
+            if (run_kernel) {
+                const double kernel_value = in.kernel.data(sample, det);
+                if (!std::isfinite(kernel_value)) {
+                    throw std::runtime_error(
+                        "contributing ordinary naive kernel is non-finite");
+                }
+                weighted_kernel = kernel_value * coefficient;
+                if (!std::isfinite(weighted_kernel)) {
+                    throw std::runtime_error(
+                        "ordinary naive weighted kernel overflowed");
+                }
+            }
+
+            Eigen::Index noise_row = omb_row;
+            Eigen::Index noise_col = omb_col;
+            if (use_cmb_noise) {
+                if (!std::isfinite(cmb_irow(sample)) ||
+                    !std::isfinite(cmb_icol(sample))) {
+                    throw std::runtime_error(
+                        "eligible ordinary naive coadd-noise projection is non-finite");
+                }
+                noise_row = static_cast<Eigen::Index>(
+                    std::llround(cmb_irow(sample)));
+                noise_col = static_cast<Eigen::Index>(
+                    std::llround(cmb_icol(sample)));
+            }
+            const bool noise_in_bounds =
+                !run_noise ||
+                (noise_row >= 0 && noise_row < nmb->n_rows &&
+                 noise_col >= 0 && noise_col < nmb->n_cols);
+            std::vector<double> noise_values;
+            if (run_noise && noise_in_bounds) {
+                noise_values.reserve(static_cast<std::size_t>(nmb->n_noise));
+                for (Eigen::Index realization = 0;
+                     realization < nmb->n_noise; ++realization) {
+                    if (realization >= in.noise.data.rows() ||
+                        (nmb->randomize_dets && det >= in.noise.data.cols()) ||
+                        (!nmb->randomize_dets && in.noise.data.cols() < 1)) {
+                        throw std::runtime_error(
+                            "ordinary naive realization-sign inventory mismatch");
+                    }
+                    const double sign = nmb->randomize_dets
+                        ? static_cast<double>(in.noise.data(realization, det))
+                        : static_cast<double>(in.noise.data(realization, 0));
+                    const double noise_value = sign * weighted_signal;
+                    if (!std::isfinite(sign) || !std::isfinite(noise_value)) {
+                        throw std::runtime_error(
+                            "contributing ordinary naive realization is non-finite");
+                    }
+                    noise_values.push_back(noise_value);
+                }
+            }
+
+            if (run_omb && omb_in_bounds) {
+                // Preserve the accepted arithmetic order in the staged merge.
+                signals[static_cast<std::size_t>(map_index)].emplace_back(
+                    omb_row, omb_col, weighted_signal);
+                weights[static_cast<std::size_t>(map_index)].emplace_back(
+                    omb_row, omb_col, coefficient);
+                if (run_kernel) {
+                    kernels[static_cast<std::size_t>(map_index)].emplace_back(
+                        omb_row, omb_col, weighted_kernel);
+                }
+                if (run_coverage) {
+                    coverages[static_cast<std::size_t>(map_index)].emplace_back(
+                        omb_row, omb_col, sample_seconds);
+                }
+                if (science_products) {
+                    contributing_hits[static_cast<std::size_t>(map_index)]
+                        .emplace_back(omb_row, omb_col, 1);
+                    retained_exposure[static_cast<std::size_t>(map_index)]
+                        .emplace_back(omb_row, omb_col, sample_seconds);
+                }
+                if (omb.contribution_diag_enabled) {
+                    contribution_records.push_back(ContributionRecord{
+                        map_index, omb_row, omb_col, weighted_signal,
+                        coefficient, detector_uid,
+                        static_cast<int>(in.index.data),
+                        static_cast<int>(sample)});
+                }
+            }
+            for (Eigen::Index realization = 0;
+                 realization < static_cast<Eigen::Index>(noise_values.size());
+                 ++realization) {
+                noise_delta.at(static_cast<std::size_t>(map_index))(
+                    noise_row, noise_col, realization) +=
+                    noise_values.at(static_cast<std::size_t>(realization));
+            }
+        }
+    }
+
+    std::scoped_lock<std::mutex> lock(*naive_mutex);
+    if (run_omb) {
+        for (Eigen::Index map_index = 0; map_index < n_maps; ++map_index) {
+            add_sparse_to_dense(signals[static_cast<std::size_t>(map_index)],
+                                omb.signal[static_cast<std::size_t>(map_index)]);
+            add_sparse_to_dense(weights[static_cast<std::size_t>(map_index)],
+                                omb.weight[static_cast<std::size_t>(map_index)]);
+            if (run_kernel) {
+                add_sparse_to_dense(kernels[static_cast<std::size_t>(map_index)],
+                                    omb.kernel[static_cast<std::size_t>(map_index)]);
+            }
+            if (run_coverage) {
+                add_sparse_to_dense(coverages[static_cast<std::size_t>(map_index)],
+                                    omb.coverage[static_cast<std::size_t>(map_index)]);
+            }
+            if (science_products) {
+                auto &products = omb.science_products;
+                add_sparse_to_dense(
+                    geometric_hits[static_cast<std::size_t>(map_index)],
+                    products.geometric_hits[static_cast<std::size_t>(map_index)]);
+                add_sparse_to_dense(
+                    contributing_hits[static_cast<std::size_t>(map_index)],
+                    products.contributing_hits[static_cast<std::size_t>(map_index)]);
+                add_sparse_to_dense(
+                    eligible_exposure[static_cast<std::size_t>(map_index)],
+                    products.upstream_eligible_exposure[
+                        static_cast<std::size_t>(map_index)]);
+                add_sparse_to_dense(
+                    retained_exposure[static_cast<std::size_t>(map_index)],
+                    products.retained_exposure[
+                        static_cast<std::size_t>(map_index)]);
+            }
+        }
+        for (const auto &record : contribution_records) {
+            omb.record_contribution(
+                record.map_index, record.row, record.col, record.signal,
+                record.coefficient, record.detector_uid, record.scan,
+                record.sample);
+        }
+    }
+    if (run_noise) {
+        for (std::size_t map_index = 0; map_index < noise_delta.size();
+             ++map_index) {
+            nmb->noise[map_index] += noise_delta[map_index];
+        }
+    }
+}
+
+template<class map_buffer_t, typename Derived, typename apt_t>
 void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, map_buffer_t &omb,
                                         map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices,
                                         std::string &pixel_axes, apt_t &apt, double d_fsmp,
                                         bool run_omb, bool run_noise,
                                         const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps) {
+
+    if (!run_polarization) {
+        populate_maps_naive_science_contract(
+            in, omb, cmb, map_indices, pixel_axes, apt, d_fsmp, run_omb,
+            run_noise, active_maps);
+        return;
+    }
 
     typedef Eigen::Triplet<double> T;
     std::vector<std::vector<T>> signals, weights, kernels, coverages;
@@ -501,6 +864,13 @@ void NaiveMapmaker::populate_maps_naive_parallel(TCData<TCDataKind::PTC, Eigen::
                                                  std::string &pixel_axes, apt_t &apt, double d_fsmp,
                                                  bool run_omb, bool run_noise,
                                                  const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps) {
+
+    if (!run_polarization) {
+        populate_maps_naive_science_contract(
+            in, omb, cmb, map_indices, pixel_axes, apt, d_fsmp, run_omb,
+            run_noise, active_maps);
+        return;
+    }
 
     const bool use_cmb = !cmb.noise.empty();
     const bool use_omb = !omb.noise.empty();

@@ -53,10 +53,10 @@ def validate_readiness(
         raise ReadinessError(f"{manifest_path}: unsupported schema_version")
     registry = validate_registry(registry_path, ledger_path)
     epoch_id = nonempty_text(manifest.get("epoch_id"), "epoch_id")
-    if epoch_id != registry["preparing_epoch_id"]:
+    if epoch_id not in registry["preparing_epoch_ids"]:
         raise ReadinessError(
-            f"epoch_id {epoch_id!r} does not match preparing epoch "
-            f"{registry['preparing_epoch_id']!r}"
+            f"epoch_id {epoch_id!r} is not a registered preparing epoch; "
+            f"expected one of {registry['preparing_epoch_ids']!r}"
         )
     if manifest.get("status") != "preparing":
         raise ReadinessError("status must be 'preparing'")

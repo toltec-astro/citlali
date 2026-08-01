@@ -382,24 +382,25 @@ def main(argv: list[str]) -> int:
     try:
         registry = validate_registry(args.registry, args.ledger)
         if args.list_profiles or args.list_preparing_profiles:
-            epoch_key = (
-                "preparing_epoch_id"
-                if args.list_preparing_profiles
-                else "active_epoch_id"
-            )
             expected_status = (
                 "preparing" if args.list_preparing_profiles else "active"
             )
-            active_epoch = registry[epoch_key]
-            if active_epoch is None:
-                return 0
-            for profile in registry["profiles"]:
+            selected_epochs = (
+                set(registry["preparing_epoch_ids"])
+                if args.list_preparing_profiles
+                else {registry["active_epoch_id"]}
+            )
+            for profile in sorted(
+                registry["profiles"],
+                key=lambda item: (item["epoch_id"], item["mode"]),
+            ):
                 if (
                     profile["status"] == expected_status
-                    and profile["epoch_id"] == active_epoch
+                    and profile["epoch_id"] in selected_epochs
                 ):
                     print(
-                        f"{profile['profile_id']}\t{profile['mode']}\t"
+                        f"{profile['epoch_id']}\t{profile['profile_id']}\t"
+                        f"{profile['mode']}\t"
                         f"{profile['baseline_record_id'] or 'pending'}"
                     )
             return 0

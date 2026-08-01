@@ -16,13 +16,14 @@ CONFIG_SOURCE = "include/citlali/core/config/coadd_config.h"
 BOUNDARY_SOURCE = "include/citlali/core/engine/detail/mapmaking_config_impl.h"
 ACCESSOR_SOURCE = "include/citlali/core/pipeline/reduction_config_accessors.h"
 PROVENANCE_SOURCE = "include/citlali/core/pipeline/coadd_provenance.h"
+EXECUTION_PLAN_SOURCE = "include/citlali/core/pipeline/coadd_execution_plan.h"
 CLI_SOURCE = "include/citlali/core/cli/reduction_execution.h"
 EXPECTED_MANIFEST_SCHEMA = "citlali-frozen-coadd-config-paths-v1"
 EXPECTED_PATHS = ["coadd.enabled"]
 EXPECTED_PATH_SHA256 = (
     "b4b87923304067219ffbc2da502fded0b867f850fa9f5254204fd9f7b537e957"
 )
-EXPECTED_PROVENANCE_SCHEMA = "citlali-coadd-provenance-v1"
+EXPECTED_PROVENANCE_SCHEMA = "citlali-coadd-provenance-v2"
 RETIRED_SYMBOLS = ("read_coadd_enabled_config", "set_coadd_enabled")
 
 
@@ -110,12 +111,66 @@ def provenance_state(provenance: str, cli: str) -> dict[str, object]:
     schema_count = provenance.count(EXPECTED_PROVENANCE_SCHEMA)
     write_count = call_count(cli, "write_coadd_provenance_file")
     completion_count = call_count(cli, "record_coadd_run_completed")
-    exact = schema_count == write_count == completion_count == 1
+    science_calls = {
+        name: call_count(provenance, name)
+        for name in (
+            "science_map_policy_contract_node",
+            "science_map_optional_exact_double_node",
+            "science_map_optional_bundle_identity_node",
+            "science_map_realized_maps_node",
+            "science_map_coadd_admissions_node",
+        )
+    }
+    exact = bool(
+        schema_count == write_count == completion_count == 1
+        and science_calls["science_map_policy_contract_node"] == 1
+        and science_calls["science_map_optional_exact_double_node"] == 2
+        and science_calls["science_map_optional_bundle_identity_node"] == 1
+        and science_calls["science_map_realized_maps_node"] == 1
+        and science_calls["science_map_coadd_admissions_node"] == 1
+        and provenance.count('root["observation_resolved"]') >= 5
+    )
     return {
         "schema_version": EXPECTED_PROVENANCE_SCHEMA,
         "schema_count": schema_count,
         "cli_write_count": write_count,
         "cli_completion_count": completion_count,
+        "science_calls": science_calls,
+        "exact": exact,
+    }
+
+
+def science_lifecycle_state(execution_plan: str) -> dict[str, object]:
+    required_counts = {
+        "CoaddScienceState": execution_plan.count("struct CoaddScienceState"),
+        "common_identity": execution_plan.count("common_identity"),
+        "realized_maps": execution_plan.count("realized_maps"),
+        "admissions": execution_plan.count("admissions"),
+        "record_science_state": call_count(execution_plan, "record_science_state"),
+        "record_admission": call_count(execution_plan, "record_admission"),
+        "validate_admission": call_count(execution_plan, "validate_admission"),
+    }
+    immutable_registration = bool(
+        '"centered-integer-common-grid-embedding-v1"' in execution_plan
+        and '"L-identity-v1"' in execution_plan
+        and "observation_raw_parent_digests" in execution_plan
+        and "normalization_support_policy" in execution_plan
+        and "science_policy_support_policy" in execution_plan
+    )
+    exact = bool(
+        required_counts["CoaddScienceState"] == 1
+        and required_counts["common_identity"] >= 5
+        and required_counts["realized_maps"] >= 5
+        and required_counts["admissions"] >= 6
+        and required_counts["record_science_state"] == 1
+        and required_counts["record_admission"] == 1
+        and required_counts["validate_admission"] == 2
+        and immutable_registration
+    )
+    return {
+        "source": EXECUTION_PLAN_SOURCE,
+        "required_counts": required_counts,
+        "immutable_registration": immutable_registration,
         "exact": exact,
     }
 
@@ -134,17 +189,22 @@ def audit(repo_root: Path) -> dict[str, object]:
         (repo_root / PROVENANCE_SOURCE).read_text(),
         (repo_root / CLI_SOURCE).read_text(),
     )
+    science_lifecycle = science_lifecycle_state(
+        (repo_root / EXECUTION_PLAN_SOURCE).read_text()
+    )
     drift = not (
         manifest["exact"]
         and reader["exact"]
         and authority["exact"]
         and provenance["exact"]
+        and science_lifecycle["exact"]
     )
     return {
         "manifest": manifest,
         "typed_reader": reader,
         "authority_boundary": authority,
         "provenance": provenance,
+        "science_lifecycle": science_lifecycle,
         "drift": drift,
     }
 
@@ -159,6 +219,8 @@ def markdown_report(result: dict[str, object]) -> str:
             f"- Direct typed reader exact: `{result['typed_reader']['exact']}`",
             f"- Authority boundary exact: `{result['authority_boundary']['exact']}`",
             f"- Versioned provenance exact: `{result['provenance']['exact']}`",
+            f"- SCI-MAP lifecycle exact: `"
+            f"{result['science_lifecycle']['exact']}`",
             "",
         ]
     )
@@ -190,6 +252,7 @@ def main() -> int:
         f"reader={result['typed_reader']['exact']} "
         f"authority={result['authority_boundary']['exact']} "
         f"provenance={result['provenance']['exact']} "
+        f"science_lifecycle={result['science_lifecycle']['exact']} "
         f"drift={result['drift']}"
     )
     return 1 if args.fail_on_drift and result["drift"] else 0

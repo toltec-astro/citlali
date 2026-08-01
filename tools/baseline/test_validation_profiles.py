@@ -27,19 +27,29 @@ class ValidationProfilesTest(unittest.TestCase):
         ]
         self.assertEqual({profile["mode"] for profile in active}, profiles.SUPPORTED_MODES)
         self.assertEqual(len(active), len(profiles.SUPPORTED_MODES))
-        preparing = [
-            profile
-            for profile in registry["profiles"]
-            if profile["status"] == "preparing"
-            and profile["epoch_id"] == registry["preparing_epoch_id"]
-        ]
-        self.assertEqual(
-            {profile["mode"] for profile in preparing},
-            profiles.SUPPORTED_MODES,
+        self.assertGreaterEqual(len(registry["preparing_epoch_ids"]), 2)
+        self.assertIn(
+            "phase5-v2.1-candidate-2026-07-24",
+            registry["preparing_epoch_ids"],
         )
-        self.assertTrue(
-            all(profile["baseline_record_id"] is None for profile in preparing)
+        self.assertIn(
+            "sci-map-001-repair-2026-07-31",
+            registry["preparing_epoch_ids"],
         )
+        for epoch_id in registry["preparing_epoch_ids"]:
+            preparing = [
+                profile
+                for profile in registry["profiles"]
+                if profile["status"] == "preparing"
+                and profile["epoch_id"] == epoch_id
+            ]
+            self.assertEqual(
+                {profile["mode"] for profile in preparing},
+                profiles.SUPPORTED_MODES,
+            )
+            self.assertTrue(
+                all(profile["baseline_record_id"] is None for profile in preparing)
+            )
 
         product_registry = contracts.load_registry(PRODUCT_CONTRACTS)
         contracts_by_id = {
@@ -110,21 +120,49 @@ class ValidationProfilesTest(unittest.TestCase):
 
     def test_registry_may_have_no_successor_in_preparation(self) -> None:
         registry = self._portable_registry()
-        preparing_epoch = registry.pop("preparing_epoch_id")
-        registry["preparing_epoch_id"] = None
+        preparing_epochs = set(registry["preparing_epoch_ids"])
+        registry["preparing_epoch_ids"] = []
         registry["epochs"] = [
             epoch
             for epoch in registry["epochs"]
-            if epoch["epoch_id"] != preparing_epoch
+            if epoch["epoch_id"] not in preparing_epochs
         ]
         registry["profiles"] = [
             profile
             for profile in registry["profiles"]
-            if profile["epoch_id"] != preparing_epoch
+            if profile["epoch_id"] not in preparing_epochs
         ]
 
         with self._write_registry(registry) as path:
             profiles.validate_registry(path, LEDGER)
+
+    def test_each_preparing_epoch_requires_all_four_modes(self) -> None:
+        registry = self._portable_registry()
+        epoch_id = registry["preparing_epoch_ids"][-1]
+        registry["profiles"] = [
+            profile
+            for profile in registry["profiles"]
+            if not (
+                profile["epoch_id"] == epoch_id
+                and profile["mode"] == "science"
+            )
+        ]
+
+        with self._write_registry(registry) as path:
+            with self.assertRaisesRegex(
+                profiles.RegistryError, "must contain exactly one"
+            ):
+                profiles.validate_registry(path, LEDGER)
+
+    def test_unlisted_preparing_epoch_is_rejected(self) -> None:
+        registry = self._portable_registry()
+        registry["preparing_epoch_ids"].pop()
+
+        with self._write_registry(registry) as path:
+            with self.assertRaisesRegex(
+                profiles.RegistryError, "agree with preparing_epoch_ids"
+            ):
+                profiles.validate_registry(path, LEDGER)
 
     def _portable_registry(self) -> dict:
         registry = copy.deepcopy(json.loads(REGISTRY.read_text(encoding="utf-8")))

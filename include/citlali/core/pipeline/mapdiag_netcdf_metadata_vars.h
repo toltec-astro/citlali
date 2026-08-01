@@ -17,6 +17,15 @@ inline void add_mapdiag_runtime_vars(
     add_netcdf_var(fo, "MAP_PIXEL_SIZE_RAD", values.pixel_size_rad);
     add_netcdf_var(fo, "MAP_COVERAGE_CUT", values.coverage_cut);
     add_netcdf_var<std::string>(fo, "MAP_SIG_UNIT", values.signal_unit);
+    add_netcdf_var<std::string>(
+        fo, "MAP_WEIGHT_INTERPRETATION",
+        "nonprecision_gridding_normalization_coefficient");
+    add_netcdf_var<std::string>(
+        fo, "MAP_PRECISION_STATUS",
+        "not_established_pending_SCI-PTC-001");
+    add_netcdf_var<std::string>(
+        fo, "MAP_COVARIANCE_STATUS",
+        "unavailable_pending_SCI-PTC-001");
 }
 
 inline void add_mapdiag_edge_guard_config_vars(
@@ -56,4 +65,3 @@ inline void add_mapdiag_metadata_vars(
     add_mapdiag_metadata_vars(
         fo, values.identity, values.runtime, values.edge_guard);
 }
-

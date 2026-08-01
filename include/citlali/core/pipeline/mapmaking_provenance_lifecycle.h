@@ -100,10 +100,41 @@ inline void complete_mapmaking_observation(
 }
 
 template <class Engine>
+void record_mapmaking_observation_science_state_if_available(
+    Engine &engine, MapmakingExecutionPlan &plan) {
+    if constexpr (requires { engine.omb.science_products; }) {
+        if (plan.observations.empty()) {
+            throw std::logic_error(
+                "cannot record science-map state before observation begins");
+        }
+        auto &observation = plan.observations.back();
+        if (observation.bundle_identity) {
+            return;
+        }
+        const auto &products = engine.omb.science_products;
+        if (!products.initialized) {
+            observation.science_state_absence_reason =
+                "science-map products were not initialized";
+            return;
+        }
+        if (!products.bundle_identity) {
+            plan.record_observation_science_absence(
+                products.realized,
+                "science-map bundle identity is unavailable for the effective profile");
+            return;
+        }
+        plan.record_observation_science_state(
+            *products.bundle_identity, products.realized);
+    }
+}
+
+template <class Engine>
 void complete_mapmaking_observation_if_available(Engine &engine) {
     if constexpr (has_mapmaking_plan_v<Engine>) {
         auto &plan = mapmaking_plan(engine);
         if (plan.initialized && plan.effective.enabled) {
+            record_mapmaking_observation_science_state_if_available(
+                engine, plan);
             complete_mapmaking_observation(plan);
         }
     }

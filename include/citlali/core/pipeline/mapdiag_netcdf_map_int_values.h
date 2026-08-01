@@ -24,10 +24,10 @@ void add_mapdiag_map_int_vars(
             "count of pixels with weight >= map_weight_threshold",
             values.n_core_pixels);
     add_int("map_peak_row",
-            "row index of the maximum absolute signal-to-noise pixel",
+            "row index of the maximum absolute legacy coefficient-standardized amplitude pixel",
             values.peak_row);
     add_int("map_peak_col",
-            "column index of the maximum absolute signal-to-noise pixel",
+            "column index of the maximum absolute legacy coefficient-standardized amplitude pixel",
             values.peak_col);
     add_int("map_edge_guard_applied",
             "1 when the filter edge guard was applied to this map, 0 otherwise",
@@ -56,4 +56,3 @@ inline void add_mapdiag_map_int_vars(
     };
     add_mapdiag_map_int_vars(add_int, values);
 }
-

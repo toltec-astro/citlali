@@ -15,7 +15,7 @@ except ImportError:
     from validate_validation_ledger import LedgerError, validate_ledger
 
 
-REGISTRY_SCHEMA_VERSION = "citlali-validation-profile-registry-v2"
+REGISTRY_SCHEMA_VERSION = "citlali-validation-profile-registry-v3"
 BINDING_POLICY_SCHEMA_VERSION = "citlali-config-binding-policy-registry-v1"
 SUPPORTED_MODES = {"point", "oof", "beammap", "science"}
 SUPPORTED_COMPARATORS = {
@@ -108,15 +108,16 @@ def validate_registry(
     active_epoch_id = _text(
         registry.get("active_epoch_id"), f"{registry_path}.active_epoch_id"
     )
-    preparing_epoch_value = registry.get("preparing_epoch_id")
-    preparing_epoch_id = (
-        _text(
-            preparing_epoch_value,
-            f"{registry_path}.preparing_epoch_id",
+    preparing_epoch_ids = [
+        _text(value, f"{registry_path}.preparing_epoch_ids[{index}]")
+        for index, value in enumerate(
+            _list(
+                registry.get("preparing_epoch_ids"),
+                f"{registry_path}.preparing_epoch_ids",
+            )
         )
-        if preparing_epoch_value is not None
-        else None
-    )
+    ]
+    _unique(preparing_epoch_ids, f"{registry_path}.preparing_epoch_ids")
     evolution = _mapping(
         registry.get("evolution_policy"), f"{registry_path}.evolution_policy"
     )
@@ -150,26 +151,31 @@ def validate_registry(
     _unique(epoch_ids, "epochs.epoch_id")
     if active_epoch_id not in epoch_ids:
         raise RegistryError("active_epoch_id does not name a registered epoch")
-    if preparing_epoch_id is not None and preparing_epoch_id not in epoch_ids:
-        raise RegistryError("preparing_epoch_id does not name a registered epoch")
+    unknown_preparing_epochs = sorted(set(preparing_epoch_ids) - set(epoch_ids))
+    if unknown_preparing_epochs:
+        raise RegistryError(
+            "preparing_epoch_ids name unregistered epochs "
+            f"{unknown_preparing_epochs}"
+        )
     if active_epoch_count != 1:
         raise RegistryError("registry must contain exactly one active epoch")
-    expected_preparing_count = 1 if preparing_epoch_id is not None else 0
-    if preparing_epoch_count != expected_preparing_count:
+    if preparing_epoch_count != len(preparing_epoch_ids):
         raise RegistryError(
-            "registry preparing epochs must agree with preparing_epoch_id"
+            "registry preparing epochs must agree with preparing_epoch_ids"
         )
     active_epoch = next(
         epoch for epoch in epochs if epoch["epoch_id"] == active_epoch_id
     )
     if active_epoch["status"] != "active":
         raise RegistryError("active_epoch_id names a non-active epoch")
-    if preparing_epoch_id is not None:
+    for preparing_epoch_id in preparing_epoch_ids:
         preparing_epoch = next(
             epoch for epoch in epochs if epoch["epoch_id"] == preparing_epoch_id
         )
         if preparing_epoch["status"] != "preparing":
-            raise RegistryError("preparing_epoch_id names a non-preparing epoch")
+            raise RegistryError(
+                "preparing_epoch_ids name a non-preparing epoch"
+            )
 
     records = ledger_records(ledger_path)
     repo_root = registry_path.resolve().parent.parent
@@ -179,7 +185,9 @@ def validate_registry(
     profiles = _list(registry.get("profiles"), f"{registry_path}.profiles")
     profile_ids: list[str] = []
     active_modes: list[str] = []
-    preparing_modes: list[str] = []
+    preparing_modes: dict[str, list[str]] = {
+        epoch_id: [] for epoch_id in preparing_epoch_ids
+    }
     for index, value in enumerate(profiles):
         context = f"profiles[{index}]"
         profile = _mapping(value, context)
@@ -322,8 +330,13 @@ def validate_registry(
 
         if status == "active" and epoch_id == active_epoch_id:
             active_modes.append(mode)
-        if status == "preparing" and epoch_id == preparing_epoch_id:
-            preparing_modes.append(mode)
+        if status == "preparing":
+            if epoch_id not in preparing_modes:
+                raise RegistryError(
+                    f"{context}: preparing profile requires its epoch in "
+                    "preparing_epoch_ids"
+                )
+            preparing_modes[epoch_id].append(mode)
         profile_ids.append(profile_id)
 
     _unique(profile_ids, "profiles.profile_id")
@@ -332,18 +345,13 @@ def validate_registry(
             "active epoch must contain exactly one active profile for each of "
             f"{sorted(SUPPORTED_MODES)}; got {sorted(active_modes)}"
         )
-    if preparing_epoch_id is not None and (
-        set(preparing_modes) != SUPPORTED_MODES
-        or len(preparing_modes) != len(SUPPORTED_MODES)
-    ):
-        raise RegistryError(
-            "preparing epoch must contain exactly one preparing profile for each of "
-            f"{sorted(SUPPORTED_MODES)}; got {sorted(preparing_modes)}"
-        )
-    if preparing_epoch_id is None and preparing_modes:
-        raise RegistryError(
-            "preparing profiles require a preparing_epoch_id"
-        )
+    for preparing_epoch_id, modes in preparing_modes.items():
+        if set(modes) != SUPPORTED_MODES or len(modes) != len(SUPPORTED_MODES):
+            raise RegistryError(
+                f"preparing epoch {preparing_epoch_id!r} must contain exactly "
+                "one preparing profile for each of "
+                f"{sorted(SUPPORTED_MODES)}; got {sorted(modes)}"
+            )
     return registry
 
 
@@ -382,12 +390,12 @@ def main(argv: list[str]) -> int:
         for profile in registry["profiles"]
         if profile["status"] == "active" and profile["epoch_id"] == active_epoch
     ]
-    preparing_epoch = registry["preparing_epoch_id"]
+    preparing_epochs = set(registry["preparing_epoch_ids"])
     preparing = [
         profile
         for profile in registry["profiles"]
         if profile["status"] == "preparing"
-        and profile["epoch_id"] == preparing_epoch
+        and profile["epoch_id"] in preparing_epochs
     ]
     print(
         f"validation profile registry valid: active_epoch={active_epoch} "
@@ -400,11 +408,12 @@ def main(argv: list[str]) -> int:
                 f"{profile['baseline_record_id']}"
             )
     if args.list_preparing:
-        if preparing_epoch is None:
-            return 0
-        for profile in sorted(preparing, key=lambda item: item["mode"]):
+        for profile in sorted(
+            preparing, key=lambda item: (item["epoch_id"], item["mode"])
+        ):
             print(
-                f"{profile['profile_id']}\t{profile['mode']}\t"
+                f"{profile['epoch_id']}\t{profile['profile_id']}\t"
+                f"{profile['mode']}\t"
                 f"{profile['baseline_record_id'] or 'pending'}"
             )
     return 0

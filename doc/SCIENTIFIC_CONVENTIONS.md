@@ -4,9 +4,11 @@
 
 This is the canonical human-readable statement of scientific identity, units,
 coordinate frames, indexing, validity, provenance state, and validation policy
-for the current Citlali refactor tree. It describes validated behavior; it does
-not redesign the underlying algorithms or promise that historical file formats
-already encode every convention completely.
+for the current Citlali refactor tree. It describes validated behavior and
+explicitly labeled accepted successor contracts; a successor that is pending
+independent re-audit does not replace an active validated snapshot. This
+document does not redesign the underlying algorithms or promise that historical
+file formats already encode every convention completely.
 
 The executable authorities are:
 
@@ -177,6 +179,145 @@ extensions, WCS spectral/Stokes axes, and the explicit map-index mappings; they
 must not be reconstructed from vector position alone. Exact FITS extension and
 NetCDF dimension requirements live in `validation/product_contracts.json`.
 
+### Science-Map Bundle Identity And Coaddition
+
+The accepted `SCI-MAP-001` F009/F010 successor contract applies to ordinary
+naive, array-grouped Stokes-I observation and coadd maps. Its implementation is
+pending independent re-audit; this section states the accepted meaning and does
+not declare the repair conformant.
+
+An observation enters a coadd as one immutable ordered bundle. Admission
+includes grouping and slot identities, array/network/detector or group identity,
+Stokes and applicable frequency identity, signal unit, estimator, response and
+required companions, full-precision WCS, shapes, and the versioned coefficient,
+contribution, support, validity, and non-finite policies. Identity is formed
+from authoritative full-precision inputs. The legacy float-valued map WCS is a
+one-way output/compatibility projection and cannot establish equality.
+
+For coadd shape `(R_c, C_c)` and observation shape `(R_o, C_o)`, the only
+permitted placement is centered integer common-grid embedding:
+
+```text
+R_c >= R_o, C_c >= C_o
+(R_c - R_o) and (C_c - C_o) are even
+delta_row = (R_c - R_o) / 2
+delta_col = (C_c - C_o) / 2
+```
+
+The full-precision observation WCS must identify the same world coordinate
+after this offset. Shape and the corresponding reference-pixel offset are the
+only permitted WCS differences. Any identity, unit, response, frame,
+projection, center, scale, orientation, map-order, shape, or policy mismatch
+rejects the complete observation before any coadd numerical, identity,
+membership, exposure/count, inventory, or provenance state changes. General
+reprojection, interpolation, fractional shifts, and implicit recentering are
+not part of this contract. The signal-centering operator is `L = I`; coaddition
+does not subtract a mean or null mode.
+
+The existing ordinary arithmetic remains `Q += u`, `N += u * signal`, and
+`K += u * kernel`, followed by division on finite positive `Q`. The coefficient
+`u` is the realized `weight_I` after observation normalization and any existing
+optional global empirical rescaling. It is a nonprecision gridding and
+normalization coefficient by default. Its inverse-squared signal unit does not
+make it inverse variance. Precision requires `SCI-PTC-001` evidence for the
+applicable marginal-precision and independence/covariance assumptions; no GLS,
+covariance regularization, coadd uncertainty, or standardized-significance
+claim follows from this contract.
+
+Sequential and OpenMP execution must apply a declared deterministic or bounded
+equivalence policy without unsynchronized shared-pixel mutation. For the fully
+compatible, authoritative-valid control, observation order, centered offsets,
+and the existing arithmetic operation order remain unchanged.
+
+The declared policy is
+`within-scan-exact-scan-farm-2gamma-n-sumabs-v1`. Sequential and
+requested-parallel accumulation within one scan share the same
+detector/sample-ordered primitive and are exact. Mutex-protected scan-farm
+commits may arrive in different orders; each binary64 plane is bounded against
+the long-double sum of per-scan planes by
+`2 * gamma_n * sum(abs(scan_value))`, with
+`gamma_n = n * epsilon / (1 - n * epsilon)`. Integer fact planes remain exact.
+
+An explicitly invalid contribution is skipped before its numerical payload is
+evaluated. A declared ordinary contribution requires finite signal, finite
+positive coefficient, and finite declared companions; an unexpected violation
+is a required pre-mutation failure. Signal, kernel, noise realizations, retained
+exposure, and coadd-observation count share the admitted membership and integer
+embedding.
+
+The version-one F010 product hierarchy is:
+
+| Product | Storage and unit | Distinct meaning |
+| --- | --- | --- |
+| `geometric_hits_I` | `int64`, count | Finite in-bounds sample/detector projections before upstream eligibility and estimator selection |
+| `contributing_hits_I` | `int64`, count | Terms admitted by the named estimator contribution predicate |
+| `coadd_observation_count_I` | `int64`, count | Admitted observation maps contributing to each coadd pixel |
+| `upstream_eligible_exposure_I` | `float64`, detector s | Projected detector-seconds eligible under the upstream validity contract before contribution and normalization retention |
+| `retained_exposure_I` | `float64`, detector s | Detector-seconds retained after contribution and normalization-support decisions |
+| `normalization_support_I` | `uint8`, dimensionless | Numerical division/population support under the normalization rule |
+| `science_policy_support_I` | `uint8`, dimensionless | Separate full-cut science-policy support |
+| `science_valid_I` | `uint8`, dimensionless | The only authoritative raw science-validity mask |
+
+`coadd_observation_count_I` is not applicable to observation maps. The v1
+contract makes the complete F010 bundle explicitly unavailable for JINC and
+detector-grouped products. No ordinary positive-coefficient rule is inferred
+for JINC; a signed contribution predicate and any corresponding product
+availability remain owned by `SCI-MAP-002`.
+
+`coverage_I` is retained only as a bitwise compatibility alias of
+`retained_exposure_I`, with detector-seconds meaning. `coverage_bool_I` is a
+deprecated bitwise compatibility alias of `science_policy_support_I`. Neither
+alias is a science-validity authority.
+
+Normalization and science-policy support use separate versioned rules. Both
+select finite strictly positive coefficient values. If `N` values remain, the
+zero-based ascending order-statistic index is
+`k = floor((floor(0.75 * N) + N) / 2)`. The realized threshold is the selected
+coefficient at `k` multiplied by the applicable cut; empty input has threshold
+zero. Ordinary normalization uses the `coverage_cut / 10` cut and
+science-policy support uses the full `coverage_cut`. Both predicates require a
+finite positive coefficient and `coefficient >= realized_threshold`; IEEE
+`!(coefficient < threshold)` is not equivalent.
+
+The one-way lifecycle is requested to effective to observation-resolved to
+realized state; later stages do not rewrite earlier authorities. Realized
+provenance preserves both algorithm/version identities, coefficient product
+and lifecycle stage, lossless requested/realized cuts and thresholds,
+positive-value count and selected order-statistic index, finite, positivity,
+and comparison conventions, counts for each fact and state, required
+companions, admitted bundle and observation membership/offsets, and exact
+`raw-parent/product` digests. Downstream operators preserve raw
+`science_valid_I` and raw-parent identity separately from local numerical
+support, response, covariance, and output validity. A finite downstream value
+cannot promote a raw-invalid input.
+
+Coefficient stages use a closed vocabulary. Threshold selection records
+`pre-observation-normalization-accumulated-coefficient` or
+`pre-coadd-normalization-sum-of-admitted-observation-coefficients`. Published
+state records
+`post-observation-normalization-no-empirical-rescale`,
+`post-observation-normalization-global-empirical-rescale-applied`,
+`post-coadd-normalization-no-empirical-rescale`, or
+`post-coadd-normalization-global-empirical-rescale-applied`. Empirical refresh
+does not rewrite admitted observation state.
+
+Filtering first freezes the validated raw F010 bundle. Filtered signal,
+coefficient, F010, and compatibility-alias HDUs identify that immutable input
+with `RAWSTATE=immutable_input` and one identical lossless `RAWPDGST`; filtered
+empirical calculations cannot mutate the raw snapshot or digest. Profiles for
+which the complete v1 bundle is unavailable retain their established legacy
+coadd arithmetic and carry explicit absence reasons, without claiming F009 or
+F010 successor coverage.
+
+F009 and F010 remain `addressed_pending_reaudit`. The human-run
+exact-repair-SHA `SCI-MAP-001-UNITY-001` gate is still required.
+Calibration/unit/response, projection/WCS, coefficient/covariance, and upstream
+eligibility conclusions remain conditioned on `SCI-CAL-001`, `SCI-AST-001`,
+`SCI-PTC-001`, and `SCI-VAL-001`, respectively. Historical accepted map
+products retain their original product-contract identities and are not
+retroactively relabeled as carrying this successor bundle. See
+[ADR 0009](adr/0009-science-map-bundle-admission-and-validity.md).
+
 ## Coordinate Frames And Astrometry
 
 ### Map Frames
@@ -231,13 +372,14 @@ Units belong to values and products, not to variable names alone.
 | Quantity | Current convention |
 | --- | --- |
 | Accepted map signal and kernel | `mJy/beam` |
-| Map weight | inverse square of the associated signal unit |
+| Map gridding/normalization coefficient (`weight_I`) | recorded as inverse square of the associated signal unit; nonprecision by default, with precision conditional on `SCI-PTC-001` and applicable covariance evidence |
 | Map noise variance | square of the associated signal unit |
-| Coverage | seconds |
-| Coverage mask, standardized signal, and signal-to-noise | dimensionless |
+| Upstream-eligible and retained exposure | detector-seconds; not unique wall-clock integration time |
+| Hit/count products | integer counts with the product-specific sample/detector or admitted-observation meaning |
+| Support/validity masks, standardized signal, and signal-to-noise | dimensionless; only `science_valid_I` is authoritative raw map validity under the successor contract |
 | TOD signal | the recorded `signal_unit`/`BUNIT` |
 | Raw ADC snapshots | signed 12-bit ADC counts, `[-2048, 2047]` |
-| PTC weights | inverse square of the recorded signal unit |
+| PTC weights | inverse square of the recorded signal unit as a dimensional statement; precision/covariance meaning remains conditional on `SCI-PTC-001` |
 | Flags, IDs, counts, categories | dimensionless or `N/A` metadata |
 | Frequencies | Hz |
 | Pointing and Beammap fitted offsets | arcsec |
@@ -257,11 +399,14 @@ resulting unit.
 
 ### Standardized Map Products
 
-The name `sig2noise` is reserved for a statistical-significance estimator with
-an empirical noise calibration. For the current map products that estimator is
-the jackknife-calibrated pixel quantity `signal * sqrt(empirical_weight)`; the
-filtered point-source form is `point_source_flux / point_source_uncertainty`.
-Its FITS metadata names the estimator.
+The name `sig2noise` is reserved for an estimator intended to have an empirical
+noise calibration. For the existing map products its arithmetic is the
+jackknife-calibrated pixel quantity `signal * sqrt(empirical_weight)`; the
+filtered point-source form is point-source flux divided by point-source
+uncertainty. Its FITS metadata names the estimator. The
+`SCI-MAP-001` successor does not by itself establish statistical significance:
+that interpretation remains conditional on the applicable `SCI-PTC-001` and
+`SCI-NOI-001/002` covariance, realization, and calibration evidence.
 
 When empirical noise products are unavailable, Citlali may still publish
 `signal * sqrt(formal_mapmaker_weight)`, but it is named
@@ -325,9 +470,14 @@ Persisted scientific products use these current validity rules:
 
 - Timestream flags identify invalid samples. Detector/APT flags identify
   unusable detectors.
-- Map signal-like pixels may be non-finite outside valid support. Positive
-  weight and coverage, together with `coverage_bool` where present, define
-  usable map support.
+- Map signal-like pixels may be non-finite outside valid support. For the
+  `SCI-MAP-001` successor ordinary-naive bundle, `science_valid_I` is the only
+  authoritative raw validity mask: it requires normalization support,
+  science-policy support, finite signal and every declared companion, and
+  admitted identity. `weight_I`, exposure, finite population,
+  `coverage_I`, and `coverage_bool_I` are not substitutes. Historical products
+  without this successor bundle retain their versioned historical contract and
+  cannot be retroactively promoted to the successor validity state.
 - Fit-table numerical values may be non-finite when the corresponding fit is
   invalid. `flag`, `flag2`, `good_fit`, `converged`, and fit-quality fields are
   the validity authority for their respective tables.

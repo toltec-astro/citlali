@@ -11,6 +11,9 @@ template <auto FilteredObsMap, class Engine, class Logger>
 void filter_observation_maps(Engine &engine,
                              StageProfileCollector &stage_profile,
                              const Logger &logger) {
+    if constexpr (requires { engine.omb.freeze_raw_science_parent(); }) {
+        engine.omb.freeze_raw_science_parent();
+    }
     filter_maps<FilteredObsMap>(
         engine, engine.omb, stage_profile, logger, "filtering obs maps");
     record_post_processing_filter_completed_if_available(

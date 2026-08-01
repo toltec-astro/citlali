@@ -36,6 +36,77 @@ The live branch, upstream revision, gate, and import policy are recorded in
 [`INTEGRATION_LEDGER.md`](INTEGRATION_LEDGER.md). The durable rationale is
 [ADR 0008](adr/0008-application-mainline-and-build-adaptation-lanes.md).
 
+## 2026-07-31 SCI-MAP-001 Bounded Repair Lane
+
+The project owner approved a bounded repair of `SCI-MAP-001` findings
+F001-F011 on `codex/repair-sci-map-001`, created directly from governing
+application source `9aae0e669384c5c0c0dda93debc194d6b8dac787`. The audit and
+coordination lines remain read-only authorities. The convolve/noise candidate
+`02a198cbfb379eaf6ab279c5a3d44ee73ff90435` is deliberately excluded and does
+not land first.
+
+The repair scope is the accepted ordinary-naive, array-grouped Stokes-I
+successor contract: contract-derived fixtures; typed exposure, count, support,
+and validity state; atomic full-precision map-bundle admission followed by one
+admission commit phase; centered integer common-grid embedding with `L = I`;
+preservation of the existing `Q += u`, `N += u * signal`, and
+`K += u * kernel` operation
+order; nonprecision coefficient labeling; the eight distinct F010 products,
+compatibility aliases, explicit absence rules, and lossless realized
+provenance. [ADR 0009](adr/0009-science-map-bundle-admission-and-validity.md)
+and [the scientific conventions](SCIENTIFIC_CONVENTIONS.md) record the durable
+meaning.
+
+The candidate records the closed pre/post observation/coadd coefficient
+stages, freezes a validated raw F010 snapshot before filtering, and carries
+that immutable input through filtered signal, coefficient, F010, and alias
+HDUs with matching lossless `RAWPDGST` identity. Unsupported JINC,
+detector-grouped, and other non-v1 profiles retain their established legacy
+coadd arithmetic with explicit successor-product absence and no F009/F010
+claim.
+
+The ordinary primitive uses one detector/sample order for sequential and
+requested-parallel calls. Concurrent scan commits are serialized and governed
+by `within-scan-exact-scan-farm-2gamma-n-sumabs-v1`: binary64 planes are tested
+against long-double per-scan sums at the pre-registered
+`2 * gamma_n * sum(abs(scan_value))` bound, while integer fact planes are
+exact. The raw-execution read census is advanced only for the new immutable
+science identity's existing kernel and separate-polarimetry state reads; it
+adds no raw configuration authority.
+
+The local candidate snapshot passes the required implementation gates without
+required-data skips or unexpected error-level records: all five requested
+build targets complete; CTest executes 588/588 enabled tests successfully
+(one pre-existing disabled test); the focused science-map executable passes
+29/29 contract, provenance, and equation tests; its ThreadSanitizer build
+passes 7/7 repaired-primitive tests; 147 baseline-tool tests pass; and the full
+config preflight passes 127 unit tests, all four mode kits, all eight compact
+compatibility cases, 100% compact-surface coverage, and every typed boundary
+audit. The classified raw-execution census remains 45 records with zero
+review-required entries at digest
+`09572da976aec89d56506394420b478426a6efbd0942c864571a8f6f311da2f8`.
+The successor validation epoch and product registry parse and list cleanly.
+These are local repair-candidate results only; they do not satisfy F012 or the
+independent re-audit.
+
+This lane does not authorize general reprojection, interpolation, GLS,
+covariance regularization, new defaults, or changes to RTC, PTC, JINC,
+noise-realization, convolve, Wiener, source-fitting, Pointing/OOF, Beammap, or
+fruit-loop algorithms. Historical accepted products and profiles retain their
+original versioned contracts. Contract status is `approved`; implementation
+remains `nonconformant`, validation `in_progress`, production
+`existing_use_only`, verdict `amend`, and re-audit `required`. F009 and F010
+remain `addressed_pending_reaudit` until a fresh independent disposition.
+
+After the local truth suite and repository gates pass at one exact repair SHA,
+the human evidence owner must run a newly issued exact-SHA
+`SCI-MAP-001-UNITY-001` request. That F012 gate remains outstanding and Codex
+does not run it. F013 continues to condition calibration/unit/response,
+projection/WCS, coefficient/covariance, and upstream-eligibility conclusions
+on `SCI-CAL-001`, `SCI-AST-001`, `SCI-PTC-001`, and `SCI-VAL-001`. A fresh
+`codex/reaudit-sci-map-001` worktree must assess the committed repair and the
+returned external bundle before findings or production disposition can change.
+
 ## 2026-07-26 Conan 2 Build Review
 
 The previously deferred TolTECA build implementation is now available and has
