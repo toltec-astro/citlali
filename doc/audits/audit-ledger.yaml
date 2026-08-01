@@ -713,6 +713,14 @@ packages:
           record_commit: 4dabc750de69d53c852317ab77c735febd00a1b5
           record_sha256: >-
             64fd3ae9788c6a8e3db18ac5ea4f04799586b548f9e7ec12cc8c18f9cbf96e09
+        - decision_id: CAL-D001-ACCURACY-001
+          status: approved
+          decision_date: 2026-08-01
+          record_path: >-
+            doc/audits/packages/SCI-CAL-001_ACCURACY_AND_MODEL_SCOPE_AMENDMENT_2026-08-01.md
+          record_commit: 353aaf196ac2cabdd273f2a5760c80bec19cc885f
+          record_sha256: >-
+            ae295b717da3f9ed7129661e812b05847ff988500bb3d6f159b7ffae45cb2780
     dispatch:
       status: frozen_for_dispatch
       coordinator_registry_commit: 88741d085a08431790c6eee719b6f20052b459d8
@@ -871,7 +879,11 @@ packages:
           Implement the approved contract on a separate repair branch, pass
           exact factor, identity, response, unit, covariance, provenance, and
           fail-closed fixtures, and complete a fresh exact-repair-SHA re-audit.
-    unresolved_scientific_decisions: []
+    unresolved_scientific_decisions:
+      - >-
+        Select the exact versioned continuous atmosphere operator and declared
+        operational opacity/elevation domain after reproducible model
+        regeneration and withheld-grid validation.
     local_evidence:
       - id: SCI-CAL-001-CORE-001
         status: accepted_for_independence
@@ -889,11 +901,19 @@ packages:
       - id: SCI-CAL-001-TEST-INVENTORY-001
         status: incomplete
         finding_ids: [SCI-CAL-001-F009]
+      - id: SCI-CAL-001-QMODEL-CONTINUITY-001
+        status: failed_current_q_model_selector
+        source_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+        evidence_commit: ae99be1cef8c390d0e7490835ffca1f31da7ebc0
+        artifact: >-
+          validation/sci_cal_001_phase0_2026-07-31/Q_MODEL_CONTINUITY_REPORT.md
+        sha256: >-
+          1a5a5cfe057e8871f299c9216e69826e393ac518a6198bdbb44f2a48d11cac00
     requested_unity_evidence:
       - SCI-CAL-001-UNITY-001
     supplied_external_evidence: []
     repair_dispatch:
-      status: frozen_for_dispatch
+      status: paused_after_phase_zero
       selected_base_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
       selected_base_ref: codex/refactor-mainline
       repair_branch: codex/repair-sci-cal-001
@@ -903,10 +923,17 @@ packages:
         9d2c0ae89244d355070d6b300f431ac1799787b835c7e4cb76c8d7fc51cde106
       phase_zero_gate: q_model_continuity_before_application_edit
       phase_zero_stop: owner_scope_decision_for_any_above_q25_discontinuity
+      phase_zero_evidence_commit: ae99be1cef8c390d0e7490835ffca1f31da7ebc0
+      successor_scope_decision: CAL-D001-ACCURACY-001
+      next_gate: >-
+        Regenerate the raw atmosphere-model grid, validate a continuous
+        versioned representation, and obtain coordinator approval of the exact
+        operator and operational domain before any application-code edit.
       parallel_dependency: >-
-        Local CAL repair may proceed against the approved abstract ALIGN input
-        contract, but F010 remains open and external evidence plus re-audit
-        wait for coordinator disposition of SCI-ALIGN-001.
+        After the atmosphere-operator gate is approved, local CAL repair may
+        proceed against the approved abstract ALIGN input contract, but F010
+        remains open and external evidence plus re-audit wait for coordinator
+        disposition of SCI-ALIGN-001.
     remediation_branch: null
     remediation_commit: null
     re_audit_status: required
