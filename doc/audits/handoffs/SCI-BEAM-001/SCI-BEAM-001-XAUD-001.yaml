@@ -1,0 +1,69 @@
+format_version: 1
+id: SCI-BEAM-001-XAUD-001
+created_date: 2026-07-31
+
+source:
+  package_id: SCI-CAL-001
+  role: auditor
+  audit_branch: codex/audit-sci-cal-001
+  audit_commit: null
+  governing_or_evidence_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+  finding_ids: [SCI-CAL-001-F001, SCI-CAL-001-F004, SCI-CAL-001-F005, SCI-CAL-001-F006]
+
+target:
+  package_id: SCI-BEAM-001
+
+priority: P0
+evidence_basis: observed
+review_phase: post_core_evidence
+arrival: before_dispatch
+status: submitted
+
+summary: >-
+  Beammap-derived APT calibration requires correct extinction, detector identity, beam/template policy, and propagated uncertainty.
+claim: >-
+  Beammap computes detector flxscale as source flux divided by a fitted or
+  template amplitude and multiplies sens, while CAL's upstream extinction
+  factor and detector binding are nonconforming and fit/source/beam uncertainty
+  is not propagated through the CAL contract.
+supports:
+  - Treat source model, fit/template amplitude, extinction, detector identity, and covariance as one Beammap-to-CAL promotion boundary.
+  - Keep Beammap-produced APTs diagnostic until that boundary is approved and re-audited.
+does_not_establish:
+  - This record does not audit Beammap fitting, priors, flagging, or iteration.
+  - It does not determine the correct calibrator flux or beam estimator.
+
+requested_actions:
+  - Include the Beammap-to-CAL factor and uncertainty lifecycle in the independent BEAM contract.
+  - Test source recovery, UID permutation, fit/source/beam covariance, and observation-order independence.
+  - Prevent promotion of derived flxscale or sens to calibration authority while CAL findings remain open.
+affected_target_findings: []
+related_handoffs: [SCI-MODE-001-XAUD-001, SCI-MAP-001-XAUD-002]
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-CAL-001-FINAL-AUDIT-001
+    availability: repository_path
+    path: doc/audits/packages/SCI-CAL-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: 957ed71d1432ad67fe582d6137fbe72c52e82a31f3199331a94ab7b39490d376
+    note: Beammap/CAL trace and findings F001, F004, F005, and F006.
+  - id: SCI-CAL-001-INDEPENDENT-CORE-001
+    availability: repository_path
+    path: doc/audits/packages/SCI-CAL-001_INDEPENDENT_CORE.tex
+    sha256: 106755520b048f601bc60fd04e7b6020e6fa470480ac3105fa7ba269c730a4fe
+    note: Frozen gain, response, beam, covariance, and lifecycle contract.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: not_applicable
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

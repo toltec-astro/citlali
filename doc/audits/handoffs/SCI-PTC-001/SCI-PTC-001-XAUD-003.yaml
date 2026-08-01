@@ -1,0 +1,69 @@
+format_version: 1
+id: SCI-PTC-001-XAUD-003
+created_date: 2026-07-31
+
+source:
+  package_id: SCI-CAL-001
+  role: auditor
+  audit_branch: codex/audit-sci-cal-001
+  audit_commit: null
+  governing_or_evidence_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+  finding_ids: [SCI-CAL-001-F001, SCI-CAL-001-F005, SCI-CAL-001-F008]
+
+target:
+  package_id: SCI-PTC-001
+
+priority: P1
+evidence_basis: observed
+review_phase: post_core_evidence
+arrival: before_dispatch
+status: submitted
+
+summary: >-
+  PTC weight inputs do not carry one approved calibration-factor or total-covariance identity.
+claim: >-
+  The CAL path applies APT flxscale to signal but excludes it from fcf; fcf
+  contains the target-unit factor and mean implemented extinction factor, while
+  approximate/hybrid PTC weighting combines fcf with APT sens.  CAL supplies no
+  common gain, extinction, beam, or template covariance.
+supports:
+  - Treat fcf and sens as a named CAL-to-PTC factor interface rather than self-evident total precision.
+  - Keep PTC weights conditional/statistical until calibration covariance and normalization are approved.
+does_not_establish:
+  - This record does not audit PTC cleaning or weight estimation.
+  - It does not prove that the intended fcf/sens decomposition is numerically wrong.
+
+requested_actions:
+  - Record exact fcf, flxscale, sens, and responsivity units, contents, normalization, and reciprocal convention.
+  - Test signal/variance/precision scaling and shared calibration covariance under the approved CAL successor.
+  - Prevent total-uncertainty or absolute-significance claims while the interface is unresolved.
+affected_target_findings: []
+related_handoffs: [SCI-RTC-001-XAUD-001, SCI-MAP-001-XAUD-002]
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-CAL-001-FINAL-AUDIT-001
+    availability: repository_path
+    path: doc/audits/packages/SCI-CAL-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: 957ed71d1432ad67fe582d6137fbe72c52e82a31f3199331a94ab7b39490d376
+    note: CAL-to-PTC trace and findings F001, F005, and F008.
+  - id: SCI-CAL-001-INDEPENDENT-CORE-001
+    availability: repository_path
+    path: doc/audits/packages/SCI-CAL-001_INDEPENDENT_CORE.tex
+    sha256: 106755520b048f601bc60fd04e7b6020e6fa470480ac3105fa7ba269c730a4fe
+    note: Frozen conditional and full covariance contract.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: not_applicable
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

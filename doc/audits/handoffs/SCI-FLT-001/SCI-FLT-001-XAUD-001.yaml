@@ -1,0 +1,68 @@
+format_version: 1
+id: SCI-FLT-001-XAUD-001
+created_date: 2026-07-31
+
+source:
+  package_id: SCI-CAL-001
+  role: auditor
+  audit_branch: codex/audit-sci-cal-001
+  audit_commit: null
+  governing_or_evidence_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+  finding_ids: [SCI-CAL-001-F001, SCI-CAL-001-F005, SCI-CAL-001-F006, SCI-CAL-001-F007]
+
+target:
+  package_id: SCI-FLT-001
+
+priority: P1
+evidence_basis: observed
+review_phase: post_core_evidence
+arrival: after_audit_completion
+status: submitted
+
+summary: >-
+  Filtered-product amplitude, response, and uncertainty cannot acquire missing CAL authority from a signal-unit label.
+claim: >-
+  CAL's current extinction multiplier is nonconforming, unit/beam/template
+  semantics remain unapproved beyond a narrow declared basis, systematic
+  covariance is absent, and realized factor/response provenance is incomplete.
+supports:
+  - Keep filtered amplitude, response, significance, and upper-limit claims conditional on an approved CAL bundle.
+  - Require CAL systematic covariance and beam/template identity at the filter input boundary.
+does_not_establish:
+  - This record does not audit convolve, Wiener, or low-pass filter mathematics.
+  - It does not reinterpret prior filtered products as CAL validation.
+
+requested_actions:
+  - Hold this post-completion handoff for FLT re-audit or external restriction routing.
+  - Record CAL unit, response, covariance, and validity as explicit filtered-product dependencies.
+  - Fail closed on new absolute/significance claims until the CAL successor is approved and re-audited.
+affected_target_findings: []
+related_handoffs: [SCI-MAP-001-XAUD-002, SCI-MODE-001-XAUD-001]
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-CAL-001-FINAL-AUDIT-001
+    availability: repository_path
+    path: doc/audits/packages/SCI-CAL-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: 957ed71d1432ad67fe582d6137fbe72c52e82a31f3199331a94ab7b39490d376
+    note: CAL unit/response/covariance findings F001, F005, F006, and F007.
+  - id: SCI-CAL-001-INDEPENDENT-CORE-001
+    availability: repository_path
+    path: doc/audits/packages/SCI-CAL-001_INDEPENDENT_CORE.tex
+    sha256: 106755520b048f601bc60fd04e7b6020e6fa470480ac3105fa7ba269c730a4fe
+    note: Frozen response, unit, and full-covariance contract.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: held_for_reaudit
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null
