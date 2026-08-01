@@ -17,6 +17,27 @@ The project will improve the existing tree incrementally. It will not restart
 as a broad rewrite and will not rewrite the granular history of the validated
 branch. The exact validated tree will remain available for forensic review.
 
+## 2026-08-01 Composition-Closure Framework Owner Decision
+
+The project owner approved `FRAMEWORK-COMP-D001`--`FRAMEWORK-COMP-D004` in the
+[composition-closure framework owner decision](audits/COMPOSITION_CLOSURE_FRAMEWORK_OWNER_DECISION_2026-08-01.md),
+whose SHA-256 is
+`dd576fc8869a873007c8409d450b53e930970e56ed1f4efc193af8fa8351018b`.
+Scientific-contract audits remain bounded-operator audits, but the future
+framework amendment will add explicit composition obligations and named,
+claim-specific composition-closure reviews. `SCI-COMP-ALIGN-AST-001` is the
+approved pilot; AST-to-MAP remains a separate seam. No fifth package-wide
+status axis will be added.
+
+This records policy only. `FRAMEWORK-COMP-D005` scientific definitions and
+tolerances and `FRAMEWORK-COMP-D006` authorization for the documentation-only
+framework patch and pilot launch remain held for later owner approval. The
+active AST audit and ALIGN phase-zero task remain unchanged. Return for those
+decisions after the completed committed AST audit and the ALIGN phase-zero
+owner-review package are both available; do not amend the framework README,
+templates, handoff rules, or canonical ledger and do not launch the closure
+task before that authorization.
+
 ## Current Integration Model
 
 As of 2026-07-31, `codex/refactor-mainline` is the canonical application
