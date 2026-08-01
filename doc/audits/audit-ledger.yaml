@@ -709,6 +709,7 @@ packages:
         doc/audits/packages/SCI-ALIGN-001_BOUNDED_REPAIR_REAUDIT_HANDOFF_2026-08-01.md
       sha256: >-
         2231e09c4310e8ddf73b6e25cd52c3c10671234667607b88d3723571dfa7a5f8
+      record_commit: 0309fd48a973a6e7e136224906ac49c02f0171be
       proposed_branch: codex/repair-sci-align-001
       launch_status: not_started
       phase_zero_gate: >-
