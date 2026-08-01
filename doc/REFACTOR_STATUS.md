@@ -122,6 +122,8 @@ calibration nuisance covariance.
 
 The project owner has clarified the APT identity portion of `CAL-D002` in the
 [APT identity decision amendment](audits/packages/SCI-CAL-001_APT_IDENTITY_DECISION_AMENDMENT_2026-08-01.md).
+The immutable record was introduced at commit
+`0a17d088aded7fc6c18a59522f5b2b2fce9749ad`.
 A validated target acquisition-row spine is an allowed compatibility binding;
 it is distinct from the imperfect cross-observation source-Beammap association
 and optional design-catalog identity. No universal UID or 100-percent design
@@ -214,8 +216,10 @@ The
 [coordinator decision brief](audits/packages/SCI-AST-001_COORDINATOR_DECISION_BRIEF_2026-08-01.md)
 records `SCI-AST-001-D001` through `D008`. The project owner has approved D001
 with an end-to-end astrometric self-consistency guard in the
-[partial decision record](audits/packages/SCI-AST-001_COORDINATOR_DECISION_2026-08-01.md):
-preserve the demonstrated signs, basis, rotation, handedness, and composition
+[partial decision record](audits/packages/SCI-AST-001_COORDINATOR_DECISION_2026-08-01.md).
+The immutable record was introduced at commit
+`0a17d088aded7fc6c18a59522f5b2b2fce9749ad`. Its policy preserves the
+demonstrated signs, basis, rotation, handedness, and composition
 that place point sources correctly across approximately one-square-degree maps,
 including at corners; document every stage, use explicit boundary adapters,
 and retain a validated layered detector binding. Verified target row order is

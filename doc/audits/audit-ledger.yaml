@@ -998,6 +998,7 @@ packages:
           decision_date: 2026-08-01
           record_path: >-
             doc/audits/packages/SCI-CAL-001_APT_IDENTITY_DECISION_AMENDMENT_2026-08-01.md
+          record_commit: 0a17d088aded7fc6c18a59522f5b2b2fce9749ad
           record_sha256: >-
             d40def5bb1450446abc858d2acfc1924c2f65276f8f48eec89cf05a171cdcf6a
           applies_to:
@@ -1767,12 +1768,14 @@ packages:
       decision_date: 2026-08-01
       record_path: >-
         doc/audits/packages/SCI-AST-001_COORDINATOR_DECISION_2026-08-01.md
+      record_commit: 0a17d088aded7fc6c18a59522f5b2b2fce9749ad
       record_sha256: >-
         9585a287cb302c8998293e3d598776671f58724d90ff3599c5b1016bfae5e8b4
       identity_amendment:
         decision_id: CAL-D002-IDENTITY-001
         path: >-
           doc/audits/packages/SCI-CAL-001_APT_IDENTITY_DECISION_AMENDMENT_2026-08-01.md
+        record_commit: 0a17d088aded7fc6c18a59522f5b2b2fce9749ad
         sha256: >-
           d40def5bb1450446abc858d2acfc1924c2f65276f8f48eec89cf05a171cdcf6a
       approved_decisions:
