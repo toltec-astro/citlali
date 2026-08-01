@@ -95,6 +95,26 @@ authorized calibrated science. The next coordination step is a bounded
 repair/re-audit handoff and exact repair-base decision. No repair branch,
 Unity evidence request, or re-audit has been started.
 
+## 2026-07-31 SCI-ALIGN-001 Audit Dispatch
+
+The independent Tier A `SCI-ALIGN-001` audit is frozen for dispatch against
+exact application SHA `9aae0e669384c5c0c0dda93debc194d6b8dac787` on
+`codex/refactor-mainline`. Its coordinator registry snapshot is
+`99bfa3562ecfa05c0c10de24a255a6a18ff313d2`. The frozen
+[inbox manifest](audits/handoffs/SCI-ALIGN-001/SCI-ALIGN-001_INBOX_MANIFEST_2026-07-31.yaml)
+contains no handoffs because no currently integrated record is addressed to
+ALIGN; records addressed to other packages are not silently imported. The
+approved CAL owner decision at
+`e8bd929008140e2ea8b44bfdc80b0a531b488765` is recorded separately as a
+bounded downstream consumer requirement, not as ALIGN implementation
+authority.
+
+The dedicated [audit prompt](audits/prompts/SCI_ALIGN_001_AUDIT_PROMPT.md)
+requires an independent-core freeze before source inspection, complete
+alignment/scan/gap and uncertainty tracing afterward, and a clean audit-only
+branch. It prohibits application changes, Unity access, repair, production
+authorization, and additional audit launches.
+
 ## 2026-07-26 Conan 2 Build Review
 
 The previously deferred TolTECA build implementation is now available and has

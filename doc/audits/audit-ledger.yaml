@@ -622,6 +622,17 @@ packages:
     governing_sha_role: audit_dispatch_snapshot
     audit_branch: codex/audit-sci-align-001
     audit_commit: null
+    dispatch:
+      status: frozen_for_dispatch
+      coordinator_registry_commit: 99bfa3562ecfa05c0c10de24a255a6a18ff313d2
+      manifest_path: >-
+        doc/audits/handoffs/SCI-ALIGN-001/SCI-ALIGN-001_INBOX_MANIFEST_2026-07-31.yaml
+      manifest_sha256: >-
+        4bad1e6b853a1176c40dfac405fe2a88214b129d7fba4eed9261f56725a17d89
+      pre_core_authority_ids: []
+      post_core_evidence_ids: []
+      prompt_path: doc/audits/prompts/SCI_ALIGN_001_AUDIT_PROMPT.md
+      prompt_sha256: a50ae4e4df8c8917f0c8f09adacacbe80f887bbbd05f8d57f561cc446f37df4b
     independent_derivation: {status: not_started, sha256: null}
     contract_status: not_started
     implementation_status: not_assessed
