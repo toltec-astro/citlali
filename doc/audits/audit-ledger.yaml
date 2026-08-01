@@ -1216,7 +1216,7 @@ packages:
       coordinator_registry_commit: 35cc8ce246e8e70c569e650be6c1eae2c91b80ef
       initial_dispatch_artifact_commit: 3ae69ba15c7f924874426f0a5d1c9a43589897f2
       identity_correction_commit: 35cc8ce246e8e70c569e650be6c1eae2c91b80ef
-      refreeze_artifact_commit: pending_commit
+      refreeze_artifact_commit: bba8beae6c933cda6562fe2c4c3cdf2b6d648c72
       manifest_path: >-
         doc/audits/handoffs/SCI-AST-001/SCI-AST-001_INBOX_MANIFEST_2026-08-01.yaml
       manifest_sha256: >-
