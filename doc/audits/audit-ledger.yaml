@@ -649,12 +649,13 @@ packages:
           status: approved_distinct_windows_stable_identity_no_dropped_support
         - id: ALIGN-OD6-synthesized-eligibility
           status: approved_continuity_only_zero_direct_science_weight_exposure
+        - id: ALIGN-OD7-mapping-covariance-response
+          status: approved_compact_generative_as_requested_detail_no_full_covariance
       approved_constraints:
         - id: ALIGN-C001-compact-exception-identity
           applies_to: [ALIGN-OD4, ALIGN-OD7]
           status: approved_with_as_requested_fallback_on_measured_burden
       pending_decisions:
-        - ALIGN-OD7-mapping-covariance-response
         - ALIGN-OD8-hwpr-separation-and-interim-production
     dispatch:
       status: frozen_for_dispatch
@@ -735,7 +736,6 @@ packages:
          severity: P1, evidence_basis: derived, confidence: high,
          status: open, owner: coordinator_and_target_packages}
     unresolved_scientific_decisions:
-      - ALIGN-OD7-mapping-covariance-response
       - ALIGN-OD8-hwpr-separation-and-interim-production
     local_evidence:
       - independent_core_offline_compile_and_13_page_visual_inspection

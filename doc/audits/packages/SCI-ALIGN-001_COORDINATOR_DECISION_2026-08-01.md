@@ -1,6 +1,6 @@
 # SCI-ALIGN-001 coordinator and scientific-owner decision — 2026-08-01
 
-Status: partial; `ALIGN-OD1`--`ALIGN-OD6` approved; `OD7`--`OD8` pending
+Status: partial; `ALIGN-OD1`--`ALIGN-OD7` approved; `OD8` pending
 
 Package: `SCI-ALIGN-001`
 
@@ -242,11 +242,71 @@ identity inside a guard, required-pointing validity behavior, bounded filter
 transfer into neighbors, and identical science results whether optional
 detailed provenance is enabled or disabled.
 
+## ALIGN-OD7 — Mapping, response, and covariance
+
+Decision: approved as a compact generative, exception-based mapping contract
+with detailed mappings and selected covariance available on request.
+
+### Always-on standard representation
+
+- Persist the common-grid origin, cadence, phase, count, slot operator and
+  tolerance; applied interface offsets and their authority/availability state;
+  the versioned `ALIGN-OD3` field/operator registry; and the stable
+  `ALIGN-OD5` scan/chunk intervals.
+- Treat the ordinary one-to-one, original-and-valid detector mapping as
+  implicit. Do not write a standard mapping row for every normal sample.
+- Persist compact exception runs for gap synthesis, original-invalid and
+  unavailable support, processing guards, and any nonidentity mapping needed
+  by supported consumers. Each run names stream/network/field, half-open
+  interval, generative method and version, action, origin, validity, and
+  science eligibility.
+- Persist aggregate acquired-original, valid-original, synthesized,
+  unavailable, guarded, and eligible support plus a named availability
+  manifest for mapping response and uncertainty terms.
+- Record unavailable terms as unavailable, never as zero. Distinguish at least
+  `available`, `available_conditional`, `unavailable_input`,
+  `not_applicable`, and `not_persisted_standard`.
+
+### Reconstructible or `as_requested` detail
+
+- Regenerate deterministic regular-grid interpolation weights from compact run
+  endpoints, the grid, and the versioned operator rather than storing weights
+  per cell.
+- Expanded per-sample mappings and masks, native endpoint rows/timestamps,
+  explicit weights and timing residuals, source-file digests, selected
+  transfer-response calculations, and covariance for a requested interval,
+  detector subset, or consumer may be `as_requested` under `ALIGN-C001`.
+- Optional detailed provenance must not change numerical values, flags,
+  eligibility, exposure, or failure behavior.
+
+### First-repair covariance and response scope
+
+- Do not construct or persist a full observation-sized covariance matrix and
+  do not invent independent-noise covariance when the necessary native joint
+  covariance is absent.
+- When a validated input covariance is supplied, a requested conditional
+  product may propagate it through the realized mapping, including correlation
+  between synthesized cells sharing endpoints. Such cells retain the zero
+  direct science weight approved by `ALIGN-OD6`.
+- Standard per-sample timing covariance and interpolation-model covariance are
+  deferred unless a supported consumer supplies an approved requirement and
+  the necessary inputs. Missing timing, model, and selection uncertainty terms
+  remain explicitly unavailable.
+- ALIGN owns its alignment operator and conditional response. Downstream
+  filters own their additional filtering response; ALIGN does not claim a
+  complete end-to-end transfer function.
+
+The repair must demonstrate exact reconstruction of compact exception
+mappings, DC and affine-ramp preservation, the expected fractional-
+interpolation sinusoidal response, shared-endpoint correlation on small
+synthetic covariance fixtures, identical results with detailed provenance on
+or off, and negligible measured cost for the always-on representation on
+representative Science and Beammap cases.
+
 ## ALIGN-C001 — Compact exception identity and measured fallback
 
-Cross-cutting constraint for approved `ALIGN-OD4` and pending `ALIGN-OD7`:
-approved with an `as_requested` fallback when measured cost is
-disproportionate.
+Cross-cutting constraint for approved `ALIGN-OD4` and `ALIGN-OD7`: approved
+with an `as_requested` fallback when measured cost is disproportionate.
 
 - Do not add standard per-sample or per-detector provenance identifiers. The
   common observation and integer slot grid supplies implicit sample identity;
@@ -277,7 +337,6 @@ Citlali timing merely to persist audit detail.
 
 ## Pending decisions
 
-- `ALIGN-OD7`: mapping/covariance/response; and
 - `ALIGN-OD8`: HWPR separation and interim production.
 
 No repair, Unity request, re-audit, or production change is authorized by this
