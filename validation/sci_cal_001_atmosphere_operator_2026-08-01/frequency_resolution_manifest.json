@@ -1,0 +1,929 @@
+{
+  "cache_evidence": {
+    "execution_sidecar_digest_algorithm": "SHA-256 of deterministic sorted-key UTF-8 JSON with two-space indentation and one final LF",
+    "execution_sidecar_digests": [
+      {
+        "bytes": 1703,
+        "case_id": "LMT_DJF_5_za10_10mhz",
+        "path_relative_to_cache": "execution_records/LMT_DJF_5_za10_10mhz.run.json",
+        "sha256": "7b9688e7a6729f85fda6eec43d7673068038c9edf37da4a9d26c7cbe03253981"
+      },
+      {
+        "bytes": 1699,
+        "case_id": "LMT_DJF_5_za10_5mhz",
+        "path_relative_to_cache": "execution_records/LMT_DJF_5_za10_5mhz.run.json",
+        "sha256": "8d17780020b72d781ca04c63866b6a1aecb1c44817004dc744f2f1a3df411d70"
+      },
+      {
+        "bytes": 1699,
+        "case_id": "LMT_DJF_5_za10_2mhz",
+        "path_relative_to_cache": "execution_records/LMT_DJF_5_za10_2mhz.run.json",
+        "sha256": "4c3520a2709557be5972c963fa99063271cca056e930422bdabbcfd59a98b19b"
+      },
+      {
+        "bytes": 1700,
+        "case_id": "LMT_DJF_5_za10_1mhz",
+        "path_relative_to_cache": "execution_records/LMT_DJF_5_za10_1mhz.run.json",
+        "sha256": "2af1abef5b0caffdcf967465bb0264f3f9c4909f63a27665e974e9c5e2cc1002"
+      },
+      {
+        "bytes": 1703,
+        "case_id": "LMT_DJF_5_za70_10mhz",
+        "path_relative_to_cache": "execution_records/LMT_DJF_5_za70_10mhz.run.json",
+        "sha256": "0010f32ea949c63f6eb3ca3cfe1ca9324b303692d5f4e483a6ddbc3d513fe302"
+      },
+      {
+        "bytes": 1699,
+        "case_id": "LMT_DJF_5_za70_5mhz",
+        "path_relative_to_cache": "execution_records/LMT_DJF_5_za70_5mhz.run.json",
+        "sha256": "94ddad74787be56d94eec56bdc84bddc277debf0365c592fef834ddd11661cf2"
+      },
+      {
+        "bytes": 1699,
+        "case_id": "LMT_DJF_5_za70_2mhz",
+        "path_relative_to_cache": "execution_records/LMT_DJF_5_za70_2mhz.run.json",
+        "sha256": "b76148f8e8d52125a2d1efb0a9d8a01e019f35486ba0b8116660e9ab7c748f15"
+      },
+      {
+        "bytes": 1700,
+        "case_id": "LMT_DJF_5_za70_1mhz",
+        "path_relative_to_cache": "execution_records/LMT_DJF_5_za70_1mhz.run.json",
+        "sha256": "844e107159929b9c81823d6c7584d8fec092e909b2c97f87f8d9552b52a2bf71"
+      },
+      {
+        "bytes": 1708,
+        "case_id": "LMT_DJF_95_za10_10mhz",
+        "path_relative_to_cache": "execution_records/LMT_DJF_95_za10_10mhz.run.json",
+        "sha256": "72ef8cff6a4c1a5d842f7bc5d18c695e5471e27c609506ba62088234745501d2"
+      },
+      {
+        "bytes": 1704,
+        "case_id": "LMT_DJF_95_za10_5mhz",
+        "path_relative_to_cache": "execution_records/LMT_DJF_95_za10_5mhz.run.json",
+        "sha256": "782f9fece52d7b07ff4215eec016a14c2da3662890d8e8cbe58153dc5e3add85"
+      },
+      {
+        "bytes": 1704,
+        "case_id": "LMT_DJF_95_za10_2mhz",
+        "path_relative_to_cache": "execution_records/LMT_DJF_95_za10_2mhz.run.json",
+        "sha256": "c0eb972440ba41d36bf7bb6802c7202269f712b3d0b9eb6f65f664783b8ab674"
+      },
+      {
+        "bytes": 1705,
+        "case_id": "LMT_DJF_95_za10_1mhz",
+        "path_relative_to_cache": "execution_records/LMT_DJF_95_za10_1mhz.run.json",
+        "sha256": "bf4c8c01de8685d645f8e4dbbd0324fd6641ad6eb5ae0a13ebf404a70acc4246"
+      },
+      {
+        "bytes": 1708,
+        "case_id": "LMT_DJF_95_za70_10mhz",
+        "path_relative_to_cache": "execution_records/LMT_DJF_95_za70_10mhz.run.json",
+        "sha256": "719ce959d3af8b2e456eb1ebe3606092e49e45549e6855bd91a8c2d8266594bc"
+      },
+      {
+        "bytes": 1704,
+        "case_id": "LMT_DJF_95_za70_5mhz",
+        "path_relative_to_cache": "execution_records/LMT_DJF_95_za70_5mhz.run.json",
+        "sha256": "eff0dc6a66a46acae035403adc8a2ae0e6acb8188ae1c3eb2ce23ca349e72b92"
+      },
+      {
+        "bytes": 1704,
+        "case_id": "LMT_DJF_95_za70_2mhz",
+        "path_relative_to_cache": "execution_records/LMT_DJF_95_za70_2mhz.run.json",
+        "sha256": "39913b0b8e22e0bdff664edcfbd8f09ea8152281a687e2693e6ad942328fd4ef"
+      },
+      {
+        "bytes": 1705,
+        "case_id": "LMT_DJF_95_za70_1mhz",
+        "path_relative_to_cache": "execution_records/LMT_DJF_95_za70_1mhz.run.json",
+        "sha256": "931e8b589ea3619dc8fdb2db5559701a6847f455181d9415e2a6bf2d4fa80723"
+      }
+    ],
+    "execution_sidecars": "stored below --cache-dir/execution_records and not committed",
+    "normalized_output_algorithm": "decode UTF-8; normalize line endings to LF; replace '# run time ...' with '# run time <volatile>' and '# dcache hit: ...' with '# dcache counters <volatile>'; append one LF",
+    "numeric_output_digest_algorithm": "SHA-256 of parsed numeric lines joined by LF with one final LF",
+    "raw_output_digest_algorithm": "SHA-256 of exact combined stdout/stderr bytes",
+    "raw_outputs": "stored below --cache-dir/raw_outputs and not committed"
+  },
+  "diagnostic_threshold_fraction": "1.00000000000000002e-03",
+  "error_line_total": 0,
+  "execution": {
+    "am_cache_path_relative_to_cache": "am_cache",
+    "am_identity": "am version 12.2 (build date Aug  1 2026 11:20:29)",
+    "check_mode": "cache_only_no_process_execution_no_directory_creation",
+    "known_warning_policy": "return code 1 is accepted only with the complete exact grid and canonical unresolved-line summary; cache, unknown warning, and error lines fail",
+    "omp_threads": 14,
+    "run_count": 16
+  },
+  "grid": {
+    "center_frequencies_ghz": [
+      150.0,
+      214.29,
+      225.0,
+      272.73
+    ],
+    "maximum_ghz": 280,
+    "minimum_ghz": 140,
+    "steps_mhz": [
+      10,
+      5,
+      2,
+      1
+    ]
+  },
+  "h2o_scale": "1.0",
+  "inputs": {
+    "copied_linux_executable": {
+      "bytes": 57995352,
+      "path_relative_to_am_root": "am-12.2/bin/am",
+      "sha256": "3fc1f71b3a025ac79f5559bdd2fbf40cf5de2aa7598cabf474f74f9a6c3b290c"
+    },
+    "native_executable": {
+      "bytes": 58435360,
+      "path": "/private/tmp/sci_cal_001_am12_2_native_build_20260801_root/am",
+      "sha256": "78e721d45b08990069a2d67a5fb337446bcbfb728046940c0d473bea340205fb"
+    },
+    "profiles": [
+      {
+        "amc": {
+          "bytes": 4837,
+          "path_relative_to_am_root": "Big_Atmosphere/LMT_am_inputs/LMT_DJF_5.amc",
+          "sha256": "fcb3b70f44cad98cf0586fede9dcd3b2e35f3cb45023d0485c782c108b25b474"
+        },
+        "npz": {
+          "bytes": 57602678,
+          "path_relative_to_am_root": "Big_Atmosphere/LMT_am_npz/LMT_DJF_5.npz",
+          "sha256": "214d9fa975c73afa01a4e1b5c5f068245779989578acd8574831b7fe2b6ed6cc"
+        },
+        "profile": "LMT_DJF_5"
+      },
+      {
+        "amc": {
+          "bytes": 4841,
+          "path_relative_to_am_root": "Big_Atmosphere/LMT_am_inputs/LMT_DJF_95.amc",
+          "sha256": "b87b918b302425ef3d85aeedc285863a987579923289a37b97c6de5c935175e6"
+        },
+        "npz": {
+          "bytes": 57602678,
+          "path_relative_to_am_root": "Big_Atmosphere/LMT_am_npz/LMT_DJF_95.npz",
+          "sha256": "3dd961143e31a8db8182c35dd55472ad9ec943a711f652f6d55d485ee5ddb42d"
+        },
+        "profile": "LMT_DJF_95"
+      }
+    ]
+  },
+  "limitations": [
+    "This study brackets two DJF profiles and two elevations; it is not a complete spectral-resolution validation.",
+    "A numerical pass does not make warning-status AM output operationally clean.",
+    "This study does not establish the missing historical q95 lineage or observational accuracy."
+  ],
+  "maximum_fractional_correction_difference_by_step": {
+    "1": "0.00000000000000000e+00",
+    "10": "3.39999421999329770e-06",
+    "2": "3.59999352000027406e-06",
+    "5": "3.59999352000027406e-06"
+  },
+  "preregistration": "FOLLOWUP_STUDY_PROTOCOL_ADDENDUM.md",
+  "profiles": [
+    "LMT_DJF_5",
+    "LMT_DJF_95"
+  ],
+  "runs": [
+    {
+      "am_identity": "am version 12.2 (build date Aug  1 2026 11:20:29)",
+      "argv": [
+        "/private/tmp/sci_cal_001_am12_2_native_build_20260801_root/am",
+        "/Users/gwilson/work_toltec/local_data/AM/Big_Atmosphere/LMT_am_inputs/LMT_DJF_5.amc",
+        "140",
+        "GHz",
+        "280",
+        "GHz",
+        "10",
+        "MHz",
+        "10",
+        "deg",
+        "1.0"
+      ],
+      "case_id": "LMT_DJF_5_za10_10mhz",
+      "elevation_deg": 80,
+      "environment_overrides": {
+        "AM_CACHE_PATH": "/private/tmp/sci_cal_001_am12_2_frequency_resolution_20260801_package_review_v3/am_cache",
+        "OMP_NUM_THREADS": "14"
+      },
+      "error_line_count": 0,
+      "normalized_output_algorithm": "decode UTF-8; normalize line endings to LF; replace '# run time ...' with '# run time <volatile>' and '# dcache hit: ...' with '# dcache counters <volatile>'; append one LF",
+      "normalized_output_sha256": "63b34f7706af9e778a8a9c15bf3a0443db1461daf3e88aad5a7e959f6ec9027e",
+      "numeric_output_sha256": "89504b6afef55a62fe69d6c21fbbbe54eb0a49fc7a1c64306abfb2e5bb102173",
+      "profile": "LMT_DJF_5",
+      "raw_output_bytes": 938762,
+      "raw_output_path_relative_to_cache": "raw_outputs/LMT_DJF_5_za10_10mhz.dat",
+      "raw_output_sha256": "24753aac5e565034ca4e7a857da811e833a28c33e3854b3aab0c298d9b0f03a8",
+      "return_code": 1,
+      "row_count": 14001,
+      "schema_version": "sci-cal-001-am12-frequency-run-v1",
+      "sidecar_path_relative_to_cache": "execution_records/LMT_DJF_5_za10_10mhz.run.json",
+      "step_mhz": 10,
+      "unexpected_warning_count": 0,
+      "unresolved_line_warning_count": 72,
+      "warning_class_counts": {
+        "cache_insert_as_mru": 0,
+        "cache_promote_to_mru": 0,
+        "other": 0,
+        "unresolved_column": 35,
+        "unresolved_summary": 1
+      },
+      "zenith_angle_deg": 10
+    },
+    {
+      "am_identity": "am version 12.2 (build date Aug  1 2026 11:20:29)",
+      "argv": [
+        "/private/tmp/sci_cal_001_am12_2_native_build_20260801_root/am",
+        "/Users/gwilson/work_toltec/local_data/AM/Big_Atmosphere/LMT_am_inputs/LMT_DJF_5.amc",
+        "140",
+        "GHz",
+        "280",
+        "GHz",
+        "5",
+        "MHz",
+        "10",
+        "deg",
+        "1.0"
+      ],
+      "case_id": "LMT_DJF_5_za10_5mhz",
+      "elevation_deg": 80,
+      "environment_overrides": {
+        "AM_CACHE_PATH": "/private/tmp/sci_cal_001_am12_2_frequency_resolution_20260801_package_review_v3/am_cache",
+        "OMP_NUM_THREADS": "14"
+      },
+      "error_line_count": 0,
+      "normalized_output_algorithm": "decode UTF-8; normalize line endings to LF; replace '# run time ...' with '# run time <volatile>' and '# dcache hit: ...' with '# dcache counters <volatile>'; append one LF",
+      "normalized_output_sha256": "c2538cc601055d50c12ad0841d6cd66f9c191ec858fdb324a6054db4348b621c",
+      "numeric_output_sha256": "2ba8a2325c208aece21de0b83df4cf06e2573a355abb15f0f5e92b6338595c20",
+      "profile": "LMT_DJF_5",
+      "raw_output_bytes": 1862465,
+      "raw_output_path_relative_to_cache": "raw_outputs/LMT_DJF_5_za10_5mhz.dat",
+      "raw_output_sha256": "b629530733bca06eb6ee1cf13a1ef85aeb2b2984948d853122487e224b6af06f",
+      "return_code": 1,
+      "row_count": 28001,
+      "schema_version": "sci-cal-001-am12-frequency-run-v1",
+      "sidecar_path_relative_to_cache": "execution_records/LMT_DJF_5_za10_5mhz.run.json",
+      "step_mhz": 5,
+      "unexpected_warning_count": 0,
+      "unresolved_line_warning_count": 57,
+      "warning_class_counts": {
+        "cache_insert_as_mru": 0,
+        "cache_promote_to_mru": 0,
+        "other": 0,
+        "unresolved_column": 29,
+        "unresolved_summary": 1
+      },
+      "zenith_angle_deg": 10
+    },
+    {
+      "am_identity": "am version 12.2 (build date Aug  1 2026 11:20:29)",
+      "argv": [
+        "/private/tmp/sci_cal_001_am12_2_native_build_20260801_root/am",
+        "/Users/gwilson/work_toltec/local_data/AM/Big_Atmosphere/LMT_am_inputs/LMT_DJF_5.amc",
+        "140",
+        "GHz",
+        "280",
+        "GHz",
+        "2",
+        "MHz",
+        "10",
+        "deg",
+        "1.0"
+      ],
+      "case_id": "LMT_DJF_5_za10_2mhz",
+      "elevation_deg": 80,
+      "environment_overrides": {
+        "AM_CACHE_PATH": "/private/tmp/sci_cal_001_am12_2_frequency_resolution_20260801_package_review_v3/am_cache",
+        "OMP_NUM_THREADS": "14"
+      },
+      "error_line_count": 0,
+      "normalized_output_algorithm": "decode UTF-8; normalize line endings to LF; replace '# run time ...' with '# run time <volatile>' and '# dcache hit: ...' with '# dcache counters <volatile>'; append one LF",
+      "normalized_output_sha256": "78b16b28820887db7390e97ec16f223300af1f238d3a276c7a0991cd23ca603e",
+      "numeric_output_sha256": "4ccb60cda7307c71f15371aa6c385df8dd07ab6f626da2d9fce8346d50480df0",
+      "profile": "LMT_DJF_5",
+      "raw_output_bytes": 4704173,
+      "raw_output_path_relative_to_cache": "raw_outputs/LMT_DJF_5_za10_2mhz.dat",
+      "raw_output_sha256": "8a6185c81106995ba5b08ad0afb5295ead2cfc9265ab8a935c19fd7bd802f94c",
+      "return_code": 1,
+      "row_count": 70001,
+      "schema_version": "sci-cal-001-am12-frequency-run-v1",
+      "sidecar_path_relative_to_cache": "execution_records/LMT_DJF_5_za10_2mhz.run.json",
+      "step_mhz": 2,
+      "unexpected_warning_count": 0,
+      "unresolved_line_warning_count": 44,
+      "warning_class_counts": {
+        "cache_insert_as_mru": 0,
+        "cache_promote_to_mru": 0,
+        "other": 0,
+        "unresolved_column": 23,
+        "unresolved_summary": 1
+      },
+      "zenith_angle_deg": 10
+    },
+    {
+      "am_identity": "am version 12.2 (build date Aug  1 2026 11:20:29)",
+      "argv": [
+        "/private/tmp/sci_cal_001_am12_2_native_build_20260801_root/am",
+        "/Users/gwilson/work_toltec/local_data/AM/Big_Atmosphere/LMT_am_inputs/LMT_DJF_5.amc",
+        "140",
+        "GHz",
+        "280",
+        "GHz",
+        "1",
+        "MHz",
+        "10",
+        "deg",
+        "1.0"
+      ],
+      "case_id": "LMT_DJF_5_za10_1mhz",
+      "elevation_deg": 80,
+      "environment_overrides": {
+        "AM_CACHE_PATH": "/private/tmp/sci_cal_001_am12_2_frequency_resolution_20260801_package_review_v3/am_cache",
+        "OMP_NUM_THREADS": "14"
+      },
+      "error_line_count": 0,
+      "normalized_output_algorithm": "decode UTF-8; normalize line endings to LF; replace '# run time ...' with '# run time <volatile>' and '# dcache hit: ...' with '# dcache counters <volatile>'; append one LF",
+      "normalized_output_sha256": "736486b1855355d9e3dbd5d3a53f1a9b8b1d5be772c051176b43c4d0d43c41d7",
+      "numeric_output_sha256": "ca5f22364f1c04359bc4ba4e237809ce27a88742a306a546b6d6b330d6599288",
+      "profile": "LMT_DJF_5",
+      "raw_output_bytes": 9393874,
+      "raw_output_path_relative_to_cache": "raw_outputs/LMT_DJF_5_za10_1mhz.dat",
+      "raw_output_sha256": "ac84c63a0ea153986337225b8ffb69e0a00dcb20e1d171cd9fc86ae04009dfdd",
+      "return_code": 1,
+      "row_count": 140001,
+      "schema_version": "sci-cal-001-am12-frequency-run-v1",
+      "sidecar_path_relative_to_cache": "execution_records/LMT_DJF_5_za10_1mhz.run.json",
+      "step_mhz": 1,
+      "unexpected_warning_count": 0,
+      "unresolved_line_warning_count": 29,
+      "warning_class_counts": {
+        "cache_insert_as_mru": 0,
+        "cache_promote_to_mru": 0,
+        "other": 0,
+        "unresolved_column": 17,
+        "unresolved_summary": 1
+      },
+      "zenith_angle_deg": 10
+    },
+    {
+      "am_identity": "am version 12.2 (build date Aug  1 2026 11:20:29)",
+      "argv": [
+        "/private/tmp/sci_cal_001_am12_2_native_build_20260801_root/am",
+        "/Users/gwilson/work_toltec/local_data/AM/Big_Atmosphere/LMT_am_inputs/LMT_DJF_5.amc",
+        "140",
+        "GHz",
+        "280",
+        "GHz",
+        "10",
+        "MHz",
+        "70",
+        "deg",
+        "1.0"
+      ],
+      "case_id": "LMT_DJF_5_za70_10mhz",
+      "elevation_deg": 20,
+      "environment_overrides": {
+        "AM_CACHE_PATH": "/private/tmp/sci_cal_001_am12_2_frequency_resolution_20260801_package_review_v3/am_cache",
+        "OMP_NUM_THREADS": "14"
+      },
+      "error_line_count": 0,
+      "normalized_output_algorithm": "decode UTF-8; normalize line endings to LF; replace '# run time ...' with '# run time <volatile>' and '# dcache hit: ...' with '# dcache counters <volatile>'; append one LF",
+      "normalized_output_sha256": "8eb87d18445d08a5e0903a6d6262f6854ba0440331e2e4064dd5da5ea5421ffd",
+      "numeric_output_sha256": "788c59fa5d1f3e0147dcf645103eca8129110d471fd7e844f4498274cb628a9e",
+      "profile": "LMT_DJF_5",
+      "raw_output_bytes": 938762,
+      "raw_output_path_relative_to_cache": "raw_outputs/LMT_DJF_5_za70_10mhz.dat",
+      "raw_output_sha256": "feb298cc1eb0bafee32ab45096327ee6a9b342f48472af5d232260c0990cb14e",
+      "return_code": 1,
+      "row_count": 14001,
+      "schema_version": "sci-cal-001-am12-frequency-run-v1",
+      "sidecar_path_relative_to_cache": "execution_records/LMT_DJF_5_za70_10mhz.run.json",
+      "step_mhz": 10,
+      "unexpected_warning_count": 0,
+      "unresolved_line_warning_count": 72,
+      "warning_class_counts": {
+        "cache_insert_as_mru": 0,
+        "cache_promote_to_mru": 0,
+        "other": 0,
+        "unresolved_column": 35,
+        "unresolved_summary": 1
+      },
+      "zenith_angle_deg": 70
+    },
+    {
+      "am_identity": "am version 12.2 (build date Aug  1 2026 11:20:29)",
+      "argv": [
+        "/private/tmp/sci_cal_001_am12_2_native_build_20260801_root/am",
+        "/Users/gwilson/work_toltec/local_data/AM/Big_Atmosphere/LMT_am_inputs/LMT_DJF_5.amc",
+        "140",
+        "GHz",
+        "280",
+        "GHz",
+        "5",
+        "MHz",
+        "70",
+        "deg",
+        "1.0"
+      ],
+      "case_id": "LMT_DJF_5_za70_5mhz",
+      "elevation_deg": 20,
+      "environment_overrides": {
+        "AM_CACHE_PATH": "/private/tmp/sci_cal_001_am12_2_frequency_resolution_20260801_package_review_v3/am_cache",
+        "OMP_NUM_THREADS": "14"
+      },
+      "error_line_count": 0,
+      "normalized_output_algorithm": "decode UTF-8; normalize line endings to LF; replace '# run time ...' with '# run time <volatile>' and '# dcache hit: ...' with '# dcache counters <volatile>'; append one LF",
+      "normalized_output_sha256": "42e4fe9a672fd40fed0c32aa7abd155d9e5eeec02a3afb5a1e1c47142166e7c3",
+      "numeric_output_sha256": "2727427ec937edf367a9a2af10d51076dd0076ec4aea314cc84b8542bfa66ba6",
+      "profile": "LMT_DJF_5",
+      "raw_output_bytes": 1862465,
+      "raw_output_path_relative_to_cache": "raw_outputs/LMT_DJF_5_za70_5mhz.dat",
+      "raw_output_sha256": "77733308ec1860297695750041d383bfa034eced301d739e7690ba2e9a1bb2bb",
+      "return_code": 1,
+      "row_count": 28001,
+      "schema_version": "sci-cal-001-am12-frequency-run-v1",
+      "sidecar_path_relative_to_cache": "execution_records/LMT_DJF_5_za70_5mhz.run.json",
+      "step_mhz": 5,
+      "unexpected_warning_count": 0,
+      "unresolved_line_warning_count": 57,
+      "warning_class_counts": {
+        "cache_insert_as_mru": 0,
+        "cache_promote_to_mru": 0,
+        "other": 0,
+        "unresolved_column": 29,
+        "unresolved_summary": 1
+      },
+      "zenith_angle_deg": 70
+    },
+    {
+      "am_identity": "am version 12.2 (build date Aug  1 2026 11:20:29)",
+      "argv": [
+        "/private/tmp/sci_cal_001_am12_2_native_build_20260801_root/am",
+        "/Users/gwilson/work_toltec/local_data/AM/Big_Atmosphere/LMT_am_inputs/LMT_DJF_5.amc",
+        "140",
+        "GHz",
+        "280",
+        "GHz",
+        "2",
+        "MHz",
+        "70",
+        "deg",
+        "1.0"
+      ],
+      "case_id": "LMT_DJF_5_za70_2mhz",
+      "elevation_deg": 20,
+      "environment_overrides": {
+        "AM_CACHE_PATH": "/private/tmp/sci_cal_001_am12_2_frequency_resolution_20260801_package_review_v3/am_cache",
+        "OMP_NUM_THREADS": "14"
+      },
+      "error_line_count": 0,
+      "normalized_output_algorithm": "decode UTF-8; normalize line endings to LF; replace '# run time ...' with '# run time <volatile>' and '# dcache hit: ...' with '# dcache counters <volatile>'; append one LF",
+      "normalized_output_sha256": "97e38983e692ea3b6b1df05a120b8aadeea48b58bcbcfefaa4634c9fcc35f471",
+      "numeric_output_sha256": "8429bd85d301165bf2d283a47dad6476f7d0f65c9df6dc330a72bfb88295cd3b",
+      "profile": "LMT_DJF_5",
+      "raw_output_bytes": 4704174,
+      "raw_output_path_relative_to_cache": "raw_outputs/LMT_DJF_5_za70_2mhz.dat",
+      "raw_output_sha256": "c2cecb6eba89719a1bab92b58540d95a3ba6c23672b95dadd440f1f6f22a93c8",
+      "return_code": 1,
+      "row_count": 70001,
+      "schema_version": "sci-cal-001-am12-frequency-run-v1",
+      "sidecar_path_relative_to_cache": "execution_records/LMT_DJF_5_za70_2mhz.run.json",
+      "step_mhz": 2,
+      "unexpected_warning_count": 0,
+      "unresolved_line_warning_count": 44,
+      "warning_class_counts": {
+        "cache_insert_as_mru": 0,
+        "cache_promote_to_mru": 0,
+        "other": 0,
+        "unresolved_column": 23,
+        "unresolved_summary": 1
+      },
+      "zenith_angle_deg": 70
+    },
+    {
+      "am_identity": "am version 12.2 (build date Aug  1 2026 11:20:29)",
+      "argv": [
+        "/private/tmp/sci_cal_001_am12_2_native_build_20260801_root/am",
+        "/Users/gwilson/work_toltec/local_data/AM/Big_Atmosphere/LMT_am_inputs/LMT_DJF_5.amc",
+        "140",
+        "GHz",
+        "280",
+        "GHz",
+        "1",
+        "MHz",
+        "70",
+        "deg",
+        "1.0"
+      ],
+      "case_id": "LMT_DJF_5_za70_1mhz",
+      "elevation_deg": 20,
+      "environment_overrides": {
+        "AM_CACHE_PATH": "/private/tmp/sci_cal_001_am12_2_frequency_resolution_20260801_package_review_v3/am_cache",
+        "OMP_NUM_THREADS": "14"
+      },
+      "error_line_count": 0,
+      "normalized_output_algorithm": "decode UTF-8; normalize line endings to LF; replace '# run time ...' with '# run time <volatile>' and '# dcache hit: ...' with '# dcache counters <volatile>'; append one LF",
+      "normalized_output_sha256": "7842089e5303ac2cb876d8aadf89c844e16b2b5708b0839b19ddef718081c315",
+      "numeric_output_sha256": "5e0f5adeaf619f30d49ad5ee7628dd20c3deb40e00a45fac3e511935092c86ec",
+      "profile": "LMT_DJF_5",
+      "raw_output_bytes": 9393874,
+      "raw_output_path_relative_to_cache": "raw_outputs/LMT_DJF_5_za70_1mhz.dat",
+      "raw_output_sha256": "39110887c73a05064235e4a9218d1956558643763b68af1c97067e9dbc65d7e9",
+      "return_code": 1,
+      "row_count": 140001,
+      "schema_version": "sci-cal-001-am12-frequency-run-v1",
+      "sidecar_path_relative_to_cache": "execution_records/LMT_DJF_5_za70_1mhz.run.json",
+      "step_mhz": 1,
+      "unexpected_warning_count": 0,
+      "unresolved_line_warning_count": 29,
+      "warning_class_counts": {
+        "cache_insert_as_mru": 0,
+        "cache_promote_to_mru": 0,
+        "other": 0,
+        "unresolved_column": 17,
+        "unresolved_summary": 1
+      },
+      "zenith_angle_deg": 70
+    },
+    {
+      "am_identity": "am version 12.2 (build date Aug  1 2026 11:20:29)",
+      "argv": [
+        "/private/tmp/sci_cal_001_am12_2_native_build_20260801_root/am",
+        "/Users/gwilson/work_toltec/local_data/AM/Big_Atmosphere/LMT_am_inputs/LMT_DJF_95.amc",
+        "140",
+        "GHz",
+        "280",
+        "GHz",
+        "10",
+        "MHz",
+        "10",
+        "deg",
+        "1.0"
+      ],
+      "case_id": "LMT_DJF_95_za10_10mhz",
+      "elevation_deg": 80,
+      "environment_overrides": {
+        "AM_CACHE_PATH": "/private/tmp/sci_cal_001_am12_2_frequency_resolution_20260801_package_review_v3/am_cache",
+        "OMP_NUM_THREADS": "14"
+      },
+      "error_line_count": 0,
+      "normalized_output_algorithm": "decode UTF-8; normalize line endings to LF; replace '# run time ...' with '# run time <volatile>' and '# dcache hit: ...' with '# dcache counters <volatile>'; append one LF",
+      "normalized_output_sha256": "ca767e56a8b20fb754ab3bdcb43e19187abf86573e745f0c2e6ea735b5d198d7",
+      "numeric_output_sha256": "0283c024f033b582b381abd807f01d809c84db413e2e3500e250bebf499a3f88",
+      "profile": "LMT_DJF_95",
+      "raw_output_bytes": 938766,
+      "raw_output_path_relative_to_cache": "raw_outputs/LMT_DJF_95_za10_10mhz.dat",
+      "raw_output_sha256": "c92d7991f6a03efa1f0ceaccab6eebd855dd12842ff066c554a844087e2817d0",
+      "return_code": 1,
+      "row_count": 14001,
+      "schema_version": "sci-cal-001-am12-frequency-run-v1",
+      "sidecar_path_relative_to_cache": "execution_records/LMT_DJF_95_za10_10mhz.run.json",
+      "step_mhz": 10,
+      "unexpected_warning_count": 0,
+      "unresolved_line_warning_count": 72,
+      "warning_class_counts": {
+        "cache_insert_as_mru": 0,
+        "cache_promote_to_mru": 0,
+        "other": 0,
+        "unresolved_column": 35,
+        "unresolved_summary": 1
+      },
+      "zenith_angle_deg": 10
+    },
+    {
+      "am_identity": "am version 12.2 (build date Aug  1 2026 11:20:29)",
+      "argv": [
+        "/private/tmp/sci_cal_001_am12_2_native_build_20260801_root/am",
+        "/Users/gwilson/work_toltec/local_data/AM/Big_Atmosphere/LMT_am_inputs/LMT_DJF_95.amc",
+        "140",
+        "GHz",
+        "280",
+        "GHz",
+        "5",
+        "MHz",
+        "10",
+        "deg",
+        "1.0"
+      ],
+      "case_id": "LMT_DJF_95_za10_5mhz",
+      "elevation_deg": 80,
+      "environment_overrides": {
+        "AM_CACHE_PATH": "/private/tmp/sci_cal_001_am12_2_frequency_resolution_20260801_package_review_v3/am_cache",
+        "OMP_NUM_THREADS": "14"
+      },
+      "error_line_count": 0,
+      "normalized_output_algorithm": "decode UTF-8; normalize line endings to LF; replace '# run time ...' with '# run time <volatile>' and '# dcache hit: ...' with '# dcache counters <volatile>'; append one LF",
+      "normalized_output_sha256": "0e446b6a98b50b8af1c2dc89f8ad6b485c4ec2286dffa56dc82f8e2755b59ac0",
+      "numeric_output_sha256": "8d7536f9a2578f8f792e4bc9f266d579de9ba643e2bcb04013dab15aee674442",
+      "profile": "LMT_DJF_95",
+      "raw_output_bytes": 1862469,
+      "raw_output_path_relative_to_cache": "raw_outputs/LMT_DJF_95_za10_5mhz.dat",
+      "raw_output_sha256": "a6c73c1c3856941c8f0a4d5d196013ae469c72c50605aa21309b14a6e5e0651e",
+      "return_code": 1,
+      "row_count": 28001,
+      "schema_version": "sci-cal-001-am12-frequency-run-v1",
+      "sidecar_path_relative_to_cache": "execution_records/LMT_DJF_95_za10_5mhz.run.json",
+      "step_mhz": 5,
+      "unexpected_warning_count": 0,
+      "unresolved_line_warning_count": 58,
+      "warning_class_counts": {
+        "cache_insert_as_mru": 0,
+        "cache_promote_to_mru": 0,
+        "other": 0,
+        "unresolved_column": 29,
+        "unresolved_summary": 1
+      },
+      "zenith_angle_deg": 10
+    },
+    {
+      "am_identity": "am version 12.2 (build date Aug  1 2026 11:20:29)",
+      "argv": [
+        "/private/tmp/sci_cal_001_am12_2_native_build_20260801_root/am",
+        "/Users/gwilson/work_toltec/local_data/AM/Big_Atmosphere/LMT_am_inputs/LMT_DJF_95.amc",
+        "140",
+        "GHz",
+        "280",
+        "GHz",
+        "2",
+        "MHz",
+        "10",
+        "deg",
+        "1.0"
+      ],
+      "case_id": "LMT_DJF_95_za10_2mhz",
+      "elevation_deg": 80,
+      "environment_overrides": {
+        "AM_CACHE_PATH": "/private/tmp/sci_cal_001_am12_2_frequency_resolution_20260801_package_review_v3/am_cache",
+        "OMP_NUM_THREADS": "14"
+      },
+      "error_line_count": 0,
+      "normalized_output_algorithm": "decode UTF-8; normalize line endings to LF; replace '# run time ...' with '# run time <volatile>' and '# dcache hit: ...' with '# dcache counters <volatile>'; append one LF",
+      "normalized_output_sha256": "52b0817b542cef6fab47eccbdacb594be62cb46f2d966bedd1c5c539013eb1aa",
+      "numeric_output_sha256": "00868fd90a9cf762fcd62ae1d54dd9430bc9ae6564118f83e40baead71b987f3",
+      "profile": "LMT_DJF_95",
+      "raw_output_bytes": 4704224,
+      "raw_output_path_relative_to_cache": "raw_outputs/LMT_DJF_95_za10_2mhz.dat",
+      "raw_output_sha256": "8effcfef548c5d6bb4f973441db6da0ec2dc407c971235dc716b257172467a85",
+      "return_code": 1,
+      "row_count": 70001,
+      "schema_version": "sci-cal-001-am12-frequency-run-v1",
+      "sidecar_path_relative_to_cache": "execution_records/LMT_DJF_95_za10_2mhz.run.json",
+      "step_mhz": 2,
+      "unexpected_warning_count": 0,
+      "unresolved_line_warning_count": 45,
+      "warning_class_counts": {
+        "cache_insert_as_mru": 0,
+        "cache_promote_to_mru": 0,
+        "other": 0,
+        "unresolved_column": 24,
+        "unresolved_summary": 1
+      },
+      "zenith_angle_deg": 10
+    },
+    {
+      "am_identity": "am version 12.2 (build date Aug  1 2026 11:20:29)",
+      "argv": [
+        "/private/tmp/sci_cal_001_am12_2_native_build_20260801_root/am",
+        "/Users/gwilson/work_toltec/local_data/AM/Big_Atmosphere/LMT_am_inputs/LMT_DJF_95.amc",
+        "140",
+        "GHz",
+        "280",
+        "GHz",
+        "1",
+        "MHz",
+        "10",
+        "deg",
+        "1.0"
+      ],
+      "case_id": "LMT_DJF_95_za10_1mhz",
+      "elevation_deg": 80,
+      "environment_overrides": {
+        "AM_CACHE_PATH": "/private/tmp/sci_cal_001_am12_2_frequency_resolution_20260801_package_review_v3/am_cache",
+        "OMP_NUM_THREADS": "14"
+      },
+      "error_line_count": 0,
+      "normalized_output_algorithm": "decode UTF-8; normalize line endings to LF; replace '# run time ...' with '# run time <volatile>' and '# dcache hit: ...' with '# dcache counters <volatile>'; append one LF",
+      "normalized_output_sha256": "7229cf3f191b087e3b77c3ab9e24e6c063497018b3c4d915b80652322fcda395",
+      "numeric_output_sha256": "ee2244ea84c3b3a2c2aa2e972f294514fb095564e3afbd05902c3f8c82999c61",
+      "profile": "LMT_DJF_95",
+      "raw_output_bytes": 9393923,
+      "raw_output_path_relative_to_cache": "raw_outputs/LMT_DJF_95_za10_1mhz.dat",
+      "raw_output_sha256": "82fe708ad283c4426e487516bd0dda4df5ce79f77009f1639dada96b0350ec77",
+      "return_code": 1,
+      "row_count": 140001,
+      "schema_version": "sci-cal-001-am12-frequency-run-v1",
+      "sidecar_path_relative_to_cache": "execution_records/LMT_DJF_95_za10_1mhz.run.json",
+      "step_mhz": 1,
+      "unexpected_warning_count": 0,
+      "unresolved_line_warning_count": 30,
+      "warning_class_counts": {
+        "cache_insert_as_mru": 0,
+        "cache_promote_to_mru": 0,
+        "other": 0,
+        "unresolved_column": 18,
+        "unresolved_summary": 1
+      },
+      "zenith_angle_deg": 10
+    },
+    {
+      "am_identity": "am version 12.2 (build date Aug  1 2026 11:20:29)",
+      "argv": [
+        "/private/tmp/sci_cal_001_am12_2_native_build_20260801_root/am",
+        "/Users/gwilson/work_toltec/local_data/AM/Big_Atmosphere/LMT_am_inputs/LMT_DJF_95.amc",
+        "140",
+        "GHz",
+        "280",
+        "GHz",
+        "10",
+        "MHz",
+        "70",
+        "deg",
+        "1.0"
+      ],
+      "case_id": "LMT_DJF_95_za70_10mhz",
+      "elevation_deg": 20,
+      "environment_overrides": {
+        "AM_CACHE_PATH": "/private/tmp/sci_cal_001_am12_2_frequency_resolution_20260801_package_review_v3/am_cache",
+        "OMP_NUM_THREADS": "14"
+      },
+      "error_line_count": 0,
+      "normalized_output_algorithm": "decode UTF-8; normalize line endings to LF; replace '# run time ...' with '# run time <volatile>' and '# dcache hit: ...' with '# dcache counters <volatile>'; append one LF",
+      "normalized_output_sha256": "092dad7d84ea5566cbcaa6eeea119d04dd82d6a80511ebb43db5a96d73da057c",
+      "numeric_output_sha256": "a3272bbdf77650b397d4ca5775fadd767de76f500af7986605e79063d01494fe",
+      "profile": "LMT_DJF_95",
+      "raw_output_bytes": 938764,
+      "raw_output_path_relative_to_cache": "raw_outputs/LMT_DJF_95_za70_10mhz.dat",
+      "raw_output_sha256": "3728de71f8660a966b9133345462f0fb20d8e70a6baa2462307337f7a70d0fb1",
+      "return_code": 1,
+      "row_count": 14001,
+      "schema_version": "sci-cal-001-am12-frequency-run-v1",
+      "sidecar_path_relative_to_cache": "execution_records/LMT_DJF_95_za70_10mhz.run.json",
+      "step_mhz": 10,
+      "unexpected_warning_count": 0,
+      "unresolved_line_warning_count": 72,
+      "warning_class_counts": {
+        "cache_insert_as_mru": 0,
+        "cache_promote_to_mru": 0,
+        "other": 0,
+        "unresolved_column": 35,
+        "unresolved_summary": 1
+      },
+      "zenith_angle_deg": 70
+    },
+    {
+      "am_identity": "am version 12.2 (build date Aug  1 2026 11:20:29)",
+      "argv": [
+        "/private/tmp/sci_cal_001_am12_2_native_build_20260801_root/am",
+        "/Users/gwilson/work_toltec/local_data/AM/Big_Atmosphere/LMT_am_inputs/LMT_DJF_95.amc",
+        "140",
+        "GHz",
+        "280",
+        "GHz",
+        "5",
+        "MHz",
+        "70",
+        "deg",
+        "1.0"
+      ],
+      "case_id": "LMT_DJF_95_za70_5mhz",
+      "elevation_deg": 20,
+      "environment_overrides": {
+        "AM_CACHE_PATH": "/private/tmp/sci_cal_001_am12_2_frequency_resolution_20260801_package_review_v3/am_cache",
+        "OMP_NUM_THREADS": "14"
+      },
+      "error_line_count": 0,
+      "normalized_output_algorithm": "decode UTF-8; normalize line endings to LF; replace '# run time ...' with '# run time <volatile>' and '# dcache hit: ...' with '# dcache counters <volatile>'; append one LF",
+      "normalized_output_sha256": "215837d5029904411361b5376a5e0babd8121faf4e91eab3064111571a4c4c3c",
+      "numeric_output_sha256": "109b7f0aaba37edd6d331c94a098f7c2db03ed64f5b2bbcbbdcb53118c904aba",
+      "profile": "LMT_DJF_95",
+      "raw_output_bytes": 1862467,
+      "raw_output_path_relative_to_cache": "raw_outputs/LMT_DJF_95_za70_5mhz.dat",
+      "raw_output_sha256": "56198a046f9ca787ac8746805e75888540ad6d447c9abf752d4cff2178b296b5",
+      "return_code": 1,
+      "row_count": 28001,
+      "schema_version": "sci-cal-001-am12-frequency-run-v1",
+      "sidecar_path_relative_to_cache": "execution_records/LMT_DJF_95_za70_5mhz.run.json",
+      "step_mhz": 5,
+      "unexpected_warning_count": 0,
+      "unresolved_line_warning_count": 58,
+      "warning_class_counts": {
+        "cache_insert_as_mru": 0,
+        "cache_promote_to_mru": 0,
+        "other": 0,
+        "unresolved_column": 29,
+        "unresolved_summary": 1
+      },
+      "zenith_angle_deg": 70
+    },
+    {
+      "am_identity": "am version 12.2 (build date Aug  1 2026 11:20:29)",
+      "argv": [
+        "/private/tmp/sci_cal_001_am12_2_native_build_20260801_root/am",
+        "/Users/gwilson/work_toltec/local_data/AM/Big_Atmosphere/LMT_am_inputs/LMT_DJF_95.amc",
+        "140",
+        "GHz",
+        "280",
+        "GHz",
+        "2",
+        "MHz",
+        "70",
+        "deg",
+        "1.0"
+      ],
+      "case_id": "LMT_DJF_95_za70_2mhz",
+      "elevation_deg": 20,
+      "environment_overrides": {
+        "AM_CACHE_PATH": "/private/tmp/sci_cal_001_am12_2_frequency_resolution_20260801_package_review_v3/am_cache",
+        "OMP_NUM_THREADS": "14"
+      },
+      "error_line_count": 0,
+      "normalized_output_algorithm": "decode UTF-8; normalize line endings to LF; replace '# run time ...' with '# run time <volatile>' and '# dcache hit: ...' with '# dcache counters <volatile>'; append one LF",
+      "normalized_output_sha256": "a5023b42ee682687f5c50139562d47e0720ddbfebbb00d59e23b9d64e7fd1d9d",
+      "numeric_output_sha256": "6406abd138a2aa939c963b5dc290ba811173302d274e48fc198d91cce3c1daa4",
+      "profile": "LMT_DJF_95",
+      "raw_output_bytes": 4704223,
+      "raw_output_path_relative_to_cache": "raw_outputs/LMT_DJF_95_za70_2mhz.dat",
+      "raw_output_sha256": "66fe23c9aae408ca6f5ff586740a5c9c47feece74117660ee42aac1be07d1fd6",
+      "return_code": 1,
+      "row_count": 70001,
+      "schema_version": "sci-cal-001-am12-frequency-run-v1",
+      "sidecar_path_relative_to_cache": "execution_records/LMT_DJF_95_za70_2mhz.run.json",
+      "step_mhz": 2,
+      "unexpected_warning_count": 0,
+      "unresolved_line_warning_count": 45,
+      "warning_class_counts": {
+        "cache_insert_as_mru": 0,
+        "cache_promote_to_mru": 0,
+        "other": 0,
+        "unresolved_column": 24,
+        "unresolved_summary": 1
+      },
+      "zenith_angle_deg": 70
+    },
+    {
+      "am_identity": "am version 12.2 (build date Aug  1 2026 11:20:29)",
+      "argv": [
+        "/private/tmp/sci_cal_001_am12_2_native_build_20260801_root/am",
+        "/Users/gwilson/work_toltec/local_data/AM/Big_Atmosphere/LMT_am_inputs/LMT_DJF_95.amc",
+        "140",
+        "GHz",
+        "280",
+        "GHz",
+        "1",
+        "MHz",
+        "70",
+        "deg",
+        "1.0"
+      ],
+      "case_id": "LMT_DJF_95_za70_1mhz",
+      "elevation_deg": 20,
+      "environment_overrides": {
+        "AM_CACHE_PATH": "/private/tmp/sci_cal_001_am12_2_frequency_resolution_20260801_package_review_v3/am_cache",
+        "OMP_NUM_THREADS": "14"
+      },
+      "error_line_count": 0,
+      "normalized_output_algorithm": "decode UTF-8; normalize line endings to LF; replace '# run time ...' with '# run time <volatile>' and '# dcache hit: ...' with '# dcache counters <volatile>'; append one LF",
+      "normalized_output_sha256": "bc2e6890be4c951cc398a1ffcf109d791c18bbff231da621c408c6523aa9dd30",
+      "numeric_output_sha256": "9e33e839fc2d3a087702b8829a0eeda09ce3a5beebb103deb8e45f654cd04bef",
+      "profile": "LMT_DJF_95",
+      "raw_output_bytes": 9393922,
+      "raw_output_path_relative_to_cache": "raw_outputs/LMT_DJF_95_za70_1mhz.dat",
+      "raw_output_sha256": "f387356714cd0001439a68d8cbd8e2be6dda8bc09c12c05c4a62caa905438b40",
+      "return_code": 1,
+      "row_count": 140001,
+      "schema_version": "sci-cal-001-am12-frequency-run-v1",
+      "sidecar_path_relative_to_cache": "execution_records/LMT_DJF_95_za70_1mhz.run.json",
+      "step_mhz": 1,
+      "unexpected_warning_count": 0,
+      "unresolved_line_warning_count": 30,
+      "warning_class_counts": {
+        "cache_insert_as_mru": 0,
+        "cache_promote_to_mru": 0,
+        "other": 0,
+        "unresolved_column": 18,
+        "unresolved_summary": 1
+      },
+      "zenith_angle_deg": 70
+    }
+  ],
+  "schema_version": "sci-cal-001-am12-frequency-resolution-v2",
+  "study_status": "diagnostic_not_operator_authorization",
+  "ten_mhz_140to280_vs_copied_0to500_maximum_fractional_correction_difference": "3.39999421999329770e-06",
+  "ten_mhz_exactly_matches_copied_centers": false,
+  "ten_mhz_resolution_diagnostic_passes": true,
+  "warning_class_totals": {
+    "cache_insert_as_mru": 0,
+    "cache_promote_to_mru": 0,
+    "other": 0,
+    "unresolved_column": 420,
+    "unresolved_summary": 16
+  },
+  "zenith_angles_deg": [
+    10,
+    70
+  ]
+}

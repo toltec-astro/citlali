@@ -36,6 +36,105 @@
     },
     {
       "availability": "local_read_only",
+      "bytes": 57995352,
+      "id": "copied-am12-linux-executable",
+      "notes": "AM 12.2 x86-64 Linux reference executable co-staged with the copied annual/seasonal suite; its version/build identity matches the copied output headers. A distinct GCC-15 native build reproduces the copied numeric output exactly. Co-staging, matching identity, and independent reproduction do not prove that this exact ELF generated the historical files, and no custody evidence ties it to the separate generic q artifacts.",
+      "path": "/Users/gwilson/work_toltec/local_data/AM/am-12.2/bin/am",
+      "role": "copied-suite generator executable",
+      "sha256": "3fc1f71b3a025ac79f5559bdd2fbf40cf5de2aa7598cabf474f74f9a6c3b290c"
+    },
+    {
+      "availability": "local_read_only",
+      "bytes": 109354,
+      "id": "copied-am12-run-script",
+      "notes": "Frozen 900-command srun workflow; exact AM argv body is profile 0 GHz 500 GHz 10 MHz ZA deg 1.0.",
+      "path": "/Users/gwilson/work_toltec/local_data/AM/Big_Atmosphere/01_do_am_runs.sh",
+      "role": "copied-suite raw-grid command record",
+      "sha256": "02d64a26c85f615bb194abd6102206f5cef29267599c78d4318dc327b7ce12a3"
+    },
+    {
+      "availability": "local_read_only",
+      "bytes": 656,
+      "id": "copied-am12-command-printer",
+      "notes": "Historical command printer; execution remains commented and the frozen shell script is the actual command record.",
+      "path": "/Users/gwilson/work_toltec/local_data/AM/Big_Atmosphere/generateAmModels.py",
+      "role": "copied-suite workflow source",
+      "sha256": "29b5445f18463fee872cfa863e6c7799647980294ca2c85432aceb10ed8262a6"
+    },
+    {
+      "availability": "local_read_only",
+      "bytes": 1620,
+      "id": "copied-am12-npz-packer",
+      "notes": "Historical uncompressed NPZ packer retaining el, atmFreq, atmTRJ, atmTtx, and atmTaun while omitting Tb.",
+      "path": "/Users/gwilson/work_toltec/local_data/AM/Big_Atmosphere/make_npz.py",
+      "role": "copied-suite output packer",
+      "sha256": "3a1c7b5283f03230a0d572620b4eca1a4859d61ca8c2b9786a67f4026e2717b5"
+    },
+    {
+      "availability": "task_package",
+      "bytes": 43771,
+      "id": "copied-am12-suite-manifest",
+      "notes": "Inventories all 25 AMC inputs, 25 NPZs, and 900 raw DAT outputs; preserves per-file and aggregate SHA-256 identities, registry separation, exact DAT-to-NPZ checks, all-family Study A comparisons, annual fit coefficients, protocol clarification, and post-discovery C1 stress.",
+      "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/copied_am_manifest.json",
+      "role": "copied-suite machine-readable provenance",
+      "sha256": "ef525bc5f2883f181cccd43f585b4e398d227f2a26eeca0ed90cf4f5922f520f"
+    },
+    {
+      "availability": "task_package",
+      "bytes": 132537,
+      "id": "am12-native-regeneration-manifest",
+      "notes": "Inventories 135 AM source/build files, five annual AMC inputs, all 180 copied reference grids, both executable identities, exact argv/environment, actual host and pinned locale, and the 180-case exact native reproduction. Every sidecar binds a whole-cache-locked immutable execution context; normalized warning-bearing output is committed by digest. All cases retain the accepted unresolved-line warning/status 1, while cache/unknown/error diagnostics are zero. Two weaker predecessor attempts are excluded or superseded.",
+      "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/native_regeneration_manifest.json",
+      "role": "native copied-suite regeneration provenance",
+      "sha256": "128d2b8481d64120be2fac020658f9f6abbe3de620438563572e6d40d8493ac4"
+    },
+    {
+      "availability": "task_package",
+      "bytes": 38380,
+      "id": "am12-frequency-resolution-manifest",
+      "notes": "Preregistered 10/5/2/1-MHz center-frequency convergence diagnostic with 16 exact execution sidecars, frozen AMC/NPZ inputs, native/copy executable identities, normalized and raw digests, and complete warning classes; no production policy is authorized.",
+      "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/frequency_resolution_manifest.json",
+      "role": "frequency-resolution diagnostic provenance",
+      "sha256": "77f93ff97fab4a75c0a6f5914df593e02c22c58a05ab415d777bde97fa482e1d"
+    },
+    {
+      "availability": "task_package",
+      "bytes": 99719,
+      "id": "am12-h2o-scale-hypothesis-manifest",
+      "notes": "Post-hoc P1, not custody proof or a holdout: 100 exact 225-GHz/elevation-80 anchors and 100 all-direct fitted-scale grids. Frozen ranks are q25 transmission LMT_MAM_5 scale 1.81225445269332575e+00 and Rayleigh-Jeans LMT_DJF_5 scale 3.01439309124786581e+00; q50 transmission LMT_MAM_25 scale 9.15696647246186712e-01 and Rayleigh-Jeans LMT_DJF_25 scale 2.02963214820032256e+00; q75 transmission LMT_DJF_50 scale 1.88602893644962655e+00 and Rayleigh-Jeans LMT_DJF_75 scale 1.01048455031671569e+00; q95 combined-ratio RMS LMT_DJF_25 scale 6.88363302058917359e+00. No q25/q50/q75 full-grid hypothesis passes 1%; all 225 nominal direct rows pass with worst error 6.65829283961727556e-03; no q95 combined-ratio hypothesis passes, with best maximum error 1.11745240975796860e-02 and RMS-winner error 1.19094929017647764e-02. Correction tau is asymmetric: q25/q50/q75 candidate uses direct atmTaun but generic truth uses -log(atmTtx); q95 uses -log(Tband/T225) on both sides. This supersedes the frozen P1 report/manifest's overbroad candidate-side-only tau wording without changing those bytes. Context 05148050e96e73577ec75be525b026b5bf37bbd2a8753f8e3702fc0b6dfb2bee binds 13,667 runs (9,792 status 0; 3,875 accepted warning-status 1), normalized numeric aggregate 343acc6878062a433b665b0c80516212dc3b338fc77337bc9b6d1ade8196d1e1, and normalized warning-bearing aggregate 3fcfe769fab3490e7067876a55c75a06e6d17e8990f137238399d02ab246728f. P1 narrows recipes but closes none of the 11 unresolved facts.",
+      "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/h2o_scale_hypothesis_manifest.json",
+      "role": "post-hoc H2O-scale provenance-hypothesis diagnostic",
+      "sha256": "1316b92a06edc7dc1eb7a6752e271a7b80eb409192ad9f7bf2882cc12928d14c"
+    },
+    {
+      "availability": "task_package",
+      "bytes": 8528,
+      "id": "copied-am12-followup-preregistration",
+      "notes": "Frozen before copied annual q5/q95 and seasonal numerical arrays were loaded; defines Studies A/B/C and their stop rule.",
+      "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/FOLLOWUP_STUDY_PREREGISTRATION.md",
+      "role": "follow-up study preregistration",
+      "sha256": "65935dbc906317e984cf2ae8b35c5868a3f216eca2ec6290f2887976892d8457"
+    },
+    {
+      "availability": "task_package",
+      "bytes": 5236,
+      "id": "copied-am12-followup-protocol-addendum",
+      "notes": "Frozen after the lineage mismatch; stops annual-anchor Study C and defines diagnostics C1, P1, and R1.",
+      "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/FOLLOWUP_STUDY_PROTOCOL_ADDENDUM.md",
+      "role": "post-lineage follow-up protocol",
+      "sha256": "0d47c11479a1ba0176babd3ea285e2871edbb1341406b6b044cbc53114c51a1d"
+    },
+    {
+      "availability": "task_package",
+      "bytes": 2066,
+      "id": "copied-am12-followup-deviation-log",
+      "notes": "Preserves the frozen records and resolves their v1/v0 identity ambiguity: annual-anchor Study C v1 stopped; legacy-anchor diagnostic C1 uses v0 without numerical reinterpretation.",
+      "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/FOLLOWUP_STUDY_DEVIATION_LOG.md",
+      "role": "protocol identity clarification",
+      "sha256": "a3df86366c7869579b3255d9ea8f95cf6827e78018e0a2a83a1640360be1b036"
+    },
+    {
+      "availability": "local_read_only",
       "bytes": 2144,
       "id": "toltec-sensitivity-atmosphere-loader",
       "notes": "Names Scott Paine am as generator and historical /data/wilson/am support; does not preserve an executable or input profiles.",
@@ -111,9 +210,13 @@
     }
   ],
   "atmospheric_profiles": {
-    "construction_method": null,
-    "historical_source_evidence": "The local dissertation attributes percentile LMT layers to NASA MERRA constraints, but no product/version, interval, vertical profiles, percentile statistic, or profile bytes survive locally.",
-    "input_artifact_ids": [],
+    "construction_method": "For the distinct copied AM 12.2 family, 25 AMC files cross annual/DJF/MAM/JJA/SON with H2O percentiles 5/25/50/75/95. They cite MERRA-2 inst3_3d_asm_Np v5.12.4, 2007-2016, per-pressure-level H2O percentiles and median O3, and contain complete pressure-layer bytes. Post-hoc P1 varied only Nscale troposphere h2o and directly ran all 100 target/profile fitted-scale grids; it narrows numerical recipes but does not establish the historical profile mapping or an independent physical intermediate-profile rule. For its correction metric, q25/q50/q75 candidate tau is direct AM atmTaun while generic truth tau is reconstructed as -log(atmTtx); q95 reconstructs both nominal ratio sides as -log(Tband/T225). The frozen P1 report/manifest's broader tau wording is superseded by this package-level clarification. Mapping to the four generic q artifacts remains unestablished.",
+    "historical_source_evidence": "The copied annual/seasonal AM 12.2 profiles and their construction comments are complete and digest-bound. TolTECA registry identity proves the copied seasonal and annual products are separate from generic am_q25/am_q50/am_q75/am_q95, so the exact generic-q profile choice or scale remains unresolved. P1's exact anchors and post-hoc rank-one recipes close no custody, missing-q95, independent-profile, spectral-choice, or operational-domain fact. The owner may either recover the generic-q custody and q95 bytes (recommended faithful-lineage closure) or approve a separately versioned AM 12.2 successor while retaining that historical custody gap as unresolved; the successor must not be represented as a regeneration of the generic products.",
+    "input_artifact_ids": [
+      "copied-am12-suite-manifest",
+      "am12-native-regeneration-manifest",
+      "am12-h2o-scale-hypothesis-manifest"
+    ],
     "percentile_models": [
       "am_q25",
       "am_q50",
@@ -124,7 +227,7 @@
       "PROF-001",
       "PROF-002"
     ],
-    "status": "unresolved_owner_input_required"
+    "status": "partially_resolved"
   },
   "band_integration": {
     "legacy_fit": "none; sample raw atmospheric transmission at one frequency per band and at 225 GHz",
@@ -152,8 +255,8 @@
   "created_date": "2026-08-01",
   "elevation_and_airmass": {
     "downstream_airmass_formula": "X(el)=sec(z)*(1-0.0012*(sec(z)^2-1)); zenith tau225 is applied with full sample X(el) and top-of-atmosphere pivot X_ref=0",
-    "published_narrative_discrepancy": "The dissertation text says 10--80 degrees in 10-degree steps; the recovered NPZ arrays and plotted nodes are 20--80 degrees in 2-degree steps. The arrays govern recovered numerical lineage; the discrepancy remains recorded.",
-    "raw_generator_airmass_status": "unresolved_owner_input_required",
+    "published_narrative_discrepancy": "The dissertation text says 10--80 degrees in 10-degree steps; generic q25/q50/q75 arrays are 20--80 degrees in 2-degree steps. The copied AM 12.2 workflow explicitly runs ZA 10--80 degrees in 2-degree steps, producing elevation 10--80 degrees in 2-degree steps, but it is a separate registry family and does not resolve the generic-grid wording.",
+    "raw_generator_airmass_status": "partially_resolved",
     "recovered_raw_elevation_grid": {
       "count": 31,
       "maximum": "8.00000000000000000e+01",
@@ -179,16 +282,30 @@
       "/Users/gwilson/tolteca/bin/python",
       "validation/sci_cal_001_atmosphere_operator_2026-08-01/generate_operator_analysis.py"
     ],
-    "raw_grid_generation_argv": null,
-    "raw_grid_generation_status": "unresolved_owner_input_required"
+    "raw_grid_generation_argv": [
+      "<am-12.2-executable>",
+      "LMT_am_inputs/<copied-profile>.amc",
+      "0",
+      "GHz",
+      "500",
+      "GHz",
+      "10",
+      "MHz",
+      "<zenith-angle-10-through-80-step-2>",
+      "deg",
+      "1.0"
+    ],
+    "raw_grid_generation_status": "partially_resolved"
   },
   "frequency_grid": {
-    "array_layout": "atmFreq, atmTRJ, and atmTtx are float64 arrays shaped [frequency_index=50001, elevation_index=31]",
-    "generator_directive_status": "unresolved_owner_input_required",
+    "array_layout": "Generic q25/q50/q75 NPZs retain atmFreq, atmTRJ, and atmTtx as float64 [50001,31]. Copied AM 12.2 NPZs retain those arrays plus direct atmTaun as float64 [50001,36]; their raw DAT files also retain Tb.",
+    "generator_directive_status": "partially_resolved",
     "quantities": [
       "atmFreq: GHz",
+      "atmTaun: direct line-of-sight optical depth in neper (copied suite)",
       "atmTRJ: Rayleigh-Jeans kelvin",
-      "atmTtx: dimensionless atmospheric transmission"
+      "atmTtx: dimensionless atmospheric transmission",
+      "Tb: brightness temperature kelvin (raw DAT only)"
     ],
     "recovered_grid": {
       "count": 50001,
@@ -203,22 +320,34 @@
     "status": "partially_resolved"
   },
   "generator": {
-    "argv": null,
-    "executable_or_source_sha256": null,
-    "historical_release_evidence": "Scott Paine, The am atmospheric model, July 2022, DOI 10.5281/zenodo.6774376; exact installed payload and command are not preserved.",
-    "model_name": "am",
+    "argv": [
+      "<copied-am12-linux-executable>",
+      "LMT_am_inputs/<copied-profile>.amc",
+      "0",
+      "GHz",
+      "500",
+      "GHz",
+      "10",
+      "MHz",
+      "<zenith-angle-deg>",
+      "deg",
+      "1.0"
+    ],
+    "executable_or_source_sha256": "3fc1f71b3a025ac79f5559bdd2fbf40cf5de2aa7598cabf474f74f9a6c3b290c",
+    "historical_release_evidence": "The copied suite preserves a co-staged AM 12.2 Linux executable whose version/build identity matches the copied output headers, the complete June-2022 AM 12.2 source payload, exact run and packing scripts, and outputs. Co-staging is suite-custody evidence that the ELF accompanied this local payload, not a producer record. A distinct GCC-15 native build reproduces all 180 annual parsed grids and numeric lines exactly in a whole-cache-locked, immutable-context-bound, two-phase sharded run with zero cache/unknown/error diagnostics. All cases retain the accepted unresolved-line warning/status 1. Neither co-staging, matching header identity, nor reproduction by the distinct native build proves that this exact ELF generated the historical files. Registry evidence does not tie this copied family to generic am_q25/am_q50/am_q75/am_q95.",
+    "model_name": "am 12.2 (copied annual/seasonal suite); exact generic-q association unresolved",
     "required_fact_ids": [
       "GEN-001",
       "GEN-002"
     ],
-    "status": "unresolved_owner_input_required"
+    "status": "partially_resolved"
   },
   "package_id": "SCI-CAL-001",
   "operational_domain": {
     "aligned_elevation_max_deg": null,
     "aligned_elevation_min_deg": null,
     "endpoints_inclusive": null,
-    "evidence_support": "The candidate analysis spans 30--80 degrees only as a diagnostic. Recovered q25/q50/q75 raw arrays span 20--80 degrees; q95 and independent intermediate runs are missing. No extrapolation is authorized.",
+    "evidence_support": "The candidate analysis spans 30--80 degrees only as a diagnostic. Recovered q25/q50/q75 raw arrays span 20--80 degrees. Missing generic q95 bytes block only faithful generic-lineage closure; a separately versioned AM 12.2 successor may retain that historical custody gap but still requires successor-specific independent intermediate runs and an owner-declared domain. No extrapolation is authorized.",
     "out_of_domain_behavior": "fail_closed",
     "required_fact_ids": [
       "DOMAIN-001"
@@ -232,14 +361,14 @@
   "schema_version": "sci-cal-001-atmosphere-regeneration-manifest-v1",
   "site_geometry": {
     "altitude_m": null,
-    "latitude_deg": null,
-    "longitude_deg": null,
-    "raw_model_slant_geometry": null,
+    "latitude_deg": 18.986,
+    "longitude_deg": -97.314,
+    "raw_model_slant_geometry": "Copied AM 12.2 AMC comments identify LMT latitude/longitude; realized headers use plane-parallel geometry, no refraction, and g=980.665 cm s^-2. Altitude/datum are absent, and applicability to the separate generic q lineage is unproven.",
     "required_fact_ids": [
       "SITE-001"
     ],
     "site_name": "Large Millimeter Telescope",
-    "status": "unresolved_owner_input_required"
+    "status": "partially_resolved"
   },
   "spectral_convention": {
     "legacy_band_frequencies_ghz": {

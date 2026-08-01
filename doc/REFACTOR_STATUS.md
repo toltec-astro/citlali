@@ -80,20 +80,34 @@ freeze the application mainline.
 
 - A 2026-08-01 SCI-CAL-001 repair-line evidence package has recovered and
   digest-bound the complete q25, q50, and q75 raw atmosphere grids and exactly
-  reconstructed their monochromatic degree-six coefficient lineage. The full
-  owner-required full-sample-airmass anchor reconstruction differs from the
-  recovered nominal-frequency raw nodes by at most 0.427091% in fractional
-  extinction correction over the available 20--80 degree grid, and a post-hoc
-  q50 raw leave-one-model-out check from the q25/q75 anchor reconstructions
-  differs by at most 0.243563%. These are partial numerical-
-  representation results, not observational-accuracy claims or a full-domain
-  gate. q95, the original `am` executable/configuration and atmospheric
-  profiles, independent intermediate-opacity runs, spectral-lineage choice,
-  and an approved operational domain remain missing. Piecewise-linear
-  line-of-sight optical depth is preregistered as the primary candidate and
-  PCHIP as the challenger; no successor operator, domain, repair, or re-audit
-  is authorized. The late SCI-ALIGN-001 sample-identity handoff remains an
-  open dependency for any aligned-elevation consumer. See the
+  reconstructed their monochromatic degree-six coefficient lineage. The
+  separately named copied AM 12.2 suite is completely inventoried, and a
+  distinct native build reproduces all 180 annual reference grids exactly;
+  every case retains the accepted unresolved-line status 1. R1 passes its
+  0.1% frequency-resolution diagnostic, with a 0.000340% 10-MHz-to-1-MHz
+  maximum correction difference, but does not approve a warning policy.
+  Canonical all-direct P1 preserves all 100 T225 anchors exactly and records
+  100 scale, 1,200 metric, and 1,050 coefficient rows from 13,667 AM runs with
+  no other warning classes, errors, or failed canonical attempts. P1 finds no
+  one-percent full-0--500-GHz reconstruction for q25/q50/q75, although every
+  copied-profile hypothesis passes one percent at all three legacy nominal
+  frequencies, with worst error 0.665829%; the absent q95 raw grid leaves only
+  a ratio-surface result whose best maximum error is 1.117452%. These are
+  post-hoc provenance and numerical diagnostics, not generic-q custody or an
+  independent operator holdout. C1 also exceeds one percent in a1100 for both
+  piecewise linear (1.738766%) and PCHIP (1.738068%), and all exact-anchor
+  candidates retain the q95/a2000 0.839827% wrong-way elevation feature, so
+  the elevation-monotonicity gate is unresolved. The owner must choose between
+  recommended faithful generic-lineage recovery, including q95, and an
+  explicitly versioned AM 12.2 successor that retains historical custody as
+  unresolved. Piecewise-linear line-of-sight optical depth remains the
+  baseline and PCHIP the challenger only; no operator, opacity/elevation
+  domain, repair, or re-audit is authorized. Any future correction must use
+  full sample airmass with top-of-atmosphere pivot `X_ref=0`, and the late
+  SCI-ALIGN-001 sample-identity/timing/interpolation/duration/eligibility
+  handoff remains open for every aligned-elevation consumer. Software
+  correctness, representation fidelity, and observational 5--10% absolute/
+  approximately 5% repeatability performance remain separate gates. See the
   [reproducible evidence package](../validation/sci_cal_001_atmosphere_operator_2026-08-01/README.md).
 - A 2026-07-30 coherent raw-I/Q event investigation has produced the first
   mode-aware observe-only production slice. The current RTC/PTC learning
@@ -2707,6 +2721,12 @@ silently choose among these:
 - Whether any future caller needs concurrent reductions in one process.
 - The measured-channel contract and missing-data policy for future R analysis.
 - Whether Citlali must be installable and consumable as an external library.
+- Whether SCI-CAL-001 follows the recommended faithful generic-q lineage path
+  by recovering q95 and exact historical custody, or approves a separately
+  versioned AM 12.2 successor with explicit profile/scale, spectral, warning,
+  validation, and support-backed domain policy while retaining the historical
+  custody gap as unresolved. Neither choice by itself authorizes an operator
+  or operational domain.
 
 ## Durable Evidence
 

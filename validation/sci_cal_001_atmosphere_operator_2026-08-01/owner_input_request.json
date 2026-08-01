@@ -1,11 +1,44 @@
 {
-  "schema_version": "sci-cal-001-owner-input-request-v1",
+  "schema_version": "sci-cal-001-owner-input-request-v2",
   "request_id": "SCI-CAL-001-ATM-INPUT-001",
   "created_date": "2026-08-01",
   "package_id": "SCI-CAL-001",
   "repair_base_sha": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
   "status": "owner_scientific_input_required",
-  "scope": "Complete raw atmosphere regeneration provenance and obtain independent raw-model validation nodes; do not implement or re-audit Citlali.",
+  "scope": "Select faithful generic-lineage closure or a separately versioned AM 12.2 successor, then complete the inputs and independent raw-model validation required by that path; do not implement or re-audit Citlali.",
+  "decision_paths": [
+    {
+      "id": "faithful_generic_lineage",
+      "recommendation": "recommended_faithful_closure",
+      "description": "Recover the original generic q95 bytes and custody-backed generator/profile/grid lineage for am_q25/am_q50/am_q75/am_q95. Post-hoc P1 profile/H2O-scale ranks may guide the search but may not substitute for a producer record or immutable lineage.",
+      "historical_custody_effect": "The generic-q custody gap must be resolved before this path can claim reproducible historical regeneration. P1 closes none of the seven path-specific custody and input facts.",
+      "path_specific_fact_ids": [
+        "Q95-001",
+        "GEN-001",
+        "GEN-002",
+        "PROF-001",
+        "PROF-002",
+        "SITE-001",
+        "GRID-001"
+      ]
+    },
+    {
+      "id": "versioned_am12_successor",
+      "recommendation": "allowed_new_model_alternative",
+      "description": "Approve the copied AM 12.2 payload and an explicit profile, grid, spectral, warning, validation, and domain policy as a separately versioned successor model. P1 narrows post-hoc profile/H2O-scale recipes but selects no profile rule: no q25/q50/q75 full-grid hypothesis passes the provisional one-percent gate, q95 has no passing combined-ratio hypothesis, and independent physical intermediate-profile evidence is still required.",
+      "historical_custody_effect": "The generic-q custody gap, including missing original q95 bytes, remains explicitly unresolved; the successor does not replace or reproduce the historical generic products. P1 also does not supply an operational opacity/elevation domain or independent successor validation.",
+      "path_specific_fact_ids": [
+        "PROF-001",
+        "PROF-002",
+        "SITE-001",
+        "GRID-001",
+        "MID-001",
+        "SPEC-001",
+        "BAND-001-CONDITIONAL",
+        "DOMAIN-001"
+      ]
+    }
+  ],
   "custody_constraints": [
     "Supply files locally with SHA-256 provenance; Codex must not access Unity.",
     "Do not substitute a contemporary am release, current LMT site defaults, synthetic profiles, or guessed bandpass weights for the historical inputs.",
@@ -14,8 +47,8 @@
   "required_items": [
     {
       "id": "Q95-001",
-      "priority": "blocking",
-      "request": "Stage the original am_q95 raw NPZ bytes registered by TolTECA as datafile ID 461, expected MD5 0ca7b331823237767d26016d19bffb3d, and report filename, byte count, SHA-256, and custody source.",
+      "priority": "blocking_for_faithful_generic_lineage_only",
+      "request": "For the faithful_generic_lineage path, stage the original am_q95 raw NPZ bytes registered by TolTECA as datafile ID 461, expected MD5 0ca7b331823237767d26016d19bffb3d, and report filename, byte count, SHA-256, and custody source. For the versioned_am12_successor path, record Q95-001 as unresolved_retained rather than substituting a copied annual or seasonal product.",
       "acceptance": [
         "MD5 exactly equals 0ca7b331823237767d26016d19bffb3d.",
         "NPZ members and shapes are inventoried without rewriting the file.",
@@ -29,56 +62,56 @@
     },
     {
       "id": "GEN-001",
-      "priority": "blocking_for_full_regeneration",
-      "request": "Supply the exact Scott Paine am source/release or executable used for these grids, including every local patch, build option, dependency lock, and SHA-256 identity.",
+      "priority": "blocking_for_faithful_generic_lineage_only",
+      "request": "Establish by custody evidence whether the copied AM 12.2 payload generated the separate generic q25/q50/q75/q95 registry products, or supply the alternative exact generator payload with SHA-256 identity. The copied payload itself is already fully inventoried and must not be supplied again.",
       "acceptance": [
-        "A clean environment can identify the same executable/source payload by SHA-256.",
-        "The supplied version is tied to the historical production rather than inferred solely from the July 2022 DOI citation."
+        "The generator-to-generic-product relationship is tied to a run record, producer record, immutable archive, or equivalent custody evidence rather than numerical similarity alone.",
+        "Any alternative executable/source, patch, build option, and dependency identity is SHA-256 bound."
       ]
     },
     {
       "id": "GEN-002",
-      "priority": "blocking_for_full_regeneration",
-      "request": "Supply the exact raw-grid generation command as an argv array plus all am configuration/control files, environment variables that affect numerical output, output parser/packer, and the original Mapping-Speed-Calculator source snapshot at gitlink commit 843cb1f44ef5f9ebaa842b296a7328f9bf64b908 or its verified successor containing that generator.",
+      "priority": "blocking_for_faithful_generic_lineage_only",
+      "request": "Supply the exact generic-q raw-grid argv/configuration, profile-to-q mapping, H2O scale, environment, and parser/packer, or identify the exact producer record that maps those facts onto the copied AM 12.2 workflow. Only the generic-q recipe is missing; the copied annual/seasonal argv and packer are recovered.",
       "acceptance": [
-        "No shell-history-only or prose-only command; every referenced input is staged and SHA-256 identified.",
-        "The command declares frequency output, elevation/slant paths, units, precision, and NPZ packing order."
+        "Every referenced generic-q input is staged or immutable-addressed and SHA-256 identified.",
+        "The record explains the generic 31-elevation products versus the copied 36-elevation products and declares frequency output, slant paths, units, precision, H2O scale, and NPZ packing order."
       ]
     },
     {
       "id": "PROF-001",
-      "priority": "blocking_for_full_regeneration",
-      "request": "Supply the complete q25/q50/q75/q95 atmosphere profile/config files used by am, byte-for-byte with SHA-256 provenance.",
+      "priority": "blocking_for_generic_q_lineage_or_successor_choice",
+      "request": "Identify the exact profile/config and H2O scale used for each generic q25/q50/q75/q95 product, or explicitly select a separately versioned copied-AM-12.2 successor profile family. Do not resupply the 25 copied AMC files; their bytes and provenance are already inventoried.",
       "acceptance": [
-        "Every profile layer, constituent, temperature/pressure/humidity quantity, boundary condition, and unit is explicit.",
-        "Profile-to-q-model identity is one-to-one and recorded in the manifest."
+        "For lineage closure, profile-to-generic-q identity and every non-unit scale are one-to-one and custody-backed.",
+        "For a successor, the owner explicitly selects annual, seasonal, season-aware, or another stated rule and records it as a new model version."
       ]
     },
     {
       "id": "PROF-002",
-      "priority": "blocking_for_full_regeneration",
-      "request": "Supply the MERRA product/version, time range, spatial sampling, variables, vertical-coordinate conversion, quality filtering, and percentile-construction statistic that produced the four profiles.",
+      "priority": "blocking_for_generic_q_lineage_or_successor_choice",
+      "request": "Supply the missing derivation that maps physical conditions to the four generic q products, or approve the copied suite's documented MERRA-2 construction as the basis of a separately versioned successor and specify how intermediate-opacity profiles will be constructed.",
       "acceptance": [
-        "The derivation can be rerun from immutable or digest-identified inputs.",
-        "The meaning of q25/q50/q75/q95 is stated explicitly; it is not inferred from selector tau225 values."
+        "The generic derivation or new successor rule is reproducible from immutable or digest-identified inputs.",
+        "The physical meaning of q25/q50/q75/q95 and intermediate nodes is explicit and is not inferred solely by scaling a fitted transmission surface."
       ]
     },
     {
       "id": "SITE-001",
-      "priority": "blocking_for_full_regeneration",
-      "request": "Supply the exact LMT latitude, longitude convention, altitude/reference datum, ground or ambient boundary inputs, Earth/atmosphere geometry, refraction/curvature settings, and elevation-to-slant-path directives used by am.",
+      "priority": "blocking_for_generic_q_lineage_or_successor_choice",
+      "request": "Confirm whether the copied AMC site/geometry convention applies to the generic q products. If a successor is selected, approve the copied explicit pressure-layer, plane-parallel/no-refraction convention and state whether altitude/datum metadata is required as model identity.",
       "acceptance": [
-        "Values come from the historical run configuration or an owner-approved replacement explicitly labeled as a new convention.",
+        "Generic-lineage values come from a historical run record, or replacement values are explicitly approved as a new convention.",
         "The raw-generator slant geometry is kept distinct from Citlali's downstream modified-secant sample-airmass formula."
       ]
     },
     {
       "id": "GRID-001",
-      "priority": "blocking_for_full_regeneration",
-      "request": "Confirm the generator directives that produced the recovered 0--500 GHz, 0.01-GHz, 50,001-point grid and the 20--80 degree, 2-degree, 31-point grid, including endpoint inclusion, numeric precision, atmTtx direction/reference plane, and atmTRJ definition.",
+      "priority": "blocking_for_generic_q_lineage_or_successor_policy",
+      "request": "Confirm the exact generic-q elevation-selection/packing rule that yielded 31 nodes at 20--80 degrees. For any AM 12.2 successor, choose whether the complete warning-status 10-MHz lineage grid is retained or a finer-grid run policy is required; the 1-MHz convergence diagnostic is already available.",
       "acceptance": [
-        "A rerun reproduces array names, shapes, coordinate ordering, and units without post hoc resampling.",
-        "The recorded dissertation text discrepancy (10--80 degrees in 10-degree steps versus recovered arrays at 20--80 degrees in 2-degree steps) is resolved by provenance, not silently edited."
+        "A generic rerun reproduces array names, shapes, coordinate ordering, and units without post hoc resampling.",
+        "The grid discrepancy and any operational treatment of AM's unresolved-line status 1 are resolved explicitly rather than silently normalized."
       ]
     },
     {
@@ -114,7 +147,7 @@
       "priority": "blocking_for_operator_selection",
       "request": "Approve the operational zenith-tau225 and aligned-elevation domain. The present 30--80 degree analysis is diagnostic only; the recovered raw grid supports 20--80 degrees, and no extrapolation is authorized.",
       "acceptance": [
-        "Minimum and maximum values, endpoint inclusivity, out-of-domain fail-closed behavior, and any data-quality eligibility rules are explicit.",
+        "Minimum and maximum values, endpoint inclusivity, out-of-domain fail-closed behavior, and aligned-sample identity/timing/interpolation/duration/original-versus-synthesized eligibility rules are explicit.",
         "The domain is contained in the supplied raw and held-out model support."
       ]
     }
@@ -124,11 +157,21 @@
     "Raw grid coordinates: 0--500 GHz at 0.01 GHz and 20--80 degrees at 2 degrees.",
     "Legacy nominal samples: 272.73, 214.29, 150.00, and reference 225.00 GHz.",
     "Legacy fit: numpy.polyfit degree six in elevation radians over 31 nodes, coefficient rounding to eight decimals, and no passband integration.",
-    "Selector zenith-tau225 anchors derived as -log(T225 at 80 degrees)/X(80 degrees); q25/q50/q75 are verified against raw bytes."
+    "Selector zenith-tau225 anchors derived as -log(T225 at 80 degrees)/X(80 degrees); q25/q50/q75 are verified against raw bytes.",
+    "Complete copied AM 12.2 source/build payload, co-staged Linux executable, exact 900-command argv workflow, NPZ packer, 25 AMC profiles, 900 DAT outputs, and 25 NPZ products with SHA-256 provenance. The executable's version/build identity matches the copied output headers, and co-staging is suite-custody evidence that the ELF accompanied this local payload; no producer record proves that this exact ELF generated the historical files or connects it to the generic q products.",
+    "Copied-profile metadata: LMT latitude/longitude comments, MERRA-2 inst3_3d_asm_Np v5.12.4, 2007--2016 interval, per-pressure-level H2O percentile, median O3, explicit layers, plane-parallel/no-refraction realization, and unit H2O scale.",
+    "All 20 copied seasonal NPZs exactly match their TolTECA seasonal registry records; five annual products have no generic registry identity and none may be substituted for generic q95 ID 461.",
+    "All 900 copied DAT files exactly match their NPZ f/tau/tx/Trj fields; all are numerically complete but retain unresolved-line warning and Slurm exit-status-1 provenance.",
+    "A distinct GCC-15 native AM 12.2 build exactly reproduces all five parsed fields and numeric data lines for the full 180-case annual matrix. The canonical run binds an immutable runner/host/locale/build/source/profile/reference execution context into every sidecar, uses a whole-cache POSIX writer lock and ordered per-phase shards, and has zero cache-mutation warnings, zero unknown warnings, and zero error lines. All cases retain the accepted unresolved-line warning and status 1; this is not a clean software-success claim. Two weaker predecessor attempts are explicitly excluded or superseded.",
+    "The SHA-256-bound 10/5/2/1-MHz center-frequency study passes its 0.1% numerical-resolution diagnostic. All 16 argv/input/output identities and warning classes are retained; unresolved-line status persists and no operational warning policy is inferred.",
+    "Post-hoc P1 directly ran all 100 copied-profile/fitted-H2O-scale hypotheses after matching all 100 parsed 225-GHz/elevation-80 anchors. Frozen rank-one recipes are q25 transmission LMT_MAM_5 scale 1.81225445269332575e+00 and Rayleigh-Jeans LMT_DJF_5 scale 3.01439309124786581e+00; q50 transmission LMT_MAM_25 scale 9.15696647246186712e-01 and Rayleigh-Jeans LMT_DJF_25 scale 2.02963214820032256e+00; q75 transmission LMT_DJF_50 scale 1.88602893644962655e+00 and Rayleigh-Jeans LMT_DJF_75 scale 1.01048455031671569e+00; q95 combined-ratio RMS LMT_DJF_25 scale 6.88363302058917359e+00. No q25/q50/q75 full-grid hypothesis passes 1%; all 225 nominal direct rows pass with worst error 6.65829283961727556e-03; no q95 combined-ratio hypothesis passes, with best maximum error 1.11745240975796860e-02 and RMS-winner error 1.19094929017647764e-02. These results narrow recipes but close none of the 11 requested facts.",
+    "The P1 manifest is 99,719 bytes with SHA-256 1316b92a06edc7dc1eb7a6752e271a7b80eb409192ad9f7bf2882cc12928d14c. Execution context 05148050e96e73577ec75be525b026b5bf37bbd2a8753f8e3702fc0b6dfb2bee binds 13,667 runs (9,792 status 0; 3,875 accepted warning-status 1), normalized numeric aggregate 343acc6878062a433b665b0c80516212dc3b338fc77337bc9b6d1ade8196d1e1, and normalized warning-bearing aggregate 3fcfe769fab3490e7067876a55c75a06e6d17e8990f137238399d02ab246728f. Correction-tau provenance is asymmetric: q25/q50/q75 candidate uses direct AM atmTaun while generic truth uses -log(atmTtx); q95 uses -log(Tband/T225) on both sides. This package-level clarification supersedes the frozen P1 report/manifest's overbroad candidate-side-only tau wording; their bytes remain frozen."
   ],
   "delivery_layout": {
     "root": "validation/sci_cal_001_atmosphere_operator_YYYY-MM-DD/inputs/owner_supplied/",
-    "required_manifest": "owner_supplied_manifest.json conforming to atmosphere_regeneration_manifest.schema.json",
+    "required_manifest": "owner_supplied_manifest.json",
+    "manifest_schema": "validation/sci_cal_001_atmosphere_operator_2026-08-01/owner_supplied_manifest.schema.json",
+    "partial_submission_policy": "Partial submissions are allowed. Include at least one fact response, identify the selected owner path, and retain unresolved historical custody explicitly; do not copy unknown fields from the full regeneration manifest.",
     "digest_file": "SHA256SUMS with paths relative to the delivery root",
     "immutability": "Preserve original bytes; generated normalized tables are separate derived artifacts."
   }

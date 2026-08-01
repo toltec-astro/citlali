@@ -1,0 +1,2343 @@
+{
+  "artifacts": {
+    "H2O_SCALE_HYPOTHESIS_REPORT.md": {
+      "sha256": "1519928944075689f07e3b041fcba35a9f4f2c1042345df06cd14a6d47e2c5b6"
+    },
+    "generator": {
+      "filename": "probe_am12_h2o_scale_hypotheses.py",
+      "sha256": "caa41ca105eec6df99f31d982ca69910ef2d7e1ebcbad86c96faa7d0e4cd3c2c"
+    },
+    "h2o_scale_hypothesis_coefficients.csv": {
+      "row_count": 1050,
+      "sha256": "31e7958d1ddc96c7642ba626cf6c349e5d6161830c9a9d09eacf064fc28a7d00"
+    },
+    "h2o_scale_hypothesis_metrics.csv": {
+      "row_count": 1200,
+      "sha256": "31210cbf3c1f5ab202fdcb8de579dc5dcfedd0ace1e36ba9ce9bfa64039f1f8b"
+    },
+    "h2o_scale_hypothesis_scales.csv": {
+      "row_count": 100,
+      "sha256": "7a43c01563855518fb1a6b51985ab6c43d41c96bf4723df2ae73b047799f9dbe"
+    }
+  },
+  "cache_execution_context": {
+    "content": {
+      "builds": {
+        "copied_linux_reference": {
+          "binary_format": "elf",
+          "resolved_path": "/Users/gwilson/work_toltec/local_data/AM/am-12.2/bin/am",
+          "sha256": "3fc1f71b3a025ac79f5559bdd2fbf40cf5de2aa7598cabf474f74f9a6c3b290c",
+          "size_bytes": 57995352,
+          "supplied_path": "/Users/gwilson/work_toltec/local_data/AM/am-12.2/bin/am"
+        },
+        "regeneration": {
+          "binary_format": "mach-o",
+          "classification": "native_macos_build_distinct_from_copied_linux_binary",
+          "compiler": {
+            "binary_format": "mach-o",
+            "resolved_path": "/opt/homebrew/Cellar/gcc/15.2.0_1/bin/gcc-15",
+            "sha256": "99821ba277c2f5961ca6ee34877407c8a2647b60b0e475efb03cebf993322593",
+            "size_bytes": 2647560,
+            "status": "supplied_by_operator_as_build_compiler",
+            "supplied_path": "/opt/homebrew/Cellar/gcc/15.2.0_1/bin/gcc-15",
+            "version_command_return_code": 0,
+            "version_output": "gcc-15 (Homebrew GCC 15.2.0_1) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+            "version_output_sha256": "b6f7687d32e9ad0f7b59d71376e0b2ad7c28c2f30a3107ec5781b890473aeb0f"
+          },
+          "native_build_command": "make -j8 gcc-omp COMPILER_GCC=gcc-15",
+          "resolved_path": "/private/tmp/sci_cal_001_am12_2_native_build_20260801_root/am",
+          "sha256": "78e721d45b08990069a2d67a5fb337446bcbfb728046940c0d473bea340205fb",
+          "size_bytes": 58435360,
+          "supplied_path": "/private/tmp/sci_cal_001_am12_2_native_build_20260801_root/am"
+        }
+      },
+      "execution_host": {
+        "machine": "arm64",
+        "node": "ASTRO-GWILSON01.local",
+        "numpy": "2.2.3",
+        "python": "3.13.2",
+        "python_executable": "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/bin/python3.13",
+        "release": "25.6.0",
+        "system": "Darwin"
+      },
+      "execution_parameters": {
+        "am_cache_sharding": {
+          "assignment": "big-endian first 64 bits of sha256(cache_id) modulo shard_count",
+          "cache_id_identity": "canonical RunSpec request, AM executable/profile SHA-256, OMP threads, shard count, and execution-context SHA-256",
+          "shard_count": 8,
+          "within_process_locking": "one lock per shard around each AM subprocess"
+        },
+        "argv_template": [
+          "<am-executable>",
+          "LMT_am_inputs/<immutable-profile>.amc",
+          "<fmin-binary64-17e>",
+          "GHz",
+          "<fmax-binary64-17e>",
+          "GHz",
+          "10",
+          "MHz",
+          "<integer-zenith-angle-deg>",
+          "deg",
+          "<frozen-h2o-scale-decimal>"
+        ],
+        "cache_lock": {
+          "filename": ".h2o_scale_hypothesis.lock",
+          "reader_mode": "nonblocking whole-cache POSIX shared lock",
+          "writer_mode": "nonblocking whole-cache POSIX exclusive lock"
+        },
+        "in_process_observation_retention": {
+          "explicitly_not_retained": [
+            "ParsedOutput.samples",
+            "raw_combined_output",
+            "execution_sidecar_payload"
+          ],
+          "purpose": "keep final all-run digest aggregation memory-bounded without changing its scientific identity or digest semantics",
+          "record_type": "frozen lightweight RunObservation",
+          "retained_fields": [
+            "cache_id",
+            "RunSpec",
+            "return_code",
+            "AM_version_identity",
+            "diagnostic_counts",
+            "numeric_text_sha256",
+            "normalized_output_sha256"
+          ]
+        },
+        "jobs": 8,
+        "locale": {
+          "LANG": "C",
+          "LC_ALL": "C"
+        },
+        "omp_threads_per_process": 1,
+        "slurm_wrapper_used": false,
+        "working_directory_role": "Big_Atmosphere"
+      },
+      "historical_workflow": {
+        "Big_Atmosphere/01_do_am_runs.sh": {
+          "path_relative_to_am_root": "Big_Atmosphere/01_do_am_runs.sh",
+          "sha256": "02d64a26c85f615bb194abd6102206f5cef29267599c78d4318dc327b7ce12a3"
+        },
+        "Big_Atmosphere/generateAmModels.py": {
+          "path_relative_to_am_root": "Big_Atmosphere/generateAmModels.py",
+          "sha256": "29b5445f18463fee872cfa863e6c7799647980294ca2c85432aceb10ed8262a6"
+        },
+        "Big_Atmosphere/make_npz.py": {
+          "path_relative_to_am_root": "Big_Atmosphere/make_npz.py",
+          "sha256": "3a1c7b5283f03230a0d572620b4eca1a4859d61ca8c2b9786a67f4026e2717b5"
+        }
+      },
+      "inputs": {
+        "am_source_contracts": {
+          "am-12.2/src/config.c": {
+            "sha256": "6e57faf4e58a536c8fdb66291c9a186f0f3c01356ee6b00a9677eea6c7fbce79"
+          },
+          "am-12.2/src/nscale.c": {
+            "sha256": "c00a333583988c241fc80a2648378914361e0eaf8fdd8f1fc112b7d2ff913d06"
+          }
+        },
+        "am_source_inventory": {
+          "aggregate_algorithm": "sha256(relative_path NUL file_sha256_bytes NUL)",
+          "aggregate_sha256": "0cd4ea9d48c3c6da2100a692af1dc24dce5b3c903ced2b07b7372e8e85182fe8",
+          "file_count": 135,
+          "files": [
+            {
+              "path": "INSTALLING",
+              "sha256": "acf32b9994d40adc3ec84eccef8392340b72a60c2b4095242c5160f86b186b40",
+              "size_bytes": 16139
+            },
+            {
+              "path": "LICENSE",
+              "sha256": "bcc72f3992abcfa20ab3eee5f552dc9d2004e3de0457bb800d49c64c174d7cf8",
+              "size_bytes": 473
+            },
+            {
+              "path": "Makefile",
+              "sha256": "5679a8e9ad5e1ab645726edeb8b16904539272d4eef3f05a3fad8c4393a696d1",
+              "size_bytes": 10412
+            },
+            {
+              "path": "REFERENCES",
+              "sha256": "c2041fe8673edfd53f64d3def76b381a273328216c7830a5e226ab898056dc71",
+              "size_bytes": 7193
+            },
+            {
+              "path": "_README_",
+              "sha256": "1aabfd69c54b2cbf8f652ba84c960b43cde6a892e1a04863762cfb3e00e6c5a5",
+              "size_bytes": 787
+            },
+            {
+              "path": "abscoeff.c",
+              "sha256": "927603edb5e4a61b2c3ed25124e91abe8dacd1f04356e74233f8b8c859fc4e6a",
+              "size_bytes": 56296
+            },
+            {
+              "path": "abscoeff.h",
+              "sha256": "7138c1e416bebf25cf3a173a2a75ce1fb757e6057f9901afcd834ec5b062c2ee",
+              "size_bytes": 4247
+            },
+            {
+              "path": "am_alloc.c",
+              "sha256": "f9941e8cd3f17d6bc95a61d43b62de2150806bfcdd0c2c0543c8b24251a47c38",
+              "size_bytes": 32542
+            },
+            {
+              "path": "am_alloc.h",
+              "sha256": "5141e9faf4dbbb1b338e34158c99053a9357c25aea45b672128cef935b1f04f2",
+              "size_bytes": 1002
+            },
+            {
+              "path": "am_sysdep.c",
+              "sha256": "81ceee4b3ac62e0225f92a39c29f57fa939c77444e934bceb0655241aee28dc0",
+              "size_bytes": 2659
+            },
+            {
+              "path": "am_sysdep.h",
+              "sha256": "35830e5604cbfc1e2f31cc67f763cf93438b6057dca2d5107332840e28cd57be",
+              "size_bytes": 1155
+            },
+            {
+              "path": "am_types.c",
+              "sha256": "c413209ee76c3bd7addad2602d467884f19c0c9b301ff62108a9dc4ffdca5c1a",
+              "size_bytes": 13588
+            },
+            {
+              "path": "am_types.h",
+              "sha256": "bc53bc85984a14b7d58f52ba8c8636837d7ce5ce74168991e661f1e7d19048e5",
+              "size_bytes": 26348
+            },
+            {
+              "path": "ch3oh.c",
+              "sha256": "48ba15db0ad4f2c49b71628537c8a28606af50755bc36135beb8a6efb2df6c09",
+              "size_bytes": 557498
+            },
+            {
+              "path": "ch3oh.h",
+              "sha256": "79560252be4f3dad0eb9816e7f76db3180d799c40c9ad146cf9217f80a823338",
+              "size_bytes": 707
+            },
+            {
+              "path": "ch4.c",
+              "sha256": "368b37d9e3925588af3cf04c8a4d1b20bf6ee47cbe9f4256e70c518bdb89029c",
+              "size_bytes": 2958070
+            },
+            {
+              "path": "ch4.h",
+              "sha256": "ffb2b12e43018361e7db7b7a386112eee8d9508c70352d0ac6644013b6851bc3",
+              "size_bytes": 683
+            },
+            {
+              "path": "cia.c",
+              "sha256": "1f9284c5a5708309294cbc7c61ee1814eaf0327c96cdec2068337e7277877042",
+              "size_bytes": 26666
+            },
+            {
+              "path": "cia.h",
+              "sha256": "446571d6fc005343d09ad3852575431fd5e2d53db63c3929879a229bfd21fce0",
+              "size_bytes": 789
+            },
+            {
+              "path": "clo.c",
+              "sha256": "5da4f94563fb2bae1752a36b2bceae959fcd22ba2bf9801da71a3614b430d326",
+              "size_bytes": 1186994
+            },
+            {
+              "path": "clo.h",
+              "sha256": "e38c0c9e72d0d85b895967b8b65f6b999fd96ac21841a891bec38c5e5640989f",
+              "size_bytes": 683
+            },
+            {
+              "path": "co.c",
+              "sha256": "8a398c4d160e6661881fb608d5b919a39b3bfb81a80bfc7d70bb7efdd27bd49d",
+              "size_bytes": 1004860
+            },
+            {
+              "path": "co.h",
+              "sha256": "69d8b3ebca91b1a0d57c45a0877b865e6c9189bbfa1287669320f8c75e2639f8",
+              "size_bytes": 671
+            },
+            {
+              "path": "co2.c",
+              "sha256": "54ce405f2397182252022be2e51f19d82d85376a7bc6e20694aa108da4577ce8",
+              "size_bytes": 1183724
+            },
+            {
+              "path": "co2.h",
+              "sha256": "07f3225769063f83ae22b07a759df64c5434b3f5bf85d8ac568d23b19acf7c0f",
+              "size_bytes": 683
+            },
+            {
+              "path": "column.c",
+              "sha256": "4f62a4906cb4b63551a2d5aaccd284ee6635911e174e22bde6e806f82b1f2b54",
+              "size_bytes": 49523
+            },
+            {
+              "path": "column.h",
+              "sha256": "4e2c9d8b7cfb788dff9ee089d00cb8b87f9894b635dc0bd73be7d207ac354e1b",
+              "size_bytes": 7320
+            },
+            {
+              "path": "config.c",
+              "sha256": "6e57faf4e58a536c8fdb66291c9a186f0f3c01356ee6b00a9677eea6c7fbce79",
+              "size_bytes": 176302
+            },
+            {
+              "path": "config.h",
+              "sha256": "dedde495c106f9657ff5e3bb23c5333f138ec4af6e51b4e36e65eacfc6274074",
+              "size_bytes": 549
+            },
+            {
+              "path": "dcache.c",
+              "sha256": "1af1d04d928a8078725b59818ed24a8257a08a3f603cc91d4c8169bee3a8b468",
+              "size_bytes": 43105
+            },
+            {
+              "path": "dcache.h",
+              "sha256": "d283c9841cb92e3a5e32f7929d804e79b797b3fef75588208b353756b97f3455",
+              "size_bytes": 862
+            },
+            {
+              "path": "doc.c",
+              "sha256": "e7de05f1af41c3958b56dee4f89394e46c0f7b5c706771b693f2e606da781b3b",
+              "size_bytes": 11988
+            },
+            {
+              "path": "doc.h",
+              "sha256": "e1e3bd211ab7d2e9077f35f0f5e89a6258f1b758de25b6227aec2bbde43719a6",
+              "size_bytes": 438
+            },
+            {
+              "path": "errlog.c",
+              "sha256": "66e75ff890d22a784072955eb9c47e5a13697038e0b00ee47ffc13663b25d5c5",
+              "size_bytes": 26998
+            },
+            {
+              "path": "errlog.h",
+              "sha256": "5c259699bd0379f1a35e3a73ae7d626dc05ba1550836b40e6801ec284bb2aa65",
+              "size_bytes": 466
+            },
+            {
+              "path": "fileops.c",
+              "sha256": "017e21cc73030667df1357805221994072afbf9d502021c8c328b341907f41c4",
+              "size_bytes": 7102
+            },
+            {
+              "path": "fileops.h",
+              "sha256": "b741650a2d631809102a87bffc5a385a1f7d02dc668e902ed6f035d395c0642f",
+              "size_bytes": 770
+            },
+            {
+              "path": "fit.c",
+              "sha256": "268a5c6da92d523b3a0a9505fc02ec540216f046683ef9c84a8faa17c90833a7",
+              "size_bytes": 63355
+            },
+            {
+              "path": "fit.h",
+              "sha256": "58eb6d95942c337cacfa98424cc631f8781f1fb5651b28064bdea67f5ebdd6fb",
+              "size_bytes": 1110
+            },
+            {
+              "path": "h2co.c",
+              "sha256": "a53292b409ddbf6b893b9afbcdac9a101c55bd2b7945a3b64c599e2a2e4d96fc",
+              "size_bytes": 1107324
+            },
+            {
+              "path": "h2co.h",
+              "sha256": "b39849172aec3237e3cd0b7de7613ec7bc8560d494c54eb1b78b94e4d8ad997e",
+              "size_bytes": 695
+            },
+            {
+              "path": "h2o.c",
+              "sha256": "008cd1ed0d2e4792635bcdb70a4e58fcc389b66bf9652d2e9891821e8ccf74b8",
+              "size_bytes": 1721877
+            },
+            {
+              "path": "h2o.h",
+              "sha256": "eb5d5a88a5598d82adbbcff4b0a9105f89cec495322d8705ff30a1b7b8eebfc1",
+              "size_bytes": 683
+            },
+            {
+              "path": "h2o2.c",
+              "sha256": "2d839905b56d20dd6e596052c3bdfb819213c6055cad704ea2924865f6d434f1",
+              "size_bytes": 7054134
+            },
+            {
+              "path": "h2o2.h",
+              "sha256": "a345833276adc8473852f97c657cd4c78fc3dc008fcb1c8b2ce4ae0d1151e705",
+              "size_bytes": 695
+            },
+            {
+              "path": "h2o_continuum.c",
+              "sha256": "15aa7564e8004a939d8b28b7cd70dcf29fa9b66cdcc17cb2f953fcc80b7adc5c",
+              "size_bytes": 11904
+            },
+            {
+              "path": "h2o_continuum.h",
+              "sha256": "a2a3d30895c872e085841e9960761b34b4f0a8f270d36c628a9fdf81e18165d3",
+              "size_bytes": 636
+            },
+            {
+              "path": "h2o_ice.c",
+              "sha256": "2362e338af48e52edb518e7cb23666409c16634a936d2eccbd66e727295e05ec",
+              "size_bytes": 37095
+            },
+            {
+              "path": "h2o_ice.h",
+              "sha256": "6e9b825398e12c3a3b233af4be7dc320ad2ce108e5db9997cd563e892c785ed3",
+              "size_bytes": 447
+            },
+            {
+              "path": "h2o_liquid.c",
+              "sha256": "0cb50ea3393aa0b0aa88c49aad2b0c329503fa3e99210b46816db9494b53e508",
+              "size_bytes": 18688
+            },
+            {
+              "path": "h2o_liquid.h",
+              "sha256": "8d02f257e68656aad703355554857b55db9095a5b0e2bc5e6daeb41a08a3f7cb",
+              "size_bytes": 459
+            },
+            {
+              "path": "h2o_psat.c",
+              "sha256": "6d425dba1b5b9259ce083b0a7ea4d12f8a9dba423723fe5a894d9573a9d22a93",
+              "size_bytes": 6303
+            },
+            {
+              "path": "h2o_psat.h",
+              "sha256": "9e0246bd56b71f4d08f2e2defedaf2ec21b87488f43f4d9ea707ff79a26b8737",
+              "size_bytes": 480
+            },
+            {
+              "path": "h2s.c",
+              "sha256": "51f65b1ed847f93a23af50f6d361688d969ba1296ab4d4b0ddb46d35366471ed",
+              "size_bytes": 1006000
+            },
+            {
+              "path": "h2s.h",
+              "sha256": "141eb4761e27a4d406ad6d46eadcaf8cd62bfd9b2386f1067508e55981d5469d",
+              "size_bytes": 683
+            },
+            {
+              "path": "hbr.c",
+              "sha256": "80ffb6c4a7cfb3eb2d922e162ea593f6a6a083dad4193318c6ad74eec3b4a0e4",
+              "size_bytes": 312106
+            },
+            {
+              "path": "hbr.h",
+              "sha256": "cecaa2ffd93f02852d30d5d01d6d6c30af73b190ebaf02c6ba7c66f690cac97b",
+              "size_bytes": 683
+            },
+            {
+              "path": "hcl.c",
+              "sha256": "e1583877ec5875c358f67d24e4ad2ef066a5ea20dc12bed4b2393ed61bf011f5",
+              "size_bytes": 375754
+            },
+            {
+              "path": "hcl.h",
+              "sha256": "72f080991cbe74967bceeca7dade6127f02ab47100ed9e3d629782ebdebc8fd5",
+              "size_bytes": 683
+            },
+            {
+              "path": "hcn.c",
+              "sha256": "ad0fed733fded9c537dd4d6edbf300b22cd806927c02b35052745c1b4a2a4b0c",
+              "size_bytes": 672374
+            },
+            {
+              "path": "hcn.h",
+              "sha256": "197870448a6fd6e70adfd035bea7c45e9161a0232979c6c35e22aec3d92dfca4",
+              "size_bytes": 683
+            },
+            {
+              "path": "hf.c",
+              "sha256": "e8f24c9e4b95c33d11b48bbf85e7489a105f550d1828f85966a778bdf973a2b9",
+              "size_bytes": 161652
+            },
+            {
+              "path": "hf.h",
+              "sha256": "4ebdc0317fd7d68591500a818e129d4dd032aa7cfef4a06ec0a37d0797c610dc",
+              "size_bytes": 671
+            },
+            {
+              "path": "hno3.c",
+              "sha256": "3d9ee2aa6d2583887244a14c996bdb13d39c31a1c3e72d16623c083202a515af",
+              "size_bytes": 51854710
+            },
+            {
+              "path": "hno3.h",
+              "sha256": "5ac7d200f4bbfd9ca31d7cdf1c8a7fc051d319c616a443e7f0aec03e903b34b7",
+              "size_bytes": 695
+            },
+            {
+              "path": "ho2.c",
+              "sha256": "ad128d87c0c27b79047aee6c052b607d61fd1be28dbf7a673483df071ec6d5ec",
+              "size_bytes": 3130432
+            },
+            {
+              "path": "ho2.h",
+              "sha256": "c3a8ddbd6c2ada06ae1876fa5d736f57eb495e90a2d8dcde27257276e7879fa6",
+              "size_bytes": 683
+            },
+            {
+              "path": "hocl.c",
+              "sha256": "51a6cacdf2203d283a7578d5778ed144ecc849edeb3cb2e148b7be68332e1f7c",
+              "size_bytes": 929468
+            },
+            {
+              "path": "hocl.h",
+              "sha256": "c2b686ed10b37466537af965bf39cfd2facd372d407b1c64c3176311aed7d6b0",
+              "size_bytes": 695
+            },
+            {
+              "path": "ils.c",
+              "sha256": "a7e8a931a4daf6ae5c47e3f4880eb2e6141152d144a45eac01f359082ece66e5",
+              "size_bytes": 20998
+            },
+            {
+              "path": "ils.h",
+              "sha256": "f47f401cc8276b6a83382c25854081514338d6d069aa01d8a42e6ca1ef7be17e",
+              "size_bytes": 1131
+            },
+            {
+              "path": "interp.c",
+              "sha256": "3e71a4bab482f83fbb2c8a67577ad1163e757d86c4738c4195308ae5d222cc5f",
+              "size_bytes": 2928
+            },
+            {
+              "path": "interp.h",
+              "sha256": "617e4cf7b292e11deba5dcabbcdba18209d7cd827f3e019bb1392b0190c55307",
+              "size_bytes": 690
+            },
+            {
+              "path": "jacobian.c",
+              "sha256": "709c409f84835f5d1243792f916697eb343d6323b4c389323bf2729d34aee739",
+              "size_bytes": 15440
+            },
+            {
+              "path": "jacobian.h",
+              "sha256": "d715c21bcdf6956d3ac39ed2dc080197a3ebc55392f1cf3e200df61a3fcb592a",
+              "size_bytes": 451
+            },
+            {
+              "path": "kcache.c",
+              "sha256": "8b976f9c008012adce82e6dbb1a3c77292a8db26af48bd357f875387930a92b6",
+              "size_bytes": 17163
+            },
+            {
+              "path": "kcache.h",
+              "sha256": "3bf17550eca67b6dd22869b718f454e63be906562c80c818f82baf51677b41ab",
+              "size_bytes": 802
+            },
+            {
+              "path": "layer.c",
+              "sha256": "72fd781988b38bf3717f9c334c688ff6c08399c7d96e6dec98b5bde3bc5323ce",
+              "size_bytes": 58149
+            },
+            {
+              "path": "layer.h",
+              "sha256": "094a1b1a081afab5e61e95aae24ab90a0867869e039bdff86b9d066c768b741c",
+              "size_bytes": 2708
+            },
+            {
+              "path": "linesum.c",
+              "sha256": "41a075a49eda0f48581ffa5de4c3a8fe2cd9b20ca71a6cc71eaf109ce5d40064",
+              "size_bytes": 46792
+            },
+            {
+              "path": "linesum.h",
+              "sha256": "feda6874e1a60903baf1284ceb0955e51f009d45a12c20b27415eb0164436244",
+              "size_bytes": 1565
+            },
+            {
+              "path": "main.c",
+              "sha256": "32133cc0bf6f4a2a173a199b2610b6542133280dd5fea092338b6ded6dc26e39",
+              "size_bytes": 9101
+            },
+            {
+              "path": "mapping.c",
+              "sha256": "fb6da00a800f1cf9d35afa22d22863a02b46888f4ee62643f258ac7913436010",
+              "size_bytes": 7380
+            },
+            {
+              "path": "mapping.h",
+              "sha256": "5814072696164e9bb60b9ce9d4dc5ef226d3e201a4ecf67f82c04c99446771ad",
+              "size_bytes": 609
+            },
+            {
+              "path": "math_const.h",
+              "sha256": "cef4f9c14185dd967bd299d8d7aeae0b3e1d8f6ca82c90b72b5f463878aa1a2e",
+              "size_bytes": 746
+            },
+            {
+              "path": "model.c",
+              "sha256": "0fc103b696d37046010142bb51c599bea75f33b2fdefe56570aa142130aa28ba",
+              "size_bytes": 60238
+            },
+            {
+              "path": "model.h",
+              "sha256": "d1a0198b8e0429390deecbfc6beb58e659e248cfbd75addcddfd565f332e3959",
+              "size_bytes": 3819
+            },
+            {
+              "path": "molecules.h",
+              "sha256": "b1a50cb188606f64a2af4f39228e64d6d0760e1784e73a99a3de945920712fc0",
+              "size_bytes": 18002
+            },
+            {
+              "path": "n2o.c",
+              "sha256": "a8306e128629577fd6e8bd421325e51e0d9d0ae331b6ef365893fb67025e1a30",
+              "size_bytes": 612303
+            },
+            {
+              "path": "n2o.h",
+              "sha256": "84b0ccc20db41df5a2e698f9344d8f108847155b6dd231a1db624b7fed24609a",
+              "size_bytes": 683
+            },
+            {
+              "path": "nh3.c",
+              "sha256": "bfef9d0ccfcc5e73aae19f8fffc4a74355ee3b3a9fc02bec806b8269c6ae6d59",
+              "size_bytes": 1951038
+            },
+            {
+              "path": "nh3.h",
+              "sha256": "48c444ede494d3b1ec653eccf6ef90f8930fc7da7f01cc9bb4ba3bc47b8c690e",
+              "size_bytes": 683
+            },
+            {
+              "path": "no.c",
+              "sha256": "640f2edad5fb3e3389c28384b93cadc6fc1e2023429b9edc9225413ac4e13db7",
+              "size_bytes": 2898674
+            },
+            {
+              "path": "no.h",
+              "sha256": "954541f0c744bf925557e2afcf2ebcb9d9e34301642f4b92d54fbf59c9b80f39",
+              "size_bytes": 671
+            },
+            {
+              "path": "no2.c",
+              "sha256": "abc537387c7cffdbb645316eefad2e662d97a21315824e8bf79372b5d4aa19a3",
+              "size_bytes": 3311184
+            },
+            {
+              "path": "no2.h",
+              "sha256": "496ab3f828fb41b5e272395e4af8b04f66cfa54cc6ab91cb1ca30a6f28923607",
+              "size_bytes": 683
+            },
+            {
+              "path": "nscale.c",
+              "sha256": "c00a333583988c241fc80a2648378914361e0eaf8fdd8f1fc112b7d2ff913d06",
+              "size_bytes": 7069
+            },
+            {
+              "path": "nscale.h",
+              "sha256": "8c84907ed1210fe762cdba9b1808d6ee17090b87e6db98ba1498f50d0a9b72f9",
+              "size_bytes": 791
+            },
+            {
+              "path": "o.c",
+              "sha256": "59d574e0e68c3339c3a188dc931fac823595496821a12d75679288283ed8914a",
+              "size_bytes": 67259
+            },
+            {
+              "path": "o.h",
+              "sha256": "ebdfc4def2a68adf7a891d308c77d157cd720310ab8d8f964a07754a5fc0bcfe",
+              "size_bytes": 659
+            },
+            {
+              "path": "o2.c",
+              "sha256": "bd9b0c34d65bae42ab46d2951a071c2b2bca8104c2b8e9dab80a32a15a588b86",
+              "size_bytes": 1375475
+            },
+            {
+              "path": "o2.h",
+              "sha256": "e20501d3c26b2158703da5cb13bda02d0078306bbbf9697019a9c8f40af6a590",
+              "size_bytes": 841
+            },
+            {
+              "path": "o3.c",
+              "sha256": "287ad4af53d8db3160a597766cc3351901245927c794258d8ab64ae29cbdc70a",
+              "size_bytes": 11593828
+            },
+            {
+              "path": "o3.h",
+              "sha256": "88adda03eb7fa7c8d19646dd483ffb4c7fb0d75601e4f7921377235298e592fb",
+              "size_bytes": 671
+            },
+            {
+              "path": "ocs.c",
+              "sha256": "85ddee7a27dc71fd6627381358a56a8511703c20ff1305d4c407b860070bb83b",
+              "size_bytes": 588390
+            },
+            {
+              "path": "ocs.h",
+              "sha256": "47599da0e86fac984655c4737406b32047b1d16bd5c8c213d70ee6f4c13000ca",
+              "size_bytes": 683
+            },
+            {
+              "path": "oh.c",
+              "sha256": "7247057dedff85a3e4e9ead066cfc47c785a02d18e2abb1016af05458e702b58",
+              "size_bytes": 811768
+            },
+            {
+              "path": "oh.h",
+              "sha256": "b6645576c2e7c91641758077efa0872ec463a617de1168f34b5b7cc7edbfdbfa",
+              "size_bytes": 671
+            },
+            {
+              "path": "oneline.c",
+              "sha256": "bd70d0a81fdfc233b9a3252daaa0bec96486b815feee36383bf222f1a6a00243",
+              "size_bytes": 5853
+            },
+            {
+              "path": "oneline.h",
+              "sha256": "6e47f7a62aa71fd995adc1badfd45dfa7d52b22d4638ef890eacddc2405ab9d4",
+              "size_bytes": 704
+            },
+            {
+              "path": "output.c",
+              "sha256": "78b75086a3995e9bb4091dcb0f8ca55218ac51e522fae9e0fcbc0157f79eb7c1",
+              "size_bytes": 86788
+            },
+            {
+              "path": "output.h",
+              "sha256": "d9036cc8751a24fef8cf4facab8947a48f0e4c92bb82a96da2556e6ea79f894e",
+              "size_bytes": 3395
+            },
+            {
+              "path": "phys_const.h",
+              "sha256": "429b4aca38a12f311db251fbcdf6f74be8a1c38cfde5a13b44690a8de03b6d0d",
+              "size_bytes": 4550
+            },
+            {
+              "path": "planck.c",
+              "sha256": "3283b2a39629503a396f0c44894492a371ae52bb0d0877ea39dff352c3d6b3b0",
+              "size_bytes": 6976
+            },
+            {
+              "path": "planck.h",
+              "sha256": "56a19ecc30c7359af2773fd564c6219581dc72a368fa207129066a65ce3e4663",
+              "size_bytes": 530
+            },
+            {
+              "path": "rayleigh.c",
+              "sha256": "afc4892ca7eeb5795b786c2062e8557f8e745b52b3c3045af7958b006e1f146e",
+              "size_bytes": 4329
+            },
+            {
+              "path": "rayleigh.h",
+              "sha256": "e17766de61d246ddf169fa34816a2e1ddfc5ff327054e2000842adb4f8663a51",
+              "size_bytes": 511
+            },
+            {
+              "path": "rt.c",
+              "sha256": "addc26d3985965ff681e9cbb7f4800d449660f95b023eefd42c8ceb01beda155",
+              "size_bytes": 18651
+            },
+            {
+              "path": "rt.h",
+              "sha256": "b2e664d954f0a309ebd4bbaeea51d2c8ae9746f6b06583848f50cdd71211c45b",
+              "size_bytes": 554
+            },
+            {
+              "path": "simplex.c",
+              "sha256": "ec0298a05996b9b2270f5de869ae99471916a6f8c6dc8281e4e392c7c26b4194",
+              "size_bytes": 16600
+            },
+            {
+              "path": "simplex.h",
+              "sha256": "684d27e550dde7bec083d56106d2380e35d9aff8fc7966592e04d2aac991b323",
+              "size_bytes": 961
+            },
+            {
+              "path": "so2.c",
+              "sha256": "583db733188f72d973d1262dc174585629225b3d43c8317ba2fdd4ac0725a0d0",
+              "size_bytes": 21854336
+            },
+            {
+              "path": "so2.h",
+              "sha256": "3040c7db2f6bfdfb173165d204cb3339937637d98dbf494c0b49f6096e01018c",
+              "size_bytes": 683
+            },
+            {
+              "path": "specfunc.c",
+              "sha256": "9549f580c6c6f3399529d04be50605b605c1bbfe85613e4fa5eca596359c3b6f",
+              "size_bytes": 143923
+            },
+            {
+              "path": "specfunc.h",
+              "sha256": "f80d5e0d38783a63e54d0f44bc47304686055c8c61c32f51f23d5b0c09580c41",
+              "size_bytes": 441
+            },
+            {
+              "path": "spectra.c",
+              "sha256": "f78d8288ad541187b6e5ab00a8f57aad9ba1f76816ee01fd550a2a52dd6deffd",
+              "size_bytes": 27371
+            },
+            {
+              "path": "spectra.h",
+              "sha256": "491ba851eccbbc7db64f8c3d73d1cc1e1f052a6244ac325ce27e781dada4b922",
+              "size_bytes": 901
+            },
+            {
+              "path": "tags.c",
+              "sha256": "c4881066361dd77a829e767333f03632cac7a8ba2018da7d369ab80e601d45c7",
+              "size_bytes": 4751
+            },
+            {
+              "path": "tags.h",
+              "sha256": "0740c3ff8aa90cbba2817d1ae52cbbf57077ff5d61880eb1c6c25ca6c04155a9",
+              "size_bytes": 488
+            },
+            {
+              "path": "transform.c",
+              "sha256": "689255fe2821ba1d6fa73f28a2f41f5c0c9bef6b083396fc36fe35038ebd20c4",
+              "size_bytes": 44200
+            },
+            {
+              "path": "transform.h",
+              "sha256": "af856f2498bb45d103c6aa3585d7f983c7d4ebeaad2d6f3cd3c0103802b98e69",
+              "size_bytes": 689
+            },
+            {
+              "path": "units.c",
+              "sha256": "43246ca71792147e73e4d39cf6eb4a3107fe8bef44b7c38b7f956e58cd3ce558",
+              "size_bytes": 13354
+            },
+            {
+              "path": "units.h",
+              "sha256": "0ad581802a95ac6836d35e2dbad97697dee26fbd48455449336910daf35f0610",
+              "size_bytes": 4922
+            },
+            {
+              "path": "version.c",
+              "sha256": "b3b61dea1c06a329d38156853dddf0b08ffc8afdae104999dd0967ce23cc1655",
+              "size_bytes": 1821
+            },
+            {
+              "path": "version.h",
+              "sha256": "42d42bfece4db096ccf5127caeb648854cbb83a8f5dbae4be5b6dfb8980aac26",
+              "size_bytes": 1227
+            }
+          ],
+          "total_bytes": 121636394
+        },
+        "copied_scale1_npz_products": [
+          {
+            "exact_zero_transmission_count": 0,
+            "filename": "LMT_annual_5.npz",
+            "md5": "0ac0e2d168a3381f606ea5c66567af86",
+            "profile": "LMT_annual_5",
+            "sha256": "3d166853b2be791389a1a4209a4378ef4db1c5f9c84e9610eac248e44ab0ed52",
+            "size_bytes": 57602678
+          },
+          {
+            "exact_zero_transmission_count": 0,
+            "filename": "LMT_annual_25.npz",
+            "md5": "e344a36e5e7ba6b701ef3a51d7298c20",
+            "profile": "LMT_annual_25",
+            "sha256": "4dc19a1d4a6da41b8cae51bcdc910fd65f8783cb744d9ea0ae6a8108456abd25",
+            "size_bytes": 57602678
+          },
+          {
+            "exact_zero_transmission_count": 0,
+            "filename": "LMT_annual_50.npz",
+            "md5": "64b622906d1a2f86072e80f365da7f5a",
+            "profile": "LMT_annual_50",
+            "sha256": "fc3b1c8ecb3cb966f994539be38c127b35084c6c8153309221508fae81645168",
+            "size_bytes": 57602678
+          },
+          {
+            "exact_zero_transmission_count": 726,
+            "filename": "LMT_annual_75.npz",
+            "md5": "1ee4c300b16da3f6ae1e141629b98aee",
+            "profile": "LMT_annual_75",
+            "sha256": "8ce0cf1a4a839f9a2cdf1699d74d7d29edf8ca63398a127bde48cd95c1f4d0e5",
+            "size_bytes": 57602678
+          },
+          {
+            "exact_zero_transmission_count": 1994,
+            "filename": "LMT_annual_95.npz",
+            "md5": "e696f02045a440b0d690964b880357ed",
+            "profile": "LMT_annual_95",
+            "sha256": "387df474b96a6d59ab7ea5be685498462f8b9ced225b27ccec288162b856e545",
+            "size_bytes": 57602678
+          },
+          {
+            "exact_zero_transmission_count": 0,
+            "filename": "LMT_DJF_5.npz",
+            "md5": "91545dca93d0e9300718b049893b8eea",
+            "profile": "LMT_DJF_5",
+            "sha256": "214d9fa975c73afa01a4e1b5c5f068245779989578acd8574831b7fe2b6ed6cc",
+            "size_bytes": 57602678
+          },
+          {
+            "exact_zero_transmission_count": 0,
+            "filename": "LMT_DJF_25.npz",
+            "md5": "3abe83329e39baa734b62f0e87db5a9c",
+            "profile": "LMT_DJF_25",
+            "sha256": "b43982166d4755fca5ae2454c151c1cae55637dbb6b1b0a8e9dd3dd5555ef717",
+            "size_bytes": 57602678
+          },
+          {
+            "exact_zero_transmission_count": 0,
+            "filename": "LMT_DJF_50.npz",
+            "md5": "004cb342896210fd23d81b329d0246f0",
+            "profile": "LMT_DJF_50",
+            "sha256": "57e6eebebe40f0bd1fb9b3a2411a73a1bd4cc0f4762a316af1c23758060a02ec",
+            "size_bytes": 57602678
+          },
+          {
+            "exact_zero_transmission_count": 0,
+            "filename": "LMT_DJF_75.npz",
+            "md5": "e2478719dd67fdbe6ea0d1fb753ab267",
+            "profile": "LMT_DJF_75",
+            "sha256": "67f7af72dd94a0c26cdf9759d75345c1d5e53b756418937b9471137c6f10f552",
+            "size_bytes": 57602678
+          },
+          {
+            "exact_zero_transmission_count": 508,
+            "filename": "LMT_DJF_95.npz",
+            "md5": "dc8e9e15e5df3238d9e5ecdb39e17dd4",
+            "profile": "LMT_DJF_95",
+            "sha256": "3dd961143e31a8db8182c35dd55472ad9ec943a711f652f6d55d485ee5ddb42d",
+            "size_bytes": 57602678
+          },
+          {
+            "exact_zero_transmission_count": 0,
+            "filename": "LMT_MAM_5.npz",
+            "md5": "b0347815c968aea4873fdff8d1d0258e",
+            "profile": "LMT_MAM_5",
+            "sha256": "7ddefd6056c932c2233b52f5d0ddec5a7ee6bd4292b1c301477684677d659518",
+            "size_bytes": 57602678
+          },
+          {
+            "exact_zero_transmission_count": 0,
+            "filename": "LMT_MAM_25.npz",
+            "md5": "074009197665f6c642ca8a9659f6f650",
+            "profile": "LMT_MAM_25",
+            "sha256": "9851853d67e8f4b8eb257aec82e9d758d6fba0daaf2348b44bd95a1cd7714195",
+            "size_bytes": 57602678
+          },
+          {
+            "exact_zero_transmission_count": 0,
+            "filename": "LMT_MAM_50.npz",
+            "md5": "1c0b684bb540ddc13bef67e27a8c15bc",
+            "profile": "LMT_MAM_50",
+            "sha256": "a6d02472c4b095caf47de7e1685885b82233564b3530764f7f9d43dc380c9720",
+            "size_bytes": 57602678
+          },
+          {
+            "exact_zero_transmission_count": 295,
+            "filename": "LMT_MAM_75.npz",
+            "md5": "72d39cbcd474622f2ac3874efe0b882b",
+            "profile": "LMT_MAM_75",
+            "sha256": "93e411f37396b0be93f641b6cd9d364c0b2f9e887f29db3d203f999fb34cdc3c",
+            "size_bytes": 57602678
+          },
+          {
+            "exact_zero_transmission_count": 1389,
+            "filename": "LMT_MAM_95.npz",
+            "md5": "d24a7e89e50033de830fe9fbb4627bbf",
+            "profile": "LMT_MAM_95",
+            "sha256": "6979af52ce7f6491d67537811322e333232c1d68be26d5a6a544c98ee287fc7b",
+            "size_bytes": 57602678
+          },
+          {
+            "exact_zero_transmission_count": 0,
+            "filename": "LMT_JJA_5.npz",
+            "md5": "5eae399cba2948630164230c461e24e6",
+            "profile": "LMT_JJA_5",
+            "sha256": "72e151b610c350ff8790ff1827d35822d6b1985081a2aec19e5d7925bf4c417a",
+            "size_bytes": 57602678
+          },
+          {
+            "exact_zero_transmission_count": 25,
+            "filename": "LMT_JJA_25.npz",
+            "md5": "0e677b7ce7f52718584c25c0fbd801c1",
+            "profile": "LMT_JJA_25",
+            "sha256": "a8131ade7fdc5d0fa0a036a74f5c911d31023be33e228d29e1b968575baf6ffc",
+            "size_bytes": 57602678
+          },
+          {
+            "exact_zero_transmission_count": 671,
+            "filename": "LMT_JJA_50.npz",
+            "md5": "c866c558d1c6c1d20e323927dde1df6c",
+            "profile": "LMT_JJA_50",
+            "sha256": "1ecdb57022d15882ecacfe2f9038c9d27a2cbcf379fd45104c18ffa01cd60650",
+            "size_bytes": 57602678
+          },
+          {
+            "exact_zero_transmission_count": 1455,
+            "filename": "LMT_JJA_75.npz",
+            "md5": "e0139e6760b2e45f2768bea572b3c081",
+            "profile": "LMT_JJA_75",
+            "sha256": "3f3003075f449cc739b579d683c4ff5f087e5982112a250fd53b29c2c0099911",
+            "size_bytes": 57602678
+          },
+          {
+            "exact_zero_transmission_count": 2277,
+            "filename": "LMT_JJA_95.npz",
+            "md5": "91473b3fbb2fd50fa8ae8afb76fea8c0",
+            "profile": "LMT_JJA_95",
+            "sha256": "0e57576febe7f0736a2015bb8e8e85766a1489db81aa09210b16c2a355bc3fa2",
+            "size_bytes": 57602678
+          },
+          {
+            "exact_zero_transmission_count": 0,
+            "filename": "LMT_SON_5.npz",
+            "md5": "e587b429e123adde3c77f524d59e71e2",
+            "profile": "LMT_SON_5",
+            "sha256": "bdab16e63b5dbd2a2993bd29ed906d1bda91e971bc548fd20044719a375bf880",
+            "size_bytes": 57602678
+          },
+          {
+            "exact_zero_transmission_count": 0,
+            "filename": "LMT_SON_25.npz",
+            "md5": "6c4384ff61fa00efc59e624946f4e6b6",
+            "profile": "LMT_SON_25",
+            "sha256": "f155f769519302cde304fc214376eb2181cfcd11c33865d74830150e7404c06a",
+            "size_bytes": 57602678
+          },
+          {
+            "exact_zero_transmission_count": 97,
+            "filename": "LMT_SON_50.npz",
+            "md5": "5d8b89c054e8b9dd6279cad6d1f33854",
+            "profile": "LMT_SON_50",
+            "sha256": "bb56847337c77d0a79052995c544e29ac76c962088771d58994b0b24303e8a68",
+            "size_bytes": 57602678
+          },
+          {
+            "exact_zero_transmission_count": 1160,
+            "filename": "LMT_SON_75.npz",
+            "md5": "d047c7f6bebfc01242ee9a7898af3165",
+            "profile": "LMT_SON_75",
+            "sha256": "b87cf2bef8233fc320dd3117ef2df78648da2d3ede2c40cf9b830c9d8121b500",
+            "size_bytes": 57602678
+          },
+          {
+            "exact_zero_transmission_count": 2251,
+            "filename": "LMT_SON_95.npz",
+            "md5": "072078db4d8ad0fc2f56e51c39c42034",
+            "profile": "LMT_SON_95",
+            "sha256": "86839682b473783004aa1f9c1eb1572afe526aa8ed5985f5a7f33c5053065622",
+            "size_bytes": 57602678
+          }
+        ],
+        "copied_suite_manifest": {
+          "canonical_product_manifest_sha256": "18dfd96f4438151197d3b6be5201476f7a71710363d81ec49c801101fa12b3ac",
+          "filename": "copied_am_manifest.json",
+          "sha256": "ef525bc5f2883f181cccd43f585b4e398d227f2a26eeca0ed90cf4f5922f520f",
+          "size_bytes": 43771
+        },
+        "frozen_protocol_artifact_inventory": {
+          "aggregate_algorithm": "sha256(relative_path NUL file_sha256_bytes NUL)",
+          "aggregate_sha256": "f534229636fe11bbf5a2d6a0c6459eb41008e6582d8c8eebb9c5b531520e31d0",
+          "file_count": 3,
+          "files": [
+            {
+              "path": "FOLLOWUP_STUDY_DEVIATION_LOG.md",
+              "sha256": "a3df86366c7869579b3255d9ea8f95cf6827e78018e0a2a83a1640360be1b036",
+              "size_bytes": 2066
+            },
+            {
+              "path": "FOLLOWUP_STUDY_PREREGISTRATION.md",
+              "sha256": "65935dbc906317e984cf2ae8b35c5868a3f216eca2ec6290f2887976892d8457",
+              "size_bytes": 8528
+            },
+            {
+              "path": "FOLLOWUP_STUDY_PROTOCOL_ADDENDUM.md",
+              "sha256": "0d47c11479a1ba0176babd3ea285e2871edbb1341406b6b044cbc53114c51a1d",
+              "size_bytes": 5236
+            }
+          ],
+          "total_bytes": 15830
+        },
+        "immutable_amc_profile_inventory": {
+          "aggregate_algorithm": "sha256(relative_path NUL file_sha256_bytes NUL)",
+          "aggregate_sha256": "b7dd766852b4f422bdc861337e04d8f0184732045ea1a06a962560e86d2ce87c",
+          "file_count": 25,
+          "files": [
+            {
+              "path_relative_to_profile_root": "LMT_DJF_25.amc",
+              "sha256": "aeeeeb48bef422f2d9392b5d7a3d62ab1887fd9e7c10322d5246d914841ba866",
+              "size_bytes": 4841
+            },
+            {
+              "path_relative_to_profile_root": "LMT_DJF_5.amc",
+              "sha256": "fcb3b70f44cad98cf0586fede9dcd3b2e35f3cb45023d0485c782c108b25b474",
+              "size_bytes": 4837
+            },
+            {
+              "path_relative_to_profile_root": "LMT_DJF_50.amc",
+              "sha256": "d7c256d04d922beb51c9f8ab715e5be1a962252580eff2d08ba1be4d206eb5b0",
+              "size_bytes": 4841
+            },
+            {
+              "path_relative_to_profile_root": "LMT_DJF_75.amc",
+              "sha256": "b63503c7f4170404d18f3797735b64fb947ce73eed35f0315155d0a29d499721",
+              "size_bytes": 4841
+            },
+            {
+              "path_relative_to_profile_root": "LMT_DJF_95.amc",
+              "sha256": "b87b918b302425ef3d85aeedc285863a987579923289a37b97c6de5c935175e6",
+              "size_bytes": 4841
+            },
+            {
+              "path_relative_to_profile_root": "LMT_JJA_25.amc",
+              "sha256": "13ea1837e3f2afeb605d8f8e8329472032f27c7a9d526d1b381bd7e75830e9b6",
+              "size_bytes": 4841
+            },
+            {
+              "path_relative_to_profile_root": "LMT_JJA_5.amc",
+              "sha256": "f5a3a92f41803247da504271eafe8a62af6df51e7a3ec8740c5e89c2b97409fc",
+              "size_bytes": 4837
+            },
+            {
+              "path_relative_to_profile_root": "LMT_JJA_50.amc",
+              "sha256": "00b86aa0f2331f6a138c8efcc89ed5a4d918baef948f0da55feb114b0df2eb76",
+              "size_bytes": 4841
+            },
+            {
+              "path_relative_to_profile_root": "LMT_JJA_75.amc",
+              "sha256": "1b54ac2d0d5c7cd8f0805d1117d44ad1ff938ccb74433a93e2a20cbc77b3fc95",
+              "size_bytes": 4841
+            },
+            {
+              "path_relative_to_profile_root": "LMT_JJA_95.amc",
+              "sha256": "54a4345d487babbffcc9b36b9ccbaec2904b58d35458f6476a382da8d70cf437",
+              "size_bytes": 4841
+            },
+            {
+              "path_relative_to_profile_root": "LMT_MAM_25.amc",
+              "sha256": "82ac1e2a49a528244c1571daadcc8d42bd6d13c0ba8a7b5d2f81d10ebc13caee",
+              "size_bytes": 4841
+            },
+            {
+              "path_relative_to_profile_root": "LMT_MAM_5.amc",
+              "sha256": "ecdf228e34ca8f4b0f5930865179fd8afe7c8e602b1863d7ee8ac4352c65351f",
+              "size_bytes": 4837
+            },
+            {
+              "path_relative_to_profile_root": "LMT_MAM_50.amc",
+              "sha256": "2f282452f3932024be26b4579ed765996c08ff1e74cafb7d2750396d234fa6ac",
+              "size_bytes": 4841
+            },
+            {
+              "path_relative_to_profile_root": "LMT_MAM_75.amc",
+              "sha256": "937ecf9b3725b03a2745a61546f3659a9506bbaead72afbb41141b51e88a630e",
+              "size_bytes": 4841
+            },
+            {
+              "path_relative_to_profile_root": "LMT_MAM_95.amc",
+              "sha256": "dc7a3acc1fbc5ce92ef98dd5d00f45db997c6f2680c3c88e485f94bdbac398b2",
+              "size_bytes": 4841
+            },
+            {
+              "path_relative_to_profile_root": "LMT_SON_25.amc",
+              "sha256": "e9b06bae87e742801a751270aadd7939f94b39bfb04c7196ecf12c7586cce627",
+              "size_bytes": 4841
+            },
+            {
+              "path_relative_to_profile_root": "LMT_SON_5.amc",
+              "sha256": "79a50d0275d026886feefb83e68e88b84801c5e3efa0066edbfc925e2b134926",
+              "size_bytes": 4837
+            },
+            {
+              "path_relative_to_profile_root": "LMT_SON_50.amc",
+              "sha256": "b47140d5680449c83327ec8ffaa3a36d2472f7d7d042119d95b84689f06b42b2",
+              "size_bytes": 4841
+            },
+            {
+              "path_relative_to_profile_root": "LMT_SON_75.amc",
+              "sha256": "c2d6a7b6aee60639168dfcb03d85dc07b85ed23ea7ea2b8e202033d16c14a770",
+              "size_bytes": 4841
+            },
+            {
+              "path_relative_to_profile_root": "LMT_SON_95.amc",
+              "sha256": "a4348f003b44205c9c4f367da42ea9a5962689cdfd6f1c12580c28c853526984",
+              "size_bytes": 4841
+            },
+            {
+              "path_relative_to_profile_root": "LMT_annual_25.amc",
+              "sha256": "a9524553a5808a549eb18046a9ed6f8bd67ca1e29ccd1c91e05b351b64ea23e6",
+              "size_bytes": 4853
+            },
+            {
+              "path_relative_to_profile_root": "LMT_annual_5.amc",
+              "sha256": "f58921d3cb222965df86b05f89cbf716f92f8193465d18f0106bf09b52fd718d",
+              "size_bytes": 4849
+            },
+            {
+              "path_relative_to_profile_root": "LMT_annual_50.amc",
+              "sha256": "ee3946b48db6049b26231ff22d456c8fc2f2dc96ecabd1a861c4d8002c81c3c3",
+              "size_bytes": 4853
+            },
+            {
+              "path_relative_to_profile_root": "LMT_annual_75.amc",
+              "sha256": "8e7a250764c8583ef23f9ca140248e62670e3e3d9b709baf005b31c24dc52387",
+              "size_bytes": 4853
+            },
+            {
+              "path_relative_to_profile_root": "LMT_annual_95.amc",
+              "sha256": "687218c4633e03f61e179cd41314ca720572eabd6015404fd7a8149e2280b1e5",
+              "size_bytes": 4853
+            }
+          ],
+          "total_bytes": 121065
+        },
+        "legacy_raw_sources": [
+          {
+            "filename": "amLMT25.npz",
+            "md5": "008d7fa69aff187a9edf419f3d961b4c",
+            "sha256": "6ddffcd2c68bbc0f6d8f6470eba0d1aa81457dcc2f348fd2d7e44c9dfe48c87b",
+            "size_bytes": 37201984,
+            "target": "am_q25",
+            "tolteca_datafile_id": "454"
+          },
+          {
+            "filename": "amLMT50.npz",
+            "md5": "6ec393672be8af4dfa06a3f4cf9aa32e",
+            "sha256": "1fe6dd2ab7a4d65f445e20c5a8f438eb42884836e7932d86f80c30e235710f81",
+            "size_bytes": 37201984,
+            "target": "am_q50",
+            "tolteca_datafile_id": "455"
+          },
+          {
+            "filename": "amLMT75.npz",
+            "md5": "d6cf4bb27008179ec491864388deac58",
+            "sha256": "adbb8eb974c4e2744c3efb0f627708565f954c4029d9345e4f434699e8843f8e",
+            "size_bytes": 37201984,
+            "target": "am_q75",
+            "tolteca_datafile_id": "456"
+          }
+        ],
+        "missing_q95_raw_source": {
+          "expected_md5": "0ca7b331823237767d26016d19bffb3d",
+          "status": "registered_raw_grid_absent_not_retrieved",
+          "tolteca_datafile_id": "461"
+        },
+        "repair_base_inputs": [
+          {
+            "path_relative_to_repository": "include/citlali/core/timestream/rtc/calibrate.h",
+            "sha256": "d70a55278227b43cdd7de19bc67e4ddb332524d40e1455c5fa7a80ae5e2d11ee",
+            "size_bytes": 7507
+          },
+          {
+            "path_relative_to_repository": "validation/sci_cal_001_phase0_2026-07-31/generate_q_model_continuity.py",
+            "sha256": "a46211c007bdc1fa11d1408c6db4c4a68264ca00cd383806fd421ba978fffe78",
+            "size_bytes": 26421
+          }
+        ]
+      },
+      "output_normalization": {
+        "algorithm": "UTF-8 splitlines; replace lines beginning '# run time ' with '# run time <volatile>' and lines beginning '# dcache hit: ' with '# dcache counters <volatile>'; join with LF and append LF",
+        "purpose": "preserve warning-bearing combined output while replacing only volatile runtime and dcache-counter header values"
+      },
+      "protocol": {
+        "elevation_grid_deg": [
+          20,
+          22,
+          24,
+          26,
+          28,
+          30,
+          32,
+          34,
+          36,
+          38,
+          40,
+          42,
+          44,
+          46,
+          48,
+          50,
+          52,
+          54,
+          56,
+          58,
+          60,
+          62,
+          64,
+          66,
+          68,
+          70,
+          72,
+          74,
+          76,
+          78,
+          80
+        ],
+        "frequency_grid_ghz": {
+          "count": 50001,
+          "maximum": "5.00000000000000000e+02",
+          "minimum": "0.00000000000000000e+00",
+          "step": "1.00000000000000002e-02"
+        },
+        "maximum_bracket_expansions": 64,
+        "only_varying_parameter": "Nscale troposphere h2o through immutable AMC argv %9",
+        "profile_stems": [
+          "LMT_annual_5",
+          "LMT_annual_25",
+          "LMT_annual_50",
+          "LMT_annual_75",
+          "LMT_annual_95",
+          "LMT_DJF_5",
+          "LMT_DJF_25",
+          "LMT_DJF_50",
+          "LMT_DJF_75",
+          "LMT_DJF_95",
+          "LMT_MAM_5",
+          "LMT_MAM_25",
+          "LMT_MAM_50",
+          "LMT_MAM_75",
+          "LMT_MAM_95",
+          "LMT_JJA_5",
+          "LMT_JJA_25",
+          "LMT_JJA_50",
+          "LMT_JJA_75",
+          "LMT_JJA_95",
+          "LMT_SON_5",
+          "LMT_SON_25",
+          "LMT_SON_50",
+          "LMT_SON_75",
+          "LMT_SON_95"
+        ],
+        "repair_base_sha": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
+        "repair_line_evidence_head": "ae99be1cef8c390d0e7490835ffca1f31da7ebc0",
+        "root_iterations": 48,
+        "study": "diagnostic_P1_documented_h2o_scale_provenance_hypothesis",
+        "target_transmission_literals": {
+          "am_q25": "0.9500275",
+          "am_q50": "0.9142065",
+          "am_q75": "0.8515054",
+          "am_q95": "0.7337698"
+        }
+      },
+      "runner": {
+        "filename": "probe_am12_h2o_scale_hypotheses.py",
+        "sha256": "caa41ca105eec6df99f31d982ca69910ef2d7e1ebcbad86c96faa7d0e4cd3c2c"
+      },
+      "schema_version": "sci-cal-001-am12-h2o-scale-hypothesis-v2-execution-context-v1",
+      "security": {
+        "citlali_application_code_modified": false,
+        "network_access": false,
+        "unity_access": false,
+        "uploader_logs_or_credentials_copied": false,
+        "uploader_logs_read": false
+      }
+    },
+    "filename": "execution_context.json",
+    "sha256": "05148050e96e73577ec75be525b026b5bf37bbd2a8753f8e3702fc0b6dfb2bee"
+  },
+  "execution": {
+    "am_cache_sharding": {
+      "assignment": "big-endian first 64 bits of sha256(cache_id) modulo shard_count",
+      "locking": "one in-process lock per shard around each AM subprocess",
+      "purpose": "prevent concurrent AM insert_as_mru rename races",
+      "shard_count": 8
+    },
+    "argv_template": [
+      "<am-executable>",
+      "LMT_am_inputs/<immutable-profile>.amc",
+      "<fmin>",
+      "GHz",
+      "<fmax>",
+      "GHz",
+      "10",
+      "MHz",
+      "<zenith-angle>",
+      "deg",
+      "<frozen-h2o-scale-decimal>"
+    ],
+    "cache_dir": "external_caller_supplied_not_artifact_identity",
+    "check_mode": "cache_only_no_am_subprocess",
+    "environment_overrides": {
+      "AM_CACHE_PATH": "external_cache/am_spectral_cache/shard_<deterministic-index>",
+      "LANG": "C",
+      "LC_ALL": "C",
+      "OMP_NUM_THREADS": "1"
+    },
+    "execution_context_sha256": "05148050e96e73577ec75be525b026b5bf37bbd2a8753f8e3702fc0b6dfb2bee",
+    "host": {
+      "machine": "arm64",
+      "node": "ASTRO-GWILSON01.local",
+      "numpy": "2.2.3",
+      "python": "3.13.2",
+      "python_executable": "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/bin/python3.13",
+      "release": "25.6.0",
+      "system": "Darwin"
+    },
+    "jobs": 8,
+    "normalized_numeric_digest_algorithms": {
+      "all_referenced_normalized_output_aggregate_sha256": "for each unique referenced run sorted by (stage,profile,target,f_min_centi_ghz,f_max_centi_ghz,zenith_angle_deg,scale_decimal): UTF-8 canonical JSON RunSpec request + NUL + digest bytes + NUL",
+      "direct_run_numeric_text_aggregate_sha256": "sha256(for each run sorted by (profile,target,f_min_centi_ghz,f_max_centi_ghz,zenith_angle_deg,scale_decimal): UTF-8 json.dumps(scientific_identity,sort_keys=True,separators=(',',':')) + NUL + bytes.fromhex(numeric_text_sha256) + NUL)",
+      "scale_trace_sha256": "sha256(UTF-8 json.dumps(trace,indent=2,sort_keys=True) + newline); trace binds execution-context SHA-256 and each evaluation's numeric-text and normalized warning-bearing output SHA-256; it excludes raw combined-output SHA/cache ID"
+    },
+    "omp_threads_per_process": 1,
+    "raw_outputs_and_sidecars_committed": false,
+    "rejected_attempt_inventory": {
+      "classification_counts": {},
+      "combined_output_sha256_location": "external failure sidecars only, never committed manifest",
+      "count": 0
+    },
+    "return_contract": "status 0, or status 1 only with the canonical unresolved-narrow-line warning, its exact 'Column included <integer> unresolved lines.' subrecords, and a complete exact grid; all other warning headers are rejected",
+    "whole_cache_lock": {
+      "cache_only_mode": "nonblocking POSIX shared lock",
+      "filename": ".h2o_scale_hypothesis.lock",
+      "run_mode": "nonblocking POSIX exclusive lock"
+    },
+    "working_directory_role": "Big_Atmosphere"
+  },
+  "full_grid_construction": {
+    "ancillary_affine_screening_lane": "tau(s)=tau_direct_scale0+s*(tau_copied_scale1-tau_direct_scale0)",
+    "ancillary_affine_trj_lane": "explicitly approximate affine-in-scale Trj construction",
+    "ancillary_affine_used_for_p1_completion_or_ranking": false,
+    "direct_hypothesis_count": 100,
+    "frozen_p1_completion_lane": "direct AM fitted-scale 0-500 GHz by 10 MHz at EL20-80 by 2 degrees for all 4 targets times 25 profiles",
+    "frozen_p1_fulfilled_by_all_direct_lane": true,
+    "opaque_sample_policy": {
+      "copied_exact_zero_transmission_count": 12848,
+      "copied_tx_domain": "0 <= atmTtx <= 1",
+      "fractional_correction_metrics_reconstruct_tau_from_tx": false,
+      "tau_authority": "finite nonnegative copied atmTaun",
+      "tau_tx_absolute_print_tolerance": "9.99999999999999955e-07"
+    },
+    "q25_q50_q75_truth": "complete digest-bound legacy raw grids",
+    "q95_truth": "repair-base nominal-frequency ratio/elevation degree-six literals because registered raw q95 is absent"
+  },
+  "identity": {
+    "custody_proof": false,
+    "evidence_date": "2026-08-01",
+    "holdout_evidence": false,
+    "operational_domain_authorization": "none",
+    "operator_authorization": "none",
+    "package_id": "SCI-CAL-001",
+    "repair_base_sha": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
+    "repair_line_evidence_head": "ae99be1cef8c390d0e7490835ffca1f31da7ebc0",
+    "study": "diagnostic_P1_documented_h2o_scale_provenance_hypothesis",
+    "study_status": "post_hoc_provenance_hypothesis"
+  },
+  "input_provenance": {
+    "am_executable": {
+      "binary_format": "mach-o",
+      "resolved_path": "/private/tmp/sci_cal_001_am12_2_native_build_20260801_root/am",
+      "sha256": "78e721d45b08990069a2d67a5fb337446bcbfb728046940c0d473bea340205fb",
+      "size_bytes": 58435360,
+      "supplied_path": "/private/tmp/sci_cal_001_am12_2_native_build_20260801_root/am"
+    },
+    "am_root": "/Users/gwilson/work_toltec/local_data/AM",
+    "am_source_and_historical_workflow_contracts": {
+      "Big_Atmosphere/01_do_am_runs.sh": {
+        "sha256": "02d64a26c85f615bb194abd6102206f5cef29267599c78d4318dc327b7ce12a3"
+      },
+      "Big_Atmosphere/generateAmModels.py": {
+        "sha256": "29b5445f18463fee872cfa863e6c7799647980294ca2c85432aceb10ed8262a6"
+      },
+      "Big_Atmosphere/make_npz.py": {
+        "sha256": "3a1c7b5283f03230a0d572620b4eca1a4859d61ca8c2b9786a67f4026e2717b5"
+      },
+      "am-12.2/src/config.c": {
+        "sha256": "6e57faf4e58a536c8fdb66291c9a186f0f3c01356ee6b00a9677eea6c7fbce79"
+      },
+      "am-12.2/src/nscale.c": {
+        "sha256": "c00a333583988c241fc80a2648378914361e0eaf8fdd8f1fc112b7d2ff913d06"
+      }
+    },
+    "builds": {
+      "copied_linux_reference": {
+        "binary_format": "elf",
+        "resolved_path": "/Users/gwilson/work_toltec/local_data/AM/am-12.2/bin/am",
+        "sha256": "3fc1f71b3a025ac79f5559bdd2fbf40cf5de2aa7598cabf474f74f9a6c3b290c",
+        "size_bytes": 57995352,
+        "supplied_path": "/Users/gwilson/work_toltec/local_data/AM/am-12.2/bin/am"
+      },
+      "regeneration": {
+        "binary_format": "mach-o",
+        "classification": "native_macos_build_distinct_from_copied_linux_binary",
+        "compiler": {
+          "binary_format": "mach-o",
+          "resolved_path": "/opt/homebrew/Cellar/gcc/15.2.0_1/bin/gcc-15",
+          "sha256": "99821ba277c2f5961ca6ee34877407c8a2647b60b0e475efb03cebf993322593",
+          "size_bytes": 2647560,
+          "status": "supplied_by_operator_as_build_compiler",
+          "supplied_path": "/opt/homebrew/Cellar/gcc/15.2.0_1/bin/gcc-15",
+          "version_command_return_code": 0,
+          "version_output": "gcc-15 (Homebrew GCC 15.2.0_1) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+          "version_output_sha256": "b6f7687d32e9ad0f7b59d71376e0b2ad7c28c2f30a3107ec5781b890473aeb0f"
+        },
+        "native_build_command": "make -j8 gcc-omp COMPILER_GCC=gcc-15",
+        "resolved_path": "/private/tmp/sci_cal_001_am12_2_native_build_20260801_root/am",
+        "sha256": "78e721d45b08990069a2d67a5fb337446bcbfb728046940c0d473bea340205fb",
+        "size_bytes": 58435360,
+        "supplied_path": "/private/tmp/sci_cal_001_am12_2_native_build_20260801_root/am"
+      }
+    },
+    "copied_scale1_npz_products": [
+      {
+        "exact_zero_transmission_count": 0,
+        "filename": "LMT_annual_5.npz",
+        "md5": "0ac0e2d168a3381f606ea5c66567af86",
+        "profile": "LMT_annual_5",
+        "sha256": "3d166853b2be791389a1a4209a4378ef4db1c5f9c84e9610eac248e44ab0ed52",
+        "size_bytes": 57602678
+      },
+      {
+        "exact_zero_transmission_count": 0,
+        "filename": "LMT_annual_25.npz",
+        "md5": "e344a36e5e7ba6b701ef3a51d7298c20",
+        "profile": "LMT_annual_25",
+        "sha256": "4dc19a1d4a6da41b8cae51bcdc910fd65f8783cb744d9ea0ae6a8108456abd25",
+        "size_bytes": 57602678
+      },
+      {
+        "exact_zero_transmission_count": 0,
+        "filename": "LMT_annual_50.npz",
+        "md5": "64b622906d1a2f86072e80f365da7f5a",
+        "profile": "LMT_annual_50",
+        "sha256": "fc3b1c8ecb3cb966f994539be38c127b35084c6c8153309221508fae81645168",
+        "size_bytes": 57602678
+      },
+      {
+        "exact_zero_transmission_count": 726,
+        "filename": "LMT_annual_75.npz",
+        "md5": "1ee4c300b16da3f6ae1e141629b98aee",
+        "profile": "LMT_annual_75",
+        "sha256": "8ce0cf1a4a839f9a2cdf1699d74d7d29edf8ca63398a127bde48cd95c1f4d0e5",
+        "size_bytes": 57602678
+      },
+      {
+        "exact_zero_transmission_count": 1994,
+        "filename": "LMT_annual_95.npz",
+        "md5": "e696f02045a440b0d690964b880357ed",
+        "profile": "LMT_annual_95",
+        "sha256": "387df474b96a6d59ab7ea5be685498462f8b9ced225b27ccec288162b856e545",
+        "size_bytes": 57602678
+      },
+      {
+        "exact_zero_transmission_count": 0,
+        "filename": "LMT_DJF_5.npz",
+        "md5": "91545dca93d0e9300718b049893b8eea",
+        "profile": "LMT_DJF_5",
+        "sha256": "214d9fa975c73afa01a4e1b5c5f068245779989578acd8574831b7fe2b6ed6cc",
+        "size_bytes": 57602678
+      },
+      {
+        "exact_zero_transmission_count": 0,
+        "filename": "LMT_DJF_25.npz",
+        "md5": "3abe83329e39baa734b62f0e87db5a9c",
+        "profile": "LMT_DJF_25",
+        "sha256": "b43982166d4755fca5ae2454c151c1cae55637dbb6b1b0a8e9dd3dd5555ef717",
+        "size_bytes": 57602678
+      },
+      {
+        "exact_zero_transmission_count": 0,
+        "filename": "LMT_DJF_50.npz",
+        "md5": "004cb342896210fd23d81b329d0246f0",
+        "profile": "LMT_DJF_50",
+        "sha256": "57e6eebebe40f0bd1fb9b3a2411a73a1bd4cc0f4762a316af1c23758060a02ec",
+        "size_bytes": 57602678
+      },
+      {
+        "exact_zero_transmission_count": 0,
+        "filename": "LMT_DJF_75.npz",
+        "md5": "e2478719dd67fdbe6ea0d1fb753ab267",
+        "profile": "LMT_DJF_75",
+        "sha256": "67f7af72dd94a0c26cdf9759d75345c1d5e53b756418937b9471137c6f10f552",
+        "size_bytes": 57602678
+      },
+      {
+        "exact_zero_transmission_count": 508,
+        "filename": "LMT_DJF_95.npz",
+        "md5": "dc8e9e15e5df3238d9e5ecdb39e17dd4",
+        "profile": "LMT_DJF_95",
+        "sha256": "3dd961143e31a8db8182c35dd55472ad9ec943a711f652f6d55d485ee5ddb42d",
+        "size_bytes": 57602678
+      },
+      {
+        "exact_zero_transmission_count": 0,
+        "filename": "LMT_MAM_5.npz",
+        "md5": "b0347815c968aea4873fdff8d1d0258e",
+        "profile": "LMT_MAM_5",
+        "sha256": "7ddefd6056c932c2233b52f5d0ddec5a7ee6bd4292b1c301477684677d659518",
+        "size_bytes": 57602678
+      },
+      {
+        "exact_zero_transmission_count": 0,
+        "filename": "LMT_MAM_25.npz",
+        "md5": "074009197665f6c642ca8a9659f6f650",
+        "profile": "LMT_MAM_25",
+        "sha256": "9851853d67e8f4b8eb257aec82e9d758d6fba0daaf2348b44bd95a1cd7714195",
+        "size_bytes": 57602678
+      },
+      {
+        "exact_zero_transmission_count": 0,
+        "filename": "LMT_MAM_50.npz",
+        "md5": "1c0b684bb540ddc13bef67e27a8c15bc",
+        "profile": "LMT_MAM_50",
+        "sha256": "a6d02472c4b095caf47de7e1685885b82233564b3530764f7f9d43dc380c9720",
+        "size_bytes": 57602678
+      },
+      {
+        "exact_zero_transmission_count": 295,
+        "filename": "LMT_MAM_75.npz",
+        "md5": "72d39cbcd474622f2ac3874efe0b882b",
+        "profile": "LMT_MAM_75",
+        "sha256": "93e411f37396b0be93f641b6cd9d364c0b2f9e887f29db3d203f999fb34cdc3c",
+        "size_bytes": 57602678
+      },
+      {
+        "exact_zero_transmission_count": 1389,
+        "filename": "LMT_MAM_95.npz",
+        "md5": "d24a7e89e50033de830fe9fbb4627bbf",
+        "profile": "LMT_MAM_95",
+        "sha256": "6979af52ce7f6491d67537811322e333232c1d68be26d5a6a544c98ee287fc7b",
+        "size_bytes": 57602678
+      },
+      {
+        "exact_zero_transmission_count": 0,
+        "filename": "LMT_JJA_5.npz",
+        "md5": "5eae399cba2948630164230c461e24e6",
+        "profile": "LMT_JJA_5",
+        "sha256": "72e151b610c350ff8790ff1827d35822d6b1985081a2aec19e5d7925bf4c417a",
+        "size_bytes": 57602678
+      },
+      {
+        "exact_zero_transmission_count": 25,
+        "filename": "LMT_JJA_25.npz",
+        "md5": "0e677b7ce7f52718584c25c0fbd801c1",
+        "profile": "LMT_JJA_25",
+        "sha256": "a8131ade7fdc5d0fa0a036a74f5c911d31023be33e228d29e1b968575baf6ffc",
+        "size_bytes": 57602678
+      },
+      {
+        "exact_zero_transmission_count": 671,
+        "filename": "LMT_JJA_50.npz",
+        "md5": "c866c558d1c6c1d20e323927dde1df6c",
+        "profile": "LMT_JJA_50",
+        "sha256": "1ecdb57022d15882ecacfe2f9038c9d27a2cbcf379fd45104c18ffa01cd60650",
+        "size_bytes": 57602678
+      },
+      {
+        "exact_zero_transmission_count": 1455,
+        "filename": "LMT_JJA_75.npz",
+        "md5": "e0139e6760b2e45f2768bea572b3c081",
+        "profile": "LMT_JJA_75",
+        "sha256": "3f3003075f449cc739b579d683c4ff5f087e5982112a250fd53b29c2c0099911",
+        "size_bytes": 57602678
+      },
+      {
+        "exact_zero_transmission_count": 2277,
+        "filename": "LMT_JJA_95.npz",
+        "md5": "91473b3fbb2fd50fa8ae8afb76fea8c0",
+        "profile": "LMT_JJA_95",
+        "sha256": "0e57576febe7f0736a2015bb8e8e85766a1489db81aa09210b16c2a355bc3fa2",
+        "size_bytes": 57602678
+      },
+      {
+        "exact_zero_transmission_count": 0,
+        "filename": "LMT_SON_5.npz",
+        "md5": "e587b429e123adde3c77f524d59e71e2",
+        "profile": "LMT_SON_5",
+        "sha256": "bdab16e63b5dbd2a2993bd29ed906d1bda91e971bc548fd20044719a375bf880",
+        "size_bytes": 57602678
+      },
+      {
+        "exact_zero_transmission_count": 0,
+        "filename": "LMT_SON_25.npz",
+        "md5": "6c4384ff61fa00efc59e624946f4e6b6",
+        "profile": "LMT_SON_25",
+        "sha256": "f155f769519302cde304fc214376eb2181cfcd11c33865d74830150e7404c06a",
+        "size_bytes": 57602678
+      },
+      {
+        "exact_zero_transmission_count": 97,
+        "filename": "LMT_SON_50.npz",
+        "md5": "5d8b89c054e8b9dd6279cad6d1f33854",
+        "profile": "LMT_SON_50",
+        "sha256": "bb56847337c77d0a79052995c544e29ac76c962088771d58994b0b24303e8a68",
+        "size_bytes": 57602678
+      },
+      {
+        "exact_zero_transmission_count": 1160,
+        "filename": "LMT_SON_75.npz",
+        "md5": "d047c7f6bebfc01242ee9a7898af3165",
+        "profile": "LMT_SON_75",
+        "sha256": "b87cf2bef8233fc320dd3117ef2df78648da2d3ede2c40cf9b830c9d8121b500",
+        "size_bytes": 57602678
+      },
+      {
+        "exact_zero_transmission_count": 2251,
+        "filename": "LMT_SON_95.npz",
+        "md5": "072078db4d8ad0fc2f56e51c39c42034",
+        "profile": "LMT_SON_95",
+        "sha256": "86839682b473783004aa1f9c1eb1572afe526aa8ed5985f5a7f33c5053065622",
+        "size_bytes": 57602678
+      }
+    ],
+    "copied_suite_manifest": {
+      "canonical_product_manifest_sha256": "18dfd96f4438151197d3b6be5201476f7a71710363d81ec49c801101fa12b3ac",
+      "filename": "copied_am_manifest.json",
+      "sha256": "ef525bc5f2883f181cccd43f585b4e398d227f2a26eeca0ed90cf4f5922f520f"
+    },
+    "frozen_protocol_artifact_inventory": {
+      "aggregate_algorithm": "sha256(relative_path NUL file_sha256_bytes NUL)",
+      "aggregate_sha256": "f534229636fe11bbf5a2d6a0c6459eb41008e6582d8c8eebb9c5b531520e31d0",
+      "file_count": 3,
+      "files": [
+        {
+          "path": "FOLLOWUP_STUDY_DEVIATION_LOG.md",
+          "sha256": "a3df86366c7869579b3255d9ea8f95cf6827e78018e0a2a83a1640360be1b036",
+          "size_bytes": 2066
+        },
+        {
+          "path": "FOLLOWUP_STUDY_PREREGISTRATION.md",
+          "sha256": "65935dbc906317e984cf2ae8b35c5868a3f216eca2ec6290f2887976892d8457",
+          "size_bytes": 8528
+        },
+        {
+          "path": "FOLLOWUP_STUDY_PROTOCOL_ADDENDUM.md",
+          "sha256": "0d47c11479a1ba0176babd3ea285e2871edbb1341406b6b044cbc53114c51a1d",
+          "size_bytes": 5236
+        }
+      ],
+      "total_bytes": 15830
+    },
+    "immutable_amc_profiles": {
+      "aggregate_algorithm": "sha256(relative_path NUL file_sha256_bytes NUL)",
+      "aggregate_sha256": "b7dd766852b4f422bdc861337e04d8f0184732045ea1a06a962560e86d2ce87c",
+      "file_count": 25,
+      "files": [
+        {
+          "path_relative_to_profile_root": "LMT_DJF_25.amc",
+          "sha256": "aeeeeb48bef422f2d9392b5d7a3d62ab1887fd9e7c10322d5246d914841ba866",
+          "size_bytes": 4841
+        },
+        {
+          "path_relative_to_profile_root": "LMT_DJF_5.amc",
+          "sha256": "fcb3b70f44cad98cf0586fede9dcd3b2e35f3cb45023d0485c782c108b25b474",
+          "size_bytes": 4837
+        },
+        {
+          "path_relative_to_profile_root": "LMT_DJF_50.amc",
+          "sha256": "d7c256d04d922beb51c9f8ab715e5be1a962252580eff2d08ba1be4d206eb5b0",
+          "size_bytes": 4841
+        },
+        {
+          "path_relative_to_profile_root": "LMT_DJF_75.amc",
+          "sha256": "b63503c7f4170404d18f3797735b64fb947ce73eed35f0315155d0a29d499721",
+          "size_bytes": 4841
+        },
+        {
+          "path_relative_to_profile_root": "LMT_DJF_95.amc",
+          "sha256": "b87b918b302425ef3d85aeedc285863a987579923289a37b97c6de5c935175e6",
+          "size_bytes": 4841
+        },
+        {
+          "path_relative_to_profile_root": "LMT_JJA_25.amc",
+          "sha256": "13ea1837e3f2afeb605d8f8e8329472032f27c7a9d526d1b381bd7e75830e9b6",
+          "size_bytes": 4841
+        },
+        {
+          "path_relative_to_profile_root": "LMT_JJA_5.amc",
+          "sha256": "f5a3a92f41803247da504271eafe8a62af6df51e7a3ec8740c5e89c2b97409fc",
+          "size_bytes": 4837
+        },
+        {
+          "path_relative_to_profile_root": "LMT_JJA_50.amc",
+          "sha256": "00b86aa0f2331f6a138c8efcc89ed5a4d918baef948f0da55feb114b0df2eb76",
+          "size_bytes": 4841
+        },
+        {
+          "path_relative_to_profile_root": "LMT_JJA_75.amc",
+          "sha256": "1b54ac2d0d5c7cd8f0805d1117d44ad1ff938ccb74433a93e2a20cbc77b3fc95",
+          "size_bytes": 4841
+        },
+        {
+          "path_relative_to_profile_root": "LMT_JJA_95.amc",
+          "sha256": "54a4345d487babbffcc9b36b9ccbaec2904b58d35458f6476a382da8d70cf437",
+          "size_bytes": 4841
+        },
+        {
+          "path_relative_to_profile_root": "LMT_MAM_25.amc",
+          "sha256": "82ac1e2a49a528244c1571daadcc8d42bd6d13c0ba8a7b5d2f81d10ebc13caee",
+          "size_bytes": 4841
+        },
+        {
+          "path_relative_to_profile_root": "LMT_MAM_5.amc",
+          "sha256": "ecdf228e34ca8f4b0f5930865179fd8afe7c8e602b1863d7ee8ac4352c65351f",
+          "size_bytes": 4837
+        },
+        {
+          "path_relative_to_profile_root": "LMT_MAM_50.amc",
+          "sha256": "2f282452f3932024be26b4579ed765996c08ff1e74cafb7d2750396d234fa6ac",
+          "size_bytes": 4841
+        },
+        {
+          "path_relative_to_profile_root": "LMT_MAM_75.amc",
+          "sha256": "937ecf9b3725b03a2745a61546f3659a9506bbaead72afbb41141b51e88a630e",
+          "size_bytes": 4841
+        },
+        {
+          "path_relative_to_profile_root": "LMT_MAM_95.amc",
+          "sha256": "dc7a3acc1fbc5ce92ef98dd5d00f45db997c6f2680c3c88e485f94bdbac398b2",
+          "size_bytes": 4841
+        },
+        {
+          "path_relative_to_profile_root": "LMT_SON_25.amc",
+          "sha256": "e9b06bae87e742801a751270aadd7939f94b39bfb04c7196ecf12c7586cce627",
+          "size_bytes": 4841
+        },
+        {
+          "path_relative_to_profile_root": "LMT_SON_5.amc",
+          "sha256": "79a50d0275d026886feefb83e68e88b84801c5e3efa0066edbfc925e2b134926",
+          "size_bytes": 4837
+        },
+        {
+          "path_relative_to_profile_root": "LMT_SON_50.amc",
+          "sha256": "b47140d5680449c83327ec8ffaa3a36d2472f7d7d042119d95b84689f06b42b2",
+          "size_bytes": 4841
+        },
+        {
+          "path_relative_to_profile_root": "LMT_SON_75.amc",
+          "sha256": "c2d6a7b6aee60639168dfcb03d85dc07b85ed23ea7ea2b8e202033d16c14a770",
+          "size_bytes": 4841
+        },
+        {
+          "path_relative_to_profile_root": "LMT_SON_95.amc",
+          "sha256": "a4348f003b44205c9c4f367da42ea9a5962689cdfd6f1c12580c28c853526984",
+          "size_bytes": 4841
+        },
+        {
+          "path_relative_to_profile_root": "LMT_annual_25.amc",
+          "sha256": "a9524553a5808a549eb18046a9ed6f8bd67ca1e29ccd1c91e05b351b64ea23e6",
+          "size_bytes": 4853
+        },
+        {
+          "path_relative_to_profile_root": "LMT_annual_5.amc",
+          "sha256": "f58921d3cb222965df86b05f89cbf716f92f8193465d18f0106bf09b52fd718d",
+          "size_bytes": 4849
+        },
+        {
+          "path_relative_to_profile_root": "LMT_annual_50.amc",
+          "sha256": "ee3946b48db6049b26231ff22d456c8fc2f2dc96ecabd1a861c4d8002c81c3c3",
+          "size_bytes": 4853
+        },
+        {
+          "path_relative_to_profile_root": "LMT_annual_75.amc",
+          "sha256": "8e7a250764c8583ef23f9ca140248e62670e3e3d9b709baf005b31c24dc52387",
+          "size_bytes": 4853
+        },
+        {
+          "path_relative_to_profile_root": "LMT_annual_95.amc",
+          "sha256": "687218c4633e03f61e179cd41314ca720572eabd6015404fd7a8149e2280b1e5",
+          "size_bytes": 4853
+        }
+      ],
+      "total_bytes": 121065
+    },
+    "legacy_raw_sources": {
+      "am_q25": {
+        "filename": "amLMT25.npz",
+        "md5": "008d7fa69aff187a9edf419f3d961b4c",
+        "sha256": "6ddffcd2c68bbc0f6d8f6470eba0d1aa81457dcc2f348fd2d7e44c9dfe48c87b",
+        "tolteca_datafile_id": "454"
+      },
+      "am_q50": {
+        "filename": "amLMT50.npz",
+        "md5": "6ec393672be8af4dfa06a3f4cf9aa32e",
+        "sha256": "1fe6dd2ab7a4d65f445e20c5a8f438eb42884836e7932d86f80c30e235710f81",
+        "tolteca_datafile_id": "455"
+      },
+      "am_q75": {
+        "filename": "amLMT75.npz",
+        "md5": "d6cf4bb27008179ec491864388deac58",
+        "sha256": "adbb8eb974c4e2744c3efb0f627708565f954c4029d9345e4f434699e8843f8e",
+        "tolteca_datafile_id": "456"
+      }
+    },
+    "legacy_source_dir": "/Users/gwilson/GitHub/toltec_beammap/src/toltec_sensitivity",
+    "missing_q95_raw_source": {
+      "expected_md5": "0ca7b331823237767d26016d19bffb3d",
+      "status": "registered_raw_grid_absent_not_retrieved",
+      "tolteca_datafile_id": "461"
+    },
+    "repair_base_inputs": {
+      "include/citlali/core/timestream/rtc/calibrate.h": {
+        "sha256": "d70a55278227b43cdd7de19bc67e4ddb332524d40e1455c5fa7a80ae5e2d11ee"
+      },
+      "validation/sci_cal_001_phase0_2026-07-31/generate_q_model_continuity.py": {
+        "sha256": "a46211c007bdc1fa11d1408c6db4c4a68264ca00cd383806fd421ba978fffe78"
+      }
+    }
+  },
+  "interrupted_first_v3_development_attempt": {
+    "canonical_artifacts_or_rankings_use_this_attempt": false,
+    "execution_context_sha256": "b6f7f88175983b49d2113bdbe626f115e7ced1da6922d7c5dea9636b64217fdd",
+    "external_cache_basename": "sci_cal_001_h2o_scale_p1_context_v3_final_20260801_root",
+    "observed_partial_cache_inventory": {
+      "scale_trace_file_count": 16,
+      "successful_execution_sidecar_file_count": 1811,
+      "successful_raw_output_file_count": 1811,
+      "targeted_sigint_failure_inventory": {
+        "complete_failure_sidecar_count": 3,
+        "disposition": "termination records excluded from evidence",
+        "empty_atomic_failure_sidecar_temporary_file_count": 3,
+        "empty_combined_output_file_count": 6,
+        "profiles": [
+          "LMT_JJA_25",
+          "LMT_JJA_50",
+          "LMT_JJA_75",
+          "LMT_SON_5",
+          "LMT_SON_25",
+          "LMT_SON_75"
+        ],
+        "return_code_where_complete": -2,
+        "target": "am_q25",
+        "zenith_angle_deg": 10
+      }
+    },
+    "preservation": "external cache retained untouched; never reused",
+    "reason": "the in-process digest inventory retained complete ParsedOutput sample arrays and would have added approximately 7.75 GB across the final full-grid runs",
+    "runner_sha256": "dae40f4484dead989d4cc559ea7cc52f9af844651c52949a6399214373d82625",
+    "status": "noncanonical_development_attempt_excluded",
+    "termination": "stopped during anchor inference after pre-full-grid memory-retention review; no related probe or AM process remained"
+  },
+  "interrupted_predecessor_attempt": {
+    "canonical_v3_artifacts_or_rankings_use_this_attempt": false,
+    "external_cache_basename": "sci_cal_001_h2o_scale_p1_20260801_root_v2",
+    "observed_partial_cache_inventory": {
+      "direct_fitted_scale_expected_stage_counts": {
+        "direct_full_grid_all_hypotheses": 2976,
+        "direct_full_grid_selected_transmission_rank1": 124
+      },
+      "execution_sidecar_file_count": 12455,
+      "execution_sidecar_stage_counts": {
+        "anchor_225ghz_el80": 9792,
+        "direct_full_grid_all_hypotheses": 1764,
+        "direct_full_grid_selected_transmission_rank1": 124,
+        "full_grid_scale0_construction_endpoint": 775
+      },
+      "raw_output_file_count": 12455,
+      "scale_trace_file_count": 100,
+      "targeted_sigint_failure_inventory": {
+        "disposition": "termination records excluded from v3 evidence",
+        "empty_combined_output_file_count": 3,
+        "failure_sidecar_count": 3,
+        "profile": "LMT_JJA_5",
+        "return_code": -2,
+        "target": "am_q25",
+        "zenith_angles_deg": [
+          10,
+          50,
+          54
+        ]
+      },
+      "total_direct_fitted_scale_expected_count": 3100,
+      "total_direct_fitted_scale_observed_count": 1888
+    },
+    "preservation": "external cache retained read-only; not deleted",
+    "reason": "the process had no whole-cache cross-process lock and its sidecars did not bind an immutable execution context",
+    "status": "noncanonical_interrupted_excluded_from_v3_evidence",
+    "termination": "stopped after cache-provenance review; no related probe or AM process remained"
+  },
+  "limitations": [
+    "Scale inference is post hoc and cannot prove the historical profile choice or custody chain.",
+    "The affine LOS-tau/Trj lane is ancillary screening only; frozen P1 completion and ranking use all 100 direct grids.",
+    "The registered q95 raw grid is absent, so q95 is compared only with repair-base ratio-polynomial literals.",
+    "No result authorizes an atmosphere operator or an opacity/elevation domain.",
+    "Software correctness, numerical representation fidelity, and observational performance remain separate gates."
+  ],
+  "ranking": {
+    "ancillary_affine_screening_transmission_rank1": {
+      "am_q25": "LMT_MAM_5",
+      "am_q50": "LMT_DJF_25",
+      "am_q75": "LMT_DJF_75",
+      "am_q95": "LMT_MAM_75"
+    },
+    "direct_q95_ratio_ranking": "combined 93-point nominal-ratio RMS, then maximum ratio residual, then profile name; raw q95 absent",
+    "direct_rayleigh_jeans_ranking": "full-grid Rayleigh-Jeans RMS, then maximum Rayleigh-Jeans residual, then profile name; separate from transmission",
+    "direct_transmission_ranking": "full-grid transmission RMS, then maximum transmission residual, then profile name",
+    "final_rank1_identities": {
+      "am_q25": {
+        "direct_rayleigh_jeans_rms_rank1": {
+          "affine_vs_direct_full_grid_fractional_correction_max_abs_error": "1.76382675968522612e-02",
+          "affine_vs_direct_full_grid_trj_rms_residual_k": "9.31948544166930617e+01",
+          "direct_full_grid_exact_parsed_target_match": true,
+          "direct_full_grid_t225_el80_transmission": "9.50027500000000025e-01",
+          "direct_run_count": 31,
+          "direct_run_numeric_text_aggregate_sha256": "b06c8ff7c1c78fe0d8456427618f2a6321a5ec5368805e5d8aa00239ca8c9594",
+          "fractional_correction_max_abs_error": "8.34500816020430307e+02",
+          "h2o_scale_decimal": "3.01439309124786581e+00",
+          "profile": "LMT_DJF_5",
+          "source_profile_family": "copied_explicit_seasonal_DJF_merra2_2007_2016_profile",
+          "transmission_or_ratio_max_abs_residual": "2.48118999999999978e-02",
+          "transmission_or_ratio_rms_residual": "5.20680587977168357e-03",
+          "trj_max_abs_residual_k": "3.59280000000001110e+00",
+          "trj_rms_residual_k": "7.77548133113115214e-01",
+          "warning_status_run_count": 31
+        },
+        "direct_transmission_rms_rank1": {
+          "affine_vs_direct_full_grid_fractional_correction_max_abs_error": "1.31949534581106767e-02",
+          "affine_vs_direct_full_grid_trj_rms_residual_k": "4.43157575101620438e+01",
+          "direct_full_grid_exact_parsed_target_match": true,
+          "direct_full_grid_t225_el80_transmission": "9.50027500000000025e-01",
+          "direct_run_count": 31,
+          "direct_run_numeric_text_aggregate_sha256": "e7d7e6a1b51c13ff3c9940573012b8c782c9e506aeafb39541a81f796b41b428",
+          "fractional_correction_max_abs_error": "7.79414740836802711e+00",
+          "h2o_scale_decimal": "1.81225445269332575e+00",
+          "profile": "LMT_MAM_5",
+          "source_profile_family": "copied_explicit_seasonal_MAM_merra2_2007_2016_profile",
+          "transmission_or_ratio_max_abs_residual": "2.26840000000000375e-02",
+          "transmission_or_ratio_rms_residual": "5.11939193880871224e-03",
+          "trj_max_abs_residual_k": "5.01519999999999300e+00",
+          "trj_rms_residual_k": "1.05083350816731147e+00",
+          "warning_status_run_count": 31
+        },
+        "rankings_are_separate_no_composite": true
+      },
+      "am_q50": {
+        "direct_rayleigh_jeans_rms_rank1": {
+          "affine_vs_direct_full_grid_fractional_correction_max_abs_error": "5.43147833493856161e-02",
+          "affine_vs_direct_full_grid_trj_rms_residual_k": "7.52446893560218513e+01",
+          "direct_full_grid_exact_parsed_target_match": true,
+          "direct_full_grid_t225_el80_transmission": "9.14206500000000033e-01",
+          "direct_run_count": 31,
+          "direct_run_numeric_text_aggregate_sha256": "326d150066ebfe92cac666b6a2e1cc71e854df28d84a51e557693c5a9f68bf63",
+          "fractional_correction_max_abs_error": "7.36370582820754521e+02",
+          "h2o_scale_decimal": "2.02963214820032256e+00",
+          "profile": "LMT_DJF_25",
+          "source_profile_family": "copied_explicit_seasonal_DJF_merra2_2007_2016_profile",
+          "transmission_or_ratio_max_abs_residual": "1.30718000000000223e-02",
+          "transmission_or_ratio_rms_residual": "3.62544609156330907e-03",
+          "trj_max_abs_residual_k": "2.22339999999999804e+00",
+          "trj_rms_residual_k": "6.04530350357074253e-01",
+          "warning_status_run_count": 31
+        },
+        "direct_transmission_rms_rank1": {
+          "affine_vs_direct_full_grid_fractional_correction_max_abs_error": "8.73518660649674067e-03",
+          "affine_vs_direct_full_grid_trj_rms_residual_k": "7.43173072142629643e+00",
+          "direct_full_grid_exact_parsed_target_match": true,
+          "direct_full_grid_t225_el80_transmission": "9.14206500000000033e-01",
+          "direct_run_count": 31,
+          "direct_run_numeric_text_aggregate_sha256": "2c7a3357a0f26bc97a471e4a1a5a55aed069a116e65703f1d7e9dc88c584cbbd",
+          "fractional_correction_max_abs_error": "9.98458439029974554e-01",
+          "h2o_scale_decimal": "9.15696647246186712e-01",
+          "profile": "LMT_MAM_25",
+          "source_profile_family": "copied_explicit_seasonal_MAM_merra2_2007_2016_profile",
+          "transmission_or_ratio_max_abs_residual": "1.95999000000000034e-02",
+          "transmission_or_ratio_rms_residual": "3.23305754092318917e-03",
+          "trj_max_abs_residual_k": "5.01310000000000855e+00",
+          "trj_rms_residual_k": "1.07354180425274071e+00",
+          "warning_status_run_count": 31
+        },
+        "rankings_are_separate_no_composite": true
+      },
+      "am_q75": {
+        "direct_rayleigh_jeans_rms_rank1": {
+          "affine_vs_direct_full_grid_fractional_correction_max_abs_error": "1.02797717547386432e-02",
+          "affine_vs_direct_full_grid_trj_rms_residual_k": "1.12613262162622507e+00",
+          "direct_full_grid_exact_parsed_target_match": true,
+          "direct_full_grid_t225_el80_transmission": "8.51505399999999968e-01",
+          "direct_run_count": 31,
+          "direct_run_numeric_text_aggregate_sha256": "2d8e1e0fcba11d6bc203a1daa7677f9f5dda57c2f8cd65f4dd1e9f66f6c36450",
+          "fractional_correction_max_abs_error": "1.41911867623572991e+01",
+          "h2o_scale_decimal": "1.01048455031671569e+00",
+          "profile": "LMT_DJF_75",
+          "source_profile_family": "copied_explicit_seasonal_DJF_merra2_2007_2016_profile",
+          "transmission_or_ratio_max_abs_residual": "7.87490000000001800e-03",
+          "transmission_or_ratio_rms_residual": "1.80504314824632590e-03",
+          "trj_max_abs_residual_k": "1.84639999999998849e+00",
+          "trj_rms_residual_k": "4.92756783098706019e-01",
+          "warning_status_run_count": 31
+        },
+        "direct_transmission_rms_rank1": {
+          "affine_vs_direct_full_grid_fractional_correction_max_abs_error": "3.54397858905759366e-01",
+          "affine_vs_direct_full_grid_trj_rms_residual_k": "8.43915113939767565e+01",
+          "direct_full_grid_exact_parsed_target_match": true,
+          "direct_full_grid_t225_el80_transmission": "8.51505399999999968e-01",
+          "direct_run_count": 31,
+          "direct_run_numeric_text_aggregate_sha256": "9ae6b5afbddd1f0320ded5b0545ead015a1f2bc4f012cdd7561b9193d1a8c417",
+          "fractional_correction_max_abs_error": "4.83405416660586074e+00",
+          "h2o_scale_decimal": "1.88602893644962655e+00",
+          "profile": "LMT_DJF_50",
+          "source_profile_family": "copied_explicit_seasonal_DJF_merra2_2007_2016_profile",
+          "transmission_or_ratio_max_abs_residual": "1.03363000000000205e-02",
+          "transmission_or_ratio_rms_residual": "1.56476455256103768e-03",
+          "trj_max_abs_residual_k": "2.24290000000002010e+00",
+          "trj_rms_residual_k": "6.06517606795184183e-01",
+          "warning_status_run_count": 31
+        },
+        "rankings_are_separate_no_composite": true
+      },
+      "am_q95": {
+        "direct_nominal_ratio_surface_rms_rank1": {
+          "affine_vs_direct_full_grid_fractional_correction_max_abs_error": "1.65326946545662885e+01",
+          "affine_vs_direct_full_grid_trj_rms_residual_k": "4.90322197861558436e+02",
+          "direct_full_grid_exact_parsed_target_match": true,
+          "direct_full_grid_t225_el80_transmission": "7.33769800000000028e-01",
+          "direct_run_count": 31,
+          "direct_run_numeric_text_aggregate_sha256": "548a00ae35a9d9cbadc65e31aaffb6651ea7a3cf075bd67c2b51953e80eda882",
+          "fractional_correction_max_abs_error": "1.19094929017647764e-02",
+          "h2o_scale_decimal": "6.88363302058917359e+00",
+          "profile": "LMT_DJF_25",
+          "source_profile_family": "copied_explicit_seasonal_DJF_merra2_2007_2016_profile",
+          "transmission_or_ratio_max_abs_residual": "1.88189832335683427e-02",
+          "transmission_or_ratio_rms_residual": "5.41090729776348960e-03",
+          "trj_max_abs_residual_k": "",
+          "trj_rms_residual_k": "",
+          "warning_status_run_count": 31
+        },
+        "rayleigh_jeans_ranking": "not_applicable_raw_q95_absent"
+      }
+    },
+    "near_exact_threshold": "not_preregistered_not_invented",
+    "unregistered_composite_score": false
+  },
+  "results": {
+    "coefficient_row_count": 1050,
+    "direct_full_grid_exact_anchor_count": 100,
+    "direct_hypothesis_count": 100,
+    "direct_rank1_results": {
+      "am_q25": {
+        "direct_rayleigh_jeans_rms_rank1": {
+          "affine_vs_direct_full_grid_fractional_correction_max_abs_error": "1.76382675968522612e-02",
+          "affine_vs_direct_full_grid_trj_rms_residual_k": "9.31948544166930617e+01",
+          "direct_full_grid_exact_parsed_target_match": true,
+          "direct_full_grid_t225_el80_transmission": "9.50027500000000025e-01",
+          "direct_run_count": 31,
+          "direct_run_numeric_text_aggregate_sha256": "b06c8ff7c1c78fe0d8456427618f2a6321a5ec5368805e5d8aa00239ca8c9594",
+          "fractional_correction_max_abs_error": "8.34500816020430307e+02",
+          "h2o_scale_decimal": "3.01439309124786581e+00",
+          "profile": "LMT_DJF_5",
+          "source_profile_family": "copied_explicit_seasonal_DJF_merra2_2007_2016_profile",
+          "transmission_or_ratio_max_abs_residual": "2.48118999999999978e-02",
+          "transmission_or_ratio_rms_residual": "5.20680587977168357e-03",
+          "trj_max_abs_residual_k": "3.59280000000001110e+00",
+          "trj_rms_residual_k": "7.77548133113115214e-01",
+          "warning_status_run_count": 31
+        },
+        "direct_transmission_rms_rank1": {
+          "affine_vs_direct_full_grid_fractional_correction_max_abs_error": "1.31949534581106767e-02",
+          "affine_vs_direct_full_grid_trj_rms_residual_k": "4.43157575101620438e+01",
+          "direct_full_grid_exact_parsed_target_match": true,
+          "direct_full_grid_t225_el80_transmission": "9.50027500000000025e-01",
+          "direct_run_count": 31,
+          "direct_run_numeric_text_aggregate_sha256": "e7d7e6a1b51c13ff3c9940573012b8c782c9e506aeafb39541a81f796b41b428",
+          "fractional_correction_max_abs_error": "7.79414740836802711e+00",
+          "h2o_scale_decimal": "1.81225445269332575e+00",
+          "profile": "LMT_MAM_5",
+          "source_profile_family": "copied_explicit_seasonal_MAM_merra2_2007_2016_profile",
+          "transmission_or_ratio_max_abs_residual": "2.26840000000000375e-02",
+          "transmission_or_ratio_rms_residual": "5.11939193880871224e-03",
+          "trj_max_abs_residual_k": "5.01519999999999300e+00",
+          "trj_rms_residual_k": "1.05083350816731147e+00",
+          "warning_status_run_count": 31
+        },
+        "rankings_are_separate_no_composite": true
+      },
+      "am_q50": {
+        "direct_rayleigh_jeans_rms_rank1": {
+          "affine_vs_direct_full_grid_fractional_correction_max_abs_error": "5.43147833493856161e-02",
+          "affine_vs_direct_full_grid_trj_rms_residual_k": "7.52446893560218513e+01",
+          "direct_full_grid_exact_parsed_target_match": true,
+          "direct_full_grid_t225_el80_transmission": "9.14206500000000033e-01",
+          "direct_run_count": 31,
+          "direct_run_numeric_text_aggregate_sha256": "326d150066ebfe92cac666b6a2e1cc71e854df28d84a51e557693c5a9f68bf63",
+          "fractional_correction_max_abs_error": "7.36370582820754521e+02",
+          "h2o_scale_decimal": "2.02963214820032256e+00",
+          "profile": "LMT_DJF_25",
+          "source_profile_family": "copied_explicit_seasonal_DJF_merra2_2007_2016_profile",
+          "transmission_or_ratio_max_abs_residual": "1.30718000000000223e-02",
+          "transmission_or_ratio_rms_residual": "3.62544609156330907e-03",
+          "trj_max_abs_residual_k": "2.22339999999999804e+00",
+          "trj_rms_residual_k": "6.04530350357074253e-01",
+          "warning_status_run_count": 31
+        },
+        "direct_transmission_rms_rank1": {
+          "affine_vs_direct_full_grid_fractional_correction_max_abs_error": "8.73518660649674067e-03",
+          "affine_vs_direct_full_grid_trj_rms_residual_k": "7.43173072142629643e+00",
+          "direct_full_grid_exact_parsed_target_match": true,
+          "direct_full_grid_t225_el80_transmission": "9.14206500000000033e-01",
+          "direct_run_count": 31,
+          "direct_run_numeric_text_aggregate_sha256": "2c7a3357a0f26bc97a471e4a1a5a55aed069a116e65703f1d7e9dc88c584cbbd",
+          "fractional_correction_max_abs_error": "9.98458439029974554e-01",
+          "h2o_scale_decimal": "9.15696647246186712e-01",
+          "profile": "LMT_MAM_25",
+          "source_profile_family": "copied_explicit_seasonal_MAM_merra2_2007_2016_profile",
+          "transmission_or_ratio_max_abs_residual": "1.95999000000000034e-02",
+          "transmission_or_ratio_rms_residual": "3.23305754092318917e-03",
+          "trj_max_abs_residual_k": "5.01310000000000855e+00",
+          "trj_rms_residual_k": "1.07354180425274071e+00",
+          "warning_status_run_count": 31
+        },
+        "rankings_are_separate_no_composite": true
+      },
+      "am_q75": {
+        "direct_rayleigh_jeans_rms_rank1": {
+          "affine_vs_direct_full_grid_fractional_correction_max_abs_error": "1.02797717547386432e-02",
+          "affine_vs_direct_full_grid_trj_rms_residual_k": "1.12613262162622507e+00",
+          "direct_full_grid_exact_parsed_target_match": true,
+          "direct_full_grid_t225_el80_transmission": "8.51505399999999968e-01",
+          "direct_run_count": 31,
+          "direct_run_numeric_text_aggregate_sha256": "2d8e1e0fcba11d6bc203a1daa7677f9f5dda57c2f8cd65f4dd1e9f66f6c36450",
+          "fractional_correction_max_abs_error": "1.41911867623572991e+01",
+          "h2o_scale_decimal": "1.01048455031671569e+00",
+          "profile": "LMT_DJF_75",
+          "source_profile_family": "copied_explicit_seasonal_DJF_merra2_2007_2016_profile",
+          "transmission_or_ratio_max_abs_residual": "7.87490000000001800e-03",
+          "transmission_or_ratio_rms_residual": "1.80504314824632590e-03",
+          "trj_max_abs_residual_k": "1.84639999999998849e+00",
+          "trj_rms_residual_k": "4.92756783098706019e-01",
+          "warning_status_run_count": 31
+        },
+        "direct_transmission_rms_rank1": {
+          "affine_vs_direct_full_grid_fractional_correction_max_abs_error": "3.54397858905759366e-01",
+          "affine_vs_direct_full_grid_trj_rms_residual_k": "8.43915113939767565e+01",
+          "direct_full_grid_exact_parsed_target_match": true,
+          "direct_full_grid_t225_el80_transmission": "8.51505399999999968e-01",
+          "direct_run_count": 31,
+          "direct_run_numeric_text_aggregate_sha256": "9ae6b5afbddd1f0320ded5b0545ead015a1f2bc4f012cdd7561b9193d1a8c417",
+          "fractional_correction_max_abs_error": "4.83405416660586074e+00",
+          "h2o_scale_decimal": "1.88602893644962655e+00",
+          "profile": "LMT_DJF_50",
+          "source_profile_family": "copied_explicit_seasonal_DJF_merra2_2007_2016_profile",
+          "transmission_or_ratio_max_abs_residual": "1.03363000000000205e-02",
+          "transmission_or_ratio_rms_residual": "1.56476455256103768e-03",
+          "trj_max_abs_residual_k": "2.24290000000002010e+00",
+          "trj_rms_residual_k": "6.06517606795184183e-01",
+          "warning_status_run_count": 31
+        },
+        "rankings_are_separate_no_composite": true
+      },
+      "am_q95": {
+        "direct_nominal_ratio_surface_rms_rank1": {
+          "affine_vs_direct_full_grid_fractional_correction_max_abs_error": "1.65326946545662885e+01",
+          "affine_vs_direct_full_grid_trj_rms_residual_k": "4.90322197861558436e+02",
+          "direct_full_grid_exact_parsed_target_match": true,
+          "direct_full_grid_t225_el80_transmission": "7.33769800000000028e-01",
+          "direct_run_count": 31,
+          "direct_run_numeric_text_aggregate_sha256": "548a00ae35a9d9cbadc65e31aaffb6651ea7a3cf075bd67c2b51953e80eda882",
+          "fractional_correction_max_abs_error": "1.19094929017647764e-02",
+          "h2o_scale_decimal": "6.88363302058917359e+00",
+          "profile": "LMT_DJF_25",
+          "source_profile_family": "copied_explicit_seasonal_DJF_merra2_2007_2016_profile",
+          "transmission_or_ratio_max_abs_residual": "1.88189832335683427e-02",
+          "transmission_or_ratio_rms_residual": "5.41090729776348960e-03",
+          "trj_max_abs_residual_k": "",
+          "trj_rms_residual_k": "",
+          "warning_status_run_count": 31
+        },
+        "rayleigh_jeans_ranking": "not_applicable_raw_q95_absent"
+      }
+    },
+    "execution_run_digest_summary": {
+      "am_version_identity_counts": {
+        "am version 12.2 (build date Aug  1 2026 11:20:29)": 13667
+      },
+      "diagnostic_totals": {
+        "error_line_count": 0,
+        "other_warning_line_count": 0,
+        "unresolved_column_warning_line_count": 139655,
+        "unresolved_line_warning_count_sum": 335885,
+        "unresolved_summary_warning_line_count": 3875,
+        "warning_bearing_run_count": 3875
+      },
+      "normalized_numeric_text_aggregate_algorithm": "for each unique referenced run sorted by (stage,profile,target,f_min_centi_ghz,f_max_centi_ghz,zenith_angle_deg,scale_decimal): UTF-8 canonical JSON RunSpec request + NUL + digest bytes + NUL",
+      "normalized_numeric_text_aggregate_sha256": "343acc6878062a433b665b0c80516212dc3b338fc77337bc9b6d1ade8196d1e1",
+      "normalized_warning_bearing_output_aggregate_algorithm": "for each unique referenced run sorted by (stage,profile,target,f_min_centi_ghz,f_max_centi_ghz,zenith_angle_deg,scale_decimal): UTF-8 canonical JSON RunSpec request + NUL + digest bytes + NUL",
+      "normalized_warning_bearing_output_aggregate_sha256": "3fcfe769fab3490e7067876a55c75a06e6d17e8990f137238399d02ab246728f",
+      "per_run_raw_and_normalized_digests": "bound to execution-context SHA-256 in external execution sidecars",
+      "return_code_counts": {
+        "0": 9792,
+        "1": 3875
+      },
+      "unique_referenced_run_count": 13667
+    },
+    "metric_row_count": 1200,
+    "observational_absolute_flux_gate": "not_tested",
+    "observational_repeatability_gate": "not_tested",
+    "provisional_one_percent_is": "numerical diagnostic only, not physical per-sample accuracy",
+    "scale_row_count": 100
+  },
+  "scale_inference": {
+    "direct_full_grid_exact_anchor_count": 100,
+    "direct_linearity_checks": "direct scale1 and fitted-scale anchors",
+    "exact_parsed_anchor_count": 100,
+    "hypothesis_count": 100,
+    "no_other_atmospheric_degrees": true,
+    "nonnegative": true,
+    "only_varying_parameter": "Nscale troposphere h2o through AMC argv %9",
+    "root_policy": "fixed 48-iteration monotone bisection of the exact parsed-transmission plateau; canonical midpoint of innermost inside scales",
+    "seed": "direct scale0 tau plus immutable copied scale1 tau",
+    "target_coordinate": "parsed AM transmission at 225 GHz and EL80/ZA10",
+    "target_literals": {
+      "am_q25": "0.9500275",
+      "am_q50": "0.9142065",
+      "am_q75": "0.8515054",
+      "am_q95": "0.7337698"
+    }
+  },
+  "schema_version": "sci-cal-001-am12-h2o-scale-hypothesis-v3",
+  "scope": {
+    "copied_profile_families": [
+      "LMT_annual_5",
+      "LMT_annual_25",
+      "LMT_annual_50",
+      "LMT_annual_75",
+      "LMT_annual_95",
+      "LMT_DJF_5",
+      "LMT_DJF_25",
+      "LMT_DJF_50",
+      "LMT_DJF_75",
+      "LMT_DJF_95",
+      "LMT_MAM_5",
+      "LMT_MAM_25",
+      "LMT_MAM_50",
+      "LMT_MAM_75",
+      "LMT_MAM_95",
+      "LMT_JJA_5",
+      "LMT_JJA_25",
+      "LMT_JJA_50",
+      "LMT_JJA_75",
+      "LMT_JJA_95",
+      "LMT_SON_5",
+      "LMT_SON_25",
+      "LMT_SON_50",
+      "LMT_SON_75",
+      "LMT_SON_95"
+    ],
+    "elevation_grid_deg": {
+      "count": 31,
+      "maximum": "8.00000000000000000e+01",
+      "minimum": "2.00000000000000000e+01",
+      "step": "2.00000000000000000e+00"
+    },
+    "frequency_grid_ghz": {
+      "count": 50001,
+      "maximum": "5.00000000000000000e+02",
+      "minimum": "0.00000000000000000e+00",
+      "step": "1.00000000000000002e-02"
+    },
+    "generic_registry_targets": [
+      "am_q25",
+      "am_q50",
+      "am_q75",
+      "am_q95"
+    ],
+    "hypothesis_count": 100,
+    "nominal_monochromatic_frequencies_ghz": {
+      "a1100": "2.72730000000000018e+02",
+      "a1400": "2.14289999999999992e+02",
+      "a2000": "1.50000000000000000e+02"
+    },
+    "passband_integration": "none_legacy_monochromatic_contract",
+    "profile_count": 25,
+    "reference_frequency_ghz": "2.25000000000000000e+02"
+  },
+  "security": {
+    "am_tree_modified": false,
+    "citlali_application_code_modified": false,
+    "legacy_repository_modified": false,
+    "network_access": false,
+    "unity_access": false,
+    "uploader_logs_or_credentials_copied": false,
+    "uploader_logs_read": false
+  }
+}

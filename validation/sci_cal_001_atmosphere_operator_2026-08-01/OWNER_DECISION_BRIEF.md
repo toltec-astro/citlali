@@ -2,42 +2,61 @@
 
 ## Decision requested
 
-**Do not select or implement a successor operator yet.** The evidence now supports a bounded primary candidate, but not a final versioned operator or operational domain.
+**Choose a scientific model-lineage path, not an operator or domain. Do not select or implement a successor operator yet.**
 
-When the missing raw evidence is supplied, evaluate `piecewise_linear_los_tau_v0` as the primary candidate and `pchip_los_tau_v0` as the challenger. Select piecewise-linear line-of-sight optical depth if it meets the preregistered one-percent raw-grid correction-error gate over the approved domain; it preserves exact anchors and introduces no unsupported curvature. Keep the cubic only as a stress test.
+1. **Recommended -- faithful generic lineage:** recover the original generic q95 datafile ID 461 and custody-backed generic generator, profile, H2O-scale, grid, and packing facts. Preserve the recovered monochromatic convention unless the owner explicitly versions a change.
+2. **Allowed alternative -- separately versioned AM 12.2 successor:** approve an explicit copied-profile rule, H2O-scale construction, grid, spectral convention, unresolved-line warning policy, independent validation design, and support-backed domain. Retain the historical generic-q custody gap, including q95, as unresolved; do not describe the successor as reproducing or replacing the generic products.
 
-For lineage closure, preserve the recovered monochromatic convention at 272.73, 214.29, and 150.00 GHz relative to 225.00 GHz. Treat any passband-integrated replacement as a separately named scientific model change requiring an explicit spectral convention.
+For either path, retain piecewise-linear line-of-sight optical depth as the baseline and PCHIP as the challenger only. Neither is authorized. A future choice must pass exact-anchor, finite-positive-transmission, continuity, opacity-monotonicity, and fail-closed-support gates, plus the provisional one-percent independent model-representation gate throughout an owner-declared domain. Elevation monotonicity must either pass or receive an explicit owner scientific disposition supported by recovered raw q95 and independent model evidence. The diagnostic sub-percent q95/a2000 excursion is not automatically release-blocking, but it cannot be silently waived.
 
 ## Evidence now established
 
-- Exact q25/q50/q75 raw NPZ grids are recovered with SHA-256 and matching TolTECA registry MD5 identities. q95 is still missing.
+- Exact generic q25/q50/q75 raw NPZ grids are recovered with SHA-256 and matching TolTECA registry MD5 identities. Generic q95 remains missing at expected datafile ID 461/MD5 `0ca7b331823237767d26016d19bffb3d`.
 - The legacy coefficients are exactly reproduced after eight-decimal rounding by a degree-six `numpy.polyfit` in elevation radians over 31 raw nodes from 20 through 80 degrees in two-degree steps.
 - The recovered fit uses `T(nu_band)/T(225 GHz)` at the four monochromatic frequencies; it does not integrate a TolTEC passband.
 - The isolated degree-six ratio fit has worst recovered raw-node correction error `0.024111%` (q75/a2000). The owner-required full-sample-airmass anchor reconstruction using repair-base coefficients has worst raw-anchor error `0.427091%` (q75/a1100). This is not a claim about the current application correction; its missing sample-airmass factor remains separate mandatory repair scope.
 - A post-hoc raw q50 leave-one-model-out check, predicted linearly in line-of-sight optical depth from raw q25 and q75, has worst correction error `0.012264%` (a1400). Using the full-airmass q25/q75 anchor reconstructions gives `0.243563%` (a1400). q50 was already inspected during provenance recovery, so this is not a preregistered or blinded holdout and not a full-domain result.
 - The recovered nominal-frequency q25/q50/q75 raw surfaces have zero increasing-opacity or increasing-elevation monotonicity violations at line-of-sight-tau tolerance `1e-12`.
 - Frozen phase-0 evidence finds material hard-selector discontinuities in all 36 tested above-q25 boundary/band/elevation rows; a continuous operator remains scientifically motivated.
-- All three diagnostic candidates preserve the exact source anchors and approved zero-to-q25 identity, remain finite and positive, and are opacity-monotone on the 30--80 degree diagnostic grid.
-- Candidate disagreement at above-q25 interval midpoints is at most `0.259200%`; legacy-fit leave-one-anchor-out error is at most `0.313498%`. Neither statistic is independent raw truth.
-- Every exact-anchor candidate inherits the q95/a2000 elevation feature: `0.839827%` maximum wrong-way correction excursion on the 0.1-degree grid. Its disposition should follow inspection of the missing q95 raw calculation.
+- The diagnostic exact-anchor candidates preserve source anchors and the approved zero-to-q25 identity, remain finite and positive, and are opacity-monotone. They do **not** pass strict elevation monotonicity: every exact-anchor candidate inherits the q95/a2000 feature, with a `0.839827%` maximum wrong-way correction excursion on the 0.1-degree grid. Because raw q95 is absent, this cannot yet be classified as a physical feature or representation artifact; it may not be silently waived.
+- C1 tests the legacy-anchor candidates against 16 in-support copied AM 12.2 profiles. Its a1100 maximum correction error exceeds one percent for both piecewise linear (`1.738766%`) and PCHIP (`1.738068%`). C1 is post-discovery stress evidence, not a blinded generic-lineage holdout, but it does not support authorization.
+- A distinct native GCC-15 AM 12.2 build exactly reproduces all five parsed fields and numeric lines for all `180/180` annual cases. All cases retain the accepted unresolved-line warning/status 1. Co-staging and matching output-build identity do not prove that the exact copied Linux ELF generated the historical files.
+- R1 passes its preregistered 0.1% frequency-resolution diagnostic: the 10-MHz maximum correction difference from 1 MHz is `0.000340%`. Status-1 unresolved-line warnings persist, so this is not a clean software-success or warning-policy decision.
 
-The partial raw errors are comfortably below one percent, but they do not cover q75--q95, independent intermediate profiles in all intervals, or an approved operational domain. They are provisional numerical representation evidence only. They do not establish 5--10% absolute flux accuracy or approximately 5% repeatability.
+Canonical P1 directly ran all 100 copied-profile/H2O-scale hypotheses over 50,001 frequencies and 31 elevations. It preserves 100/100 exact parsed T225 anchors and produces 100 scale, 1,200 metric, and 1,050 coefficient rows. Its 13,667 referenced AM runs comprise 9,792 status-0 anchors and 3,875 complete status-1 full grids; other warnings, errors, and failed canonical attempts are zero.
+
+| Generic target | Separate rank | Rank-one profile | H2O scale | RMS residual | Maximum residual | Maximum correction error (fraction) |
+| --- | --- | --- | ---: | ---: | ---: | ---: |
+| q25 | transmission | MAM5 | `1.81225445269332575` | `0.00511939194` | `0.0226840` | `7.79414741` |
+| q25 | Rayleigh-Jeans | DJF5 | `3.01439309124786581` | `0.777548 K` | `3.5928 K` | `834.500816` |
+| q50 | transmission | MAM25 | `0.915696647246186712` | `0.00323305754` | `0.0195999` | `0.998458439` |
+| q50 | Rayleigh-Jeans | DJF25 | `2.02963214820032256` | `0.604530 K` | `2.2234 K` | `736.370583` |
+| q75 | transmission | DJF50 | `1.88602893644962655` | `0.00156476455` | `0.0103363` | `4.83405417` |
+| q75 | Rayleigh-Jeans | DJF75 | `1.01048455031671569` | `0.492757 K` | `1.8464 K` | `14.1911868` |
+| q95 | nominal ratio surface | DJF25 | `6.88363302058917359` | `0.00541090730` | `0.0188189832` | `0.0119094929` |
+
+Transmission and Rayleigh-Jeans ranks are separate; the correction column for a Rayleigh-Jeans winner is the transmission-derived correction error for that same profile and is not part of its Rayleigh-Jeans rank. No composite score or near-exact cutoff is used. The frozen addendum's descriptive statement that the closest same-percentile family is DJF is not a registered ranking.
+
+P1's complete-grid result is a provenance mismatch: no q25/q50/q75 profile passes one percent over all 0--500 GHz samples. Even the smallest maximum correction errors are `97.968871%` (q25/MAM25), `99.845844%` (q50/MAM25), and `98.987223%` (q75/annual50). This must be distinguished from the legacy nominal frequencies: all 25 hypotheses pass one percent at 272.73, 214.29, and 150.00 GHz for q25/q50/q75, with worst error `0.665829%` at q75/a1100/JJA5. For q95, only the weaker 93-point ratio surface is available; none passes one percent, the best maximum is `1.117452%` (annual25), and the RMS winner's maximum is `1.190949%` (DJF25). For q25/q50/q75, direct copied-AM `atmTaun` is authoritative on the candidate side, while the generic truth NPZs contain only `atmTtx`, so P1 reconstructs truth-side line-of-sight tau as `-log(atmTtx)`. q95 is ratio-only and reconstructs both sides as `-log(T_band/T_225)`. The frozen P1 report and manifest state this authority too broadly; that wording is interpreted as candidate-side-only and is superseded by this package-level clarification.
+
+P1 is post hoc and cannot establish generic custody or serve as an independent operator holdout. The nominal-frequency results are provisional numerical diagnostics only. They do not establish 5--10% absolute flux accuracy or approximately 5% repeatability.
 
 ## Evidence and choices still required
 
-The exact request is machine-readable in `owner_input_request.json`. The blocking decisions are:
+The exact path-aware request is machine-readable in `owner_input_request.json`. After choosing one of the two lineage paths above, the remaining decisions are:
 
-1. Supply the q95 artifact registered as TolTECA datafile ID 461 with expected MD5 `0ca7b331823237767d26016d19bffb3d`, plus SHA-256 custody provenance.
-2. Supply the historical `am` payload, argv/configuration, q profiles, MERRA percentile construction, site/geometry, and output directives if full atmosphere regeneration is required.
-3. Approve physical intermediate-profile runs in each q interval and an operational zenith-opacity/aligned-elevation domain. No extrapolation is authorized. The present 30--80 degree range is diagnostic; recovered raw support is 20--80 degrees.
-4. Choose the spectral lineage: recovered monochromatic convention (recommended here) or a newly versioned band-integrated convention. The latter also requires immutable passbands, detector/array aggregation, normalization, source spectrum, and quadrature rules.
+1. For faithful closure, supply q95 and the exact generic generator/profile/scale/grid custody relationship. For an AM 12.2 successor, explicitly retain those historical facts as unresolved and select the new profile and scale construction instead.
+2. Supply or approve genuinely independent intermediate-opacity model runs. P1 fitted scales and C1 copied profiles were inspected post hoc and are not substitutes.
+3. Resolve every structural gate, including the q95/a2000 elevation-monotonicity feature, and approve exact zenith-opacity/aligned-elevation endpoints only where raw and independent model support exists. No extrapolation is authorized; out-of-domain requests must fail closed.
+4. Choose the spectral convention. The recovered monochromatic 272.73/214.29/150.00-GHz-to-225.00-GHz convention is recommended for faithful closure. Band integration is a separately versioned change requiring immutable passbands, aggregation, normalization, source spectrum, and quadrature rules.
+5. For an AM 12.2 successor, approve the operational handling of its unresolved-line status-1 output; R1 does not make that policy choice.
 
-The proposed eventual domain should be no broader than zenith `tau225` from zero through the source-derived q95 coordinate and aligned elevation from 20 through 80 degrees, and only after q95 verification, raw support, and held-out fidelity exist throughout it. Until then, no exact endpoints are approved and requests outside the owner-declared domain must fail closed.
+No exact opacity or elevation endpoints are approved here.
 
 ## Separate gates and open dependency
 
 Software correctness, atmosphere-representation fidelity, and observational performance remain separate gates. Many samples reduce stochastic error but do not reduce shared calibrator, Beammap-extinction, selector, or airmass systematics.
 
-The late SCI-ALIGN-001 handoff `SCI-CAL-001-XAUD-001` remains open and held for CAL re-audit. Any eventual atmosphere operator may use aligned elevation only with explicit ordered sample identity, timing-gap/interpolation origin, duration, and original-versus-synthesized eligibility. It does not alter the atmosphere equation or justify broader work here.
+Zenith `tau225` must be applied with each eligible sample's full modified-secant airmass and top-of-atmosphere pivot `X_ref=0`. The late SCI-ALIGN-001 handoff `SCI-CAL-001-XAUD-001` remains open and held for CAL re-audit. Any eventual atmosphere operator may use aligned elevation only with explicit ordered sample identity, timing-gap/interpolation origin, duration, and original-versus-synthesized eligibility. It does not alter the atmosphere equation or justify broader work here.
 
 This package stops before Citlali application changes, repair implementation, re-audit, Unity access, or coordination-registry edits.

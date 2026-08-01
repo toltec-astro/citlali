@@ -1,0 +1,1118 @@
+{
+  "amc_inputs": {
+    "canonical_nul_records": {
+      "algorithm": "sha256(basename UTF-8 NUL raw 32-byte SHA-256 NUL)",
+      "sha256": "b7dd766852b4f422bdc861337e04d8f0184732045ea1a06a962560e86d2ce87c"
+    },
+    "canonical_sha256sum_records": {
+      "algorithm": "UTF-8 concatenation in AMC-basename bytewise sort order of sha256<TWO_SPACES>cookbook/sites/LMT/basename<LF>",
+      "sha256": "d3e4d9e1c095ffafb77b22a7d72a988335f36e476e240aadc27b8c23ef0f3bde"
+    },
+    "file_count": 25,
+    "files": [
+      {
+        "bytes": 4841,
+        "filename": "LMT_DJF_25.amc",
+        "path_relative_to_am_root": "LMT_am_inputs/LMT_DJF_25.amc",
+        "release_copy_exact": true,
+        "release_path_relative_to_am_source_root": "cookbook/sites/LMT/LMT_DJF_25.amc",
+        "sha256": "aeeeeb48bef422f2d9392b5d7a3d62ab1887fd9e7c10322d5246d914841ba866"
+      },
+      {
+        "bytes": 4837,
+        "filename": "LMT_DJF_5.amc",
+        "path_relative_to_am_root": "LMT_am_inputs/LMT_DJF_5.amc",
+        "release_copy_exact": true,
+        "release_path_relative_to_am_source_root": "cookbook/sites/LMT/LMT_DJF_5.amc",
+        "sha256": "fcb3b70f44cad98cf0586fede9dcd3b2e35f3cb45023d0485c782c108b25b474"
+      },
+      {
+        "bytes": 4841,
+        "filename": "LMT_DJF_50.amc",
+        "path_relative_to_am_root": "LMT_am_inputs/LMT_DJF_50.amc",
+        "release_copy_exact": true,
+        "release_path_relative_to_am_source_root": "cookbook/sites/LMT/LMT_DJF_50.amc",
+        "sha256": "d7c256d04d922beb51c9f8ab715e5be1a962252580eff2d08ba1be4d206eb5b0"
+      },
+      {
+        "bytes": 4841,
+        "filename": "LMT_DJF_75.amc",
+        "path_relative_to_am_root": "LMT_am_inputs/LMT_DJF_75.amc",
+        "release_copy_exact": true,
+        "release_path_relative_to_am_source_root": "cookbook/sites/LMT/LMT_DJF_75.amc",
+        "sha256": "b63503c7f4170404d18f3797735b64fb947ce73eed35f0315155d0a29d499721"
+      },
+      {
+        "bytes": 4841,
+        "filename": "LMT_DJF_95.amc",
+        "path_relative_to_am_root": "LMT_am_inputs/LMT_DJF_95.amc",
+        "release_copy_exact": true,
+        "release_path_relative_to_am_source_root": "cookbook/sites/LMT/LMT_DJF_95.amc",
+        "sha256": "b87b918b302425ef3d85aeedc285863a987579923289a37b97c6de5c935175e6"
+      },
+      {
+        "bytes": 4841,
+        "filename": "LMT_JJA_25.amc",
+        "path_relative_to_am_root": "LMT_am_inputs/LMT_JJA_25.amc",
+        "release_copy_exact": true,
+        "release_path_relative_to_am_source_root": "cookbook/sites/LMT/LMT_JJA_25.amc",
+        "sha256": "13ea1837e3f2afeb605d8f8e8329472032f27c7a9d526d1b381bd7e75830e9b6"
+      },
+      {
+        "bytes": 4837,
+        "filename": "LMT_JJA_5.amc",
+        "path_relative_to_am_root": "LMT_am_inputs/LMT_JJA_5.amc",
+        "release_copy_exact": true,
+        "release_path_relative_to_am_source_root": "cookbook/sites/LMT/LMT_JJA_5.amc",
+        "sha256": "f5a3a92f41803247da504271eafe8a62af6df51e7a3ec8740c5e89c2b97409fc"
+      },
+      {
+        "bytes": 4841,
+        "filename": "LMT_JJA_50.amc",
+        "path_relative_to_am_root": "LMT_am_inputs/LMT_JJA_50.amc",
+        "release_copy_exact": true,
+        "release_path_relative_to_am_source_root": "cookbook/sites/LMT/LMT_JJA_50.amc",
+        "sha256": "00b86aa0f2331f6a138c8efcc89ed5a4d918baef948f0da55feb114b0df2eb76"
+      },
+      {
+        "bytes": 4841,
+        "filename": "LMT_JJA_75.amc",
+        "path_relative_to_am_root": "LMT_am_inputs/LMT_JJA_75.amc",
+        "release_copy_exact": true,
+        "release_path_relative_to_am_source_root": "cookbook/sites/LMT/LMT_JJA_75.amc",
+        "sha256": "1b54ac2d0d5c7cd8f0805d1117d44ad1ff938ccb74433a93e2a20cbc77b3fc95"
+      },
+      {
+        "bytes": 4841,
+        "filename": "LMT_JJA_95.amc",
+        "path_relative_to_am_root": "LMT_am_inputs/LMT_JJA_95.amc",
+        "release_copy_exact": true,
+        "release_path_relative_to_am_source_root": "cookbook/sites/LMT/LMT_JJA_95.amc",
+        "sha256": "54a4345d487babbffcc9b36b9ccbaec2904b58d35458f6476a382da8d70cf437"
+      },
+      {
+        "bytes": 4841,
+        "filename": "LMT_MAM_25.amc",
+        "path_relative_to_am_root": "LMT_am_inputs/LMT_MAM_25.amc",
+        "release_copy_exact": true,
+        "release_path_relative_to_am_source_root": "cookbook/sites/LMT/LMT_MAM_25.amc",
+        "sha256": "82ac1e2a49a528244c1571daadcc8d42bd6d13c0ba8a7b5d2f81d10ebc13caee"
+      },
+      {
+        "bytes": 4837,
+        "filename": "LMT_MAM_5.amc",
+        "path_relative_to_am_root": "LMT_am_inputs/LMT_MAM_5.amc",
+        "release_copy_exact": true,
+        "release_path_relative_to_am_source_root": "cookbook/sites/LMT/LMT_MAM_5.amc",
+        "sha256": "ecdf228e34ca8f4b0f5930865179fd8afe7c8e602b1863d7ee8ac4352c65351f"
+      },
+      {
+        "bytes": 4841,
+        "filename": "LMT_MAM_50.amc",
+        "path_relative_to_am_root": "LMT_am_inputs/LMT_MAM_50.amc",
+        "release_copy_exact": true,
+        "release_path_relative_to_am_source_root": "cookbook/sites/LMT/LMT_MAM_50.amc",
+        "sha256": "2f282452f3932024be26b4579ed765996c08ff1e74cafb7d2750396d234fa6ac"
+      },
+      {
+        "bytes": 4841,
+        "filename": "LMT_MAM_75.amc",
+        "path_relative_to_am_root": "LMT_am_inputs/LMT_MAM_75.amc",
+        "release_copy_exact": true,
+        "release_path_relative_to_am_source_root": "cookbook/sites/LMT/LMT_MAM_75.amc",
+        "sha256": "937ecf9b3725b03a2745a61546f3659a9506bbaead72afbb41141b51e88a630e"
+      },
+      {
+        "bytes": 4841,
+        "filename": "LMT_MAM_95.amc",
+        "path_relative_to_am_root": "LMT_am_inputs/LMT_MAM_95.amc",
+        "release_copy_exact": true,
+        "release_path_relative_to_am_source_root": "cookbook/sites/LMT/LMT_MAM_95.amc",
+        "sha256": "dc7a3acc1fbc5ce92ef98dd5d00f45db997c6f2680c3c88e485f94bdbac398b2"
+      },
+      {
+        "bytes": 4841,
+        "filename": "LMT_SON_25.amc",
+        "path_relative_to_am_root": "LMT_am_inputs/LMT_SON_25.amc",
+        "release_copy_exact": true,
+        "release_path_relative_to_am_source_root": "cookbook/sites/LMT/LMT_SON_25.amc",
+        "sha256": "e9b06bae87e742801a751270aadd7939f94b39bfb04c7196ecf12c7586cce627"
+      },
+      {
+        "bytes": 4837,
+        "filename": "LMT_SON_5.amc",
+        "path_relative_to_am_root": "LMT_am_inputs/LMT_SON_5.amc",
+        "release_copy_exact": true,
+        "release_path_relative_to_am_source_root": "cookbook/sites/LMT/LMT_SON_5.amc",
+        "sha256": "79a50d0275d026886feefb83e68e88b84801c5e3efa0066edbfc925e2b134926"
+      },
+      {
+        "bytes": 4841,
+        "filename": "LMT_SON_50.amc",
+        "path_relative_to_am_root": "LMT_am_inputs/LMT_SON_50.amc",
+        "release_copy_exact": true,
+        "release_path_relative_to_am_source_root": "cookbook/sites/LMT/LMT_SON_50.amc",
+        "sha256": "b47140d5680449c83327ec8ffaa3a36d2472f7d7d042119d95b84689f06b42b2"
+      },
+      {
+        "bytes": 4841,
+        "filename": "LMT_SON_75.amc",
+        "path_relative_to_am_root": "LMT_am_inputs/LMT_SON_75.amc",
+        "release_copy_exact": true,
+        "release_path_relative_to_am_source_root": "cookbook/sites/LMT/LMT_SON_75.amc",
+        "sha256": "c2d6a7b6aee60639168dfcb03d85dc07b85ed23ea7ea2b8e202033d16c14a770"
+      },
+      {
+        "bytes": 4841,
+        "filename": "LMT_SON_95.amc",
+        "path_relative_to_am_root": "LMT_am_inputs/LMT_SON_95.amc",
+        "release_copy_exact": true,
+        "release_path_relative_to_am_source_root": "cookbook/sites/LMT/LMT_SON_95.amc",
+        "sha256": "a4348f003b44205c9c4f367da42ea9a5962689cdfd6f1c12580c28c853526984"
+      },
+      {
+        "bytes": 4853,
+        "filename": "LMT_annual_25.amc",
+        "path_relative_to_am_root": "LMT_am_inputs/LMT_annual_25.amc",
+        "release_copy_exact": true,
+        "release_path_relative_to_am_source_root": "cookbook/sites/LMT/LMT_annual_25.amc",
+        "sha256": "a9524553a5808a549eb18046a9ed6f8bd67ca1e29ccd1c91e05b351b64ea23e6"
+      },
+      {
+        "bytes": 4849,
+        "filename": "LMT_annual_5.amc",
+        "path_relative_to_am_root": "LMT_am_inputs/LMT_annual_5.amc",
+        "release_copy_exact": true,
+        "release_path_relative_to_am_source_root": "cookbook/sites/LMT/LMT_annual_5.amc",
+        "sha256": "f58921d3cb222965df86b05f89cbf716f92f8193465d18f0106bf09b52fd718d"
+      },
+      {
+        "bytes": 4853,
+        "filename": "LMT_annual_50.amc",
+        "path_relative_to_am_root": "LMT_am_inputs/LMT_annual_50.amc",
+        "release_copy_exact": true,
+        "release_path_relative_to_am_source_root": "cookbook/sites/LMT/LMT_annual_50.amc",
+        "sha256": "ee3946b48db6049b26231ff22d456c8fc2f2dc96ecabd1a861c4d8002c81c3c3"
+      },
+      {
+        "bytes": 4853,
+        "filename": "LMT_annual_75.amc",
+        "path_relative_to_am_root": "LMT_am_inputs/LMT_annual_75.amc",
+        "release_copy_exact": true,
+        "release_path_relative_to_am_source_root": "cookbook/sites/LMT/LMT_annual_75.amc",
+        "sha256": "8e7a250764c8583ef23f9ca140248e62670e3e3d9b709baf005b31c24dc52387"
+      },
+      {
+        "bytes": 4853,
+        "filename": "LMT_annual_95.amc",
+        "path_relative_to_am_root": "LMT_am_inputs/LMT_annual_95.amc",
+        "release_copy_exact": true,
+        "release_path_relative_to_am_source_root": "cookbook/sites/LMT/LMT_annual_95.amc",
+        "sha256": "687218c4633e03f61e179cd41314ca720572eabd6015404fd7a8149e2280b1e5"
+      }
+    ],
+    "total_bytes": 121065
+  },
+  "candidates": {
+    "pchip_los_tau_v0": "fixed linear q0-q25 segment then PCHIP through q25-q95 anchors",
+    "piecewise_linear_los_tau_v0": "piecewise affine through exact legacy LOS-tau anchors"
+  },
+  "copied_raw_outputs": {
+    "all_four_retained_fields_exact_npz": true,
+    "am_identity": "am version 12.2 (build date Aug 26 2022 19:20:13)",
+    "canonical_manifest_algorithm": "UTF-8 concatenation in relative-path bytewise sort order of relative_path<TAB>bytes<TAB>sha256<LF>",
+    "canonical_manifest_sha256": "b9bcdb36952444f4db33549fa621318c5f757dbe36c4b6a11addceb46ec95053",
+    "expected_rows_per_file": 50001,
+    "file_count": 900,
+    "historical_return_disposition": "complete_numeric_outputs_with_nonzero_footer_not_clean_run_proof",
+    "retained_npz_fields": [
+      "f",
+      "tau",
+      "tx",
+      "Trj"
+    ],
+    "return_footer_status_distribution": {
+      "complete_numeric_grid_then_slurm_exit_code_1": 900
+    },
+    "slurm_retry_file_count": 3,
+    "tb_status": {
+      "npz_comparison": "not_applicable_npz_omits_tb",
+      "present_and_finite_in_all_dat_files": true
+    },
+    "total_bytes": 2983517161,
+    "unresolved_line_warning_count_distribution": {
+      "86": 324,
+      "87": 540,
+      "88": 36
+    },
+    "za_to_elevation_mapping": "elevation_deg=90-zenith_angle_deg"
+  },
+  "copied_suite": {
+    "canonical_manifest_definition": "sorted basename\\tbytes\\tsha256\\tmd5\\n",
+    "canonical_manifest_sha256": "18dfd96f4438151197d3b6be5201476f7a71710363d81ec49c801101fa12b3ac",
+    "product_count": 25,
+    "products": [
+      {
+        "amc_input": {
+          "bytes": 4841,
+          "filename": "LMT_DJF_25.amc",
+          "release_copy_exact": true,
+          "sha256": "aeeeeb48bef422f2d9392b5d7a3d62ab1887fd9e7c10322d5246d914841ba866"
+        },
+        "bytes": 57602678,
+        "filename": "LMT_DJF_25.npz",
+        "generic_q_registry_relation": "seasonal_registry_identity_generic_q_artifacts_separate",
+        "legacy_support": "q0_q25",
+        "md5": "3abe83329e39baa734b62f0e87db5a9c",
+        "modified_secant_tau225_coordinate": "4.89121360761550633e-02",
+        "sha256": "b43982166d4755fca5ae2454c151c1cae55637dbb6b1b0a8e9dd3dd5555ef717",
+        "tolteca_registry_identity": {
+          "datafile_id": "466",
+          "md5": "3abe83329e39baa734b62f0e87db5a9c",
+          "name": "am_djf_q25",
+          "status": "exact_seasonal_registry_md5_match"
+        }
+      },
+      {
+        "amc_input": {
+          "bytes": 4837,
+          "filename": "LMT_DJF_5.amc",
+          "release_copy_exact": true,
+          "sha256": "fcb3b70f44cad98cf0586fede9dcd3b2e35f3cb45023d0485c782c108b25b474"
+        },
+        "bytes": 57602678,
+        "filename": "LMT_DJF_5.npz",
+        "generic_q_registry_relation": "seasonal_registry_identity_generic_q_artifacts_separate",
+        "legacy_support": "q0_q25",
+        "md5": "91545dca93d0e9300718b049893b8eea",
+        "modified_secant_tau225_coordinate": "2.51795880137141020e-02",
+        "sha256": "214d9fa975c73afa01a4e1b5c5f068245779989578acd8574831b7fe2b6ed6cc",
+        "tolteca_registry_identity": {
+          "datafile_id": "463",
+          "md5": "91545dca93d0e9300718b049893b8eea",
+          "name": "am_djf_q05",
+          "status": "exact_seasonal_registry_md5_match"
+        }
+      },
+      {
+        "amc_input": {
+          "bytes": 4841,
+          "filename": "LMT_DJF_50.amc",
+          "release_copy_exact": true,
+          "sha256": "d7c256d04d922beb51c9f8ab715e5be1a962252580eff2d08ba1be4d206eb5b0"
+        },
+        "bytes": 57602678,
+        "filename": "LMT_DJF_50.npz",
+        "generic_q_registry_relation": "seasonal_registry_identity_generic_q_artifacts_separate",
+        "legacy_support": "q25_q50",
+        "md5": "004cb342896210fd23d81b329d0246f0",
+        "modified_secant_tau225_coordinate": "8.61204418916275000e-02",
+        "sha256": "57e6eebebe40f0bd1fb9b3a2411a73a1bd4cc0f4762a316af1c23758060a02ec",
+        "tolteca_registry_identity": {
+          "datafile_id": "465",
+          "md5": "004cb342896210fd23d81b329d0246f0",
+          "name": "am_djf_q50",
+          "status": "exact_seasonal_registry_md5_match"
+        }
+      },
+      {
+        "amc_input": {
+          "bytes": 4841,
+          "filename": "LMT_DJF_75.amc",
+          "release_copy_exact": true,
+          "sha256": "b63503c7f4170404d18f3797735b64fb947ce73eed35f0315155d0a29d499721"
+        },
+        "bytes": 57602678,
+        "filename": "LMT_DJF_75.npz",
+        "generic_q_registry_relation": "seasonal_registry_identity_generic_q_artifacts_separate",
+        "legacy_support": "q50_q75",
+        "md5": "e2478719dd67fdbe6ea0d1fb753ab267",
+        "modified_secant_tau225_coordinate": "1.56649920757046951e-01",
+        "sha256": "67f7af72dd94a0c26cdf9759d75345c1d5e53b756418937b9471137c6f10f552",
+        "tolteca_registry_identity": {
+          "datafile_id": "462",
+          "md5": "e2478719dd67fdbe6ea0d1fb753ab267",
+          "name": "am_djf_q75",
+          "status": "exact_seasonal_registry_md5_match"
+        }
+      },
+      {
+        "amc_input": {
+          "bytes": 4841,
+          "filename": "LMT_DJF_95.amc",
+          "release_copy_exact": true,
+          "sha256": "b87b918b302425ef3d85aeedc285863a987579923289a37b97c6de5c935175e6"
+        },
+        "bytes": 57602678,
+        "filename": "LMT_DJF_95.npz",
+        "generic_q_registry_relation": "seasonal_registry_identity_generic_q_artifacts_separate",
+        "legacy_support": "outside_legacy_q0_q95_support_excluded_no_extrapolation",
+        "md5": "dc8e9e15e5df3238d9e5ecdb39e17dd4",
+        "modified_secant_tau225_coordinate": "3.09672305864515274e-01",
+        "sha256": "3dd961143e31a8db8182c35dd55472ad9ec943a711f652f6d55d485ee5ddb42d",
+        "tolteca_registry_identity": {
+          "datafile_id": "464",
+          "md5": "dc8e9e15e5df3238d9e5ecdb39e17dd4",
+          "name": "am_djf_q95",
+          "status": "exact_seasonal_registry_md5_match"
+        }
+      },
+      {
+        "amc_input": {
+          "bytes": 4841,
+          "filename": "LMT_JJA_25.amc",
+          "release_copy_exact": true,
+          "sha256": "13ea1837e3f2afeb605d8f8e8329472032f27c7a9d526d1b381bd7e75830e9b6"
+        },
+        "bytes": 57602678,
+        "filename": "LMT_JJA_25.npz",
+        "generic_q_registry_relation": "seasonal_registry_identity_generic_q_artifacts_separate",
+        "legacy_support": "q75_q95",
+        "md5": "0e677b7ce7f52718584c25c0fbd801c1",
+        "modified_secant_tau225_coordinate": "2.23062390072364891e-01",
+        "sha256": "a8131ade7fdc5d0fa0a036a74f5c911d31023be33e228d29e1b968575baf6ffc",
+        "tolteca_registry_identity": {
+          "datafile_id": "483",
+          "md5": "0e677b7ce7f52718584c25c0fbd801c1",
+          "name": "am_jja_q25",
+          "status": "exact_seasonal_registry_md5_match"
+        }
+      },
+      {
+        "amc_input": {
+          "bytes": 4837,
+          "filename": "LMT_JJA_5.amc",
+          "release_copy_exact": true,
+          "sha256": "f5a3a92f41803247da504271eafe8a62af6df51e7a3ec8740c5e89c2b97409fc"
+        },
+        "bytes": 57602678,
+        "filename": "LMT_JJA_5.npz",
+        "generic_q_registry_relation": "seasonal_registry_identity_generic_q_artifacts_separate",
+        "legacy_support": "q50_q75",
+        "md5": "5eae399cba2948630164230c461e24e6",
+        "modified_secant_tau225_coordinate": "8.90615139014721696e-02",
+        "sha256": "72e151b610c350ff8790ff1827d35822d6b1985081a2aec19e5d7925bf4c417a",
+        "tolteca_registry_identity": {
+          "datafile_id": "474",
+          "md5": "5eae399cba2948630164230c461e24e6",
+          "name": "am_jja_q05",
+          "status": "exact_seasonal_registry_md5_match"
+        }
+      },
+      {
+        "amc_input": {
+          "bytes": 4841,
+          "filename": "LMT_JJA_50.amc",
+          "release_copy_exact": true,
+          "sha256": "00b86aa0f2331f6a138c8efcc89ed5a4d918baef948f0da55feb114b0df2eb76"
+        },
+        "bytes": 57602678,
+        "filename": "LMT_JJA_50.npz",
+        "generic_q_registry_relation": "seasonal_registry_identity_generic_q_artifacts_separate",
+        "legacy_support": "outside_legacy_q0_q95_support_excluded_no_extrapolation",
+        "md5": "c866c558d1c6c1d20e323927dde1df6c",
+        "modified_secant_tau225_coordinate": "3.49370578169591717e-01",
+        "sha256": "1ecdb57022d15882ecacfe2f9038c9d27a2cbcf379fd45104c18ffa01cd60650",
+        "tolteca_registry_identity": {
+          "datafile_id": "478",
+          "md5": "c866c558d1c6c1d20e323927dde1df6c",
+          "name": "am_jja_q50",
+          "status": "exact_seasonal_registry_md5_match"
+        }
+      },
+      {
+        "amc_input": {
+          "bytes": 4841,
+          "filename": "LMT_JJA_75.amc",
+          "release_copy_exact": true,
+          "sha256": "1b54ac2d0d5c7cd8f0805d1117d44ad1ff938ccb74433a93e2a20cbc77b3fc95"
+        },
+        "bytes": 57602678,
+        "filename": "LMT_JJA_75.npz",
+        "generic_q_registry_relation": "seasonal_registry_identity_generic_q_artifacts_separate",
+        "legacy_support": "outside_legacy_q0_q95_support_excluded_no_extrapolation",
+        "md5": "e0139e6760b2e45f2768bea572b3c081",
+        "modified_secant_tau225_coordinate": "4.55857567720262535e-01",
+        "sha256": "3f3003075f449cc739b579d683c4ff5f087e5982112a250fd53b29c2c0099911",
+        "tolteca_registry_identity": {
+          "datafile_id": "471",
+          "md5": "e0139e6760b2e45f2768bea572b3c081",
+          "name": "am_jja_q75",
+          "status": "exact_seasonal_registry_md5_match"
+        }
+      },
+      {
+        "amc_input": {
+          "bytes": 4841,
+          "filename": "LMT_JJA_95.amc",
+          "release_copy_exact": true,
+          "sha256": "54a4345d487babbffcc9b36b9ccbaec2904b58d35458f6476a382da8d70cf437"
+        },
+        "bytes": 57602678,
+        "filename": "LMT_JJA_95.npz",
+        "generic_q_registry_relation": "seasonal_registry_identity_generic_q_artifacts_separate",
+        "legacy_support": "outside_legacy_q0_q95_support_excluded_no_extrapolation",
+        "md5": "91473b3fbb2fd50fa8ae8afb76fea8c0",
+        "modified_secant_tau225_coordinate": "5.51879821364099077e-01",
+        "sha256": "0e57576febe7f0736a2015bb8e8e85766a1489db81aa09210b16c2a355bc3fa2",
+        "tolteca_registry_identity": {
+          "datafile_id": "468",
+          "md5": "91473b3fbb2fd50fa8ae8afb76fea8c0",
+          "name": "am_jja_q95",
+          "status": "exact_seasonal_registry_md5_match"
+        }
+      },
+      {
+        "amc_input": {
+          "bytes": 4841,
+          "filename": "LMT_MAM_25.amc",
+          "release_copy_exact": true,
+          "sha256": "82ac1e2a49a528244c1571daadcc8d42bd6d13c0ba8a7b5d2f81d10ebc13caee"
+        },
+        "bytes": 57602678,
+        "filename": "LMT_MAM_25.npz",
+        "generic_q_registry_relation": "seasonal_registry_identity_generic_q_artifacts_separate",
+        "legacy_support": "q50_q75",
+        "md5": "074009197665f6c642ca8a9659f6f650",
+        "modified_secant_tau225_coordinate": "9.58205719014873503e-02",
+        "sha256": "9851853d67e8f4b8eb257aec82e9d758d6fba0daaf2348b44bd95a1cd7714195",
+        "tolteca_registry_identity": {
+          "datafile_id": "482",
+          "md5": "074009197665f6c642ca8a9659f6f650",
+          "name": "am_mam_q25",
+          "status": "exact_seasonal_registry_md5_match"
+        }
+      },
+      {
+        "amc_input": {
+          "bytes": 4837,
+          "filename": "LMT_MAM_5.amc",
+          "release_copy_exact": true,
+          "sha256": "ecdf228e34ca8f4b0f5930865179fd8afe7c8e602b1863d7ee8ac4352c65351f"
+        },
+        "bytes": 57602678,
+        "filename": "LMT_MAM_5.npz",
+        "generic_q_registry_relation": "seasonal_registry_identity_generic_q_artifacts_separate",
+        "legacy_support": "q0_q25",
+        "md5": "b0347815c968aea4873fdff8d1d0258e",
+        "modified_secant_tau225_coordinate": "3.33546120544141525e-02",
+        "sha256": "7ddefd6056c932c2233b52f5d0ddec5a7ee6bd4292b1c301477684677d659518",
+        "tolteca_registry_identity": {
+          "datafile_id": "480",
+          "md5": "b0347815c968aea4873fdff8d1d0258e",
+          "name": "am_mam_q05",
+          "status": "exact_seasonal_registry_md5_match"
+        }
+      },
+      {
+        "amc_input": {
+          "bytes": 4841,
+          "filename": "LMT_MAM_50.amc",
+          "release_copy_exact": true,
+          "sha256": "2f282452f3932024be26b4579ed765996c08ff1e74cafb7d2750396d234fa6ac"
+        },
+        "bytes": 57602678,
+        "filename": "LMT_MAM_50.npz",
+        "generic_q_registry_relation": "seasonal_registry_identity_generic_q_artifacts_separate",
+        "legacy_support": "q75_q95",
+        "md5": "1c0b684bb540ddc13bef67e27a8c15bc",
+        "modified_secant_tau225_coordinate": "1.79280143542094317e-01",
+        "sha256": "a6d02472c4b095caf47de7e1685885b82233564b3530764f7f9d43dc380c9720",
+        "tolteca_registry_identity": {
+          "datafile_id": "469",
+          "md5": "1c0b684bb540ddc13bef67e27a8c15bc",
+          "name": "am_mam_q50",
+          "status": "exact_seasonal_registry_md5_match"
+        }
+      },
+      {
+        "amc_input": {
+          "bytes": 4841,
+          "filename": "LMT_MAM_75.amc",
+          "release_copy_exact": true,
+          "sha256": "937ecf9b3725b03a2745a61546f3659a9506bbaead72afbb41141b51e88a630e"
+        },
+        "bytes": 57602678,
+        "filename": "LMT_MAM_75.npz",
+        "generic_q_registry_relation": "seasonal_registry_identity_generic_q_artifacts_separate",
+        "legacy_support": "q75_q95",
+        "md5": "72d39cbcd474622f2ac3874efe0b882b",
+        "modified_secant_tau225_coordinate": "2.94217809001104391e-01",
+        "sha256": "93e411f37396b0be93f641b6cd9d364c0b2f9e887f29db3d203f999fb34cdc3c",
+        "tolteca_registry_identity": {
+          "datafile_id": "473",
+          "md5": "72d39cbcd474622f2ac3874efe0b882b",
+          "name": "am_mam_q75",
+          "status": "exact_seasonal_registry_md5_match"
+        }
+      },
+      {
+        "amc_input": {
+          "bytes": 4841,
+          "filename": "LMT_MAM_95.amc",
+          "release_copy_exact": true,
+          "sha256": "dc7a3acc1fbc5ce92ef98dd5d00f45db997c6f2680c3c88e485f94bdbac398b2"
+        },
+        "bytes": 57602678,
+        "filename": "LMT_MAM_95.npz",
+        "generic_q_registry_relation": "seasonal_registry_identity_generic_q_artifacts_separate",
+        "legacy_support": "outside_legacy_q0_q95_support_excluded_no_extrapolation",
+        "md5": "d24a7e89e50033de830fe9fbb4627bbf",
+        "modified_secant_tau225_coordinate": "4.45636827229329346e-01",
+        "sha256": "6979af52ce7f6491d67537811322e333232c1d68be26d5a6a544c98ee287fc7b",
+        "tolteca_registry_identity": {
+          "datafile_id": "467",
+          "md5": "d24a7e89e50033de830fe9fbb4627bbf",
+          "name": "am_mam_q95",
+          "status": "exact_seasonal_registry_md5_match"
+        }
+      },
+      {
+        "amc_input": {
+          "bytes": 4841,
+          "filename": "LMT_SON_25.amc",
+          "release_copy_exact": true,
+          "sha256": "e9b06bae87e742801a751270aadd7939f94b39bfb04c7196ecf12c7586cce627"
+        },
+        "bytes": 57602678,
+        "filename": "LMT_SON_25.npz",
+        "generic_q_registry_relation": "seasonal_registry_identity_generic_q_artifacts_separate",
+        "legacy_support": "q50_q75",
+        "md5": "6c4384ff61fa00efc59e624946f4e6b6",
+        "modified_secant_tau225_coordinate": "9.90297017273294028e-02",
+        "sha256": "f155f769519302cde304fc214376eb2181cfcd11c33865d74830150e7404c06a",
+        "tolteca_registry_identity": {
+          "datafile_id": "475",
+          "md5": "6c4384ff61fa00efc59e624946f4e6b6",
+          "name": "am_son_q25",
+          "status": "exact_seasonal_registry_md5_match"
+        }
+      },
+      {
+        "amc_input": {
+          "bytes": 4837,
+          "filename": "LMT_SON_5.amc",
+          "release_copy_exact": true,
+          "sha256": "79a50d0275d026886feefb83e68e88b84801c5e3efa0066edbfc925e2b134926"
+        },
+        "bytes": 57602678,
+        "filename": "LMT_SON_5.npz",
+        "generic_q_registry_relation": "seasonal_registry_identity_generic_q_artifacts_separate",
+        "legacy_support": "q0_q25",
+        "md5": "e587b429e123adde3c77f524d59e71e2",
+        "modified_secant_tau225_coordinate": "3.60851326796672658e-02",
+        "sha256": "bdab16e63b5dbd2a2993bd29ed906d1bda91e971bc548fd20044719a375bf880",
+        "tolteca_registry_identity": {
+          "datafile_id": "472",
+          "md5": "e587b429e123adde3c77f524d59e71e2",
+          "name": "am_son_q05",
+          "status": "exact_seasonal_registry_md5_match"
+        }
+      },
+      {
+        "amc_input": {
+          "bytes": 4841,
+          "filename": "LMT_SON_50.amc",
+          "release_copy_exact": true,
+          "sha256": "b47140d5680449c83327ec8ffaa3a36d2472f7d7d042119d95b84689f06b42b2"
+        },
+        "bytes": 57602678,
+        "filename": "LMT_SON_50.npz",
+        "generic_q_registry_relation": "seasonal_registry_identity_generic_q_artifacts_separate",
+        "legacy_support": "q75_q95",
+        "md5": "5d8b89c054e8b9dd6279cad6d1f33854",
+        "modified_secant_tau225_coordinate": "2.56133891268654323e-01",
+        "sha256": "bb56847337c77d0a79052995c544e29ac76c962088771d58994b0b24303e8a68",
+        "tolteca_registry_identity": {
+          "datafile_id": "485",
+          "md5": "5d8b89c054e8b9dd6279cad6d1f33854",
+          "name": "am_son_q50",
+          "status": "exact_seasonal_registry_md5_match"
+        }
+      },
+      {
+        "amc_input": {
+          "bytes": 4841,
+          "filename": "LMT_SON_75.amc",
+          "release_copy_exact": true,
+          "sha256": "c2d6a7b6aee60639168dfcb03d85dc07b85ed23ea7ea2b8e202033d16c14a770"
+        },
+        "bytes": 57602678,
+        "filename": "LMT_SON_75.npz",
+        "generic_q_registry_relation": "seasonal_registry_identity_generic_q_artifacts_separate",
+        "legacy_support": "outside_legacy_q0_q95_support_excluded_no_extrapolation",
+        "md5": "d047c7f6bebfc01242ee9a7898af3165",
+        "modified_secant_tau225_coordinate": "4.20982516664937190e-01",
+        "sha256": "b87cf2bef8233fc320dd3117ef2df78648da2d3ede2c40cf9b830c9d8121b500",
+        "tolteca_registry_identity": {
+          "datafile_id": "481",
+          "md5": "d047c7f6bebfc01242ee9a7898af3165",
+          "name": "am_son_q75",
+          "status": "exact_seasonal_registry_md5_match"
+        }
+      },
+      {
+        "amc_input": {
+          "bytes": 4841,
+          "filename": "LMT_SON_95.amc",
+          "release_copy_exact": true,
+          "sha256": "a4348f003b44205c9c4f367da42ea9a5962689cdfd6f1c12580c28c853526984"
+        },
+        "bytes": 57602678,
+        "filename": "LMT_SON_95.npz",
+        "generic_q_registry_relation": "seasonal_registry_identity_generic_q_artifacts_separate",
+        "legacy_support": "outside_legacy_q0_q95_support_excluded_no_extrapolation",
+        "md5": "072078db4d8ad0fc2f56e51c39c42034",
+        "modified_secant_tau225_coordinate": "5.47214142525118685e-01",
+        "sha256": "86839682b473783004aa1f9c1eb1572afe526aa8ed5985f5a7f33c5053065622",
+        "tolteca_registry_identity": {
+          "datafile_id": "477",
+          "md5": "072078db4d8ad0fc2f56e51c39c42034",
+          "name": "am_son_q95",
+          "status": "exact_seasonal_registry_md5_match"
+        }
+      },
+      {
+        "amc_input": {
+          "bytes": 4853,
+          "filename": "LMT_annual_25.amc",
+          "release_copy_exact": true,
+          "sha256": "a9524553a5808a549eb18046a9ed6f8bd67ca1e29ccd1c91e05b351b64ea23e6"
+        },
+        "bytes": 57602678,
+        "filename": "LMT_annual_25.npz",
+        "generic_q_registry_relation": "no_matching_generic_registry_identity",
+        "legacy_support": "q25_q50",
+        "md5": "e344a36e5e7ba6b701ef3a51d7298c20",
+        "modified_secant_tau225_coordinate": "8.70821430001415681e-02",
+        "sha256": "4dc19a1d4a6da41b8cae51bcdc910fd65f8783cb744d9ea0ae6a8108456abd25",
+        "tolteca_registry_identity": {
+          "datafile_id": null,
+          "md5": null,
+          "name": null,
+          "status": "no_matching_generic_registry_identity"
+        }
+      },
+      {
+        "amc_input": {
+          "bytes": 4849,
+          "filename": "LMT_annual_5.amc",
+          "release_copy_exact": true,
+          "sha256": "f58921d3cb222965df86b05f89cbf716f92f8193465d18f0106bf09b52fd718d"
+        },
+        "bytes": 57602678,
+        "filename": "LMT_annual_5.npz",
+        "generic_q_registry_relation": "no_matching_generic_registry_identity",
+        "legacy_support": "q0_q25",
+        "md5": "0ac0e2d168a3381f606ea5c66567af86",
+        "modified_secant_tau225_coordinate": "3.24770268735913789e-02",
+        "sha256": "3d166853b2be791389a1a4209a4378ef4db1c5f9c84e9610eac248e44ab0ed52",
+        "tolteca_registry_identity": {
+          "datafile_id": null,
+          "md5": null,
+          "name": null,
+          "status": "no_matching_generic_registry_identity"
+        }
+      },
+      {
+        "amc_input": {
+          "bytes": 4853,
+          "filename": "LMT_annual_50.amc",
+          "release_copy_exact": true,
+          "sha256": "ee3946b48db6049b26231ff22d456c8fc2f2dc96ecabd1a861c4d8002c81c3c3"
+        },
+        "bytes": 57602678,
+        "filename": "LMT_annual_50.npz",
+        "generic_q_registry_relation": "no_matching_generic_registry_identity",
+        "legacy_support": "q75_q95",
+        "md5": "64b622906d1a2f86072e80f365da7f5a",
+        "modified_secant_tau225_coordinate": "1.97374421259220556e-01",
+        "sha256": "fc3b1c8ecb3cb966f994539be38c127b35084c6c8153309221508fae81645168",
+        "tolteca_registry_identity": {
+          "datafile_id": null,
+          "md5": null,
+          "name": null,
+          "status": "no_matching_generic_registry_identity"
+        }
+      },
+      {
+        "amc_input": {
+          "bytes": 4853,
+          "filename": "LMT_annual_75.amc",
+          "release_copy_exact": true,
+          "sha256": "8e7a250764c8583ef23f9ca140248e62670e3e3d9b709baf005b31c24dc52387"
+        },
+        "bytes": 57602678,
+        "filename": "LMT_annual_75.npz",
+        "generic_q_registry_relation": "no_matching_generic_registry_identity",
+        "legacy_support": "outside_legacy_q0_q95_support_excluded_no_extrapolation",
+        "md5": "1ee4c300b16da3f6ae1e141629b98aee",
+        "modified_secant_tau225_coordinate": "3.58905541238168924e-01",
+        "sha256": "8ce0cf1a4a839f9a2cdf1699d74d7d29edf8ca63398a127bde48cd95c1f4d0e5",
+        "tolteca_registry_identity": {
+          "datafile_id": null,
+          "md5": null,
+          "name": null,
+          "status": "no_matching_generic_registry_identity"
+        }
+      },
+      {
+        "amc_input": {
+          "bytes": 4853,
+          "filename": "LMT_annual_95.amc",
+          "release_copy_exact": true,
+          "sha256": "687218c4633e03f61e179cd41314ca720572eabd6015404fd7a8149e2280b1e5"
+        },
+        "bytes": 57602678,
+        "filename": "LMT_annual_95.npz",
+        "generic_q_registry_relation": "no_matching_generic_registry_identity",
+        "legacy_support": "outside_legacy_q0_q95_support_excluded_no_extrapolation",
+        "md5": "e696f02045a440b0d690964b880357ed",
+        "modified_secant_tau225_coordinate": "5.19072498635637314e-01",
+        "sha256": "387df474b96a6d59ab7ea5be685498462f8b9ced225b27ccec288162b856e545",
+        "tolteca_registry_identity": {
+          "datafile_id": null,
+          "md5": null,
+          "name": null,
+          "status": "no_matching_generic_registry_identity"
+        }
+      }
+    ],
+    "total_bytes": 1440066950
+  },
+  "excluded_inputs": [
+    {
+      "pattern": "LMT_am_npz/DVUploaderLog*.log",
+      "read_by_generator": false,
+      "reason": "not_scientific_input_may_contain_credentials_and_not_upload_proof"
+    }
+  ],
+  "generated_artifacts": [
+    {
+      "bytes": 6700,
+      "filename": "COPIED_AM_FOLLOWUP_REPORT.md",
+      "sha256": "a12ce7a2c9d457ae9ca01fcbca3d000ae39dda5d44893bf916854adebc42dbc6"
+    },
+    {
+      "bytes": 24093,
+      "filename": "copied_am_annual_fit_coefficients.csv",
+      "sha256": "ee7cb3f2ba00e57f468c3efc32fe288a8d2a76c8628aa8ec5b9ec17fab5fc2b1"
+    },
+    {
+      "bytes": 41419,
+      "filename": "copied_am_legacy_comparison.csv",
+      "sha256": "9ac1c7f93bed1109d8dedcca9c484bcf6e15c9302292165bf65b150b38237e12"
+    },
+    {
+      "bytes": 2680,
+      "filename": "copied_am_operator_stress_metrics.csv",
+      "sha256": "d8c9f2a2989c512dad83bcc9b187d86b0245069c32dfeb5acf36f7df1d793078"
+    },
+    {
+      "bytes": 980664,
+      "filename": "copied_am_operator_stress_rows.csv",
+      "sha256": "df263d87f483f181a626a8925c0f80cb67dc1bf979cd81d75ae2ad62d17603f0"
+    },
+    {
+      "bytes": 17116,
+      "filename": "copied_am_product_inventory.csv",
+      "sha256": "032fb5c35f3ee0279418701d8866e1857f92a99252c6989650a649c101d36ad2"
+    },
+    {
+      "bytes": 332632,
+      "filename": "copied_am_raw_output_inventory.csv",
+      "sha256": "893b0be429f071d053ab5581180e22ac9d21c0f632ad804a375f7d50d5c1016c"
+    }
+  ],
+  "identity": {
+    "copied_suite_identity": "am_12_2_not_historical_legacy_q_identity",
+    "evidence_status": "post_discovery_non_blinded_stress",
+    "operational_domain_authorization": "none",
+    "operator_authorization": "none",
+    "package": "SCI-CAL-001",
+    "repair_base_sha": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
+    "repair_line_evidence_head": "ae99be1cef8c390d0e7490835ffca1f31da7ebc0"
+  },
+  "input_roots": {
+    "copied_am_root": "/Users/gwilson/work_toltec/local_data/AM/Big_Atmosphere",
+    "legacy_source_dir": "/Users/gwilson/GitHub/toltec_beammap/src/toltec_sensitivity",
+    "repo_root": "/Users/gwilson/.codex/worktrees/cdd5/citlali-refactor",
+    "tolteca_root": "/Users/gwilson/GitHub/tolteca"
+  },
+  "legacy_inputs": {
+    "q95_expected_md5_not_present_not_substituted": "0ca7b331823237767d26016d19bffb3d",
+    "raw_q25_q50_q75": [
+      {
+        "filename": "amLMT25.npz",
+        "md5": "008d7fa69aff187a9edf419f3d961b4c",
+        "model": "am_q25",
+        "sha256": "6ddffcd2c68bbc0f6d8f6470eba0d1aa81457dcc2f348fd2d7e44c9dfe48c87b"
+      },
+      {
+        "filename": "amLMT50.npz",
+        "md5": "6ec393672be8af4dfa06a3f4cf9aa32e",
+        "model": "am_q50",
+        "sha256": "1fe6dd2ab7a4d65f445e20c5a8f438eb42884836e7932d86f80c30e235710f81"
+      },
+      {
+        "filename": "amLMT75.npz",
+        "md5": "d6cf4bb27008179ec491864388deac58",
+        "model": "am_q75",
+        "sha256": "adbb8eb974c4e2744c3efb0f627708565f954c4029d9345e4f434699e8843f8e"
+      }
+    ],
+    "repair_files": [
+      {
+        "path": "include/citlali/core/timestream/extinction_model_selection.h",
+        "sha256": "45cf86bbb2318c22514411f6d2a0e0371e22e9e355e61b293d93c628d9f3469d"
+      },
+      {
+        "path": "include/citlali/core/timestream/rtc/calibrate.h",
+        "sha256": "d70a55278227b43cdd7de19bc67e4ddb332524d40e1455c5fa7a80ae5e2d11ee"
+      },
+      {
+        "path": "validation/sci_cal_001_phase0_2026-07-31/generate_q_model_continuity.py",
+        "sha256": "a46211c007bdc1fa11d1408c6db4c4a68264ca00cd383806fd421ba978fffe78"
+      }
+    ]
+  },
+  "limitations": [
+    "The copied AM 12.2 suite is not historical legacy q-model identity.",
+    "The stress was designed after the copied products and candidates were inspected.",
+    "No profile outside the legacy q0-q95 tau225 support is evaluated.",
+    "The test is monochromatic and does not select a band-integrated convention.",
+    "A provisional one-percent numerical stress result is not per-sample physical photometric accuracy.",
+    "No operator or operational opacity/elevation domain is authorized."
+  ],
+  "numeric_environment": {
+    "float_mantissa_bits": 53,
+    "float_radix": 2,
+    "numpy": "2.2.3",
+    "python": "3.13.2",
+    "scipy": "1.15.2"
+  },
+  "protocol_deviation": {
+    "bytes": 2066,
+    "diagnostic_c1_evaluated_identities": [
+      "piecewise_linear_los_tau_v0",
+      "pchip_los_tau_v0"
+    ],
+    "filename": "FOLLOWUP_STUDY_DEVIATION_LOG.md",
+    "frozen_protocol_records": [
+      {
+        "bytes": 8528,
+        "filename": "FOLLOWUP_STUDY_PREREGISTRATION.md",
+        "sha256": "65935dbc906317e984cf2ae8b35c5868a3f216eca2ec6290f2887976892d8457"
+      },
+      {
+        "bytes": 5236,
+        "filename": "FOLLOWUP_STUDY_PROTOCOL_ADDENDUM.md",
+        "sha256": "0d47c11479a1ba0176babd3ea285e2871edbb1341406b6b044cbc53114c51a1d"
+      }
+    ],
+    "sha256": "a3df86366c7869579b3255d9ea8f95cf6827e78018e0a2a83a1640360be1b036",
+    "status": "clarification_only_no_candidate_or_numeric_reinterpretation",
+    "stopped_study_c_identities": [
+      "piecewise_linear_los_tau_v1",
+      "pchip_los_tau_v1"
+    ]
+  },
+  "schema_version": "sci-cal-001-copied-am-followup-manifest-v2",
+  "scientific_conventions": {
+    "fractional_correction_error": "expm1(candidate_los_tau-copied_direct_los_tau)",
+    "interpolation_space": "line_of_sight_optical_depth",
+    "opacity_coordinate": "-log(copied_T225_at_elevation_80deg)/repair_base_modified_secant_airmass_80deg",
+    "outside_support_policy": "exclude_without_extrapolation",
+    "spectral_convention": {
+      "band_frequencies_ghz": {
+        "a1100": "2.72730000000000018e+02",
+        "a1400": "2.14289999999999992e+02",
+        "a2000": "1.50000000000000000e+02"
+      },
+      "bandpass_integration": "not_performed",
+      "kind": "monochromatic_legacy_parity",
+      "reference_ghz": "2.25000000000000000e+02"
+    },
+    "stress_elevation_grid_deg": "20:80:2",
+    "truth": "copied_direct_atmTaun_line_of_sight_neper"
+  },
+  "stress_scope": {
+    "annual_fit_coefficient_contract": "four annual percentiles by three bands by seven descending powers; numpy.polyfit degree six over elevation 20:80:2 in repair-base radians; explicit eight-decimal rounding",
+    "annual_fit_coefficient_row_count": 84,
+    "comparison_cartesian_contract": {
+      "bands": [
+        "a1100",
+        "a1400",
+        "a2000"
+      ],
+      "family_ranking_claim": "none_metric_values_only",
+      "percentiles": [
+        25,
+        50,
+        75,
+        95
+      ],
+      "profile_families": [
+        "annual",
+        "DJF",
+        "MAM",
+        "JJA",
+        "SON"
+      ]
+    },
+    "comparison_row_count": 60,
+    "eligible_profile_count": 16,
+    "excluded_profile_count": 9,
+    "excluded_profiles": [
+      "LMT_DJF_95",
+      "LMT_JJA_50",
+      "LMT_JJA_75",
+      "LMT_JJA_95",
+      "LMT_MAM_95",
+      "LMT_SON_75",
+      "LMT_SON_95",
+      "LMT_annual_75",
+      "LMT_annual_95"
+    ],
+    "metric_row_count": 6,
+    "provisional_threshold_fraction": "1.00000000000000002e-02",
+    "qualification": "post_discovery_non_blinded_numerical_stress_not_photometric_accuracy",
+    "stress_row_count": 2976
+  },
+  "tolteca_registry_provenance": {
+    "annual_product_identity": "no_matching_generic_registry_identity",
+    "commit": "25ccce10bfb50145424c88257a584ab92486ddf1",
+    "generic_q_artifacts": [
+      {
+        "id": "454",
+        "md5": "008d7fa69aff187a9edf419f3d961b4c",
+        "name": "am_q25",
+        "relation_to_copied_suite": "separate_registry_artifact"
+      },
+      {
+        "id": "455",
+        "md5": "6ec393672be8af4dfa06a3f4cf9aa32e",
+        "name": "am_q50",
+        "relation_to_copied_suite": "separate_registry_artifact"
+      },
+      {
+        "id": "456",
+        "md5": "d6cf4bb27008179ec491864388deac58",
+        "name": "am_q75",
+        "relation_to_copied_suite": "separate_registry_artifact"
+      },
+      {
+        "id": "461",
+        "md5": "0ca7b331823237767d26016d19bffb3d",
+        "name": "am_q95",
+        "relation_to_copied_suite": "separate_registry_artifact"
+      }
+    ],
+    "object": "tolteca/simu/lmt/__init__.py",
+    "object_sha256": "5f117c3e5644faf3141ff647ec256f0f0404b9d0ebc1b16218222ee5daed8b72",
+    "seasonal_identities": [
+      {
+        "id": "463",
+        "md5": "91545dca93d0e9300718b049893b8eea",
+        "name": "am_djf_q05"
+      },
+      {
+        "id": "466",
+        "md5": "3abe83329e39baa734b62f0e87db5a9c",
+        "name": "am_djf_q25"
+      },
+      {
+        "id": "465",
+        "md5": "004cb342896210fd23d81b329d0246f0",
+        "name": "am_djf_q50"
+      },
+      {
+        "id": "462",
+        "md5": "e2478719dd67fdbe6ea0d1fb753ab267",
+        "name": "am_djf_q75"
+      },
+      {
+        "id": "464",
+        "md5": "dc8e9e15e5df3238d9e5ecdb39e17dd4",
+        "name": "am_djf_q95"
+      },
+      {
+        "id": "474",
+        "md5": "5eae399cba2948630164230c461e24e6",
+        "name": "am_jja_q05"
+      },
+      {
+        "id": "483",
+        "md5": "0e677b7ce7f52718584c25c0fbd801c1",
+        "name": "am_jja_q25"
+      },
+      {
+        "id": "478",
+        "md5": "c866c558d1c6c1d20e323927dde1df6c",
+        "name": "am_jja_q50"
+      },
+      {
+        "id": "471",
+        "md5": "e0139e6760b2e45f2768bea572b3c081",
+        "name": "am_jja_q75"
+      },
+      {
+        "id": "468",
+        "md5": "91473b3fbb2fd50fa8ae8afb76fea8c0",
+        "name": "am_jja_q95"
+      },
+      {
+        "id": "480",
+        "md5": "b0347815c968aea4873fdff8d1d0258e",
+        "name": "am_mam_q05"
+      },
+      {
+        "id": "482",
+        "md5": "074009197665f6c642ca8a9659f6f650",
+        "name": "am_mam_q25"
+      },
+      {
+        "id": "469",
+        "md5": "1c0b684bb540ddc13bef67e27a8c15bc",
+        "name": "am_mam_q50"
+      },
+      {
+        "id": "473",
+        "md5": "72d39cbcd474622f2ac3874efe0b882b",
+        "name": "am_mam_q75"
+      },
+      {
+        "id": "467",
+        "md5": "d24a7e89e50033de830fe9fbb4627bbf",
+        "name": "am_mam_q95"
+      },
+      {
+        "id": "472",
+        "md5": "e587b429e123adde3c77f524d59e71e2",
+        "name": "am_son_q05"
+      },
+      {
+        "id": "475",
+        "md5": "6c4384ff61fa00efc59e624946f4e6b6",
+        "name": "am_son_q25"
+      },
+      {
+        "id": "485",
+        "md5": "5d8b89c054e8b9dd6279cad6d1f33854",
+        "name": "am_son_q50"
+      },
+      {
+        "id": "481",
+        "md5": "d047c7f6bebfc01242ee9a7898af3165",
+        "name": "am_son_q75"
+      },
+      {
+        "id": "477",
+        "md5": "072078db4d8ad0fc2f56e51c39c42034",
+        "name": "am_son_q95"
+      }
+    ],
+    "seasonal_identity_count": 20,
+    "seasonal_verification": "all_20_copied_seasonal_md5_values_exactly_match_registry"
+  }
+}

@@ -1,0 +1,244 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://toltec.astro.umass.edu/schemas/sci-cal-001/owner-supplied-manifest-v1.json",
+  "title": "SCI-CAL-001 owner-supplied input manifest",
+  "description": "A compact manifest for partial or complete owner responses to SCI-CAL-001-ATM-INPUT-001. It records one selected scientific path, custody status, fact responses, and digest-bound supplied artifacts without pretending to be a complete atmosphere regeneration manifest.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "package_id",
+    "request_id",
+    "submission_date",
+    "owner_path",
+    "historical_generic_lineage_custody_status",
+    "responses",
+    "artifacts"
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "fact_id": {
+      "enum": [
+        "Q95-001",
+        "GEN-001",
+        "GEN-002",
+        "PROF-001",
+        "PROF-002",
+        "SITE-001",
+        "GRID-001",
+        "MID-001",
+        "SPEC-001",
+        "BAND-001-CONDITIONAL",
+        "DOMAIN-001"
+      ]
+    },
+    "response": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fact_id",
+        "disposition",
+        "statement",
+        "artifact_ids"
+      ],
+      "properties": {
+        "fact_id": {
+          "$ref": "#/$defs/fact_id"
+        },
+        "disposition": {
+          "enum": [
+            "evidence_supplied",
+            "partial_evidence_supplied",
+            "owner_choice_approved",
+            "not_applicable_for_selected_path",
+            "unresolved_retained"
+          ]
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "artifact_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "role",
+        "path",
+        "bytes",
+        "sha256",
+        "custody_source",
+        "original_bytes_preserved"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "role": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "md5_registry_identity": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$"
+        },
+        "custody_source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "original_bytes_preserved": {
+          "type": "boolean"
+        }
+      }
+    },
+    "successor_selection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model_id",
+        "model_version",
+        "basis",
+        "profile_family_rule",
+        "frequency_grid_policy",
+        "spectral_convention",
+        "unresolved_line_status_policy",
+        "historical_generic_products_replaced"
+      ],
+      "properties": {
+        "model_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "basis": {
+          "const": "copied_am_12_2"
+        },
+        "profile_family_rule": {
+          "type": "string",
+          "minLength": 1
+        },
+        "frequency_grid_policy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "spectral_convention": {
+          "enum": [
+            "legacy_monochromatic",
+            "band_integrated_new_convention"
+          ]
+        },
+        "unresolved_line_status_policy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "historical_generic_products_replaced": {
+          "const": false
+        }
+      }
+    }
+  },
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "sci-cal-001-owner-supplied-manifest-v1"
+    },
+    "package_id": {
+      "const": "SCI-CAL-001"
+    },
+    "request_id": {
+      "const": "SCI-CAL-001-ATM-INPUT-001"
+    },
+    "submission_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "submitted_by": {
+      "type": "string",
+      "minLength": 1
+    },
+    "owner_path": {
+      "enum": [
+        "faithful_generic_lineage",
+        "versioned_am12_successor"
+      ]
+    },
+    "historical_generic_lineage_custody_status": {
+      "enum": [
+        "unresolved",
+        "partially_resolved",
+        "resolved",
+        "unresolved_retained"
+      ]
+    },
+    "responses": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/response"
+      },
+      "minItems": 1
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/artifact"
+      }
+    },
+    "successor_selection": {
+      "$ref": "#/$defs/successor_selection"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "owner_path": {
+            "const": "versioned_am12_successor"
+          }
+        },
+        "required": [
+          "owner_path"
+        ]
+      },
+      "then": {
+        "required": [
+          "successor_selection"
+        ],
+        "properties": {
+          "historical_generic_lineage_custody_status": {
+            "const": "unresolved_retained"
+          }
+        }
+      }
+    }
+  ]
+}

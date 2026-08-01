@@ -803,7 +803,21 @@ def render_report(
             "",
             "The evidence is insufficient to choose a versioned successor operator or declare an operational opacity/elevation domain. An exact-anchor surface built from the legacy fits cannot simultaneously remove the q95/a2000 elevation feature, and candidate agreement, legacy-fit leave-one-out performance, or the post-hoc raw q50 leave-one-model-out check is not a substitute for preregistered full-domain raw-model fidelity.",
             "",
-            "After the requested raw grid is supplied, evaluate at least the piecewise-linear LOS-tau baseline and monotone PCHIP against preregistered withheld tau/elevation model nodes. Select the simplest candidate that preserves exact approved anchors, positivity, continuity, physical monotonicity, fail-closed support, and no more than one-percent fractional correction error over the owner-declared domain. Observational 5--10% absolute accuracy and approximately 5% repeatability remain separate later gates.",
+            (
+                "After the requested raw grid is supplied, evaluate at least the "
+                "piecewise-linear LOS-tau baseline and monotone PCHIP against "
+                "preregistered withheld tau/elevation model nodes. Select the "
+                "simplest candidate that preserves exact approved anchors, "
+                "positivity, continuity, opacity monotonicity, fail-closed support, "
+                "and no more than one-percent fractional correction error over the "
+                "owner-declared domain. Elevation monotonicity must either pass or "
+                "receive an explicit owner scientific disposition supported by "
+                "recovered raw q95 and independent model evidence. The 0.839827% "
+                "q95/a2000 feature is diagnostic rather than automatically "
+                "release-blocking, but it may not be silently waived. Observational "
+                "5--10% absolute accuracy and approximately 5% repeatability remain "
+                "separate later gates."
+            ),
             "",
         ]
     )
