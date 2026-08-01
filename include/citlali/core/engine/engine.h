@@ -3,7 +3,6 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include <omp.h>
 #include <fstream>
 #include <limits>
 

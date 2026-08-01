@@ -18,7 +18,9 @@
 #include <tula/switch_invoke.h>
 
 #include <cstdlib>
+#if CITLALI_HAS_OPENMP
 #include <omp.h>
+#endif
 #include <regex>
 #include <tuple>
 
@@ -269,7 +271,9 @@ int run(const rc_t &rc) {
                 }
 
                 // set omp parallelization explicitly
+#if CITLALI_HAS_OPENMP
                 omp_set_num_threads(todproc.engine().n_threads);
+#endif
                 // disable eigen underlying parallelization
                 Eigen::setNbThreads(1);
 

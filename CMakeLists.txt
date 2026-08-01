@@ -12,6 +12,9 @@ include(CTest)
 include(GNUInstallDirs)
 list(PREPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
+option(CITLALI_ENABLE_OPENMP "Build with OpenMP parallelism" ON)
+set(CITLALI_HAS_OPENMP "${CITLALI_ENABLE_OPENMP}")
+
 find_package(TulaCMake 3 CONFIG REQUIRED)
 find_package(kidscpp 3.1 CONFIG REQUIRED)
 find_package(
@@ -30,12 +33,13 @@ find_package(
 find_package(Ceres 2.2 CONFIG REQUIRED)
 find_package(Boost 1.83 CONFIG REQUIRED)
 find_package(spectra 1.0 CONFIG REQUIRED)
-find_package(OpenMP REQUIRED COMPONENTS CXX)
+find_package(TulaCfitsio 1 CONFIG REQUIRED)
+if(CITLALI_ENABLE_OPENMP)
+    find_package(OpenMP REQUIRED COMPONENTS CXX)
+endif()
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(FFTW3 REQUIRED IMPORTED_TARGET fftw3)
 find_package(FFTW3Threads REQUIRED)
-pkg_check_modules(CCFITS REQUIRED IMPORTED_TARGET CCfits)
-pkg_check_modules(CFITSIO REQUIRED IMPORTED_TARGET cfitsio)
 
 add_library(citlali_config INTERFACE)
 add_library(citlali::config ALIAS citlali_config)
@@ -91,11 +95,12 @@ target_link_libraries(
         Boost::headers
         PkgConfig::FFTW3
         FFTW3::Threads
-        PkgConfig::CCFITS
-        PkgConfig::CFITSIO
-        OpenMP::OpenMP_CXX
+        tula_deps::cfitsio
         citlali::config
 )
+if(CITLALI_ENABLE_OPENMP)
+    target_link_libraries(citlali PUBLIC OpenMP::OpenMP_CXX)
+endif()
 
 option(CITLALI_BUILD_CLI "Build the Citlali data-reduction CLI" ON)
 if(CITLALI_BUILD_CLI)

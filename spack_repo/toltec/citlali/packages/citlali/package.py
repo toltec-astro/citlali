@@ -4,6 +4,7 @@ from spack.package import (
     depends_on,
     on_package_attributes,
     run_after,
+    variant,
     version,
     working_dir,
 )
@@ -18,21 +19,33 @@ class Citlali(CMakePackage):
 
     version("4.0.0")
 
+    variant(
+        "openmp",
+        default=True,
+        description="Build the pipeline with OpenMP parallelism",
+    )
+
     depends_on("cmake@3.25:", type="build")
     depends_on("cxx", type="build")
     depends_on("pkgconf", type="build")
     depends_on("tula-cmake@3.2.0", type="build")
-    depends_on("kidscpp@3.1.0", type=("build", "link"))
+    depends_on("kidscpp@3.1.0+openmp", when="+openmp", type=("build", "link"))
+    depends_on("kidscpp@3.1.0~openmp", when="~openmp", type=("build", "link"))
     depends_on(
         "tula@3.1.0+ecsv+netcdf+enum+cli+grppi+openmp",
+        when="+openmp",
+        type=("build", "link"),
+    )
+    depends_on(
+        "tula@3.1.0+ecsv+netcdf+enum+cli+grppi~openmp",
+        when="~openmp",
         type=("build", "link"),
     )
     depends_on("ceres-solver@2.2.0", type=("build", "link"))
     depends_on("boost@1.83.0", type=("build", "link"))
     depends_on("spectra@1.0.1", type=("build", "link"))
     depends_on("fftw@3.3.10", type=("build", "link"))
-    depends_on("ccfits@2.6", type=("build", "link"))
-    depends_on("cfitsio@4.3.1", type=("build", "link"))
+    depends_on("tula-cfitsio@1.0.0", type=("build", "link"))
     depends_on("googletest@1.14:~shared", type=("build", "test"))
 
     def cmake_args(self) -> list[str]:
@@ -40,6 +53,7 @@ class Citlali(CMakePackage):
         return [
             self.define("CITLALI_BUILD_CLI", True),
             self.define("CITLALI_BUILD_TESTS", self.run_tests),
+            self.define_from_variant("CITLALI_ENABLE_OPENMP", "openmp"),
         ]
 
     @run_after("build")

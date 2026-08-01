@@ -21,8 +21,15 @@ than carrying a second adapter. The removed Kidscpp multipurpose CLI and sweep
 fitter are not rebuilt inside Citlali.
 
 Citlali directly consumes Ceres, Boost, Spectra, FFTW (including the threaded
-library), CCfits, CFITSIO, Kidscpp, and the Tula capabilities used by its public
-headers.
+library), Kidscpp, and the Tula capabilities used by its public headers. FITS
+I/O uses the `tula-cfitsio` dependency adapter, which supplies the supported
+CFITSIO/CCfits pair through one `tula_deps::cfitsio` target. Spack may satisfy
+the pair from platform externals or build both from source.
+
+OpenMP is the explicit Spack variant `citlali+openmp` (the default). It
+propagates consistently to Kidscpp and Tula. `citlali~openmp` omits both the
+compile/link dependency and the exported CMake dependency, allowing a native
+Homebrew LLVM 20 portability lane without an undeclared OpenMP runtime.
 
 ## Fresh development machine
 
@@ -75,8 +82,8 @@ target_link_libraries(my_target PRIVATE citlali::citlali)
 ```
 
 `tests/installed_consumer` verifies this contract from the installed prefix,
-including transitive NetCDF, FFTW threads, CCfits/CFITSIO, Ceres, Kidscpp, and
-Tula metadata.
+including transitive NetCDF, FFTW threads, the `TulaCfitsio` adapter, Ceres,
+Kidscpp, and Tula metadata.
 
 ## Validation
 
