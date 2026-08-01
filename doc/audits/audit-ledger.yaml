@@ -684,6 +684,7 @@ packages:
       authorization_scope: ordinary_ALIGN_return_coordination_only
       record_path: >-
         doc/audits/packages/SCI-ALIGN-001_PHASE_ZERO_COORDINATOR_REVIEW_2026-08-01.md
+      record_commit: dbebd17627870963789d142fe385ab05268573da
       record_sha256: >-
         e87f619452f4839241e78ced4b2c6b70efba7735c4f4ff50255bc79a716bd17b
       evidence_branch: codex/repair-sci-align-001
@@ -774,6 +775,7 @@ packages:
       phase_zero_evidence_commit: 53c7154a3633dfe19dc036cfb5a6250f729a897d
       phase_zero_review: >-
         doc/audits/packages/SCI-ALIGN-001_PHASE_ZERO_COORDINATOR_REVIEW_2026-08-01.md
+      phase_zero_review_commit: dbebd17627870963789d142fe385ab05268573da
       next_gate: >-
         Resolve ALIGN-P0-D001 through ALIGN-P0-D005 and record the reviewed
         active-field registry before phase-one fixtures or any application edit.
@@ -1452,6 +1454,8 @@ packages:
         Ordinary AST audit/handoff and ALIGN return coordination only; no
         composition-framework amendment or closure-pilot authorization.
       audit_package_merge_commit: 83f429f1cbca435a9cd9630b39d3b19e08ab08dc
+      coordinator_integration_commit: dbebd17627870963789d142fe385ab05268573da
+      canonical_handoff_registry_commit: dbebd17627870963789d142fe385ab05268573da
       coordinator_review_path: >-
         doc/audits/packages/SCI-AST-001_COORDINATOR_DECISION_BRIEF_2026-08-01.md
       coordinator_review_sha256: >-
@@ -1712,6 +1716,7 @@ packages:
       status: pending_project_owner
       path: >-
         doc/audits/packages/SCI-AST-001_COORDINATOR_DECISION_BRIEF_2026-08-01.md
+      record_commit: dbebd17627870963789d142fe385ab05268573da
       sha256: >-
         9082395e9dde810bd58b31a7cdb0aa6b11a5ebea85565ff1510a5cff25623114
       decision_ids:
