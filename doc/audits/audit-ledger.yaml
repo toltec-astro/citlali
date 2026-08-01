@@ -631,6 +631,22 @@ packages:
       doc/audits/packages/SCI-ALIGN-001_SCIENTIFIC_CONTRACT_AUDIT.tex
     final_audit_artifact_sha256: >-
       6aaed0e6e16e4c37cd24d15b98346f84024ffd7920bd0524e7a170dbc728a393
+    owner_decision:
+      status: partial
+      decision_date: 2026-08-01
+      record_path: >-
+        doc/audits/packages/SCI-ALIGN-001_COORDINATOR_DECISION_2026-08-01.md
+      approved_decisions:
+        - id: ALIGN-OD1-grid-clock-model
+          status: approved_with_compatibility_guard
+      pending_decisions:
+        - ALIGN-OD2-offset-and-header-authority
+        - ALIGN-OD3-variable-topology
+        - ALIGN-OD4-gap-bounds-and-action
+        - ALIGN-OD5-scan-policy-and-identity
+        - ALIGN-OD6-synthesized-eligibility
+        - ALIGN-OD7-mapping-covariance-response
+        - ALIGN-OD8-hwpr-separation-and-interim-production
     dispatch:
       status: frozen_for_dispatch
       coordinator_registry_commit: 99bfa3562ecfa05c0c10de24a255a6a18ff313d2
@@ -710,7 +726,6 @@ packages:
          severity: P1, evidence_basis: derived, confidence: high,
          status: open, owner: coordinator_and_target_packages}
     unresolved_scientific_decisions:
-      - ALIGN-OD1-grid-clock-model
       - ALIGN-OD2-offset-and-header-authority
       - ALIGN-OD3-variable-topology
       - ALIGN-OD4-gap-bounds-and-action
