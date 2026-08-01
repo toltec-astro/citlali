@@ -5,6 +5,8 @@
 __pycache__/
 *.py[cod]
 foo/
+/logs/
+/unity-*.txt
 tests/cmake_test_discovery_*.json
 spack/environments/**/.spack-env/
 spack/environments/**/.spack-view/
