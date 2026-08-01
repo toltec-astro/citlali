@@ -1,7 +1,7 @@
 # SCI-AST-001 coordinator and scientific-owner decision — 2026-08-01
 
-Status: in progress; `SCI-AST-001-D001` approved with astrometric and layered
-identity compatibility guards; `D002`--`D008` pending
+Status: in progress; `SCI-AST-001-D001` and `D002` approved; `D003`--`D008`
+pending
 
 Package: `SCI-AST-001`
 
@@ -97,11 +97,84 @@ astrometric behavior while requiring explicit stage semantics and a validated,
 layered detector binding without claiming perfect design identity. It changes
 the closure contract for `SCI-AST-001-F013` but does not close that finding or
 `F006`, approve the governing implementation, authorize repair, supply exact
-validation evidence, or decide `SCI-AST-001-D002`--`D008`.
+validation evidence, or decide any other AST owner question.
+
+## SCI-AST-001-D002 — TAN operational domain and invalidity
+
+Decision: approved with an open-forward-hemisphere domain, explicit validity,
+and fail-closed consumer policy.
+
+### Issue
+
+The assessed forward TAN implementation maps `abs(D) < epsilon` to `(0,0)` and
+accepts `D < 0`. A singular or back-hemisphere direction can therefore become
+indistinguishable from a valid source at map center. Finite but enormous
+coordinates can also reach geometry or integer-pixel consumers without one
+authoritative coordinate-validity operator.
+
+### Approved contract
+
+- Require finite projection center and direction inputs. Compute the declared
+  TAN denominator `D` without replacing it by a compatibility sentinel.
+- The mathematical forward-projection domain requires finite `D > 0`.
+  Non-finite `D` or `D <= 0` is out of domain. Do not use a near-zero epsilon
+  branch to map either side of the singularity to center, and do not clamp an
+  invalid direction to a map edge.
+- Do not introduce an additional fixed minimum denominator or maximum angular
+  radius in this decision. A tighter operational radius may be added only when
+  derived from a supported map footprint, preregistered independently of the
+  candidate, and recorded in requested/effective/resolved/realized state. It
+  must not redefine the ordinary demonstrated astrometry.
+- Require finite continuous tangent coordinates. Non-finite input,
+  out-of-domain `D`, or non-finite projection output produces an explicit
+  coordinate-invalid state with a reason; `(0,0)`, NaN alone, an edge pixel,
+  or an inherited signal flag is not the validity state.
+- Keep projection validity distinct from ALIGN eligibility, signal flags, and
+  product support. An already-ineligible input remains excluded. A valid TAN
+  coordinate outside a declared map/WCS footprint is explicitly outside that
+  product's support and is excluded before integer conversion; it is not
+  relabeled as a projection failure or clamped into the map.
+- If an otherwise eligible sample lacks a valid required TAN coordinate, the
+  required coordinate-dependent product and reduction fail rather than
+  silently losing the sample. A globally invalid projection center or
+  singular/inconsistent required WCS fails setup.
+- Every coordinate consumer must admit the explicit validity and continuous
+  support state before geometry, rounding, mapmaking, fitting, feedback, or
+  persistence.
+
+### Mandatory compatibility and falsification gates
+
+- The projection center maps exactly to `(0,0)` and existing representative
+  approximately one-square-degree center, edge, and corner source locations
+  remain unchanged within preregistered compatibility tolerances.
+- Test finite inputs on both sides of `D = 0`, positive and negative zero, the
+  exact boundary, adjacent representable values, quarter-turn and antipodal
+  cases, and every non-finite input or output. No invalid case may become
+  center, reuse a prior coordinate, or become a finite valid-looking pixel.
+- As `D` approaches zero from the positive side, verify the expected response
+  growth until either finite projection or declared product support ends;
+  never define correctness by the candidate result.
+- Pass forward/inverse TAN round trips over the admitted domain, including
+  near-boundary and longitude-wrap fixtures, to preregistered angular and WCS
+  tolerances.
+- Test the separation among projection-invalid, valid-but-outside-product,
+  and preexisting-ineligible samples through every named consumer. No
+  non-finite or unsupported coordinate reaches integer conversion.
+- Sequential and supported parallel execution must produce identical
+  coordinates, validity reasons, exclusion counts, and required-failure state.
+
+### Effect
+
+`SCI-AST-001-D002` is resolved for contract design. It supplies the domain,
+boundary, invalid representation, and consumer failure policy needed by
+`SCI-AST-001-F001` and `F012`. Both findings remain open until implementation,
+exact repair-SHA local and operational evidence, and fresh re-audit succeed.
+This decision does not select a repair base or authorize repair, Unity work,
+application integration, production expansion, or a tighter approximation
+radius.
 
 ## Pending decisions
 
-- `SCI-AST-001-D002`: TAN operational domain and invalidity.
 - `SCI-AST-001-D003`: frames, epoch, transforms, and longitude topology.
 - `SCI-AST-001-D004`: support modes and time precision.
 - `SCI-AST-001-D005`: accepted nondefault WCS controls.

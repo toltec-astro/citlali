@@ -215,10 +215,10 @@ incorporated without closing the dependency.
 The
 [coordinator decision brief](audits/packages/SCI-AST-001_COORDINATOR_DECISION_BRIEF_2026-08-01.md)
 records `SCI-AST-001-D001` through `D008`. The project owner has approved D001
-with an end-to-end astrometric self-consistency guard in the
+and D002 in the
 [partial decision record](audits/packages/SCI-AST-001_COORDINATOR_DECISION_2026-08-01.md).
-The immutable record was introduced at commit
-`0a17d088aded7fc6c18a59522f5b2b2fce9749ad`. Its policy preserves the
+The cumulative record was first introduced for D001 at commit
+`0a17d088aded7fc6c18a59522f5b2b2fce9749ad`. D001 preserves the
 demonstrated signs, basis, rotation, handedness, and composition
 that place point sources correctly across approximately one-square-degree maps,
 including at corners; document every stage, use explicit boundary adapters,
@@ -226,7 +226,13 @@ and retain a validated layered detector binding. Verified target row order is
 allowed when its observation, network, count, tone order, and artifact
 provenance are admitted; source-Beammap and optional design matches remain
 separate and may not be presented as certain. This does not preserve audited
-invalid-domain, wrap, metadata, or identity defects. D002--D008 remain pending.
+wrap, metadata, or identity defects. D002 admits finite forward TAN only for a
+strictly positive denominator and finite continuous output, represents
+projection invalidity explicitly, blocks invalid or unsupported coordinates
+before integer conversion, and does not impose a new fixed radius. Existing
+ordinary approximately one-square-degree astrometry remains the compatibility
+reference. `SCI-AST-001-F001` and `F012` remain open pending implementation,
+exact evidence, and re-audit. D003--D008 remain pending.
 No AST repair base has been selected, and no repair, Unity request, re-audit,
 application integration, or production expansion is authorized. The
 governing-SHA Unity request remains an unsupplied audit artifact and must not

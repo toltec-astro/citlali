@@ -1472,8 +1472,9 @@ packages:
       note: >-
         The dedicated Ultra audit completed without application changes. Its
         independent core, report, evidence, proposal, and exact identities are
-        integrated; D001 is owner-approved with astrometric and layered
-        detector-binding compatibility guards and D002-D008 remain pending.
+        integrated; D001 and D002 are owner-approved with astrometric,
+        layered detector-binding, and explicit TAN-invalidity guards;
+        D003-D008 remain pending.
     coordination:
       owner_integration_authorization: explicit_2026-08-01
       authorization_scope: >-
@@ -1516,6 +1517,7 @@ packages:
         confidence: high
         status: open
         owner: ast_projection_implementation
+        related_decisions: [SCI-AST-001-D002]
         summary: >-
           Forward TAN maps a near-zero denominator to finite center and accepts
           the back hemisphere, aliasing invalid directions to valid-looking
@@ -1523,6 +1525,13 @@ packages:
         closure_gate: >-
           Implement the approved positive-domain/invalidity contract, propagate
           coordinate validity, pass boundary and round-trip tests, and re-audit.
+        coordinator_closure_clarification:
+          decision_id: SCI-AST-001-D002
+          status: open_pending_implementation_evidence_and_reaudit
+          summary: >-
+            Require finite inputs, D strictly greater than zero, finite
+            continuous output, and explicit invalidity; never alias, clamp, or
+            cast an invalid direction. No tighter fixed radius is approved.
       - id: SCI-AST-001-F002
         class: implementation_defect
         severity: P0
@@ -1664,12 +1673,22 @@ packages:
         confidence: high
         status: open
         owner: ast_boundary_and_consumers
+        related_decisions: [SCI-AST-001-D002]
         summary: >-
           Coordinate validity is not a first-class product or admission
           operator, so consumers can use invalid coordinates.
         closure_gate: >-
           Implement explicit validity and fail-closed propagation through every
           named consumer, then pass invalid-state tests and recipient re-audits.
+        coordinator_closure_clarification:
+          decision_id: SCI-AST-001-D002
+          status: open_pending_implementation_evidence_and_reaudit
+          summary: >-
+            Keep projection invalidity, valid-but-outside-product support, and
+            preexisting ineligibility distinct. Block invalid/unsupported
+            coordinates before integer conversion; an otherwise eligible
+            sample with invalid required TAN coordinates fails the required
+            coordinate-dependent product and reduction.
       - id: SCI-AST-001-F013
         class: implementation_defect
         severity: P0
@@ -1726,9 +1745,6 @@ packages:
           Pass every non-N/A local gate and a fresh exact-successor-SHA Unity
           campaign without required-data skips, then re-audit.
     unresolved_scientific_decisions:
-      - id: SCI-AST-001-D002
-        owner: scientific_astrometry_owner
-        question: TAN operational domain, invalid representation, and failure policy
       - id: SCI-AST-001-D003
         owner: frame_wcs_owner
         question: exact celestial frame, epoch/EOP policy, transforms, and longitude topology
@@ -1768,9 +1784,8 @@ packages:
       decision_date: 2026-08-01
       record_path: >-
         doc/audits/packages/SCI-AST-001_COORDINATOR_DECISION_2026-08-01.md
-      record_commit: 0a17d088aded7fc6c18a59522f5b2b2fce9749ad
       record_sha256: >-
-        9585a287cb302c8998293e3d598776671f58724d90ff3599c5b1016bfae5e8b4
+        2fb2e25ec6f495e9d0a0ddb3c4cb36d6c0192a2d3e6a866908d41fb6d37d41d4
       identity_amendment:
         decision_id: CAL-D002-IDENTITY-001
         path: >-
@@ -1796,8 +1811,27 @@ packages:
             read-only evidence of exact same-observation/target-row spines and
             imperfect cross-observation matching; exact repair-base artifacts
             remain required for repair and re-audit validation.
+        - id: SCI-AST-001-D002
+          status: approved_strict_forward_hemisphere_and_fail_closed_validity
+          authority: project_owner
+          evidence_basis: owner_decision
+          affected_findings:
+            - SCI-AST-001-F001
+            - SCI-AST-001-F012
+          policy: >-
+            Admit forward TAN only for finite inputs, finite D strictly greater
+            than zero, and finite continuous output. Every other case is
+            explicit coordinate invalidity, never center alias, clamp, stale
+            reuse, or ordinary map exclusion. Block invalid coordinates before
+            integer pixels and consumers; a required otherwise-eligible
+            invalid sample fails the required coordinate-dependent product and
+            reduction. Adopt no tighter radius or positive D_min unless
+            independently derived and preregistered from supported footprints.
+          compatibility_evidence: >-
+            Project-owner approval of the coordinator recommendation plus the
+            demonstrated ordinary approximately one-square-degree astrometric
+            domain; exact successor fixtures remain required.
       pending_decisions:
-        - SCI-AST-001-D002
         - SCI-AST-001-D003
         - SCI-AST-001-D004
         - SCI-AST-001-D005
@@ -1805,10 +1839,11 @@ packages:
         - SCI-AST-001-D007
         - SCI-AST-001-D008
       effect: >-
-        Resolves D001 for contract design without approving the governing
-        implementation, closing F006/F013, authorizing repair, or expanding
-        production use. The identity amendment changes the F013 closure
-        contract and also clarifies CAL F004.
+        Resolves D001 and D002 for contract design without approving the
+        governing implementation, closing F001/F006/F012/F013, authorizing
+        repair, or expanding production use. D001's identity amendment changes
+        the F013 closure contract and also clarifies CAL F004; D002 supplies
+        the F001/F012 domain and invalidity closure policy.
     local_evidence:
       - id: SCI-AST-001-LOCAL-001
         path: doc/audits/evidence/SCI-AST-001_LOCAL_EVIDENCE_2026-08-01.yaml
