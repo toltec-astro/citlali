@@ -904,6 +904,7 @@ packages:
         doc/audits/packages/SCI-CAL-001_ATMOSPHERE_OPERATOR_COORDINATOR_REVIEW_2026-08-01.md
       record_sha256: >-
         277acdaae432094944327a5b2ef71ac42e3791ebf68421669575977156fad9c2
+      record_commit: b380291b598630b40c80ce2f7ed38240a1fcd48e
       evidence_branch: codex/sci-cal-001-atmosphere-operator
       evidence_commit: 8b2fc27513eabcac1f4862b18026879f94c34d69
       evidence_parent: ae99be1cef8c390d0e7490835ffca1f31da7ebc0
