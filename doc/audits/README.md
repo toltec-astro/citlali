@@ -120,6 +120,7 @@ amplitude, covariance, response, unit, source-selection, or feedback question.
 **Policy ID:** `FRAMEWORK-EFFORT-001`
 
 **Effective date:** 2026-08-02
+
 **Scope:** future dispatches and future phases only
 
 The program maximizes scientific reliability per unit of Codex usage. Model
@@ -199,6 +200,42 @@ only dispatched choices, departures, and their reasons, so it does not become
 a redundant per-package planning table. Each record names the dispatch ID,
 package ID, phase, exact dispatch commit, model, effort, task shape, rationale,
 Ultra trigger, parallelism/synthesis plan, and stop rule.
+
+## Scope control and coordinator checkpoints
+
+**Policy ID:** `FRAMEWORK-SCOPE-001`
+
+**Effective date:** 2026-08-02
+**Scope:** future dispatches and future phases only
+
+An audit's scientific importance does not authorize unbounded engineering or
+local execution. Every task begins with a coordinator-reviewed scope
+checkpoint before substantive work: application or validation edits, a local
+Citlali reduction, a new executable helper, a new schema or verifier,
+delegation, an independent review, or an external-evidence request. The
+checkpoint is a concise report, not a new framework artifact. It names:
+
+- the exact allowed paths and required deliverables;
+- required versus prohibited execution, including `local Citlali reduction`
+  and human-run Unity evidence;
+- the planned tests and evidence, limited to the named deliverables;
+- any permitted delegation or review; and
+- the first viable artifact and the next mandatory return point.
+
+The task stops for coordinator direction if a new artifact class, executable
+tool, schema, wrapper, verifier, validation campaign, delegation, reduction,
+or scientific/operational interpretation would be needed beyond that report.
+Silence is prohibition. In particular, local Citlali reductions require an
+explicit local-only rationale in the dispatch; Unity is the default reduction
+evidence lane unless a named exception is approved.
+
+The coordinator checks each task at three points: the initial scope
+checkpoint, the first viable artifact, and before costly or local execution.
+The first viable artifact demonstrates the named output only; it does not
+authorize a new generalized control system or a perfection pass. Existing
+scientific gates remain intact, but they are implemented only to the extent
+the dispatch explicitly names. The full incident record and controls are in
+`SCOPE_CONTROL_CORRECTIVE_ACTION_2026-08-02.md`.
 
 ## Authority and evidence
 

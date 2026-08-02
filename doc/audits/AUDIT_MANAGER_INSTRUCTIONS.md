@@ -16,6 +16,23 @@ scientific authority from the project owner to the manager.
 4. State explicitly what the dispatch does not authorize: application edits,
    integration, external execution, repair, production, and subsequent audit
    launches remain separate actions.
+5. Apply `FRAMEWORK-SCOPE-001` before substantive work. The task's first
+   return is a concise scope checkpoint stating exact allowed paths and
+   deliverables; required/prohibited local Citlali reduction and Unity
+   evidence; planned tests; permitted delegation/review; first viable
+   artifact; and the next return point. Silence prohibits a capability.
+6. Do not authorize a local Citlali reduction by implication. Unity is the
+   default reduction-evidence lane. A local reduction requires a written
+   local-only rationale and a named scientific or engineering purpose.
+7. Bound deliverables by their named path and class. A task must return before
+   adding a new executable helper, schema, wrapper, verifier, validation
+   campaign, delegation, independent review, or generalized control system.
+   Do not treat a broad phrase such as “provenance,” “validation,” or
+   “evidence package” as standing authority for such expansion.
+8. Review the task at the scope checkpoint, after its first viable artifact,
+   and before costly or local execution. The first viable artifact proves the
+   named output exists; it is not permission for a perfection or framework
+   construction pass.
 
 ## Before any costly numerical study
 

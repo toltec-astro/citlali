@@ -100,6 +100,21 @@ resource_allocation:
     Record the actual selected profile and any escalation here; retain default
     profiles in the README rather than duplicating them for every package.
   resource_dispatch_history: []
+scope_control:
+  policy_id: FRAMEWORK-SCOPE-001
+  status: active_for_future_dispatches_and_future_phases
+  effective_date: 2026-08-02
+  corrective_action_path: >-
+    doc/audits/SCOPE_CONTROL_CORRECTIVE_ACTION_2026-08-02.md
+  scope: >-
+    Requires coordinator scope checkpoints before substantive work, at the
+    first viable artifact, and before costly or local execution. It does not
+    alter active tasks, frozen artifacts, scientific authority, numerical
+    controls, or completed evidence retroactively.
+  dispatch_record_rule: >-
+    Record the selected execution authority and any approved scope expansion
+    in the phase dispatch record; silence prohibits a capability.
+  scope_change_history: []
 
 controlled_vocabulary:
   tiers: [A, B, C]
@@ -204,6 +219,18 @@ controlled_vocabulary:
     - validation_interpretation
     - re_audit
     - framework_review
+  scope_checkpoint_status:
+    - required
+    - approved
+    - returned_for_direction
+    - waived_for_mechanical_task
+  local_reduction_authority:
+    - prohibited
+    - permitted_with_local_only_rationale
+  unity_evidence_authority:
+    - not_required
+    - human_run_required
+    - human_run_optional
 
 packages:
   - id: SCI-MAP-001

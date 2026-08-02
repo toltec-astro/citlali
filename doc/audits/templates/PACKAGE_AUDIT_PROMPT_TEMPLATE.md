@@ -24,6 +24,27 @@ the repository is large. The dispatch ledger record binds this profile to the
 exact phase and commit; it does not alter the package's scientific authority
 or status axes.
 
+## Mandatory scope checkpoint
+
+Before any substantive work, return the following concise checkpoint and stop
+for coordinator direction. Substantive work includes application or validation
+edits, a local Citlali reduction, a new executable helper, a schema or
+verifier, delegation, an independent review, or an external-evidence request.
+
+- allowed paths and required deliverables: `TO_SET_EXACT_PATHS_AND_OUTPUTS`
+- local Citlali reduction: `TO_SET_PROHIBITED_OR_EXPLICIT_LOCAL_ONLY_RATIONALE`
+- Unity evidence: `TO_SET_NOT_REQUIRED_OR_HUMAN_RUN_REQUIREMENT`
+- allowed tests and evidence: `TO_SET_NAMED_GATES_ONLY`
+- permitted delegation/review: `TO_SET_NONE_OR_EXACT_ROLE_AND_SCOPE`
+- first viable artifact: `TO_SET_SMALLEST_USEFUL_OUTPUT`
+- next coordinator return point: `TO_SET_AFTER_FIRST_ARTIFACT_OR_BEFORE_EXECUTION`
+
+Silence prohibits a capability. Return for coordinator direction before adding
+a new artifact class, executable helper, schema, wrapper, verifier, validation
+campaign, delegation, independent review, local reduction, or a scientific or
+operational interpretation not named above. A first viable artifact does not
+authorize a generalized control system or a perfection pass.
+
 ## Assignment
 
 Audit package:
