@@ -712,7 +712,8 @@ packages:
         tolerances remain unresolved; phase 1, application repair, Unity
         evidence, and re-audit are not authorized.
     phase_zero_owner_decisions:
-      status: partially_resolved_D001_D004_approved_D005_pending
+      status: >-
+        partially_resolved_D001_D004_and_D005_Q1_approved_phase_one_card_pending
       phase_one_authorization: none
       resolved:
         - id: ALIGN-P0-D001
@@ -1001,8 +1002,10 @@ packages:
             released_4x_view: legacy_4x_linear_any_nonzero
             repository_candidate: turnaround_candidate_0x08
             unknown_observed_bits: ["0x02", "0x40"]
-            transition_side: unavailable_pending_D005_evidence
-            scan_selection: no_new_predicate_authorized
+            transition_side: >-
+              no_producer_physical_side_claim_legacy_adapter_only
+            scan_selection: >-
+              owner_approved_legacy_4x_linear_any_nonzero_plus_separate_outside_map_box_for_exact_existing_use_profiles
             outside_map_box: separate_scan_window_condition_not_raw_bit
             header_hold_snapshots:
               - Header.M2.Hold
@@ -1028,8 +1031,56 @@ packages:
             Findings remain open; D005, explicit phase-one authorization,
             application repair, Unity evidence, re-audit, and production
             expansion remain unapproved.
+        - id: ALIGN-P0-D005-Q1-HOLD
+          questions: [D005-Q1-HOLD]
+          authority: project_owner
+          decision_date: 2026-08-02
+          status: >-
+            owner_resolved_by_existing_use_legacy_hold_and_map_box_compatibility_adapter
+          record_path: >-
+            doc/audits/packages/SCI-ALIGN-001_PHASE_ZERO_D005_DECISION_2026-08-02.md
+          record_commit: null
+          record_sha256: >-
+            b43fa095c67c1edecd357efa084763f32f269479528c13843d6d8598e1fe6f1e
+          constrained_by:
+            - ALIGN-P0-D004
+            - ALIGN-OD5
+            - ALIGN-C001
+          affected_findings:
+            - SCI-ALIGN-001-F005
+            - SCI-ALIGN-001-F008
+            - SCI-ALIGN-001-F009
+            - SCI-ALIGN-001-F012
+          evidence_commit: 5a0d64b8f1b9b246b1b5d575c548269823203d22
+          evidence_parent: 53c7154a3633dfe19dc036cfb5a6250f729a897d
+          evidence_package: >-
+            validation/sci_align_001_align_p0_d005_2026-08-01
+          evidence_digest_manifest_sha256: >-
+            149ef430af3223562d9e69b7224703b831f6f56629b2f3c513bf44c40a567bbb
+          report_sha256: >-
+            6edf7a7bd79881c3e7f9809d1da36c56a763bb22cd9e7589e91950351536663a
+          policy: >-
+            For exact admitted existing-use nonpolarimetric raster profiles,
+            combine the named legacy_4x_linear_any_nonzero view with the
+            separately applied governing outside-map-box condition solely as
+            a legacy_inferred segmentation adapter. Preserve every raw bit,
+            make no producer-turn or transition-side claim, and, only if phase
+            one is separately authorized, permit the approved OD5 boundary,
+            context, partial-support, identity, and status repairs using
+            compact/as-requested output.
+          telescope_engineer_request:
+            status: owner_will_request_strict_definition
+            blocking: false
+            arrival_rule: >-
+              Preserve exact provenance, compare to the compatibility adapter,
+              and require an explicit contract amendment before changing
+              predicate, transition placement, or scan behavior.
+          effect: >-
+            Resolves the only new Hold/segmentation authority choice. The
+            final D005 phase-one sequencing card, implementation, Unity
+            evidence, re-audit, and production expansion remain unapproved.
       pending:
-        - ALIGN-P0-D005
+        - ALIGN-P0-D005-PHASE-ONE-SEQUENCING
     dispatch:
       status: frozen_for_dispatch
       coordinator_registry_commit: 99bfa3562ecfa05c0c10de24a255a6a18ff313d2
@@ -1084,7 +1135,8 @@ packages:
       identity_correction_status: corrected
       identity_correction_commit: 35cc8ce246e8e70c569e650be6c1eae2c91b80ef
       proposed_branch: codex/repair-sci-align-001
-      launch_status: phase_zero_complete_paused_for_owner_authority
+      launch_status: >-
+        phase_zero_D005_evidence_complete_hold_policy_approved_phase_one_card_pending
       task_thread_id: 019fbd95-feaa-7b52-a382-b7bd04effa8e
       launch_date: 2026-08-01
       verified_initial_head: 9aae0e669384c5c0c0dda93debc194d6b8dac787
@@ -1093,14 +1145,18 @@ packages:
         generated telescope/HWPR field registry, cadence/phase/tolerance and
         compatibility evidence, then return for owner review.
       phase_zero_evidence_commit: 53c7154a3633dfe19dc036cfb5a6250f729a897d
+      phase_zero_d005_evidence_commit: 5a0d64b8f1b9b246b1b5d575c548269823203d22
+      phase_zero_d005_digest_manifest_sha256: >-
+        149ef430af3223562d9e69b7224703b831f6f56629b2f3c513bf44c40a567bbb
       phase_zero_review: >-
         doc/audits/packages/SCI-ALIGN-001_PHASE_ZERO_COORDINATOR_REVIEW_2026-08-01.md
       phase_zero_review_commit: dbebd17627870963789d142fe385ab05268573da
       next_gate: >-
-        Resolve ALIGN-P0-D005, including the preregistered rate-stratified
-        multi-Beammap protocol, Hold/operator comparison, and maximum
-        telescope bracket duration, before phase-one fixtures or any
-        application edit.
+        Resolve the final ALIGN-P0-D005 phase-one sequencing card. Hold
+        compatibility is owner-approved, but the owner has not yet decided
+        whether unavailable native-rate, multi-Beammap, general telescope-
+        span, changed-product-tolerance, and paired-performance evidence may
+        remain explicit later gates while phase one proceeds.
     repair_base_decision:
       authority: project_owner
       date: 2026-08-01
@@ -1188,10 +1244,33 @@ packages:
           the required local and exact-repair-SHA evidence gates, and complete
           a fresh re-audit.
     unresolved_scientific_decisions:
-      - id: ALIGN-P0-D005
-        questions: [Q13, Q15]
-        issue: compatibility_fixtures_and_preregistered_tolerances
+      - id: ALIGN-P0-D005-PHASE-ONE-SEQUENCING
+        original_questions: [Q13, Q15]
+        questions: [D005-Q2-RATES, D005-Q3-TELESCOPE,
+                    D005-Q4-BASELINE, D005-Q5-RUNTIME,
+                    D005-Q6-SCIENCE-SUPPORT,
+                    D005-Q7-COMBINED-BEAMMAP,
+                    D005-Q8-CHANGED-SCIENCE]
+        issue: >-
+          bounded_phase_one_authorization_with_explicit_evidence_gaps
         constrained_by: [ALIGN-P0-D002, ALIGN-P0-D003, ALIGN-P0-D004]
+        resolved_hold_authority:
+          status: owner_approved_existing_use_compatibility_only
+          decision_id: ALIGN-P0-D005-Q1-HOLD
+          record_path: >-
+            doc/audits/packages/SCI-ALIGN-001_PHASE_ZERO_D005_DECISION_2026-08-02.md
+          policy: >-
+            Use legacy_4x_linear_any_nonzero plus the separate outside-map-box
+            condition only as the named legacy_inferred segmentation adapter;
+            preserve every raw bit and claim no producer-turn or transition-
+            side semantics.
+        remaining_gate: >-
+          Decide whether to approve the recommended minimal phase-one
+          implementation/evidence sequence while retaining unavailable native-
+          rate, general telescope-span, multi-Beammap, nonzero changed-product
+          tolerance, and paired performance evidence as explicit later gates.
+          Until approved, the existing directives below remain prerequisites
+          and phase one remains prohibited.
         validation_directive:
           source: project_owner
           date: 2026-08-01
@@ -1234,6 +1313,7 @@ packages:
         field_span_preregistration: >-
           Freeze the maximum allowed adjacent telescope bracket duration and
           associated validation limit before successor inspection.
+        phase_one_authorized: false
     local_evidence:
       - independent_core_offline_compile_and_13_page_visual_inspection
       - post_freeze_A1_A19_source_trace_at_governing_sha
@@ -1258,6 +1338,26 @@ packages:
           Producer timestamp/anchor and Hold-bit authority, enabled-HWPR
           contract, successor products, and preregistered Hold, field-span,
           timing, scan, source-crossing, centroid, and PSF limits.
+      - id: SCI-ALIGN-001-PHASE0-D005-001
+        status: verified_evidence_owner_input_partially_resolved
+        source_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+        evidence_branch: codex/repair-sci-align-001
+        evidence_commit: 5a0d64b8f1b9b246b1b5d575c548269823203d22
+        evidence_parent: 53c7154a3633dfe19dc036cfb5a6250f729a897d
+        artifact: validation/sci_align_001_align_p0_d005_2026-08-01/REPORT.md
+        sha256: >-
+          6edf7a7bd79881c3e7f9809d1da36c56a763bb22cd9e7589e91950351536663a
+        digest_manifest_sha256: >-
+          149ef430af3223562d9e69b7224703b831f6f56629b2f3c513bf44c40a567bbb
+        established: >-
+          Native-1x slot compatibility, fixed-cohort telescope bracket
+          envelope, historical scan reconstruction, conditional compact scan
+          identities, Hold-hypothesis non-identifiability, cohort/product
+          classifications, and explicit missing native-rate/performance/
+          multi-Beammap/changed-product evidence.
+        owner_resolution: >-
+          D005-Q1-HOLD approved as an existing-use compatibility adapter;
+          final phase-one sequencing remains pending.
     requested_unity_evidence:
       - SCI-ALIGN-001-UNITY-001
     supplied_external_evidence: []
@@ -2458,14 +2558,15 @@ packages:
       dependency_hold:
         package_id: SCI-ALIGN-001
         phase_zero_status: >-
-          partial_owner_resolution_D001_D004_approved_D005_pending
+          D001_D004_and_D005_Hold_approved_phase_one_card_pending
         phase_zero_evidence_commit: 53c7154a3633dfe19dc036cfb5a6250f729a897d
+        phase_zero_d005_evidence_commit: 5a0d64b8f1b9b246b1b5d575c548269823203d22
         required_completion: exact_accepted_and_reaudited_ALIGN_successor
       next_gate: >-
-        Resolve ALIGN-P0-D005, explicitly authorize, complete, and locally
-        validate ALIGN phase one, return the human-run exact-SHA evidence,
-        accept a fresh ALIGN re-audit, and only then select and record the exact
-        AST application base.
+        Resolve the final ALIGN-P0-D005 phase-one sequencing card, complete and
+        locally validate ALIGN phase one, return the human-run exact-SHA
+        evidence, accept a fresh ALIGN re-audit, and only then select and record
+        the exact AST application base.
     repair_base_decision:
       authority: coordinator_dependency_gate
       date: 2026-08-01

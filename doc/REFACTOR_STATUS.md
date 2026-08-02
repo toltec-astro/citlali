@@ -226,13 +226,30 @@ unavailable behavior for every inactive or unresolved field. Enabled HWPR and
 polarization remain unavailable. The complete `Hold` word is preserved;
 released-4.x whole-word/nonzero behavior and historical bit `0x08` are named
 separate non-authoritative views, while `0x02` and `0x40` remain uninterpreted.
-No transition side or new scan predicate is approved. D005 must preregister
-the Hold/operator comparison, telescope bracket limit, and scan/astrometric
-acceptance gates before successor inspection. `ALIGN-P0-D005` is the sole
-remaining substantive phase-zero owner decision.
-Phase one, application repair, Unity evidence, re-audit, and production
-expansion remain unstarted. The approved contract and existing-use-only
-restriction are unchanged.
+The dedicated repair task has now committed the verified D005 evidence and
+preregistration package at
+`5a0d64b8f1b9b246b1b5d575c548269823203d22`, whose parent is the phase-zero
+evidence commit and which contains no application edit. Its checksum-list
+digest is
+`149ef430af3223562d9e69b7224703b831f6f56629b2f3c513bf44c40a567bbb`.
+The project owner approved `D005-Q1-HOLD` in the
+[partial D005 decision record](audits/packages/SCI-ALIGN-001_PHASE_ZERO_D005_DECISION_2026-08-02.md):
+the released-4.x whole-word/any-nonzero view plus the separately applied
+outside-map-box condition is a named `legacy_inferred` raster-segmentation
+adapter for the exact admitted existing-use profiles only. It carries no
+producer bit, turnaround, or transition-side claim; preserves all raw bits;
+adds no routine per-sample state output; and authorizes only the already
+approved compatibility choice. It defines the only permitted Hold/scan scope
+if and when phase one is separately authorized; it does not authorize an
+application edit.
+The owner will request a strict definition from the telescope engineer. Any
+returned producer authority is nonblocking future evidence and requires
+explicit coordinator review and amendment before it can change behavior.
+
+The final D005 phase-one sequencing card remains pending. Phase one,
+application repair, Unity evidence, re-audit, and production expansion remain
+unstarted. The approved contract and existing-use-only restriction are
+unchanged.
 
 ## 2026-08-01 SCI-AST-001 Audit Coordination
 
