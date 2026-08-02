@@ -105,8 +105,10 @@ authority is `telescope.d_fsmp`; the combined temporary capture lane is capped
 at 200 GiB and retained through fresh re-audit; and fresh lightweight TolProj
 projects use verified individual raw-file links with copied small ECSV
 authorities and no `tolproj copy-raw` after link staging. The same task is
-authorized to resume from its verified stop; the existing frozen package and
-MAP application candidate remain immutable. The owner should not fill Unity
+active again on `codex/map-unity-ed1` from its verified stop, bound to
+coordination head `c35333d4090e2bebae422538cb40fc063f7cb71a`; the existing
+frozen package and MAP application candidate remain immutable. The owner
+should not fill Unity
 operational values yet. Unity remains undispatched, external evidence and fresh
 re-audit have not begun, F009/F010 remain
 `addressed_pending_reaudit`, and the named CAL/AST/PTC/VAL dependencies remain

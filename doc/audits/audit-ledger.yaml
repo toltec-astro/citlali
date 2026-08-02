@@ -282,7 +282,7 @@ packages:
         conformity or expand production use.
     unity_campaign_preparation:
       status: >-
-        verified_prepared_not_dispatched_full_ptc_route_approved_successor_task_resume_authorized
+        verified_prepared_not_dispatched_full_ptc_route_approved_successor_task_active
       review_date: 2026-08-02
       review_id: SCI-MAP-001-UNITY-001-COORD-REVIEW-001
       review_path: >-
@@ -352,7 +352,7 @@ packages:
           changes no MAP finding, dependency, conformance, validation,
           production, repair, or re-audit state.
       evidence_protocol_producer_dispatch:
-        status: stopped_once_full_ptc_route_approved_resume_authorized
+        status: dedicated_local_task_active_after_full_ptc_route
         launch_authority: project_owner_explicit_2026-08-02
         dispatch_date: 2026-08-02
         launch_coordination_head: >-
@@ -460,7 +460,7 @@ packages:
             changes no finding, dependency, conformance, validation,
             production, repair, or re-audit state.
         continuation_handoff:
-          status: authorized_pending_task_resume
+          status: existing_task_resumed
           path: >-
             doc/audits/packages/SCI-MAP-001_UNITY_ED2_FULL_PTC_SUCCESSOR_HANDOFF_2026-08-02.md
           sha256: >-
@@ -468,7 +468,12 @@ packages:
           commit: ae2188dd4761afa85a772a1edd6b9d9571fa9d4b
           resume_from_commit: >-
             3e014f11decbcf17ad372391e5e960e6c0c54461
-          resume_coordination_head: null
+          resume_coordination_head: >-
+            c35333d4090e2bebae422538cb40fc063f7cb71a
+          resume_date: 2026-08-02
+          resume_thread_id: 019fc2c5-ca8c-7270-96b9-d9c612c934fb
+          resume_host_id: local
+          resume_effort: ultra
           same_task_required: true
           push_authorized: false
           unity_action_authorized: false
@@ -502,7 +507,7 @@ packages:
             requesting Unity operational values.
         - id: SCI-MAP-001-UNITY-001-GAP-PRODUCER-001
           class: engineering_evidence_preparation_gap
-          status: blocking_successor_task_resume_authorized_under_full_ptc_route
+          status: blocking_successor_task_active_under_full_ptc_route
           design_authority: MAP-UNITY-ED1
           capture_authority: MAP-UNITY-ED2
           original_full_term_representation:
@@ -777,7 +782,7 @@ packages:
         evidence or a finding disposition
     requested_unity_evidence:
       - status: >-
-          prepared_not_dispatched_full_ptc_route_approved_successor_task_resume_authorized
+          prepared_not_dispatched_full_ptc_route_approved_successor_task_active
         request_id: SCI-MAP-001-UNITY-001
         audited_governing_source_sha: >-
           9aae0e669384c5c0c0dda93debc194d6b8dac787
