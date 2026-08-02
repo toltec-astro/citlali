@@ -4,6 +4,7 @@
 // Include this only after Beammap has been declared.
 
 #include <citlali/core/pipeline/reduction_config_accessors.h>
+#include <citlali/core/pipeline/timestream_alignment_state.h>
 
 void Beammap::record_beammap_reference_metadata(
     double ref_det_x_t, double ref_det_y_t) {
@@ -20,7 +21,9 @@ void Beammap::preserve_beammap_raw_detector_offsets() {
 
 void Beammap::populate_beammap_derotation_elevation() {
     // per-detector derotation elevation for altaz beammaps
-    calib.apt["derot_elev"].setConstant(telescope.tel_data["TelElAct"].mean());
+    calib.apt["derot_elev"].setConstant(
+        citlali::pipeline::governing_compatibility_mean(
+            telescope.tel_data["TelElAct"], alignment));
     if (citlali::config::is_altaz_map_pixel_axes(telescope.pixel_axes) &&
         citlali::config::is_detector_map_grouping(
             citlali::pipeline::mapmaking_config(*this).grouping) &&

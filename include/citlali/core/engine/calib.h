@@ -32,13 +32,13 @@ public:
     std::string ignore_hwpr;
 
     // fpga frequency for hwpr
-    double hwpr_fpga_freq;
+    double hwpr_fpga_freq = 0.0;
 
     // apt header
     YAML::Node apt_meta;
 
     // run with hwpr?
-    bool run_hwpr;
+    bool run_hwpr = false;
 
     // network and array names
     Eigen::VectorXI nws, arrays;

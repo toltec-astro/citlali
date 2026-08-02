@@ -8,6 +8,7 @@
 
 #include <tula/datatable.h>
 #include <unordered_map>
+#include <limits>
 #include <stdexcept>
 #include <utility>
 
@@ -16,6 +17,32 @@
 #include <citlali/core/pipeline/kids_external_config.h>
 #include <citlali/core/pipeline/kids_input_validation.h>
 #include <citlali/core/pipeline/kids_tod_channel.h>
+
+namespace citlali::engine_detail {
+
+inline void require_kids_matrix_dimensions(Eigen::Index rows,
+                                           Eigen::Index columns) {
+    if (rows <= 0 || columns < 0 ||
+        (columns != 0 &&
+         rows > std::numeric_limits<Eigen::Index>::max() / columns)) {
+        throw std::overflow_error(
+            "KIDs matrix dimensions are invalid or exceed the Eigen index range");
+    }
+}
+
+inline int checked_kids_slice_index(Eigen::Index value,
+                                    const char *label) {
+    if (value < static_cast<Eigen::Index>(
+                    std::numeric_limits<int>::min()) ||
+        value > static_cast<Eigen::Index>(
+                    std::numeric_limits<int>::max())) {
+        throw std::overflow_error(std::string{label} +
+                                  " exceeds the legacy slice index range");
+    }
+    return static_cast<int>(value);
+}
+
+}  // namespace citlali::engine_detail
 
 /**
  * @brief The KIDs data solver struct
@@ -94,7 +121,7 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
 
     // populate rtc
     template <typename loaded_t>
-    auto populate_rtc(loaded_t &, const int, const int,
+    auto populate_rtc(loaded_t &, Eigen::Index, Eigen::Index,
                       citlali::config::TodType);
 
     // read+solve rawobs directly into rtc matrix (avoids intermediate loaded vector)
@@ -103,7 +130,7 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
                                   Eigen::DenseBase<Derived> &,
                                   std::vector<Eigen::Index> &,
                                   std::vector<Eigen::Index> &,
-                                  const int, const int,
+                                  Eigen::Index, Eigen::Index,
                                   citlali::config::TodType);
 
     // load rawobs with gaps
@@ -116,13 +143,16 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
                           const double);
 
     // populate rtc with gaps
-    template <typename LoadedType, typename DerivedA, typename DerivedB, typename DerivedC, typename DerivedD>
+    template <typename LoadedType, typename DerivedA, typename DerivedB,
+              typename DerivedC, typename GapPermissions,
+              typename DerivedD>
     auto populate_rtc_gaps(LoadedType &, Eigen::DenseBase<DerivedA>&,
                           std::vector<DerivedB>&,
                           std::vector<DerivedC>&,
-                          const int, const double,
+                          const GapPermissions &,
+                          Eigen::Index, const double, const double,
                           Eigen::DenseBase<DerivedD>&,
-                          const int, const int,
+                          Eigen::Index, Eigen::Index,
                           citlali::config::TodType);
 
     // TODO fix the const correctness

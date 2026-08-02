@@ -35,6 +35,7 @@
 #include <citlali/core/pipeline/noise_config_read.h>
 #include <citlali/core/pipeline/noise_execution_plan.h>
 #include <citlali/core/pipeline/noise_provenance.h>
+#include <citlali/core/pipeline/observation_setup_validation.h>
 #include <citlali/core/pipeline/pointing_config_adapter.h>
 #include <citlali/core/pipeline/pointing_config_read.h>
 #include <citlali/core/pipeline/pointing_execution_plan.h>
@@ -206,6 +207,12 @@ struct FakeTelHeaderValue {
 struct FakeTelTime {
     std::vector<double> values = {0.0, 1.0};
 
+    FakeTelTime &operator=(const Eigen::VectorXd &coordinates) {
+        values.assign(coordinates.data(),
+                      coordinates.data() + coordinates.size());
+        return *this;
+    }
+
     double operator()(std::size_t index) const { return values.at(index); }
     std::size_t size() const { return values.size(); }
 };
@@ -229,7 +236,7 @@ struct FakeRawObsMeta {
 struct FakeCalib {
     std::map<std::string, FakeAptColumn> apt;
     std::string ignore_hwpr = "false";
-    bool run_hwpr = true;
+    bool run_hwpr = false;
     int get_apt_calls = 0;
     std::string loaded_apt_path;
     std::vector<std::string> loaded_raw_filenames;
@@ -251,6 +258,7 @@ struct FakeCalib {
     }
 
     void get_hwpr(const std::string &filepath, bool sim_obs) {
+        run_hwpr = true;
         loaded_hwpr = true;
         loaded_hwpr_filepath = filepath;
         loaded_hwpr_sim_obs = sim_obs;
@@ -3956,6 +3964,7 @@ TEST(config_scaffold, reads_interface_sync_offsets_into_typed_request) {
     auto config = tula::config::YamlConfig::from_str(R"yaml(
 interface_sync_offset:
   - toltec0: 0.25
+  - toltec1: 0.0
   - toltec12: -0.125
   - hwpr: 0.5
 )yaml");
@@ -3969,8 +3978,14 @@ interface_sync_offset:
     EXPECT_TRUE(clean);
     EXPECT_FALSE(diagnostics.has_errors());
     EXPECT_DOUBLE_EQ(request.toltec_offset_sec[0], 0.25);
+    EXPECT_DOUBLE_EQ(request.toltec_offset_sec[1], 0.0);
     EXPECT_DOUBLE_EQ(request.toltec_offset_sec[12], -0.125);
     EXPECT_DOUBLE_EQ(request.hwpr_offset_sec, 0.5);
+    EXPECT_TRUE(request.toltec_configured[0]);
+    EXPECT_TRUE(request.toltec_configured[1]);
+    EXPECT_FALSE(request.toltec_configured[2]);
+    EXPECT_TRUE(request.toltec_configured[12]);
+    EXPECT_TRUE(request.hwpr_configured);
 }
 
 TEST(config_scaffold, rejects_interface_sync_duplicates_atomically) {
@@ -4037,6 +4052,83 @@ TEST(config_scaffold, adapts_interface_sync_request_one_way) {
     EXPECT_DOUBLE_EQ(offsets.at("toltec0"), 0.25);
     EXPECT_DOUBLE_EQ(offsets.at("toltec12"), -0.125);
     EXPECT_DOUBLE_EQ(offsets.at("hwpr"), 0.5);
+}
+
+TEST(config_scaffold,
+     tracks_interface_sync_source_and_exactly_once_lifecycle) {
+    citlali::config::InterfaceSyncOffsetConfig request;
+    request.toltec_offset_sec[0] = 0.0;
+    request.toltec_configured[0] = true;
+    request.toltec_offset_sec[1] = 0.125;
+    request.toltec_configured[1] = true;
+    request.hwpr_offset_sec = 0.0;
+    request.hwpr_configured = true;
+    citlali::pipeline::InterfaceSyncState state;
+
+    citlali::pipeline::adapt_interface_sync_config_one_way(request, state);
+
+    ASSERT_EQ(state.offsets.size(), 14U);
+    ASSERT_EQ(state.lifecycle.size(), 15U);
+    const auto &configured_zero =
+        citlali::pipeline::require_interface_offset_record(state, "toltec0");
+    EXPECT_DOUBLE_EQ(configured_zero.requested_sec, 0.0);
+    EXPECT_DOUBLE_EQ(configured_zero.effective_sec, 0.0);
+    EXPECT_EQ(configured_zero.source, "configured_zero");
+    EXPECT_EQ(citlali::pipeline::require_interface_offset_record(
+                  state, "toltec1")
+                  .source,
+              "configured_nonzero");
+    EXPECT_EQ(citlali::pipeline::require_interface_offset_record(
+                  state, "toltec2")
+                  .source,
+              "schema_default_zero");
+    EXPECT_EQ(citlali::pipeline::require_interface_offset_record(
+                  state, "hwpr")
+                  .source,
+              "configured_zero");
+    EXPECT_EQ(citlali::pipeline::require_interface_offset_record(
+                  state, "lmt")
+                  .source,
+              "schema_default_zero");
+
+    citlali::pipeline::begin_interface_sync_observation(state);
+    EXPECT_DOUBLE_EQ(citlali::pipeline::realize_interface_offset(
+                         state, "toltec0", false),
+                     0.0);
+    const auto &realized_zero =
+        citlali::pipeline::require_interface_offset_record(state, "toltec0");
+    EXPECT_EQ(realized_zero.availability,
+              citlali::pipeline::OffsetAvailability::observation_resolved);
+    EXPECT_TRUE(realized_zero.applied_exactly_once);
+    EXPECT_THROW(citlali::pipeline::realize_interface_offset(
+                     state, "toltec0", false),
+                 std::runtime_error);
+
+    EXPECT_THROW(citlali::pipeline::realize_interface_offset(
+                     state, "toltec1", false),
+                 std::runtime_error);
+    const auto &unavailable_nonzero =
+        citlali::pipeline::require_interface_offset_record(state, "toltec1");
+    EXPECT_EQ(unavailable_nonzero.availability,
+              citlali::pipeline::OffsetAvailability::unavailable_authority);
+    EXPECT_FALSE(unavailable_nonzero.applied_exactly_once);
+
+    citlali::pipeline::begin_interface_sync_observation(state);
+    EXPECT_EQ(citlali::pipeline::require_interface_offset_record(
+                  state, "toltec0")
+                  .availability,
+              citlali::pipeline::OffsetAvailability::not_applicable);
+    EXPECT_FALSE(citlali::pipeline::require_interface_offset_record(
+                     state, "toltec0")
+                     .applied_exactly_once);
+    EXPECT_DOUBLE_EQ(citlali::pipeline::realize_interface_offset(
+                         state, "toltec1", true),
+                     0.125);
+    const auto &realized_nonzero =
+        citlali::pipeline::require_interface_offset_record(state, "toltec1");
+    EXPECT_DOUBLE_EQ(realized_nonzero.observation_resolved_sec, 0.125);
+    EXPECT_DOUBLE_EQ(realized_nonzero.realized_sec, 0.125);
+    EXPECT_TRUE(realized_nonzero.applied_exactly_once);
 }
 
 TEST(config_scaffold, validates_timestream_output_selection_values) {
@@ -4988,7 +5080,7 @@ TEST(config_scaffold, writes_observation_tod_output_provenance) {
         citlali::pipeline::timestream_output_provenance_path(output_dir);
     const auto stored = YAML::LoadFile(output_path.string());
     EXPECT_EQ(stored["schema_version"].as<std::string>(),
-              "citlali-timestream-output-provenance-v1");
+              "citlali-timestream-output-provenance-v2");
     EXPECT_EQ(stored["requested"]["chunking"]["mode"].as<std::string>(),
               "number");
     EXPECT_EQ(stored["effective"]["output_type"].as<std::string>(), "both");
@@ -5368,36 +5460,65 @@ TEST(pipeline_preflight, configures_reduction_calibration_when_needed) {
     EXPECT_DOUBLE_EQ(todproc.engine().telescope.fsmp, 122.0);
 }
 
-TEST(pipeline_preflight, resets_simulated_observation_indices) {
+TEST(pipeline_preflight,
+     rejects_simulated_observation_indices_with_hwpr_enabled) {
     FakeEngine engine;
+    engine.calib.run_hwpr = true;
+    engine.alignment.common_time = Eigen::VectorXd::Ones(2);
+    engine.alignment.masks.push_back(Eigen::VectorXi::Ones(2));
+    engine.alignment.gaps.emplace("stale", 3);
+    engine.alignment.grid.initialized = true;
+    engine.alignment.field_registry_version = "stale";
     FakeRawObs rawobs;
     rawobs.kids_items = {
-        {"a.nc", "nw0"},
-        {"b.nc", "nw1"},
-        {"c.nc", "nw2"},
+        {"a.nc", "toltec0"},
+        {"b.nc", "toltec1"},
+        {"c.nc", "toltec2"},
     };
 
-    citlali::pipeline::reset_simulated_observation_indices(engine, rawobs);
+    EXPECT_THROW(citlali::pipeline::reset_simulated_observation_indices(
+                     engine, rawobs),
+                 std::runtime_error);
 
-    EXPECT_EQ(engine.alignment.start_indices,
-              (std::vector<Eigen::Index>{0, 0, 0, 0, 0, 0}));
-    EXPECT_TRUE(engine.alignment.end_indices.empty());
-    EXPECT_EQ(engine.alignment.hwpr_start_index, 0);
-    EXPECT_EQ(engine.alignment.hwpr_end_index, 0);
-}
-
-TEST(pipeline_preflight, leaves_hwpr_indices_when_hwpr_disabled) {
-    FakeEngine engine;
-    engine.calib.run_hwpr = false;
-    FakeRawObs rawobs;
-
-    citlali::pipeline::reset_simulated_observation_indices(engine, rawobs);
-
-    EXPECT_EQ(engine.alignment.start_indices,
-              (std::vector<Eigen::Index>{0, 0, 0, 0}));
+    EXPECT_TRUE(engine.alignment.start_indices.empty());
     EXPECT_TRUE(engine.alignment.end_indices.empty());
     EXPECT_EQ(engine.alignment.hwpr_start_index, -1);
     EXPECT_EQ(engine.alignment.hwpr_end_index, -1);
+    EXPECT_EQ(engine.alignment.common_time.size(), 0);
+    EXPECT_TRUE(engine.alignment.masks.empty());
+    EXPECT_TRUE(engine.alignment.gaps.empty());
+    EXPECT_FALSE(engine.alignment.grid.initialized);
+    EXPECT_TRUE(engine.alignment.field_registry_version.empty());
+}
+
+TEST(pipeline_preflight,
+     realizes_complete_simulated_alignment_when_hwpr_disabled) {
+    FakeEngine engine;
+    engine.calib.run_hwpr = false;
+    engine.telescope.tel_data["TelTime"].values = {0.0, 0.01};
+    FakeRawObs rawobs;
+
+    citlali::pipeline::reset_simulated_observation_indices(engine, rawobs);
+
+    EXPECT_EQ(engine.alignment.start_indices,
+              (std::vector<Eigen::Index>{0, 0}));
+    EXPECT_EQ(engine.alignment.end_indices,
+              (std::vector<Eigen::Index>{1, 1}));
+    EXPECT_EQ(engine.alignment.hwpr_start_index, -1);
+    EXPECT_EQ(engine.alignment.hwpr_end_index, -1);
+    EXPECT_TRUE(engine.alignment.grid.initialized);
+    EXPECT_EQ(engine.alignment.common_time.size(), 2);
+    EXPECT_EQ(engine.alignment.masks.size(), 2U);
+    EXPECT_EQ(engine.alignment.network_times.size(), 2U);
+    EXPECT_EQ(engine.alignment.network_masks.size(), 2U);
+    EXPECT_EQ(engine.alignment.interfaces.size(), 2U);
+    EXPECT_TRUE(engine.alignment.telescope.initialized);
+    EXPECT_EQ(engine.alignment.support.nominal_slot_count, 2U);
+    EXPECT_EQ(engine.alignment.support.acquired_original_count, 4U);
+    EXPECT_EQ(engine.alignment.grid.physical_timestamp_semantics,
+              "unavailable_no_integration_event_authority");
+    EXPECT_EQ(engine.telescope.tel_data.at("TelTime").values,
+              (std::vector<double>{0.0, 0.01}));
 }
 
 TEST(pipeline_preflight, loads_and_aligns_telescope_data) {
@@ -5439,6 +5560,7 @@ TEST(pipeline_preflight, aligns_telescope_data_over_gaps) {
 TEST(pipeline_preflight, resets_indices_for_simulated_telescope_data) {
     FakeTelescopeTodProc todproc;
     todproc.engine().telescope.sim_obs = true;
+    todproc.engine().telescope.tel_data["TelTime"].values = {0.0, 0.01};
     FakeRawObs rawobs;
     auto logger = std::make_shared<FakeLogger>();
 
@@ -5448,8 +5570,14 @@ TEST(pipeline_preflight, resets_indices_for_simulated_telescope_data) {
     EXPECT_EQ(todproc.align_timestreams_calls, 0);
     EXPECT_EQ(todproc.align_timestreams_gaps_calls, 0);
     EXPECT_EQ(todproc.engine().alignment.start_indices,
-              (std::vector<Eigen::Index>{0, 0, 0, 0}));
-    EXPECT_TRUE(todproc.engine().alignment.end_indices.empty());
+              (std::vector<Eigen::Index>{0, 0}));
+    EXPECT_EQ(todproc.engine().alignment.end_indices,
+              (std::vector<Eigen::Index>{1, 1}));
+    EXPECT_EQ(todproc.engine().alignment.hwpr_start_index, -1);
+    EXPECT_EQ(todproc.engine().alignment.hwpr_end_index, -1);
+    EXPECT_TRUE(todproc.engine().alignment.grid.initialized);
+    EXPECT_EQ(todproc.engine().alignment.common_time.size(), 2);
+    EXPECT_EQ(todproc.engine().alignment.masks.size(), 2U);
     EXPECT_EQ(logger->info_calls, 1);
 }
 
@@ -5916,6 +6044,15 @@ TEST(pipeline_preflight, ignores_null_hwpr_filepath) {
     EXPECT_FALSE(engine.calib.loaded_hwpr);
 }
 
+TEST(pipeline_preflight,
+     bounded_align_profile_rejects_any_polarization_request) {
+    EXPECT_THROW(
+        citlali::pipeline::require_bounded_nonpolarimetric_profile(true),
+        citlali::error::Error);
+    EXPECT_NO_THROW(
+        citlali::pipeline::require_bounded_nonpolarimetric_profile(false));
+}
+
 TEST(pipeline_preflight, leaves_hwpr_state_when_not_polarized) {
     FakeEngine engine;
     FakeRawObs rawobs;
@@ -5923,7 +6060,7 @@ TEST(pipeline_preflight, leaves_hwpr_state_when_not_polarized) {
 
     citlali::pipeline::load_hwpr_data_if_requested(engine, rawobs, logger);
 
-    EXPECT_TRUE(engine.calib.run_hwpr);
+    EXPECT_FALSE(engine.calib.run_hwpr);
     EXPECT_FALSE(engine.calib.loaded_hwpr);
 }
 
@@ -8722,7 +8859,9 @@ TEST(config_scaffold, serializes_versioned_raw_timestream_provenance) {
     citlali::pipeline::RawTimestreamExecutionPlan plan;
     citlali::config::InterfaceSyncOffsetConfig interface_sync_request;
     interface_sync_request.toltec_offset_sec[0] = 0.25;
+    interface_sync_request.toltec_configured[0] = true;
     interface_sync_request.hwpr_offset_sec = -0.5;
+    interface_sync_request.hwpr_configured = true;
     plan.reset_from_request(request, interface_sync_request);
     plan.effective.downsample.factor = 3;
     auto &observation = plan.begin_observation();
@@ -8735,6 +8874,17 @@ TEST(config_scaffold, serializes_versioned_raw_timestream_provenance) {
     observation.source_protection_active = false;
     observation.extinction_active = true;
     observation.extinction_model = "am_q50";
+    citlali::pipeline::InterfaceSyncState interface_sync;
+    citlali::pipeline::adapt_interface_sync_config_one_way(
+        interface_sync_request, interface_sync);
+    citlali::pipeline::begin_interface_sync_observation(interface_sync);
+    EXPECT_DOUBLE_EQ(citlali::pipeline::realize_interface_offset(
+                         interface_sync, "toltec0", true),
+                     0.25);
+    EXPECT_DOUBLE_EQ(citlali::pipeline::realize_interface_offset(
+                         interface_sync, "hwpr", true),
+                     -0.5);
+    observation.interface_offsets = interface_sync.lifecycle;
     plan.realized.execution_completed = true;
     plan.realized.completed_scan_count = 12;
     plan.realized.flagged_sample_count = 34;
@@ -8745,7 +8895,7 @@ TEST(config_scaffold, serializes_versioned_raw_timestream_provenance) {
         citlali::pipeline::raw_timestream_provenance_node(plan);
 
     EXPECT_EQ(node["schema_version"].as<std::string>(),
-              "citlali-raw-timestream-provenance-v2");
+              "citlali-raw-timestream-provenance-v3");
     EXPECT_TRUE(node["initialized"].as<bool>());
     EXPECT_EQ(node["requested"]["downsample"]["factor"].as<int>(), 0);
     EXPECT_EQ(
@@ -8757,6 +8907,14 @@ TEST(config_scaffold, serializes_versioned_raw_timestream_provenance) {
             ["toltec0"]
                 .as<double>(),
         0.25);
+    EXPECT_EQ(node["requested"]["interface_sync_offset"]["sources"]
+                  ["toltec0"]
+                      .as<std::string>(),
+              "configured_nonzero");
+    EXPECT_EQ(node["requested"]["interface_sync_offset"]["sources"]
+                  ["toltec1"]
+                      .as<std::string>(),
+              "schema_default_zero");
     EXPECT_DOUBLE_EQ(
         node["effective"]["config"]["interface_sync_offset"]
             ["offsets"]["hwpr"]
@@ -8777,6 +8935,22 @@ TEST(config_scaffold, serializes_versioned_raw_timestream_provenance) {
     EXPECT_TRUE(node["observation"]["value"]
                     ["filter_edge_guard_parity_deferred"]
                         .as<bool>());
+    const auto lifecycle =
+        node["observation"]["value"]["interface_offsets"];
+    ASSERT_EQ(lifecycle.size(), 15U);
+    EXPECT_EQ(lifecycle[0]["interface_id"].as<std::string>(), "toltec0");
+    EXPECT_EQ(lifecycle[0]["source"].as<std::string>(),
+              "configured_nonzero");
+    EXPECT_EQ(lifecycle[0]["sign"].as<std::string>(), "positive_add");
+    EXPECT_EQ(lifecycle[0]["application_stage"].as<std::string>(),
+              "before_ordering_slotting_and_gaps");
+    EXPECT_EQ(lifecycle[0]["availability"].as<std::string>(),
+              "observation_resolved");
+    EXPECT_TRUE(lifecycle[0]["applied_exactly_once"].as<bool>());
+    EXPECT_EQ(lifecycle[13]["interface_id"].as<std::string>(), "hwpr");
+    EXPECT_EQ(lifecycle[14]["interface_id"].as<std::string>(), "lmt");
+    EXPECT_EQ(lifecycle[14]["availability"].as<std::string>(),
+              "not_applicable");
     EXPECT_EQ(node["observation"]["value"]["extinction_model"]["value"]
                   .as<std::string>(),
               "am_q50");
@@ -8823,7 +8997,7 @@ TEST(config_scaffold, atomically_writes_raw_timestream_provenance) {
     EXPECT_FALSE(std::filesystem::exists(output_path.string() + ".tmp"));
     const auto stored = YAML::LoadFile(output_path.string());
     EXPECT_EQ(stored["schema_version"].as<std::string>(),
-              "citlali-raw-timestream-provenance-v2");
+              "citlali-raw-timestream-provenance-v3");
     EXPECT_TRUE(stored["initialized"].as<bool>());
     std::filesystem::remove_all(output_dir);
 }

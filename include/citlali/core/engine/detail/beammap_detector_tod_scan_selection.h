@@ -6,8 +6,10 @@
 
 #include <algorithm>
 #include <cmath>
+#include <limits>
 #include <map>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <utility>
 #include <vector>
@@ -112,7 +114,8 @@ inline void fill_slot_scan_metadata(
     std::vector<int> &slot_inner_end,
     std::vector<int> &slot_outer_start,
     std::vector<int> &slot_outer_end,
-    std::vector<double> &slot_source_distance_arcsec) {
+    std::vector<double> &slot_source_distance_arcsec,
+    Eigen::Index persisted_sample_origin = 0) {
     const auto idx = flat_detector_slot(det, slot, n_slots);
     slot_scan_index[idx] = static_cast<int>(scan_index + 1);
     slot_kind[idx] = slot_kind_value;
@@ -120,10 +123,25 @@ inline void fill_slot_scan_metadata(
         return;
     }
 
-    slot_inner_start[idx] = static_cast<int>(scan_indices(0, scan_index));
-    slot_inner_end[idx] = static_cast<int>(scan_indices(1, scan_index));
-    slot_outer_start[idx] = static_cast<int>(scan_indices(2, scan_index));
-    slot_outer_end[idx] = static_cast<int>(scan_indices(3, scan_index));
+    const auto inner_start =
+        scan_indices(0, scan_index) - persisted_sample_origin;
+    const auto inner_end =
+        scan_indices(1, scan_index) - persisted_sample_origin;
+    const auto outer_start =
+        scan_indices(2, scan_index) - persisted_sample_origin;
+    const auto outer_end =
+        scan_indices(3, scan_index) - persisted_sample_origin;
+    if (inner_start < 0 || inner_end < inner_start || outer_start < 0 ||
+        outer_end < outer_start ||
+        inner_end > std::numeric_limits<int>::max() ||
+        outer_end > std::numeric_limits<int>::max()) {
+        throw std::logic_error(
+            "scan metadata lies outside governing compatibility support");
+    }
+    slot_inner_start[idx] = static_cast<int>(inner_start);
+    slot_inner_end[idx] = static_cast<int>(inner_end);
+    slot_outer_start[idx] = static_cast<int>(outer_start);
+    slot_outer_end[idx] = static_cast<int>(outer_end);
     if (scan_index < static_cast<Eigen::Index>(ptcs.size())) {
         slot_n_samples[idx] = static_cast<int>(ptcs[scan_index].scans.data.rows());
     }

@@ -14,7 +14,7 @@
 namespace citlali::pipeline {
 
 inline constexpr const char *raw_timestream_provenance_schema_version =
-    "citlali-raw-timestream-provenance-v2";
+    "citlali-raw-timestream-provenance-v3";
 inline constexpr const char *raw_timestream_provenance_filename =
     "raw_timestream_provenance.yaml";
 
@@ -36,8 +36,43 @@ inline YAML::Node interface_sync_offset_config_node(
          index < citlali::config::toltec_interface_count; ++index) {
         node["offsets"]["toltec" + std::to_string(index)] =
             config.toltec_offset_sec[index];
+        node["sources"]["toltec" + std::to_string(index)] =
+            config.toltec_configured[index]
+                ? (config.toltec_offset_sec[index] == 0.0
+                       ? "configured_zero"
+                       : "configured_nonzero")
+                : "schema_default_zero";
     }
     node["offsets"]["hwpr"] = config.hwpr_offset_sec;
+    node["sources"]["hwpr"] = config.hwpr_configured
+        ? (config.hwpr_offset_sec == 0.0 ? "configured_zero"
+                                         : "configured_nonzero")
+        : "schema_default_zero";
+    return node;
+}
+
+inline YAML::Node interface_offset_lifecycle_node(
+    const std::vector<InterfaceOffsetLifecycleRecord> &records) {
+    YAML::Node node(YAML::NodeType::Sequence);
+    for (const auto &record : records) {
+        YAML::Node value;
+        value["interface_id"] = record.interface_id;
+        value["requested_sec"] = record.requested_sec;
+        value["effective_sec"] = record.effective_sec;
+        value["observation_resolved_sec"] =
+            record.observation_resolved_sec;
+        value["realized_sec"] = record.realized_sec;
+        value["source"] = record.source;
+        value["sign"] = record.sign;
+        value["reference"] = record.reference;
+        value["unit"] = record.unit;
+        value["application_stage"] = record.application_stage;
+        value["uncertainty"] = record.uncertainty;
+        value["availability"] =
+            std::string{to_string(record.availability)};
+        value["applied_exactly_once"] = record.applied_exactly_once;
+        node.push_back(value);
+    }
     return node;
 }
 
@@ -125,6 +160,8 @@ inline YAML::Node raw_timestream_observation_state_node(
         raw_optional_scalar_node(observation->extinction_active);
     value["extinction_model"] =
         raw_optional_scalar_node(observation->extinction_model);
+    value["interface_offsets"] =
+        interface_offset_lifecycle_node(observation->interface_offsets);
     return node;
 }
 

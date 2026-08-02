@@ -49,8 +49,7 @@ void Beammap::timestream_pipeline(
                     rtcdata, telescope, scan);
 
             citlali::pipeline::populate_rtc_scan_samples(
-                rtcdata, kidsproc, rawobs, scan, telescope, alignment.start_indices,
-                alignment.end_indices, alignment.common_time, alignment.network_times, alignment.masks,
+                rtcdata, kidsproc, rawobs, scan, telescope, alignment,
                 citlali::config::timing_gap_interpolation_active(
                     citlali::pipeline::effective_runtime_values(*this)),
                 scan_length, calib.n_dets,
@@ -94,9 +93,9 @@ auto Beammap::run_timestream(
         citlali::pipeline::initialize_rtc_flags(rtcdata);
         if (citlali::config::timing_gap_interpolation_active(
                 citlali::pipeline::effective_runtime_values(*this))) {
-            citlali::pipeline::apply_gap_masks_to_rtc_flags(
-                rtcdata, calib, alignment.network_masks, scan_window.start,
-                rtcproc.filter_edge_guard.context_samples, logger);
+            citlali::pipeline::apply_planned_gap_dispositions_to_rtc_flags(
+                rtcdata, calib, alignment, rtcdata.index.data,
+                scan_window.start, logger);
         }
 
         // create PTCData

@@ -24,7 +24,26 @@ void add_telescope_data_vars(
     for (const auto &item : tel_data) {
         netCDF::NcVar tel_data_v =
             fo.addVar(item.first, netCDF::ncDouble, n_pts_dim);
-        tel_data_v.putAtt("units", "rad");
+        tel_data_v.putAtt(
+            "units",
+            std::string{sci_align::aligned_telescope_output_unit(item.first)});
+        if (item.first == "TelTime" || item.first == "TelUTC") {
+            tel_data_v.putAtt(
+                "comment",
+                "detector-reference common_time compatibility alias; native telescope epoch/event authority unavailable");
+        }
+        else if (item.first == "Hold") {
+            tel_data_v.putAtt(
+                "long_name",
+                "legacy_4x_linear_any_nonzero compatibility view");
+            tel_data_v.putAtt("value_encoding", "0=false, 1=true");
+            tel_data_v.putAtt(
+                "raw_word_availability",
+                "exact native word retained internally and available only as requested");
+            tel_data_v.putAtt(
+                "comment",
+                "post-nonzero 0/1 output after legacy whole-word linear alignment; not the raw word and not a producer-authoritative Boolean, bit meaning, transition side, or turn state");
+        }
         set_tod_var_chunking(tel_data_v, chunk_mode, chunk_sizes);
     }
 }
@@ -59,4 +78,3 @@ void add_tod_static_metadata_vars(
     add_tod_pointing_offset_vars(
         fo, pointing_offsets, logger, n_pts_dim, chunk_mode, chunk_sizes);
 }
-

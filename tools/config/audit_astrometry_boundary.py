@@ -119,8 +119,10 @@ def audit(repo_root: Path) -> dict[str, object]:
     interpolation_state = {
         "legacy_interpolator_retained": "mlinterp::interp" in interpolation,
         "explicit_bracketing_required": (
-            "xd(0) > engine().telescope.tel_data" in interpolation
-            and "xd(1) < engine().telescope.tel_data" in interpolation
+            "governing_compatibility_start_value" in interpolation
+            and "governing_compatibility_stop_value" in interpolation
+            and "xd(0) > governing_start_time" in interpolation
+            and "xd(1) < governing_stop_time" in interpolation
         ),
         "typed_failures": "citlali::error::" in interpolation,
     }

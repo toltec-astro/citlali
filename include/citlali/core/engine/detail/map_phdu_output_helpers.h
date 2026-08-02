@@ -54,11 +54,12 @@ void add_phdu_beammap_observation_section(
         fits_entry, mb->obsnums, date_obs);
 }
 
-template <class FitsEntry, class MapBuffer, class Telescope, class Calib,
-          class Logger>
+template <class FitsEntry, class MapBuffer, class Telescope, class Alignment,
+          class Calib, class Logger>
 void add_phdu_identity_geometry_section(
     FitsEntry &fits_entry, const MapBuffer &mb, const Telescope &telescope,
-    const Calib &calib, const std::string &array_name,
+    const Alignment &alignment, const Calib &calib,
+    const std::string &array_name,
     const std::string &citlali_version, const std::string &kids_version,
     const std::string &tula_version,
     citlali::config::ReductionType reduction_type,
@@ -82,24 +83,30 @@ void add_phdu_identity_geometry_section(
         fits_entry, array_name, logger, mb->exposure_time,
         telescope.pixel_axes, source_ra, source_dec,
         rad_to_deg * citlali::pipeline::telescope_data_mean(
-                         telescope.tel_data, "TelElAct", 0.0, logger),
+                         telescope.tel_data, alignment, "TelElAct", 0.0,
+                         logger),
         rad_to_deg * citlali::pipeline::telescope_data_mean(
-                         telescope.tel_data, "TelAzAct", 0.0, logger),
+                         telescope.tel_data, alignment, "TelAzAct", 0.0,
+                         logger),
         rad_to_deg * citlali::pipeline::telescope_data_mean(
-                         telescope.tel_data, "ActParAng", 0.0, logger));
+                         telescope.tel_data, alignment, "ActParAng", 0.0,
+                         logger));
 }
 
 template <class FitsEntry, class MapBuffer, class RtcProc, class Telescope,
-          class Calib, class ToltecIo, class ArrayId, class Logger>
+          class Alignment, class Calib, class ToltecIo, class ArrayId,
+          class Logger>
 void add_phdu_extinction_apt_oof_section(
     FitsEntry &fits_entry, const MapBuffer &mb, RtcProc &rtcproc,
-    const Telescope &telescope, const Calib &calib, ToltecIo &toltec_io,
+    const Telescope &telescope, const Alignment &alignment,
+    const Calib &calib, ToltecIo &toltec_io,
     Eigen::Index map_index, const ArrayId &array_id,
     const std::string &array_name, citlali::config::ReductionType reduction_type,
     bool extinction_enabled, const Logger &logger) {
     logger->debug("adding extinction");
     const double mean_tau = citlali::pipeline::phdu_mean_tau(
-        extinction_enabled, rtcproc, telescope, calib, map_index, logger);
+        extinction_enabled, rtcproc, telescope, alignment, calib,
+        map_index, logger);
     citlali::pipeline::add_phdu_double_key(
         fits_entry, array_name, logger, "MEAN_TAU", mean_tau,
         "mean tau (" + array_name + ")");

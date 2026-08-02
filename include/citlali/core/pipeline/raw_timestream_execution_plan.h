@@ -2,12 +2,14 @@
 
 #include <citlali/core/config/interface_sync_config.h>
 #include <citlali/core/config/timestream_config.h>
+#include <citlali/core/pipeline/interface_sync_state.h>
 #include <citlali/core/pipeline/raw_timestream_resolution.h>
 
 #include <cstddef>
 #include <optional>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 namespace citlali::pipeline {
 
@@ -21,6 +23,7 @@ struct RawTimestreamObservationState {
     std::optional<bool> source_protection_active;
     std::optional<bool> extinction_active;
     std::optional<std::string> extinction_model;
+    std::vector<InterfaceOffsetLifecycleRecord> interface_offsets;
 };
 
 struct RawTimestreamRealizedState {

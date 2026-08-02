@@ -165,7 +165,9 @@ Beammap::make_detector_tod_selections(
                 selections.slot_n_samples, selections.slot_inner_start,
                 selections.slot_inner_end, selections.slot_outer_start,
                 selections.slot_outer_end,
-                selections.slot_source_distance_arcsec);
+                selections.slot_source_distance_arcsec,
+                citlali::pipeline::governing_consumer_local_start(
+                    alignment));
             slot++;
         }
         for (const auto scan_index :
@@ -178,7 +180,9 @@ Beammap::make_detector_tod_selections(
                 selections.slot_n_samples, selections.slot_inner_start,
                 selections.slot_inner_end, selections.slot_outer_start,
                 selections.slot_outer_end,
-                selections.slot_source_distance_arcsec);
+                selections.slot_source_distance_arcsec,
+                citlali::pipeline::governing_consumer_local_start(
+                    alignment));
             slot++;
         }
     }

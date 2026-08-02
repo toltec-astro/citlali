@@ -4,7 +4,9 @@
 #include <vector>
 #include <numeric>
 #include <algorithm>
+#include <cmath>
 #include <complex>
+#include <limits>
 #include <stdexcept>
 #include <cstdio>
 #include <cstdlib>
@@ -21,6 +23,7 @@
 #include <tula/algorithm/ei_stats.h>
 
 #include <citlali/core/utils/constants.h>
+#include <citlali/core/utils/slot_assignment.h>
 
 //#include "matplotlibcpp.h"
 
@@ -1184,97 +1187,302 @@ static const bool is_point_in_box(double a, double b, double x, double y, double
     return false;
 }
 
+static void require_interp_output_dimensions(Eigen::Index n_pts,
+                                             Eigen::Index n_dets) {
+    if (n_pts < 0 || n_dets < 0 ||
+        (n_pts != 0 &&
+         n_dets > std::numeric_limits<Eigen::Index>::max() / n_pts)) {
+        throw std::overflow_error(
+            "gap interpolation output dimensions exceed Eigen index range");
+    }
+}
+
 static Eigen::MatrixXd interp_data(
     const Eigen::VectorXd &t_common,
     const Eigen::VectorXi &mask,
     const Eigen::VectorXd &t_valid,
-    const Eigen::MatrixXd &data_valid) {
+    const Eigen::MatrixXd &data_valid,
+    bool allow_gap_synthesis = true,
+    double realized_cadence_seconds =
+        std::numeric_limits<double>::quiet_NaN(),
+    double realized_exclusive_half_cell_seconds =
+        std::numeric_limits<double>::quiet_NaN(),
+    bool synthesis_admission_observation_resolved = false) {
 
-    int n_pts = t_common.size();
-    int n_dets = data_valid.cols();
+    const Eigen::Index n_pts = t_common.size();
+    const Eigen::Index n_dets = data_valid.cols();
 
+    if (mask.size() != n_pts) {
+        throw std::invalid_argument(
+            "gap interpolation mask must match the common time grid");
+    }
+    if (t_valid.size() != data_valid.rows()) {
+        throw std::invalid_argument(
+            "gap interpolation timestamps and data rows must match");
+    }
+    require_interp_output_dimensions(n_pts, n_dets);
     Eigen::MatrixXd result = Eigen::MatrixXd::Zero(n_pts, n_dets);
-
     if (n_pts == 0 || n_dets == 0 || t_valid.size() == 0) {
         return result;
     }
 
-    std::vector<int> valid_indices;
-    valid_indices.reserve(t_valid.size());
-    std::vector<char> filled(n_pts, false);
-
-    // map each valid sample to the nearest t_common index
-    const auto *t_begin = t_common.data();
-    const auto *t_end = t_common.data() + n_pts;
-    for (int k = 0; k < t_valid.size(); ++k) {
-        double t = t_valid(k);
-        auto it = std::lower_bound(t_begin, t_end, t);
-        int idx = -1;
-        if (it == t_begin) {
-            idx = 0;
-        } else if (it == t_end) {
-            idx = n_pts - 1;
-        } else {
-            int right = static_cast<int>(it - t_begin);
-            int left = right - 1;
-            idx = (std::abs(t_common(right) - t) < std::abs(t - t_common(left))) ? right : left;
+    for (Eigen::Index i = 0; i < n_pts; ++i) {
+        if (!std::isfinite(t_common(i)) || (i > 0 &&
+            !(t_common(i) > t_common(i - 1)))) {
+            throw std::invalid_argument(
+                "gap interpolation common time must be finite and strictly increasing");
         }
-
-        if (idx < 0 || idx >= n_pts) {
-            continue;
+        if (mask(i) != 0 && mask(i) != 1) {
+            throw std::invalid_argument(
+                "gap interpolation mask must contain only zero or one");
         }
-        // respect the mask when provided
-        if (mask.size() == n_pts && !mask(idx)) {
-            continue;
-        }
-
-        result.row(idx) = data_valid.row(k);
-        if (!filled[idx]) {
-            valid_indices.push_back(idx);
-            filled[idx] = true;
+    }
+    for (Eigen::Index i = 0; i < t_valid.size(); ++i) {
+        if (!std::isfinite(t_valid(i)) || (i > 0 &&
+            !(t_valid(i) > t_valid(i - 1)))) {
+            throw std::invalid_argument(
+                "gap interpolation native time must be finite and strictly increasing");
         }
     }
 
-    if (valid_indices.empty()) {
-        return result;
+    const bool cadence_supplied =
+        !std::isnan(realized_cadence_seconds);
+    const bool half_cell_supplied =
+        !std::isnan(realized_exclusive_half_cell_seconds);
+    if (cadence_supplied != half_cell_supplied) {
+        throw std::invalid_argument(
+            "gap interpolation realized cadence and half-cell must be supplied together");
     }
 
-    std::sort(valid_indices.begin(), valid_indices.end());
-    valid_indices.erase(std::unique(valid_indices.begin(), valid_indices.end()), valid_indices.end());
-
-    if (static_cast<int>(valid_indices.size()) == n_pts) {
-        return result;
+    double cadence = 0.0;
+    double exclusive_half_cell = 0.0;
+    if (cadence_supplied) {
+        if (!std::isfinite(realized_cadence_seconds) ||
+            !(realized_cadence_seconds > 0.0) ||
+            !std::isfinite(realized_exclusive_half_cell_seconds) ||
+            !(realized_exclusive_half_cell_seconds > 0.0)) {
+            throw std::invalid_argument(
+                "gap interpolation realized cadence and half-cell must be finite and positive");
+        }
+        const double expected_half_cell =
+            realized_cadence_seconds / 2.0;
+        const double scale = std::max(
+            {1.0, std::abs(expected_half_cell),
+             std::abs(realized_exclusive_half_cell_seconds)});
+        const double representation_tolerance =
+            64.0 * std::numeric_limits<double>::epsilon() * scale;
+        if (std::abs(realized_exclusive_half_cell_seconds -
+                     expected_half_cell) > representation_tolerance) {
+            throw std::invalid_argument(
+                "gap interpolation realized half-cell conflicts with realized cadence");
+        }
+        cadence = realized_cadence_seconds;
+        exclusive_half_cell =
+            realized_exclusive_half_cell_seconds;
+    }
+    if (n_pts > 1) {
+        if (!cadence_supplied) {
+            cadence = (t_common(n_pts - 1) - t_common(0)) /
+                      static_cast<double>(n_pts - 1);
+            exclusive_half_cell = cadence / 2.0;
+        }
+        if (!std::isfinite(cadence) || !(cadence > 0.0)) {
+            throw std::invalid_argument(
+                "gap interpolation common cadence must be finite and positive");
+        }
+        for (Eigen::Index slot = 0; slot < n_pts; ++slot) {
+            const double expected =
+                t_common(0) + static_cast<double>(slot) * cadence;
+            const double scale =
+                std::max({1.0, std::abs(expected),
+                          std::abs(t_common(slot))});
+            const double representation_tolerance =
+                8.0 * std::numeric_limits<double>::epsilon() * scale;
+            if (std::abs(t_common(slot) - expected) >
+                representation_tolerance) {
+                throw std::invalid_argument(
+                    "gap interpolation common time is not a uniform-cadence grid");
+            }
+        }
     }
 
-    for (int j = 0; j < n_dets; ++j) {
-        for (int i = 0; i < n_pts; ++i) {
-            if (filled[i]) continue;
+    std::vector<char> filled(static_cast<std::size_t>(n_pts), false);
+    Eigen::Index left_external_row = -1;
+    Eigen::Index right_external_row = -1;
+    bool have_previous_assigned_slot = false;
+    std::int64_t previous_assigned_slot = 0;
 
-            // find left and right valid sample
-            auto it_right = std::lower_bound(valid_indices.begin(), valid_indices.end(), i);
-            if (it_right == valid_indices.end() || it_right == valid_indices.begin()) {
-                // extrapolate
-                int idx_nearest = (it_right == valid_indices.end()) ? valid_indices.back() : valid_indices.front();
-                result(i, j) = result(idx_nearest, j);
+    for (Eigen::Index native_row = 0; native_row < t_valid.size();
+         ++native_row) {
+        Eigen::Index slot = 0;
+        if (n_pts == 1) {
+            const double scale = std::max(
+                {1.0, std::abs(t_common(0)), std::abs(t_valid(native_row))});
+            const double equality_tolerance =
+                64.0 * std::numeric_limits<double>::epsilon() * scale;
+            if (std::abs(t_valid(native_row) - t_common(0)) >
+                equality_tolerance) {
                 continue;
             }
+        } else {
+            const double coordinate =
+                (t_valid(native_row) - t_common(0)) / cadence;
+            const auto assigned =
+                citlali::utils::round_half_up_slot(coordinate);
+            const double nominal =
+                t_common(0) + static_cast<double>(assigned) * cadence;
+            const double residual = t_valid(native_row) - nominal;
+            if (!(std::abs(residual) < exclusive_half_cell)) {
+                throw std::invalid_argument(
+                    "native detector row is on or outside the exclusive half-cell boundary");
+            }
+            if (have_previous_assigned_slot &&
+                assigned <= previous_assigned_slot) {
+                throw std::invalid_argument(
+                    "native detector rows collide or reverse on the common-grid slot axis");
+            }
+            previous_assigned_slot = assigned;
+            have_previous_assigned_slot = true;
 
-            int ir = *it_right;
-            int il = *(it_right - 1);
+            if (assigned < 0) {
+                // Keep the nearest observation-wide row to the processing
+                // window.  A gap can span several slots across a chunk
+                // boundary, so the retained endpoint need not be at local
+                // slot -1.
+                left_external_row = native_row;
+                continue;
+            }
+            if (assigned >= static_cast<std::int64_t>(n_pts)) {
+                // Native rows are strictly ordered; the first row to the
+                // right is the nearest valid endpoint.
+                if (right_external_row < 0) {
+                    right_external_row = native_row;
+                }
+                continue;
+            }
+            slot = static_cast<Eigen::Index>(assigned);
+            if (!(std::abs(t_valid(native_row) - t_common(slot)) <
+                  exclusive_half_cell)) {
+                throw std::invalid_argument(
+                    "native detector row is outside its assigned common-grid cell");
+            }
+        }
 
-            double t_il = t_common(il);
-            double t_ir = t_common(ir);
-            double t_i = t_common(i);
+        if (mask(slot) == 0) {
+            throw std::invalid_argument(
+                "native detector row occupies a slot declared missing");
+        }
+        if (filled[static_cast<std::size_t>(slot)]) {
+            throw std::invalid_argument(
+                "multiple native detector rows collide on one common-grid slot");
+        }
+        result.row(slot) = data_valid.row(native_row);
+        filled[static_cast<std::size_t>(slot)] = true;
+    }
 
-            double v_il = result(il, j);
-            double v_ir = result(ir, j);
+    for (Eigen::Index slot = 0; slot < n_pts; ++slot) {
+        if (mask(slot) != 0 &&
+            !filled[static_cast<std::size_t>(slot)]) {
+            throw std::invalid_argument(
+                "gap interpolation is missing a native row required by its mask");
+        }
+    }
 
-            double frac = (t_i - t_il) / (t_ir - t_il);
-            result(i, j) = (1.0 - frac) * v_il + frac * v_ir;
+    if (!allow_gap_synthesis) {
+        return result;
+    }
+
+    if (!synthesis_admission_observation_resolved) {
+        const Eigen::Index cumulative_missing = n_pts - mask.sum();
+        // Standalone callers without an observation-resolved stable scan plan
+        // retain the conservative local-window guard.  Production passes the
+        // resolved admission explicitly because its loaded context can be
+        // wider than the science window on which the >25% rule is defined.
+        if (static_cast<long double>(cumulative_missing) * 4.0L >
+            static_cast<long double>(n_pts)) {
+            return result;
+        }
+    }
+
+    Eigen::Index slot = 0;
+    while (slot < n_pts) {
+        if (mask(slot) != 0) {
+            ++slot;
+            continue;
+        }
+        const Eigen::Index begin = slot;
+        while (slot < n_pts && mask(slot) == 0) {
+            ++slot;
+        }
+        const Eigen::Index end = slot;
+
+        const bool has_left_endpoint =
+            begin > 0
+                ? filled[static_cast<std::size_t>(begin - 1)]
+                : left_external_row >= 0;
+        const bool has_right_endpoint =
+            end < n_pts
+                ? filled[static_cast<std::size_t>(end)]
+                : right_external_row >= 0;
+        // A run at a processing-chunk edge is fillable only when its adjacent
+        // observation-wide native endpoint was retained just outside the
+        // target window. True observation union edges remain unavailable.
+        if (!has_left_endpoint || !has_right_endpoint) {
+            continue;
+        }
+        const double left_time = begin > 0
+                                     ? t_common(begin - 1)
+                                     : t_valid(left_external_row);
+        const double right_time = end < n_pts
+                                      ? t_common(end)
+                                      : t_valid(right_external_row);
+        const Eigen::RowVectorXd left_value =
+            begin > 0 ? result.row(begin - 1).eval()
+                      : data_valid.row(left_external_row).eval();
+        const Eigen::RowVectorXd right_value =
+            end < n_pts ? result.row(end).eval()
+                        : data_valid.row(right_external_row).eval();
+        if (!left_value.allFinite() || !right_value.allFinite()) {
+            // The observation-resolved processing plan records this run as a
+            // permitted continuity surrogate.  Silently leaving the
+            // zero-initialized row would make execution disagree with that
+            // plan and could hide a non-finite endpoint just outside the
+            // processing chunk.  Fail the affected reduction as one unit;
+            // never fill only the detector columns whose endpoints happen to
+            // be finite.
+            throw std::invalid_argument(
+                "gap interpolation endpoint contains non-finite detector data");
+        }
+
+        const double support_span = right_time - left_time;
+        if (!std::isfinite(support_span) || !(support_span > 0.0)) {
+            throw std::invalid_argument(
+                "gap interpolation endpoints have invalid temporal support");
+        }
+        for (Eigen::Index missing = begin; missing < end; ++missing) {
+            const double right_weight =
+                (t_common(missing) - left_time) / support_span;
+            result.row(missing) =
+                (1.0 - right_weight) * left_value +
+                right_weight * right_value;
         }
     }
 
     return result;
+}
+
+static Eigen::MatrixXd interp_data_with_observation_resolved_admission(
+    const Eigen::VectorXd &t_common,
+    const Eigen::VectorXi &mask,
+    const Eigen::VectorXd &t_valid,
+    const Eigen::MatrixXd &data_valid,
+    bool allow_gap_synthesis,
+    double realized_cadence_seconds,
+    double realized_exclusive_half_cell_seconds) {
+    return interp_data(
+        t_common, mask, t_valid, data_valid, allow_gap_synthesis,
+        realized_cadence_seconds, realized_exclusive_half_cell_seconds,
+        true);
 }
 
 } //namespace engine_utils

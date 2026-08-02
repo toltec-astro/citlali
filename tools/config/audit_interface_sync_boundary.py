@@ -74,10 +74,14 @@ def audit(repo_root: Path) -> dict[str, object]:
         and boundary.count("adapt_interface_sync_config_one_way(") == 1,
         "plan_exact": "interface_sync_requested" in plan
         and "interface_sync_effective" in plan,
-        "provenance_exact": "citlali-raw-timestream-provenance-v2" in provenance
+        "provenance_exact": "citlali-raw-timestream-provenance-v3" in provenance
         and "interface_sync_offset_config_node" in provenance
+        and "interface_offset_lifecycle_node" in provenance
         and "interface_sync_requested" in provenance
-        and "interface_sync_effective" in provenance,
+        and "interface_sync_effective" in provenance
+        and "observation_resolved_sec" in provenance
+        and "realized_sec" in provenance
+        and "applied_exactly_once" in provenance,
     }
     return {"checks": checks, "drift": not all(checks.values())}
 

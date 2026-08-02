@@ -5,6 +5,7 @@
 
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/raw_timestream_policy.h>
+#include <citlali/core/pipeline/timestream_alignment_state.h>
 
 template <class map_buffer_t>
 void Engine::add_tod_header(map_buffer_t &mb) {
@@ -54,9 +55,12 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             omb.exposure_time, telescope.pixel_axes,
             telescope.tel_header["Header.Source.Ra"][0],
             telescope.tel_header["Header.Source.Dec"][0],
-            RAD_TO_DEG * telescope.tel_data["TelElAct"].mean(),
-            RAD_TO_DEG * telescope.tel_data["TelAzAct"].mean(),
-            RAD_TO_DEG * telescope.tel_data["ActParAng"].mean(),
+            RAD_TO_DEG * citlali::pipeline::governing_compatibility_mean(
+                             telescope.tel_data.at("TelElAct"), alignment),
+            RAD_TO_DEG * citlali::pipeline::governing_compatibility_mean(
+                             telescope.tel_data.at("TelAzAct"), alignment),
+            RAD_TO_DEG * citlali::pipeline::governing_compatibility_mean(
+                             telescope.tel_data.at("ActParAng"), alignment),
             calib.arrays, calib.array_fwhms, calib.array_pas,
             toltec_io.array_name_map, RAD_TO_DEG, pi / 2, omb.sig_unit);
 
@@ -66,7 +70,8 @@ void Engine::add_tod_header(map_buffer_t &mb) {
 
         citlali::pipeline::add_tod_mean_tau_vars(
             fo, raw_timestream_settings.extinction_correction_enabled,
-            rtcproc, telescope.tel_data, telescope.tau_225_GHz,
+            rtcproc, telescope.tel_data, alignment,
+            telescope.tau_225_GHz,
             calib, toltec_io.array_name_map);
 
         citlali::pipeline::add_tod_auxiliary_metadata_vars(
@@ -207,7 +212,10 @@ void Engine::create_tod_files() {
         fo, rtcproc.run_polarization, calib.run_hwpr, tod_dims.n_pts);
 
     // add tel header
-    citlali::pipeline::add_telescope_header_vars(fo, telescope.tel_header);
+    citlali::pipeline::add_telescope_header_vars(
+        fo, telescope.native_tel_header);
+    citlali::pipeline::add_telescope_header_vars(
+        fo, telescope.realized_compatibility_tel_header);
 
     });
 }

@@ -3,6 +3,7 @@
 // Implementation detail included by pointing.h.
 
 #include <citlali/core/pipeline/reduction_config_accessors.h>
+#include <citlali/core/pipeline/timestream_alignment_state.h>
 
 void Pointing::setup(citlali::pipeline::StageProfileCollector &stage_profile) {
     // run obsnum setup
@@ -48,7 +49,9 @@ void Pointing::setup(citlali::pipeline::StageProfileCollector &stage_profile) {
             logger->warn("tel_data '{}' missing/empty; using fallback {}", key, fallback);
             return fallback;
         }
-        const double value = it->second.mean();
+        const double value =
+            citlali::pipeline::governing_compatibility_mean(
+                it->second, alignment);
         if (!std::isfinite(value)) {
             logger->warn("tel_data '{}' mean non-finite ({}); using fallback {}", key, value, fallback);
             return fallback;
@@ -73,7 +76,9 @@ void Pointing::setup(citlali::pipeline::StageProfileCollector &stage_profile) {
         citlali::pipeline::latest_observation_date(observation_dates);
 
     // mean Modified Julian Date
-    ppt_meta["mjd"] = engine_utils::unix_to_modified_julian_date(telescope.tel_data["TelTime"].mean());
+    ppt_meta["mjd"] = engine_utils::unix_to_modified_julian_date(
+        citlali::pipeline::governing_compatibility_mean(
+            telescope.tel_data["TelTime"], alignment));
 
     // mean observing geometry
     const double mean_tel_el_rad = get_tel_data_mean("TelElAct", 0.0);

@@ -4,6 +4,7 @@
 // Include this only after Beammap has been declared.
 
 #include <citlali/core/pipeline/raw_timestream_policy.h>
+#include <citlali/core/pipeline/timestream_alignment_state.h>
 
 void Beammap::populate_beammap_identity_metadata() {
     calib.apt_meta["obsnum"] = observation_identity.obsnum;
@@ -35,14 +36,17 @@ void Beammap::populate_beammap_time_and_frame_metadata() {
     calib.apt_meta["date"] =
         citlali::pipeline::latest_observation_date(observation_dates);
     calib.apt_meta["mjd"] =
-        engine_utils::unix_to_modified_julian_date(telescope.tel_data["TelTime"].mean());
+        engine_utils::unix_to_modified_julian_date(
+            citlali::pipeline::governing_compatibility_mean(
+                telescope.tel_data["TelTime"], alignment));
     calib.apt_meta["Radesys"] = telescope.pixel_axes;
 }
 
 void Beammap::populate_beammap_tau_metadata() {
     if (citlali::pipeline::raw_extinction_correction_enabled(*this)) {
         Eigen::VectorXd tau_el(1);
-        tau_el << telescope.tel_data["TelElAct"].mean();
+        tau_el << citlali::pipeline::governing_compatibility_mean(
+            telescope.tel_data["TelElAct"], alignment);
         auto tau_freq = rtcproc.calibration.calc_tau(tau_el, telescope.tau_225_GHz);
 
         Eigen::Index i = 0;

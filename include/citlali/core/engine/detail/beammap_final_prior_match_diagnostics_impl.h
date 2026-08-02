@@ -10,6 +10,7 @@
 #include <vector>
 
 #include <citlali/core/pipeline/reduction_config_accessors.h>
+#include <citlali/core/pipeline/timestream_alignment_state.h>
 
 void Beammap::update_final_prior_match_diagnostics() {
     final_prior_d2_diag = Eigen::VectorXd::Constant(
@@ -96,7 +97,9 @@ void Beammap::update_final_prior_match_diagnostics() {
             citlali::config::is_altaz_map_pixel_axes(telescope.pixel_axes)) {
             double derot_elev_rad = calib.apt["derot_elev"](i);
             if (!std::isfinite(derot_elev_rad)) {
-                derot_elev_rad = telescope.tel_data["TelElAct"].mean();
+                derot_elev_rad =
+                    citlali::pipeline::governing_compatibility_mean(
+                        telescope.tel_data["TelElAct"], alignment);
             }
             if (!std::isfinite(derot_elev_rad)) {
                 derot_elev_rad = 0.0;

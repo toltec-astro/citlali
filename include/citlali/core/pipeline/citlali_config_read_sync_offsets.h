@@ -16,8 +16,10 @@ inline void set_interface_sync_offset(
     std::size_t key_index, double offset_sec) {
     if (key_index < citlali::config::toltec_interface_count) {
         config.toltec_offset_sec[key_index] = offset_sec;
+        config.toltec_configured[key_index] = true;
     } else {
         config.hwpr_offset_sec = offset_sec;
+        config.hwpr_configured = true;
     }
 }
 

@@ -16,6 +16,8 @@
 #include <citlali/core/config/timestream_config.h>
 #include <citlali/core/pipeline/phdu_beammap.h>
 #include <citlali/core/pipeline/phdu_observation_metadata.h>
+#include <citlali/core/pipeline/sci_align_field_registry.h>
+#include <citlali/core/pipeline/telescope_header_snapshot.h>
 #include <citlali/core/utils/utils.h>
 #include <citlali/core/utils/netcdf_io.h>
 

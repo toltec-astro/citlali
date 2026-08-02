@@ -4,6 +4,11 @@
 #include <Eigen/Core>
 #include <tula/algorithm/mlinterp/mlinterp.hpp>
 
+#include <citlali/core/pipeline/sci_align_contract.h>
+#include <citlali/core/pipeline/sci_align_field_registry.h>
+#include <citlali/core/pipeline/timestream_alignment_state.h>
+
+#include <algorithm>
 #include <cmath>
 #include <limits>
 #include <stdexcept>
@@ -185,14 +190,24 @@ std::vector<Eigen::VectorXi> build_common_time_grid_masks(
     masks.reserve(times.size());
 
     for (const auto &t : times) {
+        sci_align::require_strictly_increasing(t, "detector interface time");
         Eigen::VectorXi mask = Eigen::VectorXi::Zero(t_common.size());
 
         for (int i = 0; i < t.size(); ++i) {
             const double time = t(i);
-            const int idx =
-                static_cast<int>(std::round((time - max_init_time) / dt));
+            const auto idx64 = sci_align::round_half_up_slot(
+                (time - max_init_time) / dt);
+            if (idx64 < std::numeric_limits<int>::min() ||
+                idx64 > std::numeric_limits<int>::max()) {
+                throw std::runtime_error("common-grid slot exceeds integer mask range");
+            }
+            const int idx = static_cast<int>(idx64);
             if (idx >= 0 && idx < t_common.size() &&
-                std::abs(time - t_common(idx)) <= tol) {
+                std::abs(time - t_common(idx)) < tol) {
+                if (mask(idx) != 0) {
+                    throw std::runtime_error(
+                        "multiple native detector rows collide on one common-grid slot");
+                }
                 mask(idx) = 1;
             }
         }
@@ -211,26 +226,175 @@ std::vector<Eigen::VectorXi> build_common_time_grid_masks(
 template <class TelData>
 void interpolate_telescope_data_to_common_time(
     TelData &tel_data, const Eigen::VectorXd &common_time,
-    bool skip_tel_utc_during_loop) {
-    Eigen::Matrix<Eigen::Index,1,1> nd;
-    nd << tel_data["TelTime"].size();
+    bool skip_tel_utc_during_loop,
+    TimestreamAlignmentState *alignment_state = nullptr) {
+    (void)skip_tel_utc_during_loop;
+    sci_align::require_strictly_increasing(common_time,
+                                           "detector common time");
+    const auto coordinate_it = tel_data.find("TelTime");
+    if (coordinate_it == tel_data.end()) {
+        throw std::runtime_error("native telescope TelTime is unavailable");
+    }
+    const Eigen::VectorXd native_time = coordinate_it->second;
+    sci_align::require_strictly_increasing(native_time,
+                                           "native telescope TelTime");
+    if (common_time[0] < native_time[0] ||
+        common_time[common_time.size() - 1] >
+            native_time[native_time.size() - 1]) {
+        throw std::runtime_error(
+            "required telescope support does not bracket the detector common grid; extrapolation is prohibited");
+    }
 
-    for (const auto &tel_it : tel_data) {
-        if (tel_it.first == "TelTime" ||
-            (skip_tel_utc_during_loop && tel_it.first == "TelUTC")) {
+    AlignmentTelescopeSummary telescope_summary;
+    telescope_summary.initialized = true;
+    telescope_summary.native_row_count = native_time.size();
+    telescope_summary.native_first_coordinate_sec = native_time[0];
+    telescope_summary.native_last_coordinate_sec =
+        native_time[native_time.size() - 1];
+    telescope_summary.native_tel_utc_available =
+        tel_data.find("TelUTC") != tel_data.end();
+    telescope_summary.native_pps_time_available =
+        tel_data.find("PpsTime") != tel_data.end();
+    double minimum_bracket_span = std::numeric_limits<double>::max();
+    Eigen::Index upper = 0;
+    for (Eigen::Index target = 0; target < common_time.size(); ++target) {
+        while (upper < native_time.size() &&
+               native_time[upper] < common_time[target]) {
+            ++upper;
+        }
+        if (upper < native_time.size() &&
+            native_time[upper] == common_time[target]) {
+            ++telescope_summary.exact_target_count;
             continue;
         }
-        Eigen::VectorXd yd = tel_data[tel_it.first];
+        if (upper == 0 || upper >= native_time.size()) {
+            throw std::runtime_error(
+                "telescope target lacks a valid adjacent native bracket");
+        }
+        const double span = native_time[upper] - native_time[upper - 1];
+        if (!std::isfinite(span) || !(span > 0.0)) {
+            throw std::runtime_error(
+                "telescope target has an invalid adjacent native bracket");
+        }
+        ++telescope_summary.interpolated_target_count;
+        minimum_bracket_span = std::min(minimum_bracket_span, span);
+        telescope_summary.maximum_used_bracket_span_sec = std::max(
+            telescope_summary.maximum_used_bracket_span_sec, span);
+    }
+    if (telescope_summary.interpolated_target_count != 0) {
+        telescope_summary.minimum_used_bracket_span_sec =
+            minimum_bracket_span;
+    }
+
+    Eigen::Matrix<Eigen::Index,1,1> nd;
+    nd << native_time.size();
+    TelData aligned;
+
+    for (const auto &entry : sci_align::active_field_registry) {
+        const std::string key{entry.canonical_name};
+        if (entry.permitted_operator ==
+                sci_align::FieldOperator::native_coordinate ||
+            entry.permitted_operator ==
+                sci_align::FieldOperator::exact_diagnostic) {
+            continue;
+        }
+        const auto source_it = tel_data.find(key);
+        if (source_it == tel_data.end()) {
+            if (entry.required_for_admitted_intensity_profile) {
+                throw std::runtime_error(fmt::format(
+                    "required active telescope field '{}' is unavailable",
+                    key));
+            }
+            continue;
+        }
+        const Eigen::VectorXd &yd = source_it->second;
+        if (yd.size() != native_time.size() || !yd.allFinite()) {
+            throw std::runtime_error(fmt::format(
+                "active telescope field '{}' has invalid shape or nonfinite values",
+                key));
+        }
+
+        Eigen::VectorXd interpolation_source = yd;
+        const bool is_circular = entry.permitted_operator ==
+            sci_align::FieldOperator::bracketed_shortest_arc;
+        if (is_circular) {
+            constexpr double pi_value = 3.141592653589793238462643383279502884;
+            constexpr double two_pi_value = 2.0 * pi_value;
+            double branch_offset = 0.0;
+            for (Eigen::Index i = 1; i < native_time.size(); ++i) {
+                const double raw_difference = yd(i) - yd(i - 1);
+                double difference = std::fmod(raw_difference, two_pi_value);
+                if (difference <= -pi_value) {
+                    difference += two_pi_value;
+                }
+                else if (difference > pi_value) {
+                    difference -= two_pi_value;
+                }
+                if (sci_align::machine_equal(std::abs(difference), pi_value)) {
+                    throw std::runtime_error(fmt::format(
+                        "active circular telescope field '{}' has an ambiguous antipodal bracket",
+                        key));
+                }
+                branch_offset += difference - raw_difference;
+                // With no wrap, this is exactly the native value rather than
+                // a recurrence that can accumulate rounding differences.
+                interpolation_source(i) = yd(i) + branch_offset;
+            }
+        }
+
         Eigen::VectorXd yi(common_time.size());
 
         mlinterp::interp(nd.data(), common_time.size(),
-                         yd.data(), yi.data(),
-                         tel_data["TelTime"].data(), common_time.data());
-        tel_data[tel_it.first] = std::move(yi);
+                         interpolation_source.data(), yi.data(),
+                         native_time.data(), common_time.data());
+        if (is_circular) {
+            constexpr double two_pi_value =
+                6.283185307179586476925286766559005768;
+            // Both axes are strictly increasing.  Walk the native bracket
+            // once for this field instead of performing a binary search for
+            // every target sample in this established setup hot path.
+            Eigen::Index upper = 0;
+            for (Eigen::Index target = 0; target < yi.size(); ++target) {
+                while (upper < native_time.size() &&
+                       native_time(upper) < common_time(target)) {
+                    ++upper;
+                }
+                if (upper < native_time.size() &&
+                    native_time(upper) == common_time(target)) {
+                    // Exact coincidences preserve the producer's numerical
+                    // representation bit-for-bit.
+                    yi(target) = yd(upper);
+                    continue;
+                }
+                if (upper <= 0 || upper >= native_time.size()) {
+                    throw std::runtime_error(fmt::format(
+                        "active circular telescope field '{}' target lacks an adjacent bracket",
+                        key));
+                }
+                const Eigen::Index lower = upper - 1;
+                const double lambda =
+                    (common_time(target) - native_time(lower)) /
+                    (native_time(upper) - native_time(lower));
+                const double raw_linear_reference =
+                    (1.0 - lambda) * yd(lower) + lambda * yd(upper);
+                yi(target) = sci_align::nearest_periodic_equivalent(
+                    yi(target), raw_linear_reference, two_pi_value);
+            }
+        }
+        if (!yi.allFinite()) {
+            throw std::runtime_error(fmt::format(
+                "alignment produced a nonfinite telescope field '{}'",
+                key));
+        }
+        aligned[key] = std::move(yi);
     }
 
-    tel_data["TelTime"] = common_time;
-    tel_data["TelUTC"] = common_time;
+    aligned["TelTime"] = common_time;
+    aligned["TelUTC"] = common_time;
+    tel_data = std::move(aligned);
+    if (alignment_state != nullptr) {
+        alignment_state->telescope = std::move(telescope_summary);
+    }
 }
 
 inline void interpolate_hwpr_angle_to_common_time(

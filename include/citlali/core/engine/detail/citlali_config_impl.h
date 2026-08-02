@@ -28,7 +28,7 @@ void Engine::get_citlali_config(CT &config) {
     citlali::pipeline::read_interface_sync_offsets(
         config, interface_sync_config, diagnostics, logger);
     citlali::pipeline::adapt_interface_sync_config_one_way(
-        interface_sync_config, interface_sync.offsets);
+        interface_sync_config, interface_sync);
 
     runtime_config = get_runtime_config(config);
     citlali::pipeline::runtime_config_provenance(*this) =

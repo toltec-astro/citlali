@@ -105,11 +105,12 @@ inline TodFileCounts tod_file_counts(Eigen::Index n_output_scans,
     };
 }
 
-TodStreamLayout tod_stream_layout(citlali::config::TodOutputStream stream,
-                                  Eigen::Index n_rtc_output_scans,
-                                  Eigen::Index n_ptc_output_scans,
-                                  const citlali::config::TodStreamOutputConfig &rtc_output,
-                                  const citlali::config::TodStreamOutputConfig &ptc_output) {
+inline TodStreamLayout tod_stream_layout(
+    citlali::config::TodOutputStream stream,
+    Eigen::Index n_rtc_output_scans,
+    Eigen::Index n_ptc_output_scans,
+    const citlali::config::TodStreamOutputConfig &rtc_output,
+    const citlali::config::TodStreamOutputConfig &ptc_output) {
     const bool is_rtc_stream =
         citlali::config::is_rtc_tod_output_stream(stream);
     return {

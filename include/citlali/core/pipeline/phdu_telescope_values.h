@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/pipeline/timestream_alignment_state.h>
+
 #include <cmath>
 #include <sstream>
 #include <stdexcept>
@@ -43,6 +45,27 @@ double telescope_data_mean(const VectorMap &tel_data, const std::string &key,
     if (!std::isfinite(value)) {
         logger->warn("tel_data '{}' mean non-finite ({}); using fallback {}",
                      key, value, fallback);
+        return fallback;
+    }
+    return value;
+}
+
+template <class VectorMap, class Logger>
+double telescope_data_mean(
+    const VectorMap &tel_data, const TimestreamAlignmentState &alignment,
+    const std::string &key, double fallback, const Logger &logger) {
+    const auto it = tel_data.find(key);
+    if (it == tel_data.end() || it->second.size() < 1) {
+        logger->warn("tel_data '{}' missing/empty; using fallback {}", key,
+                     fallback);
+        return fallback;
+    }
+    const double value = governing_compatibility_mean(
+        it->second, alignment);
+    if (!std::isfinite(value)) {
+        logger->warn(
+            "tel_data '{}' governing-compatibility mean non-finite ({}); using fallback {}",
+            key, value, fallback);
         return fallback;
     }
     return value;

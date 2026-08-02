@@ -54,6 +54,14 @@ inline void require_polarization_frequency_groups(bool all_unmatched) {
     }
 }
 
+inline void require_bounded_nonpolarimetric_profile(
+    bool polarization_requested) {
+    if (polarization_requested) {
+        throw citlali::error::invalid_config(
+            "polarization processing is unavailable in the bounded nonpolarimetric SCI-ALIGN-001 profile");
+    }
+}
+
 inline void require_iir_below_nyquist_hz(bool below_nyquist,
                                          double frequency_hz,
                                          double nyquist_hz) {

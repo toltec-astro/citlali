@@ -37,6 +37,7 @@
 #include <citlali/core/pipeline/fruit_loop_diagnostics.h>
 #include <citlali/core/pipeline/fruit_loop_feedback_validation.h>
 #include <citlali/core/pipeline/fruit_loop_map_input_validation.h>
+#include <citlali/core/pipeline/sci_align_scan_contract.h>
 #include <citlali/core/timestream/auxiliary_stream.h>
 #include <citlali/core/utils/fits_io.h>
 #include <citlali/core/utils/utils.h>
@@ -3469,7 +3470,19 @@ void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::M
     // append telescope
     for (auto const& x: in.tel_data.data) {
         NcVar tel_data_v = fo.getVar(x.first);
-        tel_data_v.putVar(start_index_tel, size_tel, x.second.data());
+        if (x.first == "Hold") {
+            // `in` retains the fractional numeric result needed to reproduce
+            // released-4.x scan construction.  The routine output alias is
+            // explicitly the subsequent nonzero predicate, never a raw word.
+            const Eigen::VectorXd emitted_hold =
+                citlali::pipeline::sci_align::
+                    legacy_hold_emitted_compatibility_view(x.second);
+            tel_data_v.putVar(start_index_tel, size_tel,
+                              emitted_hold.data());
+        }
+        else {
+            tel_data_v.putVar(start_index_tel, size_tel, x.second.data());
+        }
     }
 
     // append pointing offsets

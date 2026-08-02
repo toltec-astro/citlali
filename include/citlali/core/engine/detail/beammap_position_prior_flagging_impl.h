@@ -3,6 +3,8 @@
 // Beammap implementation detail.
 // Include this only after Beammap has been declared.
 
+#include <citlali/core/pipeline/timestream_alignment_state.h>
+
 Beammap::BeammapArrayPositionMedians Beammap::beammap_array_position_medians() {
     BeammapArrayPositionMedians medians;
 
@@ -70,7 +72,9 @@ void Beammap::flag_beammap_position_outliers(
 }
 
 Beammap::BeammapPriorDistanceFrame Beammap::beammap_prior_distance_frame() {
-    double prior_derot_elev_rad = telescope.tel_data["TelElAct"].mean();
+    double prior_derot_elev_rad =
+        citlali::pipeline::governing_compatibility_mean(
+            telescope.tel_data["TelElAct"], alignment);
     if (!std::isfinite(prior_derot_elev_rad)) {
         prior_derot_elev_rad = 0.0;
     }

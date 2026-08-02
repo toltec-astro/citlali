@@ -62,3 +62,27 @@ void add_tod_mean_tau_vars(netCDF::NcFile &fo, bool extinction_enabled,
         add_zero_mean_tau_vars(fo, calib, array_name_map);
     }
 }
+
+template <class Rtcproc, class TelescopeData, class Alignment, class Calib,
+          class ArrayNameMap>
+void add_tod_mean_tau_vars(
+    netCDF::NcFile &fo, bool extinction_enabled, Rtcproc &rtcproc,
+    TelescopeData &tel_data, const Alignment &alignment,
+    double tau_225_ghz, const Calib &calib,
+    ArrayNameMap &array_name_map) {
+    if (extinction_enabled) {
+        Eigen::VectorXd tau_el(1);
+        const auto tel_el_it = tel_data.find("TelElAct");
+        if (tel_el_it == tel_data.end()) {
+            throw std::logic_error(
+                "TelElAct is unavailable for governing-compatible TOD tau");
+        }
+        tau_el << governing_compatibility_mean(
+            tel_el_it->second, alignment);
+        auto tau_freq = rtcproc.calibration.calc_tau(tau_el, tau_225_ghz);
+        add_mean_tau_vars(fo, tau_freq, calib, array_name_map);
+    }
+    else {
+        add_zero_mean_tau_vars(fo, calib, array_name_map);
+    }
+}

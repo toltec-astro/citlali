@@ -274,12 +274,28 @@ PROVENANCE_SIDECARS = {
     },
     "timestream_output": {
         "filename": "timestream_output_provenance.yaml",
-        "schema_version": "citlali-timestream-output-provenance-v1",
+        "schema_version": "citlali-timestream-output-provenance-v2",
+        "accepted_schema_versions": (
+            "citlali-timestream-output-provenance-v1",
+            "citlali-timestream-output-provenance-v2",
+        ),
         "required_paths": (
             ("requested",),
             ("effective",),
             ("realized",),
         ),
+        "required_paths_by_schema": {
+            "citlali-timestream-output-provenance-v2": (
+                ("requested",),
+                ("effective",),
+                ("realized",),
+                ("realized", "evidence_stage"),
+                ("realized", "execution_completed"),
+                ("realized", "n_scans"),
+                ("realized", "sci_align_scan_plan"),
+                ("realized", "sci_align_alignment"),
+            ),
+        },
         "allow_multiple": True,
     },
     "processed_timestream": {
@@ -300,10 +316,11 @@ PROVENANCE_SIDECARS = {
     },
     "raw_timestream": {
         "filename": "raw_timestream_provenance.yaml",
-        "schema_version": "citlali-raw-timestream-provenance-v2",
+        "schema_version": "citlali-raw-timestream-provenance-v3",
         "accepted_schema_versions": (
             "citlali-raw-timestream-provenance-v1",
             "citlali-raw-timestream-provenance-v2",
+            "citlali-raw-timestream-provenance-v3",
         ),
         "required_paths": (
             ("initialized",),
@@ -317,6 +334,23 @@ PROVENANCE_SIDECARS = {
             ("realized", "dynamic_notch_count"),
             ("realized", "required_timestream_write_count"),
         ),
+        "required_paths_by_schema": {
+            "citlali-raw-timestream-provenance-v3": (
+                ("initialized",),
+                ("requested",),
+                ("requested", "interface_sync_offset"),
+                ("effective", "config"),
+                ("effective", "config", "interface_sync_offset"),
+                ("effective", "resolutions"),
+                ("observation",),
+                ("observation", "value", "interface_offsets"),
+                ("realized", "execution_completed"),
+                ("realized", "completed_scan_count"),
+                ("realized", "flagged_sample_count"),
+                ("realized", "dynamic_notch_count"),
+                ("realized", "required_timestream_write_count"),
+            ),
+        },
         "allow_multiple": True,
     },
 }
@@ -579,13 +613,1809 @@ def processed_provenance_semantic_errors(data: dict[str, Any]) -> list[str]:
     return errors
 
 
+_SCI_ALIGN_EXCEPTION_CONTRACT = {
+    "source_slot_identity": "zero_based_observation_common_axis_slot",
+    "continuity_action_stage": (
+        "candidate_only_chunk_plan_controls_permission"
+    ),
+    "continuity_weight_rule": {
+        "operator": "linear_slot_coordinate_weights_v1",
+        "coordinate_basis": "observation_common_axis_slot_coordinates",
+        "target_domain": "exception_start_inclusive_stop_exclusive",
+        "left_source_weight": (
+            "(right_source_slot-target_slot)/"
+            "(right_source_slot-left_source_slot)"
+        ),
+        "right_source_weight": (
+            "(target_slot-left_source_slot)/"
+            "(right_source_slot-left_source_slot)"
+        ),
+        "normalization": (
+            "left_source_weight_plus_right_source_weight_equals_one"
+        ),
+        "dense_source_weights_persisted": False,
+    },
+}
+
+_SCI_ALIGN_HWPR_KEYS = {
+    "policy",
+    "observation_resolved",
+    "producer_input_present",
+    "aligned_angle_available",
+    "intensity_eligible",
+    "polarization_eligible",
+    "availability_reason",
+    "physical_timestamp_semantics",
+    "demodulation_semantics",
+    "dense_angle_mapping_persisted",
+}
+
+
+def _sci_align_hwpr_semantic_errors(alignment: dict[str, Any]) -> list[str]:
+    errors: list[str] = []
+    hwpr = alignment.get("hwpr")
+    if not _exact_mapping_keys(
+        hwpr, _SCI_ALIGN_HWPR_KEYS, "SCI-ALIGN HWPR status", errors
+    ):
+        return errors
+
+    producer_present = hwpr["producer_input_present"]
+    expected_reason = (
+        "producer_input_present_not_loaded_or_aligned"
+        if producer_present is True
+        else "producer_input_absent_optional_nonfatal"
+    )
+    if (
+        hwpr["policy"] != "bounded_nonpolarimetric_optional_hwpr_v1"
+        or hwpr["observation_resolved"] is not True
+        or type(producer_present) is not bool
+        or hwpr["aligned_angle_available"] is not False
+        or hwpr["intensity_eligible"] is not True
+        or hwpr["polarization_eligible"] is not False
+        or hwpr["availability_reason"] != expected_reason
+        or hwpr["physical_timestamp_semantics"]
+        != "unavailable_no_producer_integration_event_authority"
+        or hwpr["demodulation_semantics"]
+        != "unavailable_not_authorized_by_bounded_profile"
+        or hwpr["dense_angle_mapping_persisted"] is not False
+    ):
+        errors.append(
+            "SCI-ALIGN HWPR status conflicts with the bounded "
+            "nonpolarimetric contract"
+        )
+    return errors
+
+_SCI_ALIGN_PROCESSING_PLAN_KEYS = {
+    "observation_resolved",
+    "evidence_stage",
+    "execution_realized",
+    "realization_semantics",
+    "interval_convention",
+    "signal_domain",
+    "count_scope",
+    "gap_admission_contract",
+    "planned_action_support_reference",
+    "continuity_source_contract",
+    "chunk_disposition_encoding",
+    "planned_occurrence_counts",
+    "chunk_dispositions",
+}
+_SCI_ALIGN_GAP_ADMISSION_CONTRACT = {
+    "support_reference": (
+        "sci_align_scan_plan.records[stable_scan_id].compatibility_science"
+    ),
+    "window_relationship": (
+        "compatibility_science_is_a_half_open_subset_of_"
+        "compatibility_context"
+    ),
+    "cumulative_missing_count_scope": (
+        "stable_record_science_window_only"
+    ),
+    "longest_missing_run_count_scope": (
+        "stable_record_science_window_only"
+    ),
+    "unusable_rule": (
+        "four_times_cumulative_or_longest_missing_strictly_exceeds_"
+        "science_window_size"
+    ),
+    "exact_quarter": "admitted",
+}
+_SCI_ALIGN_CHUNK_DISPOSITION_ENCODING = {
+    "representation": "sparse_exceptions_v1",
+    "key_order": "compatibility_ordinal_then_roach_index",
+    "persisted_rows": "nondefault_scan_interface_dispositions_only",
+    "absent_default": {
+        "support": "all_acquired_original_zero_detector_gap",
+        "cumulative_missing_count": 0,
+        "longest_missing_run_count": 0,
+        "gap_policy_eligible_original_within_science": True,
+        "full_network_unusable": False,
+        "continuity_surrogate_permitted": "signal_domain_is_xs",
+        "planned_actions": "none",
+    },
+}
+_SCI_ALIGN_PROCESSING_COUNT_KEYS = {
+    "continuity_surrogate_missing",
+    "unavailable_missing",
+    "guarded_original",
+    "full_network_unusable_original",
+}
+_SCI_ALIGN_DISPOSITION_KEYS = {
+    "stable_scan_id",
+    "compatibility_ordinal",
+    "interface_id",
+    "roach_index",
+    "context",
+    "cumulative_missing_count",
+    "longest_missing_run_count",
+    "full_network_unusable",
+    "continuity_surrogate_permitted",
+    "planned_actions",
+}
+_SCI_ALIGN_ACTION_CONTRACTS = {
+    "continuity_surrogate_missing": "bounded_continuity_surrogate",
+    "unavailable_missing": "remain_unavailable",
+    "guarded_original": "guard_original_processing_sample",
+}
+_SCI_ALIGN_EXCEPTION_KEYS = {
+    "interface_id",
+    "field_id",
+    "start",
+    "stop",
+    "interval_convention",
+    "origin",
+    "validity",
+    "action",
+    "reason",
+    "source_slot_identity",
+    "source_slots_available",
+    "left_source_slot",
+    "right_source_slot",
+}
+_SCI_ALIGN_OUTPUT_WINDOW_KEYS = {
+    "stable_processing_record_id",
+    "compatibility_ordinal",
+    "output_row",
+    "output_interval",
+    "interval_convention",
+    "interval_authority",
+}
+
+
+def _exact_mapping_keys(
+    value: Any,
+    expected: set[str],
+    label: str,
+    errors: list[str],
+) -> bool:
+    if not isinstance(value, dict):
+        errors.append(f"{label} must be a mapping")
+        return False
+    if set(value) != expected:
+        errors.append(f"{label} fields are incomplete or non-compact")
+        return False
+    return True
+
+
+def _compact_half_open_runs(
+    value: Any,
+    context_start: int,
+    context_stop: int,
+    label: str,
+    errors: list[str],
+) -> tuple[list[tuple[int, int]], int]:
+    if not isinstance(value, list):
+        errors.append(f"{label} runs must be a sequence")
+        return [], 0
+
+    runs: list[tuple[int, int]] = []
+    occurrence_count = 0
+    previous_stop: int | None = None
+    for index, run in enumerate(value):
+        run_label = f"{label} run {index}"
+        if not _exact_mapping_keys(run, {"start", "stop"}, run_label, errors):
+            continue
+        start = run["start"]
+        stop = run["stop"]
+        if (
+            type(start) is not int
+            or type(stop) is not int
+            or start < context_start
+            or stop > context_stop
+            or stop <= start
+        ):
+            errors.append(f"{run_label} is outside its half-open context")
+            continue
+        if previous_stop is not None and start <= previous_stop:
+            errors.append(f"{label} runs are overlapping or non-maximal")
+        runs.append((start, stop))
+        occurrence_count += stop - start
+        previous_stop = stop
+    return runs, occurrence_count
+
+
+def _half_open_runs_overlap(
+    left: list[tuple[int, int]], right: list[tuple[int, int]]
+) -> bool:
+    left_index = 0
+    right_index = 0
+    while left_index < len(left) and right_index < len(right):
+        left_run = left[left_index]
+        right_run = right[right_index]
+        if left_run[1] <= right_run[0]:
+            left_index += 1
+        elif right_run[1] <= left_run[0]:
+            right_index += 1
+        else:
+            return True
+    return False
+
+
+def _sci_align_exception_semantic_errors(
+    alignment: dict[str, Any],
+    nominal_slot_count: int | None,
+    interface_roaches: dict[str, int],
+) -> tuple[list[str], list[dict[str, Any]]]:
+    errors: list[str] = []
+    contract = alignment.get("exception_run_contract")
+    weight_rule = (
+        contract.get("continuity_weight_rule")
+        if isinstance(contract, dict)
+        else None
+    )
+    if (
+        contract != _SCI_ALIGN_EXCEPTION_CONTRACT
+        or not isinstance(weight_rule, dict)
+        or weight_rule.get("dense_source_weights_persisted") is not False
+    ):
+        errors.append(
+            "SCI-ALIGN exception-run contract is missing, malformed, or dense"
+        )
+
+    value = alignment.get("exception_runs")
+    if not isinstance(value, list):
+        errors.append("SCI-ALIGN exception runs must be a sequence")
+        return errors, []
+
+    valid_exceptions: list[dict[str, Any]] = []
+    previous_stops: dict[tuple[str, str], int] = {}
+    for index, exception in enumerate(value):
+        label = f"SCI-ALIGN exception run {index}"
+        if not _exact_mapping_keys(
+            exception, _SCI_ALIGN_EXCEPTION_KEYS, label, errors
+        ):
+            continue
+
+        interface_id = exception["interface_id"]
+        field_id = exception["field_id"]
+        start = exception["start"]
+        stop = exception["stop"]
+        if not isinstance(interface_id, str) or not interface_id:
+            errors.append(f"{label} interface identity is invalid")
+            continue
+        if not isinstance(field_id, str) or not field_id:
+            errors.append(f"{label} field identity is invalid")
+            continue
+        if (
+            type(start) is not int
+            or type(stop) is not int
+            or start < 0
+            or stop <= start
+            or (
+                nominal_slot_count is not None
+                and stop > nominal_slot_count
+            )
+        ):
+            errors.append(f"{label} is outside nominal half-open support")
+            continue
+        if exception["interval_convention"] != "half_open_start_stop":
+            errors.append(f"{label} interval convention is invalid")
+        for name in ("origin", "validity", "action", "reason"):
+            if not isinstance(exception[name], str) or not exception[name]:
+                errors.append(f"{label} {name} is unavailable")
+        if exception["source_slot_identity"] != (
+            "zero_based_observation_common_axis_slot"
+        ):
+            errors.append(f"{label} source-slot identity is invalid")
+
+        key = (interface_id, field_id)
+        if key in previous_stops and start <= previous_stops[key]:
+            errors.append(
+                f"{label} overlaps or is adjacent to its preceding compact run"
+            )
+        previous_stops[key] = stop
+
+        action = exception["action"]
+        source_available = exception["source_slots_available"]
+        left_source = exception["left_source_slot"]
+        right_source = exception["right_source_slot"]
+        if type(source_available) is not bool:
+            errors.append(f"{label} source-slot availability is not boolean")
+        if type(left_source) is not int or type(right_source) is not int:
+            errors.append(f"{label} source-slot endpoints are invalid")
+        elif action == "bounded_continuity_candidate":
+            if (
+                field_id != "detector_acquisition"
+                or interface_id not in interface_roaches
+                or start == 0
+                or (
+                    nominal_slot_count is not None
+                    and stop >= nominal_slot_count
+                )
+                or source_available is not True
+                or left_source != start - 1
+                or right_source != stop
+            ):
+                errors.append(
+                    f"{label} lacks exact bounded-continuity source endpoints"
+                )
+        elif (
+            source_available is not False
+            or left_source != -1
+            or right_source != -1
+        ):
+            errors.append(
+                f"{label} retains source endpoints without continuity permission"
+            )
+
+        if field_id == "detector_acquisition" and (
+            interface_id not in interface_roaches
+        ):
+            errors.append(f"{label} names an unknown detector interface")
+        valid_exceptions.append(exception)
+    return errors, valid_exceptions
+
+
+def _sci_align_processing_plan_semantic_errors(
+    alignment: dict[str, Any],
+    scan_plan: dict[str, Any],
+    interface_roaches: dict[str, int],
+    interface_order: list[str],
+    exceptions: list[dict[str, Any]],
+    nominal_slot_count: int | None,
+    observation_execution_completed: bool | None,
+) -> list[str]:
+    errors: list[str] = []
+    processing = alignment.get("processing_support_plan")
+    if not _exact_mapping_keys(
+        processing,
+        _SCI_ALIGN_PROCESSING_PLAN_KEYS,
+        "SCI-ALIGN processing-support plan",
+        errors,
+    ):
+        return errors
+
+    execution_realized = processing["execution_realized"]
+    if type(execution_realized) is not bool:
+        errors.append(
+            "SCI-ALIGN processing-support execution state is not boolean"
+        )
+    if processing["interval_convention"] != "half_open_start_stop":
+        errors.append(
+            "SCI-ALIGN processing-support interval convention is invalid"
+        )
+    if processing["count_scope"] != (
+        "planned_occurrences_across_admitted_scan_contexts"
+    ):
+        errors.append("SCI-ALIGN processing-support count scope is invalid")
+    if processing["gap_admission_contract"] != (
+        _SCI_ALIGN_GAP_ADMISSION_CONTRACT
+    ):
+        errors.append(
+            "SCI-ALIGN gap-admission contract is invalid or incomplete"
+        )
+    if processing["planned_action_support_reference"] != (
+        "chunk_dispositions[].context_expanded_support"
+    ):
+        errors.append(
+            "SCI-ALIGN planned-action support reference is invalid"
+        )
+    if processing["continuity_source_contract"] != (
+        "each_planned_continuity_run_is_a_subrange_of_one_"
+        "bounded_exception_run"
+    ):
+        errors.append(
+            "SCI-ALIGN processing-support continuity-source contract is invalid"
+        )
+    if processing["chunk_disposition_encoding"] != (
+        _SCI_ALIGN_CHUNK_DISPOSITION_ENCODING
+    ):
+        errors.append(
+            "SCI-ALIGN sparse chunk-disposition encoding is invalid or incomplete"
+        )
+
+    counts = processing["planned_occurrence_counts"]
+    counts_valid = _exact_mapping_keys(
+        counts,
+        _SCI_ALIGN_PROCESSING_COUNT_KEYS,
+        "SCI-ALIGN planned occurrence counts",
+        errors,
+    )
+    if counts_valid:
+        for name, value in counts.items():
+            if type(value) is not int or value < 0:
+                errors.append(
+                    f"SCI-ALIGN planned occurrence count {name} is invalid"
+                )
+
+    dispositions = processing["chunk_dispositions"]
+    if not isinstance(dispositions, list):
+        errors.append("SCI-ALIGN chunk dispositions must be a sequence")
+        return errors
+
+    observation_resolved = processing["observation_resolved"]
+    if type(observation_resolved) is not bool:
+        errors.append(
+            "SCI-ALIGN processing-support observation_resolved is not boolean"
+        )
+        return errors
+
+    compatibility = scan_plan.get("compatibility_ordinal_to_stable_id")
+    records = scan_plan.get("records")
+    compatibility = compatibility if isinstance(compatibility, list) else []
+    records = records if isinstance(records, list) else []
+    signal_domain = processing["signal_domain"]
+
+    if not observation_resolved:
+        if processing["evidence_stage"] != "not_observation_resolved":
+            errors.append(
+                "unresolved SCI-ALIGN processing-support evidence stage is invalid"
+            )
+        if signal_domain != "" or dispositions:
+            errors.append(
+                "unresolved SCI-ALIGN processing support retains planned state"
+            )
+        if counts_valid and any(counts.values()):
+            errors.append(
+                "unresolved SCI-ALIGN processing support retains occurrence counts"
+            )
+        if compatibility:
+            errors.append(
+                "admitted SCI-ALIGN scans have no observation-resolved processing plan"
+            )
+        if execution_realized is not False:
+            errors.append(
+                "unresolved SCI-ALIGN processing support claims realized execution"
+            )
+        if processing["realization_semantics"] != (
+            "plan_only_no_execution_outcome_claim"
+        ):
+            errors.append(
+                "unresolved SCI-ALIGN processing-support realization semantics "
+                "are invalid"
+            )
+        return errors
+
+    if observation_execution_completed is not None:
+        expected_execution = observation_execution_completed
+        expected_stage = (
+            "observation_execution_completed_compact_result"
+            if expected_execution
+            else "observation_resolved_planned_processing"
+        )
+        expected_semantics = (
+            "required_processing_and_outputs_completed_compact_plan_result"
+            if expected_execution
+            else "plan_only_no_execution_outcome_claim"
+        )
+        if execution_realized is not expected_execution:
+            errors.append(
+                "SCI-ALIGN processing-support realization conflicts with "
+                "observation completion stage"
+            )
+        if processing["evidence_stage"] != expected_stage:
+            errors.append(
+                "resolved SCI-ALIGN processing-support evidence stage is invalid"
+            )
+        if processing["realization_semantics"] != expected_semantics:
+            errors.append(
+                "SCI-ALIGN processing-support realization semantics are invalid"
+            )
+    if signal_domain not in {"xs", "rs", "is", "qs"}:
+        errors.append("SCI-ALIGN processing-support signal domain is invalid")
+
+    maximum_disposition_count = len(compatibility) * len(interface_order)
+    if len(dispositions) > maximum_disposition_count:
+        errors.append(
+            "SCI-ALIGN sparse processing plan exceeds admitted "
+            "scan/interface cardinality"
+        )
+
+    def merged_runs(
+        runs: list[tuple[int, int]], start: int, stop: int
+    ) -> list[tuple[int, int]]:
+        result: list[tuple[int, int]] = []
+        for run_start, run_stop in sorted(runs):
+            clipped_start = max(run_start, start)
+            clipped_stop = min(run_stop, stop)
+            if clipped_stop <= clipped_start:
+                continue
+            if result and clipped_start <= result[-1][1]:
+                result[-1] = (
+                    result[-1][0], max(result[-1][1], clipped_stop)
+                )
+            else:
+                result.append((clipped_start, clipped_stop))
+        return result
+
+    detector_exception_runs: dict[str, list[tuple[int, int]]] = {
+        interface_id: [] for interface_id in interface_order
+    }
+    for exception in exceptions:
+        interface_id = exception.get("interface_id")
+        if (
+            exception.get("field_id") == "detector_acquisition"
+            and interface_id in detector_exception_runs
+            and type(exception.get("start")) is int
+            and type(exception.get("stop")) is int
+        ):
+            detector_exception_runs[interface_id].append(
+                (exception["start"], exception["stop"])
+            )
+
+    pair_facts: dict[tuple[int, str], dict[str, Any]] = {}
+    for ordinal, stable_scan_id in enumerate(compatibility):
+        record = (
+            records[stable_scan_id]
+            if type(stable_scan_id) is int
+            and 0 <= stable_scan_id < len(records)
+            and isinstance(records[stable_scan_id], dict)
+            else None
+        )
+        science = (
+            record.get("compatibility_science")
+            if isinstance(record, dict)
+            else None
+        )
+        context = (
+            record.get("compatibility_context")
+            if isinstance(record, dict)
+            else None
+        )
+        if not isinstance(science, dict) or not isinstance(context, dict):
+            continue
+        science_start = science.get("start")
+        science_stop = science.get("stop")
+        context_start = context.get("start")
+        context_stop = context.get("stop")
+        if not all(
+            type(value) is int
+            for value in (
+                science_start, science_stop, context_start, context_stop
+            )
+        ):
+            continue
+        if (
+            context_start < 0
+            or science_start < context_start
+            or science_stop <= science_start
+            or context_stop < science_stop
+            or (
+                nominal_slot_count is not None
+                and context_stop > nominal_slot_count
+            )
+        ):
+            continue
+        for interface_id in interface_order:
+            context_missing_runs = merged_runs(
+                detector_exception_runs.get(interface_id, []),
+                context_start,
+                context_stop,
+            )
+            science_missing_runs = merged_runs(
+                context_missing_runs, science_start, science_stop
+            )
+            science_missing_count = sum(
+                run_stop - run_start
+                for run_start, run_stop in science_missing_runs
+            )
+            science_size = science_stop - science_start
+            pair_facts[(ordinal, interface_id)] = {
+                "stable_scan_id": stable_scan_id,
+                "science": (science_start, science_stop),
+                "context": (context_start, context_stop),
+                "context_missing_runs": context_missing_runs,
+                "context_missing_count": sum(
+                    run_stop - run_start
+                    for run_start, run_stop in context_missing_runs
+                ),
+                "science_missing_count": science_missing_count,
+                "science_longest_missing": max(
+                    (
+                        run_stop - run_start
+                        for run_start, run_stop in science_missing_runs
+                    ),
+                    default=0,
+                ),
+                "full_unusable": (
+                    science_missing_count * 4 > science_size
+                    or max(
+                        (
+                            run_stop - run_start
+                            for run_start, run_stop in science_missing_runs
+                        ),
+                        default=0,
+                    )
+                    * 4
+                    > science_size
+                ),
+            }
+
+    aggregate_counts = dict.fromkeys(_SCI_ALIGN_PROCESSING_COUNT_KEYS, 0)
+    aggregate_science_guarded_original = 0
+    aggregate_gap_policy_eligible_original = 0
+    seen_keys: set[tuple[int, str]] = set()
+    previous_order_key: tuple[int, int] | None = None
+    parsed_rows: dict[tuple[int, str], dict[str, Any]] = {}
+    for index, disposition in enumerate(dispositions):
+        label = f"SCI-ALIGN chunk disposition {index}"
+        if not _exact_mapping_keys(
+            disposition, _SCI_ALIGN_DISPOSITION_KEYS, label, errors
+        ):
+            continue
+
+        ordinal = disposition["compatibility_ordinal"]
+        stable_scan_id = disposition["stable_scan_id"]
+        interface_id = disposition["interface_id"]
+        roach_index = disposition["roach_index"]
+        if (
+            type(ordinal) is not int
+            or ordinal < 0
+            or type(stable_scan_id) is not int
+            or stable_scan_id < 0
+            or not isinstance(interface_id, str)
+            or interface_id not in interface_roaches
+            or type(roach_index) is not int
+            or roach_index != interface_roaches.get(interface_id)
+        ):
+            errors.append(f"{label} identity is invalid")
+            continue
+        key = (ordinal, interface_id)
+        order_key = (ordinal, roach_index)
+        if key in seen_keys:
+            errors.append(f"{label} duplicates a scan/interface identity")
+        seen_keys.add(key)
+        if previous_order_key is not None and order_key <= previous_order_key:
+            errors.append(
+                f"{label} is not in deterministic compatibility/roach order"
+            )
+        previous_order_key = order_key
+        facts = pair_facts.get(key)
+        if facts is None or facts["stable_scan_id"] != stable_scan_id:
+            errors.append(f"{label} conflicts with scan compatibility identity")
+            continue
+
+        context = disposition["context"]
+        if not _exact_mapping_keys(
+            context, {"start", "stop"}, f"{label} context", errors
+        ):
+            continue
+        context_start, context_stop = facts["context"]
+        if context != {"start": context_start, "stop": context_stop}:
+            errors.append(f"{label} context conflicts with its scan plan")
+            continue
+        science_start, science_stop = facts["science"]
+        science_size = science_stop - science_start
+
+        cumulative_missing = disposition["cumulative_missing_count"]
+        longest_missing = disposition["longest_missing_run_count"]
+        full_unusable = disposition["full_network_unusable"]
+        continuity_permitted = disposition[
+            "continuity_surrogate_permitted"
+        ]
+        if (
+            type(cumulative_missing) is not int
+            or cumulative_missing < 0
+            or cumulative_missing > science_size
+            or type(longest_missing) is not int
+            or longest_missing < 0
+            or longest_missing > cumulative_missing
+        ):
+            errors.append(f"{label} missing-support counts are invalid")
+            continue
+        if (
+            type(full_unusable) is not bool
+            or type(continuity_permitted) is not bool
+        ):
+            errors.append(f"{label} action-policy state is not boolean")
+            continue
+        if continuity_permitted != (signal_domain == "xs"):
+            errors.append(f"{label} continuity permission is inconsistent")
+        if (
+            cumulative_missing != facts["science_missing_count"]
+            or longest_missing != facts["science_longest_missing"]
+        ):
+            errors.append(
+                f"{label} science-window missing counts conflict with "
+                "detector exception support"
+            )
+        if full_unusable != facts["full_unusable"]:
+            errors.append(f"{label} full-network usability is inconsistent")
+
+        actions = disposition["planned_actions"]
+        if not _exact_mapping_keys(
+            actions,
+            set(_SCI_ALIGN_ACTION_CONTRACTS),
+            f"{label} planned actions",
+            errors,
+        ):
+            continue
+        parsed_runs: dict[str, list[tuple[int, int]]] = {}
+        run_counts: dict[str, int] = {}
+        for action_name, action_identity in (
+            _SCI_ALIGN_ACTION_CONTRACTS.items()
+        ):
+            action = actions[action_name]
+            action_label = f"{label} {action_name}"
+            if not _exact_mapping_keys(
+                action, {"action", "runs"}, action_label, errors
+            ):
+                parsed_runs[action_name] = []
+                run_counts[action_name] = 0
+                continue
+            if action["action"] != action_identity:
+                errors.append(f"{action_label} action identity is invalid")
+            runs, occurrence_count = _compact_half_open_runs(
+                action["runs"],
+                context_start,
+                context_stop,
+                action_label,
+                errors,
+            )
+            parsed_runs[action_name] = runs
+            run_counts[action_name] = occurrence_count
+
+        synthesized_runs = parsed_runs["continuity_surrogate_missing"]
+        unavailable_runs = parsed_runs["unavailable_missing"]
+        guarded_runs = parsed_runs["guarded_original"]
+        synthesized_count = run_counts["continuity_surrogate_missing"]
+        unavailable_count = run_counts["unavailable_missing"]
+        guarded_count = run_counts["guarded_original"]
+        planned_missing_runs = merged_runs(
+            [*synthesized_runs, *unavailable_runs],
+            context_start,
+            context_stop,
+        )
+        if (
+            _half_open_runs_overlap(synthesized_runs, unavailable_runs)
+            or _half_open_runs_overlap(
+                facts["context_missing_runs"], guarded_runs
+            )
+            or planned_missing_runs != facts["context_missing_runs"]
+        ):
+            errors.append(f"{label} planned runs do not partition support")
+
+        is_spurious_ordinary = (
+            cumulative_missing == 0
+            and longest_missing == 0
+            and full_unusable is False
+            and not synthesized_runs
+            and not unavailable_runs
+            and not guarded_runs
+        )
+        if is_spurious_ordinary:
+            errors.append(f"{label} persists a spurious ordinary default row")
+        if full_unusable and (synthesized_count != 0 or guarded_count != 0):
+            errors.append(f"{label} unusable network retains processing actions")
+        if not continuity_permitted and synthesized_count != 0:
+            errors.append(
+                f"{label} synthesizes continuity without domain permission"
+            )
+
+        for run_start, run_stop in synthesized_runs:
+            matches = [
+                exception
+                for exception in exceptions
+                if exception.get("interface_id") == interface_id
+                and exception.get("field_id") == "detector_acquisition"
+                and exception.get("action")
+                == "bounded_continuity_candidate"
+                and exception.get("start", run_start + 1) <= run_start
+                and exception.get("stop", run_stop - 1) >= run_stop
+            ]
+            if len(matches) != 1:
+                errors.append(
+                    f"{label} continuity run has no unique compact source exception"
+                )
+        if continuity_permitted and not full_unusable:
+            for run_start, run_stop in unavailable_runs:
+                bounded_matches = [
+                    exception
+                    for exception in exceptions
+                    if exception.get("interface_id") == interface_id
+                    and exception.get("field_id") == "detector_acquisition"
+                    and exception.get("action")
+                    == "bounded_continuity_candidate"
+                    and exception.get("start", run_start + 1) <= run_start
+                    and exception.get("stop", run_stop - 1) >= run_stop
+                ]
+                if bounded_matches:
+                    errors.append(
+                        f"{label} marks bounded continuity support unavailable"
+                    )
+
+        aggregate_counts["continuity_surrogate_missing"] += synthesized_count
+        aggregate_counts["unavailable_missing"] += unavailable_count
+        aggregate_counts["guarded_original"] += guarded_count
+        if full_unusable:
+            aggregate_counts["full_network_unusable_original"] += (
+                context_stop
+                - context_start
+                - facts["context_missing_count"]
+            )
+        parsed_rows[key] = {
+            "full_unusable": full_unusable,
+            "guarded_runs": guarded_runs,
+        }
+
+    for key, facts in pair_facts.items():
+        row = parsed_rows.get(key)
+        if row is None:
+            if facts["context_missing_runs"]:
+                errors.append(
+                    "SCI-ALIGN sparse processing plan omits a nondefault "
+                    f"scan/interface disposition {key[0]}/{key[1]}"
+                )
+                continue
+            science_start, science_stop = facts["science"]
+            aggregate_gap_policy_eligible_original += (
+                science_stop - science_start
+            )
+            continue
+        if row["full_unusable"]:
+            continue
+        science_start, science_stop = facts["science"]
+        science_guarded_count = sum(
+            max(
+                0,
+                min(run_stop, science_stop)
+                - max(run_start, science_start),
+            )
+            for run_start, run_stop in row["guarded_runs"]
+        )
+        science_original_count = (
+            science_stop - science_start - facts["science_missing_count"]
+        )
+        if science_guarded_count > science_original_count:
+            errors.append(
+                "SCI-ALIGN guarded originals exceed science-window originals"
+            )
+            continue
+        aggregate_science_guarded_original += science_guarded_count
+        aggregate_gap_policy_eligible_original += (
+            science_original_count - science_guarded_count
+        )
+
+    if counts_valid and any(
+        counts[name] != aggregate_counts[name]
+        for name in _SCI_ALIGN_PROCESSING_COUNT_KEYS
+        if type(counts[name]) is int
+    ):
+        errors.append(
+            "SCI-ALIGN planned occurrence counts conflict with compact runs"
+        )
+    support = alignment.get("support")
+    if isinstance(support, dict):
+        if support.get("guarded_original_interface_slot_count") != (
+            aggregate_science_guarded_original
+        ):
+            errors.append(
+                "SCI-ALIGN guarded-original science support is inconsistent"
+            )
+        if support.get(
+            "gap_policy_eligible_original_interface_slot_count"
+        ) != aggregate_gap_policy_eligible_original:
+            errors.append(
+                "SCI-ALIGN gap-policy-eligible original support is inconsistent"
+            )
+    return errors
+
+
+def _sci_align_output_window_semantic_errors(
+    realized: dict[str, Any],
+    effective: dict[str, Any],
+    scan_plan: dict[str, Any],
+) -> list[str]:
+    errors: list[str] = []
+    compatibility = scan_plan.get("compatibility_ordinal_to_stable_id")
+    records = scan_plan.get("records")
+    if not isinstance(compatibility, list) or not isinstance(records, list):
+        return ["SCI-ALIGN output windows lack a valid scan-plan identity"]
+
+    for stream_name, raw_stream in (
+        ("raw_time_chunk", True),
+        ("processed_time_chunk", False),
+    ):
+        label = f"SCI-ALIGN {stream_name} output windows"
+        stream = realized.get(stream_name)
+        effective_stream = effective.get(stream_name)
+        if not isinstance(stream, dict) or not isinstance(
+            effective_stream, dict
+        ):
+            errors.append(f"{label} lack realized/effective stream state")
+            continue
+        n_output = stream.get("n_output_scans")
+        scan_to_output = stream.get("scan_to_output")
+        windows = stream.get("selected_output_windows")
+        mode = effective_stream.get("mode")
+        if (
+            type(n_output) is not int
+            or n_output < 0
+            or not isinstance(scan_to_output, list)
+            or len(scan_to_output) != len(compatibility)
+            or any(type(row) is not int for row in scan_to_output)
+            or not isinstance(windows, list)
+            or not isinstance(mode, str)
+            or not mode
+        ):
+            errors.append(f"{label} have invalid shape")
+            continue
+
+        context_outer = raw_stream and mode in {"full_outer", "mini_outer"}
+        interval_name = (
+            "compatibility_context"
+            if context_outer
+            else "compatibility_science"
+        )
+        interval_authority = (
+            "context_outer" if context_outer else "science_inner"
+        )
+        selected = [
+            (ordinal, row)
+            for ordinal, row in enumerate(scan_to_output)
+            if row >= 0
+        ]
+        if (
+            any(row < -1 or row >= n_output for row in scan_to_output)
+            or len(selected) != n_output
+            or sorted(row for _, row in selected) != list(range(n_output))
+            or len(windows) != n_output
+        ):
+            errors.append(f"{label} are not a complete output-row bijection")
+            continue
+
+        for window_index, ((ordinal, output_row), window) in enumerate(
+            zip(selected, windows, strict=True)
+        ):
+            window_label = f"{label} record {window_index}"
+            if not _exact_mapping_keys(
+                window,
+                _SCI_ALIGN_OUTPUT_WINDOW_KEYS,
+                window_label,
+                errors,
+            ):
+                continue
+            stable_id = compatibility[ordinal]
+            record = (
+                records[stable_id]
+                if type(stable_id) is int
+                and 0 <= stable_id < len(records)
+                and isinstance(records[stable_id], dict)
+                else None
+            )
+            expected_interval = (
+                record.get(interval_name)
+                if isinstance(record, dict)
+                else None
+            )
+            if (
+                window["stable_processing_record_id"] != stable_id
+                or window["compatibility_ordinal"] != ordinal
+                or window["output_row"] != output_row
+                or window["output_interval"] != expected_interval
+                or window["interval_convention"] != "half_open_start_stop"
+                or window["interval_authority"] != interval_authority
+            ):
+                errors.append(
+                    f"{window_label} conflicts with realized selection and "
+                    "scan-plan support"
+                )
+    return errors
+
+
+def timestream_output_provenance_semantic_errors(
+    data: dict[str, Any],
+) -> list[str]:
+    if data.get("schema_version") != (
+        "citlali-timestream-output-provenance-v2"
+    ):
+        return []
+
+    errors: list[str] = []
+    try:
+        effective = data["effective"]
+        realized = data["realized"]
+        execution_completed_value = realized["execution_completed"]
+        observation_execution_completed: bool | None = None
+        if type(execution_completed_value) is not bool:
+            errors.append(
+                "timestream-output execution_completed must be boolean"
+            )
+        else:
+            observation_execution_completed = execution_completed_value
+            expected_evidence_stage = (
+                "observation_execution_completed"
+                if execution_completed_value
+                else "observation_setup_plan"
+            )
+            if realized["evidence_stage"] != expected_evidence_stage:
+                errors.append(
+                    "timestream-output evidence stage conflicts with completion"
+                )
+        n_scans = realized["n_scans"]
+        if type(n_scans) is not int or n_scans < 0:
+            errors.append(
+                "timestream-output realized n_scans must be a "
+                "nonnegative integer"
+            )
+
+        plan = realized["sci_align_scan_plan"]
+        if not isinstance(plan, dict):
+            errors.append("SCI-ALIGN scan plan must be a mapping")
+        else:
+            if plan.get("identity") != (
+                "zero_based_stable_processing_record_id"
+            ):
+                errors.append("SCI-ALIGN scan identity is invalid")
+            if plan.get("interval_convention") != "half_open_start_stop":
+                errors.append(
+                    "SCI-ALIGN scan interval convention is invalid"
+                )
+            if plan.get("physical_identity") != (
+                "zero_based_physical_window_id_when_authority_available"
+            ):
+                errors.append("SCI-ALIGN physical-window identity is invalid")
+            if not isinstance(plan.get("policy"), str) or not plan["policy"]:
+                errors.append("SCI-ALIGN scan policy is unavailable")
+            for name in ("requested_value", "effective_duration_sec"):
+                value = plan.get(name)
+                if (
+                    isinstance(value, bool)
+                    or not isinstance(value, (int, float))
+                    or not math.isfinite(float(value))
+                ):
+                    errors.append(f"SCI-ALIGN scan {name} is not finite")
+
+            sample_count = plan.get("observation_sample_count")
+            physical_identity_count = plan.get("physical_identity_count")
+            identity_count = plan.get("identity_count")
+            admitted_count = plan.get("compatibility_admitted_count")
+            for name, value in (
+                ("observation_sample_count", sample_count),
+                ("physical_identity_count", physical_identity_count),
+                ("identity_count", identity_count),
+                ("compatibility_admitted_count", admitted_count),
+            ):
+                if type(value) is not int or value < 0:
+                    errors.append(
+                        f"SCI-ALIGN scan {name} must be a nonnegative integer"
+                    )
+
+            physical_records = plan.get("physical_records")
+            records = plan.get("records")
+            compatibility = plan.get(
+                "compatibility_ordinal_to_stable_id"
+            )
+            if not isinstance(records, list):
+                errors.append("SCI-ALIGN scan records must be a sequence")
+                records = []
+            if not isinstance(compatibility, list) or any(
+                type(value) is not int or value < 0
+                for value in compatibility
+            ):
+                errors.append(
+                    "SCI-ALIGN compatibility mapping must be a sequence "
+                    "of nonnegative integers"
+                )
+                compatibility = []
+
+            if not isinstance(physical_records, list):
+                errors.append(
+                    "SCI-ALIGN physical-window records must be a sequence"
+                )
+                physical_records = []
+            if (
+                type(physical_identity_count) is int
+                and physical_identity_count != len(physical_records)
+            ):
+                errors.append(
+                    "SCI-ALIGN physical-window count does not match records"
+                )
+            parsed_physical: list[tuple[int, int]] = []
+            previous_physical_stop = 0
+            for expected_id, physical in enumerate(physical_records):
+                if not isinstance(physical, dict):
+                    errors.append(
+                        f"SCI-ALIGN physical-window record {expected_id} "
+                        "must be a mapping"
+                    )
+                    continue
+                interval = physical.get("interval")
+                if (
+                    physical.get("stable_id") != expected_id
+                    or not isinstance(physical.get("authority"), str)
+                    or not physical["authority"]
+                    or not isinstance(interval, dict)
+                ):
+                    errors.append(
+                        f"SCI-ALIGN physical-window record {expected_id} "
+                        "identity is invalid"
+                    )
+                    continue
+                start = interval.get("start")
+                stop = interval.get("stop")
+                if (
+                    type(start) is not int
+                    or type(stop) is not int
+                    or start < 0
+                    or stop <= start
+                    or (
+                        type(sample_count) is int
+                        and stop > sample_count
+                    )
+                    or start < previous_physical_stop
+                ):
+                    errors.append(
+                        f"SCI-ALIGN physical-window record {expected_id} "
+                        "support is invalid"
+                    )
+                    continue
+                previous_physical_stop = stop
+                parsed_physical.append((start, stop))
+
+            if type(identity_count) is int and identity_count != len(records):
+                errors.append(
+                    "SCI-ALIGN scan identity count does not match records"
+                )
+            if (
+                type(admitted_count) is int
+                and admitted_count != len(compatibility)
+            ):
+                errors.append(
+                    "SCI-ALIGN admitted count does not match compatibility mapping"
+                )
+            if (
+                type(n_scans) is int
+                and type(admitted_count) is int
+                and n_scans != admitted_count
+            ):
+                errors.append(
+                    "SCI-ALIGN admitted count does not match realized n_scans"
+                )
+
+            expected_compatibility: list[int] = []
+            previous_processing_stop = 0
+            previous_compatibility_stop = 0
+            for expected_id, record in enumerate(records):
+                if not isinstance(record, dict):
+                    errors.append(
+                        f"SCI-ALIGN scan record {expected_id} must be a mapping"
+                    )
+                    continue
+                if record.get("stable_id") != expected_id:
+                    errors.append(
+                        "SCI-ALIGN scan stable identities are not contiguous "
+                        "from zero"
+                    )
+                identity_authority = record.get("identity_authority")
+                if (
+                    not isinstance(identity_authority, str)
+                    or not identity_authority
+                ):
+                    errors.append(
+                        f"SCI-ALIGN scan record {expected_id} identity "
+                        "authority is unavailable"
+                    )
+                if record.get("status") not in {
+                    "usable", "short", "partial", "empty", "rejected",
+                    "unusable",
+                }:
+                    errors.append(
+                        f"SCI-ALIGN scan record {expected_id} has invalid status"
+                    )
+
+                intervals: dict[str, tuple[int, int]] = {}
+                for name in ("processing", "science", "context"):
+                    interval = record.get(name)
+                    if not isinstance(interval, dict):
+                        errors.append(
+                            f"SCI-ALIGN scan record {expected_id} {name} "
+                            "interval is invalid"
+                        )
+                        continue
+                    start = interval.get("start")
+                    stop = interval.get("stop")
+                    if (
+                        type(start) is not int
+                        or type(stop) is not int
+                        or start < 0
+                        or stop < start
+                    ):
+                        errors.append(
+                            f"SCI-ALIGN scan record {expected_id} {name} "
+                            "interval is invalid"
+                        )
+                        continue
+                    intervals[name] = (start, stop)
+
+                if set(intervals) == {"processing", "science", "context"}:
+                    processing = intervals["processing"]
+                    science = intervals["science"]
+                    context = intervals["context"]
+                    if (
+                        (type(sample_count) is int
+                         and (
+                             processing[1] > sample_count
+                             or context[1] > sample_count
+                         ))
+                        or processing[1] <= processing[0]
+                        or science[0] < processing[0]
+                        or science[1] > processing[1]
+                        or context[0] > science[0]
+                        or context[1] < science[1]
+                        or processing[0] < previous_processing_stop
+                    ):
+                        errors.append(
+                            f"SCI-ALIGN scan record {expected_id} support is invalid"
+                        )
+                    previous_processing_stop = processing[1]
+
+                    physical_id = record.get("physical_id")
+                    if physical_id is None:
+                        bounded_raster = (
+                            plan.get("policy")
+                            == "legacy_4x_linear_any_nonzero_plus_outside_v1"
+                            and identity_authority
+                            == "legacy_inferred_raster_compatibility_"
+                            "segment_not_physical"
+                        )
+                        requested_continuous = (
+                            plan.get("policy")
+                            in {
+                                "fixed_duration_round_half_up_v1",
+                                "fixed_count_balanced_v1",
+                            }
+                            and identity_authority
+                            == "requested_processing_chunk_under_"
+                            "continuous_observation_no_physical_scan_authority"
+                        )
+                        if not bounded_raster and not requested_continuous:
+                            errors.append(
+                                f"SCI-ALIGN scan record {expected_id} lacks "
+                                "bounded physical-window authority"
+                            )
+                    elif (
+                        type(physical_id) is not int
+                        or physical_id < 0
+                        or physical_id >= len(parsed_physical)
+                    ):
+                        errors.append(
+                            f"SCI-ALIGN scan record {expected_id} physical "
+                            "identity is invalid"
+                        )
+                    elif (
+                        processing[0] < parsed_physical[physical_id][0]
+                        or processing[1] > parsed_physical[physical_id][1]
+                    ):
+                        errors.append(
+                            f"SCI-ALIGN scan record {expected_id} processing "
+                            "support is outside its physical window"
+                        )
+
+                admitted = record.get("legacy_processing_admitted")
+                ordinal = record.get("compatibility_ordinal")
+                if type(admitted) is not bool or type(ordinal) is not int:
+                    errors.append(
+                        f"SCI-ALIGN scan record {expected_id} compatibility "
+                        "state is invalid"
+                    )
+                elif admitted:
+                    if ordinal != len(expected_compatibility):
+                        errors.append(
+                            "SCI-ALIGN compatibility ordinals are not contiguous"
+                        )
+                    expected_compatibility.append(expected_id)
+                    compatibility_intervals: dict[
+                        str, tuple[int, int]
+                    ] = {}
+                    for name in (
+                        "compatibility_science",
+                        "compatibility_context",
+                    ):
+                        interval = record.get(name)
+                        if not isinstance(interval, dict):
+                            errors.append(
+                                f"SCI-ALIGN admitted scan record {expected_id} "
+                                f"{name} interval is invalid"
+                            )
+                            continue
+                        start = interval.get("start")
+                        stop = interval.get("stop")
+                        if (
+                            type(start) is not int
+                            or type(stop) is not int
+                            or start < 0
+                            or stop <= start
+                            or (
+                                type(sample_count) is int
+                                and stop > sample_count
+                            )
+                        ):
+                            errors.append(
+                                f"SCI-ALIGN admitted scan record {expected_id} "
+                                f"{name} support is invalid"
+                            )
+                            continue
+                        compatibility_intervals[name] = (start, stop)
+                    if set(compatibility_intervals) == {
+                        "compatibility_science",
+                        "compatibility_context",
+                    }:
+                        compatibility_science = compatibility_intervals[
+                            "compatibility_science"
+                        ]
+                        compatibility_context = compatibility_intervals[
+                            "compatibility_context"
+                        ]
+                        if (
+                            compatibility_context[0]
+                            > compatibility_science[0]
+                            or compatibility_context[1]
+                            < compatibility_science[1]
+                            or compatibility_science[0]
+                            < previous_compatibility_stop
+                        ):
+                            errors.append(
+                                f"SCI-ALIGN admitted scan record {expected_id} "
+                                "compatibility support is invalid or overlapping"
+                            )
+                        previous_compatibility_stop = compatibility_science[1]
+                elif ordinal != -1:
+                    errors.append(
+                        f"SCI-ALIGN non-admitted scan record {expected_id} "
+                        "has a compatibility ordinal"
+                    )
+                elif (
+                    "compatibility_science" in record
+                    or "compatibility_context" in record
+                ):
+                    errors.append(
+                        f"SCI-ALIGN non-admitted scan record {expected_id} "
+                        "retains compatibility support"
+                    )
+            if compatibility != expected_compatibility:
+                errors.append("SCI-ALIGN compatibility mapping is inconsistent")
+
+        alignment = realized["sci_align_alignment"]
+        if not isinstance(alignment, dict):
+            errors.append("SCI-ALIGN alignment provenance must be a mapping")
+        elif type(alignment.get("initialized")) is not bool:
+            errors.append("SCI-ALIGN alignment initialized must be boolean")
+        elif not alignment["initialized"]:
+            availability = alignment.get("availability")
+            if (
+                not isinstance(availability, dict)
+                or availability.get("alignment") != "not_realized"
+            ):
+                errors.append(
+                    "uninitialized SCI-ALIGN alignment is not marked not_realized"
+                )
+        else:
+            if alignment.get("representation") != (
+                "compact_generative_grid_plus_exception_runs_v1"
+            ):
+                errors.append("SCI-ALIGN alignment representation is invalid")
+            if alignment.get("dense_mapping_persisted") is not False:
+                errors.append("SCI-ALIGN alignment persists a dense mapping")
+            if (
+                not isinstance(alignment.get("field_registry_version"), str)
+                or not alignment["field_registry_version"]
+            ):
+                errors.append("SCI-ALIGN field registry identity is unavailable")
+            if any(
+                name in alignment
+                for name in (
+                    "common_time",
+                    "masks",
+                    "network_masks",
+                    "network_times",
+                    "assigned_slots",
+                    "source_weights",
+                    "processing_results",
+                )
+            ):
+                errors.append("SCI-ALIGN alignment contains dense routine state")
+
+            grid = alignment.get("grid")
+            if not isinstance(grid, dict):
+                errors.append("SCI-ALIGN alignment grid must be a mapping")
+            else:
+                phase = grid.get("phase_sec")
+                cadence = grid.get("cadence_sec")
+                half_cell = grid.get("exclusive_half_cell_sec")
+                if any(
+                    isinstance(value, bool)
+                    or not isinstance(value, (int, float))
+                    or not math.isfinite(float(value))
+                    for value in (phase, cadence, half_cell)
+                ) or not (
+                    float(cadence) > 0.0
+                    and float(half_cell) == float(cadence) / 2.0
+                ):
+                    errors.append("SCI-ALIGN alignment grid cadence is invalid")
+                if grid.get("assignment_operator") != "floor_q_plus_half_v1":
+                    errors.append(
+                        "SCI-ALIGN alignment assignment operator is invalid"
+                    )
+                if grid.get("physical_timestamp_semantics") != "unavailable":
+                    errors.append(
+                        "SCI-ALIGN physical timestamp semantics are not unavailable"
+                    )
+            for name, expected_type in (
+                ("hwpr", dict),
+                ("telescope", dict),
+                ("support", dict),
+                ("interfaces", list),
+                ("exception_runs", list),
+                ("exception_run_contract", dict),
+                ("processing_support_plan", dict),
+                ("availability", dict),
+            ):
+                if not isinstance(alignment.get(name), expected_type):
+                    errors.append(
+                        f"SCI-ALIGN alignment {name} has invalid shape"
+                    )
+
+            errors.extend(_sci_align_hwpr_semantic_errors(alignment))
+
+            support = alignment.get("support")
+            nominal_slot_count: int | None = None
+            if isinstance(support, dict):
+                nominal_value = support.get(
+                    "nominal_common_axis_slot_count"
+                )
+                if type(nominal_value) is not int or nominal_value < 0:
+                    errors.append(
+                        "SCI-ALIGN nominal common-axis slot count is invalid"
+                    )
+                else:
+                    nominal_slot_count = nominal_value
+
+            interface_roaches: dict[str, int] = {}
+            interface_order: list[str] = []
+            interfaces = alignment.get("interfaces")
+            if isinstance(interfaces, list):
+                for index, interface in enumerate(interfaces):
+                    if not isinstance(interface, dict):
+                        errors.append(
+                            f"SCI-ALIGN interface {index} must be a mapping"
+                        )
+                        continue
+                    interface_id = interface.get("interface_id")
+                    roach_index = interface.get("roach_index")
+                    if (
+                        not isinstance(interface_id, str)
+                        or not interface_id
+                        or interface_id in interface_roaches
+                        or type(roach_index) is not int
+                        or roach_index < 0
+                        or roach_index in interface_roaches.values()
+                    ):
+                        errors.append(
+                            f"SCI-ALIGN interface {index} identity is invalid "
+                            "or duplicated"
+                        )
+                        continue
+                    interface_order.append(interface_id)
+                    interface_roaches[interface_id] = roach_index
+
+            exception_errors, exceptions = (
+                _sci_align_exception_semantic_errors(
+                    alignment, nominal_slot_count, interface_roaches
+                )
+            )
+            errors.extend(exception_errors)
+            if isinstance(plan, dict):
+                errors.extend(
+                    _sci_align_processing_plan_semantic_errors(
+                        alignment,
+                        plan,
+                        interface_roaches,
+                        interface_order,
+                        exceptions,
+                        nominal_slot_count,
+                        observation_execution_completed,
+                    )
+                )
+                errors.extend(
+                    _sci_align_output_window_semantic_errors(
+                        realized, effective, plan
+                    )
+                )
+    except (AttributeError, KeyError, TypeError, ValueError) as exc:
+        errors.append(
+            f"cannot evaluate timestream-output provenance semantics: {exc}"
+        )
+    return errors
+
+
+_INTERFACE_SYNC_CONFIG_IDENTITIES = tuple(
+    [*(f"toltec{index}" for index in range(13)), "hwpr"]
+)
+_INTERFACE_SYNC_LIFECYCLE_IDENTITIES = (
+    *_INTERFACE_SYNC_CONFIG_IDENTITIES,
+    "lmt",
+)
+_INTERFACE_SYNC_SOURCES = {
+    "schema_default_zero",
+    "configured_zero",
+    "configured_nonzero",
+}
+
+
+def _finite_number(value: Any) -> bool:
+    return bool(
+        not isinstance(value, bool)
+        and isinstance(value, (int, float))
+        and math.isfinite(float(value))
+    )
+
+
+def raw_v3_interface_offset_semantic_errors(
+    data: dict[str, Any],
+) -> list[str]:
+    errors: list[str] = []
+    try:
+        requested = data["requested"]["interface_sync_offset"]
+        effective = data["effective"]["config"]["interface_sync_offset"]
+        requested_offsets = requested["offsets"]
+        effective_offsets = effective["offsets"]
+        requested_sources = requested["sources"]
+        effective_sources = effective["sources"]
+        expected_config_ids = set(_INTERFACE_SYNC_CONFIG_IDENTITIES)
+
+        for label, offsets, sources in (
+            ("requested", requested_offsets, requested_sources),
+            ("effective", effective_offsets, effective_sources),
+        ):
+            if not isinstance(sources, dict) or set(sources) != expected_config_ids:
+                errors.append(f"{label} interface-sync sources are incomplete")
+                continue
+            for interface_id in _INTERFACE_SYNC_CONFIG_IDENTITIES:
+                source = sources[interface_id]
+                if source not in _INTERFACE_SYNC_SOURCES:
+                    errors.append(
+                        f"{label} interface-sync source {interface_id} is invalid"
+                    )
+                    continue
+                offset = offsets.get(interface_id)
+                if not _finite_number(offset):
+                    continue
+                if (source == "configured_nonzero") != (float(offset) != 0.0):
+                    errors.append(
+                        f"{label} interface-sync source {interface_id} "
+                        "conflicts with zero/nonzero offset"
+                    )
+
+        lifecycle = data["observation"]["value"]["interface_offsets"]
+        if not isinstance(lifecycle, list):
+            return errors + [
+                "observation interface-offset lifecycle must be a sequence"
+            ]
+
+        records: dict[str, dict[str, Any]] = {}
+        for index, record in enumerate(lifecycle):
+            if not isinstance(record, dict):
+                errors.append(
+                    "observation interface-offset lifecycle entry "
+                    f"{index} must be a mapping"
+                )
+                continue
+            interface_id = record.get("interface_id")
+            if (
+                interface_id not in _INTERFACE_SYNC_LIFECYCLE_IDENTITIES
+                or interface_id in records
+            ):
+                errors.append(
+                    "observation interface-offset lifecycle identity "
+                    f"{interface_id!r} is invalid or duplicated"
+                )
+                continue
+            records[interface_id] = record
+
+        if set(records) != set(_INTERFACE_SYNC_LIFECYCLE_IDENTITIES):
+            errors.append(
+                "observation interface-offset lifecycle identities are incomplete"
+            )
+
+        for interface_id, record in records.items():
+            expected_offset = (
+                0.0
+                if interface_id == "lmt"
+                else effective_offsets.get(interface_id)
+            )
+            expected_requested = (
+                0.0
+                if interface_id == "lmt"
+                else requested_offsets.get(interface_id)
+            )
+            expected_source = (
+                "schema_default_zero"
+                if interface_id == "lmt"
+                else effective_sources.get(interface_id)
+            )
+
+            numeric_values: dict[str, float] = {}
+            for name in (
+                "requested_sec", "effective_sec",
+                "observation_resolved_sec", "realized_sec",
+            ):
+                value = record.get(name)
+                if not _finite_number(value):
+                    errors.append(
+                        f"interface-offset lifecycle {interface_id} {name} "
+                        "is not finite"
+                    )
+                else:
+                    numeric_values[name] = float(value)
+
+            if (
+                "requested_sec" in numeric_values
+                and _finite_number(expected_requested)
+                and numeric_values["requested_sec"]
+                    != float(expected_requested)
+            ):
+                errors.append(
+                    f"interface-offset lifecycle {interface_id} requested "
+                    "value does not match requested config"
+                )
+            if (
+                "effective_sec" in numeric_values
+                and _finite_number(expected_offset)
+                and numeric_values["effective_sec"] != float(expected_offset)
+            ):
+                errors.append(
+                    f"interface-offset lifecycle {interface_id} effective "
+                    "value does not match effective config"
+                )
+
+            if record.get("sign") != "positive_add":
+                errors.append(
+                    f"interface-offset lifecycle {interface_id} sign must be "
+                    "positive_add"
+                )
+            if record.get("unit") != "s":
+                errors.append(
+                    f"interface-offset lifecycle {interface_id} unit must be s"
+                )
+            if record.get("reference") != "detector_clock":
+                errors.append(
+                    f"interface-offset lifecycle {interface_id} reference "
+                    "must be detector_clock"
+                )
+            if record.get("application_stage") != (
+                "before_ordering_slotting_and_gaps"
+            ):
+                errors.append(
+                    f"interface-offset lifecycle {interface_id} "
+                    "application_stage must be "
+                    "before_ordering_slotting_and_gaps"
+                )
+            if record.get("source") != expected_source:
+                errors.append(
+                    f"interface-offset lifecycle {interface_id} source does "
+                    "not match effective interface-sync source"
+                )
+            if record.get("uncertainty") != "unavailable":
+                errors.append(
+                    f"interface-offset lifecycle {interface_id} uncertainty "
+                    "must be unavailable"
+                )
+
+            availability = record.get("availability")
+            if availability not in {
+                "observation_resolved",
+                "not_applicable",
+                "unavailable_authority",
+            }:
+                errors.append(
+                    f"interface-offset lifecycle {interface_id} availability "
+                    "is invalid"
+                )
+                continue
+            applied = record.get("applied_exactly_once")
+            if type(applied) is not bool:
+                errors.append(
+                    f"interface-offset lifecycle {interface_id} "
+                    "applied_exactly_once must be boolean"
+                )
+                continue
+
+            observation_value = numeric_values.get(
+                "observation_resolved_sec"
+            )
+            realized_value = numeric_values.get("realized_sec")
+            effective_value = numeric_values.get("effective_sec")
+            if availability == "observation_resolved":
+                if not applied:
+                    errors.append(
+                        f"interface-offset lifecycle {interface_id} resolved "
+                        "offset was not applied exactly once"
+                    )
+                if (
+                    observation_value is not None
+                    and realized_value is not None
+                    and effective_value is not None
+                    and (
+                        observation_value != effective_value
+                        or realized_value != effective_value
+                    )
+                ):
+                    errors.append(
+                        f"interface-offset lifecycle {interface_id} resolved "
+                        "values do not match effective offset"
+                    )
+            elif availability == "not_applicable":
+                if (
+                    applied
+                    or observation_value != 0.0
+                    or realized_value != 0.0
+                    or effective_value != 0.0
+                ):
+                    errors.append(
+                        f"interface-offset lifecycle {interface_id} "
+                        "not-applicable offset must be zero and unapplied"
+                    )
+            else:
+                if applied or observation_value != 0.0 or realized_value != 0.0:
+                    errors.append(
+                        f"interface-offset lifecycle {interface_id} unavailable "
+                        "offset must be unrealized and unapplied"
+                    )
+                errors.append(
+                    f"interface-offset lifecycle {interface_id} has unavailable "
+                    "authority in completed execution"
+                )
+
+        lmt_record = records.get("lmt", {})
+        if not (
+            lmt_record.get("availability") == "observation_resolved"
+            and lmt_record.get("applied_exactly_once") is True
+        ):
+            errors.append(
+                "interface-offset lifecycle lmt must be observation-resolved "
+                "exactly once"
+            )
+        if not any(
+            records.get(f"toltec{index}", {}).get("availability")
+                == "observation_resolved"
+            and records.get(f"toltec{index}", {}).get(
+                "applied_exactly_once"
+            ) is True
+            for index in range(13)
+        ):
+            errors.append(
+                "interface-offset lifecycle has no observation-resolved "
+                "detector interface"
+            )
+    except (AttributeError, KeyError, TypeError) as exc:
+        errors.append(
+            f"cannot evaluate raw v3 interface-offset semantics: {exc}"
+        )
+    return errors
+
+
 def raw_provenance_semantic_errors(data: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     try:
         if data["initialized"] is not True:
             errors.append("raw execution plan is not initialized")
 
-        if data.get("schema_version") == "citlali-raw-timestream-provenance-v2":
+        schema_version = data.get("schema_version")
+        if schema_version in {
+            "citlali-raw-timestream-provenance-v2",
+            "citlali-raw-timestream-provenance-v3",
+        }:
             requested_offsets = data["requested"]["interface_sync_offset"]
             effective_offsets = data["effective"]["config"][
                 "interface_sync_offset"
@@ -617,6 +2447,9 @@ def raw_provenance_semantic_errors(data: dict[str, Any]) -> list[str]:
                         )
             if requested_offsets != effective_offsets:
                 errors.append("interface-sync requested/effective values differ")
+
+        if schema_version == "citlali-raw-timestream-provenance-v3":
+            errors.extend(raw_v3_interface_offset_semantic_errors(data))
 
         observation = data["observation"]
         if observation.get("available") is not True:
@@ -2779,6 +4612,10 @@ def audit_provenance_sidecars(
                     elif name == "config_source_manifest":
                         semantic_errors = (
                             config_source_manifest_semantic_errors(data, path)
+                        )
+                    elif name == "timestream_output":
+                        semantic_errors = (
+                            timestream_output_provenance_semantic_errors(data)
                         )
                     elif name == "processed_timestream":
                         semantic_errors = (

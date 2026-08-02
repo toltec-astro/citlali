@@ -22,6 +22,11 @@ target_sources(citlali_test
         fruit_loop_map_input_validation_header.cpp
         output_root_lease_header.cpp
         reduction_restart_checkpoint_header.cpp
+        sci_align_contract_header.cpp
+        sci_align_field_registry_header.cpp
+        sci_align_scan_contract_header.cpp
+        slot_assignment_header.cpp
+        telescope_header_snapshot_header.cpp
         wiener_filter_validation_header.cpp
         test_kids_input_validation.cpp
         test_learning_and_fruit_contracts.cpp
@@ -32,6 +37,13 @@ target_sources(citlali_test
         test_rawobs_adc_snap.cpp
         test_reduction_session.cpp
         test_session_failure_boundaries.cpp
+        test_sci_align_contract.cpp
+        test_sci_align_exposure_provenance.cpp
+        test_sci_align_gap_guard.cpp
+        test_sci_align_input_contract.cpp
+        test_sci_align_scan_lifecycle.cpp
+        test_sci_align_telescope_boundary.cpp
+        test_sci_align_t17_t18.cpp
         test_tod_output_selection_config.cpp
         test_utils.cpp
 )

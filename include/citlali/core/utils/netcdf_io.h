@@ -27,8 +27,9 @@ void write_netcdf_atomic(const std::string &final_path, Writer &&writer) {
         fo.sync();
         fo.close();
 
-        ec.clear();
-        fs::remove(final_file, ec);
+        // On the supported POSIX filesystems, rename replaces an existing
+        // non-directory destination atomically.  Do not unlink the last
+        // complete artifact before that replacement succeeds.
         ec.clear();
         fs::rename(temp_file, final_file, ec);
         if (ec) {

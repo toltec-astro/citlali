@@ -6,6 +6,7 @@
 #include <citlali/core/pipeline/observation_pipeline.h>
 #include <citlali/core/pipeline/raw_timestream_provenance_lifecycle.h>
 #include <citlali/core/pipeline/stage_profile.h>
+#include <citlali/core/pipeline/timestream_output_provenance.h>
 
 namespace citlali::pipeline {
 
@@ -30,6 +31,12 @@ void run_reduction_observation_pipeline(TodProc &todproc, KidsProc &kidsproc,
     if (raw_provenance_path) {
         logger->info("raw timestream provenance sidecar: {}",
                      raw_provenance_path->string());
+    }
+    const auto output_provenance_path =
+        publish_completed_timestream_output_provenance(engine);
+    if (output_provenance_path) {
+        logger->info("completed timestream output provenance sidecar: {}",
+                     output_provenance_path->string());
     }
 }
 

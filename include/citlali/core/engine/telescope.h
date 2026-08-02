@@ -2,11 +2,15 @@
 
 #include <netcdf>
 
+#include <cstdint>
+
 #include <tula/eigen.h>
 
 #include <citlali/core/utils/netcdf_io.h>
 #include <citlali/core/utils/constants.h>
 #include <citlali/core/config/timestream_config.h>
+#include <citlali/core/pipeline/sci_align_scan_contract.h>
+#include <citlali/core/pipeline/telescope_header_snapshot.h>
 
 namespace engine {
 
@@ -16,14 +20,14 @@ public:
     std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
 
     // simulation jobkey
-    char sim_job_key [128] = "";
+    char sim_job_key [129] = "";
     // is this a simulation?
-    bool sim_obs;
+    bool sim_obs = false;
 
     // strings for mapping pattern, source name, obs goal, project ID
     std::string obs_pgm, source_name, obs_goal, project_id, map_coord;
 
-    bool exec_mode;
+    bool exec_mode = true;
 
     // tangent plane center
     //std::map<std::string, double> tan_center_rad;
@@ -46,10 +50,29 @@ public:
     // scan indices matrix (4 x nscans)
     Eigen::MatrixXI scan_indices;
 
+    // Authoritative zero-based, half-open scan identities. scan_indices is a
+    // one-way inclusive compatibility adapter for existing processors.
+    citlali::pipeline::sci_align::ScanWindowPlan scan_plan;
+
     // std map for telescope data vectors
     std::map<std::string, Eigen::VectorXd> tel_data;
+    // Exact native Hold words retained for the bounded existing-use adapter.
+    // No bit or transition-side semantics are implied.
+    Eigen::Matrix<std::uint64_t, Eigen::Dynamic, 1> hold_raw_word;
     // std map for telescope header vectors
     std::map<std::string, Eigen::VectorXd> tel_header;
+    // Native numeric file/observation headers retained with exact dtype and
+    // scalar/vector shape for required output. tel_header remains the
+    // one-way legacy double compatibility view used by existing consumers.
+    std::map<std::string,
+             citlali::pipeline::sci_align::TelescopeHeaderSnapshot>
+        native_tel_header;
+    // Realized compatibility headers are intentionally separate from exact
+    // native snapshots. The bounded simulation J2000 override is the only
+    // current member of this map.
+    std::map<std::string,
+             citlali::pipeline::sci_align::TelescopeHeaderSnapshot>
+        realized_compatibility_tel_header;
 
     // pixel axes (radec, altaz, etc)
     std::string pixel_axes;
@@ -142,6 +165,7 @@ public:
         {"Header.M2.AcuHeartbeat", "Header.M2.AcuHeartbeat"},
         {"Header.M2.Alive", "Header.M2.Alive"},
         {"Header.M2.Hold", "Header.M2.Hold"},
+        {"Header.Map.HoldDuringTurns", "Header.Map.HoldDuringTurns"},
         {"Header.M2.ModelMode", "Header.M2.ModelMode"},
         {"Header.M3.ElDesEnabled", "Header.M3.ElDesEnabled"},
         {"Header.M3.Alive", "Header.M3.Alive"},
@@ -265,8 +289,7 @@ public:
         {"Header.ScanFile.Valid", "Header.ScanFile.Valid"},
         {"Header.M1.ZernikeC","Header.M1.ZernikeC"},
         {"Header.M1.ActPos","Header.M1.ActPos"},
-        {"Header.M1.CmdPos","Header.M1.CmdPos"},
-        {"Header.Sim.Jobkey","Header.Sim.Jobkey"}
+        {"Header.M1.CmdPos","Header.M1.CmdPos"}
     };
 
     void get_tel_data(
@@ -278,6 +301,9 @@ public:
     void calc_tan_galactic();
     void calc_scan_indices(
         const citlali::config::TimestreamChunkingConfig &chunking);
+    void calc_scan_indices(
+        const citlali::config::TimestreamChunkingConfig &chunking,
+        citlali::pipeline::sci_align::HalfOpenInterval governing_support);
 };
 
 } // namespace engine

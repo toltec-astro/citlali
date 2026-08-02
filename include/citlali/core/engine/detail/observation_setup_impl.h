@@ -31,7 +31,14 @@ void setup_observation_extinction(EngineT &engine) {
         if (!engine.telescope.sim_obs) {
             Eigen::VectorXd tau_el(1);
             // get mean elevation
-            tau_el << engine.telescope.tel_data["TelElAct"].mean();
+            const auto tel_el_it =
+                engine.telescope.tel_data.find("TelElAct");
+            if (tel_el_it == engine.telescope.tel_data.end()) {
+                throw std::logic_error(
+                    "TelElAct is unavailable for governing-compatible extinction setup");
+            }
+            tau_el << citlali::pipeline::governing_compatibility_mean(
+                tel_el_it->second, engine.alignment);
             // get tau at mean elevation for each band
             auto tau_freq = engine.rtcproc.calibration.calc_tau(
                 tau_el, engine.telescope.tau_225_GHz);
@@ -68,11 +75,8 @@ void setup_observation_extinction(EngineT &engine) {
 
 template <class EngineT>
 void validate_observation_polarization_inputs(EngineT &engine) {
-    // make sure there are matched fg's in apt if reducing in polarized mode
-    if (engine.rtcproc.run_polarization) {
-        citlali::pipeline::require_polarization_frequency_groups(
-            (engine.calib.apt["fg"].array() == -1).all());
-    }
+    citlali::pipeline::require_bounded_nonpolarimetric_profile(
+        engine.rtcproc.run_polarization);
 }
 
 template <class EngineT>

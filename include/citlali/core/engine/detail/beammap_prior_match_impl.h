@@ -7,12 +7,15 @@
 #include <limits>
 
 #include <citlali/core/pipeline/reduction_config_accessors.h>
+#include <citlali/core/pipeline/timestream_alignment_state.h>
 
 double Beammap::get_prior_derot_elev_rad() const {
     double derot_elev_rad = 0.0;
     auto tel_el_it = telescope.tel_data.find("TelElAct");
     if (tel_el_it != telescope.tel_data.end() && tel_el_it->second.size() > 0) {
-        derot_elev_rad = tel_el_it->second.mean();
+        derot_elev_rad =
+            citlali::pipeline::governing_compatibility_mean(
+                tel_el_it->second, alignment);
     }
     if (!std::isfinite(derot_elev_rad)) {
         derot_elev_rad = 0.0;

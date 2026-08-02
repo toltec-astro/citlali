@@ -4,6 +4,7 @@
 
 #include <citlali/core/config/calibration_config.h>
 #include <citlali/core/error/error.h>
+#include <citlali/core/pipeline/timestream_alignment_state.h>
 
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::interp_pointing() {
@@ -37,6 +38,15 @@ void TimeOrderedDataProc<EngineType>::interp_pointing() {
         throw citlali::error::runtime(
             "cannot interpolate pointing offsets: telescope TelTime is empty");
     }
+    const auto &tel_time = engine().telescope.tel_data["TelTime"];
+    const double governing_start_time = engine().alignment.grid.initialized
+        ? citlali::pipeline::governing_compatibility_start_value(
+              tel_time, engine().alignment)
+        : tel_time(0);
+    const double governing_stop_time = engine().alignment.grid.initialized
+        ? citlali::pipeline::governing_compatibility_stop_value(
+              tel_time, engine().alignment)
+        : tel_time(ni - 1);
 
     // keys for pointing offsets
     std::vector<std::string> altaz_keys = {
@@ -65,7 +75,7 @@ void TimeOrderedDataProc<EngineType>::interp_pointing() {
 
             // use start and end of current obs if MJD values are not specified
             if (!use_mjd) {
-                xd << engine().telescope.tel_data["TelTime"](0), engine().telescope.tel_data["TelTime"](ni-1);
+                xd << governing_start_time, governing_stop_time;
             }
             // else use specified modified julian dates, convert to julian dates, and calc unix time
             else {
@@ -78,7 +88,8 @@ void TimeOrderedDataProc<EngineType>::interp_pointing() {
                         "pointing offset MJD range is invalid: end <= start");
                 }
                 // make sure offsets are before and after the observation
-                if (xd(0) > engine().telescope.tel_data["TelTime"](0) || xd(1) < engine().telescope.tel_data["TelTime"](ni-1)) {
+                if (xd(0) > governing_start_time ||
+                    xd(1) < governing_stop_time) {
                     logger->error("MJD range is invalid");
                     throw citlali::error::invalid_config(
                         "pointing offset MJD range does not bracket the observation");
@@ -88,7 +99,7 @@ void TimeOrderedDataProc<EngineType>::interp_pointing() {
             // interpolate offset onto time vector
             mlinterp::interp(nd.data(), ni, // nd, ni
                              engine().pointing_offsets.arcsec[key].data(), yi.data(), // yd, yi
-                             xd.data(), engine().telescope.tel_data["TelTime"].data()); // xd, xi
+                             xd.data(), tel_time.data()); // xd, xi
 
             // overwrite pointing offsets
             engine().pointing_offsets.arcsec[key] = yi;

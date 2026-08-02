@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 import tempfile
 import unittest
 from pathlib import Path
@@ -182,12 +183,338 @@ def valid_raw_v2_document() -> dict:
     return document
 
 
+def valid_raw_v3_document() -> dict:
+    document = valid_raw_v2_document()
+    document["schema_version"] = "citlali-raw-timestream-provenance-v3"
+    sources = {
+        **{f"toltec{index}": "schema_default_zero" for index in range(13)},
+        "hwpr": "schema_default_zero",
+    }
+    sources["toltec0"] = "configured_zero"
+    document["requested"]["interface_sync_offset"]["sources"] = dict(
+        sources
+    )
+    document["effective"]["config"]["interface_sync_offset"][
+        "sources"
+    ] = dict(sources)
+
+    lifecycle = []
+    for interface_id in (
+        *(f"toltec{index}" for index in range(13)),
+        "hwpr",
+        "lmt",
+    ):
+        configured = interface_id != "lmt"
+        requested = (
+            document["requested"]["interface_sync_offset"]["offsets"][
+                interface_id
+            ]
+            if configured
+            else 0.0
+        )
+        source = sources[interface_id] if configured else "schema_default_zero"
+        resolved = interface_id in {"toltec0", "lmt"}
+        lifecycle.append(
+            {
+                "interface_id": interface_id,
+                "requested_sec": requested,
+                "effective_sec": requested,
+                "observation_resolved_sec": requested if resolved else 0.0,
+                "realized_sec": requested if resolved else 0.0,
+                "source": source,
+                "sign": "positive_add",
+                "reference": "detector_clock",
+                "unit": "s",
+                "application_stage": "before_ordering_slotting_and_gaps",
+                "uncertainty": "unavailable",
+                "availability": (
+                    "observation_resolved" if resolved else "not_applicable"
+                ),
+                "applied_exactly_once": resolved,
+            }
+        )
+    document["observation"]["value"]["interface_offsets"] = lifecycle
+    return document
+
+
 def valid_output_document() -> dict:
     return {
         "schema_version": "citlali-timestream-output-provenance-v1",
         "requested": {},
         "effective": {},
         "realized": {"n_scans": 4},
+    }
+
+
+def valid_output_v2_document() -> dict:
+    return {
+        "schema_version": "citlali-timestream-output-provenance-v2",
+        "requested": {},
+        "effective": {
+            "raw_time_chunk": {"enabled": True, "mode": "full"},
+            "processed_time_chunk": {"enabled": True, "mode": "full"},
+        },
+        "realized": {
+            "evidence_stage": "observation_setup_plan",
+            "execution_completed": False,
+            "n_scans": 1,
+            "sci_align_scan_plan": {
+                "identity": "zero_based_stable_processing_record_id",
+                "interval_convention": "half_open_start_stop",
+                "physical_identity": (
+                    "zero_based_physical_window_id_when_authority_available"
+                ),
+                "policy": "fixed_count_balanced_v1",
+                "requested_value": 1.0,
+                "effective_duration_sec": 0.065536,
+                "observation_sample_count": 8,
+                "physical_identity_count": 0,
+                "identity_count": 1,
+                "compatibility_admitted_count": 1,
+                "compatibility_ordinal_to_stable_id": [0],
+                "physical_records": [],
+                "records": [
+                    {
+                        "stable_id": 0,
+                        "status": "usable",
+                        "physical_id": None,
+                        "identity_authority": (
+                            "requested_processing_chunk_under_"
+                            "continuous_observation_no_physical_scan_authority"
+                        ),
+                        "processing": {"start": 0, "stop": 8},
+                        "science": {"start": 0, "stop": 8},
+                        "context": {"start": 0, "stop": 8},
+                        "compatibility_science": {"start": 0, "stop": 8},
+                        "compatibility_context": {"start": 0, "stop": 8},
+                        "legacy_processing_admitted": True,
+                        "compatibility_ordinal": 0,
+                    }
+                ],
+            },
+            "sci_align_alignment": {
+                "initialized": True,
+                "representation": (
+                    "compact_generative_grid_plus_exception_runs_v1"
+                ),
+                "dense_mapping_persisted": False,
+                "field_registry_version": "sci-align-active-field-registry-v1",
+                "grid": {
+                    "phase_sec": 1_000.0,
+                    "cadence_sec": 0.008192,
+                    "exclusive_half_cell_sec": 0.004096,
+                    "assignment_operator": "floor_q_plus_half_v1",
+                    "physical_timestamp_semantics": "unavailable",
+                },
+                "hwpr": {
+                    "policy": "bounded_nonpolarimetric_optional_hwpr_v1",
+                    "observation_resolved": True,
+                    "producer_input_present": False,
+                    "aligned_angle_available": False,
+                    "intensity_eligible": True,
+                    "polarization_eligible": False,
+                    "availability_reason": (
+                        "producer_input_absent_optional_nonfatal"
+                    ),
+                    "physical_timestamp_semantics": (
+                        "unavailable_no_producer_integration_event_authority"
+                    ),
+                    "demodulation_semantics": (
+                        "unavailable_not_authorized_by_bounded_profile"
+                    ),
+                    "dense_angle_mapping_persisted": False,
+                },
+                "telescope": {},
+                "support": {
+                    "nominal_common_axis_slot_count": 8,
+                    "guarded_original_interface_slot_count": 0,
+                    "gap_policy_eligible_original_interface_slot_count": 6,
+                },
+                "interfaces": [
+                    {"interface_id": "toltec0", "roach_index": 0}
+                ],
+                "exception_run_contract": {
+                    "source_slot_identity": (
+                        "zero_based_observation_common_axis_slot"
+                    ),
+                    "continuity_action_stage": (
+                        "candidate_only_chunk_plan_controls_permission"
+                    ),
+                    "continuity_weight_rule": {
+                        "operator": "linear_slot_coordinate_weights_v1",
+                        "coordinate_basis": (
+                            "observation_common_axis_slot_coordinates"
+                        ),
+                        "target_domain": (
+                            "exception_start_inclusive_stop_exclusive"
+                        ),
+                        "left_source_weight": (
+                            "(right_source_slot-target_slot)/"
+                            "(right_source_slot-left_source_slot)"
+                        ),
+                        "right_source_weight": (
+                            "(target_slot-left_source_slot)/"
+                            "(right_source_slot-left_source_slot)"
+                        ),
+                        "normalization": (
+                            "left_source_weight_plus_right_source_weight_"
+                            "equals_one"
+                        ),
+                        "dense_source_weights_persisted": False,
+                    },
+                },
+                "exception_runs": [
+                    {
+                        "interface_id": "toltec0",
+                        "field_id": "detector_acquisition",
+                        "start": 3,
+                        "stop": 5,
+                        "interval_convention": "half_open_start_stop",
+                        "origin": "native_detector_gap",
+                        "validity": "unavailable_original",
+                        "action": "bounded_continuity_candidate",
+                        "reason": "bounded_by_acquired_originals",
+                        "source_slot_identity": (
+                            "zero_based_observation_common_axis_slot"
+                        ),
+                        "source_slots_available": True,
+                        "left_source_slot": 2,
+                        "right_source_slot": 5,
+                    }
+                ],
+                "processing_support_plan": {
+                    "observation_resolved": True,
+                    "evidence_stage": (
+                        "observation_resolved_planned_processing"
+                    ),
+                    "execution_realized": False,
+                    "realization_semantics": (
+                        "plan_only_no_execution_outcome_claim"
+                    ),
+                    "interval_convention": "half_open_start_stop",
+                    "signal_domain": "xs",
+                    "count_scope": (
+                        "planned_occurrences_across_admitted_scan_contexts"
+                    ),
+                    "gap_admission_contract": {
+                        "support_reference": (
+                            "sci_align_scan_plan.records[stable_scan_id]."
+                            "compatibility_science"
+                        ),
+                        "window_relationship": (
+                            "compatibility_science_is_a_half_open_subset_of_"
+                            "compatibility_context"
+                        ),
+                        "cumulative_missing_count_scope": (
+                            "stable_record_science_window_only"
+                        ),
+                        "longest_missing_run_count_scope": (
+                            "stable_record_science_window_only"
+                        ),
+                        "unusable_rule": (
+                            "four_times_cumulative_or_longest_missing_"
+                            "strictly_exceeds_science_window_size"
+                        ),
+                        "exact_quarter": "admitted",
+                    },
+                    "planned_action_support_reference": (
+                        "chunk_dispositions[].context_expanded_support"
+                    ),
+                    "continuity_source_contract": (
+                        "each_planned_continuity_run_is_a_subrange_of_one_"
+                        "bounded_exception_run"
+                    ),
+                    "chunk_disposition_encoding": {
+                        "representation": "sparse_exceptions_v1",
+                        "key_order": (
+                            "compatibility_ordinal_then_roach_index"
+                        ),
+                        "persisted_rows": (
+                            "nondefault_scan_interface_dispositions_only"
+                        ),
+                        "absent_default": {
+                            "support": (
+                                "all_acquired_original_zero_detector_gap"
+                            ),
+                            "cumulative_missing_count": 0,
+                            "longest_missing_run_count": 0,
+                            "gap_policy_eligible_original_within_science": True,
+                            "full_network_unusable": False,
+                            "continuity_surrogate_permitted": (
+                                "signal_domain_is_xs"
+                            ),
+                            "planned_actions": "none",
+                        },
+                    },
+                    "planned_occurrence_counts": {
+                        "continuity_surrogate_missing": 2,
+                        "unavailable_missing": 0,
+                        "guarded_original": 0,
+                        "full_network_unusable_original": 0,
+                    },
+                    "chunk_dispositions": [
+                        {
+                            "stable_scan_id": 0,
+                            "compatibility_ordinal": 0,
+                            "interface_id": "toltec0",
+                            "roach_index": 0,
+                            "context": {"start": 0, "stop": 8},
+                            "cumulative_missing_count": 2,
+                            "longest_missing_run_count": 2,
+                            "full_network_unusable": False,
+                            "continuity_surrogate_permitted": True,
+                            "planned_actions": {
+                                "continuity_surrogate_missing": {
+                                    "action": (
+                                        "bounded_continuity_surrogate"
+                                    ),
+                                    "runs": [{"start": 3, "stop": 5}],
+                                },
+                                "unavailable_missing": {
+                                    "action": "remain_unavailable",
+                                    "runs": [],
+                                },
+                                "guarded_original": {
+                                    "action": (
+                                        "guard_original_processing_sample"
+                                    ),
+                                    "runs": [],
+                                },
+                            },
+                        }
+                    ],
+                },
+                "availability": {},
+            },
+            "raw_time_chunk": {
+                "n_output_scans": 1,
+                "scan_to_output": [0],
+                "selected_output_windows": [
+                    {
+                        "stable_processing_record_id": 0,
+                        "compatibility_ordinal": 0,
+                        "output_row": 0,
+                        "output_interval": {"start": 0, "stop": 8},
+                        "interval_convention": "half_open_start_stop",
+                        "interval_authority": "science_inner",
+                    }
+                ],
+            },
+            "processed_time_chunk": {
+                "n_output_scans": 1,
+                "scan_to_output": [0],
+                "selected_output_windows": [
+                    {
+                        "stable_processing_record_id": 0,
+                        "compatibility_ordinal": 0,
+                        "output_row": 0,
+                        "output_interval": {"start": 0, "stop": 8},
+                        "interval_convention": "half_open_start_stop",
+                        "interval_authority": "science_inner",
+                    }
+                ],
+            },
+        },
     }
 
 
@@ -1659,6 +1986,706 @@ class ProvenanceAuditTest(unittest.TestCase):
         self.assertIn(
             "effective interface-sync offset toltec12 is not finite",
             audit.raw_provenance_semantic_errors(document),
+        )
+
+    def test_accepts_complete_interface_offset_lifecycle_v3(self) -> None:
+        document = valid_raw_v3_document()
+
+        self.assertEqual(audit.raw_provenance_semantic_errors(document), [])
+
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            (redu / "raw_timestream_provenance.yaml").write_text(
+                yaml.safe_dump(document, sort_keys=False),
+                encoding="utf-8",
+            )
+            (redu / "timestream_output_provenance.yaml").write_text(
+                yaml.safe_dump(valid_output_document(), sort_keys=False),
+                encoding="utf-8",
+            )
+
+            raw = audit.audit_provenance_sidecars(
+                redu, require_raw=True
+            )["raw_timestream"]
+
+            self.assertTrue(raw["valid"])
+            self.assertEqual(
+                raw["schema_version"],
+                "citlali-raw-timestream-provenance-v3",
+            )
+
+    def test_rejects_invalid_interface_offset_lifecycle_v3(self) -> None:
+        field_cases = (
+            (
+                "sign",
+                "negative_add",
+                "interface-offset lifecycle toltec0 sign must be positive_add",
+            ),
+            (
+                "unit",
+                "ms",
+                "interface-offset lifecycle toltec0 unit must be s",
+            ),
+            (
+                "reference",
+                "telescope_clock",
+                "interface-offset lifecycle toltec0 reference must be "
+                "detector_clock",
+            ),
+            (
+                "application_stage",
+                "after_slotting",
+                "interface-offset lifecycle toltec0 application_stage must be "
+                "before_ordering_slotting_and_gaps",
+            ),
+            (
+                "source",
+                "schema_default_zero",
+                "interface-offset lifecycle toltec0 source does not match "
+                "effective interface-sync source",
+            ),
+            (
+                "availability",
+                "available",
+                "interface-offset lifecycle toltec0 availability is invalid",
+            ),
+            (
+                "applied_exactly_once",
+                False,
+                "interface-offset lifecycle toltec0 resolved offset was not "
+                "applied exactly once",
+            ),
+        )
+        for field, invalid_value, expected_error in field_cases:
+            with self.subTest(field=field):
+                document = copy.deepcopy(valid_raw_v3_document())
+                document["observation"]["value"]["interface_offsets"][0][
+                    field
+                ] = invalid_value
+                self.assertIn(
+                    expected_error,
+                    audit.raw_provenance_semantic_errors(document),
+                )
+
+        duplicate = valid_raw_v3_document()
+        duplicate["observation"]["value"]["interface_offsets"][0][
+            "interface_id"
+        ] = "toltec1"
+        duplicate_errors = audit.raw_provenance_semantic_errors(duplicate)
+        self.assertIn(
+            "observation interface-offset lifecycle identity 'toltec1' is "
+            "invalid or duplicated",
+            duplicate_errors,
+        )
+        self.assertIn(
+            "observation interface-offset lifecycle identities are incomplete",
+            duplicate_errors,
+        )
+
+        unresolved = valid_raw_v3_document()
+        unresolved_record = unresolved["observation"]["value"][
+            "interface_offsets"
+        ][0]
+        unresolved_record["availability"] = "unavailable_authority"
+        unresolved_record["applied_exactly_once"] = False
+        self.assertIn(
+            "interface-offset lifecycle toltec0 has unavailable authority in "
+            "completed execution",
+            audit.raw_provenance_semantic_errors(unresolved),
+        )
+
+    def test_accepts_timestream_output_provenance_v2(self) -> None:
+        document = valid_output_v2_document()
+        self.assertEqual(
+            audit.timestream_output_provenance_semantic_errors(document), []
+        )
+
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            (redu / "timestream_output_provenance.yaml").write_text(
+                yaml.safe_dump(document, sort_keys=False),
+                encoding="utf-8",
+            )
+
+            output = audit.audit_provenance_sidecars(redu)[
+                "timestream_output"
+            ]
+
+            self.assertTrue(output["valid"])
+            self.assertEqual(
+                output["schema_version"],
+                "citlali-timestream-output-provenance-v2",
+            )
+
+    def test_accepts_completed_timestream_output_provenance_v2(self) -> None:
+        document = valid_output_v2_document()
+        document["realized"].update(
+            {
+                "evidence_stage": "observation_execution_completed",
+                "execution_completed": True,
+            }
+        )
+        processing = document["realized"]["sci_align_alignment"][
+            "processing_support_plan"
+        ]
+        processing.update(
+            {
+                "evidence_stage": (
+                    "observation_execution_completed_compact_result"
+                ),
+                "execution_realized": True,
+                "realization_semantics": (
+                    "required_processing_and_outputs_completed_"
+                    "compact_plan_result"
+                ),
+            }
+        )
+        self.assertEqual(
+            audit.timestream_output_provenance_semantic_errors(document), []
+        )
+
+    def test_rejects_inconsistent_timestream_output_provenance_v2(
+        self,
+    ) -> None:
+        document = valid_output_v2_document()
+        document["realized"]["sci_align_scan_plan"]["records"][0][
+            "stable_id"
+        ] = 1
+        document["realized"]["sci_align_alignment"]["grid"][
+            "physical_timestamp_semantics"
+        ] = "integration_centroid"
+
+        errors = audit.timestream_output_provenance_semantic_errors(document)
+        self.assertIn(
+            "SCI-ALIGN scan stable identities are not contiguous from zero",
+            errors,
+        )
+        self.assertIn(
+            "SCI-ALIGN physical timestamp semantics are not unavailable",
+            errors,
+        )
+
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            (redu / "timestream_output_provenance.yaml").write_text(
+                yaml.safe_dump(document, sort_keys=False),
+                encoding="utf-8",
+            )
+            output = audit.audit_provenance_sidecars(redu)[
+                "timestream_output"
+            ]
+            self.assertFalse(output["valid"])
+
+    def test_rejects_inconsistent_sci_align_output_windows_v2(self) -> None:
+        wrong_authority = valid_output_v2_document()
+        wrong_authority["realized"]["raw_time_chunk"][
+            "selected_output_windows"
+        ][0]["interval_authority"] = "context_outer"
+        self.assertIn(
+            "SCI-ALIGN raw_time_chunk output windows record 0 conflicts "
+            "with realized selection and scan-plan support",
+            audit.timestream_output_provenance_semantic_errors(
+                wrong_authority
+            ),
+        )
+
+        duplicate_row = valid_output_v2_document()
+        duplicate_row["realized"]["processed_time_chunk"][
+            "n_output_scans"
+        ] = 2
+        duplicate_row["realized"]["processed_time_chunk"][
+            "scan_to_output"
+        ] = [1]
+        self.assertIn(
+            "SCI-ALIGN processed_time_chunk output windows are not a "
+            "complete output-row bijection",
+            audit.timestream_output_provenance_semantic_errors(duplicate_row),
+        )
+
+        outer = valid_output_v2_document()
+        outer["effective"]["raw_time_chunk"]["mode"] = "full_outer"
+        outer["realized"]["raw_time_chunk"]["selected_output_windows"][0][
+            "interval_authority"
+        ] = "context_outer"
+        self.assertEqual(
+            audit.timestream_output_provenance_semantic_errors(outer), []
+        )
+
+    def test_retains_timestream_output_provenance_v1_compatibility(
+        self,
+    ) -> None:
+        document = valid_output_document()
+        self.assertEqual(
+            audit.timestream_output_provenance_semantic_errors(document), []
+        )
+
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            (redu / "timestream_output_provenance.yaml").write_text(
+                yaml.safe_dump(document, sort_keys=False),
+                encoding="utf-8",
+            )
+            output = audit.audit_provenance_sidecars(redu)[
+                "timestream_output"
+            ]
+            self.assertTrue(output["valid"])
+            self.assertEqual(
+                output["schema_version"],
+                "citlali-timestream-output-provenance-v1",
+            )
+
+    def test_rejects_inconsistent_sci_align_hwpr_status_v2(self) -> None:
+        missing = valid_output_v2_document()
+        del missing["realized"]["sci_align_alignment"]["hwpr"][
+            "physical_timestamp_semantics"
+        ]
+        self.assertIn(
+            "SCI-ALIGN HWPR status fields are incomplete or non-compact",
+            audit.timestream_output_provenance_semantic_errors(missing),
+        )
+
+        false_physical_claim = valid_output_v2_document()
+        false_physical_claim["realized"]["sci_align_alignment"]["hwpr"][
+            "physical_timestamp_semantics"
+        ] = "integration_centroid"
+        self.assertIn(
+            "SCI-ALIGN HWPR status conflicts with the bounded "
+            "nonpolarimetric contract",
+            audit.timestream_output_provenance_semantic_errors(
+                false_physical_claim
+            ),
+        )
+
+        present = valid_output_v2_document()
+        hwpr = present["realized"]["sci_align_alignment"]["hwpr"]
+        hwpr["producer_input_present"] = True
+        hwpr["availability_reason"] = (
+            "producer_input_present_not_loaded_or_aligned"
+        )
+        self.assertEqual(
+            audit.timestream_output_provenance_semantic_errors(present), []
+        )
+
+    def test_rejects_malformed_sci_align_exception_contract_v2(
+        self,
+    ) -> None:
+        missing_contract_field = valid_output_v2_document()
+        del missing_contract_field["realized"]["sci_align_alignment"][
+            "exception_run_contract"
+        ]["source_slot_identity"]
+        self.assertIn(
+            "SCI-ALIGN exception-run contract is missing, malformed, or dense",
+            audit.timestream_output_provenance_semantic_errors(
+                missing_contract_field
+            ),
+        )
+
+        dense_weights = valid_output_v2_document()
+        dense_weights["realized"]["sci_align_alignment"][
+            "exception_run_contract"
+        ]["continuity_weight_rule"]["dense_source_weights_persisted"] = True
+        self.assertIn(
+            "SCI-ALIGN exception-run contract is missing, malformed, or dense",
+            audit.timestream_output_provenance_semantic_errors(dense_weights),
+        )
+
+        dense_exception = valid_output_v2_document()
+        dense_exception["realized"]["sci_align_alignment"][
+            "exception_runs"
+        ][0]["source_weights"] = [2.0 / 3.0, 1.0 / 3.0]
+        self.assertIn(
+            "SCI-ALIGN exception run 0 fields are incomplete or non-compact",
+            audit.timestream_output_provenance_semantic_errors(
+                dense_exception
+            ),
+        )
+
+    def test_rejects_inconsistent_sci_align_exception_endpoints_v2(
+        self,
+    ) -> None:
+        document = valid_output_v2_document()
+        alignment = document["realized"]["sci_align_alignment"]
+        alignment["exception_runs"][0]["right_source_slot"] = 6
+        self.assertIn(
+            "SCI-ALIGN exception run 0 lacks exact bounded-continuity "
+            "source endpoints",
+            audit.timestream_output_provenance_semantic_errors(document),
+        )
+
+        adjacent = valid_output_v2_document()
+        alignment = adjacent["realized"]["sci_align_alignment"]
+        second = copy.deepcopy(alignment["exception_runs"][0])
+        second.update(
+            {
+                "start": 5,
+                "stop": 6,
+                "left_source_slot": 4,
+                "right_source_slot": 6,
+            }
+        )
+        alignment["exception_runs"].append(second)
+        self.assertIn(
+            "SCI-ALIGN exception run 1 overlaps or is adjacent to its "
+            "preceding compact run",
+            audit.timestream_output_provenance_semantic_errors(adjacent),
+        )
+
+    def test_rejects_execution_or_dense_processing_claims_v2(self) -> None:
+        realized = valid_output_v2_document()
+        processing = realized["realized"]["sci_align_alignment"][
+            "processing_support_plan"
+        ]
+        processing["execution_realized"] = True
+        self.assertIn(
+            "SCI-ALIGN processing-support realization conflicts with "
+            "observation completion stage",
+            audit.timestream_output_provenance_semantic_errors(realized),
+        )
+
+        outcome = valid_output_v2_document()
+        processing = outcome["realized"]["sci_align_alignment"][
+            "processing_support_plan"
+        ]
+        processing["execution_completed"] = True
+        self.assertIn(
+            "SCI-ALIGN processing-support plan fields are incomplete or "
+            "non-compact",
+            audit.timestream_output_provenance_semantic_errors(outcome),
+        )
+
+        dense = valid_output_v2_document()
+        run = dense["realized"]["sci_align_alignment"][
+            "processing_support_plan"
+        ]["chunk_dispositions"][0]["planned_actions"][
+            "continuity_surrogate_missing"
+        ]["runs"][0]
+        run["per_sample_values"] = [0.0, 0.0]
+        self.assertIn(
+            "SCI-ALIGN chunk disposition 0 continuity_surrogate_missing "
+            "run 0 fields are incomplete or non-compact",
+            audit.timestream_output_provenance_semantic_errors(dense),
+        )
+
+    def test_rejects_inconsistent_processing_support_plan_v2(self) -> None:
+        count_mismatch = valid_output_v2_document()
+        count_mismatch["realized"]["sci_align_alignment"][
+            "processing_support_plan"
+        ]["planned_occurrence_counts"]["continuity_surrogate_missing"] = 3
+        self.assertIn(
+            "SCI-ALIGN planned occurrence counts conflict with compact runs",
+            audit.timestream_output_provenance_semantic_errors(count_mismatch),
+        )
+
+    def test_accepts_sparse_ordinary_default_and_mixed_interfaces_v2(
+        self,
+    ) -> None:
+        ordinary = valid_output_v2_document()
+        alignment = ordinary["realized"]["sci_align_alignment"]
+        alignment["exception_runs"] = []
+        processing = alignment["processing_support_plan"]
+        processing["chunk_dispositions"] = []
+        processing["planned_occurrence_counts"] = {
+            "continuity_surrogate_missing": 0,
+            "unavailable_missing": 0,
+            "guarded_original": 0,
+            "full_network_unusable_original": 0,
+        }
+        alignment["support"][
+            "gap_policy_eligible_original_interface_slot_count"
+        ] = 8
+        self.assertEqual(
+            audit.timestream_output_provenance_semantic_errors(ordinary), []
+        )
+
+        mixed = valid_output_v2_document()
+        alignment = mixed["realized"]["sci_align_alignment"]
+        alignment["interfaces"].append(
+            {"interface_id": "toltec1", "roach_index": 1}
+        )
+        alignment["support"][
+            "gap_policy_eligible_original_interface_slot_count"
+        ] = 14
+        self.assertEqual(
+            audit.timestream_output_provenance_semantic_errors(mixed), []
+        )
+
+    def test_rejects_spurious_or_missing_sparse_dispositions_v2(self) -> None:
+        spurious = valid_output_v2_document()
+        alignment = spurious["realized"]["sci_align_alignment"]
+        alignment["exception_runs"] = []
+        alignment["support"][
+            "gap_policy_eligible_original_interface_slot_count"
+        ] = 8
+        processing = alignment["processing_support_plan"]
+        processing["planned_occurrence_counts"] = {
+            "continuity_surrogate_missing": 0,
+            "unavailable_missing": 0,
+            "guarded_original": 0,
+            "full_network_unusable_original": 0,
+        }
+        disposition = processing["chunk_dispositions"][0]
+        disposition["cumulative_missing_count"] = 0
+        disposition["longest_missing_run_count"] = 0
+        for action in disposition["planned_actions"].values():
+            action["runs"] = []
+        self.assertIn(
+            "SCI-ALIGN chunk disposition 0 persists a spurious ordinary "
+            "default row",
+            audit.timestream_output_provenance_semantic_errors(spurious),
+        )
+
+        missing = valid_output_v2_document()
+        alignment = missing["realized"]["sci_align_alignment"]
+        processing = alignment["processing_support_plan"]
+        processing["chunk_dispositions"] = []
+        processing["planned_occurrence_counts"][
+            "continuity_surrogate_missing"
+        ] = 0
+        self.assertIn(
+            "SCI-ALIGN sparse processing plan omits a nondefault "
+            "scan/interface disposition 0/toltec0",
+            audit.timestream_output_provenance_semantic_errors(missing),
+        )
+
+    def test_sparse_dispositions_use_compatibility_roach_order_v2(self) -> None:
+        document = valid_output_v2_document()
+        alignment = document["realized"]["sci_align_alignment"]
+        alignment["interfaces"].append(
+            {"interface_id": "toltec1", "roach_index": 1}
+        )
+        second_exception = copy.deepcopy(alignment["exception_runs"][0])
+        second_exception["interface_id"] = "toltec1"
+        alignment["exception_runs"].append(second_exception)
+        processing = alignment["processing_support_plan"]
+        second_disposition = copy.deepcopy(processing["chunk_dispositions"][0])
+        second_disposition["interface_id"] = "toltec1"
+        second_disposition["roach_index"] = 1
+        processing["chunk_dispositions"].append(second_disposition)
+        processing["planned_occurrence_counts"][
+            "continuity_surrogate_missing"
+        ] = 4
+        alignment["support"][
+            "gap_policy_eligible_original_interface_slot_count"
+        ] = 12
+        self.assertEqual(
+            audit.timestream_output_provenance_semantic_errors(document), []
+        )
+
+        processing["chunk_dispositions"].reverse()
+        self.assertIn(
+            "SCI-ALIGN chunk disposition 1 is not in deterministic "
+            "compatibility/roach order",
+            audit.timestream_output_provenance_semantic_errors(document),
+        )
+
+    def test_sparse_contract_uses_compatibility_science_authority_v2(
+        self,
+    ) -> None:
+        document = valid_output_v2_document()
+        record = document["realized"]["sci_align_scan_plan"]["records"][0]
+        record["science"] = {"start": 1, "stop": 7}
+        self.assertEqual(
+            audit.timestream_output_provenance_semantic_errors(document), []
+        )
+
+        shifted = valid_output_v2_document()
+        disposition = shifted["realized"]["sci_align_alignment"][
+            "processing_support_plan"
+        ]["chunk_dispositions"][0]
+        disposition["planned_actions"]["continuity_surrogate_missing"][
+            "runs"
+        ] = [{"start": 2, "stop": 5}]
+        self.assertIn(
+            "SCI-ALIGN chunk disposition 0 planned runs do not partition "
+            "support",
+            audit.timestream_output_provenance_semantic_errors(shifted),
+        )
+
+        unavailable = valid_output_v2_document()
+        alignment = unavailable["realized"]["sci_align_alignment"]
+        processing = alignment["processing_support_plan"]
+        disposition = processing["chunk_dispositions"][0]
+        disposition["planned_actions"]["continuity_surrogate_missing"][
+            "runs"
+        ] = []
+        disposition["planned_actions"]["unavailable_missing"]["runs"] = [
+            {"start": 3, "stop": 5}
+        ]
+        processing["planned_occurrence_counts"][
+            "continuity_surrogate_missing"
+        ] = 0
+        processing["planned_occurrence_counts"]["unavailable_missing"] = 2
+        self.assertIn(
+            "SCI-ALIGN chunk disposition 0 marks bounded continuity support "
+            "unavailable",
+            audit.timestream_output_provenance_semantic_errors(unavailable),
+        )
+
+    def test_rejects_altered_sparse_disposition_encoding_v2(self) -> None:
+        for mutation in ("missing", "altered", "extra"):
+            with self.subTest(mutation=mutation):
+                document = valid_output_v2_document()
+                processing = document["realized"]["sci_align_alignment"][
+                    "processing_support_plan"
+                ]
+                encoding = processing["chunk_disposition_encoding"]
+                if mutation == "missing":
+                    del encoding["absent_default"][
+                        "gap_policy_eligible_original_within_science"
+                    ]
+                elif mutation == "altered":
+                    encoding["key_order"] = "interface_then_scan"
+                else:
+                    encoding["dense_rows"] = True
+                self.assertIn(
+                    "SCI-ALIGN sparse chunk-disposition encoding is invalid "
+                    "or incomplete",
+                    audit.timestream_output_provenance_semantic_errors(
+                        document
+                    ),
+                )
+
+    def test_science_window_controls_gap_admission_not_context_v2(
+        self,
+    ) -> None:
+        document = valid_output_v2_document()
+        plan = document["realized"]["sci_align_scan_plan"]
+        plan["observation_sample_count"] = 16
+        record = plan["records"][0]
+        record["processing"] = {"start": 4, "stop": 12}
+        record["science"] = {"start": 4, "stop": 12}
+        record["context"] = {"start": 0, "stop": 16}
+        record["compatibility_science"] = {"start": 4, "stop": 12}
+        record["compatibility_context"] = {"start": 0, "stop": 16}
+
+        alignment = document["realized"]["sci_align_alignment"]
+        alignment["support"]["nominal_common_axis_slot_count"] = 16
+        alignment["support"][
+            "gap_policy_eligible_original_interface_slot_count"
+        ] = 6
+        exception = alignment["exception_runs"][0]
+        exception["start"] = 4
+        exception["stop"] = 6
+        exception["left_source_slot"] = 3
+        exception["right_source_slot"] = 6
+        left_edge = copy.deepcopy(exception)
+        left_edge.update(
+            {
+                "start": 0,
+                "stop": 2,
+                "action": "none",
+                "source_slots_available": False,
+                "left_source_slot": -1,
+                "right_source_slot": -1,
+            }
+        )
+        right_edge = copy.deepcopy(left_edge)
+        right_edge.update({"start": 14, "stop": 16})
+        alignment["exception_runs"] = [left_edge, exception, right_edge]
+        processing = alignment["processing_support_plan"]
+        processing["planned_occurrence_counts"][
+            "continuity_surrogate_missing"
+        ] = 2
+        processing["planned_occurrence_counts"]["unavailable_missing"] = 4
+        disposition = processing["chunk_dispositions"][0]
+        disposition["context"] = {"start": 0, "stop": 16}
+        disposition["planned_actions"]["continuity_surrogate_missing"][
+            "runs"
+        ] = [{"start": 4, "stop": 6}]
+        disposition["planned_actions"]["unavailable_missing"]["runs"] = [
+            {"start": 0, "stop": 2},
+            {"start": 14, "stop": 16},
+        ]
+
+        for stream_name in ("raw_time_chunk", "processed_time_chunk"):
+            document["realized"][stream_name]["selected_output_windows"][0][
+                "output_interval"
+            ] = {"start": 4, "stop": 12}
+
+        self.assertEqual(
+            audit.timestream_output_provenance_semantic_errors(document), []
+        )
+
+        context_threshold = copy.deepcopy(document)
+        context_threshold["realized"]["sci_align_alignment"][
+            "processing_support_plan"
+        ]["chunk_dispositions"][0]["full_network_unusable"] = True
+        self.assertIn(
+            "SCI-ALIGN chunk disposition 0 full-network usability is "
+            "inconsistent",
+            audit.timestream_output_provenance_semantic_errors(
+                context_threshold
+            ),
+        )
+
+        context_mismatch = valid_output_v2_document()
+        disposition = context_mismatch["realized"]["sci_align_alignment"][
+            "processing_support_plan"
+        ]["chunk_dispositions"][0]
+        disposition["context"]["stop"] = 7
+        self.assertIn(
+            "SCI-ALIGN chunk disposition 0 context conflicts with its scan plan",
+            audit.timestream_output_provenance_semantic_errors(
+                context_mismatch
+            ),
+        )
+
+        missing_source = valid_output_v2_document()
+        missing_source["realized"]["sci_align_alignment"][
+            "exception_runs"
+        ] = []
+        self.assertIn(
+            "SCI-ALIGN chunk disposition 0 continuity run has no unique "
+            "compact source exception",
+            audit.timestream_output_provenance_semantic_errors(
+                missing_source
+            ),
+        )
+
+        wrong_domain = valid_output_v2_document()
+        wrong_domain["realized"]["sci_align_alignment"][
+            "processing_support_plan"
+        ]["signal_domain"] = "rs"
+        self.assertIn(
+            "SCI-ALIGN chunk disposition 0 continuity permission is "
+            "inconsistent",
+            audit.timestream_output_provenance_semantic_errors(wrong_domain),
+        )
+
+    def test_rejects_missing_or_nondeterministic_processing_plan_v2(
+        self,
+    ) -> None:
+        unresolved = valid_output_v2_document()
+        processing = unresolved["realized"]["sci_align_alignment"][
+            "processing_support_plan"
+        ]
+        processing["observation_resolved"] = False
+        processing["evidence_stage"] = "not_observation_resolved"
+        processing["signal_domain"] = ""
+        processing["chunk_dispositions"] = []
+        processing["planned_occurrence_counts"] = {
+            "continuity_surrogate_missing": 0,
+            "unavailable_missing": 0,
+            "guarded_original": 0,
+            "full_network_unusable_original": 0,
+        }
+        self.assertIn(
+            "admitted SCI-ALIGN scans have no observation-resolved "
+            "processing plan",
+            audit.timestream_output_provenance_semantic_errors(unresolved),
+        )
+
+        duplicate = valid_output_v2_document()
+        processing = duplicate["realized"]["sci_align_alignment"][
+            "processing_support_plan"
+        ]
+        processing["chunk_dispositions"].append(
+            copy.deepcopy(processing["chunk_dispositions"][0])
+        )
+        self.assertIn(
+            "SCI-ALIGN chunk disposition 1 duplicates a scan/interface "
+            "identity",
+            audit.timestream_output_provenance_semantic_errors(duplicate),
         )
 
     def test_rejects_incomplete_raw_provenance(self) -> None:
