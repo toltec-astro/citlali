@@ -1631,7 +1631,7 @@ packages:
             toltec-passband-set-v1:sha256:5e6f38f14bcae93a29ffe8362c52b15209f51aee4e48373b23aaa5ec2f8a6433
           record_path: >-
             doc/audits/packages/SCI-CAL-001_ATMOSPHERE_CONFIRMATION_DECISION_2026-08-02.md
-          record_commit: null
+          record_commit: f513f410b88d147be6bd016d4c79ac1d3a5b2a8e
           record_sha256: >-
             24a2e12d37689999e1070bec4329aeead47c8e24082b20f183bf0ad8e29494b0
           effect: >-
@@ -1668,7 +1668,7 @@ packages:
         doc/audits/packages/SCI-CAL-001_ATMOSPHERE_CONFIRMATION_DECISION_2026-08-02.md
       record_sha256: >-
         24a2e12d37689999e1070bec4329aeead47c8e24082b20f183bf0ad8e29494b0
-      record_commit: null
+      record_commit: f513f410b88d147be6bd016d4c79ac1d3a5b2a8e
       evidence_branch: codex/sci-cal-001-atmosphere-operator
       evidence_commit: f4014d3669b94b1eceb8158da7993737efc908f2
       evidence_parent: 742a3c263faf68c2de7d5b8db0d3423127f60480
