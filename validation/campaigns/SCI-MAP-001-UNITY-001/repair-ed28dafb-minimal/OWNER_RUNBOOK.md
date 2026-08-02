@@ -5,39 +5,54 @@ operational paths, TolProj site configuration, and canonical inputs. They are
 not authorization for Codex or for unattended execution. Every remote command
 uses `unity_toltec`.
 
-## 1. Transfer and verify
+## 1. Transfer the package
 
-Run locally:
+### Local
 
 ```sh
 LOCAL_PACKAGE=/Users/gwilson/.codex/worktrees/aa31/citlali-refactor/validation/campaigns/SCI-MAP-001-UNITY-001/repair-ed28dafb-minimal
 UNITY_RUN_ROOT="$HOME/c2025t/2026-ENG-citlali-MAP"
 UNITY_PACKAGE="$UNITY_RUN_ROOT/repair-ed28dafb-minimal"
-rsync -a --checksum --protect-args "$LOCAL_PACKAGE/" "unity_toltec:$UNITY_PACKAGE/"
-ssh unity_toltec "cd '$UNITY_PACKAGE' && sha256sum -c SHA256SUMS"
+rsync -a --checksum --protect-args "$LOCAL_PACKAGE/" \
+  "unity_toltec:~/c2025t/2026-ENG-citlali-MAP/repair-ed28dafb-minimal/"
+```
+
+### Unity terminal
+
+Paste these into the already logged-in Unity terminal (and, when appropriate,
+the allocated compute-node shell):
+
+```sh
+UNITY_RUN_ROOT="$HOME/c2025t/2026-ENG-citlali-MAP"
+UNITY_PACKAGE="$UNITY_RUN_ROOT/repair-ed28dafb-minimal"
+cd "$UNITY_PACKAGE"
+sha256sum -c SHA256SUMS
 ```
 
 ## 2. Create the two TolProj workspaces
 
 The agreed Unity root is `$HOME/c2025t/2026-ENG-citlali-MAP`. Set the three
-remaining operational values yourself, then run locally. Do not reuse an old
-reduction or copy an old reduction tree into it.
+remaining operational values in Unity. Do not reuse an old reduction or copy
+an old reduction tree into it.
+
+### Local
+
+No additional local command is needed after the transfer.
+
+### Unity terminal
 
 ```sh
 TOLPROJ='<approved TolProj executable on Unity>'
 TOLPROJ_SITE_CONFIG='<approved TolProj site configuration>'
 GRANT_USER='<Grant Unity/TolProj user>'
 
-ssh unity_toltec bash -s -- "$UNITY_PACKAGE" "$UNITY_RUN_ROOT" "$TOLPROJ" "$TOLPROJ_SITE_CONFIG" "$GRANT_USER" <<'REMOTE'
 set -euo pipefail
-package=$1; root=$2; tolproj=$3; site=$4; user=$5
-point="$root/SCI-MAP-001-POINT-SOURCE"
-science="$root/SCI-MAP-001-SCIENCE-SOURCE"
+point="$UNITY_RUN_ROOT/SCI-MAP-001-POINT-SOURCE"
+science="$UNITY_RUN_ROOT/SCI-MAP-001-SCIENCE-SOURCE"
 test ! -e "$point"; test ! -e "$science"
-"$tolproj" init-test "$package/tolproj-point-source.json" --root "$root" --user "$user" --config "$site"
-"$tolproj" init-test "$package/tolproj-science-source.json" --root "$root" --user "$user" --config "$site"
+"$TOLPROJ" init-test "$UNITY_PACKAGE/tolproj-point-source.json" --root "$UNITY_RUN_ROOT" --user "$GRANT_USER" --config "$TOLPROJ_SITE_CONFIG"
+"$TOLPROJ" init-test "$UNITY_PACKAGE/tolproj-science-source.json" --root "$UNITY_RUN_ROOT" --user "$GRANT_USER" --config "$TOLPROJ_SITE_CONFIG"
 test -f "$point/project.yaml"; test -f "$science/project.yaml"
-REMOTE
 ```
 
 Stage only the canonical raw files and matched APT/PPT inputs whose observation
@@ -54,6 +69,12 @@ and only the seven case objects in `campaign.json`. Each case records its exact
 mode, observations, arrays, coadd/products setting, coverage cut, and thread
 count. If the accepted configuration cannot be materialized with those values,
 stop rather than hand-editing a different scientific configuration.
+
+### Local
+
+No local command is needed; keep the Unity compute-node terminal active.
+
+### Unity terminal
 
 ```sh
 POINT_PROJECT="$UNITY_RUN_ROOT/SCI-MAP-001-POINT-SOURCE"
@@ -83,7 +104,9 @@ binary for every selected reduction.
 
 After all seven selected reductions finish, set `RESULTS_DIR` to a directory
 under `UNITY_RUN_ROOT` containing those seven completed reduction directories,
-named by case ID. Run this one collection command on Unity:
+named by case ID.
+
+### Unity terminal
 
 ```sh
 tar -C "$UNITY_RUN_ROOT" -czf "$UNITY_RUN_ROOT/SCI-MAP-001-UNITY-001-return.tar.gz" \
@@ -91,6 +114,14 @@ tar -C "$UNITY_RUN_ROOT" -czf "$UNITY_RUN_ROOT/SCI-MAP-001-UNITY-001-return.tar.
   "$(basename "$RESULTS_DIR")"
 ```
 
-Retrieve the tarball and the seven scheduler logs with `rsync` using
-`unity_toltec`, then give their paths and SHA-256 values to the coordinator for
-interpretation. This package does not interpret results or close any finding.
+### Local
+
+```sh
+LOCAL_RETURN_DIR='<local destination for returned MAP artifacts>'
+rsync -a --checksum --protect-args \
+  "unity_toltec:~/c2025t/2026-ENG-citlali-MAP/SCI-MAP-001-UNITY-001-return.tar.gz" \
+  "$LOCAL_RETURN_DIR/"
+```
+
+Give the archive path and SHA-256 value to the coordinator for interpretation.
+This package does not interpret results or close any finding.
