@@ -38,7 +38,9 @@ sha256sum -c SHA256SUMS
 ## 2. Create the two TolProj workspaces
 
 The agreed Unity root is `$HOME/c2025t/2026-ENG-citlali-MAP`. Set the three
-remaining operational values in Unity. Do not reuse an old reduction or copy
+remaining operational values in Unity. `TOLPROJ_SITE_CONFIG` must be the path
+to an approved, existing TolProj **YAML file**. It is not the run root, project
+directory, or a directory of any kind. Do not reuse an old reduction or copy
 an old reduction tree into it.
 
 ### Local
@@ -49,10 +51,12 @@ No additional local command is needed after the transfer.
 
 ```sh
 TOLPROJ='<approved TolProj executable on Unity>'
-TOLPROJ_SITE_CONFIG='<approved TolProj site configuration>'
+TOLPROJ_SITE_CONFIG='<absolute path to approved TolProj site-config YAML>'
 GRANT_USER='<Grant Unity/TolProj user>'
 
 set -euo pipefail
+test -f "$TOLPROJ_SITE_CONFIG"
+test ! -d "$TOLPROJ_SITE_CONFIG"
 point="$UNITY_RUN_ROOT/SCI-MAP-001-POINT-SOURCE"
 science="$UNITY_RUN_ROOT/SCI-MAP-001-SCIENCE-SOURCE"
 test ! -e "$point"; test ! -e "$science"
