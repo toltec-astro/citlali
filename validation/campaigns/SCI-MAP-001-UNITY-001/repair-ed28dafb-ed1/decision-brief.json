@@ -1,0 +1,95 @@
+{
+  "schema_version": "sci-map-unity-ed1-bounded-decision-brief-v1",
+  "request_id": "SCI-MAP-001-UNITY-001",
+  "revision": "repair-sha-ed28dafb-ed1-2026-08-02",
+  "decision_id": "MAP-UNITY-ED1",
+  "date": "2026-08-02",
+  "status": "stopped_owner_decision_required",
+  "branch": "codex/map-unity-ed1",
+  "starting_point": {
+    "initial_state": "clean_detached_head",
+    "campaign_preparation_commit": "1b824f138754eeb1856ae5f102027db4b31598be",
+    "campaign_preparation_parent": "ed28dafb37f9113c0d3c95297148157129a90886",
+    "branch_preexisted": false,
+    "branch_was_checked_out_elsewhere": false
+  },
+  "candidate": {
+    "commit": "ed28dafb37f9113c0d3c95297148157129a90886",
+    "tree": "cf75c36557178f351fb62781108a6f4b41b19225",
+    "application_source_changed": false
+  },
+  "governing_authority": {
+    "handoff_sha256": "8ce9d12f93b2cf60e6fb281b67afcfdcaeb9f2ffde755b9c0f640a38c98c0c5b",
+    "owner_decision_sha256": "4cec0fbbd172a32f51cfe95d5ef1712f091297fb43bd2efee5a1c4eecf99e5fa",
+    "decision_content_commit": "db74fe293436b59eecfa5c36b2a2ea186b05e9b6",
+    "coordination_identity_binding_head": "4257265dba44aac3b29d985e1f7bc01b2a50368c"
+  },
+  "frozen_predecessor": {
+    "path": "validation/campaigns/SCI-MAP-001-UNITY-001/repair-ed28dafb",
+    "tree": "dbf486e30c9b78ca16e05bccafc2d027562d0746",
+    "sha256sums_sha256": "ecf080cce98ad3aef6d6dbf52e72dd53be5d659a40285ec6c9bfbb0aee185a69",
+    "changed": false
+  },
+  "triggered_stop_conditions": [
+    "change_to_configs_or_products",
+    "new_scientific_or_operational_tradeoff",
+    "application_source_edit_for_direct_hook",
+    "proportional_transient_storage_for_full_ptc_route"
+  ],
+  "evidence_gap": {
+    "point_product": "processed TOD is mini and omits binary64/kernel/projection authority",
+    "science_product": "processed TOD is disabled",
+    "diagnostics": "omit complete primitive population and required fields",
+    "final_fits": "derived output cannot be sole independent authority",
+    "blocked_outputs": [
+      "nine_compact_observation_array_groups",
+      "every_active_network_deterministic_actual_data_traces",
+      "focused_expansion_from_same_bound_stream",
+      "operational_successor_analyzer_and_resource_report"
+    ]
+  },
+  "local_metadata_measurement": {
+    "classification": "safe_local_metadata_not_unity_evidence",
+    "active_networks": [0, 1, 2, 3, 4, 5, 7, 8, 9, 11, 12],
+    "source_terms_total": 1717082860,
+    "source_terms_by_observation_array": {
+      "152389": {"a1100": 24429421, "a1400": 10531812, "a2000": 7521923},
+      "152390": {"a1100": 480826960, "a1400": 207303104, "a2000": 148051649},
+      "152392": {"a1100": 482113090, "a1400": 207857076, "a2000": 148447825}
+    },
+    "processed_terms_projected": 1688839080,
+    "full_ptc_core_array_lower_bound_bytes": 94254679616,
+    "full_ptc_core_array_lower_bound_gib": 87.78151088953018,
+    "v1_preliminary_bytes": 127064131640,
+    "v1_preliminary_gib": 118.34,
+    "lower_bound_excludes": [
+      "weights",
+      "telescope_streams",
+      "apt_metadata",
+      "netcdf_hdf5_overhead",
+      "manifests",
+      "compact_successor_output"
+    ]
+  },
+  "owner_decision_options": [
+    "authorize_segregated_full_all_ptc_capture",
+    "authorize_application_owned_compact_stream_hook_and_new_candidate",
+    "authorize_instrumented_validation_binary_and_equivalence_contract",
+    "decline_successor_producer_and_keep_request_blocked"
+  ],
+  "independent_review": {
+    "artifact": "INDEPENDENT_READ_ONLY_REVIEW_2026-08-02.md",
+    "conclusion": "stop_condition_confirmed"
+  },
+  "negative_confirmations": {
+    "unity_contacted": false,
+    "remote_reduction_run": false,
+    "owner_values_filled": false,
+    "external_evidence_supplied": false,
+    "repair_integrated": false,
+    "finding_or_dependency_closed": false,
+    "reaudit_launched": false,
+    "production_expanded": false,
+    "pushed": false
+  }
+}
