@@ -14,10 +14,12 @@ version-label ambiguity without rewriting either post hoc.
 
 The preregistered `piecewise_linear_los_tau_v1` and `pchip_los_tau_v1`
 identities belong to Study C's proposed annual-profile anchor training. The
-addendum stopped that study before operator selection after the copied AM 12.2
-suite was shown not to be the registered generic-q lineage. No annual-anchor
-`v1` surface was selected, evaluated as a successor, or assigned an
-operational domain.
+addendum stopped that study before operator selection after registry comparison
+showed that the copied AM 12.2 NPZ files are distinct products and not aliases
+of the generic-q products. That product-identity result does not establish
+whether the same AM 12.2 generator lineage produced the generic-q products. No
+annual-anchor `v1` surface was selected, evaluated as a successor, or assigned
+an operational domain.
 
 ## Legacy-anchor diagnostic C1
 
@@ -37,8 +39,10 @@ constitute a candidate-version or scientific-model change.
 
 ## Unchanged stop boundary
 
-The copied suite remains a distinct AM 12.2 calculation family, not the
-historical generic-q identity. This clarification supplies no missing q95
-bytes, intermediate physical atmosphere runs, observational-performance
-evidence, aligned-elevation eligibility decision, operator authorization, or
-operational-domain approval.
+The copied suite remains a distinct registered AM 12.2 calculation-product
+family. Its historical generic-generator association is not established. This
+clarification supplies no missing generic q95 bytes, intermediate physical
+atmosphere runs, observational-performance evidence, aligned-elevation
+eligibility decision, operator authorization, or operational-domain approval.
+Generic q95 remains historical/diagnostic provenance only for the selected
+AM 12.2 successor-evaluation direction.

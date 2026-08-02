@@ -1,9 +1,16 @@
 {
   "identity": {
+    "adoption_status": "evaluation_only_not_adopted",
+    "operational_domain_authorization": "none",
+    "operator_authorization": "none",
+    "owner_direction": "versioned_am12_successor_evaluation_only",
     "package": "SCI-CAL-001",
+    "q95_operational_disposition": "excluded_historical_diagnostic_only",
     "repair_base_sha": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
     "repair_line_evidence_head": "ae99be1cef8c390d0e7490835ffca1f31da7ebc0",
-    "status": "partial_raw_recovery_q25_q50_q75_q95_missing"
+    "status": "historical_generic_diagnostic_raw_recovery_q25_q50_q75",
+    "study_artifact_binding_status": "unbound_pending_study_results",
+    "successor_study_status": "pending_results"
   },
   "missing_q95_request": {
     "expected_md5": "0ca7b331823237767d26016d19bffb3d",

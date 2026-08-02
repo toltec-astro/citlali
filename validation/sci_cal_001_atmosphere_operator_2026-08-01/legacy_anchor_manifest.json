@@ -206,11 +206,17 @@
     }
   ],
   "identity": {
+    "adoption_status": "evaluation_only_not_adopted",
     "evidence_status": "legacy_polynomial_surrogate_not_raw_atmosphere_model",
+    "operational_domain_authorization": "none",
     "operator_authorization": "none",
+    "owner_direction": "versioned_am12_successor_evaluation_only",
     "package": "SCI-CAL-001",
+    "q95_operational_disposition": "excluded_historical_diagnostic_only",
     "repair_base_sha": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
-    "repair_line_evidence_head": "ae99be1cef8c390d0e7490835ffca1f31da7ebc0"
+    "repair_line_evidence_head": "ae99be1cef8c390d0e7490835ffca1f31da7ebc0",
+    "study_artifact_binding_status": "unbound_pending_study_results",
+    "successor_study_status": "pending_results"
   },
   "limitations": [
     "Raw q25/q50/q75 calculations are evaluated by the companion recovery script, not this legacy-anchor analysis.",
@@ -218,7 +224,8 @@
     "Selector-derived tau225 anchors may not equal original profile inputs.",
     "Legacy elevation polynomials are fitted evidence, not approved raw anchors.",
     "The diagnostic 30--80 degree range is not an operational domain.",
-    "The full-domain provisional one-percent raw-grid correction-error gate is not evaluated."
+    "The legacy q0--q95 diagnostic raw-grid correction-error gate is not evaluated and is not the AM 12.2 successor-adoption gate.",
+    "Generic q95 is historical/diagnostic evidence only under the owner-selected successor-evaluation direction."
   ],
   "numeric_environment": {
     "float_mantissa_bits": 53,

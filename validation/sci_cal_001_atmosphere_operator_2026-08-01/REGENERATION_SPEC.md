@@ -1,4 +1,4 @@
-# SCI-CAL-001 atmosphere regeneration specification v2
+# SCI-CAL-001 atmosphere regeneration specification v3
 
 ## Status and identity
 
@@ -9,7 +9,9 @@ This specification separates two scientific identities that must not be merged:
 
 The specification is bound to repair base `9aae0e669384c5c0c0dda93debc194d6b8dac787` and repair-line evidence head `ae99be1cef8c390d0e7490835ffca1f31da7ebc0`. It does not claim that the copied AM 12.2 profiles generated the registered generic q artifacts. `regeneration_manifest.json` is the machine-readable package state and validates against `atmosphere_regeneration_manifest.schema.json`; follow-up custody and study details are preserved in the copied-AM, native-regeneration, frequency-resolution, and post-hoc H2O-scale hypothesis manifests.
 
-No operator or operational opacity/elevation domain is authorized by this specification.
+The owner has selected evaluation of a separately versioned AM 12.2 successor. Generic q95 is retained as historical/diagnostic evidence only, and exact generic-generator association remains not established. This direction authorizes a bounded study, not an operator, adoption decision, or operational opacity/elevation domain.
+
+The machine adoption state is `evaluation_only_not_adopted`. Successor-study results and their adoption artifacts are pending and intentionally unbound.
 
 ## Immutable lineage inventory
 
@@ -69,7 +71,7 @@ The five annual products have no matching generic TolTECA registry identity. All
 
 Study A compares every annual/DJF/MAM/JJA/SON q25/q50/q75 product against the same-percentile generic raw grid over 50,001 frequencies and 31 common elevations. None is content-identical; the 60-row comparison reports transmission and Rayleigh-Jeans maximum/RMS differences without inventing a cross-quantity "closest family" score. A separate 84-row table preserves every annual q25/q50/q75/q95 degree-six coefficient, its explicit eight-decimal value, and its repair-base comparison.
 
-The frozen preregistration's `v1` identities belong only to the annual-anchor Study C that was stopped after the lineage mismatch. Diagnostic C1 evaluates the pre-existing legacy-anchor `piecewise_linear_los_tau_v0` and `pchip_los_tau_v0` surfaces. `FOLLOWUP_STUDY_DEVIATION_LOG.md`, SHA-256 `a3df86366c7869579b3255d9ea8f95cf6827e78018e0a2a83a1640360be1b036`, records this clarification without editing the frozen protocol or changing candidate numerics.
+The frozen preregistration's `v1` identities belong only to the annual-anchor Study C that was stopped after the registered-product identity mismatch. Diagnostic C1 evaluates the pre-existing legacy-anchor `piecewise_linear_los_tau_v0` and `pchip_los_tau_v0` surfaces. `FOLLOWUP_STUDY_DEVIATION_LOG.md` records this clarification without editing the frozen protocol or changing candidate numerics. The copied and generic files are distinct products; their historical generic-generator association is not established.
 
 ## Exact copied-suite execution contract
 
@@ -181,7 +183,7 @@ Correction-tau provenance is asymmetric. For q25/q50/q75 the candidate side uses
 
 The canonical execution-context SHA-256 is `05148050e96e73577ec75be525b026b5bf37bbd2a8753f8e3702fc0b6dfb2bee`. Its 13,667 unique referenced runs comprise 9,792 return-code-0 and 3,875 accepted warning-status-1 runs; other-warning and error-line totals are zero. The normalized numeric-text aggregate is `343acc6878062a433b665b0c80516212dc3b338fc77337bc9b6d1ade8196d1e1`, and the normalized warning-bearing-output aggregate is `3fcfe769fab3490e7067876a55c75a06e6d17e8990f137238399d02ab246728f`. Cache-only replay passed under a shared whole-cache lock and launched no AM process.
 
-P1 is a post-hoc candidate-recipe search, not custody proof or an independent model holdout. It closes none of the 11 unresolved generator, profile, site, grid, q95, independent-profile, spectral, bandpass, or operational-domain facts and does not authorize an operator.
+P1 is a post-hoc candidate-recipe search, not custody proof or an independent model holdout. It does not resolve successor profile, site, grid, independent-profile, spectral, conditional-bandpass, warning-policy, or domain choices and does not authorize an operator. Generic q95 and exact generic-generator custody remain unresolved nonblocking historical provenance.
 
 ## Exact recovered legacy derivation
 
@@ -223,7 +225,7 @@ To reproduce the recovered generic fits without modifying their source repositor
 
 The first command writes normalized evidence tables in this package only. It does not rewrite sibling-repository NPZs.
 
-## Generic-lineage closure protocol
+## Optional historical generic-lineage closure protocol
 
 The copied suite does not satisfy the generic-lineage request. To close that lineage:
 
@@ -234,7 +236,7 @@ The copied suite does not satisfy the generic-lineage request. To close that lin
 5. Normalize all four generic models to a common long table while preserving immutable raw outputs separately.
 6. Freeze any successor operator and independent intermediate-run plan before loading held-out results.
 
-If historical generic provenance cannot be recovered, the owner may instead authorize a newly versioned AM 12.2 model family. That decision must explicitly choose annual, seasonal, season-aware, or another stated profile-construction rule. The existence of complete annual files is not approval to select annual anchors.
+The owner has selected the separate AM 12.2 successor-evaluation path while retaining this historical protocol as optional provenance work. The successor study must explicitly choose annual, seasonal, season-aware, or another stated profile-construction rule. The existence of complete annual files is not approval to select annual anchors, and study authorization is not operator adoption.
 
 ## Versioned continuous-operator candidates
 
@@ -271,28 +273,29 @@ Candidate evaluation must report, by band and across the complete owner-declared
 2. finite values, `L>=0`, `0<T<=1`, and `C>=1`;
 3. continuity at every anchor, including one-sided binary64 `nextafter` probes;
 4. nondecreasing `L` with increasing zenith opacity;
-5. nonincreasing `L` with increasing elevation, with the known q95/a2000 feature reported rather than hidden;
+5. nonincreasing `L` with increasing elevation throughout the declared successor study domain; retain the legacy q95/a2000 feature separately as historical diagnostic evidence;
 6. fractional correction error `abs(exp(L_candidate-L_truth)-1)` at raw anchors and preregistered independent intermediate/held-out runs;
 7. maximum, 95th percentile, median, RMS, signed range, and error location.
 
-Exact-anchor, finite-positive-transmission, continuity, opacity-monotonicity, and fail-closed-support gates must pass. Elevation monotonicity must either pass or receive an explicit owner scientific disposition supported by recovered raw q95 and independent model evidence. The known `0.839827%` q95/a2000 wrong-way feature is diagnostic rather than automatically release-blocking, but it may not be silently waived.
+Exact-anchor, finite-positive-transmission, continuity, opacity-monotonicity, and fail-closed-support gates must pass. Elevation monotonicity must pass within the declared successor study domain or receive an explicit owner scientific disposition supported by independent model evidence. The known `0.839827%` legacy q95/a2000 wrong-way feature remains historical/diagnostic and is not a successor release gate.
 
-At most one-percent correction error is a provisional numerical representation-fidelity gate. It is not per-sample physical photometric accuracy. The post-discovery AM 12.2-family stress already fails one percent in a1100 for both piecewise-linear (1.738766%) and PCHIP (1.738068%), while passing in a1400 and a2000. Because the tested profiles are a different lineage and the study was non-blinded, this result neither selects nor rejects a production model; it shows that owner-selected independent validation is still required.
+At most one-percent correction error is a provisional numerical representation-fidelity gate. It is not per-sample physical photometric accuracy. The post-discovery C1 stress spans the broader legacy q0--q95 diagnostic range; its quoted a1100 maxima of 1.738766% and 1.738068% occur for `LMT_MAM_75` at modified-secant tau225 `0.294218`, in the upper q75--q95 interval. Whether that point is outside the eventual study domain depends on the still-unapproved upper endpoint. The copied products are distinct from the generic products, while historical generic-generator association is not established. C1 was non-blinded and neither selects nor rejects a production model; successor-specific independent validation remains required.
 
 Software correctness, representation fidelity, 5--10% absolute observational accuracy, and approximately 5% observation-to-observation repeatability are separate gates. More samples do not remove shared calibrator, Beammap-extinction, selector, or airmass systematics.
 
 ## Owner decisions and remaining input request
 
-Only these items remain open:
+For the selected AM 12.2 successor evaluation, these items remain open:
 
-- generic q95 datafile ID 461 bytes and custody;
-- historical generic-q generator/profile/run identity, **or** explicit approval of a separately versioned AM 12.2 successor family and profile rule;
+- explicit successor profile family and H2O-scale construction;
 - monochromatic legacy parity versus a newly versioned band-integrated convention; if band integrated, immutable passbands, weighting, normalization, and quadrature;
 - the operational warning/frequency policy for any successor;
-- preregistered independent intermediate profiles/runs under the selected physical construction rule;
+- preregistered independent intermediate profiles/runs across the q95-excluding study range under the selected physical construction rule;
 - operational zenith-tau225 and aligned-elevation limits, endpoint inclusion, and out-of-domain behavior.
 
-No profile family, q95 artifact, bandpass, frequency policy, operator, or domain is chosen silently.
+Generic q95 datafile ID 461 and exact historical generic-q generator/profile/run custody remain unresolved nonblocking provenance. Recovering them may close historical lineage but is not a prerequisite for the selected successor study.
+
+No profile family, bandpass, frequency policy, operator, or domain is chosen silently. Generic q95 is not substituted and remains diagnostic-only.
 
 ## Aligned-elevation dependency
 

@@ -2,7 +2,7 @@
 
 This directory preserves the 2026-08-01 reproducible evidence package bound to repair base `9aae0e669384c5c0c0dda93debc194d6b8dac787` and repair-line evidence head `ae99be1cef8c390d0e7490835ffca1f31da7ebc0`.
 
-The outcome remains a scientifically bounded stop. The generic q25/q50/q75 raw grids and exact legacy fit are recovered. A separately named copied AM 12.2 annual/seasonal suite is completely inventoried, and a distinct native build reproduces all 180 annual reference grids exactly. The R1 frequency-resolution diagnostic passes, and P1 directly evaluates all 100 copied-profile/H2O-scale hypotheses. These results establish copied-suite software and numerical reproducibility, not generic-q custody. The registered generic q95 raw artifact and the exact generic generator/profile/grid lineage remain missing; no successor operator or operational domain is selected or authorized.
+The outcome has advanced from a previously unresolved two-path choice to an owner-selected, separately versioned AM 12.2 successor evaluation. The generic q25/q50/q75 raw grids and exact legacy fit are recovered. A separately named copied AM 12.2 annual/seasonal suite is completely inventoried, and a distinct native build reproduces all 180 annual reference grids exactly. The R1 frequency-resolution diagnostic passes, and P1 directly evaluates all 100 copied-profile/H2O-scale hypotheses. These results establish copied-suite software and numerical reproducibility. The copied files are distinct registered products from the generic-q files; their historical generic-generator association is not established. Generic q95 and exact generic custody remain unresolved historical/diagnostic provenance, not successor-evaluation gates. No successor operator or operational domain is selected or authorized.
 
 ## Read first
 
@@ -19,12 +19,14 @@ The outcome remains a scientifically bounded stop. The generic q25/q50/q75 raw g
 
 ## Decision state
 
-The owner choice is model lineage, not an operator selection:
+The owner direction is evaluation, not adoption or operator selection:
 
-1. **Recommended faithful generic-lineage closure:** recover generic q95 datafile ID 461 and custody-backed generic generator, profile, scale, grid, and packing facts.
-2. **Separately versioned AM 12.2 successor:** explicitly approve a copied-profile rule, H2O-scale construction, grid, spectral convention, unresolved-line warning policy, validation design, and support-backed domain while retaining the historical generic-q custody gap as unresolved. Such a successor must not be represented as a regeneration or replacement of the generic products.
+1. **Selected study direction -- separately versioned AM 12.2 successor:** evaluate whether the reproducible AM 12.2 family warrants adoption under an explicit profile rule, H2O-scale construction, grid, spectral convention, unresolved-line warning policy, independent validation design, and support-backed q95-excluding study domain.
+2. **Historical provenance retained, nonblocking:** generic q95 datafile ID 461 and exact generic generator/profile/grid custody remain unresolved. No copied product is substituted for a generic product, and the successor must not be represented as a historical regeneration.
 
-Retain piecewise-linear line-of-sight optical depth as the baseline and PCHIP as the challenger only. Neither is authorized. Selection requires exact anchors, finite positive transmission, continuity, opacity monotonicity, fail-closed support, and no more than one-percent fractional extinction-correction error against independent model truth over an owner-declared domain. Elevation monotonicity must either pass or receive an explicit owner scientific disposition supported by recovered raw q95 and independent model evidence. The exact-anchor candidates inherit the q95/a2000 `0.839827%` wrong-way elevation feature; it is diagnostic rather than automatically release-blocking, but it may not be silently waived. C1 also exceeds one percent in a1100 for both piecewise linear (`1.738766%`) and PCHIP (`1.738068%`).
+The machine state is `evaluation_only_not_adopted`; successor-study results are pending and intentionally unbound.
+
+Retain piecewise-linear line-of-sight optical depth as the baseline and PCHIP as the challenger only. Neither is authorized. Selection requires exact study anchors, finite positive transmission, continuity, opacity monotonicity, fail-closed support, and no more than one-percent fractional extinction-correction error against independent model truth over the declared successor study domain. Elevation monotonicity must pass within that domain or receive an explicit owner scientific disposition supported by independent model evidence. The legacy q95/a2000 `0.839827%` feature and the full-q0--q95 C1 maxima remain historical diagnostics, not successor release gates. Exact operational opacity/elevation endpoints remain unapproved.
 
 Zenith `tau225` must be applied with the full airmass of every eligible sample and a top-of-atmosphere pivot, `X_ref=0`. Software correctness, numerical model-representation fidelity, and observational performance are separate gates; the target 5--10% absolute flux accuracy and provisional approximately 5% observation-to-observation repeatability are not established here. The open SCI-ALIGN-001 handoff additionally requires ordered sample identity, timing-gap/interpolation origin, duration, and original-versus-synthesized eligibility before aligned elevation can be consumed.
 

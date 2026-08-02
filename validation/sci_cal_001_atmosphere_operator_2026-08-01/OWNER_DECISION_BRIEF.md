@@ -1,13 +1,15 @@
 # SCI-CAL-001 owner decision brief
 
-## Decision requested
+## Direction recorded and decision boundary
 
-**Choose a scientific model-lineage path, not an operator or domain. Do not select or implement a successor operator yet.**
+**Evaluate a separately versioned AM 12.2 successor to determine whether it warrants adoption. This is study authorization only, not operator adoption or an operational-domain declaration.**
 
-1. **Recommended -- faithful generic lineage:** recover the original generic q95 datafile ID 461 and custody-backed generic generator, profile, H2O-scale, grid, and packing facts. Preserve the recovered monochromatic convention unless the owner explicitly versions a change.
-2. **Allowed alternative -- separately versioned AM 12.2 successor:** approve an explicit copied-profile rule, H2O-scale construction, grid, spectral convention, unresolved-line warning policy, independent validation design, and support-backed domain. Retain the historical generic-q custody gap, including q95, as unresolved; do not describe the successor as reproducing or replacing the generic products.
+Machine status is `evaluation_only_not_adopted`. Study results are pending and remain unbound from the living package.
 
-For either path, retain piecewise-linear line-of-sight optical depth as the baseline and PCHIP as the challenger only. Neither is authorized. A future choice must pass exact-anchor, finite-positive-transmission, continuity, opacity-monotonicity, and fail-closed-support gates, plus the provisional one-percent independent model-representation gate throughout an owner-declared domain. Elevation monotonicity must either pass or receive an explicit owner scientific disposition supported by recovered raw q95 and independent model evidence. The diagnostic sub-percent q95/a2000 excursion is not automatically release-blocking, but it cannot be silently waived.
+1. **Selected evaluation path:** define and test a versioned AM 12.2 successor with an explicit copied-profile rule, H2O-scale construction, grid, spectral convention, unresolved-line warning policy, independent validation design, and bounded q95-excluding study domain.
+2. **Historical provenance disposition:** retain the generic-q custody gap, including generic q95, as unresolved historical/diagnostic evidence. The copied products are distinct from the generic products, while their historical generic-generator association is not established. Do not describe the successor as reproducing or replacing the generic products.
+
+Retain piecewise-linear line-of-sight optical depth as the baseline and PCHIP as the challenger only. Neither is authorized. A future adoption decision must pass exact-anchor, finite-positive-transmission, continuity, opacity-monotonicity, and fail-closed-support gates, plus the provisional one-percent independent model-representation gate throughout the declared successor study domain. Elevation monotonicity must pass within that domain or receive an explicit owner scientific disposition supported by independent model evidence. The sub-percent legacy q95/a2000 excursion remains diagnostic-only and is not a successor release gate.
 
 ## Evidence now established
 
@@ -18,8 +20,8 @@ For either path, retain piecewise-linear line-of-sight optical depth as the base
 - A post-hoc raw q50 leave-one-model-out check, predicted linearly in line-of-sight optical depth from raw q25 and q75, has worst correction error `0.012264%` (a1400). Using the full-airmass q25/q75 anchor reconstructions gives `0.243563%` (a1400). q50 was already inspected during provenance recovery, so this is not a preregistered or blinded holdout and not a full-domain result.
 - The recovered nominal-frequency q25/q50/q75 raw surfaces have zero increasing-opacity or increasing-elevation monotonicity violations at line-of-sight-tau tolerance `1e-12`.
 - Frozen phase-0 evidence finds material hard-selector discontinuities in all 36 tested above-q25 boundary/band/elevation rows; a continuous operator remains scientifically motivated.
-- The diagnostic exact-anchor candidates preserve source anchors and the approved zero-to-q25 identity, remain finite and positive, and are opacity-monotone. They do **not** pass strict elevation monotonicity: every exact-anchor candidate inherits the q95/a2000 feature, with a `0.839827%` maximum wrong-way correction excursion on the 0.1-degree grid. Because raw q95 is absent, this cannot yet be classified as a physical feature or representation artifact; it may not be silently waived.
-- C1 tests the legacy-anchor candidates against 16 in-support copied AM 12.2 profiles. Its a1100 maximum correction error exceeds one percent for both piecewise linear (`1.738766%`) and PCHIP (`1.738068%`). C1 is post-discovery stress evidence, not a blinded generic-lineage holdout, but it does not support authorization.
+- The diagnostic exact-anchor candidates preserve source anchors and the approved zero-to-q25 identity, remain finite and positive, and are opacity-monotone. Their `0.839827%` q95/a2000 wrong-way feature belongs to the legacy q0--q95 diagnostic and remains useful characterization evidence, but q95 is outside the selected successor study.
+- C1 tests the legacy-anchor candidates against 16 copied AM 12.2 profiles over the broader legacy q0--q95 diagnostic range. Its quoted a1100 maxima, `1.738766%` and `1.738068%`, occur for `LMT_MAM_75` at modified-secant tau225 `0.294218`, in the upper q75--q95 interval. Whether that point is outside the eventual study domain depends on the still-unapproved upper endpoint. C1 remains post-discovery stress evidence, not a blinded successor holdout or an authorization result.
 - A distinct native GCC-15 AM 12.2 build exactly reproduces all five parsed fields and numeric lines for all `180/180` annual cases. All cases retain the accepted unresolved-line warning/status 1. Co-staging and matching output-build identity do not prove that the exact copied Linux ELF generated the historical files.
 - R1 passes its preregistered 0.1% frequency-resolution diagnostic: the 10-MHz maximum correction difference from 1 MHz is `0.000340%`. Status-1 unresolved-line warnings persist, so this is not a clean software-success or warning-policy decision.
 
@@ -41,15 +43,16 @@ P1's complete-grid result is a provenance mismatch: no q25/q50/q75 profile passe
 
 P1 is post hoc and cannot establish generic custody or serve as an independent operator holdout. The nominal-frequency results are provisional numerical diagnostics only. They do not establish 5--10% absolute flux accuracy or approximately 5% repeatability.
 
-## Evidence and choices still required
+## Successor study inputs and later choices still required
 
-The exact path-aware request is machine-readable in `owner_input_request.json`. After choosing one of the two lineage paths above, the remaining decisions are:
+The exact request is machine-readable in `owner_input_request.json`. The selected evaluation path still requires:
 
-1. For faithful closure, supply q95 and the exact generic generator/profile/scale/grid custody relationship. For an AM 12.2 successor, explicitly retain those historical facts as unresolved and select the new profile and scale construction instead.
-2. Supply or approve genuinely independent intermediate-opacity model runs. P1 fitted scales and C1 copied profiles were inspected post hoc and are not substitutes.
-3. Resolve every structural gate, including the q95/a2000 elevation-monotonicity feature, and approve exact zenith-opacity/aligned-elevation endpoints only where raw and independent model support exists. No extrapolation is authorized; out-of-domain requests must fail closed.
-4. Choose the spectral convention. The recovered monochromatic 272.73/214.29/150.00-GHz-to-225.00-GHz convention is recommended for faithful closure. Band integration is a separately versioned change requiring immutable passbands, aggregation, normalization, source spectrum, and quadrature rules.
-5. For an AM 12.2 successor, approve the operational handling of its unresolved-line status-1 output; R1 does not make that policy choice.
+1. Select and version the AM 12.2 profile family and H2O-scale construction. P1 fitted scales narrow hypotheses but do not make this scientific choice.
+2. Supply or approve genuinely independent intermediate-opacity model runs across the q95-excluding study range. P1 fitted scales and C1 copied profiles were inspected post hoc and are not substitutes.
+3. Resolve structural gates within the successor study domain and later approve exact zenith-opacity/aligned-elevation endpoints only where raw and independent model support exists. No extrapolation is authorized; out-of-domain requests must fail closed.
+4. Choose and version the spectral convention. A monochromatic choice fixes 272.73/214.29/150.00 GHz relative to 225.00 GHz. Band integration requires immutable passbands, aggregation, normalization, source spectrum, and quadrature rules.
+5. Approve the treatment of AM's unresolved-line status-1 output; R1 does not make that policy choice.
+6. Retain generic q95 and exact generic-generator custody as nonblocking historical provenance. Their absence does not prevent the successor evaluation.
 
 No exact opacity or elevation endpoints are approved here.
 

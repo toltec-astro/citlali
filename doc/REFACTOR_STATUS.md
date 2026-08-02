@@ -91,19 +91,21 @@ freeze the application mainline.
   no other warning classes, errors, or failed canonical attempts. P1 finds no
   one-percent full-0--500-GHz reconstruction for q25/q50/q75, although every
   copied-profile hypothesis passes one percent at all three legacy nominal
-  frequencies, with worst error 0.665829%; the absent q95 raw grid leaves only
-  a ratio-surface result whose best maximum error is 1.117452%. These are
-  post-hoc provenance and numerical diagnostics, not generic-q custody or an
-  independent operator holdout. C1 also exceeds one percent in a1100 for both
-  piecewise linear (1.738766%) and PCHIP (1.738068%), and all exact-anchor
-  candidates retain the q95/a2000 0.839827% wrong-way elevation feature, so
-  the elevation-monotonicity gate is unresolved. The owner must choose between
-  recommended faithful generic-lineage recovery, including q95, and an
-  explicitly versioned AM 12.2 successor that retains historical custody as
-  unresolved. Piecewise-linear line-of-sight optical depth remains the
-  baseline and PCHIP the challenger only; no operator, opacity/elevation
-  domain, repair, or re-audit is authorized. Any future correction must use
-  full sample airmass with top-of-atmosphere pivot `X_ref=0`, and the late
+  frequencies, with worst error 0.665829%; the absent generic q95 raw grid
+  leaves only a historical ratio-surface diagnostic whose best maximum error is
+  1.117452%. These are post-hoc provenance and numerical diagnostics, not
+  generic-q custody or an independent operator holdout. The copied files are
+  distinct registered products from the generic-q files; their historical
+  generic-generator association is not established. The owner has selected
+  evaluation of a separately versioned AM 12.2 successor and excluded q95
+  conditions from that study's intended operational scope. The broader legacy
+  q0--q95 C1 maxima (1.738766% piecewise linear and 1.738068% PCHIP in a1100)
+  and the q95/a2000 0.839827% elevation feature remain historical diagnostics,
+  not successor release gates. Piecewise-linear line-of-sight optical depth
+  remains the baseline and PCHIP the challenger only; no operator,
+  opacity/elevation domain, repair, or re-audit is authorized. Successor-study
+  results remain pending and unbound. Any future correction must use full
+  sample airmass with top-of-atmosphere pivot `X_ref=0`, and the late
   SCI-ALIGN-001 sample-identity/timing/interpolation/duration/eligibility
   handoff remains open for every aligned-elevation consumer. Software
   correctness, representation fidelity, and observational 5--10% absolute/
@@ -2721,12 +2723,12 @@ silently choose among these:
 - Whether any future caller needs concurrent reductions in one process.
 - The measured-channel contract and missing-data policy for future R analysis.
 - Whether Citlali must be installable and consumable as an external library.
-- Whether SCI-CAL-001 follows the recommended faithful generic-q lineage path
-  by recovering q95 and exact historical custody, or approves a separately
-  versioned AM 12.2 successor with explicit profile/scale, spectral, warning,
-  validation, and support-backed domain policy while retaining the historical
-  custody gap as unresolved. Neither choice by itself authorizes an operator
-  or operational domain.
+- For the owner-selected SCI-CAL-001 AM 12.2 successor evaluation, the explicit
+  profile/scale rule, spectral convention, warning/frequency policy,
+  independent intermediate-run design, and support-backed q95-excluding study
+  domain. Generic q95 and exact generic-q custody remain unresolved nonblocking
+  historical provenance. The study direction does not authorize an operator or
+  operational domain.
 
 ## Durable Evidence
 

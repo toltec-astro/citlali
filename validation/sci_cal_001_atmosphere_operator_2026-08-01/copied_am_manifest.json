@@ -789,9 +789,9 @@
   ],
   "generated_artifacts": [
     {
-      "bytes": 6700,
+      "bytes": 7054,
       "filename": "COPIED_AM_FOLLOWUP_REPORT.md",
-      "sha256": "a12ce7a2c9d457ae9ca01fcbca3d000ae39dda5d44893bf916854adebc42dbc6"
+      "sha256": "cff98c8b1e1f1fc4f79d1ad5c6416bec4cff470ac96d430fed71a63166a00ea3"
     },
     {
       "bytes": 24093,
@@ -814,9 +814,9 @@
       "sha256": "df263d87f483f181a626a8925c0f80cb67dc1bf979cd81d75ae2ad62d17603f0"
     },
     {
-      "bytes": 17116,
+      "bytes": 17182,
       "filename": "copied_am_product_inventory.csv",
-      "sha256": "032fb5c35f3ee0279418701d8866e1857f92a99252c6989650a649c101d36ad2"
+      "sha256": "6e6ac63a921c47d058ede5da0cc610819a095496484556d022c3de55d18b5544"
     },
     {
       "bytes": 332632,
@@ -825,13 +825,19 @@
     }
   ],
   "identity": {
-    "copied_suite_identity": "am_12_2_not_historical_legacy_q_identity",
+    "adoption_status": "evaluation_only_not_adopted",
+    "copied_suite_identity": "am_12_2_distinct_registered_product_family",
     "evidence_status": "post_discovery_non_blinded_stress",
+    "historical_generic_generator_association": "not_established",
     "operational_domain_authorization": "none",
     "operator_authorization": "none",
+    "owner_direction": "versioned_am12_successor_evaluation_only",
     "package": "SCI-CAL-001",
+    "q95_operational_disposition": "historical_diagnostic_only",
     "repair_base_sha": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
-    "repair_line_evidence_head": "ae99be1cef8c390d0e7490835ffca1f31da7ebc0"
+    "repair_line_evidence_head": "ae99be1cef8c390d0e7490835ffca1f31da7ebc0",
+    "study_artifact_binding_status": "unbound_pending_study_results",
+    "successor_study_status": "pending_results"
   },
   "input_roots": {
     "copied_am_root": "/Users/gwilson/work_toltec/local_data/AM/Big_Atmosphere",
@@ -877,7 +883,7 @@
     ]
   },
   "limitations": [
-    "The copied AM 12.2 suite is not historical legacy q-model identity.",
+    "The copied AM 12.2 products are distinct from the generic-q products; historical generic-generator association is not established.",
     "The stress was designed after the copied products and candidates were inspected.",
     "No profile outside the legacy q0-q95 tau225 support is evaluated.",
     "The test is monochromatic and does not select a band-integrated convention.",
@@ -892,7 +898,7 @@
     "scipy": "1.15.2"
   },
   "protocol_deviation": {
-    "bytes": 2066,
+    "bytes": 2405,
     "diagnostic_c1_evaluated_identities": [
       "piecewise_linear_los_tau_v0",
       "pchip_los_tau_v0"
@@ -910,7 +916,7 @@
         "sha256": "0d47c11479a1ba0176babd3ea285e2871edbb1341406b6b044cbc53114c51a1d"
       }
     ],
-    "sha256": "a3df86366c7869579b3255d9ea8f95cf6827e78018e0a2a83a1640360be1b036",
+    "sha256": "b537960e9ab164353a2516f43572bb4e3dbe587e31a3ab922578b823738620e7",
     "status": "clarification_only_no_candidate_or_numeric_reinterpretation",
     "stopped_study_c_identities": [
       "piecewise_linear_los_tau_v1",

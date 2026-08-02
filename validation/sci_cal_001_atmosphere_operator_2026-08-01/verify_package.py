@@ -23,10 +23,10 @@ TOLTECA_REPOSITORY = Path("/Users/gwilson/GitHub/tolteca")
 TOLTECA_REVISION = "2791e6a1e6349ad1d3ac549a648f41cbc51b98c7"
 OWNER_SUPPLIED_SCHEMA_NAME = "owner_supplied_manifest.schema.json"
 OWNER_SUPPLIED_SCHEMA_SHA256 = (
-    "c4d534a89f5b8b3a6441db6142addca1063b6a6ef3db126c2b727668a5634146"
+    "688309a952ac0902587ef700e7eed13f76f0414c9e0308cdf831932a96dce623"
 )
 OWNER_INPUT_REQUEST_SHA256 = (
-    "e8ba1c641d4acd71a4983fd4528d453a2b8078b3f45a87a803ad4523f3f942ef"
+    "0518bc09fd3fdaced13e2a59ea2713618d777c713af19f1886a4702999241a15"
 )
 
 FROZEN_PATHS = {
@@ -280,30 +280,34 @@ def verify_owner_supplied_manifest_schema(request: dict[str, object]) -> None:
     requested_items = request["required_items"]
     requested_ids = {item["id"] for item in requested_items}
     schema_fact_ids = set(schema["$defs"]["fact_id"]["enum"])
-    expected_paths = {"faithful_generic_lineage", "versioned_am12_successor"}
+    expected_paths = {"versioned_am12_successor"}
     if (
         schema.get("$schema") != "https://json-schema.org/draft/2020-12/schema"
         or schema.get("$id")
         != (
             "https://toltec.astro.umass.edu/schemas/sci-cal-001/"
-            "owner-supplied-manifest-v1.json"
+            "owner-supplied-manifest-v2.json"
         )
-        or schema["properties"]["owner_path"]["enum"]
-        != [
-            "faithful_generic_lineage",
-            "versioned_am12_successor",
-        ]
+        or schema["properties"]["owner_path"]["const"] != "versioned_am12_successor"
         or schema_fact_ids != requested_ids
     ):
         raise RuntimeError("owner-supplied schema identity/path/fact contract changed")
 
-    faithful_sample = {
-        "schema_version": "sci-cal-001-owner-supplied-manifest-v1",
+    successor_sample = {
+        "schema_version": "sci-cal-001-owner-supplied-manifest-v2",
         "package_id": "SCI-CAL-001",
         "request_id": "SCI-CAL-001-ATM-INPUT-001",
         "submission_date": "2026-08-01",
-        "owner_path": "faithful_generic_lineage",
-        "historical_generic_lineage_custody_status": "unresolved",
+        "owner_path": "versioned_am12_successor",
+        "evaluation_authorization": "bounded_study_only",
+        "adoption_status": "evaluation_only_not_adopted",
+        "operator_authorization": "none",
+        "operational_domain_authorization": "none",
+        "q95_operational_disposition": "excluded_historical_diagnostic_only",
+        "successor_study_status": "pending_results",
+        "study_artifact_binding_status": "unbound_pending_study_results",
+        "historical_generic_generator_association": "not_established",
+        "historical_generic_lineage_custody_status": "unresolved_retained",
         "responses": [
             {
                 "fact_id": "Q95-001",
@@ -313,33 +317,23 @@ def verify_owner_supplied_manifest_schema(request: dict[str, object]) -> None:
             }
         ],
         "artifacts": [],
+        "successor_selection": {
+            "model_id": "toltec_am12_successor",
+            "model_version": "owner-version-required",
+            "basis": "copied_am_12_2",
+            "profile_family_rule": "owner rule required",
+            "frequency_grid_policy": "owner policy required",
+            "spectral_convention": "legacy_monochromatic",
+            "unresolved_line_status_policy": "owner policy required",
+            "historical_generic_products_replaced": False,
+        },
     }
-    successor_selection = {
-        "model_id": "toltec_am12_successor",
-        "model_version": "owner-version-required",
-        "basis": "copied_am_12_2",
-        "profile_family_rule": "owner rule required",
-        "frequency_grid_policy": "owner policy required",
-        "spectral_convention": "legacy_monochromatic",
-        "unresolved_line_status_policy": "owner policy required",
-        "historical_generic_products_replaced": False,
-    }
-    successor_sample = {
-        **faithful_sample,
-        "owner_path": "versioned_am12_successor",
-        "historical_generic_lineage_custody_status": "unresolved_retained",
-        "successor_selection": successor_selection,
-    }
-    for label, sample in (
-        ("faithful path", faithful_sample),
-        ("versioned successor path", successor_sample),
-    ):
-        errors = list(validator.iter_errors(sample))
-        if errors:
-            raise RuntimeError(
-                f"owner-supplied schema rejects minimal valid {label}: "
-                f"{errors[0].message}"
-            )
+    errors = list(validator.iter_errors(successor_sample))
+    if errors:
+        raise RuntimeError(
+            "owner-supplied schema rejects minimal valid versioned successor "
+            f"submission: {errors[0].message}"
+        )
     successor_without_selection = dict(successor_sample)
     successor_without_selection.pop("successor_selection")
     successor_with_false_custody = {
@@ -358,14 +352,24 @@ def verify_owner_supplied_manifest_schema(request: dict[str, object]) -> None:
     q95 = next(item for item in requested_items if item["id"] == "Q95-001")
     delivery = request["delivery_layout"]
     if (
-        request.get("schema_version") != "sci-cal-001-owner-input-request-v2"
+        request.get("schema_version") != "sci-cal-001-owner-input-request-v3"
         or set(decision_by_id) != expected_paths
         or len(decision_by_id) != len(decision_paths)
-        or decision_by_id["faithful_generic_lineage"]["recommendation"]
-        != "recommended_faithful_closure"
         or decision_by_id["versioned_am12_successor"]["recommendation"]
-        != "allowed_new_model_alternative"
-        or q95["priority"] != "blocking_for_faithful_generic_lineage_only"
+        != "selected_for_evaluation_not_adoption"
+        or q95["priority"] != "nonblocking_historical_provenance_only"
+        or request.get("owner_direction")
+        != {
+            "selected_evaluation_path": "versioned_am12_successor",
+            "evaluation_authorization": "bounded_study_only",
+            "adoption_status": "evaluation_only_not_adopted",
+            "operator_authorization": "none",
+            "operational_domain_authorization": "none",
+            "q95_operational_disposition": "excluded_historical_diagnostic_only",
+            "historical_generic_generator_association": "not_established",
+            "successor_study_status": "pending_results",
+            "study_artifact_binding_status": "unbound_pending_study_results",
+        }
         or delivery["required_manifest"] != "owner_supplied_manifest.json"
         or delivery["manifest_schema"]
         != (
@@ -405,17 +409,11 @@ def verify_owner_supplied_manifest_schema(request: dict[str, object]) -> None:
             "owner-supplied manifest has duplicate/unknown references or "
             "an evidence response without an artifact"
         )
-    if delivered["owner_path"] == "versioned_am12_successor":
-        q95_responses = [
-            item for item in delivered["responses"] if item["fact_id"] == "Q95-001"
-        ]
-        if (
-            len(q95_responses) != 1
-            or q95_responses[0]["disposition"] != "unresolved_retained"
-        ):
-            raise RuntimeError("successor submission did not retain Q95-001 unresolved")
-    elif "successor_selection" in delivered:
-        raise RuntimeError("faithful-lineage submission included successor selection")
+    q95_responses = [
+        item for item in delivered["responses"] if item["fact_id"] == "Q95-001"
+    ]
+    if q95_responses and q95_responses[0]["disposition"] != "unresolved_retained":
+        raise RuntimeError("successor submission did not retain Q95-001 unresolved")
     delivery_root = delivered_path.parent.resolve()
     for artifact in delivered["artifacts"]:
         relative = Path(artifact["path"])
@@ -589,14 +587,22 @@ def verify_json_schema() -> None:
         raise RuntimeError("owner input request digest changed")
     verify_owner_supplied_manifest_schema(request)
     manifest_ids = set(manifest["unresolved_fact_ids"])
+    historical_ids = set(manifest["historical_nonblocking_fact_ids"])
     requested_ids = {item["id"] for item in request["required_items"]}
     if len(requested_ids) != len(request["required_items"]):
         raise RuntimeError("owner request has duplicate fact IDs")
-    if manifest_ids != requested_ids:
+    if historical_ids != {"GEN-001", "GEN-002", "Q95-001"}:
         raise RuntimeError(
-            "owner request IDs do not exactly match manifest unresolved facts: "
-            f"manifest_only={sorted(manifest_ids - requested_ids)}, "
-            f"request_only={sorted(requested_ids - manifest_ids)}"
+            f"historical nonblocking fact routing changed: {sorted(historical_ids)}"
+        )
+    if manifest_ids & historical_ids:
+        raise RuntimeError("blocking and historical nonblocking facts overlap")
+    routed_ids = manifest_ids | historical_ids
+    if routed_ids != requested_ids:
+        raise RuntimeError(
+            "owner request IDs do not exactly match manifest routed facts: "
+            f"manifest_only={sorted(routed_ids - requested_ids)}, "
+            f"request_only={sorted(requested_ids - routed_ids)}"
         )
     verify_package_level_tau_provenance_clarification(manifest, request)
 
@@ -733,10 +739,22 @@ def verify_generated_artifact_digests(manifest: dict[str, object]) -> None:
 def verify_copied_am_evidence() -> None:
     manifest = json.loads((PACKAGE_DIR / "copied_am_manifest.json").read_text())
     identity = manifest["identity"]
-    if identity["copied_suite_identity"] != "am_12_2_not_historical_legacy_q_identity":
+    if (
+        identity["copied_suite_identity"]
+        != "am_12_2_distinct_registered_product_family"
+    ):
         raise RuntimeError(
             "copied AM suite was conflated with legacy generic-q identity"
         )
+    if (
+        identity["historical_generic_generator_association"] != "not_established"
+        or identity["owner_direction"] != "versioned_am12_successor_evaluation_only"
+        or identity["adoption_status"] != "evaluation_only_not_adopted"
+        or identity["q95_operational_disposition"] != "historical_diagnostic_only"
+        or identity["successor_study_status"] != "pending_results"
+        or identity["study_artifact_binding_status"] != "unbound_pending_study_results"
+    ):
+        raise RuntimeError("copied-AM owner direction/provenance routing changed")
     if identity["operator_authorization"] != "none":
         raise RuntimeError("copied-AM stress must not authorize an operator")
     if identity["operational_domain_authorization"] != "none":
@@ -748,9 +766,9 @@ def verify_copied_am_evidence() -> None:
     )
     if (
         deviation["filename"] != "FOLLOWUP_STUDY_DEVIATION_LOG.md"
-        or deviation["bytes"] != 2066
+        or deviation["bytes"] != 2405
         or deviation["sha256"]
-        != "a3df86366c7869579b3255d9ea8f95cf6827e78018e0a2a83a1640360be1b036"
+        != "b537960e9ab164353a2516f43572bb4e3dbe587e31a3ab922578b823738620e7"
         or deviation["status"]
         != "clarification_only_no_candidate_or_numeric_reinterpretation"
         or deviation["stopped_study_c_identities"]
@@ -929,8 +947,8 @@ def verify_copied_am_evidence() -> None:
         or row["elevation_grid_deg"] != "10:80:2"
         or row["frequency_grid_ghz"] != "0:500:0.01"
         or row["spectral_array_shape"] != "50001x36"
-        or row["scientific_identity"]
-        != "copied_am_12_2_profile_not_historical_legacy_q_identity"
+        or row["scientific_identity"] != "copied_am_12_2_distinct_product_identity"
+        or row["historical_generic_generator_association"] != "not_established"
         for row in inventory
     ):
         raise RuntimeError("copied-AM product/AMC cross-identities changed")
@@ -2604,7 +2622,9 @@ def verify_h2o_hypothesis_evidence() -> None:
         or input_provenance["copied_suite_manifest"]
         != {
             "filename": "copied_am_manifest.json",
-            "sha256": sha256_path(copied_manifest_path),
+            "sha256": (
+                "ef525bc5f2883f181cccd43f585b4e398d227f2a26eeca0ed90cf4f5922f520f"
+            ),
             "canonical_product_manifest_sha256": (
                 "18dfd96f4438151197d3b6be5201476f7a71710363d81ec49c801101fa12b3ac"
             ),
@@ -2847,7 +2867,9 @@ def verify_h2o_hypothesis_evidence() -> None:
         != {
             "filename": "copied_am_manifest.json",
             "size_bytes": 43771,
-            "sha256": sha256_path(copied_manifest_path),
+            "sha256": (
+                "ef525bc5f2883f181cccd43f585b4e398d227f2a26eeca0ed90cf4f5922f520f"
+            ),
             "canonical_product_manifest_sha256": (
                 "18dfd96f4438151197d3b6be5201476f7a71710363d81ec49c801101fa12b3ac"
             ),

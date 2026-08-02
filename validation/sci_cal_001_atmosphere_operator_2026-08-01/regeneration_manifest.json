@@ -72,12 +72,12 @@
     },
     {
       "availability": "task_package",
-      "bytes": 43771,
+      "bytes": 44208,
       "id": "copied-am12-suite-manifest",
       "notes": "Inventories all 25 AMC inputs, 25 NPZs, and 900 raw DAT outputs; preserves per-file and aggregate SHA-256 identities, registry separation, exact DAT-to-NPZ checks, all-family Study A comparisons, annual fit coefficients, protocol clarification, and post-discovery C1 stress.",
       "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/copied_am_manifest.json",
       "role": "copied-suite machine-readable provenance",
-      "sha256": "ef525bc5f2883f181cccd43f585b4e398d227f2a26eeca0ed90cf4f5922f520f"
+      "sha256": "714ad24329e625625da281d3b31ac2d28d04ab3c516980d516cff5ddadb027a9"
     },
     {
       "availability": "task_package",
@@ -101,7 +101,7 @@
       "availability": "task_package",
       "bytes": 99719,
       "id": "am12-h2o-scale-hypothesis-manifest",
-      "notes": "Post-hoc P1, not custody proof or a holdout: 100 exact 225-GHz/elevation-80 anchors and 100 all-direct fitted-scale grids. Frozen ranks are q25 transmission LMT_MAM_5 scale 1.81225445269332575e+00 and Rayleigh-Jeans LMT_DJF_5 scale 3.01439309124786581e+00; q50 transmission LMT_MAM_25 scale 9.15696647246186712e-01 and Rayleigh-Jeans LMT_DJF_25 scale 2.02963214820032256e+00; q75 transmission LMT_DJF_50 scale 1.88602893644962655e+00 and Rayleigh-Jeans LMT_DJF_75 scale 1.01048455031671569e+00; q95 combined-ratio RMS LMT_DJF_25 scale 6.88363302058917359e+00. No q25/q50/q75 full-grid hypothesis passes 1%; all 225 nominal direct rows pass with worst error 6.65829283961727556e-03; no q95 combined-ratio hypothesis passes, with best maximum error 1.11745240975796860e-02 and RMS-winner error 1.19094929017647764e-02. Correction tau is asymmetric: q25/q50/q75 candidate uses direct atmTaun but generic truth uses -log(atmTtx); q95 uses -log(Tband/T225) on both sides. This supersedes the frozen P1 report/manifest's overbroad candidate-side-only tau wording without changing those bytes. Context 05148050e96e73577ec75be525b026b5bf37bbd2a8753f8e3702fc0b6dfb2bee binds 13,667 runs (9,792 status 0; 3,875 accepted warning-status 1), normalized numeric aggregate 343acc6878062a433b665b0c80516212dc3b338fc77337bc9b6d1ade8196d1e1, and normalized warning-bearing aggregate 3fcfe769fab3490e7067876a55c75a06e6d17e8990f137238399d02ab246728f. P1 narrows recipes but closes none of the 11 unresolved facts.",
+      "notes": "Post-hoc P1, not custody proof or a holdout: 100 exact 225-GHz/elevation-80 anchors and 100 all-direct fitted-scale grids. Frozen ranks are q25 transmission LMT_MAM_5 scale 1.81225445269332575e+00 and Rayleigh-Jeans LMT_DJF_5 scale 3.01439309124786581e+00; q50 transmission LMT_MAM_25 scale 9.15696647246186712e-01 and Rayleigh-Jeans LMT_DJF_25 scale 2.02963214820032256e+00; q75 transmission LMT_DJF_50 scale 1.88602893644962655e+00 and Rayleigh-Jeans LMT_DJF_75 scale 1.01048455031671569e+00; q95 combined-ratio RMS LMT_DJF_25 scale 6.88363302058917359e+00. No q25/q50/q75 full-grid hypothesis passes 1%; all 225 nominal direct rows pass with worst error 6.65829283961727556e-03; no q95 combined-ratio hypothesis passes, with best maximum error 1.11745240975796860e-02 and RMS-winner error 1.19094929017647764e-02. Correction tau is asymmetric: q25/q50/q75 candidate uses direct atmTaun but generic truth uses -log(atmTtx); q95 uses -log(Tband/T225) on both sides. This supersedes the frozen P1 report/manifest's overbroad candidate-side-only tau wording without changing those bytes. Context 05148050e96e73577ec75be525b026b5bf37bbd2a8753f8e3702fc0b6dfb2bee binds 13,667 runs (9,792 status 0; 3,875 accepted warning-status 1), normalized numeric aggregate 343acc6878062a433b665b0c80516212dc3b338fc77337bc9b6d1ade8196d1e1, and normalized warning-bearing aggregate 3fcfe769fab3490e7067876a55c75a06e6d17e8990f137238399d02ab246728f. P1 narrows recipes but closes none of the eight successor study-definition facts or three nonblocking historical custody facts.",
       "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/h2o_scale_hypothesis_manifest.json",
       "role": "post-hoc H2O-scale provenance-hypothesis diagnostic",
       "sha256": "1316b92a06edc7dc1eb7a6752e271a7b80eb409192ad9f7bf2882cc12928d14c"
@@ -119,19 +119,19 @@
       "availability": "task_package",
       "bytes": 5236,
       "id": "copied-am12-followup-protocol-addendum",
-      "notes": "Frozen after the lineage mismatch; stops annual-anchor Study C and defines diagnostics C1, P1, and R1.",
+      "notes": "Frozen after the registered-product identity mismatch; stops annual-anchor Study C and defines diagnostics C1, P1, and R1. The frozen wording does not establish a different historical generator lineage.",
       "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/FOLLOWUP_STUDY_PROTOCOL_ADDENDUM.md",
-      "role": "post-lineage follow-up protocol",
+      "role": "post-product-identity follow-up protocol",
       "sha256": "0d47c11479a1ba0176babd3ea285e2871edbb1341406b6b044cbc53114c51a1d"
     },
     {
       "availability": "task_package",
-      "bytes": 2066,
+      "bytes": 2405,
       "id": "copied-am12-followup-deviation-log",
       "notes": "Preserves the frozen records and resolves their v1/v0 identity ambiguity: annual-anchor Study C v1 stopped; legacy-anchor diagnostic C1 uses v0 without numerical reinterpretation.",
       "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/FOLLOWUP_STUDY_DEVIATION_LOG.md",
       "role": "protocol identity clarification",
-      "sha256": "a3df86366c7869579b3255d9ea8f95cf6827e78018e0a2a83a1640360be1b036"
+      "sha256": "b537960e9ab164353a2516f43572bb4e3dbe587e31a3ab922578b823738620e7"
     },
     {
       "availability": "local_read_only",
@@ -211,7 +211,7 @@
   ],
   "atmospheric_profiles": {
     "construction_method": "For the distinct copied AM 12.2 family, 25 AMC files cross annual/DJF/MAM/JJA/SON with H2O percentiles 5/25/50/75/95. They cite MERRA-2 inst3_3d_asm_Np v5.12.4, 2007-2016, per-pressure-level H2O percentiles and median O3, and contain complete pressure-layer bytes. Post-hoc P1 varied only Nscale troposphere h2o and directly ran all 100 target/profile fitted-scale grids; it narrows numerical recipes but does not establish the historical profile mapping or an independent physical intermediate-profile rule. For its correction metric, q25/q50/q75 candidate tau is direct AM atmTaun while generic truth tau is reconstructed as -log(atmTtx); q95 reconstructs both nominal ratio sides as -log(Tband/T225). The frozen P1 report/manifest's broader tau wording is superseded by this package-level clarification. Mapping to the four generic q artifacts remains unestablished.",
-    "historical_source_evidence": "The copied annual/seasonal AM 12.2 profiles and their construction comments are complete and digest-bound. TolTECA registry identity proves the copied seasonal and annual products are separate from generic am_q25/am_q50/am_q75/am_q95, so the exact generic-q profile choice or scale remains unresolved. P1's exact anchors and post-hoc rank-one recipes close no custody, missing-q95, independent-profile, spectral-choice, or operational-domain fact. The owner may either recover the generic-q custody and q95 bytes (recommended faithful-lineage closure) or approve a separately versioned AM 12.2 successor while retaining that historical custody gap as unresolved; the successor must not be represented as a regeneration of the generic products.",
+    "historical_source_evidence": "The copied annual/seasonal AM 12.2 profiles and their construction comments are complete and digest-bound. TolTECA registry identity proves the copied seasonal and annual products are separate from generic am_q25/am_q50/am_q75/am_q95. It does not establish whether the same historical generator lineage produced the generic products. The owner has selected evaluation of a separately versioned AM 12.2 successor while retaining generic q95 and exact generic custody as unresolved nonblocking historical provenance; the successor must not be represented as a historical regeneration of the generic products.",
     "input_artifact_ids": [
       "copied-am12-suite-manifest",
       "am12-native-regeneration-manifest",
@@ -265,8 +265,7 @@
       "unit": "degree"
     },
     "required_fact_ids": [
-      "SITE-001",
-      "GEN-002"
+      "SITE-001"
     ],
     "status": "partially_resolved"
   },
@@ -335,19 +334,27 @@
     ],
     "executable_or_source_sha256": "3fc1f71b3a025ac79f5559bdd2fbf40cf5de2aa7598cabf474f74f9a6c3b290c",
     "historical_release_evidence": "The copied suite preserves a co-staged AM 12.2 Linux executable whose version/build identity matches the copied output headers, the complete June-2022 AM 12.2 source payload, exact run and packing scripts, and outputs. Co-staging is suite-custody evidence that the ELF accompanied this local payload, not a producer record. A distinct GCC-15 native build reproduces all 180 annual parsed grids and numeric lines exactly in a whole-cache-locked, immutable-context-bound, two-phase sharded run with zero cache/unknown/error diagnostics. All cases retain the accepted unresolved-line warning/status 1. Neither co-staging, matching header identity, nor reproduction by the distinct native build proves that this exact ELF generated the historical files. Registry evidence does not tie this copied family to generic am_q25/am_q50/am_q75/am_q95.",
-    "model_name": "am 12.2 (copied annual/seasonal suite); exact generic-q association unresolved",
-    "required_fact_ids": [
-      "GEN-001",
-      "GEN-002"
-    ],
-    "status": "partially_resolved"
+    "model_name": "am 12.2 copied annual/seasonal suite; historical generic-generator association not established",
+    "required_fact_ids": [],
+    "status": "resolved"
   },
   "package_id": "SCI-CAL-001",
+  "owner_direction": {
+    "selected_evaluation_path": "versioned_am12_successor",
+    "evaluation_authorization": "bounded_study_only",
+    "adoption_status": "evaluation_only_not_adopted",
+    "operator_authorization": "none",
+    "operational_domain_authorization": "none",
+    "q95_operational_disposition": "excluded_historical_diagnostic_only",
+    "historical_generic_generator_association": "not_established",
+    "successor_study_status": "pending_results",
+    "study_artifact_binding_status": "unbound_pending_study_results"
+  },
   "operational_domain": {
     "aligned_elevation_max_deg": null,
     "aligned_elevation_min_deg": null,
     "endpoints_inclusive": null,
-    "evidence_support": "The candidate analysis spans 30--80 degrees only as a diagnostic. Recovered q25/q50/q75 raw arrays span 20--80 degrees. Missing generic q95 bytes block only faithful generic-lineage closure; a separately versioned AM 12.2 successor may retain that historical custody gap but still requires successor-specific independent intermediate runs and an owner-declared domain. No extrapolation is authorized.",
+    "evidence_support": "The legacy candidate analysis spans 30--80 degrees and q0--q95 only as a historical diagnostic. Recovered generic q25/q50/q75 raw arrays span 20--80 degrees. Generic q95 is excluded from the selected AM 12.2 successor study and remains nonblocking historical provenance. The successor still requires its own independent intermediate runs and exact owner-declared opacity/elevation endpoints. No extrapolation is authorized.",
     "out_of_domain_behavior": "fail_closed",
     "required_fact_ids": [
       "DOMAIN-001"
@@ -358,7 +365,7 @@
   },
   "repair_base_sha": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
   "repair_line_evidence_head": "ae99be1cef8c390d0e7490835ffca1f31da7ebc0",
-  "schema_version": "sci-cal-001-atmosphere-regeneration-manifest-v1",
+  "schema_version": "sci-cal-001-atmosphere-regeneration-manifest-v2",
   "site_geometry": {
     "altitude_m": null,
     "latitude_deg": 18.986,
@@ -385,7 +392,7 @@
     ],
     "successor_status": "unresolved_owner_input_required"
   },
-  "status": "partial_recovery_blocked_on_owner_inputs",
+  "status": "partial_recovery_successor_evaluation_selected",
   "tau225_anchors": [
     {
       "generation_profile_status": "unresolved_owner_input_required",
@@ -412,22 +419,24 @@
       "selector_tau225_binary64": "1.58313198574890929e-01"
     },
     {
-      "generation_profile_status": "unresolved_owner_input_required",
+      "generation_profile_status": "not_applicable",
       "model": "am_q95",
       "raw_grid_artifact_id": null,
       "raw_t225_at_80deg": null,
-      "selector_anchor_origin": "derived as -log(0.7337698)/X(80 degrees) from the repair-base source literal; not yet verified against q95 raw bytes",
+      "selector_anchor_origin": "historical diagnostic derived as -log(0.7337698)/X(80 degrees) from the repair-base source literal; not verified against q95 raw bytes and excluded from the successor study",
       "selector_tau225_binary64": "3.04868387190534607e-01"
     }
   ],
-  "unresolved_fact_ids": [
+  "historical_nonblocking_fact_ids": [
     "GEN-001",
     "GEN-002",
+    "Q95-001"
+  ],
+  "unresolved_fact_ids": [
     "PROF-001",
     "PROF-002",
     "SITE-001",
     "GRID-001",
-    "Q95-001",
     "MID-001",
     "SPEC-001",
     "BAND-001-CONDITIONAL",

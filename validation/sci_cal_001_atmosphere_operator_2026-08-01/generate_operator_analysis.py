@@ -5,8 +5,10 @@ This is deliberately not an atmosphere-model regeneration.  It verifies and
 parses the exact repair-base q-model literals, treats those fitted surfaces as
 surrogate evidence, and compares continuous line-of-sight-optical-depth
 representations.  The companion recovery script evaluates the locally
-recovered q25/q50/q75 grids; full-domain raw-model fidelity remains
-unevaluable until q95 and intermediate-opacity model calculations are supplied.
+recovered q25/q50/q75 grids.  Full legacy q0--q95 diagnostic raw-model fidelity
+remains unevaluable until q95 and intermediate-opacity calculations are
+supplied, but q95 is not a gate for the separately versioned, q95-excluding AM
+12.2 successor evaluation selected by the owner.
 """
 
 from __future__ import annotations
@@ -264,7 +266,13 @@ def build_manifest(state: dict[str, Any]) -> bytes:
             "repair_base_sha": SOURCE_SHA,
             "repair_line_evidence_head": REPAIR_LINE_HEAD,
             "evidence_status": ("legacy_polynomial_surrogate_not_raw_atmosphere_model"),
+            "owner_direction": "versioned_am12_successor_evaluation_only",
+            "adoption_status": "evaluation_only_not_adopted",
+            "q95_operational_disposition": "excluded_historical_diagnostic_only",
+            "successor_study_status": "pending_results",
+            "study_artifact_binding_status": "unbound_pending_study_results",
             "operator_authorization": "none",
+            "operational_domain_authorization": "none",
         },
         "frozen_inputs": [
             {
@@ -336,7 +344,8 @@ def build_manifest(state: dict[str, Any]) -> bytes:
             "Selector-derived tau225 anchors may not equal original profile inputs.",
             "Legacy elevation polynomials are fitted evidence, not approved raw anchors.",
             "The diagnostic 30--80 degree range is not an operational domain.",
-            "The full-domain provisional one-percent raw-grid correction-error gate is not evaluated.",
+            "The legacy q0--q95 diagnostic raw-grid correction-error gate is not evaluated and is not the AM 12.2 successor-adoption gate.",
+            "Generic q95 is historical/diagnostic evidence only under the owner-selected successor-evaluation direction.",
         ],
     }
     return (
@@ -554,7 +563,7 @@ def build_candidate_metric_rows(
                         float(np.max(wrong_way_excursion))
                     ),
                     "raw_grid_fractional_correction_error_status": (
-                        "not_evaluable_full_domain_q95_and_intermediate_raw_runs_missing"
+                        "not_evaluable_legacy_q0_q95_diagnostic_q95_and_intermediate_raw_runs_missing"
                     ),
                 }
             )
@@ -727,7 +736,7 @@ def render_report(
         "",
         "## Status",
         "",
-        "**No successor operator or operational domain is selected.** Exact q25/q50/q75 raw grids and the legacy monochromatic fit have been recovered, while q95, intermediate-opacity model runs, and the original `am` execution/profile provenance remain missing. This report deliberately uses only the exact repair-base legacy q-model polynomials as surrogate evidence; `RAW_GRID_RECOVERY_REPORT.md` contains the bounded raw-grid checks. The full-domain provisional one-percent fractional extinction-correction fidelity gate cannot yet be evaluated.",
+        "**The owner has selected evaluation of a separately versioned AM 12.2 successor; no successor operator or operational domain is selected or authorized.** This report remains a historical legacy q0--q95 diagnostic. Exact q25/q50/q75 raw grids and the legacy monochromatic fit have been recovered, while generic q95, intermediate-opacity model runs, and the original `am` execution/profile provenance remain missing. Those gaps limit faithful legacy-lineage closure and this legacy diagnostic, not the q95-excluding successor study. `RAW_GRID_RECOVERY_REPORT.md` contains the bounded raw-grid checks.",
         "",
         f"The evidence is bound to repair base `{SOURCE_SHA}` and repair-line evidence head `{REPAIR_LINE_HEAD}`. Frozen input digests are recorded in `{MANIFEST_NAME}`.",
         "",
@@ -801,20 +810,20 @@ def render_report(
             "",
             "## Decision disposition",
             "",
-            "The evidence is insufficient to choose a versioned successor operator or declare an operational opacity/elevation domain. An exact-anchor surface built from the legacy fits cannot simultaneously remove the q95/a2000 elevation feature, and candidate agreement, legacy-fit leave-one-out performance, or the post-hoc raw q50 leave-one-model-out check is not a substitute for preregistered full-domain raw-model fidelity.",
+            "This historical legacy-anchor evidence is insufficient to choose a versioned successor operator or declare an operational opacity/elevation domain. The q95/a2000 elevation feature remains a diagnostic of the legacy q0--q95 surface and lies outside the owner-selected q95-excluding successor study. Candidate agreement, legacy-fit leave-one-out performance, or the post-hoc raw q50 leave-one-model-out check is not a substitute for preregistered successor-specific raw-model fidelity.",
             "",
             (
-                "After the requested raw grid is supplied, evaluate at least the "
+                "In the separately versioned successor study, evaluate at least the "
                 "piecewise-linear LOS-tau baseline and monotone PCHIP against "
                 "preregistered withheld tau/elevation model nodes. Select the "
                 "simplest candidate that preserves exact approved anchors, "
                 "positivity, continuity, opacity monotonicity, fail-closed support, "
                 "and no more than one-percent fractional correction error over the "
-                "owner-declared domain. Elevation monotonicity must either pass or "
-                "receive an explicit owner scientific disposition supported by "
-                "recovered raw q95 and independent model evidence. The 0.839827% "
-                "q95/a2000 feature is diagnostic rather than automatically "
-                "release-blocking, but it may not be silently waived. Observational "
+                "owner-declared domain. Elevation monotonicity must pass within the "
+                "successor study domain or receive an explicit owner scientific "
+                "disposition supported by independent model evidence. The 0.839827% "
+                "legacy q95/a2000 feature remains historical/diagnostic and is not a "
+                "successor release gate. Observational "
                 "5--10% absolute accuracy and approximately 5% repeatability remain "
                 "separate later gates."
             ),

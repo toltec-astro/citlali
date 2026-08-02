@@ -392,7 +392,7 @@ def build_recovery(repo_root: Path, source_dir: Path) -> dict[str, Any]:
                     "passes_provisional_1pct_at_raw_anchor_nodes": str(
                         bool(np.max(absolute_ratio_fit_correction_error) <= 0.01)
                     ).lower(),
-                    "full_successor_domain_gate": "false_q95_and_intermediate_opacity_missing",
+                    "successor_evaluation_disposition": "historical_generic_anchor_diagnostic_only_independent_am12_intermediate_runs_missing",
                 }
             )
             operator_metric_rows.append(
@@ -434,7 +434,7 @@ def build_recovery(repo_root: Path, source_dir: Path) -> dict[str, Any]:
                     "passes_provisional_1pct_at_raw_anchor_nodes": str(
                         bool(np.max(absolute_operator_correction_error) <= 0.01)
                     ).lower(),
-                    "full_successor_domain_gate": "false_q95_and_intermediate_opacity_missing",
+                    "successor_evaluation_disposition": "historical_generic_anchor_diagnostic_only_independent_am12_intermediate_runs_missing",
                 }
             )
             per_model_band[model_name, band] = {
@@ -491,7 +491,7 @@ def build_recovery(repo_root: Path, source_dir: Path) -> dict[str, Any]:
                 "passes_provisional_1pct_on_this_holdout": str(
                     bool(np.max(absolute_error) <= 0.01)
                 ).lower(),
-                "full_successor_domain_gate": "false_single_holdout_q95_missing",
+                "successor_evaluation_disposition": "historical_post_hoc_single_holdout_only_not_successor_gate",
             }
         )
         q25_operator_los = per_model_band["am_q25", band]["operator_los_tau"]
@@ -535,7 +535,7 @@ def build_recovery(repo_root: Path, source_dir: Path) -> dict[str, Any]:
                 "passes_provisional_1pct_on_this_holdout": str(
                     bool(np.max(operator_absolute_error) <= 0.01)
                 ).lower(),
-                "full_successor_domain_gate": "false_single_holdout_q95_missing",
+                "successor_evaluation_disposition": "historical_post_hoc_single_holdout_only_not_successor_gate",
             }
         )
 
@@ -599,7 +599,14 @@ def build_manifest(recovery: dict[str, Any]) -> bytes:
             "package": "SCI-CAL-001",
             "repair_base_sha": SOURCE_SHA,
             "repair_line_evidence_head": REPAIR_LINE_HEAD,
-            "status": "partial_raw_recovery_q25_q50_q75_q95_missing",
+            "status": "historical_generic_diagnostic_raw_recovery_q25_q50_q75",
+            "owner_direction": "versioned_am12_successor_evaluation_only",
+            "adoption_status": "evaluation_only_not_adopted",
+            "q95_operational_disposition": "excluded_historical_diagnostic_only",
+            "successor_study_status": "pending_results",
+            "study_artifact_binding_status": "unbound_pending_study_results",
+            "operator_authorization": "none",
+            "operational_domain_authorization": "none",
         },
         "source_repository": {
             "remote": SOURCE_REPOSITORY,
@@ -783,7 +790,7 @@ def render_report(recovery: dict[str, Any]) -> bytes:
             + maximum_operator["model"]
             + "/"
             + maximum_operator["band"]
-            + "`. These are real q25--q75 raw-anchor results, but not the full successor-domain gate.",
+            + "`. These are real q25--q75 historical generic-anchor diagnostics, not the separately versioned AM 12.2 successor-adoption gate.",
             "",
             "A post-hoc raw leave-one-model-out check is possible at q50: interpolate raw LOS optical depth between raw q25 and q75 using the exact selector tau225 coordinates, then compare with the recovered raw q50 calculation. q50 was already inspected during provenance recovery, so this is not a preregistered or blinded holdout. Its worst correction error is `"
             + f"{100.0 * float(maximum_holdout['max_abs_fractional_correction_error']):.6f}%`"
@@ -793,7 +800,7 @@ def render_report(recovery: dict[str, Any]) -> bytes:
             + f"{100.0 * float(maximum_operator_holdout['max_abs_fractional_correction_error']):.6f}%`"
             + " in `"
             + maximum_operator_holdout["band"]
-            + "`. Both pass one percent in this single post-hoc q50 check only. They do not validate q75--q95, preregistered intermediate profiles in every interval, or a declared operational domain.",
+            + "`. Both pass one percent in this single post-hoc q50 check only. They do not provide preregistered AM 12.2 intermediate profiles across the selected q95-excluding successor study or declare an operational domain.",
             "",
             "Across the recovered q25/q50/q75 nominal-frequency raw surfaces, `raw_grid_physical_metrics.csv` records "
             + str(opacity_violations)
@@ -803,13 +810,13 @@ def render_report(recovery: dict[str, Any]) -> bytes:
             "",
             "## Provenance still missing",
             "",
-            "The local evidence names Scott Paine's `am` model and historical LMT percentile grids, but it does not preserve the exact `am` executable/version, atmosphere-profile files, percentile construction, generation command, or site/geometry directives. The q95 request is exactly TolTECA datafile ID `461`, expected MD5 `0ca7b331823237767d26016d19bffb3d`; those bytes must be supplied locally, inspected, and SHA-256 identified before the full operator decision.",
+            "The local evidence names Scott Paine's `am` model and historical LMT percentile grids, but it does not preserve the exact generic-product `am` executable/version, atmosphere-profile files, percentile construction, generation command, or site/geometry directives. The historical generic q95 request is TolTECA datafile ID `461`, expected MD5 `0ca7b331823237767d26016d19bffb3d`; those bytes remain required only for faithful historical-lineage closure. They are not a gate for the selected q95-excluding AM 12.2 successor evaluation.",
             "",
             "The nearby modeled passband artifact and TolTECA's versioned passband tables are not inputs to the recovered Citlali coefficients. A band-integrated successor would be a new, explicitly approved spectral convention, not a faithful rerun of this monochromatic lineage.",
             "",
             "## Disposition",
             "",
-            "This partial recovery materially narrows the owner request, but no final atmosphere operator or operational domain is selected. Full q95 raw evidence, intermediate-opacity generation rules/runs, and the missing generator/profile provenance remain required.",
+            "This partial recovery materially narrows the historical provenance record. The owner has selected evaluation of a separately versioned AM 12.2 successor with generic q95 retained as diagnostic-only evidence, but no final atmosphere operator or operational domain is selected or authorized. Successor-specific profile construction, independent intermediate-opacity runs, spectral and warning/grid policy, exact domain endpoints, and aligned-elevation eligibility remain required.",
             "",
         ]
     )

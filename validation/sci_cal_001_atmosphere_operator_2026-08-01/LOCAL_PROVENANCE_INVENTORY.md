@@ -71,17 +71,17 @@ The historical shell adds `srun` and redirects combined AM text output into one 
 
 Every copied output is numerically complete but carries AM's unresolved-narrow-line warning; the historical `srun` footer records exit status 1. Warning counts are 86--88. Three outputs also record a Slurm busy-retry message. These facts prohibit describing the copied runs as clean software successes, even though their numerical grids are complete and internally reproducible.
 
-## Registry lineage distinction
+## Registry product-identity distinction
 
-TolTECA registry commit `25ccce10bfb50145424c88257a584ab92486ddf1`, object SHA-256 `5f117c3e5644faf3141ff647ec256f0f0404b9d0ebc1b16218222ee5daed8b72`, resolves the identity question:
+TolTECA registry commit `25ccce10bfb50145424c88257a584ab92486ddf1`, object SHA-256 `5f117c3e5644faf3141ff647ec256f0f0404b9d0ebc1b16218222ee5daed8b72`, resolves the product-alias question, not the historical generator-lineage question:
 
 - all 20 copied DJF/MAM/JJA/SON NPZ files exactly match their explicit seasonal registry IDs and MD5 values;
 - the five copied annual NPZ files have no matching generic registry identity;
 - generic IDs 454, 455, 456, and 461 are separate products, not aliases for annual or seasonal files.
 
-Accordingly, no copied annual or seasonal q95 file may be substituted for generic q95 ID 461. Annual, DJF, MAM, JJA, and SON q25/q50/q75 were each compared with the same-percentile generic grid over all 50,001 frequencies and 31 common elevations; none is content-identical. The 84 annual degree-six coefficient values, their explicit eight-decimal forms, and repair-base comparisons are preserved separately. No family is promoted as "closest" by an unregistered aggregate metric. At q95, copied DJF `T225(80 deg)=0.7301993` versus legacy source literal `0.7337698`; the resulting modified-secant tau225 coordinates differ by about 1.576%.
+Accordingly, no copied annual or seasonal q95 file may be substituted for generic q95 ID 461. Annual, DJF, MAM, JJA, and SON q25/q50/q75 were each compared with the same-percentile generic grid over all 50,001 frequencies and 31 common elevations; none is content-identical. The 84 annual degree-six coefficient values, their explicit eight-decimal forms, and repair-base comparisons are preserved separately. No family is promoted as "closest" by an unregistered aggregate metric. At q95, copied DJF `T225(80 deg)=0.7301993` versus legacy source literal `0.7337698`; the resulting modified-secant tau225 coordinates differ by about 1.576%. These numerical and product-identity differences do not establish whether the same AM 12.2 generator lineage produced the generic products.
 
-The frozen preregistration named `v1` only for the annual-anchor Study C that stopped after the lineage mismatch. Post-discovery diagnostic C1 evaluates the already-existing legacy-anchor `piecewise_linear_los_tau_v0` and `pchip_los_tau_v0` surfaces. `FOLLOWUP_STUDY_DEVIATION_LOG.md`, SHA-256 `a3df86366c7869579b3255d9ea8f95cf6827e78018e0a2a83a1640360be1b036`, records that identity clarification without editing the frozen protocol or changing C1 numerics.
+The frozen preregistration named `v1` only for the annual-anchor Study C that stopped after the registered-product identity mismatch. Post-discovery diagnostic C1 evaluates the already-existing legacy-anchor `piecewise_linear_los_tau_v0` and `pchip_los_tau_v0` surfaces. `FOLLOWUP_STUDY_DEVIATION_LOG.md` records that clarification without editing the frozen protocol or changing C1 numerics. Historical generic-generator association remains not established.
 
 ## Native reproduction and frequency-resolution evidence
 
@@ -143,13 +143,12 @@ Its prose states an elevation grid of 10 through 80 degrees in ten-degree steps.
 
 ## Bounded unresolved provenance and owner choices
 
-The local search has recovered a reproducible 25-profile AM 12.2 source/input/workflow/output suite and exact custody identities for 20 seasonal products. Post-hoc P1 has also narrowed numerical profile/H2O-scale recipes, but it closes none of the 11 owner-input facts. The search has **not** recovered the generic q95 bytes or an evidence-backed mapping from the generic q25/q50/q75/q95 products to exact generator payload, profiles, profile-construction recipe, or run record.
+The local search has recovered a reproducible 25-profile AM 12.2 source/input/workflow/output suite and exact custody identities for 20 seasonal products. Post-hoc P1 has also narrowed numerical profile/H2O-scale recipes, but it resolves none of the eight successor study-definition facts or three nonblocking historical-custody facts. The search has **not** recovered the generic q95 bytes or an evidence-backed mapping from the generic q25/q50/q75/q95 products to exact generator payload, profiles, profile-construction recipe, or run record.
 
-Only the following remain owner/data-custodian dependencies:
+The owner has selected evaluation of a separately versioned AM 12.2 successor. The following remain study/adoption dependencies:
 
-- stage generic q95 datafile ID 461 with expected MD5 `0ca7b331823237767d26016d19bffb3d` and SHA-256 custody;
-- supply or identify the historical generic-q generator/profile/run provenance, or explicitly approve the copied AM 12.2 family as a separately versioned successor;
-- if a successor is chosen, select its model family and profile rule, spectral convention, warning/frequency policy, and independent intermediate-run design;
+- select and version the AM 12.2 model family and profile/H2O-scale rule, spectral convention, warning/frequency policy, and independent intermediate-run design;
+- generate or approve independent intermediate-opacity evidence across the q95-excluding successor study range;
 - approve the operational zenith-tau225/aligned-elevation domain and fail-closed eligibility rules.
 
-The copied annual family is not a default. No atmospheric profile, seasonal family, q95 file, bandpass, warning policy, operator, or domain is substituted or selected by this inventory.
+Generic q95 datafile ID 461 and historical generic-q generator/profile/run custody remain optional, nonblocking provenance dependencies for historical closure. The copied annual family is not a default. No atmospheric profile, seasonal family, q95 file, bandpass, warning policy, operator, or domain is substituted or selected by this inventory.

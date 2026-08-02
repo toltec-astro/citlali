@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://toltec.astro.umass.edu/schemas/sci-cal-001/atmosphere-regeneration-manifest-v1.json",
+  "$id": "https://toltec.astro.umass.edu/schemas/sci-cal-001/atmosphere-regeneration-manifest-v2.json",
   "title": "SCI-CAL-001 atmosphere regeneration manifest",
   "description": "A fail-closed manifest for reproducing a TolTEC atmosphere grid and deriving an extinction operator without silently filling missing scientific inputs.",
   "type": "object",
@@ -12,6 +12,7 @@
     "repair_base_sha",
     "repair_line_evidence_head",
     "status",
+    "owner_direction",
     "generator",
     "atmospheric_profiles",
     "tau225_anchors",
@@ -24,6 +25,7 @@
     "artifacts",
     "execution",
     "operational_domain",
+    "historical_nonblocking_fact_ids",
     "unresolved_fact_ids"
   ],
   "$defs": {
@@ -132,7 +134,7 @@
       "type": "string"
     },
     "schema_version": {
-      "const": "sci-cal-001-atmosphere-regeneration-manifest-v1"
+      "const": "sci-cal-001-atmosphere-regeneration-manifest-v2"
     },
     "package_id": {
       "const": "SCI-CAL-001"
@@ -150,8 +152,53 @@
     "status": {
       "enum": [
         "complete_regeneration_input",
-        "partial_recovery_blocked_on_owner_inputs"
+        "partial_recovery_blocked_on_owner_inputs",
+        "partial_recovery_successor_evaluation_selected"
       ]
+    },
+    "owner_direction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "selected_evaluation_path",
+        "evaluation_authorization",
+        "adoption_status",
+        "operator_authorization",
+        "operational_domain_authorization",
+        "q95_operational_disposition",
+        "historical_generic_generator_association",
+        "successor_study_status",
+        "study_artifact_binding_status"
+      ],
+      "properties": {
+        "selected_evaluation_path": {
+          "const": "versioned_am12_successor"
+        },
+        "evaluation_authorization": {
+          "const": "bounded_study_only"
+        },
+        "adoption_status": {
+          "const": "evaluation_only_not_adopted"
+        },
+        "operator_authorization": {
+          "const": "none"
+        },
+        "operational_domain_authorization": {
+          "const": "none"
+        },
+        "q95_operational_disposition": {
+          "const": "excluded_historical_diagnostic_only"
+        },
+        "historical_generic_generator_association": {
+          "const": "not_established"
+        },
+        "successor_study_status": {
+          "const": "pending_results"
+        },
+        "study_artifact_binding_status": {
+          "const": "unbound_pending_study_results"
+        }
+      }
     },
     "generator": {
       "type": "object",
@@ -742,6 +789,14 @@
       }
     },
     "unresolved_fact_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "historical_nonblocking_fact_ids": {
       "type": "array",
       "items": {
         "type": "string",

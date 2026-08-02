@@ -8,6 +8,20 @@
     "package_branch": "codex/sci-cal-001-atmosphere-operator",
     "coordination_line_snapshot": "4898477cf2550dd393c81b30be29f4634a2cd6d9"
   },
+  "owner_direction": {
+    "recorded_date": "2026-08-01",
+    "selected_evaluation_path": "versioned_am12_successor",
+    "evaluation_authorization": "bounded_study_only",
+    "adoption_status": "evaluation_only_not_adopted",
+    "operator_authorization": "none",
+    "operational_domain_authorization": "none",
+    "q95_operational_disposition": "excluded_historical_diagnostic_only",
+    "exact_operational_endpoints_status": "unresolved",
+    "historical_generic_generator_association": "not_established",
+    "generic_q95_custody_status": "unresolved_nonblocking_historical_provenance",
+    "successor_study_status": "pending_results",
+    "study_artifact_binding_status": "unbound_pending_study_results"
+  },
   "owner_approved_records": [
     {
       "path": "/private/tmp/citlali-scientific-audit-framework/doc/audits/packages/SCI-CAL-001_ACCURACY_AND_MODEL_SCOPE_AMENDMENT_2026-08-01.md",

@@ -126,9 +126,9 @@ EXPECTED_AM_IDENTITY = "am version 12.2 (build date Aug 26 2022 19:20:13)"
 EXPECTED_RAW_ROW_COUNT = 50001
 DEVIATION_LOG_NAME = "FOLLOWUP_STUDY_DEVIATION_LOG.md"
 EXPECTED_DEVIATION_LOG_SHA256 = (
-    "a3df86366c7869579b3255d9ea8f95cf6827e78018e0a2a83a1640360be1b036"
+    "b537960e9ab164353a2516f43572bb4e3dbe587e31a3ab922578b823738620e7"
 )
-EXPECTED_DEVIATION_LOG_BYTES = 2066
+EXPECTED_DEVIATION_LOG_BYTES = 2405
 EXPECTED_FROZEN_PROTOCOLS = {
     "FOLLOWUP_STUDY_PREREGISTRATION.md": {
         "bytes": 8528,
@@ -721,9 +721,8 @@ def load_copied_suite(
                 "modified_secant_tau225_coordinate": f64(tau225),
                 "legacy_support_interval": support,
                 "stress_eligible_no_extrapolation": str(eligible).lower(),
-                "scientific_identity": (
-                    "copied_am_12_2_profile_not_historical_legacy_q_identity"
-                ),
+                "scientific_identity": "copied_am_12_2_distinct_product_identity",
+                "historical_generic_generator_association": "not_established",
             }
         )
 
@@ -1401,7 +1400,7 @@ def build_report(
         + str(raw_outputs["slurm_retry_file_count"])
         + "` files also contain a Slurm step-creation retry notice. These historical nonzero return footers are retained as provenance and are not reclassified as clean successful runs.",
         "",
-        f"The modified-secant T225-at-80 coordinate places `{len(eligible)}` profiles inside the exact legacy q0--q95 support. `{len(excluded)}` profiles are excluded without extrapolation: "
+        f"The modified-secant T225-at-80 coordinate places `{len(eligible)}` profiles inside the exact legacy q0--q95 diagnostic support. `{len(excluded)}` profiles are excluded without extrapolation: "
         + ", ".join(
             f"`{profile['profile_id']}`"
             for profile in sorted(excluded, key=lambda item: item["profile_id"])
@@ -1443,11 +1442,11 @@ def build_report(
     lines.extend(
         [
             "",
-            "These results are useful provisional representation stress evidence only. The profiles and candidates were inspected before this analysis, the convention is monochromatic rather than band integrated, and the copied AM 12.2 suite is not the historical q-model lineage. Passing one percent here is not per-sample physical photometric accuracy and does not address the separate 5--10% absolute or approximately 5% repeatability observational gates.",
+            "These results are useful provisional representation stress evidence only. The profiles and candidates were inspected before this analysis, the convention is monochromatic rather than band integrated, and the copied products are distinct from the generic-q products while their historical generic-generator association is not established. C1 spans the legacy q0--q95 diagnostic range and is not the selected q95-excluding AM 12.2 successor study. Passing one percent here is not per-sample physical photometric accuracy and does not address the separate 5--10% absolute or approximately 5% repeatability observational gates.",
             "",
             "## Disposition",
             "",
-            "Retain piecewise-linear LOS tau as the baseline and PCHIP as the challenger for further declared studies. Do not authorize either candidate or an operational domain from this follow-up. Historical q95 provenance, the owner-selected spectral convention, preregistered independent runs, and the SCI-ALIGN-001 sample-identity eligibility dependency remain separate gates.",
+            "The owner has selected evaluation of a separately versioned AM 12.2 successor, with q95 conditions retained as historical/diagnostic evidence only. Retain piecewise-linear LOS tau as the baseline and PCHIP as the challenger for that declared study. Do not authorize either candidate or an operational domain from this follow-up. The successor profile rule, spectral convention, preregistered independent runs, exact domain endpoints, warning policy, and the SCI-ALIGN-001 sample-identity eligibility dependency remain separate gates.",
             "",
         ]
     )
@@ -1477,7 +1476,13 @@ def build_manifest(
             "repair_base_sha": REPAIR_BASE_SHA,
             "repair_line_evidence_head": REPAIR_LINE_EVIDENCE_HEAD,
             "evidence_status": "post_discovery_non_blinded_stress",
-            "copied_suite_identity": "am_12_2_not_historical_legacy_q_identity",
+            "copied_suite_identity": "am_12_2_distinct_registered_product_family",
+            "historical_generic_generator_association": "not_established",
+            "owner_direction": "versioned_am12_successor_evaluation_only",
+            "adoption_status": "evaluation_only_not_adopted",
+            "q95_operational_disposition": "historical_diagnostic_only",
+            "successor_study_status": "pending_results",
+            "study_artifact_binding_status": "unbound_pending_study_results",
             "operator_authorization": "none",
             "operational_domain_authorization": "none",
         },
@@ -1687,7 +1692,7 @@ def build_manifest(
             for filename, content in sorted(artifact_bytes.items())
         ],
         "limitations": [
-            "The copied AM 12.2 suite is not historical legacy q-model identity.",
+            "The copied AM 12.2 products are distinct from the generic-q products; historical generic-generator association is not established.",
             "The stress was designed after the copied products and candidates were inspected.",
             "No profile outside the legacy q0-q95 tau225 support is evaluated.",
             "The test is monochromatic and does not select a band-integrated convention.",

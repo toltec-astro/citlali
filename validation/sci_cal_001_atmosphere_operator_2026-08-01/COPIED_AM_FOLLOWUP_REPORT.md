@@ -22,7 +22,7 @@ For every DAT file, zenith angle is mapped to NPZ elevation by `elevation = 90 d
 
 Every complete grid is followed by an unresolved-line warning and a Slurm exit-code-1 footer. The unresolved-line count distribution is `{"86": 324, "87": 540, "88": 36}`; `3` files also contain a Slurm step-creation retry notice. These historical nonzero return footers are retained as provenance and are not reclassified as clean successful runs.
 
-The modified-secant T225-at-80 coordinate places `16` profiles inside the exact legacy q0--q95 support. `9` profiles are excluded without extrapolation: `LMT_DJF_95`, `LMT_JJA_50`, `LMT_JJA_75`, `LMT_JJA_95`, `LMT_MAM_95`, `LMT_SON_75`, `LMT_SON_95`, `LMT_annual_75`, `LMT_annual_95`.
+The modified-secant T225-at-80 coordinate places `16` profiles inside the exact legacy q0--q95 diagnostic support. `9` profiles are excluded without extrapolation: `LMT_DJF_95`, `LMT_JJA_50`, `LMT_JJA_75`, `LMT_JJA_95`, `LMT_MAM_95`, `LMT_SON_75`, `LMT_SON_95`, `LMT_annual_75`, `LMT_annual_95`.
 
 ## Legacy identity comparison
 
@@ -32,7 +32,7 @@ Annual, DJF, MAM, JJA, and SON q25/q50/q75 products were each compared with the 
 
 Across all same-percentile copied families, the largest exact repair-base anchor correction difference is `71.436439%` for `LMT_JJA_75/a1100`. This is an identity diagnostic, not an interpolation result.
 
-Protocol identity is resolved by `FOLLOWUP_STUDY_DEVIATION_LOG.md` (SHA-256 `a3df86366c7869579b3255d9ea8f95cf6827e78018e0a2a83a1640360be1b036`). Annual-anchor Study C `v1` was stopped; diagnostic C1 evaluates only the already defined legacy-anchor `v0` candidates. The clarification does not authorize or reinterpret a successor.
+Protocol identity is resolved by `FOLLOWUP_STUDY_DEVIATION_LOG.md` (SHA-256 `b537960e9ab164353a2516f43572bb4e3dbe587e31a3ab922578b823738620e7`). Annual-anchor Study C `v1` was stopped; diagnostic C1 evaluates only the already defined legacy-anchor `v0` candidates. The clarification does not authorize or reinterpret a successor.
 
 ## In-support operator stress
 
@@ -47,8 +47,8 @@ Truth is the copied direct line-of-sight `atmTaun` at monochromatic 272.73, 214.
 | `pchip_los_tau_v0` | `a1400` | `0.770085%` | `0.260285%` | `LMT_MAM_75` / `20.0 deg` | `0.015098%` | `true` |
 | `pchip_los_tau_v0` | `a2000` | `0.862716%` | `0.485404%` | `LMT_MAM_75` / `80.0 deg` | `0.182168%` | `true` |
 
-These results are useful provisional representation stress evidence only. The profiles and candidates were inspected before this analysis, the convention is monochromatic rather than band integrated, and the copied AM 12.2 suite is not the historical q-model lineage. Passing one percent here is not per-sample physical photometric accuracy and does not address the separate 5--10% absolute or approximately 5% repeatability observational gates.
+These results are useful provisional representation stress evidence only. The profiles and candidates were inspected before this analysis, the convention is monochromatic rather than band integrated, and the copied products are distinct from the generic-q products while their historical generic-generator association is not established. C1 spans the legacy q0--q95 diagnostic range and is not the selected q95-excluding AM 12.2 successor study. Passing one percent here is not per-sample physical photometric accuracy and does not address the separate 5--10% absolute or approximately 5% repeatability observational gates.
 
 ## Disposition
 
-Retain piecewise-linear LOS tau as the baseline and PCHIP as the challenger for further declared studies. Do not authorize either candidate or an operational domain from this follow-up. Historical q95 provenance, the owner-selected spectral convention, preregistered independent runs, and the SCI-ALIGN-001 sample-identity eligibility dependency remain separate gates.
+The owner has selected evaluation of a separately versioned AM 12.2 successor, with q95 conditions retained as historical/diagnostic evidence only. Retain piecewise-linear LOS tau as the baseline and PCHIP as the challenger for that declared study. Do not authorize either candidate or an operational domain from this follow-up. The successor profile rule, spectral convention, preregistered independent runs, exact domain endpoints, warning policy, and the SCI-ALIGN-001 sample-identity eligibility dependency remain separate gates.

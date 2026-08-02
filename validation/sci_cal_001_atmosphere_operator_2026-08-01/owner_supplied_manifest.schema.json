@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://toltec.astro.umass.edu/schemas/sci-cal-001/owner-supplied-manifest-v1.json",
+  "$id": "https://toltec.astro.umass.edu/schemas/sci-cal-001/owner-supplied-manifest-v2.json",
   "title": "SCI-CAL-001 owner-supplied input manifest",
-  "description": "A compact manifest for partial or complete owner responses to SCI-CAL-001-ATM-INPUT-001. It records one selected scientific path, custody status, fact responses, and digest-bound supplied artifacts without pretending to be a complete atmosphere regeneration manifest.",
+  "description": "A compact manifest for partial or complete owner responses to SCI-CAL-001-ATM-INPUT-001 under the fixed versioned-AM12 evaluation path. It records evaluation-only governance, unresolved historical custody, study-definition responses, and digest-bound supplied artifacts without authorizing adoption, an operator, or an operational domain.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -11,9 +11,18 @@
     "request_id",
     "submission_date",
     "owner_path",
+    "evaluation_authorization",
+    "adoption_status",
+    "operator_authorization",
+    "operational_domain_authorization",
+    "q95_operational_disposition",
+    "successor_study_status",
+    "study_artifact_binding_status",
+    "historical_generic_generator_association",
     "historical_generic_lineage_custody_status",
     "responses",
-    "artifacts"
+    "artifacts",
+    "successor_selection"
   ],
   "$defs": {
     "sha256": {
@@ -170,7 +179,7 @@
       "type": "string"
     },
     "schema_version": {
-      "const": "sci-cal-001-owner-supplied-manifest-v1"
+      "const": "sci-cal-001-owner-supplied-manifest-v2"
     },
     "package_id": {
       "const": "SCI-CAL-001"
@@ -187,18 +196,34 @@
       "minLength": 1
     },
     "owner_path": {
-      "enum": [
-        "faithful_generic_lineage",
-        "versioned_am12_successor"
-      ]
+      "const": "versioned_am12_successor"
+    },
+    "evaluation_authorization": {
+      "const": "bounded_study_only"
+    },
+    "adoption_status": {
+      "const": "evaluation_only_not_adopted"
+    },
+    "operator_authorization": {
+      "const": "none"
+    },
+    "operational_domain_authorization": {
+      "const": "none"
+    },
+    "q95_operational_disposition": {
+      "const": "excluded_historical_diagnostic_only"
+    },
+    "successor_study_status": {
+      "const": "pending_results"
+    },
+    "study_artifact_binding_status": {
+      "const": "unbound_pending_study_results"
+    },
+    "historical_generic_generator_association": {
+      "const": "not_established"
     },
     "historical_generic_lineage_custody_status": {
-      "enum": [
-        "unresolved",
-        "partially_resolved",
-        "resolved",
-        "unresolved_retained"
-      ]
+      "const": "unresolved_retained"
     },
     "responses": {
       "type": "array",
@@ -216,29 +241,5 @@
     "successor_selection": {
       "$ref": "#/$defs/successor_selection"
     }
-  },
-  "allOf": [
-    {
-      "if": {
-        "properties": {
-          "owner_path": {
-            "const": "versioned_am12_successor"
-          }
-        },
-        "required": [
-          "owner_path"
-        ]
-      },
-      "then": {
-        "required": [
-          "successor_selection"
-        ],
-        "properties": {
-          "historical_generic_lineage_custody_status": {
-            "const": "unresolved_retained"
-          }
-        }
-      }
-    }
-  ]
+  }
 }
