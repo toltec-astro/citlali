@@ -86,20 +86,29 @@ Unity campaign package is locally verified at preparation commit
 `1b824f138754eeb1856ae5f102027db4b31598be` without changing that application
 candidate. The 20-member package manifest and 506-check synthetic analysis
 self-test pass, and the package preserves a human-only `unity_toltec` boundary.
-It is not launch-ready: no approved frozen producer currently supplies the two
-required raw-input manifests and nine independent processed-term ledgers.
-Before implementing that producer, a bounded evidence-design review must
-address the preliminary approximately 1.72-billion-term, approximately
-118-GiB uncompressed ledger scale and determine whether a smaller independent
-representation can preserve the required claims without silent weakening.
-The owner should not fill Unity operational values yet. External evidence and
-fresh re-audit have not begun; F009/F010 remain `addressed_pending_reaudit`,
-and the named CAL/AST/PTC/VAL dependencies remain open. See the
+It is not launch-ready: no approved frozen evidence producer has returned.
+The owner approved `MAP-UNITY-ED1` on 2026-08-02, explicitly replacing the
+preliminary approximately 1.72-billion-term, approximately 118-GiB
+uncompressed full-term representation with a bounded successor protocol using
+automatic manifests, streaming hashes, compact sufficient statistics, and
+deterministic every-active-network actual-data traces. The seven reductions
+and every product, F010, WCS, coadd, realization, provenance, seq/OpenMP, and
+exhaustive local F011 gate remain unchanged. A dedicated validation-only
+successor-package/producer task is authorized from exact campaign-preparation
+commit `1b824f138754eeb1856ae5f102027db4b31598be`; the existing frozen package
+and MAP application candidate remain immutable. The owner should not fill
+Unity operational values yet. Unity remains undispatched, external evidence
+and fresh re-audit have not begun, F009/F010 remain
+`addressed_pending_reaudit`, and the named CAL/AST/PTC/VAL dependencies remain
+open. See the
 [coordinator decision](audits/packages/SCI-MAP-001_COORDINATOR_DECISION_2026-07-31.md)
 and the
 [bounded repair/re-audit handoff](audits/packages/SCI-MAP-001_BOUNDED_REPAIR_REAUDIT_HANDOFF_2026-07-31.md),
 plus the
-[Unity campaign coordinator review](audits/packages/SCI-MAP-001_UNITY_CAMPAIGN_COORDINATOR_REVIEW_2026-08-02.md).
+[Unity campaign coordinator review](audits/packages/SCI-MAP-001_UNITY_CAMPAIGN_COORDINATOR_REVIEW_2026-08-02.md),
+[MAP-UNITY-ED1 owner decision](audits/packages/SCI-MAP-001_UNITY_ED1_OWNER_DECISION_2026-08-02.md),
+and
+[successor-campaign handoff](audits/packages/SCI-MAP-001_UNITY_ED1_SUCCESSOR_CAMPAIGN_HANDOFF_2026-08-02.md).
 
 ## 2026-07-31 SCI-CAL-001 Audit Coordination
 

@@ -282,7 +282,7 @@ packages:
         conformity or expand production use.
     unity_campaign_preparation:
       status: >-
-        verified_prepared_not_dispatched_blocked_on_evidence_design_and_missing_producer_outputs
+        verified_prepared_not_dispatched_evidence_design_approved_producer_task_authorized
       review_date: 2026-08-02
       review_id: SCI-MAP-001-UNITY-001-COORD-REVIEW-001
       review_path: >-
@@ -328,10 +328,58 @@ packages:
         head: 8fc9263a2f502656b51d32cb60655481f83509f1
         align_state: phase_1_repair_active
         cal_state: preregistered_el25_confirmation_active
+      evidence_design_decision:
+        decision_id: MAP-UNITY-ED1
+        authority: project_owner
+        decision_date: 2026-08-02
+        status: approved_bounded_compact_external_evidence_protocol
+        source_review_id: SCI-MAP-001-UNITY-001-COORD-REVIEW-001
+        record_path: >-
+          doc/audits/packages/SCI-MAP-001_UNITY_ED1_OWNER_DECISION_2026-08-02.md
+        record_sha256: >-
+          4cec0fbbd172a32f51cfe95d5ef1712f091297fb43bd2efee5a1c4eecf99e5fa
+        record_commit: null
+        selected_disposition: >-
+          Preserve every seven-case product, F010, WCS, coadd, 64-realization,
+          provenance, sequential/OpenMP, and exhaustive local F011 gate while
+          replacing exhaustive external per-term retention with automatic
+          compact manifests, streaming hashes, sufficient statistics, and
+          deterministic every-active-network actual-data traces, with broader
+          traces triggered by discrepancy or named re-auditor request.
+        effect: >-
+          Resolves only the evidence-design scope gate and authorizes bounded
+          local protocol/producer work. It supplies no external evidence and
+          changes no MAP finding, dependency, conformance, validation,
+          production, repair, or re-audit state.
+      evidence_protocol_producer_dispatch:
+        status: authorized_pending_task_creation
+        launch_authority: project_owner_explicit_2026-08-02
+        dispatch_date: 2026-08-02
+        launched_from_campaign_commit: >-
+          1b824f138754eeb1856ae5f102027db4b31598be
+        application_candidate_sha: >-
+          ed28dafb37f9113c0d3c95297148157129a90886
+        application_source_change_authorized: false
+        existing_frozen_package_change_authorized: false
+        successor_path: >-
+          validation/campaigns/SCI-MAP-001-UNITY-001/repair-ed28dafb-ed1
+        successor_revision: repair-sha-ed28dafb-ed1-2026-08-02
+        handoff_path: >-
+          doc/audits/packages/SCI-MAP-001_UNITY_ED1_SUCCESSOR_CAMPAIGN_HANDOFF_2026-08-02.md
+        handoff_sha256: >-
+          8ce9d12f93b2cf60e6fb281b67afcfdcaeb9f2ffde755b9c0f640a38c98c0c5b
+        handoff_commit: null
+        task_thread_id: null
+        task_host_id: null
+        task_branch: null
+        task_worktree: null
+        authorization_scope: >-
+          Validation campaign, protocol, producer, verifier, documentation,
+          and local validation only.
       readiness_gaps:
         - id: SCI-MAP-001-UNITY-001-GAP-EVIDENCE-DESIGN-001
           class: resource_and_engineering_scope_review
-          status: blocking_before_producer_implementation
+          status: resolved_by_owner_decision
           owner_scope_decision_id: MAP-UNITY-ED1
           preliminary_scale: >-
             1,717,082,860 pre-selection network-sample-by-tone terms and
@@ -353,20 +401,31 @@ packages:
             seven-case product, F010, WCS, coadd, realization, provenance, and
             seq-OpenMP gate.
           next_gate: >-
-            Obtain owner disposition MAP-UNITY-ED1 before amending the protocol
-            or implementing an evidence producer.
+            Complete and independently review the bounded successor protocol,
+            producer, exact identities, and measured resource envelope before
+            requesting Unity operational values.
         - id: SCI-MAP-001-UNITY-001-GAP-PRODUCER-001
           class: engineering_evidence_preparation_gap
-          status: blocking
-          required_outputs:
-            - one_point_raw_input_manifest
-            - one_science_raw_input_manifest
-            - nine_independent_processed_term_npz_ledgers
+          status: blocking_successor_task_authorized
+          design_authority: MAP-UNITY-ED1
+          original_full_term_representation:
+            status: superseded_for_successor_protocol_design
+            frozen_v1_required_outputs:
+              - one_point_raw_input_manifest
+              - one_science_raw_input_manifest
+              - nine_independent_processed_term_npz_ledgers
+          approved_successor_evidence_classes:
+            - automatically_generated_point_and_science_raw_input_manifests
+            - per_observation_per_array_streaming_identity_and_term_hashes
+            - compact_per_scan_per_pixel_sufficient_statistics
+            - deterministic_actual_data_traces_from_every_active_network
+            - focused_discrepancy_trace_expansion
+            - independent_verifier_and_digest_manifest
           owner_hand_authoring_allowed: false
           next_gate: >-
-            After the evidence-design decision, identify or implement,
-            validate, digest-bind, and approve one frozen producer; then
-            generate and independently verify all required outputs.
+            Return and independently review a frozen successor protocol,
+            producer, verifier, exact identities, measured resource envelope,
+            and local results.
         - id: SCI-MAP-001-UNITY-001-GAP-OPERATIONS-001
           class: owner_operational_input
           status: deferred_until_producer_gap_closes
@@ -615,7 +674,7 @@ packages:
         preparation only, not external evidence
     requested_unity_evidence:
       - status: >-
-          prepared_not_dispatched_blocked_on_evidence_design_and_missing_producer_outputs
+          prepared_not_dispatched_evidence_design_approved_producer_task_authorized
         request_id: SCI-MAP-001-UNITY-001
         audited_governing_source_sha: >-
           9aae0e669384c5c0c0dda93debc194d6b8dac787
