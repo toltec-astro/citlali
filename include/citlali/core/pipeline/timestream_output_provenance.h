@@ -1504,18 +1504,22 @@ YAML::Node timestream_output_provenance_node(
     if constexpr (has_sci_align_scan_plan<
                       std::decay_t<decltype(engine.telescope)>>::value) {
         root["realized"]["raw_time_chunk"]["selected_output_windows"] =
-            selected_tod_output_windows_node(
-                engine.telescope.scan_plan,
-                engine.tod_outputs.rtc_scan_to_output_scan,
-                engine.tod_outputs.n_rtc_output_scans,
-                citlali::config::is_outer_tod_stream_output_mode(
-                    config.output.raw_time_chunk.mode));
+            raw_tod_output_enabled(engine)
+                ? selected_tod_output_windows_node(
+                      engine.telescope.scan_plan,
+                      engine.tod_outputs.rtc_scan_to_output_scan,
+                      engine.tod_outputs.n_rtc_output_scans,
+                      citlali::config::is_outer_tod_stream_output_mode(
+                          config.output.raw_time_chunk.mode))
+                : YAML::Node(YAML::NodeType::Sequence);
         root["realized"]["processed_time_chunk"]
             ["selected_output_windows"] =
-                selected_tod_output_windows_node(
-                    engine.telescope.scan_plan,
-                    engine.tod_outputs.ptc_scan_to_output_scan,
-                    engine.tod_outputs.n_ptc_output_scans, false);
+                processed_tod_output_enabled(engine)
+                    ? selected_tod_output_windows_node(
+                          engine.telescope.scan_plan,
+                          engine.tod_outputs.ptc_scan_to_output_scan,
+                          engine.tod_outputs.n_ptc_output_scans, false)
+                    : YAML::Node(YAML::NodeType::Sequence);
     }
     root["realized"]["files"] = YAML::Node(YAML::NodeType::Map);
     for (const auto &[stream, filepath] : engine.output_paths.tod_filename) {

@@ -757,6 +757,28 @@ TEST(sci_align_provenance,
 }
 
 TEST(sci_align_provenance,
+     disabled_tod_streams_record_empty_selected_window_sequences) {
+    auto engine = make_raster_output_provenance_engine();
+    engine.typed_config.timestream.output.type =
+        citlali::config::TodOutputType::none;
+    citlali::pipeline::reset(engine.tod_outputs);
+
+    const auto node =
+        citlali::pipeline::timestream_output_provenance_node(engine);
+    EXPECT_FALSE(node["effective"]["raw_time_chunk"]["enabled"].as<bool>());
+    EXPECT_FALSE(
+        node["effective"]["processed_time_chunk"]["enabled"].as<bool>());
+    const auto raw = node["realized"]["raw_time_chunk"]
+                         ["selected_output_windows"];
+    const auto processed = node["realized"]["processed_time_chunk"]
+                               ["selected_output_windows"];
+    EXPECT_TRUE(raw.IsSequence());
+    EXPECT_TRUE(processed.IsSequence());
+    EXPECT_EQ(raw.size(), 0U);
+    EXPECT_EQ(processed.size(), 0U);
+}
+
+TEST(sci_align_provenance,
      rejects_nonbijective_selected_output_window_rows) {
     auto duplicate = make_raster_output_provenance_engine();
     duplicate.tod_outputs.ptc_scan_to_output_scan << 0, 0;
