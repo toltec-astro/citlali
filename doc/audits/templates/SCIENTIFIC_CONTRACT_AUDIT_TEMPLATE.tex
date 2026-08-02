@@ -299,6 +299,36 @@ Acceptance tolerances are specified before looking at candidate results and
 are derived from analytic precision, finite-sample behavior, repeatability,
 or an explicit scientific decision. A required-data skip is not a pass.
 
+\section{Numerical proportionality and execution cost}
+
+List every proposed numerical or external-evidence study and classify whether
+repetition materially exposes compute, memory, storage, scheduling, scarce
+data, or human operational cost. For a non-costly study, give the measured or
+bounded basis. For a costly study, execution remains held until the exact
+artifacts required by \code{FRAMEWORK-NUM-001} pass the model-free launch gate.
+
+\begin{longtable}{L{0.16\linewidth}L{0.13\linewidth}L{0.17\linewidth}L{0.19\linewidth}L{0.23\linewidth}}
+\toprule
+Study ID & Cost class & Condition register & Preflight/certificate & Raw/evaluator salvage boundary\\
+\midrule
+\endfirsthead
+\toprule
+Study ID & Cost class & Condition register & Preflight/certificate & Raw/evaluator salvage boundary\\
+\midrule
+\endhead
+complete & costly or not costly & path/digest or N/A & path/digest/status or held & complete\\
+\bottomrule
+\end{longtable}
+
+Every aborting numerical tolerance must have a derived numerical bound or a
+quantified mapping into the final scientific metric. Exact identity is used
+only for objects with discrete or byte identity. Engineering diagnostics are
+warning-only; an impact analysis that establishes identity, numerical-
+correctness, or scientific authority requires explicit reclassification as
+Class A, B, or C. Record separate validity states for raw model output,
+parser/admission products, evaluator products, and the final scientific
+decision.
+
 \section{Findings, dependencies, and scientific decisions}
 
 \begin{longtable}{L{0.15\linewidth}L{0.15\linewidth}L{0.08\linewidth}L{0.12\linewidth}L{0.38\linewidth}}

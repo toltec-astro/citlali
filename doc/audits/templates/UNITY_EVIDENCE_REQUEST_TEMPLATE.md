@@ -109,6 +109,35 @@ Include applicable checks for:
 - unaffected-product regression against the accepted predecessor; and
 - performance/RSS only when the package or a defined trigger requires it.
 
+## Cost and execution-readiness controls
+
+The audit manager classifies this request before dispatch:
+
+| Field | Required value |
+| --- | --- |
+| Study ID | `TO_SET` |
+| Costly study | `true` or `false` |
+| Cost basis and estimate | `TO_SET` |
+| Tolerance-and-Stop-Condition Register path/SHA-256 | `TO_SET_OR_NOT_APPLICABLE_WITH_BASIS` |
+| Model-free preflight report path/SHA-256 | `TO_SET_OR_NOT_APPLICABLE_WITH_BASIS` |
+| Readiness certificate path/SHA-256 | `TO_SET_OR_NOT_APPLICABLE_WITH_BASIS` |
+| Independent review path/SHA-256 | `TO_SET_OR_NOT_APPLICABLE_WITH_BASIS` |
+| Evidence-salvage plan path/SHA-256 | `TO_SET_OR_NOT_APPLICABLE_WITH_BASIS` |
+
+If `costly study` is true, this request is not executable until the exact
+register, preflight report, review, and certificate pass
+`tools/audits/validate_expensive_study_controls.py --launch-gate` and the
+human-mediated Unity dispatch is separately authorized. The preflight must
+invoke no Citlali reduction or other scientific model. It must enumerate all
+frozen cases and exercise every deterministic guard, configuration conversion,
+boundary, dispatch branch, and output-format path. An unregistered aborting
+condition is a launch stop.
+
+Raw reduction products, parser/admission records, comparison/evaluator
+products, and the final audit decision must be written to distinct,
+digest-bound locations with separate validity states. The request must state
+what can be retained if a later parsing, comparison, or packaging step fails.
+
 ## Commands Grant should execute
 
 Give copy/paste-ready commands using the project-required SSH host alias
@@ -142,7 +171,10 @@ Return one immutable bundle or manifest containing:
 7. every changed, missing, extra, skipped, invalid, or unreadable record;
 8. all measured metrics with pre-registered bounds and pass/fail results;
 9. durable locations for large products that are not returned directly; and
-10. operator name, date/time, and any deviation from this request.
+10. the frozen condition register, preflight report, readiness certificate,
+    independent review, raw/parser/evaluator validity records, and every fired
+    condition ID when the request is costly; and
+11. operator name, date/time, and any deviation from this request.
 
 The auditor records supplied artifacts under `supplied_external_evidence` only
 after checking identity and completeness. Until then the ledger retains an

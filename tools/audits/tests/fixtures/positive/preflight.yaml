@@ -1,0 +1,169 @@
+schema_version: citlali-audit-expensive-study-preflight-v1
+preflight_id: SYN-PREFLIGHT
+status: complete
+study_id: SYN-STUDY
+bindings:
+  register:
+    path: register.yaml
+    sha256: 2ae3620a82f2df878b595a768f47a0e153c3077bc68fe798bdde8115005650ab
+  protocol:
+    path: artifacts/protocol.md
+    sha256: 346d452dd1714b85c761fdcdd650e368e86b40672e1578c936e2f59c6689bc73
+  runner:
+    path: artifacts/runner.py
+    sha256: 7a23bee5202f093f003e0d350d9cd960dacf1eaabe57cfa2fcff05a7afed1838
+    source_identity: synthetic-runner-v1
+  evaluator:
+    path: artifacts/evaluator.py
+    sha256: f9e546eb92c0600a6958cea7290025dd62704f033feeea8dd88d7101c62befe1
+    source_identity: synthetic-evaluator-v1
+  frozen_case_set:
+    case_set_id: SYN-CASES
+    artifact:
+      path: artifacts/cases.yaml
+      sha256: ee00296a60fc14cc041401b655b84acadea8927e9ec373c6a968bd322ca92b87
+    tuple_count: 1
+guard_inventory:
+  method: condition_id_dispatcher
+  census_artifact:
+    path: artifacts/guard-census.txt
+    sha256: 132b3fbbb24b5131fc271fd8b778d049ab5bbe0e5f48ad337e2e2c9e0e3b28b2
+  site_count: 4
+  registered_condition_ids:
+    - SYN-A-IDENTITY
+    - SYN-B-ULP
+    - SYN-C-SCIENCE
+    - SYN-D-DIAGNOSTIC
+  discovered_condition_ids:
+    - SYN-A-IDENTITY
+    - SYN-B-ULP
+    - SYN-C-SCIENCE
+    - SYN-D-DIAGNOSTIC
+  discovered_conditions:
+    - condition_id: SYN-A-IDENTITY
+      source_site_count: 1
+      implemented_actions: [hard_stop]
+    - condition_id: SYN-B-ULP
+      source_site_count: 1
+      implemented_actions: [hard_stop]
+    - condition_id: SYN-C-SCIENCE
+      source_site_count: 1
+      implemented_actions: [scientific_failure]
+    - condition_id: SYN-D-DIAGNOSTIC
+      source_site_count: 1
+      implemented_actions: [warning]
+  abort_capable_condition_ids:
+    - SYN-A-IDENTITY
+    - SYN-B-ULP
+    - SYN-C-SCIENCE
+  unregistered_abort_capable_ids: []
+  unknown_condition_ids: []
+execution:
+  mode: model_free_dry_run
+  command: synthetic-runner --preflight --no-model
+  scientific_model_calls: 0
+  scientific_model_execution_permitted: false
+  environment:
+    path: artifacts/environment.json
+    sha256: e6955f91fea55a5758eb7625c4ebbd961c32a579f94a02a6dbb1448a0b8294d2
+coverage:
+  enumerated_tuple_count: 1
+  exercised_tuple_count: 1
+  all_frozen_tuples_complete: true
+  condition_coverage:
+    - condition_id: SYN-A-IDENTITY
+      data_dependent: false
+      expected_exercises: 2
+      observed_exercises: 2
+      all_required_tuples_exercised: true
+      expected_branches: [match, mismatch]
+      observed_branches: [match, mismatch]
+      complete: true
+      synthetic_or_fault_injection: null
+      comparison_observation:
+        comparison_fingerprint: 29df8c654ba98f07afbc8fd07502f043712197d8165d3be741042f896c7ee068
+        observed_threshold: null
+    - condition_id: SYN-B-ULP
+      data_dependent: false
+      expected_exercises: 2
+      observed_exercises: 2
+      all_required_tuples_exercised: true
+      expected_branches: [within_bound, above_bound]
+      observed_branches: [within_bound, above_bound]
+      complete: true
+      synthetic_or_fault_injection: null
+      comparison_observation:
+        comparison_fingerprint: eaaaf722cdfa511ba4429958b28af176260e9ffa46baa6b0e07508b103571c1e
+        observed_threshold:
+          canonical_literal: '2'
+          representation: exact nonnegative integer ULP count
+          units: ULP
+    - condition_id: SYN-C-SCIENCE
+      data_dependent: true
+      expected_exercises: 0
+      observed_exercises: 0
+      all_required_tuples_exercised: false
+      expected_branches: [scientific_pass, scientific_failure]
+      observed_branches: [scientific_pass, scientific_failure]
+      complete: true
+      synthetic_or_fault_injection:
+        test_id: SYN-FAULT-C
+        passed: true
+        observed_exercises: 2
+        evidence:
+          path: artifacts/environment.json
+          sha256: e6955f91fea55a5758eb7625c4ebbd961c32a579f94a02a6dbb1448a0b8294d2
+      comparison_observation:
+        comparison_fingerprint: df0b68b04c92170ce9c7423f17007239d6c5f2dc5de43707384f92a6e000fcd9
+        observed_threshold:
+          canonical_literal: '0.01'
+          representation: canonical decimal scientific threshold
+          units: fractional
+    - condition_id: SYN-D-DIAGNOSTIC
+      data_dependent: false
+      expected_exercises: 2
+      observed_exercises: 2
+      all_required_tuples_exercised: true
+      expected_branches: [agree, disagree]
+      observed_branches: [agree, disagree]
+      complete: true
+      synthetic_or_fault_injection: null
+      comparison_observation:
+        comparison_fingerprint: c790fe9f26ded45f12c29dc7bdc3d693fcdab61f8c60c9cdecfb1e563275643f
+        observed_threshold: null
+  path_coverage:
+    - dimension: boundary_neighbors
+      required: true
+      expected_paths: [lower, exact, upper]
+      observed_paths: [lower, exact, upper]
+      complete: true
+    - dimension: constant_paths
+      required: true
+      expected_paths: [registered_constants]
+      observed_paths: [registered_constants]
+      complete: true
+    - dimension: decimal_binary_conversions
+      required: true
+      expected_paths: [canonical, alternate]
+      observed_paths: [canonical, alternate]
+      complete: true
+    - dimension: coordinate_transformations
+      required: true
+      expected_paths: [not_applicable_verified]
+      observed_paths: [not_applicable_verified]
+      complete: true
+    - dimension: candidate_dispatch
+      required: true
+      expected_paths: [synthetic_candidate]
+      observed_paths: [synthetic_candidate]
+      complete: true
+    - dimension: output_formats
+      required: true
+      expected_paths: [synthetic_yaml]
+      observed_paths: [synthetic_yaml]
+      complete: true
+result:
+  passed: true
+  failure_ids: []
+  warning_ids: [SYN-D-DIAGNOSTIC]
+  completed_at_utc: '2026-08-02T12:00:00Z'

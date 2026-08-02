@@ -1,0 +1,210 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://toltec.astro.umass.edu/schemas/expensive-execution-readiness-certificate-v1.json",
+  "title": "Citlali costly numerical execution-readiness certificate v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "certificate_id",
+    "status",
+    "study_id",
+    "execution_scope_id",
+    "bindings",
+    "remaining_data_dependent_conditions",
+    "independent_review",
+    "attestations",
+    "readiness_scope",
+    "manager_approval"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "citlali-audit-expensive-execution-readiness-v1"
+    },
+    "certificate_id": {"$ref": "#/$defs/stable_id"},
+    "status": {"enum": ["draft", "ready", "denied", "superseded"]},
+    "study_id": {"$ref": "#/$defs/stable_id"},
+    "execution_scope_id": {"$ref": "#/$defs/stable_id"},
+    "bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "register",
+        "preflight_report",
+        "protocol",
+        "runner",
+        "evaluator",
+        "frozen_case_set",
+        "salvage_policy",
+        "independent_review_record"
+      ],
+      "properties": {
+        "register": {"$ref": "#/$defs/artifact"},
+        "preflight_report": {"$ref": "#/$defs/artifact"},
+        "protocol": {"$ref": "#/$defs/artifact"},
+        "runner": {"$ref": "#/$defs/source_artifact"},
+        "evaluator": {"$ref": "#/$defs/source_artifact"},
+        "frozen_case_set": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["case_set_id", "artifact", "tuple_count"],
+          "properties": {
+            "case_set_id": {"$ref": "#/$defs/stable_id"},
+            "artifact": {"$ref": "#/$defs/artifact"},
+            "tuple_count": {"type": "integer", "minimum": 1}
+          }
+        },
+        "salvage_policy": {"$ref": "#/$defs/artifact"},
+        "independent_review_record": {"$ref": "#/$defs/artifact"}
+      }
+    },
+    "remaining_data_dependent_conditions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "condition_id",
+          "cost_exposure_understood",
+          "independent_review_acknowledged",
+          "disposition"
+        ],
+        "properties": {
+          "condition_id": {"$ref": "#/$defs/stable_id"},
+          "cost_exposure_understood": {"type": "boolean"},
+          "independent_review_acknowledged": {"type": "boolean"},
+          "disposition": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "independent_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "review_id",
+        "reviewer_role",
+        "status",
+        "unregistered_hard_guard_count",
+        "unsupported_threshold_count",
+        "unresolved_finding_count",
+        "completed_at_utc"
+      ],
+      "properties": {
+        "review_id": {"$ref": "#/$defs/stable_id"},
+        "reviewer_role": {"type": "string", "minLength": 1},
+        "status": {"enum": ["pending", "approved", "rejected"]},
+        "unregistered_hard_guard_count": {"type": "integer", "minimum": 0},
+        "unsupported_threshold_count": {"type": "integer", "minimum": 0},
+        "unresolved_finding_count": {"type": "integer", "minimum": 0},
+        "completed_at_utc": {"$ref": "#/$defs/timestamp"}
+      }
+    },
+    "attestations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "all_conditions_registered_and_justified",
+        "deterministic_coverage_complete",
+        "engineering_diagnostics_have_no_veto",
+        "raw_parser_evaluator_and_decision_validity_are_separate",
+        "data_dependent_cost_risks_understood",
+        "salvage_policy_bound_before_execution",
+        "exact_artifacts_digest_bound",
+        "independent_review_approved",
+        "preflight_was_model_free",
+        "no_unregistered_guards"
+      ],
+      "properties": {
+        "all_conditions_registered_and_justified": {"type": "boolean"},
+        "deterministic_coverage_complete": {"type": "boolean"},
+        "engineering_diagnostics_have_no_veto": {"type": "boolean"},
+        "raw_parser_evaluator_and_decision_validity_are_separate": {"type": "boolean"},
+        "data_dependent_cost_risks_understood": {"type": "boolean"},
+        "salvage_policy_bound_before_execution": {"type": "boolean"},
+        "exact_artifacts_digest_bound": {"type": "boolean"},
+        "independent_review_approved": {"type": "boolean"},
+        "preflight_was_model_free": {"type": "boolean"},
+        "no_unregistered_guards": {"type": "boolean"}
+      }
+    },
+    "readiness_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "exact_execution_scope_bound",
+        "launch_authorization",
+        "application_repair",
+        "production_disposition_change",
+        "unity_access",
+        "reaudit",
+        "statement"
+      ],
+      "properties": {
+        "exact_execution_scope_bound": {"type": "boolean"},
+        "launch_authorization": {"const": false},
+        "application_repair": {"type": "boolean"},
+        "production_disposition_change": {"type": "boolean"},
+        "unity_access": {"type": "boolean"},
+        "reaudit": {"type": "boolean"},
+        "statement": {"type": "string", "minLength": 1}
+      }
+    },
+    "manager_approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["manager_role", "decision", "approved_at_utc", "record"],
+      "properties": {
+        "manager_role": {"type": "string", "minLength": 1},
+        "decision": {"enum": ["pending", "approved", "denied"]},
+        "approved_at_utc": {
+          "oneOf": [
+            {"$ref": "#/$defs/timestamp"},
+            {"type": "null"}
+          ]
+        },
+        "record": {"type": "string", "minLength": 1}
+      }
+    }
+  },
+  "$defs": {
+    "stable_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:+-]*$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "commit": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9a-f]{40}$"
+        }
+      }
+    },
+    "source_artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "source_identity"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "commit": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "source_identity": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

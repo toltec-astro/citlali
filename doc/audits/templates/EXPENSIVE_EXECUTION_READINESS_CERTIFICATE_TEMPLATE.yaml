@@ -1,0 +1,79 @@
+# A ready certificate is valid only for the exact digest-bound execution scope.
+# The audit manager completes it after accepted independent review and a passing
+# preflight; the final mechanical launch gate then validates this certificate.
+schema_version: citlali-audit-expensive-execution-readiness-v1
+certificate_id: TEMPLATE-READINESS-001
+status: draft
+study_id: TEMPLATE-STUDY-001
+execution_scope_id: TEMPLATE-EXECUTION-SCOPE-001
+bindings:
+  register:
+    path: path/to/tolerance-and-stop-register.yaml
+    sha256: '0000000000000000000000000000000000000000000000000000000000000000'
+    commit: null
+  preflight_report:
+    path: path/to/preflight-report.yaml
+    sha256: '0000000000000000000000000000000000000000000000000000000000000000'
+    commit: null
+  protocol:
+    path: path/to/frozen-protocol.md
+    sha256: '0000000000000000000000000000000000000000000000000000000000000000'
+    commit: null
+  runner:
+    path: path/to/frozen-runner.py
+    sha256: '0000000000000000000000000000000000000000000000000000000000000000'
+    commit: null
+    source_identity: Replace with the frozen runner identity.
+  evaluator:
+    path: path/to/frozen-evaluator.py
+    sha256: '0000000000000000000000000000000000000000000000000000000000000000'
+    commit: null
+    source_identity: Replace with the frozen evaluator identity.
+  frozen_case_set:
+    case_set_id: TEMPLATE-CASE-SET-001
+    artifact:
+      path: path/to/frozen-case-set.yaml
+      sha256: '0000000000000000000000000000000000000000000000000000000000000000'
+      commit: null
+    tuple_count: 1
+  salvage_policy:
+    path: doc/audits/EVIDENCE_SALVAGE_POLICY.md
+    sha256: '0000000000000000000000000000000000000000000000000000000000000000'
+    commit: null
+  independent_review_record:
+    path: path/to/completed-independent-review.md
+    sha256: '0000000000000000000000000000000000000000000000000000000000000000'
+    commit: null
+remaining_data_dependent_conditions: []
+independent_review:
+  review_id: TEMPLATE-INDEPENDENT-REVIEW-001
+  reviewer_role: independent audit reviewer
+  status: pending
+  unregistered_hard_guard_count: 0
+  unsupported_threshold_count: 0
+  unresolved_finding_count: 0
+  completed_at_utc: '2000-01-01T00:00:00Z'
+attestations:
+  all_conditions_registered_and_justified: false
+  deterministic_coverage_complete: false
+  engineering_diagnostics_have_no_veto: false
+  raw_parser_evaluator_and_decision_validity_are_separate: false
+  data_dependent_cost_risks_understood: false
+  salvage_policy_bound_before_execution: false
+  exact_artifacts_digest_bound: false
+  independent_review_approved: false
+  preflight_was_model_free: false
+  no_unregistered_guards: false
+readiness_scope:
+  exact_execution_scope_bound: false
+  launch_authorization: false
+  application_repair: false
+  production_disposition_change: false
+  unity_access: false
+  reaudit: false
+  statement: Draft only; this certificate is not launch authorization and establishes no collateral authority.
+manager_approval:
+  manager_role: audit manager
+  decision: pending
+  approved_at_utc: null
+  record: Complete after accepted independent review and preflight; the final mechanical launch gate validates this certificate.

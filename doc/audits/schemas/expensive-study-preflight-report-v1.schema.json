@@ -1,0 +1,288 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://toltec.astro.umass.edu/schemas/expensive-study-preflight-report-v1.json",
+  "title": "Citlali costly numerical study model-free preflight report v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "preflight_id",
+    "status",
+    "study_id",
+    "bindings",
+    "guard_inventory",
+    "execution",
+    "coverage",
+    "result"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "citlali-audit-expensive-study-preflight-v1"
+    },
+    "preflight_id": {"$ref": "#/$defs/stable_id"},
+    "status": {"enum": ["draft", "complete", "failed", "superseded"]},
+    "study_id": {"$ref": "#/$defs/stable_id"},
+    "bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "register",
+        "protocol",
+        "runner",
+        "evaluator",
+        "frozen_case_set"
+      ],
+      "properties": {
+        "register": {"$ref": "#/$defs/artifact"},
+        "protocol": {"$ref": "#/$defs/artifact"},
+        "runner": {"$ref": "#/$defs/source_artifact"},
+        "evaluator": {"$ref": "#/$defs/source_artifact"},
+        "frozen_case_set": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["case_set_id", "artifact", "tuple_count"],
+          "properties": {
+            "case_set_id": {"$ref": "#/$defs/stable_id"},
+            "artifact": {"$ref": "#/$defs/artifact"},
+            "tuple_count": {"type": "integer", "minimum": 1}
+          }
+        }
+      }
+    },
+    "guard_inventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "method",
+        "census_artifact",
+        "site_count",
+        "registered_condition_ids",
+        "discovered_condition_ids",
+        "discovered_conditions",
+        "abort_capable_condition_ids",
+        "unregistered_abort_capable_ids",
+        "unknown_condition_ids"
+      ],
+      "properties": {
+        "method": {"enum": ["condition_id_dispatcher", "static_inventory", "hybrid"]},
+        "census_artifact": {"$ref": "#/$defs/artifact"},
+        "site_count": {"type": "integer", "minimum": 0},
+        "registered_condition_ids": {"$ref": "#/$defs/id_set"},
+        "discovered_condition_ids": {"$ref": "#/$defs/id_set"},
+        "discovered_conditions": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/discovered_condition"}
+        },
+        "abort_capable_condition_ids": {"$ref": "#/$defs/id_set"},
+        "unregistered_abort_capable_ids": {"$ref": "#/$defs/id_set"},
+        "unknown_condition_ids": {"$ref": "#/$defs/id_set"}
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "command",
+        "scientific_model_calls",
+        "scientific_model_execution_permitted",
+        "environment"
+      ],
+      "properties": {
+        "mode": {"const": "model_free_dry_run"},
+        "command": {"type": "string", "minLength": 1},
+        "scientific_model_calls": {"type": "integer", "minimum": 0},
+        "scientific_model_execution_permitted": {"const": false},
+        "environment": {"$ref": "#/$defs/artifact"}
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "enumerated_tuple_count",
+        "exercised_tuple_count",
+        "all_frozen_tuples_complete",
+        "condition_coverage",
+        "path_coverage"
+      ],
+      "properties": {
+        "enumerated_tuple_count": {"type": "integer", "minimum": 0},
+        "exercised_tuple_count": {"type": "integer", "minimum": 0},
+        "all_frozen_tuples_complete": {"type": "boolean"},
+        "condition_coverage": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/condition_coverage"}
+        },
+        "path_coverage": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/path_coverage"}
+        }
+      }
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["passed", "failure_ids", "warning_ids", "completed_at_utc"],
+      "properties": {
+        "passed": {"type": "boolean"},
+        "failure_ids": {"$ref": "#/$defs/id_set"},
+        "warning_ids": {"$ref": "#/$defs/id_set"},
+        "completed_at_utc": {"$ref": "#/$defs/timestamp"}
+      }
+    }
+  },
+  "$defs": {
+    "stable_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:+-]*$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "commit": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9a-f]{40}$"
+        }
+      }
+    },
+    "source_artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "source_identity"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "commit": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "source_identity": {"type": "string", "minLength": 1}
+      }
+    },
+    "id_set": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/stable_id"},
+      "uniqueItems": true
+    },
+    "condition_coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "condition_id",
+        "data_dependent",
+        "expected_exercises",
+        "observed_exercises",
+        "all_required_tuples_exercised",
+        "expected_branches",
+        "observed_branches",
+        "complete",
+        "synthetic_or_fault_injection",
+        "comparison_observation"
+      ],
+      "properties": {
+        "condition_id": {"$ref": "#/$defs/stable_id"},
+        "data_dependent": {"type": "boolean"},
+        "expected_exercises": {"type": "integer", "minimum": 0},
+        "observed_exercises": {"type": "integer", "minimum": 0},
+        "all_required_tuples_exercised": {"type": "boolean"},
+        "expected_branches": {"$ref": "#/$defs/id_set"},
+        "observed_branches": {"$ref": "#/$defs/id_set"},
+        "complete": {"type": "boolean"},
+        "synthetic_or_fault_injection": {
+          "oneOf": [
+            {"type": "null"},
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["test_id", "passed", "observed_exercises", "evidence"],
+              "properties": {
+                "test_id": {"$ref": "#/$defs/stable_id"},
+                "passed": {"type": "boolean"},
+                "observed_exercises": {"type": "integer", "minimum": 0},
+                "evidence": {"$ref": "#/$defs/artifact"}
+              }
+            }
+          ]
+        },
+        "comparison_observation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["comparison_fingerprint", "observed_threshold"],
+          "properties": {
+            "comparison_fingerprint": {"$ref": "#/$defs/sha256"},
+            "observed_threshold": {
+              "oneOf": [
+                {"$ref": "#/$defs/canonical_number"},
+                {"type": "null"}
+              ]
+            }
+          }
+        }
+      }
+    },
+    "discovered_condition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["condition_id", "source_site_count", "implemented_actions"],
+      "properties": {
+        "condition_id": {"$ref": "#/$defs/stable_id"},
+        "source_site_count": {"type": "integer", "minimum": 1},
+        "implemented_actions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "enum": ["hard_stop", "invalid_evidence", "scientific_failure", "warning"]
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "canonical_number": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["canonical_literal", "representation", "units"],
+      "properties": {
+        "canonical_literal": {
+          "type": "string",
+          "pattern": "^[+-]?(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+)?$"
+        },
+        "representation": {"type": "string", "minLength": 1},
+        "units": {"type": "string", "minLength": 1}
+      }
+    },
+    "path_coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dimension", "required", "expected_paths", "observed_paths", "complete"],
+      "properties": {
+        "dimension": {
+          "enum": [
+            "boundary_neighbors",
+            "constant_paths",
+            "decimal_binary_conversions",
+            "coordinate_transformations",
+            "candidate_dispatch",
+            "output_formats"
+          ]
+        },
+        "required": {"type": "boolean"},
+        "expected_paths": {"$ref": "#/$defs/id_set"},
+        "observed_paths": {"$ref": "#/$defs/id_set"},
+        "complete": {"type": "boolean"}
+      }
+    }
+  }
+}

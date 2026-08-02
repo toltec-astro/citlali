@@ -26,8 +26,9 @@ It does not:
   the scientific contract;
 - authorize code changes, integration, production use, or relaxed validation
   merely because an audit document exists;
-- create an audit CLI, database, formal schema, generator, CI system, or
-  alternate provenance system;
+- create a general audit CLI, database, report generator, CI system, or
+  alternate provenance system. The narrow machine-readable schemas and
+  validator required to control costly numerical studies are an exception;
 - require a rewrite of mature RTC, PTC, JINC, or Wiener algorithms without
   evidence that their internals violate an approved contract;
 - force every package to use every possible validation method; or
@@ -35,8 +36,11 @@ It does not:
   is being reviewed.
 
 The ledger and templates are deliberately hand-maintained Markdown, YAML, and
-LaTeX. Automating them is a separate decision that requires demonstrated
-maintenance value.
+LaTeX. Automating the general audit program is a separate decision that
+requires demonstrated maintenance value. Costly-study condition registers,
+model-free preflight reports, and execution-readiness certificates are
+validated under `FRAMEWORK-NUM-001` because a hidden runtime guard can consume
+or discard expensive evidence before a human can review it.
 
 ## Audit package
 
@@ -196,6 +200,13 @@ current correctness or scientific impact. Optional confidence is `low`,
 gap into a software defect.
 
 ## Package lifecycle and role separation
+
+The coordinator and audit manager also follow
+`doc/audits/AUDIT_MANAGER_INSTRUCTIONS.md`. Any study classified as costly
+must pass `FRAMEWORK-NUM-001` before execution. This adds a condition register,
+model-free guard preflight, independent control review, readiness certificate,
+and preregistered salvage plan; it does not change a package's scientific
+contract or its four status axes.
 
 1. The **coordinator** fixes the package ID, scope, tier, dependencies,
    governing SHA, initial consumer policy, and exact handoff-inbox manifest.
@@ -444,8 +455,10 @@ An **audit report** is complete when it records the exact SHA/worktree and
 frozen-core digest; addresses every common dimension or a justified
 `not_applicable`; traces products and consumers; owns every finding, decision,
 and dependency; defines falsifiable gates; and supplies a verdict plus
-machine-readable ledger proposal. A report with verdict `amend` can be
-complete while its package is not done.
+machine-readable ledger proposal. Every proposed study also has a documented
+cost classification; any costly study is either held or carries the exact
+`FRAMEWORK-NUM-001` control artifacts and launch-gate result. A report with
+verdict `amend` can be complete while its package is not done.
 
 A **package** is done only through one of two terminal paths:
 

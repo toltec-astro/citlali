@@ -1,0 +1,113 @@
+# Generate this report from the frozen harness preflight. Do not hand-convert a
+# failed or incomplete report into a passing report.
+schema_version: citlali-audit-expensive-study-preflight-v1
+preflight_id: TEMPLATE-PREFLIGHT-001
+status: draft
+study_id: TEMPLATE-STUDY-001
+bindings:
+  register:
+    path: path/to/tolerance-and-stop-register.yaml
+    sha256: '0000000000000000000000000000000000000000000000000000000000000000'
+    commit: null
+  protocol:
+    path: path/to/frozen-protocol.md
+    sha256: '0000000000000000000000000000000000000000000000000000000000000000'
+    commit: null
+  runner:
+    path: path/to/frozen-runner.py
+    sha256: '0000000000000000000000000000000000000000000000000000000000000000'
+    commit: null
+    source_identity: Replace with the frozen runner identity.
+  evaluator:
+    path: path/to/frozen-evaluator.py
+    sha256: '0000000000000000000000000000000000000000000000000000000000000000'
+    commit: null
+    source_identity: Replace with the frozen evaluator identity.
+  frozen_case_set:
+    case_set_id: TEMPLATE-CASE-SET-001
+    artifact:
+      path: path/to/frozen-case-set.yaml
+      sha256: '0000000000000000000000000000000000000000000000000000000000000000'
+      commit: null
+    tuple_count: 1
+guard_inventory:
+  method: condition_id_dispatcher
+  census_artifact:
+    path: path/to/guard-site-census.txt
+    sha256: '0000000000000000000000000000000000000000000000000000000000000000'
+    commit: null
+  site_count: 1
+  registered_condition_ids:
+    - TEMPLATE-COND-A-001
+  discovered_condition_ids:
+    - TEMPLATE-COND-A-001
+  discovered_conditions:
+    - condition_id: TEMPLATE-COND-A-001
+      source_site_count: 1
+      implemented_actions: [hard_stop]
+  abort_capable_condition_ids:
+    - TEMPLATE-COND-A-001
+  unregistered_abort_capable_ids: []
+  unknown_condition_ids: []
+execution:
+  mode: model_free_dry_run
+  command: Replace with the exact preflight command.
+  scientific_model_calls: 0
+  scientific_model_execution_permitted: false
+  environment:
+    path: path/to/preflight-environment.json
+    sha256: '0000000000000000000000000000000000000000000000000000000000000000'
+    commit: null
+coverage:
+  enumerated_tuple_count: 1
+  exercised_tuple_count: 0
+  all_frozen_tuples_complete: false
+  condition_coverage:
+    - condition_id: TEMPLATE-COND-A-001
+      data_dependent: false
+      expected_exercises: 1
+      observed_exercises: 0
+      all_required_tuples_exercised: false
+      expected_branches: [match, mismatch]
+      observed_branches: []
+      complete: false
+      synthetic_or_fault_injection: null
+      comparison_observation:
+        comparison_fingerprint: '0000000000000000000000000000000000000000000000000000000000000000'
+        observed_threshold: null
+  path_coverage:
+    - dimension: boundary_neighbors
+      required: true
+      expected_paths: [lower, exact, upper]
+      observed_paths: []
+      complete: false
+    - dimension: constant_paths
+      required: true
+      expected_paths: [registered_constants]
+      observed_paths: []
+      complete: false
+    - dimension: decimal_binary_conversions
+      required: true
+      expected_paths: [all_construction_paths]
+      observed_paths: []
+      complete: false
+    - dimension: coordinate_transformations
+      required: true
+      expected_paths: [all_transform_paths]
+      observed_paths: []
+      complete: false
+    - dimension: candidate_dispatch
+      required: true
+      expected_paths: [all_candidates]
+      observed_paths: []
+      complete: false
+    - dimension: output_formats
+      required: true
+      expected_paths: [all_output_formats]
+      observed_paths: []
+      complete: false
+result:
+  passed: false
+  failure_ids: [TEMPLATE-PREFLIGHT-INCOMPLETE]
+  warning_ids: []
+  completed_at_utc: '2000-01-01T00:00:00Z'

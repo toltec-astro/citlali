@@ -1,0 +1,514 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://toltec.astro.umass.edu/schemas/tolerance-and-stop-condition-register-v1.json",
+  "title": "Citlali audit tolerance and stop-condition register v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "register_id",
+    "status",
+    "study",
+    "final_scientific_metrics",
+    "guard_site_census",
+    "conditions"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "citlali-audit-tolerance-stop-register-v1"
+    },
+    "register_id": {"$ref": "#/$defs/stable_id"},
+    "status": {
+      "enum": ["draft", "frozen", "superseded"]
+    },
+    "study": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "study_id",
+        "title",
+        "package_id",
+        "manager_role",
+        "cost_classification",
+        "protocol",
+        "runner",
+        "evaluator",
+        "frozen_case_set",
+        "raw_evaluator_separation",
+        "salvage_policy"
+      ],
+      "properties": {
+        "study_id": {"$ref": "#/$defs/stable_id"},
+        "title": {"type": "string", "minLength": 1},
+        "package_id": {"$ref": "#/$defs/stable_id"},
+        "manager_role": {"type": "string", "minLength": 1},
+        "cost_classification": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["costly", "basis", "estimate"],
+          "properties": {
+            "costly": {"const": true},
+            "basis": {"type": "string", "minLength": 1},
+            "estimate": {"$ref": "#/$defs/cost"}
+          }
+        },
+        "protocol": {"$ref": "#/$defs/artifact"},
+        "runner": {"$ref": "#/$defs/source_artifact"},
+        "evaluator": {"$ref": "#/$defs/source_artifact"},
+        "frozen_case_set": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["case_set_id", "artifact", "tuple_count"],
+          "properties": {
+            "case_set_id": {"$ref": "#/$defs/stable_id"},
+            "artifact": {"$ref": "#/$defs/artifact"},
+            "tuple_count": {"type": "integer", "minimum": 1}
+          }
+        },
+        "raw_evaluator_separation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "raw_model_stage_separable",
+            "raw_validity_state_artifact",
+            "parser_admission_validity_state_artifact",
+            "evaluator_validity_state_artifact",
+            "scientific_decision_state_artifact"
+          ],
+          "properties": {
+            "raw_model_stage_separable": {"type": "boolean"},
+            "raw_validity_state_artifact": {"type": "string", "minLength": 1},
+            "parser_admission_validity_state_artifact": {"type": "string", "minLength": 1},
+            "evaluator_validity_state_artifact": {"type": "string", "minLength": 1},
+            "scientific_decision_state_artifact": {"type": "string", "minLength": 1}
+          }
+        },
+        "salvage_policy": {"$ref": "#/$defs/artifact"}
+      }
+    },
+    "final_scientific_metrics": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["metric_id", "quantity", "units", "acceptance_authority"],
+        "properties": {
+          "metric_id": {"$ref": "#/$defs/stable_id"},
+          "quantity": {"type": "string", "minLength": 1},
+          "units": {"type": "string", "minLength": 1},
+          "acceptance_authority": {"$ref": "#/$defs/artifact"}
+        }
+      }
+    },
+    "guard_site_census": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact",
+        "method",
+        "harness_kind",
+        "routing",
+        "legacy_static_exception",
+        "site_count",
+        "condition_ids"
+      ],
+      "properties": {
+        "artifact": {"$ref": "#/$defs/artifact"},
+        "method": {"type": "string", "minLength": 1},
+        "harness_kind": {"enum": ["new_or_revised", "legacy"]},
+        "routing": {"enum": ["condition_id_dispatcher", "static_inventory", "hybrid"]},
+        "legacy_static_exception": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["required", "status", "manager_record"],
+          "properties": {
+            "required": {"type": "boolean"},
+            "status": {"enum": ["not_required", "pending", "approved", "rejected"]},
+            "manager_record": {"type": ["string", "null"]}
+          }
+        },
+        "site_count": {"type": "integer", "minimum": 0},
+        "condition_ids": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/stable_id"},
+          "uniqueItems": true
+        }
+      }
+    },
+    "conditions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/condition"}
+    }
+  },
+  "$defs": {
+    "stable_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:+-]*$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "commit": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9a-f]{40}$"
+        }
+      }
+    },
+    "source_artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "source_identity"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "commit": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "source_identity": {"type": "string", "minLength": 1}
+      }
+    },
+    "cost": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "unit", "basis"],
+      "properties": {
+        "value": {"type": "number", "minimum": 0},
+        "unit": {
+          "enum": [
+            "wall_hour",
+            "cpu_hour",
+            "gpu_hour",
+            "gibibyte_hour",
+            "gibibyte_storage",
+            "human_hour",
+            "external_job"
+          ]
+        },
+        "basis": {"type": "string", "minLength": 1}
+      }
+    },
+    "canonical_number": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["canonical_literal", "representation", "units"],
+      "properties": {
+        "canonical_literal": {
+          "type": "string",
+          "pattern": "^[+-]?(?:[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+)?$"
+        },
+        "representation": {"type": "string", "minLength": 1},
+        "units": {"type": "string", "minLength": 1}
+      }
+    },
+    "source_site": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "symbol_or_site",
+        "source_sha256",
+        "embedded_condition_id",
+        "route_kind",
+        "implemented_action"
+      ],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "symbol_or_site": {"type": "string", "minLength": 1},
+        "source_sha256": {"$ref": "#/$defs/sha256"},
+        "embedded_condition_id": {"type": "boolean"},
+        "route_kind": {
+          "enum": [
+            "condition_id_dispatcher",
+            "direct_guard",
+            "exception_or_assertion",
+            "evaluator_gate"
+          ]
+        },
+        "implemented_action": {
+          "enum": ["hard_stop", "invalid_evidence", "scientific_failure", "warning"]
+        }
+      }
+    },
+    "condition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "condition_id",
+        "source_sites",
+        "quantity",
+        "comparison",
+        "condition_class",
+        "protected_requirement",
+        "threshold_derivation",
+        "arithmetic_model",
+        "maximum_propagated_effect",
+        "failure_mode_prevented",
+        "failure_scope",
+        "action",
+        "data_dependent",
+        "data_dependency",
+        "earliest_stage",
+        "preflight",
+        "estimated_cost_exposed_if_fires",
+        "approval"
+      ],
+      "properties": {
+        "condition_id": {"$ref": "#/$defs/stable_id"},
+        "source_sites": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/source_site"}
+        },
+        "quantity": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "units", "expected_scale", "reference_identity"],
+          "properties": {
+            "name": {"type": "string", "minLength": 1},
+            "units": {"type": "string", "minLength": 1},
+            "expected_scale": {"type": "string", "minLength": 1},
+            "reference_identity": {"type": "string", "minLength": 1}
+          }
+        },
+        "comparison": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "semantics",
+            "operator",
+            "threshold",
+            "reference",
+            "comparison_fingerprint"
+          ],
+          "properties": {
+            "semantics": {
+              "enum": [
+                "exact",
+                "absolute",
+                "relative",
+                "ulp",
+                "interval",
+                "set_identity",
+                "schema",
+                "cardinality"
+              ]
+            },
+            "operator": {"type": "string", "minLength": 1},
+            "threshold": {
+              "oneOf": [
+                {"$ref": "#/$defs/canonical_number"},
+                {"type": "null"}
+              ]
+            },
+            "reference": {"type": "string", "minLength": 1},
+            "comparison_fingerprint": {"$ref": "#/$defs/sha256"}
+          }
+        },
+        "condition_class": {
+          "enum": [
+            "A_exact_identity_integrity",
+            "B_derived_numerical_correctness",
+            "C_scientific_acceptance",
+            "D_engineering_diagnostic"
+          ]
+        },
+        "protected_requirement": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["requirement_id", "description", "authority"],
+          "properties": {
+            "requirement_id": {"$ref": "#/$defs/stable_id"},
+            "description": {"type": "string", "minLength": 1},
+            "authority": {"$ref": "#/$defs/artifact"}
+          }
+        },
+        "threshold_derivation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "derivation", "authority"],
+          "properties": {
+            "kind": {
+              "enum": [
+                "exact_identity",
+                "analytic_bound",
+                "conditioning_bound",
+                "interval_bound",
+                "ulp_bound",
+                "scientific_contract",
+                "propagated_impact",
+                "none_diagnostic"
+              ]
+            },
+            "derivation": {"type": "string", "minLength": 1},
+            "authority": {"type": "string", "minLength": 1}
+          }
+        },
+        "arithmetic_model": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["representation", "precision", "rounding", "operation_order", "conditioning"],
+          "properties": {
+            "representation": {"type": "string", "minLength": 1},
+            "precision": {"type": "string", "minLength": 1},
+            "rounding": {"type": "string", "minLength": 1},
+            "operation_order": {"type": "string", "minLength": 1},
+            "conditioning": {"type": "string", "minLength": 1}
+          }
+        },
+        "maximum_propagated_effect": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "affected_metrics",
+            "exact_integrity_rationale",
+            "derived_correctness_rationale",
+            "derivation"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "quantified",
+                "not_applicable_exact_integrity",
+                "not_applicable_derived_correctness",
+                "unknown_diagnostic"
+              ]
+            },
+            "affected_metrics": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["metric_id", "bound"],
+                "properties": {
+                  "metric_id": {"$ref": "#/$defs/stable_id"},
+                  "bound": {"$ref": "#/$defs/canonical_number"}
+                }
+              }
+            },
+            "exact_integrity_rationale": {"type": ["string", "null"]},
+            "derived_correctness_rationale": {"type": ["string", "null"]},
+            "derivation": {"type": "string", "minLength": 1}
+          }
+        },
+        "failure_mode_prevented": {"type": "string", "minLength": 1},
+        "failure_scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "validity_layer",
+            "invalidated_artifact_or_stage",
+            "already_written_raw_output",
+            "salvage_consequence"
+          ],
+          "properties": {
+            "validity_layer": {
+              "enum": [
+                "execution",
+                "raw_artifact",
+                "parser_admission",
+                "evaluator",
+                "scientific_decision"
+              ]
+            },
+            "invalidated_artifact_or_stage": {"type": "string", "minLength": 1},
+            "already_written_raw_output": {
+              "enum": ["unaffected", "affected", "not_yet_written", "requires_salvage_review"]
+            },
+            "salvage_consequence": {"type": "string", "minLength": 1}
+          }
+        },
+        "action": {
+          "enum": ["hard_stop", "invalid_evidence", "scientific_failure", "warning"]
+        },
+        "data_dependent": {"type": "boolean"},
+        "data_dependency": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "input_availability_basis",
+            "model_free_inputs_unavailable",
+            "independent_review_acknowledged",
+            "synthetic_or_fault_injection_test_id"
+          ],
+          "properties": {
+            "input_availability_basis": {"type": "string", "minLength": 1},
+            "model_free_inputs_unavailable": {"type": "boolean"},
+            "independent_review_acknowledged": {"type": "boolean"},
+            "synthetic_or_fault_injection_test_id": {
+              "oneOf": [
+                {"$ref": "#/$defs/stable_id"},
+                {"type": "null"}
+              ]
+            }
+          }
+        },
+        "earliest_stage": {
+          "enum": [
+            "protocol_construction",
+            "model_free_preflight",
+            "pre_model_execution",
+            "model_execution",
+            "raw_output_admission",
+            "downstream_evaluation",
+            "scientific_decision"
+          ]
+        },
+        "preflight": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "test_id",
+            "all_frozen_tuples_required",
+            "boundary_values_required",
+            "branch_coverage_required",
+            "required_branches"
+          ],
+          "properties": {
+            "test_id": {"$ref": "#/$defs/stable_id"},
+            "all_frozen_tuples_required": {"type": "boolean"},
+            "boundary_values_required": {"type": "boolean"},
+            "branch_coverage_required": {"type": "boolean"},
+            "required_branches": {
+              "type": "array",
+              "minItems": 1,
+              "items": {"$ref": "#/$defs/stable_id"},
+              "uniqueItems": true
+            }
+          }
+        },
+        "estimated_cost_exposed_if_fires": {"$ref": "#/$defs/cost"},
+        "approval": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["required", "role", "status", "record"],
+          "properties": {
+            "required": {"type": "boolean"},
+            "role": {
+              "enum": [
+                "not_required",
+                "scientific_owner",
+                "audit_manager",
+                "integrity_owner",
+                "numerical_methods_owner"
+              ]
+            },
+            "status": {"enum": ["not_required", "pending", "approved", "rejected"]},
+            "record": {"type": ["string", "null"]}
+          }
+        }
+      }
+    }
+  }
+}

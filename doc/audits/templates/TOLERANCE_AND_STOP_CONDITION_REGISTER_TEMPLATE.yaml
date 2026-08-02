@@ -1,0 +1,146 @@
+# Replace every TEMPLATE value before freezing. A schema-valid draft is not a
+# launch authorization. The launch gate also verifies digests and semantics.
+# A condition that remains Class D is warning-only. Reclassify a proved
+# identity, numerical-correctness, or scientific consequence as A, B, or C.
+schema_version: citlali-audit-tolerance-stop-register-v1
+register_id: TEMPLATE-TOLERANCE-REGISTER-001
+status: draft
+study:
+  study_id: TEMPLATE-STUDY-001
+  title: Replace with the costly numerical study title
+  package_id: TEMPLATE-PACKAGE-001
+  manager_role: audit manager
+  cost_classification:
+    costly: true
+    basis: Replace with the scarce resource or material rerun cost.
+    estimate:
+      value: 0.0
+      unit: wall_hour
+      basis: Replace with the measured or reasoned estimate.
+  protocol:
+    path: path/to/frozen-protocol.md
+    sha256: '0000000000000000000000000000000000000000000000000000000000000000'
+    commit: null
+  runner:
+    path: path/to/frozen-runner.py
+    sha256: '0000000000000000000000000000000000000000000000000000000000000000'
+    commit: null
+    source_identity: Replace with executable or script identity.
+  evaluator:
+    path: path/to/frozen-evaluator.py
+    sha256: '0000000000000000000000000000000000000000000000000000000000000000'
+    commit: null
+    source_identity: Replace with evaluator identity distinct from raw execution.
+  frozen_case_set:
+    case_set_id: TEMPLATE-CASE-SET-001
+    artifact:
+      path: path/to/frozen-case-set.yaml
+      sha256: '0000000000000000000000000000000000000000000000000000000000000000'
+      commit: null
+    tuple_count: 1
+  raw_evaluator_separation:
+    raw_model_stage_separable: true
+    raw_validity_state_artifact: path/to/raw-validity-state.yaml
+    parser_admission_validity_state_artifact: path/to/parser-admission-validity-state.yaml
+    evaluator_validity_state_artifact: path/to/evaluator-validity-state.yaml
+    scientific_decision_state_artifact: path/to/scientific-decision-state.yaml
+  salvage_policy:
+    path: doc/audits/EVIDENCE_SALVAGE_POLICY.md
+    sha256: '0000000000000000000000000000000000000000000000000000000000000000'
+    commit: null
+final_scientific_metrics:
+  - metric_id: TEMPLATE-METRIC-001
+    quantity: Replace with the final scientific metric.
+    units: Replace with explicit units or dimensionless.
+    acceptance_authority:
+      path: path/to/approved-scientific-contract.md
+      sha256: '0000000000000000000000000000000000000000000000000000000000000000'
+      commit: null
+guard_site_census:
+  artifact:
+    path: path/to/guard-site-census.txt
+    sha256: '0000000000000000000000000000000000000000000000000000000000000000'
+    commit: null
+  method: Replace with condition-ID dispatcher, static inventory, or both.
+  harness_kind: new_or_revised
+  routing: condition_id_dispatcher
+  legacy_static_exception:
+    required: false
+    status: not_required
+    manager_record: null
+  site_count: 1
+  condition_ids:
+    - TEMPLATE-COND-A-001
+conditions:
+  - condition_id: TEMPLATE-COND-A-001
+    source_sites:
+      - path: path/to/frozen-runner.py
+        symbol_or_site: function_or_line_reference
+        source_sha256: '0000000000000000000000000000000000000000000000000000000000000000'
+        embedded_condition_id: true
+        route_kind: condition_id_dispatcher
+        implemented_action: hard_stop
+    quantity:
+      name: frozen input digest
+      units: sha256
+      expected_scale: exactly 256 bits
+      reference_identity: frozen input artifact
+    comparison:
+      semantics: exact
+      operator: equals
+      threshold: null
+      reference: registered SHA-256 digest
+      comparison_fingerprint: '0000000000000000000000000000000000000000000000000000000000000000'
+    condition_class: A_exact_identity_integrity
+    protected_requirement:
+      requirement_id: TEMPLATE-INTEGRITY-001
+      description: Bind execution to the preregistered input artifact.
+      authority:
+        path: path/to/frozen-protocol.md
+        sha256: '0000000000000000000000000000000000000000000000000000000000000000'
+        commit: null
+    threshold_derivation:
+      kind: exact_identity
+      derivation: Byte identity requires exact digest equality.
+      authority: frozen protocol integrity requirement
+    arithmetic_model:
+      representation: SHA-256 bytes
+      precision: 256 bits
+      rounding: not applicable
+      operation_order: hash complete file then compare lowercase hexadecimal digest
+      conditioning: not applicable to discrete identity
+    maximum_propagated_effect:
+      status: not_applicable_exact_integrity
+      affected_metrics: []
+      exact_integrity_rationale: Failure establishes the wrong input identity.
+      derived_correctness_rationale: null
+      derivation: Failure establishes the wrong input identity, not a bounded metric error.
+    failure_mode_prevented: Execution against an input other than the frozen case set.
+    failure_scope:
+      validity_layer: execution
+      invalidated_artifact_or_stage: pre-model execution admission
+      already_written_raw_output: not_yet_written
+      salvage_consequence: No raw artifact exists; correct the identity before execution.
+    action: hard_stop
+    data_dependent: false
+    data_dependency:
+      input_availability_basis: All digest inputs exist before scientific model execution.
+      model_free_inputs_unavailable: false
+      independent_review_acknowledged: true
+      synthetic_or_fault_injection_test_id: null
+    earliest_stage: model_free_preflight
+    preflight:
+      test_id: TEMPLATE-PREFLIGHT-TEST-001
+      all_frozen_tuples_required: true
+      boundary_values_required: true
+      branch_coverage_required: true
+      required_branches: [match, mismatch]
+    estimated_cost_exposed_if_fires:
+      value: 0.0
+      unit: wall_hour
+      basis: The check runs before scientific model execution.
+    approval:
+      required: true
+      role: audit_manager
+      status: pending
+      record: null

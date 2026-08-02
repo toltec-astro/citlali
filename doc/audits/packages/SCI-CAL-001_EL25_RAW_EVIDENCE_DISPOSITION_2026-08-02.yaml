@@ -1,0 +1,259 @@
+schema_version: "sci-cal-001-el25-raw-evidence-disposition-v1"
+record_id: "SCI-CAL-001-AM12-EL25-SALVAGE-001"
+record_kind: "raw_evidence_salvage_disposition"
+package_id: "SCI-CAL-001"
+study_id: "SCI-CAL-001-AM12-EL25-CONFIRMATION-001"
+date: "2026-08-02"
+status: "coordinator_recommendation_preservation_and_replacement_execution_not_authorized"
+governing_policy_ids:
+  - "FRAMEWORK-NUM-001"
+  - "FRAMEWORK-SALVAGE-001"
+
+serialization_contract:
+  duplicate_keys: "reject"
+  implicit_nulls: "reject"
+  digest_algorithm: "sha256"
+  original_evidence_mutation: "forbidden"
+  dedicated_schema_status: "not_defined_not_a_launch_control_record"
+
+provenance:
+  source_branch: "codex/sci-cal-001-atmosphere-operator"
+  preregistration_commit: "fe3b3a1f7885334c50337382d97a84121dbe57c0"
+  failure_result_commit: "5d1597ca2d18f5e35519f6e62b5a014aea736fad"
+  repository_relative_evidence_root: "validation/sci_cal_001_atmosphere_operator_2026-08-01"
+  reviewed_local_worktree: "/Users/gwilson/.codex/worktrees/cdd5/citlali-refactor"
+  current_volatile_writable_cache: "/private/tmp/sci_cal_001_am12_el25_confirmation_v1_20260802_root"
+  current_cache_durable: false
+  current_cache_read_only: false
+  durable_preserved_copy: "not_created"
+  control_artifacts:
+    preregistration:
+      path: "validation/sci_cal_001_atmosphere_operator_2026-08-01/am12_el25_confirmation_preregistration.json"
+      sha256: "66c9583d67c3696ac03d1edbd6eade95884dbdc77dd93ef890226594f210da70"
+    protocol:
+      path: "validation/sci_cal_001_atmosphere_operator_2026-08-01/AM12_EL25_CONFIRMATION_PROTOCOL.md"
+      sha256: "68674df82d0212826ad19bfbd1a6399e96f7dfd0fe99de984133c004b63971f1"
+    runner:
+      path: "validation/sci_cal_001_atmosphere_operator_2026-08-01/run_am12_el25_confirmation_study.py"
+      sha256: "bcc4bc9f59574424e1daab652ab0316f8a694998155d9c3daa246e1e6260fb22"
+    result_schema:
+      path: "validation/sci_cal_001_atmosphere_operator_2026-08-01/am12_el25_confirmation_result.schema.json"
+      sha256: "a28e738970b2a462fd1fb68c78aad552e32cbd396f8f60956f8615e4be2a3965"
+    failure_report:
+      path: "validation/sci_cal_001_atmosphere_operator_2026-08-01/AM12_EL25_CONFIRMATION_FAILURE_REPORT.md"
+      sha256: "4929efe11680c39532b3b9a74bc5d50bc2a9550a935573f55da3813f3ddc2e7a"
+    failure_decision:
+      path: "validation/sci_cal_001_atmosphere_operator_2026-08-01/am12_el25_confirmation_failure_decision.json"
+      sha256: "6714994991eecade125eb3fd8e93b7795b41546e640cde3de962bba1cfa29b67"
+    execution_context:
+      path_relative_to_cache: "execution_context.json"
+      sha256: "a867df7b05ea590c498e41932bb1b3f9520e635d2534f7c8fcc539cfd4a12ecf"
+    am_executable:
+      model: "AM 12.2"
+      sha256: "78e721d45b08990069a2d67a5fb337446bcbfb728046940c0d473bea340205fb"
+
+incident:
+  case_id: "q50_q75_trisect_2/LMT_DJF_50"
+  failure_stage: "post_scale_solution_pre_full_grid_achieved_coordinate_float_guard"
+  scale_trace_path_relative_to_cache: "scale_traces/q50_q75_trisect_2_LMT_DJF_50.json"
+  scale_trace_evaluation_count: 99
+  runtime_tau225_f17: "1.34988558021834626e-01"
+  decimal_cast_tau225_f17: "1.34988558021834681e-01"
+  absolute_discrepancy_f17: "5.55111512312578270e-17"
+  discrepancy_ulps: 2
+  guard_threshold_source_literal: "5.0e-17"
+  parsed_transmission_exact_target_match: true
+  registered_in_protocol: false
+  threshold_derivation_present: false
+  final_metric_impact_mapping_present: false
+  deterministic_preflight_possible: true
+  assigned_condition_class: "D_engineering_diagnostic"
+  permitted_successor_action: "warning_only_or_remove_redundant_cross_construction_comparison"
+  replacement_universal_epsilon_permitted: false
+
+preserved_evidence:
+  evidence_collection:
+    file_count: 3920
+    total_bytes: 2249667308
+    aggregate_algorithm: "sha256(relative_path NUL file_sha256_bytes NUL)"
+    aggregate_sha256: "25ee2a1b2f793f5273e714dc0094bb7e39ebc76615e1fe424d2d65a95013956d"
+  raw_outputs:
+    file_count: 1953
+    aggregate_sha256: "e2d91f7b38c68b0c62651da5e391222b04206f49a5629a2344e75b0f70fa8370"
+    anchor_output_count: 1281
+    full_grid_output_count: 672
+  execution_sidecars:
+    file_count: 1953
+    matched_pair_count: 1953
+    aggregate_sha256: "b2dd7b6d2b155795ca302402a8f8ce06241585c17bed5bb4bbb1b0b2f3804184"
+  scale_traces:
+    file_count: 13
+    evaluation_count: 1281
+    aggregate_sha256: "775a491c99b3d02bd772d0d366909c360a5877a1ce829b1850bf3e11e5ace976"
+  failed_am_attempts:
+    file_count: 0
+    aggregate_sha256: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  internal_am_cache:
+    file_count: 21637
+    shard_count: 8
+    total_bytes: 4541614872
+    aggregate_sha256: "9141c5fb61f8d6a7265ef6b6fd0d70b8a7ed113d0950a9f787dc62480bda087d"
+
+coverage:
+  expected_case_count: 16
+  complete_case_count: 12
+  expected_full_grid_count: 896
+  retained_full_grid_count: 672
+  missing_full_grid_count: 224
+  elevations_per_case: 56
+  retained_scale_trace_count: 13
+  unstarted_scale_search_count: 3
+  complete_cases:
+    - coordinate_id: "q0_q25_trisect_1"
+      truth_profile: "LMT_DJF_5"
+    - coordinate_id: "q0_q25_trisect_1"
+      truth_profile: "LMT_DJF_25"
+    - coordinate_id: "q0_q25_trisect_2"
+      truth_profile: "LMT_DJF_5"
+    - coordinate_id: "q0_q25_trisect_2"
+      truth_profile: "LMT_DJF_25"
+    - coordinate_id: "q25_q50_trisect_1"
+      truth_profile: "LMT_DJF_25"
+    - coordinate_id: "q25_q50_trisect_1"
+      truth_profile: "LMT_DJF_50"
+    - coordinate_id: "q25_q50_trisect_2"
+      truth_profile: "LMT_DJF_25"
+    - coordinate_id: "q25_q50_trisect_2"
+      truth_profile: "LMT_DJF_50"
+    - coordinate_id: "q50_q75_trisect_1"
+      truth_profile: "LMT_DJF_50"
+    - coordinate_id: "q50_q75_trisect_1"
+      truth_profile: "LMT_DJF_75"
+    - coordinate_id: "q50_q75_trisect_1"
+      truth_profile: "LMT_annual_25"
+    - coordinate_id: "q50_q75_trisect_1"
+      truth_profile: "LMT_MAM_25"
+  incomplete_cases:
+    - coordinate_id: "q50_q75_trisect_2"
+      truth_profile: "LMT_DJF_50"
+      scale_search_state: "complete_99_evaluations_reuse_required"
+      missing_full_grid_count: 56
+    - coordinate_id: "q50_q75_trisect_2"
+      truth_profile: "LMT_DJF_75"
+      scale_search_state: "not_started_compute_once"
+      missing_full_grid_count: 56
+    - coordinate_id: "q50_q75_trisect_2"
+      truth_profile: "LMT_annual_25"
+      scale_search_state: "not_started_compute_once"
+      missing_full_grid_count: 56
+    - coordinate_id: "q50_q75_trisect_2"
+      truth_profile: "LMT_MAM_25"
+      scale_search_state: "not_started_compute_once"
+      missing_full_grid_count: 56
+
+validity:
+  frozen_scientific_contract: "unchanged"
+  retained_full_grids: "salvageable_raw_pending_preservation_and_admission"
+  retained_anchor_outputs: "salvageable_raw_pending_preservation_and_admission"
+  retained_scale_traces: "salvageable_raw_pending_preservation_and_admission"
+  original_evaluator: "invalid_evaluation"
+  original_confirmation_verdict: "confirmation_invalid"
+  partial_candidate_metrics: "not_evaluated"
+  bandpass_integration: "not_performed"
+  maximum_error: "not_evaluated"
+  observational_performance: "not_evaluated"
+
+successor_requirements:
+  original_commits_immutable: true
+  durable_byte_preserving_copy_required_before_admission: true
+  durable_copy_manifest_and_aggregate_reverification_required: true
+  durable_copy_read_only_required: true
+  new_protocol_identity_required: true
+  new_runner_identity_required: true
+  new_parser_evaluator_identity_required: true
+  new_result_schema_and_identity_required: true
+  tolerance_and_stop_register_required: true
+  all_16_case_model_free_guard_preflight_required: true
+  independent_review_required: true
+  readiness_certificate_required: true
+  separate_delta_cache_required: true
+  independent_reparse_before_metrics:
+    retained_full_grids: 672
+    retained_anchor_outputs: 1281
+    retained_scale_traces: 13
+  preserve:
+    - "all_16_scientific_tuples"
+    - "all_frozen_candidates_and_truth_profiles"
+    - "passband_authority"
+    - "scientific_opacity_elevation_domain"
+    - "exact_parsed_225ghz_target_transmission_admission"
+    - "return_code_and_warning_admission"
+    - "raw_parsing_sidecars_hashes_and_provenance"
+    - "one_percent_representation_fidelity_gate"
+  independence_condition: "no_partial_decisive_scientific_metric_inspected_before_successor_evaluator_freeze"
+
+missing_only_plan:
+  repeat_retained_full_grids_by_default: false
+  repeat_completed_case_13_scale_search_by_default: false
+  scale_searches_to_compute:
+    - "q50_q75_trisect_2/LMT_DJF_75"
+    - "q50_q75_trisect_2/LMT_annual_25"
+    - "q50_q75_trisect_2/LMT_MAM_25"
+  scale_search_count: 3
+  full_grid_cases_to_compute:
+    - "q50_q75_trisect_2/LMT_DJF_50"
+    - "q50_q75_trisect_2/LMT_DJF_75"
+    - "q50_q75_trisect_2/LMT_annual_25"
+    - "q50_q75_trisect_2/LMT_MAM_25"
+  elevations_per_full_grid_case: 56
+  full_grid_count: 224
+  final_evaluation_scope: "verified_union_of_all_896_full_grids_under_one_frozen_successor_evaluator"
+  repeat_trigger_required:
+    - "model_input_or_tuple_identity_failure"
+    - "executable_or_model_affecting_execution_context_failure"
+    - "raw_output_completeness_failure"
+    - "warning_admission_or_return_status_failure"
+    - "independent_parsing_failure"
+    - "hash_sidecar_or_provenance_failure"
+    - "confirmatory_independence_failure"
+
+held_boundaries:
+  citlali_application_code_modified: false
+  tolteca_modified: false
+  scientific_candidates_modified: false
+  passband_authority_modified: false
+  scientific_domain_modified: false
+  one_percent_gate_modified: false
+  am_launch_authorized: false
+  candidate_metric_evaluation_authorized: false
+  cal_repair_authorized: false
+  unity_evidence_authorized: false
+  re_audit_authorized: false
+  production_authorized: false
+  composition_framework_D005: "held_separate"
+  composition_framework_D006: "held_separate"
+
+next_authorization:
+  authorized_now: false
+  requested_scope: "bounded_model_free_successor_protocol_and_evidence_preservation_only"
+  recommended_durable_destination: "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/evidence/sci_cal_001_am12_el25_confirmation_5d1597ca"
+  current_cache_size_gib_approximate: "6.4"
+  destination_volume_available_gib_at_review_approximate: "359"
+  permitted_outputs:
+    - "durable_byte_preserving_cache_copy"
+    - "verified_durable_copy_manifest_and_aggregate"
+    - "successor_tolerance_and_stop_condition_register"
+    - "corrected_runner_and_evaluator_design"
+    - "full_16_case_no_AM_guard_preflight"
+    - "independent_salvage_verifier"
+    - "delta_computation_manifest"
+    - "readiness_certificate_materials"
+  prohibited_actions:
+    - "invoke_AM"
+    - "evaluate_partial_or_complete_candidate_metrics"
+    - "begin_CAL_application_repair"
+    - "request_Unity_evidence"
+    - "launch_reaudit"
+  later_separate_authorization_required_for:
+    scale_search_count: 3
+    full_grid_count: 224

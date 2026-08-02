@@ -4,7 +4,8 @@ repository: /Users/gwilson/GitHub/citlali-refactor
 inventory_branch: codex/refactor-mainline
 inventory_governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
 inventory_date: 2026-07-31
-maintenance: hand_edited_no_schema_or_validator
+maintenance: >-
+  hand_edited_general_ledger_with_narrow_schema_validated_costly_study_controls
 inventory_dependency_detail: >-
   An upstream record containing only package_id and status is an
   inventory-only edge. Before that package audit is dispatched, the
@@ -19,6 +20,72 @@ handoff_protocol:
   ownership: coordinator_integrated_source_and_recipient_proposals
   dispatch_rule: frozen_id_digest_phase_manifest
   late_arrival_rule: explicit_amendment_reaudit_or_external_restriction
+numerical_cost_control:
+  policy_id: FRAMEWORK-NUM-001
+  status: active_for_next_costly_stage
+  effective_date: 2026-08-02
+  policy_path: >-
+    doc/audits/NUMERICAL_PROPORTIONALITY_AND_COST_CONTROL_POLICY.md
+  policy_sha256: >-
+    01aa5d37300a2af5d8e35127c9d08d858854308deac6784ce43a731849911e92
+  manager_instructions_path: doc/audits/AUDIT_MANAGER_INSTRUCTIONS.md
+  manager_instructions_sha256: >-
+    aa6daf10692124ff8ca168e2bf89ef77f98eace02829d985725520810e36b129
+  evidence_salvage_policy_id: FRAMEWORK-SALVAGE-001
+  evidence_salvage_policy_path: doc/audits/EVIDENCE_SALVAGE_POLICY.md
+  evidence_salvage_policy_sha256: >-
+    eec6140d4c5c3e7ac587afe3ca36a85a4b85e4a6191d88756aecb858d918c0f9
+  register_schema_path: >-
+    doc/audits/schemas/tolerance-and-stop-condition-register-v1.schema.json
+  register_schema_sha256: >-
+    251cdd76882e635c3de97a7eba10c533519c2ac6058a4578f7ee680c18e63398
+  preflight_schema_path: >-
+    doc/audits/schemas/expensive-study-preflight-report-v1.schema.json
+  preflight_schema_sha256: >-
+    f981a37dd6a1a2e7b7bb2340225c4fe2d9de9ccb63fea862fd3b286d8a0e566a
+  readiness_schema_path: >-
+    doc/audits/schemas/expensive-execution-readiness-certificate-v1.schema.json
+  readiness_schema_sha256: >-
+    5212029e8ff9bc4f9c348e9276d6465a46441dedbe5f7e1be1cad4035d466d48
+  launch_gate: tools/audits/validate_expensive_study_controls.py
+  launch_gate_sha256: >-
+    385a8746df7bad3d112ac099e8d1453e1ae0a711212f5663b18ad47641309735
+  corrective_action_record:
+    path: >-
+      doc/audits/packages/FRAMEWORK-NUM-001_CORRECTIVE_ACTION_2026-08-02.md
+    sha256: >-
+      5075a0adf738863a19891095b407518e4094887390f7e8e2a6946433c29a484a
+  affected_audit_inventory:
+    path: >-
+      doc/audits/packages/FRAMEWORK-NUM-001_AFFECTED_AUDIT_INVENTORY_2026-08-02.md
+    sha256: >-
+      601b6321f2fbf553ade7b3a327eda3a940ee013e6910f9af3ca639f048b7521c
+  independent_review:
+    status: approved
+    path: >-
+      doc/audits/packages/FRAMEWORK-NUM-001_INDEPENDENT_REVIEW_2026-08-02.md
+    sha256: >-
+      83e495fa105a2490485844395ea0c1d030fd2e801caf64cbe75be0d33e973084
+    adversarial_test_count: 42
+    remaining_P0_P1_gaps: 0
+  owner_decision_brief:
+    path: >-
+      doc/audits/packages/FRAMEWORK-NUM-001_OWNER_DECISION_BRIEF_2026-08-02.md
+    sha256: >-
+      850b7d4dce3ab4d6904fee7731b78db8c0fb8cee08815e6a5d0648426c4a04af
+    next_authorization_id: FRAMEWORK-NUM-D001
+    next_authorization_status: owner_input_required
+  scope: >-
+    Every new costly audit study, every next costly stage of an active audit,
+    and every replacement execution after a harness or evaluator stop.
+  general_ledger_schema_status: intentionally_hand_maintained_unvalidated
+  package_status_axis_effect: none
+  completed_evidence_retroactive_effect: none
+  composition_closure_effect:
+    FRAMEWORK-COMP-D005: held_unchanged
+    FRAMEWORK-COMP-D006: held_unchanged
+  current_holds:
+    - SCI-CAL-001-AM12-EL25-CONFIRMATION-001-replacement
 
 controlled_vocabulary:
   tiers: [A, B, C]
@@ -91,6 +158,21 @@ controlled_vocabulary:
     - add_interface_test
     - informational_only
     - not_applicable
+  numerical_condition_class:
+    - A_exact_identity_integrity
+    - B_derived_numerical_correctness
+    - C_scientific_acceptance
+    - D_engineering_diagnostic
+  numerical_condition_action:
+    - hard_stop
+    - invalid_evidence
+    - scientific_failure
+    - warning
+  costly_execution_readiness_status:
+    - draft
+    - ready
+    - denied
+    - superseded
 
 packages:
   - id: SCI-MAP-001
@@ -1948,7 +2030,8 @@ packages:
         and final operational endpoints remain unresolved; no operator,
         implementation, Unity evidence, or re-audit is authorized.
     atmosphere_confirmation_decision:
-      status: approved_for_preregistered_local_confirmation
+      status: historical_authorization_consumed_by_stopped_execution
+      original_status: approved_for_preregistered_local_confirmation
       decision_date: 2026-08-02
       record_path: >-
         doc/audits/packages/SCI-CAL-001_ATMOSPHERE_CONFIRMATION_DECISION_2026-08-02.md
@@ -2006,10 +2089,72 @@ packages:
           the v1 set; require one named upstream custodian and release manifest,
           explicit owner adoption, and renewed CAL and Beammap validation.
       effect: >-
-        Authorizes only preregistration and local execution of one independent
-        EL25 numerical confirmation. It does not authorize operator adoption,
-        an operational domain, application changes, Unity evidence, CAL repair,
+        Historically authorized preregistration and local execution of one
+        independent EL25 numerical confirmation. That authority was consumed
+        by the stopped execution recorded below and supplies no replacement or
+        resume authority. It never authorized operator adoption, an
+        operational domain, application changes, Unity evidence, CAL repair,
         re-audit, or production use.
+    atmosphere_confirmation_execution:
+      study_id: SCI-CAL-001-AM12-EL25-CONFIRMATION-001
+      status: >-
+        stopped_confirmation_invalid_raw_salvageable_preservation_and_successor_held
+      evidence_branch: codex/sci-cal-001-atmosphere-operator
+      preregistration_commit: fe3b3a1f7885334c50337382d97a84121dbe57c0
+      failure_result_commit: 5d1597ca2d18f5e35519f6e62b5a014aea736fad
+      expected_cases: 16
+      complete_cases: 12
+      expected_full_grids: 896
+      retained_full_grids: 672
+      missing_full_grids: 224
+      retained_anchor_outputs: 1281
+      retained_scale_traces: 13
+      missing_scale_searches: 3
+      scientific_result_status: not_evaluated_confirmation_invalid
+      hidden_guard_incident:
+        condition_class: D_engineering_diagnostic
+        registered: false
+        runtime_tau225: "1.34988558021834626e-01"
+        decimal_cast_tau225: "1.34988558021834681e-01"
+        absolute_difference: "5.55111512312578270e-17"
+        ulp_difference: 2
+        source_threshold: "5.0e-17"
+        exact_target_transmission_match_passed: true
+        scientific_impact_mapping_present: false
+        deterministic_preflight_possible: true
+        invalidating_authority: rejected_by_FRAMEWORK_NUM_001
+      raw_evidence_aggregate_sha256: >-
+        25ee2a1b2f793f5273e714dc0094bb7e39ebc76615e1fe424d2d65a95013956d
+      disposition_path: >-
+        doc/audits/packages/SCI-CAL-001_EL25_RAW_EVIDENCE_DISPOSITION_2026-08-02.md
+      disposition_sha256: >-
+        7151ec7d004f59d147a2664ec2520dc30c299f8a2b95e05031cca365425f6cfe
+      machine_disposition_path: >-
+        doc/audits/packages/SCI-CAL-001_EL25_RAW_EVIDENCE_DISPOSITION_2026-08-02.yaml
+      machine_disposition_sha256: >-
+        80e3ac46658adf7ba07fb6243a110153280f2b4fdca36009ad425e8761835590
+      retained_raw_validity: >-
+        salvageable_raw_pending_preservation_and_admission
+      live_cache_path: >-
+        /private/tmp/sci_cal_001_am12_el25_confirmation_v1_20260802_root
+      live_cache_durable: false
+      live_cache_read_only: false
+      durable_preservation_authorized: false
+      recommended_durable_destination: >-
+        /Users/gwilson/work_toltec/local_data/citlali-validation/v1/evidence/sci_cal_001_am12_el25_confirmation_5d1597ca
+      evaluator_validity: invalid_evaluation
+      partial_candidate_metrics_inspected: false
+      permitted_successor_scope: >-
+        First make and digest-verify a byte-preserving durable copy, then
+        prepare a new protocol and condition register, demote or remove only
+        the redundant binary64 construction-path guard, run a no-AM preflight
+        over all 16 cases, independently admit the preserved read-only cache,
+        and propose a three-scale-search plus 224-grid delta execution.
+      successor_preparation_authorized: false
+      replacement_execution_authorized: false
+      cal_repair_authorized: false
+      unity_evidence_authorized: false
+      re_audit_authorized: false
     dispatch:
       status: frozen_for_dispatch
       coordinator_registry_commit: 88741d085a08431790c6eee719b6f20052b459d8
@@ -2178,8 +2323,11 @@ packages:
           fail-closed fixtures, and complete a fresh exact-repair-SHA re-audit.
     unresolved_scientific_decisions:
       - >-
-        CAL-ATM-CONF-001: the newly preregistered EL25 numerical confirmation
-        must complete and receive independent coordinator review.
+        CAL-ATM-CONF-001: the predecessor confirmation stopped invalid. Owner
+        authorization is required for durable evidence preservation and a
+        model-free successor-preparation task; a later exact readiness package
+        and separate execution authorization are required before missing-only
+        AM work may begin.
       - >-
         CAL-ATM-ADOPT-001: after successful confirmation, explicitly select
         and version the exact atmosphere operator; do not infer adoption from
@@ -2234,7 +2382,7 @@ packages:
           preregistered physical intermediate-opacity truth, selected spectral
           lineage, and exact approved operational endpoints.
       - id: SCI-CAL-001-ATMOSPHERE-OPERATOR-002
-        status: verified_owner_direction_confirmation_authorized
+        status: verified_historical_direction_execution_authority_consumed
         source_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
         evidence_branch: codex/sci-cal-001-atmosphere-operator
         evidence_commit: f4014d3669b94b1eceb8158da7993737efc908f2
@@ -2268,7 +2416,7 @@ packages:
       - SCI-CAL-001-UNITY-001
     supplied_external_evidence: []
     repair_dispatch:
-      status: paused_for_preregistered_el25_confirmation
+      status: paused_for_framework_control_and_successor_preparation_decision
       selected_base_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
       selected_base_ref: codex/refactor-mainline
       repair_branch: codex/repair-sci-cal-001
@@ -2288,8 +2436,13 @@ packages:
         toltec-passband-set-v1:sha256:5e6f38f14bcae93a29ffe8362c52b15209f51aee4e48373b23aaa5ec2f8a6433
       successor_scope_decision: CAL-D001-ACCURACY-001
       next_gate: >-
-        Preregister, execute, and independently review the bounded EL25
-        confirmation. A passing result still requires explicit selection and
+        Obtain explicit owner authorization for a bounded evidence-preservation
+        and model-free successor-preparation task. Make and verify a durable
+        byte-preserving cache copy, then freeze and independently review its
+        condition register, corrected harness/evaluator design, 16-case no-AM
+        preflight, salvage verifier, delta manifest, and readiness certificate.
+        Expensive execution remains a later separate owner authorization. A
+        passing eventual result still requires explicit selection and
         versioning of the exact operator plus a separate operational-domain
         decision before any application-code edit.
       parallel_dependency: >-

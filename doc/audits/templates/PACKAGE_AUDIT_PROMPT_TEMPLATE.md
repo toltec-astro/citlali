@@ -21,6 +21,8 @@ Audit package:
 - frozen inbound-handoff manifest path and SHA-256: `TO_SET`
 - pre-core authority handoff IDs: `TO_SET_LIST_OR_NONE`
 - post-core evidence handoff IDs: `TO_SET_LIST_OR_NONE`
+- planned numerical/external studies and manager cost classification:
+  `TO_SET_STUDY_IDS_AND_COSTLY_OR_NOT_COSTLY_WITH_BASIS`
 
 The audit package is one scientific transformation, not a source directory.
 Its included scope is:
@@ -71,6 +73,11 @@ until the independent core is frozen:
    interface/response evidence supplies a specific reopen trigger.
 9. Historical output, a regression pass, or a plausible map is evidence, not
    the mathematical authority.
+10. Do not launch a study classified as costly from the audit thread. First
+    prepare the `FRAMEWORK-NUM-001` condition register, source guard census,
+    model-free preflight, evidence-salvage plan, independent review, and
+    readiness-certificate proposal. Return them for manager validation and
+    separate launch authorization.
 
 ## Phase 1: independent core before source inspection
 
@@ -146,6 +153,14 @@ the full mathematical object from any Citlali approximation. A conditional
 conformity conclusion must name a stable dependency ID, exact assumption, and
 falsifiable test. A known mismatch is `nonconformant`, not conditional.
 
+Inventory every assertion, exception, early return, invalidation, and
+scientific-failure route in each proposed numerical-study harness. Classify it
+under `FRAMEWORK-NUM-001`, state whether it is deterministic before model
+execution, and identify the raw evidence that remains valid if it fires. A
+source-level check absent from the proposed condition register has no
+invalidating authority. Do not substitute exact floating-point equality or an
+arbitrary epsilon for an error-propagation argument.
+
 Classify findings independently as `implementation_defect`, `contract_gap`,
 `scientific_policy_decision`, `evidence_gap`, or `dependency_gap`. Use P0-P3,
 `observed`/`derived`/`suspected`/`owner_decision`, and confidence separately.
@@ -183,6 +198,9 @@ The audit must include:
   closure gates;
 - exact Unity/external evidence request with pre-registered comparisons and
   tolerances;
+- for each costly proposed study, a completed preregistration checklist and
+  proposed register/preflight/readiness/salvage artifacts, or an explicit
+  statement that execution remains held;
 - the frozen handoff manifest, pre/post-core exposure record, recipient
   disposition for every inbound handoff, and every proposed outbound handoff;
 - downstream allowlist, restrictions, and fail-closed uses;
@@ -218,7 +236,9 @@ offline checks. Report:
 7. local evidence and the exact unsupplied external evidence;
 8. allowed, restricted, and fail-closed consumers;
 9. inbound handoff dispositions and proposed outbound handoff IDs; and
-10. confirmation that no application code, frozen worktree, external lane,
+10. each proposed study's cost classification and whether the
+    `FRAMEWORK-NUM-001` launch controls are complete; and
+11. confirmation that no application code, frozen worktree, external lane,
    mainline, or canonical ledger was modified or integrated.
 
 Stop after the report. Do not repair the implementation, launch another

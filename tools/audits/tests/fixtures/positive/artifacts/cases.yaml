@@ -1,0 +1,4 @@
+case_set_id: SYN-CASES
+tuples:
+  - case: synthetic
+    coordinate: 1.0

@@ -1,0 +1,72 @@
+schema_version: citlali-audit-expensive-execution-readiness-v1
+certificate_id: SYN-CERTIFICATE
+status: ready
+study_id: SYN-STUDY
+execution_scope_id: SYN-EXECUTION
+bindings:
+  register:
+    path: register.yaml
+    sha256: 2ae3620a82f2df878b595a768f47a0e153c3077bc68fe798bdde8115005650ab
+  preflight_report:
+    path: preflight.yaml
+    sha256: 917a2991377620c785b31d3c04accb5fb48f69d0418b7479bffc56e948531811
+  protocol:
+    path: artifacts/protocol.md
+    sha256: 346d452dd1714b85c761fdcdd650e368e86b40672e1578c936e2f59c6689bc73
+  runner:
+    path: artifacts/runner.py
+    sha256: 7a23bee5202f093f003e0d350d9cd960dacf1eaabe57cfa2fcff05a7afed1838
+    source_identity: synthetic-runner-v1
+  evaluator:
+    path: artifacts/evaluator.py
+    sha256: f9e546eb92c0600a6958cea7290025dd62704f033feeea8dd88d7101c62befe1
+    source_identity: synthetic-evaluator-v1
+  frozen_case_set:
+    case_set_id: SYN-CASES
+    artifact:
+      path: artifacts/cases.yaml
+      sha256: ee00296a60fc14cc041401b655b84acadea8927e9ec373c6a968bd322ca92b87
+    tuple_count: 1
+  salvage_policy:
+    path: artifacts/salvage.md
+    sha256: dd8abe73acda52ad908525405adc10689561914f20b21da7627e2c2e7b30d817
+  independent_review_record:
+    path: artifacts/independent-review.md
+    sha256: 7c1ab7c3037555fb350ecbb1de12678d168b8ffa101bcff4140d0457881ebde4
+remaining_data_dependent_conditions:
+  - condition_id: SYN-C-SCIENCE
+    cost_exposure_understood: true
+    independent_review_acknowledged: true
+    disposition: Synthetic fault-injection covers both scientific decision branches.
+independent_review:
+  review_id: SYN-INDEPENDENT-REVIEW
+  reviewer_role: independent synthetic reviewer
+  status: approved
+  unregistered_hard_guard_count: 0
+  unsupported_threshold_count: 0
+  unresolved_finding_count: 0
+  completed_at_utc: '2026-08-02T13:00:00Z'
+attestations:
+  all_conditions_registered_and_justified: true
+  deterministic_coverage_complete: true
+  engineering_diagnostics_have_no_veto: true
+  raw_parser_evaluator_and_decision_validity_are_separate: true
+  data_dependent_cost_risks_understood: true
+  salvage_policy_bound_before_execution: true
+  exact_artifacts_digest_bound: true
+  independent_review_approved: true
+  preflight_was_model_free: true
+  no_unregistered_guards: true
+readiness_scope:
+  exact_execution_scope_bound: true
+  launch_authorization: false
+  application_repair: false
+  production_disposition_change: false
+  unity_access: false
+  reaudit: false
+  statement: Readiness applies only to SYN-EXECUTION against the exact frozen bindings; this certificate is not launch authorization.
+manager_approval:
+  manager_role: synthetic audit manager
+  decision: approved
+  approved_at_utc: '2026-08-02T14:00:00Z'
+  record: SYN-MANAGER-APPROVAL

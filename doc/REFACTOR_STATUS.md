@@ -17,6 +17,56 @@ The project will improve the existing tree incrementally. It will not restart
 as a broad rewrite and will not rewrite the granular history of the validated
 branch. The exact validated tree will remain available for forensic review.
 
+## 2026-08-02 Numerical Proportionality And Cost Control
+
+The project owner directed a framework-level corrective action after the
+preregistered SCI-CAL EL25 confirmation stopped on an unregistered two-ULP
+binary64 consistency diagnostic. The active
+[numerical proportionality and cost-control policy](audits/NUMERICAL_PROPORTIONALITY_AND_COST_CONTROL_POLICY.md)
+now requires every costly numerical audit study to bind a machine-readable
+Tolerance-and-Stop-Condition Register, run a scientific-model-free guard
+preflight over the complete frozen case set, obtain independent control
+review, define raw/evaluator evidence salvage before execution, and pass a
+digest-bound manager readiness gate. The framework does not adopt a universal
+epsilon and does not change any scientific acceptance threshold.
+
+The [corrective-action record](audits/packages/FRAMEWORK-NUM-001_CORRECTIVE_ACTION_2026-08-02.md)
+identifies the systemic failure: exact integrity, derived numerical checks,
+scientific acceptance, and engineering diagnostics previously shared abort
+semantics without a registered proportionality or cost review. The narrow
+schemas and validator under `doc/audits/schemas/` and `tools/audits/` are an
+exception to the otherwise hand-maintained audit framework. They govern
+costly-study launch controls only; they do not create a general audit database
+or a fifth package-wide status axis.
+
+The
+[final independent framework review](audits/packages/FRAMEWORK-NUM-001_INDEPENDENT_REVIEW_2026-08-02.md)
+is `approved` with no remaining P0/P1 gap. All 42 adversarial launch-gate tests,
+the positive bound-study gate, schema/meta-schema checks, YAML uniqueness,
+Ruff, ledger digest verification, and the full required config preflight pass.
+
+The SCI-CAL attempt at preregistration commit
+`fe3b3a1f7885334c50337382d97a84121dbe57c0` and failure commit
+`5d1597ca2d18f5e35519f6e62b5a014aea736fad` remains an invalid confirmation:
+no candidate error, maximum, ranking, pass/fail decision, operator adoption,
+or domain authorization exists. Its 672 completed full grids are identified as
+salvageable raw, warning-bearing evidence, but the only live cache found is a
+writable 6.4-GiB tree under `/private/tmp`; durable byte-preserving
+preservation and digest reverification are prerequisites to reuse. After that
+and independent provenance, parsing, warning-admission, and completeness
+checks, a successor may generate only the three missing scale searches and 224
+missing full grids, then evaluate the complete 896-grid union through one newly
+frozen evaluator. No cache-preservation action, replacement AM execution, CAL
+repair, Unity evidence, or re-audit is authorized. The next decision is owner
+authorization of durable preservation plus a model-free successor-preparation
+task; the coordinator then prepares and independently reviews the exact
+preregistration and control package. Execution remains a later, separate owner
+authorization.
+
+This corrective action is independent of composition closure.
+`FRAMEWORK-COMP-D005` and `FRAMEWORK-COMP-D006` remain held exactly as stated
+below.
+
 ## 2026-08-01 Composition-Closure Framework Owner Decision
 
 The project owner approved `FRAMEWORK-COMP-D001`--`FRAMEWORK-COMP-D004` in the
@@ -205,8 +255,12 @@ source commit `2791e6a1e6349ad1d3ac549a648f41cbc51b98c7`. The
 also binds the closed confirmation-only domain `0 <= tau225 <=
 0.158313198574890929`, `25 <= EL <= 80 deg`, q95 excluded, and a bounded AM
 status-1 warning-bearing evidence policy. One independently preregistered EL25
-numerical confirmation is now authorized; operator adoption, an operational
-domain, Citlali changes, Unity, CAL repair, re-audit, and production remain
+numerical confirmation was authorized and then stopped after 672 of 896 grids
+because its harness imposed an unregistered two-ULP consistency guard after
+the exact transmission target had passed. The confirmation remains invalid,
+but the raw grids are salvageable under `FRAMEWORK-NUM-001`; a replacement
+execution is not yet authorized. Operator adoption, an operational domain,
+Citlali changes, Unity, CAL repair, re-audit, and production remain
 unauthorized.
 
 Future telescope passband work is tracked by

@@ -82,6 +82,11 @@ measured, and recorded as intentional.
 - Run focused tests for the behavior touched. CTest, baseline-tool tests, and
   the full config preflight are active gates; skipped required data is not a
   successful validation.
+- Before preparing or authorizing a costly scientific-audit study, follow
+  `doc/audits/AUDIT_MANAGER_INSTRUCTIONS.md` and
+  `doc/audits/NUMERICAL_PROPORTIONALITY_AND_COST_CONTROL_POLICY.md`. Do not
+  launch until the exact register, model-free preflight, independent review,
+  salvage plan, and readiness certificate pass the framework launch gate.
 - The user performs Unity builds and reductions. Do not attempt to use Unity.
 - Do not push. The user controls pushes to GitHub.
 - Leave unrelated dirty files unchanged.
