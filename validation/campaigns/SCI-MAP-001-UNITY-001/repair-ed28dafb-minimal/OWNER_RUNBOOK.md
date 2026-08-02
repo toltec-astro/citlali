@@ -11,19 +11,19 @@ Run locally:
 
 ```sh
 LOCAL_PACKAGE=/Users/gwilson/.codex/worktrees/aa31/citlali-refactor/validation/campaigns/SCI-MAP-001-UNITY-001/repair-ed28dafb-minimal
-UNITY_PACKAGE='<Grant-selected Unity package path>/repair-ed28dafb-minimal'
+UNITY_RUN_ROOT="$HOME/c2025t/2026-ENG-citlali-MAP"
+UNITY_PACKAGE="$UNITY_RUN_ROOT/repair-ed28dafb-minimal"
 rsync -a --checksum --protect-args "$LOCAL_PACKAGE/" "unity_toltec:$UNITY_PACKAGE/"
 ssh unity_toltec "cd '$UNITY_PACKAGE' && sha256sum -c SHA256SUMS"
 ```
 
 ## 2. Create the two TolProj workspaces
 
-Set the three operational values yourself, then run locally. `UNITY_RUN_ROOT`
-must be a fresh Unity test root; do not reuse an old reduction or copy an old
-reduction tree into it.
+The agreed Unity root is `$HOME/c2025t/2026-ENG-citlali-MAP`. Set the three
+remaining operational values yourself, then run locally. Do not reuse an old
+reduction or copy an old reduction tree into it.
 
 ```sh
-UNITY_RUN_ROOT='<Grant-selected fresh Unity test root>'
 TOLPROJ='<approved TolProj executable on Unity>'
 TOLPROJ_SITE_CONFIG='<approved TolProj site configuration>'
 GRANT_USER='<Grant Unity/TolProj user>'

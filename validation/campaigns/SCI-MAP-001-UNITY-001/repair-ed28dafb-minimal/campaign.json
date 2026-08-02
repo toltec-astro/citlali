@@ -2,6 +2,7 @@
   "schema_version": "sci-map-unity-minimal-transfer-v1",
   "request_id": "SCI-MAP-001-UNITY-001",
   "revision": "repair-sha-ed28dafb-minimal-2026-08-02",
+  "unity_target_relative_to_home": "c2025t/2026-ENG-citlali-MAP",
   "candidate": {
     "sha": "ed28dafb37f9113c0d3c95297148157129a90886",
     "tree": "cf75c36557178f351fb62781108a6f4b41b19225",
