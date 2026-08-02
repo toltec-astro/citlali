@@ -31,6 +31,8 @@ CONFIGS = {
         "observation": "152389",
         "source": SUITE_ROOT
         / "point/pointings_v22/reduced/redu00/citlali_o152389_0_2_c1.yaml",
+        "fitreport_dir": SUITE_ROOT / "point/data",
+        "fitreport_interfaces": (0, 1, 2, 3, 4, 5, 7, 8, 9, 11, 12),
         "sha256": "340677ab1e873e735a44dcee84d7da9eba91a7c511f8d9229b044aa29d98f5ba",
         # Fourteen selected input paths plus the realized output_dir binding.
         "suite_path_binding_count": 15,
@@ -39,6 +41,8 @@ CONFIGS = {
         "observation": "148670",
         "source": SUITE_ROOT
         / "beammaps/3c273/reduced/redu00/citlali_o148670_0_2_c1.yaml",
+        "fitreport_dir": SUITE_ROOT / "beammaps/data",
+        "fitreport_interfaces": (0, 1, 2, 3, 4, 5, 7, 8, 9, 11, 12),
         "sha256": "d81ac8b1aa52c06c0ef7d69158c802850499695aa9d614ebaf996147ba736788",
         # Thirteen selected input paths plus the realized output_dir binding.
         "suite_path_binding_count": 14,
@@ -99,10 +103,46 @@ def selected_paths(config_text: str) -> list[Path]:
     return sorted(paths)
 
 
+def selected_fit_reports(spec: dict[str, object]) -> list[Path]:
+    directory = Path(spec["fitreport_dir"])
+    observation = str(spec["observation"])
+    expected_interfaces = tuple(spec["fitreport_interfaces"])
+    reports: list[Path] = []
+    for interface in expected_interfaces:
+        pattern = re.compile(
+            rf"toltec{interface}_{observation}_000_0001.+\.txt"
+        )
+        matches = sorted(
+            path
+            for path in directory.iterdir()
+            if path.is_file() and pattern.fullmatch(path.name)
+        )
+        if len(matches) != 1:
+            raise RuntimeError(
+                "expected exactly one fit report for "
+                f"toltec{interface} observation {observation}; found {len(matches)}"
+            )
+        reports.append(matches[0])
+    return reports
+
+
 def write_json_new(path: Path, value: object) -> None:
     with path.open("x", encoding="utf-8") as stream:
         json.dump(value, stream, indent=2, sort_keys=True)
         stream.write("\n")
+
+
+def require_manifest_unchanged(
+    entries: list[dict[str, object]], label: str
+) -> None:
+    for entry in entries:
+        path = Path(str(entry["path"]))
+        if (
+            not path.is_file()
+            or path.stat().st_size != int(entry["size_bytes"])
+            or sha256(path) != entry["sha256"]
+        ):
+            raise RuntimeError(f"{label} changed after preparation: {path}")
 
 
 def prepare(args: argparse.Namespace, repo: Path, mode_root: Path) -> None:
@@ -110,10 +150,9 @@ def prepare(args: argparse.Namespace, repo: Path, mode_root: Path) -> None:
     if mode_root.exists():
         raise FileExistsError(f"scratch mode root already exists: {mode_root}")
     config_dir = mode_root / "config"
-    data_dir = mode_root / "data"
     reduced_dir = mode_root / "reduced"
     evidence_dir = mode_root / "evidence"
-    for path in (config_dir, data_dir, reduced_dir, evidence_dir):
+    for path in (config_dir, reduced_dir, evidence_dir):
         path.mkdir(parents=True, exist_ok=False)
 
     spec = CONFIGS[args.mode]
@@ -138,7 +177,7 @@ def prepare(args: argparse.Namespace, repo: Path, mode_root: Path) -> None:
     text = replace_once(
         text,
         "    fitreportdir: ../data",
-        f"    fitreportdir: {data_dir}",
+        f"    fitreportdir: {spec['fitreport_dir']}",
         "fitreportdir binding",
     )
     text, output_count = re.subn(
@@ -168,13 +207,27 @@ def prepare(args: argparse.Namespace, repo: Path, mode_root: Path) -> None:
                 "sha256": sha256(path),
             }
         )
+    fit_reports = selected_fit_reports(spec)
+    fit_report_manifest = []
+    for interface, path in zip(spec["fitreport_interfaces"], fit_reports):
+        fit_report_manifest.append(
+            {
+                "interface": f"toltec{interface}",
+                "path": str(path),
+                "search_pattern": (
+                    f"toltec{interface}_{spec['observation']}_000_0001.+\\.txt"
+                ),
+                "size_bytes": path.stat().st_size,
+                "sha256": sha256(path),
+            }
+        )
     binary = args.binary.resolve()
     if not binary.is_file() or not os.access(binary, os.X_OK):
         raise RuntimeError(f"candidate binary is not executable: {binary}")
     write_json_new(
         evidence_dir / "preparation.json",
         {
-            "schema_version": "sci-align-001-phase1-local-preparation-v1",
+            "schema_version": "sci-align-001-phase1-local-preparation-v2",
             "mode": args.mode,
             "observation": spec["observation"],
             "repair_identity": identity,
@@ -193,6 +246,7 @@ def prepare(args: argparse.Namespace, repo: Path, mode_root: Path) -> None:
                 "sha256": sha256(binary),
             },
             "selected_inputs": manifest,
+            "selected_fit_reports": fit_report_manifest,
         },
     )
     print(localized)
@@ -213,6 +267,18 @@ def execute(args: argparse.Namespace, repo: Path, mode_root: Path) -> None:
     config = Path(preparation["localized_config"]["path"])
     if sha256(config) != preparation["localized_config"]["sha256"]:
         raise RuntimeError("localized config changed after preparation")
+    require_manifest_unchanged(preparation["selected_inputs"], "selected input")
+    current_fit_report_paths = [
+        str(path) for path in selected_fit_reports(CONFIGS[args.mode])
+    ]
+    prepared_fit_report_paths = [
+        str(entry["path"]) for entry in preparation["selected_fit_reports"]
+    ]
+    if current_fit_report_paths != prepared_fit_report_paths:
+        raise RuntimeError("selected fit-report cohort changed after preparation")
+    require_manifest_unchanged(
+        preparation["selected_fit_reports"], "selected fit report"
+    )
 
     log_path = evidence_dir / "citlali.log"
     summary_path = evidence_dir / "run_summary.json"
