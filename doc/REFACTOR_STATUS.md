@@ -117,12 +117,19 @@ freeze the application mainline.
   q0--q75/EL25--80 support, fail-closed ALIGN eligibility, and bounded
   warning-bearing status-1 evidence. The standalone protocol preregisters six
   exact opacity trisections, 16 profile/opacity scale cases, all integer
-  elevations EL25--80, 896 new full grids, and one fixed primary candidate;
-  no confirmation result exists at this snapshot. `OBS-001` remains a
-  production-only gate. FTS-versus-ECSV direct truth differs by as much as
-  3.474613%, but FTS is excluded from the owner-selected confirmation
-  passband identity. The 13 deterministic v2 artifacts are SHA-256 bound and
-  passed cache-only replay. The broader legacy q0--q95 C1 maxima and the
+  elevations EL25--80, 896 new full grids, and one fixed primary candidate.
+  Preregistration commit `fe3b3a1f7` has exact parent `f4014d366`. Its one
+  authorized execution stopped fail-closed after 12/16 cases and 672/896 full
+  grids at an unregistered binary64 consistency guard: a two-ULP
+  `5.55111512312578270e-17` discrepancy exceeded `5e-17` although the AM scale
+  matched its frozen transmission literal exactly. The execution is
+  `confirmation_invalid`; no durable candidate metric, maximum, numerical
+  pass/fail, operator, or domain exists. The partial cache is SHA-256 bound,
+  and a corrected fresh execution requires new owner/coordinator authority.
+  `OBS-001` remains a production-only gate. FTS-versus-ECSV direct truth
+  differs by as much as 3.474613%, but FTS is excluded from the owner-selected
+  confirmation passband identity. The 13 deterministic v2 artifacts are
+  SHA-256 bound and passed cache-only replay. The broader legacy q0--q95 C1 maxima and the
   q95/a2000 0.839827% elevation feature remain historical diagnostics, not
   successor release gates. Any future correction must use full sample airmass
   with top-of-atmosphere pivot `X_ref=0`, and the late
@@ -2748,8 +2755,12 @@ silently choose among these:
   for a new preregistered confirmation. The exact passband, bounded support,
   outside-domain, ALIGN eligibility, and AM status-1 policies are now frozen
   for that confirmation by coordination decision `f513f410b` and binding
-  `8fc9263a2`; the independent protocol is committed before execution. The
-  later observational validation campaign (`OBS-001`) remains production-only.
+  `8fc9263a2`; the independent protocol was committed before execution. That
+  one execution is now invalid/incomplete at 672/896 grids because of the
+  bound runner's two-ULP floating-point guard stop. Decide whether to authorize
+  a new, distinctly versioned preregistration and fresh cache with only that
+  non-scientific harness defect corrected. The later observational validation
+  campaign (`OBS-001`) remains production-only.
   Generic q95 and exact generic-q custody remain unresolved nonblocking
   historical provenance. Neither the completed study, the confirmation
   authority, nor its preregistration authorizes an operator or operational

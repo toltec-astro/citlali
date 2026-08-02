@@ -18,10 +18,17 @@ commit `f513f410b` and binding commit `8fc9263a2` subsequently resolve
 `BAND-001`, `DOMAIN-001`, and `WARN-001` for that confirmation only: exact
 TolTECA v1 ECSV bytes, closed q0--q75/EL25--80 support, fail-closed ALIGN
 eligibility, and the bounded AM status-1 warning rule.  The independent
-confirmation protocol is now frozen, but no confirmation result is recorded
-at this preregistration state.  The completed v2 failure, EL20--80 study
-domain, and 13 deterministic artifact identities remain unchanged;
-`OBS-001` remains a later production-only gate.
+confirmation protocol was frozen at preregistration commit `fe3b3a1f7`, exact
+parent `f4014d366`.  Its one authorized execution stopped fail-closed after 12
+of 16 cases and 672 of 896 full grids, before any durable candidate metric or
+maximum existed.  The stop was a two-binary64-ULP disagreement in an
+unregistered `5e-17` runner consistency guard, not an AM target mismatch.
+Machine status is `confirmation_invalid`; no numerical pass/fail, operator,
+or domain is available.  The stopped-cache decision and full SHA-256 inventory
+are recorded separately, and any corrected fresh execution requires new
+owner/coordinator authority.  The completed v2 failure, EL20--80 study domain,
+and 13 deterministic artifact identities remain unchanged; `OBS-001` remains
+a later production-only gate.
 
 ## Read first
 
@@ -33,6 +40,11 @@ domain, and 13 deterministic artifact identities remain unchanged;
 - `am12_el25_confirmation_preregistration.json`: exact machine-readable
   authority, opacity/profile/elevation selection, passband, warning, coverage,
   and output contract frozen before execution.
+- `AM12_EL25_CONFIRMATION_FAILURE_REPORT.md`: concise invalid-execution stop,
+  preserved coverage, exact two-ULP guard discrepancy, and authority boundary.
+- `am12_el25_confirmation_failure_decision.json`: complete machine-readable
+  cache inventory, warning evidence, coverage, and failure provenance; it
+  intentionally contains no partial candidate metric.
 - `AM12_SUCCESSOR_ADOPTION_STUDY_REPORT.md`: frozen v2 numerical result.
 - `AM12_SUCCESSOR_ADOPTION_STUDY_EXECUTION_RECORD_2026-08-01.md`: P1 check,
   excluded-v1, canonical-v2, and deterministic-replay lineage.
@@ -62,7 +74,9 @@ The owner direction remains evaluation, not adoption or operator selection:
    passband/domain/warning decision authorizes one independent study.  Its
    uniform integer-degree EL25--80 lattice and two exact opacity trisections
    per q interval produce 896 new direct grids; the post-result v2 EL25 slice
-   is not reused as confirmation truth.
+   is not reused as confirmation truth.  The authorized execution stopped at
+   672 grids before complete evidence, so it is `confirmation_invalid` rather
+   than a numerical pass or fail.  A replacement execution is not authorized.
 3. **Historical provenance retained, nonblocking:** generic q95 datafile ID 461 and exact generic generator/profile/grid custody remain unresolved. No copied product is substituted for a generic product, and the successor must not be represented as a historical regeneration.
 
 The 13 deterministic study artifacts are bound.  All structural and coverage
@@ -136,8 +150,8 @@ Those fields identify the state when each sub-study was frozen.  The f401
 `owner_input_request.json` are now also retained as predecessor decision-state
 records: their `BAND-001`/`DOMAIN-001`/`WARN-001` pending fields describe the
 state before coordination decision `f513f410b` and are not rewritten.  The
-content-bound coordination authority, confirmation preregistration, and later
-confirmation manifest supersede those pending fields for the bounded study
+content-bound coordination authority, confirmation preregistration, and
+invalid-execution record supersede those pending fields for the bounded study
 only without relabeling the predecessor lineage.
 
 `SHA256SUMS` covers every regular file in this package except itself. The full raw NPZ inputs are not duplicated into this repository; their immutable SHA-256 values, TolTECA MD5 identities, repository lineage, and observed read-only paths are recorded. Generated recovery artifacts locate inputs by filename and digest rather than embedding the runtime directory, so identical bytes may be staged elsewhere and passed with `--source-dir`.
@@ -194,6 +208,16 @@ $HOME/tolteca/bin/python validation/sci_cal_001_atmosphere_operator_2026-08-01/r
   --beammap-repo /Users/gwilson/GitHub/toltec_beammap \
   --output-dir validation/sci_cal_001_atmosphere_operator_2026-08-01 \
   --jobs 8 --omp-threads 1
+```
+
+The stopped EL25 cache is preserved and must not be resumed or reused. Its
+failure decision and full digest inventory can be reproduced without AM,
+passband integration, or candidate evaluation:
+
+```sh
+$HOME/tolteca/bin/python validation/sci_cal_001_atmosphere_operator_2026-08-01/record_am12_el25_confirmation_failure.py \
+  --cache-dir /private/tmp/sci_cal_001_am12_el25_confirmation_v1_20260802_root \
+  --check
 ```
 
 On another host, `--skip-external` omits unavailable machine-local coordination and AM-tree checks. If `--raw-source-dir` is explicitly supplied, its digest-identical q25/q50/q75 and supporting files are still checked; they are not skipped:
