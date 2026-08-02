@@ -1,0 +1,90 @@
+{
+  "aggregation_role": "diagnostic summaries only; per-detector product rows control comparison",
+  "apt_flag_values": [
+    0,
+    1
+  ],
+  "apt_row_count": 5234,
+  "beammap_obsnum": 148670,
+  "comparison_policy": "join by stable detector UID/array and intersect APT flag==0 with source fit_good==1; unaffected records retain exact policy; no nonzero tolerance for OD5-changed records is owner-approved",
+  "fit_summary": [
+    {
+      "array": "a1100",
+      "centroid_x_median_arcsec": -15.67683197487843,
+      "centroid_x_uncertainty_median_arcsec": 0.003471488740378961,
+      "centroid_y_median_arcsec": -3.241270741684236,
+      "centroid_y_uncertainty_median_arcsec": 0.003481577805748211,
+      "major_fwhm_median_arcsec": 6.034215927876193,
+      "major_fwhm_p16_arcsec": 5.566396401513154,
+      "major_fwhm_p84_arcsec": 6.581002055139761,
+      "minor_fwhm_median_arcsec": 5.073636465525075,
+      "minor_fwhm_p16_arcsec": 4.495899244156506,
+      "minor_fwhm_p84_arcsec": 5.638374179984677,
+      "valid_intersection_count": 2901
+    },
+    {
+      "array": "a1400",
+      "centroid_x_median_arcsec": 10.87385296145978,
+      "centroid_x_uncertainty_median_arcsec": 0.011986834657042561,
+      "centroid_y_median_arcsec": 6.615530517904664,
+      "centroid_y_uncertainty_median_arcsec": 0.012114874352138795,
+      "major_fwhm_median_arcsec": 7.1517230547045605,
+      "major_fwhm_p16_arcsec": 6.693843740338285,
+      "major_fwhm_p84_arcsec": 7.697028930816695,
+      "minor_fwhm_median_arcsec": 6.415133853746454,
+      "minor_fwhm_p16_arcsec": 5.751568759193424,
+      "minor_fwhm_p84_arcsec": 6.981938344669701,
+      "valid_intersection_count": 1186
+    },
+    {
+      "array": "a2000",
+      "centroid_x_median_arcsec": 2.1320950615467487,
+      "centroid_x_uncertainty_median_arcsec": 0.018042802559052523,
+      "centroid_y_median_arcsec": 1.643148837389806,
+      "centroid_y_uncertainty_median_arcsec": 0.018805316651824902,
+      "major_fwhm_median_arcsec": 9.417458291687549,
+      "major_fwhm_p16_arcsec": 8.858187475807412,
+      "major_fwhm_p84_arcsec": 10.178551146002851,
+      "minor_fwhm_median_arcsec": 8.670265088335206,
+      "minor_fwhm_p16_arcsec": 7.886206472194262,
+      "minor_fwhm_p84_arcsec": 9.269679811604389,
+      "valid_intersection_count": 886
+    }
+  ],
+  "source_crossing": {
+    "absolute_crossing_time_status": "UNAVAILABLE; do not infer from distance-only record",
+    "apt_flag_zero_count": 4973,
+    "detector_count": 5234,
+    "direct_closest_approach_sample_identity_present": false,
+    "direct_timestamp_variable_present": false,
+    "per_array": [
+      {
+        "array": "a1100",
+        "closest_distance_max_arcsec": 1.8919607234542835,
+        "closest_distance_median_arcsec": 0.8444031223251405,
+        "closest_distance_p95_arcsec": 1.4312860705224153,
+        "valid_intersection_count": 2901
+      },
+      {
+        "array": "a1400",
+        "closest_distance_max_arcsec": 1.8444089514502038,
+        "closest_distance_median_arcsec": 0.8373173930319775,
+        "closest_distance_p95_arcsec": 1.436064155510723,
+        "valid_intersection_count": 1186
+      },
+      {
+        "array": "a2000",
+        "closest_distance_max_arcsec": 1.733606681727987,
+        "closest_distance_median_arcsec": 0.8863395803594689,
+        "closest_distance_p95_arcsec": 1.4287096992250115,
+        "valid_intersection_count": 886
+      }
+    ],
+    "ptc_sample_rate_hz": 122.0703125,
+    "source_center_scan_index_max": 167,
+    "source_center_scan_index_min": 13,
+    "source_fit_good_count": 5135,
+    "unique_uid_count": 5234,
+    "valid_uid_array_aptflag_sourcefit_intersection_count": 4973
+  }
+}

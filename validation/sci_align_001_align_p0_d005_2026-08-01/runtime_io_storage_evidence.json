@@ -1,0 +1,115 @@
+{
+  "historical_logs": [
+    {
+      "log_interval_sec": 64.354,
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/point/pointings_v22/reduced/redu00/citlali.log.gz",
+      "serious_message_count": 0,
+      "version": "v4.0.0-3585-gd339053c"
+    },
+    {
+      "log_interval_sec": 59.364,
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/wilson/1146+399/reduced/redu00/citlali.log.gz",
+      "serious_message_count": 0,
+      "version": "v4.0.0-3564-ge97de3fd"
+    },
+    {
+      "log_interval_sec": 3779.068,
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/beammaps/3c273/reduced/redu00/citlali.log.gz",
+      "serious_message_count": 0,
+      "version": "v4.0.0-3575-gcfae989c"
+    },
+    {
+      "log_interval_sec": 396.247,
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/beammaps/pointings/reduced/redu00/citlali.log.gz",
+      "serious_message_count": 0,
+      "version": "v4.0.0-3564-ge97de3fd"
+    },
+    {
+      "log_interval_sec": 560.524,
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/science/pointings/reduced/redu00/citlali.log.gz",
+      "serious_message_count": 0,
+      "version": "v4.0.0-3535-g7ca0be50"
+    },
+    {
+      "log_interval_sec": 507.269,
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/science/reduction/NGC4449/reduced/redu00/citlali.log.gz",
+      "serious_message_count": 0,
+      "version": "v4.0.0-3535-g7ca0be50"
+    },
+    {
+      "log_interval_sec": 601.13,
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/science/reduction/NGC4449/reduced/redu01/citlali.log.gz",
+      "serious_message_count": 0,
+      "version": "v4.0.0-3535-g7ca0be50"
+    },
+    {
+      "log_interval_sec": 614.278,
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/science/reduction/NGC4449/reduced/redu02/citlali.log.gz",
+      "serious_message_count": 0,
+      "version": "v4.0.0-3535-g7ca0be50"
+    },
+    {
+      "log_interval_sec": 605.274,
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/science/reduction/NGC4449/reduced/redu03/citlali.log.gz",
+      "serious_message_count": 0,
+      "version": "v4.0.0-3535-g7ca0be50"
+    }
+  ],
+  "historical_profiles": [
+    {
+      "alignment_setup_stage_present": false,
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/point/pointings_v22/reduced/redu00/citlali_profile.ecsv",
+      "record_count": 69,
+      "unique_stage_count": 25
+    },
+    {
+      "alignment_setup_stage_present": false,
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/oof/wilson/1146+399/reduced/redu00/citlali_profile.ecsv",
+      "record_count": 84,
+      "unique_stage_count": 20
+    },
+    {
+      "alignment_setup_stage_present": false,
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/beammaps/3c273/reduced/redu00/citlali_profile.ecsv",
+      "record_count": 43,
+      "unique_stage_count": 29
+    },
+    {
+      "alignment_setup_stage_present": false,
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/beammaps/pointings/reduced/redu00/citlali_profile.ecsv",
+      "record_count": 153,
+      "unique_stage_count": 29
+    },
+    {
+      "alignment_setup_stage_present": false,
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/science/pointings/reduced/redu00/citlali_profile.ecsv",
+      "record_count": 228,
+      "unique_stage_count": 29
+    },
+    {
+      "alignment_setup_stage_present": false,
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/science/reduction/NGC4449/reduced/redu00/citlali_profile.ecsv",
+      "record_count": 186,
+      "unique_stage_count": 25
+    }
+  ],
+  "interpretation": "single historical reductions and science fruit-loop iterations are not paired repeatability trials",
+  "io_storage_rule": {
+    "io_metrics": "paired filesystem counters and exact input/output inventory; counters are comparative indicators, not bytes",
+    "numeric_byte_limit": "UNAVAILABLE until compact schema/serialization is owner-approved",
+    "storage_metrics": "exact scientific product inventory/bytes plus incremental ALIGN provenance bytes",
+    "structural_limit": "no routine dense sample-by-detector, per-sample, per-pixel provenance, response, or covariance products; new state is O(observations*interfaces + transitions/gaps/exceptions)"
+  },
+  "preregistered_runtime_rule": {
+    "aggregation": "paired successor/baseline ratios, median and IQR; retain every pair",
+    "authority": "doc/PHASE4_PERFORMANCE_PROTOCOL_2026-07-16.md plus D003 no-repeatable-regression rule",
+    "design": "same host/allocation/input/config/build/dependencies/storage/thread policy; one warmup per role; five retained alternating measured baseline/successor pairs",
+    "limits": [
+      "fail if median successor/baseline wall ratio > 1.05 (existing accepted ceiling)",
+      "owner return if successor/baseline ratio > 1.0 in all five measured pairs (repeatable same-sign slowdown)",
+      "fail incomplete/mismatched runs or any unexpected serious log message"
+    ],
+    "primary_metric": "Citlali internal log interval; external wall retained as operational context",
+    "setup_metric": "paired elapsed alignment setup stage on the same five runs; no current dedicated stage or numerical equivalence margin exists"
+  }
+}

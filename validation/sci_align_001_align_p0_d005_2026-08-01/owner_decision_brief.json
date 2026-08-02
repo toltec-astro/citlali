@@ -1,0 +1,81 @@
+{
+  "CAL_AST_safe_decision_boundary": "ALIGN may use downstream astrometric/scientific products only as sentinels. No flux, calibration, APT eligibility, OOF estimator, source estimator, mapmaking, WCS/frame, projection, sign, or handedness policy may be changed or tuned.",
+  "decision_id": "ALIGN-P0-D005",
+  "decisive_stop": "OWNER_AMENDMENT_REQUIRED_DO_NOT_SELECT_PREDICATE_OR_SIDE",
+  "explicit_non_authorizations": [
+    "phase one",
+    "application edits",
+    "new Hold predicate or transition side",
+    "Unity evidence request",
+    "CAL/AST/OOF/mapmaking/source-estimator repair",
+    "enabled HWPR/polarization",
+    "re-audit",
+    "merge/rebase/push/production expansion"
+  ],
+  "measured_conclusions": [
+    "Pointing 152389 and Beammap 148670 are suitable mandatory 1x core fixtures.",
+    "All 187 inventoried detector-file references are genuine native 1x; after observation/interface canonicalization there are 176 identities across 16 observations. Native 0.5x, 2x, and 4x are absent.",
+    "The fixed cohort supports an inclusive telescope adjacent-bracket envelope of 0.021130561828613281 s only.",
+    "OOF focus diversity and extended-source science cannot set ALIGN centroid/PSF repeatability tolerances.",
+    "Historical suite products are not exact governing-9aae executions and single runtimes are not repeatability distributions.",
+    "Beammap 148670 composite Hold-plus-outside final state cannot discriminate raw predicate or transition side because outside-map masking subsumes all tested Hold states. Its 241 maximal false runs are a conditional segmentation candidate only, not authoritative physical scans; the 198 legacy outputs remain the exact governing compatibility baseline."
+  ],
+  "owner_questions": [
+    {
+      "id": "D005-Q1-HOLD",
+      "question": "Will the owner explicitly authorize the named legacy whole-word-linear-any compatibility view combined with the separately applied governing outside-map-box condition to control raster segmentation without a producer-turn claim, leave stronger turnaround state unavailable, and apply only the OD5 scan-boundary repairs; or keep physical raster segmentation unavailable pending a separate scientific amendment with discriminating authority/evidence?"
+    },
+    {
+      "id": "D005-Q2-RATES",
+      "question": "May phase one be restricted to native 1x while 0.5x/2x/4x observational evidence remains pending, or are all four native observational strata prerequisites?"
+    },
+    {
+      "id": "D005-Q3-TELESCOPE",
+      "question": "Is 0.021130561828613281 s approved only as this fixed-cohort validation envelope, or as an admitted runtime limit? No general producer cadence/gap bound is proved."
+    },
+    {
+      "id": "D005-Q4-BASELINE",
+      "question": "Which direct comparison authority controls phase one: a future exact governing-SHA 9aae run, or an explicit amendment naming historical accepted/suite snapshots?"
+    },
+    {
+      "id": "D005-Q5-RUNTIME",
+      "question": "Does the owner approve the five-pair runtime rule (existing 5% median ceiling plus owner return for five same-sign slowdowns) and a new setup-stage measurement, while I/O/storage retain only the frozen structural compactness rule until paired evidence exists; or what exact rule replaces it?"
+    },
+    {
+      "id": "D005-Q6-SCIENCE-SUPPORT",
+      "question": "Must the realized suite be completed with 152418/152420/152430/152432/152434, whose complete owner-local raw sets are now digest-bound, or is their raw-header-only 1x evidence sufficient while product/repeatability evidence stays pending?"
+    },
+    {
+      "id": "D005-Q7-COMBINED-BEAMMAP",
+      "question": "D002 assigns a combined-Beammap study to D005, but 148670 is the only selected suite Beammap. Will the owner admit and bind supplemental heterogeneous/out-of-suite Beammap 152307, name another already-local accepted Beammap reduction, or explicitly leave the combined-observation residual/source-crossing/centroid/PSF study evidence-pending?"
+    },
+    {
+      "id": "D005-Q8-CHANGED-SCIENCE",
+      "question": "For records changed solely by approved OD5 window repairs, must the current exact Point/Beammap product policy remain the gate (so any numeric change stops), or will the owner approve a separately specified uncertainty/repeatability-derived non-degradation rule? D005 evidence cannot freeze a nonzero value."
+    }
+  ],
+  "phase_one_authorization": "NONE",
+  "recommendation": "RECORD_PREREGISTRATION_WITH_EXPLICIT_EVIDENCE_GAPS_AND_OWNER_RETURN_REQUIRED",
+  "tolerances_frozen_now": [
+    "native 1x strict slot support abs(residual)<0.004096 s and zero ordinary slot changes/collisions",
+    "fixed-cohort telescope adjacent-bracket envelope <=0.021130561828613281 s",
+    "Beammap 148670 exact 198-window governing legacy output identity",
+    "conditional Beammap 148670 241-zero-run candidate count and half-open digest as preregistration evidence only, not physical-scan authority",
+    "exact unaffected Point/OOF/Beammap record/product comparison",
+    "existing Science comparator limits only",
+    "structural no-dense-output and O(observations*interfaces + exceptions) rule"
+  ],
+  "unresolved_authority_facts": [
+    "producer-authoritative Hold bit meaning and left/right transition placement",
+    "authoritative physical raster segmentation for Beammap 148670",
+    "native 0.5x, 2x, and 4x observational residual/jitter profiles",
+    "general telescope producer cadence/gap duration rather than fixed-cohort envelope",
+    "exact whole-application governing-9aae product run for direct comparison",
+    "direct source-crossing closest-sample/timestamp identity",
+    "nonzero source-crossing/centroid/PSF tolerance for OD5-changed records",
+    "paired setup/runtime distribution and setup-stage numerical limit",
+    "numeric I/O/storage byte ceiling and peak-memory budget",
+    "enabled HWPR/polarization schema, time, angle, support, and offset authority",
+    "owner-approved second Beammap reduction for the D002 combined-Beammap study"
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "combined_manifest_serialization": "lowercase_sha256 + two spaces + root-relative POSIX path + LF; globally path-sorted",
+  "combined_manifest_sha256": "1fb6bb026eb6a7e5e3c8398eb9fcd00470abf1810b37f1ee6873b8aac195f272",
+  "file_count": 240,
+  "observations": [
+    {
+      "file_count": 48,
+      "manifest_sha256": "eaa1e53d9f1320a59254bbd784473e4be45f6454c82dcb6cd953026abb5b8aa1",
+      "native_detector_file_count": 11,
+      "native_detector_rows": 86663,
+      "native_rate_factors": [
+        1.0
+      ],
+      "obsnum": 152418,
+      "total_bytes": 540566380
+    },
+    {
+      "file_count": 48,
+      "manifest_sha256": "f032b6e9096cc5780eac53f29a6717b4fa4d62a2693fbfa0f20c5d518621c688",
+      "native_detector_file_count": 11,
+      "native_detector_rows": 84600,
+      "native_rate_factors": [
+        1.0
+      ],
+      "obsnum": 152420,
+      "total_bytes": 532119345
+    },
+    {
+      "file_count": 48,
+      "manifest_sha256": "0aec4f04c696bcc19b41d311b69d45563f61dc2bdad0c0121799f836bd56edf6",
+      "native_detector_file_count": 11,
+      "native_detector_rows": 86028,
+      "native_rate_factors": [
+        1.0
+      ],
+      "obsnum": 152430,
+      "total_bytes": 537905861
+    },
+    {
+      "file_count": 48,
+      "manifest_sha256": "aa67137d4d1d689fc0cd2f78d0da903637c11e0b1273ab29317e8daa9d5f3e57",
+      "native_detector_file_count": 11,
+      "native_detector_rows": 85777,
+      "native_rate_factors": [
+        1.0
+      ],
+      "obsnum": 152432,
+      "total_bytes": 536871133
+    },
+    {
+      "file_count": 48,
+      "manifest_sha256": "3064d0fefcfbdc143993df761305c8c41a71c3d6e0cc50ddef27e1e3ae392c6b",
+      "native_detector_file_count": 11,
+      "native_detector_rows": 86507,
+      "native_rate_factors": [
+        1.0
+      ],
+      "obsnum": 152434,
+      "total_bytes": 539847914
+    }
+  ],
+  "owner_data_root": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data",
+  "owner_local_availability": "complete raw/tune/telescope/HWPR/housekeeping sets",
+  "realization_authority": "v1 project/config files; these five observations are not realized there",
+  "selection_authority": "TolProj v1 suite.yaml",
+  "total_bytes": 2687310633,
+  "use_boundary": "native detector headers contribute rate-stratum inventory only; no config realization, reduction, product, or acceptance evidence is inferred"
+}

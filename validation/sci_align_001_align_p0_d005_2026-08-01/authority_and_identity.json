@@ -1,0 +1,171 @@
+{
+  "allowed_status_scope": [
+    "tools/diagnostics/generate_sci_align_001_d005.py",
+    "validation/sci_align_001_align_p0_d005_2026-08-01/"
+  ],
+  "application_code_edited": false,
+  "application_path_delta": [],
+  "branch": "codex/repair-sci-align-001",
+  "coordination_branch": "codex/scientific-audit-framework",
+  "coordination_clean": true,
+  "coordination_head": "6785152c2a2d4113c9ba89073de00cb454aa70c4",
+  "coordination_repository": "/private/tmp/citlali-scientific-audit-framework",
+  "frozen_phase_zero_rewritten": false,
+  "generator_path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/tools/diagnostics/generate_sci_align_001_d005.py",
+  "generator_sha256": "1d49627ed9047b704820e01dc4a66dcd31e93f8eb87af9828ef1e3e64469355c",
+  "governing_application_sha": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
+  "governing_source_blobs": [
+    {
+      "git_commit": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
+      "identity": "governing_application_source",
+      "path": "include/citlali/core/pipeline/timestream_alignment_helpers.h",
+      "sha256": "89ecc30e01f151a2faf105039a9d4bc72775e36b92ec140c283347e98245dfda",
+      "use": "exact governing timestamp/alignment/interpolation/scan implementation"
+    },
+    {
+      "byte_identical_to_governing_application": true,
+      "git_commit": "cfae989ce8eb828842cf775aa287b4f43d1e2385",
+      "identity": "suite_product_source",
+      "path": "include/citlali/core/pipeline/timestream_alignment_helpers.h",
+      "sha256": "89ecc30e01f151a2faf105039a9d4bc72775e36b92ec140c283347e98245dfda",
+      "use": "historical Beammap 148670 suite source-path compatibility"
+    },
+    {
+      "git_commit": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
+      "identity": "governing_application_source",
+      "path": "include/citlali/core/engine/detail/todproc_alignment_impl.h",
+      "sha256": "dca46d45df1040e147373e735aacdc11692d1884d3fa5b10a45ee07ef64da93c",
+      "use": "exact governing timestamp/alignment/interpolation/scan implementation"
+    },
+    {
+      "byte_identical_to_governing_application": true,
+      "git_commit": "cfae989ce8eb828842cf775aa287b4f43d1e2385",
+      "identity": "suite_product_source",
+      "path": "include/citlali/core/engine/detail/todproc_alignment_impl.h",
+      "sha256": "dca46d45df1040e147373e735aacdc11692d1884d3fa5b10a45ee07ef64da93c",
+      "use": "historical Beammap 148670 suite source-path compatibility"
+    },
+    {
+      "git_commit": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
+      "identity": "governing_application_source",
+      "path": "src/citlali/core/engine/telescope.cpp",
+      "sha256": "be518d193154209040196cb47597eeb5c48a6057222723d3432394d7ec1a5f49",
+      "use": "exact governing timestamp/alignment/interpolation/scan implementation"
+    },
+    {
+      "byte_identical_to_governing_application": true,
+      "git_commit": "cfae989ce8eb828842cf775aa287b4f43d1e2385",
+      "identity": "suite_product_source",
+      "path": "src/citlali/core/engine/telescope.cpp",
+      "sha256": "be518d193154209040196cb47597eeb5c48a6057222723d3432394d7ec1a5f49",
+      "use": "historical Beammap 148670 suite source-path compatibility"
+    },
+    {
+      "git_commit": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
+      "identity": "governing_application_source",
+      "path": "include/citlali/core/utils/utils.h",
+      "sha256": "4788813b40a8c0e931b559ca4c27b26ee65fe161f4a6d0e0aa15f001afab17f8",
+      "use": "exact governing timestamp/alignment/interpolation/scan implementation"
+    },
+    {
+      "byte_identical_to_governing_application": true,
+      "git_commit": "cfae989ce8eb828842cf775aa287b4f43d1e2385",
+      "identity": "suite_product_source",
+      "path": "include/citlali/core/utils/utils.h",
+      "sha256": "4788813b40a8c0e931b559ca4c27b26ee65fe161f4a6d0e0aa15f001afab17f8",
+      "use": "historical Beammap 148670 suite source-path compatibility"
+    },
+    {
+      "git_commit": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
+      "identity": "governing_application_source",
+      "path": "include/citlali/core/pipeline/raw_tod_output_context.h",
+      "sha256": "05500d016fd815ff8217c7c8305911672104200ca04ec10bcfecbbe348a8e24f",
+      "use": "exact governing timestamp/alignment/interpolation/scan implementation"
+    },
+    {
+      "byte_identical_to_governing_application": true,
+      "git_commit": "cfae989ce8eb828842cf775aa287b4f43d1e2385",
+      "identity": "suite_product_source",
+      "path": "include/citlali/core/pipeline/raw_tod_output_context.h",
+      "sha256": "05500d016fd815ff8217c7c8305911672104200ca04ec10bcfecbbe348a8e24f",
+      "use": "historical Beammap 148670 suite source-path compatibility"
+    },
+    {
+      "git_commit": "a398581f48200dcd0cf41e1e09d33b5b7922a06f",
+      "identity": "released_4x_source",
+      "path": "src/citlali/core/engine/telescope.cpp",
+      "sha256": "840e88792661fad4be2159e15e6d50e4c0387142dae8cac3cbb058b6031766d1",
+      "use": "released-4.x whole-word-linear-then-nonzero compatibility authority"
+    },
+    {
+      "git_commit": "a398581f48200dcd0cf41e1e09d33b5b7922a06f",
+      "identity": "released_4x_source",
+      "path": "include/citlali/core/engine/todproc.h",
+      "sha256": "759c2827ff701c0c1a4e191a80bc308bb4869d12a4948d7b481d296fe77d683b",
+      "use": "released-4.x whole-word-linear-then-nonzero compatibility authority"
+    },
+    {
+      "git_commit": "a398581f48200dcd0cf41e1e09d33b5b7922a06f",
+      "identity": "released_4x_source",
+      "path": "include/citlali/core/utils/utils.h",
+      "sha256": "bab65c87bf9966350ab61a63296ada76263af5e70e9baeb7076f3f8dc14de77d",
+      "use": "released-4.x whole-word-linear-then-nonzero compatibility authority"
+    }
+  ],
+  "owner_data_root_read_only": "/Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data",
+  "owner_decision_identity_correction": {
+    "authoritative_commit": "4f905f4f353e91847a303f4f3959654f3f03c302",
+    "canonical_correction_commit": "35cc8ce246e8e70c569e650be6c1eae2c91b80ef",
+    "rejected_transcription": "4f905f4f39461c8f9a86b0bf589880362d0a49f7",
+    "scientific_policy_changed_by_correction": false
+  },
+  "owner_local_unrealized_detector_file_references": 55,
+  "phase_one_authorized": false,
+  "phase_zero_evidence_commit": "53c7154a3633dfe19dc036cfb5a6250f729a897d",
+  "phase_zero_field_registry_sha256": "5ac211f7f21e8a7547ceb4a3db8c37491711e06a5359e9b53aec01ed3115d6f3",
+  "phase_zero_package": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/validation/sci_align_001_phase0_2026-08-01",
+  "phase_zero_report_sha256": "4ac7c1bb9c67da3ce99ddfe4f96e42799a704bcb5acf89e3fa17cdfda1ef31c8",
+  "phase_zero_sha256sums_sha256": "074aff9deddd062d13a055589714f5d1b52ee18753052286119a184d2dbc08a2",
+  "phase_zero_worktree_verified_clean_before_d005": true,
+  "realized_config_detector_file_references": 132,
+  "repair_repository": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor",
+  "repair_status_at_generation": [
+    "AM tools/diagnostics/generate_sci_align_001_d005.py",
+    "AM validation/sci_align_001_align_p0_d005_2026-08-01/REPORT.md",
+    "AM validation/sci_align_001_align_p0_d005_2026-08-01/SHA256SUMS",
+    "AM validation/sci_align_001_align_p0_d005_2026-08-01/authority_and_identity.json",
+    "A  validation/sci_align_001_align_p0_d005_2026-08-01/authority_manifest.csv",
+    "A  validation/sci_align_001_align_p0_d005_2026-08-01/baseline_product_manifest.csv",
+    "A  validation/sci_align_001_align_p0_d005_2026-08-01/beammap_source_fit_summary.json",
+    "A  validation/sci_align_001_align_p0_d005_2026-08-01/external_science_support_manifest.csv",
+    "A  validation/sci_align_001_align_p0_d005_2026-08-01/external_science_support_summary.json",
+    "A  validation/sci_align_001_align_p0_d005_2026-08-01/historical_scan_product_summary.csv",
+    "A  validation/sci_align_001_align_p0_d005_2026-08-01/hold_bit_summary.csv",
+    "A  validation/sci_align_001_align_p0_d005_2026-08-01/hold_findings.json",
+    "A  validation/sci_align_001_align_p0_d005_2026-08-01/hold_hypothesis_comparison.csv",
+    "A  validation/sci_align_001_align_p0_d005_2026-08-01/hold_raw_bit_transitions.csv",
+    "A  validation/sci_align_001_align_p0_d005_2026-08-01/hold_scan_windows.csv",
+    "A  validation/sci_align_001_align_p0_d005_2026-08-01/hold_zero_run_candidate_registry.csv",
+    "A  validation/sci_align_001_align_p0_d005_2026-08-01/native_rate_inventory.csv",
+    "A  validation/sci_align_001_align_p0_d005_2026-08-01/owner_decision_brief.json",
+    "A  validation/sci_align_001_align_p0_d005_2026-08-01/pointing_fit_metrics.csv",
+    "A  validation/sci_align_001_align_p0_d005_2026-08-01/pointing_repeatability_summary.csv",
+    "A  validation/sci_align_001_align_p0_d005_2026-08-01/preregistration_protocol.json",
+    "A  validation/sci_align_001_align_p0_d005_2026-08-01/rate_coverage.json",
+    "A  validation/sci_align_001_align_p0_d005_2026-08-01/runtime_io_storage_evidence.json",
+    "A  validation/sci_align_001_align_p0_d005_2026-08-01/selected_config_manifest.csv",
+    "A  validation/sci_align_001_align_p0_d005_2026-08-01/selected_input_manifest.csv",
+    "A  validation/sci_align_001_align_p0_d005_2026-08-01/slot_observation_summary.csv",
+    "A  validation/sci_align_001_align_p0_d005_2026-08-01/slot_residual_metrics.csv",
+    "A  validation/sci_align_001_align_p0_d005_2026-08-01/suite_selection_realization.csv",
+    "A  validation/sci_align_001_align_p0_d005_2026-08-01/telescope_bracket_metrics.csv"
+  ],
+  "selected_config_count": 6,
+  "selected_detector_file_count": 187,
+  "selected_observation_context_count": 12,
+  "selected_suite_root": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1",
+  "successor_output_inspected": false,
+  "tolproj_head_read_only": "74395c824860ca41410dde5cf2e0272e5535fc19",
+  "tolproj_repository": "/Users/gwilson/GitHub/tolproj",
+  "unity_contacted": false
+}

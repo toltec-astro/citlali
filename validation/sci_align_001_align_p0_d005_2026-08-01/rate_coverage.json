@@ -1,0 +1,58 @@
+{
+  "canonical_unique_native_rows": 8673204,
+  "canonical_unique_observation_interface_files": 176,
+  "counts_by_native_factor": {
+    "1.0": 187
+  },
+  "distinct_file_path_count": 187,
+  "distinct_observation_count": 16,
+  "downstream_RTC_rate_counts_as_native": false,
+  "duplicate_canonicalization_identity": "byte-identical SHA-256 plus exact native header/row/timing/offset tuple",
+  "duplicate_observation_interface_group_count": 11,
+  "duplicate_observation_interface_reference_count": 22,
+  "native_detector_file_count": 187,
+  "owner_local_unrealized_detector_file_references": 55,
+  "owner_local_unrealized_native_rows": 429575,
+  "profiles": [
+    {
+      "accum_len": 4194304,
+      "dt_sec": 0.016384,
+      "exclusive_half_cell_sec": 0.008192,
+      "factor": 0.5,
+      "local_observational_evidence": "evidence_pending",
+      "precise_missing_fixture": "owner-approved native Pointing or Beammap raw fixture with SampleFreq=61.03515625 Hz and AccumLen=4194304",
+      "sample_rate_hz": 61.03515625
+    },
+    {
+      "accum_len": 2097152,
+      "dt_sec": 0.008192,
+      "exclusive_half_cell_sec": 0.004096,
+      "factor": 1.0,
+      "local_observational_evidence": "available",
+      "precise_missing_fixture": "none",
+      "sample_rate_hz": 122.0703125
+    },
+    {
+      "accum_len": 1048576,
+      "dt_sec": 0.004096,
+      "exclusive_half_cell_sec": 0.002048,
+      "factor": 2.0,
+      "local_observational_evidence": "evidence_pending",
+      "precise_missing_fixture": "owner-approved native Pointing or Beammap raw fixture with SampleFreq=244.140625 Hz and AccumLen=1048576",
+      "sample_rate_hz": 244.140625
+    },
+    {
+      "accum_len": 524288,
+      "dt_sec": 0.002048,
+      "exclusive_half_cell_sec": 0.001024,
+      "factor": 4.0,
+      "local_observational_evidence": "evidence_pending",
+      "precise_missing_fixture": "owner-approved native Pointing or Beammap raw fixture with SampleFreq=488.28125 Hz and AccumLen=524288",
+      "sample_rate_hz": 488.28125
+    }
+  ],
+  "realized_canonical_unique_native_rows": 8243629,
+  "realized_config_detector_file_references": 132,
+  "realized_supplied_header_interface_exact_matches": 132,
+  "resampling_permitted_to_fill_stratum": false
+}

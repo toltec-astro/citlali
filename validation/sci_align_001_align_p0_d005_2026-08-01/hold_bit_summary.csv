@@ -1,0 +1,9 @@
+bit_index,bit_hex,native_active_rows,native_transition_count,observed,semantic_status
+0,0x01,0,0,False,not observed; producer meaning unproved
+1,0x02,14541,688,True,unknown and explicitly retained
+2,0x04,0,0,False,not observed; producer meaning unproved
+3,0x08,41789,401,True,candidate turning predicate; producer meaning unproved
+4,0x10,0,0,False,not observed; producer meaning unproved
+5,0x20,0,0,False,not observed; producer meaning unproved
+6,0x40,5088,352,True,unknown and explicitly retained
+7,0x80,0,0,False,not observed; producer meaning unproved

@@ -1,0 +1,139 @@
+{
+  "CAL_AST_safe_scope": "centroid, PSF, source-crossing, WCS, and map outputs are unchanged downstream sentinels only; do not tune flux/calibration/APT eligibility/OOF estimation/source estimation/mapmaking/inverse-TAN/frames/signs/handedness",
+  "cohort": {
+    "beammap_support": [
+      148669,
+      148671
+    ],
+    "mandatory": [
+      "Pointing 152389",
+      "Beammap 148670"
+    ],
+    "oof_context": [
+      152385,
+      152386,
+      152387
+    ],
+    "science_primary": [
+      152390,
+      152392
+    ],
+    "science_support_realized": [
+      152389,
+      152391,
+      152393
+    ],
+    "science_support_selected_but_unrealized": [
+      152418,
+      152420,
+      152430,
+      152432,
+      152434
+    ],
+    "supplemental_beammap_152307": "not selected; owner approval required because it is outside suite and heterogeneous"
+  },
+  "metrics": [
+    {
+      "aggregation": "all selected detector files, grouped by observation",
+      "definition": "per file/interface exact SampleFreq, FpgaFreq, AccumLen and common D002 factor",
+      "id": "native_rate_identity",
+      "limit": "zero missing/conflicting headers; zero mixed-rate observations",
+      "status": "frozen; local coverage is genuine native 1x only"
+    },
+    {
+      "aggregation": "exact row counts plus compact exception list only",
+      "definition": "join observation/interface/native-row; compare round-half-up integer slot and typed support class",
+      "id": "native_row_slot_support_identity",
+      "limit": "zero changed slots for every governing-supported ordinary row; zero lost/colliding/duplicate rows; Point 152389 preserves 22 edge rows and Beammap 148670 preserves 16 edge rows; each mandatory observation adds exactly three union-grid positions",
+      "status": "frozen"
+    },
+    {
+      "aggregation": "per interface count/max/p50/p95/p99 and observation extrema",
+      "definition": "r=t_after_offset-(phase+k*dt); u=abs(r)/dt; margin=0.5-u",
+      "id": "slot_residual_margin",
+      "limit": "strict u<0.5; at native 1x abs(r)<0.004096 s; unchanged inputs may not reduce frozen minimum margin or change the residual distribution identity",
+      "status": "frozen for 1x; empirical 0.5x/2x/4x margins unavailable"
+    },
+    {
+      "aggregation": "per observation count/p50/p95/max and fixed-cohort maximum",
+      "definition": "TelTime[right]-TelTime[left] for truly adjacent finite native rows bracketing each union-grid target; exact match span=0",
+      "id": "telescope_adjacent_bracket",
+      "limit": "inclusive <=0.021130561828613281 s; reject nonfinite/nonmonotonic endpoints, gaps, cross-gap brackets, ambiguity, and extrapolation",
+      "status": "frozen as fixed-cohort validation envelope only"
+    },
+    {
+      "aggregation": "exact 198 governing legacy outputs plus a conditional 241-row zero-run candidate registry and tuple digest",
+      "definition": "exact governing legacy aligned state and 198 output windows; separately, if the owner authorizes the legacy whole-word-linear-any compatibility view combined with the separately applied governing outside-map-box condition to control raster segmentation, stable candidate q plus ordered half-open science [start,stop), separate context, status, and first false sample after every composite final-state true-to-false boundary",
+      "id": "scan_and_first_post_turn_identity",
+      "limit": "the 198 governing legacy outputs must remain exactly reconstructable; only if owner Q1 authorizes that composite final state as raster segmentation, require exactly 241 candidate identities q=0..240 with no deletion/renumbering and science start at the first false sample, with only OD5-named boundary/context/status repairs",
+      "status": "legacy baseline frozen; conditional candidate evidence frozen; authoritative physical raster segmentation unavailable pending owner return"
+    },
+    {
+      "aggregation": "record-level exact comparison; per-array summaries diagnostic only",
+      "definition": "stable detector UID/array/fit validity/scan tuple/closest-distance and any retained sample-time identity",
+      "id": "source_crossing",
+      "limit": "zero difference for unaffected records; changed records must be attributable only to named OD5 scan repairs and show no worsening, but a nonzero numeric tolerance is unavailable pending owner decision",
+      "status": "record/UID/distance/legacy-scan identity frozen; direct absolute crossing time and changed-window tolerance unavailable"
+    },
+    {
+      "aggregation": "record-level comparison; summaries diagnostic",
+      "definition": "per-array validity then x_t/y_t and derived major/minor FWHM",
+      "id": "point_centroid_psf",
+      "limit": "zero difference under active Point policy",
+      "status": "frozen"
+    },
+    {
+      "aggregation": "record-level exact comparison; per-array median/quantiles diagnostic",
+      "definition": "join valid detector fits by UID/array; compare flags, x_t/y_t and major/minor FWHM",
+      "id": "beammap_centroid_psf",
+      "limit": "zero difference for unaffected records under active Beammap policy; no nonzero centroid/PSF tolerance is frozen for records affected by named OD5 repairs",
+      "status": "unaffected exact gate frozen; one full Beammap cannot establish changed-window repeatability or a nonzero threshold"
+    },
+    {
+      "aggregation": "no cross-focus morphology aggregation",
+      "definition": "each focus observation against its own exact historical baseline",
+      "id": "oof_same_observation_sentinel",
+      "limit": "zero difference under active OOF policy",
+      "status": "frozen; focus sequence is not PSF repeatability evidence"
+    },
+    {
+      "aggregation": "existing science comparator",
+      "definition": "existing exact product/integer checks and numerical comparison policy only",
+      "id": "science_long_mode_sentinel",
+      "limit": "map RMS<=1e-8; PTC-weight RMS<=1e-9; detector median absolute/fractional<=5e-5/1e-3; other diagnostic RMS<=1e-7",
+      "status": "frozen; not an ALIGN centroid/source-estimator/PSF policy"
+    },
+    {
+      "aggregation": "five alternating retained pairs; paired ratios, median and IQR",
+      "definition": "paired same-host/input/config/build/runtime-policy elapsed setup and total times",
+      "id": "setup_runtime",
+      "limit": "median total ratio<=1.05; owner return if all five ratios>1.0; incomplete/mismatched evidence fails",
+      "status": "design frozen; no local paired distribution or setup-stage baseline exists"
+    },
+    {
+      "aggregation": "per run and product class",
+      "definition": "paired filesystem indicators, exact product inventory/bytes, incremental ALIGN provenance bytes and scaling dimension",
+      "id": "io_storage_proportionality",
+      "limit": "no routine dense outputs; only O(observations*interfaces + transitions/gaps/exceptions); exact scientific inventory preserved",
+      "status": "structural rule frozen; numeric byte limit unavailable"
+    }
+  ],
+  "missing_stratum_policy": {
+    "0.5x": "evidence_pending: native Pointing or Beammap fixture with SampleFreq=61.03515625 Hz and AccumLen=4194304",
+    "2x": "evidence_pending: native Pointing or Beammap fixture with SampleFreq=244.140625 Hz and AccumLen=1048576",
+    "4x": "evidence_pending: native Pointing or Beammap fixture with SampleFreq=488.28125 Hz and AccumLen=524288",
+    "prohibition": "do not resample 1x or scale its empirical residual distribution"
+  },
+  "phase_one_authorized": false,
+  "protocol_id": "ALIGN-P0-D005",
+  "status": "PREREGISTERED_OWNER_RETURN_REQUIRED",
+  "stop_rules": [
+    "any ordinary governing-supported row changes slot/support identity",
+    "any strict half-cell, collision, gap, bracket, validity, or extrapolation failure",
+    "any governing legacy scan mismatch; if owner Q1 authorizes the composite-final-state candidate, any difference outside named first-post-state/remainder/short/context/invalid-gap repairs; or any source-crossing/centroid/PSF/active-profile regression",
+    "any repeatable measurable runtime/I/O regression or dense/material storage burden",
+    "unknown Hold bits correlate materially, Hold hypotheses differ, no side is supported, or accepted scan/astrometric behavior regresses",
+    "missing native-rate evidence remains pending and cannot be counted as a pass"
+  ],
+  "successor_output_viewed": false
+}
