@@ -1,0 +1,41 @@
+{
+  "candidate_application_commit": "c77105b9b1676ec1ec74a9d560765954c5f1d5dd",
+  "decision_requested": "Do not accept or advance SCI-ALIGN-001 yet. Review the repeatable 12-thread Pointing I/O failure and authorize only the minimal human-run exact-control/successor Unity evidence campaign when operationally ready.",
+  "engineering_invariants": [
+    "round-half-up slot assignment, checked arithmetic, exactly-once offsets, exact governing LinSpaced assigned times, fail-closed unsupported boundaries, and compact generative provenance pass local gates",
+    "ordinary governing-to-candidate assigned timing/coordinates are exact in generative and contract tests; no nonzero scientific tolerance was introduced",
+    "Pointing retains 12 compatibility outputs and one internal partial identity; Beammap retains 198 compatibility outputs and 43 internal short identities excluded from science reductions",
+    "Hold sample validity is raw_word == 0 under late producer authority while the existing whole-word/nonzero scan adapter remains behavior-preserving"
+  ],
+  "measured_local_compatibility": [
+    "Pointing 152389 and Beammap 148670 completed at candidate c77105b9b with six realized threads and zero error/critical log entries",
+    "historical Beammap scientific-equivalence comparator accepted with exact detector identities/flags, maximum 0.00004084 arcsec position change, and maximum 0.00005115 arcsec FWHM change",
+    "historical Pointing fit centroids moved 0.0235 to 0.0332 arcsec and per-axis FWHM changed by at most 0.0217 arcsec",
+    "historical strict whole-product comparisons failed because those products are from a different whole-application state; they are not exact-9aae controls"
+  ],
+  "minimal_coordination_amendment": "Bind hold_producer_authority.json at SHA-256 d6edb175c3aa62ccf92d9644675ece9c8db572a90146370a9c201c296f211c7e as late producer authority without changing the approved compatibility adapter, transition side, scan results, or production status.",
+  "minimal_future_human_evidence_request": {
+    "execution_lane": "human-run Unity only unless a later dispatch explicitly justifies local-only execution",
+    "runs": [
+      "Pointing 152389 at exact governing application 9aae0e669384c5c0c0dda93debc194d6b8dac787",
+      "Pointing 152389 at candidate c77105b9b1676ec1ec74a9d560765954c5f1d5dd",
+      "Beammap 148670 at exact governing application 9aae0e669384c5c0c0dda93debc194d6b8dac787",
+      "Beammap 148670 at candidate c77105b9b1676ec1ec74a9d560765954c5f1d5dd"
+    ],
+    "controls": "same host/allocation, realized thread count, configuration, dependency identities, input digests, and storage path/class",
+    "acceptance": "exact zero ordinary assigned-time/coordinate displacement; exact unaffected products; only approved OD5 internal identity/status additions; exact scan/window compatibility; no centroid/PSF/source-crossing regression; no repeatable setup or total runtime regression above 5%"
+  },
+  "owner_questions": [
+    "Should the repeatable 12-thread Pointing PTC NetCDF write failure become a separate non-ALIGN I/O/resource investigation, or should the exact campaign pin this fixture to six realized threads?",
+    "After the four exact-SHA Unity runs, are the exact-zero ordinary mappings, exact unaffected products, scan/source/centroid/PSF sentinels, and 5% runtime gate all satisfied?",
+    "Can producer authority establish detector timestamp start/end/effective-centroid semantics? Absolute sky-placement correctness remains unresolved until it does."
+  ],
+  "physical_timestamp_authority": [
+    "detector timestamp start/end/effective integration centroid is unproved",
+    "contiguous physical 8.192 ms integration support is unproved",
+    "absolute sky-placement correctness is unresolved",
+    "Hold transition/event timing and left/right continuity remain unresolved"
+  ],
+  "schema_version": "sci-align-001-phase1-owner-brief-v1",
+  "status": "owner_return_no_phase_two_no_acceptance"
+}

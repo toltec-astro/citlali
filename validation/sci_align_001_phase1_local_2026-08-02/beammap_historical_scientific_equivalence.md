@@ -1,0 +1,44 @@
+# Beammap Scientific Equivalence
+
+- Profile: `beammap-scientific-equivalence-v1`
+- Baseline: `/Users/gwilson/work_toltec/local_data/citlali-validation/v1/beammaps/3c273/reduced/redu00`
+- Candidate: `/private/tmp/citlali-sci-align-001-phase1-c77105b9b1676ec1ec74a9d560765954c5f1d5dd/beammap/beammap/reduced/redu00`
+- Verdict: **accepted**
+
+## APT Metrics
+
+- `baseline_product`: `148670/raw/apt_commissioning_beammap_148670_citlali.ecsv`
+- `candidate_product`: `148670/raw/apt_commissioning_beammap_148670_citlali.ecsv`
+- `detector_count`: `5234`
+- `detector_identity_exact`: `True`
+- `detector_flags_exact`: `True`
+- `sensitivity_relative_max`: `8.181079999175459e-08`
+- `signal_to_noise_relative_max`: `1.5647400440127826e-06`
+- `position_absolute_arcsec_max`: `4.083759363027184e-05`
+- `fwhm_absolute_arcsec_max`: `5.1148249985644156e-05`
+
+## Map Metrics
+
+- `product_sets_exact`: `True`
+- `good_signal_rms_relative_count`: `4973`
+- `good_signal_rms_relative_max`: `5.623913435283481e-06`
+- `good_signal_rms_relative_p99`: `4.885051299389307e-08`
+- `good_weight_rms_relative_count`: `4973`
+- `good_weight_rms_relative_max`: `3.98401530664902e-07`
+- `good_weight_rms_relative_p99`: `4.911136467185509e-09`
+- `good_kernel_rms_relative_count`: `4973`
+- `good_kernel_rms_relative_max`: `0.0009956240318236666`
+- `good_kernel_rms_relative_p99`: `7.938484153774893e-06`
+- `bad_signal_rms_relative_count`: `261`
+- `bad_signal_rms_relative_max`: `1.8300229994750212e-05`
+- `bad_signal_rms_relative_p99`: `2.825756606108686e-07`
+- `bad_weight_rms_relative_count`: `261`
+- `bad_weight_rms_relative_max`: `3.434906075874269e-07`
+- `bad_weight_rms_relative_p99`: `4.823701846490676e-08`
+- `bad_kernel_rms_relative_count`: `261`
+- `bad_kernel_rms_relative_max`: `0.005604435113901292`
+- `bad_kernel_rms_relative_p99`: `0.0010349074654418195`
+
+## Failures
+
+None.

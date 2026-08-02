@@ -1,0 +1,122 @@
+{
+  "application_candidate": {
+    "binary_path": "build/bin/citlali",
+    "binary_sha256": "8ffab0993e687536c2e358105b403df8347c2a215a6689d39821cfef1af3d502",
+    "branch": "codex/repair-sci-align-001",
+    "dispatch_head": "bfffe0e60fa8ce05a75ae34b89383bceaadb8fc2",
+    "governing_application_ancestor": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
+    "head": "c77105b9b1676ec1ec74a9d560765954c5f1d5dd",
+    "parent": "b9787afa68cb45efd862c8892aabfa0806e8576f",
+    "test_binary_path": "build/tests/citlali_test",
+    "test_binary_sha256": "d901e700c9d79107d1a0e952e2adce604fe2d0b798c197be50820fff390cea2d",
+    "version": "v4.0.0-3638-gc77105b9b (2026-08-02T15:11:18)"
+  },
+  "authority": {
+    "coordination_identity": "fff3e02b8e34ba1788014101bd0bd584569b0e80",
+    "local_reduction_clarification": "allow the already-started Beammap to finish; launch no further local Citlali reductions; classify completed Pointing/Beammap as limited compatibility/engineering evidence; default future reduction evidence to a human-run Unity campaign",
+    "local_reduction_clarification_medium": "2026-08-02 coordinator/owner Codex delegation; no separately signed source object supplied",
+    "scientific_acceptance": "not_granted"
+  },
+  "inputs": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/suite.yaml",
+      "role": "selection_authority",
+      "sha256": "e71d6664962128ff27a979390ed7d231b98c0dc2b80214fd9aebbae0ee2c30e3"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/point/project.yaml",
+      "role": "realized_point_project",
+      "sha256": "612f76a3958e31f4d92f455cdbb66c05b580d55f060b1a71a11432512ec2260d"
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v1/beammaps/project.yaml",
+      "role": "realized_beammap_project",
+      "sha256": "e853ede1eba8e3418c7d38625ececd9bbdc2c28463c55f1f03eb1e6183b78e57"
+    }
+  ],
+  "pre_candidate_diagnostics": [
+    {
+      "candidate": "b9787afa68cb45efd862c8892aabfa0806e8576f",
+      "elapsed_sec": 4.665664375,
+      "exit_code": 1,
+      "fixture": "Pointing 152389",
+      "log_sha256": "d3cd66fd290ff59c38cb8e908e21f7bd39719d86c79911e831729cac497189fe",
+      "preparation_sha256": "3bb1cde7ac1f85da0efb0c3699e6fcb2414f2f400135aa51e806779c88d46a4c",
+      "realized_threads": 12,
+      "run_summary_sha256": "853de0c408dc20b98406d60df20949ceb9ef2311c80589710e9b4705dffc0b72",
+      "status": "required PTC NetCDF write failure"
+    },
+    {
+      "candidate": "b9787afa68cb45efd862c8892aabfa0806e8576f",
+      "elapsed_sec": 6.220301083,
+      "exit_code": 1,
+      "fixture": "Pointing 152389 controlled retry",
+      "log_sha256": "b2cfcae0451d10233a721fdf796dc8ce05c37280ad88bf0b0cf1f7454afdfb86",
+      "preparation_sha256": "a811808969b85c0f3df6453821cd016dbb91818889c99ad302033efcbd8a3e9b",
+      "realized_threads": 12,
+      "run_summary_sha256": "fa3009f3e0c3275a29ccbccf347fc7a57b6c0091fd9b1b7f6bfa245c2cf73f26",
+      "status": "repeatable required PTC NetCDF write failure"
+    },
+    {
+      "candidate": "b9787afa68cb45efd862c8892aabfa0806e8576f",
+      "elapsed_sec": 20.56424125,
+      "exit_code": 0,
+      "fixture": "Pointing 152389 six-thread diagnostic",
+      "log_sha256": "774587603f26593c5b64131b1c326f0c1acc692707e679d119fdd2902b12e586",
+      "preparation_sha256": "9e426abc6da35a4109580590f7beca8c16687f05c33534cc88cc0751f43299e0",
+      "realized_threads": 6,
+      "run_summary_sha256": "003bdcde5595b982148fe674cb36dc6077474aa753e603a4895929ab4d7bf6b0",
+      "status": "completed"
+    },
+    {
+      "candidate": "b9787afa68cb45efd862c8892aabfa0806e8576f",
+      "elapsed_sec": 3.363927709,
+      "exit_code": 1,
+      "fixture": "Beammap 148670",
+      "log_sha256": "4ca98a8bdfc1ce94d4b702347b5f09a5cb26ee9da2d3f9ce5168c10be2e854e9",
+      "preparation_sha256": "a7179e8259547430b18cbec1b50ab7c7bea7a685612c8b3b1a194953ea265fc6",
+      "realized_threads": 6,
+      "run_summary_sha256": "329d771190bda136b1f24adca628590de15d465f459162e3528e18e2cc046bbb",
+      "status": "disabled TOD selection provenance mismatch fixed by c77105b9b"
+    }
+  ],
+  "runs": [
+    {
+      "candidate": "c77105b9b1676ec1ec74a9d560765954c5f1d5dd",
+      "elapsed_sec": 20.643148208,
+      "error_or_critical_log_entries": 0,
+      "exit_code": 0,
+      "fixture": "Pointing 152389",
+      "log_sha256": "9c29ed734738f5b396bf35ade0401e4ec0c550347a058d670a8da3881bc6fd72",
+      "native_rate_profile": "1x (122.0703125 Hz)",
+      "output_root": "/private/tmp/citlali-sci-align-001-phase1-c77105b9b1676ec1ec74a9d560765954c5f1d5dd/point/point/reduced/redu00",
+      "output_size_approx": "312 MiB",
+      "preparation_sha256": "bb6046201ed95de5629c3c0504d9b36e209e90984defea8b205b523e81b7690d",
+      "requested_threads": 12,
+      "run_summary_sha256": "dab10e4d9287e0b9d7ac6bee09e3fc906615b0cea72684f170ef07a4c0b4f0b2",
+      "runtime_provenance_sha256": "e7dabab913c6c40ebc251f4920dbcc2078e624633e8106c9f43e5595f208179d",
+      "realized_threads": 6,
+      "scientific_evidence_class": "limited_local_compatibility_engineering",
+      "status": "completed"
+    },
+    {
+      "candidate": "c77105b9b1676ec1ec74a9d560765954c5f1d5dd",
+      "elapsed_sec": 3569.753012291,
+      "error_or_critical_log_entries": 0,
+      "exit_code": 0,
+      "fixture": "Beammap 148670",
+      "log_sha256": "7411f07cfdd5c2eee0217c72b09bb75ca7d32666d40ce252b4c0dcf55fbd3d74",
+      "native_rate_profile": "1x (122.0703125 Hz)",
+      "output_root": "/private/tmp/citlali-sci-align-001-phase1-c77105b9b1676ec1ec74a9d560765954c5f1d5dd/beammap/beammap/reduced/redu00",
+      "output_size_approx": "12 GiB",
+      "preparation_sha256": "5945c65e33a19b40cf6fd44e17ed928eee238f2618285706f876c465c2172fe0",
+      "requested_threads": 16,
+      "run_summary_sha256": "f7f984d0ecf91f4212ad2334e48ab9b4ed57d4de67197ed0d84c8d57157973e7",
+      "runtime_provenance_sha256": "1739ca89376898d76ed1b4951df33bb1890556c7b7313f09f88d161b50058203",
+      "realized_threads": 6,
+      "scientific_evidence_class": "limited_local_compatibility_engineering",
+      "status": "completed"
+    }
+  ],
+  "schema_version": "sci-align-001-phase1-local-run-manifest-v1"
+}

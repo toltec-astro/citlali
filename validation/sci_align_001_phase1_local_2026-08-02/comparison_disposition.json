@@ -1,0 +1,189 @@
+{
+  "acceptance_state": {
+    "application_repair_accepted": false,
+    "exact_control_available": false,
+    "local_results_role": "limited_compatibility_and_engineering_evidence",
+    "phase_one_local_gates_complete": true,
+    "preferred_future_reduction_lane": "human_run_unity_exact_control_successor_campaign",
+    "scientific_acceptance_available": false
+  },
+  "engineering_invariants": {
+    "boundary_margin_interpretation": "The 34.062668 microsecond Pointing half-cell boundary margin remains an engineering distance-to-decision-boundary fact, not a sky-placement accuracy or scientific tolerance.",
+    "governing_assigned_time_constructor": "eigen_vectorxd_linspaced_9aae_gap_v1",
+    "ordinary_governing_to_candidate_assigned_coordinate_change": "exact_zero_in_generative_and_contract_tests; observational exact-9aae comparison pending",
+    "rate_algebra": "synthetic 0.5x, 1x, 2x, and 4x pass; production observations in this package are native 1x only",
+    "slot_operator": "round-half-up with checked arithmetic and fail-closed collision/boundary handling",
+    "unaffected_product_requirement": "exact equality; no nonzero tolerance authorized"
+  },
+  "local_alignment_state": {
+    "beammap_148670": {
+      "acquired_original_interface_slots": 4220705,
+      "compatibility_admitted_count": 198,
+      "guarded_original_interface_slots": 0,
+      "identity_count": 241,
+      "interface_slot_capacity": 4220722,
+      "nominal_common_axis_slots": 383702,
+      "processed_tod_selected_windows": 0,
+      "raw_tod_selected_windows": 0,
+      "status_counts": {
+        "short": 43,
+        "usable": 198
+      },
+      "synthesized_interface_slots": 0,
+      "unavailable_interface_slots": 17
+    },
+    "pointing_152389": {
+      "acquired_original_interface_slots": 84689,
+      "compatibility_admitted_count": 12,
+      "guarded_original_interface_slots": 198,
+      "identity_count": 13,
+      "interface_slot_capacity": 84700,
+      "nominal_common_axis_slots": 7700,
+      "processed_tod_selected_windows": 12,
+      "raw_tod_selected_windows": 12,
+      "status_counts": {
+        "partial": 1,
+        "usable": 12
+      },
+      "synthesized_interface_slots": 0,
+      "unavailable_interface_slots": 11
+    }
+  },
+  "hold_disposition": {
+    "defined_mask_hex": "0x7e",
+    "existing_use_scan_adapter": "legacy whole-word linear interpolation followed by nonzero, with outside-map-box separate",
+    "observed_beammap_words": [
+      0,
+      2,
+      8,
+      10,
+      64,
+      66,
+      72,
+      74
+    ],
+    "physical_transition_side": "unresolved",
+    "producer_valid_native_predicate": "raw_word == 0",
+    "scan_behavior_change": "none_authorized_or_observed",
+    "unknown_bits": "fail_closed_science_invalid_sample"
+  },
+  "historical_compatibility": {
+    "beammap_scientific_equivalence": {
+      "detector_count": 5234,
+      "detector_flags_exact": true,
+      "detector_identity_exact": true,
+      "fwhm_absolute_arcsec_max": 0.000051148249985644156,
+      "good_kernel_rms_relative_p99": 0.000007938484153774893,
+      "position_absolute_arcsec_max": 0.00004083759363027184,
+      "product_sets_exact": true,
+      "verdict": "accepted_as_historical_compatibility_only"
+    },
+    "beammap_strict_product_comparison": {
+      "changed_record_count": 15537,
+      "common_product_count": 13,
+      "missing_product_count": 0,
+      "record_count": 16466,
+      "skipped_record_count": 0,
+      "strict_verdict": "failed",
+      "interpretation": "Broad whole-application RTC/PTC/map differences make the historical product tree non-governing for exact ALIGN acceptance."
+    },
+    "point_fit_rows": [
+      {
+        "array": 0,
+        "centroid_displacement_arcsec": 0.023455212971483067,
+        "dx_arcsec": -0.023455142974853516,
+        "dy_arcsec": -0.00005730241537094116,
+        "ellipticity_change": 0.0019674510695040226,
+        "major_fwhm_change_arcsec": 0.021601200103759766,
+        "minor_fwhm_change_arcsec": -0.00007009506225585938
+      },
+      {
+        "array": 1,
+        "centroid_displacement_arcsec": 0.027612212277053964,
+        "dx_arcsec": -0.0028781890869140625,
+        "dy_arcsec": -0.02746179699897766,
+        "ellipticity_change": 0.0022995173931121826,
+        "major_fwhm_change_arcsec": 0.019472122192382812,
+        "minor_fwhm_change_arcsec": -0.009244918823242188
+      },
+      {
+        "array": 2,
+        "centroid_displacement_arcsec": 0.03323042985276826,
+        "dx_arcsec": -0.0321650505065918,
+        "dy_arcsec": -0.008346915245056152,
+        "ellipticity_change": -0.00029374402947723866,
+        "major_fwhm_change_arcsec": 0.0073451995849609375,
+        "minor_fwhm_change_arcsec": 0.012536048889160156
+      }
+    ],
+    "point_strict_product_comparison": {
+      "changed_record_count": 673,
+      "common_product_count": 12,
+      "missing_product_count": 7,
+      "record_count": 1939,
+      "skipped_record_count": 0,
+      "strict_verdict": "failed",
+      "interpretation": "The historical tree contains seven filtered products absent from the realized candidate and broad whole-application RTC/PTC/map changes; it is not an exact-9aae control."
+    }
+  },
+  "reference_angular_displacements": [
+    {
+      "full_slot_arcsec": 0.4096,
+      "half_slot_arcsec": 0.2048,
+      "scan_speed_arcsec_per_sec": 50
+    },
+    {
+      "full_slot_arcsec": 0.8192,
+      "half_slot_arcsec": 0.4096,
+      "scan_speed_arcsec_per_sec": 100
+    },
+    {
+      "full_slot_arcsec": 1.6384,
+      "half_slot_arcsec": 0.8192,
+      "scan_speed_arcsec_per_sec": 200
+    }
+  ],
+  "responsibility_boundary": {
+    "SCI_ALIGN": "correct deterministic per-sample assigned timing and telescope/HWPR field alignment within proved relative existing-use authority",
+    "SCI_MAP": "gridding and weighting of assigned sky coordinates",
+    "bounded_map_test": "compatibility sentinel only; no mapmaking implementation changed"
+  },
+  "runtime_disposition": {
+    "five_percent_criterion": "pending exact same-host control/successor runs",
+    "six_thread_beammap_elapsed_sec": 3569.753012291,
+    "six_thread_point_elapsed_sec": 20.643148208,
+    "twelve_thread_point_result": "two repeatable required PTC NetCDF write failures at pre-candidate b9787afa; not attributed to ALIGN and not resolved by this task",
+    "verdict": "not_accepted"
+  },
+  "schema_version": "sci-align-001-phase1-comparison-disposition-v1",
+  "unavailable_evidence": [
+    "detector timestamp producer semantic: start, end, or effective integration centroid",
+    "proof that the nominal 8.192 ms cadence is a contiguous physical integration duration",
+    "absolute detector-integration-centroid sky-placement correctness",
+    "exact governing 9aae whole-application Pointing and Beammap controls paired with this candidate",
+    "native observational 0.5x, 2x, and 4x profiles",
+    "Hold transition/event side and left-versus-right continuity",
+    "producer logical Hold word width",
+    "unknown-Hold-bit product-fatal disposition beyond fail-closed sample invalidity",
+    "repeatable setup/total runtime comparison under identical allocation, dependency, and storage conditions",
+    "two-arcsec gridding comparison, intentionally out of authorized scope"
+  ],
+  "owner_return_items": [
+    {
+      "id": "ALIGN-P1-OR-001",
+      "question": "Should the repeatable 12-thread Pointing PTC NetCDF write failure be handled as a separate non-ALIGN I/O/resource task, or should the exact-control campaign pin this fixture to six realized threads?"
+    },
+    {
+      "id": "ALIGN-P1-OR-002",
+      "question": "After the exact 9aae/candidate Unity pairs are available, do all ordinary assigned coordinates and unaffected products compare exactly, with only the approved OD5 internal identity/status additions?"
+    },
+    {
+      "id": "ALIGN-P1-OR-003",
+      "question": "Does the same-host exact-control campaign satisfy the existing 5% setup/total ceiling without a repeatable measurable regression?"
+    },
+    {
+      "id": "ALIGN-P1-OR-004",
+      "question": "Can producer documentation establish whether detector timestamps mark integration start, end, or effective centroid? Until then, absolute sky-placement correctness must remain unresolved."
+    }
+  ]
+}

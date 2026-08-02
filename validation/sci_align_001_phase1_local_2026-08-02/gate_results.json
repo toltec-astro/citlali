@@ -1,0 +1,66 @@
+{
+  "candidate": "c77105b9b1676ec1ec74a9d560765954c5f1d5dd",
+  "gates": [
+    {
+      "detail": "CLI and citlali_test targets built after reconfiguration embedded c77105b9b",
+      "gate": "cmake_build",
+      "status": "pass"
+    },
+    {
+      "detail": "629 enabled passed, 0 failed; MapFitterLifecycle.ExactProductSequence remains documented disabled test 447",
+      "gate": "ctest",
+      "status": "pass"
+    },
+    {
+      "detail": "154 of 154 unittest cases passed",
+      "gate": "baseline_tools",
+      "status": "pass"
+    },
+    {
+      "detail": "60 records valid",
+      "gate": "validation_ledger",
+      "status": "pass"
+    },
+    {
+      "detail": "3 changes and 5 integration commits valid",
+      "gate": "science_change_ledger",
+      "status": "pass"
+    },
+    {
+      "detail": "registry valid; phase5-v2.1 candidate remains preparing and not promotion-ready",
+      "gate": "validation_profiles_and_readiness",
+      "status": "pass"
+    },
+    {
+      "detail": "123 of 123 unittest cases passed",
+      "gate": "config_tests",
+      "status": "pass"
+    },
+    {
+      "detail": "8 of 8 compact profiles passed; 100% compact surface coverage; all authority/boundary audits passed",
+      "gate": "config_preflight_require_all",
+      "status": "pass"
+    },
+    {
+      "detail": "touched public header translation units compile as part of citlali_test target",
+      "gate": "header_compile",
+      "status": "pass"
+    },
+    {
+      "detail": "Python py_compile and Ruff pass for the bounded local runner",
+      "gate": "diagnostic_static_checks",
+      "status": "pass"
+    },
+    {
+      "detail": "git diff --check against bfffe0e60 passed",
+      "gate": "diff_hygiene",
+      "status": "pass"
+    },
+    {
+      "detail": "20 of 20 focused sci_align_provenance cases passed before the final full CTest gate",
+      "gate": "disabled_tod_provenance_focus",
+      "status": "pass"
+    }
+  ],
+  "schema_version": "sci-align-001-phase1-local-gates-v1"
+}

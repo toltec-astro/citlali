@@ -78,6 +78,30 @@ freeze the application mainline.
 
 ## Current Snapshot
 
+- A 2026-08-02 bounded `SCI-ALIGN-001` repair candidate is complete on the
+  isolated `codex/repair-sci-align-001` branch at application commit
+  `c77105b9b1676ec1ec74a9d560765954c5f1d5dd`; it is not accepted, merged,
+  pushed, or production-authorized. The repair preserves the exact governing
+  application assigned-time constructor, adds checked deterministic slot and
+  offset contracts, keeps the 198 Beammap compatibility windows while
+  retaining 43 short identities only as compact internal state, and records
+  late producer authority that a native TelescopeBackend Hold word is
+  science-valid only when zero. Pointing 152389 and Beammap 148670 completed
+  locally at native 1x with six realized threads and zero error/critical log
+  entries, but these runs are limited compatibility/engineering evidence.
+  The historical Beammap scientific-equivalence sentinel passes with exact
+  detector identities and flags and sub-milliarcsecond maximum position/FWHM
+  changes; historical whole-product comparisons are not exact controls and
+  contain broad pre-existing differences. Two controlled 12-thread Pointing
+  attempts failed repeatably in the unchanged PTC NetCDF write path, so
+  runtime/I/O acceptance remains owner-return. Future reduction evidence
+  defaults to a human-run Unity exact-`9aae`/candidate Pointing and Beammap
+  campaign; no further local reductions are authorized by this snapshot.
+  Absolute detector-integration-centroid timing and sky-placement correctness
+  remain unavailable. Local non-reduction gates pass: 629 enabled CTests, 154
+  baseline-tool tests, 123 config tests, and the complete config preflight.
+  See
+  [`validation/sci_align_001_phase1_local_2026-08-02/REPORT.md`](../validation/sci_align_001_phase1_local_2026-08-02/REPORT.md).
 - A 2026-07-30 coherent raw-I/Q event investigation has produced the first
   mode-aware observe-only production slice. The current RTC/PTC learning
   path records accepted intervals per detector UID and compacts only within
