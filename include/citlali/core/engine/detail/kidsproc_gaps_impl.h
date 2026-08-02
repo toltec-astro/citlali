@@ -2,6 +2,8 @@
 
 // Implementation detail included by kidsproc.h.
 
+#include <citlali/core/engine/detail/kidsproc_gap_cardinality.h>
+
 #include <algorithm>
 #include <cmath>
 #include <utility>
@@ -55,7 +57,7 @@ detector_source_slice_for_target_window(
 template <typename DerivedA, typename DerivedB, typename DerivedC>
 auto KidsDataProc::load_rawobs_gaps(const RawObs &rawobs, const Eigen::Index scan,
                                     Eigen::DenseBase<DerivedA>& scan_indices,
-                                    std::vector<Eigen::Index>& start_indices,
+                                    std::vector<Eigen::Index>& /*legacy_start_indices*/,
                                     Eigen::DenseBase<DerivedB>& t_common,
                                     std::vector<DerivedC>& times,
                                     const double tol) {
@@ -77,11 +79,11 @@ auto KidsDataProc::load_rawobs_gaps(const RawObs &rawobs, const Eigen::Index sca
     double t1 = t_common(scan_indices(3, scan));
 
     const auto kids_data = rawobs.kidsdata();
-    if (kids_data.size() != times.size() ||
-        kids_data.size() != start_indices.size()) {
-        throw std::runtime_error(
-            "rawobs KIDs, time-vector, and index cardinalities differ");
-    }
+    // The gap path slices from authoritative detector-time vectors. Legacy
+    // direct-path overlap offsets are neither consumed nor populated by the
+    // union-lattice alignment, so they are not a gap-loader cardinality.
+    citlali::engine_detail::require_gap_stream_cardinality(
+        kids_data.size(), times.size());
     std::size_t stream_index = 0;
     for (const auto &data_item : kids_data) {
         if (stream_index >= times.size()) {

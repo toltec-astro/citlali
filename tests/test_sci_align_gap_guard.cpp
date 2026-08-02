@@ -3,6 +3,7 @@
 #include <citlali/core/pipeline/timestream_scan_context.h>
 #include <citlali/core/pipeline/timestream_scan_generation.h>
 #include <citlali/core/pipeline/timestream_output_provenance.h>
+#include <citlali/core/engine/detail/kidsproc_gap_cardinality.h>
 #include <citlali/core/utils/utils.h>
 
 #include <gtest/gtest.h>
@@ -16,6 +17,15 @@
 #include <tuple>
 
 namespace {
+
+TEST(sci_align_gap_guard,
+     gap_loader_cardinality_ignores_legacy_direct_path_offsets) {
+    EXPECT_NO_THROW(
+        citlali::engine_detail::require_gap_stream_cardinality(11, 11));
+    EXPECT_THROW(
+        citlali::engine_detail::require_gap_stream_cardinality(11, 10),
+        std::runtime_error);
+}
 
 struct GapGuardLogger {
     template <class... Args>
