@@ -269,6 +269,116 @@ packages:
         Create the separate MAP repair from the exact audited application
         baseline; retain convolve/noise on its independent amendment and
         re-audit path.
+    repair_candidate:
+      status: locally_verified_unintegrated_nonconformant_candidate
+      branch: codex/repair-sci-map-001
+      commit: ed28dafb37f9113c0d3c95297148157129a90886
+      tree: cf75c36557178f351fb62781108a6f4b41b19225
+      parent: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+      integration_status: not_integrated
+      finding_effect: >-
+        F009 and F010 remain addressed_pending_reaudit; all other MAP findings
+        retain their recorded state. Local repair evidence does not establish
+        conformity or expand production use.
+    unity_campaign_preparation:
+      status: >-
+        verified_prepared_not_dispatched_blocked_on_evidence_design_and_missing_producer_outputs
+      review_date: 2026-08-02
+      review_id: SCI-MAP-001-UNITY-001-COORD-REVIEW-001
+      review_path: >-
+        doc/audits/packages/SCI-MAP-001_UNITY_CAMPAIGN_COORDINATOR_REVIEW_2026-08-02.md
+      review_sha256: >-
+        a1931af55f684c89cdaec9cd55c481c82287e0d90444f3e916489912eb83a484
+      review_commit: null
+      identity_path: >-
+        doc/audits/packages/SCI-MAP-001_UNITY_CAMPAIGN_IDENTITY_2026-08-02.json
+      identity_sha256: >-
+        97a2484d1599d01be27d11b0bb1c9b617b6e9cff8282f3cad60129f65858ec00
+      branch: codex/repair-sci-map-001
+      campaign_commit: 1b824f138754eeb1856ae5f102027db4b31598be
+      campaign_parent: ed28dafb37f9113c0d3c95297148157129a90886
+      campaign_commit_tree: e0f98af4ace754f90c682960a44af590cfa5013d
+      package_tree: dbf486e30c9b78ca16e05bccafc2d027562d0746
+      package_path: >-
+        validation/campaigns/SCI-MAP-001-UNITY-001/repair-ed28dafb
+      package_sha256s_member_count: 20
+      package_sha256s_sha256: >-
+        ecf080cce98ad3aef6d6dbf52e72dd53be5d659a40285ec6c9bfbb0aee185a69
+      campaign_json_sha256: >-
+        2cc7f31a5913af346e470c48f3f2e03863ef6072ced6bcbfa6175e26a508f1b3
+      verification:
+        application_source_changed_from_repair_candidate: false
+        package_verifier: pass
+        analysis_self_check: pass
+        analysis_self_check_count: 506
+        unity_contacted: false
+        jobs_submitted: false
+        required_ssh_alias: unity_toltec
+      fixed_cases: [P-SEQ, P-OMP, S-C-SEQ, S-C-OMP, S-E-SEQ, S-E-OMP,
+                    S-X-SEQ]
+      required_case_outcome: all_repaired_success
+      historical_case_note: >-
+        S-X-SEQ retains its expected-failure jobkey for identity only; the
+        repaired atomic coadd-plus-empirical outcome must succeed.
+      preparation_time_coordination_snapshot:
+        head: 846128c8ee6dc27851bd6c71aeecbe4739e1d24a
+        status: immutable_historical_campaign_provenance
+        embedded_align_state: phase_0_repair_active
+      coordinator_review_time_snapshot:
+        head: 8fc9263a2f502656b51d32cb60655481f83509f1
+        align_state: phase_1_repair_active
+        cal_state: preregistered_el25_confirmation_active
+      readiness_gaps:
+        - id: SCI-MAP-001-UNITY-001-GAP-EVIDENCE-DESIGN-001
+          class: resource_and_engineering_scope_review
+          status: blocking_before_producer_implementation
+          owner_scope_decision_id: MAP-UNITY-ED1
+          preliminary_scale: >-
+            1,717,082,860 pre-selection network-sample-by-tone terms and
+            118.34 GiB uncompressed at the declared 74 bytes per term; exact
+            admitted cardinality may be lower.
+          recommended_disposition: >-
+            Retain all seven exact-SHA cases, complete product/F010/WCS/coadd/
+            realization/provenance/seq-OpenMP checks, and exhaustive local F011
+            truth; replace full per-term storage with automatically generated
+            compact manifests, streaming hashes, compact per-scan/per-pixel
+            sufficient statistics, and deterministic every-network actual-data
+            primitive traces, escalating only on discrepancy or re-auditor
+            request.
+          intentional_tradeoff: >-
+            Owner approval replaces exhaustive retention of every actual-data
+            primitive term with deterministic actual-data trace coverage plus
+            streaming hashes and sufficient statistics, while retaining
+            exhaustive local F011 primitive-semantics coverage and every
+            seven-case product, F010, WCS, coadd, realization, provenance, and
+            seq-OpenMP gate.
+          next_gate: >-
+            Obtain owner disposition MAP-UNITY-ED1 before amending the protocol
+            or implementing an evidence producer.
+        - id: SCI-MAP-001-UNITY-001-GAP-PRODUCER-001
+          class: engineering_evidence_preparation_gap
+          status: blocking
+          required_outputs:
+            - one_point_raw_input_manifest
+            - one_science_raw_input_manifest
+            - nine_independent_processed_term_npz_ledgers
+          owner_hand_authoring_allowed: false
+          next_gate: >-
+            After the evidence-design decision, identify or implement,
+            validate, digest-bind, and approve one frozen producer; then
+            generate and independently verify all required outputs.
+        - id: SCI-MAP-001-UNITY-001-GAP-OPERATIONS-001
+          class: owner_operational_input
+          status: deferred_until_producer_gap_closes
+          required_input: exact_fail_closed_22_field_owner_values_record
+        - id: SCI-MAP-001-UNITY-001-GAP-SNAPSHOT-001
+          class: execution_provenance_input
+          status: required_immediately_before_future_human_launch
+      effect: >-
+        Accepts only the identity, integrity, local self-check, and human-only
+        execution boundary of the prepared campaign. It supplies no external
+        evidence, authorizes no Unity action, and closes no finding or
+        dependency.
     implementation_assessment:
       governing_source: nonconformant
       existing_profile_note: >-
@@ -498,16 +608,25 @@ packages:
       - bounded hashed b294802 Point cross-audit characterization
       - project-owner F009/F010 decision dated 2026-07-31
       - bounded repair and re-audit handoff with no audit-branch repair
+      - >-
+        verified SCI-MAP-001-UNITY-001 campaign-preparation commit
+        1b824f138754eeb1856ae5f102027db4b31598be with 20-member checksum-list
+        digest ecf080cce98ad3aef6d6dbf52e72dd53be5d659a40285ec6c9bfbb0aee185a69;
+        preparation only, not external evidence
     requested_unity_evidence:
-      - status: outstanding
+      - status: >-
+          prepared_not_dispatched_blocked_on_evidence_design_and_missing_producer_outputs
         request_id: SCI-MAP-001-UNITY-001
-        governing_source_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
-        cases: [point-152389-products-seq, point-152389-products-omp,
-                science-152390-152392-coadd-seq,
-                science-152390-152392-coadd-omp,
-                science-152390-152392-empirical-seq,
-                science-152390-152392-empirical-omp,
-                science-152390-152392-coadd-products-expected-failure-seq]
+        audited_governing_source_sha: >-
+          9aae0e669384c5c0c0dda93debc194d6b8dac787
+        application_candidate_sha: >-
+          ed28dafb37f9113c0d3c95297148157129a90886
+        campaign_commit: 1b824f138754eeb1856ae5f102027db4b31598be
+        campaign_revision: repair-sha-ed28dafb-2026-08-01
+        campaign_version: 2026-08-01.1
+        cases: [P-SEQ, P-OMP, S-C-SEQ, S-C-OMP, S-E-SEQ, S-E-OMP, S-X-SEQ]
+        required_case_outcome: all_repaired_success
+        external_evidence_status: unsupplied
     supplied_external_evidence:
       - id: SCI-MAP-001-XAUD-001
         scope: downstream_cross_audit_characterization_only
@@ -587,8 +706,8 @@ packages:
         - integration or production use of b294802
         - fruit-loop eligibility, amplitude, confidence, support, or gain from
           those filtered products
-    remediation_branch: null
-    remediation_commit: null
+    remediation_branch: codex/repair-sci-map-001
+    remediation_commit: ed28dafb37f9113c0d3c95297148157129a90886
     re_audit_status: required
 
   - id: SCI-ALIGN-001

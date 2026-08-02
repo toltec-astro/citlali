@@ -1,0 +1,169 @@
+{
+  "schema_version": "sci-map-001-unity-campaign-coordinator-identity-v1",
+  "review_id": "SCI-MAP-001-UNITY-001-COORD-REVIEW-001",
+  "review_date": "2026-08-02",
+  "package_id": "SCI-MAP-001",
+  "request_id": "SCI-MAP-001-UNITY-001",
+  "status": "verified_prepared_not_dispatched_blocked_on_evidence_design_and_missing_producer_outputs",
+  "repair_candidate": {
+    "repository": "citlali-refactor",
+    "branch": "codex/repair-sci-map-001",
+    "commit": "ed28dafb37f9113c0d3c95297148157129a90886",
+    "tree": "cf75c36557178f351fb62781108a6f4b41b19225",
+    "parent": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
+    "integration_status": "unintegrated_candidate",
+    "conformance_status": "nonconformant_pending_fresh_reaudit"
+  },
+  "campaign_preparation": {
+    "revision": "repair-sha-ed28dafb-2026-08-01",
+    "package_version": "2026-08-01.1",
+    "commit": "1b824f138754eeb1856ae5f102027db4b31598be",
+    "parent": "ed28dafb37f9113c0d3c95297148157129a90886",
+    "commit_tree": "e0f98af4ace754f90c682960a44af590cfa5013d",
+    "package_tree": "dbf486e30c9b78ca16e05bccafc2d027562d0746",
+    "package_path": "validation/campaigns/SCI-MAP-001-UNITY-001/repair-ed28dafb",
+    "sha256s_member_count": 20,
+    "sha256s_sha256": "ecf080cce98ad3aef6d6dbf52e72dd53be5d659a40285ec6c9bfbb0aee185a69",
+    "campaign_json_sha256": "2cc7f31a5913af346e470c48f3f2e03863ef6072ced6bcbfa6175e26a508f1b3",
+    "application_source_changed_from_repair_candidate": false,
+    "changed_scope": "documentation_and_validation_campaign_only"
+  },
+  "local_verification": {
+    "package_manifest": "pass_all_20_members",
+    "package_verifier": "pass",
+    "analysis_self_check": "pass",
+    "analysis_self_check_count": 506,
+    "working_tree_after_verification": "clean",
+    "unity_contacted": false,
+    "jobs_submitted": false,
+    "credentials_found": false,
+    "remote_action_boundary": "driver_has_no_remote_client_and_only_emits_human_action_plans",
+    "required_ssh_alias": "unity_toltec"
+  },
+  "fixed_campaign": {
+    "case_ids": [
+      "P-SEQ",
+      "P-OMP",
+      "S-C-SEQ",
+      "S-C-OMP",
+      "S-E-SEQ",
+      "S-E-OMP",
+      "S-X-SEQ"
+    ],
+    "point_observations": [152389],
+    "science_observations": [152390, 152392],
+    "arrays": ["a1100", "a1400", "a2000"],
+    "noise_realizations": 64,
+    "note": "S-X-SEQ retains a historical expected-failure jobkey, but the repaired campaign requires successful atomic coadd-plus-empirical publication."
+  },
+  "coordination_snapshots": {
+    "preparation_time": {
+      "coordination_head": "846128c8ee6dc27851bd6c71aeecbe4739e1d24a",
+      "status": "immutable_historical_campaign_provenance",
+      "embedded_align_state": "phase_0_repair_active"
+    },
+    "coordinator_review_time": {
+      "coordination_head": "8fc9263a2f502656b51d32cb60655481f83509f1",
+      "status": "current_at_review_before_this_record",
+      "align_state": "phase_1_repair_active",
+      "cal_state": "preregistered_el25_confirmation_active"
+    },
+    "policy": "Preserve the embedded preparation snapshot; bind a new execution-time snapshot before human launch and never relabel the embedded state as current."
+  },
+  "readiness_gaps": [
+    {
+      "id": "SCI-MAP-001-UNITY-001-GAP-EVIDENCE-DESIGN-001",
+      "class": "resource_and_engineering_scope_review",
+      "blocking_stage": "before_evidence_producer_implementation",
+      "owner_scope_decision_id": "MAP-UNITY-ED1",
+      "summary": "The current exact per-term NPZ design requires about 1.717 billion pre-selection terms and about 118.34 GiB uncompressed at 74 bytes per term on the three selected observations; exact admitted cardinality may be lower.",
+      "basis": {
+        "observation_152389_preselection_terms": 42483156,
+        "observation_152390_preselection_terms": 836181713,
+        "observation_152392_preselection_terms": 838417991,
+        "total_preselection_terms": 1717082860,
+        "declared_uncompressed_bytes_per_term": 74,
+        "total_uncompressed_bytes": 127064131640,
+        "total_uncompressed_gib": "118.34",
+        "largest_single_observation_array_approx_uncompressed_gib": "33.2",
+        "term_layout": "five int64, two uint8, and four float64 values",
+        "estimate_status": "preliminary_scale_check_not_a_frozen_campaign_result"
+      },
+      "recommended_bounded_alternative": [
+        "retain all seven exact-SHA cases and full output inventory, F010 alias, WCS, coadd, realization, provenance, and seq-OpenMP checks",
+        "retain the exhaustive local F011 truth suite as primitive-semantics authority",
+        "generate compact raw-input manifests automatically",
+        "replace full per-term storage with streaming hashes and compact per-scan/per-pixel sufficient statistics for full-output reconstruction",
+        "add a deterministic actual-data primitive trace sampling preselected scans and hash-selected valid/flagged detectors from every active network",
+        "escalate to broader per-term traces only for discrepancies or a named re-auditor request"
+      ],
+      "intentional_tradeoff": "Owner approval would replace exhaustive retention of every actual-data primitive term with deterministic actual-data trace coverage plus streaming hashes and sufficient statistics, while retaining exhaustive local F011 primitive-semantics coverage and every seven-case product, F010, WCS, coadd, realization, provenance, and seq-OpenMP gate.",
+      "resolution": "Obtain owner disposition MAP-UNITY-ED1 on the bounded alternative before amending the protocol or implementing a producer."
+    },
+    {
+      "id": "SCI-MAP-001-UNITY-001-GAP-PRODUCER-001",
+      "class": "engineering_evidence_preparation_gap",
+      "blocking_stage": "before_case_preparation_or_submission_plan_emission",
+      "summary": "No approved frozen raw-manifest and processed-term-ledger producer is supplied by the campaign or found elsewhere in the reviewed repository.",
+      "required_outputs": [
+        "one Point raw-input manifest for observation 152389",
+        "one Science raw-input manifest for ordered observations 152390 and 152392",
+        "nine independent per-observation-per-array NPZ processed-term ledgers"
+      ],
+      "owner_hand_authoring_allowed": false,
+      "resolution": "after the evidence-design gate is approved, identify or build, validate, digest-bind, and approve one frozen producer; then generate and independently verify all required outputs"
+    },
+    {
+      "id": "SCI-MAP-001-UNITY-001-GAP-OPERATIONS-001",
+      "class": "owner_operational_input",
+      "blocking_stage": "before_human_deployment",
+      "summary": "The fail-closed 22-field owner-values record still requires exact Unity checkout, project, path, executable, site, operator, Slurm, dependency, and local retrieval facts.",
+      "resolution": "project owner supplies or confirms exact values only after the producer gap is closed"
+    },
+    {
+      "id": "SCI-MAP-001-UNITY-001-GAP-SNAPSHOT-001",
+      "class": "execution_provenance_input",
+      "blocking_stage": "immediately_before_human_launch",
+      "summary": "The frozen campaign contains a dated coordination snapshot rather than the future live launch state.",
+      "resolution": "attach and verify a new execution-time coordination snapshot without rewriting the frozen package"
+    }
+  ],
+  "dependency_state": {
+    "SCI-ALIGN-001": "open",
+    "SCI-CAL-001": "open",
+    "SCI-AST-001": "open_pending_repair_and_reaudit",
+    "SCI-PTC-001": "not_started",
+    "SCI-VAL-001": "not_started",
+    "late_handoffs_held_for_reaudit": [
+      {
+        "id": "SCI-MAP-001-XAUD-002",
+        "source_package": "SCI-CAL-001",
+        "sha256": "2a70dae061827d18126d1bd6776f5a709d3315b5c1ae4f61d063116aeac76ac6"
+      },
+      {
+        "id": "SCI-MAP-001-XAUD-003",
+        "source_package": "SCI-AST-001",
+        "sha256": "829ca1e5d9122461d011cae85ce0024d46b3bd67cb494779ea8d003a90c29aee"
+      }
+    ],
+    "effect": "The campaign cannot close any named upstream dependency or SCI-MAP-001-F013."
+  },
+  "authorization_boundary": {
+    "authorized": [
+      "index the campaign as a locally verified preparation artifact",
+      "prepare a bounded evidence-design and resource review"
+    ],
+    "not_authorized": [
+      "contact or query Unity",
+      "deploy the package or submit jobs",
+      "implement the large evidence producer before the evidence-design scope decision",
+      "amend the evidence protocol before owner disposition MAP-UNITY-ED1",
+      "hand-author manifests or sample ledgers",
+      "integrate the repair candidate",
+      "mark external evidence supplied",
+      "close any finding or dependency",
+      "launch the MAP re-audit",
+      "expand production use"
+    ]
+  }
+}

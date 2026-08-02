@@ -82,13 +82,24 @@ application SHA, never from the audit or coordination branch. The bounded
 F001--F011 repair is locally verified at
 `ed28dafb37f9113c0d3c95297148157129a90886`; it remains an unintegrated repair
 candidate, not a conformity or production decision. Its exact-SHA human-run
-Unity campaign package is being prepared without changing that application
-candidate. External evidence and fresh re-audit have not begun; F009/F010
-remain `addressed_pending_reaudit`, and the named CAL/AST/PTC/VAL dependencies
-remain open. See the
+Unity campaign package is locally verified at preparation commit
+`1b824f138754eeb1856ae5f102027db4b31598be` without changing that application
+candidate. The 20-member package manifest and 506-check synthetic analysis
+self-test pass, and the package preserves a human-only `unity_toltec` boundary.
+It is not launch-ready: no approved frozen producer currently supplies the two
+required raw-input manifests and nine independent processed-term ledgers.
+Before implementing that producer, a bounded evidence-design review must
+address the preliminary approximately 1.72-billion-term, approximately
+118-GiB uncompressed ledger scale and determine whether a smaller independent
+representation can preserve the required claims without silent weakening.
+The owner should not fill Unity operational values yet. External evidence and
+fresh re-audit have not begun; F009/F010 remain `addressed_pending_reaudit`,
+and the named CAL/AST/PTC/VAL dependencies remain open. See the
 [coordinator decision](audits/packages/SCI-MAP-001_COORDINATOR_DECISION_2026-07-31.md)
 and the
-[bounded repair/re-audit handoff](audits/packages/SCI-MAP-001_BOUNDED_REPAIR_REAUDIT_HANDOFF_2026-07-31.md).
+[bounded repair/re-audit handoff](audits/packages/SCI-MAP-001_BOUNDED_REPAIR_REAUDIT_HANDOFF_2026-07-31.md),
+plus the
+[Unity campaign coordinator review](audits/packages/SCI-MAP-001_UNITY_CAMPAIGN_COORDINATOR_REVIEW_2026-08-02.md).
 
 ## 2026-07-31 SCI-CAL-001 Audit Coordination
 
