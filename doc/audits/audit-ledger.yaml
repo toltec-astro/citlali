@@ -925,7 +925,7 @@ packages:
             owner_resolved_by_restricted_active_registry_amended_hold_views_and_fail_closed_default
           record_path: >-
             doc/audits/packages/SCI-ALIGN-001_PHASE_ZERO_D004_DECISION_2026-08-01.md
-          record_commit: null
+          record_commit: a3775bf3039461a6435f07938572dd23b3f03d47
           record_sha256: >-
             ea03c5b614c7ce64ab5ab071c48c07d2f4910b919941798e70668049e53faf78
           constrained_by:
