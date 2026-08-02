@@ -267,6 +267,32 @@ production profiles, physical `Hold` semantics, non-1x production,
 polarization, and production expansion remain unapproved. The approved
 contract and existing-use-only restriction are unchanged.
 
+The dedicated ALIGN task subsequently committed the additive sky-domain
+evidence package at `bfffe0e60fa8ce05a75ae34b89383bceaadb8fc2`, parent
+`5a0d64b8f1b9b246b1b5d575c548269823203d22`, with no application-source delta.
+Its 15-entry checksum manifest verifies at
+`ef0dcd523dcc6c46259866e3016a53cb3cde50862b3e103a0a60e9cc0bf049ee`.
+The [coordinator review](audits/packages/SCI-ALIGN-001_D005_SKY_DOMAIN_COORDINATOR_REVIEW_2026-08-02.md)
+integrates the return without creating another owner gate: all 4,645,476 paired
+ordinary native-1x rows retain exact slot, assigned-time, and AltAz tangent-
+coordinate identity, while 110 union-edge rows remain explicitly unpaired and
+unavailable. The half-cell margin is an engineering uniqueness diagnostic, not
+a sky tolerance; physical integration-event and absolute sky-placement
+authority remain unavailable.
+
+`SKY-Q1`--`SKY-Q5` are resolved by the existing D001--D005 owner boundaries.
+Relative compatibility may proceed with absolute timestamp semantics
+unavailable; unaffected angular/product gates remain exact and any nonzero
+scientific change returns to the owner; naturally produced products under the
+existing 1-arcsec Pointing/Beammap configuration may serve as later exact
+downstream sentinels, with no special map campaign, new 2-arcsec reduction, or
+MAP implementation; native observational phase one remains 1x; and `Hold`
+remains the named compatibility adapter pending an
+explicit future telescope-engineer amendment. Bounded phase-one implementation
+may proceed on the exact clean evidence descendant. All Unity, acceptance,
+re-audit, integration, push, production, physical-semantics, and nonzero-
+tolerance prohibitions remain unchanged.
+
 ## 2026-08-01 SCI-AST-001 Audit Coordination
 
 The dedicated Ultra `SCI-AST-001` audit is complete and integrated. Its

@@ -1167,6 +1167,49 @@ packages:
             changed-product tolerance, polarization, and production expansion
             remain unapproved.
       pending: []
+    phase_zero_sky_domain_return:
+      status: verified_integrated_no_new_owner_decision
+      coordinator_review_date: 2026-08-02
+      coordinator_review_path: >-
+        doc/audits/packages/SCI-ALIGN-001_D005_SKY_DOMAIN_COORDINATOR_REVIEW_2026-08-02.md
+      coordinator_review_commit: null
+      coordinator_review_sha256: >-
+        fe7e71bb5188e8333081ce70437faed039bf11001946d0cb8825b12371a16316
+      evidence_branch: codex/repair-sci-align-001
+      evidence_commit: bfffe0e60fa8ce05a75ae34b89383bceaadb8fc2
+      evidence_parent: 5a0d64b8f1b9b246b1b5d575c548269823203d22
+      application_source_changed: false
+      artifact: >-
+        validation/sci_align_001_align_p0_d005_sky_domain_2026-08-02/REPORT.md
+      digest_manifest_sha256: >-
+        ef0dcd523dcc6c46259866e3016a53cb3cde50862b3e103a0a60e9cc0bf049ee
+      report_sha256: >-
+        c0a3a2daee0a7e4894a17416f8a71c2398ca41c147149ebbb1a6eccc35c1ca93
+      owner_brief_sha256: >-
+        764558bb76b30c55803081ff2ccfcd87e5b32774067345238bf19b7c2b9b485e
+      protocol_sha256: >-
+        a237697bf7f240f84b1fe02a496790f7b29ef48569f5e40008c52ad1cfda35be
+      measured:
+        native_rows: 4645586
+        governing_supported_ordinary_rows: 4645476
+        union_edge_unpaired_rows: 110
+        ordinary_slot_change_rows: 0
+        ordinary_assigned_time_change_max_abs_sec: 0.0
+        ordinary_sky_change_max_abs_arcsec: 0.0
+        full_slot_reassignment_rows: 0
+      physical_timestamp_authority: unavailable
+      question_disposition:
+        SKY-Q1-PHYSICAL-TIME: resolved_by_D001_relative_compatibility_absolute_unavailable
+        SKY-Q2-ANGULAR-GATE: resolved_by_D005_exact_unchanged_and_owner_return
+        SKY-Q3-MAP-SENTINEL: >-
+          naturally_produced_existing_1arcsec_product_may_be_later_exact_sentinel_no_special_map_campaign_or_MAP_implementation
+        SKY-Q4-MISSING-RATES: resolved_by_D005_native_1x_observational_phase_one
+        SKY-Q5-HOLD: resolved_by_D005_Q1_compatibility_and_future_amendment
+      effect: >-
+        Adds a sky-domain preregistration and exact differential no-move result
+        without promoting engineering margins to scientific tolerances or
+        reopening owner decisions. Bounded phase-one implementation and local
+        validation remain authorized; all later non-approvals remain in force.
     dispatch:
       status: frozen_for_dispatch
       coordinator_registry_commit: 99bfa3562ecfa05c0c10de24a255a6a18ff313d2
@@ -1222,7 +1265,7 @@ packages:
       identity_correction_commit: 35cc8ce246e8e70c569e650be6c1eae2c91b80ef
       proposed_branch: codex/repair-sci-align-001
       launch_status: >-
-        phase_one_authorized_task_continuation_pending
+        phase_one_authorized_sky_return_integrated_task_continuation_pending
       task_thread_id: 019fbd95-feaa-7b52-a382-b7bd04effa8e
       launch_date: 2026-08-01
       verified_initial_head: 9aae0e669384c5c0c0dda93debc194d6b8dac787
@@ -1234,6 +1277,10 @@ packages:
       phase_zero_d005_evidence_commit: 5a0d64b8f1b9b246b1b5d575c548269823203d22
       phase_zero_d005_digest_manifest_sha256: >-
         149ef430af3223562d9e69b7224703b831f6f56629b2f3c513bf44c40a567bbb
+      phase_zero_sky_domain_evidence_commit: >-
+        bfffe0e60fa8ce05a75ae34b89383bceaadb8fc2
+      phase_zero_sky_domain_digest_manifest_sha256: >-
+        ef0dcd523dcc6c46259866e3016a53cb3cde50862b3e103a0a60e9cc0bf049ee
       phase_zero_review: >-
         doc/audits/packages/SCI-ALIGN-001_PHASE_ZERO_COORDINATOR_REVIEW_2026-08-01.md
       phase_zero_review_commit: dbebd17627870963789d142fe385ab05268573da
@@ -1448,6 +1495,29 @@ packages:
           D005-Q1-HOLD approved as an existing-use compatibility adapter;
           bounded phase-one implementation and local validation approved with
           unavailable evidence retained as explicit later gates.
+      - id: SCI-ALIGN-001-PHASE0-D005-SKY-001
+        status: verified_integrated_no_new_owner_decision
+        source_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+        evidence_branch: codex/repair-sci-align-001
+        evidence_commit: bfffe0e60fa8ce05a75ae34b89383bceaadb8fc2
+        evidence_parent: 5a0d64b8f1b9b246b1b5d575c548269823203d22
+        artifact: >-
+          validation/sci_align_001_align_p0_d005_sky_domain_2026-08-02/REPORT.md
+        sha256: >-
+          c0a3a2daee0a7e4894a17416f8a71c2398ca41c147149ebbb1a6eccc35c1ca93
+        digest_manifest_sha256: >-
+          ef0dcd523dcc6c46259866e3016a53cb3cde50862b3e103a0a60e9cc0bf049ee
+        established: >-
+          Exact zero differential slot/time/AltAz tangent-coordinate change on
+          all 4,645,476 paired ordinary native-1x rows; 110 union-edge rows
+          remain unpaired unavailable; engineering half-cell margin is not a
+          sky tolerance; absolute physical timestamp/sky authority remains
+          unavailable.
+        coordinator_resolution: >-
+          SKY-Q1 through SKY-Q5 are applications of approved D001-D005
+          boundaries, not new owner decisions; preserve exact no-move gates,
+          avoid a new 2-arcsec reduction or MAP implementation, and proceed
+          with bounded phase one.
     requested_unity_evidence:
       - SCI-ALIGN-001-UNITY-001
     supplied_external_evidence: []
@@ -2648,7 +2718,7 @@ packages:
       dependency_hold:
         package_id: SCI-ALIGN-001
         phase_zero_status: >-
-          D001_D005_resolved_phase_one_implementation_authorized
+          D001_D005_and_sky_return_resolved_phase_one_implementation_authorized
         phase_zero_evidence_commit: 53c7154a3633dfe19dc036cfb5a6250f729a897d
         phase_zero_d005_evidence_commit: 5a0d64b8f1b9b246b1b5d575c548269823203d22
         required_completion: exact_accepted_and_reaudited_ALIGN_successor
