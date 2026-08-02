@@ -1,0 +1,486 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://toltec.astro.umass.edu/schemas/sci-cal-001-am12-el25-confirmation-result-v1.json",
+  "title": "SCI-CAL-001 AM12 EL25 confirmation decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "package_id",
+    "study_id",
+    "status",
+    "authorization",
+    "software_status",
+    "numerical_representation_status",
+    "observational_status",
+    "operator_adoption",
+    "operational_domain_authorization",
+    "provenance",
+    "primary_candidate",
+    "primary_gate_results",
+    "primary_maximum",
+    "secondary_candidates",
+    "coverage",
+    "warning_evidence",
+    "limitations"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "sci-cal-001-am12-el25-confirmation-result-v1"
+    },
+    "package_id": {"const": "SCI-CAL-001"},
+    "study_id": {"const": "SCI-CAL-001-AM12-EL25-CONFIRMATION-001"},
+    "status": {
+      "enum": [
+        "primary_confirmation_gate_pass",
+        "primary_confirmation_gate_fail",
+        "confirmation_invalid"
+      ]
+    },
+    "authorization": {
+      "const": "numerical_confirmation_evidence_only_no_adoption_or_operational_authorization"
+    },
+    "software_status": {
+      "enum": ["pass_clean", "pass_warning_bearing_evidence", "invalid"]
+    },
+    "numerical_representation_status": {
+      "enum": ["primary_pass", "primary_fail", "invalid"]
+    },
+    "observational_status": {
+      "const": "not_evaluated_required_before_production"
+    },
+    "operator_adoption": {"type": "null"},
+    "operational_domain_authorization": {"type": "null"},
+    "provenance": {"$ref": "#/$defs/provenance"},
+    "primary_candidate": {"$ref": "#/$defs/primaryIdentity"},
+    "primary_gate_results": {"$ref": "#/$defs/gateResults"},
+    "primary_maximum": {
+      "oneOf": [
+        {"$ref": "#/$defs/maximum"},
+        {"type": "null"}
+      ]
+    },
+    "secondary_candidates": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "prefixItems": [
+        {"$ref": "#/$defs/secondaryFixedPchipResult"},
+        {"$ref": "#/$defs/secondaryConditionedPiecewiseResult"},
+        {"$ref": "#/$defs/secondaryConditionedPchipResult"}
+      ],
+      "items": false
+    },
+    "coverage": {"$ref": "#/$defs/coverage"},
+    "warning_evidence": {"$ref": "#/$defs/warningEvidence"},
+    "limitations": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"status": {"const": "primary_confirmation_gate_pass"}},
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "software_status": {
+            "enum": ["pass_clean", "pass_warning_bearing_evidence"]
+          },
+          "numerical_representation_status": {"const": "primary_pass"},
+          "primary_gate_results": {
+            "properties": {
+              "G0": {"const": true},
+              "G1": {"const": true},
+              "G2": {"const": true},
+              "G3": {"const": true},
+              "G4": {"const": true},
+              "G5": {"const": true},
+              "G6": {"const": true},
+              "all_pass": {"const": true}
+            }
+          },
+          "primary_maximum": {"$ref": "#/$defs/maximum"},
+          "coverage": {"properties": {"pass": {"const": true}}},
+          "warning_evidence": {
+            "properties": {"admission_pass": {"const": true}}
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"status": {"const": "primary_confirmation_gate_fail"}},
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "software_status": {
+            "enum": ["pass_clean", "pass_warning_bearing_evidence"]
+          },
+          "numerical_representation_status": {"const": "primary_fail"},
+          "primary_gate_results": {
+            "properties": {
+              "G0": {"const": true},
+              "G1": {"const": true},
+              "G2": {"const": true},
+              "G4": {"const": true},
+              "G6": {"const": true},
+              "all_pass": {"const": false}
+            },
+            "anyOf": [
+              {"properties": {"G3": {"const": false}}},
+              {"properties": {"G5": {"const": false}}}
+            ]
+          },
+          "primary_maximum": {"$ref": "#/$defs/maximum"},
+          "coverage": {"properties": {"pass": {"const": true}}},
+          "warning_evidence": {
+            "properties": {"admission_pass": {"const": true}}
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"status": {"const": "confirmation_invalid"}},
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "software_status": {"const": "invalid"},
+          "numerical_representation_status": {"const": "invalid"},
+          "primary_gate_results": {
+            "properties": {"all_pass": {"const": false}},
+            "anyOf": [
+              {"properties": {"G0": {"const": false}}},
+              {"properties": {"G1": {"const": false}}},
+              {"properties": {"G2": {"const": false}}},
+              {"properties": {"G4": {"const": false}}},
+              {"properties": {"G6": {"const": false}}}
+            ]
+          },
+          "primary_maximum": {"type": "null"}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "gitCommit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "scientific": {
+      "type": "string",
+      "pattern": "^-?(?:0|[1-9][0-9]*)\\.[0-9]{17}e[+-][0-9]{2,3}$"
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "preregistration_commit",
+        "preregistration_parent",
+        "protocol_sha256",
+        "preregistration_sha256",
+        "result_schema_sha256",
+        "runner_sha256",
+        "execution_context_sha256",
+        "application_repair_base",
+        "coordination_binding_commit",
+        "immutable_decision_commit",
+        "am_executable_sha256",
+        "am_source_payload_sha256",
+        "candidate_nodes_sha256",
+        "passband_set_id"
+      ],
+      "properties": {
+        "preregistration_commit": {"$ref": "#/$defs/gitCommit"},
+        "preregistration_parent": {
+          "const": "f4014d3669b94b1eceb8158da7993737efc908f2"
+        },
+        "protocol_sha256": {"$ref": "#/$defs/sha256"},
+        "preregistration_sha256": {"$ref": "#/$defs/sha256"},
+        "result_schema_sha256": {"$ref": "#/$defs/sha256"},
+        "runner_sha256": {"$ref": "#/$defs/sha256"},
+        "execution_context_sha256": {"$ref": "#/$defs/sha256"},
+        "application_repair_base": {
+          "const": "9aae0e669384c5c0c0dda93debc194d6b8dac787"
+        },
+        "coordination_binding_commit": {
+          "const": "8fc9263a2f502656b51d32cb60655481f83509f1"
+        },
+        "immutable_decision_commit": {
+          "const": "f513f410b88d147be6bd016d4c79ac1d3a5b2a8e"
+        },
+        "am_executable_sha256": {
+          "const": "78e721d45b08990069a2d67a5fb337446bcbfb728046940c0d473bea340205fb"
+        },
+        "am_source_payload_sha256": {
+          "const": "0cd4ea9d48c3c6da2100a692af1dc24dce5b3c903ced2b07b7372e8e85182fe8"
+        },
+        "candidate_nodes_sha256": {
+          "const": "8005c8ae1d4ab1c8de39f06a632d76d3e8f248939dc63c616dd176bcbd2f6fe2"
+        },
+        "passband_set_id": {
+          "const": "toltec-passband-set-v1:sha256:5e6f38f14bcae93a29ffe8362c52b15209f51aee4e48373b23aaa5ec2f8a6433"
+        }
+      }
+    },
+    "gateResults": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["G0", "G1", "G2", "G3", "G4", "G5", "G6", "all_pass"],
+      "properties": {
+        "G0": {"type": "boolean"},
+        "G1": {"type": "boolean"},
+        "G2": {"type": "boolean"},
+        "G3": {"type": "boolean"},
+        "G4": {"type": "boolean"},
+        "G5": {"type": "boolean"},
+        "G6": {"type": "boolean"},
+        "all_pass": {"type": "boolean"}
+      }
+    },
+    "primaryIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidate_id", "lane", "operator", "role"],
+      "properties": {
+        "candidate_id": {
+          "const": "fixed_djf25_v1+am12_piecewise_linear_los_tau_eval_v0"
+        },
+        "lane": {"const": "fixed_djf25_v1"},
+        "operator": {"const": "am12_piecewise_linear_los_tau_eval_v0"},
+        "role": {"const": "primary_confirmatory"}
+      }
+    },
+    "secondaryFixedPchipIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidate_id", "lane", "operator", "role"],
+      "properties": {
+        "candidate_id": {
+          "const": "fixed_djf25_v1+am12_pchip_los_tau_eval_v0"
+        },
+        "lane": {"const": "fixed_djf25_v1"},
+        "operator": {"const": "am12_pchip_los_tau_eval_v0"},
+        "role": {"const": "secondary_descriptive"}
+      }
+    },
+    "secondaryConditionedPiecewiseIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidate_id", "lane", "operator", "role"],
+      "properties": {
+        "candidate_id": {
+          "const": "conditioned_djf_v1+am12_piecewise_linear_los_tau_eval_v0"
+        },
+        "lane": {"const": "conditioned_djf_v1"},
+        "operator": {"const": "am12_piecewise_linear_los_tau_eval_v0"},
+        "role": {"const": "secondary_descriptive"}
+      }
+    },
+    "secondaryConditionedPchipIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidate_id", "lane", "operator", "role"],
+      "properties": {
+        "candidate_id": {
+          "const": "conditioned_djf_v1+am12_pchip_los_tau_eval_v0"
+        },
+        "lane": {"const": "conditioned_djf_v1"},
+        "operator": {"const": "am12_pchip_los_tau_eval_v0"},
+        "role": {"const": "secondary_descriptive"}
+      }
+    },
+    "maximum": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "absolute_fractional_correction_error",
+        "signed_fractional_correction_error",
+        "coordinate_id",
+        "truth_profile",
+        "requested_tau225",
+        "achieved_tau225",
+        "elevation_deg",
+        "array",
+        "alpha"
+      ],
+      "properties": {
+        "absolute_fractional_correction_error": {"$ref": "#/$defs/scientific"},
+        "signed_fractional_correction_error": {"$ref": "#/$defs/scientific"},
+        "coordinate_id": {
+          "enum": [
+            "q0_q25_trisect_1",
+            "q0_q25_trisect_2",
+            "q25_q50_trisect_1",
+            "q25_q50_trisect_2",
+            "q50_q75_trisect_1",
+            "q50_q75_trisect_2"
+          ]
+        },
+        "truth_profile": {
+          "enum": [
+            "LMT_DJF_5",
+            "LMT_DJF_25",
+            "LMT_DJF_50",
+            "LMT_DJF_75",
+            "LMT_annual_25",
+            "LMT_MAM_25"
+          ]
+        },
+        "requested_tau225": {"$ref": "#/$defs/scientific"},
+        "achieved_tau225": {"$ref": "#/$defs/scientific"},
+        "elevation_deg": {"type": "integer", "minimum": 25, "maximum": 80},
+        "array": {"enum": ["a1100", "a1400", "a2000"]},
+        "alpha": {"enum": [-1, 0, 2, 4]}
+      }
+    },
+    "candidateResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidate", "gate_results", "maximum", "can_rescue_primary_failure"],
+      "properties": {
+        "candidate": {
+          "oneOf": [
+            {"$ref": "#/$defs/secondaryFixedPchipIdentity"},
+            {"$ref": "#/$defs/secondaryConditionedPiecewiseIdentity"},
+            {"$ref": "#/$defs/secondaryConditionedPchipIdentity"}
+          ]
+        },
+        "gate_results": {"$ref": "#/$defs/gateResults"},
+        "maximum": {
+          "oneOf": [
+            {"$ref": "#/$defs/maximum"},
+            {"type": "null"}
+          ]
+        },
+        "can_rescue_primary_failure": {"const": false}
+      }
+    },
+    "secondaryFixedPchipResult": {
+      "allOf": [
+        {"$ref": "#/$defs/candidateResult"},
+        {
+          "properties": {
+            "candidate": {"$ref": "#/$defs/secondaryFixedPchipIdentity"}
+          }
+        }
+      ]
+    },
+    "secondaryConditionedPiecewiseResult": {
+      "allOf": [
+        {"$ref": "#/$defs/candidateResult"},
+        {
+          "properties": {
+            "candidate": {
+              "$ref": "#/$defs/secondaryConditionedPiecewiseIdentity"
+            }
+          }
+        }
+      ]
+    },
+    "secondaryConditionedPchipResult": {
+      "allOf": [
+        {"$ref": "#/$defs/candidateResult"},
+        {
+          "properties": {
+            "candidate": {"$ref": "#/$defs/secondaryConditionedPchipIdentity"}
+          }
+        }
+      ]
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "opacity_coordinate_count",
+        "profile_scale_case_count",
+        "elevation_count",
+        "full_direct_am_grid_count",
+        "direct_band_alpha_truth_count",
+        "candidate_count",
+        "array_count",
+        "alpha_count",
+        "expanded_candidate_row_count",
+        "requested_predecessor_overlap_count",
+        "achieved_predecessor_overlap_count",
+        "missing_key_count",
+        "unexpected_key_count",
+        "duplicate_key_count",
+        "pass"
+      ],
+      "properties": {
+        "opacity_coordinate_count": {"const": 6},
+        "profile_scale_case_count": {"const": 16},
+        "elevation_count": {"const": 56},
+        "full_direct_am_grid_count": {"const": 896},
+        "direct_band_alpha_truth_count": {"const": 10752},
+        "candidate_count": {"const": 4},
+        "array_count": {"const": 3},
+        "alpha_count": {"const": 4},
+        "expanded_candidate_row_count": {"const": 43008},
+        "requested_predecessor_overlap_count": {"const": 0},
+        "achieved_predecessor_overlap_count": {"const": 0},
+        "missing_key_count": {"const": 0},
+        "unexpected_key_count": {"const": 0},
+        "duplicate_key_count": {"const": 0},
+        "pass": {"type": "boolean"}
+      }
+    },
+    "warningEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status_0_run_count",
+        "status_1_warning_bearing_run_count",
+        "return_code_counts",
+        "unresolved_summary_count_histogram",
+        "status_1_wrong_row_count",
+        "scale_search_status_1_count",
+        "unknown_warning_line_count",
+        "error_line_count",
+        "cache_mutation_warning_count",
+        "admission_pass"
+      ],
+      "properties": {
+        "status_0_run_count": {"type": "integer", "minimum": 0},
+        "status_1_warning_bearing_run_count": {"type": "integer", "minimum": 0},
+        "return_code_counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["0", "1"],
+          "properties": {
+            "0": {"type": "integer", "minimum": 0},
+            "1": {"type": "integer", "minimum": 0}
+          }
+        },
+        "unresolved_summary_count_histogram": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["86", "87", "88"],
+          "properties": {
+            "86": {"type": "integer", "minimum": 0},
+            "87": {"type": "integer", "minimum": 0},
+            "88": {"type": "integer", "minimum": 0}
+          }
+        },
+        "status_1_wrong_row_count": {"const": 0},
+        "scale_search_status_1_count": {"const": 0},
+        "unknown_warning_line_count": {"const": 0},
+        "error_line_count": {"const": 0},
+        "cache_mutation_warning_count": {"const": 0},
+        "admission_pass": {"type": "boolean"}
+      }
+    }
+  }
+}

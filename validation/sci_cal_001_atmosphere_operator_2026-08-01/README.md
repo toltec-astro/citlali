@@ -13,17 +13,26 @@ remain unresolved historical/diagnostic provenance and do not enter this
 decision.
 
 On 2026-08-02 the owner resolved `LOW-001` by selecting EL25 as the proposed
-minimum for a separately preregistered confirmation.  That direction leaves
-the completed v2 failure, EL20--80 study domain, and 13 deterministic artifact
-identities unchanged.  `BAND-001`, `DOMAIN-001`, and `WARN-001` still block a
-confirmation decision and numerical selection; `OBS-001` remains a later
-production-only gate.
+minimum for a separately preregistered confirmation.  Coordination decision
+commit `f513f410b` and binding commit `8fc9263a2` subsequently resolve
+`BAND-001`, `DOMAIN-001`, and `WARN-001` for that confirmation only: exact
+TolTECA v1 ECSV bytes, closed q0--q75/EL25--80 support, fail-closed ALIGN
+eligibility, and the bounded AM status-1 warning rule.  The independent
+confirmation protocol is now frozen, but no confirmation result is recorded
+at this preregistration state.  The completed v2 failure, EL20--80 study
+domain, and 13 deterministic artifact identities remain unchanged;
+`OBS-001` remains a later production-only gate.
 
 ## Read first
 
 - `OWNER_DECISION_BRIEF.md`: concise decision, recommendation, remaining choices, and stop boundary.
 - `OWNER_EL25_CONFIRMATION_DIRECTION_2026-08-02.md`: owner resolution of
   `LOW-001` and its authorization boundary.
+- `AM12_EL25_CONFIRMATION_PROTOCOL.md`: immutable independent confirmation
+  tuples, primary candidate, gates, schemas, and stop boundary.
+- `am12_el25_confirmation_preregistration.json`: exact machine-readable
+  authority, opacity/profile/elevation selection, passband, warning, coverage,
+  and output contract frozen before execution.
 - `AM12_SUCCESSOR_ADOPTION_STUDY_REPORT.md`: frozen v2 numerical result.
 - `AM12_SUCCESSOR_ADOPTION_STUDY_EXECUTION_RECORD_2026-08-01.md`: P1 check,
   excluded-v1, canonical-v2, and deterministic-replay lineage.
@@ -47,10 +56,13 @@ The owner direction remains evaluation, not adoption or operator selection:
    band-integrated comparison rows across two lanes, two operators, primary
    TolTECA ECSV passbands, representative FTS challengers, and four source
    indices.
-2. **EL25 follow-up path selected on 2026-08-02:** `LOW-001` is resolved as
+2. **EL25 confirmation preregistered on 2026-08-02:** `LOW-001` is resolved as
    `confirm_el25_minimum_with_preregistered_evidence`.  The 25-degree floor is
-   proposed confirmation support, not an operational domain, and the
-   post-result EL25 slice is not itself confirmatory evidence.
+   confirmation-only support, not an operational domain.  The later exact
+   passband/domain/warning decision authorizes one independent study.  Its
+   uniform integer-degree EL25--80 lattice and two exact opacity trisections
+   per q interval produce 896 new direct grids; the post-result v2 EL25 slice
+   is not reused as confirmation truth.
 3. **Historical provenance retained, nonblocking:** generic q95 datafile ID 461 and exact generic generator/profile/grid custody remain unresolved. No copied product is substituted for a generic product, and the successor must not be represented as a historical regeneration.
 
 The 13 deterministic study artifacts are bound.  All structural and coverage
@@ -61,10 +73,10 @@ null recommendation.  Above q25 the simplest fixed-DJF25/piecewise-linear
 candidate is within `0.288111%` of direct AM truth.  A post-result EL25--80
 slice falls below one percent but cannot retroactively narrow the frozen
 domain.  It motivates the now-owner-selected EL25 confirmation path only.  The
-FTS-versus-ECSV direct-truth difference reaches `3.474613%`, so passband
-authority remains a separate owner calibration choice.  `BAND-001`, complete
-`DOMAIN-001`, and `WARN-001` still block a confirmation decision and numerical
-selection.  Exact operational opacity/elevation endpoints remain unapproved,
+FTS-versus-ECSV direct-truth difference reaches `3.474613%`.  The owner has
+selected the exact content-bound TolTECA v1 ECSV set for the bounded
+confirmation; the selection is not a universal production color-correction
+contract.  Exact operational opacity/elevation endpoints remain unapproved,
 and `OBS-001` remains production-only.
 
 Zenith `tau225` must be applied with the full airmass of every eligible sample and a top-of-atmosphere pivot, `X_ref=0`. Software correctness, numerical model-representation fidelity, and observational performance are separate gates; the target 5--10% absolute flux accuracy and provisional approximately 5% observation-to-observation repeatability are not established here. The open SCI-ALIGN-001 handoff additionally requires ordered sample identity, timing-gap/interpolation origin, duration, and original-versus-synthesized eligibility before aligned elevation can be consumed.
@@ -119,10 +131,14 @@ is retained and excluded after the documentary P1-stage lookup failure.
 
 Earlier copied-AM, legacy-anchor, and P1 manifests remain byte-frozen with
 their pre-execution `pending_results`/`unbound_pending_study_results` fields.
-Those fields identify the state when each sub-study was frozen; the living
-`governance_manifest.json`, `regeneration_manifest.json`, and owner request
-supersede them with the completed-v2 state without rewriting their evidence
-lineage.
+Those fields identify the state when each sub-study was frozen.  The f401
+`governance_manifest.json`, `regeneration_manifest.json`, and
+`owner_input_request.json` are now also retained as predecessor decision-state
+records: their `BAND-001`/`DOMAIN-001`/`WARN-001` pending fields describe the
+state before coordination decision `f513f410b` and are not rewritten.  The
+content-bound coordination authority, confirmation preregistration, and later
+confirmation manifest supersede those pending fields for the bounded study
+only without relabeling the predecessor lineage.
 
 `SHA256SUMS` covers every regular file in this package except itself. The full raw NPZ inputs are not duplicated into this repository; their immutable SHA-256 values, TolTECA MD5 identities, repository lineage, and observed read-only paths are recorded. Generated recovery artifacts locate inputs by filename and digest rather than embedding the runtime directory, so identical bytes may be staged elsewhere and passed with `--source-dir`.
 

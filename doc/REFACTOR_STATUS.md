@@ -111,12 +111,18 @@ freeze the application mainline.
   `LOW-001` as `confirm_el25_minimum_with_preregistered_evidence`, selecting
   25 degrees as the proposed floor for a separate confirmation. This does not
   change the frozen v2 failure, EL20--80 study domain, or 13 deterministic
-  artifact identities. `BAND-001`, complete `DOMAIN-001`, and `WARN-001`
-  remain blocking for a confirmation decision and numerical selection;
-  `OBS-001` remains a production-only gate. FTS-versus-ECSV direct truth
-  differs by as much as 3.474613%, leaving passband authority as a separate
-  calibration choice. The 13 deterministic study artifacts are SHA-256 bound
-  and passed cache-only replay. The broader legacy q0--q95 C1 maxima and the
+  artifact identities. Coordination decision commit `f513f410b` and binding
+  commit `8fc9263a2` now resolve `BAND-001`, `DOMAIN-001`, and `WARN-001` for
+  one confirmation only: the exact content-bound TolTECA v1 ECSV set, closed
+  q0--q75/EL25--80 support, fail-closed ALIGN eligibility, and bounded
+  warning-bearing status-1 evidence. The standalone protocol preregisters six
+  exact opacity trisections, 16 profile/opacity scale cases, all integer
+  elevations EL25--80, 896 new full grids, and one fixed primary candidate;
+  no confirmation result exists at this snapshot. `OBS-001` remains a
+  production-only gate. FTS-versus-ECSV direct truth differs by as much as
+  3.474613%, but FTS is excluded from the owner-selected confirmation
+  passband identity. The 13 deterministic v2 artifacts are SHA-256 bound and
+  passed cache-only replay. The broader legacy q0--q95 C1 maxima and the
   q95/a2000 0.839827% elevation feature remain historical diagnostics, not
   successor release gates. Any future correction must use full sample airmass
   with top-of-atmosphere pivot `X_ref=0`, and the late
@@ -2739,15 +2745,15 @@ silently choose among these:
 - Whether Citlali must be installable and consumable as an external library.
 - Following the completed SCI-CAL-001 AM 12.2 numerical study, the owner
   resolved `LOW-001` on 2026-08-02 by selecting EL25 as the proposed minimum
-  for a new preregistered confirmation. Before a confirmation decision or
-  numerical selection, choose whether TolTECA v1 ECSV or newly supplied
-  detector/array-weighted passbands are authoritative (`BAND-001`), complete
-  the exact proposed q0--q75/EL25--80 support and outside-domain policy
-  (`DOMAIN-001`), and decide the AM warning-status-1 policy (`WARN-001`). The
+  for a new preregistered confirmation. The exact passband, bounded support,
+  outside-domain, ALIGN eligibility, and AM status-1 policies are now frozen
+  for that confirmation by coordination decision `f513f410b` and binding
+  `8fc9263a2`; the independent protocol is committed before execution. The
   later observational validation campaign (`OBS-001`) remains production-only.
   Generic q95 and exact generic-q custody remain unresolved nonblocking
-  historical provenance. Neither the completed study nor the EL25 direction
-  authorizes an operator or operational domain.
+  historical provenance. Neither the completed study, the confirmation
+  authority, nor its preregistration authorizes an operator or operational
+  domain.
 
 ## Durable Evidence
 

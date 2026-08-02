@@ -1,0 +1,440 @@
+{
+  "schema_version": "sci-cal-001-am12-el25-confirmation-preregistration-v1",
+  "record_id": "SCI-CAL-001-AM12-EL25-CONFIRMATION-PREREGISTRATION-001",
+  "package_id": "SCI-CAL-001",
+  "registration_date": "2026-08-02",
+  "registration_status": "frozen_before_any_confirmation_am_execution_or_result_inspection",
+  "evidence_driver": {
+    "filename": "run_am12_el25_confirmation_study.py",
+    "sha256": "bcc4bc9f59574424e1daab652ab0316f8a694998155d9c3daa246e1e6260fb22"
+  },
+  "authorization_boundary": {
+    "authorized": "one independent bounded EL25 numerical confirmation",
+    "not_authorized": [
+      "atmosphere_operator_adoption",
+      "operational_domain_authorization",
+      "production_calibration_authorization",
+      "Citlali_or_TolTECA_application_change",
+      "Unity_access",
+      "CAL_repair_or_reaudit"
+    ]
+  },
+  "git_identity": {
+    "evidence_head_before_registration": "f4014d3669b94b1eceb8158da7993737efc908f2",
+    "evidence_parent": "742a3c263faf68c2de7d5b8db0d3423127f60480",
+    "application_repair_base": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
+    "coordination_binding_commit": "8fc9263a2f502656b51d32cb60655481f83509f1",
+    "immutable_decision_content_commit": "f513f410b88d147be6bd016d4c79ac1d3a5b2a8e"
+  },
+  "authority": {
+    "decision_path": "doc/audits/packages/SCI-CAL-001_ATMOSPHERE_CONFIRMATION_DECISION_2026-08-02.md",
+    "decision_sha256": "24a2e12d37689999e1070bec4329aeead47c8e24082b20f183bf0ad8e29494b0",
+    "passband_record_path": "doc/audits/packages/SCI-CAL-001_PASSBAND_AUTHORITY_001.json",
+    "passband_record_sha256": "2756908181cc466550399ec0a869e6671de7912bd3a935f9aeebf63e3e826617",
+    "align_dependency_path": "doc/audits/handoffs/SCI-CAL-001/SCI-CAL-001-XAUD-001.yaml",
+    "align_dependency_sha256": "2248422a507455e972c70c221c214b40fec68566011d27a9d8827952e43087d5"
+  },
+  "predecessor_bindings": {
+    "f401_package_sha256s_sha256": "bafd34e4a3d5bffb95b3af1fdbcfb7c993146248b2bccd1d0333bae91fd3caad",
+    "completed_v2_manifest_sha256": "c9f6aea80851fb7726b8845d4697af1cb270cb7ff7ce51d3d5fc63828f793b3a",
+    "completed_v2_decision_sha256": "976c6c6a269a1b5dabde2b5eba89cb6176b02b837ea2b7b0e26a64307fe9ee59",
+    "completed_v2_operator_nodes_sha256": "8005c8ae1d4ab1c8de39f06a632d76d3e8f248939dc63c616dd176bcbd2f6fe2",
+    "completed_v2_holdout_rows_sha256": "ad74d19ef0bc915255b9cc7a507e8977f96435fb37ce0d0bd7cb385991c1802c",
+    "completed_v2_runner_sha256": "ace8e08a037535260b6b1d889f83dbf722ffc932e05bc1f7f83f0565ef0ff47c",
+    "canonical_p1_runner_sha256": "caa41ca105eec6df99f31d982ca69910ef2d7e1ebcbad86c96faa7d0e4cd3c2c",
+    "canonical_p1_execution_context_sha256": "05148050e96e73577ec75be525b026b5bf37bbd2a8753f8e3702fc0b6dfb2bee",
+    "legacy_anchor_manifest_sha256": "e481a0053e4262d7db884e34f184463c2a17a546996ad9ba1d5065c6eb97bb74"
+  },
+  "support": {
+    "tau225_min": "0",
+    "tau225_max": "0.158313198574890929",
+    "tau225_endpoints_inclusive": true,
+    "elevation_min_deg": "25",
+    "elevation_max_deg": "80",
+    "elevation_endpoints_inclusive": true,
+    "q95_included": false,
+    "outside_support_policy": "fail_closed",
+    "zenith_opacity_identity": "tau225",
+    "sample_airmass": "full_modified_secant_airmass_for_each_eligible_sample",
+    "airmass_reference": "top_of_atmosphere_X_ref_0"
+  },
+  "opacity_selection": {
+    "algorithm": "For each adjacent exact q0/q25/q50/q75 tau225 pair (lo, hi), select ((3-k)*lo + k*hi)/3 for k in {1,2}, using Decimal precision 80. Convert each requested tau to analytic T225 at EL80 using exp(-tau*X80), format to seven significant digits as %0.6e, and use the exact displayed literal as the AM parsed-transmission scale target. The achieved coordinate and asymmetric half-display-step bounds are recomputed exactly before execution.",
+    "x80_modified_secant": "1.01538872688246729",
+    "display_half_step": "5e-8",
+    "decimal_context": {
+      "precision": 80,
+      "rounding": "ROUND_HALF_EVEN",
+      "stored_value_recomparison_tolerance": "5e-78"
+    },
+    "asymmetric_bound_comparison": "-negative_lower_tau_half_step_exact <= coordinate_residual_exact <= positive_upper_tau_half_step_exact",
+    "anchor_coordinates": [
+      {"anchor_id": "am_q0", "tau225_exact": "0", "reference_transmission_el80_literal": "1.0"},
+      {"anchor_id": "am_q25", "tau225_exact": "0.0504874104674104401", "reference_transmission_el80_literal": "0.9500275"},
+      {"anchor_id": "am_q50", "tau225_exact": "0.0883393725904400573", "reference_transmission_el80_literal": "0.9142065"},
+      {"anchor_id": "am_q75", "tau225_exact": "0.158313198574890929", "reference_transmission_el80_literal": "0.8515054"}
+    ],
+    "coordinates": [
+      {
+        "coordinate_id": "q0_q25_trisect_1",
+        "interval": "q0_q25",
+        "fraction_numerator": 1,
+        "fraction_denominator": 3,
+        "requested_tau225_exact": "0.0168291368224701467",
+        "analytic_transmission_el80": "0.98305705794678488714691785499078817427515209591152042453282647254614439101187802",
+        "target_transmission_literal": "9.830571e-01",
+        "achieved_tau225_exact": "0.016829094692792866028095833034107594099807326682113141316107807600180529588238238",
+        "coordinate_residual_exact": "-4.2129677280671904166965892405900192673317886858683892192399819470411761762e-8",
+        "negative_lower_tau_half_step_exact": "5.0090908858107033827835573239810291304422737160115895888810676192355105584876663e-8",
+        "positive_upper_tau_half_step_exact": "5.0090911405818155183991594225401065268392246982618032136751583496413970730661938e-8",
+        "coordinate_acceptance_bound_exact": "5.0090911405818155183991594225401065268392246982618032136751583496413970730661938e-8"
+      },
+      {
+        "coordinate_id": "q0_q25_trisect_2",
+        "interval": "q0_q25",
+        "fraction_numerator": 2,
+        "fraction_denominator": 3,
+        "requested_tau225_exact": "0.0336582736449402934",
+        "analytic_transmission_el80": "0.96640117917898837943785400882579594791972464662748863159189394745815095338647665",
+        "target_transmission_literal": "9.664012e-01",
+        "achieved_tau225_exact": "0.033658252426569561178189965239103731896041242555314415055126326210836780629567994",
+        "coordinate_residual_exact": "-2.1218370732221810034760896268103958757444685584944873673789163219370432006e-8",
+        "negative_lower_tau_half_step_exact": "5.0954224370615562895356932124441836111550577060191613807299022672429358629448971e-8",
+        "positive_upper_tau_half_step_exact": "5.0954227006902939647334992799666188814863255310041522931301354365233511256478793e-8",
+        "coordinate_acceptance_bound_exact": "5.0954227006902939647334992799666188814863255310041522931301354365233511256478793e-8"
+      },
+      {
+        "coordinate_id": "q25_q50_trisect_1",
+        "interval": "q25_q50",
+        "fraction_numerator": 1,
+        "fraction_denominator": 3,
+        "requested_tau225_rational": "121161083856167/1920000000000000",
+        "requested_tau225_exact": "0.063104731175086979166666666666666666666666666666666666666666666666666666666666667",
+        "analytic_transmission_el80": "0.93793387082462725682587902701647078144489171923434200761042846563815695177127708",
+        "target_transmission_literal": "9.379339e-01",
+        "achieved_tau225_exact": "0.063104700540512686321847773467542976759139168650091580323635320748709109259984728",
+        "coordinate_residual_exact": "-3.0634574292844818893199123689907527498016575086343031345917957557406681939e-8",
+        "negative_lower_tau_half_step_exact": "5.2500739698361731252061096500674759683253594175273224851347734490661077834711246e-8",
+        "positive_upper_tau_half_step_exact": "5.2500742497105923019404829462579831704186556246697124931152045806992313252374157e-8",
+        "coordinate_acceptance_bound_exact": "5.2500742497105923019404829462579831704186556246697124931152045806992313252374157e-8"
+      },
+      {
+        "coordinate_id": "q25_q50_trisect_2",
+        "interval": "q25_q50",
+        "fraction_numerator": 2,
+        "fraction_denominator": 3,
+        "requested_tau225_rational": "2271661556482905547/30000000000000000000",
+        "requested_tau225_exact": "0.075722051882763518233333333333333333333333333333333333333333333333333333333333333",
+        "analytic_transmission_el80": "0.92599419073665609380542929084246648891598828696554793037094387334287336581874268",
+        "target_transmission_literal": "9.259942e-01",
+        "achieved_tau225_exact": "0.075722042030700389119626121070791857500491361410683665359233247051421228619914645",
+        "coordinate_residual_exact": "-9.852063129113707212262541475832841971922649667974100086281912104713418688e-9",
+        "negative_lower_tau_half_step_exact": "5.3177680293511263491630173321576765658340019355600575557783659169232269994913374e-8",
+        "positive_upper_tau_half_step_exact": "5.3177683164894352565127278860744803456181814351145769986909971798262308943268477e-8",
+        "coordinate_acceptance_bound_exact": "5.3177683164894352565127278860744803456181814351145769986909971798262308943268477e-8"
+      },
+      {
+        "coordinate_id": "q50_q75_trisect_1",
+        "interval": "q50_q75",
+        "fraction_numerator": 1,
+        "fraction_denominator": 3,
+        "requested_tau225_exact": "0.1116639812519236812",
+        "analytic_transmission_el80": "0.89280923123641828273267772819997365872593644438638113573152694817781829802456606",
+        "target_transmission_literal": "8.928092e-01",
+        "achieved_tau225_exact": "0.11166401570834966115343660054904395552668301345765783648306027667115637367003112",
+        "coordinate_residual_exact": "3.445642597995343660054904395552668301345765783648306027667115637367003112e-8",
+        "negative_lower_tau_half_step_exact": "5.5154251851158612156615494015961717851096582949772038896213002566463504312754885e-8",
+        "positive_upper_tau_half_step_exact": "5.5154254939962658730097503035489235220981487451408403603038791204659130864364942e-8",
+        "coordinate_acceptance_bound_exact": "5.5154254939962658730097503035489235220981487451408403603038791204659130864364942e-8"
+      },
+      {
+        "coordinate_id": "q50_q75_trisect_2",
+        "interval": "q50_q75",
+        "fraction_numerator": 2,
+        "fraction_denominator": 3,
+        "requested_tau225_exact": "0.1349885899134073051",
+        "analytic_transmission_el80": "0.87191277176542081616534004052921717182717786837747176115709711842528744339626021",
+        "target_transmission_literal": "8.719128e-01",
+        "achieved_tau225_exact": "0.13498855802183467889100714475992808246559076086155667163732523489052384928879709",
+        "coordinate_residual_exact": "-3.189157262620899285524007191753440923913844332836267476510947615071120291e-8",
+        "negative_lower_tau_half_step_exact": "5.6476087332111139087678129120029262288238843956424739130911842042689435459684850e-8",
+        "positive_upper_tau_half_step_exact": "5.6476090570742854978706910123960762606245350419194784125029785366346481208877829e-8",
+        "coordinate_acceptance_bound_exact": "5.6476090570742854978706910123960762606245350419194784125029785366346481208877829e-8"
+      }
+    ]
+  },
+  "profile_allocation": {
+    "algorithm": "Apply both registered trisection coordinates in each interval independently to every frozen predecessor profile role assigned to that interval.",
+    "by_interval": {
+      "q0_q25": ["LMT_DJF_5", "LMT_DJF_25"],
+      "q25_q50": ["LMT_DJF_25", "LMT_DJF_50"],
+      "q50_q75": ["LMT_DJF_50", "LMT_DJF_75", "LMT_annual_25", "LMT_MAM_25"]
+    },
+    "profile_sha256": {
+      "LMT_DJF_5": "fcb3b70f44cad98cf0586fede9dcd3b2e35f3cb45023d0485c782c108b25b474",
+      "LMT_DJF_25": "aeeeeb48bef422f2d9392b5d7a3d62ab1887fd9e7c10322d5246d914841ba866",
+      "LMT_DJF_50": "d7c256d04d922beb51c9f8ab715e5be1a962252580eff2d08ba1be4d206eb5b0",
+      "LMT_DJF_75": "b63503c7f4170404d18f3797735b64fb947ce73eed35f0315155d0a29d499721",
+      "LMT_annual_25": "a9524553a5808a549eb18046a9ed6f8bd67ca1e29ccd1c91e05b351b64ea23e6",
+      "LMT_MAM_25": "82ac1e2a49a528244c1571daadcc8d42bd6d13c0ba8a7b5d2f81d10ebc13caee"
+    },
+    "scale_case_count": 16
+  },
+  "elevation_selection": {
+    "algorithm": "Use every integer degree on the complete closed confirmation support, independent of any measured error location.",
+    "elevations_deg": [25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80],
+    "elevation_count": 56
+  },
+  "independence": {
+    "joint_key_checks": [
+      ["requested_tau225_exact", "elevation_deg"],
+      ["achieved_tau225_exact", "elevation_deg"]
+    ],
+    "predecessor_fit_coordinates": "q0/q25/q50/q75 opacity anchors on even EL20..80",
+    "predecessor_tuned_or_inspected_coordinates": "three arithmetic opacity midpoints on odd EL21..79",
+    "required_anti_join": "zero requested-coordinate and zero achieved-coordinate overlap against both predecessor coordinate sets before any AM execution",
+    "profile_is_an_additional_retained_dimension": true,
+    "posthoc_el25_rows_reused_as_confirmation_truth": false
+  },
+  "atmosphere_execution": {
+    "model": "AM 12.2",
+    "executable_sha256": "78e721d45b08990069a2d67a5fb337446bcbfb728046940c0d473bea340205fb",
+    "source_payload_aggregate_sha256": "0cd4ea9d48c3c6da2100a692af1dc24dce5b3c903ced2b07b7372e8e85182fe8",
+    "only_varied_profile_parameter": "Nscale troposphere h2o through AMC argv %9",
+    "frequency_grid": {
+      "minimum_ghz": "0",
+      "maximum_ghz": "500",
+      "step_ghz": "0.01",
+      "row_count": 50001
+    },
+    "root_iterations": 48,
+    "maximum_bracket_expansions": 64,
+    "locale": {"LANG": "C", "LC_ALL": "C"},
+    "jobs": 8,
+    "omp_threads_per_process": 1,
+    "cache_shard_count": 8,
+    "external_cache_basename": "sci_cal_001_am12_el25_confirmation_v1_20260802_root",
+    "external_cache_initial_state": "path_absent_then_created_fresh_by_run_confirmation"
+  },
+  "passband_set": {
+    "passband_set_id": "toltec-passband-set-v1:sha256:5e6f38f14bcae93a29ffe8362c52b15209f51aee4e48373b23aaa5ec2f8a6433",
+    "source_commit": "2791e6a1e6349ad1d3ac549a648f41cbc51b98c7",
+    "set_member_count": 4,
+    "set_total_bytes": 1297803,
+    "index_sha256": "74465637294e536c44818099e4858a916fc6b9acbb1ea21b40427d15fb6532d5",
+    "array_sha256": {
+      "a1100": "13b8fd009bb8d7c375d3c46d21e26d0a779f7f00a949a2a5ccd619d1fe56fd72",
+      "a1400": "a7b671d9f659cbc98dad99d3015ce81a3d7a3486c702819d9b3305703e7c682e",
+      "a2000": "77e4b33c7bbc2c345ef94d41480d5fee5cb096d789f4fe78e1b4f80a37e0d6ff"
+    },
+    "arrays": ["a1100", "a1400", "a2000"],
+    "selected_candidate_node_ids": {
+      "a1100": "tolteca_v1_a1100",
+      "a1400": "tolteca_v1_a1400",
+      "a2000": "tolteca_v1_a2000"
+    },
+    "fts_challenger_included": false,
+    "nonselected_node_policy": "reject_every_non_tolteca_v1_node_identity"
+  },
+  "integration": {
+    "frequency_nodes": "exact_ECSV_f_nodes_in_GHz",
+    "response": "exact_ECSV_throughput_values_as_supplied",
+    "source_spectrum": "top_of_atmosphere_S_nu_proportional_to_nu_to_alpha",
+    "alpha_values": [-1, 0, 2, 4],
+    "quadrature": "composite_trapezoid_on_exact_ECSV_nodes",
+    "normalization": "integral_R_S_T_dnu_divided_by_integral_R_S_dnu",
+    "spectral_extrapolation": "forbidden",
+    "effective_los_optical_depth": "negative_log_of_band_effective_transmission",
+    "extinction_correction": "exp_effective_los_optical_depth"
+  },
+  "candidates": {
+    "node_artifact": "am12_successor_operator_nodes.csv",
+    "node_artifact_sha256": "8005c8ae1d4ab1c8de39f06a632d76d3e8f248939dc63c616dd176bcbd2f6fe2",
+    "primary_confirmatory_candidate": {
+      "candidate_id": "fixed_djf25_v1+am12_piecewise_linear_los_tau_eval_v0",
+      "lane": "fixed_djf25_v1",
+      "operator": "am12_piecewise_linear_los_tau_eval_v0"
+    },
+    "secondary_descriptive_candidates": [
+      {"candidate_id": "fixed_djf25_v1+am12_pchip_los_tau_eval_v0", "lane": "fixed_djf25_v1", "operator": "am12_pchip_los_tau_eval_v0"},
+      {"candidate_id": "conditioned_djf_v1+am12_piecewise_linear_los_tau_eval_v0", "lane": "conditioned_djf_v1", "operator": "am12_piecewise_linear_los_tau_eval_v0"},
+      {"candidate_id": "conditioned_djf_v1+am12_pchip_los_tau_eval_v0", "lane": "conditioned_djf_v1", "operator": "am12_pchip_los_tau_eval_v0"}
+    ],
+    "secondary_may_rescue_primary_failure": false,
+    "candidate_tuning_after_registration": "forbidden"
+  },
+  "warning_policy": {
+    "status_0": "admissible only with zero warning headers and zero error records",
+    "status_1": {
+      "admissible_only_for": "full_0_to_500_GHz_grid",
+      "numeric_row_count": 50001,
+      "line_ending": "LF_only",
+      "summary_regex": "^! Warning: Encountered in-band lines narrower than the frequency\\n^!          grid spacing\\.  The output configuration data includes\\n^!          the unresolved line count after each column definition\\n^!          for which this occurred\\.  Count: (86|87|88)$",
+      "per_column_header_regex": "^! Warning: Column included [0-9]+ unresolved lines\\.$",
+      "minimum_per_column_warning_line_count": 1,
+      "warning_header_regex": "^! Warning: (.+)$",
+      "error_header_regex": "^! Error:",
+      "cache_mutation_warning_regexes": [
+        "^! Warning: Unable to rename file in insert_as_mru\\(\\)\\.$",
+        "^! Warning: Unable to rename file in promote_to_mru\\(\\)\\.$"
+      ],
+      "allowed_warning_class": "exact_summary_and_per_column_unresolved_narrow_line_records_only",
+      "allowed_unresolved_line_summary_counts": [86, 87, 88],
+      "required_summary_warning_line_count": 1,
+      "unknown_warning_line_count": 0,
+      "error_line_count": 0,
+      "label": "warning_bearing_numerical_evidence_not_clean_success"
+    },
+    "all_other_nonzero_status": "fail_closed",
+    "cache_mutation_or_cache_warning": "fail_closed_as_an_unknown_warning_header",
+    "required_result_diagnostics": [
+      "return_code_counts",
+      "unresolved_summary_count_histogram_86_87_88",
+      "status_1_wrong_row_count",
+      "scale_search_status_1_count",
+      "unknown_warning_line_count",
+      "error_line_count",
+      "cache_mutation_warning_count"
+    ]
+  },
+  "align_eligibility_probe_contract": {
+    "required_fields": [
+      "sample_identity",
+      "aligned_elevation_deg",
+      "timing_gap_or_interpolation_origin",
+      "duration_s",
+      "original_or_synthesized_eligibility",
+      "eligible"
+    ],
+    "allowed_original_or_synthesized_eligibility": ["original_eligible", "synthesized_eligible"],
+    "required_state": "all fields present, aligned elevation exactly equals the operator elevation and is finite and inside closed support, finite positive duration, explicit nonempty sample identity and timing/interpolation origin, allowed explicit original/synthesized status, and eligible exactly true",
+    "missing_or_ineligible_policy": "fail_closed",
+    "scope": "confirmation wrapper probe only; SCI-ALIGN-001 dependency remains open"
+  },
+  "structural_evaluation": {
+    "tau_grid_algorithm": "sorted unique binary64 union of numpy.linspace(0, q75, 1001), q0/q25/q50/q75 anchor coordinates, and all six achieved confirmation coordinates",
+    "elevation_grid_algorithm": "sorted unique binary64 union of numpy.linspace(25, 80, 551), exact endpoints, and frozen even candidate-node elevations inside the closed support",
+    "continuity_probe_algorithm": "at q25 and q50, evaluate nextafter(knot,-infinity), nextafter(knot,+infinity), knot-1e-12*(q75-q0), and knot+1e-12*(q75-q0) at every structural elevation; compare relative correction across each left/right pair",
+    "physical_tolerance": "1e-12",
+    "anchor_tolerance": "1e-12",
+    "low_segment_identity_tolerance": "1e-12",
+    "relative_correction_continuity_tolerance": "1e-10",
+    "align_probe_algorithm": "accept original_eligible and synthesized_eligible valid states at exact EL25, EL50, and EL80; reject each required field absent individually, empty string identities/origin/status, unknown eligibility status, eligible not exactly true, aligned-elevation mismatch, duration <=0 or nonfinite, aligned elevation and opacity nextafter outside either closed endpoint, and every nonfinite coordinate"
+  },
+  "metric_summary_algorithm": {
+    "signed_bias": "numpy.mean(signed_fractional_correction_error)",
+    "rms": "sqrt(numpy.mean(signed_fractional_correction_error**2))",
+    "p95_absolute": "numpy.quantile(abs(signed_fractional_correction_error), 0.95, method=linear)",
+    "median_absolute": "numpy.median(abs(signed_fractional_correction_error))",
+    "maximum_absolute": "numpy.max(abs(signed_fractional_correction_error))",
+    "decisive_values": "unrounded binary64 values",
+    "serialization": "Python .17e text (17 digits after the decimal point; 18 significant digits)"
+  },
+  "gates": {
+    "G0_provenance_and_execution_context": "all bound identities, exact passband set, immutable fresh cache, complete sidecars, and warning policy pass",
+    "G1_independent_tuple_anti_join": "zero joint requested-opacity/elevation overlap with candidate fit/tune and posthoc discovery coordinates",
+    "G2_exact_coordinate_conditioning": "all exact target literals matched and requested-achieved residuals within preregistered bounds",
+    "G3_structural_physics": "finite positive transmission/correction, nonnegative LOS optical depth, opacity monotonicity, elevation monotonicity, continuity, exact anchors, and exact q0-q25 linear identity",
+    "G4_fail_closed_support_and_align": "closed tau/elevation endpoints accepted; nextafter outside each endpoint and every absent/ineligible ALIGN state rejected",
+    "G5_representation_fidelity": {
+      "metric": "absolute_fractional_extinction_correction_error",
+      "formula": "abs(C_operator/C_direct_AM - 1)",
+      "threshold": "0.01",
+      "comparison": "less_than_or_equal",
+      "interpretation": "provisional numerical representation fidelity only, not per-sample physical photometric accuracy"
+    },
+    "G6_coverage": "all preregistered scales, full grids, candidates, arrays, alphas, and elevations appear exactly once with no missing, unexpected, or duplicate keys",
+    "primary_success_rule": "PASS only if G0 through G6 all pass for the primary confirmatory candidate; no secondary candidate can rescue a primary failure",
+    "secondary_rule": "report the same frozen metrics and gates descriptively for all three secondary candidates without changing the primary verdict"
+  },
+  "result_classification": {
+    "primary_confirmation_gate_pass": "G0 through G6 are all true",
+    "primary_confirmation_gate_fail": "G0, G1, G2, G4, and G6 are true, complete valid evidence exists, and primary G3 and/or G5 is false",
+    "confirmation_invalid": "any of G0, G1, G2, G4, or G6 is false, or execution cannot produce the complete registered evidence",
+    "software_status_when_valid": "pass_clean when every referenced run is status 0; pass_warning_bearing_evidence when one or more status-1 runs satisfy WARN-001 exactly",
+    "software_status_when_invalid": "invalid",
+    "numerical_status_mapping": {
+      "primary_confirmation_gate_pass": "primary_pass",
+      "primary_confirmation_gate_fail": "primary_fail",
+      "confirmation_invalid": "invalid"
+    },
+    "observational_status": "not_evaluated_required_before_production"
+  },
+  "expected_coverage": {
+    "opacity_coordinate_count": 6,
+    "profile_scale_case_count": 16,
+    "elevation_count": 56,
+    "full_direct_am_grid_count": 896,
+    "direct_band_alpha_truth_count": 10752,
+    "candidate_count": 4,
+    "array_count": 3,
+    "alpha_count": 4,
+    "expanded_candidate_row_count": 43008,
+    "requested_predecessor_overlap_count": 0,
+    "achieved_predecessor_overlap_count": 0,
+    "missing_key_count": 0,
+    "unexpected_key_count": 0,
+    "duplicate_key_count": 0
+  },
+  "output_table_schemas": {
+    "serialization": {
+      "line_ending": "LF",
+      "binary64_format": ".17e (17 digits after the decimal point; 18 significant digits)",
+      "boolean_format": "true_or_false_lowercase",
+      "json": "sort_keys compact separators UTF-8 one trailing LF"
+    },
+    "am12_el25_confirmation_scales.csv": {
+      "row_count": 16,
+      "sort_key": ["coordinate_id", "truth_profile"],
+      "fieldnames": ["coordinate_id", "interval", "fraction_numerator", "fraction_denominator", "truth_profile", "requested_tau225", "achieved_tau225", "coordinate_residual", "analytic_transmission_decimal", "target_transmission_literal", "achieved_transmission_el80", "h2o_scale_decimal", "h2o_scale_hex", "negative_lower_tau_half_step", "positive_upper_tau_half_step", "plateau_lower_outside_scale", "plateau_lower_inside_scale", "plateau_upper_inside_scale", "plateau_upper_outside_scale", "trace_path_relative_to_cache", "trace_sha256"]
+    },
+    "am12_el25_confirmation_run_inventory.csv": {
+      "row_count": "all scale-search and 896 full-grid runs; exact total determined by complete registered scale traces",
+      "sort_key": ["run_class", "coordinate_id", "truth_profile", "elevation_deg", "cache_id"],
+      "fieldnames": ["run_class", "coordinate_id", "truth_profile", "cache_id", "stage", "scale_decimal", "elevation_deg", "zenith_angle_deg", "frequency_min_centi_ghz", "frequency_max_centi_ghz", "argv_json", "working_directory_role", "profile_sha256", "am_executable_sha256", "omp_threads", "locale_json", "execution_host_json", "execution_context_sha256", "am_cache_shard_index", "am_cache_shard_count", "raw_path_relative_to_cache", "raw_sha256", "sidecar_path_relative_to_cache", "sidecar_sha256", "return_code", "am_version_identity", "numeric_row_count", "unresolved_line_warning_count", "unresolved_column_warning_line_count", "unresolved_summary_warning_line_count", "other_warning_line_count", "error_line_count", "scale_trace_path_relative_to_cache", "scale_trace_sha256", "scale_trace_evaluation_index", "scale_trace_role"]
+    },
+    "am12_el25_confirmation_rows.csv": {
+      "row_count": 43008,
+      "sort_key": ["candidate_id", "array", "alpha", "coordinate_id", "truth_profile", "elevation_deg"],
+      "fieldnames": ["coordinate_id", "interval", "fraction_numerator", "fraction_denominator", "truth_profile", "requested_tau225", "achieved_tau225", "coordinate_residual", "h2o_scale_decimal", "h2o_scale_hex", "target_transmission_literal", "achieved_transmission_el80", "elevation_deg", "airmass", "candidate_id", "candidate_role", "lane", "operator", "passband_set_id", "passband_id", "array", "alpha", "direct_effective_transmission", "direct_line_of_sight_optical_depth", "direct_extinction_correction", "operator_line_of_sight_optical_depth", "operator_extinction_correction", "signed_fractional_correction_error", "absolute_fractional_correction_error", "raw_sha256", "sidecar_sha256"]
+    },
+    "am12_el25_confirmation_metrics.csv": {
+      "row_count": 48,
+      "sort_key": ["candidate_id", "array", "alpha"],
+      "fieldnames": ["candidate_id", "candidate_role", "lane", "operator", "passband_id", "array", "alpha", "n", "signed_min_fractional_correction_error", "signed_max_fractional_correction_error", "signed_bias_fractional_correction_error", "rms_fractional_correction_error", "p95_absolute_fractional_correction_error", "median_absolute_fractional_correction_error", "max_absolute_fractional_correction_error", "gate_threshold", "gate_pass", "worst_coordinate_id", "worst_truth_profile", "worst_requested_tau225", "worst_achieved_tau225", "worst_elevation_deg", "worst_signed_fractional_correction_error"]
+    },
+    "am12_el25_confirmation_physical_metrics.csv": {
+      "row_count": 48,
+      "sort_key": ["candidate_id", "array", "alpha"],
+      "fieldnames": ["candidate_id", "candidate_role", "lane", "operator", "passband_id", "array", "alpha", "all_evaluated_quantities_finite", "minimum_line_of_sight_optical_depth", "minimum_lambda_tau225", "minimum_lambda_elevation_deg", "maximum_effective_transmission", "minimum_extinction_correction", "minimum_tau_direction_delta", "maximum_elevation_direction_delta", "tau_wrong_way_step_count", "elevation_wrong_way_step_count", "maximum_tau_wrong_way_fractional_correction_excursion", "maximum_elevation_wrong_way_fractional_correction_excursion", "maximum_internal_anchor_absolute_residual", "maximum_low_segment_absolute_residual", "maximum_relative_correction_continuity_residual", "positivity_pass", "domain_pass", "tau_monotonicity_pass", "elevation_monotonicity_pass", "continuity_pass", "fail_closed_pass", "internal_anchor_pass", "exact_low_segment_pass", "physical_contract_pass"]
+    }
+  },
+  "expected_artifacts": {
+    "external_cache": [
+      "execution_context.json",
+      "raw_outputs/*.txt",
+      "execution_records/*.run.json",
+      "scale_traces/*.json",
+      "AM_internal_cache_shards"
+    ],
+    "deterministic_package_artifacts": [
+      "am12_el25_confirmation_execution_context.json",
+      "am12_el25_confirmation_scales.csv",
+      "am12_el25_confirmation_run_inventory.csv",
+      "am12_el25_confirmation_rows.csv",
+      "am12_el25_confirmation_metrics.csv",
+      "am12_el25_confirmation_physical_metrics.csv",
+      "am12_el25_confirmation_coverage.json",
+      "am12_el25_confirmation_decision.json",
+      "AM12_EL25_CONFIRMATION_REPORT.md",
+      "am12_el25_confirmation_manifest.json"
+    ],
+    "decision_schema": {
+      "filename": "am12_el25_confirmation_result.schema.json",
+      "sha256": "a28e738970b2a462fd1fb68c78aad552e32cbd396f8f60956f8615e4be2a3965",
+      "schema_id": "https://toltec.astro.umass.edu/schemas/sci-cal-001-am12-el25-confirmation-result-v1.json"
+    },
+    "root_digest_index": "SHA256SUMS",
+    "deterministic_replay": "all ten generated package artifacts must reproduce byte-for-byte from the immutable external cache without invoking AM"
+  }
+}
