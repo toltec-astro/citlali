@@ -1,8 +1,8 @@
 # SCI-ALIGN-001 phase-zero D005 owner decision — 2026-08-02
 
-Status: `D005-Q1-HOLD` owner-approved for a bounded existing-use compatibility
-adapter; the final phase-one sequencing card remains pending; phase one remains
-unauthorized
+Status: `D005-Q1-HOLD` and the bounded phase-one sequencing card are
+owner-approved; ALIGN phase-one implementation and local validation are
+authorized; acceptance evidence and production expansion remain gated
 
 Package: `SCI-ALIGN-001`
 
@@ -11,11 +11,11 @@ Package: `SCI-ALIGN-001`
 The project owner approved the coordinator's compatibility-only disposition of
 `D005-Q1-HOLD`. The owner will separately request a strict `Hold` definition
 from the responsible telescope engineer. That request is a future producer-
-authority path and is not a prerequisite for considering the separate
-phase-one sequencing card. It does not authorize repair or permission to infer
-a bit meaning before the returned definition is reviewed.
+authority path and is not a prerequisite for the separately authorized
+phase-one implementation. The request itself does not authorize a repair or
+permission to infer a bit meaning before the returned definition is reviewed.
 
-This partial decision binds, but does not rewrite:
+This decision binds, but does not rewrite:
 
 - exact governing application SHA
   `9aae0e669384c5c0c0dda93debc194d6b8dac787`;
@@ -99,16 +99,80 @@ has already been inspected or implemented, any changed predicate, transition
 placement, or scan result becomes explicit repair/re-audit scope rather than a
 post-hoc substitution.
 
-## Explicit non-approvals and next owner gate
+## D005 phase-one sequencing — bounded authorization
 
-This partial decision does not authorize phase one, an application edit,
-Unity evidence, a new production profile, physical `Hold` semantics, a nonzero
-changed-product tolerance, re-audit, merge, rebase, push, or production
+The project owner approved the coordinator's minimal phase-one disposition on
+2026-08-02. This authorizes application edits and local validation on the
+already selected `codex/repair-sci-align-001` line only, under D001--D004,
+`D005-Q1-HOLD`, `ALIGN-OD1`--`ALIGN-OD8`, `ALIGN-C001`, and the bounded
+repair/re-audit handoff. Missing evidence remains named and unavailable; it is
+not converted into a pass.
+
+1. Implement the approved 0.5x/1x/2x/4x rate algebra and exercise every member
+   with small synthetic fixtures. Phase-one observational compatibility is
+   restricted to the native-1x Pointing 152389 and Beammap 148670 fixtures.
+   Native observational evidence for 0.5x, 2x, and 4x remains pending. Do not
+   fabricate it by resampling 1x data, and do not use the algebraic support to
+   admit a new production profile.
+
+2. Retain `0.021130561828613281 s` as the inclusive maximum-used-bracket
+   validation envelope for the frozen D005 cohort only. It is not a general
+   telescope producer cadence, gap, or runtime-admission limit. The general
+   producer bound remains unavailable; nonfinite, nonpositive,
+   nonmonotonic, ambiguous, cross-gap, and extrapolated support fails closed.
+
+3. Before scientific acceptance, obtain a clean direct whole-application
+   control from exact SHA
+   `9aae0e669384c5c0c0dda93debc194d6b8dac787` and compare it with the successor
+   under the same frozen inputs, configuration, and policy. Pair the control
+   and successor in the same later human-run exact-SHA campaign to minimize
+   owner effort. The control need not precede writing or locally testing the
+   repair. Historical accepted and validation-suite products remain useful
+   sentinels but are not silently relabeled as an exact whole-application 9aae
+   execution.
+
+4. Require exact equality under the existing active policy for every
+   unaffected record and product. For records changed solely by an approved
+   OD5 boundary/context/identity/status repair, record exact attribution and a
+   compact source-crossing, centroid, and per-array PSF comparison. Any
+   nonzero scientific-product change returns to the owner; no numerical
+   tolerance may be inferred from the single Beammap or passed silently.
+
+5. Record setup and total Pointing/Beammap timings during naturally required
+   control and successor validation. Apply the existing 5% ceiling within the
+   project's 3--5% review budget. Do not require a five-pair hour-scale
+   campaign unless those measurements show a repeatable or material regression
+   signal; such a signal triggers controlled paired repeats and owner return.
+   I/O and storage remain governed by compact structural representation; no
+   byte ceiling, dense diagnostic product, or generalized telemetry framework
+   is invented.
+
+6. Do not realize the five additional science-support reductions merely to
+   close D005. Their bound raw headers establish only the current native-1x
+   inventory. Leave the combined/multi-Beammap and native-rate-stratified study
+   pending for the later preregistered campaign; do not admit heterogeneous
+   out-of-suite Beammap 152307 simply to fill the matrix.
+
+The phase-one implementation remains proportional: reuse existing input
+passes; use compact/generative ordinary state and compact exception intervals;
+keep expanded identities and diagnostics `as_requested`; and do not add
+generalized telemetry, dense mappings, routine per-sample provenance, full
+timing covariance, new scientific estimators, or extra reduction campaigns.
+Conditional response/covariance terms may remain explicitly unavailable, with
+small synthetic tests proving only the approved mathematics.
+
+## Remaining gates and non-approvals
+
+This decision authorizes the bounded ALIGN implementation and local validation
+only. It does not authorize Unity contact or execution, acceptance of a repair
+SHA, re-audit launch, execution, or completion, merge, rebase, push, a new
+production profile, physical `Hold` semantics, a nonzero changed-product
+tolerance, non-1x production, polarization/HWPR science, or production
 expansion.
 
-The remaining D005 owner card is administrative and bounded. It will ask
-whether to authorize the recommended minimal phase-one implementation/evidence
-sequence while carrying unavailable native-rate, multi-Beammap, producer-span,
-changed-product, and performance evidence as explicit later gates rather than
-inventing or prematurely collecting them. Until that choice is approved, the
-existing prerequisites and phase-one prohibition remain unchanged.
+After local gates pass, the repair task must stop with the exact candidate SHA,
+test/evidence digest, comparison disposition, runtime disposition, and any
+owner-return item. The coordinator will then prepare the smallest exact-SHA
+human evidence request. The telescope engineer's later strict `Hold`
+definition follows the explicit amendment path above and does not silently
+change this implementation authorization.

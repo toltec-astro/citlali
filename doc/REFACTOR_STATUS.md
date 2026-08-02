@@ -233,23 +233,39 @@ evidence commit and which contains no application edit. Its checksum-list
 digest is
 `149ef430af3223562d9e69b7224703b831f6f56629b2f3c513bf44c40a567bbb`.
 The project owner approved `D005-Q1-HOLD` in the
-[partial D005 decision record](audits/packages/SCI-ALIGN-001_PHASE_ZERO_D005_DECISION_2026-08-02.md):
+[D005 decision record](audits/packages/SCI-ALIGN-001_PHASE_ZERO_D005_DECISION_2026-08-02.md):
 the released-4.x whole-word/any-nonzero view plus the separately applied
 outside-map-box condition is a named `legacy_inferred` raster-segmentation
 adapter for the exact admitted existing-use profiles only. It carries no
 producer bit, turnaround, or transition-side claim; preserves all raw bits;
 adds no routine per-sample state output; and authorizes only the already
 approved compatibility choice. It defines the only permitted Hold/scan scope
-if and when phase one is separately authorized; it does not authorize an
-application edit.
+inside the now-approved phase-one repair; the Q1 choice by itself does not
+authorize an application edit.
 The owner will request a strict definition from the telescope engineer. Any
 returned producer authority is nonblocking future evidence and requires
 explicit coordinator review and amendment before it can change behavior.
 
-The final D005 phase-one sequencing card remains pending. Phase one,
-application repair, Unity evidence, re-audit, and production expansion remain
-unstarted. The approved contract and existing-use-only restriction are
-unchanged.
+The owner has now also approved the bounded D005 phase-one sequencing card in
+the same decision record. ALIGN application edits and local validation may
+proceed only on the selected repair line. The repair must exercise the
+0.5x/1x/2x/4x algebra synthetically while limiting phase-one observational
+compatibility evidence to native-1x Pointing 152389 and Beammap 148670; native
+0.5x/2x/4x evidence remains pending and resampled 1x is not a substitute. The
+exact `0.021130561828613281 s` bracket is a fixed-cohort validation envelope,
+not a general producer/runtime limit. An exact whole-application 9aae control
+is required before scientific acceptance and should be paired with the
+successor in the same later human exact-SHA campaign; it is not required before
+implementation begins. Unaffected products retain exact gates; any
+nonzero scientific change attributable to an OD5 repair returns to the owner
+without an invented tolerance. Normal required runs supply setup/total timing;
+a five-pair campaign is triggered only by a repeatable or material regression
+signal, with the existing 5% ceiling retained. Extra science-support
+reductions and the multi-Beammap/native-rate campaign remain deferred. Unity,
+repair acceptance, re-audit launch, execution, or completion, merge, push, new
+production profiles, physical `Hold` semantics, non-1x production,
+polarization, and production expansion remain unapproved. The approved
+contract and existing-use-only restriction are unchanged.
 
 ## 2026-08-01 SCI-AST-001 Audit Coordination
 
@@ -352,11 +368,11 @@ is prepared but held. The audited `9aae0e669384c5c0c0dda93debc194d6b8dac787`
 remains the immutable AST comparison anchor, not a usable repair base: it lacks
 the approved typed ALIGN interface. ALIGN phase-zero commit
 `53c7154a3633dfe19dc036cfb5a6250f729a897d` is an evidence-only child with no
-application-source delta and is also not admissible. Resolve
-`ALIGN-P0-D005`, explicitly authorize, complete, and locally validate ALIGN
-phase one, return the human-run exact-SHA evidence, and accept a fresh ALIGN
-re-audit before
-selecting the exact accepted ALIGN successor or clean integration SHA as the
+application-source delta and is also not admissible. Complete the
+now-authorized ALIGN phase one and its local validation, return the
+subsequently authorized human-run exact-SHA evidence, and accept a fresh ALIGN
+re-audit before selecting the exact accepted ALIGN successor or clean
+integration SHA as the
 AST repair base. No `codex/repair-sci-ast-001` branch or task is authorized or
 created by the prepared handoff.
 No AST repair base has been selected, and no repair, Unity request, re-audit,
