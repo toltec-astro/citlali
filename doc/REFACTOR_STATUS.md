@@ -216,7 +216,20 @@ overkill concern is a binding proportionality guard: reuse existing input
 passes, persist only one compact observation/interface record, add no
 per-sample state or generalized timing/drift machinery, and preserve conforming
 zero-offset timestamps, slots, source crossings, centroids, PSFs, and measured
-runtime. `ALIGN-P0-D004` and `D005` remain pending.
+runtime. The owner has now approved `ALIGN-P0-D004` in the
+[phase-zero D004 decision record](audits/packages/SCI-ALIGN-001_PHASE_ZERO_D004_DECISION_2026-08-01.md).
+It overlays the retained 383-row discovery inventory with a reviewed, bounded
+active registry for the admitted nonpolarimetric path: 20 canonical fields,
+22 admitted raw source-name forms including the two RA/Dec aliases, typed
+angle/scalar operators, truthful units and shapes, and exact-only/zero-span or
+unavailable behavior for every inactive or unresolved field. Enabled HWPR and
+polarization remain unavailable. The complete `Hold` word is preserved;
+released-4.x whole-word/nonzero behavior and historical bit `0x08` are named
+separate non-authoritative views, while `0x02` and `0x40` remain uninterpreted.
+No transition side or new scan predicate is approved. D005 must preregister
+the Hold/operator comparison, telescope bracket limit, and scan/astrometric
+acceptance gates before successor inspection. `ALIGN-P0-D005` is the sole
+remaining substantive phase-zero owner decision.
 Phase one, application repair, Unity evidence, re-audit, and production
 expansion remain unstarted. The approved contract and existing-use-only
 restriction are unchanged.
@@ -323,9 +336,9 @@ remains the immutable AST comparison anchor, not a usable repair base: it lacks
 the approved typed ALIGN interface. ALIGN phase-zero commit
 `53c7154a3633dfe19dc036cfb5a6250f729a897d` is an evidence-only child with no
 application-source delta and is also not admissible. Resolve
-`ALIGN-P0-D004` and `D005`, complete and locally validate ALIGN phase one,
-return
-the human-run exact-SHA evidence, and accept a fresh ALIGN re-audit before
+`ALIGN-P0-D005`, explicitly authorize, complete, and locally validate ALIGN
+phase one, return the human-run exact-SHA evidence, and accept a fresh ALIGN
+re-audit before
 selecting the exact accepted ALIGN successor or clean integration SHA as the
 AST repair base. No `codex/repair-sci-ast-001` branch or task is authorized or
 created by the prepared handoff.

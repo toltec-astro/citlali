@@ -661,7 +661,8 @@ packages:
         - id: ALIGN-OD2-offset-and-header-authority
           status: approved_with_default_zero_compatibility
         - id: ALIGN-OD3-variable-topology
-          status: approved_pending_generated_registry_review
+          status: >-
+            approved_with_bounded_active_registry_hold_semantics_evidence_pending
         - id: ALIGN-OD4-gap-bounds-and-action
           status: approved_typed_scope_with_strict_gt_25pct_chunk_rule
         - id: ALIGN-OD5-scan-policy-and-identity
@@ -711,7 +712,7 @@ packages:
         tolerances remain unresolved; phase 1, application repair, Unity
         evidence, and re-audit are not authorized.
     phase_zero_owner_decisions:
-      status: partially_resolved_D001_D003_approved_D004_D005_pending
+      status: partially_resolved_D001_D004_approved_D005_pending
       phase_one_authorization: none
       resolved:
         - id: ALIGN-P0-D001
@@ -916,8 +917,118 @@ packages:
             Resolves D003 for bounded repair design only. Findings remain open;
             D004 and D005, phase one, application repair, Unity evidence,
             re-audit, and production expansion remain unapproved.
+        - id: ALIGN-P0-D004
+          questions: [Q06, Q07, Q08, Q09, Q10, Q11, Q12, Q14]
+          authority: project_owner
+          decision_date: 2026-08-01
+          status: >-
+            owner_resolved_by_restricted_active_registry_amended_hold_views_and_fail_closed_default
+          record_path: >-
+            doc/audits/packages/SCI-ALIGN-001_PHASE_ZERO_D004_DECISION_2026-08-01.md
+          record_commit: null
+          record_sha256: >-
+            ea03c5b614c7ce64ab5ab071c48c07d2f4910b919941798e70668049e53faf78
+          constrained_by:
+            - ALIGN-P0-D001
+            - ALIGN-P0-D002
+            - ALIGN-P0-D003
+            - ALIGN-OD3
+            - ALIGN-OD5
+            - ALIGN-OD8
+            - ALIGN-C001
+          affected_findings:
+            - SCI-ALIGN-001-F001
+            - SCI-ALIGN-001-F004
+            - SCI-ALIGN-001-F005
+            - SCI-ALIGN-001-F006
+            - SCI-ALIGN-001-F007
+            - SCI-ALIGN-001-F008
+            - SCI-ALIGN-001-F009
+            - SCI-ALIGN-001-F010
+            - SCI-ALIGN-001-F012
+            - SCI-ALIGN-001-F014
+          scope: bounded_existing_use_nonpolarimetric_active_registry
+          registry:
+            discovery_rows: 383
+            lmt_rows: 337
+            hwpr_rows: 46
+            active_canonical_internal_fields: 20
+            admitted_raw_source_name_forms: 22
+            field_registry_sha256: >-
+              5ac211f7f21e8a7547ceb4a3db8c37491711e06a5359e9b53aec01ed3115d6f3
+            inactive_or_unresolved_default: exact_only_zero_span_or_unavailable
+            generic_linear_fallback: prohibited
+          common_coordinate: >-
+            D001/D002 detector-reference common_time in seconds is distinct
+            from exact/provenance-only native telescope time identities.
+          active_operators:
+            noninterpolated:
+              native_bracketing_coordinate: TelTime
+              exact_diagnostic_time: [TelUtc, PpsTime]
+              typed_raw_word: Hold
+              step_operator: unavailable_pending_D005
+            circular_2pi_shortest_arc:
+              - ActGalAng
+              - ActParAng
+              - SourceAz
+              - SourceLAct_to_TelL
+              - SourceRaAct_to_TelRa
+              - TelAzAct
+              - TelAzDes
+            continuous_bracketed_linear:
+              - SourceBAct_to_TelB
+              - SourceDecAct_to_TelDec
+              - SourceEl
+              - TelAzCor
+              - TelAzMap
+              - TelElAct
+              - TelElCor
+              - TelElDes
+              - TelElMap
+            guard: >-
+              Require finite valid adjacent native brackets, no extrapolation
+              or D003/OD4 gap crossing, unavailable exact-pi circular
+              ambiguity, and the D005-preregistered maximum bracket duration.
+          aliases: >-
+            SourceRaAct/SourceDecAct are canonical surveyed sources;
+            TelRaAct/TelDecAct are schema-versioned legacy alternatives only.
+            If both occur, unit/shape/identity and elementwise values in the
+            same declared representation must agree exactly; disagreement,
+            including merely wrap-equivalent alternatives, fails closed
+            without map-order precedence pending separate authority.
+          hold:
+            raw_word: preserved_exactly_after_finite_nonnegative_integral_check
+            released_4x_view: legacy_4x_linear_any_nonzero
+            repository_candidate: turnaround_candidate_0x08
+            unknown_observed_bits: ["0x02", "0x40"]
+            transition_side: unavailable_pending_D005_evidence
+            scan_selection: no_new_predicate_authorized
+            outside_map_box: separate_scan_window_condition_not_raw_bit
+            header_hold_snapshots:
+              - Header.M2.Hold
+              - Header.Map.HoldDuringTurns
+            header_role: separate_exact_only_not_scan_authority
+          output_contract: >-
+            Publish truthful typed units, qualified frames and clocks,
+            topology/operator, source identity, availability, and full native
+            scalar/vector shape. State is never radians; headers are not
+            generically truncated or sample-broadcast; ordinary provenance is
+            compact/generative with detail as requested.
+          hwpr_policy: >-
+            No active HWPR field. Absent or disabled is not_applicable for
+            admitted intensity processing; enabled/required HWPR, nonzero HWPR
+            offset, aligned HWPR science, and polarization fail closed pending
+            a versioned producer schema and separate validation.
+          D005_routes:
+            - ALIGN-D004-HOLD-VALIDATION-001
+            - telescope_maximum_bracket_duration_preregistration
+          effect: >-
+            Resolves D004 for bounded registry/output design by selecting
+            explicit unavailability rather than inventing missing authority.
+            Findings remain open; D005, explicit phase-one authorization,
+            application repair, Unity evidence, re-audit, and production
+            expansion remain unapproved.
       pending:
-        - ALIGN-P0-D004
         - ALIGN-P0-D005
     dispatch:
       status: frozen_for_dispatch
@@ -986,9 +1097,9 @@ packages:
         doc/audits/packages/SCI-ALIGN-001_PHASE_ZERO_COORDINATOR_REVIEW_2026-08-01.md
       phase_zero_review_commit: dbebd17627870963789d142fe385ab05268573da
       next_gate: >-
-        Resolve ALIGN-P0-D004 and ALIGN-P0-D005, including the
-        preregistered rate-stratified multi-Beammap D005 protocol, and record
-        the reviewed active-field registry before phase-one fixtures or any
+        Resolve ALIGN-P0-D005, including the preregistered rate-stratified
+        multi-Beammap protocol, Hold/operator comparison, and maximum
+        telescope bracket duration, before phase-one fixtures or any
         application edit.
     repair_base_decision:
       authority: project_owner
@@ -1077,14 +1188,10 @@ packages:
           the required local and exact-repair-SHA evidence gates, and complete
           a fresh re-audit.
     unresolved_scientific_decisions:
-      - id: ALIGN-P0-D004
-        questions: [Q06, Q07, Q08, Q09, Q10, Q11, Q12, Q14]
-        issue: HWPR_telescope_registry_aliases_topology_units_and_output_contract
-        constrained_by: [ALIGN-P0-D003]
       - id: ALIGN-P0-D005
         questions: [Q13, Q15]
         issue: compatibility_fixtures_and_preregistered_tolerances
-        constrained_by: [ALIGN-P0-D002, ALIGN-P0-D003]
+        constrained_by: [ALIGN-P0-D002, ALIGN-P0-D003, ALIGN-P0-D004]
         validation_directive:
           source: project_owner
           date: 2026-08-01
@@ -1102,6 +1209,31 @@ packages:
             An owner-approved native-rate alternate fixture is required or the
             profile remains evidence-pending; resampled 1x is not native-rate
             evidence.
+        hold_validation_directive:
+          source: project_owner
+          date: 2026-08-01
+          study: ALIGN-D004-HOLD-VALIDATION-001
+          design: preregistered_native_transition_scan_astrometry_comparison
+          inputs: >-
+            Freeze the cohort and source digests, including Beammap 148670,
+            before inspecting any successor result.
+          compare: >-
+            Exact governing-SHA 9aae0e669384c5c0c0dda93debc194d6b8dac787
+            Hold/scan outputs, released-4.x whole-word linear-to-nonzero
+            behavior, native raw-word nonzero, native raw-word bit 0x08,
+            candidate transition sides, raw per-bit transitions, and the
+            separate map-box override.
+          metrics: >-
+            Aligned state, scan count/windows, first-post-turn sample, source
+            crossings, centroids, and per-array major/minor PSF widths.
+          stop_rule: >-
+            Stop for owner amendment if unknown bits correlate materially with
+            turns, hypotheses differ materially, no transition side is
+            supported, or an accepted scan/astrometric result regresses.
+          no_post_hoc_selection: true
+        field_span_preregistration: >-
+          Freeze the maximum allowed adjacent telescope bracket duration and
+          associated validation limit before successor inspection.
     local_evidence:
       - independent_core_offline_compile_and_13_page_visual_inspection
       - post_freeze_A1_A19_source_trace_at_governing_sha
@@ -1123,9 +1255,9 @@ packages:
           and mapping sensitivity, offset-state trace, and historical
           compatibility baselines.
         missing: >-
-          Producer timestamp/anchor authority, approved active-field semantics
-          and support, enabled-HWPR contract, successor products, and
-          preregistered compatibility tolerances.
+          Producer timestamp/anchor and Hold-bit authority, enabled-HWPR
+          contract, successor products, and preregistered Hold, field-span,
+          timing, scan, source-crossing, centroid, and PSF limits.
     requested_unity_evidence:
       - SCI-ALIGN-001-UNITY-001
     supplied_external_evidence: []
@@ -2326,13 +2458,14 @@ packages:
       dependency_hold:
         package_id: SCI-ALIGN-001
         phase_zero_status: >-
-          partial_owner_resolution_D001_D003_approved_D004_D005_pending
+          partial_owner_resolution_D001_D004_approved_D005_pending
         phase_zero_evidence_commit: 53c7154a3633dfe19dc036cfb5a6250f729a897d
         required_completion: exact_accepted_and_reaudited_ALIGN_successor
       next_gate: >-
-        Resolve ALIGN-P0-D004 and D005, complete and locally validate ALIGN
-        phase one, return the human-run exact-SHA evidence, accept a fresh ALIGN
-        re-audit, and only then select and record the exact AST application base.
+        Resolve ALIGN-P0-D005, explicitly authorize, complete, and locally
+        validate ALIGN phase one, return the human-run exact-SHA evidence,
+        accept a fresh ALIGN re-audit, and only then select and record the exact
+        AST application base.
     repair_base_decision:
       authority: coordinator_dependency_gate
       date: 2026-08-01
