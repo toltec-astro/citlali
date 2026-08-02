@@ -32,14 +32,16 @@ CONFIGS = {
         "source": SUITE_ROOT
         / "point/pointings_v22/reduced/redu00/citlali_o152389_0_2_c1.yaml",
         "sha256": "340677ab1e873e735a44dcee84d7da9eba91a7c511f8d9229b044aa29d98f5ba",
-        "suite_path_binding_count": 14,
+        # Fourteen selected input paths plus the realized output_dir binding.
+        "suite_path_binding_count": 15,
     },
     "beammap": {
         "observation": "148670",
         "source": SUITE_ROOT
         / "beammaps/3c273/reduced/redu00/citlali_o148670_0_2_c1.yaml",
         "sha256": "d81ac8b1aa52c06c0ef7d69158c802850499695aa9d614ebaf996147ba736788",
-        "suite_path_binding_count": 13,
+        # Thirteen selected input paths plus the realized output_dir binding.
+        "suite_path_binding_count": 14,
     },
 }
 REMOTE_PRIOR = (
