@@ -107,7 +107,13 @@ freeze the application mainline.
   simplest candidate. The machine result is
   `numerical_adoption_evidence_fail`, with null recommendation and no operator
   or domain authorization. A post-result EL25--80 slice reaches 0.989845% but
-  requires a new preregistered confirmation; FTS-versus-ECSV direct truth
+  is not itself confirmatory evidence. On 2026-08-02 the owner resolved
+  `LOW-001` as `confirm_el25_minimum_with_preregistered_evidence`, selecting
+  25 degrees as the proposed floor for a separate confirmation. This does not
+  change the frozen v2 failure, EL20--80 study domain, or 13 deterministic
+  artifact identities. `BAND-001`, complete `DOMAIN-001`, and `WARN-001`
+  remain blocking for a confirmation decision and numerical selection;
+  `OBS-001` remains a production-only gate. FTS-versus-ECSV direct truth
   differs by as much as 3.474613%, leaving passband authority as a separate
   calibration choice. The 13 deterministic study artifacts are SHA-256 bound
   and passed cache-only replay. The broader legacy q0--q95 C1 maxima and the
@@ -2731,15 +2737,17 @@ silently choose among these:
 - Whether any future caller needs concurrent reductions in one process.
 - The measured-channel contract and missing-data policy for future R analysis.
 - Whether Citlali must be installable and consumable as an external library.
-- Following the completed SCI-CAL-001 AM 12.2 numerical study: whether to keep
-  EL20 and revise the physical q0--q25 construction, propose EL25 with a new
-  preregistered confirmation, or explicitly relax the numerical
-  representation gate above 1.159949%; whether TolTECA v1 ECSV or newly
-  supplied detector/array-weighted passbands are authoritative; the exact
-  fail-closed q0--q75 elevation domain; AM warning-status-1 policy; and the
-  later observational validation campaign. Generic q95 and exact generic-q
-  custody remain unresolved nonblocking historical provenance. The completed
-  study does not authorize an operator or operational domain.
+- Following the completed SCI-CAL-001 AM 12.2 numerical study, the owner
+  resolved `LOW-001` on 2026-08-02 by selecting EL25 as the proposed minimum
+  for a new preregistered confirmation. Before a confirmation decision or
+  numerical selection, choose whether TolTECA v1 ECSV or newly supplied
+  detector/array-weighted passbands are authoritative (`BAND-001`), complete
+  the exact proposed q0--q75/EL25--80 support and outside-domain policy
+  (`DOMAIN-001`), and decide the AM warning-status-1 policy (`WARN-001`). The
+  later observational validation campaign (`OBS-001`) remains production-only.
+  Generic q95 and exact generic-q custody remain unresolved nonblocking
+  historical provenance. Neither the completed study nor the EL25 direction
+  authorizes an operator or operational domain.
 
 ## Durable Evidence
 

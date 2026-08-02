@@ -1,7 +1,7 @@
 {
-  "schema_version": "sci-cal-001-atmosphere-governance-manifest-v2",
+  "schema_version": "sci-cal-001-atmosphere-governance-manifest-v3",
   "package_id": "SCI-CAL-001",
-  "created_date": "2026-08-01",
+  "created_date": "2026-08-02",
   "source_identity": {
     "repair_base_sha": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
     "repair_line_evidence_head": "ae99be1cef8c390d0e7490835ffca1f31da7ebc0",
@@ -9,14 +9,22 @@
     "coordination_line_snapshot": "4898477cf2550dd393c81b30be29f4634a2cd6d9"
   },
   "owner_direction": {
-    "recorded_date": "2026-08-01",
+    "recorded_date": "2026-08-02",
     "selected_evaluation_path": "versioned_am12_successor",
     "evaluation_authorization": "bounded_study_only",
     "adoption_status": "evaluation_only_not_adopted",
     "operator_authorization": "none",
     "operational_domain_authorization": "none",
     "q95_operational_disposition": "excluded_historical_diagnostic_only",
-    "exact_operational_endpoints_status": "unresolved",
+    "exact_operational_endpoints_status": "partially_selected_el25_floor_remaining_fields_unresolved",
+    "low_opacity_followup_choice": "confirm_el25_minimum_with_preregistered_evidence",
+    "proposed_confirmation_elevation_min_deg": "25",
+    "confirmation_study_authorization": "pending_band_domain_warning_owner_choices",
+    "direction_record": {
+      "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/OWNER_EL25_CONFIRMATION_DIRECTION_2026-08-02.md",
+      "bytes": 3539,
+      "sha256": "c06aa8c01591dc9155e0cce0a08ebe4f784169c95ea2fd5d0aca8d121e833ddd"
+    },
     "historical_generic_generator_association": "not_established",
     "generic_q95_custody_status": "unresolved_nonblocking_historical_provenance",
     "successor_study_status": "numerical_adoption_evidence_fail",
@@ -26,14 +34,14 @@
     "request_id": "SCI-CAL-001-ATM-DECISION-001",
     "request": {
       "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/owner_input_request.json",
-      "bytes": 11163,
-      "sha256": "32c5c85abd6d3bc1c66c0a2d031691d0765aae03bee391ac9c0fa7137e14d955"
+      "bytes": 12336,
+      "sha256": "22d0cc893f254b67f604d162e07a2afe5956b5a936f12d7f4dc89f2e7112e78e"
     },
     "response_schema": {
-      "schema_version": "sci-cal-001-owner-supplied-manifest-v3",
+      "schema_version": "sci-cal-001-owner-supplied-manifest-v4",
       "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/owner_supplied_manifest.schema.json",
-      "bytes": 19593,
-      "sha256": "d7bf5f6551fd587918e2b980cac0863ab6cdb8442e1c87beb21b612510fc81f5"
+      "bytes": 20032,
+      "sha256": "eb8111f1812547afc574250324fbbb4b9d6e0cb883ffa29feab27b818127289e"
     },
     "decision_ids": [
       "Q95-001",
@@ -45,7 +53,18 @@
       "WARN-001",
       "OBS-001"
     ],
-    "valid_response_effect": "records_followup_evidence_path_only_no_operator_or_domain_authorization"
+    "resolved_decision_ids": [
+      "LOW-001"
+    ],
+    "remaining_blocking_decision_ids": [
+      "BAND-001",
+      "DOMAIN-001",
+      "WARN-001"
+    ],
+    "later_production_decision_ids": [
+      "OBS-001"
+    ],
+    "valid_response_effect": "records_complete_followup_evidence_path_only_no_operator_or_domain_authorization"
   },
   "owner_approved_records": [
     {
@@ -167,8 +186,10 @@
         "sha256": "ce20486a7734d6a14781dbbd7f8e45b0c55e385d4c724918497468a0c93d3177"
       }
     },
+    "recorded_owner_choices": {
+      "LOW-001": "confirm_el25_minimum_with_preregistered_evidence"
+    },
     "owner_decision_required": [
-      "LOW-001",
       "BAND-001",
       "DOMAIN-001",
       "WARN-001",

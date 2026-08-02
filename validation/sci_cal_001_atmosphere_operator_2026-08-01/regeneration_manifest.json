@@ -369,6 +369,15 @@
       "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/am12_successor_physical_metrics.csv",
       "role": "successor physical-contract table",
       "sha256": "7ced66728f7e0d24eecccee226cd4aa772907808ebd36e2d255698e8f3371c5f"
+    },
+    {
+      "availability": "task_package",
+      "bytes": 3539,
+      "id": "owner-el25-confirmation-direction",
+      "notes": "Binds LOW-001 to the proposed EL25 confirmation path without changing the frozen v2 study, selecting a passband or warning policy, authorizing an operational domain, or relabeling the post-hoc EL25 slice.",
+      "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/OWNER_EL25_CONFIRMATION_DIRECTION_2026-08-02.md",
+      "role": "partial owner scientific decision record",
+      "sha256": "c06aa8c01591dc9155e0cce0a08ebe4f784169c95ea2fd5d0aca8d121e833ddd"
     }
   ],
   "atmospheric_profiles": {
@@ -386,9 +395,7 @@
       "am_q75",
       "am_q95"
     ],
-    "required_fact_ids": [
-      "LOW-001"
-    ],
+    "required_fact_ids": [],
     "status": "partially_resolved"
   },
   "band_integration": {
@@ -412,7 +419,7 @@
     ],
     "successor_status": "unresolved_owner_input_required"
   },
-  "created_date": "2026-08-01",
+  "created_date": "2026-08-02",
   "elevation_and_airmass": {
     "downstream_airmass_formula": "X(el)=sec(z)*(1-0.0012*(sec(z)^2-1)); zenith tau225 is applied with full sample X(el) and top-of-atmosphere pivot X_ref=0",
     "published_narrative_discrepancy": "The dissertation text says 10--80 degrees in 10-degree steps; generic q25/q50/q75 arrays are 20--80 degrees in 2-degree steps. The copied AM 12.2 workflow explicitly runs ZA 10--80 degrees in 2-degree steps, producing elevation 10--80 degrees in 2-degree steps, but it is a separate registry family and does not resolve the generic-grid wording.",
@@ -522,7 +529,7 @@
     "aligned_elevation_max_deg": null,
     "aligned_elevation_min_deg": null,
     "endpoints_inclusive": null,
-    "evidence_support": "The completed successor study directly covers q0 through the exact q75 selector anchor and EL20--80, excluding q95. All structural and coverage gates pass, but all four candidates fail the frozen one-percent representation gate at 1.15994922334935469e-02 in the shared q0--q25 segment. A post-result EL25--80 slice reaches 9.89845456159954562e-03 primary and requires new preregistered confirmation. These are study bounds, not operational authorization. No extrapolation is authorized.",
+    "evidence_support": "The completed successor study directly covers q0 through the exact q75 selector anchor and EL20--80, excluding q95. All structural and coverage gates pass, but all four candidates fail the frozen one-percent representation gate at 1.15994922334935469e-02 in the shared q0--q25 segment. A post-result EL25--80 slice reaches 9.89845456159954562e-03 primary. LOW-001 now selects EL25 as the proposed confirmation floor, but BAND-001, complete DOMAIN-001, and WARN-001 remain required before the confirmation is authorized. These are evidence bounds, not operational authorization. No extrapolation is authorized.",
     "out_of_domain_behavior": "fail_closed",
     "required_fact_ids": [
       "DOMAIN-001"
@@ -598,7 +605,6 @@
     "Q95-001"
   ],
   "unresolved_fact_ids": [
-    "LOW-001",
     "BAND-001",
     "DOMAIN-001",
     "WARN-001",

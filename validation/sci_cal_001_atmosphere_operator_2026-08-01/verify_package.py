@@ -25,11 +25,16 @@ BEAMMAP_REPOSITORY = RAW_SOURCE_DIR.parents[1]
 TOLTECA_REVISION = "2791e6a1e6349ad1d3ac549a648f41cbc51b98c7"
 OWNER_SUPPLIED_SCHEMA_NAME = "owner_supplied_manifest.schema.json"
 OWNER_SUPPLIED_SCHEMA_SHA256 = (
-    "d7bf5f6551fd587918e2b980cac0863ab6cdb8442e1c87beb21b612510fc81f5"
+    "eb8111f1812547afc574250324fbbb4b9d6e0cb883ffa29feab27b818127289e"
 )
 OWNER_INPUT_REQUEST_SHA256 = (
-    "32c5c85abd6d3bc1c66c0a2d031691d0765aae03bee391ac9c0fa7137e14d955"
+    "22d0cc893f254b67f604d162e07a2afe5956b5a936f12d7f4dc89f2e7112e78e"
 )
+OWNER_LOW_DIRECTION_NAME = "OWNER_EL25_CONFIRMATION_DIRECTION_2026-08-02.md"
+OWNER_LOW_DIRECTION_IDENTITY = {
+    "bytes": 3539,
+    "sha256": "c06aa8c01591dc9155e0cce0a08ebe4f784169c95ea2fd5d0aca8d121e833ddd",
+}
 
 OWNER_DECISION_FACT_IDS = frozenset(
     {
@@ -44,7 +49,14 @@ OWNER_DECISION_FACT_IDS = frozenset(
     }
 )
 OWNER_HISTORICAL_FACT_IDS = frozenset({"Q95-001", "GEN-001", "GEN-002"})
-OWNER_BLOCKING_FACT_IDS = OWNER_DECISION_FACT_IDS - OWNER_HISTORICAL_FACT_IDS
+OWNER_RESOLVED_FACT_IDS = frozenset({"LOW-001"})
+OWNER_PENDING_NUMERICAL_FACT_IDS = frozenset(
+    {"BAND-001", "DOMAIN-001", "WARN-001"}
+)
+OWNER_LATER_PRODUCTION_FACT_IDS = frozenset({"OBS-001"})
+OWNER_PENDING_FACT_IDS = (
+    OWNER_PENDING_NUMERICAL_FACT_IDS | OWNER_LATER_PRODUCTION_FACT_IDS
+)
 
 AM12_SUCCESSOR_ARTIFACT_IDENTITIES = {
     "AM12_SUCCESSOR_ADOPTION_STUDY_REPORT.md": {
@@ -375,11 +387,19 @@ def verify_frozen_raw_sources(raw_source_dir: Path) -> None:
 
 def verify_owner_supplied_manifest_schema(request: dict[str, object]) -> None:
     schema_path = PACKAGE_DIR / OWNER_SUPPLIED_SCHEMA_NAME
+    direction_path = PACKAGE_DIR / OWNER_LOW_DIRECTION_NAME
     if (
         not schema_path.is_file()
+        or schema_path.stat().st_size != 20032
         or sha256_path(schema_path) != OWNER_SUPPLIED_SCHEMA_SHA256
     ):
         raise RuntimeError("owner-supplied manifest schema digest changed")
+    if (
+        not direction_path.is_file()
+        or direction_path.stat().st_size != OWNER_LOW_DIRECTION_IDENTITY["bytes"]
+        or sha256_path(direction_path) != OWNER_LOW_DIRECTION_IDENTITY["sha256"]
+    ):
+        raise RuntimeError("recorded LOW-001 direction identity changed")
     schema = json.loads(schema_path.read_text())
     jsonschema.Draft202012Validator.check_schema(schema)
     validator = jsonschema.Draft202012Validator(
@@ -393,14 +413,29 @@ def verify_owner_supplied_manifest_schema(request: dict[str, object]) -> None:
         or schema.get("$id")
         != (
             "https://toltec.astro.umass.edu/schemas/sci-cal-001/"
-            "owner-supplied-manifest-v3.json"
+            "owner-supplied-manifest-v4.json"
         )
         or schema["properties"]["schema_version"]["const"]
-        != "sci-cal-001-owner-supplied-manifest-v3"
+        != "sci-cal-001-owner-supplied-manifest-v4"
         or schema["properties"]["request_id"]["const"]
         != "SCI-CAL-001-ATM-DECISION-001"
         or schema_fact_ids != OWNER_DECISION_FACT_IDS
         or set(decisions_schema["properties"]) != OWNER_DECISION_FACT_IDS
+        or "recorded_low_001_binding" not in schema["required"]
+        or schema["properties"]["recorded_low_001_binding"]["const"]
+        != {
+            "choice": "confirm_el25_minimum_with_preregistered_evidence",
+            "recorded_date": "2026-08-02",
+            "direction_record": {
+                "path": (
+                    "validation/sci_cal_001_atmosphere_operator_2026-08-01/"
+                    f"{OWNER_LOW_DIRECTION_NAME}"
+                ),
+                **OWNER_LOW_DIRECTION_IDENTITY,
+            },
+        }
+        or schema["$defs"]["low_response"]["properties"]["choice"]["const"]
+        != "confirm_el25_minimum_with_preregistered_evidence"
     ):
         raise RuntimeError("owner-supplied schema identity/fact contract changed")
 
@@ -409,10 +444,10 @@ def verify_owner_supplied_manifest_schema(request: dict[str, object]) -> None:
         "statement": "Historical custody remains unresolved and nonblocking.",
         "artifacts": [],
     }
-    domain_el20 = {
+    domain_el25 = {
         "tau225_min": "0",
         "tau225_max": "0.158313198574890929",
-        "elevation_min_deg": "20",
+        "elevation_min_deg": "25",
         "elevation_max_deg": "80",
         "tau225_min_inclusive": True,
         "tau225_max_inclusive": True,
@@ -454,10 +489,10 @@ def verify_owner_supplied_manifest_schema(request: dict[str, object]) -> None:
         ),
     }
     owner_sample = {
-        "schema_version": "sci-cal-001-owner-supplied-manifest-v3",
+        "schema_version": "sci-cal-001-owner-supplied-manifest-v4",
         "package_id": "SCI-CAL-001",
         "request_id": "SCI-CAL-001-ATM-DECISION-001",
-        "submission_date": "2026-08-01",
+        "submission_date": "2026-08-02",
         "submitted_by": "SCI-CAL-001 owner",
         "machine_status": "numerical_adoption_evidence_fail",
         "study_artifact_binding_status": "bound_completed_v2_artifacts",
@@ -468,6 +503,17 @@ def verify_owner_supplied_manifest_schema(request: dict[str, object]) -> None:
         "historical_generic_generator_association": "not_established",
         "historical_generic_lineage_custody_status": "unresolved_retained",
         "historical_generic_products_replaced": False,
+        "recorded_low_001_binding": {
+            "choice": "confirm_el25_minimum_with_preregistered_evidence",
+            "recorded_date": "2026-08-02",
+            "direction_record": {
+                "path": (
+                    "validation/sci_cal_001_atmosphere_operator_2026-08-01/"
+                    f"{OWNER_LOW_DIRECTION_NAME}"
+                ),
+                **OWNER_LOW_DIRECTION_IDENTITY,
+            },
+        },
         "completed_v2_binding": {
             "study_schema_version": (
                 "sci-cal-001-am12-successor-adoption-study-v2"
@@ -504,18 +550,18 @@ def verify_owner_supplied_manifest_schema(request: dict[str, object]) -> None:
             for fact_id in OWNER_HISTORICAL_FACT_IDS
         },
         "authorization_effect": (
-            "records_owner_choices_and_authorizes_only_the_selected_"
-            "followup_evidence_path"
+            "records_remaining_owner_choices_and_authorizes_only_the_complete_"
+            "selected_followup_evidence_path"
         ),
     }
     owner_sample["decisions"].update(
         {
             "LOW-001": {
-                "choice": "retain_el20_and_revise_q0_q25",
-                "rationale": "Retain EL20 and replace the low-opacity construction.",
+                "choice": "confirm_el25_minimum_with_preregistered_evidence",
+                "rationale": "Preserve the recorded EL25 confirmation direction.",
             },
             "BAND-001": ecsv_band_response,
-            "DOMAIN-001": domain_el20,
+            "DOMAIN-001": domain_el25,
             "WARN-001": {
                 "choice": "accept_bounded_status_1_warning_bearing_evidence",
                 "rationale": "Accept only the frozen bounded warning class.",
@@ -551,31 +597,9 @@ def verify_owner_supplied_manifest_schema(request: dict[str, object]) -> None:
     errors = list(validator.iter_errors(owner_sample))
     if errors:
         raise RuntimeError(
-            "owner-supplied schema rejects valid completed-v2 EL20 response: "
+            "owner-supplied schema rejects valid post-LOW-001 EL25 response: "
             f"submission: {errors[0].message}"
         )
-
-    el25_sample = json.loads(json.dumps(owner_sample))
-    el25_sample["decisions"]["LOW-001"] = {
-        "choice": "confirm_el25_minimum_with_preregistered_evidence",
-        "rationale": "Propose EL25 and acquire independent confirmation.",
-    }
-    el25_sample["decisions"]["DOMAIN-001"]["elevation_min_deg"] = "25"
-    if list(validator.iter_errors(el25_sample)):
-        raise RuntimeError("owner schema rejects coupled EL25 response")
-
-    gate_change_sample = json.loads(json.dumps(owner_sample))
-    gate_change_sample["decisions"]["LOW-001"] = {
-        "choice": "explicitly_change_representation_fidelity_gate",
-        "rationale": "Change only the numerical representation threshold.",
-        "replacement_gate_max_fractional_correction_error": 0.012,
-        "replacement_gate_is_at_least_observed_failure": True,
-        "replacement_gate_interpretation": (
-            "numerical_representation_fidelity_only_not_photometric_accuracy"
-        ),
-    }
-    if list(validator.iter_errors(gate_change_sample)):
-        raise RuntimeError("owner schema rejects explicit numerical-gate response")
 
     def supplied_artifact(array: str) -> dict[str, object]:
         return {
@@ -611,26 +635,29 @@ def verify_owner_supplied_manifest_schema(request: dict[str, object]) -> None:
     invalid_authorization = json.loads(json.dumps(owner_sample))
     invalid_authorization["operator_authorization"] = "selected"
     invalid_samples.append(("implicit operator authorization", invalid_authorization))
-    missing_observational_gate = json.loads(json.dumps(owner_sample))
-    del missing_observational_gate["decisions"]["OBS-001"]
-    invalid_samples.append(("missing OBS-001", missing_observational_gate))
-    mismatched_el20 = json.loads(json.dumps(owner_sample))
-    mismatched_el20["decisions"]["DOMAIN-001"]["elevation_min_deg"] = "25"
-    invalid_samples.append(("EL20 LOW/DOMAIN mismatch", mismatched_el20))
-    mismatched_el25 = json.loads(json.dumps(el25_sample))
-    mismatched_el25["decisions"]["DOMAIN-001"]["elevation_min_deg"] = "20"
-    invalid_samples.append(("EL25 LOW/DOMAIN mismatch", mismatched_el25))
-    missing_gate_value = json.loads(json.dumps(owner_sample))
-    missing_gate_value["decisions"]["LOW-001"] = {
-        "choice": "explicitly_change_representation_fidelity_gate",
-        "rationale": "Incomplete gate change.",
-    }
-    invalid_samples.append(("missing replacement gate", missing_gate_value))
-    below_observed_gate = json.loads(json.dumps(gate_change_sample))
-    below_observed_gate["decisions"]["LOW-001"][
-        "replacement_gate_max_fractional_correction_error"
-    ] = 0.001
-    invalid_samples.append(("replacement gate below observed failure", below_observed_gate))
+    missing_recorded_binding = json.loads(json.dumps(owner_sample))
+    del missing_recorded_binding["recorded_low_001_binding"]
+    invalid_samples.append(("missing recorded LOW-001 binding", missing_recorded_binding))
+    for fact_id in sorted(OWNER_PENDING_FACT_IDS):
+        missing_pending = json.loads(json.dumps(owner_sample))
+        del missing_pending["decisions"][fact_id]
+        invalid_samples.append((f"missing pending {fact_id}", missing_pending))
+    missing_low = json.loads(json.dumps(owner_sample))
+    del missing_low["decisions"]["LOW-001"]
+    invalid_samples.append(("missing recorded LOW-001 decision", missing_low))
+    el20_domain = json.loads(json.dumps(owner_sample))
+    el20_domain["decisions"]["DOMAIN-001"]["elevation_min_deg"] = "20"
+    invalid_samples.append(("EL20 conflicts with recorded LOW-001", el20_domain))
+    for alternative in (
+        "retain_el20_and_revise_q0_q25",
+        "explicitly_change_representation_fidelity_gate",
+    ):
+        alternate_low = json.loads(json.dumps(owner_sample))
+        alternate_low["decisions"]["LOW-001"] = {
+            "choice": alternative,
+            "rationale": "A prior alternative may not replace recorded LOW-001.",
+        }
+        invalid_samples.append((f"alternate LOW-001 choice {alternative}", alternate_low))
     missing_spectral_convention = json.loads(json.dumps(owner_sample))
     del missing_spectral_convention["decisions"]["BAND-001"][
         "source_spectral_convention"
@@ -659,14 +686,15 @@ def verify_owner_supplied_manifest_schema(request: dict[str, object]) -> None:
     evidence_state = request.get("evidence_state")
     decision_effect = request.get("decision_effect")
     binding = request.get("completed_v2_artifact_binding")
+    recorded_choices = request.get("recorded_owner_choices")
     delivery = request["delivery_layout"]
     if (
-        request.get("schema_version") != "sci-cal-001-owner-input-request-v4"
+        request.get("schema_version") != "sci-cal-001-owner-input-request-v5"
         or request.get("request_id") != "SCI-CAL-001-ATM-DECISION-001"
         or request.get("status")
         != (
-            "owner_scientific_decision_required_after_"
-            "numerical_adoption_evidence_fail"
+            "partial_owner_decision_recorded_low_001_el25_"
+            "remaining_scientific_choices_required"
         )
         or set(request_ids) != OWNER_DECISION_FACT_IDS
         or len(request_ids) != len(set(request_ids))
@@ -675,6 +703,41 @@ def verify_owner_supplied_manifest_schema(request: dict[str, object]) -> None:
             != "nonblocking_historical_provenance_only"
             for fact_id in OWNER_HISTORICAL_FACT_IDS
         )
+        or request_by_id["LOW-001"].get("priority")
+        != "resolved_owner_direction_2026-08-02"
+        or request_by_id["LOW-001"].get("recorded_choice")
+        != "confirm_el25_minimum_with_preregistered_evidence"
+        or {
+            item.get("choice")
+            for item in request_by_id["LOW-001"].get("prior_allowed_choices", [])
+            if isinstance(item, dict)
+        }
+        != {
+            "retain_el20_and_revise_q0_q25",
+            "confirm_el25_minimum_with_preregistered_evidence",
+            "explicitly_change_representation_fidelity_gate",
+        }
+        or request.get("remaining_blocking_decision_ids")
+        != ["BAND-001", "DOMAIN-001", "WARN-001"]
+        or request.get("later_production_decision_ids") != ["OBS-001"]
+        or recorded_choices
+        != {
+            "LOW-001": {
+                "choice": "confirm_el25_minimum_with_preregistered_evidence",
+                "recorded_date": "2026-08-02",
+                "effect": (
+                    "proposes_EL25_as_the_confirmation_floor_without_relabeling_"
+                    "post_hoc_rows_or_authorizing_an_operational_domain"
+                ),
+                "direction_record": {
+                    "path": (
+                        "validation/sci_cal_001_atmosphere_operator_2026-08-01/"
+                        f"{OWNER_LOW_DIRECTION_NAME}"
+                    ),
+                    **OWNER_LOW_DIRECTION_IDENTITY,
+                },
+            }
+        }
         or not isinstance(evidence_state, dict)
         or {
             key: evidence_state.get(key)
@@ -707,8 +770,8 @@ def verify_owner_supplied_manifest_schema(request: dict[str, object]) -> None:
         or not isinstance(decision_effect, dict)
         or decision_effect.get("valid_manifest_effect")
         != (
-            "records_owner_choices_and_authorizes_only_the_selected_"
-            "followup_evidence_path"
+            "records_remaining_owner_choices_and_authorizes_only_the_complete_"
+            "selected_followup_evidence_path"
         )
         or decision_effect.get("adoption_status_after_response")
         != "evaluation_only_not_adopted"
@@ -717,6 +780,8 @@ def verify_owner_supplied_manifest_schema(request: dict[str, object]) -> None:
         != "none"
         or decision_effect.get("missing_invalid_or_unreviewed_response_policy")
         != "fail_closed"
+        or decision_effect.get("post_hoc_el25_policy")
+        != "diagnostic_only_until_new_preregistered_confirmation"
         or decision_effect.get("historical_generic_products_replaced") is not False
         or delivery["required_manifest"] != "owner_supplied_manifest.json"
         or delivery["manifest_schema"]
@@ -753,23 +818,14 @@ def verify_owner_supplied_manifest_schema(request: dict[str, object]) -> None:
         rendered = "\n".join(f"{list(error.path)}: {error.message}" for error in errors)
         raise RuntimeError(f"owner-supplied manifest schema errors:\n{rendered}")
     low_response = delivered["decisions"]["LOW-001"]
-    if low_response["choice"] == "explicitly_change_representation_fidelity_gate":
-        try:
-            replacement_gate = float(
-                low_response["replacement_gate_max_fractional_correction_error"]
-            )
-        except (TypeError, ValueError) as error:
-            raise RuntimeError(
-                "owner replacement representation gate is not numeric"
-            ) from error
-        if (
-            not math.isfinite(replacement_gate)
-            or replacement_gate < 0.0115994922334935469
-        ):
-            raise RuntimeError(
-                "owner replacement representation gate is below the observed "
-                "completed-v2 failure"
-            )
+    if (
+        low_response["choice"]
+        != "confirm_el25_minimum_with_preregistered_evidence"
+        or delivered["recorded_low_001_binding"]
+        != owner_sample["recorded_low_001_binding"]
+        or delivered["decisions"]["DOMAIN-001"]["elevation_min_deg"] != "25"
+    ):
+        raise RuntimeError("owner-supplied response changed recorded LOW-001")
 
     supplied_artifacts: list[dict[str, object]] = []
     for fact_id in OWNER_HISTORICAL_FACT_IDS:
@@ -960,19 +1016,21 @@ def verify_json_schema() -> None:
         raise RuntimeError(
             f"historical nonblocking fact routing changed: {sorted(historical_ids)}"
         )
-    if manifest_ids != OWNER_BLOCKING_FACT_IDS:
+    if manifest_ids != OWNER_PENDING_FACT_IDS:
         raise RuntimeError(
-            f"completed-v2 blocking fact routing changed: {sorted(manifest_ids)}"
+            f"post-LOW-001 pending fact routing changed: {sorted(manifest_ids)}"
         )
     if manifest_ids & historical_ids:
         raise RuntimeError("blocking and historical nonblocking facts overlap")
-    routed_ids = manifest_ids | historical_ids
+    routed_ids = manifest_ids | historical_ids | OWNER_RESOLVED_FACT_IDS
     if routed_ids != requested_ids:
         raise RuntimeError(
             "owner request IDs do not exactly match manifest routed facts: "
             f"manifest_only={sorted(routed_ids - requested_ids)}, "
             f"request_only={sorted(requested_ids - routed_ids)}"
         )
+    if manifest["atmospheric_profiles"].get("required_fact_ids") != []:
+        raise RuntimeError("resolved LOW-001 remains routed through profile facts")
     verify_package_level_tau_provenance_clarification(manifest)
 
 
@@ -5226,14 +5284,30 @@ def verify_am12_successor_adoption_evidence() -> None:
 def verify_completed_v2_governance() -> None:
     governance = json.loads((PACKAGE_DIR / "governance_manifest.json").read_text())
     expected_owner_direction = {
-        "recorded_date": "2026-08-01",
+        "recorded_date": "2026-08-02",
         "selected_evaluation_path": "versioned_am12_successor",
         "evaluation_authorization": "bounded_study_only",
         "adoption_status": "evaluation_only_not_adopted",
         "operator_authorization": "none",
         "operational_domain_authorization": "none",
         "q95_operational_disposition": "excluded_historical_diagnostic_only",
-        "exact_operational_endpoints_status": "unresolved",
+        "exact_operational_endpoints_status": (
+            "partially_selected_el25_floor_remaining_fields_unresolved"
+        ),
+        "low_opacity_followup_choice": (
+            "confirm_el25_minimum_with_preregistered_evidence"
+        ),
+        "proposed_confirmation_elevation_min_deg": "25",
+        "confirmation_study_authorization": (
+            "pending_band_domain_warning_owner_choices"
+        ),
+        "direction_record": {
+            "path": (
+                "validation/sci_cal_001_atmosphere_operator_2026-08-01/"
+                f"{OWNER_LOW_DIRECTION_NAME}"
+            ),
+            **OWNER_LOW_DIRECTION_IDENTITY,
+        },
         "historical_generic_generator_association": "not_established",
         "generic_q95_custody_status": (
             "unresolved_nonblocking_historical_provenance"
@@ -5248,16 +5322,16 @@ def verify_completed_v2_governance() -> None:
                 "validation/sci_cal_001_atmosphere_operator_2026-08-01/"
                 "owner_input_request.json"
             ),
-            "bytes": 11163,
+            "bytes": 12336,
             "sha256": OWNER_INPUT_REQUEST_SHA256,
         },
         "response_schema": {
-            "schema_version": "sci-cal-001-owner-supplied-manifest-v3",
+            "schema_version": "sci-cal-001-owner-supplied-manifest-v4",
             "path": (
                 "validation/sci_cal_001_atmosphere_operator_2026-08-01/"
                 "owner_supplied_manifest.schema.json"
             ),
-            "bytes": 19593,
+            "bytes": 20032,
             "sha256": OWNER_SUPPLIED_SCHEMA_SHA256,
         },
         "decision_ids": [
@@ -5270,14 +5344,22 @@ def verify_completed_v2_governance() -> None:
             "WARN-001",
             "OBS-001",
         ],
+        "resolved_decision_ids": ["LOW-001"],
+        "remaining_blocking_decision_ids": [
+            "BAND-001",
+            "DOMAIN-001",
+            "WARN-001",
+        ],
+        "later_production_decision_ids": ["OBS-001"],
         "valid_response_effect": (
-            "records_followup_evidence_path_only_no_operator_or_domain_authorization"
+            "records_complete_followup_evidence_path_only_no_operator_or_"
+            "domain_authorization"
         ),
     }
     study = governance.get("successor_study_evidence")
     if (
         governance.get("schema_version")
-        != "sci-cal-001-atmosphere-governance-manifest-v2"
+        != "sci-cal-001-atmosphere-governance-manifest-v3"
         or governance.get("owner_direction") != expected_owner_direction
         or governance.get("owner_decision_contract") != expected_contract
         or not isinstance(study, dict)
@@ -5295,7 +5377,9 @@ def verify_completed_v2_governance() -> None:
             "aligned_elevation_max_deg": "8.00000000000000000e+01",
             "q95_included": False,
         }
-        or set(study.get("owner_decision_required", [])) != OWNER_BLOCKING_FACT_IDS
+        or study.get("recorded_owner_choices")
+        != {"LOW-001": "confirm_el25_minimum_with_preregistered_evidence"}
+        or set(study.get("owner_decision_required", [])) != OWNER_PENDING_FACT_IDS
     ):
         raise RuntimeError("completed-v2 governance state/decision contract changed")
     expected_execution = {
@@ -5390,13 +5474,17 @@ def verify_completed_v2_governance() -> None:
     regeneration = json.loads(
         (PACKAGE_DIR / "regeneration_manifest.json").read_text()
     )
-    regeneration_owner_direction = dict(expected_owner_direction)
-    for key in (
-        "recorded_date",
-        "exact_operational_endpoints_status",
-        "generic_q95_custody_status",
-    ):
-        regeneration_owner_direction.pop(key)
+    regeneration_owner_direction = {
+        "selected_evaluation_path": "versioned_am12_successor",
+        "evaluation_authorization": "bounded_study_only",
+        "adoption_status": "evaluation_only_not_adopted",
+        "operator_authorization": "none",
+        "operational_domain_authorization": "none",
+        "q95_operational_disposition": "excluded_historical_diagnostic_only",
+        "historical_generic_generator_association": "not_established",
+        "successor_study_status": "numerical_adoption_evidence_fail",
+        "study_artifact_binding_status": "bound_completed_v2_artifacts",
+    }
     artifacts = regeneration.get("artifacts")
     artifact_by_id = {
         item.get("id"): item for item in artifacts if isinstance(item, dict)
@@ -5456,18 +5544,21 @@ def verify_completed_v2_governance() -> None:
         != "sci-cal-001-atmosphere-regeneration-manifest-v2"
         or regeneration.get("status")
         != "partial_recovery_successor_evaluation_completed_no_adoption"
+        or regeneration.get("created_date") != "2026-08-02"
         or regeneration.get("repair_base_sha")
         != "9aae0e669384c5c0c0dda93debc194d6b8dac787"
         or regeneration.get("repair_line_evidence_head")
         != "ae99be1cef8c390d0e7490835ffca1f31da7ebc0"
         or regeneration.get("owner_direction") != regeneration_owner_direction
         or regeneration.get("unresolved_fact_ids")
-        != ["LOW-001", "BAND-001", "DOMAIN-001", "WARN-001", "OBS-001"]
+        != ["BAND-001", "DOMAIN-001", "WARN-001", "OBS-001"]
         or set(regeneration.get("historical_nonblocking_fact_ids", []))
         != OWNER_HISTORICAL_FACT_IDS
         or not isinstance(artifacts, list)
-        or len(artifacts) != 40
-        or len(artifact_by_id) != 40
+        or len(artifacts) != 41
+        or len(artifact_by_id) != 41
+        or regeneration.get("atmospheric_profiles", {}).get("required_fact_ids")
+        != []
         or regeneration.get("execution", {}).get("successor_evaluation")
         != expected_regeneration_execution
         or regeneration.get("operational_domain", {}).get("status")
@@ -5488,6 +5579,25 @@ def verify_completed_v2_governance() -> None:
         )
     ):
         raise RuntimeError("current regeneration governance/routing changed")
+    owner_direction_artifact = artifact_by_id.get(
+        "owner-el25-confirmation-direction"
+    )
+    if (
+        not isinstance(owner_direction_artifact, dict)
+        or owner_direction_artifact.get("availability") != "task_package"
+        or owner_direction_artifact.get("path")
+        != (
+            "validation/sci_cal_001_atmosphere_operator_2026-08-01/"
+            f"{OWNER_LOW_DIRECTION_NAME}"
+        )
+        or owner_direction_artifact.get("bytes")
+        != OWNER_LOW_DIRECTION_IDENTITY["bytes"]
+        or owner_direction_artifact.get("sha256")
+        != OWNER_LOW_DIRECTION_IDENTITY["sha256"]
+        or owner_direction_artifact.get("role")
+        != "partial owner scientific decision record"
+    ):
+        raise RuntimeError("regeneration LOW-001 owner-record binding changed")
     for artifact_id, filename in successor_files.items():
         identity = all_successor_identities[filename]
         item = artifact_by_id.get(artifact_id)

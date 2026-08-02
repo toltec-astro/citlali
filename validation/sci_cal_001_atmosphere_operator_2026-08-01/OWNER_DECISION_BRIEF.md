@@ -15,6 +15,11 @@ q0--q75/20--80 degree study domain.  Machine status is
    `alpha=-1,0,2,4`, and direct held-out midpoint calculations over q0--q75
    and 20--80 degrees.
 2. **Historical provenance disposition:** retain the generic-q custody gap, including generic q95, as unresolved historical/diagnostic evidence. The copied products are distinct from the generic products, while their historical generic-generator association is not established. Do not describe the successor as reproducing or replacing the generic products.
+3. **Follow-up direction recorded 2026-08-02:** the owner resolved
+   `LOW-001` as `confirm_el25_minimum_with_preregistered_evidence`.  EL25 is
+   the proposed minimum for a separate confirmation study; it does not narrow
+   or relabel the frozen v2 study, select an operator, or authorize an
+   operational domain.
 
 No operator or operational domain is authorized.  The sub-percent legacy
 q95/a2000 excursion remains diagnostic-only and is not a successor release
@@ -106,36 +111,26 @@ P1's complete-grid result is a provenance mismatch: no q25/q50/q75 profile passe
 
 P1 is post hoc and cannot establish generic custody or serve as an independent operator holdout. The nominal-frequency results are provisional numerical diagnostics only. They do not establish 5--10% absolute flux accuracy or approximately 5% repeatability.
 
-## Owner decision now required
+## EL25 direction and decisions still required
 
-The frozen 20--80 degree study cannot recommend adoption by its own rule.
-Choose one `LOW-001` scientific path before another selection study is
-registered:
+On 2026-08-02 the owner selected the `LOW-001` EL25 path.  The proposed
+follow-up support retains q0 through the exact q75 selector anchor
+(`tau225=0.158313198574890929`) and raises the minimum elevation to 25
+degrees.  A separate preregistered confirmation must use opacity/elevation
+nodes not used to discover the post-result EL25 slice.  The frozen v2
+q0--q75/EL20--80 failure, machine decision, domain, and 13 deterministic
+artifacts remain unchanged.
 
-1. **Keep EL20 support.** Replace or augment the analytic q0 anchor with an
-   explicitly physical dry-atmosphere/low-opacity construction, then freeze
-   and test new q0--q25 opacity holdouts.  This addresses the actual failure
-   mechanism without weakening the one-percent gate.
-2. **Set a higher minimum elevation.** Declare whether EL25 is an acceptable
-   proposed follow-up floor, retain q0 through the exact q75 selector anchor
-   (`tau225=0.158313198574890929`), and run a new preregistered confirmation at
-   opacity/elevation nodes not used to discover that floor.  Existing rows
-   support this path numerically but do not constitute a blinded confirmation.
-3. **Relax the representation gate.** Explicitly accept at least `1.159949%`
-   (a practical rounded contract would need to be chosen) over EL20--80.  This
-   is scientifically defensible only as an owner change to a numerical
-   representation criterion; it must not be described as one-percent
-   photometry.
+`BAND-001`, `DOMAIN-001`, and `WARN-001` remain blocking for a confirmation
+decision and numerical selection.  The owner must still choose the production
+passband authority, complete the exact proposed support and outside-domain
+policy, and decide whether the bounded AM status-1 unresolved-line condition
+is acceptable evidence.  The TolTECA v1 ECSV files are immutable and
+reproducible, but the single-network FTS challengers show up to `3.474613%`
+calibration sensitivity and are not an array-average operational passband.
 
-Independently choose the `BAND-001` production passband convention.  The TolTECA v1 ECSV
-files are immutable and reproducible, but the single-network FTS challengers
-show up to `3.474613%` calibration sensitivity and are not an array-average
-operational passband.  Either explicitly select the TolTECA ECSV convention
-for a named successor version or supply detector/array-weighted operational
-passbands with immutable provenance and repeat the band integrations.
-
-If the owner chooses the EL25 path and the TolTECA v1 ECSV convention, the
-protocol's simplicity tie-break conditionally points to
+With EL25 selected as the proposed floor, a later TolTECA v1 ECSV choice would
+make the protocol's simplicity tie-break point conditionally to
 `fixed_djf25_v1` + `am12_piecewise_linear_los_tau_eval_v0` on closed support
 `0 <= tau225 <= 0.158313198574890929`, `25 <= EL <= 80`, with fail-closed
 behavior.  This is a precise follow-up candidate, not an adoption or
@@ -143,9 +138,10 @@ operational authorization.  The observed conditioned/PCHIP improvement above
 q25 is only `0.124571` percentage point in worst correction error and remains
 small compared with the unresolved passband sensitivity.
 
-The exact `DOMAIN-001` support, `WARN-001` warning-status-1 policy, and later
-`OBS-001` observational campaign also remain required.  Generic q95 and exact generic-generator custody stay nonblocking
-historical provenance and do not enter any of these choices.
+`OBS-001` remains a production-only gate: the later observational campaign is
+required after numerical selection and is not part of the EL25 representation
+confirmation.  Generic q95 and exact generic-generator custody stay
+nonblocking historical provenance and do not enter any of these choices.
 
 ## Separate gates and open dependency
 

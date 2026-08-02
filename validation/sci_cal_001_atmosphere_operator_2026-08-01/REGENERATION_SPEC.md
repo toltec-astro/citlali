@@ -19,6 +19,14 @@ EL20--80 with a `1.159949%` maximum.  Machine status is
 domain is authorized.  Generic q95 remains historical/diagnostic only, and
 exact generic-generator association remains not established.
 
+On 2026-08-02 the owner resolved `LOW-001` as
+`confirm_el25_minimum_with_preregistered_evidence`, selecting 25 degrees as
+the proposed minimum elevation for a separate confirmation.  The completed
+v2 `numerical_adoption_evidence_fail` result, its q0--q75/EL20--80 study
+domain, and all 13 deterministic artifact identities remain unchanged.
+`BAND-001`, `DOMAIN-001`, and `WARN-001` still block a confirmation decision
+and numerical selection; `OBS-001` remains a production-only gate.
+
 ## Immutable lineage inventory
 
 ### Registered generic q artifacts
@@ -316,8 +324,9 @@ definition sensitivity, not interpolation error.
 
 An inspected EL25--80 slice is below one percent (`0.989845%` primary,
 `0.949738%` challenger) but is post-result evidence and does not change the
-frozen decision.  Any EL25 selection requires an explicit owner domain choice
-and a newly registered confirmation design.
+frozen decision.  On 2026-08-02 the owner selected EL25 as the proposed
+follow-up floor under `LOW-001`; this requires a newly registered confirmation
+and does not rewrite the v2 support or result.
 
 ## Selection and validation gates
 
@@ -337,14 +346,17 @@ At most one-percent correction error is a provisional numerical representation-f
 
 Software correctness, representation fidelity, 5--10% absolute observational accuracy, and approximately 5% observation-to-observation repeatability are separate gates. More samples do not remove shared calibrator, Beammap-extinction, selector, or airmass systematics.
 
-## Owner decisions and remaining input request
+## Owner direction and remaining input request
 
-The completed study stops for these scientific choices, encoded by
-`owner_input_request.json`:
+`LOW-001` was resolved on 2026-08-02 as
+`confirm_el25_minimum_with_preregistered_evidence`.  The proposed follow-up
+support is q0 through the exact q75 selector anchor with a 25-degree minimum;
+it remains evidence-study support rather than an authorized operational
+domain.  The completed v2 failure and EL20--80 study identity are immutable.
 
-- `LOW-001`: retain EL20 and register a revised physical clear-to-q25 construction, or
-  consider EL25 as the minimum and register independent confirmation, or
-  explicitly change the provisional numerical gate above `1.159949%`;
+These choices remain open in `owner_input_request.json` and block a
+confirmation decision and numerical selection:
+
 - `BAND-001`: select the TolTECA v1 ECSV convention or supply immutable detector/array-
   weighted operational passbands; the representative FTS/ECSV difference is
   too large to leave implicit;
@@ -352,8 +364,10 @@ The completed study stops for these scientific choices, encoded by
   endpoints, inclusivity, and fail-closed behavior for the next study;
 - `WARN-001`: choose the evidence-acceptance policy for AM's bounded
   unresolved-line status 1;
-- `OBS-001`: after numerical selection, execute the separate observational absolute-
-  flux/repeatability/residual-trend campaign.
+
+`OBS-001` remains a production-only gate.  After numerical selection, its
+separate observational absolute-flux, repeatability, and residual-trend
+campaign is still required, but it does not determine numerical confirmation.
 
 Generic q95 datafile ID 461 and exact historical generic-q generator/profile/run custody remain unresolved nonblocking provenance. Recovering them may close historical lineage but is not a prerequisite for the selected successor study.
 

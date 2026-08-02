@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://toltec.astro.umass.edu/schemas/sci-cal-001/owner-supplied-manifest-v3.json",
-  "title": "SCI-CAL-001 completed-v2 owner decision manifest",
-  "description": "Validates only owner responses to SCI-CAL-001-ATM-DECISION-001. A valid response records the selected follow-up evidence path; it does not adopt an atmosphere operator or authorize an operational domain.",
+  "$id": "https://toltec.astro.umass.edu/schemas/sci-cal-001/owner-supplied-manifest-v4.json",
+  "title": "SCI-CAL-001 post-LOW-001 owner decision manifest",
+  "description": "Validates the remaining owner responses to SCI-CAL-001-ATM-DECISION-001 after LOW-001 was fixed to the proposed EL25 confirmation path. A valid response records a complete follow-up evidence path; it does not adopt an atmosphere operator or authorize an operational domain.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -20,6 +20,7 @@
     "historical_generic_generator_association",
     "historical_generic_lineage_custody_status",
     "historical_generic_products_replaced",
+    "recorded_low_001_binding",
     "completed_v2_binding",
     "evidence_semantics",
     "decisions",
@@ -136,11 +137,7 @@
       ],
       "properties": {
         "choice": {
-          "enum": [
-            "retain_el20_and_revise_q0_q25",
-            "confirm_el25_minimum_with_preregistered_evidence",
-            "explicitly_change_representation_fidelity_gate"
-          ]
+          "const": "confirm_el25_minimum_with_preregistered_evidence"
         },
         "rationale": {
           "type": "string",
@@ -495,7 +492,7 @@
       "type": "string"
     },
     "schema_version": {
-      "const": "sci-cal-001-owner-supplied-manifest-v3"
+      "const": "sci-cal-001-owner-supplied-manifest-v4"
     },
     "package_id": {
       "const": "SCI-CAL-001"
@@ -537,6 +534,17 @@
     },
     "historical_generic_products_replaced": {
       "const": false
+    },
+    "recorded_low_001_binding": {
+      "const": {
+        "choice": "confirm_el25_minimum_with_preregistered_evidence",
+        "recorded_date": "2026-08-02",
+        "direction_record": {
+          "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/OWNER_EL25_CONFIRMATION_DIRECTION_2026-08-02.md",
+          "bytes": 3539,
+          "sha256": "c06aa8c01591dc9155e0cce0a08ebe4f784169c95ea2fd5d0aca8d121e833ddd"
+        }
+      }
     },
     "completed_v2_binding": {
       "type": "object",
@@ -630,7 +638,7 @@
       }
     },
     "authorization_effect": {
-      "const": "records_owner_choices_and_authorizes_only_the_selected_followup_evidence_path"
+      "const": "records_remaining_owner_choices_and_authorizes_only_the_complete_selected_followup_evidence_path"
     }
   },
   "allOf": [

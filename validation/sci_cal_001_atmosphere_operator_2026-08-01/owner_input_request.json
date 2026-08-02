@@ -1,12 +1,32 @@
 {
-  "schema_version": "sci-cal-001-owner-input-request-v4",
+  "schema_version": "sci-cal-001-owner-input-request-v5",
   "request_id": "SCI-CAL-001-ATM-DECISION-001",
-  "created_date": "2026-08-01",
+  "created_date": "2026-08-02",
   "package_id": "SCI-CAL-001",
   "repair_base_sha": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
   "repair_line_evidence_head_sha": "ae99be1cef8c390d0e7490835ffca1f31da7ebc0",
-  "status": "owner_scientific_decision_required_after_numerical_adoption_evidence_fail",
-  "scope": "Choose the next bounded AM 12.2 successor evidence path after the completed v2 numerical study. This request does not adopt an operator, authorize an operational domain, change Citlali, launch repair or re-audit, or treat q95 as operational evidence.",
+  "status": "partial_owner_decision_recorded_low_001_el25_remaining_scientific_choices_required",
+  "scope": "LOW-001 is resolved to a proposed EL25 confirmation path. Supply the remaining bounded AM 12.2 successor choices before a confirmation protocol or numerical selection. This request does not adopt an operator, authorize an operational domain, change Citlali, launch repair or re-audit, or treat q95 as operational evidence.",
+  "recorded_owner_choices": {
+    "LOW-001": {
+      "choice": "confirm_el25_minimum_with_preregistered_evidence",
+      "recorded_date": "2026-08-02",
+      "effect": "proposes_EL25_as_the_confirmation_floor_without_relabeling_post_hoc_rows_or_authorizing_an_operational_domain",
+      "direction_record": {
+        "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/OWNER_EL25_CONFIRMATION_DIRECTION_2026-08-02.md",
+        "bytes": 3539,
+        "sha256": "c06aa8c01591dc9155e0cce0a08ebe4f784169c95ea2fd5d0aca8d121e833ddd"
+      }
+    }
+  },
+  "remaining_blocking_decision_ids": [
+    "BAND-001",
+    "DOMAIN-001",
+    "WARN-001"
+  ],
+  "later_production_decision_ids": [
+    "OBS-001"
+  ],
   "evidence_state": {
     "study_schema_version": "sci-cal-001-am12-successor-adoption-study-v2",
     "machine_status": "numerical_adoption_evidence_fail",
@@ -144,9 +164,11 @@
     },
     {
       "id": "LOW-001",
-      "priority": "blocking_for_next_numerical_selection",
-      "request": "Choose exactly one response to the preregistered q0-q25/EL21 representation failure.",
-      "allowed_choices": [
+      "priority": "resolved_owner_direction_2026-08-02",
+      "request": "Preserve the recorded response to the preregistered q0-q25/EL21 representation failure.",
+      "recorded_choice": "confirm_el25_minimum_with_preregistered_evidence",
+      "recorded_effect": "EL25 is the proposed confirmation floor; independent confirmation and all remaining owner choices are still required.",
+      "prior_allowed_choices": [
         {
           "choice": "retain_el20_and_revise_q0_q25",
           "required_followup": "Freeze a physical dry-atmosphere or low-opacity construction and preregister new q0-q25 holdouts over EL20-80 without weakening the one-percent gate."
@@ -183,12 +205,13 @@
       "required_values": {
         "tau225_min": "0",
         "tau225_max": "0.158313198574890929",
-        "elevation_min_deg": "20_or_25_as_selected_by_LOW-001",
+        "elevation_min_deg": "25",
         "elevation_max_deg": "80",
         "all_endpoints_inclusive": true,
         "outside_domain_policy": "fail_closed",
         "q95_included": false
       },
+      "preselected_component": "LOW-001 fixes only the proposed elevation minimum at 25 degrees; all other DOMAIN-001 values still require explicit owner response.",
       "aligned_elevation_dependency": "Only eligible aligned per-sample elevation may be used, with ordered sample identity, timing-gap/interpolation origin, sample duration, and original-versus-synthesized eligibility explicit. Missing or ineligible alignment fails closed."
     },
     {
@@ -209,7 +232,7 @@
     }
   ],
   "decision_effect": {
-    "valid_manifest_effect": "records_owner_choices_and_authorizes_only_the_selected_followup_evidence_path",
+    "valid_manifest_effect": "records_remaining_owner_choices_and_authorizes_only_the_complete_selected_followup_evidence_path",
     "adoption_status_after_response": "evaluation_only_not_adopted",
     "operator_authorization_after_response": "none",
     "operational_domain_authorization_after_response": "none",

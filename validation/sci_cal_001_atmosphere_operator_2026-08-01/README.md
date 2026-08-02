@@ -12,9 +12,18 @@ domain is selected or authorized.  Generic q95 and exact generic custody
 remain unresolved historical/diagnostic provenance and do not enter this
 decision.
 
+On 2026-08-02 the owner resolved `LOW-001` by selecting EL25 as the proposed
+minimum for a separately preregistered confirmation.  That direction leaves
+the completed v2 failure, EL20--80 study domain, and 13 deterministic artifact
+identities unchanged.  `BAND-001`, `DOMAIN-001`, and `WARN-001` still block a
+confirmation decision and numerical selection; `OBS-001` remains a later
+production-only gate.
+
 ## Read first
 
 - `OWNER_DECISION_BRIEF.md`: concise decision, recommendation, remaining choices, and stop boundary.
+- `OWNER_EL25_CONFIRMATION_DIRECTION_2026-08-02.md`: owner resolution of
+  `LOW-001` and its authorization boundary.
 - `AM12_SUCCESSOR_ADOPTION_STUDY_REPORT.md`: frozen v2 numerical result.
 - `AM12_SUCCESSOR_ADOPTION_STUDY_EXECUTION_RECORD_2026-08-01.md`: P1 check,
   excluded-v1, canonical-v2, and deterministic-replay lineage.
@@ -38,7 +47,11 @@ The owner direction remains evaluation, not adoption or operator selection:
    band-integrated comparison rows across two lanes, two operators, primary
    TolTECA ECSV passbands, representative FTS challengers, and four source
    indices.
-2. **Historical provenance retained, nonblocking:** generic q95 datafile ID 461 and exact generic generator/profile/grid custody remain unresolved. No copied product is substituted for a generic product, and the successor must not be represented as a historical regeneration.
+2. **EL25 follow-up path selected on 2026-08-02:** `LOW-001` is resolved as
+   `confirm_el25_minimum_with_preregistered_evidence`.  The 25-degree floor is
+   proposed confirmation support, not an operational domain, and the
+   post-result EL25 slice is not itself confirmatory evidence.
+3. **Historical provenance retained, nonblocking:** generic q95 datafile ID 461 and exact generic generator/profile/grid custody remain unresolved. No copied product is substituted for a generic product, and the successor must not be represented as a historical regeneration.
 
 The 13 deterministic study artifacts are bound.  All structural and coverage
 gates pass, but the numerical result is
@@ -47,9 +60,12 @@ maximum `1.101467%`, no eligible candidate, empty conditional ranking, and
 null recommendation.  Above q25 the simplest fixed-DJF25/piecewise-linear
 candidate is within `0.288111%` of direct AM truth.  A post-result EL25--80
 slice falls below one percent but cannot retroactively narrow the frozen
-domain.  The FTS-versus-ECSV direct-truth difference reaches `3.474613%`, so
-passband authority is a separate owner calibration choice.  Exact operational
-opacity/elevation endpoints remain unapproved.
+domain.  It motivates the now-owner-selected EL25 confirmation path only.  The
+FTS-versus-ECSV direct-truth difference reaches `3.474613%`, so passband
+authority remains a separate owner calibration choice.  `BAND-001`, complete
+`DOMAIN-001`, and `WARN-001` still block a confirmation decision and numerical
+selection.  Exact operational opacity/elevation endpoints remain unapproved,
+and `OBS-001` remains production-only.
 
 Zenith `tau225` must be applied with the full airmass of every eligible sample and a top-of-atmosphere pivot, `X_ref=0`. Software correctness, numerical model-representation fidelity, and observational performance are separate gates; the target 5--10% absolute flux accuracy and provisional approximately 5% observation-to-observation repeatability are not established here. The open SCI-ALIGN-001 handoff additionally requires ordered sample identity, timing-gap/interpolation origin, duration, and original-versus-synthesized eligibility before aligned elevation can be consumed.
 
