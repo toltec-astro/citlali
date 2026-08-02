@@ -289,7 +289,7 @@ packages:
         doc/audits/packages/SCI-MAP-001_UNITY_CAMPAIGN_COORDINATOR_REVIEW_2026-08-02.md
       review_sha256: >-
         a1931af55f684c89cdaec9cd55c481c82287e0d90444f3e916489912eb83a484
-      review_commit: null
+      review_commit: c6807e44d30a4fa668b27f7eb0b5a1ca7fd1a292
       identity_path: >-
         doc/audits/packages/SCI-MAP-001_UNITY_CAMPAIGN_IDENTITY_2026-08-02.json
       identity_sha256: >-
