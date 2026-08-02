@@ -401,7 +401,8 @@ packages:
             doc/audits/packages/SCI-MAP-001_UNITY_ED1_STOP_RETURN_COORDINATOR_REVIEW_2026-08-02.md
           coordinator_review_sha256: >-
             ec98c2f3b8475e7aa4842363780cc247143ecca05053ea61e22e0a9d8e22f83d
-          coordinator_review_commit: null
+          coordinator_review_commit: >-
+            ae2188dd4761afa85a772a1edd6b9d9571fa9d4b
           application_source_changed: false
           frozen_predecessor_changed: false
           unity_contacted: false
@@ -422,7 +423,7 @@ packages:
             doc/audits/packages/SCI-MAP-001_UNITY_ED2_FULL_PTC_CAPTURE_OWNER_DECISION_2026-08-02.md
           record_sha256: >-
             b03e410bf246fd4e3218d1114b59cf96f6019a901112fadea6074af0003a026a
-          record_commit: null
+          record_commit: ae2188dd4761afa85a772a1edd6b9d9571fa9d4b
           selected_route: segregated_full_all_ptc_capture
           exact_candidate: >-
             ed28dafb37f9113c0d3c95297148157129a90886
@@ -464,7 +465,7 @@ packages:
             doc/audits/packages/SCI-MAP-001_UNITY_ED2_FULL_PTC_SUCCESSOR_HANDOFF_2026-08-02.md
           sha256: >-
             709873e1c3e325d9e1a0a2a85d6acd647b9a31b44f4074014abe674878ffa058
-          commit: null
+          commit: ae2188dd4761afa85a772a1edd6b9d9571fa9d4b
           resume_from_commit: >-
             3e014f11decbcf17ad372391e5e960e6c0c54461
           resume_coordination_head: null
