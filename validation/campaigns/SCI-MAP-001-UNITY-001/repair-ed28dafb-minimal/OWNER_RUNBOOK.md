@@ -7,14 +7,20 @@ uses `unity_toltec`.
 
 ## 1. Transfer the package
 
+### Unity terminal, before the local transfer
+
+```sh
+mkdir -p "$HOME/c2025t/2026-ENG-citlali-MAP"
+```
+
 ### Local
 
 ```sh
 LOCAL_PACKAGE=/Users/gwilson/.codex/worktrees/aa31/citlali-refactor/validation/campaigns/SCI-MAP-001-UNITY-001/repair-ed28dafb-minimal
-UNITY_RUN_ROOT="$HOME/c2025t/2026-ENG-citlali-MAP"
+UNITY_RUN_ROOT=/home/toltec_umass_edu/c2025t/2026-ENG-citlali-MAP
 UNITY_PACKAGE="$UNITY_RUN_ROOT/repair-ed28dafb-minimal"
 rsync -a --checksum --protect-args "$LOCAL_PACKAGE/" \
-  "unity_toltec:~/c2025t/2026-ENG-citlali-MAP/repair-ed28dafb-minimal/"
+  "unity_toltec:$UNITY_PACKAGE/"
 ```
 
 ### Unity terminal
@@ -119,7 +125,7 @@ tar -C "$UNITY_RUN_ROOT" -czf "$UNITY_RUN_ROOT/SCI-MAP-001-UNITY-001-return.tar.
 ```sh
 LOCAL_RETURN_DIR='<local destination for returned MAP artifacts>'
 rsync -a --checksum --protect-args \
-  "unity_toltec:~/c2025t/2026-ENG-citlali-MAP/SCI-MAP-001-UNITY-001-return.tar.gz" \
+  "unity_toltec:/home/toltec_umass_edu/c2025t/2026-ENG-citlali-MAP/SCI-MAP-001-UNITY-001-return.tar.gz" \
   "$LOCAL_RETURN_DIR/"
 ```
 
