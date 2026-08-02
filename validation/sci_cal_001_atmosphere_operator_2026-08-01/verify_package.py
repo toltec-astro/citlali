@@ -10,6 +10,7 @@ import json
 import math
 import subprocess
 import sys
+from collections import Counter
 from pathlib import Path
 
 import jsonschema
@@ -20,13 +21,121 @@ PACKAGE_DIR = Path(__file__).resolve().parent
 RAW_SOURCE_DIR = Path("/Users/gwilson/GitHub/toltec_beammap/src/toltec_sensitivity")
 AM_ROOT = Path("/Users/gwilson/work_toltec/local_data/AM")
 TOLTECA_REPOSITORY = Path("/Users/gwilson/GitHub/tolteca")
+BEAMMAP_REPOSITORY = RAW_SOURCE_DIR.parents[1]
 TOLTECA_REVISION = "2791e6a1e6349ad1d3ac549a648f41cbc51b98c7"
 OWNER_SUPPLIED_SCHEMA_NAME = "owner_supplied_manifest.schema.json"
 OWNER_SUPPLIED_SCHEMA_SHA256 = (
-    "688309a952ac0902587ef700e7eed13f76f0414c9e0308cdf831932a96dce623"
+    "d7bf5f6551fd587918e2b980cac0863ab6cdb8442e1c87beb21b612510fc81f5"
 )
 OWNER_INPUT_REQUEST_SHA256 = (
-    "0518bc09fd3fdaced13e2a59ea2713618d777c713af19f1886a4702999241a15"
+    "32c5c85abd6d3bc1c66c0a2d031691d0765aae03bee391ac9c0fa7137e14d955"
+)
+
+OWNER_DECISION_FACT_IDS = frozenset(
+    {
+        "Q95-001",
+        "GEN-001",
+        "GEN-002",
+        "LOW-001",
+        "BAND-001",
+        "DOMAIN-001",
+        "WARN-001",
+        "OBS-001",
+    }
+)
+OWNER_HISTORICAL_FACT_IDS = frozenset({"Q95-001", "GEN-001", "GEN-002"})
+OWNER_BLOCKING_FACT_IDS = OWNER_DECISION_FACT_IDS - OWNER_HISTORICAL_FACT_IDS
+
+AM12_SUCCESSOR_ARTIFACT_IDENTITIES = {
+    "AM12_SUCCESSOR_ADOPTION_STUDY_REPORT.md": {
+        "bytes": 1990,
+        "sha256": "0bd1a2c00984ad1b8586c1979dba4834df3e96ce8d5322bae30c455d675e0565",
+    },
+    "am12_successor_adoption_manifest.json": {
+        "bytes": 52198,
+        "sha256": "c9f6aea80851fb7726b8845d4697af1cb270cb7ff7ce51d3d5fc63828f793b3a",
+    },
+    "am12_successor_bandpass_inventory.csv": {
+        "bytes": 10919,
+        "sha256": "de845d9280317662488f4df262e445887cc663dd6409925115716922200eb1d0",
+    },
+    "am12_successor_coverage.json": {
+        "bytes": 1364,
+        "sha256": "5922421a5245d9216ef68f10037e32dff96d824fb971f7a4cc5af8625bc193a8",
+    },
+    "am12_successor_decision.json": {
+        "bytes": 40864,
+        "sha256": "976c6c6a269a1b5dabde2b5eba89cb6176b02b837ea2b7b0e26a64307fe9ee59",
+    },
+    "am12_successor_holdout_execution_context.json": {
+        "bytes": 17531,
+        "sha256": "05dd063ca433b79ab3e2c2fa469e0976802a69502232aae2ddc58121d1a7ccff",
+    },
+    "am12_successor_holdout_rows.csv": {
+        "bytes": 13138637,
+        "sha256": "ad74d19ef0bc915255b9cc7a507e8977f96435fb37ce0d0bd7cb385991c1802c",
+    },
+    "am12_successor_holdout_run_inventory.csv": {
+        "bytes": 1552892,
+        "sha256": "e1ccb79465588a4c549cfd0d149123e17e24146cf1db3b8c3b8205eb06cbee57",
+    },
+    "am12_successor_holdout_scales.csv": {
+        "bytes": 6235,
+        "sha256": "e0799ee52b0bce33fa21af9061b9f0bdeccfe3865186e1170ef8c2ebc9d01678",
+    },
+    "am12_successor_operator_metrics.csv": {
+        "bytes": 146252,
+        "sha256": "337437825b7adece383a1e963a2c0e6204f22c81b8f5a5c5c3f634f69a04fb27",
+    },
+    "am12_successor_operator_nodes.csv": {
+        "bytes": 758661,
+        "sha256": "8005c8ae1d4ab1c8de39f06a632d76d3e8f248939dc63c616dd176bcbd2f6fe2",
+    },
+    "am12_successor_p1_run_inventory.csv": {
+        "bytes": 61638,
+        "sha256": "72255d30078d4eca7d2f4fa92bf4e53a95b476e734894ed341eba5e6e7258138",
+    },
+    "am12_successor_physical_metrics.csv": {
+        "bytes": 40819,
+        "sha256": "7ced66728f7e0d24eecccee226cd4aa772907808ebd36e2d255698e8f3371c5f",
+    },
+}
+
+AM12_SUCCESSOR_CONTROL_IDENTITIES = {
+    "run_am12_successor_adoption_study.py": {
+        "bytes": 138990,
+        "sha256": "ace8e08a037535260b6b1d889f83dbf722ffc932e05bc1f7f83f0565ef0ff47c",
+    },
+    "AM12_SUCCESSOR_ADOPTION_STUDY_PROTOCOL.md": {
+        "bytes": 17283,
+        "sha256": "bbf73c25e2b6d3c3d4315ae6b18e39d327abb51c435683b057039c505c2cfc96",
+    },
+    "AM12_SUCCESSOR_ADOPTION_STUDY_PREEXECUTION_CLARIFICATIONS.md": {
+        "bytes": 5626,
+        "sha256": "01957dab95e37a4b87e6224c713ec96ec645b37ae39c5dd95b6b49af493b9a66",
+    },
+    "AM12_SUCCESSOR_ADOPTION_STUDY_EXECUTION_ERRATUM_2026-08-01.md": {
+        "bytes": 3925,
+        "sha256": "590f49007065e604aced97fc391067e981a94d7336db1cec81512dd0de893e4e",
+    },
+    "AM12_SUCCESSOR_ADOPTION_STUDY_EXECUTION_RECORD_2026-08-01.md": {
+        "bytes": 4802,
+        "sha256": "ce20486a7734d6a14781dbbd7f8e45b0c55e385d4c724918497468a0c93d3177",
+    },
+    "probe_am12_h2o_scale_hypotheses.py": {
+        "bytes": 150058,
+        "sha256": "caa41ca105eec6df99f31d982ca69910ef2d7e1ebcbad86c96faa7d0e4cd3c2c",
+    },
+}
+
+AM12_SUCCESSOR_CONTEXT_SHA256 = (
+    "05dd063ca433b79ab3e2c2fa469e0976802a69502232aae2ddc58121d1a7ccff"
+)
+CANONICAL_P1_RUNNER_SHA256 = (
+    "caa41ca105eec6df99f31d982ca69910ef2d7e1ebcbad86c96faa7d0e4cd3c2c"
+)
+CANONICAL_P1_EXECUTION_CONTEXT_SHA256 = (
+    "05148050e96e73577ec75be525b026b5bf37bbd2a8753f8e3702fc0b6dfb2bee"
 )
 
 FROZEN_PATHS = {
@@ -277,99 +386,338 @@ def verify_owner_supplied_manifest_schema(request: dict[str, object]) -> None:
         schema, format_checker=jsonschema.FormatChecker()
     )
 
-    requested_items = request["required_items"]
-    requested_ids = {item["id"] for item in requested_items}
-    schema_fact_ids = set(schema["$defs"]["fact_id"]["enum"])
-    expected_paths = {"versioned_am12_successor"}
+    decisions_schema = schema["properties"]["decisions"]
+    schema_fact_ids = set(decisions_schema["required"])
     if (
         schema.get("$schema") != "https://json-schema.org/draft/2020-12/schema"
         or schema.get("$id")
         != (
             "https://toltec.astro.umass.edu/schemas/sci-cal-001/"
-            "owner-supplied-manifest-v2.json"
+            "owner-supplied-manifest-v3.json"
         )
-        or schema["properties"]["owner_path"]["const"] != "versioned_am12_successor"
-        or schema_fact_ids != requested_ids
+        or schema["properties"]["schema_version"]["const"]
+        != "sci-cal-001-owner-supplied-manifest-v3"
+        or schema["properties"]["request_id"]["const"]
+        != "SCI-CAL-001-ATM-DECISION-001"
+        or schema_fact_ids != OWNER_DECISION_FACT_IDS
+        or set(decisions_schema["properties"]) != OWNER_DECISION_FACT_IDS
     ):
-        raise RuntimeError("owner-supplied schema identity/path/fact contract changed")
+        raise RuntimeError("owner-supplied schema identity/fact contract changed")
 
-    successor_sample = {
-        "schema_version": "sci-cal-001-owner-supplied-manifest-v2",
+    historical_response = {
+        "disposition": "unresolved_retained",
+        "statement": "Historical custody remains unresolved and nonblocking.",
+        "artifacts": [],
+    }
+    domain_el20 = {
+        "tau225_min": "0",
+        "tau225_max": "0.158313198574890929",
+        "elevation_min_deg": "20",
+        "elevation_max_deg": "80",
+        "tau225_min_inclusive": True,
+        "tau225_max_inclusive": True,
+        "elevation_min_inclusive": True,
+        "elevation_max_inclusive": True,
+        "outside_domain_policy": "fail_closed",
+        "q95_included": False,
+        "sample_airmass_application": (
+            "full_modified_secant_airmass_per_eligible_sample"
+        ),
+        "airmass_pivot": "top_of_atmosphere_X_ref_0",
+        "aligned_elevation_eligibility": {
+            "ordered_sample_identity_required": True,
+            "timing_gap_or_interpolation_origin_required": True,
+            "sample_duration_required": True,
+            "original_or_synthesized_eligibility_required": True,
+            "missing_or_ineligible_policy": "fail_closed",
+        },
+        "proposed_domain_is_not_operational_authorization": True,
+    }
+    ecsv_band_response = {
+        "choice": "select_tolteca_v1_ecsv",
+        "rationale": "Select the frozen primary passband family.",
+        "selected_passband_commit": TOLTECA_REVISION,
+        "selected_passband_sha256_by_array": {
+            "a1100": FROZEN_GIT_OBJECTS[
+                "tolteca/data/cal/toltec_passband/data/a1100_passband.ecsv"
+            ],
+            "a1400": FROZEN_GIT_OBJECTS[
+                "tolteca/data/cal/toltec_passband/data/a1400_passband.ecsv"
+            ],
+            "a2000": FROZEN_GIT_OBJECTS[
+                "tolteca/data/cal/toltec_passband/data/a2000_passband.ecsv"
+            ],
+        },
+        "source_spectral_convention": (
+            "S_nu proportional to (nu/nu_pivot)^alpha with alpha retained "
+            "as an operator identity"
+        ),
+    }
+    owner_sample = {
+        "schema_version": "sci-cal-001-owner-supplied-manifest-v3",
         "package_id": "SCI-CAL-001",
-        "request_id": "SCI-CAL-001-ATM-INPUT-001",
+        "request_id": "SCI-CAL-001-ATM-DECISION-001",
         "submission_date": "2026-08-01",
-        "owner_path": "versioned_am12_successor",
-        "evaluation_authorization": "bounded_study_only",
+        "submitted_by": "SCI-CAL-001 owner",
+        "machine_status": "numerical_adoption_evidence_fail",
+        "study_artifact_binding_status": "bound_completed_v2_artifacts",
         "adoption_status": "evaluation_only_not_adopted",
         "operator_authorization": "none",
         "operational_domain_authorization": "none",
         "q95_operational_disposition": "excluded_historical_diagnostic_only",
-        "successor_study_status": "pending_results",
-        "study_artifact_binding_status": "unbound_pending_study_results",
         "historical_generic_generator_association": "not_established",
         "historical_generic_lineage_custody_status": "unresolved_retained",
-        "responses": [
-            {
-                "fact_id": "Q95-001",
-                "disposition": "unresolved_retained",
-                "statement": "Original registered q95 bytes remain unavailable.",
-                "artifact_ids": [],
-            }
-        ],
-        "artifacts": [],
-        "successor_selection": {
-            "model_id": "toltec_am12_successor",
-            "model_version": "owner-version-required",
-            "basis": "copied_am_12_2",
-            "profile_family_rule": "owner rule required",
-            "frequency_grid_policy": "owner policy required",
-            "spectral_convention": "legacy_monochromatic",
-            "unresolved_line_status_policy": "owner policy required",
-            "historical_generic_products_replaced": False,
+        "historical_generic_products_replaced": False,
+        "completed_v2_binding": {
+            "study_schema_version": (
+                "sci-cal-001-am12-successor-adoption-study-v2"
+            ),
+            "decision_schema_version": (
+                "sci-cal-001-am12-successor-adoption-study-v2-decision-v1"
+            ),
+            "artifact_count": 13,
+            "adoption_manifest_sha256": AM12_SUCCESSOR_ARTIFACT_IDENTITIES[
+                "am12_successor_adoption_manifest.json"
+            ]["sha256"],
+            "decision_sha256": AM12_SUCCESSOR_ARTIFACT_IDENTITIES[
+                "am12_successor_decision.json"
+            ]["sha256"],
+            "report_sha256": AM12_SUCCESSOR_ARTIFACT_IDENTITIES[
+                "AM12_SUCCESSOR_ADOPTION_STUDY_REPORT.md"
+            ]["sha256"],
+            "repair_base_sha": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
+            "repair_line_evidence_head_sha": (
+                "ae99be1cef8c390d0e7490835ffca1f31da7ebc0"
+            ),
         },
+        "evidence_semantics": {
+            "valid_manifest_is_not_adoption_authorization": True,
+            "valid_manifest_is_not_operator_authorization": True,
+            "valid_manifest_is_not_operational_domain_authorization": True,
+            "missing_invalid_or_unreviewed_response_fails_closed": True,
+            "one_percent_is_numerical_representation_fidelity_only": True,
+            "post_hoc_el25_is_not_preregistered_confirmation": True,
+            "observational_performance_is_a_separate_gate": True,
+        },
+        "decisions": {
+            fact_id: json.loads(json.dumps(historical_response))
+            for fact_id in OWNER_HISTORICAL_FACT_IDS
+        },
+        "authorization_effect": (
+            "records_owner_choices_and_authorizes_only_the_selected_"
+            "followup_evidence_path"
+        ),
     }
-    errors = list(validator.iter_errors(successor_sample))
+    owner_sample["decisions"].update(
+        {
+            "LOW-001": {
+                "choice": "retain_el20_and_revise_q0_q25",
+                "rationale": "Retain EL20 and replace the low-opacity construction.",
+            },
+            "BAND-001": ecsv_band_response,
+            "DOMAIN-001": domain_el20,
+            "WARN-001": {
+                "choice": "accept_bounded_status_1_warning_bearing_evidence",
+                "rationale": "Accept only the frozen bounded warning class.",
+                "accepted_status_1_contract": {
+                    "numeric_rows_required": 50001,
+                    "only_known_unresolved_line_records_and_summary": True,
+                    "cache_mutation_warning_count": 0,
+                    "unknown_warning_count": 0,
+                    "error_line_count": 0,
+                    "classification": (
+                        "warning_bearing_evidence_not_clean_software_success"
+                    ),
+                },
+            },
+            "OBS-001": {
+                "choice": (
+                    "require_separate_observational_campaign_after_"
+                    "numerical_selection"
+                ),
+                "statement": "A separate observational campaign remains required.",
+                "campaign_gate": {
+                    "absolute_flux_accuracy_target_percent_min": 5,
+                    "absolute_flux_accuracy_target_percent_max": 10,
+                    "provisional_repeatability_target_percent": 5,
+                    "separate_from_software_correctness": True,
+                    "separate_from_model_representation_fidelity": True,
+                    "sample_count_does_not_remove_common_systematics": True,
+                },
+            },
+        }
+    )
+
+    errors = list(validator.iter_errors(owner_sample))
     if errors:
         raise RuntimeError(
-            "owner-supplied schema rejects minimal valid versioned successor "
+            "owner-supplied schema rejects valid completed-v2 EL20 response: "
             f"submission: {errors[0].message}"
         )
-    successor_without_selection = dict(successor_sample)
-    successor_without_selection.pop("successor_selection")
-    successor_with_false_custody = {
-        **successor_sample,
-        "historical_generic_lineage_custody_status": "resolved",
-    }
-    if not list(validator.iter_errors(successor_without_selection)):
-        raise RuntimeError("owner schema accepts successor without versioned selection")
-    if not list(validator.iter_errors(successor_with_false_custody)):
-        raise RuntimeError("owner schema lets successor claim resolved generic custody")
 
-    decision_paths = request.get("decision_paths")
-    if not isinstance(decision_paths, list):
-        raise RuntimeError("owner request has no explicit decision paths")
-    decision_by_id = {item["id"]: item for item in decision_paths}
-    q95 = next(item for item in requested_items if item["id"] == "Q95-001")
+    el25_sample = json.loads(json.dumps(owner_sample))
+    el25_sample["decisions"]["LOW-001"] = {
+        "choice": "confirm_el25_minimum_with_preregistered_evidence",
+        "rationale": "Propose EL25 and acquire independent confirmation.",
+    }
+    el25_sample["decisions"]["DOMAIN-001"]["elevation_min_deg"] = "25"
+    if list(validator.iter_errors(el25_sample)):
+        raise RuntimeError("owner schema rejects coupled EL25 response")
+
+    gate_change_sample = json.loads(json.dumps(owner_sample))
+    gate_change_sample["decisions"]["LOW-001"] = {
+        "choice": "explicitly_change_representation_fidelity_gate",
+        "rationale": "Change only the numerical representation threshold.",
+        "replacement_gate_max_fractional_correction_error": 0.012,
+        "replacement_gate_is_at_least_observed_failure": True,
+        "replacement_gate_interpretation": (
+            "numerical_representation_fidelity_only_not_photometric_accuracy"
+        ),
+    }
+    if list(validator.iter_errors(gate_change_sample)):
+        raise RuntimeError("owner schema rejects explicit numerical-gate response")
+
+    def supplied_artifact(array: str) -> dict[str, object]:
+        return {
+            "id": f"operational-{array}",
+            "role": f"operational detector/array-weighted {array} passband",
+            "path": f"passbands/{array}.ecsv",
+            "bytes": 1,
+            "sha256": hashlib.sha256(array.encode()).hexdigest(),
+            "custody_source": "owner-supplied immutable release",
+            "original_bytes_preserved": True,
+        }
+
+    supplied_band_sample = json.loads(json.dumps(owner_sample))
+    supplied_band_sample["decisions"]["BAND-001"] = {
+        "choice": "supply_detector_or_array_weighted_operational_passbands",
+        "rationale": "Use detector/array-weighted operational passbands.",
+        "passband_version_id": "owner-version-required",
+        "passband_artifacts_by_array": {
+            array: supplied_artifact(array)
+            for array in ("a1100", "a1400", "a2000")
+        },
+        "detector_or_array_weighting_rule": "owner rule",
+        "aggregation_rule": "owner rule",
+        "normalization_rule": "owner rule",
+        "source_spectral_convention": "owner convention",
+        "quadrature_rule": "owner rule",
+        "out_of_band_policy": "fail closed",
+    }
+    if list(validator.iter_errors(supplied_band_sample)):
+        raise RuntimeError("owner schema rejects supplied operational passbands")
+
+    invalid_samples: list[tuple[str, dict[str, object]]] = []
+    invalid_authorization = json.loads(json.dumps(owner_sample))
+    invalid_authorization["operator_authorization"] = "selected"
+    invalid_samples.append(("implicit operator authorization", invalid_authorization))
+    missing_observational_gate = json.loads(json.dumps(owner_sample))
+    del missing_observational_gate["decisions"]["OBS-001"]
+    invalid_samples.append(("missing OBS-001", missing_observational_gate))
+    mismatched_el20 = json.loads(json.dumps(owner_sample))
+    mismatched_el20["decisions"]["DOMAIN-001"]["elevation_min_deg"] = "25"
+    invalid_samples.append(("EL20 LOW/DOMAIN mismatch", mismatched_el20))
+    mismatched_el25 = json.loads(json.dumps(el25_sample))
+    mismatched_el25["decisions"]["DOMAIN-001"]["elevation_min_deg"] = "20"
+    invalid_samples.append(("EL25 LOW/DOMAIN mismatch", mismatched_el25))
+    missing_gate_value = json.loads(json.dumps(owner_sample))
+    missing_gate_value["decisions"]["LOW-001"] = {
+        "choice": "explicitly_change_representation_fidelity_gate",
+        "rationale": "Incomplete gate change.",
+    }
+    invalid_samples.append(("missing replacement gate", missing_gate_value))
+    below_observed_gate = json.loads(json.dumps(gate_change_sample))
+    below_observed_gate["decisions"]["LOW-001"][
+        "replacement_gate_max_fractional_correction_error"
+    ] = 0.001
+    invalid_samples.append(("replacement gate below observed failure", below_observed_gate))
+    missing_spectral_convention = json.loads(json.dumps(owner_sample))
+    del missing_spectral_convention["decisions"]["BAND-001"][
+        "source_spectral_convention"
+    ]
+    invalid_samples.append(
+        ("missing ECSV source spectral convention", missing_spectral_convention)
+    )
+    historical_artifact_without_evidence = json.loads(json.dumps(owner_sample))
+    historical_artifact_without_evidence["decisions"]["Q95-001"]["artifacts"] = [
+        supplied_artifact("q95")
+    ]
+    invalid_samples.append(
+        ("artifact attached to unresolved Q95", historical_artifact_without_evidence)
+    )
+    for label, sample in invalid_samples:
+        if not list(validator.iter_errors(sample)):
+            raise RuntimeError(f"owner schema accepts invalid response: {label}")
+
+    decision_items = request.get("decision_items")
+    if not isinstance(decision_items, list) or not all(
+        isinstance(item, dict) for item in decision_items
+    ):
+        raise RuntimeError("owner request has no completed-v2 decision items")
+    request_ids = [item.get("id") for item in decision_items]
+    request_by_id = {item["id"]: item for item in decision_items}
+    evidence_state = request.get("evidence_state")
+    decision_effect = request.get("decision_effect")
+    binding = request.get("completed_v2_artifact_binding")
     delivery = request["delivery_layout"]
     if (
-        request.get("schema_version") != "sci-cal-001-owner-input-request-v3"
-        or set(decision_by_id) != expected_paths
-        or len(decision_by_id) != len(decision_paths)
-        or decision_by_id["versioned_am12_successor"]["recommendation"]
-        != "selected_for_evaluation_not_adoption"
-        or q95["priority"] != "nonblocking_historical_provenance_only"
-        or request.get("owner_direction")
+        request.get("schema_version") != "sci-cal-001-owner-input-request-v4"
+        or request.get("request_id") != "SCI-CAL-001-ATM-DECISION-001"
+        or request.get("status")
+        != (
+            "owner_scientific_decision_required_after_"
+            "numerical_adoption_evidence_fail"
+        )
+        or set(request_ids) != OWNER_DECISION_FACT_IDS
+        or len(request_ids) != len(set(request_ids))
+        or any(
+            request_by_id[fact_id].get("priority")
+            != "nonblocking_historical_provenance_only"
+            for fact_id in OWNER_HISTORICAL_FACT_IDS
+        )
+        or not isinstance(evidence_state, dict)
+        or {
+            key: evidence_state.get(key)
+            for key in (
+                "study_schema_version",
+                "machine_status",
+                "study_artifact_binding_status",
+                "adoption_status",
+                "operator_authorization",
+                "operational_domain_authorization",
+                "q95_operational_disposition",
+                "historical_generic_generator_association",
+            )
+        }
         != {
-            "selected_evaluation_path": "versioned_am12_successor",
-            "evaluation_authorization": "bounded_study_only",
+            "study_schema_version": (
+                "sci-cal-001-am12-successor-adoption-study-v2"
+            ),
+            "machine_status": "numerical_adoption_evidence_fail",
+            "study_artifact_binding_status": "bound_completed_v2_artifacts",
             "adoption_status": "evaluation_only_not_adopted",
             "operator_authorization": "none",
             "operational_domain_authorization": "none",
             "q95_operational_disposition": "excluded_historical_diagnostic_only",
             "historical_generic_generator_association": "not_established",
-            "successor_study_status": "pending_results",
-            "study_artifact_binding_status": "unbound_pending_study_results",
         }
+        or not isinstance(binding, dict)
+        or binding.get("binding_method") != "sha256"
+        or binding.get("artifact_count") != 13
+        or not isinstance(decision_effect, dict)
+        or decision_effect.get("valid_manifest_effect")
+        != (
+            "records_owner_choices_and_authorizes_only_the_selected_"
+            "followup_evidence_path"
+        )
+        or decision_effect.get("adoption_status_after_response")
+        != "evaluation_only_not_adopted"
+        or decision_effect.get("operator_authorization_after_response") != "none"
+        or decision_effect.get("operational_domain_authorization_after_response")
+        != "none"
+        or decision_effect.get("missing_invalid_or_unreviewed_response_policy")
+        != "fail_closed"
+        or decision_effect.get("historical_generic_products_replaced") is not False
         or delivery["required_manifest"] != "owner_supplied_manifest.json"
         or delivery["manifest_schema"]
         != (
@@ -377,7 +725,24 @@ def verify_owner_supplied_manifest_schema(request: dict[str, object]) -> None:
             "owner_supplied_manifest.schema.json"
         )
     ):
-        raise RuntimeError("owner request decision-path/Q95/schema routing changed")
+        raise RuntimeError("owner request completed-v2 decision contract changed")
+
+    bound_artifacts = binding.get("artifacts")
+    if not isinstance(bound_artifacts, list) or not all(
+        isinstance(item, dict) for item in bound_artifacts
+    ):
+        raise RuntimeError("owner request has no completed-v2 artifact binding")
+    bound_by_path = {item.get("path"): item for item in bound_artifacts}
+    if (
+        len(bound_by_path) != len(bound_artifacts)
+        or set(bound_by_path) != set(AM12_SUCCESSOR_ARTIFACT_IDENTITIES)
+        or any(
+            bound_by_path[name].get("bytes") != identity["bytes"]
+            or bound_by_path[name].get("sha256") != identity["sha256"]
+            for name, identity in AM12_SUCCESSOR_ARTIFACT_IDENTITIES.items()
+        )
+    ):
+        raise RuntimeError("owner request completed-v2 artifact identities changed")
 
     delivered_path = PACKAGE_DIR / "inputs/owner_supplied/owner_supplied_manifest.json"
     if not delivered_path.is_file():
@@ -387,35 +752,41 @@ def verify_owner_supplied_manifest_schema(request: dict[str, object]) -> None:
     if errors:
         rendered = "\n".join(f"{list(error.path)}: {error.message}" for error in errors)
         raise RuntimeError(f"owner-supplied manifest schema errors:\n{rendered}")
-    response_ids = [item["fact_id"] for item in delivered["responses"]]
-    artifact_ids = [item["id"] for item in delivered["artifacts"]]
-    referenced_ids = {
-        artifact_id
-        for response in delivered["responses"]
-        for artifact_id in response["artifact_ids"]
-    }
+    low_response = delivered["decisions"]["LOW-001"]
+    if low_response["choice"] == "explicitly_change_representation_fidelity_gate":
+        try:
+            replacement_gate = float(
+                low_response["replacement_gate_max_fractional_correction_error"]
+            )
+        except (TypeError, ValueError) as error:
+            raise RuntimeError(
+                "owner replacement representation gate is not numeric"
+            ) from error
+        if (
+            not math.isfinite(replacement_gate)
+            or replacement_gate < 0.0115994922334935469
+        ):
+            raise RuntimeError(
+                "owner replacement representation gate is below the observed "
+                "completed-v2 failure"
+            )
+
+    supplied_artifacts: list[dict[str, object]] = []
+    for fact_id in OWNER_HISTORICAL_FACT_IDS:
+        supplied_artifacts.extend(delivered["decisions"][fact_id]["artifacts"])
+    band_response = delivered["decisions"]["BAND-001"]
     if (
-        len(response_ids) != len(set(response_ids))
-        or len(artifact_ids) != len(set(artifact_ids))
-        or not referenced_ids.issubset(artifact_ids)
-        or any(
-            response["disposition"]
-            in {"evidence_supplied", "partial_evidence_supplied"}
-            and not response["artifact_ids"]
-            for response in delivered["responses"]
-        )
+        band_response["choice"]
+        == "supply_detector_or_array_weighted_operational_passbands"
     ):
-        raise RuntimeError(
-            "owner-supplied manifest has duplicate/unknown references or "
-            "an evidence response without an artifact"
+        supplied_artifacts.extend(
+            band_response["passband_artifacts_by_array"].values()
         )
-    q95_responses = [
-        item for item in delivered["responses"] if item["fact_id"] == "Q95-001"
-    ]
-    if q95_responses and q95_responses[0]["disposition"] != "unresolved_retained":
-        raise RuntimeError("successor submission did not retain Q95-001 unresolved")
+    artifact_ids = [item["id"] for item in supplied_artifacts]
+    if len(artifact_ids) != len(set(artifact_ids)):
+        raise RuntimeError("owner-supplied manifest has duplicate artifact IDs")
     delivery_root = delivered_path.parent.resolve()
-    for artifact in delivered["artifacts"]:
+    for artifact in supplied_artifacts:
         relative = Path(artifact["path"])
         if relative.is_absolute() or ".." in relative.parts:
             raise RuntimeError("owner-supplied artifact path is not delivery-relative")
@@ -436,7 +807,7 @@ def verify_owner_supplied_manifest_schema(request: dict[str, object]) -> None:
 
 
 def verify_package_level_tau_provenance_clarification(
-    manifest: dict[str, object], request: dict[str, object]
+    manifest: dict[str, object],
 ) -> None:
     artifacts = manifest.get("artifacts")
     profiles = manifest.get("atmospheric_profiles")
@@ -525,17 +896,6 @@ def verify_package_level_tau_provenance_clarification(
             raise RuntimeError(
                 f"package-level tau-provenance clarification changed: {filename}"
             )
-    recovered_facts = request.get("facts_already_recovered_do_not_request_again")
-    if (
-        not isinstance(recovered_facts, list)
-        or not all(isinstance(item, str) for item in recovered_facts)
-        or "\n".join(recovered_facts).count(
-            "q25/q50/q75 candidate uses direct AM atmTaun while generic truth uses "
-            "-log(atmTtx); q95 uses -log(Tband/T225) on both sides"
-        )
-        != 1
-    ):
-        raise RuntimeError("owner request lost the P1 tau-provenance clarification")
 
 
 def verify_json_schema() -> None:
@@ -588,12 +948,21 @@ def verify_json_schema() -> None:
     verify_owner_supplied_manifest_schema(request)
     manifest_ids = set(manifest["unresolved_fact_ids"])
     historical_ids = set(manifest["historical_nonblocking_fact_ids"])
-    requested_ids = {item["id"] for item in request["required_items"]}
-    if len(requested_ids) != len(request["required_items"]):
+    decision_items = request.get("decision_items")
+    if not isinstance(decision_items, list) or not all(
+        isinstance(item, dict) for item in decision_items
+    ):
+        raise RuntimeError("owner request has no completed-v2 decision items")
+    requested_ids = {item["id"] for item in decision_items}
+    if len(requested_ids) != len(decision_items):
         raise RuntimeError("owner request has duplicate fact IDs")
-    if historical_ids != {"GEN-001", "GEN-002", "Q95-001"}:
+    if historical_ids != OWNER_HISTORICAL_FACT_IDS:
         raise RuntimeError(
             f"historical nonblocking fact routing changed: {sorted(historical_ids)}"
+        )
+    if manifest_ids != OWNER_BLOCKING_FACT_IDS:
+        raise RuntimeError(
+            f"completed-v2 blocking fact routing changed: {sorted(manifest_ids)}"
         )
     if manifest_ids & historical_ids:
         raise RuntimeError("blocking and historical nonblocking facts overlap")
@@ -604,7 +973,7 @@ def verify_json_schema() -> None:
             f"manifest_only={sorted(routed_ids - requested_ids)}, "
             f"request_only={sorted(requested_ids - routed_ids)}"
         )
-    verify_package_level_tau_provenance_clarification(manifest, request)
+    verify_package_level_tau_provenance_clarification(manifest)
 
 
 def verify_manifest_artifact_files(*, include_external: bool) -> None:
@@ -3993,6 +4362,1151 @@ def verify_h2o_hypothesis_evidence() -> None:
         raise RuntimeError("H2O-hypothesis report lost its all-direct/P1 limits")
 
 
+def verify_am12_successor_adoption_evidence() -> None:
+    for filename, identity in {
+        **AM12_SUCCESSOR_ARTIFACT_IDENTITIES,
+        **AM12_SUCCESSOR_CONTROL_IDENTITIES,
+    }.items():
+        path = PACKAGE_DIR / filename
+        if (
+            not path.is_file()
+            or path.stat().st_size != identity["bytes"]
+            or sha256_path(path) != identity["sha256"]
+        ):
+            raise RuntimeError(
+                f"AM12 successor artifact/control identity changed: {path}"
+            )
+
+    manifest = json.loads(
+        (PACKAGE_DIR / "am12_successor_adoption_manifest.json").read_text()
+    )
+    decision = json.loads(
+        (PACKAGE_DIR / "am12_successor_decision.json").read_text()
+    )
+    context = json.loads(
+        (PACKAGE_DIR / "am12_successor_holdout_execution_context.json").read_text()
+    )
+    coverage = json.loads(
+        (PACKAGE_DIR / "am12_successor_coverage.json").read_text()
+    )
+
+    child_identities = {
+        name: {
+            "size_bytes": identity["bytes"],
+            "sha256": identity["sha256"],
+        }
+        for name, identity in AM12_SUCCESSOR_ARTIFACT_IDENTITIES.items()
+        if name != "am12_successor_adoption_manifest.json"
+    }
+    if (
+        manifest.get("schema_version")
+        != "sci-cal-001-am12-successor-adoption-study-v2"
+        or manifest.get("artifacts") != child_identities
+        or len(child_identities) != 12
+    ):
+        raise RuntimeError("AM12 successor root/child artifact binding changed")
+
+    expected_identity = {
+        "evidence_status": "numerical_adoption_evidence_fail",
+        "operator_authorization": "none_evidence_for_owner_adoption_decision",
+        "package": "SCI-CAL-001",
+        "scope": "q0_q75_only_no_q95",
+    }
+    expected_domain = {
+        "elevation_max_deg": "8.00000000000000000e+01",
+        "elevation_min_deg": "2.00000000000000000e+01",
+        "outside_domain_policy": "fail_closed",
+        "tau225_max_q75_selector_anchor": "1.58313198574890929e-01",
+        "tau225_min": "0.00000000000000000e+00",
+    }
+    expected_p1 = {
+        "cache_policy": "shared-lock cache-only validation; no process execution",
+        "direct_grid_count": 155,
+        "execution_context_sha256": CANONICAL_P1_EXECUTION_CONTEXT_SHA256,
+        "external_cache_basename": (
+            "sci_cal_001_h2o_scale_p1_context_v3_lightweight_final_20260801_root"
+        ),
+    }
+    expected_holdouts = {
+        "direct_grid_count": 240,
+        "execution_context_sha256": AM12_SUCCESSOR_CONTEXT_SHA256,
+        "external_cache_basename": (
+            "sci_cal_001_am12_successor_adoption_v2_20260801_root"
+        ),
+        "metric_row_count": 23040,
+        "scale_search_run_count": 785,
+        "status": "cache_validated",
+        "total_run_inventory_count": 1025,
+    }
+    expected_gates = {
+        "challenger_statuses": ["fail"],
+        "criterion_interpretation": (
+            "provisional numerical representation fidelity only; not "
+            "per-sample or absolute physical photometric accuracy"
+        ),
+        "fractional_extinction_correction_representation_fidelity_max": (
+            "1.00000000000000002e-02"
+        ),
+        "physical_contract_pass": True,
+        "primary_holdout_fidelity_pass": False,
+    }
+    expected_security = {
+        "citlali_application_code_modified": False,
+        "network_access": False,
+        "sibling_repositories_modified": False,
+        "unity_access": False,
+    }
+    expected_erratum = {
+        "filename": (
+            "AM12_SUCCESSOR_ADOPTION_STUDY_EXECUTION_ERRATUM_2026-08-01.md"
+        ),
+        "predecessor_cache_disposition": "excluded_not_reused",
+        "predecessor_execution_context_sha256": (
+            "f0acb32cd43fd0bd128a06ab8d7e354bc6a6c1389d6d0794db716753d03f85c8"
+        ),
+        "sha256": AM12_SUCCESSOR_CONTROL_IDENTITIES[
+            "AM12_SUCCESSOR_ADOPTION_STUDY_EXECUTION_ERRATUM_2026-08-01.md"
+        ]["sha256"],
+    }
+    if (
+        manifest.get("identity") != expected_identity
+        or manifest.get("domain") != expected_domain
+        or manifest.get("p1_cache") != expected_p1
+        or manifest.get("holdouts") != expected_holdouts
+        or manifest.get("gates") != expected_gates
+        or manifest.get("security") != expected_security
+        or manifest.get("execution_erratum") != expected_erratum
+        or manifest.get("decision") != decision
+    ):
+        raise RuntimeError("AM12 successor manifest decision/governance changed")
+    limitations = manifest.get("limitations")
+    if (
+        not isinstance(limitations, list)
+        or "No q95 model, profile, target, or operational condition is evaluated."
+        not in limitations
+    ):
+        raise RuntimeError("AM12 successor q95 exclusion changed")
+
+    expected_protocol = {
+        "filename": "AM12_SUCCESSOR_ADOPTION_STUDY_PROTOCOL.md",
+        "sha256": AM12_SUCCESSOR_CONTROL_IDENTITIES[
+            "AM12_SUCCESSOR_ADOPTION_STUDY_PROTOCOL.md"
+        ]["sha256"],
+    }
+    expected_clarification = {
+        "filename": "AM12_SUCCESSOR_ADOPTION_STUDY_PREEXECUTION_CLARIFICATIONS.md",
+        "sha256": AM12_SUCCESSOR_CONTROL_IDENTITIES[
+            "AM12_SUCCESSOR_ADOPTION_STUDY_PREEXECUTION_CLARIFICATIONS.md"
+        ]["sha256"],
+    }
+    expected_context_erratum = {
+        **expected_erratum,
+        "correction": (
+            "derive_P1_cache_stage_from_frozen_ancillary_screening_"
+            "transmission_rank1"
+        ),
+    }
+    expected_runner = {
+        "filename": "run_am12_successor_adoption_study.py",
+        "sha256": AM12_SUCCESSOR_CONTROL_IDENTITIES[
+            "run_am12_successor_adoption_study.py"
+        ]["sha256"],
+    }
+    imported_p1 = context.get("imported_canonical_p1_runner")
+    # This frozen field name is historically wrong: its value is the imported
+    # P1 runner digest alias, not the canonical P1 execution-context digest.
+    expected_imported_p1 = {
+        "canonical_p1_context_sha256": CANONICAL_P1_RUNNER_SHA256,
+        "filename": "probe_am12_h2o_scale_hypotheses.py",
+        "sha256": CANONICAL_P1_RUNNER_SHA256,
+    }
+    if (
+        context.get("schema_version")
+        != (
+            "sci-cal-001-am12-successor-adoption-study-v2-"
+            "holdout-execution-context-v1"
+        )
+        or sha256_path(
+            PACKAGE_DIR / "am12_successor_holdout_execution_context.json"
+        )
+        != AM12_SUCCESSOR_CONTEXT_SHA256
+        or context.get("protocol") != expected_protocol
+        or context.get("preexecution_clarification") != expected_clarification
+        or context.get("execution_erratum") != expected_context_erratum
+        or context.get("runner") != expected_runner
+        or imported_p1 != expected_imported_p1
+        or context.get("p1_execution_context_sha256")
+        != CANONICAL_P1_EXECUTION_CONTEXT_SHA256
+        or CANONICAL_P1_RUNNER_SHA256 == CANONICAL_P1_EXECUTION_CONTEXT_SHA256
+        or context.get("scale_solver_contract")
+        != {
+            "identity_match_pass": True,
+            "maximum_bracket_expansions": 64,
+            "root_iterations": 48,
+        }
+        or context.get("security") != {"network_access": False, "unity_access": False}
+    ):
+        raise RuntimeError("AM12 successor execution control/context changed")
+    expected_am_executable = {
+        "binary_format": "mach-o",
+        "resolved_path": "/private/tmp/sci_cal_001_am12_2_native_build_20260801_root/am",
+        "sha256": "78e721d45b08990069a2d67a5fb337446bcbfb728046940c0d473bea340205fb",
+        "size_bytes": 58435360,
+    }
+    expected_profile_hashes = {
+        "LMT_DJF_25": "aeeeeb48bef422f2d9392b5d7a3d62ab1887fd9e7c10322d5246d914841ba866",
+        "LMT_DJF_5": "fcb3b70f44cad98cf0586fede9dcd3b2e35f3cb45023d0485c782c108b25b474",
+        "LMT_DJF_50": "d7c256d04d922beb51c9f8ab715e5be1a962252580eff2d08ba1be4d206eb5b0",
+        "LMT_DJF_75": "b63503c7f4170404d18f3797735b64fb947ce73eed35f0315155d0a29d499721",
+        "LMT_MAM_25": "82ac1e2a49a528244c1571daadcc8d42bd6d13c0ba8a7b5d2f81d10ebc13caee",
+        "LMT_annual_25": "a9524553a5808a549eb18046a9ed6f8bd67ca1e29ccd1c91e05b351b64ea23e6",
+    }
+    expected_passband_sources = {
+        "tolteca_v1_a1100": (
+            "13b8fd009bb8d7c375d3c46d21e26d0a779f7f00a949a2a5ccd619d1fe56fd72",
+            TOLTECA_REVISION,
+        ),
+        "fts_5934_n0_a1100": (
+            "b72e9be7a4637adbfb5f2a6e131741a4a7b151effc03dea49410d0e56a5df74c",
+            "958a2a15f43189846a24556a63ef908da789c7b8",
+        ),
+        "tolteca_v1_a1400": (
+            "a7b671d9f659cbc98dad99d3015ce81a3d7a3486c702819d9b3305703e7c682e",
+            TOLTECA_REVISION,
+        ),
+        "fts_9932_n9_a1400": (
+            "da440896f537545871ac0d026b5149aeb5ba356e2f613c934567ef20fde0fd36",
+            "958a2a15f43189846a24556a63ef908da789c7b8",
+        ),
+        "tolteca_v1_a2000": (
+            "77e4b33c7bbc2c345ef94d41480d5fee5cb096d789f4fe78e1b4f80a37e0d6ff",
+            TOLTECA_REVISION,
+        ),
+        "fts_9903_n11_a2000": (
+            "b3d5a0b1a332d40b4cdc436cb4327e849afbce42cfd766108aacf6016e775e65",
+            "958a2a15f43189846a24556a63ef908da789c7b8",
+        ),
+    }
+    profile_hashes = {
+        item.get("profile"): item.get("sha256")
+        for item in context.get("profiles", [])
+        if isinstance(item, dict)
+    }
+    passband_sources = {
+        item.get("id"): (item.get("sha256"), item.get("source_commit"))
+        for item in context.get("passbands", [])
+        if isinstance(item, dict)
+    }
+    holdout_plan = context.get("holdout_plan")
+    if (
+        context.get("am_executable") != expected_am_executable
+        or profile_hashes != expected_profile_hashes
+        or len(profile_hashes) != len(context.get("profiles", []))
+        or passband_sources != expected_passband_sources
+        or len(passband_sources) != len(context.get("passbands", []))
+        or not isinstance(holdout_plan, list)
+        or len(holdout_plan) != 8
+        or {
+            (item.get("kind"), item.get("profile"))
+            for item in holdout_plan
+            if isinstance(item, dict)
+        }
+        != {
+            ("q0_q25_midpoint", "LMT_DJF_5"),
+            ("q0_q25_midpoint", "LMT_DJF_25"),
+            ("q25_q50_midpoint", "LMT_DJF_25"),
+            ("q25_q50_midpoint", "LMT_DJF_50"),
+            ("q50_q75_midpoint", "LMT_DJF_50"),
+            ("q50_q75_midpoint", "LMT_DJF_75"),
+            ("q50_q75_midpoint", "LMT_annual_25"),
+            ("q50_q75_midpoint", "LMT_MAM_25"),
+        }
+        or any(
+            item.get("elevations_deg") != list(range(21, 80, 2))
+            for item in holdout_plan
+        )
+        or any("q95" in json.dumps(item).lower() for item in holdout_plan)
+    ):
+        raise RuntimeError("AM12 successor executable/profile/passband plan changed")
+    execution_parameters = context.get("execution_parameters")
+    if (
+        not isinstance(execution_parameters, dict)
+        or execution_parameters.get("jobs") != 8
+        or execution_parameters.get("omp_threads_per_process") != 1
+        or execution_parameters.get("cache_shard_count") != 8
+        or execution_parameters.get("root_iterations") != 48
+        or execution_parameters.get("maximum_bracket_expansions") != 64
+        or execution_parameters.get("grid") != "0--500 GHz inclusive at 10 MHz"
+        or execution_parameters.get("elevations_deg") != list(range(21, 80, 2))
+        or execution_parameters.get("locale") != {"LANG": "C", "LC_ALL": "C"}
+    ):
+        raise RuntimeError("AM12 successor execution parameters changed")
+    p1_committed = context.get("p1_committed_evidence")
+    if p1_committed != {
+        "manifest": {
+            "path_relative_to_package": "h2o_scale_hypothesis_manifest.json",
+            "sha256": H2O_FINAL_ARTIFACT_IDENTITIES[
+                "h2o_scale_hypothesis_manifest.json"
+            ]["sha256"],
+        },
+        "scale_table": {
+            "path_relative_to_package": "h2o_scale_hypothesis_scales.csv",
+            "sha256": H2O_FINAL_ARTIFACT_IDENTITIES[
+                "h2o_scale_hypothesis_scales.csv"
+            ]["sha256"],
+        },
+    }:
+        raise RuntimeError("AM12 successor canonical P1 evidence binding changed")
+
+    execution_record = (
+        PACKAGE_DIR
+        / "AM12_SUCCESSOR_ADOPTION_STUDY_EXECUTION_RECORD_2026-08-01.md"
+    ).read_text()
+    alias_fragments = (
+        "imported_canonical_p1_runner.canonical_p1_context_sha256",
+        "which is the imported canonical P1 **runner** SHA-256",
+        "p1_execution_context_sha256",
+        CANONICAL_P1_RUNNER_SHA256,
+        CANONICAL_P1_EXECUTION_CONTEXT_SHA256,
+        "must never be treated",
+        "as P1 context identity.",
+    )
+    if any(fragment not in execution_record for fragment in alias_fragments):
+        raise RuntimeError("AM12 successor runner/context alias record changed")
+
+    expected_candidates = {
+        (lane, operator)
+        for lane in ("fixed_djf25_v1", "conditioned_djf_v1")
+        for operator in (
+            "am12_piecewise_linear_los_tau_eval_v0",
+            "am12_pchip_los_tau_eval_v0",
+        )
+    }
+    candidate_decisions = decision.get("candidate_decisions")
+    if not isinstance(candidate_decisions, list):
+        raise RuntimeError("AM12 successor decision has no candidates")
+    candidate_ids = {
+        (item.get("lane"), item.get("operator")) for item in candidate_decisions
+    }
+    expected_primary_worst_location = {
+        "alpha": "-1",
+        "band": "a2000",
+        "elevation_deg": "21",
+        "h2o_scale_decimal": "1.00520377860868826e+00",
+        "interval": "q0_q25_midpoint",
+        "profile": "LMT_DJF_5",
+    }
+    if (
+        decision.get("schema_version")
+        != "sci-cal-001-am12-successor-adoption-study-v2-decision-v1"
+        or decision.get("status") != "numerical_adoption_evidence_fail"
+        or decision.get("authorization") != "none_owner_selection_required"
+        or decision.get("recommendation") is not None
+        or decision.get("conditional_primary_ranking") != []
+        or decision.get("G0_provenance_and_execution_context_pass") is not True
+        or len(candidate_decisions) != 4
+        or candidate_ids != expected_candidates
+    ):
+        raise RuntimeError("AM12 successor fail/null/four-candidate decision changed")
+    for item in candidate_decisions:
+        failed_challengers = [
+            result
+            for result in item["challenger_gate_results"]
+            if result["gate_results"]["G6_representation_fidelity"] is False
+        ]
+        if (
+            item.get("eligible") is not False
+            or item.get("physical_contract_pass") is not True
+            or item.get("primary_physical_pass") is not True
+            or item.get("challenger_physical_pass") is not True
+            or item.get("primary_representation_pass") is not False
+            or item.get("challenger_representation_pass") is not False
+            or item.get("challenger_status") != "fail"
+            or item.get("primary_max_absolute_fractional_correction_error")
+            != "1.15994922334935469e-02"
+            or item.get("fts_vs_ecsv_truth_max_absolute_fractional_difference")
+            != "3.47461271987401510e-02"
+            or item.get("primary_worst_location")
+            != expected_primary_worst_location
+            or len(item.get("challenger_gate_results", [])) != 12
+            or len(failed_challengers) != 1
+            or failed_challengers[0].get("array") != "a2000"
+            or failed_challengers[0].get("alpha") != "-1"
+            or failed_challengers[0].get(
+                "max_absolute_fractional_correction_error"
+            )
+            != "1.10146739018793793e-02"
+        ):
+            raise RuntimeError("AM12 successor candidate gate/worst value changed")
+    expected_truth_location = {
+        "alpha": "4",
+        "array": "a2000",
+        "elevation_deg": "21",
+        "h2o_scale_decimal": "7.85592749304793836e-01",
+        "interval": "q50_q75_midpoint",
+        "profile": "LMT_DJF_75",
+    }
+    truth_challenger = decision.get("truth_challenger")
+    if (
+        not isinstance(truth_challenger, dict)
+        or truth_challenger.get("maximum_absolute_fractional_difference")
+        != "3.47461271987401510e-02"
+        or truth_challenger.get("location") != expected_truth_location
+        or len(truth_challenger.get("individual_band_alpha_results", [])) != 12
+    ):
+        raise RuntimeError("AM12 successor truth-challenger maximum changed")
+
+    p1_rows = read_csv_rows("am12_successor_p1_run_inventory.csv")
+    expected_training_counts = {
+        ("am_q25", "LMT_DJF_25"): 31,
+        ("am_q50", "LMT_DJF_25"): 31,
+        ("am_q50", "LMT_DJF_50"): 31,
+        ("am_q75", "LMT_DJF_25"): 31,
+        ("am_q75", "LMT_DJF_75"): 31,
+    }
+    p1_keys = [
+        (row["target"], row["profile"], row["elevation_deg"]) for row in p1_rows
+    ]
+    p1_training_counts = Counter(
+        (row["target"], row["profile"]) for row in p1_rows
+    )
+    p1_stage_counts: Counter[str] = Counter()
+    for row in p1_rows:
+        raw_path = row["raw_path_relative_to_p1_cache"]
+        if raw_path.startswith("raw_outputs/direct_full_grid_all_hypotheses_"):
+            p1_stage_counts["general"] += 1
+        elif raw_path.startswith(
+            "raw_outputs/direct_full_grid_selected_transmission_rank1_"
+        ):
+            p1_stage_counts["selected"] += 1
+        else:
+            raise RuntimeError("AM12 successor P1 stage identity changed")
+    if (
+        len(p1_rows) != 155
+        or len(set(p1_keys)) != 155
+        or p1_training_counts != Counter(expected_training_counts)
+        or p1_stage_counts != Counter({"general": 93, "selected": 62})
+        or {row["elevation_deg"] for row in p1_rows}
+        != {str(value) for value in range(20, 81, 2)}
+        or len({row["raw_path_relative_to_p1_cache"] for row in p1_rows}) != 155
+        or len({row["sidecar_path_relative_to_p1_cache"] for row in p1_rows})
+        != 155
+        or Counter(row["return_code"] for row in p1_rows) != Counter({"1": 155})
+        or Counter(row["unresolved_line_warning_count"] for row in p1_rows)
+        != Counter({"86": 124, "87": 31})
+        or sum(int(row["unresolved_line_warning_count"]) for row in p1_rows)
+        != 13361
+        or any("q95" in row["target"].lower() for row in p1_rows)
+    ):
+        raise RuntimeError("AM12 successor 155=93+62 P1 coverage changed")
+
+    holdout_run_rows = read_csv_rows("am12_successor_holdout_run_inventory.csv")
+    run_class_counts = Counter(row["run_class"] for row in holdout_run_rows)
+    full_grid_runs = [
+        row
+        for row in holdout_run_rows
+        if row["run_class"] == "midpoint_odd_elevation_full_grid"
+    ]
+    if (
+        len(holdout_run_rows) != 1025
+        or 785 + 240 != 1025
+        or run_class_counts
+        != Counter(
+            {
+                "midpoint_scale_search_anchor": 785,
+                "midpoint_odd_elevation_full_grid": 240,
+            }
+        )
+        or len({row["cache_id"] for row in holdout_run_rows}) != 1025
+        or len(
+            {row["raw_path_relative_to_holdout_cache"] for row in holdout_run_rows}
+        )
+        != 1025
+        or len(
+            {
+                row["sidecar_path_relative_to_holdout_cache"]
+                for row in holdout_run_rows
+            }
+        )
+        != 1025
+        or {row["execution_context_sha256"] for row in holdout_run_rows}
+        != {AM12_SUCCESSOR_CONTEXT_SHA256}
+        or Counter(row["stage"] for row in holdout_run_rows)
+        != Counter(
+            {
+                "anchor_225ghz_el80": 785,
+                "adoption_midpoint_odd_elevation_holdout": 240,
+            }
+        )
+        or {row["am_executable_sha256"] for row in holdout_run_rows}
+        != {expected_am_executable["sha256"]}
+        or {row["am_version_identity"] for row in holdout_run_rows}
+        != {"am version 12.2 (build date Aug  1 2026 11:20:29)"}
+        or Counter(row["return_code"] for row in holdout_run_rows)
+        != Counter({"0": 785, "1": 240})
+        or Counter(row["numeric_row_count"] for row in holdout_run_rows)
+        != Counter({"3": 785, "50001": 240})
+        or len(
+            {
+                row["scale_trace_path_relative_to_holdout_cache"]
+                for row in holdout_run_rows
+                if row["scale_trace_path_relative_to_holdout_cache"]
+            }
+        )
+        != 8
+        or any("q95" in row["holdout_kind"].lower() for row in holdout_run_rows)
+    ):
+        raise RuntimeError("AM12 successor 785+240=1025 run inventory changed")
+
+    holdout_rows = read_csv_rows("am12_successor_holdout_rows.csv")
+    holdout_keys = [
+        (
+            row["holdout_kind"],
+            row["truth_profile"],
+            row["elevation_deg"],
+            row["lane"],
+            row["operator"],
+            row["passband_id"],
+            row["alpha"],
+        )
+        for row in holdout_rows
+    ]
+    expected_holdout_cases = {
+        ("q0_q25_midpoint", "LMT_DJF_5"),
+        ("q0_q25_midpoint", "LMT_DJF_25"),
+        ("q25_q50_midpoint", "LMT_DJF_25"),
+        ("q25_q50_midpoint", "LMT_DJF_50"),
+        ("q50_q75_midpoint", "LMT_DJF_50"),
+        ("q50_q75_midpoint", "LMT_DJF_75"),
+        ("q50_q75_midpoint", "LMT_annual_25"),
+        ("q50_q75_midpoint", "LMT_MAM_25"),
+    }
+    expected_passbands = {
+        "tolteca_v1_a1100",
+        "fts_5934_n0_a1100",
+        "tolteca_v1_a1400",
+        "fts_9932_n9_a1400",
+        "tolteca_v1_a2000",
+        "fts_9903_n11_a2000",
+    }
+    direct_grid_provenance = {
+        (
+            row["holdout_kind"],
+            row["truth_profile"],
+            row["elevation_deg"],
+        ): (row["raw_sha256"], row["sidecar_sha256"])
+        for row in full_grid_runs
+    }
+    if (
+        len(holdout_rows) != 23040
+        or len(set(holdout_keys)) != 23040
+        or {
+            (row["holdout_kind"], row["truth_profile"]) for row in holdout_rows
+        }
+        != expected_holdout_cases
+        or {row["elevation_deg"] for row in holdout_rows}
+        != {str(value) for value in range(21, 80, 2)}
+        or {row["lane"] for row in holdout_rows}
+        != {"fixed_djf25_v1", "conditioned_djf_v1"}
+        or {row["operator"] for row in holdout_rows}
+        != {
+            "am12_piecewise_linear_los_tau_eval_v0",
+            "am12_pchip_los_tau_eval_v0",
+        }
+        or {row["passband_id"] for row in holdout_rows} != expected_passbands
+        or {row["alpha"] for row in holdout_rows} != {"-1", "0", "2", "4"}
+        or len(direct_grid_provenance) != 240
+        or any(
+            direct_grid_provenance.get(
+                (
+                    row["holdout_kind"],
+                    row["truth_profile"],
+                    row["elevation_deg"],
+                )
+            )
+            != (row["raw_sha256"], row["sidecar_sha256"])
+            for row in holdout_rows
+        )
+        or any("q95" in row["holdout_kind"].lower() for row in holdout_rows)
+    ):
+        raise RuntimeError("AM12 successor 23,040 unique holdout coverage changed")
+
+    def expected_coverage_section(count: int) -> dict[str, object]:
+        return {
+            "actual_row_count": count,
+            "actual_unique_key_count": count,
+            "duplicate_key_count": 0,
+            "duplicate_keys": [],
+            "expected_row_count": count,
+            "missing_key_anti_join": [],
+            "missing_key_count": 0,
+            "pass": True,
+            "unexpected_key_anti_join": [],
+            "unexpected_key_count": 0,
+        }
+
+    if (
+        coverage.get("schema_version")
+        != "sci-cal-001-am12-successor-adoption-study-v2-coverage-v1"
+        or coverage.get("required_dimensions")
+        != {
+            "lane_count": 2,
+            "odd_elevation_count": 30,
+            "opacity_interval_count": 3,
+            "operator_count": 2,
+            "passband_count": 6,
+            "registered_midpoint_profile_case_count": 8,
+            "spectral_index_count": 4,
+        }
+        or coverage.get("raw_direct_grid_coverage")
+        != expected_coverage_section(240)
+        or coverage.get("expanded_holdout_row_coverage")
+        != expected_coverage_section(23040)
+        or coverage.get("combined_required_metric_coverage")
+        != expected_coverage_section(96)
+        or coverage.get("pass") is not True
+    ):
+        raise RuntimeError("AM12 successor exact G8 coverage record changed")
+
+    operator_metric_rows = read_csv_rows("am12_successor_operator_metrics.csv")
+    metric_group_counts = Counter(row["metric_group"] for row in operator_metric_rows)
+    combined_metrics = [
+        row
+        for row in operator_metric_rows
+        if row["metric_group"] == "direct_am_holdout_representation_fidelity"
+        and row["evidence_slice"] == "combined_required_holdouts"
+    ]
+    combined_metric_keys = {
+        (
+            row["lane"],
+            row["operator"],
+            row["passband_id"],
+            row["array"],
+            row["alpha"],
+        )
+        for row in combined_metrics
+    }
+    if (
+        len(operator_metric_rows) != 444
+        or metric_group_counts
+        != Counter(
+            {
+                "direct_am_holdout_representation_fidelity": 384,
+                "lane_disagreement_dense_domain": 48,
+                "fts_truth_vs_primary_truth": 12,
+            }
+        )
+        or len(combined_metrics) != 96
+        or len(combined_metric_keys) != 96
+        or Counter(row["gate_pass"] for row in combined_metrics)
+        != Counter({"true": 84, "false": 12})
+        or any(row["n"] != "240" for row in combined_metrics)
+    ):
+        raise RuntimeError("AM12 successor 96-row metric coverage changed")
+
+    physical_rows = read_csv_rows("am12_successor_physical_metrics.csv")
+    physical_keys = {
+        (
+            row["lane"],
+            row["operator"],
+            row["passband_id"],
+            row["array"],
+            row["alpha"],
+        )
+        for row in physical_rows
+    }
+    physical_boolean_fields = (
+        "all_evaluated_quantities_finite",
+        "positivity_pass",
+        "g2_domain_pass",
+        "tau_monotonicity_pass",
+        "elevation_monotonicity_pass",
+        "continuity_pass",
+        "fail_closed_pass",
+        "exact_anchor_pass",
+        "exact_low_segment_pass",
+        "physical_contract_pass",
+    )
+    if (
+        len(physical_rows) != 96
+        or len(physical_keys) != 96
+        or any(
+            row[field] != "true"
+            for row in physical_rows
+            for field in physical_boolean_fields
+        )
+    ):
+        raise RuntimeError("AM12 successor 96-row physical coverage changed")
+
+    primary_metrics = [
+        row
+        for row in combined_metrics
+        if row["passband_id"].startswith("tolteca_v1_")
+    ]
+    challenger_metrics = [
+        row
+        for row in combined_metrics
+        if row["passband_id"].startswith("fts_")
+    ]
+    primary_worst = [
+        row
+        for row in primary_metrics
+        if row["max_absolute_fractional_correction_error"]
+        == "1.15994922334935469e-02"
+    ]
+    challenger_worst = [
+        row
+        for row in challenger_metrics
+        if row["max_absolute_fractional_correction_error"]
+        == "1.10146739018793793e-02"
+    ]
+    truth_metrics = [
+        row
+        for row in operator_metric_rows
+        if row["metric_group"] == "fts_truth_vs_primary_truth"
+    ]
+    truth_worst = [
+        row
+        for row in truth_metrics
+        if row["max_absolute_fractional_correction_error"]
+        == "3.47461271987401510e-02"
+    ]
+    failed_combined = [row for row in combined_metrics if row["gate_pass"] == "false"]
+    expected_failure_signatures = Counter(
+        {
+            (
+                "tolteca_v1_a2000",
+                "a2000",
+                "-1",
+                "1.15994922334935469e-02",
+                "q0_q25_midpoint",
+                "LMT_DJF_5",
+                "21",
+            ): 4,
+            (
+                "tolteca_v1_a2000",
+                "a2000",
+                "0",
+                "1.06957680561995394e-02",
+                "q0_q25_midpoint",
+                "LMT_DJF_5",
+                "21",
+            ): 4,
+            (
+                "fts_9903_n11_a2000",
+                "a2000",
+                "-1",
+                "1.10146739018793793e-02",
+                "q0_q25_midpoint",
+                "LMT_DJF_5",
+                "21",
+            ): 4,
+        }
+    )
+    actual_failure_signatures = Counter(
+        (
+            row["passband_id"],
+            row["array"],
+            row["alpha"],
+            row["max_absolute_fractional_correction_error"],
+            row["worst_holdout_kind"],
+            row["worst_truth_profile"],
+            row["worst_elevation_deg"],
+        )
+        for row in failed_combined
+    )
+
+    def candidate_pairs(rows: list[dict[str, str]]) -> set[tuple[str, str]]:
+        return {(row["lane"], row["operator"]) for row in rows}
+
+    if (
+        actual_failure_signatures != expected_failure_signatures
+        or candidate_pairs(primary_worst) != expected_candidates
+        or len(primary_worst) != 4
+        or any(
+            row["array"] != "a2000"
+            or row["alpha"] != "-1"
+            or row["signed_min_fractional_correction_error"]
+            != "-1.15994922334935469e-02"
+            or row["worst_holdout_kind"] != "q0_q25_midpoint"
+            or row["worst_truth_profile"] != "LMT_DJF_5"
+            or row["worst_h2o_scale_decimal"] != "1.00520377860868826e+00"
+            or row["worst_elevation_deg"] != "21"
+            for row in primary_worst
+        )
+        or candidate_pairs(challenger_worst) != expected_candidates
+        or len(challenger_worst) != 4
+        or any(
+            row["array"] != "a2000"
+            or row["alpha"] != "-1"
+            or row["signed_min_fractional_correction_error"]
+            != "-1.10146739018793793e-02"
+            or row["worst_holdout_kind"] != "q0_q25_midpoint"
+            or row["worst_truth_profile"] != "LMT_DJF_5"
+            or row["worst_h2o_scale_decimal"] != "1.00520377860868826e+00"
+            or row["worst_elevation_deg"] != "21"
+            for row in challenger_worst
+        )
+        or len(truth_metrics) != 12
+        or len(truth_worst) != 1
+        or truth_worst[0]["array"] != "a2000"
+        or truth_worst[0]["alpha"] != "4"
+        or truth_worst[0]["worst_holdout_kind"] != "q50_q75_midpoint"
+        or truth_worst[0]["worst_truth_profile"] != "LMT_DJF_75"
+        or truth_worst[0]["worst_h2o_scale_decimal"]
+        != "7.85592749304793836e-01"
+        or truth_worst[0]["worst_elevation_deg"] != "21"
+    ):
+        raise RuntimeError("AM12 successor exact worst calibration values changed")
+
+    posthoc_el25_maxima: dict[tuple[str, str, str, str], float] = {}
+    for row in holdout_rows:
+        if int(row["elevation_deg"]) < 25:
+            continue
+        key = (
+            row["lane"],
+            row["operator"],
+            row["passband_id"],
+            row["alpha"],
+        )
+        error = abs(float(row["fractional_correction_error"]))
+        posthoc_el25_maxima[key] = max(posthoc_el25_maxima.get(key, 0.0), error)
+    posthoc_primary = {
+        key: value
+        for key, value in posthoc_el25_maxima.items()
+        if key[2].startswith("tolteca_v1_")
+    }
+    posthoc_challenger = {
+        key: value
+        for key, value in posthoc_el25_maxima.items()
+        if key[2].startswith("fts_")
+    }
+    if (
+        len(posthoc_primary) != 48
+        or len(posthoc_challenger) != 48
+        or format(max(posthoc_primary.values()), ".17e")
+        != "9.89845456159954562e-03"
+        or format(max(posthoc_challenger.values()), ".17e")
+        != "9.49737889738433427e-03"
+        or sum(value > 0.01 for value in posthoc_primary.values()) != 0
+        or sum(value > 0.01 for value in posthoc_challenger.values()) != 0
+    ):
+        raise RuntimeError("AM12 successor post-result EL25 diagnostic changed")
+
+    node_rows = read_csv_rows("am12_successor_operator_nodes.csv")
+    scale_rows = read_csv_rows("am12_successor_holdout_scales.csv")
+    bandpass_rows = read_csv_rows("am12_successor_bandpass_inventory.csv")
+    if (
+        len(bandpass_rows) != 24
+        or len(node_rows) != 4464
+        or len({tuple(row.values()) for row in node_rows}) != 4464
+        or {row["target"] for row in node_rows} != {"am_q25", "am_q50", "am_q75"}
+        or len(scale_rows) != 8
+        or any(
+            "q95" in value.lower()
+            for row in (*node_rows, *scale_rows)
+            for value in row.values()
+        )
+    ):
+        raise RuntimeError("AM12 successor q95 exclusion/node-scale coverage changed")
+
+    report = (PACKAGE_DIR / "AM12_SUCCESSOR_ADOPTION_STUDY_REPORT.md").read_text()
+    report_fragments = (
+        "Status: **numerical_adoption_evidence_fail**.",
+        "It does not evaluate q95.",
+        "numerical representation fidelity, not observational photometric accuracy",
+        "exact-anchor contract: PASS.",
+        '"conditional_primary_ranking": [],',
+        '"recommendation": null',
+    )
+    if any(fragment not in report for fragment in report_fragments):
+        raise RuntimeError("AM12 successor report decision boundary changed")
+
+
+def verify_completed_v2_governance() -> None:
+    governance = json.loads((PACKAGE_DIR / "governance_manifest.json").read_text())
+    expected_owner_direction = {
+        "recorded_date": "2026-08-01",
+        "selected_evaluation_path": "versioned_am12_successor",
+        "evaluation_authorization": "bounded_study_only",
+        "adoption_status": "evaluation_only_not_adopted",
+        "operator_authorization": "none",
+        "operational_domain_authorization": "none",
+        "q95_operational_disposition": "excluded_historical_diagnostic_only",
+        "exact_operational_endpoints_status": "unresolved",
+        "historical_generic_generator_association": "not_established",
+        "generic_q95_custody_status": (
+            "unresolved_nonblocking_historical_provenance"
+        ),
+        "successor_study_status": "numerical_adoption_evidence_fail",
+        "study_artifact_binding_status": "bound_completed_v2_artifacts",
+    }
+    expected_contract = {
+        "request_id": "SCI-CAL-001-ATM-DECISION-001",
+        "request": {
+            "path": (
+                "validation/sci_cal_001_atmosphere_operator_2026-08-01/"
+                "owner_input_request.json"
+            ),
+            "bytes": 11163,
+            "sha256": OWNER_INPUT_REQUEST_SHA256,
+        },
+        "response_schema": {
+            "schema_version": "sci-cal-001-owner-supplied-manifest-v3",
+            "path": (
+                "validation/sci_cal_001_atmosphere_operator_2026-08-01/"
+                "owner_supplied_manifest.schema.json"
+            ),
+            "bytes": 19593,
+            "sha256": OWNER_SUPPLIED_SCHEMA_SHA256,
+        },
+        "decision_ids": [
+            "Q95-001",
+            "GEN-001",
+            "GEN-002",
+            "LOW-001",
+            "BAND-001",
+            "DOMAIN-001",
+            "WARN-001",
+            "OBS-001",
+        ],
+        "valid_response_effect": (
+            "records_followup_evidence_path_only_no_operator_or_domain_authorization"
+        ),
+    }
+    study = governance.get("successor_study_evidence")
+    if (
+        governance.get("schema_version")
+        != "sci-cal-001-atmosphere-governance-manifest-v2"
+        or governance.get("owner_direction") != expected_owner_direction
+        or governance.get("owner_decision_contract") != expected_contract
+        or not isinstance(study, dict)
+        or study.get("study_id")
+        != "sci-cal-001-am12-successor-adoption-study-v2"
+        or study.get("status") != "numerical_adoption_evidence_fail"
+        or study.get("authorization") != "none_owner_selection_required"
+        or study.get("operator_recommendation") is not None
+        or study.get("conditional_primary_ranking") != []
+        or study.get("study_domain")
+        != {
+            "zenith_tau225_min": "0.00000000000000000e+00",
+            "zenith_tau225_max_q75_selector_anchor": "1.58313198574890929e-01",
+            "aligned_elevation_min_deg": "2.00000000000000000e+01",
+            "aligned_elevation_max_deg": "8.00000000000000000e+01",
+            "q95_included": False,
+        }
+        or set(study.get("owner_decision_required", [])) != OWNER_BLOCKING_FACT_IDS
+    ):
+        raise RuntimeError("completed-v2 governance state/decision contract changed")
+    expected_execution = {
+        "runner_sha256": AM12_SUCCESSOR_CONTROL_IDENTITIES[
+            "run_am12_successor_adoption_study.py"
+        ]["sha256"],
+        "canonical_context_sha256": AM12_SUCCESSOR_CONTEXT_SHA256,
+        "p1_training_grid_count": 155,
+        "scale_search_run_count": 785,
+        "direct_holdout_grid_count": 240,
+        "total_run_inventory_count": 1025,
+        "expanded_holdout_row_count": 23040,
+        "cache_only_replay": "passed_13_artifacts_byte_identical_no_am_process",
+        "excluded_v1_context_sha256": (
+            "f0acb32cd43fd0bd128a06ab8d7e354bc6a6c1389d6d0794db716753d03f85c8"
+        ),
+        "excluded_v1_disposition": (
+            "wrong_documentary_p1_stage_retained_not_reused"
+        ),
+    }
+    expected_numerical_result = {
+        "representation_gate_fraction": "1.00000000000000002e-02",
+        "primary_max_absolute_fractional_correction_error": (
+            "1.15994922334935469e-02"
+        ),
+        "primary_worst_location": "a2000_alpha_minus1_DJF5_q0_q25_midpoint_EL21",
+        "challenger_max_absolute_fractional_correction_error": (
+            "1.10146739018793793e-02"
+        ),
+        "above_q25_best_max_absolute_fractional_correction_error": (
+            "1.63540207204826427e-03"
+        ),
+        "above_q25_simplest_max_absolute_fractional_correction_error": (
+            "2.88110708364130996e-03"
+        ),
+        "post_result_el25_primary_max_absolute_fractional_correction_error": (
+            "9.89845456159954562e-03"
+        ),
+        "post_result_el25_challenger_max_absolute_fractional_correction_error": (
+            "9.49737889738433427e-03"
+        ),
+        "post_result_el25_disposition": (
+            "diagnostic_requires_new_preregistered_confirmation"
+        ),
+        "maximum_fts_vs_ecsv_truth_fractional_difference": (
+            "3.47461271987401510e-02"
+        ),
+    }
+    expected_bound = {
+        "root_manifest": (
+            "am12_successor_adoption_manifest.json",
+            AM12_SUCCESSOR_ARTIFACT_IDENTITIES[
+                "am12_successor_adoption_manifest.json"
+            ],
+        ),
+        "decision": (
+            "am12_successor_decision.json",
+            AM12_SUCCESSOR_ARTIFACT_IDENTITIES["am12_successor_decision.json"],
+        ),
+        "execution_context": (
+            "am12_successor_holdout_execution_context.json",
+            AM12_SUCCESSOR_ARTIFACT_IDENTITIES[
+                "am12_successor_holdout_execution_context.json"
+            ],
+        ),
+        "execution_record": (
+            "AM12_SUCCESSOR_ADOPTION_STUDY_EXECUTION_RECORD_2026-08-01.md",
+            AM12_SUCCESSOR_CONTROL_IDENTITIES[
+                "AM12_SUCCESSOR_ADOPTION_STUDY_EXECUTION_RECORD_2026-08-01.md"
+            ],
+        ),
+    }
+    bound = study.get("bound_artifacts")
+    if (
+        study.get("execution") != expected_execution
+        or study.get("numerical_result") != expected_numerical_result
+        or not isinstance(bound, dict)
+        or set(bound) != set(expected_bound)
+        or any(
+            bound[key].get("path")
+            != (
+                "validation/sci_cal_001_atmosphere_operator_2026-08-01/"
+                f"{filename}"
+            )
+            or bound[key].get("bytes") != identity["bytes"]
+            or bound[key].get("sha256") != identity["sha256"]
+            for key, (filename, identity) in expected_bound.items()
+        )
+    ):
+        raise RuntimeError("completed-v2 governance execution/evidence binding changed")
+
+    regeneration = json.loads(
+        (PACKAGE_DIR / "regeneration_manifest.json").read_text()
+    )
+    regeneration_owner_direction = dict(expected_owner_direction)
+    for key in (
+        "recorded_date",
+        "exact_operational_endpoints_status",
+        "generic_q95_custody_status",
+    ):
+        regeneration_owner_direction.pop(key)
+    artifacts = regeneration.get("artifacts")
+    artifact_by_id = {
+        item.get("id"): item for item in artifacts if isinstance(item, dict)
+    } if isinstance(artifacts, list) else {}
+    successor_files = {
+        "am12-successor-adoption-protocol": "AM12_SUCCESSOR_ADOPTION_STUDY_PROTOCOL.md",
+        "am12-successor-preexecution-clarifications": (
+            "AM12_SUCCESSOR_ADOPTION_STUDY_PREEXECUTION_CLARIFICATIONS.md"
+        ),
+        "am12-successor-study-runner": "run_am12_successor_adoption_study.py",
+        "am12-successor-execution-erratum": (
+            "AM12_SUCCESSOR_ADOPTION_STUDY_EXECUTION_ERRATUM_2026-08-01.md"
+        ),
+        "am12-successor-execution-record": (
+            "AM12_SUCCESSOR_ADOPTION_STUDY_EXECUTION_RECORD_2026-08-01.md"
+        ),
+        "am12-successor-adoption-manifest": "am12_successor_adoption_manifest.json",
+        "am12-successor-study-report": "AM12_SUCCESSOR_ADOPTION_STUDY_REPORT.md",
+        "am12-successor-bandpass-inventory": "am12_successor_bandpass_inventory.csv",
+        "am12-successor-coverage": "am12_successor_coverage.json",
+        "am12-successor-decision": "am12_successor_decision.json",
+        "am12-successor-execution-context": (
+            "am12_successor_holdout_execution_context.json"
+        ),
+        "am12-successor-holdout-rows": "am12_successor_holdout_rows.csv",
+        "am12-successor-holdout-run-inventory": (
+            "am12_successor_holdout_run_inventory.csv"
+        ),
+        "am12-successor-holdout-scales": "am12_successor_holdout_scales.csv",
+        "am12-successor-operator-metrics": "am12_successor_operator_metrics.csv",
+        "am12-successor-operator-nodes": "am12_successor_operator_nodes.csv",
+        "am12-successor-p1-run-inventory": "am12_successor_p1_run_inventory.csv",
+        "am12-successor-physical-metrics": "am12_successor_physical_metrics.csv",
+    }
+    all_successor_identities = {
+        **AM12_SUCCESSOR_ARTIFACT_IDENTITIES,
+        **AM12_SUCCESSOR_CONTROL_IDENTITIES,
+    }
+    expected_regeneration_execution = {
+        "status": "numerical_adoption_evidence_fail",
+        "runner_sha256": AM12_SUCCESSOR_CONTROL_IDENTITIES[
+            "run_am12_successor_adoption_study.py"
+        ]["sha256"],
+        "execution_context_sha256": AM12_SUCCESSOR_CONTEXT_SHA256,
+        "p1_training_grid_count": 155,
+        "scale_search_run_count": 785,
+        "direct_holdout_grid_count": 240,
+        "expanded_holdout_row_count": 23040,
+        "deterministic_artifact_count": 13,
+        "cache_only_replay": "passed_no_am_process",
+        "excluded_predecessor_context_sha256": (
+            "f0acb32cd43fd0bd128a06ab8d7e354bc6a6c1389d6d0794db716753d03f85c8"
+        ),
+    }
+    if (
+        regeneration.get("schema_version")
+        != "sci-cal-001-atmosphere-regeneration-manifest-v2"
+        or regeneration.get("status")
+        != "partial_recovery_successor_evaluation_completed_no_adoption"
+        or regeneration.get("repair_base_sha")
+        != "9aae0e669384c5c0c0dda93debc194d6b8dac787"
+        or regeneration.get("repair_line_evidence_head")
+        != "ae99be1cef8c390d0e7490835ffca1f31da7ebc0"
+        or regeneration.get("owner_direction") != regeneration_owner_direction
+        or regeneration.get("unresolved_fact_ids")
+        != ["LOW-001", "BAND-001", "DOMAIN-001", "WARN-001", "OBS-001"]
+        or set(regeneration.get("historical_nonblocking_fact_ids", []))
+        != OWNER_HISTORICAL_FACT_IDS
+        or not isinstance(artifacts, list)
+        or len(artifacts) != 40
+        or len(artifact_by_id) != 40
+        or regeneration.get("execution", {}).get("successor_evaluation")
+        != expected_regeneration_execution
+        or regeneration.get("operational_domain", {}).get("status")
+        != "unresolved_owner_input_required"
+        or regeneration.get("operational_domain", {}).get("out_of_domain_behavior")
+        != "fail_closed"
+        or regeneration.get("operational_domain", {}).get("required_fact_ids")
+        != ["DOMAIN-001"]
+        or any(
+            regeneration.get("operational_domain", {}).get(key) is not None
+            for key in (
+                "aligned_elevation_max_deg",
+                "aligned_elevation_min_deg",
+                "endpoints_inclusive",
+                "zenith_tau225_max",
+                "zenith_tau225_min",
+            )
+        )
+    ):
+        raise RuntimeError("current regeneration governance/routing changed")
+    for artifact_id, filename in successor_files.items():
+        identity = all_successor_identities[filename]
+        item = artifact_by_id.get(artifact_id)
+        if (
+            not isinstance(item, dict)
+            or item.get("availability") != "task_package"
+            or item.get("path")
+            != (
+                "validation/sci_cal_001_atmosphere_operator_2026-08-01/"
+                f"{filename}"
+            )
+            or item.get("bytes") != identity["bytes"]
+            or item.get("sha256") != identity["sha256"]
+        ):
+            raise RuntimeError(
+                f"regeneration successor artifact binding changed: {artifact_id}"
+            )
+
+
 def verify_followup_evidence() -> None:
     for name in FOLLOWUP_REQUIRED_FILES:
         if not (PACKAGE_DIR / name).is_file():
@@ -4001,6 +5515,8 @@ def verify_followup_evidence() -> None:
     verify_frequency_resolution_evidence()
     verify_native_regeneration_evidence()
     verify_h2o_hypothesis_evidence()
+    verify_am12_successor_adoption_evidence()
+    verify_completed_v2_governance()
 
 
 def run_generated_checks(
@@ -4010,6 +5526,8 @@ def run_generated_checks(
     check_raw_source: bool,
     h2o_cache_dir: Path | None,
     native_cache_dir: Path | None,
+    adoption_cache_dir: Path | None,
+    adoption_p1_cache_dir: Path | None,
 ) -> None:
     commands = [
         [
@@ -4106,6 +5624,38 @@ def run_generated_checks(
             if build_command is not None:
                 native_command.extend(["--native-build-command", build_command])
             commands.append(native_command)
+        if adoption_cache_dir is not None and adoption_p1_cache_dir is not None:
+            adoption_context = json.loads(
+                (
+                    PACKAGE_DIR
+                    / "am12_successor_holdout_execution_context.json"
+                ).read_text()
+            )
+            commands.append(
+                [
+                    sys.executable,
+                    str(PACKAGE_DIR / "run_am12_successor_adoption_study.py"),
+                    "--check",
+                    "--p1-cache-dir",
+                    str(adoption_p1_cache_dir.resolve()),
+                    "--holdout-cache-dir",
+                    str(adoption_cache_dir.resolve()),
+                    "--am-root",
+                    str(AM_ROOT),
+                    "--am-executable",
+                    adoption_context["am_executable"]["resolved_path"],
+                    "--tolteca-repo",
+                    str(TOLTECA_REPOSITORY),
+                    "--beammap-repo",
+                    str(BEAMMAP_REPOSITORY),
+                    "--output-dir",
+                    str(PACKAGE_DIR),
+                    "--jobs",
+                    "8",
+                    "--omp-threads",
+                    "1",
+                ]
+            )
         frequency_manifest = json.loads(
             (PACKAGE_DIR / "frequency_resolution_manifest.json").read_text()
         )
@@ -4173,11 +5723,35 @@ def main() -> int:
             "mode; never launches AM"
         ),
     )
+    parser.add_argument(
+        "--adoption-cache-dir",
+        type=Path,
+        help=(
+            "optional completed-v2 holdout cache for cache-only deterministic "
+            "replay; requires --adoption-p1-cache-dir and never launches AM"
+        ),
+    )
+    parser.add_argument(
+        "--adoption-p1-cache-dir",
+        type=Path,
+        help=(
+            "canonical P1 cache consumed directly by completed-v2 replay; "
+            "requires --adoption-cache-dir and does not invoke the standalone "
+            "P1 wrapper"
+        ),
+    )
     args = parser.parse_args()
     if args.skip_external and (
-        args.h2o_cache_dir is not None or args.native_cache_dir is not None
+        args.h2o_cache_dir is not None
+        or args.native_cache_dir is not None
+        or args.adoption_cache_dir is not None
+        or args.adoption_p1_cache_dir is not None
     ):
         parser.error("cache directories cannot be checked with --skip-external")
+    if (args.adoption_cache_dir is None) != (args.adoption_p1_cache_dir is None):
+        parser.error(
+            "--adoption-cache-dir and --adoption-p1-cache-dir must be supplied together"
+        )
     raw_source_was_supplied = args.raw_source_dir is not None
     raw_source_dir = (
         (args.raw_source_dir if raw_source_was_supplied else RAW_SOURCE_DIR)
@@ -4200,6 +5774,8 @@ def main() -> int:
         check_raw_source=check_raw_source,
         h2o_cache_dir=args.h2o_cache_dir,
         native_cache_dir=args.native_cache_dir,
+        adoption_cache_dir=args.adoption_cache_dir,
+        adoption_p1_cache_dir=args.adoption_p1_cache_dir,
     )
     print("SCI-CAL-001 atmosphere-operator package verification passed")
     return 0

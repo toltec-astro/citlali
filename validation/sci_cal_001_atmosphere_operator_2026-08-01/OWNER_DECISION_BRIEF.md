@@ -2,14 +2,73 @@
 
 ## Direction recorded and decision boundary
 
-**Evaluate a separately versioned AM 12.2 successor to determine whether it warrants adoption. This is study authorization only, not operator adoption or an operational-domain declaration.**
+**The separately versioned AM 12.2 successor study is complete.  It is much
+better behaved than the hard legacy selector, but no frozen candidate passes
+the preregistered one-percent representation gate over the complete
+q0--q75/20--80 degree study domain.  Machine status is
+`numerical_adoption_evidence_fail`; adoption remains
+`evaluation_only_not_adopted`.**
 
-Machine status is `evaluation_only_not_adopted`. Study results are pending and remain unbound from the living package.
-
-1. **Selected evaluation path:** define and test a versioned AM 12.2 successor with an explicit copied-profile rule, H2O-scale construction, grid, spectral convention, unresolved-line warning policy, independent validation design, and bounded q95-excluding study domain.
+1. **Completed evaluation path:** AM 12.2, two frozen profile/H2O-scale lanes,
+   two continuous line-of-sight-optical-depth operators, TolTECA v1 ECSV
+   primary passbands, representative FTS challengers, source indices
+   `alpha=-1,0,2,4`, and direct held-out midpoint calculations over q0--q75
+   and 20--80 degrees.
 2. **Historical provenance disposition:** retain the generic-q custody gap, including generic q95, as unresolved historical/diagnostic evidence. The copied products are distinct from the generic products, while their historical generic-generator association is not established. Do not describe the successor as reproducing or replacing the generic products.
 
-Retain piecewise-linear line-of-sight optical depth as the baseline and PCHIP as the challenger only. Neither is authorized. A future adoption decision must pass exact-anchor, finite-positive-transmission, continuity, opacity-monotonicity, and fail-closed-support gates, plus the provisional one-percent independent model-representation gate throughout the declared successor study domain. Elevation monotonicity must pass within that domain or receive an explicit owner scientific disposition supported by independent model evidence. The sub-percent legacy q95/a2000 excursion remains diagnostic-only and is not a successor release gate.
+No operator or operational domain is authorized.  The sub-percent legacy
+q95/a2000 excursion remains diagnostic-only and is not a successor release
+gate.
+
+## Brass-tacks calibration result
+
+All four lane/operator candidates pass provenance, exact-anchor, positivity,
+continuity, opacity/elevation monotonicity, fail-closed support, and complete
+evidence-coverage gates.  They all fail the full-domain numerical decision at
+the same clear-to-q25 point:
+
+| Quantity | Result |
+| --- | ---: |
+| Worst primary-ECSV correction error | `1.159949%` |
+| Location | a2000, `alpha=-1`, DJF5, q0--q25 midpoint, EL21 |
+| Primary a2000 `alpha=0` maximum | `1.069577%` |
+| Worst FTS-challenger representation error | `1.101467%` |
+| Best above-q25 maximum (`conditioned_djf_v1` + PCHIP) | `0.163540%` |
+| Simplest above-q25 maximum (`fixed_djf25_v1` + piecewise linear) | `0.288111%` |
+| Maximum fixed-versus-conditioned lane difference | `0.049709%` |
+| Maximum piecewise-linear-versus-PCHIP difference on holdouts | `0.123225%` |
+
+The failure is therefore narrow, not a broad model breakdown: every primary
+band/alpha combination other than a2000 `alpha=-1` and `alpha=0` passes, and
+the q25--q50 and q50--q75 intervals are comfortably sub-percent.  The common
+failure comes from the frozen analytic q0-to-q25 segment, so changing the
+above-q25 lane or interpolant cannot cure it.
+
+At the worst row the direct AM correction is `1.057175916` and the operator
+returns `1.044913213`: a `1.159949%` flux under-correction.  The sign therefore
+does not hide a cancellation or merely symmetric scatter.
+
+For comparison, the legacy hard selector has instantaneous extinction-
+correction jumps at q50/q75 of `0.267763%` through `7.735359%` across the
+tested a1100/a1400/a2000 rows at representative EL30--80.  A discontinuity is
+not itself a truth-error measurement, but it is a real calibration step that
+the AM12 continuous candidates remove.  Against direct AM12 truth, the new
+continuous representation is no worse than `1.159949%` over the complete
+study and no worse than `0.288111%` above q25 for even the simplest candidate.
+
+Passband definition is now the larger calibration ambiguity.  Direct truth
+integrated through the representative FTS spectra versus the TolTECA v1 ECSV
+passbands differs by as much as `3.336470%` in a1100, `0.408717%` in a1400,
+and `3.474613%` in a2000.  Those differences are not interpolation error and
+are large enough to matter within a 5--10% absolute-flux objective.
+
+The post-result diagnostic is also informative but is not a new passing
+study: restricting the already inspected rows to EL25--80 gives maximum
+representation errors of `0.989845%` for the primary passbands and
+`0.949738%` for the FTS challengers.  The corresponding maximum FTS-versus-
+ECSV truth difference remains `3.047492%`.  Because EL25 was identified after
+the EL20--80 result was seen, it cannot be used to relabel the frozen study as
+a pass.
 
 ## Evidence now established
 
@@ -20,8 +79,12 @@ Retain piecewise-linear line-of-sight optical depth as the baseline and PCHIP as
 - A post-hoc raw q50 leave-one-model-out check, predicted linearly in line-of-sight optical depth from raw q25 and q75, has worst correction error `0.012264%` (a1400). Using the full-airmass q25/q75 anchor reconstructions gives `0.243563%` (a1400). q50 was already inspected during provenance recovery, so this is not a preregistered or blinded holdout and not a full-domain result.
 - The recovered nominal-frequency q25/q50/q75 raw surfaces have zero increasing-opacity or increasing-elevation monotonicity violations at line-of-sight-tau tolerance `1e-12`.
 - Frozen phase-0 evidence finds material hard-selector discontinuities in all 36 tested above-q25 boundary/band/elevation rows; a continuous operator remains scientifically motivated.
-- The diagnostic exact-anchor candidates preserve source anchors and the approved zero-to-q25 identity, remain finite and positive, and are opacity-monotone. Their `0.839827%` q95/a2000 wrong-way feature belongs to the legacy q0--q95 diagnostic and remains useful characterization evidence, but q95 is outside the selected successor study.
-- C1 tests the legacy-anchor candidates against 16 copied AM 12.2 profiles over the broader legacy q0--q95 diagnostic range. Its quoted a1100 maxima, `1.738766%` and `1.738068%`, occur for `LMT_MAM_75` at modified-secant tau225 `0.294218`, in the upper q75--q95 interval. Whether that point is outside the eventual study domain depends on the still-unapproved upper endpoint. C1 remains post-discovery stress evidence, not a blinded successor holdout or an authorization result.
+- The diagnostic exact-anchor candidates preserve source anchors and the
+  protocol-frozen zero-to-q25 identity, remain finite and positive, and are
+  opacity-monotone. Their `0.839827%` q95/a2000 wrong-way feature belongs to
+  the legacy q0--q95 diagnostic and remains useful characterization evidence,
+  but q95 is outside the selected successor study.
+- C1 tests the legacy-anchor candidates against 16 copied AM 12.2 profiles over the broader legacy q0--q95 diagnostic range. Its quoted a1100 maxima, `1.738766%` and `1.738068%`, occur for `LMT_MAM_75` at modified-secant tau225 `0.294218`, in the upper q75--q95 interval. That point is outside the proposed q0--q75 follow-up support; the proposed support is not an authorized operational domain. C1 remains post-discovery stress evidence, not a blinded successor holdout or an authorization result.
 - A distinct native GCC-15 AM 12.2 build exactly reproduces all five parsed fields and numeric lines for all `180/180` annual cases. All cases retain the accepted unresolved-line warning/status 1. Co-staging and matching output-build identity do not prove that the exact copied Linux ELF generated the historical files.
 - R1 passes its preregistered 0.1% frequency-resolution diagnostic: the 10-MHz maximum correction difference from 1 MHz is `0.000340%`. Status-1 unresolved-line warnings persist, so this is not a clean software-success or warning-policy decision.
 
@@ -43,18 +106,46 @@ P1's complete-grid result is a provenance mismatch: no q25/q50/q75 profile passe
 
 P1 is post hoc and cannot establish generic custody or serve as an independent operator holdout. The nominal-frequency results are provisional numerical diagnostics only. They do not establish 5--10% absolute flux accuracy or approximately 5% repeatability.
 
-## Successor study inputs and later choices still required
+## Owner decision now required
 
-The exact request is machine-readable in `owner_input_request.json`. The selected evaluation path still requires:
+The frozen 20--80 degree study cannot recommend adoption by its own rule.
+Choose one `LOW-001` scientific path before another selection study is
+registered:
 
-1. Select and version the AM 12.2 profile family and H2O-scale construction. P1 fitted scales narrow hypotheses but do not make this scientific choice.
-2. Supply or approve genuinely independent intermediate-opacity model runs across the q95-excluding study range. P1 fitted scales and C1 copied profiles were inspected post hoc and are not substitutes.
-3. Resolve structural gates within the successor study domain and later approve exact zenith-opacity/aligned-elevation endpoints only where raw and independent model support exists. No extrapolation is authorized; out-of-domain requests must fail closed.
-4. Choose and version the spectral convention. A monochromatic choice fixes 272.73/214.29/150.00 GHz relative to 225.00 GHz. Band integration requires immutable passbands, aggregation, normalization, source spectrum, and quadrature rules.
-5. Approve the treatment of AM's unresolved-line status-1 output; R1 does not make that policy choice.
-6. Retain generic q95 and exact generic-generator custody as nonblocking historical provenance. Their absence does not prevent the successor evaluation.
+1. **Keep EL20 support.** Replace or augment the analytic q0 anchor with an
+   explicitly physical dry-atmosphere/low-opacity construction, then freeze
+   and test new q0--q25 opacity holdouts.  This addresses the actual failure
+   mechanism without weakening the one-percent gate.
+2. **Set a higher minimum elevation.** Declare whether EL25 is an acceptable
+   proposed follow-up floor, retain q0 through the exact q75 selector anchor
+   (`tau225=0.158313198574890929`), and run a new preregistered confirmation at
+   opacity/elevation nodes not used to discover that floor.  Existing rows
+   support this path numerically but do not constitute a blinded confirmation.
+3. **Relax the representation gate.** Explicitly accept at least `1.159949%`
+   (a practical rounded contract would need to be chosen) over EL20--80.  This
+   is scientifically defensible only as an owner change to a numerical
+   representation criterion; it must not be described as one-percent
+   photometry.
 
-No exact opacity or elevation endpoints are approved here.
+Independently choose the `BAND-001` production passband convention.  The TolTECA v1 ECSV
+files are immutable and reproducible, but the single-network FTS challengers
+show up to `3.474613%` calibration sensitivity and are not an array-average
+operational passband.  Either explicitly select the TolTECA ECSV convention
+for a named successor version or supply detector/array-weighted operational
+passbands with immutable provenance and repeat the band integrations.
+
+If the owner chooses the EL25 path and the TolTECA v1 ECSV convention, the
+protocol's simplicity tie-break conditionally points to
+`fixed_djf25_v1` + `am12_piecewise_linear_los_tau_eval_v0` on closed support
+`0 <= tau225 <= 0.158313198574890929`, `25 <= EL <= 80`, with fail-closed
+behavior.  This is a precise follow-up candidate, not an adoption or
+operational authorization.  The observed conditioned/PCHIP improvement above
+q25 is only `0.124571` percentage point in worst correction error and remains
+small compared with the unresolved passband sensitivity.
+
+The exact `DOMAIN-001` support, `WARN-001` warning-status-1 policy, and later
+`OBS-001` observational campaign also remain required.  Generic q95 and exact generic-generator custody stay nonblocking
+historical provenance and do not enter any of these choices.
 
 ## Separate gates and open dependency
 

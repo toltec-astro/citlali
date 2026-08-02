@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://toltec.astro.umass.edu/schemas/sci-cal-001/owner-supplied-manifest-v2.json",
-  "title": "SCI-CAL-001 owner-supplied input manifest",
-  "description": "A compact manifest for partial or complete owner responses to SCI-CAL-001-ATM-INPUT-001 under the fixed versioned-AM12 evaluation path. It records evaluation-only governance, unresolved historical custody, study-definition responses, and digest-bound supplied artifacts without authorizing adoption, an operator, or an operational domain.",
+  "$id": "https://toltec.astro.umass.edu/schemas/sci-cal-001/owner-supplied-manifest-v3.json",
+  "title": "SCI-CAL-001 completed-v2 owner decision manifest",
+  "description": "Validates only owner responses to SCI-CAL-001-ATM-DECISION-001. A valid response records the selected follow-up evidence path; it does not adopt an atmosphere operator or authorize an operational domain.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -10,75 +10,25 @@
     "package_id",
     "request_id",
     "submission_date",
-    "owner_path",
-    "evaluation_authorization",
+    "submitted_by",
+    "machine_status",
+    "study_artifact_binding_status",
     "adoption_status",
     "operator_authorization",
     "operational_domain_authorization",
     "q95_operational_disposition",
-    "successor_study_status",
-    "study_artifact_binding_status",
     "historical_generic_generator_association",
     "historical_generic_lineage_custody_status",
-    "responses",
-    "artifacts",
-    "successor_selection"
+    "historical_generic_products_replaced",
+    "completed_v2_binding",
+    "evidence_semantics",
+    "decisions",
+    "authorization_effect"
   ],
   "$defs": {
     "sha256": {
       "type": "string",
       "pattern": "^[0-9a-f]{64}$"
-    },
-    "fact_id": {
-      "enum": [
-        "Q95-001",
-        "GEN-001",
-        "GEN-002",
-        "PROF-001",
-        "PROF-002",
-        "SITE-001",
-        "GRID-001",
-        "MID-001",
-        "SPEC-001",
-        "BAND-001-CONDITIONAL",
-        "DOMAIN-001"
-      ]
-    },
-    "response": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "fact_id",
-        "disposition",
-        "statement",
-        "artifact_ids"
-      ],
-      "properties": {
-        "fact_id": {
-          "$ref": "#/$defs/fact_id"
-        },
-        "disposition": {
-          "enum": [
-            "evidence_supplied",
-            "partial_evidence_supplied",
-            "owner_choice_approved",
-            "not_applicable_for_selected_path",
-            "unresolved_retained"
-          ]
-        },
-        "statement": {
-          "type": "string",
-          "minLength": 1
-        },
-        "artifact_ids": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "minLength": 1
-          },
-          "uniqueItems": true
-        }
-      }
     },
     "artifact": {
       "type": "object",
@@ -112,64 +62,430 @@
         "sha256": {
           "$ref": "#/$defs/sha256"
         },
-        "md5_registry_identity": {
-          "type": "string",
-          "pattern": "^[0-9a-f]{32}$"
-        },
         "custody_source": {
           "type": "string",
           "minLength": 1
         },
         "original_bytes_preserved": {
-          "type": "boolean"
+          "const": true
         }
       }
     },
-    "successor_selection": {
+    "historical_response": {
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "model_id",
-        "model_version",
-        "basis",
-        "profile_family_rule",
-        "frequency_grid_policy",
-        "spectral_convention",
-        "unresolved_line_status_policy",
-        "historical_generic_products_replaced"
+        "disposition",
+        "statement",
+        "artifacts"
       ],
       "properties": {
-        "model_id": {
-          "type": "string",
-          "minLength": 1
-        },
-        "model_version": {
-          "type": "string",
-          "minLength": 1
-        },
-        "basis": {
-          "const": "copied_am_12_2"
-        },
-        "profile_family_rule": {
-          "type": "string",
-          "minLength": 1
-        },
-        "frequency_grid_policy": {
-          "type": "string",
-          "minLength": 1
-        },
-        "spectral_convention": {
+        "disposition": {
           "enum": [
-            "legacy_monochromatic",
-            "band_integrated_new_convention"
+            "unresolved_retained",
+            "partial_evidence_supplied_nonblocking",
+            "evidence_supplied"
           ]
         },
-        "unresolved_line_status_policy": {
+        "statement": {
           "type": "string",
           "minLength": 1
         },
-        "historical_generic_products_replaced": {
+        "artifacts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/artifact"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "disposition": {
+                "const": "unresolved_retained"
+              }
+            },
+            "required": [
+              "disposition"
+            ]
+          },
+          "then": {
+            "properties": {
+              "artifacts": {
+                "maxItems": 0
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "artifacts": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "low_response": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "choice",
+        "rationale"
+      ],
+      "properties": {
+        "choice": {
+          "enum": [
+            "retain_el20_and_revise_q0_q25",
+            "confirm_el25_minimum_with_preregistered_evidence",
+            "explicitly_change_representation_fidelity_gate"
+          ]
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1
+        },
+        "replacement_gate_max_fractional_correction_error": {
+          "type": "number",
+          "minimum": 0.0115994922334935469,
+          "maximum": 1
+        },
+        "replacement_gate_is_at_least_observed_failure": {
+          "const": true
+        },
+        "replacement_gate_interpretation": {
+          "const": "numerical_representation_fidelity_only_not_photometric_accuracy"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "choice": {
+                "const": "explicitly_change_representation_fidelity_gate"
+              }
+            },
+            "required": [
+              "choice"
+            ]
+          },
+          "then": {
+            "required": [
+              "replacement_gate_max_fractional_correction_error",
+              "replacement_gate_is_at_least_observed_failure",
+              "replacement_gate_interpretation"
+            ]
+          },
+          "else": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "replacement_gate_max_fractional_correction_error"
+                  ]
+                },
+                {
+                  "required": [
+                    "replacement_gate_is_at_least_observed_failure"
+                  ]
+                },
+                {
+                  "required": [
+                    "replacement_gate_interpretation"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "band_response": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "choice",
+            "rationale",
+            "selected_passband_commit",
+            "selected_passband_sha256_by_array",
+            "source_spectral_convention"
+          ],
+          "properties": {
+            "choice": {
+              "const": "select_tolteca_v1_ecsv"
+            },
+            "rationale": {
+              "type": "string",
+              "minLength": 1
+            },
+            "selected_passband_commit": {
+              "const": "2791e6a1e6349ad1d3ac549a648f41cbc51b98c7"
+            },
+            "selected_passband_sha256_by_array": {
+              "const": {
+                "a1100": "13b8fd009bb8d7c375d3c46d21e26d0a779f7f00a949a2a5ccd619d1fe56fd72",
+                "a1400": "a7b671d9f659cbc98dad99d3015ce81a3d7a3486c702819d9b3305703e7c682e",
+                "a2000": "77e4b33c7bbc2c345ef94d41480d5fee5cb096d789f4fe78e1b4f80a37e0d6ff"
+              }
+            },
+            "source_spectral_convention": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "choice",
+            "rationale",
+            "passband_version_id",
+            "passband_artifacts_by_array",
+            "detector_or_array_weighting_rule",
+            "aggregation_rule",
+            "normalization_rule",
+            "source_spectral_convention",
+            "quadrature_rule",
+            "out_of_band_policy"
+          ],
+          "properties": {
+            "choice": {
+              "const": "supply_detector_or_array_weighted_operational_passbands"
+            },
+            "rationale": {
+              "type": "string",
+              "minLength": 1
+            },
+            "passband_version_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "passband_artifacts_by_array": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "a1100",
+                "a1400",
+                "a2000"
+              ],
+              "properties": {
+                "a1100": {
+                  "$ref": "#/$defs/artifact"
+                },
+                "a1400": {
+                  "$ref": "#/$defs/artifact"
+                },
+                "a2000": {
+                  "$ref": "#/$defs/artifact"
+                }
+              }
+            },
+            "detector_or_array_weighting_rule": {
+              "type": "string",
+              "minLength": 1
+            },
+            "aggregation_rule": {
+              "type": "string",
+              "minLength": 1
+            },
+            "normalization_rule": {
+              "type": "string",
+              "minLength": 1
+            },
+            "source_spectral_convention": {
+              "type": "string",
+              "minLength": 1
+            },
+            "quadrature_rule": {
+              "type": "string",
+              "minLength": 1
+            },
+            "out_of_band_policy": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      ]
+    },
+    "domain_response": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tau225_min",
+        "tau225_max",
+        "elevation_min_deg",
+        "elevation_max_deg",
+        "tau225_min_inclusive",
+        "tau225_max_inclusive",
+        "elevation_min_inclusive",
+        "elevation_max_inclusive",
+        "outside_domain_policy",
+        "q95_included",
+        "sample_airmass_application",
+        "airmass_pivot",
+        "aligned_elevation_eligibility",
+        "proposed_domain_is_not_operational_authorization"
+      ],
+      "properties": {
+        "tau225_min": {
+          "const": "0"
+        },
+        "tau225_max": {
+          "const": "0.158313198574890929"
+        },
+        "elevation_min_deg": {
+          "enum": [
+            "20",
+            "25"
+          ]
+        },
+        "elevation_max_deg": {
+          "const": "80"
+        },
+        "tau225_min_inclusive": {
+          "const": true
+        },
+        "tau225_max_inclusive": {
+          "const": true
+        },
+        "elevation_min_inclusive": {
+          "const": true
+        },
+        "elevation_max_inclusive": {
+          "const": true
+        },
+        "outside_domain_policy": {
+          "const": "fail_closed"
+        },
+        "q95_included": {
           "const": false
+        },
+        "sample_airmass_application": {
+          "const": "full_modified_secant_airmass_per_eligible_sample"
+        },
+        "airmass_pivot": {
+          "const": "top_of_atmosphere_X_ref_0"
+        },
+        "aligned_elevation_eligibility": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "ordered_sample_identity_required",
+            "timing_gap_or_interpolation_origin_required",
+            "sample_duration_required",
+            "original_or_synthesized_eligibility_required",
+            "missing_or_ineligible_policy"
+          ],
+          "properties": {
+            "ordered_sample_identity_required": {
+              "const": true
+            },
+            "timing_gap_or_interpolation_origin_required": {
+              "const": true
+            },
+            "sample_duration_required": {
+              "const": true
+            },
+            "original_or_synthesized_eligibility_required": {
+              "const": true
+            },
+            "missing_or_ineligible_policy": {
+              "const": "fail_closed"
+            }
+          }
+        },
+        "proposed_domain_is_not_operational_authorization": {
+          "const": true
+        }
+      }
+    },
+    "warning_response": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "choice",
+            "rationale",
+            "accepted_status_1_contract"
+          ],
+          "properties": {
+            "choice": {
+              "const": "accept_bounded_status_1_warning_bearing_evidence"
+            },
+            "rationale": {
+              "type": "string",
+              "minLength": 1
+            },
+            "accepted_status_1_contract": {
+              "const": {
+                "numeric_rows_required": 50001,
+                "only_known_unresolved_line_records_and_summary": true,
+                "cache_mutation_warning_count": 0,
+                "unknown_warning_count": 0,
+                "error_line_count": 0,
+                "classification": "warning_bearing_evidence_not_clean_software_success"
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "choice",
+            "rationale",
+            "required_return_status",
+            "followup_generation_required"
+          ],
+          "properties": {
+            "choice": {
+              "const": "require_status_0_before_numerical_selection"
+            },
+            "rationale": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required_return_status": {
+              "const": 0
+            },
+            "followup_generation_required": {
+              "const": true
+            }
+          }
+        }
+      ]
+    },
+    "observational_response": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "choice",
+        "statement",
+        "campaign_gate"
+      ],
+      "properties": {
+        "choice": {
+          "const": "require_separate_observational_campaign_after_numerical_selection"
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "campaign_gate": {
+          "const": {
+            "absolute_flux_accuracy_target_percent_min": 5,
+            "absolute_flux_accuracy_target_percent_max": 10,
+            "provisional_repeatability_target_percent": 5,
+            "separate_from_software_correctness": true,
+            "separate_from_model_representation_fidelity": true,
+            "sample_count_does_not_remove_common_systematics": true
+          }
         }
       }
     }
@@ -179,13 +495,13 @@
       "type": "string"
     },
     "schema_version": {
-      "const": "sci-cal-001-owner-supplied-manifest-v2"
+      "const": "sci-cal-001-owner-supplied-manifest-v3"
     },
     "package_id": {
       "const": "SCI-CAL-001"
     },
     "request_id": {
-      "const": "SCI-CAL-001-ATM-INPUT-001"
+      "const": "SCI-CAL-001-ATM-DECISION-001"
     },
     "submission_date": {
       "type": "string",
@@ -195,11 +511,11 @@
       "type": "string",
       "minLength": 1
     },
-    "owner_path": {
-      "const": "versioned_am12_successor"
+    "machine_status": {
+      "const": "numerical_adoption_evidence_fail"
     },
-    "evaluation_authorization": {
-      "const": "bounded_study_only"
+    "study_artifact_binding_status": {
+      "const": "bound_completed_v2_artifacts"
     },
     "adoption_status": {
       "const": "evaluation_only_not_adopted"
@@ -213,33 +529,195 @@
     "q95_operational_disposition": {
       "const": "excluded_historical_diagnostic_only"
     },
-    "successor_study_status": {
-      "const": "pending_results"
-    },
-    "study_artifact_binding_status": {
-      "const": "unbound_pending_study_results"
-    },
     "historical_generic_generator_association": {
       "const": "not_established"
     },
     "historical_generic_lineage_custody_status": {
       "const": "unresolved_retained"
     },
-    "responses": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/response"
-      },
-      "minItems": 1
+    "historical_generic_products_replaced": {
+      "const": false
     },
-    "artifacts": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/artifact"
+    "completed_v2_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "study_schema_version",
+        "decision_schema_version",
+        "artifact_count",
+        "adoption_manifest_sha256",
+        "decision_sha256",
+        "report_sha256",
+        "repair_base_sha",
+        "repair_line_evidence_head_sha"
+      ],
+      "properties": {
+        "study_schema_version": {
+          "const": "sci-cal-001-am12-successor-adoption-study-v2"
+        },
+        "decision_schema_version": {
+          "const": "sci-cal-001-am12-successor-adoption-study-v2-decision-v1"
+        },
+        "artifact_count": {
+          "const": 13
+        },
+        "adoption_manifest_sha256": {
+          "const": "c9f6aea80851fb7726b8845d4697af1cb270cb7ff7ce51d3d5fc63828f793b3a"
+        },
+        "decision_sha256": {
+          "const": "976c6c6a269a1b5dabde2b5eba89cb6176b02b837ea2b7b0e26a64307fe9ee59"
+        },
+        "report_sha256": {
+          "const": "0bd1a2c00984ad1b8586c1979dba4834df3e96ce8d5322bae30c455d675e0565"
+        },
+        "repair_base_sha": {
+          "const": "9aae0e669384c5c0c0dda93debc194d6b8dac787"
+        },
+        "repair_line_evidence_head_sha": {
+          "const": "ae99be1cef8c390d0e7490835ffca1f31da7ebc0"
+        }
       }
     },
-    "successor_selection": {
-      "$ref": "#/$defs/successor_selection"
+    "evidence_semantics": {
+      "const": {
+        "valid_manifest_is_not_adoption_authorization": true,
+        "valid_manifest_is_not_operator_authorization": true,
+        "valid_manifest_is_not_operational_domain_authorization": true,
+        "missing_invalid_or_unreviewed_response_fails_closed": true,
+        "one_percent_is_numerical_representation_fidelity_only": true,
+        "post_hoc_el25_is_not_preregistered_confirmation": true,
+        "observational_performance_is_a_separate_gate": true
+      }
+    },
+    "decisions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "Q95-001",
+        "GEN-001",
+        "GEN-002",
+        "LOW-001",
+        "BAND-001",
+        "DOMAIN-001",
+        "WARN-001",
+        "OBS-001"
+      ],
+      "properties": {
+        "Q95-001": {
+          "$ref": "#/$defs/historical_response"
+        },
+        "GEN-001": {
+          "$ref": "#/$defs/historical_response"
+        },
+        "GEN-002": {
+          "$ref": "#/$defs/historical_response"
+        },
+        "LOW-001": {
+          "$ref": "#/$defs/low_response"
+        },
+        "BAND-001": {
+          "$ref": "#/$defs/band_response"
+        },
+        "DOMAIN-001": {
+          "$ref": "#/$defs/domain_response"
+        },
+        "WARN-001": {
+          "$ref": "#/$defs/warning_response"
+        },
+        "OBS-001": {
+          "$ref": "#/$defs/observational_response"
+        }
+      }
+    },
+    "authorization_effect": {
+      "const": "records_owner_choices_and_authorizes_only_the_selected_followup_evidence_path"
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "decisions": {
+            "properties": {
+              "LOW-001": {
+                "properties": {
+                  "choice": {
+                    "const": "confirm_el25_minimum_with_preregistered_evidence"
+                  }
+                },
+                "required": [
+                  "choice"
+                ]
+              }
+            },
+            "required": [
+              "LOW-001"
+            ]
+          }
+        },
+        "required": [
+          "decisions"
+        ]
+      },
+      "then": {
+        "properties": {
+          "decisions": {
+            "properties": {
+              "DOMAIN-001": {
+                "properties": {
+                  "elevation_min_deg": {
+                    "const": "25"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "decisions": {
+            "properties": {
+              "LOW-001": {
+                "properties": {
+                  "choice": {
+                    "enum": [
+                      "retain_el20_and_revise_q0_q25",
+                      "explicitly_change_representation_fidelity_gate"
+                    ]
+                  }
+                },
+                "required": [
+                  "choice"
+                ]
+              }
+            },
+            "required": [
+              "LOW-001"
+            ]
+          }
+        },
+        "required": [
+          "decisions"
+        ]
+      },
+      "then": {
+        "properties": {
+          "decisions": {
+            "properties": {
+              "DOMAIN-001": {
+                "properties": {
+                  "elevation_min_deg": {
+                    "const": "20"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
 }

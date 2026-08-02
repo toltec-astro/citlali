@@ -1,5 +1,5 @@
 {
-  "schema_version": "sci-cal-001-atmosphere-governance-manifest-v1",
+  "schema_version": "sci-cal-001-atmosphere-governance-manifest-v2",
   "package_id": "SCI-CAL-001",
   "created_date": "2026-08-01",
   "source_identity": {
@@ -19,8 +19,33 @@
     "exact_operational_endpoints_status": "unresolved",
     "historical_generic_generator_association": "not_established",
     "generic_q95_custody_status": "unresolved_nonblocking_historical_provenance",
-    "successor_study_status": "pending_results",
-    "study_artifact_binding_status": "unbound_pending_study_results"
+    "successor_study_status": "numerical_adoption_evidence_fail",
+    "study_artifact_binding_status": "bound_completed_v2_artifacts"
+  },
+  "owner_decision_contract": {
+    "request_id": "SCI-CAL-001-ATM-DECISION-001",
+    "request": {
+      "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/owner_input_request.json",
+      "bytes": 11163,
+      "sha256": "32c5c85abd6d3bc1c66c0a2d031691d0765aae03bee391ac9c0fa7137e14d955"
+    },
+    "response_schema": {
+      "schema_version": "sci-cal-001-owner-supplied-manifest-v3",
+      "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/owner_supplied_manifest.schema.json",
+      "bytes": 19593,
+      "sha256": "d7bf5f6551fd587918e2b980cac0863ab6cdb8442e1c87beb21b612510fc81f5"
+    },
+    "decision_ids": [
+      "Q95-001",
+      "GEN-001",
+      "GEN-002",
+      "LOW-001",
+      "BAND-001",
+      "DOMAIN-001",
+      "WARN-001",
+      "OBS-001"
+    ],
+    "valid_response_effect": "records_followup_evidence_path_only_no_operator_or_domain_authorization"
   },
   "owner_approved_records": [
     {
@@ -83,6 +108,73 @@
       "role": "selector threshold authority"
     }
   ],
+  "successor_study_evidence": {
+    "study_id": "sci-cal-001-am12-successor-adoption-study-v2",
+    "status": "numerical_adoption_evidence_fail",
+    "authorization": "none_owner_selection_required",
+    "operator_recommendation": null,
+    "conditional_primary_ranking": [],
+    "study_domain": {
+      "zenith_tau225_min": "0.00000000000000000e+00",
+      "zenith_tau225_max_q75_selector_anchor": "1.58313198574890929e-01",
+      "aligned_elevation_min_deg": "2.00000000000000000e+01",
+      "aligned_elevation_max_deg": "8.00000000000000000e+01",
+      "q95_included": false
+    },
+    "execution": {
+      "runner_sha256": "ace8e08a037535260b6b1d889f83dbf722ffc932e05bc1f7f83f0565ef0ff47c",
+      "canonical_context_sha256": "05dd063ca433b79ab3e2c2fa469e0976802a69502232aae2ddc58121d1a7ccff",
+      "p1_training_grid_count": 155,
+      "scale_search_run_count": 785,
+      "direct_holdout_grid_count": 240,
+      "total_run_inventory_count": 1025,
+      "expanded_holdout_row_count": 23040,
+      "cache_only_replay": "passed_13_artifacts_byte_identical_no_am_process",
+      "excluded_v1_context_sha256": "f0acb32cd43fd0bd128a06ab8d7e354bc6a6c1389d6d0794db716753d03f85c8",
+      "excluded_v1_disposition": "wrong_documentary_p1_stage_retained_not_reused"
+    },
+    "numerical_result": {
+      "representation_gate_fraction": "1.00000000000000002e-02",
+      "primary_max_absolute_fractional_correction_error": "1.15994922334935469e-02",
+      "primary_worst_location": "a2000_alpha_minus1_DJF5_q0_q25_midpoint_EL21",
+      "challenger_max_absolute_fractional_correction_error": "1.10146739018793793e-02",
+      "above_q25_best_max_absolute_fractional_correction_error": "1.63540207204826427e-03",
+      "above_q25_simplest_max_absolute_fractional_correction_error": "2.88110708364130996e-03",
+      "post_result_el25_primary_max_absolute_fractional_correction_error": "9.89845456159954562e-03",
+      "post_result_el25_challenger_max_absolute_fractional_correction_error": "9.49737889738433427e-03",
+      "post_result_el25_disposition": "diagnostic_requires_new_preregistered_confirmation",
+      "maximum_fts_vs_ecsv_truth_fractional_difference": "3.47461271987401510e-02"
+    },
+    "bound_artifacts": {
+      "root_manifest": {
+        "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/am12_successor_adoption_manifest.json",
+        "bytes": 52198,
+        "sha256": "c9f6aea80851fb7726b8845d4697af1cb270cb7ff7ce51d3d5fc63828f793b3a"
+      },
+      "decision": {
+        "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/am12_successor_decision.json",
+        "bytes": 40864,
+        "sha256": "976c6c6a269a1b5dabde2b5eba89cb6176b02b837ea2b7b0e26a64307fe9ee59"
+      },
+      "execution_context": {
+        "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/am12_successor_holdout_execution_context.json",
+        "bytes": 17531,
+        "sha256": "05dd063ca433b79ab3e2c2fa469e0976802a69502232aae2ddc58121d1a7ccff"
+      },
+      "execution_record": {
+        "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/AM12_SUCCESSOR_ADOPTION_STUDY_EXECUTION_RECORD_2026-08-01.md",
+        "bytes": 4802,
+        "sha256": "ce20486a7734d6a14781dbbd7f8e45b0c55e385d4c724918497468a0c93d3177"
+      }
+    },
+    "owner_decision_required": [
+      "LOW-001",
+      "BAND-001",
+      "DOMAIN-001",
+      "WARN-001",
+      "OBS-001"
+    ]
+  },
   "scope_guards": [
     "no Citlali application-code modification",
     "no Unity access or request",

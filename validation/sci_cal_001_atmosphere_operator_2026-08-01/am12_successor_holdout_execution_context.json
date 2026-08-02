@@ -1,0 +1,600 @@
+{
+  "am_executable": {
+    "binary_format": "mach-o",
+    "resolved_path": "/private/tmp/sci_cal_001_am12_2_native_build_20260801_root/am",
+    "sha256": "78e721d45b08990069a2d67a5fb337446bcbfb728046940c0d473bea340205fb",
+    "size_bytes": 58435360
+  },
+  "coordinate_source": {
+    "path_relative_to_package": "legacy_anchor_manifest.json",
+    "q0_q75_targets": {
+      "am_q0": {
+        "reference_225ghz_transmission_literal": "1.0",
+        "tau225_selector_anchor_binary64": "0.00000000000000000e+00"
+      },
+      "am_q25": {
+        "reference_225ghz_transmission_literal": "0.9500275",
+        "tau225_selector_anchor_binary64": "5.04874104674104401e-02"
+      },
+      "am_q50": {
+        "reference_225ghz_transmission_literal": "0.9142065",
+        "tau225_selector_anchor_binary64": "8.83393725904400573e-02"
+      },
+      "am_q75": {
+        "reference_225ghz_transmission_literal": "0.8515054",
+        "tau225_selector_anchor_binary64": "1.58313198574890929e-01"
+      }
+    },
+    "sha256": "e481a0053e4262d7db884e34f184463c2a17a546996ad9ba1d5065c6eb97bb74"
+  },
+  "copied_scale1_npz_inputs": {
+    "copied_am_manifest": {
+      "canonical_product_manifest_sha256": "18dfd96f4438151197d3b6be5201476f7a71710363d81ec49c801101fa12b3ac",
+      "path_relative_to_package": "copied_am_manifest.json",
+      "sha256": "714ad24329e625625da281d3b31ac2d28d04ab3c516980d516cff5ddadb027a9",
+      "size_bytes": 44208
+    },
+    "cross_inventory_identity_pass": true,
+    "p1_inventory": {
+      "execution_context_sha256": "05148050e96e73577ec75be525b026b5bf37bbd2a8753f8e3702fc0b6dfb2bee",
+      "inventory_path": "inputs.copied_scale1_npz_products",
+      "recorded_copied_suite_manifest": {
+        "canonical_product_manifest_sha256": "18dfd96f4438151197d3b6be5201476f7a71710363d81ec49c801101fa12b3ac",
+        "filename": "copied_am_manifest.json",
+        "sha256": "ef525bc5f2883f181cccd43f585b4e398d227f2a26eeca0ed90cf4f5922f520f",
+        "size_bytes": 43771
+      }
+    },
+    "products": [
+      {
+        "copied_scale1_tau_los_el80_225ghz": "4.96647900000000003e-02",
+        "copied_scale1_transmission_el80_225ghz": "9.51548300000000014e-01",
+        "filename": "LMT_DJF_25.npz",
+        "md5_from_both_inventories": "3abe83329e39baa734b62f0e87db5a9c",
+        "path_relative_to_am_root": "Big_Atmosphere/LMT_am_npz/LMT_DJF_25.npz",
+        "profile": "LMT_DJF_25",
+        "sha256": "b43982166d4755fca5ae2454c151c1cae55637dbb6b1b0a8e9dd3dd5555ef717",
+        "size_bytes": 57602678
+      },
+      {
+        "copied_scale1_tau_los_el80_225ghz": "2.55670900000000006e-02",
+        "copied_scale1_transmission_el80_225ghz": "9.74756999999999985e-01",
+        "filename": "LMT_DJF_5.npz",
+        "md5_from_both_inventories": "91545dca93d0e9300718b049893b8eea",
+        "path_relative_to_am_root": "Big_Atmosphere/LMT_am_npz/LMT_DJF_5.npz",
+        "profile": "LMT_DJF_5",
+        "sha256": "214d9fa975c73afa01a4e1b5c5f068245779989578acd8574831b7fe2b6ed6cc",
+        "size_bytes": 57602678
+      },
+      {
+        "copied_scale1_tau_los_el80_225ghz": "8.74456799999999979e-02",
+        "copied_scale1_transmission_el80_225ghz": "9.16268599999999989e-01",
+        "filename": "LMT_DJF_50.npz",
+        "md5_from_both_inventories": "004cb342896210fd23d81b329d0246f0",
+        "path_relative_to_am_root": "Big_Atmosphere/LMT_am_npz/LMT_DJF_50.npz",
+        "profile": "LMT_DJF_50",
+        "sha256": "57e6eebebe40f0bd1fb9b3a2411a73a1bd4cc0f4762a316af1c23758060a02ec",
+        "size_bytes": 57602678
+      },
+      {
+        "copied_scale1_tau_los_el80_225ghz": "1.59060499999999994e-01",
+        "copied_scale1_transmission_el80_225ghz": "8.52944700000000000e-01",
+        "filename": "LMT_DJF_75.npz",
+        "md5_from_both_inventories": "e2478719dd67fdbe6ea0d1fb753ab267",
+        "path_relative_to_am_root": "Big_Atmosphere/LMT_am_npz/LMT_DJF_75.npz",
+        "profile": "LMT_DJF_75",
+        "sha256": "67f7af72dd94a0c26cdf9759d75345c1d5e53b756418937b9471137c6f10f552",
+        "size_bytes": 57602678
+      },
+      {
+        "copied_scale1_tau_los_el80_225ghz": "9.72951600000000055e-02",
+        "copied_scale1_transmission_el80_225ghz": "9.07288199999999989e-01",
+        "filename": "LMT_MAM_25.npz",
+        "md5_from_both_inventories": "074009197665f6c642ca8a9659f6f650",
+        "path_relative_to_am_root": "Big_Atmosphere/LMT_am_npz/LMT_MAM_25.npz",
+        "profile": "LMT_MAM_25",
+        "sha256": "9851853d67e8f4b8eb257aec82e9d758d6fba0daaf2348b44bd95a1cd7714195",
+        "size_bytes": 57602678
+      },
+      {
+        "copied_scale1_tau_los_el80_225ghz": "8.84221899999999977e-02",
+        "copied_scale1_transmission_el80_225ghz": "9.15374299999999974e-01",
+        "filename": "LMT_annual_25.npz",
+        "md5_from_both_inventories": "e344a36e5e7ba6b701ef3a51d7298c20",
+        "path_relative_to_am_root": "Big_Atmosphere/LMT_am_npz/LMT_annual_25.npz",
+        "profile": "LMT_annual_25",
+        "sha256": "4dc19a1d4a6da41b8cae51bcdc910fd65f8783cb744d9ea0ae6a8108456abd25",
+        "size_bytes": 57602678
+      }
+    ],
+    "whole_copied_manifest_identity_match": false,
+    "whole_manifest_lineage_disposition": "current_package_manifest_wrapper_revision_differs_from_P1_frozen_whole_file_but_canonical_product_manifest_and_each_used_NPZ_identity_match_exactly"
+  },
+  "execution_erratum": {
+    "correction": "derive_P1_cache_stage_from_frozen_ancillary_screening_transmission_rank1",
+    "filename": "AM12_SUCCESSOR_ADOPTION_STUDY_EXECUTION_ERRATUM_2026-08-01.md",
+    "predecessor_cache_disposition": "excluded_not_reused",
+    "predecessor_execution_context_sha256": "f0acb32cd43fd0bd128a06ab8d7e354bc6a6c1389d6d0794db716753d03f85c8",
+    "sha256": "590f49007065e604aced97fc391067e981a94d7336db1cec81512dd0de893e4e"
+  },
+  "execution_host": {
+    "machine": "arm64",
+    "node": "ASTRO-GWILSON01.local",
+    "numpy": "2.2.3",
+    "python": "3.13.2",
+    "python_executable": "/opt/homebrew/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/bin/python3.13",
+    "release": "25.6.0",
+    "scipy": "1.15.2",
+    "system": "Darwin"
+  },
+  "execution_parameters": {
+    "cache_shard_count": 8,
+    "elevations_deg": [
+      21,
+      23,
+      25,
+      27,
+      29,
+      31,
+      33,
+      35,
+      37,
+      39,
+      41,
+      43,
+      45,
+      47,
+      49,
+      51,
+      53,
+      55,
+      57,
+      59,
+      61,
+      63,
+      65,
+      67,
+      69,
+      71,
+      73,
+      75,
+      77,
+      79
+    ],
+    "grid": "0--500 GHz inclusive at 10 MHz",
+    "jobs": 8,
+    "locale": {
+      "LANG": "C",
+      "LC_ALL": "C"
+    },
+    "maximum_bracket_expansions": 64,
+    "omp_threads_per_process": 1,
+    "root_iterations": 48
+  },
+  "holdout_plan": [
+    {
+      "acceptance_bound": "5.0520728940642322243954415686818446938796189165994015416323937551481551675275427E-8",
+      "elevations_deg": [
+        21,
+        23,
+        25,
+        27,
+        29,
+        31,
+        33,
+        35,
+        37,
+        39,
+        41,
+        43,
+        45,
+        47,
+        49,
+        51,
+        53,
+        55,
+        57,
+        59,
+        61,
+        63,
+        65,
+        67,
+        69,
+        71,
+        73,
+        75,
+        77,
+        79
+      ],
+      "kind": "q0_q25_midpoint",
+      "parsed_target_transmission_literal": "9.746935e-01",
+      "profile": "LMT_DJF_5",
+      "t_analytic": "0.97469354158114745553508831815628015029974675602183362669560581146819884603263570",
+      "tau_achieved": "0.025243747247900839085096398614711652349992626497133215095636634751008667628929700",
+      "tau_mid": "0.02524370523370522005"
+    },
+    {
+      "acceptance_bound": "5.0520728940642322243954415686818446938796189165994015416323937551481551675275427E-8",
+      "elevations_deg": [
+        21,
+        23,
+        25,
+        27,
+        29,
+        31,
+        33,
+        35,
+        37,
+        39,
+        41,
+        43,
+        45,
+        47,
+        49,
+        51,
+        53,
+        55,
+        57,
+        59,
+        61,
+        63,
+        65,
+        67,
+        69,
+        71,
+        73,
+        75,
+        77,
+        79
+      ],
+      "kind": "q0_q25_midpoint",
+      "parsed_target_transmission_literal": "9.746935e-01",
+      "profile": "LMT_DJF_25",
+      "t_analytic": "0.97469354158114745553508831815628015029974675602183362669560581146819884603263570",
+      "tau_achieved": "0.025243747247900839085096398614711652349992626497133215095636634751008667628929700",
+      "tau_mid": "0.02524370523370522005"
+    },
+    {
+      "acceptance_bound": "5.2838130421273827825282572173172821320405328629478679242731964027010026129907903E-8",
+      "elevations_deg": [
+        21,
+        23,
+        25,
+        27,
+        29,
+        31,
+        33,
+        35,
+        37,
+        39,
+        41,
+        43,
+        45,
+        47,
+        49,
+        51,
+        53,
+        55,
+        57,
+        59,
+        61,
+        63,
+        65,
+        67,
+        69,
+        71,
+        73,
+        75,
+        77,
+        79
+      ],
+      "kind": "q25_q50_midpoint",
+      "parsed_target_transmission_literal": "9.319449e-01",
+      "profile": "LMT_DJF_25",
+      "t_analytic": "0.93194491021666621378882448539398595280595717248356672509626827210471764776840197",
+      "tau_achieved": "0.069413402325515737390579783686337103966670862378788403186887980770462051302471648",
+      "tau_mid": "0.06941339152892524870"
+    },
+    {
+      "acceptance_bound": "5.2838130421273827825282572173172821320405328629478679242731964027010026129907903E-8",
+      "elevations_deg": [
+        21,
+        23,
+        25,
+        27,
+        29,
+        31,
+        33,
+        35,
+        37,
+        39,
+        41,
+        43,
+        45,
+        47,
+        49,
+        51,
+        53,
+        55,
+        57,
+        59,
+        61,
+        63,
+        65,
+        67,
+        69,
+        71,
+        73,
+        75,
+        77,
+        79
+      ],
+      "kind": "q25_q50_midpoint",
+      "parsed_target_transmission_literal": "9.319449e-01",
+      "profile": "LMT_DJF_50",
+      "t_analytic": "0.93194491021666621378882448539398595280595717248356672509626827210471764776840197",
+      "tau_achieved": "0.069413402325515737390579783686337103966670862378788403186887980770462051302471648",
+      "tau_mid": "0.06941339152892524870"
+    },
+    {
+      "acceptance_bound": "5.5811262015306698785863430786079962273622560304724591444777097833645958281999621E-8",
+      "elevations_deg": [
+        21,
+        23,
+        25,
+        27,
+        29,
+        31,
+        33,
+        35,
+        37,
+        39,
+        41,
+        43,
+        45,
+        47,
+        49,
+        51,
+        53,
+        55,
+        57,
+        59,
+        61,
+        63,
+        65,
+        67,
+        69,
+        71,
+        73,
+        75,
+        77,
+        79
+      ],
+      "kind": "q50_q75_midpoint",
+      "parsed_target_transmission_literal": "8.822991e-01",
+      "profile": "LMT_DJF_50",
+      "t_analytic": "0.88229913944483703744584498893253555542436296560007104078306300673412218746416929",
+      "tau_achieved": "0.12332632961198596232897444252371010587334779945876716683716184899107668522863690",
+      "tau_mid": "0.12332628558266549315"
+    },
+    {
+      "acceptance_bound": "5.5811262015306698785863430786079962273622560304724591444777097833645958281999621E-8",
+      "elevations_deg": [
+        21,
+        23,
+        25,
+        27,
+        29,
+        31,
+        33,
+        35,
+        37,
+        39,
+        41,
+        43,
+        45,
+        47,
+        49,
+        51,
+        53,
+        55,
+        57,
+        59,
+        61,
+        63,
+        65,
+        67,
+        69,
+        71,
+        73,
+        75,
+        77,
+        79
+      ],
+      "kind": "q50_q75_midpoint",
+      "parsed_target_transmission_literal": "8.822991e-01",
+      "profile": "LMT_DJF_75",
+      "t_analytic": "0.88229913944483703744584498893253555542436296560007104078306300673412218746416929",
+      "tau_achieved": "0.12332632961198596232897444252371010587334779945876716683716184899107668522863690",
+      "tau_mid": "0.12332628558266549315"
+    },
+    {
+      "acceptance_bound": "5.5811262015306698785863430786079962273622560304724591444777097833645958281999621E-8",
+      "elevations_deg": [
+        21,
+        23,
+        25,
+        27,
+        29,
+        31,
+        33,
+        35,
+        37,
+        39,
+        41,
+        43,
+        45,
+        47,
+        49,
+        51,
+        53,
+        55,
+        57,
+        59,
+        61,
+        63,
+        65,
+        67,
+        69,
+        71,
+        73,
+        75,
+        77,
+        79
+      ],
+      "kind": "q50_q75_midpoint",
+      "parsed_target_transmission_literal": "8.822991e-01",
+      "profile": "LMT_annual_25",
+      "t_analytic": "0.88229913944483703744584498893253555542436296560007104078306300673412218746416929",
+      "tau_achieved": "0.12332632961198596232897444252371010587334779945876716683716184899107668522863690",
+      "tau_mid": "0.12332628558266549315"
+    },
+    {
+      "acceptance_bound": "5.5811262015306698785863430786079962273622560304724591444777097833645958281999621E-8",
+      "elevations_deg": [
+        21,
+        23,
+        25,
+        27,
+        29,
+        31,
+        33,
+        35,
+        37,
+        39,
+        41,
+        43,
+        45,
+        47,
+        49,
+        51,
+        53,
+        55,
+        57,
+        59,
+        61,
+        63,
+        65,
+        67,
+        69,
+        71,
+        73,
+        75,
+        77,
+        79
+      ],
+      "kind": "q50_q75_midpoint",
+      "parsed_target_transmission_literal": "8.822991e-01",
+      "profile": "LMT_MAM_25",
+      "t_analytic": "0.88229913944483703744584498893253555542436296560007104078306300673412218746416929",
+      "tau_achieved": "0.12332632961198596232897444252371010587334779945876716683716184899107668522863690",
+      "tau_mid": "0.12332628558266549315"
+    }
+  ],
+  "imported_canonical_p1_runner": {
+    "canonical_p1_context_sha256": "caa41ca105eec6df99f31d982ca69910ef2d7e1ebcbad86c96faa7d0e4cd3c2c",
+    "filename": "probe_am12_h2o_scale_hypotheses.py",
+    "sha256": "caa41ca105eec6df99f31d982ca69910ef2d7e1ebcbad86c96faa7d0e4cd3c2c"
+  },
+  "p1_committed_evidence": {
+    "manifest": {
+      "path_relative_to_package": "h2o_scale_hypothesis_manifest.json",
+      "sha256": "1316b92a06edc7dc1eb7a6752e271a7b80eb409192ad9f7bf2882cc12928d14c"
+    },
+    "scale_table": {
+      "path_relative_to_package": "h2o_scale_hypothesis_scales.csv",
+      "sha256": "7a43c01563855518fb1a6b51985ab6c43d41c96bf4723df2ae73b047799f9dbe"
+    }
+  },
+  "p1_execution_context_sha256": "05148050e96e73577ec75be525b026b5bf37bbd2a8753f8e3702fc0b6dfb2bee",
+  "passbands": [
+    {
+      "id": "tolteca_v1_a1100",
+      "sha256": "13b8fd009bb8d7c375d3c46d21e26d0a779f7f00a949a2a5ccd619d1fe56fd72",
+      "source_commit": "2791e6a1e6349ad1d3ac549a648f41cbc51b98c7"
+    },
+    {
+      "id": "fts_5934_n0_a1100",
+      "sha256": "b72e9be7a4637adbfb5f2a6e131741a4a7b151effc03dea49410d0e56a5df74c",
+      "source_commit": "958a2a15f43189846a24556a63ef908da789c7b8"
+    },
+    {
+      "id": "tolteca_v1_a1400",
+      "sha256": "a7b671d9f659cbc98dad99d3015ce81a3d7a3486c702819d9b3305703e7c682e",
+      "source_commit": "2791e6a1e6349ad1d3ac549a648f41cbc51b98c7"
+    },
+    {
+      "id": "fts_9932_n9_a1400",
+      "sha256": "da440896f537545871ac0d026b5149aeb5ba356e2f613c934567ef20fde0fd36",
+      "source_commit": "958a2a15f43189846a24556a63ef908da789c7b8"
+    },
+    {
+      "id": "tolteca_v1_a2000",
+      "sha256": "77e4b33c7bbc2c345ef94d41480d5fee5cb096d789f4fe78e1b4f80a37e0d6ff",
+      "source_commit": "2791e6a1e6349ad1d3ac549a648f41cbc51b98c7"
+    },
+    {
+      "id": "fts_9903_n11_a2000",
+      "sha256": "b3d5a0b1a332d40b4cdc436cb4327e849afbce42cfd766108aacf6016e775e65",
+      "source_commit": "958a2a15f43189846a24556a63ef908da789c7b8"
+    }
+  ],
+  "preexecution_clarification": {
+    "filename": "AM12_SUCCESSOR_ADOPTION_STUDY_PREEXECUTION_CLARIFICATIONS.md",
+    "sha256": "01957dab95e37a4b87e6224c713ec96ec645b37ae39c5dd95b6b49af493b9a66"
+  },
+  "profiles": [
+    {
+      "profile": "LMT_DJF_25",
+      "sha256": "aeeeeb48bef422f2d9392b5d7a3d62ab1887fd9e7c10322d5246d914841ba866"
+    },
+    {
+      "profile": "LMT_DJF_5",
+      "sha256": "fcb3b70f44cad98cf0586fede9dcd3b2e35f3cb45023d0485c782c108b25b474"
+    },
+    {
+      "profile": "LMT_DJF_50",
+      "sha256": "d7c256d04d922beb51c9f8ab715e5be1a962252580eff2d08ba1be4d206eb5b0"
+    },
+    {
+      "profile": "LMT_DJF_75",
+      "sha256": "b63503c7f4170404d18f3797735b64fb947ce73eed35f0315155d0a29d499721"
+    },
+    {
+      "profile": "LMT_MAM_25",
+      "sha256": "82ac1e2a49a528244c1571daadcc8d42bd6d13c0ba8a7b5d2f81d10ebc13caee"
+    },
+    {
+      "profile": "LMT_annual_25",
+      "sha256": "a9524553a5808a549eb18046a9ed6f8bd67ca1e29ccd1c91e05b351b64ea23e6"
+    }
+  ],
+  "protocol": {
+    "filename": "AM12_SUCCESSOR_ADOPTION_STUDY_PROTOCOL.md",
+    "sha256": "bbf73c25e2b6d3c3d4315ae6b18e39d327abb51c435683b057039c505c2cfc96"
+  },
+  "runner": {
+    "filename": "run_am12_successor_adoption_study.py",
+    "sha256": "ace8e08a037535260b6b1d889f83dbf722ffc932e05bc1f7f83f0565ef0ff47c"
+  },
+  "scale_solver_contract": {
+    "identity_match_pass": true,
+    "maximum_bracket_expansions": 64,
+    "root_iterations": 48
+  },
+  "schema_version": "sci-cal-001-am12-successor-adoption-study-v2-holdout-execution-context-v1",
+  "security": {
+    "network_access": false,
+    "unity_access": false
+  }
+}

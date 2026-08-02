@@ -207,15 +207,178 @@
       "path": "/Users/gwilson/work_toltec/local_data/doc/mmccrackan_dissertation.pdf",
       "role": "historical provenance narrative",
       "sha256": "2aa4373aaa0394f1a79e6668047a7aecd07d4914ce162c931f495d5502a49be0"
+    },
+    {
+      "availability": "task_package",
+      "bytes": 17283,
+      "id": "am12-successor-adoption-protocol",
+      "notes": "Frozen before successor holdout execution; defines the two lanes, two operators, q95-excluding domain, passbands, holdouts, gates, and stop rule.",
+      "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/AM12_SUCCESSOR_ADOPTION_STUDY_PROTOCOL.md",
+      "role": "successor adoption-study preregistration",
+      "sha256": "bbf73c25e2b6d3c3d4315ae6b18e39d327abb51c435683b057039c505c2cfc96"
+    },
+    {
+      "availability": "task_package",
+      "bytes": 5626,
+      "id": "am12-successor-preexecution-clarifications",
+      "notes": "Frozen pre-execution decisions on P1 staging, candidate identities, holdout construction, passband mapping, and gate interpretation.",
+      "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/AM12_SUCCESSOR_ADOPTION_STUDY_PREEXECUTION_CLARIFICATIONS.md",
+      "role": "successor pre-execution clarification",
+      "sha256": "01957dab95e37a4b87e6224c713ec96ec645b37ae39c5dd95b6b49af493b9a66"
+    },
+    {
+      "availability": "task_package",
+      "bytes": 138990,
+      "id": "am12-successor-study-runner",
+      "notes": "Corrected v2 runner; check mode reproduces all 13 deterministic study artifacts from immutable external caches without launching AM.",
+      "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/run_am12_successor_adoption_study.py",
+      "role": "successor execution and deterministic replay implementation",
+      "sha256": "ace8e08a037535260b6b1d889f83dbf722ffc932e05bc1f7f83f0565ef0ff47c"
+    },
+    {
+      "availability": "task_package",
+      "bytes": 3925,
+      "id": "am12-successor-execution-erratum",
+      "notes": "Freezes the v1 documentary P1-stage failure, bounded v2 correction, and predecessor-cache exclusion.",
+      "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/AM12_SUCCESSOR_ADOPTION_STUDY_EXECUTION_ERRATUM_2026-08-01.md",
+      "role": "successor execution-lineage erratum",
+      "sha256": "590f49007065e604aced97fc391067e981a94d7336db1cec81512dd0de893e4e"
+    },
+    {
+      "availability": "task_package",
+      "bytes": 4802,
+      "id": "am12-successor-execution-record",
+      "notes": "Records exact P1 prerequisite replay, excluded v1, canonical v2 command/cache/counts, and mandatory deterministic replay.",
+      "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/AM12_SUCCESSOR_ADOPTION_STUDY_EXECUTION_RECORD_2026-08-01.md",
+      "role": "successor execution provenance record",
+      "sha256": "ce20486a7734d6a14781dbbd7f8e45b0c55e385d4c724918497468a0c93d3177"
+    },
+    {
+      "availability": "task_package",
+      "bytes": 52198,
+      "id": "am12-successor-adoption-manifest",
+      "notes": "Root v2 study artifact binding the exact inputs, execution, domains, gates, decision, and twelve deterministic child artifacts.",
+      "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/am12_successor_adoption_manifest.json",
+      "role": "successor adoption-study root manifest",
+      "sha256": "c9f6aea80851fb7726b8845d4697af1cb270cb7ff7ce51d3d5fc63828f793b3a"
+    },
+    {
+      "availability": "task_package",
+      "bytes": 1990,
+      "id": "am12-successor-study-report",
+      "notes": "Concise frozen report of the numerical adoption-evidence failure and null recommendation.",
+      "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/AM12_SUCCESSOR_ADOPTION_STUDY_REPORT.md",
+      "role": "successor numerical decision report",
+      "sha256": "0bd1a2c00984ad1b8586c1979dba4834df3e96ce8d5322bae30c455d675e0565"
+    },
+    {
+      "availability": "task_package",
+      "bytes": 10919,
+      "id": "am12-successor-bandpass-inventory",
+      "notes": "Immutable primary ECSV and representative FTS challenger bandpass provenance and integration metadata.",
+      "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/am12_successor_bandpass_inventory.csv",
+      "role": "successor passband provenance table",
+      "sha256": "de845d9280317662488f4df262e445887cc663dd6409925115716922200eb1d0"
+    },
+    {
+      "availability": "task_package",
+      "bytes": 1364,
+      "id": "am12-successor-coverage",
+      "notes": "Exact 240-grid, 23,040-row, and 96-metric anti-join/duplicate coverage proof.",
+      "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/am12_successor_coverage.json",
+      "role": "successor evidence coverage proof",
+      "sha256": "5922421a5245d9216ef68f10037e32dff96d824fb971f7a4cc5af8625bc193a8"
+    },
+    {
+      "availability": "task_package",
+      "bytes": 40864,
+      "id": "am12-successor-decision",
+      "notes": "Records numerical_adoption_evidence_fail, four ineligible candidates, empty conditional ranking, null recommendation, and no authorization.",
+      "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/am12_successor_decision.json",
+      "role": "successor machine-readable decision",
+      "sha256": "976c6c6a269a1b5dabde2b5eba89cb6176b02b837ea2b7b0e26a64307fe9ee59"
+    },
+    {
+      "availability": "task_package",
+      "bytes": 17531,
+      "id": "am12-successor-execution-context",
+      "notes": "Immutable v2 context binding runner, protocol, corrections, P1 cache, AM executable, profiles, passbands, host, grid, and execution parameters.",
+      "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/am12_successor_holdout_execution_context.json",
+      "role": "successor canonical execution context",
+      "sha256": "05dd063ca433b79ab3e2c2fa469e0976802a69502232aae2ddc58121d1a7ccff"
+    },
+    {
+      "availability": "task_package",
+      "bytes": 13138637,
+      "id": "am12-successor-holdout-rows",
+      "notes": "All 23,040 band-integrated direct-AM versus operator correction rows.",
+      "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/am12_successor_holdout_rows.csv",
+      "role": "successor expanded truth table",
+      "sha256": "ad74d19ef0bc915255b9cc7a507e8977f96435fb37ce0d0bd7cb385991c1802c"
+    },
+    {
+      "availability": "task_package",
+      "bytes": 1552892,
+      "id": "am12-successor-holdout-run-inventory",
+      "notes": "Immutable inventory of 785 scale-search and 240 full-grid AM executions.",
+      "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/am12_successor_holdout_run_inventory.csv",
+      "role": "successor direct-run inventory",
+      "sha256": "e1ccb79465588a4c549cfd0d149123e17e24146cf1db3b8c3b8205eb06cbee57"
+    },
+    {
+      "availability": "task_package",
+      "bytes": 6235,
+      "id": "am12-successor-holdout-scales",
+      "notes": "Target and achieved midpoint H2O scales with exact coordinate residuals.",
+      "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/am12_successor_holdout_scales.csv",
+      "role": "successor midpoint-scale table",
+      "sha256": "e0799ee52b0bce33fa21af9061b9f0bdeccfe3865186e1170ef8c2ebc9d01678"
+    },
+    {
+      "availability": "task_package",
+      "bytes": 146252,
+      "id": "am12-successor-operator-metrics",
+      "notes": "Deterministic representation, lane-disagreement, and FTS-versus-ECSV metrics.",
+      "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/am12_successor_operator_metrics.csv",
+      "role": "successor operator metric table",
+      "sha256": "337437825b7adece383a1e963a2c0e6204f22c81b8f5a5c5c3f634f69a04fb27"
+    },
+    {
+      "availability": "task_package",
+      "bytes": 758661,
+      "id": "am12-successor-operator-nodes",
+      "notes": "Exact band-integrated q0/q25/q50/q75 line-of-sight optical-depth nodes for both frozen lanes.",
+      "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/am12_successor_operator_nodes.csv",
+      "role": "successor operator node table",
+      "sha256": "8005c8ae1d4ab1c8de39f06a632d76d3e8f248939dc63c616dd176bcbd2f6fe2"
+    },
+    {
+      "availability": "task_package",
+      "bytes": 61638,
+      "id": "am12-successor-p1-run-inventory",
+      "notes": "Validated inventory of 155 direct P1 training grids, split 93 general-stage and 62 selected-stage records.",
+      "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/am12_successor_p1_run_inventory.csv",
+      "role": "successor training-grid provenance table",
+      "sha256": "72255d30078d4eca7d2f4fa92bf4e53a95b476e734894ed341eba5e6e7258138"
+    },
+    {
+      "availability": "task_package",
+      "bytes": 40819,
+      "id": "am12-successor-physical-metrics",
+      "notes": "Exact anchor, finite/positive, continuity, monotonicity, and fail-closed contract metrics.",
+      "path": "validation/sci_cal_001_atmosphere_operator_2026-08-01/am12_successor_physical_metrics.csv",
+      "role": "successor physical-contract table",
+      "sha256": "7ced66728f7e0d24eecccee226cd4aa772907808ebd36e2d255698e8f3371c5f"
     }
   ],
   "atmospheric_profiles": {
-    "construction_method": "For the distinct copied AM 12.2 family, 25 AMC files cross annual/DJF/MAM/JJA/SON with H2O percentiles 5/25/50/75/95. They cite MERRA-2 inst3_3d_asm_Np v5.12.4, 2007-2016, per-pressure-level H2O percentiles and median O3, and contain complete pressure-layer bytes. Post-hoc P1 varied only Nscale troposphere h2o and directly ran all 100 target/profile fitted-scale grids; it narrows numerical recipes but does not establish the historical profile mapping or an independent physical intermediate-profile rule. For its correction metric, q25/q50/q75 candidate tau is direct AM atmTaun while generic truth tau is reconstructed as -log(atmTtx); q95 reconstructs both nominal ratio sides as -log(Tband/T225). The frozen P1 report/manifest's broader tau wording is superseded by this package-level clarification. Mapping to the four generic q artifacts remains unestablished.",
-    "historical_source_evidence": "The copied annual/seasonal AM 12.2 profiles and their construction comments are complete and digest-bound. TolTECA registry identity proves the copied seasonal and annual products are separate from generic am_q25/am_q50/am_q75/am_q95. It does not establish whether the same historical generator lineage produced the generic products. The owner has selected evaluation of a separately versioned AM 12.2 successor while retaining generic q95 and exact generic custody as unresolved nonblocking historical provenance; the successor must not be represented as a historical regeneration of the generic products.",
+    "construction_method": "For the distinct copied AM 12.2 family, 25 AMC files cross annual/DJF/MAM/JJA/SON with H2O percentiles 5/25/50/75/95. They cite MERRA-2 inst3_3d_asm_Np v5.12.4, 2007-2016, per-pressure-level H2O percentiles and median O3, and contain complete pressure-layer bytes. Post-hoc P1 varied only Nscale troposphere h2o and directly ran all 100 target/profile fitted-scale grids. The completed successor study freezes and evaluates fixed_djf25_v1 and conditioned_djf_v1, with 155 validated P1 training grids and 240 new direct holdout grids; neither lane is selected. For the earlier P1 correction metric, q25/q50/q75 candidate tau is direct AM atmTaun while generic truth tau is reconstructed as -log(atmTtx); q95 reconstructs both nominal ratio sides as -log(Tband/T225). The frozen P1 report/manifest's broader tau wording is superseded by this package-level clarification. Mapping to the four generic q artifacts remains unestablished.",
+    "historical_source_evidence": "The copied annual/seasonal AM 12.2 profiles and their construction comments are complete and digest-bound. TolTECA registry identity proves the copied seasonal and annual products are separate from generic am_q25/am_q50/am_q75/am_q95. It does not establish whether the same historical generator lineage produced the generic products. The owner-authorized separately versioned AM 12.2 successor study is complete with numerical_adoption_evidence_fail while generic q95 and exact generic custody remain unresolved nonblocking historical provenance; the successor is not represented as a historical regeneration of the generic products.",
     "input_artifact_ids": [
       "copied-am12-suite-manifest",
       "am12-native-regeneration-manifest",
-      "am12-h2o-scale-hypothesis-manifest"
+      "am12-h2o-scale-hypothesis-manifest",
+      "am12-successor-adoption-manifest"
     ],
     "percentile_models": [
       "am_q25",
@@ -224,8 +387,7 @@
       "am_q95"
     ],
     "required_fact_ids": [
-      "PROF-001",
-      "PROF-002"
+      "LOW-001"
     ],
     "status": "partially_resolved"
   },
@@ -233,8 +395,7 @@
     "legacy_fit": "none; sample raw atmospheric transmission at one frequency per band and at 225 GHz",
     "legacy_polynomial_fit": "numpy.polyfit(elevation_radians, atmTtx(nu_band,elevation)/atmTtx(225GHz,elevation), 6) over all 31 elevations; round coefficients to 8 decimal places",
     "required_fact_ids": [
-      "SPEC-001",
-      "BAND-001-CONDITIONAL"
+      "BAND-001"
     ],
     "successor_status": "unresolved_owner_input_required"
   },
@@ -247,8 +408,7 @@
     ],
     "legacy_fit_usage": "none_monochromatic_sampling",
     "required_fact_ids": [
-      "SPEC-001",
-      "BAND-001-CONDITIONAL"
+      "BAND-001"
     ],
     "successor_status": "unresolved_owner_input_required"
   },
@@ -264,13 +424,11 @@
       "step": "2.00000000000000000e+00",
       "unit": "degree"
     },
-    "required_fact_ids": [
-      "SITE-001"
-    ],
+    "required_fact_ids": [],
     "status": "partially_resolved"
   },
   "execution": {
-    "acceptance_gate": "Do not select an operator until every supplied input has a SHA-256 identity and the chosen candidate has <=1% absolute fractional extinction-correction error against preregistered raw held-out/intermediate runs throughout an owner-declared opacity/elevation domain; observational accuracy and repeatability are separate gates.",
+    "acceptance_gate": "The completed q0--q75/EL20--80 successor study requires no more than one-percent absolute fractional extinction-correction error against preregistered raw held-out/intermediate runs. All four candidates fail at 1.15994922334935469e-02; no operator or domain is authorized. Observational accuracy and repeatability remain separate gates.",
     "legacy_fit_reproduction_argv": [
       "/Users/gwilson/tolteca/bin/python",
       "validation/sci_cal_001_atmosphere_operator_2026-08-01/recover_legacy_raw_grids.py",
@@ -281,6 +439,18 @@
       "/Users/gwilson/tolteca/bin/python",
       "validation/sci_cal_001_atmosphere_operator_2026-08-01/generate_operator_analysis.py"
     ],
+    "successor_evaluation": {
+      "status": "numerical_adoption_evidence_fail",
+      "runner_sha256": "ace8e08a037535260b6b1d889f83dbf722ffc932e05bc1f7f83f0565ef0ff47c",
+      "execution_context_sha256": "05dd063ca433b79ab3e2c2fa469e0976802a69502232aae2ddc58121d1a7ccff",
+      "p1_training_grid_count": 155,
+      "scale_search_run_count": 785,
+      "direct_holdout_grid_count": 240,
+      "expanded_holdout_row_count": 23040,
+      "deterministic_artifact_count": 13,
+      "cache_only_replay": "passed_no_am_process",
+      "excluded_predecessor_context_sha256": "f0acb32cd43fd0bd128a06ab8d7e354bc6a6c1389d6d0794db716753d03f85c8"
+    },
     "raw_grid_generation_argv": [
       "<am-12.2-executable>",
       "LMT_am_inputs/<copied-profile>.amc",
@@ -313,9 +483,7 @@
       "step": "1.00000000000000002e-02",
       "unit": "GHz"
     },
-    "required_fact_ids": [
-      "GRID-001"
-    ],
+    "required_fact_ids": [],
     "status": "partially_resolved"
   },
   "generator": {
@@ -347,14 +515,14 @@
     "operational_domain_authorization": "none",
     "q95_operational_disposition": "excluded_historical_diagnostic_only",
     "historical_generic_generator_association": "not_established",
-    "successor_study_status": "pending_results",
-    "study_artifact_binding_status": "unbound_pending_study_results"
+    "successor_study_status": "numerical_adoption_evidence_fail",
+    "study_artifact_binding_status": "bound_completed_v2_artifacts"
   },
   "operational_domain": {
     "aligned_elevation_max_deg": null,
     "aligned_elevation_min_deg": null,
     "endpoints_inclusive": null,
-    "evidence_support": "The legacy candidate analysis spans 30--80 degrees and q0--q95 only as a historical diagnostic. Recovered generic q25/q50/q75 raw arrays span 20--80 degrees. Generic q95 is excluded from the selected AM 12.2 successor study and remains nonblocking historical provenance. The successor still requires its own independent intermediate runs and exact owner-declared opacity/elevation endpoints. No extrapolation is authorized.",
+    "evidence_support": "The completed successor study directly covers q0 through the exact q75 selector anchor and EL20--80, excluding q95. All structural and coverage gates pass, but all four candidates fail the frozen one-percent representation gate at 1.15994922334935469e-02 in the shared q0--q25 segment. A post-result EL25--80 slice reaches 9.89845456159954562e-03 primary and requires new preregistered confirmation. These are study bounds, not operational authorization. No extrapolation is authorized.",
     "out_of_domain_behavior": "fail_closed",
     "required_fact_ids": [
       "DOMAIN-001"
@@ -371,9 +539,7 @@
     "latitude_deg": 18.986,
     "longitude_deg": -97.314,
     "raw_model_slant_geometry": "Copied AM 12.2 AMC comments identify LMT latitude/longitude; realized headers use plane-parallel geometry, no refraction, and g=980.665 cm s^-2. Altitude/datum are absent, and applicability to the separate generic q lineage is unproven.",
-    "required_fact_ids": [
-      "SITE-001"
-    ],
+    "required_fact_ids": [],
     "site_name": "Large Millimeter Telescope",
     "status": "partially_resolved"
   },
@@ -387,15 +553,14 @@
     "legacy_fit_status": "resolved",
     "reference_frequency_ghz": "2.25000000000000000e+02",
     "required_fact_ids": [
-      "SPEC-001",
-      "BAND-001-CONDITIONAL"
+      "BAND-001"
     ],
     "successor_status": "unresolved_owner_input_required"
   },
-  "status": "partial_recovery_successor_evaluation_selected",
+  "status": "partial_recovery_successor_evaluation_completed_no_adoption",
   "tau225_anchors": [
     {
-      "generation_profile_status": "unresolved_owner_input_required",
+      "generation_profile_status": "partially_resolved",
       "model": "am_q25",
       "raw_grid_artifact_id": "raw-am-q25",
       "raw_t225_at_80deg": "9.50027500000000025e-01",
@@ -403,7 +568,7 @@
       "selector_tau225_binary64": "5.04874104674104401e-02"
     },
     {
-      "generation_profile_status": "unresolved_owner_input_required",
+      "generation_profile_status": "partially_resolved",
       "model": "am_q50",
       "raw_grid_artifact_id": "raw-am-q50",
       "raw_t225_at_80deg": "9.14206500000000033e-01",
@@ -411,7 +576,7 @@
       "selector_tau225_binary64": "8.83393725904400573e-02"
     },
     {
-      "generation_profile_status": "unresolved_owner_input_required",
+      "generation_profile_status": "partially_resolved",
       "model": "am_q75",
       "raw_grid_artifact_id": "raw-am-q75",
       "raw_t225_at_80deg": "8.51505399999999968e-01",
@@ -433,13 +598,10 @@
     "Q95-001"
   ],
   "unresolved_fact_ids": [
-    "PROF-001",
-    "PROF-002",
-    "SITE-001",
-    "GRID-001",
-    "MID-001",
-    "SPEC-001",
-    "BAND-001-CONDITIONAL",
-    "DOMAIN-001"
+    "LOW-001",
+    "BAND-001",
+    "DOMAIN-001",
+    "WARN-001",
+    "OBS-001"
   ]
 }

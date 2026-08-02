@@ -153,7 +153,8 @@
       "enum": [
         "complete_regeneration_input",
         "partial_recovery_blocked_on_owner_inputs",
-        "partial_recovery_successor_evaluation_selected"
+        "partial_recovery_successor_evaluation_selected",
+        "partial_recovery_successor_evaluation_completed_no_adoption"
       ]
     },
     "owner_direction": {
@@ -193,10 +194,10 @@
           "const": "not_established"
         },
         "successor_study_status": {
-          "const": "pending_results"
+          "const": "numerical_adoption_evidence_fail"
         },
         "study_artifact_binding_status": {
-          "const": "unbound_pending_study_results"
+          "const": "bound_completed_v2_artifacts"
         }
       }
     },
@@ -675,6 +676,7 @@
         "raw_grid_generation_argv",
         "legacy_fit_reproduction_argv",
         "operator_analysis_argv",
+        "successor_evaluation",
         "acceptance_gate"
       ],
       "properties": {
@@ -703,6 +705,54 @@
             "type": "string"
           },
           "minItems": 1
+        },
+        "successor_evaluation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "runner_sha256",
+            "execution_context_sha256",
+            "p1_training_grid_count",
+            "scale_search_run_count",
+            "direct_holdout_grid_count",
+            "expanded_holdout_row_count",
+            "deterministic_artifact_count",
+            "cache_only_replay",
+            "excluded_predecessor_context_sha256"
+          ],
+          "properties": {
+            "status": {
+              "const": "numerical_adoption_evidence_fail"
+            },
+            "runner_sha256": {
+              "const": "ace8e08a037535260b6b1d889f83dbf722ffc932e05bc1f7f83f0565ef0ff47c"
+            },
+            "execution_context_sha256": {
+              "const": "05dd063ca433b79ab3e2c2fa469e0976802a69502232aae2ddc58121d1a7ccff"
+            },
+            "p1_training_grid_count": {
+              "const": 155
+            },
+            "scale_search_run_count": {
+              "const": 785
+            },
+            "direct_holdout_grid_count": {
+              "const": 240
+            },
+            "expanded_holdout_row_count": {
+              "const": 23040
+            },
+            "deterministic_artifact_count": {
+              "const": 13
+            },
+            "cache_only_replay": {
+              "const": "passed_no_am_process"
+            },
+            "excluded_predecessor_context_sha256": {
+              "const": "f0acb32cd43fd0bd128a06ab8d7e354bc6a6c1389d6d0794db716753d03f85c8"
+            }
+          }
         },
         "acceptance_gate": {
           "type": "string"

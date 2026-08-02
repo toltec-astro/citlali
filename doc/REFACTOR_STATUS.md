@@ -96,16 +96,24 @@ freeze the application mainline.
   1.117452%. These are post-hoc provenance and numerical diagnostics, not
   generic-q custody or an independent operator holdout. The copied files are
   distinct registered products from the generic-q files; their historical
-  generic-generator association is not established. The owner has selected
-  evaluation of a separately versioned AM 12.2 successor and excluded q95
-  conditions from that study's intended operational scope. The broader legacy
-  q0--q95 C1 maxima (1.738766% piecewise linear and 1.738068% PCHIP in a1100)
-  and the q95/a2000 0.839827% elevation feature remain historical diagnostics,
-  not successor release gates. Piecewise-linear line-of-sight optical depth
-  remains the baseline and PCHIP the challenger only; no operator,
-  opacity/elevation domain, repair, or re-audit is authorized. Successor-study
-  results remain pending and unbound. Any future correction must use full
-  sample airmass with top-of-atmosphere pivot `X_ref=0`, and the late
+  generic-generator association is not established. The owner-selected,
+  q95-excluding AM 12.2 successor study is complete: 155 validated P1 training
+  grids, 785 scale-search runs, and 240 new full grids produce 23,040 direct-
+  truth comparison rows. All provenance, structural, monotonicity, support,
+  and coverage gates pass, but all four frozen candidates fail the
+  preregistered q0--q75/EL20--80 one-percent representation gate at the same
+  a2000 clear-to-q25 point. The worst primary correction error is 1.159949%
+  (a flux under-correction), versus at most 0.288111% above q25 for the
+  simplest candidate. The machine result is
+  `numerical_adoption_evidence_fail`, with null recommendation and no operator
+  or domain authorization. A post-result EL25--80 slice reaches 0.989845% but
+  requires a new preregistered confirmation; FTS-versus-ECSV direct truth
+  differs by as much as 3.474613%, leaving passband authority as a separate
+  calibration choice. The 13 deterministic study artifacts are SHA-256 bound
+  and passed cache-only replay. The broader legacy q0--q95 C1 maxima and the
+  q95/a2000 0.839827% elevation feature remain historical diagnostics, not
+  successor release gates. Any future correction must use full sample airmass
+  with top-of-atmosphere pivot `X_ref=0`, and the late
   SCI-ALIGN-001 sample-identity/timing/interpolation/duration/eligibility
   handoff remains open for every aligned-elevation consumer. Software
   correctness, representation fidelity, and observational 5--10% absolute/
@@ -2723,12 +2731,15 @@ silently choose among these:
 - Whether any future caller needs concurrent reductions in one process.
 - The measured-channel contract and missing-data policy for future R analysis.
 - Whether Citlali must be installable and consumable as an external library.
-- For the owner-selected SCI-CAL-001 AM 12.2 successor evaluation, the explicit
-  profile/scale rule, spectral convention, warning/frequency policy,
-  independent intermediate-run design, and support-backed q95-excluding study
-  domain. Generic q95 and exact generic-q custody remain unresolved nonblocking
-  historical provenance. The study direction does not authorize an operator or
-  operational domain.
+- Following the completed SCI-CAL-001 AM 12.2 numerical study: whether to keep
+  EL20 and revise the physical q0--q25 construction, propose EL25 with a new
+  preregistered confirmation, or explicitly relax the numerical
+  representation gate above 1.159949%; whether TolTECA v1 ECSV or newly
+  supplied detector/array-weighted passbands are authoritative; the exact
+  fail-closed q0--q75 elevation domain; AM warning-status-1 policy; and the
+  later observational validation campaign. Generic q95 and exact generic-q
+  custody remain unresolved nonblocking historical provenance. The completed
+  study does not authorize an operator or operational domain.
 
 ## Durable Evidence
 

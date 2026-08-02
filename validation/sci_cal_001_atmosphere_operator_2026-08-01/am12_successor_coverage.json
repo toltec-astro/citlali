@@ -1,0 +1,49 @@
+{
+  "combined_required_metric_coverage": {
+    "actual_row_count": 96,
+    "actual_unique_key_count": 96,
+    "duplicate_key_count": 0,
+    "duplicate_keys": [],
+    "expected_row_count": 96,
+    "missing_key_anti_join": [],
+    "missing_key_count": 0,
+    "pass": true,
+    "unexpected_key_anti_join": [],
+    "unexpected_key_count": 0
+  },
+  "expanded_holdout_row_coverage": {
+    "actual_row_count": 23040,
+    "actual_unique_key_count": 23040,
+    "duplicate_key_count": 0,
+    "duplicate_keys": [],
+    "expected_row_count": 23040,
+    "missing_key_anti_join": [],
+    "missing_key_count": 0,
+    "pass": true,
+    "unexpected_key_anti_join": [],
+    "unexpected_key_count": 0
+  },
+  "pass": true,
+  "raw_direct_grid_coverage": {
+    "actual_row_count": 240,
+    "actual_unique_key_count": 240,
+    "duplicate_key_count": 0,
+    "duplicate_keys": [],
+    "expected_row_count": 240,
+    "missing_key_anti_join": [],
+    "missing_key_count": 0,
+    "pass": true,
+    "unexpected_key_anti_join": [],
+    "unexpected_key_count": 0
+  },
+  "required_dimensions": {
+    "lane_count": 2,
+    "odd_elevation_count": 30,
+    "opacity_interval_count": 3,
+    "operator_count": 2,
+    "passband_count": 6,
+    "registered_midpoint_profile_case_count": 8,
+    "spectral_index_count": 4
+  },
+  "schema_version": "sci-cal-001-am12-successor-adoption-study-v2-coverage-v1"
+}

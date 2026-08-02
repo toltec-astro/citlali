@@ -7,11 +7,17 @@ This specification separates two scientific identities that must not be merged:
 - **legacy generic-q lineage closure**: registered generic q25/q50/q75 bytes are recovered and exactly reproduce the Citlali coefficients; generic q95 and the generic products' exact generator/profile/run provenance remain absent;
 - **copied AM 12.2 suite regeneration**: a complete source/input/workflow/output package is local for 25 annual/seasonal profiles and can be rerun as a separately identified AM 12.2 calculation family.
 
-The specification is bound to repair base `9aae0e669384c5c0c0dda93debc194d6b8dac787` and repair-line evidence head `ae99be1cef8c390d0e7490835ffca1f31da7ebc0`. It does not claim that the copied AM 12.2 profiles generated the registered generic q artifacts. `regeneration_manifest.json` is the machine-readable package state and validates against `atmosphere_regeneration_manifest.schema.json`; follow-up custody and study details are preserved in the copied-AM, native-regeneration, frequency-resolution, and post-hoc H2O-scale hypothesis manifests.
+The specification is bound to repair base `9aae0e669384c5c0c0dda93debc194d6b8dac787` and repair-line evidence head `ae99be1cef8c390d0e7490835ffca1f31da7ebc0`. It does not claim that the copied AM 12.2 profiles generated the registered generic q artifacts. `regeneration_manifest.json` is the machine-readable package state and validates against `atmosphere_regeneration_manifest.schema.json`; follow-up custody and study details are preserved in the copied-AM, native-regeneration, frequency-resolution, post-hoc H2O-scale hypothesis, and successor-adoption manifests.
 
-The owner has selected evaluation of a separately versioned AM 12.2 successor. Generic q95 is retained as historical/diagnostic evidence only, and exact generic-generator association remains not established. This direction authorizes a bounded study, not an operator, adoption decision, or operational opacity/elevation domain.
-
-The machine adoption state is `evaluation_only_not_adopted`. Successor-study results and their adoption artifacts are pending and intentionally unbound.
+The owner selected evaluation of a separately versioned AM 12.2 successor.
+That q95-excluding study is complete and its 13 deterministic artifacts are
+bound.  It passes provenance, structural, monotonicity, and coverage gates but
+fails the preregistered one-percent representation gate over q0--q75 and
+EL20--80 with a `1.159949%` maximum.  Machine status is
+`numerical_adoption_evidence_fail`; adoption remains
+`evaluation_only_not_adopted`.  No operator or operational opacity/elevation
+domain is authorized.  Generic q95 remains historical/diagnostic only, and
+exact generic-generator association remains not established.
 
 ## Immutable lineage inventory
 
@@ -183,7 +189,14 @@ Correction-tau provenance is asymmetric. For q25/q50/q75 the candidate side uses
 
 The canonical execution-context SHA-256 is `05148050e96e73577ec75be525b026b5bf37bbd2a8753f8e3702fc0b6dfb2bee`. Its 13,667 unique referenced runs comprise 9,792 return-code-0 and 3,875 accepted warning-status-1 runs; other-warning and error-line totals are zero. The normalized numeric-text aggregate is `343acc6878062a433b665b0c80516212dc3b338fc77337bc9b6d1ade8196d1e1`, and the normalized warning-bearing-output aggregate is `3fcfe769fab3490e7067876a55c75a06e6d17e8990f137238399d02ab246728f`. Cache-only replay passed under a shared whole-cache lock and launched no AM process.
 
-P1 is a post-hoc candidate-recipe search, not custody proof or an independent model holdout. It does not resolve successor profile, site, grid, independent-profile, spectral, conditional-bandpass, warning-policy, or domain choices and does not authorize an operator. Generic q95 and exact generic-generator custody remain unresolved nonblocking historical provenance.
+P1 is a post-hoc candidate-recipe search, not custody proof or an independent
+model holdout.  By itself it did not resolve the successor study definition or
+authorize an operator.  The completed v2 study subsequently froze explicit
+profile, site/geometry, grid, passband-challenger, and independent-holdout
+rules; the resulting low-opacity, production-passband, proposed-domain,
+warning-evidence, and observational choices are listed below.  Generic q95 and
+exact generic-generator custody remain unresolved nonblocking historical
+provenance.
 
 ## Exact recovered legacy derivation
 
@@ -236,9 +249,13 @@ The copied suite does not satisfy the generic-lineage request. To close that lin
 5. Normalize all four generic models to a common long table while preserving immutable raw outputs separately.
 6. Freeze any successor operator and independent intermediate-run plan before loading held-out results.
 
-The owner has selected the separate AM 12.2 successor-evaluation path while retaining this historical protocol as optional provenance work. The successor study must explicitly choose annual, seasonal, season-aware, or another stated profile-construction rule. The existence of complete annual files is not approval to select annual anchors, and study authorization is not operator adoption.
+The owner selected and completed the separate AM 12.2 successor-evaluation
+path while retaining this historical protocol as optional provenance work.
+The frozen study evaluated both fixed-DJF25 and conditioned-DJF profile rules;
+neither is adopted.  The existence of complete annual files is not approval
+to select annual anchors, and study completion is not operator adoption.
 
-## Versioned continuous-operator candidates
+## Historical legacy-anchor continuous-operator candidates
 
 For a sample with valid zenith `tau225` and eligible aligned elevation `e`, evaluate each q-anchor band transmission with the top-of-atmosphere pivot:
 
@@ -251,7 +268,7 @@ C_q,b(e) = exp(L_q,b(e)).
 
 The full sample airmass is applied to zenith `tau225`; no Beammap-relative or reference-airmass subtraction is permitted. A continuous candidate interpolates complete line-of-sight optical depth `L`, then returns `T=exp(-L)` and `C=exp(L)`.
 
-All candidates share the owner-approved low-opacity segment:
+All candidates share the protocol-frozen low-opacity segment:
 
 ```text
 L_b(tau,e) = (tau/tau_q25) * L_q25,b(e),  0 <= tau <= tau_q25.
@@ -264,6 +281,43 @@ Above q25, the frozen candidates are:
 - `cubic_through_anchors_los_tau_v0`: unconstrained exact-anchor stress test, not recommended for selection.
 
 Requests outside a declared opacity/elevation domain, non-finite inputs, invalid aligned-elevation eligibility, or absent model support fail closed. There is no extrapolation.
+
+## Completed AM12 successor evaluation v2
+
+The frozen successor candidates and their exact implementation identities are
+defined by `AM12_SUCCESSOR_ADOPTION_STUDY_PROTOCOL.md`, its pre-execution
+clarification and execution erratum, and runner SHA-256
+`ace8e08a037535260b6b1d889f83dbf722ffc932e05bc1f7f83f0565ef0ff47c`:
+
+- model lanes `fixed_djf25_v1` and `conditioned_djf_v1`;
+- opacity operators `am12_piecewise_linear_los_tau_eval_v0` and
+  `am12_pchip_los_tau_eval_v0`;
+- analytic zero-to-q25 segment, q25/q50/q75 AM12 anchors, and no q95 node;
+- closed study support `0 <= tau225 <= 0.158313198574890929` and
+  `20 <= EL <= 80` degrees;
+- TolTECA v1 ECSV primary passbands, mapped FTS challengers, and
+  `S_nu proportional to nu^alpha` for `alpha=-1,0,2,4`;
+- PCHIP in elevation through direct even-elevation AM nodes and direct
+  odd-elevation midpoint holdouts.
+
+Canonical v2 execution context
+`05dd063ca433b79ab3e2c2fa469e0976802a69502232aae2ddc58121d1a7ccff`
+binds 785 scale-search runs and 240 full grids.  Together with 155 validated
+P1 training grids, the study contains 23,040 complete comparison rows.  A
+cache-only replay reproduced all 13 artifacts byte-for-byte without launching
+AM.
+
+All structural gates pass.  No candidate is eligible because the common
+analytic q0--q25 segment under-corrects the worst a2000/`alpha=-1`/EL21 row by
+`1.159949%`.  Above q25, maximum primary errors range from `0.163540%` for
+conditioned/PCHIP to `0.288111%` for fixed-DJF25/piecewise-linear.  Direct
+FTS-versus-ECSV truth differs by up to `3.474613%`; that is a passband
+definition sensitivity, not interpolation error.
+
+An inspected EL25--80 slice is below one percent (`0.989845%` primary,
+`0.949738%` challenger) but is post-result evidence and does not change the
+frozen decision.  Any EL25 selection requires an explicit owner domain choice
+and a newly registered confirmation design.
 
 ## Selection and validation gates
 
@@ -279,23 +333,33 @@ Candidate evaluation must report, by band and across the complete owner-declared
 
 Exact-anchor, finite-positive-transmission, continuity, opacity-monotonicity, and fail-closed-support gates must pass. Elevation monotonicity must pass within the declared successor study domain or receive an explicit owner scientific disposition supported by independent model evidence. The known `0.839827%` legacy q95/a2000 wrong-way feature remains historical/diagnostic and is not a successor release gate.
 
-At most one-percent correction error is a provisional numerical representation-fidelity gate. It is not per-sample physical photometric accuracy. The post-discovery C1 stress spans the broader legacy q0--q95 diagnostic range; its quoted a1100 maxima of 1.738766% and 1.738068% occur for `LMT_MAM_75` at modified-secant tau225 `0.294218`, in the upper q75--q95 interval. Whether that point is outside the eventual study domain depends on the still-unapproved upper endpoint. The copied products are distinct from the generic products, while historical generic-generator association is not established. C1 was non-blinded and neither selects nor rejects a production model; successor-specific independent validation remains required.
+At most one-percent correction error is a provisional numerical representation-fidelity gate. It is not per-sample physical photometric accuracy. The post-discovery C1 stress spans the broader legacy q0--q95 diagnostic range; its quoted a1100 maxima of 1.738766% and 1.738068% occur for `LMT_MAM_75` at modified-secant tau225 `0.294218`, in the upper q75--q95 interval. That point is outside the proposed q0--q75 follow-up support; the proposed support remains unauthorized operationally. The copied products are distinct from the generic products, while historical generic-generator association is not established. C1 was non-blinded and neither selects nor rejects a production model; successor-specific independent validation remains required.
 
 Software correctness, representation fidelity, 5--10% absolute observational accuracy, and approximately 5% observation-to-observation repeatability are separate gates. More samples do not remove shared calibrator, Beammap-extinction, selector, or airmass systematics.
 
 ## Owner decisions and remaining input request
 
-For the selected AM 12.2 successor evaluation, these items remain open:
+The completed study stops for these scientific choices, encoded by
+`owner_input_request.json`:
 
-- explicit successor profile family and H2O-scale construction;
-- monochromatic legacy parity versus a newly versioned band-integrated convention; if band integrated, immutable passbands, weighting, normalization, and quadrature;
-- the operational warning/frequency policy for any successor;
-- preregistered independent intermediate profiles/runs across the q95-excluding study range under the selected physical construction rule;
-- operational zenith-tau225 and aligned-elevation limits, endpoint inclusion, and out-of-domain behavior.
+- `LOW-001`: retain EL20 and register a revised physical clear-to-q25 construction, or
+  consider EL25 as the minimum and register independent confirmation, or
+  explicitly change the provisional numerical gate above `1.159949%`;
+- `BAND-001`: select the TolTECA v1 ECSV convention or supply immutable detector/array-
+  weighted operational passbands; the representative FTS/ECSV difference is
+  too large to leave implicit;
+- `DOMAIN-001`: propose and freeze exact zenith-tau225 and aligned-elevation
+  endpoints, inclusivity, and fail-closed behavior for the next study;
+- `WARN-001`: choose the evidence-acceptance policy for AM's bounded
+  unresolved-line status 1;
+- `OBS-001`: after numerical selection, execute the separate observational absolute-
+  flux/repeatability/residual-trend campaign.
 
 Generic q95 datafile ID 461 and exact historical generic-q generator/profile/run custody remain unresolved nonblocking provenance. Recovering them may close historical lineage but is not a prerequisite for the selected successor study.
 
-No profile family, bandpass, frequency policy, operator, or domain is chosen silently. Generic q95 is not substituted and remains diagnostic-only.
+No profile family, passband, warning policy, operator, numerical threshold, or
+domain is chosen silently. Generic q95 is not substituted and remains
+diagnostic-only.
 
 ## Aligned-elevation dependency
 

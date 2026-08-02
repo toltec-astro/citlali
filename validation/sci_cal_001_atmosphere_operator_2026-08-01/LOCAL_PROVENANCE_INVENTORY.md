@@ -117,6 +117,65 @@ The canonical context SHA-256 is `05148050e96e73577ec75be525b026b5bf37bbd2a8753f
 
 P1 narrows possible copied-profile/H2O-scale recipes after seeing the legacy targets. It closes no custody-backed generator, generic-profile construction, missing-q95, independent-intermediate-profile, spectral-choice, or operational-domain fact. Its all-direct full-grid results and its nominal operator-facing diagnostic must remain distinct.
 
+## AM12 successor execution and decision evidence
+
+The owner-authorized, q95-excluding AM12 successor study is complete.  Its
+frozen protocol, pre-execution clarification, execution erratum, and runner
+define two profile/H2O-scale lanes (`fixed_djf25_v1` and
+`conditioned_djf_v1`), two continuous line-of-sight-optical-depth operators,
+TolTECA v1 ECSV primary passbands, mapped single-network FTS challengers,
+source indices `alpha=-1,0,2,4`, and closed study support from q0 through the
+exact q75 selector anchor and EL20--80.  The study does not use q95 and does
+not claim historical generic-product custody.
+
+Canonical v2 used runner SHA-256
+`ace8e08a037535260b6b1d889f83dbf722ffc932e05bc1f7f83f0565ef0ff47c`
+and immutable execution-context SHA-256
+`05dd063ca433b79ab3e2c2fa469e0976802a69502232aae2ddc58121d1a7ccff`.
+Within that frozen context, the key named
+`imported_canonical_p1_runner.canonical_p1_context_sha256` is a misnamed alias
+for imported P1 runner SHA-256
+`caa41ca105eec6df99f31d982ca69910ef2d7e1ebcbad86c96faa7d0e4cd3c2c`;
+the actual P1 execution-context identity is the separate
+`p1_execution_context_sha256` value
+`05148050e96e73577ec75be525b026b5bf37bbd2a8753f8e3702fc0b6dfb2bee`.
+It validates 155 direct P1 training grids (93 general-stage plus 62
+selected-stage records), executes 785 midpoint scale searches and 240 full
+held-out grids, and expands them to 23,040 band-integrated truth rows.  The
+external cache contains 1,025 raw outputs and 1,025 execution sidecars.  The
+mandatory cache-only replay reproduced all 13 deterministic package artifacts
+byte-for-byte without launching AM.
+
+The predecessor v1 context, SHA-256
+`f0acb32cd43fd0bd128a06ab8d7e354bc6a6c1389d6d0794db716753d03f85c8`,
+is retained but excluded because its runner requested the wrong documentary
+P1 stage and stopped before producing decision artifacts.  V1 and v2 contain
+the same 1,025 physical requests and argv; every numeric-text and normalized-
+output SHA-256 agrees.  Raw combined-output SHA-256 values differ in 935
+cases solely in volatile runtime/cache lines removed by the frozen
+normalization.  This is an execution-lineage comparison, not a basis for
+admitting v1 into the decision evidence.
+
+All provenance, exact-anchor, positivity, continuity, opacity/elevation
+monotonicity, fail-closed-support, and evidence-coverage gates pass.  All four
+candidates fail the preregistered full-domain numerical gate because their
+shared analytic q0--q25 segment has a worst primary-passband fractional
+extinction-correction error of `1.159949%` at a2000, `alpha=-1`, DJF5,
+q0--q25 midpoint, and EL21.  The direct AM correction there is `1.057175916`
+and the operator correction is `1.044913213`, so the practical effect is a
+flux under-correction.  Above q25, the candidate maxima are
+`0.163540%`--`0.288111%`; the continuous successor surfaces also remove the
+legacy selector's instantaneous q50/q75 correction jumps, whose absolute
+sizes span `0.267763%`--`7.735359%` in the evaluated bands/elevations.
+
+A post-result EL25--80 slice is below one percent (`0.989845%` primary and
+`0.949738%` FTS), but it is diagnostic rather than a passing relabeling of the
+frozen study.  Direct FTS-versus-ECSV truth differs by as much as `3.474613%`,
+which is a passband-definition sensitivity rather than operator
+representation error.  The machine result is therefore
+`numerical_adoption_evidence_fail`, with no eligible candidate and no operator
+or domain authorization.
+
 ## Recovered fit and spectral convention
 
 Direct calculation from the generic q25/q50/q75 grids proves the production fit used:
@@ -143,12 +202,30 @@ Its prose states an elevation grid of 10 through 80 degrees in ten-degree steps.
 
 ## Bounded unresolved provenance and owner choices
 
-The local search has recovered a reproducible 25-profile AM 12.2 source/input/workflow/output suite and exact custody identities for 20 seasonal products. Post-hoc P1 has also narrowed numerical profile/H2O-scale recipes, but it resolves none of the eight successor study-definition facts or three nonblocking historical-custody facts. The search has **not** recovered the generic q95 bytes or an evidence-backed mapping from the generic q25/q50/q75/q95 products to exact generator payload, profiles, profile-construction recipe, or run record.
+The local search has recovered a reproducible 25-profile AM 12.2
+source/input/workflow/output suite and exact custody identities for 20 seasonal
+products.  The completed successor study now supplies independent
+intermediate-opacity/elevation model evidence for two explicitly versioned
+profile/H2O-scale rules and two operators.  It does not resolve the three
+nonblocking historical-custody facts: the search has **not** recovered the
+generic q95 bytes or an evidence-backed mapping from the generic
+q25/q50/q75/q95 products to an exact generator payload, profiles,
+profile-construction recipe, or run record.
 
-The owner has selected evaluation of a separately versioned AM 12.2 successor. The following remain study/adoption dependencies:
+The next selection study requires owner scientific choices, not more
+unbounded provenance search:
 
-- select and version the AM 12.2 model family and profile/H2O-scale rule, spectral convention, warning/frequency policy, and independent intermediate-run design;
-- generate or approve independent intermediate-opacity evidence across the q95-excluding successor study range;
-- approve the operational zenith-tau225/aligned-elevation domain and fail-closed eligibility rules.
+- retain EL20 and revise the physical q0--q25 construction, set EL25 as a
+  proposed floor and preregister independent confirmation, or explicitly
+  relax the representation criterion above `1.159949%`;
+- select the immutable TolTECA v1 ECSV convention or supply authoritative
+  detector/array-weighted operational passbands;
+- propose and freeze exact opacity/elevation endpoints and fail-closed
+  eligibility for the next study, choose the AM warning-status-1
+  evidence-acceptance policy, and retain the later observational validation
+  campaign as a separate gate.
 
-Generic q95 datafile ID 461 and historical generic-q generator/profile/run custody remain optional, nonblocking provenance dependencies for historical closure. The copied annual family is not a default. No atmospheric profile, seasonal family, q95 file, bandpass, warning policy, operator, or domain is substituted or selected by this inventory.
+Generic q95 datafile ID 461 and historical generic-q generator/profile/run
+custody remain optional, nonblocking provenance dependencies for historical
+closure.  No passband, warning policy, operator, representation threshold, or
+domain is selected by this inventory.
