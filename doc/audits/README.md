@@ -115,6 +115,91 @@ and retained real-data evidence, but it must state that reasoning.
 A package is promoted to Tier A when interface evidence exposes an unresolved
 amplitude, covariance, response, unit, source-selection, or feedback question.
 
+## Model and reasoning-effort allocation
+
+**Policy ID:** `FRAMEWORK-EFFORT-001`
+
+**Effective date:** 2026-08-02
+**Scope:** future dispatches and future phases only
+
+The program maximizes scientific reliability per unit of Codex usage. Model
+and effort are selected from the consequence and ambiguity of the question,
+whether the task is mechanically settled or scientifically interpretive,
+whether the scientific contract remains open, and whether the task is one
+coherent problem or several independent hard investigations. They do not
+alter package tier, scientific authority, evidence gates, role separation, or
+the costly-study controls in `FRAMEWORK-NUM-001`.
+
+| Task shape | Default allocation | Examples |
+| --- | --- | --- |
+| Mechanical and settled | Terra Medium | Exact SHA/worktree checks, manifests, checksums, known commands, routine metadata extraction, and fully specified mechanical edits. |
+| Bounded engineering judgment | Terra High | Audit management, dispatches, ledger/dependency work, bounded tracing, approved repairs, ordinary build/test interpretation, and handoff integration. |
+| Difficult scientific analysis | Sol High or XHigh | Evidence and consumer synthesis; signal/variance/weight/support/response/validity interpretation; cross-process tracing; consequential decision briefs. |
+| One deep coherent scientific problem | Sol Max | Independent foundational derivation; a covariance, response, unit, timing, calibration, normalization, or validity contradiction; final adjudication of one tightly coupled contract. |
+| Several independent hard investigations requiring synthesis | Sol Ultra | A written, broad adversarial review divided into independent mathematical, implementation, product/metadata, validation, and consumer workstreams. |
+
+`XHigh` is the Codex effort-setting name for the intermediate level sometimes
+described as “Extra High.” Terra Medium is not the default for a full
+scientific audit, and Ultra is not a generic safety margin for an important,
+large, or long task.
+
+### Phase defaults
+
+Unless a dispatch records a specific reason to depart, a Tier A lifecycle uses:
+
+1. launch checkpoint and source inventory — Terra High;
+2. independent scientific core — Sol Max;
+3. implementation, product, and consumer tracing — Sol High or XHigh;
+4. scientific decision brief — Sol XHigh, escalating to Sol Max only for one
+   remaining coherent question;
+5. approved repair — Terra High, or Sol High when an implementation choice can
+   alter estimator or product meaning;
+6. mechanical validation — Terra Medium;
+7. validation interpretation — Terra High or Sol High according to whether it
+   can change scientific meaning; and
+8. fresh re-audit — Sol Max when it assesses one coherent contract.
+
+Tier B interface/response work normally begins at Terra High or Sol High and
+uses Sol Max only after a specific mathematical or scientific reopen trigger.
+Tier C work normally remains Terra High, with Terra Medium reserved for its
+settled execution steps. The same defaults apply to the analogous phase of an
+amendment or successor task; completed and frozen audit artifacts are never
+relabeled retroactively.
+
+### Ultra, parallelism, and task lifecycle
+
+An Ultra escalation is permitted only when a dispatch identifies the
+unresolved question, why XHigh or Max is insufficient, the independent
+subproblems, the reconciliation owner and method, and the exact stop rule.
+Ultra ends when that decomposable synthesis phase ends. No currently active
+package receives an implicit Ultra escalation from this policy.
+
+Parallelism is a latency and independence tool, not a credit-saving device.
+It is permitted only for operationally and scientifically independent work
+with explicit authority boundaries, predetermined output owners, and a named
+synthesis point. Within a package, retain the required serial sequence:
+
+```text
+independent core -> freeze/hash/commit -> implementation inspection ->
+findings -> owner decision -> repair -> validation -> fresh re-audit
+```
+
+End a task when its role changes (for example audit to repair or validation to
+re-audit) and use a compact, frozen handoff. Role separation preserves
+scientific independence and authority boundaries; it is not merely a context
+or usage optimization.
+
+### Dispatch and ledger record
+
+Every future package or subtask dispatch includes the header defined in
+`templates/PACKAGE_AUDIT_PROMPT_TEMPLATE.md`. The coordinator records the
+actual selected allocation and any escalation in `audit-ledger.yaml` under
+`resource_dispatch_history`. The README supplies defaults; the ledger records
+only dispatched choices, departures, and their reasons, so it does not become
+a redundant per-package planning table. Each record names the dispatch ID,
+package ID, phase, exact dispatch commit, model, effort, task shape, rationale,
+Ultra trigger, parallelism/synthesis plan, and stop rule.
+
 ## Authority and evidence
 
 No evidence class substitutes for all the others:

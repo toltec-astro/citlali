@@ -4,6 +4,26 @@ Replace every `TO_SET` field before dispatch. This prompt starts one bounded
 audit; it does not authorize implementation repair, integration, a push, or a
 Unity connection.
 
+## Execution profile
+
+- MODEL: `TO_SET_TERRA_OR_SOL`
+- EFFORT: `TO_SET_MEDIUM_HIGH_XHIGH_MAX_OR_ULTRA`
+- TASK SHAPE: `TO_SET_MECHANICAL_BOUNDED_ENGINEERING_COHERENT_SCIENTIFIC_OR_DECOMPOSABLE_SCIENTIFIC`
+- MISSION: `TO_SET_ONE_PRECISE_SENTENCE`
+- SCIENTIFIC AUTHORITY: `TO_SET_APPROVED_FACTS_ABSTRACTIONS_AND_NONDECISIONS`
+- ULTRA TRIGGER: `TO_SET_EXACT_TRIGGER_OR_NONE`
+- PARALLELISM: `TO_SET_PERMITTED_INDEPENDENT_WORKSTREAMS_AND_SYNTHESIS_OWNER_OR_NONE`
+- STOP RULE: `TO_SET_EXACT_ROLE_OR_SCOPE_BOUNDARY`
+- EXPECTED OUTPUT: `TO_SET_FILES_COMMITS_DECISION_BRIEF_EVIDENCE_REQUEST_OR_STATUS_FIELDS`
+- DOWNSTREAM RESTRICTIONS: `TO_SET_CONSUMERS_THAT_REMAIN_RESTRICTED_OR_FAIL_CLOSED`
+
+Select this profile under `FRAMEWORK-EFFORT-001`. Use Ultra only when the
+written trigger names genuinely independent hard workstreams and their
+explicit synthesis; do not use it merely because the package is important or
+the repository is large. The dispatch ledger record binds this profile to the
+exact phase and commit; it does not alter the package's scientific authority
+or status axes.
+
 ## Assignment
 
 Audit package:

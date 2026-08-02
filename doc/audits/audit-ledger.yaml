@@ -86,6 +86,20 @@ numerical_cost_control:
     FRAMEWORK-COMP-D006: held_unchanged
   current_holds:
     - SCI-CAL-001-AM12-EL25-CONFIRMATION-001-replacement
+resource_allocation:
+  policy_id: FRAMEWORK-EFFORT-001
+  status: active_for_future_dispatches_and_future_phases
+  effective_date: 2026-08-02
+  policy_path: doc/audits/README.md#model-and-reasoning-effort-allocation
+  scope: >-
+    Model and reasoning-effort allocation for future package and subtask
+    dispatches. It does not modify active tasks, frozen artifacts, package
+    status axes, scientific authority, numerical-study controls, or completed
+    evidence retroactively.
+  dispatch_record_rule: >-
+    Record the actual selected profile and any escalation here; retain default
+    profiles in the README rather than duplicating them for every package.
+  resource_dispatch_history: []
 
 controlled_vocabulary:
   tiers: [A, B, C]
@@ -173,6 +187,23 @@ controlled_vocabulary:
     - ready
     - denied
     - superseded
+  dispatch_model: [terra, sol]
+  dispatch_effort: [medium, high, xhigh, max, ultra]
+  dispatch_task_shape:
+    - mechanical
+    - bounded_engineering
+    - coherent_scientific
+    - decomposable_scientific
+  dispatch_phase:
+    - launch_inventory
+    - independent_core
+    - implementation_trace
+    - scientific_decision
+    - repair
+    - mechanical_validation
+    - validation_interpretation
+    - re_audit
+    - framework_review
 
 packages:
   - id: SCI-MAP-001
