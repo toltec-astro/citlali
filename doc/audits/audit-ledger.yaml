@@ -282,7 +282,7 @@ packages:
         conformity or expand production use.
     unity_campaign_preparation:
       status: >-
-        verified_prepared_not_dispatched_evidence_design_approved_producer_task_authorized
+        verified_prepared_not_dispatched_evidence_design_approved_producer_task_active
       review_date: 2026-08-02
       review_id: SCI-MAP-001-UNITY-001-COORD-REVIEW-001
       review_path: >-
@@ -352,9 +352,11 @@ packages:
           changes no MAP finding, dependency, conformance, validation,
           production, repair, or re-audit state.
       evidence_protocol_producer_dispatch:
-        status: authorized_pending_task_creation
+        status: dedicated_local_task_active
         launch_authority: project_owner_explicit_2026-08-02
         dispatch_date: 2026-08-02
+        launch_coordination_head: >-
+          4257265dba44aac3b29d985e1f7bc01b2a50368c
         launched_from_campaign_commit: >-
           1b824f138754eeb1856ae5f102027db4b31598be
         application_candidate_sha: >-
@@ -369,10 +371,12 @@ packages:
         handoff_sha256: >-
           8ce9d12f93b2cf60e6fb281b67afcfdcaeb9f2ffde755b9c0f640a38c98c0c5b
         handoff_commit: db74fe293436b59eecfa5c36b2a2ea186b05e9b6
-        task_thread_id: null
-        task_host_id: null
-        task_branch: null
-        task_worktree: null
+        task_thread_id: 019fc2c5-ca8c-7270-96b9-d9c612c934fb
+        task_host_id: local
+        task_branch: codex/map-unity-ed1
+        task_worktree: >-
+          /Users/gwilson/.codex/worktrees/aa31/citlali-refactor
+        launch_effort: ultra
         authorization_scope: >-
           Validation campaign, protocol, producer, verifier, documentation,
           and local validation only.
@@ -406,7 +410,7 @@ packages:
             requesting Unity operational values.
         - id: SCI-MAP-001-UNITY-001-GAP-PRODUCER-001
           class: engineering_evidence_preparation_gap
-          status: blocking_successor_task_authorized
+          status: blocking_successor_task_active
           design_authority: MAP-UNITY-ED1
           original_full_term_representation:
             status: superseded_for_successor_protocol_design
@@ -674,7 +678,7 @@ packages:
         preparation only, not external evidence
     requested_unity_evidence:
       - status: >-
-          prepared_not_dispatched_evidence_design_approved_producer_task_authorized
+          prepared_not_dispatched_evidence_design_approved_producer_task_active
         request_id: SCI-MAP-001-UNITY-001
         audited_governing_source_sha: >-
           9aae0e669384c5c0c0dda93debc194d6b8dac787

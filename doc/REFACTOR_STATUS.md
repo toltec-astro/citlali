@@ -93,10 +93,11 @@ uncompressed full-term representation with a bounded successor protocol using
 automatic manifests, streaming hashes, compact sufficient statistics, and
 deterministic every-active-network actual-data traces. The seven reductions
 and every product, F010, WCS, coadd, realization, provenance, seq/OpenMP, and
-exhaustive local F011 gate remain unchanged. A dedicated validation-only
-successor-package/producer task is authorized from exact campaign-preparation
-commit `1b824f138754eeb1856ae5f102027db4b31598be`; the existing frozen package
-and MAP application candidate remain immutable. The owner should not fill
+exhaustive local F011 gate remain unchanged. The dedicated validation-only
+successor-package/producer task is active on `codex/map-unity-ed1` from exact
+campaign-preparation commit
+`1b824f138754eeb1856ae5f102027db4b31598be`; the existing frozen package and
+MAP application candidate remain immutable. The owner should not fill
 Unity operational values yet. Unity remains undispatched, external evidence
 and fresh re-audit have not begun, F009/F010 remain
 `addressed_pending_reaudit`, and the named CAL/AST/PTC/VAL dependencies remain
