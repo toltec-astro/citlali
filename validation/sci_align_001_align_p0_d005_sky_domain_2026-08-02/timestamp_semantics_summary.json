@@ -1,0 +1,20 @@
+{
+  "absolute_physical_sky_placement_correctness": "UNRESOLVED",
+  "cadence_equals_contiguous_integration_duration": "UNPROVED",
+  "compile_identities": [
+    1731683195,
+    1732640701
+  ],
+  "compile_identity_count": 2,
+  "governing_consumer_behavior": "uses reconstructed timestamp directly without plus/minus half-cadence adjustment",
+  "negative_receive_lag_rows": 0,
+  "physical_integration_centroid_error": "UNAVAILABLE_FOR_ALL_ROWS",
+  "producer_timestamp_event": "UNPROVED",
+  "receive_lag_interpretation": "end/completion hypothesis only; clock and row association undocumented",
+  "receive_lag_max_sec": 0.06322050094604492,
+  "receive_lag_median_sec": 0.00021910667419433594,
+  "receive_lag_min_sec": 7.390975952148438e-05,
+  "receive_lag_p99_sec": 0.0005953311920166016,
+  "selected_detector_file_count": 66,
+  "selected_detector_row_count": 4645586
+}

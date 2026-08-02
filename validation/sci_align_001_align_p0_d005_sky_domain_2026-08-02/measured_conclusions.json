@@ -1,0 +1,12 @@
+{
+  "canonical_interface_row_digest_count": 66,
+  "edge_rows": 110,
+  "exception_row_count": 110,
+  "full_slot_reassignment_rows": 0,
+  "native_rows": 4645586,
+  "ordinary_assigned_time_change_max_abs_sec": 0.0,
+  "ordinary_rows": 4645476,
+  "ordinary_sky_change_max_abs_arcsec": 0.0,
+  "ordinary_slot_change_rows": 0,
+  "populated_stratum_count": 14250
+}

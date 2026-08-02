@@ -1,0 +1,134 @@
+{
+  "cohort": {
+    "deduplication": "Pointing 152389 point_core/science_support references are byte-identical and measured once; both roles retained",
+    "mandatory_core": [
+      "Pointing 152389",
+      "Beammap 148670"
+    ],
+    "native_rate": "genuine 1x only; 0.5x/2x/4x remain evidence-pending",
+    "unique_observations": [
+      148669,
+      148670,
+      148671,
+      152389,
+      152391,
+      152393
+    ]
+  },
+  "engineering_invariants": [
+    "strict abs(raw residual)<dt/2 is the unique nearest-slot admission rule only",
+    "round-half-up is used once and identically for assignment/mask/identity",
+    "zero ordinary slot changes, collisions, losses, or duplicates",
+    "union-edge rows remain typed unavailable in the governing baseline and are not reassignment events"
+  ],
+  "explicit_prohibitions": [
+    "do not use half-cell boundary distance or observed residual maximum as a sky tolerance",
+    "do not infer start/end/centroid semantics from cadence, receive lag, or consumer behavior",
+    "do not change AST frame/projection/detector geometry",
+    "do not implement or tune SCI-MAP gridding/mapmaking",
+    "do not select a Hold predicate or transition side",
+    "do not authorize phase one, Unity, production expansion, re-audit, merge, rebase, or push"
+  ],
+  "parent_D005_owner_return_preserved": {
+    "question_ids": [
+      "D005-Q1",
+      "D005-Q2",
+      "D005-Q3",
+      "D005-Q4",
+      "D005-Q5",
+      "D005-Q6",
+      "D005-Q7",
+      "D005-Q8"
+    ],
+    "status": "unchanged and incorporated by reference; this sky amendment does not answer or replace them"
+  },
+  "protocol_id": "ALIGN-P0-D005-SKY-001",
+  "science_facing_metrics": [
+    {
+      "aggregation": "record digest plus populated strata by observation, direction, interface, array, speed, acceleration, Hold views, support",
+      "definition": "paired delta x/y, radial, signed along/cross for every ordinary row",
+      "id": "sample_sky_coordinate_displacement",
+      "limit": "exact zero under active Point/Beammap successor policy; any nonzero result stops for owner review"
+    },
+    {
+      "definition": "signed mean/median plus population std and 1.4826*MAD of along/cross by interface and direction",
+      "id": "systematic_offset_and_random_scatter",
+      "limit": "exact zero for this behavior-preserving repair; no nonzero angular tolerance authorized"
+    },
+    {
+      "definition": "continuous delta/p plus nearest-cell identity on exact fixed baseline WCS",
+      "id": "one_and_two_arcsec_pixel_sensitivity",
+      "limit": "zero coordinate-induced change; 2-arcsec view is counterfactual sensitivity, not a new map configuration"
+    },
+    {
+      "boundary": "SCI-MAP owns JINC/naive gridding and map weights; ALIGN may only supply coordinates and run a bounded downstream sentinel",
+      "definition": "with exact baseline WCS/operator/signal/eligibility/weights held fixed, compare stencil keys and normalized per-sample stencil L1 delta",
+      "id": "gridding_weight_sentinel",
+      "limit": "exact unchanged under active map-product gate"
+    },
+    {
+      "definition": "join UID/array/validity/stable scan; lexicographic argmin(distance^2,assigned_time,row); compare row/time/coordinate/distance",
+      "id": "source_crossing",
+      "limit": "exact unchanged; current historical artifact lacks closest row/time, so direct successor comparison remains pending"
+    },
+    {
+      "definition": "Pointing per-array and Beammap UID/array/validity joined signed x/y and radial displacement",
+      "id": "centroid",
+      "limit": "exact unchanged under active policy; fit uncertainties are descriptive, not regression allowance"
+    },
+    {
+      "definition": "major=max(a_fwhm,b_fwhm), minor=min(...), ellipticity=(major-minor)/(major+minor)",
+      "id": "PSF",
+      "limit": "exact unchanged under active policy; historical 0.0001-arcsec profile does not widen it"
+    },
+    {
+      "definition": "R_full=N(abs(delta_slot)>=1)/N(governing-supported ordinary); union edges excluded",
+      "id": "full_slot_reassignment_rate_and_wings",
+      "limit": "exactly zero; any event stops",
+      "required_stop_diagnostic": "fixed baseline centroid/orientation/FWHM ellipse; absolute map residual in rho<=1, 1<rho<=2, 2<rho<=4 normalized by baseline core absolute signal; no refit"
+    }
+  ],
+  "status": "PREREGISTERED_OWNER_RETURN_REQUIRED_PHASE_ONE_UNAUTHORIZED",
+  "stop_and_owner_return": [
+    "any nonzero ordinary assigned-time or sky-coordinate change",
+    "any changed active Point/Beammap product, crossing, centroid, FWHM, ellipticity, pixel identity, gridding key/weight, or PSF wing",
+    "any full-slot reassignment",
+    "any claim of absolute sky correctness without a versioned producer timestamp/window contract",
+    "missing native 0.5x/2x/4x evidence remains pending and is not a pass"
+  ],
+  "successor_output_viewed": false,
+  "three_distinct_time_quantities": [
+    {
+      "definition": "r=t_native_after_offset-t_candidate_slot",
+      "id": "raw_timestamp_to_slot_residual",
+      "role": "engineering placement diagnostic and strict unique-slot admission; not sky accuracy"
+    },
+    {
+      "definition": "delta_t=t_candidate_slot-t_governing_slot for governing-supported ordinary rows",
+      "id": "governing_to_candidate_assigned_time_change",
+      "role": "differential sky-coordinate driver; union-edge rows are unpaired/unavailable"
+    },
+    {
+      "definition": "epsilon=t_assigned-t_physical_integration_centroid",
+      "id": "assigned_time_to_physical_integration_centroid_error",
+      "role": "absolute physical placement; unavailable until producer event/window authority exists"
+    }
+  ],
+  "trajectory_method": {
+    "acceleration": "a=[R(t+dt/2)-2R(t)+R(t-dt/2)]/(dt/2)^2",
+    "acceleration_bins": "per-observation governing-trajectory p25/p50/p75, digest-bound before successor",
+    "along_unit": "v/|v|",
+    "cross_unit": "(-v_y,v_x)/|v|; positive is +90 degrees in tangent plane",
+    "direction": "atan2(v_y,v_x) in eight fixed half-open 45-degree sectors",
+    "estimator_window_is_tolerance": false,
+    "frame": "governing AltAz tangent plane; +x azimuth-like, +y elevation-like; arcsec",
+    "ordering": "periodic-fix each native field; interpolate six fields at each assigned time; then apply exact governing tangent formula",
+    "speed_bins_arcsec_per_sec": [
+      "[0,50)",
+      "[50,100)",
+      "[100,200)",
+      "[200,infinity)"
+    ],
+    "velocity": "v=[R(t+dt/2)-R(t-dt/2)]/dt on bracket-supported samples"
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "allowed_status_scope": [
+    "tools/diagnostics/generate_sci_align_001_d005_sky.py",
+    "validation/sci_align_001_align_p0_d005_sky_domain_2026-08-02/"
+  ],
+  "application_source_changed": false,
+  "bounded_exception_rows_written": 110,
+  "branch": "codex/repair-sci-align-001",
+  "canonical_all_row_comparison_sha256": "52d72f652f917c8077a764b8f318533e8c810c583059e1a7667516298217e5cb",
+  "citlali_executed": false,
+  "committed_delta_after_task_base_scope_validated": true,
+  "coordination_frozen_head": "6785152c2a2d4113c9ba89073de00cb454aa70c4",
+  "coordination_frozen_snapshot_verified_clean_by_parent_D005": true,
+  "coordination_live_head_status_inspected": false,
+  "coordination_live_worktree_content_read": false,
+  "coordination_repository": "/private/tmp/citlali-scientific-audit-framework",
+  "dense_ordinary_row_artifact_written": false,
+  "frozen_D005_package": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/validation/sci_align_001_align_p0_d005_2026-08-01",
+  "frozen_D005_report_sha256": "6edf7a7bd79881c3e7f9809d1da36c56a763bb22cd9e7589e91950351536663a",
+  "frozen_D005_rewritten": false,
+  "frozen_D005_sha256sums_sha256": "149ef430af3223562d9e69b7224703b831f6f56629b2f3c513bf44c40a567bbb",
+  "generation_head_is_base_or_package_only_descendant": true,
+  "generator_path": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor/tools/diagnostics/generate_sci_align_001_d005_sky.py",
+  "generator_sha256": "808b3714995dcff35ddba8b874957ca57c2ede85e1ec8c3ad22e630cc3fcb935",
+  "governing_application_sha": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
+  "governing_source_blobs": [
+    {
+      "authority_class": "exact_governing_application_source",
+      "authority_id": "governing_source:include/citlali/core/pipeline/timestream_alignment_helpers.h",
+      "git_commit": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
+      "path": "include/citlali/core/pipeline/timestream_alignment_helpers.h",
+      "sha256": "89ecc30e01f151a2faf105039a9d4bc72775e36b92ec140c283347e98245dfda",
+      "use": "slot, telescope trajectory, detector geometry, unit, or array identity"
+    },
+    {
+      "authority_class": "exact_governing_application_source",
+      "authority_id": "governing_source:include/citlali/core/engine/detail/todproc_alignment_impl.h",
+      "git_commit": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
+      "path": "include/citlali/core/engine/detail/todproc_alignment_impl.h",
+      "sha256": "dca46d45df1040e147373e735aacdc11692d1884d3fa5b10a45ee07ef64da93c",
+      "use": "slot, telescope trajectory, detector geometry, unit, or array identity"
+    },
+    {
+      "authority_class": "exact_governing_application_source",
+      "authority_id": "governing_source:src/citlali/core/engine/telescope.cpp",
+      "git_commit": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
+      "path": "src/citlali/core/engine/telescope.cpp",
+      "sha256": "be518d193154209040196cb47597eeb5c48a6057222723d3432394d7ec1a5f49",
+      "use": "slot, telescope trajectory, detector geometry, unit, or array identity"
+    },
+    {
+      "authority_class": "exact_governing_application_source",
+      "authority_id": "governing_source:include/citlali/core/utils/pointing.h",
+      "git_commit": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
+      "path": "include/citlali/core/utils/pointing.h",
+      "sha256": "d342c8369b01ec8ea97e91da014bc471737b0f15b5135aa312cad07ddedc6bc4",
+      "use": "slot, telescope trajectory, detector geometry, unit, or array identity"
+    },
+    {
+      "authority_class": "exact_governing_application_source",
+      "authority_id": "governing_source:include/citlali/core/utils/constants.h",
+      "git_commit": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
+      "path": "include/citlali/core/utils/constants.h",
+      "sha256": "217dee25bf5d3ff9cc09109e06683713de69df7b5e4e260e784db77211127062",
+      "use": "slot, telescope trajectory, detector geometry, unit, or array identity"
+    },
+    {
+      "authority_class": "exact_governing_application_source",
+      "authority_id": "governing_source:include/citlali/core/utils/toltec_io.h",
+      "git_commit": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
+      "path": "include/citlali/core/utils/toltec_io.h",
+      "sha256": "8fa0b3f4d60f67b8a5c240bcf068153fae778d8f8ca100ffe2366cec7954c1ef",
+      "use": "slot, telescope trajectory, detector geometry, unit, or array identity"
+    }
+  ],
+  "mapmaking_executed": false,
+  "owner_sky_domain_direction_received_in_task": "2026-08-02",
+  "phase_one_authorized": false,
+  "phase_zero_evidence_commit": "53c7154a3633dfe19dc036cfb5a6250f729a897d",
+  "protocol_id": "ALIGN-P0-D005-SKY-001",
+  "repair_repository": "/Users/gwilson/.codex/worktrees/9c82/citlali-refactor",
+  "repair_worktree_scope_validated": true,
+  "selected_canonical_detector_files": 66,
+  "selected_native_rows": 4645586,
+  "selected_unique_observations": [
+    148669,
+    148670,
+    148671,
+    152389,
+    152391,
+    152393
+  ],
+  "successor_output_inspected": false,
+  "task_base_commit": "5a0d64b8f1b9b246b1b5d575c548269823203d22",
+  "tolproj_executed": false,
+  "unity_contacted": false
+}

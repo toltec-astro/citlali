@@ -1,0 +1,7 @@
+native_rate_factor,cadence_sec,reference_speed_arcsec_per_sec,slot_change,absolute_time_change_sec,constant_speed_first_order_displacement_arcsec,displacement_in_1_arcsec_pixels,displacement_in_2_arcsec_pixels,interpretation
+1x,0.008192,50.0,half_slot,0.004096,0.20479999999999998,0.20479999999999998,0.10239999999999999,dimensional sensitivity reference only; not an acceptance tolerance or actual curved trajectory result
+1x,0.008192,50.0,full_slot,0.008192,0.40959999999999996,0.40959999999999996,0.20479999999999998,dimensional sensitivity reference only; not an acceptance tolerance or actual curved trajectory result
+1x,0.008192,100.0,half_slot,0.004096,0.40959999999999996,0.40959999999999996,0.20479999999999998,dimensional sensitivity reference only; not an acceptance tolerance or actual curved trajectory result
+1x,0.008192,100.0,full_slot,0.008192,0.8191999999999999,0.8191999999999999,0.40959999999999996,dimensional sensitivity reference only; not an acceptance tolerance or actual curved trajectory result
+1x,0.008192,200.0,half_slot,0.004096,0.8191999999999999,0.8191999999999999,0.40959999999999996,dimensional sensitivity reference only; not an acceptance tolerance or actual curved trajectory result
+1x,0.008192,200.0,full_slot,0.008192,1.6383999999999999,1.6383999999999999,0.8191999999999999,dimensional sensitivity reference only; not an acceptance tolerance or actual curved trajectory result

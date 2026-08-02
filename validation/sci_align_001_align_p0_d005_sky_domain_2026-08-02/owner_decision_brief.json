@@ -1,0 +1,66 @@
+{
+  "ALIGN_AST_SCI_MAP_boundary": {
+    "ALIGN": "native row identity, offsets, assigned time, aligned support/validity and per-sample aligned fields",
+    "AST": "frozen conversion of aligned telescope fields and detector geometry into sky/tangent coordinates",
+    "SCI-MAP": "WCS coordinate-to-pixel projection, JINC/naive coefficients, sample accumulation, weights, coverage and coaddition",
+    "bounded_validation": "Pointing/Beammap map products may be exact downstream sentinels; this repair does not implement mapmaking"
+  },
+  "decision_id": "ALIGN-P0-D005-SKY-001",
+  "engineering_invariants": [
+    "D001 legacy reconstruction and D002 round-half-up assignment are deterministic compatibility rules.",
+    "The strict half cell admits a unique nearest slot; it is not an angular accuracy tolerance.",
+    "All 4645476 governing-supported ordinary rows retain exact slot/time identity; 110 union-edge rows are unpaired baseline-unavailable.",
+    "The Pointing 152389 34.062668-us half-cell margin is only distance to an engineering decision boundary."
+  ],
+  "measured_angular_non_degradation": [
+    "All 4645476 paired rows have exactly zero assigned-time, az-tangent, el-tangent, radial, along-scan, and cross-scan change.",
+    "Systematic offsets and random scatter are exactly zero in every populated observation/interface/array/direction/speed/acceleration/Hold/support ordinary stratum.",
+    "The rare full-slot reassignment rate is exactly zero; union-edge admission is not reassignment.",
+    "Zero coordinate change implies zero coordinate-induced 1-arcsec/2-arcsec cell or gridding-key change when baseline geometry/operator/other inputs are fixed; no mapmaker was executed.",
+    "Source-crossing/centroid/PSF successor products were not generated; their active exact downstream gates remain preregistered, not claimed as executed measurements."
+  ],
+  "owner_questions_required_before_phase_one": [
+    {
+      "id": "SKY-Q1-PHYSICAL-TIME",
+      "question": "Will the owner require a versioned producer ICD defining both observed compile identities' integration window, latch event, clock relation, pipeline latency, and RecvTime association before phase one, or explicitly proceed with relative compatibility while absolute sky correctness remains unresolved?"
+    },
+    {
+      "id": "SKY-Q2-ANGULAR-GATE",
+      "question": "Does the owner approve exact zero ordinary assigned-time/sky displacement and the existing exact Point/Beammap downstream policy as the phase-one gate, with any nonzero angular allowance requiring a separate pre-candidate authority amendment?"
+    },
+    {
+      "id": "SKY-Q3-MAP-SENTINEL",
+      "question": "Does the owner require the bounded fixed-WCS/fixed-JINC 1-arcsec map sentinel and counterfactual 2-arcsec coordinate sensitivity in phase-one validation, while keeping all gridding implementation under SCI-MAP?"
+    },
+    {
+      "id": "SKY-Q4-MISSING-RATES",
+      "question": "May any future phase one be restricted to native 1x while 0.5x/2x/4x sky-domain observational evidence remains pending, or are all four native strata prerequisites?"
+    },
+    {
+      "id": "SKY-Q5-HOLD",
+      "question": "Will the owner resolve the existing D005 Hold/scan predicate and transition-side return separately, without using the zero angular slot result to select either hypothesis?"
+    }
+  ],
+  "parent_D005_owner_questions_still_required": {
+    "question_ids": [
+      "D005-Q1",
+      "D005-Q2",
+      "D005-Q3",
+      "D005-Q4",
+      "D005-Q5",
+      "D005-Q6",
+      "D005-Q7",
+      "D005-Q8"
+    ],
+    "status": "unchanged; SKY questions refine timing/sky criteria and do not supersede the frozen parent return"
+  },
+  "phase_one_authorization": "NONE",
+  "recommendation": "RECORD_SKY_DOMAIN_REFRAME_AND_RETURN_TO_OWNER; PHASE_ONE_UNAUTHORIZED",
+  "unresolved_physical_timestamp_authority": [
+    "No selected detector header or local producer contract identifies the timestamp as integration start, end, effective centroid, FPGA capture, packet formation, or another event; cadence also does not prove a contiguous exposure duration.",
+    "Consumer use without a +/-4.096-ms shift proves governing behavior only.",
+    "Positive RecvTime lag is an undocumented end/completion hypothesis, not authority.",
+    "Assigned-time-to-physical-integration-centroid error and absolute physical sky-placement correctness remain unavailable.",
+    "Telescope time physical-event/absolute-precision authority also remains unproved under D004."
+  ]
+}
