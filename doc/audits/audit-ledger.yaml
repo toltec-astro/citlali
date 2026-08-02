@@ -1172,7 +1172,7 @@ packages:
       coordinator_review_date: 2026-08-02
       coordinator_review_path: >-
         doc/audits/packages/SCI-ALIGN-001_D005_SKY_DOMAIN_COORDINATOR_REVIEW_2026-08-02.md
-      coordinator_review_commit: null
+      coordinator_review_commit: 72c26111c0a19272a54101f209d51cab91829e6b
       coordinator_review_sha256: >-
         fe7e71bb5188e8333081ce70437faed039bf11001946d0cb8825b12371a16316
       evidence_branch: codex/repair-sci-align-001
