@@ -1039,7 +1039,7 @@ packages:
             owner_resolved_by_existing_use_legacy_hold_and_map_box_compatibility_adapter
           record_path: >-
             doc/audits/packages/SCI-ALIGN-001_PHASE_ZERO_D005_DECISION_2026-08-02.md
-          record_commit: null
+          record_commit: 71fe1266ca992715e8992aa487daa07cf0c0e9c9
           record_sha256: >-
             b43fa095c67c1edecd357efa084763f32f269479528c13843d6d8598e1fe6f1e
           constrained_by:
