@@ -1623,8 +1623,24 @@ packages:
             separates it from imperfect source-Beammap and optional design
             matches, and supersedes any requirement for a fictitious
             universal UID or perfect design match. Findings remain open.
+        - decision_id: BAND-001
+          status: approved_for_bounded_successor_confirmation
+          decision_date: 2026-08-02
+          selected_option: select_tolteca_v1_ecsv
+          passband_set_id: >-
+            toltec-passband-set-v1:sha256:5e6f38f14bcae93a29ffe8362c52b15209f51aee4e48373b23aaa5ec2f8a6433
+          record_path: >-
+            doc/audits/packages/SCI-CAL-001_ATMOSPHERE_CONFIRMATION_DECISION_2026-08-02.md
+          record_commit: null
+          record_sha256: >-
+            24a2e12d37689999e1070bec4329aeead47c8e24082b20f183bf0ad8e29494b0
+          effect: >-
+            Selects the exact content-bound TolTECA v1 ECSV byte set as the
+            primary passband authority for the preregistered EL25 numerical
+            confirmation. This is not atmospheric-operator adoption or
+            production activation.
     atmosphere_operator_review:
-      status: verified_evidence_owner_input_required
+      status: verified_phase_zero_review_superseded_by_confirmation_decision
       review_date: 2026-08-01
       record_path: >-
         doc/audits/packages/SCI-CAL-001_ATMOSPHERE_OPERATOR_COORDINATOR_REVIEW_2026-08-01.md
@@ -1645,6 +1661,69 @@ packages:
         authority, independent intermediate-opacity truth, spectral lineage,
         and final operational endpoints remain unresolved; no operator,
         implementation, Unity evidence, or re-audit is authorized.
+    atmosphere_confirmation_decision:
+      status: approved_for_preregistered_local_confirmation
+      decision_date: 2026-08-02
+      record_path: >-
+        doc/audits/packages/SCI-CAL-001_ATMOSPHERE_CONFIRMATION_DECISION_2026-08-02.md
+      record_sha256: >-
+        24a2e12d37689999e1070bec4329aeead47c8e24082b20f183bf0ad8e29494b0
+      record_commit: null
+      evidence_branch: codex/sci-cal-001-atmosphere-operator
+      evidence_commit: f4014d3669b94b1eceb8158da7993737efc908f2
+      evidence_parent: 742a3c263faf68c2de7d5b8db0d3423127f60480
+      evidence_package_sha256s_sha256: >-
+        bafd34e4a3d5bffb95b3af1fdbcfb7c993146248b2bccd1d0333bae91fd3caad
+      owner_direction_artifact: >-
+        validation/sci_cal_001_atmosphere_operator_2026-08-01/OWNER_EL25_CONFIRMATION_DIRECTION_2026-08-02.md
+      owner_direction_sha256: >-
+        c06aa8c01591dc9155e0cce0a08ebe4f784169c95ea2fd5d0aca8d121e833ddd
+      passband_authority:
+        audit_record_id: SCI-CAL-001-PASSBAND-AUTHORITY-001
+        passband_set_id: >-
+          toltec-passband-set-v1:sha256:5e6f38f14bcae93a29ffe8362c52b15209f51aee4e48373b23aaa5ec2f8a6433
+        alias: tolteca-v1-ecsv
+        source_repository: tolteca
+        source_commit: 2791e6a1e6349ad1d3ac549a648f41cbc51b98c7
+        manifest_path: >-
+          doc/audits/packages/SCI-CAL-001_PASSBAND_AUTHORITY_001.json
+        manifest_sha256: >-
+          2756908181cc466550399ec0a869e6671de7912bd3a935f9aeebf63e3e826617
+        production_activation_status: not_authorized
+      decisions:
+        - id: BAND-001
+          authority: scientific_owner
+          disposition: select_tolteca_v1_ecsv
+        - id: DOMAIN-001
+          authority: scientific_audit_coordinator
+          disposition: >-
+            Confirmation-only closed support 0 <= tau225 <=
+            0.158313198574890929 and 25 <= elevation_deg <= 80; q95 excluded;
+            full eligible-sample airmass with X_ref = 0; fail closed outside
+            support or on absent or ineligible ALIGN state.
+        - id: WARN-001
+          authority: scientific_audit_coordinator
+          disposition: >-
+            Accept AM status 1 only as explicitly warning-bearing numerical
+            evidence with 50,001 output rows, only the preregistered unresolved-
+            line warnings and canonical count 86, 87, or 88, and zero unknown
+            warnings, cache mutation, or errors. Every other nonzero status
+            fails closed.
+      future_passband_measurement_plan:
+        id: SCI-CAL-001-PASSBAND-MEASUREMENT-PLAN-001
+        status: planned_nonblocking_awaiting_telescope_measurements
+        trigger: receipt_of_immutable_measurement_bundle
+        unmeasured_successor_authority: none
+        rule: >-
+          Keep immutable campaign, processed candidate, owner adoption record,
+          and content-bound passband-set identities distinct. Never overwrite
+          the v1 set; require one named upstream custodian and release manifest,
+          explicit owner adoption, and renewed CAL and Beammap validation.
+      effect: >-
+        Authorizes only preregistration and local execution of one independent
+        EL25 numerical confirmation. It does not authorize operator adoption,
+        an operational domain, application changes, Unity evidence, CAL repair,
+        re-audit, or production use.
     dispatch:
       status: frozen_for_dispatch
       coordinator_registry_commit: 88741d085a08431790c6eee719b6f20052b459d8
@@ -1813,17 +1892,19 @@ packages:
           fail-closed fixtures, and complete a fresh exact-repair-SHA re-audit.
     unresolved_scientific_decisions:
       - >-
-        CAL-ATM-D001: require and supply q95, historical regeneration
-        authority, and preregistered physical intermediate-opacity runs.
+        CAL-ATM-CONF-001: the newly preregistered EL25 numerical confirmation
+        must complete and receive independent coordinator review.
       - >-
-        CAL-ATM-D002: preserve the recovered monochromatic spectral lineage or
-        authorize a separately versioned band-integrated model.
+        CAL-ATM-ADOPT-001: after successful confirmation, explicitly select
+        and version the exact atmosphere operator; do not infer adoption from
+        a passing numerical result.
       - >-
-        CAL-ATM-D003: approve the piecewise-linear LOS-optical-depth primary,
-        PCHIP challenger, and one-percent withheld-grid selection gate.
+        CAL-ATM-DOMAIN-001: after successful confirmation, separately approve
+        or amend an operational domain. The confirmation-study domain is not
+        production authority.
       - >-
-        CAL-ATM-D004: approve the maximum fail-closed domain rule and defer
-        exact operational endpoints until q95 and held-out support pass.
+        OBS-001: require a separate preregistered observational campaign after
+        numerical selection, before any production authorization.
     local_evidence:
       - id: SCI-CAL-001-CORE-001
         status: accepted_for_independence
@@ -1866,11 +1947,42 @@ packages:
           q95 raw artifact, historical generator/profile provenance,
           preregistered physical intermediate-opacity truth, selected spectral
           lineage, and exact approved operational endpoints.
+      - id: SCI-CAL-001-ATMOSPHERE-OPERATOR-002
+        status: verified_owner_direction_confirmation_authorized
+        source_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+        evidence_branch: codex/sci-cal-001-atmosphere-operator
+        evidence_commit: f4014d3669b94b1eceb8158da7993737efc908f2
+        evidence_parent: 742a3c263faf68c2de7d5b8db0d3423127f60480
+        artifact: >-
+          validation/sci_cal_001_atmosphere_operator_2026-08-01/OWNER_EL25_CONFIRMATION_DIRECTION_2026-08-02.md
+        sha256: >-
+          c06aa8c01591dc9155e0cce0a08ebe4f784169c95ea2fd5d0aca8d121e833ddd
+        package_sha256s_sha256: >-
+          bafd34e4a3d5bffb95b3af1fdbcfb7c993146248b2bccd1d0333bae91fd3caad
+        established: >-
+          Binds the owner-selected proposed EL25 floor without relabeling the
+          post-hoc slice, verifies the complete predecessor package, and
+          supports the separately preregistered confirmation direction.
+        missing: >-
+          Independent EL25 confirmation, exact operator adoption, approved
+          operational domain, observational validation, repair, Unity evidence,
+          and re-audit.
+      - id: SCI-CAL-001-PASSBAND-AUTHORITY-001
+        status: approved_for_bounded_successor_confirmation
+        authority_repository: tolteca
+        authority_commit: 2791e6a1e6349ad1d3ac549a648f41cbc51b98c7
+        passband_set_id: >-
+          toltec-passband-set-v1:sha256:5e6f38f14bcae93a29ffe8362c52b15209f51aee4e48373b23aaa5ec2f8a6433
+        manifest: >-
+          doc/audits/packages/SCI-CAL-001_PASSBAND_AUTHORITY_001.json
+        sha256: >-
+          2756908181cc466550399ec0a869e6671de7912bd3a935f9aeebf63e3e826617
+        scope: bounded_el25_numerical_confirmation_only
     requested_unity_evidence:
       - SCI-CAL-001-UNITY-001
     supplied_external_evidence: []
     repair_dispatch:
-      status: paused_for_atmosphere_owner_input
+      status: paused_for_preregistered_el25_confirmation
       selected_base_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
       selected_base_ref: codex/refactor-mainline
       repair_branch: codex/repair-sci-cal-001
@@ -1881,13 +1993,19 @@ packages:
       phase_zero_gate: q_model_continuity_before_application_edit
       phase_zero_stop: owner_scope_decision_for_any_above_q25_discontinuity
       phase_zero_evidence_commit: ae99be1cef8c390d0e7490835ffca1f31da7ebc0
-      atmosphere_evidence_commit: 8b2fc27513eabcac1f4862b18026879f94c34d69
+      atmosphere_evidence_commit: f4014d3669b94b1eceb8158da7993737efc908f2
+      atmosphere_confirmation_decision: >-
+        doc/audits/packages/SCI-CAL-001_ATMOSPHERE_CONFIRMATION_DECISION_2026-08-02.md
+      atmosphere_confirmation_decision_sha256: >-
+        24a2e12d37689999e1070bec4329aeead47c8e24082b20f183bf0ad8e29494b0
+      passband_set_id: >-
+        toltec-passband-set-v1:sha256:5e6f38f14bcae93a29ffe8362c52b15209f51aee4e48373b23aaa5ec2f8a6433
       successor_scope_decision: CAL-D001-ACCURACY-001
       next_gate: >-
-        Resolve CAL-ATM-D001 through CAL-ATM-D004, stage and verify the missing
-        q95/regeneration/intermediate-opacity evidence, freeze the candidate
-        validation design, and obtain explicit approval of the exact versioned
-        operator and operational endpoints before any application-code edit.
+        Preregister, execute, and independently review the bounded EL25
+        confirmation. A passing result still requires explicit selection and
+        versioning of the exact operator plus a separate operational-domain
+        decision before any application-code edit.
       parallel_dependency: >-
         After the atmosphere-operator gate is approved, local CAL repair may
         proceed against the approved abstract ALIGN input contract, but F010

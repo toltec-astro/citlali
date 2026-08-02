@@ -158,8 +158,32 @@ representation errors below one percent where raw evidence exists. It did not
 recover q95, historical generator/profile authority, preregistered physical
 intermediate-opacity truth, or final spectral/domain decisions. The
 [coordinator review](audits/packages/SCI-CAL-001_ATMOSPHERE_OPERATOR_COORDINATOR_REVIEW_2026-08-01.md)
-therefore holds CAL for owner input before any application-code edit. F010
+therefore held CAL for owner input before any application-code edit. F010
 remains open on ALIGN; Unity evidence and fresh re-audit have not started.
+
+On 2026-08-02 the owner selected the exact TolTECA v1 ECSV set for the bounded
+successor confirmation. Its canonical provenance ID is
+`toltec-passband-set-v1:sha256:5e6f38f14bcae93a29ffe8362c52b15209f51aee4e48373b23aaa5ec2f8a6433`;
+the content binding covers the TolTECA index and all three array ECSV files at
+source commit `2791e6a1e6349ad1d3ac549a648f41cbc51b98c7`. The
+[confirmation decision](audits/packages/SCI-CAL-001_ATMOSPHERE_CONFIRMATION_DECISION_2026-08-02.md)
+also binds the closed confirmation-only domain `0 <= tau225 <=
+0.158313198574890929`, `25 <= EL <= 80 deg`, q95 excluded, and a bounded AM
+status-1 warning-bearing evidence policy. One independently preregistered EL25
+numerical confirmation is now authorized; operator adoption, an operational
+domain, Citlali changes, Unity, CAL repair, re-audit, and production remain
+unauthorized.
+
+Future telescope passband work is tracked by
+`SCI-CAL-001-PASSBAND-MEASUREMENT-PLAN-001`. Raw campaigns, processed
+candidates, owner adoption records, and content-bound passband sets remain
+distinct and immutable. TolTECA remains the current upstream selection and
+passband-byte authority; the audit registry only indexes it. A future set may
+supersede v1 only through a named upstream custodian and release manifest,
+explicit calibration-owner adoption, and renewed CAL and Beammap numerical and
+observational validation. Later Citlali provenance should record the compact
+set ID and authoritative manifest digest rather than duplicate passband data
+per sample.
 
 ## 2026-08-01 SCI-ALIGN-001 Audit And Repair Coordination
 

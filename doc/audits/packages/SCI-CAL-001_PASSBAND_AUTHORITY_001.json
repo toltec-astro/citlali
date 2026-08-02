@@ -1,0 +1,126 @@
+{
+  "schema_version": "sci-cal-001-passband-set-provenance-v1",
+  "record_id": "SCI-CAL-001-PASSBAND-AUTHORITY-001",
+  "record_type": "coordination_index_for_upstream_passband_authority",
+  "human_alias": "tolteca-v1-ecsv",
+  "passband_set_id": "toltec-passband-set-v1:sha256:5e6f38f14bcae93a29ffe8362c52b15209f51aee4e48373b23aaa5ec2f8a6433",
+  "status": "approved_primary_authority_for_bounded_cal_successor_confirmation",
+  "decision": {
+    "package_id": "SCI-CAL-001",
+    "decision_id": "BAND-001",
+    "selected_choice": "select_tolteca_v1_ecsv",
+    "authority": "project_owner_acting_as_calibration_and_atmosphere_scientist",
+    "decision_date": "2026-08-02"
+  },
+  "source": {
+    "repository": "tolteca",
+    "authority_role": "upstream calibration-selection and passband-byte authority",
+    "source_commit": "2791e6a1e6349ad1d3ac549a648f41cbc51b98c7",
+    "package_path": "tolteca/data/cal/toltec_passband",
+    "package_version": "v1.0.0-tolteca_package_data",
+    "byte_stability_evidence": "the four bound files are byte-identical in the inspected operational TolTECA references"
+  },
+  "set_binding": {
+    "algorithm": "sha256 over members sorted by relative_path; for each member append UTF-8 relative_path, NUL, raw 32-byte member SHA-256, NUL",
+    "member_count": 4,
+    "total_bytes": 1297803,
+    "sha256": "5e6f38f14bcae93a29ffe8362c52b15209f51aee4e48373b23aaa5ec2f8a6433"
+  },
+  "members": [
+    {
+      "role": "array_passband",
+      "array": "a1100",
+      "relative_path": "data/a1100_passband.ecsv",
+      "bytes": 496586,
+      "sha256": "13b8fd009bb8d7c375d3c46d21e26d0a779f7f00a949a2a5ccd619d1fe56fd72",
+      "sample_count": 10059,
+      "frequency_min_ghz": "229.920000000000016",
+      "frequency_max_ghz": "330.500000000000000"
+    },
+    {
+      "role": "array_passband",
+      "array": "a1400",
+      "relative_path": "data/a1400_passband.ecsv",
+      "bytes": 430487,
+      "sha256": "a7b671d9f659cbc98dad99d3015ce81a3d7a3486c702819d9b3305703e7c682e",
+      "sample_count": 8538,
+      "frequency_min_ghz": "186.290000000000020",
+      "frequency_max_ghz": "271.660000000000025"
+    },
+    {
+      "role": "array_passband",
+      "array": "a2000",
+      "relative_path": "data/a2000_passband.ecsv",
+      "bytes": 370199,
+      "sha256": "77e4b33c7bbc2c345ef94d41480d5fee5cb096d789f4fe78e1b4f80a37e0d6ff",
+      "sample_count": 7440,
+      "frequency_min_ghz": "111.430000000000007",
+      "frequency_max_ghz": "185.820000000000022"
+    },
+    {
+      "role": "package_index",
+      "relative_path": "index.yaml",
+      "bytes": 531,
+      "sha256": "74465637294e536c44818099e4858a916fc6b9acbb1ea21b40427d15fb6532d5"
+    }
+  ],
+  "response_identity": {
+    "frequency_column": "f",
+    "frequency_unit": "GHz",
+    "response_column": "throughput",
+    "response_unit": "dimensionless",
+    "response_use": "use ECSV nodes and throughput values exactly as supplied",
+    "array_aggregation": "none; one array-named curve per TolTEC array",
+    "normalization": "as supplied; curves are neither peak-normalized nor area-normalized",
+    "physical_response_semantics": "not established by the retained ECSV metadata",
+    "measurement_status": "modeled array-named responses; not documented detector- or network-weighted telescope measurements"
+  },
+  "confirmation_study_convention": {
+    "scope": "frozen numerical convention for the SCI-CAL-001 EL25 confirmation only; not a universal production color-correction contract",
+    "spectral_plane": "top_of_atmosphere",
+    "source_spectrum": "S_nu proportional to nu^alpha",
+    "alpha_values": [-1, 0, 2, 4],
+    "weighting_label": "energy_weighted_throughput",
+    "quadrature": "composite_trapezoid_on_exact_ecsv_frequency_nodes",
+    "out_of_band_policy": "no spectral extrapolation",
+    "normalization": "divide integral of R_nu S_nu T_nu by integral of R_nu S_nu",
+    "inventory_sha256": "de845d9280317662488f4df262e445887cc663dd6409925115716922200eb1d0",
+    "execution_context_sha256": "05dd063ca433b79ab3e2c2fa469e0976802a69502232aae2ddc58121d1a7ccff"
+  },
+  "known_lineage": {
+    "tolteca_initial_release_commit": "b67fa1bc100c07ae5ff36b46d6ccb65cb268d54e",
+    "last_ecsv_byte_change_commit": "6d18583ae6646c6da7a2b051e8ca5cbaf71c30b8",
+    "numerical_relationship": "ECSV throughput values match contiguous same-frequency slices of toltec_beammap model_passbands.npz in the reviewed evidence",
+    "unresolved": [
+      "original generator script and complete generation recipe",
+      "underlying acquisition or modeling configuration",
+      "detector or network weighting and aggregation",
+      "uncertainty and covariance",
+      "photon-versus-energy physical response convention"
+    ],
+    "missing_fact_policy": "record unknown; do not infer from numerical agreement"
+  },
+  "authorization_boundary": {
+    "authorized": [
+      "preregister and execute the bounded SCI-CAL-001 EL25 numerical confirmation",
+      "use this exact passband set as the primary passband authority in that confirmation"
+    ],
+    "not_authorized": [
+      "adopt an atmospheric operator",
+      "activate a production calibration or operational domain",
+      "modify Citlali or TolTECA application code",
+      "request Unity evidence",
+      "launch CAL repair or re-audit",
+      "treat future telescope measurements as adopted without a new owner decision"
+    ]
+  },
+  "successor_policy": {
+    "plan_id": "SCI-CAL-001-PASSBAND-MEASUREMENT-PLAN-001",
+    "current_unmeasured_successor_authority": "none",
+    "authority_model": "the owner designates one upstream calibration custodian and one release manifest before promotion; this coordination record indexes that authority and does not duplicate it",
+    "immutability": "never overwrite this record or any bound member; issue new campaign, candidate, adoption-record, and content-bound passband-set identities",
+    "runtime_provenance_target": "compact content-bound passband_set_id plus authoritative release-manifest SHA-256; do not duplicate dense passband data per sample",
+    "supersedes": null,
+    "superseded_by": null
+  }
+}
