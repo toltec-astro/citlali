@@ -49,7 +49,7 @@ import probe_am12_h2o_scale_hypotheses as p1_driver
 PACKAGE_DIR = Path(__file__).resolve().parent
 REPO_ROOT = PACKAGE_DIR.parents[1]
 
-SCHEMA_VERSION = "sci-cal-001-am12-successor-adoption-study-v1"
+SCHEMA_VERSION = "sci-cal-001-am12-successor-adoption-study-v2"
 P1_SCHEMA_VERSION = "sci-cal-001-am12-h2o-scale-hypothesis-v2"
 TOLTECA_COMMIT = "2791e6a1e6349ad1d3ac549a648f41cbc51b98c7"
 BEAMMAP_COMMIT = "958a2a15f43189846a24556a63ef908da789c7b8"
@@ -63,6 +63,9 @@ STUDY_PROTOCOL_SHA256 = (
 )
 PREEXECUTION_CLARIFICATION_SHA256 = (
     "01957dab95e37a4b87e6224c713ec96ec645b37ae39c5dd95b6b49af493b9a66"
+)
+EXECUTION_ERRATUM_SHA256 = (
+    "590f49007065e604aced97fc391067e981a94d7336db1cec81512dd0de893e4e"
 )
 FROZEN_TARGET_COORDINATES = {
     "am_q0": ("0.00000000000000000e+00", "1.0"),
@@ -218,6 +221,10 @@ TRAINING_KEYS = tuple(
         key=lambda item: (TARGET_ORDER[item[0]], item[1]),
     )
 )
+P1_SELECTED_STAGE_TRAINING_KEYS = {
+    ("am_q50", "LMT_DJF_25"),
+    ("am_q75", "LMT_DJF_75"),
+}
 OPERATORS = (
     "am12_piecewise_linear_los_tau_eval_v0",
     "am12_pchip_los_tau_eval_v0",
@@ -674,6 +681,22 @@ class P1Cache:
         expected = set(TRAINING_KEYS)
         if set(self.scales) != expected:
             raise RuntimeError("P1 frozen training scale table is incomplete")
+        stage_flags = {
+            row["ancillary_screening_transmission_rank1"]
+            for row in self.scales.values()
+        }
+        if not stage_flags <= {"true", "false"}:
+            raise RuntimeError("P1 frozen training stage flag is invalid")
+        selected_stage_keys = {
+            key
+            for key, row in self.scales.items()
+            if row["ancillary_screening_transmission_rank1"] == "true"
+        }
+        if selected_stage_keys != P1_SELECTED_STAGE_TRAINING_KEYS:
+            raise RuntimeError(
+                "P1 frozen selected-stage training identity is not the "
+                "preregistered five-construction coverage"
+            )
         self._records: dict[tuple[str, str, int], P1Record] = {}
 
     @contextmanager
@@ -797,9 +820,15 @@ class P1Cache:
         if key in self._records:
             return self._records[key]
         za = 90 - elevation_deg
-        scale = self.scale(target, profile)
+        scale_row = self.scales[(target, profile)]
+        scale = scale_row["fitted_h2o_scale_decimal"]
+        stage = (
+            "direct_full_grid_selected_transmission_rank1"
+            if scale_row["ancillary_screening_transmission_rank1"] == "true"
+            else "direct_full_grid_all_hypotheses"
+        )
         spec = p1_driver.full_grid_spec(
-            "direct_full_grid_all_hypotheses",
+            stage,
             profile,
             target,
             za,
@@ -2575,10 +2604,15 @@ def holdout_execution_context(
     clarification = (
         PACKAGE_DIR / "AM12_SUCCESSOR_ADOPTION_STUDY_PREEXECUTION_CLARIFICATIONS.md"
     )
+    erratum = (
+        PACKAGE_DIR / "AM12_SUCCESSOR_ADOPTION_STUDY_EXECUTION_ERRATUM_2026-08-01.md"
+    )
     if sha256_path(protocol) != STUDY_PROTOCOL_SHA256:
         raise RuntimeError("frozen adoption-study protocol digest mismatch")
     if sha256_path(clarification) != PREEXECUTION_CLARIFICATION_SHA256:
         raise RuntimeError("frozen pre-execution clarification digest mismatch")
+    if sha256_path(erratum) != EXECUTION_ERRATUM_SHA256:
+        raise RuntimeError("frozen execution erratum digest mismatch")
     imported_runner = Path(p1_driver.__file__).resolve()
     imported_runner_sha = sha256_path(imported_runner)
     if imported_runner_sha != p1.context["runner"]["sha256"]:
@@ -2611,6 +2645,18 @@ def holdout_execution_context(
         "preexecution_clarification": {
             "filename": clarification.name,
             "sha256": sha256_path(clarification),
+        },
+        "execution_erratum": {
+            "filename": erratum.name,
+            "sha256": sha256_path(erratum),
+            "predecessor_cache_disposition": "excluded_not_reused",
+            "predecessor_execution_context_sha256": (
+                "f0acb32cd43fd0bd128a06ab8d7e354bc6a6c1389d6d0794db716753d03f85c8"
+            ),
+            "correction": (
+                "derive_P1_cache_stage_from_frozen_"
+                "ancillary_screening_transmission_rank1"
+            ),
         },
         "imported_canonical_p1_runner": {
             "filename": imported_runner.name,
@@ -3053,6 +3099,16 @@ def build_manifest(
             "scope": "q0_q75_only_no_q95",
             "evidence_status": summary["status"],
             "operator_authorization": "none_evidence_for_owner_adoption_decision",
+        },
+        "execution_erratum": {
+            "filename": (
+                "AM12_SUCCESSOR_ADOPTION_STUDY_EXECUTION_ERRATUM_2026-08-01.md"
+            ),
+            "sha256": EXECUTION_ERRATUM_SHA256,
+            "predecessor_cache_disposition": "excluded_not_reused",
+            "predecessor_execution_context_sha256": (
+                "f0acb32cd43fd0bd128a06ab8d7e354bc6a6c1389d6d0794db716753d03f85c8"
+            ),
         },
         "domain": {
             "tau225_min": f17(0.0),
