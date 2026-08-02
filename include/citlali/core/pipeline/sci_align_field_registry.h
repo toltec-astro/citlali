@@ -9,9 +9,11 @@
 namespace citlali::pipeline::sci_align {
 
 inline constexpr std::string_view active_field_registry_version =
-    "sci-align-active-field-registry-v1";
+    "sci-align-active-field-registry-v2";
 inline constexpr std::string_view active_field_registry_authority =
-    "ALIGN-P0-D004-owner-approved-bounded-existing-use";
+    "ALIGN-P0-D004-plus-SCI-ALIGN-001-HOLD-PRODUCER-AUTHORITY-2026-08-02";
+inline constexpr std::string_view active_hold_native_semantics_authority =
+    "SCI-ALIGN-001-HOLD-PRODUCER-AUTHORITY-2026-08-02;sha256=d6edb175c3aa62ccf92d9644675ece9c8db572a90146370a9c201c296f211c7e";
 
 enum class FieldOperator {
     native_coordinate,
@@ -111,12 +113,13 @@ inline constexpr std::array<ActiveFieldRegistryEntry, 20>
          FieldTopology::continuous_scalar, FieldOperator::bracketed_linear,
          true, "TelElMap"},
         {"lmt.hold_raw_word", "Data.TelescopeBackend.Hold", "Hold",
-         "exact native multi-bit Hold word plus named legacy compatibility "
-         "view", "1",
-         "state word; physical bits unavailable", FieldTopology::exact_only,
+         "exact native producer-defined Hold reason bitmask plus named legacy "
+         "compatibility view", "1",
+         "state word; zero only science-valid; unknown bits fail closed; "
+         "transition side unresolved", FieldTopology::exact_only,
          FieldOperator::legacy_whole_word_linear_any_nonzero, true,
          "Hold: post-nonzero 0/1 compatibility alias; exact raw word "
-         "internal/as-requested"},
+         "retained internally; no routine exporter"},
         {"lmt.tel_utc", "Data.TelescopeBackend.TelUtc", "TelUTC",
          "native telescope UTC diagnostic", "s", "unproved native clock",
          FieldTopology::exact_only, FieldOperator::exact_diagnostic, false,
@@ -199,12 +202,18 @@ inline constexpr std::string_view active_field_raw_unit(
 }
 
 inline constexpr std::string_view active_field_source_authority(
-    const ActiveFieldRegistryEntry &) noexcept {
+    const ActiveFieldRegistryEntry &entry) noexcept {
+    if (entry.canonical_name == "Hold") {
+        return active_hold_native_semantics_authority;
+    }
     return "D004_owner_decision_plus_bound_local_raw_schema";
 }
 
 inline constexpr std::string_view active_field_validity_policy(
     const ActiveFieldRegistryEntry &entry) noexcept {
+    if (entry.canonical_name == "Hold") {
+        return "finite_nonnegative_integral_lossless_raw_word;native_science_valid_iff_zero;unknown_bits_fail_closed;legacy_whole_word_linear_any_nonzero_transition_side_unresolved";
+    }
     switch (entry.permitted_operator) {
         case FieldOperator::native_coordinate:
             return "finite_nonempty_strictly_increasing";

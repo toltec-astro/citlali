@@ -56,9 +56,12 @@ public:
 
     // std map for telescope data vectors
     std::map<std::string, Eigen::VectorXd> tel_data;
-    // Exact native Hold words retained for the bounded existing-use adapter.
-    // No bit or transition-side semantics are implied.
-    Eigen::Matrix<std::uint64_t, Eigen::Dynamic, 1> hold_raw_word;
+    // Exact native Hold words retain the producer-defined reason bits. Zero is
+    // the only science-valid native word; unknown bits fail closed. No
+    // left/right transition-side semantics are implied. The uint64 container
+    // is not a claim about the producer's logical word width.
+    Eigen::Matrix<citlali::pipeline::sci_align::TelescopeHoldWord,
+                  Eigen::Dynamic, 1> hold_raw_word;
     // std map for telescope header vectors
     std::map<std::string, Eigen::VectorXd> tel_header;
     // Native numeric file/observation headers retained with exact dtype and

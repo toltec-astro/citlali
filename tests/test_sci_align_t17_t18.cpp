@@ -462,7 +462,7 @@ citlali::pipeline::TimestreamAlignmentState valid_compact_alignment() {
     state.support.gap_policy_eligible_original_count = 1;
     state.support.nominal_span_sec = 0.5;
     state.support.acquired_original_cadence_weighted_support_sec = 0.5;
-    state.field_registry_version = "sci-align-active-field-registry-v1";
+    state.field_registry_version = "sci-align-active-field-registry-v2";
     return state;
 }
 

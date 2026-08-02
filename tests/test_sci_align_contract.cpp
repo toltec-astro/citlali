@@ -663,8 +663,12 @@ TEST(sci_align_T15, missing_auxiliary_streams_do_not_trim_detector_lattice) {
 TEST(sci_align_registry, binds_twenty_fields_and_two_exact_aliases) {
     EXPECT_EQ(align::active_field_registry.size(), 20U);
     EXPECT_EQ(align::active_field_aliases.size(), 2U);
+    EXPECT_EQ(align::active_field_registry_version,
+              "sci-align-active-field-registry-v2");
     EXPECT_EQ(align::active_field_registry_authority,
-              "ALIGN-P0-D004-owner-approved-bounded-existing-use");
+              "ALIGN-P0-D004-plus-SCI-ALIGN-001-HOLD-PRODUCER-AUTHORITY-2026-08-02");
+    EXPECT_EQ(align::active_hold_native_semantics_authority,
+              "SCI-ALIGN-001-HOLD-PRODUCER-AUTHORITY-2026-08-02;sha256=d6edb175c3aa62ccf92d9644675ece9c8db572a90146370a9c201c296f211c7e");
 
     std::set<std::string_view> field_ids;
     for (const auto &entry : align::active_field_registry) {
@@ -685,10 +689,22 @@ TEST(sci_align_registry, binds_twenty_fields_and_two_exact_aliases) {
               "boolean_raw_attribute_conflicts_with_observed_multi_bit_word");
     EXPECT_EQ(align::field_operator_name(hold->permitted_operator),
               "legacy_4x_linear_any_nonzero");
+    EXPECT_NE(hold->scientific_identity.find("producer-defined"),
+              std::string_view::npos);
+    EXPECT_NE(hold->frame.find("zero only science-valid"),
+              std::string_view::npos);
+    EXPECT_NE(align::active_field_validity_policy(*hold).find(
+                  "unknown_bits_fail_closed"),
+              std::string_view::npos);
+    EXPECT_NE(align::active_field_validity_policy(*hold).find(
+                  "transition_side_unresolved"),
+              std::string_view::npos);
+    EXPECT_EQ(align::active_field_source_authority(*hold),
+              align::active_hold_native_semantics_authority);
     EXPECT_EQ(
         hold->output_identity,
         "Hold: post-nonzero 0/1 compatibility alias; exact raw word "
-        "internal/as-requested");
+        "retained internally; no routine exporter");
 
     EXPECT_EQ(align::active_field_aliases[0].canonical_field_id,
               "lmt.source_ra");

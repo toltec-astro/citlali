@@ -1,0 +1,68 @@
+{
+  "compatibility_disposition": {
+    "aligned_existing_use_formula": "linear_interpolation_of_complete_nonnegative_numeric_word_then_value_not_equal_to_zero",
+    "aligned_existing_use_name": "legacy_4x_linear_any_nonzero",
+    "application_enforcement_scope": "unchanged_existing_raster_compatibility_adapter_only; no all-profile Hold science-mask claim",
+    "behavior_change_authorized": false,
+    "native_equivalence_proof": "defined_set_bit_or_unknown_set_bit iff raw_word != 0; therefore raw_word == 0 is the only science-valid native state for every accepted word",
+    "outside_map_box_condition": "separate_scan_window_condition",
+    "transition_side_authority": "unresolved"
+  },
+  "coordination_binding": {
+    "canonical_coordination_record": "pending_minimal_amendment",
+    "frozen_phase_zero_packages_modified": false,
+    "required_amendment": "record this overlay identity and digest as the Hold producer-semantics authority without changing the approved legacy alignment adapter or scan results",
+    "routine_metadata_disposition": "product-contract-v1 Hold variable and attributes remain byte-compatible; their legacy wording is superseded by field-registry v2 and this overlay rather than rewritten"
+  },
+  "field": {
+    "defined_mask_hex": "0x7e",
+    "native_container": "lossless internal uint64 converted from accepted exact nonnegative integral float64",
+    "producer_logical_width": "unavailable",
+    "raw_word_export": "retained internally; no routine or as-requested exporter is implemented",
+    "raw_name": "Data.TelescopeBackend.Hold"
+  },
+  "native_sample_validity": {
+    "defined_set_bit_disposition": "science_invalid_sample",
+    "product_fatal_disposition": "unavailable_not_asserted",
+    "unknown_bit_disposition": "fail_closed_science_invalid_sample",
+    "unknown_bit_meaning": "unavailable",
+    "unknown_mask_expression": "raw_word & ~0x7e",
+    "valid_predicate": "raw_word == 0"
+  },
+  "producer_definitions": [
+    {
+      "bit_hex": "0x02",
+      "name": "Pointing"
+    },
+    {
+      "bit_hex": "0x04",
+      "name": "External",
+      "producer_status": "contemplated_backend_originated_hold_never_implemented"
+    },
+    {
+      "bit_hex": "0x08",
+      "name": "ObsPgm",
+      "producer_description": "observing_program_forces_backend_hold_during_setup_under_always_streaming_design_assumption"
+    },
+    {
+      "bit_hex": "0x10",
+      "name": "M1"
+    },
+    {
+      "bit_hex": "0x20",
+      "name": "M2"
+    },
+    {
+      "bit_hex": "0x40",
+      "name": "M3"
+    }
+  ],
+  "record_id": "SCI-ALIGN-001-HOLD-PRODUCER-AUTHORITY-2026-08-02",
+  "schema_version": "sci-align-001-hold-producer-authority-v1",
+  "source_chain": {
+    "evidence_medium": "project-owner Codex delegation; no separately signed source object supplied",
+    "producer_source": "direct 2026-08-02 response from LMT chief engineer Kamal",
+    "project_owner_disposition": "zero is the only science-valid defined state; unknown bits fail closed",
+    "received_date": "2026-08-02"
+  }
+}

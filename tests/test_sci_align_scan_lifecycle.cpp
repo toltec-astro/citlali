@@ -9,6 +9,7 @@
 
 #include <Eigen/Core>
 
+#include <array>
 #include <cmath>
 #include <cstdint>
 #include <filesystem>
@@ -384,6 +385,67 @@ TEST(sci_align_t11,
     EXPECT_EQ(raw_words(7) & std::uint64_t{0x08}, std::uint64_t{0x08});
     EXPECT_EQ(raw_words(7) & std::uint64_t{0x40}, std::uint64_t{0x40});
 
+    using citlali::pipeline::sci_align::TelescopeHoldReason;
+    using citlali::pipeline::sci_align::native_hold_word_has_reason;
+    using citlali::pipeline::sci_align::native_hold_word_science_valid;
+    using citlali::pipeline::sci_align::native_hold_word_unknown_bits;
+    EXPECT_EQ(citlali::pipeline::sci_align::telescope_hold_defined_mask,
+              std::uint64_t{0x7e});
+    EXPECT_TRUE(native_hold_word_science_valid(0));
+    for (Eigen::Index i = 0; i < raw_words.size(); ++i) {
+        EXPECT_EQ(
+            citlali::pipeline::sci_align::
+                legacy_hold_linear_any_nonzero_state(
+                    static_cast<double>(raw_words(i))),
+            !native_hold_word_science_valid(raw_words(i)));
+        EXPECT_EQ(native_hold_word_unknown_bits(raw_words(i)), 0);
+    }
+    EXPECT_TRUE(native_hold_word_has_reason(
+        std::uint64_t{74}, TelescopeHoldReason::pointing));
+    EXPECT_TRUE(native_hold_word_has_reason(
+        std::uint64_t{74}, TelescopeHoldReason::obs_pgm));
+    EXPECT_TRUE(native_hold_word_has_reason(
+        std::uint64_t{74}, TelescopeHoldReason::m3));
+    EXPECT_FALSE(native_hold_word_has_reason(
+        std::uint64_t{74}, TelescopeHoldReason::external));
+    for (const auto word : {std::uint64_t{0x04}, std::uint64_t{0x10},
+                            std::uint64_t{0x20}, std::uint64_t{0x01},
+                            std::uint64_t{0x80}}) {
+        EXPECT_FALSE(native_hold_word_science_valid(word));
+    }
+    EXPECT_EQ(native_hold_word_unknown_bits(std::uint64_t{0x01}),
+              std::uint64_t{0x01});
+    EXPECT_EQ(native_hold_word_unknown_bits(std::uint64_t{0x80}),
+              std::uint64_t{0x80});
+    ASSERT_EQ(
+        citlali::pipeline::sci_align::telescope_hold_reason_definitions.size(),
+        6U);
+    constexpr std::array<std::uint64_t, 6> expected_masks{
+        0x02, 0x04, 0x08, 0x10, 0x20, 0x40};
+    constexpr std::array<const char *, 6> expected_names{
+        "Pointing", "External", "ObsPgm", "M1", "M2", "M3"};
+    constexpr std::array<bool, 6> expected_never_implemented{
+        false, true, false, false, false, false};
+    for (std::size_t i = 0; i < expected_masks.size(); ++i) {
+        const auto &definition = citlali::pipeline::sci_align::
+            telescope_hold_reason_definitions[i];
+        EXPECT_EQ(citlali::pipeline::sci_align::telescope_hold_reason_mask(
+                      definition.reason),
+                  expected_masks[i]);
+        EXPECT_STREQ(definition.producer_name, expected_names[i]);
+        EXPECT_EQ(definition.declared_never_implemented,
+                  expected_never_implemented[i]);
+    }
+    constexpr std::uint64_t mixed_defined_and_unknown = 0x83;
+    EXPECT_TRUE(native_hold_word_has_reason(
+        mixed_defined_and_unknown, TelescopeHoldReason::pointing));
+    EXPECT_EQ(native_hold_word_unknown_bits(mixed_defined_and_unknown),
+              std::uint64_t{0x81});
+    EXPECT_FALSE(native_hold_word_science_valid(mixed_defined_and_unknown));
+    EXPECT_STREQ(citlali::pipeline::sci_align::
+                     telescope_hold_transition_side_authority,
+                 "unresolved");
+
     Eigen::VectorXd invalid(1);
     invalid << std::numeric_limits<double>::quiet_NaN();
     EXPECT_THROW(
@@ -392,7 +454,8 @@ TEST(sci_align_t11,
         std::runtime_error);
 }
 
-TEST(sci_align_t11, routine_hold_output_metadata_names_the_zero_one_view) {
+TEST(sci_align_t11,
+     routine_hold_output_metadata_remains_frozen_legacy_zero_one_view) {
     const auto path = std::filesystem::path(::testing::TempDir()) /
         "sci_align_hold_output_metadata.nc";
     std::filesystem::remove(path);
@@ -427,8 +490,20 @@ TEST(sci_align_t11, routine_hold_output_metadata_names_the_zero_one_view) {
         EXPECT_NE(comment.find("post-nonzero 0/1 output"),
                   std::string::npos);
         EXPECT_NE(comment.find("not the raw word"), std::string::npos);
+        // Product-contract v1 freezes this historical wording. Registry v2
+        // and its digest-bound overlay, not this compatibility attribute, are
+        // the current authority for native bit meanings and validity.
         EXPECT_NE(comment.find("not a producer-authoritative"),
                   std::string::npos);
+        const auto frozen_attributes = hold.getAtts();
+        for (const auto *attribute : {
+                 "native_defined_bits", "native_semantics_authority",
+                 "native_word_width_authority",
+                 "native_word_science_validity",
+                 "native_unknown_bit_policy", "transition_side_authority"}) {
+            EXPECT_EQ(frozen_attributes.find(attribute),
+                      frozen_attributes.end());
+        }
     }
 
     std::filesystem::remove(path);

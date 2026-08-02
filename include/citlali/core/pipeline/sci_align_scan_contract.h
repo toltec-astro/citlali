@@ -3,8 +3,10 @@
 #include <Eigen/Core>
 
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <cstddef>
+#include <cstdint>
 #include <limits>
 #include <optional>
 #include <stdexcept>
@@ -528,10 +530,66 @@ inline ScanWindowPlan make_number_scan_plan(
         cadence_sec, context_samples);
 }
 
+using TelescopeHoldWord = std::uint64_t;
+
+enum class TelescopeHoldReason : TelescopeHoldWord {
+    pointing = 0x02,
+    external = 0x04,
+    obs_pgm = 0x08,
+    m1 = 0x10,
+    m2 = 0x20,
+    m3 = 0x40,
+};
+
+struct TelescopeHoldReasonDefinition {
+    TelescopeHoldReason reason;
+    const char *producer_name;
+    bool declared_never_implemented;
+};
+
+inline constexpr std::array<TelescopeHoldReasonDefinition, 6>
+    telescope_hold_reason_definitions{{
+        {TelescopeHoldReason::pointing, "Pointing", false},
+        {TelescopeHoldReason::external, "External", true},
+        {TelescopeHoldReason::obs_pgm, "ObsPgm", false},
+        {TelescopeHoldReason::m1, "M1", false},
+        {TelescopeHoldReason::m2, "M2", false},
+        {TelescopeHoldReason::m3, "M3", false},
+    }};
+
+inline constexpr TelescopeHoldWord telescope_hold_defined_mask = 0x7e;
+
+inline constexpr TelescopeHoldWord telescope_hold_reason_mask(
+    TelescopeHoldReason reason) noexcept {
+    return static_cast<TelescopeHoldWord>(reason);
+}
+
+inline constexpr bool native_hold_word_has_reason(
+    TelescopeHoldWord word, TelescopeHoldReason reason) noexcept {
+    return (word & telescope_hold_reason_mask(reason)) != 0;
+}
+
+inline constexpr TelescopeHoldWord native_hold_word_unknown_bits(
+    TelescopeHoldWord word) noexcept {
+    return word & ~telescope_hold_defined_mask;
+}
+
+// Producer authority defines zero as the only science-valid native word.
+// This intentionally fails closed for both defined and unknown set bits. It
+// records native-state meaning; it does not introduce a new all-profile mask.
+inline constexpr bool native_hold_word_science_valid(
+    TelescopeHoldWord word) noexcept {
+    return word == 0;
+}
+
+inline constexpr const char *telescope_hold_transition_side_authority =
+    "unresolved";
+
 // This is the only admitted non-native Hold predicate.  It reproduces the
 // released 4.x order of operations: linearly align the complete numeric word,
-// then test that aligned value for nonzero.  It does not assign Boolean,
-// turnaround, bit, or transition-side semantics to the producer field.
+// then test that aligned value for nonzero.  Native bit meanings and native
+// zero-only validity are producer-authoritative, but this compatibility
+// alignment still assigns no left/right transition-event timing.
 inline bool legacy_hold_linear_any_nonzero_state(double aligned_numeric_word) {
     if (!std::isfinite(aligned_numeric_word) || aligned_numeric_word < 0.0) {
         throw std::runtime_error(
@@ -543,7 +601,8 @@ inline bool legacy_hold_linear_any_nonzero_state(double aligned_numeric_word) {
 // Routine TOD output keeps the historical variable name `Hold` solely as a
 // compatibility alias.  Emitting the fractional linearly aligned word would
 // falsely look like a raw state word, so the persisted view is explicitly the
-// post-nonzero 0/1 result.  Exact native words remain internal/as-requested.
+// post-nonzero 0/1 result. Exact native words remain internal; no raw-word
+// exporter is implemented by this bounded repair.
 inline Eigen::VectorXd legacy_hold_emitted_compatibility_view(
     const Eigen::VectorXd &legacy_aligned_numeric_word) {
     Eigen::VectorXd result(legacy_aligned_numeric_word.size());

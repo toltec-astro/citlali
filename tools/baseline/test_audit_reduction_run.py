@@ -298,7 +298,7 @@ def valid_output_v2_document() -> dict:
                     "compact_generative_grid_plus_exception_runs_v1"
                 ),
                 "dense_mapping_persisted": False,
-                "field_registry_version": "sci-align-active-field-registry-v1",
+                "field_registry_version": "sci-align-active-field-registry-v2",
                 "grid": {
                     "phase_sec": 1_000.0,
                     "cadence_sec": 0.008192,

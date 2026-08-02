@@ -281,7 +281,8 @@ void Telescope::get_tel_data(
                     "native Hold word is not finite, nonnegative, integral, and losslessly representable at row {}",
                     i)};
             }
-            const auto word = static_cast<std::uint64_t>(value);
+            const auto word = static_cast<
+                citlali::pipeline::sci_align::TelescopeHoldWord>(value);
             if (static_cast<double>(word) != value) {
                 throw DataIOError{fmt::format(
                     "native Hold word loses integer identity at row {}", i)};
