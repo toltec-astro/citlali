@@ -89,7 +89,7 @@ def replace_once(text: str, old: str, new: str, label: str) -> str:
 
 def selected_paths(config_text: str) -> list[Path]:
     values = re.findall(
-        r"^\s*(?:-\s+)?filepath:\s+([^#\n]+?)\s*$",
+        r"^[ \t]*(?:-[ \t]+)?filepath:[ \t]+([^#\n]+?)[ \t]*$",
         config_text,
         flags=re.MULTILINE,
     )
