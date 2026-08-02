@@ -1099,7 +1099,7 @@ packages:
             owner_resolved_by_bounded_phase_one_with_explicit_later_evidence_gates
           record_path: >-
             doc/audits/packages/SCI-ALIGN-001_PHASE_ZERO_D005_DECISION_2026-08-02.md
-          record_commit: null
+          record_commit: 99886afb84c0ef582cee070ec156342a2f0b3327
           record_sha256: >-
             b07c62103105f044269b68e6db1ee669f4293eabce6d0f145105f57337a683d4
           constrained_by:
