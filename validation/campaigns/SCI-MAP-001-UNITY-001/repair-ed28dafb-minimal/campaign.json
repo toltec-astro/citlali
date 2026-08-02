@@ -1,0 +1,57 @@
+{
+  "schema_version": "sci-map-unity-minimal-transfer-v1",
+  "request_id": "SCI-MAP-001-UNITY-001",
+  "revision": "repair-sha-ed28dafb-minimal-2026-08-02",
+  "candidate": {
+    "sha": "ed28dafb37f9113c0d3c95297148157129a90886",
+    "tree": "cf75c36557178f351fb62781108a6f4b41b19225",
+    "binary_policy": "one ordinary exact-candidate executable"
+  },
+  "arrays": ["a1100", "a1400", "a2000"],
+  "projects": {
+    "point": {
+      "spec": "tolproj-point-source.json",
+      "science_observations": [152389],
+      "group": "1146+399",
+      "matched_apt_observations": [152389]
+    },
+    "science": {
+      "spec": "tolproj-science-source.json",
+      "science_observations": [152390, 152392],
+      "science_group": "NGC4449",
+      "pointing_support_observations": [152389, 152391, 152393],
+      "pointing_group": "1146+399",
+      "matched_apt_observations": [152390, 152392]
+    }
+  },
+  "auxiliary_full_ptc_captures": {
+    "overlay": "processed-time-chunk-full-overlay.yaml",
+    "captures": [
+      {"id": "CAP-POINT", "observations": [152389], "reference_case": "P-SEQ"},
+      {"id": "CAP-SCIENCE", "observations": [152390, 152392], "reference_case": "S-E-SEQ"}
+    ]
+  },
+  "cases": [
+    {"id": "P-SEQ", "jobkey": "sci_map_001_point_seq", "mode": "pointing", "parallel_policy": "seq", "observations": [152389], "arrays": ["a1100", "a1400", "a2000"], "coadd": false, "products_enabled": true, "coverage_cut": 0.1, "threads": 1, "cpus": 1, "expected_counts": {"observation_maps": 3, "observation_noise_files": 3, "coadd_maps": 0, "coadd_noise_files": 0}},
+    {"id": "P-OMP", "jobkey": "sci_map_001_point_omp", "mode": "pointing", "parallel_policy": "omp", "observations": [152389], "arrays": ["a1100", "a1400", "a2000"], "coadd": false, "products_enabled": true, "coverage_cut": 0.1, "threads": 6, "cpus": 6, "expected_counts": {"observation_maps": 3, "observation_noise_files": 3, "coadd_maps": 0, "coadd_noise_files": 0}},
+    {"id": "S-C-SEQ", "jobkey": "sci_map_001_science_coadd_seq", "mode": "science", "parallel_policy": "seq", "observations": [152390, 152392], "arrays": ["a1100", "a1400", "a2000"], "coadd": true, "products_enabled": false, "coverage_cut": 0.5, "threads": 1, "cpus": 1, "expected_counts": {"observation_maps": 6, "observation_noise_files": 0, "coadd_maps": 3, "coadd_noise_files": 3}},
+    {"id": "S-C-OMP", "jobkey": "sci_map_001_science_coadd_omp", "mode": "science", "parallel_policy": "omp", "observations": [152390, 152392], "arrays": ["a1100", "a1400", "a2000"], "coadd": true, "products_enabled": false, "coverage_cut": 0.5, "threads": 16, "cpus": 16, "expected_counts": {"observation_maps": 6, "observation_noise_files": 0, "coadd_maps": 3, "coadd_noise_files": 3}},
+    {"id": "S-E-SEQ", "jobkey": "sci_map_001_science_empirical_seq", "mode": "science", "parallel_policy": "seq", "observations": [152390, 152392], "arrays": ["a1100", "a1400", "a2000"], "coadd": false, "products_enabled": true, "coverage_cut": 0.5, "threads": 1, "cpus": 1, "expected_counts": {"observation_maps": 6, "observation_noise_files": 6, "coadd_maps": 0, "coadd_noise_files": 0}},
+    {"id": "S-E-OMP", "jobkey": "sci_map_001_science_empirical_omp", "mode": "science", "parallel_policy": "omp", "observations": [152390, 152392], "arrays": ["a1100", "a1400", "a2000"], "coadd": false, "products_enabled": true, "coverage_cut": 0.5, "threads": 16, "cpus": 16, "expected_counts": {"observation_maps": 6, "observation_noise_files": 6, "coadd_maps": 0, "coadd_noise_files": 0}},
+    {"id": "S-X-SEQ", "jobkey": "sci_map_001_science_expected_failure", "mode": "science", "parallel_policy": "seq", "observations": [152390, 152392], "arrays": ["a1100", "a1400", "a2000"], "coadd": true, "products_enabled": true, "coverage_cut": 0.5, "threads": 1, "cpus": 1, "expected_counts": {"observation_maps": 6, "observation_noise_files": 6, "coadd_maps": 3, "coadd_noise_files": 3}}
+  ],
+  "expected_return": {
+    "archive": "SCI-MAP-001-UNITY-001-return.tar.gz",
+    "required_members": [
+      "SCI-MAP-001-POINT-SOURCE/project.yaml",
+      "SCI-MAP-001-SCIENCE-SOURCE/project.yaml",
+      "seven completed case reduction directories named P-SEQ, P-OMP, S-C-SEQ, S-C-OMP, S-E-SEQ, S-E-OMP, S-X-SEQ",
+      "generated numbered configuration YAML, 02_redu.sh, scheduler stdout/stderr, ordinary products, and TolProj executable snapshot for each case"
+    ]
+  },
+  "non_authorizations": [
+    "no candidate or scientific-case change",
+    "no Codex Unity access or reduction submission",
+    "no finding/dependency closure, re-audit launch, or production admission"
+  ]
+}
