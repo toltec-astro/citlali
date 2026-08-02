@@ -84,6 +84,40 @@ def require_clean_identity(repo: Path, expected_sha: str) -> dict[str, str]:
     return {"branch": branch, "head": head, "status": "clean"}
 
 
+def candidate_binary_identity(
+    repo: Path, binary: Path, expected_sha: str
+) -> dict[str, str]:
+    completed = subprocess.run(
+        [str(binary), "--version"],
+        cwd=repo,
+        check=True,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+    )
+    match = re.search(
+        r"(?m)^(?P<version>v\S+-g(?P<revision>[0-9a-f]{7,40})"
+        r"(?P<dirty>-dirty)?)(?:\s|$)",
+        completed.stdout,
+    )
+    if match is None:
+        raise RuntimeError("candidate binary has no parseable Citlali revision")
+    if match.group("dirty"):
+        raise RuntimeError("candidate binary was built from a dirty Citlali tree")
+    embedded_commit = git(
+        repo, "rev-parse", f"{match.group('revision')}^{{commit}}"
+    )
+    if embedded_commit != expected_sha:
+        raise RuntimeError(
+            "candidate binary revision differs from the expected repair identity: "
+            f"{embedded_commit} != {expected_sha}"
+        )
+    return {
+        "version_line": match.group("version"),
+        "embedded_commit": embedded_commit,
+    }
+
+
 def replace_once(text: str, old: str, new: str, label: str) -> str:
     count = text.count(old)
     if count != 1:
@@ -224,6 +258,7 @@ def prepare(args: argparse.Namespace, repo: Path, mode_root: Path) -> None:
     binary = args.binary.resolve()
     if not binary.is_file() or not os.access(binary, os.X_OK):
         raise RuntimeError(f"candidate binary is not executable: {binary}")
+    binary_identity = candidate_binary_identity(repo, binary, args.expected_sha)
     write_json_new(
         evidence_dir / "preparation.json",
         {
@@ -244,6 +279,7 @@ def prepare(args: argparse.Namespace, repo: Path, mode_root: Path) -> None:
                 "path": str(binary),
                 "size_bytes": binary.stat().st_size,
                 "sha256": sha256(binary),
+                **binary_identity,
             },
             "selected_inputs": manifest,
             "selected_fit_reports": fit_report_manifest,
@@ -259,14 +295,38 @@ def execute(args: argparse.Namespace, repo: Path, mode_root: Path) -> None:
     if not preparation_path.is_file():
         raise RuntimeError("fixture has not been prepared")
     preparation = json.loads(preparation_path.read_text(encoding="utf-8"))
+    spec = CONFIGS[args.mode]
+    if preparation.get("schema_version") != (
+        "sci-align-001-phase1-local-preparation-v2"
+    ):
+        raise RuntimeError("unsupported fixture preparation schema")
+    if (
+        preparation.get("mode") != args.mode
+        or preparation.get("observation") != spec["observation"]
+    ):
+        raise RuntimeError("prepared fixture mode or observation differs")
     if preparation["repair_identity"] != identity:
         raise RuntimeError("prepared and executing repair identities differ")
     binary = Path(preparation["candidate_binary"]["path"])
     if sha256(binary) != preparation["candidate_binary"]["sha256"]:
         raise RuntimeError("candidate binary changed after preparation")
+    current_binary_identity = candidate_binary_identity(
+        repo, binary, args.expected_sha
+    )
+    for key in ("version_line", "embedded_commit"):
+        if preparation["candidate_binary"].get(key) != current_binary_identity[key]:
+            raise RuntimeError("candidate binary identity changed after preparation")
     config = Path(preparation["localized_config"]["path"])
     if sha256(config) != preparation["localized_config"]["sha256"]:
         raise RuntimeError("localized config changed after preparation")
+    current_input_paths = [
+        str(path) for path in selected_paths(config.read_text(encoding="utf-8"))
+    ]
+    prepared_input_paths = [
+        str(entry["path"]) for entry in preparation["selected_inputs"]
+    ]
+    if current_input_paths != prepared_input_paths:
+        raise RuntimeError("selected input cohort changed after preparation")
     require_manifest_unchanged(preparation["selected_inputs"], "selected input")
     current_fit_report_paths = [
         str(path) for path in selected_fit_reports(CONFIGS[args.mode])
@@ -284,6 +344,7 @@ def execute(args: argparse.Namespace, repo: Path, mode_root: Path) -> None:
     summary_path = evidence_dir / "run_summary.json"
     if log_path.exists() or summary_path.exists():
         raise FileExistsError("fixture execution evidence already exists")
+    preparation_digest = sha256(preparation_path)
     start_utc = dt.datetime.now(dt.timezone.utc)
     start_ns = time.monotonic_ns()
     before = resource.getrusage(resource.RUSAGE_CHILDREN)
@@ -305,6 +366,10 @@ def execute(args: argparse.Namespace, repo: Path, mode_root: Path) -> None:
         "mode": args.mode,
         "observation": preparation["observation"],
         "repair_identity": identity,
+        "preparation": {
+            "path": str(preparation_path),
+            "sha256": preparation_digest,
+        },
         "command": [str(binary), str(config), "--grppiex", "omp"],
         "start_utc": start_utc.isoformat(),
         "stop_utc": stop_utc.isoformat(),
