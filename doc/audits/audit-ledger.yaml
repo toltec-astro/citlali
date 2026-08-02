@@ -338,7 +338,7 @@ packages:
           doc/audits/packages/SCI-MAP-001_UNITY_ED1_OWNER_DECISION_2026-08-02.md
         record_sha256: >-
           4cec0fbbd172a32f51cfe95d5ef1712f091297fb43bd2efee5a1c4eecf99e5fa
-        record_commit: null
+        record_commit: db74fe293436b59eecfa5c36b2a2ea186b05e9b6
         selected_disposition: >-
           Preserve every seven-case product, F010, WCS, coadd, 64-realization,
           provenance, sequential/OpenMP, and exhaustive local F011 gate while
@@ -368,7 +368,7 @@ packages:
           doc/audits/packages/SCI-MAP-001_UNITY_ED1_SUCCESSOR_CAMPAIGN_HANDOFF_2026-08-02.md
         handoff_sha256: >-
           8ce9d12f93b2cf60e6fb281b67afcfdcaeb9f2ffde755b9c0f640a38c98c0c5b
-        handoff_commit: null
+        handoff_commit: db74fe293436b59eecfa5c36b2a2ea186b05e9b6
         task_thread_id: null
         task_host_id: null
         task_branch: null
