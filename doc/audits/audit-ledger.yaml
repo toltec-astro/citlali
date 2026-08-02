@@ -282,7 +282,7 @@ packages:
         conformity or expand production use.
     unity_campaign_preparation:
       status: >-
-        verified_prepared_not_dispatched_evidence_design_approved_producer_task_active
+        verified_prepared_not_dispatched_full_ptc_route_approved_successor_task_resume_authorized
       review_date: 2026-08-02
       review_id: SCI-MAP-001-UNITY-001-COORD-REVIEW-001
       review_path: >-
@@ -352,7 +352,7 @@ packages:
           changes no MAP finding, dependency, conformance, validation,
           production, repair, or re-audit state.
       evidence_protocol_producer_dispatch:
-        status: dedicated_local_task_active
+        status: stopped_once_full_ptc_route_approved_resume_authorized
         launch_authority: project_owner_explicit_2026-08-02
         dispatch_date: 2026-08-02
         launch_coordination_head: >-
@@ -380,6 +380,97 @@ packages:
         authorization_scope: >-
           Validation campaign, protocol, producer, verifier, documentation,
           and local validation only.
+        stop_return:
+          status: verified_bounded_stop_owner_route_decision_resolved
+          return_commit: >-
+            3e014f11decbcf17ad372391e5e960e6c0c54461
+          return_parent: >-
+            1b824f138754eeb1856ae5f102027db4b31598be
+          return_tree: 6db187a3f0f976cbd16dafbe17078438c0af1733
+          returned_package_tree: >-
+            910f712c8153e997a908db3590f0c63c8dee312b
+          returned_sha256s_sha256: >-
+            293b21ec162d407496c22db0b022cc512e8e4ebc8ac0c6d15765e8bbd844cc60
+          decision_brief_sha256: >-
+            a1de515081bee6169811ac9a9f7ec14ab4e07135b6a30858384c7325e676d2bb
+          machine_brief_sha256: >-
+            6b2d061332f62fd6316c37c3efade3196a181377e219730923e05ae0b1062b92
+          independent_review_sha256: >-
+            ab1949e738c22544ede6ae9af449bfbe219f5e33794346426d8a81eb76bdca6d
+          coordinator_review_path: >-
+            doc/audits/packages/SCI-MAP-001_UNITY_ED1_STOP_RETURN_COORDINATOR_REVIEW_2026-08-02.md
+          coordinator_review_sha256: >-
+            ec98c2f3b8475e7aa4842363780cc247143ecca05053ea61e22e0a9d8e22f83d
+          coordinator_review_commit: null
+          application_source_changed: false
+          frozen_predecessor_changed: false
+          unity_contacted: false
+          external_evidence_supplied: false
+          finding_or_dependency_closed: false
+          reaudit_launched: false
+          production_expanded: false
+          effect: >-
+            Accepts a correct stop and route-choice brief only; it is not a
+            completed producer, Unity evidence, or MAP acceptance result.
+        continuation_decision:
+          decision_id: MAP-UNITY-ED2
+          authority: project_owner
+          decision_date: 2026-08-02
+          status: approved_bounded_full_all_ptc_capture_route
+          amends: MAP-UNITY-ED1
+          record_path: >-
+            doc/audits/packages/SCI-MAP-001_UNITY_ED2_FULL_PTC_CAPTURE_OWNER_DECISION_2026-08-02.md
+          record_sha256: >-
+            b03e410bf246fd4e3218d1114b59cf96f6019a901112fadea6074af0003a026a
+          record_commit: null
+          selected_route: segregated_full_all_ptc_capture
+          exact_candidate: >-
+            ed28dafb37f9113c0d3c95297148157129a90886
+          exact_binary_count: 1
+          auxiliary_captures:
+            - id: CAP-POINT
+              observations: [152389]
+            - id: CAP-SCIENCE
+              observations: [152390, 152392]
+              pointing_support: [152389, 152391, 152393]
+          permitted_output_changes:
+            enabled: true
+            mode: full
+            indices: all
+          fixed_seven_cases_changed: false
+          effective_rate_authority: telescope.d_fsmp
+          processed_tod_samprate_identity: native_telescope.fsmp
+          temporary_capture_ceiling_gib: 200
+          temporary_capture_ceiling_bytes: 214748364800
+          retention: through_fresh_map_reaudit_and_focused_expansion
+          cleanup: >-
+            no automatic cleanup; exact human-run cleanup becomes eligible
+            only after recorded coordinator acceptance of the fresh re-audit
+          tolproj_source_projects:
+            - SCI-MAP-001-POINT-SOURCE
+            - SCI-MAP-001-SCIENCE-SOURCE
+          raw_staging: >-
+            Individual symlinks to verified canonical regular files only;
+            tolproj copy-raw is prohibited after link staging.
+          small_authorities: copied_and_digest_bound_apt_and_ppt_ecsv
+          effect: >-
+            Resolves only the returned route choice and authorizes bounded
+            local successor-package work. It supplies no external evidence and
+            changes no finding, dependency, conformance, validation,
+            production, repair, or re-audit state.
+        continuation_handoff:
+          status: authorized_pending_task_resume
+          path: >-
+            doc/audits/packages/SCI-MAP-001_UNITY_ED2_FULL_PTC_SUCCESSOR_HANDOFF_2026-08-02.md
+          sha256: >-
+            709873e1c3e325d9e1a0a2a85d6acd647b9a31b44f4074014abe674878ffa058
+          commit: null
+          resume_from_commit: >-
+            3e014f11decbcf17ad372391e5e960e6c0c54461
+          resume_coordination_head: null
+          same_task_required: true
+          push_authorized: false
+          unity_action_authorized: false
       readiness_gaps:
         - id: SCI-MAP-001-UNITY-001-GAP-EVIDENCE-DESIGN-001
           class: resource_and_engineering_scope_review
@@ -410,8 +501,9 @@ packages:
             requesting Unity operational values.
         - id: SCI-MAP-001-UNITY-001-GAP-PRODUCER-001
           class: engineering_evidence_preparation_gap
-          status: blocking_successor_task_active
+          status: blocking_successor_task_resume_authorized_under_full_ptc_route
           design_authority: MAP-UNITY-ED1
+          capture_authority: MAP-UNITY-ED2
           original_full_term_representation:
             status: superseded_for_successor_protocol_design
             frozen_v1_required_outputs:
@@ -427,9 +519,10 @@ packages:
             - independent_verifier_and_digest_manifest
           owner_hand_authoring_allowed: false
           next_gate: >-
-            Return and independently review a frozen successor protocol,
-            producer, verifier, exact identities, measured resource envelope,
-            and local results.
+            Resume the existing task from its verified stop under
+            MAP-UNITY-ED2, then return and independently review the frozen
+            successor protocol, producer, verifier, exact identities, measured
+            resource envelope, and local results.
         - id: SCI-MAP-001-UNITY-001-GAP-OPERATIONS-001
           class: owner_operational_input
           status: deferred_until_producer_gap_closes
@@ -676,9 +769,14 @@ packages:
         1b824f138754eeb1856ae5f102027db4b31598be with 20-member checksum-list
         digest ecf080cce98ad3aef6d6dbf52e72dd53be5d659a40285ec6c9bfbb0aee185a69;
         preparation only, not external evidence
+      - >-
+        verified MAP-UNITY-ED1 bounded stop return at
+        3e014f11decbcf17ad372391e5e960e6c0c54461 and owner-approved
+        MAP-UNITY-ED2 full/all PTC continuation route; neither is external
+        evidence or a finding disposition
     requested_unity_evidence:
       - status: >-
-          prepared_not_dispatched_evidence_design_approved_producer_task_active
+          prepared_not_dispatched_full_ptc_route_approved_successor_task_resume_authorized
         request_id: SCI-MAP-001-UNITY-001
         audited_governing_source_sha: >-
           9aae0e669384c5c0c0dda93debc194d6b8dac787

@@ -94,12 +94,21 @@ automatic manifests, streaming hashes, compact sufficient statistics, and
 deterministic every-active-network actual-data traces. The seven reductions
 and every product, F010, WCS, coadd, realization, provenance, seq/OpenMP, and
 exhaustive local F011 gate remain unchanged. The dedicated validation-only
-successor-package/producer task is active on `codex/map-unity-ed1` from exact
-campaign-preparation commit
-`1b824f138754eeb1856ae5f102027db4b31598be`; the existing frozen package and
-MAP application candidate remain immutable. The owner should not fill
-Unity operational values yet. Unity remains undispatched, external evidence
-and fresh re-audit have not begun, F009/F010 remain
+successor-package/producer task stopped correctly at exact commit
+`3e014f11decbcf17ad372391e5e960e6c0c54461`: the fixed seven outputs cannot
+supply the complete primitive authority, while the existing full processed-TOD
+writer can do so only through an explicit capture/resource decision. The owner
+therefore approved `MAP-UNITY-ED2`, selecting one segregated Point and one
+segregated Science full/all PTC capture from the same ordinary exact-candidate
+binary. The fixed seven cases remain separate and unchanged; effective-rate
+authority is `telescope.d_fsmp`; the combined temporary capture lane is capped
+at 200 GiB and retained through fresh re-audit; and fresh lightweight TolProj
+projects use verified individual raw-file links with copied small ECSV
+authorities and no `tolproj copy-raw` after link staging. The same task is
+authorized to resume from its verified stop; the existing frozen package and
+MAP application candidate remain immutable. The owner should not fill Unity
+operational values yet. Unity remains undispatched, external evidence and fresh
+re-audit have not begun, F009/F010 remain
 `addressed_pending_reaudit`, and the named CAL/AST/PTC/VAL dependencies remain
 open. See the
 [coordinator decision](audits/packages/SCI-MAP-001_COORDINATOR_DECISION_2026-07-31.md)
@@ -108,8 +117,11 @@ and the
 plus the
 [Unity campaign coordinator review](audits/packages/SCI-MAP-001_UNITY_CAMPAIGN_COORDINATOR_REVIEW_2026-08-02.md),
 [MAP-UNITY-ED1 owner decision](audits/packages/SCI-MAP-001_UNITY_ED1_OWNER_DECISION_2026-08-02.md),
-and
-[successor-campaign handoff](audits/packages/SCI-MAP-001_UNITY_ED1_SUCCESSOR_CAMPAIGN_HANDOFF_2026-08-02.md).
+[successor-campaign handoff](audits/packages/SCI-MAP-001_UNITY_ED1_SUCCESSOR_CAMPAIGN_HANDOFF_2026-08-02.md),
+[verified stop return](audits/packages/SCI-MAP-001_UNITY_ED1_STOP_RETURN_COORDINATOR_REVIEW_2026-08-02.md),
+[MAP-UNITY-ED2 owner decision](audits/packages/SCI-MAP-001_UNITY_ED2_FULL_PTC_CAPTURE_OWNER_DECISION_2026-08-02.md),
+and the
+[continuation handoff](audits/packages/SCI-MAP-001_UNITY_ED2_FULL_PTC_SUCCESSOR_HANDOFF_2026-08-02.md).
 
 ## 2026-07-31 SCI-CAL-001 Audit Coordination
 
