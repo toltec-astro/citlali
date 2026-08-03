@@ -3956,8 +3956,8 @@ packages:
       - id: SCI-MAP-002-D003
         status: partially_resolved_remaining_owner_decisions_before_repair
         scope: >-
-          Support/r_max and subpixel response are resolved. Conditioning,
-          parameter/coefficient admission, coverage/mask/kernel semantics, and
+          Support/r_max, subpixel response, and conditioning are resolved.
+          Parameter/coefficient admission, coverage/mask/kernel semantics, and
           realized provenance remain owner decisions.
     owner_decisions:
       - id: SCI-MAP-002-D003-SUPPORT-001
@@ -3982,6 +3982,17 @@ packages:
           Retain phase-quantized point sampling as the JINC subpixel response;
           it is not a pixel-area integration.
         applies_to: [SCI-MAP-002-F003]
+      - id: SCI-MAP-002-D003-CONDITIONING-001
+        status: approved
+        decision_date: 2026-08-03
+        record_path: >-
+          doc/audits/packages/SCI-MAP-002_CONDITIONING_OWNER_DECISION_2026-08-03.md
+        record_sha256: >-
+          8f74aacdd9df5a9119c08d1e627ae7859ff1d87d7a8ecdbfac0d76acaa0eddcc
+        disposition: >-
+          Replace unit-bearing absolute C/Q gates with finite-positive Q and
+          a serialized dimensionless cancellation bound based on rho.
+        applies_to: [SCI-MAP-002-F004]
     local_evidence:
       - path: doc/audits/evidence/SCI-MAP-002_LOCAL_EVIDENCE_2026-08-03.yaml
         sha256: 3a10f410dcb681a41bb2dee42b5ef1141a93a0de1362ce829dff0afa297855b8
