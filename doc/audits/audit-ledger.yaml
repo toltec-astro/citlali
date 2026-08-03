@@ -545,6 +545,31 @@ packages:
           Resolves only the product-retention interpretation. It authorizes no
           source change and changes no finding, dependency, conformance,
           validation, production, repair, or re-audit state.
+      seven_case_coordinator_review:
+        status: accepted_bounded_naive_map_product_evidence
+        review_date: 2026-08-03
+        record_path: >-
+          doc/audits/packages/SCI-MAP-001_UNITY_SEVEN_CASE_COORDINATOR_REVIEW_2026-08-03.md
+        record_sha256: >-
+          f1f14434d30e6d72cbe7c18bcd4d012d0456bd797c5bb2eff0ff5d2f25a483fd
+        reviewed_task_branch: codex/map-unity-ed1
+        reviewed_task_commit: 5928ebfe9ae263dba5a67db3ec27719313f8cbc5
+        application_candidate: ed28dafb37f9113c0d3c95297148157129a90886
+        frozen_executable_sha256: >-
+          693c14898faa1d41a854030b86cdde2729bf121442eb8427feffb4d4e57686c5
+        external_transfer_manifest_sha256: >-
+          d56aa24133352d0b33d3db2986b77c7d4c20b3b4ecb8d22a21ef8e15c8fdf066
+        accepted_scope: >-
+          Seven-case naive map/product identity, log health, product
+          inventory, sequential/OpenMP, and C/E/X common-product evidence.
+        exclusions: >-
+          No JINC conclusion; no estimator/covariance/significance,
+          primitive-level, effective-rate, F010/F011, or full MAP-conformance
+          conclusion; CAP-SCIENCE remains Unity-retained contingency evidence.
+        effect: >-
+          Supplies a naive-only post-core handoff to SCI-MAP-002. No MAP
+          finding/dependency/status is closed and no source or production
+          authorization changes.
       evidence_protocol_producer_dispatch:
         status: dedicated_local_task_active_after_full_ptc_route
         launch_authority: project_owner_explicit_2026-08-02
@@ -3795,9 +3820,32 @@ packages:
     upstream_dependencies:
       - package_id: SCI-MAP-001
         status: open
+        required_fact: >-
+          Shared map-product vocabulary and open-map restrictions; the
+          completed seven-case external evidence is naive-only and may not be
+          treated as JINC evidence.
+        consequence: >-
+          Derive and audit JINC independently; declare JINC-specific signed
+          coefficient/contribution semantics or explicit unavailability.
       - package_id: SCI-VAL-001
         status: open
+        required_fact: >-
+          Shared validation/eligibility contract and future method-specific
+          validation route.
+        consequence: >-
+          JINC conclusions remain conditional on a future validation boundary
+          and cannot expand production use.
     downstream_consumers: [SCI-NOI-001, SCI-NOI-002, SCI-FLT-001, SCI-FLT-002]
+    incoming_handoffs:
+      - id: SCI-MAP-002-XAUD-001
+        path: >-
+          doc/audits/handoffs/SCI-MAP-002/SCI-MAP-002-XAUD-001.yaml
+        sha256: >-
+          288505047e9fc1b24c31f34c072d780c475485aa0167096177318b34eb2517a6
+        source_package: SCI-MAP-001
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted
     governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
     governing_sha_role: inventory_snapshot
     audit_branch: null
@@ -3816,6 +3864,27 @@ packages:
     remediation_branch: null
     remediation_commit: null
     re_audit_status: not_started
+    dispatch:
+      status: frozen_for_scope_checkpoint
+      dispatch_date: 2026-08-03
+      coordinator_registry_commit: 640e549bf9d2990d27e536654c8d5d87b54bd696
+      manifest_path: >-
+        doc/audits/handoffs/SCI-MAP-002/SCI-MAP-002_INBOX_MANIFEST_2026-08-03.yaml
+      manifest_sha256: >-
+        053709d8579393f52b751431ef3304d87f08711723d620105c7685470c73c980
+      prompt_path: doc/audits/prompts/SCI_MAP_002_AUDIT_PROMPT.md
+      prompt_sha256: >-
+        79982ec44ec84c0ba7234bdfa7fb2001ac29761f45f944e3ef1c93396ca84101
+      pre_core_authority_ids: []
+      post_core_evidence_ids: [SCI-MAP-002-XAUD-001]
+      launch_profile:
+        model: Sol
+        effort: XHigh
+        authority: project_owner_approved_2026-08-03
+      scope_checkpoint_required: true
+      local_citlali_reduction_authorized: false
+      unity_evidence_authorized: false
+      application_source_change_authorized: false
 
   - id: SCI-NOI-001
     name: Noise and jackknife realization construction and propagation

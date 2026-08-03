@@ -1,0 +1,69 @@
+format_version: 1
+id: SCI-MAP-002-XAUD-001
+created_date: 2026-08-03
+
+source:
+  package_id: SCI-MAP-001
+  role: coordinator
+  audit_branch: codex/map-unity-ed1
+  audit_commit: 5928ebfe9ae263dba5a67db3ec27719313f8cbc5
+  governing_or_evidence_sha: ed28dafb37f9113c0d3c95297148157129a90886
+  finding_ids: []
+
+target:
+  package_id: SCI-MAP-002
+
+priority: P1
+evidence_basis: observed
+review_phase: post_core_evidence
+arrival: before_dispatch
+status: submitted
+
+summary: >-
+  The completed SCI-MAP-001 Unity seven-case bundle is naive-only map/product
+  evidence and establishes no JINC mapmaker result.
+claim: >-
+  All seven returned reductions selected mapmaking.method naive. Their
+  sequential/OpenMP and C/E/X shared-product results may serve only as a
+  naive-control/context for SCI-MAP-002; JINC response, normalization,
+  contribution predicate, parameter behavior, and product conformity require
+  independent SCI-MAP-002 derivation and evidence.
+supports:
+  - Preserve an explicit naive-only control distinction in the JINC audit.
+  - Require a JINC-specific coefficient/contribution and product disposition.
+does_not_establish:
+  - Any JINC implementation, response, normalization, parameter-selection,
+    edge, parallel-equivalence, uncertainty, or production conclusion.
+  - Closure of any SCI-MAP-001 finding or dependency.
+
+requested_actions:
+  - Audit JINC independently after the independent core freeze.
+  - Do not silently reuse the ordinary-naive positive-coefficient predicate.
+affected_target_findings: []
+related_handoffs: []
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-MAP-001-UNITY-001-SEVEN-CASE-REVIEW-2026-08-03
+    availability: repository_path
+    path: >-
+      doc/audits/packages/SCI-MAP-001_UNITY_SEVEN_CASE_COORDINATOR_REVIEW_2026-08-03.md
+    sha256: f1f14434d30e6d72cbe7c18bcd4d012d0456bd797c5bb2eff0ff5d2f25a483fd
+    note: >-
+      Coordinator-bounded interpretation of the returned seven-case handback;
+      the external transfer manifest is cited inside the review.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: not_applicable
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

@@ -1,0 +1,16 @@
+format_version: 1
+target_package: SCI-MAP-002
+created_date: 2026-08-03
+coordinator_registry_commit: 640e549bf9d2990d27e536654c8d5d87b54bd696
+manifest_status: frozen_for_scope_checkpoint
+
+handoffs:
+  - id: SCI-MAP-002-XAUD-001
+    path: >-
+      doc/audits/handoffs/SCI-MAP-002/SCI-MAP-002-XAUD-001.yaml
+    sha256: 288505047e9fc1b24c31f34c072d780c475485aa0167096177318b34eb2517a6
+    review_phase: post_core_evidence
+
+pre_core_authority_ids: []
+post_core_evidence_ids:
+  - SCI-MAP-002-XAUD-001
