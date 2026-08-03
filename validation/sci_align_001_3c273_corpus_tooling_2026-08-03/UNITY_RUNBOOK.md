@@ -15,11 +15,11 @@ create and transfer this bundle containing both commits after the known base:
 # On the local source clone:
 git bundle create /Users/gwilson/GitHub/citlali-refactor/sci_align_001_followup_8e4fcae2.bundle \
   a2b37924d612eb175821483523cc94dd233f2fea..8e4fcae2ff92078665b8fad992307a609236125a
-# Owner transfer to the known Unity checkout (not performed by Codex):
+# Owner transfer to the owner-controlled Unity staging directory (not performed by Codex):
 scp /Users/gwilson/GitHub/citlali-refactor/sci_align_001_followup_8e4fcae2.bundle \
-  unity_toltec:/work/toltec/citlali_dev/citlali_refactor/
+  unity_toltec:/work/toltec/wilson/
 # Then, on Unity from the repository clone:
-git fetch /work/toltec/citlali_dev/citlali_refactor/sci_align_001_followup_8e4fcae2.bundle \
+git fetch /work/toltec/wilson/sci_align_001_followup_8e4fcae2.bundle \
   8e4fcae2ff92078665b8fad992307a609236125a:refs/heads/codex/sci-align-001-3c273-corpus-tooling
 ```
 
