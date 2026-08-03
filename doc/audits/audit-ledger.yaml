@@ -3885,6 +3885,30 @@ packages:
       local_citlali_reduction_authorized: false
       unity_evidence_authorized: false
       application_source_change_authorized: false
+      scope_checkpoint:
+        status: accepted_independent_core_phase_authorized
+        review_date: 2026-08-03
+        task_thread_id: 019fc873-565c-7b83-90c3-89ce776b0781
+        returned_application_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+        returned_framework_head: 4f02b018710f0646d556fbcd157452ae5595fb90
+        frozen_artifact_digests_verified: true
+        wrapper_commit_literal_correction:
+          erroneous_literal: 4f02b0187e918b38587e6f7c2823d8d92b5edceb
+          correct_content_commit: 4f02b018710f0646d556fbcd157452ae5595fb90
+          effect: >-
+            A launch-wrapper transcription error only. Prompt, manifest, and
+            handoff bytes matched their frozen SHA-256 bindings exactly.
+        next_phase_scope: >-
+          Create the isolated audit branch and freeze only the
+          implementation-independent JINC scientific core. Repository-level
+          architecture/scientific authority reading is allowed; JINC source
+          and the post-core MAP handoff remain quarantined.
+        local_citlali_reduction_authorized: false
+        unity_evidence_authorized: false
+        permitted_delegation_or_review: none
+        next_return: >-
+          Stop after the exact independent-core artifact is frozen and return
+          its path, digest, commit, and first-source-inspection plan.
 
   - id: SCI-NOI-001
     name: Noise and jackknife realization construction and propagation
