@@ -146,14 +146,68 @@ for CASE in S-C-SEQ S-E-SEQ S-X-SEQ S-C-OMP S-E-OMP; do
 done
 ```
 
-For the auxiliary CAP-POINT/CAP-SCIENCE primitive captures only, copy
-`processed-time-chunk-full-overlay.yaml` to a filename sorting after
-`99_zzz_sci_map_case.yaml`, such as `99_zzzz_processed_time_chunk_full.yaml`.
-It changes only `enabled=true`, `mode=full`, and `indices=all`. Do not install
-it in a seven-case directory. TolProj freezes the selected executable at
-submission; use one ordinary candidate binary for every selected reduction.
+## 4. Prepare and submit the two auxiliary full/all captures
 
-## 4. Collect ordinary artifacts
+These are separate retained captures, not acceptance cases. `CAP-POINT` starts
+from the exact P-SEQ configuration; `CAP-SCIENCE` starts from the exact S-E-SEQ
+configuration. In each fresh directory, install the ordinary case overlay
+first, then install the full/all output overlay as
+`99_zzzz_processed_time_chunk_full.yaml`. This filename sorts after
+`99_zzz_sci_map_case.yaml`, so it changes only:
+
+```yaml
+timestream.processed_time_chunk.output.enabled: true
+timestream.processed_time_chunk.output.mode: full
+timestream.processed_time_chunk.output.indices: all
+```
+
+### Local
+
+No additional local command is needed after the package transfer.
+
+### Unity terminal
+
+Run this only after the Science pointing-support reduction has produced the
+required `ppt_*.ecsv` files and `SCIENCE_POINTING_REDUCTION` is set to its
+actual `reduNN` value. It creates fresh capture directories and never changes a
+seven-case directory.
+
+```sh
+CAPTURE_OVERLAY="$UNITY_PACKAGE/processed-time-chunk-full-overlay.yaml"
+
+# CAP-POINT: exact P-SEQ plus only full/all PTC output.
+test ! -e "$POINT_PROJECT/CAP-POINT"
+"$TOLPROJ" setup-pointing-reductions "$POINT_PROJECT" \
+  --refactor --source 1146+399 --pointings-dir CAP-POINT --apt-dir apts --cpus 1
+cp "$CASE_OVERLAYS/P-SEQ.yaml" \
+  "$POINT_PROJECT/CAP-POINT/99_zzz_sci_map_case.yaml"
+cp "$CAPTURE_OVERLAY" \
+  "$POINT_PROJECT/CAP-POINT/99_zzzz_processed_time_chunk_full.yaml"
+"$TOLPROJ" validate-reduction "$POINT_PROJECT/CAP-POINT"
+"$TOLPROJ" submit-reduction "$POINT_PROJECT/CAP-POINT"
+
+# CAP-SCIENCE: regenerate only the unrun sequential template, then copy it to
+# a fresh capture directory. The capture receives exact S-E-SEQ plus full/all.
+test ! -e "$SCIENCE_PROJECT/CAP-SCIENCE"
+"$TOLPROJ" setup-science-reductions "$SCIENCE_PROJECT" \
+  --refactor --user "$GRANT_USER" --pointing-reduction "$SCIENCE_POINTING_REDUCTION" \
+  --apt-product matched --cpus 1
+cp -a "$SCIENCE_BASE" "$SCIENCE_PROJECT/CAP-SCIENCE"
+cp "$CASE_OVERLAYS/S-E-SEQ.yaml" \
+  "$SCIENCE_PROJECT/CAP-SCIENCE/99_zzz_sci_map_case.yaml"
+cp "$CAPTURE_OVERLAY" \
+  "$SCIENCE_PROJECT/CAP-SCIENCE/99_zzzz_processed_time_chunk_full.yaml"
+"$TOLPROJ" validate-reduction "$SCIENCE_PROJECT/CAP-SCIENCE"
+"$TOLPROJ" submit-reduction "$SCIENCE_PROJECT/CAP-SCIENCE"
+```
+
+Do not install `99_zzzz_processed_time_chunk_full.yaml` in P-SEQ, P-OMP,
+S-C-SEQ, S-C-OMP, S-E-SEQ, S-E-OMP, or S-X-SEQ. Do not clean either capture
+after it has started or finished. TolProj freezes the selected executable at
+submission; use the same ordinary candidate binary for both captures and every
+acceptance case.
+
+## 5. Collect ordinary artifacts
 
 After all seven selected reductions finish, set `RESULTS_DIR` to a directory
 under `UNITY_RUN_ROOT` containing those seven completed reduction directories,
