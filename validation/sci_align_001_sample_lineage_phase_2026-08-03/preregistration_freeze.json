@@ -1,0 +1,49 @@
+{
+  "aggregate_sha256": "a2aa8f4edcdfe123fc76677b6425f5ec9c198659c008a74bc1d28d06e0f87272",
+  "confirmatory_signal_read": false,
+  "entries": [
+    {
+      "path": "frozen_confirmatory_uids.txt",
+      "sha256": "2265d0b7758f7fe30f6854af7963da4e95d4e183e44c8ba2a90eeb2bfe64a130"
+    },
+    {
+      "path": "identity.json",
+      "sha256": "9aecb0b58785080e31893737d0a8f84ebea5c6d63894b57790446310057c2efe"
+    },
+    {
+      "path": "input_manifest.csv",
+      "sha256": "ad2137e5a328ee0e294104bcdb73c3756f4dd834cd35ebfd5843405a294dadec"
+    },
+    {
+      "path": "lineage_source_trace.csv",
+      "sha256": "1165edfe52cd77b6ed76456dfdb554d800781c704657bd21445032eb0f35c4a9"
+    },
+    {
+      "path": "model_registry.csv",
+      "sha256": "9b2d09733c00901c0ac1124595911ba5b626ce5642154617e7a86648323a8230"
+    },
+    {
+      "path": "preregistered_protocol.json",
+      "sha256": "0e4ede634c0c392844d9278130fe6f2acf90b1f7da2294e24ba4c2784b1898af"
+    },
+    {
+      "path": "raw_row_mapping_summary.csv",
+      "sha256": "4acd58de8fb1caa91d63b36434a122ea291470d747422ab7e83d60b68082964a"
+    },
+    {
+      "path": "stage_a_conclusion.json",
+      "sha256": "072ce5d839276a1b9e016fc358c95d8bdf0150e53aef7e3ead26182184e7812f"
+    }
+  ],
+  "freeze_rule": "analyze mode must verify this aggregate before reading signal",
+  "ordered_files": [
+    "frozen_confirmatory_uids.txt",
+    "identity.json",
+    "input_manifest.csv",
+    "lineage_source_trace.csv",
+    "model_registry.csv",
+    "preregistered_protocol.json",
+    "raw_row_mapping_summary.csv",
+    "stage_a_conclusion.json"
+  ]
+}

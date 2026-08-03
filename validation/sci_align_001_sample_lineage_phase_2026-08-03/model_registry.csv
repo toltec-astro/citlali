@@ -1,0 +1,19 @@
+model_id,time_basis,row_shift_k,phase_phi_samples,phase_sec,effective_time_formula,row_identity_changed,primary_support,secondary_support
+assigned_slot_k-1_phi-0.5,assigned_slot,-1,-0.5,-0.004096,T[n+k] + phi * 0.008192 s,True,all-model common interior support,model-native within-scan support
+assigned_slot_k-1_phi+0.0,assigned_slot,-1,0.0,0.0,T[n+k] + phi * 0.008192 s,True,all-model common interior support,model-native within-scan support
+assigned_slot_k-1_phi+0.5,assigned_slot,-1,0.5,0.004096,T[n+k] + phi * 0.008192 s,True,all-model common interior support,model-native within-scan support
+assigned_slot_k+0_phi-0.5,assigned_slot,0,-0.5,-0.004096,T[n+k] + phi * 0.008192 s,False,all-model common interior support,model-native within-scan support
+assigned_slot_k+0_phi+0.0,assigned_slot,0,0.0,0.0,T[n+k] + phi * 0.008192 s,False,all-model common interior support,model-native within-scan support
+assigned_slot_k+0_phi+0.5,assigned_slot,0,0.5,0.004096,T[n+k] + phi * 0.008192 s,False,all-model common interior support,model-native within-scan support
+assigned_slot_k+1_phi-0.5,assigned_slot,1,-0.5,-0.004096,T[n+k] + phi * 0.008192 s,True,all-model common interior support,model-native within-scan support
+assigned_slot_k+1_phi+0.0,assigned_slot,1,0.0,0.0,T[n+k] + phi * 0.008192 s,True,all-model common interior support,model-native within-scan support
+assigned_slot_k+1_phi+0.5,assigned_slot,1,0.5,0.004096,T[n+k] + phi * 0.008192 s,True,all-model common interior support,model-native within-scan support
+raw_detector_timestamp_k-1_phi-0.5,raw_detector_timestamp,-1,-0.5,-0.004096,T[n+k] + phi * 0.008192 s,True,all-model common interior support,model-native within-scan support
+raw_detector_timestamp_k-1_phi+0.0,raw_detector_timestamp,-1,0.0,0.0,T[n+k] + phi * 0.008192 s,True,all-model common interior support,model-native within-scan support
+raw_detector_timestamp_k-1_phi+0.5,raw_detector_timestamp,-1,0.5,0.004096,T[n+k] + phi * 0.008192 s,True,all-model common interior support,model-native within-scan support
+raw_detector_timestamp_k+0_phi-0.5,raw_detector_timestamp,0,-0.5,-0.004096,T[n+k] + phi * 0.008192 s,False,all-model common interior support,model-native within-scan support
+raw_detector_timestamp_k+0_phi+0.0,raw_detector_timestamp,0,0.0,0.0,T[n+k] + phi * 0.008192 s,False,all-model common interior support,model-native within-scan support
+raw_detector_timestamp_k+0_phi+0.5,raw_detector_timestamp,0,0.5,0.004096,T[n+k] + phi * 0.008192 s,False,all-model common interior support,model-native within-scan support
+raw_detector_timestamp_k+1_phi-0.5,raw_detector_timestamp,1,-0.5,-0.004096,T[n+k] + phi * 0.008192 s,True,all-model common interior support,model-native within-scan support
+raw_detector_timestamp_k+1_phi+0.0,raw_detector_timestamp,1,0.0,0.0,T[n+k] + phi * 0.008192 s,True,all-model common interior support,model-native within-scan support
+raw_detector_timestamp_k+1_phi+0.5,raw_detector_timestamp,1,0.5,0.004096,T[n+k] + phi * 0.008192 s,True,all-model common interior support,model-native within-scan support

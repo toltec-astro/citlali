@@ -1,0 +1,11 @@
+{
+  "conclusion": "The inspected implementation and actual raw cardinalities preserve D[n] with Ts[n] through native read, solver row geometry, slot insertion, scan indexing, and retained sample copy. No Citlali n<->n+/-1 defect is demonstrated.",
+  "direct_row_mismatch_found": false,
+  "mapping_reconstruction": "deterministic from raw Ts, exact offset/slot formula, compact scan origin, and same-index retained copy; expanded mappings are diagnostic-only",
+  "producer_semantics": "unresolved: Data.Toltec.Ts integration start/end/effective-centroid meaning is unavailable",
+  "qualification": "Filters transform values across neighboring samples but do not relabel or permute the sample axis. Synthesized rows require separate lineage; the retained provenance reports zero synthesized interface slots in admitted science support.",
+  "retained_dense_raw_to_output_mapping_persisted": false,
+  "stage_b_row_shift_interpretation": "k=+/-1 remains an explicit counterfactual. With no direct Stage-A mismatch, a null under k plus phi can support only an effective timing offset, not the proposed decomposition.",
+  "stage_b_technically_feasible_without_new_reduction": true,
+  "status": "bounded_lineage_reconstruction_complete_before_counterfactual_signal_read"
+}

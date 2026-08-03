@@ -1,0 +1,10 @@
+stage,path,source_sha256,line_start_1based,line_stop_1based_inclusive,lineage_conclusion
+raw_schema_row_pair,include/citlali/core/engine/detail/sci_align_netcdf_input_contract.h,daa35ed14e6a6e136616061cae6b6b2c71d0bdc4262133f7f6484da83bd0152c,162,212,"I, Q, and Ts share the same nonempty native time-row cardinality"
+timestamp_reconstruction,include/citlali/core/pipeline/sci_align_contract.h,54691b3d641ab6f030fc3edf9bf5f5d523bf1be55f0a2d24a6f328ba4538b1fa,226,293,Ts native row is reconstructed without row permutation; offset is later positive-add
+raw_slice,include/citlali/core/engine/detail/kidsproc_gaps_impl.h,33d0b87ded9c1e4762f3071996bb0786c7083a0806cb7b8bc9fc7db583e249be,58,110,one common source slice selects the row-aligned I/Q block
+solver_row_geometry,build/_deps/kidscpp-src/src/kids/timestream/solver.cpp,29938fdcb9403b59e58330929b9981b841686ace4e502da9792b71c42a1474a1,116,133,solver outputs retain the input ntimes row axis
+native_row_to_slot,include/citlali/core/utils/utils.h,7b8c9013412cb3b52047478363c18a0ba00d27b17ab74c2fcb0f005cbe40cb8c,1315,1379,"slot comes from t_valid(native_row), then the same data_valid native_row is copied"
+scan_population,include/citlali/core/pipeline/timestream_scan_generation.h,7956c94b7ee0f4484931d76bbee4f25f427ae79a313b48f43bb708f8c569a1e6,108,136,scan window and common-grid index bounds are passed unchanged into population
+rtc_filter_and_inner_crop,include/citlali/core/timestream/rtc/rtcproc.h,41693a6385c112bdde36f5590d8ac10b60514c56d5449aad30962e08a64f3549,1149,1210,realized downsampling is disabled; the RTC output is the same ordered inner row block
+ptc_row_geometry,include/citlali/core/timestream/ptc/ptcproc.h,15f5da569fc65f02048cefb7b685116b32919c8e8ab60374a638bc46cf1508ab,665,1105,PTC transforms values on the fixed n_pts row axis and does not relabel or permute rows
+retained_output_copy,include/citlali/core/engine/detail/beammap_detector_tod_netcdf_helpers.h,aecfad367a29eb736fee173ae5b8fa383e0b91df91c888ae1733859baead5988,131,182,"retained sample index copies ptc.scans.data(sample, det) and its same-index flag"
