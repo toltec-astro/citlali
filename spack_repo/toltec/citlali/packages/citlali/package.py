@@ -1,5 +1,7 @@
 """Spack package for the Citlali data-reduction pipeline."""
 
+import os
+
 from spack.package import (
     depends_on,
     on_package_attributes,
@@ -16,8 +18,9 @@ class Citlali(CMakePackage):
     """Build the Citlali library, CLI, and behavior tests."""
 
     homepage = "https://github.com/toltec-astro/citlali"
+    git = "https://github.com/toltec-astro/citlali.git"
 
-    version("4.0.0")
+    version("4.1.0", tag="v4.1.0")
 
     variant(
         "openmp",
@@ -54,6 +57,16 @@ class Citlali(CMakePackage):
             self.define("CITLALI_BUILD_CLI", True),
             self.define("CITLALI_BUILD_TESTS", self.run_tests),
             self.define_from_variant("CITLALI_ENABLE_OPENMP", "openmp"),
+            self.define("CITLALI_PACKAGE_SPEC", str(self.spec)),
+            self.define("CITLALI_DAG_HASH", self.spec.dag_hash()),
+            self.define(
+                "TOLTECA_BUILD_PROFILE",
+                os.environ.get("TOLTECA_BUILD_PROFILE", ""),
+            ),
+            self.define(
+                "TOLTECA_LOCK_SHA256",
+                os.environ.get("TOLTECA_LOCK_SHA256", ""),
+            ),
         ]
 
     @run_after("build")

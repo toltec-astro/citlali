@@ -1,4 +1,6 @@
 #pragma once
 
+#include <citlali/version.h>
+
 #define CITLALI_VERSION "@PROJECT_VERSION@"
 #cmakedefine01 CITLALI_HAS_OPENMP

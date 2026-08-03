@@ -1145,6 +1145,23 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var<std::string>(fo, "VERSION", CITLALI_VERSION);
         add_netcdf_var<std::string>(fo, "KIDS", KIDSCPP_VERSION);
         add_netcdf_var<std::string>(fo, "TULA", TULA_VERSION);
+        add_netcdf_var<std::string>(
+            fo, "CITLALI_REVISION", std::string{citlali::build::git_revision});
+        add_netcdf_var<std::string>(
+            fo, "CITLALI_GIT_STATE", std::string{citlali::build::git_state});
+        add_netcdf_var<std::string>(
+            fo, "KIDSCPP_REVISION", std::string{kids::build::git_revision});
+        add_netcdf_var<std::string>(
+            fo, "TULA_REVISION", std::string{tula::build::git_revision});
+        add_netcdf_var<std::string>(
+            fo, "BUILD_COMPILER", std::string{citlali::build::compiler});
+        add_netcdf_var(fo, "CXX_STANDARD", citlali::build::cxx_standard);
+        add_netcdf_var<std::string>(
+            fo, "SPACK_DAG_HASH", std::string{citlali::build::dag_hash});
+        add_netcdf_var<std::string>(
+            fo, "DEPLOY_PROFILE", std::string{citlali::build::build_profile});
+        add_netcdf_var<std::string>(
+            fo, "SPACK_LOCK_SHA256", std::string{citlali::build::lock_sha256});
         add_netcdf_var<std::string>(fo, "PROJID", telescope.project_id);
         add_netcdf_var<std::string>(fo, "GOAL", redu_type);
         add_netcdf_var<std::string>(fo, "OBSGOAL", telescope.obs_goal);
@@ -1885,6 +1902,18 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey("KIDS", KIDSCPP_VERSION, "KIDSCPP_VERSION");
     // add kids version
     fits_io->at(i).pfits->pHDU().addKey("TULA", TULA_VERSION, "TULA_VERSION");
+    fits_io->at(i).pfits->pHDU().addKey(
+        "CITREV", std::string{citlali::build::git_revision}, "Citlali Git revision");
+    fits_io->at(i).pfits->pHDU().addKey(
+        "CITSTATE", std::string{citlali::build::git_state}, "Citlali Git state");
+    fits_io->at(i).pfits->pHDU().addKey(
+        "KIDSREV", std::string{kids::build::git_revision}, "Kidscpp Git revision");
+    fits_io->at(i).pfits->pHDU().addKey(
+        "TULAREV", std::string{tula::build::git_revision}, "Tula Git revision");
+    fits_io->at(i).pfits->pHDU().addKey(
+        "DAGHASH", std::string{citlali::build::dag_hash}, "Spack DAG hash");
+    fits_io->at(i).pfits->pHDU().addKey(
+        "LOCKSHA", std::string{citlali::build::lock_sha256}, "Spack lock SHA-256");
     // project id
     fits_io->at(i).pfits->pHDU().addKey("PROJID", telescope.project_id, "Project ID");
     // add redu type

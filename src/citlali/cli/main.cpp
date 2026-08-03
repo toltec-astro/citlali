@@ -82,8 +82,31 @@ auto parse_args(int argc, char *argv[]) {
         std::exit(EXIT_SUCCESS);
     } else if (cc.get_typed<bool>("version")) {
         screen.version();
-        // also print the kids version
         fmt::print("{}\n", kids_ver_str);
+        fmt::print("tula {}\n", TULA_VERSION);
+        fmt::print(
+            "source={} ({}) compiler={} c++{}\n"
+            "spec={}\n"
+            "dag={}\n"
+            "profile={}\n"
+            "lock={}\n",
+            citlali::build::git_revision,
+            citlali::build::git_state,
+            citlali::build::compiler,
+            citlali::build::cxx_standard,
+            citlali::build::package_spec,
+            citlali::build::dag_hash,
+            citlali::build::build_profile,
+            citlali::build::lock_sha256);
+        fmt::print(
+            "kidscpp-source={} ({}) dag={}\n"
+            "tula-source={} ({}) dag={}\n",
+            kids::build::git_revision,
+            kids::build::git_state,
+            kids::build::dag_hash,
+            tula::build::git_revision,
+            tula::build::git_state,
+            tula::build::dag_hash);
         std::exit(EXIT_SUCCESS);
     }
     {

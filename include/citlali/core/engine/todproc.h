@@ -1480,6 +1480,23 @@ void TimeOrderedDataProc<EngineType>::make_index_file(std::string filepath) {
     node["kids_version"].push_back(KIDSCPP_VERSION);
     // tula version
     node["tula_version"].push_back(TULA_VERSION);
+    node["provenance/citlali_revision"].push_back(
+        std::string{citlali::build::git_revision});
+    node["provenance/citlali_git_state"].push_back(
+        std::string{citlali::build::git_state});
+    node["provenance/kidscpp_revision"].push_back(
+        std::string{kids::build::git_revision});
+    node["provenance/tula_revision"].push_back(
+        std::string{tula::build::git_revision});
+    node["provenance/compiler"].push_back(
+        std::string{citlali::build::compiler});
+    node["provenance/cxx_standard"].push_back(citlali::build::cxx_standard);
+    node["provenance/dag_hash"].push_back(
+        std::string{citlali::build::dag_hash});
+    node["provenance/profile"].push_back(
+        std::string{citlali::build::build_profile});
+    node["provenance/lock_sha256"].push_back(
+        std::string{citlali::build::lock_sha256});
 
     // call make_index_file recursively if current object is directory
     for (const auto & entry : sorted_by_name) {
