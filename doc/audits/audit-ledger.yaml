@@ -517,6 +517,34 @@ packages:
           local protocol/producer work. It supplies no external evidence and
           changes no MAP finding, dependency, conformance, validation,
           production, repair, or re-audit state.
+      product_retention_decision:
+        decision_id: MAP-UNITY-PR1
+        authority: project_owner
+        decision_date: 2026-08-03
+        status: approved_empirical_product_cardinality_policy
+        record_path: >-
+          doc/audits/packages/SCI-MAP-001_UNITY_PR1_EMPIRICAL_PRODUCT_RETENTION_OWNER_DECISION_2026-08-03.md
+        record_sha256: >-
+          f0f589ffc3ffc6d74c55dd7d975e2cfbf3c9cbd361c4c59a5b6221e983eef14b
+        applies_to: successful_S-E_and_S-X_empirical_product_inventory_interpretation
+        selected_policy: >-
+          In coadd empirical mode, retain compact per-observation empirical
+          planes in ordinary signal FITS and retain the separate 64-realization
+          ensemble only for the coadd; explicit non-coadd empirical mode
+          retains per-observation realization products.
+        consumer_requirement: >-
+          Product inventory/provenance must expose realization placement and
+          compact plane identities. Consumers requiring a per-observation
+          ensemble must select explicit non-coadd empirical mode or return for
+          a separately scoped product-policy decision.
+        evidence_scope: >-
+          The returned S-E/S-X product inventory establishes placement only;
+          it does not establish empirical-estimator, realization, F010, F011,
+          WCS, coaddition, or sequential/OpenMP correctness.
+        effect: >-
+          Resolves only the product-retention interpretation. It authorizes no
+          source change and changes no finding, dependency, conformance,
+          validation, production, repair, or re-audit state.
       evidence_protocol_producer_dispatch:
         status: dedicated_local_task_active_after_full_ptc_route
         launch_authority: project_owner_explicit_2026-08-02
