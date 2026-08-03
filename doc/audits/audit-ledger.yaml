@@ -2354,6 +2354,44 @@ packages:
         No AM execution, source change, repair, re-audit, Unity activity,
         operator adoption, operational-domain adoption, production change, or
         new output format.
+    atmosphere_engineering_extension_study_scope_decision:
+      decision_id: CAL-ATM-D007
+      authority: project_owner
+      decision_date: 2026-08-03
+      status: approved_design_exact_execution_request_preparation_authorized
+      record_path: >-
+        doc/audits/packages/SCI-CAL-001_TAU025_EXTENSION_STUDY_SCOPE_DECISION_2026-08-03.md
+      record_sha256: >-
+        67690533211ec47b9f01d269a85e0dcc2296009b50b11d1ee701d1957dfe76b4
+      protocol_evidence:
+        branch: codex/sci-cal-001-atmosphere-operator
+        preparation_commit: 84fbe8e6c8cdf10913aa05cbfa69eea8f4156820
+        protocol_path: >-
+          validation/sci_cal_001_atmosphere_operator_2026-08-01/SCI_CAL_001_TAU025_ENGINEERING_EXTENSION_PROTOCOL.md
+        protocol_sha256: >-
+          2552a8fee94bc64719504528d3a763c402bfedd9c7ec1380c2d4f5d1775b6967
+      profile_matrix: >-
+        All 25 copied AM 12.2 profiles: annual, DJF, MAM, JJA, and SON at
+        percentiles 5, 25, 50, 75, and 95.
+      construction_nodes:
+        tau225: [0.15, 0.20, 0.25]
+        elevation_deg: [25, 35, 45, 55, 65, 75, 80]
+      heldout_nodes:
+        tau225: [0.1625, 0.175, 0.1875, 0.2125, 0.225, 0.2375]
+        elevation_deg: [29, 41, 53, 67, 79]
+      boundary_diagnostic: >-
+        No-AM evaluator-only nextafter(.15) continuity triplet with one
+        candidate identity; it is not a direct-AM or scale-search target.
+      engineering_maximum_heldout_fractional_correction_error: 0.05
+      inherited_warning_policy: WARN-001
+      permitted_next_step: >-
+        Documentation-only exact execution request, including tuple/run
+        inventory, immutable cache/provenance layout, invocation/scale plan,
+        resource estimate, stop register, and preflight/readiness gates.
+      stop_before: >-
+        Return for owner approval before cache creation, AM execution, fitting,
+        numerical-result interpretation, source change, repair, re-audit,
+        Unity action, adoption, production change, or output-format work.
     dispatch:
       status: frozen_for_dispatch
       coordinator_registry_commit: 88741d085a08431790c6eee719b6f20052b459d8
