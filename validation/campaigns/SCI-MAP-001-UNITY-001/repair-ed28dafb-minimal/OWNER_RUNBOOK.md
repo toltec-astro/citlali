@@ -71,14 +71,15 @@ identities appear in `campaign.json`: Point APT 152389; Science APTs 152390 and
 input is absent or ambiguous. Do not copy an old reduction, and do not change
 the selected observations or groups.
 
-## 3. Set up and run the selected reductions
+## 3. Set up fresh, named reductions
 
-On Unity, use the approved TolProj workflow to prepare the pointing-support
-reduction before Science. Use `--refactor`, the explicit source/group below,
-and only the seven case objects in `campaign.json`. Each case records its exact
-mode, observations, arrays, coadd/products setting, coverage cut, and thread
-count. If the accepted configuration cannot be materialized with those values,
-stop rather than hand-editing a different scientific configuration.
+The generic `pointings/02_redu.sh` generated with `--cpus 1` is not a MAP
+case: it leaves the default `parallel_policy: omp` in force and produces the
+unsupported `omp`/one-thread combination. Preserve that failed directory as a
+diagnostic; do not rerun it or edit its generated merged YAML. Create fresh,
+named case directories and install exactly one supplied case overlay in each.
+The overlay name must be `99_zzz_sci_map_case.yaml`, which loads after TolProj's
+submission-runtime overlay. Do not combine `omp` with one CPU/thread.
 
 ### Local
 
@@ -89,26 +90,72 @@ No local command is needed; keep the Unity compute-node terminal active.
 ```sh
 POINT_PROJECT="$UNITY_RUN_ROOT/SCI-MAP-001-POINT-SOURCE"
 SCIENCE_PROJECT="$UNITY_RUN_ROOT/SCI-MAP-001-SCIENCE-SOURCE"
+CASE_OVERLAYS="$UNITY_PACKAGE/case-overlays"
 
-"$TOLPROJ" setup-pointing-reductions "$POINT_PROJECT" --config "$TOLPROJ_SITE_CONFIG" \
-  --refactor --source 1146+399 --pointings-dir pointings --apt-dir apts --cpus 1
+# Science pointing support is not an acceptance case. It must be an ordinary
+# valid OMP run because its outputs are needed to prepare the Science cases.
+# The existing directory must have no completed reduNN output before setup.
+test ! -d "$SCIENCE_PROJECT/pointings/reduced/redu00"
 "$TOLPROJ" setup-pointing-reductions "$SCIENCE_PROJECT" --config "$TOLPROJ_SITE_CONFIG" \
-  --refactor --source 1146+399 --pointings-dir pointings --apt-dir apts --cpus 1
+  --refactor --source 1146+399 --pointings-dir pointings --apt-dir apts --cpus 6
+"$TOLPROJ" validate-reduction "$SCIENCE_PROJECT/pointings"
+"$TOLPROJ" submit-reduction "$SCIENCE_PROJECT/pointings"
 
-# After the selected Science pointing-support reduction finishes as reduNN:
+# Wait for the support reduction. For every required support obsnum
+# 152389/152391/152393, its selected reduNN/raw directory must contain exactly
+# one ppt_*.ecsv before continuing. Substitute that same reduNN below.
+SCIENCE_POINTING_REDUCTION='reduNN'
+
+# The two Point acceptance cases are fresh sibling directories. Their first
+# execution is permitted only while reduced/redu* is absent; do not rerun them,
+# because TolProj's generated Point launcher clears its own prior redu* output.
+for CASE in P-SEQ P-OMP; do
+  test ! -e "$POINT_PROJECT/$CASE"
+done
+"$TOLPROJ" setup-pointing-reductions "$POINT_PROJECT" --config "$TOLPROJ_SITE_CONFIG" \
+  --refactor --source 1146+399 --pointings-dir P-SEQ --apt-dir apts --cpus 1
+cp "$CASE_OVERLAYS/P-SEQ.yaml" "$POINT_PROJECT/P-SEQ/99_zzz_sci_map_case.yaml"
+"$TOLPROJ" setup-pointing-reductions "$POINT_PROJECT" --config "$TOLPROJ_SITE_CONFIG" \
+  --refactor --source 1146+399 --pointings-dir P-OMP --apt-dir apts --cpus 6
+cp "$CASE_OVERLAYS/P-OMP.yaml" "$POINT_PROJECT/P-OMP/99_zzz_sci_map_case.yaml"
+for CASE in P-SEQ P-OMP; do
+  "$TOLPROJ" validate-reduction "$POINT_PROJECT/$CASE"
+  "$TOLPROJ" submit-reduction "$POINT_PROJECT/$CASE"
+done
+
+# Prepare a clean sequential Science template, clone it before executing, and
+# then prepare a clean OMP template. These copies are unrun TolProj setup
+# directories, not copied reductions or returned evidence.
+SCIENCE_BASE="$SCIENCE_PROJECT/$GRANT_USER/NGC4449"
+for CASE in S-C-SEQ S-E-SEQ S-X-SEQ S-C-OMP S-E-OMP; do
+  test ! -e "$SCIENCE_PROJECT/$CASE"
+done
 "$TOLPROJ" setup-science-reductions "$SCIENCE_PROJECT" --config "$TOLPROJ_SITE_CONFIG" \
-  --refactor --user "$GRANT_USER" --pointing-reduction reduNN --apt-product matched
-
-# For each prepared P-SEQ, P-OMP, S-C-SEQ, S-C-OMP, S-E-SEQ, S-E-OMP, and S-X-SEQ directory:
-"$TOLPROJ" validate-reduction '<case reduction directory>'
-"$TOLPROJ" submit-reduction '<case reduction directory>'
+  --refactor --user "$GRANT_USER" --pointing-reduction "$SCIENCE_POINTING_REDUCTION" \
+  --apt-product matched --cpus 1
+for CASE in S-C-SEQ S-E-SEQ S-X-SEQ; do
+  cp -a "$SCIENCE_BASE" "$SCIENCE_PROJECT/$CASE"
+  cp "$CASE_OVERLAYS/$CASE.yaml" "$SCIENCE_PROJECT/$CASE/99_zzz_sci_map_case.yaml"
+done
+"$TOLPROJ" setup-science-reductions "$SCIENCE_PROJECT" --config "$TOLPROJ_SITE_CONFIG" \
+  --refactor --user "$GRANT_USER" --pointing-reduction "$SCIENCE_POINTING_REDUCTION" \
+  --apt-product matched --cpus 16
+for CASE in S-C-OMP S-E-OMP; do
+  cp -a "$SCIENCE_BASE" "$SCIENCE_PROJECT/$CASE"
+  cp "$CASE_OVERLAYS/$CASE.yaml" "$SCIENCE_PROJECT/$CASE/99_zzz_sci_map_case.yaml"
+done
+for CASE in S-C-SEQ S-E-SEQ S-X-SEQ S-C-OMP S-E-OMP; do
+  "$TOLPROJ" validate-reduction "$SCIENCE_PROJECT/$CASE"
+  "$TOLPROJ" submit-reduction "$SCIENCE_PROJECT/$CASE"
+done
 ```
 
-For the auxiliary CAP-POINT/CAP-SCIENCE primitive captures only, apply
-`processed-time-chunk-full-overlay.yaml`: `enabled=true`, `mode=full`, and
-`indices=all`. Do not apply that overlay to the seven acceptance cases. TolProj
-freezes the selected executable at submission; use one ordinary candidate
-binary for every selected reduction.
+For the auxiliary CAP-POINT/CAP-SCIENCE primitive captures only, copy
+`processed-time-chunk-full-overlay.yaml` to a filename sorting after
+`99_zzz_sci_map_case.yaml`, such as `99_zzzz_processed_time_chunk_full.yaml`.
+It changes only `enabled=true`, `mode=full`, and `indices=all`. Do not install
+it in a seven-case directory. TolProj freezes the selected executable at
+submission; use one ordinary candidate binary for every selected reduction.
 
 ## 4. Collect ordinary artifacts
 

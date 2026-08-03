@@ -1,0 +1,27 @@
+reduce:
+  jobkey: sci_map_001_science_empirical_omp
+  steps:
+    0:
+      config:
+        low_level:
+          coadd: {enabled: false}
+          mapmaking:
+            method: naive
+            coverage_cut: 0.5
+          noise_maps:
+            enabled: true
+            n_noise_maps: 64
+            randomize_dets: false
+            write_realizations: true
+            products:
+              enabled: true
+              apply_empirical_weights: false
+          post_processing:
+            map_filtering: {enabled: false}
+            source_finding: {enabled: false}
+          runtime:
+            n_threads: 16
+            parallel_policy: omp
+            verbose: true
+          timestream:
+            fruit_loops: {enabled: false}
