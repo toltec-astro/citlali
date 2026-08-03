@@ -283,36 +283,17 @@ def publish_products(
     _write_table(
         directory / "raw_counter_transitions.csv",
         products.raw_counter_rows,
-        [
-            "network_id",
-            "transition_ordinal",
-            "transition_row_zero_based",
-            "rows_since_previous_transition",
-            "t0_integer_sec",
-            "clock_time_nanosec_retained",
-            "pps_count_before",
-            "pps_count_after",
-            "clock_count_before_u32",
-            "clock_count_after_u32",
-            "pps_time_before_u32",
-            "pps_time_after_u32",
-            "paired_pps_time_transition_row_zero_based",
-            "pps_time_minus_pps_count_transition_rows",
-            "phase_after_sec",
-        ],
+        table_fields(products.raw_counter_rows),
     )
     _write_table(
         directory / "raw_phase_summary.csv",
         products.raw_phase_rows,
-        [
-            "network_id",
-            "raw_linkage_status",
-            "t0_integer_sec",
-            "clock_time_nanosec_values_json",
-            "pps_transition_count",
-            "native_frame_phase_mean_sec",
-            "native_to_assigned_mean_sec",
-        ],
+        table_fields(products.raw_phase_rows),
+    )
+    _write_table(
+        directory / "raw_pps_time_increment_anomalies.csv",
+        products.raw_pps_time_increment_anomaly_rows,
+        table_fields(products.raw_pps_time_increment_anomaly_rows),
     )
     _write_table(
         directory / "input_manifest.csv",
@@ -630,7 +611,7 @@ def main(argv: list[str] | None = None) -> int:
         protocol = AnalysisProtocol.from_json(protocol_path)
         if (
             protocol.authority_schema_version
-            != "sci-align-001-3c273-corpus-protocol-v1"
+            != "sci-align-001-3c273-corpus-protocol-v2"
         ):
             raise ContractError(
                 "per-map execution requires the frozen corpus protocol schema"

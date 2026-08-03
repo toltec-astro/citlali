@@ -1,23 +1,25 @@
 status	path	scope
-A	tools/diagnostics/aggregate_sci_align_001_3c273_corpus.py	bounded diagnostic aggregation tool
-A	tools/diagnostics/generate_sci_align_001_3c273_slurm_array.py	bounded scheduler generator
-A	tools/diagnostics/inventory_sci_align_001_3c273_corpus.py	bounded read-only corpus inventory
-A	tools/diagnostics/run_sci_align_001_3c273_beammap.py	bounded retained-product runner
-A	tools/diagnostics/sci_align_001_3c273_common.py	bounded diagnostic implementation shared by runner
-A	tools/diagnostics/test_sci_align_001_3c273_aggregation.py	diagnostic aggregation tests
-A	tools/diagnostics/test_sci_align_001_3c273_inventory.py	diagnostic inventory and scheduler tests
-A	tools/diagnostics/test_sci_align_001_3c273_runner.py	diagnostic runner tests
-A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/OUTPUT_SCHEMA.md	output contract
-A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/OWNER_DECISION_BRIEF.md	owner decision boundary
-A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/README.md	package index
-A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/RETURN_BUNDLE_PROMPT.md	owner-return review prompt
-A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/SHA256SUMS	package checksums
-A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/UNITY_RUNBOOK.md	owner execution runbook
-A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/candidate_manifest.example.json	illustrative schema instance
-A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/candidate_manifest.schema.json	selected-manifest schema
-A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/changed_paths.tsv	bounded changed-path proof
-A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/frozen_analysis_protocol.json	preregistered scientific protocol
-A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/identity.json	branch/base/scope identity
-A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/local_148670_regression.json	local regression evidence
-A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/synthetic_aggregation_test_evidence.json	synthetic decision evidence
-A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/validation_gates.json	local gate evidence
+M	tools/diagnostics/aggregate_sci_align_001_3c273_corpus.py	bounded corpus aggregation and omissions/anomaly reporting
+M	tools/diagnostics/generate_sci_align_001_3c273_slurm_array.py	checksum-bound serial and Slurm retained-product runners
+M	tools/diagnostics/inventory_sci_align_001_3c273_corpus.py	authoritative inventory, run-root exclusion, canonical selection, availability
+M	tools/diagnostics/run_sci_align_001_3c273_beammap.py	retained-product anomaly artifact emission
+M	tools/diagnostics/sci_align_001_3c273_common.py	delivered raw-counter/PpsTime diagnostic implementation
+M	tools/diagnostics/test_sci_align_001_3c273_aggregation.py	aggregation/anomaly regression tests
+M	tools/diagnostics/test_sci_align_001_3c273_inventory.py	allowlist, canonical, exclusion, scheduler tests
+M	tools/diagnostics/test_sci_align_001_3c273_runner.py	delivered raw anomaly tests
+A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/authoritative_obsnums.schema.json	checksum-bound allowlist schema
+A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/authoritative_obsnums_2026-08-03.json	exact owner-authoritative 40-ObsNum corpus
+M	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/OUTPUT_SCHEMA.md	v2 output contract
+M	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/OWNER_DECISION_BRIEF.md	owner decisions and deferred scientific interpretation
+M	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/README.md	package index
+M	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/RETURN_BUNDLE_PROMPT.md	owner-return evidence review boundary
+M	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/SHA256SUMS	regenerated package integrity index
+M	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/UNITY_RUNBOOK.md	exact owner-only retained-product commands
+M	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/candidate_manifest.example.json	v2 checksum-bound example
+M	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/candidate_manifest.schema.json	v2 selected-manifest contract
+M	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/changed_paths.tsv	follow-up changed-path proof
+M	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/frozen_analysis_protocol.json	v2 preregistered protocol
+M	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/identity.json	follow-up ancestry/scope evidence
+M	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/local_148670_regression.json	v2 local retained-product evidence
+M	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/synthetic_aggregation_test_evidence.json	v2 synthetic coverage evidence
+M	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/validation_gates.json	follow-up gate evidence

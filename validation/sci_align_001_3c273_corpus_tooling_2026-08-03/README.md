@@ -19,6 +19,9 @@ rows, or authorize a physical timing correction.
   stopping point.
 - `RETURN_BUNDLE_PROMPT.md` is the exact prompt for the inventory-only or
   completed-bundle review task.
+- `authoritative_obsnums_2026-08-03.json` and its schema are the checksum-bound
+  40-ObsNum corpus authority. They are copied into inventory and selected-
+  manifest packages and verified by serial and Slurm scripts before execution.
 
 ## Local evidence
 
@@ -44,3 +47,8 @@ and cannot rule out an upstream FPGA metadata-to-integration association error.
 
 The stopping point is a checksum-bound diagnostic kit and owner-returned
 compact evidence bundle. No 3C273 result alone authorizes a production change.
+
+The owner run directory is deliberately below the 3C273 analysis directory but
+is an explicit inventory exclusion. It may contain generated serial/Slurm
+scripts, execution identity, compact outputs, and archive metadata; it is not
+a retained reduction and is never a candidate-discovery root.

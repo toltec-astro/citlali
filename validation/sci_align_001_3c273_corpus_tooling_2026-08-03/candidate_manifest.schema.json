@@ -1,5 +1,5 @@
 {
-  "$id": "https://toltec.invalid/schemas/sci-align-001-3c273-selected-manifest-v1.json",
+  "$id": "https://toltec.invalid/schemas/sci-align-001-3c273-selected-manifest-v2.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": true,
   "description": "Owner-frozen, provenance-only selection consumed by the SCI-ALIGN-001 3C273 per-Beammap runner. Each observation has exactly one primary row; eligible duplicate reductions may be sensitivity rows.",
@@ -16,6 +16,16 @@
     "owner_selection_sha256": {
       "$ref": "#/$defs/sha256"
     },
+    "obsnum_allowlist_filename": {
+      "pattern": "^[A-Za-z0-9_.-]+\\.json$",
+      "type": "string"
+    },
+    "obsnum_allowlist_schema_version": {
+      "const": "sci-align-001-3c273-obsnum-allowlist-v1"
+    },
+    "obsnum_allowlist_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
     "rows": {
       "items": {
         "$ref": "#/$defs/candidate"
@@ -24,7 +34,7 @@
       "type": "array"
     },
     "schema_version": {
-      "const": "sci-align-001-3c273-selected-manifest-v1"
+      "const": "sci-align-001-3c273-selected-manifest-v2"
     },
     "source_inventory_sha256": {
       "$ref": "#/$defs/sha256"
@@ -35,6 +45,9 @@
     "source_inventory_sha256",
     "owner_selection_sha256",
     "owner_selection_format",
+    "obsnum_allowlist_sha256",
+    "obsnum_allowlist_schema_version",
+    "obsnum_allowlist_filename",
     "rows",
     "manifest_sha256"
   ],

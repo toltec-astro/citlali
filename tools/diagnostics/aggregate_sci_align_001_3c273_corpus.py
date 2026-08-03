@@ -37,11 +37,11 @@ import numpy as np  # noqa: E402
 from scipy import stats  # noqa: E402
 
 
-SCHEMA_VERSION = "sci-align-001-3c273-aggregate-v1"
-PROTOCOL_VERSION = "sci-align-001-3c273-frozen-analysis-v1"
-SELECTED_MANIFEST_SCHEMA = "sci-align-001-3c273-selected-manifest-v1"
-INVENTORY_SCHEMA = "sci-align-001-3c273-candidate-inventory-v1"
-SELECTION_SCHEMA = "sci-align-001-3c273-selection-v1"
+SCHEMA_VERSION = "sci-align-001-3c273-aggregate-v2"
+PROTOCOL_VERSION = "sci-align-001-3c273-frozen-analysis-v2"
+SELECTED_MANIFEST_SCHEMA = "sci-align-001-3c273-selected-manifest-v2"
+INVENTORY_SCHEMA = "sci-align-001-3c273-candidate-inventory-v2"
+SELECTION_SCHEMA = "sci-align-001-3c273-selection-v2"
 DEFAULT_ALPHA = 0.05
 NETWORK_TIMING_ALIASES = (
     "timing_residual_sec",
@@ -264,7 +264,9 @@ def _selected_manifest_document(path: Path) -> dict[str, Any]:
         raise AggregateError("unsupported selected-manifest schema")
     expected_keys = {
         "schema_version", "source_inventory_sha256", "owner_selection_sha256",
-        "owner_selection_format", "rows", "manifest_sha256",
+        "owner_selection_format", "obsnum_allowlist_sha256",
+        "obsnum_allowlist_schema_version", "obsnum_allowlist_filename",
+        "rows", "manifest_sha256",
     }
     if set(document) != expected_keys:
         raise AggregateError("selected manifest has unexpected or missing top-level fields")
@@ -304,6 +306,20 @@ def _selected_manifest_document(path: Path) -> dict[str, Any]:
     owner_format = str(document.get("owner_selection_format") or "")
     if owner_format not in {"csv", "json"}:
         raise AggregateError("selected manifest has invalid owner_selection_format")
+    allowlist_sha = _require_sha256(
+        document.get("obsnum_allowlist_sha256"), "obsnum_allowlist_sha256",
+    )
+    if document.get("obsnum_allowlist_schema_version") != "sci-align-001-3c273-obsnum-allowlist-v1":
+        raise AggregateError("selected manifest has unsupported obsnum allowlist schema")
+    inventory_allowlist = matching_inventory.get("obsnum_allowlist")
+    if not isinstance(inventory_allowlist, Mapping) or inventory_allowlist.get("sha256") != allowlist_sha:
+        raise AggregateError("selected manifest obsnum allowlist does not match source inventory")
+    allowlist_name = str(document.get("obsnum_allowlist_filename") or "")
+    if allowlist_name != str(inventory_allowlist.get("filename") or ""):
+        raise AggregateError("selected manifest obsnum allowlist filename does not match source inventory")
+    allowlist_copy = path.parent / allowlist_name
+    if not allowlist_name or not allowlist_copy.is_file() or sha256_file(allowlist_copy) != allowlist_sha:
+        raise AggregateError("selected manifest obsnum allowlist copy/digest is invalid")
     owner_selection = path.parent / f"owner_selection.{owner_format}"
     if not owner_selection.is_file() or sha256_file(owner_selection) != owner_selection_sha:
         raise AggregateError("owner-selection file/digest does not match selected manifest")
@@ -420,6 +436,78 @@ def _read_manifest(path: Path) -> list[dict[str, Any]]:
 
 def _validate_manifest_internal_digest(path: Path) -> None:
     _selected_manifest_document(path)
+
+
+def _inventory_for_selected_manifest(path: Path, source_inventory_sha256: str) -> dict[str, Any]:
+    for candidate in (path.parent / "candidate_inventory.json", path.parent.parent / "candidate_inventory.json"):
+        if not candidate.is_file():
+            continue
+        try:
+            document = json.loads(candidate.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        if (
+            isinstance(document, dict)
+            and document.get("schema_version") == INVENTORY_SCHEMA
+            and document.get("inventory_sha256") == source_inventory_sha256
+            and _semantic_digest(document, ("inventory_sha256",)) == source_inventory_sha256
+        ):
+            return document
+    raise AggregateError("cannot locate checksum-bound source inventory for known omissions")
+
+
+def known_omissions(
+    inventory: Mapping[str, Any],
+    bundles: Sequence[MapBundle],
+    combined_network_rows: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    authoritative = inventory.get("authoritative_obsnum_status", [])
+    status_rows = [dict(row) for row in authoritative if isinstance(row, Mapping)]
+    deficiencies = [
+        row for row in status_rows
+        if row.get("status") != "eligible_canonical_candidate_found"
+    ]
+    missing_networks = [
+        dict(row) for row in combined_network_rows
+        if str(row.get("status")) == "missing_network"
+    ]
+    incomplete = [
+        {
+            "map_id": bundle.map_id,
+            "observation_number": bundle.obsnum,
+            "status": bundle.summary.get("status"),
+        }
+        for bundle in bundles
+        if str(bundle.summary.get("status")) != "success"
+    ]
+    raw_unavailable = [
+        {
+            "map_id": bundle.map_id,
+            "observation_number": bundle.obsnum,
+            "network_id": row.network_id,
+            "reason": "raw_phase_or_counter_metadata_unavailable",
+        }
+        for bundle in bundles
+        for row in bundle.rows
+        if row.raw_linkage_status not in {"proved_original_row_one_to_one", "config_proven"}
+    ]
+    return {
+        "schema_version": "sci-align-001-3c273-known-omissions-v1",
+        "authoritative_obsnum_deficiencies": deficiencies,
+        "ambiguous_duplicates_awaiting_owner_selection": [
+            row for row in deficiencies
+            if row.get("status") == "ambiguous_duplicate_requires_owner_review"
+        ],
+        "missing_network_rows": missing_networks,
+        "unavailable_raw_metadata": raw_unavailable,
+        "failed_or_incomplete_per_map_tasks": incomplete,
+        "deliberately_skipped_sensitivity_duplicates": [],
+        "intentional_compact_archive_exclusions": [
+            "raw timestreams are not included",
+            "retained beammap reduction products are not included",
+        ],
+        "timing_result_used_as_cut": False,
+    }
 
 
 def _normalize_timestamp(value: Any) -> tuple[str | None, str | None]:
@@ -1407,13 +1495,6 @@ def predict_candidate(
     if predictive_variance <= 0 or not math.isfinite(predictive_variance):
         raise AggregateError("invalid predictive variance")
     residual = row.timing_sec - prediction
-    speed = row.speed_arcsec_s
-    sky_error = abs(residual) * abs(speed) if speed is not None else None
-    fwhm_fraction = (
-        sky_error / row.parallel_fwhm_arcsec
-        if sky_error is not None and row.parallel_fwhm_arcsec is not None
-        and row.parallel_fwhm_arcsec > 0 else None
-    )
     return {
         **base,
         "prediction_status": "supported",
@@ -1425,10 +1506,6 @@ def predict_candidate(
         "predictive_se_sec": math.sqrt(predictive_variance),
         "prediction_parameter_variance_sec2": parameter_variance,
         "standardized_residual": residual / math.sqrt(predictive_variance),
-        "sky_error_arcsec": sky_error,
-        "beam_fwhm_fraction": fwhm_fraction,
-        "scan_speed_arcsec_s": speed,
-        "parallel_fwhm_arcsec": row.parallel_fwhm_arcsec,
         "beta": fitted.beta,
         "beta_se": fitted.beta_se,
     }
@@ -1885,8 +1962,6 @@ def summarize_candidates(
         applicable = [row for row in values if _bool(row.get("applicable"), False)]
         supported = [row for row in applicable if _bool(row.get("supported"), False)]
         residual = np.asarray(_finite_values(supported, "timing_residual_after_prediction_sec"), dtype=float)
-        sky = np.asarray(_finite_values(supported, "sky_error_arcsec"), dtype=float)
-        fwhm = np.asarray(_finite_values(supported, "beam_fwhm_fraction"), dtype=float)
         groups = {str(row["group_id"]) for row in supported}
         blocks = _supported_prediction_blocks(supported) if supported else []
         if blocks:
@@ -1958,11 +2033,6 @@ def summarize_candidates(
                 float(np.mean(parameter_counts)) if parameter_counts else None
             ),
             "fitted_parameter_count_max": max(parameter_counts) if parameter_counts else None,
-            "sky_error_median_arcsec": float(np.median(sky)) if sky.size else None,
-            "sky_error_p90_arcsec": float(np.quantile(sky, 0.9)) if sky.size else None,
-            "sky_error_rms_arcsec": float(math.sqrt(np.mean(sky**2))) if sky.size else None,
-            "beam_fwhm_fraction_median": float(np.median(fwhm)) if fwhm.size else None,
-            "beam_fwhm_fraction_p90": float(np.quantile(fwhm, 0.9)) if fwhm.size else None,
             "beta_fold_mean": beta_mean,
             "beta_fold_rms": beta_fold_rms,
             "passes_predictive_gate": passes,
@@ -2431,6 +2501,186 @@ def drift_statistics(
     return output, summary
 
 
+def _bundle_gls_mean(
+    bundle: MapBundle, network_ids: set[int]
+) -> tuple[float, float, np.ndarray] | None:
+    indices = [index for index, row in enumerate(bundle.rows) if row.network_id in network_ids]
+    if not indices:
+        return None
+    covariance = bundle.covariance[np.ix_(indices, indices)]
+    inverse = np.linalg.pinv(covariance, rcond=1.0e-12)
+    ones = np.ones(len(indices), dtype=float)
+    denominator = float(ones @ inverse @ ones)
+    if not math.isfinite(denominator) or denominator <= 0:
+        return None
+    local_weights = (inverse @ ones) / denominator
+    weights = np.zeros(len(bundle.rows), dtype=float)
+    weights[indices] = local_weights
+    timing = float(weights @ np.asarray([row.timing_sec for row in bundle.rows]))
+    variance = float(weights @ bundle.covariance @ weights)
+    return timing, math.sqrt(max(0.0, variance)), weights
+
+
+def nw9_anomaly_diagnostics(
+    bundles: Sequence[MapBundle],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    """Summarize the preregistered PpsTime increment anomaly without causal claims."""
+
+    occurrence: list[dict[str, Any]] = []
+    details: list[dict[str, Any]] = []
+    timing: list[dict[str, Any]] = []
+    for bundle in sorted(bundles, key=lambda item: (item.obsnum, item.map_id)):
+        raw_by_network = {
+            _int(row.get("network_id"), field_name="raw phase network_id"): row
+            for row in bundle.phase_rows
+            if isinstance(row, Mapping) and row.get("network_id") not in (None, "")
+        }
+        for network, raw in sorted(raw_by_network.items()):
+            denominator = _float(raw.get("pps_time_increment_eligible_count"), field_name="pps_time_increment_eligible_count", optional=True)
+            count = _float(raw.get("pps_time_increment_mismatch_count"), field_name="pps_time_increment_mismatch_count", optional=True)
+            rate = _float(raw.get("pps_time_increment_mismatch_rate"), field_name="pps_time_increment_mismatch_rate", optional=True)
+            occurrence.append({
+                "map_id": bundle.map_id,
+                "observation_number": bundle.obsnum,
+                "analysis_role": bundle.role,
+                "t0_session_id": bundle.session_id,
+                "network_id": network,
+                "metadata_status": "available",
+                "eligible_increment_count": int(denominator) if denominator is not None else None,
+                "mismatch_count": int(count) if count is not None else None,
+                "mismatch_rate": rate,
+                "first_transition_row_zero_based": raw.get("pps_time_increment_anomaly_first_transition_row_zero_based"),
+                "last_transition_row_zero_based": raw.get("pps_time_increment_anomaly_last_transition_row_zero_based"),
+                "isolated_count": raw.get("pps_time_increment_anomaly_isolated_count"),
+                "consecutive_count": raw.get("pps_time_increment_anomaly_consecutive_count"),
+                "tick_definition": "PpsTime transition increment minus authenticated Header.Toltec.FpgaFreq",
+                "timing_result_used_as_cut": False,
+            })
+        for network in sorted({row.network_id for row in bundle.rows} - set(raw_by_network)):
+            occurrence.append({
+                "map_id": bundle.map_id,
+                "observation_number": bundle.obsnum,
+                "analysis_role": bundle.role,
+                "t0_session_id": bundle.session_id,
+                "network_id": network,
+                "metadata_status": "unavailable_or_unreadable_not_zero_anomalies",
+                "eligible_increment_count": None,
+                "mismatch_count": None,
+                "mismatch_rate": None,
+                "first_transition_row_zero_based": None,
+                "last_transition_row_zero_based": None,
+                "isolated_count": None,
+                "consecutive_count": None,
+                "tick_definition": None,
+                "timing_result_used_as_cut": False,
+            })
+        if 9 not in raw_by_network and not any(row.network_id == 9 for row in bundle.rows):
+            occurrence.append({
+                "map_id": bundle.map_id,
+                "observation_number": bundle.obsnum,
+                "analysis_role": bundle.role,
+                "t0_session_id": bundle.session_id,
+                "network_id": 9,
+                "metadata_status": "nw9_not_present_or_metadata_unavailable_not_zero_anomalies",
+                "eligible_increment_count": None,
+                "mismatch_count": None,
+                "mismatch_rate": None,
+                "first_transition_row_zero_based": None,
+                "last_transition_row_zero_based": None,
+                "isolated_count": None,
+                "consecutive_count": None,
+                "tick_definition": None,
+                "timing_result_used_as_cut": False,
+            })
+        for raw in _read_optional_csv(bundle.directory, "raw_pps_time_increment_anomalies.csv"):
+            item = dict(raw)
+            item.update({
+                "map_id": bundle.map_id,
+                "observation_number": bundle.obsnum,
+                "analysis_role": bundle.role,
+                "t0_session_id": bundle.session_id,
+            })
+            details.append(item)
+        nw9 = next((row for row in bundle.rows if row.network_id == 9), None)
+        if nw9 is None:
+            continue
+        all_mean = _bundle_gls_mean(bundle, {row.network_id for row in bundle.rows})
+        other_mean = _bundle_gls_mean(bundle, {row.network_id for row in bundle.rows if row.network_id != 9})
+        leave_mean = other_mean
+        nw9_index = next(index for index, row in enumerate(bundle.rows) if row.network_id == 9)
+        nw9_weights = np.zeros(len(bundle.rows), dtype=float)
+        nw9_weights[nw9_index] = 1.0
+        if other_mean is not None:
+            contrast = nw9_weights - other_mean[2]
+            relative = float(contrast @ np.asarray([row.timing_sec for row in bundle.rows]))
+            relative_se = math.sqrt(max(0.0, float(contrast @ bundle.covariance @ contrast)))
+        else:
+            relative, relative_se = None, None
+        if all_mean is not None and leave_mean is not None:
+            difference_weights = all_mean[2] - leave_mean[2]
+            leave_difference = float(difference_weights @ np.asarray([row.timing_sec for row in bundle.rows]))
+            leave_difference_se = math.sqrt(max(0.0, float(difference_weights @ bundle.covariance @ difference_weights)))
+        else:
+            leave_difference, leave_difference_se = None, None
+        anomaly = raw_by_network.get(9, {})
+        timing.append({
+            "map_id": bundle.map_id,
+            "observation_number": bundle.obsnum,
+            "t0_session_id": bundle.session_id,
+            "nw9_timing_sec": nw9.timing_sec,
+            "nw9_timing_se_sec": nw9.timing_se_sec,
+            "nw9_relative_to_other_networks_sec": relative,
+            "nw9_relative_to_other_networks_se_sec": relative_se,
+            "nw9_anomaly_count": anomaly.get("pps_time_increment_mismatch_count"),
+            "nw9_eligible_increment_count": anomaly.get("pps_time_increment_eligible_count"),
+            "nw9_anomaly_rate": anomaly.get("pps_time_increment_mismatch_rate"),
+            "all_network_pooled_timing_sec": all_mean[0] if all_mean else None,
+            "all_network_pooled_timing_se_sec": all_mean[1] if all_mean else None,
+            "leave_nw9_out_pooled_timing_sec": leave_mean[0] if leave_mean else None,
+            "leave_nw9_out_pooled_timing_se_sec": leave_mean[1] if leave_mean else None,
+            "all_minus_leave_nw9_out_sec": leave_difference,
+            "all_minus_leave_nw9_out_se_sec": leave_difference_se,
+            "affected_row_mask_or_repair": "not_authorized_metadata_semantics_ambiguous",
+            "association_is_causal_claim": False,
+        })
+    association_rows = [
+        row for row in timing
+        if row.get("nw9_anomaly_rate") not in (None, "")
+        and row.get("nw9_relative_to_other_networks_sec") not in (None, "")
+        and row.get("nw9_relative_to_other_networks_se_sec") not in (None, "")
+    ]
+    if association_rows:
+        x = np.asarray([float(row["nw9_anomaly_rate"]) for row in association_rows])
+        y = np.asarray([float(row["nw9_relative_to_other_networks_sec"]) for row in association_rows])
+        covariance = np.diag([
+            max(float(row["nw9_relative_to_other_networks_se_sec"]) ** 2, 1.0e-24)
+            for row in association_rows
+        ])
+        association = _linear_fit(x, y, covariance)
+    else:
+        association = {"available": False, "reason": "no_nw9_anomaly_rate_and_timing_pairs", "row_count": 0}
+    nw9_occurrence = [row for row in occurrence if row["network_id"] == 9 and row["analysis_role"] == "primary"]
+    total_denominator = sum(int(row["eligible_increment_count"] or 0) for row in nw9_occurrence)
+    total_count = sum(int(row["mismatch_count"] or 0) for row in nw9_occurrence)
+    summary = {
+        "nw9_observation_count_with_raw_metadata": len(nw9_occurrence),
+        "nw9_observation_count_with_at_least_one_anomaly": sum(int(row["mismatch_count"] or 0) > 0 for row in nw9_occurrence),
+        "nw9_t0_session_count_with_at_least_one_anomaly": len({
+            row["t0_session_id"] for row in nw9_occurrence
+            if int(row["mismatch_count"] or 0) > 0 and row.get("t0_session_id") not in (None, "")
+        }),
+        "nw9_total_mismatch_count": total_count,
+        "nw9_total_eligible_increment_count": total_denominator,
+        "nw9_total_mismatch_rate": total_count / total_denominator if total_denominator else None,
+        "all_network_control_occurrence_row_count": len(occurrence),
+        "nw9_timing_association": association,
+        "affected_row_mask_or_repair_authorized": False,
+        "leave_nw9_out_sensitivity": "reported per observation; no timing-based exclusion",
+        "interpretation": "metadata occurrence and association measurement only; not clock-drift or causal evidence",
+    }
+    return occurrence, details, timing, summary
+
+
 def session_statistics(
     rows: Sequence[NetworkDatum],
     bundles: Mapping[str, MapBundle],
@@ -2809,13 +3059,10 @@ def _report_text(summary: Mapping[str, Any]) -> str:
     variance = summary["variance_components"]
     drift = summary["within_observation_timing_variation"]
     sensitivity = summary["duplicate_reduction_sensitivity"]
+    nw9 = summary.get("nw9_pps_time_anomaly", {})
     heldout = summary.get("nested_selected_heldout_performance", {})
     timing_rmse = heldout.get("timing_rmse_sec")
-    sky_rms = heldout.get("sky_error_rms_arcsec")
-    fwhm_p90 = heldout.get("beam_fwhm_fraction_p90")
     timing_text = f"{float(timing_rmse):.9g} s" if timing_rmse is not None else "unavailable"
-    sky_text = f"{float(sky_rms):.9g} arcsec" if sky_rms is not None else "unavailable"
-    fwhm_text = f"{float(fwhm_p90):.9g}" if fwhm_p90 is not None else "unavailable"
     sensitivity_maximum = sensitivity.get("maximum_absolute_timing_difference_sec")
     sensitivity_maximum_text = (
         f"{float(sensitivity_maximum):.9g} s"
@@ -2829,9 +3076,8 @@ def _report_text(summary: Mapping[str, Any]) -> str:
 Classification: **{decision['code']}. {decision['category']}**.
 
 This is held-out predictive diagnostic evidence only. It authorizes neither a
-production correction nor a physical clock interpretation. Science tolerance
-has not been assessed; held-out errors are reported in seconds, arcseconds,
-and measured beam-FWHM fractions for project-owner judgment.
+production correction nor a physical clock interpretation. No scientific
+acceptability threshold is imposed or assessed in this run.
 
 Reasons: {'; '.join(decision['reasons'])}.
 
@@ -2840,10 +3086,8 @@ untouched outer-group prediction. Candidate-specific outer-LOGO rows are
 retained as descriptive fixed-model comparisons and do not select their own
 category.
 
-Nested-selected held-out timing RMSE: **{timing_text}**. Measured-speed sky
-RMS: **{sky_text}**. Held-out P90 absolute error as a fraction of the measured
-parallel beam FWHM: **{fwhm_text}**. These are reported measurements, not an
-engineering acceptance threshold.
+Nested-selected held-out timing RMSE: **{timing_text}**. Translation into
+on-sky scientific impact is deferred to a separate downstream analysis.
 
 ## Variability
 
@@ -2854,6 +3098,20 @@ engineering acceptance threshold.
 
 First-half/second-half changes are called *within-observation timing variation*,
 not clock drift, unless raw counters contradict the shared-Octo clock account.
+
+## nw9 PpsTime increment anomaly
+
+- nw9 observations with raw metadata: {nw9.get('nw9_observation_count_with_raw_metadata', 0)}.
+- nw9 observations with one or more mismatches: {nw9.get('nw9_observation_count_with_at_least_one_anomaly', 0)}.
+- Corpus numerator/denominator: {nw9.get('nw9_total_mismatch_count', 0)}/{nw9.get('nw9_total_eligible_increment_count', 0)}.
+- Corpus nw9 mismatch rate: {nw9.get('nw9_total_mismatch_rate', None)}.
+
+`pps_time_increment_occurrence.csv` retains every available-network control,
+`raw_pps_time_increment_anomalies.csv` preserves each delivered anomaly and
+its row/counter geometry, and `nw9_timing_sensitivity.csv` reports nw9 versus
+other-network and leave-nw9-out effects with uncertainty. These are association
+measurements only; no affected-row mask or repair is authorized because
+metadata-to-integration semantics remain unresolved.
 
 ## Duplicate-reduction sensitivity
 
@@ -2875,7 +3133,7 @@ analyzed separately. {followup_interpretation}
 ## Scope
 
 - Production correction authorized: false
-- Science tolerance assessed: false
+- Science acceptability threshold assessed: false
 - Citlali reductions launched by aggregation: 0
 - Source products modified: false
 - Unity contacted by aggregation: false
@@ -2898,8 +3156,11 @@ def command_run(args: argparse.Namespace) -> int:
     protocol_path = args.frozen_protocol.resolve()
     _verify_checksum_file(protocol_path.parent)
     _verify_checksum_file(manifest.parent)
-    _validate_manifest_internal_digest(manifest)
+    selected_document = _selected_manifest_document(manifest)
     manifest_sha = sha256_file(manifest)
+    source_inventory = _inventory_for_selected_manifest(
+        manifest, str(selected_document["source_inventory_sha256"])
+    )
     protocol_file_sha = sha256_file(protocol_path)
     protocol = json.loads(protocol_path.read_text(encoding="utf-8"))
     if not isinstance(protocol, dict):
@@ -2982,6 +3243,9 @@ def command_run(args: argparse.Namespace) -> int:
     regression_rows, regression_summary = slot_regressions(rows, bundle_lookup)
     drift_rows, drift_summary = drift_statistics(primary, alpha=alpha)
     session_summary = session_statistics(rows, bundle_lookup, alpha=alpha)
+    nw9_occurrence_rows, nw9_detail_rows, nw9_timing_rows, nw9_summary = (
+        nw9_anomaly_diagnostics(primary)
+    )
     decision = classify_result(
         group_count=group_count,
         candidate_summaries=candidate_rows,
@@ -3027,6 +3291,7 @@ def command_run(args: argparse.Namespace) -> int:
         "session_effects": session_summary,
         "predictor_regressions": regression_summary,
         "duplicate_reduction_sensitivity": sensitivity_summary,
+        "nw9_pps_time_anomaly": nw9_summary,
         "decision": decision,
         "nested_selected_heldout_performance": nested_performance,
         "classification_uses": (
@@ -3168,7 +3433,6 @@ def command_run(args: argparse.Namespace) -> int:
         "model_id", "validation_regime", "fold_id", "map_id", "obsnum",
         "network_id", "prediction_status", "supported", "timing_observed_sec",
         "diagnostic_predicted_offset_sec", "timing_residual_after_prediction_sec",
-        "sky_error_arcsec", "beam_fwhm_fraction",
     )))
     write_csv(output / "variance_components.csv", variance_rows, _fields(variance_rows))
     write_csv(output / "network_repeatability.csv", repeatability_rows, _fields(repeatability_rows))
@@ -3177,6 +3441,25 @@ def command_run(args: argparse.Namespace) -> int:
         "beta_95_low", "beta_95_high", "beta_consistent_with_minus_one_95",
     )))
     write_csv(output / "drift_results.csv", drift_rows, _fields(drift_rows))
+    write_csv(
+        output / "pps_time_increment_occurrence.csv",
+        nw9_occurrence_rows,
+        _fields(nw9_occurrence_rows),
+    )
+    write_csv(
+        output / "raw_pps_time_increment_anomalies.csv",
+        nw9_detail_rows,
+        _fields(nw9_detail_rows),
+    )
+    write_csv(
+        output / "nw9_timing_sensitivity.csv",
+        nw9_timing_rows,
+        _fields(nw9_timing_rows),
+    )
+    write_json(
+        output / "known_omissions.json",
+        known_omissions(source_inventory, bundles, combined_network_rows),
+    )
     write_json(output / "corpus_summary.json", corpus_summary)
     input_rows = [row for bundle in bundles for row in bundle.input_files]
     write_csv(output / "input_digests.csv", input_rows, ("map_id", "path", "sha256"))

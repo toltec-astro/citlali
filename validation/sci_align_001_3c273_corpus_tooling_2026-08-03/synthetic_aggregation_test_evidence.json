@@ -10,6 +10,13 @@
     "UNPREDICTABLE with retained outliers",
     "INSUFFICIENT for too few independent groups"
   ],
+  "followup_v2_cases": [
+    "authoritative allowlist binds inventory/frozen manifest and excludes a run root",
+    "sole candidate and redu00/redu01 canonical selection are timing blind",
+    "nw10 structural availability and nw6 intermittent availability are distinguished",
+    "every-network PpsTime increment anomaly occurrence and nw9 leave-out sensitivity tables",
+    "one-tick, adjacent-row, consecutive, and unavailable-field anomaly controls"
+  ],
   "determinism": {
     "byte_identical_serial_replay_including_png_and_checksums": true,
     "row_shuffle_preserves_scientific_outputs": true
@@ -27,7 +34,7 @@
     "tests_run": 24,
     "warnings_treated_as_errors": true
   },
-  "schema_version": "sci-align-001-3c273-synthetic-aggregation-evidence-v1",
+  "schema_version": "sci-align-001-3c273-synthetic-aggregation-evidence-v2",
   "statistical_safeguards": [
     "joint held-out blocks use full available within-map measurement covariance",
     "prediction covariance includes shared fitted-parameter covariance",
@@ -40,8 +47,8 @@
     "sensitivity reductions are compared but never fitted or counted as independent"
   ],
   "tool_identity": {
-    "aggregate_script_sha256": "11ab2d430deebd219ffd150f2e00f990b789aea4d0e243395c297f7c8de95af3",
+    "aggregate_script_sha256": "b236c0c248145334ebbac39fcded9043360dc7e901a5d641fb8d0d0271f78952",
     "candidate_model_registry_sha256": "be213755686f582712b460e6c42521b7db76e1dc5210c27cb6f8a5e6e897c82c",
-    "test_script_sha256": "036e6a551b25eabe4363987dfcbf372bf87e8ab8f3fa75f9a846396f61fbf390"
+    "test_script_sha256": "e684d48a29c4c214f357e235098d9410f1628ba672c36f5f25793424528f3778"
   }
 }

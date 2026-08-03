@@ -23,6 +23,7 @@ class SyntheticCorpus:
         self.reduced.mkdir(parents=True)
         self.config_dir.mkdir(parents=True)
         self.raw_root.mkdir(parents=True)
+        self.obsnums: set[int] = set()
 
     @staticmethod
     def _string_variable(dataset: Dataset, name: str, value: str) -> None:
@@ -135,6 +136,7 @@ class SyntheticCorpus:
         version: str = "v4.0.0-1-gabcdef12",
         t0_by_network: dict[int, tuple[int, ...]] | None = None,
     ) -> Path:
+        self.obsnums.add(obsnum)
         result = self.reduced / reduction_id / str(obsnum)
         result.mkdir(parents=True)
         detector_tod = self.make_detector_tod(
@@ -198,6 +200,16 @@ class SyntheticCorpus:
         apt.write_text("# synthetic apt\n", encoding="utf-8")
         return result
 
+    def allowlist(self) -> Path:
+        path = self.root / "authoritative_obsnums.json"
+        path.write_text(json.dumps({
+            "schema_version": inventory.ALLOWLIST_SCHEMA,
+            "corpus_id": "synthetic-authoritative-corpus",
+            "selection_authority": "test fixture",
+            "obsnums": sorted(self.obsnums),
+        }, indent=2) + "\n", encoding="utf-8")
+        return path
+
     def run_inventory(
         self,
         output: Path,
@@ -210,6 +222,7 @@ class SyntheticCorpus:
             [self.raw_root],
             output=output,
             source_regex=source_regex,
+            obsnum_allowlist=self.allowlist(),
             threshold=threshold,
         )
         return document
@@ -238,7 +251,7 @@ class InventoryTests(unittest.TestCase):
             self.assertFalse(row["core_eligible"])
             self.assertIn("source_identity_ambiguous", row["exclusion_reasons"])
 
-    def test_duplicate_group_is_observation_identity_and_tie_requires_owner(self):
+    def test_duplicate_group_is_observation_identity_and_redu01_is_canonical(self):
         with tempfile.TemporaryDirectory() as temporary:
             fixture = SyntheticCorpus(Path(temporary))
             fixture.make_candidate(100010, reduction_id="redu00")
@@ -247,8 +260,10 @@ class InventoryTests(unittest.TestCase):
             self.assertEqual(len(rows), 2)
             self.assertEqual({row["duplicate_group_id"] for row in rows}, {"obs:100010"})
             self.assertEqual(len({row["provenance_signature_id"] for row in rows}), 1)
-            self.assertFalse(any(row["canonical_proposal"] for row in rows))
-            self.assertTrue(all(row["owner_selection_required"] for row in rows))
+            canonical = [row for row in rows if row["canonical_proposal"]]
+            self.assertEqual(len(canonical), 1)
+            self.assertEqual(canonical[0]["reduction_id"], "redu01")
+            self.assertFalse(any(row["owner_selection_required"] for row in rows))
 
     def test_different_config_or_software_authority_is_never_auto_selected(self):
         rows = [
@@ -408,8 +423,12 @@ class InventoryTests(unittest.TestCase):
             document, cache = inventory.inventory(
                 [fixture.project], [fixture.raw_root], output=output,
                 source_regex=inventory.DEFAULT_SOURCE_REGEX,
+                obsnum_allowlist=fixture.allowlist(),
             )
-            inventory.emit(document, cache, output, commands=["inspect"])
+            inventory.emit(
+                document, cache, output, commands=["inspect"],
+                obsnum_allowlist=fixture.allowlist(),
+            )
             selection = json.loads((output / "selection_template.json").read_text())
             selection["rows"][0]["selected"] = True
             selection_path = output / "owner_selection.json"
@@ -461,7 +480,10 @@ class InventoryTests(unittest.TestCase):
                 inventory.InventoryError, "no source_inventory_sha256"
             ):
                 inventory.freeze_selection(
-                    document["rows"], document["inventory_sha256"], missing_digest_path
+                    document["rows"], document["inventory_sha256"], missing_digest_path,
+                    obsnum_allowlist_sha256=document["obsnum_allowlist"]["sha256"],
+                    obsnum_allowlist_schema_version=inventory.ALLOWLIST_SCHEMA,
+                    obsnum_allowlist_filename=document["obsnum_allowlist"]["filename"],
                 )
 
             truncated = json.loads(json.dumps(selection))
@@ -472,7 +494,10 @@ class InventoryTests(unittest.TestCase):
                 inventory.InventoryError, "preserve every inventory candidate"
             ):
                 inventory.freeze_selection(
-                    document["rows"], document["inventory_sha256"], truncated_path
+                    document["rows"], document["inventory_sha256"], truncated_path,
+                    obsnum_allowlist_sha256=document["obsnum_allowlist"]["sha256"],
+                    obsnum_allowlist_schema_version=inventory.ALLOWLIST_SCHEMA,
+                    obsnum_allowlist_filename=document["obsnum_allowlist"]["filename"],
                 )
 
             wrong_observation = json.loads(json.dumps(selection))
@@ -488,6 +513,9 @@ class InventoryTests(unittest.TestCase):
                     document["rows"],
                     document["inventory_sha256"],
                     wrong_observation_path,
+                    obsnum_allowlist_sha256=document["obsnum_allowlist"]["sha256"],
+                    obsnum_allowlist_schema_version=inventory.ALLOWLIST_SCHEMA,
+                    obsnum_allowlist_filename=document["obsnum_allowlist"]["filename"],
                 )
 
             wrong_suffix = output / "owner_selection.txt"
@@ -510,11 +538,13 @@ class InventoryTests(unittest.TestCase):
             template = inventory.selection_template(
                 document["rows"], document["inventory_sha256"]
             )
-            template["rows"][0]["selected"] = True
             selection_path = root / "owner_selection.json"
             selection_path.write_text(json.dumps(template), encoding="utf-8")
             selected = inventory.freeze_selection(
-                document["rows"], document["inventory_sha256"], selection_path
+                document["rows"], document["inventory_sha256"], selection_path,
+                obsnum_allowlist_sha256=document["obsnum_allowlist"]["sha256"],
+                obsnum_allowlist_schema_version=inventory.ALLOWLIST_SCHEMA,
+                obsnum_allowlist_filename=document["obsnum_allowlist"]["filename"],
             )
             self.assertEqual(len(selected["rows"]), 2)
             self.assertEqual(
@@ -539,7 +569,37 @@ class InventoryTests(unittest.TestCase):
                     [fixture.raw_root],
                     output=fixture.project / "diagnostics",
                     source_regex=inventory.DEFAULT_SOURCE_REGEX,
+                    obsnum_allowlist=fixture.allowlist(),
                 )
+
+    def test_authoritative_allowlist_and_excluded_run_root_are_inventory_bound(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            fixture = SyntheticCorpus(root)
+            fixture.make_candidate(100070)
+            fixture.make_candidate(100071)
+            allowlist = root / "allowlist.json"
+            allowlist.write_text(json.dumps({
+                "schema_version": inventory.ALLOWLIST_SCHEMA,
+                "corpus_id": "test-authoritative-only",
+                "selection_authority": "test",
+                "obsnums": [100070, 100072],
+            }), encoding="utf-8")
+            run_root = fixture.project / "sci_align_001_corpus_run_2026-08-03"
+            run_root.mkdir()
+            document, _ = inventory.inventory(
+                [fixture.project], [fixture.raw_root],
+                output=run_root / "output", source_regex=inventory.DEFAULT_SOURCE_REGEX,
+                obsnum_allowlist=allowlist, excluded_paths=[run_root],
+            )
+            self.assertEqual([row["observation_number"] for row in document["rows"]], [100070])
+            self.assertEqual(
+                [row["observation_number"] for row in document["out_of_scope_3c273_rows"]],
+                [100071],
+            )
+            status = {row["observation_number"]: row["status"] for row in document["authoritative_obsnum_status"]}
+            self.assertEqual(status[100072], "no_retained_reduction_found")
+            self.assertEqual(document["excluded_paths"], [str(run_root.resolve())])
 
     def test_large_digest_status_and_physical_file_deduplication(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -583,11 +643,21 @@ class SchedulerTests(unittest.TestCase):
             "core_eligible": True,
             "enhanced_eligible": False,
         }
+        allowlist = root / "authoritative_obsnums.json"
+        allowlist.write_text(json.dumps({
+            "schema_version": inventory.ALLOWLIST_SCHEMA,
+            "corpus_id": "scheduler-test",
+            "selection_authority": "test",
+            "obsnums": [100060],
+        }), encoding="utf-8")
         base = {
             "schema_version": scheduler.SELECTED_MANIFEST_SCHEMA,
             "source_inventory_sha256": "a" * 64,
             "owner_selection_sha256": "b" * 64,
             "owner_selection_format": "csv",
+            "obsnum_allowlist_sha256": scheduler.sha256_file(allowlist),
+            "obsnum_allowlist_schema_version": inventory.ALLOWLIST_SCHEMA,
+            "obsnum_allowlist_filename": allowlist.name,
             "rows": [row],
         }
         document = {**base, "manifest_sha256": scheduler.digest_object(base)}
@@ -620,7 +690,7 @@ class SchedulerTests(unittest.TestCase):
             )
             self.assertEqual(argv[-1], "--resume")
             options = scheduler.parse_sbatch_options(
-                ["partition=debug", "account=project", "time=01:00:00", "cpus-per-task=4"]
+                ["partition=debug", "time=01:00:00", "cpus-per-task=4"]
             )
             script = scheduler.render_script(
                 command_table=root / "commands with spaces.csv",
@@ -631,13 +701,14 @@ class SchedulerTests(unittest.TestCase):
                 sbatch_options=options,
                 command_table_sha256="c" * 64,
                 selected_manifest_sha256="d" * 64,
+                obsnum_allowlist=root / "authoritative_obsnums.json",
+                obsnum_allowlist_sha256="f" * 64,
                 protocol_sha256="e" * 64,
             )
             self.assertIn("#SBATCH --array=0-0%2", script)
             self.assertIn("#SBATCH --partition=debug", script)
-            self.assertIn("#SBATCH --account=project", script)
             self.assertLess(
-                script.index("#SBATCH --account=project"),
+                script.index("#SBATCH --partition=debug"),
                 script.index("set -euo pipefail"),
             )
             self.assertIn("subprocess.run(argv, check=True)", script)
@@ -654,14 +725,18 @@ class SchedulerTests(unittest.TestCase):
                 sbatch_options=[],
                 command_table_sha256="c" * 64,
                 selected_manifest_sha256="d" * 64,
+                obsnum_allowlist=root / "authoritative_obsnums.json",
+                obsnum_allowlist_sha256="f" * 64,
                 protocol_sha256="e" * 64,
             )
-            self.assertNotIn("--partition", default_script)
+            self.assertIn("#SBATCH --partition=toltec-cpu", default_script)
             self.assertNotIn("--account", default_script)
-            self.assertNotIn("--time", default_script)
-            self.assertNotIn("--cpus-per-task", default_script)
+            self.assertIn("#SBATCH --time=48:00:00", default_script)
+            self.assertIn("#SBATCH --cpus-per-task=6", default_script)
             with self.assertRaises(scheduler.SchedulerError):
                 scheduler.parse_sbatch_options(["partition=debug\n#SBATCH --account=bad"])
+            with self.assertRaises(scheduler.SchedulerError):
+                scheduler.parse_sbatch_options(["account=project"])
 
     def test_scheduler_main_writes_json_argv_command_table(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -670,6 +745,7 @@ class SchedulerTests(unittest.TestCase):
             script = root / "scheduler output" / "array.sh"
             table = root / "scheduler output" / "commands.csv"
             output = root / "analysis output"
+            serial = root / "scheduler output" / "serial.sh"
             runner = root / "runner.py"
             runner.write_text("# synthetic\n", encoding="utf-8")
             self.assertEqual(
@@ -677,6 +753,7 @@ class SchedulerTests(unittest.TestCase):
                     [
                         "--selected-manifest", str(manifest),
                         "--output-script", str(script),
+                        "--serial-script", str(serial),
                         "--command-table", str(table),
                         "--output-root", str(output),
                         "--runner", str(runner),
@@ -692,6 +769,7 @@ class SchedulerTests(unittest.TestCase):
             argv = json.loads(rows[0]["argv_json"])
             self.assertEqual(argv[argv.index("--candidate-id") + 1], "map:special-id")
             self.assertTrue(script.stat().st_mode & 0o100)
+            self.assertTrue(serial.stat().st_mode & 0o100)
             script_text = script.read_text(encoding="utf-8")
             self.assertIn(
                 f"expected_command_table_sha256={scheduler.sha256_file(table)}",
@@ -701,6 +779,8 @@ class SchedulerTests(unittest.TestCase):
                 f"expected_selected_manifest_sha256={scheduler.sha256_file(manifest)}",
                 script_text,
             )
+            self.assertIn("ObsNum allowlist SHA-256 changed", script_text)
+            self.assertIn("subprocess.run(argv, check=True)", serial.read_text(encoding="utf-8"))
             with self.assertRaisesRegex(
                 scheduler.SchedulerError, "overlaps control input"
             ):

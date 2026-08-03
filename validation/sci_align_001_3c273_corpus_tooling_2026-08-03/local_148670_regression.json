@@ -15,6 +15,29 @@
     "result": "SHA256SUMS files and all 14 listed candidate artifacts are byte-identical",
     "resume_result": "resumed_complete"
   },
+  "followup_v2_local_replay": {
+    "allowlist": {
+      "filename": "authoritative_obsnums_2026-08-03.json",
+      "schema_version": "sci-align-001-3c273-obsnum-allowlist-v1",
+      "scope": "40 authoritative ObsNums; this retained local fixture supplies 148670 only"
+    },
+    "inventory_and_freeze": {
+      "inventory_sha256": "6bb56970ad4e2e5501ec0a3a00be4e8f14eee0611b6f7fe2f42f462264be05d2",
+      "selected_manifest_sha256": "ac96c6797e9b7e40e0fcdd69c66167961e6dddc19963dcdabf8007a3b5adf25d",
+      "result": "read-only inventory, canonical timing-blind selection, and v2 freeze completed"
+    },
+    "nw9_pps_time_anomaly": {
+      "control_networks": [0, 1, 2, 3, 4, 5, 7, 8, 11, 12],
+      "control_mismatch_count_each": 0,
+      "eligible_increment_denominator_per_available_network": 3142,
+      "nw9_mismatch_count": 369,
+      "nw9_mismatch_rate": 0.11744112030553787,
+      "raw_anomaly_rows": 369,
+      "interpretation": "delivered PpsTime metadata anomaly; no clock-drift, row-reassociation, mask, repair, or causal timing claim"
+    },
+    "protocol_sha256": "b7814f310c3a056283a6d4b5f7804b24d15b1f4e02f0acc7a73fcb0fa4e193a3",
+    "result": "fresh enhanced retained-product run completed; all candidate SHA256SUMS entries verified; resume binding was accepted"
+  },
   "half_partition": {
     "difference_se_sec": 0.0005198993865053033,
     "difference_sec": 0.0018022134007888296,
@@ -78,7 +101,7 @@
     "repeat_128_interval_15625_rows_mismatch_count": 0,
     "variable_metadata_capture_or_isr_latency_observed": false
   },
-  "schema_version": "sci-align-001-3c273-local-regression-evidence-v1",
+  "schema_version": "sci-align-001-3c273-local-regression-evidence-v2",
   "status": "success",
   "timing_results": {
     "assigned_baseline": {

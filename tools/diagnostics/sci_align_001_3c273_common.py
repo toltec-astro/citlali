@@ -31,13 +31,13 @@ from netCDF4 import Dataset
 from scipy.optimize import least_squares
 
 
-RUNNER_SCHEMA = "sci-align-001-3c273-map-result-v1"
+RUNNER_SCHEMA = "sci-align-001-3c273-map-result-v2"
 INPUT_SCHEMA = "sci-align-001-3c273-map-input-v1"
 PROTOCOL_SCHEMA = "sci-align-001-3c273-fit-protocol-v1"
-SELECTED_MANIFEST_SCHEMA = "sci-align-001-3c273-selected-manifest-v1"
+SELECTED_MANIFEST_SCHEMA = "sci-align-001-3c273-selected-manifest-v2"
 ARRAY_NAMES = {0: "a1100", 1: "a1400", 2: "a2000"}
 ARRAY_FWHM_LIMITS = {0: (3.0, 10.0), 1: (3.5, 15.0), 2: (5.5, 20.0)}
-DEFAULT_EXPECTED_NETWORKS = tuple(range(13))
+DEFAULT_EXPECTED_NETWORKS = tuple(network for network in range(13) if network != 10)
 FROZEN_PILOT_UIDS = (0, 5, 10, 15, 20, 25, 30, 35)
 RAD_TO_ARCSEC = 180.0 * 3600.0 / math.pi
 
@@ -633,6 +633,17 @@ def parse_manifest(path: Path) -> list[ReductionInputs]:
         raise ContractError("selected manifest lacks a valid owner_selection_sha256")
     if value.get("owner_selection_format") not in {"csv", "json"}:
         raise ContractError("selected manifest owner_selection_format must be csv or json")
+    allowlist_digest = str(value.get("obsnum_allowlist_sha256", "")).lower()
+    if not re.fullmatch(r"[0-9a-f]{64}", allowlist_digest):
+        raise ContractError("selected manifest lacks a valid obsnum_allowlist_sha256")
+    if value.get("obsnum_allowlist_schema_version") != "sci-align-001-3c273-obsnum-allowlist-v1":
+        raise ContractError("selected manifest has unsupported obsnum allowlist schema")
+    allowlist_name = str(value.get("obsnum_allowlist_filename", ""))
+    if Path(allowlist_name).name != allowlist_name or not allowlist_name.endswith(".json"):
+        raise ContractError("selected manifest has invalid obsnum allowlist filename")
+    allowlist_path = path.parent / allowlist_name
+    if not allowlist_path.is_file() or sha256_file(allowlist_path) != allowlist_digest:
+        raise ContractError("selected manifest obsnum allowlist copy/digest is invalid")
     digest_payload = {
         key: item for key, item in value.items() if key != "manifest_sha256"
     }
@@ -721,7 +732,7 @@ class AnalysisProtocol:
         if path is None:
             return cls()
         value = json.loads(path.read_text())
-        if value.get("schema_version") == "sci-align-001-3c273-corpus-protocol-v1":
+        if value.get("schema_version") == "sci-align-001-3c273-corpus-protocol-v2":
             required_sections = {
                 "aggregation",
                 "decision",
@@ -749,6 +760,11 @@ class AnalysisProtocol:
             timing = value["timing_models"]
             if not all(isinstance(item, Mapping) for item in (fit, scan, timing)):
                 raise ContractError("frozen fit, scan, and timing sections must be objects")
+            raw_diagnostics = value["raw_phase_and_counter_diagnostics"]
+            if not isinstance(raw_diagnostics, Mapping) or not isinstance(
+                raw_diagnostics.get("nw9_pps_time_increment_anomaly"), Mapping
+            ):
+                raise ContractError("frozen raw-counter protocol lacks nw9 anomaly diagnostics")
             required_fit_keys = {
                 "fwhm_bounds_arcsec_by_array",
                 "fit_boundary_margin_minimum",
@@ -1261,6 +1277,7 @@ class RawMapping:
     timestamp_fields: np.ndarray
     counter_transitions: list[dict[str, Any]]
     phase_summary: dict[str, Any]
+    pps_time_increment_anomalies: list[dict[str, Any]] = field(default_factory=list)
 
 
 def build_row_mapping(
@@ -1347,7 +1364,7 @@ def prove_raw_mapping(
         )
     if accum <= 0 or not math.isfinite(sample_rate) or sample_rate <= 0:
         raise ContractError(f"raw toltec{network} has invalid timing headers")
-    transition_rows, transition_summary = raw_counter_diagnostics(
+    transition_rows, transition_summary, anomaly_rows = raw_counter_diagnostics(
         ts, network, fpga, accum
     )
     reconstructed = reconstruct_legacy_timestamp(ts, fpga, ts[:, 3]) + offset_sec
@@ -1388,6 +1405,7 @@ def prove_raw_mapping(
         ts,
         transition_rows,
         transition_summary,
+        anomaly_rows,
     )
 
 
@@ -1603,7 +1621,7 @@ def raw_counter_diagnostics(
     network: int,
     fpga_hz: float,
     accumulation_ticks: int,
-) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+) -> tuple[list[dict[str, Any]], dict[str, Any], list[dict[str, Any]]]:
     """Inventory delivered PPS/internal-counter relationships without semantics claims."""
 
     fields = np.asarray(timestamp_fields, dtype=np.int64)
@@ -1762,6 +1780,78 @@ def raw_counter_diagnostics(
         else np.asarray([], dtype=np.uint64)
     )
     expected_pps_ticks = int(round(fpga_hz))
+    anomaly_ordinals = np.flatnonzero(pps_time_transition_step != expected_pps_ticks)
+    anomaly_rows: list[dict[str, Any]] = []
+    phase_geometry = _modular_difference(clock_count, pps_time)
+    count_transition_set = {int(value) for value in transition_indices}
+    for anomaly_index, ordinal_value in enumerate(anomaly_ordinals):
+        ordinal = int(ordinal_value)
+        previous_row = int(pps_time_change[ordinal])
+        row = int(pps_time_change[ordinal + 1])
+        actual_increment = int(pps_time_transition_step[ordinal])
+        residual_mod = (actual_increment - expected_pps_ticks) % 2**32
+        signed_residual = residual_mod - 2**32 if residual_mod > 2**31 else residual_mod
+        nearest_index = int(np.argmin(np.abs(transition_indices.astype(np.int64) - row)))
+        nearest_count_row = int(transition_indices[nearest_index])
+        following_residual = None
+        if ordinal + 1 < pps_time_transition_step.size:
+            following_actual = int(pps_time_transition_step[ordinal + 1])
+            following_mod = (following_actual - expected_pps_ticks) % 2**32
+            following_residual = following_mod - 2**32 if following_mod > 2**31 else following_mod
+        adjacent_anomaly = (
+            (anomaly_index > 0 and int(anomaly_ordinals[anomaly_index - 1]) == ordinal - 1)
+            or (
+                anomaly_index + 1 < anomaly_ordinals.size
+                and int(anomaly_ordinals[anomaly_index + 1]) == ordinal + 1
+            )
+        )
+        phase_step_mod = int(
+            _modular_difference(phase_geometry[row:row + 1], phase_geometry[row - 1:row])[0]
+        )
+        signed_phase_step = phase_step_mod - 2**32 if phase_step_mod > 2**31 else phase_step_mod
+        sample_pps_time_step = int(_modular_difference(pps_time[row:row + 1], pps_time[row - 1:row])[0])
+        delivered_timestamp_step_residual = int(
+            int(pps_diff[row - 1]) * expected_pps_ticks
+            + int(clock_step[row - 1])
+            - sample_pps_time_step
+            - accumulation_ticks
+        )
+        anomaly_rows.append({
+            "network_id": network,
+            "anomaly_ordinal": anomaly_index,
+            "pps_time_increment_ordinal": ordinal,
+            "pps_time_previous_transition_row_zero_based": previous_row,
+            "pps_time_transition_row_zero_based": row,
+            "t0_integer_sec": int(t0[row]),
+            "actual_pps_time_increment_ticks_u32": actual_increment,
+            "expected_pps_time_increment_ticks": expected_pps_ticks,
+            "signed_tick_residual": signed_residual,
+            "absolute_tick_residual": abs(signed_residual),
+            "signed_time_residual_sec": signed_residual / fpga_hz,
+            "absolute_time_residual_sec": abs(signed_residual) / fpga_hz,
+            "pps_count_transition_nearest_row_zero_based": nearest_count_row,
+            "pps_time_minus_nearest_pps_count_rows": row - nearest_count_row,
+            "on_pps_count_transition_row": row in count_transition_set,
+            "clock_step_before_ticks": int(clock_step[row - 1]),
+            "packet_step_before": int(packet_step[row - 1]),
+            "pps_count_step_before": int(pps_diff[row - 1]),
+            "sample_pps_time_step_ticks": sample_pps_time_step,
+            "delivered_reconstructed_timestamp_step_residual_ticks": delivered_timestamp_step_residual,
+            "delivered_reconstructed_timestamp_step_residual_sec": delivered_timestamp_step_residual / fpga_hz,
+            "phase_geometry_before_ticks": int(phase_geometry[row - 1]),
+            "phase_geometry_after_ticks": int(phase_geometry[row]),
+            "phase_geometry_step_signed_ticks": signed_phase_step,
+            "following_pps_time_increment_signed_tick_residual": following_residual,
+            "cluster_class": "consecutive" if adjacent_anomaly else "isolated",
+            "persistence_class": (
+                "subsequent_increment_returns_nominal_counter_offset_persists_in_delivered_field"
+                if following_residual == 0 else
+                "subsequent_increment_also_anomalous" if following_residual is not None else
+                "last_transition_no_following_increment"
+            ),
+            "delivered_data_timestamp_row_association": "D[n]/Ts[n] row lineage proved downstream; upstream FPGA association unresolved",
+            "metadata_to_integration_association_proved": False,
+        })
     unique_t0 = sorted(set(int(value) for value in t0))
     unique_nanosec = sorted(set(int(value) for value in t0_nanosec))
     summary = {
@@ -1791,8 +1881,30 @@ def raw_counter_diagnostics(
             sum(not bool(row["pps_time_changed_on_pps_count_transition_row"]) for row in rows)
         ),
         "pps_time_increment_expected_ticks": expected_pps_ticks,
+        "pps_time_increment_eligible_count": int(pps_time_transition_step.size),
         "pps_time_increment_mismatch_count": int(
             np.sum(pps_time_transition_step != expected_pps_ticks)
+        ),
+        "pps_time_increment_mismatch_rate": (
+            float(anomaly_ordinals.size / pps_time_transition_step.size)
+            if pps_time_transition_step.size else None
+        ),
+        "pps_time_increment_anomaly_first_transition_row_zero_based": (
+            int(anomaly_rows[0]["pps_time_transition_row_zero_based"])
+            if anomaly_rows else None
+        ),
+        "pps_time_increment_anomaly_last_transition_row_zero_based": (
+            int(anomaly_rows[-1]["pps_time_transition_row_zero_based"])
+            if anomaly_rows else None
+        ),
+        "pps_time_increment_anomaly_isolated_count": int(
+            sum(row["cluster_class"] == "isolated" for row in anomaly_rows)
+        ),
+        "pps_time_increment_anomaly_consecutive_count": int(
+            sum(row["cluster_class"] == "consecutive" for row in anomaly_rows)
+        ),
+        "pps_time_increment_anomaly_periodicity": (
+            "reported_from_transition_ordinals_only; no periodicity cut applied"
         ),
         "pps_time_transition_pairing_status": "unique_ordered_same_or_adjacent_row_bijection"
         if transition_pairing_unambiguous
@@ -1869,7 +1981,7 @@ def raw_counter_diagnostics(
         "distinct_stable_network_integration_phase": "allowed",
         "metadata_to_integration_association": "unresolved_without_fpga_source",
     }
-    return rows, summary
+    return rows, summary, anomaly_rows
 
 
 def model_id(basis: str, k: int, phi: float) -> str:
@@ -2354,7 +2466,12 @@ def science_support_mask(state: AlignmentState) -> np.ndarray:
 
 
 def source_write_guard(inputs: ReductionInputs, output_root: Path) -> None:
-    """Reject output placement in any reduction or raw-data source directory."""
+    """Reject output placement in an individual retained product or raw directory.
+
+    An owner versioned run directory may live below the broad Beammap project
+    directory; it must still be outside every individual reduction and raw
+    source retained by the selected manifest.
+    """
 
     output = output_root.expanduser().resolve()
     forbidden = {inputs.reduction_path.resolve()}
@@ -2367,8 +2484,6 @@ def source_write_guard(inputs: ReductionInputs, output_root: Path) -> None:
     ):
         if path is not None:
             forbidden.add(path.parent.resolve())
-    if inputs.project_path is not None:
-        forbidden.add(inputs.project_path.resolve())
     forbidden.update(path.parent.resolve() for path in inputs.raw_by_network.values())
     for source in sorted(forbidden):
         try:
@@ -2739,6 +2854,7 @@ class AnalysisProducts:
     raw_linkage_rows: list[dict[str, Any]]
     raw_counter_rows: list[dict[str, Any]]
     raw_phase_rows: list[dict[str, Any]]
+    raw_pps_time_increment_anomaly_rows: list[dict[str, Any]] = field(default_factory=list)
 
 
 def linear_predictor_diagnostic(
@@ -2830,6 +2946,7 @@ def analyze_reduction(
     mappings: dict[int, RawMapping] = {}
     raw_rows: list[dict[str, Any]] = []
     raw_counter_rows: list[dict[str, Any]] = []
+    raw_pps_time_increment_anomaly_rows: list[dict[str, Any]] = []
     model_descriptors: list[dict[str, Any]] = []
     model_coordinate: dict[str, dict[int, dict[str, np.ndarray]]] = {}
     common_by_network: dict[int, np.ndarray] = {}
@@ -2849,6 +2966,9 @@ def analyze_reduction(
                 mappings[network] = mapping
                 raw_rows.append(raw_residual_summary(mapping))
                 raw_counter_rows.extend(mapping.counter_transitions)
+                raw_pps_time_increment_anomaly_rows.extend(
+                    mapping.pps_time_increment_anomalies
+                )
         except ContractError as error:
             raise RawLinkageError(str(error)) from error
         for basis, k, phi in protocol.enhanced_models:
@@ -3615,6 +3735,13 @@ def analyze_reduction(
             "grain": "one delivered PpsCount transition per analyzed raw network",
             "checksum_authority": "candidate SHA256SUMS",
         },
+        "raw_pps_time_increment_anomaly_product": {
+            "path": "raw_pps_time_increment_anomalies.csv",
+            "row_count": len(raw_pps_time_increment_anomaly_rows),
+            "grain": "one delivered PpsTime increment mismatch per raw network",
+            "metadata_to_integration_association_proved": False,
+            "row_mask_or_repair_authorized": False,
+        },
         "raw_phase_summary": raw_rows,
         "t0_session": t0_session,
         "within_map_predictors": within_map_predictors,
@@ -3650,4 +3777,5 @@ def analyze_reduction(
         raw_rows,
         raw_counter_rows,
         raw_rows,
+        raw_pps_time_increment_anomaly_rows,
     )

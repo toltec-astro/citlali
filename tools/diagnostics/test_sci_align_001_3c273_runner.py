@@ -242,7 +242,7 @@ class CounterAndProtocolTests(unittest.TestCase):
         fields[:, 4] = _signed_u32(pps_time_u32)
         fields[:, 5] = 125_000_000
 
-        rows, summary = raw_counter_diagnostics(
+        rows, summary, anomalies = raw_counter_diagnostics(
             fields, network=0, fpga_hz=fpga_hz, accumulation_ticks=accumulation
         )
         self.assertEqual(len(rows), len(transition_rows))
@@ -253,6 +253,7 @@ class CounterAndProtocolTests(unittest.TestCase):
         self.assertEqual(summary["clock_increment_mismatch_count"], 0)
         self.assertEqual(summary["packet_increment_mismatch_count"], 0)
         self.assertEqual(summary["pps_time_increment_mismatch_count"], 0)
+        self.assertEqual(anomalies, [])
         self.assertEqual(
             summary["pps_time_transition_pairing_status"],
             "unique_ordered_same_or_adjacent_row_bijection",
@@ -279,7 +280,7 @@ class CounterAndProtocolTests(unittest.TestCase):
             * np.uint64(int(fpga_hz))
         ) % np.uint64(2**32)
         misaligned[:, 4] = _signed_u32(misaligned_pps_time_u32)
-        misaligned_rows, misaligned_summary = raw_counter_diagnostics(
+        misaligned_rows, misaligned_summary, _ = raw_counter_diagnostics(
             misaligned,
             network=0,
             fpga_hz=fpga_hz,
@@ -295,11 +296,28 @@ class CounterAndProtocolTests(unittest.TestCase):
             all(not row["native_frame_phase_available"] for row in misaligned_rows)
         )
 
+        anomalous = fields.copy()
+        anomalous_pps_time = pps_time_u32.copy()
+        anomalous_pps_time[int(pps_time_transition_rows[10]):] += np.uint64(1)
+        anomalous[:, 4] = _signed_u32(anomalous_pps_time)
+        _, anomalous_summary, anomaly_rows = raw_counter_diagnostics(
+            anomalous,
+            network=9,
+            fpga_hz=fpga_hz,
+            accumulation_ticks=accumulation,
+        )
+        self.assertEqual(anomalous_summary["pps_time_increment_mismatch_count"], 1)
+        self.assertEqual(anomalous_summary["pps_time_increment_eligible_count"], len(transition_rows) - 1)
+        self.assertEqual(len(anomaly_rows), 1)
+        self.assertEqual(anomaly_rows[0]["network_id"], 9)
+        self.assertEqual(anomaly_rows[0]["signed_tick_residual"], 1)
+        self.assertFalse(anomaly_rows[0]["metadata_to_integration_association_proved"])
+
     def test_frozen_protocol_binds_authority_and_limits_fixture_exclusions(self) -> None:
         protocol = AnalysisProtocol.from_json(FROZEN_PROTOCOL)
         self.assertEqual(
             protocol.authority_schema_version,
-            "sci-align-001-3c273-corpus-protocol-v1",
+            "sci-align-001-3c273-corpus-protocol-v2",
         )
         self.assertEqual(protocol.authority_document_sha256, sha256_file(FROZEN_PROTOCOL))
         self.assertEqual(len(protocol.enhanced_models), 4)
@@ -394,10 +412,13 @@ class ManifestResumeAndRunnerTests(unittest.TestCase):
             canonical_json(network_t0_vector).encode("utf-8")
         ).hexdigest()
         manifest_base = {
-            "schema_version": "sci-align-001-3c273-selected-manifest-v1",
+            "schema_version": "sci-align-001-3c273-selected-manifest-v2",
             "source_inventory_sha256": "a" * 64,
             "owner_selection_sha256": "b" * 64,
             "owner_selection_format": "csv",
+            "obsnum_allowlist_sha256": "c" * 64,
+            "obsnum_allowlist_schema_version": "sci-align-001-3c273-obsnum-allowlist-v1",
+            "obsnum_allowlist_filename": "allowlist.json",
             "rows": [
                         {
                             "candidate_id": inputs.candidate_id,
@@ -426,6 +447,9 @@ class ManifestResumeAndRunnerTests(unittest.TestCase):
                         }
                     ],
         }
+        (self.root / "allowlist.json").write_text("{}\n", encoding="utf-8")
+        # Bind the artificial selected manifest to a real byte payload.
+        manifest_base["obsnum_allowlist_sha256"] = sha256_file(self.root / "allowlist.json")
         manifest_document = {
             **manifest_base,
             "manifest_sha256": hashlib.sha256(

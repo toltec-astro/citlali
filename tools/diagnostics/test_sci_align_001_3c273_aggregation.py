@@ -43,26 +43,32 @@ class SyntheticCorpus:
         self.manifest = root / "selected_manifest.json"
         self.owner_selection = root / "owner_selection.json"
         self.inventory = root / "candidate_inventory.json"
+        self.allowlist = root / "allowlist.json"
         self.template = root / "runner_protocol.json"
         self.freeze_dir = root / "freeze"
         self.maps = root / "maps"
         self.output = root / "aggregate"
         self.rows: list[dict[str, Any]] = []
         self.owner_selection.write_text(json.dumps({
-            "schema_version": "sci-align-001-3c273-selection-v1",
+            "schema_version": "sci-align-001-3c273-selection-v2",
             "selection": "synthetic-test-authority",
         }, indent=2, sort_keys=True) + "\n")
         inventory_base = {
             "schema_version": agg.INVENTORY_SCHEMA,
             "rows": [],
             "scope": "synthetic aggregation test authority",
+            "obsnum_allowlist": {
+                "filename": self.allowlist.name,
+                "sha256": "0" * 64,
+                "schema_version": "sci-align-001-3c273-obsnum-allowlist-v1",
+            },
         }
         self.inventory.write_text(json.dumps({
             **inventory_base,
             "inventory_sha256": agg._semantic_digest(inventory_base),
         }, indent=2, sort_keys=True) + "\n")
         self.template.write_text(json.dumps({
-            "schema_version": "sci-align-001-3c273-corpus-protocol-v1",
+            "schema_version": "sci-align-001-3c273-corpus-protocol-v2",
             "status": "FROZEN_BEFORE_CORPUS_TIMING_RESULTS",
         }, indent=2, sort_keys=True) + "\n")
 
@@ -106,10 +112,21 @@ class SyntheticCorpus:
         self.rows.append(row)
 
     def freeze(self) -> dict[str, Any]:
+        self.allowlist.write_text(json.dumps({
+            "schema_version": "sci-align-001-3c273-obsnum-allowlist-v1",
+            "corpus_id": "synthetic-aggregation",
+            "selection_authority": "test fixture",
+            "obsnums": sorted({int(row["obsnum"]) for row in self.rows}),
+        }, indent=2, sort_keys=True) + "\n")
         inventory_base = {
             "schema_version": agg.INVENTORY_SCHEMA,
             "rows": self.rows,
             "scope": "synthetic aggregation test authority",
+            "obsnum_allowlist": {
+                "filename": self.allowlist.name,
+                "sha256": agg.sha256_file(self.allowlist),
+                "schema_version": "sci-align-001-3c273-obsnum-allowlist-v1",
+            },
         }
         self.inventory.write_text(json.dumps({
             **inventory_base,
@@ -137,12 +154,15 @@ class SyntheticCorpus:
             "source_inventory_sha256": source_inventory_sha,
             "owner_selection_sha256": agg.sha256_file(self.owner_selection),
             "owner_selection_format": "json",
+            "obsnum_allowlist_sha256": agg.sha256_file(self.allowlist),
+            "obsnum_allowlist_schema_version": "sci-align-001-3c273-obsnum-allowlist-v1",
+            "obsnum_allowlist_filename": self.allowlist.name,
             "rows": self.rows,
         }
         document = {**base, "manifest_sha256": agg._semantic_digest(base)}
         self.manifest.write_text(json.dumps(document, indent=2, sort_keys=True) + "\n")
         agg.write_checksums(
-            self.root, (self.manifest, self.owner_selection, self.inventory),
+            self.root, (self.manifest, self.owner_selection, self.inventory, self.allowlist),
         )
         code = agg.main([
             "freeze", "--selected-manifest", str(self.manifest),
@@ -164,6 +184,7 @@ class SyntheticCorpus:
         half_difference: float | None = None,
         half_difference_se: float | None = None,
         counter_anomaly: bool = False,
+        nw9_mismatch_count: int = 0,
         partial: bool = False,
         shuffle: bool = False,
         covariance: list[list[float]] | None = None,
@@ -206,9 +227,16 @@ class SyntheticCorpus:
                     "clock_increment_mismatch_count": 0,
                     "packet_increment_mismatch_count": 0,
                     "pps_time_increment_mismatch_count": 0,
+                    "pps_time_increment_eligible_count": 127,
+                    "pps_time_increment_mismatch_rate": (
+                        nw9_mismatch_count / 127 if network == 9 else 0.0
+                    ),
                     "pps_time_transition_offset_other_count": 0,
                     "variable_metadata_capture_or_isr_latency_observed": counter_anomaly,
                 })
+                raw_rows[-1]["pps_time_increment_mismatch_count"] = (
+                    nw9_mismatch_count if network == 9 else 0
+                )
         if shuffle:
             network_rows = list(reversed(network_rows))
             raw_rows = list(reversed(raw_rows))
@@ -372,7 +400,7 @@ class AggregationTests(unittest.TestCase):
         self.assertEqual(protocol["grouping_kind"], "t0_clocktime_vector")
         map_index = 0
         for session in offsets:
-            phase = {network: 0.001 + network * 1.0e-5 for network in NETWORKS}
+            phase = {network: 0.001 + network * 1.0e-5 for network in (*NETWORKS, 9)}
             for _ in range(2):
                 corpus.add_map_output(
                     f"map-{map_index}", {network: offsets[session] for network in NETWORKS},
@@ -480,6 +508,25 @@ class AggregationTests(unittest.TestCase):
         assert summary is not None
         self.assertEqual(summary["within_observation_timing_variation"]["counter_anomaly_map_count"], 1)
         self.assertFalse(summary["within_observation_timing_variation"]["clock_drift_claimed"])
+
+    def test_nw9_anomaly_occurrence_denominator_and_leave_out_effect_are_reported(self) -> None:
+        corpus = self.make_dates()
+        for index in range(4):
+            phase = {network: 0.001 + network * 1.0e-5 for network in (*NETWORKS, 9)}
+            timing = {0: -0.012, 7: -0.012, 9: -0.012 + index * 1.0e-4, 11: -0.012}
+            corpus.add_map_output(
+                f"map-{index}", timing, phase=phase, nw9_mismatch_count=index,
+            )
+        code, summary = corpus.run()
+        self.assertEqual(code, 0)
+        assert summary is not None
+        nw9 = summary["nw9_pps_time_anomaly"]
+        self.assertEqual(nw9["nw9_total_mismatch_count"], 6)
+        self.assertEqual(nw9["nw9_total_eligible_increment_count"], 4 * 127)
+        sensitivity = (corpus.output / "nw9_timing_sensitivity.csv").read_text()
+        self.assertIn("leave_nw9_out_pooled_timing_sec", sensitivity)
+        occurrence = (corpus.output / "pps_time_increment_occurrence.csv").read_text()
+        self.assertIn("eligible_increment_count", occurrence)
 
     def test_invalid_psd_covariance_rejected(self) -> None:
         corpus = self.make_dates(3)

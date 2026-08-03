@@ -15,9 +15,18 @@ from pathlib import Path
 from typing import Any, Sequence
 
 
-SELECTED_MANIFEST_SCHEMA = "sci-align-001-3c273-selected-manifest-v1"
-COMMAND_TABLE_SCHEMA = "sci-align-001-3c273-command-table-v1"
+SELECTED_MANIFEST_SCHEMA = "sci-align-001-3c273-selected-manifest-v2"
+COMMAND_TABLE_SCHEMA = "sci-align-001-3c273-command-table-v2"
 SBATCH_KEY_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_-]*$")
+DEFAULT_SBATCH_OPTIONS: tuple[tuple[str, str], ...] = (
+    ("time", "48:00:00"),
+    ("mem", "64G"),
+    ("cpus-per-task", "6"),
+    ("nodes", "1"),
+    ("ntasks", "1"),
+    ("partition", "toltec-cpu"),
+    ("parsable", ""),
+)
 DEFAULT_PROTOCOL = (
     Path(__file__).resolve().parents[2]
     / "validation/sci_align_001_3c273_corpus_tooling_2026-08-03"
@@ -67,11 +76,19 @@ def load_selected_manifest(path: Path) -> dict[str, Any]:
         raise SchedulerError(f"cannot read selected manifest {path}: {error}") from error
     if not isinstance(document, dict) or document.get("schema_version") != SELECTED_MANIFEST_SCHEMA:
         raise SchedulerError("unsupported selected-manifest schema")
-    for field in ("source_inventory_sha256", "owner_selection_sha256"):
+    for field in ("source_inventory_sha256", "owner_selection_sha256", "obsnum_allowlist_sha256"):
         if not re.fullmatch(r"[0-9a-f]{64}", str(document.get(field) or "")):
             raise SchedulerError(f"selected manifest lacks a valid {field}")
     if document.get("owner_selection_format") not in {"csv", "json"}:
         raise SchedulerError("selected manifest has invalid owner_selection_format")
+    if document.get("obsnum_allowlist_schema_version") != "sci-align-001-3c273-obsnum-allowlist-v1":
+        raise SchedulerError("selected manifest has unsupported obsnum allowlist schema")
+    allowlist_name = str(document.get("obsnum_allowlist_filename") or "")
+    if Path(allowlist_name).name != allowlist_name or not allowlist_name.endswith(".json"):
+        raise SchedulerError("selected manifest has invalid obsnum allowlist filename")
+    allowlist_path = path.parent / allowlist_name
+    if not allowlist_path.is_file() or sha256_file(allowlist_path) != document["obsnum_allowlist_sha256"]:
+        raise SchedulerError("selected manifest obsnum allowlist copy/digest is invalid")
     recorded = document.get("manifest_sha256")
     base = {key: value for key, value in document.items() if key != "manifest_sha256"}
     measured = digest_object(base)
@@ -125,7 +142,6 @@ def validate_output_isolation(
         for key in (
             "reduction_path",
             "reduction_run_path",
-            "project_path",
         ):
             if row.get(key):
                 source_paths.append(Path(str(row[key])))
@@ -204,8 +220,8 @@ def command_rows(
 
 
 def parse_sbatch_options(values: Sequence[str]) -> list[tuple[str, str]]:
-    options: dict[str, str] = {}
-    reserved = {"array", "job-name"}
+    options: dict[str, str] = dict(DEFAULT_SBATCH_OPTIONS)
+    reserved = {"array", "job-name", "account", "parsable"}
     for raw in values:
         if "=" not in raw:
             raise SchedulerError(f"--sbatch-option requires KEY=VALUE: {raw!r}")
@@ -214,8 +230,8 @@ def parse_sbatch_options(values: Sequence[str]) -> list[tuple[str, str]]:
             raise SchedulerError(f"invalid or reserved Slurm option key: {key!r}")
         if not value or any(character in value for character in "\r\n"):
             raise SchedulerError(f"invalid Slurm option value for {key!r}")
-        if key in options:
-            raise SchedulerError(f"duplicate Slurm option: {key}")
+        if key == "account":
+            raise SchedulerError("no Slurm account directive is authorized for this workflow")
         options[key] = value
     return sorted(options.items())
 
@@ -230,10 +246,14 @@ def render_script(
     sbatch_options: Sequence[tuple[str, str]],
     command_table_sha256: str,
     selected_manifest_sha256: str,
+    obsnum_allowlist: Path,
+    obsnum_allowlist_sha256: str,
     protocol_sha256: str,
 ) -> str:
     if not re.fullmatch(r"[A-Za-z0-9_.-]+", job_name):
         raise SchedulerError("--job-name contains unsupported characters")
+    if not sbatch_options:
+        sbatch_options = DEFAULT_SBATCH_OPTIONS
     array = f"0-{row_count - 1}"
     if array_concurrency is not None:
         if array_concurrency <= 0:
@@ -241,10 +261,14 @@ def render_script(
         array += f"%{array_concurrency}"
     lines = [
         "#!/usr/bin/env bash",
+        "# Owner-editable scheduler policy: update the directives below before submission.",
         f"#SBATCH --job-name={job_name}",
         f"#SBATCH --array={array}",
     ]
-    lines.extend(f"#SBATCH --{key}={value}" for key, value in sbatch_options)
+    lines.extend(
+        f"#SBATCH --{key}" if value == "" else f"#SBATCH --{key}={value}"
+        for key, value in sbatch_options
+    )
     lines.extend(
         [
             "",
@@ -259,9 +283,11 @@ def render_script(
             f"python_exec={shlex.quote(str(python))}",
             f"expected_command_table_sha256={command_table_sha256}",
             f"expected_selected_manifest_sha256={selected_manifest_sha256}",
+            f"obsnum_allowlist={shlex.quote(str(obsnum_allowlist))}",
+            f"expected_obsnum_allowlist_sha256={obsnum_allowlist_sha256}",
             f"expected_protocol_sha256={protocol_sha256}",
             'array_index="${SLURM_ARRAY_TASK_ID:?SLURM_ARRAY_TASK_ID is required}"',
-            '"${python_exec}" - "${command_table}" "${array_index}" "${expected_command_table_sha256}" "${expected_selected_manifest_sha256}" "${expected_protocol_sha256}" <<\'PY\'',
+            '"${python_exec}" - "${command_table}" "${array_index}" "${expected_command_table_sha256}" "${expected_selected_manifest_sha256}" "${obsnum_allowlist}" "${expected_obsnum_allowlist_sha256}" "${expected_protocol_sha256}" <<\'PY\'',
             "import csv",
             "import hashlib",
             "import json",
@@ -272,7 +298,9 @@ def render_script(
             "array_index = int(sys.argv[2])",
             "expected_table_sha = sys.argv[3]",
             "expected_manifest_sha = sys.argv[4]",
-            "expected_protocol_sha = sys.argv[5]",
+            "allowlist_path = sys.argv[5]",
+            "expected_allowlist_sha = sys.argv[6]",
+            "expected_protocol_sha = sys.argv[7]",
             "def sha256(path):",
             "    digest = hashlib.sha256()",
             "    with open(path, 'rb') as stream:",
@@ -295,6 +323,8 @@ def render_script(
             "protocol_path = argv[argv.index('--protocol') + 1]",
             "if sha256(manifest_path) != expected_manifest_sha:",
             "    raise SystemExit('selected-manifest SHA-256 changed after array generation')",
+            "if sha256(allowlist_path) != expected_allowlist_sha:",
+            "    raise SystemExit('ObsNum allowlist SHA-256 changed after array generation')",
             "if sha256(protocol_path) != expected_protocol_sha:",
             "    raise SystemExit('analysis-protocol SHA-256 changed after array generation')",
             "subprocess.run(argv, check=True)",
@@ -325,6 +355,69 @@ def render_command_table(rows: list[dict[str, Any]]) -> str:
     return stream.getvalue()
 
 
+def render_serial_script(
+    *,
+    command_table: Path,
+    python: Path,
+    command_table_sha256: str,
+    selected_manifest_sha256: str,
+    obsnum_allowlist: Path,
+    obsnum_allowlist_sha256: str,
+    protocol_sha256: str,
+) -> str:
+    """Render a checksum-bound owner serial runner for the same command table."""
+
+    lines = [
+        "#!/usr/bin/env bash",
+        "set -euo pipefail",
+        "export OMP_NUM_THREADS=1",
+        "export OPENBLAS_NUM_THREADS=1",
+        "export MKL_NUM_THREADS=1",
+        "",
+        f"command_table={shlex.quote(str(command_table))}",
+        f"python_exec={shlex.quote(str(python))}",
+        f"expected_command_table_sha256={command_table_sha256}",
+        f"expected_selected_manifest_sha256={selected_manifest_sha256}",
+        f"obsnum_allowlist={shlex.quote(str(obsnum_allowlist))}",
+        f"expected_obsnum_allowlist_sha256={obsnum_allowlist_sha256}",
+        f"expected_protocol_sha256={protocol_sha256}",
+        '"${python_exec}" - "${command_table}" "${expected_command_table_sha256}" "${expected_selected_manifest_sha256}" "${obsnum_allowlist}" "${expected_obsnum_allowlist_sha256}" "${expected_protocol_sha256}" <<\'PY\'',
+        "import csv",
+        "import hashlib",
+        "import json",
+        "import subprocess",
+        "import sys",
+        "",
+        "table_path, expected_table_sha, expected_manifest_sha, allowlist_path, expected_allowlist_sha, expected_protocol_sha = sys.argv[1:]",
+        "def sha256(path):",
+        "    digest = hashlib.sha256()",
+        "    with open(path, 'rb') as stream:",
+        "        for block in iter(lambda: stream.read(1024 * 1024), b''):",
+        "            digest.update(block)",
+        "    return digest.hexdigest()",
+        "if sha256(table_path) != expected_table_sha:",
+        "    raise SystemExit('command-table SHA-256 changed after serial generation')",
+        "if sha256(allowlist_path) != expected_allowlist_sha:",
+        "    raise SystemExit('ObsNum allowlist SHA-256 changed after serial generation')",
+        "with open(table_path, encoding='utf-8', newline='') as stream:",
+        "    rows = list(csv.DictReader(stream))",
+        "for expected_index, row in enumerate(rows):",
+        "    if int(row['array_index']) != expected_index:",
+        "        raise SystemExit('command table array indices are not deterministic')",
+        "    argv = json.loads(row['argv_json'])",
+        "    manifest_path = argv[argv.index('--manifest') + 1]",
+        "    protocol_path = argv[argv.index('--protocol') + 1]",
+        "    if sha256(manifest_path) != expected_manifest_sha:",
+        "        raise SystemExit('selected-manifest SHA-256 changed after serial generation')",
+        "    if sha256(protocol_path) != expected_protocol_sha:",
+        "        raise SystemExit('analysis-protocol SHA-256 changed after serial generation')",
+        "    subprocess.run(argv, check=True)",
+        "PY",
+        "",
+    ]
+    return "\n".join(lines)
+
+
 def write_command_table(path: Path, text: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(text, encoding="utf-8")
@@ -334,6 +427,10 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--selected-manifest", type=Path, required=True)
     parser.add_argument("--output-script", type=Path, required=True)
+    parser.add_argument(
+        "--serial-script", type=Path,
+        help="Also generate a checksum-bound serial execution script.",
+    )
     parser.add_argument("--command-table", type=Path)
     parser.add_argument("--output-root", type=Path, required=True)
     parser.add_argument(
@@ -344,15 +441,15 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--python", type=Path, default=Path(sys.executable))
     parser.add_argument("--protocol", type=Path, default=DEFAULT_PROTOCOL)
     parser.add_argument("--job-name", default="sci-align-001-3c273")
-    parser.add_argument("--array-concurrency", type=int)
+    parser.add_argument("--array-concurrency", type=int, default=8)
     parser.add_argument(
         "--sbatch-option",
         action="append",
         default=[],
         metavar="KEY=VALUE",
         help=(
-            "Optional Slurm directive; partition, account, time, CPUs, memory, "
-            "and other resources have no defaults and must be supplied explicitly."
+            "Optional override of the standard time/memory/CPU/node/task/partition "
+            "directives. An account directive is intentionally not accepted."
         ),
     )
     parser.add_argument("--resume", action="store_true")
@@ -364,6 +461,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
     manifest_path = resolved(args.selected_manifest)
     script_path = resolved(args.output_script)
+    serial_script = resolved(args.serial_script) if args.serial_script else None
     command_table = resolved(
         args.command_table
         if args.command_table is not None
@@ -380,7 +478,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     manifest = load_selected_manifest(manifest_path)
     validate_output_isolation(
         manifest["rows"],
-        [script_path, command_table, output_root],
+        [script_path, command_table, output_root, *([serial_script] if serial_script else [])],
         [manifest_path, protocol, resolved(runner), resolved(python)],
     )
     options = parse_sbatch_options(args.sbatch_option)
@@ -404,8 +502,19 @@ def main(argv: Sequence[str] | None = None) -> int:
         sbatch_options=options,
         command_table_sha256=command_sha,
         selected_manifest_sha256=sha256_file(manifest_path),
+        obsnum_allowlist=manifest_path.parent / str(manifest["obsnum_allowlist_filename"]),
+        obsnum_allowlist_sha256=str(manifest["obsnum_allowlist_sha256"]),
         protocol_sha256=sha256_file(protocol),
     )
+    serial = render_serial_script(
+        command_table=command_table,
+        python=python,
+        command_table_sha256=command_sha,
+        selected_manifest_sha256=sha256_file(manifest_path),
+        obsnum_allowlist=manifest_path.parent / str(manifest["obsnum_allowlist_filename"]),
+        obsnum_allowlist_sha256=str(manifest["obsnum_allowlist_sha256"]),
+        protocol_sha256=sha256_file(protocol),
+    ) if serial_script else None
     if args.dry_run:
         print(script, end="")
         print("# command table")
@@ -416,9 +525,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     write_command_table(command_table, command_text)
     script_path.write_text(script, encoding="utf-8")
     script_path.chmod(0o755)
+    if serial_script is not None and serial is not None:
+        serial_script.parent.mkdir(parents=True, exist_ok=True)
+        serial_script.write_text(serial, encoding="utf-8")
+        serial_script.chmod(0o755)
     print(
         f"Slurm array generated: rows={len(rows)} script={script_path} "
         f"commands={command_table}"
+        + (f" serial={serial_script}" if serial_script else "")
     )
     return 0
 

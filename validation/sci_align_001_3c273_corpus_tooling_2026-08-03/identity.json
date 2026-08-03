@@ -8,7 +8,9 @@
   "no_merge_rebase_or_push": true,
   "repository": "/Users/gwilson/GitHub/citlali-refactor",
   "repository_authority": "AGENTS.md plus the living status and scientific-conventions documents routed by the TolTEC context skill",
-  "schema_version": "sci-align-001-3c273-tooling-identity-v1",
+  "followup_parent_commit": "6776931e753488b902d178b177815a2762375e5c",
+  "followup_scope": "authoritative corpus, canonical selection, availability, checksum-bound scripts, omission evidence, and nw9 anomaly diagnostics only",
+  "schema_version": "sci-align-001-3c273-tooling-identity-v2",
   "starting_worktree_clean": true,
   "unity_contacted": false
 }

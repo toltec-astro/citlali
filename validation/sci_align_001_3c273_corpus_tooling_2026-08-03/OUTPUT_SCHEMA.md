@@ -26,6 +26,9 @@ not detector row, is the detector identity.
 | --- | --- |
 | `candidate_inventory.csv` | one discovered reduction candidate |
 | `candidate_inventory.json` | schema, roots, source policy, sorted candidate rows, and digest metadata |
+| `authoritative_obsnum_status.csv` | one owner-listed ObsNum, including retained-reduction absence or frozen duplicate status |
+| `out_of_scope_3c273_discovery.csv` | discovered 3C273 products not permitted into the corpus |
+| `network_availability.csv` | one candidate/network availability statement, including nw10 structural and nw6 intermittent semantics |
 | `candidate_table.md` | owner-readable rendering of all candidates |
 | `selection_template.csv` | all candidate rows plus explicit owner selection/note fields |
 | `duplicate_reduction_registry.csv` | one duplicate group/candidate membership row; no silent winner |
@@ -51,6 +54,12 @@ primary reduction per core-eligible observation. Every other core-eligible
 reduction of that observation is included with `analysis_role=sensitivity`
 and inherits the primary observation's held-out fold.
 
+The inventory includes a checksum-bound authoritative ObsNum allowlist and
+explicit excluded discovery paths. A run-root descendant cannot become a
+candidate. A sole eligible reduction is canonical; exactly one eligible
+`redu00` plus one eligible `redu01` selects `redu01`, retaining `redu00` as
+sensitivity. Ambiguous duplicate provenance prevents selection freeze.
+
 ## Stage 2: one Beammap
 
 Each candidate has a separate directory named by a sanitized `candidate_id`.
@@ -67,6 +76,7 @@ directory for safe resume; the directory itself is not renamed atomically.
 | `scan_registry.csv` | one realized stable scan window and trajectory-derived direction classification |
 | `raw_counter_transitions.csv` | one delivered PPS-counter transition per network |
 | `raw_phase_summary.csv` | one raw network mapping, phase, and counter summary or no rows for core-only analysis |
+| `raw_pps_time_increment_anomalies.csv` | one delivered PpsTime increment mismatch with adjacent delivered counter/timestamp geometry |
 | `input_manifest.csv` / `input_manifest.json` | exact retained inputs and digests used by the candidate |
 | `run.log` | deterministic diagnostic messages and any explicit enhanced-to-core fallback |
 | `enhanced_failure.json` | fail-closed raw-linkage/analysis error when a valid core result is retained |
@@ -75,14 +85,13 @@ directory for safe resume; the directory itself is not renamed atomically.
 
 The primary map fields include pooled timing estimate and scan-jackknife
 uncertainty, left/right and excluded scan counts, matched detector and network
-counts, scan-speed quantiles, equivalent parallel/perpendicular sky
-displacement, FWHM fraction, beam major/minor widths, amplitudes, first- and
-second-half estimates, and every preregistered model comparison.  Half changes
+counts, amplitudes, first- and second-half estimates, and every preregistered
+model comparison. On-sky scientific-impact translation is deferred. Half changes
 are labeled within-observation timing variation, not clock drift.
 
 Each available network row includes the primary assigned-slot estimate and
-uncertainty, detector/scan counts, sky and beam controls, all comparison-model
-estimates, native-to-assigned-slot summaries, native detector-frame phase,
+uncertainty, detector/scan counts, all comparison-model estimates,
+native-to-assigned-slot summaries, native detector-frame phase,
 integer `T0`, and raw-counter anomaly counts where enhanced linkage succeeds.
 The map result contains separate within-map regressions against native phase
 and native-to-assigned-slot residual.
@@ -121,8 +130,11 @@ protocol, and per-map outputs.
 | `network_repeatability.csv` | persistent-network repeatability summaries |
 | `slot_regression_results.csv` | within-map, session, and corpus native-phase/slot predictor fits |
 | `drift_results.csv` | group-aware within-observation timing-variation summaries |
+| `pps_time_increment_occurrence.csv` | per-map/session/network anomaly numerator, denominator, rate, and unavailable-metadata status |
+| `raw_pps_time_increment_anomalies.csv` | compact concatenation of delivered anomaly geometry across maps |
+| `nw9_timing_sensitivity.csv` | nw9/other-network contrast, all versus leave-nw9-out effect, uncertainty, and anomaly rate |
 | `corpus_summary.json` | selected category, limitations, producer authority, and no-correction scope |
-| `REPORT.md` | owner-readable result, sky/FWHM scales, exclusions, and decision rationale |
+| `REPORT.md` | owner-readable timing/support result, exclusions, descriptive classifications, and limitations |
 | `input_digests.csv` / `input_digests.json` | verified compact-input, manifest, protocol, and tooling identities |
 | `plots/` | deterministic compact diagnostic plots only |
 | `SHA256SUMS` | aggregate package checksums |
@@ -135,12 +147,18 @@ date group, then deterministic observation-number fallback.  At least three
 independent groups are required for held-out claims; exactly three permits
 reporting all preregistered models but prohibits data-driven model selection.
 
-Candidate model statistics include weighted held-out timing error, sky error,
-beam-FWHM fraction, between-map intrinsic scatter, persistent network scatter,
+Candidate model statistics include weighted held-out timing error,
+between-map intrinsic scatter, persistent network scatter,
 network-by-map interaction, within-map and corpus regressions for both native
 phase and native-to-assigned-slot residual, the free slot coefficient and its
 interval relative to `-1`, session support, and within-observation variation.
 Unsupported levels and missing predictors remain explicit.
+
+`nw10` is structural and never a missing-network result. `nw6` absence is
+intermittent and non-exclusionary; other absent networks reduce support without
+automatically excluding a Beammap. PpsTime mismatch counts are diagnostic
+observations, never quality cuts; unavailable raw fields are not represented as
+zero anomalies.
 
 ## Scope fields required in every final result
 

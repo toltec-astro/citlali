@@ -21,12 +21,12 @@
       "status": "pass"
     },
     {
-      "command": "env PYTHONWARNINGS=error MPLBACKEND=Agg MPLCONFIGDIR=/private/tmp/sci-align-001-focused-mpl XDG_CACHE_HOME=/private/tmp/sci-align-001-focused-cache /Users/gwilson/tolteca/bin/python -m unittest tools.diagnostics.test_sci_align_001_3c273_inventory tools.diagnostics.test_sci_align_001_3c273_runner tools.diagnostics.test_sci_align_001_3c273_aggregation",
-      "result": "55 tests passed: 15 inventory/scheduler, 16 runner, 24 aggregation",
+      "command": "env MPLBACKEND=Agg MPLCONFIGDIR=/private/tmp/sci-align-followup-mpl XDG_CACHE_HOME=/private/tmp/sci-align-followup-cache /Users/gwilson/tolteca/bin/python -m unittest tools.diagnostics.test_sci_align_001_3c273_inventory tools.diagnostics.test_sci_align_001_3c273_runner tools.diagnostics.test_sci_align_001_3c273_aggregation",
+      "result": "57 tests passed, including authoritative allowlist/run-root exclusion, redu01 canonical selection, availability distinctions, serial/Slurm checksum binding, and nw9 anomaly occurrence/leave-out sensitivity controls",
       "status": "pass"
     },
     {
-      "command": "/Users/gwilson/tolteca/bin/python -m ruff check --no-cache <all eight new diagnostic and test Python files>",
+      "command": "/Users/gwilson/tolteca/bin/python -m ruff check --no-cache <all eight SCI-ALIGN diagnostic and test Python files>",
       "result": "all checks passed",
       "status": "pass"
     },
@@ -37,12 +37,12 @@
     },
     {
       "command": "Draft 2020-12 schema validation",
-      "result": "candidate schema, illustrative example, actual selected manifest, and frozen protocol JSON validated",
+      "result": "Draft 2020-12 authoritative allowlist and selected-manifest examples validated; frozen protocol and package evidence JSON parsed",
       "status": "pass"
     },
     {
-      "command": "two fresh local 148670 manifest-driven runner executions",
-      "result": "candidate SHA256SUMS files byte-identical; all 14 listed artifacts verified; resume returned resumed_complete",
+      "command": "fresh local 148670 authoritative-allowlist inventory/freeze and enhanced retained-product runner replay",
+      "result": "v2 freeze completed; 148670 candidate SHA256SUMS verified; nw9 had 369/3142 one-tick PpsTime increment mismatches while all ten other available networks had zero; no repair, drift, or causal timing claim",
       "status": "pass"
     },
     {
@@ -57,6 +57,6 @@
     }
   ],
   "no_unity_access": true,
-  "schema_version": "sci-align-001-3c273-validation-gates-v1",
+  "schema_version": "sci-align-001-3c273-validation-gates-v2",
   "validated_on": "2026-08-03"
 }

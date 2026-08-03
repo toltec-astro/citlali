@@ -28,13 +28,16 @@ the delivered D[n]/Ts[n] pair and cannot exclude upstream FPGA association
 error. Do not call a first/second-half difference clock drift unless counters
 contradict the shared-clock account.
 
-If the attachment is inventory-only, review every source identity, exclusion,
-duplicate group, canonical proposal, exact network T0 vector, counter-field
-availability, and core/enhanced eligibility without inspecting timing
-outcomes. Identify the exact owner choices needed to freeze one primary
-reduction per observation; do not choose an ambiguous duplicate for the owner.
-Return a proposed owner_selection.csv diff and the exact freeze, sentinel,
-batch, and resume commands, then stop for owner approval.
+If the attachment is inventory-only, verify the checksum-bound authoritative
+40-ObsNum allowlist, every listed-ObsNum status, out-of-scope discovery row,
+source identity, exclusion, duplicate group, canonical proposal, exact network
+T0 vector, counter-field availability, and core/enhanced eligibility without
+inspecting timing outcomes. A sole eligible candidate is primary; a single
+redu00/redu01 pair selects redu01 primary and keeps redu00 as sensitivity;
+ambiguous duplicates remain owner-stop cases. Interpret nw10 as structural and
+nw6 as intermittent rather than observation-excluding. Return a proposed
+owner_selection.csv diff and the exact freeze, serial, array, and resume
+commands, then stop for owner approval.
 
 If the attachment is a completed corpus bundle, verify that grouping was
 frozen before aggregate timing inspection and that duplicate reductions do
@@ -47,13 +50,19 @@ repeat, modulo-2^32 counter increments, and same/adjacent/variable metadata
 transition association. Evaluate only genuinely held-out predictions; with
 exactly three independent groups report models but do not select one.
 
-Return one frozen category (GLOBAL-STABLE, NETWORK-STABLE, SESSION-STABLE,
-SLOT-PREDICTABLE, TIME-VARIABLE, UNPREDICTABLE, or INSUFFICIENT), its exact
-evidence and limitations, timing error translated by measured scan speed into
-arcseconds and beam-FWHM fraction, every exclusion/duplicate sensitivity, and
-the minimum preregistered non-3C273 confirmation needed later. A stable or
-T0-session-predictable native phase may support a later bounded structural
-native-time/fractional-slot investigation, not fixed physical clock
-corrections. State explicitly that 3C273 alone authorizes no production
-correction and stop before any application change.
+Audit `pps_time_increment_occurrence.csv`,
+`raw_pps_time_increment_anomalies.csv`, and `nw9_timing_sensitivity.csv`:
+require every-network denominators, field-unavailable status, nw9
+observation/session fractions, and all-network versus leave-nw9-out effect
+sizes with uncertainties. Treat them as descriptive association evidence, not
+a mask/repair authorization or a causal claim. Return one frozen category
+(GLOBAL-STABLE, NETWORK-STABLE, SESSION-STABLE, SLOT-PREDICTABLE,
+TIME-VARIABLE, UNPREDICTABLE, or INSUFFICIENT), exact evidence and
+limitations, every exclusion/duplicate sensitivity, and the minimum
+preregistered non-3C273 confirmation needed later. Do not impose a science
+acceptability threshold or translate this diagnostic into a science-impact
+decision. A stable or T0-session-predictable native phase may support a later
+bounded structural native-time/fractional-slot investigation, not fixed
+physical clock corrections. State explicitly that 3C273 alone authorizes no
+production correction and stop before any application change.
 ```

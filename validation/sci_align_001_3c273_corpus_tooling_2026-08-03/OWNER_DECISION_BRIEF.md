@@ -42,6 +42,37 @@ The previously measured 1.856 ms first-half/second-half difference is called
 within-observation timing variation here.  It is not evidence for clock drift
 unless raw counters contradict the shared-reference account.
 
+## Owner-frozen corpus and execution policy
+
+The checksum-bound `authoritative_obsnums_2026-08-03.json` file is the sole
+40-ObsNum corpus authority. The inventory reports every listed observation,
+including missing retained reductions, and records other discovered 3C273
+products only in a separate out-of-scope table. The versioned owner run
+directory is excluded from discovery, so a rerun cannot discover its own
+outputs. Citlali is never invoked; `CITLALI_BIN` is execution provenance only.
+
+The canonical rule is timing-blind: use the sole eligible retained reduction;
+when exactly one `redu00` and one `redu01` are eligible, use `redu01` and keep
+`redu00` as a sensitivity duplicate. Multiple candidates in either location,
+an unexpected location, or ambiguous provenance stops selection freeze for
+owner review. A lone `redu00` remains eligible.
+
+`nw10` is structural and never reported as missing. `nw6` is recorded as
+present or intermittently absent without excluding a map. Other per-map
+network absences and unreadable metadata remain explicit support limitations.
+
+## nw9 PpsTime increment diagnostic
+
+Every available network is tested with the same authenticated PpsTime
+increment detector. The compact bundle reports denominator, count/rate,
+signed/absolute tick residual, physical-time conversion, transition and packet
+geometry, first/last and clustered occurrences, and unavailable fields as
+unavailable rather than zero. It separately reports nw9 timing relative to
+other networks and all-network versus leave-nw9-out estimates with covariance
+aware uncertainty, plus an uncertainty-aware anomaly-rate association across
+observations. This is not a causal or clock-drift claim; direct affected-row
+masking/repair is not authorized while metadata semantics remain unresolved.
+
 ## Preserved Beammap 148670 evidence
 
 The predecessor package remains unchanged.  Its frozen common-support results
@@ -112,12 +143,12 @@ after each transition.  It must test:
 These are observations of delivered metadata.  Without FPGA source they do
 not establish which integration event a counter or timestamp marks.
 
-## Science-facing scale and later confirmation
+## Deferred science-facing scale and later confirmation
 
-The aggregate report converts timing prediction errors with each Beammap's
-measured scan speed and reports arcseconds and fraction of measured beam FWHM.
-It imposes no arbitrary sub-millisecond pass threshold; the project owner must
-choose the science tolerance.
+SCI-ALIGN-001 records timing, support, uncertainties, network structure, and
+descriptive model classifications. It imposes no arcsecond, FWHM, timing, or
+mitigation acceptability threshold. On-sky scientific-impact translation is a
+separate downstream analysis.
 
 Even a successful 3C273 result is discovery/validation evidence for a later
 bounded design, not production authorization.  Before any production change,

@@ -1,442 +1,198 @@
 # SCI-ALIGN-001 3C273 corpus owner runbook
 
-This runbook is for the project owner to execute on Unity. Codex did not run
-these commands and must not connect to Unity. Every analysis command is
-read-only with respect to reduction and raw-data roots and writes only below
-the owner-selected output root.
+This is an owner-executed, retained-product diagnostic workflow.  Codex did
+not access Unity, run these commands, create a Citlali reduction, or authorize
+a correction.  The commands read retained beammap/raw metadata and write only
+under the versioned run directory.
 
-The current owner-provided 3C273 analysis location is:
+## 1. Make the exact tooling available and verify identity
 
-```text
-/work/toltec/wilson/citlali_testing/beammaps/3c273
-```
-
-Angle-bracketed values are deliberate owner choices. Do not copy a command
-until every placeholder in it has been resolved.
-
-## 1. Environment and exact repository identity
+Codex does not push or perform network activity.  If the Unity checkout lacks
+the handoff commit, the owner may either fetch it after an owner push, or copy
+an owner-created git bundle and run the following from the Unity clone:
 
 ```bash
-export SCI_REPO=<UNITY_CITLALI_REPOSITORY>
-export SCI_TOOLING_COMMIT=<TOOLING_COMMIT_FROM_CODEX_HANDOFF>
+# On the source clone, after the follow-up commit is supplied in the handoff:
+git bundle create sci_align_001_followup.bundle \
+  6776931e753488b902d178b177815a2762375e5c..<FOLLOWUP_COMMIT>
+# Transfer the bundle by an owner-approved route, then on Unity:
+git fetch /path/to/sci_align_001_followup.bundle \
+  <FOLLOWUP_COMMIT>:refs/heads/codex/sci-align-001-3c273-corpus-tooling
+```
+
+```bash
+export SCI_REPO=/work/toltec/citlali_dev/citlali_refactor
+export CITLALI_BIN=/work/toltec/citlali_dev/citlali_refactor/build/bin/citlali
 export SCI_ANALYSIS_ROOT=/work/toltec/wilson/citlali_testing/beammaps/3c273
-export SCI_RAW_ROOT=<UNITY_RAW_DATA_ROOT>
-export SCI_OUTPUT_ROOT=<OWNER_WRITABLE_OUTPUT_ROOT>/sci_align_001_3c273_corpus
-export SCI_RUNTIME_CACHE="$SCI_OUTPUT_ROOT/_runtime_cache"
+export SCI_RAW_ROOT=/work/toltec/wilson/citlali_testing/beammaps/data
+export SCI_RUN_ROOT=/work/toltec/wilson/citlali_testing/beammaps/3c273/sci_align_001_corpus_run_2026-08-03
+export SCI_SCRIPT_ROOT="$SCI_RUN_ROOT/scripts"
+export SCI_OUTPUT_ROOT="$SCI_RUN_ROOT/output"
+export SCI_RUNTIME_CACHE="$SCI_RUN_ROOT/_runtime_cache"
+export SCI_TOOLING_COMMIT=<FOLLOWUP_COMMIT>
+export SCI_PACKAGE=validation/sci_align_001_3c273_corpus_tooling_2026-08-03
 
 source "$HOME/tolteca/bin/activate"
 cd "$SCI_REPO"
-
 test "$(git branch --show-current)" = codex/sci-align-001-3c273-corpus-tooling
 test "$(git rev-parse HEAD)" = "$SCI_TOOLING_COMMIT"
-git merge-base --is-ancestor \
-  a2b37924d612eb175821483523cc94dd233f2fea HEAD
+git merge-base --is-ancestor 6776931e753488b902d178b177815a2762375e5c HEAD
 test -z "$(git status --short)"
-"$HOME/tolteca/bin/python" --version
-```
+# CITLALI_BIN is retained in execution identity only; do not test or invoke it.
+(cd "$SCI_PACKAGE" && shasum -a 256 -c SHA256SUMS)
 
-Stop if any identity check fails. Do not substitute a patched executable,
-different branch, or uncommitted copy while retaining the expected identity.
-
-Create only the separate owner output directory:
-
-```bash
-mkdir -p "$SCI_OUTPUT_ROOT"
-mkdir -p "$SCI_RUNTIME_CACHE/matplotlib" "$SCI_RUNTIME_CACHE/xdg"
-test -w "$SCI_OUTPUT_ROOT"
-
+mkdir -p "$SCI_SCRIPT_ROOT" "$SCI_OUTPUT_ROOT" \
+  "$SCI_RUNTIME_CACHE/matplotlib" "$SCI_RUNTIME_CACHE/xdg"
+test -w "$SCI_RUN_ROOT"
 {
   echo "tooling_branch=$(git branch --show-current)"
   echo "tooling_commit=$(git rev-parse HEAD)"
-  echo "frozen_predecessor=a2b37924d612eb175821483523cc94dd233f2fea"
+  echo "citlali_bin_recorded_only=$CITLALI_BIN"
   echo "python=$($HOME/tolteca/bin/python --version 2>&1)"
-} > "$SCI_OUTPUT_ROOT/execution_identity.txt"
+} > "$SCI_RUN_ROOT/execution_identity.txt"
 ```
 
-The output root must not be inside either the analysis or raw-data root.
+Stop before analysis if any identity or package checksum check fails.  No
+command below invokes `CITLALI_BIN`, `citlali`, or a reduction configuration.
 
-## 2. Inventory dry run and inventory
+## 2. Inventory the authoritative corpus
 
-First preview discovery without writing:
-
-```bash
-"$HOME/tolteca/bin/python" \
-  tools/diagnostics/inventory_sci_align_001_3c273_corpus.py \
-  --reduction-root "$SCI_ANALYSIS_ROOT" \
-  --raw-root "$SCI_RAW_ROOT" \
-  --output "$SCI_OUTPUT_ROOT/inventory" \
-  --source-regex '(?i)^3c[ _-]?273$' \
-  --dry-run
-```
-
-Then create the deterministic inventory:
+The run root is passed as an explicit exclusion.  This prevents any generated
+script, output, cache, or archive below it from becoming a candidate on a
+repeat run.
 
 ```bash
-"$HOME/tolteca/bin/python" \
-  tools/diagnostics/inventory_sci_align_001_3c273_corpus.py \
-  --reduction-root "$SCI_ANALYSIS_ROOT" \
-  --raw-root "$SCI_RAW_ROOT" \
-  --output "$SCI_OUTPUT_ROOT/inventory" \
-  --source-regex '(?i)^3c[ _-]?273$'
-```
+"$HOME/tolteca/bin/python" tools/diagnostics/inventory_sci_align_001_3c273_corpus.py \
+  --reduction-root "$SCI_ANALYSIS_ROOT" --raw-root "$SCI_RAW_ROOT" \
+  --exclude-path "$SCI_RUN_ROOT" \
+  --obsnum-allowlist "$SCI_PACKAGE/authoritative_obsnums_2026-08-03.json" \
+  --source-regex '(?i)^3c[ _-]?273$' --output "$SCI_OUTPUT_ROOT/inventory"
 
-The default inventory hashes small identity and configuration files. Very
-large raw signal files are identified by path, size, producer metadata, and a
-persistent digest-cache status rather than being repeatedly hashed. If the
-owner deliberately wants complete raw SHA-256 values, repeat with
-`--hash-large`; retain the digest cache so each physical file is read only
-once.
-
-Before analysis, the runner always authenticates the current bytes of every
-retained input. A digest supplied by the frozen manifest must match. A large
-raw file that was deliberately left `not_hashed_large` during inventory is
-hashed once into the owner-output physical-file digest cache, then reused only
-while its device/inode/size/mtime identity remains unchanged.
-
-## 3. Inspect candidates, duplicates, and exclusions
-
-```bash
-sed -n '1,240p' "$SCI_OUTPUT_ROOT/inventory/candidate_table.md"
-sed -n '1,240p' "$SCI_OUTPUT_ROOT/inventory/next_commands.txt"
-column -s, -t < "$SCI_OUTPUT_ROOT/inventory/candidate_inventory.csv" | less -S
+column -s, -t < "$SCI_OUTPUT_ROOT/inventory/authoritative_obsnum_status.csv" | less -S
+column -s, -t < "$SCI_OUTPUT_ROOT/inventory/network_availability.csv" | less -S
+column -s, -t < "$SCI_OUTPUT_ROOT/inventory/out_of_scope_3c273_discovery.csv" | less -S
 column -s, -t < "$SCI_OUTPUT_ROOT/inventory/duplicate_reduction_registry.csv" | less -S
-column -s, -t < "$SCI_OUTPUT_ROOT/inventory/exclusion_registry.csv" | less -S
-"$HOME/tolteca/bin/python" -m json.tool \
-  "$SCI_OUTPUT_ROOT/inventory/candidate_inventory.json" | less
 ```
 
-Check every source spelling, observation, reduction/configuration identity,
-software revision, network set, exact per-network integer-second T0 vector,
-retained PPS/internal-counter field availability, eligibility class, and
-exclusion reason.
-Eligibility and canonical proposals are provenance-only; do not inspect a
-candidate's inferred timing result to decide whether to select it.
+The allowlist is exactly the owner-supplied 40 ObsNums and is checksum-bound
+in the inventory and selected manifest.  `nw10` is structural/nonexistent;
+`nw6` is recorded as intermittent; other absences remain visible and reduce
+only relevant network support.  Missing retained products and raw metadata
+remain deficiencies—never run a new reduction to fill them.
 
-For duplicate observations:
-
-- retain every reduction in the inventory;
-- select exactly one core-eligible reduction per eligible observation for
-  primary independence;
-- keep other reductions for reduction-sensitivity analysis;
-- stop for an owner choice when configuration or provenance does not establish
-  a defensible canonical authority.
-
-## 4. Freeze the selected manifest
-
-Copy the generated owner-selection template, change only its explicit
-selection and owner-note columns, and preserve every candidate row:
+Canonical selection is provenance-only: a sole eligible candidate wins; an
+eligible `redu00`/`redu01` pair selects `redu01` primary and retains `redu00`
+as sensitivity.  Multiple candidates in either location, another location, or
+ambiguous provenance fail closed.  Edit only the resulting template:
 
 ```bash
 cp "$SCI_OUTPUT_ROOT/inventory/selection_template.csv" \
   "$SCI_OUTPUT_ROOT/inventory/owner_selection.csv"
-<OWNER_EDITOR> "$SCI_OUTPUT_ROOT/inventory/owner_selection.csv"
-```
-
-Validate and freeze that selection without rereading timing results:
-
-```bash
-"$HOME/tolteca/bin/python" \
-  tools/diagnostics/inventory_sci_align_001_3c273_corpus.py \
+emacs -nw "$SCI_OUTPUT_ROOT/inventory/owner_selection.csv"
+"$HOME/tolteca/bin/python" tools/diagnostics/inventory_sci_align_001_3c273_corpus.py \
   --freeze-selection "$SCI_OUTPUT_ROOT/inventory/owner_selection.csv" \
   --inventory "$SCI_OUTPUT_ROOT/inventory/candidate_inventory.json" \
   --output "$SCI_OUTPUT_ROOT/inventory/frozen"
-```
-
-Inspect the exact freeze and its digest:
-
-```bash
-column -s, -t < "$SCI_OUTPUT_ROOT/inventory/frozen/selected_manifest.csv" | less -S
-"$HOME/tolteca/bin/python" -m json.tool \
-  "$SCI_OUTPUT_ROOT/inventory/frozen/selected_manifest.json" | less
 (cd "$SCI_OUTPUT_ROOT/inventory/frozen" && shasum -a 256 -c SHA256SUMS)
 ```
 
-Do not continue if a primary observation has zero or multiple selected
-reductions, an ineligible row is selected, or a duplicate choice remains
-unresolved.
+## 3. Generate checksum-bound serial and Slurm analysis scripts
 
-The frozen manifest assigns the chosen reduction `analysis_role=primary` and
-automatically retains every other core-eligible reduction of that observation
-as `analysis_role=sensitivity`. Those rows are executed by the same serial or
-array command but never count as independent observations; they inherit the
-primary observation's frozen held-out group. The exact edited owner-selection
-file is copied into the frozen directory and covered by its `SHA256SUMS`.
-
-## 5. Preview per-map analysis
-
-```bash
-"$HOME/tolteca/bin/python" \
-  tools/diagnostics/run_sci_align_001_3c273_beammap.py \
-  --manifest "$SCI_OUTPUT_ROOT/inventory/frozen/selected_manifest.json" \
-  --protocol \
-    validation/sci_align_001_3c273_corpus_tooling_2026-08-03/frozen_analysis_protocol.json \
-  --output-root "$SCI_OUTPUT_ROOT/per_map" \
-  --dry-run
-```
-
-This must list retained-product reads and owner-output writes only. It must not
-list `citlali`, TolTECA reduction setup, `sbatch`, or writes under the source
-roots.
-
-For enhanced candidates, the planned outputs must include raw phase and
-counter diagnostics: exact T0 by network, PPS transition rows, before/after
-internal-counter values, 122/123-row spacing checks, the exact
-128-second/15,625-row repeat check, and one-row metadata/counter anomaly
-checks. Absence of a retained field must be reported explicitly rather than
-inferred.
-
-## 6A. Serial per-map execution
-
-For a small corpus or an initial sentinel, run one selected candidate:
-
-```bash
-export SCI_CANDIDATE_ID=<CANDIDATE_ID_FROM_SELECTED_MANIFEST>
-
-OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \
-MPLBACKEND=Agg MPLCONFIGDIR="$SCI_RUNTIME_CACHE/matplotlib" \
-XDG_CACHE_HOME="$SCI_RUNTIME_CACHE/xdg" \
-"$HOME/tolteca/bin/python" \
-  tools/diagnostics/run_sci_align_001_3c273_beammap.py \
-  --manifest "$SCI_OUTPUT_ROOT/inventory/frozen/selected_manifest.json" \
-  --candidate-id "$SCI_CANDIDATE_ID" \
-  --protocol \
-    validation/sci_align_001_3c273_corpus_tooling_2026-08-03/frozen_analysis_protocol.json \
-  --output-root "$SCI_OUTPUT_ROOT/per_map"
-```
-
-Run every selected map serially with:
-
-```bash
-OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \
-MPLBACKEND=Agg MPLCONFIGDIR="$SCI_RUNTIME_CACHE/matplotlib" \
-XDG_CACHE_HOME="$SCI_RUNTIME_CACHE/xdg" \
-"$HOME/tolteca/bin/python" \
-  tools/diagnostics/run_sci_align_001_3c273_beammap.py \
-  --manifest "$SCI_OUTPUT_ROOT/inventory/frozen/selected_manifest.json" \
-  --protocol \
-    validation/sci_align_001_3c273_corpus_tooling_2026-08-03/frozen_analysis_protocol.json \
-  --output-root "$SCI_OUTPUT_ROOT/per_map"
-```
-
-## 6B. Configurable Slurm job array
-
-Generate, but inspect before submitting, a scheduler script. Scheduler policy
-is deliberately supplied by the owner rather than embedded in the toolkit:
+Both scripts analyze retained products only.  They bind command table, selected
+manifest, allowlist, protocol, and tool bytes by checksum; every candidate has
+a unique output directory.  The six Slurm CPUs remain deliberately unused by
+numerical libraries (all numerical thread counts are one).
 
 ```bash
 mkdir -p "$SCI_OUTPUT_ROOT/slurm_logs"
-"$HOME/tolteca/bin/python" \
-  tools/diagnostics/generate_sci_align_001_3c273_slurm_array.py \
-  --selected-manifest \
-    "$SCI_OUTPUT_ROOT/inventory/frozen/selected_manifest.json" \
+"$HOME/tolteca/bin/python" tools/diagnostics/generate_sci_align_001_3c273_slurm_array.py \
+  --selected-manifest "$SCI_OUTPUT_ROOT/inventory/frozen/selected_manifest.json" \
+  --protocol "$SCI_PACKAGE/frozen_analysis_protocol.json" \
   --output-root "$SCI_OUTPUT_ROOT/per_map" \
-  --output-script "$SCI_OUTPUT_ROOT/run_3c273_array.sh" \
-  --command-table "$SCI_OUTPUT_ROOT/run_3c273_array.commands.csv" \
-  --python "$HOME/tolteca/bin/python" \
-  --protocol \
-    validation/sci_align_001_3c273_corpus_tooling_2026-08-03/frozen_analysis_protocol.json \
-  --array-concurrency <MAX_CONCURRENT_MAPS> \
-  --sbatch-option cpus-per-task=<CPUS_PER_TASK> \
-  --sbatch-option mem=<MEMORY_REQUEST> \
-  --sbatch-option partition=<PARTITION> \
-  --sbatch-option account=<ACCOUNT> \
+  --command-table "$SCI_SCRIPT_ROOT/3c273.commands.csv" \
+  --output-script "$SCI_SCRIPT_ROOT/run_3c273_array.sh" \
+  --serial-script "$SCI_SCRIPT_ROOT/run_3c273_serial.sh" \
+  --python "$HOME/tolteca/bin/python" --array-concurrency 8 \
   --sbatch-option output="$SCI_OUTPUT_ROOT/slurm_logs/%x_%A_%a.out" \
-  --sbatch-option error="$SCI_OUTPUT_ROOT/slurm_logs/%x_%A_%a.err" \
-  --sbatch-option time=<TIME_LIMIT>
+  --sbatch-option error="$SCI_OUTPUT_ROOT/slurm_logs/%x_%A_%a.err"
+
+sed -n '1,240p' "$SCI_SCRIPT_ROOT/run_3c273_array.sh"
+bash -n "$SCI_SCRIPT_ROOT/run_3c273_array.sh"
+bash -n "$SCI_SCRIPT_ROOT/run_3c273_serial.sh"
 ```
 
-Review all rendered directives, environment lines, manifest paths, and array
-bounds:
+The rendered array has exactly these owner defaults: `48:00:00`, `64G`, six
+CPUs, one node, one task, `toltec-cpu`, `--parsable`, and `%8`; it has no
+account directive.  Scheduler variables appear at the top and are editable.
+Run one route, only after inspection:
 
 ```bash
-sed -n '1,260p' "$SCI_OUTPUT_ROOT/run_3c273_array.sh"
-column -s, -t \
-  < "$SCI_OUTPUT_ROOT/run_3c273_array.commands.csv" | less -S
+"$SCI_SCRIPT_ROOT/run_3c273_serial.sh"
+# Or, owner-run only:
+sbatch "$SCI_SCRIPT_ROOT/run_3c273_array.sh"
 ```
 
-The owner may then submit it:
-
-```bash
-sbatch "$SCI_OUTPUT_ROOT/run_3c273_array.sh"
-```
-
-This `sbatch` command is owner-run. Its presence in the runbook is not Codex
-authorization to submit or inspect a Unity job.
-
-## 7. Resume or retry
-
-Completed map outputs are reusable only when their candidate, selected
-manifest, frozen protocol, tool, and input digests match exactly.
-
-Retry one failed candidate:
+## 4. Freeze the aggregate plan and aggregate compact results
 
 ```bash
 MPLBACKEND=Agg MPLCONFIGDIR="$SCI_RUNTIME_CACHE/matplotlib" \
 XDG_CACHE_HOME="$SCI_RUNTIME_CACHE/xdg" \
-"$HOME/tolteca/bin/python" \
-  tools/diagnostics/run_sci_align_001_3c273_beammap.py \
-  --manifest "$SCI_OUTPUT_ROOT/inventory/frozen/selected_manifest.json" \
-  --candidate-id <FAILED_CANDIDATE_ID> \
-  --protocol \
-    validation/sci_align_001_3c273_corpus_tooling_2026-08-03/frozen_analysis_protocol.json \
-  --output-root "$SCI_OUTPUT_ROOT/per_map" \
-  --resume
-```
-
-Retry the complete manifest while reusing digest-matched successes:
-
-```bash
-MPLBACKEND=Agg MPLCONFIGDIR="$SCI_RUNTIME_CACHE/matplotlib" \
-XDG_CACHE_HOME="$SCI_RUNTIME_CACHE/xdg" \
-"$HOME/tolteca/bin/python" \
-  tools/diagnostics/run_sci_align_001_3c273_beammap.py \
-  --manifest "$SCI_OUTPUT_ROOT/inventory/frozen/selected_manifest.json" \
-  --protocol \
-    validation/sci_align_001_3c273_corpus_tooling_2026-08-03/frozen_analysis_protocol.json \
-  --output-root "$SCI_OUTPUT_ROOT/per_map" \
-  --resume
-```
-
-Never force reuse after a digest mismatch. Move the stale output aside and run
-the candidate again into a fresh owner-output directory.
-
-## 8. Freeze held-out grouping before aggregate timing analysis
-
-This stage reads selected-manifest identity and provenance fields only:
-
-```bash
-MPLBACKEND=Agg MPLCONFIGDIR="$SCI_RUNTIME_CACHE/matplotlib" \
-XDG_CACHE_HOME="$SCI_RUNTIME_CACHE/xdg" \
-"$HOME/tolteca/bin/python" \
-  tools/diagnostics/aggregate_sci_align_001_3c273_corpus.py freeze \
-  --selected-manifest \
-    "$SCI_OUTPUT_ROOT/inventory/frozen/selected_manifest.json" \
-  --protocol-template \
-    validation/sci_align_001_3c273_corpus_tooling_2026-08-03/frozen_analysis_protocol.json \
+"$HOME/tolteca/bin/python" tools/diagnostics/aggregate_sci_align_001_3c273_corpus.py freeze \
+  --selected-manifest "$SCI_OUTPUT_ROOT/inventory/frozen/selected_manifest.json" \
+  --protocol-template "$SCI_PACKAGE/frozen_analysis_protocol.json" \
   --output "$SCI_OUTPUT_ROOT/aggregate_freeze"
+
+OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 MPLBACKEND=Agg \
+MPLCONFIGDIR="$SCI_RUNTIME_CACHE/matplotlib" XDG_CACHE_HOME="$SCI_RUNTIME_CACHE/xdg" \
+"$HOME/tolteca/bin/python" tools/diagnostics/aggregate_sci_align_001_3c273_corpus.py run \
+  --selected-manifest "$SCI_OUTPUT_ROOT/inventory/frozen/selected_manifest.json" \
+  --frozen-protocol "$SCI_OUTPUT_ROOT/aggregate_freeze/frozen_analysis_protocol.json" \
+  --map-output-root "$SCI_OUTPUT_ROOT/per_map" --output "$SCI_OUTPUT_ROOT/aggregate"
 ```
 
-Inspect `aggregate_freeze/session_registry.csv` and
-`aggregate_freeze/frozen_analysis_protocol.json` before running aggregation.
-The complete ordered network-T0 vector is the first candidate
-ROACH-initialization session identity. A session grouping is valid only when
-that vector or other retained provenance supports it; otherwise the documented
-date or observation fallback is used.
+The aggregate reports no science acceptance threshold, timing eligibility cut,
+or correction decision.  It reports support counts (observations, networks,
+scans, detectors), phase/session structure, and descriptive uncertainties.
+The Stage-A lineage evidence begins with delivered `D[n]/Ts[n]`; it cannot
+exclude an upstream FPGA metadata-to-integration association error.
 
-## 9. Aggregate compact per-map results
+For every available network the returned bundle includes mismatch denominators,
+counts/rates, signed and absolute tick residuals, locations/adjacent geometry,
+and field-unavailable status in `pps_time_increment_occurrence.csv` and
+`raw_pps_time_increment_anomalies.csv`.  `nw9_timing_sensitivity.csv` contains
+the nw9 estimate/residual/rate plus all-network versus leave-nw9-out difference
+and uncertainty; its corpus association is descriptive, not causal.  No
+row mask or repair is authorized where metadata semantics are ambiguous.
 
-```bash
-OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \
-MPLBACKEND=Agg MPLCONFIGDIR="$SCI_RUNTIME_CACHE/matplotlib" \
-XDG_CACHE_HOME="$SCI_RUNTIME_CACHE/xdg" \
-"$HOME/tolteca/bin/python" \
-  tools/diagnostics/aggregate_sci_align_001_3c273_corpus.py run \
-  --selected-manifest \
-    "$SCI_OUTPUT_ROOT/inventory/frozen/selected_manifest.json" \
-  --frozen-protocol \
-    "$SCI_OUTPUT_ROOT/aggregate_freeze/frozen_analysis_protocol.json" \
-  --map-output-root "$SCI_OUTPUT_ROOT/per_map" \
-  --output "$SCI_OUTPUT_ROOT/aggregate"
-```
-
-The aggregate report must retain all technically valid timing outliers, state
-the independent-group count, expose unsupported held-out levels, compare
-network timing against both measured native detector-frame phase and
-native-to-assigned-slot residual, report the free coefficient and its interval
-relative to `-1`, and translate held-out errors into arcseconds and beam-FWHM
-fractions. It must not call a first/second-half change clock drift unless the
-raw counters contradict the shared-clock producer account. A stable or
-T0-session-predictable native detector-frame phase, or a genuinely held-out
-slot predictor, favors later structural native-time or fractional-slot design,
-not a fixed physical clock correction. The report must always state that no
-production correction is authorized.
-
-## 10. Verify checksums and compactness
-
-Verify each package from its own directory:
+## 5. Verify and return the compact bundle
 
 ```bash
 while IFS= read -r -d '' sci_sum; do
   sci_dir=$(dirname "$sci_sum")
   (cd "$sci_dir" && shasum -a 256 -c SHA256SUMS) || exit 1
-done < <(find "$SCI_OUTPUT_ROOT" -name SHA256SUMS -type f -print0)
+done < <(find "$SCI_RUN_ROOT" -name SHA256SUMS -type f -print0)
+
+"$HOME/tolteca/bin/python" -m json.tool \
+  "$SCI_OUTPUT_ROOT/aggregate/known_omissions.json" | less
+find "$SCI_RUN_ROOT" -type f \( -name '*.nc' -o -name '*.fits' -o -name '*.fits.gz' \) -print
+
+export SCI_ARCHIVE_PARENT=$(dirname "$SCI_RUN_ROOT")
+export SCI_ARCHIVE_NAME=sci_align_001_3c273_corpus_run_2026-08-03.tar.gz
+tar -C "$SCI_ARCHIVE_PARENT" -czf "$SCI_ARCHIVE_PARENT/$SCI_ARCHIVE_NAME" \
+  --exclude="$(basename "$SCI_RUN_ROOT")/_runtime_cache" \
+  "$(basename "$SCI_RUN_ROOT")"
+(cd "$SCI_ARCHIVE_PARENT" && shasum -a 256 "$SCI_ARCHIVE_NAME" > "$SCI_ARCHIVE_NAME.sha256")
 ```
 
-Confirm that no retained reduction or raw product was copied into the output:
+`known_omissions.json` is generated from inventory and task evidence.  It
+enumerates listed ObsNum/product/raw-linkage deficiencies, network absence with
+the nw10/nw6 distinctions, unresolved duplicates, task failures, unavailable
+metadata, and intentionally skipped sensitivity duplicates; it also records
+that raw timestreams and retained beammap products are intentionally absent
+from the compact archive.
 
-```bash
-find "$SCI_OUTPUT_ROOT" -type f \
-  \( -name '*.nc' -o -name '*.fits' -o -name '*.fits.gz' \) -print
-find "$SCI_OUTPUT_ROOT" -type f -size +100M -print
-```
-
-Both commands must print nothing. Inspect total compact size:
-
-```bash
-du -sh "$SCI_OUTPUT_ROOT"
-```
-
-Expected disk use is approximately 15 MiB per analyzed map plus no more
-than about 100 MiB for manifests, aggregate tables, reports, plots, and logs.
-For `N` maps, reserve approximately `(20 * N + 100) MiB`. This is a disk-use
-estimate only; the toolkit deliberately makes no execution-time estimate.
-
-## 11. Create the compact transfer archive
-
-```bash
-export SCI_ARCHIVE_PARENT=$(dirname "$SCI_OUTPUT_ROOT")
-export SCI_ARCHIVE_NAME=sci_align_001_3c273_corpus_bundle.tar.gz
-export SCI_RETRIEVAL_UTC=$(date -u '+%Y-%m-%dT%H:%M:%SZ')
-
-cat > "$SCI_OUTPUT_ROOT/RETURN_METADATA.txt" <<EOF
-retrieval_timestamp_utc=$SCI_RETRIEVAL_UTC
-source_unity_path=$SCI_OUTPUT_ROOT
-scope=SCI-ALIGN-001 retained 3C273 beammap corpus diagnostic
-question=stability, T0-session dependence, native-phase/slot predictability, within-observation variation, or unpredictability
-known_omissions=<KNOWN_OMISSIONS_OR_NONE>
-EOF
-
-tar -C "$SCI_ARCHIVE_PARENT" -czf \
-  "$SCI_ARCHIVE_PARENT/$SCI_ARCHIVE_NAME" \
-  --exclude="$(basename "$SCI_OUTPUT_ROOT")/_runtime_cache" \
-  --exclude="$(basename "$SCI_OUTPUT_ROOT")/per_map/_input_digest_cache.json" \
-  "$(basename "$SCI_OUTPUT_ROOT")"
-(cd "$SCI_ARCHIVE_PARENT" && \
-  shasum -a 256 "$SCI_ARCHIVE_NAME" > "$SCI_ARCHIVE_NAME.sha256")
-```
-
-Resolve `<KNOWN_OMISSIONS_OR_NONE>` before creating the archive. The metadata
-is intentionally outside the deterministic scientific tables but inside the
-checksum-bound transfer archive. Runtime plotting caches and the host-specific
-physical-file digest cache are deliberately excluded; verified per-candidate
-`input_manifest` files retain the portable input digests.
-
-From the owner's local machine, use the required SSH host alias:
-
-```bash
-scp unity_toltec:<UNITY_ARCHIVE_PATH>/sci_align_001_3c273_corpus_bundle.tar.gz .
-scp unity_toltec:<UNITY_ARCHIVE_PATH>/sci_align_001_3c273_corpus_bundle.tar.gz.sha256 .
-shasum -a 256 -c sci_align_001_3c273_corpus_bundle.tar.gz.sha256
-```
-
-Do not transfer raw timestreams, retained reduction products, project YAML,
-APTs, or Unity logs outside the compact diagnostic list.
-
-## Stop conditions
-
-Stop and return the smallest relevant manifest/log excerpt if:
-
-- source, observation, reduction, config, or software identity is ambiguous;
-- duplicate reductions lack a defensible canonical authority;
-- a required retained product is missing or malformed;
-- raw-row linkage fails or is ambiguous (core analysis may remain eligible,
-  but no enhanced claim is allowed);
-- common-support construction differs across compared timing models;
-- a tool proposes writing below the reduction/raw root;
-- a new Citlali reduction or application/configuration change appears needed;
-- a checksum, manifest, protocol, or resume binding fails; or
-- the independent corpus cannot support the frozen held-out protocol.
-
-Do not weaken a fit cut, remove an unusual timing result, select a duplicate
-after viewing timing, or recommend a fixed correction to make the analysis
-complete.
+Stop and return the smallest relevant manifest/log excerpt if identity,
+checksum, provenance, duplicate authority, required retained-product, or
+raw-linkage checks fail; if a whole observation cannot be analyzed; or if a
+command proposes reduction, application/configuration edits, source-root
+writes, a timing correction, push, merge, or rebase.

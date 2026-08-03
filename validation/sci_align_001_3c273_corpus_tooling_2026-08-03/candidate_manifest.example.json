@@ -2,6 +2,9 @@
   "manifest_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
   "owner_selection_format": "csv",
   "owner_selection_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+  "obsnum_allowlist_filename": "authoritative_obsnums_2026-08-03.json",
+  "obsnum_allowlist_schema_version": "sci-align-001-3c273-obsnum-allowlist-v1",
+  "obsnum_allowlist_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
   "rows": [
     {
       "analysis_role": "primary",
@@ -65,6 +68,6 @@
       "telescope_path": "/data/tel_toltec_148670_EXAMPLE.nc"
     }
   ],
-  "schema_version": "sci-align-001-3c273-selected-manifest-v1",
+  "schema_version": "sci-align-001-3c273-selected-manifest-v2",
   "source_inventory_sha256": "3333333333333333333333333333333333333333333333333333333333333333"
 }

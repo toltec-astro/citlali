@@ -18,16 +18,17 @@ import sys
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Iterable, Sequence
+from typing import Any, Iterable, Mapping, Sequence
 
 import numpy as np
 import yaml
 from netCDF4 import Dataset
 
 
-INVENTORY_SCHEMA = "sci-align-001-3c273-candidate-inventory-v1"
-SELECTION_SCHEMA = "sci-align-001-3c273-selection-v1"
-SELECTED_MANIFEST_SCHEMA = "sci-align-001-3c273-selected-manifest-v1"
+INVENTORY_SCHEMA = "sci-align-001-3c273-candidate-inventory-v2"
+SELECTION_SCHEMA = "sci-align-001-3c273-selection-v2"
+SELECTED_MANIFEST_SCHEMA = "sci-align-001-3c273-selected-manifest-v2"
+ALLOWLIST_SCHEMA = "sci-align-001-3c273-obsnum-allowlist-v1"
 DIGEST_CACHE_SCHEMA = "sci-align-001-file-digest-cache-v1"
 DEFAULT_SOURCE_REGEX = r"(?i)^3c[ _-]?273$"
 DEFAULT_LARGE_FILE_THRESHOLD = 64 * 1024 * 1024
@@ -102,6 +103,7 @@ INVENTORY_FIELDS = [
     "canonical_proposal",
     "canonical_proposal_rule",
     "owner_selection_required",
+    "in_authoritative_corpus",
 ]
 
 SELECTED_FIELDS = [
@@ -242,11 +244,13 @@ def paths_overlap(first: Path, second: Path) -> bool:
 
 
 def validate_roots(
-    reduction_roots: Sequence[Path], raw_roots: Sequence[Path], output: Path
-) -> tuple[list[Path], list[Path], Path]:
+    reduction_roots: Sequence[Path], raw_roots: Sequence[Path], output: Path,
+    excluded_paths: Sequence[Path] = (),
+) -> tuple[list[Path], list[Path], Path, list[Path]]:
     reductions = sorted({resolved(path) for path in reduction_roots}, key=str)
     raws = sorted({resolved(path) for path in raw_roots}, key=str)
     destination = resolved(output)
+    exclusions = sorted({resolved(path) for path in excluded_paths}, key=str)
     if not reductions:
         raise InventoryError("at least one --reduction-root is required")
     for label, roots in (("reduction", reductions), ("raw", raws)):
@@ -254,11 +258,26 @@ def validate_roots(
         if missing:
             raise InventoryError(f"{label} root is not a directory: {missing}")
         for path in roots:
-            if paths_overlap(path, destination):
+            if paths_overlap(path, destination) and not (
+                label == "reduction"
+                and any(destination.is_relative_to(exclusion) for exclusion in exclusions)
+                and any(exclusion.is_relative_to(path) for exclusion in exclusions)
+            ):
                 raise InventoryError(
                     f"output directory overlaps {label} source root: {destination} and {path}"
                 )
-    return reductions, raws, destination
+    for exclusion in exclusions:
+        if not any(exclusion.is_relative_to(root) for root in reductions):
+            raise InventoryError(
+                f"--exclude-path must be below a reduction root: {exclusion}"
+            )
+    if any(destination.is_relative_to(root) for root in reductions) and not any(
+        destination.is_relative_to(exclusion) for exclusion in exclusions
+    ):
+        raise InventoryError(
+            "an output below --reduction-root requires an enclosing --exclude-path"
+        )
+    return reductions, raws, destination, exclusions
 
 
 @dataclass(frozen=True)
@@ -446,17 +465,42 @@ def product_markers(path: Path) -> bool:
     )
 
 
-def discover_candidate_dirs(roots: Sequence[Path]) -> list[Path]:
+def discover_candidate_dirs(
+    roots: Sequence[Path], excluded_paths: Sequence[Path] = ()
+) -> list[Path]:
     candidates: set[Path] = set()
     for root in roots:
-        if root.name.isdigit() and product_markers(root):
+        if root.name.isdigit() and product_markers(root) and not any(
+            root.is_relative_to(exclusion) for exclusion in excluded_paths
+        ):
             candidates.add(root)
         for path in root.rglob("*"):
+            if any(path.is_relative_to(exclusion) for exclusion in excluded_paths):
+                continue
             if not path.is_dir() or not path.name.isdigit():
                 continue
             if REDU_RE.fullmatch(path.parent.name) or product_markers(path):
                 candidates.add(path)
     return sorted((resolved(path) for path in candidates), key=str)
+
+
+def load_obsnum_allowlist(path: Path) -> tuple[dict[str, Any], list[int], str]:
+    try:
+        document = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise InventoryError(f"cannot read --obsnum-allowlist {path}: {error}") from error
+    if not isinstance(document, dict) or document.get("schema_version") != ALLOWLIST_SCHEMA:
+        raise InventoryError("unsupported --obsnum-allowlist schema_version")
+    if not isinstance(document.get("corpus_id"), str) or not document["corpus_id"].strip():
+        raise InventoryError("--obsnum-allowlist lacks corpus_id")
+    values = document.get("obsnums")
+    if not isinstance(values, list) or not values:
+        raise InventoryError("--obsnum-allowlist must contain a nonempty obsnums array")
+    if any(isinstance(value, bool) or not isinstance(value, int) or value <= 0 for value in values):
+        raise InventoryError("--obsnum-allowlist obsnums must be positive integers")
+    if values != sorted(values) or len(values) != len(set(values)):
+        raise InventoryError("--obsnum-allowlist obsnums must be sorted and unique")
+    return document, list(values), sha256_file(path)
 
 
 def project_path_for(candidate: Path) -> Path:
@@ -1192,6 +1236,7 @@ def candidate_inventory(
         "canonical_proposal": False,
         "canonical_proposal_rule": None,
         "owner_selection_required": False,
+        "in_authoritative_corpus": False,
     }
 
 
@@ -1201,40 +1246,30 @@ def apply_duplicate_policy(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
         by_observation.setdefault(int(row["observation_number"]), []).append(row)
     for candidates in by_observation.values():
         eligible = [row for row in candidates if row["core_eligible"]]
-        if len(candidates) == 1:
-            candidates[0]["canonical_proposal"] = bool(eligible)
-            candidates[0]["canonical_proposal_rule"] = (
-                "sole_core_eligible_reduction" if eligible else None
-            )
+        if len(eligible) == 1:
+            eligible[0]["canonical_proposal"] = True
+            eligible[0]["canonical_proposal_rule"] = "sole_core_eligible_reduction"
             continue
         if not eligible:
-            for row in candidates:
-                row["owner_selection_required"] = True
             continue
-        authority_keys = {
-            (
-                row.get("config_sha256"),
-                row.get("software_sha"),
-                row.get("software_version"),
-            )
-            for row in eligible
-        }
-        if len(authority_keys) != 1:
-            # Metadata completeness cannot choose between materially different
-            # configurations or application identities.
+        by_reduction: dict[str, list[dict[str, Any]]] = {}
+        for row in eligible:
+            by_reduction.setdefault(str(row.get("reduction_id") or ""), []).append(row)
+        supported_locations = {"redu00", "redu01"}
+        if (
+            set(by_reduction) != supported_locations
+            or any(len(values) != 1 for values in by_reduction.values())
+        ):
             for row in candidates:
                 row["owner_selection_required"] = True
+                row["canonical_proposal_rule"] = "ambiguous_duplicate_requires_owner_review"
             continue
-        best = max(int(row["canonical_quality_score"]) for row in eligible)
-        leaders = [row for row in eligible if int(row["canonical_quality_score"]) == best]
-        if len(leaders) == 1:
-            leaders[0]["canonical_proposal"] = True
-            leaders[0]["canonical_proposal_rule"] = (
-                "same_config_and_software_unique_provenance_input_quality"
-            )
-        else:
-            for row in candidates:
-                row["owner_selection_required"] = True
+        redu01 = by_reduction["redu01"][0]
+        redu01["canonical_proposal"] = True
+        redu01["canonical_proposal_rule"] = "one_redu00_one_redu01_select_later_redu01"
+        by_reduction["redu00"][0]["canonical_proposal_rule"] = (
+            "one_redu00_one_redu01_retain_redu00_as_sensitivity"
+        )
     return rows
 
 
@@ -1263,6 +1298,7 @@ def csv_row(row: dict[str, Any]) -> dict[str, Any]:
         "enhanced_eligible",
         "canonical_proposal",
         "owner_selection_required",
+        "in_authoritative_corpus",
     ):
         result[key] = bool_text(bool(row.get(key)))
     return result
@@ -1312,6 +1348,78 @@ def exclusion_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     ]
 
 
+def authoritative_obsnum_status(
+    obsnums: Sequence[int], rows: Sequence[Mapping[str, Any]]
+) -> list[dict[str, Any]]:
+    by_obsnum: dict[int, list[Mapping[str, Any]]] = {}
+    for row in rows:
+        by_obsnum.setdefault(int(row["observation_number"]), []).append(row)
+    result: list[dict[str, Any]] = []
+    for obsnum in obsnums:
+        candidates = sorted(by_obsnum.get(int(obsnum), []), key=lambda item: str(item["candidate_id"]))
+        eligible = [row for row in candidates if bool(row.get("core_eligible"))]
+        canonical = [row for row in candidates if bool(row.get("canonical_proposal"))]
+        if not candidates:
+            status = "no_retained_reduction_found"
+        elif not eligible:
+            status = "retained_reduction_found_no_eligible_candidate"
+        elif any(bool(row.get("owner_selection_required")) for row in candidates):
+            status = "ambiguous_duplicate_requires_owner_review"
+        elif len(canonical) == 1:
+            status = "eligible_canonical_candidate_found"
+        else:
+            status = "eligible_candidate_without_canonical_resolution"
+        result.append({
+            "observation_number": int(obsnum),
+            "candidate_count": len(candidates),
+            "core_eligible_candidate_count": len(eligible),
+            "canonical_candidate_id": canonical[0]["candidate_id"] if len(canonical) == 1 else "",
+            "status": status,
+            "candidate_ids_json": canonical_json([row["candidate_id"] for row in candidates]),
+            "eligibility_reasons_json": canonical_json([
+                {"candidate_id": row["candidate_id"], "reasons": row.get("exclusion_reasons", [])}
+                for row in candidates
+            ]),
+        })
+    return result
+
+
+def network_availability_rows(rows: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
+    expected = tuple(range(13))
+    result: list[dict[str, Any]] = []
+    for row in rows:
+        present = {int(value) for value in row.get("detector_networks", [])}
+        metadata_available = bool(row.get("detector_tod_path"))
+        for network in expected:
+            if network == 10:
+                kind = "structural_absence_nw10"
+                status = "not_a_network"
+            elif not metadata_available:
+                kind = "metadata_unavailable"
+                status = "detector_network_metadata_unreadable_or_absent"
+            elif network in present:
+                kind = "present"
+                status = "present"
+            elif network == 6:
+                kind = "known_intermittent_absence_nw6"
+                status = "not_exclusionary"
+            else:
+                kind = "unexpected_per_observation_absence"
+                status = "record_only_not_automatic_observation_exclusion"
+            result.append({
+                "observation_number": int(row["observation_number"]),
+                "candidate_id": row["candidate_id"],
+                "reduction_id": row["reduction_id"],
+                "core_eligible": bool_text(bool(row.get("core_eligible"))),
+                "network_id": network,
+                "availability_kind": kind,
+                "availability_status": status,
+                "detector_metadata_available": bool_text(metadata_available),
+                "timing_result_used_as_cut": "false",
+            })
+    return result
+
+
 def candidate_table(rows: list[dict[str, Any]]) -> str:
     lines = [
         "# SCI-ALIGN-001 3C273 candidate inventory",
@@ -1342,9 +1450,10 @@ def selection_template(rows: list[dict[str, Any]], inventory_sha256: str) -> dic
         "schema_version": SELECTION_SCHEMA,
         "source_inventory_sha256": inventory_sha256,
         "selection_rule": (
-            "Owner selects exactly one primary core-eligible candidate per eligible "
-            "observation; other eligible duplicates are retained as sensitivity rows; "
-            "timing outcomes must not be consulted."
+            "The provenance-only canonical rule selects the sole eligible reduction, "
+            "or redu01 when exactly one redu00 and one redu01 are eligible. Other "
+            "eligible duplicates remain sensitivity rows. Ambiguous duplicates cannot "
+            "be frozen; timing outcomes must not be consulted."
         ),
         "rows": [
             {
@@ -1393,11 +1502,25 @@ def freeze_selection(
     inventory_rows: list[dict[str, Any]],
     inventory_sha256: str,
     selection_path: Path,
+    *,
+    obsnum_allowlist_sha256: str,
+    obsnum_allowlist_schema_version: str,
+    obsnum_allowlist_filename: str,
 ) -> dict[str, Any]:
     selected_digest, selection_rows = read_selection(selection_path)
     if selected_digest != inventory_sha256:
         raise InventoryError("selection was prepared from a different candidate inventory")
     by_id = {row["candidate_id"]: row for row in inventory_rows}
+    unresolved = sorted(
+        int(row["observation_number"])
+        for row in inventory_rows
+        if row.get("owner_selection_required")
+    )
+    if unresolved:
+        raise InventoryError(
+            "ambiguous duplicate provenance prevents selection freeze; review observation(s): "
+            + ", ".join(str(value) for value in sorted(set(unresolved)))
+        )
     selected: list[dict[str, Any]] = []
     seen_selection_ids: set[str] = set()
     for index, selection in enumerate(selection_rows):
@@ -1444,6 +1567,16 @@ def freeze_selection(
             + ", ".join(str(value) for value in missing_primary)
         )
     primary_ids = {str(row["candidate_id"]) for row in selected}
+    canonical_primary_ids = {
+        str(row["candidate_id"])
+        for row in inventory_rows
+        if bool(row.get("core_eligible")) and bool(row.get("canonical_proposal"))
+    }
+    if primary_ids != canonical_primary_ids:
+        raise InventoryError(
+            "selection must preserve the frozen canonical-reduction rule; "
+            "do not substitute timing-informed primary candidates"
+        )
     analysis_rows: list[dict[str, Any]] = []
     for row in inventory_rows:
         if not bool(row.get("core_eligible")):
@@ -1482,6 +1615,9 @@ def freeze_selection(
         "source_inventory_sha256": inventory_sha256,
         "owner_selection_sha256": sha256_file(selection_path),
         "owner_selection_format": selection_path.suffix.lower().removeprefix("."),
+        "obsnum_allowlist_sha256": obsnum_allowlist_sha256,
+        "obsnum_allowlist_schema_version": obsnum_allowlist_schema_version,
+        "obsnum_allowlist_filename": obsnum_allowlist_filename,
         "rows": manifest_rows,
     }
     return {**base, "manifest_sha256": digest_object(base)}
@@ -1527,7 +1663,8 @@ def selected_csv_rows(selected: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def emit_selected_manifest(
-    output: Path, selected: dict[str, Any], selection_path: Path
+    output: Path, selected: dict[str, Any], selection_path: Path,
+    allowlist_path: Path,
 ) -> None:
     output.mkdir(parents=True, exist_ok=True)
     write_json(output / "selected_manifest.json", selected)
@@ -1540,6 +1677,9 @@ def emit_selected_manifest(
     selection_copy = output / f"owner_selection{suffix}"
     if selection_copy.resolve() != selection_path.resolve():
         shutil.copyfile(selection_path, selection_copy)
+    allowlist_copy = output / allowlist_path.name
+    if allowlist_copy.resolve() != allowlist_path.resolve():
+        shutil.copyfile(allowlist_path, allowlist_copy)
     write_sha256sums(output)
 
 
@@ -1549,10 +1689,17 @@ def inventory(
     *,
     output: Path,
     source_regex: str,
+    obsnum_allowlist: Path,
+    excluded_paths: Sequence[Path] = (),
     threshold: int = DEFAULT_LARGE_FILE_THRESHOLD,
     hash_large: bool = False,
 ) -> tuple[dict[str, Any], DigestCache]:
-    reductions, raws, destination = validate_roots(reduction_roots, raw_roots, output)
+    reductions, raws, destination, exclusions = validate_roots(
+        reduction_roots, raw_roots, output, excluded_paths
+    )
+    allowlist_document, allowed_obsnums, allowlist_sha256 = load_obsnum_allowlist(
+        resolved(obsnum_allowlist)
+    )
     try:
         pattern = re.compile(source_regex)
     except re.error as error:
@@ -1561,21 +1708,45 @@ def inventory(
         destination / "digest_cache.json", threshold=threshold, hash_large=hash_large
     )
     raw_index = raw_file_index(raws)
-    rows = [
+    discovered = [
         candidate_inventory(
             candidate,
             source_pattern=pattern,
             raw_by_obsnum=raw_index,
             digest_cache=cache,
         )
-        for candidate in discover_candidate_dirs(reductions)
+        for candidate in discover_candidate_dirs(reductions, exclusions)
     ]
-    rows = apply_duplicate_policy(sorted(rows, key=lambda row: (row["observation_number"], row["reduction_path"])))
+    allowed = set(allowed_obsnums)
+    rows = [row for row in discovered if int(row["observation_number"]) in allowed]
+    for row in rows:
+        row["in_authoritative_corpus"] = True
+    rows = apply_duplicate_policy(
+        sorted(rows, key=lambda row: (row["observation_number"], row["reduction_path"]))
+    )
+    out_of_scope = sorted(
+        [
+            row for row in discovered
+            if int(row["observation_number"]) not in allowed
+            and row.get("source_status") in {"accepted", "target"}
+        ],
+        key=lambda row: (int(row["observation_number"]), str(row["reduction_path"])),
+    )
+    status_rows = authoritative_obsnum_status(allowed_obsnums, rows)
     inventory_base = {
         "schema_version": INVENTORY_SCHEMA,
         "source_regex": source_regex,
         "reduction_roots": [str(path) for path in reductions],
         "raw_roots": [str(path) for path in raws],
+        "excluded_paths": [str(path) for path in exclusions],
+        "obsnum_allowlist": {
+            "path": str(resolved(obsnum_allowlist)),
+            "filename": resolved(obsnum_allowlist).name,
+            "sha256": allowlist_sha256,
+            "schema_version": allowlist_document["schema_version"],
+            "corpus_id": allowlist_document["corpus_id"],
+            "obsnums": allowed_obsnums,
+        },
         "eligibility_policy": {
             "timing_results_used": False,
             "core": [
@@ -1596,6 +1767,8 @@ def inventory(
             "t0_session_rule": "Data.Toltec.Ts column 0 only; no common phase inferred",
         },
         "rows": rows,
+        "authoritative_obsnum_status": status_rows,
+        "out_of_scope_3c273_rows": out_of_scope,
     }
     return {
         **inventory_base,
@@ -1612,7 +1785,12 @@ def next_commands(args: argparse.Namespace, output: Path) -> list[str]:
         base += ["--reduction-root", str(resolved(root))]
     for root in args.raw_root:
         base += ["--raw-root", str(resolved(root))]
-    base += ["--output", str(output), "--source-regex", args.source_regex]
+    for path in args.exclude_path:
+        base += ["--exclude-path", str(resolved(path))]
+    base += [
+        "--obsnum-allowlist", str(resolved(args.obsnum_allowlist)),
+        "--output", str(output), "--source-regex", args.source_regex,
+    ]
     inventory_command = " ".join(json.dumps(part) for part in base)
     owner_selection = output / "owner_selection.csv"
     copy_selection_command = " ".join(
@@ -1640,7 +1818,7 @@ def next_commands(args: argparse.Namespace, output: Path) -> list[str]:
         inventory_command,
         f"Review {output / 'candidate_table.md'} and {output / 'duplicate_reduction_registry.csv'}",
         copy_selection_command,
-        f"Edit {owner_selection} without consulting timing outcomes",
+        f"emacs -nw {owner_selection}  # edit only owner_note; selection is canonical and timing-blind",
         freeze_command,
     ]
 
@@ -1651,6 +1829,7 @@ def emit(
     output: Path,
     *,
     commands: list[str],
+    obsnum_allowlist: Path,
 ) -> None:
     output.mkdir(parents=True, exist_ok=True)
     rows = document["rows"]
@@ -1672,6 +1851,29 @@ def emit(
         exclusion_rows(rows),
         ["candidate_id", "observation_number", "eligibility", "reason", "reduction_path"],
     )
+    write_csv(
+        output / "authoritative_obsnum_status.csv",
+        document["authoritative_obsnum_status"],
+        [
+            "observation_number", "candidate_count", "core_eligible_candidate_count",
+            "canonical_candidate_id", "status", "candidate_ids_json",
+            "eligibility_reasons_json",
+        ],
+    )
+    write_csv(
+        output / "network_availability.csv",
+        network_availability_rows(rows),
+        [
+            "observation_number", "candidate_id", "reduction_id", "core_eligible",
+            "network_id", "availability_kind", "availability_status",
+            "detector_metadata_available", "timing_result_used_as_cut",
+        ],
+    )
+    write_csv(
+        output / "out_of_scope_3c273_discovery.csv",
+        [csv_row(row) for row in document["out_of_scope_3c273_rows"]],
+        INVENTORY_FIELDS,
+    )
     (output / "candidate_table.md").write_text(candidate_table(rows), encoding="utf-8")
     template = selection_template(rows, document["inventory_sha256"])
     write_json(output / "selection_template.json", template)
@@ -1690,6 +1892,7 @@ def emit(
     write_json(output / "next_commands.json", {"commands": commands})
     (output / "next_commands.txt").write_text("\n".join(commands) + "\n", encoding="utf-8")
     write_json(output / "digest_cache.json", cache.document())
+    shutil.copyfile(resolved(obsnum_allowlist), output / resolved(obsnum_allowlist).name)
     write_sha256sums(output)
 
 
@@ -1703,6 +1906,11 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--source-regex", default=DEFAULT_SOURCE_REGEX)
+    parser.add_argument("--obsnum-allowlist", type=Path)
+    parser.add_argument(
+        "--exclude-path", action="append", type=Path, default=[],
+        help="A discovery subtree, such as the owner run directory, excluded from candidates.",
+    )
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--freeze-selection", type=Path)
     parser.add_argument("--hash-large", action="store_true")
@@ -1728,15 +1936,33 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "--inventory requires --freeze-selection in freeze-only mode"
             )
         document = load_frozen_inventory(resolved(args.inventory))
-        for raw_root in document.get("reduction_roots", []) + document.get("raw_roots", []):
+        recorded_exclusions = [Path(str(path)) for path in document.get("excluded_paths", [])]
+        for raw_root in document.get("raw_roots", []):
             if paths_overlap(Path(str(raw_root)), output):
                 raise InventoryError(
                     f"output directory overlaps source root recorded by inventory: {raw_root}"
                 )
+        for reduction_root in document.get("reduction_roots", []):
+            root = Path(str(reduction_root))
+            if paths_overlap(root, output) and not any(
+                output.is_relative_to(path) for path in recorded_exclusions
+            ):
+                raise InventoryError(
+                    f"output directory overlaps source root recorded by inventory: {reduction_root}"
+                )
+        allowlist = document.get("obsnum_allowlist")
+        if not isinstance(allowlist, dict):
+            raise InventoryError("inventory lacks checksum-bound obsnum allowlist")
+        allowlist_path = resolved(args.inventory).parent / str(allowlist.get("filename") or "")
+        if not allowlist_path.is_file() or sha256_file(allowlist_path) != allowlist.get("sha256"):
+            raise InventoryError("inventory obsnum allowlist copy is missing or has a digest mismatch")
         selected = freeze_selection(
             document["rows"],
             document["inventory_sha256"],
             resolved(args.freeze_selection),
+            obsnum_allowlist_sha256=str(allowlist["sha256"]),
+            obsnum_allowlist_schema_version=str(allowlist["schema_version"]),
+            obsnum_allowlist_filename=str(allowlist["filename"]),
         )
         if args.dry_run:
             print(
@@ -1744,7 +1970,9 @@ def main(argv: Sequence[str] | None = None) -> int:
                 f"manifest_sha256={selected['manifest_sha256']}"
             )
             return 0
-        emit_selected_manifest(output, selected, resolved(args.freeze_selection))
+        emit_selected_manifest(
+            output, selected, resolved(args.freeze_selection), allowlist_path
+        )
         print(
             f"selection frozen: rows={len(selected['rows'])} "
             f"output={output} sha256={selected['manifest_sha256']}"
@@ -1759,11 +1987,15 @@ def main(argv: Sequence[str] | None = None) -> int:
         raise InventoryError(
             "--freeze-selection requires freeze-only --inventory mode"
         )
+    if args.obsnum_allowlist is None:
+        raise InventoryError("discovery mode requires --obsnum-allowlist")
     document, cache = inventory(
         args.reduction_root,
         args.raw_root,
         output=output,
         source_regex=args.source_regex,
+        obsnum_allowlist=args.obsnum_allowlist,
+        excluded_paths=args.exclude_path,
         threshold=int(args.large_file_threshold_mib * 1024 * 1024),
         hash_large=args.hash_large,
     )
@@ -1779,6 +2011,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         cache,
         output,
         commands=commands,
+        obsnum_allowlist=args.obsnum_allowlist,
     )
     print(
         f"inventory complete: candidates={len(document['rows'])} "

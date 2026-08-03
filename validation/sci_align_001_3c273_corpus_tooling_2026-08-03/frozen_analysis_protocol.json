@@ -32,7 +32,7 @@
       "free-beta interval and consistency with -1",
       "first-half versus second-half change",
       "session dependence when session identity is supported",
-      "held-out timing, sky-placement, and beam-FWHM-fraction prediction error"
+      "held-out timing prediction error, uncertainty, network/map support counts, and descriptive model structure"
     ],
     "split_freeze_rule": "The freeze stage reads selected-manifest identity and provenance fields only. The run stage refuses a selected-manifest or protocol digest mismatch.",
     "timing_outliers": "Retain every timing outlier that passes the independently frozen input and fit-quality criteria."
@@ -58,7 +58,7 @@
     ],
     "production_correction_authorized": false,
     "science_tolerance_assessed": false,
-    "tolerance_rule": "Do not impose a millisecond threshold. Translate errors with each measured scan speed and report arcseconds and fraction of the relevant measured beam FWHM for owner judgment."
+    "tolerance_rule": "No arcsecond, beam-FWHM, timing, or mitigation acceptability threshold is part of SCI-ALIGN-001; any on-sky impact translation is deferred to a separate downstream analysis."
   },
   "eligibility": {
     "core_requires": [
@@ -94,7 +94,6 @@
       7,
       8,
       9,
-      10,
       11,
       12
     ],
@@ -254,6 +253,14 @@
       "search packet, internal-clock, PPS-count, and PPS-time sequences for one-row discontinuity or variable metadata-capture/ISR latency",
       "regress left/right network timing against measured native phase and native-to-assigned-slot residual, including the preregistered slope -1 comparison"
     ],
+    "nw9_pps_time_increment_anomaly": {
+      "detector": "For every available network, compare each consecutive delivered PpsTime transition increment with authenticated Header.Toltec.FpgaFreq; missing metadata is unavailable, never zero anomalies.",
+      "occurrence": "Report eligible-increment denominator, mismatch count/rate, signed and absolute tick residuals, physical-time conversion, first/last row, isolated/consecutive classification, PPS-counter row geometry, packet and detector-row geometry, by observation/network/T0 session and corpus controls.",
+      "consequence": "At each mismatch preserve the delivered row and adjacent-row counter/timestamp geometry. Distinguish one-field metadata inconsistency, delivered reconstructed timestamp perturbation, persistent subsequent delivered-field offset, and unresolved adjacent-row association. No FPGA metadata-to-integration association is inferred.",
+      "timing": "For each observation with nw9, report nw9 timing, nw9 minus other-network timing, all-network and leave-nw9-out pooled timing, their covariance-aware uncertainty, and the change. Across observations fit a preregistered uncertainty-aware nw9 anomaly-rate association; it is not causal.",
+      "affected_row_sensitivity": "No row mask or repair is authorized unless a future protocol establishes unambiguous metadata semantics. Leave-nw9-out is the preregistered interpretable sensitivity.",
+      "quality_cut": false
+    },
     "variation_language": "First-half/second-half or fitted time slopes are within-observation timing variation. Call them clock drift only if raw counter evidence contradicts the shared-clock account."
   },
   "scan_classifier": {
@@ -266,7 +273,7 @@
     "positive_axis": "principal eigenvector of admitted-window median realized velocity vectors, signed toward configured Map.ScanAngle",
     "stable_sign_fraction_minimum": 0.99
   },
-  "schema_version": "sci-align-001-3c273-corpus-protocol-v1",
+  "schema_version": "sci-align-001-3c273-corpus-protocol-v2",
   "status": "FROZEN_BEFORE_CORPUS_TIMING_RESULTS",
   "timing_models": {
     "common_support": "The primary population is the exact intersection of original signal/flag/radial/Hold validity and valid interior raw-row/slot/telescope support for every compared basis, row guard, and phase. Native-only support is secondary and scan-edge population changes cannot count as improvement.",
