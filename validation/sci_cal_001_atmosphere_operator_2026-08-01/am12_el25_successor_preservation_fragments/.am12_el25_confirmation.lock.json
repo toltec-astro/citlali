@@ -1,0 +1,1 @@
+{"inventory":{"aggregate_sha256":"c4427e10a22b5b3e555e110df0970a7c77cdefa890f89cceb4f747c33814bf07","algorithm":"sha256(relative_path NUL file_sha256_bytes NUL)","file_count":1,"files":[{"path":".am12_el25_confirmation.lock","sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855","size_bytes":0}],"total_bytes":0},"subtree":".am12_el25_confirmation.lock"}

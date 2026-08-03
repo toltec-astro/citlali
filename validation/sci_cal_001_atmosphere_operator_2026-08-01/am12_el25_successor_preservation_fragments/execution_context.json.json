@@ -1,0 +1,1 @@
+{"inventory":{"aggregate_sha256":"a5dfcb259517397b8eca05343c7b5e61d59fcd434ccdab30a330b2e989f8e9a7","algorithm":"sha256(relative_path NUL file_sha256_bytes NUL)","file_count":1,"files":[{"path":"execution_context.json","sha256":"a867df7b05ea590c498e41932bb1b3f9520e635d2534f7c8fcc539cfd4a12ecf","size_bytes":35183}],"total_bytes":35183},"subtree":"execution_context.json"}

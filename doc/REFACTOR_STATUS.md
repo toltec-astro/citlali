@@ -124,8 +124,14 @@ freeze the application mainline.
   `5.55111512312578270e-17` discrepancy exceeded `5e-17` although the AM scale
   matched its frozen transmission literal exactly. The execution is
   `confirmation_invalid`; no durable candidate metric, maximum, numerical
-  pass/fail, operator, or domain exists. The partial cache is SHA-256 bound,
-  and a corrected fresh execution requires new owner/coordinator authority.
+  pass/fail, operator, or domain exists. Owner decision `CAL-ATM-D005`, bound
+  at coordination commit `640e549bf`, now authorizes only a versioned,
+  missing-only successor sequence. Its 25,558-file stopped cache has been
+  copied byte-for-byte to the registered durable read-only location, but no
+  successor protocol or AM delta cache exists: the required independent review
+  and audit-manager readiness certificate are not assigned by that decision,
+  and the task cannot self-certify them. The confirmation therefore remains
+  stopped before AM admission or execution.
   `OBS-001` remains a production-only gate. FTS-versus-ECSV direct truth
   differs by as much as 3.474613%, but FTS is excluded from the owner-selected
   confirmation passband identity. The 13 deterministic v2 artifacts are
@@ -2757,10 +2763,12 @@ silently choose among these:
   for that confirmation by coordination decision `f513f410b` and binding
   `8fc9263a2`; the independent protocol was committed before execution. That
   one execution is now invalid/incomplete at 672/896 grids because of the
-  bound runner's two-ULP floating-point guard stop. Decide whether to authorize
-  a new, distinctly versioned preregistration and fresh cache with only that
-  non-scientific harness defect corrected. The later observational validation
-  campaign (`OBS-001`) remains production-only.
+  bound runner's two-ULP floating-point guard stop. `CAL-ATM-D005` authorizes
+  the prescribed missing-only successor after durable preservation and the
+  `FRAMEWORK-NUM-001` controls, but preservation has exposed an unassigned
+  independent-review/audit-manager readiness gate. Name those roles or supply
+  their signed records before any delta AM work. The later observational
+  validation campaign (`OBS-001`) remains production-only.
   Generic q95 and exact generic-q custody remain unresolved nonblocking
   historical provenance. Neither the completed study, the confirmation
   authority, nor its preregistration authorizes an operator or operational
