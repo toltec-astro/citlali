@@ -1,0 +1,9 @@
+format_version: 1
+target_package: ENG-STATE-001
+created_date: 2026-08-03
+coordinator_registry_commit: a445f25c3ef85f0785864e7e53ec52a81b5a8dee
+manifest_status: frozen_for_scope_checkpoint
+
+handoffs: []
+pre_core_authority_ids: []
+post_core_evidence_ids: []
