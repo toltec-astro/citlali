@@ -678,6 +678,23 @@ packages:
             local successor-package work. It supplies no external evidence and
             changes no finding, dependency, conformance, validation,
             production, repair, or re-audit state.
+        operational_resource_amendment:
+          decision_id: MAP-UNITY-ED2-OPS-RESOURCE-001
+          authority: project_owner
+          decision_date: 2026-08-03
+          status: approved_bounded_resource_and_human_operations_clarification
+          record_path: >-
+            doc/audits/packages/SCI-MAP-001_ED2_RESOURCE_AND_OPERATIONS_AMENDMENT_2026-08-03.md
+          record_sha256: >-
+            85998ea7c078208ba6bcae939dd97919f5189cf776f727bd00651cf6ef07d8c4
+          temporary_capture_ceiling_gib: 200
+          operation_mode: >-
+            Human-managed Unity sequence: standalone no-submit resource
+            preflight, human review, then a separately invoked submission.
+          remaining_successor_scope: >-
+            Make storage accounting comprehensive and component-wise
+            conservative before first writes; retain the hard ceiling and
+            all scientific/evidence boundaries.
         continuation_handoff:
           status: existing_task_resumed
           path: >-
