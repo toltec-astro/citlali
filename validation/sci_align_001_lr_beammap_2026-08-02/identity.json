@@ -1,0 +1,8 @@
+{
+  "branch": "codex/sci-align-001-lr-beammap",
+  "candidate": "c77105b9b1676ec1ec74a9d560765954c5f1d5dd",
+  "governing_application": "9aae0e669384c5c0c0dda93debc194d6b8dac787",
+  "head": "3e12c0dcbd8b7fe83e54918eccaec48c94f35bff",
+  "status": "clean_except_current_package",
+  "task_base": "3e12c0dcbd8b7fe83e54918eccaec48c94f35bff"
+}

@@ -1,0 +1,15 @@
+{
+  "admitted": 198,
+  "census_complete": true,
+  "disjoint": true,
+  "excluded": 0,
+  "hold_valid_all_selected": true,
+  "left": 99,
+  "low_speed_threshold_arcsec_s": 22.710778116959688,
+  "positive_axis": [
+    -0.0007017418680507849,
+    0.999999753779145
+  ],
+  "right": 99,
+  "transition_ambiguous_selected": 0
+}

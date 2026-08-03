@@ -1,0 +1,2 @@
+role,path,sha256,selection_difference,candidate_commit,omp_threads_realized
+retained_full_candidate,/private/tmp/citlali-sci-align-001-phase1-c77105b9b1676ec1ec74a9d560765954c5f1d5dd/beammap/beammap/config/citlali_o148670_0_2_c1.yaml,a3f6c000016581defc6e19dccd2d2ebe262b424307144b43259da8a5321d931a,none; retained product partitioned after execution,c77105b9b1676ec1ec74a9d560765954c5f1d5dd,6

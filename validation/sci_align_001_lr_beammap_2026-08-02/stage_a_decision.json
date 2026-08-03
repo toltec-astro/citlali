@@ -1,0 +1,30 @@
+{
+  "additional_citlali_reduction_required": false,
+  "bulk_map_products_generated": false,
+  "citlali_application_change_required": false,
+  "decision": "retained_product_partition_and_refit_is_sufficient",
+  "options_in_required_order": [
+    {
+      "answer": "yes",
+      "evidence": "final-iteration detector_tod signal has exact detector/slot/scan/sample bounds; the assigned-time plus telescope/astrometry reconstruction reproduced retained source-distance metadata and center-scan identity",
+      "maximum_reconstruction_delta_arcsec_feasibility_probe": 1.068141573767889e-05,
+      "option": 1,
+      "question": "Can retained products be partitioned and refitted?"
+    },
+    {
+      "answer": "no general reduction selector identified; not needed after option 1 succeeded",
+      "option": 2,
+      "question": "Can existing configuration select explicit accepted scan identities?",
+      "realized_config_contains_scan_identity_selector": false,
+      "source_search_matches": [
+        "include/citlali/core/pipeline/timestream_scan_generation.h:44:    explicit ScanCursor(Eigen::Index scan_count) : scan_count_(scan_count) {}"
+      ]
+    },
+    {
+      "answer": "not required; a wrapper would lack a reduction-level explicit scan selector",
+      "option": 3,
+      "question": "Can a wrapper generate explicit left/right realized configs without Citlali change?"
+    }
+  ],
+  "ordinary_application_behavior_changed": false
+}

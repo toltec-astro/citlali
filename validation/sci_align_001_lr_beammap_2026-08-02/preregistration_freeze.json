@@ -1,0 +1,29 @@
+{
+  "aggregate_sha256": "896a5b71fc3d27b791dc160626d0ba079cbe85ddde5151c32d70cf17d04a91cc",
+  "confirmatory_signal_variable_read_by_prepare": false,
+  "freeze_scope": "all prepare-mode files except this freeze record",
+  "ordered_files": [
+    "excluded_scan_identities.csv",
+    "identity.json",
+    "left_scan_identities.txt",
+    "local_run_manifest.json",
+    "preregistered_protocol.json",
+    "raw_input_manifest.csv",
+    "realized_config_manifest.csv",
+    "right_scan_identities.txt",
+    "scan_direction_registry.csv",
+    "scan_selection_summary.json",
+    "source_manifest.json",
+    "stage_a_decision.json"
+  ],
+  "pilot_uids_excluded": [
+    0,
+    5,
+    10,
+    15,
+    20,
+    25,
+    30,
+    35
+  ]
+}

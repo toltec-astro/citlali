@@ -1,0 +1,122 @@
+{
+  "confirmatory_detector_preselection": {
+    "rules": [
+      "retained detector_tod_fit_good == 1",
+      "retained output APT flag == 0",
+      "finite positive retained full-fit amplitude, centroid, major/minor FWHM",
+      "UID not in feasibility pilot [0, 5, 10, 15, 20, 25, 30, 35]"
+    ],
+    "selection_fixed_before_confirmatory_signal_read": true
+  },
+  "controls": [
+    "perpendicular centroid difference",
+    "first-half versus second-half scan split",
+    "balanced same-direction odd/even-within-direction null partition (not scan-index parity classification)",
+    "left/right counts, coverage, angle, speed, and normalized weight",
+    "per-array and per-network consistency",
+    "left/right major/minor FWHM, ellipticity, and amplitude",
+    "timing dependence on realized speed reported; limited leverage disposition required"
+  ],
+  "direction_classifier": {
+    "census": {
+      "excluded": 0,
+      "left": 99,
+      "right": 99
+    },
+    "hold_rule": "both adjacent native raw Hold words exactly zero and equal; otherwise exclude",
+    "low_speed_threshold_arcsec_s": 22.710778116959688,
+    "measurement_window": "central 80 percent of each admitted compatibility-science window",
+    "parity_used": false,
+    "stable_sign_rule": "at least 99 percent of projected samples in the direction window have the robust-median sign",
+    "threshold_rule": "one half the minimum absolute robust median projected speed over all admitted windows"
+  },
+  "fixture": {
+    "cadence_sec": 0.008192,
+    "native_rate_hz": 122.0703125,
+    "obsnum": 148670
+  },
+  "limited_feasibility_pilot": {
+    "conducted_before_freeze": true,
+    "confirmatory_inference": "excluded from every confirmatory population and result",
+    "nonblind_limitation": "eight pilot detector direction differences were visible before this freeze",
+    "uids": [
+      0,
+      5,
+      10,
+      15,
+      20,
+      25,
+      30,
+      35
+    ],
+    "use": "debug coordinate reconstruction and confirm fit viability only"
+  },
+  "pooled_fit": {
+    "coordinate": "each detector translated by its retained full-fit centroid; translation cancels in left-right difference",
+    "extent_arcsec": [
+      -80.0,
+      80.0
+    ],
+    "groups": "all arrays pooled, each array, each detector network/interface",
+    "minimum_pixel_count": 5,
+    "model": "elliptical 2D Gaussian plus affine background",
+    "normalization": "signal divided by retained positive full-fit amplitude; equal detector contribution",
+    "pixel_size_arcsec": 1.0
+  },
+  "positive_scan_axis": {
+    "derivation": "principal eigenvector of admitted-window robust median realized velocity vectors",
+    "sign": "dot product positive with configured Rectilinear Map.ScanAngle unit vector",
+    "x_az_tangent": -0.0007017418680507849,
+    "y_el_tangent": 0.999999753779145
+  },
+  "primary_estimator": {
+    "definition": "((centroid_right-centroid_left) dot positive_axis)/(median_speed_right-median_speed_left)",
+    "detection_rule": "95 percent interval excludes zero and controls are timing-compatible",
+    "global_tolerance": "none; result is a measurement, not ALIGN acceptance",
+    "intervals": "normal-equivalent 68 percent = estimate +/- 1 SE; 95 percent = estimate +/- 1.96 SE",
+    "speed": "actual instantaneous trajectory projected speed for the exact retained fit samples",
+    "uncertainty": "delete-one-stable-scan jackknife of the pooled normalized 1-arcsec diagnostic map",
+    "upper_bound_rule": "only when 95 percent interval includes zero and controls/coverage are acceptable: max(abs(interval endpoints))"
+  },
+  "protocol_id": "SCI-ALIGN-001-LR-BEAMMAP-PREREG-v1",
+  "sample_selection": {
+    "hold": "both adjacent raw words zero and no transition ambiguity",
+    "radial_window": "distance from retained full-fit centroid <= 4 times retained major FWHM",
+    "scan": "must be selected in frozen direction registry",
+    "signal_flag": "flags == 0 and finite signal",
+    "slot_kind": "dense source crossing only (kind=2)"
+  },
+  "scope": {
+    "absolute_physical_timestamp_semantics": "unresolved",
+    "application_source_change": false,
+    "citlali_run": false,
+    "mapmaking_implementation_change": false,
+    "unity_contact": false
+  },
+  "separate_fit": {
+    "amplitude": "nonnegative",
+    "center_bounds": "retained full-fit centroid plus/minus retained major FWHM on each tangent axis",
+    "fwhm_bounds_arcsec_by_array": {
+      "a1100": [
+        3.0,
+        10.0
+      ],
+      "a1400": [
+        3.5,
+        15.0
+      ],
+      "a2000": [
+        5.5,
+        20.0
+      ]
+    },
+    "loss": "scipy least_squares soft_l1",
+    "loss_scale": "max(0.2 times prefit signal standard deviation, 1e-12)",
+    "matched_population": "intersection passing identical frozen quality rules in both directions",
+    "minimum_distinct_scans_per_direction": 3,
+    "minimum_samples_per_direction": 100,
+    "model": "elliptical 2D Gaussian plus tangent-plane affine background",
+    "quality": "solver success, finite covariance, amplitude / residual MAD-sigma >= 3, non-boundary center and widths"
+  },
+  "status": "FROZEN_BEFORE_CONFIRMATORY_COHORT_SIGNAL_INSPECTION"
+}
