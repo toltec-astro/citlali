@@ -868,12 +868,47 @@ def analyze(repo: Path) -> None:
     array_difference_se=math.hypot(array_max["timing_jackknife_se_sec"],array_min["timing_jackknife_se_sec"])
     global_consistent=abs(array_difference) <= 1.96*array_difference_se
     pooled_detected=pooled["timing_95_low_sec"]*pooled["timing_95_high_sec"]>0
+    interface_alignment={
+        row["interface_id"]:0.5*(float(row["minimum_residual_sec"])+float(row["maximum_residual_sec"]))
+        for row in state["alignment"]["interfaces"]
+    }
+    interface_rows=[]
+    for row in timing:
+        if not row["identity"].startswith("network:"):
+            continue
+        interface=row["identity"].split("network:",1)[1]
+        raw_residual=interface_alignment[interface]
+        interface_rows.append({
+            "interface":interface,
+            "raw_timestamp_minus_assigned_slot_sec":raw_residual,
+            "direction_reversal_assigned_coordinate_offset_sec":row["timing_offset_sec"],
+            "direction_reversal_formal_map_se_sec":row["timing_jackknife_se_sec"],
+            "sum_raw_residual_plus_direction_reversal_sec":raw_residual+row["timing_offset_sec"],
+        })
+    raw_vector=np.array([row["raw_timestamp_minus_assigned_slot_sec"] for row in interface_rows])
+    measured_vector=np.array([row["direction_reversal_assigned_coordinate_offset_sec"] for row in interface_rows])
+    regression=np.polyfit(raw_vector,measured_vector,1)
+    correlation=float(np.corrcoef(raw_vector,measured_vector)[0,1])
+    fixed_slope_values=raw_vector+measured_vector
+    interface_model={
+        "definition":"measured direction-reversal offset versus r = raw detector timestamp minus assigned slot",
+        "linear_fit_slope":float(regression[0]),
+        "linear_fit_intercept_sec":float(regression[1]),
+        "pearson_correlation":correlation,
+        "shared_raw_event_lag_expected_slope":-1.0,
+        "fixed_slope_minus_one_implied_raw_timestamp_minus_signal_event_mean_sec":float(np.mean(fixed_slope_values)),
+        "fixed_slope_minus_one_implied_raw_timestamp_minus_signal_event_std_population_sec":float(np.std(fixed_slope_values)),
+        "physical_interpretation_authorized":False,
+        "reason":"Data.Toltec.Ts start/end/effective integration-centroid event semantics remain unproved",
+    }
+    write_csv(package/"interface_timing_residuals.csv",interface_rows)
+    write_json(package/"interface_timing_model.json",interface_model)
     disposition=(
-        "direction-odd residual detected but inconsistent across arrays/networks; not reducible to one global timing offset"
+        "direction-odd residual detected; interface dependence tracks engineering slot residuals, but no physical correction is authorized"
         if pooled_detected and not global_consistent else
         "residual timing detected" if pooled_detected else "no significant residual"
     )
-    consistency={"global_scalar_timing_model_consistent":global_consistent,"array_min_identity":array_min["identity"],"array_max_identity":array_max["identity"],"array_timing_span_sec":array_difference,"array_timing_span_formal_se_sec":array_difference_se,"interpretation":"array/network uncertainties are secondary formal map covariances; the spread is descriptive until exact Unity scan-block evidence"}
+    consistency={"single_assigned_coordinate_offset_consistent_across_arrays":global_consistent,"array_min_identity":array_min["identity"],"array_max_identity":array_max["identity"],"array_timing_span_sec":array_difference,"array_timing_span_formal_se_sec":array_difference_se,"interface_raw_to_slot_relationship":interface_model,"interpretation":"array/network uncertainties are secondary formal map covariances; most interface spread tracks the known engineering raw-to-slot residual, while remaining scatter and time drift require exact Unity evidence"}
     confirm={"disposition":disposition,"primary":pooled,"array_network_consistency":consistency,"physical_timestamp_authority":"unresolved: detector timestamp start/end/effective integration centroid remains unproved","speed_scaling":"fixture has narrow native speed range; 50/100/200 arcsec/s values are dimensional translations, not independently measured scaling","same_direction_null":same_direction,"time_split":time_split,"speed_split":speed_split,"absolute_sky_correctness":"unresolved despite differential direction-reversal measurement"}
     write_json(package/"confirmatory_results.json",confirm);write_json(package/"joint_fit_results.json",{"used":False,"reason":"separate direction fits and pooled scan-delete maps were identifiable"})
 
@@ -887,6 +922,9 @@ def analyze(repo: Path) -> None:
     labels=[row["identity"] for row in timing];vals=np.array([row["timing_offset_sec"]*1000 for row in timing]);errs=np.array([row["timing_jackknife_se_sec"]*1000 for row in timing]);fig,ax=plt.subplots(figsize=(10,5));ax.errorbar(np.arange(len(labels)),vals,yerr=errs,fmt="o");ax.axhline(0,color="black",lw=.8);ax.set_xticks(np.arange(len(labels)),labels,rotation=60,ha="right");ax.set_ylabel("timing offset (ms), jackknife SE");fig.tight_layout();fig.savefig(plot_dir/"timing_by_array_network.png",dpi=160);plt.close(fig)
     fig,ax=plt.subplots(figsize=(6,5));par=np.array([row["parallel_centroid_difference_arcsec"] for row in det_matched]);per=np.array([row["perpendicular_centroid_difference_arcsec"] for row in det_matched]);ax.hexbin(par,per,gridsize=60,mincnt=1,cmap="magma");ax.axhline(0,color="white",lw=.7);ax.axvline(0,color="white",lw=.7);ax.set_xlabel("parallel R-L centroid (arcsec)");ax.set_ylabel("perpendicular R-L centroid (arcsec)");fig.tight_layout();fig.savefig(plot_dir/"parallel_perpendicular_detector_control.png",dpi=160);plt.close(fig)
     jk=np.array([row["timing_sec"]*1000 for row in jackknife["all"]]);fig,ax=plt.subplots(figsize=(7,4));ax.hist(jk,bins=40);ax.axvline(pooled["timing_offset_sec"]*1000,color="crimson");ax.set_xlabel("delete-one-scan timing estimate (ms)");ax.set_ylabel("replicates");fig.tight_layout();fig.savefig(plot_dir/"pooled_scan_jackknife.png",dpi=160);plt.close(fig)
+    fig,ax=plt.subplots(figsize=(6,5));ax.errorbar(raw_vector*1000,measured_vector*1000,yerr=np.array([row["direction_reversal_formal_map_se_sec"] for row in interface_rows])*1000,fmt="o");grid=np.linspace(np.min(raw_vector),np.max(raw_vector),100);ax.plot(grid*1000,(regression[0]*grid+regression[1])*1000,label=f"fit slope={regression[0]:.3f}");ax.plot(grid*1000,(-grid+np.mean(fixed_slope_values))*1000,"--",label="fixed slope -1");
+    for row in interface_rows:ax.annotate(row["interface"].replace("toltec",""),(row["raw_timestamp_minus_assigned_slot_sec"]*1000,row["direction_reversal_assigned_coordinate_offset_sec"]*1000),xytext=(3,3),textcoords="offset points",fontsize=8)
+    ax.set_xlabel("raw timestamp - assigned slot (ms)");ax.set_ylabel("direction-reversal offset (ms)");ax.legend();fig.tight_layout();fig.savefig(plot_dir/"interface_timing_vs_slot_residual.png",dpi=160);plt.close(fig)
 
     # Human report, owner brief, and Unity handoff.
     report=f"""# SCI-ALIGN-001-LR-BEAMMAP retained-product result
@@ -897,7 +935,7 @@ The no-code retained-product path was sufficient. No Citlali process or new redu
 
 The pooled retained-TOD estimator gives **{pooled['timing_offset_sec']*1000:.4f} ms** with delete-one-scan SE **{pooled['timing_jackknife_se_sec']*1000:.4f} ms** and 95% interval **[{pooled['timing_95_low_sec']*1000:.4f}, {pooled['timing_95_high_sec']*1000:.4f}] ms**. The right-minus-left centroid is **{pooled['parallel_centroid_difference_arcsec']:.5f} arcsec** parallel and **{pooled['perpendicular_centroid_difference_arcsec']:.5f} arcsec** perpendicular to the frozen scan axis. The confirmatory matched detector population is {quality}/{pre}.
 
-The three arrays span **{array_min['timing_offset_sec']*1000:.3f} to {array_max['timing_offset_sec']*1000:.3f} ms** (ordered by signed value), and network estimates span **{min(row['timing_offset_sec'] for row in timing if row['identity'].startswith('network:'))*1000:.3f} to {max(row['timing_offset_sec'] for row in timing if row['identity'].startswith('network:'))*1000:.3f} ms**. The direction-odd effect is present throughout, but this spread and the first/second-half difference prevent interpretation as one universal scalar timing correction.
+The three arrays span **{array_min['timing_offset_sec']*1000:.3f} to {array_max['timing_offset_sec']*1000:.3f} ms** (ordered by signed value), and network estimates span **{min(row['timing_offset_sec'] for row in timing if row['identity'].startswith('network:'))*1000:.3f} to {max(row['timing_offset_sec'] for row in timing if row['identity'].startswith('network:'))*1000:.3f} ms**. The network estimates correlate **{correlation:.3f}** with the known raw-timestamp-minus-assigned-slot residual; the fitted slope is **{regression[0]:.3f}**, compared with -1 for a shared raw-event lag. Under that algebra only, `measured + raw residual` has mean **{np.mean(fixed_slope_values)*1000:.3f} ms** and population scatter **{np.std(fixed_slope_values)*1000:.3f} ms**. This is not an integration-centroid correction because the raw timestamp event is unproved, and the remaining interface scatter plus first/second-half difference still preclude a universal correction.
 
 Disposition: **{disposition}** in this bounded local retained-product diagnostic. This is not SCI-ALIGN acceptance and does not provide absolute physical timestamp correctness.
 
@@ -910,7 +948,7 @@ Disposition: **{disposition}** in this bounded local retained-product diagnostic
 - A human Unity exact-9aae/exact-candidate left/right campaign remains required for definitive governing-versus-candidate evidence.
 """
     (package/"REPORT.md").write_text(report)
-    owner={"task":"SCI-ALIGN-001-LR-BEAMMAP","branch":BRANCH,"application_modified":False,"new_local_reductions":0,"measured_disposition":disposition,"primary":pooled,"array_network_consistency":consistency,"engineering_invariants":["retained assigned-time/coordinate behavior is unchanged from c771 phase-one evidence","direction sets are deterministic, disjoint, census-complete, trajectory-derived, and Hold-fail-closed"],"measured_angular_results":{"parallel_arcsec":pooled["parallel_centroid_difference_arcsec"],"perpendicular_arcsec":pooled["perpendicular_centroid_difference_arcsec"]},"unresolved":["absolute detector integration-event timestamp semantics","absolute sky-placement correctness","definitive exact-9aae versus exact-c771 Unity comparison","speed scaling beyond narrow approximately 48 arcsec/s fixture leverage","cause of array/network and first/second-half variation"],"owner_questions":["Does the owner treat the local retained-product detection as sufficient motivation to schedule the exact governing/candidate Unity campaign?","Does the owner request producer authority for whether Data.Toltec.Ts denotes integration start, end, or effective centroid before any physical timing correction is proposed?","If Unity confirms a residual, should a separate scientific amendment investigate interface-specific or time-varying behavior before proposing any correction?"],"phase_one_or_acceptance_authorized":False}
+    owner={"task":"SCI-ALIGN-001-LR-BEAMMAP","branch":BRANCH,"application_modified":False,"new_local_reductions":0,"measured_disposition":disposition,"primary":pooled,"array_network_consistency":consistency,"interface_timing_model":interface_model,"engineering_invariants":["retained assigned-time/coordinate behavior is unchanged from c771 phase-one evidence","direction sets are deterministic, disjoint, census-complete, trajectory-derived, and Hold-fail-closed"],"measured_angular_results":{"parallel_arcsec":pooled["parallel_centroid_difference_arcsec"],"perpendicular_arcsec":pooled["perpendicular_centroid_difference_arcsec"]},"unresolved":["absolute detector integration-event timestamp semantics","absolute sky-placement correctness","definitive exact-9aae versus exact-c771 Unity comparison","speed scaling beyond narrow approximately 48 arcsec/s fixture leverage","cause of residual interface scatter and first/second-half variation"],"owner_questions":["Does the owner treat the local retained-product detection as sufficient motivation to schedule the exact governing/candidate Unity campaign?","Does the owner request producer authority for whether Data.Toltec.Ts denotes integration start, end, or effective centroid before any physical timing correction is proposed?","If Unity confirms a residual, should a separate scientific amendment investigate interface-specific or time-varying behavior before proposing any correction?"],"phase_one_or_acceptance_authorized":False}
     write_json(package/"owner_decision_brief.json",owner)
     (package/"UNITY_HANDOFF.md").write_text(f"""# Human-run Unity handoff (not executed)
 
