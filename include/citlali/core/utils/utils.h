@@ -1,6 +1,7 @@
 #pragma once
 
 #include <time.h>
+#include <sys/resource.h>
 #include <vector>
 #include <numeric>
 #include <complex>
@@ -41,31 +42,17 @@ namespace engine_utils {
     }
 }*/
 
-static const int parseLine(char* line){
-    // this assumes that a digit will be found and the line ends in " Kb".
-    int i = strlen(line);
-    const char* p = line;
-    while (*p <'0' || *p > '9') {
-        p++;
+static const long get_phys_memory() { // return peak resident memory in KB
+    struct rusage usage {};
+    if (getrusage(RUSAGE_SELF, &usage) != 0) {
+        return -1;
     }
-    line[i-3] = '\0';
-    i = atoi(p);
-    return i;
-}
-
-static const int get_phys_memory() { // note: this value is in KB!
-    FILE* file = fopen("/proc/self/status", "r");
-    int result = -1;
-    char line[128];
-
-    while (fgets(line, 128, file) != NULL){
-        if (strncmp(line, "VmRSS:", 6) == 0){
-            result = parseLine(line);
-            break;
-        }
-    }
-    fclose(file);
-    return result;
+#if defined(__APPLE__)
+    // Darwin reports ru_maxrss in bytes; Linux reports KiB.
+    return usage.ru_maxrss / 1024;
+#else
+    return usage.ru_maxrss;
+#endif
 }
 
 // planck function (W x sr-1 x m-2 x Hz−1)

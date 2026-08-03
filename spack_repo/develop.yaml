@@ -1,0 +1,4 @@
+# Spack develop packages owned by this source repository.
+# Paths are relative to the repository root.
+develop:
+  citlali: {spec: "citlali@4.0.0", path: .}

@@ -36,44 +36,39 @@ capability across the transitive package chain.
 
 ## Fresh development machine
 
-The supported reproducible setup is the workspace dev container:
+The maintained orchestration lives in `tolteca_deploy`. Clone
+`tolteca_deploy`, `tula_cmake`, `tula`, `kidscpp`, and `citlali` as siblings,
+select one of its native Spack profiles, and let it generate a location-local
+environment. The repositories own their package recipes and development source
+mappings; the deployment location owns compiler policy, externals, the lock,
+build stage, environment, and view. Its install store and download cache follow
+the configured user-shared or location-scoped storage policy.
 
-1. Install Docker and a Dev Container-capable client.
-2. Clone `tula_cmake`, `tula`, `kidscpp`, `citlali`, and
-   `tolteca_test_data` as siblings.
-3. Rebuild the container; `.devcontainer/postCreate.sh` installs Spack 1.2.2,
-   GCC 14, LLVM 20, and required system development packages.
-4. Run:
-
-   ```console
-   cd /workspaces/cpp
-   just production
-   ```
-
-The native commands for one lane are:
+Once generated, the underlying workflow remains ordinary Spack:
 
 ```console
-spack -e tula_cmake/environments/production/gcc14 concretize --force
-spack -e tula_cmake/environments/production/gcc14 \
-  install --test=all --overwrite --show-log-on-error
-spack -e tula_cmake/environments/production/gcc14 \
-  location -i citlali
+cd ../toltec_astro_dev
+source dotbashrc
+just cpp-install
+spack -e "$TOLTECA_CPP_ENV" location -i citlali
 ```
 
-Replace `gcc14` with `llvm20` for Clang 20. Both lanes require C++23.
+Choose the generated profile in `location.yaml`. Linux development profiles
+use GCC 14 or LLVM 20; the native macOS profile uses Homebrew LLVM 20. All
+lanes require C++23.
 
 ## Use the installed executable
 
 The environment view contains the root executable:
 
 ```console
-tula_cmake/environments/production/gcc14/.spack-view/bin/citlali --help
+"$TOLTECA_CPP_VIEW/bin/citlali" --help
 ```
 
 Alternatively:
 
 ```console
-spack -e tula_cmake/environments/production/gcc14 load citlali
+spack -e "$TOLTECA_CPP_ENV" load citlali
 citlali --version
 ```
 
@@ -88,6 +83,10 @@ target_link_libraries(my_target PRIVATE citlali::citlali)
 including transitive NetCDF, FFTW threads, the `TulaCcfits` adapter, Ceres,
 Kidscpp, and Tula metadata.
 
+`spack_repo/develop.yaml` declares that the `citlali` development spec maps to
+this source root. The deployment repository selects revisions and profiles;
+Citlali retains ownership of its Spack package-to-source mapping.
+
 ## Validation
 
 Measured in Ubuntu 24.04 arm64:
@@ -100,18 +99,24 @@ Measured in Ubuntu 24.04 arm64:
 The six tests include CLI help/version/config checks and a real-data RTC
 comparison against the direct Kidscpp reader/solver path.
 
+The native macOS arm64 Homebrew LLVM 20.1.8 profile also concretizes and
+installs the complete graph. Its installed Citlali 4.0 CLI processed all 123
+scans in observation 149101 and wrote raw and filtered FITS products for all
+three arrays. Runtime memory reporting uses portable `getrusage` semantics, so
+the diagnostic no longer assumes Linux `/proc` exists.
+
 The complete observation-level gate uses the installed CLI, eleven TolTEC
 NetCDF streams, the recomputed telescope stream, and the APT ECSV table:
 
 ```console
-cd /workspaces/cpp
-just citlali-real
+cd ../tula_cmake
+just citlali-real-workdir
 ```
 
-Run it from the workspace root after rebuilding the dev container so the
-external `toltec_astro/run` source tree is mounted read-only. The fixture
-writes generated FITS products under `/tmp/citlali-o149101-output` and retains
-the full CLI log under `tula_cmake/build/citlali-real-workdir/`.
+Run it with the sibling `tolteca_test_data/tolteca_workdir` fixture available.
+The gate writes generated FITS products under `/tmp/citlali-o149101-output`
+and retains the full CLI log under
+`tula_cmake/build/citlali-real-workdir/`.
 
 The prior Conan implementation is preserved on its baseline branch and in the
 workspace archive. `refs/citlali` remains read-only evidence.
