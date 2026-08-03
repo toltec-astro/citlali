@@ -85,7 +85,9 @@ def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
     if not rows:
         raise RuntimeError(f"refusing to write empty table {path}")
     with path.open("w", newline="") as stream:
-        writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
+        writer = csv.DictWriter(
+            stream, fieldnames=list(rows[0]), lineterminator="\n"
+        )
         writer.writeheader()
         writer.writerows(rows)
 
@@ -429,6 +431,8 @@ def analyze_one_model(
     speed_values: dict[tuple[str, str, str], list[float]] = defaultdict(list)
     support_counts: dict[tuple[str, str], int] = defaultdict(int)
     boundary_counts: dict[tuple[str, str], int] = defaultdict(int)
+    lineage_counts: dict[tuple[str, str], int] = defaultdict(int)
+    lineage_boundary_counts: dict[tuple[str, str], int] = defaultdict(int)
 
     apt_uid = np.asarray(apt["uid"], dtype=int)
     if not np.array_equal(uid, apt_uid):
@@ -486,6 +490,15 @@ def analyze_one_model(
             masks = {"common": base_valid & common}
             if not pooled_only:
                 masks["native"] = base_valid & model_native
+            lineage_masks = {"common": common}
+            if not pooled_only:
+                lineage_masks["native"] = model_native
+            for support, lineage_valid in lineage_masks.items():
+                lineage_counts[(support, direction)] += int(np.sum(lineage_valid))
+                if support == "native":
+                    lineage_boundary_counts[(support, direction)] += int(
+                        np.sum(lineage_valid & ~lineage_masks["common"])
+                    )
             for support, valid in masks.items():
                 support_counts[(support, direction)] += int(np.sum(valid))
                 if support == "native":
@@ -728,7 +741,9 @@ def analyze_one_model(
             {
                 "support": support,
                 "direction": direction,
+                "lineage_supported_detector_sample_count_before_signal_and_radial_cuts": lineage_counts[(support, direction)],
                 "detector_sample_count": count_value,
+                "native_only_lineage_boundary_sample_count": lineage_boundary_counts[(support, direction)],
                 "native_only_boundary_sample_count": boundary_counts[(support, direction)],
             }
             for (support, direction), count_value in sorted(support_counts.items())
@@ -923,10 +938,35 @@ def analyze() -> None:
         for result in results
         if result["descriptor"]["model_id"] == best["model_id"]
     )
+    best_group_rows = [
+        row
+        for row in group_rows
+        if row["model_id"] == best["model_id"]
+        and row["support"] == "common"
+        and row["group"].startswith("network:")
+        and row.get("quality")
+    ]
+    best_network_span_sec = max(float(row["timing_sec"]) for row in best_group_rows) - min(
+        float(row["timing_sec"]) for row in best_group_rows
+    )
+    best_half_difference_sec = abs(
+        float(first["first"]["timing_sec"]) - float(first["second"]["timing_sec"])
+    )
+    best_se = float(best["timing_jackknife_se_sec"])
+    material_remaining_structure = (
+        abs(float(network_model["pearson"])) >= 0.5
+        or best_network_span_sec >= 2.0 * best_se
+        or best_half_difference_sec >= 2.0 * best_se
+    )
     if not json.loads((PACKAGE / "stage_a_conclusion.json").read_text())[
         "direct_row_mismatch_found"
     ]:
-        if abs(float(best["timing_sec"])) <= 1.96 * float(best["timing_jackknife_se_sec"]):
+        if (
+            abs(float(best["timing_sec"])) <= 1.96 * best_se
+            and material_remaining_structure
+        ):
+            classification = "common component explained but interface/time-dependent residual remains"
+        elif abs(float(best["timing_sec"])) <= 1.96 * best_se:
             classification = "evidence only for a common approximately 1.5-sample effective offset"
         elif abs(float(best["timing_sec"])) < 0.5 * abs(float(assigned_baseline["timing_sec"])):
             classification = "common component explained but interface/time-dependent residual remains"
@@ -944,7 +984,10 @@ def analyze() -> None:
         "raw_combined_common_support": raw_combined,
         "best_discrete_common_support": best,
         "best_network_residual_model": network_model,
+        "best_network_timing_span_sec": best_network_span_sec,
         "best_time_halves": first,
+        "best_time_half_difference_sec": best_half_difference_sec,
+        "material_remaining_structure": material_remaining_structure,
         "classification": classification,
         "direct_row_mismatch_found": False,
         "physical_timestamp_semantics": "unresolved",

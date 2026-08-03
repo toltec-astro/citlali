@@ -1,0 +1,40 @@
+{
+  "application_modified": false,
+  "classification": "common component explained but interface/time-dependent residual remains",
+  "direct_citlali_row_mismatch_found": false,
+  "engineering_conclusions": [
+    "Data.Toltec.Is, Data.Toltec.Qs, and Data.Toltec.Ts have exact shared native row cardinality for every realized interface",
+    "native row-to-slot mappings are one-to-one and increasing with zero packet gaps, collisions, or reversals",
+    "the inspected path preserves D[n] with Ts[n] through retained output; k=+/-1 is counterfactual",
+    "raw-minus-lattice-slot residual is an engineering assignment quantity and not a sky tolerance"
+  ],
+  "measured_results": {
+    "assigned_baseline_ms": -12.249512996635163,
+    "assigned_baseline_jackknife_se_ms": 0.27475023445865365,
+    "assigned_k_plus_1_phi_plus_half_ms": -0.07524425655629242,
+    "assigned_k_plus_1_phi_plus_half_jackknife_se_ms": 0.27204022283045953,
+    "continuous_profile_effective_shift_ms": 12.367073486802651,
+    "assigned_combined_parallel_arcsec": -0.007345041758311495,
+    "assigned_combined_perpendicular_arcsec": 0.031706631772394855,
+    "assigned_combined_network_span_ms": 7.350536409388589,
+    "assigned_combined_network_residual_pearson": -0.9634384871709487,
+    "assigned_combined_network_residual_slope": -0.8765384589556692,
+    "assigned_combined_first_half_ms": 0.6615718843210341,
+    "assigned_combined_second_half_ms": -1.194295598952515,
+    "raw_k_plus_1_phi_plus_half_ms": -0.9541163943448997,
+    "raw_k_plus_1_phi_plus_half_jackknife_se_ms": 0.26586995426938015,
+    "raw_combined_network_residual_pearson": 0.4432026473494419,
+    "raw_combined_network_residual_slope": 0.12182624654398087
+  },
+  "owner_decisions_required": [
+    "Whether to request producer authority for the Data.Toltec.Ts integration event before any correction design",
+    "Whether to authorize a separate bounded investigation of the remaining network/interface and time-dependent structure",
+    "Whether later human-run exact-SHA evidence should include this diagnostic as an analysis sidecar without changing the existing SCI-MAP suite"
+  ],
+  "physical_timestamp_semantics": "unresolved",
+  "production_correction_authorized": false,
+  "recommended_next_action": "Do not implement a 1.5-sample correction. Obtain producer timestamp-event authority and, if approved, design a separate interface/time-residual diagnostic using native raw timestamps and exact retained lineage.",
+  "task": "SCI-ALIGN-001-SAMPLE-LINEAGE-PHASE",
+  "unity_contacted": false,
+  "new_citlali_reductions": 0
+}

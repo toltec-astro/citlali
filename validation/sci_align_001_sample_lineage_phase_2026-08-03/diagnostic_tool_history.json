@@ -1,0 +1,14 @@
+{
+  "analysis_implementation_commit": "5176a46bc7d67be82e9eb064653663e432705350",
+  "post_result_reporting_correction": {
+    "changed_scientific_models": false,
+    "changed_cohort_or_fit": false,
+    "changed_preregistered_protocol": false,
+    "reason": "The first result writer counted only fit-selected boundary rows and classified a pooled numerical null without applying the preregistered remaining-interface/time-structure outcome rule.",
+    "repair": "Add pre-cut lineage boundary accounting and apply the frozen outcome hierarchy using the measured network span/correlation and first-half/second-half difference.",
+    "results_replayed_after_repair": true,
+    "serial_replay_byte_identical": true
+  },
+  "preregistration_commit": "e1b29ab6da16e26502bb3d26d96a2fa45b7247ef",
+  "preregistration_signal_read": false
+}

@@ -1,0 +1,82 @@
+{
+  "analysis_tool": "tools/diagnostics/analyze_sci_align_001_sample_lineage_phase.py",
+  "analysis_tool_sha256": "57ac9e6575766e58644ca93c2b61316f6f882982701d845cbe0e0a47a1db0734",
+  "branch": "codex/sci-align-001-sample-lineage-phase",
+  "confirmatory_signal_read_after_freeze_verification": true,
+  "head_before_analysis": "5176a46bc7d67be82e9eb064653663e432705350",
+  "preregistration_aggregate_sha256": "a2aa8f4edcdfe123fc76677b6425f5ec9c198659c008a74bc1d28d06e0f87272",
+  "preregistration_commit": "e1b29ab6da16e26502bb3d26d96a2fa45b7247ef",
+  "protocol": {
+    "assigned_slot_residual_definition": {
+      "formula": "r[i,n] = (t_raw[i,n] + offset[i]) - (phase + round_half_up(((t_raw[i,n] + offset[i]) - phase)/dt) * dt)",
+      "offset_stage": "positive-add exactly once before lattice assignment",
+      "round_half_up": "floor(x + 0.5)",
+      "sign": "raw-plus-offset minus lattice-slot time",
+      "unit": "s",
+      "warning": "half-cell distance is an engineering assignment residual, not a sky-error tolerance"
+    },
+    "cadence_sec": 0.008192,
+    "classification": [
+      "demonstrated row-index error plus half-sample convention error",
+      "evidence only for a common approximately 1.5-sample effective offset",
+      "common component explained but interface/time-dependent residual remains",
+      "hypothesis not supported"
+    ],
+    "confirmatory_signal_read_during_preregistration": false,
+    "continuous_profile": "secondary pooled common-support profile around the best discrete model; it cannot redefine the primary hypotheses",
+    "frozen_discrete_predictions_from_existing_estimate_ms": {
+      "baseline_magnitude": 12.138,
+      "correcting_k_plus_one_only_remaining_magnitude": 3.946,
+      "correcting_k_plus_one_phi_plus_half_remaining_signed": 0.15,
+      "correcting_phi_plus_half_only_remaining_magnitude": 8.042,
+      "sign_basis": "existing signed estimate is -12.138 ms; evaluating telescope coordinates 12.288 ms later predicts approximately +0.150 ms"
+    },
+    "interpretation_rule": "A numerical null cannot establish a row-index defect. Direct Stage-A lineage evidence is mandatory, and producer authority retains integration-event semantics.",
+    "metrics_every_model": [
+      "pooled right-minus-left parallel and perpendicular centroid",
+      "timing estimate and delete-one-stable-scan jackknife interval",
+      "per-array and per-network estimates",
+      "network correlation and slope versus exactly defined assigned-slot residual",
+      "first-half versus second-half estimate",
+      "balanced same-direction null",
+      "major/minor FWHM, ellipticity, and amplitude",
+      "common/native sample counts and exact boundary-row differences"
+    ],
+    "not_authorized": [
+      "application behavior change",
+      "production timing correction",
+      "SCI-MAP-001-UNITY-001 modification",
+      "new Citlali reduction",
+      "Unity access",
+      "producer timestamp semantic claim"
+    ],
+    "primary_models": {
+      "formula": "t_eff(n;k,phi) = T[n+k] + phi * 0.008192 s",
+      "k": [
+        -1,
+        0,
+        1
+      ],
+      "phase_requirement": "phi preserves detector row identity",
+      "phi_samples": [
+        -0.5,
+        0.0,
+        0.5
+      ],
+      "row_shift_requirement": "k changes row association; it is not a constant timestamp addition",
+      "time_bases": [
+        "assigned_slot",
+        "raw_detector_timestamp"
+      ]
+    },
+    "primary_population": {
+      "detectors": "4809 frozen matched detector UIDs from LR-BEAMMAP",
+      "purpose": "identical interior detector rows for every model",
+      "samples": "intersection of original flags/finite/frozen baseline radial selection and within-scan valid support for k=-1,0,+1 across both bases and all phases",
+      "scans": "frozen 99 left and 99 right trajectory-derived Hold-valid registry"
+    },
+    "scientific_question": "Does D[n] acquire a wrong Ts row, and does an independent edge-versus-centroid phase explain the retained Beammap direction-odd residual?",
+    "secondary_population": "each model's native within-scan support, with added/removed boundary rows reported",
+    "task": "SCI-ALIGN-001-SAMPLE-LINEAGE-PHASE"
+  }
+}

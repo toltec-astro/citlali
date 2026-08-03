@@ -1,0 +1,32 @@
+{
+  "application_source_changed": false,
+  "citlali_reductions_run": 0,
+  "gates": [
+    {
+      "command": "$HOME/tolteca/bin/python -m py_compile tools/diagnostics/prepare_sci_align_001_sample_lineage_phase.py tools/diagnostics/analyze_sci_align_001_sample_lineage_phase.py",
+      "result": "pass"
+    },
+    {
+      "command": "MPLBACKEND=Agg MPLCONFIGDIR=/tmp/sci-align-mpl XDG_CACHE_HOME=/tmp/sci-align-cache $HOME/tolteca/bin/python tools/diagnostics/analyze_sci_align_001_sample_lineage_phase.py",
+      "result": "pass; two clean serial executions produced byte-identical result tables, controls, summary, identity, and plots"
+    },
+    {
+      "command": "cmake --build build --target citlali_cli -j 8",
+      "result": "pass"
+    },
+    {
+      "command": "ctest --test-dir build --output-on-failure",
+      "result": "pass; 629 enabled tests passed, 0 failed, 1 pre-existing disabled test"
+    },
+    {
+      "command": "$HOME/tolteca/bin/python -m unittest discover -s tools/baseline -p 'test_*.py'",
+      "result": "pass; 154 tests"
+    },
+    {
+      "command": "$HOME/tolteca/bin/python tools/config/run_config_preflight.py --require-all",
+      "result": "pass; 123 unit tests, four mode kits, 8 compact-compatibility cases, and all authority/boundary checks"
+    }
+  ],
+  "task": "SCI-ALIGN-001-SAMPLE-LINEAGE-PHASE",
+  "unity_contacted": false
+}
