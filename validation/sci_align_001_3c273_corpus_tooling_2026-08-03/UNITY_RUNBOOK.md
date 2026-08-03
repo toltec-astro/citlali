@@ -14,16 +14,16 @@ after Unity's verified shared base `9aae0e669384c5c0c0dda93debc194d6b8dac787`:
 
 ```bash
 # On the local source clone:
-git bundle create /Users/gwilson/GitHub/citlali-refactor/sci_align_001_corpus_tooling.bundle \
+git bundle create /Users/gwilson/GitHub/citlali-refactor/sci_align_001_corpus_tooling_from_9aae.bundle \
   9aae0e669384c5c0c0dda93debc194d6b8dac787..codex/sci-align-001-3c273-corpus-tooling
-git bundle verify /Users/gwilson/GitHub/citlali-refactor/sci_align_001_corpus_tooling.bundle
+git bundle verify /Users/gwilson/GitHub/citlali-refactor/sci_align_001_corpus_tooling_from_9aae.bundle
 # Owner transfer to the owner-controlled Unity staging directory (not performed by Codex):
-scp /Users/gwilson/GitHub/citlali-refactor/sci_align_001_corpus_tooling.bundle \
+scp /Users/gwilson/GitHub/citlali-refactor/sci_align_001_corpus_tooling_from_9aae.bundle \
   unity_toltec:/work/toltec/wilson/
 # Then, on Unity from the repository clone:
-git bundle verify /work/toltec/wilson/sci_align_001_corpus_tooling.bundle
+git bundle verify /work/toltec/wilson/sci_align_001_corpus_tooling_from_9aae.bundle
 git switch --detach
-git fetch /work/toltec/wilson/sci_align_001_corpus_tooling.bundle \
+git fetch /work/toltec/wilson/sci_align_001_corpus_tooling_from_9aae.bundle \
   codex/sci-align-001-3c273-corpus-tooling:refs/heads/codex/sci-align-001-3c273-corpus-tooling
 git switch codex/sci-align-001-3c273-corpus-tooling
 ```
