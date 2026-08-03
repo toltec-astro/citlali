@@ -99,7 +99,20 @@ resource_allocation:
   dispatch_record_rule: >-
     Record the actual selected profile and any escalation here; retain default
     profiles in the README rather than duplicating them for every package.
-  resource_dispatch_history: []
+  resource_dispatch_history:
+    - dispatch_id: ENG-STATE-001-SCOPE-CHECKPOINT-2026-08-03
+      package_id: ENG-STATE-001
+      phase: launch_inventory
+      dispatch_content_commit: 1af3ebb0c32b8b277a2e75d0c9347a1cc27a3578
+      model: terra
+      effort: high
+      task_shape: bounded_engineering
+      rationale: >-
+        A no-code Tier C scope checkpoint for a dependency-free lifecycle and
+        provenance audit; it is not an independent scientific derivation.
+      ultra_trigger: none
+      parallelism: none
+      stop_rule: stop_after_scope_checkpoint
 scope_control:
   policy_id: FRAMEWORK-SCOPE-001
   status: active_for_future_dispatches_and_future_phases
@@ -114,7 +127,20 @@ scope_control:
   dispatch_record_rule: >-
     Record the selected execution authority and any approved scope expansion
     in the phase dispatch record; silence prohibits a capability.
-  scope_change_history: []
+  scope_change_history:
+    - dispatch_id: ENG-STATE-001-SCOPE-CHECKPOINT-2026-08-03
+      package_id: ENG-STATE-001
+      checkpoint_status: required
+      local_reduction_authority: prohibited
+      unity_evidence_authority: not_required
+      allowed_deliverable_class: concise_scope_checkpoint_handback
+      prohibited_expansions:
+        - implementation_source_inspection
+        - audit_artifact_creation
+        - local_reduction
+        - delegation
+        - independent_review
+      approval: project_owner_dispatch_2026-08-03
 
 controlled_vocabulary:
   tiers: [A, B, C]
