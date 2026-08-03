@@ -37,11 +37,10 @@ sha256sum -c SHA256SUMS
 
 ## 2. Create the two TolProj workspaces
 
-The agreed Unity root is `$HOME/c2025t/2026-ENG-citlali-MAP`. Set the three
-remaining operational values in Unity. `TOLPROJ_SITE_CONFIG` must be the path
-to an approved, existing TolProj **YAML file**. It is not the run root, project
-directory, or a directory of any kind. Do not reuse an old reduction or copy
-an old reduction tree into it.
+The agreed Unity root is `$HOME/c2025t/2026-ENG-citlali-MAP`. Set the two
+remaining operational values in Unity. This runbook uses Unity's default
+TolProj reduction configuration. Do not reuse an old reduction or copy an old
+reduction tree into it.
 
 ### Local
 
@@ -51,17 +50,14 @@ No additional local command is needed after the transfer.
 
 ```sh
 TOLPROJ='<approved TolProj executable on Unity>'
-TOLPROJ_SITE_CONFIG='<absolute path to approved TolProj site-config YAML>'
 GRANT_USER='<Grant Unity/TolProj user>'
 
 set -euo pipefail
-test -f "$TOLPROJ_SITE_CONFIG"
-test ! -d "$TOLPROJ_SITE_CONFIG"
 point="$UNITY_RUN_ROOT/SCI-MAP-001-POINT-SOURCE"
 science="$UNITY_RUN_ROOT/SCI-MAP-001-SCIENCE-SOURCE"
 test ! -e "$point"; test ! -e "$science"
-"$TOLPROJ" init-test "$UNITY_PACKAGE/tolproj-point-source.json" --root "$UNITY_RUN_ROOT" --user "$GRANT_USER" --config "$TOLPROJ_SITE_CONFIG"
-"$TOLPROJ" init-test "$UNITY_PACKAGE/tolproj-science-source.json" --root "$UNITY_RUN_ROOT" --user "$GRANT_USER" --config "$TOLPROJ_SITE_CONFIG"
+"$TOLPROJ" init-test "$UNITY_PACKAGE/tolproj-point-source.json" --root "$UNITY_RUN_ROOT" --user "$GRANT_USER"
+"$TOLPROJ" init-test "$UNITY_PACKAGE/tolproj-science-source.json" --root "$UNITY_RUN_ROOT" --user "$GRANT_USER"
 test -f "$point/project.yaml"; test -f "$science/project.yaml"
 ```
 
@@ -96,7 +92,7 @@ CASE_OVERLAYS="$UNITY_PACKAGE/case-overlays"
 # valid OMP run because its outputs are needed to prepare the Science cases.
 # The existing directory must have no completed reduNN output before setup.
 test ! -d "$SCIENCE_PROJECT/pointings/reduced/redu00"
-"$TOLPROJ" setup-pointing-reductions "$SCIENCE_PROJECT" --config "$TOLPROJ_SITE_CONFIG" \
+"$TOLPROJ" setup-pointing-reductions "$SCIENCE_PROJECT" \
   --refactor --source 1146+399 --pointings-dir pointings --apt-dir apts --cpus 6
 "$TOLPROJ" validate-reduction "$SCIENCE_PROJECT/pointings"
 "$TOLPROJ" submit-reduction "$SCIENCE_PROJECT/pointings"
@@ -112,10 +108,10 @@ SCIENCE_POINTING_REDUCTION='reduNN'
 for CASE in P-SEQ P-OMP; do
   test ! -e "$POINT_PROJECT/$CASE"
 done
-"$TOLPROJ" setup-pointing-reductions "$POINT_PROJECT" --config "$TOLPROJ_SITE_CONFIG" \
+"$TOLPROJ" setup-pointing-reductions "$POINT_PROJECT" \
   --refactor --source 1146+399 --pointings-dir P-SEQ --apt-dir apts --cpus 1
 cp "$CASE_OVERLAYS/P-SEQ.yaml" "$POINT_PROJECT/P-SEQ/99_zzz_sci_map_case.yaml"
-"$TOLPROJ" setup-pointing-reductions "$POINT_PROJECT" --config "$TOLPROJ_SITE_CONFIG" \
+"$TOLPROJ" setup-pointing-reductions "$POINT_PROJECT" \
   --refactor --source 1146+399 --pointings-dir P-OMP --apt-dir apts --cpus 6
 cp "$CASE_OVERLAYS/P-OMP.yaml" "$POINT_PROJECT/P-OMP/99_zzz_sci_map_case.yaml"
 for CASE in P-SEQ P-OMP; do
@@ -130,14 +126,14 @@ SCIENCE_BASE="$SCIENCE_PROJECT/$GRANT_USER/NGC4449"
 for CASE in S-C-SEQ S-E-SEQ S-X-SEQ S-C-OMP S-E-OMP; do
   test ! -e "$SCIENCE_PROJECT/$CASE"
 done
-"$TOLPROJ" setup-science-reductions "$SCIENCE_PROJECT" --config "$TOLPROJ_SITE_CONFIG" \
+"$TOLPROJ" setup-science-reductions "$SCIENCE_PROJECT" \
   --refactor --user "$GRANT_USER" --pointing-reduction "$SCIENCE_POINTING_REDUCTION" \
   --apt-product matched --cpus 1
 for CASE in S-C-SEQ S-E-SEQ S-X-SEQ; do
   cp -a "$SCIENCE_BASE" "$SCIENCE_PROJECT/$CASE"
   cp "$CASE_OVERLAYS/$CASE.yaml" "$SCIENCE_PROJECT/$CASE/99_zzz_sci_map_case.yaml"
 done
-"$TOLPROJ" setup-science-reductions "$SCIENCE_PROJECT" --config "$TOLPROJ_SITE_CONFIG" \
+"$TOLPROJ" setup-science-reductions "$SCIENCE_PROJECT" \
   --refactor --user "$GRANT_USER" --pointing-reduction "$SCIENCE_POINTING_REDUCTION" \
   --apt-product matched --cpus 16
 for CASE in S-C-OMP S-E-OMP; do
