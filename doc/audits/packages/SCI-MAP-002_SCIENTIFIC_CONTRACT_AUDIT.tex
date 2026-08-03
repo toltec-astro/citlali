@@ -1,0 +1,727 @@
+\documentclass[10pt]{article}
+
+\usepackage[margin=0.78in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{longtable}
+\usepackage[table]{xcolor}
+\usepackage{url}
+
+\newcommand{\packageid}{SCI-MAP-002}
+\newcommand{\appsha}{9aae0e669384c5c0c0dda93debc194d6b8dac787}
+\newcommand{\corecommit}{bccc2614663c95aee66ed9b21b6025f5fb4e5f04}
+\newcommand{\tracecommit}{0d80c4df9d4694634c4c77830c7701b07af577b1}
+\newcommand{\jinc}{\operatorname{jinc}}
+\newcommand{\corelabel}{\textbf{DERIVATION}}
+\newcommand{\srclabel}{\textbf{SOURCE FACT}}
+\newcommand{\inflabel}{\textbf{INFERENCE}}
+\newcommand{\runlabel}{\textbf{UNVERIFIED RUNTIME}}
+\newcommand{\handofflabel}{\textbf{HANDOFF}}
+
+\title{\packageid{} Scientific-Contract Audit\\
+JINC Gridding, Normalization, Response, Support, and Product Interface}
+\author{Independent scientific-contract audit}
+\date{2026-08-03}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+\toprule
+Governing application identity & \texttt{\appsha} \\
+Frozen independent core & \texttt{\corecommit} \\
+Independent-core SHA-256 & \texttt{2c1f9ff95f65422a098846f747ed165d5aeddc5bedd854678bfa7faeebba4e24} \\
+Frozen static trace & \texttt{\tracecommit} \\
+Static-trace SHA-256 & \texttt{37be33eb76dad4d916dd2772cb32f6570fef7e58ebbde0cf2de1add189d73340} \\
+Audit branch & \texttt{codex/audit-sci-map-002} \\
+Audit mode & read-only source audit; documentation artifacts only \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Executive disposition}
+
+\textbf{Verdict: amend; implementation nonconformant to the frozen proposed
+contract; validation incomplete; production status remains existing-use-only.}
+This verdict is bounded to JINC.  It neither changes the established
+implementation nor authorizes a repair, numerical parameter campaign, broader
+production use, or a conclusion about naive mapmaking.
+
+The governing source contains the correct three raw algebraic accumulators for
+the frozen constant-field gridding estimator,
+\begin{equation}
+  N_p=\sum_s q_s c_{sp}d_s,\qquad
+  C_p=\sum_s q_s c_{sp},\qquad
+  Q_p=\sum_s q_s c_{sp}^{2},
+  \label{eq:raw}
+\end{equation}
+and the observation-map finalizer publishes
+\begin{equation}
+  \widehat m_p=N_p/C_p,\qquad
+  W_{p,\mathrm{formal}}=C_p^2/Q_p
+  \label{eq:final}
+\end{equation}
+on retained support.  Negative coefficients keep their signs in $N_p$ and
+$C_p$ and enter $Q_p$ quadratically.  The source also constructs the raw
+kernel numerator $K_p=\sum_s q_sc_{sp}h_s$ and divides it by the same $C_p$;
+for the visible analytic RTC templates, $h_s$ is explicitly generated as a
+unit-source response.  These are material conforming subcontracts.
+
+They do not close the package.  The source realizes a square, point-sampled
+footprint rather than the frozen radial, pixel-response-averaged contract;
+uses fixed absolute $|C_p|$ and $Q_p$ numerical scales that are not invariant
+under a change of signal unit; records coefficient-squared time as
+``coverage''; and can publish \path{coverage_bool_*}=1 for zero or non-finite
+weight.  Shape-vector elements are checked for finiteness but not their
+physical domain, and the coefficient is not checked for finiteness before
+deposition.  Provenance records requested/effective configuration and coarse
+completion state but not the realized normalization, support, array
+selection, parallel policy, kernel source, cancellation diagnostics, or
+product joins required by the frozen core.
+
+The only incoming post-core handoff is explicitly naive-only.  It supplies no
+JINC runtime evidence.  Static reachability shows both ordinary and detector-
+beammap JINC paths, including concurrent policies, but there is no exact-SHA
+runtime evidence for response, product values, or sequential/parallel
+acceptance.  A bounded protocol is proposed in Section~\ref{sec:protocol}; it
+has not been requested, run, or interpreted.
+
+\section{Authority, chronology, and epistemic separation}
+
+The independent mathematical reference is
+\path{doc/audits/packages/SCI-MAP-002_INDEPENDENT_CORE.tex}, frozen and
+committed before any JINC implementation or post-core evidence was opened.
+Its SHA-256 is stated above.  The phase-two source-to-equation matrix is
+\path{doc/audits/packages/SCI-MAP-002_STATIC_SOURCE_TRACE.md}; it was frozen
+separately and is preliminary evidence, not the present verdict.
+
+This report uses the following labels strictly:
+
+\begin{itemize}[leftmargin=*]
+  \item \corelabel{} is mathematics or a required scientific identity from
+        the frozen independent core.
+  \item \srclabel{} is directly visible at \texttt{\appsha}; line ranges are
+        cited.  The audit branch differs from the governing SHA only by audit
+        documentation commits, and the examined application paths have no
+        diff from \texttt{\appsha}.
+  \item \inflabel{} is a conclusion that follows from combined source facts;
+        it is not described as observed runtime behavior.
+  \item \runlabel{} names behavior that static reading cannot establish.
+  \item \handofflabel{} is bounded incoming evidence and retains the scope
+        assigned by its author.
+\end{itemize}
+
+No Citlali compilation, test, reduction, numerical probe, Unity access,
+network access, delegation, or independent review was performed.  The only
+allowed execution for this package is documentation-only LaTeX verification.
+
+\subsection{Post-core handoff disposition}
+
+\handofflabel{} \path{SCI-MAP-002-XAUD-001} states that all seven reductions
+in the completed MAP evidence bundle selected \texttt{mapmaking.method naive}.
+It explicitly does not establish any JINC implementation, response,
+normalization, parameter-selection, edge, parallel-equivalence, uncertainty,
+product, or production claim.  This audit acknowledges and incorporates only
+the naive-control distinction.  No JINC finding is closed or downgraded by
+that handoff, and the ordinary-naive positive-coefficient predicate is not
+reused here.
+
+\section{Bounded source expansion}
+
+The phase-two roots were exactly
+\path{include/citlali/core/mapmaking/jinc_mm.h},
+\path{include/citlali/core/pipeline/mapmaking_dispatch.h}, and
+\path{include/citlali/core/pipeline/mapmaking_method_config.h}.  Final audit
+inspection followed only direct definitions, callers, publishers, and
+consumers needed to answer the frozen questions.  The complete per-file hash
+and reason record is in
+\path{doc/audits/evidence/SCI-MAP-002_LOCAL_EVIDENCE_2026-08-03.yaml}.
+The expansion was grouped as follows:
+
+\begin{longtable}{@{}p{0.21\textwidth}p{0.71\textwidth}@{}}
+\toprule
+Question & Direct paths opened and reason \\
+\midrule
+\endhead
+Final normalization and masks &
+\path{include/citlali/core/mapmaking/map.h},
+\path{src/citlali/core/mapmaking/map.cpp}, and
+\path{include/citlali/core/utils/utils.h}: define buffer identity,
+\path{normalize_maps}, $C/Q$ validity, thresholds, mask application,
+empirical-weight separation, and coverage-region thresholding. \\
+Configuration and realized state &
+\path{include/citlali/core/config/mapmaking_config.h},
+\path{include/citlali/core/config/mapmaking_config_validation.h},
+\path{include/citlali/core/config/config_error.h},
+\path{include/citlali/core/engine/detail/mapmaking_config_impl.h},
+\path{include/citlali/core/pipeline/mapmaking_config_policy.h},
+\path{include/citlali/core/pipeline/mapmaking_execution_plan.h},
+\path{include/citlali/core/pipeline/mapmaking_config_serialization.h}, and
+\path{include/citlali/core/pipeline/mapmaking_provenance.h}: define defaults,
+validation, one-way adaptation, plan states, serialization, and publication. \\
+Callers and reachability &
+The direct pointing, Lali, fruit-loop, Beammap population, pipeline, setup,
+and mapmaking-pass implementation headers listed in the evidence manifest,
+plus \path{include/citlali/core/timestream/rtc/rtcproc.h}: determine ordinary
+dispatch, normalization call sites, detector grouping, unique detector-map
+indices, outer-scan concurrency, and detector-parallel reachability. \\
+Kernel and consumers &
+\path{include/citlali/core/timestream/rtc/kernel.h},
+\path{include/citlali/core/timestream/timestream.h}, and
+\path{include/citlali/core/mapmaking/wiener_filter.h}: determine the
+sample-domain template, fruit-loop feedback, and post-map consumer use of
+kernel, weight, and coverage.  Filtering mathematics itself was not audited. \\
+Product publication and identity &
+The direct FITS image helper/name/unit/metadata/write-slot headers, observation
+and coadd map-file helpers, and Engine output implementation headers listed in
+the evidence manifest: determine array/file identity, WCS attachment, HDU
+names, units, formal/empirical labels, coverage mask construction, and
+required-output failure behavior. \\
+Coadd boundary &
+\path{include/citlali/core/pipeline/observation_coadd_accumulation.h},
+\path{include/citlali/core/pipeline/raw_observation_outputs.h},
+\path{include/citlali/core/pipeline/raw_coadd_outputs.h}, and their direct
+execution wrappers: distinguish a JINC observation estimator from the later
+weighted coadd without auditing the general coadd contract. \\
+\bottomrule
+\end{longtable}
+
+\section{Independent reference contract}
+
+The frozen core defines the peak-normalized family
+\begin{equation}
+  \jinc(z)=\begin{cases}2J_1(z)/z,&z\ne0,\\1,&z=0,\end{cases}
+\end{equation}
+and requires the effective analytic family, radial coordinate, envelope,
+support boundary, pixel-response rule, and array-specific parameter ordering
+to be explicit.  Its ideal deposition coefficient is a finite,
+dimensionless pixel response
+\begin{equation}
+  c_{sp}=\frac{1}{A_p}\int_{P_p}g_a(\boldsymbol{x},\boldsymbol{x}_s)
+  k_a(\rho_a;\boldsymbol{\theta}_a)\,d^2\boldsymbol{x}.
+\end{equation}
+The core allows negative and zero coefficients.  It distinguishes geometric
+exposure $T_p=\sum_s\Delta t_s$ from coefficient and statistical support.
+
+For mutually independent samples with absolute inverse-variance weights
+$q_s$, Equations~\eqref{eq:raw}--\eqref{eq:final} give
+\begin{equation}
+  \operatorname{Var}_{\mathrm{formal}}(\widehat m_p)=Q_p/C_p^2.
+\end{equation}
+Valid support requires finite accumulators, positive geometric exposure,
+$Q_p>0$, $C_p\ne0$, and any stronger declared conditioning/coverage gate.
+The realized response to source template $b_a$ is
+\begin{equation}
+  R_{a,p}(\boldsymbol{x}_0)=
+  \frac{\sum_s q_sc_{sp}b_a(\boldsymbol{x}_s-\boldsymbol{x}_0)}{C_p}.
+  \label{eq:response}
+\end{equation}
+The persisted kernel must be the realized response in signal units, not a bare
+coefficient, $C_p$, or $Q_p$.  Formal standardized signal and empirical
+signal-to-noise are distinct products.  Stable array identity is one of
+\texttt{a1100}, \texttt{a1400}, and \texttt{a2000}, never a positional
+fallback.  Requested, effective, observation-resolved, and realized state are
+separate one-way records.
+
+\section{Source model and conformity}
+
+\subsection{Analytic family, footprint, and subpixel rule}
+
+\srclabel{} At nonzero physical angular radius $r$, the implementation first
+uses $r/l_{d,a}$ and evaluates
+\begin{equation}
+ k_a(r)=
+ \frac{2J_1(2\pi r/(a l_{d,a}))}{2\pi r/(a l_{d,a})}
+ \exp\!\left[-\left(\frac{2r}{b l_{d,a}}\right)^c\right]
+ \frac{2J_1(3.831706 r/(r_{\max}l_{d,a}))}
+      {3.831706 r/(r_{\max}l_{d,a})};
+ \label{eq:implkernel}
+\end{equation}
+at exactly zero it returns one.  Shape-vector positions are $(a,b,c)$.
+The fixed numeric scales map keys 0, 1, and 2 to wavelengths 1.1, 1.4, and
+2.0 mm divided by 45.  Evidence:
+\path{jinc_mm.h:117-160,214-224} and
+\path{mapmaking_method_config.h:30-54,86-98}.
+
+\srclabel{} The cache half-width is
+$R_a=\lfloor r_{\max}l_{d,a}/\mathrm{pixel\_size\_rad}\rfloor$, and every
+cell in the full $(2R_a+1)^2$ square is evaluated.  There is no radial support
+predicate; corners extend to approximately $\sqrt{2}\,r_{\max}l_{d,a}$.
+The same $r_{\max}$ also places the first zero of the second JINC factor.
+Map-edge blocks are cropped without wrap or reflection, but a sample whose
+rounded center is outside the map is discarded even when part of its square
+footprint could overlap.  Evidence: \path{jinc_mm.h:125-128,162-207,530-553,
+1078-1113}.
+
+\srclabel{} For \path{subpixel_n}$=n>1$, $n^2$ point-evaluated phase caches
+use offsets $-1/2+(i+1/2)/n$.  The sample coordinate is rounded, the residual
+phase is binned, and one cache is selected.  This converges to point sampling
+at the realized phase, not to a pixel-area integral.  Evidence:
+\path{jinc_mm.h:140-153,185-207,496-515,1034-1061}.
+
+\inflabel{} The implementation is mathematically explicit, but the names
+\path{r_max} and \path{subpixel_n} do not by themselves disclose that
+the former is both a square-cache scale and a second-JINC zero or that the
+latter refines a point-phase approximation.  This is a direct divergence from
+the frozen radial/pixel-response contract, not evidence that the mature
+parameter values should be optimized.
+
+\subsection{Configuration domain and array identity}
+
+\srclabel{} Typed configuration defaults provide all three stable array keys
+and three positional values.  Validation requires finite positive
+\path{r_max}, \path{subpixel_n}$\ge1$, and finite shape elements, but it
+does not require the first two shape scales to be positive or otherwise
+validate the domain of $(a,b,c)$.  Deposition checks finite signal and finite
+positive $q_s$ but does not check finite $c_{sp}$.  Evidence:
+\path{mapmaking_config.h:40-47},
+\path{mapmaking_config_validation.h:32-47},
+\path{config_error.h:108-139}, and
+\path{jinc_mm.h:488-495,1034-1041,1098-1190}.
+
+\inflabel{} A finite but zero or physically invalid scale can reach
+Equation~\eqref{eq:implkernel}; any resulting non-finite coefficient can
+contaminate raw $N,C,Q$, kernel, and coverage before the final mask.  Static
+source is sufficient to establish the missing admission and coefficient
+check.  The exact floating result for every invalid tuple is deliberately not
+claimed without execution.
+
+\srclabel{} Request parsing selects shape vectors by stable array name, and a
+one-way adapter maps them to fixed numeric array IDs.  Calibration defines
+\texttt{0->a1100}, \texttt{1->a1400}, and \texttt{2->a2000}; deposition uses
+the detector APT array value, and FITS filenames/PHDU/WCS use the same stable
+map.  Missing required names fail through \texttt{at()} rather than neighbor
+fallback.  Evidence: \path{engine/calib.h:74-79},
+\path{mapmaking_method_config.h:30-54,86-98},
+\path{map_observation_files_impl.h:39-53}, and
+\path{map_image_output_impl.h:21-50}.
+
+\inflabel{} The current fixed identity mapping conforms for array reordering
+and subsetting because selection remains keyed by numeric physical array ID,
+not container position.  Runtime evidence for arbitrary malformed APT
+identity is outside this package.
+
+\subsection{Normalization, cancellation, and formal weight}
+
+\srclabel{} Accepted samples update $N,C,Q$ exactly as
+Equation~\eqref{eq:raw}; the same coefficient sign is used in $N$ and $C$,
+while $Q$ uses $c^2$.  Evidence:
+\path{jinc_mm.h:559-615,1119-1175}.
+
+\srclabel{} The grid-weight finalizer requires finite
+$|C_p|>10^{-8}$ and finite $Q_p>0$, computes
+\begin{equation}
+ W_p=\frac{C_p^2}{\max(Q_p,10^{-30})},
+\end{equation}
+then applies a positive-weight mask and, when configured, a support threshold
+derived at \path{coverage_cut/10}.  It publishes $N_p/C_p$, $K_p/C_p$,
+normalized noise numerators, and the finalized weight on that mask.  It clears
+the raw \path{grid_weight} afterward.  Evidence:
+\path{map.cpp:76-121,223-301}.
+
+\inflabel{} Negative $C_p$ is valid if its magnitude passes the gate; exact
+and sufficiently small cancellation is masked.  Near cancellation above the
+fixed gate lowers $C_p^2/Q_p$ as required.  Therefore the signed estimator and
+the ordinary cancellation direction conform.
+
+\inflabel{} The two fixed numerical constants carry implicit units.  Under
+$d\mapsto\lambda d$ and $q\mapsto q/\lambda^2$, the estimator and formal
+weight scale correctly only while the same pixels stay on the same side of
+$|C|=10^{-8}$ and $Q=10^{-30}$.  The validity boundary can change solely with
+the declared signal unit, and $0<Q<10^{-30}$ does not receive the exact
+$C^2/Q$ weight.  Neither constant nor the realized threshold is present in
+mapmaking provenance.  Thus final normalization is \emph{conditionally}
+conforming, not exact over the admitted numeric domain.
+
+\subsection{Kernel, coverage, masks, and product identity}
+
+\srclabel{} JINC accumulates
+\begin{equation}
+ K_p=\sum_s q_sc_{sp}h_s,\qquad
+ H_p=\sum_s c_{sp}^2/f_s,
+\end{equation}
+into \path{kernel} and \path{coverage}, respectively.  The finalizer
+publishes $K_p/C_p$ and masks $H_p$ but does not otherwise normalize coverage.
+Evidence: \path{jinc_mm.h:617-627,1177-1190} and
+\path{map.cpp:244-295}.
+
+\srclabel{} Analytic Gaussian and Airy RTC paths describe and create a
+unit-source, unit-peak sample-domain template $h_s$; FITS template mode copies
+image values and therefore inherits the input image's amplitude convention.
+Evidence: \path{timestream/rtc/kernel.h:172-223,226-360,363-410}.
+The output writer stores \path{kernel_*} in the signal unit with the same
+WCS, plus kernel type and FWHM.  Fruit-loop feedback samples this stored map,
+and the Wiener path directly uses it as the filter template/response input.
+Evidence: \path{map_image_output_helpers.h:76-95},
+\path{fits_image_metadata_keys.h:124-128},
+\path{timestream.h:2672-2697,2817-2844}, and
+\path{wiener_filter.h:235-255,1324-1349}.
+
+\inflabel{} For the visible analytic unit-source templates, $K/C$ has the
+realized-response form in Equation~\eqref{eq:response} and is consumed rather
+than reconstructed downstream.  This is a conforming kernel equation.  The
+FITS-template amplitude convention and complete source identity are not
+carried by the kernel HDU or mapmaking provenance, so product provenance is
+only partial.  A unit-source runtime response comparison remains unverified.
+
+\srclabel{} \path{coverage_*} is labeled seconds and ``effective integration
+time,'' while its actual estimator is $H_p=\sum c^2/f_s$.  It is not geometric
+exposure, contributor time, $C$, or $Q$; analytic coefficient zeros count as
+zero coverage.  The Wiener edge guard may use this plane to refine support.
+Evidence: \path{fits_image_units_kernels.h:33-35,116-121} and
+\path{wiener_filter.h:1074-1105}.
+
+\srclabel{} The writer does not derive \path{coverage_bool_*} from
+\path{coverage}.  It obtains a threshold from the current working weight
+and returns one wherever \texttt{weight < threshold} is false.  If the
+threshold is zero, a zero-weight pixel is therefore labeled one; a non-finite
+weight also compares false and is labeled one for any threshold.  The default
+\path{coverage_cut} is zero.  Evidence:
+\path{map_image_output_helpers.h:98-123},
+\path{fits_image_products.h:65-100},
+\path{map.cpp:539-551}, \path{utils.h:526-595}, and
+\path{mapmaking_config.h:208-228}.
+
+\inflabel{} This directly falsifies the published-mask contract: positive
+weight and finite signal-like state are not required for a pixel labeled
+usable.  It is not merely an unverified edge case.  Separately, the coverage
+HDU has a dimensionally valid second unit but an incompletely declared
+coefficient-squared estimator; consumers cannot infer geometric exposure from
+it.
+
+\srclabel{} Signal, working weight, formal weight, noise variance, kernel,
+coverage, coverage mask, formal standardized signal, and empirical pixel S/N
+have distinct HDU names and metadata.  When empirical noise products exist,
+the code saves the pre-calibration working weight as \path{weight_formal_*},
+derives a map-level empirical scale from jackknife variance, optionally
+replaces \path{weight_*}, and labels pixel S/N empirical.  Without empirical
+products, signal times square-root weight is labeled
+\path{formal_standardized_signal_*}, explicitly not significance.
+Evidence: \path{map.cpp:826-923},
+\path{map_image_output_helpers.h:13-73,125-155},
+\path{fits_image_hdu_names_wcs.h:5-53}, and
+\path{fits_image_units_kernels.h:19-27,124-137}.
+
+\inflabel{} The formal-versus-empirical standardized-product naming conforms
+for the traced observation product.  Empirical-noise estimator validity is
+outside \packageid{} and is not audited here.
+
+\subsection{Observation/coadd boundary}
+
+\srclabel{} Observation normalization occurs before raw observation noise
+products and output.  Optional empirical calibration can replace the working
+observation weight.  Coaddition later accumulates
+\begin{equation}
+ \sum_o W_{o,p}\widehat m_{o,p},\qquad \sum_o W_{o,p},
+\end{equation}
+and likewise weight-averages the normalized kernel; it sums coverage.  The
+coadd finalizer then uses its non-grid-weight branch.  Evidence:
+\path{raw_observation_outputs.h:13-49},
+\path{observation_output_execution.h:34-57},
+\path{observation_coadd_accumulation.h:19-93}, and
+\path{raw_coadd_outputs.h:21-45}.
+
+\inflabel{} The per-observation JINC product is the direct $N/C$ estimator.
+The coadd is a later inverse-working-weight mean of already normalized
+observations, and the chosen $W_o$ may be formal or empirically rescaled.  It
+is not generally the single raw-sample ratio $(\sum_oN_o)/(\sum_oC_o)$.
+This report records the identity boundary but does not reopen the excluded
+general coadd audit or reinterpret \path{SCI-MAP-001} evidence.
+
+\subsection{Requested, effective, resolved, and realized provenance}
+
+\srclabel{} \path{mapmaking_provenance.yaml} serializes the complete requested
+and effective mapmaking configurations, including named JINC vectors;
+requested/effective grouping and unit resolution; observation index, obsnum,
+map count, effective pixel size, write count and completion; coadd
+cardinality; and coarse realized completion/mapmaking booleans.  It is written
+atomically after lifecycle completion.  Evidence:
+\path{mapmaking_config_serialization.h:15-149},
+\path{mapmaking_provenance.h:13-49},
+\path{mapmaking_execution_plan.h:18-179}, and
+\path{reduction_execution.h:260-270}.
+
+\inflabel{} This is a sound one-way state skeleton, but it omits the analytic
+JINC convention, $(a,b,c)$ semantics, square support, realized pixel cutoff,
+present array-to-parameter selections, coefficient/cancellation diagnostics,
+normalization constants and support threshold, execution policy, kernel
+source/amplitude convention, coverage estimator, product paths/digests, and
+formal/empirical association.  It therefore cannot prove which realized JINC
+contract produced a downstream map.
+
+\subsection{Sequential and parallel reachability}
+
+\srclabel{} Ordinary typed dispatch calls \path{populate_maps_jinc}.  That
+method accumulates into thread-local scratch and merges touched blocks under a
+mutex.  Non-detector Beammap grouping can run scans under \texttt{grppi} and
+calls this same method.  Evidence: \path{mapmaking_dispatch.h:9-27},
+\path{jinc_mm.h:333-425,729-775}, and
+\path{beammap_map_population_impl.h:43-54}.
+
+\srclabel{} Detector-grouped Beammap directly calls
+\path{populate_maps_jinc_parallel}, which parallelizes over detectors and
+writes map blocks without a numerical lock.  However, detector grouping
+constructs \path{indices=LinSpaced(0,n_dets-1)} and then a one-to-one
+detector-to-map mapping; therefore each reachable detector worker writes a
+different map plane.  Evidence:
+\path{beammap_map_population_impl.h:17-35},
+\path{rtcproc.h:791-846}, and
+\path{jinc_mm.h:964-1005,1115-1190}.
+
+\inflabel{} The preliminary phase-two ``overlapping write'' concern is not a
+current reachable defect under that caller invariant.  The implementation
+would be unsafe for a future concurrent caller that maps two workers to the
+same plane, but no such direct caller was found in the bounded trace.
+Observation/scans can still merge in runtime-dependent order, so bitwise or
+tolerance-bounded sequential/parallel equivalence is not established
+statically.
+
+\runlabel{} No exact-SHA reduction demonstrates which policy executed, stable
+contributor cardinality, cancellation-sensitive agreement, output mask
+agreement, or product-level sequential/parallel acceptance.
+
+\section{Equation/source conformance table}
+
+\small
+\begin{longtable}{@{}p{0.18\textwidth}p{0.27\textwidth}p{0.27\textwidth}p{0.20\textwidth}@{}}
+\toprule
+Contract item & Frozen equation/identity & Governing source & Disposition \\
+\midrule
+\endhead
+Zero-limit JINC & $\jinc(0)=1$ & Exact \texttt{r==0} return one; nonzero path
+uses two JINCs and envelope. & Conforms at the removable limit; analytic family
+must be documented as the product in Equation~\eqref{eq:implkernel}. \\
+Footprint & Declared radial $g_{sp}$ & Full square cache; no radial cutoff;
+$r_{\max}$ also second-JINC zero. & Divergent from frozen radial support (F002). \\
+Pixel response & Pixel-area average or declared convergent quadrature & One
+phase-quantized point cache & Divergent target; scientifically undecided
+whether contract or implementation should change (F003). \\
+Numerator & $N=\sum qcd$ & \texttt{signal += q*c*d} & Conforms. \\
+Signed denominator & $C=\sum qc$ & \path{grid_weight += q*c} & Conforms. \\
+Variance term & $Q=\sum qc^2$ & \texttt{weight += q*c*c} & Conforms. \\
+Signal finalization & $\widehat m=N/C$ on valid support & \texttt{signal/C}
+with $|C|>10^{-8}$ and mask & Conforms algebraically; fixed absolute gate is
+unit-dependent (F004). \\
+Formal weight & $C^2/Q$ & $C^2/\max(Q,10^{-30})$ after $Q>0$ & Conforms for
+$Q\ge10^{-30}$; conditional divergence below the floor (F004). \\
+Signed cancellation & Exact $C=0$ invalid; near cancellation low weight &
+Negative $C$ accepted; $|C|\le10^{-8}$ masked; otherwise $C^2/Q$ & Direction
+conforms; absolute scale and provenance do not (F004). \\
+Coefficient validity & Finite $c$ or fail before deposition & Shape elements
+finite only; no physical-domain or coefficient-finite check & Nonconformant
+(F005). \\
+Kernel response & $R=\sum qch/C$ in signal units & $K=\sum qch$, then $K/C$;
+analytic $h$ is unit source; same map consumed & Equation conforms; FITS
+amplitude/provenance and runtime injection remain open (F007/F008). \\
+Coverage & Declared geometric exposure $T=\sum\Delta t$ &
+$H=\sum c^2/f_s$, seconds, then final mask & Different effective-exposure
+estimator and incomplete metadata (F006). \\
+Published support & Explicit finite/positive validity authority &
+\path{coverage_bool=(weight<threshold)?0:1} & Zero/non-finite weights can be
+labeled valid; nonconformant (F001). \\
+Formal/empirical identity & Separate formal weight, empirical weight/SNR,
+formal standardized plane & Separate HDUs and estimator metadata; formal
+standardized signal only without empirical products & Conforms for traced
+observation publication. \\
+Array identity & Stable name selects shape and product & Fixed ID/name map,
+name-keyed config/provenance, array-keyed filename/WCS & Conforms for valid
+current calibration identity. \\
+Four-stage state & Lossless requested/effective/resolved/realized JINC and
+product join & Full requested/effective config; coarse observation and realized
+cardinality only & Partial/nonconformant provenance (F007). \\
+Parallel equivalence & Same contributors/equations and accepted numerical
+policy & Same equations; detector-parallel maps are disjoint; outer-scan merge
+order may differ & Static race concern discharged; numerical equivalence
+unverified (F008). \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\section{Findings}
+
+\begin{longtable}{@{}p{0.14\textwidth}p{0.09\textwidth}p{0.69\textwidth}@{}}
+\toprule
+ID & Severity & Finding and closure condition \\
+\midrule
+\endhead
+\texttt{F001} & P0 & \textbf{Published validity mask admits invalid support.}
+\srclabel{} \path{coverage_bool} uses a strict less-than comparison against
+the weight threshold.  With the default zero coverage cut, zero weight is
+labeled one; non-finite weight is also labeled one because the comparison is
+false.  Closure requires an approved finite/positive mask predicate, exact
+HDU semantics, zero/NaN/Inf and threshold-boundary tests, exact-SHA product
+evidence, and recipient re-audit. \\
+\texttt{F002} & P1 & \textbf{\texttt{r\_max} is not the frozen radial support
+cut.}  It is both a second-JINC zero scale and half-width of a fully populated
+square.  Closure requires the scientific owner to approve either the realized
+square/dual-use convention or a radial support contract, serialize it, test
+below/equal/above and corner/edge cases, and re-audit; no parameter optimization
+is implied. \\
+\texttt{F003} & P1 & \textbf{Subpixel refinement targets point-phase sampling,
+not pixel response.}  Closure requires an owner decision defining the target
+response, phase/rounding convention and convergence criterion, followed by
+bounded tests and exact-successor-SHA re-audit. \\
+\texttt{F004} & P1 & \textbf{Final normalization is unit-scale dependent at
+fixed absolute gates.}  $|C|>10^{-8}$ and $Q$ floor $10^{-30}$ are not expressed
+in declared units or provenance and can change support or weight under a unit
+rescaling.  Closure requires an approved conditioning policy, typed units,
+serialization, scaling/cancellation/tiny-$Q$ tests, and re-audit. \\
+\texttt{F005} & P1 & \textbf{Parameter admission and coefficient finiteness are
+incomplete.}  Finite shape values with zero/invalid scales are admitted, and
+non-finite evaluated coefficients are not rejected before accumulation.
+Closure requires an approved $(a,b,c)$ domain and fail-closed coefficient
+policy plus malformed-domain tests; it does not require running invalid
+reductions on Unity. \\
+\texttt{F006} & P1 & \textbf{Coverage identity is coefficient-squared exposure,
+not geometric exposure.}  The seconds-valued $\sum c^2/f_s$ plane loses
+analytic-zero geometric exposure and is consumed as an edge-support proxy,
+while metadata states only ``effective integration time.''  Closure requires
+an owner-approved estimator name/accounting rule, explicit distinction from
+geometric exposure and masks, product metadata/provenance, consumer admission,
+and exact-SHA verification. \\
+\texttt{F007} & P1 & \textbf{Realized JINC and product provenance is
+incomplete.}  Requested/effective config exists, but realized analytic,
+support, normalization, array-selection, execution, kernel-source, coverage,
+cancellation, mask, and product-link identities do not.  Closure requires a
+versioned one-way record and exact serialization/product-join tests. \\
+\texttt{F008} & P1 & \textbf{No exact-governing-SHA JINC runtime evidence is
+available.}  The incoming evidence is naive-only.  Static analysis resolves
+the current detector-parallel writes as map-disjoint but cannot establish
+response, product values, execution-policy realization, or numerical
+sequential/parallel acceptance.  Closure requires coordinator-approved return
+of the bounded prerequisites in Section~\ref{sec:protocol}; no evidence is
+requested by this report. \\
+\bottomrule
+\end{longtable}
+
+\section{Decisions and dependencies}
+
+\begin{enumerate}[leftmargin=*]
+  \item \textbf{SCI-MAP-002-D001 --- amend.}  Adopt
+        Equations~\eqref{eq:raw}--\eqref{eq:final} as the proposed JINC
+        observation estimator, while recording the current fixed numerical
+        validity policy as nonconforming until scientifically resolved.
+  \item \textbf{SCI-MAP-002-D002 --- restrict.}  Do not use
+        \path{coverage_bool_*} as an authoritative validity mask for new
+        scientific validation or broadened production claims until F001 is
+        closed.  This audit does not alter existing runs.
+  \item \textbf{SCI-MAP-002-D003 --- owner decision required.}  The square
+        footprint, dual-use \path{r_max}, point-phase subpixel response, and
+        coefficient-squared coverage need explicit scientific acceptance or a
+        separately authorized successor implementation.  No parameter study
+        is authorized; any such study routes through \texttt{FRAMEWORK-NUM-001}.
+  \item \textbf{SCI-MAP-002-D004 --- retain positive controls.}  Preserve the
+        distinct $N,C,Q$ accumulators, signed coefficients, $K/C$ response
+        equation, stable array-name mapping, and formal/empirical product
+        separation in any future work.
+  \item \textbf{SCI-MAP-002-D005 --- evidence remains proposed.}  The protocol
+        below is a prerequisite specification only.  It is not an external
+        evidence request and does not authorize Codex to access Unity.
+\end{enumerate}
+
+The package retains these dependencies:
+
+\begin{itemize}[leftmargin=*]
+  \item \textbf{SCI-MAP-001/general coadd:} this report distinguishes the
+        observation-level JINC estimator from the later formal/empirical
+        weighted coadd.  It neither closes nor reopens SCI-MAP-001 findings.
+  \item \textbf{SCI-NOI-001/002 and SCI-FLT-001/002:} downstream conclusions
+        remain conditional on a future accepted JINC product contract.  The
+        visible consumers use kernel/weight/coverage directly, so F001, F006,
+        and F007 require recipient admission/re-audit before closure.
+  \item \textbf{Scientific JINC owner:} must decide the footprint, subpixel,
+        conditioning, coverage, and parameter-domain contracts before a repair
+        or parameter campaign can be scoped.
+\end{itemize}
+
+\section{Proposed exact-SHA Unity evidence protocol}
+\label{sec:protocol}
+
+This section is a \emph{proposal}, not a request.  Nothing here was run or
+sent to Unity.  A coordinator must separately approve the inputs and human
+execution.
+
+\subsection{Prerequisites returned with every case}
+
+\begin{enumerate}[leftmargin=*]
+  \item A clean checkout whose application identity is exactly
+        \texttt{\appsha}; return \texttt{git status}, exact SHA, compiler,
+        build mode, dependency lock identity, host/CPU, thread environment,
+        and executable digest.
+  \item A coordinator-approved, checksum-pinned input observation or existing
+        simulation with explicit reduction type, present arrays, detector
+        identity, sample rate, flags, and calibration identity.  A true
+        unit-source response claim additionally requires a checksum-pinned
+        unit-amplitude input whose source template is independently declared;
+        if none exists, F19-style response remains open rather than launching
+        a campaign.
+  \item The exact authored YAML and its checksum, complete resolved config,
+        \path{mapmaking_provenance.yaml}, stdout/stderr, runtime thread/policy
+        diagnostics, product index, and every returned FITS file/digest.
+  \item For each FITS product, return HDU names, shapes, numeric type, WCS,
+        UNIT/BUNIT/TYPE/DESCRIP/WTTHRESH/FWHM keys, and finite/NaN/Inf/zero/
+        positive pixel counts.  Preserve both working and formal weights when
+        empirical noise products are enabled.
+  \item No code patch, helper, validator, parameter optimization, or repair in
+        the evidence branch.  An unavailable prerequisite yields ``not
+        established,'' not substitution by a different SHA or naive run.
+\end{enumerate}
+
+\subsection{Bounded case set}
+
+\begin{longtable}{@{}p{0.10\textwidth}p{0.29\textwidth}p{0.53\textwidth}@{}}
+\toprule
+Case & Controlled difference & Required comparison \\
+\midrule
+\endhead
+U01 & One ordinary array-grouped JINC reduction with raw kernel enabled and
+empirical replacement disabled. & Confirm method=JINC and present-array
+parameter selection in resolved config; return signal, formal weight, kernel,
+coverage and mask products; verify product/header joins and finite-positive
+mask implications.  This is product evidence, not parameter validation. \\
+U02 & Same input/config as U01, differing only in empirical-weight replacement
+enabled with fixed noise settings. & Confirm signal/kernel/coverage identity
+unchanged within the approved policy; working weight and empirical S/N change
+as declared; formal weight remains separately identical; record any coadd
+weight identity separately. \\
+U03 & Detector-grouped Beammap JINC, forced sequential execution policy. &
+Return policy realization, active detector-to-map mapping, normalized products,
+support/cancellation diagnostics, logs, and digests. \\
+U04 & Bit-for-bit same as U03 except the authorized concurrent policy and
+thread count. & Compare contributor/map cardinality, valid-mask set, all
+finite-status counts, and signal/formal-weight/kernel/coverage arrays using a
+coordinator-approved absolute/relative policy with special reporting for
+small $|C|$ support.  Do not assume bitwise equality. \\
+U05 & Repeat U04 once under the same policy and thread environment. & Establish
+or falsify run-to-run determinism at the named policy; report array-level
+max/quantile differences and changed support, never only file hashes. \\
+U06 & Only if the checksum-pinned independent unit-source input in prerequisite
+2 already exists: run the corresponding JINC case with the exact template and
+flags. & Compare output signal response to the recorded kernel on their common
+finite valid support, including peak, integral, edge asymmetry, WCS, units and
+array identity.  Otherwise mark ``not available'' and do not create a new
+simulation campaign under this package. \\
+\bottomrule
+\end{longtable}
+
+The evidence acceptance policy must be approved before execution and must
+name tolerances, valid-pixel matching, non-finite handling, and cancellation-
+sensitive reporting.  The bundle may inform re-audit only after its exact
+identity and completeness are checked; it cannot itself amend the contract.
+
+\section{Limits of this audit}
+
+This report does not assess naive or maximum-likelihood mapmaker internals,
+the general coadd repair, RTC/PTC scientific correctness, empirical noise
+validity, Wiener/convolution mathematics, calibration, astrometry, flagging,
+source fitting, Beammap inference, or JINC parameter optimality.  Direct
+consumer lines were opened only to determine product identity and reachability.
+No test result or Unity behavior is implied by static source.  No source
+change follows automatically from a finding.  A future repair, validation
+run, evidence request, downstream audit, or numerical study requires separate
+coordinator authorization.
+
+\end{document}

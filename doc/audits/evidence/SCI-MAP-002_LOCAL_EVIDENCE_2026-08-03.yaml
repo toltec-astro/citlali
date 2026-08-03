@@ -1,0 +1,381 @@
+format_version: 1
+evidence_id: SCI-MAP-002-LOCAL-001
+package_id: SCI-MAP-002
+created_date: 2026-08-03
+role: independent_package_auditor
+scope: >-
+  Audit-only, exact-source static evidence for JINC deposition, final
+  normalization, response, support, parameter identity, direct reachability,
+  product publication, provenance, and immediate kernel/weight/coverage
+  consumers. This manifest is evidence, not scientific authority, repair
+  authorization, a Unity request, or production approval.
+
+identity:
+  application_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+  application_sha_role: governing_audit_snapshot
+  authority_ref: codex/refactor-mainline
+  audit_branch: codex/audit-sci-map-002
+  worktree: /Users/gwilson/.codex/worktrees/a4fe/citlali-refactor
+  audit_parent_commit: 0d80c4df9d4694634c4c77830c7701b07af577b1
+  final_audit_path: doc/audits/packages/SCI-MAP-002_SCIENTIFIC_CONTRACT_AUDIT.tex
+  final_audit_sha256: d77bb5c8e555b43d5303ad2ce0a81e5baef42df2beb85347f9f98cab759d5239
+  core_path: doc/audits/packages/SCI-MAP-002_INDEPENDENT_CORE.tex
+  core_sha256: 2c1f9ff95f65422a098846f747ed165d5aeddc5bedd854678bfa7faeebba4e24
+  core_freeze_commit: bccc2614663c95aee66ed9b21b6025f5fb4e5f04
+  core_freeze_timestamp_utc: 2026-08-03T16:54:20Z
+  static_trace_path: doc/audits/packages/SCI-MAP-002_STATIC_SOURCE_TRACE.md
+  static_trace_sha256: 37be33eb76dad4d916dd2772cb32f6570fef7e58ebbde0cf2de1add189d73340
+  static_trace_freeze_commit: 0d80c4df9d4694634c4c77830c7701b07af577b1
+  static_trace_freeze_timestamp_utc: 2026-08-03T17:16:58Z
+
+frozen_dispatch:
+  coordination_authorization: ff8bcf10f
+  dispatch_content_commit: 4f02b018710f0646d556fbcd157452ae5595fb90
+  prompt:
+    path: /private/tmp/citlali-scientific-audit-framework/doc/audits/prompts/SCI_MAP_002_AUDIT_PROMPT.md
+    sha256: 79982ec44ec84c0ba7234bdfa7fb2001ac29761f45f944e3ef1c93396ca84101
+  inbox_manifest:
+    path: /private/tmp/citlali-scientific-audit-framework/doc/audits/handoffs/SCI-MAP-002/SCI-MAP-002_INBOX_MANIFEST_2026-08-03.yaml
+    sha256: 053709d8579393f52b751431ef3304d87f08711723d620105c7685470c73c980
+    pre_core_authority_ids: []
+    post_core_evidence_ids: [SCI-MAP-002-XAUD-001]
+  post_core_handoff:
+    id: SCI-MAP-002-XAUD-001
+    path: /private/tmp/citlali-scientific-audit-framework/doc/audits/handoffs/SCI-MAP-002/SCI-MAP-002-XAUD-001.yaml
+    sha256: 288505047e9fc1b24c31f34c072d780c475485aa0167096177318b34eb2517a6
+    evidence_scope: naive_control_only
+    jinc_claims_established: []
+
+quarantine_chronology:
+  pre_core_application_source_opened: false
+  pre_core_post_core_handoff_opened: false
+  independent_core_frozen_before_source: true
+  independent_core_frozen_before_handoff: true
+  static_trace_frozen_before_handoff: true
+  post_core_handoff_first_open_exact_utc: not_recorded
+  ordering_verified: true
+  note: >-
+    The independent-core bytes and then the preliminary three-path source trace
+    were separately hashed and committed before the post-core MAP handoff or
+    the expanded final source-conformity trace was opened. No successor revision
+    of the independent core was made.
+
+governing_source_identity_check:
+  command: git diff --name-only 9aae0e669384c5c0c0dda93debc194d6b8dac787 -- include src
+  result: pass
+  observed_summary: no_paths_reported
+  interpretation: >-
+    All examined application files in the audit worktree have the same bytes as
+    the governing application SHA. Audit-documentation commits are not promoted
+    to application authority.
+
+phase_two_roots:
+  - path: include/citlali/core/mapmaking/jinc_mm.h
+    sha256: 65fd41b97e06048d2b4b2b0a6d6ecd175a22f1b415d1b52d925a7ec0da4c9e5b
+    reason: Frozen root for analytic coefficient, caches, raw accumulators, and sequential/parallel implementations.
+  - path: include/citlali/core/pipeline/mapmaking_dispatch.h
+    sha256: f111be3054e55aea9a4dd36d03e8d29716a990985ea0ee5eed61a03480993c77
+    reason: Frozen root for typed method dispatch.
+  - path: include/citlali/core/pipeline/mapmaking_method_config.h
+    sha256: 288a50b451196248e753e1488843315b01b2c8eb25c8b329bd797195c63262a2
+    reason: Frozen root for JINC request parsing, cardinality, stable names, and one-way adaptation.
+
+added_source_trace:
+  - path: include/citlali/core/mapmaking/map.h
+    sha256: 90bf76f8cc9b2df26cdd30dda0732e18ed2f37ef3d183454036c6a1b4a44a40f
+    reason: Direct declaration of MapBuffer signal, weight, grid_weight, kernel, coverage, diagnostics, and finalizers.
+  - path: src/citlali/core/mapmaking/map.cpp
+    sha256: 6887ab016d70bb080f6883039ca445efee0593c91a3d5be87297624a26ef1188
+    reason: Direct definitions of N/C and C-squared/Q finalization, cancellation gates, support masks, empirical weights, and coverage regions.
+  - path: include/citlali/core/utils/utils.h
+    sha256: 4788813b40a8c0e931b559ca4c27b26ee65fe161f4a6d0e0aa15f001afab17f8
+    reason: Direct definition of the working-weight threshold used by normalization and coverage_bool publication.
+  - path: include/citlali/core/config/mapmaking_config.h
+    sha256: cecaac0c195fc4399bd3dc66350424bf1eef7d6aa0f3c381ed44d395689edad0
+    reason: Direct JINC defaults, stable shape keys, coverage_cut default, and typed mapmaking state.
+  - path: include/citlali/core/config/mapmaking_config_validation.h
+    sha256: 37a1be67b436f6584aad0a41c7d2dd7c688a475d20590f54de39dda874a0a32f
+    reason: Direct validation domain for r_max, subpixel_n, and shape elements.
+  - path: include/citlali/core/config/config_error.h
+    sha256: 7976ae77d057f6f608846deb36bb28dc5d3d5e5f49569933aa5d66a96477c76f
+    reason: Direct finite/minimum/greater-than semantics used by JINC config validation.
+  - path: include/citlali/core/engine/detail/mapmaking_config_impl.h
+    sha256: 1d5944acaa49f3873215fc71288627e745bd0ae18d636d335d1afb6239daa971
+    reason: Direct caller establishing request read, one-way JINC adaptation, and execution-plan initialization.
+  - path: include/citlali/core/pipeline/mapmaking_config_policy.h
+    sha256: b4e83368315dd9de1e414dbd1a38c4781584f0472f49ca545420a798190ecf7b
+    reason: Direct policy for effective grouping, runtime parallel policy synchronization, and JINC cache finalization.
+  - path: include/citlali/core/pipeline/mapmaking_execution_plan.h
+    sha256: 9bae48ce1b6c6ee5cdc710c2d7f3c4e420936786bad6adfb0e536d950fda3936
+    reason: Direct requested/effective/observation/coadd/realized state definitions and lifecycle invariants.
+  - path: include/citlali/core/pipeline/mapmaking_config_serialization.h
+    sha256: c6ffa5e42144810dbdc8febb9a0c062f2469e8983cafe91ebce7d96f40bf7158
+    reason: Direct serialization of JINC vectors, grouping/unit resolution, observations, coadd, and realized state.
+  - path: include/citlali/core/pipeline/mapmaking_provenance.h
+    sha256: 1f38e731966a3c3310cb4fd51071641ab5b570e1fd183b070ba4e137afd69205
+    reason: Direct mapmaking provenance schema and atomic writer.
+  - path: include/citlali/core/cli/reduction_execution.h
+    sha256: a31c33e692cfbea44988241fd38478af7d0509acfb71d591b49fd8202c8de200
+    reason: Direct completed-reduction caller that publishes mapmaking provenance.
+  - path: include/citlali/core/pipeline/map_buffer_allocation.h
+    sha256: 4fa15fbc1e616eab1169a2b5c10cd97692f095bd3dd7bddf7954794c00178d3b
+    reason: Direct allocation semantics for signal, weight, grid_weight, kernel, and coverage planes.
+  - path: include/citlali/core/pipeline/beammap_mapmaking_policy.h
+    sha256: e8972501f671e268a7323725d620e622000456b766db98f17cf6c69d7ff203b0
+    reason: Direct Beammap JINC grid_weight allocation/reset and preflight diagnostics.
+  - path: include/citlali/core/engine/detail/pointing_map_population_impl.h
+    sha256: 1eaa7b7e13e8196146a631f3b927a23733268946081dbe4119549c9e2820ba30
+    reason: Direct pointing caller of typed naive/JINC dispatch.
+  - path: include/citlali/core/engine/detail/lali_map_population_impl.h
+    sha256: 539a78a33de9f240f30fcc5e172eb9f8d88c656d0dd4f3a779e87a03715d05f8
+    reason: Direct Lali caller of typed mapmaking dispatch.
+  - path: include/citlali/core/engine/detail/beammap_map_population_impl.h
+    sha256: fd86d362d04a85a487d1ed610bd243a13af643a0bc8c427497197b151b12d647
+    reason: Direct Beammap caller resolving detector-parallel JINC and outer-scan ordinary JINC reachability.
+  - path: include/citlali/core/engine/detail/pointing_fruitloop_impl.h
+    sha256: eb6ca404a75fa56e04a7e515d1c81c48240fb0050891218bdd165faa8c520945
+    reason: Direct pointing fruit-loop JINC/noise population caller.
+  - path: include/citlali/core/engine/detail/lali_fruitloop_impl.h
+    sha256: fc480b6e64b6108954dfc7f9e6fe129d25db2fbf4d2209b2872492460da32fd8
+    reason: Direct Lali fruit-loop JINC/noise population caller.
+  - path: include/citlali/core/engine/detail/pointing_pipeline_impl.h
+    sha256: 75ffa0309081a730cce489d8094dd7032d8da743ce2e7699e5fe1fa150f72753
+    reason: Direct pointing normalization call after map population.
+  - path: include/citlali/core/engine/detail/lali_setup_pipeline_impl.h
+    sha256: a6174ad84f115e44a700741d6912060b01572b308001e442fd11914bd0ae712d
+    reason: Direct Lali normalization reachability and method condition.
+  - path: include/citlali/core/engine/detail/beammap_mapmaking_pass_impl.h
+    sha256: 7590ca2d835c03e49ddedb12b163fc312b0609f095deb96ef749931e2751b9e6
+    reason: Direct Beammap JINC allocation, population, normalization, and kernel diagnostic lifecycle.
+  - path: include/citlali/core/engine/detail/beammap_timestream_pipeline_impl.h
+    sha256: 1e3a4eb0e1fdbb08411650f39edb473aef577b3fe201c93864e0e0c81fe14b78
+    reason: Direct storage path for per-scan detector-to-map indices consumed by Beammap JINC.
+  - path: include/citlali/core/timestream/rtc/rtcproc.h
+    sha256: 41693a6385c112bdde36f5590d8ac10b60514c56d5449aad30962e08a64f3549
+    reason: Direct construction of one-to-one detector grouping indices that discharges current overlapping-write reachability.
+  - path: include/citlali/core/timestream/rtc/kernel.h
+    sha256: cda4260e3c281cc650c82420be219a78c60053e6e09ba4d897708b04be1a0f0b
+    reason: Direct creation and amplitude convention of analytic/FITS sample-domain kernel templates h_s.
+  - path: include/citlali/core/timestream/timestream.h
+    sha256: 83418ff0123e64dd8a7807b7e6a480848f422d0443ca302b0762862bacab1b78
+    reason: Direct fruit-loop reader and consumer of stored signal, weight, and kernel products.
+  - path: include/citlali/core/mapmaking/wiener_filter.h
+    sha256: ffab049f189561197fc35425a925254208c0fc3796148c9bd4a79a39a3701a5f
+    reason: Direct downstream use of realized kernel, working weight, and coverage; filter mathematics was not audited.
+  - path: include/citlali/core/pipeline/map_image_output_helpers.h
+    sha256: c20ab1443fc959410a5517e90bc678eca31667cbbe37150a335e765e53354034
+    reason: Direct publication of signal/working/formal weights, kernel, coverage, coverage_bool, and standardized products.
+  - path: include/citlali/core/engine/detail/map_image_output_impl.h
+    sha256: fd29586dbfddc7f16a4b8f0f9a1292b2e99f2f5f8b5e7dd36614359fc394b700
+    reason: Direct Engine product writer joining map, array, Stokes, WCS, and optional kernel/noise products.
+  - path: include/citlali/core/pipeline/fits_image_products.h
+    sha256: 4243a8ec7b44519c14ef6d559e38b8d0127350bafb3d7eb989064b1aca24ff4a
+    reason: Direct coverage_bool and formal-standardized-signal calculations plus required product slot checks.
+  - path: include/citlali/core/pipeline/fits_image_write_slots.h
+    sha256: 167be4b86c329e0cd8d15346610662290993f7262cb385acd779cd190eccb118
+    reason: Direct map/file/Stokes/array write-slot mapping and fail-required checks.
+  - path: include/citlali/core/pipeline/fits_image_hdu_names_wcs.h
+    sha256: 63514517ae44a12541d6b7cfe05e2797f2a00618f1d59740ff2fa51a89971ebb
+    reason: Direct HDU product identities and array-frequency/Stokes WCS assignment.
+  - path: include/citlali/core/pipeline/fits_image_metadata_keys.h
+    sha256: 616b67cbe462fb914ac25fec6e7bb7deedb2da731716efcd34248741c66802fc
+    reason: Direct UNIT/BUNIT/TYPE/DESCRIP metadata for map products.
+  - path: include/citlali/core/pipeline/fits_image_units_kernels.h
+    sha256: 2ea71eedfea46f3a11648cecedb4d3735b2c0a8ef91dccae84245b9acfd5f468
+    reason: Direct signal/weight/variance/coverage units and formal/empirical/kernel descriptions.
+  - path: include/citlali/core/engine/calib.h
+    sha256: e1c200b800b14f358e2b0ec38b69d17388756beb8368c18d0d4bef70b39ba769
+    reason: Direct stable numeric-array-ID to a1100/a1400/a2000 name map.
+  - path: include/citlali/core/engine/detail/output_summary_impl.h
+    sha256: 659e676ecb1131d5ca2295aa0ec00a9890da03fd0d4bdc41f804d0c0916eb15a
+    reason: Direct get_map_name caller used for output layer identity.
+  - path: include/citlali/core/pipeline/map_layer_name.h
+    sha256: 8980ce8e11113eb2c683120f085ed95b804b1dd28a27ce7125ec4f30b98e5637
+    reason: Direct network/frequency-group/detector extension-layer naming semantics.
+  - path: include/citlali/core/pipeline/map_group_indexing.h
+    sha256: 8647d8ff0f06aff1c6d70403733db8460b2df839906e782dd24ced01e10ab372
+    reason: Direct maps-to-arrays, maps-to-Stokes, and arrays-to-files index construction.
+  - path: include/citlali/core/pipeline/map_index_state.h
+    sha256: 05c44769d5fadd7102882a1bba0b17f7edcf2a34e3617e754230ccaef05ca53a
+    reason: Direct typed storage of map/product identity indices.
+  - path: include/citlali/core/pipeline/observation_map_files.h
+    sha256: f7d652463002705033571e81d2a6d81a2c925d8d300b4d644feaf353327cc51d
+    reason: Direct stable array-name construction of observation/coadd output filenames.
+  - path: include/citlali/core/engine/detail/map_observation_files_impl.h
+    sha256: 3be964ba4f6cfbe1eac82f253470ed0d3b3a59299ac12e58286b43aacddadcd9
+    reason: Direct observation map/noise/filtered file creation keyed by stable array name.
+  - path: include/citlali/core/engine/detail/map_phdu_output_impl.h
+    sha256: 7a424e68aacfc682d8949632609a03297359303911c477fec4281d930770ce61
+    reason: Direct PHDU array-name and mapmaking-config publication join.
+  - path: include/citlali/core/pipeline/raw_observation_outputs.h
+    sha256: 01d732ee1abf9ddf776cfde6bd7699e6bf2bcb238e575bb2c2a73f33b4e12ac0
+    reason: Direct ordering of empirical noise-product calculation and raw observation publication.
+  - path: include/citlali/core/pipeline/raw_map_outputs.h
+    sha256: 83e42e2667d03537c8912fd7a07c70ee7cf451272e051ab32f4484c788502ea5
+    reason: Direct policy wiring for unfiltered empirical weight replacement and output.
+  - path: include/citlali/core/pipeline/noise_weight_policy.h
+    sha256: e8f43607bc0dcdb28d8c05f9cd3249e2c5902de833c7263ee58cd763c7bc7226
+    reason: Direct formal-versus-empirical working-weight selection policy.
+  - path: include/citlali/core/pipeline/map_noise_products.h
+    sha256: 7e261748e6a97f9e7287932b162ca5ab5a88622a0a0783517b6d712b2641247f
+    reason: Direct caller of MapBuffer empirical noise-product finalization.
+  - path: include/citlali/core/pipeline/observation_output_execution.h
+    sha256: 0d40acf7d95bc4ecbfccb2e8bd36bd8e80f1ce7740882f0bdac9b04b5b6adafd
+    reason: Direct ordering of raw observation outputs and later coadd accumulation.
+  - path: include/citlali/core/pipeline/observation_coadd_accumulation.h
+    sha256: 00b7b5e2a5090930bc2724d919671c4877b1ddbfc00aa3c4c4cd3f47dbcaa4f3
+    reason: Direct weighted coadd equations for normalized signal, working weight, kernel, coverage, and noise.
+  - path: include/citlali/core/engine/detail/todproc_coadd_output_impl.h
+    sha256: 42d8248746d30aa9159227c2f15116289104161bf81e226f19877c6cbcf8cc76
+    reason: Direct coadd caller and stable array-name coadd file creation.
+  - path: include/citlali/core/pipeline/raw_coadd_outputs.h
+    sha256: dc594a9452d0aa1eceee2553ce037443022b46c683715337b8f5f90195c1a5b1
+    reason: Direct coadd normalization, empirical-noise, diagnostic, and output ordering.
+  - path: include/citlali/core/engine/detail/beammap_map_product_setup_impl.h
+    sha256: 9c7a8742e043c3d1e836c0be44bb54985393efb436541c81a4c4729133fd5adc
+    reason: Direct detector-map output-file index use confirming detector product identity.
+
+static_positive_controls:
+  - id: SCI-MAP-002-C001
+    observation: Raw signal, signed denominator, and coefficient-squared variance are distinct N, C, and Q accumulators.
+    conclusion: Conforms to the frozen constant-field gridding equations before final masking.
+  - id: SCI-MAP-002-C002
+    observation: Negative coefficients are retained in N and C and squared only in Q/coverage; negative C remains valid above the magnitude gate.
+    conclusion: Signed-lobe and ordinary cancellation direction conform.
+  - id: SCI-MAP-002-C003
+    observation: Observation signal and kernel are divided by the same C, while formal weight is C-squared/Q over the ordinary admitted range.
+    conclusion: Signal and analytic unit-source kernel equations conform conditionally on support/numerical gates.
+  - id: SCI-MAP-002-C004
+    observation: Stable array names select shape vectors and output files/WCS; missing required vectors do not fall back to a neighboring array.
+    conclusion: Current valid array identity path conforms statically.
+  - id: SCI-MAP-002-C005
+    observation: Formal standardized signal and empirical pixel S/N use distinct names/metadata, and formal weight remains separately publishable.
+    conclusion: Traced observation product identity conforms; empirical-noise truth remains out of scope.
+  - id: SCI-MAP-002-C006
+    observation: Reachable detector-parallel Beammap JINC has a one-to-one detector-to-map mapping.
+    conclusion: The preliminary overlapping-block race concern is discharged for the current direct caller, while numerical reproducibility remains unverified.
+
+handoff_evidence:
+  - id: SCI-MAP-002-XAUD-001
+    evidence_basis: observed_by_source_package
+    accepted_use: naive_control_distinction_only
+    conclusion: >-
+      All seven cited MAP reductions selected naive. They establish no JINC
+      result and close no SCI-MAP-002 finding.
+
+runtime_and_external_evidence:
+  citlali_compiled_or_tested: false
+  local_reduction_run: false
+  numerical_probe_run: false
+  unity_accessed_by_codex: false
+  unity_evidence_requested: false
+  unity_evidence_received: false
+  exact_sha_jinc_runtime_evidence_available: false
+  limitation: >-
+    Response realization, output values, execution-policy realization, and
+    numerical sequential/parallel acceptance remain unverified runtime behavior.
+
+documentation_verification:
+  diff_check:
+    command: git diff --check -- doc/audits/packages/SCI-MAP-002_SCIENTIFIC_CONTRACT_AUDIT.tex
+    result: pass
+  brace_balance:
+    result: pass
+    observed_summary: open_braces=402 close_braces=402 delta=0
+  yaml_parse:
+    command_summary: >-
+      The required project Python loaded both audit YAML artifacts with
+      yaml.safe_load.
+    result: pass
+    observed_summary: yaml_ok_2
+    note: The command is normalized here to avoid embedding shell quoting; no Citlali code was imported or tested.
+  latex_compile:
+    tool: /opt/homebrew/bin/tectonic
+    commands:
+      - /opt/homebrew/bin/tectonic --outdir /private/tmp/sci-map-002-latex-verify doc/audits/packages/SCI-MAP-002_SCIENTIFIC_CONTRACT_AUDIT.tex
+      - /opt/homebrew/bin/tectonic --only-cached --outdir /private/tmp/sci-map-002-latex-verify doc/audits/packages/SCI-MAP-002_SCIENTIFIC_CONTRACT_AUDIT.tex
+      - /opt/homebrew/bin/tectonic --bundle LOCAL_CACHED_BUNDLE_DATA_DIRECTORY --outdir /private/tmp/sci-map-002-latex-verify doc/audits/packages/SCI-MAP-002_SCIENTIFIC_CONTRACT_AUDIT.tex
+    result: unavailable_tool_failure
+    observed_summary: >-
+      The installed engine panicked in its reqwest/system-configuration client
+      before parsing the document, including cached-only mode. Pointing it at
+      the existing local bundle data directory also failed because that
+      directory does not provide the SHA256SUM bundle file. No PDF was produced
+      and no network, installation, or alternate engine was used.
+    interpretation: Not document evidence and not a Citlali validation result.
+
+proposed_unity_protocol:
+  status: proposed_not_requested
+  exact_application_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+  prerequisites:
+    - Clean exact-SHA checkout, executable digest, build/dependency identity, compiler, host/CPU, and thread environment.
+    - Coordinator-approved checksum-pinned input and authored/resolved config with explicit arrays, detector identity, sample rate, flags, and calibration.
+    - Complete logs, policy diagnostics, mapmaking provenance, product index, FITS products/digests, HDU metadata, and finite/non-finite/support counts.
+    - Existing checksum-pinned independent unit-source input is required for a response-injection claim; absence remains open and does not authorize a new campaign.
+  cases:
+    - id: U01
+      purpose: Ordinary array-grouped JINC product and formal-weight identity with empirical replacement disabled.
+    - id: U02
+      purpose: Same as U01 with only empirical replacement enabled; preserve formal product and declare working-weight/SNR change.
+    - id: U03
+      purpose: Detector-grouped Beammap JINC with forced sequential execution.
+    - id: U04
+      purpose: Exact U03 twin with authorized concurrent policy/thread count; compare contributors, support, finite status, and all numeric planes under preapproved tolerances.
+    - id: U05
+      purpose: Exact repeat of U04 to assess run-to-run determinism.
+    - id: U06
+      purpose: Conditional existing unit-source input comparison of signal response and recorded kernel; unavailable if the prerequisite does not already exist.
+  prohibitions:
+    - no_new_helper_or_validator
+    - no_parameter_optimization
+    - no_code_patch_or_repair
+    - no_substitute_sha
+    - no_naive_result_promoted_to_jinc
+
+finding_support:
+  SCI-MAP-002-F001:
+    - include/citlali/core/pipeline/map_image_output_helpers.h
+    - include/citlali/core/pipeline/fits_image_products.h
+    - src/citlali/core/mapmaking/map.cpp
+    - include/citlali/core/utils/utils.h
+    - include/citlali/core/config/mapmaking_config.h
+  SCI-MAP-002-F002:
+    - include/citlali/core/mapmaking/jinc_mm.h
+  SCI-MAP-002-F003:
+    - include/citlali/core/mapmaking/jinc_mm.h
+  SCI-MAP-002-F004:
+    - src/citlali/core/mapmaking/map.cpp
+  SCI-MAP-002-F005:
+    - include/citlali/core/config/mapmaking_config_validation.h
+    - include/citlali/core/mapmaking/jinc_mm.h
+  SCI-MAP-002-F006:
+    - include/citlali/core/mapmaking/jinc_mm.h
+    - include/citlali/core/pipeline/fits_image_units_kernels.h
+    - include/citlali/core/mapmaking/wiener_filter.h
+  SCI-MAP-002-F007:
+    - include/citlali/core/pipeline/mapmaking_execution_plan.h
+    - include/citlali/core/pipeline/mapmaking_config_serialization.h
+    - include/citlali/core/pipeline/mapmaking_provenance.h
+  SCI-MAP-002-F008:
+    - SCI-MAP-002-XAUD-001
+    - include/citlali/core/engine/detail/beammap_map_population_impl.h
+    - include/citlali/core/timestream/rtc/rtcproc.h
+    - include/citlali/core/mapmaking/jinc_mm.h
+
+scope_guards:
+  application_code_modified: false
+  tests_modified: false
+  build_files_modified: false
+  production_documentation_modified: false
+  canonical_audit_ledger_modified: false
+  canonical_handoff_registry_modified: false
+  helper_schema_validator_campaign_added: false
+  citlali_compilation_or_test_attempted: false
+  citlali_reduction_attempted: false
+  unity_accessed: false
+  unity_evidence_requested: false
+  network_accessed: false
+  software_installed_or_downloaded: false
+  delegation_or_independent_review_used: false
+  repair_or_reaudit_attempted: false
+  parameter_optimization_attempted: false
