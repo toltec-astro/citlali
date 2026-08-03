@@ -3938,7 +3938,7 @@ packages:
       freeze_commit: bccc2614663c95aee66ed9b21b6025f5fb4e5f04
       freeze_timestamp_utc: 2026-08-03T16:54:20Z
       first_source_inspection_utc: 2026-08-03T17:16:58Z
-    contract_status: proposed_owner_contract_required
+    contract_status: owner_contract_approved_repair_not_authorized
     implementation_status: nonconformant
     validation_status: incomplete
     production_status: existing_use_only
@@ -3952,14 +3952,7 @@ packages:
       - {id: SCI-MAP-002-F006, class: product_contract_gap, severity: P1, evidence_basis: observed_static_source, confidence: high, status: open, owner: map_coverage_product_and_consumers, summary: "coverage is coefficient-squared time rather than declared geometric exposure and is consumed as an edge-support proxy."}
       - {id: SCI-MAP-002-F007, class: provenance_gap, severity: P1, evidence_basis: observed_static_source, confidence: high, status: open, owner: mapmaking_realized_provenance, summary: "Requested/effective configuration exists but realized JINC and product-join identity is incomplete."}
       - {id: SCI-MAP-002-F008, class: validation_gap, severity: P1, evidence_basis: observed_absence, confidence: high, status: open, owner: coordinator_and_human_unity_operator, summary: "No exact-governing-SHA JINC response or sequential/concurrent numerical evidence exists; incoming MAP evidence is naive-only."}
-    unresolved_scientific_decisions:
-      - id: SCI-MAP-002-D003
-        status: partially_resolved_remaining_owner_decisions_before_repair
-        scope: >-
-          Support/r_max, subpixel response, conditioning, and
-          parameter/coefficient admission, formal-mask authority, coverage
-          semantics, and kernel identity are resolved. Realized provenance
-          remains the owner decision.
+    unresolved_scientific_decisions: []
     owner_decisions:
       - id: SCI-MAP-002-D003-SUPPORT-001
         status: approved
@@ -4043,6 +4036,18 @@ packages:
           realization provenance rather than an unfiltered or measured beam
           identity.
         applies_to: [SCI-MAP-002-F006, SCI-MAP-002-F007]
+      - id: SCI-MAP-002-D003-PROVENANCE-001
+        status: approved
+        decision_date: 2026-08-03
+        record_path: >-
+          doc/audits/packages/SCI-MAP-002_PROVENANCE_OWNER_DECISION_2026-08-03.md
+        record_sha256: >-
+          bb3084e3905ae283266f066dd8406d5d48a787e5af6825b4a9ddf60edac5dd1f
+        disposition: >-
+          Require compact atomic one-way requested/effective/resolved/realized
+          JINC and product provenance, without per-sample, per-detector, or
+          per-pixel payloads.
+        applies_to: [SCI-MAP-002-F007]
     local_evidence:
       - path: doc/audits/evidence/SCI-MAP-002_LOCAL_EVIDENCE_2026-08-03.yaml
         sha256: 3a10f410dcb681a41bb2dee42b5ef1141a93a0de1362ce829dff0afa297855b8
