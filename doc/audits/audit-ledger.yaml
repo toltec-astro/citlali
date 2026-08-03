@@ -2267,6 +2267,33 @@ packages:
       cal_repair_authorized: false
       unity_evidence_authorized: false
       re_audit_authorized: false
+    atmosphere_confirmation_successor_decision:
+      decision_id: CAL-ATM-D005
+      authority: project_owner
+      decision_date: 2026-08-03
+      status: approved_bounded_successor_protocol_and_delta_execution_conditional
+      record_path: >-
+        doc/audits/packages/SCI-CAL-001_AM12_EL25_SUCCESSOR_OWNER_DECISION_2026-08-03.md
+      record_sha256: >-
+        6dd1afe2b5197e4b2bda6e2f44aeb5e37a2a6be6718807e2854daa4671e005d2
+      selected_guard: >-
+        Replace only the redundant construction-path absolute guard with an
+        explicit finite-positive ULP-aware diagnostic admitting at most two
+        binary64 ULPs; no universal absolute epsilon is authorized.
+      preserved_scientific_content: >-
+        All 16 tuples, AM/model inputs, passband authority, domain/airmass,
+        warning and parsed-transmission admission, and one-percent fidelity
+        gate remain frozen without tuning or broadening.
+      conditional_execution: >-
+        First preserve and make read-only the stopped evidence, then pass the
+        new protocol/register, all-case model-free preflight, independent
+        review, and readiness gates. Reuse admitted raw evidence and execute
+        only three unstarted scale searches plus four missing 56-elevation
+        grids in a separate delta cache.
+      effect: >-
+        Authorizes only the bounded successor confirmation. It does not
+        authorize application changes, operator/domain adoption, CAL repair,
+        Unity activity, re-audit, production change, or a partial conclusion.
     dispatch:
       status: frozen_for_dispatch
       coordinator_registry_commit: 88741d085a08431790c6eee719b6f20052b459d8
