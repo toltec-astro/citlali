@@ -3939,6 +3939,14 @@ packages:
       freeze_timestamp_utc: 2026-08-03T16:54:20Z
       first_source_inspection_utc: 2026-08-03T17:16:58Z
     contract_status: owner_contract_approved_repair_not_authorized
+    repair_sequence:
+      status: owner_approved
+      decision_date: 2026-08-03
+      prerequisite_package: SCI-MAP-001
+      disposition: >-
+        Select a MAP-002 repair base only after it contains the accepted,
+        freshly re-audited SCI-MAP-001 repair; do not repair the shared map
+        product contract in parallel with SCI-MAP-002.
     implementation_status: nonconformant
     validation_status: incomplete
     production_status: existing_use_only
@@ -4217,7 +4225,7 @@ packages:
         bounded_repair_reaudit_handoff_path: >-
           doc/audits/packages/SCI-MAP-002_BOUNDED_REPAIR_REAUDIT_HANDOFF_2026-08-03.md
         bounded_repair_reaudit_handoff_sha256: >-
-          fdd23a5201c472bdaa1aa7fd4badab318e94b5dd631b343dbada3489093f936c
+          11f6d5b173ce9980910a1970835c33098ee89bb89c9df0ec8e1b3170ed3e050f
         exact_sha_unity_evidence_status: proposed_not_requested
         repair_authorized: false
 

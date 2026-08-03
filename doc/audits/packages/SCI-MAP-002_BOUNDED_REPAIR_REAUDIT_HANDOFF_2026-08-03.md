@@ -30,6 +30,16 @@ application SHA. It must never be based on the audit branch. Record the
 selected base SHA, its merge relationship, and exact touched files before the
 first source edit.
 
+## Approved repair sequence
+
+`SCI-MAP-001` owns the shared map-product validity vocabulary that this JINC
+successor consumes. Its accepted repair, including a fresh re-audit, is a
+required upstream application state for `SCI-MAP-002` repair. Therefore the
+selected MAP-002 repair base must contain the accepted MAP-001 repair commit;
+the MAP-002 repair does not begin from the pre-repair audit SHA or in parallel
+with changes to that shared contract. This sequencing does not close MAP-001,
+authorize its repair, or expand MAP-002 scope.
+
 ## Approved contract to implement exactly
 
 The successor preserves the observed identities
@@ -151,4 +161,3 @@ and issue a new implementation, validation, and production disposition.
 
 No repair is accepted merely because a map resembles historical output. Until
 re-audit succeeds, `existing_use_only` and all validity restrictions remain.
-
