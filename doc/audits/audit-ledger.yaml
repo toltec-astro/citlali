@@ -4199,7 +4199,7 @@ packages:
           start repair, re-audit, external evidence, a numerical parameter
           campaign, or any additional audit.
       full_scientific_contract_audit:
-        status: accepted_integrated_owner_decision_pending
+        status: owner_contract_complete_repair_handoff_prepared
         audit_source_commit: abb8d8896d6a1cbaa912b9ac181bd649588acc62
         audit_integration_commit: d313c879b
         final_artifact_path: >-
@@ -4214,6 +4214,10 @@ packages:
           doc/audits/packages/SCI-MAP-002_COORDINATOR_REVIEW_2026-08-03.md
         coordinator_review_sha256: >-
           e409f87ae94855989624ac3fcffc2ae60d102e10611a3f86e6a4d27f602ee2af
+        bounded_repair_reaudit_handoff_path: >-
+          doc/audits/packages/SCI-MAP-002_BOUNDED_REPAIR_REAUDIT_HANDOFF_2026-08-03.md
+        bounded_repair_reaudit_handoff_sha256: >-
+          fdd23a5201c472bdaa1aa7fd4badab318e94b5dd631b343dbada3489093f936c
         exact_sha_unity_evidence_status: proposed_not_requested
         repair_authorized: false
 
