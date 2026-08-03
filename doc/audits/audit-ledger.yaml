@@ -3954,10 +3954,23 @@ packages:
       - {id: SCI-MAP-002-F008, class: validation_gap, severity: P1, evidence_basis: observed_absence, confidence: high, status: open, owner: coordinator_and_human_unity_operator, summary: "No exact-governing-SHA JINC response or sequential/concurrent numerical evidence exists; incoming MAP evidence is naive-only."}
     unresolved_scientific_decisions:
       - id: SCI-MAP-002-D003
-        status: owner_decision_required_before_repair
+        status: partially_resolved_remaining_owner_decisions_before_repair
         scope: >-
-          Support/r_max, subpixel response, conditioning, parameter/coefficient
-          admission, coverage/mask/kernel semantics, and realized provenance.
+          Support/r_max is resolved. Subpixel response, conditioning,
+          parameter/coefficient admission, coverage/mask/kernel semantics, and
+          realized provenance remain owner decisions.
+    owner_decisions:
+      - id: SCI-MAP-002-D003-SUPPORT-001
+        status: approved
+        decision_date: 2026-08-03
+        record_path: >-
+          doc/audits/packages/SCI-MAP-002_SUPPORT_OWNER_DECISION_2026-08-03.md
+        record_sha256: >-
+          8c6b53476e70c40f5ff98fde6e279c44d58406cc81ffaa86d34d6cf6cd93645a
+        disposition: >-
+          Retain the square cached footprint and dual-use r_max convention;
+          do not reinterpret r_max as a strict radial support limit.
+        applies_to: [SCI-MAP-002-F002]
     local_evidence:
       - path: doc/audits/evidence/SCI-MAP-002_LOCAL_EVIDENCE_2026-08-03.yaml
         sha256: 3a10f410dcb681a41bb2dee42b5ef1141a93a0de1362ce829dff0afa297855b8
