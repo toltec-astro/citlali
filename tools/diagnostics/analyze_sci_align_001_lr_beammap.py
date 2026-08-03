@@ -639,9 +639,7 @@ def map_fit(sum_image: np.ndarray, count_image: np.ndarray, array: int, extent: 
         return {"success": False, "quality": False, "reason": "insufficient_map_pixels"}
     weights = np.sqrt(count_image[valid].astype(float) / np.max(count_image[valid]))
     x, y, values = xx[valid], yy[valid], z[valid]
-    fmin, fmax = ARRAY_FWHM_LIMITS[array]
-    if array == -1:
-        fmin, fmax = 3.0, 20.0
+    fmin, fmax = (3.0, 20.0) if array == -1 else ARRAY_FWHM_LIMITS[array]
     major0 = 0.55 * (fmin + fmax)
     minor0 = 0.50 * (fmin + fmax)
     p0 = np.array([
