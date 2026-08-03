@@ -3957,8 +3957,9 @@ packages:
         status: partially_resolved_remaining_owner_decisions_before_repair
         scope: >-
           Support/r_max, subpixel response, conditioning, and
-          parameter/coefficient admission are resolved. Coverage/mask/kernel
-          semantics and realized provenance remain owner decisions.
+          parameter/coefficient admission and formal-mask authority are
+          resolved. Coverage/kernel semantics and realized provenance remain
+          owner decisions.
     owner_decisions:
       - id: SCI-MAP-002-D003-SUPPORT-001
         status: approved
@@ -4005,6 +4006,18 @@ packages:
           preserve signed finite lobes, and fail the selected JINC product on
           invalid array identity or non-finite coefficient state.
         applies_to: [SCI-MAP-002-F005]
+      - id: SCI-MAP-002-D003-MASK-001
+        status: approved
+        decision_date: 2026-08-03
+        record_path: >-
+          doc/audits/packages/SCI-MAP-002_VALIDITY_MASK_OWNER_DECISION_2026-08-03.md
+        record_sha256: >-
+          4d6d236e3b630f6608eb6dc36f8ee9041f7b623ea5f4adbc0f5e0c946a0b9f08
+        disposition: >-
+          Retain coverage_bool as the authoritative finite-positive formal
+          support mask; coverage is distinct and empirical weight may only
+          further exclude, never promote.
+        applies_to: [SCI-MAP-002-F001]
     local_evidence:
       - path: doc/audits/evidence/SCI-MAP-002_LOCAL_EVIDENCE_2026-08-03.yaml
         sha256: 3a10f410dcb681a41bb2dee42b5ef1141a93a0de1362ce829dff0afa297855b8
