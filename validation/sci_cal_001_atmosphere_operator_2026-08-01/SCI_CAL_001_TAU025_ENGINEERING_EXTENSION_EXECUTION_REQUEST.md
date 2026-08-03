@@ -7,6 +7,10 @@ Decision authority: `CAL-ATM-D007`, coordination commit
 `b227043d2a1ac9caad0d2b18d357fe732fcc9a6d`
 Decision-record SHA-256:
 `67690533211ec47b9f01d269a85e0dcc2296009b50b11d1ee701d1957dfe76b4`
+Achieved-coordinate gate amendment:
+`CAL-ATM-D007-ACHIEVED-COORDINATE-001`, coordination commit
+`1bffc48b6e72191ed2c9125ac405eabf4b2eae3c`, SHA-256
+`1aa5e20c521b204f5f6c130fb0bf3ebf4ef80850899c8a9e706577acfd336894`
 
 ## Scope and explicit non-authorizations
 
@@ -88,7 +92,7 @@ rounded back to it.
 | Node ID | Role | Requested `tau225` | Exact target literal | `tau225,achieved` from literal |
 | --- | --- | ---: | --- | ---: |
 | `tau015` | construction | `.15` | `8.587235e-01` | `0.1499999859125433062628881602402745` |
-| `tau01625` | held-out | `.1625` | `8.478931e-01` | `0.1625000436670042842458733986011410` |
+| `tau01625` | held-out | `.1625` | `8.478931e-01` | `0.1625000436670042842458733986011408` |
 | `tau0175` | held-out | `.175` | `8.371994e-01` | `0.1749999782159755418032064132046966` |
 | `tau01875` | held-out | `.1875` | `8.266405e-01` | `0.1874999959892568741794020809655989` |
 | `tau020` | construction | `.20` | `8.162148e-01` | `0.1999999783213567867059666712638576` |
@@ -96,6 +100,27 @@ rounded back to it.
 | `tau0225` | held-out | `.225` | `7.957562e-01` | `0.2249999585478593390938136819948858` |
 | `tau02375` | held-out | `.2375` | `7.857200e-01` | `0.2374999620652431274454965339427345` |
 | `tau025` | construction | `.25` | `7.758104e-01` | `0.2499999377860148032413478624431719` |
+
+The achieved coordinate is derived provenance, not a second AM target, a
+scale-selection criterion, or a substitute for the exact parsed target
+literal. For each node, recompute it with decimal precision of at least 100
+significant digits from the displayed target literal and `X80` above; record
+the serialized recomputation and the absolute difference from the printed
+reference. The provenance gate passes only when every difference is at most
+`1e-12`; changing a requested tau or target literal, or failing exact
+parsed-literal equality, remains fail-closed.
+
+| Node ID | Recomputed achieved `tau225` (70 fractional digits) | Absolute difference from printed reference |
+| --- | --- | --- |
+| `tau015` | `0.1499999859125433062628881602402745171307972530967402260405210510624037` | `1.7130797253096740226040521051062403692417361011312637574839939399400000e-35` |
+| `tau01625` | `0.1625000436670042842458733986011407957621884281834432958559048571995763` | `4.2378115718165567041440951428004237069387897970290426112394215591000000e-36` |
+| `tau0175` | `0.1749999782159755418032064132046966137541183699181855319794028821003869` | `1.3754118369918185531979402882100386882805634625455719561607182201000000e-35` |
+| `tau01875` | `0.1874999959892568741794020809655989327280331348631778269363229169776814` | `3.2728033134863177826936322916977681416022175522525825924502205232300000e-35` |
+| `tau020` | `0.1999999783213567867059666712638576458165224486770253649622899349654778` | `4.5816522448677025364962289934965477815605672981946970080440532402300000e-35` |
+| `tau02125` | `0.2124999488193856859985890648134455471372731474165985305638558361114224` | `4.7137273147416598530563855836111422444518198162564286785174055222200000e-35` |
+| `tau0225` | `0.2249999585478593390938136819948857561002096611296179412824915384024972` | `4.3899790338870382058717508461597502818566419949401467431757753970600000e-35` |
+| `tau02375` | `0.2374999620652431274454965339427344793402346942304927484185036454082416` | `2.0659765305769507251581496354591758379998155087822689984947818935400000e-35` |
+| `tau025` | `0.2499999377860148032413478624431718813116558655350862065273554110308605` | `1.8688344134464913793472644588969139511323682289333463073794501897400000e-35` |
 
 Let `P` be the 25 AMC filenames in the preceding table. The exact full-grid
 run inventory is the following lexical Cartesian expansion; the run identifier
@@ -244,10 +269,12 @@ recorded as passing before any cache creation:
 2. Every executable, source payload, AMC input, passband index/member, and
    protocol digest matches this request; all 25 profiles and all 1,275 unique
    tuple IDs expand exactly once.
-3. The scale-target table is regenerated from the stated `X80` formula using
-   the AM parser's seven-significant-digit scientific-decimal convention and
-   byte-compares with this table; its achieved-coordinate values are recorded
-   before AM launch.
+3. The requested tau and seven-significant-digit target-literal columns of the
+   scale-target table byte-compare with this table. Every achieved coordinate
+   is recomputed at high precision from its unchanged target literal and
+   `X80`, serialized with its absolute difference from the printed reference,
+   and must differ by at most `1e-12`. Achieved tau is derived provenance only,
+   never a second AM target or scale-selection coordinate.
 4. The proposed external cache parent has at least 12 GiB free, the exact
    basename target is absent, and no existing cache is inspected, copied,
    reused, or mutated.
