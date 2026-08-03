@@ -121,8 +121,24 @@ done
 
 # Prepare a clean sequential Science template, clone it before executing, and
 # then prepare a clean OMP template. These copies are unrun TolProj setup
-# directories, not copied reductions or returned evidence.
+# directories, not copied reductions or returned evidence.  TolProj writes an
+# absolute template path into 02_redu.sh, so every clone must have that path
+# rewritten before it can be submitted.  Without this rewrite every clone
+# changes directory back to $SCIENCE_BASE, bypasses its case overlay, and runs
+# the same default reduction.
 SCIENCE_BASE="$SCIENCE_PROJECT/$GRANT_USER/NGC4449"
+finalize_science_launcher() {
+  local case_id="$1"
+  local cpus="$2"
+  local case_dir="$SCIENCE_PROJECT/$case_id"
+  local launcher="$case_dir/02_redu.sh"
+  test -f "$launcher"
+  perl -0pi -e "s|\\Q$SCIENCE_BASE\\E|$case_dir|g; s|^#SBATCH --job-name=.*$|#SBATCH --job-name=$case_id|m; s|^#SBATCH --cpus-per-task=.*$|#SBATCH --cpus-per-task=$cpus|m" \
+    "$launcher"
+  grep -Fx "#SBATCH --job-name=$case_id" "$launcher"
+  grep -Fx "#SBATCH --cpus-per-task=$cpus" "$launcher"
+  grep -Fx "cd $case_dir" "$launcher"
+}
 for CASE in S-C-SEQ S-E-SEQ S-X-SEQ S-C-OMP S-E-OMP; do
   test ! -e "$SCIENCE_PROJECT/$CASE"
 done
@@ -132,6 +148,7 @@ done
 for CASE in S-C-SEQ S-E-SEQ S-X-SEQ; do
   cp -a "$SCIENCE_BASE" "$SCIENCE_PROJECT/$CASE"
   cp "$CASE_OVERLAYS/$CASE.yaml" "$SCIENCE_PROJECT/$CASE/99_zzz_sci_map_case.yaml"
+  finalize_science_launcher "$CASE" 1
 done
 "$TOLPROJ" setup-science-reductions "$SCIENCE_PROJECT" \
   --refactor --user "$GRANT_USER" --pointing-reduction "$SCIENCE_POINTING_REDUCTION" \
@@ -139,12 +156,45 @@ done
 for CASE in S-C-OMP S-E-OMP; do
   cp -a "$SCIENCE_BASE" "$SCIENCE_PROJECT/$CASE"
   cp "$CASE_OVERLAYS/$CASE.yaml" "$SCIENCE_PROJECT/$CASE/99_zzz_sci_map_case.yaml"
+  finalize_science_launcher "$CASE" 16
 done
 for CASE in S-C-SEQ S-E-SEQ S-X-SEQ S-C-OMP S-E-OMP; do
   "$TOLPROJ" validate-reduction "$SCIENCE_PROJECT/$CASE"
   "$TOLPROJ" submit-reduction "$SCIENCE_PROJECT/$CASE"
 done
 ```
+
+If a previous package version has already created one or more named Science
+directories, but its reduction failed before producing any output, repair only
+their generated launchers before trying again. This keeps the case overlays
+and the failed Slurm logs intact; it does not alter the selected observations
+or scientific configuration.
+
+### Unity terminal
+
+With `SCIENCE_PROJECT`, `SCIENCE_BASE`, and `finalize_science_launcher` still
+defined from the block above, run:
+
+```sh
+for CASE in S-C-SEQ S-E-SEQ S-X-SEQ; do
+  test -d "$SCIENCE_PROJECT/$CASE"
+  finalize_science_launcher "$CASE" 1
+done
+for CASE in S-C-OMP S-E-OMP; do
+  test -d "$SCIENCE_PROJECT/$CASE"
+  finalize_science_launcher "$CASE" 16
+done
+for CASE in S-C-SEQ S-E-SEQ S-X-SEQ S-C-OMP S-E-OMP; do
+  "$TOLPROJ" validate-reduction "$SCIENCE_PROJECT/$CASE"
+done
+```
+
+The `fruit_loops.sig2noise_limit` error from the earlier jobs is expected from
+the unmodified template configuration: those launchers changed into
+`$SCIENCE_BASE` and never loaded the named case's
+`99_zzz_sci_map_case.yaml`, which disables fruit loops. After this repair, do
+not change the supplied case overlay. Submit only the corrected named case
+directory; do not submit `$SCIENCE_BASE`.
 
 ## 4. Prepare and submit the two auxiliary full/all captures
 
@@ -197,6 +247,7 @@ cp "$CASE_OVERLAYS/S-E-SEQ.yaml" \
   "$SCIENCE_PROJECT/CAP-SCIENCE/99_zzz_sci_map_case.yaml"
 cp "$CAPTURE_OVERLAY" \
   "$SCIENCE_PROJECT/CAP-SCIENCE/99_zzzz_processed_time_chunk_full.yaml"
+finalize_science_launcher CAP-SCIENCE 1
 "$TOLPROJ" validate-reduction "$SCIENCE_PROJECT/CAP-SCIENCE"
 "$TOLPROJ" submit-reduction "$SCIENCE_PROJECT/CAP-SCIENCE"
 ```
