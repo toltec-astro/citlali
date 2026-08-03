@@ -2401,6 +2401,22 @@ packages:
         candidate identity; it is not a direct-AM or scale-search target.
       engineering_maximum_heldout_fractional_correction_error: 0.05
       inherited_warning_policy: WARN-001
+      achieved_coordinate_gate_amendment:
+        decision_id: CAL-ATM-D007-ACHIEVED-COORDINATE-001
+        authority: project_owner
+        decision_date: 2026-08-03
+        status: approved_bounded_provenance_gate_correction
+        record_path: >-
+          doc/audits/packages/SCI-CAL-001_TAU025_ACHIEVED_COORDINATE_GATE_AMENDMENT_2026-08-03.md
+        record_sha256: >-
+          1aa5e20c521b204f5f6c130fb0bf3ebf4ef80850899c8a9e706577acfd336894
+        exact_authority: >-
+          Requested tau225 and AM parsed target-transmission literals remain
+          byte-exact; parsed-literal equality remains a hard gate.
+        derived_provenance_absolute_tolerance: 1.0e-12
+        evidence_requirement: >-
+          Record high-precision recomputed values and absolute differences for
+          every node; this is not a physics or photometric tolerance.
       execution_request:
         status: owner_approved_selected_fresh_cache_root
         source_branch: codex/sci-cal-001-atmosphere-operator
