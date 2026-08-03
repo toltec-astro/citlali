@@ -20,22 +20,18 @@ find_package(TulaCMake 3 CONFIG REQUIRED)
 find_package(kidscpp 3.1 CONFIG REQUIRED)
 find_package(
     tula 3.1 CONFIG REQUIRED
-    COMPONENTS core logging yaml ecsv eigen netcdf enum cli grppi
+    COMPONENTS core logging yaml ecsv eigen netcdf enum cli perflibs grppi
 )
+find_package(TulaCcfits 1 CONFIG REQUIRED)
+find_package(netCDF CONFIG REQUIRED)
 find_package(Ceres 2.2 CONFIG REQUIRED)
 find_package(Boost 1.83 CONFIG REQUIRED)
 find_package(spectra 1.0 CONFIG REQUIRED)
-find_package(TulaPerflibs 0.1 CONFIG REQUIRED)
-if(NOT TARGET OpenMP::OpenMP_CXX)
-    find_package(OpenMP REQUIRED COMPONENTS CXX)
-endif()
 find_package(HDF5 REQUIRED COMPONENTS C HL)
 find_package(ZLIB REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(FFTW3 REQUIRED IMPORTED_TARGET fftw3)
 find_package(FFTW3Threads REQUIRED)
-pkg_check_modules(CCFITS REQUIRED IMPORTED_TARGET CCfits)
-pkg_check_modules(CFITSIO REQUIRED IMPORTED_TARGET cfitsio)
 
 if(TARGET hdf5::hdf5-shared AND TARGET hdf5::hdf5_hl-shared)
     set(CITLALI_HDF5_TARGETS hdf5::hdf5-shared hdf5::hdf5_hl-shared)
@@ -49,11 +45,27 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+option(CITLALI_ENABLE_OPENMP "Enable pipeline OpenMP support" ON)
 option(
     CITLALI_USE_WIENER_FILTER_OMP
     "Use OpenMP Wiener filter implementation"
     ON
 )
+if(CITLALI_ENABLE_OPENMP AND NOT tula_OPENMP_ENABLED)
+    message(FATAL_ERROR
+        "CITLALI_ENABLE_OPENMP requires an OpenMP-enabled Tula package"
+    )
+endif()
+if(NOT CITLALI_ENABLE_OPENMP AND tula_OPENMP_ENABLED)
+    message(FATAL_ERROR
+        "CITLALI_ENABLE_OPENMP=OFF requires a non-OpenMP Tula package"
+    )
+endif()
+if(CITLALI_USE_WIENER_FILTER_OMP AND NOT CITLALI_ENABLE_OPENMP)
+    message(FATAL_ERROR
+        "CITLALI_USE_WIENER_FILTER_OMP requires CITLALI_ENABLE_OPENMP"
+    )
+endif()
 set(
     CITLALI_SPACK_DAG_HASH ""
     CACHE STRING "Concrete Spack DAG hash for build provenance"
@@ -62,10 +74,15 @@ if(NOT CITLALI_SPACK_DAG_HASH)
     message(FATAL_ERROR "CITLALI_SPACK_DAG_HASH is required")
 endif()
 set(CITLALI_BUILD_SYSTEM "spack")
-if(CITLALI_USE_WIENER_FILTER_OMP)
-    set(CITLALI_BUILD_VARIANTS "+wiener_openmp")
+if(CITLALI_ENABLE_OPENMP)
+    set(CITLALI_BUILD_VARIANTS "+openmp")
 else()
-    set(CITLALI_BUILD_VARIANTS "~wiener_openmp")
+    set(CITLALI_BUILD_VARIANTS "~openmp")
+endif()
+if(CITLALI_USE_WIENER_FILTER_OMP)
+    string(APPEND CITLALI_BUILD_VARIANTS " +wiener_openmp")
+else()
+    string(APPEND CITLALI_BUILD_VARIANTS " ~wiener_openmp")
 endif()
 
 set(CITLALI_GENERATED_INCLUDE "${CMAKE_CURRENT_BINARY_DIR}/generated")
@@ -175,14 +192,14 @@ target_link_libraries(
         tula::netcdf
         tula::enum
         tula::cli
+        tula::perflibs
         tula::grppi
+        tula_deps::ccfits
+        netCDF::netcdf
         Spectra::Spectra
         Boost::headers
         PkgConfig::FFTW3
         FFTW3::Threads
-        PkgConfig::CCFITS
-        PkgConfig::CFITSIO
-        OpenMP::OpenMP_CXX
         ZLIB::ZLIB
         ${CITLALI_HDF5_TARGETS}
 )

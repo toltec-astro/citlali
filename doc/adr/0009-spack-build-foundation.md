@@ -43,14 +43,19 @@ entry, local, package-consumer, Unity, provenance, and same-SHA mode gates.
 Native macOS development with exact Homebrew LLVM 20 is required. The normal
 acceptance sequence is native Mac build and fast gates, followed by GitHub
 transfer and a user-owned Unity build and reduction. Containers may support CI
-or troubleshooting but are not a required developer interface. The intended
-workspace consists of sibling Tula CMake, Tula, Kidscpp, and Citlali checkouts,
-with orchestration owned by the Tula CMake `Justfile`.
+or troubleshooting but are not a required developer interface. Citlali owns a
+checked manifest of the exact Tula CMake, Tula, and Kidscpp revisions consumed
+by this adaptation and materializes them in an ignored build-only source area.
+This prevents unrelated developer checkouts from becoming implicit build
+inputs. External deployment tooling remains outside Citlali and is not modified
+as part of the adaptation.
 
 ## Consequences
 
 - Native Spack concepts remain visible; Citlali does not add a wrapper that
   becomes a second dependency language.
+- The small source-preparation command implements the checked revision
+  manifest; it does not replace Spack's package or dependency model.
 - A container-only success cannot satisfy the native Mac gate.
 - Unity deployment remains in project-owned user space.
 - Unity's existing use of Spack is useful infrastructure evidence but is not

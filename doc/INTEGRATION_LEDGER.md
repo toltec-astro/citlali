@@ -17,17 +17,24 @@ ADRs, and validation records.
 
 ## External Build Inputs
 
-Latest isolated review completed 2026-07-31:
+Latest isolated review completed 2026-08-03:
 
 | Repository | Branch | Reviewed commit | Disposition |
 | --- | --- | --- | --- |
-| `tula_cmake` | `v3.x_spack` | `1ea93f600055e14248b2dbfcf1c16c5487a7b757` | Accepted Spack/CMake foundation plus bounded Tlaloc ECSV matrix; installed fixture independently passes with LLVM 20 |
-| `tula` | `v3.x_spack` | `61f862c9cc08f335e946a4f55c5aa5cf35401bb0` | Explicit component graph plus reviewed ECSV table-view lifetime repair and regression test |
-| `kidscpp` | `v3.x_spack` | `e3c05ebc75da42151a450bbc8c1b27f1e2e5e61b` | Raw-reader and solver package tests reported against real TolTEC data |
-| `citlali` | `v3.x_spack` | `8a1be68354d78110c0c3e0f1d4ee5fd3cea20864` | Installed upstream CLI and 123-scan real-data run reported; full refactor port remains required |
+| `tula_cmake` | `v3.x_spack` | `0086c652185b0ed15d2c666cd83da4f6b584403c` | Owns normalized CCfits, NetCDF C++ and portable OpenMP adapters; accepted as the build-mechanics source |
+| `tula` | `v3.x_spack` | `79c1b2e07a4e34577040c4077db5e9156871c2da` | Exposes explicit perflibs/OpenMP component capability and installed-consumer contract |
+| `kidscpp` | `v3.x_spack` | `d3cf4d246411f5e76809e9760a6cb1df34a236d9` | Propagates the explicit OpenMP choice through its Tula dependency |
+| `citlali` | `v3.x_spack` | `4097c09d288d867c2987e025b09be46d55117244` | Reference implementation only; the full refactored application recipe remains authoritative here |
 
 Branch movement does not update this table automatically. Re-review and record
-new exact commits before importing subsequent upstream work.
+new exact commits before importing subsequent upstream work. The three consumed
+dependency revisions are also enforced by `spack/upstream-revisions.json`;
+`tolteca_deploy` is neither modified nor used as an input to this lane.
+
+The accepted `tula-netcdf-cxx4` adapter does not yet export NetCDF-C's include
+directory to installed consumers. Citlali therefore retains a direct
+`netcdf-c` dependency and target until that upstream interface is corrected;
+this is a build-contract workaround, not a fork of the upstream package.
 
 ## Current Gates
 
@@ -50,6 +57,9 @@ new exact commits before importing subsequent upstream work.
   installed consumer passes, and a separate reader consumer opens a current
   raw TolTEC file and reads a two-sample I/Q slice. The historical upstream
   real-data fixture still needs an accessible immutable manifest.
+- Citlali now consumes upstream-owned `tula-ccfits`, `tula-netcdf-cxx4`, and
+  `tula-perflibs` targets. Its temporary package and CMake adapters have been
+  removed, and general pipeline OpenMP is distinct from Wiener OpenMP.
 - The full refactored Citlali library, production CLI, 533 enabled CTests,
   complete config preflight, installed CLI, and independent installed package
   consumer now pass natively under exact Homebrew LLVM 20. The CLI records its
@@ -60,12 +70,13 @@ new exact commits before importing subsequent upstream work.
   GCC/G++/GFortran 13.3, CMake 3.30, Python 3.12, no Ninja, and no
   user-callable Spack.
   A user-owned Spack 1.2.2 `unity-gcc13` profile and prerequisite gate are now
-  prepared; concretization and execution evidence remain pending.
+  prepared. Its earlier lock is superseded by the upstream-adapter graph;
+  fresh concretization and execution evidence remain pending.
 - The macOS graph builds CFITSIO 4.3.0 from source and declares Homebrew FFTW
   plus GCC 15 Fortran as checked host externals; all C/C++ application code is
   LLVM 20.
-- Define immutable release sources, a portable lock, and exact first-party
-  dependency source provenance.
+- Promote the checked development revision manifest into immutable release
+  sources and a portable release lock.
 
 ### Spack Adaptation Exit
 

@@ -13,6 +13,7 @@ from spack_citlali_common import (
     run,
     spack_build_env_command,
     validate_concrete_graph,
+    validate_first_party_sources,
 )
 from spack_citlali_profiles import PROFILES, get_profile
 
@@ -75,6 +76,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.jobs < 1:
         raise ValueError("--jobs must be positive")
 
+    validate_first_party_sources(source_root)
     root_hash, root_spec = validate_concrete_graph(
         environment_path,
         root_compiler_term=profile.root_compiler_term,
@@ -104,6 +106,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             ],
             "-DCITLALI_BUILD_CLI=ON",
             "-DCITLALI_BUILD_TESTS=ON",
+            "-DCITLALI_ENABLE_OPENMP=ON",
             "-DCITLALI_USE_WIENER_FILTER_OMP=ON",
             f"-DCITLALI_SPACK_DAG_HASH={root_hash}",
         ]

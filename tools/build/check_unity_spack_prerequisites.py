@@ -140,7 +140,11 @@ def inspect_prerequisites(
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     source_root = Path(__file__).resolve().parents[2]
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--workspace-root", type=Path, default=source_root.parent)
+    parser.add_argument(
+        "--workspace-root",
+        type=Path,
+        default=source_root / "build/spack-sources",
+    )
     parser.add_argument("--citlali-source", type=Path, default=source_root)
     parser.add_argument(
         "--spack",

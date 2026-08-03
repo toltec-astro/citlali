@@ -36,19 +36,6 @@ if [[ -n "$(git status --porcelain)" ]]; then
     exit 2
 fi
 
-declare -A sibling_revisions=(
-    [tula_cmake]=1ea93f600055e14248b2dbfcf1c16c5487a7b757
-    [tula]=61f862c9cc08f335e946a4f55c5aa5cf35401bb0
-    [kidscpp]=e3c05ebc75da42151a450bbc8c1b27f1e2e5e61b
-)
-for sibling in "${!sibling_revisions[@]}"; do
-    actual="$(git -C "${workspace}/${sibling}" rev-parse HEAD)"
-    if [[ "${actual}" != "${sibling_revisions[${sibling}]}" ]]; then
-        echo "${sibling} SHA mismatch: expected ${sibling_revisions[${sibling}]}, got ${actual}" >&2
-        exit 2
-    fi
-done
-
 if [[ ! -x "${spack_root}/bin/spack" ]]; then
     echo "missing Spack executable ${spack_root}/bin/spack" >&2
     exit 2
@@ -63,18 +50,21 @@ export SPACK_PYTHON="${spack_python}"
 # shellcheck disable=SC1091
 source "${SPACK_ROOT}/share/spack/setup-env.sh"
 
+"${SPACK_PYTHON}" tools/build/verify_spack_source_revisions.py \
+    --workspace-root "${repository}/build/spack-sources" | tee "${manifest}"
+
 {
     echo "started_at=$(date -Is)"
     echo "host=$(hostname -f)"
     echo "slurm_job_id=${job_id}"
     echo "slurm_cpus=${jobs}"
     echo "citlali_sha=${actual_sha}"
-    for sibling in tula_cmake tula kidscpp; do
-        echo "${sibling}_sha=$(git -C "${workspace}/${sibling}" rev-parse HEAD)"
+    for dependency in tula_cmake tula kidscpp; do
+        echo "${dependency}_sha=$(git -C "${repository}/build/spack-sources/${dependency}" rev-parse HEAD)"
     done
     echo "spack_version=$(spack --version)"
     echo "spack_lock_sha256=$(sha256sum "${environment}/spack.lock" | awk '{print $1}')"
-} | tee "${manifest}"
+} | tee -a "${manifest}"
 
 spack -e "${environment}" find -cvl
 spack -e "${environment}" clean --stage citlali || true

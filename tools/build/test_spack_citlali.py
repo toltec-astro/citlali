@@ -13,6 +13,7 @@ from spack_citlali_common import (
     run,
     spack_build_env_command,
     validate_concrete_graph,
+    validate_first_party_sources,
 )
 from spack_citlali_profiles import PROFILES, get_profile
 
@@ -76,6 +77,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         if not required.exists():
             raise FileNotFoundError(required)
 
+    validate_first_party_sources(source_root)
     root_hash, root_spec = validate_concrete_graph(
         environment_path,
         root_compiler_term=profile.root_compiler_term,

@@ -6,8 +6,13 @@ replace the existing CMake/FetchContent build until the acceptance gates in
 
 ## Supported Development Sequence
 
-1. Keep `tula_cmake`, `tula`, `kidscpp`, and this Citlali checkout as sibling
-   directories.
+1. Materialize the exact accepted `tula_cmake`, `tula`, and `kidscpp` revisions
+   in Citlali's ignored `build/spack-sources/` area:
+
+   ```console
+   $HOME/tolteca/bin/python tools/build/prepare_spack_sources.py
+   $HOME/tolteca/bin/python tools/build/verify_spack_source_revisions.py
+   ```
 2. Use exact Homebrew LLVM 20 on Apple Silicon. AppleClang and unversioned
    Homebrew `llvm` are not accepted substitutes.
 3. Use Spack 1.2.2 as the dependency and environment authority.
@@ -18,6 +23,10 @@ replace the existing CMake/FetchContent build until the acceptance gates in
 Containers are optional CI or troubleshooting tools. They are not part of the
 required local workflow.
 
+This lane does not invoke, modify, or vendor `tolteca_deploy`. That repository
+may later consume an accepted Citlali release, but Citlali owns this adaptation,
+its pinned source manifest, and its Mac/Unity acceptance profiles.
+
 ## Prerequisite Check
 
 Run:
@@ -27,8 +36,8 @@ $HOME/tolteca/bin/python tools/build/check_macos_spack_prerequisites.py \
   --spack "$SPACK_ROOT/bin/spack"
 ```
 
-The check rejects AppleClang, the wrong Spack release, missing sibling package
-repositories, and shell flags that force the independently versioned Homebrew
+The check rejects AppleClang, the wrong Spack release, missing pinned package
+sources, and shell flags that force the independently versioned Homebrew
 `libomp` into an LLVM 20 build. The Spack environment must supply a compatible
 OpenMP runtime instead.
 
@@ -65,11 +74,14 @@ HDF5 dependency. That can compile against Homebrew HDF5 2 headers while
 linking Spack HDF5 1.14. The explicit graph prevents that undeclared mixed-ABI
 build.
 
-The environment also uses a bounded local compatibility adapter for NetCDF
-C++ 4.3.1. That release installs neither the `netcdf-cxx4.pc` metadata expected
-by the upstream Tula adapter nor a complete CMake imported target. The local
-adapter preserves `tula_deps::netcdf_cxx4` and locates only the already
-concretized package. Its removal condition is documented with the adapter.
+The accepted Tula CMake source now owns the normalized
+`tula_deps::netcdf_cxx4` target. It locates the C++ and C libraries from the
+concrete Spack graph without relying on metadata that NetCDF C++ 4.3.1 does not
+install. Citlali's temporary local adapter has therefore been removed.
+The upstream target does not yet propagate NetCDF-C's include directory to
+installed consumers, so Citlali explicitly links `netCDF::netcdf` as a bounded
+workaround. Remove that direct edge when the upstream adapter exports the
+complete transitive interface.
 
 The two installation steps are intentional. Dependencies are installed
 normally first; then the first-party Tula root is rebuilt with package tests.
@@ -83,8 +95,9 @@ libraries or Citlali contracts. Third-party private test compatibility is not
 a Citlali gate.
 
 OpenMP remains a separate required gate because Homebrew LLVM 20 does not
-bundle `libomp`, and the upstream Tula perflibs recipe does not declare the
-separate LLVM OpenMP runtime as a package dependency on macOS.
+bundle `libomp`. The accepted upstream `tula-perflibs` package now declares
+exact `llvm-openmp@20.1.8` on macOS and exports the resolved runtime to
+installed consumers.
 
 ## Kidscpp Environment
 
@@ -98,10 +111,9 @@ $HOME/tolteca/bin/python tools/build/test_spack_kidscpp.py \
   --require-real-data --fixture /path/to/raw-timestream.nc
 ```
 
-The repository-local `tula-perflibs` recipe adds the missing macOS dependency
-on exact `llvm-openmp@20.1.8`. It does not fork the Tula CMake target or change
-its behavior. Remove the override once the upstream recipe declares the
-runtime required by `find_package(OpenMP)` on macOS.
+Kidscpp's `+openmp` variant now propagates through Tula's `+perflibs+openmp`
+contract. The graph uses the upstream Tula CMake recipe and target; Citlali no
+longer owns an OpenMP compatibility recipe.
 
 The acceptance tool first builds the Kidscpp repository's independent
 installed-package consumer. With `--require-real-data`, it also builds a
@@ -121,8 +133,8 @@ OpenMP graph.
 ## Full Citlali Environment
 
 The full environment carries the refactored library, production CLI, complete
-compiled test surface, direct HDF5/Zlib ownership, and the OpenMP Wiener build
-identity:
+compiled test surface, direct HDF5/Zlib ownership, normalized Tula CCfits
+ownership, and distinct pipeline-OpenMP and OpenMP-Wiener build identities:
 
 ```console
 spack -e spack/environments/citlali-macos-llvm20 concretize --force
@@ -190,7 +202,7 @@ disabled. This profile treats GCC 13 as a new Unity acceptance lane; it does
 not relabel it as part of the upstream GCC 14/LLVM 20 matrix. All compiled
 tests and real reductions remain required evidence.
 
-Bootstrap Spack once in the sibling-checkout workspace:
+Bootstrap Spack once in the acceptance workspace:
 
 ```console
 export WORKSPACE="$HOME/work_toltec/citlali_spack_acceptance"
@@ -203,12 +215,20 @@ git clone --branch v1.2.2 --depth 1 \
 spack --version
 ```
 
+Prepare the exact first-party sources declared by the Citlali manifest:
+
+```console
+cd "$WORKSPACE/citlali"
+"$SPACK_PYTHON" tools/build/prepare_spack_sources.py
+"$SPACK_PYTHON" tools/build/verify_spack_source_revisions.py
+```
+
 Run the fail-fast host gate before concretizing:
 
 ```console
 cd "$WORKSPACE/citlali"
 "$SPACK_PYTHON" tools/build/check_unity_spack_prerequisites.py \
-  --workspace-root "$WORKSPACE" \
+  --workspace-root "$WORKSPACE/citlali/build/spack-sources" \
   --spack "$SPACK_ROOT/bin/spack" \
   --spack-python "$SPACK_PYTHON"
 ```
@@ -221,13 +241,13 @@ spack -e "$ENV" concretize --force
 spack -e "$ENV" find -cvl
 ```
 
-The concrete root must report `citlali@4.0.0+tests+wiener_openmp` with
+The concrete root must report `citlali@4.0.0+openmp+tests+wiener_openmp` with
 `%cxx=gcc@13.3.0`. Stop if it selects a second C/C++ compiler, an external
-first-party package, or a package outside the declared sibling checkouts.
+first-party package, or a package outside the pinned build-source area.
 
 After graph review, create the log directory and submit the checked acceptance
 script from the Citlali checkout. The submission captures the exact source SHA
-and refuses to run if the checkout or any reviewed sibling revision drifts:
+and refuses to run if the checkout or any pinned first-party revision drifts:
 
 ```console
 cd "$WORKSPACE/citlali"

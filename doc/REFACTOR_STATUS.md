@@ -52,19 +52,21 @@ explicit HDF5/Zlib ownership, provide native Mac and Unity environments, or
 define immutable release sources and a portable lock. The existing build
 remains the operational path until those gates pass.
 
-The build owner subsequently confirmed the intended deployment contract. The
-developer workspace is four sibling repositories orchestrated through the
-Tula CMake `Justfile`; native macOS is supported; and Unity installation is in
-user-owned space. Project policy makes exact Homebrew LLVM 20 the initial Mac
-gate and treats containers as optional CI/troubleshooting infrastructure, not
-a local prerequisite. Real-data fixture identity, portable system-versus-
-source dependency resolution, provenance improvements, and release locking
-remain implementation work.
+The build owner subsequently confirmed the intended deployment contract:
+native macOS is supported and Unity installation is in user-owned space. The
+upstream developer workflow uses sibling repositories and the Tula CMake
+`Justfile`. Citlali's bounded adaptation instead owns an exact revision
+manifest and materializes clean build-only Tula CMake, Tula, and Kidscpp
+checkouts under ignored `build/spack-sources/`; unrelated developer checkouts
+and `tolteca_deploy` are not modified. Project policy makes exact Homebrew LLVM
+20 the initial Mac gate and treats containers as optional CI/troubleshooting
+infrastructure, not a local prerequisite. Real-data fixture identity,
+provenance improvements, and release locking remain implementation work.
 
 The native-Mac foundation checkpoint is complete on the build-adaptation
 branch. A tested preflight accepts exact Homebrew LLVM 20.1.8, Spack 1.2.2,
-CMake 4.3, Ninja 1.13, the supported Spack Python launcher, the three sibling
-package repositories, and the current Citlali build worktree while rejecting
+CMake 4.3, Ninja 1.13, the supported Spack Python launcher, the three pinned
+package sources, and the current Citlali build worktree while rejecting
 AppleClang, wrong Spack releases, missing repositories, and globally forced
 unversioned Homebrew `libomp`.
 
@@ -72,13 +74,15 @@ The source-built Tula component closure now installs through a concrete
 macOS Spack environment. Fourteen Tula tests and an independent installed
 consumer pass under LLVM 20. NetCDF-C is constrained to explicit Spack HDF5,
 Szip, and Zstandard edges after an undeclared Homebrew-header/Spack-library
-ABI mix was reproduced and eliminated. A bounded local NetCDF C++ target
-adapter is required because NetCDF C++ 4.3.1 installs neither the pkg-config
-metadata expected by the upstream Tula adapter nor a complete CMake target.
+ABI mix was reproduced and eliminated. The accepted upstream Tula CMake
+package now supplies the normalized NetCDF C++ target without relying on
+metadata that NetCDF C++ 4.3.1 does not install, so the bounded local adapter
+has been removed.
 
-The native Kidscpp checkpoint is also complete. A bounded local
-`tula-perflibs` recipe declares exact `llvm-openmp@20.1.8`; Kidscpp installs
-from source, its independent installed consumer passes, and a separate reader
+The native Kidscpp checkpoint is also complete. The accepted upstream
+`tula-perflibs` recipe declares exact `llvm-openmp@20.1.8` and exports that
+resolved runtime to installed consumers; the local override has been removed.
+Kidscpp installs from source, its independent installed consumer passes, and a separate reader
 consumer opens a current raw pointing file and reads a two-sample I/Q slice.
 The upstream historical real-file test remains fixture-gated and currently
 handles an empty fixture root incorrectly, so it is not counted as a complete
@@ -105,10 +109,11 @@ Wiener variant, and concrete Spack DAG hash. A persistent Ninja workflow now
 separates ordinary incremental development from the slower `spack install`
 packaging gate; a measured no-op build takes 0.82 seconds.
 
-Phase 5 is still not complete. Immutable release sources, a portable release
-lock, exact first-party dependency source revisions, the user-owned Unity
-environment, point smoke run, and same-SHA four-mode validation matrix remain
-open. The legacy build therefore remains the operational fallback.
+Phase 5 is still not complete. Exact first-party development revisions are now
+machine-readable and checked, but immutable release source archives, a portable
+release lock, the user-owned Unity environment, point smoke run, and same-SHA
+four-mode validation matrix remain open. The legacy build therefore remains
+the operational fallback.
 
 The first user-supplied Unity inventory is now recorded operational evidence:
 Ubuntu 24.04 x86_64 exposes GCC/G++/GFortran 13.3 and Clang 18.1, CMake 3.30 through the
@@ -123,14 +128,14 @@ GCC 13 belongs to the upstream GCC 14/LLVM 20 matrix. Concretization, install,
 compiled tests, package-consumer acceptance, and reduction validation remain
 pending on Unity.
 
-The first Unity concretization now passes with lock SHA-256
+The first Unity concretization passed with historical lock SHA-256
 `02e5dddbd3775e4335d4d5ddd4c72a45493562fe531180f225b206467073f6ac`.
-The concrete root enables tests and OpenMP Wiener filtering, uses GCC 13.3 for
-all compiled nodes, and resolves only GCC and glibc as system externals. All
-first-party packages use the controlled sibling checkouts. A checked Slurm
-acceptance script now owns source install, persistent build, complete CTest,
-installed-consumer verification, and final executable provenance. Execution
-of that job remains pending.
+The 2026-08-03 upstream-adapter adoption intentionally supersedes that graph:
+the new root distinguishes pipeline OpenMP from Wiener OpenMP and consumes
+pinned upstream Tula adapters from Citlali's build-only source area. A fresh
+Unity concretization, install, compiled-test run, installed-consumer check, and
+point reduction are therefore pending. The checked Slurm acceptance script
+owns those gates and records final executable provenance.
 
 ## 2026-07-26 Conan 2 Build Review
 

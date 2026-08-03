@@ -5,8 +5,8 @@ spack:
 
   specs:
     - >-
-      citlali@4.0.0+wiener_openmp+tests %cxx=llvm@20.1.8
-      ^tula@3.1.0+ecsv+netcdf+enum+cli+grppi+openmp~fitting
+      citlali@4.0.0+openmp+wiener_openmp+tests %cxx=llvm@20.1.8
+      ^tula@3.1.0+ecsv+netcdf+enum+cli+perflibs+grppi+openmp~fitting
       ^netcdf-c@4.10.0+shared~blosc+szip+zstd build_system=cmake
       ^hdf5@1.14.6+hl+shared~mpi~szip
       ^cfitsio@4.3.0~fortran
@@ -29,28 +29,31 @@ spack:
   develop:
     tula-cmake:
       spec: tula-cmake@3.2.0
-      path: ../../../../tula_cmake
+      path: ../../../build/spack-sources/tula_cmake
     tula-logging:
       spec: tula-logging@1.0.0
-      path: ../../../../tula_cmake/packages/tula_logging
+      path: ../../../build/spack-sources/tula_cmake/packages/tula_logging
     tula-yaml-cpp:
       spec: tula-yaml-cpp@0.8.0
-      path: ../../../../tula_cmake/packages/tula_yaml_cpp
+      path: ../../../build/spack-sources/tula_cmake/packages/tula_yaml_cpp
     tula-eigen3:
       spec: tula-eigen3@3.4.0
-      path: ../../../../tula_cmake/packages/tula_eigen3
+      path: ../../../build/spack-sources/tula_cmake/packages/tula_eigen3
+    tula-ccfits:
+      spec: tula-ccfits@1.0.0
+      path: ../../../build/spack-sources/tula_cmake/packages/tula_ccfits
     tula-netcdf-cxx4:
       spec: tula-netcdf-cxx4@4.3.1
-      path: ../../compat/tula_netcdf_cxx4
+      path: ../../../build/spack-sources/tula_cmake/packages/tula_netcdf_cxx4
     tula-perflibs:
       spec: tula-perflibs@0.1.0+openmp
-      path: ../../compat/tula_perflibs
+      path: ../../../build/spack-sources/tula_cmake/packages/tula_perflibs
     tula:
-      spec: tula@3.1.0+openmp+cli~fitting
-      path: ../../../../tula
+      spec: tula@3.1.0+openmp+cli+perflibs~fitting
+      path: ../../../build/spack-sources/tula
     kidscpp:
-      spec: kidscpp@3.1.0
-      path: ../../../../kidscpp
+      spec: kidscpp@3.1.0+openmp
+      path: ../../../build/spack-sources/kidscpp
     citlali:
-      spec: citlali@4.0.0+wiener_openmp
+      spec: citlali@4.0.0+openmp+wiener_openmp
       path: ../../..

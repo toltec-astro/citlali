@@ -9,15 +9,30 @@ import subprocess
 from pathlib import Path
 from typing import Sequence
 
+from verify_spack_source_revisions import (
+    inspect_revisions,
+    load_revisions,
+    require_accepted_revisions,
+)
+
 
 EXPECTED_PACKAGES = {
     "citlali": ("4.0.0", "toltec.citlali"),
     "kidscpp": ("3.1.0", "toltec.kidscpp"),
     "tula": ("3.1.0", "toltec.tula"),
-    "tula-perflibs": ("0.1.0", "toltec.citlali"),
+    "tula-ccfits": ("1.0.0", "toltec.tula_cmake"),
+    "tula-netcdf-cxx4": ("4.3.1", "toltec.tula_cmake"),
+    "tula-perflibs": ("0.1.0", "toltec.tula_cmake"),
     "cfitsio": ("4.3.0", "builtin"),
     "hdf5": ("1.14.6", "builtin"),
 }
+
+
+def validate_first_party_sources(source_root: Path) -> None:
+    """Require the exact clean dependency sources declared by Citlali."""
+    revisions = load_revisions(source_root / "spack/upstream-revisions.json")
+    results = inspect_revisions(source_root / "build/spack-sources", revisions)
+    require_accepted_revisions(results)
 
 
 def run(command: Sequence[str], *, environment: dict[str, str]) -> str:
@@ -77,6 +92,7 @@ def validate_concrete_graph(
     root_spec = roots[0].get("spec", "")
     required_root_terms = (
         "citlali@4.0.0",
+        "+openmp",
         "+tests",
         "+wiener_openmp",
         root_compiler_term,

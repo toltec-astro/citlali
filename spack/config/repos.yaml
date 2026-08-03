@@ -1,5 +1,5 @@
 repos:
   toltec.citlali: ../spack_repo/toltec/citlali
-  toltec.kidscpp: ../../../kidscpp/spack_repo/toltec/kidscpp
-  toltec.tula: ../../../tula/spack_repo/toltec/tula
-  toltec.tula_cmake: ../../../tula_cmake/spack_repo/toltec/tula_cmake
+  toltec.kidscpp: ../../build/spack-sources/kidscpp/spack_repo/toltec/kidscpp
+  toltec.tula: ../../build/spack-sources/tula/spack_repo/toltec/tula
+  toltec.tula_cmake: ../../build/spack-sources/tula_cmake/spack_repo/toltec/tula_cmake

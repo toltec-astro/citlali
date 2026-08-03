@@ -1,6 +1,6 @@
 # TolTECA Spack Build Integration Review
 
-Date: 2026-07-31
+Date: 2026-07-31; updated 2026-08-03
 
 Status: architecture review complete; **Adapt with Spack** selected as the
 successor-build direction. The existing build remains the operational
@@ -13,10 +13,10 @@ The review used isolated checkouts at the exact pushed revisions:
 
 | Repository | Branch | Commit |
 | --- | --- | --- |
-| `toltec-astro/tula_cmake` | `v3.x_spack` | `1ea93f600055e14248b2dbfcf1c16c5487a7b757` |
-| `toltec-astro/tula` | `v3.x_spack` | `61f862c9cc08f335e946a4f55c5aa5cf35401bb0` |
-| `toltec-astro/kidscpp` | `v3.x_spack` | `e3c05ebc75da42151a450bbc8c1b27f1e2e5e61b` |
-| `toltec-astro/citlali` | `v3.x_spack` | `8a1be68354d78110c0c3e0f1d4ee5fd3cea20864` |
+| `toltec-astro/tula_cmake` | `v3.x_spack` | `0086c652185b0ed15d2c666cd83da4f6b584403c` |
+| `toltec-astro/tula` | `v3.x_spack` | `79c1b2e07a4e34577040c4077db5e9156871c2da` |
+| `toltec-astro/kidscpp` | `v3.x_spack` | `d3cf4d246411f5e76809e9760a6cb1df34a236d9` |
+| `toltec-astro/citlali` | `v3.x_spack` | `4097c09d288d867c2987e025b09be46d55117244` |
 
 The reconciled design authority is the `design/` directory in the reviewed
 Tula CMake branch. The earlier Conan 2 review remains historical evidence but
@@ -43,6 +43,10 @@ initial review:
 
 Project policy further requires native macOS development. Containers may be
 used for CI or troubleshooting, but are not required for local development.
+For the bounded Citlali adaptation, those upstream sources are materialized at
+the checked revisions under Citlali's ignored `build/spack-sources/` directory.
+This avoids modifying unrelated developer checkouts. `tolteca_deploy` remains
+an external, read-only deployment project and is not an input to this lane.
 
 ## Decision
 
@@ -123,8 +127,7 @@ On the review Mac:
 - an independent installed Tula consumer configures, builds, and passes CTest
   against the concrete dependency graph.
 - a concrete Kidscpp environment source-builds with an explicit
-  `llvm-openmp@20.1.8` dependency supplied by a bounded local
-  `tula-perflibs` recipe adaptation;
+  `llvm-openmp@20.1.8` dependency;
 - the independent installed Kidscpp consumer configures, links, and passes
   CTest against that installed graph; and
 - a second independent reader consumer opens a current raw TolTEC pointing
@@ -142,6 +145,10 @@ On the review Mac:
   family, Wiener variant, and concrete Spack root DAG hash. A persistent Ninja
   tree provides a measured 0.82-second no-op build without restaging the
   development package.
+- the 2026-08-03 upstream revisions replace the local NetCDF C++ and perflibs
+  adapters with Tula CMake-owned packages, add the normalized CCfits target,
+  and distinguish general pipeline OpenMP from Wiener OpenMP; the resulting
+  full Citlali package concretizes and installs under native LLVM 20.
 
 The native reproduction exposed two portability defects that the reported
 Ubuntu external-package lane did not exercise. NetCDF-C's CMake build can
@@ -149,17 +156,18 @@ auto-detect undeclared Homebrew compression libraries, mixing Homebrew HDF5 2
 headers with the declared Spack HDF5 1.14 library. The environment now uses
 explicit shared NetCDF, HDF5, Szip, and Zstandard constraints, eliminating
 that mixed ABI. NetCDF C++ 4.3.1 also installs neither the
-`netcdf-cxx4.pc` file expected by the upstream Tula adapter nor a complete
-CMake imported target. A bounded local compatibility adapter preserves
-`tula_deps::netcdf_cxx4` until the upstream package boundary is corrected.
+`netcdf-cxx4.pc` file used by an earlier adapter nor a complete CMake imported
+target. The accepted Tula CMake package now resolves the concrete C++ and C
+libraries directly and exports `tula_deps::netcdf_cxx4`; the local Citlali
+adapter is no longer required.
 
-After the original review, Tula CMake advanced only to add the accepted Tlaloc
-ECSV integration matrix and Tula advanced to fix ECSV table-view lifetimes
-with a focused regression test. Those bounded changes were reviewed and are
-the revisions now recorded above. Kidscpp and upstream Citlali did not move.
+After the original review, all four upstream branches advanced. The current
+revisions recorded above were re-reviewed in isolated clean checkouts. Only
+Tula CMake, Tula, and Kidscpp are consumed as build inputs; upstream Citlali is
+a reference implementation and is not merged into the refactored application.
 
 The complete production reduction matrix was not independently reproduced
-locally. The four-sibling workflow now reaches the full refactored Citlali
+locally. The pinned-source workflow now reaches the full refactored Citlali
 application. The repositories do not identify an accessible immutable revision of
 `tolteca_test_data`. A native Kidscpp package-test rebuild therefore ran six
 of seven discovered tests successfully but failed the historical real-file
@@ -183,15 +191,15 @@ Citlali, Kidscpp, Tula, and other C/C++ application nodes remain exact LLVM 20.
 | Dependency ownership | Pass | Spack owns one concrete graph; Tula CMake is CMake-only. |
 | First-party package identity | Pass in development | Tula CMake, Tula, Kidscpp, and Citlali are explicit decentralized packages. |
 | Installed package consumers | Pass locally | Native Tula, Kidscpp, and full refactored Citlali installed consumers pass. |
-| NetCDF C++ propagation | Pass with bounded adapter | Source-built 4.3.1 lacks the pkg-config metadata required by upstream Tula; the local target adapter and installed consumer pass. |
+| NetCDF C++ propagation | Pass upstream | Tula CMake owns a normalized target that does not depend on missing NetCDF C++ pkg-config metadata. |
 | Compiler matrix | Partial | GCC 14 and LLVM 20 pass in Ubuntu, and native macOS LLVM 20 passes through the full application; Unity remains unmeasured. |
 | Native developer bootstrap | Pass locally | Exact LLVM 20/Spack host gate, source-built full graph, persistent Ninja workflow, and installed-artifact gate pass. |
 | Real-data fixtures | Partial | A current pointing file passes the independent reader gate with recorded SHA-256, but the shared historical fixture has no accessible immutable manifest. |
-| Release source identity | Fail | First-party recipes provide versions without immutable source URLs/checksums and rely on local `develop` paths. |
+| Release source identity | Partial | Exact development revisions are machine-readable and checked; immutable release archives/checksums remain open. |
 | Portable lock | Planned | Local locks are intentionally ignored; no release environment lock exists. |
 | Full refactored application | Pass locally | All eight active compiled sources, full header surface, generated inputs, library, CLI, and tests build through Spack. |
 | Full CLI and config | Pass locally | Full operational CLI/help and complete 123-test/four-mode config preflight pass. |
-| Source/dependency provenance | Partial | Source/dirty state, compiler, build type, Wiener variant, semantic package versions, and concrete DAG hash are published; exact first-party dependency source revisions and portable release lock remain open. |
+| Source/dependency provenance | Partial | Source/dirty state, compiler, build type, OpenMP/Wiener variants, semantic package versions, concrete DAG hash, and exact first-party development revisions are checked; a complete embedded manifest and portable release lock remain open. |
 | Direct dependencies | Pass | HDF5 and Zlib are explicit Citlali recipe and CMake target edges. |
 | Kidscpp compatibility | Pass pending product validation | A bounded V3 raw-timestream adapter compiles and is tested; legacy config remains accepted and the unused sweep fitter is omitted only in V3. Unity product validation remains. |
 | Full tests | Pass locally | All 533 enabled CTests and complete config preflight pass; baseline/ledger/exit gates remain part of final acceptance. |
@@ -202,8 +210,9 @@ Citlali, Kidscpp, Tula, and other C/C++ application nodes remain exact LLVM 20.
 
 ### A. Make The Environment Reconstructible
 
-1. Document and reproduce the four-sibling-checkout workflow through the Tula
-   CMake `Justfile`; keep any container workflow optional.
+1. Maintain the checked first-party source manifest and Citlali-owned
+   build-source preparation command; keep deployment tooling and containers
+   optional and external.
 2. Identify an accessible real-data fixture and record an immutable manifest.
 3. Add and verify the required native macOS environment using exact Homebrew
    LLVM 20 and a compatible OpenMP runtime.

@@ -54,7 +54,12 @@ def _assert_concrete_graph(environment_path: Path) -> None:
     if len(roots) != 1:
         raise RuntimeError(f"expected one concrete root, found {len(roots)}")
     root_spec = roots[0].get("spec", "")
-    if "kidscpp@3.1.0" not in root_spec or "%cxx=clang@20.1.8" not in root_spec:
+    required_root_terms = (
+        "kidscpp@3.1.0",
+        "+openmp",
+        "%cxx=clang@20.1.8",
+    )
+    if any(term not in root_spec for term in required_root_terms):
         raise RuntimeError(f"unexpected Kidscpp root: {root_spec}")
 
     packages = {
@@ -62,7 +67,7 @@ def _assert_concrete_graph(environment_path: Path) -> None:
     }
     expected = {
         "kidscpp": ("3.1.0", "toltec.kidscpp"),
-        "tula-perflibs": ("0.1.0", "toltec.citlali"),
+        "tula-perflibs": ("0.1.0", "toltec.tula_cmake"),
         "llvm-openmp": ("20.1.8", "builtin"),
     }
     for name, (version, namespace) in expected.items():

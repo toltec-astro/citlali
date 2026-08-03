@@ -317,8 +317,8 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--workspace-root",
         type=Path,
-        default=source_root.parent,
-        help="Directory containing sibling tula_cmake, tula, and kidscpp checkouts",
+        default=source_root / "build/spack-sources",
+        help="Directory containing pinned tula_cmake, tula, and kidscpp sources",
     )
     parser.add_argument(
         "--citlali-source",
