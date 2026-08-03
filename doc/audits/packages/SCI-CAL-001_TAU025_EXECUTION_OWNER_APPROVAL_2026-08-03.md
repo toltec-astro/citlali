@@ -1,8 +1,7 @@
 # SCI-CAL-001 tau225 engineering-extension execution approval — 2026-08-03
 
-Status: owner approved; preflight may begin. Direct AM execution remains
-fail-closed on all registered readiness gates and an owner-supplied fresh cache
-root.
+Status: owner approved with selected fresh cache root; direct AM execution
+remains fail-closed on all registered readiness gates.
 
 Decision ID: `CAL-ATM-D007-EXECUTION-001`
 
@@ -44,15 +43,19 @@ direct-truth study:
 The `nextafter(.15)` triplet remains a later no-AM candidate-evaluator
 diagnostic only. It has no direct-AM target, scale search, or cache entry.
 
-## Cache-root boundary
+## Selected cache root
 
-The approved request deliberately does not name a host-specific external cache
-parent. Before creating a cache or invoking AM, the owner must supply the
-absolute fresh cache-root path with basename
-`sci_cal_001_tau025_engineering_extension_001_root`. The CAL task may
-perform all no-AM checks now, but must stop if that path is absent, existing,
-not writable, has insufficient free space, or fails any registered gate. It
-may not choose, reuse, delete, or mutate a cache root by inference.
+The owner selected the absolute cache root:
+
+```text
+/Users/gwilson/work_toltec/local_data/sci_cal_001_tau025_engineering_extension_001_root
+```
+
+At authorization recording, its parent exists and the selected root is absent.
+The task must independently recheck that it is absent, writable, and has at
+least 12 GiB free immediately before creation. Any existing, partial, locked,
+or insufficiently provisioned root fails closed; the task may not reuse,
+delete, or infer a substitute cache path.
 
 ## Continuing prohibitions
 
@@ -62,4 +65,3 @@ repair, Unity activity, re-audit, operational-domain or production adoption,
 a new output format, or any tolerance/warning-policy expansion. A completed
 study returns to the coordinator for independent review and a separate owner
 decision.
-

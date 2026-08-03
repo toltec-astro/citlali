@@ -2358,7 +2358,7 @@ packages:
       decision_id: CAL-ATM-D007
       authority: project_owner
       decision_date: 2026-08-03
-      status: owner_approved_preflight_and_fresh_cache_study_pending_cache_root
+      status: owner_approved_preflight_and_fresh_cache_study
       record_path: >-
         doc/audits/packages/SCI-CAL-001_TAU025_EXTENSION_STUDY_SCOPE_DECISION_2026-08-03.md
       record_sha256: >-
@@ -2385,7 +2385,7 @@ packages:
       engineering_maximum_heldout_fractional_correction_error: 0.05
       inherited_warning_policy: WARN-001
       execution_request:
-        status: owner_approved_pending_owner_supplied_fresh_cache_root
+        status: owner_approved_selected_fresh_cache_root
         source_branch: codex/sci-cal-001-atmosphere-operator
         source_commit: 31c67119be604ac21905d39b4a91699bd62fffcf
         path: >-
@@ -2395,22 +2395,24 @@ packages:
         owner_approval_path: >-
           doc/audits/packages/SCI-CAL-001_TAU025_EXECUTION_OWNER_APPROVAL_2026-08-03.md
         owner_approval_sha256: >-
-          d91dd376ff36df51871e3f5eb53bfaf985080fe5c6011bda80e8c58e43bf7c96
+          68d3d2222f0050666279e6b52c89a8fa1c6a3fa01686b6b6f6abb6f849ed0815
+        selected_fresh_cache_root: >-
+          /Users/gwilson/work_toltec/local_data/sci_cal_001_tau025_engineering_extension_001_root
+        cache_root_recorded_state: parent_exists_root_absent
         preflight_authorized: true
         cache_creation_and_am_execution: >-
-          Authorized only after every registered readiness gate passes and the
-          owner supplies one absent, writable, sufficiently provisioned
-          external cache root with the requested basename.
+          Authorized only after every registered readiness gate passes,
+          including immediate verification that the selected root is absent,
+          writable, and sufficiently provisioned.
       permitted_next_step: >-
-        Run the exact no-AM readiness preflight. After all gates pass and the
-        owner supplies the requested fresh cache root, execute only the
-        registered direct-AM study and return its frozen evidence for review.
+        Run the exact readiness preflight. After all gates pass, execute only
+        the registered direct-AM study at the selected fresh cache root and
+        return its frozen evidence for review.
       stop_before: >-
-        Stop before cache creation or AM execution until the owner provides
-        the fresh cache root; also stop before fitting, numerical-result
-        interpretation beyond preregistered checks, source change, repair,
-        re-audit, Unity action, adoption, production change, or output-format
-        work.
+        Stop on any readiness or cache-root failure; also stop before fitting,
+        numerical-result interpretation beyond preregistered checks, source
+        change, repair, re-audit, Unity action, adoption, production change,
+        or output-format work.
     dispatch:
       status: frozen_for_dispatch
       coordinator_registry_commit: 88741d085a08431790c6eee719b6f20052b459d8
