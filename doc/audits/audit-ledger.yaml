@@ -3956,7 +3956,7 @@ packages:
       - id: SCI-MAP-002-D003
         status: partially_resolved_remaining_owner_decisions_before_repair
         scope: >-
-          Support/r_max is resolved. Subpixel response, conditioning,
+          Support/r_max and subpixel response are resolved. Conditioning,
           parameter/coefficient admission, coverage/mask/kernel semantics, and
           realized provenance remain owner decisions.
     owner_decisions:
@@ -3971,6 +3971,17 @@ packages:
           Retain the square cached footprint and dual-use r_max convention;
           do not reinterpret r_max as a strict radial support limit.
         applies_to: [SCI-MAP-002-F002]
+      - id: SCI-MAP-002-D003-SUBPIXEL-001
+        status: approved
+        decision_date: 2026-08-03
+        record_path: >-
+          doc/audits/packages/SCI-MAP-002_SUBPIXEL_OWNER_DECISION_2026-08-03.md
+        record_sha256: >-
+          053cedd2a644850ea65db616661cc95a1d872f60945074d40e81d07397716aaa
+        disposition: >-
+          Retain phase-quantized point sampling as the JINC subpixel response;
+          it is not a pixel-area integration.
+        applies_to: [SCI-MAP-002-F003]
     local_evidence:
       - path: doc/audits/evidence/SCI-MAP-002_LOCAL_EVIDENCE_2026-08-03.yaml
         sha256: 3a10f410dcb681a41bb2dee42b5ef1141a93a0de1362ce829dff0afa297855b8
