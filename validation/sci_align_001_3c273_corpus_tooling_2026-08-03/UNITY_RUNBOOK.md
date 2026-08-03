@@ -7,17 +7,20 @@ under the versioned run directory.
 
 ## 1. Make the exact tooling available and verify identity
 
-Codex does not push or perform network activity.  If the Unity checkout lacks
-the handoff commit, the owner may either fetch it after an owner push, or copy
-an owner-created git bundle and run the following from the Unity clone:
+Codex does not push or perform network activity. If the Unity checkout lacks
+the handoff commits, the owner may either fetch them after an owner push, or
+create and transfer this bundle containing both commits after the known base:
 
 ```bash
-# On the source clone, after the follow-up commit is supplied in the handoff:
-git bundle create sci_align_001_followup.bundle \
-  6776931e753488b902d178b177815a2762375e5c..<FOLLOWUP_COMMIT>
-# Transfer the bundle by an owner-approved route, then on Unity:
-git fetch /path/to/sci_align_001_followup.bundle \
-  <FOLLOWUP_COMMIT>:refs/heads/codex/sci-align-001-3c273-corpus-tooling
+# On the local source clone:
+git bundle create /Users/gwilson/GitHub/citlali-refactor/sci_align_001_followup_8e4fcae2.bundle \
+  a2b37924d612eb175821483523cc94dd233f2fea..8e4fcae2ff92078665b8fad992307a609236125a
+# Owner transfer to the known Unity checkout (not performed by Codex):
+scp /Users/gwilson/GitHub/citlali-refactor/sci_align_001_followup_8e4fcae2.bundle \
+  unity_toltec:/work/toltec/citlali_dev/citlali_refactor/
+# Then, on Unity from the repository clone:
+git fetch /work/toltec/citlali_dev/citlali_refactor/sci_align_001_followup_8e4fcae2.bundle \
+  8e4fcae2ff92078665b8fad992307a609236125a:refs/heads/codex/sci-align-001-3c273-corpus-tooling
 ```
 
 ```bash
@@ -29,7 +32,7 @@ export SCI_RUN_ROOT=/work/toltec/wilson/citlali_testing/beammaps/3c273/sci_align
 export SCI_SCRIPT_ROOT="$SCI_RUN_ROOT/scripts"
 export SCI_OUTPUT_ROOT="$SCI_RUN_ROOT/output"
 export SCI_RUNTIME_CACHE="$SCI_RUN_ROOT/_runtime_cache"
-export SCI_TOOLING_COMMIT=<FOLLOWUP_COMMIT>
+export SCI_TOOLING_COMMIT=8e4fcae2ff92078665b8fad992307a609236125a
 export SCI_PACKAGE=validation/sci_align_001_3c273_corpus_tooling_2026-08-03
 
 source "$HOME/tolteca/bin/activate"
@@ -48,7 +51,7 @@ test -w "$SCI_RUN_ROOT"
   echo "tooling_branch=$(git branch --show-current)"
   echo "tooling_commit=$(git rev-parse HEAD)"
   echo "citlali_bin_recorded_only=$CITLALI_BIN"
-  echo "python=$($HOME/tolteca/bin/python --version 2>&1)"
+  echo "python=$(python --version 2>&1)"
 } > "$SCI_RUN_ROOT/execution_identity.txt"
 ```
 
@@ -62,7 +65,7 @@ script, output, cache, or archive below it from becoming a candidate on a
 repeat run.
 
 ```bash
-"$HOME/tolteca/bin/python" tools/diagnostics/inventory_sci_align_001_3c273_corpus.py \
+python tools/diagnostics/inventory_sci_align_001_3c273_corpus.py \
   --reduction-root "$SCI_ANALYSIS_ROOT" --raw-root "$SCI_RAW_ROOT" \
   --exclude-path "$SCI_RUN_ROOT" \
   --obsnum-allowlist "$SCI_PACKAGE/authoritative_obsnums_2026-08-03.json" \
@@ -89,7 +92,7 @@ ambiguous provenance fail closed.  Edit only the resulting template:
 cp "$SCI_OUTPUT_ROOT/inventory/selection_template.csv" \
   "$SCI_OUTPUT_ROOT/inventory/owner_selection.csv"
 emacs -nw "$SCI_OUTPUT_ROOT/inventory/owner_selection.csv"
-"$HOME/tolteca/bin/python" tools/diagnostics/inventory_sci_align_001_3c273_corpus.py \
+python tools/diagnostics/inventory_sci_align_001_3c273_corpus.py \
   --freeze-selection "$SCI_OUTPUT_ROOT/inventory/owner_selection.csv" \
   --inventory "$SCI_OUTPUT_ROOT/inventory/candidate_inventory.json" \
   --output "$SCI_OUTPUT_ROOT/inventory/frozen"
@@ -105,14 +108,14 @@ numerical libraries (all numerical thread counts are one).
 
 ```bash
 mkdir -p "$SCI_OUTPUT_ROOT/slurm_logs"
-"$HOME/tolteca/bin/python" tools/diagnostics/generate_sci_align_001_3c273_slurm_array.py \
+python tools/diagnostics/generate_sci_align_001_3c273_slurm_array.py \
   --selected-manifest "$SCI_OUTPUT_ROOT/inventory/frozen/selected_manifest.json" \
   --protocol "$SCI_PACKAGE/frozen_analysis_protocol.json" \
   --output-root "$SCI_OUTPUT_ROOT/per_map" \
   --command-table "$SCI_SCRIPT_ROOT/3c273.commands.csv" \
   --output-script "$SCI_SCRIPT_ROOT/run_3c273_array.sh" \
   --serial-script "$SCI_SCRIPT_ROOT/run_3c273_serial.sh" \
-  --python "$HOME/tolteca/bin/python" --array-concurrency 8 \
+  --python python --array-concurrency 8 \
   --sbatch-option output="$SCI_OUTPUT_ROOT/slurm_logs/%x_%A_%a.out" \
   --sbatch-option error="$SCI_OUTPUT_ROOT/slurm_logs/%x_%A_%a.err"
 
@@ -137,14 +140,14 @@ sbatch "$SCI_SCRIPT_ROOT/run_3c273_array.sh"
 ```bash
 MPLBACKEND=Agg MPLCONFIGDIR="$SCI_RUNTIME_CACHE/matplotlib" \
 XDG_CACHE_HOME="$SCI_RUNTIME_CACHE/xdg" \
-"$HOME/tolteca/bin/python" tools/diagnostics/aggregate_sci_align_001_3c273_corpus.py freeze \
+python tools/diagnostics/aggregate_sci_align_001_3c273_corpus.py freeze \
   --selected-manifest "$SCI_OUTPUT_ROOT/inventory/frozen/selected_manifest.json" \
   --protocol-template "$SCI_PACKAGE/frozen_analysis_protocol.json" \
   --output "$SCI_OUTPUT_ROOT/aggregate_freeze"
 
 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 MPLBACKEND=Agg \
 MPLCONFIGDIR="$SCI_RUNTIME_CACHE/matplotlib" XDG_CACHE_HOME="$SCI_RUNTIME_CACHE/xdg" \
-"$HOME/tolteca/bin/python" tools/diagnostics/aggregate_sci_align_001_3c273_corpus.py run \
+python tools/diagnostics/aggregate_sci_align_001_3c273_corpus.py run \
   --selected-manifest "$SCI_OUTPUT_ROOT/inventory/frozen/selected_manifest.json" \
   --frozen-protocol "$SCI_OUTPUT_ROOT/aggregate_freeze/frozen_analysis_protocol.json" \
   --map-output-root "$SCI_OUTPUT_ROOT/per_map" --output "$SCI_OUTPUT_ROOT/aggregate"
@@ -172,7 +175,7 @@ while IFS= read -r -d '' sci_sum; do
   (cd "$sci_dir" && shasum -a 256 -c SHA256SUMS) || exit 1
 done < <(find "$SCI_RUN_ROOT" -name SHA256SUMS -type f -print0)
 
-"$HOME/tolteca/bin/python" -m json.tool \
+python -m json.tool \
   "$SCI_OUTPUT_ROOT/aggregate/known_omissions.json" | less
 find "$SCI_RUN_ROOT" -type f \( -name '*.nc' -o -name '*.fits' -o -name '*.fits.gz' \) -print
 
