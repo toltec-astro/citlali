@@ -1,9 +1,12 @@
 # SCI-ALIGN-001 3C273 corpus owner runbook
 
-This is an owner-executed, retained-product diagnostic workflow.  Codex did
-not access Unity, run these commands, create a Citlali reduction, or authorize
-a correction.  The commands read retained beammap/raw metadata and write only
-under the versioned run directory.
+This is an owner-executed SCI-ALIGN-001 diagnostic workflow. Codex did not
+access Unity or run these commands. The original corpus lane remains
+retained-product analysis only. On 2026-08-03, the owner additionally
+authorized one isolated 148670 diagnostic reproduction to create the missing
+detector-resolved PTC TOD required to validate that lane. It must write to its
+own explicitly named reproduction root, never to existing reductions or raw
+inputs, and it does not authorize a timing correction.
 
 ## 1. Make the exact tooling available and verify identity
 
@@ -45,7 +48,9 @@ cd "$SCI_REPO"
 test "$(git branch --show-current)" = codex/sci-align-001-3c273-corpus-tooling
 git merge-base --is-ancestor "$SCI_TOOLING_IMPLEMENTATION_COMMIT" HEAD
 test -z "$(git status --short)"
-# CITLALI_BIN is retained in execution identity only; do not test or invoke it.
+# CITLALI_BIN is recorded here and used only by the explicitly authorized
+# 148670 reproduction gate below. It is not invoked by inventory or corpus
+# analysis commands.
 (cd "$SCI_PACKAGE" && shasum -a 256 -c SHA256SUMS)
 
 mkdir -p "$SCI_SCRIPT_ROOT" "$SCI_OUTPUT_ROOT" \
@@ -61,9 +66,64 @@ test -w "$SCI_RUN_ROOT"
 ```
 
 Stop before analysis if any identity or package checksum check fails.  No
-command below invokes `CITLALI_BIN`, `citlali`, or a reduction configuration.
+corpus inventory or analysis command below invokes `CITLALI_BIN`, `citlali`,
+or a reduction configuration. The sole exception is the explicit,
+owner-authorized reproduction gate immediately below.
 
-## 2. Inventory the authoritative corpus
+## 2. Authorized 148670 reproduction gate
+
+The retained historical directory lacks the detector-resolved PTC TOD. The
+following owner-authorized, source-isolated reproduction is therefore the
+entry gate to the corpus measurement. It regenerates only the 148670 diagnostic
+products required by SCI-ALIGN-001, using the archived matched-input APT and
+telescope identities and the exact accepted Beammap policy. It does not modify
+an existing reduction, raw file, APT, or application configuration.
+
+```bash
+export SCI_REPLAY_ROOT=/work/toltec/wilson/citlali_testing/beammaps/3c273/sci_align_001_reproduction_148670_2026-08-03
+test ! -e "$SCI_REPLAY_ROOT"
+
+python tools/diagnostics/prepare_sci_align_001_148670_reproduction.py \
+  --analysis-root "$SCI_ANALYSIS_ROOT" --raw-root "$SCI_RAW_ROOT" \
+  --repo-root "$SCI_REPO" --citlali-bin "$CITLALI_BIN" \
+  --output-root "$SCI_REPLAY_ROOT" --threads 6
+
+(cd "$SCI_REPLAY_ROOT" && shasum -a 256 -c SHA256SUMS)
+sed -n '1,260p' "$SCI_REPLAY_ROOT/config/citlali_o148670_0_2_c1_sci_align_reproduction.yaml"
+sed -n '1,120p' "$SCI_REPLAY_ROOT/submit_148670_reproduction.sbatch"
+```
+
+Preparation hashes all eleven raw network files (roughly 17 GiB total) before
+writing anything; several minutes of filesystem time is normal. It fails if
+any raw input, the matched APT, or the telescope file differs from the archived
+148670 identity. After owner review of the generated config and Slurm script,
+submit exactly one job:
+
+```bash
+replay_job_id="$(sbatch "$SCI_REPLAY_ROOT/submit_148670_reproduction.sbatch")"
+printf 'replay_job_id=%s\n' "$replay_job_id"
+```
+
+After the job completes, stop and return the job log tail plus this minimal
+product evidence for review before running corpus inventory or any further
+reproduction:
+
+```bash
+(cd "$SCI_REPLAY_ROOT" && shasum -a 256 -c SHA256SUMS)
+tail -80 "$SCI_REPO/slurm-${replay_job_id%%;*}.out"
+find "$SCI_REPLAY_ROOT/reduced" -type f \
+  \( -name '*_ptc_detector_tod.nc' -o -name 'timestream_output_provenance.yaml' \
+     -o -name 'raw_timestream_provenance.yaml' -o -name '*_citlali.ecsv' \) \
+  -print | sort
+find "$SCI_REPLAY_ROOT/reduced" -type f -name 'citlali.log.gz' \
+  -exec sh -c 'gzip -cd "$1" | tail -80' _ {} \;
+```
+
+The replay root deliberately remains outside `SCI_RUN_ROOT`, so an inventory
+of `SCI_ANALYSIS_ROOT` can discover the explicitly authorized replay while
+still excluding generated analysis scripts, cache, and compact outputs.
+
+## 3. Inventory the authoritative corpus
 
 The run root is passed as an explicit exclusion.  This prevents any generated
 script, output, cache, or archive below it from becoming a candidate on a
@@ -104,7 +164,7 @@ python tools/diagnostics/inventory_sci_align_001_3c273_corpus.py \
 (cd "$SCI_OUTPUT_ROOT/inventory/frozen" && shasum -a 256 -c SHA256SUMS)
 ```
 
-## 3. Generate checksum-bound serial and Slurm analysis scripts
+## 4. Generate checksum-bound serial and Slurm analysis scripts
 
 Both scripts analyze retained products only.  They bind command table, selected
 manifest, allowlist, protocol, and tool bytes by checksum; every candidate has
@@ -140,7 +200,7 @@ Run one route, only after inspection:
 sbatch "$SCI_SCRIPT_ROOT/run_3c273_array.sh"
 ```
 
-## 4. Freeze the aggregate plan and aggregate compact results
+## 5. Freeze the aggregate plan and aggregate compact results
 
 ```bash
 MPLBACKEND=Agg MPLCONFIGDIR="$SCI_RUNTIME_CACHE/matplotlib" \
@@ -172,7 +232,7 @@ the nw9 estimate/residual/rate plus all-network versus leave-nw9-out difference
 and uncertainty; its corpus association is descriptive, not causal.  No
 row mask or repair is authorized where metadata semantics are ambiguous.
 
-## 5. Verify and return the compact bundle
+## 6. Verify and return the compact bundle
 
 ```bash
 while IFS= read -r -d '' sci_sum; do

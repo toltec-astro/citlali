@@ -4,9 +4,11 @@ M	tools/diagnostics/generate_sci_align_001_3c273_slurm_array.py	checksum-bound s
 M	tools/diagnostics/inventory_sci_align_001_3c273_corpus.py	authoritative inventory, run-root exclusion, canonical selection, availability
 M	tools/diagnostics/run_sci_align_001_3c273_beammap.py	retained-product anomaly artifact emission
 M	tools/diagnostics/sci_align_001_3c273_common.py	delivered raw-counter/PpsTime diagnostic implementation
+A	tools/diagnostics/prepare_sci_align_001_148670_reproduction.py	owner-authorized source-isolated 148670 detector-TOD reproduction preparation
 M	tools/diagnostics/test_sci_align_001_3c273_aggregation.py	aggregation/anomaly regression tests
 M	tools/diagnostics/test_sci_align_001_3c273_inventory.py	allowlist, canonical, exclusion, scheduler tests
 M	tools/diagnostics/test_sci_align_001_3c273_runner.py	delivered raw anomaly tests
+A	tools/diagnostics/test_prepare_sci_align_001_148670_reproduction.py	exact replay input/configuration contract tests
 A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/authoritative_obsnums.schema.json	checksum-bound allowlist schema
 A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/authoritative_obsnums_2026-08-03.json	exact owner-authoritative 40-ObsNum corpus
 M	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/OUTPUT_SCHEMA.md	v2 output contract
@@ -14,7 +16,7 @@ M	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/OWNER_DECISION_BRIEF.
 M	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/README.md	package index
 M	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/RETURN_BUNDLE_PROMPT.md	owner-return evidence review boundary
 M	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/SHA256SUMS	regenerated package integrity index
-M	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/UNITY_RUNBOOK.md	exact owner-only retained-product commands
+M	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/UNITY_RUNBOOK.md	exact owner-only retained-product commands and one review-gated reproduction command
 M	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/candidate_manifest.example.json	v2 checksum-bound example
 M	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/candidate_manifest.schema.json	v2 selected-manifest contract
 M	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/changed_paths.tsv	follow-up changed-path proof

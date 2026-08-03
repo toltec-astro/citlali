@@ -20,6 +20,21 @@ identifies one reduction/provenance realization and is not an independent
 observation.  `network_id` is the integer TolTEC/ROACH network identity.  UID,
 not detector row, is the detector identity.
 
+## Stage 0: owner-authorized 148670 reproduction gate
+
+Before the retained-product corpus stages, the owner may run exactly one
+source-isolated diagnostic reproduction for observation 148670. Its preparation
+directory contains a derived low-level configuration, an exact input manifest,
+the Citlali executable identity, a direct run script, a Slurm script, and
+`SHA256SUMS`. Preparation fails unless all eleven historical raw files plus the
+matched APT and telescope product match their archived SHA-256 identities. The
+replay output root is distinct from existing reductions and from the corpus run
+root. It requests the existing `source_crossing_tod` detector-resolved PTC TOD
+sidecar. On successful completion, its run script regenerates `SHA256SUMS` to
+include every replay product. The replay creates evidence only; it does not authorize a timing
+correction, source/configuration change, or row reassociation. Review its
+compact product/log evidence before the inventory stages proceed.
+
 ## Stage 1: inventory
 
 | File | Row grain or purpose |
@@ -164,7 +179,7 @@ zero anomalies.
 
 Every `map_result.json`, `corpus_summary.json`, and `REPORT.md` states:
 
-- no Citlali reduction was launched;
+- no Citlali reduction was launched by the corpus-analysis lane;
 - no source product was modified;
 - Codex did not contact Unity;
 - raw row reassociation is not claimed;

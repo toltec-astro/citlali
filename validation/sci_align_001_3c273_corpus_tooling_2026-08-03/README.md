@@ -1,11 +1,13 @@
 # SCI-ALIGN-001 3C273 corpus diagnostic kit
 
-This package is the bounded, read-only owner-execution contract for the 3C273
-Beammap corpus. It inventories retained reductions, runs the preregistered
-left/right and raw-counter diagnostics, freezes independent validation groups,
-and aggregates only compact outputs. It does not launch Citlali, contact
-Unity, alter an application/configuration/reduction product, reassociate raw
-rows, or authorize a physical timing correction.
+This package is the bounded owner-execution contract for the 3C273 Beammap
+corpus. It inventories retained reductions, runs the preregistered left/right
+and raw-counter diagnostics, freezes independent validation groups, and
+aggregates only compact outputs. The corpus lane does not launch Citlali,
+contact Unity, alter an application/configuration/reduction product,
+reassociate raw rows, or authorize a physical timing correction. The owner has
+separately authorized one source-isolated 148670 reproduction gate to generate
+the missing detector-resolved PTC TOD before corpus execution.
 
 ## Owner entry points
 
@@ -45,8 +47,10 @@ metadata association, and start/end/centroid timestamp semantics remain
 separate hypotheses. The prior Stage-A proof begins at delivered `D[n]/Ts[n]`
 and cannot rule out an upstream FPGA metadata-to-integration association error.
 
-The stopping point is a checksum-bound diagnostic kit and owner-returned
-compact evidence bundle. No 3C273 result alone authorizes a production change.
+The immediate stopping point is the 148670 replay product and its compact
+owner-returned evidence, before any corpus execution. The later stopping point
+is a checksum-bound corpus evidence bundle. No 3C273 result alone authorizes a
+production change.
 
 The owner run directory is deliberately below the 3C273 analysis directory but
 is an explicit inventory exclusion. It may contain generated serial/Slurm

@@ -9,9 +9,11 @@ time-variable, unpredictable, or insufficiently constrained.  Held-out
 prediction, not constancy alone, governs whether a later bounded mitigation
 design may be investigated.
 
-This package does not choose a production correction.  It creates a
-read-only, preregistered experiment and a compact evidence contract for the
-project owner to run on Unity.
+This package does not choose a production correction. It creates a
+preregistered experiment and compact evidence contract for the project owner
+to run on Unity. The corpus-analysis lane remains read-only; the owner has
+separately authorized an isolated 148670 diagnostic reproduction solely to
+create the missing detector-resolved PTC TOD.
 
 ## Producer timing authority incorporated during tooling development
 
@@ -49,7 +51,9 @@ The checksum-bound `authoritative_obsnums_2026-08-03.json` file is the sole
 including missing retained reductions, and records other discovered 3C273
 products only in a separate out-of-scope table. The versioned owner run
 directory is excluded from discovery, so a rerun cannot discover its own
-outputs. Citlali is never invoked; `CITLALI_BIN` is execution provenance only.
+outputs. The inventory and corpus analysis do not invoke Citlali. The only
+exception is the separately checksum-bound, owner-reviewed 148670 replay gate;
+`CITLALI_BIN` is otherwise execution provenance only.
 
 The canonical rule is timing-blind: use the sole eligible retained reduction;
 when exactly one `redu00` and one `redu01` are eligible, use `redu01` and keep
@@ -159,7 +163,9 @@ performed by this task.
 
 ## Authorized stopping point
 
-Stop after the owner has a compact, checksum-bound corpus report and the
-unresolved duplicate/path choices are explicit.  No Unity access by Codex,
-new Citlali reduction, application or configuration edit, row reassociation,
-physical timestamp correction, merge, rebase, or push is part of this work.
+First stop after the owner returns the isolated 148670 replay product evidence;
+do not start corpus inventory or another reproduction before review. The later
+stop is a compact, checksum-bound corpus report with unresolved duplicate/path
+choices explicit. No Unity access by Codex, physical timestamp correction, row
+reassociation, application/source edit, merge, rebase, or push is part of this
+work. The sole authorized reduction is the one source-isolated 148670 replay.
