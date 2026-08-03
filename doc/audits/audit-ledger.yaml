@@ -3856,7 +3856,7 @@ packages:
       sha256: 2c1f9ff95f65422a098846f747ed165d5aeddc5bedd854678bfa7faeebba4e24
       freeze_commit: bccc2614663c95aee66ed9b21b6025f5fb4e5f04
       freeze_timestamp_utc: 2026-08-03T16:54:20Z
-      first_source_inspection_utc: not_yet_opened
+      first_source_inspection_utc: 2026-08-03T17:16:58Z
     contract_status: not_started
     implementation_status: not_assessed
     validation_status: not_started
@@ -3945,6 +3945,68 @@ packages:
           Return after the static source matrix, before opening the post-core
           MAP handoff, creating another artifact, requesting evidence, or
           proposing a numerical parameter study.
+      static_source_trace_checkpoint:
+        status: accepted_full_scientific_contract_audit_authorized
+        review_date: 2026-08-03
+        path: doc/audits/packages/SCI-MAP-002_STATIC_SOURCE_TRACE.md
+        sha256: >-
+          37be33eb76dad4d916dd2772cb32f6570fef7e58ebbde0cf2de1add189d73340
+        freeze_commit: 0d80c4df9d4694634c4c77830c7701b07af577b1
+        freeze_parent: bccc2614663c95aee66ed9b21b6025f5fb4e5f04
+        freeze_timestamp_utc: 2026-08-03T17:16:58Z
+        review_scope: >-
+          The phase-two trace has mapped the frozen independent core to the
+          JINC kernel, typed dispatch, and typed configuration paths. It
+          establishes preliminary source facts only: it is not a final
+          implementation verdict, repair authorization, or numerical result.
+        next_phase_scope: >-
+          Complete the standard, read-only SCI-MAP-002 scientific-contract
+          audit. Combine the frozen independent mathematical core with a
+          source-conformity analysis of the final normalization, product
+          publication, mask/weight/kernel semantics, direct caller and
+          consumer paths, and the post-core naive-only MAP handoff. Start
+          from the three traced paths and expand only by direct static
+          reference necessary to resolve those interfaces; record every
+          additional path and the reason it was opened. The audit must retain
+          the distinction between derivation, source evidence, inference,
+          and unverified runtime behavior.
+        permitted_artifacts:
+          - doc/audits/packages/SCI-MAP-002_SCIENTIFIC_CONTRACT_AUDIT.tex
+          - doc/audits/evidence/SCI-MAP-002_LOCAL_EVIDENCE_2026-08-03.yaml
+          - doc/audits/proposals/SCI-MAP-002_LEDGER_PROPOSAL_2026-08-03.yaml
+          - >-
+            Evidence-bound proposed handoffs only to SCI-NOI-001,
+            SCI-NOI-002, SCI-FLT-001, or SCI-FLT-002, if a concrete interface
+            fact is found.
+        required_audit_content:
+          - >-
+            Preserve the independent-core equations and give an explicit
+            source/equation conformance table, including every point where
+            the implemented scientific policy is different or undecidable.
+          - >-
+            Resolve, or explicitly leave open, final signal and formal-weight
+            normalization, signed-coefficient cancellation validity, kernel,
+            coverage, masks, product identity, configuration provenance,
+            array identity, and sequential/parallel reachability.
+          - >-
+            State a bounded exact-SHA Unity evidence protocol only as a
+            proposed future prerequisite where static inspection cannot decide
+            a question; do not request, run, or interpret Unity evidence.
+          - >-
+            Compile the LaTeX report with an already available local tool and
+            verify that the generated document is readable. This permits
+            documentation rendering only, not Citlali compilation or tests.
+        local_citlali_reduction_authorized: false
+        unity_evidence_authorized: false
+        citlali_compilation_or_tests_authorized: false
+        application_source_change_authorized: false
+        delegation_or_independent_review_authorized: false
+        next_return: >-
+          Stop after committing the complete audit package. Return its paths,
+          SHA-256 digests, commit, a concise finding/decision brief, and any
+          proposed (not requested) exact-SHA evidence prerequisites. Do not
+          start repair, re-audit, external evidence, a numerical parameter
+          campaign, or any additional audit.
 
   - id: SCI-NOI-001
     name: Noise and jackknife realization construction and propagation
