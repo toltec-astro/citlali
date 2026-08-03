@@ -50,8 +50,14 @@ Every eventual direct-truth run must bind all of the following before launch:
   airmass, and top-of-atmosphere `X_ref=0`.
 
 The later request must name a distinct cache, execution context, source/profile
-matrix, raw-output schema already used by the evidence package, warning policy,
-and SHA-256 manifest. No new output format is proposed here.
+matrix, raw-output schema already used by the evidence package, and SHA-256
+manifest. It must bind and enforce the existing approved `WARN-001` bounded
+warning-bearing numerical-evidence policy verbatim: `WARN-001 admits AM status
+1 only as explicitly warning-bearing numerical evidence with all 50,001 rows,
+solely the preregistered unresolved-line warnings and canonical summary count
+86, 87, or 88, and zero unknown warnings, cache mutation, or errors. Every
+other nonzero status fails closed.` New warning classes or any deviation fail
+closed. No new output format is proposed here.
 
 ## Proposed evidence design for owner approval
 
@@ -65,30 +71,36 @@ approve its exact subset of the existing copied AM 12.2 AMC inventory.
 | Construction anchors | `.15`, `.20`, `.25` | `25, 35, 45, 55, 65, 75, 80` | Fit only a single declared continuous engineering candidate. |
 | Independent opacity holdout | `.1625`, `.175`, `.1875`, `.2125`, `.225`, `.2375` | all proposed held-out elevations | Never used to fit/tune the candidate. |
 | Independent elevation holdout | all held-out opacity nodes | `29, 41, 53, 67, 79` | Never used to fit/tune the candidate. |
-| Boundary structural probe | `.15`, `nextafter(.15,-inf)`, `nextafter(.15,+inf)` | all construction and held-out elevations | Continuity only; no correction-operator change at `.15`. |
+| Boundary evaluator-only diagnostic | `.15`, `nextafter(.15,-inf)`, `nextafter(.15,+inf)` | all construction and held-out elevations | No-AM algebraic/operator-evaluator continuity diagnostic after the candidate is defined; one candidate identity evaluates all three values, with no direct-AM target or scale search. |
 
 The exact target-transmission literals, achieved `tau225` coordinates, AM scale
-search traces, and anti-join against all fitting/tuning coordinates must be
-frozen in a subsequent execution request. If a displayed AM target cannot
-represent an intended node within an explicitly approved coordinate interval,
-the execution request fails closed rather than silently moving that node.
+search traces, and anti-join against all fitting/tuning coordinates for the
+decimal construction and independent held-out nodes must be frozen in a
+subsequent execution request. The `nextafter(.15)` triplet is not a direct-AM
+truth target and has no AM scale search. If a displayed decimal AM target
+cannot represent an intended node within an explicitly approved coordinate
+interval, the execution request fails closed rather than silently moving that
+node.
 
 ## Required gates for a future extension study
 
 1. **Direct truth and node identity.** Every direct-AM grid has the exact
    0--500 GHz/10 MHz frequency lattice, expected profile and executable
-   digests, parsed 225-GHz target identity, admitted status/warning record,
-   50,001 rows, and SHA-256 raw/sidecar binding.
+   digests, parsed 225-GHz target identity, the bound/enforced existing
+   `WARN-001` admission record, 50,001 rows, and SHA-256 raw/sidecar binding.
 2. **Physical domain.** Band-integrated transmission is finite and positive;
    LOS optical depth and correction are finite and non-negative/positive,
    respectively. Opacity monotonicity and elevation-direction monotonicity
    are measured and reported separately; a wrong-way feature is not hidden by
    averaging.
 3. **Exact nodes and continuity.** The candidate reproduces every declared
-   construction node to its frozen numerical node tolerance. At `.15`, left,
-   exact, and right evaluations use the same candidate identity. Report the
-   maximum relative correction discontinuity; an operator-selector handoff is
-   a protocol failure.
+   decimal construction node to its frozen numerical node tolerance. Only
+   after that candidate is defined, the `.15` left/exact/right `nextafter`
+   triplet is a no-AM algebraic/operator-evaluator diagnostic: all three
+   evaluations use the same candidate identity and it creates neither a
+   direct-AM truth target nor a scale search. Report the maximum relative
+   correction discontinuity; an operator-selector handoff is a protocol
+   failure.
 4. **Independent held-out fidelity.** Evaluate the Cartesian held-out
    opacity/elevation grid, by profile, array, and alpha, only after the
    candidate is frozen. Report maximum, p95, RMS, signed extrema, and their
@@ -110,7 +122,8 @@ screen for engineering availability, not the science `<=1%`
 representation-fidelity criterion, not a 5--10% observational flux claim, and
 not an adopted threshold. The owner must accept, revise, or reject it together
 with the exact profile matrix, direct-AM node literals, execution cost/cache
-request, and warning/stop register before any AM invocation.
+request, and an execution request that binds and enforces the existing
+`WARN-001` policy before any AM invocation.
 
 ## Explicit stop boundary
 
