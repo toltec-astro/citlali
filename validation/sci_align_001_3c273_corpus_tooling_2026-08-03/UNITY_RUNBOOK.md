@@ -9,18 +9,23 @@ under the versioned run directory.
 
 Codex does not push or perform network activity. If the Unity checkout lacks
 the handoff commits, the owner may either fetch them after an owner push, or
-create and transfer this bundle containing both commits after the known base:
+create and transfer this bundle containing the full named SCI-ALIGN branch
+after the known base:
 
 ```bash
 # On the local source clone:
-git bundle create /Users/gwilson/GitHub/citlali-refactor/sci_align_001_followup_8e4fcae2.bundle \
-  a2b37924d612eb175821483523cc94dd233f2fea..8e4fcae2ff92078665b8fad992307a609236125a
+git bundle create /Users/gwilson/GitHub/citlali-refactor/sci_align_001_corpus_tooling.bundle \
+  a2b37924d612eb175821483523cc94dd233f2fea..codex/sci-align-001-3c273-corpus-tooling
+git bundle verify /Users/gwilson/GitHub/citlali-refactor/sci_align_001_corpus_tooling.bundle
 # Owner transfer to the owner-controlled Unity staging directory (not performed by Codex):
-scp /Users/gwilson/GitHub/citlali-refactor/sci_align_001_followup_8e4fcae2.bundle \
+scp /Users/gwilson/GitHub/citlali-refactor/sci_align_001_corpus_tooling.bundle \
   unity_toltec:/work/toltec/wilson/
 # Then, on Unity from the repository clone:
-git fetch /work/toltec/wilson/sci_align_001_followup_8e4fcae2.bundle \
-  8e4fcae2ff92078665b8fad992307a609236125a:refs/heads/codex/sci-align-001-3c273-corpus-tooling
+git bundle verify /work/toltec/wilson/sci_align_001_corpus_tooling.bundle
+git switch --detach
+git fetch /work/toltec/wilson/sci_align_001_corpus_tooling.bundle \
+  codex/sci-align-001-3c273-corpus-tooling:refs/heads/codex/sci-align-001-3c273-corpus-tooling
+git switch codex/sci-align-001-3c273-corpus-tooling
 ```
 
 ```bash
@@ -32,14 +37,13 @@ export SCI_RUN_ROOT=/work/toltec/wilson/citlali_testing/beammaps/3c273/sci_align
 export SCI_SCRIPT_ROOT="$SCI_RUN_ROOT/scripts"
 export SCI_OUTPUT_ROOT="$SCI_RUN_ROOT/output"
 export SCI_RUNTIME_CACHE="$SCI_RUN_ROOT/_runtime_cache"
-export SCI_TOOLING_COMMIT=8e4fcae2ff92078665b8fad992307a609236125a
+export SCI_TOOLING_IMPLEMENTATION_COMMIT=8e4fcae2ff92078665b8fad992307a609236125a
 export SCI_PACKAGE=validation/sci_align_001_3c273_corpus_tooling_2026-08-03
 
 source "$HOME/tolteca/bin/activate"
 cd "$SCI_REPO"
 test "$(git branch --show-current)" = codex/sci-align-001-3c273-corpus-tooling
-test "$(git rev-parse HEAD)" = "$SCI_TOOLING_COMMIT"
-git merge-base --is-ancestor 6776931e753488b902d178b177815a2762375e5c HEAD
+git merge-base --is-ancestor "$SCI_TOOLING_IMPLEMENTATION_COMMIT" HEAD
 test -z "$(git status --short)"
 # CITLALI_BIN is retained in execution identity only; do not test or invoke it.
 (cd "$SCI_PACKAGE" && shasum -a 256 -c SHA256SUMS)
@@ -49,7 +53,8 @@ mkdir -p "$SCI_SCRIPT_ROOT" "$SCI_OUTPUT_ROOT" \
 test -w "$SCI_RUN_ROOT"
 {
   echo "tooling_branch=$(git branch --show-current)"
-  echo "tooling_commit=$(git rev-parse HEAD)"
+  echo "tooling_branch_commit=$(git rev-parse HEAD)"
+  echo "tooling_implementation_commit=$SCI_TOOLING_IMPLEMENTATION_COMMIT"
   echo "citlali_bin_recorded_only=$CITLALI_BIN"
   echo "python=$(python --version 2>&1)"
 } > "$SCI_RUN_ROOT/execution_identity.txt"
