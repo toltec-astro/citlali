@@ -2358,7 +2358,7 @@ packages:
       decision_id: CAL-ATM-D007
       authority: project_owner
       decision_date: 2026-08-03
-      status: approved_design_exact_execution_request_preparation_authorized
+      status: owner_approved_preflight_and_fresh_cache_study_pending_cache_root
       record_path: >-
         doc/audits/packages/SCI-CAL-001_TAU025_EXTENSION_STUDY_SCOPE_DECISION_2026-08-03.md
       record_sha256: >-
@@ -2384,14 +2384,33 @@ packages:
         candidate identity; it is not a direct-AM or scale-search target.
       engineering_maximum_heldout_fractional_correction_error: 0.05
       inherited_warning_policy: WARN-001
+      execution_request:
+        status: owner_approved_pending_owner_supplied_fresh_cache_root
+        source_branch: codex/sci-cal-001-atmosphere-operator
+        source_commit: 31c67119be604ac21905d39b4a91699bd62fffcf
+        path: >-
+          validation/sci_cal_001_atmosphere_operator_2026-08-01/SCI_CAL_001_TAU025_ENGINEERING_EXTENSION_EXECUTION_REQUEST.md
+        sha256: >-
+          54a694d783e9f80c078707dcc1cac4a07da4e4ae37fd6e8e554bb620ba71c04f
+        owner_approval_path: >-
+          doc/audits/packages/SCI-CAL-001_TAU025_EXECUTION_OWNER_APPROVAL_2026-08-03.md
+        owner_approval_sha256: >-
+          d91dd376ff36df51871e3f5eb53bfaf985080fe5c6011bda80e8c58e43bf7c96
+        preflight_authorized: true
+        cache_creation_and_am_execution: >-
+          Authorized only after every registered readiness gate passes and the
+          owner supplies one absent, writable, sufficiently provisioned
+          external cache root with the requested basename.
       permitted_next_step: >-
-        Documentation-only exact execution request, including tuple/run
-        inventory, immutable cache/provenance layout, invocation/scale plan,
-        resource estimate, stop register, and preflight/readiness gates.
+        Run the exact no-AM readiness preflight. After all gates pass and the
+        owner supplies the requested fresh cache root, execute only the
+        registered direct-AM study and return its frozen evidence for review.
       stop_before: >-
-        Return for owner approval before cache creation, AM execution, fitting,
-        numerical-result interpretation, source change, repair, re-audit,
-        Unity action, adoption, production change, or output-format work.
+        Stop before cache creation or AM execution until the owner provides
+        the fresh cache root; also stop before fitting, numerical-result
+        interpretation beyond preregistered checks, source change, repair,
+        re-audit, Unity action, adoption, production change, or output-format
+        work.
     dispatch:
       status: frozen_for_dispatch
       coordinator_registry_commit: 88741d085a08431790c6eee719b6f20052b459d8
