@@ -1,7 +1,11 @@
 find_package(GTest CONFIG REQUIRED)
 
 include(GoogleTest)
-foreach(_name gauss_models kidsproc)
+set(_citlali_test_names gauss_models)
+if(CITLALI_HAS_REAL_TEST_DATA)
+    list(APPEND _citlali_test_names kidsproc)
+endif()
+foreach(_name IN LISTS _citlali_test_names)
     add_executable("citlali_test_${_name}" "test_${_name}.cpp")
     target_link_libraries(
         "citlali_test_${_name}"
