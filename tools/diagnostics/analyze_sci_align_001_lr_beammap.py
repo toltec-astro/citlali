@@ -96,7 +96,11 @@ def write_json(path: Path, value: Any) -> None:
 def write_csv(path: Path, rows: Iterable[dict[str, Any]], fields: list[str] | None = None) -> None:
     rows = list(rows)
     if fields is None:
-        fields = list(rows[0]) if rows else []
+        fields = []
+        for row in rows:
+            for key in row:
+                if key not in fields:
+                    fields.append(key)
     with path.open("w", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
         writer.writeheader()
@@ -857,8 +861,20 @@ def analyze(repo: Path) -> None:
     # cannot refit maps without another pass; derive them from per-detector fits
     # only as explicitly limited controls.
     pooled=next(row for row in timing if row["identity"]=="all")
-    disposition="residual timing detected" if pooled["timing_95_low_sec"]*pooled["timing_95_high_sec"]>0 else "no significant residual"
-    confirm={"disposition":disposition,"primary":pooled,"physical_timestamp_authority":"unresolved: detector timestamp start/end/effective integration centroid remains unproved","speed_scaling":"fixture has narrow native speed range; 50/100/200 arcsec/s values are dimensional translations, not independently measured scaling","same_direction_null":same_direction,"time_split":time_split,"speed_split":speed_split,"absolute_sky_correctness":"unresolved despite differential direction-reversal measurement"}
+    array_results=[row for row in timing if row["identity"].startswith("array:")]
+    array_min=min(array_results,key=lambda row:row["timing_offset_sec"])
+    array_max=max(array_results,key=lambda row:row["timing_offset_sec"])
+    array_difference=array_max["timing_offset_sec"]-array_min["timing_offset_sec"]
+    array_difference_se=math.hypot(array_max["timing_jackknife_se_sec"],array_min["timing_jackknife_se_sec"])
+    global_consistent=abs(array_difference) <= 1.96*array_difference_se
+    pooled_detected=pooled["timing_95_low_sec"]*pooled["timing_95_high_sec"]>0
+    disposition=(
+        "direction-odd residual detected but inconsistent across arrays/networks; not reducible to one global timing offset"
+        if pooled_detected and not global_consistent else
+        "residual timing detected" if pooled_detected else "no significant residual"
+    )
+    consistency={"global_scalar_timing_model_consistent":global_consistent,"array_min_identity":array_min["identity"],"array_max_identity":array_max["identity"],"array_timing_span_sec":array_difference,"array_timing_span_formal_se_sec":array_difference_se,"interpretation":"array/network uncertainties are secondary formal map covariances; the spread is descriptive until exact Unity scan-block evidence"}
+    confirm={"disposition":disposition,"primary":pooled,"array_network_consistency":consistency,"physical_timestamp_authority":"unresolved: detector timestamp start/end/effective integration centroid remains unproved","speed_scaling":"fixture has narrow native speed range; 50/100/200 arcsec/s values are dimensional translations, not independently measured scaling","same_direction_null":same_direction,"time_split":time_split,"speed_split":speed_split,"absolute_sky_correctness":"unresolved despite differential direction-reversal measurement"}
     write_json(package/"confirmatory_results.json",confirm);write_json(package/"joint_fit_results.json",{"used":False,"reason":"separate direction fits and pooled scan-delete maps were identifiable"})
 
     # Diagnostic plots.
@@ -873,11 +889,42 @@ def analyze(repo: Path) -> None:
     jk=np.array([row["timing_sec"]*1000 for row in jackknife["all"]]);fig,ax=plt.subplots(figsize=(7,4));ax.hist(jk,bins=40);ax.axvline(pooled["timing_offset_sec"]*1000,color="crimson");ax.set_xlabel("delete-one-scan timing estimate (ms)");ax.set_ylabel("replicates");fig.tight_layout();fig.savefig(plot_dir/"pooled_scan_jackknife.png",dpi=160);plt.close(fig)
 
     # Human report, owner brief, and Unity handoff.
-    report=f"""# SCI-ALIGN-001-LR-BEAMMAP retained-product result\n\n+## Outcome\n\n+The no-code retained-product path was sufficient. No Citlali process or new reduction was launched, and no application source changed. The frozen direction registry contains {sum(r['classification']=='left' for r in registry.values())} left and {sum(r['classification']=='right' for r in registry.values())} right windows with {sum(r['classification']=='excluded' for r in registry.values())} exclusions.\n\n+The pooled retained-TOD estimator gives **{pooled['timing_offset_sec']*1000:.4f} ms** with delete-one-scan SE **{pooled['timing_jackknife_se_sec']*1000:.4f} ms** and 95% interval **[{pooled['timing_95_low_sec']*1000:.4f}, {pooled['timing_95_high_sec']*1000:.4f}] ms**. The right-minus-left centroid is **{pooled['parallel_centroid_difference_arcsec']:.5f} arcsec** parallel and **{pooled['perpendicular_centroid_difference_arcsec']:.5f} arcsec** perpendicular to the frozen scan axis. The confirmatory matched detector population is {quality}/{pre}.\n\n+Disposition: **{disposition}** in this bounded local retained-product diagnostic. This is not SCI-ALIGN acceptance and does not provide absolute physical timestamp correctness.\n\n+## Scope and limitations\n\n+- Eight feasibility-pilot UIDs {list(PILOT_UIDS)} were viewed before protocol freeze and are excluded from all confirmatory results.\n+- The native speed distribution is narrow, so scaling with speed is not independently identified. The 50/100/200 arcsec/s values in `timing_estimates.csv` are dimensional translations.\n+- Detector timestamp start/end/effective integration-centroid semantics remain unproved; absolute sky correctness remains unresolved.\n+- The retained split uses final-iteration per-crossing PTC products and a bounded 1-arcsec diagnostic accumulation. It does not alter or validate SCI-MAP implementation.\n+- A human Unity exact-9aae/exact-candidate left/right campaign remains required for definitive governing-versus-candidate evidence.\n+"""
+    report=f"""# SCI-ALIGN-001-LR-BEAMMAP retained-product result
+
+## Outcome
+
+The no-code retained-product path was sufficient. No Citlali process or new reduction was launched, and no application source changed. The frozen direction registry contains {sum(r['classification']=='left' for r in registry.values())} left and {sum(r['classification']=='right' for r in registry.values())} right windows with {sum(r['classification']=='excluded' for r in registry.values())} exclusions.
+
+The pooled retained-TOD estimator gives **{pooled['timing_offset_sec']*1000:.4f} ms** with delete-one-scan SE **{pooled['timing_jackknife_se_sec']*1000:.4f} ms** and 95% interval **[{pooled['timing_95_low_sec']*1000:.4f}, {pooled['timing_95_high_sec']*1000:.4f}] ms**. The right-minus-left centroid is **{pooled['parallel_centroid_difference_arcsec']:.5f} arcsec** parallel and **{pooled['perpendicular_centroid_difference_arcsec']:.5f} arcsec** perpendicular to the frozen scan axis. The confirmatory matched detector population is {quality}/{pre}.
+
+The three arrays span **{array_min['timing_offset_sec']*1000:.3f} to {array_max['timing_offset_sec']*1000:.3f} ms** (ordered by signed value), and network estimates span **{min(row['timing_offset_sec'] for row in timing if row['identity'].startswith('network:'))*1000:.3f} to {max(row['timing_offset_sec'] for row in timing if row['identity'].startswith('network:'))*1000:.3f} ms**. The direction-odd effect is present throughout, but this spread and the first/second-half difference prevent interpretation as one universal scalar timing correction.
+
+Disposition: **{disposition}** in this bounded local retained-product diagnostic. This is not SCI-ALIGN acceptance and does not provide absolute physical timestamp correctness.
+
+## Scope and limitations
+
+- Eight feasibility-pilot UIDs {list(PILOT_UIDS)} were viewed before protocol freeze and are excluded from all confirmatory results.
+- The native speed distribution is narrow, so scaling with speed is not independently identified. The 50/100/200 arcsec/s values in `timing_estimates.csv` are dimensional translations.
+- Detector timestamp start/end/effective integration-centroid semantics remain unproved; absolute sky correctness remains unresolved.
+- The retained split uses final-iteration per-crossing PTC products and a bounded 1-arcsec diagnostic accumulation. It does not alter or validate SCI-MAP implementation.
+- A human Unity exact-9aae/exact-candidate left/right campaign remains required for definitive governing-versus-candidate evidence.
+"""
     (package/"REPORT.md").write_text(report)
-    owner={"task":"SCI-ALIGN-001-LR-BEAMMAP","branch":BRANCH,"application_modified":False,"new_local_reductions":0,"measured_disposition":disposition,"primary":pooled,"engineering_invariants":["retained assigned-time/coordinate behavior is unchanged from c771 phase-one evidence","direction sets are deterministic, disjoint, census-complete, trajectory-derived, and Hold-fail-closed"],"measured_angular_results":{"parallel_arcsec":pooled["parallel_centroid_difference_arcsec"],"perpendicular_arcsec":pooled["perpendicular_centroid_difference_arcsec"]},"unresolved":["absolute detector integration-event timestamp semantics","absolute sky-placement correctness","definitive exact-9aae versus exact-c771 Unity comparison","speed scaling beyond narrow approximately 48 arcsec/s fixture leverage"],"owner_questions":["Does the owner treat the local retained-product detection as sufficient motivation to schedule the exact governing/candidate Unity campaign?","Does the owner request producer authority for whether Data.Toltec.Ts denotes integration start, end, or effective centroid before any physical timing correction is proposed?","If Unity confirms a residual, should a separate scientific amendment authorize investigation of a timing correction and sky-domain tolerance?"],"phase_one_or_acceptance_authorized":False}
+    owner={"task":"SCI-ALIGN-001-LR-BEAMMAP","branch":BRANCH,"application_modified":False,"new_local_reductions":0,"measured_disposition":disposition,"primary":pooled,"array_network_consistency":consistency,"engineering_invariants":["retained assigned-time/coordinate behavior is unchanged from c771 phase-one evidence","direction sets are deterministic, disjoint, census-complete, trajectory-derived, and Hold-fail-closed"],"measured_angular_results":{"parallel_arcsec":pooled["parallel_centroid_difference_arcsec"],"perpendicular_arcsec":pooled["perpendicular_centroid_difference_arcsec"]},"unresolved":["absolute detector integration-event timestamp semantics","absolute sky-placement correctness","definitive exact-9aae versus exact-c771 Unity comparison","speed scaling beyond narrow approximately 48 arcsec/s fixture leverage","cause of array/network and first/second-half variation"],"owner_questions":["Does the owner treat the local retained-product detection as sufficient motivation to schedule the exact governing/candidate Unity campaign?","Does the owner request producer authority for whether Data.Toltec.Ts denotes integration start, end, or effective centroid before any physical timing correction is proposed?","If Unity confirms a residual, should a separate scientific amendment investigate interface-specific or time-varying behavior before proposing any correction?"],"phase_one_or_acceptance_authorized":False}
     write_json(package/"owner_decision_brief.json",owner)
-    (package/"UNITY_HANDOFF.md").write_text(f"""# Human-run Unity handoff (not executed)\n\n+Run Beammap {OBSNUM} under the human-controlled `unity_toltec` lane with four isolated fail-if-exists outputs: exact `{GOVERNING_APPLICATION}` left/right and exact `{APPLICATION_CANDIDATE}` left/right. Use the digest-bound inputs/config in `raw_input_manifest.csv`; six OMP threads per job; identical dependencies, resources, APT, fit reports, calibration, detector population, and all non-selection settings. Apply the exact stable IDs in `left_scan_identities.txt` and `right_scan_identities.txt` through a reviewed external selection/diagnostic mechanism. Do not label a patched executable exact. Preserve maps, per-scan products, setup/total timing, logs, embedded SHA, and SHA-256 manifests. Compare governing left/right, candidate left/right, and governing-to-candidate within each direction using the frozen `preregistered_protocol.json`.\n""")
+    (package/"UNITY_HANDOFF.md").write_text(f"""# Human-run Unity handoff (not executed)
+
+Run Beammap {OBSNUM} under the human-controlled `unity_toltec` lane with four isolated fail-if-exists outputs: exact `{GOVERNING_APPLICATION}` left/right and exact `{APPLICATION_CANDIDATE}` left/right. Use the digest-bound inputs/config in `raw_input_manifest.csv`; six OMP threads per job; identical dependencies, resources, APT, fit reports, calibration, detector population, and all non-selection settings. Apply the exact stable IDs in `left_scan_identities.txt` and `right_scan_identities.txt` through a reviewed external selection/diagnostic mechanism. Do not label a patched executable exact. Preserve maps, per-scan products, setup/total timing, logs, embedded SHA, and SHA-256 manifests. Compare governing left/right, candidate left/right, and governing-to-candidate within each direction using the frozen `preregistered_protocol.json`.
+""")
+    write_json(package/"diagnostic_tool_history.json",{
+        "preregistration_commit":"ccf705c6765c52c58593c3b3c915bff9afb37749",
+        "postfreeze_bugfix_commit":"a89b665ad517311de64af73ef8ea51e6438c81b6",
+        "bugfix":"pooled array sentinel -1 handled before ARRAY_FWHM_LIMITS lookup",
+        "scientific_protocol_or_cohort_changed":False,
+        "confirmatory_results_written_before_bugfix":False,
+        "final_analysis_tool_commit":git(repo,"rev-parse","HEAD"),
+        "final_tool_sha256":sha256_file(repo/SCRIPT_REL),
+    })
     changed=[{"status":"A","path":str(SCRIPT_REL),"reason":"bounded retained-product diagnostic"}]+[{"status":"A","path":str(path.relative_to(repo)),"reason":"SCI-ALIGN-001-LR-BEAMMAP evidence"} for path in sorted(package.rglob("*")) if path.is_file()]
     write_csv(package/"changed_paths.tsv",changed,fields=["status","path","reason"])
     # Final sums exclude themselves and are regenerated deterministically.
