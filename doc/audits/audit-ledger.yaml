@@ -3918,11 +3918,19 @@ packages:
         source_package: SCI-MAP-001
         review_phase: post_core_evidence
         arrival: before_dispatch
-        status: submitted
+        status: acknowledged_naive_only_context
+        recipient_disposition: >-
+          Incorporated solely as a prohibition on treating the completed
+          SCI-MAP-001 naive cases as JINC evidence. It closes no JINC fact.
     governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
     governing_sha_role: inventory_snapshot
-    audit_branch: null
-    audit_commit: null
+    audit_branch: codex/audit-sci-map-002
+    audit_commit: abb8d8896d6a1cbaa912b9ac181bd649588acc62
+    audit_integration_commit: d313c879b
+    audit_artifact_at_commit: >-
+      doc/audits/packages/SCI-MAP-002_SCIENTIFIC_CONTRACT_AUDIT.tex
+    final_audit_artifact_sha256: >-
+      d77bb5c8e555b43d5303ad2ce0a81e5baef42df2beb85347f9f98cab759d5239
     independent_derivation:
       status: independent_draft_frozen
       path: doc/audits/packages/SCI-MAP-002_INDEPENDENT_CORE.tex
@@ -3930,21 +3938,41 @@ packages:
       freeze_commit: bccc2614663c95aee66ed9b21b6025f5fb4e5f04
       freeze_timestamp_utc: 2026-08-03T16:54:20Z
       first_source_inspection_utc: 2026-08-03T17:16:58Z
-    contract_status: not_started
-    implementation_status: not_assessed
-    validation_status: not_started
+    contract_status: proposed_owner_contract_required
+    implementation_status: nonconformant
+    validation_status: incomplete
     production_status: existing_use_only
-    verdict: pending
-    open_findings: []
-    unresolved_scientific_decisions: []
-    local_evidence: []
+    verdict: amend
+    open_findings:
+      - {id: SCI-MAP-002-F001, class: implementation_defect, severity: P0, evidence_basis: observed_static_source, confidence: high, status: open, owner: map_product_validity_mask, summary: "coverage_bool can label zero or non-finite formal weight valid and cannot be an authoritative scientific support mask."}
+      - {id: SCI-MAP-002-F002, class: contract_implementation_mismatch, severity: P1, evidence_basis: observed_static_source, confidence: high, status: open, owner: scientific_jinc_support_owner, summary: "r_max realizes a second-JINC zero and a square cache half-width, not a declared radial support boundary."}
+      - {id: SCI-MAP-002-F003, class: contract_implementation_mismatch, severity: P1, evidence_basis: observed_static_source, confidence: high, status: open, owner: scientific_jinc_subpixel_owner, summary: "subpixel_n selects phase-quantized point sampling rather than a declared pixel-response average."}
+      - {id: SCI-MAP-002-F004, class: implementation_defect, severity: P1, evidence_basis: derived_from_static_source, confidence: high, status: open, owner: jinc_normalization_and_conditioning, summary: "Fixed absolute C and Q gates have implicit units and alter support and formal-weight behavior under unit scaling."}
+      - {id: SCI-MAP-002-F005, class: implementation_defect, severity: P1, evidence_basis: observed_static_source, confidence: high, status: open, owner: jinc_parameter_and_coefficient_admission, summary: "Shape physical-domain and coefficient-finiteness admission is incomplete before deposition."}
+      - {id: SCI-MAP-002-F006, class: product_contract_gap, severity: P1, evidence_basis: observed_static_source, confidence: high, status: open, owner: map_coverage_product_and_consumers, summary: "coverage is coefficient-squared time rather than declared geometric exposure and is consumed as an edge-support proxy."}
+      - {id: SCI-MAP-002-F007, class: provenance_gap, severity: P1, evidence_basis: observed_static_source, confidence: high, status: open, owner: mapmaking_realized_provenance, summary: "Requested/effective configuration exists but realized JINC and product-join identity is incomplete."}
+      - {id: SCI-MAP-002-F008, class: validation_gap, severity: P1, evidence_basis: observed_absence, confidence: high, status: open, owner: coordinator_and_human_unity_operator, summary: "No exact-governing-SHA JINC response or sequential/concurrent numerical evidence exists; incoming MAP evidence is naive-only."}
+    unresolved_scientific_decisions:
+      - id: SCI-MAP-002-D003
+        status: owner_decision_required_before_repair
+        scope: >-
+          Support/r_max, subpixel response, conditioning, parameter/coefficient
+          admission, coverage/mask/kernel semantics, and realized provenance.
+    local_evidence:
+      - path: doc/audits/evidence/SCI-MAP-002_LOCAL_EVIDENCE_2026-08-03.yaml
+        sha256: 3a10f410dcb681a41bb2dee42b5ef1141a93a0de1362ce829dff0afa297855b8
+        status: verified_static_source_evidence
+      - path: >-
+          doc/audits/proposals/SCI-MAP-002_LEDGER_PROPOSAL_2026-08-03.yaml
+        sha256: 93eb40e598e2ac417c0f966843aa770730658984f2a14c4249bc99403be77881
+        status: reviewed_and_integrated
     requested_unity_evidence: []
     supplied_external_evidence: []
     remediation_branch: null
     remediation_commit: null
     re_audit_status: not_started
     dispatch:
-      status: frozen_for_scope_checkpoint
+      status: audit_complete_coordinator_reviewed_owner_decision_pending
       dispatch_date: 2026-08-03
       coordinator_registry_commit: 640e549bf9d2990d27e536654c8d5d87b54bd696
       manifest_path: >-
@@ -4080,6 +4108,24 @@ packages:
           proposed (not requested) exact-SHA evidence prerequisites. Do not
           start repair, re-audit, external evidence, a numerical parameter
           campaign, or any additional audit.
+      full_scientific_contract_audit:
+        status: accepted_integrated_owner_decision_pending
+        audit_source_commit: abb8d8896d6a1cbaa912b9ac181bd649588acc62
+        audit_integration_commit: d313c879b
+        final_artifact_path: >-
+          doc/audits/packages/SCI-MAP-002_SCIENTIFIC_CONTRACT_AUDIT.tex
+        final_artifact_sha256: >-
+          d77bb5c8e555b43d5303ad2ce0a81e5baef42df2beb85347f9f98cab759d5239
+        local_evidence_sha256: >-
+          3a10f410dcb681a41bb2dee42b5ef1141a93a0de1362ce829dff0afa297855b8
+        ledger_proposal_sha256: >-
+          93eb40e598e2ac417c0f966843aa770730658984f2a14c4249bc99403be77881
+        coordinator_review_path: >-
+          doc/audits/packages/SCI-MAP-002_COORDINATOR_REVIEW_2026-08-03.md
+        coordinator_review_sha256: >-
+          e409f87ae94855989624ac3fcffc2ae60d102e10611a3f86e6a4d27f602ee2af
+        exact_sha_unity_evidence_status: proposed_not_requested
+        repair_authorized: false
 
   - id: SCI-NOI-001
     name: Noise and jackknife realization construction and propagation
