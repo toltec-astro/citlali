@@ -3850,7 +3850,13 @@ packages:
     governing_sha_role: inventory_snapshot
     audit_branch: null
     audit_commit: null
-    independent_derivation: {status: not_started, sha256: null}
+    independent_derivation:
+      status: independent_draft_frozen
+      path: doc/audits/packages/SCI-MAP-002_INDEPENDENT_CORE.tex
+      sha256: 2c1f9ff95f65422a098846f747ed165d5aeddc5bedd854678bfa7faeebba4e24
+      freeze_commit: bccc2614663c95aee66ed9b21b6025f5fb4e5f04
+      freeze_timestamp_utc: 2026-08-03T16:54:20Z
+      first_source_inspection_utc: not_yet_opened
     contract_status: not_started
     implementation_status: not_assessed
     validation_status: not_started
@@ -3909,6 +3915,36 @@ packages:
         next_return: >-
           Stop after the exact independent-core artifact is frozen and return
           its path, digest, commit, and first-source-inspection plan.
+      independent_core_checkpoint:
+        status: accepted_static_source_trace_authorized
+        review_date: 2026-08-03
+        path: doc/audits/packages/SCI-MAP-002_INDEPENDENT_CORE.tex
+        sha256: >-
+          2c1f9ff95f65422a098846f747ed165d5aeddc5bedd854678bfa7faeebba4e24
+        freeze_commit: bccc2614663c95aee66ed9b21b6025f5fb4e5f04
+        freeze_parent: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+        freeze_timestamp_utc: 2026-08-03T16:54:20Z
+        review_scope: >-
+          The independent core states a concrete signed-coefficient JINC
+          reference, distinct support/normalization/uncertainty semantics,
+          stable per-array parameter selection, lifecycle state, product
+          contract, and falsification cases without asserting implementation
+          behavior.
+        next_phase_scope: >-
+          Static source trace only: open the three named JINC/dispatch/config
+          paths at the governing SHA and produce one audit-local static
+          finding matrix that maps source evidence to the frozen questions.
+          Do not open SCI-MAP-002-XAUD-001 yet.
+        permitted_artifact: >-
+          doc/audits/packages/SCI-MAP-002_STATIC_SOURCE_TRACE.md only.
+        local_citlali_reduction_authorized: false
+        unity_evidence_authorized: false
+        tests_authorized: false
+        delegation_or_independent_review_authorized: false
+        next_return: >-
+          Return after the static source matrix, before opening the post-core
+          MAP handoff, creating another artifact, requesting evidence, or
+          proposing a numerical parameter study.
 
   - id: SCI-NOI-001
     name: Noise and jackknife realization construction and propagation
