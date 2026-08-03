@@ -1,0 +1,9 @@
+{
+  "bugfix": "pooled array sentinel -1 handled before ARRAY_FWHM_LIMITS lookup",
+  "confirmatory_results_written_before_bugfix": false,
+  "final_analysis_tool_commit": "00b114d65aa96d427a89dd945d185e296b06d38f",
+  "final_tool_sha256": "79e1fe9b3eb7c01ada95833fe0fcc3147a30433a2a1472e445c8e82a3bc7d9a6",
+  "postfreeze_bugfix_commit": "a89b665ad517311de64af73ef8ea51e6438c81b6",
+  "preregistration_commit": "ccf705c6765c52c58593c3b3c915bff9afb37749",
+  "scientific_protocol_or_cohort_changed": false
+}

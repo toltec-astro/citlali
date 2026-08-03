@@ -1,0 +1,40 @@
+{
+  "application_source_changed": false,
+  "baseline_tool_tests": {
+    "command": "$HOME/tolteca/bin/python -m unittest discover -s tools/baseline -p 'test_*.py'",
+    "failed": 0,
+    "passed": 154,
+    "status": "pass"
+  },
+  "build": {
+    "command": "cmake --build build --target citlali_cli -j 8",
+    "status": "pass",
+    "target": "citlali_cli"
+  },
+  "config_preflight": {
+    "command": "$HOME/tolteca/bin/python tools/config/run_config_preflight.py --require-all",
+    "compact_compatibility_failed": 0,
+    "compact_compatibility_passed": 8,
+    "config_unit_tests_failed": 0,
+    "config_unit_tests_passed": 123,
+    "mode_kits_passed": 4,
+    "status": "pass",
+    "surface_coverage_percent": 100.0
+  },
+  "ctest": {
+    "command": "ctest --test-dir build --output-on-failure",
+    "disabled": 1,
+    "failed": 0,
+    "passed": 629,
+    "status": "pass"
+  },
+  "diagnostic": {
+    "command": "$HOME/tolteca/bin/python tools/diagnostics/analyze_sci_align_001_lr_beammap.py analyze",
+    "deterministic_replay": "pass_exact_SHA256SUMS_identity",
+    "py_compile": "pass",
+    "pre_gate_record_sha256sums_identity": "2d19b8a73c6e9ff58bc83ce8341be451b195216bcd639b4c60fb4552a2ba5a8f"
+  },
+  "new_citlali_reductions": 0,
+  "ordinary_default_behavior_evidence": "No application/config source changed; clean existing candidate rebuilt; full CTest, config preflight, and baseline-tool suites passed.",
+  "unity_contacted": false
+}

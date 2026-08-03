@@ -1,0 +1,11 @@
+{
+  "definition": "measured direction-reversal offset versus r = raw detector timestamp minus assigned slot",
+  "fixed_slope_minus_one_implied_raw_timestamp_minus_signal_event_mean_sec": -0.013054040458329563,
+  "fixed_slope_minus_one_implied_raw_timestamp_minus_signal_event_std_population_sec": 0.0007427345538888237,
+  "linear_fit_intercept_sec": -0.012936329024165883,
+  "linear_fit_slope": -0.849156528372447,
+  "pearson_correlation": -0.9659394322720205,
+  "physical_interpretation_authorized": false,
+  "reason": "Data.Toltec.Ts start/end/effective integration-centroid event semantics remain unproved",
+  "shared_raw_event_lag_expected_slope": -1.0
+}
