@@ -10,12 +10,12 @@ under the versioned run directory.
 Codex does not push or perform network activity. If the Unity checkout lacks
 the handoff commits, the owner may either fetch them after an owner push, or
 create and transfer this bundle containing the full named SCI-ALIGN branch
-after the known base:
+after Unity's verified shared base `9aae0e669384c5c0c0dda93debc194d6b8dac787`:
 
 ```bash
 # On the local source clone:
 git bundle create /Users/gwilson/GitHub/citlali-refactor/sci_align_001_corpus_tooling.bundle \
-  a2b37924d612eb175821483523cc94dd233f2fea..codex/sci-align-001-3c273-corpus-tooling
+  9aae0e669384c5c0c0dda93debc194d6b8dac787..codex/sci-align-001-3c273-corpus-tooling
 git bundle verify /Users/gwilson/GitHub/citlali-refactor/sci_align_001_corpus_tooling.bundle
 # Owner transfer to the owner-controlled Unity staging directory (not performed by Codex):
 scp /Users/gwilson/GitHub/citlali-refactor/sci_align_001_corpus_tooling.bundle \
