@@ -2319,6 +2319,41 @@ packages:
         Authorizes only the bounded successor confirmation. It does not
         authorize application changes, operator/domain adoption, CAL repair,
         Unity activity, re-audit, production change, or a partial conclusion.
+    atmosphere_quality_tier_decision:
+      decision_id: CAL-ATM-D006
+      authority: project_owner
+      decision_date: 2026-08-03
+      status: approved_policy_and_extension_protocol_preparation_only
+      record_path: >-
+        doc/audits/packages/SCI-CAL-001_TAU025_ENGINEERING_AVAILABILITY_DECISION_2026-08-03.md
+      record_sha256: >-
+        05d4f2720184974394890d528f8676a5b31a1a0704a2ee391600f8396cc5b830
+      science_qualification_target: >-
+        0 <= tau225 <= 0.15, subject to the separate strict numerical and
+        observational gates; this is not yet an adopted operational domain.
+      engineering_availability_target: >-
+        0.15 < tau225 <= 0.25 may seek a separately validated, explicitly
+        versioned engineering correction, without a science-quality claim.
+      unsupported_calibration_condition: >-
+        tau225 > 0.25, non-finite tau225, or absent required calibration
+        identity: no silent extrapolation and no calibrated-science label.
+      boundary_policy: >-
+        One correction operator and compact quality state per coherent
+        calibrated observation or declared processing segment, classified by
+        its maximum eligible tau225. No sample-by-sample operator switch or
+        per-sample quality tagging is authorized.
+      evidence_boundary: >-
+        Current successor evidence ends at the q75 anchor
+        tau225=0.158313198574890929. Generic q95 remains diagnostic-only and
+        cannot establish the extension to 0.25.
+      permitted_next_step: >-
+        Prepare only the distinct SCI-CAL-001-TAU025-ENGINEERING-EXTENSION-001
+        direct-AM protocol and its proposed execution request. It must return
+        for owner review before any AM run or numerical criterion selection.
+      exclusions: >-
+        No AM execution, source change, repair, re-audit, Unity activity,
+        operator adoption, operational-domain adoption, production change, or
+        new output format.
     dispatch:
       status: frozen_for_dispatch
       coordinator_registry_commit: 88741d085a08431790c6eee719b6f20052b459d8
