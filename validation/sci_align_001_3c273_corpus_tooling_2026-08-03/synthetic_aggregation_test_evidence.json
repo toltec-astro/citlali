@@ -1,0 +1,47 @@
+{
+  "command": "env PYTHONWARNINGS=error MPLBACKEND=Agg MPLCONFIGDIR=/private/tmp/codex-sci-align-agg-mpl-final XDG_CACHE_HOME=/private/tmp/codex-sci-align-agg-cache-final /Users/gwilson/tolteca/bin/python -m unittest tools.diagnostics.test_sci_align_001_3c273_aggregation -v",
+  "covered_decision_cases": [
+    "GLOBAL-STABLE",
+    "NETWORK-STABLE with a missing network",
+    "SESSION-STABLE with T0-session anchors and phase stability",
+    "SLOT-PREDICTABLE with beta consistent with -1",
+    "SLOT-PREDICTABLE with beta not consistent with -1",
+    "TIME-VARIABLE using within-observation timing-variation terminology",
+    "UNPREDICTABLE with retained outliers",
+    "INSUFFICIENT for too few independent groups"
+  ],
+  "determinism": {
+    "byte_identical_serial_replay_including_png_and_checksums": true,
+    "row_shuffle_preserves_scientific_outputs": true
+  },
+  "integrity_negative_cases": [
+    "aggregation tool changed after freeze",
+    "candidate-model registry changed after freeze",
+    "selected-manifest/package checksum mismatch",
+    "non-positive-semidefinite measurement covariance",
+    "legacy or incomplete manifest authority"
+  ],
+  "result": {
+    "elapsed_seconds": 5.217,
+    "failures": 0,
+    "tests_run": 24,
+    "warnings_treated_as_errors": true
+  },
+  "schema_version": "sci-align-001-3c273-synthetic-aggregation-evidence-v1",
+  "statistical_safeguards": [
+    "joint held-out blocks use full available within-map measurement covariance",
+    "prediction covariance includes shared fitted-parameter covariance",
+    "equal-frozen-group Gaussian log predictive scoring penalizes inflated uncertainty",
+    "classification support requires at least three independent frozen groups",
+    "with exactly three groups models are reported but data-driven selection is prohibited",
+    "nested model selection excludes each untouched outer group",
+    "within-group repeated maps do not add precision to timing-variation gates",
+    "session tests remove persistent network effects and collapse to independent group summaries",
+    "sensitivity reductions are compared but never fitted or counted as independent"
+  ],
+  "tool_identity": {
+    "aggregate_script_sha256": "11ab2d430deebd219ffd150f2e00f990b789aea4d0e243395c297f7c8de95af3",
+    "candidate_model_registry_sha256": "be213755686f582712b460e6c42521b7db76e1dc5210c27cb6f8a5e6e897c82c",
+    "test_script_sha256": "036e6a551b25eabe4363987dfcbf372bf87e8ab8f3fa75f9a846396f61fbf390"
+  }
+}

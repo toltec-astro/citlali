@@ -1,0 +1,62 @@
+{
+  "gates": [
+    {
+      "command": "cmake --build build --target citlali_cli -j 8",
+      "result": "passed; citlali_cli reached 100 percent",
+      "status": "pass"
+    },
+    {
+      "command": "ctest --test-dir build --output-on-failure",
+      "result": "549 of 549 enabled tests passed; 550 registered; pre-existing test 453 disabled",
+      "status": "pass"
+    },
+    {
+      "command": "/Users/gwilson/tolteca/bin/python -m unittest discover -s tools/baseline -p 'test_*.py'",
+      "result": "154 tests passed",
+      "status": "pass"
+    },
+    {
+      "command": "/Users/gwilson/tolteca/bin/python tools/config/run_config_preflight.py --require-all",
+      "result": "123 config unit tests passed; four mode kits passed; 8 compact compatibility cases passed; coverage and all authority/boundary audits passed",
+      "status": "pass"
+    },
+    {
+      "command": "env PYTHONWARNINGS=error MPLBACKEND=Agg MPLCONFIGDIR=/private/tmp/sci-align-001-focused-mpl XDG_CACHE_HOME=/private/tmp/sci-align-001-focused-cache /Users/gwilson/tolteca/bin/python -m unittest tools.diagnostics.test_sci_align_001_3c273_inventory tools.diagnostics.test_sci_align_001_3c273_runner tools.diagnostics.test_sci_align_001_3c273_aggregation",
+      "result": "55 tests passed: 15 inventory/scheduler, 16 runner, 24 aggregation",
+      "status": "pass"
+    },
+    {
+      "command": "/Users/gwilson/tolteca/bin/python -m ruff check --no-cache <all eight new diagnostic and test Python files>",
+      "result": "all checks passed",
+      "status": "pass"
+    },
+    {
+      "command": "/Users/gwilson/tolteca/bin/python -m py_compile <all eight new diagnostic and test Python files>",
+      "result": "passed",
+      "status": "pass"
+    },
+    {
+      "command": "Draft 2020-12 schema validation",
+      "result": "candidate schema, illustrative example, actual selected manifest, and frozen protocol JSON validated",
+      "status": "pass"
+    },
+    {
+      "command": "two fresh local 148670 manifest-driven runner executions",
+      "result": "candidate SHA256SUMS files byte-identical; all 14 listed artifacts verified; resume returned resumed_complete",
+      "status": "pass"
+    },
+    {
+      "command": "two fresh local inventory/freeze executions",
+      "result": "candidate_inventory.json and selected_manifest.json byte-identical; package checksums verified",
+      "status": "pass"
+    },
+    {
+      "command": "independent code/protocol and final runbook/schema audits",
+      "result": "fail-closed input/manifest/tool binding, covariance/group-aware statistics, producer interpretation, CLI names, archive portability, and source isolation reviewed; no remaining findings in final audited scope",
+      "status": "pass"
+    }
+  ],
+  "no_unity_access": true,
+  "schema_version": "sci-align-001-3c273-validation-gates-v1",
+  "validated_on": "2026-08-03"
+}

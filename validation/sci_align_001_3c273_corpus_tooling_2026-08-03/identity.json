@@ -1,0 +1,14 @@
+{
+  "application_or_production_configuration_paths_changed": false,
+  "branch": "codex/sci-align-001-3c273-corpus-tooling",
+  "commit_identity_authority": "The committed tree and final handoff report the exact resulting commit; a file cannot contain its own Git object identity without changing that identity.",
+  "frozen_predecessor_commit": "a2b37924d612eb175821483523cc94dd233f2fea",
+  "frozen_predecessor_package_modified": false,
+  "frozen_predecessor_package_path": "validation/sci_align_001_sample_lineage_phase_2026-08-03",
+  "no_merge_rebase_or_push": true,
+  "repository": "/Users/gwilson/GitHub/citlali-refactor",
+  "repository_authority": "AGENTS.md plus the living status and scientific-conventions documents routed by the TolTEC context skill",
+  "schema_version": "sci-align-001-3c273-tooling-identity-v1",
+  "starting_worktree_clean": true,
+  "unity_contacted": false
+}

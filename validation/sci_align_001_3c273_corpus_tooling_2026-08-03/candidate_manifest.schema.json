@@ -1,0 +1,306 @@
+{
+  "$id": "https://toltec.invalid/schemas/sci-align-001-3c273-selected-manifest-v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "description": "Owner-frozen, provenance-only selection consumed by the SCI-ALIGN-001 3C273 per-Beammap runner. Each observation has exactly one primary row; eligible duplicate reductions may be sensitivity rows.",
+  "properties": {
+    "manifest_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "owner_selection_format": {
+      "enum": [
+        "csv",
+        "json"
+      ]
+    },
+    "owner_selection_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "rows": {
+      "items": {
+        "$ref": "#/$defs/candidate"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "sci-align-001-3c273-selected-manifest-v1"
+    },
+    "source_inventory_sha256": {
+      "$ref": "#/$defs/sha256"
+    }
+  },
+  "required": [
+    "schema_version",
+    "source_inventory_sha256",
+    "owner_selection_sha256",
+    "owner_selection_format",
+    "rows",
+    "manifest_sha256"
+  ],
+  "title": "SCI-ALIGN-001 3C273 selected candidate manifest",
+  "type": "object",
+  "$defs": {
+    "absolutePath": {
+      "minLength": 2,
+      "pattern": "^/",
+      "type": "string"
+    },
+    "candidate": {
+      "additionalProperties": true,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "enhanced_eligible": {
+                "const": true
+              }
+            },
+            "required": [
+              "enhanced_eligible"
+            ]
+          },
+          "then": {
+            "properties": {
+              "network_t0_status": {
+                "const": "complete_unambiguous"
+              },
+              "raw_files": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ],
+      "properties": {
+        "analysis_role": {
+          "enum": [
+            "primary",
+            "sensitivity"
+          ]
+        },
+        "candidate_id": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "config_path": {
+          "$ref": "#/$defs/absolutePath"
+        },
+        "config_sha256": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "core_eligible": {
+          "const": true
+        },
+        "detector_networks": {
+          "items": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "detector_tod_path": {
+          "$ref": "#/$defs/absolutePath"
+        },
+        "duplicate_group_id": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "enhanced_eligible": {
+          "type": "boolean"
+        },
+        "map_id": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "network_t0_status": {
+          "enum": [
+            "complete_unambiguous",
+            "incomplete",
+            "ambiguous",
+            "unavailable"
+          ]
+        },
+        "network_t0_vector": {
+          "items": {
+            "$ref": "#/$defs/t0Item"
+          },
+          "type": "array"
+        },
+        "network_t0_vector_sha256": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "observation_number": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "obsnum": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "output_apt_path": {
+          "$ref": "#/$defs/absolutePath"
+        },
+        "project_path": {
+          "$ref": "#/$defs/absolutePath"
+        },
+        "provenance_path": {
+          "$ref": "#/$defs/absolutePath"
+        },
+        "raw_files": {
+          "items": {
+            "$ref": "#/$defs/rawFile"
+          },
+          "type": "array"
+        },
+        "raw_networks": {
+          "items": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "reduction_path": {
+          "$ref": "#/$defs/absolutePath"
+        },
+        "session_id": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "session_status": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "software_sha": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{7,40}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "telescope_path": {
+          "$ref": "#/$defs/absolutePath"
+        }
+      },
+      "required": [
+        "candidate_id",
+        "map_id",
+        "observation_number",
+        "obsnum",
+        "analysis_role",
+        "duplicate_group_id",
+        "reduction_path",
+        "project_path",
+        "config_path",
+        "detector_tod_path",
+        "output_apt_path",
+        "provenance_path",
+        "telescope_path",
+        "detector_networks",
+        "raw_files",
+        "raw_networks",
+        "network_t0_vector",
+        "network_t0_status",
+        "core_eligible",
+        "enhanced_eligible"
+      ],
+      "type": "object"
+    },
+    "rawFile": {
+      "additionalProperties": true,
+      "properties": {
+        "configured_interface": {
+          "pattern": "^toltec[0-9]+$",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "digest_status": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "network": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "path": {
+          "$ref": "#/$defs/absolutePath"
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "size_bytes": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "timestamp_available": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "network",
+        "path",
+        "timestamp_available",
+        "digest_status",
+        "size_bytes"
+      ],
+      "type": "object"
+    },
+    "sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "t0Item": {
+      "additionalProperties": false,
+      "properties": {
+        "network": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "t0": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "network",
+        "t0"
+      ],
+      "type": "object"
+    }
+  }
+}

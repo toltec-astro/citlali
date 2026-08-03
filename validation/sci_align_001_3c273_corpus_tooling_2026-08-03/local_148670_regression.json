@@ -1,0 +1,120 @@
+{
+  "analysis_mode": "enhanced",
+  "candidate_id": "map:c34fd13719a1d5ccbb00",
+  "constraints": {
+    "application_or_production_config_changed": false,
+    "citlali_reduction_launched": false,
+    "physical_correction_authorized": false,
+    "raw_row_reassociation_claimed": false,
+    "unity_contacted": false
+  },
+  "deterministic_replay": {
+    "candidate_sha256sums_file_sha256": "bd03dfb4d836f40595602387c60e7429a843a322daba6020bd89be13534ff4e1",
+    "fresh_output_a": "/private/tmp/sci-align-runner-t0-fix.5mJxfj/map_c34fd13719a1d5ccbb00",
+    "fresh_output_b": "/private/tmp/sci-align-runner-final-replay-SerjcT/map_c34fd13719a1d5ccbb00",
+    "result": "SHA256SUMS files and all 14 listed candidate artifacts are byte-identical",
+    "resume_result": "resumed_complete"
+  },
+  "half_partition": {
+    "difference_se_sec": 0.0005198993865053033,
+    "difference_sec": 0.0018022134007888296,
+    "first_half_sec": -0.011532017517504498,
+    "interpretation": "within-observation timing variation; not clock drift absent contradictory raw-counter evidence",
+    "method": "fixed chronological compatibility-ordinal split of the 99 selected left and 99 selected right scans, with independent delete-one-selected-scan jackknifes in each half",
+    "predecessor_1p856_ms_explanation": "The predecessor headline 1.855867483 ms belongs to assigned_slot_k+1_phi+0.5 (+0.661571884 minus -1.194295599 ms), not the assigned_slot_k+0_phi+0.0 baseline. The predecessor baseline fixed-half checkpoint was 1.802201340 ms.",
+    "second_half_sec": -0.013334230918293328
+  },
+  "identity": {
+    "analysis_protocol_file_sha256": "8440affad0ccc3d6a12f1d626179f7b5ad7c79cfc185fad774b251c1b2e0ac69",
+    "candidate_inventory_file_sha256": "8bd7f8e340119ff231bda4885f5dff6761514856e9e7d6e80b15fb9a6f4b91de",
+    "candidate_inventory_semantic_sha256": "d3e83b7bf8584928e8de2651b749393101c4e6fa0cb3aced793dbba3445c1bd8",
+    "frozen_predecessor_commit": "a2b37924d612eb175821483523cc94dd233f2fea",
+    "observation_number": 148670,
+    "selected_manifest_file_sha256": "11e6c922e879b7f26452bd056c724d666cff19fc58c9ae9ccc76b74a0cdafa26",
+    "selected_manifest_semantic_sha256": "b32dd9704c4002bedce1ce689653fbfd02a94ef912112fb19f7573cc619dab7b"
+  },
+  "network_comparisons": {
+    "assigned_counterfactual_k1_phi0p5_correlation_with_native_to_assigned_slot": -0.9634382949572088,
+    "assigned_counterfactual_k1_phi0p5_network_span_sec": 0.007350564752047055,
+    "raw_counterfactual_k1_phi0p5_correlation_with_native_to_assigned_slot": 0.44320133586732374,
+    "raw_counterfactual_k1_phi0p5_network_span_sec": 0.0023419403660052745
+  },
+  "raw_counter_diagnostics": {
+    "clock_increment_mismatch_count": 0,
+    "manifest_authority_validated_against_raw": true,
+    "native_frame_phase_mean_sec_by_network": {
+      "0": 0.004090336330237829,
+      "1": 0.004063949908526885,
+      "2": 0.004096951933115257,
+      "3": 0.004070287368507397,
+      "4": 0.00409671133023783,
+      "5": 0.004110367234727966,
+      "7": 0.004095012486825883,
+      "8": 0.004119303903267181,
+      "9": 0.004127103488903913,
+      "11": 0.0040986303653456095,
+      "12": 0.004104549338311327
+    },
+    "native_frame_phase_network_span_sec": 0.00006315358037702837,
+    "network_count": 11,
+    "packet_increment_mismatch_count": 0,
+    "pps_spacing_other_count": 0,
+    "pps_time_increment_mismatch_count_by_network": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "7": 0,
+      "8": 0,
+      "9": 369,
+      "11": 0,
+      "12": 0
+    },
+    "pps_transition_count_per_network": 3143,
+    "pps_transition_pairing": "unique ordered same-row bijection for all 11 networks; physical event simultaneity is not claimed",
+    "raw_counter_transition_row_count": 34573,
+    "repeat_128_interval_15625_rows_mismatch_count": 0,
+    "variable_metadata_capture_or_isr_latency_observed": false
+  },
+  "schema_version": "sci-align-001-3c273-local-regression-evidence-v1",
+  "status": "success",
+  "timing_results": {
+    "assigned_baseline": {
+      "predecessor_delta_sec": 1.934005853555798e-08,
+      "predecessor_sec": -0.012249512996635163,
+      "se_sec": 0.00027474884282826855,
+      "timing_sec": -0.012249493656576627
+    },
+    "assigned_counterfactual_k1_phi0p5": {
+      "predecessor_delta_sec": 1.2238488860210586e-08,
+      "predecessor_sec": -0.00007524425655629242,
+      "se_sec": 0.00027203912894167327,
+      "timing_sec": -0.00007523201806743221
+    },
+    "raw_counterfactual_k1_phi0p5": {
+      "predecessor_delta_sec": 1.2089798490230383e-08,
+      "predecessor_sec": -0.0009541163943448997,
+      "se_sec": 0.0002658686653164743,
+      "timing_sec": -0.0009541043045464095
+    }
+  },
+  "t0_session": {
+    "network_t0_vector": [
+      {"network": 0, "t0": 1765472667},
+      {"network": 1, "t0": 1765472681},
+      {"network": 2, "t0": 1765472548},
+      {"network": 3, "t0": 1765472544},
+      {"network": 4, "t0": 1765472544},
+      {"network": 5, "t0": 1765472548},
+      {"network": 7, "t0": 1765472561},
+      {"network": 8, "t0": 1765472557},
+      {"network": 9, "t0": 1765472699},
+      {"network": 11, "t0": 1765472715},
+      {"network": 12, "t0": 1765472941}
+    ],
+    "network_t0_vector_sha256": "44cf69da97d473965ef69f4d6e11cda58d67b3be5762dce81c8497e26695a67a",
+    "raw_recomputed_network_t0_vector_sha256": "44cf69da97d473965ef69f4d6e11cda58d67b3be5762dce81c8497e26695a67a"
+  }
+}

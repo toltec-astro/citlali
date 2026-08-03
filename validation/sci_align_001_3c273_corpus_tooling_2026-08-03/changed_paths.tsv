@@ -1,0 +1,23 @@
+status	path	scope
+A	tools/diagnostics/aggregate_sci_align_001_3c273_corpus.py	bounded diagnostic aggregation tool
+A	tools/diagnostics/generate_sci_align_001_3c273_slurm_array.py	bounded scheduler generator
+A	tools/diagnostics/inventory_sci_align_001_3c273_corpus.py	bounded read-only corpus inventory
+A	tools/diagnostics/run_sci_align_001_3c273_beammap.py	bounded retained-product runner
+A	tools/diagnostics/sci_align_001_3c273_common.py	bounded diagnostic implementation shared by runner
+A	tools/diagnostics/test_sci_align_001_3c273_aggregation.py	diagnostic aggregation tests
+A	tools/diagnostics/test_sci_align_001_3c273_inventory.py	diagnostic inventory and scheduler tests
+A	tools/diagnostics/test_sci_align_001_3c273_runner.py	diagnostic runner tests
+A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/OUTPUT_SCHEMA.md	output contract
+A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/OWNER_DECISION_BRIEF.md	owner decision boundary
+A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/README.md	package index
+A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/RETURN_BUNDLE_PROMPT.md	owner-return review prompt
+A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/SHA256SUMS	package checksums
+A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/UNITY_RUNBOOK.md	owner execution runbook
+A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/candidate_manifest.example.json	illustrative schema instance
+A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/candidate_manifest.schema.json	selected-manifest schema
+A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/changed_paths.tsv	bounded changed-path proof
+A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/frozen_analysis_protocol.json	preregistered scientific protocol
+A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/identity.json	branch/base/scope identity
+A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/local_148670_regression.json	local regression evidence
+A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/synthetic_aggregation_test_evidence.json	synthetic decision evidence
+A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/validation_gates.json	local gate evidence

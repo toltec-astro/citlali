@@ -1,0 +1,327 @@
+{
+  "aggregation": {
+    "alpha": 0.05,
+    "candidate_models": {
+      "M0": "one global term",
+      "M1": "global plus fixed network terms",
+      "M2": "global plus session term; cold-start and rolling session-anchor predictions are reported separately",
+      "M3_FREE": "global plus a freely fitted native-to-assigned-slot coefficient",
+      "M3_NEG1": "global with the native-to-assigned-slot coefficient fixed at -1",
+      "M4_NETWORK_SLOT": "global plus fixed network terms plus a slot coefficient",
+      "M4_SESSION_SLOT": "global plus session terms plus a slot coefficient",
+      "M4_NETWORK_SESSION": "global plus fixed network and session terms",
+      "M4_NETWORK_SESSION_SLOT": "global plus fixed network and session terms plus a slot coefficient",
+      "M5": "no reliable mitigation model"
+    },
+    "duplicate_rule": "Only the owner-frozen canonical reduction contributes to primary independence. Other reductions of the same observation remain in a separate sensitivity registry and inherit the canonical observation fold.",
+    "grouping_precedence": [
+      "exact ordered per-network integer-second T0 vector when complete and at least three distinct T0-vector sessions exist",
+      "other provenance-derived initialization/session identity when complete and at least three sessions exist",
+      "trusted UTC observing date when at least three date groups exist",
+      "observation number"
+    ],
+    "held_out_strategy": "leave one frozen independent group out",
+    "minimum_independent_groups": 3,
+    "model_selection": "With at least four independent groups, model selection uses only nested training folds. With exactly three groups, every preregistered model is reported but data-driven selection is prohibited.",
+    "required_statistics": [
+      "pooled timing residual versus beammap",
+      "intrinsic between-beammap scatter after measurement uncertainty",
+      "per-network repeatability",
+      "network-by-beammap interaction amplitude",
+      "within-map and corpus slot-residual regression",
+      "free-beta interval and consistency with -1",
+      "first-half versus second-half change",
+      "session dependence when session identity is supported",
+      "held-out timing, sky-placement, and beam-FWHM-fraction prediction error"
+    ],
+    "split_freeze_rule": "The freeze stage reads selected-manifest identity and provenance fields only. The run stage refuses a selected-manifest or protocol digest mismatch.",
+    "timing_outliers": "Retain every timing outlier that passes the independently frozen input and fit-quality criteria."
+  },
+  "decision": {
+    "categories": {
+      "GLOBAL-STABLE": "M0 generalizes and persistent network, between-map, interaction, and residual within-observation timing-variation structure are not resolved beyond measurement error.",
+      "INSUFFICIENT": "The corpus, provenance, independent grouping, retained products, or uncertainty contract cannot support a defensible conclusion.",
+      "NETWORK-STABLE": "M1 generalizes across independent groups, network terms repeat, and residual map, interaction, and within-observation timing-variation structure are not resolved.",
+      "SESSION-STABLE": "Only a T0-vector or other provenance-supported rolling anchored session model generalizes, session differences are resolved, and residual within-session timing variation is not.",
+      "SLOT-PREDICTABLE": "An M3 or slot-containing M4 generalizes on enhanced held-out rows and removes resolved native-phase or slot-related structure; consistency of beta with -1 is reported separately. Favor structural native-time or fractional-slot mitigation, not a physical clock correction.",
+      "TIME-VARIABLE": "Significant within-observation or within-session timing variation remains after the best supported static or dynamic model. Do not label it clock drift unless raw counters contradict the shared-clock producer account.",
+      "UNPREDICTABLE": "Variability exceeds measurement uncertainty and no preregistered model predicts held-out results."
+    },
+    "precedence": [
+      "INSUFFICIENT",
+      "GLOBAL-STABLE",
+      "NETWORK-STABLE",
+      "SLOT-PREDICTABLE",
+      "SESSION-STABLE",
+      "TIME-VARIABLE",
+      "UNPREDICTABLE"
+    ],
+    "production_correction_authorized": false,
+    "science_tolerance_assessed": false,
+    "tolerance_rule": "Do not impose a millisecond threshold. Translate errors with each measured scan speed and report arcseconds and fraction of the relevant measured beam FWHM for owner judgment."
+  },
+  "eligibility": {
+    "core_requires": [
+      "unambiguous 3C273 source identity under the explicit source regex",
+      "one observation identity",
+      "completed retained reduction provenance",
+      "detector source-crossing TOD with required identity, slot, signal, flag, and fit fields",
+      "output Beammap APT with UID, fit-validity, amplitude, centroid, width, and network identity",
+      "telescope trajectory with time, pointing fields, source fields, and Hold",
+      "scan registry or realized scan-plan authority",
+      "at least three independently accepted left-going and right-going scans"
+    ],
+    "enhanced_requires": [
+      "core eligibility",
+      "unambiguous realized config linkage to every raw network input",
+      "raw detector timestamps and producer headers for every analyzed network",
+      "proved raw-row linkage under the frozen linkage checks"
+    ],
+    "selection_blinding": "Eligibility, duplicate resolution, and manifest freezing use provenance and fit-input quality only. They do not inspect inferred timing values."
+  },
+  "fit_quality": {
+    "amplitude": "finite and positive retained reference amplitude; fitted direction amplitude is nonnegative",
+    "background": "affine tangent-plane background",
+    "detector_join": "UID only; detector row is not persistent identity",
+    "expected_networks": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "fwhm_bounds_arcsec_by_array": {
+      "a1100": [
+        3.0,
+        10.0
+      ],
+      "a1400": [
+        3.5,
+        15.0
+      ],
+      "a2000": [
+        5.5,
+        20.0
+      ]
+    },
+    "legacy_feasibility_exclusions_by_observation": {
+      "148670": [
+        0,
+        5,
+        10,
+        15,
+        20,
+        25,
+        30,
+        35
+      ]
+    },
+    "map_extent_arcsec": 80.0,
+    "map_minimum_pixel_count": 5,
+    "map_pixel_size_arcsec": 1.0,
+    "fit_boundary_margin_minimum": 0.001,
+    "minimum_amplitude_snr": 3.0,
+    "minimum_distinct_scans_per_direction": 3,
+    "minimum_fitted_map_pixels": 100,
+    "minimum_matched_detectors": 100,
+    "minimum_samples_per_direction": 100,
+    "model": "elliptical two-dimensional Gaussian plus affine background",
+    "population": [
+      "detector_tod_fit_good equals 1",
+      "output APT flag equals 0",
+      "finite retained centroid, amplitude, major FWHM, minor FWHM, and angle",
+      "both direction fits pass the same frozen quality criteria",
+      "observation-specific preregistration exclusions only where explicitly listed"
+    ],
+    "radial_fwhm_multiplier": 4.0,
+    "radial_support": "distance from retained full-fit centroid no greater than radial_fwhm_multiplier times retained major FWHM",
+    "robust_loss": "scipy least_squares soft_l1",
+    "signal_validity": "detector-TOD flag equals zero and signal is finite",
+    "timing_result_not_a_cut": true
+  },
+  "identity": {
+    "branch": "codex/sci-align-001-3c273-corpus-tooling",
+    "frozen_predecessor_commit": "a2b37924d612eb175821483523cc94dd233f2fea",
+    "frozen_predecessor_package": "validation/sci_align_001_sample_lineage_phase_2026-08-03",
+    "source_alias_policy": "Preserve every exact source/header representation. Normalize only for the explicit full-match source regex. Conflicting authoritative representations are ambiguous and ineligible.",
+    "source_regex_default": "(?i)^3c[ _-]?273$"
+  },
+  "objective": "Determine whether retained 3C273 left/right Beammap timing residuals are globally stable, network-stable, T0-session-stable, native-phase/slot-predictable, time-variable, unpredictable, or insufficient, without designing or authorizing a correction.",
+  "producer_authority": {
+    "authority_status": "project-owner-supplied clarification from Kamal during the bounded corpus-tooling task",
+    "clock_architecture": [
+      "NTP supplies the integer-second T0 at each ROACH initialization",
+      "all ROACH internal clocks derive from the same Octo-distributed 10 MHz reference",
+      "PPS is derived and distributed from the same system",
+      "PPS does not reset or restart detector integration/sample cadence",
+      "PPS is observed at detector-sample cadence through an incremental counter",
+      "the UDP packet carries T0, the incremental PPS counter, and the internal clock counter",
+      "the PPS counter is incremented through an interrupt service routine",
+      "FPGA source is not presently available"
+    ],
+    "interpretation": [
+      "arbitrary millisecond NTP epoch error is strongly disfavored; NTP error should primarily affect integer-second labeling",
+      "differential oscillator drift is strongly disfavored by the shared 10 MHz reference",
+      "shared frequency and PPS do not imply a common detector integration-frame phase",
+      "each network may have a distinct but stable integration phase within its realized cadence",
+      "the delivered raw D[n]/Ts[n] lineage proof cannot rule out an upstream FPGA metadata-to-integration association error"
+    ],
+    "hypotheses_to_keep_distinct": [
+      "correctly timestamped network-dependent sample phase",
+      "PPS-counter observation quantized to detector frames",
+      "non-atomic or adjacent-frame association among detector data, internal-clock counter, and PPS counter",
+      "start, end, centroid, or other timestamp event semantics"
+    ]
+  },
+  "outputs": {
+    "determinism": [
+      "sorted traversal and fixed row/column order",
+      "canonical sorted-key JSON with non-finite values rejected",
+      "fixed random seed where resampling is used",
+      "atomic writes under an owner-specified output root",
+      "no wall-clock values in scientific outputs",
+      "input, protocol, tool, and selected-manifest digest binding",
+      "per-map and aggregate SHA256SUMS"
+    ],
+    "large_products_copied": false,
+    "source_directories_written": false
+  },
+  "prohibited": [
+    "Unity access by Codex",
+    "new Citlali reduction",
+    "application source or production configuration change",
+    "raw-row reassociation claim without direct proof",
+    "physical timestamp-event semantic claim",
+    "fixed timing correction recommendation from unpredictable behavior",
+    "production authorization from the 3C273 corpus",
+    "non-3C273 execution in this task",
+    "merge, rebase, or push"
+  ],
+  "raw_linkage": {
+    "assigned_slot_residual": "r[i,n] = (t_raw[i,n] + offset[i]) - (phase + round_half_up(((t_raw[i,n] + offset[i]) - phase)/dt) * dt)",
+    "failure_policy": "Any ambiguity makes enhanced analysis unavailable for the affected map/network. It does not silently re-associate rows and does not invalidate an otherwise eligible core analysis.",
+    "offset_application": "positive-add exactly once before lattice assignment",
+    "proof_checks": [
+      "realized interface identity equals producer RoachIndex",
+      "Data.Toltec.Ts row cardinality agrees with retained raw signal row cardinality",
+      "producer packet sequence has no unexplained reset, reversal, collision, or gap where available",
+      "reconstructed native timestamps are finite and strictly increasing",
+      "assigned slots are strictly increasing with no collision or reversal",
+      "slot residual magnitude does not exceed one half cadence apart from declared numerical tolerance",
+      "every retained science slot has exactly one original native detector row",
+      "raw file identity agrees with observation and realized config provenance"
+    ],
+    "stage_a_boundary": "The prior row-lineage proof begins at the delivered raw D[n]/Ts[n] pair. It establishes downstream preservation of that delivered pair but cannot exclude an FPGA-level association error between integration data and metadata.",
+    "rounding": "round_half_up(x) = floor(x + 0.5)",
+    "sign": "raw-plus-offset minus assigned lattice time",
+    "unit": "s"
+  },
+  "raw_phase_and_counter_diagnostics": {
+    "clock_counter_modulus": 4294967296,
+    "expected_cadence_for_148670_sec": 0.008192,
+    "internal_counter_rate_authority": "read Header.Toltec.FpgaFreq for each raw file; the counter clock is derived from the shared reference but is not assumed to run at 10 MHz",
+    "shared_reference_hz": 10000000.0,
+    "expected_pps_spacing_rows": [
+      122,
+      123
+    ],
+    "expected_repeat": {
+      "detector_rows": 15625,
+      "pps_intervals": 128,
+      "seconds": 128
+    },
+    "native_frame_phase_estimator": "When ordered PpsCount/PpsTime transition pairing is unambiguous, evaluate ((uint32 ClockCount[j] - uint32 PpsTime[j]) mod 2^32) / Header.Toltec.FpgaFreq on the actual PpsTime-transition row j. The PpsCount-transition-row geometry is retained separately and is not called detector-frame phase.",
+    "phase_failure_policy": "If PpsCount/PpsTime transition pairing is ambiguous, report native detector-frame phase unavailable; do not substitute the count-row value or infer metadata-to-integration association.",
+    "required_when_fields_are_retained": [
+      "record the exact integer-second T0 and retained nanosecond field separately for every network; do not reinterpret the nanosecond field as detector phase without authority",
+      "form an ordered network-to-T0 vector and use its digest as a candidate ROACH-initialization session identity",
+      "inventory every PPS-counter transition row",
+      "record internal-clock and PPS-time counter values on the detector rows immediately before and after every PPS-counter transition",
+      "record whether PPS-count and retained PPS-time metadata transition on the same delivered row",
+      "measure detector-frame phase by network without assuming a common phase",
+      "test phase stability within identical T0-vector sessions and changes across initialization sessions",
+      "verify every adjacent PPS transition spacing is 122 or 123 detector rows",
+      "verify transition row i+128 minus transition row i equals 15625 detector rows wherever support exists",
+      "test internal-clock increments modulo 2^32 against the retained accumulation length",
+      "search packet, internal-clock, PPS-count, and PPS-time sequences for one-row discontinuity or variable metadata-capture/ISR latency",
+      "regress left/right network timing against measured native phase and native-to-assigned-slot residual, including the preregistered slope -1 comparison"
+    ],
+    "variation_language": "First-half/second-half or fitted time slopes are within-observation timing variation. Call them clock drift only if raw counter evidence contradicts the shared-clock account."
+  },
+  "scan_classifier": {
+    "central_fraction": 0.8,
+    "direction_measurement": "central 80 percent of each admitted compatibility-science window",
+    "hold": "both adjacent native TelescopeBackend Hold words are finite integral zero and equal; transitions or ambiguity are excluded",
+    "low_speed_fraction_of_minimum": 0.5,
+    "low_speed_threshold": "low_speed_fraction_of_minimum times the minimum absolute robust median projected speed over admitted windows",
+    "parity_used": false,
+    "positive_axis": "principal eigenvector of admitted-window median realized velocity vectors, signed toward configured Map.ScanAngle",
+    "stable_sign_fraction_minimum": 0.99
+  },
+  "schema_version": "sci-align-001-3c273-corpus-protocol-v1",
+  "status": "FROZEN_BEFORE_CORPUS_TIMING_RESULTS",
+  "timing_models": {
+    "common_support": "The primary population is the exact intersection of original signal/flag/radial/Hold validity and valid interior raw-row/slot/telescope support for every compared basis, row guard, and phase. Native-only support is secondary and scan-edge population changes cannot count as improvement.",
+    "comparison_models": [
+      {
+        "basis": "assigned_slot",
+        "k": 0,
+        "model_id": "assigned_slot_k+0_phi+0.0",
+        "phi_samples": 0.0,
+        "role": "primary retained-coordinate result"
+      },
+      {
+        "basis": "assigned_slot",
+        "k": 1,
+        "model_id": "assigned_slot_k+1_phi+0.5",
+        "phi_samples": 0.5,
+        "role": "previously tested common 1.5-sample counterfactual"
+      },
+      {
+        "basis": "raw_detector_timestamp",
+        "k": 0,
+        "model_id": "raw_detector_timestamp_k+0_phi+0.0",
+        "phi_samples": 0.0,
+        "role": "native timestamp telescope-evaluation control"
+      },
+      {
+        "basis": "raw_detector_timestamp",
+        "k": 1,
+        "model_id": "raw_detector_timestamp_k+1_phi+0.5",
+        "phi_samples": 0.5,
+        "role": "previously tested enhanced comparison"
+      }
+    ],
+    "counterfactual_warning": "k=+1 is a diagnostic comparison, not evidence of a row defect or an authorized correction.",
+    "guard_rows_k": [
+      -1,
+      0,
+      1
+    ],
+    "physical_timestamp_semantics": "start/end/centroid semantics and FPGA metadata-to-integration association remain unresolved",
+    "sample_cadence_authority": "realized alignment provenance; 0.008192 s is the expected 148670 regression value but is not hard-coded for corpus identity"
+  },
+  "uncertainty_and_controls": {
+    "controls": [
+      "perpendicular centroid difference",
+      "first-half and second-half timing",
+      "balanced same-direction chronological-rank null",
+      "scan-speed distribution",
+      "left/right major and minor FWHM",
+      "left/right amplitude or within-observation amplitude ratio",
+      "fit quality, sample counts, detector counts, and exclusions"
+    ],
+    "jackknife_population": "selected left/right stable scans only; excluded scans never create no-op replicates",
+    "primary_uncertainty": "delete-one-selected-stable-scan jackknife",
+    "reported_intervals": "normal-equivalent 68 percent and 95 percent intervals",
+    "time_segments": "beginning, middle, and end raw slot residuals plus first-half and second-half Beammap timing estimates"
+  }
+}

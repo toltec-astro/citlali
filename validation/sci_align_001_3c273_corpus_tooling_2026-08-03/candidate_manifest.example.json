@@ -1,0 +1,70 @@
+{
+  "manifest_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "owner_selection_format": "csv",
+  "owner_selection_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+  "rows": [
+    {
+      "analysis_role": "primary",
+      "candidate_id": "map:EXAMPLE_PROVENANCE_ONLY_ID",
+      "config_path": "/work/toltec/OWNER/3c273/config/citlali_o148670.yaml",
+      "config_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+      "core_eligible": true,
+      "detector_networks": [
+        0,
+        1
+      ],
+      "detector_tod_path": "/work/toltec/OWNER/3c273/reduced/redu00/148670/raw/source_crossing_tod/example_ptc_detector_tod.nc",
+      "duplicate_group_id": "obs:148670",
+      "enhanced_eligible": true,
+      "map_id": "map:EXAMPLE_PROVENANCE_ONLY_ID",
+      "network_t0_status": "complete_unambiguous",
+      "network_t0_vector": [
+        {
+          "network": 0,
+          "t0": 1765472667
+        },
+        {
+          "network": 1,
+          "t0": 1765472681
+        }
+      ],
+      "network_t0_vector_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+      "observation_number": 148670,
+      "obsnum": 148670,
+      "output_apt_path": "/work/toltec/OWNER/3c273/reduced/redu00/148670/raw/apt_example_citlali.ecsv",
+      "project_path": "/work/toltec/OWNER/3c273",
+      "provenance_path": "/work/toltec/OWNER/3c273/reduced/redu00/148670/timestream_output_provenance.yaml",
+      "raw_files": [
+        {
+          "configured_interface": "toltec0",
+          "digest_status": "not_hashed_large",
+          "network": 0,
+          "path": "/data/toltec0_148670_000_0002_EXAMPLE.nc",
+          "sha256": null,
+          "size_bytes": 1927836040,
+          "timestamp_available": true
+        },
+        {
+          "configured_interface": "toltec1",
+          "digest_status": "not_hashed_large",
+          "network": 1,
+          "path": "/data/toltec1_148670_000_0002_EXAMPLE.nc",
+          "sha256": null,
+          "size_bytes": 1491928664,
+          "timestamp_available": true
+        }
+      ],
+      "raw_networks": [
+        0,
+        1
+      ],
+      "reduction_path": "/work/toltec/OWNER/3c273/reduced/redu00/148670",
+      "session_id": "roach-t0:EXAMPLE_T0_VECTOR_DIGEST",
+      "session_status": "network_t0_vector",
+      "software_sha": "c77105b9b",
+      "telescope_path": "/data/tel_toltec_148670_EXAMPLE.nc"
+    }
+  ],
+  "schema_version": "sci-align-001-3c273-selected-manifest-v1",
+  "source_inventory_sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+}
