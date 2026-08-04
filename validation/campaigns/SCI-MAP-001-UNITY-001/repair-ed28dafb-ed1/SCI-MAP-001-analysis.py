@@ -1163,11 +1163,14 @@ def validate_owner_values(path: Path, require_existing: bool = False) -> dict[st
         die("owner-values schema_version is not pinned")
     if values["unity_host_alias"] != "unity_toltec":
         die("Unity host alias must be exactly unity_toltec")
-    placeholders = ("TODO", "CHANGEME", "UNKNOWN", "<", ">")
+    placeholders = ("TODO", "CHANGE_ME", "CHANGEME", "UNKNOWN", "<", ">")
     for key, value in values.items():
-        if key in ("slurm_qos", "slurm_constraint", "slurm_reservation"):
+        if key in ("slurm_account", "slurm_qos", "slurm_constraint", "slurm_reservation"):
             if not isinstance(value, str):
                 die(f"owner-values {key} must be a string (empty is explicit)")
+            if "\n" in value or "\r" in value or any(
+                    token.lower() in value.lower() for token in placeholders):
+                die(f"owner-values {key} contains an invalid optional value")
             continue
         if not isinstance(value, str) or not value.strip():
             die(f"owner-values {key} is unresolved")

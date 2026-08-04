@@ -103,7 +103,9 @@ ABSOLUTE_PATH_KEYS = (
     "candidate_build_manifest", "candidate_version_output",
     "resource_filesystem_root",
 )
-OPTIONAL_OWNER_STRINGS = ("slurm_qos", "slurm_constraint", "slurm_reservation")
+OPTIONAL_OWNER_STRINGS = (
+    "slurm_account", "slurm_qos", "slurm_constraint", "slurm_reservation",
+)
 NUMBERED_RE = re.compile(r"^[0-9]{2}_.+\.ya?ml$")
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 RFC3339_UTC_RE = re.compile(
@@ -827,8 +829,18 @@ def command_self_check(args: argparse.Namespace) -> int:
             stderr=Path("/self-check.err"),
         )
         expected_export = f"--export=ALL,OMP_NUM_THREADS={case['cpus']}"
-        if expected_export not in test_options or "--wait" not in test_options:
+        if expected_export not in test_options or "--wait" not in test_options \
+                or "--account=self-check-account" not in test_options:
             fail(f"case Slurm/OMP export policy differs: {case['id']}")
+    default_account_options = slurm_options(
+        {"slurm_account": "", "slurm_qos": "", "slurm_constraint": "",
+         "slurm_reservation": ""}, campaign, cpus=1, memory="1G",
+        time="00:01:00", job_name="self-check-default-account",
+        chdir=Path("/self-check"), stdout=Path("/self-check.out"),
+        stderr=Path("/self-check.err"),
+    )
+    if any(option.startswith("--account=") for option in default_account_options):
+        fail("empty Slurm account must omit the account directive")
     print("SCI-MAP-001 Unity campaign driver self-check passed")
     return 0
 
@@ -1356,13 +1368,13 @@ def slurm_options(values: Mapping[str, str], campaign: Mapping[str, Any],
                   chdir: Path, stdout: Path, stderr: Path) -> list[str]:
     options = [
         "sbatch", "--wait", "--parsable", "--partition=" + campaign["fixed_execution"]["partition"],
-        "--account=" + values["slurm_account"],
         f"--export=ALL,OMP_NUM_THREADS={cpus}",
         f"--cpus-per-task={cpus}", "--mem=" + memory, "--time=" + time,
         "--job-name=" + job_name, "--chdir=" + str(chdir),
         "--output=" + str(stdout), "--error=" + str(stderr),
     ]
-    for key, option in (("slurm_qos", "--qos="), ("slurm_constraint", "--constraint="),
+    for key, option in (("slurm_account", "--account="), ("slurm_qos", "--qos="),
+                        ("slurm_constraint", "--constraint="),
                         ("slurm_reservation", "--reservation=")):
         if values[key]:
             options.append(option + values[key])

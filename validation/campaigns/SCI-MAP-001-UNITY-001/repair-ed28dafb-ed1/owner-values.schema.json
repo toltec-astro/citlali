@@ -69,7 +69,7 @@
       "pattern": "^redu[0-9][0-9]$"
     },
     "evidence_operator": {"type": "string", "minLength": 1},
-    "slurm_account": {"type": "string", "minLength": 1},
+    "slurm_account": {"type": "string"},
     "slurm_qos": {"type": "string"},
     "slurm_constraint": {"type": "string"},
     "slurm_reservation": {"type": "string"},

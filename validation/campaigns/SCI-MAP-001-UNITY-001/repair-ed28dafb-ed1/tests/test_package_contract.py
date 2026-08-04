@@ -179,7 +179,7 @@ class PackageContractTest(unittest.TestCase):
         fixed = {
             "schema_version": "sci-map-unity-owner-values-v1",
             "unity_host_alias": "unity_toltec",
-            "slurm_qos": "", "slurm_constraint": "", "slurm_reservation": "",
+            "slurm_account": "", "slurm_qos": "", "slurm_constraint": "", "slurm_reservation": "",
         }
         for key, value in values.items():
             if key in fixed:

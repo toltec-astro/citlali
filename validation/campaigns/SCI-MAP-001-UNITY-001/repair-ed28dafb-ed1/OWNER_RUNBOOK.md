@@ -84,7 +84,7 @@ Do not use or copy an old reduction as the deployed package.
 
 Copy `owner-values.template.json` outside Git on Unity and fill every `null`
 with a verified operational fact. Empty strings are permitted only for the
-three optional Slurm fields. In particular:
+optional Slurm fields. In particular:
 
 - `unity_host_alias` remains `unity_toltec`;
 - `tolproj_site_config` is the resolved default source reported by
@@ -93,6 +93,10 @@ three optional Slurm fields. In particular:
   provenance input only.  Do not pass it through `--config`; the campaign uses
   the ordinary Unity default and records its resolved base/profile/default
   layers and digests;
+- `slurm_account` is explicitly empty when `tolproj config show` reports
+  `slurm.account: null`, as the verified Unity default does. The emitted
+  commands then omit `--account`; do not substitute the login name
+  `toltec_umass_edu` for an allocation account;
 - `canonical_raw_root` is the owner-verified `/work/toltec`;
 - `point_source_project` and `science_source_project` are exactly the two
   project paths below `unity_test_root` named by the JSON specs;
