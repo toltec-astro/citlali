@@ -1,6 +1,6 @@
 # TolTECA Spack Build Integration Review
 
-Date: 2026-07-31; updated 2026-08-03
+Date: 2026-07-31; updated 2026-08-04
 
 Status: architecture review complete; **Adapt with Spack** selected as the
 successor-build direction. The existing build remains the operational
@@ -13,14 +13,20 @@ The review used isolated checkouts at the exact pushed revisions:
 
 | Repository | Branch | Commit |
 | --- | --- | --- |
-| `toltec-astro/tula_cmake` | `v3.x_spack` | `0086c652185b0ed15d2c666cd83da4f6b584403c` |
-| `toltec-astro/tula` | `v3.x_spack` | `79c1b2e07a4e34577040c4077db5e9156871c2da` |
-| `toltec-astro/kidscpp` | `v3.x_spack` | `d3cf4d246411f5e76809e9760a6cb1df34a236d9` |
-| `toltec-astro/citlali` | `v3.x_spack` | `4097c09d288d867c2987e025b09be46d55117244` |
+| `toltec-astro/tula_cmake` | `v3.x_spack` | `e8b6721ebead47d2b54ea266b1c7a761bb508963` |
+| `toltec-astro/tula` | `v3.x_spack` | `47471cf7fd5b93f60c9fe1e420b551f11ef34bc8` |
+| `toltec-astro/kidscpp` | `v3.x_spack` | `006c980d17c9fff13fa0a71038fd5683a975ddcb` |
+| `toltec-astro/citlali` | `v3.x_spack` | `370992442a3076f1b0c7043e2aa61d4ccd5fac97` |
 
 The reconciled design authority is the `design/` directory in the reviewed
 Tula CMake branch. The earlier Conan 2 review remains historical evidence but
 no longer governs the package-manager choice.
+
+The 2026-08-04 update adds immutable tag-based source-release recipes,
+machine-readable build provenance inputs, and a portable-versus-real-data test
+distinction. It does not change the installed `tula-netcdf-cxx4` target's
+incomplete NetCDF-C include interface; the bounded Citlali direct dependency
+remains necessary until that target is corrected upstream.
 
 ## Build-Owner Intent Clarification
 

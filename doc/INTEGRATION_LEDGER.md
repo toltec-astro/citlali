@@ -17,14 +17,14 @@ ADRs, and validation records.
 
 ## External Build Inputs
 
-Latest isolated review completed 2026-08-03:
+Latest isolated review completed 2026-08-04:
 
 | Repository | Branch | Reviewed commit | Disposition |
 | --- | --- | --- | --- |
-| `tula_cmake` | `v3.x_spack` | `0086c652185b0ed15d2c666cd83da4f6b584403c` | Owns normalized CCfits, NetCDF C++ and portable OpenMP adapters; accepted as the build-mechanics source |
-| `tula` | `v3.x_spack` | `79c1b2e07a4e34577040c4077db5e9156871c2da` | Exposes explicit perflibs/OpenMP component capability and installed-consumer contract |
-| `kidscpp` | `v3.x_spack` | `d3cf4d246411f5e76809e9760a6cb1df34a236d9` | Propagates the explicit OpenMP choice through its Tula dependency |
-| `citlali` | `v3.x_spack` | `4097c09d288d867c2987e025b09be46d55117244` | Reference implementation only; the full refactored application recipe remains authoritative here |
+| `tula_cmake` | `v3.x_spack` | `e8b6721ebead47d2b54ea266b1c7a761bb508963` | Adds immutable source-release and build-provenance support while retaining the normalized dependency adapters |
+| `tula` | `v3.x_spack` | `47471cf7fd5b93f60c9fe1e420b551f11ef34bc8` | Exports source, compiler, package, DAG, profile, and lock provenance through its installed interface |
+| `kidscpp` | `v3.x_spack` | `006c980d17c9fff13fa0a71038fd5683a975ddcb` | Exports equivalent provenance and separates portable tests from optional real-data coverage |
+| `citlali` | `v3.x_spack` | `370992442a3076f1b0c7043e2aa61d4ccd5fac97` | Reference implementation only; its release/provenance design is reviewed without replacing the refactored application |
 
 Branch movement does not update this table automatically. Re-review and record
 new exact commits before importing subsequent upstream work. The three consumed
@@ -35,6 +35,8 @@ The accepted `tula-netcdf-cxx4` adapter does not yet export NetCDF-C's include
 directory to installed consumers. Citlali therefore retains a direct
 `netcdf-c` dependency and target until that upstream interface is corrected;
 this is a build-contract workaround, not a fork of the upstream package.
+The 2026-08-04 upstream revision leaves that adapter interface unchanged, so
+the workaround remains required despite the other release fixes in this round.
 
 ## Current Gates
 

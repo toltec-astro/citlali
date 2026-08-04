@@ -45,8 +45,10 @@ strategy. Exact revisions, reproduced evidence, reported compiler/real-data
 results, requirement dispositions, and entry gates are recorded in
 [`TOLTECA_SPACK_BUILD_INTEGRATION_REVIEW_2026-07-31.md`](TOLTECA_SPACK_BUILD_INTEGRATION_REVIEW_2026-07-31.md).
 
-The new architecture resolves the earlier NetCDF C++ export problem and has
-substantially stronger installed-package and real-data evidence. It does not
+The new architecture substantially improves the earlier NetCDF C++ export
+problem and has stronger installed-package and real-data evidence. Its
+installed adapter still omits NetCDF-C's include directory for independent
+consumers, so Citlali retains a bounded direct NetCDF-C target. It does not
 remove the need to port the full refactor, preserve provenance and tests, add
 explicit HDF5/Zlib ownership, provide native Mac and Unity environments, or
 define immutable release sources and a portable lock. The existing build
@@ -82,12 +84,12 @@ has been removed.
 The native Kidscpp checkpoint is also complete. The accepted upstream
 `tula-perflibs` recipe declares exact `llvm-openmp@20.1.8` and exports that
 resolved runtime to installed consumers; the local override has been removed.
-Kidscpp installs from source, its independent installed consumer passes, and a separate reader
-consumer opens a current raw pointing file and reads a two-sample I/Q slice.
-The upstream historical real-file test remains fixture-gated and currently
-handles an empty fixture root incorrectly, so it is not counted as a complete
-native package-suite pass. An accessible immutable fixture manifest remains
-open.
+Kidscpp installs from source, its independent installed consumer passes, and a
+separate reader consumer opens a current raw pointing file and reads a
+two-sample I/Q slice. The 2026-08-04 upstream revision cleanly separates
+portable generated-input tests from the optional historical real-file test,
+so an unavailable large fixture is no longer counted as a skipped success. An
+accessible immutable fixture manifest remains open for the real-data gate.
 
 The full native-Mac application checkpoint is now complete locally. The
 parallel Spack CMake project builds all eight active refactor implementation
@@ -136,6 +138,14 @@ pinned upstream Tula adapters from Citlali's build-only source area. A fresh
 Unity concretization, install, compiled-test run, installed-consumer check, and
 point reduction are therefore pending. The checked Slurm acceptance script
 owns those gates and records final executable provenance.
+
+The 2026-08-04 dependency refresh accepts exact TulaCMake `e8b6721e`, Tula
+`47471cf7`, and Kidscpp `006c980d` candidates. Their immutable source-release,
+provenance, and portable-test improvements compile under the native Mac graph;
+all 533 enabled Citlali CTests pass. The upstream Citlali `37099244` revision
+is reviewed as design evidence only and is not imported as application code.
+Exact-clean installed-package acceptance and Unity validation remain the next
+gates for this refreshed graph.
 
 ## 2026-07-26 Conan 2 Build Review
 

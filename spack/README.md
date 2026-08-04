@@ -138,14 +138,19 @@ ownership, and distinct pipeline-OpenMP and OpenMP-Wiener build identities:
 
 ```console
 spack -e spack/environments/citlali-macos-llvm20 concretize --force
+spack -e spack/environments/citlali-macos-llvm20 clean --stage citlali || true
 spack -e spack/environments/citlali-macos-llvm20 \
-  install --show-log-on-error
+  install -y --overwrite --show-log-on-error citlali
 ```
 
 This is the packaging and release-candidate gate. Do not use repeated
 `spack install` calls as the ordinary edit/build loop: a development package
 is restaged and its header-heavy CLI translation unit can dominate the
 rebuild.
+Removing Citlali's stage before the packaging install is required when the
+source commit changes without changing the concrete dependency graph. Spack's
+incremental development stage can otherwise reuse an executable carrying the
+previous source revision; the installed-artifact gate rejects that mismatch.
 
 Use the persistent native build tree instead:
 
