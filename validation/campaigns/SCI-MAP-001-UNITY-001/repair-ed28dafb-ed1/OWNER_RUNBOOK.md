@@ -29,7 +29,8 @@ Local:
 
 ```sh
 LOCAL_REPO=/Users/gwilson/.codex/worktrees/aa31/citlali-refactor
-HANDOFF_COMMIT='<coordinator-approved exact implementation commit>'
+# Use this exact value only after the coordinator accepts this handback.
+HANDOFF_COMMIT=49e21ea90cd663370aa797f1295e8ee65ad4341c
 
 git -C "$LOCAL_REPO" status --short
 test "$(git -C "$LOCAL_REPO" branch --show-current)" = codex/map-unity-ed1
@@ -38,11 +39,28 @@ git -C "$LOCAL_REPO" push origin codex/map-unity-ed1
 ```
 
 Unity (after the owner has logged in and allocated the intended interactive
-environment): use a separate existing Unity package checkout. Never switch or
-modify the candidate checkout while obtaining the package.
+environment): create a separate package checkout if one does not already
+exist. Never switch or modify the candidate checkout while obtaining the
+package.
 
 ```sh
-PACKAGE_CHECKOUT='<owner-selected existing Unity package checkout>'
+# First-time package checkout only. This must be distinct from the candidate
+# source checkout used to build Citlali.
+HANDOFF_COMMIT=49e21ea90cd663370aa797f1295e8ee65ad4341c
+PACKAGE_CHECKOUT="$HOME/c2025t/2026-ENG-citlali-MAP/citlali-refactor-ed2-package"
+PACKAGE_ORIGIN=git@github.com:toltec-astro/citlali.git
+
+test ! -e "$PACKAGE_CHECKOUT"
+git clone "$PACKAGE_ORIGIN" "$PACKAGE_CHECKOUT"
+```
+
+For either that new checkout or a pre-existing separate package checkout, run
+the following clean detached-checkout verification. Do not reuse a directory
+with uncommitted files.
+
+```sh
+HANDOFF_COMMIT=49e21ea90cd663370aa797f1295e8ee65ad4341c
+PACKAGE_CHECKOUT="${PACKAGE_CHECKOUT:-$HOME/c2025t/2026-ENG-citlali-MAP/citlali-refactor-ed2-package}"
 commit="$HANDOFF_COMMIT"
 checkout="$PACKAGE_CHECKOUT"
 test -d "$checkout/.git"
