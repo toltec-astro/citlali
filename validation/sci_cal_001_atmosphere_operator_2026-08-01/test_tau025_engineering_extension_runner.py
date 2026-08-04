@@ -3,6 +3,7 @@
 
 from pathlib import Path
 import tempfile
+from unittest.mock import patch
 
 import numpy as np
 
@@ -43,8 +44,36 @@ def main() -> int:
         else:
             raise AssertionError("unapproved root admitted")
         assert not wrong.exists()
-    # The selected root must remain absent through all no-AM checks.
-    assert not runner.CACHE_ROOT.exists()
+    # The exact committed JSON path is restored before first would-be AM argv
+    # construction.  subprocess.run is trapped to prove this coverage cannot
+    # invoke AM; the sentinel leaf remains absent throughout.
+    with tempfile.TemporaryDirectory(prefix="sci_cal_001_tau025_deserialize_") as temporary:
+        sentinel = Path(temporary) / runner.CACHE_BASENAME
+        real_subprocess_run = runner.subprocess.run
+
+        def reject_am_invocation(argv, *args, **kwargs):
+            if Path(argv[0]).resolve() == runner.AM_EXECUTABLE.resolve():
+                raise AssertionError("AM must not be invoked")
+            return real_subprocess_run(argv, *args, **kwargs)
+
+        with patch.object(runner.subprocess, "run", side_effect=reject_am_invocation):
+            context = runner.preflight(sentinel, dry_run_sentinel=True)
+            restored = runner.deserialize_full_inventory(context["full_inventory"])
+            construction = next(item for item in restored if item.node.role == "construction")
+            heldout = next(item for item in restored if item.node.role == "heldout")
+            profiles_by_filename = {row["filename"]: row for row in context["inputs"]["profiles"]}
+            command_builder = runner.CacheRunner(sentinel, context, profiles_by_filename)
+            construction_spec = runner.full_grid_specification(construction, "1.00000000000000000")
+            heldout_spec = runner.full_grid_specification(heldout, "1.00000000000000000")
+            construction_argv = command_builder.argv(construction_spec)
+            heldout_argv = command_builder.argv(heldout_spec)
+        assert len(restored) == 1275
+        assert construction_spec.zenith_angle_deg == 90 - construction.elevation_deg
+        assert heldout_spec.zenith_angle_deg == 90 - heldout.elevation_deg
+        assert construction_argv[1].endswith(f"{construction.profile}.amc")
+        assert heldout_argv[1].endswith(f"{heldout.profile}.amc")
+        assert construction_argv[-1] == heldout_argv[-1] == "1.00000000000000000"
+        assert not sentinel.exists()
     print("TAU025 runner focused no-AM tests passed")
     return 0
 

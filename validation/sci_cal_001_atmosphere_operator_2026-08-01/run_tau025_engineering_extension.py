@@ -193,21 +193,63 @@ def derived_provenance() -> list[dict[str, str]]:
     return rows
 
 
-def cache_admission(cache_root: Path) -> dict[str, Any]:
-    require(cache_root.is_absolute() and cache_root == CACHE_ROOT and cache_root.name == CACHE_BASENAME, "unapproved cache root")
+def cache_admission(cache_root: Path, *, dry_run_sentinel: bool = False) -> dict[str, Any]:
+    """Verify an execution root, or a deliberately uncreatable dry-run leaf.
+
+    The sentinel option exists solely for regression/preflight evidence after
+    the formerly selected execution root became preserved forensic evidence.
+    It is never accepted by ``--run`` and this function does not create it.
+    """
+    approved_execution_root = cache_root == CACHE_ROOT
+    approved_sentinel = (
+        dry_run_sentinel
+        and cache_root.is_absolute()
+        and cache_root.name == CACHE_BASENAME
+        and cache_root != CACHE_ROOT
+    )
+    require(cache_root.is_absolute() and cache_root.name == CACHE_BASENAME and (approved_execution_root or approved_sentinel), "unapproved cache root")
     parent = cache_root.parent
     require(parent.is_dir() and os.access(parent, os.W_OK | os.X_OK), "cache parent is not writable")
     require(not cache_root.exists() and not cache_root.is_symlink(), "fresh cache root already exists")
     free = shutil.disk_usage(parent).free
     require(free >= MIN_FREE_BYTES, f"insufficient cache storage: {free}")
-    return {"cache_root": str(cache_root), "target_absent": True, "parent_writable": True, "free_bytes": free, "minimum_free_bytes": MIN_FREE_BYTES}
+    return {"cache_root": str(cache_root), "target_absent": True, "parent_writable": True, "free_bytes": free, "minimum_free_bytes": MIN_FREE_BYTES, "dry_run_sentinel": dry_run_sentinel}
 
 
-def preflight(cache_root: Path) -> dict[str, Any]:
+def preflight(cache_root: Path, *, dry_run_sentinel: bool = False) -> dict[str, Any]:
     profiles = profile_inventory()
     inventory = full_inventory(profiles)
     scales = scale_inventory(profiles)
-    return {"runner_id": "SCI-CAL-001-TAU025-RUNNER-001", "runner_sha256": sha256_path(Path(__file__)), "request_sha256": sha256_path(REQUEST_PATH), "protocol_sha256": sha256_path(PROTOCOL_PATH), "inputs": input_binding(profiles), "derived_provenance": derived_provenance(), "full_run_count": len(inventory), "scale_trace_count": len(scales), "full_inventory": [{"run_id": item.run_id, "profile": item.profile, "node_id": item.node.node_id, "role": item.node.role, "elevation_deg": item.elevation_deg, "zenith_angle_deg": 90 - item.elevation_deg} for item in inventory], "cache_admission": cache_admission(cache_root)}
+    return {"runner_id": "SCI-CAL-001-TAU025-RUNNER-001", "runner_sha256": sha256_path(Path(__file__)), "request_sha256": sha256_path(REQUEST_PATH), "protocol_sha256": sha256_path(PROTOCOL_PATH), "inputs": input_binding(profiles), "derived_provenance": derived_provenance(), "full_run_count": len(inventory), "scale_trace_count": len(scales), "full_inventory": [{"run_id": item.run_id, "profile": item.profile, "node_id": item.node.node_id, "role": item.node.role, "elevation_deg": item.elevation_deg, "zenith_angle_deg": 90 - item.elevation_deg} for item in inventory], "cache_admission": cache_admission(cache_root, dry_run_sentinel=dry_run_sentinel)}
+
+
+def deserialize_full_inventory(rows: Iterable[dict[str, Any]]) -> list[FullRun]:
+    """Restore the committed JSON inventory before any execution expansion."""
+    node_by_id = {node.node_id: node for node in nodes()}
+    result: list[FullRun] = []
+    for row in rows:
+        node_id = str(row["node_id"])
+        require(node_id in node_by_id, f"unknown serialized node: {node_id}")
+        node = node_by_id[node_id]
+        item = FullRun(str(row["run_id"]), str(row["profile"]), node, int(row["elevation_deg"]))
+        require(row["role"] == node.role, f"serialized role mismatch: {item.run_id}")
+        require(int(row["zenith_angle_deg"]) == 90 - item.elevation_deg, f"serialized geometry mismatch: {item.run_id}")
+        expected_id = f"tau025e001/{node.role}/{item.profile}/{node.node_id}/el{item.elevation_deg:02d}"
+        require(item.run_id == expected_id, f"serialized run identifier mismatch: {item.run_id}")
+        result.append(item)
+    result.sort(key=lambda item: item.run_id)
+    require(len(result) == 1275 and len({item.run_id for item in result}) == 1275, "serialized full-grid inventory mismatch")
+    require(sum(item.node.role == "construction" for item in result) == 525, "serialized construction inventory mismatch")
+    require(sum(item.node.role == "heldout" for item in result) == 750, "serialized held-out inventory mismatch")
+    return result
+
+
+def full_grid_specification(item: FullRun, scale_decimal: str) -> p1.RunSpec:
+    """Build the first would-be direct-AM command request from restored data."""
+    return p1.full_grid_spec(
+        "tau025_direct_full_grid", item.profile, item.node.node_id,
+        90 - item.elevation_deg, scale_decimal,
+    )
 
 
 def cache_id(spec: p1.RunSpec, profile_sha256: str, context_sha256: str) -> str:
@@ -307,6 +349,7 @@ def create_cache(root: Path, context: dict[str, Any]) -> tuple[int, Any]:
 def run_study(cache_root: Path) -> None:
     context = preflight(cache_root)
     profiles = {row["filename"]: row for row in context["inputs"]["profiles"]}
+    inventory = deserialize_full_inventory(context["full_inventory"])
     descriptor, lock = create_cache(cache_root, context)
     admission = cache_root.parent / f".{cache_root.name}.admission.lock"
     try:
@@ -319,7 +362,7 @@ def run_study(cache_root: Path) -> None:
         saved = dict(p1.EXPECTED_TARGET_TRANSMISSIONS)
         try:
             p1.EXPECTED_TARGET_TRANSMISSIONS.update({node.node_id: node.target_literal for node in nodes()})
-            for profile in sorted({item.profile for item in context["full_inventory"]}):
+            for profile in sorted({item.profile for item in inventory}):
                 scale0 = adapter.run_or_load(p1.anchor_spec(profile, "shared_scale0", p1.f64(0.0)))
                 scale1 = adapter.run_or_load(p1.anchor_spec(profile, "shared_scale1", p1.f64(1.0)))
                 copied_tau, copied_tx = p1.copied_anchor(AM_ROOT, profile)
@@ -332,9 +375,8 @@ def run_study(cache_root: Path) -> None:
                     os.replace(source, destination)
                     scales[(profile, node.node_id)] = solution.scale_decimal
             require(len(scales) == 225, f"scale inventory incomplete: {len(scales)}")
-            inventory = [FullRun(item["run_id"], item["profile"], next(node for node in nodes() if node.node_id == item["node_id"]), int(item["elevation_deg"])) for item in context["full_inventory"]]
             def full_grid(item: FullRun) -> dict[str, Any]:
-                spec = p1.full_grid_spec("tau025_direct_full_grid", item.profile, item.node.node_id, 90 - item.elevation_deg, scales[(item.profile, item.node.node_id)])
+                spec = full_grid_specification(item, scales[(item.profile, item.node.node_id)])
                 return runner.run(item.run_id, spec)
             with concurrent.futures.ThreadPoolExecutor(max_workers=JOBS) as pool:
                 list(pool.map(full_grid, inventory))
@@ -354,13 +396,18 @@ def run_study(cache_root: Path) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--cache-root", type=Path, default=CACHE_ROOT)
+    parser.add_argument("--test-sentinel-cache-root", type=Path,
+                        help="nonexistent test-only leaf for --dry-run; rejected by --run")
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--dry-run", action="store_true")
     mode.add_argument("--run", action="store_true")
     args = parser.parse_args()
     if args.dry_run:
-        print(json.dumps(preflight(args.cache_root), indent=2, sort_keys=True))
+        cache_root = args.test_sentinel_cache_root or args.cache_root
+        require(args.test_sentinel_cache_root is not None, "--dry-run requires --test-sentinel-cache-root; the former selected root is forensic evidence")
+        print(json.dumps(preflight(cache_root, dry_run_sentinel=True), indent=2, sort_keys=True))
         return 0
+    require(args.test_sentinel_cache_root is None, "--test-sentinel-cache-root is dry-run only")
     run_study(args.cache_root)
     return 0
 
