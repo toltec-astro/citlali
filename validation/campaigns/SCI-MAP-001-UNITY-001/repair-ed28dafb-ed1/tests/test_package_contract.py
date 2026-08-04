@@ -37,7 +37,7 @@ def git(*args: str) -> str:
         ("git", "-C", str(REPO), *args), check=True, text=True,
         stdout=subprocess.PIPE, stderr=subprocess.PIPE,
     )
-    return result.stdout.strip()
+    return result.stdout.rstrip()
 
 
 class PackageContractTest(unittest.TestCase):
@@ -215,6 +215,9 @@ class PackageContractTest(unittest.TestCase):
         self.assertNotRegex(text, r"(?m)^\s*ssh unity(?:\s|$)")
         self.assertNotIn('"$TOLPROJ" copy-raw', text)
         self.assertNotIn('"$tolproj" copy-raw', text)
+        self.assertNotIn('--config "$site"', text)
+        self.assertNotIn('--config "$TOLPROJ_SITE_CONFIG"', text)
+        self.assertIn("ordinary Unity default", text)
         self.assertIn("full ptc remains on unity", text.lower())
         self.assertIn("Do not run cleanup", text)
 

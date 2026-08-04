@@ -31,6 +31,8 @@ import subprocess
 import sys
 from typing import Any, Iterable, Mapping, NoReturn, Sequence
 
+import yaml
+
 
 CAMPAIGN_SCHEMA = "sci-map-unity-campaign-ed2-v1"
 OWNER_SCHEMA = "sci-map-unity-owner-values-v1"
@@ -555,7 +557,6 @@ def tolproj_identity(values: Mapping[str, str], campaign: Mapping[str, Any]) -> 
 
     try:
         import tolproj
-        from tolproj.config import config_to_plain_data, load_config, redact_config
         from tolproj.refactor_config import verified_vendor_metadata
         from tolteca.utils.runtime_context import RuntimeContext
         import tolteca
@@ -574,10 +575,35 @@ def tolproj_identity(values: Mapping[str, str], campaign: Mapping[str, Any]) -> 
         if row.get("bundle") != "phase4_1_v2_1" or row.get("source_commit") != campaign[
                 "authority"]["tolproj_bundle_source_commit"]:
             fail(f"installed TolProj {mode} bundle identity differs")
-    site = load_config(Path(values["tolproj_site_config"]))
-    rendered = config_to_plain_data(redact_config(site))
-    if not isinstance(site, Mapping):
-        fail("TolProj site config did not resolve to a mapping")
+    expected_site_source = Path(values["tolproj_site_config"]).resolve(strict=True)
+    config_show = run((str(executable), "config", "show", "--no-provenance"))
+    try:
+        resolved_site = yaml.safe_load(config_show.stdout or "")
+    except yaml.YAMLError as exc:
+        raise CampaignError(f"TolProj config show did not emit YAML: {exc}") from exc
+    if not isinstance(resolved_site, Mapping):
+        fail("TolProj config show did not emit a mapping")
+    source_value = resolved_site.get("source")
+    layer_values = resolved_site.get("layers")
+    rendered = resolved_site.get("config")
+    if not isinstance(source_value, str) or not isinstance(layer_values, list) \
+            or not isinstance(rendered, Mapping):
+        fail("TolProj config show is missing source, layers, or resolved config")
+    actual_site_source = Path(source_value).resolve(strict=True)
+    if actual_site_source != expected_site_source:
+        fail("TolProj selected config source differs from tolproj_site_config")
+    layer_records = []
+    for value in layer_values:
+        if not isinstance(value, str):
+            fail("TolProj config show contains a non-string layer")
+        layer = Path(value).resolve(strict=True)
+        if not layer.is_file():
+            fail(f"TolProj config layer is not a file: {layer}")
+        layer_records.append({"path": str(layer), "sha256": sha256(layer)})
+    if not layer_records or layer_records[-1]["path"] != str(actual_site_source):
+        fail("TolProj config source is not the final resolved layer")
+    if resolved_site.get("profile") != "unity" or rendered.get("cluster") != "unity":
+        fail("TolProj did not resolve the required Unity default profile")
     help_result = run((str(executable), "--help"))
     if "setup-pointing-reductions" not in (help_result.stdout or ""):
         fail("TolProj executable does not expose the required setup surface")
@@ -599,8 +625,9 @@ def tolproj_identity(values: Mapping[str, str], campaign: Mapping[str, Any]) -> 
         "vendor_manifest_sha256": sha256(vendor_path),
         "bundle_manifest": str(bundle_path),
         "bundle_manifest_sha256": sha256(bundle_path),
-        "tolproj_site_config": str(Path(values["tolproj_site_config"]).resolve()),
-        "tolproj_site_config_sha256": sha256(Path(values["tolproj_site_config"])),
+        "tolproj_site_config": str(actual_site_source),
+        "tolproj_site_config_sha256": sha256(actual_site_source),
+        "tolproj_site_config_layers": layer_records,
         "tolproj_site_config_redacted": rendered,
         "tolteca_version": importlib.metadata.version("tolteca"),
         "tolteca_module": str(tolteca_module),
@@ -1120,7 +1147,6 @@ def command_prepare_cases(args: argparse.Namespace) -> int:
     python = Path(values["unity_python"]).resolve(strict=True)
     source = Path(values["unity_source_checkout"]).resolve(strict=True)
     tolproj = Path(values["tolproj_executable"]).resolve(strict=True)
-    site = Path(values["tolproj_site_config"]).resolve(strict=True)
     binary = root / "bin" / "citlali"
     self_check = (
         str(python), str(analysis), "self-check",
@@ -1141,7 +1167,7 @@ def command_prepare_cases(args: argparse.Namespace) -> int:
         record_dir.mkdir(mode=0o755)
         duplicate = (
             str(tolproj), "duplicate", project_source, case_id,
-            "--destination-root", str(projects), "--config", str(site), "--refactor",
+            "--destination-root", str(projects), "--refactor",
         )
         run_logged(duplicate, cwd=projects,
                    transcript=record_dir / "01-duplicate-transcript.txt")
@@ -1152,7 +1178,7 @@ def command_prepare_cases(args: argparse.Namespace) -> int:
             case_dir = project / "audit-pointings"
             setup = (
                 str(tolproj), "setup-pointing-reductions", str(project),
-                "--config", str(site), "--refactor", "--source",
+                "--refactor", "--source",
                 values["point_source_filter"], "--pointings-dir", "audit-pointings",
                 "--apt-dir", values["point_apt_dir"], "--cpus", str(case["cpus"]),
                 "--time", campaign["fixed_execution"]["case_time"],
@@ -1163,7 +1189,7 @@ def command_prepare_cases(args: argparse.Namespace) -> int:
             case_dir = user_root / values["science_source_basename"]
             setup = (
                 str(tolproj), "setup-science-reductions", str(project),
-                "--config", str(site), "--refactor", "--user", "sci_map_001",
+                "--refactor", "--user", "sci_map_001",
                 "--pointing-reduction", values["science_pointing_reduction"],
                 "--apt-product", "matched", "--cpus", str(case["cpus"]),
                 "--time", campaign["fixed_execution"]["case_time"],

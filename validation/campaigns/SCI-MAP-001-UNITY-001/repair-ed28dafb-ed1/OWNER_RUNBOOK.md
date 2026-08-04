@@ -87,6 +87,12 @@ with a verified operational fact. Empty strings are permitted only for the
 three optional Slurm fields. In particular:
 
 - `unity_host_alias` remains `unity_toltec`;
+- `tolproj_site_config` is the resolved default source reported by
+  `tolproj config show --no-provenance`: on Unity it is
+  `/work/toltec/toltec_astro/tolproj/tolproj/config/default.yaml`.  It is a
+  provenance input only.  Do not pass it through `--config`; the campaign uses
+  the ordinary Unity default and records its resolved base/profile/default
+  layers and digests;
 - `canonical_raw_root` is the owner-verified `/work/toltec`;
 - `point_source_project` and `science_source_project` are exactly the two
   project paths below `unity_test_root` named by the JSON specs;
@@ -256,9 +262,8 @@ values="$request_root/owner-values.json"
 frozen="$request_root/frozen-package-tree/validation/campaigns/SCI-MAP-001-UNITY-001/repair-ed28dafb-ed1"
 value() { python_bin=$1; key=$2; "$python_bin" -c \
   'import json,sys; print(json.load(open(sys.argv[1]))[sys.argv[2]])' "$values" "$key"; }
-python_bin=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["unity_python"])' "$values")
+python_bin=$(python -c 'import json,sys; print(json.load(open(sys.argv[1]))["unity_python"])' "$values")
 tolproj=$(value "$python_bin" tolproj_executable)
-site=$(value "$python_bin" tolproj_site_config)
 test_root=$(value "$python_bin" unity_test_root)
 operator=$(value "$python_bin" evidence_operator)
 point_project=$(value "$python_bin" point_source_project)
@@ -267,9 +272,9 @@ science_project=$(value "$python_bin" science_source_project)
 test ! -e "$point_project"; test ! -L "$point_project"
 test ! -e "$science_project"; test ! -L "$science_project"
 "$tolproj" init-test "$frozen/tolproj-point-source.json" \
-  --root "$test_root" --user "$operator" --config "$site"
+  --root "$test_root" --user "$operator"
 "$tolproj" init-test "$frozen/tolproj-science-source.json" \
-  --root "$test_root" --user "$operator" --config "$site"
+  --root "$test_root" --user "$operator"
 test -d "$point_project/data"; test ! -L "$point_project/data"
 test -d "$science_project/data"; test ! -L "$science_project/data"
 test -z "$(find "$point_project/data" -mindepth 1 -maxdepth 1 -print -quit)"
@@ -311,9 +316,9 @@ mkdir "$science_project/pointings/reduced/redu00"
   --output "$science_project/logs/authority-staging.json"
 
 "$tolproj" duplicate "$point_project" CAP-POINT \
-  --destination-root "$request_root/captures" --config "$site" --refactor
+  --destination-root "$request_root/captures" --refactor
 "$tolproj" duplicate "$science_project" CAP-SCIENCE \
-  --destination-root "$request_root/captures" --config "$site" --refactor
+  --destination-root "$request_root/captures" --refactor
 ```
 
 Only individual absolute raw-file symlinks and the named copied ECSV files are
@@ -330,10 +335,10 @@ binary and one CPU, matching fixed reference cases P-SEQ and S-E-SEQ.
 ```sh
 # HUMAN on Unity, after reviewing every derived path.
 "$TOLPROJ" setup-pointing-reductions "$CAPTURE_POINT_ROOT" \
-  --config "$TOLPROJ_SITE_CONFIG" --refactor --source 1146+399 \
+  --refactor --source 1146+399 \
   --pointings-dir capture-pointing --apt-dir apts --cpus 1 --time 24:00:00 --mem 64G
 "$TOLPROJ" setup-science-reductions "$CAPTURE_SCIENCE_ROOT" \
-  --config "$TOLPROJ_SITE_CONFIG" --refactor --user capture \
+  --refactor --user capture \
   --pointing-reduction redu00 --apt-product matched --cpus 1 --time 24:00:00 --mem 64G
 ```
 
