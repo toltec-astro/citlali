@@ -409,7 +409,7 @@ def _validate_authority_staging(
     node = read_json(regular(path, "authority staging manifest"))
     required = {
         "schema_version", "request_id", "revision", "candidate_sha",
-        "capture_id", "authority_root", "records",
+        "capture_id", "records",
         "wholesale_legacy_reduction_used",
     }
     if not isinstance(node, Mapping) or set(node) != required \
@@ -419,8 +419,6 @@ def _validate_authority_staging(
             or node["capture_id"] != expected_capture_id \
             or node["wholesale_legacy_reduction_used"] is not False:
         die("authority staging manifest identity/policy differs")
-    authority_root = directory(
-        Path(node["authority_root"]), "authority staging source root")
     expected = ([('apt', 152389, 'apt_152389_matched.ecsv')]
                 if expected_capture_id == "CAP-POINT" else [
                     ('apt', 152390, 'apt_152390_matched.ecsv'),
@@ -452,7 +450,6 @@ def _validate_authority_staging(
         destination = regular(
             Path(row["destination_path"]), "staged authority destination")
         if "citlali-validation/v1" in source.as_posix() \
-                or not _under(source, authority_root) \
                 or source.name != basename or destination.name != basename \
                 or source in sources or destination in destinations \
                 or not isinstance(row["size_bytes"], int) \
@@ -538,14 +535,18 @@ def _authority_selection(path: Path, capture_id: str) -> list[dict[str, Any]]:
                     ('ppt', 152393, None)])
     rows: list[dict[str, Any]] = []
     for index, (item, expected_row) in enumerate(zip(value["records"], expected)):
-        if not isinstance(item, Mapping) or set(item) != {"role", "observation", "basename"}:
+        if not isinstance(item, Mapping) or set(item) != {
+                "role", "observation", "basename", "source_path"}:
             die(f"authority selection record {index} fields differ")
-        role, obsnum, basename = item["role"], item["observation"], item["basename"]
+        role, obsnum, basename, source_path = (
+            item["role"], item["observation"], item["basename"], item["source_path"])
         expected_role, expected_obs, expected_name = expected_row
         ppt_ok = expected_name is None and isinstance(basename, str) \
             and basename.startswith("ppt_") and basename.endswith(".ecsv") \
             and re.search(rf"(?<![0-9]){obsnum}(?![0-9])", basename)
-        if role != expected_role or obsnum != expected_obs \
+        if not isinstance(source_path, str) or not source_path.startswith("/") \
+                or Path(source_path).name != basename \
+                or role != expected_role or obsnum != expected_obs \
                 or (expected_name is not None and basename != expected_name) \
                 or (expected_name is None and not ppt_ok):
             die(f"authority selection record {index} differs from fixed policy")
@@ -558,30 +559,15 @@ def _authority_selection(path: Path, capture_id: str) -> list[dict[str, Any]]:
 
 
 def command_stage_authorities(args: argparse.Namespace) -> dict[str, Any]:
-    root = directory(args.authority_root, "authority source root")
     apt_destination = directory(args.apt_destination, "APT destination")
     ppt_destination = directory(args.ppt_destination, "PPT destination") \
         if args.capture_id == "CAP-SCIENCE" else None
     selected = _authority_selection(args.selection, args.capture_id)
-    if args.capture_id == "CAP-SCIENCE":
-        for row in selected:
-            if row["role"] != "ppt":
-                continue
-            matches = [
-                path for path in root.rglob("ppt_*.ecsv")
-                if not path.is_symlink() and path.is_file()
-                and re.search(rf"(?<![0-9]){row['observation']}(?![0-9])",
-                              path.name)
-            ]
-            if len(matches) != 1 or matches[0].name != row["basename"]:
-                die(f"PPT authority for observation {row['observation']} is "
-                    "absent, ambiguous, or differs from the selected basename")
     prepared: list[tuple[Path, Path, Mapping[str, Any], str]] = []
     for row in selected:
-        matches = sorted(root.rglob(row["basename"]))
-        if len(matches) != 1:
-            die(f"authority basename {row['basename']} has {len(matches)} matches")
-        source = regular(matches[0], f"{row['role']} authority")
+        source = regular(Path(row["source_path"]), f"{row['role']} authority")
+        if source.name != row["basename"]:
+            die(f"authority source basename differs from selection: {source}")
         if "citlali-validation/v1" in source.as_posix():
             die("legacy citlali-validation/v1 is reference-only, not authority")
         target_root = apt_destination if row["role"] == "apt" else ppt_destination
@@ -608,7 +594,7 @@ def command_stage_authorities(args: argparse.Namespace) -> dict[str, Any]:
         "schema_version": "sci-map-001-authority-staging-v1",
         "request_id": REQUEST_ID, "revision": REVISION,
         "candidate_sha": CANDIDATE, "capture_id": args.capture_id,
-        "authority_root": str(root), "records": records,
+        "records": records,
         "wholesale_legacy_reduction_used": False,
     }
     write_new(args.output, pretty_json(output))
@@ -2481,7 +2467,6 @@ def parser() -> argparse.ArgumentParser:
 
     authorities = commands.add_parser("stage-authorities")
     authorities.add_argument("--capture-id", choices=tuple(CAPTURES), required=True)
-    authorities.add_argument("--authority-root", type=Path, required=True)
     authorities.add_argument("--selection", type=Path, required=True)
     authorities.add_argument("--apt-destination", type=Path, required=True)
     authorities.add_argument("--ppt-destination", type=Path)

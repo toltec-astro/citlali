@@ -72,8 +72,8 @@ OWNER_KEYS = (
     "slurm_constraint", "slurm_reservation", "kidscpp_source_dir",
     "tula_source_dir", "local_retrieval_destination", "unity_test_root",
     "canonical_raw_root", "point_source_project", "science_source_project",
-    "point_raw_selection", "science_raw_selection", "authority_source_root",
-    "authority_selection", "capture_point_root", "capture_science_root",
+    "point_raw_selection", "science_raw_selection", "authority_selection",
+    "capture_point_root", "capture_science_root",
     "compact_evidence_root", "capture_point_fixed_realized_config",
     "capture_point_realized_config", "capture_science_fixed_realized_config",
     "capture_science_realized_config", "candidate_binary",
@@ -85,8 +85,8 @@ UNITY_EXISTING_PATHS = (
     "tolproj_executable", "tolproj_site_config", "point_project",
     "point_apt_dir", "science_project", "kidscpp_source_dir",
     "tula_source_dir", "canonical_raw_root", "unity_test_root",
-    "point_raw_selection", "science_raw_selection", "authority_source_root",
-    "authority_selection", "resource_filesystem_root",
+    "point_raw_selection", "science_raw_selection", "authority_selection",
+    "resource_filesystem_root",
 )
 ABSOLUTE_PATH_KEYS = (
     "unity_source_checkout", "request_root", "deployed_campaign_path",
@@ -95,8 +95,8 @@ ABSOLUTE_PATH_KEYS = (
     "kidscpp_source_dir", "tula_source_dir", "local_retrieval_destination",
     "unity_test_root",
     "canonical_raw_root", "point_source_project", "science_source_project",
-    "point_raw_selection", "science_raw_selection", "authority_source_root",
-    "authority_selection", "capture_point_root", "capture_science_root",
+    "point_raw_selection", "science_raw_selection", "authority_selection",
+    "capture_point_root", "capture_science_root",
     "compact_evidence_root", "capture_point_fixed_realized_config",
     "capture_point_realized_config", "capture_science_fixed_realized_config",
     "capture_science_realized_config", "candidate_binary",
@@ -450,7 +450,7 @@ def validate_owner(path: Path, campaign: Mapping[str, Any],
         for key in ("unity_source_checkout", "deployed_campaign_path", "point_project",
                     "point_apt_dir", "science_project", "kidscpp_source_dir",
                     "tula_source_dir", "canonical_raw_root", "unity_test_root",
-                    "authority_source_root", "resource_filesystem_root"):
+                    "resource_filesystem_root"):
             if not Path(values[key]).is_dir():
                 fail(f"owner directory is absent: {key}")
     if Path(values["canonical_raw_root"]) != Path("/work/toltec"):

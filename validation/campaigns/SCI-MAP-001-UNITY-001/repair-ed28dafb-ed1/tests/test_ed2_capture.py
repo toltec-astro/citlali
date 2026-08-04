@@ -60,10 +60,13 @@ class CaptureToolTest(unittest.TestCase):
     def authority_selection(self, capture_id: str,
                             records: list[dict[str, object]]) -> Path:
         path = self.root / "authority-selection.json"
+        normalized = [{**row, "source_path": row.get(
+            "source_path", str(self.root / "authorities" / str(row["basename"]))) }
+            for row in records]
         write_json(path, {
             "schema_version": "sci-map-001-authority-selection-v1",
             "capture_id": capture_id,
-            "records": records,
+            "records": normalized,
         })
         return path
 
@@ -307,7 +310,7 @@ class CaptureToolTest(unittest.TestCase):
         ppt.mkdir()
         selection = self.authority_selection("CAP-SCIENCE", records)
         with self.assertRaisesRegex(
-                capture.CaptureError, "0 matches|absent, ambiguous"):
+                capture.CaptureError, "regular file"):
             capture.command_stage_authorities(namespace(
                 capture_id="CAP-SCIENCE", authority_root=authority_root,
                 selection=selection, apt_destination=apt,
@@ -324,8 +327,8 @@ class CaptureToolTest(unittest.TestCase):
         self.assertEqual((apt / "apt_152390_matched.ecsv").read_bytes(),
                          b"do not replace")
 
-    def test_authority_copy_rejects_multiple_ppt_matches_for_observation(self) -> None:
-        """ED2 requires one, not merely one selected, PPT authority per support obs."""
+    def test_authority_copy_uses_selected_exact_ppt_source(self) -> None:
+        """An unselected duplicate cannot change the explicitly selected PPT."""
         authority_root = self.root / "authorities"
         authority_root.mkdir()
         records = self.science_authorities()
@@ -337,11 +340,32 @@ class CaptureToolTest(unittest.TestCase):
         apt.mkdir()
         ppt = self.root / "ppt"
         ppt.mkdir()
-        with self.assertRaisesRegex(capture.CaptureError, "ambiguous|matches"):
+        result = capture.command_stage_authorities(namespace(
+            capture_id="CAP-SCIENCE", authority_root=authority_root,
+            selection=selection, apt_destination=apt,
+            ppt_destination=ppt, output=self.root / "selected-ppt.json"))
+        selected = next(row for row in result["records"]
+                        if row["observation"] == 152389)
+        self.assertEqual(Path(selected["source_path"]).name,
+                         "ppt_pointing_152389.ecsv")
+
+    def test_authority_copy_rejects_reference_only_source(self) -> None:
+        legacy = self.root / "citlali-validation" / "v1"
+        legacy.mkdir(parents=True)
+        apt_name = "apt_152389_matched.ecsv"
+        source = legacy / apt_name
+        source.write_bytes(b"reference only")
+        selection = self.authority_selection("CAP-POINT", [{
+            "role": "apt", "observation": 152389, "basename": apt_name,
+            "source_path": str(source),
+        }])
+        destination = self.root / "apt"
+        destination.mkdir()
+        with self.assertRaisesRegex(capture.CaptureError, "reference-only"):
             capture.command_stage_authorities(namespace(
-                capture_id="CAP-SCIENCE", authority_root=authority_root,
-                selection=selection, apt_destination=apt,
-                ppt_destination=ppt, output=self.root / "ambiguous-ppt.json"))
+                capture_id="CAP-POINT", selection=selection,
+                apt_destination=destination, ppt_destination=None,
+                output=self.root / "reference-only.json"))
 
     def _config_fixture(self, mode: str = "point") -> tuple[Path, Path, Path, Path]:
         fixed_root = self.root / "fixed-numbered"
@@ -886,7 +910,7 @@ class CaptureToolTest(unittest.TestCase):
                 manifest=raw_link_manifest, destination=point_data,
                 output=raw_link_staging))
 
-        authority_root = self.root / "point-authorities"
+        authority_root = self.root / "authorities"
         authority_root.mkdir()
         apt_name = "apt_152389_matched.ecsv"
         (authority_root / apt_name).write_bytes(b"point apt authority")

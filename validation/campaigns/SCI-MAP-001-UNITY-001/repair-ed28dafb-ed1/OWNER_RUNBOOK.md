@@ -120,8 +120,45 @@ The single `authority_selection` file may be an
 `CAP-SCIENCE` `records` arrays. Point contains only
 `apt_152389_matched.ecsv`. Science contains, in order,
 `apt_152390_matched.ecsv`, `apt_152392_matched.ecsv`, then exactly one selected
-`ppt_*.ecsv` for 152389, 152391, and 152393. The stager independently rejects
-another matching PPT for any support observation.
+`ppt_*.ecsv` for 152389, 152391, and 152393. Every record carries its exact
+absolute `source_path`; the stager copies only that regular file, requires its
+basename to agree with the selection, and records its digest. It does not
+search a directory or select among duplicate files. The APT source paths are
+the paths named by the actual `72_*.yaml` reduction inputs:
+
+```text
+/work/toltec/commissioning2025-test/2025-C1-COM-01/apts/apt_152389_matched.ecsv
+/work/toltec/commissioning2025-test/2025-C1-COM-01/apts/apt_152390_matched.ecsv
+/work/toltec/commissioning2025-test/2025-C1-COM-01/apts/apt_152392_matched.ecsv
+/work/toltec/commissioning2025-test/2025-C1-COM-01/apts/apt_152391_matched.ecsv
+/work/toltec/commissioning2025-test/2025-C1-COM-01/apts/apt_152393_matched.ecsv
+```
+
+For CAP-SCIENCE, record the three PPT paths from the retained Science pointing
+reduction individually (for example, its `redu00/<obsnum>/raw/` files); do not
+substitute a top-level duplicate or a discovery root.
+
+With the presently verified Unity layout, the completed authority-selection
+file is exactly this shape (replace only `$HOME` through shell expansion when
+writing the file; the stored JSON itself contains absolute paths):
+
+```json
+{
+  "schema_version": "sci-map-001-authority-selection-set-v1",
+  "captures": {
+    "CAP-POINT": {"records": [
+      {"role": "apt", "observation": 152389, "basename": "apt_152389_matched.ecsv", "source_path": "/work/toltec/commissioning2025-test/2025-C1-COM-01/apts/apt_152389_matched.ecsv"}
+    ]},
+    "CAP-SCIENCE": {"records": [
+      {"role": "apt", "observation": 152390, "basename": "apt_152390_matched.ecsv", "source_path": "/work/toltec/commissioning2025-test/2025-C1-COM-01/apts/apt_152390_matched.ecsv"},
+      {"role": "apt", "observation": 152392, "basename": "apt_152392_matched.ecsv", "source_path": "/work/toltec/commissioning2025-test/2025-C1-COM-01/apts/apt_152392_matched.ecsv"},
+      {"role": "ppt", "observation": 152389, "basename": "ppt_commissioning_pointing_152389_citlali.ecsv", "source_path": "/home/toltec_umass_edu/c2025t/2026-ENG-citlali-MAP/SCI-MAP-001-SCIENCE-SOURCE/pointings/reduced/redu00/152389/raw/ppt_commissioning_pointing_152389_citlali.ecsv"},
+      {"role": "ppt", "observation": 152391, "basename": "ppt_commissioning_pointing_152391_citlali.ecsv", "source_path": "/home/toltec_umass_edu/c2025t/2026-ENG-citlali-MAP/SCI-MAP-001-SCIENCE-SOURCE/pointings/reduced/redu00/152391/raw/ppt_commissioning_pointing_152391_citlali.ecsv"},
+      {"role": "ppt", "observation": 152393, "basename": "ppt_commissioning_pointing_152393_citlali.ecsv", "source_path": "/home/toltec_umass_edu/c2025t/2026-ENG-citlali-MAP/SCI-MAP-001-SCIENCE-SOURCE/pointings/reduced/redu00/152393/raw/ppt_commissioning_pointing_152393_citlali.ecsv"}
+    ]}
+  }
+}
+```
 
 Unity (in the already-open Unity shell):
 
@@ -288,7 +325,6 @@ canonical=$(value "$python_bin" canonical_raw_root)
 raw_point=$(value "$python_bin" point_raw_selection)
 raw_science=$(value "$python_bin" science_raw_selection)
 authorities=$(value "$python_bin" authority_selection)
-authority_root=$(value "$python_bin" authority_source_root)
 tool="$frozen/scripts/ed2-capture.py"
 
 "$python_bin" "$tool" raw-manifest --capture-id CAP-POINT \
@@ -310,11 +346,11 @@ tool="$frozen/scripts/ed2-capture.py"
 mkdir "$science_project/pointings/reduced"
 mkdir "$science_project/pointings/reduced/redu00"
 "$python_bin" "$tool" stage-authorities --capture-id CAP-POINT \
-  --authority-root "$authority_root" --selection "$authorities" \
+  --selection "$authorities" \
   --apt-destination "$point_project/apts" \
   --output "$point_project/logs/authority-staging.json"
 "$python_bin" "$tool" stage-authorities --capture-id CAP-SCIENCE \
-  --authority-root "$authority_root" --selection "$authorities" \
+  --selection "$authorities" \
   --apt-destination "$science_project/apts" \
   --ppt-destination "$science_project/pointings/reduced/redu00" \
   --output "$science_project/logs/authority-staging.json"
