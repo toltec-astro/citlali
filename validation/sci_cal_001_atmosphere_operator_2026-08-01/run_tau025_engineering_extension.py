@@ -40,8 +40,11 @@ AM_ROOT = Path("/Users/gwilson/work_toltec/local_data/AM")
 AM_EXECUTABLE = Path("/private/tmp/sci_cal_001_am12_2_native_build_20260801_root/am")
 TOLTECA_REPO = Path("/Users/gwilson/GitHub/tolteca")
 TOLTECA_COMMIT = "2791e6a1e6349ad1d3ac549a648f41cbc51b98c7"
-CACHE_ROOT = Path("/Users/gwilson/work_toltec/local_data/sci_cal_001_tau025_engineering_extension_001_root")
-CACHE_BASENAME = "sci_cal_001_tau025_engineering_extension_001_root"
+CACHE_ROOT = Path("/Users/gwilson/work_toltec/local_data/sci_cal_001_tau025_engineering_extension_002_root")
+CACHE_BASENAME = "sci_cal_001_tau025_engineering_extension_002_root"
+FORENSIC_CACHE_ROOT = Path("/Users/gwilson/work_toltec/local_data/sci_cal_001_tau025_engineering_extension_001_root")
+RETRY_ROOT_AUTHORIZATION_ID = "CAL-ATM-D007-RETRY-ROOT-001"
+RETRY_ROOT_AUTHORIZATION_SHA256 = "295b6ce5fdfae2d204364085bb808bfbf3bbb1ec50be0d28e73771d3e62525d8"
 CACHE_LOCK_NAME = ".tau025-engineering.lock"
 AM_SOURCE_SHA256 = "0cd4ea9d48c3c6da2100a692af1dc24dce5b3c903ced2b07b7372e8e85182fe8"
 AM_EXECUTABLE_SHA256 = "78e721d45b08990069a2d67a5fb337446bcbfb728046940c0d473bea340205fb"
@@ -208,12 +211,15 @@ def cache_admission(cache_root: Path, *, dry_run_sentinel: bool = False) -> dict
         and cache_root != CACHE_ROOT
     )
     require(cache_root.is_absolute() and cache_root.name == CACHE_BASENAME and (approved_execution_root or approved_sentinel), "unapproved cache root")
+    require(cache_root != FORENSIC_CACHE_ROOT, "forensic cache root is ineligible")
     parent = cache_root.parent
     require(parent.is_dir() and os.access(parent, os.W_OK | os.X_OK), "cache parent is not writable")
     require(not cache_root.exists() and not cache_root.is_symlink(), "fresh cache root already exists")
+    admission_lock = parent / f".{cache_root.name}.admission.lock"
+    require(not admission_lock.exists() and not admission_lock.is_symlink(), "cache admission lock already exists")
     free = shutil.disk_usage(parent).free
     require(free >= MIN_FREE_BYTES, f"insufficient cache storage: {free}")
-    return {"cache_root": str(cache_root), "target_absent": True, "parent_writable": True, "free_bytes": free, "minimum_free_bytes": MIN_FREE_BYTES, "dry_run_sentinel": dry_run_sentinel}
+    return {"cache_root": str(cache_root), "target_absent": True, "parent_writable": True, "admission_lock_absent": True, "free_bytes": free, "minimum_free_bytes": MIN_FREE_BYTES, "dry_run_sentinel": dry_run_sentinel, "retry_root_authorization": {"decision_id": RETRY_ROOT_AUTHORIZATION_ID, "sha256": RETRY_ROOT_AUTHORIZATION_SHA256}}
 
 
 def preflight(cache_root: Path, *, dry_run_sentinel: bool = False) -> dict[str, Any]:
@@ -404,8 +410,7 @@ def main() -> int:
     args = parser.parse_args()
     if args.dry_run:
         cache_root = args.test_sentinel_cache_root or args.cache_root
-        require(args.test_sentinel_cache_root is not None, "--dry-run requires --test-sentinel-cache-root; the former selected root is forensic evidence")
-        print(json.dumps(preflight(cache_root, dry_run_sentinel=True), indent=2, sort_keys=True))
+        print(json.dumps(preflight(cache_root, dry_run_sentinel=args.test_sentinel_cache_root is not None), indent=2, sort_keys=True))
         return 0
     require(args.test_sentinel_cache_root is None, "--test-sentinel-cache-root is dry-run only")
     run_study(args.cache_root)

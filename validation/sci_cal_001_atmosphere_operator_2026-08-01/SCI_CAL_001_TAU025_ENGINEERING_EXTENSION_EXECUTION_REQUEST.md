@@ -187,12 +187,14 @@ full-grid tuple uses only that trace's final scale.
 
 ## Immutable fresh-cache and provenance layout
 
-The owner-approved execution must supply one previously absent external cache
-path whose basename is exactly
-`sci_cal_001_tau025_engineering_extension_001_root`. This request deliberately
-does not name a host-specific parent path or create that path. Before creation,
-the runner records the absolute proposed path and verifies it is absent; an
-existing, partial, writer-locked, or reused path fails closed.
+Under retry authorization `CAL-ATM-D007-RETRY-ROOT-001` (SHA-256
+`295b6ce5fdfae2d204364085bb808bfbf3bbb1ec50be0d28e73771d3e62525d8`),
+the owner-approved execution may use only the previously absent external cache
+path `/Users/gwilson/work_toltec/local_data/sci_cal_001_tau025_engineering_extension_002_root`.
+The former `_001_root` is forensic and ineligible: it must not be inspected,
+reused, modified, or deleted. Before creation, the runner records the exact
+approved path and verifies it is absent, unlocked, writable, and provisioned;
+an existing, partial, writer-locked, or reused path fails closed.
 
 After approval, the runner may create only this layout below that fresh root:
 

@@ -3,6 +3,7 @@
 
 from pathlib import Path
 import tempfile
+from types import SimpleNamespace
 from unittest.mock import patch
 
 import numpy as np
@@ -34,16 +35,55 @@ def main() -> int:
         pass
     else:
         raise AssertionError("WARN-001 admitted a non-full scale-search grid")
-    # A non-approved root is rejected before any path is made.
+    # Exercise the actual admission path with a temporary stand-in for the
+    # one selected root.  It must reject an existing target, admission lock,
+    # unwritable parent, or insufficient provisioned storage.
     with tempfile.TemporaryDirectory(prefix="sci_cal_001_tau025_runner_test_") as temporary:
-        wrong = Path(temporary) / runner.CACHE_BASENAME
-        try:
-            runner.cache_admission(wrong)
-        except RuntimeError:
-            pass
-        else:
-            raise AssertionError("unapproved root admitted")
-        assert not wrong.exists()
+        admitted = Path(temporary) / runner.CACHE_BASENAME
+        with patch.object(runner, "CACHE_ROOT", admitted):
+            admission = runner.cache_admission(admitted)
+            assert admission["target_absent"] and admission["parent_writable"]
+            assert admission["admission_lock_absent"]
+            assert admission["retry_root_authorization"]["decision_id"] == "CAL-ATM-D007-RETRY-ROOT-001"
+            admission_lock = admitted.parent / f".{admitted.name}.admission.lock"
+            admission_lock.touch()
+            try:
+                runner.cache_admission(admitted)
+            except RuntimeError:
+                pass
+            else:
+                raise AssertionError("admission lock was accepted")
+            admission_lock.unlink()
+            admitted.mkdir()
+            try:
+                runner.cache_admission(admitted)
+            except RuntimeError:
+                pass
+            else:
+                raise AssertionError("existing target was accepted")
+            admitted.rmdir()
+            with patch.object(runner.os, "access", return_value=False):
+                try:
+                    runner.cache_admission(admitted)
+                except RuntimeError:
+                    pass
+                else:
+                    raise AssertionError("unwritable parent was accepted")
+            with patch.object(runner.shutil, "disk_usage", return_value=SimpleNamespace(free=runner.MIN_FREE_BYTES - 1)):
+                try:
+                    runner.cache_admission(admitted)
+                except RuntimeError:
+                    pass
+                else:
+                    raise AssertionError("underprovisioned target was accepted")
+        for rejected in (runner.FORENSIC_CACHE_ROOT, Path(temporary) / "arbitrary_sibling"):
+            try:
+                runner.cache_admission(rejected)
+            except RuntimeError:
+                pass
+            else:
+                raise AssertionError(f"unapproved root admitted: {rejected}")
+        assert not admitted.exists()
     # The exact committed JSON path is restored before first would-be AM argv
     # construction.  subprocess.run is trapped to prove this coverage cannot
     # invoke AM; the sentinel leaf remains absent throughout.
