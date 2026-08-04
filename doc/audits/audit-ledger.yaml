@@ -4030,11 +4030,29 @@ packages:
     governing_sha_role: inventory_snapshot
     audit_branch: codex/audit-sci-map-002
     audit_commit: abb8d8896d6a1cbaa912b9ac181bd649588acc62
+    audit_provenance_correction_commit: fe201b69be2764dc47dc0a1957bfc8e493f2905a
     audit_integration_commit: d313c879b
     audit_artifact_at_commit: >-
       doc/audits/packages/SCI-MAP-002_SCIENTIFIC_CONTRACT_AUDIT.tex
     final_audit_artifact_sha256: >-
       d77bb5c8e555b43d5303ad2ce0a81e5baef42df2beb85347f9f98cab759d5239
+    audit_provenance_correction:
+      status: verified_documentation_only
+      coordinator_acknowledgment_path: >-
+        doc/audits/packages/SCI-MAP-002_PROVENANCE_CORRECTION_ACKNOWLEDGMENT_2026-08-03.md
+      coordinator_acknowledgment_sha256: >-
+        9196837da6092ec62239d306ee55de9a4bfe3b0e0ab756a1e4c0bf017c2e97a6
+      completed_audit_commit: abb8d8896d6a1cbaa912b9ac181bd649588acc62
+      completed_audit_report_sha256: >-
+        d77bb5c8e555b43d5303ad2ce0a81e5baef42df2beb85347f9f98cab759d5239
+      correction_commit: fe201b69be2764dc47dc0a1957bfc8e493f2905a
+      corrected_report_sha256: >-
+        f2049d2e3cd677405559bd256c488199a22d0411d8f278b276183b94ee93f531
+      corrected_local_evidence_sha256: >-
+        d599a058a0c378c49043342fc50fac231cb6f2c9b7a772bb3c374d58dd77f67e
+      corrected_ledger_proposal_sha256: >-
+        2be6ff0f032532cce79004c78a5f8584f5364a98c7f38ef7fc5cfa7bdd311b76
+      substantive_change: false
     independent_derivation:
       status: independent_draft_frozen
       path: doc/audits/packages/SCI-MAP-002_INDEPENDENT_CORE.tex
