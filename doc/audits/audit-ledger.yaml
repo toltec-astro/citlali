@@ -2454,6 +2454,23 @@ packages:
           Authorized only after every registered readiness gate passes,
           including immediate verification that the selected root is absent,
           writable, and sufficiently provisioned.
+        retry_root_authorization:
+          decision_id: CAL-ATM-D007-RETRY-ROOT-001
+          authority: coordinator_under_owner_approved_execution_request
+          decision_date: 2026-08-03
+          status: selected_fresh_retry_root_authorized
+          record_path: >-
+            doc/audits/packages/SCI-CAL-001_TAU025_RETRY_ROOT_AUTHORIZATION_2026-08-03.md
+          record_sha256: >-
+            295b6ce5fdfae2d204364085bb808bfbf3bbb1ec50be0d28e73771d3e62525d8
+          preserved_ineligible_root: >-
+            /Users/gwilson/work_toltec/local_data/sci_cal_001_tau025_engineering_extension_001_root
+          selected_fresh_retry_root: >-
+            /Users/gwilson/work_toltec/local_data/sci_cal_001_tau025_engineering_extension_002_root
+          root_recorded_state: parent_exists_root_absent_available_kib_323930752
+          prerequisite: >-
+            Runner correction 1e4f96f321d230b8578e2042b5687c7147d75d24 and
+            renewed all-gate preflight immediately before root creation.
         runner_preparation_authorization:
           decision_id: CAL-ATM-D007-RUNNER-001
           authority: coordinator_under_owner_approved_execution_request
