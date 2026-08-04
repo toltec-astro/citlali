@@ -545,23 +545,29 @@ actual `inputs.data_items` paths. The following is a collection record only;
 it does not copy a PTC payload or alter the completed reduction.
 
 ```sh
-record_generated_configs() (
-  set -euo pipefail
+record_generated_configs() {
   capture_root=$1
   expected_count=$2
   output="$capture_root/generated-citlali-configs.sha256"
-  test ! -e "$output"
-  configs=$(find "$capture_root" -type f -path '*/reduced/redu*/citlali_o*.yaml' \
-    -print | LC_ALL=C sort)
-  test "$(printf '%s\n' "$configs" | sed '/^$/d' | wc -l | tr -d ' ')" = "$expected_count"
+  test ! -e "$output" || return 1
+  configs=$(find "$capture_root" -type f -path '*/reduced/redu*/citlali_o*.yaml' -print)
+  status=$?
+  test "$status" -eq 0 || return "$status"
+  configs=$(printf '%s\n' "$configs" | sed '/^$/d' | LC_ALL=C sort)
+  status=$?
+  test "$status" -eq 0 || return "$status"
+  count=$(printf '%s\n' "$configs" | sed '/^$/d' | wc -l | tr -d ' ')
+  test "$count" = "$expected_count" || return 1
   printf '%s\n' "$configs" | while IFS= read -r config; do
-    test -n "$config"
-    grep -q '^inputs:' "$config"
-    grep -q 'data_items:' "$config"
-    sha256sum "$config"
+    test -n "$config" || exit 1
+    grep -q '^inputs:' "$config" || exit 1
+    grep -q 'data_items:' "$config" || exit 1
+    sha256sum "$config" || exit 1
   done > "$output"
-  test -s "$output"
-)
+  status=$?
+  test "$status" -eq 0 || return "$status"
+  test -s "$output" || return 1
+}
 record_generated_configs "$CAPTURE_POINT_ROOT" 1
 record_status=$?
 test "$record_status" -eq 0 || exit "$record_status"
