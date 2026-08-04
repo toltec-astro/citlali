@@ -19,6 +19,12 @@ choose another raw transfer route, build a second binary, edit the candidate,
 change a case/gate, infer a missing primitive from FITS, or delete retained
 evidence.
 
+> **Later recovery authority (2026-08-04):** the original seven-case execution
+> lane remains retired. Do not rerun it or pursue another full-PTC route.
+> `JINC_RECOVERY_COMPARISON_2026-08-04.md` instead prepares two isolated,
+> method-only naïve-versus-JINC comparator clones after CAP-SCIENCE failed
+> configuration admission. It contains no submission command.
+
 ## 1. Coordinator-approved push and separate Unity checkout
 
 Only after the coordinator names `HANDOFF_COMMIT`, the owner may run this

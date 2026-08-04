@@ -1,0 +1,14 @@
+# Local recovery comparator for CAP-POINT.
+#
+# Install only as the final numbered fragment in a clone of the successful
+# naive P-SEQ reduction.  CAP-POINT is not a clean comparator because its
+# full-PTC output overlay intentionally differs from P-SEQ.  The P-SEQ clone
+# already carries the required noise, geometry, runtime, and disabled
+# fruit-loop policy, so the only resolved scientific change is this method.
+reduce:
+  steps:
+    0:
+      config:
+        low_level:
+          mapmaking:
+            method: jinc

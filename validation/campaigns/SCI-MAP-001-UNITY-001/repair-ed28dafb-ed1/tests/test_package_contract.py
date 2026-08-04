@@ -174,6 +174,30 @@ class PackageContractTest(unittest.TestCase):
             }}},
         }}}}}})
 
+    def test_jinc_recovery_is_method_only_and_ptc_free(self) -> None:
+        science = yaml.safe_load((PACKAGE / "jinc-science-comparator-overlay.yaml").read_text())
+        point = yaml.safe_load((PACKAGE / "jinc-point-comparator-overlay.yaml").read_text())
+        self.assertEqual(
+            science["reduce"]["steps"][0]["config"]["low_level"],
+            {
+                "mapmaking": {"method": "jinc"},
+                "noise_maps": {
+                    "enabled": True, "n_noise_maps": 64,
+                    "products": {"enabled": True},
+                },
+                "timestream": {"fruit_loops": {"enabled": False}},
+            },
+        )
+        self.assertEqual(
+            point["reduce"]["steps"][0]["config"]["low_level"],
+            {"mapmaking": {"method": "jinc"}},
+        )
+        recovery = (PACKAGE / "JINC_RECOVERY_COMPARISON_2026-08-04.md").read_text()
+        self.assertIn("CAP-POINT is **not** a clean point comparator", recovery)
+        self.assertIn("--report-nonconformant", recovery)
+        self.assertIn("No `processed-time-chunk-full-overlay.yaml` is installed", recovery)
+        self.assertIn("`tolproj submit-reduction`, `sbatch`, or\n`tolteca reduce`", recovery)
+
     def test_owner_operational_values_remain_unfilled(self) -> None:
         values = load("owner-values.template.json")
         fixed = {

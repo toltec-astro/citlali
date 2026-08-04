@@ -38,6 +38,10 @@ package.
 - `scripts/unity-campaign.py` retains the fail-closed one-build/seven-case
   orchestration and emits human commands without contacting Unity or
   submitting Slurm work.
+- `JINC_RECOVERY_COMPARISON_2026-08-04.md` is the later, local-only recovery
+  preparation after the CAP-SCIENCE admission failure. It leaves the completed
+  seven naïve controls and retained captures untouched; it prepares isolated
+  method-only JINC comparator clones without a full-PTC overlay.
 - `resource-report.json` records local metadata measurements and the Unity
   planning estimate. `resource-projection.schema.json` binds that estimate to
   before-stage records, but it is not a full/all-PTC serialization upper bound

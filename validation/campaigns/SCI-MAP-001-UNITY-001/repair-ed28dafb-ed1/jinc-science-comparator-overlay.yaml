@@ -1,0 +1,22 @@
+# Local recovery comparator for the CAP-SCIENCE configuration-admission failure.
+#
+# Install only as the final numbered fragment in a clone of the successful
+# naive S-E-SEQ reduction.  The clone supplies the same observations, pointing
+# authority, cleaning, geometry, runtime, and empirical-noise settings.  This
+# fragment makes those three admission requirements explicit and changes only
+# the resolved mapmaking method relative to that known-good baseline.
+reduce:
+  steps:
+    0:
+      config:
+        low_level:
+          mapmaking:
+            method: jinc
+          noise_maps:
+            enabled: true
+            n_noise_maps: 64
+            products:
+              enabled: true
+          timestream:
+            fruit_loops:
+              enabled: false

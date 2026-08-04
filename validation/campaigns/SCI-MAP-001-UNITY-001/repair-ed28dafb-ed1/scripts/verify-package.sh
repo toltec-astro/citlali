@@ -28,7 +28,7 @@ done < <(find . -type f -name '*.json' -not -path './__pycache__/*' | LC_ALL=C s
 "$python_bin" -m py_compile \
   SCI-MAP-001-analysis.py \
   scripts/compact-evidence.py scripts/ed2-capture.py scripts/hash-tree.py \
-  scripts/unity-campaign.py \
+  scripts/jinc-comparator-check.py scripts/unity-campaign.py \
   tests/test_compact_evidence.py tests/test_ed2_capture.py \
   tests/test_package_contract.py
 
@@ -37,6 +37,7 @@ bash -n scripts/analysis-job-wrapper.sh scripts/case-job-wrapper.sh \
 
 "$python_bin" scripts/ed2-capture.py self-check >/dev/null
 "$python_bin" scripts/compact-evidence.py self-check >/dev/null
+"$python_bin" scripts/jinc-comparator-check.py --self-check >/dev/null
 "$python_bin" SCI-MAP-001-analysis.py self-check \
   --campaign campaign.json \
   --product-contracts "$source_root/validation/product_contracts.json" \
