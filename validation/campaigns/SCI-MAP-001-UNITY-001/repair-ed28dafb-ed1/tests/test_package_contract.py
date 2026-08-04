@@ -195,6 +195,12 @@ class PackageContractTest(unittest.TestCase):
         recovery = (PACKAGE / "JINC_RECOVERY_COMPARISON_2026-08-04.md").read_text()
         self.assertIn("CAP-POINT is **not** a clean point comparator", recovery)
         self.assertIn("--report-nonconformant", recovery)
+        self.assertIn(
+            "/work/toltec/commissioning2025-test/2026-ENG-citlali-sci-map-001",
+            recovery,
+        )
+        self.assertNotIn('RUN_ROOT="$HOME/c2025t/', recovery)
+        self.assertIn("Package staging is intentionally separate", recovery)
         self.assertIn("No `processed-time-chunk-full-overlay.yaml` is installed", recovery)
         self.assertIn("`tolproj submit-reduction`, `sbatch`, or\n`tolteca reduce`", recovery)
 

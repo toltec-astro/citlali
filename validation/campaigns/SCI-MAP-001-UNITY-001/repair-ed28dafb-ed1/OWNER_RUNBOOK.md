@@ -23,7 +23,10 @@ evidence.
 > lane remains retired. Do not rerun it or pursue another full-PTC route.
 > `JINC_RECOVERY_COMPARISON_2026-08-04.md` instead prepares two isolated,
 > method-only naïve-versus-JINC comparator clones after CAP-SCIENCE failed
-> configuration admission. It contains no submission command.
+> configuration admission. It contains no submission command. Its only Unity
+> processing root is `/work/toltec/commissioning2025-test/2026-ENG-citlali-sci-map-001`;
+> the `$HOME/c2025t/.../citlali-refactor-ed2-package` checkout remains separate
+> package staging, never a processing root.
 
 ## 1. Coordinator-approved push and separate Unity checkout
 

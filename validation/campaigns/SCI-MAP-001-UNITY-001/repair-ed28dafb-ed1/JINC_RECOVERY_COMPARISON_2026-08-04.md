@@ -40,9 +40,14 @@ session. They do not submit a job. Do not enter `set -euo pipefail` in an
 interactive compute-node terminal.
 
 ```sh
-RUN_ROOT="$HOME/c2025t/2026-ENG-citlali-MAP/SCI-MAP-001-UNITY-001-ED2"
-PACKAGE="$HOME/c2025t/2026-ENG-citlali-MAP/citlali-refactor-ed2-package/validation/campaigns/SCI-MAP-001-UNITY-001/repair-ed28dafb-ed1"
-CONTROLS_ROOT="$HOME/c2025t/2026-ENG-citlali-MAP"
+# This is the only Unity processing root for this recovery/comparison.
+PROCESSING_ROOT="/work/toltec/commissioning2025-test/2026-ENG-citlali-sci-map-001"
+RUN_ROOT="$PROCESSING_ROOT/SCI-MAP-001-UNITY-001-ED2"
+CONTROLS_ROOT="$PROCESSING_ROOT"
+
+# Package staging is intentionally separate and read-only during processing.
+PACKAGE_CHECKOUT="$HOME/c2025t/2026-ENG-citlali-MAP/citlali-refactor-ed2-package"
+PACKAGE="$PACKAGE_CHECKOUT/validation/campaigns/SCI-MAP-001-UNITY-001/repair-ed28dafb-ed1"
 CANDIDATE_BIN="/work/toltec/citlali_dev/citlali_refactor_map_ed28/build_unity_release/bin/citlali"
 export TOLPROJ_CONFIG="$RUN_ROOT/tolproj-map-ed28.yaml"
 
@@ -53,6 +58,8 @@ JINC_SCIENCE="$JINC_ROOT/S-E-SEQ-JINC"
 JINC_POINT="$JINC_ROOT/P-SEQ-JINC"
 
 test -x "$CANDIDATE_BIN"
+test -d "$PROCESSING_ROOT"
+test -d "$PACKAGE"
 test -d "$NAIVE_SCIENCE"
 test -d "$NAIVE_POINT"
 test ! -e "$JINC_SCIENCE"
