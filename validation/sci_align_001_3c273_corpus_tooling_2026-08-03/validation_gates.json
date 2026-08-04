@@ -57,7 +57,7 @@
     },
     {
       "command": "cmake build; config preflight; focused 148670 preparation plus 3C273 corpus tests under headless Matplotlib; archived low-level configuration comparison; ruff and py_compile",
-      "result": "citlali_cli build and full config preflight passed; 62 focused preparation/corpus tests passed; generated low-level config matched the archived 148670 config outside explicit input, output/runtime, and prior bindings; static checks passed. The tool binds all eleven raw files, matched APT, telescope, active policy, and Citlali executable by SHA-256 before writing the owner-selected replay root.",
+      "result": "citlali_cli build and full config preflight passed; 62 focused preparation/corpus tests passed; generated low-level config matched the archived 148670 config outside explicit input, output/runtime, prior, and absolute raw-data fit-report bindings; static checks passed. The tool binds all eleven raw files, matched APT, telescope, active policy, and Citlali executable by SHA-256 before writing the owner-selected replay root.",
       "status": "pass"
     }
   ],

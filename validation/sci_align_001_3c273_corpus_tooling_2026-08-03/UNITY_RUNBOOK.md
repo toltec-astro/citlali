@@ -76,8 +76,11 @@ The retained historical directory lacks the detector-resolved PTC TOD. The
 following owner-authorized, source-isolated reproduction is therefore the
 entry gate to the corpus measurement. It regenerates only the 148670 diagnostic
 products required by SCI-ALIGN-001, using the archived matched-input APT and
-telescope identities and the exact accepted Beammap policy. It does not modify
-an existing reduction, raw file, APT, or application configuration.
+telescope identities and the accepted Beammap policy. The generated config
+resolves the policy's historical relative `../data` fit-report location to the
+checksum-bound absolute raw-data directory, so Slurm's repository working
+directory cannot change that input. It does not modify an existing reduction,
+raw file, APT, or application configuration.
 
 ```bash
 export SCI_REPLAY_ROOT=/work/toltec/wilson/citlali_testing/beammaps/3c273/sci_align_001_reproduction_148670_2026-08-03
@@ -92,6 +95,10 @@ python tools/diagnostics/prepare_sci_align_001_148670_reproduction.py \
 sed -n '1,260p' "$SCI_REPLAY_ROOT/config/citlali_o148670_0_2_c1_sci_align_reproduction.yaml"
 sed -n '1,120p' "$SCI_REPLAY_ROOT/submit_148670_reproduction.sbatch"
 ```
+
+If an earlier replay attempt created this root but exited unsuccessfully, do
+not remove or overwrite it. Preserve its evidence and select a new root ending
+in `_retry1` before repeating the preparation gate.
 
 Preparation hashes all eleven raw network files (roughly 17 GiB total) before
 writing anything; several minutes of filesystem time is normal. It fails if

@@ -9,6 +9,11 @@ reassociate raw rows, or authorize a physical timing correction. The owner has
 separately authorized one source-isolated 148670 reproduction gate to generate
 the missing detector-resolved PTC TOD before corpus execution.
 
+The replay binds the historical raw-data directory as an absolute KIDs
+fit-report location. This is equivalent to the archived `../data` convention
+when launched from the historical Beammap reduction directory, but is stable
+under owner Slurm submission from the repository checkout.
+
 ## Owner entry points
 
 - `UNITY_RUNBOOK.md` gives the exact owner-run inventory, freeze, serial,

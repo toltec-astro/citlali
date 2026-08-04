@@ -30,8 +30,10 @@ the Citlali executable identity, a direct run script, a Slurm script, and
 matched APT and telescope product match their archived SHA-256 identities. The
 replay output root is distinct from existing reductions and from the corpus run
 root. It requests the existing `source_crossing_tod` detector-resolved PTC TOD
-sidecar. On successful completion, its run script regenerates `SHA256SUMS` to
-include every replay product. The replay creates evidence only; it does not authorize a timing
+sidecar and binds the archived relative `../data` fit-report convention to the
+absolute raw-data directory recorded in the input manifest. On successful
+completion, its run script regenerates `SHA256SUMS` to include every replay
+product. The replay creates evidence only; it does not authorize a timing
 correction, source/configuration change, or row reassociation. Review its
 compact product/log evidence before the inventory stages proceed.
 

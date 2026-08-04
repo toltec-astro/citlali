@@ -51,6 +51,7 @@ class ReproductionConfigurationTest(unittest.TestCase):
             f"/analysis/reduced/{APT_NAME}",
         )
         self.assertEqual(config["beammap"]["priors"]["filepath"], f"/repo/{PRIOR_RELATIVE}")
+        self.assertEqual(config["kids"]["solver"]["fitreportdir"], "/raw")
         self.assertTrue(config["beammap"]["detector_tod_output"]["enabled"])
         self.assertEqual(config["beammap"]["detector_tod_output"]["subdir_name"], "source_crossing_tod")
         self.assertEqual(config["runtime"]["output_dir"], "/output/reduced")
@@ -118,6 +119,7 @@ class ReproductionConfigurationTest(unittest.TestCase):
             ):
                 preparation = prepare(arguments)
             self.assertTrue(preparation["detector_tod_requested"])
+            self.assertEqual(preparation["fitreport_directory"], "/raw")
             checksums = (output / "SHA256SUMS").read_text(encoding="utf-8")
             self.assertIn("config/citlali_o148670_0_2_c1_sci_align_reproduction.yaml", checksums)
             self.assertIn("run_148670_reproduction.sh", checksums)

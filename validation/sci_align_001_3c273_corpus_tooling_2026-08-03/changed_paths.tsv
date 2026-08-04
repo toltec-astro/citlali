@@ -4,7 +4,7 @@ M	tools/diagnostics/generate_sci_align_001_3c273_slurm_array.py	checksum-bound s
 M	tools/diagnostics/inventory_sci_align_001_3c273_corpus.py	authoritative inventory, run-root exclusion, canonical selection, availability
 M	tools/diagnostics/run_sci_align_001_3c273_beammap.py	retained-product anomaly artifact emission
 M	tools/diagnostics/sci_align_001_3c273_common.py	delivered raw-counter/PpsTime diagnostic implementation
-A	tools/diagnostics/prepare_sci_align_001_148670_reproduction.py	owner-authorized source-isolated 148670 detector-TOD reproduction preparation
+A	tools/diagnostics/prepare_sci_align_001_148670_reproduction.py	owner-authorized source-isolated 148670 detector-TOD reproduction preparation with absolute fit-report input binding
 M	tools/diagnostics/test_sci_align_001_3c273_aggregation.py	aggregation/anomaly regression tests
 M	tools/diagnostics/test_sci_align_001_3c273_inventory.py	allowlist, canonical, exclusion, scheduler tests
 M	tools/diagnostics/test_sci_align_001_3c273_runner.py	delivered raw anomaly tests

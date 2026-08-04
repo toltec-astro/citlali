@@ -183,6 +183,10 @@ def reproduction_config(
         }
     ]
     config["beammap"]["priors"]["filepath"] = str(paths["beammap_prior"])
+    # The accepted numbered policy's relative ../data location assumes the
+    # historical beammaps/reduced working directory. The owner-run replay is
+    # submitted from the repository, so preserve that input meaning explicitly.
+    config["kids"]["solver"]["fitreportdir"] = str(raw_root.expanduser().resolve())
     config["runtime"]["n_threads"] = int(threads)
     config["runtime"]["output_dir"] = str(output_root)
     config["runtime"]["parallel_policy"] = "omp"
@@ -270,7 +274,7 @@ def prepare(args: argparse.Namespace) -> dict[str, Any]:
             "telescope_sha256": ARCHIVED_TELESCOPE_SHA256,
             "policy_path": str(POLICY.resolve()),
             "policy_sha256": sha256_file(POLICY),
-            "policy_equivalence": "matches archived 148670 low-level policy except inputs, runtime, and prior path",
+            "policy_equivalence": "matches archived 148670 low-level policy except inputs, runtime, prior path, and absolute fitreport directory resolving historical ../data",
         },
         "citlali": {"path": str(executable), "sha256": sha256_file(executable)},
         "inputs": rows,
@@ -278,6 +282,7 @@ def prepare(args: argparse.Namespace) -> dict[str, Any]:
         "output_root": str(output),
         "source_products_modified": False,
         "detector_tod_requested": True,
+        "fitreport_directory": str(raw_root),
     }
     if args.dry_run:
         return preparation
