@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "sci-map-001-source-selection-v1",
+  "title": "SCI-MAP-001 factual source-role selection for automatic raw manifests",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "capture_id", "records"],
+  "properties": {
+    "schema_version": {"const": "sci-map-001-source-selection-v1"},
+    "capture_id": {"enum": ["CAP-POINT", "CAP-SCIENCE"]},
+    "records": {
+      "type": "array",
+      "minItems": 5,
+      "items": {"$ref": "#/$defs/record"}
+    }
+  },
+  "$defs": {
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "role", "path", "obsnums", "arrays", "networks"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"},
+        "role": {
+          "enum": [
+            "raw_timestream", "kids_fit_report", "apt", "calibration",
+            "pointing_support"
+          ]
+        },
+        "path": {"type": "string", "pattern": "^/[^\\n\\r]+$"},
+        "obsnums": {
+          "type": "array", "minItems": 1, "uniqueItems": true,
+          "items": {"type": "integer", "minimum": 1}
+        },
+        "arrays": {
+          "type": "array", "minItems": 1, "uniqueItems": true,
+          "items": {"enum": ["a1100", "a1400", "a2000"]}
+        },
+        "networks": {
+          "type": "array", "minItems": 1, "uniqueItems": true,
+          "items": {"type": "integer", "minimum": 0, "maximum": 12}
+        }
+      }
+    }
+  }
+}

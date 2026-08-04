@@ -1,0 +1,11 @@
+reduce:
+  steps:
+    0:
+      config:
+        low_level:
+          timestream:
+            processed_time_chunk:
+              output:
+                enabled: true
+                mode: full
+                indices: all

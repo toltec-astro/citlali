@@ -1,0 +1,95 @@
+{
+  "schema_version": "sci-map-001-ed2-resource-report-v1",
+  "classification": "local-metadata-planning-only-not-unity-evidence",
+  "request_id": "SCI-MAP-001-UNITY-001",
+  "revision": "repair-sha-ed28dafb-ed1-2026-08-02",
+  "candidate_sha": "ed28dafb37f9113c0d3c95297148157129a90886",
+  "ceiling": {
+    "bytes": 214748364800,
+    "gib": 200.0,
+    "inclusive": true
+  },
+  "local_metadata_measurement": {
+    "active_networks": [0, 1, 2, 3, 4, 5, 7, 8, 9, 11, 12],
+    "detector_count": 5518,
+    "source_terms_total": 1717082860,
+    "source_terms_by_observation_array": {
+      "152389": {"a1100": 24429421, "a1400": 10531812, "a2000": 7521923},
+      "152390": {"a1100": 480826960, "a1400": 207303104, "a2000": 148051649},
+      "152392": {"a1100": 482113090, "a1400": 207857076, "a2000": 148447825}
+    },
+    "post_rtc_samples_per_detector": {
+      "152389": 3628,
+      "152390": 151216,
+      "152392": 151216
+    },
+    "processed_terms_by_observation": {
+      "152389": 20019304,
+      "152390": 834409888,
+      "152392": 834409888
+    },
+    "processed_terms_total": 1688839080,
+    "core_array_lower_bound_bytes": {
+      "CAP-POINT": 800772160,
+      "CAP-SCIENCE": 93453907456,
+      "combined": 94254679616
+    },
+    "core_array_lower_bound_gib": 87.78151088953018,
+    "preliminary_full_capture_estimate_bytes": 127064131640,
+    "preliminary_full_capture_estimate_gib": 118.33769422024488
+  },
+  "projected_unity_envelope": {
+    "method": "allocate-the-local-127064131640-byte-preliminary-estimate-in-proportion-to-the-measured-core-array-lower-bound-and-add-a-separate-16-GiB-compact-log-manifest-reserve",
+    "incremental_stage_bytes": [
+      {"stage": "CAP-POINT", "bytes": 1079515834},
+      {"stage": "CAP-SCIENCE", "bytes": 125984615806},
+      {"stage": "compact-logs-manifests-and-focused-expansion-reserve", "bytes": 17179869184}
+    ],
+    "projected_total_bytes": 144244000824,
+    "projected_total_gib": 134.33769422024488,
+    "projected_headroom_bytes": 70504363976,
+    "projected_headroom_gib": 65.66230577975512,
+    "warning": "This is a local planning estimate, not a component-wise full/all-PTC serialization bound, a capacity proof, or a guarantee of realized Unity workspace use. Before and after every Unity material stage, the owner records live governed-root logical and allocated use, selected-filesystem availability, and this digest-bound planning estimate, then makes the next-stage stop/continue decision."
+  },
+  "projection_contract": {
+    "schema_version": "sci-map-001-resource-projection-v1",
+    "operator_supplied_byte_count": false,
+    "preparation_method": "frozen local planning envelope total: 144244000824 bytes; owner-review context only",
+    "capture_method": "frozen local planning estimate: CAP-POINT=1079515834 bytes; CAP-SCIENCE=125984615806 bytes; owner-review context only",
+    "compact_method": "67108864 bytes plus two bytes per primitive term from the exact producer-stream authority",
+    "focused_expansion_plan_method": "67108864 bytes plus 256 bytes per max_terms entry in the exact discrepancy request",
+    "focused_expansion_emit_method": "67108864 bytes plus 2048 bytes per max_terms entry in the exact discrepancy request",
+    "analysis_method": "4294967296 bytes plus the byte size of the exact result collection",
+    "final_bundle_method": "67108864 bytes plus three times the final-inventory size sum of return members after exact retained-PTC exclusions"
+  },
+  "governed_roots": [
+    "owner_values.point_source_project",
+    "owner_values.science_source_project",
+    "owner_values.capture_point_root",
+    "owner_values.capture_science_root",
+    "owner_values.compact_evidence_root"
+  ],
+  "excluded_only_when_symlinks_remain_links": [
+    "pre-existing canonical raw targets reached through individual file symlinks"
+  ],
+  "required_pre_stage_checks": [
+    "every root, directory, regular file, and symlink under all governed roots is inventoried without traversing symlink targets",
+    "the digest-bound local planning estimate is recorded without treating it as an output upper bound",
+    "all five governed roots are on the recorded selected filesystem",
+    "current logical apparent and allocated bytes are at most 214748364800",
+    "the owner reviews current use, available filesystem capacity, and the planning estimate before every next material stage"
+  ],
+  "required_post_stage_checks": [
+    "record logical apparent bytes",
+    "record allocated bytes",
+    "record complete generated-file inventory",
+    "owner stops before the next material stage if logical or allocated bytes approaches or exceeds 214748364800, or capacity is inadequate"
+  ],
+  "retention": {
+    "full_captures": ["CAP-POINT", "CAP-SCIENCE"],
+    "retain_through": ["fresh MAP re-audit", "any requested focused expansion"],
+    "automatic_cleanup": false,
+    "deletion_to_fit_ceiling": false,
+    "future_cleanup_requires": "recorded coordinator acceptance of the fresh MAP re-audit"
+  }
+}

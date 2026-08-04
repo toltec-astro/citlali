@@ -1,0 +1,43 @@
+{
+  "schema_version": "sci-map-001-ed2-capture-plan-v1",
+  "request_id": "SCI-MAP-001-UNITY-001",
+  "revision": "repair-sha-ed28dafb-ed1-2026-08-02",
+  "candidate_sha": "ed28dafb37f9113c0d3c95297148157129a90886",
+  "ordinary_binary_count": 1,
+  "capture_order": ["CAP-POINT", "CAP-SCIENCE"],
+  "captures": [
+    {
+      "capture_id": "CAP-POINT",
+      "mode": "point",
+      "tolproj_spec": "tolproj-point-source.json",
+      "target_observations": [152389],
+      "pointing_support_observations": [],
+      "apt_basenames": ["apt_152389_matched.ecsv"],
+      "ppt_observations": [],
+      "reference_case": "P-SEQ"
+    },
+    {
+      "capture_id": "CAP-SCIENCE",
+      "mode": "science",
+      "tolproj_spec": "tolproj-science-source.json",
+      "target_observations": [152390, 152392],
+      "pointing_support_observations": [152389, 152391, 152393],
+      "apt_basenames": [
+        "apt_152390_matched.ecsv",
+        "apt_152392_matched.ecsv"
+      ],
+      "ppt_observations": [152389, 152391, 152393],
+      "reference_case": "S-E-SEQ"
+    }
+  ],
+  "merged_config_diff_allowlist": {
+    "timestream.processed_time_chunk.output.enabled": true,
+    "timestream.processed_time_chunk.output.mode": "full",
+    "timestream.processed_time_chunk.output.indices": "all"
+  },
+  "resource_ceiling_bytes": 214748364800,
+  "retention": {
+    "automatic_cleanup": false,
+    "retain_through": ["fresh-map-reaudit", "focused-expansion"]
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "sci-map-001-resource-record-v1",
+  "title": "SCI-MAP-001 ED2 owner-operated Unity resource record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "request_id", "revision", "candidate_sha", "stage",
+    "recorded_at_utc", "governed_roots", "ceiling_bytes",
+    "filesystem_root", "filesystem_device",
+    "current_logical_bytes", "current_allocated_bytes",
+    "projected_incremental_bytes", "filesystem_available_bytes",
+    "logical_plus_projected_bytes", "allocated_plus_projected_bytes",
+    "projection_authority", "inventory", "passed", "retention"
+  ],
+  "properties": {
+    "schema_version": {"const": "sci-map-001-resource-record-v1"},
+    "request_id": {"const": "SCI-MAP-001-UNITY-001"},
+    "revision": {"const": "repair-sha-ed28dafb-ed1-2026-08-02"},
+    "candidate_sha": {"const": "ed28dafb37f9113c0d3c95297148157129a90886"},
+    "stage": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "recorded_at_utc": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "governed_roots": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {"$ref": "#/$defs/absolute_path"},
+      "uniqueItems": true
+    },
+    "ceiling_bytes": {"const": 214748364800},
+    "filesystem_root": {"$ref": "#/$defs/absolute_path"},
+    "filesystem_device": {"$ref": "#/$defs/nonnegative_integer"},
+    "current_logical_bytes": {"$ref": "#/$defs/nonnegative_integer"},
+    "current_allocated_bytes": {"$ref": "#/$defs/nonnegative_integer"},
+    "projected_incremental_bytes": {"$ref": "#/$defs/nonnegative_integer"},
+    "projection_authority": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "sha256", "method"],
+          "properties": {
+            "path": {"$ref": "#/$defs/absolute_path"},
+            "sha256": {"$ref": "#/$defs/sha256"},
+            "method": {"type": "string", "minLength": 1, "maxLength": 128}
+          }
+        }
+      ]
+    },
+    "filesystem_available_bytes": {"$ref": "#/$defs/nonnegative_integer"},
+    "logical_plus_projected_bytes": {"$ref": "#/$defs/nonnegative_integer"},
+    "allocated_plus_projected_bytes": {"$ref": "#/$defs/nonnegative_integer"},
+    "inventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path_count", "total_logical_bytes", "total_allocated_bytes", "sha256"
+      ],
+      "properties": {
+        "path_count": {"$ref": "#/$defs/nonnegative_integer"},
+        "total_logical_bytes": {"$ref": "#/$defs/nonnegative_integer"},
+        "total_allocated_bytes": {"$ref": "#/$defs/nonnegative_integer"},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "passed": {"const": true},
+    "retention": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "automatic_cleanup", "capture_point_retained", "capture_science_retained"
+      ],
+      "properties": {
+        "automatic_cleanup": {"const": false},
+        "capture_point_retained": {"const": true},
+        "capture_science_retained": {"const": true}
+      }
+    }
+  },
+  "$defs": {
+    "absolute_path": {"type": "string", "minLength": 2, "pattern": "^/[^\\n\\r]+$"},
+    "nonnegative_integer": {"type": "integer", "minimum": 0},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

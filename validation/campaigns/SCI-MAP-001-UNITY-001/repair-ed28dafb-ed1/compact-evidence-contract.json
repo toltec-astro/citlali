@@ -1,0 +1,195 @@
+{
+  "schema_version": "sci-map-001-compact-evidence-contract-v1",
+  "campaign_revision": "repair-sha-ed28dafb-ed1-2026-08-02",
+  "candidate_sha": "ed28dafb37f9113c0d3c95297148157129a90886",
+  "decisions": [
+    "MAP-UNITY-ED1",
+    "MAP-UNITY-ED2"
+  ],
+  "purpose": "Bounded independent reconstruction authority derived from the two owner-authorized full/all processed-TOD captures; final FITS numerical payloads are not inputs.",
+  "required_groups": [
+    "152389:a1100",
+    "152389:a1400",
+    "152389:a2000",
+    "152390:a1100",
+    "152390:a1400",
+    "152390:a2000",
+    "152392:a1100",
+    "152392:a1400",
+    "152392:a2000"
+  ],
+  "full_ptc_input": {
+    "operational_adapter": "candidate-full-ptc-netcdf-v1",
+    "local_fixture_adapter": "full-ptc-normalized-npz-v1",
+    "capture_output_mode": "full",
+    "capture_detector_selection": "all",
+    "required_primitive_members": [
+      "row",
+      "col",
+      "scan_index",
+      "detector_index",
+      "sample_index",
+      "network",
+      "geometric_in_bounds",
+      "detector_apt_flagged",
+      "sample_flagged",
+      "upstream_eligible",
+      "coefficient",
+      "sample_signal",
+      "sample_kernel"
+    ],
+    "candidate_full_ptc_variables": [
+      "signal", "flags", "kernel", "det_lat", "det_lon", "weights",
+      "scan_indices", "output_scan_index", "apt_flag", "apt_array",
+      "apt_nw", "apt_kids_tone", "apt_uid", "SAMPRATE"
+    ],
+    "projection": "C++ llround(det_lat/effective_pixel_size_rad + (rows-1)/2) and corresponding det_lon/cols expression; rows, cols, pixel size, identity, and d_fsmp come from digest-bound realized mapmaking provenance, never final FITS.",
+    "detector_identity": "Composite (network,kids_tone,uid,APT row index); UID alone is not required to be unique.",
+    "record_order": "scan-major-detector-major-sample-minor-cartesian-v1",
+    "realization_sign_authority": "Reproduce 64 scan-level signs from the unchanged registered seed-5489 Boost MT19937/uniform-int policy with randomize_dets=false; signs are not claimed to be a PTC NetCDF variable.",
+    "native_rate_authority": "telescope.fsmp",
+    "effective_rate_authority": "telescope.d_fsmp",
+    "rate_provenance_binding": "realized_raw_timestream_provenance_sha256 is distinct from realized_mapmaking_provenance_sha256 and binds telescope.fsmp/telescope.d_fsmp; the mapmaking digest separately binds projection, shape, WCS, target, and pixel size.",
+    "sample_interval_authority": "binary64(1/telescope.d_fsmp)",
+    "mini_or_partial_capture_policy": "reject"
+  },
+  "resource_gate": {
+    "schema_version": "sci-map-001-resource-record-v1",
+    "ceiling_bytes": 214748364800,
+    "freshness_seconds": 900,
+    "maximum_future_skew_seconds": 60,
+    "governed_roots_in_exact_order": [
+      "point_source_project",
+      "science_source_project",
+      "capture_point_root",
+      "capture_science_root",
+      "compact_evidence_root"
+    ],
+    "projection": "Canonical sci-map-001-resource-projection-v1 document reconstructed from a digest-bound producer stream or discrepancy request; no operator byte count is accepted.",
+    "inventory": "Canonical sci-map-001-resource-inventory-v1 document; roots and directories bind logical and allocated metadata, regular files are byte-hashed, and symlinks bind UTF-8 link text and resolved target without traversing target payloads; the producer recomputes the live inventory before writing.",
+    "required_stage_names": [
+      "CAP-POINT",
+      "CAP-SCIENCE",
+      "compact-production:<obsnum>:<array>",
+      "focused-expansion-plan:<request_id>",
+      "focused-expansion:<request_id>",
+      "ANALYSIS",
+      "FINAL-BUNDLE"
+    ],
+    "required_checks": [
+      "current logical apparent bytes plus projected incremental bytes is at most the ceiling",
+      "current allocated bytes plus projected incremental bytes is at most the ceiling",
+      "all governed roots share the recorded selected filesystem device",
+      "filesystem available bytes covers projected incremental bytes",
+      "inventory count, totals, canonical digest, exact roots, and live contents agree",
+      "projection digest, source digest, stage identity, and deterministic arithmetic agree",
+      "both full captures remain retained and automatic cleanup is false"
+    ]
+  },
+  "sufficient_statistics": {
+    "container": "deterministic NumPy NPZ with allow_pickle=False",
+    "ordinary_array_bound": "five*nscan*npixel + two*npixel + 64*nscan elements; no primitive-term axis",
+    "members": {
+      "signal_numerator": {
+        "dtype": "float64",
+        "shape": ["nscan", "map_rows", "map_cols"],
+        "units": "signal_unit * inverse_signal_unit_squared",
+        "identity": "ordered sum of coefficient*sample_signal over contributing terms within each scan/pixel",
+        "claim": "signal_I and every pinned realization"
+      },
+      "weight": {
+        "dtype": "float64",
+        "shape": ["nscan", "map_rows", "map_cols"],
+        "units": "inverse_signal_unit_squared",
+        "identity": "ordered sum of positive finite coefficient over contributing terms within each scan/pixel",
+        "claim": "formal weight, normalization support, and science-policy support"
+      },
+      "kernel_numerator": {
+        "dtype": "float64",
+        "shape": ["nscan", "map_rows", "map_cols"],
+        "units": "kernel_unit * inverse_signal_unit_squared",
+        "identity": "ordered sum of coefficient*sample_kernel over contributing terms within each scan/pixel",
+        "claim": "kernel_I"
+      },
+      "upstream_eligible_exposure": {
+        "dtype": "float64",
+        "shape": ["nscan", "map_rows", "map_cols"],
+        "units": "s",
+        "identity": "ordered sum of binary64(1/telescope.d_fsmp) for upstream-eligible terms",
+        "claim": "F010 upstream-eligible exposure"
+      },
+      "retained_exposure": {
+        "dtype": "float64",
+        "shape": ["nscan", "map_rows", "map_cols"],
+        "units": "s",
+        "identity": "ordered sum of binary64(1/telescope.d_fsmp) for contributing terms before normalization support",
+        "claim": "F010 retained exposure and coverage"
+      },
+      "geometric_hits": {
+        "dtype": "int64",
+        "shape": ["map_rows", "map_cols"],
+        "units": "count",
+        "identity": "exact count before detector/sample eligibility",
+        "claim": "F010 geometric hits"
+      },
+      "contributing_hits": {
+        "dtype": "int64",
+        "shape": ["map_rows", "map_cols"],
+        "units": "count",
+        "identity": "exact count after eligibility and finite-positive coefficient",
+        "claim": "F010 contributing hits"
+      },
+      "realization_signs": {
+        "dtype": "int8",
+        "shape": ["nscan", 64],
+        "units": "dimensionless",
+        "identity": "Boost MT19937 seed 5489, high-bit Rademacher stream, randomize_dets=false",
+        "claim": "all 64 retained realizations"
+      }
+    },
+    "finite_policy": "Eligible non-finite coefficients and contributing non-finite/overflowed signal or kernel terms fail closed; explicit invalid terms do not contribute.",
+    "reduction_order": "Terms are accumulated in exact source order within a scan/pixel; reconstruction folds scan planes in ascending scan_index. Integer fields are exact; binary64 comparisons use the unchanged registered regression bounds."
+  },
+  "stream_digest_canonicalization": {
+    "algorithm": "sha256-domain-canonical-json-and-little-endian-record-v1",
+    "domain_prefix": "SCI-MAP-001-COMPACT-V1\\u0000",
+    "header": "RFC8785-compatible sorted-key compact JSON restricted to integers/strings/lists/objects, prefixed by uint64 little-endian byte count",
+    "term_record": "uint64 ordinal; int64 scan,detector,sample,network,row,col; uint8 geometric,apt_flagged,sample_flagged,upstream; float64 coefficient,signal,kernel,interval, all little-endian",
+    "domains": [
+      "complete-primitive-order",
+      "population-membership",
+      "identity-order",
+      "eligibility",
+      "contribution",
+      "realization-signs"
+    ],
+    "chunk_boundaries": "not encoded; digests are invariant to producer chunk size"
+  },
+  "deterministic_trace": {
+    "policy_id": "first-lower-middle-last-every-network-sha256-min-valid-flagged-v1",
+    "scan_selection": "scan indices 0, floor((nscan-1)/2), nscan-1, deduplicated while retaining all applicable role labels",
+    "detector_selection": "For each selected scan and every active network, SHA-256-min composite detector identity separately for APT-valid and APT-flagged classes; sample flags never reclassify a detector.",
+    "selection_domain": "candidate, campaign revision, raw-manifest digest, observation, array, network, scan identity/roles, detector state, detector UID, kids tone, and APT row index",
+    "class_absence": "explicit JSON fact with present=false and no fabricated sequence",
+    "fixed_budget": "exact sum of sample_count for each present selected detector-by-scan sequence",
+    "sample_identity": "sample index is implicit from sequence_offsets; scan/detector identity occurs once in the selection descriptor, never once per sample",
+    "claim_limit": "engineering falsification surface, not exhaustive external primitive coverage"
+  },
+  "focused_expansion": {
+    "schema_version": "sci-map-001-discrepancy-request-v1",
+    "two_pass": "plan-expansion counts and digests the exact selection; emit-expansion rereads the unchanged source and must reproduce count and digest",
+    "named_trigger_required": [
+      "named_discrepancy",
+      "named_reauditor"
+    ],
+    "target_required": "exact observation/array/network plus either one scan identity and composite detector identity or one map pixel",
+    "maximum_terms_per_request": 1000000,
+    "full_population": "forbidden"
+  },
+  "result_collection_mapping": {
+    "field": "compact_groups",
+    "keys": "exact required_groups set",
+    "values": "relative paths to each group.json"
+  },
+  "scope_boundary": "This validation-only representation cannot contact Unity, run Citlali, close MAP findings or dependencies, launch re-audit, or authorize cleanup."
+}

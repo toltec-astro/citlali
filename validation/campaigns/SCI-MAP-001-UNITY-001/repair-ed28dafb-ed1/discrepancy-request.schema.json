@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "sci-map-001-discrepancy-request.schema.json",
+  "title": "SCI-MAP-001 named bounded focused primitive expansion request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "request_id",
+    "candidate_sha",
+    "campaign_revision",
+    "raw_input_manifest_sha256",
+    "trigger",
+    "target",
+    "max_terms",
+    "full_population"
+  ],
+  "properties": {
+    "schema_version": {"const": "sci-map-001-discrepancy-request-v1"},
+    "request_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"},
+    "candidate_sha": {"const": "ed28dafb37f9113c0d3c95297148157129a90886"},
+    "campaign_revision": {"const": "repair-sha-ed28dafb-ed1-2026-08-02"},
+    "raw_input_manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "trigger": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "name"],
+      "properties": {
+        "kind": {"enum": ["named_discrepancy", "named_reauditor"]},
+        "name": {"type": "string", "minLength": 1, "maxLength": 256}
+      }
+    },
+    "target": {
+      "oneOf": [
+        {"$ref": "#/$defs/detector_target"},
+        {"$ref": "#/$defs/pixel_target"}
+      ]
+    },
+    "max_terms": {"type": "integer", "minimum": 1, "maximum": 1000000},
+    "full_population": {"const": false}
+  },
+  "$defs": {
+    "base": {
+      "type": "object",
+      "required": ["kind", "obsnum", "array", "network"],
+      "properties": {
+        "kind": {"enum": ["detector_sequence", "pixel"]},
+        "obsnum": {"enum": [152389, 152390, 152392]},
+        "array": {"enum": ["a1100", "a1400", "a2000"]},
+        "network": {"type": "integer", "minimum": 0, "maximum": 12}
+      }
+    },
+    "detector_target": {
+      "allOf": [
+        {"$ref": "#/$defs/base"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "obsnum", "array", "network", "scan_identity", "detector_identity"],
+          "properties": {
+            "kind": {"const": "detector_sequence"},
+            "obsnum": {"enum": [152389, 152390, 152392]},
+            "array": {"enum": ["a1100", "a1400", "a2000"]},
+            "network": {"type": "integer", "minimum": 0, "maximum": 12},
+            "scan_identity": {"type": "string", "minLength": 1, "maxLength": 256},
+            "detector_identity": {"type": "string", "minLength": 1, "maxLength": 512}
+          }
+        }
+      ]
+    },
+    "pixel_target": {
+      "allOf": [
+        {"$ref": "#/$defs/base"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "obsnum", "array", "network", "row", "col"],
+          "properties": {
+            "kind": {"const": "pixel"},
+            "obsnum": {"enum": [152389, 152390, 152392]},
+            "array": {"enum": ["a1100", "a1400", "a2000"]},
+            "network": {"type": "integer", "minimum": 0, "maximum": 12},
+            "row": {"type": "integer", "minimum": 0},
+            "col": {"type": "integer", "minimum": 0}
+          }
+        }
+      ]
+    }
+  }
+}

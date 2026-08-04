@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "sci-map-001-result-collection-v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "request_id", "revision", "candidate_sha",
+    "request_root", "binary_identity", "capture_records",
+    "compact_groups", "resource_records", "retention", "cases"
+  ],
+  "properties": {
+    "schema_version": {"const": "sci-map-001-result-collection-v2"},
+    "request_id": {"const": "SCI-MAP-001-UNITY-001"},
+    "revision": {"const": "repair-sha-ed28dafb-ed1-2026-08-02"},
+    "candidate_sha": {"const": "ed28dafb37f9113c0d3c95297148157129a90886"},
+    "request_root": {"$ref": "#/$defs/absolute_path"},
+    "binary_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate_sha", "candidate_tree", "binary_sha256",
+        "build_manifest", "build_manifest_sha256",
+        "version_output", "version_output_sha256"
+      ],
+      "properties": {
+        "candidate_sha": {"const": "ed28dafb37f9113c0d3c95297148157129a90886"},
+        "candidate_tree": {"const": "cf75c36557178f351fb62781108a6f4b41b19225"},
+        "binary_sha256": {"$ref": "#/$defs/sha256"},
+        "build_manifest": {"$ref": "#/$defs/relative_file"},
+        "build_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "version_output": {"$ref": "#/$defs/relative_file"},
+        "version_output_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "capture_records": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["CAP-POINT", "CAP-SCIENCE"],
+      "properties": {
+        "CAP-POINT": {"$ref": "#/$defs/capture_record"},
+        "CAP-SCIENCE": {"$ref": "#/$defs/capture_record"}
+      }
+    },
+    "compact_groups": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "152389:a1100", "152389:a1400", "152389:a2000",
+        "152390:a1100", "152390:a1400", "152390:a2000",
+        "152392:a1100", "152392:a1400", "152392:a2000"
+      ],
+      "properties": {
+        "152389:a1100": {"$ref": "#/$defs/group_path"},
+        "152389:a1400": {"$ref": "#/$defs/group_path"},
+        "152389:a2000": {"$ref": "#/$defs/group_path"},
+        "152390:a1100": {"$ref": "#/$defs/group_path"},
+        "152390:a1400": {"$ref": "#/$defs/group_path"},
+        "152390:a2000": {"$ref": "#/$defs/group_path"},
+        "152392:a1100": {"$ref": "#/$defs/group_path"},
+        "152392:a1400": {"$ref": "#/$defs/group_path"},
+        "152392:a2000": {"$ref": "#/$defs/group_path"}
+      }
+    },
+    "resource_records": {
+      "type": "array",
+      "minItems": 22,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/digested_relative_file"}
+    },
+    "retention": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["capture_point_retained", "capture_science_retained", "automatic_cleanup", "cleanup_eligible"],
+      "properties": {
+        "capture_point_retained": {"const": true},
+        "capture_science_retained": {"const": true},
+        "automatic_cleanup": {"const": false},
+        "cleanup_eligible": {"const": false}
+      }
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "prefixItems": [
+        {"$ref": "#/$defs/p_seq"}, {"$ref": "#/$defs/p_omp"},
+        {"$ref": "#/$defs/sc_seq"}, {"$ref": "#/$defs/sc_omp"},
+        {"$ref": "#/$defs/se_seq"}, {"$ref": "#/$defs/se_omp"},
+        {"$ref": "#/$defs/sx_seq"}
+      ],
+      "items": false
+    }
+  },
+  "$defs": {
+    "absolute_path": {"type": "string", "minLength": 2, "pattern": "^/"},
+    "relative_file": {"type": "string", "minLength": 1, "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "digested_relative_file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"$ref": "#/$defs/relative_file"},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "group_path": {"type": "string", "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+/group\\.json$"},
+    "capture_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "capture_record", "capture_record_sha256", "raw_input_manifest",
+        "raw_input_manifest_sha256", "binary_sha256", "retained"
+      ],
+      "properties": {
+        "capture_record": {"$ref": "#/$defs/relative_file"},
+        "capture_record_sha256": {"$ref": "#/$defs/sha256"},
+        "raw_input_manifest": {"$ref": "#/$defs/relative_file"},
+        "raw_input_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "binary_sha256": {"$ref": "#/$defs/sha256"},
+        "retained": {"const": true}
+      }
+    },
+    "case_common": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "case_id", "reduction_root", "exit_status", "merged_config",
+        "raw_input_manifest", "logs", "preflight_manifest",
+        "submit_record", "slurm_accounting"
+      ],
+      "properties": {
+        "case_id": {"type": "string"},
+        "reduction_root": {"$ref": "#/$defs/absolute_path"},
+        "exit_status": {"const": 0},
+        "merged_config": {"$ref": "#/$defs/absolute_path"},
+        "raw_input_manifest": {"$ref": "#/$defs/absolute_path"},
+        "logs": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/absolute_path"}, "uniqueItems": true},
+        "preflight_manifest": {"$ref": "#/$defs/absolute_path"},
+        "submit_record": {"$ref": "#/$defs/absolute_path"},
+        "slurm_accounting": {"$ref": "#/$defs/absolute_path"}
+      }
+    },
+    "p_seq": {"allOf": [{"$ref": "#/$defs/case_common"}, {"properties": {"case_id": {"const": "P-SEQ"}}}]},
+    "p_omp": {"allOf": [{"$ref": "#/$defs/case_common"}, {"properties": {"case_id": {"const": "P-OMP"}}}]},
+    "sc_seq": {"allOf": [{"$ref": "#/$defs/case_common"}, {"properties": {"case_id": {"const": "S-C-SEQ"}}}]},
+    "sc_omp": {"allOf": [{"$ref": "#/$defs/case_common"}, {"properties": {"case_id": {"const": "S-C-OMP"}}}]},
+    "se_seq": {"allOf": [{"$ref": "#/$defs/case_common"}, {"properties": {"case_id": {"const": "S-E-SEQ"}}}]},
+    "se_omp": {"allOf": [{"$ref": "#/$defs/case_common"}, {"properties": {"case_id": {"const": "S-E-OMP"}}}]},
+    "sx_seq": {"allOf": [{"$ref": "#/$defs/case_common"}, {"properties": {"case_id": {"const": "S-X-SEQ"}}}]}
+  }
+}

@@ -1,0 +1,249 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "sci-map-001-ed2-capture-record-v1",
+  "title": "SCI-MAP-001 ED2 full/all auxiliary capture record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "request_id", "revision", "candidate_sha",
+    "candidate_tree", "capture_id", "mode", "target_observations",
+    "pointing_support_observations", "binary_sha256", "raw_input_manifest",
+    "retained", "binary", "staging", "config_proof", "ptc_outputs",
+    "rates", "realized_provenance", "retention"
+  ],
+  "properties": {
+    "schema_version": {"const": "sci-map-001-ed2-capture-record-v1"},
+    "request_id": {"const": "SCI-MAP-001-UNITY-001"},
+    "revision": {"const": "repair-sha-ed28dafb-ed1-2026-08-02"},
+    "candidate_sha": {"const": "ed28dafb37f9113c0d3c95297148157129a90886"},
+    "candidate_tree": {"const": "cf75c36557178f351fb62781108a6f4b41b19225"},
+    "capture_id": {"enum": ["CAP-POINT", "CAP-SCIENCE"]},
+    "mode": {"enum": ["point", "science"]},
+    "target_observations": {
+      "oneOf": [{"const": [152389]}, {"const": [152390, 152392]}]
+    },
+    "pointing_support_observations": {
+      "oneOf": [{"const": []}, {"const": [152389, 152391, 152393]}]
+    },
+    "binary_sha256": {"$ref": "#/$defs/sha256"},
+    "raw_input_manifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"$ref": "#/$defs/absolute_path"},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "retained": {"const": true},
+    "binary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path", "sha256", "build_manifest_path", "build_manifest_sha256",
+        "version_output_path", "version_output_sha256", "ordinary", "instrumented"
+      ],
+      "properties": {
+        "path": {"$ref": "#/$defs/absolute_path"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "build_manifest_path": {"$ref": "#/$defs/absolute_path"},
+        "build_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "version_output_path": {"$ref": "#/$defs/absolute_path"},
+        "version_output_sha256": {"$ref": "#/$defs/sha256"},
+        "ordinary": {"const": true},
+        "instrumented": {"const": false}
+      }
+    },
+    "staging": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "raw_link_manifest_path", "raw_link_manifest_sha256",
+        "raw_link_staging_path", "raw_link_staging_sha256",
+        "authority_manifest_path", "authority_manifest_sha256"
+      ],
+      "properties": {
+        "raw_link_manifest_path": {"$ref": "#/$defs/absolute_path"},
+        "raw_link_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "raw_link_staging_path": {"$ref": "#/$defs/absolute_path"},
+        "raw_link_staging_sha256": {"$ref": "#/$defs/sha256"},
+        "authority_manifest_path": {"$ref": "#/$defs/absolute_path"},
+        "authority_manifest_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "config_proof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "passed"],
+      "properties": {
+        "path": {"$ref": "#/$defs/absolute_path"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "passed": {"const": true}
+      }
+    },
+    "ptc_outputs": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 2,
+      "items": {"$ref": "#/$defs/ptc_output"}
+    },
+    "rates": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["native_fsmp_hz", "effective_d_fsmp_hz", "sample_interval_s"],
+      "properties": {
+        "native_fsmp_hz": {"$ref": "#/$defs/native_rate"},
+        "effective_d_fsmp_hz": {"$ref": "#/$defs/effective_rate"},
+        "sample_interval_s": {"$ref": "#/$defs/interval"}
+      }
+    },
+    "realized_provenance": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 2,
+      "items": {"$ref": "#/$defs/provenance"}
+    },
+    "retention": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["retained", "automatic_cleanup", "retain_through"],
+      "properties": {
+        "retained": {"const": true},
+        "automatic_cleanup": {"const": false},
+        "retain_through": {"const": ["fresh-map-reaudit", "focused-expansion"]}
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"capture_id": {"const": "CAP-POINT"}}},
+      "then": {
+        "properties": {
+          "mode": {"const": "point"},
+          "target_observations": {"const": [152389]},
+          "pointing_support_observations": {"const": []},
+          "ptc_outputs": {"minItems": 1, "maxItems": 1},
+          "realized_provenance": {"minItems": 1, "maxItems": 1}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"capture_id": {"const": "CAP-SCIENCE"}}},
+      "then": {
+        "properties": {
+          "mode": {"const": "science"},
+          "target_observations": {"const": [152390, 152392]},
+          "pointing_support_observations": {"const": [152389, 152391, 152393]},
+          "ptc_outputs": {"minItems": 2, "maxItems": 2},
+          "realized_provenance": {"minItems": 2, "maxItems": 2}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "absolute_path": {"type": "string", "minLength": 2, "pattern": "^/[^\\n\\r]+$"},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "exact_float": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decimal", "hex", "authority"],
+      "properties": {
+        "decimal": {"type": "string", "minLength": 1},
+        "hex": {"type": "string", "pattern": "^0x[0-9a-f]+(?:\\.[0-9a-f]*)?p[+-][0-9]+$"},
+        "authority": {"type": "string", "minLength": 1}
+      }
+    },
+    "native_rate": {
+      "allOf": [
+        {"$ref": "#/$defs/exact_float"},
+        {"properties": {"authority": {"const": "telescope.fsmp"}}}
+      ]
+    },
+    "effective_rate": {
+      "allOf": [
+        {"$ref": "#/$defs/exact_float"},
+        {"properties": {"authority": {"const": "telescope.d_fsmp"}}}
+      ]
+    },
+    "interval": {
+      "allOf": [
+        {"$ref": "#/$defs/exact_float"},
+        {"properties": {"authority": {"const": "binary64(1/telescope.d_fsmp)"}}}
+      ]
+    },
+    "scan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scan_index", "output_scan_index", "sample_start", "sample_stop_inclusive",
+        "sample_count", "exposure_s"
+      ],
+      "properties": {
+        "scan_index": {"type": "integer", "minimum": 0},
+        "output_scan_index": {"type": "integer", "minimum": 0},
+        "sample_start": {"type": "integer", "minimum": 0},
+        "sample_stop_inclusive": {"type": "integer", "minimum": 0},
+        "sample_count": {"type": "integer", "minimum": 1},
+        "exposure_s": {
+          "allOf": [
+            {"$ref": "#/$defs/exact_float"},
+            {
+              "properties": {
+                "authority": {
+                  "const": "binary64(sample_count/telescope.d_fsmp)"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "ptc_output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "obsnum", "path", "size_bytes", "sha256", "tod_output_type",
+        "mode", "indices", "native_samprate_hz", "sample_count",
+        "detector_count", "scan_count", "scan_order"
+      ],
+      "properties": {
+        "obsnum": {"enum": [152389, 152390, 152392]},
+        "path": {"$ref": "#/$defs/absolute_path"},
+        "size_bytes": {"type": "integer", "minimum": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "tod_output_type": {"const": "ptc"},
+        "mode": {"const": "full"},
+        "indices": {"const": "all"},
+        "native_samprate_hz": {"$ref": "#/$defs/native_rate"},
+        "sample_count": {"type": "integer", "minimum": 1},
+        "detector_count": {"type": "integer", "minimum": 1},
+        "scan_count": {"type": "integer", "minimum": 1},
+        "scan_order": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/scan"}}
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "obsnum", "path", "size_bytes", "sha256", "schema_version",
+        "native_fsmp_hz", "effective_d_fsmp_hz", "completed_scan_count",
+        "required_timestream_write_count", "ptc_scan_count", "ptc_sample_count",
+        "scan_cardinality_matches"
+      ],
+      "properties": {
+        "obsnum": {"enum": [152389, 152390, 152392]},
+        "path": {"$ref": "#/$defs/absolute_path"},
+        "size_bytes": {"type": "integer", "minimum": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "schema_version": {"const": "citlali-raw-timestream-provenance-v2"},
+        "native_fsmp_hz": {"$ref": "#/$defs/native_rate"},
+        "effective_d_fsmp_hz": {"$ref": "#/$defs/effective_rate"},
+        "completed_scan_count": {"type": "integer", "minimum": 1},
+        "required_timestream_write_count": {"type": "integer", "minimum": 1},
+        "ptc_scan_count": {"type": "integer", "minimum": 1},
+        "ptc_sample_count": {"type": "integer", "minimum": 1},
+        "scan_cardinality_matches": {"const": true}
+      }
+    }
+  }
+}

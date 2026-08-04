@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "sci-map-001-resource-projection-v1",
+  "title": "SCI-MAP-001 ED2 metadata-derived incremental resource projection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "request_id", "revision", "candidate_sha", "stage",
+    "method", "source", "fixed_overhead_bytes", "unit_count",
+    "bytes_per_unit", "projected_incremental_bytes"
+  ],
+  "properties": {
+    "schema_version": {"const": "sci-map-001-resource-projection-v1"},
+    "request_id": {"const": "SCI-MAP-001-UNITY-001"},
+    "revision": {"const": "repair-sha-ed28dafb-ed1-2026-08-02"},
+    "candidate_sha": {"const": "ed28dafb37f9113c0d3c95297148157129a90886"},
+    "stage": {
+      "type": "string", "minLength": 1, "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "method": {"type": "string", "minLength": 1, "maxLength": 128},
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "size_bytes", "sha256", "schema_version"],
+      "properties": {
+        "path": {"$ref": "#/$defs/absolute_path"},
+        "size_bytes": {"type": "integer", "minimum": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "schema_version": {"type": "string", "minLength": 1, "maxLength": 128}
+      }
+    },
+    "fixed_overhead_bytes": {"type": "integer", "minimum": 0},
+    "unit_count": {"type": "integer", "minimum": 0},
+    "bytes_per_unit": {"type": "integer", "minimum": 0},
+    "projected_incremental_bytes": {
+      "type": "integer", "minimum": 1, "maximum": 214748364800
+    }
+  },
+  "$defs": {
+    "absolute_path": {"type": "string", "minLength": 2, "pattern": "^/[^\\n\\r]+$"},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}
