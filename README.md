@@ -1,4 +1,4 @@
-# Citlali 4.0
+# Citlali 4.1
 
 Citlali is the TolTEC data-reduction pipeline engine. The `v3.x_spack` branch
 changes the build and distribution infrastructure while retaining the v4
@@ -63,6 +63,7 @@ The environment view contains the root executable:
 
 ```console
 "$TOLTECA_CPP_VIEW/bin/citlali" --help
+"$TOLTECA_CPP_VIEW/bin/citlali" --version
 ```
 
 Alternatively:
@@ -100,7 +101,7 @@ The six tests include CLI help/version/config checks and a real-data RTC
 comparison against the direct Kidscpp reader/solver path.
 
 The native macOS arm64 Homebrew LLVM 20.1.8 profile also concretizes and
-installs the complete graph. Its installed Citlali 4.0 CLI processed all 123
+installs the complete graph. Its installed Citlali 4.1 CLI processed all 123
 scans in observation 149101 and wrote raw and filtered FITS products for all
 three arrays. Runtime memory reporting uses portable `getrusage` semantics, so
 the diagnostic no longer assumes Linux `/proc` exists.
@@ -117,6 +118,17 @@ Run it with the sibling `tolteca_test_data/tolteca_workdir` fixture available.
 The gate writes generated FITS products under `/tmp/citlali-o149101-output`
 and retains the full CLI log under
 `tula_cmake/build/citlali-real-workdir/`.
+
+`citlali --version` reports the source revision/tree state, compiler, C++
+standard, package spec, DAG hash, selected profile, lock SHA-256, and the
+Kidscpp/Tula source identities. The generated NetCDF, FITS, and index products
+retain the relevant provenance fields. Release recipes fetch tag `v4.1.0`;
+the locked source commit is `d751f299d04f33a89de5b955ec6b1230dd1306ad`.
+
+Portable package releases do not contain the large observation fixture. Their
+tests use generated inputs and compile the complete installed contract. A
+sibling `tolteca_test_data` checkout enables the additional reader/solver and
+123-scan development gates.
 
 The prior Conan implementation is preserved on its baseline branch and in the
 workspace archive. `refs/citlali` remains read-only evidence.
