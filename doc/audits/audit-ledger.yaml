@@ -695,6 +695,23 @@ packages:
             Make storage accounting comprehensive and component-wise
             conservative before first writes; retain the hard ceiling and
             all scientific/evidence boundaries.
+          unity_cap_operationalization:
+            decision_id: MAP-UNITY-ED2-OPS-RESOURCE-002
+            authority: project_owner
+            decision_date: 2026-08-03
+            status: approved_human_managed_unity_cap_clarification
+            record_path: >-
+              doc/audits/packages/SCI-MAP-001_ED2_UNITY_CAP_OPERATIONALIZATION_2026-08-03.md
+            record_sha256: >-
+              bb9fba34f6122a24268fd9fba3e92d8775b1c678fb908a4cd019e491b3a3b73b
+            supersedes_only: >-
+              The component-wise source-derived full/all-PTC byte proof as a
+              package blocker. The 200-GiB cap remains applicable only to
+              governed Unity campaign roots.
+            required_control: >-
+              Separate no-submit before/after-stage records and owner review
+              between separately invoked Unity stages; no automatic
+              submission, continuation, deletion, cleanup, or cache reuse.
         continuation_handoff:
           status: existing_task_resumed
           path: >-
