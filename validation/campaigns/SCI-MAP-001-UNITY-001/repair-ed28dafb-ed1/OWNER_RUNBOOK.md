@@ -97,7 +97,6 @@ optional Slurm fields. In particular:
   `slurm.account: null`, as the verified Unity default does. The emitted
   commands then omit `--account`; do not substitute the login name
   `toltec_umass_edu` for an allocation account;
-- `canonical_raw_root` is the owner-verified `/work/toltec`;
 - `point_source_project` and `science_source_project` are exactly the two
   project paths below `unity_test_root` named by the JSON specs;
 - capture roots are exactly
@@ -109,11 +108,11 @@ optional Slurm fields. In particular:
 - the four realized-config paths name the fixed and full/all merged YAML
   files that the commands below will create.
 
-The two raw-selection files are explicit ordered basename lists. Point uses
-schema `sci-map-001-raw-selection-v1`, capture `CAP-POINT`, and records covering
-only 152389. Science uses capture `CAP-SCIENCE` and records covering each of
-152389/152390/152391/152392/152393; 152389/152391/152393 remain pointing
-support only. Every basename contains its observation as a numeric token.
+The ordinary Unity `tolproj copy-raw --no-sbatch` workflow owns raw-data
+selection and copying. Do not create a campaign-specific raw-file list, link
+farm, or alternate transfer route. Tolteca writes the exact `inputs.data_items`
+paths it actually used into every generated `citlali_*.yaml`; those generated
+files are the raw-input provenance authority for this campaign.
 
 The single `authority_selection` file may be an
 `sci-map-001-authority-selection-set-v1` object with exact `CAP-POINT` and
@@ -290,7 +289,7 @@ PREPARE_PROJECTION=$(resource_projection PREPARE-STAGING "$FROZEN/resource-repor
 resource_record PREPARE-STAGING pre "$PREPARE_PROJECTION"
 ```
 
-## 5. Create the two lightweight projects and stage inputs
+## 5. Create the two lightweight projects with the ordinary TolProj workflow
 
 Both project paths must be absent before `init-test`.
 
@@ -316,32 +315,13 @@ test ! -e "$science_project"; test ! -L "$science_project"
   --root "$test_root" --user "$operator"
 "$tolproj" init-test "$frozen/tolproj-science-source.json" \
   --root "$test_root" --user "$operator"
-test -d "$point_project/data"; test ! -L "$point_project/data"
-test -d "$science_project/data"; test ! -L "$science_project/data"
-test -z "$(find "$point_project/data" -mindepth 1 -maxdepth 1 -print -quit)"
-test -z "$(find "$science_project/data" -mindepth 1 -maxdepth 1 -print -quit)"
-
-canonical=$(value "$python_bin" canonical_raw_root)
-raw_point=$(value "$python_bin" point_raw_selection)
-raw_science=$(value "$python_bin" science_raw_selection)
 authorities=$(value "$python_bin" authority_selection)
 tool="$frozen/scripts/ed2-capture.py"
 
-"$python_bin" "$tool" raw-manifest --capture-id CAP-POINT \
-  --canonical-root "$canonical" --selection "$raw_point" \
-  --output "$point_project/logs/raw-link-manifest.json"
-"$python_bin" "$tool" stage-raw \
-  --manifest "$point_project/logs/raw-link-manifest.json" \
-  --destination "$point_project/data" \
-  --output "$point_project/logs/raw-link-staging.json"
-
-"$python_bin" "$tool" raw-manifest --capture-id CAP-SCIENCE \
-  --canonical-root "$canonical" --selection "$raw_science" \
-  --output "$science_project/logs/raw-link-manifest.json"
-"$python_bin" "$tool" stage-raw \
-  --manifest "$science_project/logs/raw-link-manifest.json" \
-  --destination "$science_project/data" \
-  --output "$science_project/logs/raw-link-staging.json"
+"$tolproj" copy-raw SCI-MAP-001-POINT-SOURCE --root "$test_root" --no-sbatch
+"$tolproj" copy-raw SCI-MAP-001-SCIENCE-SOURCE --root "$test_root" --no-sbatch
+test -n "$(find "$point_project/data" -mindepth 1 -maxdepth 1 -type f -print -quit)"
+test -n "$(find "$science_project/data" -mindepth 1 -maxdepth 1 -type f -print -quit)"
 
 mkdir "$science_project/pointings/reduced"
 mkdir "$science_project/pointings/reduced/redu00"
@@ -361,10 +341,10 @@ mkdir "$science_project/pointings/reduced/redu00"
   --destination-root "$request_root/captures" --refactor
 ```
 
-Only individual absolute raw-file symlinks and the named copied ECSV files are
-allowed. From the first successful link-staging command onward, `tolproj
-copy-raw` is absolutely prohibited. A missing canonical file is a stop, not
-permission to copy from NESE or an old reduction.
+The normal TolProj data copy is the only raw-input route for these fresh
+projects. Do not subsequently replace, add, or link files under either
+`data/` directory by hand. The generated `citlali_*.yaml` files—not a
+pre-authored filename list—record the exact inputs consumed by each reduction.
 
 ## 6. Configure the two captures and prove the complete diff
 
@@ -559,96 +539,52 @@ ordered 152390 then 152392. Set exact paths for each PTC,
 inside its capture root. The helper rejects another full PTC anywhere in that
 root.
 
-Create one factual `source-selection.schema.json` document per capture. It
-names only regular, digestible authority files and the five roles
-`raw_timestream`, `kids_fit_report`, `apt`, `calibration`, and
-`pointing_support`, with exact observation/array/network coverage. Use the
-resolved canonical raw targets, copied APT/PPT files, and run-produced KIDs and
-calibration authorities. Do not guess a network or use final FITS as a source.
-The generator automatically adds the PTC/mapmaking/sample-rate/FWHM/target
-roles and rejects incomplete or unused records.
+For each completed capture, preserve the exact Tolteca-generated input YAML
+files. They are the raw-input provenance authority because they enumerate the
+actual `inputs.data_items` paths. The following is a collection record only;
+it does not copy a PTC payload or alter the completed reduction.
 
 ```sh
-"$UNITY_PYTHON" "$CAPTURE_TOOL" build-raw-input-manifest \
-  --capture-id CAP-POINT --capture-root "$CAPTURE_POINT_ROOT" \
-  --ptc "152389=$POINT_PTC" \
-  --raw-provenance "152389=$POINT_RAW_PROVENANCE" \
-  --map-provenance "152389=$POINT_MAP_PROVENANCE" \
-  --source-selection "$POINT_SOURCE_SELECTION" \
-  --raw-link-manifest "$POINT_SOURCE_PROJECT/logs/raw-link-manifest.json" \
-  --raw-link-staging "$POINT_SOURCE_PROJECT/logs/raw-link-staging.json" \
-  --authority-manifest "$POINT_SOURCE_PROJECT/logs/authority-staging.json"
-
-"$UNITY_PYTHON" "$CAPTURE_TOOL" build-raw-input-manifest \
-  --capture-id CAP-SCIENCE --capture-root "$CAPTURE_SCIENCE_ROOT" \
-  --ptc "152390=$SCIENCE_152390_PTC" --ptc "152392=$SCIENCE_152392_PTC" \
-  --raw-provenance "152390=$SCIENCE_152390_RAW_PROVENANCE" \
-  --raw-provenance "152392=$SCIENCE_152392_RAW_PROVENANCE" \
-  --map-provenance "152390=$SCIENCE_152390_MAP_PROVENANCE" \
-  --map-provenance "152392=$SCIENCE_152392_MAP_PROVENANCE" \
-  --source-selection "$SCIENCE_SOURCE_SELECTION" \
-  --raw-link-manifest "$SCIENCE_SOURCE_PROJECT/logs/raw-link-manifest.json" \
-  --raw-link-staging "$SCIENCE_SOURCE_PROJECT/logs/raw-link-staging.json" \
-  --authority-manifest "$SCIENCE_SOURCE_PROJECT/logs/authority-staging.json"
+record_generated_configs() (
+  set -euo pipefail
+  capture_root=$1
+  expected_count=$2
+  output="$capture_root/generated-citlali-configs.sha256"
+  test ! -e "$output"
+  configs=$(find "$capture_root" -type f -path '*/reduced/redu*/citlali_o*.yaml' \
+    -print | LC_ALL=C sort)
+  test "$(printf '%s\n' "$configs" | sed '/^$/d' | wc -l | tr -d ' ')" = "$expected_count"
+  printf '%s\n' "$configs" | while IFS= read -r config; do
+    test -n "$config"
+    grep -q '^inputs:' "$config"
+    grep -q 'data_items:' "$config"
+    sha256sum "$config"
+  done > "$output"
+  test -s "$output"
+)
+record_generated_configs "$CAPTURE_POINT_ROOT" 1
+record_status=$?
+test "$record_status" -eq 0 || exit "$record_status"
+record_generated_configs "$CAPTURE_SCIENCE_ROOT" 2
+record_status=$?
+test "$record_status" -eq 0 || exit "$record_status"
 ```
 
-For each of the nine observation/array pairs, run `producer-authority` into an
-absent JSON path below its capture root. Then run `capture-record` once per
-capture, supplying the one binary/build/version record, duplicated staging
-manifests, config proof, exact PTC paths, and raw-provenance paths. These
-commands enforce full binary64 primitives, contiguous every-scan/all-detector
-coverage, native `SAMPRATE == telescope.fsmp`, separately realized finite
-positive `telescope.d_fsmp`, a positive integral downsample factor with
-bit-exact `d_fsmp == fsmp / factor`, bit-exact decimal/hex rates,
-interval/exposure,
-and scan/write cardinality. Missing authority is a stop.
+The retired raw-link-manifest, raw-link-staging, and capture-record commands
+must not be used for this ordinary TolProj route. They describe a different
+pre-staged-input workflow. After recording the generated YAMLs and the two
+post-capture resource records, stop for coordinator interpretation; do not
+start compact production, a seven-case rerun, or a re-audit automatically.
 
-```sh
-for array in a1100 a1400 a2000; do
-  "$UNITY_PYTHON" "$CAPTURE_TOOL" producer-authority \
-    --raw-input-manifest "$CAPTURE_POINT_ROOT/raw-input-manifest.json" \
-    --obsnum 152389 --array "$array" \
-    --output "$CAPTURE_POINT_ROOT/producer-authority-152389-$array.json"
-done
-for obs in 152390 152392; do
-  for array in a1100 a1400 a2000; do
-    "$UNITY_PYTHON" "$CAPTURE_TOOL" producer-authority \
-      --raw-input-manifest "$CAPTURE_SCIENCE_ROOT/raw-input-manifest.json" \
-      --obsnum "$obs" --array "$array" \
-      --output "$CAPTURE_SCIENCE_ROOT/producer-authority-$obs-$array.json"
-  done
-done
+## 9. Retired downstream automation (do not run)
 
-"$UNITY_PYTHON" "$CAPTURE_TOOL" capture-record \
-  --capture-id CAP-POINT --capture-root "$CAPTURE_POINT_ROOT" \
-  --binary "$CANDIDATE_BINARY" --build-manifest "$CANDIDATE_BUILD_MANIFEST" \
-  --version-output "$CANDIDATE_VERSION_OUTPUT" \
-  --raw-link-manifest "$POINT_SOURCE_PROJECT/logs/raw-link-manifest.json" \
-  --raw-link-staging "$POINT_SOURCE_PROJECT/logs/raw-link-staging.json" \
-  --authority-manifest "$POINT_SOURCE_PROJECT/logs/authority-staging.json" \
-  --config-proof "$CAPTURE_POINT_ROOT/capture-authority/config-proof.json" \
-  --ptc "152389=$POINT_PTC" \
-  --raw-provenance "152389=$POINT_RAW_PROVENANCE"
+The remaining compact/collection commands below are preserved as historical
+package context only. They require the retired raw-link manifests and therefore
+are not runnable on the ordinary TolProj path authorized above. Do not invoke
+them. A future, separately reviewed generated-Citlali-YAML adapter would be
+required before compact production or formal result collection can resume.
 
-"$UNITY_PYTHON" "$CAPTURE_TOOL" capture-record \
-  --capture-id CAP-SCIENCE --capture-root "$CAPTURE_SCIENCE_ROOT" \
-  --binary "$CANDIDATE_BINARY" --build-manifest "$CANDIDATE_BUILD_MANIFEST" \
-  --version-output "$CANDIDATE_VERSION_OUTPUT" \
-  --raw-link-manifest "$SCIENCE_SOURCE_PROJECT/logs/raw-link-manifest.json" \
-  --raw-link-staging "$SCIENCE_SOURCE_PROJECT/logs/raw-link-staging.json" \
-  --authority-manifest "$SCIENCE_SOURCE_PROJECT/logs/authority-staging.json" \
-  --config-proof "$CAPTURE_SCIENCE_ROOT/capture-authority/config-proof.json" \
-  --ptc "152390=$SCIENCE_152390_PTC" --ptc "152392=$SCIENCE_152392_PTC" \
-  --raw-provenance "152390=$SCIENCE_152390_RAW_PROVENANCE" \
-  --raw-provenance "152392=$SCIENCE_152392_RAW_PROVENANCE"
-
-"$UNITY_PYTHON" "$CAPTURE_TOOL" verify-capture-record \
-  --capture-record "$CAPTURE_POINT_ROOT/capture-record.json"
-"$UNITY_PYTHON" "$CAPTURE_TOOL" verify-capture-record \
-  --capture-record "$CAPTURE_SCIENCE_ROOT/capture-record.json"
-```
-
-## 9. Produce and verify exactly nine compact groups
+## Retired: produce and verify exactly nine compact groups
 
 For each pair in this exact order:
 
@@ -762,7 +698,7 @@ resource_record "$emit_stage" pre "$emit_projection"
 resource_record "$emit_stage" post
 ```
 
-## 10. Run the unchanged seven-case lane
+## Retired: run the unchanged seven-case lane
 
 Install the two automatic manifests byte-for-byte into the seven fixed cases,
 then prepare the native cases:
@@ -789,7 +725,7 @@ S-X-SEQ. All original observations, arrays, products, 64 realizations, CPU
 counts, tolerances, WCS/coadd/support/provenance gates, and expected exit-zero
 outcomes remain unchanged. The same ordinary binary digest is mandatory.
 
-## 11. Collection, analysis, and bounded return
+## Retired: collection, analysis, and bounded return
 
 After all seven cases finish:
 

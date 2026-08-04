@@ -126,9 +126,7 @@
     "native_samprate_authority": "telescope.fsmp",
     "effective_rate_authority": "telescope.d_fsmp",
     "effective_rate_encoding": ["decimal", "float64_hex"],
-    "canonical_raw_root": "/work/toltec",
-    "raw_staging": "individual-canonical-file-symlinks-only",
-    "tolproj_copy_raw_after_link_staging": "prohibited",
+    "raw_input_provenance": "ordinary-tolproj-copy-raw; generated-citlali-yaml-is-authority",
     "capture_retention": "retain-both-through-fresh-map-reaudit-and-focused-expansion",
     "automatic_cleanup": false,
     "bounded_return": {

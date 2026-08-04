@@ -71,8 +71,7 @@ OWNER_KEYS = (
     "evidence_operator", "slurm_account", "slurm_qos",
     "slurm_constraint", "slurm_reservation", "kidscpp_source_dir",
     "tula_source_dir", "local_retrieval_destination", "unity_test_root",
-    "canonical_raw_root", "point_source_project", "science_source_project",
-    "point_raw_selection", "science_raw_selection", "authority_selection",
+    "point_source_project", "science_source_project", "authority_selection",
     "capture_point_root", "capture_science_root",
     "compact_evidence_root", "capture_point_fixed_realized_config",
     "capture_point_realized_config", "capture_science_fixed_realized_config",
@@ -84,8 +83,7 @@ UNITY_EXISTING_PATHS = (
     "unity_source_checkout", "deployed_campaign_path", "unity_python",
     "tolproj_executable", "tolproj_site_config", "point_project",
     "point_apt_dir", "science_project", "kidscpp_source_dir",
-    "tula_source_dir", "canonical_raw_root", "unity_test_root",
-    "point_raw_selection", "science_raw_selection", "authority_selection",
+    "tula_source_dir", "unity_test_root", "authority_selection",
     "resource_filesystem_root",
 )
 ABSOLUTE_PATH_KEYS = (
@@ -93,9 +91,8 @@ ABSOLUTE_PATH_KEYS = (
     "unity_python", "tolproj_executable", "tolproj_site_config",
     "point_project", "point_apt_dir", "science_project",
     "kidscpp_source_dir", "tula_source_dir", "local_retrieval_destination",
-    "unity_test_root",
-    "canonical_raw_root", "point_source_project", "science_source_project",
-    "point_raw_selection", "science_raw_selection", "authority_selection",
+    "unity_test_root", "point_source_project", "science_source_project",
+    "authority_selection",
     "capture_point_root", "capture_science_root",
     "compact_evidence_root", "capture_point_fixed_realized_config",
     "capture_point_realized_config", "capture_science_fixed_realized_config",
@@ -443,18 +440,15 @@ def validate_owner(path: Path, campaign: Mapping[str, Any],
         for key in ("unity_python", "tolproj_executable"):
             if not Path(values[key]).is_file() or not os.access(values[key], os.X_OK):
                 fail(f"owner executable is not an executable file: {key}")
-        for key in ("tolproj_site_config", "point_raw_selection",
-                    "science_raw_selection", "authority_selection"):
+        for key in ("tolproj_site_config", "authority_selection"):
             if not Path(values[key]).is_file():
                 fail(f"owner file is absent: {key}")
         for key in ("unity_source_checkout", "deployed_campaign_path", "point_project",
                     "point_apt_dir", "science_project", "kidscpp_source_dir",
-                    "tula_source_dir", "canonical_raw_root", "unity_test_root",
+                    "tula_source_dir", "unity_test_root",
                     "resource_filesystem_root"):
             if not Path(values[key]).is_dir():
                 fail(f"owner directory is absent: {key}")
-    if Path(values["canonical_raw_root"]) != Path("/work/toltec"):
-        fail("canonical_raw_root must be the explicitly owner-verified /work/toltec")
     request_root = Path(values["request_root"]).resolve(strict=False)
     request_local_paths = {
         "capture_point_root": request_root / "captures" / "CAP-POINT",
