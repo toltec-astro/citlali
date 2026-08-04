@@ -713,7 +713,7 @@ packages:
               between separately invoked Unity stages; no automatic
               submission, continuation, deletion, cleanup, or cache reuse.
         continuation_handoff:
-          status: existing_task_resumed
+          status: locally_verified_successor_package_accepted_not_dispatched
           path: >-
             doc/audits/packages/SCI-MAP-001_UNITY_ED2_FULL_PTC_SUCCESSOR_HANDOFF_2026-08-02.md
           sha256: >-
@@ -725,6 +725,21 @@ packages:
             c35333d4090e2bebae422538cb40fc063f7cb71a
           resume_date: 2026-08-02
           resume_thread_id: 019fc2c5-ca8c-7270-96b9-d9c612c934fb
+          successor_package:
+            task_commit: 49e21ea90cd663370aa797f1295e8ee65ad4341c
+            task_commit_tree: 7804c6855371757bfcad5b00e133c8262bbdbd1d
+            package_tree: d5fa2a2219cfc91b53621c896a5d34a734f3121f
+            active_checksum_inventory_sha256: >-
+              ff33b659376c0535ae1b27bd02ecc9dba2c841bd7b6eaff5619f5fa87183cbf7
+            independent_read_only_review: pass
+            local_verification: >-
+              Complete package verifier, checksum checks, JSON/shell parsing,
+              capture/compact/analyzer/driver self-checks, and 47 tests pass.
+            coordinator_review_path: >-
+              doc/audits/packages/SCI-MAP-001_ED2_SUCCESSOR_PACKAGE_COORDINATOR_REVIEW_2026-08-03.md
+            coordinator_review_sha256: >-
+              c86e0967425c6106baf12bbd9a07458ccd1606ee594a546a6304eb5cc5c6ff09
+            unity_execution_status: prepared_not_dispatched_owner_action_required
           resume_host_id: local
           resume_effort: ultra
           same_task_required: true
