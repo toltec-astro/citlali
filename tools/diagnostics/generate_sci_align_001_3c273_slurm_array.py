@@ -10,6 +10,7 @@ import io
 import json
 import re
 import shlex
+import shutil
 import sys
 from pathlib import Path
 from typing import Any, Sequence
@@ -61,6 +62,28 @@ def resolved(path: Path) -> Path:
 def absolute_preserving_symlink(path: Path) -> Path:
     expanded = path.expanduser()
     return expanded if expanded.is_absolute() else Path.cwd() / expanded
+
+
+def resolve_python_executable(value: Path) -> Path:
+    """Resolve an explicit interpreter path or a bare command through ``PATH``.
+
+    A bare ``python`` is the documented Unity invocation.  Treating it as a
+    relative path would instead bind it to the generator's current directory.
+    ``shutil.which`` resolves that command at generation time, so the rendered
+    scripts contain one explicit interpreter identity rather than depending on
+    a later shell's ``PATH``.
+    """
+    text = str(value)
+    if value.parent == Path("."):
+        located = shutil.which(text)
+        if located is None:
+            raise SchedulerError(f"--python command is not available on PATH: {text}")
+        path = absolute_preserving_symlink(Path(located))
+    else:
+        path = absolute_preserving_symlink(value)
+    if not path.is_file():
+        raise SchedulerError(f"--python executable is not a regular file: {path}")
+    return path
 
 
 def paths_overlap(first: Path, second: Path) -> bool:
@@ -471,7 +494,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     # Preserve an explicitly selected virtual-environment interpreter instead
     # of resolving its symlink to a host-specific system Python path.
     runner = absolute_preserving_symlink(args.runner)
-    python = absolute_preserving_symlink(args.python)
+    python = resolve_python_executable(args.python)
     protocol = resolved(args.protocol)
     if not protocol.is_file():
         raise SchedulerError(f"analysis protocol does not exist: {protocol}")

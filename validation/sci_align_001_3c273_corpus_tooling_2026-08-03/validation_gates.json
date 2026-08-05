@@ -59,6 +59,11 @@
       "command": "cmake build; config preflight; focused 148670 preparation plus 3C273 corpus tests under headless Matplotlib; archived low-level configuration comparison; ruff and py_compile",
       "result": "citlali_cli build and full config preflight passed; 62 focused preparation/corpus tests passed; generated low-level config matched the archived 148670 config outside explicit input, output/runtime, prior, and absolute raw-data fit-report bindings; static checks passed. The tool binds all eleven raw files, matched APT, telescope, active policy, and Citlali executable by SHA-256 before writing the owner-selected replay root.",
       "status": "pass"
+    },
+    {
+      "command": "focused 3C273 inventory/runner/aggregation/preparation tests after bare-PATH Python resolution repair",
+      "result": "63 tests passed. The documented Unity --python python invocation resolves through PATH at script generation and the rendered serial/Slurm scripts bind the resulting executable path; an unavailable bare command fails before any script is written.",
+      "status": "pass"
     }
   ],
   "no_unity_access": true,

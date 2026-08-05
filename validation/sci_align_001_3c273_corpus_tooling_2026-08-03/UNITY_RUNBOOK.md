@@ -196,6 +196,10 @@ bash -n "$SCI_SCRIPT_ROOT/run_3c273_array.sh"
 bash -n "$SCI_SCRIPT_ROOT/run_3c273_serial.sh"
 ```
 
+The documented `--python python` resolves `python` through the current Unity
+`PATH` while generating the scripts; the rendered scripts bind that resolved
+interpreter path rather than a later shell's `PATH`.
+
 The rendered array has exactly these owner defaults: `48:00:00`, `64G`, six
 CPUs, one node, one task, `toltec-cpu`, `--parsable`, and `%8`; it has no
 account directive.  Scheduler variables appear at the top and are editable.

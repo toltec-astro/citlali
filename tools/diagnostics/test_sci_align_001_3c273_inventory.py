@@ -3,6 +3,7 @@ import json
 import os
 import tempfile
 import unittest
+from unittest import mock
 from pathlib import Path
 
 import numpy as np
@@ -738,6 +739,19 @@ class SchedulerTests(unittest.TestCase):
             with self.assertRaises(scheduler.SchedulerError):
                 scheduler.parse_sbatch_options(["account=project"])
 
+    def test_bare_python_command_resolves_from_path(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            executable = Path(temporary) / "python"
+            executable.write_text("#!/bin/sh\n", encoding="utf-8")
+            executable.chmod(0o755)
+            with mock.patch.object(scheduler.shutil, "which", return_value=str(executable)):
+                self.assertEqual(
+                    scheduler.resolve_python_executable(Path("python")), executable
+                )
+            with mock.patch.object(scheduler.shutil, "which", return_value=None):
+                with self.assertRaisesRegex(scheduler.SchedulerError, "not available"):
+                    scheduler.resolve_python_executable(Path("python"))
+
     def test_scheduler_main_writes_json_argv_command_table(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -748,25 +762,29 @@ class SchedulerTests(unittest.TestCase):
             serial = root / "scheduler output" / "serial.sh"
             runner = root / "runner.py"
             runner.write_text("# synthetic\n", encoding="utf-8")
-            self.assertEqual(
-                scheduler.main(
-                    [
-                        "--selected-manifest", str(manifest),
-                        "--output-script", str(script),
-                        "--serial-script", str(serial),
-                        "--command-table", str(table),
-                        "--output-root", str(output),
-                        "--runner", str(runner),
-                        "--python", str(Path(os.sys.executable)),
-                        "--resume",
-                    ]
-                ),
-                0,
-            )
+            with mock.patch.object(
+                scheduler.shutil, "which", return_value=os.sys.executable
+            ):
+                self.assertEqual(
+                    scheduler.main(
+                        [
+                            "--selected-manifest", str(manifest),
+                            "--output-script", str(script),
+                            "--serial-script", str(serial),
+                            "--command-table", str(table),
+                            "--output-root", str(output),
+                            "--runner", str(runner),
+                            "--python", "python",
+                            "--resume",
+                        ]
+                    ),
+                    0,
+                )
             with table.open(encoding="utf-8", newline="") as stream:
                 rows = list(csv.DictReader(stream))
             self.assertEqual(len(rows), 1)
             argv = json.loads(rows[0]["argv_json"])
+            self.assertEqual(argv[0], os.sys.executable)
             self.assertEqual(argv[argv.index("--candidate-id") + 1], "map:special-id")
             self.assertTrue(script.stat().st_mode & 0o100)
             self.assertTrue(serial.stat().st_mode & 0o100)
