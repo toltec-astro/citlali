@@ -69,9 +69,14 @@
       "command": "focused 3C273 aggregation contract test after runner-schema binding repair",
       "result": "64 focused inventory/runner/aggregation/preparation tests passed. The aggregate loader obtains its required compact-map schema from the same shared RUNNER_SCHEMA contract as the per-map writer, and synthetic per-map fixtures use that shared authority, preventing stale v1/v2 schema disagreement. A one-primary-map corpus publishes explicit unavailable network-adjusted variance/repeatability diagnostics and classifies INSUFFICIENT rather than failing or treating unavailable variance as zero.",
       "status": "pass"
+    },
+    {
+      "command": "focused 3C273 inventory/runner/aggregation/148670-preparation/replay-campaign tests; campaign ruff, py_compile, and diff check",
+      "result": "67 focused tests verify the fixed 15-new-replay/16-total campaign plan, 70/72 numbered-config policy/calibration extraction, exact scannum-2 raw/telescope/APT association, four-job batch cap, detector-TOD sidecar binding, and fail-closed preservation of partial roots. Static checks passed.",
+      "status": "pass"
     }
   ],
   "no_unity_access": true,
   "schema_version": "sci-align-001-3c273-validation-gates-v3",
-  "validated_on": "2026-08-03"
+  "validated_on": "2026-08-05"
 }

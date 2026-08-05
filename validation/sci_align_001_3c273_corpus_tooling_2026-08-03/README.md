@@ -5,9 +5,10 @@ corpus. It inventories retained reductions, runs the preregistered left/right
 and raw-counter diagnostics, freezes independent validation groups, and
 aggregates only compact outputs. The corpus lane does not launch Citlali,
 contact Unity, alter an application/configuration/reduction product,
-reassociate raw rows, or authorize a physical timing correction. The owner has
-separately authorized one source-isolated 148670 reproduction gate to generate
-the missing detector-resolved PTC TOD before corpus execution.
+reassociate raw rows, or authorize a physical timing correction. The owner
+separately authorized source-isolated diagnostic replays: first 148670, then a
+bounded 16-independent-map campaign that includes 148670 and fifteen
+stratified additional 3C273 maps.
 
 The replay binds the historical raw-data directory as an absolute KIDs
 fit-report location. This is equivalent to the archived `../data` convention
@@ -18,6 +19,10 @@ under owner Slurm submission from the repository checkout.
 
 - `UNITY_RUNBOOK.md` gives the exact owner-run inventory, freeze, serial,
   Slurm, resume, aggregate, checksum, and compact-transfer commands.
+- `REPLAY_CAMPAIGN_RUNBOOK_2026-08-05.md` is the owner-run four-concurrent-job,
+  sixteen-map expansion. It generates direct Citlali diagnostic inputs from the
+  owner-supplied 70/72 numbered-config policy/calibration contract and stops on
+  an ambiguous raw/telescope/APT association.
 - `frozen_analysis_protocol.json` is the before-corpus-results scientific and
   statistical authority.
 - `candidate_manifest.schema.json` and `OUTPUT_SCHEMA.md` define the portable
@@ -52,10 +57,11 @@ metadata association, and start/end/centroid timestamp semantics remain
 separate hypotheses. The prior Stage-A proof begins at delivered `D[n]/Ts[n]`
 and cannot rule out an upstream FPGA metadata-to-integration association error.
 
-The immediate stopping point is the 148670 replay product and its compact
-owner-returned evidence, before any corpus execution. The later stopping point
-is a checksum-bound corpus evidence bundle. No 3C273 result alone authorizes a
-production change.
+The earlier 148670 stopping point has been completed and reviewed. The current
+operational stopping point is the checksum-verified completion of each
+four-job campaign batch, before submitting the next batch. The later stopping
+point is a checksum-bound corpus evidence bundle. No 3C273 result alone
+authorizes a production change.
 
 The owner run directory is deliberately below the 3C273 analysis directory but
 is an explicit inventory exclusion. It may contain generated serial/Slurm

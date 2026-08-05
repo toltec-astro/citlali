@@ -9,8 +9,8 @@
   "repository": "/Users/gwilson/GitHub/citlali-refactor",
   "repository_authority": "AGENTS.md plus the living status and scientific-conventions documents routed by the TolTEC context skill",
   "followup_parent_commit": "6776931e753488b902d178b177815a2762375e5c",
-  "followup_scope": "authoritative corpus, canonical selection, availability, checksum-bound scripts, omission evidence, nw9 anomaly diagnostics, and one owner-authorized source-isolated 148670 detector-TOD reproduction gate with an absolute raw-data fit-report binding",
-  "schema_version": "sci-align-001-3c273-tooling-identity-v4",
+  "followup_scope": "authoritative corpus, canonical selection, availability, checksum-bound scripts, omission evidence, nw9 anomaly diagnostics, the completed source-isolated 148670 detector-TOD reproduction gate, and an owner-authorized 16-independent-map campaign generated from the supplied 70/72 numbered-config policy/calibration authority",
+  "schema_version": "sci-align-001-3c273-tooling-identity-v5",
   "starting_worktree_clean": true,
   "unity_contacted": false
 }

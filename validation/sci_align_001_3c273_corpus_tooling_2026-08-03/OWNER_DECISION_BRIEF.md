@@ -11,9 +11,10 @@ design may be investigated.
 
 This package does not choose a production correction. It creates a
 preregistered experiment and compact evidence contract for the project owner
-to run on Unity. The corpus-analysis lane remains read-only; the owner has
-separately authorized an isolated 148670 diagnostic reproduction solely to
-create the missing detector-resolved PTC TOD.
+to run on Unity. The corpus-analysis lane remains read-only; the owner first
+authorized an isolated 148670 diagnostic reproduction and, after review,
+authorized the bounded 16-independent-map source-isolated replay campaign in
+`REPLAY_CAMPAIGN_RUNBOOK_2026-08-05.md`.
 
 ## Producer timing authority incorporated during tooling development
 
@@ -163,9 +164,10 @@ performed by this task.
 
 ## Authorized stopping point
 
-First stop after the owner returns the isolated 148670 replay product evidence;
-do not start corpus inventory or another reproduction before review. The later
-stop is a compact, checksum-bound corpus report with unresolved duplicate/path
-choices explicit. No Unity access by Codex, physical timestamp correction, row
-reassociation, application/source edit, merge, rebase, or push is part of this
-work. The sole authorized reduction is the one source-isolated 148670 replay.
+The initial 148670 replay stop has been completed and reviewed. The current
+stop condition is after each checksum-verified campaign batch and before the
+next batch is submitted. The later stop is a compact, checksum-bound corpus
+report with unresolved duplicate/path choices explicit. No Unity access by
+Codex, physical timestamp correction, row reassociation, application/source
+edit, merge, rebase, or push is part of this work. Authorized reductions are
+only the source-isolated roots emitted by the fixed 16-map campaign preparer.
