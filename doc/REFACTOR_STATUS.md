@@ -36,7 +36,54 @@ The live branch, upstream revision, gate, and import policy are recorded in
 [`INTEGRATION_LEDGER.md`](INTEGRATION_LEDGER.md). The durable rationale is
 [ADR 0008](adr/0008-application-mainline-and-build-adaptation-lanes.md).
 
-## 2026-07-31 SCI-MAP-001 Bounded Repair Lane
+## 2026-08-05 SCI-MAP-001 Application Integration Candidate
+
+The final independent re-audit at
+`8fc716557ca78b0d220200a92be46fa3545797e9` and the final canonical
+coordination candidate at
+`c7bb0214edfd57fddf31165923f08784dfd1b8c9` accept the bounded
+`SCI-MAP-001` scientific contract at exact application source
+`af0c849ce59a5f80e5efc8db435bb6662863052f`. Within that scope the contract
+is approved, the implementation is conformant, validation is complete within
+the local plus owner-accepted bounded evidence scope, and the bounded verdict
+is `accept`.
+
+F001--F011 are closed. F012 is
+`closed_bounded_owner_accepted` only for the exact-`ed28dafb` external
+execution/completion, returned product/inventory, visible observation/coadd,
+and SEQ/OMP claims. Its retained limitations are the absent independent raw
+manifest and sample ledger, scan-farm pre-normalization planes and commit-order
+trace, wrapper/Slurm/environment/collection/retrieval chain, and historical
+same-case S-X observation-realization files. F013 remains `open_conditioned`
+on `SCI-ALIGN-001`, `SCI-CAL-001`, `SCI-AST-001`, `SCI-PTC-001`, and
+`SCI-VAL-001`.
+
+The coordinator-directed 2026-08-05 application-integration task separately
+authorizes this MAP candidate for application integration. The dedicated
+`codex/integrate-sci-map-001` branch was created from exact canonical
+application base `9aae0e669384c5c0c0dda93debc194d6b8dac787` and advanced only
+by fast-forward through `ed28dafb3`, `1b824f138`, `02b9eb303`, `f84b9fd7d`,
+and `af0c849ce`. The excluded convolve/noise candidate
+`02a198cbfb379eaf6ab279c5a3d44ee73ff90435` is not in that ancestry. Before
+the integration records were edited, the branch tree was exactly the
+`af0c849` application tree, `47aa745554e47514398e72d579625484abdcb79e`.
+The branch-tip child of `af0c849` is a documentation-only integration commit
+that changes this status, the integration ledger, and the dated
+[application-integration handoff](../handoff/SCI-MAP-001_APPLICATION_INTEGRATION_DECISION_2026-08-05.md);
+it is not a later application-source revision.
+
+`codex/refactor-mainline` remains unmoved at `9aae0e669`; the integration
+branch is a committed candidate for owner/coordinator review and later
+fast-forward. Production remains `existing_use_only`, no upstream dependency
+is closed by MAP acceptance, and neither production expansion nor Conan-lane
+import is authorized by this candidate.
+
+## Historical 2026-07-31 SCI-MAP-001 Bounded Repair Lane
+
+This section preserves the repair-lane chronology and its candidate-time gate
+states. Statements below about a then-pending final re-audit are historical
+evidence, not current instructions or current package status; the application-
+integration disposition above supersedes them as live state.
 
 The project owner approved a bounded repair of `SCI-MAP-001` findings
 F001-F011 on `codex/repair-sci-map-001`, created directly from governing

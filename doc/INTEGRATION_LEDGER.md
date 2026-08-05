@@ -10,7 +10,7 @@ ADRs, and validation records.
 | Workstream | Authority | Purpose | Integration rule | State |
 | --- | --- | --- | --- | --- |
 | Refactored application | `codex/refactor-mainline` | Canonical source, tests, configuration, operational behavior, and validation history | Normal application changes land here after their affected gates | Active |
-| SCI-MAP-001 bounded repair | `codex/repair-sci-map-001` from `9aae0e669384c5c0c0dda93debc194d6b8dac787` | Isolated bounded implementation, product/provenance contract, local truth suite, owner-amended F005/output-persistence cycle, final coadd/filter cardinality closeout, and reconciled seven-case external corpus | Fresh exact-repair-SHA re-audit precedes any application-mainline integration; do not merge audit, coordination, or convolve/noise candidates into this lane | Final bookkeeping repair locally verified; final re-audit pending; not application authority |
+| SCI-MAP-001 application integration candidate | `codex/integrate-sci-map-001`, with exact application source `af0c849ce59a5f80e5efc8db435bb6662863052f` from `codex/repair-sci-map-001` followed only by the containing documentation-only integration commit | Accepted bounded implementation, product/provenance contract, truth suites, owner-amended evidence, and frozen campaign/closeout history | After owner/coordinator review, fast-forward `codex/refactor-mainline` only to the verified integration-candidate tip; do not merge audit, coordination, or convolve/noise branches | Committed and locally verified candidate; bounded MAP contract accepted; production remains `existing_use_only` |
 | Conan 2 adaptation | `codex/conan2-adaptation` | Port the full application into the accepted Tula/Conan 2 architecture | Incorporate mainline regularly; return only after all build-integration gates pass | Active in `/Users/gwilson/GitHub/citlali-refactor-conan2` |
 | Historical structural refactor | `codex/structural-refactor` at `171487196` | Forensic pointer to the pre-follow-on integration tree | Do not resume as an application authority | Frozen |
 | Historical fruit-loop/raw-IQ topic | `codex/fruit-loop-calibration-reference` at `b02fef613` | Forensic pointer to the topic-named branch before mainline normalization | Do not resume as an application authority | Frozen locally; its existing remote remains historical |
@@ -39,58 +39,36 @@ new exact commits before importing subsequent upstream work.
 - Record intentional scientific changes separately from refactoring and build
   integration.
 
-### SCI-MAP-001 Bounded Repair
+### SCI-MAP-001 Application Integration
 
-- Preserve ordinary compatible numerical behavior and the exact approved
-  F009/F010 contract in ADR 0009; do not broaden the prohibited algorithms or
-  production defaults.
-- Preserve the frozen raw-parent snapshot and matching `RAWPDGST` carriage for
-  filtered successor products. Keep unsupported profiles on their explicit
-  pre-successor legacy arithmetic lane without an F009/F010 claim.
-- Pass the contract-derived focused truth suite, affected CTests, baseline
-  tools, complete config preflight, and touched provenance/output validators at
-  one exact committed repair SHA with no required-data skip or unexpected
-  error-level record.
-- Keep F009 and F010 `addressed_pending_reaudit`, package verdict `amend`, and
-  production `existing_use_only`; this lane cannot declare conformance or
-  close findings.
-- Apply the 2026-08-05 owner amendment only to F005 aggregate/index
-  fail-closed safety, coadd-enabled observation-realization persistence, and
-  the specified production WCS/card/output tests. Keep normal finite-domain
-  arithmetic, WCS policy, defaults, and prohibited algorithms unchanged.
-- The second-cycle independent re-audit at
-  `fc26e24e6543d1102f9fcc9bf4e849369b39dd04` proposed F005, F007, and F010
-  closure but retained F004/F011 for one completion-provenance cardinality
-  defect. The repair candidate now counts raw observation stages separately
-  from raw-plus-filtered coadd stages, yielding exactly 18 realization writes
-  and 9 empirical product maps for the audited three-map, two-realization
-  coadd-plus-filter case. This is a candidate result, not canonical closure.
-- The human owner completed all seven `SCI-MAP-001-UNITY-001` cases for exact
-  candidate `ed28dafb37f9113c0d3c95297148157129a90886`; do not issue or run a
-  duplicate campaign. The read-only local reconciliation is recorded in
-  `SCI-MAP-001_EXISTING_CORPUS_CLOSEOUT_2026-08-05.md`. F012 is owner-accepted
-  only for the bounded external product/execution/SEQ-OMP claims in
-  `SCI-MAP-001_OWNER_SCOPE_EVIDENCE_AMENDMENT_2026-08-05.md`; missing lanes
-  remain limitations. Codex did not access Unity.
-- The versioned local owner package is
-  `validation/campaigns/SCI-MAP-001-UNITY-001/repair-ed28dafb/`. It prepares
-  the exact `ed28dafb37f9113c0d3c95297148157129a90886` campaign and now points
-  to the reconciled external corpus closeout; multi-gigabyte products remain
-  outside the repository. Its manifest records ALIGN-OD1 through ALIGN-OD8 and
-  ALIGN-C001 as owner-approved at record commit
-  `4f905f4f353e91847a303f4f3959654f3f03c302`, with its expanded-identity
-  correction at `35cc8ce246e8e70c569e650be6c1eae2c91b80ef`, the bounded handoff at
-  `0309fd48a973a6e7e136224906ac49c02f0171be`, and coordination-ledger HEAD
-  `846128c8ee6dc27851bd6c71aeecbe4739e1d24a`. ALIGN implementation remains
-  nonconformant, validation is in progress, production remains
-  `existing_use_only`, and MAP evidence closes none of ALIGN, CAL, AST, PTC,
-  or VAL.
-- Keep F013 conditioned on `SCI-ALIGN-001`, `SCI-CAL-001`, `SCI-AST-001`,
-  `SCI-PTC-001`, and `SCI-VAL-001`. A fresh `codex/reaudit-sci-map-001`
-  worktree assesses F004 and F011 against the final exact repair SHA, confirms
-  or rejects the second-cycle F005/F007/F010 proposed closures against the
-  amendment, records bounded F012 acceptance and limitations, preserves F013
-  dependencies, and issues the next disposition.
+- Final independent re-audit
+  `8fc716557ca78b0d220200a92be46fa3545797e9` and final canonical coordination
+  candidate `c7bb0214edfd57fddf31165923f08784dfd1b8c9` establish the bounded
+  package axes `approved`, `conformant`, `complete`, and
+  `existing_use_only`, with bounded-contract verdict `accept`.
+- The coordinator-directed 2026-08-05 task separately authorizes application
+  integration. Exact application source remains
+  `af0c849ce59a5f80e5efc8db435bb6662863052f`; its application tree is
+  `47aa745554e47514398e72d579625484abdcb79e`. The branch-tip child is only the
+  documentation/status commit containing the linked
+  [integration handoff](../handoff/SCI-MAP-001_APPLICATION_INTEGRATION_DECISION_2026-08-05.md).
+- F001--F011 are closed. F012 is
+  `closed_bounded_owner_accepted`, retaining the absent raw/sample ledger,
+  pre-normalization/commit-order, operational-chain, and historical same-case
+  S-X observation-realization lanes as explicit limitations. F013 remains
+  `open_conditioned` on ALIGN, CAL, AST, PTC, and VAL.
+- Preserve ordinary compatible numerical behavior, the frozen raw-parent
+  snapshot and `RAWPDGST` carriage, explicit unsupported-profile absence, and
+  the exact ADR 0009 F009/F010 contract. Do not broaden mapmaking,
+  noise-generation, coadd, WCS, threshold, output-routing, configuration
+  defaults, or any other mature algorithm.
+- The completed seven-case external campaign remains frozen historical
+  evidence; do not repeat it. This application integration did not access
+  Unity or the external corpus and closes no upstream dependency.
+- Owner review may fast-forward `codex/refactor-mainline` to the verified
+  integration-candidate tip. Production expansion and any subsequent Conan
+  adaptation import remain separate decisions; production stays
+  `existing_use_only`.
 
 ### Conan 2 Adaptation Entry
 
@@ -128,8 +106,9 @@ The exit gates remain those in the build integration review:
   provenance, CLI behavior, or validated application sources.
 - Do not combine numerical algorithm changes with build integration commits.
 - Do not import the isolated SCI-MAP-001 repair directly into the Conan 2 lane.
-  It becomes eligible for ordinary synchronization only after the required
-  independent disposition and application-mainline integration.
+  It becomes eligible for ordinary synchronization only after the owner
+  fast-forwards the verified application-integration candidate into
+  `codex/refactor-mainline`; MAP closure alone does not update the Conan lane.
 
 ## Repository Hygiene
 
