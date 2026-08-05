@@ -1,0 +1,63 @@
+{
+  "cache_root": "/Users/gwilson/work_toltec/local_data/sci_cal_001_tau025_engineering_extension_002_root",
+  "candidate_metrics": [
+    {
+      "candidate": "piecewise_linear_los_tau_v1",
+      "elevation_violations": 0,
+      "exact_node_max_los_tau_error": 5.551115123125783e-17,
+      "max_fractional_correction_error": 0.005320050555155155,
+      "nextafter_max_relative_correction_step": 1.1102230246251565e-16,
+      "opacity_violations": 0,
+      "p95": 0.003699842039410853,
+      "rms": 0.0014327158166743323
+    },
+    {
+      "candidate": "pchip_los_tau_v1",
+      "elevation_violations": 0,
+      "exact_node_max_los_tau_error": 1.1102230246251565e-16,
+      "max_fractional_correction_error": 0.005517928371531477,
+      "nextafter_max_relative_correction_step": 2.2204460492503136e-16,
+      "opacity_violations": 0,
+      "p95": 0.003901091299474634,
+      "rms": 0.0014778908686230259
+    }
+  ],
+  "execution_context_sha256": "20f2dbc1ae232cc1b96b02431d703c5cbd166ceda28635d8bebc8867eb602efc",
+  "execution_manifest_sha256": "932ab48ec5d79e1455f970b576e177f2a3673f7108a79b1e9fa2f86db9905208",
+  "heldout_row_count": 18000,
+  "interpretation": "numerical representation evidence only; not observational calibration accuracy or operator adoption",
+  "profiles": [
+    "LMT_DJF_25",
+    "LMT_DJF_5",
+    "LMT_DJF_50",
+    "LMT_DJF_75",
+    "LMT_DJF_95",
+    "LMT_JJA_25",
+    "LMT_JJA_5",
+    "LMT_JJA_50",
+    "LMT_JJA_75",
+    "LMT_JJA_95",
+    "LMT_MAM_25",
+    "LMT_MAM_5",
+    "LMT_MAM_50",
+    "LMT_MAM_75",
+    "LMT_MAM_95",
+    "LMT_SON_25",
+    "LMT_SON_5",
+    "LMT_SON_50",
+    "LMT_SON_75",
+    "LMT_SON_95",
+    "LMT_annual_25",
+    "LMT_annual_5",
+    "LMT_annual_50",
+    "LMT_annual_75",
+    "LMT_annual_95"
+  ],
+  "recommended_candidate": "piecewise_linear_los_tau_v1",
+  "schema_version": "sci-cal-001-tau025-evaluation-v1",
+  "support": {
+    "elevation_deg": "25 <= EL <= 80",
+    "profile_identity": "one of 25 frozen AMC profile identities; no generic profile inference",
+    "tau225": "0.15 <= tau225 <= 0.25"
+  }
+}
