@@ -264,9 +264,10 @@ packages:
     tier: A
     queue_wave: first_new_audit
     scientific_scope: >-
-      The shared map-product contract, naive weighted gridding, normalization,
-      signal, formal weight, kernel, hits/coverage, validity, and centered
-      inverse-variance observation coaddition.
+      The shared map-product contract: naive gridding and normalization,
+      signal, the nonprecision gridding/normalization coefficient weight_I,
+      kernel, facts/support/validity, and centered coefficient-weighted
+      observation coaddition.
     known_code_areas:
       - include/citlali/core/mapmaking/naive_mm.h
       - include/citlali/core/mapmaking/map.h
@@ -279,7 +280,9 @@ packages:
       - pointing/pixel operator and sample duration
     outputs:
       - observation and coadd signal maps
-      - formal map weight, kernel, hits/coverage, and validity
+      - >-
+        nonprecision gridding/normalization coefficient weight_I, kernel,
+        facts, support, and validity products
     upstream_dependencies:
       - package_id: SCI-ALIGN-001
         status: open
