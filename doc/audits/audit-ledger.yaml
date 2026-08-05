@@ -131,6 +131,24 @@ resource_allocation:
         consumer adequacy while preserving the NOI-002 boundary.
       parallelism: serial_single_audit_task_no_delegation
       stop_rule: stop_after_phase_0_scope_checkpoint
+    - dispatch_id: SCI-NOI-001-PHASE-1-INDEPENDENT-CORE-2026-08-05
+      package_id: SCI-NOI-001
+      phase: independent_core_freeze_only
+      dispatch_content_commit: 6f50a85ab5f2798fa96af227d2b5e5ac566882b2
+      model: gpt-5.6-sol
+      effort: ultra
+      task_shape: single_audit_synthesis_independent_core
+      rationale: >-
+        Owner-approved phased progression after the accepted clean Phase 0
+        checkpoint; authorize only the independent mathematical core before
+        any quarantined implementation/test/diff or post-core exposure.
+      ultra_trigger: >-
+        Reconcile sign-law/effective-size mathematics, conditioning/RNG/state/
+        eligibility/provenance, realized-operator propagation,
+        deterministic-signal leakage/residual bias trade, and consumer
+        adequacy while preserving the NOI-002 boundary.
+      parallelism: serial_same_task_no_delegation_or_subagents
+      stop_rule: stop_after_independent_core_commit_before_phase_2_exposure
 scope_control:
   policy_id: FRAMEWORK-SCOPE-001
   status: active_for_future_dispatches_and_future_phases
@@ -4829,13 +4847,13 @@ packages:
     requested_unity_evidence: []
     supplied_external_evidence: []
     dispatch:
-      status: frozen_phase_0_only
+      status: phase_0_completed_accepted_phase_1_independent_core_authorized
       dispatch_date: 2026-08-05
       launch_authorization: project_owner_explicit_phase_0_only
       coordinator_registry_commit: 192e0d9b5e3be4eb20522d3319cae346168c4bce
       application_source_sha: d5015fe716971bf8ea617e8a187311bf5af05185
       prompt_path: doc/audits/prompts/SCI_NOI_001_AUDIT_PROMPT.md
-      prompt_sha256: 755e41939682f5130fabf0f2428d32580acdd231c701860927ec493fcb98fa7b
+      prompt_sha256: f2dec3e30b7955e45d8f68bc370f91d239ebe89980cfa3e1b97f21e8e42da37c
       manifest_path: >-
         doc/audits/handoffs/SCI-NOI-001/SCI-NOI-001_INBOX_MANIFEST_2026-08-05.yaml
       manifest_sha256: 571d1b043e7ec041e3ca8c8dd841761aafcecd03d92a959e72add1dfdbebf819
@@ -4844,8 +4862,29 @@ packages:
       readiness_record:
         path: >-
           doc/audits/packages/SCI-NOI-001_COORDINATOR_DISPATCH_READINESS_2026-08-05.md
-        sha256: dfa5f6caed8d3b260c6e6527a253cc989bda06cd59b6b78964ae2fd0a6108c7e
+        sha256: 95ab988eb6de29891a8a755feef356f47202cc93a7f76d1169036196d0e14582
       phase_0:
+        status: completed_accepted
+        task_thread_id: 019fd40a-cf4d-7ad0-aa9b-9543d5236154
+        execution_worktree: /Users/gwilson/.codex/worktrees/e71f/citlali-refactor
+        execution_head: d5015fe716971bf8ea617e8a187311bf5af05185
+        execution_head_state: detached_clean
+        execution_origin_ref: origin/codex/refactor-mainline
+        dispatch_commit_verified: 6f50a85ab5f2798fa96af227d2b5e5ac566882b2
+        verified_prompt_sha256: 755e41939682f5130fabf0f2428d32580acdd231c701860927ec493fcb98fa7b
+        verified_manifest_sha256: 571d1b043e7ec041e3ca8c8dd841761aafcecd03d92a959e72add1dfdbebf819
+        verified_handoff_sha256:
+          SCI-NOI-001-XAUD-001: c7730995b8c5474389518c6bef2e24355ec31f0b4e317e01934a6a5afca17860
+          SCI-NOI-001-XAUD-002: c4865418065cb093c07aa00711cb7d0b06e34c314fd8200d6ded627a220dafdc
+        pre_core_authority_handoff_count: 2
+        post_core_evidence_handoff_count: 0
+        quarantined_implementation_or_test_or_diff_opened: false
+        post_core_evidence_opened: false
+        prior_exposure: none_reported
+        prohibited_action_performed: none
+        correction: >-
+          Prompt now explicitly enumerates known quarantined paths and the
+          non-exhaustive direct-source/test/diff exposure boundary.
         model: gpt-5.6-terra
         effort: high
         authorized_scope: scope_checkpoint_repository_state_and_quarantine_verification_only
@@ -4866,13 +4905,33 @@ packages:
         next_return: >-
           concise_FRAMEWORK-SCOPE-001_checkpoint_with_execution_worktree_path,
           detached_or_starting_HEAD_clean_state_and_exact_Git_object_byte_checks
+      phase_1:
+        status: authorized_independent_core_freeze_only
+        task_thread_id: 019fd40a-cf4d-7ad0-aa9b-9543d5236154
+        task_worktree: /Users/gwilson/.codex/worktrees/e71f/citlali-refactor
+        starting_sha: d5015fe716971bf8ea617e8a187311bf5af05185
+        model: gpt-5.6-sol
+        effort: ultra
+        parallelism: serial_no_delegation_or_subagents
+        audit_branch: codex/audit-sci-noi-001
+        audit_branch_creation: only_if_absent_and_task_worktree_clean
+        allowed_reads: [repository_level_authorities, SCI-NOI-001-XAUD-001, SCI-NOI-001-XAUD-002]
+        permitted_write: doc/audits/packages/SCI-NOI-001_INDEPENDENT_CORE.tex_only
+        required_return: >-
+          path_sha256_commit_UTC_timestamp_first_permitted_phase_2_inspection
+          boundary_and_clean_state
+        prohibited_before_stop:
+          - quarantined_implementation_test_or_diff_opening
+          - post_core_evidence_opening
+          - local_reduction
+          - Unity
+          - helper_schema_or_verifier
+          - repair
+          - push
+          - integration
+          - phase_2
+        stop_rule: stop_after_independent_core_commit
       held_future_phases:
-        phase_1:
-          model: gpt-5.6-sol
-          effort: ultra
-          authorization: explicit_coordinator_follow_up_required
-          audit_branch: codex/audit-sci-noi-001_created_only_after_authorization
-          deliverable: SCI-NOI-001_INDEPENDENT_CORE.tex_only_then_stop
         phase_2:
           model: gpt-5.6-sol
           effort: ultra

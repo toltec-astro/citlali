@@ -32,12 +32,29 @@ worktree stated below; that infrastructure action has no audit authority.
   `SCI-NOI-001-XAUD-002` (FLT). There are no post-core evidence handoffs at
   dispatch.
 
+## Quarantined implementation and exposure boundary
+
+The following known package implementation paths are quarantined through the
+Phase 1 independent-core freeze. Their enumeration is an exposure boundary,
+not a claim of an exhaustive implementation inventory:
+
+- `include/citlali/core/pipeline/timestream_scan_generation.h`
+- `include/citlali/core/pipeline/noise_execution_plan.h`
+- `include/citlali/core/mapmaking/naive_mm.h`
+- `include/citlali/core/mapmaking/jinc_mm.h`
+- `include/citlali/core/pipeline/observation_coadd_accumulation.h`
+
+Package-specific tests/diffs and any other implementation source directly
+exercising sign construction, RNG/seed, realization mapmaking/coaddition/
+filtering/persistence, or fruit-loop subtraction/re-addition are likewise
+quarantined until Phase 2. No post-core evidence may be opened in Phase 1.
+
 ## Phase profile and stop rule
 
 | Phase | Model/effort | Authority now | Required stop |
 | --- | --- | --- | --- |
 | 0 | `gpt-5.6-terra`, high | scope checkpoint, repository state, and quarantine verification only in the coordinator-created isolated execution worktree | return before independent derivation or source inspection |
-| 1 | `gpt-5.6-sol`, ultra | only after explicit coordinator follow-up | commit only `SCI-NOI-001_INDEPENDENT_CORE.tex`, report its digest/commit/timestamp, and stop before quarantined source or post-core evidence |
+| 1 | `gpt-5.6-sol`, ultra | authorized only for the existing task `019fd40a-cf4d-7ad0-aa9b-9543d5236154` and the independent-core freeze | commit only `SCI-NOI-001_INDEPENDENT_CORE.tex`, report its digest/commit/timestamp, and stop before quarantined source or post-core evidence |
 | 2 | `gpt-5.6-sol`, ultra | only after a separate explicit coordinator follow-up | documentation-only source/product/consumer trace and final audit synthesis, then stop |
 
 The Phase 1/2 Ultra trigger is owner-approved and specific: reconcile the
@@ -51,6 +68,28 @@ core first; then map every source/product/consumer result to numbered core
 equations and state dependency-conditioned conclusions. Ultra ends at each
 named Phase 1 or Phase 2 stop boundary. No delegation or parallel subagents
 are permitted.
+
+## Exact Phase 1 continuation prompt
+
+Continue only task `019fd40a-cf4d-7ad0-aa9b-9543d5236154` in its verified
+isolated execution worktree
+`/Users/gwilson/.codex/worktrees/e71f/citlali-refactor`, which is clean at
+detached HEAD `d5015fe716971bf8ea617e8a187311bf5af05185`. Use
+`gpt-5.6-sol` at Ultra effort, serially, with no delegation or subagents.
+
+Before derivation, reverify the clean worktree and exact starting SHA. Create
+`codex/audit-sci-noi-001` in that worktree only if the branch is absent and the
+worktree remains clean; do not move, reuse, or alter another branch. Read only
+repository-level authorities and frozen pre-core handoffs
+`SCI-NOI-001-XAUD-001` and `SCI-NOI-001-XAUD-002`. Do not open any quarantined
+implementation/test/diff or post-core evidence.
+
+Create and commit only
+`doc/audits/packages/SCI-NOI-001_INDEPENDENT_CORE.tex`. Report its path,
+SHA-256, commit, UTC timestamp, first permitted Phase 2 inspection boundary,
+and clean state, then stop. Do not perform Phase 2, a local reduction, Unity
+action, helper/schema/verifier work, repair, push, integration, or another
+audit/package launch.
 
 ## Exact Phase 0 launch prompt
 
@@ -161,9 +200,9 @@ production default, beammap expectation, or new cap.
 
 ## Later Phase 1 independent-core requirements
 
-After explicit Phase 1 authorization, read only repository-level authorities
+Under the current Phase 1 authorization, read only repository-level authorities
 and the two frozen pre-core handoffs before deriving the independent core. Do
-not open quarantined implementation paths or a post-core record. The core must
+not open quarantined implementation paths, tests, diffs, or a post-core record. The core must
 derive conditional mean/covariance using the sign-correlation law
 `Q_epsilon`; coherent-sign cases; balance, duplicate/complement, dependence,
 seed, and effective-unique-assignment constraints; physical-noise versus

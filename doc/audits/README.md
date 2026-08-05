@@ -92,20 +92,23 @@ retains their exact boundary. The package remains
 `proposed`/`conditionally_conformant`/`in_progress`/`fail_closed` with verdict
 `amend` and re-audit `required`.
 
-### SCI-NOI-001 Phase 0 dispatch — 2026-08-05
+### SCI-NOI-001 Phase 0 accepted; Phase 1 core authorized — 2026-08-05
 
 The [frozen SCI-NOI-001 prompt](prompts/SCI_NOI_001_AUDIT_PROMPT.md),
 [inbound manifest](handoffs/SCI-NOI-001/SCI-NOI-001_INBOX_MANIFEST_2026-08-05.yaml),
 and [dispatch/readiness record](packages/SCI-NOI-001_COORDINATOR_DISPATCH_READINESS_2026-08-05.md)
-prepare only a Terra-high Phase 0 scope checkpoint against exact application
-SHA `d5015fe716971bf8ea617e8a187311bf5af05185`. Two frozen pre-core authority
-handoffs carry the accepted bounded MAP contract and FLT D001--D003
-restrictions. Phase 0 permits no auditor-created audit branch/worktree, derivation, implementation
-inspection, reduction, Unity action, or evidence request; the Codex
-app/coordinator may create a dedicated isolated clean execution worktree at
-exact `d5015fe716971bf8ea617e8a187311bf5af05185` solely to perform the Phase 0
-repository-state and quarantine check. The auditor may not create/switch/move
-an audit branch or write files in Phase 0.
+record the accepted Terra-high Phase 0 checkpoint in task
+`019fd40a-cf4d-7ad0-aa9b-9543d5236154`: its isolated worktree was clean at
+detached `d5015fe716971bf8ea617e8a187311bf5af05185`, all frozen bytes matched,
+and no implementation/test/diff or post-core evidence was opened. The prompt
+now explicitly enumerates the known quarantined paths and the non-exhaustive
+direct-source/test/diff boundary.
+
+Phase 1 alone is authorized in that same task/worktree: Sol-ultra, serial, no
+delegation, and only the independent-core file may be created and committed.
+The audit branch may be created only if absent and the worktree remains clean.
+It must stop before any quarantined exposure or post-core evidence. Phase 2
+remains separately held.
 
 NOI-001 will define the conditional pre-mapmaking sign ensemble and its
 ensemble second-moment imprint through realized map/coadd/filter interfaces.

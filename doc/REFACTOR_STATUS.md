@@ -227,19 +227,27 @@ exact-successor repair/evidence and fresh re-audit authorization against the
 [recorded decision boundary](audits/packages/SCI-FLT-001_COORDINATOR_DECISION_BRIEF_2026-08-05.md);
 it authorizes no application integration or production expansion.
 
-## 2026-08-05 SCI-NOI-001 Phase 0 Dispatch Preparation
+## 2026-08-05 SCI-NOI-001 Phase 0 Acceptance and Phase 1 Authorization
 
-The coordination line has frozen a Phase 0-only
+The coordination line froze the
 [SCI-NOI-001 dispatch prompt](audits/prompts/SCI_NOI_001_AUDIT_PROMPT.md),
 [inbound handoff manifest](audits/handoffs/SCI-NOI-001/SCI-NOI-001_INBOX_MANIFEST_2026-08-05.yaml),
 and [readiness record](audits/packages/SCI-NOI-001_COORDINATOR_DISPATCH_READINESS_2026-08-05.md).
 The later audit source is exact `d5015fe716971bf8ea617e8a187311bf5af05185`.
-Phase 0 uses Terra-high solely for a scope checkpoint, repository-state, and
-quarantine verification; it must stop before derivation, implementation
-inspection, an auditor-created audit branch/worktree, reduction, Unity action,
-or an evidence request. The Codex app/coordinator may create a dedicated
-isolated clean execution worktree at exact
-`d5015fe716971bf8ea617e8a187311bf5af05185` solely for this Phase 0 check.
+Phase 0 is accepted from task `019fd40a-cf4d-7ad0-aa9b-9543d5236154`:
+`/Users/gwilson/.codex/worktrees/e71f/citlali-refactor` was clean at detached
+`d5015fe716971bf8ea617e8a187311bf5af05185`; dispatch/prompt/manifest/handoff
+bytes were verified, and no implementation/test/diff or post-core evidence was
+opened. The prompt correction explicitly lists the known quarantined paths and
+states the non-exhaustive direct-source/test/diff boundary.
+
+Phase 1 alone is authorized in that same task/worktree: Sol-ultra, serial,
+with no delegation. It may create `codex/audit-sci-noi-001` only if absent and
+the worktree remains clean, read repository-level authorities plus the two
+pre-core handoffs, and create/commit only the independent core. It must stop
+before quarantined exposure, post-core evidence, local reduction, Unity,
+helper/schema/verifier work, repair, push, integration, or Phase 2. Phase 2
+remains separately held.
 
 The later NOI-001 question is the conditional ensemble made by pre-mapmaking
 sign randomization of fixed realized post-RTC/PTC samples, including its
