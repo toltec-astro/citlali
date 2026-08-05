@@ -124,7 +124,11 @@ for exact repair candidate `ed28dafb37f9113c0d3c95297148157129a90886`.
 It contains the seven-case manifest, explicit deployment-value and result
 schemas, raw-source/scan/detector/sample authority schema, deterministic
 expert-overlay generator, input/hash preflight, allocation wrappers, and
-request-specific analyzer. The package has no Unity results and is not an
-accepted validation record. Follow its owner runbook; missing independent
-processed-term ledgers are evidence gaps, not values to infer from final FITS
-products.
+request-specific analyzer. The human owner has already executed the seven
+cases; do not rerun the owner runbook. The returned products remain in the
+owner-supplied external corpus and are reconciled in
+`SCI-MAP-001_EXISTING_CORPUS_CLOSEOUT_2026-08-05.md`. That closeout is an
+evidence handoff, not an accepted validation record or finding disposition.
+Missing independent processed-term ledgers and same-case `S-X-SEQ`
+observation-realization bytes remain explicit evidence gaps, not values to
+infer from final FITS or sibling products.

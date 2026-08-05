@@ -10,7 +10,7 @@ ADRs, and validation records.
 | Workstream | Authority | Purpose | Integration rule | State |
 | --- | --- | --- | --- | --- |
 | Refactored application | `codex/refactor-mainline` | Canonical source, tests, configuration, operational behavior, and validation history | Normal application changes land here after their affected gates | Active |
-| SCI-MAP-001 bounded repair | `codex/repair-sci-map-001` from `9aae0e669384c5c0c0dda93debc194d6b8dac787` | Isolated F001-F011 implementation, product/provenance contract, and local truth suite | Fresh exact-repair-SHA re-audit and the required external disposition precede any application-mainline integration; do not merge audit, coordination, or convolve/noise candidates into this lane | Active isolated candidate; not application authority |
+| SCI-MAP-001 bounded repair | `codex/repair-sci-map-001` from `9aae0e669384c5c0c0dda93debc194d6b8dac787` | Isolated F001-F011 implementation, product/provenance contract, local truth suite, and reconciled seven-case external corpus | Fresh exact-repair-SHA re-audit and the required external disposition precede any application-mainline integration; do not merge audit, coordination, or convolve/noise candidates into this lane | External corpus reconciled; re-audit pending; not application authority |
 | Conan 2 adaptation | `codex/conan2-adaptation` | Port the full application into the accepted Tula/Conan 2 architecture | Incorporate mainline regularly; return only after all build-integration gates pass | Active in `/Users/gwilson/GitHub/citlali-refactor-conan2` |
 | Historical structural refactor | `codex/structural-refactor` at `171487196` | Forensic pointer to the pre-follow-on integration tree | Do not resume as an application authority | Frozen |
 | Historical fruit-loop/raw-IQ topic | `codex/fruit-loop-calibration-reference` at `b02fef613` | Forensic pointer to the topic-named branch before mainline normalization | Do not resume as an application authority | Frozen locally; its existing remote remains historical |
@@ -54,13 +54,16 @@ new exact commits before importing subsequent upstream work.
 - Keep F009 and F010 `addressed_pending_reaudit`, package verdict `amend`, and
   production `existing_use_only`; this lane cannot declare conformance or
   close findings.
-- Issue `SCI-MAP-001-UNITY-001` for the exact committed repair SHA to the human
-  evidence owner. F012 remains outstanding until the complete returned bundle
-  is audited; Codex does not access Unity.
+- The human owner completed all seven `SCI-MAP-001-UNITY-001` cases for exact
+  candidate `ed28dafb37f9113c0d3c95297148157129a90886`; do not issue or run a
+  duplicate campaign. The read-only local reconciliation is recorded in
+  `SCI-MAP-001_EXISTING_CORPUS_CLOSEOUT_2026-08-05.md`. F012 sufficiency
+  remains for independent re-audit; Codex did not access Unity.
 - The versioned local owner package is
   `validation/campaigns/SCI-MAP-001-UNITY-001/repair-ed28dafb/`. It prepares
-  the exact `ed28dafb37f9113c0d3c95297148157129a90886` campaign but is not
-  external evidence. Its manifest records ALIGN-OD1 through ALIGN-OD8 and
+  the exact `ed28dafb37f9113c0d3c95297148157129a90886` campaign and now points
+  to the reconciled external corpus closeout; multi-gigabyte products remain
+  outside the repository. Its manifest records ALIGN-OD1 through ALIGN-OD8 and
   ALIGN-C001 as owner-approved at record commit
   `4f905f4f353e91847a303f4f3959654f3f03c302`, with its expanded-identity
   correction at `35cc8ce246e8e70c569e650be6c1eae2c91b80ef`, the bounded handoff at
@@ -71,8 +74,8 @@ new exact commits before importing subsequent upstream work.
   or VAL.
 - Keep F013 conditioned on `SCI-CAL-001`, `SCI-AST-001`, `SCI-PTC-001`, and
   `SCI-VAL-001`. A fresh `codex/reaudit-sci-map-001` worktree assesses F001-F013,
-  independently reconstructs the persisted map facts, audits the exact-SHA
-  Unity bundle, and issues the next disposition.
+  audits the exact-SHA returned corpus and its explicit unavailable lanes and
+  discrepancies, and issues the next disposition.
 
 ### Conan 2 Adaptation Entry
 

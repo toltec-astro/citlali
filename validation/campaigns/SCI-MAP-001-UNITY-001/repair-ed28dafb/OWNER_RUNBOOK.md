@@ -1,5 +1,12 @@
 # Owner runbook: SCI-MAP-001-UNITY-001
 
+> **SUPERSEDED EXECUTION INSTRUCTIONS — DO NOT RUN.** The owner already
+> completed the seven cases. This runbook is retained only to preserve the
+> prepared protocol and command history. Do not contact Unity, prepare another
+> request root, submit another job, or retrieve another copy. Continue with
+> [`SCI-MAP-001_EXISTING_CORPUS_CLOSEOUT_2026-08-05.md`](SCI-MAP-001_EXISTING_CORPUS_CLOSEOUT_2026-08-05.md)
+> and the fresh independent re-audit handoff.
+
 This is the human-run procedure for exact Citlali candidate
 `ed28dafb37f9113c0d3c95297148157129a90886`. Package preparation did not
 access Unity, submit a job, or create external evidence. Every command that
@@ -31,9 +38,10 @@ the whole block or replace an existing artifact.
   `rtol=1e-10`; all residuals are retained
 - WCS sky bound: `1e-12` degrees
 
-F009 and F010 remain `addressed_pending_reaudit`. F012 remains open until the
-returned exact-SHA bundle is independently audited. MAP F013 remains
-conditioned and this campaign closes none of ALIGN, CAL, AST, PTC, or VAL.
+F009 and F010 remain `addressed_pending_reaudit`. The returned exact-SHA corpus
+awaits independent re-audit; this historical runbook does not decide F012.
+MAP F013 remains conditioned and this campaign closes none of ALIGN, CAL, AST,
+PTC, or VAL.
 
 ALIGN-OD1 through ALIGN-OD8 and ALIGN-C001 are owner-approved at
 `4f905f4f353e91847a303f4f3959654f3f03c302`; the canonical identity correction

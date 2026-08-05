@@ -1,9 +1,17 @@
 # SCI-MAP-001-UNITY-001 repair-candidate campaign
 
-This directory is the frozen, human-run Unity campaign package for Citlali
-candidate `ed28dafb37f9113c0d3c95297148157129a90886`. It prepares evidence; it
-does not contain external evidence and does not authorize Codex to access
-Unity.
+> **CAMPAIGN ALREADY EXECUTED — DO NOT RERUN.** The owner completed all seven
+> cases and returned the candidate evidence corpus. The execution instructions
+> remain only as historical package provenance. Read
+> [`SCI-MAP-001_EXISTING_CORPUS_CLOSEOUT_2026-08-05.md`](SCI-MAP-001_EXISTING_CORPUS_CLOSEOUT_2026-08-05.md)
+> for the reconciled identities, evidence limits, discrepancies, and fresh
+> re-audit handoff. No command in this package authorizes another Unity run.
+
+This directory is the frozen preparation package used for the human-run Unity
+campaign for Citlali candidate
+`ed28dafb37f9113c0d3c95297148157129a90886`. The multi-gigabyte returned
+products remain outside the repository; the closeout note records their
+read-only reconciliation. Codex did not access Unity.
 
 The request identity remains `SCI-MAP-001-UNITY-001`, with revision
 `repair-sha-ed28dafb-2026-08-01`. All seven cases now have an expected exit
@@ -66,9 +74,11 @@ order, and rejects a tenth source.
 
 ## Status boundary
 
-F009 and F010 remain `addressed_pending_reaudit`; F012 remains the human-run
-exact-repair-SHA evidence gate. F013 remains conditioned on the named upstream
-audits. ALIGN-OD1 through ALIGN-OD8 and ALIGN-C001 are owner-approved at record
+F009 and F010 remain `addressed_pending_reaudit`. The human F012 execution has
+occurred and its returned corpus is reconciled, but only the fresh independent
+re-audit may decide evidence sufficiency or finding status. F013 remains
+conditioned on the named upstream audits. ALIGN-OD1 through ALIGN-OD8 and
+ALIGN-C001 are owner-approved at record
 commit `4f905f4f353e91847a303f4f3959654f3f03c302`, with canonical identity
 correction at `35cc8ce246e8e70c569e650be6c1eae2c91b80ef`; the bounded handoff is integrated
 at `0309fd48a973a6e7e136224906ac49c02f0171be`, with coordination
@@ -78,5 +88,5 @@ in progress, and production remains `existing_use_only`. This campaign cannot
 close MAP findings or any ALIGN, CAL, AST, PTC, or VAL dependency, and cannot
 promote production use.
 
-Run `scripts/verify-package.sh` locally before transfer. Then follow
-`OWNER_RUNBOOK.md` exactly.
+`scripts/verify-package.sh` remains the local integrity check for these frozen
+package bytes. Do not transfer or execute the historical owner runbook again.

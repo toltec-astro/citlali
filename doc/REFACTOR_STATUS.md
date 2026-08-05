@@ -98,14 +98,19 @@ remains `nonconformant`, validation `in_progress`, production
 `existing_use_only`, verdict `amend`, and re-audit `required`. F009 and F010
 remain `addressed_pending_reaudit` until a fresh independent disposition.
 
-After the local truth suite and repository gates pass at one exact repair SHA,
-the human evidence owner must run a newly issued exact-SHA
-`SCI-MAP-001-UNITY-001` request. That F012 gate remains outstanding and Codex
-does not run it. F013 continues to condition calibration/unit/response,
+The human evidence owner executed all seven exact-SHA
+`SCI-MAP-001-UNITY-001` cases on 2026-08-03 and returned the corpus locally.
+The 2026-08-05 read-only reconciliation binds every captured executable and
+reduction index to candidate `ed28dafb37f9113c0d3c95297148157129a90886` and
+records the exact product inventory, evidence limitations, missing `S-X-SEQ`
+observation-level realization serialization, and typed-WCS/Stokes discrepancy
+in the campaign closeout note. Do not repeat the campaign. F012 evidence
+sufficiency remains for fresh independent re-audit; this reconciliation does
+not close findings. F013 continues to condition calibration/unit/response,
 projection/WCS, coefficient/covariance, and upstream-eligibility conclusions
 on `SCI-CAL-001`, `SCI-AST-001`, `SCI-PTC-001`, and `SCI-VAL-001`. A fresh
 `codex/reaudit-sci-map-001` worktree must assess the committed repair and the
-returned external bundle before findings or production disposition can change.
+returned external corpus before findings or production disposition can change.
 
 On 2026-08-01 the versioned human-run campaign package for exact candidate
 `ed28dafb37f9113c0d3c95297148157129a90886` was prepared under
@@ -113,8 +118,12 @@ On 2026-08-01 the versioned human-run campaign package for exact candidate
 seven repaired-success cases, successor product contracts, explicit owner
 deployment values, native TolProj/TolTECA source ordering, independent F010
 reconstruction inputs, collection manifests, and frozen analysis. Package
-preparation did not access Unity and supplies no external evidence; F012
-remains outstanding. The package also records ALIGN-OD1 through ALIGN-OD8 and
+preparation did not access Unity. The owner subsequently executed a bounded
+minimal transfer of the seven cases; the external products remain in the
+owner-supplied local corpus rather than this repository. The durable
+`SCI-MAP-001_EXISTING_CORPUS_CLOSEOUT_2026-08-05.md` records what is present,
+what is unavailable, and the exact re-audit route. The package also records
+ALIGN-OD1 through ALIGN-OD8 and
 ALIGN-C001 as owner-approved at record commit
 `4f905f4f353e91847a303f4f3959654f3f03c302`, with canonical identity correction
 at `35cc8ce246e8e70c569e650be6c1eae2c91b80ef`, and the bounded repair/re-audit

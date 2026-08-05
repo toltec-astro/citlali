@@ -1,9 +1,15 @@
 # SCI-MAP-001-UNITY-001 launch checklist
 
-Run all seven cases against clean exact candidate
-`ed28dafb37f9113c0d3c95297148157129a90886` and return the complete immutable
-bundle and digest. This campaign is not a re-audit and closes none of ALIGN,
-CAL, AST, PTC, or VAL.
+> **CAMPAIGN ALREADY EXECUTED — DO NOT LAUNCH.** The seven returned cases are
+> the candidate evidence corpus. This checklist is historical provenance only;
+> do not repeat any transfer, build, submission, analysis, or retrieval block.
+> Use
+> [`SCI-MAP-001_EXISTING_CORPUS_CLOSEOUT_2026-08-05.md`](SCI-MAP-001_EXISTING_CORPUS_CLOSEOUT_2026-08-05.md)
+> for the exact evidence state and fresh re-audit handoff.
+
+The completed campaign used clean exact candidate
+`ed28dafb37f9113c0d3c95297148157129a90886`. It is not a re-audit and closes
+none of ALIGN, CAL, AST, PTC, or VAL.
 
 All state-changing blocks and both emitted plans are single-shot. Preserve any
 partial state and stop for owner inspection; do not rerun or overwrite it.
