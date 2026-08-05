@@ -213,6 +213,7 @@ def direct_config(
     kids = _mapping(config.get("kids"), "70 low_level.kids")
     solver = _mapping(kids.get("solver"), "70 low_level.kids.solver")
     runtime = _mapping(config.get("runtime"), "70 low_level.runtime")
+    mapmaking = _mapping(config.get("mapmaking"), "70 low_level.mapmaking")
     prior_config = _mapping(beammap.get("priors"), "70 low_level.beammap.priors")
     sidecar = beammap.get("detector_tod_output")
     if not isinstance(sidecar, dict):
@@ -234,6 +235,9 @@ def direct_config(
     runtime["output_dir"] = str(output)
     runtime["parallel_policy"] = "omp"
     runtime["use_subdir"] = True
+    # Detector-resolved PTC TOD is a distinct diagnostic product. Citlali's
+    # typed contract requires detector map grouping whenever it is enabled.
+    mapmaking["grouping"] = "detector"
     sidecar["enabled"] = True
     sidecar["subdir_name"] = "source_crossing_tod"
     return config

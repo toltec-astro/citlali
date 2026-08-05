@@ -64,6 +64,7 @@ class NumberedCampaignTest(unittest.TestCase):
         self.assertEqual(config["beammap"]["detector_tod_output"]["subdir_name"], "source_crossing_tod")
         self.assertEqual(config["kids"]["solver"]["fitreportdir"], "/data")
         self.assertEqual(config["runtime"]["output_dir"], "/output/reduced")
+        self.assertEqual(config["mapmaking"]["grouping"], "detector")
         self.assertEqual(config["inputs"][0]["cal_items"][1]["type"], "photometry")
         self.assertNotIn("select", config["inputs"][0]["cal_items"][1])
         self.assertEqual(yaml.safe_load(yaml.safe_dump(config)), config)

@@ -83,7 +83,8 @@ policy and the 72 per-ObsNum calibration, selects exact scannum-2 raw files,
 telescope product, and matched-input APT by filename, hashes every selected
 input, and emits a separate output root. It changes only runtime output/thread
 settings, the absolute raw fit-report directory, the active refactor prior
-path, and the existing detector-TOD sidecar request.
+path, the existing detector-TOD sidecar request, and its required
+`mapmaking.grouping: detector` diagnostic binding.
 
 It can read hundreds of GiB while calculating checksums, so tens of minutes to
 several hours of filesystem time is normal. Do not interrupt it merely because
@@ -108,6 +109,13 @@ for script in "$SCI_CAMPAIGN_ROOT"/submit_batch_*.sh; do bash -n "$script"; done
 An absent or ambiguous raw/telescope/APT binding, wrong-ObsNum raw path,
 unreadable numbered configuration, or output overlap is a hard stop before any
 job is submitted. Return the error and the intact partial root for review.
+
+If a submitted batch fails before science processing because Citlali rejects a
+generated diagnostic configuration, preserve that campaign root and its Slurm
+logs. Apply the reviewed tooling fix, use a new campaign root ending in
+`_retry1`, rerun preparation, and submit Batch 1 again only after the new
+preparation checksums verify. Never edit generated configs in place or reuse
+the failed root.
 
 ## 3. Submit and review one batch at a time
 
