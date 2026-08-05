@@ -167,11 +167,52 @@ boundary. Historical audit, campaign, stop, and evidence-design records remain
 immutable and are labeled historical in the canonical ledger; none is a
 current execution instruction.
 
-The next gate is project-owner or audit-coordinator review and integration of
-this coordination-only candidate into `codex/scientific-audit-framework`.
-Application-mainline integration of `af0c849` remains a separately held action
-requiring explicit authorization. Production expansion additionally requires
-resolution of all five F013 dependencies and a separate production decision.
+This coordination-only candidate was subsequently reviewed and separately
+authorized for documentation-only application-mainline integration at exact
+`d5015fe716971bf8ea617e8a187311bf5af05185`, a child of `af0c849` that changes
+no application source, test, configuration, numerical behavior, or product
+contract. MAP closure still closes none of F013's five upstream dependencies;
+production expansion requires their resolution and a separate production
+decision.
+
+## 2026-08-05 SCI-FLT-001 Coordination Amendment
+
+The [SCI-FLT-001 coordinator amendment](audits/packages/SCI-FLT-001_COORDINATOR_AMENDMENT_2026-08-05.md)
+reconciles the accepted bounded MAP contract with the existing convolve audit.
+MAP is now a `conditioned`, not satisfied, dependency: it provides signal,
+nonprecision gridding/normalization `weight_I`, kernel, facts/support/validity,
+and centered coefficient-weighted coaddition, but no FLT precision or
+inverse-variance authority. MAP validity remains conditioned on PTC/VAL and
+production remains `existing_use_only`.
+
+Owner decision `SCI-FLT-001-D001` retains same-map median fill solely as a
+numerical boundary device. The scientifically admitted region must be eroded by
+the declared effective filter footprint, and edge/fill-influenced pixels remain
+invalid for scientific weighting, significance, photometry, confidence, and
+feedback. F004 is therefore still open: a bounded successor must prove no
+admitted stencil reaches fill, including sequential/OpenMP equality and
+explicit edge/guard fixtures, before fresh re-audit. Fill-covariance work for
+invalid pixels is not authorized.
+
+Owner decision `SCI-FLT-001-D002` defines the primary use as aperture
+photometry, especially cross-band dust-beta work. `signal_I` remains fixed
+convolved amplitude. `kernel_I` must be the mapmaking kernel convolved with the
+identical realized operator, centering, and valid-region policy under an
+explicit unit-source convention. Users may apply the kernel response to
+interior peaks or identically weighted aperture sums, but there is no automatic
+point-source correction, direct flux product, aperture catalog, or response
+plane. F005 and F006 remain open for bounded implementation, equality and
+metadata evidence, CAL/NOI-conditioned validation, and fresh re-audit.
+
+SCI-NOI-001 and SCI-NOI-002 remain not started, and SCI-CAL-001 remains
+nonconformant/in progress; its bounded D007 atmosphere evidence does not
+authorize absolute photometry. The package remains contract `proposed`,
+implementation `conditionally_conformant` only under its recorded numerical
+assumptions, validation `in_progress`, production `fail_closed`, verdict
+`amend`, and re-audit `required`. The next coordinator/owner gate is the
+[still-held D004/D005 owner choices](audits/packages/SCI-FLT-001_COORDINATOR_DECISION_BRIEF_2026-08-05.md);
+they authorize no repair, evidence campaign, application integration, or
+production expansion.
 
 ## 2026-07-31 SCI-CAL-001 Audit Coordination
 

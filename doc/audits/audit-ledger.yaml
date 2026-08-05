@@ -4787,9 +4787,10 @@ packages:
     queue_wave: existing_audit_amend_and_reaudit_4
     scientific_scope: >-
       Fixed globally normalized map convolution, binary edge window,
-      data-derived exterior fill, conditional formal and empirical variance,
-      response/support/photometric semantics, products, metadata, and
-      downstream-use restrictions. JINC and Wiener are separate packages.
+      data-derived exterior fill, conditional candidate variance and empirical
+      diagnostics, owner-approved aperture-photometry semantics, products,
+      metadata, and downstream-use restrictions. JINC and Wiener are separate
+      packages.
     known_code_areas:
       - include/citlali/core/mapmaking/wiener_filter.h
       - include/citlali/core/mapmaking/wiener_filter_omp.h
@@ -4798,35 +4799,60 @@ packages:
       - include/citlali/core/pipeline/map_image_output_helpers.h
       - validation/product_contracts.json
     inputs:
-      - map signal, formal inverse variance, coverage, validity, and kernel image
+      - >-
+        MAP signal, nonprecision gridding/normalization coefficient weight_I,
+        coverage, facts/support/validity, and kernel image; any FLT
+        variance/precision identity must be separately authorized
       - normalized convolution kernel, edge/guard policy, and cov_cut policy
       - filtered noise or jackknife realizations
     outputs:
       - signal_I and convolved-amplitude compatibility aliases
-      - weight_formal_I, noise_variance_I, weight_I, and S/N products
-      - coverage_I, coverage_bool_I, kernel_I, and edge diagnostics
+      - >-
+        candidate conditional weight_formal_I, noise_variance_I, weight_I,
+        and standardized-signal products, none yet authorized as scientific
+        precision, significance, confidence, or feedback
+      - >-
+        coverage_I, coverage_bool_I, valid-region diagnostics, and kernel_I as
+        the correspondingly convolved mapmaking kernel with truthful
+        normalization/filter/input-kernel identity metadata
     upstream_dependencies:
       - package_id: SCI-MAP-001
+        status: conditioned
+        required_contract: >-
+          Accepted bounded MAP signal, nonprecision gridding/normalization
+          coefficient weight_I, kernel, facts/support/validity, raw
+          scientific-validity versus numerical-computability distinction, and
+          centered coefficient-weighted observation coaddition at af0c849;
+          separately authorized FLT variance/precision remains required.
+        consequence: >-
+          MAP weight_I is not formal inverse variance. MAP validity remains
+          conditioned on SCI-PTC-001 and SCI-VAL-001, MAP production remains
+          existing_use_only, and no new filtered consumer is authorized.
+      - package_id: SCI-NOI-001
         status: open
         required_contract: >-
-          Map signal, formal weight, hits/coverage, validity, and normalization.
+          Not-started noise-realization construction and propagation through
+          the exact admitted FLT operator, support, and validity boundary.
         consequence: >-
-          Candidate variance conformity and response/support interpretation
-          remain conditional, and no new filtered consumer is authorized.
+          No empirical filtered variance, covariance, standardized signal, or
+          significance claim is scientifically admitted.
       - package_id: SCI-NOI-002
         status: open
         required_contract: >-
-          Noise/covariance, jackknife, empirical calibration, and S/N semantics.
+          Not-started empirical variance/covariance, jackknife calibration,
+          and standardized-signal/S/N semantics.
         consequence: >-
           Empirical weight and standardized-signal products remain restricted
           and cannot establish calibrated significance.
       - package_id: SCI-CAL-001
         status: open
         required_contract: >-
-          Map unit, beam/template, and photometric meaning after smoothing.
+          CAL unit, beam/template, response, covariance, and photometric
+          meaning after smoothing; CAL remains nonconformant and in progress.
         consequence: >-
-          Convolved-amplitude aliases cannot be interpreted as validated
-          point-source or integrated photometry.
+          Completed bounded D007 atmosphere evidence does not authorize
+          absolute photometry. Convolved-amplitude aliases cannot be
+          interpreted as validated point-source or integrated photometry.
     downstream_consumers:
       - package_id: SCI-SRC-001
         restriction: filtered estimates require response/support validation
@@ -4867,6 +4893,71 @@ packages:
         The pilot document records the independence sequence, but no
         pre-inspection digest of frozen core bytes was committed. The final
         artifact digest above must not be misrepresented as that earlier hash.
+    coordinator_amendment:
+      status: current
+      decision_date: 2026-08-05
+      base_coordination_commit: c7bb0214edfd57fddf31165923f08784dfd1b8c9
+      record_path: >-
+        doc/audits/packages/SCI-FLT-001_COORDINATOR_AMENDMENT_2026-08-05.md
+      record_sha256: >-
+        9253c73daf0d8f101a9335ea09c6bc4c253bd0bb1255e8473ad22728c83157be
+      owner_decision_brief:
+        path: >-
+          doc/audits/packages/SCI-FLT-001_COORDINATOR_DECISION_BRIEF_2026-08-05.md
+        sha256: >-
+          242f0af99a52c16d136b6e6df1d77023e3325f1f1d0a778a55413b7526a051e1
+        status: partially_owner_decided
+      map_reconciliation:
+        accepted_application_candidate: >-
+          af0c849ce59a5f80e5efc8db435bb6662863052f
+        final_reaudit_commit: 8fc716557ca78b0d220200a92be46fa3545797e9
+        application_mainline_documentation_child: >-
+          d5015fe716971bf8ea617e8a187311bf5af05185
+        application_integration_decision_sha256: >-
+          3420e63145cdd776f0bc1dc3210515d6fdb787b598a1b8a103eccd14afec07e9
+        dependency_disposition: conditioned_not_satisfied
+        map_weight_I_identity: nonprecision_gridding_normalization_coefficient
+        map_validity_dependencies: [SCI-PTC-001, SCI-VAL-001]
+        map_production_status: existing_use_only
+      owner_decisions:
+        - id: SCI-FLT-001-D001
+          status: approved
+          decision_date: 2026-08-05
+          disposition: >-
+            same_map_median_fill_is_numerical_boundary_only_and_scientific
+            admission_is_eroded_by_the_effective_filter_footprint
+          fill_covariance_work_for_invalid_pixels: not_authorized
+        - id: SCI-FLT-001-D002
+          status: owner_decided_approved
+          decision_date: 2026-08-05
+          disposition: >-
+            aperture_photometry_with_identically_convolved_kernel_response
+            and_no_automatic_point_source_correction
+          signal_identity: fixed_convolved_map_amplitude
+          kernel_identity: >-
+            mapmaking_kernel_convolved_with_identical_realized_operator,
+            centering, and_valid_region_policy
+          required_convenience_metadata:
+            - peak
+            - signed_integral
+            - pixel_solid_angle
+            - effective_beam_solid_angle
+          prohibited_products: [direct_flux_product, aperture_catalog, response_plane]
+          limiting_authorities: [SCI-CAL-001, SCI-NOI-002]
+      implementation_evidence:
+        source_commit: d5015fe716971bf8ea617e8a187311bf5af05185
+        source_ref: origin/codex/refactor-mainline
+        status: implementation_characterization_requires_successor_checks
+        sequential_path: >-
+          wiener_filter.h assigns mb.kernel[map_index] to filtered_map, calls
+          run_convolve(), then applies the analogous signal sequence.
+        openmp_path: >-
+          wiener_filter_omp.h assigns mb.kernel[map_index] to filtered_map,
+          calls run_convolve(), then applies the analogous signal sequence.
+        convolve_denominator: one
+        required_follow_up: >-
+          Focused signal/kernel equality, centering/valid-region, and
+          identity/normalization metadata checks plus fresh re-audit.
     contract_status: proposed
     implementation_status: conditionally_conformant
     validation_status: in_progress
@@ -4892,13 +4983,21 @@ packages:
         confidence: high
         status: open
         owner: scientific_owner
+        owner_policy_status: resolved
+        remediation_status: approved_bounded
+        owner_decision_id: SCI-FLT-001-D001
         closure_gate: >-
-          Record whether to propagate, bound, or replace the same-map fill;
-          implement the accepted estimator and verify its covariance in local
-          fixtures and returned same-SHA evidence.
+          Implement the approved numerical-boundary policy: conservatively
+          erode the scientifically admitted region by the declared effective
+          filter footprint so no admitted output stencil reaches fill; verify
+          explicit edge/guard fixtures and sequential/OpenMP equality at the
+          exact successor, then obtain a fresh re-audit. No fill-covariance
+          calculation is required for invalid fill-influenced pixels.
         summary: >-
-          The exterior fill is a nonlinear same-map median, but its variance
-          and signal/fill cross-covariance are omitted.
+          The exterior fill is a nonlinear same-map median. Owner policy now
+          confines it to a numerical boundary device, but implementation and
+          evidence must still prove it cannot contaminate scientifically
+          admitted outputs.
       - id: SCI-FLT-001-F005
         class: scientific_policy_decision
         severity: P1
@@ -4906,13 +5005,18 @@ packages:
         confidence: high
         status: open
         owner: scientific_owner
+        owner_policy_status: resolved_by_SCI-FLT-001-D002
+        owner_decision_id: SCI-FLT-001-D002
         closure_gate: >-
-          Approve named response and absolute-support definitions, floors,
-          products, and metadata, then pass pre-registered blank and injection
-          gates.
+          Implement the approved convolved-kernel aperture-response contract;
+          verify identical realized signal/kernel operator, centering and
+          valid-region policy, explicit unit-source convention, and truthful
+          normalization/filter/input-kernel identity plus convenience metadata;
+          then pass focused fixtures and fresh re-audit.
         summary: >-
-          Response template/normalization, absolute support metric and floor,
-          and persisted response/support products are undecided.
+          The approved aperture contract uses a convolved mapmaking kernel and
+          valid-region mask, not an automatic response correction or continuous
+          response plane. Implementation and evidence remain outstanding.
       - id: SCI-FLT-001-F006
         class: scientific_policy_decision
         severity: P1
@@ -4920,13 +5024,17 @@ packages:
         confidence: high
         status: open
         owner: scientific_owner
+        owner_policy_status: resolved_by_SCI-FLT-001-D002
+        owner_decision_id: SCI-FLT-001-D002
         closure_gate: >-
-          Approve the post-smoothing photometric convention and any corrected
-          estimator, align units and aliases, and pass injection plus named
-          astronomical-recovery gates.
+          Implement the approved truthful unchanged-unit aperture contract,
+          retain convolved-amplitude compatibility aliases, verify kernel peak
+          and identically weighted aperture-response identities, and complete
+          the required CAL- and NOI-conditioned evidence plus fresh re-audit.
         summary: >-
-          Smoothed mJy/beam photometric meaning and any true point-source or
-          integrated-flux estimator are undecided.
+          Primary use is aperture photometry. Point-source response correction
+          is user-applied from the convolved kernel; no direct flux product or
+          automatic photometry is approved.
       - id: SCI-FLT-001-F007
         class: contract_gap
         severity: P2
@@ -4962,13 +5070,16 @@ packages:
         status: open
         owner: audit_coordinator
         closure_gate: >-
-          Close or explicitly condition SCI-MAP-001, SCI-NOI-002, and
-          SCI-CAL-001 through their package audits and propagate the resulting
-          restrictions into the convolve contract.
-        dependencies: [SCI-MAP-001, SCI-NOI-002, SCI-CAL-001]
+          Retain SCI-MAP-001 as conditioned, obtain separately authorized
+          variance/precision identity, and close or explicitly condition
+          SCI-NOI-001, SCI-NOI-002, and SCI-CAL-001 through their package
+          audits before propagating any resulting authorization into the
+          convolve contract.
+        dependencies: [SCI-MAP-001, SCI-NOI-001, SCI-NOI-002, SCI-CAL-001]
         summary: >-
-          Map-weight, noise/covariance, and photometric input contracts remain
-          unresolved.
+          MAP now supplies bounded nonprecision gridding/normalization and
+          validity facts only; variance/precision, noise/covariance, and
+          photometric input contracts remain unresolved.
     addressed_findings:
       - id: SCI-FLT-001-F001
         class: implementation_defect
@@ -5007,11 +5118,12 @@ packages:
           Dormant fractional taper uses inconsistent weight powers; accepted
           convolve configurations now reject that mode.
     unresolved_scientific_decisions:
-      - propagate, bound, or replace the same-map median-fill covariance
-      - choose and normalize response and absolute-support products and floors
-      - define mJy/beam photometry after smoothing and any corrected estimator
-      - retain a global empirical scale or adopt a spatial empirical model
-      - define downstream representation or calibration of filtered covariance
+      - >-
+        SCI-FLT-001-D004: retain a global empirical scale, adopt a spatial
+        empirical model, or keep empirical products diagnostic
+      - >-
+        SCI-FLT-001-D005: define downstream representation or calibration of
+        filtered covariance, or retain the consumer fail-closed boundary
     local_evidence:
       - independent mathematical derivation and source trace in audit commit 800e8ae
       - analytic limiting cases and candidate focused-test inventory
@@ -5024,8 +5136,17 @@ packages:
         - exact amended candidate SHA, clean state, compiler and dependency identity
         - complete low-level config, observation identity, and all three arrays
         - named noise counts/seeds, formal and empirical products, and provenance
-        - variable-coverage interior and edge regions with no skipped required data
-        - blank covariance, false-S/N, and edge false-support measurements
+        - >-
+          variable-coverage interior and declared effective-footprint eroded
+          edge regions with no skipped required data
+        - >-
+          explicit edge/guard fixtures proving no admitted output stencil
+          reaches fill, with sequential/OpenMP equality
+        - >-
+          identical realized signal/kernel operator, centering, valid-region,
+          unit-source convention, kernel peak/signed-integral/pixel-solid-angle/
+          effective-beam metadata, and aperture-response fixtures
+        - blank covariance, false-S/N, and admitted-region false-support measurements
         - compact, beam-shaped, resolved, and extended injection/recovery
         - named astronomical calibrator/source recovery with pre-registered amplitude, shape, and unit tolerances
         - pre-registered comparison metrics and tolerances
@@ -5079,7 +5200,13 @@ packages:
           - incomplete clean-source, compiler, build, and dependency identity
           - no independent formal-variance table or blank-field covariance analysis
           - no injection/recovery or named astronomical recovery
-          - unresolved response, support, photometry, fill-covariance, and output-covariance contracts
+          - >-
+            pre-D001 evidence does not prove effective-footprint erosion or
+            absence of fill contamination in scientifically admitted outputs
+          - >-
+            pre-D002 evidence lacks the approved signal/kernel equality,
+            aperture-response, and identity/normalization metadata checks
+          - unresolved empirical and output-covariance contracts
           - does not complete SCI-FLT-001-UNITY-001 or authorize candidate integration
         disposition: >-
           Keep validation in progress, production fail-closed, verdict amend,
@@ -5088,6 +5215,14 @@ packages:
       - do not use filtered amplitude or weight as fruit-loop feedback amplitude, confidence, or gain
       - no filtered product is authorized for production fruit-loop support selection
       - do not call convolved-amplitude aliases response-corrected photometry
+      - >-
+        retain point-source aliases as explicitly labeled convolved amplitudes;
+        do not apply automatic point-source correction or emit a direct flux
+        product, aperture catalog, or response plane
+      - >-
+        do not assign scientific weighting, significance, photometry,
+        confidence, or feedback interpretation to edge- or fill-influenced
+        pixels
       - keep fractional taper rejected unless a successor estimator is audited
     remediation_branch: codex/convolve-noise-correction
     remediation_commit: 02a198cbfb379eaf6ab279c5a3d44ee73ff90435

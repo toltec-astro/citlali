@@ -35,12 +35,51 @@ The byte-preserved [owner amendment](packages/SCI-MAP-001_OWNER_SCOPE_EVIDENCE_A
 [final decision](packages/SCI-MAP-001_FINAL_REAUDIT_DECISION_2026-08-05.md),
 and [machine-readable proposal](packages/SCI-MAP-001_FINAL_REAUDIT_LEDGER_UPDATE_PROPOSAL_2026-08-05.yaml)
 are indexed in the canonical ledger with their authority commits and SHA-256
-digests. This closes the MAP repair/re-audit workflow only. It does not
+digests. This closed the MAP repair/re-audit workflow only; it did not itself
 authorize application-mainline integration, close an upstream dependency, or
-expand production. The next gate is owner/coordinator review and integration
-of the coordination-only candidate; any application integration remains a
-separate explicit decision, and production expansion additionally requires
-resolution of F013.
+expand production. A later separately authorized documentation-only
+application-mainline integration is recorded at
+`d5015fe716971bf8ea617e8a187311bf5af05185`. Production expansion still
+requires resolution of F013 and a separate decision.
+
+### SCI-FLT-001 current amendment — 2026-08-05
+
+The [coordinator amendment](packages/SCI-FLT-001_COORDINATOR_AMENDMENT_2026-08-05.md)
+records the current bounded disposition.
+
+SCI-MAP-001 is now a `conditioned`, not satisfied, FLT dependency. At exact
+`af0c849ce59a5f80e5efc8db435bb6662863052f`, MAP supplies the bounded signal,
+nonprecision gridding/normalization coefficient `weight_I`, kernel,
+facts/support/validity, and centered coefficient-weighted coaddition contract.
+`weight_I` is not formal inverse variance. FLT must obtain any precision or
+variance identity separately; MAP validity remains conditioned on PTC/VAL and
+its production status remains `existing_use_only`.
+
+Owner decision `SCI-FLT-001-D001` retains same-map median fill only as a
+numerical boundary device. The scientific region must be eroded by the declared
+effective filter footprint, and fill-influenced pixels remain invalid for
+scientific weighting, significance, photometry, confidence, and feedback.
+F004 therefore remains open pending exact-successor implementation,
+edge/guard fixtures, sequential/OpenMP equality, and fresh re-audit; no
+fill-covariance calculation is authorized for invalid pixels.
+
+Owner decision `SCI-FLT-001-D002` approves a deliberately small
+aperture-photometry contract: `signal_I` remains a fixed convolved amplitude,
+and `kernel_I` must be the identically convolved, centered, and valid-region
+mapmaking kernel under an explicit unit-source convention. Users may apply
+kernel response to interior peaks or identically weighted aperture sums; the
+pipeline emits no automatic correction, direct flux product, aperture catalog,
+or response plane. Persisted kernel identity/normalization and inexpensive
+peak, signed-integral, pixel-solid-angle, and effective-beam metadata require
+implementation checks and re-audit. F005 and F006 remain open.
+
+SCI-NOI-001 and SCI-NOI-002 remain not started, and CAL remains nonconformant
+and in progress; neither empirical significance/covariance nor absolute
+photometry is authorized. The still-held D004/D005 empirical-calibration and
+filtered-covariance choices are collected in the
+[FLT decision brief](packages/SCI-FLT-001_COORDINATOR_DECISION_BRIEF_2026-08-05.md).
+The package remains `proposed`/`conditionally_conformant`/`in_progress`/
+`fail_closed` with verdict `amend` and re-audit `required`.
 
 ## Purpose and non-goals
 
@@ -530,6 +569,7 @@ flowchart LR
     map --> jinc
     map --> jk --> empirical
     map --> convolve
+    jk --> convolve
     empirical --> convolve
     map --> wiener
     empirical --> wiener
@@ -551,7 +591,7 @@ package but does not define their estimators.
 
 | Package ID | Tier | Bounded package | Primary upstream packages | Queue |
 | --- | --- | --- | --- | --- |
-| `SCI-MAP-001` | A | Shared/naive mapmaking signal, formal weight, kernel, hits/coverage, validity, and observation coaddition | `SCI-CAL-001`, `SCI-AST-001`, `SCI-PTC-001`, `SCI-VAL-001` may begin as explicit abstract inputs | First new audit |
+| `SCI-MAP-001` | A | Shared/naive mapmaking signal, nonprecision gridding/normalization coefficient `weight_I`, kernel, hits/coverage, validity, and observation coaddition | `SCI-CAL-001`, `SCI-AST-001`, `SCI-PTC-001`, `SCI-VAL-001` may begin as explicit abstract inputs | First new audit |
 | `SCI-ALIGN-001` | A | Sample/telescope alignment, scan slicing, and gap interpolation | external input identity | Foundation wave 1 |
 | `SCI-CAL-001` | A | Detector calibration, extinction, flux scaling, and map-unit transfer | `SCI-ALIGN-001` | Foundation wave 1 |
 | `SCI-AST-001` | A | Pointing corrections, detector coordinates, frames, and WCS | `SCI-ALIGN-001` | Foundation wave 1 |
@@ -562,7 +602,7 @@ package but does not define their estimators.
 | `SCI-MAP-002` | B | Mature JINC gridding interface, normalization, support, and response | approved/shared `SCI-MAP-001` product contract | Map successor wave |
 | `SCI-NOI-001` | A | Jackknife/noise randomization and propagation through selected operators | `SCI-PTC-001`, `SCI-VAL-001`, `SCI-MAP-001` | Uncertainty wave 3 |
 | `SCI-NOI-002` | A | Empirical variance/covariance, global calibration, statistical weight, and S/N semantics | `SCI-NOI-001`, `SCI-MAP-001` | Uncertainty wave 3 |
-| `SCI-FLT-001` | A | Fixed map-domain `convolve` signal, uncertainty, response, and support | `SCI-MAP-001`, `SCI-NOI-002`, `SCI-CAL-001` | Existing audit; amend/re-audit wave 4 |
+| `SCI-FLT-001` | A | Fixed map-domain `convolve` signal, conditional candidate variance, response, support, and downstream restrictions | conditioned `SCI-MAP-001`; `SCI-NOI-001`, `SCI-NOI-002`, and `SCI-CAL-001` open | Existing audit; owner amendment then amend/re-audit wave 4 |
 | `SCI-FLT-002` | B | Mature Wiener and lowpass filtering interface, normalization, and response | `SCI-MAP-001`, `SCI-NOI-001`, `SCI-NOI-002` | Product wave 4 |
 | `SCI-SRC-001` | A | Generic map-domain source finding, Gaussian fitting, and source tables | map/filter, `SCI-NOI-002`, `SCI-AST-001` | Product wave 4 |
 | `SCI-MODE-001` | A | Pointing/OOF map fitting, significance, astrometric/shape products | `SCI-MAP-001`, `SCI-NOI-002`, `SCI-AST-001`, `SCI-CAL-001` | Mode wave 4 |
