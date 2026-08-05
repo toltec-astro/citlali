@@ -236,7 +236,10 @@ and [readiness record](audits/packages/SCI-NOI-001_COORDINATOR_DISPATCH_READINES
 The later audit source is exact `d5015fe716971bf8ea617e8a187311bf5af05185`.
 Phase 0 uses Terra-high solely for a scope checkpoint, repository-state, and
 quarantine verification; it must stop before derivation, implementation
-inspection, an audit worktree, reduction, Unity action, or an evidence request.
+inspection, an auditor-created audit branch/worktree, reduction, Unity action,
+or an evidence request. The Codex app/coordinator may create a dedicated
+isolated clean execution worktree at exact
+`d5015fe716971bf8ea617e8a187311bf5af05185` solely for this Phase 0 check.
 
 The later NOI-001 question is the conditional ensemble made by pre-mapmaking
 sign randomization of fixed realized post-RTC/PTC samples, including its

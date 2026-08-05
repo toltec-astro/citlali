@@ -4835,7 +4835,7 @@ packages:
       coordinator_registry_commit: 192e0d9b5e3be4eb20522d3319cae346168c4bce
       application_source_sha: d5015fe716971bf8ea617e8a187311bf5af05185
       prompt_path: doc/audits/prompts/SCI_NOI_001_AUDIT_PROMPT.md
-      prompt_sha256: 9f70738da33564a9c21eb19bdf927e43e73dc887cc7c7cf5e2ee7276cb989188
+      prompt_sha256: 755e41939682f5130fabf0f2428d32580acdd231c701860927ec493fcb98fa7b
       manifest_path: >-
         doc/audits/handoffs/SCI-NOI-001/SCI-NOI-001_INBOX_MANIFEST_2026-08-05.yaml
       manifest_sha256: 571d1b043e7ec041e3ca8c8dd841761aafcecd03d92a959e72add1dfdbebf819
@@ -4844,23 +4844,34 @@ packages:
       readiness_record:
         path: >-
           doc/audits/packages/SCI-NOI-001_COORDINATOR_DISPATCH_READINESS_2026-08-05.md
-        sha256: 900182bab06448b1d639c004fc2d24cdad808f684f44dcec9bc4368e2240603f
+        sha256: dfa5f6caed8d3b260c6e6527a253cc989bda06cd59b6b78964ae2fd0a6108c7e
       phase_0:
         model: gpt-5.6-terra
         effort: high
         authorized_scope: scope_checkpoint_repository_state_and_quarantine_verification_only
+        execution_worktree_creation_authorized: true
+        execution_worktree_owner: codex_app_coordinator_only
+        execution_worktree_starting_ref: >-
+          origin/codex/refactor-mainline at
+          d5015fe716971bf8ea617e8a187311bf5af05185
+        execution_worktree_purpose: >-
+          isolated_clean_phase_0_repository_state_and_quarantine_verification
+          only_not_audit_authority
         independent_derivation_authorized: false
         implementation_inspection_authorized: false
-        audit_worktree_authorized: false
+        auditor_audit_branch_or_worktree_authorized: false
         local_reduction_authorized: false
         unity_evidence_authorized: false
         delegation_authorized: false
-        next_return: concise_FRAMEWORK-SCOPE-001_checkpoint_only
+        next_return: >-
+          concise_FRAMEWORK-SCOPE-001_checkpoint_with_execution_worktree_path,
+          detached_or_starting_HEAD_clean_state_and_exact_Git_object_byte_checks
       held_future_phases:
         phase_1:
           model: gpt-5.6-sol
           effort: ultra
           authorization: explicit_coordinator_follow_up_required
+          audit_branch: codex/audit-sci-noi-001_created_only_after_authorization
           deliverable: SCI-NOI-001_INDEPENDENT_CORE.tex_only_then_stop
         phase_2:
           model: gpt-5.6-sol

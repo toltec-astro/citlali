@@ -100,8 +100,12 @@ and [dispatch/readiness record](packages/SCI-NOI-001_COORDINATOR_DISPATCH_READIN
 prepare only a Terra-high Phase 0 scope checkpoint against exact application
 SHA `d5015fe716971bf8ea617e8a187311bf5af05185`. Two frozen pre-core authority
 handoffs carry the accepted bounded MAP contract and FLT D001--D003
-restrictions. Phase 0 permits no audit worktree, derivation, implementation
-inspection, reduction, Unity action, or evidence request.
+restrictions. Phase 0 permits no auditor-created audit branch/worktree, derivation, implementation
+inspection, reduction, Unity action, or evidence request; the Codex
+app/coordinator may create a dedicated isolated clean execution worktree at
+exact `d5015fe716971bf8ea617e8a187311bf5af05185` solely to perform the Phase 0
+repository-state and quarantine check. The auditor may not create/switch/move
+an audit branch or write files in Phase 0.
 
 NOI-001 will define the conditional pre-mapmaking sign ensemble and its
 ensemble second-moment imprint through realized map/coadd/filter interfaces.

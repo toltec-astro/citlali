@@ -2,8 +2,10 @@
 
 This is a frozen, phased scientific-contract audit dispatch. It authorizes
 only the Phase 0 scope checkpoint below. It does not authorize an audit,
-implementation inspection, an audit worktree, a reduction, Unity activity,
-repair, integration, a push, or another package launch.
+implementation inspection, an auditor-created audit branch/worktree, a
+reduction, Unity activity, repair, integration, a push, or another package
+launch. The Codex app/coordinator may create the isolated Phase 0 execution
+worktree stated below; that infrastructure action has no audit authority.
 
 ## Frozen assignment
 
@@ -14,9 +16,13 @@ repair, integration, a push, or another package launch.
 - Frozen application source to assess in later phases:
   `d5015fe716971bf8ea617e8a187311bf5af05185` on
   `origin/codex/refactor-mainline`.
-- Required later audit branch and isolated worktree:
-  `codex/audit-sci-noi-001` and a fresh worktree created from that exact SHA
-  only after explicit coordinator authorization.
+- Phase 0 execution environment: the Codex app/coordinator may create a
+  dedicated isolated, clean execution worktree at detached/starting HEAD
+  `d5015fe716971bf8ea617e8a187311bf5af05185` from
+  `origin/codex/refactor-mainline`. This is environment creation only.
+- Required later audit branch: `codex/audit-sci-noi-001`, created only after
+  explicit Phase 1 authorization, in that isolated task worktree if safely
+  possible.
 - Dispatch coordination parent:
   `192e0d9b5e3be4eb20522d3319cae346168c4bce`.
 - Frozen inbound manifest:
@@ -30,7 +36,7 @@ repair, integration, a push, or another package launch.
 
 | Phase | Model/effort | Authority now | Required stop |
 | --- | --- | --- | --- |
-| 0 | `gpt-5.6-terra`, high | scope checkpoint, repository state, and quarantine verification only | return before independent derivation or source inspection |
+| 0 | `gpt-5.6-terra`, high | scope checkpoint, repository state, and quarantine verification only in the coordinator-created isolated execution worktree | return before independent derivation or source inspection |
 | 1 | `gpt-5.6-sol`, ultra | only after explicit coordinator follow-up | commit only `SCI-NOI-001_INDEPENDENT_CORE.tex`, report its digest/commit/timestamp, and stop before quarantined source or post-core evidence |
 | 2 | `gpt-5.6-sol`, ultra | only after a separate explicit coordinator follow-up | documentation-only source/product/consumer trace and final audit synthesis, then stop |
 
@@ -48,16 +54,24 @@ are permitted.
 
 ## Exact Phase 0 launch prompt
 
-Starting ref: `d5015fe716971bf8ea617e8a187311bf5af05185` (do not create a
-worktree or branch in this phase). Read the repository `AGENTS.md`, TolTEC
-context/authorities, this prompt, and the frozen manifest. Verify the exact
-ref, clean state of the intended audit starting point, manifest digest, and
-that the listed implementation paths and all post-core evidence remain
-quarantined. Return only the `FRAMEWORK-SCOPE-001` checkpoint: allowed paths
-and deliverables; prohibited local reduction; Unity requirement; named
-read-only checks; permitted delegation/review; first viable artifact; next
-return point; and any mismatch. Stop. Do not derive equations, inspect package
-implementation contents, create any file/worktree/branch, run Citlali, open
+The Codex app/coordinator may create a dedicated isolated, clean execution
+worktree whose detached/starting HEAD is exact
+`d5015fe716971bf8ea617e8a187311bf5af05185` from
+`origin/codex/refactor-mainline`. This Phase 0 infrastructure creation does
+not authorize the auditor to create, switch, or move an audit branch; write
+files; derive equations; inspect quarantined implementation; run a reduction;
+or perform later-phase work.
+
+In that execution worktree, read the repository `AGENTS.md`, TolTEC
+context/authorities, this prompt, and the frozen manifest. Verify and report
+the worktree path, detached/starting HEAD, clean state, and the dispatch
+commit/prompt/manifest bytes via exact Git objects. Confirm that the listed
+implementation paths and all post-core evidence remain quarantined. Return
+only the `FRAMEWORK-SCOPE-001` checkpoint: allowed paths and deliverables;
+prohibited local reduction; Unity requirement; named read-only checks;
+permitted delegation/review; first viable artifact; next return point; and any
+mismatch. Stop. Do not derive equations, inspect package implementation
+contents, create/switch/move an audit branch, write files, run Citlali, open
 Unity, request evidence, or make a scientific conclusion.
 
 ## Central scientific question for later authorized phases
