@@ -53,6 +53,13 @@ citlali::config::RuntimeConfig read_runtime_config(
         config, std::tuple{"runtime", "interp_over_gaps"}, interp_over_gaps,
         runtime_config.interp_over_gaps, diagnostics);
 
+    bool crop_detector_to_telescope_support =
+        runtime_config.crop_detector_to_telescope_support;
+    read_mirrored_config_value(
+        config, std::tuple{"runtime", "crop_detector_to_telescope_support"},
+        crop_detector_to_telescope_support,
+        runtime_config.crop_detector_to_telescope_support, diagnostics);
+
     return runtime_config;
 }
 

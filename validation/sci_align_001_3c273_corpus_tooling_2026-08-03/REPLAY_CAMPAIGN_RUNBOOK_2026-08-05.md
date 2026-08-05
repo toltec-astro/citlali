@@ -117,6 +117,42 @@ logs. Apply the reviewed tooling fix, use a new campaign root ending in
 preparation checksums verify. Never edit generated configs in place or reuse
 the failed root.
 
+### Early-observation telescope-support retry
+
+If an observation is rejected because the detector union reaches beyond native
+telescope support, preserve that failed replay and its log. The reviewed
+diagnostic-only policy `runtime.crop_detector_to_telescope_support: true`
+admits only the original detector rows on the closed native `TelTime` support
+interval. It neither edits raw files nor shifts/reassociates timestamps. The
+retained provenance reports source, admitted, and leading/trailing excluded row
+counts for every network. This is not a production timing correction.
+
+After transferring the reviewed Citlali/tooling commit and rebuilding, prepare
+only the failed declared campaign member under a fresh root. For the observed
+113862 endpoint mismatch:
+
+```bash
+export SCI_CROP_RETRY_ROOT=/work/toltec/wilson/citlali_testing/beammaps/3c273/sci_align_001_replay_o113862_supportcrop_retry1_2026-08-05
+test ! -e "$SCI_CROP_RETRY_ROOT"
+
+python tools/diagnostics/prepare_sci_align_001_3c273_replay_campaign.py \
+  prepare --base-config "$SCI_BASE_CONFIG" \
+  --calibration-config "$SCI_CALIBRATION_CONFIG" \
+  --analysis-root /work/toltec/wilson/citlali_testing/beammaps/3c273 \
+  --raw-root "$SCI_DATA_ROOT" --repo-root "$SCI_REPO" \
+  --output-root "$SCI_CROP_RETRY_ROOT" \
+  --citlali-bin "$CITLALI_BIN" --threads 6 --obsnum 113862
+
+(cd "$SCI_CROP_RETRY_ROOT" && shasum -a 256 -c PREPARATION_SHA256SUMS)
+grep -n 'crop_detector_to_telescope_support' \
+  "$SCI_CROP_RETRY_ROOT/replay_o113862/config/"*.yaml
+bash "$SCI_CROP_RETRY_ROOT/submit_batch_01.sh" \
+  | tee "$SCI_CROP_RETRY_ROOT/job_ids.txt"
+```
+
+Do not start another campaign batch until this retry either produces verified
+detector-TOD/provenance outputs or provides a new reviewed failure.
+
 ## 3. Submit and review one batch at a time
 
 After reviewing the generated configuration and input manifest for all four

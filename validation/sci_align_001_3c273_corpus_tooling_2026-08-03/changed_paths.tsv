@@ -4,13 +4,26 @@ M	tools/diagnostics/generate_sci_align_001_3c273_slurm_array.py	checksum-bound s
 M	tools/diagnostics/inventory_sci_align_001_3c273_corpus.py	authoritative inventory, run-root exclusion, canonical selection, availability
 M	tools/diagnostics/run_sci_align_001_3c273_beammap.py	retained-product anomaly artifact emission
 M	tools/diagnostics/sci_align_001_3c273_common.py	delivered raw-counter/PpsTime diagnostic implementation
+M	data/config.yaml	default-false diagnostic telescope-support admission setting
+M	include/citlali/core/config/runtime_config.h	typed default-false telescope-support admission policy
+M	include/citlali/core/engine/detail/todproc_alignment_impl.h	opt-in native telescope-support detector admission before lattice construction
+M	include/citlali/core/pipeline/config_leaf_schema_generated.h	regenerated runtime startup allowlist
+M	include/citlali/core/pipeline/runtime_config_read.h	typed runtime telescope-support admission parsing
+M	include/citlali/core/pipeline/runtime_provenance_output.h	requested/effective telescope-support admission provenance
+M	include/citlali/core/pipeline/timestream_alignment_helpers.h	closed native telescope-support detector-row range contract
+M	include/citlali/core/pipeline/timestream_alignment_state.h	per-interface telescope-support exclusion counts
+M	include/citlali/core/pipeline/timestream_output_provenance.h	admitted-versus-source detector-row provenance validation and serialization
 A	tools/diagnostics/prepare_sci_align_001_148670_reproduction.py	owner-authorized source-isolated 148670 detector-TOD reproduction preparation with absolute fit-report input binding
-A	tools/diagnostics/prepare_sci_align_001_3c273_replay_campaign.py	owner-authorized fixed 16-map source-isolated campaign preparation from 70/72 numbered-config policy and calibration authority
+A	tools/diagnostics/prepare_sci_align_001_3c273_replay_campaign.py	owner-authorized fixed 16-map source-isolated campaign preparation from 70/72 numbered-config policy/calibration authority, including reviewed support-crop retry subsets
 M	tools/diagnostics/test_sci_align_001_3c273_aggregation.py	aggregation/anomaly regression tests
 M	tools/diagnostics/test_sci_align_001_3c273_inventory.py	allowlist, canonical, exclusion, scheduler tests
 M	tools/diagnostics/test_sci_align_001_3c273_runner.py	delivered raw anomaly tests
+M	tests/test_sci_align_exposure_provenance.cpp	telescope-support admission provenance contract
+M	tests/test_sci_align_t17_t18.cpp	closed native telescope-support detector admission contract
 A	tools/diagnostics/test_prepare_sci_align_001_148670_reproduction.py	exact replay input/configuration contract tests
-A	tools/diagnostics/test_prepare_sci_align_001_3c273_replay_campaign.py	fixed campaign selection, numbered-config calibration, input-association stop, and sidecar preparation contracts
+A	tools/diagnostics/test_prepare_sci_align_001_3c273_replay_campaign.py	fixed campaign selection, numbered-config calibration, input-association stop, sidecar, and reviewed retry-subset preparation contracts
+M	tools/config/config_key_classification.yaml	hidden/internal classification for diagnostic telescope-support admission
+M	tools/config/config_leaf_contract_resolved.json	regenerated runtime leaf contract
 A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/authoritative_obsnums.schema.json	checksum-bound allowlist schema
 A	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/authoritative_obsnums_2026-08-03.json	exact owner-authoritative 40-ObsNum corpus
 M	validation/sci_align_001_3c273_corpus_tooling_2026-08-03/OUTPUT_SCHEMA.md	v2 output contract

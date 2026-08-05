@@ -82,6 +82,10 @@ inline bool is_beammap_reduction_type(ReductionType value) {
 struct RuntimeConfig {
     bool verbose = true;
     bool interp_over_gaps = true;
+    // Explicit diagnostic-only admission policy. It does not alter raw files
+    // or detector timestamps; it only limits the in-memory common lattice to
+    // rows bracketed by native telescope support.
+    bool crop_detector_to_telescope_support = false;
     int n_threads = 1;
     std::string output_dir = "/path/to/redu/directory/";
     ParallelPolicy parallel_policy = ParallelPolicy::seq;

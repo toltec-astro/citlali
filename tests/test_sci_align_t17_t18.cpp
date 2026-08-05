@@ -35,6 +35,25 @@ Eigen::VectorXd vector(std::initializer_list<double> values) {
     return result;
 }
 
+TEST(sci_align_telescope_support_crop,
+     admits_only_closed_native_telescope_support_without_shifting_time) {
+    const auto detector = vector({-0.5, 0.0, 0.008192, 0.016384, 1.0});
+    const auto telescope = vector({0.0, 0.5, 0.75});
+
+    const auto range =
+        citlali::pipeline::find_telescope_supported_detector_range(
+            detector, telescope, "toltec0");
+    EXPECT_EQ(range.start_index, 1);
+    EXPECT_EQ(range.end_index, 3);
+    EXPECT_DOUBLE_EQ(detector[range.start_index], 0.0);
+    EXPECT_DOUBLE_EQ(detector[range.end_index], 0.016384);
+
+    EXPECT_THROW(
+        citlali::pipeline::find_telescope_supported_detector_range(
+            vector({-2.0, -1.0}), telescope, "toltec0"),
+        std::runtime_error);
+}
+
 struct OperatorCase {
     std::string identity;
     Eigen::VectorXd source_time;

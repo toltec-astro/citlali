@@ -33,6 +33,9 @@ struct PreparedDetectorAlignment {
     std::vector<Eigen::VectorXd> network_times;
     std::vector<Eigen::VectorXi> masks;
     std::vector<Eigen::Index> network_ids;
+    std::vector<Eigen::Index> source_row_counts;
+    std::vector<Eigen::Index> leading_telescope_support_excluded_row_counts;
+    std::vector<Eigen::Index> trailing_telescope_support_excluded_row_counts;
     std::vector<std::vector<citlali::pipeline::sci_align::PacketGap>>
         packet_gaps;
 };
@@ -131,6 +134,16 @@ inline void populate_compact_alignment_state(
     citlali::pipeline::TimestreamAlignmentState &state,
     const PreparedDetectorAlignment &prepared) {
     const auto &lattice = prepared.lattice;
+    if (prepared.network_ids.size() != lattice.interfaces.size() ||
+        prepared.source_row_counts.size() != lattice.interfaces.size() ||
+        prepared.leading_telescope_support_excluded_row_counts.size() !=
+            lattice.interfaces.size() ||
+        prepared.trailing_telescope_support_excluded_row_counts.size() !=
+            lattice.interfaces.size() ||
+        prepared.masks.size() != lattice.interfaces.size()) {
+        throw std::logic_error(
+            "compact alignment provenance inputs have inconsistent interface cardinality");
+    }
     state.grid.initialized = true;
     state.grid.phase_sec = lattice.phase_seconds;
     state.grid.cadence_sec = lattice.cadence_seconds;
@@ -152,8 +165,8 @@ inline void populate_compact_alignment_state(
         citlali::pipeline::AlignmentInterfaceSummary summary;
         summary.interface_id = mapping.interface_id;
         summary.roach_index = prepared.network_ids[i];
-        summary.native_row_count = mapping.native_row_count;
-        summary.accepted_row_count = summary.native_row_count;
+        summary.native_row_count = prepared.source_row_counts[i];
+        summary.accepted_row_count = mapping.native_row_count;
         summary.first_global_slot = mapping.first_global_slot;
         summary.last_global_slot = mapping.last_global_slot;
         summary.minimum_residual_sec = mapping.minimum_residual_seconds;
@@ -168,22 +181,26 @@ inline void populate_compact_alignment_state(
             summary.trailing_unavailable_count = static_cast<std::int64_t>(
                 mapping.trailing_unavailable->size());
         }
+        summary.leading_telescope_support_excluded_row_count =
+            prepared.leading_telescope_support_excluded_row_counts[i];
+        summary.trailing_telescope_support_excluded_row_count =
+            prepared.trailing_telescope_support_excluded_row_counts[i];
         state.interfaces.push_back(summary);
-        const auto native_row_count =
+        const auto accepted_row_count =
             static_cast<std::uint64_t>(mapping.native_row_count);
         state.support.acquired_original_count =
             citlali::pipeline::checked_alignment_count_add(
-                state.support.acquired_original_count, native_row_count,
+                state.support.acquired_original_count, accepted_row_count,
                 "ALIGN acquired-original count");
         state.support.timing_coordinate_valid_original_count =
             citlali::pipeline::checked_alignment_count_add(
                 state.support.timing_coordinate_valid_original_count,
-                native_row_count,
+                accepted_row_count,
                 "ALIGN timing-coordinate-valid original count");
         state.support.unavailable_count =
             citlali::pipeline::checked_alignment_count_add(
                 state.support.unavailable_count,
-                lattice.slot_count() - native_row_count,
+                lattice.slot_count() - accepted_row_count,
                 "ALIGN unavailable interface-slot count");
         append_missing_runs(state, mapping.interface_id, prepared.masks[i]);
     }
@@ -366,6 +383,9 @@ PreparedDetectorAlignment prepare_detector_alignment(
                     std::move(native), offset);
 
             prepared.network_ids.push_back(roach_index);
+            prepared.source_row_counts.push_back(native_count);
+            prepared.leading_telescope_support_excluded_row_counts.push_back(0);
+            prepared.trailing_telescope_support_excluded_row_counts.push_back(0);
             prepared.packet_gaps.push_back(
                 std::move(reconstructed.packet_gaps));
             coordinates.push_back({interface_id, header,
@@ -407,6 +427,39 @@ PreparedDetectorAlignment prepare_detector_alignment(
     }
     (void)citlali::pipeline::realize_interface_offset(
         engine.interface_sync, "lmt", false);
+
+    if (citlali::pipeline::runtime_config(engine)
+            .crop_detector_to_telescope_support) {
+        const auto telescope_time_it = engine.telescope.tel_data.find("TelTime");
+        if (telescope_time_it == engine.telescope.tel_data.end()) {
+            throw std::runtime_error(
+                "diagnostic detector-support crop requires native telescope TelTime");
+        }
+        const auto &telescope_time = telescope_time_it->second;
+        for (std::size_t i = 0; i < coordinates.size(); ++i) {
+            auto &time = coordinates[i].corrected_time.seconds;
+            const auto range =
+                citlali::pipeline::find_telescope_supported_detector_range(
+                    time, telescope_time, coordinates[i].interface_id);
+            const Eigen::Index original_size = time.size();
+            prepared.leading_telescope_support_excluded_row_counts[i] =
+                range.start_index;
+            prepared.trailing_telescope_support_excluded_row_counts[i] =
+                original_size - range.end_index - 1;
+
+            std::vector<citlali::pipeline::sci_align::PacketGap> cropped_gaps;
+            for (const auto &gap : prepared.packet_gaps[i]) {
+                if (gap.row_before >= range.start_index &&
+                    gap.row_before < range.end_index) {
+                    auto adjusted = gap;
+                    adjusted.row_before -= range.start_index;
+                    cropped_gaps.push_back(adjusted);
+                }
+            }
+            prepared.packet_gaps[i] = std::move(cropped_gaps);
+            time = time.segment(range.start_index, range.size());
+        }
+    }
 
     prepared.raw_overlap_end_sec =
         std::numeric_limits<double>::infinity();

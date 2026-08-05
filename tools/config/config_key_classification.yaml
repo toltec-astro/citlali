@@ -101,6 +101,13 @@ rules:
     classification: hidden/internal
     owner: citlali
     reason: Current runtime expects this to stay true; compact profiles should own it.
+  - id: internal-detector-telescope-support-crop
+    pattern: runtime.crop_detector_to_telescope_support
+    classification: hidden/internal
+    owner: citlali
+    reason: >
+      Diagnostic-only admission policy. It is opt-in and records excluded
+      detector rows; compact profiles must not enable it.
   - id: internal-timestream-type
     pattern: timestream.type
     classification: hidden/internal

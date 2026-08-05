@@ -74,6 +74,11 @@
       "command": "focused 3C273 inventory/runner/aggregation/148670-preparation/replay-campaign tests; campaign ruff, py_compile, and diff check",
       "result": "67 focused tests verify the fixed 15-new-replay/16-total campaign plan, 70/72 numbered-config policy/calibration extraction, exact scannum-2 raw/telescope/APT association, four-job batch cap, detector-TOD sidecar binding, and fail-closed preservation of partial roots. Static checks passed.",
       "status": "pass"
+    },
+    {
+      "command": "cmake --build build --target citlali_cli citlali_test -j 8; build/tests/citlali_test; config preflight; focused replay-campaign tests",
+      "result": "citlali_cli and citlali_test built; 617 enabled C++ tests passed (one disabled); the full config preflight passed 123 Python tests, four mode kits, eight compact compatibility cases, and all boundary audits; four focused replay-campaign tests passed. The default-false diagnostic telescope-support admission preserves original detector timestamps and row identity, excludes only unbracketed endpoint rows when enabled, and records source/admitted/excluded counts in provenance.",
+      "status": "pass"
     }
   ],
   "no_unity_access": true,

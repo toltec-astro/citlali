@@ -168,6 +168,8 @@ The initial 148670 replay stop has been completed and reviewed. The current
 stop condition is after each checksum-verified campaign batch and before the
 next batch is submitted. The later stop is a compact, checksum-bound corpus
 report with unresolved duplicate/path choices explicit. No Unity access by
-Codex, physical timestamp correction, row reassociation, application/source
-edit, merge, rebase, or push is part of this work. Authorized reductions are
-only the source-isolated roots emitted by the fixed 16-map campaign preparer.
+Codex, physical timestamp correction, row reassociation, merge, rebase, or
+push is part of this work. The owner separately authorized the default-false,
+diagnostic-only telescope-support admission implementation used by the campaign
+retry; it is not a production timing correction. Authorized reductions are only
+the source-isolated roots emitted by the fixed 16-map campaign preparer.

@@ -15,6 +15,7 @@ from tools.diagnostics.prepare_sci_align_001_3c273_replay_campaign import (
     authority,
     direct_config,
     observation_inputs,
+    selected_campaign,
 )
 
 
@@ -48,6 +49,14 @@ class NumberedCampaignTest(unittest.TestCase):
             with self.assertRaisesRegex(CampaignError, "ambiguous raw network 0"):
                 observation_inputs(root, raw, 113862)
 
+    def test_explicit_subset_preserves_declared_batch_and_rejects_unknown_members(self) -> None:
+        self.assertEqual(selected_campaign([113862]), ((113862, 1),))
+        self.assertEqual(selected_campaign([152451, 113862]), ((113862, 1), (152451, 2)))
+        with self.assertRaisesRegex(CampaignError, "at most once"):
+            selected_campaign([113862, 113862])
+        with self.assertRaisesRegex(CampaignError, "not a campaign member"):
+            selected_campaign([148670])
+
     def test_direct_config_preserves_numbered_policy_and_binds_diagnostic_outputs(self) -> None:
         low_level, astrometry, photometry = authority(SOURCE / "70_reduce.yaml", SOURCE / "72_reduce.yaml")
         inputs = {
@@ -64,6 +73,7 @@ class NumberedCampaignTest(unittest.TestCase):
         self.assertEqual(config["beammap"]["detector_tod_output"]["subdir_name"], "source_crossing_tod")
         self.assertEqual(config["kids"]["solver"]["fitreportdir"], "/data")
         self.assertEqual(config["runtime"]["output_dir"], "/output/reduced")
+        self.assertTrue(config["runtime"]["crop_detector_to_telescope_support"])
         self.assertEqual(config["mapmaking"]["grouping"], "detector")
         self.assertEqual(config["inputs"][0]["cal_items"][1]["type"], "photometry")
         self.assertNotIn("select", config["inputs"][0]["cal_items"][1])

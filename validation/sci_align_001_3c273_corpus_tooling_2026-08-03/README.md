@@ -22,7 +22,9 @@ under owner Slurm submission from the repository checkout.
 - `REPLAY_CAMPAIGN_RUNBOOK_2026-08-05.md` is the owner-run four-concurrent-job,
   sixteen-map expansion. It generates direct Citlali diagnostic inputs from the
   owner-supplied 70/72 numbered-config policy/calibration contract and stops on
-  an ambiguous raw/telescope/APT association.
+  an ambiguous raw/telescope/APT association. Its reviewed early-observation
+  retry admits only native telescope-supported detector rows, with explicit
+  provenance; it does not shift timestamps or edit raw data.
 - `frozen_analysis_protocol.json` is the before-corpus-results scientific and
   statistical authority.
 - `candidate_manifest.schema.json` and `OUTPUT_SCHEMA.md` define the portable

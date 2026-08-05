@@ -7,6 +7,7 @@
 
 #include <gtest/gtest.h>
 
+#include <cstdint>
 #include <filesystem>
 #include <map>
 #include <string>
@@ -834,6 +835,35 @@ TEST(sci_align_provenance,
     EXPECT_FALSE(node["hwpr"]["polarization_eligible"].as<bool>());
     EXPECT_EQ(node["hwpr"]["availability_reason"].as<std::string>(),
               "producer_input_absent_optional_nonfatal");
+}
+
+TEST(sci_align_provenance,
+     records_telescope_support_admission_without_relabeling_raw_rows) {
+    auto state = make_alignment_state();
+    state.interfaces[0].native_row_count = 4;
+    state.interfaces[0].accepted_row_count = 3;
+    state.interfaces[0].trailing_telescope_support_excluded_row_count = 1;
+
+    EXPECT_NO_THROW(
+        citlali::pipeline::validate_compact_alignment_provenance(state));
+    const auto node =
+        citlali::pipeline::compact_alignment_provenance_node(state);
+    const auto interface = node["interfaces"][0];
+    EXPECT_EQ(interface["native_row_count"].as<Eigen::Index>(), 4);
+    EXPECT_EQ(interface["accepted_row_count"].as<Eigen::Index>(), 3);
+    EXPECT_EQ(
+        interface["leading_telescope_support_excluded_row_count"]
+            .as<std::int64_t>(),
+        0);
+    EXPECT_EQ(
+        interface["trailing_telescope_support_excluded_row_count"]
+            .as<std::int64_t>(),
+        1);
+
+    state.interfaces[0].trailing_telescope_support_excluded_row_count = 0;
+    EXPECT_THROW(
+        citlali::pipeline::validate_compact_alignment_provenance(state),
+        std::logic_error);
 }
 
 TEST(sci_align_provenance, rejects_stale_or_claimed_hwpr_availability) {

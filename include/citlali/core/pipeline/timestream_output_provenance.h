@@ -917,6 +917,11 @@ inline void validate_compact_alignment_provenance(
             interface.last_global_slot < interface.first_global_slot ||
             interface.leading_unavailable_count < 0 ||
             interface.trailing_unavailable_count < 0 ||
+            interface.leading_telescope_support_excluded_row_count < 0 ||
+            interface.trailing_telescope_support_excluded_row_count < 0 ||
+            interface.native_row_count - interface.accepted_row_count !=
+                interface.leading_telescope_support_excluded_row_count +
+                    interface.trailing_telescope_support_excluded_row_count ||
             !std::isfinite(interface.minimum_residual_sec) ||
             !std::isfinite(interface.maximum_residual_sec) ||
             !std::isfinite(interface.maximum_absolute_residual_sec) ||
@@ -927,7 +932,7 @@ inline void validate_compact_alignment_provenance(
                 grid.exclusive_half_cell_sec ||
             mask.size() != alignment.common_time.size() ||
             acquired_mask_count !=
-                static_cast<std::uint64_t>(interface.native_row_count)) {
+                static_cast<std::uint64_t>(interface.accepted_row_count)) {
             throw std::logic_error(
                 "alignment interface summary is incomplete or inconsistent");
         }
@@ -1238,6 +1243,10 @@ inline YAML::Node compact_alignment_provenance_node(
             interface.leading_unavailable_count;
         value["trailing_unavailable_count"] =
             interface.trailing_unavailable_count;
+        value["leading_telescope_support_excluded_row_count"] =
+            interface.leading_telescope_support_excluded_row_count;
+        value["trailing_telescope_support_excluded_row_count"] =
+            interface.trailing_telescope_support_excluded_row_count;
         node["interfaces"].push_back(value);
     }
 

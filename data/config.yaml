@@ -140,6 +140,7 @@ mapmaking: # mapmaking parameters
 runtime: # parameters to control how citlali runs
   verbose: true # extra debug output in terminal (same as -l debug).  adds summary files to obsnum/logs/ directory.
   interp_over_gaps: true # required true; find and interpolate over gaps in the timestreams
+  crop_detector_to_telescope_support: false # diagnostic-only; admit only detector rows with native telescope support
   meta:
     version: tolteca... # extra info from tolteca
   n_threads: 1 # number of threads to use

@@ -70,6 +70,8 @@ struct AlignmentInterfaceSummary {
     std::int64_t last_global_slot = -1;
     std::int64_t leading_unavailable_count = 0;
     std::int64_t trailing_unavailable_count = 0;
+    std::int64_t leading_telescope_support_excluded_row_count = 0;
+    std::int64_t trailing_telescope_support_excluded_row_count = 0;
 };
 
 struct AlignmentTelescopeSummary {

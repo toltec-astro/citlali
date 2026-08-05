@@ -20,6 +20,8 @@ inline YAML::Node runtime_config_node(
     YAML::Node node;
     node["verbose"] = config.verbose;
     node["interp_over_gaps"] = config.interp_over_gaps;
+    node["crop_detector_to_telescope_support"] =
+        config.crop_detector_to_telescope_support;
     node["n_threads"] = config.n_threads;
     node["output_dir"] = config.output_dir;
     node["parallel_policy"] = std::string(

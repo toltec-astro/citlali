@@ -1,5 +1,5 @@
 {
-  "application_or_production_configuration_paths_changed": false,
+  "application_or_production_configuration_paths_changed": true,
   "branch": "codex/sci-align-001-3c273-corpus-tooling",
   "commit_identity_authority": "The committed tree and final handoff report the exact resulting commit; a file cannot contain its own Git object identity without changing that identity.",
   "frozen_predecessor_commit": "a2b37924d612eb175821483523cc94dd233f2fea",
@@ -9,8 +9,8 @@
   "repository": "/Users/gwilson/GitHub/citlali-refactor",
   "repository_authority": "AGENTS.md plus the living status and scientific-conventions documents routed by the TolTEC context skill",
   "followup_parent_commit": "6776931e753488b902d178b177815a2762375e5c",
-  "followup_scope": "authoritative corpus, canonical selection, availability, checksum-bound scripts, omission evidence, nw9 anomaly diagnostics, the completed source-isolated 148670 detector-TOD reproduction gate, and an owner-authorized 16-independent-map campaign generated from the supplied 70/72 numbered-config policy/calibration authority",
-  "schema_version": "sci-align-001-3c273-tooling-identity-v5",
+  "followup_scope": "authoritative corpus, canonical selection, availability, checksum-bound scripts, omission evidence, nw9 anomaly diagnostics, the completed source-isolated 148670 detector-TOD reproduction gate, an owner-authorized 16-independent-map campaign generated from the supplied 70/72 numbered-config policy/calibration authority, and a default-false diagnostic telescope-support admission path for an early-observation retry that neither edits raw data nor shifts/reassociates timestamps",
+  "schema_version": "sci-align-001-3c273-tooling-identity-v6",
   "starting_worktree_clean": true,
   "unity_contacted": false
 }

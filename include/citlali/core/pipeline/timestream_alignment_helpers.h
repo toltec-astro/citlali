@@ -82,6 +82,33 @@ struct TimestreamSampleRange {
     }
 };
 
+// Select rows on the closed native telescope-support interval. This is an
+// admission operation, not a timestamp transformation.
+inline TimestreamSampleRange find_telescope_supported_detector_range(
+    const Eigen::VectorXd &detector_time,
+    const Eigen::VectorXd &native_telescope_time,
+    const std::string &interface_id) {
+    sci_align::require_strictly_increasing(
+        detector_time, "detector interface time");
+    sci_align::require_strictly_increasing(
+        native_telescope_time, "native telescope TelTime");
+    const auto begin_it = std::lower_bound(
+        detector_time.data(), detector_time.data() + detector_time.size(),
+        native_telescope_time[0]);
+    const auto end_it = std::upper_bound(
+        detector_time.data(), detector_time.data() + detector_time.size(),
+        native_telescope_time[native_telescope_time.size() - 1]);
+    const auto start = static_cast<Eigen::Index>(
+        begin_it - detector_time.data());
+    const auto stop = static_cast<Eigen::Index>(end_it - detector_time.data());
+    if (start >= stop) {
+        throw std::runtime_error(fmt::format(
+            "detector interface '{}' has no rows within native telescope support",
+            interface_id));
+    }
+    return {start, stop - 1};
+}
+
 struct TimestreamSampleWindow {
     std::vector<Eigen::Index> start_indices;
     std::vector<Eigen::Index> end_indices;

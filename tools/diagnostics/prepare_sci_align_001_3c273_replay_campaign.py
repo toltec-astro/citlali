@@ -235,6 +235,11 @@ def direct_config(
     runtime["output_dir"] = str(output)
     runtime["parallel_policy"] = "omp"
     runtime["use_subdir"] = True
+    # The campaign preserves raw timestamps and row identity, but admits only
+    # detector rows with native telescope bracketing. This keeps early legacy
+    # observations fail-closed against extrapolation while recording any
+    # excluded endpoint rows in the alignment provenance.
+    runtime["crop_detector_to_telescope_support"] = True
     # Detector-resolved PTC TOD is a distinct diagnostic product. Citlali's
     # typed contract requires detector map grouping whenever it is enabled.
     mapmaking["grouping"] = "detector"
@@ -315,6 +320,19 @@ def describe(base: Path, calibration: Path) -> dict[str, Any]:
     }
 
 
+def selected_campaign(obsnums: list[int] | None) -> tuple[tuple[int, int], ...]:
+    if not obsnums:
+        return CAMPAIGN
+    requested = set(obsnums)
+    if len(requested) != len(obsnums):
+        raise CampaignError("--obsnum may be supplied at most once per observation")
+    available = {obsnum for obsnum, _batch in CAMPAIGN}
+    unknown = sorted(requested - available)
+    if unknown:
+        raise CampaignError(f"--obsnum is not a campaign member: {unknown}")
+    return tuple(row for row in CAMPAIGN if row[0] in requested)
+
+
 def prepare(args: argparse.Namespace) -> dict[str, Any]:
     campaign_root = args.output_root.expanduser().resolve()
     if campaign_root.exists():
@@ -327,6 +345,7 @@ def prepare(args: argparse.Namespace) -> dict[str, Any]:
     repo_root = require_directory(args.repo_root, "repository root")
     prior = require_file(args.beammap_prior or repo_root / PRIOR_RELATIVE, "beammap prior")
     low_level, astrometry, photometry = authority(base, calibration)
+    campaign = selected_campaign(args.obsnum)
     source_authority = {
         "70_reduce": {"path": str(base), "sha256": sha256_file(base), "used_for": "shared low_level policy"},
         "72_reduce": {"path": str(calibration), "sha256": sha256_file(calibration), "used_for": "per-ObsNum photometry and astrometry"},
@@ -334,16 +353,24 @@ def prepare(args: argparse.Namespace) -> dict[str, Any]:
     }
     campaign_root.mkdir(parents=True, exist_ok=False)
     results = []
-    for obsnum, batch in CAMPAIGN:
+    for obsnum, batch in campaign:
         results.append(_write_replay(
             campaign_root=campaign_root, obsnum=obsnum, batch=batch, low_level=low_level, astrometry=astrometry,
             photometry=photometry[obsnum], analysis_root=analysis_root, raw_root=raw_root, repo_root=repo_root,
             prior=prior, fitreport_root=raw_root, executable=executable, source_authority=source_authority, threads=args.threads,
         ))
-    index = {"schema": SCHEMA, "source_products_modified": False, "citlali_reductions_launched": 0, "replays": results}
+    index = {
+        "schema": SCHEMA,
+        "source_products_modified": False,
+        "citlali_reductions_launched": 0,
+        "selection": "full_campaign" if campaign == CAMPAIGN else "explicit_subset",
+        "replays": results,
+    }
     atomic_write(campaign_root / "campaign_preparation.json", canonical_json(index))
     for batch in range(1, 5):
         rows = [row for row in results if row["batch"] == batch]
+        if not rows:
+            continue
         script = ["#!/usr/bin/env bash", "set -euo pipefail"]
         for row in rows:
             submit = Path(row["replay_root"]) / f"submit_o{row['observation_number']}_reproduction.sbatch"
@@ -369,6 +396,9 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     prepare_parser.add_argument("--output-root", required=True, type=Path)
     prepare_parser.add_argument("--beammap-prior", type=Path)
     prepare_parser.add_argument("--threads", type=int, default=6)
+    prepare_parser.add_argument(
+        "--obsnum", type=int, action="append",
+        help="Prepare only this declared campaign ObsNum; repeat for a reviewed subset.")
     return parser.parse_args(argv)
 
 
