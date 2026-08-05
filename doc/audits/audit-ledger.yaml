@@ -113,6 +113,24 @@ resource_allocation:
       ultra_trigger: none
       parallelism: none
       stop_rule: stop_after_scope_checkpoint
+    - dispatch_id: SCI-NOI-001-PHASE-0-DISPATCH-2026-08-05
+      package_id: SCI-NOI-001
+      phase: scope_checkpoint_only
+      dispatch_content_commit: 192e0d9b5e3be4eb20522d3319cae346168c4bce
+      model: gpt-5.6-terra
+      effort: high
+      task_shape: bounded_engineering_coordination
+      rationale: >-
+        Freeze the conditional-noise-ensemble audit boundary, authority
+        handoffs, and quarantine before any independent derivation or source
+        inspection. Phase 1 and Phase 2 remain separately authorized.
+      ultra_trigger: >-
+        Phase 1/2 only: reconcile sign-law/effective-size mathematics,
+        conditioning/RNG/state/eligibility/provenance, realized-operator
+        propagation, deterministic-signal leakage/residual bias trade, and
+        consumer adequacy while preserving the NOI-002 boundary.
+      parallelism: serial_single_audit_task_no_delegation
+      stop_rule: stop_after_phase_0_scope_checkpoint
 scope_control:
   policy_id: FRAMEWORK-SCOPE-001
   status: active_for_future_dispatches_and_future_phases
@@ -4703,27 +4721,100 @@ packages:
     tier: A
     queue_wave: uncertainty_3
     scientific_scope: >-
-      Random-sign/jackknife construction, random engine and seed identity,
-      conditioning assumptions, and propagation of realizations through the
-      selected gridding, coadd, and filtering operators.
+      Conditional pre-mapmaking random-sign ensemble construction from fixed
+      realized post-RTC/PTC sample state: sign law/coherence/effective size,
+      RNG/state/cardinality/provenance, deterministic-signal ensemble
+      second-moment imprint, and propagation through realized mapmaking,
+      validity, coaddition, and filtering. Downstream estimator validity is
+      exclusively outside this package.
     known_code_areas:
       - include/citlali/core/pipeline/timestream_scan_generation.h
       - include/citlali/core/pipeline/noise_execution_plan.h
       - include/citlali/core/mapmaking/naive_mm.h
       - include/citlali/core/mapmaking/jinc_mm.h
       - include/citlali/core/pipeline/observation_coadd_accumulation.h
-    inputs: [processed TOD, flags, randomization policy and seed, selected operators]
-    outputs: [observation, coadd, and filtered noise realizations with provenance]
+    inputs:
+      - fixed realized post-RTC/PTC sample state, residual correlations, flags, and eligibility
+      - sign-correlation law, randomization policy, seed/state, and realized cardinality
+      - realized mapmaking, validity, coaddition, and filtering operator interfaces
+    outputs:
+      - >-
+        observation, coadd, and filtered conditional ensemble realizations
+        with reproducibility/provenance and ensemble-adequacy characterization
     upstream_dependencies:
       - package_id: SCI-PTC-001
         status: open
+        required_contract: >-
+          Realized cleaned-sample, retained-correlation, detector-weight,
+          source-mask, flag, and selection state at the pre-mapmaking sign
+          boundary.
+        consequence: >-
+          NOI-001 conditions on this frozen state and does not establish raw
+          detector-noise, PTC transfer/covariance, or PTC parameter-estimation
+          uncertainty.
       - package_id: SCI-VAL-001
         status: open
+        required_contract: >-
+          Realized sample/detector eligibility, non-finite, flag, and support
+          state presented to mapmaking.
+        consequence: >-
+          NOI-001 conditions on the realized eligibility interface and does
+          not establish correctness of eligibility or universal validity.
       - package_id: SCI-MAP-001
+        status: conditioned
+        required_contract: >-
+          Accepted bounded signal, nonprecision gridding/normalization
+          coefficient weight_I, kernel, facts/support/validity, and centered
+          coefficient-weighted coaddition at af0c849 and d5015fe.
+        consequence: >-
+          Derive conditional ensemble propagation through realized MAP
+          interfaces only. weight_I is not variance or precision authority;
+          MAP remains PTC/VAL-conditioned and existing_use_only.
+      - package_id: SCI-MAP-002
         status: open
-    downstream_consumers: [SCI-NOI-002, SCI-FLT-001, SCI-FLT-002]
-    governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
-    governing_sha_role: inventory_snapshot
+        required_contract: >-
+          JINC-specific map/interface contract, only if an active JINC path
+          is assessed after the NOI-001 independent core freeze.
+        consequence: >-
+          Any JINC conclusion remains conditioned on SCI-MAP-002 and does not
+          reopen or close that package.
+      - package_id: SCI-FLT-001
+        status: conditioned
+        required_contract: >-
+          Owner-approved D001--D003 restrictions: identical realized operator
+          and full realization provenance, direct pixelwise variance/S/N as
+          diagnostics, and NOI-002 ownership of estimator/product validity.
+        consequence: >-
+          NOI-001 may characterize conditional ensemble adequacy at the FLT
+          interface but cannot validate a downstream estimator or reopen FLT.
+      - package_id: SCI-FRUIT-001
+        status: open
+        required_contract: >-
+          A future approved fruit-loop state/interface contract before any
+          residual-state randomization successor can be assessed.
+        consequence: >-
+          The source-subtracted residual expression is conceptual only; Phase
+          2 may inspect only the narrow interface needed to characterize it.
+    downstream_consumers: [SCI-NOI-002, SCI-FLT-001, SCI-FLT-002, SCI-FRUIT-001]
+    incoming_handoffs:
+      - id: SCI-NOI-001-XAUD-001
+        path: >-
+          doc/audits/handoffs/SCI-NOI-001/SCI-NOI-001-XAUD-001.yaml
+        sha256: c7730995b8c5474389518c6bef2e24355ec31f0b4e317e01934a6a5afca17860
+        source_package: SCI-MAP-001
+        review_phase: pre_core_authority
+        arrival: before_dispatch
+        status: submitted
+      - id: SCI-NOI-001-XAUD-002
+        path: >-
+          doc/audits/handoffs/SCI-NOI-001/SCI-NOI-001-XAUD-002.yaml
+        sha256: c4865418065cb093c07aa00711cb7d0b06e34c314fd8200d6ded627a220dafdc
+        source_package: SCI-FLT-001
+        review_phase: pre_core_authority
+        arrival: before_dispatch
+        status: submitted
+    governing_sha: d5015fe716971bf8ea617e8a187311bf5af05185
+    governing_sha_role: audit_dispatch_snapshot
     audit_branch: null
     audit_commit: null
     independent_derivation: {status: not_started, sha256: null}
@@ -4737,6 +4828,48 @@ packages:
     local_evidence: []
     requested_unity_evidence: []
     supplied_external_evidence: []
+    dispatch:
+      status: frozen_phase_0_only
+      dispatch_date: 2026-08-05
+      launch_authorization: project_owner_explicit_phase_0_only
+      coordinator_registry_commit: 192e0d9b5e3be4eb20522d3319cae346168c4bce
+      application_source_sha: d5015fe716971bf8ea617e8a187311bf5af05185
+      prompt_path: doc/audits/prompts/SCI_NOI_001_AUDIT_PROMPT.md
+      prompt_sha256: 9f70738da33564a9c21eb19bdf927e43e73dc887cc7c7cf5e2ee7276cb989188
+      manifest_path: >-
+        doc/audits/handoffs/SCI-NOI-001/SCI-NOI-001_INBOX_MANIFEST_2026-08-05.yaml
+      manifest_sha256: 571d1b043e7ec041e3ca8c8dd841761aafcecd03d92a959e72add1dfdbebf819
+      pre_core_authority_ids: [SCI-NOI-001-XAUD-001, SCI-NOI-001-XAUD-002]
+      post_core_evidence_ids: []
+      readiness_record:
+        path: >-
+          doc/audits/packages/SCI-NOI-001_COORDINATOR_DISPATCH_READINESS_2026-08-05.md
+        sha256: 900182bab06448b1d639c004fc2d24cdad808f684f44dcec9bc4368e2240603f
+      phase_0:
+        model: gpt-5.6-terra
+        effort: high
+        authorized_scope: scope_checkpoint_repository_state_and_quarantine_verification_only
+        independent_derivation_authorized: false
+        implementation_inspection_authorized: false
+        audit_worktree_authorized: false
+        local_reduction_authorized: false
+        unity_evidence_authorized: false
+        delegation_authorized: false
+        next_return: concise_FRAMEWORK-SCOPE-001_checkpoint_only
+      held_future_phases:
+        phase_1:
+          model: gpt-5.6-sol
+          effort: ultra
+          authorization: explicit_coordinator_follow_up_required
+          deliverable: SCI-NOI-001_INDEPENDENT_CORE.tex_only_then_stop
+        phase_2:
+          model: gpt-5.6-sol
+          effort: ultra
+          authorization: separate_explicit_coordinator_follow_up_required
+          deliverable: documentation_only_final_audit_and_proposed_handoffs_then_stop
+      resource_note: >-
+        64 is a resource-admitted high-count validation tier only, not a
+        requirement, production default, beammap expectation, or cap.
     remediation_branch: null
     remediation_commit: null
     re_audit_status: not_started

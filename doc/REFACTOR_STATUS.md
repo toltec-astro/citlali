@@ -227,6 +227,27 @@ exact-successor repair/evidence and fresh re-audit authorization against the
 [recorded decision boundary](audits/packages/SCI-FLT-001_COORDINATOR_DECISION_BRIEF_2026-08-05.md);
 it authorizes no application integration or production expansion.
 
+## 2026-08-05 SCI-NOI-001 Phase 0 Dispatch Preparation
+
+The coordination line has frozen a Phase 0-only
+[SCI-NOI-001 dispatch prompt](audits/prompts/SCI_NOI_001_AUDIT_PROMPT.md),
+[inbound handoff manifest](audits/handoffs/SCI-NOI-001/SCI-NOI-001_INBOX_MANIFEST_2026-08-05.yaml),
+and [readiness record](audits/packages/SCI-NOI-001_COORDINATOR_DISPATCH_READINESS_2026-08-05.md).
+The later audit source is exact `d5015fe716971bf8ea617e8a187311bf5af05185`.
+Phase 0 uses Terra-high solely for a scope checkpoint, repository-state, and
+quarantine verification; it must stop before derivation, implementation
+inspection, an audit worktree, reduction, Unity action, or an evidence request.
+
+The later NOI-001 question is the conditional ensemble made by pre-mapmaking
+sign randomization of fixed realized post-RTC/PTC samples, including its
+ensemble second-moment imprint, sign law/effective size, provenance, realized
+operator propagation, and deterministic-source leakage diagnostics. It
+conditions on MAP/PTC/VAL interfaces and reserves every empirical variance,
+weight, S/N, aperture-estimator, and production realization-count/default
+decision to SCI-NOI-002. The 64-realization tier is resource-admitted
+validation only, not a requirement/default/cap. Phase 1 and Phase 2 are
+separate Sol-ultra serial authorizations with no delegation.
+
 ## 2026-07-31 SCI-CAL-001 Audit Coordination
 
 The independent Tier A `SCI-CAL-001` audit is integrated on the scientific-

@@ -92,6 +92,25 @@ retains their exact boundary. The package remains
 `proposed`/`conditionally_conformant`/`in_progress`/`fail_closed` with verdict
 `amend` and re-audit `required`.
 
+### SCI-NOI-001 Phase 0 dispatch — 2026-08-05
+
+The [frozen SCI-NOI-001 prompt](prompts/SCI_NOI_001_AUDIT_PROMPT.md),
+[inbound manifest](handoffs/SCI-NOI-001/SCI-NOI-001_INBOX_MANIFEST_2026-08-05.yaml),
+and [dispatch/readiness record](packages/SCI-NOI-001_COORDINATOR_DISPATCH_READINESS_2026-08-05.md)
+prepare only a Terra-high Phase 0 scope checkpoint against exact application
+SHA `d5015fe716971bf8ea617e8a187311bf5af05185`. Two frozen pre-core authority
+handoffs carry the accepted bounded MAP contract and FLT D001--D003
+restrictions. Phase 0 permits no audit worktree, derivation, implementation
+inspection, reduction, Unity action, or evidence request.
+
+NOI-001 will define the conditional pre-mapmaking sign ensemble and its
+ensemble second-moment imprint through realized map/coadd/filter interfaces.
+It conditions on frozen RTC/PTC and validity state; it does not validate those
+upstream packages. NOI-002 retains every variance/weight/S/N/aperture-estimator
+and production realization-count/default decision. The resource-admitted
+64-realization tier is neither a default nor a requirement. Future Sol-ultra
+Phase 1 and Phase 2 work each need explicit coordinator follow-up.
+
 ## Purpose and non-goals
 
 The program exists to make the claimed estimator, its uncertainty and

@@ -1,0 +1,80 @@
+format_version: 1
+id: SCI-NOI-001-XAUD-002
+created_date: 2026-08-05
+
+source:
+  package_id: SCI-FLT-001
+  role: coordinator
+  audit_branch: codex/coordinate-sci-flt-001-amendment
+  audit_commit: 192e0d9b5e3be4eb20522d3319cae346168c4bce
+  governing_or_evidence_sha: d5015fe716971bf8ea617e8a187311bf5af05185
+  finding_ids: [SCI-FLT-001-F007, SCI-FLT-001-F009]
+
+target:
+  package_id: SCI-NOI-001
+
+priority: P1
+evidence_basis: owner_decision
+review_phase: pre_core_authority
+arrival: before_dispatch
+status: submitted
+
+summary: >-
+  Owner-approved FLT restrictions that bound how NOI-001 may characterize an
+  ensemble while reserving empirical-estimator validity to NOI-002.
+claim: >-
+  FLT requires identical realized operator identity and full realization
+  provenance, retains direct pixelwise jackknife variance and S/N as
+  diagnostics pending NOI-002, and reserves aperture uncertainty to blank
+  apertures or a future compact NOI-002 product; it authorizes neither a
+  spatial empirical model, full covariance matrix, long-term realization-stack
+  requirement, nor independent-pixel aperture summation.
+supports:
+  - >-
+    Require NOI-001 to characterize only ensemble adequacy and provenance,
+    with downstream estimator and product validity reserved to NOI-002.
+  - >-
+    Carry the exact realized filtering operator as a conditional propagation
+    interface when filtering is assessed.
+does_not_establish:
+  - scientific validity of a variance, weight, S/N, confidence, or feedback product.
+  - an aperture-uncertainty estimator or production realization-count/default policy.
+  - a new FLT implementation requirement, repair, evidence run, or re-audit closure.
+
+requested_actions:
+  - add_or_update_dependency
+  - restrict_consumer
+affected_target_findings: []
+related_handoffs: []
+
+authority_for_pre_core_review: >-
+  Owner-approved SCI-FLT-001-D001 through D003 in the current canonical
+  coordination amendment at commit 192e0d9b5e3be4eb20522d3319cae346168c4bce.
+
+evidence:
+  - id: SCI-FLT-001-coordinator-amendment
+    availability: repository_path
+    path: >-
+      doc/audits/packages/SCI-FLT-001_COORDINATOR_AMENDMENT_2026-08-05.md
+    sha256: 965e9dd545c9b5bd7da4f15e08ab6ec3d96ac59b53c78873485eaead19ace661
+    note: Current FLT owner decisions and operational realization-count boundary.
+  - id: SCI-FLT-001-owner-decision-brief
+    availability: repository_path
+    path: >-
+      doc/audits/packages/SCI-FLT-001_COORDINATOR_DECISION_BRIEF_2026-08-05.md
+    sha256: b381e0ed64b55a891e1251e6ff4e8d72484a961acce6b437d479c8ab30e887cd
+    note: Concise D001--D003 boundary and restrictions.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: not_applicable
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: [SCI-FLT-001, SCI-NOI-002]
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

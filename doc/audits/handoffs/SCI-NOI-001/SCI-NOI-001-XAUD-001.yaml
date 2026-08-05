@@ -1,0 +1,74 @@
+format_version: 1
+id: SCI-NOI-001-XAUD-001
+created_date: 2026-08-05
+
+source:
+  package_id: SCI-MAP-001
+  role: coordinator
+  audit_branch: codex/final-reaudit-sci-map-001
+  audit_commit: 8fc716557ca78b0d220200a92be46fa3545797e9
+  governing_or_evidence_sha: d5015fe716971bf8ea617e8a187311bf5af05185
+  finding_ids: [SCI-MAP-001-F013]
+
+target:
+  package_id: SCI-NOI-001
+
+priority: P1
+evidence_basis: owner_decision
+review_phase: pre_core_authority
+arrival: before_dispatch
+status: submitted
+
+summary: >-
+  Accepted bounded MAP identity and restrictions for conditional NOI-001
+  ensemble propagation at the integrated application-mainline documentation
+  child.
+claim: >-
+  At d5015fe716971bf8ea617e8a187311bf5af05185, MAP supplies only the bounded
+  signal, nonprecision gridding/normalization coefficient weight_I, kernel,
+  facts/support/validity, and centered coefficient-weighted coaddition
+  contract accepted at af0c849; its validity remains conditioned on PTC/VAL
+  and production remains existing_use_only.
+supports:
+  - >-
+    Define NOI-001 propagation through the admitted MAP signal, kernel,
+    facts/support/validity, and coefficient-weighted coaddition abstractions.
+  - >-
+    Treat observation membership, valid regions, and coadd behavior as
+    realized conditional interfaces rather than universal scalar guarantees.
+does_not_establish:
+  - MAP weight_I as variance, precision, covariance, uncertainty, S/N, or significance authority.
+  - closure of SCI-PTC-001, SCI-VAL-001, or SCI-MAP-001-F013.
+  - validity of an empirical variance, calibrated weight, S/N, or other downstream estimator.
+
+requested_actions:
+  - add_or_update_dependency
+  - restrict_consumer
+affected_target_findings: []
+related_handoffs: []
+
+authority_for_pre_core_review: >-
+  SCI-MAP-001 final re-audit decision and canonical coordinator disposition at
+  commit 192e0d9b5e3be4eb20522d3319cae346168c4bce.
+
+evidence:
+  - id: SCI-MAP-001-final-reaudit-decision
+    availability: repository_path
+    path: >-
+      doc/audits/packages/SCI-MAP-001_FINAL_REAUDIT_DECISION_2026-08-05.md
+    sha256: 96d06b8b9e918922ac0752d0f1ffad35586fde1631f499986ef03f64e36629f4
+    note: Accepted bounded MAP contract, retained F013 dependencies, and production restriction.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: not_applicable
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: [SCI-MAP-001, SCI-PTC-001, SCI-VAL-001]
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

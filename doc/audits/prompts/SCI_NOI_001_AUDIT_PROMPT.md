@@ -1,0 +1,196 @@
+# SCI-NOI-001 conditional-noise-ensemble audit dispatch — 2026-08-05
+
+This is a frozen, phased scientific-contract audit dispatch. It authorizes
+only the Phase 0 scope checkpoint below. It does not authorize an audit,
+implementation inspection, an audit worktree, a reduction, Unity activity,
+repair, integration, a push, or another package launch.
+
+## Frozen assignment
+
+- Package: `SCI-NOI-001` — Noise and jackknife realization construction and
+  propagation.
+- Tier: A.
+- Canonical repository: `/Users/gwilson/GitHub/citlali-refactor`.
+- Frozen application source to assess in later phases:
+  `d5015fe716971bf8ea617e8a187311bf5af05185` on
+  `origin/codex/refactor-mainline`.
+- Required later audit branch and isolated worktree:
+  `codex/audit-sci-noi-001` and a fresh worktree created from that exact SHA
+  only after explicit coordinator authorization.
+- Dispatch coordination parent:
+  `192e0d9b5e3be4eb20522d3319cae346168c4bce`.
+- Frozen inbound manifest:
+  `doc/audits/handoffs/SCI-NOI-001/SCI-NOI-001_INBOX_MANIFEST_2026-08-05.yaml`
+  (digest recorded in the canonical ledger).
+- Pre-core authority handoffs: `SCI-NOI-001-XAUD-001` (MAP) and
+  `SCI-NOI-001-XAUD-002` (FLT). There are no post-core evidence handoffs at
+  dispatch.
+
+## Phase profile and stop rule
+
+| Phase | Model/effort | Authority now | Required stop |
+| --- | --- | --- | --- |
+| 0 | `gpt-5.6-terra`, high | scope checkpoint, repository state, and quarantine verification only | return before independent derivation or source inspection |
+| 1 | `gpt-5.6-sol`, ultra | only after explicit coordinator follow-up | commit only `SCI-NOI-001_INDEPENDENT_CORE.tex`, report its digest/commit/timestamp, and stop before quarantined source or post-core evidence |
+| 2 | `gpt-5.6-sol`, ultra | only after a separate explicit coordinator follow-up | documentation-only source/product/consumer trace and final audit synthesis, then stop |
+
+The Phase 1/2 Ultra trigger is owner-approved and specific: reconcile the
+distinct hard investigations of (a) sign-law mathematics and effective
+ensemble size; (b) conditioning, RNG, state, eligibility, and provenance;
+(c) propagation through observation/coadd/filter operators; (d) deterministic
+signal leakage and the fruit-loop residual bias trade; and (e) ensemble
+adequacy across consumer classes while preserving the NOI-002 boundary. The
+single audit task is the synthesis owner. Freeze/hash/commit the independent
+core first; then map every source/product/consumer result to numbered core
+equations and state dependency-conditioned conclusions. Ultra ends at each
+named Phase 1 or Phase 2 stop boundary. No delegation or parallel subagents
+are permitted.
+
+## Exact Phase 0 launch prompt
+
+Starting ref: `d5015fe716971bf8ea617e8a187311bf5af05185` (do not create a
+worktree or branch in this phase). Read the repository `AGENTS.md`, TolTEC
+context/authorities, this prompt, and the frozen manifest. Verify the exact
+ref, clean state of the intended audit starting point, manifest digest, and
+that the listed implementation paths and all post-core evidence remain
+quarantined. Return only the `FRAMEWORK-SCOPE-001` checkpoint: allowed paths
+and deliverables; prohibited local reduction; Unity requirement; named
+read-only checks; permitted delegation/review; first viable artifact; next
+return point; and any mismatch. Stop. Do not derive equations, inspect package
+implementation contents, create any file/worktree/branch, run Citlali, open
+Unity, request evidence, or make a scientific conclusion.
+
+## Central scientific question for later authorized phases
+
+Given a fixed realized post-RTC/PTC sample state, what conditional random
+ensemble does Citlali's pre-mapmaking sign operation generate, which
+physical-noise modes and deterministic-signal imprints does it preserve or
+destroy, and for which downstream estimators could that ensemble serve as an
+admissible input—without deciding whether those estimators are themselves
+valid?
+
+## Owner-approved facts and conditional object
+
+The sign operation is immediately before mapmaking. RTC/PTC have already
+operated and are frozen per realization. Realized residuals, correlations,
+flags, and imperfections remain in the sample stream. The ensemble is
+conditional on realized RTC/PTC state; it need not reproduce raw detector-noise
+or RTC/PTC parameter-estimation uncertainty.
+
+The ensemble must be a clearly defined, sufficiently faithful empirical
+surrogate for explicitly authorized uses, not a statistically optimal
+estimator. Observation membership, scan geometries, valid regions, and coadd
+weights vary; derive conditional realized-coadd behavior, not a universal
+scalar guarantee. Use **ensemble second-moment imprint**, not
+“variance/weight signature,” except when tracing an observed downstream
+consumer symptom and explicitly reserving estimator/product validity to
+SCI-NOI-002. A distribution-valid, covariance-valid, or variance-scale-valid
+label in this package means ensemble adequacy only, never validity of a
+downstream estimator or product.
+
+For an observation `o`, conditioning state `Theta_o`, realized sample vector
+`x_o = s_o + n_o`, sign operator `D_epsilon`, and realized map operator
+`A_o`, the Phase 1 core must define and number:
+
+```text
+x_o = s_o + n_o conditional on Theta_o
+z_o^(r) = A_o D_epsilon x_o
+z_o,res^(r) = A_o D_epsilon[x_o - shat_o]   (conceptual only)
+```
+
+The residual expression is a conceptual successor hypothesis only: randomize
+the final fruit-loop source-subtracted sample state immediately before source
+re-addition. It may reduce positive source leakage but may suppress genuine
+noise if the data-derived source model absorbs noise. It is not an authorized
+implementation, an assumption of unbiasedness, or a request to inspect/audit
+the fruit-loop algorithm before the core freeze.
+
+Deterministic astronomical signal may inflate ensemble second moments and
+create a source-shaped downstream anti-weight symptom. This is a strong
+falsification diagnostic; its absence is not proof of zero leakage. Count 64
+is only a resource-admitted high-count validation tier, not a requirement,
+production default, beammap expectation, or new cap.
+
+## Frozen dependency and consumer boundaries
+
+1. **MAP (`SCI-MAP-001`)** is `conditioned`, not open or satisfied. The
+   accepted bounded MAP contract at `af0c849` and its application-mainline
+   documentation child `d5015fe716971bf8ea617e8a187311bf5af05185` supply signal, nonprecision
+   gridding/normalization `weight_I`, kernel, facts/support/validity, and
+   centered coefficient-weighted observation coaddition. `weight_I` is not
+   variance or precision authority. MAP remains conditioned on PTC/VAL and
+   `existing_use_only`.
+2. **PTC (`SCI-PTC-001`)** remains open. NOI-001 conditions upon the realized
+   cleaned sample state, retained correlations, flags, detector weights, and
+   source-mask/selection state at the sign boundary; it does not validate the
+   PTC covariance, transfer, or parameter-estimation uncertainty.
+3. **VAL (`SCI-VAL-001`)** remains open. NOI-001 conditions upon the realized
+   sample/detector eligibility, non-finite, flag, and support state presented
+   to mapmaking; it does not establish eligibility correctness or universal
+   validity semantics.
+4. **MAP-002/JINC (`SCI-MAP-002`)** remains separate. If an active JINC path
+   is assessed in Phase 2, condition the conclusion on SCI-MAP-002 and do not
+   reopen or close JINC.
+5. **FRUIT (`SCI-FRUIT-001`)** is not audited. The residual-state hypothesis is
+   conditioned on a future approved fruit-loop contract. After the core
+   freeze, inspect only the narrow state/interface necessary to characterize
+   the hypothesis.
+6. **FLT (`SCI-FLT-001`)** facts are frozen through the pre-core handoff:
+   identical realized operator/provenance requirements apply; direct
+   pixelwise jackknife variance/S/N remain diagnostics; empirical-estimator
+   and product validity remain reserved to NOI-002. Do not reopen FLT.
+7. **NOI-002** exclusively owns sample-variance normalization/finite-N
+   correction, empirical variance/weight calibration, downstream weight
+   formula, S/N/detection/threshold/feedback authority, aperture-uncertainty
+   estimator, and production realization-count/default policy. NOI-001 must
+   not decide them.
+
+## Later Phase 1 independent-core requirements
+
+After explicit Phase 1 authorization, read only repository-level authorities
+and the two frozen pre-core handoffs before deriving the independent core. Do
+not open quarantined implementation paths or a post-core record. The core must
+derive conditional mean/covariance using the sign-correlation law
+`Q_epsilon`; coherent-sign cases; balance, duplicate/complement, dependence,
+seed, and effective-unique-assignment constraints; physical-noise versus
+randomization covariance; compact/resolved/extended/scan-synchronous source
+leakage second moments; fixed versus data-derived coadd weights as an interface
+fact; cross-observation terms; and propagation through realized mapmaking,
+validity, coaddition, and filtering.
+
+It must define RNG/state/cardinality/provenance/reproducibility and whether
+the ensemble contains information adequate as a possible input to named later
+uses. It must state requested/effective/observation-resolved/realized state;
+identity, units, shape, indexing, validity and missing policy; analytic
+limits; and proportional tiny deterministic fixtures tied to numbered
+equations. No fixture may become a repository helper or costly campaign.
+
+Freeze only
+`doc/audits/packages/SCI-NOI-001_INDEPENDENT_CORE.tex`, commit it, report its
+SHA-256, commit, timestamp, and planned first source-open event, then stop.
+
+## Later Phase 2 trace and evidence boundaries
+
+Only after explicit Phase 2 authorization may the auditor inspect the narrow
+quarantined paths needed to trace exact insertion point, randomized unit,
+RNG/seed/balance/eligibility/count, operator, cardinality, persistence,
+product, and consumer behavior at
+`d5015fe716971bf8ea617e8a187311bf5af05185`. Trace sequential/OpenMP
+reachability and every state transition only as necessary for the NOI-001
+question. Map each conclusion to numbered independent-core equations.
+
+The final audit may draft an exact-`d5015fe716971bf8ea617e8a187311bf5af05185`
+current-ensemble evidence
+request. It may describe a current-versus-fruit-residual A/B as a conditional
+future design only, because no approved residual-mode implementation SHA
+exists. Do not request or launch Unity. Blank apertures/source-free regions
+may test ensemble reproduction but may not define a production estimator or
+tolerance. Do not invent tolerances. Any costly study remains held for
+`FRAMEWORK-NUM-001` admission.
+
+The audit may identify consumers and symptoms and propose bounded records to
+NOI-002, FLT, and FRUIT; it must defer all downstream estimator validity to
+NOI-002. It may not modify application/test/configuration files, canonical
+ledger, canonical handoff registry, audit/repair branches, or production
+status; repair, re-audit, integration, push, another audit, and production
+authorization are prohibited.
