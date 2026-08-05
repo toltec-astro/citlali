@@ -27,6 +27,13 @@ endforeach()
 if(TARGET citlali_cli)
     add_test(NAME citlali::cli.help COMMAND citlali_cli --help)
     add_test(NAME citlali::cli.version COMMAND citlali_cli --version)
+    set_tests_properties(
+        citlali::cli.version
+        PROPERTIES
+            ENVIRONMENT
+                "TOLTECA_SPACK_PROFILE=test-profile;TOLTECA_SPACK_LOCK_SHA256=test-lock"
+            PASS_REGULAR_EXPRESSION "profile=test-profile"
+    )
     add_test(NAME citlali::cli.dump_config COMMAND citlali_cli --dump_config)
     set_tests_properties(
         citlali::cli.dump_config

@@ -10,6 +10,7 @@
 
 #include <citlali/config.h>
 #include <citlali/default_config.h>
+#include <citlali/deployment.h>
 #include <kids/config.h>
 #include <kids/core/kidsdata.h>
 #include <kids/timestream/solver.h>
@@ -1159,9 +1160,9 @@ void Engine::add_tod_header(map_buffer_t &mb) {
         add_netcdf_var<std::string>(
             fo, "SPACK_DAG_HASH", std::string{citlali::build::dag_hash});
         add_netcdf_var<std::string>(
-            fo, "DEPLOY_PROFILE", std::string{citlali::build::build_profile});
+            fo, "DEPLOY_PROFILE", citlali::deployment::spack_profile());
         add_netcdf_var<std::string>(
-            fo, "SPACK_LOCK_SHA256", std::string{citlali::build::lock_sha256});
+            fo, "SPACK_LOCK_SHA256", citlali::deployment::spack_lock_sha256());
         add_netcdf_var<std::string>(fo, "PROJID", telescope.project_id);
         add_netcdf_var<std::string>(fo, "GOAL", redu_type);
         add_netcdf_var<std::string>(fo, "OBSGOAL", telescope.obs_goal);
@@ -1913,7 +1914,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     fits_io->at(i).pfits->pHDU().addKey(
         "DAGHASH", std::string{citlali::build::dag_hash}, "Spack DAG hash");
     fits_io->at(i).pfits->pHDU().addKey(
-        "LOCKSHA", std::string{citlali::build::lock_sha256}, "Spack lock SHA-256");
+        "LOCKSHA", citlali::deployment::spack_lock_sha256(), "Spack lock SHA-256");
     // project id
     fits_io->at(i).pfits->pHDU().addKey("PROJID", telescope.project_id, "Project ID");
     // add redu type

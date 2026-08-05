@@ -1,5 +1,6 @@
 #include <citlali/config.h>
 #include <citlali/default_config.h>
+#include <citlali/deployment.h>
 #include <kids/config.h>
 #include <kids/core/kidsdata.h>
 #include <kids/timestream/solver.h>
@@ -96,8 +97,8 @@ auto parse_args(int argc, char *argv[]) {
             citlali::build::cxx_standard,
             citlali::build::package_spec,
             citlali::build::dag_hash,
-            citlali::build::build_profile,
-            citlali::build::lock_sha256);
+            citlali::deployment::spack_profile(),
+            citlali::deployment::spack_lock_sha256());
         fmt::print(
             "kidscpp-source={} ({}) dag={}\n"
             "tula-source={} ({}) dag={}\n",

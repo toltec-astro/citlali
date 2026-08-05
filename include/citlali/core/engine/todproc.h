@@ -4,6 +4,7 @@
 
 #include <tula/eigen.h>
 
+#include <citlali/deployment.h>
 #include <citlali/core/utils/pointing.h>
 #include <tula/algorithm/mlinterp/mlinterp.hpp>
 
@@ -1494,9 +1495,9 @@ void TimeOrderedDataProc<EngineType>::make_index_file(std::string filepath) {
     node["provenance/dag_hash"].push_back(
         std::string{citlali::build::dag_hash});
     node["provenance/profile"].push_back(
-        std::string{citlali::build::build_profile});
+        citlali::deployment::spack_profile());
     node["provenance/lock_sha256"].push_back(
-        std::string{citlali::build::lock_sha256});
+        citlali::deployment::spack_lock_sha256());
 
     // call make_index_file recursively if current object is directory
     for (const auto & entry : sorted_by_name) {
