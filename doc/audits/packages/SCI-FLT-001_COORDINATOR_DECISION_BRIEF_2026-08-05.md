@@ -1,7 +1,7 @@
 # SCI-FLT-001 remaining owner decision brief — 2026-08-05
 
 Record ID: `SCI-FLT-001-OWNER-BRIEF-2026-08-05`
-Status: FLT-D001 and FLT-D002 owner decided; no implementation, evidence
+Status: FLT-D001 through FLT-D003 owner decided; no implementation, evidence
 campaign, repair, re-audit, Unity action, application integration, or
 production change is authorized by this brief.
 
@@ -53,45 +53,44 @@ requiring focused signal/kernel equality, centering/valid-region, and
 identity/normalization metadata tests at a later exact successor and fresh
 re-audit. It is not closure of F005 or F006.
 
-## Still-held scientific-policy choices
+## Owner-approved SCI-FLT-001-D003 — empirical calibration and covariance boundary
 
-### SCI-FLT-001-D004 — empirical calibration policy
+FLT retains one robust global empirical calibration of the formal spatial
+pattern. Direct per-pixel jackknife variance and S/N remain diagnostics pending
+SCI-NOI-002; they are not scientifically admitted uncertainty, significance,
+or confidence products. Identical realized operator identity and complete
+realization provenance are required.
 
-Choose the intended scientific status of any empirical filtered product:
+No spatial empirical model, full covariance matrix, or long-term
+realization-stack requirement is authorized in FLT. Aperture uncertainty uses
+blank apertures or a future compact SCI-NOI-002 product, never an
+independent-pixel summation. Until the applicable NOI and CAL contracts are
+complete, covariance-dependent multi-pixel significance, morphology,
+confidence, and feedback consumers remain fail closed. This resolves the
+previous empirical-calibration and filtered-covariance policy choices; it does
+not close implementation, evidence, dependency, or re-audit gates.
 
-1. Keep empirical products diagnostic and not scientifically interpretable
-   until SCI-NOI-001/002 are approved.
-2. Permit a later named global empirical calibration policy after the NOI
-   contracts define its realization, calibration-region, and covariance limits.
-3. Reserve a spatial empirical model for a separately scoped successor rather
-   than folding it into this amendment.
+## Operational realization-count note
 
-No choice converts MAP `weight_I` into precision or permits significance before
-the required NOI and validity evidence.
+This is not a FLT scientific finding, implementation requirement, or new
+default. At pushed `origin/codex/refactor-mainline`
+`d5015fe716971bf8ea617e8a187311bf5af05185`, `NoiseConfig` validation has no
+hard maximum and requires only `n_noise_maps >= 0` when enabled. Current mode
+configurations request 10 for science and beammap, 5 for pointing, and 1 for
+OOF. `write_realizations` is false unless explicitly requested, while
+in-memory realization storage scales linearly with the requested count.
 
-### SCI-FLT-001-D005 — filtered covariance and downstream use
+The available resource-admitted high-count validation tier of 64 is not a
+universal requirement, routine default, or beammap expectation. Beammap may
+remain at 10; any higher beammap count awaits a later memory/resource study.
+Routine configurations remain unchanged. This amendment adds no artificial
+hard ceiling and authorizes no FLT streaming or memory work.
 
-Choose the downstream contract after D001 admission is enforced:
+## Resulting coordination boundary
 
-1. Keep every multi-pixel, morphology, confidence, and feedback consumer fail
-   closed until a covariance representation is approved and validated.
-2. Name the smallest covariance representation or calibration that a specific
-   downstream consumer needs, together with its consumer allowlist and
-   validation gate.
-3. Defer all filtered covariance consumers to a separately scoped successor.
-
-This choice must not repurpose a diagonal variance, `coverage_bool_I`, support,
-or response as covariance, confidence, or feedback gain.
-
-## Bounded return template
-
-For D004--D005, return the selected option (or an explicit deferral), the
-intended product/consumer boundary, and any required acceptance evidence. Do
-not add source files, output formats, simulations, campaigns, or new estimator
-modes unless a later authorization names them explicitly.
-
-## Proposed next owner question
-
-Should empirical filtered products remain diagnostic until SCI-NOI-001/002
-are approved, or should the owner reserve one named global empirical
-calibration policy for a later bounded successor?
+All substantive FLT scientific-policy choices are now owner-resolved by
+D001--D003. The next coordinator/owner action is to authorize, if desired, an
+exact-successor repair/evidence and fresh re-audit package against the stated
+gates. It must not infer a new realization-count cap/default or authorize
+application integration, production expansion, source changes, or a new
+campaign from these decisions alone.

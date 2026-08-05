@@ -73,13 +73,24 @@ or response plane. Persisted kernel identity/normalization and inexpensive
 peak, signed-integral, pixel-solid-angle, and effective-beam metadata require
 implementation checks and re-audit. F005 and F006 remain open.
 
+Owner decision `SCI-FLT-001-D003` retains one robust global empirical
+calibration of the formal spatial pattern. Direct per-pixel jackknife variance
+and S/N remain diagnostics pending SCI-NOI-002; aperture uncertainty uses blank
+apertures or a future compact NOI-002 product, never independent-pixel
+summation. FLT authorizes no spatial empirical model, full covariance matrix,
+or long-term realization-stack requirement, and covariance-dependent consumers
+remain fail closed. The available resource-admitted 64-realization validation
+tier is operational only—not a routine default, universal requirement, or
+beammap expectation; routine configurations and `write_realizations` behavior
+remain unchanged.
+
 SCI-NOI-001 and SCI-NOI-002 remain not started, and CAL remains nonconformant
 and in progress; neither empirical significance/covariance nor absolute
-photometry is authorized. The still-held D004/D005 empirical-calibration and
-filtered-covariance choices are collected in the
-[FLT decision brief](packages/SCI-FLT-001_COORDINATOR_DECISION_BRIEF_2026-08-05.md).
-The package remains `proposed`/`conditionally_conformant`/`in_progress`/
-`fail_closed` with verdict `amend` and re-audit `required`.
+photometry is authorized. All substantive owner scientific-policy choices are
+resolved by D001--D003; the [FLT decision brief](packages/SCI-FLT-001_COORDINATOR_DECISION_BRIEF_2026-08-05.md)
+retains their exact boundary. The package remains
+`proposed`/`conditionally_conformant`/`in_progress`/`fail_closed` with verdict
+`amend` and re-audit `required`.
 
 ## Purpose and non-goals
 

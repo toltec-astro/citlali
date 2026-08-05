@@ -204,15 +204,28 @@ point-source correction, direct flux product, aperture catalog, or response
 plane. F005 and F006 remain open for bounded implementation, equality and
 metadata evidence, CAL/NOI-conditioned validation, and fresh re-audit.
 
+Owner decision `SCI-FLT-001-D003` retains one robust global empirical
+calibration of the formal spatial pattern. Direct per-pixel jackknife variance
+and S/N remain diagnostics pending SCI-NOI-002; aperture uncertainty must use
+blank apertures or a future compact NOI-002 product, never independent-pixel
+summation. FLT has no authorization for a spatial empirical model, full
+covariance matrix, or long-term realization-stack requirement, and
+covariance-dependent consumers remain fail closed. The available
+resource-admitted 64-realization validation tier is operational only—not a
+routine default, universal requirement, or beammap expectation; routine
+configurations remain unchanged and `write_realizations` stays false unless
+explicitly requested.
+
 SCI-NOI-001 and SCI-NOI-002 remain not started, and SCI-CAL-001 remains
 nonconformant/in progress; its bounded D007 atmosphere evidence does not
 authorize absolute photometry. The package remains contract `proposed`,
 implementation `conditionally_conformant` only under its recorded numerical
 assumptions, validation `in_progress`, production `fail_closed`, verdict
-`amend`, and re-audit `required`. The next coordinator/owner gate is the
-[still-held D004/D005 owner choices](audits/packages/SCI-FLT-001_COORDINATOR_DECISION_BRIEF_2026-08-05.md);
-they authorize no repair, evidence campaign, application integration, or
-production expansion.
+`amend`, and re-audit `required`. All substantive owner scientific-policy
+choices are resolved by D001--D003. The next coordinator/owner gate is an
+exact-successor repair/evidence and fresh re-audit authorization against the
+[recorded decision boundary](audits/packages/SCI-FLT-001_COORDINATOR_DECISION_BRIEF_2026-08-05.md);
+it authorizes no application integration or production expansion.
 
 ## 2026-07-31 SCI-CAL-001 Audit Coordination
 

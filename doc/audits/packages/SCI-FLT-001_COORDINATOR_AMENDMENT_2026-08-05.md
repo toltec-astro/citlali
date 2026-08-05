@@ -87,6 +87,42 @@ A later bounded successor must demonstrate exact sequential/OpenMP
 signal/kernel equality and truthful identity/normalization metadata before
 re-audit; it is not a current closure.
 
+## Owner decision SCI-FLT-001-D003 — empirical calibration and covariance boundary
+
+Authority: project owner. Status: owner_decided/approved 2026-08-05.
+
+FLT retains one robust global empirical calibration of the formal spatial
+pattern. Direct per-pixel jackknife variance and S/N remain diagnostics pending
+SCI-NOI-002; neither is a scientifically admitted uncertainty, significance,
+or confidence product. FLT is not authorized to add a spatial empirical model,
+full covariance matrix, or long-term realization-stack requirement. The
+identical realized operator and full realization provenance remain required.
+
+Aperture uncertainty must come from blank apertures or a future compact
+SCI-NOI-002 product, not an independent-pixel summation. Until the applicable
+NOI and CAL authorities are complete, this preserves the fail-closed boundary
+for covariance-dependent multi-pixel significance, morphology, confidence, and
+feedback consumers. It resolves the remaining empirical-calibration and
+filtered-covariance owner-policy choices without closing their implementation,
+evidence, dependency, or re-audit gates.
+
+### Operational realization-count note
+
+This is an operational note, not a new FLT finding or implementation
+requirement. Read-only inspection of pushed
+`origin/codex/refactor-mainline` at `d5015fe716971bf8ea617e8a187311bf5af05185`
+shows `NoiseConfig` accepts `n_noise_maps >= 0` when noise is enabled and has
+no hard maximum. Current application mode configurations request 10 for
+science and beammap, 5 for pointing, and 1 for OOF; `write_realizations` is
+false unless explicitly requested. In-memory realization storage scales
+linearly with the requested count.
+
+The available resource-admitted high-count validation tier of 64 is neither a
+universal requirement nor a default or beammap expectation. Beammap may remain
+at 10; any higher beammap count is deferred to a later memory/resource study.
+Routine configurations remain unchanged, no artificial hard ceiling is
+introduced, and no FLT streaming or memory work is authorized.
+
 ## Owner decision SCI-FLT-001-D001 — fill-boundary policy
 
 Authority: project owner. Status: approved 2026-08-05.
@@ -119,7 +155,7 @@ re-audit `required`. F005--F009 remain open. In particular, filtered products
 remain unavailable for scientific weighting, significance, photometry,
 confidence, feedback, or a multi-pixel covariance interpretation.
 
-The next gate is owner disposition of the still-held empirical-calibration and
-filtered-covariance policy choices in
-`SCI-FLT-001_COORDINATOR_DECISION_BRIEF_2026-08-05.md`. A reply may define a
-later bounded repair/re-audit contract; it does not itself authorize one.
+All substantive FLT scientific-policy choices are owner-resolved by D001--D003.
+The next gate is a separately authorized exact-successor repair/evidence and
+fresh re-audit package that implements and verifies those bounded policies;
+this amendment authorizes none of that work.
