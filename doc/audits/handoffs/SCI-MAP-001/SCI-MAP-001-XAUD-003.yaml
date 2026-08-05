@@ -22,7 +22,7 @@ priority: P0
 evidence_basis: observed
 review_phase: post_core_evidence
 arrival: after_audit_completion
-status: submitted
+status: resolved
 
 summary: >-
   The governing AST implementation can emit finite-invalid tangent positions
@@ -73,15 +73,26 @@ evidence:
     note: Exact-source trace, derived edge probes, positive controls, and evidence limits.
 
 recipient_disposition:
-  status: pending
+  status: resolved
   late_arrival_route: held_for_reaudit
-  actions: []
-  rationale: null
-  target_audit_branch: null
-  target_audit_commit: null
-  affected_findings: []
-  affected_dependencies: []
-  contract_or_report_locations: []
+  actions:
+    - dependency_recorded
+    - restrict_consumer
+    - add_interface_test
+  rationale: >-
+    The completed SCI-MAP-001 repair/re-audit chain retains SCI-AST-001 as an
+    open F013 dependency. Bounded MAP implementation conformity therefore
+    does not establish upstream coordinate validity, precise astrometry, or
+    production WCS eligibility and does not close the AST package.
+  target_audit_branch: codex/final-reaudit-sci-map-001
+  target_audit_commit: 8fc716557ca78b0d220200a92be46fa3545797e9
+  affected_findings: [SCI-MAP-001-F013]
+  affected_dependencies: [SCI-AST-001]
+  contract_or_report_locations:
+    - >-
+      doc/audits/packages/SCI-MAP-001_FINAL_NARROW_INDEPENDENT_REAUDIT_2026-08-05.md,
+      SHA-256
+      48c0e389ff0cee6003b9dba157839601d4d2abfa7e9e3f95ae4e6a617d753703
 
 supersedes: null
 superseded_by: null

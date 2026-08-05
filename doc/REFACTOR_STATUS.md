@@ -112,68 +112,66 @@ The live branch, upstream revision, gate, and import policy are recorded in
 [`INTEGRATION_LEDGER.md`](INTEGRATION_LEDGER.md). The durable rationale is
 [ADR 0008](adr/0008-application-mainline-and-build-adaptation-lanes.md).
 
-## 2026-07-31 SCI-MAP-001 Audit Coordination
+## 2026-08-05 SCI-MAP-001 Final Coordination
 
-The first full scientific-contract package audit is integrated on the
-scientific-audit coordination line. The immutable SCI-MAP-001 decision commit
-is `b9e1e9a9b2fe492c402d8c7b0cf7e5a36c136a53`; its approved contract requires
-a bounded repair but does not approve the governing implementation or expand
-production use. The canonical ledger records the exact audit artifact digest,
-findings, owner decisions, restrictions, and four accepted outbound PTC/VAL
-handoffs. Recipient dispositions remain pending, and target inbox manifests
-will be frozen only when those audits are dispatched.
+The bounded shared/naive mapmaking and observation-coaddition contract is now
+accepted. Exact application candidate
+`af0c849ce59a5f80e5efc8db435bb6662863052f` on
+`codex/repair-sci-map-001` is conformant within SCI-MAP-001 scope, and
+validation is complete within the local plus owner-accepted bounded evidence
+scope. Production remains `existing_use_only`. In the hand-maintained ledger,
+the controlled package verdict is `retain`; the exact coordinator disposition
+`accept` is preserved separately as the bounded-contract verdict rather than
+expanding the framework vocabulary.
 
-The repair-base decision selects application SHA
-`9aae0e669384c5c0c0dda93debc194d6b8dac787`. The unapproved convolve/noise
-candidate `02a198cbfb379eaf6ab279c5a3d44ee73ff90435` does not land first; it
-retains its independent amendment, validation, and re-audit path. The next MAP
-stage was created on `codex/repair-sci-map-001` directly from the selected
-application SHA, never from the audit or coordination branch. The bounded
-F001--F011 repair is locally verified at
-`ed28dafb37f9113c0d3c95297148157129a90886`; it remains an unintegrated repair
-candidate, not a conformity or production decision. Its exact-SHA human-run
-Unity campaign package is locally verified at preparation commit
-`1b824f138754eeb1856ae5f102027db4b31598be` without changing that application
-candidate. The 20-member package manifest and 506-check synthetic analysis
-self-test pass, and the package preserves a human-only `unity_toltec` boundary.
-It is not launch-ready: no approved frozen evidence producer has returned.
-The owner approved `MAP-UNITY-ED1` on 2026-08-02, explicitly replacing the
-preliminary approximately 1.72-billion-term, approximately 118-GiB
-uncompressed full-term representation with a bounded successor protocol using
-automatic manifests, streaming hashes, compact sufficient statistics, and
-deterministic every-active-network actual-data traces. The seven reductions
-and every product, F010, WCS, coadd, realization, provenance, seq/OpenMP, and
-exhaustive local F011 gate remain unchanged. The dedicated validation-only
-successor-package/producer task stopped correctly at exact commit
-`3e014f11decbcf17ad372391e5e960e6c0c54461`: the fixed seven outputs cannot
-supply the complete primitive authority, while the existing full processed-TOD
-writer can do so only through an explicit capture/resource decision. The owner
-therefore approved `MAP-UNITY-ED2`, selecting one segregated Point and one
-segregated Science full/all PTC capture from the same ordinary exact-candidate
-binary. The fixed seven cases remain separate and unchanged; effective-rate
-authority is `telescope.d_fsmp`; the combined temporary capture lane is capped
-at 200 GiB and retained through fresh re-audit; and fresh lightweight TolProj
-projects use verified individual raw-file links with copied small ECSV
-authorities and no `tolproj copy-raw` after link staging. The same task is
-active again on `codex/map-unity-ed1` from its verified stop, bound to
-coordination head `c35333d4090e2bebae422538cb40fc063f7cb71a`; the existing
-frozen package and MAP application candidate remain immutable. The owner
-should not fill Unity
-operational values yet. Unity remains undispatched, external evidence and fresh
-re-audit have not begun, F009/F010 remain
-`addressed_pending_reaudit`, and the named CAL/AST/PTC/VAL dependencies remain
-open. See the
-[coordinator decision](audits/packages/SCI-MAP-001_COORDINATOR_DECISION_2026-07-31.md)
-and the
-[bounded repair/re-audit handoff](audits/packages/SCI-MAP-001_BOUNDED_REPAIR_REAUDIT_HANDOFF_2026-07-31.md),
-plus the
-[Unity campaign coordinator review](audits/packages/SCI-MAP-001_UNITY_CAMPAIGN_COORDINATOR_REVIEW_2026-08-02.md),
-[MAP-UNITY-ED1 owner decision](audits/packages/SCI-MAP-001_UNITY_ED1_OWNER_DECISION_2026-08-02.md),
-[successor-campaign handoff](audits/packages/SCI-MAP-001_UNITY_ED1_SUCCESSOR_CAMPAIGN_HANDOFF_2026-08-02.md),
-[verified stop return](audits/packages/SCI-MAP-001_UNITY_ED1_STOP_RETURN_COORDINATOR_REVIEW_2026-08-02.md),
-[MAP-UNITY-ED2 owner decision](audits/packages/SCI-MAP-001_UNITY_ED2_FULL_PTC_CAPTURE_OWNER_DECISION_2026-08-02.md),
-and the
-[continuation handoff](audits/packages/SCI-MAP-001_UNITY_ED2_FULL_PTC_SUCCESSOR_HANDOFF_2026-08-02.md).
+The completed chain preserves the first re-audit
+`851035e67f63bdb2bacc122b17566877a9e6db97`, owner amendment
+`6409a36d324072c9b29145c620d01a0686275870`, second repair
+`f84b9fd7d7364f9d35317fc6c15b55d2a30e89f7`, second re-audit
+`fc26e24e6543d1102f9fcc9bf4e849369b39dd04`, final bookkeeping repair
+`af0c849ce59a5f80e5efc8db435bb6662863052f`, and final independent re-audit
+`8fc716557ca78b0d220200a92be46fa3545797e9`. The final change corrects only
+stage-aware realized product/write cardinality: the coadd-plus-filter case now
+records exactly nine empirical maps and eighteen realization writes. It does
+not change the numerical primitive, random generation, mapmaking, coadd, WCS,
+threshold, output routing, accepted finite-domain results, or arithmetic
+order.
+
+All six required Release targets, 593/593 enabled CTests, 31 focused
+truth/provenance tests, nine ThreadSanitizer tests, 22 production FITS tests,
+147 baseline tests, and the full 127-test config preflight pass, with no
+required-data skip or unexpected error/critical record. This evidence proves
+the bounded MAP operator and product contract at exact `af0c849`; it does not
+establish upstream alignment, calibration, astrometry, PTC, or validity
+contracts and does not authorize a new precision, covariance, uncertainty,
+significance, GLS, NOI, photometry, or astrometry claim.
+
+F001--F011 are closed. F012 is closed only as
+`closed_bounded_owner_accepted`: the exact-`ed28dafb` execution/completion,
+returned product/inventory, visible observation/coadd behavior, and SEQ/OMP
+claims are accepted, while missing independent raw/sample ledgers,
+pre-normalization planes and commit-order traces, wrapper/Slurm/environment/
+collection/retrieval records, and historical same-case S-X observation-
+realization files remain explicit limitations. Those limitations prove no
+unobserved internal behavior and are not MAP Unity rerun requests. F013
+remains `open_conditioned` on SCI-ALIGN-001, SCI-CAL-001, SCI-AST-001,
+SCI-PTC-001, and SCI-VAL-001; MAP closure closes none of them.
+
+The byte-preserved authority package comprises the
+[owner amendment](audits/packages/SCI-MAP-001_OWNER_SCOPE_EVIDENCE_AMENDMENT_2026-08-05.md),
+[final independent report](audits/packages/SCI-MAP-001_FINAL_NARROW_INDEPENDENT_REAUDIT_2026-08-05.md),
+[final decision](audits/packages/SCI-MAP-001_FINAL_REAUDIT_DECISION_2026-08-05.md),
+and [machine-readable proposal](audits/packages/SCI-MAP-001_FINAL_REAUDIT_LEDGER_UPDATE_PROPOSAL_2026-08-05.yaml).
+The CAL and AST late handoffs are resolved into the still-open F013 dependency
+boundary. Historical audit, campaign, stop, and evidence-design records remain
+immutable and are labeled historical in the canonical ledger; none is a
+current execution instruction.
+
+The next gate is project-owner or audit-coordinator review and integration of
+this coordination-only candidate into `codex/scientific-audit-framework`.
+Application-mainline integration of `af0c849` remains a separately held action
+requiring explicit authorization. Production expansion additionally requires
+resolution of all five F013 dependencies and a separate production decision.
 
 ## 2026-07-31 SCI-CAL-001 Audit Coordination
 

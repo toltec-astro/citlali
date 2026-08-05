@@ -80,3 +80,14 @@ raw-validity exchange. It is deliberately post-core evidence: it establishes a
 downstream consequence of an unresolved raw-map handoff while explicitly not
 establishing a raw numerical regression, a valid filtering estimator, or
 production authorization.
+
+## SCI-MAP-001 final recipient dispositions
+
+The completed final re-audit at
+`8fc716557ca78b0d220200a92be46fa3545797e9` resolves the late CAL
+`SCI-MAP-001-XAUD-002` and AST `SCI-MAP-001-XAUD-003` recipient dispositions.
+Both records are incorporated as dependency, interface-test, and consumer-
+restriction inputs to SCI-MAP-001-F013. Their source submissions remain
+immutable. The resolutions do not close SCI-CAL-001 or SCI-AST-001, establish
+upstream production eligibility, or expand MAP production use; F013 remains
+open and conditioned, and production remains `existing_use_only`.

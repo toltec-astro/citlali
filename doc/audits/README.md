@@ -14,6 +14,34 @@ configuration, and validation authorities remain under `validation/` and
 `tools/config/`. This directory records scientific-contract work without
 replacing any of those authorities.
 
+### SCI-MAP-001 current disposition — 2026-08-05
+
+The bounded shared/naive MAP scientific contract is accepted at exact
+application candidate `af0c849ce59a5f80e5efc8db435bb6662863052f` after the
+completed repair/re-audit chain. The canonical axes are `approved`,
+`conformant`, `complete`, and `existing_use_only`. The package-level
+controlled verdict is `retain`; this is the existing-schema representation of
+the coordinator's exact bounded-contract disposition `accept`.
+
+F001--F011 are closed. F012 is controlled-status `closed` with the exact
+bounded disposition `closed_bounded_owner_accepted`; the absent raw/sample
+ledgers, pre-normalization traces, operational-chain records, and historical
+same-case S-X files remain explicit limitations, not rerun requests. F013
+remains controlled-status `open` with disposition `open_conditioned` on
+SCI-ALIGN-001, SCI-CAL-001, SCI-AST-001, SCI-PTC-001, and SCI-VAL-001.
+
+The byte-preserved [owner amendment](packages/SCI-MAP-001_OWNER_SCOPE_EVIDENCE_AMENDMENT_2026-08-05.md),
+[final independent report](packages/SCI-MAP-001_FINAL_NARROW_INDEPENDENT_REAUDIT_2026-08-05.md),
+[final decision](packages/SCI-MAP-001_FINAL_REAUDIT_DECISION_2026-08-05.md),
+and [machine-readable proposal](packages/SCI-MAP-001_FINAL_REAUDIT_LEDGER_UPDATE_PROPOSAL_2026-08-05.yaml)
+are indexed in the canonical ledger with their authority commits and SHA-256
+digests. This closes the MAP repair/re-audit workflow only. It does not
+authorize application-mainline integration, close an upstream dependency, or
+expand production. The next gate is owner/coordinator review and integration
+of the coordination-only candidate; any application integration remains a
+separate explicit decision, and production expansion additionally requires
+resolution of F013.
+
 ## Purpose and non-goals
 
 The program exists to make the claimed estimator, its uncertainty and

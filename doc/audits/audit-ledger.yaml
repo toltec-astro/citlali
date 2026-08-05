@@ -281,6 +281,16 @@ packages:
       - observation and coadd signal maps
       - formal map weight, kernel, hits/coverage, and validity
     upstream_dependencies:
+      - package_id: SCI-ALIGN-001
+        status: open
+        required_contract: >-
+          Ordered detector/telescope sample identity, common time axis,
+          timing-gap and interpolation state, and original-versus-synthesized
+          sample eligibility at the MAP input boundary.
+        consequence: >-
+          MAP's bounded operator conformity does not establish upstream
+          alignment, timing, or synthesized-sample eligibility and cannot
+          authorize dependent production use.
       - package_id: SCI-CAL-001
         status: open
         required_contract: >-
@@ -332,21 +342,37 @@ packages:
       - id: SCI-MAP-001-XAUD-002
         path: >-
           doc/audits/handoffs/SCI-MAP-001/SCI-MAP-001-XAUD-002.yaml
+        submission_sha256: >-
+          2a70dae061827d18126d1bd6776f5a709d3315b5c1ae4f61d063116aeac76ac6
+        canonical_sha256: >-
+          1443c35cd11a16819ea412a3c0b5ace4f0dfe49c54323174d67d6b60765867a5
         source_package: SCI-CAL-001
         review_phase: post_core_evidence
         arrival: after_audit_completion
-        status: submitted
+        status: resolved
         late_arrival_route: held_for_reaudit
+        recipient_disposition:
+          actions: [dependency_recorded, restrict_consumer, add_interface_test]
+          affected_findings: [SCI-MAP-001-F013]
+          affected_dependencies: [SCI-CAL-001]
+          target_audit_commit: 8fc716557ca78b0d220200a92be46fa3545797e9
       - id: SCI-MAP-001-XAUD-003
         path: >-
           doc/audits/handoffs/SCI-MAP-001/SCI-MAP-001-XAUD-003.yaml
-        sha256: >-
+        submission_sha256: >-
           829ca1e5d9122461d011cae85ce0024d46b3bd67cb494779ea8d003a90c29aee
+        canonical_sha256: >-
+          2398a42e44af36dce2c62b6c6d94728bb0f6feabfae24bf982960a1a06566865
         source_package: SCI-AST-001
         review_phase: post_core_evidence
         arrival: after_audit_completion
-        status: submitted
+        status: resolved
         late_arrival_route: held_for_reaudit
+        recipient_disposition:
+          actions: [dependency_recorded, restrict_consumer, add_interface_test]
+          affected_findings: [SCI-MAP-001-F013]
+          affected_dependencies: [SCI-AST-001]
+          target_audit_commit: 8fc716557ca78b0d220200a92be46fa3545797e9
     outgoing_handoffs:
       - id: SCI-PTC-001-XAUD-001
         path: >-
@@ -408,11 +434,294 @@ packages:
       coordinator_decision_path: >-
         doc/audits/packages/SCI-MAP-001_COORDINATOR_DECISION_2026-07-31.md
     contract_status: approved
-    implementation_status: nonconformant
-    validation_status: in_progress
+    implementation_status: conformant
+    validation_status: complete
     production_status: existing_use_only
-    verdict: amend
-    contract_approval:
+    verdict: retain
+    final_coordination_disposition:
+      decision_date: 2026-08-05
+      coordination_scope: coordination_records_only
+      coordination_base_commit: dd5894679bf12bf4a5fb551e871b3c6010ef9b9b
+      canonical_coordination_branch: codex/scientific-audit-framework
+      continuation_branch: codex/coordinate-sci-map-001-final
+      exact_application_candidate: >-
+        af0c849ce59a5f80e5efc8db435bb6662863052f
+      application_candidate_branch: codex/repair-sci-map-001
+      final_reaudit_commit: 8fc716557ca78b0d220200a92be46fa3545797e9
+      final_reaudit_branch: codex/final-reaudit-sci-map-001
+      bounded_contract_verdict: accept
+      status_scope: bounded_sci_map_001_scientific_contract
+      repair_work_complete: true
+      map_repair_reaudit_chain_complete: true
+      map_scientific_contract_closed: true
+      application_integration_authorized: false
+      production_expansion_authorized: false
+      artifact_package:
+        owner_amendment:
+          authority_commit: 6409a36d324072c9b29145c620d01a0686275870
+          source_path_at_authority: >-
+            handoff/SCI-MAP-001_OWNER_SCOPE_EVIDENCE_AMENDMENT_2026-08-05.md
+          path: >-
+            doc/audits/packages/SCI-MAP-001_OWNER_SCOPE_EVIDENCE_AMENDMENT_2026-08-05.md
+          sha256: >-
+            52be19700b73659ba1847012d4cb0766407399cda5899570acb79bf5b45221f3
+        final_report:
+          authority_commit: 8fc716557ca78b0d220200a92be46fa3545797e9
+          source_path_at_authority: >-
+            handoff/SCI-MAP-001_FINAL_NARROW_INDEPENDENT_REAUDIT_2026-08-05.md
+          path: >-
+            doc/audits/packages/SCI-MAP-001_FINAL_NARROW_INDEPENDENT_REAUDIT_2026-08-05.md
+          sha256: >-
+            48c0e389ff0cee6003b9dba157839601d4d2abfa7e9e3f95ae4e6a617d753703
+        final_decision:
+          authority_commit: 8fc716557ca78b0d220200a92be46fa3545797e9
+          source_path_at_authority: >-
+            handoff/SCI-MAP-001_FINAL_REAUDIT_DECISION_2026-08-05.md
+          path: >-
+            doc/audits/packages/SCI-MAP-001_FINAL_REAUDIT_DECISION_2026-08-05.md
+          sha256: >-
+            96d06b8b9e918922ac0752d0f1ffad35586fde1631f499986ef03f64e36629f4
+        final_ledger_proposal:
+          authority_commit: 8fc716557ca78b0d220200a92be46fa3545797e9
+          source_path_at_authority: >-
+            handoff/SCI-MAP-001_FINAL_REAUDIT_LEDGER_UPDATE_PROPOSAL_2026-08-05.yaml
+          path: >-
+            doc/audits/packages/SCI-MAP-001_FINAL_REAUDIT_LEDGER_UPDATE_PROPOSAL_2026-08-05.yaml
+          sha256: >-
+            15d34205de19f67c9919f3db1be25c5d209286505abca11f1956ae23a0c15e57
+      repair_reaudit_history:
+        - stage: first_reaudit
+          audit_commit: 851035e67f63bdb2bacc122b17566877a9e6db97
+          assessed_application_candidate: >-
+            ed28dafb37f9113c0d3c95297148157129a90886
+          starting_head: 02b9eb303037eb3f3a7bb90838b478bb5262e346
+          disposition: historical_nonconformant_under_then_registered_criteria
+          report:
+            source_path: >-
+              handoff/SCI-MAP-001_INDEPENDENT_REAUDIT_2026-08-05.md
+            sha256: >-
+              77cf9c5dd4ccb3d382a5a365cc6693cdcc0301cc5a36bcb0b2a6c616c36d7f00
+          decision:
+            source_path: >-
+              handoff/SCI-MAP-001_REAUDIT_DECISION_2026-08-05.md
+            sha256: >-
+              f4841e89e380e75b3fcc5efb4f65ba0ffbdcaa6f10df3affad5f7bc4c9492ae8
+          ledger_proposal:
+            source_path: >-
+              handoff/SCI-MAP-001_REAUDIT_LEDGER_UPDATE_PROPOSAL_2026-08-05.yaml
+            sha256: >-
+              642d603440a01265cbc0563a969fb72142e20e6df74fc2a96d579453c63dd88d
+        - stage: owner_scope_and_evidence_amendment
+          authority_commit: 6409a36d324072c9b29145c620d01a0686275870
+          source_reaudit_commit: 851035e67f63bdb2bacc122b17566877a9e6db97
+          disposition: approved_additive_prospective_amendment
+          sha256: >-
+            52be19700b73659ba1847012d4cb0766407399cda5899570acb79bf5b45221f3
+        - stage: second_repair
+          repair_commit: f84b9fd7d7364f9d35317fc6c15b55d2a30e89f7
+          repair_parent: 02b9eb303037eb3f3a7bb90838b478bb5262e346
+          disposition: >-
+            f005_f007_f010_conformant_final_cardinality_defect_remained
+        - stage: second_reaudit
+          audit_commit: fc26e24e6543d1102f9fcc9bf4e849369b39dd04
+          assessed_application_candidate: >-
+            f84b9fd7d7364f9d35317fc6c15b55d2a30e89f7
+          disposition: historical_narrow_final_repair_required
+          report:
+            source_path: >-
+              handoff/SCI-MAP-001_SECOND_CYCLE_INDEPENDENT_REAUDIT_2026-08-05.md
+            sha256: >-
+              d18acbcc2c49ab6c97845ba55c1c58d27517809714497740403538ae2d28b389
+          decision:
+            source_path: >-
+              handoff/SCI-MAP-001_SECOND_CYCLE_REAUDIT_DECISION_2026-08-05.md
+            sha256: >-
+              8f0db097032cfe97c85a65bcd3dbc0feb907e292c17da6f699e07e5b1b8f1bad
+          ledger_proposal:
+            source_path: >-
+              handoff/SCI-MAP-001_SECOND_CYCLE_REAUDIT_LEDGER_UPDATE_PROPOSAL_2026-08-05.yaml
+            sha256: >-
+              0a013c414d1ffbc4df3e52bf307237b4c95f3b858516fc7fbe8871b727b5b83a
+        - stage: final_bookkeeping_repair
+          repair_commit: af0c849ce59a5f80e5efc8db435bb6662863052f
+          repair_parent: f84b9fd7d7364f9d35317fc6c15b55d2a30e89f7
+          disposition: stage_aware_cardinality_conformant
+        - stage: final_reaudit
+          audit_commit: 8fc716557ca78b0d220200a92be46fa3545797e9
+          audit_parent: af0c849ce59a5f80e5efc8db435bb6662863052f
+          assessed_application_candidate: >-
+            af0c849ce59a5f80e5efc8db435bb6662863052f
+          disposition: accept_bounded_map_scientific_contract
+      validation_summary:
+        scope: local_plus_owner_accepted_bounded_external_evidence
+        required_release_build_targets: {result: pass, count: 6}
+        exact_cardinality_policy_cases: {result: pass, passed: 3, failed: 0}
+        focused_science_map_truth: {result: pass, passed: 31, failed: 0}
+        tsan_focused_science_map_truth:
+          result: pass
+          passed: 9
+          failed: 0
+          sanitizer_reports: 0
+        production_fits_products: {result: pass, passed: 22, failed: 0}
+        ctest:
+          result: pass
+          registered: 594
+          enabled_passed: 593
+          failed: 0
+          disabled_unrelated: 1
+        baseline_tool_tests: {result: pass, passed: 147, failed: 0}
+        config_preflight:
+          result: pass
+          unit_tests_passed: 127
+          mode_kits_passed: 4
+          compact_compatibility_cases_passed: 8
+          compact_coverage_percent: 100.0
+        validation_ledger: {result: pass, accepted_records: 60}
+        validation_profiles:
+          result: pass
+          active_profiles: 4
+          preparing_profiles: 8
+        science_change_ledger:
+          result: pass
+          changes: 3
+          integration_commits: 5
+        unexpected_error_or_critical_records: 0
+        required_data_skips: 0
+      f012_evidence_disposition:
+        controlled_status: closed
+        bounded_disposition: closed_bounded_owner_accepted
+        sufficient_for_owner_amended_scope: true
+        accepted_claims:
+          - exact_ed28_candidate_execution_and_successful_completion
+          - returned_product_identity_and_inventory
+          - persisted_observation_to_coadd_behavior
+          - sequential_openmp_product_agreement_within_registered_bounds
+        retained_limitations:
+          - independent_raw_manifest_and_sample_ledger
+          - scan_farm_pre_normalization_planes_and_commit_order
+          - wrapper_slurm_environment_collection_and_retrieval_chain
+          - same_case_s_x_observation_realization_files_in_historical_corpus
+        rerun_requested: false
+        proves_unobserved_internal_behavior: false
+      upstream_production_boundary:
+        f013_controlled_status: open
+        f013_bounded_disposition: open_conditioned
+        open_dependencies:
+          - SCI-ALIGN-001
+          - SCI-CAL-001
+          - SCI-AST-001
+          - SCI-PTC-001
+          - SCI-VAL-001
+        map_closure_resolves_dependencies: false
+        production_eligible: false
+        production_status: existing_use_only
+      schema_adaptation:
+        package_verdict: retain
+        bounded_contract_verdict: accept
+        f012_finding_status: closed
+        f012_bounded_disposition: closed_bounded_owner_accepted
+        f013_finding_status: open
+        f013_bounded_disposition: open_conditioned
+        rationale: >-
+          The existing controlled vocabulary has retain/open/closed but no
+          package verdict accept or compound finding statuses. The exact
+          coordinator-approved dispositions are preserved in bounded fields
+          without changing the framework schema.
+      next_integration_gate:
+        coordination_action: >-
+          Project owner or coordinator reviews and integrates the single
+          coordination-only candidate into codex/scientific-audit-framework.
+        application_mainline_action: >-
+          Separately held; af0c849 is not authorized for application-mainline
+          integration by MAP closure or this coordination record.
+        production_expansion_gate: >-
+          Resolve the five F013 dependencies and obtain a separate explicit
+          production decision; existing_use_only remains in force meanwhile.
+    current_findings:
+      - id: SCI-MAP-001-F001
+        class: implementation_defect
+        status: closed
+        disposition: confirm_prior_scoped_closure_not_reopened
+      - id: SCI-MAP-001-F002
+        class: implementation_defect
+        status: closed
+        disposition: confirm_prior_scoped_closure_not_reopened
+      - id: SCI-MAP-001-F003
+        class: implementation_defect
+        status: closed
+        disposition: confirm_prior_scoped_closure_not_reopened
+      - id: SCI-MAP-001-F004
+        class: implementation_defect
+        status: closed
+        disposition: close_after_final_reaudit
+        basis: >-
+          The accepted persistence repair plus the final stage-aware
+          cardinality repair record exactly 9 empirical maps and 18
+          realization writes in the coadd-plus-filter case.
+      - id: SCI-MAP-001-F005
+        class: implementation_defect
+        status: closed
+        disposition: confirm_second_cycle_closure
+      - id: SCI-MAP-001-F006
+        class: contract_gap
+        status: closed
+        disposition: confirm_prior_scoped_closure_not_reopened
+      - id: SCI-MAP-001-F007
+        class: contract_gap
+        status: closed
+        disposition: confirm_second_cycle_closure
+      - id: SCI-MAP-001-F008
+        class: contract_gap
+        status: closed
+        disposition: confirm_prior_scoped_closure_not_reopened
+      - id: SCI-MAP-001-F009
+        class: scientific_policy_decision
+        status: closed
+        disposition: confirm_prior_scoped_closure_not_reopened
+      - id: SCI-MAP-001-F010
+        class: scientific_policy_decision
+        status: closed
+        disposition: confirm_second_cycle_closure
+      - id: SCI-MAP-001-F011
+        class: evidence_gap
+        status: closed
+        disposition: close_after_final_reaudit
+        basis: >-
+          The missing exact cardinality state is covered and every
+          proportionate complete local gate passes without a required-data
+          skip or unexpected serious record.
+      - id: SCI-MAP-001-F012
+        class: evidence_gap
+        status: closed
+        bounded_disposition: closed_bounded_owner_accepted
+        retained_limitations:
+          - independent_raw_manifest_and_sample_ledger
+          - scan_farm_pre_normalization_planes_and_commit_order
+          - wrapper_slurm_environment_collection_and_retrieval_chain
+          - same_case_s_x_observation_realization_files_in_historical_corpus
+      - id: SCI-MAP-001-F013
+        class: dependency_gap
+        status: open
+        bounded_disposition: open_conditioned
+        dependencies:
+          - SCI-ALIGN-001
+          - SCI-CAL-001
+          - SCI-AST-001
+          - SCI-PTC-001
+          - SCI-VAL-001
+        consequence: >-
+          MAP closure establishes no upstream production eligibility;
+          production remains existing_use_only.
+    historical_snapshot_notice:
+      snapshot_scope: initial_audit_repair_and_unity_evidence_design_history
+      superseded_as_current_status_by: final_coordination_disposition
+      embedded_status_and_next_gate_fields: historical_only_not_current_actions
+      preservation: >-
+        The records below retain their original findings, candidate state,
+        stopped evidence-design routes, and then-current gates. They are
+        historical evidence and do not request a Unity rerun or reopen a
+        finding closed by the final coordination disposition.
+    historical_initial_contract_approval:
       authority: project_owner
       date: 2026-07-31
       scope: bounded_F009_F010_specialization
@@ -421,11 +730,11 @@ packages:
         raw-validity successor contract; does not approve the governing
         implementation, complete validation, production expansion, or a
         precision claim.
-    repair_handoff:
+    historical_initial_repair_handoff:
       authorization: bounded_proposal_only_no_audit_branch_repair
       path: >-
         doc/audits/packages/SCI-MAP-001_BOUNDED_REPAIR_REAUDIT_HANDOFF_2026-07-31.md
-    repair_base_decision:
+    historical_initial_repair_base_decision:
       authority: project_owner
       date: 2026-07-31
       selected_application_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
@@ -435,7 +744,7 @@ packages:
         Create the separate MAP repair from the exact audited application
         baseline; retain convolve/noise on its independent amendment and
         re-audit path.
-    repair_candidate:
+    historical_initial_repair_candidate:
       status: locally_verified_unintegrated_nonconformant_candidate
       branch: codex/repair-sci-map-001
       commit: ed28dafb37f9113c0d3c95297148157129a90886
@@ -446,7 +755,7 @@ packages:
         F009 and F010 remain addressed_pending_reaudit; all other MAP findings
         retain their recorded state. Local repair evidence does not establish
         conformity or expand production use.
-    unity_campaign_preparation:
+    historical_unity_campaign_preparation:
       status: >-
         verified_prepared_not_dispatched_full_ptc_route_approved_successor_task_active
       review_date: 2026-08-02
@@ -809,13 +1118,13 @@ packages:
         execution boundary of the prepared campaign. It supplies no external
         evidence, authorizes no Unity action, and closes no finding or
         dependency.
-    implementation_assessment:
+    historical_initial_implementation_assessment:
       governing_source: nonconformant
       existing_profile_note: >-
         Preserve only previously accepted operational use under the four
         named active Phase 4 profiles; that does not make the audited
         implementation conformant or authorize expansion.
-    open_findings:
+    historical_initial_open_findings:
       - id: SCI-MAP-001-F001
         class: implementation_defect
         severity: P0
@@ -973,7 +1282,7 @@ packages:
         closure_gate: >-
           Audit each dependency, pass its named interface test, propagate its
           restrictions, and re-audit every conditional map/coadd conclusion.
-    addressed_findings:
+    historical_initial_addressed_findings:
       - id: SCI-MAP-001-F009
         class: scientific_policy_decision
         severity: P1
@@ -1031,7 +1340,7 @@ packages:
           reconstruction, boundary, full-precision round-trip, and fresh
           re-audit gates.
     unresolved_scientific_decisions: []
-    local_evidence:
+    historical_initial_local_evidence:
       - frozen independent core and exact SHA-256/commit/timestamps
       - successful independent-core TeX compile and all-page render inspection
       - exact governing-source/equation/product/consumer trace
@@ -1048,7 +1357,7 @@ packages:
         3e014f11decbcf17ad372391e5e960e6c0c54461 and owner-approved
         MAP-UNITY-ED2 full/all PTC continuation route; neither is external
         evidence or a finding disposition
-    requested_unity_evidence:
+    historical_requested_unity_evidence:
       - status: >-
           prepared_not_dispatched_full_ptc_route_approved_successor_task_active
         request_id: SCI-MAP-001-UNITY-001
@@ -1062,7 +1371,7 @@ packages:
         cases: [P-SEQ, P-OMP, S-C-SEQ, S-C-OMP, S-E-SEQ, S-E-OMP, S-X-SEQ]
         required_case_outcome: all_repaired_success
         external_evidence_status: unsupplied
-    supplied_external_evidence:
+    historical_supplied_external_evidence:
       - id: SCI-MAP-001-XAUD-001
         scope: downstream_cross_audit_characterization_only
         source_package: SCI-FLT-001
@@ -1094,7 +1403,7 @@ packages:
           - does not validate the raw science-validity contract
           - does not establish a raw-map defect or close any MAP finding
           - does not authorize filtered products or candidate integration
-    cross_audit_handoffs:
+    historical_cross_audit_handoffs:
       NOI:
         findings: [SCI-MAP-001-F002, SCI-MAP-001-F006,
                    SCI-MAP-001-F007, SCI-MAP-001-F008,
@@ -1116,7 +1425,7 @@ packages:
           Do not treat filtered support or unrestricted finite-realization
           pixelwise S/N as feedback eligibility without accepted MAP, NOI,
           and FLT contracts.
-    downstream_policy:
+    historical_initial_downstream_policy:
       allowed_existing_profiles:
         - phase4-point-152389-v1
         - phase4-oof-152385-152387-v1
@@ -1141,9 +1450,29 @@ packages:
         - integration or production use of b294802
         - fruit-loop eligibility, amplitude, confidence, support, or gain from
           those filtered products
+    downstream_policy:
+      production_status: existing_use_only
+      allowed_existing_profiles:
+        - phase4-point-152389-v1
+        - phase4-oof-152385-152387-v1
+        - phase4-science-152390-152392-v1
+        - phase4-beammap-148670-v1
+      allowed_uses:
+        - previously accepted operational behavior under those exact profiles
+        - bounded MAP product interpretation established by the approved contract
+      prohibited_inferences_and_actions:
+        - application-mainline integration without separate authorization
+        - production expansion or new consumer authorization
+        - precision, inverse-variance, covariance, uncertainty, significance,
+          GLS, NOI, response-corrected photometry, or precise astrometry claims
+          beyond separately approved upstream contracts
+        - treating MAP closure as closure of ALIGN, CAL, AST, PTC, or VAL
+        - treating missing F012 evidence lanes as observed internal behavior
+        - repeating Unity solely for the historical S-X files or missing
+          operational-chain and pre-normalization records
     remediation_branch: codex/repair-sci-map-001
-    remediation_commit: ed28dafb37f9113c0d3c95297148157129a90886
-    re_audit_status: required
+    remediation_commit: af0c849ce59a5f80e5efc8db435bb6662863052f
+    re_audit_status: complete
 
   - id: SCI-ALIGN-001
     name: Sample alignment, scan slicing, and gap interpolation
