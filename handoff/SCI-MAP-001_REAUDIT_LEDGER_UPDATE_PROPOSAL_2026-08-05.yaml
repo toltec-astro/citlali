@@ -1,0 +1,221 @@
+format_version: 1
+record_type: audit_ledger_update_proposal
+proposal_id: SCI-MAP-001-REAUDIT-2026-08-05
+proposal_date: 2026-08-05
+package_id: SCI-MAP-001
+authority: independent_reauditor
+coordinator_action: review_and_integrate_or_supersede
+
+scope:
+  verified_starting_head: 02b9eb303037eb3f3a7bb90838b478bb5262e346
+  exact_application_candidate: ed28dafb37f9113c0d3c95297148157129a90886
+  audit_branch: codex/reaudit-sci-map-001
+  audit_commit: null
+  audit_commit_note: >-
+    The containing Git commit is supplied in the coordinator handoff; a file
+    cannot losslessly contain the hash of the commit that contains itself.
+  canonical_ledger_modified: false
+  canonical_coordination_line_modified: false
+  integration_performed: false
+  unity_accessed: false
+  external_corpus_modified: false
+
+artifacts:
+  report:
+    path: handoff/SCI-MAP-001_INDEPENDENT_REAUDIT_2026-08-05.md
+    sha256: 77cf9c5dd4ccb3d382a5a365cc6693cdcc0301cc5a36bcb0b2a6c616c36d7f00
+  decision:
+    path: handoff/SCI-MAP-001_REAUDIT_DECISION_2026-08-05.md
+    sha256: f4841e89e380e75b3fcc5efb4f65ba0ffbdcaa6f10df3affad5f7bc4c9492ae8
+
+proposed_package_update:
+  contract_status: approved
+  implementation_status: nonconformant
+  validation_status: in_progress
+  production_status: existing_use_only
+  verdict: amend
+  re_audit_status: complete
+  f012_evidence_status: insufficient
+  integration_authorized: false
+  production_expansion_authorized: false
+  repair_authorized: false
+
+finding_updates:
+  - id: SCI-MAP-001-F001
+    current_status: open
+    proposed_status: closed
+    disposition: close_scoped_finding
+    basis: >-
+      One staged ordinary primitive, exact sequential/requested-parallel
+      realization behavior, mutex-protected scan commits, and passing focused
+      TSan evidence satisfy the scoped race finding.
+  - id: SCI-MAP-001-F002
+    current_status: open
+    proposed_status: closed
+    disposition: close_scoped_finding
+    basis: >-
+      Finite-positive support, pre-payload invalid skips, separate masks, and
+      authoritative raw validity pass local and returned-product checks.
+  - id: SCI-MAP-001-F003
+    current_status: open
+    proposed_status: closed
+    disposition: close_scoped_finding
+    basis: >-
+      Full binary64 identity and two-phase centered coadd admission reject a
+      mismatch before mutation; physical FITS loss remains assigned to F007.
+  - id: SCI-MAP-001-F004
+    current_status: open
+    proposed_status: open
+    disposition: retain_open
+    basis: >-
+      Same-case S-X observation realizations and independent raw/trace
+      authority are absent, and the NOI/covariance boundary remains open.
+  - id: SCI-MAP-001-F005
+    current_status: open
+    proposed_status: open
+    disposition: retain_open
+    basis: >-
+      Finite staged floating and integer contributions can overflow at merge,
+      and finite projected coordinates can reach rounding outside the
+      representable index domain without fail-closed atomic rejection.
+  - id: SCI-MAP-001-F006
+    current_status: open
+    proposed_status: closed
+    disposition: close_scoped_finding
+    basis: >-
+      Persisted coefficient semantics are nonprecision by default and no
+      unconditional uncertainty, significance, or inverse-variance coadd is
+      published; SCI-PTC-001 remains open.
+  - id: SCI-MAP-001-F007
+    current_status: open
+    proposed_status: open
+    disposition: retain_open
+    basis: >-
+      Production FITS WCS fails the registered 1e-12-degree typed-identity
+      bound, and realized threshold cards fail exact binary64 persistence.
+  - id: SCI-MAP-001-F008
+    current_status: open
+    proposed_status: closed
+    disposition: close_scoped_finding
+    basis: >-
+      Versioned sidecars losslessly preserve identity, policies, products,
+      membership, thresholds, and raw-parent digests and pass tamper tests;
+      unavailable independent raw authority remains assigned to F012.
+  - id: SCI-MAP-001-F009
+    current_status: addressed_pending_reaudit
+    proposed_status: closed
+    disposition: close_after_reaudit
+    basis: >-
+      Strict admission, centered integer embedding, L=I, the nonprecision
+      normalized mean, invalid exclusion, and atomic coadd behavior conform;
+      six returned coadds recombine exactly.
+  - id: SCI-MAP-001-F010
+    current_status: addressed_pending_reaudit
+    proposed_status: addressed_pending_reaudit
+    disposition: retain_pending
+    basis: >-
+      The returned eight facts, masks, aliases, and practical threshold
+      behavior agree, but aggregate overflow prevents an all-input exact claim
+      and exact WTTHRESH card round trips fail.
+  - id: SCI-MAP-001-F011
+    current_status: open
+    proposed_status: open
+    disposition: retain_open
+    basis: >-
+      All executed local gates pass, but registered states for production
+      typed/FITS WCS, aggregate overflow/index range, concurrent noise merge,
+      noise gamma bounds, and complete legacy-WCS atomicity are not tested.
+  - id: SCI-MAP-001-F012
+    current_status: open
+    proposed_status: open
+    disposition: retain_open_insufficient_evidence
+    basis: >-
+      The authentic seven-case corpus lacks approved raw/trace and
+      wrapper/Slurm lanes, lacks direct same-case S-X observation
+      realizations, and fails registered WCS and threshold-card checks.
+  - id: SCI-MAP-001-F013
+    current_status: open
+    proposed_status: open
+    disposition: retain_open_conditioned
+    dependencies:
+      - SCI-ALIGN-001
+      - SCI-CAL-001
+      - SCI-AST-001
+      - SCI-PTC-001
+      - SCI-VAL-001
+    basis: MAP evidence closes none of the five governing dependencies.
+
+f012_evidence_disposition:
+  sufficient: false
+  accepted_supporting_results:
+    - exact_candidate_successful_execution
+    - returned_product_inventory_and_integrity
+    - f010_product_internal_consistency
+    - sequential_openmp_regression_agreement
+    - exact_serialized_observation_to_coadd_recombination
+    - sibling_empirical_product_identity_support
+  unavailable_direct_lanes:
+    - independent_raw_manifest_sample_ledger_and_actual_data_trace
+    - frozen_wrapper_slurm_environment_collection_and_retrieval_chain
+    - scan_farm_pre_normalization_planes_and_commit_order
+    - same_case_s_x_seq_observation_realization_serialization
+  failed_registered_checks:
+    - typed_to_fits_wcs_all_pixel_residual_at_most_1e-12_degree
+    - exact_binary64_threshold_fits_cards
+  verifier_defects_not_candidate_failures:
+    - frozen_analyzer_requires_typed_stokes_identity_1_instead_of_governing_0
+
+local_gates:
+  release_cli_build: pass
+  focused_science_map_truth:
+    result: pass
+    passed: 29
+    failed: 0
+  tsan_focused_science_map_truth:
+    result: pass
+    passed: 7
+    failed: 0
+  ctest:
+    result: pass
+    registered: 589
+    enabled_passed: 588
+    failed: 0
+    disabled_unrelated: 1
+  baseline_tool_tests:
+    result: pass
+    passed: 147
+    failed: 0
+  config_preflight:
+    result: pass
+    unit_tests_passed: 127
+    mode_kits_passed: 4
+    compact_compatibility_cases_passed: 8
+  frozen_package_verifier:
+    result: pass
+    checksum_members_verified: 21
+
+coordinator_effect:
+  canonical_update_required_for_effect: true
+  proposed_decision_record_only: true
+  close_findings:
+    - SCI-MAP-001-F001
+    - SCI-MAP-001-F002
+    - SCI-MAP-001-F003
+    - SCI-MAP-001-F006
+    - SCI-MAP-001-F008
+    - SCI-MAP-001-F009
+  retain_open_findings:
+    - SCI-MAP-001-F004
+    - SCI-MAP-001-F005
+    - SCI-MAP-001-F007
+    - SCI-MAP-001-F011
+    - SCI-MAP-001-F012
+    - SCI-MAP-001-F013
+  retain_addressed_pending_reaudit:
+    - SCI-MAP-001-F010
+  prohibited_inferences:
+    - missing_evidence_is_a_pass
+    - sibling_noise_products_are_same_case_direct_evidence
+    - registered_tolerance_may_be_loosened_for_disposition
+    - typed_stokes_identity_may_be_changed_to_satisfy_a_verifier_defect
+    - map_evidence_closes_an_upstream_dependency
