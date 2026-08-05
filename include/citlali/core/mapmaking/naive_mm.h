@@ -1,8 +1,11 @@
 #pragma once
 
+#include <cstdint>
 #include <cmath>
-#include <thread>
+#include <limits>
 #include <mutex>
+#include <thread>
+#include <type_traits>
 
 #include <Eigen/Sparse>
 
@@ -49,6 +52,106 @@ public:
         dense_matrix += sparse_matrix;
         std::vector<Eigen::Triplet<Scalar>>().swap(triplets);
     }
+
+private:
+    template <typename Scalar>
+    static Scalar checked_aggregate_add(Scalar lhs, Scalar rhs,
+                                        const char *quantity) {
+        if constexpr (std::is_floating_point_v<Scalar>) {
+            if (!std::isfinite(lhs) || !std::isfinite(rhs)) {
+                throw std::runtime_error(
+                    std::string("ordinary naive ") + quantity +
+                    " aggregate is non-finite");
+            }
+            const Scalar result = lhs + rhs;
+            if (!std::isfinite(result)) {
+                throw std::runtime_error(
+                    std::string("ordinary naive ") + quantity +
+                    " aggregate overflowed");
+            }
+            return result;
+        }
+        else {
+            static_assert(std::is_integral_v<Scalar> &&
+                          std::is_signed_v<Scalar>);
+            if ((rhs > 0 &&
+                 lhs > std::numeric_limits<Scalar>::max() - rhs) ||
+                (rhs < 0 &&
+                 lhs < std::numeric_limits<Scalar>::lowest() - rhs)) {
+                throw std::runtime_error(
+                    std::string("ordinary naive ") + quantity +
+                    " aggregate overflowed");
+            }
+            return static_cast<Scalar>(lhs + rhs);
+        }
+    }
+
+    template <typename Scalar>
+    static Eigen::SparseMatrix<Scalar> make_checked_sparse_delta(
+        const std::vector<Eigen::Triplet<Scalar>> &triplets,
+        Eigen::Index rows, Eigen::Index cols, const char *quantity) {
+        for (const auto &triplet : triplets) {
+            if (triplet.row() < 0 || triplet.row() >= rows ||
+                triplet.col() < 0 || triplet.col() >= cols) {
+                throw std::runtime_error(
+                    std::string("ordinary naive ") + quantity +
+                    " aggregate index is outside the target plane");
+            }
+            (void)checked_aggregate_add(
+                Scalar{}, triplet.value(), quantity);
+        }
+
+        Eigen::SparseMatrix<Scalar> delta(rows, cols);
+        delta.setFromTriplets(
+            triplets.begin(), triplets.end(),
+            [quantity](Scalar lhs, Scalar rhs) {
+                return checked_aggregate_add(lhs, rhs, quantity);
+            });
+        return delta;
+    }
+
+    template <typename Scalar, typename Derived>
+    static void preflight_sparse_commit(
+        const Eigen::SparseMatrix<Scalar> &delta,
+        const Eigen::DenseBase<Derived> &dense, const char *quantity) {
+        if (delta.rows() != dense.rows() || delta.cols() != dense.cols()) {
+            throw std::runtime_error(
+                std::string("ordinary naive ") + quantity +
+                " aggregate shape differs from the target plane");
+        }
+        for (Eigen::Index outer = 0; outer < delta.outerSize(); ++outer) {
+            for (typename Eigen::SparseMatrix<Scalar>::InnerIterator value(
+                     delta, outer);
+                 value; ++value) {
+                (void)checked_aggregate_add(
+                    static_cast<Scalar>(dense(value.row(), value.col())),
+                    value.value(), quantity);
+            }
+        }
+    }
+
+    static Eigen::Index checked_projected_index(double coordinate) {
+        if (!std::isfinite(coordinate)) {
+            throw std::runtime_error(
+                "ordinary naive projected coordinate is non-finite");
+        }
+        const long double projected = static_cast<long double>(coordinate);
+        if (projected < static_cast<long double>(
+                            std::numeric_limits<Eigen::Index>::lowest()) ||
+            projected > static_cast<long double>(
+                            std::numeric_limits<Eigen::Index>::max()) ||
+            projected < static_cast<long double>(
+                            std::numeric_limits<long long>::lowest()) ||
+            projected > static_cast<long double>(
+                            std::numeric_limits<long long>::max())) {
+            throw std::runtime_error(
+                "ordinary naive projected coordinate is outside the representable index domain");
+        }
+        // Keep the established conversion for every accepted coordinate.
+        return static_cast<Eigen::Index>(std::llround(coordinate));
+    }
+
+public:
 
     // run polarization?
     bool run_polarization;
@@ -170,10 +273,6 @@ void NaiveMapmaker::populate_maps_naive_science_contract(
     }
 
     const auto n_maps = static_cast<Eigen::Index>(omb.signal.size());
-    if (run_omb && omb.contribution_diag_enabled) {
-        std::scoped_lock<std::mutex> lock(*naive_mutex);
-        omb.ensure_contribution_diag(n_maps);
-    }
     std::vector<std::vector<DoubleTriplet>> signals(
         static_cast<std::size_t>(n_maps));
     std::vector<std::vector<DoubleTriplet>> weights(
@@ -257,10 +356,8 @@ void NaiveMapmaker::populate_maps_naive_science_contract(
             Eigen::Index omb_col = -1;
             bool omb_in_bounds = false;
             if (projection_finite) {
-                omb_row = static_cast<Eigen::Index>(
-                    std::llround(omb_irow(sample)));
-                omb_col = static_cast<Eigen::Index>(
-                    std::llround(omb_icol(sample)));
+                omb_row = checked_projected_index(omb_irow(sample));
+                omb_col = checked_projected_index(omb_icol(sample));
                 omb_in_bounds = omb_row >= 0 && omb_row < omb.n_rows &&
                                 omb_col >= 0 && omb_col < omb.n_cols;
                 if (science_products && omb_in_bounds) {
@@ -332,10 +429,8 @@ void NaiveMapmaker::populate_maps_naive_science_contract(
                     throw std::runtime_error(
                         "eligible ordinary naive coadd-noise projection is non-finite");
                 }
-                noise_row = static_cast<Eigen::Index>(
-                    std::llround(cmb_irow(sample)));
-                noise_col = static_cast<Eigen::Index>(
-                    std::llround(cmb_icol(sample)));
+                noise_row = checked_projected_index(cmb_irow(sample));
+                noise_col = checked_projected_index(cmb_icol(sample));
             }
             const bool noise_in_bounds =
                 !run_noise ||
@@ -395,9 +490,81 @@ void NaiveMapmaker::populate_maps_naive_science_contract(
             for (Eigen::Index realization = 0;
                  realization < static_cast<Eigen::Index>(noise_values.size());
                  ++realization) {
-                noise_delta.at(static_cast<std::size_t>(map_index))(
-                    noise_row, noise_col, realization) +=
-                    noise_values.at(static_cast<std::size_t>(realization));
+                auto &aggregate =
+                    noise_delta.at(static_cast<std::size_t>(map_index))(
+                        noise_row, noise_col, realization);
+                aggregate = checked_aggregate_add(
+                    aggregate,
+                    noise_values.at(static_cast<std::size_t>(realization)),
+                    "realization");
+            }
+        }
+    }
+
+    std::vector<Eigen::SparseMatrix<double>> signal_delta;
+    std::vector<Eigen::SparseMatrix<double>> weight_delta;
+    std::vector<Eigen::SparseMatrix<double>> kernel_delta;
+    std::vector<Eigen::SparseMatrix<double>> coverage_delta;
+    std::vector<Eigen::SparseMatrix<std::int64_t>> geometric_hit_delta;
+    std::vector<Eigen::SparseMatrix<std::int64_t>> contributing_hit_delta;
+    std::vector<Eigen::SparseMatrix<double>> eligible_exposure_delta;
+    std::vector<Eigen::SparseMatrix<double>> retained_exposure_delta;
+    if (run_omb) {
+        const auto count = static_cast<std::size_t>(n_maps);
+        signal_delta.reserve(count);
+        weight_delta.reserve(count);
+        if (run_kernel) {
+            kernel_delta.reserve(count);
+        }
+        if (run_coverage) {
+            coverage_delta.reserve(count);
+        }
+        if (science_products) {
+            geometric_hit_delta.reserve(count);
+            contributing_hit_delta.reserve(count);
+            eligible_exposure_delta.reserve(count);
+            retained_exposure_delta.reserve(count);
+        }
+        for (Eigen::Index map_index = 0; map_index < n_maps; ++map_index) {
+            const auto slot = static_cast<std::size_t>(map_index);
+            signal_delta.push_back(make_checked_sparse_delta(
+                signals[slot], omb.signal[slot].rows(),
+                omb.signal[slot].cols(), "signal"));
+            weight_delta.push_back(make_checked_sparse_delta(
+                weights[slot], omb.weight[slot].rows(),
+                omb.weight[slot].cols(), "coefficient"));
+            if (run_kernel) {
+                kernel_delta.push_back(make_checked_sparse_delta(
+                    kernels[slot], omb.kernel[slot].rows(),
+                    omb.kernel[slot].cols(), "kernel"));
+            }
+            if (run_coverage) {
+                coverage_delta.push_back(make_checked_sparse_delta(
+                    coverages[slot], omb.coverage[slot].rows(),
+                    omb.coverage[slot].cols(), "coverage"));
+            }
+            if (science_products) {
+                auto &products = omb.science_products;
+                geometric_hit_delta.push_back(make_checked_sparse_delta(
+                    geometric_hits[slot],
+                    products.geometric_hits[slot].rows(),
+                    products.geometric_hits[slot].cols(),
+                    "geometric-hit count"));
+                contributing_hit_delta.push_back(make_checked_sparse_delta(
+                    contributing_hits[slot],
+                    products.contributing_hits[slot].rows(),
+                    products.contributing_hits[slot].cols(),
+                    "contributing-hit count"));
+                eligible_exposure_delta.push_back(make_checked_sparse_delta(
+                    eligible_exposure[slot],
+                    products.upstream_eligible_exposure[slot].rows(),
+                    products.upstream_eligible_exposure[slot].cols(),
+                    "upstream-eligible exposure"));
+                retained_exposure_delta.push_back(make_checked_sparse_delta(
+                    retained_exposure[slot],
+                    products.retained_exposure[slot].rows(),
+                    products.retained_exposure[slot].cols(),
+                    "retained exposure"));
             }
         }
     }
@@ -405,34 +572,81 @@ void NaiveMapmaker::populate_maps_naive_science_contract(
     std::scoped_lock<std::mutex> lock(*naive_mutex);
     if (run_omb) {
         for (Eigen::Index map_index = 0; map_index < n_maps; ++map_index) {
-            add_sparse_to_dense(signals[static_cast<std::size_t>(map_index)],
-                                omb.signal[static_cast<std::size_t>(map_index)]);
-            add_sparse_to_dense(weights[static_cast<std::size_t>(map_index)],
-                                omb.weight[static_cast<std::size_t>(map_index)]);
+            const auto slot = static_cast<std::size_t>(map_index);
+            preflight_sparse_commit(signal_delta[slot], omb.signal[slot],
+                                    "signal");
+            preflight_sparse_commit(weight_delta[slot], omb.weight[slot],
+                                    "coefficient");
             if (run_kernel) {
-                add_sparse_to_dense(kernels[static_cast<std::size_t>(map_index)],
-                                    omb.kernel[static_cast<std::size_t>(map_index)]);
+                preflight_sparse_commit(kernel_delta[slot], omb.kernel[slot],
+                                        "kernel");
             }
             if (run_coverage) {
-                add_sparse_to_dense(coverages[static_cast<std::size_t>(map_index)],
-                                    omb.coverage[static_cast<std::size_t>(map_index)]);
+                preflight_sparse_commit(coverage_delta[slot],
+                                        omb.coverage[slot], "coverage");
             }
             if (science_products) {
                 auto &products = omb.science_products;
-                add_sparse_to_dense(
-                    geometric_hits[static_cast<std::size_t>(map_index)],
-                    products.geometric_hits[static_cast<std::size_t>(map_index)]);
-                add_sparse_to_dense(
-                    contributing_hits[static_cast<std::size_t>(map_index)],
-                    products.contributing_hits[static_cast<std::size_t>(map_index)]);
-                add_sparse_to_dense(
-                    eligible_exposure[static_cast<std::size_t>(map_index)],
-                    products.upstream_eligible_exposure[
-                        static_cast<std::size_t>(map_index)]);
-                add_sparse_to_dense(
-                    retained_exposure[static_cast<std::size_t>(map_index)],
-                    products.retained_exposure[
-                        static_cast<std::size_t>(map_index)]);
+                preflight_sparse_commit(
+                    geometric_hit_delta[slot], products.geometric_hits[slot],
+                    "geometric-hit count");
+                preflight_sparse_commit(
+                    contributing_hit_delta[slot],
+                    products.contributing_hits[slot],
+                    "contributing-hit count");
+                preflight_sparse_commit(
+                    eligible_exposure_delta[slot],
+                    products.upstream_eligible_exposure[slot],
+                    "upstream-eligible exposure");
+                preflight_sparse_commit(
+                    retained_exposure_delta[slot],
+                    products.retained_exposure[slot],
+                    "retained exposure");
+            }
+        }
+    }
+    if (run_noise) {
+        for (std::size_t map_index = 0; map_index < noise_delta.size();
+             ++map_index) {
+            for (Eigen::Index realization = 0;
+                 realization < nmb->n_noise; ++realization) {
+                for (Eigen::Index col = 0; col < nmb->n_cols; ++col) {
+                    for (Eigen::Index row = 0; row < nmb->n_rows; ++row) {
+                        (void)checked_aggregate_add(
+                            nmb->noise[map_index](row, col, realization),
+                            noise_delta[map_index](row, col, realization),
+                            "realization");
+                    }
+                }
+            }
+        }
+    }
+
+    if (run_omb) {
+        if (omb.contribution_diag_enabled) {
+            omb.ensure_contribution_diag(n_maps);
+        }
+        for (Eigen::Index map_index = 0; map_index < n_maps; ++map_index) {
+            const auto slot = static_cast<std::size_t>(map_index);
+            // These are the established accepted-input commit operations and
+            // order; every bundle member has already passed preflight.
+            omb.signal[slot] += signal_delta[slot];
+            omb.weight[slot] += weight_delta[slot];
+            if (run_kernel) {
+                omb.kernel[slot] += kernel_delta[slot];
+            }
+            if (run_coverage) {
+                omb.coverage[slot] += coverage_delta[slot];
+            }
+            if (science_products) {
+                auto &products = omb.science_products;
+                products.geometric_hits[slot] += geometric_hit_delta[slot];
+                products.contributing_hits[slot] +=
+                    contributing_hit_delta[slot];
+                products.upstream_eligible_exposure[slot] +=
+                    eligible_exposure_delta[slot];
+                products.retained_exposure[slot] +=
+                    retained_exposure_delta[slot];
             }
         }
         for (const auto &record : contribution_records) {

@@ -196,6 +196,35 @@ compatibility-alias HDUs carry `RAWSTATE=immutable_input` and one identical,
 lossless `RAWPDGST` value. A filtered empirical recalculation cannot mutate
 that snapshot or its digest.
 
+### Owner-amended persistence and failure boundaries
+
+The 2026-08-05 project-owner amendment keeps the binary64 typed/sidecar WCS as
+the lossless admission and provenance authority. The corresponding physical
+FITS WCS must agree within `0.1 arcsec` maximum sky separation while preserving
+axis sign, handedness, orientation, and the exact centered integer
+observation/coadd shape and reference-pixel relations. This tolerance does not
+authorize fractional shifts, reprojection, interpolation, or implicit
+recentering.
+
+The lossless sidecar remains the exact realized-threshold authority. FITS
+threshold cards are finite, unit-bearing convenience metadata: the policy card
+and alias must be mutually consistent and each must agree with the governing
+sidecar value at `rtol=1e-12`. No threshold selection, support predicate,
+normalization, or coadd arithmetic changes follow from this persistence rule.
+
+When observation realization products and coaddition are both enabled, the
+observation realization bundle remains required and is serialized in addition
+to the coadd realization bundle. Observation ownership, the admitted operator,
+shape/component identity, support/validity, cardinality, and provenance are
+preserved; a missing required output slot or write failure propagates before a
+partial required product is published.
+
+Finite floating-point and signed count aggregates that cannot be represented,
+and finite projected coordinates outside the representable integer/index
+domain, are rejected before any live map, product, realization, diagnostic, or
+coadd state changes. Accepted finite-domain operations retain their established
+order and numerical result.
+
 ## Consequences
 
 - Coadd admission uses a two-phase preflight/commit boundary and cannot leave
@@ -214,9 +243,11 @@ that snapshot or its digest.
   contracts. They are not retroactively relabeled as carrying the successor
   F010 bundle.
 - F009/F010 remain `addressed_pending_reaudit`. The fresh re-audit must assess
-  the exact repair SHA. The human-run `SCI-MAP-001-UNITY-001` exact-SHA gate
-  remains outstanding, and conclusions remain conditioned on
-  `SCI-CAL-001`, `SCI-AST-001`, `SCI-PTC-001`, and `SCI-VAL-001`.
+  the exact repair SHA. F012 is owner-accepted only for the bounded external
+  product/execution/SEQ-OMP claims in the 2026-08-05 amendment; its named
+  missing lanes remain limitations and no Unity rerun is required solely for
+  them. Conclusions remain conditioned on `SCI-ALIGN-001`, `SCI-CAL-001`,
+  `SCI-AST-001`, `SCI-PTC-001`, and `SCI-VAL-001`.
 
 ## Rejected Alternatives
 
@@ -246,5 +277,10 @@ decision.
 - `SCI-MAP-001` scientific-contract audit at governing source
   `9aae0e669384c5c0c0dda93debc194d6b8dac787`
 - `SCI-MAP-001_BOUNDED_REPAIR_REAUDIT_HANDOFF_2026-07-31.md`
+- Independent re-audit package at
+  `851035e67f63bdb2bacc122b17566877a9e6db97`
+- [`../../handoff/SCI-MAP-001_OWNER_SCOPE_EVIDENCE_AMENDMENT_2026-08-05.md`](../../handoff/SCI-MAP-001_OWNER_SCOPE_EVIDENCE_AMENDMENT_2026-08-05.md),
+  SHA-256
+  `52be19700b73659ba1847012d4cb0766407399cda5899570acb79bf5b45221f3`
 - [`../SCIENTIFIC_CONVENTIONS.md`](../SCIENTIFIC_CONVENTIONS.md)
 - [`../../validation/product_contracts.json`](../../validation/product_contracts.json)

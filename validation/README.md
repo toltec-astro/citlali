@@ -132,3 +132,10 @@ evidence handoff, not an accepted validation record or finding disposition.
 Missing independent processed-term ledgers and same-case `S-X-SEQ`
 observation-realization bytes remain explicit evidence gaps, not values to
 infer from final FITS or sibling products.
+
+The later project-owner amendment
+[`SCI-MAP-001_OWNER_SCOPE_EVIDENCE_AMENDMENT_2026-08-05.md`](../handoff/SCI-MAP-001_OWNER_SCOPE_EVIDENCE_AMENDMENT_2026-08-05.md)
+accepts F012 only for the bounded external product/execution/SEQ-OMP claims and
+retains those missing lanes as limitations. It authorizes local repair and
+production-path tests for the `S-X-SEQ` observation-realization persistence
+defect; it does not authorize or require a repeat Unity reduction.

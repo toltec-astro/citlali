@@ -153,13 +153,10 @@ inline void record_noise_run_completed(
                       : coadd_map_count,
               output_stage_count, "empirical product maps")
         : std::size_t{0};
-    const std::size_t output_realization_count = coadd_available
-        ? coadd_realization_count
-        : observation_realization_count;
     const std::size_t realization_image_write_count =
         plan.effective.write_realizations
         ? checked_noise_count_product(
-              output_realization_count, output_stage_count,
+              total_realization_count, output_stage_count,
               "realization image writes")
         : std::size_t{0};
 

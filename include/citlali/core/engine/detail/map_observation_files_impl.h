@@ -52,22 +52,23 @@ void Engine::create_obs_map_files() {
                 array_name, observation_identity.obsnum, telescope.sim_obs);
         append_fits_file(map_fits_outputs.obs, filename);
 
-        // if noise maps are requested but coadding is not, populate noise fits vector
-        if (create_per_obs_outputs) {
-            if (create_noise_maps) {
-                // noise map filename
-                const auto noise_filename =
-                    citlali::pipeline::observation_output_filename<
-                        engine_utils::toltecIO::toltec,
-                        engine_utils::toltecIO::noise,
-                        engine_utils::toltecIO::raw>(
-                        toltec_io, raw_dir,
-                        citlali::pipeline::runtime_reduction_type(*this),
-                        array_name,
-                        observation_identity.obsnum, telescope.sim_obs);
-                append_fits_file(map_fits_outputs.obs_noise, noise_filename);
-            }
+        // Observation realizations remain required observation-owned products
+        // when coaddition is enabled; the coadd realization files are an
+        // additional persisted bundle, not a replacement.
+        if (create_noise_maps) {
+            const auto noise_filename =
+                citlali::pipeline::observation_output_filename<
+                    engine_utils::toltecIO::toltec,
+                    engine_utils::toltecIO::noise,
+                    engine_utils::toltecIO::raw>(
+                    toltec_io, raw_dir,
+                    citlali::pipeline::runtime_reduction_type(*this),
+                    array_name,
+                    observation_identity.obsnum, telescope.sim_obs);
+            append_fits_file(map_fits_outputs.obs_noise, noise_filename);
+        }
 
+        if (create_per_obs_outputs) {
             // map filtering
             if (create_filtered_maps) {
                 // filtered map filename

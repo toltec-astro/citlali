@@ -259,6 +259,30 @@ std::string coadd_state_digest(const mapmaking::MapBuffer &coadd) {
                           ? mapmaking::science_map_bundle_identity_digest(
                                 *coadd.science_products.bundle_identity)
                           : "none");
+    digest.add_integer(coadd.wcs.cdelt.size());
+    for (const auto value : coadd.wcs.cdelt) {
+        digest.add_double(static_cast<double>(value));
+    }
+    digest.add_integer(coadd.wcs.naxis.size());
+    for (const auto value : coadd.wcs.naxis) {
+        digest.add_integer(value);
+    }
+    digest.add_integer(coadd.wcs.crpix.size());
+    for (const auto value : coadd.wcs.crpix) {
+        digest.add_double(static_cast<double>(value));
+    }
+    digest.add_integer(coadd.wcs.crval.size());
+    for (const auto value : coadd.wcs.crval) {
+        digest.add_double(static_cast<double>(value));
+    }
+    digest.add_integer(coadd.wcs.cunit.size());
+    for (const auto &value : coadd.wcs.cunit) {
+        digest.add_string(value);
+    }
+    digest.add_integer(coadd.wcs.ctype.size());
+    for (const auto &value : coadd.wcs.ctype) {
+        digest.add_string(value);
+    }
     const auto hash_planes = [&](const auto &planes) {
         digest.add_integer(planes.size());
         for (const auto &plane : planes) {

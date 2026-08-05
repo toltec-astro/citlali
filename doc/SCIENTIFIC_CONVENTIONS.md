@@ -245,6 +245,13 @@ is a required pre-mutation failure. Signal, kernel, noise realizations, retained
 exposure, and coadd-observation count share the admitted membership and integer
 embedding.
 
+Finite floating-point and signed count aggregates that overflow their storage
+domain are required pre-mutation failures. A finite projected coordinate that
+cannot be rounded and converted within the representable integer/index domain
+is likewise rejected before any live map, product, realization, diagnostic, or
+coadd state changes. These guards do not reorder or otherwise change accepted
+finite-domain accumulation.
+
 The version-one F010 product hierarchy is:
 
 | Product | Storage and unit | Distinct meaning |
@@ -309,11 +316,35 @@ which the complete v1 bundle is unavailable retain their established legacy
 coadd arithmetic and carry explicit absence reasons, without claiming F009 or
 F010 successor coverage.
 
-F009 and F010 remain `addressed_pending_reaudit`. The human-run
-exact-repair-SHA `SCI-MAP-001-UNITY-001` gate is still required.
+The binary64 typed/sidecar WCS is the lossless admission and provenance
+authority. Physical FITS WCS serialization must remain within `0.1 arcsec`
+maximum sky separation of that authority while preserving exact axis sign,
+handedness, orientation, and centered integer observation/coadd shape and
+reference-pixel relationships. No WCS tolerance authorizes a fractional shift,
+reprojection, interpolation, or implicit recentering. The typed Stokes identity
+for the validated Stokes-I lane is index `0`; no FITS physical-code rule is
+inferred from that typed value.
+
+The binary64 sidecar is also the exact realized-threshold authority. FITS
+threshold cards must be finite, identify the correct policy and unit, preserve
+exact policy/alias consistency, and agree with the sidecar at `rtol=1e-12`.
+They are not a second exact binary64 authority, and this persistence rule does
+not change threshold selection or support arithmetic.
+
+When observation realization products are enabled together with coaddition,
+the required observation realization files are serialized as well as the
+coadd files. Both inventories preserve their own ownership, admitted operator,
+component/shape identity, support/validity, cardinality, and provenance;
+required-output failures propagate.
+
+F009 and F010 remain `addressed_pending_reaudit`. F012 is owner-accepted only
+for the bounded external product/execution/SEQ-OMP claims stated in
+`SCI-MAP-001_OWNER_SCOPE_EVIDENCE_AMENDMENT_2026-08-05.md`; every absent
+operational or internal-reconstruction lane remains an explicit limitation,
+and no Unity rerun is required solely for those absences.
 Calibration/unit/response, projection/WCS, coefficient/covariance, and upstream
-eligibility conclusions remain conditioned on `SCI-CAL-001`, `SCI-AST-001`,
-`SCI-PTC-001`, and `SCI-VAL-001`, respectively. Historical accepted map
+eligibility conclusions remain conditioned on `SCI-ALIGN-001`, `SCI-CAL-001`,
+`SCI-AST-001`, `SCI-PTC-001`, and `SCI-VAL-001`. Historical accepted map
 products retain their original product-contract identities and are not
 retroactively relabeled as carrying this successor bundle. See
 [ADR 0009](adr/0009-science-map-bundle-admission-and-validity.md).

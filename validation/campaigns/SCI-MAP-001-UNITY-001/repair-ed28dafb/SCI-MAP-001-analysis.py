@@ -3075,7 +3075,7 @@ def verify_identity_wcs_adapter(identity: Mapping[str, Any], array: str,
              slot.get("grouping") == "array"
              and slot.get("group_identity") == f"array:{slot_index}"
              and int(slot.get("array_identity", -1)) == slot_index
-             and int(slot.get("stokes_identity", -1)) == 1
+             and int(slot.get("stokes_identity", -1)) == 0
              and int(slot.get("ordered_slot", -1)) == slot_index,
              dict(slot))
 
@@ -3127,7 +3127,7 @@ def verify_science_identity(identity: Mapping[str, Any], record: Mapping[str, An
         and slot.get("grouping") == "array"
         and slot.get("group_identity") == f"array:{index}"
         and slot.get("array_identity") == index
-        and slot.get("stokes_identity") == 1
+        and slot.get("stokes_identity") == 0
         for index, slot in enumerate(slots))
     book.add(prefix + ".identity_ordered_slots_exact", slots_exact,
              {"expected_slot_count": len(ARRAYS), "actual": slots})

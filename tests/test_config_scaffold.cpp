@@ -2415,6 +2415,7 @@ TEST(config_scaffold, records_naive_coadd_observation_and_coadd_noise_cardinalit
     citlali::config::NoiseConfig request;
     request.enabled = true;
     request.n_noise_maps = 2;
+    request.write_realizations = true;
     citlali::pipeline::NoiseExecutionPlan noise;
     noise.reset_from_request(request, true);
 
@@ -2426,6 +2427,7 @@ TEST(config_scaffold, records_naive_coadd_observation_and_coadd_noise_cardinalit
     EXPECT_EQ(*noise.realized.coadd_noise_realization_count, 6U);
     EXPECT_EQ(*noise.realized.total_noise_realization_count, 12U);
     EXPECT_EQ(*noise.realized.empirical_product_map_count, 6U);
+    EXPECT_EQ(*noise.realized.realization_image_write_count, 12U);
 }
 
 TEST(config_scaffold, rejects_noise_completion_before_mapmaking) {

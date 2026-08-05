@@ -21,6 +21,10 @@
   `846128c8ee6dc27851bd6c71aeecbe4739e1d24a`
 - Selected SCI-ALIGN-001 repair base:
   `9aae0e669384c5c0c0dda93debc194d6b8dac787`
+- SCI-MAP-001 project-owner amendment commit:
+  `6409a36d324072c9b29145c620d01a0686275870`
+- SCI-MAP-001 project-owner amendment SHA-256:
+  `52be19700b73659ba1847012d4cb0766407399cda5899570acb79bf5b45221f3`
 
 The audit protocol and repair handoff bytes were checked against the pinned
 coordination commit while preparing this package. The application candidate
@@ -63,12 +67,18 @@ evidence.
 ## Coordination state
 
 SCI-MAP-001 implementation remains nonconformant pending independent re-audit.
-F009 and F010 remain `addressed_pending_reaudit`; F012 is this outstanding
-human-run exact-SHA evidence gate; F013 remains conditioned on the named
-upstream audits. ALIGN-OD1 through ALIGN-OD8 and ALIGN-C001 are owner-approved,
-and the dedicated phase-0 repair task is active, but no ALIGN application-repair
-commit or re-audit exists. ALIGN implementation remains nonconformant,
-validation is in progress, and production remains `existing_use_only`. MAP
-F013 remains conditioned until the ALIGN repair, exact-repair-SHA evidence, and
-fresh re-audit succeed. No MAP campaign result closes ALIGN, CAL, AST, PTC, or
-VAL.
+F009 and F010 remain `addressed_pending_reaudit`. The owner amendment accepts
+F012 only for the bounded external product/execution/SEQ-OMP claims in the
+returned seven-case corpus; missing operational, internal-reconstruction, and
+same-case S-X observation-realization lanes remain explicit limitations. No
+Unity rerun is required solely for those absences. The analyzer's prospective
+typed-Stokes assertion is corrected to governing typed index `0`; this changes
+no application bytes, FITS physical-code rule, or historical corpus.
+
+F013 remains conditioned on the named upstream audits. ALIGN-OD1 through
+ALIGN-OD8 and ALIGN-C001 are owner-approved, and the dedicated phase-0 repair
+task is active, but no ALIGN application-repair commit or re-audit exists.
+ALIGN implementation remains nonconformant, validation is in progress, and
+production remains `existing_use_only`. MAP F013 remains conditioned until the
+ALIGN repair, exact-repair-SHA evidence, and fresh re-audit succeed. No MAP
+campaign result closes ALIGN, CAL, AST, PTC, or VAL.

@@ -171,6 +171,10 @@ Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_
     const bool empirical_noise_products_expected =
         citlali::pipeline::noise_maps_enabled(*this) &&
         citlali::pipeline::noise_product_outputs_enabled(*this);
+    const bool noise_realization_outputs_expected =
+        citlali::pipeline::noise_maps_enabled(*this) &&
+        citlali::pipeline::noise_realization_outputs_enabled(*this) &&
+        mb->n_noise > 0;
     const bool coadd_product =
         citlali::pipeline::science_map_successor_coadd_product(
             science_products);
@@ -223,8 +227,10 @@ Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_
             &citlali::pipeline::require_array_fwhm_for_id(
                 calib.array_fwhms, array_id, logger);
     }
-    if (citlali::pipeline::should_write_noise_maps(mb->noise,
-                                                   noise_fits_io)) {
+    const bool write_noise_realizations =
+        citlali::pipeline::should_write_noise_maps(mb->noise,
+                                                   noise_fits_io);
+    if (noise_realization_outputs_expected || write_noise_realizations) {
         citlali::pipeline::require_noise_map_write_slots(
             mb->noise, noise_fits_io, map_index, i, logger);
         citlali::pipeline::require_noise_map_tensor_shape(
@@ -304,8 +310,7 @@ Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_
             empirical_noise_products_expected, coadd_product, logger);
 
         // write noise maps
-        if (citlali::pipeline::should_write_noise_maps(mb->noise,
-                                                       noise_fits_io)) {
+        if (write_noise_realizations) {
             const double median_rms =
                 citlali::pipeline::map_median_rms_or_zero_logged(
                     mb->median_rms, i, map_name,

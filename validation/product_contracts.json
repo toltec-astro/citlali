@@ -197,6 +197,15 @@
       },
       "validity_formula": "normalization_support_I AND science_policy_support_I AND finite signal_I and every declared required companion AND admitted product identity",
       "required_companion_policy": "Realized provenance enumerates required companions; a missing, undeclared, or non-finite required companion makes science_valid_I false or required publication fail according to the versioned failure policy.",
+      "aggregate_failure_policy": "A finite floating-point or signed count aggregate that cannot be represented, or a finite projected coordinate outside the representable integer/index domain before rounding and conversion, is rejected before any live map, product, realization, diagnostic, or coadd mutation. Accepted finite-domain operation order and numerical results are unchanged.",
+      "physical_fits_persistence": {
+        "wcs_authority": "The binary64 typed/sidecar WCS is the lossless admission and provenance authority.",
+        "maximum_typed_to_fits_sky_separation_arcsec": 0.1,
+        "exact_wcs_relations": "Axis sign, handedness, orientation, and centered integer observation/coadd shape and reference-pixel relations remain exact; fractional shifts, reprojection, interpolation, and implicit recentering are forbidden.",
+        "typed_stokes_i_index": 0,
+        "threshold_authority": "The binary64 sidecar decimal/hex value is exact; FITS threshold cards are finite, correctly identified and unit-bearing convenience metadata with exact policy/alias consistency and rtol=1e-12 agreement with the sidecar."
+      },
+      "realization_persistence_policy": "When observation realization products and coaddition are both enabled, required observation-owned realization files are serialized in addition to coadd realization files. Ownership, admitted operator, component/shape identity, support/validity, cardinality, provenance, and required-write failure propagation remain distinct and explicit.",
       "jinc_absence_policy": "This v1 repair does not select a JINC signed-contribution predicate. JINC F010 planes are explicitly unavailable rather than inferred or populated by an ordinary q>0 rule.",
       "detector_grouping_absence_policy": "Detector-grouped products explicitly omit the F010 plane bundle and compatibility aliases in this v1 contract.",
       "non_array_grouping_absence_policy": "Network, frequency-group, detector, and unresolved non-array profiles explicitly omit the F010 plane bundle and compatibility aliases in this v1 contract; they retain the established pre-successor arithmetic lane without an F009/F010 claim.",

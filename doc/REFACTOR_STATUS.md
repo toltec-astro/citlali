@@ -86,8 +86,8 @@ audit. The classified raw-execution census remains 45 records with zero
 review-required entries at digest
 `09572da976aec89d56506394420b478426a6efbd0942c864571a8f6f311da2f8`.
 The successor validation epoch and product registry parse and list cleanly.
-These are local repair-candidate results only; they do not satisfy F012 or the
-independent re-audit.
+Those initial local repair-candidate results did not themselves satisfy F012
+or the independent re-audit.
 
 This lane does not authorize general reprojection, interpolation, GLS,
 covariance regularization, new defaults, or changes to RTC, PTC, JINC,
@@ -104,13 +104,57 @@ The 2026-08-05 read-only reconciliation binds every captured executable and
 reduction index to candidate `ed28dafb37f9113c0d3c95297148157129a90886` and
 records the exact product inventory, evidence limitations, missing `S-X-SEQ`
 observation-level realization serialization, and typed-WCS/Stokes discrepancy
-in the campaign closeout note. Do not repeat the campaign. F012 evidence
-sufficiency remains for fresh independent re-audit; this reconciliation does
-not close findings. F013 continues to condition calibration/unit/response,
+in the campaign closeout note. Do not repeat the campaign. The later owner
+amendment accepts F012 only for bounded external product/execution/SEQ-OMP
+claims and retains every missing lane as a limitation; this reconciliation
+does not close findings. F013 continues to condition calibration/unit/response,
 projection/WCS, coefficient/covariance, and upstream-eligibility conclusions
-on `SCI-CAL-001`, `SCI-AST-001`, `SCI-PTC-001`, and `SCI-VAL-001`. A fresh
+on `SCI-ALIGN-001`, `SCI-CAL-001`, `SCI-AST-001`, `SCI-PTC-001`, and
+`SCI-VAL-001`. A fresh
 `codex/reaudit-sci-map-001` worktree must assess the committed repair and the
 returned external corpus before findings or production disposition can change.
+
+The independent re-audit at
+`851035e67f63bdb2bacc122b17566877a9e6db97` remains intact historical evidence.
+The project-owner amendment at
+`6409a36d324072c9b29145c620d01a0686275870`, reproduced byte-for-byte as
+`handoff/SCI-MAP-001_OWNER_SCOPE_EVIDENCE_AMENDMENT_2026-08-05.md` with
+SHA-256 `52be19700b73659ba1847012d4cb0766407399cda5899570acb79bf5b45221f3`,
+authorizes a second bounded repair only for F005 aggregate/index fail-closed
+safety and coadd-enabled observation-realization persistence. It also defines
+the production WCS/card tests and accepts F012 only for the named external
+product/execution/SEQ-OMP claims, with every missing lane retained as a
+limitation and no Unity rerun required solely for those absences.
+
+The second-cycle candidate rejects floating and signed-count aggregate
+overflow and finite projected coordinates outside the representable index
+domain before live bundle mutation. It persists required observation
+realizations alongside coadd realizations, preserves observation/coadd
+ownership and realized cardinality, and propagates missing required writer
+slots before the first HDU. Production-path fixtures enforce typed/sidecar to
+physical-FITS WCS separation `<= 0.1 arcsec`, exact orientation and centered
+integer placement, finite/unit-bearing threshold-card identity and aliases,
+sidecar agreement at `rtol=1e-12`, complete realization identity, and
+unchanged-WCS atomicity. Normal finite-domain mapmaking, coadd, threshold, and
+WCS policies are unchanged.
+
+The complete local second-cycle gate set passes: `citlali_cli`, the monolithic
+test executable, the safety executable, and the isolated production-FITS
+executable build; 592/592 enabled CTests pass with the one pre-existing
+disabled test unchanged; the focused contract/provenance/truth executable
+passes 31/31; its ThreadSanitizer build passes 9/9 without a race report; the
+production FITS suite passes 22/22; all 147 baseline-tool tests pass; and the
+127-test config preflight passes all four mode kits, eight compact
+compatibility cases, 100% compact-surface coverage, and every typed-boundary
+audit. These are repair-candidate results for fresh independent review, not a
+finding or conformance disposition.
+
+F004, F005, F007, F010, and F011 remain open or pending until the fresh
+exact-repair-SHA re-audit. F009 and F010 remain
+`addressed_pending_reaudit`; production remains `existing_use_only`. F012 is
+owner-accepted only in the amendment's bounded terms. F013 remains conditioned
+on `SCI-ALIGN-001`, `SCI-CAL-001`, `SCI-AST-001`, `SCI-PTC-001`, and
+`SCI-VAL-001`; this repair closes none of them.
 
 On 2026-08-01 the versioned human-run campaign package for exact candidate
 `ed28dafb37f9113c0d3c95297148157129a90886` was prepared under

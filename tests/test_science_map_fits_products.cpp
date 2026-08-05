@@ -1,17 +1,25 @@
 #include <gtest/gtest.h>
 
+#include <citlali/core/engine/engine.h>
 #include <citlali/core/mapmaking/map.h>
 #include <citlali/core/pipeline/map_image_output_helpers.h>
+#include <citlali/core/pipeline/science_map_provenance_serialization.h>
 #include <citlali/core/utils/fits_io.h>
 
 #include <fitsio.h>
 #include <spdlog/sinks/null_sink.h>
 
+#include <algorithm>
+#include <array>
 #include <chrono>
+#include <cmath>
 #include <cstdio>
 #include <cstdint>
+#include <cstring>
+#include <filesystem>
 #include <map>
 #include <memory>
+#include <stdexcept>
 #include <sstream>
 #include <string>
 #include <type_traits>
@@ -463,6 +471,298 @@ struct FitsFileCleanup {
     ~FitsFileCleanup() { std::remove(path.c_str()); }
 };
 
+struct FitsDirectoryCleanup {
+    std::filesystem::path path;
+    ~FitsDirectoryCleanup() {
+        std::error_code error;
+        std::filesystem::remove_all(path, error);
+    }
+};
+
+void configure_production_writer_engine(Engine &engine) {
+    engine.logger = science_map_test_logger();
+    engine.typed_config.runtime.reduction_type =
+        citlali::config::ReductionType::science;
+    engine.runtime_config_provenance =
+        citlali::config::make_runtime_config_provenance(
+            engine.typed_config.runtime, false);
+    engine.typed_config.mapmaking.enabled = true;
+    engine.typed_config.mapmaking.method = citlali::config::MapMethod::naive;
+    engine.typed_config.mapmaking.grouping =
+        citlali::config::MapGrouping::array;
+    engine.typed_config.coadd.enabled = true;
+    engine.typed_config.noise.enabled = true;
+    engine.typed_config.noise.n_noise_maps = 2;
+    engine.typed_config.noise.write_realizations = true;
+    engine.typed_config.noise.products_enabled = true;
+    engine.typed_config.post_processing.map_filtering.enabled = false;
+
+    engine.map_indices.n_maps = 1;
+    engine.map_indices.maps_to_arrays.resize(1);
+    engine.map_indices.maps_to_arrays.setZero();
+    engine.map_indices.arrays_to_maps.resize(1);
+    engine.map_indices.arrays_to_maps.setZero();
+    engine.map_indices.maps_to_stokes.resize(1);
+    engine.map_indices.maps_to_stokes.setZero();
+    engine.calib.n_arrays = 1;
+    engine.calib.arrays.resize(1);
+    engine.calib.arrays.setZero();
+    engine.omb.map_grouping = "array";
+    engine.telescope.pixel_axes = "radec";
+    engine.telescope.sim_obs = false;
+    engine.telescope.tel_header["Header.Source.Epoch"] =
+        Eigen::VectorXd::Constant(1, 2000.0);
+    engine.rtcproc.run_polarization = false;
+    engine.rtcproc.polarization.stokes_params.clear();
+    engine.rtcproc.polarization.stokes_params[0] = "I";
+}
+
+std::shared_ptr<ScienceMapBufferFixture> make_production_science_map_buffer(
+    const Engine &engine, bool coadd, Eigen::Index rows, Eigen::Index cols,
+    const std::array<double, 2> &reference_pixel) {
+    auto map = std::make_shared<ScienceMapBufferFixture>(
+        coadd ? "cmb" : "omb");
+    map->n_rows = rows;
+    map->n_cols = cols;
+    map->n_noise = 2;
+    map->pixel_size_rad = 2.0 * ASEC_TO_RAD;
+    map->sig_unit = "mJy/beam";
+    map->map_grouping = "array";
+    map->cov_cut = 1.0;
+    map->science_products.allocate(1, rows, cols, coadd, true, true);
+
+    auto &products = map->science_products;
+    auto &realized = products.realized[0];
+    mapmaking::ScienceMapBundleIdentity identity;
+    identity.grouping = map->map_grouping;
+    identity.signal_unit = map->sig_unit;
+    identity.estimator_identity =
+        mapmaking::science_map_coadd_estimator_version;
+    identity.response_identity =
+        citlali::pipeline::science_map_response_identity(
+            engine.rtcproc.kernel, false);
+    identity.required_companions = {
+        "noise_realization_0_I", "noise_realization_1_I"};
+    identity.rows = rows;
+    identity.cols = cols;
+    identity.wcs.coordinate_frame = "radec";
+    identity.wcs.projection = "TAN";
+    identity.wcs.axis_types = {"RA---TAN", "DEC--TAN"};
+    identity.wcs.axis_units = {"deg", "deg"};
+    identity.wcs.pixel_scale = {
+        -0.00055555555555555556, 0.00055555555555555556};
+    identity.wcs.reference_world = {
+        187.046325, 44.093558300000005};
+    identity.wcs.reference_pixel = {
+        reference_pixel[0], reference_pixel[1]};
+    identity.wcs.source_epoch = 2000.0;
+    identity.wcs.orientation_rad = 0.0;
+    mapmaking::ScienceMapSlotIdentity slot;
+    slot.ordered_slot = 0;
+    slot.grouping = "array";
+    slot.group_identity = "array:0";
+    slot.array_identity = 0;
+    slot.stokes_identity = 0;
+    slot.frequency_hz = engine.toltec_io.array_freq_map.at(0);
+    identity.ordered_slots.push_back(slot);
+    products.bundle_identity = identity;
+    products.identity_admitted = true;
+
+    realized.normalization.support_algorithm =
+        mapmaking::science_map_normalization_support_version;
+    realized.normalization.coefficient_stage = coadd
+        ? mapmaking::science_map_coadd_normalization_coefficient_stage
+        : mapmaking::science_map_observation_normalization_coefficient_stage;
+    realized.normalization.requested_cut = 0.1;
+    realized.normalization.realized_cut = 0.1;
+    realized.normalization.realized_threshold = 0.001453413509532904;
+    realized.normalization.selected_positive_value = 0.01453413509532904;
+    realized.normalization.positive_value_count =
+        static_cast<std::size_t>(rows * cols - 1);
+    realized.normalization.selected_zero_based_index =
+        realized.normalization.positive_value_count / 2;
+    realized.normalization.selected_index_available = true;
+    realized.science_policy.support_algorithm =
+        mapmaking::science_map_policy_support_version;
+    realized.science_policy.coefficient_stage =
+        realized.normalization.coefficient_stage;
+    realized.science_policy.requested_cut = 1.0;
+    realized.science_policy.realized_cut = 1.0;
+    realized.science_policy.realized_threshold = 0.01453413509532904;
+    realized.science_policy.selected_positive_value = 0.01453413509532904;
+    realized.science_policy.positive_value_count =
+        realized.normalization.positive_value_count;
+    realized.science_policy.selected_zero_based_index =
+        realized.normalization.selected_zero_based_index;
+    realized.science_policy.selected_index_available = true;
+
+    map->signal.assign(1, Eigen::MatrixXd::Zero(rows, cols));
+    map->weight.assign(1, Eigen::MatrixXd::Zero(rows, cols));
+    map->coverage.assign(1, Eigen::MatrixXd::Zero(rows, cols));
+    map->weight_formal.assign(1, Eigen::MatrixXd::Zero(rows, cols));
+    map->noise_variance.assign(1, Eigen::MatrixXd::Zero(rows, cols));
+    map->sig2noise_pixel.assign(1, Eigen::MatrixXd::Zero(rows, cols));
+    map->noise.emplace_back(rows, cols, map->n_noise);
+    map->noise[0].setZero();
+    for (Eigen::Index row = 0; row < rows; ++row) {
+        for (Eigen::Index col = 0; col < cols; ++col) {
+            const bool supported = row != 0 || col != 0;
+            products.geometric_hits[0](row, col) = 1;
+            products.contributing_hits[0](row, col) = supported ? 1 : 0;
+            products.coadd_observation_count[0](row, col) =
+                coadd && supported ? 1 : 0;
+            products.upstream_eligible_exposure[0](row, col) = 1.0;
+            products.retained_exposure[0](row, col) = supported ? 1.0 : 0.0;
+            products.normalization_support[0](row, col) = supported ? 1 : 0;
+            products.science_policy_support[0](row, col) = supported ? 1 : 0;
+            products.science_valid[0](row, col) = supported ? 1 : 0;
+            map->signal[0](row, col) =
+                supported ? 10.0 + row + 0.01 * col : 0.0;
+            map->weight[0](row, col) =
+                supported ? realized.science_policy.realized_threshold : 0.0;
+            map->coverage[0](row, col) =
+                products.retained_exposure[0](row, col);
+            map->weight_formal[0](row, col) =
+                supported ? 2.0 * map->weight[0](row, col) : 0.0;
+            map->noise_variance[0](row, col) = supported ? 4.0 : 0.0;
+            map->sig2noise_pixel[0](row, col) =
+                supported ? map->signal[0](row, col) / 2.0 : 0.0;
+            for (Eigen::Index realization = 0;
+                 realization < map->n_noise; ++realization) {
+                map->noise[0](row, col, realization) = supported
+                    ? 100.0 * (realization + 1) + 10.0 * row + col
+                    : 0.0;
+            }
+        }
+    }
+    map->median_err = Eigen::VectorXd::Constant(1, 1.0);
+    map->median_rms = Eigen::VectorXd::Constant(1, 2.0);
+    map->wcs.ctype = {"RA---TAN", "DEC--TAN", "FREQ", "STOKES"};
+    map->wcs.cunit = {"deg", "deg", "Hz", "1"};
+    map->wcs.crval = {0.0F, 0.0F, 0.0F, 0.0F};
+    map->wcs.cdelt = {0.0F, 0.0F, 1.0F, 1.0F};
+    map->wcs.crpix = {0.0F, 0.0F, 0.0F, 0.0F};
+    map->wcs.naxis = {
+        static_cast<int>(cols), static_cast<int>(rows), 1, 1};
+    mapmaking::science_map_finalize_realized_product_facts(*map, 0);
+    return map;
+}
+
+struct FitsSpatialWcs {
+    std::array<double, 2> cdelt{};
+    std::array<double, 2> crpix{};
+    std::array<double, 2> crval{};
+    std::array<std::string, 2> ctype{};
+    std::array<std::string, 2> cunit{};
+    long cols = 0;
+    long rows = 0;
+};
+
+double read_required_fits_double(fitsfile *file, const char *key) {
+    double value = 0.0;
+    int status = 0;
+    if (fits_read_key(file, TDOUBLE, key, &value, nullptr, &status) != 0) {
+        throw std::runtime_error(std::string{"missing FITS double key "} + key);
+    }
+    return value;
+}
+
+std::string read_required_fits_string(fitsfile *file, const char *key) {
+    char value[FLEN_VALUE] = {};
+    int status = 0;
+    if (fits_read_key(file, TSTRING, key, value, nullptr, &status) != 0) {
+        throw std::runtime_error(std::string{"missing FITS string key "} + key);
+    }
+    return value;
+}
+
+void move_to_required_image(fitsfile *file, const std::string &name) {
+    int status = 0;
+    if (fits_movnam_hdu(file, IMAGE_HDU, const_cast<char *>(name.c_str()), 0,
+                       &status) != 0) {
+        throw std::runtime_error("missing FITS image " + name);
+    }
+}
+
+FitsSpatialWcs read_spatial_wcs(fitsfile *file, const std::string &name) {
+    move_to_required_image(file, name);
+    FitsSpatialWcs wcs;
+    for (std::size_t axis = 0; axis < 2; ++axis) {
+        const auto suffix = std::to_string(axis + 1);
+        wcs.cdelt[axis] =
+            read_required_fits_double(file, ("CDELT" + suffix).c_str());
+        wcs.crpix[axis] =
+            read_required_fits_double(file, ("CRPIX" + suffix).c_str());
+        wcs.crval[axis] =
+            read_required_fits_double(file, ("CRVAL" + suffix).c_str());
+        wcs.ctype[axis] =
+            read_required_fits_string(file, ("CTYPE" + suffix).c_str());
+        wcs.cunit[axis] =
+            read_required_fits_string(file, ("CUNIT" + suffix).c_str());
+    }
+    long axes[4] = {};
+    int status = 0;
+    if (fits_get_img_size(file, 4, axes, &status) != 0) {
+        throw std::runtime_error("cannot read FITS image shape");
+    }
+    wcs.cols = axes[0];
+    wcs.rows = axes[1];
+    return wcs;
+}
+
+std::array<double, 2> inverse_tan_world(const FitsSpatialWcs &wcs,
+                                        long row, long col) {
+    const double deg_to_rad = M_PI / 180.0;
+    const double xi =
+        ((static_cast<double>(col) + 1.0) - wcs.crpix[0]) *
+        wcs.cdelt[0] * deg_to_rad;
+    const double eta =
+        ((static_cast<double>(row) + 1.0) - wcs.crpix[1]) *
+        wcs.cdelt[1] * deg_to_rad;
+    const double ra0 = wcs.crval[0] * deg_to_rad;
+    const double dec0 = wcs.crval[1] * deg_to_rad;
+    const double denominator = std::cos(dec0) - eta * std::sin(dec0);
+    const double ra = ra0 + std::atan2(xi, denominator);
+    const double dec = std::atan2(
+        std::sin(dec0) + eta * std::cos(dec0),
+        std::hypot(denominator, xi));
+    return {ra, dec};
+}
+
+double sky_separation_arcsec(const std::array<double, 2> &lhs,
+                             const std::array<double, 2> &rhs) {
+    const double half_delta_ra = (lhs[0] - rhs[0]) / 2.0;
+    const double half_delta_dec = (lhs[1] - rhs[1]) / 2.0;
+    const double haversine =
+        std::sin(half_delta_dec) * std::sin(half_delta_dec) +
+        std::cos(lhs[1]) * std::cos(rhs[1]) *
+            std::sin(half_delta_ra) * std::sin(half_delta_ra);
+    return 2.0 * std::asin(std::sqrt(std::clamp(haversine, 0.0, 1.0))) *
+        (180.0 / M_PI) * 3600.0;
+}
+
+double maximum_wcs_separation_arcsec(
+    const mapmaking::ScienceMapWcsIdentity &typed,
+    const FitsSpatialWcs &physical) {
+    FitsSpatialWcs typed_wcs;
+    typed_wcs.cdelt = {typed.pixel_scale[0], typed.pixel_scale[1]};
+    typed_wcs.crpix = {
+        typed.reference_pixel[0] + 1.0,
+        typed.reference_pixel[1] + 1.0};
+    typed_wcs.crval = {typed.reference_world[0], typed.reference_world[1]};
+    double maximum = 0.0;
+    for (long row = 0; row < physical.rows; ++row) {
+        for (long col = 0; col < physical.cols; ++col) {
+            maximum = std::max(
+                maximum,
+                sky_separation_arcsec(
+                    inverse_tan_world(typed_wcs, row, col),
+                    inverse_tan_world(physical, row, col)));
+        }
+    }
+    return maximum;
+}
+
 TEST(science_map_fits_products, preserves_native_fits_scalar_types) {
     const auto nonce = std::chrono::high_resolution_clock::now()
                            .time_since_epoch()
@@ -698,6 +998,280 @@ TEST(science_map_fits_products,
     fits_free_memory(value, &free_status);
     EXPECT_EQ(free_status, 0);
     EXPECT_EQ(fits_close_file(file, &status), 0);
+}
+
+TEST(science_map_fits_products,
+     coadd_enabled_observation_inventory_keeps_required_noise_file) {
+    const auto nonce = std::chrono::high_resolution_clock::now()
+                           .time_since_epoch()
+                           .count();
+    FitsDirectoryCleanup cleanup{
+        std::filesystem::path{"/private/tmp"} /
+        ("citlali-science-map-observation-inventory-" +
+         std::to_string(nonce))};
+    Engine engine;
+    configure_production_writer_engine(engine);
+    engine.output_paths.obsnum_dir_name = cleanup.path.string() + "/";
+    engine.observation_identity.obsnum = "152390";
+    std::filesystem::create_directories(cleanup.path / "raw");
+
+    ASSERT_NO_THROW(engine.create_obs_map_files());
+    ASSERT_EQ(engine.map_fits_outputs.obs.size(), 1U);
+    ASSERT_EQ(engine.map_fits_outputs.obs_noise.size(), 1U);
+    EXPECT_TRUE(engine.map_fits_outputs.filtered_obs.empty());
+    EXPECT_TRUE(engine.map_fits_outputs.filtered_obs_noise.empty());
+    EXPECT_NE(engine.map_fits_outputs.obs[0].filepath.find("152390"),
+              std::string::npos);
+    EXPECT_NE(engine.map_fits_outputs.obs_noise[0].filepath.find("152390"),
+              std::string::npos);
+    EXPECT_NE(engine.map_fits_outputs.obs_noise[0].filepath.find("_noise"),
+              std::string::npos);
+}
+
+TEST(science_map_fits_products,
+     production_writer_preserves_wcs_threshold_and_realization_contracts) {
+    const auto nonce = std::chrono::high_resolution_clock::now()
+                           .time_since_epoch()
+                           .count();
+    FitsDirectoryCleanup cleanup{
+        std::filesystem::path{"/private/tmp"} /
+        ("citlali-science-map-production-writer-" +
+         std::to_string(nonce))};
+    Engine engine;
+    configure_production_writer_engine(engine);
+    engine.output_paths.obsnum_dir_name = cleanup.path.string() + "/obs/";
+    engine.observation_identity.obsnum = "152390";
+    std::filesystem::create_directories(cleanup.path / "obs" / "raw");
+    std::filesystem::create_directories(cleanup.path / "coadd" / "raw");
+    ASSERT_NO_THROW(engine.create_obs_map_files());
+
+    const std::string coadd_map_base =
+        (cleanup.path / "coadd" / "raw" / "coadd_map").string();
+    const std::string coadd_noise_base =
+        (cleanup.path / "coadd" / "raw" / "coadd_noise").string();
+    engine.map_fits_outputs.coadd.emplace_back(coadd_map_base);
+    engine.map_fits_outputs.coadd_noise.emplace_back(coadd_noise_base);
+
+    constexpr Eigen::Index obs_rows = 9;
+    constexpr Eigen::Index obs_cols = 11;
+    constexpr Eigen::Index coadd_rows = 13;
+    constexpr Eigen::Index coadd_cols = 17;
+    constexpr long delta_row = 2;
+    constexpr long delta_col = 3;
+    auto observation = make_production_science_map_buffer(
+        engine, false, obs_rows, obs_cols, {5.0, 4.0});
+    auto coadd = make_production_science_map_buffer(
+        engine, true, coadd_rows, coadd_cols, {8.0, 6.0});
+    auto *observation_map_files = &engine.map_fits_outputs.obs;
+    auto *observation_noise_files = &engine.map_fits_outputs.obs_noise;
+    auto *coadd_map_files = &engine.map_fits_outputs.coadd;
+    auto *coadd_noise_files = &engine.map_fits_outputs.coadd_noise;
+    ASSERT_NO_THROW(engine.write_maps(
+        observation_map_files, observation_noise_files, observation, 0));
+    ASSERT_NO_THROW(engine.write_maps(
+        coadd_map_files, coadd_noise_files, coadd, 0));
+
+    const auto observation_map_path =
+        engine.map_fits_outputs.obs[0].filepath + ".fits";
+    const auto observation_noise_path =
+        engine.map_fits_outputs.obs_noise[0].filepath + ".fits";
+    const auto coadd_map_path = coadd_map_base + ".fits";
+    const auto coadd_noise_path = coadd_noise_base + ".fits";
+
+    decltype(engine.map_fits_outputs.obs) failed_map_files;
+    decltype(engine.map_fits_outputs.obs_noise) missing_noise_files;
+    const std::string failed_map_base =
+        (cleanup.path / "required_write_failure").string();
+    failed_map_files.emplace_back(failed_map_base);
+    auto failed_observation = make_production_science_map_buffer(
+        engine, false, obs_rows, obs_cols, {5.0, 4.0});
+    const auto failed_wcs = failed_observation->wcs;
+    auto *failed_map_file_ptr = &failed_map_files;
+    auto *missing_noise_file_ptr = &missing_noise_files;
+    EXPECT_THROW(
+        engine.write_maps(
+            failed_map_file_ptr, missing_noise_file_ptr, failed_observation,
+            0),
+        std::runtime_error);
+    EXPECT_TRUE(failed_map_files[0].hdus.empty());
+    EXPECT_EQ(failed_observation->wcs.cdelt, failed_wcs.cdelt);
+    EXPECT_EQ(failed_observation->wcs.crpix, failed_wcs.crpix);
+    EXPECT_EQ(failed_observation->wcs.crval, failed_wcs.crval);
+
+    engine.map_fits_outputs.obs[0].pfits.reset();
+    engine.map_fits_outputs.obs_noise[0].pfits.reset();
+    engine.map_fits_outputs.coadd[0].pfits.reset();
+    engine.map_fits_outputs.coadd_noise[0].pfits.reset();
+    failed_map_files[0].pfits.reset();
+
+    fitsfile *observation_file = nullptr;
+    fitsfile *observation_noise_file = nullptr;
+    fitsfile *coadd_file = nullptr;
+    fitsfile *coadd_noise_file = nullptr;
+    int status = 0;
+    ASSERT_EQ(fits_open_file(&observation_file, observation_map_path.c_str(),
+                             READONLY, &status),
+              0);
+    status = 0;
+    ASSERT_EQ(fits_open_file(&observation_noise_file,
+                             observation_noise_path.c_str(), READONLY,
+                             &status),
+              0);
+    status = 0;
+    ASSERT_EQ(fits_open_file(&coadd_file, coadd_map_path.c_str(), READONLY,
+                             &status),
+              0);
+    status = 0;
+    ASSERT_EQ(fits_open_file(&coadd_noise_file, coadd_noise_path.c_str(),
+                             READONLY, &status),
+              0);
+
+    const auto observation_wcs =
+        read_spatial_wcs(observation_file, "signal_I");
+    const auto coadd_wcs = read_spatial_wcs(coadd_file, "signal_I");
+    const auto &observation_identity =
+        observation->science_products.bundle_identity->wcs;
+    const auto &coadd_identity =
+        coadd->science_products.bundle_identity->wcs;
+    const double observation_max_separation =
+        maximum_wcs_separation_arcsec(
+            observation_identity, observation_wcs);
+    const double coadd_max_separation =
+        maximum_wcs_separation_arcsec(coadd_identity, coadd_wcs);
+    EXPECT_GT(observation_max_separation, 0.0);
+    EXPECT_GT(coadd_max_separation, 0.0);
+    EXPECT_LE(observation_max_separation, 0.1);
+    EXPECT_LE(coadd_max_separation, 0.1);
+
+    for (const auto *wcs : {&observation_wcs, &coadd_wcs}) {
+        EXPECT_EQ(wcs->ctype[0], "RA---TAN");
+        EXPECT_EQ(wcs->ctype[1], "DEC--TAN");
+        EXPECT_EQ(wcs->cunit[0], "deg");
+        EXPECT_EQ(wcs->cunit[1], "deg");
+        EXPECT_TRUE(std::signbit(wcs->cdelt[0]));
+        EXPECT_FALSE(std::signbit(wcs->cdelt[1]));
+    }
+    EXPECT_DOUBLE_EQ(observation_identity.orientation_rad, 0.0);
+    EXPECT_DOUBLE_EQ(coadd_identity.orientation_rad, 0.0);
+    EXPECT_EQ(observation_wcs.rows, obs_rows);
+    EXPECT_EQ(observation_wcs.cols, obs_cols);
+    EXPECT_EQ(coadd_wcs.rows, coadd_rows);
+    EXPECT_EQ(coadd_wcs.cols, coadd_cols);
+    EXPECT_DOUBLE_EQ(
+        coadd_identity.reference_pixel[0],
+        observation_identity.reference_pixel[0] + delta_col);
+    EXPECT_DOUBLE_EQ(
+        coadd_identity.reference_pixel[1],
+        observation_identity.reference_pixel[1] + delta_row);
+    EXPECT_DOUBLE_EQ(
+        coadd_wcs.crpix[0], observation_wcs.crpix[0] + delta_col);
+    EXPECT_DOUBLE_EQ(
+        coadd_wcs.crpix[1], observation_wcs.crpix[1] + delta_row);
+
+    const auto &coadd_realized = coadd->science_products.realized[0];
+    const auto normalization_sidecar =
+        citlali::pipeline::science_map_threshold_realization_node(
+            coadd_realized.normalization);
+    const auto policy_sidecar =
+        citlali::pipeline::science_map_threshold_realization_node(
+            coadd_realized.science_policy);
+    const double normalization_authority =
+        citlali::pipeline::science_map_exact_double_value(
+            normalization_sidecar["realized_threshold"]);
+    const double policy_authority =
+        citlali::pipeline::science_map_exact_double_value(
+            policy_sidecar["realized_threshold"]);
+    auto verify_threshold_card = [&](const std::string &hdu_name,
+                                     const std::string &estimator,
+                                     double authority) {
+        move_to_required_image(coadd_file, hdu_name);
+        const double card = read_required_fits_double(coadd_file, "WTTHRESH");
+        EXPECT_TRUE(std::isfinite(card)) << hdu_name;
+        EXPECT_EQ(read_required_fits_string(coadd_file, "BUNIT"), "1")
+            << hdu_name;
+        EXPECT_EQ(read_required_fits_string(coadd_file, "ESTTYPE"), estimator)
+            << hdu_name;
+        EXPECT_LE(std::abs(card - authority),
+                  1.0e-12 * std::abs(authority))
+            << hdu_name;
+        return card;
+    };
+    verify_threshold_card(
+        "normalization_support_I", "normalization_support",
+        normalization_authority);
+    const double policy_card = verify_threshold_card(
+        "science_policy_support_I", "science_policy_support",
+        policy_authority);
+    const double alias_card = verify_threshold_card(
+        "coverage_bool_I", "science_policy_support", policy_authority);
+    EXPECT_DOUBLE_EQ(policy_card, alias_card);
+    move_to_required_image(coadd_file, "coverage_bool_I");
+    EXPECT_EQ(read_required_fits_string(coadd_file, "ALIASOF"),
+              "science_policy_support_I");
+
+    ASSERT_TRUE(observation->science_products.bundle_identity);
+    ASSERT_TRUE(coadd->science_products.bundle_identity);
+    EXPECT_EQ(
+        observation->science_products.bundle_identity->response_identity,
+        coadd->science_products.bundle_identity->response_identity);
+    EXPECT_EQ(
+        observation->science_products.bundle_identity->required_companions,
+        coadd->science_products.bundle_identity->required_companions);
+    const std::vector<std::string> realization_names = {
+        "signal_0_I", "signal_1_I"};
+    auto verify_realization_file = [&](
+        fitsfile *file, const ScienceMapBufferFixture &map) {
+        int hdu_count = 0;
+        int local_status = 0;
+        ASSERT_EQ(fits_get_num_hdus(file, &hdu_count, &local_status), 0);
+        EXPECT_EQ(hdu_count, 3);
+        for (Eigen::Index realization = 0;
+             realization < map.n_noise; ++realization) {
+            const auto realization_index =
+                static_cast<std::size_t>(realization);
+            const auto realization_wcs =
+                read_spatial_wcs(file, realization_names[realization_index]);
+            EXPECT_EQ(realization_wcs.rows, map.n_rows);
+            EXPECT_EQ(realization_wcs.cols, map.n_cols);
+            EXPECT_EQ(read_required_fits_string(file, "UNIT"), map.sig_unit);
+            std::vector<double> values(
+                static_cast<std::size_t>(map.n_rows * map.n_cols));
+            int any_null = 0;
+            local_status = 0;
+            ASSERT_EQ(
+                fits_read_img(file, TDOUBLE, 1,
+                              static_cast<long>(values.size()), nullptr,
+                              values.data(), &any_null, &local_status),
+                0);
+            for (Eigen::Index row = 0; row < map.n_rows; ++row) {
+                for (Eigen::Index output_col = 0;
+                     output_col < map.n_cols; ++output_col) {
+                    const Eigen::Index source_col =
+                        map.n_cols - output_col - 1;
+                    const auto flat = static_cast<std::size_t>(
+                        row * map.n_cols + output_col);
+                    EXPECT_DOUBLE_EQ(
+                        values[flat],
+                        map.noise[0](row, source_col, realization));
+                    if (!map.science_products.normalization_support[0](
+                            row, source_col)) {
+                        EXPECT_DOUBLE_EQ(values[flat], 0.0);
+                    }
+                }
+            }
+        }
+    };
+    verify_realization_file(observation_noise_file, *observation);
+    verify_realization_file(coadd_noise_file, *coadd);
+
+    status = 0;
+    EXPECT_EQ(fits_close_file(observation_file, &status), 0);
+    status = 0;
+    EXPECT_EQ(fits_close_file(observation_noise_file, &status), 0);
+    status = 0;
+    EXPECT_EQ(fits_close_file(coadd_file, &status), 0);
+    status = 0;
+    EXPECT_EQ(fits_close_file(coadd_noise_file, &status), 0);
 }
 
 TEST(science_map_fits_products,

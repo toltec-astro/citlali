@@ -35,7 +35,6 @@ target_sources(citlali_test
         test_science_map_contract.cpp
         test_science_map_truth_suite.cpp
         test_session_failure_boundaries.cpp
-        test_science_map_fits_products.cpp
         test_tod_output_selection_config.cpp
         test_utils.cpp
 )
@@ -66,6 +65,29 @@ target_link_libraries(citlali_science_map_truth_test
     PRIVATE
         citlali::citlali
         GTest::gtest_main
+)
+
+# Engine's production FITS writer is supplied by legacy implementation-detail
+# headers. Isolate this test in one translation unit so it can exercise that
+# real boundary without duplicating those definitions across citlali_test.
+add_executable(citlali_science_map_fits_products_test EXCLUDE_FROM_ALL
+    test_science_map_fits_products.cpp
+)
+set_target_properties(citlali_science_map_fits_products_test
+    PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+)
+target_link_libraries(citlali_science_map_fits_products_test
+    PRIVATE
+        citlali::citlali
+        GTest::gtest_main
+)
+add_dependencies(check citlali_science_map_fits_products_test)
+gtest_discover_tests(
+    citlali_science_map_fits_products_test
+        WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+        TEST_PREFIX "citlali::science_map_fits::"
+        DISCOVERY_MODE PRE_TEST
 )
 
 # SCI-MAP-001-F001: the repaired ordinary primitive is a header-instantiated

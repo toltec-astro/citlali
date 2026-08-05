@@ -289,6 +289,48 @@ void expect_scan_merge_count_exact(
     }
 }
 
+void expect_scan_merge_realization_within_registered_bound(
+    const Eigen::Tensor<double, 3> &actual,
+    const std::vector<mapmaking::MapBuffer> &per_scan,
+    Eigen::Index map_index) {
+    const long double term_count =
+        static_cast<long double>(per_scan.size());
+    const long double epsilon =
+        static_cast<long double>(std::numeric_limits<double>::epsilon());
+    const long double gamma_n =
+        (term_count * epsilon) / (1.0L - term_count * epsilon);
+    for (Eigen::Index realization = 0;
+         realization < actual.dimension(2); ++realization) {
+        for (Eigen::Index col = 0; col < actual.dimension(1); ++col) {
+            for (Eigen::Index row = 0; row < actual.dimension(0); ++row) {
+                long double reference = 0.0L;
+                long double sum_abs = 0.0L;
+                for (const auto &scan : per_scan) {
+                    const long double value = static_cast<long double>(
+                        scan.noise[static_cast<std::size_t>(map_index)](
+                            row, col, realization));
+                    reference += value;
+                    sum_abs += std::abs(value);
+                }
+                const long double error = std::abs(
+                    static_cast<long double>(
+                        actual(row, col, realization)) -
+                    reference);
+                const long double bound = 2.0L * gamma_n * sum_abs;
+                EXPECT_LE(error, bound)
+                    << "policy="
+                    << mapmaking::science_map_parallel_equivalence_policy
+                    << " plane=noise_realization map=" << map_index
+                    << " realization=" << realization << " row=" << row
+                    << " col=" << col << " reference="
+                    << static_cast<double>(reference) << " error="
+                    << static_cast<double>(error) << " bound="
+                    << static_cast<double>(bound);
+            }
+        }
+    }
+}
+
 mapmaking::MapBuffer run_ordinary_profile(const std::string &grouping,
                                           bool requested_parallel,
                                           mapmaking::MapBuffer *coadd_out = nullptr) {
@@ -652,6 +694,95 @@ TEST(science_map_truth,
     EXPECT_TRUE(map_has_only_zero_accumulators(map));
 }
 
+TEST(science_map_truth,
+     floating_and_count_aggregate_overflow_fail_before_bundle_commit) {
+    enum class OverflowTarget {
+        staged_signal,
+        live_signal,
+        live_realization,
+        live_geometric_count,
+    };
+
+    for (const auto target : {
+             OverflowTarget::staged_signal,
+             OverflowTarget::live_signal,
+             OverflowTarget::live_realization,
+             OverflowTarget::live_geometric_count}) {
+        auto fixture = make_ordinary_fixture();
+        fixture.data.flags.data.setConstant(true);
+        fixture.data.tel_data.data["alt_phys"].setZero();
+        fixture.data.tel_data.data["az_phys"].setZero();
+        fixture.data.weights.data.setOnes();
+        fixture.data.scans.data.setZero();
+        fixture.data.kernel.data.setZero();
+
+        auto map = make_ordinary_map("array", 1);
+        constexpr Eigen::Index center = 1;
+        if (target == OverflowTarget::staged_signal) {
+            fixture.data.flags.data(0, 0) = false;
+            fixture.data.flags.data(1, 0) = false;
+            fixture.data.scans.data(0, 0) =
+                std::numeric_limits<double>::max();
+            fixture.data.scans.data(1, 0) =
+                std::numeric_limits<double>::max();
+        }
+        else if (target == OverflowTarget::live_signal) {
+            fixture.data.flags.data(0, 0) = false;
+            fixture.data.scans.data(0, 0) =
+                std::numeric_limits<double>::max();
+            map.signal[0](center, center) =
+                std::numeric_limits<double>::max();
+        }
+        else if (target == OverflowTarget::live_realization) {
+            fixture.data.flags.data(0, 0) = false;
+            fixture.data.scans.data(0, 0) =
+                std::numeric_limits<double>::max();
+            map.noise[0](center, center, 0) =
+                std::numeric_limits<double>::max();
+        }
+        else {
+            map.science_products.geometric_hits[0](center, center) =
+                std::numeric_limits<std::int64_t>::max();
+        }
+
+        const auto before = map;
+        auto coadd = make_noise_sentinel(1);
+        auto map_indices = map_indices_for("array");
+        std::string pixel_axes = "altaz";
+        mapmaking::NaiveMapmaker mapmaker;
+        mapmaker.run_polarization = false;
+        EXPECT_THROW(
+            mapmaker.populate_maps_naive_parallel(
+                fixture.data, map, coadd, map_indices, pixel_axes,
+                fixture.apt, kSampleRateHz, true, true),
+            std::runtime_error);
+        expect_map_exact(map, before);
+    }
+}
+
+TEST(science_map_truth,
+     finite_projection_outside_index_domain_fails_before_bundle_commit) {
+    auto fixture = make_ordinary_fixture();
+    fixture.data.flags.data.setConstant(true);
+    fixture.data.tel_data.data["alt_phys"].setConstant(1.0);
+    fixture.data.tel_data.data["az_phys"].setZero();
+    auto map = make_ordinary_map("array", 1);
+    map.pixel_size_rad = 1.0e-300;
+    const auto before = map;
+    auto coadd = make_noise_sentinel(1);
+    auto map_indices = map_indices_for("array");
+    std::string pixel_axes = "altaz";
+    mapmaking::NaiveMapmaker mapmaker;
+    mapmaker.run_polarization = false;
+
+    EXPECT_THROW(
+        mapmaker.populate_maps_naive_parallel(
+            fixture.data, map, coadd, map_indices, pixel_axes, fixture.apt,
+            kSampleRateHz, true, true),
+        std::runtime_error);
+    expect_map_exact(map, before);
+}
+
 TEST(science_map_truth, repaired_primitive_is_race_free_under_concurrent_calls) {
     constexpr int kThreadCount = 8;
     constexpr std::array<double, kThreadCount> signal_scales{
@@ -683,19 +814,19 @@ TEST(science_map_truth, repaired_primitive_is_race_free_under_concurrent_calls) 
     std::vector<mapmaking::MapBuffer> per_scan;
     per_scan.reserve(kThreadCount);
     for (int scan = 0; scan < kThreadCount; ++scan) {
-        auto local_map = make_ordinary_map("array", 1, false);
+        auto local_map = make_ordinary_map("array", 1, true);
         mapmaking::MapBuffer local_coadd{"unused"};
         mapmaking::NaiveMapmaker local_mapmaker;
         local_mapmaker.run_polarization = false;
         local_mapmaker.populate_maps_naive_parallel(
             fixtures[scan].data, local_map, local_coadd, indices[scan],
-            axes[scan], fixtures[scan].apt, kSampleRateHz, true, false);
+            axes[scan], fixtures[scan].apt, kSampleRateHz, true, true);
         per_scan.push_back(std::move(local_map));
     }
     ASSERT_FALSE(mapmaking::science_map_exact_double_equal(
         per_scan[0].signal[0].sum(), per_scan[1].signal[0].sum()));
 
-    auto shared_map = make_ordinary_map("array", 1, false);
+    auto shared_map = make_ordinary_map("array", 1, true);
     mapmaking::MapBuffer shared_coadd{"unused"};
     mapmaking::NaiveMapmaker mapmaker;
     mapmaker.run_polarization = false;
@@ -714,7 +845,7 @@ TEST(science_map_truth, repaired_primitive_is_race_free_under_concurrent_calls) 
                 mapmaker.populate_maps_naive_parallel(
                     fixtures[thread].data, shared_map, shared_coadd,
                     indices[thread], axes[thread], fixtures[thread].apt,
-                    kSampleRateHz, true, false);
+                    kSampleRateHz, true, true);
             }
             catch (...) {
                 errors[thread] = std::current_exception();
@@ -770,6 +901,8 @@ TEST(science_map_truth, repaired_primitive_is_race_free_under_concurrent_calls) 
         [](const auto &map) -> const auto & {
             return map.science_products.contributing_hits[0];
         });
+    expect_scan_merge_realization_within_registered_bound(
+        shared_map.noise[0], per_scan, 0);
 }
 
 }  // namespace

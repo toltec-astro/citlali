@@ -10,7 +10,7 @@ ADRs, and validation records.
 | Workstream | Authority | Purpose | Integration rule | State |
 | --- | --- | --- | --- | --- |
 | Refactored application | `codex/refactor-mainline` | Canonical source, tests, configuration, operational behavior, and validation history | Normal application changes land here after their affected gates | Active |
-| SCI-MAP-001 bounded repair | `codex/repair-sci-map-001` from `9aae0e669384c5c0c0dda93debc194d6b8dac787` | Isolated F001-F011 implementation, product/provenance contract, local truth suite, and reconciled seven-case external corpus | Fresh exact-repair-SHA re-audit and the required external disposition precede any application-mainline integration; do not merge audit, coordination, or convolve/noise candidates into this lane | External corpus reconciled; re-audit pending; not application authority |
+| SCI-MAP-001 bounded repair | `codex/repair-sci-map-001` from `9aae0e669384c5c0c0dda93debc194d6b8dac787` | Isolated bounded implementation, product/provenance contract, local truth suite, owner-amended F005/output-persistence cycle, and reconciled seven-case external corpus | Fresh exact-repair-SHA re-audit precedes any application-mainline integration; do not merge audit, coordination, or convolve/noise candidates into this lane | Second bounded repair locally verified; re-audit pending; not application authority |
 | Conan 2 adaptation | `codex/conan2-adaptation` | Port the full application into the accepted Tula/Conan 2 architecture | Incorporate mainline regularly; return only after all build-integration gates pass | Active in `/Users/gwilson/GitHub/citlali-refactor-conan2` |
 | Historical structural refactor | `codex/structural-refactor` at `171487196` | Forensic pointer to the pre-follow-on integration tree | Do not resume as an application authority | Frozen |
 | Historical fruit-loop/raw-IQ topic | `codex/fruit-loop-calibration-reference` at `b02fef613` | Forensic pointer to the topic-named branch before mainline normalization | Do not resume as an application authority | Frozen locally; its existing remote remains historical |
@@ -54,11 +54,17 @@ new exact commits before importing subsequent upstream work.
 - Keep F009 and F010 `addressed_pending_reaudit`, package verdict `amend`, and
   production `existing_use_only`; this lane cannot declare conformance or
   close findings.
+- Apply the 2026-08-05 owner amendment only to F005 aggregate/index
+  fail-closed safety, coadd-enabled observation-realization persistence, and
+  the specified production WCS/card/output tests. Keep normal finite-domain
+  arithmetic, WCS policy, defaults, and prohibited algorithms unchanged.
 - The human owner completed all seven `SCI-MAP-001-UNITY-001` cases for exact
   candidate `ed28dafb37f9113c0d3c95297148157129a90886`; do not issue or run a
   duplicate campaign. The read-only local reconciliation is recorded in
-  `SCI-MAP-001_EXISTING_CORPUS_CLOSEOUT_2026-08-05.md`. F012 sufficiency
-  remains for independent re-audit; Codex did not access Unity.
+  `SCI-MAP-001_EXISTING_CORPUS_CLOSEOUT_2026-08-05.md`. F012 is owner-accepted
+  only for the bounded external product/execution/SEQ-OMP claims in
+  `SCI-MAP-001_OWNER_SCOPE_EVIDENCE_AMENDMENT_2026-08-05.md`; missing lanes
+  remain limitations. Codex did not access Unity.
 - The versioned local owner package is
   `validation/campaigns/SCI-MAP-001-UNITY-001/repair-ed28dafb/`. It prepares
   the exact `ed28dafb37f9113c0d3c95297148157129a90886` campaign and now points
@@ -72,10 +78,11 @@ new exact commits before importing subsequent upstream work.
   nonconformant, validation is in progress, production remains
   `existing_use_only`, and MAP evidence closes none of ALIGN, CAL, AST, PTC,
   or VAL.
-- Keep F013 conditioned on `SCI-CAL-001`, `SCI-AST-001`, `SCI-PTC-001`, and
-  `SCI-VAL-001`. A fresh `codex/reaudit-sci-map-001` worktree assesses F001-F013,
-  audits the exact-SHA returned corpus and its explicit unavailable lanes and
-  discrepancies, and issues the next disposition.
+- Keep F013 conditioned on `SCI-ALIGN-001`, `SCI-CAL-001`, `SCI-AST-001`,
+  `SCI-PTC-001`, and `SCI-VAL-001`. A fresh `codex/reaudit-sci-map-001`
+  worktree assesses F004, F005, F007, F010, and F011 against the amendment and
+  exact repair SHA, records bounded F012 acceptance and limitations, preserves
+  F013 dependencies, and issues the next disposition.
 
 ### Conan 2 Adaptation Entry
 
