@@ -1,0 +1,327 @@
+format_version: 1
+record_type: audit_ledger_update_proposal
+proposal_id: SCI-MAP-001-FINAL-REAUDIT-2026-08-05
+proposal_date: 2026-08-05
+package_id: SCI-MAP-001
+authority: independent_reauditor
+coordinator_action: review_and_integrate_or_supersede
+
+scope:
+  verified_starting_head: af0c849ce59a5f80e5efc8db435bb6662863052f
+  verified_repair_branch: codex/repair-sci-map-001
+  verified_repair_branch_tip: af0c849ce59a5f80e5efc8db435bb6662863052f
+  exact_application_candidate: af0c849ce59a5f80e5efc8db435bb6662863052f
+  candidate_parent: f84b9fd7d7364f9d35317fc6c15b55d2a30e89f7
+  second_cycle_reaudit_commit: fc26e24e6543d1102f9fcc9bf4e849369b39dd04
+  owner_amendment_commit: 6409a36d324072c9b29145c620d01a0686275870
+  owner_amendment_sha256: 52be19700b73659ba1847012d4cb0766407399cda5899570acb79bf5b45221f3
+  audit_branch: codex/final-reaudit-sci-map-001
+  audit_commit: null
+  audit_commit_note: >-
+    The containing Git commit is supplied in the coordinator handoff; a file
+    cannot losslessly contain the hash of the commit that contains itself.
+  canonical_ledger_modified_by_audit: false
+  canonical_coordination_line_modified_by_audit: false
+  application_source_modified_by_audit: false
+  tests_modified_by_audit: false
+  configuration_modified_by_audit: false
+  original_audit_or_amendment_modified: false
+  integration_performed: false
+  unity_accessed: false
+  external_corpus_accessed: false
+  external_corpus_modified: false
+  task_or_campaign_launched: false
+  delegation_used: false
+
+artifacts:
+  report:
+    path: handoff/SCI-MAP-001_FINAL_NARROW_INDEPENDENT_REAUDIT_2026-08-05.md
+    sha256: 48c0e389ff0cee6003b9dba157839601d4d2abfa7e9e3f95ae4e6a617d753703
+  decision:
+    path: handoff/SCI-MAP-001_FINAL_REAUDIT_DECISION_2026-08-05.md
+    sha256: 96d06b8b9e918922ac0752d0f1ffad35586fde1631f499986ef03f64e36629f4
+
+cardinality_policy:
+  observation_products_use_observation_output_stages: true
+  coadd_products_use_coadd_output_stages: true
+  cases:
+    - id: non_coadd_filtered
+      observation_output_stages: 2
+      coadd_output_stages: 0
+      empirical_product_maps: 6
+      realization_image_writes: 12
+      result: pass_unchanged
+    - id: coadd_unfiltered
+      observation_output_stages: 1
+      coadd_output_stages: 1
+      empirical_product_maps: 6
+      realization_image_writes: 12
+      result: pass_unchanged
+    - id: coadd_filtered
+      observations: 1
+      coadds: 1
+      scientific_maps_each: 3
+      realizations_per_scientific_map: 2
+      observation_output_stages: 1
+      coadd_output_stages: 2
+      empirical_product_maps: 9
+      realization_image_writes: 18
+      result: pass_exact
+
+candidate_change_scope:
+  changed_files:
+    - doc/INTEGRATION_LEDGER.md
+    - doc/REFACTOR_STATUS.md
+    - include/citlali/core/pipeline/noise_execution_plan.h
+    - tests/test_config_scaffold.cpp
+  changed_application_source_files:
+    - include/citlali/core/pipeline/noise_execution_plan.h
+  application_change: realized_provenance_cardinality_only
+  numerical_behavior_changed: false
+  noise_generation_changed: false
+  mapmaking_changed: false
+  coadd_changed: false
+  wcs_changed: false
+  threshold_changed: false
+  output_routing_changed: false
+  normal_finite_domain_arithmetic_order_changed: false
+  accepted_finite_domain_results_changed: false
+
+proposed_package_update:
+  status_scope: bounded_sci_map_001_scientific_contract
+  contract_status: approved
+  implementation_status: conformant
+  validation_status: complete
+  production_status: existing_use_only
+  verdict: accept
+  re_audit_status: complete
+  repair_work_complete: true
+  map_scientific_contract_closed: true
+  f012_evidence_status: accepted_bounded_with_limitations
+  coordinator_ledger_integration_ready: true
+  application_integration_authorized: false
+  production_expansion_authorized: false
+  upstream_production_eligibility: unresolved_open_dependencies
+
+finding_updates:
+  - id: SCI-MAP-001-F001
+    pre_final_reaudit_status: closed_scoped
+    proposed_status: closed
+    disposition: confirm_prior_scoped_closure_not_reopened
+    basis: >-
+      The final bookkeeping diff does not touch the accepted
+      sequential/requested-parallel or concurrent realization path; focused
+      TSan passes 9/9.
+  - id: SCI-MAP-001-F002
+    pre_final_reaudit_status: closed_scoped
+    proposed_status: closed
+    disposition: confirm_prior_scoped_closure_not_reopened
+    basis: >-
+      Validity, finite-positive support, distinct masks, and required-companion
+      behavior are unchanged by the final diff.
+  - id: SCI-MAP-001-F003
+    pre_final_reaudit_status: closed_scoped
+    proposed_status: closed
+    disposition: confirm_prior_scoped_closure_not_reopened
+    basis: >-
+      Binary64 identity, centered admission, and unchanged-state atomicity are
+      outside the final bookkeeping diff and remain covered.
+  - id: SCI-MAP-001-F004
+    pre_final_reaudit_status: open
+    proposed_status: closed
+    disposition: close_after_final_reaudit
+    basis: >-
+      The accepted second-cycle persistence repair is unchanged, and the last
+      coadd-plus-filter provenance defect now records exactly 9 empirical
+      product maps and 18 realization writes.
+  - id: SCI-MAP-001-F005
+    pre_final_reaudit_status: proposed_closed_by_second_cycle_reaudit
+    proposed_status: closed
+    disposition: confirm_second_cycle_closure
+    basis: >-
+      Aggregate/index safety code is unchanged, and the focused overflow,
+      range, and atomicity tests pass at the exact final candidate.
+  - id: SCI-MAP-001-F006
+    pre_final_reaudit_status: closed_scoped
+    proposed_status: closed
+    disposition: confirm_prior_scoped_closure_not_reopened
+    basis: >-
+      Nonprecision coefficient semantics and the absence of unauthorized
+      covariance, uncertainty, or significance claims are unchanged.
+  - id: SCI-MAP-001-F007
+    pre_final_reaudit_status: proposed_closed_by_second_cycle_reaudit
+    proposed_status: closed
+    disposition: confirm_second_cycle_closure
+    basis: >-
+      WCS and threshold paths are unchanged; all 22 production FITS tests pass
+      the owner-amended persistence contract.
+  - id: SCI-MAP-001-F008
+    pre_final_reaudit_status: closed_scoped
+    proposed_status: closed
+    disposition: confirm_prior_scoped_closure_not_reopened
+    basis: >-
+      Lossless one-way identity, threshold, product, membership, and raw-parent
+      provenance remain intact; the corrected counts use the existing
+      serializer.
+  - id: SCI-MAP-001-F009
+    pre_final_reaudit_status: closed_scoped
+    proposed_status: closed
+    disposition: confirm_prior_scoped_closure_not_reopened
+    basis: >-
+      Centered integer embedding, L=I, strict bundle admission, and historical
+      finite-domain coadd arithmetic are unchanged.
+  - id: SCI-MAP-001-F010
+    pre_final_reaudit_status: proposed_closed_by_second_cycle_reaudit
+    proposed_status: closed
+    disposition: confirm_second_cycle_closure
+    basis: >-
+      The eight facts, masks, aliases, exact sidecar authority, aggregate
+      safety, and amended FITS-card relations remain covered without a
+      threshold or coadd arithmetic change.
+  - id: SCI-MAP-001-F011
+    pre_final_reaudit_status: open
+    proposed_status: closed
+    disposition: close_after_final_reaudit
+    basis: >-
+      The previously absent coadd-plus-filter cardinality state now has an
+      exact regression and passes with every proportionate complete local
+      gate, with no required-data skip or unexpected serious record.
+  - id: SCI-MAP-001-F012
+    pre_final_reaudit_status: owner_resolved_bounded
+    proposed_status: closed_bounded_owner_accepted
+    disposition: preserve_only_owner_amended_external_scope
+    basis: >-
+      Accept only exact-ed28 execution/completion, returned product/inventory,
+      visible observation/coadd, and sequential/OpenMP claims; every missing
+      lane remains an explicit limitation and was not rerun.
+  - id: SCI-MAP-001-F013
+    pre_final_reaudit_status: open_conditioned
+    proposed_status: open_conditioned
+    disposition: retain_open_conditioned
+    dependencies:
+      - SCI-ALIGN-001
+      - SCI-CAL-001
+      - SCI-AST-001
+      - SCI-PTC-001
+      - SCI-VAL-001
+    basis: MAP evidence closes none of the five governing dependencies.
+
+local_gates:
+  exact_cli_identity: v4.0.0-3632-gaf0c849ce
+  required_release_build_targets:
+    result: pass
+    targets:
+      - citlali_cli
+      - citlali_test
+      - citlali_safety_test
+      - citlali_science_map_truth_test
+      - citlali_science_map_tsan_test
+      - citlali_science_map_fits_products_test
+  exact_cardinality_policy_cases:
+    result: pass
+    passed: 3
+    failed: 0
+  focused_science_map_truth:
+    result: pass
+    passed: 31
+    failed: 0
+  tsan_focused_science_map_truth:
+    result: pass
+    passed: 9
+    failed: 0
+    sanitizer_reports: 0
+  production_fits_products:
+    result: pass
+    passed: 22
+    failed: 0
+  ctest:
+    result: pass
+    registered: 594
+    enabled_passed: 593
+    failed: 0
+    disabled_unrelated: 1
+  baseline_tool_tests:
+    result: pass
+    passed: 147
+    failed: 0
+  config_preflight:
+    result: pass
+    unit_tests_passed: 127
+    mode_kits_passed: 4
+    compact_compatibility_cases_passed: 8
+    compact_coverage_percent: 100.0
+  validation_ledger:
+    result: pass
+    accepted_records: 60
+  validation_profiles:
+    result: pass
+    active_profiles: 4
+    preparing_profiles: 8
+  science_change_ledger:
+    result: pass
+    changes: 3
+    integration_commits: 5
+  owner_amendment_digest:
+    result: pass
+    current_sha256: 52be19700b73659ba1847012d4cb0766407399cda5899570acb79bf5b45221f3
+    authority_commit_sha256: 52be19700b73659ba1847012d4cb0766407399cda5899570acb79bf5b45221f3
+  candidate_diff_check: pass
+  unexpected_error_or_critical_records: 0
+  required_data_skips: 0
+
+f012_evidence_disposition:
+  sufficient_for_owner_amended_scope: true
+  accepted_claims:
+    - exact_ed28_candidate_execution_and_successful_completion
+    - returned_product_identity_and_inventory
+    - persisted_observation_to_coadd_behavior
+    - sequential_openmp_product_agreement_within_registered_bounds
+  retained_limitations:
+    - independent_raw_manifest_and_sample_ledger
+    - scan_farm_pre_normalization_planes_and_commit_order
+    - wrapper_slurm_environment_collection_and_retrieval_chain
+    - same_case_s_x_observation_realization_files_in_historical_corpus
+  rerun_requested: false
+  external_corpus_touched_by_final_reaudit: false
+
+upstream_production_boundary:
+  production_status: existing_use_only
+  production_eligible: false
+  open_dependencies:
+    - SCI-ALIGN-001
+    - SCI-CAL-001
+    - SCI-AST-001
+    - SCI-PTC-001
+    - SCI-VAL-001
+  map_closure_resolves_dependencies: false
+
+coordinator_effect:
+  canonical_update_required_for_effect: true
+  proposed_decision_record_only: true
+  map_repair_reaudit_chain_complete: true
+  ready_for_coordinator_ledger_integration: true
+  newly_close_findings:
+    - SCI-MAP-001-F004
+    - SCI-MAP-001-F011
+  confirm_second_cycle_closures:
+    - SCI-MAP-001-F005
+    - SCI-MAP-001-F007
+    - SCI-MAP-001-F010
+  confirm_prior_scoped_closures_not_reopened:
+    - SCI-MAP-001-F001
+    - SCI-MAP-001-F002
+    - SCI-MAP-001-F003
+    - SCI-MAP-001-F006
+    - SCI-MAP-001-F008
+    - SCI-MAP-001-F009
+  preserve_closed_bounded_owner_accepted:
+    - SCI-MAP-001-F012
+  retain_open_conditioned:
+    - SCI-MAP-001-F013
+  prohibited_inferences:
+    - map_scientific_contract_closure_authorizes_production_expansion
+    - map_evidence_closes_an_upstream_dependency
+    - missing_f012_lanes_were_observed_or_rerun
+    - af0_is_the_external_campaign_candidate
+    - audit_artifacts_are_a_canonical_ledger_update
+    - coordinator_review_is_optional
