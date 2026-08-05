@@ -460,6 +460,22 @@ class AggregationTests(unittest.TestCase):
         assert summary is not None
         self.assertEqual(summary["decision"]["code"], "G")
 
+    def test_single_map_reports_insufficient_without_failing_aggregation(self) -> None:
+        corpus = self.make_dates(1)
+        corpus.add_map_output("map-0", {network: -0.012 for network in NETWORKS})
+        code, summary = corpus.run()
+        self.assertEqual(code, 0)
+        assert summary is not None
+        self.assertEqual(summary["decision"]["category"], "INSUFFICIENT")
+        variance = summary["variance_components"]
+        self.assertFalse(variance["available"])
+        self.assertEqual(
+            variance["network_adjustment_fit_status"],
+            "insufficient_training_support",
+        )
+        repeatability = agg._read_table(corpus.output / "network_repeatability.csv")
+        self.assertTrue(all(row["available"] == "false" for row in repeatability))
+
     def test_duplicate_inherits_observation_fold(self) -> None:
         corpus = self.make_dates(3)
         corpus.add_manifest_map(

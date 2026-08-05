@@ -67,7 +67,7 @@
     },
     {
       "command": "focused 3C273 aggregation contract test after runner-schema binding repair",
-      "result": "63 focused inventory/runner/aggregation/preparation tests passed. The aggregate loader obtains its required compact-map schema from the same shared RUNNER_SCHEMA contract as the per-map writer, and synthetic per-map fixtures use that shared authority, preventing stale v1/v2 schema disagreement.",
+      "result": "64 focused inventory/runner/aggregation/preparation tests passed. The aggregate loader obtains its required compact-map schema from the same shared RUNNER_SCHEMA contract as the per-map writer, and synthetic per-map fixtures use that shared authority, preventing stale v1/v2 schema disagreement. A one-primary-map corpus publishes explicit unavailable network-adjusted variance/repeatability diagnostics and classifies INSUFFICIENT rather than failing or treating unavailable variance as zero.",
       "status": "pass"
     }
   ],

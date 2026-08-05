@@ -2057,7 +2057,7 @@ def _in_sample_residuals(
 ) -> tuple[FittedCandidate, dict[tuple[str, int], float]]:
     fitted = fit_candidate(model_id, rows, bundles)
     if fitted.fit_status != "fit":
-        raise AggregateError(f"cannot fit corpus diagnostic model {model_id}: {fitted.fit_status}")
+        return fitted, {}
     residuals: dict[tuple[str, int], float] = {}
     for row in rows:
         result = predict_candidate(fitted, row, regime="descriptive_full_corpus", fold_id="all")
@@ -2073,6 +2073,41 @@ def variance_components(
     alpha: float,
 ) -> tuple[list[dict[str, Any]], dict[str, Any], dict[tuple[str, int], float], dict[str, float]]:
     fitted, residuals = _in_sample_residuals("M1_NETWORK", rows, bundles)
+    if fitted.fit_status != "fit":
+        reason = "persistent_network_adjustment_unavailable"
+        records = [
+            {
+                "component": component,
+                "available": False,
+                "reason": reason,
+                "network_adjustment_fit_status": fitted.fit_status,
+                "method": "not fit: insufficient full-corpus network support",
+                "intrinsic_sd_sec": None,
+                "q_statistic": None,
+                "q_dof": None,
+                "pvalue": None,
+                "resolved_beyond_measurement_error": False,
+                "profile_interval_available": False,
+            }
+            for component in (
+                "between_beammap_common",
+                "network_by_beammap_interaction",
+            )
+        ]
+        summary = {
+            "available": False,
+            "reason": reason,
+            "network_adjustment_fit_status": fitted.fit_status,
+            "method": "network-adjusted variance components require a fitted M1_NETWORK model",
+            "between_beammap_intrinsic_sd_sec": None,
+            "between_beammap_pvalue": None,
+            "between_beammap_resolved": False,
+            "network_by_beammap_interaction_sd_sec": None,
+            "network_by_beammap_pvalue": None,
+            "network_by_beammap_resolved": False,
+            "overclaim_warning": "variance components are unavailable; no zero-variance claim is made",
+        }
+        return records, summary, {}, {}
     map_effects: dict[str, float] = {}
     map_variances: dict[str, float] = {}
     between_q = 0.0
@@ -2156,6 +2191,19 @@ def network_repeatability(
     output = []
     for network in sorted({row.network_id for row in rows}):
         selected = [row for row in rows if row.network_id == network]
+        if any((row.map_id, row.network_id) not in residuals for row in selected):
+            output.append({
+                "network_id": network,
+                "available": False,
+                "reason": "persistent_network_adjustment_unavailable",
+                "map_count": len(selected),
+                "independent_group_count": len({row.group_id for row in selected}),
+                "map_centered_mean_sec": None,
+                "observed_repeatability_sd_sec": None,
+                "measurement_error_subtracted_repeatability_sd_sec": None,
+                "missing_map_count": len({row.map_id for row in rows}) - len(selected),
+            })
+            continue
         values = np.asarray([
             residuals[(row.map_id, row.network_id)] - map_effects[row.map_id]
             for row in selected
@@ -2167,6 +2215,8 @@ def network_repeatability(
         intrinsic = math.sqrt(max(0.0, observed**2 - float(np.sum(weights * variances) / np.sum(weights))))
         output.append({
             "network_id": network,
+            "available": True,
+            "reason": None,
             "map_count": len(selected),
             "independent_group_count": len({row.group_id for row in selected}),
             "map_centered_mean_sec": mean,
@@ -3073,6 +3123,16 @@ def _report_text(summary: Mapping[str, Any]) -> str:
         f"{float(sensitivity_maximum):.9g} s"
         if sensitivity_maximum is not None else "unavailable"
     )
+    between_intrinsic = variance.get("between_beammap_intrinsic_sd_sec")
+    interaction_intrinsic = variance.get("network_by_beammap_interaction_sd_sec")
+    between_intrinsic_text = (
+        f"{float(between_intrinsic):.9g} s"
+        if between_intrinsic is not None else "unavailable"
+    )
+    interaction_intrinsic_text = (
+        f"{float(interaction_intrinsic):.9g} s"
+        if interaction_intrinsic is not None else "unavailable"
+    )
     followup_interpretation = str(decision["producer_followup_interpretation"])
     return f"""# SCI-ALIGN-001 3C273 corpus aggregate
 
@@ -3096,8 +3156,8 @@ on-sky scientific impact is deferred to a separate downstream analysis.
 
 ## Variability
 
-- Between-beammap intrinsic SD (method-of-moments): {variance['between_beammap_intrinsic_sd_sec']:.9g} s.
-- Network-by-beammap interaction SD (method-of-moments): {variance['network_by_beammap_interaction_sd_sec']:.9g} s.
+- Between-beammap intrinsic SD (method-of-moments): {between_intrinsic_text}.
+- Network-by-beammap interaction SD (method-of-moments): {interaction_intrinsic_text}.
 - Quantified within-observation timing variation resolved: {str(drift['within_observation_timing_variation_resolved']).lower()}.
 - Raw-counter anomaly maps: {drift['counter_anomaly_map_count']}.
 
