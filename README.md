@@ -119,11 +119,13 @@ The gate writes generated FITS products under `/tmp/citlali-o149101-output`
 and retains the full CLI log under
 `tula_cmake/build/citlali-real-workdir/`.
 
-`citlali --version` reports the source revision/tree state, compiler, C++
-standard, package spec, DAG hash, selected profile, lock SHA-256, and the
-Kidscpp/Tula source identities. The generated NetCDF, FITS, and index products
-retain the relevant provenance fields. Release recipes fetch tag `v4.1.0`;
-the locked source commit is `d751f299d04f33a89de5b955ec6b1230dd1306ad`.
+`citlali --version` reports compiled artifact identity—source revision/tree
+state, compiler, C++ standard, package spec, DAG hash, and Kidscpp/Tula source
+identities—plus the active deployment profile and lock SHA-256 read at runtime.
+Generated NetCDF, FITS, and index products retain the same distinction. The
+current clean-source recipe selects immutable commit
+`91b7febcd55a3bca18d5ef9be725c3acc1ac53f0`; final tag naming is intentionally
+deferred.
 
 Portable package releases do not contain the large observation fixture. Their
 tests use generated inputs and compile the complete installed contract. A

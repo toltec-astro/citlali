@@ -18,7 +18,7 @@ class Citlali(CMakePackage):
     homepage = "https://github.com/toltec-astro/citlali"
     git = "https://github.com/toltec-astro/citlali.git"
 
-    version("4.1.0", commit="d751f299d04f33a89de5b955ec6b1230dd1306ad")
+    version("4.1.0", commit="91b7febcd55a3bca18d5ef9be725c3acc1ac53f0")
 
     variant(
         "openmp",
