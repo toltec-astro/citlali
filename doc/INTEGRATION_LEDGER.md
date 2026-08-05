@@ -10,7 +10,7 @@ ADRs, and validation records.
 | Workstream | Authority | Purpose | Integration rule | State |
 | --- | --- | --- | --- | --- |
 | Refactored application | `codex/refactor-mainline` | Canonical source, tests, configuration, operational behavior, and validation history | Normal application changes land here after their affected gates | Active |
-| SCI-MAP-001 bounded repair | `codex/repair-sci-map-001` from `9aae0e669384c5c0c0dda93debc194d6b8dac787` | Isolated bounded implementation, product/provenance contract, local truth suite, owner-amended F005/output-persistence cycle, and reconciled seven-case external corpus | Fresh exact-repair-SHA re-audit precedes any application-mainline integration; do not merge audit, coordination, or convolve/noise candidates into this lane | Second bounded repair locally verified; re-audit pending; not application authority |
+| SCI-MAP-001 bounded repair | `codex/repair-sci-map-001` from `9aae0e669384c5c0c0dda93debc194d6b8dac787` | Isolated bounded implementation, product/provenance contract, local truth suite, owner-amended F005/output-persistence cycle, final coadd/filter cardinality closeout, and reconciled seven-case external corpus | Fresh exact-repair-SHA re-audit precedes any application-mainline integration; do not merge audit, coordination, or convolve/noise candidates into this lane | Final bookkeeping repair locally verified; final re-audit pending; not application authority |
 | Conan 2 adaptation | `codex/conan2-adaptation` | Port the full application into the accepted Tula/Conan 2 architecture | Incorporate mainline regularly; return only after all build-integration gates pass | Active in `/Users/gwilson/GitHub/citlali-refactor-conan2` |
 | Historical structural refactor | `codex/structural-refactor` at `171487196` | Forensic pointer to the pre-follow-on integration tree | Do not resume as an application authority | Frozen |
 | Historical fruit-loop/raw-IQ topic | `codex/fruit-loop-calibration-reference` at `b02fef613` | Forensic pointer to the topic-named branch before mainline normalization | Do not resume as an application authority | Frozen locally; its existing remote remains historical |
@@ -58,6 +58,13 @@ new exact commits before importing subsequent upstream work.
   fail-closed safety, coadd-enabled observation-realization persistence, and
   the specified production WCS/card/output tests. Keep normal finite-domain
   arithmetic, WCS policy, defaults, and prohibited algorithms unchanged.
+- The second-cycle independent re-audit at
+  `fc26e24e6543d1102f9fcc9bf4e849369b39dd04` proposed F005, F007, and F010
+  closure but retained F004/F011 for one completion-provenance cardinality
+  defect. The repair candidate now counts raw observation stages separately
+  from raw-plus-filtered coadd stages, yielding exactly 18 realization writes
+  and 9 empirical product maps for the audited three-map, two-realization
+  coadd-plus-filter case. This is a candidate result, not canonical closure.
 - The human owner completed all seven `SCI-MAP-001-UNITY-001` cases for exact
   candidate `ed28dafb37f9113c0d3c95297148157129a90886`; do not issue or run a
   duplicate campaign. The read-only local reconciliation is recorded in
@@ -80,9 +87,10 @@ new exact commits before importing subsequent upstream work.
   or VAL.
 - Keep F013 conditioned on `SCI-ALIGN-001`, `SCI-CAL-001`, `SCI-AST-001`,
   `SCI-PTC-001`, and `SCI-VAL-001`. A fresh `codex/reaudit-sci-map-001`
-  worktree assesses F004, F005, F007, F010, and F011 against the amendment and
-  exact repair SHA, records bounded F012 acceptance and limitations, preserves
-  F013 dependencies, and issues the next disposition.
+  worktree assesses F004 and F011 against the final exact repair SHA, confirms
+  or rejects the second-cycle F005/F007/F010 proposed closures against the
+  amendment, records bounded F012 acceptance and limitations, preserves F013
+  dependencies, and issues the next disposition.
 
 ### Conan 2 Adaptation Entry
 

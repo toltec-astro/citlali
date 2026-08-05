@@ -144,21 +144,45 @@ inline void record_noise_run_completed(
             coadd_map_count, noise_count, "coadd realizations");
     const std::size_t total_realization_count =
         observation_realization_count + coadd_realization_count;
-    const std::size_t output_stage_count =
-        filtered_maps_enabled ? std::size_t{2} : std::size_t{1};
-    const std::size_t product_map_count = plan.effective.products_enabled
-        ? checked_noise_count_product(
-              observation_noise_generated
-                      ? observation_map_count + coadd_map_count
-                      : coadd_map_count,
-              output_stage_count, "empirical product maps")
+    const std::size_t observation_output_stage_count =
+        filtered_maps_enabled && !coadd_available ? std::size_t{2}
+                                                  : std::size_t{1};
+    const std::size_t coadd_output_stage_count =
+        coadd_available
+        ? (filtered_maps_enabled ? std::size_t{2} : std::size_t{1})
         : std::size_t{0};
-    const std::size_t realization_image_write_count =
+    const std::size_t observation_product_map_count =
+        plan.effective.products_enabled
+        ? checked_noise_count_product(
+              observation_noise_generated ? observation_map_count
+                                          : std::size_t{0},
+              observation_output_stage_count,
+              "observation empirical product maps")
+        : std::size_t{0};
+    const std::size_t coadd_product_map_count =
+        plan.effective.products_enabled
+        ? checked_noise_count_product(
+              coadd_map_count, coadd_output_stage_count,
+              "coadd empirical product maps")
+        : std::size_t{0};
+    const std::size_t product_map_count =
+        observation_product_map_count + coadd_product_map_count;
+    const std::size_t observation_realization_image_write_count =
         plan.effective.write_realizations
         ? checked_noise_count_product(
-              total_realization_count, output_stage_count,
-              "realization image writes")
+              observation_realization_count,
+              observation_output_stage_count,
+              "observation realization image writes")
         : std::size_t{0};
+    const std::size_t coadd_realization_image_write_count =
+        plan.effective.write_realizations
+        ? checked_noise_count_product(
+              coadd_realization_count, coadd_output_stage_count,
+              "coadd realization image writes")
+        : std::size_t{0};
+    const std::size_t realization_image_write_count =
+        observation_realization_image_write_count +
+        coadd_realization_image_write_count;
 
     plan.realized.reduction_completed = true;
     plan.realized.generation_executed = noise_count > 0;

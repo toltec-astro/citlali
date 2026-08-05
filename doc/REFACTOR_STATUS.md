@@ -149,12 +149,41 @@ compatibility cases, 100% compact-surface coverage, and every typed-boundary
 audit. These are repair-candidate results for fresh independent review, not a
 finding or conformance disposition.
 
-F004, F005, F007, F010, and F011 remain open or pending until the fresh
-exact-repair-SHA re-audit. F009 and F010 remain
-`addressed_pending_reaudit`; production remains `existing_use_only`. F012 is
-owner-accepted only in the amendment's bounded terms. F013 remains conditioned
-on `SCI-ALIGN-001`, `SCI-CAL-001`, `SCI-AST-001`, `SCI-PTC-001`, and
-`SCI-VAL-001`; this repair closes none of them.
+The second-cycle independent re-audit at
+`fc26e24e6543d1102f9fcc9bf4e849369b39dd04` proposed F005, F007, and F010
+for closure, but found one remaining F004/F011 bookkeeping defect: completion
+provenance multiplied both observation and coadd products by the global
+filtered-stage count even though coadd-enabled filtering writes only the raw
+observation stage and writes both raw and filtered coadd stages. Those proposed
+closures are re-audit findings, not coordinator-integrated canonical closure.
+
+The final bounded bookkeeping candidate now applies the already-established
+observation and coadd output-stage counts separately. In the audited one
+observation, one-coadd, three-map, two-realization filtered case it records the
+exact 18 realization writes and 9 empirical product maps; the existing
+non-coadd filtered and coadd unfiltered states remain unchanged. This alters
+only realized provenance cardinality, outside the numerical and output-routing
+paths.
+
+The final-bookkeeping local gates pass: all six required build targets
+(`citlali_cli`, the monolithic test executable, the safety executable, the
+focused truth executable, its ThreadSanitizer build, and the isolated
+production-FITS executable) complete; the exact three-state cardinality test
+selection passes 3/3; 593/593 enabled CTests pass with the one pre-existing
+disabled test unchanged; the focused truth, ThreadSanitizer, and production
+FITS suites pass 31/31, 9/9 without a race report, and 22/22; all 147
+baseline-tool tests pass; and the 127-test config preflight passes all four
+mode kits, eight compact compatibility cases, 100% compact-surface coverage,
+and every typed-boundary audit. These remain repair-candidate results for a
+fresh independent exact-SHA re-audit, not a finding or conformance disposition.
+
+F004 and F011 remain pending the final exact-repair-SHA re-audit. F005, F007,
+and F010 retain only the second-cycle re-audit's proposed closure pending
+canonical disposition. F009 and F010 remain `addressed_pending_reaudit`;
+production remains `existing_use_only`. F012 is owner-accepted only in the
+amendment's bounded terms. F013 remains conditioned on `SCI-ALIGN-001`,
+`SCI-CAL-001`, `SCI-AST-001`, `SCI-PTC-001`, and `SCI-VAL-001`; this repair
+closes none of them.
 
 On 2026-08-01 the versioned human-run campaign package for exact candidate
 `ed28dafb37f9113c0d3c95297148157129a90886` was prepared under

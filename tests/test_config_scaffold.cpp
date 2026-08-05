@@ -2430,6 +2430,39 @@ TEST(config_scaffold, records_naive_coadd_observation_and_coadd_noise_cardinalit
     EXPECT_EQ(*noise.realized.realization_image_write_count, 12U);
 }
 
+TEST(config_scaffold,
+     records_separate_observation_and_coadd_filtered_noise_cardinality) {
+    citlali::config::MapmakingConfig mapmaking_request;
+    mapmaking_request.method = citlali::config::MapMethod::naive;
+    citlali::pipeline::MapmakingExecutionPlan mapmaking;
+    mapmaking.reset_from_request(
+        mapmaking_request, citlali::config::ReductionType::science);
+    mapmaking.begin_iteration();
+    mapmaking.begin_observation(0, "152390", 3, 4.848136811e-6, 3);
+    citlali::pipeline::complete_mapmaking_observation(mapmaking);
+    mapmaking.begin_coadd(3, 3);
+    citlali::pipeline::complete_mapmaking_coadd(mapmaking);
+    citlali::pipeline::record_mapmaking_run_completed(mapmaking);
+    citlali::config::NoiseConfig request;
+    request.enabled = true;
+    request.n_noise_maps = 2;
+    request.products_enabled = true;
+    request.write_realizations = true;
+    citlali::pipeline::NoiseExecutionPlan noise;
+    noise.reset_from_request(request, true);
+
+    citlali::pipeline::record_noise_run_completed(
+        noise, mapmaking, true);
+
+    EXPECT_EQ(*noise.realized.observation_scientific_map_count, 3U);
+    EXPECT_EQ(*noise.realized.observation_noise_realization_count, 6U);
+    EXPECT_EQ(*noise.realized.coadd_scientific_map_count, 3U);
+    EXPECT_EQ(*noise.realized.coadd_noise_realization_count, 6U);
+    EXPECT_EQ(*noise.realized.total_noise_realization_count, 12U);
+    EXPECT_EQ(*noise.realized.empirical_product_map_count, 9U);
+    EXPECT_EQ(*noise.realized.realization_image_write_count, 18U);
+}
+
 TEST(config_scaffold, rejects_noise_completion_before_mapmaking) {
     citlali::pipeline::MapmakingExecutionPlan mapmaking;
     mapmaking.reset_from_request(
