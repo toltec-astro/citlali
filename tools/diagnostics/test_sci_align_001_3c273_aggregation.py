@@ -243,7 +243,7 @@ class SyntheticCorpus:
         pooled = sum(timing.values()) / len(timing)
         status = "partial_core_success_enhanced_failed" if partial else "success"
         summary = {
-            "schema": "sci-align-001-3c273-map-result-v1",
+            "schema": agg.RUNNER_SCHEMA,
             "map_id": map_id,
             "candidate_id": map_id,
             "observation_number": manifest_row["obsnum"],
@@ -263,7 +263,7 @@ class SyntheticCorpus:
         template_sha = agg.sha256_file(self.template)
         manifest_sha = agg.sha256_file(self.manifest)
         result = {
-            "schema": "sci-align-001-3c273-map-result-v1",
+            "schema": agg.RUNNER_SCHEMA,
             "selected_manifest_sha256": manifest_sha,
             "identity": {"candidate_id": map_id},
             "protocol": {"authority_document_sha256": template_sha},

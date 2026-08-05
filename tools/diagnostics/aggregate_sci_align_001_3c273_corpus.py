@@ -36,6 +36,11 @@ import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 from scipy import stats  # noqa: E402
 
+try:
+    from tools.diagnostics.sci_align_001_3c273_common import RUNNER_SCHEMA
+except ModuleNotFoundError:  # direct execution from tools/diagnostics
+    from sci_align_001_3c273_common import RUNNER_SCHEMA  # type: ignore[no-redef]
+
 
 SCHEMA_VERSION = "sci-align-001-3c273-aggregate-v2"
 PROTOCOL_VERSION = "sci-align-001-3c273-frozen-analysis-v2"
@@ -1095,7 +1100,7 @@ def load_map_bundle(
     _verify_checksum_file(directory)
     result = _result_document(directory)
     summary = _load_summary(directory, result)
-    expected_map_schema = "sci-align-001-3c273-map-result-v1"
+    expected_map_schema = RUNNER_SCHEMA
     if result and result.get("schema") != expected_map_schema:
         raise AggregateError(
             f"unsupported compact map result schema in {directory}: {result.get('schema')!r}"

@@ -21,6 +21,7 @@ try:
         RawLinkageError,
         RawMapping,
         ReductionInputs,
+        RUNNER_SCHEMA,
         atomic_write_json,
         atomic_write_text,
         build_common_support,
@@ -48,6 +49,7 @@ except ModuleNotFoundError:  # direct execution from tools/diagnostics
         RawLinkageError,
         RawMapping,
         ReductionInputs,
+        RUNNER_SCHEMA,
         atomic_write_json,
         atomic_write_text,
         build_common_support,
@@ -82,7 +84,7 @@ def _signed_u32(values: np.ndarray) -> np.ndarray:
 
 def _fake_products(candidate: str = "fixture") -> AnalysisProducts:
     summary = {
-        "schema": "sci-align-001-3c273-map-result-v1",
+        "schema": RUNNER_SCHEMA,
         "map_id": candidate,
         "observation_number": 148670,
         "analysis_mode": "core",
@@ -92,7 +94,7 @@ def _fake_products(candidate: str = "fixture") -> AnalysisProducts:
     return AnalysisProducts(
         map_summary=summary,
         map_result={
-            "schema": "sci-align-001-3c273-map-result-v1",
+            "schema": RUNNER_SCHEMA,
             "summary": summary,
             "scope": {"enhanced_analysis_complete": False},
         },

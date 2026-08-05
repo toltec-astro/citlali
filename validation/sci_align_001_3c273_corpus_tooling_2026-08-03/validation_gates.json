@@ -64,6 +64,11 @@
       "command": "focused 3C273 inventory/runner/aggregation/preparation tests after bare-PATH Python resolution repair",
       "result": "63 tests passed. The documented Unity --python python invocation resolves through PATH at script generation and the rendered serial/Slurm scripts bind the resulting executable path; an unavailable bare command fails before any script is written.",
       "status": "pass"
+    },
+    {
+      "command": "focused 3C273 aggregation contract test after runner-schema binding repair",
+      "result": "63 focused inventory/runner/aggregation/preparation tests passed. The aggregate loader obtains its required compact-map schema from the same shared RUNNER_SCHEMA contract as the per-map writer, and synthetic per-map fixtures use that shared authority, preventing stale v1/v2 schema disagreement.",
+      "status": "pass"
     }
   ],
   "no_unity_access": true,
