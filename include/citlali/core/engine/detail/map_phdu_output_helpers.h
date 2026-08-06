@@ -42,11 +42,13 @@ void add_phdu_beammap_observation_section(
     const citlali::config::BeammapIterationConfig &iteration_config,
     const citlali::config::BeammapPhaseStrategyConfig &phase_config,
     const citlali::config::BeammapReferenceConfig &reference_config,
+    citlali::config::BeammapDirectionMode direction_mode,
     Calib &calib, const DateObs &date_obs) {
     citlali::pipeline::add_phdu_beammap_keys_if_needed(
         fits_entry, array_name, logger, reduction_type,
         beammap_fluxes_mjy_beam, beammap_fluxes_mjy_sr,
-        iteration_config, phase_config, reference_config, calib);
+        iteration_config, phase_config, reference_config, direction_mode,
+        calib);
 
     logger->debug("adding obsnums");
     citlali::pipeline::add_phdu_obsnum_keys(fits_entry, mb->obsnums);

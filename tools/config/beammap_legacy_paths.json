@@ -1,7 +1,7 @@
 {
   "schema_version": "citlali-frozen-beammap-config-paths-v1",
-  "path_count": 74,
-  "path_sha256": "23b89ad61e2c318eb2f2a37369968e3079101ff3f52e814ac4c00e786e542f97",
+  "path_count": 75,
+  "path_sha256": "758c8bb5e045c7bc26e06a6c08b4d64edd1bc2fcff198f476e3cb1d0d42d5fb9",
   "config_prefixes": ["beammap"],
   "known_typed_gaps": [],
   "paths": [
@@ -12,6 +12,7 @@
     "beammap.detector_tod_output.n_uniform",
     "beammap.detector_tod_output.subdir_name",
     "beammap.detector_weighting.mode",
+    "beammap.direction_mode",
     "beammap.fitting.fit_radius_fwhm",
     "beammap.flagging.array_lower_fwhm_arcsec.0",
     "beammap.flagging.array_lower_fwhm_arcsec.1",

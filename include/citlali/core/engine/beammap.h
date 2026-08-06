@@ -20,6 +20,7 @@
 #include <citlali/core/engine/engine.h>
 #include <citlali/core/engine/beammap_types.h>
 #include <citlali/core/pipeline/timestream_output_context.h>
+#include <citlali/core/pipeline/beammap_direction_selection.h>
 #include <citlali/core/utils/ecsv_io.h>
 
 using timestream::TCData;
@@ -115,6 +116,13 @@ public:
 
     // vector to store each scan's PTCData
     std::vector<TCData<TCDataKind::PTC,Eigen::MatrixXd>> ptcs0, ptcs;
+
+    // Realized mapmaking-only scan-direction selection. This is populated
+    // after common RTC/PTC processing and is never used to alter upstream
+    // calibration, filtering, cleaning, detector weights, or eligibility.
+    citlali::pipeline::BeammapDirectionSelectionPlan
+        beammap_direction_selection;
+    bool beammap_direction_selection_initialized = false;
 
     // copy of obs map buffer for map iteration
     mapmaking::MapBuffer omb_copy{"omb"};
@@ -759,6 +767,8 @@ public:
         const BeammapDetectorTodSelections &selections);
     void write_detector_specific_ptc_tod(int output_iter);
     void write_detector_table_outputs();
+    void prepare_beammap_direction_selection();
+    bool beammap_direction_scan_selected(Eigen::Index scan_index) const;
     void write_beammap_fit_qc_table(const std::string &apt_filename);
     // main pipeline process
     template <class KidsProc, class RawObs>
@@ -848,6 +858,7 @@ public:
 };
 
 #include <citlali/core/engine/detail/beammap_detector_tod_output_impl.h>
+#include <citlali/core/engine/detail/beammap_direction_selection_impl.h>
 #include <citlali/core/engine/detail/beammap_ptc_product_output_impl.h>
 #include <citlali/core/engine/detail/beammap_apt_table_output_impl.h>
 #include <citlali/core/engine/detail/beammap_detector_table_output_impl.h>

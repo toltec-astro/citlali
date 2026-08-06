@@ -10,6 +10,9 @@ void Beammap::populate_beammap_identity_metadata() {
     calib.apt_meta["obsnum"] = observation_identity.obsnum;
     calib.apt_meta["source"] = telescope.source_name;
     calib.apt_meta["project_id"] = telescope.project_id;
+    calib.apt_meta["beammap_direction_mode"] = std::string{
+        citlali::config::to_string(
+            citlali::pipeline::beammap_config(*this).direction_mode)};
 }
 
 void Beammap::populate_beammap_phase_metadata() {

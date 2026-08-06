@@ -23,8 +23,8 @@ class BeammapBoundaryAuditTest(unittest.TestCase):
     def test_reader_covers_all_frozen_paths(self) -> None:
         state = audit.audit(REPO_ROOT)["reader_coverage"]
         self.assertTrue(state["exact"])
-        self.assertEqual(state["root_count"], 59)
-        self.assertEqual(state["covered_path_count"], 74)
+        self.assertEqual(state["root_count"], 60)
+        self.assertEqual(state["covered_path_count"], 75)
         self.assertEqual(state["missing_paths"], [])
         self.assertEqual(state["extra_roots"], [])
         self.assertTrue(state["mutation_helpers_retired"])
@@ -36,8 +36,8 @@ class BeammapBoundaryAuditTest(unittest.TestCase):
     def test_serializer_covers_all_frozen_paths(self) -> None:
         state = audit.audit(REPO_ROOT)["serializer_coverage"]
         self.assertTrue(state["exact"])
-        self.assertEqual(state["root_count"], 59)
-        self.assertEqual(state["covered_path_count"], 74)
+        self.assertEqual(state["root_count"], 60)
+        self.assertEqual(state["covered_path_count"], 75)
         self.assertEqual(state["missing_paths"], [])
         self.assertEqual(state["extra_roots"], [])
 

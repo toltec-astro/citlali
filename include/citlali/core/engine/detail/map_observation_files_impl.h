@@ -4,6 +4,8 @@
 // Include this only after Engine has been declared.
 
 #include <citlali/core/pipeline/runtime_policy.h>
+#include <citlali/core/pipeline/beammap_direction_selection.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 void Engine::create_obs_map_files() {
     // clear fits vectors for each observation
@@ -22,6 +24,15 @@ void Engine::create_obs_map_files() {
                                 const std::string &filename) {
         citlali::pipeline::append_observation_map_fits_file(
             fits_files, filename, make_fits_io);
+    };
+    auto directional_filename = [&](std::string filename) {
+        if (citlali::config::is_beammap_reduction_type(
+                citlali::pipeline::runtime_reduction_type(*this))) {
+            return citlali::pipeline::beammap_direction_product_filename(
+                std::move(filename),
+                citlali::pipeline::beammap_config(*this).direction_mode);
+        }
+        return filename;
     };
     const bool create_per_obs_outputs =
         citlali::pipeline::should_create_observation_per_obs_outputs(
@@ -43,20 +54,20 @@ void Engine::create_obs_map_files() {
         // array name
         std::string array_name = toltec_io.array_name_map[array];
         // map filename
-        const auto filename =
+        const auto filename = directional_filename(
             citlali::pipeline::observation_output_filename<
                 engine_utils::toltecIO::toltec, engine_utils::toltecIO::map,
                 engine_utils::toltecIO::raw>(
                 toltec_io, raw_dir,
                 citlali::pipeline::runtime_reduction_type(*this),
-                array_name, observation_identity.obsnum, telescope.sim_obs);
+                array_name, observation_identity.obsnum, telescope.sim_obs));
         append_fits_file(map_fits_outputs.obs, filename);
 
         // if noise maps are requested but coadding is not, populate noise fits vector
         if (create_per_obs_outputs) {
             if (create_noise_maps) {
                 // noise map filename
-                const auto noise_filename =
+                const auto noise_filename = directional_filename(
                     citlali::pipeline::observation_output_filename<
                         engine_utils::toltecIO::toltec,
                         engine_utils::toltecIO::noise,
@@ -64,14 +75,14 @@ void Engine::create_obs_map_files() {
                         toltec_io, raw_dir,
                         citlali::pipeline::runtime_reduction_type(*this),
                         array_name,
-                        observation_identity.obsnum, telescope.sim_obs);
+                        observation_identity.obsnum, telescope.sim_obs));
                 append_fits_file(map_fits_outputs.obs_noise, noise_filename);
             }
 
             // map filtering
             if (create_filtered_maps) {
                 // filtered map filename
-                const auto filtered_filename =
+                const auto filtered_filename = directional_filename(
                     citlali::pipeline::observation_output_filename<
                         engine_utils::toltecIO::toltec,
                         engine_utils::toltecIO::map,
@@ -79,13 +90,13 @@ void Engine::create_obs_map_files() {
                         toltec_io, filtered_dir,
                         citlali::pipeline::runtime_reduction_type(*this),
                         array_name,
-                        observation_identity.obsnum, telescope.sim_obs);
+                        observation_identity.obsnum, telescope.sim_obs));
                 append_fits_file(map_fits_outputs.filtered_obs, filtered_filename);
 
                 // filtered noise maps
                 if (create_filtered_noise_maps) {
                     // filtered noise map filename
-                    const auto filtered_noise_filename =
+                    const auto filtered_noise_filename = directional_filename(
                         citlali::pipeline::observation_output_filename<
                             engine_utils::toltecIO::toltec,
                             engine_utils::toltecIO::noise,
@@ -93,7 +104,7 @@ void Engine::create_obs_map_files() {
                             toltec_io, filtered_dir,
                             citlali::pipeline::runtime_reduction_type(*this),
                             array_name,
-                            observation_identity.obsnum, telescope.sim_obs);
+                            observation_identity.obsnum, telescope.sim_obs));
                     append_fits_file(map_fits_outputs.filtered_obs_noise,
                                      filtered_noise_filename);
                 }

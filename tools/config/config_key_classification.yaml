@@ -256,6 +256,11 @@ rules:
     classification: user-facing
     owner: compact
     reason: Common detector-beammap weighting choice.
+  - id: expert-beammap-direction-mode
+    pattern: beammap.direction_mode
+    classification: expert
+    owner: citlali
+    reason: Opt-in SCI-ALIGN diagnostic scan-direction mapmaking selection; the standard default preserves production behavior.
   - id: user-beammap-detector-tod
     pattern: beammap.detector_tod_output.enabled
     classification: user-facing

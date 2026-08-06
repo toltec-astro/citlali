@@ -66,9 +66,9 @@ READER_SOURCES = (
 )
 
 EXPECTED_SCHEMA = "citlali-frozen-beammap-config-paths-v1"
-EXPECTED_PATH_COUNT = 74
+EXPECTED_PATH_COUNT = 75
 EXPECTED_PATH_SHA256 = (
-    "23b89ad61e2c318eb2f2a37369968e3079101ff3f52e814ac4c00e786e542f97"
+    "758c8bb5e045c7bc26e06a6c08b4d64edd1bc2fcff198f476e3cb1d0d42d5fb9"
 )
 EXPECTED_LITERAL_FILES = {
     "include/citlali/core/config/beammap_config_validation.h",

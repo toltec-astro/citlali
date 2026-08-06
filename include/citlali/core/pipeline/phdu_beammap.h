@@ -66,7 +66,9 @@ void add_phdu_beammap_tuning(FitsEntry &fits_entry,
                              const citlali::config::BeammapPhaseStrategyConfig
                                  &phase_config,
                              const citlali::config::BeammapReferenceConfig
-                                 &reference_config) {
+                                 &reference_config,
+                             citlali::config::BeammapDirectionMode
+                                 direction_mode) {
     auto &hdu = fits_entry.pfits->pHDU();
     add_phdu_double_key(fits_entry, array_name, logger,
                         "BEAMMAP.ITER_TOLERANCE", iteration_config.tolerance,
@@ -86,6 +88,9 @@ void add_phdu_beammap_tuning(FitsEntry &fits_entry,
                "Beammap first measurement iteration");
     hdu.addKey("BEAMMAP.IS_DEROTATED", reference_config.derotate,
                "Beammap derotated");
+    hdu.addKey("BEAMMAP.DIRECTION_MODE",
+               std::string{citlali::config::to_string(direction_mode)},
+               "Beammap mapmaking-only scan direction mode");
 }
 
 template <class FitsEntry, class ReferenceValues, class Logger>
@@ -123,6 +128,7 @@ void add_phdu_beammap_keys_if_needed(
     const citlali::config::BeammapIterationConfig &iteration_config,
     const citlali::config::BeammapPhaseStrategyConfig &phase_config,
     const citlali::config::BeammapReferenceConfig &reference_config,
+    citlali::config::BeammapDirectionMode direction_mode,
     Calib &calib) {
     if (!citlali::config::is_beammap_reduction_type(reduction_type)) {
         return;
@@ -134,7 +140,7 @@ void add_phdu_beammap_keys_if_needed(
 
     add_phdu_beammap_tuning(
         fits_entry, array_name, logger, iteration_config, phase_config,
-        reference_config);
+        reference_config, direction_mode);
 
     BeammapReferenceHeaderValues reference_values;
     if (reference_config.subtract_reference_detector) {

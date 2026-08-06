@@ -21,6 +21,8 @@ YAML::Node beammap_sequence_node(const std::vector<Value> &values) {
 inline YAML::Node beammap_config_node(
     const citlali::config::BeammapConfig &config) {
     YAML::Node node;
+    node["direction_mode"] = std::string{
+        citlali::config::to_string(config.direction_mode)};
     node["iter_max"] = config.iteration.max_iterations;
     node["iter_tolerance"] = config.iteration.tolerance;
     node["convergence_radius_arcsec"] =

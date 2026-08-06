@@ -3,11 +3,26 @@
 // Included by beammap_config_loading.h inside namespace citlali::pipeline.
 
 struct BeammapCoreConfigValues {
+    citlali::config::BeammapDirectionMode direction_mode =
+        citlali::config::BeammapDirectionMode::standard;
     citlali::config::BeammapIterationConfig iteration;
     citlali::config::BeammapPhaseStrategyConfig phase_strategy;
     citlali::config::BeammapReferenceConfig reference;
     citlali::config::BeammapRfiMaskConfig rfi_mask;
 };
+
+template <class Config, class MissingKeys, class InvalidKeys>
+citlali::config::BeammapDirectionMode read_beammap_direction_mode(
+    Config &config, MissingKeys &missing_keys, InvalidKeys &invalid_keys) {
+    auto value = std::string{citlali::config::to_string(
+        citlali::config::BeammapDirectionMode::standard)};
+    read_optional_beammap_config_value(
+        config, value, missing_keys, invalid_keys,
+        std::tuple{"beammap", "direction_mode"},
+        {"standard", "left", "right", "all"});
+    const auto parsed = citlali::config::parse_beammap_direction_mode(value);
+    return parsed.value_or(citlali::config::BeammapDirectionMode::standard);
+}
 
 template <class Config, class MissingKeys, class InvalidKeys>
 citlali::config::BeammapIterationConfig read_beammap_iteration_config(
@@ -87,6 +102,8 @@ template <class Config, class MissingKeys, class InvalidKeys>
 BeammapCoreConfigValues read_beammap_core_config(
     Config &config, MissingKeys &missing_keys, InvalidKeys &invalid_keys) {
     BeammapCoreConfigValues values;
+    values.direction_mode =
+        read_beammap_direction_mode(config, missing_keys, invalid_keys);
     values.iteration =
         read_beammap_iteration_config(config, missing_keys, invalid_keys);
     values.phase_strategy =

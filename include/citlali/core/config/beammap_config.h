@@ -16,6 +16,13 @@ enum class BeammapDetectorWeightingMode {
     ptc_after_iter0
 };
 
+enum class BeammapDirectionMode {
+    standard,
+    left,
+    right,
+    all
+};
+
 enum class BeammapPriorAlignmentScope {
     array,
     common
@@ -31,6 +38,14 @@ inline constexpr std::array<EnumName<BeammapDetectorWeightingMode>, 3>
         {BeammapDetectorWeightingMode::constant, "const"},
         {BeammapDetectorWeightingMode::ptc, "ptc"},
         {BeammapDetectorWeightingMode::ptc_after_iter0, "ptc_after_iter0"},
+    }};
+
+inline constexpr std::array<EnumName<BeammapDirectionMode>, 4>
+    beammap_direction_mode_names{{
+        {BeammapDirectionMode::standard, "standard"},
+        {BeammapDirectionMode::left, "left"},
+        {BeammapDirectionMode::right, "right"},
+        {BeammapDirectionMode::all, "all"},
     }};
 
 inline constexpr std::array<EnumName<BeammapPriorAlignmentScope>, 2>
@@ -50,6 +65,11 @@ parse_beammap_detector_weighting_mode(std::string_view value) {
     return parse_enum(value, beammap_detector_weighting_mode_names);
 }
 
+inline std::optional<BeammapDirectionMode>
+parse_beammap_direction_mode(std::string_view value) {
+    return parse_enum(value, beammap_direction_mode_names);
+}
+
 inline std::optional<BeammapPriorAlignmentScope>
 parse_beammap_prior_alignment_scope(std::string_view value) {
     return parse_enum(value, beammap_prior_alignment_scope_names);
@@ -62,6 +82,10 @@ parse_beammap_prior_alignment_support(std::string_view value) {
 
 inline std::string_view to_string(BeammapDetectorWeightingMode value) {
     return enum_name(value, beammap_detector_weighting_mode_names);
+}
+
+inline std::string_view to_string(BeammapDirectionMode value) {
+    return enum_name(value, beammap_direction_mode_names);
 }
 
 inline std::string_view to_string(BeammapPriorAlignmentScope value) {
@@ -174,6 +198,7 @@ struct BeammapFlaggingConfig {
 };
 
 struct BeammapConfig {
+    BeammapDirectionMode direction_mode = BeammapDirectionMode::standard;
     BeammapIterationConfig iteration;
     BeammapPhaseStrategyConfig phase_strategy;
     BeammapReferenceConfig reference;

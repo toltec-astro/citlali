@@ -55,6 +55,7 @@ inline void apply_beammap_typed_config(
     const citlali::config::BeammapFlaggingConfig &flagging,
     const BeammapSensitivityConfigValues &sensitivity) {
     target = citlali::config::BeammapConfig{};
+    target.direction_mode = core_values.direction_mode;
     target.iteration = core_values.iteration;
     target.phase_strategy = core_values.phase_strategy;
     target.reference = core_values.reference;

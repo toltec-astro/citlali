@@ -214,14 +214,15 @@ citlali::pipeline::BeammapExecutionPlan completed_beammap_plan() {
     return plan;
 }
 
-TEST(BeammapConfigSerialization, CoversFrozenSeventyFourLeafSurface) {
+TEST(BeammapConfigSerialization, CoversFrozenSeventyFiveLeafSurface) {
     auto config = complete_beammap_request();
     config.split_fits_by_flag.flag_values = {5, 1};
     const auto node = citlali::pipeline::beammap_config_node(config);
     std::set<std::string> paths;
     collect_yaml_leaf_paths(node, "beammap", paths);
 
-    EXPECT_EQ(paths.size(), 74U);
+    EXPECT_EQ(paths.size(), 75U);
+    EXPECT_EQ(node["direction_mode"].as<std::string>(), "standard");
     EXPECT_NE(paths.find("beammap.flagging.array_lower_fwhm_arcsec.2"),
               paths.end());
     EXPECT_NE(paths.find("beammap.flagging.sens_factors.1"), paths.end());
@@ -600,6 +601,7 @@ TEST(BeammapExecutionPlan, ReadsRawRequestBeforeResolvingEffectivePolicy) {
     auto root = YAML::Load(citlali::citlali_default_config_content);
     auto beammap = root["beammap"];
     beammap["iter_max"] = 6;
+    beammap["direction_mode"] = "left";
     beammap["phase_strategy"]["locator_iter"] = 2;
     beammap["phase_strategy"]["measurement_start_iter"] = 1;
     beammap["split_fits_by_flag"]["flag_values"] =
@@ -621,6 +623,8 @@ TEST(BeammapExecutionPlan, ReadsRawRequestBeforeResolvingEffectivePolicy) {
 
     ASSERT_FALSE(diagnostics.has_errors());
     EXPECT_EQ(read.request.iteration.max_iterations, 6);
+    EXPECT_EQ(read.request.direction_mode,
+              citlali::config::BeammapDirectionMode::left);
     EXPECT_EQ(read.request.phase_strategy.locator_iter, 2);
     EXPECT_EQ(read.request.phase_strategy.measurement_start_iter, 1);
     EXPECT_TRUE(read.request.priors.enabled);
@@ -635,6 +639,8 @@ TEST(BeammapExecutionPlan, ReadsRawRequestBeforeResolvingEffectivePolicy) {
     citlali::pipeline::BeammapExecutionPlan plan;
     plan.reset_from_request(read.request, read.presence, true);
     EXPECT_EQ(plan.requested().phase_strategy.locator_iter, 2);
+    EXPECT_EQ(plan.requested().direction_mode,
+              citlali::config::BeammapDirectionMode::left);
     EXPECT_TRUE(plan.requested().priors.enabled);
     EXPECT_EQ(plan.effective().phase_strategy.locator_iter, 0);
     EXPECT_DOUBLE_EQ(plan.effective().priors.max_d2_iter0, 7.0);
@@ -649,6 +655,8 @@ TEST(BeammapExecutionPlan, ReadsRawRequestBeforeResolvingEffectivePolicy) {
     citlali::pipeline::install_beammap_effective_compatibility_config(
         plan, compatibility);
     EXPECT_EQ(compatibility.phase_strategy.locator_iter, 0);
+    EXPECT_EQ(compatibility.direction_mode,
+              citlali::config::BeammapDirectionMode::left);
     EXPECT_FALSE(compatibility.priors.enabled);
     EXPECT_EQ(compatibility.split_fits_by_flag.flag_values,
               (std::vector<int>{1, 5}));
