@@ -1,0 +1,323 @@
+format_version: 1
+record_type: audit_ledger_update_proposal
+proposal_id: SCI-NOI-001-REAUDIT-2026-08-06
+proposal_date: 2026-08-06
+package_id: SCI-NOI-001
+authority: independent_reauditor
+coordinator_action: review_and_integrate_or_supersede
+
+scope:
+  verified_starting_head: 38ef72860743636f59d226c9e1ff5ff776d0e9c0
+  verified_repair_branch: codex/repair-sci-noi-001
+  verified_repair_branch_tip: 38ef72860743636f59d226c9e1ff5ff776d0e9c0
+  exact_application_candidate: 38ef72860743636f59d226c9e1ff5ff776d0e9c0
+  candidate_parent: d5015fe716971bf8ea617e8a187311bf5af05185
+  coordination_authority_commit: ac43fb4fc950d53e54f0b3ec424bd8b3ee0a6cd4
+  audit_branch: codex/reaudit-sci-noi-001
+  audit_commit: null
+  audit_commit_note: >-
+    The containing Git commit is supplied in the coordinator handoff; a file
+    cannot losslessly contain the hash of the commit that contains itself.
+  included_findings:
+    - SCI-NOI-001-F001
+    - SCI-NOI-001-F002
+    - SCI-NOI-001-F003
+    - SCI-NOI-001-F005
+    - SCI-NOI-001-F008
+  held_finding: SCI-NOI-001-F007
+  excluded_findings:
+    - SCI-NOI-001-F004
+    - SCI-NOI-001-F006
+  canonical_ledger_modified_by_audit: false
+  canonical_handoff_registry_modified_by_audit: false
+  application_source_modified_by_audit: false
+  tests_modified_by_audit: false
+  configuration_modified_by_audit: false
+  original_authorities_modified_by_audit: false
+  integration_performed: false
+  unity_accessed: false
+  local_reduction_executed: false
+  astronomical_evidence_executed_or_requested: false
+  external_corpus_accessed: false
+  task_or_campaign_launched: false
+  delegation_used: false
+  pushed: false
+
+verified_authorities:
+  reaudit_prompt:
+    source_commit: ac43fb4fc950d53e54f0b3ec424bd8b3ee0a6cd4
+    path: doc/audits/prompts/SCI_NOI_001_REAUDIT_PROMPT.md
+    sha256: 7448d748043cdcb7f942688766166b1d3a4ed112421fe0997155a3a10723546b
+  reaudit_authority_manifest:
+    source_commit: ac43fb4fc950d53e54f0b3ec424bd8b3ee0a6cd4
+    path: >-
+      doc/audits/handoffs/SCI-NOI-001/SCI-NOI-001_REAUDIT_AUTHORITY_MANIFEST_2026-08-06.yaml
+    sha256: fbe4cf5c4c783f6bc878ef1037aae7806386294124af1689dd071e04d9abb49e
+  frozen_readiness_record:
+    source_commit: cfe45c7fa2f969e4b5edd0edf4b25e1fd5ed0883
+    path: >-
+      doc/audits/packages/SCI-NOI-001_REAUDIT_DISPATCH_READINESS_2026-08-06.md
+    sha256: f0b64947246bb15fcf957caeaaff7491b95d35138d7a90b70d8c0b8cf4c4882d
+  live_coordination_clarification:
+    source_commit: ac43fb4fc950d53e54f0b3ec424bd8b3ee0a6cd4
+    readiness_record_sha256_with_clarification: 5e40c7ba107d1cacd0c0f276c77e89fa381506e830511fd6a297ef7a657b3055
+    frozen_prompt_and_manifest_unchanged: true
+  owner_decision_brief:
+    source_commit: c21ff272ff09160fb004536504f1820e9dbd08d5
+    sha256: a40b151e161d3d2e5721bf75f6ec126dafae8f275e28ee6efbf0e07f146de471
+  final_audit:
+    source_commit: bf6de403c2c50d55f54b8486424aea5543cdd346
+    sha256: eb38c7b282a95f792759ca71721fdb7731db5a4e392f8a95ac208c33754f7517
+  independent_core_R3:
+    source_commit: 5a027c94ef9fc9c4a6e6cadc84af1c8a550d3508
+    sha256: 27263ab3bf29ac8f098463455e540f13e783241a688ef2bc5cb15b1f2a4319da
+  repair_prompt:
+    source_commit: 4fa99c673d108df47f96d06f420c8101def09c80
+    sha256: 83996bd6ae5ffbf609f14354d237d23465f3ecb1ec6a3d161447b162bfeaa024
+  repair_authority_manifest:
+    source_commit: 4fa99c673d108df47f96d06f420c8101def09c80
+    sha256: 44c6ac459f058ba39e18d01f35e64bfb37bcfec9c116a12a2839f64beac71bae
+
+artifacts:
+  report:
+    path: >-
+      doc/audits/packages/SCI-NOI-001_NARROW_INDEPENDENT_REAUDIT_2026-08-06.md
+    sha256: 9f3bbbec9f96c1ac33057d274f2106729b27ec8ccea8f5a11237d588baceb7b3
+  ledger_proposal:
+    path: >-
+      doc/audits/proposals/SCI-NOI-001_REAUDIT_LEDGER_UPDATE_PROPOSAL_2026-08-06.yaml
+    sha256: null
+    sha256_note: >-
+      The proposal digest is supplied in the coordinator handoff because this
+      file cannot contain its own digest without changing that digest.
+
+repair_assessment:
+  exact_diff_files: 23
+  insertions: 1386
+  deletions: 138
+  application_scope_bounded: true
+  excluded_numerical_algorithm_change_observed: false
+  runtime_configuration_changed: false
+  f001_application_surface: conformant
+  f002_application_surface: conformant
+  f002_required_validation_boundary: nonconformant
+  f003_current_mode_surface: conformant_scoped
+  f005_application_surface: conformant
+  f005_required_validation_boundary: nonconformant
+  f008_explicit_opt_in_lifecycle: conformant_scoped
+  overall_repair_disposition: incomplete_requires_bounded_successor
+
+proposed_package_update:
+  contract_status: proposed
+  implementation_status: nonconformant
+  validation_status: failed
+  production_status: existing_use_only
+  verdict: amend
+  reaudit_status: complete_with_closure_blocker
+  repair_work_complete: false
+  coordinator_ledger_proposal_ready: true
+  application_integration_ready: false
+  application_integration_authorized: false
+  production_expansion_authorized: false
+  successor_repair_required: true
+  successor_reaudit_required: true
+
+closure_blockers:
+  - id: SCI-NOI-001-REAUDIT-B001
+    mapped_findings:
+      - SCI-NOI-001-F002
+      - SCI-NOI-001-F005
+    class: required_validation_boundary_nonconformance
+    evidence_basis: observed_static_source_and_direct_compatibility_probe
+    confidence: high
+    summary: >-
+      The repaired application emits citlali-noise-products-provenance-v2,
+      the versioned SHA256/SplitMix counter identity, and available-zero
+      disabled cardinalities, while the active reduction auditor admits only
+      v1, requires the retired mt19937 identity, and requires disabled counts
+      to be unavailable.
+    consequence: >-
+      An exact-candidate run audited with required noise-products provenance
+      is rejected even when the repaired output is correct; F002 and F005
+      cannot close end to end.
+    bounded_successor_gate:
+      - admit_and_semantically_validate_v2_with_any_intentional_v1_compatibility
+      - validate_compact_policy_partition_order_completion_mode_and_digest_joins
+      - validate_disabled_available_zero_counts_suppressed_promises_and_zero_work
+      - add_enabled_and_disabled_v2_baseline_regressions
+      - retain_and_compare_new_noise_identity_FITS_cards
+      - rerun_proportionate_local_gates_and_fresh_narrow_reaudit
+    does_not_require:
+      - application_algorithm_change
+      - dense_sign_or_correlation_products
+      - estimator_or_count_policy
+      - astronomical_evidence
+      - Unity
+      - local_reduction
+      - production_change
+
+finding_updates:
+  - id: SCI-NOI-001-F001
+    current_status: open
+    proposed_status: closed
+    disposition: close_after_coordinator_review
+    basis: >-
+      Versioned observation/pass/realization/coherence/channel keys are
+      independent of mutable draw order and pass sequential, OpenMP dynamic,
+      scheduling, distinct-observation, dimension, and shape-growth fixtures.
+  - id: SCI-NOI-001-F002
+    current_status: open
+    proposed_status: open
+    disposition: retain_open_pending_required_validator_repair_and_reaudit
+    basis: >-
+      Compact application records and persisted joins conform, but the active
+      required-provenance auditor rejects schema v2 and the new randomization
+      identity, while standard baseline FITS inventories capture none of the
+      nine new identity cards.
+  - id: SCI-NOI-001-F003
+    current_status: open
+    proposed_status: closed
+    disposition: close_bounded_current_source_imprinted_mode
+    retained_conditions:
+      - final_pre_readdition_residual_not_implemented_or_authorized
+      - future_residual_mode_requires_SCI-FRUIT-001_contract
+      - downstream_estimators_consumers_and_count_remain_SCI-NOI-002_owned
+    basis: >-
+      Sidecar and FITS metadata truthfully identify source_imprinted_current as
+      restricted diagnostics in which deterministic signal may remain and
+      negative-source realizations are permitted.
+  - id: SCI-NOI-001-F005
+    current_status: open
+    proposed_status: open
+    disposition: retain_open_pending_required_validator_repair_and_reaudit
+    basis: >-
+      Config and execution code correctly reject enabled zero, force disabled
+      effective/realized zero, and perform no assignment/product work, but the
+      active auditor rejects all eight approved available-zero records.
+  - id: SCI-NOI-001-F008
+    current_status: open
+    proposed_status: closed
+    disposition: close_explicit_opt_in_deterministic_lifecycle_scope
+    basis: >-
+      Beammap signs are populated once per named pass/iteration before active
+      buffer reset and pass order/history tests are stable; standard Beammap
+      remains disabled and its configured count is inert.
+  - id: SCI-NOI-001-F007
+    current_status: open
+    proposed_status: open
+    disposition: retain_open_held_no_current_evidence_execution
+    basis: >-
+      No runtime, astronomical, Unity, or reduction evidence was requested or
+      executed; later admission remains exact-repaired-SHA and
+      FRAMEWORK-NUM-001 conditioned.
+
+excluded_finding_disposition:
+  SCI-NOI-001-F004: untouched_remains_open
+  SCI-NOI-001-F006: untouched_remains_open
+
+beammap_owner_clarification:
+  optional_v4_compatible_capability_retained: true
+  explicit_opt_in_only: true
+  standard_configuration_enabled: false
+  disabled_effective_count: 0
+  disabled_realization_or_noise_product_work: false
+  disabled_configured_count_is_inert: true
+  disabled_configured_count_is_requirement_or_evidence_request: false
+  f008_assessment_scope: deterministic_assignment_lifecycle_when_enabled
+
+local_gates:
+  clean_entry_and_exact_lineage: pass
+  authority_digests: pass
+  build:
+    result: pass
+    configured_fresh_tree: true
+    targets:
+      - citlali_cli
+      - citlali_test
+      - citlali_science_map_fits_products_test
+  cli_identity: v4.0.0-3634-g38ef72860
+  core_cpp_tests:
+    result: pass
+    passed: 567
+    failed: 0
+    unrelated_disabled: 1
+  production_fits_tests:
+    result: pass
+    passed: 22
+    failed: 0
+  focused_noise_realization_contract:
+    result: pass
+    passed: 7
+    failed: 0
+  relevant_ctest:
+    result: pass
+    passed: 15
+    failed: 0
+  python_noise_boundary:
+    result: pass
+    passed: 10
+    failed: 0
+  config_preflight:
+    result: pass
+    unit_tests_passed: 127
+    mode_kits_passed: 4
+    compact_compatibility_cases_passed: 8
+    compact_coverage_percent: 100.0
+  public_header_isolation: pass
+  baseline_auditor_unit_tests:
+    result: pass_but_v1_only_coverage
+    passed: 63
+    failed: 0
+  v2_baseline_compatibility_probe:
+    result: fail_as_closure_blocker
+    schema_v2_accepted: false
+    versioned_randomization_identity_accepted: false
+    disabled_available_zero_count_fields_accepted: 0
+    disabled_available_zero_count_fields_required: 8
+  baseline_fits_identity_inventory_probe:
+    result: fail_as_closure_blocker
+    new_identity_cards: 9
+    captured_by_standard_summary: 0
+    captured_by_standard_comparison: 0
+  required_data_skips: 0
+  reduction_or_external_evidence_used: false
+  final_pre_artifact_worktree_clean: true
+
+f007_evidence_policy:
+  status: held_open_no_current_execution
+  exact_d501_design: retained_reference_only
+  rerun_requested: false
+  later_admission_requires:
+    - exact_repaired_SHA
+    - concrete_unresolved_closure_question
+    - preapproved_comparison_set
+    - preapproved_cost_and_acceptance_policy
+    - FRAMEWORK-NUM-001_approval
+    - subsequent_reaudit_review
+
+outgoing_handoffs: []
+
+coordinator_effect:
+  canonical_update_required_for_effect: true
+  proposal_is_decision_record_only: true
+  repair_candidate_accepted_for_integration: false
+  proposed_close_findings:
+    - SCI-NOI-001-F001
+    - SCI-NOI-001-F003
+    - SCI-NOI-001-F008
+  retain_open_after_reaudit:
+    - SCI-NOI-001-F002
+    - SCI-NOI-001-F004
+    - SCI-NOI-001-F005
+    - SCI-NOI-001-F006
+    - SCI-NOI-001-F007
+  successor_scope: existing_baseline_provenance_and_FITS_validation_boundary_only
+  prohibited_inferences:
+    - green_application_tests_make_the_required_v2_run_auditor_conformant
+    - partial_finding_closure_authorizes_application_integration
+    - partial_finding_closure_authorizes_production_expansion
+    - F003_current_mode_closure_authorizes_a_residual_mode_or_estimator
+    - F008_closure_requires_or_enables_standard_Beammap_noise_work
+    - held_F007_policy_authorizes_evidence_execution
+    - audit_artifacts_are_a_canonical_ledger_update
+    - coordinator_review_is_optional
