@@ -11,6 +11,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from typing import Any
+from unittest import mock
 
 
 HERE = Path(__file__).resolve().parent
@@ -414,6 +415,32 @@ class AggregationTests(unittest.TestCase):
         self.assertEqual(
             agg._checksum_bound_map_directories([complete, remnant]), [complete],
         )
+
+    def test_incomplete_heldout_block_is_not_partially_scored(self) -> None:
+        rows = [
+            agg.NetworkDatum(
+                map_id="map", obsnum=1000, group_id="group", session_id=None,
+                start_utc=None, network_id=network, array_name="a1100",
+                timing_sec=-0.012, timing_se_sec=1.0e-4, slot_sec=None,
+                slot_se_sec=0.0, phase_sec=None, phase_se_sec=0.0,
+                speed_arcsec_s=None, parallel_fwhm_arcsec=None,
+                counter_anomaly=False, raw_linkage_status="config_proven", source_row={},
+            )
+            for network in (0, 1)
+        ]
+        fitted = mock.Mock(model_id="M1_NETWORK")
+        predictions = [
+            {"supported": True, "prediction_status": "supported"},
+            {"supported": False, "prediction_status": "network_level_unavailable"},
+        ]
+        with mock.patch.object(agg, "predict_candidate", side_effect=predictions):
+            result = agg.predict_candidate_block(
+                fitted, rows, {}, regime="outer_logo", fold_id="group",
+            )
+        self.assertEqual(result[0]["prediction_status"], "incomplete_heldout_block")
+        self.assertFalse(result[0]["supported"])
+        self.assertFalse(result[1]["supported"])
+        self.assertTrue(all("predictive_block_nlpd_per_observation" not in row for row in result))
 
     def test_b_network_stable_with_missing_network(self) -> None:
         corpus = self.make_dates()

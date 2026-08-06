@@ -99,6 +99,11 @@
       "command": "headless focused 3C273 aggregation and runner tests; ruff; py_compile; diff check after retry-root merge audit",
       "result": "47 tests passed. Aggregation admits only checksum-complete compact packages, so an incomplete failure remnant cannot conflict with a later checksum-complete retry package for the same frozen map. Static checks and whitespace audit passed.",
       "status": "pass"
+    },
+    {
+      "command": "headless focused 3C273 aggregation and runner tests; ruff; py_compile; diff check after combined 11-of-13 aggregate evidence",
+      "result": "48 tests passed. A held-out prediction block with an unavailable network is explicitly unsupported as a whole rather than partially scored without joint covariance metrics. Static checks and whitespace audit passed.",
+      "status": "pass"
     }
   ],
   "no_unity_access": true,

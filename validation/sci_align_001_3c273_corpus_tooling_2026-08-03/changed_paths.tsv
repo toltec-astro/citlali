@@ -1,5 +1,5 @@
 status	path	scope
-M	tools/diagnostics/aggregate_sci_align_001_3c273_corpus.py	bounded corpus aggregation, omissions/anomaly reporting, explicit two-record pre-analysis support-insufficiency accounting, and checksum-complete retry-package precedence over incomplete remnants
+M	tools/diagnostics/aggregate_sci_align_001_3c273_corpus.py	bounded corpus aggregation, omissions/anomaly reporting, explicit two-record pre-analysis support-insufficiency accounting, checksum-complete retry-package precedence, and complete held-out-block scoring
 M	tools/diagnostics/generate_sci_align_001_3c273_slurm_array.py	checksum-bound serial and Slurm retained-product runners
 M	tools/diagnostics/inventory_sci_align_001_3c273_corpus.py	authoritative inventory, run-root exclusion, canonical selection, availability
 M	tools/diagnostics/run_sci_align_001_3c273_beammap.py	retained-product anomaly artifact emission
@@ -15,7 +15,7 @@ M	include/citlali/core/pipeline/timestream_alignment_state.h	per-interface teles
 M	include/citlali/core/pipeline/timestream_output_provenance.h	admitted-versus-source detector-row provenance validation and serialization
 A	tools/diagnostics/prepare_sci_align_001_148670_reproduction.py	owner-authorized source-isolated 148670 detector-TOD reproduction preparation with absolute fit-report input binding
 A	tools/diagnostics/prepare_sci_align_001_3c273_replay_campaign.py	owner-authorized fixed 16-map source-isolated campaign preparation from 70/72 numbered-config policy/calibration authority, including reviewed support-crop retry subsets
-M	tools/diagnostics/test_sci_align_001_3c273_aggregation.py	aggregation/anomaly regression tests, including strict 11-of-13 pre-analysis-support accounting
+M	tools/diagnostics/test_sci_align_001_3c273_aggregation.py	aggregation/anomaly regression tests, including strict 11-of-13 accounting, retry-package precedence, and incomplete held-out-block controls
 M	tools/diagnostics/test_sci_align_001_3c273_inventory.py	allowlist, canonical, exclusion, scheduler tests
 M	tools/diagnostics/test_sci_align_001_3c273_runner.py	delivered raw anomaly, packet-counter transport, finite predictor-output, and null optional-fit-diagnostic regression coverage
 M	tools/diagnostics/sci_align_001_3c273_common.py	retain non-unit delivered PacketCount increments as raw transport diagnostics without row reassociation; emit undefined within-map predictor correlation and rejected-fit optional diagnostics as unavailable rather than non-finite output

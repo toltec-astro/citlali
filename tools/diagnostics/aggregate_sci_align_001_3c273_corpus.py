@@ -1656,7 +1656,17 @@ def predict_candidate_block(
     block_id = f"{regime}|{fold_id}|{fitted.model_id}"
     for prediction in predictions:
         prediction["predictive_block_id"] = block_id
-    if not predictions or not all(_bool(row.get("supported"), False) for row in predictions):
+    if not predictions:
+        return predictions
+    if not all(_bool(row.get("supported"), False) for row in predictions):
+        # A joint held-out score is defined only for the complete block.  Do
+        # not let a supported subset masquerade as a scored prediction when a
+        # network or predictor is unavailable elsewhere in the same held-out
+        # map/group.
+        for prediction in predictions:
+            if _bool(prediction.get("supported"), False):
+                prediction["supported"] = False
+                prediction["prediction_status"] = "incomplete_heldout_block"
         return predictions
 
     design_rows = []

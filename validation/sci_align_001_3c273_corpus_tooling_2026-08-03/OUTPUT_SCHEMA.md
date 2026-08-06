@@ -181,6 +181,11 @@ but lacks `SHA256SUMS` and is never an aggregate input. A checksum-complete
 fresh package for the same frozen map may be supplied from a later output root;
 the historical failure remains audit evidence only.
 
+Held-out predictions are scored only as complete map/group blocks. If any
+network in a block is unsupported, its otherwise-predictable peers are marked
+`incomplete_heldout_block` rather than being partially scored with invalid
+joint metrics.
+
 Candidate model statistics include weighted held-out timing error,
 between-map intrinsic scatter, persistent network scatter,
 network-by-map interaction, within-map and corpus regressions for both native

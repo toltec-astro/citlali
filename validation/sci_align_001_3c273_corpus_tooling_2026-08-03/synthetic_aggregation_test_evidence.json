@@ -52,7 +52,7 @@
     "sensitivity reductions are compared but never fitted or counted as independent"
   ],
   "tool_identity": {
-    "aggregate_script_sha256": "c982b25581645b44142e1456a0f40918d7101a0ebf7977517a3cde94c5b60726",
+    "aggregate_script_sha256": "349be8350b99383dee13c5b81634699217ae7f77b0abc71792e83f80deb62c84",
     "candidate_model_registry_sha256": "be213755686f582712b460e6c42521b7db76e1dc5210c27cb6f8a5e6e897c82c",
     "test_script_sha256": "547b223cc3b18110c13415ee7350912af659fbf305ef904cea331aec468326f3"
   }
