@@ -36,3 +36,16 @@ remains a held no-current-evidence policy. F004/F006 and all filter, estimator,
 residual, Unity, reduction, integration, and production work remain excluded.
 The re-auditor stops after documentation-only report/proposal commit for
 coordinator review.
+
+## Live owner clarification: optional Beammap capability
+
+The frozen prompt and authority manifest remain byte-for-byte unchanged. The
+live coordination record clarifies that the v4-compatible Beammap
+jackknife/noise-map capability is retained only as an explicit opt-in. Standard
+Beammap configurations remain disabled by default and then perform zero
+realization/noise-product work; any disabled-mode configured count (commonly
+10) is inert and resolves to effective count zero, not a requirement, adequacy
+threshold, operational expectation, or evidence request. Re-audit F008 only
+for deterministic pass/active-map assignment correctness in an explicitly
+enabled capability; this authorizes no generation, validation campaign,
+default, application change, or production expansion.

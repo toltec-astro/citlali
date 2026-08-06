@@ -142,6 +142,13 @@ permitted post-core evidence. The resource-admitted
 request, re-audit execution, reduction, Unity action, integration, or
 production authorization follows from these phase authorizations.
 
+The owner retains the v4-compatible Beammap jackknife/noise-map path as an
+optional capability only. Standard Beammap configurations remain disabled by
+default and do no realization/noise-product work; an inert configured count
+while disabled resolves to effective zero and is not a requirement or adequacy
+claim. F008 remains for deterministic behavior on explicit opt-in, while
+SCI-NOI-002 may assess Beammap only as such an optional recipient.
+
 ## Purpose and non-goals
 
 The program exists to make the claimed estimator, its uncertainty and

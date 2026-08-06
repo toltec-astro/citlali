@@ -4926,7 +4926,7 @@ packages:
         status: proposed_not_requested_costly_work_held_under_FRAMEWORK-NUM-001
       coordinator_decision_brief:
         path: doc/audits/packages/SCI-NOI-001_COORDINATOR_DECISION_BRIEF_2026-08-06.md
-        sha256: a40b151e161d3d2e5721bf75f6ec126dafae8f275e28ee6efbf0e07f146de471
+        sha256: ba73859d406e0968ed12d58ca912acdbf595123cb62da2c0906f450771c45a1d
         status: D001_to_D004_policy_resolved_D001_D002_pending_repair_D003_pending_repair_or_dependent_contract_D004_no_current_evidence_execution
       submitted_proposals:
         ledger:
@@ -4968,7 +4968,16 @@ packages:
         sha256: 44c6ac459f058ba39e18d01f35e64bfb37bcfec9c116a12a2839f64beac71bae
       readiness_record:
         path: doc/audits/packages/SCI-NOI-001_REPAIR_DISPATCH_READINESS_2026-08-06.md
-        sha256: 3cecf6922f888aff6b4e5a79bc1f7a781b710312d75c0279708561972b2db6ae
+        sha256: 9da6bad110e4575bf6e97b18eed2784e0d1ca1d907efcf8fded0d74fae970095
+      Beammap_optional_capability_clarification:
+        status: owner_approved_live_coordination_clarification
+        decision_date: 2026-08-06
+        optional_v4_compatible_capability: retained
+        standard_Beammap_default: disabled_zero_realization_and_noise_product_work
+        disabled_configured_count: inert_effective_count_zero_not_requirement_adequacy_threshold_or_operational_expectation
+        validation_provenance_148670: generation_executed_false
+        F008_scope: explicit_opt_in_deterministic_assignment_lifecycle_only
+        does_not_authorize: [Beammap_noise_generation, validation_campaign, default_change, application_change, production_expansion]
       planned_execution:
         model: gpt-5.6-sol
         effort: ultra
@@ -5024,7 +5033,15 @@ packages:
           sha256: fbe4cf5c4c783f6bc878ef1037aae7806386294124af1689dd071e04d9abb49e
         readiness_record:
           path: doc/audits/packages/SCI-NOI-001_REAUDIT_DISPATCH_READINESS_2026-08-06.md
-          sha256: f0b64947246bb15fcf957caeaaff7491b95d35138d7a90b70d8c0b8cf4c4882d
+          sha256: 5e40c7ba107d1cacd0c0f276c77e89fa381506e830511fd6a297ef7a657b3055
+        late_owner_clarification:
+          decision_date: 2026-08-06
+          applies_to: SCI-NOI-001-F008
+          frozen_prompt_and_manifest: unchanged_byte_authoritative
+          optional_v4_compatible_Beammap_capability: retained_explicit_opt_in_only
+          standard_Beammap_default: disabled_effective_count_zero_no_realization_or_noise_product_work
+          disabled_configured_count: inert_not_requirement_adequacy_threshold_or_operational_expectation
+          re_audit_boundary: deterministic_assignment_lifecycle_only_when_explicitly_enabled
         model: gpt-5.6-sol
         effort: ultra
         parallelism: serial_no_delegation_or_subagents
@@ -5045,7 +5062,7 @@ packages:
       - {id: SCI-NOI-001-F005, class: implementation_defect, severity: P1, evidence_basis: observed_static_source, confidence: high, status: open, owner: noise_configuration_and_lifecycle, owner_decision_id: SCI-NOI-001-D002, owner_decision_status: approved_pending_repair, summary: "Enabled zero realizations are admitted although the approved policy permits the no-ensemble state only when realizations are disabled.", closure_gate: "Implement enabled-implies-requested/effective/realized-count-at-least-one and disabled-only zero-count semantics; verify no realization work/products in disabled pointing/OOF quicklook lanes, then re-audit without selecting count adequacy or a default."}
       - {id: SCI-NOI-001-F006, class: dependency_gap, severity: P1, evidence_basis: observed_static_source, confidence: high, status: open, owner: SCI-NOI-002, summary: "The stack feeds variance, empirical coefficient, S/N, threshold, consumer, and feedback paths without NOI-002 authority.", closure_gate: "NOI-002 decides finite-N normalization, variance/weight formula and labels, S/N/significance/threshold/feedback/aperture use, and production count; consumers are then dispositioned."}
       - {id: SCI-NOI-001-F007, class: evidence_gap, severity: P1, evidence_basis: observed_absence, confidence: high, status: open, owner: coordinator_and_human_evidence_operator, owner_decision_id: SCI-NOI-001-D004, owner_decision_status: approved_no_current_evidence_execution, summary: "No runtime evidence exists. Owner policy prohibits a broad campaign against known-bad d501; the exact-d501 design is held as reference while decisive questions route to repair-level tests.", closure_gate: "After an exact repaired SHA and repair-level identity/provenance tests, admit astronomical or costly comparison evidence only for a concrete unresolved closure question with preapproved comparison set, cost, acceptance policy, FRAMEWORK-NUM-001 approval, and re-audit; no current evidence execution is authorized."}
-      - {id: SCI-NOI-001-F008, class: implementation_defect, severity: P1, evidence_basis: observed_static_source, confidence: high, status: open, owner: Beammap_RNG_and_realization_identity, owner_decision_id: SCI-NOI-001-D001, owner_decision_status: approved_pending_repair, summary: "Beammap retained signs depend on active-map reset overwrite history rather than a named realization key.", closure_gate: "Implement approved once-per-named-pass/iteration generation reused across active slots, test pass/order permutations and sequential/OpenMP repeats, condition JINC on SCI-MAP-002, then re-audit."}
+      - {id: SCI-NOI-001-F008, class: implementation_defect, severity: P1, evidence_basis: observed_static_source, confidence: high, status: open, owner: Beammap_RNG_and_realization_identity, owner_decision_id: SCI-NOI-001-D001, owner_decision_status: approved_pending_repair, summary: "For the retained optional explicitly enabled Beammap capability, signs depend on active-map reset overwrite history rather than a named realization key. Standard disabled Beammap configurations perform no realization/noise-product work.", closure_gate: "For explicit opt-in only, implement approved once-per-named-pass/iteration generation reused across active slots, test pass/order permutations and sequential/OpenMP repeats, condition JINC on SCI-MAP-002, then re-audit; disabled-mode configured count remains inert and effective zero."}
     unresolved_scientific_decisions: []
     owner_decision_set_status: D001_to_D004_policy_resolved_implementation_findings_remain_open
     owner_decisions:
@@ -5058,6 +5075,10 @@ packages:
           detector_channel_identity: stable_observation_scoped_realized_channel_identity_not_design_detector_match
           distinct_observation_assignments: independent_required_current_prefix_reuse_not_desired
           Beammap_generation_scope: once_per_named_mapmaking_pass_or_iteration_reused_across_active_map_slots_order_independent
+          Beammap_noise_map_capability: retained_optional_v4_compatible_explicit_opt_in
+          Beammap_standard_default: disabled_zero_realization_and_noise_product_work
+          Beammap_disabled_configured_count: inert_effective_count_zero_not_requirement_adequacy_threshold_or_operational_expectation
+          Beammap_validation_provenance_148670: generation_executed_false
           execution_identity: sequential_OpenMP_and_scheduling_repeatability_required
           compact_provenance: [key_policy_and_version, stable_ordering_and_partition, completed_realization_IDs, ensemble_mode, digest_joins]
           dense_identity_products: not_required
@@ -5309,7 +5330,7 @@ packages:
         sha256: 1de9dbc5f9aca42f5a9f9b1f05b7b14c092ee9b443946d0c52eeb27c8da117b0
       readiness_record:
         path: doc/audits/packages/SCI-NOI-002_DISPATCH_READINESS_2026-08-06.md
-        sha256: 0bf1750a1636b1779b4deb895568212f19e64314a7010834a87c2cc97d9fdcbb
+        sha256: 460fd3544fa99ffc786078acf4e511c673ffbb1c341ca26f4f7e8c51cffe3897
       pre_core_authority_ids: [SCI-NOI-002-XAUD-002]
       post_core_evidence_ids: [SCI-NOI-002-XAUD-001]
       planned_phases:
@@ -5360,6 +5381,8 @@ packages:
           parallelism: serial_no_delegation_or_subagents
           model: gpt-5.6-sol
           effort: ultra
+          Beammap_recipient_scope: optional_explicitly_enabled_only
+          disabled_Beammap_configured_count: inert_effective_zero_no_routine_use_or_adequacy_inference
       ultra_trigger: >-
         finite_N_normalization_covariance_weight_consumer_aperture_and_count
         policy_are_distinct_hard_investigations_requiring_one_independent

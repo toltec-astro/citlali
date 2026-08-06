@@ -68,6 +68,18 @@ feedback/aperture/count policy remains NOI-002; and no astronomical evidence
 or residual FRUIT implementation is admitted. The repair changes no production
 default or status.
 
+## Live owner clarification: optional Beammap capability
+
+The owner retains the v4-compatible Beammap jackknife/noise-map capability as
+an optional feature, while standard Beammap configurations remain disabled by
+default and perform zero realization/noise-product work. A configured count in
+disabled mode (commonly 10) is inert and resolves to effective count zero; it
+is not a Beammap requirement, adequacy threshold, operational expectation, or
+evidence request. F008 therefore remains limited to deterministic lifecycle
+correctness when a user explicitly enables the capability. This record changes
+no repair scope, implementation, default, validation campaign, or production
+status.
+
 ## Required execution profile and return
 
 The recommended task is `gpt-5.6-sol`, Ultra, serial with no delegation. The

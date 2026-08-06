@@ -83,3 +83,9 @@ condition on R3 but cannot repair NOI-001. Count 64 remains optional validation
 capacity only. MAP `weight_I` is nonprecision; JINC remains SCI-MAP-002-
 conditioned; MAP remains PTC/VAL-conditioned and `existing_use_only`; FLT and
 FRUIT remain separate and unopened by this readiness record.
+
+Beammap is an optional, explicitly enabled recipient only. Standard Beammap
+configurations disable realizations/noise products, so an inert configured
+disabled-mode count (commonly 10) resolves to effective count zero and cannot
+be used to infer routine Beammap use or any adequacy requirement. This adds no
+Beammap evidence, default, implementation, or production authorization.

@@ -311,6 +311,16 @@ post-core; the task must not inspect or use the NOI-001 repair as its audit
 target. Neither authorization permits evidence, Unity, integration, or
 production change.
 
+Owner clarification preserves the v4-compatible Beammap jackknife/noise-map
+path as optional while standard Beammap configurations remain disabled by
+default and perform zero realization/noise-product work. A configured count in
+disabled mode (often 10) is inert and resolves to effective zero, not a
+Beammap requirement, adequacy threshold, operational expectation, or evidence
+request. F008 therefore remains a deterministic-lifecycle obligation only for
+explicit opt-in; SCI-NOI-002 may consider Beammap only as that optional
+recipient. This authorizes no generation, validation campaign, default or
+application change, or production expansion.
+
 ## 2026-07-31 SCI-CAL-001 Audit Coordination
 
 The independent Tier A `SCI-CAL-001` audit is integrated on the scientific-

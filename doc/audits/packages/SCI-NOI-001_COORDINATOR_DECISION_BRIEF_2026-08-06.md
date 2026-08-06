@@ -43,6 +43,18 @@ request, reduction, Unity action, or production change is authorized.
    N-by-N Q matrices are not required. This selects no RNG implementation or
    seed, repair SHA, production count, estimator, product validity, evidence
    run, or production authorization.
+
+   **Beammap/noise-map clarification — owner-approved 2026-08-06.** Retain the
+   optional v4-compatible Beammap jackknife/noise-map capability, but keep
+   standard Beammap configurations disabled by default. A disabled mode does
+   zero realization and noise-product work; any configured disabled-mode count
+   (commonly 10) is inert, resolves to effective count zero, and is neither a
+   Beammap requirement, adequacy threshold, operational expectation, nor an
+   evidence request. F008 remains in the bounded repair/re-audit scope solely
+   for an explicitly enabled use: its once-per-named-pass/iteration assignment
+   lifecycle must then be deterministic and correct. This clarification
+   authorizes no Beammap generation, validation campaign, default change,
+   application change, or production expansion.
 2. **Zero-realization admission (F005) — approved 2026-08-06, pending
    repair.** When noise realizations are enabled, requested/effective/realized
    count must be at least one; enabled with zero is invalid. Disabled is the
