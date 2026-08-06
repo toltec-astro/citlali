@@ -78,6 +78,17 @@ def _json_value(value: Any, location: str = "$") -> Any:
     return value
 
 
+def _finite_or_none(value: float | np.floating[Any]) -> float | None:
+    """Represent an unavailable optional diagnostic as JSON null, never NaN.
+
+    A rejected fit can have no invertible covariance or no admitted samples in
+    one direction.  Those are retained diagnostic facts, not a reason to
+    serialize a non-finite pseudo-measurement or abort a whole map analysis.
+    """
+    result = float(value)
+    return result if math.isfinite(result) else None
+
+
 def canonical_json(value: Any) -> str:
     """Return the byte-stable JSON representation used in identity digests."""
 
@@ -1460,7 +1471,7 @@ def raw_residual_summary(mapping: RawMapping) -> dict[str, Any]:
             / (scale * denominator)
         )
     else:
-        slope = math.nan
+        slope = None
     result = {
         "network_id": mapping.network,
         "raw_linkage_status": "proved_original_row_one_to_one",
@@ -2173,29 +2184,29 @@ def fit_detector_model(
         "quality": quality,
         "reason": "accepted" if quality else "frozen_quality_rule_failed",
         "n_samples": int(z.size),
-        "amplitude": float(values[0]),
-        "background": float(values[6]),
-        "background_x": float(values[7]),
-        "background_y": float(values[8]),
-        "centroid_x_arcsec": float(values[1]),
-        "centroid_y_arcsec": float(values[2]),
-        "centroid_x_sigma_arcsec": float(math.sqrt(max(0.0, center_covariance[0, 0])))
-        if np.isfinite(center_covariance[0, 0])
-        else math.nan,
-        "centroid_y_sigma_arcsec": float(math.sqrt(max(0.0, center_covariance[1, 1])))
-        if np.isfinite(center_covariance[1, 1])
-        else math.nan,
-        "centroid_xy_cov_arcsec2": float(center_covariance[0, 1])
-        if np.isfinite(center_covariance[0, 1])
-        else math.nan,
-        "major_fwhm_arcsec": float(major),
-        "minor_fwhm_arcsec": float(minor),
-        "position_angle_deg": float(math.degrees(position_angle)),
-        "ellipticity": float(major / minor - 1.0),
-        "residual_mad_sigma": residual_mad,
-        "amplitude_over_residual_mad": amplitude_snr,
-        "cost": float(result.cost),
-        "optimality": float(result.optimality),
+        "amplitude": _finite_or_none(values[0]),
+        "background": _finite_or_none(values[6]),
+        "background_x": _finite_or_none(values[7]),
+        "background_y": _finite_or_none(values[8]),
+        "centroid_x_arcsec": _finite_or_none(values[1]),
+        "centroid_y_arcsec": _finite_or_none(values[2]),
+        "centroid_x_sigma_arcsec": _finite_or_none(
+            math.sqrt(max(0.0, center_covariance[0, 0]))
+            if np.isfinite(center_covariance[0, 0]) else math.nan
+        ),
+        "centroid_y_sigma_arcsec": _finite_or_none(
+            math.sqrt(max(0.0, center_covariance[1, 1]))
+            if np.isfinite(center_covariance[1, 1]) else math.nan
+        ),
+        "centroid_xy_cov_arcsec2": _finite_or_none(center_covariance[0, 1]),
+        "major_fwhm_arcsec": _finite_or_none(major),
+        "minor_fwhm_arcsec": _finite_or_none(minor),
+        "position_angle_deg": _finite_or_none(math.degrees(position_angle)),
+        "ellipticity": _finite_or_none(major / minor - 1.0),
+        "residual_mad_sigma": _finite_or_none(residual_mad),
+        "amplitude_over_residual_mad": _finite_or_none(amplitude_snr),
+        "cost": _finite_or_none(result.cost),
+        "optimality": _finite_or_none(result.optimality),
         "nfev": int(result.nfev),
     }
 
@@ -2351,24 +2362,24 @@ def map_fit(
         "reason": "accepted" if quality else "fit_or_covariance_failed",
         "n_pixels": int(np.sum(valid)),
         "n_samples": int(np.sum(counts)),
-        "amplitude": float(fitted[0]),
-        "centroid_x_arcsec": float(fitted[1]),
-        "centroid_y_arcsec": float(fitted[2]),
-        "centroid_x_sigma_arcsec": float(math.sqrt(max(0.0, covariance[1, 1])))
-        if np.isfinite(covariance[1, 1])
-        else math.nan,
-        "centroid_y_sigma_arcsec": float(math.sqrt(max(0.0, covariance[2, 2])))
-        if np.isfinite(covariance[2, 2])
-        else math.nan,
-        "centroid_xy_cov_arcsec2": float(covariance[1, 2])
-        if np.isfinite(covariance[1, 2])
-        else math.nan,
-        "major_fwhm_arcsec": float(major),
-        "minor_fwhm_arcsec": float(minor),
-        "position_angle_deg": float(np.degrees(angle)),
-        "ellipticity": float(major / minor - 1.0),
-        "residual_mad_sigma": float(residual_mad),
-        "cost": float(result.cost),
+        "amplitude": _finite_or_none(fitted[0]),
+        "centroid_x_arcsec": _finite_or_none(fitted[1]),
+        "centroid_y_arcsec": _finite_or_none(fitted[2]),
+        "centroid_x_sigma_arcsec": _finite_or_none(
+            math.sqrt(max(0.0, covariance[1, 1]))
+            if np.isfinite(covariance[1, 1]) else math.nan
+        ),
+        "centroid_y_sigma_arcsec": _finite_or_none(
+            math.sqrt(max(0.0, covariance[2, 2]))
+            if np.isfinite(covariance[2, 2]) else math.nan
+        ),
+        "centroid_xy_cov_arcsec2": _finite_or_none(covariance[1, 2]),
+        "major_fwhm_arcsec": _finite_or_none(major),
+        "minor_fwhm_arcsec": _finite_or_none(minor),
+        "position_angle_deg": _finite_or_none(np.degrees(angle)),
+        "ellipticity": _finite_or_none(major / minor - 1.0),
+        "residual_mad_sigma": _finite_or_none(residual_mad),
+        "cost": _finite_or_none(result.cost),
     }
 
 
@@ -2376,11 +2387,13 @@ def fit_timing(
     left: Mapping[str, Any],
     right: Mapping[str, Any],
     axis: np.ndarray,
-    v_left: float,
-    v_right: float,
+    v_left: float | None,
+    v_right: float | None,
 ) -> dict[str, Any]:
     if not left.get("quality") or not right.get("quality"):
         return {"quality": False, "reason": "left_or_right_fit_failed"}
+    if v_left is None or v_right is None:
+        return {"quality": False, "reason": "direction_speed_unavailable"}
     denominator = v_right - v_left
     if not math.isfinite(denominator) or abs(denominator) <= np.finfo(float).eps:
         return {"quality": False, "reason": "direction_speed_denominator_invalid"}
@@ -2829,7 +2842,7 @@ def _timing_row(
     group: str,
     left: Mapping[str, Any],
     right: Mapping[str, Any],
-    speeds: Mapping[str, float],
+    speeds: Mapping[str, float | None],
     axis: np.ndarray,
 ) -> dict[str, Any]:
     return {
@@ -3222,7 +3235,7 @@ def analyze_reduction(
                         "quality": False,
                         "reason": "no_selected_direction_samples",
                     }
-                    direction_speeds[direction] = math.nan
+                    direction_speeds[direction] = None
                 else:
                     direction_speeds[direction] = float(np.median(speed_values))
                 direction_fits[direction] = fit

@@ -882,6 +882,7 @@ def _declared_preanalysis_insufficiencies(
     registry_by_map: Mapping[str, Mapping[str, Any]],
     *,
     selected_manifest_sha256: str,
+    eligible_map_ids: set[str],
 ) -> dict[str, dict[str, Any]]:
     """Load only the two pre-registered non-timing support failures.
 
@@ -907,6 +908,12 @@ def _declared_preanalysis_insufficiencies(
             map_id = str(failure.get("candidate_id", ""))
             if map_id not in registry_by_map:
                 raise AggregateError(f"failure evidence map is absent from frozen partition: {map_id}")
+            # A successful compact package in a later fresh root supersedes a
+            # prior failed attempt.  Historical failure records must remain
+            # auditable, but cannot block the two-record missing-output
+            # allowance or be reclassified as a current omission.
+            if map_id not in eligible_map_ids:
+                continue
             if map_id in records:
                 raise AggregateError(f"multiple failure records for map {map_id}")
             if failure.get("schema") != FAILURE_SCHEMA:
@@ -3340,6 +3347,7 @@ def command_run(args: argparse.Namespace) -> int:
         declared_by_map = _declared_preanalysis_insufficiencies(
             args.map_output_root, registry_by_map,
             selected_manifest_sha256=manifest_sha,
+            eligible_map_ids=set(missing),
         )
         declared_kinds = [record["failure_kind"] for record in declared_by_map.values()]
         if len(declared_by_map) > 2 or len(set(declared_kinds)) != len(declared_kinds):

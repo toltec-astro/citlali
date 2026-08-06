@@ -171,6 +171,11 @@ matched detector-cohort support.  It preserves the selected manifest, records
 the binding and evidence digests in `corpus_summary.json` and
 `known_omissions.json`, and cannot waive an arbitrary task failure.
 
+Optional diagnostics from a rejected fit (for example, an unavailable
+centroid covariance or direction speed) are represented as JSON `null` and an
+empty CSV cell. A non-finite scientific measurement remains prohibited; the
+runner does not replace it with a numeric value or use it in timing inference.
+
 Candidate model statistics include weighted held-out timing error,
 between-map intrinsic scatter, persistent network scatter,
 network-by-map interaction, within-map and corpus regressions for both native

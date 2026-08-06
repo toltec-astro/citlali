@@ -89,6 +89,11 @@
       "command": "headless focused 3C273 inventory, runner, aggregation, and replay-campaign tests; ruff; py_compile; diff check",
       "result": "66 tests passed. Aggregation defaults to requiring every frozen primary output; the explicit support-insufficiency route accepts at most one manifest-bound left/right-scan ContractError and one manifest-bound detector-cohort ContractError, records the selected-versus-evaluable counts and evidence digests, and rejects arbitrary missing outputs. Static checks and whitespace audit passed.",
       "status": "pass"
+    },
+    {
+      "command": "headless focused 3C273 runner and aggregation tests; ruff; py_compile; diff check after campaign13 retry evidence",
+      "result": "46 tests passed. Rejected-fit optional covariance and direction-speed diagnostics serialize as null/empty rather than NaN, without weakening the deterministic non-finite scientific-value guard. Aggregation ignores a superseded historical failure only when a fresh compact result for that same frozen map is supplied from a later root; only currently missing maps may use the two-record support-insufficiency allowance.",
+      "status": "pass"
     }
   ],
   "no_unity_access": true,

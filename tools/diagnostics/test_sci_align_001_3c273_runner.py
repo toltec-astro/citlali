@@ -22,6 +22,7 @@ try:
         RawMapping,
         ReductionInputs,
         RUNNER_SCHEMA,
+        _finite_or_none,
         atomic_write_json,
         atomic_write_text,
         build_common_support,
@@ -30,6 +31,7 @@ try:
         checksum_lines,
         classify_scan_direction,
         explicit_missing_network_rows,
+        fit_timing,
         group_selected_scans,
         linear_predictor_diagnostic,
         parse_manifest,
@@ -51,6 +53,7 @@ except ModuleNotFoundError:  # direct execution from tools/diagnostics
         RawMapping,
         ReductionInputs,
         RUNNER_SCHEMA,
+        _finite_or_none,
         atomic_write_json,
         atomic_write_text,
         build_common_support,
@@ -59,6 +62,7 @@ except ModuleNotFoundError:  # direct execution from tools/diagnostics
         checksum_lines,
         classify_scan_direction,
         explicit_missing_network_rows,
+        fit_timing,
         group_selected_scans,
         linear_predictor_diagnostic,
         parse_manifest,
@@ -218,6 +222,15 @@ class CounterAndProtocolTests(unittest.TestCase):
     def test_deterministic_json_rejects_nonfinite_values(self) -> None:
         with self.assertRaisesRegex(ContractError, r"non-finite.*\$\.value"):
             canonical_json({"value": np.float64(np.nan)})
+
+    def test_unavailable_fit_diagnostics_use_null_without_permitting_nan(self) -> None:
+        self.assertIsNone(_finite_or_none(np.nan))
+        self.assertIsNone(_finite_or_none(np.inf))
+        self.assertEqual(canonical_json({"optional": _finite_or_none(np.nan)}), '{"optional":null}')
+        self.assertEqual(
+            fit_timing({"quality": True}, {"quality": True}, np.array([1.0, 0.0]), None, 1.0),
+            {"quality": False, "reason": "direction_speed_unavailable"},
+        )
 
     def test_linear_predictor_reports_constant_response_as_unavailable(self) -> None:
         diagnostic = linear_predictor_diagnostic(
