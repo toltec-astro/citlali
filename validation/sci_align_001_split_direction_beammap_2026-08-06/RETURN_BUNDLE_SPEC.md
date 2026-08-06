@@ -14,6 +14,8 @@ The return must contain:
 - standard, `_left`, and `_right` map FITS, Beammap APT, and fit-QC ECSV files
   wherever the corresponding ordinary product is enabled;
 - each observation's `beammap_direction_scan_registry_all.csv`;
+- each generated `review_o*_a1100/` directory, including its multipage PDF,
+  selected-detector ECSV, detector-metric ECSV, manifest, and `SHA256SUMS`;
 - executable hash, repository commit, realized config/provenance products,
   final recursive checksum manifest, and Slurm `MaxRSS` evidence;
 - `OWNER_NOTES.txt` identifying scheduler interruption, retry, or unexpected

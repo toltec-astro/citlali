@@ -66,10 +66,28 @@ Directional siblings in the same `raw/` or `filtered/` directory carry
 `_left` or `_right`. FITS primary headers and APT metadata record the realized
 `standard`, `left`, or `right` identity.
 
-This change creates map/APT inputs for later comparison. It does not implement
-centroid comparison, expectation manifests, null maps, bootstraps, difference
-maps, overlays, timing conversion, or mitigation. These products alone do not
-authorize a timestamp correction or a claim of physical clock failure.
+The Citlali change creates map/APT inputs for later comparison; it does not
+alter timestamps or implement a mitigation. A companion read-only diagnostic,
+`tools/diagnostics/render_sci_align_001_split_direction_beammaps.py`, consumes
+one completed `all` reduction and creates the first visual review product. It:
+
+- selects up to 100 detectors from a requested array using only standard-APT
+  quality and S/N (or a supplied, pre-existing UID list), never a measured
+  left/right displacement;
+- renders the standard, left, and right maps on their common absolute WCS,
+  without recentering, with fitted centroids and the positive scan direction;
+- renders common-coordinate contours, a left-minus-right map, and an
+  along-scan profile for each detector;
+- reports right-minus-left parallel and perpendicular fitted-centroid
+  separations and a fit-derived timing-equivalent diagnostic; and
+- writes a multipage PDF, ECSV selection and metric tables, a hash-bound input
+  manifest, and output checksums.
+
+The default is one detector per page. The only other supported layout is two
+detectors per page; the program rejects larger values. The fit-derived timing
+uncertainty uses the diagonal left/right centroid-fit errors only and is not a
+claim that map pixels or detectors are independent. These diagnostic products
+do not authorize a timestamp correction or a claim of physical clock failure.
 
 See `UNITY_RUNBOOK.md` for the owner-run 150819-first campaign and
 `RETURN_BUNDLE_SPEC.md` for return evidence.

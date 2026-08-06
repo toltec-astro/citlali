@@ -57,9 +57,12 @@ worktree is dirty, or the new root already exists.
 
 ## 2. Render configs and Slurm scripts
 
-This preparation changes only `beammap.direction_mode` and
-`runtime.output_dir`. It verifies detector grouping, launches nothing, and
-does not create either observation output root.
+This preparation sets `beammap.direction_mode`, a new `runtime.output_dir`, and
+the explicit compatibility value
+`runtime.crop_detector_to_telescope_support: false`. The last value preserves
+the historical behavior of the source replay configs while satisfying the
+new typed-config requirement. It verifies detector grouping, launches nothing,
+and does not create either observation output root.
 
 ```bash
 python - "$SCI_SOURCE_CONFIG_150819" "$SCI_SOURCE_CONFIG_148670" \
@@ -92,8 +95,12 @@ root.mkdir(parents=True)
 (root / "preparation").mkdir()
 (root / "jobs").mkdir()
 manifest = {
-    "schema": "sci-align-001-split-direction-preparation-v3",
+    "schema": "sci-align-001-split-direction-preparation-v4",
     "execution_model": "one shared timestream pass; three detector map buffers",
+    "compatibility_policy": {
+        "runtime.crop_detector_to_telescope_support": False,
+        "reason": "preserve the source replay's historical non-cropping behavior",
+    },
     "source_products_modified": False,
     "citlali": {"path": str(citlali), "sha256": sha256(citlali)},
     "runs": [],
@@ -115,6 +122,7 @@ for obsnum in (150819, 148670):
     config_path = root / "preparation" / f"citlali_o{obsnum}_all.yaml"
     beammap["direction_mode"] = "all"
     runtime["output_dir"] = str(output_root)
+    runtime["crop_detector_to_telescope_support"] = False
     config_path.write_text(yaml.safe_dump(config, sort_keys=False))
     script = root / "jobs" / f"run_o{obsnum}_all.sbatch"
     script.write_text("\n".join([
@@ -146,6 +154,7 @@ for obsnum in (150819, 148670):
         "output_root": str(output_root),
         "submit_script": str(script),
         "requested_memory": "192G",
+        "crop_detector_to_telescope_support": False,
     })
 (root / "preparation" / "manifest.json").write_text(
     json.dumps(manifest, indent=2, sort_keys=True) + "\n")
@@ -213,6 +222,38 @@ map, APT, and fit-QC siblings in the same reduction tree. Search stdout and
 stderr for unexpected error-level messages. Preserve and stop on failure; do
 not retry in place.
 
+### Render the visual review product
+
+Run this only after the reduction and product checks above have completed. It
+is read-only with respect to the reduction. The default makes one page per
+detector; `--detectors-per-page 2` is the only denser supported layout.
+
+```bash
+export SCI_VIZ_ROOT="$SCI_SPLIT_ROOT/review_o150819_a1100"
+export SCI_VIZ_CACHE="$SCI_SPLIT_ROOT/_visualization_cache"
+test ! -e "$SCI_VIZ_ROOT"
+mkdir -p "$SCI_VIZ_CACHE/matplotlib" "$SCI_VIZ_CACHE/xdg"
+
+OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+MPLBACKEND=Agg MPLCONFIGDIR="$SCI_VIZ_CACHE/matplotlib" \
+XDG_CACHE_HOME="$SCI_VIZ_CACHE/xdg" \
+python "$SCI_REPO/tools/diagnostics/render_sci_align_001_split_direction_beammaps.py" \
+  --reduction-root "$SCI_SPLIT_ROOT/o150819" \
+  --output "$SCI_VIZ_ROOT" \
+  --array a1100 \
+  --max-detectors 100 \
+  --detectors-per-page 1
+
+(cd "$SCI_VIZ_ROOT" && shasum -a 256 -c SHA256SUMS)
+pdfinfo "$SCI_VIZ_ROOT/split_direction_beammaps_o150819_a1100.pdf" \
+  | rg '^(Pages|Page size|File size)'
+```
+
+If an independently fixed hero UID table already exists, add
+`--hero-selection /absolute/path/to/hero_uids.ecsv`. Do not construct that
+table after looking at directional displacement. The automatic selection is
+network-balanced and uses only standard-APT quality and S/N.
+
 ## 4. Replicate with 148670
 
 Only after 150819 passes:
@@ -238,5 +279,4 @@ shasum -a 256 "$CITLALI_BIN" \
 ```
 
 Then create the recursive manifest and tarball in `RETURN_BUNDLE_SPEC.md`.
-Map comparison, recentering, timestamp modification, and mitigation decisions
-remain outside this runbook.
+Timestamp modification and mitigation decisions remain outside this runbook.
