@@ -6,6 +6,11 @@ contract `proposed`, implementation `nonconformant`, validation `incomplete`,
 and production `existing_use_only`. No repair, recipient dispatch, evidence
 request, reduction, Unity action, or production change is authorized.
 
+Update: independent re-audit `159a1a8f46e2197c6faee253d40e1ca7242bfb22`
+closed F001, bounded-current-mode F003, and explicit-opt-in F008. F002/F005
+remain pending only the unlaunched baseline-validator/FITS-inventory amendment;
+F004/F006 remain excluded/open and F007 remains held.
+
 ## Coordinator-accepted framework and provenance requirements
 
 1. R3 remains the sole independent equation authority. The final audit is a
@@ -28,7 +33,7 @@ request, reduction, Unity action, or production change is authorized.
 ## Owner decisions
 
 1. **Realization identity policy (F001/F002/F008) — approved 2026-08-06,
-   pending repair.** Every realization must use a compact, versioned,
+   partially re-audited; F002 validator amendment pending.** Every realization must use a compact, versioned,
    deterministic key containing observation identity, ensemble mode,
    conditioning iteration/pass, realization number, and coherence-unit
    identity. A detector/channel identity is the stable observation-scoped
@@ -55,8 +60,8 @@ request, reduction, Unity action, or production change is authorized.
    lifecycle must then be deterministic and correct. This clarification
    authorizes no Beammap generation, validation campaign, default change,
    application change, or production expansion.
-2. **Zero-realization admission (F005) — approved 2026-08-06, pending
-   repair.** When noise realizations are enabled, requested/effective/realized
+2. **Zero-realization admission (F005) — approved 2026-08-06, validator
+   amendment pending.** When noise realizations are enabled, requested/effective/realized
    count must be at least one; enabled with zero is invalid. Disabled is the
    sole supported no-ensemble state: effective and realized counts are zero,
    no realization-derived products, weights, or diagnostics are promised, and
@@ -66,8 +71,8 @@ request, reduction, Unity action, or production change is authorized.
    depends on noise maps. This selects no default, scientifically adequate, or
    production count; no estimator, product validity, repair SHA, or evidence
    plan. NOI-002 retains count/default and estimator ownership.
-3. **Ensemble-mode identity (F003) — approved 2026-08-06, pending repair or
-   dependent contract.** Retain the ordinary ensemble as
+3. **Ensemble-mode identity (F003) — approved 2026-08-06, current mode
+   re-audited; future residual remains dependent-contract only.** Retain the ordinary ensemble as
    `source_imprinted_current`: randomization of cleaned `x=s+n`. Individual
    realizations and their moments may retain deterministic astronomical signal,
    including literal negative-source realizations; that is expected under this

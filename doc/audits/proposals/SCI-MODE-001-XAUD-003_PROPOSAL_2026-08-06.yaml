@@ -1,0 +1,86 @@
+format_version: 1
+id: SCI-MODE-001-XAUD-003
+created_date: 2026-08-06
+
+source:
+  package_id: SCI-NOI-002
+  role: auditor
+  audit_branch: codex/audit-sci-noi-002
+  audit_commit: null
+  audit_commit_note: complete_package_commit_returned_out_of_band
+  governing_or_evidence_sha: d5015fe716971bf8ea617e8a187311bf5af05185
+  finding_ids: [SCI-NOI-002-F002, SCI-NOI-002-F004, SCI-NOI-002-F007]
+
+target:
+  package_id: SCI-MODE-001
+
+priority: P1
+evidence_basis: owner_decision_observed_static_source_and_independent_derivation
+review_phase: post_core_evidence
+arrival: after_audit_completion
+status: submitted
+
+summary: >-
+  Standard Pointing actively requests five detector-coherent realization maps
+  and applies the globally scaled nonprecision coefficient, whereas standard
+  OOF disables noise maps and its configured count one is inert.
+claim: >-
+  Pointing count five is a configuration value, not an adequacy result or
+  default decision for filtered pixels, Gaussian fits, or parameter errors.
+  Under the binding disabled-lane policy, OOF resolves to effective count zero
+  and performs no noise-product work; its stored count one has no operational
+  or scientific meaning while disabled.
+supports:
+  - retain_Pointing_noise_products_as_existing_use_only_pending_contract
+  - keep_Pointing_fit_coefficient_labeled_nonprecision
+  - preserve_OOF_disabled_effective_zero_no_work_semantics
+  - avoid_inferring_count_adequacy_from_standard_configuration
+does_not_establish:
+  - Pointing_or_OOF_scientific_mode_validity
+  - pointing_fit_parameter_uncertainty_or_detection_significance
+  - adequacy_default_or_minimum_for_count_five_or_one
+  - configuration_change_repair_evidence_or_production_expansion
+
+requested_actions:
+  - hold_for_next_authorized_amendment_or_reaudit
+  - record_Pointing_as_a_conditioned_active_NOI-002_consumer
+  - record_OOF_as_disabled_effective_zero_unless_explicitly_enabled
+  - require_use_specific_count_and_uncertainty_decisions_for_any_stronger_claim
+affected_target_findings: []
+related_handoffs: [SCI-MODE-001-XAUD-001, SCI-MODE-001-XAUD-002]
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-NOI-002-INDEPENDENT-CORE
+    availability: repository_path
+    path: doc/audits/packages/SCI-NOI-002_INDEPENDENT_CORE.tex
+    sha256: 36781b766a2f57c9a3bd7e173ee8f1d85cba7f3d08afe2e67a403166f6b6d72d
+    note: Frozen consumer-adequacy and production-count contract.
+  - id: SCI-NOI-002-PHASE2-AUDIT
+    availability: repository_path
+    path: doc/audits/packages/SCI-NOI-002_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: 2874ffe950aed769f73277ed8f60ecab8860692d24e7c541f05a47a041a8a40d
+    note: Findings F002, F004, and F007 at the complete package proposal bytes.
+  - id: SCI-NOI-001-OWNER-POLICY
+    availability: repository_path_at_coordination_commit
+    path: doc/audits/packages/SCI-NOI-001_COORDINATOR_DECISION_BRIEF_2026-08-06.md
+    sha256: ba73859d406e0968ed12d58ca912acdbf595123cb62da2c0906f450771c45a1d
+    note: Disabled zero-work and enabled-positive admission policy at ac43fb4fc950d53e54f0b3ec424bd8b3ee0a6cd4.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: held_for_reaudit
+  actions: []
+  rationale: >-
+    SCI-MODE-001 has an existing audit chain. This record is held for a
+    separately authorized amendment or re-audit and does not change either
+    standard mode or select a count.
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: [SCI-NOI-002]
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

@@ -1,8 +1,10 @@
 # SCI-NOI-001 narrow independent re-audit dispatch readiness — 2026-08-06
 
-Status: `ready_pending_launch`. This package is frozen preparation only; no
-re-audit worktree/branch, evidence execution, Unity action, local reduction,
-integration, push, or production change has occurred.
+Status: `completed_with_bounded_validator_closure_blocker`. The frozen prompt
+and authority manifest remain immutable dispatch authorities. The independent
+re-audit completed at `159a1a8f46e2197c6faee253d40e1ca7242bfb22`; no evidence
+execution, Unity action, local reduction, integration, or production change
+occurred.
 
 ## Repair completion accepted for re-audit
 
@@ -49,3 +51,15 @@ threshold, operational expectation, or evidence request. Re-audit F008 only
 for deterministic pass/active-map assignment correctness in an explicitly
 enabled capability; this authorizes no generation, validation campaign,
 default, application change, or production expansion.
+
+## Completed independent disposition
+
+The re-audit closes F001, the bounded `source_imprinted_current` portion of
+F003, and explicit-opt-in F008 after coordinator review. F002 and F005 remain
+open only because the active baseline auditor and FITS summary/comparison
+inventories retain the retired v1/unavailable-disabled-count contract and omit
+all nine v2 identity cards. This is a bounded validation-tool compatibility
+defect, not a scientific or numerical defect. F004/F006 remain excluded and
+open; F007 remains held with no current evidence execution. The successor is a
+separate unlaunched validator/tooling amendment from exact repair `38ef`, then
+a fresh Sol-Ultra re-audit.

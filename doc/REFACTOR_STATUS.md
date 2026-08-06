@@ -302,13 +302,17 @@ weight, S/N, aperture-estimator, and production realization-count/default
 decision to SCI-NOI-002. The 64-realization tier is resource-admitted
 validation only, not a requirement/default/cap. The bounded SCI-NOI-001 repair
 package is `repair_complete_pending_reaudit` at exact
-`38ef72860743636f59d226c9e1ff5ff776d0e9c0`, with a frozen narrow re-audit
-prepared only for F001/F002/F003/F005/F008 and held F007 evidence policy. The
-independent SCI-NOI-002 package has accepted its Sol-Ultra independent core at
-`f08a6da2ceebff03f498386f374980d13c5146a6`; only its Phase 2 source/consumer
-trace at exact d501 is now authorized. SCI-NOI-002-XAUD-001 may open only
-post-core; the task must not inspect or use the NOI-001 repair as its audit
-target. Neither authorization permits evidence, Unity, integration, or
+`38ef72860743636f59d226c9e1ff5ff776d0e9c0`, with its narrow independent
+re-audit completed at `159a1a8f46e2197c6faee253d40e1ca7242bfb22`. F001,
+bounded-current-mode F003, and explicit-opt-in F008 are closed; F002/F005 stay
+open for a separate unlaunched baseline-validator/FITS-inventory amendment,
+F004/F006 remain excluded/open, and F007 remains held. The independent
+SCI-NOI-002 package completed Phase 2 exact-d501 source/consumer trace at
+`4f1fec36f7802f3b5e8ac067377679946930983c`: all eight P1 findings remain open
+under `amend`, its six proposed handoffs are held, and owner D001/F001 now
+approves only the conditional finite-stack descriptive identity; D002/F002
+approves only a global nonprecision-scale diagnostic. The remaining owner
+policy is pending. Neither result authorizes evidence, Unity, integration, or
 production change.
 
 Owner clarification preserves the v4-compatible Beammap jackknife/noise-map

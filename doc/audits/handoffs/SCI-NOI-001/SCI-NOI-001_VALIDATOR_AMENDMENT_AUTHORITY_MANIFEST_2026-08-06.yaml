@@ -1,0 +1,62 @@
+format_version: 1
+record_type: frozen_authority_manifest
+manifest_id: SCI-NOI-001-VALIDATOR-AMENDMENT-2026-08-06
+package_id: SCI-NOI-001
+status: ready_pending_launch
+purpose: bounded_baseline_validator_and_FITS_identity_inventory_compatibility_amendment
+governing_repair_sha: 38ef72860743636f59d226c9e1ff5ff776d0e9c0
+governing_repair_parent: d5015fe716971bf8ea617e8a187311bf5af05185
+proposed_branch: codex/amend-sci-noi-001-validator
+resource_profile:
+  model: gpt-5.6-terra
+  effort: high
+  parallelism: serial_no_delegation_or_subagents
+  stop_rule: bounded_tooling_commit_then_coordinator_review_before_fresh_reaudit
+included_findings: [SCI-NOI-001-F002, SCI-NOI-001-F005]
+closed_bounded_findings_not_reopened: [SCI-NOI-001-F001, SCI-NOI-001-F003, SCI-NOI-001-F008]
+held_or_excluded_findings: [SCI-NOI-001-F004, SCI-NOI-001-F006, SCI-NOI-001-F007]
+authorities:
+  - id: repair_candidate
+    source: git_object
+    commit: 38ef72860743636f59d226c9e1ff5ff776d0e9c0
+    parent: d5015fe716971bf8ea617e8a187311bf5af05185
+  - id: narrow_independent_reaudit
+    source: git_object_and_canonical_copy
+    commit: 159a1a8f46e2197c6faee253d40e1ca7242bfb22
+    path: doc/audits/packages/SCI-NOI-001_NARROW_INDEPENDENT_REAUDIT_2026-08-06.md
+    sha256: 9f3bbbec9f96c1ac33057d274f2106729b27ec8ccea8f5a11237d588baceb7b3
+  - id: reaudit_ledger_proposal
+    source: git_object_and_canonical_copy
+    commit: 159a1a8f46e2197c6faee253d40e1ca7242bfb22
+    path: doc/audits/proposals/SCI-NOI-001_REAUDIT_LEDGER_UPDATE_PROPOSAL_2026-08-06.yaml
+    sha256: 9525e3a349dbf815171ccee7894e94b28a914b777cec107cb5644f0f90fa47b7
+  - id: frozen_reaudit_prompt
+    source_commit: ac43fb4fc950d53e54f0b3ec424bd8b3ee0a6cd4
+    path: doc/audits/prompts/SCI_NOI_001_REAUDIT_PROMPT.md
+    sha256: 7448d748043cdcb7f942688766166b1d3a4ed112421fe0997155a3a10723546b
+  - id: frozen_reaudit_manifest
+    source_commit: ac43fb4fc950d53e54f0b3ec424bd8b3ee0a6cd4
+    path: doc/audits/handoffs/SCI-NOI-001/SCI-NOI-001_REAUDIT_AUTHORITY_MANIFEST_2026-08-06.yaml
+    sha256: fbe4cf5c4c783f6bc878ef1037aae7806386294124af1689dd071e04d9abb49e
+  - id: owner_policy_and_beammap_clarification
+    source_commit: ac43fb4fc950d53e54f0b3ec424bd8b3ee0a6cd4
+    path: doc/audits/packages/SCI-NOI-001_COORDINATOR_DECISION_BRIEF_2026-08-06.md
+    sha256: ba73859d406e0968ed12d58ca912acdbf595123cb62da2c0906f450771c45a1d
+required_work:
+  - admit_v2_while_preserving_intentionally_supported_v1
+  - validate_compact_policy_partition_order_completion_mode_and_digest_joins
+  - validate_disabled_available_zero_suppressed_promises_and_zero_work
+  - retain_and_compare_nine_existing_FITS_identity_cards
+  - rerun_proportionate_existing_local_tooling_and_product_inventory_gates
+prohibited_work:
+  - Citlali_application_source_tests_or_configuration
+  - algorithm_or_realization_generation_change
+  - estimator_count_default_or_scientific_policy_choice
+  - new_framework_schema_wrapper_verifier_or_tool
+  - local_or_Unity_reduction_evidence_request_or_execution
+  - application_integration_push_or_production_change
+  - re_audit_launch
+frozen_boundary:
+  re_audit_prompt_and_manifest: byte_authoritative_unchanged
+  standard_Beammap: disabled_effective_zero_optional_explicit_opt_in_only
+  count_64: optional_validation_capacity_only

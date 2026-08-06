@@ -1,0 +1,86 @@
+format_version: 1
+id: SCI-FLT-002-XAUD-001
+created_date: 2026-08-06
+
+source:
+  package_id: SCI-NOI-002
+  role: auditor
+  audit_branch: codex/audit-sci-noi-002
+  audit_commit: null
+  audit_commit_note: complete_package_commit_returned_out_of_band
+  governing_or_evidence_sha: d5015fe716971bf8ea617e8a187311bf5af05185
+  finding_ids: [SCI-NOI-002-F002, SCI-NOI-002-F004, SCI-NOI-002-F005]
+
+target:
+  package_id: SCI-FLT-002
+
+priority: P1
+evidence_basis: observed_static_source_and_independent_derivation
+review_phase: post_core_evidence
+arrival: before_dispatch
+status: submitted
+
+summary: >-
+  The Wiener/low-pass interface can calculate noise products and force the
+  same-stack scalar coefficient rescale through normalize_errors, then expose
+  two inequivalent filtered S/N-like maps and a pixelwise point-source label.
+claim: >-
+  At exact d501, normalize_errors can apply a globally scaled nonprecision
+  coefficient even when the ordinary empirical-apply flag is false. The
+  coefficient-standardized and direct-stack ratios are unequal unless the
+  formal coefficient times stack scatter is spatially constant, and neither
+  statistic establishes a null tail, template response, or aperture error.
+supports:
+  - add_SCI-NOI-002_as_conditioned_interface_dependency
+  - audit_normalize_errors_as_a_live_coefficient_mutation
+  - separate_coefficient_standardized_and_direct_stack_statistics
+  - require_filter_template_response_and_projected_covariance_for_point_source_claims
+does_not_establish:
+  - Wiener_or_lowpass_mathematical_validity
+  - filter_edge_response_or_photometric_normalization
+  - significance_detection_threshold_or_aperture_authority
+  - repair_evidence_execution_default_or_production_admission
+
+requested_actions:
+  - quarantine_this_record_until_SCI-FLT-002_independent_core_is_frozen
+  - trace_normalize_errors_and_live_weight_refresh_after_the_freeze
+  - classify_all_filtered_noise_and_point_source_outputs_by_exact_statistic
+  - fail_closed_for_precision_significance_and_aperture_claims_without_contract
+affected_target_findings: []
+related_handoffs: [SCI-NOI-001-XAUD-002, SCI-FLT-001-XAUD-003]
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-NOI-002-INDEPENDENT-CORE
+    availability: repository_path
+    path: doc/audits/packages/SCI-NOI-002_INDEPENDENT_CORE.tex
+    sha256: 36781b766a2f57c9a3bd7e173ee8f1d85cba7f3d08afe2e67a403166f6b6d72d
+    note: Frozen calibration, S/N, filtered-projection, and aperture contract.
+  - id: SCI-NOI-002-PHASE2-AUDIT
+    availability: repository_path
+    path: doc/audits/packages/SCI-NOI-002_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: 2874ffe950aed769f73277ed8f60ecab8860692d24e7c541f05a47a041a8a40d
+    note: Findings F002, F004, and F005 at the complete package proposal bytes.
+  - id: SCI-NOI-002-APPLICATION
+    availability: git_object
+    path: null
+    sha256: null
+    note: Exact application commit d5015fe716971bf8ea617e8a187311bf5af05185.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: held_for_recipient_independent_core_then_post_core_review
+  actions: []
+  rationale: >-
+    This is source-derived recipient evidence. It cannot be opened to seed an
+    SCI-FLT-002 independent derivation and grants no repair or production
+    authority.
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: [SCI-NOI-002]
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

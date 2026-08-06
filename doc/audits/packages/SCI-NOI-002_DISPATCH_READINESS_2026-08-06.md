@@ -1,10 +1,11 @@
 # SCI-NOI-002 independent audit dispatch readiness — 2026-08-06
 
-Status: Phase 0 and Phase 1 `completed_accepted`; Phase 2
-`authorized_not_started`. The frozen prompt and inbox manifest are unchanged.
-No Phase 2 source/test/diff or sealed-XAUD-001 exposure, evidence request,
-reduction, Unity action, repair, integration, push, or production change has
-occurred.
+Status: Phase 0/1 `completed_accepted`; Phase 2
+`completed_documentation_only_pending_owner_policy`. The frozen prompt and
+inbox manifest are unchanged. Phase 2 completed at
+`4f1fec36f7802f3b5e8ac067377679946930983c` against exact d501; no evidence
+request, reduction, Unity action, repair, integration, push, or production
+change occurred.
 
 ## Exact starting state and phase profile
 
@@ -89,3 +90,12 @@ configurations disable realizations/noise products, so an inert configured
 disabled-mode count (commonly 10) resolves to effective count zero and cannot
 be used to infer routine Beammap use or any adequacy requirement. This adds no
 Beammap evidence, default, implementation, or production authorization.
+
+## Completed Phase 2 disposition
+
+The exact-d501 Phase 2 audit is `amend`, with eight open P1 findings,
+`existing_use_only` production, no count/default selection, and no evidence
+authorization. Its final report and six proposed post-core handoffs are held in
+canonical coordination records only: no recipient is dispatched. Standard
+Beammap remains disabled/effective-zero/no-work; it is an optional explicit
+recipient only.

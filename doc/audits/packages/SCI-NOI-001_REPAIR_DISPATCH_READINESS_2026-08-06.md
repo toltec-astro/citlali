@@ -1,7 +1,7 @@
 # SCI-NOI-001 bounded repair dispatch readiness — 2026-08-06
 
-Status: `repair_complete_pending_reaudit`. The frozen repair prompt and
-authority manifest are unchanged. The repair remains unintegrated and
+Status: `repair_reaudited_validator_amendment_pending`. The frozen repair
+prompt and authority manifest are unchanged. The repair remains unintegrated and
 `existing_use_only`; no evidence request, Unity action, re-audit execution,
 integration, push, or production change has occurred.
 
@@ -40,10 +40,12 @@ focused 7/7 noise-realization plus 2/2 FITS reruns are preserved in the ledger.
 The unrelated disabled external-corpus test is recorded but is neither success
 substitute nor blocker.
 
-The independent [narrow re-audit prompt](../prompts/SCI_NOI_001_REAUDIT_PROMPT.md)
-and authority manifest are `ready_pending_launch` against exact repair SHA
-38ef. They assess only F001/F002/F003/F005/F008 and the held F007 policy; they
-authorize no current runtime or astronomical evidence execution.
+The independent narrow re-audit completed at
+`159a1a8f46e2197c6faee253d40e1ca7242bfb22`: F001, bounded current-mode F003,
+and explicit-opt-in F008 close, while F002/F005 remain open only for the
+separate unlaunched baseline-validator/FITS-inventory amendment. F004/F006
+remain excluded/open and F007 remains held. No runtime or astronomical evidence
+execution is authorized.
 
 ## Frozen package hashes
 

@@ -93,7 +93,7 @@ retains their exact boundary. The package remains
 `proposed`/`conditionally_conformant`/`in_progress`/`fail_closed` with verdict
 `amend` and re-audit `required`.
 
-### SCI-NOI-001 Phase 2 completed; repair and NOI-002 dispatches ready — 2026-08-06
+### SCI-NOI-001 re-audit and SCI-NOI-002 Phase 2 complete — 2026-08-06
 
 The [frozen SCI-NOI-001 prompt](prompts/SCI_NOI_001_AUDIT_PROMPT.md),
 [inbound manifest](handoffs/SCI-NOI-001/SCI-NOI-001_INBOX_MANIFEST_2026-08-05.yaml),
@@ -127,20 +127,26 @@ Its bounded [repair prompt](prompts/SCI_NOI_001_REPAIR_PROMPT.md),
 [authority manifest](handoffs/SCI-NOI-001/SCI-NOI-001_REPAIR_AUTHORITY_MANIFEST_2026-08-06.yaml),
 and [readiness record](packages/SCI-NOI-001_REPAIR_DISPATCH_READINESS_2026-08-06.md)
 completed their bounded repair at exact `38ef72860743636f59d226c9e1ff5ff776d0e9c0`
-and are `complete_pending_reaudit`; a narrow independent re-audit is prepared
-but not launched through its [prompt](prompts/SCI_NOI_001_REAUDIT_PROMPT.md),
+and have now completed their narrow independent re-audit at
+`159a1a8f46e2197c6faee253d40e1ca7242bfb22`. F001, bounded-current-mode F003,
+and explicit-opt-in F008 close; F002/F005 remain open only for a fresh,
+unlaunched baseline-validator/FITS-inventory amendment, with F004/F006 still
+excluded and F007 held. The frozen [prompt](prompts/SCI_NOI_001_REAUDIT_PROMPT.md),
 [authority manifest](handoffs/SCI-NOI-001/SCI-NOI-001_REAUDIT_AUTHORITY_MANIFEST_2026-08-06.yaml),
-and [readiness record](packages/SCI-NOI-001_REAUDIT_DISPATCH_READINESS_2026-08-06.md). The
+and [readiness record](packages/SCI-NOI-001_REAUDIT_DISPATCH_READINESS_2026-08-06.md)
+remain historical dispatch authority. The
 independent [SCI-NOI-002 prompt](prompts/SCI_NOI_002_AUDIT_PROMPT.md),
 [manifest](handoffs/SCI-NOI-002/SCI-NOI-002_INBOX_MANIFEST_2026-08-06.yaml),
 and [readiness record](packages/SCI-NOI-002_DISPATCH_READINESS_2026-08-06.md)
-have completed/accepted its independent core at
-`f08a6da2ceebff03f498386f374980d13c5146a6` and authorize only Phase 2: R3
-remains the core authority, while SCI-NOI-002-XAUD-001 is now the first
-permitted post-core evidence. The resource-admitted
-64-realization tier is neither a default nor a requirement. No repair, evidence
-request, re-audit execution, reduction, Unity action, integration, or
-production authorization follows from these phase authorizations.
+record the completed exact-d501 Phase 2 audit at
+`4f1fec36f7802f3b5e8ac067377679946930983c`. All eight P1 findings remain open
+under verdict `amend`; its six recipient proposals are held, not dispatched.
+Owner D001/F001 approves only a conditional finite-stack descriptive identity,
+and D002/F002 only a global nonprecision-scale diagnostic; the remaining
+NOI-002 policy questions remain open.
+The resource-admitted 64-realization tier is neither a default nor a
+requirement. No repair, evidence request, re-audit execution, reduction, Unity
+action, integration, or production authorization follows from these results.
 
 The owner retains the v4-compatible Beammap jackknife/noise-map path as an
 optional capability only. Standard Beammap configurations remain disabled by

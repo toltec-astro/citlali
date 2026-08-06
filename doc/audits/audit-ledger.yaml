@@ -4926,8 +4926,8 @@ packages:
         status: proposed_not_requested_costly_work_held_under_FRAMEWORK-NUM-001
       coordinator_decision_brief:
         path: doc/audits/packages/SCI-NOI-001_COORDINATOR_DECISION_BRIEF_2026-08-06.md
-        sha256: ba73859d406e0968ed12d58ca912acdbf595123cb62da2c0906f450771c45a1d
-        status: D001_to_D004_policy_resolved_D001_D002_pending_repair_D003_pending_repair_or_dependent_contract_D004_no_current_evidence_execution
+        sha256: bfbfcfa6673830d0f43f5ff2e8a8ed044edf98308441027b7e97c43b7d3c6a3f
+        status: D001_partially_reaudited_D002_validator_amendment_pending_D003_current_mode_reaudited_D004_no_current_evidence_execution
       submitted_proposals:
         ledger:
           path: doc/audits/proposals/SCI-NOI-001_LEDGER_PROPOSAL_2026-08-06.yaml
@@ -4949,11 +4949,12 @@ packages:
         separately as integrated records.
     contract_status: proposed
     implementation_status: nonconformant
-    validation_status: incomplete
+    validation_status: failed
+    validation_disposition: failed_required_validation_boundary
     production_status: existing_use_only
     verdict: amend
     repair_dispatch:
-      status: repair_complete_pending_reaudit
+      status: bounded_repair_reaudited_validator_amendment_pending
       prepared_date: 2026-08-06
       governing_application_sha: d5015fe716971bf8ea617e8a187311bf5af05185
       proposed_repair_branch: codex/repair-sci-noi-001
@@ -4968,7 +4969,7 @@ packages:
         sha256: 44c6ac459f058ba39e18d01f35e64bfb37bcfec9c116a12a2839f64beac71bae
       readiness_record:
         path: doc/audits/packages/SCI-NOI-001_REPAIR_DISPATCH_READINESS_2026-08-06.md
-        sha256: 9da6bad110e4575bf6e97b18eed2784e0d1ca1d907efcf8fded0d74fae970095
+        sha256: d2133ff9e2e798737bba27be505659745a134552110a56f51237b1393618ae96
       Beammap_optional_capability_clarification:
         status: owner_approved_live_coordination_clarification
         decision_date: 2026-08-06
@@ -5020,7 +5021,7 @@ packages:
         root_rerun_gates: [noise_realization_contract_7_of_7, FITS_contract_2_of_2]
         disposition: complete_pending_independent_reaudit
       re_audit_dispatch:
-        status: ready_pending_launch
+        status: completed_with_bounded_validator_closure_blocker
         governing_repair_sha: 38ef72860743636f59d226c9e1ff5ff776d0e9c0
         governing_repair_parent: d5015fe716971bf8ea617e8a187311bf5af05185
         proposed_reaudit_branch: codex/reaudit-sci-noi-001
@@ -5033,7 +5034,7 @@ packages:
           sha256: fbe4cf5c4c783f6bc878ef1037aae7806386294124af1689dd071e04d9abb49e
         readiness_record:
           path: doc/audits/packages/SCI-NOI-001_REAUDIT_DISPATCH_READINESS_2026-08-06.md
-          sha256: 5e40c7ba107d1cacd0c0f276c77e89fa381506e830511fd6a297ef7a657b3055
+          sha256: e7a2bb7b528874cc06e9e06db0bac7c3d847e3c01a17b5ce3b26b04aaaa8cd84
         late_owner_clarification:
           decision_date: 2026-08-06
           applies_to: SCI-NOI-001-F008
@@ -5049,25 +5050,58 @@ packages:
         held_finding: SCI-NOI-001-F007
         excluded_findings: [SCI-NOI-001-F004, SCI-NOI-001-F006]
         stop_rule: documentation_only_reaudit_commit_then_coordinator_review
+        completion:
+          audit_branch: codex/reaudit-sci-noi-001
+          audit_commit: 159a1a8f46e2197c6faee253d40e1ca7242bfb22
+          audit_parent: 38ef72860743636f59d226c9e1ff5ff776d0e9c0
+          report:
+            path: doc/audits/packages/SCI-NOI-001_NARROW_INDEPENDENT_REAUDIT_2026-08-06.md
+            sha256: 9f3bbbec9f96c1ac33057d274f2106729b27ec8ccea8f5a11237d588baceb7b3
+          submitted_ledger_proposal:
+            path: doc/audits/proposals/SCI-NOI-001_REAUDIT_LEDGER_UPDATE_PROPOSAL_2026-08-06.yaml
+            sha256: 9525e3a349dbf815171ccee7894e94b28a914b777cec107cb5644f0f90fa47b7
+          verdict: amend
+          application_scope_conformant: [SCI-NOI-001-F001, SCI-NOI-001-F003_current_mode_only, SCI-NOI-001-F008_explicit_opt_in_only]
+          closure_blocker: SCI-NOI-001-REAUDIT-B001_required_validation_boundary_nonconformance
+      validator_amendment_dispatch:
+        status: ready_pending_launch
+        governing_repair_sha: 38ef72860743636f59d226c9e1ff5ff776d0e9c0
+        proposed_branch: codex/amend-sci-noi-001-validator
+        included_findings: [SCI-NOI-001-F002, SCI-NOI-001-F005]
+        closed_bounded_findings_not_reopened: [SCI-NOI-001-F001, SCI-NOI-001-F003, SCI-NOI-001-F008]
+        held_or_excluded_findings: [SCI-NOI-001-F004, SCI-NOI-001-F006, SCI-NOI-001-F007]
+        prompt:
+          path: doc/audits/prompts/SCI_NOI_001_VALIDATOR_AMENDMENT_PROMPT.md
+          sha256: 2fc54144c107197e718e89cd650a0380fcf5e3950242aeb708809d05beb87a51
+        authority_manifest:
+          path: doc/audits/handoffs/SCI-NOI-001/SCI-NOI-001_VALIDATOR_AMENDMENT_AUTHORITY_MANIFEST_2026-08-06.yaml
+          sha256: 43be3d0485e61ed5787927993d57cd93504a66380174315dab05cbe38aaea89a
+        readiness_record:
+          path: doc/audits/packages/SCI-NOI-001_VALIDATOR_AMENDMENT_DISPATCH_READINESS_2026-08-06.md
+          sha256: 243ef0ce6cdb3d4da0faf8cc94f6b8ee7f00f5804822940d7e914e4efb70cafd
+        implementation_resource_profile: {model: gpt-5.6-terra, effort: high, parallelism: serial_no_delegation_or_subagents}
+        fresh_reaudit_resource_profile: {model: gpt-5.6-sol, effort: ultra, parallelism: serial_no_delegation_or_subagents}
+        scope: existing_baseline_auditor_tests_and_FITS_summary_comparison_identity_inventories_only
+        prohibited: [application_algorithm_or_configuration_change, count_or_default_choice, evidence_execution, Unity, local_reduction, integration, push, production_change]
       launch_effect: >-
         The bounded repair completed on the clean repair branch at exact
         successor commit 38ef72860743636f59d226c9e1ff5ff776d0e9c0. It remains
         unintegrated; implementation/validation status and production use do
         not change until the prepared independent re-audit returns.
     open_findings:
-      - {id: SCI-NOI-001-F001, class: implementation_defect, severity: P1, evidence_basis: observed_static_source_and_derived_R3_consequence, confidence: high, status: open, owner: noise_RNG_and_realization_identity, owner_decision_id: SCI-NOI-001-D001, owner_decision_status: approved_pending_repair, summary: "Fixed seed 5489 is recreated without observation or realization namespaces; equal-shaped observations can repeat sign prefixes.", closure_gate: "Implement the approved compact versioned key/namespace policy, establish collision/repeat and sequential/OpenMP fixtures, publish reconstruction facts, then re-audit an exact successor."}
-      - {id: SCI-NOI-001-F002, class: contract_gap, severity: P1, evidence_basis: observed_static_source, confidence: high, status: open, owner: noise_provenance, owner_decision_id: SCI-NOI-001-D001, owner_decision_status: approved_pending_repair, summary: "Current sidecars and digests do not reconstruct assignments, mode, completed IDs, or partial failure.", closure_gate: "Implement approved compact provenance: policy/version, stable ordering/partition, completed IDs, ensemble mode, and digest joins; dense per-sample IDs, sign vectors, and N-by-N Q matrices are not required; then re-audit."}
-      - {id: SCI-NOI-001-F003, class: contract_gap, severity: P1, evidence_basis: observed_static_source_and_R3_derivation, confidence: high, status: open, owner: product_identity_NOI-002_and_FRUIT-001, owner_decision_id: SCI-NOI-001-D003, owner_decision_status: approved_pending_repair_or_dependent_contract, summary: "Current source_imprinted_current realizations retain deterministic signal; final_pre_readdition_residual is reserved but lacks SCI-FRUIT-001-approved product identity and contract.", closure_gate: "Implement truthful source_imprinted_current product identity, obtain SCI-FRUIT-001 residual-state/source-model/readdition contract before any distinct residual mode, obtain NOI-002 consumer dispositions, then pass any later admitted tests/evidence and re-audit."}
+      - {id: SCI-NOI-001-F001, class: implementation_defect, severity: P1, evidence_basis: observed, confidence: high, status: closed, disposition: closed_after_independent_reaudit, owner: noise_RNG_and_realization_identity, owner_decision_id: SCI-NOI-001-D001, owner_decision_status: approved_partially_reaudited, summary: "Versioned observation/pass/realization/coherence/channel identity is draw-order independent and passed sequential/OpenMP, scheduling, namespace, and shape-growth fixtures at repair 38ef.", closure_gate: closed_by_159a1a8f46e2197c6faee253d40e1ca7242bfb22}
+      - {id: SCI-NOI-001-F002, class: contract_gap, severity: P1, evidence_basis: observed, confidence: high, status: open, owner: noise_provenance, owner_decision_id: SCI-NOI-001-D001, owner_decision_status: approved_partially_reaudited_validator_amendment_pending, summary: "Application compact provenance and digest joins conform at repair 38ef, but the active required baseline auditor rejects v2/versioned identity and standard FITS inventories omit all nine identity cards.", closure_gate: "Amend only the existing baseline auditor/tests and FITS summary/comparison inventories to validate v2 while preserving intentional v1, then fresh narrow re-audit; dense per-sample IDs, sign vectors, and N-by-N Q matrices remain unnecessary."}
+      - {id: SCI-NOI-001-F003, class: contract_gap, severity: P1, evidence_basis: observed, confidence: high, status: closed, disposition: closed_bounded_current_source_imprinted_mode, owner: product_identity_NOI-002_and_FRUIT-001, owner_decision_id: SCI-NOI-001-D003, owner_decision_status: approved_current_mode_reaudited_residual_contract_still_dependent, summary: "source_imprinted_current is truthfully persisted as restricted diagnostics with deterministic signal retained and negative-source realizations permitted.", retained_conditions: [final_pre_readdition_residual_not_implemented_or_authorized, SCI-FRUIT-001_contract_required_for_future_residual_mode, NOI-002_owns_downstream_estimators_consumers_and_count], closure_gate: closed_for_current_mode_by_159a1a8f46e2197c6faee253d40e1ca7242bfb22}
       - {id: SCI-NOI-001-F004, class: implementation_defect, severity: P1, evidence_basis: observed_static_source, confidence: high, status: open, owner: SCI-FLT-001_operator_and_provenance, summary: "Science edge preprocessing includes an affine background term omitted from realizations.", closure_gate: "FLT resolves identical versus explicitly affine preprocessing, publishes the realized choice/parent join, passes paired fixtures, and returns a conditioned disposition."}
-      - {id: SCI-NOI-001-F005, class: implementation_defect, severity: P1, evidence_basis: observed_static_source, confidence: high, status: open, owner: noise_configuration_and_lifecycle, owner_decision_id: SCI-NOI-001-D002, owner_decision_status: approved_pending_repair, summary: "Enabled zero realizations are admitted although the approved policy permits the no-ensemble state only when realizations are disabled.", closure_gate: "Implement enabled-implies-requested/effective/realized-count-at-least-one and disabled-only zero-count semantics; verify no realization work/products in disabled pointing/OOF quicklook lanes, then re-audit without selecting count adequacy or a default."}
+      - {id: SCI-NOI-001-F005, class: implementation_defect, severity: P1, evidence_basis: observed, confidence: high, status: open, owner: noise_configuration_and_lifecycle, owner_decision_id: SCI-NOI-001-D002, owner_decision_status: approved_application_conformant_validator_amendment_pending, summary: "Repair 38ef correctly rejects enabled zero and records disabled available-zero/no-work state, but the active baseline auditor requires retired unavailable disabled counts and rejects all eight approved zero fields.", closure_gate: "Amend only existing baseline validation to accept/require disabled available-zero, suppressed promises, and zero work, then fresh narrow re-audit without selecting count adequacy or a default."}
       - {id: SCI-NOI-001-F006, class: dependency_gap, severity: P1, evidence_basis: observed_static_source, confidence: high, status: open, owner: SCI-NOI-002, summary: "The stack feeds variance, empirical coefficient, S/N, threshold, consumer, and feedback paths without NOI-002 authority.", closure_gate: "NOI-002 decides finite-N normalization, variance/weight formula and labels, S/N/significance/threshold/feedback/aperture use, and production count; consumers are then dispositioned."}
       - {id: SCI-NOI-001-F007, class: evidence_gap, severity: P1, evidence_basis: observed_absence, confidence: high, status: open, owner: coordinator_and_human_evidence_operator, owner_decision_id: SCI-NOI-001-D004, owner_decision_status: approved_no_current_evidence_execution, summary: "No runtime evidence exists. Owner policy prohibits a broad campaign against known-bad d501; the exact-d501 design is held as reference while decisive questions route to repair-level tests.", closure_gate: "After an exact repaired SHA and repair-level identity/provenance tests, admit astronomical or costly comparison evidence only for a concrete unresolved closure question with preapproved comparison set, cost, acceptance policy, FRAMEWORK-NUM-001 approval, and re-audit; no current evidence execution is authorized."}
-      - {id: SCI-NOI-001-F008, class: implementation_defect, severity: P1, evidence_basis: observed_static_source, confidence: high, status: open, owner: Beammap_RNG_and_realization_identity, owner_decision_id: SCI-NOI-001-D001, owner_decision_status: approved_pending_repair, summary: "For the retained optional explicitly enabled Beammap capability, signs depend on active-map reset overwrite history rather than a named realization key. Standard disabled Beammap configurations perform no realization/noise-product work.", closure_gate: "For explicit opt-in only, implement approved once-per-named-pass/iteration generation reused across active slots, test pass/order permutations and sequential/OpenMP repeats, condition JINC on SCI-MAP-002, then re-audit; disabled-mode configured count remains inert and effective zero."}
+      - {id: SCI-NOI-001-F008, class: implementation_defect, severity: P1, evidence_basis: observed_static_source, confidence: high, status: closed, disposition: closed_explicit_opt_in_deterministic_lifecycle_scope, owner: Beammap_RNG_and_realization_identity, owner_decision_id: SCI-NOI-001-D001, owner_decision_status: approved_partially_reaudited, summary: "For optional explicitly enabled Beammap, signs are generated once per named pass/iteration before active-buffer reset and pass order/history are invariant. Standard Beammap remains disabled with inert configured count and effective zero.", retained_conditions: [JINC_scientific_conclusions_conditioned_on_SCI-MAP-002, standard_Beammap_noise_maps_disabled_effective_zero_no_work], closure_gate: closed_by_159a1a8f46e2197c6faee253d40e1ca7242bfb22}
     unresolved_scientific_decisions: []
     owner_decision_set_status: D001_to_D004_policy_resolved_implementation_findings_remain_open
     owner_decisions:
       - id: SCI-NOI-001-D001
-        status: approved_pending_repair
+        status: approved_partially_reaudited_validator_amendment_pending
         decision_date: 2026-08-06
         scope: realization_identity_generation_scope_and_compact_provenance_only
         policy:
@@ -5084,7 +5118,7 @@ packages:
           dense_identity_products: not_required
         does_not_select: [RNG_implementation, seed_value, repair_SHA, production_realization_count, estimator, product_validity, evidence_run, production_authorization]
       - id: SCI-NOI-001-D002
-        status: approved_pending_repair
+        status: approved_application_conformant_validator_amendment_pending
         decision_date: 2026-08-06
         scope: enabled_and_disabled_realization_admission_semantics_only
         policy:
@@ -5097,7 +5131,7 @@ packages:
           pointing_and_OOF_quicklook: disabled_lane_minimum_computation_no_noise_map_dependency
         does_not_select: [default_count, scientifically_adequate_count, production_count, estimator, product_validity, repair_SHA, evidence_plan, production_authorization]
       - id: SCI-NOI-001-D003
-        status: approved_pending_repair_or_dependent_contract
+        status: approved_current_mode_reaudited_future_residual_contract_pending
         decision_date: 2026-08-06
         scope: current_and_future_residual_ensemble_identity_only
         policy:
@@ -5266,23 +5300,25 @@ packages:
         requirement, production default, beammap expectation, or cap.
     remediation_branch: codex/repair-sci-noi-001
     remediation_commit: 38ef72860743636f59d226c9e1ff5ff776d0e9c0
-    re_audit_status: ready_pending_launch
+    re_audit_status: complete
+    re_audit_disposition: validator_amendment_pending
 
   - id: SCI-NOI-002
     name: Empirical variance, covariance, calibrated weight, and S/N
     tier: A
     queue_wave: uncertainty_3
     scientific_scope: >-
-      Formal-versus-empirical map uncertainty, jackknife moments, output-pixel
-      covariance, empirical calibration, inverse-variance products,
-      standardized signal/S/N, metadata, and consumer interpretation.
+      Finite conditional realization-stack moments, empirical
+      variance/covariance targets, calibration, nonprecision coefficient scale,
+      standardized-statistic labels, filtered/aperture uncertainty, adaptive
+      feedback interfaces, use-specific adequacy, and count policy.
     known_code_areas:
       - src/citlali/core/mapmaking/map.cpp
       - include/citlali/core/pipeline/map_noise_products.h
       - include/citlali/core/pipeline/noise_weight_policy.h
       - include/citlali/core/pipeline/map_image_output_helpers.h
     inputs: [formal map weights, noise realizations, support and calibration region]
-    outputs: [empirical variance/covariance claims, calibrated weights, S/N products]
+    outputs: [descriptive conditional stack diagnostics, restricted nonprecision-scale diagnostics, truthfully labeled standardized-statistic products, held consumer dispositions]
     upstream_dependencies:
       - package_id: SCI-NOI-001
         status: conditioned
@@ -5317,7 +5353,7 @@ packages:
         status: submitted_held_for_recipient_independent_core
         late_arrival_route: held_for_recipient_independent_core_then_post_core_review
     audit_dispatch:
-      status: phase_1_completed_accepted_phase_2_authorized
+      status: phase_2_completed_accepted_owner_policy_pending
       prepared_date: 2026-08-06
       governing_application_sha: d5015fe716971bf8ea617e8a187311bf5af05185
       proposed_audit_branch: codex/audit-sci-noi-002
@@ -5330,7 +5366,7 @@ packages:
         sha256: 1de9dbc5f9aca42f5a9f9b1f05b7b14c092ee9b443946d0c52eeb27c8da117b0
       readiness_record:
         path: doc/audits/packages/SCI-NOI-002_DISPATCH_READINESS_2026-08-06.md
-        sha256: 460fd3544fa99ffc786078acf4e511c673ffbb1c341ca26f4f7e8c51cffe3897
+        sha256: f3bb7c9429388388e731a0732781d316bd6648cc70511391a33f6c3ec27e48f6
       pre_core_authority_ids: [SCI-NOI-002-XAUD-002]
       post_core_evidence_ids: [SCI-NOI-002-XAUD-001]
       planned_phases:
@@ -5370,7 +5406,7 @@ packages:
           quarantined_source_test_diff_or_XAUD_001_opened: false
           stop_rule: independent_core_commit_then_stop_before_exposure
         phase_2:
-          status: authorized_not_started
+          status: completed_documentation_only_accepted
           task_thread_id: 019fd4e1-8add-7b52-aa2f-3446e980cd4b
           execution_worktree: /Users/gwilson/.codex/worktrees/e801/citlali-refactor
           audit_branch: codex/audit-sci-noi-002
@@ -5383,20 +5419,25 @@ packages:
           effort: ultra
           Beammap_recipient_scope: optional_explicitly_enabled_only
           disabled_Beammap_configured_count: inert_effective_zero_no_routine_use_or_adequacy_inference
+          completion_commit: 4f1fec36f7802f3b5e8ac067377679946930983c
+          completion_parent: f08a6da2ceebff03f498386f374980d13c5146a6
+          final_audit_path: doc/audits/packages/SCI-NOI-002_SCIENTIFIC_CONTRACT_AUDIT.tex
+          final_audit_sha256: 2874ffe950aed769f73277ed8f60ecab8860692d24e7c541f05a47a041a8a40d
+          stop_rule: documentation_only_audit_artifacts_then_coordinator_review
       ultra_trigger: >-
         finite_N_normalization_covariance_weight_consumer_aperture_and_count
         policy_are_distinct_hard_investigations_requiring_one_independent
         estimator_synthesis
       launch_effect: >-
-        Phase 1 independent core completed and is accepted on the clean audit
-        branch. Phase 2 alone may now open sealed XAUD-001 and exact-d501
-        source/tests/diffs; it must not inspect or assess the NOI-001 repair
-        commit, and no repair/evidence/integration/production action is
-        authorized.
+        Phase 2 completed its exact-d501 documentation-only trace without
+        inspecting the NOI-001 repair. All eight P1 findings remain open,
+        owner policy is pending, and no repair/evidence/integration/production
+        action is authorized.
     governing_sha: d5015fe716971bf8ea617e8a187311bf5af05185
     governing_sha_role: ready_dispatch_exact_application_snapshot
     audit_branch: codex/audit-sci-noi-002
-    audit_commit: null
+    audit_commit: 4f1fec36f7802f3b5e8ac067377679946930983c
+    audit_parent_sha: f08a6da2ceebff03f498386f374980d13c5146a6
     independent_derivation:
       status: completed_accepted
       path: doc/audits/packages/SCI-NOI-002_INDEPENDENT_CORE.tex
@@ -5405,19 +5446,77 @@ packages:
       parent: d5015fe716971bf8ea617e8a187311bf5af05185
       structural_review: balanced_LaTeX_50_unique_labels_12_resolved_references
       TeX_compile_evidence: not_available
-    contract_status: not_started
-    implementation_status: not_assessed
-    validation_status: not_started
+    final_audit:
+      status: completed_accepted_for_coordination_record
+      path: doc/audits/packages/SCI-NOI-002_SCIENTIFIC_CONTRACT_AUDIT.tex
+      sha256: 2874ffe950aed769f73277ed8f60ecab8860692d24e7c541f05a47a041a8a40d
+      source_commit: 4f1fec36f7802f3b5e8ac067377679946930983c
+      proposal:
+        path: doc/audits/proposals/SCI-NOI-002_LEDGER_PROPOSAL_2026-08-06.yaml
+        sha256: 5574d8e34fcfba8f4709d5848e79732ff3557a9817be25604375b9f3d4ec278d
+        status: submitted_preserved_exact_bytes
+      owner_decision_brief:
+        path: doc/audits/packages/SCI-NOI-002_OWNER_DECISION_BRIEF_2026-08-06.md
+        sha256: 0c79c815dc3f2f21112dbe2dcb4ec013c02aeff9fb14d599a1098dba0b2a5be2
+        status: D001_D002_owner_decided_remaining_owner_review_pending
+    held_outgoing_handoff_proposals:
+      - {id: SCI-FLT-001-XAUD-003, path: doc/audits/proposals/SCI-FLT-001-XAUD-003_PROPOSAL_2026-08-06.yaml, sha256: 47b5533ba88e3dfac19c5beda2e92ff84d149bf3d50a41ec3740fa1b9615d9d7, review_phase: post_core_evidence, status: submitted_held_for_future_amendment_or_reaudit}
+      - {id: SCI-FLT-002-XAUD-001, path: doc/audits/proposals/SCI-FLT-002-XAUD-001_PROPOSAL_2026-08-06.yaml, sha256: 655054b9253bfb0023f3598c2606ab15ea4d29d404a3d5ef4345c26c078c1249, review_phase: post_core_evidence, status: submitted_held_for_recipient_independent_core}
+      - {id: SCI-SRC-001-XAUD-002, path: doc/audits/proposals/SCI-SRC-001-XAUD-002_PROPOSAL_2026-08-06.yaml, sha256: 258325b407757dcc716ec4d53db300e56bb896a93f993dc500f1080050399544, review_phase: post_core_evidence, status: submitted_held_for_recipient_independent_core}
+      - {id: SCI-MODE-001-XAUD-003, path: doc/audits/proposals/SCI-MODE-001-XAUD-003_PROPOSAL_2026-08-06.yaml, sha256: 6b12c60277f9dd408a21f1b31e3470aaebc84ed746a39b105ceb9669224e11b8, review_phase: post_core_evidence, status: submitted_held_for_future_amendment_or_reaudit}
+      - {id: SCI-FRUIT-001-XAUD-002, path: doc/audits/proposals/SCI-FRUIT-001-XAUD-002_PROPOSAL_2026-08-06.yaml, sha256: 000583fe2ab82adb926b9c8c9d9f78829eb88c1d980a1208bdc3e3c45a9a7fcd, review_phase: post_core_evidence, status: submitted_held_for_recipient_independent_core}
+      - {id: SCI-BEAM-001-XAUD-003, path: doc/audits/proposals/SCI-BEAM-001-XAUD-003_PROPOSAL_2026-08-06.yaml, sha256: ebaf770d7269474f0709b20c6faceb357a67ae0e4668002679ad47d7292cb312, review_phase: post_core_evidence, status: submitted_held_inactive_unless_explicitly_enabled}
+    contract_status: proposed
+    implementation_status: nonconformant
+    implementation_disposition: bounded_descriptive_and_global_scale_diagnostic_subcontracts_only
+    validation_status: in_progress
+    validation_disposition: static_trace_complete_empirical_validation_not_established
     production_status: existing_use_only
-    verdict: pending
-    open_findings: []
-    unresolved_scientific_decisions: []
+    verdict: amend
+    open_findings:
+      - {id: SCI-NOI-002-F001, class: contract_gap, severity: P1, evidence_basis: derived, confidence: high, status: open, owner: NOI-002_estimator_policy, owner_decision_id: SCI-NOI-002-D001, owner_decision_status: owner_decided_approved_pending_repair_and_reaudit, summary: "Exact d501 uses centered 1/R pixel scatter without target or joint-design correction; owner D001 now admits it only as empirically centered conditional finite-stack scatter for completed source_imprinted_current realizations.", closure_gate: "Implement D001 compact target/design/support/response/validity/normalization facts and R=1 invalid-for-uncertainty rule on an authorized successor, then re-audit; no physical-noise estimator or calibration claim is authorized."}
+      - {id: SCI-NOI-002-F002, class: contract_gap, severity: P1, evidence_basis: derived, confidence: high, status: open, owner: NOI-002_with_MAP_and_FLT_interfaces, owner_decision_id: SCI-NOI-002-D002, owner_decision_status: owner_decided_approved_pending_repair_and_reaudit, summary: "Owner D002 retains alpha=1/median_D(q_p V_p) and alpha q_p only as global_nonprecision_scale_diagnostic; empty/nonfinite/invalid calibration is unavailable, not successful alpha=1 calibration.", closure_gate: "Implement compact D002 identity/calibration/overlap/validity facts and unavailable-invalid calibration behavior on an authorized successor, then re-audit; retain overwrite only as existing_use_only compatibility pending FLT/MODE review."}
+      - {id: SCI-NOI-002-F003, class: contract_gap, severity: P1, evidence_basis: observed, confidence: high, status: open, owner: NOI-002_provenance_with_NOI-001_joins, summary: "Products omit target, centering, design/divisor, completion, source-imprint, calibration, covariance-domain, and consumer-validity facts.", closure_gate: "Publish compact required facts and product-contract tests without dense covariance or sign streams."}
+      - {id: SCI-NOI-002-F004, class: contract_gap, severity: P1, evidence_basis: derived, confidence: high, status: open, owner: NOI-002_and_SCI-SRC-001, summary: "Multiple inequivalent coefficient, stack, pooled, source-finder, and source-table statistics share S/N-like interpretation without null, response, search, selection, or multiplicity law.", closure_gate: "Name each statistic and response, restrict unsupported uses, and separately validate every claimed tail or catalog property."}
+      - {id: SCI-NOI-002-F005, class: dependency_gap, severity: P1, evidence_basis: derived, confidence: high, status: open, owner: NOI-002_with_SCI-FLT-001_and_SCI-FLT-002, summary: "Filtered point-source uncertainty is pixelwise stack scatter, not response-corrected aperture/template uncertainty, and no off-diagonal covariance is available.", closure_gate: "Establish exact filter response/operator identity and validate projected covariance, blank-aperture, or other approved compact method."}
+      - {id: SCI-NOI-002-F006, class: dependency_gap, severity: P1, evidence_basis: derived, confidence: high, status: open, owner: SCI-FRUIT-001_with_NOI-002_interface, summary: "FRUIT consumes median realization RMS inside adaptive selection, and standard science configuration text conflicts with its empirical-product prerequisite.", closure_gate: "Admit consistent configuration and approve full adaptive or independent split/cross-fit procedure before statistical feedback use."}
+      - {id: SCI-NOI-002-F007, class: scientific_policy_decision, severity: P1, evidence_basis: observed, confidence: high, status: open, owner: package_consumer_owners_and_coordinator, summary: "Active configured counts and inert disabled counts have no use-specific adequacy decision; 64 is optional validation capacity only.", closure_gate: "Approve enabled uses, target/design/estimator/error criteria, resource/failure policy, and predeclared acceptance without presuming a count."}
+      - {id: SCI-NOI-002-F008, class: evidence_gap, severity: P1, evidence_basis: observed, confidence: high, status: open, owner: coordinator_and_eventual_exact_successor_verifier, summary: "Exact-d501 tests are structural and do not establish estimator, calibration, dependence, tail, feedback, or aperture validity.", closure_gate: "Run only separately authorized proportional successor fixtures and admitted evidence with predeclared criteria; no current request exists."}
+    owner_decisions:
+      - id: SCI-NOI-002-D001
+        status: owner_decided_approved_pending_repair_and_reaudit
+        decision_date: 2026-08-06
+        scope: conditional_finite_stack_descriptive_identity_only
+        policy:
+          retained_computation: empirically_centered_conditional_finite_stack_scatter_for_completed_source_imprinted_current_realizations
+          required_compact_facts: [completed_R, joint_assignment_design_identity, source_imprint_mode, common_support_response_validity, exact_normalization]
+          R_equals_1: mathematically_trivial_zero_descriptive_scatter_invalid_for_uncertainty_or_S_N_use
+          not_authorized_as: [repeated_physical_noise_variance_or_covariance, inverse_variance, precision, significance, threshold_authority, aperture_uncertainty, production_noise_calibration]
+          future_physical_noise_estimator: balanced_interleaved_scan_split_null_maps_and_fixed_consumer_projections_prioritized
+          later_resampling_condition: delete_group_or_residual_block_only_with_preserved_detector_common_mode_correlations_and_validation_against_genuine_repeats_or_blank_apertures
+          separate_systematics: [calibration, extinction, persistent_detector_calibration]
+        does_not_authorize: [physical_noise_implementation, evidence_request, default, count, Unity_action, repair]
+      - id: SCI-NOI-002-D002
+        status: owner_decided_approved_pending_repair_and_reaudit
+        decision_date: 2026-08-06
+        scope: global_nonprecision_scale_diagnostic_only
+        policy:
+          retained_computation: alpha_equals_one_over_median_D_q_p_times_V_p_and_alpha_q_p
+          only_identity: global_nonprecision_scale_diagnostic
+          prohibited_inferences: [inverse_variance, precision, physical_noise_weight, covariance_correction, significance_calibration, correct_spatial_form_of_q_p]
+          required_compact_facts: [original_q_p_identity, calibration_region_definition, valid_pixel_count, m, alpha, realization_design_source_imprint_identity, overlap_same_stack_fact, explicit_validity]
+          invalid_calibration: empty_nonfinite_or_invalid_region_unavailable_not_successful_alpha_equals_one
+          live_overwrite: existing_use_only_compatibility_pending_FLT_and_MODE_consumer_review
+          longer_term_boundary: scaled_diagnostic_separate_from_authoritative_mapmaking_coefficient_unless_independent_validation_establishes_proportionality_to_named_physical_inverse_variance_target
+        does_not_authorize: [implementation, evidence, Unity_action, default, count, production_change]
+    unresolved_scientific_decisions: [SCI-NOI-002-D003_statistic_tail_claims, SCI-NOI-002-D004_aperture_template_method, SCI-NOI-002-D005_FRUIT_feedback_procedure, SCI-NOI-002-D006_use_specific_count_adequacy, SCI-NOI-002-D007_evidence_admission_policy]
     local_evidence: []
     requested_unity_evidence: []
     supplied_external_evidence: []
     remediation_branch: null
     remediation_commit: null
     re_audit_status: not_started
+    re_audit_gate: owner_policy_and_authorized_successor_required
 
   - id: SCI-FLT-001
     name: Map-domain convolve signal, uncertainty, response, and support
