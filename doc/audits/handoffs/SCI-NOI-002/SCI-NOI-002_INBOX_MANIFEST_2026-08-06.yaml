@@ -1,0 +1,26 @@
+format_version: 1
+target_package: SCI-NOI-002
+created_date: 2026-08-06
+coordinator_registry_commit: c21ff272ff09160fb004536504f1820e9dbd08d5
+manifest_status: frozen_for_dispatch
+authorized_phase: phase_0_only
+governing_application_sha: d5015fe716971bf8ea617e8a187311bf5af05185
+
+handoffs:
+  - id: SCI-NOI-002-XAUD-002
+    path: doc/audits/handoffs/SCI-NOI-002/SCI-NOI-002-XAUD-002.yaml
+    sha256: 9eb6c778409d344ce73387f44ac4a5429a89d43b8e768c19bf3da1ed6967c1e5
+    review_phase: pre_core_authority
+  - id: SCI-NOI-002-XAUD-001
+    path: doc/audits/handoffs/SCI-NOI-002/SCI-NOI-002-XAUD-001.yaml
+    sha256: dfcd59e9d59395ba84f7dfed1656690daae694872c2a1a40bf4f5c79f6abed3a
+    review_phase: post_core_evidence
+
+pre_core_authority_ids: [SCI-NOI-002-XAUD-002]
+post_core_evidence_ids: [SCI-NOI-002-XAUD-001]
+quarantine: >-
+  SCI-NOI-002-XAUD-001, the NOI-001 final source audit, all NOI-001 repair
+  dispatch material and repair diffs, and package implementation/test/diff
+  content remain closed until the independently derived SCI-NOI-002 core is
+  frozen and coordinator-accepted. This partition does not expose an
+  exhaustive implementation inventory.

@@ -216,7 +216,8 @@ routine default, universal requirement, or beammap expectation; routine
 configurations remain unchanged and `write_realizations` stays false unless
 explicitly requested.
 
-SCI-NOI-001 and SCI-NOI-002 remain not started, and SCI-CAL-001 remains
+SCI-NOI-001 repair and SCI-NOI-002 independent-audit dispatch packages are
+prepared but neither task is launched, and SCI-CAL-001 remains
 nonconformant/in progress; its bounded D007 atmosphere evidence does not
 authorize absolute photometry. The package remains contract `proposed`,
 implementation `conditionally_conformant` only under its recorded numerical
@@ -299,8 +300,16 @@ operator propagation, and deterministic-source leakage diagnostics. It
 conditions on MAP/PTC/VAL interfaces and reserves every empirical variance,
 weight, S/N, aperture-estimator, and production realization-count/default
 decision to SCI-NOI-002. The 64-realization tier is resource-admitted
-validation only, not a requirement/default/cap. No NOI-001 audit phase remains
-active; any follow-up requires a separate authorization.
+validation only, not a requirement/default/cap. The bounded SCI-NOI-001 repair
+package is `ready_pending_launch` from exact d501 and includes only
+F001/F002/F003/F005/F008; its frozen prompt, authority manifest, and readiness
+record authorize no work until separately launched. The independent SCI-NOI-002
+package is `ready_pending_phase0_launch` from the same exact d501: its Phase 0
+is a Terra-high worktree/authority/quarantine checkpoint only, R3 is its sole
+pre-core package authority, and SCI-NOI-002-XAUD-001 remains sealed as
+post-core evidence. Neither readiness record authorizes repair, audit
+derivation, source inspection, evidence, Unity, integration, or production
+change until its explicit later phase gate.
 
 ## 2026-07-31 SCI-CAL-001 Audit Coordination
 

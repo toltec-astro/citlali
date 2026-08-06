@@ -1,0 +1,33 @@
+format_version: 1
+target_package: SCI-NOI-001
+created_date: 2026-08-06
+coordinator_registry_commit: c21ff272ff09160fb004536504f1820e9dbd08d5
+manifest_status: frozen_repair_dispatch_authority
+dispatch_status: ready_pending_launch
+governing_application_sha: d5015fe716971bf8ea617e8a187311bf5af05185
+proposed_repair_branch: codex/repair-sci-noi-001
+
+authority_artifacts:
+  - id: SCI-NOI-001-OWNER-DECISION-BRIEF
+    availability: git_object
+    source_commit: c21ff272ff09160fb004536504f1820e9dbd08d5
+    path: doc/audits/packages/SCI-NOI-001_COORDINATOR_DECISION_BRIEF_2026-08-06.md
+    sha256: a40b151e161d3d2e5721bf75f6ec126dafae8f275e28ee6efbf0e07f146de471
+    role: approved_D001_to_D004_repair_policy_boundary
+  - id: SCI-NOI-001-FINAL-AUDIT
+    availability: git_object
+    source_commit: bf6de403c2c50d55f54b8486424aea5543cdd346
+    path: doc/audits/packages/SCI-NOI-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: eb38c7b282a95f792759ca71721fdb7731db5a4e392f8a95ac208c33754f7517
+    role: bounded_source_trace_and_open_finding_basis
+  - id: SCI-NOI-001-R3
+    availability: git_object
+    source_commit: 5a027c94ef9fc9c4a6e6cadc84af1c8a550d3508
+    path: doc/audits/packages/SCI-NOI-001_INDEPENDENT_CORE_R3.tex
+    sha256: 27263ab3bf29ac8f098463455e540f13e783241a688ef2bc5cb15b1f2a4319da
+    role: immutable_54_equation_independent_core_lineage
+
+included_finding_ids: [SCI-NOI-001-F001, SCI-NOI-001-F002, SCI-NOI-001-F003, SCI-NOI-001-F005, SCI-NOI-001-F008]
+excluded_finding_ids: [SCI-NOI-001-F004, SCI-NOI-001-F006, SCI-NOI-001-F007]
+required_authority_checks: [all_artifact_hashes, exact_application_starting_SHA, clean_fresh_worktree, repair_branch_absent_before_creation]
+prohibited_scope: [filter_edge_resolution, NOI-002_estimator_or_consumer_or_count_policy, astronomical_or_Unity_evidence_execution, final_pre_readdition_residual_implementation, RTC_PTC_MAP_JINC_FLT_or_FRUIT_algorithm_changes, production_defaults_or_status_change]

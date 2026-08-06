@@ -4952,6 +4952,35 @@ packages:
     validation_status: incomplete
     production_status: existing_use_only
     verdict: amend
+    repair_dispatch:
+      status: ready_pending_launch
+      prepared_date: 2026-08-06
+      governing_application_sha: d5015fe716971bf8ea617e8a187311bf5af05185
+      proposed_repair_branch: codex/repair-sci-noi-001
+      included_findings: [SCI-NOI-001-F001, SCI-NOI-001-F002, SCI-NOI-001-F003, SCI-NOI-001-F005, SCI-NOI-001-F008]
+      excluded_findings: [SCI-NOI-001-F004, SCI-NOI-001-F006, SCI-NOI-001-F007]
+      prompt:
+        path: doc/audits/prompts/SCI_NOI_001_REPAIR_PROMPT.md
+        sha256: 83996bd6ae5ffbf609f14354d237d23465f3ecb1ec6a3d161447b162bfeaa024
+      authority_manifest:
+        path: >-
+          doc/audits/handoffs/SCI-NOI-001/SCI-NOI-001_REPAIR_AUTHORITY_MANIFEST_2026-08-06.yaml
+        sha256: 44c6ac459f058ba39e18d01f35e64bfb37bcfec9c116a12a2839f64beac71bae
+      readiness_record:
+        path: doc/audits/packages/SCI-NOI-001_REPAIR_DISPATCH_READINESS_2026-08-06.md
+        sha256: dccfa791ed8de15128e2c761044d8f8e7a49ee11a51e5612a570fc78c936e880
+      planned_execution:
+        model: gpt-5.6-sol
+        effort: ultra
+        parallelism: serial_no_delegation_or_subagents
+        ultra_trigger: >-
+          RNG_identity_concurrency_determinism_Beammap_lifecycle_and_compact
+          provenance_cross_distinct_paths_and_require_one_reconciled_design
+        initial_checkpoint: required_before_code_or_test_edit
+        stop_rule: repair_and_focused_test_commit_then_coordinator_review
+      launch_effect: >-
+        No repair branch or worktree has been created; remediation_branch and
+        remediation_commit remain null until an authorized repair task starts.
     open_findings:
       - {id: SCI-NOI-001-F001, class: implementation_defect, severity: P1, evidence_basis: observed_static_source_and_derived_R3_consequence, confidence: high, status: open, owner: noise_RNG_and_realization_identity, owner_decision_id: SCI-NOI-001-D001, owner_decision_status: approved_pending_repair, summary: "Fixed seed 5489 is recreated without observation or realization namespaces; equal-shaped observations can repeat sign prefixes.", closure_gate: "Implement the approved compact versioned key/namespace policy, establish collision/repeat and sequential/OpenMP fixtures, publish reconstruction facts, then re-audit an exact successor."}
       - {id: SCI-NOI-001-F002, class: contract_gap, severity: P1, evidence_basis: observed_static_source, confidence: high, status: open, owner: noise_provenance, owner_decision_id: SCI-NOI-001-D001, owner_decision_status: approved_pending_repair, summary: "Current sidecars and digests do not reconstruct assignments, mode, completed IDs, or partial failure.", closure_gate: "Implement approved compact provenance: policy/version, stable ordering/partition, completed IDs, ensemble mode, and digest joins; dense per-sample IDs, sign vectors, and N-by-N Q matrices are not required; then re-audit."}
@@ -5179,19 +5208,29 @@ packages:
     outputs: [empirical variance/covariance claims, calibrated weights, S/N products]
     upstream_dependencies:
       - package_id: SCI-NOI-001
-        status: open
+        status: conditioned
         required_contract: >-
-          Accepted conditional-sign ensemble audit facts, including compact
-          reconstruction gaps, deterministic-signal imprint, repeated
-          observation prefixes, consumer trace, and explicit use limits.
+          Frozen R3 conditional-sign ensemble abstraction at exact commit
+          5a027c94ef9fc9c4a6e6cadc84af1c8a550d3508 and approved D001--D004
+          repair-policy boundary, without source-derived consumer evidence.
         consequence: >-
-          SCI-NOI-002 alone must decide finite-N normalization, empirical
+          SCI-NOI-002 may condition independent derivation on the ensemble
+          contract but alone decides finite-N normalization, empirical
           variance/weight calibration and formula, S/N/significance/threshold/
-          feedback/aperture estimator validity, and production count/default.
+          feedback/aperture estimator validity, and production count/default;
+          its final source-derived handoff remains post-core evidence.
       - package_id: SCI-MAP-001
         status: open
     downstream_consumers: [SCI-FLT-001, SCI-FLT-002, SCI-SRC-001, SCI-MODE-001, SCI-FRUIT-001]
     incoming_handoffs:
+      - id: SCI-NOI-002-XAUD-002
+        path: doc/audits/handoffs/SCI-NOI-002/SCI-NOI-002-XAUD-002.yaml
+        sha256: 9eb6c778409d344ce73387f44ac4a5429a89d43b8e768c19bf3da1ed6967c1e5
+        source_package: SCI-NOI-001
+        review_phase: pre_core_authority
+        arrival: before_dispatch
+        status: submitted
+        late_arrival_route: not_applicable
       - id: SCI-NOI-002-XAUD-001
         path: doc/audits/handoffs/SCI-NOI-002/SCI-NOI-002-XAUD-001.yaml
         sha256: dfcd59e9d59395ba84f7dfed1656690daae694872c2a1a40bf4f5c79f6abed3a
@@ -5200,8 +5239,46 @@ packages:
         arrival: before_dispatch
         status: submitted_held_for_recipient_independent_core
         late_arrival_route: held_for_recipient_independent_core_then_post_core_review
-    governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
-    governing_sha_role: inventory_snapshot
+    audit_dispatch:
+      status: ready_pending_phase0_launch
+      prepared_date: 2026-08-06
+      governing_application_sha: d5015fe716971bf8ea617e8a187311bf5af05185
+      proposed_audit_branch: codex/audit-sci-noi-002
+      prompt:
+        path: doc/audits/prompts/SCI_NOI_002_AUDIT_PROMPT.md
+        sha256: 74cd002580f1bd92eb6c5030eb8a9fdf19711db7fb6f9359f26ac21245a12220
+      inbound_manifest:
+        path: >-
+          doc/audits/handoffs/SCI-NOI-002/SCI-NOI-002_INBOX_MANIFEST_2026-08-06.yaml
+        sha256: 1de9dbc5f9aca42f5a9f9b1f05b7b14c092ee9b443946d0c52eeb27c8da117b0
+      readiness_record:
+        path: doc/audits/packages/SCI-NOI-002_DISPATCH_READINESS_2026-08-06.md
+        sha256: 10b33363cfe72af52d3574f1285cf61650895b7a750a47dbf772dbdc389bbd8e
+      pre_core_authority_ids: [SCI-NOI-002-XAUD-002]
+      post_core_evidence_ids: [SCI-NOI-002-XAUD-001]
+      planned_phases:
+        phase_0:
+          model: gpt-5.6-terra
+          effort: high
+          stop_rule: worktree_authority_byte_and_quarantine_checkpoint_only
+        phase_1:
+          model: gpt-5.6-sol
+          effort: ultra
+          stop_rule: independent_core_commit_then_stop_before_exposure
+        phase_2:
+          status: held_for_separate_coordinator_authorization_after_core_acceptance
+          model: gpt-5.6-sol
+          effort: ultra
+      ultra_trigger: >-
+        finite_N_normalization_covariance_weight_consumer_aperture_and_count
+        policy_are_distinct_hard_investigations_requiring_one_independent
+        estimator_synthesis
+      launch_effect: >-
+        No audit branch or worktree exists from this dispatch; phase 0 alone
+        may be launched separately and neither derivation nor source exposure
+        is authorized by readiness status.
+    governing_sha: d5015fe716971bf8ea617e8a187311bf5af05185
+    governing_sha_role: ready_dispatch_exact_application_snapshot
     audit_branch: null
     audit_commit: null
     independent_derivation: {status: not_started, sha256: null}

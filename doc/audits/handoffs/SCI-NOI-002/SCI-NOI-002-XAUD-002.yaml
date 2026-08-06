@@ -1,0 +1,75 @@
+format_version: 1
+id: SCI-NOI-002-XAUD-002
+created_date: 2026-08-06
+
+source:
+  package_id: SCI-NOI-001
+  role: coordinator
+  audit_branch: codex/audit-sci-noi-001
+  audit_commit: 5a027c94ef9fc9c4a6e6cadc84af1c8a550d3508
+  governing_or_evidence_sha: d5015fe716971bf8ea617e8a187311bf5af05185
+  finding_ids: []
+
+target:
+  package_id: SCI-NOI-002
+
+priority: P1
+evidence_basis: derived
+review_phase: pre_core_authority
+arrival: before_dispatch
+status: submitted
+
+summary: >-
+  R3 is the frozen upstream conditional-sign ensemble contract that NOI-002
+  may use as an input abstraction before its independent estimator derivation.
+claim: >-
+  The R3 core defines the conditional realized-sample sign ensemble, its
+  sign-correlation-law representation, conditional propagation identities,
+  deterministic-source imprint caveat, and compact provenance distinctions;
+  it does not decide any NOI-002 estimator, normalization, weight,
+  significance, aperture, or realization-count policy.
+supports:
+  - condition_independent_estimator_derivation_on_named_ensemble_contract
+  - preserve_NOI-001_and_NOI-002_ownership_boundary
+  - identify_required_interface_facts_without_source_trace_exposure
+does_not_establish:
+  - finite_N_or_sample_variance_normalization
+  - empirical_variance_or_weight_calibration_or_formula
+  - downstream_weight_formula
+  - S_N_significance_threshold_feedback_or_aperture_estimator_validity
+  - production_realization_count_or_default
+  - source_implementation_behavior_or_repair_disposition
+
+requested_actions:
+  - use_as_upstream_mathematical_contract_only
+  - independently_derive_estimator_and_consumer_requirements
+  - keep_source_derived_XAUD-001_quarantined_until_post_core
+affected_target_findings: []
+related_handoffs: [SCI-NOI-002-XAUD-001]
+
+authority_for_pre_core_review: >-
+  Approved canonical independent-core authority at exact audit commit
+  5a027c94ef9fc9c4a6e6cadc84af1c8a550d3508; this record grants no source,
+  test, final-audit, repair, or post-core handoff exposure.
+
+evidence:
+  - id: SCI-NOI-001-R3
+    availability: git_object
+    path: doc/audits/packages/SCI-NOI-001_INDEPENDENT_CORE_R3.tex
+    sha256: 27263ab3bf29ac8f098463455e540f13e783241a688ef2bc5cb15b1f2a4319da
+    note: Sole NOI-001 independent equation authority, frozen at the source audit commit above.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: not_applicable
+  actions: []
+  rationale: >-
+    Frozen before SCI-NOI-002 dispatch for independent-core-only exposure.
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: [SCI-NOI-001]
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

@@ -84,15 +84,16 @@ tier is operational only—not a routine default, universal requirement, or
 beammap expectation; routine configurations and `write_realizations` behavior
 remain unchanged.
 
-SCI-NOI-001 and SCI-NOI-002 remain not started, and CAL remains nonconformant
-and in progress; neither empirical significance/covariance nor absolute
-photometry is authorized. All substantive owner scientific-policy choices are
-resolved by D001--D003; the [FLT decision brief](packages/SCI-FLT-001_COORDINATOR_DECISION_BRIEF_2026-08-05.md)
+SCI-NOI-001 repair and SCI-NOI-002 independent-audit dispatch packages are
+prepared but neither task is launched, and CAL remains nonconformant and in
+progress; neither empirical significance/covariance nor absolute photometry is
+authorized. All substantive owner scientific-policy choices are resolved by
+D001--D003; the [FLT decision brief](packages/SCI-FLT-001_COORDINATOR_DECISION_BRIEF_2026-08-05.md)
 retains their exact boundary. The package remains
 `proposed`/`conditionally_conformant`/`in_progress`/`fail_closed` with verdict
 `amend` and re-audit `required`.
 
-### SCI-NOI-001 Phase 2 completed; R3 authoritative; owner review held — 2026-08-06
+### SCI-NOI-001 Phase 2 completed; repair and NOI-002 dispatches ready — 2026-08-06
 
 The [frozen SCI-NOI-001 prompt](prompts/SCI_NOI_001_AUDIT_PROMPT.md),
 [inbound manifest](handoffs/SCI-NOI-001/SCI-NOI-001_INBOX_MANIFEST_2026-08-05.yaml),
@@ -120,14 +121,20 @@ validation capacity only. The accepted handoffs are held for recipient core or
 re-audit review, not dispatched automatically. JINC remains SCI-MAP-002-
 conditioned and the residual interface SCI-FRUIT-001-conditioned.
 
-NOI-001 will define the conditional pre-mapmaking sign ensemble and its
+NOI-001 has defined the conditional pre-mapmaking sign ensemble and its
 ensemble second-moment imprint through realized map/coadd/filter interfaces.
-It conditions on frozen RTC/PTC and validity state; it does not validate those
-upstream packages. NOI-002 retains every variance/weight/S/N/aperture-estimator
-and production realization-count/default decision. The resource-admitted
+Its bounded [repair prompt](prompts/SCI_NOI_001_REPAIR_PROMPT.md),
+[authority manifest](handoffs/SCI-NOI-001/SCI-NOI-001_REPAIR_AUTHORITY_MANIFEST_2026-08-06.yaml),
+and [readiness record](packages/SCI-NOI-001_REPAIR_DISPATCH_READINESS_2026-08-06.md)
+are `ready_pending_launch`; they include only F001/F002/F003/F005/F008. The
+independent [SCI-NOI-002 prompt](prompts/SCI_NOI_002_AUDIT_PROMPT.md),
+[manifest](handoffs/SCI-NOI-002/SCI-NOI-002_INBOX_MANIFEST_2026-08-06.yaml),
+and [readiness record](packages/SCI-NOI-002_DISPATCH_READINESS_2026-08-06.md)
+are `ready_pending_phase0_launch`: R3 is pre-core authority, while
+SCI-NOI-002-XAUD-001 remains post-core evidence. The resource-admitted
 64-realization tier is neither a default nor a requirement. No repair, evidence
-request, recipient audit, reduction, Unity action, integration, or production
-authorization follows from this coordination acceptance.
+request, audit task, re-audit, reduction, Unity action, integration, or
+production authorization follows from these readiness records.
 
 ## Purpose and non-goals
 
