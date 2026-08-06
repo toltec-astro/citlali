@@ -4851,11 +4851,37 @@ packages:
         review_phase: pre_core_authority
         arrival: before_dispatch
         status: submitted
+    outgoing_handoffs:
+      - id: SCI-NOI-002-XAUD-001
+        path: doc/audits/handoffs/SCI-NOI-002/SCI-NOI-002-XAUD-001.yaml
+        target_package: SCI-NOI-002
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted_held_for_recipient_independent_core
+        submitted_proposal_sha256: d1e669333c6f63ee9928eea6f5e9cb512fa4e729a1d52237b77ad9d69ffc9a3e
+        integrated_record_sha256: dfcd59e9d59395ba84f7dfed1656690daae694872c2a1a40bf4f5c79f6abed3a
+      - id: SCI-FLT-001-XAUD-002
+        path: doc/audits/handoffs/SCI-FLT-001/SCI-FLT-001-XAUD-002.yaml
+        target_package: SCI-FLT-001
+        review_phase: post_core_evidence
+        arrival: after_audit_completion
+        status: submitted_held_for_reaudit
+        submitted_proposal_sha256: 52c7a9fdd32eb46350c5c5984cd5d6188c65299074e99044c3fea1e7baadee56
+        integrated_record_sha256: 3a99decf0f80b8be599290a7b26a2de618e346073ce0e89c38ac0aa163ad48e9
+      - id: SCI-FRUIT-001-XAUD-001
+        path: doc/audits/handoffs/SCI-FRUIT-001/SCI-FRUIT-001-XAUD-001.yaml
+        target_package: SCI-FRUIT-001
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted_reclassified_from_unapproved_pre_core_proposal
+        submitted_proposal_sha256: 3e580be1f2c65be351debe8a0ec62b0c86a9ec7d5a699cf39531cf3376d3bc51
+        integrated_record_sha256: 0fcada430c4052ad7aefc4bc1aa37a9aac15a302322a807282d9a3984ce22a58
     governing_sha: d5015fe716971bf8ea617e8a187311bf5af05185
-    governing_sha_role: audit_dispatch_snapshot
+    governing_sha_role: exact_application_source_assessed
     audit_branch: codex/audit-sci-noi-001
-    audit_commit: 5a027c94ef9fc9c4a6e6cadc84af1c8a550d3508
-    audit_parent_sha: d5015fe716971bf8ea617e8a187311bf5af05185
+    audit_commit: bf6de403c2c50d55f54b8486424aea5543cdd346
+    audit_parent_sha: 5a027c94ef9fc9c4a6e6cadc84af1c8a550d3508
+    audit_application_parent_sha: d5015fe716971bf8ea617e8a187311bf5af05185
     independent_derivation:
       status: phase_1_completed_accepted_R3_authoritative
       authoritative_revision: R3
@@ -4887,18 +4913,66 @@ packages:
       phase_1_quarantine_preserved: true
       tectonic_effective_compile: unavailable_local_pre_tex_panic
       structural_document_checks: passed
-    contract_status: not_started
-    implementation_status: not_assessed
-    validation_status: not_started
+    phase_2_final_audit:
+      status: completed_accepted_for_coordinator_record
+      commit: bf6de403c2c50d55f54b8486424aea5543cdd346
+      timestamp: 2026-08-05T21:19:57-04:00
+      final_audit_artifact:
+        path: doc/audits/packages/SCI-NOI-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+        sha256: eb38c7b282a95f792759ca71721fdb7731db5a4e392f8a95ac208c33754f7517
+      evidence_design_artifact:
+        path: doc/audits/requests/SCI-NOI-001_CURRENT_AND_FUTURE_RESIDUAL_EVIDENCE_DESIGN_2026-08-06.md
+        sha256: 09ad9cc1ef4650c3bb8dcfc8519c0e1d5c825438589a7676ae6ec6f42a04f625
+        status: proposed_not_requested_costly_work_held_under_FRAMEWORK-NUM-001
+      coordinator_decision_brief:
+        path: doc/audits/packages/SCI-NOI-001_COORDINATOR_DECISION_BRIEF_2026-08-06.md
+        sha256: 05c3fea726a82a29adc2ca086075997569375fe54d2d582ccc8ef239e1175b15
+        status: owner_review_required
+      submitted_proposals:
+        ledger:
+          path: doc/audits/proposals/SCI-NOI-001_LEDGER_PROPOSAL_2026-08-06.yaml
+          sha256: 72265d51daf6c51024e13da3d72831e7b4b090ea81eb8451362230913400a78d
+        NOI_002_handoff:
+          path: doc/audits/proposals/SCI-NOI-002-XAUD-001_PROPOSAL_2026-08-06.yaml
+          sha256: d1e669333c6f63ee9928eea6f5e9cb512fa4e729a1d52237b77ad9d69ffc9a3e
+        FLT_001_handoff:
+          path: doc/audits/proposals/SCI-FLT-001-XAUD-002_PROPOSAL_2026-08-06.yaml
+          sha256: 52c7a9fdd32eb46350c5c5984cd5d6188c65299074e99044c3fea1e7baadee56
+        FRUIT_001_handoff:
+          path: doc/audits/proposals/SCI-FRUIT-001-XAUD-001_PROPOSAL_2026-08-06.yaml
+          sha256: 3e580be1f2c65be351debe8a0ec62b0c86a9ec7d5a699cf39531cf3376d3bc51
+      proposal_self_reference_resolution: >-
+        The byte-preserved submitted proposals retain their pre-freeze
+        placeholders. Coordinator-integrated ledger and handoff records use
+        exact audit commit bf6de403c2c50d55f54b8486424aea5543cdd346 and
+        verified repository_path availability; their hashes are recorded
+        separately as integrated records.
+    contract_status: proposed
+    implementation_status: nonconformant
+    validation_status: incomplete
     production_status: existing_use_only
-    verdict: pending
-    open_findings: []
-    unresolved_scientific_decisions: []
-    local_evidence: []
+    verdict: amend
+    open_findings:
+      - {id: SCI-NOI-001-F001, class: implementation_defect, severity: P1, evidence_basis: observed_static_source_and_derived_R3_consequence, confidence: high, status: open, owner: noise_RNG_and_realization_identity, summary: "Fixed seed 5489 is recreated without observation or realization namespaces; equal-shaped observations can repeat sign prefixes.", closure_gate: "Approve compact versioned key/namespace policy, publish reconstruction facts, establish collision/repeat and sequential/OpenMP fixtures, then re-audit an exact successor."}
+      - {id: SCI-NOI-001-F002, class: contract_gap, severity: P1, evidence_basis: observed_static_source, confidence: high, status: open, owner: noise_provenance, summary: "Current sidecars and digests do not reconstruct assignments, mode, completed IDs, or partial failure.", closure_gate: "Publish compact algorithm/key/coherence/order/assignment/completion/mode and digest joins; dense per-sample IDs, sign vectors, and N-by-N Q matrices are not required."}
+      - {id: SCI-NOI-001-F003, class: contract_gap, severity: P1, evidence_basis: observed_static_source_and_R3_derivation, confidence: high, status: open, owner: product_identity_NOI-002_and_FRUIT-001, summary: "Current realizations contain deterministic signal and a conditional fruit residual path lacks approved product identity.", closure_gate: "Bind current/residual identity to products, preserve R3 bias trade, obtain NOI-002 and FRUIT-001 dispositions, and pass admitted source/blank-region evidence without invented tolerances."}
+      - {id: SCI-NOI-001-F004, class: implementation_defect, severity: P1, evidence_basis: observed_static_source, confidence: high, status: open, owner: SCI-FLT-001_operator_and_provenance, summary: "Science edge preprocessing includes an affine background term omitted from realizations.", closure_gate: "FLT resolves identical versus explicitly affine preprocessing, publishes the realized choice/parent join, passes paired fixtures, and returns a conditioned disposition."}
+      - {id: SCI-NOI-001-F005, class: implementation_defect, severity: P1, evidence_basis: observed_static_source, confidence: high, status: open, owner: noise_configuration_and_lifecycle, summary: "Enabled zero realizations are admitted although diagnostics and required empirical outputs cannot safely realize the state.", closure_gate: "Approve positive-count admission or complete zero-stack semantics, validate lifecycle/product paths, and re-audit without selecting a production count."}
+      - {id: SCI-NOI-001-F006, class: dependency_gap, severity: P1, evidence_basis: observed_static_source, confidence: high, status: open, owner: SCI-NOI-002, summary: "The stack feeds variance, empirical coefficient, S/N, threshold, consumer, and feedback paths without NOI-002 authority.", closure_gate: "NOI-002 decides finite-N normalization, variance/weight formula and labels, S/N/significance/threshold/feedback/aperture use, and production count; consumers are then dispositioned."}
+      - {id: SCI-NOI-001-F007, class: evidence_gap, severity: P1, evidence_basis: observed_absence, confidence: high, status: open, owner: coordinator_and_human_evidence_operator, summary: "No exact-d501 runtime evidence establishes empirical sign law, effective uniqueness, cross-observation behavior, source imprint, filter identity, or repeatability.", closure_gate: "Admit any bounded evidence request only under FRAMEWORK-NUM-001 and independent review; no request is currently authorized."}
+      - {id: SCI-NOI-001-F008, class: implementation_defect, severity: P1, evidence_basis: observed_static_source, confidence: high, status: open, owner: Beammap_RNG_and_realization_identity, summary: "Beammap retained signs depend on active-map reset overwrite history rather than a named realization key.", closure_gate: "Approve generation scope and compact identity, test pass permutations/repeats, condition JINC on SCI-MAP-002, and re-audit."}
+    unresolved_scientific_decisions:
+      - owner_decision_required_for_realization_key_namespace_and_Beammap_generation_scope
+      - owner_decision_required_for_enabled_zero_realization_admission_semantics
+      - owner_decision_required_for_current_vs_future_residual_product_identity
+      - owner_decision_required_before_any_FRAMEWORK-NUM-001_evidence_admission
+    local_evidence:
+      - read_only_exact_d501_source_trace_mapped_to_R3
+      - documentation_structural_checks_passed_TeX_execution_unavailable_before_compilation
     requested_unity_evidence: []
     supplied_external_evidence: []
     dispatch:
-      status: phase_1_completed_accepted_R3_authoritative_phase_2_trace_authorized
+      status: phase_2_completed_accepted_R3_authoritative_owner_review_held
       dispatch_date: 2026-08-05
       launch_authorization: project_owner_explicit_phase_2_only_after_phase_1_acceptance
       coordinator_registry_commit: 192e0d9b5e3be4eb20522d3319cae346168c4bce
@@ -4913,7 +4987,7 @@ packages:
       readiness_record:
         path: >-
           doc/audits/packages/SCI-NOI-001_COORDINATOR_DISPATCH_READINESS_2026-08-05.md
-        sha256: 14cdeac0439eaa0e95a75a3696b0f82307afffed88478dc1bca096287376ae47
+        sha256: 13006f82dd8f43d8eb7196c78d35c2d79d8d48c1d0f5b801564c30e7418ac270
       phase_0:
         status: completed_accepted
         task_thread_id: 019fd40a-cf4d-7ad0-aa9b-9543d5236154
@@ -4992,7 +5066,7 @@ packages:
         structural_document_checks: passed
         stop_rule: completed_before_quarantined_exposure
       phase_2:
-        status: authorized_documentation_only_trace_and_synthesis
+        status: completed_documentation_only_trace_accepted
         task_thread_id: 019fd40a-cf4d-7ad0-aa9b-9543d5236154
         task_worktree: /Users/gwilson/.codex/worktrees/e71f/citlali-refactor
         audit_branch: codex/audit-sci-noi-001
@@ -5011,6 +5085,11 @@ packages:
           read_only_Git_source_test_product_consumer_inspection_and_tiny
           deterministic_equation_linked_existing_or_ephemeral_private_tmp_fixtures
         canonical_ledger_edit_authorized: false
+        completion_commit: bf6de403c2c50d55f54b8486424aea5543cdd346
+        completion_timestamp: 2026-08-05T21:19:57-04:00
+        completion_clean_worktree: true
+        completion_scope: six_new_documentation_artifacts_only
+        final_audit_sha256: eb38c7b282a95f792759ca71721fdb7731db5a4e392f8a95ac208c33754f7517
         final_deliverables: >-
           documentation_only_final_audit_embedded_comparison_and_matrices,
           supported_proposed_handoffs, evidence_request_designs, and_proposed
@@ -5052,9 +5131,26 @@ packages:
     upstream_dependencies:
       - package_id: SCI-NOI-001
         status: open
+        required_contract: >-
+          Accepted conditional-sign ensemble audit facts, including compact
+          reconstruction gaps, deterministic-signal imprint, repeated
+          observation prefixes, consumer trace, and explicit use limits.
+        consequence: >-
+          SCI-NOI-002 alone must decide finite-N normalization, empirical
+          variance/weight calibration and formula, S/N/significance/threshold/
+          feedback/aperture estimator validity, and production count/default.
       - package_id: SCI-MAP-001
         status: open
     downstream_consumers: [SCI-FLT-001, SCI-FLT-002, SCI-SRC-001, SCI-MODE-001, SCI-FRUIT-001]
+    incoming_handoffs:
+      - id: SCI-NOI-002-XAUD-001
+        path: doc/audits/handoffs/SCI-NOI-002/SCI-NOI-002-XAUD-001.yaml
+        sha256: dfcd59e9d59395ba84f7dfed1656690daae694872c2a1a40bf4f5c79f6abed3a
+        source_package: SCI-NOI-001
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted_held_for_recipient_independent_core
+        late_arrival_route: held_for_recipient_independent_core_then_post_core_review
     governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
     governing_sha_role: inventory_snapshot
     audit_branch: null
@@ -5159,6 +5255,14 @@ packages:
         review_phase: post_core_evidence
         arrival: after_audit_completion
         status: submitted
+        late_arrival_route: held_for_reaudit
+      - id: SCI-FLT-001-XAUD-002
+        path: doc/audits/handoffs/SCI-FLT-001/SCI-FLT-001-XAUD-002.yaml
+        sha256: 3a99decf0f80b8be599290a7b26a2de618e346073ce0e89c38ac0aa163ad48e9
+        source_package: SCI-NOI-001
+        review_phase: post_core_evidence
+        arrival: after_audit_completion
+        status: submitted_held_for_reaudit
         late_arrival_route: held_for_reaudit
     outgoing_handoffs:
       - id: SCI-MAP-001-XAUD-001
@@ -5822,6 +5926,15 @@ packages:
       - package_id: SCI-MODE-001
         status: open
     downstream_consumers: [final iterative science and pointing reductions]
+    incoming_handoffs:
+      - id: SCI-FRUIT-001-XAUD-001
+        path: doc/audits/handoffs/SCI-FRUIT-001/SCI-FRUIT-001-XAUD-001.yaml
+        sha256: 0fcada430c4052ad7aefc4bc1aa37a9aac15a302322a807282d9a3984ce22a58
+        source_package: SCI-NOI-001
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted_held_for_recipient_independent_core
+        late_arrival_route: held_for_recipient_independent_core_then_post_core_review
     governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
     governing_sha_role: inventory_snapshot
     audit_branch: null

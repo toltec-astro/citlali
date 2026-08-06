@@ -1,0 +1,97 @@
+format_version: 1
+id: SCI-NOI-002-XAUD-001
+created_date: 2026-08-06
+
+source:
+  package_id: SCI-NOI-001
+  role: auditor
+  audit_branch: codex/audit-sci-noi-001
+  audit_commit: bf6de403c2c50d55f54b8486424aea5543cdd346
+  governing_or_evidence_sha: d5015fe716971bf8ea617e8a187311bf5af05185
+  finding_ids: [SCI-NOI-001-F003, SCI-NOI-001-F006, SCI-NOI-001-F007]
+
+target:
+  package_id: SCI-NOI-002
+
+priority: P1
+evidence_basis: observed_static_source_and_R3_derivation
+review_phase: post_core_evidence
+arrival: before_dispatch
+status: submitted
+
+summary: >-
+  The current NOI-001 realization stack feeds empirical estimator and consumer
+  products whose validity and production policy are exclusively SCI-NOI-002's.
+claim: >-
+  At exact d5015fe716971bf8ea617e8a187311bf5af05185, the observed current
+  realization stack reaches variance, empirical coefficient, S/N, threshold,
+  coadd/filter/source-finding, point-source, and fruit-feedback consumers;
+  deterministic signal imprint and repeated observation sign prefixes are
+  established source-trace facts, not estimator validation.
+supports:
+  - add_or_update_dependency_on_SCI-NOI-001
+  - enumerate_direct_and_coefficient_mediated_realization_consumers
+  - preserve_current_ensemble_signal_imprint_and_cross_observation_caveats
+  - require_use_specific_distribution_covariance_and_scale_admission
+does_not_establish:
+  - finite_N_or_sample_variance_normalization
+  - empirical_variance_or_weight_validity
+  - downstream_weight_formula
+  - S_N_significance_threshold_feedback_or_aperture_validity
+  - production_realization_count_or_default
+  - physical_noise_covariance
+  - fruit_residual_unbiasedness
+
+requested_actions:
+  - add_or_update_dependency
+  - add_or_update_finding
+  - classify_each_consumer_allow_restrict_or_prohibit
+  - decide_finite_stack_normalization_and_product_labels
+  - decide_empirical_weight_S_N_threshold_feedback_aperture_and_count_policy
+  - return_any_admitted_interface_changes_for_bounded_reaudit
+affected_target_findings: []
+related_handoffs: [SCI-FLT-001-XAUD-002, SCI-FRUIT-001-XAUD-001]
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-NOI-001-R3
+    availability: repository_path
+    path: doc/audits/packages/SCI-NOI-001_INDEPENDENT_CORE_R3.tex
+    sha256: 27263ab3bf29ac8f098463455e540f13e783241a688ef2bc5cb15b1f2a4319da
+    note: Sole independent equation authority; especially equations 15-27 and 33-54.
+  - id: SCI-NOI-001-FINAL-AUDIT
+    availability: repository_path
+    path: doc/audits/packages/SCI-NOI-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: eb38c7b282a95f792759ca71721fdb7731db5a4e392f8a95ac208c33754f7517
+    note: Final audit verified from exact bf6de403c2c50d55f54b8486424aea5543cdd346.
+  - id: SCI-NOI-001-APPLICATION
+    availability: git_object
+    path: null
+    sha256: null
+    note: Exact application commit d5015fe716971bf8ea617e8a187311bf5af05185.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: held_for_recipient_independent_core_then_post_core_review
+  actions: []
+  rationale: >-
+    SCI-NOI-002 is not dispatched. This is post-core evidence, quarantined
+    until its independently derived core is frozen; it neither authorizes nor
+    supplies an estimator decision.
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: [SCI-NOI-001]
+  contract_or_report_locations: []
+
+coordinator_provenance:
+  submitted_proposal_path: doc/audits/proposals/SCI-NOI-002-XAUD-001_PROPOSAL_2026-08-06.yaml
+  submitted_proposal_sha256: d1e669333c6f63ee9928eea6f5e9cb512fa4e729a1d52237b77ad9d69ffc9a3e
+  integration: >-
+    Coordinator-integrated successor replaces the proposal's self-reference
+    placeholder with the verified final audit commit and repository-path
+    availability; the submitted proposal remains byte-preserved separately.
+
+supersedes: null
+superseded_by: null

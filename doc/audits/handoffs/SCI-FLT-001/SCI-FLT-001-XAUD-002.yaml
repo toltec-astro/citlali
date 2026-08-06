@@ -1,0 +1,91 @@
+format_version: 1
+id: SCI-FLT-001-XAUD-002
+created_date: 2026-08-06
+
+source:
+  package_id: SCI-NOI-001
+  role: auditor
+  audit_branch: codex/audit-sci-noi-001
+  audit_commit: bf6de403c2c50d55f54b8486424aea5543cdd346
+  governing_or_evidence_sha: d5015fe716971bf8ea617e8a187311bf5af05185
+  finding_ids: [SCI-NOI-001-F004]
+
+target:
+  package_id: SCI-FLT-001
+
+priority: P1
+evidence_basis: observed_static_source
+review_phase: post_core_evidence
+arrival: after_audit_completion
+status: submitted
+
+summary: >-
+  Science and realization maps share the filter core, template, denominator,
+  and edge window, but science-only affine edge preprocessing breaks literal
+  identical preprocessing when the background is nonzero.
+claim: >-
+  At exact d5015fe716971bf8ea617e8a187311bf5af05185, the bounded difference
+  is edge preprocessing only: later template, denominator, and core transform
+  are shared. This is an interface/provenance fact, not a filter-mathematics
+  or estimator conclusion.
+supports:
+  - preserve_shared_filter_template_denominator_and_realization_path
+  - add_bounded_edge_preprocessing_identity_finding
+  - require_realized_background_window_and_raw_parent_provenance_join
+does_not_establish:
+  - filter_mathematical_response_or_normalization_validity
+  - jackknife_variance_or_S_N_validity
+  - numerical_tolerance_or_production_admission
+  - need_to_reopen_filter_mathematics
+
+requested_actions:
+  - review_bounded_conditioned_operator_fact
+  - approve_identical_or_explicitly_affine_preprocessing_contract
+  - add_zero_and_nonzero_background_paired_interface_test
+  - publish_realized_operator_identity_and_product_join
+affected_target_findings: []
+related_handoffs: [SCI-NOI-001-XAUD-002]
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-NOI-001-R3-FILTER
+    availability: repository_path
+    path: doc/audits/packages/SCI-NOI-001_INDEPENDENT_CORE_R3.tex
+    sha256: 27263ab3bf29ac8f098463455e540f13e783241a688ef2bc5cb15b1f2a4319da
+    note: R3 equations 38-39 require fixed realized filter propagation.
+  - id: SCI-NOI-001-FINAL-AUDIT
+    availability: repository_path
+    path: doc/audits/packages/SCI-NOI-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: eb38c7b282a95f792759ca71721fdb7731db5a4e392f8a95ac208c33754f7517
+    note: Finding SCI-NOI-001-F004 at verified final audit commit bf6de403c2c50d55f54b8486424aea5543cdd346.
+  - id: SCI-NOI-001-APPLICATION
+    availability: git_object
+    path: null
+    sha256: null
+    note: Exact application commit d5015fe716971bf8ea617e8a187311bf5af05185.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: held_for_reaudit
+  actions: []
+  rationale: >-
+    FLT has a completed audit/amendment chain. This late bounded interface fact
+    is held for its next authorized amendment or re-audit and does not reopen
+    filter mathematics or authorize a repair.
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: [SCI-NOI-001]
+  contract_or_report_locations: []
+
+coordinator_provenance:
+  submitted_proposal_path: doc/audits/proposals/SCI-FLT-001-XAUD-002_PROPOSAL_2026-08-06.yaml
+  submitted_proposal_sha256: 52c7a9fdd32eb46350c5c5984cd5d6188c65299074e99044c3fea1e7baadee56
+  integration: >-
+    Coordinator-integrated successor replaces the proposal's self-reference
+    placeholder with the verified final audit commit and repository-path
+    availability; the submitted proposal remains byte-preserved separately.
+
+supersedes: null
+superseded_by: null

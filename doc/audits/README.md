@@ -92,7 +92,7 @@ retains their exact boundary. The package remains
 `proposed`/`conditionally_conformant`/`in_progress`/`fail_closed` with verdict
 `amend` and re-audit `required`.
 
-### SCI-NOI-001 Phase 1 accepted; R3 authoritative; Phase 2 authorized — 2026-08-05
+### SCI-NOI-001 Phase 2 completed; R3 authoritative; owner review held — 2026-08-06
 
 The [frozen SCI-NOI-001 prompt](prompts/SCI_NOI_001_AUDIT_PROMPT.md),
 [inbound manifest](handoffs/SCI-NOI-001/SCI-NOI-001_INBOX_MANIFEST_2026-08-05.yaml),
@@ -105,20 +105,29 @@ diff or post-core evidence was opened before the core freeze. R1 and R2 remain
 immutable lineage; R3 at `5a027c94ef9fc9c4a6e6cadc84af1c8a550d3508`, with 54
 preserved equation labels/order, is the sole authority for Phase 2 mapping.
 
-Phase 2 alone is now authorized in that same task/worktree and audit branch:
-Sol-ultra, serial, no delegation, exact-d501 read-only trace beginning at the
-declared timestream scan-generation boundary, and documentation-only audit
-artifacts/proposals. It must stop after its documentation commit. No repair,
-re-audit, reduction, Unity, external execution, push, integration, another
-audit, or production authorization is allowed.
+Phase 2 completed at `bf6de403c2c50d55f54b8486424aea5543cdd346` as a clean
+six-document, exact-d501 read-only trace. The final audit is `amend`:
+NOI-001 contract is proposed, implementation nonconformant, validation
+incomplete, and production remains `existing_use_only`. R3 remains the sole
+authority for its 54-equation mapping; all eight P1 findings remain open.
+
+The completed audit and [owner decision brief](packages/SCI-NOI-001_COORDINATOR_DECISION_BRIEF_2026-08-06.md)
+preserve the boundary: NOI-002 exclusively owns finite-N normalization,
+empirical variance/weight and downstream formula, S/N/significance/threshold/
+feedback/aperture estimator, and production-count/default decisions. The
+evidence design is proposed only and held for FRAMEWORK-NUM-001; 64 is optional
+validation capacity only. The accepted handoffs are held for recipient core or
+re-audit review, not dispatched automatically. JINC remains SCI-MAP-002-
+conditioned and the residual interface SCI-FRUIT-001-conditioned.
 
 NOI-001 will define the conditional pre-mapmaking sign ensemble and its
 ensemble second-moment imprint through realized map/coadd/filter interfaces.
 It conditions on frozen RTC/PTC and validity state; it does not validate those
 upstream packages. NOI-002 retains every variance/weight/S/N/aperture-estimator
 and production realization-count/default decision. The resource-admitted
-64-realization tier is neither a default nor a requirement. No later phase is
-implicitly authorized beyond the bounded Phase 2 prompt.
+64-realization tier is neither a default nor a requirement. No repair, evidence
+request, recipient audit, reduction, Unity action, integration, or production
+authorization follows from this coordination acceptance.
 
 ## Purpose and non-goals
 

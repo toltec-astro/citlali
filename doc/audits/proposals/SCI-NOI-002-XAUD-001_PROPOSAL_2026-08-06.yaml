@@ -1,0 +1,98 @@
+format_version: 1
+proposal_only: true
+canonical_handoff_registry_modified: false
+id: SCI-NOI-002-XAUD-001
+created_date: 2026-08-06
+
+source:
+  package_id: SCI-NOI-001
+  role: auditor
+  audit_branch: codex/audit-sci-noi-001
+  audit_commit: pending_complete_package_commit
+  governing_or_evidence_sha: d5015fe716971bf8ea617e8a187311bf5af05185
+  finding_ids:
+    - SCI-NOI-001-F003
+    - SCI-NOI-001-F006
+    - SCI-NOI-001-F007
+
+target:
+  package_id: SCI-NOI-002
+
+priority: P1
+evidence_basis: observed_static_source_and_R3_derivation
+review_phase: post_core_evidence
+arrival: after_audit_completion
+status: proposed_pending_coordinator_submission
+
+summary: >-
+  The current NOI-001 realization stack feeds variance, empirical coefficient,
+  S/N, source-threshold, coadd/filter/source-finding, point-source, and fruit
+  feedback products whose estimator and production validity belongs solely to
+  SCI-NOI-002.
+claim: >-
+  At exact application SHA d5015fe716971bf8ea617e8a187311bf5af05185,
+  calc_noise_products forms a mean-subtracted one-over-N pixel stack variance,
+  derives a global median-based coefficient scale, can replace the map
+  coefficient before coadd/filter/source finding, and publishes or supplies
+  pixel S/N, point-source uncertainty/S/N, median realization RMS, and fruit
+  S/N feedback inputs. The ordinary current ensemble includes deterministic
+  signal, and observation sign prefixes repeat because the fixed RNG seed is
+  reset without an observation namespace.
+supports:
+  - add_or_update_dependency_on_SCI-NOI-001
+  - enumerate_all_direct_and_coefficient_mediated_realization_consumers
+  - preserve_current_ensemble_signal_imprint_and_cross_observation_caveats
+  - require_use_specific_distribution_covariance_and_scale_admission
+does_not_establish:
+  - finite_N_or_sample_variance_normalization
+  - empirical_variance_or_weight_validity
+  - downstream_weight_formula
+  - S_N_significance_threshold_feedback_or_aperture_validity
+  - production_realization_count_or_default
+  - physical_noise_covariance
+  - fruit_residual_unbiasedness
+
+requested_actions:
+  - add_or_update_dependency
+  - add_or_update_finding
+  - classify_each_consumer_allow_restrict_or_prohibit
+  - decide_finite_stack_normalization_and_product_labels
+  - decide_empirical_weight_S_N_threshold_feedback_aperture_and_count_policy
+  - return_any_admitted_interface_changes_for_bounded_reaudit
+affected_target_findings: []
+related_handoffs:
+  - SCI-FLT-001-XAUD-002
+  - SCI-FRUIT-001-XAUD-001
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-NOI-001-R3
+    availability: repository_path_and_hash
+    path: doc/audits/packages/SCI-NOI-001_INDEPENDENT_CORE_R3.tex
+    sha256: 27263ab3bf29ac8f098463455e540f13e783241a688ef2bc5cb15b1f2a4319da
+    note: Sole independent equation authority; especially equations 15-27 and 33-54.
+  - id: SCI-NOI-001-FINAL-AUDIT
+    availability: repository_path_hash_pending_final_validation
+    path: doc/audits/packages/SCI-NOI-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: eb38c7b282a95f792759ca71721fdb7731db5a4e392f8a95ac208c33754f7517
+    note: Final document digest after document-local validation.
+  - id: SCI-NOI-001-APPLICATION
+    availability: git_object
+    path: null
+    sha256: null
+    note: Exact application commit d5015fe716971bf8ea617e8a187311bf5af05185.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: held_for_recipient_independent_core_then_post_core_review
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

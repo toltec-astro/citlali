@@ -1,0 +1,93 @@
+format_version: 1
+id: SCI-FRUIT-001-XAUD-001
+created_date: 2026-08-06
+
+source:
+  package_id: SCI-NOI-001
+  role: auditor
+  audit_branch: codex/audit-sci-noi-001
+  audit_commit: bf6de403c2c50d55f54b8486424aea5543cdd346
+  governing_or_evidence_sha: d5015fe716971bf8ea617e8a187311bf5af05185
+  finding_ids: [SCI-NOI-001-F003]
+
+target:
+  package_id: SCI-FRUIT-001
+
+priority: P1
+evidence_basis: observed_static_source_and_R3_derivation
+review_phase: post_core_evidence
+arrival: before_dispatch
+status: submitted
+
+summary: >-
+  A narrow current interface exposes final pre-readdition state and source
+  readdition, but does not establish an approved residual ensemble product.
+claim: >-
+  At exact d5015fe716971bf8ea617e8a187311bf5af05185, the Lali and Pointing
+  paths structurally expose the R3 residual boundary when fruit is enabled,
+  while product identity, source-model identity, unbiasedness, and preserved
+  physical-noise covariance remain unestablished.
+supports:
+  - define_final_pre_readdition_state_and_source_model_identity
+  - preserve_residual_signal_imprint_and_noise_overfit_bias_trade
+  - define_current_versus_residual_product_identity_and_readdition_boundary
+  - require_compact_join_to_noise_realization_provenance
+does_not_establish:
+  - fruit_loop_algorithm_validity
+  - unbiased_source_model
+  - preserved_physical_noise_covariance
+  - approved_residual_mode_implementation_SHA
+  - S_N_threshold_or_feedback_validity
+  - production_use
+
+requested_actions:
+  - define_final_source_subtracted_state_model_and_readdition_contract
+  - preserve_complete_overfit_and_residual_signal_limits
+  - return_only_conditioned_interface_facts_to_future_NOI_work
+affected_target_findings: []
+related_handoffs: [SCI-NOI-001-XAUD-002]
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-NOI-001-R3-RESIDUAL
+    availability: repository_path
+    path: doc/audits/packages/SCI-NOI-001_INDEPENDENT_CORE_R3.tex
+    sha256: 27263ab3bf29ac8f098463455e540f13e783241a688ef2bc5cb15b1f2a4319da
+    note: R3 equations 16 and 28-32 define the conceptual residual and bias trade.
+  - id: SCI-NOI-001-FINAL-AUDIT
+    availability: repository_path
+    path: doc/audits/packages/SCI-NOI-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: eb38c7b282a95f792759ca71721fdb7731db5a4e392f8a95ac208c33754f7517
+    note: Bounded residual-interface trace at verified final audit commit bf6de403c2c50d55f54b8486424aea5543cdd346.
+  - id: SCI-NOI-001-APPLICATION
+    availability: git_object
+    path: null
+    sha256: null
+    note: Exact application commit d5015fe716971bf8ea617e8a187311bf5af05185.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: held_for_recipient_independent_core_then_post_core_review
+  actions: []
+  rationale: >-
+    The auditor-proposed pre-core phase is superseded because observed source
+    and derived interface material is not approved pre-core authority. It is
+    retained as post-core evidence for a future independently derived FRUIT
+    core; no dispatch or residual-mode authorization follows.
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: [SCI-NOI-001]
+  contract_or_report_locations: []
+
+coordinator_provenance:
+  submitted_proposal_path: doc/audits/proposals/SCI-FRUIT-001-XAUD-001_PROPOSAL_2026-08-06.yaml
+  submitted_proposal_sha256: 3e580be1f2c65be351debe8a0ec62b0c86a9ec7d5a699cf39531cf3376d3bc51
+  integration: >-
+    Coordinator-integrated successor replaces self-reference placeholders and
+    reclassifies unapproved source-derived material from pre-core authority to
+    post-core evidence under the canonical late-arrival rule.
+
+supersedes: null
+superseded_by: null

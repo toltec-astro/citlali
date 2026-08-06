@@ -227,7 +227,7 @@ exact-successor repair/evidence and fresh re-audit authorization against the
 [recorded decision boundary](audits/packages/SCI-FLT-001_COORDINATOR_DECISION_BRIEF_2026-08-05.md);
 it authorizes no application integration or production expansion.
 
-## 2026-08-05 SCI-NOI-001 Phase 1 Acceptance and Phase 2 Authorization
+## 2026-08-06 SCI-NOI-001 Phase 2 Completion and Owner Review Hold
 
 The coordination line froze the
 [SCI-NOI-001 dispatch prompt](audits/prompts/SCI_NOI_001_AUDIT_PROMPT.md),
@@ -247,13 +247,22 @@ core lineage is immutable; R3 commit
 authority for Phase 2. No quarantined implementation/test/diff, post-core
 evidence, fixture, reduction, or Unity material was opened during Phase 1.
 
-Phase 2 alone is authorized in that same task/worktree: Sol-ultra, serial,
-with no delegation, exact-d501 read-only tracing beginning at
-`include/citlali/core/pipeline/timestream_scan_generation.h`, and
-documentation-only final audit/proposal artifacts. It must stop after that
-documentation commit; repair, re-audit, local reduction, Unity, external
-execution, push, integration, another audit, and production authorization are
-prohibited.
+Phase 2 completed at audit commit
+`bf6de403c2c50d55f54b8486424aea5543cdd346`, a clean six-document
+documentation-only exact-d501 trace. R3 remains the sole equation authority.
+The package is `amend`: proposed contract, nonconformant implementation,
+incomplete validation, `existing_use_only` production, and eight open P1
+findings. Its companion evidence design is proposed only and held for
+FRAMEWORK-NUM-001; no request or reduction was launched.
+
+The coordinator integrated the final audit and routed three bounded handoffs:
+NOI-002 and FRUIT material is quarantined until a future recipient independent
+core; the FLT edge-preprocessing identity fact is held for a future authorized
+re-audit. NOI-002 exclusively owns every finite-N/variance/weight/S/N/
+significance/threshold/feedback/aperture/count decision. JINC remains
+SCI-MAP-002-conditioned, and residual interface facts SCI-FRUIT-001-
+conditioned. The next action is owner review of the concise NOI-001 decision
+brief, not repair, evidence admission, or recipient dispatch.
 
 The later NOI-001 question is the conditional ensemble made by pre-mapmaking
 sign randomization of fixed realized post-RTC/PTC samples, including its
@@ -262,8 +271,8 @@ operator propagation, and deterministic-source leakage diagnostics. It
 conditions on MAP/PTC/VAL interfaces and reserves every empirical variance,
 weight, S/N, aperture-estimator, and production realization-count/default
 decision to SCI-NOI-002. The 64-realization tier is resource-admitted
-validation only, not a requirement/default/cap. The bounded Phase 2 prompt is
-the only active Sol-ultra authorization, with no delegation.
+validation only, not a requirement/default/cap. No NOI-001 audit phase remains
+active; any follow-up requires a separate authorization.
 
 ## 2026-07-31 SCI-CAL-001 Audit Coordination
 

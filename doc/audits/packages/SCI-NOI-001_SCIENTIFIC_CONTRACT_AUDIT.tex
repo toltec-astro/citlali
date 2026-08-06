@@ -1,0 +1,930 @@
+\documentclass[10pt]{article}
+
+\usepackage[margin=0.76in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage[table]{xcolor}
+\usepackage{url}
+
+\newcommand{\packageid}{SCI-NOI-001}
+\newcommand{\appsha}{d5015fe716971bf8ea617e8a187311bf5af05185}
+\newcommand{\corecommit}{5a027c94ef9fc9c4a6e6cadc84af1c8a550d3508}
+\newcommand{\coordcommit}{1a6a08c2baea04ec7bbe9f820ef0a45c653970d2}
+\newcommand{\corelabel}{\textbf{R3 CONTRACT}}
+\newcommand{\srclabel}{\textbf{SOURCE FACT}}
+\newcommand{\inflabel}{\textbf{INFERENCE}}
+\newcommand{\unverifiedlabel}{\textbf{UNVERIFIED RUNTIME}}
+\newcommand{\conditionedlabel}{\textbf{CONDITIONED}}
+\newcommand{\rthree}[2]{R3 Eq.~(#1), \texttt{#2}}
+
+\title{\packageid{} Scientific-Contract Audit\\
+Conditional Noise and Jackknife Realization Construction and Propagation}
+\author{Independent scientific-contract audit}
+\date{2026-08-06}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+Governing application identity & \texttt{\appsha} \\
+Coordination authorization & \texttt{\coordcommit} \\
+Frozen prompt SHA-256 & \path{3b63109fd66ecba1646e08619b63ae1b070b5ffed934327290a65f46db2e01ef} \\
+Authoritative independent core & \path{doc/audits/packages/SCI-NOI-001_INDEPENDENT_CORE_R3.tex} \\
+Independent-core commit & \texttt{\corecommit} \\
+Independent-core SHA-256 & \path{27263ab3bf29ac8f098463455e540f13e783241a688ef2bc5cb15b1f2a4319da} \\
+Audit branch & \path{codex/audit-sci-noi-001} \\
+Audit mode & read-only exact-SHA trace; documentation artifacts only \\
+First authorized source open & \path{2026-08-06T00:43:44Z} \\
+First authorized source path & \path{include/citlali/core/pipeline/timestream_scan_generation.h} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Executive disposition}
+\label{sec:disposition}
+
+\textbf{Verdict: amend.  Contract status is proposed; implementation status
+is nonconformant with material conforming subcontracts; validation is
+incomplete; production status remains existing-use-only.}  This audit does
+not authorize a repair, a new estimator, a realization-count default, a
+reduction, an evidence request, or production use.
+
+The governing implementation constructs finite signs in $\{-1,+1\}$ and, on
+the accepted ordinary Stokes-$I$ naive lane, applies each sign to the fixed
+post-RTC/PTC sample value at the map contribution point.  The realization
+uses the same detector/sample eligibility predicate, positive coefficient,
+projection, map normalization support, and observation coadd coefficient as
+the science map.  These facts conform structurally to \rthree{1}{eq:fixed-state},
+\rthree{4}{eq:sign-operator}, \rthree{10}{eq:unit-map-contributions}, and
+\rthree{33}{eq:fixed-coadd}.  JINC contains the corresponding sign
+multiplication and shared gridding path, but every JINC conclusion in this
+report is conditioned on \path{SCI-MAP-002}.
+
+The package does not close for six central reasons.  First, the fixed
+\texttt{boost::random::mt19937} seed 5489 is recreated for every ordinary
+observation pipeline invocation without observation, iteration, array,
+network, detector/channel, or realization namespaces.  Equal-shaped
+observations therefore reuse the same pseudorandom prefix, so the
+cross-observation term in \rthree{36}{eq:coadd-covariance} is not the target
+independent-observation law.  Second, the Beammap reset path regenerates and
+overwrites every PTC sign array once per active map slot, making the retained
+assignment depend on active-map/pass history rather than a named realization
+key.  Third, current provenance records engine, fixed seed, coarse scope,
+configuration, and inferred counts, while the science-map digest verifies
+the final map bundle; neither record provides the compact lossless
+reconstruction facts required by \rthree{49}{eq:rng-key-map}--
+\rthree{50}{eq:realization-identity}.
+
+Fourth, the ordinary non-fruit path randomizes the entire cleaned sample
+$x=s+n$, so deterministic astronomical signal is present in individual
+realizations and their second moments, as required by
+\rthree{21}{eq:fixed-realization-decomposition} and
+\rthree{26}{eq:signal-second-moment}.  A negative source in a persisted
+realization is therefore produced directly by the
+\path{MapBuffer::noise} $\rightarrow$
+\path{add_noise_realization_image_hdus} path; the relevant FITS HDU is
+\path{signal_<map><realization>_<stokes>} in a raw or filtered noise file.
+This identifies the literal anti-source-capable product without validating
+any variance or S/N estimator.  Fifth, a Wiener/convolution filter reuses the
+same template, denominator, edge window, and core transform for every
+realization, but the science signal alone receives an affine edge-background
+fill.  The science and realization preprocessing operators are not identical
+when that background is nonzero.  Sixth, an enabled realization count of zero
+is accepted by configuration validation although downstream diagnostics and
+required empirical-product publication require a positive stack.
+
+The code then computes a mean-subtracted $1/N$ pixel stack variance, a global
+empirical rescaling of the map coefficient, pixel and point-source S/N,
+median realization RMS, averaged PSD/histogram products, and feedback gates.
+The empirical rescale occurs before observation coaddition or filtering and
+therefore couples the realization stack into later operators as the interface
+fact in \rthree{37}{eq:data-derived-coadd}.  All finite-$N$ normalization,
+variance/weight calibration, S/N, significance, threshold, feedback,
+aperture-uncertainty, and production-count decisions remain exclusively with
+\path{SCI-NOI-002}.
+
+\section{Authority, chronology, and epistemic separation}
+\label{sec:authority}
+
+The entry gate verified a clean \path{codex/audit-sci-noi-001} at
+\texttt{\corecommit}, descended from \texttt{\appsha}.  The coordination commit,
+frozen prompt, unchanged manifest, and the two pre-core handoffs were read
+from exact Git objects.  Their verified SHA-256 values were respectively
+\path{3b63109fd66ecba1646e08619b63ae1b070b5ffed934327290a65f46db2e01ef},
+\path{571d1b043e7ec041e3ca8c8dd841761aafcecd03d92a959e72add1dfdbebf819},
+\path{c7730995b8c5474389518c6bef2e24355ec31f0b4e317e01934a6a5afca17860},
+and
+\path{c4865418065cb093c07aa00711cb7d0b06e34c314fd8200d6ded627a220dafdc}.
+No post-core evidence handoff existed or was opened.
+
+The independent mathematical authority is only R3.  R1 and R2 remain
+immutable lineage and were not used as competing equation authorities.  All
+source facts below refer to the exact application object \texttt{\appsha}, not
+to an inferred current branch state.
+
+This report uses the following labels:
+
+\begin{itemize}[leftmargin=*]
+  \item \corelabel{} is a numbered requirement or result from R3.
+  \item \srclabel{} is directly visible in the exact application source or
+        its direct tests/configuration.
+  \item \inflabel{} follows from one or more source facts and an R3 equation;
+        it is not claimed as measured runtime evidence.
+  \item \unverifiedlabel{} identifies a question that static source and the
+        existing tests do not establish.
+  \item \conditionedlabel{} preserves an upstream or downstream package
+        boundary and does not close that package.
+\end{itemize}
+
+No Citlali build, test executable, fixture, astronomical reduction, Unity
+operation, network access, or costly study was run.  A tiny calculation was
+not needed: the sign law, operator insertion, and consumer formulas are
+explicit in source, while estimator tests are outside NOI-001.  No delegation
+or independent review was used.
+
+\section{Bounded source expansion}
+\label{sec:source-expansion}
+
+The first source boundary was crossed exactly as authorized.  Expansion then
+followed only direct definitions, callers, publishers, tests, and consumers
+needed for NOI-001.  The grouped inventory is:
+
+\begin{longtable}{@{}p{0.22\textwidth}p{0.70\textwidth}@{}}
+\toprule
+Question & Exact-\appsha{} paths and bounded reason \\
+\midrule
+\endhead
+Sign creation and transfer &
+\path{include/citlali/core/pipeline/timestream_scan_generation.h}, the Lali
+and Pointing pipeline implementation headers, and the direct
+\path{rtcproc.h} copy: establish sequential sign creation, scan order, and
+unchanged transfer into the processed chunk. \\
+RNG and state &
+\path{include/citlali/core/pipeline/noise_execution_plan.h}, noise config
+read/validation/adapter/serialization headers, reduction observation loop,
+and Beammap run/reset headers: establish the engine, seed, reset scope,
+requested/effective state, and Beammap overwrite behavior. \\
+Map insertion &
+\path{include/citlali/core/mapmaking/naive_mm.h},
+\path{include/citlali/core/mapmaking/jinc_mm.h},
+\path{include/citlali/core/pipeline/mapmaking_dispatch.h}, and the Beammap
+population caller: establish the sign multiplication, coherence indexing,
+eligibility, and sequential/concurrent reachability. \\
+Normalization and coadd &
+\path{src/citlali/core/mapmaking/map.cpp},
+\path{include/citlali/core/mapmaking/science_map_contract.h}, and
+\path{include/citlali/core/pipeline/observation_coadd_accumulation.h}:
+establish common support/normalization, typed bundle digest, and fixed
+coefficient-weighted realization coaddition. \\
+Filtering &
+The map-filter loop/template/output-lifecycle headers and
+\path{wiener_filter.h}/\path{wiener_filter_omp.h}: establish one built
+template and denominator, realization filtering, OpenMP realization
+parallelism, and the edge-background asymmetry.  Filter mathematics was not
+re-audited. \\
+Products and writers &
+Noise-product, raw/filtered observation/coadd output, FITS image helper/name/
+unit/metadata, required-output, and noise-provenance headers plus
+\path{map_image_output_impl.h}: establish products, ordering, names,
+persistence, and failure propagation. \\
+Consumers &
+Map diagnostics, spectral NetCDF, mapdiag tail/nonfinite, source-detection,
+Pointing fit call, and direct fruit-loop feedback references: establish every
+direct or coefficient-mediated realization consumer without validating its
+estimator. \\
+Fruit boundary &
+Only \path{lali_fruitloop_impl.h}, \path{pointing_fruitloop_impl.h}, their
+immediate run/map-population callers, and the small weight-policy interface:
+establish final source-subtracted state, noise-only population, and source
+re-addition.  Fruit-loop model construction was not inspected or audited. \\
+Tests/configuration &
+The direct config scaffold and science-map truth/FITS/fruit-contract tests,
+plus shipped TolTECA mode YAML leaves: establish current test coverage and
+requested counts only.  No test was executed and no count was endorsed. \\
+\bottomrule
+\end{longtable}
+
+Maximum-likelihood mapmaking, polarization validity, RTC/PTC algorithms,
+JINC scientific response, filter mathematics, fruit-loop model construction,
+and all estimator decisions remain outside this trace.
+
+\subsection{Complete R3 equation-block mapping}
+
+The detailed conclusions below cite individual equations.  For completeness,
+the following coverage map assigns every numbered R3 equation to an observed
+implementation fact, a conditioned boundary, or an explicitly open gap:
+
+\begin{longtable}{@{}p{0.16\textwidth}p{0.76\textwidth}@{}}
+\toprule
+R3 equations & Phase 2 disposition \\
+\midrule
+\endhead
+(1)--(4) &
+The post-RTC/PTC state is frozen before map contribution; signs are transferred
+unchanged and inserted in the common map contribution.  Lifecycle provenance
+is incomplete. \\
+(5)--(14) &
+The two ordinary coherence lifts and Beammap variant are traced.  Marginal
+$\pm1$ generation targets (6)--(9); detector-disabled and detector-enabled
+lanes realize respectively block-coherent and unit-level laws related to
+(11)--(12).  Balance (13) is not enforced.  Once generated, the array is a
+fixed assignment with the deterministic-law distinction in (14). \\
+(15)--(21) &
+The ordinary current ensemble (15) is implemented; the conceptual residual
+(16) has only a conditioned fruit boundary.  Current finite means, second
+moments, covariance, Hadamard sign action, and deterministic decomposition are
+therefore governed by (17)--(21), without validating an estimator. \\
+(22)--(25) &
+The implementation creates conditional randomization covariance only.  No
+trace fact equates it to physical-noise/map covariance or establishes the
+averaged preserved-physical component. \\
+(26)--(32) &
+Current realizations retain the deterministic-signal and cross imprint in
+(26)--(27).  The fruit boundary exposes the residual decomposition and the
+perfect-removal/complete-overfit limits in (28)--(31) only conditionally;
+source readdition follows (32). \\
+(33)--(37) &
+Signal and realization coadds use the same realized coefficient and support,
+but repeated observation sign prefixes can retain (36) cross terms, and
+optional empirical replacement makes the coefficient realization-derived as
+in (37). \\
+(38)--(39) &
+One filter core/template/denominator is reused, while science-only affine edge
+preprocessing is a bounded nonconformance to literal fixed-operator identity. \\
+(40)--(48) &
+Finite stack moments are calculated downstream, but empirical sign moments,
+balance, raw/complement uniqueness, assignment-space accounting, and
+use-specific effective size are neither published nor established. \\
+(49)--(50) &
+Fixed seed 5489 with implicit draw order is not the required namespaced key
+map; product/cardinality provenance is positive but does not provide compact
+exact reconstruction, mode, completion, and assignment identity. \\
+(51)--(53) &
+Distribution, covariance, and scale adequacy remain separate and receive the
+use-specific allow/restrict/prohibit dispositions in
+Section~\ref{sec:adequacy}. \\
+(54) &
+Independent coherence-unit signs are the algorithmic target only in the
+detector-randomized partition.  The exact independent-unit moment limit is not
+established empirically, while scan-coherent and cross-observation reuse cases
+are explicitly distinct. \\
+\bottomrule
+\end{longtable}
+
+\section{Fixed state, sign insertion, and eligibility}
+\label{sec:insertion}
+
+\srclabel{} The ordinary Lali and Pointing generators allocate a sign array
+before loading each RTC scan.  RTC processing copies that array unchanged to
+its output.  The sign is not applied to the timestream there.  It is applied
+later in the mapmaker as
+\begin{equation}
+  \texttt{noise\_value}=
+  \texttt{sign}\,\texttt{sample\_signal}\,\texttt{coefficient},
+  \label{eq:implementation-insertion}
+\end{equation}
+after RTC/PTC, learned exclusions, fruit-state handling, and weight
+resolution for that pass.  Equation~\eqref{eq:implementation-insertion} is
+the implementation of \rthree{1}{eq:fixed-state},
+\rthree{2}{eq:map-operator}, and \rthree{4}{eq:sign-operator}.
+
+\srclabel{} On the ordinary naive lane, a detector contributes to science and
+every realization only when the observation-scoped detector/channel column
+has APT flag zero, the sample flag is false, the active map is admitted, the
+projection is finite/in bounds, the coefficient is finite and positive, and
+the contributing sample is finite.  Flagged payloads are not inspected.
+Eligible non-finite projection/sample/coefficient values fail with an
+exception; out-of-bounds map samples are skipped.  The same projection,
+coefficient, and sample are used for the signal and all signs.  Noise values
+are staged and committed under the same aggregate preflight.
+
+\conditionedlabel{} The JINC functions also use the same detector/sample
+predicate for science and realizations, the same JINC block, and the same
+positive coefficient.  Their visible legacy predicate silently skips a
+non-finite sample rather than using the naive fail-closed rule.  Support,
+normalization, response, validity, and sequential/parallel admissibility are
+therefore not promoted here; they remain conditioned on \path{SCI-MAP-002}.
+
+\srclabel{} Map normalization applies the same numerical support mask and the
+same denominator to the signal, kernel, and every realization.  It zeros each
+companion outside support and requires all declared realization companions to
+be finite before marking a science-valid pixel.  These facts implement the
+common propagation requirement of \rthree{3}{eq:state-lifecycle} and the
+validity part of \rthree{50}{eq:realization-identity}.  Whether upstream flags
+and exclusions are scientifically correct remains conditioned on
+\path{SCI-VAL-001}; whether the cleaned sample covariance and coefficient are
+scientifically correct remains conditioned on \path{SCI-PTC-001}.
+
+\section{Coherence units, finite sign law, and RNG identity}
+\label{sec:rng}
+
+\subsection{Actual coherence units}
+
+For ordinary Lali/Pointing, the implementation realizes the following lift
+of \rthree{5}{eq:coherence-lift}:
+
+\begin{longtable}{@{}p{0.20\textwidth}p{0.33\textwidth}p{0.38\textwidth}@{}}
+\toprule
+Mode & Realized assignment unit $g$ & Consequence for target $Q_\epsilon$ \\
+\midrule
+\endhead
+\texttt{randomize\_dets=false} &
+One RTC input scan per realization, shared by every retained detector/channel,
+array, and network in that scan.  RTC child chunks inherit the same sign. &
+$Q_\epsilon=1$ within a scan block and targets zero across distinct scan
+blocks.  This is block-coherent, not globally coherent unless only one scan
+unit contributes. \\
+\texttt{randomize\_dets=true} &
+One pair (RTC input scan, observation-scoped realized detector/channel column)
+per realization. &
+$Q_\epsilon=1$ within that scan/channel block and targets zero across
+distinct blocks.  The key is a column ordinal, not a guaranteed
+tone-to-design detector match. \\
+Beammap &
+One PTC chunk, optionally crossed with detector/channel column, but regenerated
+for all chunks inside each active-map reset pass. &
+The retained signs have the same nominal block coherence, while their draw
+offset depends on active-map and pass history; see Finding F008. \\
+\bottomrule
+\end{longtable}
+
+The implementation has no array or network sign namespace.  With detector
+randomization disabled, sharing across arrays/networks is the realized current
+coherence.  With it enabled, distinct current columns consume distinct draws,
+but their identity is still only their stable ordinal within the realized
+observation/operator chain.
+
+\subsection{Target law and finite stack}
+
+\srclabel{} Every entry is \texttt{2*uniform\_int(0,1)-1}; the target marginal
+is a finite Rademacher sign, satisfying \rthree{6}{eq:unit-sign-moments} as an
+algorithmic target.  There is no balancing, orthogonal assignment,
+duplicate rejection, complement rejection, empirical-moment check, or
+effective-unique count.  Thus \rthree{13}{eq:within-realization-balance} is
+not enforced, while the cardinality and collision limits in
+\rthree{44}{eq:assignment-cardinality}--\rthree{48}{eq:use-specific-effective-size}
+remain operative.  Individual finite stacks can have nonzero empirical sign
+mean and correlation as in \rthree{40}{eq:empirical-sign-mean}--
+\rthree{41}{eq:empirical-sign-correlation}.
+
+\subsection{Seed, namespaces, collisions, and scheduling}
+
+\srclabel{} The engine is \texttt{boost::random::mt19937}; the only seed is
+the compiled unsigned constant 5489; there is no configured master seed or
+key derivation.  Each Lali/Pointing \path{engine.pipeline} invocation creates
+a new engine.  The reduction observation loop invokes that pipeline once per
+observation and again on later fruit iterations.  Therefore the same draw
+prefix repeats across observations/iterations having the same preceding
+shape and scan/channel ordering.  Observation number, array, network,
+observation-scoped channel identity, and realization ID do not enter the RNG
+state.  This is a direct nonconformance to \rthree{49}{eq:rng-key-map} and
+\rthree{50}{eq:realization-identity}.
+
+\inflabel{} A fixed seed provides repeatability only for the exact build,
+Boost/Eigen behavior, scan order, detector/channel order, matrix shape, and
+control-flow history.  It does not provide independent observation keys.
+Because a given realization ordinal is coadded with the same ordinal from
+each observation, Eq.~(36) can retain cross-observation sign terms rather than
+the independent-observation target.
+
+\srclabel{} Ordinary signs are drawn in the sequential GRPPI generator before
+the farm, so assignment order is invariant to the downstream sequential or
+OpenMP policy.  Beammap signs are also fixed before detector/scan map
+population.  The map arithmetic can still differ within the separately
+approved MAP numerical-equivalence policy, and JINC remains conditioned on
+\path{SCI-MAP-002}.  Existing tests verify the compiled default MT sequence,
+typed configuration, count arithmetic, map propagation with supplied signs,
+and provenance serialization; they do not test generated sign balance,
+$Q_\epsilon$, observation namespace separation, duplicates/complements,
+Beammap reset identity, or exact sequential/OpenMP sign reconstruction.
+
+\section{Requested, effective, realized, and provenance state}
+\label{sec:state}
+
+\subsection{Lifecycle and cardinality}
+
+\srclabel{} The typed request contains
+\texttt{enabled}, \texttt{n\_noise\_maps}, \texttt{randomize\_dets},
+\texttt{write\_realizations}, \texttt{products.enabled}, and
+\texttt{products.apply\_empirical\_weights}.  If mapmaking or the request is
+disabled, the effective plan disables noise and sets its effective count to
+zero without mutating the request.  The effective count and randomization
+mode are adapted one way into observation and, when enabled, coadd buffers.
+The count is reduction-global rather than observation-resolved; map counts
+are observation-resolved in the mapmaking plan.
+
+\srclabel{} A completed realized record is inferred only after the entire
+mapmaking/output lifecycle succeeds.  It records maps per scientific map,
+observation/coadd map and realization cardinalities, empirical product-map
+count, configured realization-image write count, and a boolean output
+completion state.  It does not record completed realization IDs or partial
+success.  A required write or product failure throws and prevents final noise
+provenance publication; this is fail-closed but supplies no partial recovery
+record.  The counts are plan-derived rather than a digest of observed files.
+
+\srclabel{} Configuration validation permits
+\texttt{enabled=true,n\_noise\_maps=0}.  Buffer allocation then creates a
+nonempty map list whose tensors have depth zero.  The map PSD/histogram code
+tests only whether the list is nonempty, performs zero realization
+iterations, and then accesses the absent averaged-noise result.  If empirical
+products are requested, their calculation returns without creating required
+planes and the FITS writer fails the required inventory check.  A positive
+count is therefore an unstated operational precondition.  Selecting its
+production value, including whether shipped counts 1, 5, or 10 are adequate,
+belongs to \path{SCI-NOI-002}.  A count of 64 is only an optional
+resource-admitted validation tier.
+
+\subsection{What provenance does and does not establish}
+
+Positive controls are material:
+
+\begin{itemize}[leftmargin=*]
+  \item \path{noise_products_provenance.yaml} atomically records requested and
+        effective config, the engine string, seed 5489, policy string, coarse
+        generator-scope string, and realized cardinalities.  Write failures
+        propagate.
+  \item The SCI-MAP raw-parent digest hashes the admitted bundle identity,
+        signal, coefficient, kernel when present, every final realization
+        map plane, support/validity products, and realized map facts.  It is
+        used to verify observation/coadd admission and filtered raw-parent
+        identity.
+  \item Realization companions receive stable ordinal names
+        \path{noise_realization_<r>_I}; observation files carry observation
+        identity, and coadd admissions carry ordered observation IDs.
+\end{itemize}
+
+These are verification and product-join facts, not a lossless sign
+representation.  The records omit the RNG/library version, assignment-policy
+version, observation/reduction-iteration namespace, scan/coherence partition,
+stable realized channel-order digest, active Beammap pass/map sequence,
+completed realization IDs, assignment digest, current-versus-residual
+ensemble mode, and a join from those facts to each realization product.
+The fruit restart checkpoint contains no noise RNG or assignment state.  A
+consumer cannot reconstruct exact signs from the digest alone, and the sidecar
+does not contain enough facts to reconstruct them unambiguously.  The closure
+contract is proportional: existing deterministic ordering plus compact
+versioned key/partition/completion facts and a digest are sufficient; dense
+per-sample identities, persisted sign vectors, and dense $N\times N$ sign
+correlation matrices are not required.  If reconstruction cannot be supplied,
+the gap must remain classified rather than repaired with dense storage by
+default.
+
+\section{Map, coadd, filter, and residual propagation}
+\label{sec:operators}
+
+\subsection{Naive and JINC mapmaking}
+
+\srclabel{} The ordinary naive path forms the signal contribution
+$q_jx_j$ and each realization contribution $\epsilon^{(r)}_{g(j)}q_jx_j$
+under one predicate, then normalizes both by the same map denominator and
+support.  Its requested sequential and parallel entry points both dispatch
+the same ordinary Stokes-$I$ contract function.  This realizes
+\rthree{2}{eq:map-operator}, \rthree{10}{eq:unit-map-contributions}, and
+\rthree{15}{eq:current-ensemble} for the accepted MAP lane.
+
+\conditionedlabel{} Both visible JINC functions multiply the same weighted
+sample by the same sign and JINC block used for science.  The ordinary JINC
+caller can be scan-parallel; the detector Beammap caller uses the explicitly
+parallel function.  The latter is map-disjoint only under its detector-group
+caller invariant.  These are source reachability facts, not approval of JINC
+response/support/normalization/validity or numerical equivalence.  All JINC
+uses remain conditional on \path{SCI-MAP-002}.
+
+\subsection{Fixed-weight observation coaddition}
+
+\srclabel{} Each admitted observation realization is multiplied by the same
+realized observation coefficient used for signal and added into the same
+centered coadd pixel.  Normalization support is checked before signal,
+coefficient, kernel, realization, or retained exposure is evaluated.  The
+coadd cube must match the observation count and shape, and all realization
+companions must be finite.  Final coadd normalization divides signal, kernel,
+and every realization by the same accumulated coefficient.  This implements
+\rthree{33}{eq:fixed-coadd}--\rthree{36}{eq:coadd-covariance} conditional on
+the accepted MAP interface.
+
+\srclabel{} Raw observation empirical products are calculated before coadd.
+When configured, \path{calc_noise_products} replaces the observation
+coefficient plane by one globally rescaled from the realization stack, then
+refreshes map support provenance.  The coadd consumes that realized plane.
+The coupling is exactly the interface fact in
+\rthree{37}{eq:data-derived-coadd}; whether the scale is a valid weight is not
+decided here.  Because ordinary observations also repeat their sign sequence,
+the fixed-weight cross-observation covariance cannot be evaluated under an
+independence assumption without additional evidence.
+
+\subsection{Filtering}
+
+\srclabel{} For each map, the filter builds one template, filters science, and
+retains the realized denominator.  Every realization then uses the same
+template, denominator, edge window, and convolution/Wiener numerator rule.
+OpenMP parallelizes realization indices but writes disjoint tensor chips.
+This is a positive conditional implementation of
+\rthree{38}{eq:fixed-filter}--\rthree{39}{eq:filter-propagation} after the
+filter state is frozen.
+
+There is one bounded exception.  With edge guard enabled, science is replaced
+before filtering by
+\begin{equation}
+  s' = b + (s-b)E,
+  \qquad z' = zE,
+  \label{eq:edge-asymmetry}
+\end{equation}
+where $E$ is the realized taper and $b$ is a science-derived background
+level.  Realizations receive no $b(1-E)$ term.  Thus the preprocessing is not
+one identical linear $F$ when $b\ne0$.  This report does not audit the filter
+or choose a repair; it proposes a conditioned handoff to \path{SCI-FLT-001}.
+
+\subsection{Current and conceptual residual ensembles}
+
+\begin{longtable}{@{}p{0.18\textwidth}p{0.25\textwidth}p{0.25\textwidth}p{0.23\textwidth}@{}}
+\toprule
+Fact & Ordinary current path & Existing conditional fruit boundary & R3 conceptual successor \\
+\midrule
+\endhead
+Randomized state &
+The final cleaned $x=s+n$ is signed during map accumulation; no source model
+is subtracted. &
+When fruit loops are enabled and a map is loaded, the map is subtracted,
+cleaning and noise-weight calculation operate on that state, and a noise-only
+map pass occurs before add-back. &
+$x-\widehat s$ at the approved final pre-readdition boundary; R3
+Eq.~(16), \texttt{eq:residual-ensemble}. \\
+Science map &
+Built from the same post-clean state. &
+The source map is added back to the timestream; the later science-only map pass
+skips a second realization population. &
+Fixed source readdition changes science but not realizations; R3 Eq.~(32),
+\texttt{eq:fixed-source-readdition}. \\
+Signal imprint &
+Full deterministic $s$ enters realization means/second moments; R3
+Eqs.~(21), (26), and (27). &
+Residual $(I-H)s$ can remain; model noise absorption can suppress physical
+noise; R3 Eqs.~(28)--(31). &
+Same bias trade, but only after \path{SCI-FRUIT-001} approves the residual
+state and model identity. \\
+Status &
+Implemented and assessed at \appsha; not validated for an estimator. &
+Structurally present at \appsha, but product identity/provenance and fruit
+scientific validity are not established. &
+Design hypothesis only.  No approved residual-mode implementation SHA exists
+for the proposed future A/B. \\
+\bottomrule
+\end{longtable}
+
+The existing narrow fruit path is evidence that the pre-readdition interface
+exists; it is not evidence that $H$ is unbiased, that the loaded model has the
+required identity, or that a future selectable residual ensemble is
+implemented.  Every conclusion remains conditioned on \path{SCI-FRUIT-001}.
+
+\section{Product and consumer matrix}
+\label{sec:consumers}
+
+``Allow'' below means only the named bounded use.  ``Restrict'' means an
+existing diagnostic may be inspected but cannot be promoted to a scientific
+estimator.  ``Prohibit'' means no new scientific or production use is
+admitted by NOI-001.
+
+\begin{longtable}{@{}p{0.20\textwidth}p{0.29\textwidth}p{0.20\textwidth}p{0.22\textwidth}@{}}
+\toprule
+Product/path & Construction and direct consumers & R3 mapping & Classification/owner \\
+\midrule
+\endhead
+Observation realization cube &
+Normalized \path{omb.noise}; coadd input, filter input, diagnostics, optional
+FITS realization writer, product digest. &
+Eqs.~(15), (21), (40)--(48), (50) &
+Restrict to exact-build operator/debug and existing qualitative diagnostics;
+NOI-002 owns estimator admission. \\
+Coadd realization cube &
+Centered coefficient-weighted observation cubes, then normalized; diagnostics,
+filter, optional writer. &
+Eqs.~(33)--(37) &
+Prohibit covariance inference until observation key independence and
+NOI-002 weight/covariance authority close. \\
+Filtered realization cube &
+Same template/denominator/core filter as science, with edge preprocessing
+exception in Eq.~\eqref{eq:edge-asymmetry}; optional writer. &
+Eqs.~(38)--(39) &
+Restrict; conditioned on FLT-001 and NOI-002. \\
+\path{noise_mean} &
+In-memory average of realization pixels; subtracted in the current variance
+calculation; not published as a routine FITS plane. &
+Eqs.~(17), (40), (42) &
+Allow on-demand audit calculation; no routine persistence required. \\
+\path{noise_variance} &
+$N^{-1}\sum z_r^2-\bar z^2$, clipped nonnegative; observation FITS
+\path{noise_variance_*}; input to global scale and point-source uncertainty. &
+Eqs.~(18)--(19), (26), (42)--(43) &
+Prohibit precision/variance claim pending NOI-002; existing diagnostic only. \\
+Formal and empirical coefficient &
+Formal snapshot plus global scale $1/\operatorname{median}(w_{\rm formal}v)$;
+optionally replaces \path{weight}.  Coadd, filter, source finder, and later
+weighted fits consume the replaced plane. &
+Eq.~(37), plus Eqs.~(42)--(43) &
+Formal plane remains MAP/PTC-conditioned nonprecision; empirical calibration
+and all downstream formulas are NOI-002. \\
+Pixel S/N &
+\path{signal*sqrt(weight_empirical)} published under legacy and explicit pixel
+S/N names; source finding separately uses \path{signal*sqrt(weight)} and a
+threshold. &
+Eqs.~(26), (37), (42)--(43) &
+Prohibit significance/detection authority; NOI-002 owns formula and threshold. \\
+Point-source uncertainty/S/N &
+Filtered output publishes $\sqrt{v}$ as ``1-sigma uncertainty'' and
+\path{signal/sqrt(v)} as point-source S/N. &
+Eqs.~(26), (42)--(43) &
+Prohibit estimator validity and significance claims pending NOI-002. \\
+Median realization RMS &
+Median over realization map RMS values on a weight-defined region; written as
+FITS summary metadata and loaded by fruit feedback as the denominator of a
+pixel S/N gate. &
+Eqs.~(42)--(43), (48), (53) &
+Restrict metadata; prohibit feedback authority pending NOI-002 and
+FRUIT-001. \\
+PSD and histogram averages &
+Per-realization PSD/histogram products averaged over the stack and published
+in spectral diagnostics. &
+Eqs.~(18), (24)--(27), (42), (48) &
+Restrict to qualitative/existing diagnostics; no physical covariance or
+distribution claim. \\
+Mapdiag tails/RMS/nonfinite &
+Per-realization core RMS, robust tails/skew, and NaN/Inf counts; contributor
+diagnostics join the science map separately. &
+Eqs.~(42), (48), (51)--(53) &
+Allow integrity/nonfinite checks; restrict distributional interpretation. \\
+Realization FITS HDUs &
+Optional raw/filtered observation and coadd noise files with
+\path{signal_<map><r>_<stokes>} HDUs. &
+Eqs.~(21), (40), (50) &
+Allow product identity/byte verification; literal anti-source appearance is
+expected for negative source-coherent assignments and is not an estimator. \\
+Science-map raw-parent digest &
+Compact hash of final signal/coefficient/kernel/realization/support bytes and
+map facts; used for coadd/filter joins. &
+Eq.~(50) &
+Allow verification; it is not lossless sign reconstruction. \\
+Fruit feedback &
+Previous-map median RMS participates in configured S/N selection; selected
+map signal is subtracted/re-added around the residual noise pass. &
+Eqs.~(28)--(32), (42)--(43) &
+Prohibit new feedback claims; conditioned on FRUIT-001 and owned by NOI-002
+for S/N/threshold validity. \\
+Aperture uncertainty &
+No direct in-repository realization-consuming aperture-uncertainty estimator
+was found in the bounded trace. &
+Eqs.~(19), (36), (52)--(53) &
+Absent and prohibited by default; any future estimator belongs to NOI-002. \\
+\bottomrule
+\end{longtable}
+
+\section{Use-specific ensemble adequacy}
+\label{sec:adequacy}
+
+The labels below concern only the conditional ensemble, never a downstream
+estimator.
+
+\begin{longtable}{@{}p{0.24\textwidth}p{0.17\textwidth}p{0.49\textwidth}@{}}
+\toprule
+Use & Classification & Basis and condition \\
+\midrule
+\endhead
+Finite sign support & Structurally adequate &
+Every draw is exactly $\pm1$; R3 Eqs.~(6)--(9).  Finite balance and empirical
+correlation remain unmeasured. \\
+Single-observation ordinary naive operator regression & Allow &
+Same supplied signs, predicate, coefficient, projection, and normalization;
+Eqs.~(2), (4), and (10).  Exact build/config/order identity is required. \\
+Single-observation conditional distribution & Restricted/incomplete &
+The generator targets pseudorandom Rademacher blocks, but no exact-SHA evidence
+establishes empirical means, $Q_\epsilon$, duplicate/complement counts, or
+use-specific effective size; Eqs.~(40)--(53). \\
+Cross-observation/coadd covariance surrogate & Inadequate/prohibited &
+Fixed seed prefixes repeat without observation namespaces; Eq.~(36).  The
+coadd coefficient can also be stack-derived; Eq.~(37). \\
+Physical-noise covariance surrogate & Not established &
+Randomization covariance is not physical covariance; Eqs.~(22)--(25).
+PTC correlations and parameter uncertainty are conditioned facts. \\
+Variance-scale surrogate & Incomplete/prohibited &
+Deterministic signal enters second moments, and no scale acceptance evidence
+exists; Eqs.~(26)--(27), (42)--(43), and (53). \\
+Residual ensemble & Conditioned/unverified &
+The narrow implementation boundary exists, but signal-removal/overfit trade,
+identity, and product provenance are not approved; Eqs.~(28)--(32). \\
+Filtered diagnostic & Restricted &
+Shared core transform is positive evidence, while affine edge preprocessing
+breaks literal operator identity when background is nonzero; Eqs.~(38)--(39). \\
+JINC realization propagation & Conditioned &
+Sign multiplication is shared in source, but every response/support/validity/
+parallel conclusion remains conditional on SCI-MAP-002. \\
+S/N, significance, source detection, feedback, aperture uncertainty & Prohibit &
+All estimator, normalization, threshold, and default-count authority belongs
+to SCI-NOI-002. \\
+Production realization count & No NOI-001 decision &
+Shipped requested counts are facts, not adequacy.  64 is only optional
+resource-admitted validation capacity, never a requirement or default. \\
+\bottomrule
+\end{longtable}
+
+\section{Findings and closure gates}
+\label{sec:findings}
+
+\begin{longtable}{@{}p{0.12\textwidth}p{0.09\textwidth}p{0.18\textwidth}p{0.52\textwidth}@{}}
+\toprule
+ID & Severity & Basis/owner & Finding and closure gate \\
+\midrule
+\endhead
+SCI-NOI-001-F001 & P1 &
+Observed source plus derived consequence; noise RNG/identity owner &
+The fixed seed is recreated per ordinary observation/iteration with no
+observation or realization key, repeating draw prefixes and invalidating an
+independent cross-observation sign assumption.  \textbf{Gate:} approve a
+versioned compact key/namespace policy, including stable observation-scoped
+channel identity where used; establish collision/repeat and sequential/OpenMP
+fixtures; publish reconstruction facts and digest; re-audit. \\
+SCI-NOI-001-F002 & P1 &
+Observed source; noise provenance owner &
+Current sidecars and product digests verify coarse state/final bytes but do
+not reconstruct exact assignments, distinguish ensemble mode, record completed
+realization IDs, or describe partial failure.  \textbf{Gate:} publish compact
+algorithm/version, seed/key derivation, coherence partition, stable ordering,
+assignment policy, completion IDs, mode, and digest joins, or classify any
+remaining gap.  Dense identities/sign vectors/$Q$ matrices are not required. \\
+SCI-NOI-001-F003 & P1 &
+Observed source plus R3 derivation; product identity and NOI-002/FRUIT owners &
+The ordinary current ensemble includes deterministic signal; individual
+negative realization HDUs can show an anti-source and second moments can show
+source imprint.  A conditional fruit residual path exists but is not named as
+an approved ensemble product.  \textbf{Gate:} name current/residual identity,
+bind it to products, retain the R3 bias trade, obtain NOI-002 consumer
+disposition and FRUIT-001 residual-state authority, and pass exact-SHA
+source/blank-region evidence without inventing tolerances. \\
+SCI-NOI-001-F004 & P1 &
+Observed source; FLT-001 operator/provenance owner &
+Filter science preprocessing includes a science-derived affine background
+term that realization preprocessing omits.  \textbf{Gate:} FLT owner approves
+an identical-operator or explicitly distinct affine contract, publishes the
+realized choice and raw-parent join, passes zero/nonzero-background paired
+fixtures, and returns it for conditioned re-audit. \\
+SCI-NOI-001-F005 & P1 &
+Observed source; noise configuration/lifecycle owner &
+Enabled zero realizations are admitted although diagnostics and required
+empirical outputs cannot realize that state safely.  \textbf{Gate:} approve
+either a positive-count admission rule or complete zero-stack semantics,
+validate requested/effective/realized/product/write paths, and re-audit.  This
+does not select a production count. \\
+SCI-NOI-001-F006 & P1 &
+Observed source; SCI-NOI-002 &
+The stack feeds variance, a global empirical coefficient scale, S/N-labeled
+FITS products, source thresholds, weighted coadd/filter/source finding, and
+fruit feedback without NOI-002 authority.  \textbf{Gate:} NOI-002 decides
+finite-$N$ normalization, empirical variance/weight formula, product labels,
+S/N/significance/threshold/feedback/aperture use, and production count; direct
+consumers are then restricted or admitted and re-audited. \\
+SCI-NOI-001-F007 & P1 &
+Observed absence; coordinator/human evidence owner &
+No exact-\appsha{} runtime evidence establishes empirical sign law,
+$Q_\epsilon$, effective unique assignments, cross-observation behavior,
+source imprint, filter identity, or repeatability.  \textbf{Gate:} coordinator
+admits a bounded evidence request under FRAMEWORK-NUM-001 where costly, a
+human returns the complete exact-SHA bundle, and an independent review applies
+preapproved acceptance criteria.  The proposal in Section~\ref{sec:evidence}
+has not been sent. \\
+SCI-NOI-001-F008 & P1 &
+Observed source; Beammap RNG/realization-identity owner &
+Beammap regenerates all PTC sign arrays inside the active-map reset loop and
+retains only the last overwrite, so assignments depend on active-map/pass/
+iteration history.  \textbf{Gate:} approve the intended generation scope and
+identity, bind it compactly to completed products, test active-map/pass
+permutations and repeats, condition JINC cases on SCI-MAP-002, and re-audit. \\
+\bottomrule
+\end{longtable}
+
+\section{Decisions, dependencies, and consumer restrictions}
+\label{sec:decisions}
+
+The audit proposes the following owner decisions without implementing them:
+
+\begin{enumerate}[leftmargin=*]
+  \item Adopt R3's conditional ensemble and coherence notation as the proposed
+        NOI-001 contract, preserving the distinction between randomization
+        covariance and physical-noise covariance.
+  \item Require a compact versioned realization key/partition/completion and
+        digest contract.  ``Detector'' identity means stable
+        observation-scoped realized detector/channel identity within the
+        reduction/operator chain, not a guaranteed tone-to-design match.
+  \item Name and bind the realized ensemble mode: ordinary current $x=s+n$,
+        existing conditional fruit residual, or a future approved residual
+        successor.  Do not infer unbiasedness from the label.
+  \item Ask FLT-001 to resolve only the edge-preprocessing identity in
+        Eq.~\eqref{eq:edge-asymmetry}; do not reopen filter mathematics.
+  \item Ask NOI-002 to own every empirical estimator/product/count decision
+        listed in F006 and to state allow/restrict/prohibit dispositions.
+  \item Ask the Beammap/noise owner to define sign generation once per named
+        pass/realization identity rather than leaving identity implicit in
+        active-map overwrite history.  No repair is selected here.
+\end{enumerate}
+
+Dependencies remain:
+
+\begin{itemize}[leftmargin=*]
+  \item \path{SCI-MAP-001}: conditioned, existing-use-only map/coadd boundary;
+        \path{weight_I} is nonprecision.
+  \item \path{SCI-PTC-001}: open; cleaned-state covariance, detector
+        coefficient, correlations, and parameter uncertainty are conditioned.
+  \item \path{SCI-VAL-001}: open; eligibility/flag correctness is conditioned.
+  \item \path{SCI-MAP-002}: every JINC conclusion is conditional.
+  \item \path{SCI-FLT-001}: frozen filter facts retained; F004 is a bounded
+        conditioned proposal, not a re-audit.
+  \item \path{SCI-FRUIT-001}: residual state/model identity and bias trade are
+        conditioned; internals were not audited.
+  \item \path{SCI-NOI-002}: exclusive estimator/product/count owner.
+\end{itemize}
+
+Allowed now are exact-byte/cardinality/finite/digest checks and same-build
+operator regressions.  Restricted now are existing realization images,
+PSD/histogram/tail summaries, and on-demand sign-moment diagnostics.  Prohibited
+now are new covariance, variance, precision, empirical weight, S/N,
+significance, threshold, feedback, aperture-uncertainty, production-count,
+JINC-closure, residual-unbiasedness, and production-authorization claims.
+
+\section{Proposed evidence designs and cost status}
+\label{sec:evidence}
+
+The detailed design is
+\path{doc/audits/requests/SCI-NOI-001_CURRENT_AND_FUTURE_RESIDUAL_EVIDENCE_DESIGN_2026-08-06.md}.
+It is explicitly \textbf{proposed, not requested}.  Its exact-\appsha{}
+current-ensemble lane freezes application/input/config/build/host/thread and
+product identities, then asks for bounded paired cases covering the two
+coherence modes, multiple observations, sequential/OpenMP repeatability,
+Beammap pass identity, source/blank-region second moments, coadd cross terms,
+and filter edge state.  It requires complete logs, resolved configuration,
+existing provenance/products, input/output digests, and explicit missing-data
+reporting.  It defines no estimator or numerical tolerance.
+
+The future residual A/B lane is separate and blocked pending an approved
+FRUIT contract and an exact successor implementation SHA with explicit
+current/residual mode identity.  It pairs the same input, random keys,
+operators, and admitted product identities to compare deterministic source
+imprint with source-free/blank-region behavior and the overfit trade in R3
+Eqs.~(28)--(32).  The existing narrow fruit path is not substituted for that
+missing approved implementation identity.  No request was sent, no Unity
+work was attempted, and any costly reduction/study remains held for
+\path{FRAMEWORK-NUM-001}.  A 64-realization case may be admitted later only
+as optional capacity, never as the minimum, default, or acceptance rule.
+
+\section{Proposed handoffs and ledger action}
+\label{sec:handoffs}
+
+Three machine-readable proposals accompany this audit:
+
+\begin{itemize}[leftmargin=*]
+  \item \path{doc/audits/proposals/SCI-NOI-002-XAUD-001_PROPOSAL_2026-08-06.yaml}
+        routes F003, F006, and F007 consumer/estimator facts to NOI-002.
+  \item \path{doc/audits/proposals/SCI-FLT-001-XAUD-002_PROPOSAL_2026-08-06.yaml}
+        routes only the conditioned edge-operator fact in F004.
+  \item \path{doc/audits/proposals/SCI-FRUIT-001-XAUD-001_PROPOSAL_2026-08-06.yaml}
+        routes only the final pre-readdition residual-state/interface fact in
+        F003.
+\end{itemize}
+
+Recipient dispositions remain pending and no canonical handoff registry was
+edited.  The proposed package ledger record is
+\path{doc/audits/proposals/SCI-NOI-001_LEDGER_PROPOSAL_2026-08-06.yaml}; the
+canonical ledger was not edited.
+
+\section{Validation record and limits}
+\label{sec:validation}
+
+Document-local structural validation passed: environments and braces are
+balanced, all labels are unique, every reference resolves, and the proposal
+YAML parses.  The staged documentation-only path check and
+\path{git diff --check} also passed before commit.  No application compile or
+test is appropriate for a documentation-only audit, and no fixture or
+reduction was run.  The only installed TeX compiler was Tectonic.  Its
+cached-only offline attempt exited 101 before TeX execution with the known
+Homebrew \path{system-configuration-0.6.1} dynamic-store NULL-object panic;
+this is an environment limitation, not document evidence.  No download or
+alternate tool installation was attempted.
+
+This audit establishes source reachability and conformance only at
+\texttt{\appsha}.  It does not validate the physical noise model, RTC/PTC
+uncertainty, JINC, filtering mathematics, fruit-loop model, empirical
+estimators, production counts, or any astronomical data product.  It did not
+modify implementation, tests, configurations, canonical coordination
+records, or production status.
+
+The recommended next coordinator task is a documentation review of this
+commit and its proposals, followed by dispatch of \path{SCI-NOI-002} with the
+accepted R3 contract and bounded post-core consumer facts.  F001/F002/F004/
+F005/F008 owner decisions and any admitted exact-SHA evidence request should
+remain separate coordinator actions.  This report grants no permission to
+continue automatically.
+
+\end{document}

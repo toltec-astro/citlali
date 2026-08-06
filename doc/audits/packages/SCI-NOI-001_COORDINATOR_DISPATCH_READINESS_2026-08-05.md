@@ -1,10 +1,10 @@
 # SCI-NOI-001 coordinator dispatch/readiness record — 2026-08-05
 
-Status: Phase 0 and Phase 1 are completed and accepted. R3 is the authoritative
-independent core. Only Phase 2 is authorized: a bounded documentation-only
-trace and synthesis. No local reduction, Unity action, evidence request,
-repair, application integration, production change, push, or another package
-is authorized.
+Status: Phase 0, Phase 1, and the bounded Phase 2 documentation audit are
+completed and accepted for coordination review. R3 remains the authoritative
+independent core. The audit verdict is `amend`; no local reduction, Unity
+action, evidence request, repair, application integration, production change,
+push, or recipient-audit dispatch is authorized.
 
 ## Entry verification
 
@@ -95,20 +95,23 @@ post-core evidence, fixture, reduction, or Unity material. Tectonic panicked
 before TeX execution in the local Homebrew/system-configuration layer;
 structural document checks passed.
 
-## Phase authorization
+## Phase authorization and completion
 
-Phase 0 and Phase 1 are accepted and closed. Phase 2 alone is authorized for
-the same task `019fd40a-cf4d-7ad0-aa9b-9543d5236154`, in the same isolated
-worktree and existing audit branch, using `gpt-5.6-sol`, Ultra effort,
-serially, with no delegation. It must begin at
-`include/citlali/core/pipeline/timestream_scan_generation.h`, treat R3 as the
-sole mapping authority, and remain within the precise prompt boundary. The
-owner-approved Ultra trigger is unchanged.
+Phase 0 and Phase 1 are accepted and closed. Phase 2 completed in the same
+task/worktree at audit commit `bf6de403c2c50d55f54b8486424aea5543cdd346`
+(parent R3), using `gpt-5.6-sol`, Ultra effort, serially with no delegation.
+It produced six documentation-only artifacts, including the final audit SHA-256
+`eb38c7b282a95f792759ca71721fdb7731db5a4e392f8a95ac208c33754f7517` and
+evidence design SHA-256
+`09ad9cc1ef4650c3bb8dcfc8519c0e1d5c825438589a7676ae6ec6f42a04f625`.
+The worktree was clean; no repair, reduction, Unity action, evidence request,
+or production authorization occurred.
 
 ## Next coordinator action
 
-Continue only the exact Phase 2 prompt in the frozen dispatch document. It may
-perform the bounded read-only trace and permitted tiny equation-linked fixtures,
-then commit documentation/audit artifacts only and stop. It must not repair,
-re-audit, run a local reduction or Unity, request/launch evidence, push,
-integrate, launch another audit, or authorize production.
+Stop for owner/coordinator review. The integrated handoffs are held: NOI-002
+and FRUIT await a recipient independent core before post-core opening; the
+bounded FLT edge-preprocessing fact is held for a future authorized re-audit.
+The concise decision brief asks only for realization-identity, zero-count,
+ensemble-mode, and future evidence-admission decisions. No recipient audit is
+launched by this record.
