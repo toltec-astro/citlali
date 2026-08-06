@@ -311,9 +311,11 @@ SCI-NOI-002 package completed Phase 2 exact-d501 source/consumer trace at
 `4f1fec36f7802f3b5e8ac067377679946930983c`: all eight P1 findings remain open
 under `amend`, its six proposed handoffs are held, and owner D001/F001 now
 approves only the conditional finite-stack descriptive identity; D002/F002
-approves only a global nonprecision-scale diagnostic. The remaining owner
-policy is pending. Neither result authorizes evidence, Unity, integration, or
-production change.
+approves only a global nonprecision-scale diagnostic; qualified D003/F003
+places complete provenance at package scope with compact product joins, not
+duplicated per-file metadata. F003 remains open for implementation and
+package-integrity/join validation. The remaining owner policy is pending.
+Neither result authorizes evidence, Unity, integration, or production change.
 
 Owner clarification preserves the v4-compatible Beammap jackknife/noise-map
 path as optional while standard Beammap configurations remain disabled by

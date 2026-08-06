@@ -3,9 +3,11 @@
 Status: coordinator review record only. Exact-d501 audit
 `4f1fec36f7802f3b5e8ac067377679946930983c` is `amend` with all eight P1
 findings open, production `existing_use_only`, no count/default selection, and
-no evidence authorization. Owner decision D001/F001 is approved as recorded
-below, and D002/F002 is approved as recorded below; the remaining questions do
-not authorize repair, evidence, recipient dispatch, or production use.
+no evidence authorization. Owner decisions D001/F001 and D002/F002 are
+approved as recorded below. Owner direction D003/F003 is a qualified
+package-level provenance contract, not acceptance of the audit's broad
+per-product premise. The remaining questions do not authorize repair, evidence,
+recipient dispatch, or production use.
 
 ## Owner-approved first decision: F001 / D001 — what does a realization stack estimate?
 
@@ -182,13 +184,25 @@ its configured 10 is inert and not a requirement.
 
 ### F003 — provenance and labels
 
-Current products omit compact target, centering, design/divisor, completion,
-source-imprint, calibration, covariance-domain, and consumer-validity facts.
-The consequence is misinterpretation, not a requirement for dense sign vectors,
-per-sample IDs, or N-by-N matrices. Recommendation: require compact facts and
-contract tests as engineering follow-through to whatever owner choices above
-are made. No owner decision is needed unless a proposed product cannot carry
-those facts.
+**Qualified owner direction — 2026-08-06.** The authoritative provenance unit
+is the reduction package/bundle. Put complete semantic provenance once in an
+authoritative compact package manifest/sidecar, rather than redundantly in
+every FITS/HDU/file. Each individual product needs only a stable package/
+provenance join, product identity/version and applicable digest/scope join,
+plus the minimum validity/restriction label needed to prevent misuse if
+detached. Audit and validation must verify package integrity and joins.
+
+A detached product is unverified/out-of-contract; that does not prove that all
+metadata must be duplicated. Record requested/effective/completed realization
+count at package scope. Require per-pixel realization counts only when support
+actually varies and a consumer needs them. Do not add dense covariance, sign
+streams, per-sample IDs, or duplicated metadata.
+
+This is an engineering/provenance policy, not acceptance of the audit’s initial
+claim that every individual product is intrinsically under-specified. F003
+remains open pending implementation, package-integrity/join validation, and
+re-audit. It authorizes no implementation, evidence, defaults/count changes,
+Unity, repair, or production action.
 
 ### F008 — proportional evidence
 

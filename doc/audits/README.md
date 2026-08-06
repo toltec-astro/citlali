@@ -143,7 +143,10 @@ record the completed exact-d501 Phase 2 audit at
 under verdict `amend`; its six recipient proposals are held, not dispatched.
 Owner D001/F001 approves only a conditional finite-stack descriptive identity,
 and D002/F002 only a global nonprecision-scale diagnostic; the remaining
-NOI-002 policy questions remain open.
+NOI-002 policy questions remain open. Qualified D003/F003 makes the reduction
+package the authoritative compact provenance unit, not every detached product;
+F003 remains open for implementation, package-integrity/join validation, and
+re-audit.
 The resource-admitted 64-realization tier is neither a default nor a
 requirement. No repair, evidence request, re-audit execution, reduction, Unity
 action, integration, or production authorization follows from these results.
