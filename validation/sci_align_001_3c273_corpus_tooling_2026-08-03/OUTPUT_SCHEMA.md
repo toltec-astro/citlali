@@ -176,6 +176,11 @@ centroid covariance or direction speed) are represented as JSON `null` and an
 empty CSV cell. A non-finite scientific measurement remains prohibited; the
 runner does not replace it with a numeric value or use it in timing inference.
 
+An incomplete failed publication may retain a diagnostic `map_result.json`,
+but lacks `SHA256SUMS` and is never an aggregate input. A checksum-complete
+fresh package for the same frozen map may be supplied from a later output root;
+the historical failure remains audit evidence only.
+
 Candidate model statistics include weighted held-out timing error,
 between-map intrinsic scatter, persistent network scatter,
 network-by-map interaction, within-map and corpus regressions for both native

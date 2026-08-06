@@ -405,6 +405,16 @@ class AggregationTests(unittest.TestCase):
         self.assertEqual(code, 2)
         self.assertIsNone(summary)
 
+    def test_unchecksummed_publish_remnant_is_not_an_aggregate_input(self) -> None:
+        corpus = self.make_dates()
+        complete = corpus.add_map_output("map-0", {network: -0.012 for network in NETWORKS})
+        remnant = corpus.maps / "map-1-remnant"
+        remnant.mkdir()
+        agg.write_json(remnant / "map_result.json", {"summary": {"map_id": "map-1"}})
+        self.assertEqual(
+            agg._checksum_bound_map_directories([complete, remnant]), [complete],
+        )
+
     def test_b_network_stable_with_missing_network(self) -> None:
         corpus = self.make_dates()
         offsets = {0: -0.014, 7: -0.012, 11: -0.010}

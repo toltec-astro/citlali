@@ -94,6 +94,11 @@
       "command": "headless focused 3C273 runner and aggregation tests; ruff; py_compile; diff check after campaign13 retry evidence",
       "result": "46 tests passed. Rejected-fit optional covariance and direction-speed diagnostics serialize as null/empty rather than NaN, without weakening the deterministic non-finite scientific-value guard. Aggregation ignores a superseded historical failure only when a fresh compact result for that same frozen map is supplied from a later root; only currently missing maps may use the two-record support-insufficiency allowance.",
       "status": "pass"
+    },
+    {
+      "command": "headless focused 3C273 aggregation and runner tests; ruff; py_compile; diff check after retry-root merge audit",
+      "result": "47 tests passed. Aggregation admits only checksum-complete compact packages, so an incomplete failure remnant cannot conflict with a later checksum-complete retry package for the same frozen map. Static checks and whitespace audit passed.",
+      "status": "pass"
     }
   ],
   "no_unity_access": true,

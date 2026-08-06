@@ -1,5 +1,5 @@
 status	path	scope
-M	tools/diagnostics/aggregate_sci_align_001_3c273_corpus.py	bounded corpus aggregation, omissions/anomaly reporting, and explicit two-record pre-analysis support-insufficiency accounting
+M	tools/diagnostics/aggregate_sci_align_001_3c273_corpus.py	bounded corpus aggregation, omissions/anomaly reporting, explicit two-record pre-analysis support-insufficiency accounting, and checksum-complete retry-package precedence over incomplete remnants
 M	tools/diagnostics/generate_sci_align_001_3c273_slurm_array.py	checksum-bound serial and Slurm retained-product runners
 M	tools/diagnostics/inventory_sci_align_001_3c273_corpus.py	authoritative inventory, run-root exclusion, canonical selection, availability
 M	tools/diagnostics/run_sci_align_001_3c273_beammap.py	retained-product anomaly artifact emission

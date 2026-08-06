@@ -877,6 +877,17 @@ def _discover_map_directories(roots: Sequence[Path]) -> list[Path]:
     return sorted(directories, key=str)
 
 
+def _checksum_bound_map_directories(directories: Sequence[Path]) -> list[Path]:
+    """Retain only complete compact packages for aggregation.
+
+    A runner that fails while publishing leaves diagnostic remnants for audit,
+    including an early map_result.json but no SHA256SUMS.  Such a remnant is
+    never an aggregate input and may be superseded by a fresh package in a
+    later owner-selected root.
+    """
+    return [directory for directory in directories if (directory / "SHA256SUMS").is_file()]
+
+
 def _declared_preanalysis_insufficiencies(
     roots: Sequence[Path],
     registry_by_map: Mapping[str, Mapping[str, Any]],
@@ -3326,7 +3337,9 @@ def command_run(args: argparse.Namespace) -> int:
     if {row.map_id for row in current} != set(registry_by_map):
         raise AggregateError("selected manifest identities differ from frozen partition")
 
-    directories = _discover_map_directories(args.map_output_root)
+    directories = _checksum_bound_map_directories(
+        _discover_map_directories(args.map_output_root)
+    )
     directory_identity: dict[str, Path] = {}
     for directory in directories:
         result = _result_document(directory)
