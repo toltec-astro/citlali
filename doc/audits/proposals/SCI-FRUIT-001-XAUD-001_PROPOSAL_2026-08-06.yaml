@@ -1,0 +1,92 @@
+format_version: 1
+proposal_only: true
+canonical_handoff_registry_modified: false
+id: SCI-FRUIT-001-XAUD-001
+created_date: 2026-08-06
+
+source:
+  package_id: SCI-NOI-001
+  role: auditor
+  audit_branch: codex/audit-sci-noi-001
+  audit_commit: pending_complete_package_commit
+  governing_or_evidence_sha: d5015fe716971bf8ea617e8a187311bf5af05185
+  finding_ids:
+    - SCI-NOI-001-F003
+
+target:
+  package_id: SCI-FRUIT-001
+
+priority: P1
+evidence_basis: observed_static_source_and_R3_derivation
+review_phase: pre_core_authority
+arrival: before_dispatch
+status: proposed_pending_coordinator_submission
+
+summary: >-
+  A narrow current interface subtracts the loaded fruit map, cleans and
+  weights the source-subtracted state, populates noise maps before source
+  readdition, and then restores the source for the science-map pass.
+claim: >-
+  At exact application SHA d5015fe716971bf8ea617e8a187311bf5af05185,
+  when fruit loops are enabled and a map is loaded, the Lali and Pointing
+  paths expose a final pre-readdition state that is structurally capable of
+  the R3 residual ensemble. The later final science-map pass suppresses a
+  second noise population. The product/provenance does not establish an
+  approved residual ensemble identity, source-model identity, unbiasedness,
+  or protection against model absorption of physical noise.
+supports:
+  - define_final_pre_readdition_state_and_source_model_identity
+  - preserve_residual_signal_imprint_and_noise_overfit_bias_trade
+  - define_current_versus_residual_product_identity_and_readdition_boundary
+  - require_compact_join_to_noise_realization_provenance
+does_not_establish:
+  - fruit_loop_algorithm_validity
+  - unbiased_source_model
+  - preserved_physical_noise_covariance
+  - approved_residual_mode_implementation_SHA
+  - S_N_threshold_or_feedback_validity
+  - production_use
+
+requested_actions:
+  - admit_as_bounded_pre_core_interface_authority_if_coordinator_approves
+  - define_final_source_subtracted_state_model_and_readdition_contract
+  - preserve_complete_overfit_and_residual_signal_limits
+  - return_only_conditioned_interface_facts_to_future_NOI_work
+affected_target_findings: []
+related_handoffs:
+  - SCI-NOI-001-XAUD-002
+
+authority_for_pre_core_review:
+  decision: coordinator_to_accept_reject_or_supersede_before_FRUIT_dispatch
+  allowed_use: independent_core_conditioning_boundary_only
+
+evidence:
+  - id: SCI-NOI-001-R3-RESIDUAL
+    availability: repository_path_and_hash
+    path: doc/audits/packages/SCI-NOI-001_INDEPENDENT_CORE_R3.tex
+    sha256: 27263ab3bf29ac8f098463455e540f13e783241a688ef2bc5cb15b1f2a4319da
+    note: R3 equations 16 and 28-32 define the conceptual residual and bias trade.
+  - id: SCI-NOI-001-FINAL-AUDIT
+    availability: repository_path_hash_pending_final_validation
+    path: doc/audits/packages/SCI-NOI-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: eb38c7b282a95f792759ca71721fdb7731db5a4e392f8a95ac208c33754f7517
+    note: Bounded residual-interface trace only; final digest after document-local validation.
+  - id: SCI-NOI-001-APPLICATION
+    availability: git_object
+    path: null
+    sha256: null
+    note: Exact application commit d5015fe716971bf8ea617e8a187311bf5af05185.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: not_applicable_pending_future_dispatch
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

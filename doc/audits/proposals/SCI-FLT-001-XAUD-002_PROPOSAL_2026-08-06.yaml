@@ -1,0 +1,88 @@
+format_version: 1
+proposal_only: true
+canonical_handoff_registry_modified: false
+id: SCI-FLT-001-XAUD-002
+created_date: 2026-08-06
+
+source:
+  package_id: SCI-NOI-001
+  role: auditor
+  audit_branch: codex/audit-sci-noi-001
+  audit_commit: pending_complete_package_commit
+  governing_or_evidence_sha: d5015fe716971bf8ea617e8a187311bf5af05185
+  finding_ids:
+    - SCI-NOI-001-F004
+
+target:
+  package_id: SCI-FLT-001
+
+priority: P1
+evidence_basis: observed_static_source
+review_phase: post_core_evidence
+arrival: after_audit_completion
+status: proposed_pending_coordinator_submission
+
+summary: >-
+  The filter reuses one template, denominator, edge window, and core transform
+  for science and realization maps, but its edge preprocessing adds a
+  science-derived affine background term only to the science map.
+claim: >-
+  At exact application SHA d5015fe716971bf8ea617e8a187311bf5af05185,
+  filter_maps replaces science by b + (science - b) times the realized edge
+  window before the filter core, while filter_noise and
+  filter_noise_threadsafe multiply each realization by the window without the
+  b times (1-window) term. The later filter template/denominator/core operation
+  is shared. Literal identical linear propagation therefore holds only when
+  the background term vanishes or the window is unity.
+supports:
+  - preserve_shared_filter_template_denominator_and_realization_chip_path
+  - add_bounded_edge_preprocessing_identity_finding
+  - require_realized_background_window_and_raw_parent_provenance_join
+does_not_establish:
+  - filter_mathematical_validity
+  - filter_response_or_normalization_validity
+  - jackknife_variance_or_S_N_validity
+  - numerical_tolerance_or_production_admission
+  - any_need_to_reopen_the_completed_FLT_audit_beyond_recipient_disposition
+
+requested_actions:
+  - review_bounded_conditioned_operator_fact
+  - approve_identical_or_explicitly_affine_preprocessing_contract
+  - add_zero_and_nonzero_background_paired_interface_test
+  - publish_realized_operator_identity_and_product_join
+affected_target_findings: []
+related_handoffs:
+  - SCI-NOI-001-XAUD-002
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-NOI-001-R3-FILTER
+    availability: repository_path_and_hash
+    path: doc/audits/packages/SCI-NOI-001_INDEPENDENT_CORE_R3.tex
+    sha256: 27263ab3bf29ac8f098463455e540f13e783241a688ef2bc5cb15b1f2a4319da
+    note: R3 equations 38-39 require fixed realized filter propagation.
+  - id: SCI-NOI-001-FINAL-AUDIT
+    availability: repository_path_hash_pending_final_validation
+    path: doc/audits/packages/SCI-NOI-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: eb38c7b282a95f792759ca71721fdb7731db5a4e392f8a95ac208c33754f7517
+    note: Finding SCI-NOI-001-F004; final digest after document-local validation.
+  - id: SCI-NOI-001-APPLICATION
+    availability: git_object
+    path: null
+    sha256: null
+    note: Exact application commit d5015fe716971bf8ea617e8a187311bf5af05185.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: coordinator_review_for_conditioned_amendment_or_reaudit
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null
