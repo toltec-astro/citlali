@@ -3797,6 +3797,24 @@ TEST(config_scaffold, validates_top_level_config_values) {
     EXPECT_EQ(report.error_count(), 8U);
 }
 
+TEST(config_scaffold, all_beammap_products_require_detector_grouping) {
+    citlali::config::ReductionConfig config;
+    config.runtime.reduction_type =
+        citlali::config::ReductionType::beammap;
+    config.beammap.direction_mode =
+        citlali::config::BeammapDirectionMode::all;
+    config.mapmaking.grouping = citlali::config::MapGrouping::array;
+
+    const auto report = citlali::config::validate(config);
+    EXPECT_EQ(report.error_count(), 1U) << report.format_for_cli();
+    EXPECT_NE(report.format_for_cli().find("beammap.direction_mode"),
+              std::string::npos);
+
+    config.mapmaking.grouping =
+        citlali::config::MapGrouping::detector;
+    EXPECT_TRUE(citlali::config::validate(config).ok());
+}
+
 TEST(config_scaffold, accepts_checked_low_level_config_schema) {
     const auto config = tula::config::YamlConfig::from_str(
         citlali::citlali_default_config_content);

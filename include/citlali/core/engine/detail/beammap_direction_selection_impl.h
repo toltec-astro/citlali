@@ -37,7 +37,7 @@ void Beammap::prepare_beammap_direction_selection() {
     const auto registry_path =
         std::filesystem::path(output_paths.obsnum_dir_name) / "raw" /
         ("beammap_direction_scan_registry" +
-         citlali::pipeline::beammap_direction_product_suffix(mode) +
+         citlali::pipeline::beammap_direction_registry_suffix(mode) +
          ".csv");
     citlali::pipeline::write_beammap_direction_scan_registry(
         registry_path, beammap_direction_selection);
@@ -51,12 +51,12 @@ void Beammap::prepare_beammap_direction_selection() {
         registry_path.string());
 }
 
-bool Beammap::beammap_direction_scan_selected(
-    Eigen::Index scan_index) const {
+citlali::pipeline::BeammapDirectionBufferSelection
+Beammap::beammap_direction_buffer_selection(Eigen::Index scan_index) const {
     const auto mode =
         citlali::pipeline::beammap_config(*this).direction_mode;
     if (citlali::pipeline::beammap_direction_mode_is_standard(mode)) {
-        return true;
+        return {true, false, false};
     }
     if (!beammap_direction_selection_initialized || scan_index < 0 ||
         scan_index >= static_cast<Eigen::Index>(
@@ -64,7 +64,8 @@ bool Beammap::beammap_direction_scan_selected(
         throw std::logic_error(
             "beammap direction selection is unavailable for a mapmaking scan");
     }
-    return beammap_direction_selection.scans[
-               static_cast<std::size_t>(scan_index)]
-        .selected;
+    return citlali::pipeline::beammap_direction_buffer_selection(
+        mode, beammap_direction_selection.scans[
+                  static_cast<std::size_t>(scan_index)]
+                  .direction);
 }

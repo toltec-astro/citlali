@@ -35,7 +35,7 @@ void Beammap::loop_pipeline(
 
     if (detector_grouping) {
         finalize_beammap_detector_grouping_outputs(
-            map_parallel_policy, mapmaking_config.grouping);
+            map_parallel_policy, mapmaking_config.grouping, stage_profile);
     }
     else {
         finalize_beammap_non_detector_grouping_outputs(stage_profile);

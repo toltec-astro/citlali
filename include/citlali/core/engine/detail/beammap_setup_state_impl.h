@@ -74,6 +74,7 @@ void Beammap::reset_beammap_convergence_state() {
 void Beammap::resize_beammap_state_buffers() {
     beammap_direction_selection = {};
     beammap_direction_selection_initialized = false;
+    beammap_direction_products.reset();
     resize_beammap_scan_buffers();
     reset_beammap_fit_buffers();
     reset_beammap_mask_diagnostics();

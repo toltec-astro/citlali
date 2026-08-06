@@ -6,7 +6,8 @@
 #include <citlali/core/pipeline/beammap_provenance_lifecycle.h>
 #include <citlali/core/pipeline/raw_timestream_policy.h>
 
-void Beammap::normalize_beammap_maps_after_pass(
+void Beammap::normalize_beammap_map_buffer_after_pass(
+    mapmaking::MapBuffer &map_buffer,
     const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps,
     const std::string &profile_context,
     citlali::pipeline::StageProfileCollector &stage_profile) {
@@ -16,24 +17,64 @@ void Beammap::normalize_beammap_maps_after_pass(
         citlali::pipeline::profile_stage(stage_profile,
             "beammap.mapmaking.normalize", logger, profile_context);
     if (citlali::pipeline::raw_kernel_enabled(*this) &&
-        !omb.grid_weight.empty()) {
+        !map_buffer.grid_weight.empty()) {
         timestream::log_kernel_map_diag(
             logger,
             "beammap iter " + std::to_string(current_iter) + " before normalize",
-            omb.kernel,
+            map_buffer.kernel,
             active_maps,
-            &omb.grid_weight);
+            &map_buffer.grid_weight);
     }
-    omb.normalize_maps(active_maps);
+    map_buffer.normalize_maps(active_maps);
     if (citlali::pipeline::raw_kernel_enabled(*this)) {
         timestream::log_kernel_map_diag(
             logger,
             "beammap iter " + std::to_string(current_iter) + " after normalize",
-            omb.kernel,
+            map_buffer.kernel,
             active_maps);
     }
     citlali::pipeline::log_beammap_normalize_support_summary(
-        omb, calib, current_iter, logger);
+        map_buffer, calib, current_iter, logger);
+}
+
+void Beammap::normalize_beammap_maps_after_pass(
+    const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps,
+    const std::string &profile_context,
+    citlali::pipeline::StageProfileCollector &stage_profile) {
+    normalize_beammap_map_buffer_after_pass(
+        omb, active_maps, profile_context + " product=standard",
+        stage_profile);
+    if (citlali::pipeline::beammap_direction_mode_is_all(
+            citlali::pipeline::beammap_config(*this).direction_mode)) {
+        normalize_beammap_map_buffer_after_pass(
+            beammap_direction_products.left, active_maps,
+            profile_context + " product=left", stage_profile);
+        normalize_beammap_map_buffer_after_pass(
+            beammap_direction_products.right, active_maps,
+            profile_context + " product=right", stage_profile);
+    }
+}
+
+void Beammap::ensure_beammap_direction_map_buffers() {
+    if (!citlali::pipeline::beammap_direction_mode_is_all(
+            citlali::pipeline::beammap_config(*this).direction_mode) ||
+        beammap_direction_products.buffers_initialized) {
+        return;
+    }
+    beammap_direction_products.left = omb;
+    beammap_direction_products.right = omb;
+    beammap_direction_products.left.name = "omb_left";
+    beammap_direction_products.right.name = "omb_right";
+    beammap_direction_products.buffers_initialized = true;
+    const double matrix_gb =
+        8.0 * static_cast<double>(omb.n_rows) *
+        static_cast<double>(omb.n_cols) *
+        static_cast<double>(map_indices.n_maps) / 1e9;
+    logger->info(
+        "beammap direction_mode=all allocated standard/left/right observation map buffers after PTC setup: rows={} cols={} maps={} base_matrix_size={:.3f} GB",
+        static_cast<long long>(omb.n_rows),
+        static_cast<long long>(omb.n_cols),
+        static_cast<long long>(map_indices.n_maps), matrix_gb);
 }
 
 template <class RandomBits, class Generator>
@@ -49,6 +90,7 @@ void Beammap::run_beammap_mapmaking_pass(bool update_progress,
         citlali::pipeline::select_unconverged_beammap_maps(
             mapmaking_grouping, converged, map_indices.n_maps, logger);
     const auto *active_maps_ptr = active_maps.ptr();
+    ensure_beammap_direction_map_buffers();
 
     std::ostringstream context;
     context << "iter=" << current_iter
@@ -74,6 +116,23 @@ void Beammap::run_beammap_mapmaking_pass(bool update_progress,
             citlali::pipeline::noise_maps_enabled(*this),
             omb.randomize_dets, calib.n_dets, active_maps_ptr, rands,
             eng);
+
+        if (citlali::pipeline::beammap_direction_mode_is_all(
+                citlali::pipeline::beammap_config(*this).direction_mode)) {
+            for (auto *direction_buffer : {
+                     &beammap_direction_products.left,
+                     &beammap_direction_products.right}) {
+                citlali::pipeline::ensure_jinc_grid_weight_maps(
+                    mapmaking_method, *direction_buffer,
+                    map_indices.n_maps, logger);
+                citlali::pipeline::reset_beammap_mapmaking_buffers(
+                    *direction_buffer, ptcs, map_indices.n_maps,
+                    citlali::pipeline::raw_kernel_enabled(*this),
+                    citlali::pipeline::noise_maps_enabled(*this),
+                    direction_buffer->randomize_dets, calib.n_dets,
+                    active_maps_ptr, rands, eng);
+            }
+        }
     }
 
     logger->info("running mapmaking");

@@ -10,6 +10,15 @@
 
 std::string Beammap::write_beammap_apt_table() {
     logger->info("writing apt table");
+    const auto requested_mode =
+        citlali::pipeline::beammap_config(*this).direction_mode;
+    const auto realized_mode =
+        citlali::pipeline::beammap_direction_realized_product_mode(
+            requested_mode,
+            requested_mode == citlali::config::BeammapDirectionMode::all
+                ? calib.apt_meta["beammap_direction_mode"]
+                      .as<std::string>("")
+                : std::string{});
     auto apt_filename = citlali::pipeline::beammap_direction_product_filename(
         citlali::pipeline::observation_output_filename<
             engine_utils::toltecIO::apt, engine_utils::toltecIO::map,
@@ -18,7 +27,7 @@ std::string Beammap::write_beammap_apt_table() {
             citlali::pipeline::runtime_reduction_type(*this), "",
             observation_identity.obsnum,
             telescope.sim_obs),
-        citlali::pipeline::beammap_config(*this).direction_mode);
+        realized_mode);
 
     Eigen::MatrixXd apt_table =
         beammap_apt_table_output_helpers::apt_table(calib, flag2);

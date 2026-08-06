@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <fstream>
 #include <map>
+#include <stdexcept>
 #include <string>
 
 namespace {
@@ -58,11 +59,6 @@ TEST(BeammapDirectionSelection, SelectsRequestedScanDirectionOnRotatedAxis) {
         citlali::pipeline::make_beammap_direction_selection_plan(
             citlali::config::BeammapDirectionMode::right,
             fixture.scan_indices, fixture.tel_data, "az", angle);
-    const auto all =
-        citlali::pipeline::make_beammap_direction_selection_plan(
-            citlali::config::BeammapDirectionMode::all,
-            fixture.scan_indices, fixture.tel_data, "az", angle);
-
     ASSERT_EQ(left.scans.size(), 4U);
     EXPECT_EQ(left.left_count, 2);
     EXPECT_EQ(left.right_count, 2);
@@ -71,11 +67,40 @@ TEST(BeammapDirectionSelection, SelectsRequestedScanDirectionOnRotatedAxis) {
     EXPECT_TRUE(left.scans[1].selected);
     EXPECT_TRUE(right.scans[0].selected);
     EXPECT_FALSE(right.scans[1].selected);
-    EXPECT_EQ(all.selected_count, 4);
     EXPECT_GT(left.scans[0].signed_fast_axis_rate_rad_per_sec, 0.0);
     EXPECT_LT(left.scans[1].signed_fast_axis_rate_rad_per_sec, 0.0);
     EXPECT_EQ(left.scans[0].science_start, 1);
     EXPECT_EQ(left.scans[0].science_stop_exclusive, 6);
+}
+
+TEST(BeammapDirectionSelection, AllClassifiesOnceAndRoutesThreeBuffers) {
+    DirectionFixture fixture;
+    const auto plan =
+        citlali::pipeline::make_beammap_direction_selection_plan(
+            citlali::config::BeammapDirectionMode::all,
+            fixture.scan_indices, fixture.tel_data, "az",
+            0.78539816339744830962);
+    ASSERT_EQ(plan.scans.size(), 4U);
+    EXPECT_EQ(plan.selected_count, 4);
+    Eigen::Index standard_count = 0;
+    Eigen::Index left_count = 0;
+    Eigen::Index right_count = 0;
+    for (const auto &scan : plan.scans) {
+        const auto buffers =
+            citlali::pipeline::beammap_direction_buffer_selection(
+                plan.mode, scan.direction);
+        standard_count += buffers.standard ? 1 : 0;
+        left_count += buffers.left ? 1 : 0;
+        right_count += buffers.right ? 1 : 0;
+        EXPECT_NE(buffers.left, buffers.right);
+    }
+    EXPECT_EQ(standard_count, 4);
+    EXPECT_EQ(left_count, 2);
+    EXPECT_EQ(right_count, 2);
+    EXPECT_THROW(
+        citlali::pipeline::beammap_direction_product_filename(
+            "beammap", citlali::config::BeammapDirectionMode::all),
+        std::logic_error);
 }
 
 TEST(BeammapDirectionSelection, DoesNotMutateCommonTelescopeInputs) {
@@ -85,7 +110,7 @@ TEST(BeammapDirectionSelection, DoesNotMutateCommonTelescopeInputs) {
     const auto before_y = fixture.tel_data.at("alt_phys");
 
     (void)citlali::pipeline::make_beammap_direction_selection_plan(
-        citlali::config::BeammapDirectionMode::all,
+        citlali::config::BeammapDirectionMode::left,
         fixture.scan_indices, fixture.tel_data, "az", 0.78539816339744830962);
 
     EXPECT_EQ(fixture.tel_data.at("TelTime"), before_time);
@@ -144,16 +169,49 @@ TEST(BeammapDirectionSelection, PreservesStandardNamesAndTagsDiagnostics) {
     EXPECT_EQ(citlali::pipeline::beammap_direction_product_filename(
                   base, citlali::config::BeammapDirectionMode::right),
               base + "_right");
-    EXPECT_EQ(citlali::pipeline::beammap_direction_product_filename(
-                  base, citlali::config::BeammapDirectionMode::all),
-              base + "_all");
+}
+
+TEST(BeammapDirectionSelection, RoutesSingleDirectionIntoPrimaryBufferOnly) {
+    using Mode = citlali::config::BeammapDirectionMode;
+    using Direction = citlali::pipeline::BeammapScanDirection;
+    const auto left =
+        citlali::pipeline::beammap_direction_buffer_selection(
+            Mode::left, Direction::left);
+    const auto rejected =
+        citlali::pipeline::beammap_direction_buffer_selection(
+            Mode::left, Direction::right);
+    EXPECT_TRUE(left.standard);
+    EXPECT_FALSE(left.left);
+    EXPECT_FALSE(left.right);
+    EXPECT_FALSE(rejected.standard);
+}
+
+TEST(BeammapDirectionSelection, ResolvesAllOutputIdentityFailClosed) {
+    using Mode = citlali::config::BeammapDirectionMode;
+    EXPECT_EQ(citlali::pipeline::beammap_direction_realized_product_mode(
+                  Mode::all, "standard"),
+              Mode::standard);
+    EXPECT_EQ(citlali::pipeline::beammap_direction_realized_product_mode(
+                  Mode::all, "left"),
+              Mode::left);
+    EXPECT_EQ(citlali::pipeline::beammap_direction_realized_product_mode(
+                  Mode::all, "right"),
+              Mode::right);
+    EXPECT_THROW(
+        citlali::pipeline::beammap_direction_realized_product_mode(
+            Mode::all, "all"),
+        std::logic_error);
+    EXPECT_THROW(
+        citlali::pipeline::beammap_direction_realized_product_mode(
+            Mode::all, ""),
+        std::logic_error);
 }
 
 TEST(BeammapDirectionSelection, WritesDeterministicScanRegistry) {
     DirectionFixture fixture;
     const auto plan =
         citlali::pipeline::make_beammap_direction_selection_plan(
-            citlali::config::BeammapDirectionMode::all,
+            citlali::config::BeammapDirectionMode::left,
             fixture.scan_indices, fixture.tel_data, "az",
             0.78539816339744830962);
     const auto root = std::filesystem::temp_directory_path() /
@@ -173,8 +231,8 @@ TEST(BeammapDirectionSelection, WritesDeterministicScanRegistry) {
 
     EXPECT_EQ(first_text, second_text);
     EXPECT_NE(first_text.find("direction,selected,mode"), std::string::npos);
-    EXPECT_NE(first_text.find(",right,true,all"), std::string::npos);
-    EXPECT_NE(first_text.find(",left,true,all"), std::string::npos);
+    EXPECT_NE(first_text.find(",right,false,left"), std::string::npos);
+    EXPECT_NE(first_text.find(",left,true,left"), std::string::npos);
     std::filesystem::remove_all(root);
 }
 

@@ -28,9 +28,13 @@ void Engine::create_obs_map_files() {
     auto directional_filename = [&](std::string filename) {
         if (citlali::config::is_beammap_reduction_type(
                 citlali::pipeline::runtime_reduction_type(*this))) {
+            auto mode =
+                citlali::pipeline::beammap_config(*this).direction_mode;
+            if (mode == citlali::config::BeammapDirectionMode::all) {
+                mode = citlali::config::BeammapDirectionMode::standard;
+            }
             return citlali::pipeline::beammap_direction_product_filename(
-                std::move(filename),
-                citlali::pipeline::beammap_config(*this).direction_mode);
+                std::move(filename), mode);
         }
         return filename;
     };

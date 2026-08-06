@@ -8,7 +8,9 @@
 
 void Beammap::finalize_beammap_detector_grouping_outputs(
     const std::string &map_parallel_policy,
-    citlali::config::MapGrouping mapmaking_grouping) {
+    citlali::config::MapGrouping mapmaking_grouping,
+    citlali::pipeline::StageProfileCollector &stage_profile) {
+    const engine::Calib common_calib = calib;
     calculate_beammap_detector_sensitivities(map_parallel_policy);
     populate_beammap_detector_fit_apt_columns();
     populate_beammap_mask_diagnostic_apt_columns();
@@ -23,6 +25,11 @@ void Beammap::finalize_beammap_detector_grouping_outputs(
     update_final_prior_match_diagnostics();
     write_beammap_final_prior_diagnostics_to_apt();
     refresh_beammap_final_calibration_products();
+    if (citlali::pipeline::beammap_direction_mode_is_all(
+            citlali::pipeline::beammap_config(*this).direction_mode)) {
+        calib.apt_meta["beammap_direction_mode"] = "standard";
+    }
+    build_beammap_all_directional_products(common_calib, stage_profile);
     update_beammap_final_tod_pointing(map_parallel_policy, mapmaking_grouping);
 }
 

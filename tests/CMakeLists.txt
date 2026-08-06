@@ -60,7 +60,24 @@ gtest_discover_tests(
         WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
         TEST_PREFIX "citlali::"
         DISCOVERY_MODE PRE_TEST
-    )
+)
+
+# Beammap's legacy header-defined implementation cannot share a test binary
+# with other translation units that include overlapping Engine fragments.
+add_executable(citlali_beammap_product_state_transaction_test EXCLUDE_FROM_ALL
+    test_beammap_product_state_transaction.cpp)
+target_link_libraries(citlali_beammap_product_state_transaction_test
+    PRIVATE
+        citlali::citlali
+        GTest::gtest_main
+)
+add_dependencies(check citlali_beammap_product_state_transaction_test)
+gtest_discover_tests(
+    citlali_beammap_product_state_transaction_test
+        WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+        TEST_PREFIX "citlali::"
+        DISCOVERY_MODE PRE_TEST
+)
 
 add_executable(citlali_safety_test EXCLUDE_FROM_ALL)
 set_target_properties(citlali_safety_test

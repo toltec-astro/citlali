@@ -1,24 +1,25 @@
 # Owner return bundle
 
 Return the complete diagnostic root after both observations finish, or after
-the first hard failure. Preserve the failed root; do not edit generated YAML,
+the first hard failure. Preserve failed output; do not edit generated YAML,
 retry in place, or substitute another observation.
 
 The return must contain:
 
-- `preparation/`, including the two source-config hashes and all eight rendered
-  mode configs;
-- `jobs/`, including submitted job IDs and Slurm stdout/stderr;
-- `o150819/{standard,left,right,all}/` and
-  `o148670/{standard,left,right,all}/` for every attempted run;
-- ordinary map FITS files, Beammap APT and fit-QC ECSV files, and every emitted
-  nonstandard scan registry;
-- the executable hash, repository commit, realized config/provenance products,
-  and final recursive checksum manifest;
-- a short `OWNER_NOTES.txt` identifying any scheduler interruption, retry, or
-  unexpected warning/error.
+- `preparation/`, including source-config hashes and both rendered `all`
+  configs;
+- `jobs/`, including job IDs and Slurm stdout/stderr;
+- `o150819/` and `o148670/`, each containing its one ordinary Citlali
+  reduction tree;
+- standard, `_left`, and `_right` map FITS, Beammap APT, and fit-QC ECSV files
+  wherever the corresponding ordinary product is enabled;
+- each observation's `beammap_direction_scan_registry_all.csv`;
+- executable hash, repository commit, realized config/provenance products,
+  final recursive checksum manifest, and Slurm `MaxRSS` evidence;
+- `OWNER_NOTES.txt` identifying scheduler interruption, retry, or unexpected
+  warning/error.
 
-On Unity, after all retained files are closed:
+After all files are closed on Unity:
 
 ```bash
 cd "$SCI_SPLIT_ROOT"
@@ -33,6 +34,5 @@ tar -czf "$(basename "$SCI_SPLIT_ROOT").tar.gz" \
 shasum -a 256 "$(basename "$SCI_SPLIT_ROOT").tar.gz"
 ```
 
-The owner can then download the tarball from the local source machine with the
-`unity_toltec` SSH alias. Do not omit failure logs merely because a later retry
-succeeds.
+Download the tarball from the local machine with the `unity_toltec` SSH alias.
+Do not omit failure logs merely because a later retry succeeds.

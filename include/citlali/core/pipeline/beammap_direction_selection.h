@@ -14,6 +14,7 @@
 #include <map>
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -60,6 +61,11 @@ inline bool beammap_direction_mode_is_standard(
     return mode == citlali::config::BeammapDirectionMode::standard;
 }
 
+inline bool beammap_direction_mode_is_all(
+    citlali::config::BeammapDirectionMode mode) noexcept {
+    return mode == citlali::config::BeammapDirectionMode::all;
+}
+
 inline bool beammap_direction_selects(
     citlali::config::BeammapDirectionMode mode,
     BeammapScanDirection direction) noexcept {
@@ -73,6 +79,29 @@ inline bool beammap_direction_selects(
             return direction == BeammapScanDirection::right;
     }
     return false;
+}
+
+struct BeammapDirectionBufferSelection {
+    bool standard = false;
+    bool left = false;
+    bool right = false;
+};
+
+inline BeammapDirectionBufferSelection beammap_direction_buffer_selection(
+    citlali::config::BeammapDirectionMode mode,
+    BeammapScanDirection direction) noexcept {
+    switch (mode) {
+        case citlali::config::BeammapDirectionMode::standard:
+            return {true, false, false};
+        case citlali::config::BeammapDirectionMode::left:
+            return {direction == BeammapScanDirection::left, false, false};
+        case citlali::config::BeammapDirectionMode::right:
+            return {direction == BeammapScanDirection::right, false, false};
+        case citlali::config::BeammapDirectionMode::all:
+            return {true, direction == BeammapScanDirection::left,
+                    direction == BeammapScanDirection::right};
+    }
+    return {};
 }
 
 inline std::pair<std::string, std::string>
@@ -287,7 +316,36 @@ inline std::string beammap_direction_product_suffix(
     if (beammap_direction_mode_is_standard(mode)) {
         return {};
     }
+    if (mode == citlali::config::BeammapDirectionMode::all) {
+        throw std::logic_error(
+            "beammap direction_mode 'all' has no single product suffix");
+    }
     return "_" + std::string{citlali::config::to_string(mode)};
+}
+
+inline std::string beammap_direction_registry_suffix(
+    citlali::config::BeammapDirectionMode mode) {
+    if (beammap_direction_mode_is_standard(mode)) {
+        return {};
+    }
+    return "_" + std::string{citlali::config::to_string(mode)};
+}
+
+inline citlali::config::BeammapDirectionMode
+beammap_direction_realized_product_mode(
+    citlali::config::BeammapDirectionMode requested_mode,
+    std::string_view realized_mode) {
+    if (!beammap_direction_mode_is_all(requested_mode)) {
+        return requested_mode;
+    }
+    const auto parsed =
+        citlali::config::parse_beammap_direction_mode(realized_mode);
+    if (!parsed.has_value() ||
+        parsed.value() == citlali::config::BeammapDirectionMode::all) {
+        throw std::logic_error(
+            "beammap all-product output lacks a realized standard/left/right product identity");
+    }
+    return parsed.value();
 }
 
 inline std::string beammap_direction_product_filename(

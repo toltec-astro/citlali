@@ -89,7 +89,8 @@ void Beammap::fit_single_beammap_map(
 
 void Beammap::fit_beammap_maps(
     bool detector_grouping, bool measurement_iter,
-    citlali::pipeline::StageProfileCollector &stage_profile) {
+    citlali::pipeline::StageProfileCollector &stage_profile,
+    bool record_lifecycle) {
     (void)stage_profile;
     BeammapFitIterationStats fit_stats(map_fitter.n_params);
 
@@ -117,9 +118,11 @@ void Beammap::fit_beammap_maps(
         fit_stats.attempt_prior + fit_stats.attempt_blind;
     const auto failure_count = fit_stats.fail_prev +
         fit_stats.fail_prior + fit_stats.fail_blind;
-    citlali::pipeline::record_post_processing_beammap_fits_completed(
-        citlali::pipeline::post_processing_plan(*this),
-        static_cast<std::size_t>(attempt_count),
-        static_cast<std::size_t>(attempt_count - failure_count));
-    citlali::pipeline::record_beammap_fitting_completed_if_available(*this);
+    if (record_lifecycle) {
+        citlali::pipeline::record_post_processing_beammap_fits_completed(
+            citlali::pipeline::post_processing_plan(*this),
+            static_cast<std::size_t>(attempt_count),
+            static_cast<std::size_t>(attempt_count - failure_count));
+        citlali::pipeline::record_beammap_fitting_completed_if_available(*this);
+    }
 }

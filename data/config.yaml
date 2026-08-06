@@ -1,5 +1,5 @@
 beammap: # beammap controls (node required, but options ignored if not beammapping)
-  direction_mode: standard # mapmaking-only scan selection: standard, left, right, or all; standard preserves existing behavior
+  direction_mode: standard # standard preserves existing behavior; left/right select one scan direction; all fills standard, left, and right detector-map buffers in one reduction
   iter_max: 1 # maximum number of iterations for beammapping (>0)
   derotate: false # derotate beammap to zero elevation
   subtract_reference_det: true # enable subtraction of reference detector position

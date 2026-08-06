@@ -19,6 +19,7 @@
 
 #include <citlali/core/engine/engine.h>
 #include <citlali/core/engine/beammap_types.h>
+#include <citlali/core/engine/beammap_direction_products.h>
 #include <citlali/core/pipeline/timestream_output_context.h>
 #include <citlali/core/pipeline/beammap_direction_selection.h>
 #include <citlali/core/utils/ecsv_io.h>
@@ -280,7 +281,20 @@ public:
         citlali::config::MapGrouping mapmaking_grouping);
     void finalize_beammap_detector_grouping_outputs(
         const std::string &map_parallel_policy,
-        citlali::config::MapGrouping mapmaking_grouping);
+        citlali::config::MapGrouping mapmaking_grouping,
+        citlali::pipeline::StageProfileCollector &);
+    void build_beammap_all_directional_products(
+        const engine::Calib &common_calib,
+        citlali::pipeline::StageProfileCollector &);
+    citlali::engine_detail::beammap::DirectionalProduct
+        fit_beammap_directional_product(
+            citlali::config::BeammapDirectionMode,
+            mapmaking::MapBuffer &,
+            const engine::Calib &,
+            const citlali::engine_detail::beammap::DirectionalProduct &,
+            citlali::pipeline::StageProfileCollector &);
+    void finalize_beammap_directional_product(
+        citlali::pipeline::StageProfileCollector &);
     void finalize_beammap_non_detector_grouping_outputs(
         citlali::pipeline::StageProfileCollector &);
 
@@ -306,7 +320,8 @@ public:
                                             bool detector_grouping,
                                             citlali::pipeline::StageProfileCollector &);
     void fit_beammap_maps(bool detector_grouping, bool measurement_iter,
-                          citlali::pipeline::StageProfileCollector &);
+                          citlali::pipeline::StageProfileCollector &,
+                          bool record_lifecycle = true);
     bool can_use_beammap_fit_priors(bool detector_grouping) const;
     void maybe_update_beammap_prior_frame_for_fit(bool can_use_priors);
     void fit_single_beammap_map(Eigen::Index map_index,
@@ -404,6 +419,14 @@ public:
         citlali::config::MapMethod mapmaking_method,
         const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps,
         bool update_progress);
+    void ensure_beammap_direction_map_buffers();
+    citlali::pipeline::BeammapDirectionBufferSelection
+        beammap_direction_buffer_selection(Eigen::Index scan_index) const;
+    void normalize_beammap_map_buffer_after_pass(
+        mapmaking::MapBuffer &map_buffer,
+        const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps,
+        const std::string &profile_context,
+        citlali::pipeline::StageProfileCollector &);
     void normalize_beammap_maps_after_pass(
         const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps,
         const std::string &profile_context,
@@ -768,7 +791,17 @@ public:
     void write_detector_specific_ptc_tod(int output_iter);
     void write_detector_table_outputs();
     void prepare_beammap_direction_selection();
-    bool beammap_direction_scan_selected(Eigen::Index scan_index) const;
+    void create_beammap_product_map_files(
+        citlali::config::BeammapDirectionMode mode,
+        bool include_raw, bool include_filtered);
+    void write_beammap_directional_raw_product(
+        const citlali::engine_detail::beammap::DirectionalProduct &,
+        mapmaking::MapBuffer &,
+        citlali::pipeline::StageProfileCollector &);
+    void write_beammap_directional_filtered_product(
+        const citlali::engine_detail::beammap::DirectionalProduct &,
+        mapmaking::MapBuffer &,
+        citlali::pipeline::StageProfileCollector &);
     void write_beammap_fit_qc_table(const std::string &apt_filename);
     // main pipeline process
     template <class KidsProc, class RawObs>
@@ -855,6 +888,10 @@ public:
         std::vector<fitsIO<file_type_enum::write_fits, CCfits::ExtHDU*>> *n_io,
         citlali::pipeline::StageProfileCollector &stage_profile,
         const std::string &dir_name);
+
+private:
+    citlali::engine_detail::beammap::DirectionProducts
+        beammap_direction_products;
 };
 
 #include <citlali/core/engine/detail/beammap_detector_tod_output_impl.h>
@@ -862,6 +899,8 @@ public:
 #include <citlali/core/engine/detail/beammap_ptc_product_output_impl.h>
 #include <citlali/core/engine/detail/beammap_apt_table_output_impl.h>
 #include <citlali/core/engine/detail/beammap_detector_table_output_impl.h>
+#include <citlali/core/engine/detail/beammap_product_state_transaction_impl.h>
+#include <citlali/core/engine/detail/beammap_directional_product_output_impl.h>
 #include <citlali/core/engine/detail/beammap_map_product_output_impl.h>
 #include <citlali/core/engine/detail/beammap_empirical_template_calibration_impl.h>
 #include <citlali/core/engine/detail/beammap_masking_impl.h>

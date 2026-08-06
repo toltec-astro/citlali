@@ -83,14 +83,21 @@ freeze the application mainline.
   `codex/sci-align-001-split-direction-beammap-validation` branch. The optional
   `beammap.direction_mode` enum is exactly `standard`, `left`, `right`, or
   `all`, with `standard` preserving the existing selection path and output
-  basenames. Nonstandard modes classify current raster science windows from
+  basenames. `left` and `right` classify current raster science windows from
   their own telescope fast-axis trajectories, fail closed on ambiguous
   support, and admit whole processed PTC scans only at map accumulation after
-  common calibration/filtering/weight state. Nonstandard map/APT products and
-  deterministic scan registries carry mode-specific names. All 639 enabled
-  CTests, 154 baseline-tool tests, the 123-test config suite, the full config
-  preflight, and the local CLI build pass. No Unity reduction or scientific
-  split-map comparison has yet been
+  common calibration/filtering/weight state. `all` performs one shared
+  calibration/RTC/PTC pass and accumulates each processed scan into the
+  standard detector-map buffer plus exactly one left/right buffer. It then
+  reuses the existing Beammap fit/QC/output pipeline transactionally for the
+  two directional buffers and restores the standard fit state exactly.
+  Standard basenames remain unchanged; directional map/APT products carry
+  mode-specific names, and one deterministic `_all` scan registry records the
+  classifier. `all` requires detector grouping and retains approximately three
+  observation map buffers rather than executing three reductions. The local
+  CLI build, all 645 enabled CTests, 154 baseline-tool tests, the 123-test
+  config suite, and the full config preflight pass. No Unity reduction or
+  scientific split-map comparison has yet been
   performed; the candidate is diagnostic-only and does not authorize a timing
   correction. See
   [`validation/sci_align_001_split_direction_beammap_2026-08-06/README.md`](../validation/sci_align_001_split_direction_beammap_2026-08-06/README.md).

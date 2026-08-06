@@ -39,6 +39,13 @@ inline ValidationReport validate(const ReductionConfig &config) {
             {"beammap", "detector_tod_output", "enabled"},
             "requires mapmaking.grouping=detector");
     }
+    if (config.runtime.reduction_type == ReductionType::beammap &&
+        config.beammap.direction_mode == BeammapDirectionMode::all &&
+        config.mapmaking.grouping != MapGrouping::detector) {
+        report.add_error(
+            {"beammap", "direction_mode"},
+            "all requires mapmaking.grouping=detector because it emits standard, left, and right detector maps and APTs from one reduction");
+    }
     return report;
 }
 

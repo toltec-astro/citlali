@@ -1,13 +1,16 @@
-# Unity owner runbook: split-direction Beammap products
+# Unity owner runbook: one-pass split-direction Beammap products
 
 This runbook is executed by the owner on Unity. Codex does not access Unity.
 It creates new diagnostic roots and never edits raw data, retained reductions,
-or the two completed replay configurations used as input authorities.
+or the completed replay configurations used as authorities.
 
-Run ObsNum 150819 first. Do not submit 148670 until all four 150819 jobs have
-finished and their retained products pass the checks below.
+One config with `beammap.direction_mode: all` launches one Citlali reduction.
+After shared calibration/RTC/PTC processing, each scan fills the standard map
+buffer and one directional buffer. The reduction writes standard, `_left`, and
+`_right` products into one ordinary output tree. Run ObsNum 150819 first; do
+not submit 148670 until 150819 passes the retained-product checks.
 
-## 1. Environment and source authorities
+## 1. Environment and authorities
 
 Load the normal TolTEC environment first so that `python` has `yaml` and the
 usual science dependencies. Then define:
@@ -18,17 +21,17 @@ export CITLALI_BIN="$SCI_REPO/build/bin/citlali"
 export SCI_ANALYSIS_ROOT=/work/toltec/wilson/citlali_testing/beammaps/3c273
 export SCI_CAMPAIGN_ROOT="$SCI_ANALYSIS_ROOT/sci_align_001_replay_campaign_16_2026-08-05_retry1"
 export SCI_REPLAY_148670="$SCI_ANALYSIS_ROOT/sci_align_001_reproduction_148670_2026-08-03_retry1"
-export SCI_SPLIT_ROOT="$SCI_ANALYSIS_ROOT/sci_align_001_split_direction_beammap_2026-08-06"
+export SCI_SPLIT_ROOT="$SCI_ANALYSIS_ROOT/sci_align_001_split_direction_beammap_onepass_2026-08-06"
 
 cd "$SCI_REPO"
 test -z "$(git status --short)"
 test -x "$CITLALI_BIN"
 command -v python
-python -c 'import yaml; print(yaml.__version__)'
+python -c 'import yaml; print("python=", __import__("sys").executable); print("yaml=", yaml.__version__)'
 test ! -e "$SCI_SPLIT_ROOT"
 ```
 
-Resolve exactly one completed direct Citlali config for each observation:
+Resolve one completed direct Citlali config per observation:
 
 ```bash
 mapfile -t SCI_CONFIGS_150819 < <(
@@ -49,14 +52,14 @@ shasum -a 256 "$SCI_SOURCE_CONFIG_150819" "$SCI_SOURCE_CONFIG_148670" \
   "$CITLALI_BIN"
 ```
 
-Stop if either config is absent/ambiguous, the executable is missing, the Git
-worktree is dirty, or the new diagnostic root already exists.
+Stop if a config is absent or ambiguous, the executable is missing, the Git
+worktree is dirty, or the new root already exists.
 
-## 2. Render eight isolated mode configs and Slurm scripts
+## 2. Render configs and Slurm scripts
 
-The following preparation reads the two completed configs, changes only
-`beammap.direction_mode` and `runtime.output_dir`, and emits one isolated root
-and Slurm script per observation/mode. It launches nothing.
+This preparation changes only `beammap.direction_mode` and
+`runtime.output_dir`. It verifies detector grouping, launches nothing, and
+does not create either observation output root.
 
 ```bash
 python - "$SCI_SOURCE_CONFIG_150819" "$SCI_SOURCE_CONFIG_148670" \
@@ -64,7 +67,6 @@ python - "$SCI_SOURCE_CONFIG_150819" "$SCI_SOURCE_CONFIG_148670" \
 import copy
 import hashlib
 import json
-import os
 import stat
 import sys
 from pathlib import Path
@@ -75,7 +77,7 @@ source_by_obs = {150819: Path(sys.argv[1]), 148670: Path(sys.argv[2])}
 root = Path(sys.argv[3])
 citlali = Path(sys.argv[4])
 if root.exists():
-    raise SystemExit(f"refusing existing output root: {root}")
+    raise SystemExit(f"refusing existing preparation root: {root}")
 if not citlali.is_file():
     raise SystemExit(f"missing Citlali executable: {citlali}")
 
@@ -90,57 +92,61 @@ root.mkdir(parents=True)
 (root / "preparation").mkdir()
 (root / "jobs").mkdir()
 manifest = {
-    "schema": "sci-align-001-split-direction-preparation-v1",
+    "schema": "sci-align-001-split-direction-preparation-v3",
+    "execution_model": "one shared timestream pass; three detector map buffers",
     "source_products_modified": False,
     "citlali": {"path": str(citlali), "sha256": sha256(citlali)},
     "runs": [],
 }
 for obsnum in (150819, 148670):
     source = source_by_obs[obsnum].resolve()
-    base = yaml.safe_load(source.read_text())
-    if not isinstance(base, dict):
+    config = copy.deepcopy(yaml.safe_load(source.read_text()))
+    if not isinstance(config, dict):
         raise SystemExit(f"config root is not a mapping: {source}")
-    for mode in ("standard", "left", "right", "all"):
-        config = copy.deepcopy(base)
-        beammap = config.setdefault("beammap", {})
-        runtime = config.setdefault("runtime", {})
-        if not isinstance(beammap, dict) or not isinstance(runtime, dict):
-            raise SystemExit(f"beammap/runtime is not a mapping: {source}")
-        mode_root = root / f"o{obsnum}" / mode
-        config_path = root / "preparation" / f"citlali_o{obsnum}_{mode}.yaml"
-        beammap["direction_mode"] = mode
-        runtime["output_dir"] = str(mode_root / "reduced")
-        rendered = yaml.safe_dump(config, sort_keys=False)
-        config_path.write_text(rendered)
-        script = root / "jobs" / f"run_o{obsnum}_{mode}.sbatch"
-        script.write_text("\n".join([
-            "#!/usr/bin/env bash",
-            f"#SBATCH --job-name=sci-align-{obsnum}-{mode}",
-            "#SBATCH --time=48:00:00",
-            "#SBATCH --mem=64G",
-            "#SBATCH --cpus-per-task=6",
-            "#SBATCH --nodes=1",
-            "#SBATCH --ntasks=1",
-            "#SBATCH --partition=toltec-cpu",
-            f"#SBATCH --output={root}/jobs/%x_%j.out",
-            f"#SBATCH --error={root}/jobs/%x_%j.err",
-            "#SBATCH --parsable",
-            "set -euo pipefail",
-            f"cd {json.dumps(str(citlali.parent.parent.parent))}",
-            f"{json.dumps(str(citlali))} {json.dumps(str(config_path))} --grppiex omp",
-            "",
-        ]))
-        script.chmod(script.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP)
-        manifest["runs"].append({
-            "observation_number": obsnum,
-            "mode": mode,
-            "source_config": str(source),
-            "source_config_sha256": sha256(source),
-            "rendered_config": str(config_path),
-            "rendered_config_sha256": sha256(config_path),
-            "output_root": str(mode_root),
-            "submit_script": str(script),
-        })
+    beammap = config.setdefault("beammap", {})
+    runtime = config.setdefault("runtime", {})
+    mapmaking = config.get("mapmaking", {})
+    if not all(isinstance(node, dict) for node in (beammap, runtime, mapmaking)):
+        raise SystemExit(f"beammap/runtime/mapmaking is not a mapping: {source}")
+    if mapmaking.get("grouping") != "detector":
+        raise SystemExit(
+            f"direction_mode=all requires mapmaking.grouping=detector: {source}")
+    output_root = root / f"o{obsnum}"
+    config_path = root / "preparation" / f"citlali_o{obsnum}_all.yaml"
+    beammap["direction_mode"] = "all"
+    runtime["output_dir"] = str(output_root)
+    config_path.write_text(yaml.safe_dump(config, sort_keys=False))
+    script = root / "jobs" / f"run_o{obsnum}_all.sbatch"
+    script.write_text("\n".join([
+        "#!/usr/bin/env bash",
+        f"#SBATCH --job-name=sci-align-{obsnum}-all",
+        "#SBATCH --time=48:00:00",
+        "#SBATCH --mem=192G",
+        "#SBATCH --cpus-per-task=6",
+        "#SBATCH --nodes=1",
+        "#SBATCH --ntasks=1",
+        "#SBATCH --partition=toltec-cpu",
+        f"#SBATCH --output={root}/jobs/%x_%j.out",
+        f"#SBATCH --error={root}/jobs/%x_%j.err",
+        "#SBATCH --parsable",
+        "set -euo pipefail",
+        f"cd {json.dumps(str(citlali.parent.parent.parent))}",
+        f"{json.dumps(str(citlali))} {json.dumps(str(config_path))} --grppiex omp",
+        "",
+    ]))
+    script.chmod(script.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP)
+    manifest["runs"].append({
+        "observation_number": obsnum,
+        "requested_mode": "all",
+        "realized_products": ["standard", "left", "right"],
+        "source_config": str(source),
+        "source_config_sha256": sha256(source),
+        "rendered_config": str(config_path),
+        "rendered_config_sha256": sha256(config_path),
+        "output_root": str(output_root),
+        "submit_script": str(script),
+        "requested_memory": "192G",
+    })
 (root / "preparation" / "manifest.json").write_text(
     json.dumps(manifest, indent=2, sort_keys=True) + "\n")
 PY
@@ -151,83 +157,78 @@ python - "$SCI_SPLIT_ROOT/preparation/manifest.json" <<'PY'
 import json, sys
 doc = json.load(open(sys.argv[1]))
 for row in doc["runs"]:
-    print(row["observation_number"], row["mode"], row["output_root"])
+    print(row["observation_number"], row["requested_mode"],
+          row["realized_products"], row["output_root"],
+          row["requested_memory"])
 PY
+
+test ! -e "$SCI_SPLIT_ROOT/o150819"
+test ! -e "$SCI_SPLIT_ROOT/o148670"
 ```
 
-Review the eight output roots. Each must be below `SCI_SPLIT_ROOT`; no source
-config or retained reduction may appear as an output.
+The first run requests 192 GB conservatively because `all` retains three
+detector-map buffers. Record `MaxRSS`; later requests may be lowered from
+evidence. This is one reduction, not three. Relative to the previous 2h40m
+standard jobs, allow roughly 3–5 hours after allocation for the additional map
+accumulation, normalization, fitting, and output. The 48-hour limit is a guard,
+not an expected runtime.
 
-## 3. Run 150819 first
-
-Submit the four independent modes. They may run concurrently; each has its own
-output root.
+## 3. Run and verify 150819
 
 ```bash
-: > "$SCI_SPLIT_ROOT/jobs/o150819_job_ids.txt"
-for mode in standard left right all; do
-  job_id=$(sbatch "$SCI_SPLIT_ROOT/jobs/run_o150819_${mode}.sbatch")
-  job_id=${job_id%%;*}
-  printf 'obsnum=150819 mode=%s job_id=%s\n' "$mode" "$job_id" \
-    | tee -a "$SCI_SPLIT_ROOT/jobs/o150819_job_ids.txt"
-done
+job_id=$(sbatch "$SCI_SPLIT_ROOT/jobs/run_o150819_all.sbatch")
+job_id=${job_id%%;*}
+printf 'obsnum=150819 mode=all job_id=%s\n' "$job_id" \
+  | tee "$SCI_SPLIT_ROOT/jobs/o150819_job_id.txt"
+
+squeue -j "$job_id" -o '%.18i %.28j %.8T %.10M %.4C %R'
+tail -f "$SCI_SPLIT_ROOT"/jobs/sci-align-150819-all_"${job_id}".out
 ```
 
-Monitor without relying on the current login shell remaining alive:
+After it leaves `squeue`:
 
 ```bash
-squeue -j "$(awk -F= '{print $4}' "$SCI_SPLIT_ROOT/jobs/o150819_job_ids.txt" \
-  | paste -sd, -)" -o '%.18i %.28j %.8T %.10M %.4C %R'
-tail -f "$SCI_SPLIT_ROOT"/jobs/sci-align-150819-*.out
+sacct -X -j "$job_id" \
+  --format=JobID,JobName%30,State,ExitCode,Elapsed,MaxRSS,Start,End \
+  | tee "$SCI_SPLIT_ROOT/jobs/o150819_sacct.txt"
+
+find "$SCI_SPLIT_ROOT/o150819" -type f \
+  \( -name '*_citlali*.fits' -o -name 'apt_*_citlali*.ecsv' \
+     -o -name 'beammap_direction_scan_registry*.csv' \
+     -o -name '*provenance*.yaml' \) \
+  -print | sort
+
+test "$(find "$SCI_SPLIT_ROOT/o150819" -type f \
+  -name 'beammap_direction_scan_registry_all.csv' | wc -l)" -eq 1
+test "$(find "$SCI_SPLIT_ROOT/o150819" -type f \
+  -name 'apt_*_citlali.ecsv' | wc -l)" -ge 1
+test "$(find "$SCI_SPLIT_ROOT/o150819" -type f \
+  -name 'apt_*_citlali_left.ecsv' | wc -l)" -ge 1
+test "$(find "$SCI_SPLIT_ROOT/o150819" -type f \
+  -name 'apt_*_citlali_right.ecsv' | wc -l)" -ge 1
 ```
 
-When `squeue` is empty, require four successful accounting records:
-
-```bash
-sacct -X -j "$(awk -F= '{print $4}' "$SCI_SPLIT_ROOT/jobs/o150819_job_ids.txt" \
-  | paste -sd, -)" --format=JobID,JobName%30,State,ExitCode,Elapsed,Start,End
-```
-
-Then inspect the products:
-
-```bash
-for mode in standard left right all; do
-  mode_root="$SCI_SPLIT_ROOT/o150819/$mode"
-  printf '\n===== 150819 %s =====\n' "$mode"
-  find "$mode_root" -type f \
-    \( -name '*_citlali*.fits' -o -name 'apt_*_citlali*.ecsv' \
-       -o -name 'beammap_direction_scan_registry*.csv' \) \
-    -print | sort
-done
-```
-
-Require ordinary map FITS and APT products in every mode, no nonstandard
-registry for `standard`, and exactly one matching registry for each of
-`left`, `right`, and `all`. Stop and return the logs if any job failed, a
-registry is absent, or Citlali reports an ambiguous/low-speed leg.
+Require Slurm `COMPLETED`/`0:0`, one `_all` registry, and standard/left/right
+map, APT, and fit-QC siblings in the same reduction tree. Search stdout and
+stderr for unexpected error-level messages. Preserve and stop on failure; do
+not retry in place.
 
 ## 4. Replicate with 148670
 
-Only after 150819 passes the preceding checks:
+Only after 150819 passes:
 
 ```bash
-: > "$SCI_SPLIT_ROOT/jobs/o148670_job_ids.txt"
-for mode in standard left right all; do
-  job_id=$(sbatch "$SCI_SPLIT_ROOT/jobs/run_o148670_${mode}.sbatch")
-  job_id=${job_id%%;*}
-  printf 'obsnum=148670 mode=%s job_id=%s\n' "$mode" "$job_id" \
-    | tee -a "$SCI_SPLIT_ROOT/jobs/o148670_job_ids.txt"
-done
+job_id_148670=$(sbatch "$SCI_SPLIT_ROOT/jobs/run_o148670_all.sbatch")
+job_id_148670=${job_id_148670%%;*}
+printf 'obsnum=148670 mode=all job_id=%s\n' "$job_id_148670" \
+  | tee "$SCI_SPLIT_ROOT/jobs/o148670_job_id.txt"
 ```
 
-Use the same `squeue`, `sacct`, log, and product checks with `150819` replaced
-by `148670`. Do not change classification rules or configuration fields after
-viewing the 150819 maps.
+Use the same `squeue`, `tail`, `sacct`, and product checks with `150819`
+replaced by `148670`. Do not change the classifier or any other configuration
+after viewing 150819.
 
 ## 5. Freeze the return
-
-Record the exact code and executable identity, then create the recursive
-checksum manifest described in `RETURN_BUNDLE_SPEC.md`:
 
 ```bash
 cd "$SCI_REPO"
@@ -236,5 +237,6 @@ shasum -a 256 "$CITLALI_BIN" \
   | tee "$SCI_SPLIT_ROOT/preparation/citlali_executable_sha256.txt"
 ```
 
-No map comparison, recentering, timestamp modification, or mitigation decision
-is part of this runbook.
+Then create the recursive manifest and tarball in `RETURN_BUNDLE_SPEC.md`.
+Map comparison, recentering, timestamp modification, and mitigation decisions
+remain outside this runbook.

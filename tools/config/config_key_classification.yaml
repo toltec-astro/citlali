@@ -260,7 +260,7 @@ rules:
     pattern: beammap.direction_mode
     classification: expert
     owner: citlali
-    reason: Opt-in SCI-ALIGN diagnostic scan-direction mapmaking selection; the standard default preserves production behavior.
+    reason: Opt-in SCI-ALIGN diagnostic product mode; left/right select mapmaking scan direction, all emits standard/left/right detector-map products from one shared processed-timestream pass, and the standard default preserves production behavior.
   - id: user-beammap-detector-tod
     pattern: beammap.detector_tod_output.enabled
     classification: user-facing

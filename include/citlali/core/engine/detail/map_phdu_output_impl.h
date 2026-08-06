@@ -28,6 +28,14 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     const auto &beammap_iteration_config = beammap_settings.iteration;
     const auto &beammap_phase_config = beammap_settings.phase_strategy;
     const auto &beammap_reference_config = beammap_settings.reference;
+    auto beammap_direction_mode = beammap_settings.direction_mode;
+    if (citlali::config::is_beammap_reduction_type(reduction_type)) {
+        beammap_direction_mode =
+            citlali::pipeline::beammap_direction_realized_product_mode(
+                beammap_direction_mode,
+                calib.apt_meta["beammap_direction_mode"]
+                    .as<std::string>(""));
+    }
 
     try {
     citlali::engine_detail::add_phdu_unit_conversion_section(
@@ -40,7 +48,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         fits_entry, mb, name, logger, reduction_type,
         source_flux_mJy_beam, source_flux_MJy_Sr,
         beammap_iteration_config, beammap_phase_config,
-        beammap_reference_config, beammap_settings.direction_mode,
+        beammap_reference_config, beammap_direction_mode,
         calib, observation_dates.date_obs);
 
     logger->debug("adding obs info");
