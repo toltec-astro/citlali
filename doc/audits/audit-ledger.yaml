@@ -5457,8 +5457,8 @@ packages:
         status: submitted_preserved_exact_bytes
       owner_decision_brief:
         path: doc/audits/packages/SCI-NOI-002_OWNER_DECISION_BRIEF_2026-08-06.md
-        sha256: de82d9d923341f79e54a66d1f0b6b194c43bb985384951dcb7f4e194ce8a5e93
-        status: D001_D002_D004_D005_owner_decided_D003_qualified_owner_direction_remaining_owner_review_pending
+        sha256: 3520172cfc11e8e34f280f9ebdf147ea414c7a3a4ca6109bad55354a5ff3cf71
+        status: D001_D002_D004_D005_D006_D007_D008_owner_decided_D003_qualified_owner_direction_all_policy_resolved
     held_outgoing_handoff_proposals:
       - {id: SCI-FLT-001-XAUD-003, path: doc/audits/proposals/SCI-FLT-001-XAUD-003_PROPOSAL_2026-08-06.yaml, sha256: 47b5533ba88e3dfac19c5beda2e92ff84d149bf3d50a41ec3740fa1b9615d9d7, review_phase: post_core_evidence, status: submitted_held_for_future_amendment_or_reaudit}
       - {id: SCI-FLT-002-XAUD-001, path: doc/audits/proposals/SCI-FLT-002-XAUD-001_PROPOSAL_2026-08-06.yaml, sha256: 655054b9253bfb0023f3598c2606ab15ea4d29d404a3d5ef4345c26c078c1249, review_phase: post_core_evidence, status: submitted_held_for_recipient_independent_core}
@@ -5468,9 +5468,9 @@ packages:
       - {id: SCI-BEAM-001-XAUD-003, path: doc/audits/proposals/SCI-BEAM-001-XAUD-003_PROPOSAL_2026-08-06.yaml, sha256: ebaf770d7269474f0709b20c6faceb357a67ae0e4668002679ad47d7292cb312, review_phase: post_core_evidence, status: submitted_held_inactive_unless_explicitly_enabled}
     contract_status: proposed
     implementation_status: nonconformant
-    implementation_disposition: bounded_descriptive_global_scale_provenance_identity_and_filtered_scatter_subcontracts_only
+    implementation_disposition: bounded_descriptive_global_scale_provenance_identity_filtered_scatter_FRUIT_gate_and_count_completion_subcontracts_only
     validation_status: in_progress
-    validation_disposition: static_trace_complete_empirical_validation_not_established
+    validation_disposition: static_trace_complete_owner_proportional_evidence_contract_held
     production_status: existing_use_only
     verdict: amend
     open_findings:
@@ -5479,9 +5479,9 @@ packages:
       - {id: SCI-NOI-002-F003, class: contract_gap, severity: P1, evidence_basis: owner_decision, confidence: high, status: open, owner: NOI-002_provenance_with_NOI-001_joins, owner_decision_id: SCI-NOI-002-D003, owner_decision_status: owner_decided_qualified_package_level_contract_pending_implementation_and_reaudit, summary: "Owner rejects the broad per-product premise: the reduction package/bundle is authoritative, with one compact semantic manifest/sidecar and stable product joins plus minimum detached-product misuse labels.", closure_gate: "Implement the qualified package-level manifest/join contract, verify package integrity and joins, require per-pixel realization counts only for varying support and a named consumer, then re-audit; no dense covariance, sign streams, per-sample IDs, or duplicated metadata."}
       - {id: SCI-NOI-002-F004, class: contract_gap, severity: P1, evidence_basis: owner_decision, confidence: high, status: open, owner: NOI-002_and_SCI-SRC-001, owner_decision_id: SCI-NOI-002-D004, owner_decision_status: owner_decided_approved_pending_implementation_and_reaudit, summary: "Owner D004 requires distinct internal/product identities for mathematically distinct S/N-like quantities; legacy sig2noise remains only a deprecated, explicitly not-significance compatibility alias, while current values stay descriptive or engineering scores.", closure_gate: "Implement D004 distinct identities, compatibility metadata, and invalid/unavailable zero-denominator behavior, then re-audit; SCI-SRC-001 separately validates any response/null/search/selection/multiplicity significance or catalog claim."}
       - {id: SCI-NOI-002-F005, class: dependency_gap, severity: P1, evidence_basis: owner_decision, confidence: high, status: open, owner: NOI-002_with_SCI-FLT-001_and_SCI-FLT-002, owner_decision_id: SCI-NOI-002-D005, owner_decision_status: owner_decided_approved_pending_implementation_and_reaudit, summary: "Owner D005 retains the filtered pixel product only as filtered_pixel_stack_scatter and defines fixed aperture/background and fixed-template realization projections as conditional finite-stack scatter diagnostics, not physical point-source or aperture uncertainty.", closure_gate: "Implement D005 common realized filter/operator/edge treatment and fixed-measurement projections with package-level provenance, then re-audit; separately validate physical uncertainty only if later authorized, without dense covariance or per-pixel matrix calculations."}
-      - {id: SCI-NOI-002-F006, class: dependency_gap, severity: P1, evidence_basis: derived, confidence: high, status: open, owner: SCI-FRUIT-001_with_NOI-002_interface, summary: "FRUIT consumes median realization RMS inside adaptive selection, and standard science configuration text conflicts with its empirical-product prerequisite.", closure_gate: "Admit consistent configuration and approve full adaptive or independent split/cross-fit procedure before statistical feedback use."}
-      - {id: SCI-NOI-002-F007, class: scientific_policy_decision, severity: P1, evidence_basis: observed, confidence: high, status: open, owner: package_consumer_owners_and_coordinator, summary: "Active configured counts and inert disabled counts have no use-specific adequacy decision; 64 is optional validation capacity only.", closure_gate: "Approve enabled uses, target/design/estimator/error criteria, resource/failure policy, and predeclared acceptance without presuming a count."}
-      - {id: SCI-NOI-002-F008, class: evidence_gap, severity: P1, evidence_basis: observed, confidence: high, status: open, owner: coordinator_and_eventual_exact_successor_verifier, summary: "Exact-d501 tests are structural and do not establish estimator, calibration, dependence, tail, feedback, or aperture validity.", closure_gate: "Run only separately authorized proportional successor fixtures and admitted evidence with predeclared criteria; no current request exists."}
+      - {id: SCI-NOI-002-F006, class: dependency_gap, severity: P1, evidence_basis: owner_decision, confidence: high, status: open, owner: SCI-FRUIT-001_with_NOI-002_interface, owner_decision_id: SCI-NOI-002-D006, owner_decision_status: owner_decided_scientific_requirement_pending_SCI_FRUIT_001_implementation_and_reaudit, summary: "Owner D006 retains MEDRMS only as a FRUIT scale-gate/naive baseline, not calibrated S/N or significance, and requires SCI-FRUIT-001 to establish a defensible bright-source map-uncertainty estimator under adaptive reconstruction.", closure_gate: "SCI-FRUIT-001 must derive/audit the iterative update, bright-source add-back, stopping law, uncertainty behavior, and candidate estimators with the median baseline retained; only then may a separately authorized implementation and re-audit proceed, without selecting a successor estimator here."}
+      - {id: SCI-NOI-002-F007, class: scientific_policy_decision, severity: P1, evidence_basis: owner_decision, confidence: high, status: open, owner: package_consumer_owners_and_coordinator, owner_decision_id: SCI-NOI-002-D007, owner_decision_status: owner_decided_configuration_boundary_pending_implementation_use_specific_evidence_and_reaudit, summary: "Owner D007 treats Science=10 and Pointing=5 only as user-configured requested values, not scientific production defaults; packages must record requested/effective/completed counts and bind incomplete products to actual completion/validity or fail.", closure_gate: "Implement D007 requested/effective/completed count and incomplete-execution behavior, preserve standard quicklook/Beammap disabled-zero policy, then complete a separately authorized Science convergence study of intended quantities against runtime/memory before any recommendation and re-audit."}
+      - {id: SCI-NOI-002-F008, class: evidence_gap, severity: P1, evidence_basis: owner_decision, confidence: high, status: open, owner: coordinator_and_eventual_exact_successor_verifier, owner_decision_id: SCI-NOI-002-D008, owner_decision_status: owner_decided_proportional_evidence_contract_pending_authorized_execution_and_reaudit, summary: "Owner D008 freezes small deterministic exact fixture classes and exact-repair-SHA-only astronomical validation; neither broad campaigns nor reduction success alone establish statistical validity.", closure_gate: "On an exact authorized repair SHA, complete D008 analytic/exact local and consumer fixtures, then only separately admitted astronomical validation with predeclared criteria and FRUIT routing, followed by re-audit; no empirical tolerance is invented here."}
     owner_decisions:
       - id: SCI-NOI-002-D001
         status: owner_decided_approved_pending_repair_and_reaudit
@@ -5552,7 +5552,50 @@ packages:
           provenance: qualified_D003_package_level_authoritative
           prohibited_burden: [dense_covariance_product, expensive_per_pixel_matrix_calculations]
         does_not_authorize: [implementation, repair, evidence, Unity_action, task_launch, default_or_count_change, production_action]
-    unresolved_scientific_decisions: [SCI-NOI-002-F006_FRUIT_feedback_procedure, SCI-NOI-002-F007_use_specific_count_adequacy, SCI-NOI-002-F008_evidence_admission_policy]
+      - id: SCI-NOI-002-D006
+        status: owner_decided_scientific_requirement_pending_SCI_FRUIT_001_implementation_and_reaudit
+        decision_date: 2026-08-06
+        scope: FRUIT_scale_gate_boundary_and_future_bright_source_uncertainty_requirement_only
+        policy:
+          current_FRUIT_behavior: existing_use_only_pending_SCI_FRUIT_001
+          MEDRMS_identity: FRUIT_scale_gate_naive_baseline_not_calibrated_S_N_or_significance
+          calculation_and_persistence: internal_scalar_calculation_separate_from_noise_map_product_persistence
+          nonzero_gate_invalid_scalar: explicit_failure_not_silent_default
+          NOI_002_does_not_alter: [FRUIT_algorithm, gate_threshold, defaults]
+          scientific_requirement: defensible_map_uncertainty_estimator_for_FRUIT_fruitloop_bright_source_reductions
+          SCI_FRUIT_001_must_audit: [complete_iterative_update, bright_source_add_back, stopping_law, uncertainty_behavior, candidate_estimator_comparison, adaptive_reconstruction_map_noise_relationship]
+          retained_baseline: median_approach
+          successor_method_selection: not_selected_split_sample_cross_fit_blank_aperture_or_other
+        does_not_authorize: [implementation, repair, evidence, Unity_action, task_launch, default_or_count_change, production_action]
+      - id: SCI-NOI-002-D007
+        status: owner_decided_configuration_boundary_pending_implementation_use_specific_evidence_and_reaudit
+        decision_date: 2026-08-06
+        scope: requested_effective_completed_realization_count_and_quicklook_boundary_only
+        policy:
+          current_requested_values: {Science: 10, Pointing: 5}
+          requested_values: user_configured_not_scientifically_validated_production_values_or_universal_defaults
+          Science_10: existing_use_only_pending_use_specific_convergence_evidence
+          Pointing_and_OOF_quicklook: standard_noise_work_should_remain_or_become_disabled_by_default_minimal_calculation_optional_explicit_diagnostics_possible
+          standard_Beammap: disabled_effective_zero_no_work_explicit_opt_in_only
+          tier_64: optional_validation_resource_capacity_not_target_minimum_default_or_production_recommendation
+          package_counts: [requested, effective, completed]
+          incomplete_execution: products_bind_actual_completed_count_and_validity_or_fail_when_full_request_required_never_report_requested_as_completed
+          future_Science_convergence_study: [global_scale_stability, aperture_template_scatter, later_FRUIT_uncertainty, runtime, memory]
+          prohibited_interpretation: user_configuration_value_as_production_or_scientific_authority
+        does_not_authorize: [implementation, repair, evidence, Unity_action, task_launch, count_or_default_change, production_action]
+      - id: SCI-NOI-002-D008
+        status: owner_decided_proportional_evidence_contract_pending_authorized_execution_and_reaudit
+        decision_date: 2026-08-06
+        scope: proportional_exact_fixture_and_exact_repair_SHA_astronomical_validation_contract_only
+        policy:
+          local_exact_fixtures: [R_equals_1_invalidity, R_equals_2_normalization, duplicate_complementary_simple_independent_designs, requested_effective_completed_count_handling, empty_calibration_region_failure, invalid_denominator_behavior, distinct_S_N_like_product_identities]
+          local_consumer_fixtures: [identical_realized_filter_operator_edge_treatment_signal_realizations_kernel_response, two_pixel_correlated_realization_level_aperture_projection, fixed_aperture_template_projection, FRUIT_configuration_dependency_without_full_adaptive_validation]
+          expected_results: analytic_or_exact_where_possible
+          later_astronomical_validation: exact_authorized_repair_SHA_only_with_predeclared_acceptance_criteria
+          later_astronomical_inputs: [blank_apertures, split_or_null_maps, repeated_observations, bright_source_FRUIT_tests_through_separate_audit]
+          prohibited_evidence_method: [invented_empirical_tolerances, broad_campaign, reduction_success_as_statistical_proof]
+        does_not_authorize: [implementation, repair, evidence_execution, Unity_action, task_launch, default_or_count_change, production_action]
+    unresolved_scientific_decisions: []
     local_evidence: []
     requested_unity_evidence: []
     supplied_external_evidence: []

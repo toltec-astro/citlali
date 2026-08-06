@@ -317,11 +317,25 @@ duplicated per-file metadata. F003 remains open for implementation and
 package-integrity/join validation. Owner D004/F004 approves distinct
 descriptive/engineering S/N-like identities and explicitly not-significance
 legacy aliases; F004 remains open for implementation and re-audit, while
-SCI-SRC-001 owns any future significance or catalog claim. The remaining owner
-policy is pending. Owner D005/F005 retains only
+SCI-SRC-001 owns any future significance or catalog claim. F008 owner policy
+remains pending. Owner D005/F005 retains only
 `filtered_pixel_stack_scatter` and fixed-measurement realization-scatter
 diagnostics; F005 remains open for implementation and re-audit, without a
 dense covariance requirement or physical-uncertainty claim.
+Owner D006/F006 retains MEDRMS only as a FRUIT scale-gate naive baseline,
+requires explicit failure for an unavailable requested nonzero gate, and routes
+the defensible bright-source map-uncertainty estimator to SCI-FRUIT-001; F006
+remains open pending that contract, implementation, and re-audit.
+Owner D007/F007 treats Science=10 and Pointing=5 only as current
+user-configured requests, not production/scientific authority; it requires
+requested/effective/completed count provenance and truthful incomplete-execution
+binding, while standard quicklook/Beammap noise work remains disabled-zero.
+F007 remains open for implementation, use-specific convergence evidence, and
+re-audit.
+Owner D008/F008 freezes proportional deterministic exact local and
+consumer-fixture classes and exact-authorized-repair-SHA-only astronomical
+validation with predeclared criteria. F008 remains open pending separately
+authorized execution and re-audit; reduction success is not statistical proof.
 Neither result authorizes evidence, Unity, integration, or production change.
 
 Owner clarification preserves the v4-compatible Beammap jackknife/noise-map

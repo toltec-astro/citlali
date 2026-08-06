@@ -151,10 +151,21 @@ legacy aliases; F004 remains open for implementation and re-audit, while
 SCI-SRC-001 owns any future significance or catalog claim. Owner D005/F005
 retains only `filtered_pixel_stack_scatter` and fixed-measurement realization
 scatter diagnostics; F005 remains open for implementation and re-audit, with
-no dense covariance requirement or physical-uncertainty claim.
-The resource-admitted 64-realization tier is neither a default nor a
-requirement. No repair, evidence request, re-audit execution, reduction, Unity
-action, integration, or production authorization follows from these results.
+no dense covariance requirement or physical-uncertainty claim. Owner D006/F006
+retains MEDRMS only as a FRUIT scale-gate naive baseline, requires explicit
+failure for an unavailable requested nonzero gate, and routes the defensible
+bright-source map-uncertainty estimator to SCI-FRUIT-001; F006 remains open.
+Owner D007/F007 treats Science=10 and Pointing=5 only as current user-configured
+requests, preserves standard quicklook/Beammap disabled-zero behavior, and
+requires requested/effective/completed counts plus truthful incomplete-execution
+binding; F007 remains open for implementation, use-specific convergence
+evidence, and re-audit. Owner D008/F008 freezes proportional exact local and
+consumer-fixture classes, and exact-authorized-repair-SHA-only astronomical
+validation with predeclared criteria; F008 remains open pending authorized
+execution and re-audit. The resource-admitted 64-realization tier is neither a
+default nor a requirement. No repair, evidence request, re-audit execution,
+reduction, Unity action, integration, or production authorization follows from
+these results.
 
 The owner retains the v4-compatible Beammap jackknife/noise-map path as an
 optional capability only. Standard Beammap configurations remain disabled by

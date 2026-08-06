@@ -4,10 +4,11 @@ Status: coordinator review record only. Exact-d501 audit
 `4f1fec36f7802f3b5e8ac067377679946930983c` is `amend` with all eight P1
 findings open, production `existing_use_only`, no count/default selection, and
 no evidence authorization. Owner decisions D001/F001, D002/F002, D004/F004,
-and D005/F005 are approved as recorded below. Owner direction D003/F003 is a
-qualified package-level provenance contract, not acceptance of the audit's
-broad per-product premise. The remaining questions do not authorize repair,
-evidence, recipient dispatch, or production use.
+D005/F005, D006/F006, and D007/F007 are approved as recorded below. Owner
+direction D003/F003 is a qualified package-level provenance contract, not
+acceptance of the audit's broad per-product premise. D008/F008 is approved as
+the held proportional-evidence contract below. No decision authorizes repair,
+evidence execution, recipient dispatch, or production use.
 
 ## Owner-approved first decision: F001 / D001 — what does a realization stack estimate?
 
@@ -135,51 +136,59 @@ launch, defaults/count change, or production action.
 
 ### F006 — FRUIT feedback
 
-**Issue and current code.** FRUIT uses median realization RMS in an adaptive
-gate while the standard science text enables that gate but disables its stated
-empirical-product prerequisite.
+**Approved owner disposition with scientific requirement — 2026-08-06.** Keep
+FRUIT’s existing numerical behavior `existing_use_only` pending SCI-FRUIT-001.
+Identify its current median realization RMS only as a FRUIT scale gate / naive
+baseline, not calibrated S/N or significance. Separate the internal
+calculation from product persistence so the required scalar may be calculated
+without forcing noise-map files to be written. If a nonzero gate is requested
+and its scalar cannot be calculated validly, fail explicitly rather than
+substituting a silent default. NOI-002 does not alter FRUIT’s algorithm, gate
+threshold, or defaults.
 
-**Consequence.** Fixed stack moments do not validate repeated selection,
-addback, stopping, or subsequent noise estimation.
+Citlali needs a defensible map-uncertainty estimator for FRUIT/fruitloop
+reductions of bright sources. MEDRMS was a reasonable naive first method, but
+is not presumed adequate. SCI-FRUIT-001 must derive and audit the complete
+iterative update, bright-source add-back, stopping law, and uncertainty
+behavior; compare candidate estimators while retaining the median approach as
+a baseline and account for adaptive bright-source reconstruction changing the
+map/noise relationship. This does not select split-sample, cross-fit,
+blank-aperture, or another successor method.
 
-**Engineering versus science.** Engineering can expose a consistent
-configuration prerequisite. The scientific policy is the complete adaptive or
-independent split/cross-fit procedure and its failure law.
-
-**Recommendation.** Keep this feedback authority unavailable; route the full
-choice to SCI-FRUIT-001 with the held post-core handoff.
-
-**Owner question.** Is statistical FRUIT feedback a required scientific use,
-and if so should SCI-FRUIT-001 define a full adaptive procedure or an
-independent/split procedure before any enabled claim?
-
-**May defer.** A repair, tolerance, source-model decision, and evidence study.
+F006 remains open pending that SCI-FRUIT-001 contract, any separately
+authorized implementation, and re-audit. This policy authorizes no
+implementation, repair, evidence, Unity action, task launch, defaults/count
+change, or production action.
 
 ### F007 — use-specific count adequacy
 
-**Issue and current code.** Science and Pointing have active configured counts;
-OOF and standard Beammap are disabled/effective zero. None establishes a
-use-specific adequacy or default. `64` is optional validation capacity only.
+**Approved owner disposition with configuration clarification — 2026-08-06.**
+Science=10 and Pointing=5 are current user-configured requested values, not
+scientifically validated production values or universal defaults. Preserve
+Science=10 only as current `existing_use_only` configuration behavior pending
+use-specific convergence evidence. Citlali must not reinterpret a user’s
+configuration value as a production or scientific authority.
 
-**Consequence.** A configured count is not an uncertainty, resource, or
-production guarantee.
+Pointing and OOF quicklook products do not require noise maps, so their
+standard noise work should remain/become disabled by default under the approved
+minimal-calculation policy; optional explicit diagnostic use remains possible.
+Standard Beammap noise work remains disabled/effective-zero/no-work, with
+explicit opt-in only. `64` is optional validation/resource capacity, never a
+target, minimum, default, or production recommendation.
 
-**Engineering versus science.** Engineering can preserve disabled-zero/no-work
-and positive-enabled admission. The scientific/operational choice is a named
-enabled use, target estimator, error/resource/failure criteria, and acceptance
-policy.
+The package records requested, effective, and completed counts. Incomplete
+execution must bind products to actual completed count and validity, or fail
+when the full request is required; it must never silently report requested as
+completed. A future bounded Science convergence study must evaluate global
+scale stability, aperture/template scatter, and later FRUIT uncertainty against
+runtime and memory before any recommendation.
 
-**Recommendation.** Preserve current defaults and disabled lanes; select no
-count until one named consumer needs it.
+F007 remains open pending separately authorized implementation, use-specific
+convergence evidence, and re-audit. This policy authorizes no implementation,
+repair, evidence, Unity action, task launch, count/default change, or
+production action.
 
-**Owner question.** Which enabled consumer, if any, should first receive a
-use-specific adequacy decision, with what error and resource/failure criteria?
-
-**May defer.** Any numeric count, default, Beammap expansion, or study. Standard
-Beammap remains optional explicit opt-in only, disabled/effective-zero/no-work;
-its configured 10 is inert and not a requirement.
-
-## Engineering follow-through, not new owner choices: F003 and F008
+## Established policy follow-through: F003 and F008
 
 ### F003 — provenance and labels
 
@@ -205,12 +214,27 @@ Unity, repair, or production action.
 
 ### F008 — proportional evidence
 
-Exact-d501 structural tests do not establish estimator, calibration,
-dependence, tail, feedback, or aperture validity. Recommendation: hold all
-evidence; later admit only exact-successor fixtures or studies tied to a
-concrete unresolved closure question with predeclared acceptance and
-FRAMEWORK-NUM-001 approval when costly. No owner choice or request is needed
-now.
+**Approved owner disposition — 2026-08-06.** Hold the following small,
+deterministic local exact fixtures: R=1 invalidity; R=2 normalization;
+duplicate, complementary, and simple-independent designs;
+requested/effective/completed-count handling; empty calibration-region failure;
+invalid-denominator behavior; and distinct S/N-like product identities.
+
+Hold small deterministic local consumer fixtures for identical realized
+filter/operator and edge treatment of signal, realizations, and
+kernel-response; a two-pixel correlated case demonstrating realization-level
+aperture projection; fixed aperture/template projection; and the FRUIT
+configuration dependency without claiming validation of the full adaptive
+procedure. Use analytic/exact expectations where possible.
+
+Later astronomical validation is limited to an exact authorized repair SHA with
+predeclared acceptance criteria: blank apertures, split/null maps, repeated
+observations, and bright-source FRUIT tests routed through its separate audit.
+Do not invent empirical tolerances, require a broad campaign, or treat mere
+reduction success as statistical proof. F008 remains open pending separately
+authorized implementation, exact fixtures, any admitted exact-repair-SHA
+astronomical validation, and re-audit. It authorizes no evidence execution,
+Unity action, task launch, repair, default/count change, or production action.
 
 ## Held recipient interfaces
 
