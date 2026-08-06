@@ -4953,7 +4953,7 @@ packages:
     production_status: existing_use_only
     verdict: amend
     repair_dispatch:
-      status: launched_checkpoint_passed
+      status: repair_complete_pending_reaudit
       prepared_date: 2026-08-06
       governing_application_sha: d5015fe716971bf8ea617e8a187311bf5af05185
       proposed_repair_branch: codex/repair-sci-noi-001
@@ -4968,7 +4968,7 @@ packages:
         sha256: 44c6ac459f058ba39e18d01f35e64bfb37bcfec9c116a12a2839f64beac71bae
       readiness_record:
         path: doc/audits/packages/SCI-NOI-001_REPAIR_DISPATCH_READINESS_2026-08-06.md
-        sha256: 9ea123eb48a10e00233ebaa07de84dcde1ed9fac952627d3bbe40fc43a0965df
+        sha256: 3cecf6922f888aff6b4e5a79bc1f7a781b710312d75c0279708561972b2db6ae
       planned_execution:
         model: gpt-5.6-sol
         effort: ultra
@@ -4989,7 +4989,7 @@ packages:
         verified_frozen_authorities: [repair_prompt, repair_authority_manifest, readiness_record, owner_decision_brief, final_audit, R3]
         prohibited_activity: none_reported_or_observed
       implementation_test_authorization:
-        status: authorized_not_started
+        status: completed_repair_commit_pending_reaudit
         task_thread_id: 019fd4e1-8add-7b52-aa2f-3422a521c745
         execution_worktree: /Users/gwilson/.codex/worktrees/142f/citlali-refactor
         repair_branch: codex/repair-sci-noi-001
@@ -5000,11 +5000,43 @@ packages:
         permitted_scope: F001_F002_F003_F005_F008_only
         continuing_stop_rule: commit_bounded_repair_and_focused_tests_then_stop_for_coordinator_review
         prohibited: [integration, re_audit, evidence_execution, Unity, local_reduction, push, production_change]
+      repair_completion:
+        repair_commit: 38ef72860743636f59d226c9e1ff5ff776d0e9c0
+        repair_parent: d5015fe716971bf8ea617e8a187311bf5af05185
+        repair_worktree: /Users/gwilson/.codex/worktrees/142f/citlali-refactor
+        repair_branch_clean: true
+        bounded_changed_paths: [noise_identity, noise_config_admission, Beammap_pass_identity, compact_provenance, realization_metadata_and_output, focused_tests, boundary_validation]
+        excluded_area_change_observed: none
+        reported_gates: [citlali_test_567_of_567, science_map_FITS_22_of_22, OpenMP_dynamic_scheduling, relevant_CTest_15_of_15, Python_boundary_10_of_10, config_preflight_127_of_127, compatibility_8_of_8, coverage_100_percent, public_header_isolation, unrelated_disabled_external_corpus_test]
+        root_rerun_gates: [noise_realization_contract_7_of_7, FITS_contract_2_of_2]
+        disposition: complete_pending_independent_reaudit
+      re_audit_dispatch:
+        status: ready_pending_launch
+        governing_repair_sha: 38ef72860743636f59d226c9e1ff5ff776d0e9c0
+        governing_repair_parent: d5015fe716971bf8ea617e8a187311bf5af05185
+        proposed_reaudit_branch: codex/reaudit-sci-noi-001
+        prompt:
+          path: doc/audits/prompts/SCI_NOI_001_REAUDIT_PROMPT.md
+          sha256: 7448d748043cdcb7f942688766166b1d3a4ed112421fe0997155a3a10723546b
+        authority_manifest:
+          path: >-
+            doc/audits/handoffs/SCI-NOI-001/SCI-NOI-001_REAUDIT_AUTHORITY_MANIFEST_2026-08-06.yaml
+          sha256: fbe4cf5c4c783f6bc878ef1037aae7806386294124af1689dd071e04d9abb49e
+        readiness_record:
+          path: doc/audits/packages/SCI-NOI-001_REAUDIT_DISPATCH_READINESS_2026-08-06.md
+          sha256: f0b64947246bb15fcf957caeaaff7491b95d35138d7a90b70d8c0b8cf4c4882d
+        model: gpt-5.6-sol
+        effort: ultra
+        parallelism: serial_no_delegation_or_subagents
+        included_findings: [SCI-NOI-001-F001, SCI-NOI-001-F002, SCI-NOI-001-F003, SCI-NOI-001-F005, SCI-NOI-001-F008]
+        held_finding: SCI-NOI-001-F007
+        excluded_findings: [SCI-NOI-001-F004, SCI-NOI-001-F006]
+        stop_rule: documentation_only_reaudit_commit_then_coordinator_review
       launch_effect: >-
-        The clean repair branch/worktree now exists at exact d501 solely after
-        the accepted checkpoint. No implementation/test edit, repair commit,
-        integration, or production change has occurred; remediation_commit
-        remains null.
+        The bounded repair completed on the clean repair branch at exact
+        successor commit 38ef72860743636f59d226c9e1ff5ff776d0e9c0. It remains
+        unintegrated; implementation/validation status and production use do
+        not change until the prepared independent re-audit returns.
     open_findings:
       - {id: SCI-NOI-001-F001, class: implementation_defect, severity: P1, evidence_basis: observed_static_source_and_derived_R3_consequence, confidence: high, status: open, owner: noise_RNG_and_realization_identity, owner_decision_id: SCI-NOI-001-D001, owner_decision_status: approved_pending_repair, summary: "Fixed seed 5489 is recreated without observation or realization namespaces; equal-shaped observations can repeat sign prefixes.", closure_gate: "Implement the approved compact versioned key/namespace policy, establish collision/repeat and sequential/OpenMP fixtures, publish reconstruction facts, then re-audit an exact successor."}
       - {id: SCI-NOI-001-F002, class: contract_gap, severity: P1, evidence_basis: observed_static_source, confidence: high, status: open, owner: noise_provenance, owner_decision_id: SCI-NOI-001-D001, owner_decision_status: approved_pending_repair, summary: "Current sidecars and digests do not reconstruct assignments, mode, completed IDs, or partial failure.", closure_gate: "Implement approved compact provenance: policy/version, stable ordering/partition, completed IDs, ensemble mode, and digest joins; dense per-sample IDs, sign vectors, and N-by-N Q matrices are not required; then re-audit."}
@@ -5212,8 +5244,8 @@ packages:
         64 is a resource-admitted high-count validation tier only, not a
         requirement, production default, beammap expectation, or cap.
     remediation_branch: codex/repair-sci-noi-001
-    remediation_commit: null
-    re_audit_status: not_started
+    remediation_commit: 38ef72860743636f59d226c9e1ff5ff776d0e9c0
+    re_audit_status: ready_pending_launch
 
   - id: SCI-NOI-002
     name: Empirical variance, covariance, calibrated weight, and S/N
@@ -5264,7 +5296,7 @@ packages:
         status: submitted_held_for_recipient_independent_core
         late_arrival_route: held_for_recipient_independent_core_then_post_core_review
     audit_dispatch:
-      status: phase_0_accepted_phase_1_authorized
+      status: phase_1_completed_accepted_phase_2_authorized
       prepared_date: 2026-08-06
       governing_application_sha: d5015fe716971bf8ea617e8a187311bf5af05185
       proposed_audit_branch: codex/audit-sci-noi-002
@@ -5277,7 +5309,7 @@ packages:
         sha256: 1de9dbc5f9aca42f5a9f9b1f05b7b14c092ee9b443946d0c52eeb27c8da117b0
       readiness_record:
         path: doc/audits/packages/SCI-NOI-002_DISPATCH_READINESS_2026-08-06.md
-        sha256: 77d321f9f283775ebe5576dbce58fcca306282539d74a989138af8cc733eb116
+        sha256: 0bf1750a1636b1779b4deb895568212f19e64314a7010834a87c2cc97d9fdcbb
       pre_core_authority_ids: [SCI-NOI-002-XAUD-002]
       post_core_evidence_ids: [SCI-NOI-002-XAUD-001]
       planned_phases:
@@ -5294,19 +5326,38 @@ packages:
           effort: high
           stop_rule: worktree_authority_byte_and_quarantine_checkpoint_only
         phase_1:
-          status: authorized_not_started
+          status: completed_accepted
           task_thread_id: 019fd4e1-8add-7b52-aa2f-3446e980cd4b
           execution_worktree: /Users/gwilson/.codex/worktrees/e801/citlali-refactor
           audit_branch: codex/audit-sci-noi-002
-          branch_creation: permitted_only_if_absent_clean_and_exact_d501
+          branch_creation: completed_from_exact_d501_clean_worktree
           model: gpt-5.6-sol
           effort: ultra
           parallelism: serial_no_delegation_or_subagents
           permitted_reads: [repository_level_authorities, SCI-NOI-002-XAUD-002, SCI-NOI-001-R3]
           permitted_write: doc/audits/packages/SCI-NOI-002_INDEPENDENT_CORE.tex_only
+          completion_commit: f08a6da2ceebff03f498386f374980d13c5146a6
+          completion_parent: d5015fe716971bf8ea617e8a187311bf5af05185
+          independent_core:
+            path: doc/audits/packages/SCI-NOI-002_INDEPENDENT_CORE.tex
+            sha256: 36781b766a2f57c9a3bd7e173ee8f1d85cba7f3d08afe2e67a403166f6b6d72d
+            line_count: 1031
+            unique_labels: 50
+            references_resolved: 12
+            TeX_compile_evidence: not_available
+            structural_review: balanced_LaTeX_and_references_passed
+          quarantined_source_test_diff_or_XAUD_001_opened: false
           stop_rule: independent_core_commit_then_stop_before_exposure
         phase_2:
-          status: held_for_separate_coordinator_authorization_after_core_acceptance
+          status: authorized_not_started
+          task_thread_id: 019fd4e1-8add-7b52-aa2f-3446e980cd4b
+          execution_worktree: /Users/gwilson/.codex/worktrees/e801/citlali-refactor
+          audit_branch: codex/audit-sci-noi-002
+          governing_application_sha: d5015fe716971bf8ea617e8a187311bf5af05185
+          independent_core_commit: f08a6da2ceebff03f498386f374980d13c5146a6
+          permitted_first_exposure: SCI-NOI-002-XAUD-001_then_exact_d501_source_tests_and_diffs
+          prohibited_reference: SCI-NOI-001_repair_commit_38ef72860743636f59d226c9e1ff5ff776d0e9c0
+          parallelism: serial_no_delegation_or_subagents
           model: gpt-5.6-sol
           effort: ultra
       ultra_trigger: >-
@@ -5314,14 +5365,23 @@ packages:
         policy_are_distinct_hard_investigations_requiring_one_independent
         estimator_synthesis
       launch_effect: >-
-        Phase 0 completed in a clean detached execution worktree. The audit
-        branch remains absent; only Phase 1 independent-core work is now
-        authorized, while source exposure and Phase 2 remain unauthorized.
+        Phase 1 independent core completed and is accepted on the clean audit
+        branch. Phase 2 alone may now open sealed XAUD-001 and exact-d501
+        source/tests/diffs; it must not inspect or assess the NOI-001 repair
+        commit, and no repair/evidence/integration/production action is
+        authorized.
     governing_sha: d5015fe716971bf8ea617e8a187311bf5af05185
     governing_sha_role: ready_dispatch_exact_application_snapshot
-    audit_branch: null
+    audit_branch: codex/audit-sci-noi-002
     audit_commit: null
-    independent_derivation: {status: not_started, sha256: null}
+    independent_derivation:
+      status: completed_accepted
+      path: doc/audits/packages/SCI-NOI-002_INDEPENDENT_CORE.tex
+      sha256: 36781b766a2f57c9a3bd7e173ee8f1d85cba7f3d08afe2e67a403166f6b6d72d
+      commit: f08a6da2ceebff03f498386f374980d13c5146a6
+      parent: d5015fe716971bf8ea617e8a187311bf5af05185
+      structural_review: balanced_LaTeX_50_unique_labels_12_resolved_references
+      TeX_compile_evidence: not_available
     contract_status: not_started
     implementation_status: not_assessed
     validation_status: not_started

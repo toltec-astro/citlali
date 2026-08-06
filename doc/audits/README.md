@@ -126,17 +126,21 @@ ensemble second-moment imprint through realized map/coadd/filter interfaces.
 Its bounded [repair prompt](prompts/SCI_NOI_001_REPAIR_PROMPT.md),
 [authority manifest](handoffs/SCI-NOI-001/SCI-NOI-001_REPAIR_AUTHORITY_MANIFEST_2026-08-06.yaml),
 and [readiness record](packages/SCI-NOI-001_REPAIR_DISPATCH_READINESS_2026-08-06.md)
-have passed their clean launch checkpoint and bounded implementation/test work
-is authorized only for F001/F002/F003/F005/F008. The
+completed their bounded repair at exact `38ef72860743636f59d226c9e1ff5ff776d0e9c0`
+and are `complete_pending_reaudit`; a narrow independent re-audit is prepared
+but not launched through its [prompt](prompts/SCI_NOI_001_REAUDIT_PROMPT.md),
+[authority manifest](handoffs/SCI-NOI-001/SCI-NOI-001_REAUDIT_AUTHORITY_MANIFEST_2026-08-06.yaml),
+and [readiness record](packages/SCI-NOI-001_REAUDIT_DISPATCH_READINESS_2026-08-06.md). The
 independent [SCI-NOI-002 prompt](prompts/SCI_NOI_002_AUDIT_PROMPT.md),
 [manifest](handoffs/SCI-NOI-002/SCI-NOI-002_INBOX_MANIFEST_2026-08-06.yaml),
 and [readiness record](packages/SCI-NOI-002_DISPATCH_READINESS_2026-08-06.md)
-have completed/accepted Phase 0 and authorize only the independent-core Phase
-1: R3 is pre-core authority, while SCI-NOI-002-XAUD-001 remains post-core
-evidence. The resource-admitted
+have completed/accepted its independent core at
+`f08a6da2ceebff03f498386f374980d13c5146a6` and authorize only Phase 2: R3
+remains the core authority, while SCI-NOI-002-XAUD-001 is now the first
+permitted post-core evidence. The resource-admitted
 64-realization tier is neither a default nor a requirement. No repair, evidence
-request, re-audit, reduction, Unity action, integration, or production
-authorization follows from these phase authorizations.
+request, re-audit execution, reduction, Unity action, integration, or
+production authorization follows from these phase authorizations.
 
 ## Purpose and non-goals
 

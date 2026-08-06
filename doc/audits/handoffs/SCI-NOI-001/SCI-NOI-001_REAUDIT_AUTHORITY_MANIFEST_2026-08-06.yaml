@@ -1,0 +1,67 @@
+format_version: 1
+target_package: SCI-NOI-001
+created_date: 2026-08-06
+coordinator_registry_commit: 6bd451a2b4a9970cfabfde809858c29050c901ab
+manifest_status: frozen_for_narrow_independent_reaudit_dispatch
+dispatch_status: ready_pending_launch
+
+repair_lineage:
+  application_parent: d5015fe716971bf8ea617e8a187311bf5af05185
+  repair_branch: codex/repair-sci-noi-001
+  repair_commit: 38ef72860743636f59d226c9e1ff5ff776d0e9c0
+  repair_commit_parent: d5015fe716971bf8ea617e8a187311bf5af05185
+
+authority_artifacts:
+  - id: SCI-NOI-001-OWNER-DECISION-BRIEF
+    availability: git_object
+    source_commit: c21ff272ff09160fb004536504f1820e9dbd08d5
+    path: doc/audits/packages/SCI-NOI-001_COORDINATOR_DECISION_BRIEF_2026-08-06.md
+    sha256: a40b151e161d3d2e5721bf75f6ec126dafae8f275e28ee6efbf0e07f146de471
+    role: approved_D001_to_D004_contract_boundary
+  - id: SCI-NOI-001-FINAL-AUDIT
+    availability: git_object
+    source_commit: bf6de403c2c50d55f54b8486424aea5543cdd346
+    path: doc/audits/packages/SCI-NOI-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: eb38c7b282a95f792759ca71721fdb7731db5a4e392f8a95ac208c33754f7517
+    role: immutable_open_finding_and_scope_basis
+  - id: SCI-NOI-001-R3
+    availability: git_object
+    source_commit: 5a027c94ef9fc9c4a6e6cadc84af1c8a550d3508
+    path: doc/audits/packages/SCI-NOI-001_INDEPENDENT_CORE_R3.tex
+    sha256: 27263ab3bf29ac8f098463455e540f13e783241a688ef2bc5cb15b1f2a4319da
+    role: immutable_54_equation_independent_core_authority
+  - id: SCI-NOI-001-REPAIR-PROMPT
+    availability: git_object
+    source_commit: 4fa99c673d108df47f96d06f420c8101def09c80
+    path: doc/audits/prompts/SCI_NOI_001_REPAIR_PROMPT.md
+    sha256: 83996bd6ae5ffbf609f14354d237d23465f3ecb1ec6a3d161447b162bfeaa024
+    role: frozen_bounded_repair_scope
+  - id: SCI-NOI-001-REPAIR-AUTHORITY-MANIFEST
+    availability: git_object
+    source_commit: 4fa99c673d108df47f96d06f420c8101def09c80
+    path: doc/audits/handoffs/SCI-NOI-001/SCI-NOI-001_REPAIR_AUTHORITY_MANIFEST_2026-08-06.yaml
+    sha256: 44c6ac459f058ba39e18d01f35e64bfb37bcfec9c116a12a2839f64beac71bae
+    role: frozen_repair_authority_partition
+
+included_findings: [SCI-NOI-001-F001, SCI-NOI-001-F002, SCI-NOI-001-F003, SCI-NOI-001-F005, SCI-NOI-001-F008]
+held_finding: SCI-NOI-001-F007
+excluded_findings: [SCI-NOI-001-F004, SCI-NOI-001-F006]
+held_F007_policy: >-
+  No current runtime or astronomical evidence execution is authorized. Keep the
+  exact-d501 evidence design as a held reference; any later evidence requires
+  an exact repaired SHA, concrete closure question, preapproved comparison,
+  cost, acceptance policy, FRAMEWORK-NUM-001 admission, and re-audit review.
+reported_local_gates:
+  - citlali_test_567_of_567
+  - science_map_FITS_22_of_22
+  - OpenMP_dynamic_scheduling
+  - relevant_CTest_15_of_15
+  - Python_boundary_10_of_10
+  - config_preflight_127_of_127
+  - compatibility_8_of_8
+  - coverage_100_percent
+  - public_header_isolation
+  - root_rerun_noise_realization_contract_7_of_7
+  - root_rerun_FITS_contract_2_of_2
+  - unrelated_disabled_external_corpus_test
+prohibited_scope: [FLT_or_filter_edge_resolution, NOI-002_estimator_consumer_or_count_policy, final_pre_readdition_residual_implementation, RTC_PTC_MAP_JINC_FLT_or_FRUIT_algorithm_changes, evidence_execution, Unity, local_reduction, integration, push, production_change]

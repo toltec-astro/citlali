@@ -1,8 +1,8 @@
 # SCI-NOI-001 bounded repair dispatch readiness — 2026-08-06
 
-Status: `launched_checkpoint_passed`; bounded implementation/test work is
-`authorized_not_started`. The frozen prompt and authority manifest are
-unchanged. No source edit, test run, evidence request, Unity action, re-audit,
+Status: `repair_complete_pending_reaudit`. The frozen repair prompt and
+authority manifest are unchanged. The repair remains unintegrated and
+`existing_use_only`; no evidence request, Unity action, re-audit execution,
 integration, push, or production change has occurred.
 
 ## Exact starting state
@@ -23,12 +23,27 @@ prompt, authority manifest, readiness record, owner brief, final audit, and R3
 digests matched. No implementation/test content was inspected or changed, and
 no build, test, reduction, Unity action, or commit occurred.
 
-The same task/worktree/branch is authorized for the bounded Sol-Ultra,
-serial/no-delegation implementation/test phase. It may address only
-F001/F002/F003/F005/F008, commit the bounded repair and focused tests, report
-the exact commit/gates/clean state, and stop for coordinator review. It remains
-unintegrated and `existing_use_only`; F004/F006/F007 and every frozen
-prohibition remain in force.
+The same task/worktree/branch was authorized for the bounded Sol-Ultra,
+serial/no-delegation implementation/test phase. It addressed only
+F001/F002/F003/F005/F008, committed the bounded repair and focused tests, and
+stopped for coordinator review. It remains unintegrated and `existing_use_only`;
+F004/F006/F007 and every frozen prohibition remain in force.
+
+## Completed repair and frozen re-audit return
+
+The task completed repair commit `38ef72860743636f59d226c9e1ff5ff776d0e9c0`
+with exact parent d501 and clean branch state. Its path-level diff is confined
+to the approved F001/F002/F003/F005/F008 noise identity, configuration,
+Beammap, provenance/output, and focused-test boundaries; no FLT, FRUIT, or
+NOI-002 estimator scope was observed. The reported local gates and root's
+focused 7/7 noise-realization plus 2/2 FITS reruns are preserved in the ledger.
+The unrelated disabled external-corpus test is recorded but is neither success
+substitute nor blocker.
+
+The independent [narrow re-audit prompt](../prompts/SCI_NOI_001_REAUDIT_PROMPT.md)
+and authority manifest are `ready_pending_launch` against exact repair SHA
+38ef. They assess only F001/F002/F003/F005/F008 and the held F007 policy; they
+authorize no current runtime or astronomical evidence execution.
 
 ## Frozen package hashes
 

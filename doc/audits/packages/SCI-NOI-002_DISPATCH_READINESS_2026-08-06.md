@@ -1,10 +1,10 @@
 # SCI-NOI-002 independent audit dispatch readiness — 2026-08-06
 
-Status: Phase 0 `completed_accepted`; Phase 1
-`authorized_not_started`; Phase 2 remains held. The frozen prompt and inbox
-manifest are unchanged. No audit branch, independent derivation, source/test/
-diff inspection, evidence request, reduction, Unity action, repair,
-integration, push, or production change has occurred.
+Status: Phase 0 and Phase 1 `completed_accepted`; Phase 2
+`authorized_not_started`. The frozen prompt and inbox manifest are unchanged.
+No Phase 2 source/test/diff or sealed-XAUD-001 exposure, evidence request,
+reduction, Unity action, repair, integration, push, or production change has
+occurred.
 
 ## Exact starting state and phase profile
 
@@ -26,13 +26,28 @@ SCI-NOI-002-XAUD-002 digests; SCI-NOI-002-XAUD-001 remained sealed and no
 prohibited exposure or write occurred. `codex/audit-sci-noi-002` remains
 absent and untouched.
 
-The same task/worktree is now authorized only for Sol-Ultra Phase 1, serial
-with no delegation. It may create `codex/audit-sci-noi-002` from exact d501
-only if absent and clean; read repository-level authorities plus
-SCI-NOI-002-XAUD-002/R3; derive and commit only
-`doc/audits/packages/SCI-NOI-002_INDEPENDENT_CORE.tex`; report its path,
-digest, commit, timestamp, first permitted Phase 2 boundary, and clean state;
-then stop before every quarantined source/test/diff or post-core handoff.
+The same task/worktree was authorized only for Sol-Ultra Phase 1, serial with
+no delegation. It created `codex/audit-sci-noi-002` from exact d501, read only
+repository-level authorities plus SCI-NOI-002-XAUD-002/R3, derived and committed
+only `doc/audits/packages/SCI-NOI-002_INDEPENDENT_CORE.tex`, and stopped before
+every quarantined source/test/diff or post-core handoff.
+
+## Completed Phase 1 and Phase 2 boundary
+
+Phase 1 completed on `codex/audit-sci-noi-002` at commit
+`f08a6da2ceebff03f498386f374980d13c5146a6`, exact parent d501, with the sole
+added file `doc/audits/packages/SCI-NOI-002_INDEPENDENT_CORE.tex` (1,031 lines,
+SHA-256 `36781b766a2f57c9a3bd7e173ee8f1d85cba7f3d08afe2e67a403166f6b6d72d`).
+Root structural review reports 50 unique labels and all 12 references resolved;
+no TeX-engine compile evidence is available. The clean task trace reports no
+source/test/diff or sealed-XAUD-001 exposure before the core freeze.
+
+Phase 2 is now authorized only for the same Sol-Ultra serial/no-delegation
+task. It may open SCI-NOI-002-XAUD-001 and exact-d501 source/tests/diffs to map
+the implementation against the independent core. It must not inspect repair
+commit `38ef72860743636f59d226c9e1ff5ff776d0e9c0` or use repaired behavior as
+the audit target; no repair, evidence, Unity, integration, or production action
+is authorized.
 
 ## Frozen package hashes
 
