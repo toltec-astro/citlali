@@ -6,12 +6,25 @@
 
 namespace citlali::engine_detail::beammap {
 
+inline YAML::Node clone_product_metadata(const YAML::Node &metadata) {
+    if (!metadata.IsDefined()) {
+        return {};
+    }
+    return YAML::Load(YAML::Dump(metadata));
+}
+
+inline engine::Calib clone_product_calib(const engine::Calib &calib) {
+    engine::Calib result = calib;
+    result.apt_meta.reset(clone_product_metadata(calib.apt_meta));
+    return result;
+}
+
 inline DirectionalProduct capture_product_state(
     const Beammap &beammap,
     citlali::config::BeammapDirectionMode mode) {
     DirectionalProduct state;
     state.mode = mode;
-    state.calib = beammap.calib;
+    state.calib = clone_product_calib(beammap.calib);
     state.params = beammap.params;
     state.perrors = beammap.perrors;
     state.p0 = beammap.p0;
@@ -46,7 +59,7 @@ inline DirectionalProduct capture_product_state(
 
 inline void restore_product_state(
     Beammap &beammap, const DirectionalProduct &state) {
-    beammap.calib = state.calib;
+    beammap.calib = clone_product_calib(state.calib);
     beammap.params = state.params;
     beammap.perrors = state.perrors;
     beammap.p0 = state.p0;

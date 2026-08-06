@@ -26,10 +26,11 @@ Beammap::fit_beammap_directional_product(
     citlali::pipeline::StageProfileCollector &stage_profile) {
     using citlali::engine_detail::beammap::ObservationMapBufferTransaction;
     using citlali::engine_detail::beammap::capture_product_state;
+    using citlali::engine_detail::beammap::clone_product_calib;
     using citlali::engine_detail::beammap::restore_product_state;
 
     restore_product_state(*this, standard_state);
-    calib = common_calib;
+    calib = clone_product_calib(common_calib);
     ObservationMapBufferTransaction map_transaction{omb, direction_buffer};
 
     reset_beammap_fit_buffers();

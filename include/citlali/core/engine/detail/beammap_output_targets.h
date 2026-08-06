@@ -2,6 +2,7 @@
 
 // Beammap output target selection helpers.
 
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -57,6 +58,14 @@ void write_raw_obs_outputs(BeammapState &beammap,
         beammap.add_tod_header(output_targets.mb);
     }
 
+    if (citlali::pipeline::beammap_direction_mode_is_all(
+            citlali::pipeline::beammap_config(beammap).direction_mode) &&
+        beammap.calib.apt_meta["beammap_direction_mode"]
+                .template as<std::string>("") != "standard") {
+        throw std::logic_error(
+            "beammap direction_mode=all standard detector-table output "
+            "does not hold restored standard metadata");
+    }
     beammap.write_detector_table_outputs();
 }
 

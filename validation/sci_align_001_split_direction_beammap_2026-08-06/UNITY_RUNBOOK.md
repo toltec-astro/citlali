@@ -215,12 +215,24 @@ test "$(find "$SCI_SPLIT_ROOT/o150819" -type f \
   -name 'apt_*_citlali_left.ecsv' | wc -l)" -ge 1
 test "$(find "$SCI_SPLIT_ROOT/o150819" -type f \
   -name 'apt_*_citlali_right.ecsv' | wc -l)" -ge 1
+test "$(find "$SCI_SPLIT_ROOT/o150819" -type f \
+  -name 'apt_*_citlali_fit_qc.ecsv' | wc -l)" -ge 1
+test "$(find "$SCI_SPLIT_ROOT/o150819" -type f \
+  -name 'apt_*_citlali_left_fit_qc.ecsv' | wc -l)" -ge 1
+test "$(find "$SCI_SPLIT_ROOT/o150819" -type f \
+  -name 'apt_*_citlali_right_fit_qc.ecsv' | wc -l)" -ge 1
 ```
 
 Require Slurm `COMPLETED`/`0:0`, one `_all` registry, and standard/left/right
 map, APT, and fit-QC siblings in the same reduction tree. Search stdout and
 stderr for unexpected error-level messages. Preserve and stop on failure; do
 not retry in place.
+
+The retained job 62656042 from commit 9730f0e2 is a known contract failure,
+despite Slurm `COMPLETED`/`0:0`: YAML metadata aliasing caused the standard
+APT write to use the `_right` identity. Preserve that root. Reproduce 150819
+only in a new root with the metadata-isolation follow-up commit and rebuilt
+executable; never fill its missing standard APT from an older reduction.
 
 ### Render the visual review product
 

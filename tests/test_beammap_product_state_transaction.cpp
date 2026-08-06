@@ -155,6 +155,54 @@ TEST(BeammapProductStateTransaction, RestoresExactStandardStateAfterFailure) {
     expect_directional_product_state_exact(actual, expected);
 }
 
+TEST(BeammapProductStateTransaction, IsolatesNestedYamlMetadataMutation) {
+    using citlali::config::BeammapDirectionMode;
+    using citlali::engine_detail::beammap::ProductStateTransaction;
+    using citlali::engine_detail::beammap::capture_product_state;
+
+    Beammap beammap;
+    seed_transaction_test_state(beammap);
+    const auto expected = capture_product_state(
+        beammap, BeammapDirectionMode::standard);
+
+    {
+        ProductStateTransaction transaction{beammap};
+        beammap.calib.apt_meta["beammap_direction_mode"] = "right";
+        beammap.calib.apt_meta["transaction_token"] = "mutated";
+    }
+
+    const auto actual = capture_product_state(
+        beammap, BeammapDirectionMode::standard);
+    expect_directional_product_state_exact(actual, expected);
+    EXPECT_EQ(actual.calib.apt_meta["beammap_direction_mode"].as<std::string>(),
+              "standard");
+    EXPECT_EQ(actual.calib.apt_meta["transaction_token"].as<std::string>(),
+              "preserve-me");
+}
+
+TEST(BeammapProductStateTransaction, ClonesIndependentDirectionalMetadata) {
+    using citlali::engine_detail::beammap::clone_product_calib;
+
+    Beammap beammap;
+    seed_transaction_test_state(beammap);
+    const engine::Calib common = clone_product_calib(beammap.calib);
+    engine::Calib left = clone_product_calib(common);
+    left.apt_meta["beammap_direction_mode"] = "left";
+    left.apt_meta["transaction_token"] = "left-fit";
+    engine::Calib right = clone_product_calib(common);
+    right.apt_meta["beammap_direction_mode"] = "right";
+    right.apt_meta["transaction_token"] = "right-fit";
+
+    EXPECT_EQ(common.apt_meta["beammap_direction_mode"].as<std::string>(),
+              "standard");
+    EXPECT_EQ(common.apt_meta["transaction_token"].as<std::string>(),
+              "preserve-me");
+    EXPECT_EQ(left.apt_meta["beammap_direction_mode"].as<std::string>(),
+              "left");
+    EXPECT_EQ(right.apt_meta["beammap_direction_mode"].as<std::string>(),
+              "right");
+}
+
 TEST(BeammapProductStateTransaction, RestoresMapBufferAfterFailure) {
     using citlali::engine_detail::beammap::ObservationMapBufferTransaction;
     mapmaking::MapBuffer standard{"standard"};

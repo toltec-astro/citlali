@@ -46,8 +46,10 @@ The standard fit state is saved before each directional fit. Citlali uses the
 existing Beammap fitter, flagging, reference subtraction, derotation,
 calibration, APT, fit-QC, and FITS writers for each side, then restores the
 standard state through an exception-safe transaction. A dedicated test mutates
-the complete retained product-state surface, injects a failure, and verifies
-exact restoration.
+the complete retained product-state surface, injects a failure, mutates nested
+YAML metadata, and verifies exact restoration. Product-state calibration
+copies deep-clone `apt_meta`; ordinary `YAML::Node` copy semantics otherwise
+alias the metadata across the standard, left, and right products.
 
 `standard` bypasses direction classification. `left` and `right` write one
 matching registry. `all` writes one complete registry:
@@ -65,6 +67,15 @@ Standard map, noise-map, filtered-map, APT, and fit-QC basenames are unchanged.
 Directional siblings in the same `raw/` or `filtered/` directory carry
 `_left` or `_right`. FITS primary headers and APT metadata record the realized
 `standard`, `left`, or `right` identity.
+
+The first Unity `all` run for ObsNum 150819 (job 62656042, commit 9730f0e2)
+completed its map writes but exposed the YAML aliasing defect: the final
+standard detector-table write retained `right` metadata and overwrote the
+right APT, leaving no unsuffixed standard APT or standard fit-QC table. That
+output is retained as failed contract evidence and is not valid visualization
+input. The follow-up deep-clones metadata for every captured/restored product
+and fails closed if the standard detector-table output does not hold restored
+`standard` metadata.
 
 The Citlali change creates map/APT inputs for later comparison; it does not
 alter timestamps or implement a mitigation. A companion read-only diagnostic,
