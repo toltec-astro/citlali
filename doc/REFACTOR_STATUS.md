@@ -272,7 +272,12 @@ enabled realizations require a positive requested/effective/realized count,
 while disabled is the sole zero-count no-ensemble state. Pointing and OOF
 quicklook lanes may explicitly disable realizations and perform no
 realization/noise-product work because they do not depend on noise maps. This
-sets no default, adequate, or production count; Decisions 3--4 remain open.
+sets no default, adequate, or production count. Owner Decision 3 is approved
+pending repair or dependent contract: ordinary realizations are truthfully
+`source_imprinted_current`, while any `final_pre_readdition_residual` mode
+awaits an SCI-FRUIT-001 residual-state/source-model/readdition contract. This
+does not authorize the legacy fruit path as that product or infer residual
+unbiasedness. Decision 4 remains open.
 
 The later NOI-001 question is the conditional ensemble made by pre-mapmaking
 sign randomization of fixed realized post-RTC/PTC samples, including its

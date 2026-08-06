@@ -54,11 +54,24 @@ request, reduction, Unity action, or production change is authorized.
    depends on noise maps. This selects no default, scientifically adequate, or
    production count; no estimator, product validity, repair SHA, or evidence
    plan. NOI-002 retains count/default and estimator ownership.
-3. **Ensemble-mode identity (F003) — owner decision still required.** Decide whether ordinary current
-   `x=s+n` realizations must be explicitly labeled as source-imprinted
-   diagnostics while a future selectable residual mode waits for a FRUIT
-   contract. Recommendation: approve that truthful separation; do not infer
-   residual unbiasedness or authorize the legacy path as a residual product.
+3. **Ensemble-mode identity (F003) — approved 2026-08-06, pending repair or
+   dependent contract.** Retain the ordinary ensemble as
+   `source_imprinted_current`: randomization of cleaned `x=s+n`. Individual
+   realizations and their moments may retain deterministic astronomical signal,
+   including literal negative-source realizations; that is expected under this
+   identity and is not a source-free physical-noise ensemble. Existing
+   realizations remain restricted diagnostics only; NOI-002 retains every
+   variance, precision, empirical-weight, S/N/significance, threshold,
+   feedback, aperture-uncertainty, and production decision.
+
+   Reserve distinct `final_pre_readdition_residual` identity for a future
+   realization mode after subtraction of an SCI-FRUIT-001-approved source
+   model. Do not infer residual unbiasedness; retain source-model error and
+   physical-noise overfit/removal risks. SCI-FRUIT-001 must establish the
+   residual state, source-model identity, and readdition contract before such
+   a mode is implemented or authorized. This approval does not implement a
+   mode, authorize the legacy fruit path as that product, select repair SHA,
+   count/default, estimator, evidence plan, or change production status.
 4. **Evidence admission — owner decision still required.** Decide whether any exact-d501 evidence case merits
    a separate FRAMEWORK-NUM-001 cost/readiness review after a successor policy
    is chosen. Recommendation: hold all cases now; authorize none until the
