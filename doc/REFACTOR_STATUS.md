@@ -314,7 +314,14 @@ approves only the conditional finite-stack descriptive identity; D002/F002
 approves only a global nonprecision-scale diagnostic; qualified D003/F003
 places complete provenance at package scope with compact product joins, not
 duplicated per-file metadata. F003 remains open for implementation and
-package-integrity/join validation. The remaining owner policy is pending.
+package-integrity/join validation. Owner D004/F004 approves distinct
+descriptive/engineering S/N-like identities and explicitly not-significance
+legacy aliases; F004 remains open for implementation and re-audit, while
+SCI-SRC-001 owns any future significance or catalog claim. The remaining owner
+policy is pending. Owner D005/F005 retains only
+`filtered_pixel_stack_scatter` and fixed-measurement realization-scatter
+diagnostics; F005 remains open for implementation and re-audit, without a
+dense covariance requirement or physical-uncertainty claim.
 Neither result authorizes evidence, Unity, integration, or production change.
 
 Owner clarification preserves the v4-compatible Beammap jackknife/noise-map

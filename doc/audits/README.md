@@ -142,11 +142,16 @@ record the completed exact-d501 Phase 2 audit at
 `4f1fec36f7802f3b5e8ac067377679946930983c`. All eight P1 findings remain open
 under verdict `amend`; its six recipient proposals are held, not dispatched.
 Owner D001/F001 approves only a conditional finite-stack descriptive identity,
-and D002/F002 only a global nonprecision-scale diagnostic; the remaining
-NOI-002 policy questions remain open. Qualified D003/F003 makes the reduction
-package the authoritative compact provenance unit, not every detached product;
-F003 remains open for implementation, package-integrity/join validation, and
-re-audit.
+and D002/F002 only a global nonprecision-scale diagnostic. Qualified D003/F003
+makes the reduction package the authoritative compact provenance unit, not
+every detached product; F003 remains open for implementation,
+package-integrity/join validation, and re-audit. Owner D004/F004 approves
+distinct descriptive/engineering S/N-like identities and not-significance
+legacy aliases; F004 remains open for implementation and re-audit, while
+SCI-SRC-001 owns any future significance or catalog claim. Owner D005/F005
+retains only `filtered_pixel_stack_scatter` and fixed-measurement realization
+scatter diagnostics; F005 remains open for implementation and re-audit, with
+no dense covariance requirement or physical-uncertainty claim.
 The resource-admitted 64-realization tier is neither a default nor a
 requirement. No repair, evidence request, re-audit execution, reduction, Unity
 action, integration, or production authorization follows from these results.

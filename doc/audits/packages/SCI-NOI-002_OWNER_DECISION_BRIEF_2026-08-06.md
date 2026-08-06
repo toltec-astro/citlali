@@ -3,11 +3,11 @@
 Status: coordinator review record only. Exact-d501 audit
 `4f1fec36f7802f3b5e8ac067377679946930983c` is `amend` with all eight P1
 findings open, production `existing_use_only`, no count/default selection, and
-no evidence authorization. Owner decisions D001/F001 and D002/F002 are
-approved as recorded below. Owner direction D003/F003 is a qualified
-package-level provenance contract, not acceptance of the audit's broad
-per-product premise. The remaining questions do not authorize repair, evidence,
-recipient dispatch, or production use.
+no evidence authorization. Owner decisions D001/F001, D002/F002, D004/F004,
+and D005/F005 are approved as recorded below. Owner direction D003/F003 is a
+qualified package-level provenance contract, not acceptance of the audit's
+broad per-product premise. The remaining questions do not authorize repair,
+evidence, recipient dispatch, or production use.
 
 ## Owner-approved first decision: F001 / D001 — what does a realization stack estimate?
 
@@ -90,47 +90,46 @@ and FLT-001/FLT-002.
 
 ### F004 — distinct S/N-like statistics and source claims
 
-**Issue and current code.** Coefficient-standardized pixels, direct-stack
-ratios, pooled values, source-finder values, and source-table amplitude/map-RMS
-ratios are different statistics but share S/N-like interpretation.
+**Approved owner disposition — 2026-08-06.** Give every mathematically distinct
+S/N-like quantity a distinct internal and product identity. Retain legacy
+`sig2noise` names only as compatibility aliases with explicit identity,
+deprecation, and not-significance metadata. Current values are descriptive or
+engineering scores, not calibrated statistical significance.
 
-**Consequence.** No null tail, threshold, search multiplicity, completeness,
-purity, or catalog-inference claim is established.
+Existing source-finder and pointing/OOF quicklook heuristic thresholds may
+continue without adding expensive calculations. Invalid or zero denominators
+produce invalid/unavailable status, never a numeric S/N=0 sentinel. No
+false-positive probability, catalog completeness, universal N-sigma threshold,
+or significance claim is allowed without separate SCI-SRC-001 validation of
+response and null/search/selection/multiplicity behavior.
 
-**Engineering versus science.** Engineering can give each statistic a unique
-name and truthful label. Scientific policy is needed only before a claimed
-tail, detection threshold, or catalog property.
-
-**Recommendation.** Require distinct descriptive labels now; keep significance
-and threshold claims fail-closed pending a later named consumer contract.
-
-**Owner question.** Which, if any, consumer needs a statistical significance or
-search/catalog claim rather than a descriptive display?
-
-**May defer.** Threshold values, source-finder repair, and any campaign. This
-routes SCI-SRC-001 and conditions FLT-002.
+This is an identity-and-labeling policy only. F004 remains open pending an
+authorized implementation of the distinct identities, compatibility metadata,
+and invalid/unavailable behavior, followed by re-audit. It authorizes no
+implementation, repair, evidence, Unity action, task launch, defaults/count
+change, or production action.
 
 ### F005 — filtered/aperture uncertainty
 
-**Issue and current code.** Filtered `point_source_uncertainty` is pixelwise
-stack scatter, without filter-response-corrected aperture/template projection
-or off-diagonal covariance.
+**Approved owner disposition — 2026-08-06.** Preserve the current filtered
+pixel product, but identify it truthfully as `filtered_pixel_stack_scatter`,
+not point-source or aperture uncertainty. Apply the exact same realized
+filter/operator and edge treatment to the signal map, every realization map,
+and the applicable response/kernel map.
 
-**Consequence.** It cannot support point-source or aperture uncertainty.
+For aperture photometry, apply the complete fixed aperture-plus-background
+operator separately to every realization and compute scatter of the resulting
+scalar measurements. For fixed-template photometry, project or fit every
+realization using the same fixed template and location. These outputs remain
+conditional finite-stack scatter diagnostics unless separately validated as
+physical uncertainty. Future validation may use blank apertures, split/null
+maps, and repeated observations.
 
-**Engineering versus science.** Engineering can trace exact response/support.
-The scientific choice is which approved compact method—if any—must support a
-named aperture/template use.
-
-**Recommendation.** Continue to prohibit aperture and point-source uncertainty
-claims; use only a separately justified projection or blank-aperture method.
-
-**Owner question.** Which concrete filtered aperture/template use, if any,
-needs an uncertainty claim, and is a response-bound blank-aperture method
-acceptable as its intended route?
-
-**May defer.** Full covariance, flux products, and implementation. This is
-coupled to FLT-001 D002/D003 and FLT-002 response work.
+Do not require a dense covariance product or expensive per-pixel matrix
+calculations. Package-level provenance remains authoritative under qualified
+D003/F003. F005 remains open pending authorized implementation and re-audit.
+This policy authorizes no implementation, repair, evidence, Unity action, task
+launch, defaults/count change, or production action.
 
 ## Adaptive and count-policy decisions: F006 and F007
 
