@@ -1,0 +1,87 @@
+format_version: 1
+id: SCI-FLT-001-XAUD-003
+created_date: 2026-08-06
+
+source:
+  package_id: SCI-NOI-002
+  role: auditor
+  audit_branch: codex/audit-sci-noi-002
+  audit_commit: null
+  audit_commit_note: complete_package_commit_returned_out_of_band
+  governing_or_evidence_sha: d5015fe716971bf8ea617e8a187311bf5af05185
+  finding_ids: [SCI-NOI-002-F002, SCI-NOI-002-F005]
+
+target:
+  package_id: SCI-FLT-001
+
+priority: P1
+evidence_basis: observed_static_source_and_independent_derivation
+review_phase: post_core_evidence
+arrival: after_audit_completion
+status: submitted
+
+summary: >-
+  Exact d501 globally rescales the MAP nonprecision coefficient from the
+  median product of coefficient and centered 1/R stack scatter, while its
+  filtered point-source uncertainty remains a pixel diagonal rather than an
+  aperture or template covariance.
+claim: >-
+  The scalar operation can establish only an in-sample global scale
+  functional of the existing nonprecision pattern. It cannot establish a
+  marginal inverse variance, full precision, filtered correlation shape, or
+  response-corrected aperture uncertainty; the latter requires the exact FLT
+  operator and a complete consumer projection.
+supports:
+  - retain_one_global_empirical_scale_only_as_nonprecision_diagnostic
+  - keep_direct_filtered_pixel_scatter_separate_from_aperture_uncertainty
+  - require_exact_filter_response_and_raw_parent_identity_for_any_stronger_claim
+  - prefer_blank_aperture_or_compact_covariance_method_when_separately_validated
+does_not_establish:
+  - filter_response_normalization_or_edge_semantics
+  - physical_noise_covariance_or_precision
+  - point_source_photometric_or_aperture_uncertainty
+  - numerical_tolerance_evidence_request_repair_or_production_admission
+
+requested_actions:
+  - hold_for_next_authorized_amendment_or_reaudit
+  - preserve_nonprecision_label_for_scalar_scaled_coefficient
+  - classify_filtered_pixel_and_aperture_consumers_separately
+  - bind_any_future_aperture_method_to_response_support_covariance_and_validity
+affected_target_findings: []
+related_handoffs: [SCI-NOI-001-XAUD-002, SCI-FLT-001-XAUD-002]
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-NOI-002-INDEPENDENT-CORE
+    availability: repository_path
+    path: doc/audits/packages/SCI-NOI-002_INDEPENDENT_CORE.tex
+    sha256: 36781b766a2f57c9a3bd7e173ee8f1d85cba7f3d08afe2e67a403166f6b6d72d
+    note: Frozen finite-design, calibration, weight, and aperture contract.
+  - id: SCI-NOI-002-PHASE2-AUDIT
+    availability: repository_path
+    path: doc/audits/packages/SCI-NOI-002_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: 2874ffe950aed769f73277ed8f60ecab8860692d24e7c541f05a47a041a8a40d
+    note: Findings F002 and F005 at the complete package proposal bytes.
+  - id: SCI-NOI-002-APPLICATION
+    availability: git_object
+    path: null
+    sha256: null
+    note: Exact application commit d5015fe716971bf8ea617e8a187311bf5af05185.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: held_for_reaudit
+  actions: []
+  rationale: >-
+    SCI-FLT-001 has an accepted audit/amendment chain. This bounded interface
+    proposal is held for a separately authorized amendment or re-audit and
+    does not reopen filter mathematics or authorize implementation work.
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: [SCI-NOI-002]
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

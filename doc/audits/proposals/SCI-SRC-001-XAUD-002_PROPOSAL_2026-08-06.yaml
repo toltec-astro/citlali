@@ -1,0 +1,86 @@
+format_version: 1
+id: SCI-SRC-001-XAUD-002
+created_date: 2026-08-06
+
+source:
+  package_id: SCI-NOI-002
+  role: auditor
+  audit_branch: codex/audit-sci-noi-002
+  audit_commit: null
+  audit_commit_note: complete_package_commit_returned_out_of_band
+  governing_or_evidence_sha: d5015fe716971bf8ea617e8a187311bf5af05185
+  finding_ids: [SCI-NOI-002-F002, SCI-NOI-002-F004, SCI-NOI-002-F005]
+
+target:
+  package_id: SCI-SRC-001
+
+priority: P1
+evidence_basis: observed_static_source_and_independent_derivation
+review_phase: post_core_evidence
+arrival: before_dispatch
+status: submitted
+
+summary: >-
+  Source detection, Gaussian fitting, filtered pixel products, and the source
+  table consume different coefficient- or map-scale statistics that currently
+  share S/N-like interpretation without one common null or error law.
+claim: >-
+  Exact d501 finds sources from signal times square root of the live
+  nonprecision coefficient, uses the coefficient in fitting, and reports a
+  table ratio of fitted amplitude to whole-map standard deviation. Those
+  statistics differ from both noise-stack pixel ratios, and none is a
+  selection-corrected significance or fit-amplitude uncertainty by construction.
+supports:
+  - inventory_each_source_statistic_and_fit_weight_separately
+  - add_SCI-NOI-002_and_relevant_FLT_dependencies
+  - require_null_search_multiplicity_and_selection_contract_for_significance
+  - keep_nonprecision_map_coefficient_distinct_from_fit_precision
+does_not_establish:
+  - source_finder_completeness_purity_or_false_alarm_rate
+  - Gaussian_fit_response_or_parameter_uncertainty
+  - point_source_photometric_or_aperture_validity
+  - threshold_default_repair_evidence_or_production_admission
+
+requested_actions:
+  - quarantine_this_record_until_recipient_independent_core_is_frozen
+  - name_detection_fit_and_table_statistics_without_S_N_overloading
+  - distinguish_descriptive_ratio_S_N_and_statistical_significance
+  - require_joint_detection_and_estimation_or_approved_split_for_catalog_claims
+affected_target_findings: []
+related_handoffs: [SCI-SRC-001-XAUD-001, SCI-FLT-001-XAUD-003, SCI-FLT-002-XAUD-001]
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-NOI-002-INDEPENDENT-CORE
+    availability: repository_path
+    path: doc/audits/packages/SCI-NOI-002_INDEPENDENT_CORE.tex
+    sha256: 36781b766a2f57c9a3bd7e173ee8f1d85cba7f3d08afe2e67a403166f6b6d72d
+    note: Frozen standardized-statistic, threshold, search, and selection contract.
+  - id: SCI-NOI-002-PHASE2-AUDIT
+    availability: repository_path
+    path: doc/audits/packages/SCI-NOI-002_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: 2874ffe950aed769f73277ed8f60ecab8860692d24e7c541f05a47a041a8a40d
+    note: Findings F002, F004, and F005 at the complete package proposal bytes.
+  - id: SCI-NOI-002-APPLICATION
+    availability: git_object
+    path: null
+    sha256: null
+    note: Exact application commit d5015fe716971bf8ea617e8a187311bf5af05185.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: held_for_recipient_independent_core_then_post_core_review
+  actions: []
+  rationale: >-
+    The source-statistic inventory is post-core evidence only. It cannot seed
+    the source-package derivation and does not authorize a threshold, catalog,
+    repair, or evidence campaign.
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: [SCI-NOI-002]
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

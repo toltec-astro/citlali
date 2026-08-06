@@ -1,0 +1,653 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,booktabs,longtable,array,enumitem,hyperref,xcolor}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\setlength{\emergencystretch}{3em}
+\setlength{\tabcolsep}{3.5pt}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\code}[1]{\nolinkurl{#1}}
+
+\newcommand{\AuditPackageID}{SCI-NOI-002}
+\newcommand{\AuditPackageName}{Empirical variance, covariance, calibrated weight, and S/N}
+\newcommand{\AuditTier}{A}
+\newcommand{\AuditGoverningSHA}{d5015fe716971bf8ea617e8a187311bf5af05185}
+\newcommand{\AuditBranch}{codex/audit-sci-noi-002}
+\newcommand{\AuditWorktree}{/Users/gwilson/.codex/worktrees/e801/citlali-refactor}
+\newcommand{\AuditCorePath}{doc/audits/packages/SCI-NOI-002_INDEPENDENT_CORE.tex}
+\newcommand{\AuditCoreSHA}{36781b766a2f57c9a3bd7e173ee8f1d85cba7f3d08afe2e67a403166f6b6d72d}
+\newcommand{\AuditCoreFreezeCommit}{f08a6da2ceebff03f498386f374980d13c5146a6}
+\newcommand{\AuditDate}{2026-08-06}
+
+\title{\AuditPackageName\\
+\large Citlali scientific-contract audit: \AuditPackageID}
+\author{Independent package auditor}
+\date{\AuditDate}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+At exact application commit \code{\AuditGoverningSHA}, the reachable
+noise-product implementation computes a per-pixel finite-stack mean and the
+empirically centered second central moment with divisor (R), then uses the
+same stack to scale an already nonprecision map coefficient by the reciprocal
+median of coefficient times scatter.  It produces no cross-pixel covariance.
+The implementation therefore conforms only as a descriptive finite-stack
+diagnostic and a global nonprecision scale diagnostic.  It does not satisfy
+the accepted independent core for a physical-noise covariance, marginal
+inverse variance, precision, statistical significance, searched threshold,
+adaptive feedback, aperture uncertainty, or scientifically adequate
+production count.  The verdict is \textbf{amend}; current operation remains
+\code{existing_use_only}, and no production count or default is selected.
+\end{abstract}
+
+\section{Executive summary and bounded scope}
+
+\begin{description}[style=nextline]
+\item[Package] \AuditPackageID: \AuditPackageName.
+\item[Tier] \AuditTier.
+\item[Included transformation] The exact finite realization stack through
+per-pixel moments, global coefficient scale, persisted uncertainty/S/N-like
+products, and their direct filter, source, mode, and FRUIT consumers.
+\item[Explicit exclusions] The NOI-001 realization law beyond its accepted R3
+contract; raw physical-noise modeling; RTC/PTC, MAP, FLT, source-finder, FRUIT,
+JINC, Beammap-fit, or photometric validity except at the bounded interface;
+the NOI-001 repair commit; application repair; and any execution campaign.
+\item[Claimed result] Exact-d501 behavior is source-traceable, but its strongest
+truthful scientific identity is a source-imprinted conditional finite-stack
+diagnostic with a globally scaled nonprecision coefficient.
+\item[Consumer policy] Descriptive moments and engineering scale summaries are
+restricted diagnostics.  New covariance, precision, significance, threshold,
+feedback, aperture, count-adequacy, and production claims fail closed.
+\end{description}
+
+\section{Authority, independence, and quarantine transition}
+
+\begin{longtable}{L{0.27\linewidth}L{0.65\linewidth}}
+\toprule
+Field & Exact value\\
+\midrule
+Governing application SHA & \code{\AuditGoverningSHA}.\\
+Coordination authority &
+\code{ac43fb4fc950d53e54f0b3ec424bd8b3ee0a6cd4} on
+\code{origin/codex/coordinate-sci-noi-001-dispatch}.\\
+Frozen prompt &
+\code{doc/audits/prompts/SCI_NOI_002_AUDIT_PROMPT.md}, SHA-256
+\code{74cd002580f1bd92eb6c5030eb8a9fdf19711db7fb6f9359f26ac21245a12220}.\\
+Frozen manifest &
+\code{doc/audits/handoffs/SCI-NOI-002/SCI-NOI-002_INBOX_MANIFEST_2026-08-06.yaml},
+SHA-256
+\code{1de9dbc5f9aca42f5a9f9b1f05b7b14c092ee9b443946d0c52eeb27c8da117b0}.\\
+Audit branch/worktree & \code{\AuditBranch}; \code{\AuditWorktree}.\\
+Independent core & \code{\AuditCorePath}, SHA-256
+\code{\AuditCoreSHA}.\\
+Freeze commit/parent & \code{\AuditCoreFreezeCommit}; parent
+\code{\AuditGoverningSHA}.\\
+Pre-core package authority & \code{SCI-NOI-002-XAUD-002}, SHA-256
+\code{9eb6c778409d344ce73387f44ac4a5429a89d43b8e768c19bf3da1ed6967c1e5},
+admitting NOI-001 R3 SHA-256
+\code{27263ab3bf29ac8f098463455e540f13e783241a688ef2bc5cb15b1f2a4319da}.\\
+First post-core exposure & \code{SCI-NOI-002-XAUD-001} was byte-verified at
+coordination commit \code{ac43fb4...} as SHA-256
+\code{dfcd59e9d59395ba84f7dfed1656690daae694872c2a1a40bf4f5c79f6abed3a}
+and opened only after the accepted core freeze, before source inspection.\\
+First package-source inspection & 2026-08-06T09:57:57Z;
+\code{include/citlali/core/pipeline/timestream_scan_generation.h} at the exact
+governing application object.\\
+Prohibited exposure & The NOI-001 final source audit, NOI-001 repair prompt,
+repair diffs, and repair commit
+\code{38ef72860743636f59d226c9e1ff5ff776d0e9c0} were not opened or used.  The
+sealed handoff's bibliographic reference to a final-audit path/hash was not
+followed.\\
+Execution discipline & \code{gpt-5.6-sol}, Ultra, serial; no delegation or
+subagents.\\
+\bottomrule
+\end{longtable}
+
+Phase 1 used only repository-level authority, XAUD-002, and NOI-001 R3.  Its
+exact bytes were committed and accepted before the quarantine was lifted.
+Phase 2 then opened XAUD-001 first, verified its partition as
+\code{post_core_evidence}, and only afterward inspected exact-d501 source,
+configuration, tests, consumers, and outputs.  XAUD-001 contributed a bounded
+source-derived consumer inventory and the established source-imprint and
+repeated-prefix caveats.  It supplied no estimator equation or validity
+decision; all equations and adequacy criteria remain derived from the frozen
+independent core.
+
+\section{Accepted independent contract}
+
+Let (Y^{(r)}\in\mathbb R^P) be completed realization (r), projected onto a
+common parent, unit, response, support, and validity domain.  Let (R) be the
+completed count and
+
+\begin{align}
+ \bar Y &= \frac1R\sum_{r=1}^{R}Y^{(r)},\\
+ S_R &= \sum_{r=1}^{R}(Y^{(r)}-\bar Y)
+                    (Y^{(r)}-\bar Y)^{\mathsf T}.
+ \label{eq:audit-scatter}
+\end{align}
+
+The frozen core proves that, for arbitrary position means \(\mu_r\) and joint
+design covariance \(\Gamma_{rs}\),
+
+\begin{align}
+ \E[S_R]={}&\sum_r\Gamma_{rr}
+ -\frac1R\sum_{r,s}\Gamma_{rs}
+ +\sum_r(\mu_r-\bar\mu)(\mu_r-\bar\mu)^{\mathsf T}.
+ \label{eq:audit-general-expectation}
+\end{align}
+
+No divisor follows from (R) alone.  Only in the iid, common-mean case is
+(S_R/(R-1)) the ordinary unbiased covariance; (S_R/R) is then low by
+((R-1)/R).  Cross-realization dependence, complement or duplicate structure,
+missing completed identities, source imprint, and changing support require
+their own target and design treatment.
+
+For any fixed scalar consumer (a=\ell^{\mathsf T}D), the required variance is
+(\ell^{\mathsf T}T\ell), not an arbitrary map diagonal or a coefficient with
+inverse-squared units.  For a fixed aperture/background operator (a),
+
+\begin{equation}
+ \Var(a^{\mathsf T}m)=a^{\mathsf T}Ta,
+ \label{eq:audit-aperture}
+\end{equation}
+
+including off-diagonal terms.  Significance additionally requires the null law
+of the complete statistic, search, selection, and multiplicity.  Adaptive
+feedback additionally requires the joint update/stopping law.  These
+requirements are not promoted by a count, a scalar calibration, or a passing
+consumer.
+
+\section{Exact implementation estimator}
+
+For pixel (p), exact d501 computes, with the reachable default
+\code{mean_subtract=true},
+
+\begin{align}
+ \bar Y_p^{\rm d501} &= \frac1R\sum_{r=1}^{R}Y_{rp},\\
+ V_p^{\rm d501} &= \frac1R\sum_{r=1}^{R}Y_{rp}^{2}
+                  -(\bar Y_p^{\rm d501})^2
+                =\frac{(S_R)_{pp}}{R}.
+ \label{eq:d501-variance}
+\end{align}
+
+Negative roundoff is clamped to zero.  No off-diagonal covariance is formed.
+Consequently, under the special iid common-law case,
+
+\begin{equation}
+ \E[V_p^{\rm d501}]=\frac{R-1}{R}K_{pp};
+ \label{eq:d501-iid-bias}
+\end{equation}
+
+under a general joint assignment design its expectation is the (p,p)
+element of Equation~\eqref{eq:audit-general-expectation} divided by (R).
+The code applies no design correction and persists neither the joint design
+nor completed realization identities needed to select one.  (R=1) returns
+zero centered scatter, leaves the calibration region empty, retains scale one,
+and emits zero direct-ratio values wherever its denominator is zero.  That is
+a degenerate descriptive result, not an uncertainty estimate.
+
+Let (q_p) be the snapshot of the admitted formal MAP coefficient.  The MAP
+contract classifies (q_p) as a nonprecision gridding/normalization
+coefficient.  Exact d501 defines a calibration region (D) using finite,
+positive (q_p), a coverage threshold, and finite positive (V_p^{\rm d501}),
+then computes
+
+\begin{align}
+ m &= \operatorname{median}_{p\in D}(q_pV_p^{\rm d501}),\\
+ \alpha &= m^{-1},\\
+ w_p^{\rm emp,d501} &= \alpha q_p.
+ \label{eq:d501-scale}
+\end{align}
+
+When (D) is empty, \(\alpha\) silently remains one.  Otherwise this same-stack
+operation enforces a median scale relation by construction.  It does not
+establish that (q_p\) has the spatial shape of an inverse marginal variance,
+cannot repair an incorrect correlation shape, and is not an external
+calibration to a repeated-physical-noise target.  When requested, the scaled
+coefficient overwrites the live coefficient and downstream science products
+are refreshed.  Filter \code{normalize_errors} can force that application even
+when the noise-product apply flag alone is false.
+
+The other direct products are
+
+\begin{align}
+ Z_p^{q} &= D_p\sqrt{\alpha q_p},\\
+ \sigma_p^{V} &= \sqrt{V_p^{\rm d501}},\\
+ Z_p^{V} &=
+ \begin{cases}D_p/\sigma_p^{V},&\sigma_p^{V}>0,\\0,&\text{otherwise.}\end{cases}
+ \label{eq:d501-snr-family}
+\end{align}
+
+The two standardized maps agree only if (q_pV_p^{\rm d501}) is spatially
+constant after scaling.  A separate \code{noise_s2n_sigma} pools
+(Y_{rp}\sqrt{q_p}) over both pixels and realizations and takes an ordinary
+sample standard deviation, without modeling their dependence.  These are four
+different statistics.  None has a source-derived null, response, selection,
+search, multiplicity, or tail calibration.
+
+\section{Assignment, lifecycle, and provenance trace}
+
+The generation path draws one sign per scan and realization.  With
+\code{randomize_dets=false}, all detectors share that scan sign; with
+\code{randomize_dets=true}, detector assignments differ.  A fixed MT19937 seed
+5489 is recreated per ordinary pipeline invocation, so equal-shaped
+observation prefixes repeat.  This is an accepted source fact from XAUD-001,
+not evidence that any finite-stack estimator is valid.  Deterministic
+astronomical signal remains in the accepted
+\code{source_imprinted_current} ensemble and can enter Equation
+\eqref{eq:d501-variance}.
+
+The requested/effective lifecycle correctly reduces disabled noise-map work to
+effective count zero.  Exact-d501 static validation nevertheless admits an
+enabled count of zero.  The owner decision at coordination authority
+\code{ac43fb4...} is binding: enabled use must have at least one realization;
+disabled is the sole supported zero-ensemble lane and promises no realization
+products or work.  That policy is pending implementation and selects no
+scientifically adequate count.
+
+Current provenance records requested/effective switches and counts, the fixed
+seed/engine/scope, and aggregate output cardinality.  It does not bind the
+estimator to completed realization IDs, missing/failed identities, duplicate
+or complement census, unique even-moment patterns, per-pixel/pair counts,
+centering, divisor, design correction, target law, calibration data, rank,
+covariance domain, or use-specific validity.  Product inventory contracts
+check presence and the formal coefficient's nonprecision labels, but do not
+require those estimator facts.
+
+\section{Implementation conformity trace}
+
+\begin{longtable}{L{0.27\linewidth}L{0.18\linewidth}L{0.20\linewidth}L{0.25\linewidth}}
+\toprule
+Exact-d501 source & Symbol/lines & Core requirement & Assessment\\
+\midrule
+\endfirsthead
+\toprule
+Exact-d501 source & Symbol/lines & Core requirement & Assessment\\
+\midrule
+\endhead
+\code{src/citlali/core/mapmaking/map.cpp} &
+\code{calc_noise_products}, 1048--1220 &
+Finite design, target, centering, covariance, calibration &
+Observed (S_{R,pp}/R), no full covariance, same-stack scalar scale;
+nonconformant beyond descriptive/scale diagnostics.\\
+\code{src/citlali/core/mapmaking/map.cpp} &
+\code{calc_median_rms}, 1006--1030 &
+Exact consumer projection and distribution &
+Median across realization RMS values after spatial pooling; not a per-pixel or
+tail-calibrated uncertainty.\\
+\code{include/citlali/core/pipeline/timestream_scan_generation.h} and ordinary
+pipeline setup & sign population and RNG construction &
+Joint assignment design and completed identity &
+Fixed deterministic stream and repeated observation prefixes; no estimator
+design correction or compact realized design join.\\
+\code{include/citlali/core/pipeline/noise_execution_plan.h} &
+requested/effective plan & lifecycle &
+Disabled reduces to zero; enabled zero remains admitted elsewhere.\\
+\code{include/citlali/core/pipeline/map_filtering_template_noise.h} &
+96--152 & calibration/application boundary &
+\code{normalize_errors} can force live scalar coefficient rescaling.\\
+\code{include/citlali/core/pipeline/map_image_output_helpers.h} and metadata
+helpers & uncertainty and S/N HDUs & truthful product identity &
+Inventory and nonprecision coefficient labels are improved, but variance,
+centering/design/target/calibration and point-source validity are incomplete.\\
+\code{src/citlali/core/mapmaking/map.cpp} &
+\code{find_sources}, 1254 onward & threshold statistic &
+Uses signal times square root of the live coefficient; no null/search/selection
+calibration from NOI-002.\\
+\code{include/citlali/core/pipeline/map_source_table_output.h} &
+\code{source_signal_to_noise}, 115--137 & source statistic identity &
+Reports fitted amplitude divided by whole-map standard deviation, distinct
+from both noise-stack standardized maps and fit uncertainty.\\
+\code{include/citlali/core/timestream/timestream.h} &
+MEDRMS load and pixel gate, 1394--1495 and 2716--2801 & adaptive law &
+Uses an array scalar in thresholded feedback; fixed-state stack does not
+establish the adaptive procedure.\\
+\bottomrule
+\end{longtable}
+
+\section{Product and consumer matrix}
+
+\begin{longtable}{L{0.15\linewidth}L{0.14\linewidth}L{0.17\linewidth}L{0.12\linewidth}L{0.16\linewidth}L{0.17\linewidth}}
+\toprule
+Input & Operator & Product & Units & Validity/metadata & Consumer policy\\
+\midrule
+\endfirsthead
+\toprule
+Input & Operator & Product & Units & Validity/metadata & Consumer policy\\
+\midrule
+\endhead
+(Y_{rp}) & finite mean & \code{noise_mean} & signal &
+Source-imprinted conditional stack; completed/design facts absent &
+Restricted descriptive diagnostic.\\
+(Y_{rp}) & Equation~\eqref{eq:d501-variance} &
+\code{noise_variance} & signal squared &
+Centered (1/R) diagonal; target/design/divisor not persisted &
+Restricted as finite-stack scatter; no physical covariance claim.\\
+(q_p,V_p) & Equation~\eqref{eq:d501-scale} &
+\code{weight_empirical} & inverse signal squared &
+Globally scaled nonprecision coefficient; in-sample scale &
+Restricted engineering scale; prohibit inverse-variance/precision label.\\
+(D_p,\alpha q_p) & (D_p\sqrt{\alpha q_p}) &
+\code{sig2noise} alias and \code{sig2noise_pixel} & dimensionless &
+Numerator/response/null/tail incomplete &
+Restricted S/N-like display; not significance or threshold authority.\\
+(V_p) & square root & \code{point_source_uncertainty} & signal &
+Filtered-pixel stack scatter; response and target conditioned on FLT &
+Fail closed for flux/aperture uncertainty; bounded pixel diagnostic only.\\
+(D_p,V_p) & direct ratio & \code{sig2noise_point_source} & dimensionless &
+Zero sentinel at zero scatter; no tail/search law &
+Fail closed for significance/source threshold.\\
+(Y_{rp},q_p) & pooled standard deviation &
+\code{noise_s2n_sigma} & dimensionless &
+Pixels and realizations pooled as if exchangeable &
+Engineering diagnostic only.\\
+(Y_{rp}) & median realization RMS & \code{MEDRMS} & signal &
+Spatial region and source-imprinted target incomplete &
+Restricted summary; no per-pixel uncertainty or calibrated tail.\\
+live (D_p,q_p) & source threshold & source candidates/Gaussian fits & mixed &
+Nonprecision fit weight and uncalibrated searched threshold &
+Existing-use-only; no new detection/significance/interval claim.\\
+fit amplitude/map RMS & source table ratio & table \code{sig2noise} & dimensionless &
+Distinct statistic sharing an overloaded name &
+Restricted descriptive ratio.\\
+array signal/\code{MEDRMS} & FRUIT gate and addback & adaptive selection & dimensionless &
+Full update/null/stopping law absent &
+Fail closed as statistical feedback authority pending SCI-FRUIT-001.\\
+\bottomrule
+\end{longtable}
+
+Coadd writers intentionally suppress this uncertainty/significance product
+family.  That is a truthful absence, not evidence that coadd uncertainty has
+been solved.  Filtered products apply the realized filter to realization maps,
+but exact response, edge preprocessing, covariance, and point-source
+normalization remain conditioned on the appropriate FLT audit.  No product in
+the exact-d501 family supplies Equation~\eqref{eq:audit-aperture}.
+
+\section{Standard-mode reachability and count interpretation}
+
+\begin{longtable}{L{0.14\linewidth}L{0.13\linewidth}L{0.14\linewidth}L{0.16\linewidth}L{0.33\linewidth}}
+\toprule
+Mode & Noise request & Products/apply & Adjacent consumer & Audit disposition\\
+\midrule
+Science & enabled, (R=10), detector-shared signs &
+products disabled; apply defaults enabled &
+Wiener filter; FRUIT enabled with 2.5 scalar S/N gate &
+Ten is a configured request only.  Static FRUIT activation requires enabled
+empirical products for a nonzero S/N gate, so the shown standard configuration
+is incompatible with that prerequisite; no validator or reduction was run.\\
+Pointing & enabled, (R=5), detector-shared signs &
+products/apply enabled & Wiener filter and Gaussian pointing fit &
+Five is an active configured request, not an adequacy result or default
+decision.  The scaled coefficient remains nonprecision.\\
+OOF & disabled, configured (R=1) & configured product/apply values inert &
+filter/source/FRUIT disabled &
+Binding owner policy gives effective count zero and no noise work.  The stored
+one is not a minimum, default, or evidence request.\\
+Beammap & disabled, configured (R=10), detector-shared signs &
+configured filter normalization value inert & optional explicit recipient &
+Binding owner policy keeps standard Beammap disabled with effective count zero
+and no work.  Ten is inert.  Only an explicitly enabled future/use-specific
+recipient inherits the conditional findings in this report.\\
+\bottomrule
+\end{longtable}
+
+The version-2 configuration family carries the same relevant values.  A count
+of 64 appears only as optional resource-admitted validation capacity in owner
+authority.  It is not a production default, minimum, threshold, cap,
+operational expectation, or evidence request.  This audit selects no count.
+
+\section{Use-specific adequacy assessment}
+
+\begin{longtable}{L{0.23\linewidth}L{0.20\linewidth}L{0.17\linewidth}L{0.30\linewidth}}
+\toprule
+Use & Minimum core level & Exact-d501 level & Disposition\\
+\midrule
+Finite-stack visual diagnostic & identity plus declared moment & partial identity &
+Restricted: name it centered (1/R) conditional stack scatter and expose
+source-imprint/design limitations.\\
+Global coefficient scale & one declared scale functional & scale by construction &
+Restricted nonprecision engineering calibration only.\\
+Marginal inverse variance & marginal target/calibration/inversion & not established &
+Fail closed.\\
+Covariance/precision/GLS & covariance, rank, regularization, inversion & unavailable &
+Fail closed.\\
+Pixel S/N & calibrated exact numerator variance/response & not established &
+Restricted display only; no significance.\\
+Detection threshold/catalog & distribution/tail, search, selection, multiplicity & unavailable &
+Fail closed for new statistical claims; route SCI-SRC-001.\\
+Filtered point-source uncertainty & fixed filter/template response and projected covariance &
+diagonal stack scatter only &
+Fail closed for photometric/aperture claims; route FLT packages.\\
+Aperture uncertainty & full aperture/background projection & unavailable &
+Fail closed; diagonal sums are not admitted.\\
+FRUIT feedback & complete adaptive law or approved split & unavailable &
+Fail closed as statistical feedback authority; route SCI-FRUIT-001.\\
+Production default & every enabled consumer plus error/resource policy & unavailable &
+No count/default authorized.\\
+\bottomrule
+\end{longtable}
+
+\section{Falsifiable validation matrix}
+
+No evidence was executed or requested.  The following are closure
+specifications only and do not constitute an authorization or selected
+tolerance.
+
+\begin{longtable}{L{0.23\linewidth}L{0.25\linewidth}L{0.22\linewidth}L{0.20\linewidth}}
+\toprule
+Future method & Claim tested & Minimal artifact & Current status\\
+\midrule
+Analytic (R=1,2), duplicate, complement, iid limits &
+centering/divisor/design semantics & tiny exact successor fixture &
+Specified in frozen core; not run.\\
+Permutation and completed-ID fixture & fixed operator and design identity &
+compact realized design metadata & not run or requested.\\
+Two-pixel equal-diagonal/opposite-covariance case &
+aperture/filter dependence on off-diagonals & symbolic or tiny fixture &
+not run or requested.\\
+Zero-valid-calibration-region case & fail-closed scale validity &
+tiny exact successor fixture & not run or requested.\\
+Fixed-location versus searched maximum & significance/multiplicity &
+predeclared null fixture & not run or requested.\\
+Fixed versus data-selected aperture & selection conditioning &
+predeclared compact fixture & not run or requested.\\
+Complete FRUIT replay or approved split & adaptive operating characteristics &
+SCI-FRUIT-001-owned design & blocked on contract; not requested.\\
+Astronomical or Unity recovery & any residual scientific closure &
+exact successor SHA and FRAMEWORK-NUM-001 admission &
+not authorized; no contact or request.\\
+\bottomrule
+\end{longtable}
+
+The exact-d501 tests inspect configuration parsing, requested/effective
+adaptation, fixed-seed sequence/cardinality, pipeline call routing, FITS
+inventory/fail-closed behavior, and nonprecision coefficient metadata.  FITS
+tests inject arbitrary variance/S/N arrays rather than exercising Equation
+\eqref{eq:d501-variance}.  FRUIT tests cover configuration coupling or
+algorithm plumbing, not a joint statistical law.  No direct test establishes
+finite-design normalization, dependence correction, calibration to a target,
+null tails, search multiplicity, adaptive feedback, or aperture covariance.
+
+\section{Findings, owners, and closure gates}
+
+\begin{longtable}{L{0.15\linewidth}L{0.15\linewidth}L{0.07\linewidth}L{0.12\linewidth}L{0.41\linewidth}}
+\toprule
+Stable ID & Class & Pri. & Basis/conf. & Finding, owner, and closure gate\\
+\midrule
+\endfirsthead
+\toprule
+Stable ID & Class & Pri. & Basis/conf. & Finding, owner, and closure gate\\
+\midrule
+\endhead
+SCI-NOI-002-F001 & scientific contract gap & P1 & derived/observed, high &
+Exact d501 labels (S_{R,pp}/R) as noise variance without selecting a target
+law or accounting for the realized joint design; (R=1) degenerates and the
+iid case is biased low.  Owner: NOI-002 estimator policy.  Close only with a
+named target, completed design/support facts, exact normalization, invalidity
+policy, successor implementation, and re-audit.\\
+SCI-NOI-002-F002 & scientific contract gap & P1 & derived/observed, high &
+The reciprocal-median scalar calibrates only the global scale of a MAP
+nonprecision pattern, uses the same stack, silently retains scale one when no
+pixel is valid, and can overwrite the live coefficient.  Owner: NOI-002 with
+MAP/FLT interfaces.  Close with a bounded scale target/data/validity contract
+or a separately validated covariance model; never relabel scalar-scaled (q)
+as precision by unit alone.\\
+SCI-NOI-002-F003 & provenance/label gap & P1 & observed, high &
+Persisted products omit target, centering, divisor/design correction,
+completed and per-support counts, source-imprint mode, calibration identity,
+rank/covariance domain, and consumer validity.  Owner: NOI-002 provenance with
+NOI-001 joins.  Close with compact required facts and product-contract tests;
+dense covariance or sign streams are not automatically required.\\
+SCI-NOI-002-F004 & consumer contract gap & P1 & observed/derived, high &
+Coefficient-standardized pixels, direct-scatter pixels, pooled stack values,
+source-finder values, and source-table amplitude/map-RMS ratios are distinct
+statistics sharing S/N-like labels, with no null/search/selection/multiplicity
+law.  Owner: NOI-002 and SCI-SRC-001.  Close by naming each statistic and
+response, restricting unsupported uses, and separately validating any claimed
+tail or catalog property.\\
+SCI-NOI-002-F005 & dependency gap & P1 & derived/observed, high &
+Filtered \code{point_source_uncertainty} is a pixelwise conditional stack
+scatter, not a response-corrected aperture/template uncertainty, and no
+off-diagonal covariance is available.  Owner: NOI-002 with SCI-FLT-001/002.
+Close only after exact filter response/operator identity and a validated
+consumer projection (for example an approved blank-aperture or compact
+covariance method), followed by re-audit.\\
+SCI-NOI-002-F006 & adaptive dependency gap & P1 & observed/derived, high &
+FRUIT uses median realization RMS as an array scalar gate inside an adaptive
+procedure; the standard science text enables a nonzero S/N gate while
+disabling required empirical products.  Owner: SCI-FRUIT-001 with NOI-002
+interface.  Close with a consistent admitted configuration and an approved
+full-procedure or split/cross-fit statistical contract; fixed-stack moments do
+not validate feedback.\\
+SCI-NOI-002-F007 & scientific policy gap & P1 & observed/derived, high &
+Configured counts 10 and 5 and inert disabled values 1 and 10 have no
+use-specific adequacy decision; 64 is optional validation capacity only.
+Owner: package/consumer owners and coordinator.  Close only after enabled uses,
+target/design/estimator/error criteria, resource/failure policy, and
+predeclared acceptance are approved.  No count is selected here.\\
+SCI-NOI-002-F008 & evidence gap & P1 & observed absence, high &
+Exact-d501 tests are structural and do not establish the estimator,
+calibration, dependence, consumer tail, feedback, or aperture claims.  Owner:
+coordinator and eventual exact-successor verifier.  Close with proportional
+predeclared fixtures and any separately admitted evidence; this audit creates
+no request and invents no tolerance.\\
+\bottomrule
+\end{longtable}
+
+\section{Proposed scientific decisions}
+
+\begin{enumerate}[label=\textbf{SCI-NOI-002-D00\arabic*.}]
+\item Adopt the frozen independent core as the proposed estimator/consumer
+contract.  Classify exact-d501 \code{noise_variance} as empirically centered
+conditional \code{source_imprinted_current} stack scatter with divisor (R),
+not as repeated-physical-noise covariance.
+\item Retain the reciprocal-median operation only as a global nonprecision
+scale diagnostic unless an independently governed calibration establishes a
+stronger target.  An empty calibration region is invalid, not scale one.
+\item Give every standardized statistic a unique identity.  Reserve
+significance and threshold claims for a complete null, response, search,
+selection, multiplicity, and calibration contract.
+\item Do not infer filtered point-source or aperture uncertainty from a
+pixelwise diagonal.  Require the exact response and projected covariance or a
+separately validated blank-aperture/compact consumer method.
+\item Treat FRUIT S/N feedback as unavailable statistical authority pending
+SCI-FRUIT-001's complete adaptive procedure.  A separately defined flux-only
+gate is not authorized merely by disabling this statistic.
+\item Preserve the binding disabled lane: effective count zero and no work.
+Enabled admission requires at least one realization, but scientific adequacy
+and any default remain undecided per use.  Standard Beammap remains disabled;
+only explicit opt-in is a conditional recipient.
+\item Keep every future fixture or numerical study at proposal status.  No
+evidence request, Unity action, production admission, or count follows from
+this audit.
+\end{enumerate}
+
+These are audit proposals for coordinator/owner disposition, except the
+already binding disabled/Beammap and enabled-positive admission policies from
+coordination authority.  They do not modify application behavior.
+
+\section{Cross-audit handoffs}
+
+XAUD-002 remains accepted pre-core authority.  XAUD-001 is accepted as bounded
+post-core evidence affecting the source-imprint/dependence caveat, consumer
+inventory, and evidence gap; it does not close a finding.  Six separate
+outbound proposals are supplied for coordinator review:
+
+\begin{longtable}{L{0.18\linewidth}L{0.14\linewidth}L{0.17\linewidth}L{0.41\linewidth}}
+\toprule
+Handoff & Target & Priority/route & Bounded requested disposition\\
+\midrule
+SCI-FLT-001-XAUD-003 & SCI-FLT-001 & P1, held for amendment/re-audit &
+Retain scalar scale as nonprecision diagnostic; resolve filtered-pixel versus
+aperture covariance and response.\\
+SCI-FLT-002-XAUD-001 & SCI-FLT-002 & P1, held until independent core &
+Audit Wiener \code{normalize_errors}, live coefficient overwrite, and
+point-source output identities after quarantine.\\
+SCI-SRC-001-XAUD-002 & SCI-SRC-001 & P1, held until independent core/re-audit &
+Separate source-finder, fit-weight, fit-error, and source-table S/N statistics;
+own search/selection/tail validity.\\
+SCI-MODE-001-XAUD-003 & SCI-MODE-001 & P1, held for amendment/re-audit &
+Record Pointing (R=5) as unproven adequacy and preserve OOF disabled zero-work
+semantics.\\
+SCI-FRUIT-001-XAUD-002 & SCI-FRUIT-001 & P1, held until independent core &
+Own MEDRMS scalar selection and the complete adaptive feedback law; resolve the
+standard science configuration prerequisite.\\
+SCI-BEAM-001-XAUD-003 & SCI-BEAM-001 & P2, conditional opt-in only &
+Record standard Beammap as disabled/effective zero; apply NOI-002 restrictions
+only if the optional capability is explicitly enabled.\\
+\bottomrule
+\end{longtable}
+
+No canonical registry was edited.  A handoff cannot authorize a repair,
+evidence execution, default, production use, or reopening of an adjacent
+package's mathematics.
+
+\section{Verdict and production disposition}
+
+\begin{description}[style=nextline]
+\item[Contract status] \code{proposed}, frozen core retained without
+source-derived amendment.
+\item[Implementation status]
+\code{nonconformant_with_bounded_descriptive_and_global_scale_diagnostic_subcontracts}
+at \code{\AuditGoverningSHA}.
+\item[Validation status] \code{incomplete}; static read-only trace only.
+\item[Production status] \code{existing_use_only}.  Standard disabled
+Beammap/OOF noise paths have effective count zero and no work.  No new
+uncertainty, significance, threshold, feedback, aperture, count, or default
+claim is admitted.
+\item[Verdict] \textbf{amend}.
+\item[Allowed/restricted consumers] Finite-stack descriptive moments, raw
+realization images, pooled summaries, and global coefficient-scale summaries
+may remain diagnostics with exact identity and limitations.  Existing
+coefficient-mediated workflows remain existing-use-only, not newly validated.
+\item[Fail-closed consumers] Physical covariance, marginal inverse variance,
+precision/GLS, significance, searched source thresholds, selection-corrected
+catalog inference, adaptive FRUIT authority, aperture uncertainty, and
+production-count adequacy.
+\item[Repair and re-audit trigger] A separately authorized successor must bind
+target/design/completed identity, normalization, calibration and validity,
+truthful product names, consumer-specific covariance/tail/adaptive contracts,
+and proportional tests.  This report does not authorize that work.
+\end{description}
+
+\section{Machine-readable ledger proposal and closeout}
+
+The companion proposal is
+\code{doc/audits/proposals/SCI-NOI-002_LEDGER_PROPOSAL_2026-08-06.yaml}.
+It records this verdict, all findings/decisions/dependencies, the six outbound
+handoff proposals, validation limits, and closeout guards.  It is not the
+canonical ledger.
+
+Only documentation under \code{doc/audits/packages} and
+\code{doc/audits/proposals} is changed by Phase 2.  No application source,
+test, configuration, schema, helper, verifier, evidence request, reduction,
+Unity state, production status, canonical coordination record, or repair was
+changed or executed.  No push or integration was performed.
+
+\end{document}

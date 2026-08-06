@@ -1,0 +1,87 @@
+format_version: 1
+id: SCI-BEAM-001-XAUD-003
+created_date: 2026-08-06
+
+source:
+  package_id: SCI-NOI-002
+  role: auditor
+  audit_branch: codex/audit-sci-noi-002
+  audit_commit: null
+  audit_commit_note: complete_package_commit_returned_out_of_band
+  governing_or_evidence_sha: d5015fe716971bf8ea617e8a187311bf5af05185
+  finding_ids: [SCI-NOI-002-F002, SCI-NOI-002-F005, SCI-NOI-002-F007]
+
+target:
+  package_id: SCI-BEAM-001
+
+priority: P2
+evidence_basis: owner_decision_observed_static_source_and_independent_derivation
+review_phase: post_core_evidence
+arrival: after_audit_completion
+status: submitted
+
+summary: >-
+  Standard Beammap noise maps are owner-disabled with effective count zero and
+  no work; only an explicitly enabled optional v4-compatible use would become
+  a recipient of NOI-002 estimator, filtered-pixel, and count restrictions.
+claim: >-
+  The configured disabled count ten and normalize-errors value are inert in
+  standard Beammap. They are not a default, requirement, adequacy threshold,
+  operational expectation, or evidence request. If an owner explicitly
+  enables the optional capability, its 1/R stack scatter and scalar-scaled
+  nonprecision coefficient do not establish detector-fit precision,
+  point-source/aperture uncertainty, or count adequacy.
+supports:
+  - preserve_standard_Beammap_disabled_effective_zero_no_work_policy
+  - record_only_a_conditional_dependency_for_explicit_opt_in
+  - apply_NOI-002_product_and_count_restrictions_if_enabled
+  - avoid_routine_Beammap_evidence_or_default_inference
+does_not_establish:
+  - Beammap_fit_photometry_calibration_or_quality_control_validity
+  - need_to_enable_noise_maps_or_change_standard_configuration
+  - adequacy_of_count_ten_or_any_other_count
+  - repair_evidence_execution_or_production_expansion
+
+requested_actions:
+  - hold_as_inactive_conditional_interface_record
+  - leave_standard_Beammap_disabled_with_effective_count_zero
+  - activate_recipient_review_only_for_an_explicitly_enabled_use
+  - require_use_specific_estimator_response_and_count_contract_if_activated
+affected_target_findings: []
+related_handoffs: [SCI-BEAM-001-XAUD-001, SCI-BEAM-001-XAUD-002]
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-NOI-002-INDEPENDENT-CORE
+    availability: repository_path
+    path: doc/audits/packages/SCI-NOI-002_INDEPENDENT_CORE.tex
+    sha256: 36781b766a2f57c9a3bd7e173ee8f1d85cba7f3d08afe2e67a403166f6b6d72d
+    note: Frozen estimator, point-source/aperture, and count-adequacy contract.
+  - id: SCI-NOI-002-PHASE2-AUDIT
+    availability: repository_path
+    path: doc/audits/packages/SCI-NOI-002_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: 2874ffe950aed769f73277ed8f60ecab8860692d24e7c541f05a47a041a8a40d
+    note: Findings F002, F005, and F007 at the complete package proposal bytes.
+  - id: SCI-NOI-001-OWNER-POLICY
+    availability: repository_path_at_coordination_commit
+    path: doc/audits/packages/SCI-NOI-001_COORDINATOR_DECISION_BRIEF_2026-08-06.md
+    sha256: ba73859d406e0968ed12d58ca912acdbf595123cb62da2c0906f450771c45a1d
+    note: Optional explicit-only Beammap and disabled effective-zero policy at ac43fb4fc950d53e54f0b3ec424bd8b3ee0a6cd4.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: held_for_reaudit
+  actions: []
+  rationale: >-
+    SCI-BEAM-001 has an existing audit chain. This P2 record stays inactive
+    while standard Beammap noise maps are disabled and may be considered only
+    in a separately authorized explicit-enable amendment or re-audit.
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: [SCI-NOI-002]
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

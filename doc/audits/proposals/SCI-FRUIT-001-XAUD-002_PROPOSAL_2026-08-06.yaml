@@ -1,0 +1,87 @@
+format_version: 1
+id: SCI-FRUIT-001-XAUD-002
+created_date: 2026-08-06
+
+source:
+  package_id: SCI-NOI-002
+  role: auditor
+  audit_branch: codex/audit-sci-noi-002
+  audit_commit: null
+  audit_commit_note: complete_package_commit_returned_out_of_band
+  governing_or_evidence_sha: d5015fe716971bf8ea617e8a187311bf5af05185
+  finding_ids: [SCI-NOI-002-F004, SCI-NOI-002-F006, SCI-NOI-002-F007]
+
+target:
+  package_id: SCI-FRUIT-001
+
+priority: P1
+evidence_basis: observed_static_source_and_independent_derivation
+review_phase: post_core_evidence
+arrival: before_dispatch
+status: submitted
+
+summary: >-
+  FRUIT reads MEDRMS, the median across per-realization spatial RMS values,
+  and gates addback pixels with signal divided by that array scalar inside an
+  adaptive loop; the standard science text enables this gate while disabling
+  required empirical products.
+claim: >-
+  MEDRMS is neither a per-pixel variance nor a calibrated tail statistic, and
+  a fixed conditional realization stack does not establish the joint law of
+  repeated selection, addback, stopping, and subsequent noise estimation.
+  Exact-d501 activation validation requires empirical products for the nonzero
+  S/N gate, which conflicts with the shown standard science product switch.
+supports:
+  - add_MEDRMS_statistic_identity_and_NOI-002_dependency
+  - classify_the_S_N_gate_as_an_adaptive_procedure_consumer
+  - require_a_consistent_admitted_configuration
+  - require_complete_replay_independent_split_cross_fit_or_other_joint_law
+does_not_establish:
+  - fruit_residual_unbiasedness_or_source_model_validity
+  - convergence_source_preservation_or_false_selection_rate
+  - validity_of_any_separate_flux_or_peak_fraction_gate
+  - repair_evidence_request_count_default_or_production_admission
+
+requested_actions:
+  - quarantine_this_record_until_SCI-FRUIT-001_independent_core_is_frozen
+  - own_the_complete_feedback_update_stopping_and_failure_contract
+  - separate_MEDRMS_scale_diagnostic_from_statistical_S_N_or_significance
+  - resolve_the_standard_science_activation_prerequisite_before_any_enabled_claim
+affected_target_findings: []
+related_handoffs: [SCI-FRUIT-001-XAUD-001, SCI-NOI-002-XAUD-001]
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-NOI-002-INDEPENDENT-CORE
+    availability: repository_path
+    path: doc/audits/packages/SCI-NOI-002_INDEPENDENT_CORE.tex
+    sha256: 36781b766a2f57c9a3bd7e173ee8f1d85cba7f3d08afe2e67a403166f6b6d72d
+    note: Frozen feedback, threshold, distribution, and count-adequacy contract.
+  - id: SCI-NOI-002-PHASE2-AUDIT
+    availability: repository_path
+    path: doc/audits/packages/SCI-NOI-002_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: 2874ffe950aed769f73277ed8f60ecab8860692d24e7c541f05a47a041a8a40d
+    note: Findings F004, F006, and F007 at the complete package proposal bytes.
+  - id: SCI-NOI-002-APPLICATION
+    availability: git_object
+    path: null
+    sha256: null
+    note: Exact application commit d5015fe716971bf8ea617e8a187311bf5af05185.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: held_for_recipient_independent_core_then_post_core_review
+  actions: []
+  rationale: >-
+    This bounded FRUIT interface trace is source-derived evidence. It cannot
+    seed an independent FRUIT derivation and does not authorize a feedback
+    rule, configuration repair, evidence run, or production use.
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: [SCI-NOI-002]
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null
