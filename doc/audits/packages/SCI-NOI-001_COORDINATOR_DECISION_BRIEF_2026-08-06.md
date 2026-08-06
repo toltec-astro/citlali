@@ -72,11 +72,31 @@ request, reduction, Unity action, or production change is authorized.
    a mode is implemented or authorized. This approval does not implement a
    mode, authorize the legacy fruit path as that product, select repair SHA,
    count/default, estimator, evidence plan, or change production status.
-4. **Evidence admission — owner decision still required.** Decide whether any exact-d501 evidence case merits
-   a separate FRAMEWORK-NUM-001 cost/readiness review after a successor policy
-   is chosen. Recommendation: hold all cases now; authorize none until the
-   requested scientific question, comparison set, cost, and acceptance policy
-   are separately approved.
+4. **Evidence admission (F007) — approved 2026-08-06, no current evidence
+   execution.** Do not run a broad evidence campaign against known-bad
+   exact-`d5015fe716971bf8ea617e8a187311bf5af05185`. Preserve the exact-d501
+   evidence design as a held reference/design, not an execution request. Route
+   cheap decisive questions to repair-level tests: namespaced
+   cross-observation independence; exact repeatability across
+   sequential/OpenMP/scheduling; Beammap active-map/pass invariance;
+   positive-count admission and disabled zero-cost behavior; compact
+   provenance/completion identity; and truthful ensemble-mode metadata.
+
+   Any later astronomical or Unity validation must target an exact repaired
+   SHA and a specific closure question with a preapproved comparison set, cost,
+   and acceptance policy. Admit a costly current-versus-repaired or
+   current-versus-residual study only if NOI-002, FLT, FRUIT, or a re-audit
+   identifies a concrete unresolved scientific question and
+   FRAMEWORK-NUM-001 approves it. Count 64 remains optional validation
+   capacity, never a default, minimum, adequacy threshold, or universal
+   requirement. This authorizes no evidence execution, repair, repair SHA,
+   count/default, estimator/product validity, recipient dispatch, Unity action,
+   or production change.
+
+All current owner decisions D001--D004 are resolved at policy level. The
+related findings remain open pending repair, required repair-level tests and
+provenance, any separately admitted exact-repaired-SHA validation, and
+re-audit.
 
 The FLT edge-preprocessing fact is routed only for a future conditioned
 interface disposition; it does not reopen filter mathematics. JINC remains

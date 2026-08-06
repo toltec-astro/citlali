@@ -277,7 +277,20 @@ pending repair or dependent contract: ordinary realizations are truthfully
 `source_imprinted_current`, while any `final_pre_readdition_residual` mode
 awaits an SCI-FRUIT-001 residual-state/source-model/readdition contract. This
 does not authorize the legacy fruit path as that product or infer residual
-unbiasedness. Decision 4 remains open.
+unbiasedness. Owner Decision 4 closes the current owner-policy set: do not run
+a broad evidence campaign against known-bad exact-d501; retain its evidence
+design as a held reference, and route the decisive questions to repair-level
+tests. Any later astronomical or Unity validation must target an exact repaired
+SHA and a specific closure question with preapproved comparison set, cost, and
+acceptance policy. A costly comparison is admissible only when NOI-002, FLT,
+FRUIT, or re-audit identifies a concrete unresolved scientific question and
+FRAMEWORK-NUM-001 approves it. The 64-realization tier remains optional
+validation capacity, never a default, minimum, adequacy threshold, or
+universal requirement. This authorizes no evidence execution, repair,
+recipient dispatch, Unity action, or production change; all D001--D004 are
+policy-resolved while the findings remain open pending repair, tests,
+provenance, any separately admitted exact-repaired-SHA validation, and
+re-audit.
 
 The later NOI-001 question is the conditional ensemble made by pre-mapmaking
 sign randomization of fixed realized post-RTC/PTC samples, including its

@@ -4926,8 +4926,8 @@ packages:
         status: proposed_not_requested_costly_work_held_under_FRAMEWORK-NUM-001
       coordinator_decision_brief:
         path: doc/audits/packages/SCI-NOI-001_COORDINATOR_DECISION_BRIEF_2026-08-06.md
-        sha256: 2efacb377d0d8fed13d1709f0c979ed9661cab5fd17ad24ce20fd5cc1fb1b633
-        status: D001_D002_approved_pending_repair_D003_approved_pending_repair_or_dependent_contract_D004_owner_review_required
+        sha256: a40b151e161d3d2e5721bf75f6ec126dafae8f275e28ee6efbf0e07f146de471
+        status: D001_to_D004_policy_resolved_D001_D002_pending_repair_D003_pending_repair_or_dependent_contract_D004_no_current_evidence_execution
       submitted_proposals:
         ledger:
           path: doc/audits/proposals/SCI-NOI-001_LEDGER_PROPOSAL_2026-08-06.yaml
@@ -4959,10 +4959,10 @@ packages:
       - {id: SCI-NOI-001-F004, class: implementation_defect, severity: P1, evidence_basis: observed_static_source, confidence: high, status: open, owner: SCI-FLT-001_operator_and_provenance, summary: "Science edge preprocessing includes an affine background term omitted from realizations.", closure_gate: "FLT resolves identical versus explicitly affine preprocessing, publishes the realized choice/parent join, passes paired fixtures, and returns a conditioned disposition."}
       - {id: SCI-NOI-001-F005, class: implementation_defect, severity: P1, evidence_basis: observed_static_source, confidence: high, status: open, owner: noise_configuration_and_lifecycle, owner_decision_id: SCI-NOI-001-D002, owner_decision_status: approved_pending_repair, summary: "Enabled zero realizations are admitted although the approved policy permits the no-ensemble state only when realizations are disabled.", closure_gate: "Implement enabled-implies-requested/effective/realized-count-at-least-one and disabled-only zero-count semantics; verify no realization work/products in disabled pointing/OOF quicklook lanes, then re-audit without selecting count adequacy or a default."}
       - {id: SCI-NOI-001-F006, class: dependency_gap, severity: P1, evidence_basis: observed_static_source, confidence: high, status: open, owner: SCI-NOI-002, summary: "The stack feeds variance, empirical coefficient, S/N, threshold, consumer, and feedback paths without NOI-002 authority.", closure_gate: "NOI-002 decides finite-N normalization, variance/weight formula and labels, S/N/significance/threshold/feedback/aperture use, and production count; consumers are then dispositioned."}
-      - {id: SCI-NOI-001-F007, class: evidence_gap, severity: P1, evidence_basis: observed_absence, confidence: high, status: open, owner: coordinator_and_human_evidence_operator, summary: "No exact-d501 runtime evidence establishes empirical sign law, effective uniqueness, cross-observation behavior, source imprint, filter identity, or repeatability.", closure_gate: "Admit any bounded evidence request only under FRAMEWORK-NUM-001 and independent review; no request is currently authorized."}
+      - {id: SCI-NOI-001-F007, class: evidence_gap, severity: P1, evidence_basis: observed_absence, confidence: high, status: open, owner: coordinator_and_human_evidence_operator, owner_decision_id: SCI-NOI-001-D004, owner_decision_status: approved_no_current_evidence_execution, summary: "No runtime evidence exists. Owner policy prohibits a broad campaign against known-bad d501; the exact-d501 design is held as reference while decisive questions route to repair-level tests.", closure_gate: "After an exact repaired SHA and repair-level identity/provenance tests, admit astronomical or costly comparison evidence only for a concrete unresolved closure question with preapproved comparison set, cost, acceptance policy, FRAMEWORK-NUM-001 approval, and re-audit; no current evidence execution is authorized."}
       - {id: SCI-NOI-001-F008, class: implementation_defect, severity: P1, evidence_basis: observed_static_source, confidence: high, status: open, owner: Beammap_RNG_and_realization_identity, owner_decision_id: SCI-NOI-001-D001, owner_decision_status: approved_pending_repair, summary: "Beammap retained signs depend on active-map reset overwrite history rather than a named realization key.", closure_gate: "Implement approved once-per-named-pass/iteration generation reused across active slots, test pass/order permutations and sequential/OpenMP repeats, condition JINC on SCI-MAP-002, then re-audit."}
-    unresolved_scientific_decisions:
-      - owner_decision_required_before_any_FRAMEWORK-NUM-001_evidence_admission
+    unresolved_scientific_decisions: []
+    owner_decision_set_status: D001_to_D004_policy_resolved_implementation_findings_remain_open
     owner_decisions:
       - id: SCI-NOI-001-D001
         status: approved_pending_repair
@@ -5003,6 +5003,18 @@ packages:
           required_FRUIT_contract: [residual_state, source_model_identity, readdition_contract]
           legacy_fruit_path: not_authorized_as_future_residual_product
         does_not_select: [mode_implementation, repair_SHA, count_or_default, estimator, evidence_plan, production_status_or_authorization]
+      - id: SCI-NOI-001-D004
+        status: approved_no_current_evidence_execution
+        decision_date: 2026-08-06
+        scope: evidence_admission_and_repair_level_test_routing_only
+        policy:
+          known_bad_d501_broad_campaign: prohibited
+          exact_d501_evidence_design: held_reference_design_not_execution_request
+          repair_level_decisive_tests: [namespaced_cross_observation_independence, exact_sequential_OpenMP_and_scheduling_repeatability, Beammap_active_map_and_pass_invariance, positive_count_admission_and_disabled_zero_cost_behavior, compact_provenance_and_completion_identity, truthful_ensemble_mode_metadata]
+          later_astronomical_or_Unity_validation: exact_repaired_SHA_specific_closure_question_preapproved_comparison_set_cost_and_acceptance_policy
+          costly_comparison_study_admission: concrete_unresolved_question_from_SCI-NOI-002_SCI-FLT-001_SCI-FRUIT-001_or_reaudit_and_FRAMEWORK-NUM-001_approval
+          realization_count_64: optional_validation_capacity_not_default_minimum_adequacy_threshold_or_universal_requirement
+        does_not_authorize: [evidence_execution, repair, repair_SHA, count_or_default, estimator_or_product_validity, recipient_dispatch, Unity_action, production_change]
     local_evidence:
       - read_only_exact_d501_source_trace_mapped_to_R3
       - documentation_structural_checks_passed_TeX_execution_unavailable_before_compilation
