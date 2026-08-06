@@ -336,6 +336,12 @@ Owner D008/F008 freezes proportional deterministic exact local and
 consumer-fixture classes and exact-authorized-repair-SHA-only astronomical
 validation with predeclared criteria. F008 remains open pending separately
 authorized execution and re-audit; reduction success is not statistical proof.
+All SCI-NOI-002 F001--F008 owner policies are contract-resolved while the
+findings remain technically open. A bounded successor repair dispatch is
+`ready_pending_launch` from exact application SHA
+`d5015fe716971bf8ea617e8a187311bf5af05185`, covering F001/F002/F003/F004/F005/
+F007 plus F008 local fixtures and holding F006 for SCI-FRUIT-001. It creates no
+task, worktree, branch, repair, evidence, or re-audit authorization.
 Neither result authorizes evidence, Unity, integration, or production change.
 
 Owner clarification preserves the v4-compatible Beammap jackknife/noise-map

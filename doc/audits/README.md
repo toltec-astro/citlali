@@ -167,6 +167,14 @@ default nor a requirement. No repair, evidence request, re-audit execution,
 reduction, Unity action, integration, or production authorization follows from
 these results.
 
+All F001--F008 owner policies are now resolved at contract level; the findings
+remain technically open. The frozen bounded SCI-NOI-002 successor repair
+[prompt](prompts/SCI_NOI_002_REPAIR_PROMPT.md), [authority manifest](handoffs/SCI-NOI-002/SCI-NOI-002_REPAIR_AUTHORITY_MANIFEST_2026-08-06.yaml), and
+[readiness record](packages/SCI-NOI-002_REPAIR_DISPATCH_READINESS_2026-08-06.md)
+are `ready_pending_launch` from exact application SHA
+`d5015fe716971bf8ea617e8a187311bf5af05185`; no task, worktree, branch, repair,
+or re-audit has been launched.
+
 The owner retains the v4-compatible Beammap jackknife/noise-map path as an
 optional capability only. Standard Beammap configurations remain disabled by
 default and do no realization/noise-product work; an inert configured count

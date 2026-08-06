@@ -5353,7 +5353,7 @@ packages:
         status: submitted_held_for_recipient_independent_core
         late_arrival_route: held_for_recipient_independent_core_then_post_core_review
     audit_dispatch:
-      status: phase_2_completed_accepted_owner_policy_pending
+      status: phase_2_completed_accepted_owner_policy_resolved_repair_dispatch_ready
       prepared_date: 2026-08-06
       governing_application_sha: d5015fe716971bf8ea617e8a187311bf5af05185
       proposed_audit_branch: codex/audit-sci-noi-002
@@ -5430,9 +5430,10 @@ packages:
         estimator_synthesis
       launch_effect: >-
         Phase 2 completed its exact-d501 documentation-only trace without
-        inspecting the NOI-001 repair. All eight P1 findings remain open,
-        owner policy is pending, and no repair/evidence/integration/production
-        action is authorized.
+        inspecting the NOI-001 repair. All eight P1 findings remain technically
+        open, owner policy is resolved, and the successor repair dispatch is
+        ready but unlaunched; no repair/evidence/integration/production action
+        is authorized by this audit record.
     governing_sha: d5015fe716971bf8ea617e8a187311bf5af05185
     governing_sha_role: ready_dispatch_exact_application_snapshot
     audit_branch: codex/audit-sci-noi-002
@@ -5466,7 +5467,29 @@ packages:
       - {id: SCI-MODE-001-XAUD-003, path: doc/audits/proposals/SCI-MODE-001-XAUD-003_PROPOSAL_2026-08-06.yaml, sha256: 6b12c60277f9dd408a21f1b31e3470aaebc84ed746a39b105ceb9669224e11b8, review_phase: post_core_evidence, status: submitted_held_for_future_amendment_or_reaudit}
       - {id: SCI-FRUIT-001-XAUD-002, path: doc/audits/proposals/SCI-FRUIT-001-XAUD-002_PROPOSAL_2026-08-06.yaml, sha256: 000583fe2ab82adb926b9c8c9d9f78829eb88c1d980a1208bdc3e3c45a9a7fcd, review_phase: post_core_evidence, status: submitted_held_for_recipient_independent_core}
       - {id: SCI-BEAM-001-XAUD-003, path: doc/audits/proposals/SCI-BEAM-001-XAUD-003_PROPOSAL_2026-08-06.yaml, sha256: ebaf770d7269474f0709b20c6faceb357a67ae0e4668002679ad47d7292cb312, review_phase: post_core_evidence, status: submitted_held_inactive_unless_explicitly_enabled}
-    contract_status: proposed
+    repair_dispatch:
+      status: ready_pending_launch
+      prepared_date: 2026-08-06
+      coordinator_authority_commit: 64ba81795110d89d8baf0ad7d645d16472c254c5
+      governing_application_sha: d5015fe716971bf8ea617e8a187311bf5af05185
+      governing_application_ref: origin/codex/refactor-mainline
+      proposed_repair_branch: codex/repair-sci-noi-002
+      prompt:
+        path: doc/audits/prompts/SCI_NOI_002_REPAIR_PROMPT.md
+        sha256: 45fc19d6ccf0e55aa1c2a1189d97f72ffb9b51027c659580d7cbcc9415c4bc71
+      authority_manifest:
+        path: >-
+          doc/audits/handoffs/SCI-NOI-002/SCI-NOI-002_REPAIR_AUTHORITY_MANIFEST_2026-08-06.yaml
+        sha256: 6f4b84995c8cb118bdb182b9189c4b95464c4fe7e414b762debb8786e825ce79
+      readiness_record:
+        path: doc/audits/packages/SCI-NOI-002_REPAIR_DISPATCH_READINESS_2026-08-06.md
+        sha256: 246c751397b2d138939372c7943e8187ba36658bbb7a5b8f96bb01edca0f4804
+      included_findings: [SCI-NOI-002-F001, SCI-NOI-002-F002, SCI-NOI-002-F003, SCI-NOI-002-F004, SCI-NOI-002-F005, SCI-NOI-002-F007, SCI-NOI-002-F008]
+      held_finding: SCI-NOI-002-F006_SCI_FRUIT_001_owned_interface_only
+      resource_profile: gpt_5_6_sol_ultra_serial_no_delegation
+      future_reaudit: separately_prepared_and_authorized_fresh_branch_codex_reaudit_sci_noi_002_only_after_repair_return
+      launch_effect: documentation_only_readiness_no_task_worktree_branch_or_application_change_created
+    contract_status: approved
     implementation_status: nonconformant
     implementation_disposition: bounded_descriptive_global_scale_provenance_identity_filtered_scatter_FRUIT_gate_and_count_completion_subcontracts_only
     validation_status: in_progress
@@ -5602,7 +5625,7 @@ packages:
     remediation_branch: null
     remediation_commit: null
     re_audit_status: not_started
-    re_audit_gate: owner_policy_and_authorized_successor_required
+    re_audit_gate: bounded_repair_completion_then_fresh_independent_reaudit_authorization_required
 
   - id: SCI-FLT-001
     name: Map-domain convolve signal, uncertainty, response, and support

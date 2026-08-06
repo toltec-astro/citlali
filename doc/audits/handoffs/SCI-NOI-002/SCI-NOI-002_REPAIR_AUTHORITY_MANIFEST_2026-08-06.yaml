@@ -1,0 +1,106 @@
+format_version: 1
+record_type: frozen_authority_manifest
+manifest_id: SCI-NOI-002-REPAIR-2026-08-06
+package_id: SCI-NOI-002
+status: ready_pending_launch
+purpose: bounded_owner_decided_NOI_002_successor_repair_and_local_exact_fixture_preparation
+coordinator_registry_commit: 64ba81795110d89d8baf0ad7d645d16472c254c5
+governing_application_sha: d5015fe716971bf8ea617e8a187311bf5af05185
+governing_application_ref: origin/codex/refactor-mainline
+proposed_repair_branch: codex/repair-sci-noi-002
+future_reaudit_branch: codex/reaudit-sci-noi-002
+resource_profile:
+  model: gpt-5.6-sol
+  effort: ultra
+  parallelism: serial_no_delegation_or_subagents
+  ultra_trigger: >-
+    finite_stack_identity_global_scale_provenance_product_alias_filter_projection
+    and_count_completion_contracts_cross_map_pipeline_output_and_config_paths
+    and_require_one_bounded_consistent_repair_and_fixture_synthesis
+  stop_rule: bounded_repair_and_local_gates_commit_then_coordinator_review_before_fresh_reaudit
+
+authorities:
+  - id: SCI-NOI-002-OWNER-DECISION-BRIEF
+    source: git_object
+    commit: 64ba81795110d89d8baf0ad7d645d16472c254c5
+    path: doc/audits/packages/SCI-NOI-002_OWNER_DECISION_BRIEF_2026-08-06.md
+    sha256: 3520172cfc11e8e34f280f9ebdf147ea414c7a3a4ca6109bad55354a5ff3cf71
+    role: approved_D001_to_D008_repair_and_evidence_boundary
+  - id: SCI-NOI-002-FINAL-AUDIT
+    source: git_object
+    commit: 4f1fec36f7802f3b5e8ac067377679946930983c
+    parent: f08a6da2ceebff03f498386f374980d13c5146a6
+    assessed_application_sha: d5015fe716971bf8ea617e8a187311bf5af05185
+    path: doc/audits/packages/SCI-NOI-002_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: 2874ffe950aed769f73277ed8f60ecab8860692d24e7c541f05a47a041a8a40d
+    role: source_trace_open_finding_and_consumer_boundary
+  - id: SCI-NOI-002-INDEPENDENT-CORE
+    source: git_object
+    commit: f08a6da2ceebff03f498386f374980d13c5146a6
+    parent: d5015fe716971bf8ea617e8a187311bf5af05185
+    path: doc/audits/packages/SCI-NOI-002_INDEPENDENT_CORE.tex
+    sha256: 36781b766a2f57c9a3bd7e173ee8f1d85cba7f3d08afe2e67a403166f6b6d72d
+    role: immutable_estimator_and_fixture_authority
+  - id: SCI-NOI-002-LEDGER-PROPOSAL
+    source: git_object
+    commit: 4f1fec36f7802f3b5e8ac067377679946930983c
+    path: doc/audits/proposals/SCI-NOI-002_LEDGER_PROPOSAL_2026-08-06.yaml
+    sha256: 5574d8e34fcfba8f4709d5848e79732ff3557a9817be25604375b9f3d4ec278d
+    role: immutable_submitted_audit_proposal_not_canonical_ledger
+  - id: SCI-NOI-001-R3
+    source: git_object
+    commit: 5a027c94ef9fc9c4a6e6cadc84af1c8a550d3508
+    path: doc/audits/packages/SCI-NOI-001_INDEPENDENT_CORE_R3.tex
+    sha256: 27263ab3bf29ac8f098463455e540f13e783241a688ef2bc5cb15b1f2a4319da
+    role: conditioned_source_imprinted_current_ensemble_contract_only
+
+included_findings: [SCI-NOI-002-F001, SCI-NOI-002-F002, SCI-NOI-002-F003, SCI-NOI-002-F004, SCI-NOI-002-F005, SCI-NOI-002-F007, SCI-NOI-002-F008]
+held_finding:
+  id: SCI-NOI-002-F006
+  status: SCI_FRUIT_001_owned_algorithmic_statistical_closure_excluded
+  permitted_interface_only: internal_scale_calculation_independent_of_persistence_and_explicit_invalid_nonzero_gate_failure_if_safely_direct
+  prohibited: [FRUIT_algorithm, threshold, default, iteration, bright_source_add_back, stopping_law, successor_uncertainty_estimator_selection]
+
+allowed_source_paths:
+  - src/citlali/core/mapmaking/map.cpp
+  - include/citlali/core/pipeline/timestream_scan_generation.h
+  - include/citlali/core/pipeline/noise_execution_plan.h
+  - include/citlali/core/pipeline/map_filtering_template_noise.h
+  - include/citlali/core/pipeline/map_image_output_helpers.h
+  - include/citlali/core/pipeline/map_source_table_output.h
+  - include/citlali/core/timestream/timestream.h
+allowed_test_or_contract_paths:
+  - tests/test_learning_and_fruit_contracts.cpp
+  - tests/test_tod_output_selection_config.cpp
+  - tests/test_config_safety.cpp
+  - tests/test_config_scaffold.cpp
+  - validation/product_contracts.json
+  - tools/config/run_config_preflight.py
+path_expansion_rule: direct_references_and_existing_direct_tests_only_after_scope_checkpoint_no_new_helper_schema_wrapper_verifier_or_framework
+
+required_local_gates:
+  - focused_exact_R_1_R_2_and_design_fixture_tests
+  - requested_effective_completed_and_disabled_zero_no_work_tests
+  - empty_calibration_and_invalid_denominator_fail_closed_tests
+  - product_identity_alias_and_package_join_contract_tests
+  - identical_realized_filter_operator_edge_and_kernel_response_parity_tests
+  - two_pixel_correlated_aperture_and_fixed_template_projection_fixtures
+  - bounded_FRUIT_configuration_dependency_test_without_adaptive_claim
+  - focused_CTest
+  - required_config_preflight
+  - proportionate_citlali_cli_build
+later_held_evidence:
+  - exact_repair_SHA_astronomical_validation_only_with_predeclared_acceptance_criteria
+  - blank_apertures_split_or_null_maps_and_repeated_observations_only_after_separate_admission
+  - bright_source_FRUIT_tests_routed_through_SCI_FRUIT_001
+
+prohibited_scope:
+  - physical_noise_variance_covariance_precision_or_significance_claim
+  - SCI_SRC_001_response_null_search_selection_or_multiplicity_validation
+  - FLT_mathematics_or_filter_algorithm_change
+  - MAP_JINC_RTC_PTC_MODE_or_FRUIT_algorithm_change
+  - FRUIT_threshold_default_iteration_add_back_stopping_or_successor_estimator_selection
+  - configured_count_or_default_change_for_Science_Pointing_OOF_or_Beammap
+  - dense_covariance_sign_stream_per_sample_ID_or_duplicated_full_metadata
+  - local_or_Unity_astronomical_reduction_or_evidence_execution
+  - application_integration_push_reaudit_launch_or_production_change
