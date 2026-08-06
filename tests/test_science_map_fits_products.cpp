@@ -496,6 +496,11 @@ void configure_production_writer_engine(Engine &engine) {
     engine.typed_config.noise.write_realizations = true;
     engine.typed_config.noise.products_enabled = true;
     engine.typed_config.post_processing.map_filtering.enabled = false;
+    engine.noise_plan.reset_from_request(engine.typed_config.noise, true);
+    citlali::pipeline::record_noise_assignment_completed(
+        engine.noise_plan,
+        citlali::pipeline::make_noise_assignment_context(
+            "152390", 0, "ordinary_mapmaking", 2, 1, 1, true));
 
     engine.map_indices.n_maps = 1;
     engine.map_indices.maps_to_arrays.resize(1);
@@ -1234,6 +1239,17 @@ TEST(science_map_fits_products,
             EXPECT_EQ(realization_wcs.rows, map.n_rows);
             EXPECT_EQ(realization_wcs.cols, map.n_cols);
             EXPECT_EQ(read_required_fits_string(file, "UNIT"), map.sig_unit);
+            EXPECT_EQ(read_required_fits_string(file, "ENSMODE"),
+                      "source_imprinted_current");
+            EXPECT_EQ(read_required_fits_string(file, "NKEYVER"),
+                      citlali::pipeline::noise_realization_key_policy_version);
+            EXPECT_EQ(read_required_fits_string(file, "DIAGSTAT"),
+                      "restricted_diagnostic_only");
+            EXPECT_DOUBLE_EQ(read_required_fits_double(file, "NREALID"),
+                             static_cast<double>(realization));
+            EXPECT_FALSE(read_required_fits_string(file, "NPROVSC").empty());
+            EXPECT_FALSE(read_required_fits_string(file, "NASNDIG").empty());
+            EXPECT_FALSE(read_required_fits_string(file, "NPROVDIG").empty());
             std::vector<double> values(
                 static_cast<std::size_t>(map.n_rows * map.n_cols));
             int any_null = 0;

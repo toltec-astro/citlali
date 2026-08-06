@@ -4,7 +4,10 @@
 // Include this only after Beammap has been declared.
 
 #include <citlali/core/pipeline/beammap_provenance_lifecycle.h>
+#include <citlali/core/pipeline/noise_execution_plan.h>
+#include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/raw_timestream_policy.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 
 void Beammap::normalize_beammap_maps_after_pass(
     const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps,
@@ -36,10 +39,7 @@ void Beammap::normalize_beammap_maps_after_pass(
         omb, calib, current_iter, logger);
 }
 
-template <class RandomBits, class Generator>
 void Beammap::run_beammap_mapmaking_pass(bool update_progress,
-                                         RandomBits &rands,
-                                         Generator &eng,
     citlali::pipeline::StageProfileCollector &stage_profile) {
     (void)stage_profile;
     const auto &mapmaking = citlali::pipeline::mapmaking_config(*this);
@@ -49,6 +49,19 @@ void Beammap::run_beammap_mapmaking_pass(bool update_progress,
         citlali::pipeline::select_unconverged_beammap_maps(
             mapmaking_grouping, converged, map_indices.n_maps, logger);
     const auto *active_maps_ptr = active_maps.ptr();
+    const bool make_noise_maps =
+        citlali::pipeline::noise_maps_enabled(*this);
+    std::optional<citlali::pipeline::NoiseAssignmentContext> noise_context;
+    if (make_noise_maps) {
+        noise_context.emplace(
+            citlali::pipeline::make_noise_assignment_context(
+                observation_identity.obsnum, static_cast<int>(current_iter),
+                update_progress ? "beammap_primary"
+                                : "beammap_scan_band_rebuild",
+                static_cast<int>(omb.n_noise), ptcs.size(),
+                static_cast<std::size_t>(calib.n_dets),
+                omb.randomize_dets, update_progress ? 0 : 1));
+    }
 
     std::ostringstream context;
     context << "iter=" << current_iter
@@ -68,12 +81,13 @@ void Beammap::run_beammap_mapmaking_pass(bool update_progress,
         citlali::pipeline::ensure_jinc_grid_weight_maps(
             mapmaking_method, omb, map_indices.n_maps, logger);
 
+        if (noise_context) {
+            citlali::pipeline::populate_beammap_noise_signs(
+                ptcs, true, *noise_context);
+        }
         citlali::pipeline::reset_beammap_mapmaking_buffers(
-            omb, ptcs, map_indices.n_maps,
-            citlali::pipeline::raw_kernel_enabled(*this),
-            citlali::pipeline::noise_maps_enabled(*this),
-            omb.randomize_dets, calib.n_dets, active_maps_ptr, rands,
-            eng);
+            omb, map_indices.n_maps,
+            citlali::pipeline::raw_kernel_enabled(*this), active_maps_ptr);
     }
 
     logger->info("running mapmaking");
@@ -92,14 +106,15 @@ void Beammap::run_beammap_mapmaking_pass(bool update_progress,
         active_maps_ptr, context.str(), stage_profile);
     citlali::pipeline::record_beammap_mapmaking_pass_completed_if_available(
         *this);
+    if (noise_context) {
+        citlali::pipeline::record_noise_assignment_completed(
+            citlali::pipeline::noise_plan(*this), *noise_context);
+    }
 }
 
-template <class RandomBits, class Generator>
 void Beammap::run_beammap_mapmaking_stage(bool locator_iter,
                                           bool measurement_iter,
                                           bool detector_grouping,
-                                          RandomBits &rands,
-                                          Generator &eng,
     citlali::pipeline::StageProfileCollector &stage_profile) {
     logger->info("starting mapmaking");
 
@@ -109,7 +124,7 @@ void Beammap::run_beammap_mapmaking_stage(bool locator_iter,
 
     const auto &scan_band_config =
         citlali::pipeline::beammap_config(*this).scan_band_mask;
-    run_beammap_mapmaking_pass(true, rands, eng, stage_profile);
+    run_beammap_mapmaking_pass(true, stage_profile);
 
     if (scan_band_config.enabled && detector_grouping && locator_iter) {
         auto scan_band_summary = apply_scan_band_mask(omb);
@@ -121,7 +136,7 @@ void Beammap::run_beammap_mapmaking_stage(bool locator_iter,
                 scan_band_summary.n_det_flagged,
                 scan_band_summary.n_det_rejected,
                 scan_band_config.max_flagged_fraction);
-            run_beammap_mapmaking_pass(false, rands, eng, stage_profile);
+            run_beammap_mapmaking_pass(false, stage_profile);
         }
         else {
             logger->info(

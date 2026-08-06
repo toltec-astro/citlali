@@ -11,6 +11,7 @@
 #include <exception>
 #include <string>
 #include <type_traits>
+#include <vector>
 
 namespace citlali::pipeline {
 
@@ -609,7 +610,19 @@ template <class FitsEntry, class MapBuffer, class Wcs>
 void add_noise_realization_image_hdus(
     FitsEntry &fits_entry, MapBuffer &mb, Eigen::Index i,
     const std::string &map_name, const std::string &stokes_suffix,
-    const Wcs &wcs, double source_epoch, double median_rms) {
+    const Wcs &wcs, double source_epoch, double median_rms,
+    const std::vector<NoiseRealizationProductIdentity> &identities) {
+    if (identities.size() != static_cast<std::size_t>(mb->n_noise)) {
+        throw std::logic_error(
+            "noise realization output identity cardinality is incomplete");
+    }
+    for (Eigen::Index n = 0; n < mb->n_noise; ++n) {
+        if (identities[static_cast<std::size_t>(n)].realization_id !=
+            static_cast<std::size_t>(n)) {
+            throw std::logic_error(
+                "noise realization output identity ordering is inconsistent");
+        }
+    }
     for (Eigen::Index n = 0; n < mb->n_noise; ++n) {
         Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>>
             noise_matrix(
@@ -621,6 +634,9 @@ void add_noise_realization_image_hdus(
             noise_matrix, wcs, source_epoch);
         add_noise_image_summary_keys(
             *fits_entry.hdus.back(), mb->sig_unit, median_rms);
+        add_noise_realization_identity_keys(
+            *fits_entry.hdus.back(),
+            identities[static_cast<std::size_t>(n)]);
     }
 }
 

@@ -16,7 +16,8 @@ void read_noise_request_config(
         std::tuple{"noise_maps", "enabled"});
     read_config_value(
         config, request.n_noise_maps, diagnostics,
-        std::tuple{"noise_maps", "n_noise_maps"}, {}, {0}, {});
+        std::tuple{"noise_maps", "n_noise_maps"}, {},
+        {request.enabled ? 1 : 0}, {});
     read_config_value(
         config, request.randomize_dets, diagnostics,
         std::tuple{"noise_maps", "randomize_dets"});

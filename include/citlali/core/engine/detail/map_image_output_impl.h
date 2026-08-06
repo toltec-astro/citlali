@@ -11,6 +11,7 @@
 #include <citlali/core/pipeline/science_map_identity.h>
 
 #include <type_traits>
+#include <vector>
 
 template <typename fits_io_type, class map_buffer_t>
 Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_io, map_buffer_t &mb, Eigen::Index i) {
@@ -236,6 +237,29 @@ Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_
         citlali::pipeline::require_noise_map_tensor_shape(
             mb->noise, i, mb->n_rows, mb->n_cols, mb->n_noise, logger);
     }
+    std::vector<citlali::pipeline::NoiseRealizationProductIdentity>
+        noise_realization_identities;
+    if (write_noise_realizations) {
+        noise_realization_identities.reserve(
+            static_cast<std::size_t>(mb->n_noise));
+        try {
+            for (Eigen::Index realization = 0;
+                 realization < mb->n_noise; ++realization) {
+                noise_realization_identities.push_back(
+                    citlali::pipeline::noise_realization_product_identity(
+                        citlali::pipeline::noise_plan(*this),
+                        observation_identity.obsnum, coadd_product,
+                        static_cast<std::size_t>(realization)));
+            }
+        }
+        catch (const std::exception &error) {
+            citlali::pipeline::fail_required_output(
+                logger,
+                fmt::format(
+                    "noise realization output identity is incomplete: {}",
+                    error.what()));
+        }
+    }
     const auto first_hdu_index =
         static_cast<Eigen::Index>(fits_io->at(map_index).hdus.size());
     struct MapOutputBreadcrumbReset {
@@ -317,7 +341,8 @@ Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_
                     noise_fits_io->at(map_index).filepath, logger);
             citlali::pipeline::add_noise_realization_image_hdus(
                 noise_fits_io->at(map_index), mb, i, map_name, stokes_suffix,
-                mb->wcs, source_epoch, median_rms);
+                mb->wcs, source_epoch, median_rms,
+                noise_realization_identities);
         }
         return first_hdu_index;
     } catch (const CCfits::FitsException &e) {

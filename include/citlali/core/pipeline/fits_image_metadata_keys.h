@@ -116,6 +116,29 @@ void add_noise_image_summary_keys(Hdu &hdu, const std::string &unit,
 }
 
 template <class Hdu>
+void add_noise_realization_identity_keys(
+    Hdu &hdu, const NoiseRealizationProductIdentity &identity) {
+    hdu.addKey("ENSMODE", identity.ensemble_mode,
+               "Noise ensemble mode");
+    hdu.addKey("NKEYVER", identity.key_policy_version,
+               "Noise realization key policy version");
+    hdu.addKey("NREALID", identity.realization_id,
+               "Zero-based noise realization identity");
+    hdu.addKey("NPROVSC", identity.product_scope,
+               "Noise product provenance scope");
+    hdu.addKey("NASNDIG", identity.assignment_digest,
+               "Completed noise assignment digest", true);
+    hdu.addKey("NPROVDIG", identity.product_digest_join,
+               "Noise assignment/product provenance digest join", true);
+    hdu.addKey("DIAGSTAT", std::string{"restricted_diagnostic_only"},
+               "Scientific interpretation status");
+    hdu.addKey("SIGSTATE", std::string{"deterministic_signal_may_remain"},
+               "Signal content of source-imprinted ensemble");
+    hdu.addKey("NEGSRC", std::string{"permitted"},
+               "Negative-source realizations are permitted");
+}
+
+template <class Hdu>
 void add_image_unit_description_keys(Hdu &hdu, const std::string &unit,
                                      const std::string &description) {
     add_image_unit_keys(hdu, unit);

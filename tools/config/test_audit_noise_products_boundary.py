@@ -83,11 +83,36 @@ class NoiseProductsBoundaryAuditTest(unittest.TestCase):
         )
         self.assertFalse(state["exact"])
 
-    def test_accepts_explicit_rng_identity(self) -> None:
-        state = audit.rng_state([
-            "boost::random::mt19937 eng{noise_random_seed};"
-            for _ in range(3)
+    def test_accepts_versioned_deterministic_assignment_identity(self) -> None:
+        identity = "\n".join([
+            "citlali-noise-realization-key-v1",
+            "citlali-sha256-splitmix64-sign-v1",
+            "source_imprinted_current",
+            "observation_scoped_zero_based_channel_ordinal",
+            "realization_then_coherence_unit_then_channel",
+            "noise_random_seed = 5489U",
+            "noise_assignment_namespace_digest()",
+            "noise_realization_sign()",
         ])
+        ordinary = "noise_realization_sign();"
+        beammap = "\n".join([
+            "populate_noise_sign_matrix();",
+            "void reset_beammap_mapmaking_buffers() {}",
+            "template <class Ptc>",
+        ])
+        calls = [
+            "make_noise_assignment_context();\n"
+            "record_noise_assignment_completed();",
+            "make_noise_assignment_context();\n"
+            "record_noise_assignment_completed();",
+            "make_noise_assignment_context();\n"
+            "populate_beammap_noise_signs();\n"
+            "reset_beammap_mapmaking_buffers();\n"
+            "record_noise_assignment_completed();",
+        ]
+        state = audit.deterministic_assignment_state(
+            identity, calls, ordinary, beammap
+        )
         self.assertTrue(state["exact"])
 
     def test_accepts_effective_execution_policy(self) -> None:

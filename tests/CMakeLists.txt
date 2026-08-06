@@ -26,6 +26,7 @@ target_sources(citlali_test
         test_kids_input_validation.cpp
         test_learning_and_fruit_contracts.cpp
         test_map_fitter_lifecycle.cpp
+        test_noise_realization_contract.cpp
         test_output_root_lease.cpp
         test_pointing_fit_table_metrics.cpp
         test_process_resource_snapshot.cpp

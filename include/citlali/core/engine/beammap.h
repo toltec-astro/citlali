@@ -280,17 +280,11 @@ public:
     template <class KidsProc, class RawObs>
     void run_loop(KidsProc &, RawObs &,
                   citlali::pipeline::StageProfileCollector &);
-    template <class RandomBits, class Generator>
     void run_beammap_mapmaking_pass(bool update_progress,
-                                    RandomBits &rands,
-                                    Generator &eng,
                                     citlali::pipeline::StageProfileCollector &);
-    template <class RandomBits, class Generator>
     void run_beammap_mapmaking_stage(bool locator_iter,
                                      bool measurement_iter,
                                      bool detector_grouping,
-                                     RandomBits &rands,
-                                     Generator &eng,
                                      citlali::pipeline::StageProfileCollector &);
     template <class KidsProc, class RawObs>
     bool maybe_run_beammap_source_aware_rtc(KidsProc &, RawObs &,

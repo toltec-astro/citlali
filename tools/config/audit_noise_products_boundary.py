@@ -24,10 +24,19 @@ MAP_FILTER_BOUNDARY_SOURCE = (
 )
 PROVENANCE_SOURCE = "include/citlali/core/pipeline/noise_provenance.h"
 CLI_SOURCE = "include/citlali/core/cli/reduction_execution.h"
-RNG_SOURCES = (
+ASSIGNMENT_CALL_SOURCES = (
     "include/citlali/core/engine/detail/pointing_pipeline_impl.h",
     "include/citlali/core/engine/detail/lali_setup_pipeline_impl.h",
-    "include/citlali/core/engine/detail/beammap_run_loop_impl.h",
+    "include/citlali/core/engine/detail/beammap_mapmaking_pass_impl.h",
+)
+ASSIGNMENT_IDENTITY_SOURCE = (
+    "include/citlali/core/pipeline/noise_realization_identity.h"
+)
+ORDINARY_SIGN_SOURCE = (
+    "include/citlali/core/pipeline/timestream_scan_generation.h"
+)
+BEAMMAP_SIGN_SOURCE = (
+    "include/citlali/core/pipeline/beammap_mapmaking_policy.h"
 )
 EXPECTED_MANIFEST_SCHEMA = (
     "citlali-frozen-noise-products-config-paths-v1"
@@ -49,7 +58,7 @@ EXPECTED_OPTIONAL_PATHS = set(EXPECTED_PATHS) - EXPECTED_REQUIRED_PATHS
 EXPECTED_PATH_SHA256 = (
     "e5e23109f40bb155047bef945faf8e0ae28e08783ee5a0a7a49abd56eb82023b"
 )
-EXPECTED_PROVENANCE_SCHEMA = "citlali-noise-products-provenance-v1"
+EXPECTED_PROVENANCE_SCHEMA = "citlali-noise-products-provenance-v2"
 RETIRED_SYMBOLS = (
     "read_noise_map_config",
     "read_noise_product_config",
@@ -178,19 +187,80 @@ def authority_state(
     }
 
 
-def rng_state(source_texts: list[str]) -> dict[str, object]:
-    explicit_seed_counts = [
-        text.count("noise_random_seed") for text in source_texts
+def deterministic_assignment_state(
+    identity: str,
+    call_sources: list[str],
+    ordinary_signs: str,
+    beammap_signs: str,
+) -> dict[str, object]:
+    required_identity_tokens = (
+        "citlali-noise-realization-key-v1",
+        "citlali-sha256-splitmix64-sign-v1",
+        "source_imprinted_current",
+        "observation_scoped_zero_based_channel_ordinal",
+        "realization_then_coherence_unit_then_channel",
+        "noise_random_seed = 5489U",
+        "noise_assignment_namespace_digest",
+        "noise_realization_sign",
+    )
+    identity_tokens_present = {
+        token: token in identity for token in required_identity_tokens
+    }
+    context_counts = [
+        call_count(text, "make_noise_assignment_context")
+        for text in call_sources
     ]
-    unseeded_counts = [
-        len(re.findall(r"boost::random::mt19937\s+eng\s*;", text))
-        for text in source_texts
+    completion_counts = [
+        call_count(text, "record_noise_assignment_completed")
+        for text in call_sources
     ]
-    exact = explicit_seed_counts == [1, 1, 1] and not any(unseeded_counts)
+    mutable_rng_counts = [
+        text.count("boost::random::mt19937") +
+        text.count("uniform_int_distribution")
+        for text in [identity, *call_sources, ordinary_signs, beammap_signs]
+    ]
+    beammap_populate = call_sources[2].find(
+        "populate_beammap_noise_signs("
+    )
+    beammap_reset = call_sources[2].find(
+        "reset_beammap_mapmaking_buffers("
+    )
+    reset_definition = beammap_signs.find(
+        "void reset_beammap_mapmaking_buffers("
+    )
+    reset_definition_end = beammap_signs.find(
+        "template <class Ptc", reset_definition
+    )
+    reset_body = beammap_signs[
+        reset_definition:reset_definition_end
+    ]
+    beammap_once_before_reset = (
+        0 <= beammap_populate < beammap_reset
+        and call_count(call_sources[2], "populate_beammap_noise_signs") == 1
+        and reset_definition >= 0
+        and reset_definition_end > reset_definition
+        and "ptcs" not in reset_body
+        and "populate_noise_sign_matrix" not in reset_body
+    )
+    exact = bool(
+        all(identity_tokens_present.values())
+        and context_counts == [1, 1, 1]
+        and completion_counts == [1, 1, 1]
+        and not any(mutable_rng_counts)
+        and call_count(ordinary_signs, "noise_realization_sign") == 1
+        and call_count(beammap_signs, "populate_noise_sign_matrix") == 1
+        and beammap_once_before_reset
+    )
     return {
-        "sources": list(RNG_SOURCES),
-        "explicit_seed_counts": explicit_seed_counts,
-        "unseeded_counts": unseeded_counts,
+        "identity_source": ASSIGNMENT_IDENTITY_SOURCE,
+        "call_sources": list(ASSIGNMENT_CALL_SOURCES),
+        "ordinary_sign_source": ORDINARY_SIGN_SOURCE,
+        "beammap_sign_source": BEAMMAP_SIGN_SOURCE,
+        "identity_tokens_present": identity_tokens_present,
+        "context_counts": context_counts,
+        "completion_counts": completion_counts,
+        "mutable_rng_counts": mutable_rng_counts,
+        "beammap_once_before_reset": beammap_once_before_reset,
         "exact": exact,
     }
 
@@ -235,9 +305,15 @@ def audit(repo_root: Path) -> dict[str, object]:
         (repo_root / ACCESSOR_SOURCE).read_text(),
         (repo_root / ADAPTER_SOURCE).read_text(),
     )
-    rng = rng_state([
-        (repo_root / source).read_text() for source in RNG_SOURCES
-    ])
+    assignment = deterministic_assignment_state(
+        (repo_root / ASSIGNMENT_IDENTITY_SOURCE).read_text(),
+        [
+            (repo_root / source).read_text()
+            for source in ASSIGNMENT_CALL_SOURCES
+        ],
+        (repo_root / ORDINARY_SIGN_SOURCE).read_text(),
+        (repo_root / BEAMMAP_SIGN_SOURCE).read_text(),
+    )
     execution_policy = execution_policy_state(
         (repo_root / MAP_FILTER_POLICY_SOURCE).read_text(),
         (repo_root / MAP_FILTER_BOUNDARY_SOURCE).read_text(),
@@ -249,14 +325,15 @@ def audit(repo_root: Path) -> dict[str, object]:
     drift = not all(
         state["exact"]
         for state in (
-            manifest, reader, authority, rng, execution_policy, provenance
+            manifest, reader, authority, assignment, execution_policy,
+            provenance
         )
     )
     return {
         "manifest": manifest,
         "typed_reader": reader,
         "authority_boundary": authority,
-        "randomization": rng,
+        "randomization": assignment,
         "execution_policy": execution_policy,
         "provenance": provenance,
         "drift": drift,
@@ -271,7 +348,7 @@ def markdown_report(result: dict[str, object]) -> str:
         f"- Frozen paths: `{result['manifest']['path_count']}`",
         f"- Direct typed reader exact: `{result['typed_reader']['exact']}`",
         f"- Authority boundary exact: `{result['authority_boundary']['exact']}`",
-        f"- RNG identity exact: `{result['randomization']['exact']}`",
+        f"- Deterministic assignment identity exact: `{result['randomization']['exact']}`",
         f"- Effective execution policy exact: `{result['execution_policy']['exact']}`",
         f"- Versioned provenance exact: `{result['provenance']['exact']}`",
         "",

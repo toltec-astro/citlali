@@ -11,6 +11,7 @@
 #include <tuple>
 
 #include <citlali/core/pipeline/required_output_failure.h>
+#include <citlali/core/pipeline/noise_realization_identity.h>
 
 namespace citlali::pipeline {
 

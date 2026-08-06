@@ -74,7 +74,6 @@
 #include <citlali/core/pipeline/processed_timestream_provenance.h>
 #include <citlali/core/pipeline/processed_weighting_config_read.h>
 
-#include <boost/random/mersenne_twister.hpp>
 #include <citlali/core/pipeline/processed_weighting_resolution.h>
 #include <citlali/core/pipeline/runtime_provenance_output.h>
 #include <citlali/core/pipeline/source_finding_config_policy.h>
@@ -2260,6 +2259,9 @@ TEST(config_scaffold, noise_plan_preserves_disabled_request) {
     citlali::config::NoiseConfig request;
     request.enabled = true;
     request.n_noise_maps = 10;
+    request.write_realizations = true;
+    request.products_enabled = true;
+    request.apply_empirical_weights = true;
     citlali::pipeline::NoiseExecutionPlan plan;
 
     plan.reset_from_request(request, false);
@@ -2268,6 +2270,9 @@ TEST(config_scaffold, noise_plan_preserves_disabled_request) {
     EXPECT_EQ(plan.requested.n_noise_maps, 10);
     EXPECT_FALSE(plan.effective.enabled);
     EXPECT_EQ(plan.effective.n_noise_maps, 0);
+    EXPECT_FALSE(plan.effective.write_realizations);
+    EXPECT_FALSE(plan.effective.products_enabled);
+    EXPECT_FALSE(plan.effective.apply_empirical_weights);
     EXPECT_TRUE(plan.effective_resolution.disabled_by_mapmaking);
     EXPECT_TRUE(plan.effective_resolution.count_zeroed_while_disabled);
     EXPECT_EQ(
@@ -2308,17 +2313,55 @@ TEST(config_scaffold, adapts_effective_noise_config_one_way) {
     EXPECT_EQ(effective.n_noise_maps, 7);
 }
 
-TEST(config_scaffold, explicit_noise_seed_preserves_default_sequence) {
-    boost::random::mt19937 legacy_default;
-    boost::random::mt19937 explicit_seed{
-        citlali::pipeline::noise_random_seed};
+TEST(config_scaffold, rejects_enabled_zero_noise_stack_at_read_boundary) {
+    ensure_citlali_test_logger();
+    auto yaml_config = tula::config::YamlConfig::from_str(
+        "noise_maps:\n"
+        "  enabled: true\n"
+        "  n_noise_maps: 0\n"
+        "  randomize_dets: true\n");
+    citlali::config::NoiseConfig request;
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
 
-    for (int i = 0; i < 16; ++i) {
-        EXPECT_EQ(legacy_default(), explicit_seed());
-    }
+    citlali::pipeline::read_noise_request_config(
+        yaml_config, request, diagnostics);
+
+    EXPECT_TRUE(diagnostics.has_errors());
 }
 
-TEST(config_scaffold, records_disabled_noise_run) {
+TEST(config_scaffold, rejects_enabled_zero_noise_stack_at_plan_boundary) {
+    citlali::config::NoiseConfig request;
+    request.enabled = true;
+    request.n_noise_maps = 0;
+    citlali::pipeline::NoiseExecutionPlan plan;
+
+    EXPECT_THROW(plan.reset_from_request(request, true), std::logic_error);
+    EXPECT_FALSE(plan.initialized);
+}
+
+TEST(config_scaffold, disabled_zero_noise_stack_is_admitted_as_zero_work) {
+    ensure_citlali_test_logger();
+    auto yaml_config = tula::config::YamlConfig::from_str(
+        "noise_maps:\n"
+        "  enabled: false\n"
+        "  n_noise_maps: 0\n"
+        "  randomize_dets: true\n");
+    citlali::config::NoiseConfig request;
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
+
+    citlali::pipeline::read_noise_request_config(
+        yaml_config, request, diagnostics);
+    citlali::pipeline::NoiseExecutionPlan plan;
+    plan.reset_from_request(request, true);
+
+    EXPECT_FALSE(diagnostics.has_errors());
+    EXPECT_FALSE(plan.effective.enabled);
+    EXPECT_EQ(plan.effective.n_noise_maps, 0);
+}
+
+TEST(config_scaffold, records_shared_pointing_oof_disabled_zero_work) {
+    // OOF quicklooks use the pointing reduction path; both share this
+    // execution-plan admission and zero-work contract.
     citlali::pipeline::MapmakingExecutionPlan mapmaking;
     mapmaking.reset_from_request(
         citlali::config::MapmakingConfig{},
@@ -2335,8 +2378,16 @@ TEST(config_scaffold, records_disabled_noise_run) {
 
     EXPECT_TRUE(noise.realized.reduction_completed);
     EXPECT_FALSE(noise.realized.generation_executed);
-    EXPECT_FALSE(noise.realized.total_noise_realization_count.has_value());
+    ASSERT_TRUE(noise.realized.noise_maps_per_scientific_map.has_value());
+    ASSERT_TRUE(noise.realized.total_noise_realization_count.has_value());
+    EXPECT_EQ(*noise.realized.noise_maps_per_scientific_map, 0U);
+    EXPECT_EQ(*noise.realized.total_noise_realization_count, 0U);
+    EXPECT_EQ(*noise.realized.empirical_product_map_count, 0U);
+    EXPECT_EQ(*noise.realized.realization_image_write_count, 0U);
+    EXPECT_TRUE(noise.realized.zero_work);
+    EXPECT_FALSE(noise.realized.outputs_promised);
     EXPECT_FALSE(noise.realized.outputs_completed);
+    EXPECT_TRUE(noise.assignments.empty());
 }
 
 TEST(config_scaffold, records_jinc_science_noise_cardinality) {
@@ -2359,6 +2410,12 @@ TEST(config_scaffold, records_jinc_science_noise_cardinality) {
     request.products_enabled = false;
     citlali::pipeline::NoiseExecutionPlan noise;
     noise.reset_from_request(request, true);
+    citlali::pipeline::record_noise_assignment_completed(
+        noise, citlali::pipeline::make_noise_assignment_context(
+                   "152390", 0, "ordinary_mapmaking", 10, 1, 3, true));
+    citlali::pipeline::record_noise_assignment_completed(
+        noise, citlali::pipeline::make_noise_assignment_context(
+                   "152392", 0, "ordinary_mapmaking", 10, 1, 3, true));
 
     citlali::pipeline::record_noise_run_completed(
         noise, mapmaking, true);
@@ -2390,6 +2447,9 @@ TEST(config_scaffold, records_full_observation_noise_outputs) {
     request.write_realizations = true;
     citlali::pipeline::NoiseExecutionPlan noise;
     noise.reset_from_request(request, true);
+    citlali::pipeline::record_noise_assignment_completed(
+        noise, citlali::pipeline::make_noise_assignment_context(
+                   "152389", 0, "ordinary_mapmaking", 2, 1, 3, true));
 
     citlali::pipeline::record_noise_run_completed(
         noise, mapmaking, true);
@@ -2418,6 +2478,9 @@ TEST(config_scaffold, records_naive_coadd_observation_and_coadd_noise_cardinalit
     request.write_realizations = true;
     citlali::pipeline::NoiseExecutionPlan noise;
     noise.reset_from_request(request, true);
+    citlali::pipeline::record_noise_assignment_completed(
+        noise, citlali::pipeline::make_noise_assignment_context(
+                   "152390", 0, "ordinary_mapmaking", 2, 1, 3, true));
 
     citlali::pipeline::record_noise_run_completed(
         noise, mapmaking, false);
@@ -2450,6 +2513,9 @@ TEST(config_scaffold,
     request.write_realizations = true;
     citlali::pipeline::NoiseExecutionPlan noise;
     noise.reset_from_request(request, true);
+    citlali::pipeline::record_noise_assignment_completed(
+        noise, citlali::pipeline::make_noise_assignment_context(
+                   "152390", 0, "ordinary_mapmaking", 2, 1, 3, true));
 
     citlali::pipeline::record_noise_run_completed(
         noise, mapmaking, true);
@@ -2888,6 +2954,9 @@ TEST(config_scaffold, serializes_versioned_noise_provenance) {
     request.write_realizations = true;
     citlali::pipeline::NoiseExecutionPlan plan;
     plan.reset_from_request(request, true);
+    citlali::pipeline::record_noise_assignment_completed(
+        plan, citlali::pipeline::make_noise_assignment_context(
+                  "152390", 0, "ordinary_mapmaking", 2, 1, 3, true));
     plan.realized.reduction_completed = true;
     plan.realized.generation_executed = true;
     plan.realized.noise_maps_per_scientific_map = 2U;
@@ -2903,7 +2972,7 @@ TEST(config_scaffold, serializes_versioned_noise_provenance) {
     const auto node = citlali::pipeline::noise_provenance_node(plan);
 
     EXPECT_EQ(node["schema_version"].as<std::string>(),
-              "citlali-noise-products-provenance-v1");
+              "citlali-noise-products-provenance-v2");
     EXPECT_EQ(node["requested"]["n_noise_maps"].as<int>(), 2);
     EXPECT_EQ(node["effective"]["resolution"]["randomization"]["seed"]
                   .as<std::uint32_t>(),
@@ -2914,6 +2983,10 @@ TEST(config_scaffold, serializes_versioned_noise_provenance) {
     EXPECT_EQ(node["realized"]["realization_image_write_count"]["value"]
                   .as<std::size_t>(),
               12U);
+    EXPECT_EQ(node["assignments"][0]["ensemble_mode"].as<std::string>(),
+              "source_imprinted_current");
+    EXPECT_EQ(node["assignments"][0]["completed_realization_ids"].size(),
+              2U);
 }
 
 TEST(config_scaffold, atomically_writes_noise_provenance) {
@@ -2922,8 +2995,14 @@ TEST(config_scaffold, atomically_writes_noise_provenance) {
         "citlali_noise_provenance_test";
     std::filesystem::remove_all(output_dir);
     std::filesystem::create_directories(output_dir);
+    citlali::config::NoiseConfig request;
+    request.enabled = true;
+    request.n_noise_maps = 2;
     citlali::pipeline::NoiseExecutionPlan plan;
-    plan.reset_from_request(citlali::config::NoiseConfig{}, true);
+    plan.reset_from_request(request, true);
+    citlali::pipeline::record_noise_assignment_completed(
+        plan, citlali::pipeline::make_noise_assignment_context(
+                  "152390", 0, "ordinary_mapmaking", 2, 3, 5, true));
     plan.realized.reduction_completed = true;
 
     citlali::pipeline::write_noise_provenance_file(output_dir, plan);
@@ -2934,7 +3013,15 @@ TEST(config_scaffold, atomically_writes_noise_provenance) {
     EXPECT_FALSE(std::filesystem::exists(output_path.string() + ".tmp"));
     const auto stored = YAML::LoadFile(output_path.string());
     EXPECT_EQ(stored["schema_version"].as<std::string>(),
-              "citlali-noise-products-provenance-v1");
+              "citlali-noise-products-provenance-v2");
+    EXPECT_EQ(
+        stored["assignments"][0]["digests"]["reconstruction"]
+            .as<std::string>(),
+        plan.assignments[0].reconstruction_digest);
+    EXPECT_EQ(
+        stored["assignment_summary"]["digest"].as<std::string>(),
+        citlali::pipeline::noise_assignment_records_digest(
+            plan.assignments));
     std::filesystem::remove_all(output_dir);
 }
 
@@ -3844,6 +3931,17 @@ TEST(config_scaffold, validates_top_level_config_values) {
     auto report = citlali::config::validate(config);
     EXPECT_FALSE(report.ok());
     EXPECT_EQ(report.error_count(), 8U);
+}
+
+TEST(config_scaffold, enabled_noise_stack_requires_positive_count) {
+    citlali::config::ReductionConfig config;
+    config.noise.enabled = true;
+    config.noise.n_noise_maps = 0;
+
+    const auto report = citlali::config::validate(config);
+
+    EXPECT_FALSE(report.ok());
+    EXPECT_EQ(report.error_count(), 1U);
 }
 
 TEST(config_scaffold, accepts_checked_low_level_config_schema) {

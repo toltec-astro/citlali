@@ -1,8 +1,11 @@
 #pragma once
 
+#include <citlali/core/pipeline/noise_realization_identity.h>
+
 #include <Eigen/Core>
 
 #include <optional>
+#include <stdexcept>
 
 namespace citlali::pipeline {
 
@@ -30,26 +33,40 @@ Eigen::Index initialize_rtc_scan(
     return rtcdata.scan_indices.data(3) - rtcdata.scan_indices.data(2) + 1;
 }
 
-template <class RtcData, class MapBuffer, class Calib,
-          class RandomDistribution, class RandomEngine>
+template <class Matrix>
+void populate_noise_sign_matrix(
+    Matrix &matrix, const NoiseAssignmentContext &context,
+    std::size_t coherence_unit) {
+    const auto columns = context.randomize_channels
+        ? static_cast<Eigen::Index>(context.channel_count)
+        : Eigen::Index{1};
+    matrix.resize(context.n_realizations, columns);
+    for (int realization = 0; realization < context.n_realizations;
+         ++realization) {
+        for (Eigen::Index channel = 0; channel < columns; ++channel) {
+            matrix(realization, channel) = noise_realization_sign(
+                context, realization, coherence_unit,
+                static_cast<std::size_t>(channel));
+        }
+    }
+}
+
+template <class RtcData, class MapBuffer, class Calib>
 void populate_noise_map_signs(
     RtcData &rtcdata, const MapBuffer &omb, const Calib &calib,
-    bool enabled, RandomDistribution &rands, RandomEngine &eng) {
+    bool enabled, const NoiseAssignmentContext &context,
+    std::size_t coherence_unit) {
     if (!enabled) {
         return;
     }
-
-    if (omb.randomize_dets) {
-        rtcdata.noise.data =
-            Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic>::Zero(
-                omb.n_noise, calib.n_dets)
-                .unaryExpr([&](int) { return 2 * rands(eng) - 1; });
+    if (context.n_realizations != omb.n_noise ||
+        context.randomize_channels != omb.randomize_dets ||
+        context.channel_count != static_cast<std::size_t>(calib.n_dets)) {
+        throw std::logic_error(
+            "noise sign context differs from observation map geometry");
     }
-    else {
-        rtcdata.noise.data =
-            Eigen::Matrix<int, Eigen::Dynamic, 1>::Zero(omb.n_noise)
-                .unaryExpr([&](int) { return 2 * rands(eng) - 1; });
-    }
+    populate_noise_sign_matrix(
+        rtcdata.noise.data, context, coherence_unit);
 }
 
 template <class RtcData, class KidsProc, class RawObs, class Telescope,

@@ -138,11 +138,6 @@ void Beammap::run_loop(
     // variable to control iteration
     bool keep_going = true;
 
-    // declare random number generator
-    boost::random::mt19937 eng{citlali::pipeline::noise_random_seed};
-
-    // boost random number generator (0,1)
-    boost::random::uniform_int_distribution<> rands{0,1};
     const bool detector_grouping =
         citlali::pipeline::mapmaking_config(*this).grouping ==
         citlali::config::MapGrouping::detector;
@@ -182,8 +177,7 @@ void Beammap::run_loop(
             stage_profile);
 
         run_beammap_mapmaking_stage(
-            locator_iter, measurement_iter, detector_grouping, rands, eng,
-            stage_profile);
+            locator_iter, measurement_iter, detector_grouping, stage_profile);
 
         const int completed_iter = current_iter;
         keep_going = advance_beammap_iteration_state(stage_profile);

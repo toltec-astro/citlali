@@ -26,11 +26,18 @@ void Lali::pipeline(
         citlali::pipeline::standard_timestream_output_expectations(
             *this, output_flags);
 
-    // declare random number generator
-    boost::random::mt19937 eng{citlali::pipeline::noise_random_seed};
-
-    // boost random number generator (0,1)
-    boost::random::uniform_int_distribution<> rands{0,1};
+    const bool make_noise_maps =
+        citlali::pipeline::noise_maps_enabled(*this);
+    std::optional<citlali::pipeline::NoiseAssignmentContext> noise_context;
+    if (make_noise_maps) {
+        noise_context.emplace(
+            citlali::pipeline::make_noise_assignment_context(
+                observation_identity.obsnum, iteration.fruit_iter,
+                "ordinary_mapmaking", static_cast<int>(omb.n_noise),
+                static_cast<std::size_t>(telescope.scan_indices.cols()),
+                static_cast<std::size_t>(calib.n_dets),
+                omb.randomize_dets));
+    }
 
     // progress bar
     tula::logging::progressbar pb(
@@ -55,10 +62,11 @@ void Lali::pipeline(
                     rtcdata, telescope, scan);
 
             // populate noise matrix (do outside of parallelized region for thread safety)
-            citlali::pipeline::populate_noise_map_signs(
-                rtcdata, omb, calib,
-                citlali::pipeline::noise_maps_enabled(*this),
-                rands, eng);
+            if (noise_context) {
+                citlali::pipeline::populate_noise_map_signs(
+                    rtcdata, omb, calib, true, *noise_context,
+                    static_cast<std::size_t>(scan));
+            }
 
             citlali::pipeline::populate_rtc_scan_samples(
                 rtcdata, kidsproc, rawobs, scan, telescope, alignment.start_indices,
@@ -76,6 +84,10 @@ void Lali::pipeline(
 
     output_writers.rethrow_if_failed();
     output_writers.verify_complete(output_expectations);
+    if (noise_context) {
+        citlali::pipeline::record_noise_assignment_completed(
+            citlali::pipeline::noise_plan(*this), *noise_context);
+    }
 
     if (citlali::pipeline::mapmaking_enabled(*this)) {
         // normalize maps
