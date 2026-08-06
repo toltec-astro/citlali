@@ -65,6 +65,11 @@ four-job campaign batch, before submitting the next batch. The later stopping
 point is a checksum-bound corpus evidence bundle. No 3C273 result alone
 authorizes a production change.
 
+Delivered `PacketCount` discontinuities are retained as transport diagnostics.
+They neither authorize a row reassociation nor by themselves invalidate a
+strictly monotonic, unique native detector-row-to-slot mapping; an actual
+missing or ambiguous admitted science row remains a fail-closed condition.
+
 The owner run directory is deliberately below the 3C273 analysis directory but
 is an explicit inventory exclusion. It may contain generated serial/Slurm
 scripts, execution identity, compact outputs, and archive metadata; it is not

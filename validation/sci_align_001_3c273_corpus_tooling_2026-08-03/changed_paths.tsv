@@ -17,7 +17,8 @@ A	tools/diagnostics/prepare_sci_align_001_148670_reproduction.py	owner-authorize
 A	tools/diagnostics/prepare_sci_align_001_3c273_replay_campaign.py	owner-authorized fixed 16-map source-isolated campaign preparation from 70/72 numbered-config policy/calibration authority, including reviewed support-crop retry subsets
 M	tools/diagnostics/test_sci_align_001_3c273_aggregation.py	aggregation/anomaly regression tests
 M	tools/diagnostics/test_sci_align_001_3c273_inventory.py	allowlist, canonical, exclusion, scheduler tests
-M	tools/diagnostics/test_sci_align_001_3c273_runner.py	delivered raw anomaly tests
+M	tools/diagnostics/test_sci_align_001_3c273_runner.py	delivered raw anomaly, packet-counter transport, and finite within-map predictor-output regression coverage
+M	tools/diagnostics/sci_align_001_3c273_common.py	retain non-unit delivered PacketCount increments as raw transport diagnostics without row reassociation; emit undefined within-map predictor correlation as unavailable
 M	tests/test_sci_align_exposure_provenance.cpp	telescope-support admission provenance contract
 M	tests/test_sci_align_t17_t18.cpp	closed native telescope-support detector admission contract
 A	tools/diagnostics/test_prepare_sci_align_001_148670_reproduction.py	exact replay input/configuration contract tests

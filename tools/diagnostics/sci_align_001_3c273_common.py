@@ -50,19 +50,31 @@ class RawLinkageError(ContractError):
     """Raised when enhanced raw linkage fails but core analysis may remain valid."""
 
 
-def _json_value(value: Any) -> Any:
+def _json_value(value: Any, location: str = "$") -> Any:
     if isinstance(value, Path):
         return str(value)
     if isinstance(value, np.generic):
-        return _json_value(value.item())
+        return _json_value(value.item(), location)
     if isinstance(value, np.ndarray):
-        return [_json_value(item) for item in value.tolist()]
+        return [
+            _json_value(item, f"{location}[{index}]")
+            for index, item in enumerate(value.tolist())
+        ]
     if isinstance(value, Mapping):
-        return {str(key): _json_value(item) for key, item in value.items()}
+        return {
+            str(key): _json_value(item, f"{location}.{key}")
+            for key, item in value.items()
+        }
     if isinstance(value, (list, tuple)):
-        return [_json_value(item) for item in value]
+        return [
+            _json_value(item, f"{location}[{index}]")
+            for index, item in enumerate(value)
+        ]
     if isinstance(value, float) and not math.isfinite(value):
-        raise ContractError("non-finite value is prohibited in deterministic output")
+        raise ContractError(
+            "non-finite value is prohibited in deterministic output "
+            f"at {location}"
+        )
     return value
 
 
@@ -1252,10 +1264,12 @@ def reconstruct_legacy_timestamp(
     packet_counts = np.asarray(packet_counts)
     if packet_counts.shape != (fields.shape[0],):
         raise ContractError("PacketCount cardinality differs from timestamp rows")
-    packet_u32 = _u32(packet_counts)
-    packet_step = _modular_difference(packet_u32[1:], packet_u32[:-1])
-    if np.any(packet_step != 1):
-        raise ContractError("PacketCount has a duplicate, reset, reversal, or gap")
+    # PacketCount is delivered transport metadata.  Its non-unit increments
+    # are counted and preserved by raw_counter_diagnostics(), but do not alter
+    # the delivered D[n]/Ts[n] pairing.  The strict reconstructed-time and
+    # native-to-slot checks below remain the Stage-A row-lineage boundary and
+    # still fail if an admitted science row is genuinely absent or ambiguous.
+    _u32(packet_counts)
     return result
 
 
@@ -2876,21 +2890,45 @@ def linear_predictor_diagnostic(
         }
     x = np.asarray([float(row[predictor]) for row in usable])
     y = np.asarray([float(row["timing_residual_sec"]) for row in usable])
-    if float(np.ptp(x)) <= np.finfo(float).eps:
+    if not np.all(np.isfinite(x)) or not np.all(np.isfinite(y)):
+        return {
+            "available": False,
+            "reason": "non_finite_predictor_or_response",
+            "predictor": predictor,
+            "network_count": len(usable),
+        }
+    x_scale = max(1.0, float(np.max(np.abs(x))))
+    if float(np.ptp(x)) <= np.finfo(float).eps * x_scale:
         return {
             "available": False,
             "reason": "predictor_has_no_network_leverage",
             "predictor": predictor,
             "network_count": len(usable),
         }
+    y_scale = max(1.0, float(np.max(np.abs(y))))
+    if float(np.ptp(y)) <= np.finfo(float).eps * y_scale:
+        return {
+            "available": False,
+            "reason": "response_has_no_network_leverage",
+            "predictor": predictor,
+            "network_count": len(usable),
+        }
     slope, intercept = np.polyfit(x, y, 1)
+    pearson = float(np.corrcoef(x, y)[0, 1])
+    if not math.isfinite(pearson):
+        return {
+            "available": False,
+            "reason": "correlation_undefined",
+            "predictor": predictor,
+            "network_count": len(usable),
+        }
     return {
         "available": True,
         "predictor": predictor,
         "network_count": len(usable),
         "slope": float(slope),
         "intercept_sec": float(intercept),
-        "pearson": float(np.corrcoef(x, y)[0, 1]),
+        "pearson": pearson,
         "preregistered_slot_relation_slope": -1.0
         if predictor == "native_to_assigned_slot_residual_sec"
         else None,

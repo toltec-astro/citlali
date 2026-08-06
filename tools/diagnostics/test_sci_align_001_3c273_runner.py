@@ -31,6 +31,7 @@ try:
         classify_scan_direction,
         explicit_missing_network_rows,
         group_selected_scans,
+        linear_predictor_diagnostic,
         parse_manifest,
         raw_counter_diagnostics,
         reconstruct_legacy_timestamp,
@@ -59,6 +60,7 @@ except ModuleNotFoundError:  # direct execution from tools/diagnostics
         classify_scan_direction,
         explicit_missing_network_rows,
         group_selected_scans,
+        linear_predictor_diagnostic,
         parse_manifest,
         raw_counter_diagnostics,
         reconstruct_legacy_timestamp,
@@ -198,7 +200,7 @@ class DirectionAndSupportTests(unittest.TestCase):
 
 
 class CounterAndProtocolTests(unittest.TestCase):
-    def test_packet_counter_wrap_is_modular_but_gaps_fail(self) -> None:
+    def test_packet_counter_wrap_and_gaps_are_transport_diagnostics(self) -> None:
         fields = np.zeros((3, 6), dtype=np.int64)
         fields[:, 0] = 100
         fields[:, 2] = [0, 1, 2]
@@ -208,12 +210,29 @@ class CounterAndProtocolTests(unittest.TestCase):
             [99.0, 100.0, 101.0],
         )
         fields[2, 3] += 1
-        with self.assertRaisesRegex(ContractError, "duplicate, reset, reversal, or gap"):
-            reconstruct_legacy_timestamp(fields, fpga_hz=1.0)
+        np.testing.assert_allclose(
+            reconstruct_legacy_timestamp(fields, fpga_hz=1.0),
+            [99.0, 100.0, 101.0],
+        )
 
     def test_deterministic_json_rejects_nonfinite_values(self) -> None:
-        with self.assertRaisesRegex(ContractError, "non-finite"):
+        with self.assertRaisesRegex(ContractError, r"non-finite.*\$\.value"):
             canonical_json({"value": np.float64(np.nan)})
+
+    def test_linear_predictor_reports_constant_response_as_unavailable(self) -> None:
+        diagnostic = linear_predictor_diagnostic(
+            [
+                {
+                    "available": True,
+                    "native_to_assigned_slot_residual_sec": value,
+                    "timing_residual_sec": 0.0,
+                }
+                for value in (-0.001, 0.0, 0.001)
+            ],
+            "native_to_assigned_slot_residual_sec",
+        )
+        self.assertFalse(diagnostic["available"])
+        self.assertEqual(diagnostic["reason"], "response_has_no_network_leverage")
 
     def test_counter_inventory_preserves_t0_and_pairs_transitions(self) -> None:
         fpga_hz = 1_000_000.0

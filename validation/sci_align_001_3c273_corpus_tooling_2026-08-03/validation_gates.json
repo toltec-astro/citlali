@@ -79,9 +79,14 @@
       "command": "cmake --build build --target citlali_cli citlali_test -j 8; build/tests/citlali_test; config preflight; focused replay-campaign tests",
       "result": "citlali_cli and citlali_test built; 617 enabled C++ tests passed (one disabled); the full config preflight passed 123 Python tests, four mode kits, eight compact compatibility cases, and all boundary audits; four focused replay-campaign tests passed. The default-false diagnostic telescope-support admission preserves original detector timestamps and row identity, excludes only unbracketed endpoint rows when enabled, and records source/admitted/excluded counts in provenance.",
       "status": "pass"
+    },
+    {
+      "command": "focused 3C273 runner, inventory, aggregation, and replay-campaign tests after 13-map Slurm failure audit",
+      "result": "64 tests passed. Non-unit delivered PacketCount increments are retained and counted as transport diagnostics while strict reconstructed-time and native-slot lineage checks remain fail-closed. Undefined within-map predictor correlations publish as unavailable rather than non-finite output; deterministic JSON errors now identify the offending field path.",
+      "status": "pass"
     }
   ],
   "no_unity_access": true,
   "schema_version": "sci-align-001-3c273-validation-gates-v3",
-  "validated_on": "2026-08-05"
+  "validated_on": "2026-08-06"
 }

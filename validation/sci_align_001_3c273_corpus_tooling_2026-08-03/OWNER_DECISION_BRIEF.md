@@ -41,6 +41,12 @@ Consequently:
   proves downstream preservation of that pair but cannot exclude an upstream
   FPGA metadata-to-integration association error.
 
+Non-unit delivered `PacketCount` increments are retained as transport-counter
+diagnostics.  They do not by themselves reassign, repair, or invalidate a
+monotonic, unique native-to-slot `D[n]`/`Ts[n]` mapping; a missing or ambiguous
+admitted science row still fails closed.  Packet-counter anomalies are not an
+FPGA metadata-to-integration conclusion.
+
 The previously measured 1.856 ms first-half/second-half difference is called
 within-observation timing variation here.  It is not evidence for clock drift
 unless raw counters contradict the shared-reference account.
