@@ -1,0 +1,1031 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,longtable,array}
+\usepackage[hidelinks]{hyperref}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Law}{\operatorname{Law}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\one}{\bm{1}}
+\newcommand{\zero}{\bm{0}}
+\newcommand{\ThetaV}{\boldsymbol{\Theta}}
+
+\title{SCI-NOI-002 Independent Mathematical Core\\
+Finite ensembles, covariance calibration, and consumer validity}
+\author{Independent Phase 1 audit derivation}
+\date{Frozen against application parent\\
+\texttt{d5015fe716971bf8ea617e8a187311bf5af05185}}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This document derives the conditions under which a finite conditional
+randomization ensemble can support an empirical variance, covariance,
+calibrated weight, signal-to-noise, significance, source-finding threshold,
+feedback, aperture uncertainty, or production-count claim.  It distinguishes
+uncentered second moments, centered randomization covariance, repeated-
+physical-noise covariance, marginal inverse variance, full precision, and
+consumer-specific effective precision.  It derives exact finite-stack scatter
+identities for arbitrary cross-realization dependence; identifies the special
+assumptions behind divisors $R$, $R-1$, weighted corrections, and analytic
+inverse-covariance corrections; and states the extra distributional and
+selection requirements for significance and adaptive consumers.
+
+The result is a requirements core, not an implementation finding.  It selects
+no estimator, calibration, threshold, feedback rule, aperture, production
+realization count, or default.  In particular, 64 is optional validation
+capacity only.  It is not a default, minimum, adequacy threshold, cap, or
+universal requirement.
+\end{abstract}
+
+\section{Authority, quarantine, and exclusive scope}
+
+The sole package-specific pre-core authority is the frozen
+\texttt{SCI-NOI-002-XAUD-002} handoff, SHA-256
+\texttt{9eb6c778409d344ce73387f44ac4a5429a89d43b8e768c19bf3da1ed6967c1e5}.
+It admits the SCI-NOI-001 R3 conditional-sign ensemble contract at commit
+\texttt{5a027c94ef9fc9c4a6e6cadc84af1c8a550d3508}, SHA-256
+\texttt{27263ab3bf29ac8f098463455e540f13e783241a688ef2bc5cb15b1f2a4319da}.
+R3 supplies the conditional ensemble law, its mean and covariance propagation,
+finite realized assignments, source-imprint caveat, and use-specific target
+projections.  It deliberately supplies no SCI-NOI-002 estimator or consumer
+policy.
+
+This derivation also conditions on the repository-level scientific contract:
+the accepted MAP \texttt{weight\_I} quantity is a nonprecision gridding and
+normalization coefficient.  Its inverse-squared signal unit is dimensional
+metadata, not evidence that it is inverse variance or precision.  Raw science
+validity, downstream numerical support, estimator validity, and consumer
+validity remain separate.  MAP remains conditioned on PTC/VAL and
+\texttt{existing\_use\_only}; JINC remains conditioned on SCI-MAP-002.  No
+FLT, FRUIT, or other downstream package is reopened here.
+
+No implementation source, package test, implementation diff, NOI-001 final
+source audit, NOI-001 repair material, or sealed
+\texttt{SCI-NOI-002-XAUD-001} evidence was used.  Consequently this document
+makes no statement about what the application computes.  It gives the
+independent equations against which a separately authorized trace can later
+be performed.
+
+\section{Conditional ensemble and target taxonomy}
+
+Let $Y^{(r)}\in\mathbb R^P$ be one completed observation, coadd, or filtered
+realization from the R3 \texttt{source\_imprinted\_current} ensemble, after a
+fixed projection onto a declared common identity, unit, support, response, and
+validity domain.  All equations are conditional on the exact realized state
+$\ThetaV$ required by R3.  The realization index is $r\in\{1,\ldots,R\}$,
+where $R$ is the completed count, not the requested or effective count.
+
+For a one-realization marginal law define
+\begin{align}
+  \mu_r &= \E[Y^{(r)}\mid\ThetaV],
+  \label{eq:marginal-mean}\\
+  K_{rr} &= \Cov(Y^{(r)},Y^{(r)}\mid\ThetaV),
+  \label{eq:marginal-covariance}\\
+  M_{rr} &= \E[Y^{(r)}Y^{(r)\mathsf T}\mid\ThetaV]
+          =K_{rr}+\mu_r\mu_r^{\mathsf T}.
+  \label{eq:marginal-second-moment}
+\end{align}
+Across realized assignment positions define the joint-design covariance
+\begin{equation}
+  \Gamma_{rs}
+  =\Cov(Y^{(r)},Y^{(s)}\mid\ThetaV),
+  \qquad 1\le r,s\le R.
+  \label{eq:cross-realization-covariance}
+\end{equation}
+Complement pairing, exact balance across realizations, orthogonal arrays,
+sampling without replacement, duplicate assignments, reused streams, and
+deterministic assignment lists can all make $\Gamma_{rs}\ne0$ for $r\ne s$.
+The one-realization covariance and the cross-realization design are distinct
+facts.
+
+For a named use $u$, let $L_u$ be its fixed linear projection and
+$\mathcal V_u$ its admitted validity domain.  The target need not be the
+conditional randomization covariance.  Write
+\begin{equation}
+  T_u^\star
+  =\Cov_{\star}(L_uY,L_uY\mid\ThetaV,\mathcal V_u)
+  \label{eq:consumer-target}
+\end{equation}
+for the independently authorized target covariance.  The subscript $\star$
+must say whether the target is conditional randomization, repeated physical
+noise, an externally calibrated empirical law, or some other named law.
+Unbiased estimation of the R3 conditional covariance does not by itself prove
+$L_uK_{rr}L_u^{\mathsf T}=T_u^\star$.
+
+At minimum, the following product meanings are distinct:
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.24\textwidth}
+                  >{\raggedright\arraybackslash}p{0.69\textwidth}}
+\toprule
+Quantity & Required meaning \\
+\midrule
+\endhead
+Uncentered ensemble second moment &
+$M=\E[YY^{\mathsf T}]$ or its declared finite-stack analogue.  It equals
+covariance only when the relevant mean is exactly zero. \\
+Centered randomization covariance &
+$K^\epsilon=\Cov_\epsilon(Y\mid\ThetaV)$ under the R3 assignment law, with
+the fixed realized data and operators in the conditioning state. \\
+Physical-noise covariance &
+Covariance under repeated physical noise at a named pre-realization state.
+R3 shows that this is not generally the conditional randomization covariance. \\
+Marginal variance &
+$v_p=K_{pp}$ for one declared pixel, coefficient, or projected statistic,
+with squared signal unit. \\
+Inverse marginal variance &
+$w_p^{\rm marg}=1/v_p$ on a separately valid domain.  It is not a full
+precision matrix and is biased when formed by naively inverting a noisy
+variance estimate. \\
+Precision matrix &
+$\Pi=K^{-1}$, or a declared generalized/regularized inverse on a stated
+subspace.  In general $\Pi_{pp}\ne1/K_{pp}$. \\
+Consumer effective precision &
+$w_u=[L_uKL_u^{\mathsf T}]^{-1}$ for a scalar consumer, or the corresponding
+matrix on its projected domain.  It is tied to the exact operator $L_u$. \\
+MAP coefficient &
+The admitted nonprecision gridding/normalization \texttt{weight\_I}.  It is
+none of the preceding empirical-noise quantities without separate authority. \\
+\bottomrule
+\end{longtable}
+
+\section{Exact finite-stack identities}
+
+\subsection{Equal-weight empirical centering}
+
+Define
+\begin{align}
+  \bar Y &= \frac1R\sum_{r=1}^R Y^{(r)},
+  \label{eq:sample-mean}\\
+  S_R &= \sum_{r=1}^R
+    (Y^{(r)}-\bar Y)(Y^{(r)}-\bar Y)^{\mathsf T}.
+  \label{eq:centered-scatter}
+\end{align}
+Let $\bar\mu=R^{-1}\sum_r\mu_r$.  Direct expansion gives
+\begin{align}
+  \E[S_R\mid\ThetaV]
+  ={}&\sum_{r=1}^R\Gamma_{rr}
+     -\frac1R\sum_{r=1}^R\sum_{s=1}^R\Gamma_{rs}
+  \nonumber\\
+  &+\sum_{r=1}^R
+    (\mu_r-\bar\mu)(\mu_r-\bar\mu)^{\mathsf T}.
+  \label{eq:general-scatter-expectation}
+\end{align}
+Thus no divisor can be selected from $R$ alone.  Marginal means, marginal
+covariances, and the complete cross-realization design determine the expected
+scatter.
+
+If all positions have common mean $\mu$ and common marginal covariance $K$,
+Equation~\eqref{eq:general-scatter-expectation} reduces to
+\begin{equation}
+  \E[S_R\mid\ThetaV]
+  =RK-\frac1R\sum_{r,s}\Gamma_{rs}.
+  \label{eq:common-marginal-scatter}
+\end{equation}
+Only for independent assignments, $\Gamma_{rs}=0$ for $r\ne s$, does
+\begin{equation}
+  \E[S_R]=(R-1)K,
+  \qquad
+  \widehat K_{\rm iid}=\frac{S_R}{R-1}
+  \label{eq:bessel-case}
+\end{equation}
+give the ordinary unbiased covariance estimator for $R\ge2$.  The divisor
+$R$ instead gives the maximum-likelihood covariance under an independent
+Gaussian model and has expectation $(R-1)K/R$ when the mean is estimated.
+Calling either formula empirical variance without recording the mean and
+design assumptions is incomplete.
+
+For an exchangeable joint design with
+\begin{equation}
+  \Gamma_{rr}=K,
+  \qquad
+  \Gamma_{rs}=C\quad(r\ne s),
+  \label{eq:exchangeable-design}
+\end{equation}
+the exact result is
+\begin{equation}
+  \E[S_R]=(R-1)(K-C).
+  \label{eq:exchangeable-scatter}
+\end{equation}
+The $R-1$ estimator therefore targets $K-C$, not $K$.  If and only if a
+separate authority establishes $C=\rho K$ with known scalar $\rho$, then
+\begin{equation}
+  \widehat K
+  =\frac{S_R}{(R-1)(1-\rho)}
+  \label{eq:scalar-correlation-correction}
+\end{equation}
+is an unbiased scalar correction when $\rho\ne1$.  A nonproportional $C$
+cannot be repaired by replacing $R$ with one scalar effective count.  A known
+joint design may instead define a matrix- or operator-valued correction on a
+declared subspace, but its invertibility, conditioning, and bias are part of
+the estimator contract.
+
+Sampling from a finite assignment population is a concrete illustration.  Let
+$\Omega$ contain $M_\Omega$ equally weighted maps, let $K_\Omega$ denote the
+covariance of one uniform draw with population divisor $M_\Omega$, and draw
+$R$ distinct assignments uniformly without replacement.  Then
+\begin{equation}
+  \Gamma_{rs}=-\frac{K_\Omega}{M_\Omega-1}
+  \quad(r\ne s),
+  \label{eq:without-replacement-cross-covariance}
+\end{equation}
+and the centered scatter obeys
+\begin{equation}
+  \E[S_R]
+  =(R-1)\frac{M_\Omega}{M_\Omega-1}K_\Omega.
+  \label{eq:finite-population-scatter}
+\end{equation}
+Thus $S_R/(R-1)$ is unbiased for the finite-population covariance defined with
+divisor $M_\Omega-1$, while
+$(M_\Omega-1)S_R/[M_\Omega(R-1)]$ targets the marginal uniform-draw covariance
+$K_\Omega$.  Sampling with replacement, sampling without replacement, and
+complete deterministic enumeration have different normalizations even when
+their assignment set is the same.
+
+The sampling covariance of the empirical mean is independently
+\begin{equation}
+  \Cov(\bar Y\mid\ThetaV)
+  =\frac1{R^2}\sum_{r,s}\Gamma_{rs}.
+  \label{eq:mean-covariance}
+\end{equation}
+For a fixed scalar projection $h_r=\ell^{\mathsf T}Y^{(r)}$ with common
+marginal variance $v_h=\ell^{\mathsf T}K\ell$, a mean-specific information
+descriptor is
+\begin{equation}
+  R_{\rm eff}^{\rm mean}(\ell)
+  =\frac{R^2v_h}{\sum_{r,s}\ell^{\mathsf T}\Gamma_{rs}\ell},
+  \label{eq:mean-effective-count}
+\end{equation}
+when the denominator is positive.  This can exceed $R$ for an antithetic
+design or collapse to one for duplicates.  It does not give the effective
+count for a variance, tail, covariance inverse, or source finder.
+
+\subsection{Known mean, uncentered moments, and source imprint}
+
+For a fixed reference mean $m_0$, define
+\begin{equation}
+  \widehat K(m_0)
+  =\frac1R\sum_{r=1}^R
+    (Y^{(r)}-m_0)(Y^{(r)}-m_0)^{\mathsf T}.
+  \label{eq:known-mean-estimator}
+\end{equation}
+Its expectation is
+\begin{equation}
+  \E[\widehat K(m_0)]
+  =\frac1R\sum_r\left[
+    \Gamma_{rr}+(\mu_r-m_0)(\mu_r-m_0)^{\mathsf T}
+  \right].
+  \label{eq:known-mean-expectation}
+\end{equation}
+Cross-realization dependence affects its Monte Carlo uncertainty but not this
+marginal expectation.  For a common marginal covariance and a truly known
+$m_0=\mu$, it is unbiased for $K$ even when assignment positions are
+dependent.  For $m_0=0$ it is the uncentered second moment.  R3 permits a
+centered target sign law while a finite stack has a nonzero empirical sign
+mean, and R3 also proves that deterministic source content can enter the
+conditional second moment and covariance.  Consequently, choosing known zero
+mean rather than empirical centering is a substantive target decision, not a
+mere normalization preference.
+
+\subsection{Unequal realization weights}
+
+Let $a_r\ge0$, $\sum_ra_r=1$, and define
+\begin{align}
+  \bar Y_a &=\sum_ra_rY^{(r)},\\
+  S_a &=\sum_ra_r(Y^{(r)}-\bar Y_a)
+                    (Y^{(r)}-\bar Y_a)^{\mathsf T}.
+  \label{eq:weighted-scatter}
+\end{align}
+With $\bar\mu_a=\sum_ra_r\mu_r$,
+\begin{align}
+  \E[S_a]={}&\sum_ra_r\Gamma_{rr}
+  -\sum_{r,s}a_ra_s\Gamma_{rs}
+  \nonumber\\
+  &+\sum_ra_r(\mu_r-\bar\mu_a)(\mu_r-\bar\mu_a)^{\mathsf T}.
+  \label{eq:weighted-scatter-expectation}
+\end{align}
+For independent identically distributed positions this becomes
+\begin{equation}
+  \E[S_a]=\left(1-\sum_ra_r^2\right)K,
+  \qquad
+  \widehat K_a=\frac{S_a}{1-\sum_ra_r^2}.
+  \label{eq:weighted-iid-correction}
+\end{equation}
+The often quoted $R_w=(\sum_ra_r)^2/\sum_ra_r^2=1/\sum_ra_r^2$ is therefore
+only a weight-concentration count in this case.  It does not correct unknown
+cross-realization covariance or data-derived weights.  If $a_r$ is estimated
+from the same realization stack, Equation~\eqref{eq:weighted-scatter-expectation}
+does not apply conditionally without including the weight--map joint law.
+
+\subsection{Missing realizations and changing support}
+
+Every estimator must use completed realization identities.  If the valid set
+depends on pixel or product, let $R_p$ be the count at pixel $p$ and $R_{pq}$
+the common count for a covariance pair.  Substituting one global $R$ is then
+wrong.  Pairwise deletion can produce a non-positive-semidefinite matrix
+because different entries use different realization populations.  A valid
+contract must choose one of: a fixed complete-case domain; a declared
+missingness model and estimator; or separate products whose supports and
+pairwise populations are explicit.  A missing required realization is not a
+numerical zero, and a partially persisted stack cannot claim its requested
+cardinality.
+
+\section{Rank, inversion, and regularization}
+
+For $P$ projected coordinates,
+\begin{equation}
+  \rank(S_R)\le\min(P,R-1),
+  \label{eq:rank-bound}
+\end{equation}
+with a potentially smaller bound from duplicate, complement-equivalent, or
+otherwise restricted even-moment assignments.  Thus a centered empirical
+covariance cannot generically supply a full $P$-dimensional precision matrix
+when $R\le P$.  A pseudoinverse then describes only the realized covariance
+span; it is not full precision.  Binning, low-rank modeling, tapering,
+shrinkage, or another regularizer changes the estimator and must name its
+target, hyperparameter rule, bias, rank, and out-of-sample validation.
+
+The independent Gaussian limit gives a useful falsification benchmark, not a
+default model.  If $Y^{(r)}\stackrel{\rm iid}{\sim}\mathcal N_P(\mu,K)$ and
+\begin{equation}
+  \widehat K=\frac{S_R}{R-1},
+  \label{eq:gaussian-sample-covariance}
+\end{equation}
+then $(R-1)\widehat K$ is Wishart with $R-1$ degrees of freedom.  For one
+coordinate with variance $v$,
+\begin{equation}
+  \E[\widehat v^{-1}]
+  =\frac{R-1}{R-3}\,v^{-1},
+  \qquad R>3.
+  \label{eq:inverse-variance-bias}
+\end{equation}
+Hence naive inversion is biased upward even when the variance estimator is
+unbiased; $(R-3)\widehat v^{-1}/(R-1)$ is unbiased only in this exact
+univariate iid Gaussian setting.  For a full $P$-dimensional inverse,
+\begin{equation}
+  \E[\widehat K^{-1}]
+  =\frac{R-1}{R-P-2}\,K^{-1},
+  \qquad R>P+2,
+  \label{eq:inverse-covariance-bias}
+\end{equation}
+so $(R-P-2)\widehat K^{-1}/(R-1)$ is the corresponding analytic correction.
+Replacing $R$ by a generic effective count in these formulae is unjustified:
+correlated randomization designs need not be Wishart, and non-Gaussian sign
+ensembles need not have Gaussian fourth moments.
+
+Under the same iid Gaussian benchmark,
+\begin{equation}
+  \Cov(\widehat K_{ij},\widehat K_{k\ell})
+  =\frac{K_{ik}K_{j\ell}+K_{i\ell}K_{jk}}{R-1},
+  \label{eq:wishart-entry-covariance}
+\end{equation}
+and
+\begin{equation}
+  \frac{\operatorname{sd}(\widehat v)}{v}
+  =\sqrt{\frac{2}{R-1}}.
+  \label{eq:variance-relative-error}
+\end{equation}
+For a dependent ensemble, uncertainty of a variance estimate depends on the
+cross-realization covariance of quadratic summaries
+$q_r=(\ell^{\mathsf T}(Y^{(r)}-\mu))^2$, hence on fourth-order joint moments.
+If the $q_r$ have common marginal variance $\tau_q^2$ and covariance matrix
+$\Lambda_q$, the analogous descriptor
+\begin{equation}
+  R_{\rm eff}^{q}(\ell)
+  =\frac{R^2\tau_q^2}{\one^{\mathsf T}\Lambda_q\one}
+  \label{eq:quadratic-effective-count}
+\end{equation}
+applies only to the Monte Carlo mean of that exact quadratic summary when the
+denominator is positive.  $R_{\rm eff}^{\rm mean}$ cannot substitute for it,
+and neither effective count supplies a finite-$R$ bias correction by itself.
+
+\section{Calibration and truthful weight identities}
+
+Let $\widetilde K_u$ be a finite-stack estimate on the domain of consumer
+$u$.  A calibration is an explicit, independently governed map
+\begin{equation}
+  \widehat T_u
+  =\mathcal C_u(\widetilde K_u;D_{\rm cal},\Xi_u),
+  \label{eq:calibration-operator}
+\end{equation}
+where $D_{\rm cal}$ identifies the calibration data and $\Xi_u$ records the
+target law, response, region, estimator version, and fitting assumptions.  A
+calibration claim requires evidence that $\widehat T_u$ estimates
+$T_u^\star$, including overlap or independence between $D_{\rm cal}$, the
+science numerator, and the ensemble used for $\widetilde K_u$.
+
+A scalar scale calibration has the special form
+\begin{equation}
+  \widehat T_u=\widehat\alpha_u\widetilde K_u,
+  \qquad \widehat\alpha_u>0.
+  \label{eq:scalar-calibration}
+\end{equation}
+It can correct a scale functional for which proportionality has been
+established.  It cannot repair a wrong correlation shape, source-imprint
+morphology, support mismatch, response error, or tail law.  A spatially varying
+calibration is a larger covariance model and needs correspondingly stronger
+identifiability and validation.
+
+Once a calibrated covariance is valid, three common weight constructions are
+\begin{align}
+  \widehat w_p^{\rm marg}
+  &=\frac{1}{\widehat T_{u,pp}},
+  \label{eq:marginal-inverse-variance}\\
+  \widehat\Pi_u
+  &=\widehat T_u^{-1},
+  \label{eq:precision-estimate}\\
+  \widehat w_u^{\rm eff}
+  &=\frac{1}{\ell_u^{\mathsf}\widehat T_u\ell_u}
+  \quad\text{for a scalar fixed projection }\ell_u.
+  \label{eq:effective-consumer-weight}
+\end{align}
+Equation~\eqref{eq:marginal-inverse-variance} is an inverse marginal variance,
+Equation~\eqref{eq:precision-estimate} is a full or declared regularized
+precision, and Equation~\eqref{eq:effective-consumer-weight} is an effective
+precision for one operator.  They are not interchangeable.  Each requires
+finite positive denominator or a declared positive-definite subspace, and
+each carries inverse squared output unit.  Invalid or unavailable estimates
+use an explicit validity state; a zero, infinity, NaN, or negative number is
+not an undocumented sentinel.
+
+At least the following metadata is required before a quantity may be labeled
+empirical variance, calibrated weight, or precision:
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.22\textwidth}
+                  >{\raggedright\arraybackslash}p{0.71\textwidth}}
+\toprule
+Field class & Required fact \\
+\midrule
+\endhead
+Target & Conditional randomization, repeated physical noise, calibrated null,
+or another exact law; observation/coadd/filter stage and raw-parent identity. \\
+Centering & Known reference mean, empirical mean, or uncentered second moment;
+the mean estimate and whether deterministic source imprint is admitted. \\
+Finite design & Requested/effective/completed $R$; joint assignment design;
+duplicates, complements, unique even patterns, weighting, missingness, and the
+exact normalization or design correction. \\
+Covariance domain & Pixel, block, stationary kernel, low-rank subspace, full
+matrix, or fixed consumer projection; units, shape, frame, indexing, response,
+support, and validity. \\
+Calibration & Calibration data identity; independence/overlap; scalar,
+spatial, matrix, or distributional transform; estimator/version and its
+uncertainty. \\
+Regularization & None, pseudoinverse, shrinkage, taper, binning, spectral
+model, or other rule; rank and positive-definiteness policy. \\
+Output label & Second moment, randomization covariance, physical covariance,
+marginal inverse variance, precision, effective consumer weight, formal
+standardized signal, or empirical S/N. \\
+\bottomrule
+\end{longtable}
+
+The word ``empirical'' identifies how a quantity was estimated; it does not
+identify the target law or prove calibration.  The word ``weight'' identifies
+neither marginal variance nor precision.  Those meanings must be explicit.
+
+\section{Signal-to-noise and significance}
+
+\subsection{Fixed scalar signal estimator}
+
+Let $D$ be a science data vector on a valid domain, and let a fixed linear
+signal estimator be
+\begin{equation}
+  \widehat a=\ell^{\mathsf T}D.
+  \label{eq:linear-amplitude}
+\end{equation}
+For target covariance $T_0$ under a declared null hypothesis $H_0$, its noise
+variance is
+\begin{equation}
+  \sigma_a^2=\ell^{\mathsf T}T_0\ell.
+  \label{eq:linear-amplitude-variance}
+\end{equation}
+The standardized ratio
+\begin{equation}
+  Z_{\rm plug}=\frac{\widehat a-a_0}{\widehat\sigma_a}
+  \label{eq:plugin-standard-score}
+\end{equation}
+is an S/N-like statistic.  It is statistical significance only after the
+null law of the complete statistic is established.  If $T_0$ is known and
+$\widehat a$ is Gaussian with null mean $a_0$, then $Z$ is standard normal.
+If $T_0$ is estimated, the numerator shares data with the denominator, the
+position or template was selected, or the conditional ensemble is non-Gaussian,
+the standard-normal conclusion does not follow.  A Student-$t$, Hotelling,
+random-field, bootstrap, randomization, or empirical-null calibration requires
+its own exact assumptions; none is selected here.
+
+For a fixed template $t$ and known positive-definite $T_0$, the generalized
+least-squares amplitude is
+\begin{equation}
+  \widehat a_{\rm GLS}
+  =\frac{t^{\mathsf T}T_0^{-1}D}
+         {t^{\mathsf T}T_0^{-1}t},
+  \qquad
+  \Var_0(\widehat a_{\rm GLS})
+  =\frac{1}{t^{\mathsf T}T_0^{-1}t}.
+  \label{eq:gls-amplitude}
+\end{equation}
+This identity requires the template, response, support, and covariance to
+refer to the same realized operator chain.  Plugging a noisy, singular, or
+regularized covariance estimate into Equation~\eqref{eq:gls-amplitude}
+changes the estimator and its null law.  The same ensemble cannot validate
+that plug-in law merely because it supplied the covariance matrix.
+
+The repository convention permits the truthful label
+\texttt{formal\_standardized\_signal} for a signal multiplied by the square
+root of a formal mapmaker weight when empirical noise products are unavailable.
+That label is not statistical significance.  A product called
+\texttt{sig2noise} requires an empirically calibrated uncertainty for the
+exact numerator and response, plus the target and validity facts above.
+
+\subsection{Thresholds, searches, and multiplicity}
+
+A threshold belongs to a statistic and a decision loss, not to a map name.
+For a fixed location, a one-sided threshold $q_\alpha$ may be defined by
+\begin{equation}
+  \Pr_{H_0}(Z\ge q_\alpha\mid\ThetaV,\mathcal V)\le\alpha.
+  \label{eq:pointwise-threshold}
+\end{equation}
+A source finder usually searches positions, scales, templates, or iterations.
+If
+\begin{equation}
+  Z_{\max}=\max_{j\in\mathcal J(D)}Z_j,
+  \label{eq:search-maximum}
+\end{equation}
+then a global false-alarm threshold requires the null law of $Z_{\max}$,
+including spatial covariance, search mask, boundaries, template bank,
+selection rule, and any data-dependent set $\mathcal J(D)$.  Pointwise
+Gaussian tail labels do not supply family-wise error, false-discovery rate,
+completeness, or purity.  Threshold metadata must therefore name the statistic,
+tail direction, null, search domain, multiplicity policy, calibration sample,
+and version.
+
+Source finding also conditions later photometry on a selection event.  Flux
+and S/N reported at a detected maximum are subject to maximization and
+selection bias.  A valid catalog claim must calibrate detection and estimation
+jointly or separate discovery from estimation with an approved split or
+cross-fitting design.
+
+\subsection{Adaptive masks and feedback}
+
+Suppose a thresholded source set or mask updates the next state according to
+\begin{equation}
+  \ThetaV_{k+1}
+  =\Psi\!\left(\ThetaV_k,
+    \mathcal F(D,\widehat T_k,q_k)\right),
+  \label{eq:feedback-map}
+\end{equation}
+where $\mathcal F$ is a finder or classifier.  The R3 conditional covariance
+at fixed $\ThetaV_k$ does not give the law of the adaptive sequence.  Noise
+estimation, S/N, thresholding, masking/modeling, and the next noise estimate
+form a closed statistical loop.  Valid feedback requires one of the following
+independently approved designs:
+\begin{itemize}
+\item replay the complete adaptive procedure under a null or injected-signal
+law, including stopping and every data-dependent operator;
+\item estimate the noise and make feedback decisions from independent splits;
+\item use cross-fitting with preserved fold identity and a proved aggregation
+rule; or
+\item establish another joint selective-inference law for the exact update.
+\end{itemize}
+The contract must separately define convergence, maximum iterations, failure,
+oscillation, source preservation, and false-selection behavior.  An S/N value
+alone is not a feedback or fruit-loop convergence criterion, and this core
+does not authorize any FRUIT behavior.
+
+\section{Aperture and other projected uncertainties}
+
+Let $m\in\mathbb R^P$ be a map with target covariance $T$, and let
+$a\in\mathbb R^P$ encode a fixed aperture, background subtraction, pixel-area
+factor, mask, and any deterministic response normalization.  The extracted
+quantity is
+\begin{equation}
+  \widehat f=a^{\mathsf T}m,
+  \qquad
+  \Var(\widehat f)=a^{\mathsf T}Ta.
+  \label{eq:aperture-variance}
+\end{equation}
+Equivalently,
+\begin{equation}
+  a^{\mathsf T}Ta
+  =\sum_pa_p^2T_{pp}
+   +2\sum_{p<q}a_pa_qT_{pq}.
+  \label{eq:aperture-cross-terms}
+\end{equation}
+Pixelwise variances are therefore insufficient unless off-diagonal terms are
+proved irrelevant for that exact aperture and background operator.  A global
+scale match is likewise insufficient when the correlation shape is wrong.
+
+If $a^{\mathsf T}t$ is the response to a source template $t$, a response-
+corrected flux and variance are
+\begin{equation}
+  \widehat F=\frac{a^{\mathsf T}m}{a^{\mathsf T}t},
+  \qquad
+  \Var(\widehat F)
+  =\frac{a^{\mathsf T}Ta}{(a^{\mathsf T}t)^2},
+  \label{eq:response-corrected-aperture}
+\end{equation}
+provided $a^{\mathsf T}t$ is fixed, finite, nonzero, and uses the same filter
+and map response.  A fitted or data-selected aperture, centroid, radius,
+background annulus, or template is random; its uncertainty requires the joint
+procedure rather than Equation~\eqref{eq:aperture-variance} with the selected
+operator treated as fixed.
+
+An ensemble-based aperture estimator applies the exact same fixed $a$ to
+every compatible realization and then estimates the scalar variance with the
+finite-design rules of this document.  It is admissible only if R3 covariance
+adequacy holds on the $a$ projection, source imprint and calibration are
+controlled, the realized support is common, and the completed assignment
+design gives adequate quadratic-statistic information.  No universal pixel
+count, aperture size, or realization count follows.
+
+\section{Use-specific adequacy hierarchy}
+
+For each claimed use $u$, define a complete object
+\begin{equation}
+  \mathcal A_u=
+  (\ThetaV,L_u,\mathcal V_u,\mathcal P_u^\star,
+   \widehat T_u,\mathcal C_u,\mathcal D_R,\mathcal G_u),
+  \label{eq:adequacy-object}
+\end{equation}
+where $\mathcal P_u^\star$ is the target law, $\mathcal D_R$ is the finite
+joint assignment design, and $\mathcal G_u$ is the downstream decision rule.
+The following levels are distinct:
+\begin{enumerate}
+\item \textbf{Identity adequate:} exact parent, operator, response, unit,
+shape, indexing, support, validity, realization identity, and provenance match.
+\item \textbf{Mean adequate:} the projected ensemble mean equals the target
+mean to an owner-approved criterion, including any source-imprint condition.
+\item \textbf{Scale adequate:} one predeclared scalar functional of projected
+covariance matches the target.  This can support only that scale use.
+\item \textbf{Marginal-variance adequate:} the required covariance diagonal
+matches.  This does not establish off-diagonal covariance or precision.
+\item \textbf{Covariance adequate:} $L_uK^\epsilon L_u^{\mathsf T}=T_u^\star$
+on the complete use domain, or meets a preregistered approximation criterion.
+\item \textbf{Precision adequate:} covariance estimation, rank, regularization,
+and inversion error are acceptable for the exact inverse problem.
+\item \textbf{Distribution/tail adequate:} the complete projected null law,
+including estimator and selection, is adequate for the claimed tail or
+interval probability.
+\item \textbf{Adaptive-procedure adequate:} the full update, stopping, and
+selection sequence has an accepted joint law and operating characteristics.
+\end{enumerate}
+Scale adequacy does not imply marginal adequacy; marginal adequacy does not
+imply covariance or precision adequacy; covariance adequacy does not imply a
+tail law; and a fixed-statistic tail law does not imply adaptive-procedure
+adequacy.  Distributional adequacy implies lower moment adequacy only when the
+required moments exist and the same conditioning domain is used.
+
+The minimum level differs by use:
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.28\textwidth}
+                  >{\raggedright\arraybackslash}p{0.65\textwidth}}
+\toprule
+Claimed use & Minimum independent requirement \\
+\midrule
+\endhead
+Pixel variance diagnostic & Identity, declared centering/normalization, and
+marginal randomization-variance estimation; no physical-noise claim implied. \\
+Calibrated inverse-variance map & Marginal target adequacy, validated
+calibration, inversion-bias treatment, and explicit nonprecision distinction. \\
+Covariance-aware filter or GLS & Covariance and precision adequacy on the
+filter/template subspace, including regularization and response. \\
+Pixel S/N & Calibrated numerator variance for the exact pixel statistic;
+truthful S/N label without an automatic significance claim. \\
+Significance or source threshold & Distribution/tail adequacy plus null,
+selection, search, and multiplicity calibration. \\
+Aperture uncertainty & Covariance adequacy on the complete aperture,
+background, and response projection; joint treatment if the aperture is fit. \\
+Feedback or iterative masking & Adaptive-procedure adequacy or an approved
+independence/cross-fitting design. \\
+Production default & Every enabled consumer's level above, plus bounded Monte
+Carlo uncertainty, resource/failure policy, and owner acceptance. \\
+\bottomrule
+\end{longtable}
+
+\section{Production realization-count and default decisions}
+
+No count is scientifically meaningful without a named target, assignment
+design, estimator, consumer, and error criterion.  A production-count decision
+must proceed in this order:
+\begin{enumerate}
+\item enumerate every enabled consumer and the adequacy level it claims;
+\item fix the conditional ensemble, joint assignment design, target law,
+centering, covariance estimator, calibration, and regularization;
+\item select predeclared error metrics for the actual consumer functionals,
+including bias, Monte Carlo dispersion, rank/conditioning, tail resolution,
+and failure probability;
+\item set owner-approved tolerances and confidence or coverage levels without
+using the candidate count to choose a passing criterion;
+\item derive or measure the use-specific information under the joint design,
+including unique assignments and dependence of both linear and quadratic
+summaries;
+\item include requested, effective, completed, missing, duplicate, complement,
+and use-specific effective counts in the decision;
+\item specify resource, persistence, partial-failure, retry, and reproducibility
+policy; and
+\item validate the chosen fixed or adaptive stopping rule on representative
+declared domains before making it a default.
+\end{enumerate}
+
+Different consumers can require different counts.  A single production stack
+may support a pixel-scale diagnostic but not a covariance inverse, aperture,
+or rare-tail threshold.  If one count is shared, its accepted scope is the
+intersection of the uses it actually satisfies; it is not promoted by the
+least demanding consumer.  A requested count is intent, an effective count is
+the admitted plan, a completed count is realized state, and a unique or
+effective count is a use-specific information descriptor.
+
+Some estimator-specific algebraic boundaries are exact but are not universal
+production minima:
+\begin{itemize}
+\item $R=1$ has zero empirically centered scatter and no centered sample-
+variance degree of freedom, although a known-mean second moment can be formed;
+\item the iid $R-1$ covariance requires $R\ge2$;
+\item a generic centered $P$-dimensional covariance requires $R\ge P+1$ even
+to have possible full rank;
+\item the iid Gaussian mean-unbiased full inverse in
+Equation~\eqref{eq:inverse-covariance-bias} requires $R>P+2$; and
+\item shrinkage or a parametric covariance model can operate below those rank
+bounds only by making additional assumptions and a different claim.
+\end{itemize}
+
+For iid Gaussian scalar variance, Equation~\eqref{eq:variance-relative-error}
+implies the approximate planning relation
+\begin{equation}
+  R\gtrsim1+\frac{2}{\delta_v^2}
+  \label{eq:variance-count-planning}
+\end{equation}
+for relative standard deviation at most $\delta_v$.  This is an analytic
+benchmark only.  Correlated assignments, non-Gaussian fourth moments,
+calibration uncertainty, source imprint, and spatial pooling can make the
+actual requirement larger or qualitatively different.
+
+Tail calibration has a separate information scale.  With $R$ independent
+draws, an empirical exceedance frequency changes in increments of $1/R$.
+If zero exceedances are observed for a fixed event with probability $p$, the
+exact iid probability of that result is $(1-p)^R$; a one-sided level
+$1-\alpha$ upper bound is
+\begin{equation}
+  p_{\rm upper}=1-\alpha^{1/R}.
+  \label{eq:zero-exceedance-bound}
+\end{equation}
+Dependence reduces or otherwise changes this resolution.  A finite stack that
+is useful for variance-scale validation can therefore be incapable of
+calibrating a rare source-finding tail.
+
+A count of 64 illustrates why a count cannot authorize itself.  Under the
+ideal iid Gaussian scalar benchmark, its variance estimate has relative
+standard deviation $\sqrt{2/63}\simeq0.178$ before calibration uncertainty.
+Its raw empirical exceedance frequency moves in steps of $1/64$.  These facts
+neither reject nor approve 64 for any use; they only show that 64 is optional
+capacity whose adequacy must be assessed against a declared purpose.  It is
+never presumed to be a production default, minimum, adequacy threshold, cap,
+or universal requirement.
+
+An adaptive count may stop when a preregistered precision diagnostic is met,
+but the stopping statistic, minimum/maximum resource bounds, dependence-aware
+confidence rule, failure route, and inference conditional on stopping must be
+declared.  Stopping after inspecting a favorable weight, S/N, or tail result
+without such a rule creates selection bias and cannot establish a default.
+
+\section{Analytic limits}
+
+Any later source trace or proportional fixture plan must recover the following
+limits before an empirical or production interpretation is considered:
+\begin{enumerate}
+\item \textbf{Zero input.}  If every R3 realization is the zero vector, all
+means, moments, scatters, projected variances, and aperture variances vanish;
+no inverse weight is valid because the zero variance requires a declared
+degenerate model rather than division by zero.
+
+\item \textbf{One realization.}  $R=1$ gives $S_R=0$ identically.  A formula
+that returns a positive centered empirical variance from one completed map is
+using an unstated prior, pooling rule, known-mean moment, or external model.
+
+\item \textbf{Independent common law.}  For iid realizations with estimated
+mean, $S_R/(R-1)$ is unbiased for $K$ and $S_R/R$ is biased low by
+$(R-1)/R$.  This is the only ordinary Bessel case.
+
+\item \textbf{Known centered law.}  If $\mu=0$ is exact, the uncentered
+$R^{-1}\sum_rY^{(r)}Y^{(r)\mathsf T}$ is unbiased for $K$ regardless of
+cross-position dependence in its marginal expectation, but dependence still
+controls its Monte Carlo error and deterministic source imprint can make the
+target inappropriate for physical noise.
+
+\item \textbf{Exact duplicates.}  If $Y^{(r)}=Y^{(1)}$ for every $r$, then
+$S_R=0$ and the mean-specific information is at most one realization.  A
+large completed count does not restore information.
+
+\item \textbf{One complement pair.}  For $R=2$ with
+$Y^{(2)}=-Y^{(1)}= -Y$, $\bar Y=0$ and
+\begin{equation}
+  S_2=2YY^{\mathsf T}.
+  \label{eq:complement-pair-scatter}
+\end{equation}
+If the pair exactly enumerates a symmetric two-point marginal law, the
+uncentered average $YY^{\mathsf T}$ is its covariance, whereas the iid
+$R-1$ formula gives $2YY^{\mathsf T}$.  Complement pairing can make odd
+moments exact while contributing only one distinct even-moment pattern.
+
+\item \textbf{Exchangeable correlation.}  Common cross-covariance $C$ gives
+Equation~\eqref{eq:exchangeable-scatter}; positive $C$ suppresses empirical
+scatter and negative $C$ inflates it.  Unless $C$ is known and proportional to
+$K$, a scalar effective-count correction is false.
+
+\item \textbf{Rank.}  Centering $R$ maps supplies at most $R-1$ covariance
+directions.  Any claimed full precision beyond that span must expose its
+model or regularization.
+
+\item \textbf{Linear projection.}  For fixed $L$,
+\begin{equation}
+  \Cov(LY)=LKL^{\mathsf T}.
+  \label{eq:linear-projection-covariance}
+\end{equation}
+Two covariances with identical diagonals can give different aperture,
+matched-filter, and smoothed-map variances.  A diagonal match cannot validate
+those consumers.
+
+\item \textbf{Scalar rescaling.}  If $T^\star$ is not proportional to
+$\widetilde K$, no scalar $\alpha$ makes
+$\alpha\widetilde K=T^\star$.  Global scale calibration cannot repair a
+correlation-shape or morphology error.
+
+\item \textbf{Source imprint.}  R3's deterministic-source term can elevate a
+conditional second moment or covariance around source morphology even under a
+centered sign law.  Inverting that elevation can create an apparent source-
+shaped anti-weight.  Absence of the symptom does not prove source-free
+physical covariance because filtering, normalization, support, finite design,
+or calibration can hide it.
+
+\item \textbf{Aperture correlation.}  If all aperture pixels have common
+variance $v$ and common pairwise covariance $c$, an unweighted $n$-pixel sum
+has variance
+\begin{equation}
+  nv+n(n-1)c,
+  \label{eq:equicorrelated-aperture}
+\end{equation}
+not $nv$.  Even small $c$ can dominate a large aperture.
+
+\item \textbf{Known Gaussian covariance.}  A fixed linear statistic divided
+by its known null standard deviation is standard normal only under the stated
+Gaussian null.  Estimating covariance, searching peaks, choosing apertures,
+or feeding the result back changes that law.
+
+\item \textbf{Complete assignment enumeration.}  If a deterministic design
+exactly reproduces the target first and second sign moments, its conditional
+mean and second moment can be exact without iid sampling.  Its uncertainty is
+then design-specific; applying an iid finite-$R$ correction reintroduces error.
+\end{enumerate}
+
+\section{Falsification conditions and proportional future checks}
+
+The following observations are sufficient to falsify the corresponding claim;
+their absence is not proof of validity:
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.43\textwidth}
+                  >{\raggedright\arraybackslash}p{0.50\textwidth}}
+\toprule
+Observation & Claim falsified \\
+\midrule
+\endhead
+Requested $R$ differs from completed product identities without an explicit
+partial-stack state & Any estimator normalized by requested count. \\
+Duplicate or complement census conflicts with the declared joint design &
+The reported independence, effective count, or finite correction. \\
+Empirical scatter changes under permutation only because weights or support
+are recomputed & A fixed-operator covariance identity. \\
+Known-mean and empirically centered products share one unlabeled name & A
+unique variance meaning. \\
+Covariance estimate is not symmetric positive semidefinite on its claimed
+complete-case domain & An unregularized covariance claim. \\
+Claimed precision has rank exceeding the empirical span without a declared
+model & A direct empirical-precision claim. \\
+Calibrated scale agrees but aperture or filtered projections disagree &
+Covariance adequacy beyond scalar scale. \\
+Source-shaped second-moment or anti-weight morphology tracks injected or
+known deterministic structure & A source-free-noise interpretation. \\
+Nominal pointwise false-alarm rate changes with search area or template bank &
+A global significance threshold. \\
+Feedback result changes when noise estimation and selection are split & A
+fixed-state or independence-based adaptive claim. \\
+Empirical tail claim is finer than completed unique assignment resolution &
+The claimed tail calibration. \\
+\bottomrule
+\end{longtable}
+
+Proportional future checks, if separately authorized, need only tiny symbolic
+or enumerated cases:
+\begin{enumerate}
+\item two scalar iid draws to distinguish divisors $R$ and $R-1$;
+\item duplicate and complement pairs to verify
+Equations~\eqref{eq:exchangeable-scatter} and
+\eqref{eq:complement-pair-scatter};
+\item a two-coordinate covariance with equal diagonals and opposite
+off-diagonals to expose aperture and filter dependence;
+\item a rank-deficient $P>R-1$ stack to expose undeclared precision;
+\item a fixed compact deterministic component plus random residual to expose
+source imprint before any inverse operation;
+\item a fixed-location null versus a two-location maximum to expose the
+look-elsewhere effect; and
+\item a fixed aperture versus a data-selected aperture to expose selection
+conditioning.
+\end{enumerate}
+These are specifications only.  No helper, schema, verifier, test, reduction,
+or evidence request is created or executed by this freeze, and no numerical
+tolerance is selected.
+
+\section{Estimator and consumer provenance contract}
+
+The requested, effective, observation-resolved, and realized lifecycle remains
+one-way.  At minimum, interpretation requires the following logical facts;
+this list does not mandate a new persistence schema:
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.18\textwidth}
+                  >{\raggedright\arraybackslash}p{0.75\textwidth}}
+\toprule
+Layer & Required SCI-NOI-002 facts \\
+\midrule
+\endhead
+Requested & Requested realization count and product/consumer scope; requested
+variance, covariance, calibration, weight, S/N, threshold, aperture, or
+feedback policy; disabled expert values retained as request, not execution. \\
+Effective & Admitted target law and ensemble identity; estimator/version;
+centering; finite normalization; weighting/missingness; covariance domain;
+calibration and regularization policy; explicit unsupported combinations. \\
+Observation-resolved & Exact observation/coadd/filter parent; map/group/Stokes
+identity; signal unit, response, WCS/frame, indexing, shape, common support and
+validity; fixed consumer projection, template, aperture/background, search
+domain, and applicable calibration identity. \\
+Realized design & Completed realization IDs and count; missing/failure state;
+duplicates, complements, unique raw/even patterns; joint dependence law or
+classified gap; per-pixel/pair counts if support varies; exact normalization
+and any use-specific effective-information diagnostic. \\
+Realized estimator & Reference/empirical mean; second moment versus covariance;
+raw and calibrated covariance identities; calibration fit and uncertainty;
+rank, eigen/support diagnostics, regularization, inverse correction; units and
+validity. \\
+Realized consumer & Numerator estimator and response; marginal/effective/full
+weight meaning; S/N versus significance label; null and tail law; threshold,
+search and multiplicity; aperture; feedback/stopping state; product inventory
+and raw-parent identity. \\
+\bottomrule
+\end{longtable}
+
+Routine products need not persist dense covariance matrices when a compact
+model, operator, or reconstruction contract is sufficient for the claimed
+use.  A digest verifies identity but does not reconstruct missing values.
+Absence of exact reconstruction is a classified limitation, not permission to
+infer a covariance or weight from a filename or unit.
+
+\section{Decisions deliberately left open}
+
+This core does not choose:
+\begin{itemize}
+\item whether any R3 conditional randomization product is adequate for a
+repeated-physical-noise target;
+\item known-zero versus empirical centering, divisor $R$ versus $R-1$, or a
+joint-design correction;
+\item a covariance representation, pooling domain, shrinkage, regularization,
+or inverse correction;
+\item calibration data, calibration operator, source-imprint treatment, or
+acceptance tolerance;
+\item marginal inverse variance, full precision, or consumer-effective weight
+as the appropriate output;
+\item any S/N numerator, null distribution, significance label, threshold,
+search/multiplicity rule, source finder, or catalog policy;
+\item any feedback, masking, cross-fitting, stopping, or convergence rule;
+\item an aperture, background, source response, or adaptive photometry rule;
+or
+\item any production realization count or default.
+\end{itemize}
+Each decision requires a named owner, target, evidence route, failure policy,
+and validation criterion.  No implementation or production disposition follows
+from the equations alone.
+
+\section{Phase boundary}
+
+This file is the sole Phase 1 artifact.  The first return point is coordinator
+verification and acceptance of its exact committed bytes.  Only a separate
+Phase 2 authorization after that acceptance may open the sealed
+\texttt{SCI-NOI-002-XAUD-001} and inspect the exact application source at
+\texttt{d5015fe716971bf8ea617e8a187311bf5af05185}.  The first permitted source
+boundary is the narrow realization-stack producer/persistence interface and
+the first consumer of its variance/covariance/weight products, sufficient to
+bind:
+\begin{itemize}
+\item completed count, centering, finite normalization, and cross-realization
+design;
+\item second-moment, covariance, calibration, weight, unit, support, validity,
+and provenance labels;
+\item the exact S/N, threshold, source-finding, feedback, and aperture
+operators that are actually reachable; and
+\item the production-count request/effective/realized path without assuming a
+policy.
+\end{itemize}
+That trace must identify consumer symptoms without treating a consumer as
+validation of its own estimator.  It remains documentation/audit work only.
+No test, reduction, Unity action, evidence request, repair, integration, push,
+or production authorization is implied.
+
+\end{document}
