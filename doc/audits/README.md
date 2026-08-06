@@ -182,6 +182,32 @@ while disabled resolves to effective zero and is not a requirement or adequacy
 claim. F008 remains for deterministic behavior on explicit opt-in, while
 SCI-NOI-002 may assess Beammap only as such an optional recipient.
 
+### SCI-NOI-002 Cycle 1 re-audit and Cycle 2 dispatch — 2026-08-06
+
+The first bounded repair candidate is exact application commit
+`0bc4d95d6bb2117442d0ccdb79c57e42e0b79989`. Its fresh independent re-audit at
+`e4cdf7b3ac42f536497a3249c0499d6e2de2f8c1` returns `amend`: contract remains
+approved, implementation nonconformant, required validation failed at the
+package/count boundary, and production remains `existing_use_only`.
+
+The first repair closes F001, F002, and F008 within their bounded owner-approved
+scope. F003, F004, and F007 remain open; F005 remains open and conditioned on
+SCI-FLT; F006 remains SCI-FRUIT-001-owned. The four Cycle 2 P1 defects are
+realized publication membership/atomicity, the active auditor's rejection of
+approved disabled available-zero state, plan-derived rather than observed
+completion counts, and filtered-scatter validity not derived from the actual
+calculation. Two accepted P2 cleanups remove duplicate canonical HDUs and
+repair residual Mapdiag terminology.
+
+The owner-approved [Cycle 2 handoff](packages/SCI-NOI-002_CYCLE2_OWNER_DECISION_AND_REPAIR_HANDOFF_2026-08-06.md)
+selects one physical plane under the compatible legacy `EXTNAME`; canonical
+identity is carried by metadata and package joins, not duplicate data. The
+frozen [prompt](prompts/SCI_NOI_002_CYCLE2_REPAIR_PROMPT.md), [manifest](handoffs/SCI-NOI-002/SCI-NOI-002_CYCLE2_REPAIR_AUTHORITY_MANIFEST_2026-08-06.yaml),
+and [readiness record](packages/SCI-NOI-002_CYCLE2_REPAIR_DISPATCH_READINESS_2026-08-06.md)
+continue the existing repair task from exact `0bc4d95d6`, never from the audit
+or coordination line. They authorize no estimator/filter change, counts or
+defaults, Unity/evidence work, integration, production expansion, or re-audit.
+
 ### DOC-MAP-001 queued user-facing map-semantics guide — 2026-08-06
 
 The project owner requires a compact one-to-two-page explanation of what each

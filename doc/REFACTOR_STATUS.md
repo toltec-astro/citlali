@@ -136,6 +136,36 @@ chains or hard-code meanings that depend on configuration, but `DOC-MAP-001`
 must close before production expansion and Phase 5 closeout. It authorizes no
 numerical, configuration-default, output-selection, or audit-scope change.
 
+## 2026-08-06 SCI-NOI-002 Cycle 1 Re-audit and Cycle 2 Repair Authority
+
+Exact repair candidate `0bc4d95d6bb2117442d0ccdb79c57e42e0b79989` completed a
+fresh independent re-audit at
+`e4cdf7b3ac42f536497a3249c0499d6e2de2f8c1`. The verdict remains `amend`:
+contract is approved, implementation is nonconformant, required validation
+failed at package/count truthfulness, and production remains
+`existing_use_only`. The deterministic first-repair work closes F001, F002,
+and F008 within scope; F003/F004/F007 remain open, F005 remains conditioned on
+SCI-FLT, and F006 remains SCI-FRUIT-001-owned.
+
+Cycle 2 is frozen as an engineering-correctness repair only. It must replace
+recursive output discovery with explicit run-scoped successful publication
+membership and atomic final completion, align the active auditor with disabled
+available-zero/no-work semantics, separate expected plan counts from observed
+aggregate lifecycle completion, and derive filtered-scatter validity from the
+actual calculation. The owner also rejects duplicate canonical HDUs: retain
+one compatible legacy-named physical plane with canonical identity/version/
+digest/validity/restriction metadata and package joins. Correct Mapdiag
+descriptions/identity without duplicating variables or changing numerics.
+
+The frozen [owner handoff](audits/packages/SCI-NOI-002_CYCLE2_OWNER_DECISION_AND_REPAIR_HANDOFF_2026-08-06.md),
+[prompt](audits/prompts/SCI_NOI_002_CYCLE2_REPAIR_PROMPT.md),
+[manifest](audits/handoffs/SCI-NOI-002/SCI-NOI-002_CYCLE2_REPAIR_AUTHORITY_MANIFEST_2026-08-06.yaml),
+and [readiness record](audits/packages/SCI-NOI-002_CYCLE2_REPAIR_DISPATCH_READINESS_2026-08-06.md)
+continue the existing repair branch from exact `0bc4d95d6`. They authorize no
+new estimator, physical-noise/significance claim, count/default, FLT/FRUIT or
+mapmaking algorithm change, Unity/evidence work, integration, production
+change, or fresh re-audit.
+
 ## 2026-08-05 SCI-MAP-001 Final Coordination
 
 The bounded shared/naive mapmaking and observation-coaddition contract is now
