@@ -17,6 +17,11 @@
     "every-network PpsTime increment anomaly occurrence and nw9 leave-out sensitivity tables",
     "one-tick, adjacent-row, consecutive, and unavailable-field anomaly controls"
   ],
+  "followup_v3_cases": [
+    "default aggregation rejects every missing selected primary output",
+    "the explicit allowance accepts exactly one manifest-bound left/right scan-support ContractError and one manifest-bound detector-cohort ContractError",
+    "declared support failures preserve selected-versus-evaluable map accounting and cannot waive an arbitrary missing output"
+  ],
   "determinism": {
     "byte_identical_serial_replay_including_png_and_checksums": true,
     "row_shuffle_preserves_scientific_outputs": true
@@ -31,10 +36,10 @@
   "result": {
     "elapsed_seconds": 5.217,
     "failures": 0,
-    "tests_run": 24,
+    "tests_run": 28,
     "warnings_treated_as_errors": true
   },
-  "schema_version": "sci-align-001-3c273-synthetic-aggregation-evidence-v2",
+  "schema_version": "sci-align-001-3c273-synthetic-aggregation-evidence-v3",
   "statistical_safeguards": [
     "joint held-out blocks use full available within-map measurement covariance",
     "prediction covariance includes shared fitted-parameter covariance",
@@ -47,8 +52,8 @@
     "sensitivity reductions are compared but never fitted or counted as independent"
   ],
   "tool_identity": {
-    "aggregate_script_sha256": "b236c0c248145334ebbac39fcded9043360dc7e901a5d641fb8d0d0271f78952",
+    "aggregate_script_sha256": "4272acc40b477e3137b5b0d13cf80724965439dc6019348579c7c106c29ca142",
     "candidate_model_registry_sha256": "be213755686f582712b460e6c42521b7db76e1dc5210c27cb6f8a5e6e897c82c",
-    "test_script_sha256": "e684d48a29c4c214f357e235098d9410f1628ba672c36f5f25793424528f3778"
+    "test_script_sha256": "547b223cc3b18110c13415ee7350912af659fbf305ef904cea331aec468326f3"
   }
 }

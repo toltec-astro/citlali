@@ -229,6 +229,33 @@ python tools/diagnostics/aggregate_sci_align_001_3c273_corpus.py run \
   --map-output-root "$SCI_OUTPUT_ROOT/per_map" --output "$SCI_OUTPUT_ROOT/aggregate"
 ```
 
+If, and only if, the run root contains the two owner-declared pre-analysis
+support failures (`insufficient independently selected left/right scans` and a
+matched detector cohort below its preregistered minimum), keep the frozen
+selection unchanged, create a fresh freeze under the current aggregate-tool
+identity, and use fresh aggregate output directories with:
+
+```bash
+MPLBACKEND=Agg MPLCONFIGDIR="$SCI_RUNTIME_CACHE/matplotlib" \
+XDG_CACHE_HOME="$SCI_RUNTIME_CACHE/xdg" \
+python tools/diagnostics/aggregate_sci_align_001_3c273_corpus.py freeze \
+  --selected-manifest "$SCI_OUTPUT_ROOT/inventory/frozen/selected_manifest.json" \
+  --protocol-template "$SCI_PACKAGE/frozen_analysis_protocol.json" \
+  --output "$SCI_OUTPUT_ROOT/aggregate_freeze_11_of_13"
+
+python tools/diagnostics/aggregate_sci_align_001_3c273_corpus.py run \
+  --selected-manifest "$SCI_OUTPUT_ROOT/inventory/frozen/selected_manifest.json" \
+  --frozen-protocol "$SCI_OUTPUT_ROOT/aggregate_freeze_11_of_13/frozen_analysis_protocol.json" \
+  --map-output-root "$SCI_OUTPUT_ROOT/per_map" \
+  --allow-declared-preanalysis-insufficiency \
+  --output "$SCI_OUTPUT_ROOT/aggregate_11_of_13"
+```
+
+This opt-in accepts only a manifest-bound `failure.json`/`resume_binding.json`
+pair for those two exact `ContractError` forms.  It preserves the 13-map
+frozen manifest, reports an 11-map evaluable corpus, and rejects every other
+missing, malformed, or timing-dependent map result.
+
 The aggregate reports no science acceptance threshold, timing eligibility cut,
 or correction decision.  It reports support counts (observations, networks,
 scans, detectors), phase/session structure, and descriptive uncertainties.

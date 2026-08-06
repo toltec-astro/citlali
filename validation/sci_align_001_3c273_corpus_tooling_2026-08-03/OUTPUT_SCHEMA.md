@@ -150,7 +150,7 @@ protocol, and per-map outputs.
 | `pps_time_increment_occurrence.csv` | per-map/session/network anomaly numerator, denominator, rate, and unavailable-metadata status |
 | `raw_pps_time_increment_anomalies.csv` | compact concatenation of delivered anomaly geometry across maps |
 | `nw9_timing_sensitivity.csv` | nw9/other-network contrast, all versus leave-nw9-out effect, uncertainty, and anomaly rate |
-| `corpus_summary.json` | selected category, limitations, producer authority, and no-correction scope |
+| `corpus_summary.json` | selected/evaluable map counts, declared pre-analysis support omissions, category, limitations, producer authority, and no-correction scope |
 | `REPORT.md` | owner-readable timing/support result, exclusions, descriptive classifications, and limitations |
 | `input_digests.csv` / `input_digests.json` | verified compact-input, manifest, protocol, and tooling identities |
 | `plots/` | deterministic compact diagnostic plots only |
@@ -163,6 +163,13 @@ is complete integer-`T0` vector, other provenance initialization identity,
 date group, then deterministic observation-number fallback.  At least three
 independent groups are required for held-out claims; exactly three permits
 reporting all preregistered models but prohibits data-driven model selection.
+
+The aggregate default requires compact outputs for every selected primary map.
+The explicit `--allow-declared-preanalysis-insufficiency` route is limited to
+the two preregistered `ContractError` forms for left/right scan support and
+matched detector-cohort support.  It preserves the selected manifest, records
+the binding and evidence digests in `corpus_summary.json` and
+`known_omissions.json`, and cannot waive an arbitrary task failure.
 
 Candidate model statistics include weighted held-out timing error,
 between-map intrinsic scatter, persistent network scatter,

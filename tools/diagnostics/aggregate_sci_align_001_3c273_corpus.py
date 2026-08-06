@@ -48,6 +48,11 @@ SELECTED_MANIFEST_SCHEMA = "sci-align-001-3c273-selected-manifest-v2"
 INVENTORY_SCHEMA = "sci-align-001-3c273-candidate-inventory-v2"
 SELECTION_SCHEMA = "sci-align-001-3c273-selection-v2"
 DEFAULT_ALPHA = 0.05
+FAILURE_SCHEMA = "sci-align-001-3c273-failure-v1"
+PREANALYSIS_SCAN_SUPPORT_ERROR = "insufficient independently selected left/right scans"
+PREANALYSIS_COHORT_ERROR = re.compile(
+    r"^matched detector cohort has \d+ detectors, below minimum \d+$"
+)
 NETWORK_TIMING_ALIASES = (
     "timing_residual_sec",
     "timing_sec",
@@ -465,6 +470,7 @@ def known_omissions(
     inventory: Mapping[str, Any],
     bundles: Sequence[MapBundle],
     combined_network_rows: Sequence[Mapping[str, Any]],
+    declared_preanalysis_insufficiencies: Sequence[Mapping[str, Any]] = (),
 ) -> dict[str, Any]:
     authoritative = inventory.get("authoritative_obsnum_status", [])
     status_rows = [dict(row) for row in authoritative if isinstance(row, Mapping)]
@@ -506,6 +512,9 @@ def known_omissions(
         "missing_network_rows": missing_networks,
         "unavailable_raw_metadata": raw_unavailable,
         "failed_or_incomplete_per_map_tasks": incomplete,
+        "declared_preanalysis_support_insufficiencies": [
+            dict(row) for row in declared_preanalysis_insufficiencies
+        ],
         "deliberately_skipped_sensitivity_duplicates": [],
         "intentional_compact_archive_exclusions": [
             "raw timestreams are not included",
@@ -866,6 +875,66 @@ def _discover_map_directories(roots: Sequence[Path]) -> list[Path]:
     if not directories:
         raise AggregateError("no compact Stage-2 map outputs found")
     return sorted(directories, key=str)
+
+
+def _declared_preanalysis_insufficiencies(
+    roots: Sequence[Path],
+    registry_by_map: Mapping[str, Mapping[str, Any]],
+    *,
+    selected_manifest_sha256: str,
+) -> dict[str, dict[str, Any]]:
+    """Load only the two pre-registered non-timing support failures.
+
+    A failed per-map runner has no checksum package, so the compact failure
+    record and its resume binding are validated directly.  This narrow route
+    is intentionally separate from successful compact-output validation: it
+    neither changes the frozen manifest nor permits a general missing-output
+    waiver.
+    """
+    records: dict[str, dict[str, Any]] = {}
+    for original in roots:
+        root = original.resolve()
+        if not root.exists() or root.is_file():
+            continue
+        for path in sorted(root.rglob("failure.json"), key=str):
+            try:
+                failure = json.loads(path.read_text(encoding="utf-8"))
+                binding = json.loads((path.parent / "resume_binding.json").read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError) as error:
+                raise AggregateError(f"cannot read declared per-map failure evidence: {path}") from error
+            if not isinstance(failure, Mapping) or not isinstance(binding, Mapping):
+                raise AggregateError(f"declared per-map failure evidence is not an object: {path}")
+            map_id = str(failure.get("candidate_id", ""))
+            if map_id not in registry_by_map:
+                raise AggregateError(f"failure evidence map is absent from frozen partition: {map_id}")
+            if map_id in records:
+                raise AggregateError(f"multiple failure records for map {map_id}")
+            if failure.get("schema") != FAILURE_SCHEMA:
+                raise AggregateError(f"unsupported per-map failure schema: {path}")
+            if failure.get("error_type") != "ContractError":
+                raise AggregateError(f"per-map failure is not a ContractError: {path}")
+            if binding.get("selected_manifest_sha256") != selected_manifest_sha256:
+                raise AggregateError(f"failure binding manifest mismatch: {path.parent}")
+            error_text = str(failure.get("error", ""))
+            if error_text == PREANALYSIS_SCAN_SUPPORT_ERROR:
+                failure_kind = "insufficient_independently_selected_left_right_scans"
+            elif PREANALYSIS_COHORT_ERROR.fullmatch(error_text):
+                failure_kind = "matched_detector_cohort_below_preregistered_minimum"
+            else:
+                raise AggregateError(
+                    f"per-map failure is not an allowed pre-analysis support insufficiency: {path}"
+                )
+            records[map_id] = {
+                "map_id": map_id,
+                "observation_number": _int(
+                    registry_by_map[map_id].get("obsnum"), field_name=f"{map_id}.obsnum"
+                ),
+                "failure_kind": failure_kind,
+                "error": error_text,
+                "failure_json_sha256": sha256_file(path),
+                "resume_binding_sha256": sha256_file(path.parent / "resume_binding.json"),
+            }
+    return records
 
 
 def _read_optional_csv(directory: Path, name: str) -> list[dict[str, Any]]:
@@ -3266,6 +3335,20 @@ def command_run(args: argparse.Namespace) -> int:
         if row.get("analysis_role") in {"primary", "duplicate_sensitivity"}
     )
     missing = [map_id for map_id in required if map_id not in directory_identity]
+    declared_preanalysis: list[dict[str, Any]] = []
+    if missing and args.allow_declared_preanalysis_insufficiency:
+        declared_by_map = _declared_preanalysis_insufficiencies(
+            args.map_output_root, registry_by_map,
+            selected_manifest_sha256=manifest_sha,
+        )
+        declared_kinds = [record["failure_kind"] for record in declared_by_map.values()]
+        if len(declared_by_map) > 2 or len(set(declared_kinds)) != len(declared_kinds):
+            raise AggregateError(
+                "declared pre-analysis allowance permits at most one scan-support and "
+                "one detector-cohort support failure"
+            )
+        declared_preanalysis = [declared_by_map[map_id] for map_id in missing if map_id in declared_by_map]
+        missing = [map_id for map_id in missing if map_id not in declared_by_map]
     if missing:
         raise AggregateError(f"missing compact primary map outputs: {missing}")
     bundles = [
@@ -3287,6 +3370,7 @@ def command_run(args: argparse.Namespace) -> int:
             "action": "aggregate_run", "writes_performed": False,
             "primary_map_count": len(primary), "network_map_count": len(rows),
             "independent_group_count": group_count,
+            "declared_preanalysis_support_insufficiency_count": len(declared_preanalysis),
             "verified_selected_manifest_sha256": manifest_sha,
             "verified_protocol_sha256": recorded_semantic,
             "verified_aggregation_tool_sha256": tool_identity["script_sha256"],
@@ -3340,6 +3424,12 @@ def command_run(args: argparse.Namespace) -> int:
                 "map_id": bundle.map_id,
                 "limitation": "paired network covariance unavailable; diagonal measurement covariance used",
             })
+    for record in declared_preanalysis:
+        limitations.append({
+            "map_id": record["map_id"],
+            "limitation": "excluded before timing inference: declared pre-analysis support insufficiency",
+            "failure_kind": record["failure_kind"],
+        })
     corpus_summary = {
         "schema_version": SCHEMA_VERSION,
         "selected_manifest_sha256": manifest_sha,
@@ -3348,6 +3438,10 @@ def command_run(args: argparse.Namespace) -> int:
         "runner_protocol_template_sha256": runner_protocol_sha,
         "aggregation_tool": tool_identity,
         "map_count": len(primary),
+        "selected_map_count": len(required),
+        "evaluable_map_count": len(primary),
+        "declared_preanalysis_support_insufficiency_count": len(declared_preanalysis),
+        "declared_preanalysis_support_insufficiencies": declared_preanalysis,
         "network_map_count": len(rows),
         "independent_group_count": group_count,
         "grouping_kind": protocol.get("grouping_kind"),
@@ -3523,7 +3617,10 @@ def command_run(args: argparse.Namespace) -> int:
     )
     write_json(
         output / "known_omissions.json",
-        known_omissions(source_inventory, bundles, combined_network_rows),
+        known_omissions(
+            source_inventory, bundles, combined_network_rows,
+            declared_preanalysis,
+        ),
     )
     write_json(output / "corpus_summary.json", corpus_summary)
     input_rows = [row for bundle in bundles for row in bundle.input_files]
@@ -3556,6 +3653,13 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("--frozen-protocol", type=Path, required=True)
     run.add_argument("--map-output-root", type=Path, action="append", required=True)
     run.add_argument("--output", type=Path, required=True)
+    run.add_argument(
+        "--allow-declared-preanalysis-insufficiency", action="store_true",
+        help=(
+            "allow only checksum-bound ContractError records for the two preregistered "
+            "pre-analysis support insufficiencies; all other missing map outputs still fail"
+        ),
+    )
     run.add_argument("--dry-run", action="store_true")
     run.set_defaults(function=lambda args: command_run(args))
     return parser

@@ -70,6 +70,13 @@ They neither authorize a row reassociation nor by themselves invalidate a
 strictly monotonic, unique native detector-row-to-slot mapping; an actual
 missing or ambiguous admitted science row remains a fail-closed condition.
 
+When a selected map stops before timing inference for a preregistered
+left/right scan-support or detector-cohort-support insufficiency, the aggregate
+may be explicitly instructed to retain that immutable selection and analyze
+the remaining evaluable maps.  The compact failure and manifest-binding
+evidence are recorded; arbitrary missing or timing-dependent failures remain
+fail-closed.
+
 The owner run directory is deliberately below the 3C273 analysis directory but
 is an explicit inventory exclusion. It may contain generated serial/Slurm
 scripts, execution identity, compact outputs, and archive metadata; it is not

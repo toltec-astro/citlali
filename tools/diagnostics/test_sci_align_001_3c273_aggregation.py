@@ -297,14 +297,42 @@ class SyntheticCorpus:
         agg.write_checksums(directory)
         return directory
 
-    def run(self, *, output: Path | None = None) -> tuple[int, dict[str, Any] | None]:
+    def add_declared_preanalysis_failure(self, map_id: str, error: str) -> Path:
+        manifest_row = next(row for row in self.rows if row["map_id"] == map_id)
+        directory = self.maps / map_id
+        directory.mkdir(parents=True, exist_ok=True)
+        manifest_sha = agg.sha256_file(self.manifest)
+        agg.write_json(directory / "failure.json", {
+            "schema": "sci-align-001-3c273-failure-v1",
+            "candidate_id": map_id,
+            "observation_number": manifest_row["obsnum"],
+            "error_type": "ContractError",
+            "error": error,
+            "source_products_modified": False,
+            "citlali_reduction_launched": False,
+        })
+        agg.write_json(directory / "resume_binding.json", {
+            "schema": "test-binding",
+            "selected_manifest_sha256": manifest_sha,
+        })
+        return directory
+
+    def run(
+        self,
+        *,
+        output: Path | None = None,
+        allow_declared_preanalysis_insufficiency: bool = False,
+    ) -> tuple[int, dict[str, Any] | None]:
         destination = output or self.output
-        code = agg.main([
+        argv = [
             "run", "--selected-manifest", str(self.manifest),
             "--frozen-protocol", str(self.freeze_dir / "frozen_analysis_protocol.json"),
             "--map-output-root", str(self.maps),
             "--output", str(destination),
-        ])
+        ]
+        if allow_declared_preanalysis_insufficiency:
+            argv.append("--allow-declared-preanalysis-insufficiency")
+        code = agg.main(argv)
         summary = json.loads((destination / "corpus_summary.json").read_text()) if code == 0 else None
         return code, summary
 
@@ -340,6 +368,42 @@ class AggregationTests(unittest.TestCase):
         self.assertTrue((corpus.output / "SHA256SUMS").is_file())
         agg._verify_checksum_file(corpus.output)
         agg._verify_checksum_file(corpus.freeze_dir)
+
+    def test_declared_preanalysis_support_insufficiencies_allow_eleven_of_thirteen_logic(self) -> None:
+        corpus = self.make_dates()
+        for index in range(2):
+            corpus.add_map_output(f"map-{index}", {network: -0.012 for network in NETWORKS})
+        corpus.add_declared_preanalysis_failure(
+            "map-2", "insufficient independently selected left/right scans",
+        )
+        corpus.add_declared_preanalysis_failure(
+            "map-3", "matched detector cohort has 0 detectors, below minimum 100",
+        )
+        rejected, _ = corpus.run()
+        self.assertEqual(rejected, 2)
+        code, summary = corpus.run(
+            allow_declared_preanalysis_insufficiency=True,
+        )
+        self.assertEqual(code, 0)
+        assert summary is not None
+        self.assertEqual(summary["selected_map_count"], 4)
+        self.assertEqual(summary["evaluable_map_count"], 2)
+        self.assertEqual(summary["map_count"], 2)
+        self.assertEqual(summary["declared_preanalysis_support_insufficiency_count"], 2)
+        self.assertEqual(
+            {item["map_id"] for item in summary["declared_preanalysis_support_insufficiencies"]},
+            {"map-2", "map-3"},
+        )
+        omissions = json.loads((corpus.output / "known_omissions.json").read_text())
+        self.assertEqual(len(omissions["declared_preanalysis_support_insufficiencies"]), 2)
+
+    def test_preanalysis_flag_does_not_allow_an_arbitrary_missing_map(self) -> None:
+        corpus = self.make_dates()
+        for index in range(3):
+            corpus.add_map_output(f"map-{index}", {network: -0.012 for network in NETWORKS})
+        code, summary = corpus.run(allow_declared_preanalysis_insufficiency=True)
+        self.assertEqual(code, 2)
+        self.assertIsNone(summary)
 
     def test_b_network_stable_with_missing_network(self) -> None:
         corpus = self.make_dates()

@@ -84,6 +84,11 @@
       "command": "focused 3C273 runner, inventory, aggregation, and replay-campaign tests after 13-map Slurm failure audit",
       "result": "64 tests passed. Non-unit delivered PacketCount increments are retained and counted as transport diagnostics while strict reconstructed-time and native-slot lineage checks remain fail-closed. Undefined within-map predictor correlations publish as unavailable rather than non-finite output; deterministic JSON errors now identify the offending field path.",
       "status": "pass"
+    },
+    {
+      "command": "headless focused 3C273 inventory, runner, aggregation, and replay-campaign tests; ruff; py_compile; diff check",
+      "result": "66 tests passed. Aggregation defaults to requiring every frozen primary output; the explicit support-insufficiency route accepts at most one manifest-bound left/right-scan ContractError and one manifest-bound detector-cohort ContractError, records the selected-versus-evaluable counts and evidence digests, and rejects arbitrary missing outputs. Static checks and whitespace audit passed.",
+      "status": "pass"
     }
   ],
   "no_unity_access": true,
