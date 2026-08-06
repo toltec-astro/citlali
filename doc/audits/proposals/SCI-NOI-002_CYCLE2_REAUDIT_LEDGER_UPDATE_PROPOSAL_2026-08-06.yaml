@@ -1,0 +1,253 @@
+format_version: 1
+record_type: audit_ledger_update_proposal
+proposal_id: SCI-NOI-002-CYCLE2-REAUDIT-2026-08-06
+proposal_date: 2026-08-06
+package_id: SCI-NOI-002
+authority: independent_reauditor
+status: proposed_for_owner_coordinator_review
+coordinator_action: review_integrate_or_supersede
+
+scope:
+  exact_application_candidate: d1d19145df574571a894772fdc9410c86cba1041
+  candidate_parent: 0bc4d95d6bb2117442d0ccdb79c57e42e0b79989
+  candidate_tree: 826f601e2c3447765e5d1b25285ac365ee3fd120
+  parent_tree: 25f39d8b1ba2527c2a154a69a527b0d8835a412a
+  exact_parent_count: 1
+  candidate_parent_merge_base_exact: true
+  repair_branch: origin/codex/repair-sci-noi-002
+  repair_branch_remote_tip: d1d19145df574571a894772fdc9410c86cba1041
+  audit_branch: codex/reaudit-sci-noi-002-cycle2
+  audit_commit: null
+  audit_commit_note: >-
+    The containing commit is supplied with the coordinator handoff because a
+    file cannot contain the hash of the commit that contains itself.
+  worktree: /Users/gwilson/.codex/worktrees/2069/citlali-refactor
+  clean_entry_verified: true
+  exact_candidate_only: true
+  parent_relative_diff_only: true
+  canonical_ledger_modified_by_audit: false
+  canonical_handoff_registry_modified_by_audit: false
+  application_source_modified_by_audit: false
+  tests_modified_by_audit: false
+  configuration_modified_by_audit: false
+  integration_performed: false
+  unity_accessed_or_contacted: false
+  local_or_astronomical_reduction_executed: false
+  external_evidence_requested: false
+  repair_launched_or_performed: false
+  pushed: false
+
+frozen_authority:
+  source_commit: 287840715c8e4ae778ce57b7166de86e7b7dfa9c
+  source_tree: d56ddbd4583a7cf9dd7ee5a27095db469b632cd4
+  artifacts:
+    cycle2_repair_prompt:
+      path: doc/audits/prompts/SCI_NOI_002_CYCLE2_REPAIR_PROMPT.md
+      sha256: 42ba64a459f8496d4f167cc9fd32a0634023b37252249becd850b64b626e889d
+    cycle2_authority_manifest:
+      path: doc/audits/handoffs/SCI-NOI-002/SCI-NOI-002_CYCLE2_REPAIR_AUTHORITY_MANIFEST_2026-08-06.yaml
+      sha256: 36602cd0ba779a3fe9d9419c3b0ed53d86e26eb4c887ec7b5d19c0442ad86202
+    cycle2_owner_decision:
+      path: doc/audits/packages/SCI-NOI-002_CYCLE2_OWNER_DECISION_AND_REPAIR_HANDOFF_2026-08-06.md
+      sha256: 3b8587564418632bcf9cddd417ebb30d08374127fd75420179c7b6050187559d
+    cycle2_dispatch_readiness:
+      path: doc/audits/packages/SCI-NOI-002_CYCLE2_REPAIR_DISPATCH_READINESS_2026-08-06.md
+      sha256: 1ef66a8436d14d95dfb0fcf369706e743f7a3bf3248a72b4849cebed7e623dfa
+    prior_independent_reaudit:
+      path: doc/audits/packages/SCI-NOI-002_INDEPENDENT_REAUDIT_2026-08-06.md
+      sha256: a66ef3f17976a7149ef04d2fec08e2c1faa2947c4b883fddd651a3eb57e44517
+    prior_reaudit_ledger_proposal:
+      path: doc/audits/proposals/SCI-NOI-002_REAUDIT_LEDGER_UPDATE_PROPOSAL_2026-08-06.yaml
+      sha256: 6f9410fc2015bccba49001e337b063660387edd39f1879c0d5de7100dd1c970e
+    owner_decision_brief:
+      path: doc/audits/packages/SCI-NOI-002_OWNER_DECISION_BRIEF_2026-08-06.md
+      sha256: 3520172cfc11e8e34f280f9ebdf147ea414c7a3a4ca6109bad55354a5ff3cf71
+    original_final_audit:
+      path: doc/audits/packages/SCI-NOI-002_SCIENTIFIC_CONTRACT_AUDIT.tex
+      sha256: 2874ffe950aed769f73277ed8f60ecab8860692d24e7c541f05a47a041a8a40d
+    independent_core:
+      path: doc/audits/packages/SCI-NOI-002_INDEPENDENT_CORE.tex
+      sha256: 36781b766a2f57c9a3bd7e173ee8f1d85cba7f3d08afe2e67a403166f6b6d72d
+    original_ledger_proposal:
+      path: doc/audits/proposals/SCI-NOI-002_LEDGER_PROPOSAL_2026-08-06.yaml
+      sha256: 5574d8e34fcfba8f4709d5848e79732ff3557a9817be25604375b9f3d4ec278d
+    noi001_r3_conditioned_evidence:
+      path: doc/audits/packages/SCI-NOI-001_INDEPENDENT_CORE_R3.tex
+      sha256: 27263ab3bf29ac8f098463455e540f13e783241a688ef2bc5cb15b1f2a4319da
+      admitted_scope: source_imprinted_current_ensemble_identity_only
+
+artifact:
+  report:
+    path: doc/audits/packages/SCI-NOI-002_CYCLE2_INDEPENDENT_REAUDIT_2026-08-06.md
+    sha256: c689ac09f90c904909d8bd77c4b95c454ea2875134c40a87dc8f1c8db8dbb7a6
+  proposal_sha256: null
+  proposal_sha256_note: >-
+    This file cannot contain its own digest without changing that digest. The
+    verified digest is recorded in the companion machine-readable result and
+    coordinator handoff.
+
+proposed_ledger_update:
+  verdict: amend
+  integration_ready: false
+  production_status: existing_use_only
+  astronomical_validation_complete: false
+  p0_count: 0
+  p1_count: 7
+  p2_count: 3
+  cycle2_repair_complete: false
+  fresh_successor_repair_required: true
+  fresh_independent_reaudit_after_successor_required: true
+
+contract_disposition:
+  SCI-NOI-002-RA-B001:
+    status: open
+    reason: >-
+      Explicit nonrecursive membership and atomic rename exist, but publication
+      initialization, iteration scope, semantic/member reconciliation, exact
+      joins, non-symlink safety, split selection, and aggregate identity remain
+      nonconformant.
+  SCI-NOI-002-RA-B002:
+    status: open
+    reason: >-
+      Available-zero serialization validates on basic records, but disabled
+      packages may contain stack-derived products, and literal requested-enabled
+      zero is accepted when mapmaking disables execution.
+  SCI-NOI-002-RA-B003:
+    status: open
+    reason: >-
+      Expected and realized fields are separate, but current-run/iteration
+      ownership, partial publication, and split selection accounting are not
+      truthfully reconciled.
+  SCI-NOI-002-RA-B004:
+    status: open
+    reason: >-
+      Fail-closed reasons and NaN masking exist, but production supplies a
+      hard-coded unity response and raw-parent policy support instead of actual
+      calculated response and filtered support.
+  SCI-NOI-002-RA-R001:
+    status: open
+    reason: >-
+      Candidate-added canonical HDUs were removed, but two compatible legacy
+      HDUs retain the same physical coefficient-standardized plane and
+      duplicate canonical identities are not rejected.
+  SCI-NOI-002-RA-R002:
+    status: implementation_pass_validation_incomplete
+    reason: >-
+      Stored names, calculations, and value bindings are unchanged and comments
+      are corrected without duplicate variables; exact regression assertions
+      are incomplete.
+
+finding_disposition:
+  SCI-NOI-002-F001: closed
+  SCI-NOI-002-F002: closed
+  SCI-NOI-002-F003: open
+  SCI-NOI-002-F004: open_conditioned
+  SCI-NOI-002-F005:
+    status: open
+    disposition: open_conditioned
+    parity_status: scope_blocked_not_applicable_pending_FLT
+    owner: SCI-FLT-001
+  SCI-NOI-002-F006:
+    status: open
+    manifest_state: held_external
+    owner: SCI-FRUIT-001
+    cycle2_interface_lifecycle_regression: true
+  SCI-NOI-002-F007: open_conditioned
+  SCI-NOI-002-F008: closed
+
+new_findings:
+  - id: SCI-NOI-002-C2RA-P1-001
+    severity: P1
+    title: publication_starts_before_reduction_directory_exists
+    affects: [SCI-NOI-002-RA-B001, SCI-NOI-002-RA-B003]
+  - id: SCI-NOI-002-C2RA-P1-002
+    severity: P1
+    title: session_scoped_noise_publication_corrupts_FRUIT_iterations
+    affects: [SCI-NOI-002-RA-B001, SCI-NOI-002-RA-B003, SCI-NOI-002-F006]
+  - id: SCI-NOI-002-C2RA-P1-003
+    severity: P1
+    title: completion_not_reconciled_to_package_product_identities
+    affects: [SCI-NOI-002-RA-B001, SCI-NOI-002-RA-B002, SCI-NOI-002-RA-B003]
+  - id: SCI-NOI-002-C2RA-P1-004
+    severity: P1
+    title: joins_and_member_symlink_identity_are_not_exact
+    affects: [SCI-NOI-002-RA-B001, SCI-NOI-002-RA-R001]
+  - id: SCI-NOI-002-C2RA-P1-005
+    severity: P1
+    title: production_filtered_validity_does_not_use_actual_response_or_support
+    affects: [SCI-NOI-002-RA-B004, SCI-NOI-002-F005]
+  - id: SCI-NOI-002-C2RA-P1-006
+    severity: P1
+    title: split_Beammap_bookkeeping_counts_unselected_maps
+    affects: [SCI-NOI-002-RA-B001, SCI-NOI-002-RA-B003]
+  - id: SCI-NOI-002-C2RA-P1-007
+    severity: P1
+    title: literal_enabled_zero_authority_not_implemented
+    authority_ambiguity_if_effective_only_was_intended: true
+    affects: [SCI-NOI-002-RA-B002]
+  - id: SCI-NOI-002-C2RA-P2-001
+    severity: P2
+    title: duplicate_compatible_legacy_HDU_physical_plane_remains
+    affects: [SCI-NOI-002-RA-R001]
+  - id: SCI-NOI-002-C2RA-P2-002
+    severity: P2
+    title: aggregate_digest_encoding_and_auditor_order_are_ambiguous
+    affects: [SCI-NOI-002-RA-B001]
+  - id: SCI-NOI-002-C2RA-P2-003
+    severity: P2
+    title: Mapdiag_exact_metadata_and_value_regression_fixture_incomplete
+    affects: [SCI-NOI-002-RA-R002]
+
+scope_creep_assessment:
+  scientific_scope_creep_found: false
+  only_intended_direct_scientific_numerical_change_observed: true
+  intended_numerical_change: invalid_filtered_scatter_response_or_support_fails_closed_to_NaN
+  other_direct_numerical_change_observed: false
+  output_selection_changed: false
+  other_execution_or_completion_behavior_change_observed: true
+  execution_or_completion_change: >-
+    Incorrect publication lifecycle changes completion behavior for FRUIT and
+    misaccounts existing split Beammap selection even though writer-hook diffs
+    are mechanically bookkeeping.
+  authorized_storage_or_product_layout_change_observed: true
+  authorized_storage_or_product_layout_change: candidate_added_canonical_HDUs_removed
+  mapdiag_calculations_or_names_changed: false
+  FLT_SRC_FRUIT_MODE_mathematics_changed: false
+  dense_covariance_added: false
+  per_sample_ids_or_sign_stream_added: false
+  R_I_Q_phase_behavior_changed: false
+  auxiliary_channel_substituted_for_primary_x: false
+  duplicated_full_package_metadata_added: false
+
+validation_summary:
+  build: pass
+  focused_core_tests: {passed: 32, failed: 0}
+  focused_fits_tests: {passed: 8, failed: 0}
+  full_core_tests: {passed: 563, failed: 0, disabled: 1}
+  full_fits_tests: {passed: 29, failed: 0}
+  full_safety_tests: {passed: 14, failed: 0}
+  ctest: {registered: 607, executed_passed: 606, failed: 0, disabled: 1}
+  baseline_auditor_tests: {passed: 71, failed: 0}
+  contract_ledger_profile_tests: {passed: 49, failed: 0}
+  config_preflight: {passed: true, tests: 127, coverage_percent: 100}
+  product_contract_json: valid
+  validation_ledger: {valid: true, records: 60}
+  science_change_ledger: {valid: true, changes: 3, integration_commits: 5}
+  disabled_package_with_members_negative_probe: unexpectedly_accepted
+  requested_enabled_zero_mapmaking_disabled_negative_probe: unexpectedly_accepted
+  unity_or_astronomical_validation: not_performed_not_claimed
+
+handoff_proposals:
+  created: []
+  reason: >-
+    No new handoff is required. Existing FLT and FRUIT proposals already own
+    F005 and F006; duplicating them would create competing authority.
+  preserve_F005_to_FLT_boundary: true
+  preserve_F006_to_FRUIT_boundary: true
+
+recommendation:
+  owner_coordinator_disposition: amend
+  integrate_exact_candidate: false
+  successor_application_base: d1d19145df574571a894772fdc9410c86cba1041
+  launch_successor_from_this_audit_task: false
+  stop_for_review: true
