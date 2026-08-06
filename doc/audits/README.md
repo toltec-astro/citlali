@@ -92,31 +92,33 @@ retains their exact boundary. The package remains
 `proposed`/`conditionally_conformant`/`in_progress`/`fail_closed` with verdict
 `amend` and re-audit `required`.
 
-### SCI-NOI-001 Phase 0 accepted; Phase 1 core authorized — 2026-08-05
+### SCI-NOI-001 Phase 1 accepted; R3 authoritative; Phase 2 authorized — 2026-08-05
 
 The [frozen SCI-NOI-001 prompt](prompts/SCI_NOI_001_AUDIT_PROMPT.md),
 [inbound manifest](handoffs/SCI-NOI-001/SCI-NOI-001_INBOX_MANIFEST_2026-08-05.yaml),
 and [dispatch/readiness record](packages/SCI-NOI-001_COORDINATOR_DISPATCH_READINESS_2026-08-05.md)
-record the accepted Terra-high Phase 0 checkpoint in task
-`019fd40a-cf4d-7ad0-aa9b-9543d5236154`: its isolated worktree was clean at
-detached `d5015fe716971bf8ea617e8a187311bf5af05185`, all frozen bytes matched,
-and no implementation/test/diff or post-core evidence was opened. The prompt
-now explicitly enumerates the known quarantined paths and the non-exhaustive
-direct-source/test/diff boundary.
+record the accepted Terra-high Phase 0 checkpoint and completed Sol-ultra
+Phase 1 in task `019fd40a-cf4d-7ad0-aa9b-9543d5236154`. The isolated worktree
+started clean at detached `d5015fe716971bf8ea617e8a187311bf5af05185`; all
+frozen handoff/manifest bytes matched and no quarantined implementation/test/
+diff or post-core evidence was opened before the core freeze. R1 and R2 remain
+immutable lineage; R3 at `5a027c94ef9fc9c4a6e6cadc84af1c8a550d3508`, with 54
+preserved equation labels/order, is the sole authority for Phase 2 mapping.
 
-Phase 1 alone is authorized in that same task/worktree: Sol-ultra, serial, no
-delegation, and only the independent-core file may be created and committed.
-The audit branch may be created only if absent and the worktree remains clean.
-It must stop before any quarantined exposure or post-core evidence. Phase 2
-remains separately held.
+Phase 2 alone is now authorized in that same task/worktree and audit branch:
+Sol-ultra, serial, no delegation, exact-d501 read-only trace beginning at the
+declared timestream scan-generation boundary, and documentation-only audit
+artifacts/proposals. It must stop after its documentation commit. No repair,
+re-audit, reduction, Unity, external execution, push, integration, another
+audit, or production authorization is allowed.
 
 NOI-001 will define the conditional pre-mapmaking sign ensemble and its
 ensemble second-moment imprint through realized map/coadd/filter interfaces.
 It conditions on frozen RTC/PTC and validity state; it does not validate those
 upstream packages. NOI-002 retains every variance/weight/S/N/aperture-estimator
 and production realization-count/default decision. The resource-admitted
-64-realization tier is neither a default nor a requirement. Future Sol-ultra
-Phase 1 and Phase 2 work each need explicit coordinator follow-up.
+64-realization tier is neither a default nor a requirement. No later phase is
+implicitly authorized beyond the bounded Phase 2 prompt.
 
 ## Purpose and non-goals
 

@@ -149,6 +149,26 @@ resource_allocation:
         adequacy while preserving the NOI-002 boundary.
       parallelism: serial_same_task_no_delegation_or_subagents
       stop_rule: stop_after_independent_core_commit_before_phase_2_exposure
+    - dispatch_id: SCI-NOI-001-PHASE-2-TRACE-2026-08-05
+      package_id: SCI-NOI-001
+      phase: documentation_only_trace_and_final_synthesis
+      dispatch_content_commit: 23edb3a075a27bdb572c0211920510f18cd593f9
+      model: gpt-5.6-sol
+      effort: ultra
+      task_shape: single_audit_synthesis_trace_mapped_to_authoritative_R3_core
+      rationale: >-
+        Accepted R3 independent core authorizes the bounded read-only
+        implementation/product/consumer trace and documentation-only final
+        audit synthesis at exact d5015fe, with all downstream estimator
+        validity reserved to SCI-NOI-002.
+      ultra_trigger: >-
+        Reconcile sign-law/effective-size mathematics, conditioning/RNG/state/
+        eligibility/provenance, realized-operator propagation,
+        deterministic-signal leakage/residual bias trade, and consumer
+        adequacy while preserving the NOI-002 boundary, mapping every result
+        to numbered authoritative R3 equations.
+      parallelism: serial_same_task_no_delegation_or_subagents
+      stop_rule: stop_after_documentation_only_audit_artifact_commit
 scope_control:
   policy_id: FRAMEWORK-SCOPE-001
   status: active_for_future_dispatches_and_future_phases
@@ -4833,9 +4853,40 @@ packages:
         status: submitted
     governing_sha: d5015fe716971bf8ea617e8a187311bf5af05185
     governing_sha_role: audit_dispatch_snapshot
-    audit_branch: null
-    audit_commit: null
-    independent_derivation: {status: not_started, sha256: null}
+    audit_branch: codex/audit-sci-noi-001
+    audit_commit: 5a027c94ef9fc9c4a6e6cadc84af1c8a550d3508
+    audit_parent_sha: d5015fe716971bf8ea617e8a187311bf5af05185
+    independent_derivation:
+      status: phase_1_completed_accepted_R3_authoritative
+      authoritative_revision: R3
+      authoritative_path: doc/audits/packages/SCI-NOI-001_INDEPENDENT_CORE_R3.tex
+      authoritative_sha256: 27263ab3bf29ac8f098463455e540f13e783241a688ef2bc5cb15b1f2a4319da
+      authoritative_commit: 5a027c94ef9fc9c4a6e6cadc84af1c8a550d3508
+      authoritative_timestamp: 2026-08-05T20:31:29-04:00
+      phase_2_equation_mapping_authority: R3_only
+      equation_label_count: 54
+      lineage:
+        - revision: R1
+          path: doc/audits/packages/SCI-NOI-001_INDEPENDENT_CORE.tex
+          sha256: b49c81424be41961d1a3517e0360288f3ab6a0a9dee00d1abce56b25b1159065
+          commit: ca52f9237adcbd322e32d03659dea197ab182340
+          timestamp: 2026-08-05T18:46:18-04:00
+          role: immutable_original_independent_core
+        - revision: R2
+          path: doc/audits/packages/SCI-NOI-001_INDEPENDENT_CORE_R2.tex
+          sha256: 5b0b6cc2b89b8fab9b44adbcfa121194ff0fb13f559cb6ae297a5549e6ae6c42
+          commit: dfd1b47c780697b6b4a59893b411bc6308873287
+          timestamp: 2026-08-05T20:28:01-04:00
+          role: immutable_reviewed_successor_rendering_identity_provenance_lineage
+        - revision: R3
+          path: doc/audits/packages/SCI-NOI-001_INDEPENDENT_CORE_R3.tex
+          sha256: 27263ab3bf29ac8f098463455e540f13e783241a688ef2bc5cb15b1f2a4319da
+          commit: 5a027c94ef9fc9c4a6e6cadc84af1c8a550d3508
+          timestamp: 2026-08-05T20:31:29-04:00
+          role: authoritative_mechanical_successor_preserving_54_equation_labels_order
+      phase_1_quarantine_preserved: true
+      tectonic_effective_compile: unavailable_local_pre_tex_panic
+      structural_document_checks: passed
     contract_status: not_started
     implementation_status: not_assessed
     validation_status: not_started
@@ -4847,13 +4898,13 @@ packages:
     requested_unity_evidence: []
     supplied_external_evidence: []
     dispatch:
-      status: phase_0_completed_accepted_phase_1_independent_core_authorized
+      status: phase_1_completed_accepted_R3_authoritative_phase_2_trace_authorized
       dispatch_date: 2026-08-05
-      launch_authorization: project_owner_explicit_phase_0_only
+      launch_authorization: project_owner_explicit_phase_2_only_after_phase_1_acceptance
       coordinator_registry_commit: 192e0d9b5e3be4eb20522d3319cae346168c4bce
       application_source_sha: d5015fe716971bf8ea617e8a187311bf5af05185
       prompt_path: doc/audits/prompts/SCI_NOI_001_AUDIT_PROMPT.md
-      prompt_sha256: f2dec3e30b7955e45d8f68bc370f91d239ebe89980cfa3e1b97f21e8e42da37c
+      prompt_sha256: 3b63109fd66ecba1646e08619b63ae1b070b5ffed934327290a65f46db2e01ef
       manifest_path: >-
         doc/audits/handoffs/SCI-NOI-001/SCI-NOI-001_INBOX_MANIFEST_2026-08-05.yaml
       manifest_sha256: 571d1b043e7ec041e3ca8c8dd841761aafcecd03d92a959e72add1dfdbebf819
@@ -4862,7 +4913,7 @@ packages:
       readiness_record:
         path: >-
           doc/audits/packages/SCI-NOI-001_COORDINATOR_DISPATCH_READINESS_2026-08-05.md
-        sha256: 95ab988eb6de29891a8a755feef356f47202cc93a7f76d1169036196d0e14582
+        sha256: 14cdeac0439eaa0e95a75a3696b0f82307afffed88478dc1bca096287376ae47
       phase_0:
         status: completed_accepted
         task_thread_id: 019fd40a-cf4d-7ad0-aa9b-9543d5236154
@@ -4906,7 +4957,7 @@ packages:
           concise_FRAMEWORK-SCOPE-001_checkpoint_with_execution_worktree_path,
           detached_or_starting_HEAD_clean_state_and_exact_Git_object_byte_checks
       phase_1:
-        status: authorized_independent_core_freeze_only
+        status: completed_accepted_R3_authoritative
         task_thread_id: 019fd40a-cf4d-7ad0-aa9b-9543d5236154
         task_worktree: /Users/gwilson/.codex/worktrees/e71f/citlali-refactor
         starting_sha: d5015fe716971bf8ea617e8a187311bf5af05185
@@ -4914,29 +4965,68 @@ packages:
         effort: ultra
         parallelism: serial_no_delegation_or_subagents
         audit_branch: codex/audit-sci-noi-001
-        audit_branch_creation: only_if_absent_and_task_worktree_clean
+        audit_branch_creation: completed_from_exact_starting_sha
         allowed_reads: [repository_level_authorities, SCI-NOI-001-XAUD-001, SCI-NOI-001-XAUD-002]
-        permitted_write: doc/audits/packages/SCI-NOI-001_INDEPENDENT_CORE.tex_only
-        required_return: >-
-          path_sha256_commit_UTC_timestamp_first_permitted_phase_2_inspection
-          boundary_and_clean_state
-        prohibited_before_stop:
-          - quarantined_implementation_test_or_diff_opening
-          - post_core_evidence_opening
+        writes_committed:
+          - revision: R1
+            path: doc/audits/packages/SCI-NOI-001_INDEPENDENT_CORE.tex
+            sha256: b49c81424be41961d1a3517e0360288f3ab6a0a9dee00d1abce56b25b1159065
+            commit: ca52f9237adcbd322e32d03659dea197ab182340
+            timestamp: 2026-08-05T18:46:18-04:00
+          - revision: R2
+            path: doc/audits/packages/SCI-NOI-001_INDEPENDENT_CORE_R2.tex
+            sha256: 5b0b6cc2b89b8fab9b44adbcfa121194ff0fb13f559cb6ae297a5549e6ae6c42
+            commit: dfd1b47c780697b6b4a59893b411bc6308873287
+            timestamp: 2026-08-05T20:28:01-04:00
+          - revision: R3
+            path: doc/audits/packages/SCI-NOI-001_INDEPENDENT_CORE_R3.tex
+            sha256: 27263ab3bf29ac8f098463455e540f13e783241a688ef2bc5cb15b1f2a4319da
+            commit: 5a027c94ef9fc9c4a6e6cadc84af1c8a550d3508
+            timestamp: 2026-08-05T20:31:29-04:00
+            authoritative_for_phase_2_equation_mapping: true
+        R1_R2_status: immutable_lineage_not_competing_authorities
+        no_quarantined_implementation_test_or_diff_opened: true
+        no_post_core_evidence_fixture_reduction_or_Unity_opened: true
+        clean_state_reported: true
+        tectonic_effective_compile: unavailable_local_pre_tex_panic
+        structural_document_checks: passed
+        stop_rule: completed_before_quarantined_exposure
+      phase_2:
+        status: authorized_documentation_only_trace_and_synthesis
+        task_thread_id: 019fd40a-cf4d-7ad0-aa9b-9543d5236154
+        task_worktree: /Users/gwilson/.codex/worktrees/e71f/citlali-refactor
+        audit_branch: codex/audit-sci-noi-001
+        application_sha: d5015fe716971bf8ea617e8a187311bf5af05185
+        model: gpt-5.6-sol
+        effort: ultra
+        parallelism: serial_no_delegation_or_subagents
+        independent_core_authority:
+          revision: R3
+          commit: 5a027c94ef9fc9c4a6e6cadc84af1c8a550d3508
+          path: doc/audits/packages/SCI-NOI-001_INDEPENDENT_CORE_R3.tex
+          sha256: 27263ab3bf29ac8f098463455e540f13e783241a688ef2bc5cb15b1f2a4319da
+        first_inspection_boundary: include/citlali/core/pipeline/timestream_scan_generation.h
+        scope_expansion: direct_references_and_enumerated_known_paths_only
+        allowed_execution: >-
+          read_only_Git_source_test_product_consumer_inspection_and_tiny
+          deterministic_equation_linked_existing_or_ephemeral_private_tmp_fixtures
+        canonical_ledger_edit_authorized: false
+        final_deliverables: >-
+          documentation_only_final_audit_embedded_comparison_and_matrices,
+          supported_proposed_handoffs, evidence_request_designs, and_proposed
+          ledger_update_then_stop
+        prohibited:
           - local_reduction
           - Unity
-          - helper_schema_or_verifier
+          - repository_helper_schema_wrapper_or_verifier
           - repair
           - push
           - integration
-          - phase_2
-        stop_rule: stop_after_independent_core_commit
-      held_future_phases:
-        phase_2:
-          model: gpt-5.6-sol
-          effort: ultra
-          authorization: separate_explicit_coordinator_follow_up_required
-          deliverable: documentation_only_final_audit_and_proposed_handoffs_then_stop
+          - re_audit
+          - another_audit
+          - production_authorization
+          - external_evidence_execution
+        stop_rule: stop_after_documentation_audit_commit
       resource_note: >-
         64 is a resource-admitted high-count validation tier only, not a
         requirement, production default, beammap expectation, or cap.

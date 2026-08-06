@@ -1,11 +1,10 @@
 # SCI-NOI-001 conditional-noise-ensemble audit dispatch — 2026-08-05
 
-This is a frozen, phased scientific-contract audit dispatch. It authorizes
-only the Phase 0 scope checkpoint below. It does not authorize an audit,
-implementation inspection, an auditor-created audit branch/worktree, a
-reduction, Unity activity, repair, integration, a push, or another package
-launch. The Codex app/coordinator may create the isolated Phase 0 execution
-worktree stated below; that infrastructure action has no audit authority.
+This is a frozen, phased scientific-contract audit dispatch. Phase 0 and the
+independent mathematical core are completed and accepted. It now authorizes
+only the bounded Phase 2 documentation-only trace and synthesis below. It does
+not authorize a reduction, Unity activity, repair, integration, a push, or
+another package launch.
 
 ## Frozen assignment
 
@@ -20,9 +19,8 @@ worktree stated below; that infrastructure action has no audit authority.
   dedicated isolated, clean execution worktree at detached/starting HEAD
   `d5015fe716971bf8ea617e8a187311bf5af05185` from
   `origin/codex/refactor-mainline`. This is environment creation only.
-- Required later audit branch: `codex/audit-sci-noi-001`, created only after
-  explicit Phase 1 authorization, in that isolated task worktree if safely
-  possible.
+- Audit branch: `codex/audit-sci-noi-001`, created from the exact application
+  snapshot during accepted Phase 1 in the isolated task worktree.
 - Dispatch coordination parent:
   `192e0d9b5e3be4eb20522d3319cae346168c4bce`.
 - Frozen inbound manifest:
@@ -34,9 +32,9 @@ worktree stated below; that infrastructure action has no audit authority.
 
 ## Quarantined implementation and exposure boundary
 
-The following known package implementation paths are quarantined through the
-Phase 1 independent-core freeze. Their enumeration is an exposure boundary,
-not a claim of an exhaustive implementation inventory:
+The following known package implementation paths were quarantined through the
+accepted Phase 1 independent-core freeze. Their enumeration remains an
+exposure boundary, not a claim of an exhaustive implementation inventory:
 
 - `include/citlali/core/pipeline/timestream_scan_generation.h`
 - `include/citlali/core/pipeline/noise_execution_plan.h`
@@ -46,16 +44,18 @@ not a claim of an exhaustive implementation inventory:
 
 Package-specific tests/diffs and any other implementation source directly
 exercising sign construction, RNG/seed, realization mapmaking/coaddition/
-filtering/persistence, or fruit-loop subtraction/re-addition are likewise
-quarantined until Phase 2. No post-core evidence may be opened in Phase 1.
+filtering/persistence, or fruit-loop subtraction/re-addition were likewise
+quarantined in Phase 1. In Phase 2, they may be opened only when within the
+explicit read-only trace boundary below. No post-core evidence is admitted at
+dispatch.
 
 ## Phase profile and stop rule
 
 | Phase | Model/effort | Authority now | Required stop |
 | --- | --- | --- | --- |
 | 0 | `gpt-5.6-terra`, high | scope checkpoint, repository state, and quarantine verification only in the coordinator-created isolated execution worktree | return before independent derivation or source inspection |
-| 1 | `gpt-5.6-sol`, ultra | authorized only for the existing task `019fd40a-cf4d-7ad0-aa9b-9543d5236154` and the independent-core freeze | commit only `SCI-NOI-001_INDEPENDENT_CORE.tex`, report its digest/commit/timestamp, and stop before quarantined source or post-core evidence |
-| 2 | `gpt-5.6-sol`, ultra | only after a separate explicit coordinator follow-up | documentation-only source/product/consumer trace and final audit synthesis, then stop |
+| 1 | `gpt-5.6-sol`, ultra | completed and accepted in task `019fd40a-cf4d-7ad0-aa9b-9543d5236154`; R3 is the authoritative core | preserved R1/R2/R3 lineage, then stop before implementation/test/diff or post-core evidence |
+| 2 | `gpt-5.6-sol`, ultra | authorized only for that same task, serially with no delegation | documentation-only source/product/consumer trace and final audit synthesis, then stop |
 
 The Phase 1/2 Ultra trigger is owner-approved and specific: reconcile the
 distinct hard investigations of (a) sign-law mathematics and effective
@@ -69,27 +69,86 @@ equations and state dependency-conditioned conclusions. Ultra ends at each
 named Phase 1 or Phase 2 stop boundary. No delegation or parallel subagents
 are permitted.
 
-## Exact Phase 1 continuation prompt
+## Accepted Phase 1 independent-core lineage
 
-Continue only task `019fd40a-cf4d-7ad0-aa9b-9543d5236154` in its verified
-isolated execution worktree
-`/Users/gwilson/.codex/worktrees/e71f/citlali-refactor`, which is clean at
-detached HEAD `d5015fe716971bf8ea617e8a187311bf5af05185`. Use
-`gpt-5.6-sol` at Ultra effort, serially, with no delegation or subagents.
+In task `019fd40a-cf4d-7ad0-aa9b-9543d5236154`, in isolated execution
+worktree `/Users/gwilson/.codex/worktrees/e71f/citlali-refactor`, Phase 1
+started from clean application snapshot
+`d5015fe716971bf8ea617e8a187311bf5af05185`. Its audit branch is
+`codex/audit-sci-noi-001`. No quarantined implementation/test/diff, post-core
+evidence, fixture, reduction, or Unity material was opened in Phase 1.
 
-Before derivation, reverify the clean worktree and exact starting SHA. Create
-`codex/audit-sci-noi-001` in that worktree only if the branch is absent and the
-worktree remains clean; do not move, reuse, or alter another branch. Read only
-repository-level authorities and frozen pre-core handoffs
-`SCI-NOI-001-XAUD-001` and `SCI-NOI-001-XAUD-002`. Do not open any quarantined
-implementation/test/diff or post-core evidence.
+The immutable lineage is: R1 commit
+`ca52f9237adcbd322e32d03659dea197ab182340`,
+`SCI-NOI-001_INDEPENDENT_CORE.tex`, SHA-256
+`b49c81424be41961d1a3517e0360288f3ab6a0a9dee00d1abce56b25b1159065`;
+R2 commit `dfd1b47c780697b6b4a59893b411bc6308873287`,
+`SCI-NOI-001_INDEPENDENT_CORE_R2.tex`, SHA-256
+`5b0b6cc2b89b8fab9b44adbcfa121194ff0fb13f559cb6ae297a5549e6ae6c42`;
+and authoritative R3 commit `5a027c94ef9fc9c4a6e6cadc84af1c8a550d3508`,
+`SCI-NOI-001_INDEPENDENT_CORE_R3.tex`, SHA-256
+`27263ab3bf29ac8f098463455e540f13e783241a688ef2bc5cb15b1f2a4319da`.
+R2 records reviewed rendering, observation-scoped detector/channel identity,
+compact provenance, and successor-lineage corrections; R3 is the mechanical
+successor preserving all 54 equation labels and their order. R1 and R2 remain
+immutable lineage, not competing Phase 2 authorities. Tectonic could not
+compile effectively because it panicked before TeX execution in the local
+Homebrew/system-configuration layer; structural document checks passed.
 
-Create and commit only
-`doc/audits/packages/SCI-NOI-001_INDEPENDENT_CORE.tex`. Report its path,
-SHA-256, commit, UTC timestamp, first permitted Phase 2 inspection boundary,
-and clean state, then stop. Do not perform Phase 2, a local reduction, Unity
-action, helper/schema/verifier work, repair, push, integration, or another
-audit/package launch.
+## Exact Phase 2 continuation prompt
+
+Continue only task `019fd40a-cf4d-7ad0-aa9b-9543d5236154` in its isolated
+worktree `/Users/gwilson/.codex/worktrees/e71f/citlali-refactor` on
+`codex/audit-sci-noi-001`. Reverify it is clean and that the application parent
+is exact `d5015fe716971bf8ea617e8a187311bf5af05185`. Use `gpt-5.6-sol` at
+Ultra effort, serially, with no delegation or subagents. Treat R3 above as the
+sole authoritative independent core for equation mapping.
+
+Begin the read-only trace at
+`include/citlali/core/pipeline/timestream_scan_generation.h`, then expand only
+through direct references and the enumerated known paths needed for the complete
+NOI-001 trace. Inspect only: the sign insertion point and conditioning state;
+randomized unit(s), `randomize_dets`, sign law and balance; RNG algorithm,
+seed derivation/namespaces, reproducibility/collisions, and sequential/OpenMP
+scheduling identity; flags/eligibility/gaps/non-finite/exclusion propagation;
+requested/effective/observation-resolved/realized counts and realization
+identity/cardinality; identical realized mapmaking/coadd/filter policy,
+including naive and JINC paths (condition any JINC conclusion on SCI-MAP-002);
+persistence/writers/restart/provenance/required-write failure; all realization
+consumers and uses while reserving variance estimator, weight, S/N,
+significance, aperture estimator, and default counts to SCI-NOI-002; the exact
+product behind anti-source symptoms without validating its formula; and only
+the narrow final fruit-loop pre-readdition state/interface needed to
+characterize the conceptual residual hypothesis, conditioned on SCI-FRUIT-001
+without auditing fruit-loop internals.
+
+Allowed execution is read-only Git/source/test/product/consumer inspection and
+tiny deterministic equation-linked fixtures using existing facilities or
+ephemeral calculations under `/private/tmp` with `$HOME/tolteca/bin/python`.
+Do not add a repository helper; run a full/local astronomical reduction, Unity,
+a costly study, network/download; or create a schema, wrapper, verifier,
+campaign, repair, production product, or algorithm expansion. Compact
+deterministic reconstruction and digest-bound provenance are admissible; do not
+require dense persisted per-sample IDs, sign vectors, or N-by-N
+`Q_epsilon` matrices.
+
+Create and commit documentation/audit artifacts only: the final
+`doc/audits/packages/SCI-NOI-001_SCIENTIFIC_CONTRACT_AUDIT.tex`, with a concise
+current-versus-conceptual-residual comparison table, product/consumer matrix,
+findings/closure gates, and use-specific ensemble-adequacy classifications
+embedded in or accompanying it proportionally; proposed SCI-NOI-002 and,
+only if evidence supports them, conditioned FLT/FRUIT handoffs in established
+proposal locations without editing a canonical registry; an exact-d501 current
+ensemble evidence-request design and a clearly separate future residual A/B
+design; and a proposed YAML ledger update, not a canonical-ledger edit. Do not
+invent tolerances; hold costly studies for `FRAMEWORK-NUM-001`.
+
+Map every source/product/consumer result to numbered R3 equations and state
+dependency-conditioned conclusions. At the final Phase 2 stop, commit only
+those documentation/audit artifacts; report exact commit/digests,
+findings/status axes/verdict/dependencies/owner decisions, and a recommended
+next task. Do not repair, re-audit, execute external evidence, push, integrate,
+launch another audit, or authorize production.
 
 ## Exact Phase 0 launch prompt
 
@@ -198,9 +257,9 @@ production default, beammap expectation, or new cap.
    estimator, and production realization-count/default policy. NOI-001 must
    not decide them.
 
-## Later Phase 1 independent-core requirements
+## Phase 1 independent-core requirements retained as history
 
-Under the current Phase 1 authorization, read only repository-level authorities
+Under the completed Phase 1 authorization, read only repository-level authorities
 and the two frozen pre-core handoffs before deriving the independent core. Do
 not open quarantined implementation paths, tests, diffs, or a post-core record. The core must
 derive conditional mean/covariance using the sign-correlation law
@@ -222,15 +281,11 @@ Freeze only
 `doc/audits/packages/SCI-NOI-001_INDEPENDENT_CORE.tex`, commit it, report its
 SHA-256, commit, timestamp, and planned first source-open event, then stop.
 
-## Later Phase 2 trace and evidence boundaries
+## Phase 2 trace and evidence boundaries
 
-Only after explicit Phase 2 authorization may the auditor inspect the narrow
-quarantined paths needed to trace exact insertion point, randomized unit,
-RNG/seed/balance/eligibility/count, operator, cardinality, persistence,
-product, and consumer behavior at
-`d5015fe716971bf8ea617e8a187311bf5af05185`. Trace sequential/OpenMP
-reachability and every state transition only as necessary for the NOI-001
-question. Map each conclusion to numbered independent-core equations.
+Phase 2 is authorized only by the exact continuation above. Trace
+sequential/OpenMP reachability and every state transition only as necessary for
+the NOI-001 question. Map each conclusion to numbered R3 equations.
 
 The final audit may draft an exact-`d5015fe716971bf8ea617e8a187311bf5af05185`
 current-ensemble evidence

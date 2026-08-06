@@ -227,7 +227,7 @@ exact-successor repair/evidence and fresh re-audit authorization against the
 [recorded decision boundary](audits/packages/SCI-FLT-001_COORDINATOR_DECISION_BRIEF_2026-08-05.md);
 it authorizes no application integration or production expansion.
 
-## 2026-08-05 SCI-NOI-001 Phase 0 Acceptance and Phase 1 Authorization
+## 2026-08-05 SCI-NOI-001 Phase 1 Acceptance and Phase 2 Authorization
 
 The coordination line froze the
 [SCI-NOI-001 dispatch prompt](audits/prompts/SCI_NOI_001_AUDIT_PROMPT.md),
@@ -241,13 +241,19 @@ bytes were verified, and no implementation/test/diff or post-core evidence was
 opened. The prompt correction explicitly lists the known quarantined paths and
 states the non-exhaustive direct-source/test/diff boundary.
 
-Phase 1 alone is authorized in that same task/worktree: Sol-ultra, serial,
-with no delegation. It may create `codex/audit-sci-noi-001` only if absent and
-the worktree remains clean, read repository-level authorities plus the two
-pre-core handoffs, and create/commit only the independent core. It must stop
-before quarantined exposure, post-core evidence, local reduction, Unity,
-helper/schema/verifier work, repair, push, integration, or Phase 2. Phase 2
-remains separately held.
+Phase 1 is completed and accepted on `codex/audit-sci-noi-001`. Its R1/R2/R3
+core lineage is immutable; R3 commit
+`5a027c94ef9fc9c4a6e6cadc84af1c8a550d3508` is the sole 54-equation mapping
+authority for Phase 2. No quarantined implementation/test/diff, post-core
+evidence, fixture, reduction, or Unity material was opened during Phase 1.
+
+Phase 2 alone is authorized in that same task/worktree: Sol-ultra, serial,
+with no delegation, exact-d501 read-only tracing beginning at
+`include/citlali/core/pipeline/timestream_scan_generation.h`, and
+documentation-only final audit/proposal artifacts. It must stop after that
+documentation commit; repair, re-audit, local reduction, Unity, external
+execution, push, integration, another audit, and production authorization are
+prohibited.
 
 The later NOI-001 question is the conditional ensemble made by pre-mapmaking
 sign randomization of fixed realized post-RTC/PTC samples, including its
@@ -256,8 +262,8 @@ operator propagation, and deterministic-source leakage diagnostics. It
 conditions on MAP/PTC/VAL interfaces and reserves every empirical variance,
 weight, S/N, aperture-estimator, and production realization-count/default
 decision to SCI-NOI-002. The 64-realization tier is resource-admitted
-validation only, not a requirement/default/cap. Phase 1 and Phase 2 are
-separate Sol-ultra serial authorizations with no delegation.
+validation only, not a requirement/default/cap. The bounded Phase 2 prompt is
+the only active Sol-ultra authorization, with no delegation.
 
 ## 2026-07-31 SCI-CAL-001 Audit Coordination
 
