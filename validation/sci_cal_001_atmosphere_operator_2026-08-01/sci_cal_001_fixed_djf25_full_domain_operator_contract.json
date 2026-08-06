@@ -1,0 +1,98 @@
+{
+  "anchors": [
+    {
+      "id": "tau0",
+      "source": "analytic unity",
+      "tau225": "0"
+    },
+    {
+      "id": "am_q25",
+      "source": "low fixed-DJF25",
+      "tau225": "0.0504874104674104401"
+    },
+    {
+      "id": "am_q50",
+      "source": "low fixed-DJF25",
+      "tau225": "0.0883393725904400573"
+    },
+    {
+      "id": "tau015",
+      "source": "TAU025 fixed-DJF25 target; achieved provenance 0.1499999859125433062628881602402745",
+      "tau225": "0.15"
+    },
+    {
+      "id": "am_q75",
+      "source": "low fixed-DJF25",
+      "tau225": "0.158313198574890929"
+    },
+    {
+      "id": "tau020",
+      "source": "TAU025 fixed-DJF25 target; achieved provenance 0.1999999783213567867059666712638576",
+      "tau225": "0.20"
+    },
+    {
+      "id": "tau025",
+      "source": "TAU025 fixed-DJF25 target; achieved provenance 0.2499999377860148032413478624431719",
+      "tau225": "0.25"
+    }
+  ],
+  "convention": {
+    "coordinate": "modified-secant zenith tau225",
+    "derivative_continuity_gate": false,
+    "full_sample_airmass": true,
+    "operator_switch_at_tau015": false,
+    "transmission": "finite and 0 < T <= 1",
+    "x_ref": 0
+  },
+  "domain": {
+    "elevation_deg": "25 <= elevation_deg <= 80",
+    "outside": "fail_closed",
+    "tau225": "0 <= tau225 <= 0.25"
+  },
+  "interpolation": {
+    "elevation": "shape-preserving PCHIP separately at every nonzero anchor; low anchors use even 20..80 evidence, TAU025 anchors use 25,35,..,80 evidence",
+    "opacity": "piecewise linear in LOS optical depth through ordered anchors",
+    "zero": "analytic unity"
+  },
+  "limitations": [
+    "representation contract only; no observational calibration validation",
+    "no runtime profile selector",
+    "value continuity at .15 is guaranteed by the shared operator anchor; derivative continuity is not a gate"
+  ],
+  "operator_id": "am12_fixed_djf25_piecewise_linear_los_tau_v1",
+  "owner_accepted_tau015_comparison": {
+    "array_maxima": {
+      "a1100": 0.000338295,
+      "a1400": 8.5375e-05,
+      "a2000": 0.000144061
+    },
+    "case_count": 84,
+    "max_fractional_correction_difference": 0.000338295,
+    "method": "coordinator fixed-DJF25 TolTECA-v1 band/alpha/elevation comparison; accepted as negligible",
+    "p95": 0.000216573,
+    "rms": 9.9135e-05
+  },
+  "provenance": {
+    "low_manifest_sha256": "c9f6aea80851fb7726b8845d4697af1cb270cb7ff7ce51d3d5fc63828f793b3a",
+    "low_nodes_csv_sha256": "8005c8ae1d4ab1c8de39f06a632d76d3e8f248939dc63c616dd176bcbd2f6fe2",
+    "operator_nodes_csv_sha256": "fd688a4cd3f46585b08631bc63a562aed482feb9b24ec9ee0071b70db7eb8a5f",
+    "tau025_context_sha256": "20f2dbc1ae232cc1b96b02431d703c5cbd166ceda28635d8bebc8867eb602efc",
+    "tau025_manifest_sha256": "932ab48ec5d79e1455f970b576e177f2a3673f7108a79b1e9fa2f86db9905208"
+  },
+  "quality_regimes": [
+    {
+      "label": "science_qualification_regime",
+      "tau225": "0 <= tau225 <= 0.15"
+    },
+    {
+      "label": "engineering_availability_regime",
+      "tau225": "0.15 < tau225 <= 0.25"
+    }
+  ],
+  "reference_profile": {
+    "filename": "LMT_DJF_25.amc",
+    "meaning": "declared model approximation; not inferred atmospheric truth",
+    "sha256": "aeeeeb48bef422f2d9392b5d7a3d62ab1887fd9e7c10322d5246d914841ba866"
+  },
+  "schema_version": "sci-cal-001-fixed-djf25-full-domain-operator-contract-v1"
+}
