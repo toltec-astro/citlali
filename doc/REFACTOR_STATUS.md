@@ -261,8 +261,13 @@ core; the FLT edge-preprocessing identity fact is held for a future authorized
 re-audit. NOI-002 exclusively owns every finite-N/variance/weight/S/N/
 significance/threshold/feedback/aperture/count decision. JINC remains
 SCI-MAP-002-conditioned, and residual interface facts SCI-FRUIT-001-
-conditioned. The next action is owner review of the concise NOI-001 decision
-brief, not repair, evidence admission, or recipient dispatch.
+conditioned. Owner Decision 1 is now approved pending repair: a compact
+versioned realization key must identify observation, mode, pass/iteration,
+realization, and coherence unit; distinct observations require independent
+assignments, and Beammap assignment is once per named pass/iteration and
+order-independent across active slots. This authorizes neither its RNG/seed
+implementation nor repair, count selection, evidence admission, recipient
+dispatch, or production use. Owner Decisions 2--4 remain open.
 
 The later NOI-001 question is the conditional ensemble made by pre-mapmaking
 sign randomization of fixed realized post-RTC/PTC samples, including its

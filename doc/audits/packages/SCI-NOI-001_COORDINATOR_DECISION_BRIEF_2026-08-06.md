@@ -25,25 +25,35 @@ request, reduction, Unity action, or production change is authorized.
 5. Retain all evidence designs as unrequested. Any costly work remains held
    for FRAMEWORK-NUM-001. Count 64 is optional validation capacity only.
 
-## Owner decisions requested
+## Owner decisions
 
-1. **Realization identity policy (F001/F002/F008).** Decide the intended
-   namespaced realization key and Beammap generation scope: what must identify
-   an observation/pass/iteration/realization, and whether an exact successor
-   should preserve or intentionally change current repeated-prefix behavior.
-   Recommendation: approve a compact versioned identity policy before repair;
-   do not select a production count.
-2. **Zero-realization admission (F005).** Decide whether an enabled mode must
+1. **Realization identity policy (F001/F002/F008) — approved 2026-08-06,
+   pending repair.** Every realization must use a compact, versioned,
+   deterministic key containing observation identity, ensemble mode,
+   conditioning iteration/pass, realization number, and coherence-unit
+   identity. A detector/channel identity is the stable observation-scoped
+   realized channel identity in the reduction/operator chain, not a
+   design-detector match. Distinct observations must receive independent sign
+   assignments; repeated cross-observation prefixes are not desired behavior.
+   Beammap signs are generated once per named mapmaking pass/iteration and
+   reused across active map slots, independent of active-map ordering/history.
+   Assignments must repeat across sequential/OpenMP scheduling. Provenance must
+   record policy/version, stable ordering/partition, completed realization IDs,
+   ensemble mode, and digest joins. Dense sign vectors, per-sample IDs, and
+   N-by-N Q matrices are not required. This selects no RNG implementation or
+   seed, repair SHA, production count, estimator, product validity, evidence
+   run, or production authorization.
+2. **Zero-realization admission (F005) — owner decision still required.** Decide whether an enabled mode must
    require a positive realized count or whether a complete zero-stack product
    semantics is scientifically meaningful. Recommendation: require explicit
    positive-count admission unless the owner can state the complete no-stack
    contract; this is not a default-count decision.
-3. **Ensemble-mode identity (F003).** Decide whether ordinary current
+3. **Ensemble-mode identity (F003) — owner decision still required.** Decide whether ordinary current
    `x=s+n` realizations must be explicitly labeled as source-imprinted
    diagnostics while a future selectable residual mode waits for a FRUIT
    contract. Recommendation: approve that truthful separation; do not infer
    residual unbiasedness or authorize the legacy path as a residual product.
-4. **Evidence admission.** Decide whether any exact-d501 evidence case merits
+4. **Evidence admission — owner decision still required.** Decide whether any exact-d501 evidence case merits
    a separate FRAMEWORK-NUM-001 cost/readiness review after a successor policy
    is chosen. Recommendation: hold all cases now; authorize none until the
    requested scientific question, comparison set, cost, and acceptance policy
