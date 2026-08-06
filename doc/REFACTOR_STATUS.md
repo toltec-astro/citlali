@@ -267,7 +267,12 @@ realization, and coherence unit; distinct observations require independent
 assignments, and Beammap assignment is once per named pass/iteration and
 order-independent across active slots. This authorizes neither its RNG/seed
 implementation nor repair, count selection, evidence admission, recipient
-dispatch, or production use. Owner Decisions 2--4 remain open.
+dispatch, or production use. Owner Decision 2 is also approved pending repair:
+enabled realizations require a positive requested/effective/realized count,
+while disabled is the sole zero-count no-ensemble state. Pointing and OOF
+quicklook lanes may explicitly disable realizations and perform no
+realization/noise-product work because they do not depend on noise maps. This
+sets no default, adequate, or production count; Decisions 3--4 remain open.
 
 The later NOI-001 question is the conditional ensemble made by pre-mapmaking
 sign randomization of fixed realized post-RTC/PTC samples, including its

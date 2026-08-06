@@ -43,11 +43,17 @@ request, reduction, Unity action, or production change is authorized.
    N-by-N Q matrices are not required. This selects no RNG implementation or
    seed, repair SHA, production count, estimator, product validity, evidence
    run, or production authorization.
-2. **Zero-realization admission (F005) — owner decision still required.** Decide whether an enabled mode must
-   require a positive realized count or whether a complete zero-stack product
-   semantics is scientifically meaningful. Recommendation: require explicit
-   positive-count admission unless the owner can state the complete no-stack
-   contract; this is not a default-count decision.
+2. **Zero-realization admission (F005) — approved 2026-08-06, pending
+   repair.** When noise realizations are enabled, requested/effective/realized
+   count must be at least one; enabled with zero is invalid. Disabled is the
+   sole supported no-ensemble state: effective and realized counts are zero,
+   no realization-derived products, weights, or diagnostics are promised, and
+   no realization-generation or downstream noise-product work occurs.
+   Real-time pointing and OOF quicklook reductions may use this disabled lane
+   to perform the minimum computation needed for quicklook because neither
+   depends on noise maps. This selects no default, scientifically adequate, or
+   production count; no estimator, product validity, repair SHA, or evidence
+   plan. NOI-002 retains count/default and estimator ownership.
 3. **Ensemble-mode identity (F003) — owner decision still required.** Decide whether ordinary current
    `x=s+n` realizations must be explicitly labeled as source-imprinted
    diagnostics while a future selectable residual mode waits for a FRUIT
