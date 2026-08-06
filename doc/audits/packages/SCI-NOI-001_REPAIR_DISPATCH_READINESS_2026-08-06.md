@@ -1,17 +1,34 @@
 # SCI-NOI-001 bounded repair dispatch readiness — 2026-08-06
 
-Status: `ready_pending_launch`. This is a frozen coordination package only;
-no repair worktree, repair branch, source edit, test run, evidence request,
-Unity action, re-audit, integration, push, or production change has occurred.
+Status: `launched_checkpoint_passed`; bounded implementation/test work is
+`authorized_not_started`. The frozen prompt and authority manifest are
+unchanged. No source edit, test run, evidence request, Unity action, re-audit,
+integration, push, or production change has occurred.
 
 ## Exact starting state
 
 The eventual repair task must use a fresh isolated worktree at exact
 `d5015fe716971bf8ea617e8a187311bf5af05185` from
 `origin/codex/refactor-mainline`, never an audit or coordination branch. Its
-proposed branch is `codex/repair-sci-noi-001`; creation is permitted only on a
-clean worktree when that branch is absent. The authority baseline is
+proposed branch is `codex/repair-sci-noi-001`; creation was permitted only on a
+clean worktree when that branch was absent. The authority baseline is
 coordination commit `c21ff272ff09160fb004536504f1820e9dbd08d5`.
+
+## Accepted launch checkpoint and next authorization
+
+Task `019fd4e1-8add-7b52-aa2f-3422a521c745` verified clean detached entry at
+exact d501 in `/Users/gwilson/.codex/worktrees/142f/citlali-refactor`, then
+created `codex/repair-sci-noi-001` at the same exact clean HEAD. The frozen
+prompt, authority manifest, readiness record, owner brief, final audit, and R3
+digests matched. No implementation/test content was inspected or changed, and
+no build, test, reduction, Unity action, or commit occurred.
+
+The same task/worktree/branch is authorized for the bounded Sol-Ultra,
+serial/no-delegation implementation/test phase. It may address only
+F001/F002/F003/F005/F008, commit the bounded repair and focused tests, report
+the exact commit/gates/clean state, and stop for coordinator review. It remains
+unintegrated and `existing_use_only`; F004/F006/F007 and every frozen
+prohibition remain in force.
 
 ## Frozen package hashes
 

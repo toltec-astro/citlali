@@ -1,10 +1,10 @@
 # SCI-NOI-002 independent audit dispatch readiness — 2026-08-06
 
-Status: `ready_pending_phase0_launch`. This frozen package authorizes no task
-launch by itself and no Phase 1 or Phase 2 work. No audit branch/worktree,
-independent derivation, source/test/diff inspection, evidence request,
-reduction, Unity action, repair, integration, push, or production change has
-occurred.
+Status: Phase 0 `completed_accepted`; Phase 1
+`authorized_not_started`; Phase 2 remains held. The frozen prompt and inbox
+manifest are unchanged. No audit branch, independent derivation, source/test/
+diff inspection, evidence request, reduction, Unity action, repair,
+integration, push, or production change has occurred.
 
 ## Exact starting state and phase profile
 
@@ -15,6 +15,24 @@ High and stops after verifying worktree/HEAD/clean state, prompt and manifest
 bytes, and quarantine. The future audit branch
 `codex/audit-sci-noi-002` may be created only after explicit Phase 1
 authorization, from exact d501 in that clean worktree if the branch is absent.
+
+## Accepted Phase 0 and Phase 1 authorization
+
+Task `019fd4e1-8add-7b52-aa2f-3446e980cd4b` used isolated worktree
+`/Users/gwilson/.codex/worktrees/e801/citlali-refactor` at clean detached
+exact d501, with `origin/codex/refactor-mainline` resolving to the same SHA.
+It verified the frozen prompt, inbox manifest, readiness record, and
+SCI-NOI-002-XAUD-002 digests; SCI-NOI-002-XAUD-001 remained sealed and no
+prohibited exposure or write occurred. `codex/audit-sci-noi-002` remains
+absent and untouched.
+
+The same task/worktree is now authorized only for Sol-Ultra Phase 1, serial
+with no delegation. It may create `codex/audit-sci-noi-002` from exact d501
+only if absent and clean; read repository-level authorities plus
+SCI-NOI-002-XAUD-002/R3; derive and commit only
+`doc/audits/packages/SCI-NOI-002_INDEPENDENT_CORE.tex`; report its path,
+digest, commit, timestamp, first permitted Phase 2 boundary, and clean state;
+then stop before every quarantined source/test/diff or post-core handoff.
 
 ## Frozen package hashes
 
