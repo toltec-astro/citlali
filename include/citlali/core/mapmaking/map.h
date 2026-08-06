@@ -90,10 +90,24 @@ public:
     // parent identities. Filtered computation never rewrites it.
     std::shared_ptr<const ScienceMapProducts> raw_science_parent;
 
-    // empirical noise products derived from jackknife noise maps
+    // Conditional products of the completed source_imprinted_current stack.
+    // The legacy member names remain storage-level compatibility aliases:
+    // noise_variance is S_R/R conditional finite-stack scatter,
+    // sig2noise_pixel is coefficient-standardized signal,
+    // point_source_uncertainty is filtered-pixel stack scatter, and
+    // sig2noise_point_source is a conditional stack-scatter ratio. None is a
+    // physical-noise variance, precision, significance, or aperture error.
     std::vector<Eigen::MatrixXd> weight_formal, noise_mean, noise_variance,
                                 weight_empirical, sig2noise_pixel,
                                 point_source_uncertainty, sig2noise_point_source;
+    // Per-map product-level validity. Pixel-level invalid denominators are
+    // represented by non-finite values in the corresponding ratio plane.
+    Eigen::VectorXi noise_stack_scatter_valid,
+                    noise_uncertainty_use_valid,
+                    noise_weight_scale_valid,
+                    noise_pooled_stack_scale_valid;
+    // Compatibility storage for the global nonprecision scale diagnostic,
+    // pooled stack-scale diagnostic, and calibration-region pixel count.
     Eigen::VectorXd noise_weight_median_ratio, noise_weight_scale,
                     noise_s2n_sigma, noise_valid_pixels;
 
@@ -254,6 +268,12 @@ public:
     void calc_noise_products(bool, bool = true);
     void calc_noise_products(Eigen::Index, bool, bool = true);
     void clear_noise_products();
+    // Apply one declared fixed linear aperture/background/template projection
+    // to every compatible realization, then return S_R/R for the projected
+    // scalars. This is a conditional finite-stack diagnostic, not an aperture
+    // uncertainty or physical-noise calibration.
+    double calc_fixed_projection_stack_scatter(
+        Eigen::Index, const Eigen::MatrixXd &, double = 1.0) const;
     // calculate mean rms of signal maps within an annulus
     void calc_median_rms_annulus(double, double);
     // find sources in maps

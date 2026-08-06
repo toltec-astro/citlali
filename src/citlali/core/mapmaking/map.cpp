@@ -1039,6 +1039,10 @@ void MapBuffer::clear_noise_products() {
     std::vector<Eigen::MatrixXd>().swap(sig2noise_pixel);
     std::vector<Eigen::MatrixXd>().swap(point_source_uncertainty);
     std::vector<Eigen::MatrixXd>().swap(sig2noise_point_source);
+    noise_stack_scatter_valid.resize(0);
+    noise_uncertainty_use_valid.resize(0);
+    noise_weight_scale_valid.resize(0);
+    noise_pooled_stack_scale_valid.resize(0);
     noise_weight_median_ratio.resize(0);
     noise_weight_scale.resize(0);
     noise_s2n_sigma.resize(0);
@@ -1047,6 +1051,11 @@ void MapBuffer::clear_noise_products() {
 
 void MapBuffer::calc_noise_products(bool apply_empirical_weight_scale, bool mean_subtract) {
     clear_noise_products();
+
+    if (!mean_subtract) {
+        throw std::invalid_argument(
+            "conditional finite-stack scatter requires empirical stack centering");
+    }
 
     const Eigen::Index n_maps = static_cast<Eigen::Index>(weight.size());
     if (n_maps <= 0 || noise.empty() || n_noise <= 0) {
@@ -1060,9 +1069,14 @@ void MapBuffer::calc_noise_products(bool apply_empirical_weight_scale, bool mean
     sig2noise_pixel.resize(static_cast<size_t>(n_maps));
     point_source_uncertainty.resize(static_cast<size_t>(n_maps));
     sig2noise_point_source.resize(static_cast<size_t>(n_maps));
-    noise_weight_median_ratio.setZero(n_maps);
-    noise_weight_scale.setOnes(n_maps);
-    noise_s2n_sigma.setZero(n_maps);
+    const double unavailable = std::numeric_limits<double>::quiet_NaN();
+    noise_stack_scatter_valid.setZero(n_maps);
+    noise_uncertainty_use_valid.setZero(n_maps);
+    noise_weight_scale_valid.setZero(n_maps);
+    noise_pooled_stack_scale_valid.setZero(n_maps);
+    noise_weight_median_ratio.setConstant(n_maps, unavailable);
+    noise_weight_scale.setConstant(n_maps, unavailable);
+    noise_s2n_sigma.setConstant(n_maps, unavailable);
     noise_valid_pixels.setZero(n_maps);
 
     for (Eigen::Index i=0; i<n_maps; ++i) {
@@ -1074,6 +1088,10 @@ void MapBuffer::calc_noise_products(bool apply_empirical_weight_scale, bool mean
 }
 
 void MapBuffer::calc_noise_products(Eigen::Index i, bool apply_empirical_weight_scale, bool mean_subtract) {
+    if (!mean_subtract) {
+        throw std::invalid_argument(
+            "conditional finite-stack scatter requires empirical stack centering");
+    }
     const Eigen::Index n_maps = static_cast<Eigen::Index>(weight.size());
     if (i < 0 || i >= n_maps || i >= static_cast<Eigen::Index>(noise.size()) || n_noise <= 0) {
         return;
@@ -1092,14 +1110,25 @@ void MapBuffer::calc_noise_products(Eigen::Index i, bool apply_empirical_weight_
     ensure_matrix_vec(point_source_uncertainty);
     ensure_matrix_vec(sig2noise_point_source);
 
+    auto ensure_validity_vec = [&](Eigen::VectorXi &vec) {
+        if (vec.size() != n_maps) {
+            vec.setZero(n_maps);
+        }
+    };
+    ensure_validity_vec(noise_stack_scatter_valid);
+    ensure_validity_vec(noise_uncertainty_use_valid);
+    ensure_validity_vec(noise_weight_scale_valid);
+    ensure_validity_vec(noise_pooled_stack_scale_valid);
+
+    const double unavailable = std::numeric_limits<double>::quiet_NaN();
     if (noise_weight_median_ratio.size() != n_maps) {
-        noise_weight_median_ratio.setZero(n_maps);
+        noise_weight_median_ratio.setConstant(n_maps, unavailable);
     }
     if (noise_weight_scale.size() != n_maps) {
-        noise_weight_scale.setOnes(n_maps);
+        noise_weight_scale.setConstant(n_maps, unavailable);
     }
     if (noise_s2n_sigma.size() != n_maps) {
-        noise_s2n_sigma.setZero(n_maps);
+        noise_s2n_sigma.setConstant(n_maps, unavailable);
     }
     if (noise_valid_pixels.size() != n_maps) {
         noise_valid_pixels.setZero(n_maps);
@@ -1117,12 +1146,14 @@ void MapBuffer::calc_noise_products(Eigen::Index i, bool apply_empirical_weight_
     }
     noise_mean[static_cast<size_t>(i)].array() /= static_cast<double>(n_noise);
     noise_variance[static_cast<size_t>(i)].array() /= static_cast<double>(n_noise);
-    if (mean_subtract) {
-        noise_variance[static_cast<size_t>(i)].array() -=
-            noise_mean[static_cast<size_t>(i)].array().square();
-        noise_variance[static_cast<size_t>(i)] =
-            noise_variance[static_cast<size_t>(i)].array().max(0.0).matrix();
-    }
+    noise_variance[static_cast<size_t>(i)].array() -=
+        noise_mean[static_cast<size_t>(i)].array().square();
+    noise_variance[static_cast<size_t>(i)] =
+        noise_variance[static_cast<size_t>(i)].array().max(0.0).matrix();
+    noise_stack_scatter_valid(i) =
+        noise_variance[static_cast<size_t>(i)].array().isFinite().any() ? 1 : 0;
+    noise_uncertainty_use_valid(i) =
+        n_noise >= 2 && noise_stack_scatter_valid(i) != 0 ? 1 : 0;
 
     double weight_threshold = 0.0;
     if (cov_cut > 0.0) {
@@ -1145,7 +1176,7 @@ void MapBuffer::calc_noise_products(Eigen::Index i, bool apply_empirical_weight_
     }
     noise_valid_pixels(i) = static_cast<double>(n_valid);
 
-    double scale = 1.0;
+    double scale = unavailable;
     if (n_valid > 0) {
         Eigen::VectorXd ratios(n_valid);
         Eigen::Index idx = 0;
@@ -1177,26 +1208,36 @@ void MapBuffer::calc_noise_products(Eigen::Index i, bool apply_empirical_weight_
         if (std::isfinite(med_ratio) && med_ratio > 0.0) {
             noise_weight_median_ratio(i) = med_ratio;
             scale = 1.0 / med_ratio;
+            noise_weight_scale_valid(i) = 1;
         }
         if (ns_count > 1) {
             const double mean = ns_sum / static_cast<double>(ns_count);
             const double var = (ns_sum_sq - static_cast<double>(ns_count) * mean * mean) /
                                static_cast<double>(ns_count - 1);
-            noise_s2n_sigma(i) = std::sqrt(std::max(0.0, var));
+            if (std::isfinite(var)) {
+                noise_s2n_sigma(i) = std::sqrt(std::max(0.0, var));
+                noise_pooled_stack_scale_valid(i) = 1;
+            }
         }
     }
 
-    if (!std::isfinite(scale) || scale <= 0.0) {
+    if (apply_empirical_weight_scale &&
+        (!std::isfinite(scale) || scale <= 0.0)) {
         throw std::runtime_error(
-            "empirical coefficient rescale is non-finite or nonpositive");
+            "requested existing-use-only global nonprecision scale is unavailable");
     }
 
     noise_weight_scale(i) = scale;
     weight_empirical[static_cast<size_t>(i)] =
-        weight_formal[static_cast<size_t>(i)] * scale;
-    if (!weight_empirical[static_cast<size_t>(i)].array().isFinite().all()) {
-        throw std::runtime_error(
-            "empirical coefficient rescale produced a non-finite plane");
+        Eigen::MatrixXd::Constant(n_rows, n_cols, unavailable);
+    if (noise_weight_scale_valid(i)) {
+        weight_empirical[static_cast<size_t>(i)] =
+            weight_formal[static_cast<size_t>(i)] * scale;
+        if (apply_empirical_weight_scale &&
+            !weight_empirical[static_cast<size_t>(i)].array().isFinite().all()) {
+            throw std::runtime_error(
+                "global nonprecision scale produced a non-finite live coefficient plane");
+        }
     }
 
     if (apply_empirical_weight_scale) {
@@ -1210,14 +1251,74 @@ void MapBuffer::calc_noise_products(Eigen::Index i, bool apply_empirical_weight_
         refresh_science_products_after_coefficient_rescale(i);
     }
 
-    sig2noise_pixel[static_cast<size_t>(i)] =
-        (signal[i].array() * weight_empirical[static_cast<size_t>(i)].array().max(0.0).sqrt()).matrix();
+    const auto standardized_valid =
+        signal[i].array().isFinite() &&
+        weight_empirical[static_cast<size_t>(i)].array().isFinite() &&
+        (weight_empirical[static_cast<size_t>(i)].array() >= 0.0);
+    sig2noise_pixel[static_cast<size_t>(i)] = standardized_valid.select(
+        signal[i].array() *
+            weight_empirical[static_cast<size_t>(i)].array().max(0.0).sqrt(),
+        unavailable);
     point_source_uncertainty[static_cast<size_t>(i)] =
         noise_variance[static_cast<size_t>(i)].array().max(0.0).sqrt().matrix();
-    sig2noise_point_source[static_cast<size_t>(i)] =
-        (point_source_uncertainty[static_cast<size_t>(i)].array() > 0.0)
-            .select(signal[i].array() / point_source_uncertainty[static_cast<size_t>(i)].array(), 0.0)
-            .matrix();
+    Eigen::ArrayXX<bool> ratio_valid =
+        signal[i].array().isFinite() &&
+        point_source_uncertainty[static_cast<size_t>(i)].array().isFinite() &&
+        (point_source_uncertainty[static_cast<size_t>(i)].array() > 0.0);
+    if (noise_uncertainty_use_valid(i) == 0) {
+        ratio_valid.setConstant(false);
+    }
+    sig2noise_point_source[static_cast<size_t>(i)] = ratio_valid.select(
+        signal[i].array() /
+            point_source_uncertainty[static_cast<size_t>(i)].array(),
+        unavailable);
+}
+
+double MapBuffer::calc_fixed_projection_stack_scatter(
+    Eigen::Index map_index, const Eigen::MatrixXd &projection,
+    double response_normalization) const {
+    if (map_index < 0 ||
+        map_index >= static_cast<Eigen::Index>(noise.size()) ||
+        n_noise <= 0) {
+        throw std::invalid_argument(
+            "fixed stack projection requires a completed realization stack");
+    }
+    if (projection.rows() != n_rows || projection.cols() != n_cols ||
+        !projection.array().isFinite().all()) {
+        throw std::invalid_argument(
+            "fixed stack projection must be finite and match the map shape");
+    }
+    if (!std::isfinite(response_normalization) ||
+        response_normalization == 0.0) {
+        throw std::invalid_argument(
+            "fixed stack projection response normalization is unavailable");
+    }
+    const auto &stack = noise[static_cast<size_t>(map_index)];
+    if (stack.dimension(0) != n_rows || stack.dimension(1) != n_cols ||
+        stack.dimension(2) != n_noise) {
+        throw std::logic_error(
+            "fixed stack projection realization shape is inconsistent");
+    }
+
+    Eigen::VectorXd projected(n_noise);
+    for (Eigen::Index realization = 0; realization < n_noise;
+         ++realization) {
+        Eigen::Map<const Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>>
+            realization_map(
+                stack.data() + realization * n_rows * n_cols,
+                n_rows, n_cols);
+        const double value =
+            (projection.array() * realization_map.array()).sum() /
+            response_normalization;
+        if (!std::isfinite(value)) {
+            throw std::domain_error(
+                "fixed stack projection encountered unavailable realization data");
+        }
+        projected(realization) = value;
+    }
+    const double mean = projected.mean();
+    return (projected.array() - mean).square().sum() /
+           static_cast<double>(n_noise);
 }
 
 void MapBuffer::calc_median_rms_annulus(double inner_radius_rad, double outer_radius_rad) {
@@ -1268,8 +1369,10 @@ bool MapBuffer::find_sources(Eigen::Index map_index) {
         source_signal = -source_signal;
     }
 
-    // s/n map
-    Eigen::MatrixXd sig2noise = sqrt(weight[map_index].array())*source_signal.array();
+    // Existing quicklook engineering score; no significance calibration is
+    // implied by the configured threshold.
+    Eigen::MatrixXd source_finder_engineering_score =
+        sqrt(weight[map_index].array()) * source_signal.array();
 
     // find pixels equal or above source sigma
     std::vector<int> row_index, col_index;
@@ -1279,7 +1382,7 @@ bool MapBuffer::find_sources(Eigen::Index map_index) {
         for (Eigen::Index i=0; i<n_rows; ++i) {
             for (Eigen::Index j=0; j<n_cols; ++j) {
                 if (cov_bool(i,j) == 1) {
-                    if (abs(sig2noise(i,j)) >= source_sigma) {
+                    if (abs(source_finder_engineering_score(i,j)) >= source_sigma) {
                         row_index.push_back(i);
                         col_index.push_back(j);
                     }
@@ -1291,7 +1394,7 @@ bool MapBuffer::find_sources(Eigen::Index map_index) {
         for (Eigen::Index i=0; i<n_rows; ++i) {
             for (Eigen::Index j=0; j<n_cols; ++j) {
                 if (cov_bool(i,j) == 1) {
-                    if (sig2noise(i,j) >= source_sigma) {
+                    if (source_finder_engineering_score(i,j) >= source_sigma) {
                         row_index.push_back(i);
                         col_index.push_back(j);
                     }

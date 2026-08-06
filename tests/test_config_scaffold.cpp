@@ -96,8 +96,10 @@
 
 #include <algorithm>
 #include <array>
+#include <cmath>
 #include <functional>
 #include <filesystem>
+#include <fstream>
 #include <initializer_list>
 #include <limits>
 #include <map>
@@ -2275,6 +2277,37 @@ TEST(config_scaffold, noise_plan_preserves_disabled_request) {
         citlali::pipeline::noise_random_seed);
 }
 
+TEST(config_scaffold, rejects_enabled_zero_noise_count_without_defaulting) {
+    citlali::config::NoiseConfig request;
+    request.enabled = true;
+    request.n_noise_maps = 0;
+    citlali::pipeline::NoiseExecutionPlan plan;
+
+    EXPECT_THROW(plan.reset_from_request(request, true),
+                 std::invalid_argument);
+    EXPECT_EQ(request.n_noise_maps, 0);
+    EXPECT_FALSE(plan.initialized);
+}
+
+TEST(config_scaffold, records_exact_noise_joint_assignment_design) {
+    citlali::config::NoiseConfig request;
+    request.enabled = true;
+    request.n_noise_maps = 2;
+    citlali::pipeline::NoiseExecutionPlan plan;
+
+    request.randomize_dets = true;
+    plan.reset_from_request(request, true);
+    EXPECT_EQ(
+        plan.effective_resolution.joint_assignment_design,
+        "sequential_mt19937_per_scan_per_detector_sign_assignments");
+
+    request.randomize_dets = false;
+    plan.reset_from_request(request, true);
+    EXPECT_EQ(
+        plan.effective_resolution.joint_assignment_design,
+        "sequential_mt19937_per_scan_detector_shared_sign_assignments");
+}
+
 TEST(config_scaffold, routes_noise_accessor_through_effective_plan) {
     FakeEngine engine;
     engine.typed_config.noise.enabled = true;
@@ -2335,8 +2368,16 @@ TEST(config_scaffold, records_disabled_noise_run) {
 
     EXPECT_TRUE(noise.realized.reduction_completed);
     EXPECT_FALSE(noise.realized.generation_executed);
-    EXPECT_FALSE(noise.realized.total_noise_realization_count.has_value());
-    EXPECT_FALSE(noise.realized.outputs_completed);
+    ASSERT_TRUE(noise.realized.noise_maps_per_scientific_map.has_value());
+    ASSERT_TRUE(noise.realized.total_noise_realization_count.has_value());
+    EXPECT_EQ(*noise.realized.noise_maps_per_scientific_map, 0U);
+    EXPECT_EQ(*noise.realized.total_noise_realization_count, 0U);
+    EXPECT_TRUE(noise.realized.actual_completion_valid);
+    EXPECT_TRUE(noise.realized.completed_count_matches_effective);
+    EXPECT_FALSE(noise.realized.uncertainty_use_valid);
+    EXPECT_EQ(noise.realized.completion_basis,
+              "effective_disabled_zero_work");
+    EXPECT_TRUE(noise.realized.outputs_completed);
 }
 
 TEST(config_scaffold, records_jinc_science_noise_cardinality) {
@@ -2398,6 +2439,11 @@ TEST(config_scaffold, records_full_observation_noise_outputs) {
     EXPECT_EQ(*noise.realized.total_noise_realization_count, 6U);
     EXPECT_EQ(*noise.realized.empirical_product_map_count, 6U);
     EXPECT_EQ(*noise.realized.realization_image_write_count, 12U);
+    EXPECT_TRUE(noise.realized.actual_completion_valid);
+    EXPECT_TRUE(noise.realized.completed_count_matches_effective);
+    EXPECT_TRUE(noise.realized.uncertainty_use_valid);
+    EXPECT_EQ(noise.realized.completion_basis,
+              "successful_pipeline_return_under_effective_plan");
 }
 
 TEST(config_scaffold, records_naive_coadd_observation_and_coadd_noise_cardinality) {
@@ -2898,6 +2944,11 @@ TEST(config_scaffold, serializes_versioned_noise_provenance) {
     plan.realized.total_noise_realization_count = 6U;
     plan.realized.empirical_product_map_count = 6U;
     plan.realized.realization_image_write_count = 12U;
+    plan.realized.actual_completion_valid = true;
+    plan.realized.completed_count_matches_effective = true;
+    plan.realized.uncertainty_use_valid = true;
+    plan.realized.completion_basis =
+        "successful_pipeline_return_under_effective_plan";
     plan.realized.outputs_completed = true;
 
     const auto node = citlali::pipeline::noise_provenance_node(plan);
@@ -2914,6 +2965,36 @@ TEST(config_scaffold, serializes_versioned_noise_provenance) {
     EXPECT_EQ(node["realized"]["realization_image_write_count"]["value"]
                   .as<std::size_t>(),
               12U);
+    EXPECT_EQ(node["package"]["package_id"].as<std::string>(),
+              citlali::pipeline::noise_package_id);
+    EXPECT_EQ(node["semantics"]["ensemble_identity"].as<std::string>(),
+              "source_imprinted_current");
+    EXPECT_EQ(node["semantics"]["estimator_identity"].as<std::string>(),
+              "conditional_finite_stack_scatter");
+    EXPECT_EQ(node["semantics"]["normalization"].as<std::string>(),
+              "centered_sum_of_squares_divided_by_completed_R");
+    EXPECT_EQ(
+        node["filter_operator_parity_gate"]["status"].as<std::string>(),
+        "scope_blocked_not_applicable_pending_FLT");
+    EXPECT_EQ(
+        node["filter_operator_parity_gate"]["finding_disposition"]
+            .as<std::string>(),
+        "F005_open_conditioned_on_FLT_repair_and_reaudit");
+    ASSERT_TRUE(node["package"]["product_contract_inventory"].IsSequence());
+    bool found_projection_contract = false;
+    for (const auto &product :
+         node["package"]["product_contract_inventory"]) {
+        if (product["product_identity"].as<std::string>() ==
+            citlali::pipeline::noise_fixed_projection_scatter_product_id) {
+            found_projection_contract = true;
+            EXPECT_EQ(
+                product["semantic_digest"].as<std::string>(),
+                citlali::pipeline::noise_product_semantic_digest(
+                    citlali::pipeline::
+                        noise_fixed_projection_scatter_product_id));
+        }
+    }
+    EXPECT_TRUE(found_projection_contract);
 }
 
 TEST(config_scaffold, atomically_writes_noise_provenance) {
@@ -2922,6 +3003,22 @@ TEST(config_scaffold, atomically_writes_noise_provenance) {
         "citlali_noise_provenance_test";
     std::filesystem::remove_all(output_dir);
     std::filesystem::create_directories(output_dir);
+    {
+        std::ofstream stream(output_dir / "map.fits");
+        stream << "map-bytes";
+    }
+    {
+        std::ofstream stream(output_dir / "noise.nc");
+        stream << "nc-bytes";
+    }
+    {
+        std::ofstream stream(output_dir / "sources.ecsv");
+        stream << "table-bytes";
+    }
+    {
+        std::ofstream stream(output_dir / "ignored.yaml");
+        stream << "not-a-member";
+    }
     citlali::pipeline::NoiseExecutionPlan plan;
     plan.reset_from_request(citlali::config::NoiseConfig{}, true);
     plan.realized.reduction_completed = true;
@@ -2935,6 +3032,31 @@ TEST(config_scaffold, atomically_writes_noise_provenance) {
     const auto stored = YAML::LoadFile(output_path.string());
     EXPECT_EQ(stored["schema_version"].as<std::string>(),
               "citlali-noise-products-provenance-v1");
+    ASSERT_TRUE(stored["package"]["member_files"].IsSequence());
+    ASSERT_EQ(stored["package"]["member_files"].size(), 3U);
+    EXPECT_EQ(
+        stored["package"]["member_files"][0]["member_product_identity"]
+            .as<std::string>(),
+        "map.fits");
+    EXPECT_EQ(
+        stored["package"]["member_files"][0]["sha256"].as<std::string>(),
+        citlali::utils::sha256("map-bytes"));
+    EXPECT_EQ(
+        stored["package"]["member_files"][0]["detached_status"]
+            .as<std::string>(),
+        "unverified_out_of_contract_without_package");
+    EXPECT_EQ(
+        stored["package"]["member_files"][1]["member_product_identity"]
+            .as<std::string>(),
+        "noise.nc");
+    EXPECT_EQ(
+        stored["package"]["member_files"][2]["member_product_identity"]
+            .as<std::string>(),
+        "sources.ecsv");
+    const auto inventory_digest =
+        stored["package"]["member_inventory_digest"].as<std::string>();
+    EXPECT_EQ(inventory_digest.rfind("sha256:", 0), 0U);
+    EXPECT_EQ(inventory_digest.size(), 71U);
     std::filesystem::remove_all(output_dir);
 }
 
@@ -2957,6 +3079,45 @@ TEST(config_scaffold, noise_provenance_failure_propagates) {
         citlali::pipeline::write_noise_provenance_file(
             missing_dir, citlali::pipeline::NoiseExecutionPlan{}),
         std::logic_error);
+}
+
+TEST(config_scaffold,
+     fitted_amplitude_map_rms_ratio_is_distinct_and_fails_closed) {
+    EXPECT_FLOAT_EQ(
+        citlali::pipeline::fitted_amplitude_over_full_map_rms_ratio(
+            10.0, 2.0),
+        5.0F);
+    EXPECT_TRUE(std::isnan(
+        citlali::pipeline::fitted_amplitude_over_full_map_rms_ratio(
+            10.0, 0.0)));
+    EXPECT_TRUE(std::isnan(
+        citlali::pipeline::fitted_amplitude_over_full_map_rms_ratio(
+            10.0, -1.0)));
+    EXPECT_TRUE(std::isnan(
+        citlali::pipeline::fitted_amplitude_over_full_map_rms_ratio(
+            std::numeric_limits<double>::infinity(), 2.0)));
+
+    std::map<std::string, std::string> descriptions;
+    for (const auto &header : citlali::pipeline::source_table_header()) {
+        descriptions[header] = "legacy-description";
+    }
+    const std::vector<int> obsnums{152390};
+    const auto meta = citlali::pipeline::source_table_meta_for_observation(
+        obsnums, "mJy/beam", citlali::config::MapPixelAxes::radec,
+        "fixture", "2026-08-06", "2026-08-06", descriptions);
+
+    EXPECT_EQ(meta["sig2noise"][1].as<std::string>(),
+              "fitted amplitude divided by full-map RMS "
+              "(legacy name; not significance)");
+    const auto contract = meta["noise_product_contract"];
+    EXPECT_EQ(contract["product_identity"].as<std::string>(),
+              "fitted_amplitude_over_full_map_rms_ratio");
+    EXPECT_EQ(contract["semantic_digest"].as<std::string>(),
+              citlali::pipeline::noise_product_semantic_digest(
+                  citlali::pipeline::
+                      noise_fitted_amplitude_rms_ratio_product_id));
+    EXPECT_EQ(contract["restriction"].as<std::string>(),
+              "legacy_alias_deprecated_not_significance");
 }
 
 TEST(config_scaffold, resolves_pointing_request_without_mutating_it) {

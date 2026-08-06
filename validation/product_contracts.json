@@ -66,8 +66,8 @@
         "map_cube_altaz",
         "map_cube_celestial"
       ],
-      "fact": "Phase-4 v1 products without empirical jackknife noise used sig2noise extension names for signal times the square root of formal mapmaker weight. Those historical planes are standardized amplitudes, not calibrated statistical-significance maps.",
-      "disposition": "Keep the immutable v1 checks for accepted historical artifacts. Current writers reserve sig2noise names for jackknife-calibrated products and emit formal_standardized_signal otherwise; successor profiles must use the v2 checks."
+      "fact": "Phase-4 v1 products used sig2noise extension names for standardized amplitudes or descriptive ratios. Current writers retain those names only as deprecated aliases of distinctly identified products; none is calibrated statistical significance.",
+      "disposition": "Keep accepted historical artifacts immutable. Current empirical-product writers emit canonical coefficient_standardized_signal and conditional_stack_scatter_ratio identities alongside explicitly deprecated not-significance aliases; products without empirical noise emit formal_standardized_signal."
     }
   ],
   "science_map_contracts": {
@@ -280,7 +280,7 @@
       "science_map_contract_id": "sci-map-001-f010-v1"
     },
     "map_cube_altaz": {
-      "scientific_identity": "Per-array Stokes-I map planes with signal, weights, kernel, coverage, and estimator-explicit standardized products: jackknife-calibrated signal-to-noise when empirical noise products exist, otherwise explicitly labeled formal-weight-standardized signal.",
+      "scientific_identity": "Per-array Stokes-I map planes with signal, nonprecision coefficients, kernel, coverage, and estimator-explicit standardized products. Empirical products are conditional finite-stack diagnostics, never calibrated statistical significance; products without them use explicitly labeled formal-weight-standardized signal.",
       "coordinate_frame": "AltAz tangent-plane azimuth/elevation offsets around the configured map center.",
       "axes": [
         "azimuth offset",
@@ -288,13 +288,13 @@
         "frequency",
         "Stokes"
       ],
-      "units_policy": "BUNIT and ESTTYPE are authoritative per HDU: signal/kernel in mJy/beam, weights in inverse squared signal units, noise variance in squared signal units, coverage in seconds, and masks/standardized products dimensionless. sig2noise names require empirical jackknife calibration.",
+      "units_policy": "BUNIT and ESTTYPE are authoritative per HDU: signal/kernel in mJy/beam, nonprecision coefficients in inverse squared signal units, conditional stack scatter in squared signal units, coverage in seconds, and masks/standardized products dimensionless. Legacy sig2noise names are deprecated aliases and carry explicit not-significance metadata.",
       "indexing_policy": "FITS/WCS pixel coordinates are one-based; diagnostic row/column indices are zero-based.",
       "missing_value_policy": "Signal-like pixels may be non-finite where coverage/weight is invalid; coverage_bool identifies supported pixels.",
       "failure_policy": "Fatal when the map family is enabled in the active profile."
     },
     "map_cube_celestial": {
-      "scientific_identity": "Per-array Stokes-I map planes with signal, weights, kernel, coverage, and estimator-explicit standardized products: jackknife-calibrated signal-to-noise when empirical noise products exist, otherwise explicitly labeled formal-weight-standardized signal.",
+      "scientific_identity": "Per-array Stokes-I map planes with signal, nonprecision coefficients, kernel, coverage, and estimator-explicit standardized products. Empirical products are conditional finite-stack diagnostics, never calibrated statistical significance; products without them use explicitly labeled formal-weight-standardized signal.",
       "coordinate_frame": "Equatorial J2000 TAN projection centered on the configured science field.",
       "axes": [
         "right ascension",
@@ -302,7 +302,7 @@
         "frequency",
         "Stokes"
       ],
-      "units_policy": "BUNIT and ESTTYPE are authoritative per HDU: signal/kernel in mJy/beam, weights in inverse squared signal units, coverage in seconds, and masks/standardized products dimensionless. sig2noise names require empirical jackknife calibration.",
+      "units_policy": "BUNIT and ESTTYPE are authoritative per HDU: signal/kernel in mJy/beam, nonprecision coefficients in inverse squared signal units, conditional stack scatter in squared signal units, coverage in seconds, and masks/standardized products dimensionless. Legacy sig2noise names are deprecated aliases and carry explicit not-significance metadata.",
       "indexing_policy": "FITS/WCS pixel coordinates are one-based; diagnostic row/column indices are zero-based.",
       "missing_value_policy": "Signal-like pixels may be non-finite where coverage/weight is invalid; coverage_bool identifies supported pixels.",
       "failure_policy": "Fatal when the map family is enabled in the active profile."
@@ -546,7 +546,10 @@
       },
       "required_ext_header_one_of": {
         "weight_I": {
-          "CALTYPE": ["formal", "empirical"]
+          "CALTYPE": [
+            "formal", "empirical",
+            "global_nonprecision_scale_diagnostic"
+          ]
         }
       },
       "same_shape_extnames": ["signal_I", "weight_I", "kernel_I"],
@@ -583,7 +586,10 @@
       },
       "required_ext_header_one_of": {
         "weight_I": {
-          "CALTYPE": ["formal", "empirical"]
+          "CALTYPE": [
+            "formal", "empirical",
+            "global_nonprecision_scale_diagnostic"
+          ]
         }
       },
       "same_shape_extnames": ["signal_I", "weight_I", "kernel_I"],
@@ -809,7 +815,8 @@
     },
     "sci_map_empirical_products_v1": {
       "required_extnames": [
-        "weight_formal_I", "noise_variance_I",
+        "weight_formal_I", "conditional_stack_scatter_I",
+        "noise_variance_I", "coefficient_standardized_signal_I",
         "sig2noise_I", "sig2noise_pixel_I"
       ],
       "forbidden_extnames": ["formal_standardized_signal_I"],
@@ -818,16 +825,60 @@
           "ESTTYPE": "formal_normalization_coefficient_snapshot",
           "TYPE": "formal_normalization_coefficient_snapshot",
           "PRECSTAT": "conditional_SCI-PTC-001",
-          "COVSTAT": "unavailable"
+          "COVSTAT": "unavailable",
+          "NOIPKG": "citlali-noise-products",
+          "NOIPROV": "noise_products_provenance.yaml",
+          "NOIPRID": "formal_nonprecision_coefficient_snapshot",
+          "NOIPVER": "SCI-NOI-002-v1",
+          "NOIDGST": "sha256:5320f43a5b799b9dc42f79a3439a1e4ae8f08a0f6ce39ead7c3813f7a14c82a2"
+        },
+        "conditional_stack_scatter_I": {
+          "ESTTYPE": "conditional_finite_stack_scatter",
+          "TYPE": "conditional_finite_stack_scatter",
+          "COVSTAT": "conditional_stack_only",
+          "NOIPKG": "citlali-noise-products",
+          "NOIPROV": "noise_products_provenance.yaml",
+          "NOIPRID": "conditional_finite_stack_scatter",
+          "NOIPVER": "SCI-NOI-002-v1",
+          "NOIDGST": "sha256:6e414e47fbcb26a686453a4d84a49d59d8e8710c77672d4581579401235580ae"
+        },
+        "noise_variance_I": {
+          "ESTTYPE": "conditional_finite_stack_scatter",
+          "ALIASOF": "conditional_stack_scatter_I",
+          "DEPRCATD": "true",
+          "NOIPRID": "conditional_finite_stack_scatter"
+        },
+        "coefficient_standardized_signal_I": {
+          "ESTTYPE": "coefficient_standardized_signal",
+          "SIGSTAT": "not_significance",
+          "NULLSTAT": "unavailable",
+          "NOIPKG": "citlali-noise-products",
+          "NOIPROV": "noise_products_provenance.yaml",
+          "NOIPRID": "coefficient_standardized_signal",
+          "NOIPVER": "SCI-NOI-002-v1",
+          "NOIDGST": "sha256:643459993e6288638e0ebba6b52b21847ba8adb9e2f2437e8138fe3081cae094"
+        },
+        "sig2noise_I": {
+          "ESTTYPE": "coefficient_standardized_signal",
+          "ALIASOF": "coefficient_standardized_signal_I",
+          "DEPRCATD": "true",
+          "SIGSTAT": "not_significance"
+        },
+        "sig2noise_pixel_I": {
+          "ESTTYPE": "coefficient_standardized_signal",
+          "ALIASOF": "coefficient_standardized_signal_I",
+          "DEPRCATD": "true",
+          "SIGSTAT": "not_significance"
         }
       }
     },
     "sci_map_filtered_empirical_products_v1": {
       "required_extnames": [
-        "weight_formal_I", "noise_variance_I",
-        "sig2noise_I", "sig2noise_pixel_I",
-        "point_source_flux_I", "point_source_uncertainty_I",
-        "sig2noise_point_source_I"
+        "weight_formal_I", "conditional_stack_scatter_I",
+        "noise_variance_I", "coefficient_standardized_signal_I",
+        "sig2noise_I", "sig2noise_pixel_I", "point_source_flux_I",
+        "filtered_pixel_stack_scatter_I", "point_source_uncertainty_I",
+        "conditional_stack_scatter_ratio_I", "sig2noise_point_source_I"
       ],
       "forbidden_extnames": ["formal_standardized_signal_I"],
       "required_ext_headers": {
@@ -835,15 +886,74 @@
           "ESTTYPE": "formal_normalization_coefficient_snapshot",
           "TYPE": "formal_normalization_coefficient_snapshot",
           "PRECSTAT": "conditional_SCI-PTC-001",
-          "COVSTAT": "unavailable"
+          "COVSTAT": "unavailable",
+          "NOIPRID": "formal_nonprecision_coefficient_snapshot"
+        },
+        "conditional_stack_scatter_I": {
+          "ESTTYPE": "conditional_finite_stack_scatter",
+          "NOIPRID": "conditional_finite_stack_scatter"
+        },
+        "noise_variance_I": {
+          "ALIASOF": "conditional_stack_scatter_I",
+          "DEPRCATD": "true",
+          "NOIPRID": "conditional_finite_stack_scatter"
+        },
+        "coefficient_standardized_signal_I": {
+          "ESTTYPE": "coefficient_standardized_signal",
+          "SIGSTAT": "not_significance",
+          "NOIPRID": "coefficient_standardized_signal"
+        },
+        "sig2noise_I": {
+          "ALIASOF": "coefficient_standardized_signal_I",
+          "DEPRCATD": "true",
+          "SIGSTAT": "not_significance"
+        },
+        "sig2noise_pixel_I": {
+          "ALIASOF": "coefficient_standardized_signal_I",
+          "DEPRCATD": "true",
+          "SIGSTAT": "not_significance"
+        },
+        "filtered_pixel_stack_scatter_I": {
+          "ESTTYPE": "filtered_pixel_stack_scatter",
+          "SIGSTAT": "not_significance",
+          "NOIPKG": "citlali-noise-products",
+          "NOIPROV": "noise_products_provenance.yaml",
+          "NOIPRID": "filtered_pixel_stack_scatter",
+          "NOIPVER": "SCI-NOI-002-v1",
+          "NOIDGST": "sha256:21fc8fef8dcd0b0875bbd7ba8d51862bb0277da78ffb4eb4c45d69414b026f35"
+        },
+        "point_source_uncertainty_I": {
+          "ESTTYPE": "filtered_pixel_stack_scatter",
+          "ALIASOF": "filtered_pixel_stack_scatter_I",
+          "DEPRCATD": "true",
+          "SIGSTAT": "not_significance"
+        },
+        "conditional_stack_scatter_ratio_I": {
+          "ESTTYPE": "conditional_stack_scatter_ratio",
+          "SIGSTAT": "not_significance",
+          "NULLSTAT": "unavailable",
+          "NOIPKG": "citlali-noise-products",
+          "NOIPROV": "noise_products_provenance.yaml",
+          "NOIPRID": "conditional_stack_scatter_ratio",
+          "NOIPVER": "SCI-NOI-002-v1",
+          "NOIDGST": "sha256:c75e661fa0fe9f4c97f1e8cca450b7c7a4bc24629685947c2af6244287b215b3"
+        },
+        "sig2noise_point_source_I": {
+          "ESTTYPE": "conditional_stack_scatter_ratio",
+          "ALIASOF": "conditional_stack_scatter_ratio_I",
+          "DEPRCATD": "true",
+          "SIGSTAT": "not_significance"
         }
       }
     },
     "sci_map_formal_standardized_only_v1": {
       "required_extnames": ["formal_standardized_signal_I"],
       "forbidden_extnames": [
-        "weight_formal_I", "noise_variance_I",
-        "sig2noise_I", "sig2noise_pixel_I"
+        "weight_formal_I", "conditional_stack_scatter_I",
+        "noise_variance_I", "coefficient_standardized_signal_I",
+        "sig2noise_I", "sig2noise_pixel_I",
+        "filtered_pixel_stack_scatter_I",
+        "conditional_stack_scatter_ratio_I"
       ],
       "required_ext_headers": {
         "formal_standardized_signal_I": {
@@ -866,7 +976,10 @@
       },
       "required_prefix_header_one_of": {
         "weight_det_": {
-          "CALTYPE": ["formal", "empirical"]
+          "CALTYPE": [
+            "formal", "empirical",
+            "global_nonprecision_scale_diagnostic"
+          ]
         }
       },
       "forbidden_extname_prefixes": [
@@ -875,8 +988,10 @@
         "retained_exposure_", "normalization_support_",
         "science_policy_support_", "science_valid_",
         "coverage_", "coverage_bool_",
-        "formal_standardized_signal_", "sig2noise_",
-        "point_source_flux_", "point_source_uncertainty_"
+        "formal_standardized_signal_", "conditional_stack_scatter_",
+        "coefficient_standardized_signal_", "sig2noise_",
+        "point_source_flux_", "filtered_pixel_stack_scatter_",
+        "point_source_uncertainty_", "conditional_stack_scatter_ratio_"
       ],
       "axis_types": ["AZOFFSET", "ELOFFSET", "FREQ", "STOKES"],
       "axis_units": ["arcsec", "arcsec", "Hz", null]
@@ -2304,10 +2419,14 @@
           "required_config_check_matches": 1,
           "checks": {
             "forbidden_extnames": [
-              "weight_formal_I", "noise_variance_I",
+              "weight_formal_I", "conditional_stack_scatter_I",
+              "noise_variance_I", "coefficient_standardized_signal_I",
               "formal_standardized_signal_I", "sig2noise_I",
               "sig2noise_pixel_I", "point_source_flux_I",
-              "point_source_uncertainty_I", "sig2noise_point_source_I"
+              "filtered_pixel_stack_scatter_I",
+              "point_source_uncertainty_I",
+              "conditional_stack_scatter_ratio_I",
+              "sig2noise_point_source_I"
             ]
           }
         },
@@ -2323,10 +2442,14 @@
           "required_config_check_matches": 2,
           "checks": {
             "forbidden_extnames": [
-              "weight_formal_I", "noise_variance_I",
+              "weight_formal_I", "conditional_stack_scatter_I",
+              "noise_variance_I", "coefficient_standardized_signal_I",
               "formal_standardized_signal_I", "sig2noise_I",
               "sig2noise_pixel_I", "point_source_flux_I",
-              "point_source_uncertainty_I", "sig2noise_point_source_I"
+              "filtered_pixel_stack_scatter_I",
+              "point_source_uncertainty_I",
+              "conditional_stack_scatter_ratio_I",
+              "sig2noise_point_source_I"
             ]
           }
         }

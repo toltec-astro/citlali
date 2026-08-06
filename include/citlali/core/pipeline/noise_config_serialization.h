@@ -40,6 +40,10 @@ inline YAML::Node noise_effective_resolution_node(
     node["randomization"]["seed_policy"] = resolution.seed_policy;
     node["randomization"]["generator_scope"] =
         resolution.generator_scope;
+    node["randomization"]["joint_assignment_design"] =
+        resolution.joint_assignment_design;
+    node["randomization"]["dependence_status"] =
+        noise_dependence_status;
     return node;
 }
 
@@ -75,6 +79,11 @@ inline YAML::Node noise_realized_state_node(
         noise_optional_value_node(realized.empirical_product_map_count);
     node["realization_image_write_count"] =
         noise_optional_value_node(realized.realization_image_write_count);
+    node["actual_completion_valid"] = realized.actual_completion_valid;
+    node["completed_count_matches_effective"] =
+        realized.completed_count_matches_effective;
+    node["uncertainty_use_valid"] = realized.uncertainty_use_valid;
+    node["completion_basis"] = realized.completion_basis;
     node["outputs_completed"] = realized.outputs_completed;
     return node;
 }

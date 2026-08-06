@@ -88,19 +88,73 @@ void add_image_weight_threshold_key(Hdu &hdu, double weight_threshold) {
 
 template <class Hdu>
 void add_empirical_weight_scale_key(Hdu &hdu, double scale) {
-    hdu.addKey("EMP_SCALE", scale, "Empirical weight scale");
+    hdu.addKey("EMP_SCALE", scale,
+               "Existing-use-only global nonprecision coefficient scale");
 }
 
 template <class Hdu>
 void add_weight_variance_median_key(Hdu &hdu, double median_ratio) {
     hdu.addKey("WVARMED", median_ratio,
-               "Median formal weight times jackknife variance");
+               "Median q_p times conditional finite-stack scatter");
 }
 
 template <class Hdu>
 void add_point_source_response_norm_key(Hdu &hdu, double response_norm) {
     hdu.addKey("RESPNORM", response_norm,
-               "Point-source response normalization applied");
+               "Legacy identity response; no aperture/template calibration");
+}
+
+template <class Hdu>
+void add_noise_product_join_keys(
+    Hdu &hdu, const std::string &package_id,
+    const std::string &provenance_id, const std::string &product_identity,
+    const std::string &product_version, const std::string &semantic_digest,
+    const std::string &scope, const std::string &validity,
+    const std::string &restriction) {
+    hdu.addKey("NOIPKG", package_id, "Noise-product package identity", true);
+    hdu.addKey("NOIPROV", provenance_id,
+               "Required authoritative package sidecar", true);
+    hdu.addKey("NOIPRID", product_identity,
+               "Noise product identity", true);
+    hdu.addKey("NOIPVER", product_version,
+               "Noise product contract version", true);
+    hdu.addKey("NOIDGST", semantic_digest,
+               "Product semantic-contract digest", true);
+    hdu.addKey("NOIDGKND", std::string{"semantic_contract_sha256"},
+               "Product digest kind", true);
+    hdu.addKey("NOISCOPE", scope, "Product scope", true);
+    hdu.addKey("NOIVALID", validity, "Product-level validity", true);
+    hdu.addKey("NOIRESTR", restriction,
+               "Detached-product restriction", true);
+    hdu.addKey("NOIMISS", std::string{"nonfinite_unavailable"},
+               "Missing/invalid value policy");
+}
+
+template <class Hdu>
+void add_global_nonprecision_scale_diagnostic_keys(
+    Hdu &hdu, bool valid, Eigen::Index valid_pixel_count,
+    double median_ratio, double scale) {
+    hdu.addKey("SCLID", std::string{"global_nonprecision_scale_diagnostic"},
+               "Scale diagnostic identity", true);
+    hdu.addKey("SCLVALID", valid ? std::string{"true"}
+                                  : std::string{"false"},
+               "Scale diagnostic validity");
+    hdu.addKey("SCLNPIX", valid_pixel_count,
+               "Finite positive calibration-region pixels");
+    if (valid) {
+        hdu.addKey("SCLMED", median_ratio,
+                   "Median q_p times conditional stack scatter");
+        hdu.addKey("SCLALPH", scale,
+                   "Reciprocal-median nonprecision scale");
+    }
+}
+
+template <class Hdu>
+void add_not_significance_keys(Hdu &hdu) {
+    hdu.addKey("SIGSTAT", std::string{"not_significance"},
+               "Statistical-significance status");
+    hdu.addKey("NULLSTAT", std::string{"unavailable"},
+               "Null/tail calibration status");
 }
 
 template <class Hdu>
@@ -138,7 +192,7 @@ void add_weight_map_metadata(Hdu &hdu, const std::string &weight_unit,
     hdu.addKey("CALTYPE",
                std::string{weight_calibration_type(
                    empirical_weight_calibration)},
-               "Coefficient calibration type");
+               "Coefficient scaling type; not precision calibration");
     hdu.addKey("PRECSTAT", std::string{"not_established"},
                "Marginal-precision interpretation");
     hdu.addKey("COVSTAT", std::string{"unavailable"},
@@ -161,9 +215,26 @@ void add_formal_weight_map_metadata(Hdu &hdu,
 
 template <class Hdu>
 void add_noise_variance_map_metadata(Hdu &hdu,
-                                     const std::string &variance_unit) {
-    add_image_unit_description_keys(hdu, variance_unit,
-                                    noise_variance_map_description());
+                                     const std::string &variance_unit,
+                                     const std::string &canonical_name) {
+    add_image_unit_type_description_keys(
+        hdu, variance_unit, conditional_stack_scatter_estimator_type(),
+        "Finite-stack estimator type", noise_variance_map_description());
+    add_image_alias_keys(hdu, canonical_name, true);
+    hdu.addKey("COVSTAT", std::string{"conditional_stack_only"},
+               "Physical-noise covariance status");
+}
+
+template <class Hdu>
+void add_conditional_stack_scatter_map_metadata(
+    Hdu &hdu, const std::string &variance_unit) {
+    add_image_unit_type_description_keys(
+        hdu, variance_unit, conditional_stack_scatter_estimator_type(),
+        "Finite-stack estimator type",
+        conditional_stack_scatter_map_description());
+    add_image_validity_authority_key(hdu, false);
+    hdu.addKey("COVSTAT", std::string{"conditional_stack_only"},
+               "Physical-noise covariance status");
 }
 
 template <class Hdu>
@@ -265,17 +336,36 @@ void add_science_valid_map_metadata(Hdu &hdu) {
 }
 
 template <class Hdu>
-void add_legacy_pixel_snr_map_metadata(Hdu &hdu) {
+void add_legacy_pixel_snr_map_metadata(
+    Hdu &hdu, const std::string &canonical_name) {
     add_image_unit_type_description_keys(
-        hdu, not_applicable_image_unit(), pixel_snr_estimator_type(),
+        hdu, not_applicable_image_unit(),
+        coefficient_standardized_signal_estimator_type(),
         snr_estimator_type_comment(), legacy_pixel_snr_map_description());
+    add_image_alias_keys(hdu, canonical_name, true);
+    add_not_significance_keys(hdu);
 }
 
 template <class Hdu>
-void add_pixel_snr_map_metadata(Hdu &hdu) {
+void add_pixel_snr_map_metadata(
+    Hdu &hdu, const std::string &canonical_name) {
     add_image_unit_type_description_keys(
-        hdu, not_applicable_image_unit(), pixel_snr_estimator_type(),
+        hdu, not_applicable_image_unit(),
+        coefficient_standardized_signal_estimator_type(),
         snr_estimator_type_comment(), pixel_snr_map_description());
+    add_image_alias_keys(hdu, canonical_name, true);
+    add_not_significance_keys(hdu);
+}
+
+template <class Hdu>
+void add_coefficient_standardized_signal_map_metadata(Hdu &hdu) {
+    add_image_unit_type_description_keys(
+        hdu, not_applicable_image_unit(),
+        coefficient_standardized_signal_estimator_type(),
+        standardized_signal_estimator_type_comment(),
+        coefficient_standardized_signal_map_description());
+    add_image_validity_authority_key(hdu, false);
+    add_not_significance_keys(hdu);
 }
 
 template <class Hdu>
@@ -285,25 +375,61 @@ void add_formal_standardized_signal_map_metadata(Hdu &hdu) {
         formal_standardized_signal_estimator_type(),
         standardized_signal_estimator_type_comment(),
         formal_standardized_signal_map_description());
+    add_not_significance_keys(hdu);
 }
 
 template <class Hdu>
 void add_point_source_flux_map_metadata(Hdu &hdu,
-                                        const std::string &signal_unit) {
+                                        const std::string &signal_unit,
+                                        const std::string &canonical_name) {
     add_image_unit_description_keys(hdu, signal_unit,
                                     point_source_flux_map_description());
+    add_image_alias_keys(hdu, canonical_name, true);
+    add_not_significance_keys(hdu);
 }
 
 template <class Hdu>
 void add_point_source_uncertainty_map_metadata(
-    Hdu &hdu, const std::string &signal_unit) {
+    Hdu &hdu, const std::string &signal_unit,
+    const std::string &canonical_name) {
     add_image_unit_description_keys(
         hdu, signal_unit, point_source_uncertainty_map_description());
+    add_image_type_key(
+        hdu, filtered_pixel_stack_scatter_estimator_type(),
+        "Finite-stack estimator type");
+    add_image_alias_keys(hdu, canonical_name, true);
+    add_not_significance_keys(hdu);
 }
 
 template <class Hdu>
-void add_point_source_snr_map_metadata(Hdu &hdu) {
+void add_point_source_snr_map_metadata(
+    Hdu &hdu, const std::string &canonical_name) {
     add_image_unit_type_description_keys(
-        hdu, not_applicable_image_unit(), point_source_snr_estimator_type(),
+        hdu, not_applicable_image_unit(),
+        conditional_stack_scatter_ratio_estimator_type(),
         snr_estimator_type_comment(), point_source_snr_map_description());
+    add_image_alias_keys(hdu, canonical_name, true);
+    add_not_significance_keys(hdu);
+}
+
+template <class Hdu>
+void add_filtered_pixel_stack_scatter_map_metadata(
+    Hdu &hdu, const std::string &signal_unit) {
+    add_image_unit_type_description_keys(
+        hdu, signal_unit, filtered_pixel_stack_scatter_estimator_type(),
+        "Finite-stack estimator type",
+        filtered_pixel_stack_scatter_map_description());
+    add_image_validity_authority_key(hdu, false);
+    add_not_significance_keys(hdu);
+}
+
+template <class Hdu>
+void add_conditional_stack_scatter_ratio_map_metadata(Hdu &hdu) {
+    add_image_unit_type_description_keys(
+        hdu, not_applicable_image_unit(),
+        conditional_stack_scatter_ratio_estimator_type(),
+        "Finite-stack ratio type",
+        conditional_stack_scatter_ratio_map_description());
+    add_image_validity_authority_key(hdu, false);
+    add_not_significance_keys(hdu);
 }

@@ -93,8 +93,31 @@ YAML::Node source_table_meta(
 
     for (const auto &[key, val] : source_header_units) {
         source_meta[key].push_back(source_units_meta_entry(val));
-        source_meta[key].push_back(apt_header_description[key]);
+        source_meta[key].push_back(
+            key == "sig2noise"
+                ? "fitted amplitude divided by full-map RMS "
+                  "(legacy name; not significance)"
+                : apt_header_description[key]);
     }
+
+    // The legacy column name is retained for compatibility. Its package join
+    // identifies the actual quicklook ratio without duplicating the package
+    // sidecar's full semantic provenance.
+    auto contract = source_meta["noise_product_contract"];
+    contract["package_id"] = "citlali-noise-products";
+    contract["provenance_id"] = "noise_products_provenance.yaml";
+    contract["column"] = "sig2noise";
+    contract["product_identity"] =
+        "fitted_amplitude_over_full_map_rms_ratio";
+    contract["product_version"] = "SCI-NOI-002-v1";
+    contract["semantic_digest"] =
+        "sha256:718feaeebe6004be1714d7c23b33df67a157c6760016f18d6c85a0e75172ae48";
+    contract["digest_kind"] = "semantic_contract_sha256";
+    contract["scope"] = "source_table_row";
+    contract["validity"] =
+        "finite_amplitude_and_finite_positive_full_map_rms";
+    contract["restriction"] =
+        "legacy_alias_deprecated_not_significance";
 
     return source_meta;
 }
@@ -112,8 +135,12 @@ YAML::Node source_table_meta_for_observation(
         source_header_units, apt_header_description);
 }
 
-inline float source_signal_to_noise(double source_amplitude,
-                                    double map_std_dev) {
+inline float fitted_amplitude_over_full_map_rms_ratio(
+    double source_amplitude, double map_std_dev) {
+    if (!std::isfinite(source_amplitude) || !std::isfinite(map_std_dev) ||
+        map_std_dev <= 0.0) {
+        return std::numeric_limits<float>::quiet_NaN();
+    }
     return static_cast<float>(source_amplitude / map_std_dev);
 }
 
@@ -133,7 +160,7 @@ void populate_source_table_map_columns(
         for (Eigen::Index j = 0; j < map_buffer.n_sources[i]; ++j) {
             source_table(source_row, 0) = maps_to_arrays(i);
             source_table(source_row, sig2noise_col) =
-                source_signal_to_noise(
+                fitted_amplitude_over_full_map_rms_ratio(
                     map_buffer.source_params(source_row, 0), map_std_dev);
             ++source_row;
         }

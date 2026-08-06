@@ -116,8 +116,9 @@ void log_map_filter_noise_weight_summary_if_present(
     }
 
     logger->info(
-        "noise products: median(w_formal*var)={:.4g} "
-        "scale={:.4g} noise_s2n_sigma={:.4g}",
+        "conditional stack products: median(q*scatter)={:.4g} "
+        "global_nonprecision_scale={:.4g} "
+        "pooled_stack_scale_diagnostic={:.4g}",
         map_buffer.noise_weight_median_ratio(map_index),
         map_buffer.noise_weight_scale(map_index),
         map_buffer.noise_s2n_sigma(map_index));

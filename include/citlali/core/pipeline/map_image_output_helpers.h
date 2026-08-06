@@ -2,6 +2,7 @@
 
 #include <citlali/core/mapmaking/science_map_contract.h>
 #include <citlali/core/pipeline/fits_image_metadata.h>
+#include <citlali/core/pipeline/noise_execution_plan.h>
 
 #include <Eigen/Core>
 
@@ -9,10 +10,22 @@
 #include <cmath>
 #include <cstring>
 #include <exception>
+#include <limits>
 #include <string>
 #include <type_traits>
 
 namespace citlali::pipeline {
+
+template <class Hdu>
+void add_noise_product_package_join(
+    Hdu &hdu, const char *product_identity, const std::string &scope,
+    const std::string &validity, const std::string &restriction) {
+    add_noise_product_join_keys(
+        hdu, noise_package_id, noise_provenance_join_id, product_identity,
+        noise_product_contract_version,
+        noise_product_semantic_digest(product_identity), scope, validity,
+        restriction);
+}
 
 template <class ScienceProducts>
 bool science_map_any_product_available(const ScienceProducts &products) {
@@ -402,16 +415,28 @@ void add_primary_map_image_hdus(
     bool coadd_product, const Logger &logger,
     bool is_filtered_output = false,
     const std::string &raw_parent_digest = {}) {
-    const bool publish_empirical_precision_companions =
+    const bool publish_empirical_product_companions =
         empirical_noise_products_expected && !coadd_product;
-    if (publish_empirical_precision_companions &&
+    const bool stack_scatter_valid =
+        i >= 0 && i < mb->noise_stack_scatter_valid.size()
+            ? mb->noise_stack_scatter_valid(i) != 0
+            : mb->n_noise > 0;
+    const bool scale_valid =
+        i >= 0 && i < mb->noise_weight_scale_valid.size()
+            ? mb->noise_weight_scale_valid(i) != 0
+            : i >= 0 && i < mb->noise_weight_scale.size() &&
+                  std::isfinite(mb->noise_weight_scale(i)) &&
+                  mb->noise_weight_scale(i) > 0.0;
+    const std::string map_pixel_scope =
+        is_filtered_output ? "filtered_map_pixel" : "raw_map_pixel";
+    if (publish_empirical_product_companions &&
         (!has_map_image_slot(mb->weight_formal, i, mb->n_rows, mb->n_cols) ||
          !has_map_image_slot(mb->noise_variance, i, mb->n_rows,
                              mb->n_cols))) {
         fail_required_output(
             logger,
             fmt::format(
-                "empirical noise products were requested but map index {} lacks formal-weight or noise-variance data",
+                "empirical noise products were requested but map index {} lacks formal-coefficient or conditional-stack-scatter data",
                 static_cast<long long>(i)));
     }
     if (!coadd_product &&
@@ -437,19 +462,37 @@ void add_primary_map_image_hdus(
     const std::string weight_unit = map_weight_unit(mb->sig_unit);
     add_weight_map_metadata(
         *fits_entry.hdus.back(), weight_unit, empirical_weight_calibration);
+    if (empirical_weight_calibration) {
+        add_noise_product_package_join(
+            *fits_entry.hdus.back(), noise_scaled_coefficient_product_id,
+            map_pixel_scope, scale_valid ? "available" : "unavailable",
+            "existing_use_only_nonprecision_not_precision");
+    }
     if (is_filtered_output && !raw_parent_digest.empty()) {
         add_raw_parent_identity_keys(
             *fits_entry.hdus.back(), raw_parent_digest);
     }
-    if (publish_empirical_precision_companions &&
-        i < mb->noise_weight_scale.size()) {
-        add_empirical_weight_scale_key(
-            *fits_entry.hdus.back(), mb->noise_weight_scale(i));
-    }
-    if (publish_empirical_precision_companions &&
-        i < mb->noise_weight_median_ratio.size()) {
-        add_weight_variance_median_key(
-            *fits_entry.hdus.back(), mb->noise_weight_median_ratio(i));
+    if (publish_empirical_product_companions) {
+        const Eigen::Index valid_pixels =
+            i >= 0 && i < mb->noise_valid_pixels.size()
+                ? static_cast<Eigen::Index>(mb->noise_valid_pixels(i))
+                : 0;
+        const double median_ratio =
+            i >= 0 && i < mb->noise_weight_median_ratio.size()
+                ? mb->noise_weight_median_ratio(i)
+                : std::numeric_limits<double>::quiet_NaN();
+        const double scale =
+            i >= 0 && i < mb->noise_weight_scale.size()
+                ? mb->noise_weight_scale(i)
+                : std::numeric_limits<double>::quiet_NaN();
+        add_global_nonprecision_scale_diagnostic_keys(
+            *fits_entry.hdus.back(), scale_valid, valid_pixels,
+            median_ratio, scale);
+        if (scale_valid) {
+            add_empirical_weight_scale_key(*fits_entry.hdus.back(), scale);
+            add_weight_variance_median_key(
+                *fits_entry.hdus.back(), median_ratio);
+        }
     }
 
     if (!coadd_product) {
@@ -461,19 +504,48 @@ void add_primary_map_image_hdus(
             *fits_entry.hdus.back(), median_err, mb->sig_unit);
     }
 
-    if (publish_empirical_precision_companions) {
+    if (publish_empirical_product_companions) {
         add_map_hdu_with_wcs(
             fits_entry, formal_weight_map_hdu_name(map_name, stokes_suffix),
             mb->weight_formal[i], wcs, source_epoch);
         add_formal_weight_map_metadata(*fits_entry.hdus.back(), weight_unit);
+        add_noise_product_package_join(
+            *fits_entry.hdus.back(), noise_formal_coefficient_product_id,
+            map_pixel_scope, "available",
+            "nonprecision_snapshot_not_inverse_variance");
+
+        const std::string canonical_scatter_name =
+            conditional_stack_scatter_map_hdu_name(
+                map_name, stokes_suffix);
+        add_map_hdu_with_wcs(
+            fits_entry, canonical_scatter_name,
+            mb->noise_variance[i], wcs, source_epoch);
+        const auto canonical_scatter_hdu = fits_entry.hdus.back();
+        const std::string variance_unit = map_variance_unit(mb->sig_unit);
+        add_conditional_stack_scatter_map_metadata(
+            *fits_entry.hdus.back(), variance_unit);
+        add_noise_product_package_join(
+            *fits_entry.hdus.back(),
+            noise_conditional_stack_scatter_product_id, map_pixel_scope,
+            stack_scatter_valid ? "conditional_descriptive" : "unavailable",
+            is_filtered_output
+                ? "not_physical_noise_variance_strict_parity_pending_FLT"
+                : "not_physical_noise_variance_or_covariance");
 
         add_map_hdu_with_wcs(
             fits_entry, noise_variance_map_hdu_name(map_name, stokes_suffix),
             mb->noise_variance[i], wcs, source_epoch);
-        const std::string variance_unit = map_variance_unit(mb->sig_unit);
         add_noise_variance_map_metadata(
-            *fits_entry.hdus.back(), variance_unit);
+            *fits_entry.hdus.back(), variance_unit, canonical_scatter_name);
+        add_noise_product_package_join(
+            *fits_entry.hdus.back(),
+            noise_conditional_stack_scatter_product_id, map_pixel_scope,
+            stack_scatter_valid ? "conditional_descriptive" : "unavailable",
+            "deprecated_alias_not_physical_noise_variance");
         if (i < mb->median_rms.size() && std::isfinite(mb->median_rms(i))) {
+            add_image_median_rms_key(
+                *canonical_scatter_hdu,
+                mb->median_rms(i), mb->sig_unit);
             add_image_median_rms_key(
                 *fits_entry.hdus.back(), mb->median_rms(i), mb->sig_unit);
         }
@@ -516,7 +588,7 @@ void add_coverage_support_image_hdus(
             fail_required_output(
                 logger,
                 fmt::format(
-                    "empirical noise products were requested but map index {} lacks pixel S/N data",
+                    "empirical noise products were requested but map index {} lacks coefficient-standardized signal data",
                     static_cast<long long>(i)));
         }
         const bool point_source_products_available =
@@ -530,7 +602,7 @@ void add_coverage_support_image_hdus(
             fail_required_output(
                 logger,
                 fmt::format(
-                    "empirical noise products were requested for filtered map index {} but point-source uncertainty or S/N data are absent",
+                    "empirical noise products were requested for filtered map index {} but filtered-pixel stack-scatter products are absent",
                     static_cast<long long>(i)));
         }
     }
@@ -558,16 +630,52 @@ void add_coverage_support_image_hdus(
     }
 
     if (empirical_noise_products_expected) {
-        Eigen::MatrixXd &sig2noise = mb->sig2noise_pixel[i];
+        Eigen::MatrixXd &coefficient_standardized_signal =
+            mb->sig2noise_pixel[i];
+        const bool scale_valid =
+            i >= 0 && i < mb->noise_weight_scale_valid.size()
+                ? mb->noise_weight_scale_valid(i) != 0
+                : i >= 0 && i < mb->noise_weight_scale.size() &&
+                      std::isfinite(mb->noise_weight_scale(i)) &&
+                      mb->noise_weight_scale(i) > 0.0;
+        const char *product_scope =
+            is_filtered_output ? "filtered_map_pixel" : "raw_map_pixel";
+        const char *product_validity =
+            scale_valid ? "available_where_finite" : "unavailable";
+        const std::string canonical_name =
+            coefficient_standardized_signal_map_hdu_name(
+                map_name, stokes_suffix);
+        add_map_hdu_with_wcs(
+            fits_entry, canonical_name, coefficient_standardized_signal,
+            wcs, source_epoch);
+        add_coefficient_standardized_signal_map_metadata(
+            *fits_entry.hdus.back());
+        add_noise_product_package_join(
+            *fits_entry.hdus.back(),
+            noise_coefficient_standardized_signal_product_id,
+            product_scope, product_validity,
+            "engineering_standardization_not_significance");
+
         add_map_hdu_with_wcs(
             fits_entry, legacy_pixel_snr_map_hdu_name(map_name, stokes_suffix),
-            sig2noise, wcs, source_epoch);
-        add_legacy_pixel_snr_map_metadata(*fits_entry.hdus.back());
+            coefficient_standardized_signal, wcs, source_epoch);
+        add_legacy_pixel_snr_map_metadata(
+            *fits_entry.hdus.back(), canonical_name);
+        add_noise_product_package_join(
+            *fits_entry.hdus.back(),
+            noise_coefficient_standardized_signal_product_id,
+            product_scope, product_validity,
+            "deprecated_alias_not_significance");
 
         add_map_hdu_with_wcs(
             fits_entry, pixel_snr_map_hdu_name(map_name, stokes_suffix),
-            sig2noise, wcs, source_epoch);
-        add_pixel_snr_map_metadata(*fits_entry.hdus.back());
+            coefficient_standardized_signal, wcs, source_epoch);
+        add_pixel_snr_map_metadata(*fits_entry.hdus.back(), canonical_name);
+        add_noise_product_package_join(
+            *fits_entry.hdus.back(),
+            noise_coefficient_standardized_signal_product_id,
+            product_scope, product_validity,
+            "deprecated_alias_not_significance");
     }
     else {
         Eigen::MatrixXd formal_standardized_signal =
@@ -582,26 +690,76 @@ void add_coverage_support_image_hdus(
     }
 
     if (is_filtered_output && empirical_noise_products_expected) {
+        const bool uncertainty_use_valid =
+            i >= 0 && i < mb->noise_uncertainty_use_valid.size()
+                ? mb->noise_uncertainty_use_valid(i) != 0
+                : mb->n_noise >= 2;
+        const char *scatter_validity =
+            mb->n_noise > 0 ? "conditional_descriptive" : "unavailable";
+        const char *ratio_validity =
+            uncertainty_use_valid
+                ? "available_where_finite_positive_denominator"
+                : "unavailable_R_lt_2";
+        const std::string signal_name =
+            signal_map_hdu_name(map_name, stokes_suffix);
         add_map_hdu_with_wcs(
             fits_entry, point_source_flux_map_hdu_name(
                 map_name, stokes_suffix),
             mb->signal[i], wcs, source_epoch);
         add_point_source_flux_map_metadata(
-            *fits_entry.hdus.back(), mb->sig_unit);
+            *fits_entry.hdus.back(), mb->sig_unit, signal_name);
         add_point_source_response_norm_key(*fits_entry.hdus.back(), 1.0);
+
+        const std::string canonical_scatter_name =
+            filtered_pixel_stack_scatter_map_hdu_name(
+                map_name, stokes_suffix);
+        add_map_hdu_with_wcs(
+            fits_entry, canonical_scatter_name,
+            mb->point_source_uncertainty[i], wcs, source_epoch);
+        add_filtered_pixel_stack_scatter_map_metadata(
+            *fits_entry.hdus.back(), mb->sig_unit);
+        add_noise_product_package_join(
+            *fits_entry.hdus.back(),
+            noise_filtered_pixel_stack_scatter_product_id,
+            "filtered_map_pixel", scatter_validity,
+            "not_aperture_uncertainty_strict_parity_pending_FLT");
 
         add_map_hdu_with_wcs(
             fits_entry, point_source_uncertainty_map_hdu_name(
                 map_name, stokes_suffix),
             mb->point_source_uncertainty[i], wcs, source_epoch);
         add_point_source_uncertainty_map_metadata(
-            *fits_entry.hdus.back(), mb->sig_unit);
+            *fits_entry.hdus.back(), mb->sig_unit,
+            canonical_scatter_name);
+        add_noise_product_package_join(
+            *fits_entry.hdus.back(),
+            noise_filtered_pixel_stack_scatter_product_id,
+            "filtered_map_pixel", scatter_validity,
+            "deprecated_alias_not_aperture_uncertainty");
+
+        const std::string canonical_ratio_name =
+            conditional_stack_scatter_ratio_map_hdu_name(
+                map_name, stokes_suffix);
+        add_map_hdu_with_wcs(
+            fits_entry, canonical_ratio_name,
+            mb->sig2noise_point_source[i], wcs, source_epoch);
+        add_conditional_stack_scatter_ratio_map_metadata(
+            *fits_entry.hdus.back());
+        add_noise_product_package_join(
+            *fits_entry.hdus.back(), noise_stack_scatter_ratio_product_id,
+            "filtered_map_pixel", ratio_validity,
+            "conditional_descriptive_ratio_not_significance");
 
         add_map_hdu_with_wcs(
             fits_entry, point_source_snr_map_hdu_name(
                 map_name, stokes_suffix),
             mb->sig2noise_point_source[i], wcs, source_epoch);
-        add_point_source_snr_map_metadata(*fits_entry.hdus.back());
+        add_point_source_snr_map_metadata(
+            *fits_entry.hdus.back(), canonical_ratio_name);
+        add_noise_product_package_join(
+            *fits_entry.hdus.back(), noise_stack_scatter_ratio_product_id,
+            "filtered_map_pixel", ratio_validity,
+            "deprecated_alias_not_significance");
     }
 }
 
@@ -621,6 +779,11 @@ void add_noise_realization_image_hdus(
             noise_matrix, wcs, source_epoch);
         add_noise_image_summary_keys(
             *fits_entry.hdus.back(), mb->sig_unit, median_rms);
+        add_noise_product_package_join(
+            *fits_entry.hdus.back(), noise_realization_product_id,
+            "realization_map_index_" + std::to_string(n),
+            "conditional_design_member",
+            "source_imprinted_current_not_physical_noise_repeat");
     }
 }
 

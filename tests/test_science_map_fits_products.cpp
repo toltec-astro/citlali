@@ -204,6 +204,297 @@ bool captured_has_image(const CapturedFitsEntry &entry,
     return false;
 }
 
+void set_noise_stack(
+    mapmaking::MapBuffer &map,
+    const std::vector<Eigen::MatrixXd> &realizations) {
+    ASSERT_FALSE(realizations.empty());
+    map.n_noise = static_cast<Eigen::Index>(realizations.size());
+    map.noise.clear();
+    map.noise.emplace_back(map.n_rows, map.n_cols, map.n_noise);
+    for (Eigen::Index realization = 0; realization < map.n_noise;
+         ++realization) {
+        ASSERT_EQ(realizations[static_cast<std::size_t>(realization)].rows(),
+                  map.n_rows);
+        ASSERT_EQ(realizations[static_cast<std::size_t>(realization)].cols(),
+                  map.n_cols);
+        for (Eigen::Index row = 0; row < map.n_rows; ++row) {
+            for (Eigen::Index col = 0; col < map.n_cols; ++col) {
+                map.noise[0](row, col, realization) =
+                    realizations[static_cast<std::size_t>(realization)](
+                        row, col);
+            }
+        }
+    }
+}
+
+std::shared_ptr<mapmaking::MapBuffer> make_noise_product_fixture(
+    const Eigen::MatrixXd &signal, const Eigen::MatrixXd &weight,
+    const std::vector<Eigen::MatrixXd> &realizations) {
+    auto map = std::make_shared<mapmaking::MapBuffer>("noise-fixture");
+    map->n_rows = signal.rows();
+    map->n_cols = signal.cols();
+    map->cov_cut = 0.0;
+    map->signal = {signal};
+    map->weight = {weight};
+    set_noise_stack(*map, realizations);
+    return map;
+}
+
+TEST(science_map_fits_products,
+     conditional_stack_scatter_R1_is_descriptive_but_not_uncertainty) {
+    const Eigen::MatrixXd signal = Eigen::MatrixXd::Constant(1, 1, 2.0);
+    const Eigen::MatrixXd weight = Eigen::MatrixXd::Ones(1, 1);
+    auto map = make_noise_product_fixture(
+        signal, weight,
+        {Eigen::MatrixXd::Constant(1, 1, 5.0)});
+
+    map->calc_noise_products(Eigen::Index{0}, false, true);
+
+    EXPECT_DOUBLE_EQ(map->noise_mean[0](0, 0), 5.0);
+    EXPECT_DOUBLE_EQ(map->noise_variance[0](0, 0), 0.0);
+    EXPECT_EQ(map->noise_stack_scatter_valid(0), 1);
+    EXPECT_EQ(map->noise_uncertainty_use_valid(0), 0);
+    EXPECT_EQ(map->noise_weight_scale_valid(0), 0);
+    EXPECT_TRUE(std::isnan(map->noise_weight_scale(0)));
+    EXPECT_TRUE(std::isnan(map->sig2noise_pixel[0](0, 0)));
+    EXPECT_DOUBLE_EQ(map->point_source_uncertainty[0](0, 0), 0.0);
+    EXPECT_TRUE(std::isnan(map->sig2noise_point_source[0](0, 0)));
+
+    auto required_scale = make_noise_product_fixture(
+        signal, weight,
+        {Eigen::MatrixXd::Constant(1, 1, 5.0)});
+    EXPECT_THROW(required_scale->calc_noise_products(
+                     Eigen::Index{0}, true, true),
+                 std::runtime_error);
+
+    auto uncentered = make_noise_product_fixture(
+        signal, weight,
+        {Eigen::MatrixXd::Constant(1, 1, 5.0)});
+    EXPECT_THROW(uncentered->calc_noise_products(
+                     Eigen::Index{0}, false, false),
+                 std::invalid_argument);
+}
+
+TEST(science_map_fits_products,
+     conditional_stack_scatter_R2_uses_completed_R_normalization) {
+    const Eigen::MatrixXd signal = Eigen::MatrixXd::Constant(1, 1, 2.0);
+    const Eigen::MatrixXd weight = Eigen::MatrixXd::Constant(1, 1, 0.25);
+    auto map = make_noise_product_fixture(
+        signal, weight,
+        {Eigen::MatrixXd::Constant(1, 1, -2.0),
+         Eigen::MatrixXd::Constant(1, 1, 2.0)});
+
+    map->calc_noise_products(Eigen::Index{0}, false, true);
+
+    EXPECT_DOUBLE_EQ(map->noise_mean[0](0, 0), 0.0);
+    EXPECT_DOUBLE_EQ(map->noise_variance[0](0, 0), 4.0);
+    EXPECT_EQ(map->noise_uncertainty_use_valid(0), 1);
+    EXPECT_EQ(map->noise_weight_scale_valid(0), 1);
+    EXPECT_DOUBLE_EQ(map->noise_weight_median_ratio(0), 1.0);
+    EXPECT_DOUBLE_EQ(map->noise_weight_scale(0), 1.0);
+    EXPECT_DOUBLE_EQ(map->weight_empirical[0](0, 0), 0.25);
+    EXPECT_DOUBLE_EQ(map->sig2noise_pixel[0](0, 0), 1.0);
+    EXPECT_DOUBLE_EQ(map->point_source_uncertainty[0](0, 0), 2.0);
+    EXPECT_DOUBLE_EQ(map->sig2noise_point_source[0](0, 0), 1.0);
+
+    auto existing_use_only = make_noise_product_fixture(
+        signal, Eigen::MatrixXd::Constant(1, 1, 0.5),
+        {Eigen::MatrixXd::Constant(1, 1, -2.0),
+         Eigen::MatrixXd::Constant(1, 1, 2.0)});
+    existing_use_only->calc_noise_products(Eigen::Index{0}, true, true);
+    EXPECT_DOUBLE_EQ(existing_use_only->weight_formal[0](0, 0), 0.5);
+    EXPECT_DOUBLE_EQ(existing_use_only->noise_weight_scale(0), 0.5);
+    EXPECT_DOUBLE_EQ(existing_use_only->weight[0](0, 0), 0.25);
+}
+
+TEST(science_map_fits_products,
+     duplicate_complementary_and_simple_R2_designs_are_exact) {
+    const Eigen::MatrixXd signal = Eigen::MatrixXd::Ones(1, 1);
+    const Eigen::MatrixXd weight = Eigen::MatrixXd::Ones(1, 1);
+
+    auto duplicate = make_noise_product_fixture(
+        signal, weight,
+        {Eigen::MatrixXd::Constant(1, 1, 3.0),
+         Eigen::MatrixXd::Constant(1, 1, 3.0)});
+    duplicate->calc_noise_products(Eigen::Index{0}, false, true);
+    EXPECT_DOUBLE_EQ(duplicate->noise_variance[0](0, 0), 0.0);
+    EXPECT_EQ(duplicate->noise_weight_scale_valid(0), 0);
+    EXPECT_TRUE(std::isnan(duplicate->sig2noise_point_source[0](0, 0)));
+
+    auto complementary = make_noise_product_fixture(
+        signal, weight,
+        {Eigen::MatrixXd::Constant(1, 1, -2.0),
+         Eigen::MatrixXd::Constant(1, 1, 2.0)});
+    complementary->calc_noise_products(Eigen::Index{0}, false, true);
+    EXPECT_DOUBLE_EQ(complementary->noise_variance[0](0, 0), 4.0);
+
+    auto simple = make_noise_product_fixture(
+        signal, weight,
+        {Eigen::MatrixXd::Constant(1, 1, 0.0),
+         Eigen::MatrixXd::Constant(1, 1, 2.0)});
+    simple->calc_noise_products(Eigen::Index{0}, false, true);
+    EXPECT_DOUBLE_EQ(simple->noise_mean[0](0, 0), 1.0);
+    EXPECT_DOUBLE_EQ(simple->noise_variance[0](0, 0), 1.0);
+}
+
+TEST(science_map_fits_products,
+     empty_scale_calibration_region_is_unavailable_and_fails_closed) {
+    const Eigen::MatrixXd signal = Eigen::MatrixXd::Ones(1, 1);
+    const Eigen::MatrixXd zero_weight = Eigen::MatrixXd::Zero(1, 1);
+    const std::vector<Eigen::MatrixXd> realizations{
+        Eigen::MatrixXd::Constant(1, 1, -1.0),
+        Eigen::MatrixXd::Constant(1, 1, 1.0)};
+    auto diagnostic = make_noise_product_fixture(
+        signal, zero_weight, realizations);
+
+    diagnostic->calc_noise_products(Eigen::Index{0}, false, true);
+    EXPECT_EQ(diagnostic->noise_valid_pixels(0), 0.0);
+    EXPECT_EQ(diagnostic->noise_weight_scale_valid(0), 0);
+    EXPECT_TRUE(std::isnan(diagnostic->noise_weight_median_ratio(0)));
+    EXPECT_TRUE(std::isnan(diagnostic->noise_weight_scale(0)));
+    EXPECT_TRUE(std::isnan(diagnostic->sig2noise_pixel[0](0, 0)));
+
+    auto required_scale = make_noise_product_fixture(
+        signal, zero_weight, realizations);
+    EXPECT_THROW(required_scale->calc_noise_products(
+                     Eigen::Index{0}, true, true),
+                 std::runtime_error);
+}
+
+TEST(science_map_fits_products,
+     fixed_projection_preserves_two_pixel_covariance_without_dense_matrix) {
+    Eigen::MatrixXd signal = Eigen::MatrixXd::Zero(1, 2);
+    Eigen::MatrixXd weight = Eigen::MatrixXd::Ones(1, 2);
+    Eigen::MatrixXd plus = Eigen::MatrixXd::Ones(1, 2);
+    Eigen::MatrixXd minus = -Eigen::MatrixXd::Ones(1, 2);
+    auto map = make_noise_product_fixture(signal, weight, {plus, minus});
+    map->calc_noise_products(Eigen::Index{0}, false, true);
+
+    Eigen::MatrixXd aperture = Eigen::MatrixXd::Ones(1, 2);
+    const double projected_scatter =
+        map->calc_fixed_projection_stack_scatter(0, aperture);
+    const double diagonal_only = map->noise_variance[0].sum();
+    EXPECT_DOUBLE_EQ(diagonal_only, 2.0);
+    EXPECT_DOUBLE_EQ(projected_scatter, 4.0);
+    EXPECT_DOUBLE_EQ(
+        map->calc_fixed_projection_stack_scatter(0, aperture, 2.0),
+        1.0);
+
+    Eigen::MatrixXd first(1, 2);
+    first << 2.0, 0.0;
+    Eigen::MatrixXd second(1, 2);
+    second << 0.0, 2.0;
+    auto template_map = make_noise_product_fixture(
+        signal, weight, {first, second});
+    Eigen::MatrixXd fixed_template(1, 2);
+    fixed_template << 0.5, -0.5;
+    EXPECT_DOUBLE_EQ(
+        template_map->calc_fixed_projection_stack_scatter(
+            0, fixed_template),
+        1.0);
+    EXPECT_THROW(
+        template_map->calc_fixed_projection_stack_scatter(
+            0, fixed_template, 0.0),
+        std::invalid_argument);
+}
+
+TEST(science_map_fits_products,
+     publishes_canonical_noise_identities_with_legacy_alias_joins) {
+    auto map = make_science_map_buffer(false);
+    set_noise_stack(
+        *map,
+        {Eigen::MatrixXd::Constant(2, 2, -2.0),
+         Eigen::MatrixXd::Constant(2, 2, 2.0)});
+    map->science_products.bundle_identity->required_companions = {
+        "noise_realization_0_I", "noise_realization_1_I"};
+    mapmaking::science_map_finalize_realized_product_facts(*map, 0);
+    map->calc_noise_products(Eigen::Index{0}, false, true);
+    ASSERT_EQ(map->noise_weight_scale_valid(0), 1);
+    CapturedFitsEntry primary;
+    CapturedFitsEntry raw_support;
+    DummyWcs wcs;
+
+    citlali::pipeline::add_primary_map_image_hdus(
+        primary, map, 0, "", "I", wcs, 2000.0, false, true, false,
+        false, science_map_test_logger());
+    citlali::pipeline::add_coverage_support_image_hdus(
+        raw_support, map, 0, "", "I", wcs, 2000.0, false, true, false,
+        science_map_test_logger());
+
+    ASSERT_TRUE(captured_has_image(
+        primary, "conditional_stack_scatter_I"));
+    ASSERT_TRUE(captured_has_image(primary, "noise_variance_I"));
+    const auto &scatter =
+        captured_hdu(primary, "conditional_stack_scatter_I").keys;
+    EXPECT_EQ(scatter.at("ESTTYPE"),
+              "conditional_finite_stack_scatter");
+    EXPECT_EQ(scatter.at("NOIPKG"), "citlali-noise-products");
+    EXPECT_EQ(scatter.at("NOIPROV"),
+              "noise_products_provenance.yaml");
+    EXPECT_EQ(scatter.at("NOIPRID"),
+              "conditional_finite_stack_scatter");
+    EXPECT_EQ(scatter.at("NOIPVER"), "SCI-NOI-002-v1");
+    EXPECT_EQ(scatter.at("NOIDGST"),
+              citlali::pipeline::noise_product_semantic_digest(
+                  citlali::pipeline::
+                      noise_conditional_stack_scatter_product_id));
+    EXPECT_EQ(scatter.find("NOIRCOMP"), scatter.end());
+    const auto &legacy_scatter =
+        captured_hdu(primary, "noise_variance_I").keys;
+    EXPECT_EQ(legacy_scatter.at("ALIASOF"),
+              "conditional_stack_scatter_I");
+    EXPECT_EQ(legacy_scatter.at("DEPRCATD"), "true");
+    EXPECT_EQ(legacy_scatter.at("NOIPRID"), scatter.at("NOIPRID"));
+
+    ASSERT_TRUE(captured_has_image(
+        raw_support, "coefficient_standardized_signal_I"));
+    const auto &standardized = captured_hdu(
+        raw_support, "coefficient_standardized_signal_I").keys;
+    EXPECT_EQ(standardized.at("ESTTYPE"),
+              "coefficient_standardized_signal");
+    EXPECT_EQ(standardized.at("SIGSTAT"), "not_significance");
+    EXPECT_EQ(standardized.at("NOIPRID"),
+              "coefficient_standardized_signal");
+    EXPECT_EQ(captured_hdu(raw_support, "sig2noise_I").keys.at("ALIASOF"),
+              "coefficient_standardized_signal_I");
+    EXPECT_EQ(
+        captured_hdu(raw_support, "sig2noise_pixel_I").keys.at("ALIASOF"),
+        "coefficient_standardized_signal_I");
+
+    map->freeze_raw_science_parent();
+    CapturedFitsEntry filtered_support;
+    citlali::pipeline::add_coverage_support_image_hdus(
+        filtered_support, map, 0, "", "I", wcs, 2000.0, true, true,
+        false, science_map_test_logger());
+
+    ASSERT_TRUE(captured_has_image(
+        filtered_support, "filtered_pixel_stack_scatter_I"));
+    const auto &filtered_scatter = captured_hdu(
+        filtered_support, "filtered_pixel_stack_scatter_I").keys;
+    EXPECT_EQ(filtered_scatter.at("ESTTYPE"),
+              "filtered_pixel_stack_scatter");
+    EXPECT_EQ(filtered_scatter.at("NOIPRID"),
+              "filtered_pixel_stack_scatter");
+    EXPECT_NE(filtered_scatter.at("NOIRESTR").find(
+                  "strict_parity_pending_FLT"),
+              std::string::npos);
+    EXPECT_EQ(
+        captured_hdu(filtered_support, "point_source_uncertainty_I")
+            .keys.at("ALIASOF"),
+        "filtered_pixel_stack_scatter_I");
+    ASSERT_TRUE(captured_has_image(
+        filtered_support, "conditional_stack_scatter_ratio_I"));
+    const auto &ratio = captured_hdu(
+        filtered_support, "conditional_stack_scatter_ratio_I").keys;
+    EXPECT_EQ(ratio.at("ESTTYPE"),
+              "conditional_stack_scatter_ratio");
+    EXPECT_EQ(ratio.at("SIGSTAT"), "not_significance");
+    EXPECT_EQ(
+        captured_hdu(filtered_support, "sig2noise_point_source_I")
+            .keys.at("ALIASOF"),
+        "conditional_stack_scatter_ratio_I");
+}
+
 TEST(science_map_fits_products, writes_canonical_typed_planes_and_aliases) {
     auto map = make_science_map_buffer();
     CapturedFitsEntry output;
@@ -297,10 +588,18 @@ TEST(science_map_fits_products,
 
     EXPECT_TRUE(captured_has_image(output, "science_valid_I"));
     EXPECT_FALSE(captured_has_image(output, "formal_standardized_signal_I"));
+    EXPECT_FALSE(captured_has_image(
+        output, "conditional_stack_scatter_I"));
+    EXPECT_FALSE(captured_has_image(
+        output, "coefficient_standardized_signal_I"));
     EXPECT_FALSE(captured_has_image(output, "sig2noise_I"));
     EXPECT_FALSE(captured_has_image(output, "sig2noise_pixel_I"));
     EXPECT_FALSE(captured_has_image(output, "point_source_flux_I"));
     EXPECT_FALSE(captured_has_image(output, "point_source_uncertainty_I"));
+    EXPECT_FALSE(captured_has_image(
+        output, "filtered_pixel_stack_scatter_I"));
+    EXPECT_FALSE(captured_has_image(
+        output, "conditional_stack_scatter_ratio_I"));
     EXPECT_FALSE(captured_has_image(output, "sig2noise_point_source_I"));
 }
 

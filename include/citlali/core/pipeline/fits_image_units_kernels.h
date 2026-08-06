@@ -17,7 +17,8 @@ inline bool empirical_weight_calibration_enabled(
 }
 
 inline const char *weight_calibration_type(bool empirical_calibration) {
-    return empirical_calibration ? "empirical" : "formal";
+    return empirical_calibration ? "global_nonprecision_scale_diagnostic"
+                                 : "formal";
 }
 
 inline const char *normalization_coefficient_estimator_type() {
@@ -30,7 +31,7 @@ inline const char *formal_coefficient_snapshot_estimator_type() {
 
 inline const char *weight_map_description(bool empirical_calibration) {
     return empirical_calibration
-        ? "Globally empirical-scaled nonprecision normalization coefficient; covariance unavailable"
+        ? "Globally scaled nonprecision normalization coefficient, existing-use-only; not precision or covariance calibration"
         : "Formal nonprecision normalization coefficient; precision conditional on SCI-PTC-001";
 }
 
@@ -46,12 +47,20 @@ inline const char *formal_weight_calibration_type() {
     return "formal";
 }
 
-inline const char *pixel_snr_estimator_type() {
-    return "pixel";
+inline const char *coefficient_standardized_signal_estimator_type() {
+    return "coefficient_standardized_signal";
 }
 
-inline const char *point_source_snr_estimator_type() {
-    return "point_source";
+inline const char *conditional_stack_scatter_estimator_type() {
+    return "conditional_finite_stack_scatter";
+}
+
+inline const char *filtered_pixel_stack_scatter_estimator_type() {
+    return "filtered_pixel_stack_scatter";
+}
+
+inline const char *conditional_stack_scatter_ratio_estimator_type() {
+    return "conditional_stack_scatter_ratio";
 }
 
 inline const char *weight_calibration_type_comment() {
@@ -63,7 +72,7 @@ inline const char *kernel_type_comment() {
 }
 
 inline const char *snr_estimator_type_comment() {
-    return "S/N estimator type";
+    return "Legacy standardized/ratio product identity";
 }
 
 inline const char *standardized_signal_estimator_type_comment() {
@@ -114,7 +123,11 @@ inline const char *formal_weight_map_description() {
 }
 
 inline const char *noise_variance_map_description() {
-    return "Per-pixel variance estimated from jackknife noise maps";
+    return "Deprecated noise_variance alias of empirically centered S_R/R for the completed source_imprinted_current stack; not physical-noise variance";
+}
+
+inline const char *conditional_stack_scatter_map_description() {
+    return "Empirically centered S_R/R for the completed source_imprinted_current stack; descriptive conditional scatter, not physical-noise variance or covariance";
 }
 
 inline const char *kernel_map_description() {
@@ -202,11 +215,15 @@ inline const char *science_valid_map_description() {
 }
 
 inline const char *legacy_pixel_snr_map_description() {
-    return "Legacy alias of jackknife-calibrated pixel S/N";
+    return "Deprecated sig2noise alias of coefficient-standardized signal; not calibrated S/N or significance";
 }
 
 inline const char *pixel_snr_map_description() {
-    return "Pixel S/N map: signal times sqrt(empirical weight)";
+    return "Deprecated sig2noise_pixel alias of coefficient-standardized signal; not calibrated S/N or significance";
+}
+
+inline const char *coefficient_standardized_signal_map_description() {
+    return "Signal times sqrt(global-nonprecision-scaled coefficient); engineering standardized amplitude, not significance";
 }
 
 inline const char *formal_standardized_signal_estimator_type() {
@@ -218,13 +235,21 @@ inline const char *formal_standardized_signal_map_description() {
 }
 
 inline const char *point_source_flux_map_description() {
-    return "Point-source flux estimate after filter response normalization";
+    return "Deprecated exact alias of the filtered signal plane; not an aperture or fitted-template flux product";
 }
 
 inline const char *point_source_uncertainty_map_description() {
-    return "Point-source 1-sigma uncertainty from jackknife maps";
+    return "Deprecated alias of filtered-pixel conditional stack scatter; not point-source or aperture uncertainty";
 }
 
 inline const char *point_source_snr_map_description() {
-    return "Point-source S/N from flux divided by jackknife uncertainty";
+    return "Deprecated alias of filtered signal divided by filtered-pixel conditional stack scatter; not significance";
+}
+
+inline const char *filtered_pixel_stack_scatter_map_description() {
+    return "Square root of filtered-pixel conditional finite-stack scatter; strict signal-realization-kernel edge parity pending FLT";
+}
+
+inline const char *conditional_stack_scatter_ratio_map_description() {
+    return "Filtered signal divided by positive finite filtered-pixel stack scatter; descriptive ratio, not significance";
 }
