@@ -17,3 +17,20 @@ The machine contract binds the exact low fixed-DJF25 node artifact, TAU025
 cache manifests, profile identity, anchors, interpolation, regimes, and
 limitation that this is representation evidence—not observational calibration
 accuracy, production adoption, or a runtime profile-selection rule.
+
+## Spectral-reference contract
+
+`calibration.reference_spectral_index_alpha` denotes the reduction-level
+reference spectrum `S_nu proportional to nu^alpha`. It defaults to `0`; only
+`-1, 0, 2, 4` are initially supported. Select the matching precomputed surface
+once per reduction—never integrate per sample or interpolate/extrapolate in
+alpha. Unsupported/non-finite explicit values fail closed; omission records
+that alpha zero was defaulted. Products record effective/defaulted alpha,
+TolTECA-v1 passband provenance, operator/reference-profile IDs, and quality
+regime. This defines map meaning, not every source's spectrum.
+
+Bound-node recomputation finds maximum alpha sensitivity relative to alpha=0
+of `3.7912745%` in the science regime and `6.0784703%` in engineering; the
+latter is at a1100, alpha=4, tau225=.25, EL=25 degrees. These are
+reference-spectrum sensitivity, not interpolation-fidelity or observational
+accuracy metrics.

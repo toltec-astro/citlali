@@ -94,5 +94,82 @@
     "meaning": "declared model approximation; not inferred atmospheric truth",
     "sha256": "aeeeeb48bef422f2d9392b5d7a3d62ab1887fd9e7c10322d5246d914841ba866"
   },
-  "schema_version": "sci-cal-001-fixed-djf25-full-domain-operator-contract-v1"
+  "reference_spectrum_sensitivity": {
+    "engineering_availability_regime": {
+      "location": {
+        "alpha": 4,
+        "anchor_id": "tau025",
+        "elevation_deg": 25,
+        "passband_id": "toltec_v1_a1100",
+        "tau225": 0.25
+      },
+      "maximum_relative_to_alpha0": 0.06078470337035302
+    },
+    "science_qualification_regime": {
+      "location": {
+        "alpha": 4,
+        "anchor_id": "tau015",
+        "elevation_deg": 25,
+        "passband_id": "toltec_v1_a1100",
+        "tau225": 0.15
+      },
+      "maximum_relative_to_alpha0": 0.03791274511067444
+    }
+  },
+  "representation_evidence_by_regime": {
+    "engineering_availability_regime": {
+      "interpolation_fidelity": "TAU025 profile-conditioned held-out study: fixed-DJF25 is included; aggregate all-profile piecewise-linear maximum is 0.532005%, not a science-quality or observational result.",
+      "observational_accuracy": "not evaluated; engineering availability is not calibrated-science validation.",
+      "reference_spectrum_sensitivity": {
+        "location": {
+          "alpha": 4,
+          "anchor_id": "tau025",
+          "elevation_deg": 25,
+          "passband_id": "toltec_v1_a1100",
+          "tau225": 0.25
+        },
+        "maximum_relative_to_alpha0": 0.06078470337035302
+      }
+    },
+    "science_qualification_regime": {
+      "interpolation_fidelity": "The inherited low-opacity fixed-DJF25 study is numerical representation evidence only; its manifest records primary_holdout_fidelity_pass=false, so this contract does not claim a passing science numerical-fidelity gate.",
+      "observational_accuracy": "not evaluated; no absolute-flux or repeatability claim.",
+      "reference_spectrum_sensitivity": {
+        "location": {
+          "alpha": 4,
+          "anchor_id": "tau015",
+          "elevation_deg": 25,
+          "passband_id": "toltec_v1_a1100",
+          "tau225": 0.15
+        },
+        "maximum_relative_to_alpha0": 0.03791274511067444
+      }
+    }
+  },
+  "schema_version": "sci-cal-001-fixed-djf25-full-domain-operator-contract-v1",
+  "spectral_reference": {
+    "alpha_interpolation_or_extrapolation": "prohibited without a separately validated contract",
+    "configuration_field": "calibration.reference_spectral_index_alpha",
+    "default_alpha": 0,
+    "map_meaning_limitation": "reference-spectrum convention only; it does not assert every source in a map has that spectrum",
+    "omission": "use alpha=0 and record default_applied=true",
+    "quicklook": "pointing and OOF quicklook may omit the field and use the default",
+    "required_product_provenance": [
+      "effective_alpha",
+      "alpha_default_applied",
+      "tolteca_v1_passband_set_provenance",
+      "operator_id",
+      "reference_profile_id",
+      "calibration_quality_regime"
+    ],
+    "selection": "select one already precomputed alpha surface once per reduction; never integrate per sample",
+    "semantics": "reference source spectrum S_nu proportional to nu^alpha for calibrated map/product meaning",
+    "supported_values": [
+      -1,
+      0,
+      2,
+      4
+    ],
+    "unsupported_or_nonfinite": "fail_closed"
+  }
 }
