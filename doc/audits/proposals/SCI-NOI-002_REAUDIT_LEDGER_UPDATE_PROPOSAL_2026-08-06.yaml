@@ -1,0 +1,696 @@
+format_version: 1
+record_type: audit_ledger_update_proposal
+proposal_id: SCI-NOI-002-REAUDIT-2026-08-06
+proposal_date: 2026-08-06
+package_id: SCI-NOI-002
+authority: independent_reauditor
+coordinator_action: review_and_integrate_or_supersede
+
+scope:
+  exact_application_candidate: 0bc4d95d6bb2117442d0ccdb79c57e42e0b79989
+  candidate_parent: d5015fe716971bf8ea617e8a187311bf5af05185
+  candidate_tree: 25f39d8b1ba2527c2a154a69a527b0d8835a412a
+  parent_tree: 5483c0647ef692439b5773744a5576b4b4dfcabd
+  exact_parent_count: 1
+  candidate_parent_merge_base_exact: true
+  repair_branch: codex/repair-sci-noi-002
+  repair_branch_local_tip: 0bc4d95d6bb2117442d0ccdb79c57e42e0b79989
+  repair_branch_remote_tip: 0bc4d95d6bb2117442d0ccdb79c57e42e0b79989
+  required_application_base_ref: origin/codex/refactor-mainline
+  required_application_base_ref_tip: d5015fe716971bf8ea617e8a187311bf5af05185
+  coordination_authority_ref: codex/coordinate-sci-noi-001-dispatch
+  coordination_authority_commit: ad5c288bde7c801d2e436c053e340a809a669343
+  coordination_authority_tree: 5a00271c729a0627cd6a3d4dacb2eae1adebc7b7
+  candidate_coordination_merge_base: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+  coordination_used_as_application_base: false
+  audit_branch: codex/reaudit-sci-noi-002
+  audit_commit: null
+  audit_commit_note: >-
+    The containing Git commit is supplied in the coordinator handoff; a file
+    cannot losslessly contain the hash of the commit that contains itself.
+  worktree: /Users/gwilson/.codex/worktrees/f908/citlali-refactor
+  clean_entry_verified: true
+  exact_candidate_only: true
+  parent_relative_diff_only: true
+  canonical_ledger_modified_by_audit: false
+  canonical_handoff_registry_modified_by_audit: false
+  application_source_modified_by_audit: false
+  tests_modified_by_audit: false
+  configuration_modified_by_audit: false
+  original_authorities_modified_by_audit: false
+  integration_performed: false
+  unity_accessed_or_contacted: false
+  local_or_astronomical_reduction_executed: false
+  external_evidence_requested: false
+  repair_launched_or_performed: false
+  delegation_or_subagents_used: false
+  pushed: false
+
+verified_authorities:
+  repair_prompt:
+    source_commit: ad5c288bde7c801d2e436c053e340a809a669343
+    path: doc/audits/prompts/SCI_NOI_002_REPAIR_PROMPT.md
+    sha256: 45fc19d6ccf0e55aa1c2a1189d97f72ffb9b51027c659580d7cbcc9415c4bc71
+  repair_authority_manifest:
+    source_commit: ad5c288bde7c801d2e436c053e340a809a669343
+    path: >-
+      doc/audits/handoffs/SCI-NOI-002/SCI-NOI-002_REPAIR_AUTHORITY_MANIFEST_2026-08-06.yaml
+    sha256: 6f4b84995c8cb118bdb182b9189c4b95464c4fe7e414b762debb8786e825ce79
+  repair_readiness:
+    source_commit: ad5c288bde7c801d2e436c053e340a809a669343
+    path: >-
+      doc/audits/packages/SCI-NOI-002_REPAIR_DISPATCH_READINESS_2026-08-06.md
+    sha256: 246c751397b2d138939372c7943e8187ba36658bbb7a5b8f96bb01edca0f4804
+  owner_decision_brief:
+    source_commit: 64ba81795110d89d8baf0ad7d645d16472c254c5
+    path: >-
+      doc/audits/packages/SCI-NOI-002_OWNER_DECISION_BRIEF_2026-08-06.md
+    sha256: 3520172cfc11e8e34f280f9ebdf147ea414c7a3a4ca6109bad55354a5ff3cf71
+  final_exact_d501_audit:
+    source_commit: 4f1fec36f7802f3b5e8ac067377679946930983c
+    parent: f08a6da2ceebff03f498386f374980d13c5146a6
+    assessed_application: d5015fe716971bf8ea617e8a187311bf5af05185
+    path: doc/audits/packages/SCI-NOI-002_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: 2874ffe950aed769f73277ed8f60ecab8860692d24e7c541f05a47a041a8a40d
+  independent_core:
+    source_commit: f08a6da2ceebff03f498386f374980d13c5146a6
+    parent: d5015fe716971bf8ea617e8a187311bf5af05185
+    path: doc/audits/packages/SCI-NOI-002_INDEPENDENT_CORE.tex
+    sha256: 36781b766a2f57c9a3bd7e173ee8f1d85cba7f3d08afe2e67a403166f6b6d72d
+  original_ledger_proposal_noncanonical:
+    source_commit: 4f1fec36f7802f3b5e8ac067377679946930983c
+    path: doc/audits/proposals/SCI-NOI-002_LEDGER_PROPOSAL_2026-08-06.yaml
+    sha256: 5574d8e34fcfba8f4709d5848e79732ff3557a9817be25604375b9f3d4ec278d
+  noi_001_R3_conditioned_evidence:
+    source_commit: 5a027c94ef9fc9c4a6e6cadc84af1c8a550d3508
+    path: doc/audits/packages/SCI-NOI-001_INDEPENDENT_CORE_R3.tex
+    sha256: 27263ab3bf29ac8f098463455e540f13e783241a688ef2bc5cb15b1f2a4319da
+    admitted_scope: source_imprinted_current_ensemble_identity_only
+
+artifacts:
+  report:
+    path: doc/audits/packages/SCI-NOI-002_INDEPENDENT_REAUDIT_2026-08-06.md
+    sha256: a66ef3f17976a7149ef04d2fec08e2c1faa2947c4b883fddd651a3eb57e44517
+  ledger_proposal:
+    path: >-
+      doc/audits/proposals/SCI-NOI-002_REAUDIT_LEDGER_UPDATE_PROPOSAL_2026-08-06.yaml
+    sha256: null
+    sha256_note: >-
+      The proposal digest is supplied in the coordinator handoff because this
+      file cannot contain its own digest without changing that digest.
+
+scope_resolution:
+  conditional_path_expansion_authorized_by_coordinator: true
+  expansion_approves_correctness: false
+  expanded_direct_paths:
+    - include/citlali/core/mapmaking/map.h
+    - include/citlali/core/pipeline/noise_config_serialization.h
+    - include/citlali/core/pipeline/noise_provenance.h
+    - include/citlali/core/pipeline/fits_image_hdu_names_wcs.h
+    - include/citlali/core/pipeline/fits_image_units_kernels.h
+    - include/citlali/core/pipeline/fits_image_metadata_keys.h
+    - tests/test_science_map_fits_products.cpp
+  each_expanded_path_stayed_direct_metadata_provenance_or_existing_test: true
+  new_file_created_by_candidate: false
+  new_schema_version_created: false
+  new_helper_component_created: false
+  new_wrapper_or_verifier_created: false
+  new_framework_created: false
+  new_product_class_created: false
+  suspect_unauthorized_scope_expansion_observed: false
+
+candidate_diff:
+  modified_existing_files: 14
+  insertions: 1449
+  deletions: 135
+  added_files: 0
+  deleted_files: 0
+  renamed_files: 0
+  paths:
+    - path: include/citlali/core/mapmaking/map.h
+      additions: 21
+      deletions: 1
+      trace: [F001, F005, validity_state, fixed_projection]
+    - path: include/citlali/core/pipeline/fits_image_hdu_names_wcs.h
+      additions: 20
+      deletions: 0
+      trace: [F004, F005, canonical_legacy_names]
+    - path: include/citlali/core/pipeline/fits_image_metadata_keys.h
+      additions: 141
+      deletions: 15
+      trace: [F002, F003, F004, F005, joins_validity_aliases]
+    - path: include/citlali/core/pipeline/fits_image_units_kernels.h
+      additions: 38
+      deletions: 13
+      trace: [F001, F002, F004, F005, descriptions_units_only]
+    - path: include/citlali/core/pipeline/map_filtering_template_noise.h
+      additions: 3
+      deletions: 2
+      trace: [F002, F004, log_labels_only]
+    - path: include/citlali/core/pipeline/map_image_output_helpers.h
+      additions: 188
+      deletions: 25
+      trace: [F002, F003, F004, F005, product_writes_and_joins]
+    - path: include/citlali/core/pipeline/map_source_table_output.h
+      additions: 31
+      deletions: 4
+      trace: [F004, source_table_identity_and_invalid_ratio]
+    - path: include/citlali/core/pipeline/noise_config_serialization.h
+      additions: 9
+      deletions: 0
+      trace: [F007, realized_completion_serialization]
+    - path: include/citlali/core/pipeline/noise_execution_plan.h
+      additions: 118
+      deletions: 15
+      trace: [F001, F002, F003, F004, F005, F007, identities_and_counts]
+    - path: include/citlali/core/pipeline/noise_provenance.h
+      additions: 138
+      deletions: 4
+      trace: [F001, F002, F003, F004, F005, F007, package_inventory]
+    - path: src/citlali/core/mapmaking/map.cpp
+      additions: 133
+      deletions: 30
+      trace: [F001, F002, F004, F005, estimator_scale_projection]
+    - path: tests/test_config_scaffold.cpp
+      additions: 163
+      deletions: 2
+      trace: [F001, F002, F003, F004, F005, F007, fixtures]
+    - path: tests/test_science_map_fits_products.cpp
+      additions: 299
+      deletions: 0
+      trace: [F001, F002, F003, F004, F005, fixtures]
+    - path: validation/product_contracts.json
+      additions: 147
+      deletions: 24
+      trace: [F003, F004, F005, product_contract_checks]
+  runtime_yaml_changed: false
+  count_or_default_changed: false
+  excluded_algorithm_change_observed: false
+  adr_0005_or_primary_channel_changed: false
+
+independent_mathematical_assessment:
+  estimator_identity: conditional_finite_stack_scatter
+  ensemble_identity: source_imprinted_current
+  centering: empirical_completed_stack_mean
+  normalization: centered_sum_of_squares_divided_by_completed_R
+  algebra: V_p_equals_mean_Y_squared_minus_mean_Y_quantity_squared
+  iid_unbiased_sample_variance: false
+  dependence_correction: none
+  covariance_product: none
+  missingness: fixed_completed_stack_nonfinite_pixel_unavailable
+  per_pixel_reduced_count_substitution: false
+  R1:
+    finite_mean: retained
+    descriptive_scatter: 0
+    uncertainty_or_ratio_valid: false
+  R2_exact_fixtures:
+    complementary_minus2_plus2_scatter: 4
+    duplicate_3_3_scatter: 0
+    simple_0_2_mean: 1
+    simple_0_2_scatter: 1
+  global_scale:
+    identity: global_nonprecision_scale_diagnostic
+    region: finite_positive_q_and_V_at_or_above_realized_threshold
+    statistic: median_of_q_times_V
+    scale: reciprocal_of_positive_finite_median
+    empty_or_invalid: unavailable
+    requested_invalid_application: throws
+    live_application: existing_use_only_nonprecision
+  fixed_projection:
+    formula: centered_second_moment_over_completed_R_of_fixed_response_normalized_projection
+    two_pixel_correlated_scatter: 4
+    response_two_scatter: 1
+    fixed_template_scatter: 1
+    dense_covariance_created: false
+    physical_aperture_uncertainty_claim: false
+  prohibited_interpretations:
+    - repeated_physical_noise_variance_or_covariance
+    - inverse_variance_or_precision
+    - calibrated_significance_or_tail_probability
+    - aperture_or_photometric_uncertainty
+    - count_adequacy_or_production_calibration
+  semantic_digest_identities_recomputed: 11
+  registry_semantic_digest_checks: 5
+  registry_semantic_digest_mismatches: 0
+
+completion_assessment:
+  enabled_zero_rejected_without_request_mutation: true
+  disabled_requested_values_preserved: true
+  disabled_effective_enabled: false
+  disabled_effective_count: 0
+  disabled_realized_counts_available_zero: 8
+  disabled_outputs_completed: true
+  disabled_basis: effective_disabled_zero_work
+  enabled_basis: successful_pipeline_return_under_effective_plan
+  enabled_cardinality_source: effective_count_times_mapmaking_plan_cardinality
+  measured_from_realization_ids: false
+  measured_from_realized_publication_inventory: false
+  crash_interruption_or_partial_publication_represented: false
+  reused_root_stale_sidecar_excluded: false
+  count_adequacy_or_default_selected: false
+  exact_configured_counts_are_scientific_values: false
+  active_baseline_validator:
+    enabled_candidate_errors: 0
+    disabled_candidate_errors: 9
+    disabled_completed_output_rejected: true
+    disabled_available_zero_fields_rejected: 8
+    validator_unit_tests_pass_historical_contract: 95
+
+mode_count_observations:
+  science:
+    enabled: true
+    configured_request: 10
+    scientific_or_production_authority: false
+  pointing:
+    enabled: true
+    configured_request: 5
+    scientific_or_production_authority: false
+  oof:
+    enabled: false
+    inert_configured_request: 1
+    effective_count: 0
+    scientific_or_production_authority: false
+  beammap:
+    enabled: false
+    inert_configured_request: 10
+    effective_count: 0
+    explicit_opt_in_only: true
+    scientific_or_production_authority: false
+  optional_capacity_64:
+    selected_as_target_default_minimum_or_requirement: false
+
+package_provenance_assessment:
+  complete_semantics_once_in_sidecar: true
+  minimal_fits_join_key_count: 10
+  full_metadata_duplicated_per_hdu: false
+  detached_product_status_explicit: true
+  member_discovery: recursive_extension_scan
+  admitted_extensions: [.fits, .ecsv, .nc]
+  membership_bound_to_realized_publication_inventory: false
+  stale_or_unrelated_matching_file_excluded: false
+  preexisting_reused_root_file_excluded: false
+  symlink_target_excluded: false
+  ordering: lexicographic_path_sort
+  member_record: [relative_path, file_sha256, size_bytes]
+  inventory_digest_input: canonical_relative_path_file_sha256_size_v1
+  self_digest_cycle_avoided: true
+  sidecar_write_atomic: true
+  package_snapshot_atomic: false
+  file_hash_TOCTOU_protected: false
+  stale_existing_sidecar_removed_before_run: false
+  member_inventory_or_join_validator_exists: false
+  hash_time_complexity: O_total_admitted_package_bytes
+  hash_buffer_bytes: 8192
+  hash_update_implementation: byte_loop
+  hash_memory_complexity: O_1_plus_member_yaml
+
+storage_assessment:
+  scalar_type: float64
+  bytes_per_pixel_per_added_plane: 8
+  duplicate_planes:
+    conditional_stack_scatter: noise_variance
+    coefficient_standardized_signal: [sig2noise, sig2noise_pixel]
+    filtered_pixel_stack_scatter: point_source_uncertainty
+    conditional_stack_scatter_ratio: sig2noise_point_source
+  added_planes_per_raw_empirical_map: 2
+  added_payload_bytes_per_raw_empirical_map: 16N
+  added_planes_per_filtered_empirical_map: 4
+  added_payload_bytes_per_filtered_empirical_map: 32N
+  representative_three_array_raw_plus_filtered_added_planes: 18
+  representative_added_payload_bytes: 144N
+  representative_1024_squared:
+    payload_bytes: 150994944
+    payload_MiB: 144
+    fits_padded_data_bytes: 151009920
+    minimum_with_one_header_block_per_hdu_bytes: 151061760
+  representative_2048_squared:
+    payload_bytes: 603979776
+    payload_MiB: 576
+    fits_padded_data_bytes: 603987840
+    minimum_with_one_header_block_per_hdu_bytes: 604039680
+  package_hash_adds_full_read_of_duplicate_planes: true
+  representative_1024_squared_minimum_write_plus_hash_MiB: 288
+  representative_2048_squared_minimum_write_plus_hash_MiB: 1152
+  persistent_mapbuffer_plane_duplication: false
+  transient_writer_buffer_planes: 1
+  material_or_avoidable: true
+  compatibility_policy_decision_required: canonical_EXTNAME_required_or_canonical_identity_metadata_sufficient
+
+reaudit_findings:
+  p0: []
+  p1:
+    - id: SCI-NOI-002-RA-B001
+      class: implementation_provenance_defect
+      mapped_findings: [SCI-NOI-002-F003]
+      evidence_basis: static_source_and_existing_direct_fixture
+      confidence: high
+      summary: >-
+        Recursive extension scanning is not a current realized publication
+        inventory and admits stale/unrelated files, omits other members, has a
+        hash-to-sidecar TOCTOU window, and has no inventory/join validator.
+    - id: SCI-NOI-002-RA-B002
+      class: required_validation_boundary_nonconformance
+      mapped_findings: [SCI-NOI-002-F003, SCI-NOI-002-F007]
+      evidence_basis: static_source_and_direct_compatibility_probe
+      confidence: high
+      summary: >-
+        The active auditor rejects the approved disabled completed/available-
+        zero representation with nine deterministic errors.
+    - id: SCI-NOI-002-RA-B003
+      class: lifecycle_contract_defect
+      mapped_findings: [SCI-NOI-002-F007]
+      evidence_basis: static_call_trace_and_exact_fixtures
+      confidence: high
+      summary: >-
+        Enabled completed counts are inferred from effective plan cardinality,
+        not measured realization/publication completion, despite actual and
+        matching labels; incomplete and partial execution remains unrepresented.
+    - id: SCI-NOI-002-RA-B004
+      class: product_validity_defect
+      mapped_findings: [SCI-NOI-002-F003, SCI-NOI-002-F005]
+      evidence_basis: static_source_and_independent_missingness_derivation
+      confidence: high
+      summary: >-
+        Filtered stack-scatter validity uses n_noise greater than zero instead
+        of actual stack validity and can mark an all-NaN R-at-least-two plane
+        conditionally descriptive with an incorrect R-less-than-two reason.
+  p2:
+    - id: SCI-NOI-002-RA-R001
+      class: storage_and_performance_defect
+      mapped_findings: [SCI-NOI-002-F003, SCI-NOI-002-F004]
+      evidence_basis: exact_writer_trace_and_byte_accounting
+      confidence: high
+      summary: >-
+        Canonical EXTNAME HDUs duplicate legacy float64 arrays, adding 16N raw
+        and 32N filtered bytes plus a complete package-hash reread.
+    - id: SCI-NOI-002-RA-R002
+      class: residual_metadata_gap
+      mapped_findings: [SCI-NOI-002-F004]
+      evidence_basis: unchanged_exact_source_trace
+      confidence: high
+      summary: >-
+        Secondary Mapdiag names/descriptions retain variance, weight, and S2N
+        terminology inconsistent with broad canonical meaning.
+
+proposed_package_update:
+  contract_status: approved
+  implementation_status: nonconformant
+  validation_status: failed
+  production_status: existing_use_only
+  verdict: amend
+  reaudit_status: complete_with_bounded_closures_and_open_blockers
+  repair_work_complete: false
+  coordinator_ledger_proposal_ready: true
+  application_integration_ready: false
+  application_integration_authorized: false
+  production_expansion_authorized: false
+  bounded_successor_repair_required: true
+  successor_reaudit_required: true
+
+finding_updates:
+  - id: SCI-NOI-002-F001
+    current_status: open
+    proposed_status: closed
+    disposition: closed_bounded_owner_accepted
+    closure_scope: >-
+      Exact centered completed-R conditional finite-stack estimator, R1/R2
+      behavior, fixed complete-stack missingness, source-imprinted target, and
+      prohibited physical-covariance/precision/significance interpretations.
+  - id: SCI-NOI-002-F002
+    current_status: open
+    proposed_status: closed
+    disposition: closed_bounded_owner_accepted
+    closure_scope: >-
+      Reciprocal-median global nonprecision diagnostic, valid support, explicit
+      unavailable state, fail-closed requested application, and existing-use-
+      only live behavior; no spatial precision claim.
+  - id: SCI-NOI-002-F003
+    current_status: open
+    proposed_status: open
+    disposition: open
+    blockers:
+      - current_membership_not_bound_to_realized_publication_inventory
+      - stale_and_unrelated_membership_and_TOCTOU
+      - no_member_digest_or_package_join_validation
+      - filtered_detached_product_validity_defect
+  - id: SCI-NOI-002-F004
+    current_status: open
+    proposed_status: open
+    disposition: open_conditioned
+    bounded_pass:
+      - canonical_FITS_product_identities_units_and_not_significance_aliases
+      - source_table_invalid_denominator_and_distinct_ratio_identity
+      - source_finder_math_and_threshold_unchanged
+    conditions:
+      - Mapdiag_canonical_identity_and_description_repair
+      - canonical_EXTNAME_storage_compatibility_decision
+      - SCI-SRC-001_for_any_tail_search_selection_or_catalog_claim
+  - id: SCI-NOI-002-F005
+    current_status: open
+    proposed_status: open
+    disposition: open_conditioned
+    parity_status: scope_blocked_not_applicable_pending_FLT
+    conditions:
+      - SCI-FLT-001_or_SCI-FLT-002_strict_signal_realization_kernel_edge_operator_contract
+      - filtered_product_validity_repair
+    prohibited_closure_inference: bounded_projection_fixtures_are_not_physical_aperture_uncertainty_or_dense_covariance
+  - id: SCI-NOI-002-F006
+    current_status: open
+    proposed_status: open
+    disposition: open
+    owner: SCI-FRUIT-001
+    unchanged_contract: >-
+      No FRUIT algorithm, default, threshold, add-back, stopping, iteration,
+      or bright-source uncertainty behavior changed or closed.
+  - id: SCI-NOI-002-F007
+    current_status: open
+    proposed_status: open
+    disposition: open_conditioned
+    bounded_lifecycle_subtranche:
+      status: demonstrated_local
+      includes:
+        - enabled_zero_rejection
+        - disabled_effective_zero_no_work
+        - post_successful_return_planned_cardinality
+    remains_open:
+      - actual_realization_and_publication_completion_measurement
+      - crash_interruption_and_partial_publication_truth
+      - active_baseline_validator_compatibility
+      - use_specific_count_adequacy
+      - count_and_default_selection
+    configured_counts_are_production_or_scientific_values: false
+  - id: SCI-NOI-002-F008
+    current_status: open
+    proposed_status: closed
+    disposition: closed_bounded_owner_accepted
+    closure_scope: admitted_deterministic_local_tranche_only
+    included:
+      - exact_R1_R2_and_design_fixtures
+      - empty_calibration_and_invalid_denominator_fixtures
+      - distinct_identity_and_alias_fixtures
+      - fixed_projection_fixtures
+      - requested_effective_disabled_and_successful_return_count_fixtures
+      - proportional_build_CTest_and_config_gates
+    explicitly_not_closed:
+      - astronomical_or_Unity_validation
+      - FRUIT_adaptive_or_bright_source_validation
+      - strict_FLT_operator_edge_parity
+      - empirical_tolerance_or_count_adequacy
+      - production_admission
+
+remaining_dependencies:
+  - package_id: SCI-NOI-001
+    status: conditioned
+    required_fact: source_imprinted_current_bounded_ensemble_identity_only
+  - package_id: SCI-MAP-001
+    status: conditioned
+    required_fact: nonprecision_coefficient_support_validity_and_existing_use_only
+  - package_id: SCI-FLT-001
+    status: open
+    required_fact: identical_signal_realization_kernel_filter_edge_operator_contract
+  - package_id: SCI-FLT-002
+    status: open
+    required_fact: Wiener_operator_response_and_normalize_errors_contract
+  - package_id: SCI-SRC-001
+    status: open
+    required_fact: null_response_search_selection_multiplicity_and_catalog_contract
+  - package_id: SCI-FRUIT-001
+    status: open
+    required_fact: adaptive_update_addback_stopping_and_bright_source_uncertainty_contract
+  - package_id: SCI-MODE-001
+    status: conditioned
+    required_fact: pointing_and_OOF_consumer_identity_without_significance_expansion
+  - package_id: SCI-BEAM-001
+    status: conditioned
+    required_fact: optional_explicit_enable_only_standard_disabled_zero_work
+
+channel_boundary:
+  stokes_surface: I_only
+  r_behavior_changed: false
+  I_Q_phase_behavior_changed: false
+  ADR_0005_changed: false
+  future_note: >-
+    Auxiliary measured channels may diagnose non-optical readout/electronics
+    noise but are not substitutes for primary x-derived science-map noise.
+
+local_gates:
+  configure:
+    command: >-
+      env BUILD_DIR=/Users/gwilson/.codex/worktrees/f908/citlali-refactor/build
+      BUILD_TYPE=Release BUILD_TESTS=ON
+      tools/macos/configure-homebrew-build.sh
+    result: pass_after_approved_dependency_network_retry
+    initial_sandbox_DNS_denial_is_candidate_failure: false
+  builds:
+    - command: cmake --build build --target citlali_cli -j 8
+      result: pass
+    - command: cmake --build build --target citlali_test -j 8
+      result: pass
+    - command: >-
+        cmake --build build --target
+        citlali_science_map_fits_products_test -j 8
+      result: pass
+    - command: cmake --build build --target citlali_safety_test -j 8
+      result: pass
+  cli_identity: v4.0.0-3634-g0bc4d95d6
+  focused_estimator_fits_fixtures:
+    result: pass
+    passed: 6
+    failed: 0
+  complete_fits_product_binary:
+    result: pass
+    passed: 28
+    failed: 0
+  focused_noise_count_provenance_source_table:
+    result: pass
+    passed: 12
+    failed: 0
+  bounded_FRUIT_configuration:
+    result: pass_no_F006_claim
+    passed: 6
+    failed: 0
+  source_finder:
+    result: pass
+    passed: 2
+    failed: 0
+  complete_core_cpp_binary:
+    result: pass
+    passed: 560
+    failed: 0
+    disabled: 1
+  complete_safety_binary:
+    result: pass
+    passed: 14
+    failed: 0
+  ctest:
+    command: ctest --test-dir build --output-on-failure
+    result: pass
+    registered: 603
+    executed_passed: 602
+    failed: 0
+    disabled: 1
+  baseline_python_unit_suites:
+    command: >-
+      /Users/gwilson/tolteca/bin/python -m unittest
+      tools.baseline.test_audit_reduction_run
+      tools.baseline.test_validate_product_contract
+      tools.baseline.test_validate_reduction
+    result: pass_historical_contract_only
+    passed: 95
+    failed: 0
+  exact_candidate_baseline_probe:
+    result: fail_as_finding
+    enabled_errors: 0
+    disabled_errors: 9
+  product_registry_load:
+    result: pass
+    schema: citlali-product-contract-registry-v2
+    contracts: 10
+    science_map_contracts: 1
+  semantic_digest_probe:
+    result: pass
+    identities: 11
+    registry_checks: 5
+    mismatches: 0
+  proposal_structural_validation:
+    result: pass
+    checks:
+      - parsed_YAML_mapping
+      - exact_candidate
+      - report_SHA256_binding
+      - controlled_status_axes
+      - ordered_F001_through_F008_set
+      - F005_parity_status
+      - F006_owner
+  config_preflight:
+    command: >-
+      /Users/gwilson/tolteca/bin/python
+      tools/config/run_config_preflight.py --require-all
+    result: pass
+    unit_tests_passed: 127
+    mode_kits_passed: 4
+    compact_compatibility_passed: 8
+    compact_coverage_percent: 100.0
+    boundary_audits_passed: true
+  parent_relative_diff_check:
+    command: >-
+      git diff --check d5015fe716971bf8ea617e8a187311bf5af05185
+      0bc4d95d6bb2117442d0ccdb79c57e42e0b79989
+    result: pass
+  strict_filter_operator_kernel_parity:
+    result: scope_blocked_not_applicable_pending_FLT
+    counted_as_pass: false
+  required_data_skips: 0
+  reduction_Unity_or_external_evidence_used: false
+
+bounded_successor:
+  required: true
+  application_or_existing_tool_repairs:
+    - bind_noise_package_membership_to_current_realized_publication_inventory
+    - define_stale_self_failure_and_atomic_package_behavior
+    - validate_member_hashes_inventory_digest_and_FITS_table_sidecar_joins
+    - update_active_auditor_for_disabled_available_zero_and_completion_fields
+    - distinguish_planned_successful_return_counts_from_measured_partial_completion
+    - repair_filtered_scatter_and_ratio_validity_reasons
+    - repair_Mapdiag_names_descriptions_only_if_broad_F004_closure_is_sought
+  owner_or_coordinator_decision:
+    question: >-
+      Is canonical EXTNAME lookup required strongly enough to retain duplicate
+      arrays, or is one legacy-named plane with canonical identity/join
+      metadata the compatibility contract?
+    quantified_cost_available: true
+  does_not_require:
+    - numerical_estimator_change
+    - count_or_default_selection
+    - dense_covariance
+    - sign_stream_or_per_sample_ID
+    - new_framework_or_product_class
+    - FLT_Wiener_or_FRUIT_algorithm_change
+    - astronomical_evidence_or_Unity
+    - integration_push_or_production_change
+
+outgoing_handoffs: []
+
+coordinator_effect:
+  canonical_update_required_for_effect: true
+  proposal_is_noncanonical_decision_record: true
+  repair_candidate_accepted_for_integration: false
+  proposed_close_findings:
+    - SCI-NOI-002-F001
+    - SCI-NOI-002-F002
+    - SCI-NOI-002-F008
+  retain_open_after_reaudit:
+    - SCI-NOI-002-F003
+    - SCI-NOI-002-F004
+    - SCI-NOI-002-F005
+    - SCI-NOI-002-F006
+    - SCI-NOI-002-F007
+  prohibited_inferences:
+    - green_local_tests_make_package_membership_or_completion_truthful
+    - deterministic_projection_fixtures_close_physical_aperture_uncertainty
+    - bounded_FRUIT_tests_close_SCI-FRUIT-001
+    - configured_counts_are_validated_scientific_or_production_values
+    - canonical_alias_metadata_preapproves_duplicate_data_planes
+    - F008_local_tranche_closure_authorizes_astronomical_or_Unity_evidence
+    - partial_finding_closure_authorizes_integration_or_production_expansion
+    - audit_artifacts_modify_the_canonical_ledger_without_coordinator_action
