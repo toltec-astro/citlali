@@ -112,6 +112,30 @@ The live branch, upstream revision, gate, and import policy are recorded in
 [`INTEGRATION_LEDGER.md`](INTEGRATION_LEDGER.md). The durable rationale is
 [ADR 0008](adr/0008-application-mainline-and-build-adaptation-lanes.md).
 
+## 2026-08-06 User-Facing Map Semantics Deliverable
+
+`DOC-MAP-001` is queued as a Citlali-owned, cross-package Phase 5 deliverable.
+The project will provide a compact one-to-two-page guide explaining what every
+emitted map measures. The guide is required because repaired map identities,
+validity, and statistical restrictions now depart materially from historical
+shorthand and require explicit user education.
+
+The deliverable has two linked forms: a static canonical map dictionary and a
+per-reduction rendering driven by the effective plan and realized observation
+state. The static source records identity, definition, units, normalization or
+calibration, filtering/kernel response, support and validity, statistical
+status, permitted uses, prohibited interpretations, and legacy aliases. The
+realized rendering lists only products actually emitted and the settings that
+materially determine their meaning; it links to the authoritative provenance
+package instead of duplicating it. TolTECA and TolProj may expose the artifact,
+but Citlali's product contract remains the semantic authority.
+
+Map-producing audits and repairs must supply the necessary facts as their
+contracts stabilize. Implementation must not interrupt active repair/re-audit
+chains or hard-code meanings that depend on configuration, but `DOC-MAP-001`
+must close before production expansion and Phase 5 closeout. It authorizes no
+numerical, configuration-default, output-selection, or audit-scope change.
+
 ## 2026-08-05 SCI-MAP-001 Final Coordination
 
 The bounded shared/naive mapmaking and observation-coaddition contract is now

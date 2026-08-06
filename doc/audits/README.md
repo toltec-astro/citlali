@@ -182,6 +182,31 @@ while disabled resolves to effective zero and is not a requirement or adequacy
 claim. F008 remains for deterministic behavior on explicit opt-in, while
 SCI-NOI-002 may assess Beammap only as such an optional recipient.
 
+### DOC-MAP-001 queued user-facing map-semantics guide — 2026-08-06
+
+The project owner requires a compact one-to-two-page explanation of what each
+emitted map measures because the repaired product meanings now differ
+materially from historical shorthand. This is a Citlali-owned cross-package
+deliverable: Citlali owns the product identities and the effective and realized
+configuration that can change their meaning. TolTECA and TolProj may surface or
+copy the result, but they must not independently redefine the products.
+
+The queued design is deliberately hybrid. A static canonical map dictionary
+will state each product's identity, equation or operational definition, units,
+normalization/calibration, filtering or kernel response, support/validity,
+statistical status, safe uses, prohibited interpretations, and legacy aliases.
+A compact per-reduction guide will then be rendered from the same product
+contracts plus effective and realized state, listing only emitted maps and the
+settings that materially determine their meaning. Requested configuration
+alone is insufficient, and the user guide must link to rather than duplicate
+the full provenance package.
+
+Each map-producing audit or repair must contribute the facts needed by this
+guide. Implementation is held until the applicable product identities are
+stable enough to avoid churn, but completion is required before production
+expansion and Phase 5 closeout. This task does not broaden an active audit,
+alter a numerical algorithm, or launch a new audit package.
+
 ## Purpose and non-goals
 
 The program exists to make the claimed estimator, its uncertainty and
