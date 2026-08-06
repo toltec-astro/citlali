@@ -257,7 +257,7 @@ TEST(science_map_fits_products,
     EXPECT_EQ(map->noise_weight_scale_valid(0), 0);
     EXPECT_TRUE(std::isnan(map->noise_weight_scale(0)));
     EXPECT_TRUE(std::isnan(map->sig2noise_pixel[0](0, 0)));
-    EXPECT_DOUBLE_EQ(map->point_source_uncertainty[0](0, 0), 0.0);
+    EXPECT_TRUE(std::isnan(map->point_source_uncertainty[0](0, 0)));
     EXPECT_TRUE(std::isnan(map->sig2noise_point_source[0](0, 0)));
 
     auto required_scale = make_noise_product_fixture(
@@ -399,7 +399,46 @@ TEST(science_map_fits_products,
 }
 
 TEST(science_map_fits_products,
-     publishes_canonical_noise_identities_with_legacy_alias_joins) {
+     filtered_scatter_validity_distinguishes_exact_failure_reasons) {
+    const Eigen::MatrixXd finite_scatter =
+        Eigen::MatrixXd::Ones(2, 2);
+    Eigen::MatrixXd nonfinite_scatter =
+        Eigen::MatrixXd::Constant(
+            2, 2, std::numeric_limits<double>::quiet_NaN());
+    mapmaking::ScienceMapMaskPlane supported =
+        mapmaking::ScienceMapMaskPlane::Ones(2, 2);
+    mapmaking::ScienceMapMaskPlane unsupported =
+        mapmaking::ScienceMapMaskPlane::Zero(2, 2);
+
+    auto validity = citlali::pipeline::filtered_scatter_validity(
+        1, finite_scatter, 1.0, &supported);
+    EXPECT_FALSE(validity.available);
+    EXPECT_STREQ(validity.status, "R_lt_2");
+
+    validity = citlali::pipeline::filtered_scatter_validity(
+        2, nonfinite_scatter, 1.0, &supported);
+    EXPECT_FALSE(validity.available);
+    EXPECT_STREQ(validity.status, "scatter_unavailable_or_nonfinite");
+
+    validity = citlali::pipeline::filtered_scatter_validity(
+        2, finite_scatter, 0.0, &supported);
+    EXPECT_FALSE(validity.available);
+    EXPECT_STREQ(validity.status, "response_invalid");
+
+    validity = citlali::pipeline::filtered_scatter_validity(
+        2, finite_scatter, 1.0, &unsupported);
+    EXPECT_FALSE(validity.available);
+    EXPECT_STREQ(validity.status, "support_invalid");
+
+    validity = citlali::pipeline::filtered_scatter_validity(
+        2, finite_scatter, 1.0, &supported);
+    EXPECT_TRUE(validity.available);
+    EXPECT_STREQ(
+        validity.status, "available_where_finite_on_valid_support");
+}
+
+TEST(science_map_fits_products,
+     retains_compatible_noise_planes_with_canonical_identity_metadata) {
     auto map = make_science_map_buffer(false);
     set_noise_stack(
         *map,
@@ -421,11 +460,10 @@ TEST(science_map_fits_products,
         raw_support, map, 0, "", "I", wcs, 2000.0, false, true, false,
         science_map_test_logger());
 
-    ASSERT_TRUE(captured_has_image(
+    EXPECT_FALSE(captured_has_image(
         primary, "conditional_stack_scatter_I"));
     ASSERT_TRUE(captured_has_image(primary, "noise_variance_I"));
-    const auto &scatter =
-        captured_hdu(primary, "conditional_stack_scatter_I").keys;
+    const auto &scatter = captured_hdu(primary, "noise_variance_I").keys;
     EXPECT_EQ(scatter.at("ESTTYPE"),
               "conditional_finite_stack_scatter");
     EXPECT_EQ(scatter.at("NOIPKG"), "citlali-noise-products");
@@ -439,27 +477,31 @@ TEST(science_map_fits_products,
                   citlali::pipeline::
                       noise_conditional_stack_scatter_product_id));
     EXPECT_EQ(scatter.find("NOIRCOMP"), scatter.end());
-    const auto &legacy_scatter =
-        captured_hdu(primary, "noise_variance_I").keys;
-    EXPECT_EQ(legacy_scatter.at("ALIASOF"),
-              "conditional_stack_scatter_I");
-    EXPECT_EQ(legacy_scatter.at("DEPRCATD"), "true");
-    EXPECT_EQ(legacy_scatter.at("NOIPRID"), scatter.at("NOIPRID"));
+    EXPECT_EQ(scatter.at("DEPRCATD"), "true");
+    EXPECT_EQ(scatter.find("ALIASOF"), scatter.end());
 
-    ASSERT_TRUE(captured_has_image(
+    EXPECT_FALSE(captured_has_image(
         raw_support, "coefficient_standardized_signal_I"));
     const auto &standardized = captured_hdu(
-        raw_support, "coefficient_standardized_signal_I").keys;
+        raw_support, "sig2noise_I").keys;
     EXPECT_EQ(standardized.at("ESTTYPE"),
               "coefficient_standardized_signal");
     EXPECT_EQ(standardized.at("SIGSTAT"), "not_significance");
     EXPECT_EQ(standardized.at("NOIPRID"),
               "coefficient_standardized_signal");
-    EXPECT_EQ(captured_hdu(raw_support, "sig2noise_I").keys.at("ALIASOF"),
-              "coefficient_standardized_signal_I");
-    EXPECT_EQ(
-        captured_hdu(raw_support, "sig2noise_pixel_I").keys.at("ALIASOF"),
-        "coefficient_standardized_signal_I");
+    EXPECT_EQ(standardized.find("ALIASOF"), standardized.end());
+    const auto &standardized_pixel =
+        captured_hdu(raw_support, "sig2noise_pixel_I").keys;
+    EXPECT_EQ(standardized_pixel.at("NOIPRID"),
+              standardized.at("NOIPRID"));
+    EXPECT_EQ(standardized_pixel.at("NOIDGST"),
+              standardized.at("NOIDGST"));
+    EXPECT_EQ(standardized_pixel.at("NOIVALID"),
+              standardized.at("NOIVALID"));
+    EXPECT_EQ(standardized_pixel.at("NOIRESTR"),
+              standardized.at("NOIRESTR"));
+    EXPECT_EQ(standardized_pixel.find("ALIASOF"),
+              standardized_pixel.end());
 
     map->freeze_raw_science_parent();
     CapturedFitsEntry filtered_support;
@@ -467,10 +509,10 @@ TEST(science_map_fits_products,
         filtered_support, map, 0, "", "I", wcs, 2000.0, true, true,
         false, science_map_test_logger());
 
-    ASSERT_TRUE(captured_has_image(
+    EXPECT_FALSE(captured_has_image(
         filtered_support, "filtered_pixel_stack_scatter_I"));
     const auto &filtered_scatter = captured_hdu(
-        filtered_support, "filtered_pixel_stack_scatter_I").keys;
+        filtered_support, "point_source_uncertainty_I").keys;
     EXPECT_EQ(filtered_scatter.at("ESTTYPE"),
               "filtered_pixel_stack_scatter");
     EXPECT_EQ(filtered_scatter.at("NOIPRID"),
@@ -478,21 +520,22 @@ TEST(science_map_fits_products,
     EXPECT_NE(filtered_scatter.at("NOIRESTR").find(
                   "strict_parity_pending_FLT"),
               std::string::npos);
-    EXPECT_EQ(
-        captured_hdu(filtered_support, "point_source_uncertainty_I")
-            .keys.at("ALIASOF"),
-        "filtered_pixel_stack_scatter_I");
-    ASSERT_TRUE(captured_has_image(
+    EXPECT_EQ(filtered_scatter.find("ALIASOF"), filtered_scatter.end());
+    EXPECT_EQ(filtered_scatter.at("NOIVALID"),
+              "available_where_finite_on_valid_support");
+    EXPECT_FALSE(captured_has_image(
         filtered_support, "conditional_stack_scatter_ratio_I"));
     const auto &ratio = captured_hdu(
-        filtered_support, "conditional_stack_scatter_ratio_I").keys;
+        filtered_support, "sig2noise_point_source_I").keys;
     EXPECT_EQ(ratio.at("ESTTYPE"),
               "conditional_stack_scatter_ratio");
     EXPECT_EQ(ratio.at("SIGSTAT"), "not_significance");
+    EXPECT_EQ(ratio.at("NOIPRID"),
+              "conditional_stack_scatter_ratio");
+    EXPECT_EQ(ratio.find("ALIASOF"), ratio.end());
     EXPECT_EQ(
-        captured_hdu(filtered_support, "sig2noise_point_source_I")
-            .keys.at("ALIASOF"),
-        "conditional_stack_scatter_ratio_I");
+        ratio.at("NOIVALID"),
+        "available_where_finite_positive_denominator_on_valid_support");
 }
 
 TEST(science_map_fits_products, writes_canonical_typed_planes_and_aliases) {

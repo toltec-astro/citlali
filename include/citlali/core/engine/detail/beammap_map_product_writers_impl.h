@@ -202,6 +202,19 @@ void Beammap::write_split_beammap_map_products(
 
         beammap_map_product_split_helpers::log_split_output_filepaths(
             logger, *split_f_io, flag_value);
+
+        const auto published_data_paths =
+            citlali::pipeline::noise_fits_output_paths(*split_f_io);
+        const auto published_noise_paths =
+            citlali::pipeline::noise_fits_output_paths(*split_n_io);
+        split_f_io->clear();
+        split_n_io->clear();
+
+        auto &run_noise_plan = citlali::pipeline::noise_plan(*this);
+        citlali::pipeline::record_noise_fits_members(
+            run_noise_plan, published_data_paths, published_noise_paths,
+            citlali::pipeline::noise_data_fits_have_package_join(
+                run_noise_plan, false, *mb));
     }
 }
 
@@ -228,7 +241,8 @@ void Beammap::write_beammap_map_products(
             detector_grouping, split_config);
 
     // wiener filtered maps write before this and are deleted from the vector.
-    if (!f_io->empty()) {
+    const bool map_output_started = !f_io->empty();
+    if (map_output_started) {
         if (split_by_flag_mode) {
             write_split_beammap_map_products<map_type>(
                 mb, f_io, n_io, stage_profile, dir_name, detector_grouping,
@@ -240,9 +254,33 @@ void Beammap::write_beammap_map_products(
         }
     }
 
+    const auto published_data_paths =
+        citlali::pipeline::noise_fits_output_paths(*f_io);
+    const auto published_noise_paths =
+        citlali::pipeline::noise_fits_output_paths(*n_io);
+
     // clear fits file vectors to ensure its closed.
     f_io->clear();
     n_io->clear();
+
+    if (map_output_started) {
+        constexpr bool is_coadd =
+            map_type == mapmaking::RawCoadd ||
+            map_type == mapmaking::FilteredCoadd;
+        constexpr bool is_filtered =
+            map_type == mapmaking::FilteredObs ||
+            map_type == mapmaking::FilteredCoadd;
+        auto &run_noise_plan = citlali::pipeline::noise_plan(*this);
+        if (published_data_paths.empty()) {
+            citlali::pipeline::record_noise_map_output_stage(
+                run_noise_plan, is_coadd, is_filtered, *mb);
+        }
+        else {
+            citlali::pipeline::record_noise_map_output_publication(
+                run_noise_plan, is_coadd, is_filtered, *mb,
+                published_data_paths, published_noise_paths);
+        }
+    }
 
     write_beammap_non_detector_map_diagnostics<map_type>(
         mb, dir_name, detector_grouping);

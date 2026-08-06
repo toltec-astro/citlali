@@ -514,38 +514,20 @@ void add_primary_map_image_hdus(
             map_pixel_scope, "available",
             "nonprecision_snapshot_not_inverse_variance");
 
-        const std::string canonical_scatter_name =
-            conditional_stack_scatter_map_hdu_name(
-                map_name, stokes_suffix);
-        add_map_hdu_with_wcs(
-            fits_entry, canonical_scatter_name,
-            mb->noise_variance[i], wcs, source_epoch);
-        const auto canonical_scatter_hdu = fits_entry.hdus.back();
         const std::string variance_unit = map_variance_unit(mb->sig_unit);
-        add_conditional_stack_scatter_map_metadata(
-            *fits_entry.hdus.back(), variance_unit);
+        add_map_hdu_with_wcs(
+            fits_entry, noise_variance_map_hdu_name(map_name, stokes_suffix),
+            mb->noise_variance[i], wcs, source_epoch);
+        add_noise_variance_map_metadata(
+            *fits_entry.hdus.back(), variance_unit, "");
         add_noise_product_package_join(
             *fits_entry.hdus.back(),
             noise_conditional_stack_scatter_product_id, map_pixel_scope,
             stack_scatter_valid ? "conditional_descriptive" : "unavailable",
             is_filtered_output
-                ? "not_physical_noise_variance_strict_parity_pending_FLT"
-                : "not_physical_noise_variance_or_covariance");
-
-        add_map_hdu_with_wcs(
-            fits_entry, noise_variance_map_hdu_name(map_name, stokes_suffix),
-            mb->noise_variance[i], wcs, source_epoch);
-        add_noise_variance_map_metadata(
-            *fits_entry.hdus.back(), variance_unit, canonical_scatter_name);
-        add_noise_product_package_join(
-            *fits_entry.hdus.back(),
-            noise_conditional_stack_scatter_product_id, map_pixel_scope,
-            stack_scatter_valid ? "conditional_descriptive" : "unavailable",
-            "deprecated_alias_not_physical_noise_variance");
+                ? "retained_legacy_name_not_physical_noise_variance_strict_parity_pending_FLT"
+                : "retained_legacy_name_not_physical_noise_variance_or_covariance");
         if (i < mb->median_rms.size() && std::isfinite(mb->median_rms(i))) {
-            add_image_median_rms_key(
-                *canonical_scatter_hdu,
-                mb->median_rms(i), mb->sig_unit);
             add_image_median_rms_key(
                 *fits_entry.hdus.back(), mb->median_rms(i), mb->sig_unit);
         }
@@ -571,6 +553,44 @@ void add_kernel_map_image_hdu(
     add_kernel_fwhm_key(*fits_entry.hdus.back(), fwhm);
     fits_entry.add_wcs(fits_entry.hdus.back(), wcs, source_epoch);
     add_kernel_map_metadata(*fits_entry.hdus.back(), mb->sig_unit);
+}
+
+struct FilteredScatterValidity {
+    bool available = false;
+    const char *status = "scatter_unavailable_or_nonfinite";
+};
+
+template <class ScatterPlane, class SupportPlane>
+FilteredScatterValidity filtered_scatter_validity(
+    Eigen::Index completed_realizations, const ScatterPlane &scatter,
+    double response_normalization, const SupportPlane *support) {
+    if (completed_realizations < 2) {
+        return {false, "R_lt_2"};
+    }
+    if (scatter.size() == 0 || !scatter.array().isFinite().any()) {
+        return {false, "scatter_unavailable_or_nonfinite"};
+    }
+    if (!std::isfinite(response_normalization) ||
+        response_normalization == 0.0) {
+        return {false, "response_invalid"};
+    }
+    if (support == nullptr || support->rows() != scatter.rows() ||
+        support->cols() != scatter.cols()) {
+        return {false, "support_invalid"};
+    }
+    bool finite_supported_value = false;
+    for (Eigen::Index row = 0; row < scatter.rows(); ++row) {
+        for (Eigen::Index col = 0; col < scatter.cols(); ++col) {
+            if ((*support)(row, col) != 0 &&
+                std::isfinite(scatter(row, col))) {
+                finite_supported_value = true;
+            }
+        }
+    }
+    return finite_supported_value
+        ? FilteredScatterValidity{
+              true, "available_where_finite_on_valid_support"}
+        : FilteredScatterValidity{false, "support_invalid"};
 }
 
 template <class FitsEntry, class MapBuffer, class Wcs, class Logger>
@@ -642,40 +662,26 @@ void add_coverage_support_image_hdus(
             is_filtered_output ? "filtered_map_pixel" : "raw_map_pixel";
         const char *product_validity =
             scale_valid ? "available_where_finite" : "unavailable";
-        const std::string canonical_name =
-            coefficient_standardized_signal_map_hdu_name(
-                map_name, stokes_suffix);
-        add_map_hdu_with_wcs(
-            fits_entry, canonical_name, coefficient_standardized_signal,
-            wcs, source_epoch);
-        add_coefficient_standardized_signal_map_metadata(
-            *fits_entry.hdus.back());
-        add_noise_product_package_join(
-            *fits_entry.hdus.back(),
-            noise_coefficient_standardized_signal_product_id,
-            product_scope, product_validity,
-            "engineering_standardization_not_significance");
-
         add_map_hdu_with_wcs(
             fits_entry, legacy_pixel_snr_map_hdu_name(map_name, stokes_suffix),
             coefficient_standardized_signal, wcs, source_epoch);
         add_legacy_pixel_snr_map_metadata(
-            *fits_entry.hdus.back(), canonical_name);
+            *fits_entry.hdus.back(), "");
         add_noise_product_package_join(
             *fits_entry.hdus.back(),
             noise_coefficient_standardized_signal_product_id,
             product_scope, product_validity,
-            "deprecated_alias_not_significance");
+            "retained_legacy_name_engineering_standardization_not_significance");
 
         add_map_hdu_with_wcs(
             fits_entry, pixel_snr_map_hdu_name(map_name, stokes_suffix),
             coefficient_standardized_signal, wcs, source_epoch);
-        add_pixel_snr_map_metadata(*fits_entry.hdus.back(), canonical_name);
+        add_pixel_snr_map_metadata(*fits_entry.hdus.back(), "");
         add_noise_product_package_join(
             *fits_entry.hdus.back(),
             noise_coefficient_standardized_signal_product_id,
             product_scope, product_validity,
-            "deprecated_alias_not_significance");
+            "retained_legacy_name_engineering_standardization_not_significance");
     }
     else {
         Eigen::MatrixXd formal_standardized_signal =
@@ -690,16 +696,47 @@ void add_coverage_support_image_hdus(
     }
 
     if (is_filtered_output && empirical_noise_products_expected) {
-        const bool uncertainty_use_valid =
-            i >= 0 && i < mb->noise_uncertainty_use_valid.size()
-                ? mb->noise_uncertainty_use_valid(i) != 0
-                : mb->n_noise >= 2;
-        const char *scatter_validity =
-            mb->n_noise > 0 ? "conditional_descriptive" : "unavailable";
-        const char *ratio_validity =
-            uncertainty_use_valid
-                ? "available_where_finite_positive_denominator"
-                : "unavailable_R_lt_2";
+        const auto &support_authority = mb->raw_science_parent
+            ? *mb->raw_science_parent
+            : mb->science_products;
+        const mapmaking::ScienceMapMaskPlane *support = nullptr;
+        if (science_map_product_available(
+                support_authority, i,
+                mapmaking::ScienceMapProduct::science_policy_support) &&
+            i >= 0 &&
+            i < static_cast<Eigen::Index>(
+                    support_authority.science_policy_support.size())) {
+            support = &support_authority.science_policy_support[
+                static_cast<std::size_t>(i)];
+        }
+        constexpr double response_normalization = 1.0;
+        const auto validity = filtered_scatter_validity(
+            mb->n_noise, mb->point_source_uncertainty[i],
+            response_normalization, support);
+        const char *scatter_validity = validity.status;
+        const char *ratio_validity = validity.available
+            ? "available_where_finite_positive_denominator_on_valid_support"
+            : validity.status;
+        Eigen::MatrixXd filtered_scatter =
+            mb->point_source_uncertainty[i];
+        Eigen::MatrixXd filtered_ratio = mb->sig2noise_point_source[i];
+        const double unavailable =
+            std::numeric_limits<double>::quiet_NaN();
+        if (!validity.available) {
+            filtered_scatter.setConstant(unavailable);
+            filtered_ratio.setConstant(unavailable);
+        }
+        else {
+            for (Eigen::Index row = 0; row < filtered_scatter.rows(); ++row) {
+                for (Eigen::Index col = 0;
+                     col < filtered_scatter.cols(); ++col) {
+                    if ((*support)(row, col) == 0) {
+                        filtered_scatter(row, col) = unavailable;
+                        filtered_ratio(row, col) = unavailable;
+                    }
+                }
+            }
+        }
         const std::string signal_name =
             signal_map_hdu_name(map_name, stokes_suffix);
         add_map_hdu_with_wcs(
@@ -708,58 +745,31 @@ void add_coverage_support_image_hdus(
             mb->signal[i], wcs, source_epoch);
         add_point_source_flux_map_metadata(
             *fits_entry.hdus.back(), mb->sig_unit, signal_name);
-        add_point_source_response_norm_key(*fits_entry.hdus.back(), 1.0);
-
-        const std::string canonical_scatter_name =
-            filtered_pixel_stack_scatter_map_hdu_name(
-                map_name, stokes_suffix);
-        add_map_hdu_with_wcs(
-            fits_entry, canonical_scatter_name,
-            mb->point_source_uncertainty[i], wcs, source_epoch);
-        add_filtered_pixel_stack_scatter_map_metadata(
-            *fits_entry.hdus.back(), mb->sig_unit);
-        add_noise_product_package_join(
-            *fits_entry.hdus.back(),
-            noise_filtered_pixel_stack_scatter_product_id,
-            "filtered_map_pixel", scatter_validity,
-            "not_aperture_uncertainty_strict_parity_pending_FLT");
+        add_point_source_response_norm_key(
+            *fits_entry.hdus.back(), response_normalization);
 
         add_map_hdu_with_wcs(
             fits_entry, point_source_uncertainty_map_hdu_name(
                 map_name, stokes_suffix),
-            mb->point_source_uncertainty[i], wcs, source_epoch);
+            filtered_scatter, wcs, source_epoch);
         add_point_source_uncertainty_map_metadata(
-            *fits_entry.hdus.back(), mb->sig_unit,
-            canonical_scatter_name);
+            *fits_entry.hdus.back(), mb->sig_unit, "");
         add_noise_product_package_join(
             *fits_entry.hdus.back(),
             noise_filtered_pixel_stack_scatter_product_id,
             "filtered_map_pixel", scatter_validity,
-            "deprecated_alias_not_aperture_uncertainty");
-
-        const std::string canonical_ratio_name =
-            conditional_stack_scatter_ratio_map_hdu_name(
-                map_name, stokes_suffix);
-        add_map_hdu_with_wcs(
-            fits_entry, canonical_ratio_name,
-            mb->sig2noise_point_source[i], wcs, source_epoch);
-        add_conditional_stack_scatter_ratio_map_metadata(
-            *fits_entry.hdus.back());
-        add_noise_product_package_join(
-            *fits_entry.hdus.back(), noise_stack_scatter_ratio_product_id,
-            "filtered_map_pixel", ratio_validity,
-            "conditional_descriptive_ratio_not_significance");
+            "retained_legacy_name_not_aperture_uncertainty_strict_parity_pending_FLT");
 
         add_map_hdu_with_wcs(
             fits_entry, point_source_snr_map_hdu_name(
                 map_name, stokes_suffix),
-            mb->sig2noise_point_source[i], wcs, source_epoch);
+            filtered_ratio, wcs, source_epoch);
         add_point_source_snr_map_metadata(
-            *fits_entry.hdus.back(), canonical_ratio_name);
+            *fits_entry.hdus.back(), "");
         add_noise_product_package_join(
             *fits_entry.hdus.back(), noise_stack_scatter_ratio_product_id,
             "filtered_map_pixel", ratio_validity,
-            "deprecated_alias_not_significance");
+            "retained_legacy_name_conditional_descriptive_ratio_not_significance");
     }
 }
 

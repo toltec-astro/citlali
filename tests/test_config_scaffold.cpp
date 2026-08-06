@@ -32,6 +32,7 @@
 #include <citlali/core/pipeline/mapmaking_provenance.h>
 #include <citlali/core/pipeline/mapmaking_provenance_lifecycle.h>
 #include <citlali/core/pipeline/map_filter_config_policy.h>
+#include <citlali/core/pipeline/mapdiag_netcdf.h>
 #include <citlali/core/pipeline/noise_config_adapter.h>
 #include <citlali/core/pipeline/noise_config_read.h>
 #include <citlali/core/pipeline/noise_execution_plan.h>
@@ -2321,6 +2322,39 @@ TEST(config_scaffold, routes_noise_accessor_through_effective_plan) {
     EXPECT_EQ(citlali::pipeline::noise_config(engine).n_noise_maps, 0);
 }
 
+TEST(config_scaffold,
+     admits_only_data_fits_that_carry_the_noise_package_join) {
+    struct Products {
+        bool initialized = true;
+        bool is_coadd = false;
+        bool ordinary_contribution_predicate_available = true;
+    };
+    struct Buffer {
+        Products science_products;
+        std::optional<Products> raw_science_parent;
+    } buffer;
+    citlali::config::NoiseConfig request;
+    request.enabled = true;
+    request.n_noise_maps = 2;
+    request.products_enabled = true;
+    request.apply_empirical_weights = false;
+    citlali::pipeline::NoiseExecutionPlan plan;
+    plan.reset_from_request(request, true);
+
+    EXPECT_TRUE(citlali::pipeline::noise_data_fits_have_package_join(
+        plan, false, buffer));
+    buffer.science_products.is_coadd = true;
+    EXPECT_FALSE(citlali::pipeline::noise_data_fits_have_package_join(
+        plan, false, buffer));
+    buffer.raw_science_parent = buffer.science_products;
+    buffer.science_products.is_coadd = false;
+    EXPECT_FALSE(citlali::pipeline::noise_data_fits_have_package_join(
+        plan, true, buffer));
+    plan.effective.apply_empirical_weights = true;
+    EXPECT_TRUE(citlali::pipeline::noise_data_fits_have_package_join(
+        plan, true, buffer));
+}
+
 TEST(config_scaffold, adapts_effective_noise_config_one_way) {
     struct FakeMapBlock {
         int n_noise = -1;
@@ -2362,6 +2396,7 @@ TEST(config_scaffold, records_disabled_noise_run) {
     citlali::pipeline::record_mapmaking_run_completed(mapmaking);
     citlali::pipeline::NoiseExecutionPlan noise;
     noise.reset_from_request(citlali::config::NoiseConfig{}, true);
+    citlali::pipeline::begin_noise_run_publication(noise);
 
     citlali::pipeline::record_noise_run_completed(
         noise, mapmaking, true);
@@ -2400,6 +2435,13 @@ TEST(config_scaffold, records_jinc_science_noise_cardinality) {
     request.products_enabled = false;
     citlali::pipeline::NoiseExecutionPlan noise;
     noise.reset_from_request(request, true);
+    citlali::pipeline::begin_noise_run_publication(noise);
+    citlali::pipeline::record_noise_map_output_stage(
+        noise, false, false, 6, 10, 0, 0);
+    citlali::pipeline::record_noise_map_output_stage(
+        noise, true, false, 3, 10, 0, 0);
+    citlali::pipeline::record_noise_map_output_stage(
+        noise, true, true, 3, 10, 0, 0);
 
     citlali::pipeline::record_noise_run_completed(
         noise, mapmaking, true);
@@ -2431,6 +2473,11 @@ TEST(config_scaffold, records_full_observation_noise_outputs) {
     request.write_realizations = true;
     citlali::pipeline::NoiseExecutionPlan noise;
     noise.reset_from_request(request, true);
+    citlali::pipeline::begin_noise_run_publication(noise);
+    citlali::pipeline::record_noise_map_output_stage(
+        noise, false, false, 3, 2, 3, 6);
+    citlali::pipeline::record_noise_map_output_stage(
+        noise, false, true, 3, 2, 3, 6);
 
     citlali::pipeline::record_noise_run_completed(
         noise, mapmaking, true);
@@ -2443,7 +2490,7 @@ TEST(config_scaffold, records_full_observation_noise_outputs) {
     EXPECT_TRUE(noise.realized.completed_count_matches_effective);
     EXPECT_TRUE(noise.realized.uncertainty_use_valid);
     EXPECT_EQ(noise.realized.completion_basis,
-              "successful_pipeline_return_under_effective_plan");
+              "observed_successful_publication_lifecycle");
 }
 
 TEST(config_scaffold, records_naive_coadd_observation_and_coadd_noise_cardinality) {
@@ -2464,6 +2511,11 @@ TEST(config_scaffold, records_naive_coadd_observation_and_coadd_noise_cardinalit
     request.write_realizations = true;
     citlali::pipeline::NoiseExecutionPlan noise;
     noise.reset_from_request(request, true);
+    citlali::pipeline::begin_noise_run_publication(noise);
+    citlali::pipeline::record_noise_map_output_stage(
+        noise, false, false, 3, 2, 3, 6);
+    citlali::pipeline::record_noise_map_output_stage(
+        noise, true, false, 3, 2, 3, 6);
 
     citlali::pipeline::record_noise_run_completed(
         noise, mapmaking, false);
@@ -2496,6 +2548,13 @@ TEST(config_scaffold,
     request.write_realizations = true;
     citlali::pipeline::NoiseExecutionPlan noise;
     noise.reset_from_request(request, true);
+    citlali::pipeline::begin_noise_run_publication(noise);
+    citlali::pipeline::record_noise_map_output_stage(
+        noise, false, false, 3, 2, 3, 6);
+    citlali::pipeline::record_noise_map_output_stage(
+        noise, true, false, 3, 2, 3, 6);
+    citlali::pipeline::record_noise_map_output_stage(
+        noise, true, true, 3, 2, 3, 6);
 
     citlali::pipeline::record_noise_run_completed(
         noise, mapmaking, true);
@@ -2507,6 +2566,42 @@ TEST(config_scaffold,
     EXPECT_EQ(*noise.realized.total_noise_realization_count, 12U);
     EXPECT_EQ(*noise.realized.empirical_product_map_count, 9U);
     EXPECT_EQ(*noise.realized.realization_image_write_count, 18U);
+}
+
+TEST(config_scaffold,
+     rejects_plan_derived_completion_without_all_observed_stages) {
+    citlali::pipeline::MapmakingExecutionPlan mapmaking;
+    mapmaking.reset_from_request(
+        citlali::config::MapmakingConfig{},
+        citlali::config::ReductionType::pointing);
+    mapmaking.begin_iteration();
+    mapmaking.begin_observation(0, "152389", 3, 4.848136811e-6, 3);
+    citlali::pipeline::complete_mapmaking_observation(mapmaking);
+    citlali::pipeline::record_mapmaking_run_completed(mapmaking);
+    citlali::config::NoiseConfig request;
+    request.enabled = true;
+    request.n_noise_maps = 2;
+    request.products_enabled = true;
+    request.write_realizations = true;
+    citlali::pipeline::NoiseExecutionPlan noise;
+    noise.reset_from_request(request, true);
+    citlali::pipeline::begin_noise_run_publication(noise);
+    citlali::pipeline::record_noise_map_output_stage(
+        noise, false, false, 3, 2, 3, 6);
+
+    EXPECT_THROW(
+        citlali::pipeline::record_noise_run_completed(
+            noise, mapmaking, true),
+        std::logic_error);
+    EXPECT_TRUE(noise.expected.initialized);
+    EXPECT_EQ(noise.expected.empirical_product_map_count, 6U);
+    EXPECT_EQ(noise.expected.realization_image_write_count, 12U);
+    EXPECT_FALSE(noise.realized.actual_completion_valid);
+    EXPECT_FALSE(noise.realized.completed_count_matches_effective);
+    EXPECT_FALSE(noise.realized.outputs_completed);
+    EXPECT_EQ(
+        noise.realized.completion_basis,
+        "observed_lifecycle_counts_incomplete_or_mismatched");
 }
 
 TEST(config_scaffold, rejects_noise_completion_before_mapmaking) {
@@ -2948,8 +3043,15 @@ TEST(config_scaffold, serializes_versioned_noise_provenance) {
     plan.realized.completed_count_matches_effective = true;
     plan.realized.uncertainty_use_valid = true;
     plan.realized.completion_basis =
-        "successful_pipeline_return_under_effective_plan";
+        "observed_successful_publication_lifecycle";
     plan.realized.outputs_completed = true;
+    plan.expected.initialized = true;
+    plan.expected.noise_maps_per_scientific_map = 2U;
+    plan.expected.observation_scientific_map_count = 3U;
+    plan.expected.observation_noise_realization_count = 6U;
+    plan.expected.total_noise_realization_count = 6U;
+    plan.expected.empirical_product_map_count = 6U;
+    plan.expected.realization_image_write_count = 12U;
 
     const auto node = citlali::pipeline::noise_provenance_node(plan);
 
@@ -2965,6 +3067,10 @@ TEST(config_scaffold, serializes_versioned_noise_provenance) {
     EXPECT_EQ(node["realized"]["realization_image_write_count"]["value"]
                   .as<std::size_t>(),
               12U);
+    EXPECT_TRUE(node["expected"]["initialized"].as<bool>());
+    EXPECT_EQ(
+        node["expected"]["empirical_product_map_count"].as<std::size_t>(),
+        6U);
     EXPECT_EQ(node["package"]["package_id"].as<std::string>(),
               citlali::pipeline::noise_package_id);
     EXPECT_EQ(node["semantics"]["ensemble_identity"].as<std::string>(),
@@ -2982,9 +3088,12 @@ TEST(config_scaffold, serializes_versioned_noise_provenance) {
         "F005_open_conditioned_on_FLT_repair_and_reaudit");
     ASSERT_TRUE(node["package"]["product_contract_inventory"].IsSequence());
     bool found_projection_contract = false;
+    bool found_scale_contract = false;
     for (const auto &product :
          node["package"]["product_contract_inventory"]) {
-        if (product["product_identity"].as<std::string>() ==
+        const auto identity =
+            product["product_identity"].as<std::string>();
+        if (identity ==
             citlali::pipeline::noise_fixed_projection_scatter_product_id) {
             found_projection_contract = true;
             EXPECT_EQ(
@@ -2993,8 +3102,66 @@ TEST(config_scaffold, serializes_versioned_noise_provenance) {
                     citlali::pipeline::
                         noise_fixed_projection_scatter_product_id));
         }
+        if (identity ==
+            citlali::pipeline::noise_scale_diagnostic_identity) {
+            found_scale_contract = true;
+            EXPECT_EQ(
+                product["semantic_digest"].as<std::string>(),
+                citlali::pipeline::noise_product_semantic_digest(
+                    citlali::pipeline::noise_scale_diagnostic_identity));
+        }
     }
     EXPECT_TRUE(found_projection_contract);
+    EXPECT_TRUE(found_scale_contract);
+}
+
+TEST(config_scaffold, mapdiag_noise_metadata_keeps_names_and_exact_joins) {
+    const auto scale_comment =
+        citlali::pipeline::mapdiag_noise_product_comment(
+            "scale", "global_nonprecision_scale_diagnostic",
+            "available_when_finite", "not_precision");
+    EXPECT_NE(
+        scale_comment.find("package_id=citlali-noise-products"),
+        std::string::npos);
+    EXPECT_NE(
+        scale_comment.find(
+            "provenance_id=noise_products_provenance.yaml"),
+        std::string::npos);
+    EXPECT_NE(
+        scale_comment.find(
+            "product_identity=global_nonprecision_scale_diagnostic"),
+        std::string::npos);
+    EXPECT_NE(
+        scale_comment.find("product_version=SCI-NOI-002-v1"),
+        std::string::npos);
+    EXPECT_NE(scale_comment.find("scope=map_summary"), std::string::npos);
+    EXPECT_NE(
+        scale_comment.find("validity=available_when_finite"),
+        std::string::npos);
+    EXPECT_NE(
+        scale_comment.find("restriction=not_precision"),
+        std::string::npos);
+
+    const std::vector<double> values{1.0};
+    citlali::pipeline::MapdiagMapDoubleValues map_values{
+        values, values, values, values, values, values, values, values,
+        values, values, values, values, values, values, values, values,
+        values, values, values, values, values, values, values, values,
+        values, values, values, values, values, values, values, values,
+        values, values, values, values, values, values, values, values,
+        values, values, values};
+    std::map<std::string, std::string> comments;
+    citlali::pipeline::add_mapdiag_map_double_vars(
+        [&](const std::string &name, const std::string &comment,
+            const std::vector<double> &) { comments[name] = comment; },
+        map_values);
+    EXPECT_TRUE(comments.contains("map_noise_weight_median_ratio"));
+    EXPECT_TRUE(comments.contains("map_noise_weight_scale"));
+    EXPECT_TRUE(comments.contains("map_noise_products_s2n_sigma"));
+    EXPECT_NE(
+        comments.at("map_noise_products_s2n_sigma").find(
+            "product_identity=pooled_stack_scale_diagnostic"),
+        std::string::npos);
 }
 
 TEST(config_scaffold, atomically_writes_noise_provenance) {
@@ -3003,44 +3170,160 @@ TEST(config_scaffold, atomically_writes_noise_provenance) {
         "citlali_noise_provenance_test";
     std::filesystem::remove_all(output_dir);
     std::filesystem::create_directories(output_dir);
-    {
-        std::ofstream stream(output_dir / "map.fits");
-        stream << "map-bytes";
-    }
-    {
-        std::ofstream stream(output_dir / "noise.nc");
-        stream << "nc-bytes";
-    }
-    {
-        std::ofstream stream(output_dir / "sources.ecsv");
-        stream << "table-bytes";
-    }
-    {
-        std::ofstream stream(output_dir / "ignored.yaml");
-        stream << "not-a-member";
-    }
-    citlali::pipeline::NoiseExecutionPlan plan;
-    plan.reset_from_request(citlali::config::NoiseConfig{}, true);
-    plan.realized.reduction_completed = true;
-
-    citlali::pipeline::write_noise_provenance_file(output_dir, plan);
 
     const auto output_path =
         citlali::pipeline::noise_provenance_path(output_dir);
+    {
+        std::ofstream stream(output_path);
+        stream << "stale-complete-authority";
+    }
+    {
+        std::ofstream stream(output_path.string() + ".pending");
+        stream << "stale-pending-authority";
+    }
+
+    citlali::pipeline::NoiseExecutionPlan plan;
+    plan.reset_from_request(citlali::config::NoiseConfig{}, true);
+    citlali::pipeline::begin_noise_product_publication(output_dir, plan);
+    EXPECT_FALSE(std::filesystem::exists(output_path));
+    EXPECT_FALSE(std::filesystem::exists(output_path.string() + ".pending"));
+
+    const auto fits_path = output_dir / "map.fits";
+    {
+        fitsfile *fits = nullptr;
+        int status = 0;
+        const std::string create_path = "!" + fits_path.string();
+        fits_create_file(&fits, create_path.c_str(), &status);
+        fits_create_img(fits, BYTE_IMG, 0, nullptr, &status);
+        long axes[2]{1, 1};
+        fits_create_img(fits, DOUBLE_IMG, 2, axes, &status);
+        const std::string identity =
+            citlali::pipeline::noise_conditional_stack_scatter_product_id;
+        const std::string digest =
+            citlali::pipeline::noise_product_semantic_digest(identity);
+        fits_write_key_longstr(
+            fits, "NOIPKG", citlali::pipeline::noise_package_id,
+            nullptr, &status);
+        fits_write_key_longstr(
+            fits, "NOIPROV", citlali::pipeline::noise_provenance_join_id,
+            nullptr, &status);
+        fits_write_key_longstr(
+            fits, "NOIPRID", identity.c_str(), nullptr, &status);
+        fits_write_key_longstr(
+            fits, "NOIPVER",
+            citlali::pipeline::noise_product_contract_version,
+            nullptr, &status);
+        fits_write_key_longstr(
+            fits, "NOIDGST", digest.c_str(), nullptr, &status);
+        fits_write_key_longstr(
+            fits, "NOISCOPE", "raw_map_pixel", nullptr, &status);
+        fits_write_key_longstr(
+            fits, "NOIVALID", "conditional_descriptive", nullptr,
+            &status);
+        fits_write_key_longstr(
+            fits, "NOIRESTR", "not_physical_noise_variance", nullptr,
+            &status);
+        fits_close_file(fits, &status);
+        ASSERT_EQ(status, 0);
+    }
+
+    const auto netcdf_path = output_dir / "noise.nc";
+    {
+        netCDF::NcFile file(
+            netcdf_path.string(), netCDF::NcFile::replace);
+        const auto dim = file.addDim("n_maps", 1);
+        const double value = 1.0;
+        const std::string prefix =
+            "package_id=citlali-noise-products; "
+            "provenance_id=noise_products_provenance.yaml; ";
+        const auto add_joined_variable = [&](
+            const std::string &name, const std::string &identity,
+            const std::string &validity,
+            const std::string &restriction) {
+            auto variable = file.addVar(name, netCDF::ncDouble, dim);
+            variable.putAtt(
+                "comment", prefix + "product_identity=" + identity +
+                    "; product_version=SCI-NOI-002-v1; "
+                    "scope=map_summary; validity=" + validity +
+                    "; restriction=" + restriction);
+            variable.putVar(&value);
+        };
+        add_joined_variable(
+            "map_noise_weight_median_ratio",
+            citlali::pipeline::noise_scale_diagnostic_identity,
+            "available_when_finite_positive_calibration_support_exists",
+            "engineering_scale_diagnostic_not_precision_or_significance");
+        add_joined_variable(
+            "map_noise_weight_scale",
+            citlali::pipeline::noise_scale_diagnostic_identity,
+            "available_when_finite_positive_median_ratio_exists",
+            "nonprecision_scale_not_inverse_variance_or_precision");
+        add_joined_variable(
+            "map_noise_products_s2n_sigma",
+            citlali::pipeline::noise_pooled_stack_scale_product_id,
+            "available_when_finite_pooled_stack_scale_exists",
+            "engineering_scale_diagnostic_not_calibrated_significance");
+    }
+
+    const auto ecsv_path = output_dir / "sources.ecsv";
+    {
+        std::ofstream stream(ecsv_path);
+        stream
+            << "# noise_product_contract\n"
+            << "# package_id: citlali-noise-products\n"
+            << "# provenance_id: noise_products_provenance.yaml\n"
+            << "# product_identity: fitted_amplitude_over_full_map_rms_ratio\n"
+            << "# product_version: SCI-NOI-002-v1\n"
+            << "# semantic_digest: sha256:718feaeebe6004be1714d7c23b33df67a157c6760016f18d6c85a0e75172ae48\n"
+            << "# scope: source_table_row\n"
+            << "# validity: finite_amplitude_and_finite_positive_full_map_rms\n"
+            << "# restriction: legacy_alias_deprecated_not_significance\n"
+            << "array amp\n";
+    }
+    {
+        std::ofstream stream(output_dir / "unadmitted.fits");
+        stream << "must-not-be-discovered";
+    }
+
+    plan.expected.initialized = true;
+    plan.realized.reduction_completed = true;
+    plan.realized.actual_completion_valid = true;
+    plan.realized.completed_count_matches_effective = true;
+    plan.realized.completion_basis = "effective_disabled_zero_work";
+    plan.realized.outputs_completed = true;
+    citlali::pipeline::record_noise_published_member(
+        plan, fits_path,
+        citlali::pipeline::NoisePublishedMemberKind::fits);
+    citlali::pipeline::record_noise_published_member(
+        plan, netcdf_path,
+        citlali::pipeline::NoisePublishedMemberKind::netcdf);
+    citlali::pipeline::record_noise_published_member(
+        plan, ecsv_path,
+        citlali::pipeline::NoisePublishedMemberKind::ecsv);
+
+    citlali::pipeline::write_noise_provenance_file(output_dir, plan);
+
     EXPECT_TRUE(std::filesystem::exists(output_path));
     EXPECT_FALSE(std::filesystem::exists(output_path.string() + ".tmp"));
+    EXPECT_FALSE(
+        std::filesystem::exists(output_path.string() + ".pending"));
     const auto stored = YAML::LoadFile(output_path.string());
     EXPECT_EQ(stored["schema_version"].as<std::string>(),
               "citlali-noise-products-provenance-v1");
     ASSERT_TRUE(stored["package"]["member_files"].IsSequence());
     ASSERT_EQ(stored["package"]["member_files"].size(), 3U);
+    EXPECT_EQ(stored["package"]["member_count"].as<std::size_t>(), 3U);
+    EXPECT_TRUE(stored["package"]["complete"].as<bool>());
+    EXPECT_EQ(
+        stored["package"]["publication_state"].as<std::string>(),
+        "complete");
     EXPECT_EQ(
         stored["package"]["member_files"][0]["member_product_identity"]
             .as<std::string>(),
         "map.fits");
     EXPECT_EQ(
         stored["package"]["member_files"][0]["sha256"].as<std::string>(),
-        citlali::utils::sha256("map-bytes"));
+        citlali::utils::sha256_file(fits_path));
     EXPECT_EQ(
         stored["package"]["member_files"][0]["detached_status"]
             .as<std::string>(),
@@ -3057,6 +3340,13 @@ TEST(config_scaffold, atomically_writes_noise_provenance) {
         stored["package"]["member_inventory_digest"].as<std::string>();
     EXPECT_EQ(inventory_digest.rfind("sha256:", 0), 0U);
     EXPECT_EQ(inventory_digest.size(), 71U);
+    for (const auto &member : stored["package"]["member_files"]) {
+        EXPECT_NE(
+            member["member_product_identity"].as<std::string>(),
+            "unadmitted.fits");
+        EXPECT_TRUE(member["joined_product_identities"].IsSequence());
+        EXPECT_GT(member["joined_product_identities"].size(), 0U);
+    }
     std::filesystem::remove_all(output_dir);
 }
 
@@ -3067,17 +3357,16 @@ TEST(config_scaffold, noise_provenance_failure_propagates) {
     std::filesystem::remove_all(missing_dir.parent_path());
     citlali::pipeline::NoiseExecutionPlan plan;
     plan.reset_from_request(citlali::config::NoiseConfig{}, true);
-    plan.realized.reduction_completed = true;
 
     EXPECT_THROW(
-        citlali::pipeline::write_noise_provenance_file(
+        citlali::pipeline::begin_noise_product_publication(
             missing_dir, plan),
         std::ios_base::failure);
     EXPECT_FALSE(std::filesystem::exists(
         citlali::pipeline::noise_provenance_path(missing_dir)));
     EXPECT_THROW(
         citlali::pipeline::write_noise_provenance_file(
-            missing_dir, citlali::pipeline::NoiseExecutionPlan{}),
+            missing_dir, plan),
         std::logic_error);
 }
 

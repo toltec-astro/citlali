@@ -22,11 +22,6 @@ inline std::string noise_variance_map_hdu_name(
     return "noise_variance_" + map_name + stokes_suffix;
 }
 
-inline std::string conditional_stack_scatter_map_hdu_name(
-    const std::string &map_name, const std::string &stokes_suffix) {
-    return "conditional_stack_scatter_" + map_name + stokes_suffix;
-}
-
 inline std::string kernel_map_hdu_name(const std::string &map_name,
                                        const std::string &stokes_suffix) {
     return "kernel_" + map_name + stokes_suffix;
@@ -92,11 +87,6 @@ inline std::string pixel_snr_map_hdu_name(const std::string &map_name,
     return "sig2noise_pixel_" + map_name + stokes_suffix;
 }
 
-inline std::string coefficient_standardized_signal_map_hdu_name(
-    const std::string &map_name, const std::string &stokes_suffix) {
-    return "coefficient_standardized_signal_" + map_name + stokes_suffix;
-}
-
 inline std::string formal_standardized_signal_map_hdu_name(
     const std::string &map_name, const std::string &stokes_suffix) {
     return "formal_standardized_signal_" + map_name + stokes_suffix;
@@ -112,19 +102,9 @@ inline std::string point_source_uncertainty_map_hdu_name(
     return "point_source_uncertainty_" + map_name + stokes_suffix;
 }
 
-inline std::string filtered_pixel_stack_scatter_map_hdu_name(
-    const std::string &map_name, const std::string &stokes_suffix) {
-    return "filtered_pixel_stack_scatter_" + map_name + stokes_suffix;
-}
-
 inline std::string point_source_snr_map_hdu_name(
     const std::string &map_name, const std::string &stokes_suffix) {
     return "sig2noise_point_source_" + map_name + stokes_suffix;
-}
-
-inline std::string conditional_stack_scatter_ratio_map_hdu_name(
-    const std::string &map_name, const std::string &stokes_suffix) {
-    return "conditional_stack_scatter_ratio_" + map_name + stokes_suffix;
 }
 
 inline std::string noise_signal_map_hdu_name(

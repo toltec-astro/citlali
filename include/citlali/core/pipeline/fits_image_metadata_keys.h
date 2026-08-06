@@ -44,7 +44,9 @@ void add_raw_parent_identity_keys(Hdu &hdu,
 template <class Hdu>
 void add_image_alias_keys(Hdu &hdu, const std::string &canonical_name,
                           bool deprecated) {
-    hdu.addKey("ALIASOF", canonical_name, "Canonical image product");
+    if (!canonical_name.empty()) {
+        hdu.addKey("ALIASOF", canonical_name, "Canonical image product");
+    }
     hdu.addKey("DEPRCATD", deprecated ? std::string{"true"}
                                       : std::string{"false"},
                "Compatibility alias is deprecated");
@@ -226,18 +228,6 @@ void add_noise_variance_map_metadata(Hdu &hdu,
 }
 
 template <class Hdu>
-void add_conditional_stack_scatter_map_metadata(
-    Hdu &hdu, const std::string &variance_unit) {
-    add_image_unit_type_description_keys(
-        hdu, variance_unit, conditional_stack_scatter_estimator_type(),
-        "Finite-stack estimator type",
-        conditional_stack_scatter_map_description());
-    add_image_validity_authority_key(hdu, false);
-    hdu.addKey("COVSTAT", std::string{"conditional_stack_only"},
-               "Physical-noise covariance status");
-}
-
-template <class Hdu>
 void add_kernel_map_metadata(Hdu &hdu, const std::string &signal_unit) {
     add_image_unit_description_keys(hdu, signal_unit,
                                     kernel_map_description());
@@ -358,17 +348,6 @@ void add_pixel_snr_map_metadata(
 }
 
 template <class Hdu>
-void add_coefficient_standardized_signal_map_metadata(Hdu &hdu) {
-    add_image_unit_type_description_keys(
-        hdu, not_applicable_image_unit(),
-        coefficient_standardized_signal_estimator_type(),
-        standardized_signal_estimator_type_comment(),
-        coefficient_standardized_signal_map_description());
-    add_image_validity_authority_key(hdu, false);
-    add_not_significance_keys(hdu);
-}
-
-template <class Hdu>
 void add_formal_standardized_signal_map_metadata(Hdu &hdu) {
     add_image_unit_type_description_keys(
         hdu, not_applicable_image_unit(),
@@ -409,27 +388,5 @@ void add_point_source_snr_map_metadata(
         conditional_stack_scatter_ratio_estimator_type(),
         snr_estimator_type_comment(), point_source_snr_map_description());
     add_image_alias_keys(hdu, canonical_name, true);
-    add_not_significance_keys(hdu);
-}
-
-template <class Hdu>
-void add_filtered_pixel_stack_scatter_map_metadata(
-    Hdu &hdu, const std::string &signal_unit) {
-    add_image_unit_type_description_keys(
-        hdu, signal_unit, filtered_pixel_stack_scatter_estimator_type(),
-        "Finite-stack estimator type",
-        filtered_pixel_stack_scatter_map_description());
-    add_image_validity_authority_key(hdu, false);
-    add_not_significance_keys(hdu);
-}
-
-template <class Hdu>
-void add_conditional_stack_scatter_ratio_map_metadata(Hdu &hdu) {
-    add_image_unit_type_description_keys(
-        hdu, not_applicable_image_unit(),
-        conditional_stack_scatter_ratio_estimator_type(),
-        "Finite-stack ratio type",
-        conditional_stack_scatter_ratio_map_description());
-    add_image_validity_authority_key(hdu, false);
     add_not_significance_keys(hdu);
 }

@@ -88,4 +88,27 @@ inline YAML::Node noise_realized_state_node(
     return node;
 }
 
+inline YAML::Node noise_expected_counts_node(
+    const NoiseExpectedCounts &expected) {
+    YAML::Node node;
+    node["initialized"] = expected.initialized;
+    node["noise_maps_per_scientific_map"] =
+        expected.noise_maps_per_scientific_map;
+    node["observation_scientific_map_count"] =
+        expected.observation_scientific_map_count;
+    node["observation_noise_realization_count"] =
+        expected.observation_noise_realization_count;
+    node["coadd_scientific_map_count"] =
+        expected.coadd_scientific_map_count;
+    node["coadd_noise_realization_count"] =
+        expected.coadd_noise_realization_count;
+    node["total_noise_realization_count"] =
+        expected.total_noise_realization_count;
+    node["empirical_product_map_count"] =
+        expected.empirical_product_map_count;
+    node["realization_image_write_count"] =
+        expected.realization_image_write_count;
+    return node;
+}
+
 }  // namespace citlali::pipeline

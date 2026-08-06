@@ -48,6 +48,19 @@ struct MapdiagMapDoubleValues {
     const std::vector<double> &edge_guard_exterior_max_abs_post;
 };
 
+inline std::string mapdiag_noise_product_comment(
+    const std::string &description, const std::string &product_identity,
+    const std::string &validity, const std::string &restriction) {
+    return description +
+        "; package_id=citlali-noise-products"
+        "; provenance_id=noise_products_provenance.yaml"
+        "; product_identity=" + product_identity +
+        "; product_version=SCI-NOI-002-v1"
+        "; scope=map_summary"
+        "; validity=" + validity +
+        "; restriction=" + restriction;
+}
+
 template <class AddDouble>
 void add_mapdiag_map_double_vars(
     const AddDouble &add_double, const MapdiagMapDoubleValues &values) {
@@ -79,13 +92,25 @@ void add_mapdiag_map_double_vars(
                "ratio of empirical map RMS to the legacy reciprocal-sqrt coefficient scale; not an uncertainty calibration claim",
                values.empirical_to_formal_noise_ratio);
     add_double("map_noise_weight_median_ratio",
-               "median of the nonprecision normalization coefficient times jackknife variance over the valid support",
+               mapdiag_noise_product_comment(
+                   "median of the nonprecision normalization coefficient times conditional finite-stack scatter over the realized calibration support",
+                   "global_nonprecision_scale_diagnostic",
+                   "available_when_finite_positive_calibration_support_exists",
+                   "engineering_scale_diagnostic_not_precision_or_significance"),
                values.noise_weight_median_ratio);
     add_double("map_noise_weight_scale",
-               "empirical scalar applied to formal weights",
+               mapdiag_noise_product_comment(
+                   "existing-use-only global scalar applied to the nonprecision normalization coefficient",
+                   "global_nonprecision_scale_diagnostic",
+                   "available_when_finite_positive_median_ratio_exists",
+                   "nonprecision_scale_not_inverse_variance_or_precision"),
                values.noise_weight_scale);
     add_double("map_noise_products_s2n_sigma",
-               "standard deviation of jackknife noise multiplied by sqrt(nonprecision normalization coefficient); not calibrated significance",
+               mapdiag_noise_product_comment(
+                   "pooled completed-stack scale of realization amplitudes multiplied by sqrt(nonprecision normalization coefficient)",
+                   "pooled_stack_scale_diagnostic",
+                   "available_when_finite_pooled_stack_scale_exists",
+                   "engineering_scale_diagnostic_not_calibrated_significance"),
                values.noise_products_s2n_sigma);
     add_double("map_noise_products_valid_pixels",
                "number of pixels used for empirical noise-product calibration",

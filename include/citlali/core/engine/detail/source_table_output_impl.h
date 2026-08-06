@@ -35,6 +35,9 @@ void Engine::write_sources(map_buffer_t &mb, std::string dir_name) {
         citlali::pipeline::latest_observation_date(observation_dates),
         calib.apt_header_description,
         source_table_callbacks);
+    citlali::pipeline::record_noise_published_member(
+        citlali::pipeline::noise_plan(*this), source_filename + ".ecsv",
+        citlali::pipeline::NoisePublishedMemberKind::ecsv);
 
     if constexpr (map_t == mapmaking::FilteredObs ||
                   map_t == mapmaking::FilteredCoadd) {

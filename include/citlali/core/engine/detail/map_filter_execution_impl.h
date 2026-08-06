@@ -51,7 +51,22 @@ void Engine::run_wiener_filter(map_buffer_t &mb) {
         rtcproc.run_polarization, rtcproc.polarization,
         filter_callbacks, logger);
 
+    const auto published_data_paths =
+        citlali::pipeline::noise_fits_output_paths(*filtered_fits_io);
+    const auto published_noise_paths =
+        citlali::pipeline::noise_fits_output_paths(*filtered_noise_fits_io);
+
     citlali::pipeline::finalize_map_filter_fits_outputs_if_needed(
         filter_options.write_filtered_maps_partial, filtered_fits_io,
         filtered_noise_fits_io, map_label, logger);
+
+    if (filter_options.write_filtered_maps_partial) {
+        constexpr bool is_coadd = map_t == mapmaking::RawCoadd ||
+            map_t == mapmaking::FilteredCoadd;
+        constexpr bool is_filtered = map_t == mapmaking::FilteredObs ||
+            map_t == mapmaking::FilteredCoadd;
+        citlali::pipeline::record_noise_map_output_publication(
+            citlali::pipeline::noise_plan(*this), is_coadd, is_filtered,
+            mb, published_data_paths, published_noise_paths);
+    }
 }

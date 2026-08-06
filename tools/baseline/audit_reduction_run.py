@@ -186,9 +186,25 @@ PROVENANCE_SIDECARS = {
             ("requested", "products", "apply_empirical_weights"),
             ("effective", "config"),
             ("effective", "resolution"),
+            ("expected", "initialized"),
             ("realized", "reduction_completed"),
             ("realized", "generation_executed"),
+            ("realized", "actual_completion_valid"),
+            ("realized", "completed_count_matches_effective"),
+            ("realized", "completion_basis"),
             ("realized", "outputs_completed"),
+            ("package", "package_id"),
+            ("package", "provenance_id"),
+            ("package", "product_contract_version"),
+            ("package", "authority"),
+            ("package", "detached_product_status"),
+            ("package", "product_contract_inventory"),
+            ("package", "member_files"),
+            ("package", "member_count"),
+            ("package", "member_inventory_digest"),
+            ("package", "member_inventory_digest_kind"),
+            ("package", "publication_state"),
+            ("package", "complete"),
         ),
         "allow_multiple": False,
     },
@@ -1017,12 +1033,6 @@ def valid_noise_config(config: Any, label: str) -> list[str]:
     return errors
 
 
-def unavailable_count(record: Any, field: str) -> bool:
-    if not isinstance(record, dict) or record.get("available") is not False:
-        return False
-    return "value" not in record
-
-
 def noise_provenance_semantic_errors(data: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     try:
@@ -1081,6 +1091,8 @@ def noise_provenance_semantic_errors(data: dict[str, Any]) -> list[str]:
             errors.append("noise effective count resolution is inconsistent")
         if effective["n_noise_maps"] != expected_count:
             errors.append("noise effective count does not follow activation policy")
+        if effective["enabled"] and effective["n_noise_maps"] <= 0:
+            errors.append("enabled noise effective count must be positive")
         if resolution["count_zeroed_while_disabled"] != (
             requested["n_noise_maps"] != effective["n_noise_maps"]
         ):
@@ -1114,6 +1126,9 @@ def noise_provenance_semantic_errors(data: dict[str, Any]) -> list[str]:
         for name in (
             "reduction_completed",
             "generation_executed",
+            "actual_completion_valid",
+            "completed_count_matches_effective",
+            "uncertainty_use_valid",
             "outputs_completed",
         ):
             if type(realized.get(name)) is not bool:
@@ -1133,87 +1148,451 @@ def noise_provenance_semantic_errors(data: dict[str, Any]) -> list[str]:
             "empirical_product_map_count",
             "realization_image_write_count",
         )
-        if not effective["enabled"]:
-            if realized["generation_executed"]:
-                errors.append("disabled noise-products records generation")
-            if realized["outputs_completed"]:
-                errors.append("disabled noise-products records completed outputs")
-            for name in count_names:
-                if not unavailable_count(realized.get(name), name):
-                    errors.append(
-                        f"disabled noise-products records {name}"
-                    )
+        expected = data.get("expected")
+        if not isinstance(expected, dict) or expected.get("initialized") is not True:
+            errors.append("noise expected counts are not initialized")
             return errors
-
-        counts: dict[str, int] = {}
+        expected_counts: dict[str, int] = {}
+        for name in count_names:
+            value = expected.get(name)
+            if type(value) is not int or value < 0:
+                errors.append(
+                    f"noise expected {name} must be a nonnegative integer"
+                )
+            else:
+                expected_counts[name] = value
+        realized_counts: dict[str, int] = {}
         for name in count_names:
             try:
-                counts[name] = available_count(realized[name], name)
+                realized_counts[name] = available_count(realized[name], name)
             except ValueError as exc:
                 errors.append(str(exc))
         if errors:
             return errors
-        if counts["noise_maps_per_scientific_map"] != effective["n_noise_maps"]:
-            errors.append("noise realized per-map count differs from effective config")
-        if realized["generation_executed"] != (
-            effective["n_noise_maps"] > 0
+
+        if expected_counts["noise_maps_per_scientific_map"] != (
+            effective["n_noise_maps"]
         ):
-            errors.append("noise generation record differs from effective count")
-        expected_observation_realizations = (
-            counts["observation_scientific_map_count"]
-            * effective["n_noise_maps"]
-        )
-        expected_coadd_realizations = (
-            counts["coadd_scientific_map_count"]
-            * effective["n_noise_maps"]
-        )
-        if counts["observation_noise_realization_count"] != (
-            expected_observation_realizations
+            errors.append("noise expected per-map count differs from effective config")
+        if expected_counts["observation_noise_realization_count"] != (
+            expected_counts["observation_scientific_map_count"]
+            * expected_counts["noise_maps_per_scientific_map"]
         ):
-            errors.append("noise observation realization count is inconsistent")
-        if counts["coadd_noise_realization_count"] != (
-            expected_coadd_realizations
+            errors.append("noise expected observation realization count is inconsistent")
+        if expected_counts["coadd_noise_realization_count"] != (
+            expected_counts["coadd_scientific_map_count"]
+            * expected_counts["noise_maps_per_scientific_map"]
         ):
-            errors.append("noise coadd realization count is inconsistent")
-        if counts["total_noise_realization_count"] != (
-            expected_observation_realizations + expected_coadd_realizations
+            errors.append("noise expected coadd realization count is inconsistent")
+        if expected_counts["total_noise_realization_count"] != (
+            expected_counts["observation_noise_realization_count"]
+            + expected_counts["coadd_noise_realization_count"]
         ):
-            errors.append("noise total realization count is inconsistent")
+            errors.append("noise expected total realization count is inconsistent")
+
+        if not effective["enabled"]:
+            if realized["generation_executed"]:
+                errors.append("disabled noise-products records generation")
+            for name in count_names:
+                if expected_counts[name] != 0:
+                    errors.append(
+                        f"disabled noise-products expects nonzero {name}"
+                    )
+                if realized_counts[name] != 0:
+                    errors.append(
+                        f"disabled noise-products records nonzero {name}"
+                    )
+            if realized["actual_completion_valid"] is not True:
+                errors.append("disabled noise-products completion is not valid")
+            if realized["completed_count_matches_effective"] is not True:
+                errors.append("disabled noise-products count does not match effective zero")
+            if realized["uncertainty_use_valid"] is not False:
+                errors.append("disabled noise-products authorizes uncertainty use")
+            if realized.get("completion_basis") != "effective_disabled_zero_work":
+                errors.append("disabled noise-products completion basis is inconsistent")
+            if realized["outputs_completed"] is not True:
+                errors.append("disabled noise-products zero-work completion is incomplete")
+            return errors
+
+        for name in count_names:
+            if realized_counts[name] != expected_counts[name]:
+                errors.append(
+                    f"noise observed {name} differs from plan-derived expected count"
+                )
+        if realized["generation_executed"] is not True:
+            errors.append("enabled noise generation was not observed")
 
         active_product_maps = (
-            counts["observation_scientific_map_count"]
-            + counts["coadd_scientific_map_count"]
+            expected_counts["observation_scientific_map_count"]
+            + expected_counts["coadd_scientific_map_count"]
         )
-        product_count = counts["empirical_product_map_count"]
+        product_count = expected_counts["empirical_product_map_count"]
         if not effective["products"]["enabled"]:
             if product_count != 0:
                 errors.append("disabled empirical products have nonzero count")
         elif active_product_maps == 0 and product_count != 0:
             errors.append("empirical products exist without scientific maps")
-        elif active_product_maps and product_count not in (
-            active_product_maps, 2 * active_product_maps
+        elif active_product_maps and not (
+            active_product_maps <= product_count <= 2 * active_product_maps
         ):
             errors.append("empirical product count has invalid output-stage cardinality")
 
-        output_realizations = (
-            expected_coadd_realizations
-            if counts["coadd_scientific_map_count"] > 0
-            else expected_observation_realizations
-        )
-        write_count = counts["realization_image_write_count"]
+        output_realizations = expected_counts["total_noise_realization_count"]
+        write_count = expected_counts["realization_image_write_count"]
         if not effective["write_realizations"]:
             if write_count != 0:
                 errors.append("disabled realization outputs have nonzero count")
         elif output_realizations == 0 and write_count != 0:
             errors.append("realization outputs exist without realizations")
-        elif output_realizations and write_count not in (
-            output_realizations, 2 * output_realizations
+        elif output_realizations and not (
+            output_realizations <= write_count <= 2 * output_realizations
         ):
             errors.append("realization write count has invalid output-stage cardinality")
+        if realized["actual_completion_valid"] is not True:
+            errors.append("enabled noise-products completion is not valid")
+        if realized["completed_count_matches_effective"] is not True:
+            errors.append("enabled noise-products observed counts do not match expected")
+        if realized["uncertainty_use_valid"] != (
+            effective["n_noise_maps"] >= 2
+        ):
+            errors.append("noise uncertainty-use validity is inconsistent")
+        if realized.get("completion_basis") != (
+            "observed_successful_publication_lifecycle"
+        ):
+            errors.append("enabled noise-products completion basis is inconsistent")
         if realized["outputs_completed"] is not True:
             errors.append("enabled noise-products outputs are incomplete")
     except (AttributeError, KeyError, TypeError) as exc:
         errors.append(f"cannot evaluate noise-products provenance semantics: {exc}")
+    return errors
+
+
+NOISE_PRODUCT_CONTRACTS = {
+    "conditional_finite_stack_scatter": (
+        "map_pixel",
+        "conditional_completed_stack_descriptive_not_physical_noise_variance_or_covariance",
+    ),
+    "formal_nonprecision_coefficient_snapshot": (
+        "map_pixel",
+        "pre_scale_nonprecision_coefficient_not_inverse_variance_or_precision",
+    ),
+    "global_nonprecision_scaled_coefficient": (
+        "map_pixel",
+        "existing_use_only_nonprecision_not_inverse_variance_or_precision",
+    ),
+    "coefficient_standardized_signal": (
+        "map_pixel", "engineering_standardization_not_significance",
+    ),
+    "filtered_pixel_stack_scatter": (
+        "filtered_map_pixel",
+        "conditional_diagnostic_strict_operator_edge_parity_pending_FLT",
+    ),
+    "conditional_stack_scatter_ratio": (
+        "filtered_map_pixel",
+        "descriptive_ratio_not_significance_positive_finite_denominator_required",
+    ),
+    "source_imprinted_current_realization": (
+        "realization_map", "source_imprinted_current_conditional_design_member",
+    ),
+    "pooled_stack_scale_diagnostic": (
+        "map_summary", "engineering_scale_diagnostic_not_significance",
+    ),
+    "global_nonprecision_scale_diagnostic": (
+        "map_summary",
+        "engineering_scale_diagnostic_not_precision_or_significance",
+    ),
+    "source_finder_engineering_score": (
+        "source_finder",
+        "existing_quicklook_engineering_score_not_significance",
+    ),
+    "fitted_amplitude_over_full_map_rms_ratio": (
+        "source_table", "fitted_amplitude_over_full_map_rms_not_significance",
+    ),
+    "fixed_projection_stack_scatter": (
+        "fixed_linear_projection",
+        "conditional_finite_stack_diagnostic_not_aperture_uncertainty",
+    ),
+}
+NOISE_PRODUCT_IDENTITIES = frozenset(NOISE_PRODUCT_CONTRACTS)
+
+
+def noise_product_semantic_digest(product_identity: str) -> str:
+    canonical = (
+        "citlali-noise-products|SCI-NOI-002-v1|" + product_identity
+    )
+    return "sha256:" + hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
+def fits_noise_member_joins(path: Path) -> tuple[list[str], int]:
+    from astropy.io import fits
+
+    identities: set[str] = set()
+    realization_count = 0
+    keys = (
+        "NOIPKG", "NOIPROV", "NOIPRID", "NOIPVER", "NOIDGST",
+        "NOISCOPE", "NOIVALID", "NOIRESTR",
+    )
+    with fits.open(path, memmap=False) as hdus:
+        for hdu in hdus:
+            values = {key: hdu.header.get(key) for key in keys}
+            if not any(value is not None for value in values.values()):
+                continue
+            if any(value is None for value in values.values()):
+                raise ValueError(f"partial FITS noise-product join in {path}")
+            identity = str(values["NOIPRID"])
+            if (
+                values["NOIPKG"] != "citlali-noise-products"
+                or values["NOIPROV"] != "noise_products_provenance.yaml"
+                or values["NOIPVER"] != "SCI-NOI-002-v1"
+                or values["NOIDGST"] != noise_product_semantic_digest(identity)
+                or identity not in NOISE_PRODUCT_IDENTITIES
+                or not str(values["NOISCOPE"])
+                or not str(values["NOIVALID"])
+                or not str(values["NOIRESTR"])
+            ):
+                raise ValueError(f"invalid FITS noise-product join in {path}")
+            identities.add(identity)
+            if identity == "source_imprinted_current_realization":
+                realization_count += 1
+    if not identities:
+        raise ValueError(f"admitted FITS member has no noise-product join: {path}")
+    return sorted(identities), realization_count
+
+
+def ecsv_noise_member_joins(path: Path) -> tuple[list[str], int]:
+    from collections.abc import Mapping
+    from astropy.table import Table
+
+    table = Table.read(path, format="ascii.ecsv")
+    contract = table.meta.get("noise_product_contract")
+    if not isinstance(contract, Mapping):
+        raise ValueError(f"admitted ECSV member has no noise-product join: {path}")
+    identity = "fitted_amplitude_over_full_map_rms_ratio"
+    expected = {
+        "package_id": "citlali-noise-products",
+        "provenance_id": "noise_products_provenance.yaml",
+        "product_identity": identity,
+        "product_version": "SCI-NOI-002-v1",
+        "semantic_digest": noise_product_semantic_digest(identity),
+        "scope": "source_table_row",
+        "validity": "finite_amplitude_and_finite_positive_full_map_rms",
+        "restriction": "legacy_alias_deprecated_not_significance",
+    }
+    if any(contract.get(key) != value for key, value in expected.items()):
+        raise ValueError(f"invalid ECSV noise-product join in {path}")
+    return [identity], 0
+
+
+def netcdf_noise_member_joins(path: Path) -> tuple[list[str], int]:
+    from netCDF4 import Dataset
+
+    variables = {
+        "map_noise_weight_median_ratio": (
+            "global_nonprecision_scale_diagnostic",
+            "available_when_finite_positive_calibration_support_exists",
+            "engineering_scale_diagnostic_not_precision_or_significance",
+        ),
+        "map_noise_weight_scale": (
+            "global_nonprecision_scale_diagnostic",
+            "available_when_finite_positive_median_ratio_exists",
+            "nonprecision_scale_not_inverse_variance_or_precision",
+        ),
+        "map_noise_products_s2n_sigma": (
+            "pooled_stack_scale_diagnostic",
+            "available_when_finite_pooled_stack_scale_exists",
+            "engineering_scale_diagnostic_not_calibrated_significance",
+        ),
+    }
+    identities: set[str] = set()
+    with Dataset(path, "r") as dataset:
+        for name, (identity, validity, restriction) in variables.items():
+            if name not in dataset.variables:
+                raise ValueError(
+                    f"missing NetCDF noise-contract variable {name} in {path}"
+                )
+            comment = str(getattr(dataset.variables[name], "comment", ""))
+            required = (
+                "package_id=citlali-noise-products",
+                "provenance_id=noise_products_provenance.yaml",
+                f"product_identity={identity}",
+                "product_version=SCI-NOI-002-v1",
+                "scope=map_summary",
+                f"validity={validity}",
+                f"restriction={restriction}",
+            )
+            missing = [token for token in required if token not in comment]
+            if missing:
+                raise ValueError(
+                    f"invalid NetCDF noise-product join for {name} in {path}: "
+                    f"missing {', '.join(missing)}"
+                )
+            identities.add(identity)
+    return sorted(identities), 0
+
+
+def noise_package_integrity_errors(
+    data: dict[str, Any], sidecar_path: Path
+) -> list[str]:
+    errors: list[str] = []
+    try:
+        package = data["package"]
+        if package.get("package_id") != "citlali-noise-products":
+            errors.append("noise package identity is inconsistent")
+        if package.get("provenance_id") != sidecar_path.name:
+            errors.append("noise package provenance join is inconsistent")
+        if package.get("product_contract_version") != "SCI-NOI-002-v1":
+            errors.append("noise package product version is inconsistent")
+        if package.get("authority") != "package_sidecar":
+            errors.append("noise package authority is inconsistent")
+        if package.get("detached_product_status") != (
+            "unverified_out_of_contract"
+        ):
+            errors.append("noise package detached-product status is inconsistent")
+        if package.get("publication_state") != "complete" or (
+            package.get("complete") is not True
+        ):
+            errors.append("noise package publication is not complete")
+
+        contract_inventory = package.get("product_contract_inventory")
+        declared_identities: set[str] = set()
+        if not isinstance(contract_inventory, list):
+            errors.append("noise package product-contract inventory must be a sequence")
+        else:
+            for index, contract in enumerate(contract_inventory):
+                label = f"noise package product contract {index}"
+                if not isinstance(contract, dict):
+                    errors.append(f"{label} must be a mapping")
+                    continue
+                identity = contract.get("product_identity")
+                if identity not in NOISE_PRODUCT_IDENTITIES:
+                    errors.append(f"{label} identity is unknown")
+                    continue
+                if identity in declared_identities:
+                    errors.append(f"duplicate noise product contract: {identity}")
+                    continue
+                declared_identities.add(identity)
+                if contract.get("product_version") != "SCI-NOI-002-v1":
+                    errors.append(f"{label} version is inconsistent")
+                if contract.get("semantic_digest") != (
+                    noise_product_semantic_digest(identity)
+                ):
+                    errors.append(f"{label} semantic digest is inconsistent")
+                if contract.get("digest_kind") != "semantic_contract_sha256":
+                    errors.append(f"{label} digest kind is inconsistent")
+                expected_scope, expected_restriction = (
+                    NOISE_PRODUCT_CONTRACTS[identity]
+                )
+                if contract.get("scope") != expected_scope:
+                    errors.append(f"{label} scope is inconsistent")
+                if contract.get("restriction") != expected_restriction:
+                    errors.append(f"{label} restriction is inconsistent")
+            if declared_identities != NOISE_PRODUCT_IDENTITIES:
+                errors.append("noise package product-contract inventory is incomplete")
+
+        members = package.get("member_files")
+        if not isinstance(members, list):
+            return errors + ["noise package member inventory must be a sequence"]
+        if package.get("member_count") != len(members):
+            errors.append("noise package member count is inconsistent")
+
+        root = sidecar_path.parent.resolve(strict=True)
+        seen: set[str] = set()
+        canonical_inventory = ""
+        realization_count = 0
+        for index, member in enumerate(members):
+            label = f"noise package member {index}"
+            if not isinstance(member, dict):
+                errors.append(f"{label} must be a mapping")
+                continue
+            relative = member.get("member_product_identity")
+            if not isinstance(relative, str) or not relative:
+                errors.append(f"{label} has no relative identity")
+                continue
+            parts = relative.split("/")
+            if (
+                relative.startswith("/")
+                or "\\" in relative
+                or any(part in ("", ".", "..") for part in parts)
+                or "/".join(parts) != relative
+            ):
+                errors.append(f"{label} path is not normalized and relative")
+                continue
+            if relative in seen:
+                errors.append(f"duplicate noise package member: {relative}")
+                continue
+            seen.add(relative)
+            candidate = sidecar_path.parent.joinpath(*parts)
+            if candidate.is_symlink():
+                errors.append(f"{label} is a symlink")
+                continue
+            try:
+                resolved = candidate.resolve(strict=True)
+                resolved.relative_to(root)
+            except (FileNotFoundError, RuntimeError, ValueError):
+                errors.append(f"{label} is missing or outside the reduction root")
+                continue
+            if not resolved.is_file():
+                errors.append(f"{label} is not a regular file")
+                continue
+
+            kind = member.get("member_kind")
+            extensions = {"fits": ".fits", "ecsv": ".ecsv", "netcdf": ".nc"}
+            if kind not in extensions or resolved.suffix != extensions[kind]:
+                errors.append(f"{label} kind/extension is inconsistent")
+                continue
+            digest = sha256_file(resolved)
+            size = resolved.stat().st_size
+            if member.get("sha256") != digest:
+                errors.append(f"{label} SHA-256 is inconsistent")
+            if member.get("size_bytes") != size:
+                errors.append(f"{label} size is inconsistent")
+            if member.get("digest_kind") != "file_sha256":
+                errors.append(f"{label} digest kind is inconsistent")
+            if member.get("detached_status") != (
+                "unverified_out_of_contract_without_package"
+            ):
+                errors.append(f"{label} detached status is inconsistent")
+
+            if kind == "fits":
+                identities, member_realizations = fits_noise_member_joins(resolved)
+            elif kind == "ecsv":
+                identities, member_realizations = ecsv_noise_member_joins(resolved)
+            else:
+                identities, member_realizations = netcdf_noise_member_joins(resolved)
+            listed_identities = member.get("joined_product_identities")
+            if listed_identities != identities:
+                errors.append(f"{label} joined product identities are inconsistent")
+            if not isinstance(listed_identities, list) or any(
+                identity not in declared_identities
+                for identity in listed_identities
+            ):
+                errors.append(
+                    f"{label} identity is absent from package contract inventory"
+                )
+            realization_count += member_realizations
+            canonical_inventory += f"{relative}\n{digest}\n{size}\n"
+
+        inventory_digest = "sha256:" + hashlib.sha256(
+            canonical_inventory.encode("utf-8")
+        ).hexdigest()
+        if package.get("member_inventory_digest") != inventory_digest:
+            errors.append("noise package aggregate inventory digest is inconsistent")
+        if package.get("member_inventory_digest_kind") != (
+            "canonical_relative_path_file_sha256_size_v1"
+        ):
+            errors.append("noise package aggregate digest kind is inconsistent")
+        observed_writes = available_count(
+            data["realized"]["realization_image_write_count"],
+            "realization_image_write_count",
+        )
+        if realization_count != observed_writes:
+            errors.append(
+                "noise package realization FITS inventory differs from observed writes"
+            )
+    except (AttributeError, KeyError, TypeError, ValueError) as exc:
+        errors.append(f"cannot evaluate noise package integrity: {exc}")
+    except Exception as exc:
+        errors.append(f"cannot validate noise package member joins: {exc}")
     return errors
 
 
@@ -1228,7 +1607,7 @@ def noise_mapmaking_cross_check_errors(
             return ["noise-products cross-check requires mapmaking provenance v2"]
         noise_resolution = noise["effective"]["resolution"]
         noise_effective = noise["effective"]["config"]
-        noise_realized = noise["realized"]
+        noise_expected = noise["expected"]
         mapmaking_effective = mapmaking["effective"]["config"]
         if noise_resolution["mapmaking_enabled"] != (
             mapmaking_effective["enabled"]
@@ -1246,27 +1625,16 @@ def noise_mapmaking_cross_check_errors(
         coadd = mapmaking["coadd"]
         coadd_available = coadd["available"]
         coadd_map_count = coadd["map_count"] if coadd_available else 0
-        observation_noise_generated = (
-            not coadd_available or mapmaking_effective["method"] == "jinc"
-        )
-        expected_observation_maps = (
-            observation_map_count if observation_noise_generated else 0
-        )
-        realized_observation_maps = available_count(
-            noise_realized["observation_scientific_map_count"],
-            "observation_scientific_map_count",
-        )
-        realized_coadd_maps = available_count(
-            noise_realized["coadd_scientific_map_count"],
-            "coadd_scientific_map_count",
-        )
-        if realized_observation_maps != expected_observation_maps:
+        expected_observation_maps = observation_map_count
+        if noise_expected["observation_scientific_map_count"] != (
+            expected_observation_maps
+        ):
             errors.append(
-                "noise observation map count differs from mapmaking provenance"
+                "noise expected observation map count differs from mapmaking provenance"
             )
-        if realized_coadd_maps != coadd_map_count:
+        if noise_expected["coadd_scientific_map_count"] != coadd_map_count:
             errors.append(
-                "noise coadd map count differs from mapmaking provenance"
+                "noise expected coadd map count differs from mapmaking provenance"
             )
     except (KeyError, TypeError, ValueError) as exc:
         errors.append(f"cannot cross-check noise and mapmaking provenance: {exc}")
@@ -2795,9 +3163,9 @@ def audit_provenance_sidecars(
                             data
                         )
                     elif name == "noise_products":
-                        semantic_errors = (
-                            noise_provenance_semantic_errors(data)
-                        )
+                        semantic_errors = noise_provenance_semantic_errors(
+                            data
+                        ) + noise_package_integrity_errors(data, path)
                     elif name == "pointing":
                         semantic_errors = (
                             pointing_provenance_semantic_errors(data)

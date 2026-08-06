@@ -126,10 +126,6 @@ inline const char *noise_variance_map_description() {
     return "Deprecated noise_variance alias of empirically centered S_R/R for the completed source_imprinted_current stack; not physical-noise variance";
 }
 
-inline const char *conditional_stack_scatter_map_description() {
-    return "Empirically centered S_R/R for the completed source_imprinted_current stack; descriptive conditional scatter, not physical-noise variance or covariance";
-}
-
 inline const char *kernel_map_description() {
     return "Mapmaking or filtering kernel image";
 }
@@ -222,10 +218,6 @@ inline const char *pixel_snr_map_description() {
     return "Deprecated sig2noise_pixel alias of coefficient-standardized signal; not calibrated S/N or significance";
 }
 
-inline const char *coefficient_standardized_signal_map_description() {
-    return "Signal times sqrt(global-nonprecision-scaled coefficient); engineering standardized amplitude, not significance";
-}
-
 inline const char *formal_standardized_signal_estimator_type() {
     return "formal_weight_standardized";
 }
@@ -244,12 +236,4 @@ inline const char *point_source_uncertainty_map_description() {
 
 inline const char *point_source_snr_map_description() {
     return "Deprecated alias of filtered signal divided by filtered-pixel conditional stack scatter; not significance";
-}
-
-inline const char *filtered_pixel_stack_scatter_map_description() {
-    return "Square root of filtered-pixel conditional finite-stack scatter; strict signal-realization-kernel edge parity pending FLT";
-}
-
-inline const char *conditional_stack_scatter_ratio_map_description() {
-    return "Filtered signal divided by positive finite filtered-pixel stack scatter; descriptive ratio, not significance";
 }

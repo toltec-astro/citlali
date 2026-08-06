@@ -66,8 +66,8 @@
         "map_cube_altaz",
         "map_cube_celestial"
       ],
-      "fact": "Phase-4 v1 products used sig2noise extension names for standardized amplitudes or descriptive ratios. Current writers retain those names only as deprecated aliases of distinctly identified products; none is calibrated statistical significance.",
-      "disposition": "Keep accepted historical artifacts immutable. Current empirical-product writers emit canonical coefficient_standardized_signal and conditional_stack_scatter_ratio identities alongside explicitly deprecated not-significance aliases; products without empirical noise emit formal_standardized_signal."
+      "fact": "Phase-4 v1 products used sig2noise extension names for standardized amplitudes or descriptive ratios. Current writers retain those compatible physical names with explicit canonical product identity metadata; none is calibrated statistical significance.",
+      "disposition": "Keep accepted historical artifacts immutable. Current empirical-product writers store one compatible physical plane per established writer slot and carry canonical SCI-NOI identity in metadata; candidate-added canonical duplicate planes are forbidden. Products without empirical noise emit formal_standardized_signal."
     }
   ],
   "science_map_contracts": {
@@ -815,11 +815,13 @@
     },
     "sci_map_empirical_products_v1": {
       "required_extnames": [
-        "weight_formal_I", "conditional_stack_scatter_I",
-        "noise_variance_I", "coefficient_standardized_signal_I",
-        "sig2noise_I", "sig2noise_pixel_I"
+        "weight_formal_I", "noise_variance_I", "sig2noise_I",
+        "sig2noise_pixel_I"
       ],
-      "forbidden_extnames": ["formal_standardized_signal_I"],
+      "forbidden_extnames": [
+        "formal_standardized_signal_I", "conditional_stack_scatter_I",
+        "coefficient_standardized_signal_I"
+      ],
       "required_ext_headers": {
         "weight_formal_I": {
           "ESTTYPE": "formal_normalization_coefficient_snapshot",
@@ -832,55 +834,52 @@
           "NOIPVER": "SCI-NOI-002-v1",
           "NOIDGST": "sha256:5320f43a5b799b9dc42f79a3439a1e4ae8f08a0f6ce39ead7c3813f7a14c82a2"
         },
-        "conditional_stack_scatter_I": {
+        "noise_variance_I": {
           "ESTTYPE": "conditional_finite_stack_scatter",
           "TYPE": "conditional_finite_stack_scatter",
           "COVSTAT": "conditional_stack_only",
+          "DEPRCATD": "true",
           "NOIPKG": "citlali-noise-products",
           "NOIPROV": "noise_products_provenance.yaml",
           "NOIPRID": "conditional_finite_stack_scatter",
           "NOIPVER": "SCI-NOI-002-v1",
           "NOIDGST": "sha256:6e414e47fbcb26a686453a4d84a49d59d8e8710c77672d4581579401235580ae"
         },
-        "noise_variance_I": {
-          "ESTTYPE": "conditional_finite_stack_scatter",
-          "ALIASOF": "conditional_stack_scatter_I",
-          "DEPRCATD": "true",
-          "NOIPRID": "conditional_finite_stack_scatter"
-        },
-        "coefficient_standardized_signal_I": {
+        "sig2noise_I": {
           "ESTTYPE": "coefficient_standardized_signal",
           "SIGSTAT": "not_significance",
           "NULLSTAT": "unavailable",
+          "DEPRCATD": "true",
           "NOIPKG": "citlali-noise-products",
           "NOIPROV": "noise_products_provenance.yaml",
           "NOIPRID": "coefficient_standardized_signal",
           "NOIPVER": "SCI-NOI-002-v1",
           "NOIDGST": "sha256:643459993e6288638e0ebba6b52b21847ba8adb9e2f2437e8138fe3081cae094"
         },
-        "sig2noise_I": {
-          "ESTTYPE": "coefficient_standardized_signal",
-          "ALIASOF": "coefficient_standardized_signal_I",
-          "DEPRCATD": "true",
-          "SIGSTAT": "not_significance"
-        },
         "sig2noise_pixel_I": {
           "ESTTYPE": "coefficient_standardized_signal",
-          "ALIASOF": "coefficient_standardized_signal_I",
           "DEPRCATD": "true",
-          "SIGSTAT": "not_significance"
+          "SIGSTAT": "not_significance",
+          "NOIPKG": "citlali-noise-products",
+          "NOIPROV": "noise_products_provenance.yaml",
+          "NOIPRID": "coefficient_standardized_signal",
+          "NOIPVER": "SCI-NOI-002-v1",
+          "NOIDGST": "sha256:643459993e6288638e0ebba6b52b21847ba8adb9e2f2437e8138fe3081cae094"
         }
       }
     },
     "sci_map_filtered_empirical_products_v1": {
       "required_extnames": [
-        "weight_formal_I", "conditional_stack_scatter_I",
-        "noise_variance_I", "coefficient_standardized_signal_I",
-        "sig2noise_I", "sig2noise_pixel_I", "point_source_flux_I",
-        "filtered_pixel_stack_scatter_I", "point_source_uncertainty_I",
-        "conditional_stack_scatter_ratio_I", "sig2noise_point_source_I"
+        "weight_formal_I", "noise_variance_I", "sig2noise_I",
+        "sig2noise_pixel_I", "point_source_flux_I",
+        "point_source_uncertainty_I", "sig2noise_point_source_I"
       ],
-      "forbidden_extnames": ["formal_standardized_signal_I"],
+      "forbidden_extnames": [
+        "formal_standardized_signal_I", "conditional_stack_scatter_I",
+        "coefficient_standardized_signal_I",
+        "filtered_pixel_stack_scatter_I",
+        "conditional_stack_scatter_ratio_I"
+      ],
       "required_ext_headers": {
         "weight_formal_I": {
           "ESTTYPE": "formal_normalization_coefficient_snapshot",
@@ -889,32 +888,30 @@
           "COVSTAT": "unavailable",
           "NOIPRID": "formal_nonprecision_coefficient_snapshot"
         },
-        "conditional_stack_scatter_I": {
-          "ESTTYPE": "conditional_finite_stack_scatter",
-          "NOIPRID": "conditional_finite_stack_scatter"
-        },
         "noise_variance_I": {
-          "ALIASOF": "conditional_stack_scatter_I",
+          "ESTTYPE": "conditional_finite_stack_scatter",
           "DEPRCATD": "true",
-          "NOIPRID": "conditional_finite_stack_scatter"
+          "NOIPKG": "citlali-noise-products",
+          "NOIPROV": "noise_products_provenance.yaml",
+          "NOIPRID": "conditional_finite_stack_scatter",
+          "NOIPVER": "SCI-NOI-002-v1",
+          "NOIDGST": "sha256:6e414e47fbcb26a686453a4d84a49d59d8e8710c77672d4581579401235580ae"
         },
-        "coefficient_standardized_signal_I": {
+        "sig2noise_I": {
           "ESTTYPE": "coefficient_standardized_signal",
+          "DEPRCATD": "true",
           "SIGSTAT": "not_significance",
           "NOIPRID": "coefficient_standardized_signal"
         },
-        "sig2noise_I": {
-          "ALIASOF": "coefficient_standardized_signal_I",
-          "DEPRCATD": "true",
-          "SIGSTAT": "not_significance"
-        },
         "sig2noise_pixel_I": {
-          "ALIASOF": "coefficient_standardized_signal_I",
+          "ESTTYPE": "coefficient_standardized_signal",
           "DEPRCATD": "true",
-          "SIGSTAT": "not_significance"
+          "SIGSTAT": "not_significance",
+          "NOIPRID": "coefficient_standardized_signal"
         },
-        "filtered_pixel_stack_scatter_I": {
+        "point_source_uncertainty_I": {
           "ESTTYPE": "filtered_pixel_stack_scatter",
+          "DEPRCATD": "true",
           "SIGSTAT": "not_significance",
           "NOIPKG": "citlali-noise-products",
           "NOIPROV": "noise_products_provenance.yaml",
@@ -922,14 +919,9 @@
           "NOIPVER": "SCI-NOI-002-v1",
           "NOIDGST": "sha256:21fc8fef8dcd0b0875bbd7ba8d51862bb0277da78ffb4eb4c45d69414b026f35"
         },
-        "point_source_uncertainty_I": {
-          "ESTTYPE": "filtered_pixel_stack_scatter",
-          "ALIASOF": "filtered_pixel_stack_scatter_I",
-          "DEPRCATD": "true",
-          "SIGSTAT": "not_significance"
-        },
-        "conditional_stack_scatter_ratio_I": {
+        "sig2noise_point_source_I": {
           "ESTTYPE": "conditional_stack_scatter_ratio",
+          "DEPRCATD": "true",
           "SIGSTAT": "not_significance",
           "NULLSTAT": "unavailable",
           "NOIPKG": "citlali-noise-products",
@@ -937,12 +929,6 @@
           "NOIPRID": "conditional_stack_scatter_ratio",
           "NOIPVER": "SCI-NOI-002-v1",
           "NOIDGST": "sha256:c75e661fa0fe9f4c97f1e8cca450b7c7a4bc24629685947c2af6244287b215b3"
-        },
-        "sig2noise_point_source_I": {
-          "ESTTYPE": "conditional_stack_scatter_ratio",
-          "ALIASOF": "conditional_stack_scatter_ratio_I",
-          "DEPRCATD": "true",
-          "SIGSTAT": "not_significance"
         }
       }
     },
@@ -1215,6 +1201,9 @@
         "map_stokes",
         "map_name",
         "map_median_rms",
+        "map_noise_weight_median_ratio",
+        "map_noise_weight_scale",
+        "map_noise_products_s2n_sigma",
         "map_peak_signal",
         "map_n_valid_pixels"
       ]

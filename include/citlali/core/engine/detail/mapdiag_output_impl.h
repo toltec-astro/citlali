@@ -98,8 +98,10 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             mapdiag_context, idx, obs_weight_frac, obs_core_weight_frac);
     }
 
+    const std::string mapdiag_path =
+        citlali::pipeline::mapdiag_netcdf_filename(filename);
     write_netcdf_atomic(
-        citlali::pipeline::mapdiag_netcdf_filename(filename),
+        mapdiag_path,
         [&](netCDF::NcFile &fo) {
             const auto mapdiag_netcdf_vars =
                 citlali::pipeline::make_mapdiag_netcdf_vars(
@@ -108,4 +110,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             citlali::pipeline::add_mapdiag_netcdf_vars(
                 fo, mapdiag_netcdf_vars);
         });
+    citlali::pipeline::record_noise_published_member(
+        citlali::pipeline::noise_plan(*this), mapdiag_path,
+        citlali::pipeline::NoisePublishedMemberKind::netcdf);
 }

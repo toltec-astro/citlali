@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import tempfile
 import unittest
 from pathlib import Path
@@ -316,43 +317,31 @@ def valid_noise_document(enabled: bool = True) -> dict:
         "n_noise_maps": effective_count,
         "products": dict(requested["products"]),
     }
-    unavailable = {"available": False}
+    expected_values = {
+        "noise_maps_per_scientific_map": effective_count,
+        "observation_scientific_map_count": 6 if enabled else 0,
+        "observation_noise_realization_count": 60 if enabled else 0,
+        "coadd_scientific_map_count": 3 if enabled else 0,
+        "coadd_noise_realization_count": 30 if enabled else 0,
+        "total_noise_realization_count": 90 if enabled else 0,
+        "empirical_product_map_count": 0,
+        "realization_image_write_count": 0,
+    }
     realized = {
         "reduction_completed": True,
         "generation_executed": enabled,
-        "noise_maps_per_scientific_map": (
-            {"available": True, "value": effective_count}
-            if enabled else dict(unavailable)
+        **{
+            name: {"available": True, "value": value}
+            for name, value in expected_values.items()
+        },
+        "actual_completion_valid": True,
+        "completed_count_matches_effective": True,
+        "uncertainty_use_valid": enabled and effective_count >= 2,
+        "completion_basis": (
+            "observed_successful_publication_lifecycle"
+            if enabled else "effective_disabled_zero_work"
         ),
-        "observation_scientific_map_count": (
-            {"available": True, "value": 6}
-            if enabled else dict(unavailable)
-        ),
-        "observation_noise_realization_count": (
-            {"available": True, "value": 60}
-            if enabled else dict(unavailable)
-        ),
-        "coadd_scientific_map_count": (
-            {"available": True, "value": 3}
-            if enabled else dict(unavailable)
-        ),
-        "coadd_noise_realization_count": (
-            {"available": True, "value": 30}
-            if enabled else dict(unavailable)
-        ),
-        "total_noise_realization_count": (
-            {"available": True, "value": 90}
-            if enabled else dict(unavailable)
-        ),
-        "empirical_product_map_count": (
-            {"available": True, "value": 0}
-            if enabled else dict(unavailable)
-        ),
-        "realization_image_write_count": (
-            {"available": True, "value": 0}
-            if enabled else dict(unavailable)
-        ),
-        "outputs_completed": enabled,
+        "outputs_completed": True,
     }
     return {
         "schema_version": "citlali-noise-products-provenance-v1",
@@ -376,8 +365,154 @@ def valid_noise_document(enabled: bool = True) -> dict:
                 },
             },
         },
+        "expected": {"initialized": True, **expected_values},
         "realized": realized,
+        "package": {
+            "package_id": "citlali-noise-products",
+            "provenance_id": "noise_products_provenance.yaml",
+            "product_contract_version": "SCI-NOI-002-v1",
+            "authority": "package_sidecar",
+            "detached_product_status": "unverified_out_of_contract",
+            "product_contract_inventory": [
+                {
+                    "product_identity": identity,
+                    "product_version": "SCI-NOI-002-v1",
+                    "semantic_digest": (
+                        audit.noise_product_semantic_digest(identity)
+                    ),
+                    "digest_kind": "semantic_contract_sha256",
+                    "scope": scope,
+                    "restriction": restriction,
+                }
+                for identity, (scope, restriction) in sorted(
+                    audit.NOISE_PRODUCT_CONTRACTS.items()
+                )
+            ],
+            "member_files": [],
+            "member_count": 0,
+            "member_inventory_digest": (
+                "sha256:e3b0c44298fc1c149afbf4c8996fb924"
+                "27ae41e4649b934ca495991b7852b855"
+            ),
+            "member_inventory_digest_kind": (
+                "canonical_relative_path_file_sha256_size_v1"
+            ),
+            "publication_state": "complete",
+            "complete": True,
+        },
     }
+
+
+def refresh_noise_member_inventory(redu: Path, document: dict) -> None:
+    canonical = ""
+    for member in document["package"]["member_files"]:
+        identity = member["member_product_identity"]
+        path = redu / identity
+        digest = audit.sha256_file(path)
+        size = path.stat().st_size
+        member["sha256"] = digest
+        member["size_bytes"] = size
+        canonical += f"{identity}\n{digest}\n{size}\n"
+    document["package"]["member_inventory_digest"] = "sha256:" + (
+        hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+    )
+
+
+def add_valid_noise_member_inventory(redu: Path, document: dict) -> list[Path]:
+    import numpy as np
+    from astropy.io import fits
+    from astropy.table import Table
+    from netCDF4 import Dataset
+
+    fits_path = redu / "map.fits"
+    identity = "conditional_finite_stack_scatter"
+    image = fits.ImageHDU(np.ones((1, 1), dtype=float))
+    image.header["NOIPKG"] = "citlali-noise-products"
+    image.header["NOIPROV"] = "noise_products_provenance.yaml"
+    image.header["NOIPRID"] = identity
+    image.header["NOIPVER"] = "SCI-NOI-002-v1"
+    image.header["NOIDGST"] = audit.noise_product_semantic_digest(identity)
+    image.header["NOISCOPE"] = "raw_map_pixel"
+    image.header["NOIVALID"] = "conditional_descriptive"
+    image.header["NOIRESTR"] = "not_physical_noise_variance"
+    fits.HDUList([fits.PrimaryHDU(), image]).writeto(fits_path)
+
+    ecsv_path = redu / "sources.ecsv"
+    source_identity = "fitted_amplitude_over_full_map_rms_ratio"
+    source_table = Table({"array": [0], "sig2noise": [1.0]})
+    source_table.meta["noise_product_contract"] = {
+        "package_id": "citlali-noise-products",
+        "provenance_id": "noise_products_provenance.yaml",
+        "product_identity": source_identity,
+        "product_version": "SCI-NOI-002-v1",
+        "semantic_digest": audit.noise_product_semantic_digest(
+            source_identity
+        ),
+        "scope": "source_table_row",
+        "validity": "finite_amplitude_and_finite_positive_full_map_rms",
+        "restriction": "legacy_alias_deprecated_not_significance",
+    }
+    source_table.write(ecsv_path, format="ascii.ecsv")
+
+    netcdf_path = redu / "noise.nc"
+    variables = {
+        "map_noise_weight_median_ratio": (
+            "global_nonprecision_scale_diagnostic",
+            "available_when_finite_positive_calibration_support_exists",
+            "engineering_scale_diagnostic_not_precision_or_significance",
+        ),
+        "map_noise_weight_scale": (
+            "global_nonprecision_scale_diagnostic",
+            "available_when_finite_positive_median_ratio_exists",
+            "nonprecision_scale_not_inverse_variance_or_precision",
+        ),
+        "map_noise_products_s2n_sigma": (
+            "pooled_stack_scale_diagnostic",
+            "available_when_finite_pooled_stack_scale_exists",
+            "engineering_scale_diagnostic_not_calibrated_significance",
+        ),
+    }
+    with Dataset(netcdf_path, "w") as dataset:
+        dataset.createDimension("n_maps", 1)
+        for name, (product_identity, validity, restriction) in (
+            variables.items()
+        ):
+            variable = dataset.createVariable(name, "f8", ("n_maps",))
+            variable.comment = (
+                "package_id=citlali-noise-products; "
+                "provenance_id=noise_products_provenance.yaml; "
+                f"product_identity={product_identity}; "
+                "product_version=SCI-NOI-002-v1; scope=map_summary; "
+                f"validity={validity}; restriction={restriction}"
+            )
+            variable[:] = [1.0]
+
+    identities = {
+        "map.fits": [identity],
+        "noise.nc": sorted(
+            {contract[0] for contract in variables.values()}
+        ),
+        "sources.ecsv": [source_identity],
+    }
+    kinds = {".fits": "fits", ".nc": "netcdf", ".ecsv": "ecsv"}
+    members = []
+    paths = sorted((fits_path, netcdf_path, ecsv_path), key=lambda path: path.name)
+    for path in paths:
+        members.append(
+            {
+                "member_product_identity": path.name,
+                "member_kind": kinds[path.suffix],
+                "joined_product_identities": identities[path.name],
+                "digest_kind": "file_sha256",
+                "detached_status": (
+                    "unverified_out_of_contract_without_package"
+                ),
+            }
+        )
+    document["package"]["member_files"] = members
+    document["package"]["member_count"] = len(members)
+    refresh_noise_member_inventory(redu, document)
+    return paths
 
 
 def valid_pointing_document(enabled: bool = True) -> dict:
@@ -1382,12 +1517,162 @@ class ProvenanceAuditTest(unittest.TestCase):
             self.assertTrue(noise["required"])
             self.assertTrue(noise["valid"])
 
+    def test_accepts_explicit_fits_ecsv_netcdf_noise_inventory(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            document = valid_noise_document()
+            add_valid_noise_member_inventory(redu, document)
+            (redu / "noise_products_provenance.yaml").write_text(
+                yaml.safe_dump(document, sort_keys=False),
+                encoding="utf-8",
+            )
+
+            noise = audit.audit_provenance_sidecars(
+                redu, require_noise_products=True
+            )["noise_products"]
+
+            self.assertTrue(noise["valid"], noise.get("semantic_errors"))
+
+    def test_rejects_tampered_explicit_noise_inventory_member(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            document = valid_noise_document()
+            paths = add_valid_noise_member_inventory(redu, document)
+            (redu / "noise_products_provenance.yaml").write_text(
+                yaml.safe_dump(document, sort_keys=False),
+                encoding="utf-8",
+            )
+            paths[-1].write_text(
+                paths[-1].read_text(encoding="utf-8") + "\n# tamper\n",
+                encoding="utf-8",
+            )
+
+            noise = audit.audit_provenance_sidecars(
+                redu, require_noise_products=True
+            )["noise_products"]
+
+            self.assertFalse(noise["valid"])
+            self.assertIn(
+                "noise package member 2 SHA-256 is inconsistent",
+                noise["files"][0]["semantic_errors"],
+            )
+
+    def test_rejects_symlinked_explicit_noise_inventory_member(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            document = valid_noise_document()
+            paths = add_valid_noise_member_inventory(redu, document)
+            target = redu / "unadmitted-map-target.fits"
+            paths[0].rename(target)
+            paths[0].symlink_to(target.name)
+
+            errors = audit.noise_package_integrity_errors(
+                document, redu / "noise_products_provenance.yaml"
+            )
+
+            self.assertIn("noise package member 0 is a symlink", errors)
+
+    def test_rejects_partial_fits_noise_product_join(self) -> None:
+        from astropy.io import fits
+
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            document = valid_noise_document()
+            paths = add_valid_noise_member_inventory(redu, document)
+            with fits.open(paths[0], mode="update", memmap=False) as hdus:
+                del hdus[1].header["NOIRESTR"]
+            refresh_noise_member_inventory(redu, document)
+
+            errors = audit.noise_package_integrity_errors(
+                document, redu / "noise_products_provenance.yaml"
+            )
+
+            self.assertTrue(
+                any("partial FITS noise-product join" in error
+                    for error in errors),
+                errors,
+            )
+
+    def test_rejects_member_without_package_contract_identity(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            document = valid_noise_document()
+            add_valid_noise_member_inventory(redu, document)
+            contracts = document["package"]["product_contract_inventory"]
+            document["package"]["product_contract_inventory"] = [
+                contract for contract in contracts
+                if contract["product_identity"] != (
+                    "conditional_finite_stack_scatter"
+                )
+            ]
+
+            errors = audit.noise_package_integrity_errors(
+                document, redu / "noise_products_provenance.yaml"
+            )
+
+            self.assertIn(
+                "noise package product-contract inventory is incomplete",
+                errors,
+            )
+            self.assertIn(
+                "noise package member 0 identity is absent from package "
+                "contract inventory",
+                errors,
+            )
+
     def test_accepts_effectively_disabled_noise_products(self) -> None:
         self.assertEqual(
             audit.noise_provenance_semantic_errors(
                 valid_noise_document(enabled=False)
             ),
             [],
+        )
+
+    def test_rejects_disabled_noise_without_available_zero_counters(self) -> None:
+        document = valid_noise_document(enabled=False)
+        document["realized"]["total_noise_realization_count"] = {
+            "available": False
+        }
+
+        self.assertIn(
+            "total_noise_realization_count is unavailable",
+            audit.noise_provenance_semantic_errors(document),
+        )
+
+    def test_rejects_disabled_noise_incomplete_or_wrong_basis(self) -> None:
+        document = valid_noise_document(enabled=False)
+        document["realized"]["outputs_completed"] = False
+        document["realized"]["completion_basis"] = "pipeline_return"
+
+        errors = audit.noise_provenance_semantic_errors(document)
+        self.assertIn(
+            "disabled noise-products zero-work completion is incomplete",
+            errors,
+        )
+        self.assertIn(
+            "disabled noise-products completion basis is inconsistent",
+            errors,
+        )
+
+    def test_rejects_enabled_zero_noise_count(self) -> None:
+        document = valid_noise_document()
+        document["requested"]["n_noise_maps"] = 0
+        document["effective"]["config"]["n_noise_maps"] = 0
+        document["effective"]["resolution"]["requested_n_noise_maps"] = 0
+        document["effective"]["resolution"]["effective_n_noise_maps"] = 0
+        document["expected"]["noise_maps_per_scientific_map"] = 0
+        for name in (
+            "observation_noise_realization_count",
+            "coadd_noise_realization_count",
+            "total_noise_realization_count",
+        ):
+            document["expected"][name] = 0
+            document["realized"][name]["value"] = 0
+        document["realized"]["noise_maps_per_scientific_map"]["value"] = 0
+
+        self.assertIn(
+            "enabled noise effective count must be positive",
+            audit.noise_provenance_semantic_errors(document),
         )
 
     def test_rejects_missing_required_noise_products_provenance(self) -> None:
@@ -1412,7 +1697,7 @@ class ProvenanceAuditTest(unittest.TestCase):
         document["realized"]["total_noise_realization_count"]["value"] = 89
 
         self.assertIn(
-            "noise total realization count is inconsistent",
+            "noise observed total_noise_realization_count differs from plan-derived expected count",
             audit.noise_provenance_semantic_errors(document),
         )
 
@@ -1430,6 +1715,9 @@ class ProvenanceAuditTest(unittest.TestCase):
             redu = Path(directory)
             mapmaking = valid_mapmaking_document()
             noise = valid_noise_document()
+            noise["expected"]["coadd_scientific_map_count"] = 6
+            noise["expected"]["coadd_noise_realization_count"] = 60
+            noise["expected"]["total_noise_realization_count"] = 120
             noise["realized"]["coadd_scientific_map_count"]["value"] = 6
             noise["realized"]["coadd_noise_realization_count"]["value"] = 60
             noise["realized"]["total_noise_realization_count"]["value"] = 120
@@ -1452,7 +1740,9 @@ class ProvenanceAuditTest(unittest.TestCase):
             self.assertFalse(records["noise_products"]["valid"])
             self.assertEqual(
                 records["noise_products"]["cross_check_errors"],
-                ["noise coadd map count differs from mapmaking provenance"],
+                [
+                    "noise expected coadd map count differs from mapmaking provenance"
+                ],
             )
 
     def test_accepts_complete_pointing_provenance(self) -> None:

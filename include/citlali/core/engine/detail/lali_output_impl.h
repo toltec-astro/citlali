@@ -131,8 +131,21 @@ void Lali::output(citlali::pipeline::StageProfileCollector &stage_profile) {
         // wiener filtered maps write before this and are deleted from the vector.
         write_lali_map_fits_products(f_io, n_io, mb);
 
+        const auto published_data_paths =
+            citlali::pipeline::noise_fits_output_paths(*f_io);
+        const auto published_noise_paths =
+            citlali::pipeline::noise_fits_output_paths(*n_io);
+
         // clear fits file vectors to ensure its closed.
         finalize_lali_map_fits_outputs(*f_io, *n_io);
+
+        constexpr bool is_coadd = map_type == mapmaking::RawCoadd ||
+            map_type == mapmaking::FilteredCoadd;
+        constexpr bool is_filtered = map_type == mapmaking::FilteredObs ||
+            map_type == mapmaking::FilteredCoadd;
+        citlali::pipeline::record_noise_map_output_publication(
+            citlali::pipeline::noise_plan(*this), is_coadd, is_filtered,
+            *mb, published_data_paths, published_noise_paths);
 
         // write psd and histogram files
         logger->debug("writing psds");

@@ -1259,8 +1259,18 @@ void MapBuffer::calc_noise_products(Eigen::Index i, bool apply_empirical_weight_
         signal[i].array() *
             weight_empirical[static_cast<size_t>(i)].array().max(0.0).sqrt(),
         unavailable);
-    point_source_uncertainty[static_cast<size_t>(i)] =
-        noise_variance[static_cast<size_t>(i)].array().max(0.0).sqrt().matrix();
+    if (noise_uncertainty_use_valid(i) != 0) {
+        point_source_uncertainty[static_cast<size_t>(i)] =
+            noise_variance[static_cast<size_t>(i)]
+                .array()
+                .max(0.0)
+                .sqrt()
+                .matrix();
+    }
+    else {
+        point_source_uncertainty[static_cast<size_t>(i)] =
+            Eigen::MatrixXd::Constant(n_rows, n_cols, unavailable);
+    }
     Eigen::ArrayXX<bool> ratio_valid =
         signal[i].array().isFinite() &&
         point_source_uncertainty[static_cast<size_t>(i)].array().isFinite() &&
