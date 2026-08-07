@@ -62,6 +62,7 @@ inline std::string mapdiag_noise_product_comment(
         "|product_version=SCI-NOI-002-v1"
         "|semantic_digest=" + semantic_digest +
         "|digest_kind=semantic_contract_sha256"
+        "|missingness=nonfinite_unavailable"
         "|scope=map_summary"
         "|validity=" + validity +
         "|restriction=" + restriction;

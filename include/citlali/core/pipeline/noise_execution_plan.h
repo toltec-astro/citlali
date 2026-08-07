@@ -336,6 +336,10 @@ inline void record_noise_map_output_stage(
         }
         return;
     }
+    if (is_coadd && empirical_product_map_count != 0) {
+        throw std::logic_error(
+            "successor coadd observed an empirical companion product");
+    }
     if (scientific_map_count == 0 ||
         noise_maps_per_scientific_map == 0) {
         throw std::logic_error(
@@ -401,7 +405,7 @@ void record_noise_map_output_stage(
         static_cast<std::size_t>(map_buffer.signal.size());
     const auto noise_count =
         static_cast<std::size_t>(map_buffer.n_noise);
-    const auto empirical_count = plan.effective.products_enabled
+    const auto empirical_count = plan.effective.products_enabled && !is_coadd
         ? static_cast<std::size_t>(map_buffer.noise_variance.size())
         : std::size_t{0};
     const auto realization_write_count = plan.effective.write_realizations
@@ -445,7 +449,7 @@ void record_noise_selected_map_output_stage(
     }
     const auto noise_count =
         static_cast<std::size_t>(map_buffer.n_noise);
-    const auto empirical_count = plan.effective.products_enabled
+    const auto empirical_count = plan.effective.products_enabled && !is_coadd
         ? published_scientific_map_count
         : std::size_t{0};
     const auto realization_write_count =
@@ -533,21 +537,17 @@ inline NoiseExpectedCounts expected_noise_counts(
     const std::size_t observation_output_stage_count =
         filtered_maps_enabled && !coadd_available ? std::size_t{2}
                                                   : std::size_t{1};
-    const std::size_t coadd_output_stage_count = coadd_available
-        ? (filtered_maps_enabled ? std::size_t{2} : std::size_t{1})
-        : std::size_t{0};
     if (plan.effective.products_enabled) {
         expected.empirical_product_map_count =
             checked_noise_count_product(
                 expected.observation_scientific_map_count,
                 observation_output_stage_count,
-                "observation empirical product maps") +
-            checked_noise_count_product(
-                expected.coadd_scientific_map_count,
-                coadd_output_stage_count,
-                "coadd empirical product maps");
+                "observation empirical product maps");
     }
     if (plan.effective.write_realizations) {
+        const std::size_t coadd_output_stage_count = coadd_available
+            ? (filtered_maps_enabled ? std::size_t{2} : std::size_t{1})
+            : std::size_t{0};
         expected.realization_image_write_count =
             checked_noise_count_product(
                 expected.observation_noise_realization_count,

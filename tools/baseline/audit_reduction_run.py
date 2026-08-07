@@ -1227,16 +1227,17 @@ def noise_provenance_semantic_errors(data: dict[str, Any]) -> list[str]:
         if realized["generation_executed"] is not True:
             errors.append("enabled noise generation was not observed")
 
-        active_product_maps = (
-            expected_counts["observation_scientific_map_count"]
-            + expected_counts["coadd_scientific_map_count"]
-        )
+        active_product_maps = expected_counts[
+            "observation_scientific_map_count"
+        ]
         product_count = expected_counts["empirical_product_map_count"]
         if not effective["products"]["enabled"]:
             if product_count != 0:
                 errors.append("disabled empirical products have nonzero count")
         elif active_product_maps == 0 and product_count != 0:
-            errors.append("empirical products exist without scientific maps")
+            errors.append(
+                "empirical products exist without observation maps"
+            )
         elif active_product_maps and not (
             active_product_maps <= product_count <= 2 * active_product_maps
         ):
@@ -1441,15 +1442,54 @@ def noise_fits_identity_is_empirical_map_product(identity: str) -> bool:
     }
 
 
+def noise_fits_logical_map_identity(
+    identity: str, extname: str, scope: str
+) -> str:
+    extname = extname.lower()
+    prefixes = {
+        "formal_nonprecision_coefficient_snapshot": "weight_formal_",
+        "global_nonprecision_scaled_coefficient": "weight_",
+        "conditional_finite_stack_scatter": "noise_variance_",
+        "coefficient_standardized_signal": "sig2noise_",
+        "filtered_pixel_stack_scatter": "point_source_uncertainty_",
+        "conditional_stack_scatter_ratio": "sig2noise_point_source_",
+        "source_imprinted_current_realization": "signal_",
+    }
+    prefix = prefixes.get(identity)
+    if prefix is None:
+        raise ValueError("FITS noise-product identity has no EXTNAME binding")
+    if not extname.startswith(prefix) or len(extname) == len(prefix):
+        raise ValueError(
+            "FITS noise-product EXTNAME does not match its identity"
+        )
+    encoded_map = extname[len(prefix):]
+    if identity != "source_imprinted_current_realization":
+        return encoded_map
+
+    ordinal = scope[len("realization_map_index_"):]
+    leading = ordinal + "_"
+    if encoded_map.startswith(leading) and len(encoded_map) > len(leading):
+        return encoded_map[len(leading):]
+    marker = "_" + ordinal + "_"
+    marker_pos = encoded_map.rfind(marker)
+    if marker_pos <= 0 or marker_pos + len(marker) >= len(encoded_map):
+        raise ValueError(
+            "FITS noise-realization EXTNAME does not encode its scope"
+        )
+    return encoded_map[:marker_pos] + "_" + encoded_map[
+        marker_pos + len(marker):
+    ]
+
+
 def fits_noise_member_joins(
     path: Path,
 ) -> tuple[list[str], int, int, bool]:
     from astropy.io import fits
 
     identity_counts: Counter[str] = Counter()
-    empirical_scope: str | None = None
-    realization_scopes: set[str] = set()
+    logical_maps: dict[str, dict[str, Any]] = {}
     realization_count = 0
+    empirical_map_count = 0
     keys = (
         "NOIPKG", "NOIPROV", "NOIPRID", "NOIPVER", "NOIDGST",
         "NOIDGKND", "NOISCOPE", "NOIVALID", "NOIRESTR", "NOIMISS",
@@ -1472,55 +1512,112 @@ def fits_noise_member_joins(
                 or not noise_fits_join_matches_contract(values)
             ):
                 raise ValueError(f"invalid FITS noise-product join in {path}")
+            extname = hdu.header.get("EXTNAME")
+            if not isinstance(extname, str) or not extname:
+                raise ValueError(
+                    f"FITS noise-product join lacks an EXTNAME in {path}"
+                )
+            logical_map_identity = noise_fits_logical_map_identity(
+                identity, extname, str(values["NOISCOPE"])
+            )
+            logical_map = logical_maps.setdefault(
+                logical_map_identity,
+                {
+                    "identity_counts": Counter(),
+                    "empirical_scope": None,
+                    "realization_scopes": set(),
+                },
+            )
             identity_counts[identity] += 1
+            logical_map["identity_counts"][identity] += 1
             if (
                 identity != "source_imprinted_current_realization"
-                and identity_counts[identity] > 1
+                and logical_map["identity_counts"][identity] > 1
             ):
                 raise ValueError(
                     "duplicate non-realization FITS noise-product identity "
-                    f"{identity} in {path}"
+                    f"{identity} within logical map {logical_map_identity} "
+                    f"in {path}"
                 )
             if noise_fits_identity_is_empirical_map_product(identity):
                 scope = str(values["NOISCOPE"])
-                if empirical_scope is None:
-                    empirical_scope = scope
-                elif empirical_scope != scope:
+                if logical_map["empirical_scope"] is None:
+                    logical_map["empirical_scope"] = scope
+                elif logical_map["empirical_scope"] != scope:
                     raise ValueError(
-                        f"mixed empirical FITS noise-product scopes in {path}"
+                        "mixed empirical FITS noise-product scopes within "
+                        f"logical map {logical_map_identity} in {path}"
                     )
             if identity == "source_imprinted_current_realization":
                 scope = str(values["NOISCOPE"])
+                realization_scopes = logical_map["realization_scopes"]
                 if scope in realization_scopes:
                     raise ValueError(
-                        f"duplicate FITS noise-realization scope {scope} in {path}"
+                        "duplicate FITS noise-realization scope "
+                        f"{scope} within logical map {logical_map_identity} "
+                        f"in {path}"
                     )
                 realization_scopes.add(scope)
                 realization_count += 1
     if not identity_counts:
         raise ValueError(f"admitted FITS member has no noise-product join: {path}")
-    if realization_scopes != {
-        f"realization_map_index_{ordinal}"
-        for ordinal in range(realization_count)
-    }:
-        raise ValueError(
-            f"noncanonical FITS noise-realization scope sequence in {path}"
+    for logical_map_identity, logical_map in logical_maps.items():
+        logical_counts = logical_map["identity_counts"]
+        realization_scopes = logical_map["realization_scopes"]
+        if realization_scopes != {
+            f"realization_map_index_{ordinal}"
+            for ordinal in range(len(realization_scopes))
+        }:
+            raise ValueError(
+                "noncanonical FITS noise-realization scope sequence within "
+                f"logical map {logical_map_identity} in {path}"
+            )
+        empirical_identity_present = any(
+            noise_fits_identity_is_empirical_map_product(identity)
+            for identity in logical_counts
         )
-    empirical_member = any(
-        noise_fits_identity_is_empirical_map_product(identity)
-        for identity in identity_counts
-    )
-    if empirical_member and (
-        realization_count
-        or identity_counts["formal_nonprecision_coefficient_snapshot"] != 1
-        or identity_counts["conditional_finite_stack_scatter"] != 1
-        or identity_counts["filtered_pixel_stack_scatter"]
-        != identity_counts["conditional_stack_scatter_ratio"]
-    ):
-        raise ValueError(
-            f"incomplete or mixed empirical FITS noise-product bundle in {path}"
+        if not empirical_identity_present:
+            continue
+        if realization_scopes:
+            raise ValueError(
+                "mixed realization and empirical FITS noise products within "
+                f"logical map {logical_map_identity} in {path}"
+            )
+        formal_count = logical_counts[
+            "formal_nonprecision_coefficient_snapshot"
+        ]
+        scatter_count = logical_counts["conditional_finite_stack_scatter"]
+        scaled_count = logical_counts["global_nonprecision_scaled_coefficient"]
+        standardized_count = logical_counts["coefficient_standardized_signal"]
+        filtered_scatter_count = logical_counts["filtered_pixel_stack_scatter"]
+        ratio_count = logical_counts["conditional_stack_scatter_ratio"]
+        full_empirical_bundle = any(
+            (
+                formal_count,
+                scatter_count,
+                standardized_count,
+                filtered_scatter_count,
+                ratio_count,
+            )
         )
-    return sorted(identity_counts), realization_count, int(empirical_member), True
+        if not full_empirical_bundle:
+            if scaled_count != 1:
+                raise ValueError(
+                    "invalid standalone scaled-coefficient FITS noise product "
+                    f"within logical map {logical_map_identity} in {path}"
+                )
+            continue
+        if (
+            formal_count != 1
+            or scatter_count != 1
+            or filtered_scatter_count != ratio_count
+        ):
+            raise ValueError(
+                "incomplete or mixed empirical FITS noise-product bundle "
+                f"within logical map {logical_map_identity} in {path}"
+            )
+        empirical_map_count += 1
+    return sorted(identity_counts), realization_count, empirical_map_count, True
 
 
 def ecsv_noise_member_joins(
@@ -1528,6 +1625,21 @@ def ecsv_noise_member_joins(
 ) -> tuple[list[str], int, int, bool]:
     from collections.abc import Mapping
     from astropy.table import Table
+
+    header_lines: list[str] = []
+    with path.open("r", encoding="utf-8") as stream:
+        for line in stream:
+            if not line.startswith("#"):
+                break
+            header_lines.append(line)
+    missingness_field_count = len(
+        re.findall(
+            r"(?<![A-Za-z0-9_])missingness\s*:",
+            "".join(header_lines),
+        )
+    )
+    if missingness_field_count != 1:
+        raise ValueError(f"invalid ECSV noise-product join in {path}")
 
     table = Table.read(path, format="ascii.ecsv")
     contract = table.meta.get("noise_product_contract")
@@ -1541,6 +1653,7 @@ def ecsv_noise_member_joins(
         "product_version": "SCI-NOI-002-v1",
         "semantic_digest": noise_product_semantic_digest(identity),
         "digest_kind": NOISE_SEMANTIC_DIGEST_KIND,
+        "missingness": NOISE_COMPACT_MISSINGNESS,
         "column": "sig2noise",
         "scope": "source_table_row",
         "validity": "finite_amplitude_and_finite_positive_full_map_rms",
@@ -1563,6 +1676,7 @@ NOISE_NETCDF_JOIN_KEYS = (
     "product_version",
     "semantic_digest",
     "digest_kind",
+    "missingness",
     "scope",
     "validity",
     "restriction",
@@ -1583,6 +1697,7 @@ def noise_netcdf_join_record(
         "product_version": "SCI-NOI-002-v1",
         "semantic_digest": noise_product_semantic_digest(identity),
         "digest_kind": NOISE_SEMANTIC_DIGEST_KIND,
+        "missingness": NOISE_COMPACT_MISSINGNESS,
         "scope": "map_summary",
         "validity": validity,
         "restriction": restriction,
@@ -1968,11 +2083,6 @@ def noise_package_integrity_errors(
                 errors.append(
                     "noise package empirical FITS inventory does not match "
                     "observed empirical product maps"
-                )
-            if contains_empirical_netcdf and empirical_map_product_count == 0:
-                errors.append(
-                    "noise package contains empirical NetCDF diagnostics "
-                    "without empirical map products"
                 )
         observed_writes = available_count(
             data["realized"]["realization_image_write_count"],

@@ -191,6 +191,70 @@ inline bool noise_fits_identity_is_empirical_map_product(
         identity == noise_stack_scatter_ratio_product_id;
 }
 
+inline std::string noise_fits_logical_map_identity(
+    std::string_view identity, std::string_view extname,
+    std::string_view scope) {
+    std::string normalized_extname{extname};
+    std::transform(
+        normalized_extname.begin(), normalized_extname.end(),
+        normalized_extname.begin(), [](unsigned char value) {
+            return static_cast<char>(std::tolower(value));
+        });
+    extname = normalized_extname;
+    std::string_view prefix;
+    if (identity == noise_formal_coefficient_product_id) {
+        prefix = "weight_formal_";
+    }
+    else if (identity == noise_scaled_coefficient_product_id) {
+        prefix = "weight_";
+    }
+    else if (identity == noise_conditional_stack_scatter_product_id) {
+        prefix = "noise_variance_";
+    }
+    else if (identity == noise_coefficient_standardized_signal_product_id) {
+        prefix = "sig2noise_";
+    }
+    else if (identity == noise_filtered_pixel_stack_scatter_product_id) {
+        prefix = "point_source_uncertainty_";
+    }
+    else if (identity == noise_stack_scatter_ratio_product_id) {
+        prefix = "sig2noise_point_source_";
+    }
+    else if (identity == noise_realization_product_id) {
+        prefix = "signal_";
+    }
+    else {
+        throw std::runtime_error(
+            "FITS noise-product identity has no EXTNAME binding");
+    }
+    if (!extname.starts_with(prefix) || extname.size() == prefix.size()) {
+        throw std::runtime_error(
+            "FITS noise-product EXTNAME does not match its identity");
+    }
+
+    const auto encoded_map = extname.substr(prefix.size());
+    if (identity != noise_realization_product_id) {
+        return std::string{encoded_map};
+    }
+
+    constexpr std::string_view scope_prefix{"realization_map_index_"};
+    const auto ordinal = scope.substr(scope_prefix.size());
+    const std::string leading = std::string{ordinal} + "_";
+    if (encoded_map.starts_with(leading) &&
+        encoded_map.size() > leading.size()) {
+        return std::string{encoded_map.substr(leading.size())};
+    }
+    const std::string marker = "_" + std::string{ordinal} + "_";
+    const auto marker_pos = encoded_map.rfind(marker);
+    if (marker_pos == std::string_view::npos || marker_pos == 0 ||
+        marker_pos + marker.size() >= encoded_map.size()) {
+        throw std::runtime_error(
+            "FITS noise-realization EXTNAME does not encode its scope");
+    }
+    return std::string{encoded_map.substr(0, marker_pos)} + "_" +
+        std::string{encoded_map.substr(marker_pos + marker.size())};
+}
+
 inline YAML::Node noise_provenance_node(
     const NoiseExecutionPlan &plan) {
     YAML::Node root;
@@ -349,9 +413,14 @@ inline NoiseMemberJoinValidation validate_noise_fits_joins(
                 "failed to enumerate admitted FITS noise member " +
                 path.string());
         }
+        struct LogicalMapJoins {
+            std::map<std::string, std::size_t> identity_counts;
+            std::optional<std::string> empirical_map_scope;
+            std::set<std::string> realization_scopes;
+            std::size_t realization_count = 0;
+        };
         std::map<std::string, std::size_t> identity_counts;
-        std::optional<std::string> empirical_map_scope;
-        std::set<std::string> realization_scopes;
+        std::map<std::string, LogicalMapJoins> logical_maps;
         for (int hdu_index = 1; hdu_index <= hdu_count; ++hdu_index) {
             int hdu_type = 0;
             fits_movabs_hdu(fits, hdu_index, &hdu_type, &status);
@@ -379,6 +448,8 @@ inline NoiseMemberJoinValidation validate_noise_fits_joins(
                 read_noise_fits_string_key(fits, "NOIRESTR");
             const auto missingness =
                 read_noise_fits_string_key(fits, "NOIMISS");
+            const auto extname =
+                read_noise_fits_string_key(fits, "EXTNAME");
             const bool any_join = package || provenance || identity ||
                 version || digest || digest_kind || scope || validity ||
                 restriction || missingness;
@@ -403,30 +474,44 @@ inline NoiseMemberJoinValidation validate_noise_fits_joins(
                 throw std::runtime_error(
                     "invalid FITS noise-product join in " + path.string());
             }
-            auto &identity_count = identity_counts[*identity];
-            ++identity_count;
+            if (!extname || extname->empty()) {
+                throw std::runtime_error(
+                    "FITS noise-product join lacks an EXTNAME in " +
+                    path.string());
+            }
+            const auto logical_map_identity =
+                noise_fits_logical_map_identity(
+                    *identity, *extname, *scope);
+            auto &logical_map = logical_maps[logical_map_identity];
+            ++identity_counts[*identity];
+            auto &logical_identity_count =
+                logical_map.identity_counts[*identity];
+            ++logical_identity_count;
             if (*identity != noise_realization_product_id &&
-                identity_count > 1) {
+                logical_identity_count > 1) {
                 throw std::runtime_error(
                     "duplicate non-realization FITS noise-product identity " +
-                    *identity + " in " + path.string());
+                    *identity + " within logical map " +
+                    logical_map_identity + " in " + path.string());
             }
             if (noise_fits_identity_is_empirical_map_product(*identity)) {
-                if (!empirical_map_scope) {
-                    empirical_map_scope = *scope;
+                if (!logical_map.empirical_map_scope) {
+                    logical_map.empirical_map_scope = *scope;
                 }
-                else if (*empirical_map_scope != *scope) {
+                else if (*logical_map.empirical_map_scope != *scope) {
                     throw std::runtime_error(
-                        "mixed empirical FITS noise-product scopes in " +
-                        path.string());
+                        "mixed empirical FITS noise-product scopes within logical map " +
+                        logical_map_identity + " in " + path.string());
                 }
             }
             if (*identity == noise_realization_product_id) {
-                if (!realization_scopes.insert(*scope).second) {
+                if (!logical_map.realization_scopes.insert(*scope).second) {
                     throw std::runtime_error(
                         "duplicate FITS noise-realization scope " +
-                        *scope + " in " + path.string());
+                        *scope + " within logical map " +
+                        logical_map_identity + " in " + path.string());
                 }
+                ++logical_map.realization_count;
                 ++validation.realization_image_count;
             }
         }
@@ -435,41 +520,70 @@ inline NoiseMemberJoinValidation validate_noise_fits_joins(
                 "admitted FITS member has no noise-product join: " +
                 path.string());
         }
-        for (std::size_t ordinal = 0;
-             ordinal < validation.realization_image_count; ++ordinal) {
-            if (!realization_scopes.contains(
-                    "realization_map_index_" +
-                    std::to_string(ordinal))) {
-                throw std::runtime_error(
-                    "noncanonical FITS noise-realization scope sequence in " +
-                    path.string());
+        for (const auto &[logical_map_identity, logical_map] :
+             logical_maps) {
+            for (std::size_t ordinal = 0;
+                 ordinal < logical_map.realization_count; ++ordinal) {
+                if (!logical_map.realization_scopes.contains(
+                        "realization_map_index_" +
+                        std::to_string(ordinal))) {
+                    throw std::runtime_error(
+                        "noncanonical FITS noise-realization scope sequence within logical map " +
+                        logical_map_identity + " in " + path.string());
+                }
             }
-        }
-        const bool empirical_member = std::any_of(
-            identity_counts.begin(), identity_counts.end(),
-            [](const auto &entry) {
-                return noise_fits_identity_is_empirical_map_product(
-                    entry.first);
-            });
-        if (empirical_member) {
             const auto identity_count = [&](const char *identity_name) {
-                const auto item = identity_counts.find(identity_name);
-                return item == identity_counts.end()
+                const auto item =
+                    logical_map.identity_counts.find(identity_name);
+                return item == logical_map.identity_counts.end()
                     ? std::size_t{0}
                     : item->second;
             };
-            if (validation.realization_image_count != 0 ||
-                identity_count(noise_formal_coefficient_product_id) != 1 ||
-                identity_count(
-                    noise_conditional_stack_scatter_product_id) != 1 ||
-                identity_count(
-                    noise_filtered_pixel_stack_scatter_product_id) !=
-                    identity_count(noise_stack_scatter_ratio_product_id)) {
-                throw std::runtime_error(
-                    "incomplete or mixed empirical FITS noise-product bundle in " +
-                    path.string());
+            const bool empirical_identity_present = std::any_of(
+                logical_map.identity_counts.begin(),
+                logical_map.identity_counts.end(),
+                [](const auto &entry) {
+                    return noise_fits_identity_is_empirical_map_product(
+                        entry.first);
+                });
+            if (!empirical_identity_present) {
+                continue;
             }
-            validation.empirical_map_product_count = 1;
+            if (logical_map.realization_count != 0) {
+                throw std::runtime_error(
+                    "mixed realization and empirical FITS noise products within logical map " +
+                    logical_map_identity + " in " + path.string());
+            }
+            const auto formal_count =
+                identity_count(noise_formal_coefficient_product_id);
+            const auto scatter_count = identity_count(
+                noise_conditional_stack_scatter_product_id);
+            const auto scaled_count =
+                identity_count(noise_scaled_coefficient_product_id);
+            const auto standardized_count = identity_count(
+                noise_coefficient_standardized_signal_product_id);
+            const auto filtered_scatter_count = identity_count(
+                noise_filtered_pixel_stack_scatter_product_id);
+            const auto ratio_count =
+                identity_count(noise_stack_scatter_ratio_product_id);
+            const bool full_empirical_bundle = formal_count != 0 ||
+                scatter_count != 0 || standardized_count != 0 ||
+                filtered_scatter_count != 0 || ratio_count != 0;
+            if (!full_empirical_bundle) {
+                if (scaled_count != 1) {
+                    throw std::runtime_error(
+                        "invalid standalone scaled-coefficient FITS noise product within logical map " +
+                        logical_map_identity + " in " + path.string());
+                }
+                continue;
+            }
+            if (formal_count != 1 || scatter_count != 1 ||
+                filtered_scatter_count != ratio_count) {
+                throw std::runtime_error(
+                    "incomplete or mixed empirical FITS noise-product bundle within logical map " +
+                    logical_map_identity + " in " + path.string());
+            }
+            ++validation.empirical_map_product_count;
         }
         validation.contains_stack_derived_product = true;
         validation.product_identities.reserve(identity_counts.size());
@@ -595,6 +709,7 @@ inline NoiseMemberJoinValidation validate_noise_ecsv_join(
          noise_product_semantic_digest(
              noise_fitted_amplitude_rms_ratio_product_id)},
         {"digest_kind", noise_semantic_digest_kind},
+        {"missingness", noise_compact_missingness},
         {"scope", "source_table_row"},
         {"validity",
          "finite_amplitude_and_finite_positive_full_map_rms"},
@@ -648,6 +763,7 @@ inline void validate_noise_netcdf_join_comment(
         {"product_version", noise_product_contract_version},
         {"semantic_digest", std::string{semantic_digest}},
         {"digest_kind", noise_semantic_digest_kind},
+        {"missingness", noise_compact_missingness},
         {"scope", "map_summary"},
         {"validity", std::string{validity}},
         {"restriction", std::string{restriction}}};
@@ -999,10 +1115,6 @@ inline void validate_noise_package_member_semantics(
         *plan.realized.empirical_product_map_count) {
         throw std::logic_error(
             "noise package empirical FITS inventory does not match observed empirical product maps");
-    }
-    if (contains_empirical_netcdf && empirical_map_product_count == 0) {
-        throw std::logic_error(
-            "noise package contains empirical NetCDF diagnostics without empirical map products");
     }
 }
 

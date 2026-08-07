@@ -113,6 +113,7 @@ YAML::Node source_table_meta(
     contract["semantic_digest"] =
         "sha256:718feaeebe6004be1714d7c23b33df67a157c6760016f18d6c85a0e75172ae48";
     contract["digest_kind"] = "semantic_contract_sha256";
+    contract["missingness"] = "nonfinite_unavailable";
     contract["scope"] = "source_table_row";
     contract["validity"] =
         "finite_amplitude_and_finite_positive_full_map_rms";

@@ -436,32 +436,102 @@ def valid_noise_fits_join(
     }
 
 
-def write_valid_noise_fits(path: Path) -> list[str]:
+def write_valid_noise_fits(
+    path: Path, logical_maps: tuple[str, ...] = ("I",)
+) -> list[str]:
     import numpy as np
     from astropy.io import fits
 
-    joins = (
-        valid_noise_fits_join(
-            "formal_nonprecision_coefficient_snapshot",
-            "raw_map_pixel",
-            "available",
-            "nonprecision_snapshot_not_inverse_variance",
-        ),
-        valid_noise_fits_join(
-            "conditional_finite_stack_scatter",
-            "raw_map_pixel",
-            "conditional_descriptive",
-            "retained_legacy_name_not_physical_noise_variance_or_covariance",
-        ),
-    )
+    joins = []
+    for logical_map in logical_maps:
+        joins.extend(
+            (
+                (
+                    f"weight_formal_{logical_map}",
+                    valid_noise_fits_join(
+                        "formal_nonprecision_coefficient_snapshot",
+                        "raw_map_pixel",
+                        "available",
+                        "nonprecision_snapshot_not_inverse_variance",
+                    ),
+                ),
+                (
+                    f"noise_variance_{logical_map}",
+                    valid_noise_fits_join(
+                        "conditional_finite_stack_scatter",
+                        "raw_map_pixel",
+                        "conditional_descriptive",
+                        (
+                            "retained_legacy_name_not_physical_noise_"
+                            "variance_or_covariance"
+                        ),
+                    ),
+                ),
+            )
+        )
     images = []
-    for join in joins:
-        image = fits.ImageHDU(np.ones((1, 1), dtype=float))
+    for extname, join in joins:
+        image = fits.ImageHDU(
+            np.ones((1, 1), dtype=float), name=extname
+        )
         for key, value in join.items():
             image.header[key] = value
         images.append(image)
     fits.HDUList([fits.PrimaryHDU(), *images]).writeto(path, overwrite=True)
-    return sorted(join["NOIPRID"] for join in joins)
+    return sorted({join["NOIPRID"] for _, join in joins})
+
+
+def write_valid_noise_realization_fits(
+    path: Path, logical_maps: tuple[str, ...] = ("I",), count: int = 2
+) -> list[str]:
+    import numpy as np
+    from astropy.io import fits
+
+    identity = "source_imprinted_current_realization"
+    images = []
+    for logical_map in logical_maps:
+        stokes_separator = logical_map.rfind("_")
+        for ordinal in range(count):
+            extname = (
+                f"signal_{ordinal}_{logical_map}"
+                if stokes_separator < 0
+                else "signal_"
+                + logical_map[:stokes_separator]
+                + f"_{ordinal}"
+                + logical_map[stokes_separator:]
+            )
+            image = fits.ImageHDU(
+                np.ones((1, 1), dtype=float), name=extname
+            )
+            join = valid_noise_fits_join(
+                identity,
+                f"realization_map_index_{ordinal}",
+                "conditional_design_member",
+                "source_imprinted_current_not_physical_noise_repeat",
+            )
+            for key, value in join.items():
+                image.header[key] = value
+            images.append(image)
+    fits.HDUList([fits.PrimaryHDU(), *images]).writeto(path, overwrite=True)
+    return [identity]
+
+
+def write_valid_scaled_coadd_fits(path: Path) -> list[str]:
+    import numpy as np
+    from astropy.io import fits
+
+    identity = "global_nonprecision_scaled_coefficient"
+    image = fits.ImageHDU(np.ones((1, 1), dtype=float), name="weight_I")
+    join = valid_noise_fits_join(
+        identity,
+        "raw_map_pixel",
+        "available",
+        "existing_use_only_nonprecision_not_precision",
+    )
+    for key, value in join.items():
+        image.header[key] = value
+    fits.HDUList([fits.PrimaryHDU(), image]).writeto(path, overwrite=True)
+    return [identity]
 
 
 def write_valid_source_ecsv(path: Path) -> str:
@@ -479,6 +549,7 @@ def write_valid_source_ecsv(path: Path) -> str:
             source_identity
         ),
         "digest_kind": "semantic_contract_sha256",
+        "missingness": "nonfinite_unavailable",
         "scope": "source_table_row",
         "validity": "finite_amplitude_and_finite_positive_full_map_rms",
         "restriction": "legacy_alias_deprecated_not_significance",
@@ -543,6 +614,51 @@ def enable_single_map_empirical_noise(document: dict) -> None:
         document["realized"][name]["value"] = value
 
 
+def configure_enabled_noise_counts(
+    document: dict,
+    *,
+    observation_maps: int,
+    coadd_maps: int,
+    empirical_maps: int,
+    realization_writes: int,
+    n_noise_maps: int = 2,
+) -> None:
+    document["requested"]["enabled"] = True
+    document["requested"]["n_noise_maps"] = n_noise_maps
+    document["requested"]["write_realizations"] = True
+    document["requested"]["products"]["enabled"] = True
+    effective = document["effective"]["config"]
+    effective["enabled"] = True
+    effective["n_noise_maps"] = n_noise_maps
+    effective["write_realizations"] = True
+    effective["products"]["enabled"] = True
+    resolution = document["effective"]["resolution"]
+    resolution["requested_enabled"] = True
+    resolution["effective_enabled"] = True
+    resolution["requested_n_noise_maps"] = n_noise_maps
+    resolution["effective_n_noise_maps"] = n_noise_maps
+    resolution["count_zeroed_while_disabled"] = False
+    counts = {
+        "noise_maps_per_scientific_map": n_noise_maps,
+        "observation_scientific_map_count": observation_maps,
+        "observation_noise_realization_count": (
+            observation_maps * n_noise_maps
+        ),
+        "coadd_scientific_map_count": coadd_maps,
+        "coadd_noise_realization_count": coadd_maps * n_noise_maps,
+        "total_noise_realization_count": (
+            (observation_maps + coadd_maps) * n_noise_maps
+        ),
+        "empirical_product_map_count": empirical_maps,
+        "realization_image_write_count": realization_writes,
+    }
+    for name, value in counts.items():
+        document["expected"][name] = value
+        document["realized"][name]["value"] = value
+    document["realized"]["generation_executed"] = True
+    document["realized"]["uncertainty_use_valid"] = True
+
+
 def add_valid_noise_member_inventory(redu: Path, document: dict) -> list[Path]:
     enable_single_map_empirical_noise(document)
     fits_path = redu / "map.fits"
@@ -576,6 +692,29 @@ def add_valid_noise_member_inventory(redu: Path, document: dict) -> list[Path]:
     document["package"]["member_count"] = len(members)
     refresh_noise_member_inventory(redu, document)
     return paths
+
+
+def set_noise_member_inventory(
+    redu: Path,
+    document: dict,
+    entries: list[tuple[Path, str, list[str]]],
+) -> None:
+    document["package"]["member_files"] = [
+        {
+            "member_product_identity": path.name,
+            "member_kind": kind,
+            "joined_product_identities": identities,
+            "digest_kind": "file_sha256",
+            "detached_status": (
+                "unverified_out_of_contract_without_package"
+            ),
+        }
+        for path, kind, identities in sorted(
+            entries, key=lambda entry: entry[0].name
+        )
+    ]
+    document["package"]["member_count"] = len(entries)
+    refresh_noise_member_inventory(redu, document)
 
 
 def valid_pointing_document(enabled: bool = True) -> dict:
@@ -1596,6 +1735,181 @@ class ProvenanceAuditTest(unittest.TestCase):
 
             self.assertTrue(noise["valid"], noise.get("semantic_errors"))
 
+    def test_successor_coadd_packages_preserve_realizations_only_or_scaled(
+        self,
+    ) -> None:
+        for scaled in (False, True):
+            with self.subTest(scaled=scaled), tempfile.TemporaryDirectory() as directory:
+                redu = Path(directory)
+                document = valid_noise_document()
+                configure_enabled_noise_counts(
+                    document,
+                    observation_maps=0,
+                    coadd_maps=1,
+                    empirical_maps=0,
+                    realization_writes=2,
+                )
+                document["requested"]["products"][
+                    "apply_empirical_weights"
+                ] = scaled
+                document["effective"]["config"]["products"][
+                    "apply_empirical_weights"
+                ] = scaled
+                realization_path = redu / "coadd_noise.fits"
+                realization_identities = write_valid_noise_realization_fits(
+                    realization_path
+                )
+                entries = [
+                    (realization_path, "fits", realization_identities)
+                ]
+                if scaled:
+                    scaled_path = redu / "coadd_map.fits"
+                    scaled_identities = write_valid_scaled_coadd_fits(
+                        scaled_path
+                    )
+                    entries.append((scaled_path, "fits", scaled_identities))
+                set_noise_member_inventory(redu, document, entries)
+
+                self.assertEqual(
+                    audit.noise_provenance_semantic_errors(document), []
+                )
+                self.assertEqual(
+                    audit.noise_package_integrity_errors(
+                        document,
+                        redu / "noise_products_provenance.yaml",
+                    ),
+                    [],
+                )
+
+                falsely_counted = valid_noise_document()
+                configure_enabled_noise_counts(
+                    falsely_counted,
+                    observation_maps=0,
+                    coadd_maps=1,
+                    empirical_maps=1,
+                    realization_writes=2,
+                )
+                set_noise_member_inventory(redu, falsely_counted, entries)
+                semantic_errors = audit.noise_provenance_semantic_errors(
+                    falsely_counted
+                )
+                self.assertIn(
+                    "empirical products exist without observation maps",
+                    semantic_errors,
+                )
+                package_errors = audit.noise_package_integrity_errors(
+                    falsely_counted,
+                    redu / "noise_products_provenance.yaml",
+                )
+                self.assertIn(
+                    "noise package empirical FITS inventory does not match "
+                    "observed empirical product maps",
+                    package_errors,
+                )
+
+    def test_split_beammap_package_shapes_reconcile_logical_maps(self) -> None:
+        layouts = (
+            (("det_0_I",), ("det_1_I",)),
+            (("det_0_I", "det_1_I"),),
+        )
+        for layout_index, layout in enumerate(layouts):
+            with self.subTest(layout=layout_index), tempfile.TemporaryDirectory() as directory:
+                from astropy.io import fits
+
+                redu = Path(directory)
+                document = valid_noise_document()
+                configure_enabled_noise_counts(
+                    document,
+                    observation_maps=2,
+                    coadd_maps=0,
+                    empirical_maps=2,
+                    realization_writes=4,
+                )
+                entries: list[tuple[Path, str, list[str]]] = []
+                for file_index, logical_maps in enumerate(layout):
+                    data_path = redu / f"array{file_index}_map.fits"
+                    realization_path = (
+                        redu / f"array{file_index}_noise.fits"
+                    )
+                    entries.extend(
+                        (
+                            (
+                                data_path,
+                                "fits",
+                                write_valid_noise_fits(
+                                    data_path, logical_maps
+                                ),
+                            ),
+                            (
+                                realization_path,
+                                "fits",
+                                write_valid_noise_realization_fits(
+                                    realization_path, logical_maps
+                                ),
+                            ),
+                        )
+                    )
+                empty_path = redu / "unused_array_map.fits"
+                fits.HDUList([fits.PrimaryHDU()]).writeto(empty_path)
+                set_noise_member_inventory(redu, document, entries)
+
+                self.assertEqual(
+                    audit.noise_provenance_semantic_errors(document), []
+                )
+                self.assertEqual(
+                    audit.noise_package_integrity_errors(
+                        document,
+                        redu / "noise_products_provenance.yaml",
+                    ),
+                    [],
+                )
+                self.assertNotIn(
+                    empty_path.name,
+                    {
+                        member["member_product_identity"]
+                        for member in document["package"]["member_files"]
+                    },
+                )
+
+                admitted_empty = valid_noise_document()
+                configure_enabled_noise_counts(
+                    admitted_empty,
+                    observation_maps=2,
+                    coadd_maps=0,
+                    empirical_maps=2,
+                    realization_writes=4,
+                )
+                set_noise_member_inventory(
+                    redu,
+                    admitted_empty,
+                    [*entries, (empty_path, "fits", [])],
+                )
+                empty_errors = audit.noise_package_integrity_errors(
+                    admitted_empty,
+                    redu / "noise_products_provenance.yaml",
+                )
+                self.assertTrue(
+                    any(
+                        "admitted FITS member has no noise-product join"
+                        in error
+                        for error in empty_errors
+                    ),
+                    empty_errors,
+                )
+
+                document["realized"]["empirical_product_map_count"][
+                    "value"
+                ] = 1
+                count_errors = audit.noise_package_integrity_errors(
+                    document,
+                    redu / "noise_products_provenance.yaml",
+                )
+                self.assertIn(
+                    "noise package empirical FITS inventory does not match "
+                    "observed empirical product maps",
+                    count_errors,
+                )
+
     def test_disabled_noise_allows_only_non_stack_source_ecsv(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             redu = Path(directory)
@@ -1748,6 +2062,61 @@ class ProvenanceAuditTest(unittest.TestCase):
                 errors,
             )
 
+    def test_reconciles_repeated_fits_identities_by_logical_map(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "split_array.fits"
+            write_valid_noise_fits(path, ("det_0_I", "det_1_I"))
+
+            identities, realization_count, empirical_count, stack = (
+                audit.fits_noise_member_joins(path)
+            )
+
+            self.assertEqual(
+                identities,
+                [
+                    "conditional_finite_stack_scatter",
+                    "formal_nonprecision_coefficient_snapshot",
+                ],
+            )
+            self.assertEqual(realization_count, 0)
+            self.assertEqual(empirical_count, 2)
+            self.assertTrue(stack)
+
+    def test_realization_scopes_restart_only_across_logical_maps(self) -> None:
+        import numpy as np
+        from astropy.io import fits
+
+        identity = "source_imprinted_current_realization"
+        images = []
+        for detector in range(2):
+            for ordinal in range(2):
+                image = fits.ImageHDU(
+                    np.ones((1, 1), dtype=float),
+                    name=f"signal_det_{detector}_{ordinal}_I",
+                )
+                values = valid_noise_fits_join(
+                    identity,
+                    f"realization_map_index_{ordinal}",
+                    "conditional_design_member",
+                    "source_imprinted_current_not_physical_noise_repeat",
+                )
+                for key, value in values.items():
+                    image.header[key] = value
+                images.append(image)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "split_realizations.fits"
+            fits.HDUList([fits.PrimaryHDU(), *images]).writeto(path)
+            _, realization_count, empirical_count, _ = (
+                audit.fits_noise_member_joins(path)
+            )
+            self.assertEqual(realization_count, 4)
+            self.assertEqual(empirical_count, 0)
+
+            with fits.open(path, mode="update", memmap=False) as hdus:
+                hdus.append(hdus[1].copy())
+            with self.assertRaises(ValueError):
+                audit.fits_noise_member_joins(path)
+
     def test_counts_repeated_realization_identity_hdus(self) -> None:
         import numpy as np
         from astropy.io import fits
@@ -1755,7 +2124,10 @@ class ProvenanceAuditTest(unittest.TestCase):
         identity = "source_imprinted_current_realization"
         images = []
         for ordinal in range(2):
-            image = fits.ImageHDU(np.ones((1, 1), dtype=float))
+            image = fits.ImageHDU(
+                np.ones((1, 1), dtype=float),
+                name=f"signal_{ordinal}_I",
+            )
             values = {
                 "NOIPKG": "citlali-noise-products",
                 "NOIPROV": "noise_products_provenance.yaml",
@@ -1790,6 +2162,7 @@ class ProvenanceAuditTest(unittest.TestCase):
         from astropy.io import fits
 
         wrong_values = {
+            "EXTNAME": "weight_formal_other",
             "NOIDGKND": "file_sha256",
             "NOIMISS": "zero_filled",
             "NOISCOPE": "other_scope",
@@ -1838,6 +2211,35 @@ class ProvenanceAuditTest(unittest.TestCase):
 
             write_valid_source_ecsv(path)
             table = Table.read(path, format="ascii.ecsv")
+            del table.meta["noise_product_contract"]["missingness"]
+            table.write(path, format="ascii.ecsv", overwrite=True)
+            with self.assertRaises(ValueError):
+                audit.ecsv_noise_member_joins(path)
+
+            for wrong_missingness in ("", "zero_filled"):
+                with self.subTest(missingness=wrong_missingness):
+                    write_valid_source_ecsv(path)
+                    table = Table.read(path, format="ascii.ecsv")
+                    table.meta["noise_product_contract"]["missingness"] = (
+                        wrong_missingness
+                    )
+                    table.write(path, format="ascii.ecsv", overwrite=True)
+                    with self.assertRaises(ValueError):
+                        audit.ecsv_noise_member_joins(path)
+
+            write_valid_source_ecsv(path)
+            lines = path.read_text(encoding="utf-8").splitlines(True)
+            missingness_line = next(
+                line for line in lines if "missingness:" in line
+            )
+            duplicate_at = lines.index(missingness_line)
+            lines.insert(duplicate_at + 1, missingness_line)
+            path.write_text("".join(lines), encoding="utf-8")
+            with self.assertRaises(ValueError):
+                audit.ecsv_noise_member_joins(path)
+
+            write_valid_source_ecsv(path)
+            table = Table.read(path, format="ascii.ecsv")
             table.remove_column("sig2noise")
             table.write(path, format="ascii.ecsv", overwrite=True)
             with self.assertRaises(ValueError):
@@ -1865,6 +2267,36 @@ class ProvenanceAuditTest(unittest.TestCase):
                     token for token in comment.split("|")
                     if not token.startswith("semantic_digest=")
                 )
+            )
+            with self.assertRaises(ValueError):
+                audit.netcdf_noise_member_joins(path)
+
+            write_valid_noise_netcdf(path)
+            update_comment(
+                lambda comment: "|".join(
+                    token for token in comment.split("|")
+                    if not token.startswith("missingness=")
+                )
+            )
+            with self.assertRaises(ValueError):
+                audit.netcdf_noise_member_joins(path)
+
+            for wrong_missingness in ("", "zero_filled"):
+                with self.subTest(missingness=wrong_missingness):
+                    write_valid_noise_netcdf(path)
+                    update_comment(
+                        lambda comment: comment.replace(
+                            "missingness=nonfinite_unavailable",
+                            f"missingness={wrong_missingness}",
+                        )
+                    )
+                    with self.assertRaises(ValueError):
+                        audit.netcdf_noise_member_joins(path)
+
+            write_valid_noise_netcdf(path)
+            update_comment(
+                lambda comment: comment
+                + "|missingness=nonfinite_unavailable"
             )
             with self.assertRaises(ValueError):
                 audit.netcdf_noise_member_joins(path)

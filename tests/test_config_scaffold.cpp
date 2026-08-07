@@ -107,6 +107,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <string_view>
 #include <variant>
 #include <vector>
 
@@ -2597,7 +2598,7 @@ TEST(config_scaffold, records_naive_coadd_observation_and_coadd_noise_cardinalit
     citlali::pipeline::record_noise_map_output_stage(
         noise, false, false, 3, 2, 3, 6);
     citlali::pipeline::record_noise_map_output_stage(
-        noise, true, false, 3, 2, 3, 6);
+        noise, true, false, 3, 2, 0, 6);
 
     citlali::pipeline::record_noise_run_completed(
         noise, mapmaking, false);
@@ -2606,7 +2607,7 @@ TEST(config_scaffold, records_naive_coadd_observation_and_coadd_noise_cardinalit
     EXPECT_EQ(*noise.realized.observation_noise_realization_count, 6U);
     EXPECT_EQ(*noise.realized.coadd_noise_realization_count, 6U);
     EXPECT_EQ(*noise.realized.total_noise_realization_count, 12U);
-    EXPECT_EQ(*noise.realized.empirical_product_map_count, 6U);
+    EXPECT_EQ(*noise.realized.empirical_product_map_count, 3U);
     EXPECT_EQ(*noise.realized.realization_image_write_count, 12U);
 }
 
@@ -2634,9 +2635,9 @@ TEST(config_scaffold,
     citlali::pipeline::record_noise_map_output_stage(
         noise, false, false, 3, 2, 3, 6);
     citlali::pipeline::record_noise_map_output_stage(
-        noise, true, false, 3, 2, 3, 6);
+        noise, true, false, 3, 2, 0, 6);
     citlali::pipeline::record_noise_map_output_stage(
-        noise, true, true, 3, 2, 3, 6);
+        noise, true, true, 3, 2, 0, 6);
 
     citlali::pipeline::record_noise_run_completed(
         noise, mapmaking, true);
@@ -2646,8 +2647,28 @@ TEST(config_scaffold,
     EXPECT_EQ(*noise.realized.coadd_scientific_map_count, 3U);
     EXPECT_EQ(*noise.realized.coadd_noise_realization_count, 6U);
     EXPECT_EQ(*noise.realized.total_noise_realization_count, 12U);
-    EXPECT_EQ(*noise.realized.empirical_product_map_count, 9U);
+    EXPECT_EQ(*noise.realized.empirical_product_map_count, 3U);
     EXPECT_EQ(*noise.realized.realization_image_write_count, 18U);
+}
+
+TEST(config_scaffold,
+     successor_coadd_rejects_empirical_companion_count) {
+    citlali::config::NoiseConfig request;
+    request.enabled = true;
+    request.n_noise_maps = 2;
+    request.products_enabled = true;
+    request.write_realizations = true;
+    citlali::pipeline::NoiseExecutionPlan noise;
+    noise.reset_from_request(request, true);
+    citlali::pipeline::begin_noise_run_publication(noise);
+
+    EXPECT_THROW(
+        citlali::pipeline::record_noise_map_output_stage(
+            noise, true, false, 1, 2, 1, 2),
+        std::logic_error);
+    EXPECT_EQ(*noise.realized.coadd_scientific_map_count, 0U);
+    EXPECT_EQ(*noise.realized.empirical_product_map_count, 0U);
+    EXPECT_EQ(*noise.realized.realization_image_write_count, 0U);
 }
 
 TEST(config_scaffold,
@@ -3105,10 +3126,42 @@ TEST(config_scaffold, coadd_provenance_failure_propagates) {
 
 using NoiseJoinFields = std::map<std::string, std::string>;
 
+std::string noise_fits_fixture_extname(
+    const std::string &identity, const std::string &scope,
+    const std::string &logical_map = "I") {
+    if (identity == citlali::pipeline::noise_realization_product_id) {
+        constexpr std::string_view prefix{"realization_map_index_"};
+        const auto ordinal = scope.substr(prefix.size());
+        const auto stokes_separator = logical_map.rfind('_');
+        if (stokes_separator == std::string::npos) {
+            return "signal_" + ordinal + "_" + logical_map;
+        }
+        return "signal_" + logical_map.substr(0, stokes_separator) + "_" +
+            ordinal + logical_map.substr(stokes_separator);
+    }
+    const std::map<std::string, std::string> prefixes{
+        {citlali::pipeline::noise_formal_coefficient_product_id,
+         "weight_formal_"},
+        {citlali::pipeline::noise_scaled_coefficient_product_id,
+         "weight_"},
+        {citlali::pipeline::noise_conditional_stack_scatter_product_id,
+         "noise_variance_"},
+        {citlali::pipeline::noise_coefficient_standardized_signal_product_id,
+         "sig2noise_"},
+        {citlali::pipeline::noise_filtered_pixel_stack_scatter_product_id,
+         "point_source_uncertainty_"},
+        {citlali::pipeline::noise_stack_scatter_ratio_product_id,
+         "sig2noise_point_source_"}};
+    return prefixes.at(identity) + logical_map;
+}
+
 NoiseJoinFields valid_noise_fits_join_fields(
     const std::string &identity, const std::string &scope,
-    const std::string &validity, const std::string &restriction) {
+    const std::string &validity, const std::string &restriction,
+    const std::string &logical_map = "I") {
     return {
+        {"EXTNAME", noise_fits_fixture_extname(
+                        identity, scope, logical_map)},
         {"NOIPKG", citlali::pipeline::noise_package_id},
         {"NOIPROV", citlali::pipeline::noise_provenance_join_id},
         {"NOIPRID", identity},
@@ -3144,23 +3197,28 @@ void write_noise_fits_fixture(
     }
 }
 
-std::vector<NoiseJoinFields> valid_empirical_noise_fits_joins() {
+std::vector<NoiseJoinFields> valid_empirical_noise_fits_joins(
+    const std::string &logical_map = "I") {
     return {
         valid_noise_fits_join_fields(
             citlali::pipeline::noise_formal_coefficient_product_id,
             "raw_map_pixel", "available",
-            "nonprecision_snapshot_not_inverse_variance"),
+            "nonprecision_snapshot_not_inverse_variance", logical_map),
         valid_noise_fits_join_fields(
             citlali::pipeline::noise_conditional_stack_scatter_product_id,
             "raw_map_pixel", "conditional_descriptive",
-            "retained_legacy_name_not_physical_noise_variance_or_covariance")};
+            "retained_legacy_name_not_physical_noise_variance_or_covariance",
+            logical_map)};
 }
 
 void write_noise_ecsv_fixture(
     const std::filesystem::path &path,
     const std::string &column_binding = "sig2noise",
     const std::optional<std::string> &omitted_field = std::nullopt,
-    bool include_bound_column = true) {
+    bool include_bound_column = true,
+    const std::string &missingness =
+        citlali::pipeline::noise_compact_missingness,
+    bool duplicate_missingness = false) {
     const std::string identity =
         citlali::pipeline::noise_fitted_amplitude_rms_ratio_product_id;
     std::map<std::string, std::string> contract{
@@ -3171,6 +3229,7 @@ void write_noise_ecsv_fixture(
         {"product_version", citlali::pipeline::noise_product_contract_version},
         {"semantic_digest", citlali::pipeline::noise_product_semantic_digest(identity)},
         {"digest_kind", citlali::pipeline::noise_semantic_digest_kind},
+        {"missingness", missingness},
         {"scope", "source_table_row"},
         {"validity", "finite_amplitude_and_finite_positive_full_map_rms"},
         {"restriction", "legacy_alias_deprecated_not_significance"}};
@@ -3189,6 +3248,9 @@ void write_noise_ecsv_fixture(
            << "# - noise_product_contract:\n";
     for (const auto &[key, value] : contract) {
         stream << "#     " << key << ": " << value << '\n';
+    }
+    if (duplicate_missingness) {
+        stream << "#     missingness: " << missingness << '\n';
     }
     stream << "# schema: astropy-2.0\n"
            << (include_bound_column ? "array sig2noise\n0 1.0\n"
@@ -3455,15 +3517,15 @@ TEST(config_scaffold,
     const std::map<std::string, std::string> exact_noise_comments{
         {
             "map_noise_weight_median_ratio",
-            "median of the nonprecision normalization coefficient times conditional finite-stack scatter over the realized calibration support; citlali_noise_product_join_v1|variable=map_noise_weight_median_ratio|package_id=citlali-noise-products|provenance_id=noise_products_provenance.yaml|product_identity=global_nonprecision_scale_diagnostic|product_version=SCI-NOI-002-v1|semantic_digest=sha256:bfb6d1ea365d1b8e82fd88aad0c2aac3ebb0a2f40f3b78c244f5b1ce9498a655|digest_kind=semantic_contract_sha256|scope=map_summary|validity=available_when_finite_positive_calibration_support_exists|restriction=engineering_scale_diagnostic_not_precision_or_significance"
+            "median of the nonprecision normalization coefficient times conditional finite-stack scatter over the realized calibration support; citlali_noise_product_join_v1|variable=map_noise_weight_median_ratio|package_id=citlali-noise-products|provenance_id=noise_products_provenance.yaml|product_identity=global_nonprecision_scale_diagnostic|product_version=SCI-NOI-002-v1|semantic_digest=sha256:bfb6d1ea365d1b8e82fd88aad0c2aac3ebb0a2f40f3b78c244f5b1ce9498a655|digest_kind=semantic_contract_sha256|missingness=nonfinite_unavailable|scope=map_summary|validity=available_when_finite_positive_calibration_support_exists|restriction=engineering_scale_diagnostic_not_precision_or_significance"
         },
         {
             "map_noise_weight_scale",
-            "existing-use-only global scalar applied to the nonprecision normalization coefficient; citlali_noise_product_join_v1|variable=map_noise_weight_scale|package_id=citlali-noise-products|provenance_id=noise_products_provenance.yaml|product_identity=global_nonprecision_scale_diagnostic|product_version=SCI-NOI-002-v1|semantic_digest=sha256:bfb6d1ea365d1b8e82fd88aad0c2aac3ebb0a2f40f3b78c244f5b1ce9498a655|digest_kind=semantic_contract_sha256|scope=map_summary|validity=available_when_finite_positive_median_ratio_exists|restriction=nonprecision_scale_not_inverse_variance_or_precision"
+            "existing-use-only global scalar applied to the nonprecision normalization coefficient; citlali_noise_product_join_v1|variable=map_noise_weight_scale|package_id=citlali-noise-products|provenance_id=noise_products_provenance.yaml|product_identity=global_nonprecision_scale_diagnostic|product_version=SCI-NOI-002-v1|semantic_digest=sha256:bfb6d1ea365d1b8e82fd88aad0c2aac3ebb0a2f40f3b78c244f5b1ce9498a655|digest_kind=semantic_contract_sha256|missingness=nonfinite_unavailable|scope=map_summary|validity=available_when_finite_positive_median_ratio_exists|restriction=nonprecision_scale_not_inverse_variance_or_precision"
         },
         {
             "map_noise_products_s2n_sigma",
-            "pooled completed-stack scale of realization amplitudes multiplied by sqrt(nonprecision normalization coefficient); citlali_noise_product_join_v1|variable=map_noise_products_s2n_sigma|package_id=citlali-noise-products|provenance_id=noise_products_provenance.yaml|product_identity=pooled_stack_scale_diagnostic|product_version=SCI-NOI-002-v1|semantic_digest=sha256:1b3a38d18a451b9e35ffe9f9fed21b1f3107a8f9cd229386d16998ddff359e79|digest_kind=semantic_contract_sha256|scope=map_summary|validity=available_when_finite_pooled_stack_scale_exists|restriction=engineering_scale_diagnostic_not_calibrated_significance"
+            "pooled completed-stack scale of realization amplitudes multiplied by sqrt(nonprecision normalization coefficient); citlali_noise_product_join_v1|variable=map_noise_products_s2n_sigma|package_id=citlali-noise-products|provenance_id=noise_products_provenance.yaml|product_identity=pooled_stack_scale_diagnostic|product_version=SCI-NOI-002-v1|semantic_digest=sha256:1b3a38d18a451b9e35ffe9f9fed21b1f3107a8f9cd229386d16998ddff359e79|digest_kind=semantic_contract_sha256|missingness=nonfinite_unavailable|scope=map_summary|validity=available_when_finite_pooled_stack_scale_exists|restriction=engineering_scale_diagnostic_not_calibrated_significance"
         }};
 
     const auto exact_bindings = [&](const auto &candidate) {
@@ -3720,6 +3782,7 @@ TEST(config_scaffold, noise_fits_joins_require_every_exact_contract_field) {
     EXPECT_EQ(accepted.realization_image_count, 1U);
 
     const std::map<std::string, std::string> wrong_values{
+        {"EXTNAME", "signal_other_I"},
         {"NOIDGKND", "file_sha256"},
         {"NOIMISS", "zero_filled"},
         {"NOISCOPE", "realization_map_index_01"},
@@ -3747,6 +3810,7 @@ TEST(config_scaffold, noise_fits_joins_require_every_exact_contract_field) {
 
     auto realization_one = valid;
     realization_one["NOISCOPE"] = "realization_map_index_1";
+    realization_one["EXTNAME"] = "signal_1_I";
     write_noise_fits_fixture(path, {valid, realization_one});
     const auto multiple =
         citlali::pipeline::validate_noise_fits_joins(path);
@@ -3756,6 +3820,55 @@ TEST(config_scaffold, noise_fits_joins_require_every_exact_contract_field) {
     auto duplicate_empirical = valid_empirical_noise_fits_joins();
     duplicate_empirical.push_back(duplicate_empirical.front());
     write_noise_fits_fixture(path, duplicate_empirical);
+    EXPECT_THROW(
+        citlali::pipeline::validate_noise_fits_joins(path),
+        std::runtime_error);
+    std::filesystem::remove_all(root);
+}
+
+TEST(config_scaffold,
+     noise_fits_joins_reconcile_logical_maps_within_one_file) {
+    const auto root = std::filesystem::path(testing::TempDir()) /
+        "citlali_noise_multimap_fits_join";
+    std::filesystem::remove_all(root);
+    std::filesystem::create_directories(root);
+    const auto path = root / "split_array.fits";
+
+    auto empirical = valid_empirical_noise_fits_joins("det_0_I");
+    const auto detector_one =
+        valid_empirical_noise_fits_joins("det_1_I");
+    empirical.insert(
+        empirical.end(), detector_one.begin(), detector_one.end());
+    write_noise_fits_fixture(path, empirical);
+    const auto empirical_validation =
+        citlali::pipeline::validate_noise_fits_joins(path);
+    EXPECT_EQ(empirical_validation.empirical_map_product_count, 2U);
+
+    auto duplicate_within_map = empirical;
+    duplicate_within_map.push_back(empirical.front());
+    write_noise_fits_fixture(path, duplicate_within_map);
+    EXPECT_THROW(
+        citlali::pipeline::validate_noise_fits_joins(path),
+        std::runtime_error);
+
+    std::vector<NoiseJoinFields> realizations;
+    for (const auto &logical_map : {"det_0_I", "det_1_I"}) {
+        for (std::size_t ordinal = 0; ordinal < 2; ++ordinal) {
+            realizations.push_back(valid_noise_fits_join_fields(
+                citlali::pipeline::noise_realization_product_id,
+                "realization_map_index_" + std::to_string(ordinal),
+                "conditional_design_member",
+                "source_imprinted_current_not_physical_noise_repeat",
+                logical_map));
+        }
+    }
+    write_noise_fits_fixture(path, realizations);
+    const auto realization_validation =
+        citlali::pipeline::validate_noise_fits_joins(path);
+    EXPECT_EQ(realization_validation.realization_image_count, 4U);
+
+    realizations.push_back(realizations.front());
+    write_noise_fits_fixture(path, realizations);
     EXPECT_THROW(
         citlali::pipeline::validate_noise_fits_joins(path),
         std::runtime_error);
@@ -3776,6 +3889,26 @@ TEST(config_scaffold, noise_ecsv_join_is_an_exact_structured_column_binding) {
         citlali::pipeline::validate_noise_ecsv_join(path),
         std::runtime_error);
     write_noise_ecsv_fixture(path, "sig2noise", "digest_kind");
+    EXPECT_THROW(
+        citlali::pipeline::validate_noise_ecsv_join(path),
+        std::runtime_error);
+    write_noise_ecsv_fixture(path, "sig2noise", "missingness");
+    EXPECT_THROW(
+        citlali::pipeline::validate_noise_ecsv_join(path),
+        std::runtime_error);
+    write_noise_ecsv_fixture(
+        path, "sig2noise", std::nullopt, true, "zero_filled");
+    EXPECT_THROW(
+        citlali::pipeline::validate_noise_ecsv_join(path),
+        std::runtime_error);
+    write_noise_ecsv_fixture(
+        path, "sig2noise", std::nullopt, true, "");
+    EXPECT_THROW(
+        citlali::pipeline::validate_noise_ecsv_join(path),
+        std::runtime_error);
+    write_noise_ecsv_fixture(
+        path, "sig2noise", std::nullopt, true,
+        citlali::pipeline::noise_compact_missingness, true);
     EXPECT_THROW(
         citlali::pipeline::validate_noise_ecsv_join(path),
         std::runtime_error);
@@ -3813,6 +3946,49 @@ TEST(config_scaffold, noise_netcdf_join_rejects_missing_duplicate_and_swapped_fi
     write_noise_netcdf_fixture(
         path, [&](const auto &, const auto &comment) {
             return erase_field(comment, "semantic_digest");
+        });
+    EXPECT_THROW(
+        citlali::pipeline::validate_noise_netcdf_joins(path),
+        std::runtime_error);
+
+    write_noise_netcdf_fixture(
+        path, [&](const auto &, const auto &comment) {
+            return erase_field(comment, "missingness");
+        });
+    EXPECT_THROW(
+        citlali::pipeline::validate_noise_netcdf_joins(path),
+        std::runtime_error);
+
+    write_noise_netcdf_fixture(
+        path, [](const auto &, const auto &comment) {
+            auto changed = comment;
+            const std::string original =
+                "missingness=nonfinite_unavailable";
+            changed.replace(
+                changed.find(original), original.size(),
+                "missingness=zero_filled");
+            return changed;
+        });
+    EXPECT_THROW(
+        citlali::pipeline::validate_noise_netcdf_joins(path),
+        std::runtime_error);
+
+    write_noise_netcdf_fixture(
+        path, [](const auto &, const auto &comment) {
+            auto changed = comment;
+            const std::string original =
+                "missingness=nonfinite_unavailable";
+            changed.replace(
+                changed.find(original), original.size(), "missingness=");
+            return changed;
+        });
+    EXPECT_THROW(
+        citlali::pipeline::validate_noise_netcdf_joins(path),
+        std::runtime_error);
+
+    write_noise_netcdf_fixture(
+        path, [](const auto &, const auto &comment) {
+            return comment + "|missingness=nonfinite_unavailable";
         });
     EXPECT_THROW(
         citlali::pipeline::validate_noise_netcdf_joins(path),
@@ -3975,6 +4151,8 @@ TEST(config_scaffold,
               citlali::pipeline::noise_product_semantic_digest(
                   citlali::pipeline::
                       noise_fitted_amplitude_rms_ratio_product_id));
+    EXPECT_EQ(contract["missingness"].as<std::string>(),
+              citlali::pipeline::noise_compact_missingness);
     EXPECT_EQ(contract["restriction"].as<std::string>(),
               "legacy_alias_deprecated_not_significance");
 }

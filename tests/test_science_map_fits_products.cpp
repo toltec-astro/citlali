@@ -1,8 +1,11 @@
 #include <gtest/gtest.h>
 
+#include <citlali/core/engine/beammap.h>
 #include <citlali/core/engine/engine.h>
 #include <citlali/core/mapmaking/map.h>
 #include <citlali/core/pipeline/map_image_output_helpers.h>
+#include <citlali/core/pipeline/mapmaking_provenance_lifecycle.h>
+#include <citlali/core/pipeline/noise_provenance.h>
 #include <citlali/core/pipeline/science_map_provenance_serialization.h>
 #include <citlali/core/utils/fits_io.h>
 
@@ -1060,6 +1063,113 @@ std::shared_ptr<ScienceMapBufferFixture> make_production_science_map_buffer(
     return map;
 }
 
+std::shared_ptr<ScienceMapBufferFixture> make_production_beammap_noise_buffer(
+    Eigen::Index map_count) {
+    auto map = std::make_shared<ScienceMapBufferFixture>("omb");
+    map->n_rows = 2;
+    map->n_cols = 3;
+    map->n_noise = 2;
+    map->pixel_size_rad = 2.0 * ASEC_TO_RAD;
+    map->sig_unit = "mJy/beam";
+    map->map_grouping = "detector";
+    map->exposure_time = 1.0;
+    map->science_products.allocate(
+        map_count, map->n_rows, map->n_cols, false, false, false);
+    map->signal.assign(
+        static_cast<std::size_t>(map_count),
+        Eigen::MatrixXd::Ones(map->n_rows, map->n_cols));
+    map->weight.assign(
+        static_cast<std::size_t>(map_count),
+        Eigen::MatrixXd::Constant(map->n_rows, map->n_cols, 2.0));
+    map->weight_formal.assign(
+        static_cast<std::size_t>(map_count),
+        Eigen::MatrixXd::Constant(map->n_rows, map->n_cols, 3.0));
+    map->noise_variance.assign(
+        static_cast<std::size_t>(map_count),
+        Eigen::MatrixXd::Constant(map->n_rows, map->n_cols, 4.0));
+    map->sig2noise_pixel.assign(
+        static_cast<std::size_t>(map_count),
+        Eigen::MatrixXd::Constant(map->n_rows, map->n_cols, 0.5));
+    for (Eigen::Index map_index = 0; map_index < map_count; ++map_index) {
+        map->noise.emplace_back(map->n_rows, map->n_cols, map->n_noise);
+        map->noise.back().setConstant(
+            static_cast<double>(map_index + 1));
+    }
+    map->median_err = Eigen::VectorXd::Ones(map_count);
+    map->median_rms = Eigen::VectorXd::Constant(map_count, 2.0);
+    map->noise_stack_scatter_valid = Eigen::VectorXi::Ones(map_count);
+    map->noise_weight_scale_valid = Eigen::VectorXi::Ones(map_count);
+    map->noise_weight_median_ratio = Eigen::VectorXd::Ones(map_count);
+    map->noise_weight_scale = Eigen::VectorXd::Ones(map_count);
+    map->noise_valid_pixels = Eigen::VectorXd::Constant(
+        map_count, static_cast<double>(map->n_rows * map->n_cols));
+    map->wcs.ctype = {"AZ---TAN", "EL---TAN", "FREQ", "STOKES"};
+    map->wcs.cunit = {"deg", "deg", "Hz", "1"};
+    map->wcs.crval = {0.0F, 0.0F, 0.0F, 0.0F};
+    map->wcs.cdelt = {-0.001F, 0.001F, 1.0F, 1.0F};
+    map->wcs.crpix = {1.0F, 1.0F, 0.0F, 0.0F};
+    map->wcs.naxis = {
+        static_cast<int>(map->n_cols), static_cast<int>(map->n_rows), 1, 1};
+    return map;
+}
+
+void configure_production_beammap_writer(
+    Beammap &beammap, const std::vector<int> &array_ids,
+    const std::vector<int> &flags, Eigen::Index array_count) {
+    configure_production_writer_engine(beammap);
+    beammap.typed_config.runtime.reduction_type =
+        citlali::config::ReductionType::beammap;
+    beammap.typed_config.mapmaking.grouping =
+        citlali::config::MapGrouping::detector;
+    beammap.typed_config.coadd.enabled = false;
+    beammap.typed_config.beammap.split_fits_by_flag.enabled = true;
+    beammap.typed_config.beammap.split_fits_by_flag.flag_values = {0};
+    beammap.noise_plan.reset_from_request(
+        beammap.typed_config.noise, true);
+
+    const auto map_count = static_cast<Eigen::Index>(array_ids.size());
+    beammap.map_indices.n_maps = map_count;
+    beammap.map_indices.maps_to_arrays.resize(map_count);
+    beammap.map_indices.arrays_to_maps.resize(map_count);
+    beammap.map_indices.maps_to_stokes.resize(map_count);
+    beammap.map_indices.maps_to_stokes.setZero();
+    for (Eigen::Index map_index = 0; map_index < map_count; ++map_index) {
+        beammap.map_indices.maps_to_arrays(map_index) =
+            array_ids[static_cast<std::size_t>(map_index)];
+        beammap.map_indices.arrays_to_maps(map_index) =
+            array_ids[static_cast<std::size_t>(map_index)];
+    }
+
+    beammap.calib.n_dets = map_count;
+    beammap.calib.n_arrays = array_count;
+    beammap.calib.arrays.resize(array_count);
+    for (Eigen::Index array_index = 0; array_index < array_count;
+         ++array_index) {
+        beammap.calib.arrays(array_index) = array_index;
+    }
+    beammap.calib.run_hwpr = false;
+    beammap.calib.apt_header_keys.clear();
+    beammap.calib.apt_header_units.clear();
+    beammap.calib.apt["flag"].resize(map_count);
+    beammap.flag2 = Eigen::Matrix<uint16_t, Eigen::Dynamic, 1>::Zero(
+        map_count);
+    for (Eigen::Index map_index = 0; map_index < map_count; ++map_index) {
+        beammap.calib.apt["flag"](map_index) =
+            flags[static_cast<std::size_t>(map_index)];
+    }
+    for (Eigen::Index array_index = 0; array_index < array_count;
+         ++array_index) {
+        beammap.calib.array_fwhms[array_index] = {
+            6.0 * ASEC_TO_RAD, 5.0 * ASEC_TO_RAD};
+        beammap.calib.array_pas[array_index] = 0.0;
+        beammap.calib.array_beam_areas[array_index] = 1.0;
+    }
+    beammap.telescope.fsmp = 1.0;
+    beammap.telescope.source_name = "beammap-fixture";
+    beammap.telescope.project_id = "SCI-NOI-002";
+    beammap.telescope.obs_goal = "beammap";
+}
+
 struct FitsSpatialWcs {
     std::array<double, 2> cdelt{};
     std::array<double, 2> crpix{};
@@ -1438,6 +1548,309 @@ TEST(science_map_fits_products,
               std::string::npos);
     EXPECT_NE(engine.map_fits_outputs.obs_noise[0].filepath.find("_noise"),
               std::string::npos);
+}
+
+TEST(science_map_fits_products,
+     successor_coadd_writer_finalizes_unscaled_and_scaled_only_packages) {
+    for (const bool apply_empirical_weights : {false, true}) {
+        SCOPED_TRACE(apply_empirical_weights);
+        const auto nonce = std::chrono::high_resolution_clock::now()
+                               .time_since_epoch()
+                               .count();
+        FitsDirectoryCleanup cleanup{
+            std::filesystem::path{"/private/tmp"} /
+            ("citlali-noise-coadd-package-" +
+             std::to_string(nonce) + "-" +
+             std::to_string(apply_empirical_weights))};
+        std::filesystem::create_directories(cleanup.path);
+
+        Engine engine;
+        configure_production_writer_engine(engine);
+        engine.typed_config.noise.apply_empirical_weights =
+            apply_empirical_weights;
+        engine.noise_plan.reset_from_request(
+            engine.typed_config.noise, true);
+        citlali::pipeline::begin_noise_product_publication(
+            cleanup.path, engine.noise_plan);
+
+        decltype(engine.map_fits_outputs.obs) observation_data_files;
+        decltype(engine.map_fits_outputs.obs_noise)
+            observation_realization_files;
+        const auto observation_data_base =
+            (cleanup.path / "observation_map").string();
+        const auto observation_realization_base =
+            (cleanup.path / "observation_noise").string();
+        observation_data_files.emplace_back(observation_data_base);
+        observation_realization_files.emplace_back(
+            observation_realization_base);
+        auto observation = make_production_science_map_buffer(
+            engine, false, 3, 4, {2.0, 1.5});
+        auto *observation_data_ptr = &observation_data_files;
+        auto *observation_realization_ptr =
+            &observation_realization_files;
+        ASSERT_NO_THROW(engine.write_maps(
+            observation_data_ptr, observation_realization_ptr,
+            observation, 0));
+        const std::vector<std::filesystem::path> observation_data_paths{
+            observation_data_base + ".fits"};
+        const std::vector<std::filesystem::path>
+            observation_realization_paths{
+                observation_realization_base + ".fits"};
+        observation_data_files.clear();
+        observation_realization_files.clear();
+        ASSERT_NO_THROW(
+            citlali::pipeline::record_noise_map_output_publication(
+                engine.noise_plan, false, false, *observation,
+                observation_data_paths, observation_realization_paths));
+        ASSERT_EQ(
+            *engine.noise_plan.realized.empirical_product_map_count, 1U);
+        ASSERT_EQ(
+            *engine.noise_plan.realized.realization_image_write_count, 2U);
+
+        decltype(engine.map_fits_outputs.coadd) data_files;
+        decltype(engine.map_fits_outputs.coadd_noise) realization_files;
+        const auto data_base =
+            (cleanup.path / "coadd_map").string();
+        const auto realization_base =
+            (cleanup.path / "coadd_noise").string();
+        data_files.emplace_back(data_base);
+        realization_files.emplace_back(realization_base);
+        auto coadd = make_production_science_map_buffer(
+            engine, true, 3, 4, {2.0, 1.5});
+        auto *data_file_ptr = &data_files;
+        auto *realization_file_ptr = &realization_files;
+        ASSERT_NO_THROW(engine.write_maps(
+            data_file_ptr, realization_file_ptr, coadd, 0));
+
+        const std::vector<std::filesystem::path> data_paths{
+            data_base + ".fits"};
+        const std::vector<std::filesystem::path> realization_paths{
+            realization_base + ".fits"};
+        data_files.clear();
+        realization_files.clear();
+        ASSERT_NO_THROW(
+            citlali::pipeline::record_noise_map_output_publication(
+                engine.noise_plan, true, false, *coadd,
+                data_paths, realization_paths));
+        EXPECT_EQ(
+            *engine.noise_plan.realized.empirical_product_map_count, 1U);
+        EXPECT_EQ(
+            *engine.noise_plan.realized.realization_image_write_count, 4U);
+
+        citlali::config::MapmakingConfig mapmaking_request;
+        mapmaking_request.method = citlali::config::MapMethod::naive;
+        citlali::pipeline::MapmakingExecutionPlan mapmaking;
+        mapmaking.reset_from_request(
+            mapmaking_request, citlali::config::ReductionType::science);
+        mapmaking.begin_iteration();
+        mapmaking.begin_observation(
+            0, "152390", 1, 4.848136811e-6, 1);
+        citlali::pipeline::complete_mapmaking_observation(mapmaking);
+        mapmaking.begin_coadd(1, 1);
+        citlali::pipeline::complete_mapmaking_coadd(mapmaking);
+        citlali::pipeline::record_mapmaking_run_completed(mapmaking);
+        ASSERT_NO_THROW(citlali::pipeline::record_noise_run_completed(
+            engine.noise_plan, mapmaking, false));
+        EXPECT_EQ(
+            engine.noise_plan.expected.empirical_product_map_count, 1U);
+        EXPECT_EQ(
+            *engine.noise_plan.realized.empirical_product_map_count, 1U);
+        EXPECT_EQ(
+            *engine.noise_plan.realized.realization_image_write_count, 4U);
+
+        ASSERT_NO_THROW(citlali::pipeline::write_noise_provenance_file(
+            cleanup.path, engine.noise_plan));
+        const auto package = YAML::LoadFile(
+            citlali::pipeline::noise_provenance_path(cleanup.path).string());
+        const auto members = package["package"]["member_files"];
+        ASSERT_TRUE(members.IsSequence());
+        EXPECT_EQ(
+            members.size(), apply_empirical_weights ? 4U : 3U);
+
+        const auto observation_join =
+            citlali::pipeline::validate_noise_fits_joins(
+                observation_data_paths.front());
+        EXPECT_EQ(observation_join.empirical_map_product_count, 1U);
+        const auto observation_realization_join =
+            citlali::pipeline::validate_noise_fits_joins(
+                observation_realization_paths.front());
+        EXPECT_EQ(observation_realization_join.realization_image_count, 2U);
+
+        const auto realization_join =
+            citlali::pipeline::validate_noise_fits_joins(
+                realization_paths.front());
+        EXPECT_EQ(realization_join.realization_image_count, 2U);
+        EXPECT_EQ(realization_join.empirical_map_product_count, 0U);
+        if (apply_empirical_weights) {
+            const auto scaled_join =
+                citlali::pipeline::validate_noise_fits_joins(
+                    data_paths.front());
+            EXPECT_EQ(scaled_join.empirical_map_product_count, 0U);
+            EXPECT_EQ(
+                scaled_join.product_identities,
+                std::vector<std::string>{
+                    citlali::pipeline::
+                        noise_scaled_coefficient_product_id});
+        }
+        else {
+            EXPECT_THROW(
+                citlali::pipeline::validate_noise_fits_joins(
+                    data_paths.front()),
+                std::runtime_error);
+        }
+    }
+}
+
+TEST(science_map_fits_products,
+     split_beammap_writer_finalizes_logical_maps_and_excludes_empty_files) {
+    struct SplitShape {
+        std::vector<int> arrays;
+        std::vector<int> flags;
+        Eigen::Index array_count;
+        std::size_t selected_array_count;
+    };
+    const std::array<SplitShape, 2> shapes{{
+        {{0, 1}, {0, 0}, 2, 2},
+        {{0, 0, 1}, {0, 0, 1}, 2, 1},
+    }};
+
+    for (std::size_t shape_index = 0; shape_index < shapes.size();
+         ++shape_index) {
+        SCOPED_TRACE(shape_index);
+        const auto &shape = shapes[shape_index];
+        const auto nonce = std::chrono::high_resolution_clock::now()
+                               .time_since_epoch()
+                               .count();
+        FitsDirectoryCleanup cleanup{
+            std::filesystem::path{"/private/tmp"} /
+            ("citlali-noise-split-beammap-package-" +
+             std::to_string(nonce) + "-" +
+             std::to_string(shape_index))};
+        std::filesystem::create_directories(cleanup.path);
+
+        Beammap beammap;
+        configure_production_beammap_writer(
+            beammap, shape.arrays, shape.flags, shape.array_count);
+        citlali::pipeline::begin_noise_product_publication(
+            cleanup.path, beammap.noise_plan);
+        auto buffer = make_production_beammap_noise_buffer(
+            static_cast<Eigen::Index>(shape.arrays.size()));
+
+        decltype(beammap.map_fits_outputs.obs) data_files;
+        decltype(beammap.map_fits_outputs.obs_noise) realization_files;
+        std::vector<std::string> data_bases;
+        std::vector<std::string> realization_bases;
+        for (Eigen::Index array_index = 0;
+             array_index < shape.array_count; ++array_index) {
+            data_bases.push_back(
+                (cleanup.path /
+                 ("array" + std::to_string(array_index) + "_map"))
+                    .string());
+            realization_bases.push_back(
+                (cleanup.path /
+                 ("array" + std::to_string(array_index) + "_noise"))
+                    .string());
+            data_files.emplace_back(data_bases.back());
+            realization_files.emplace_back(realization_bases.back());
+        }
+        auto *data_file_ptr = &data_files;
+        auto *realization_file_ptr = &realization_files;
+        citlali::pipeline::StageProfileCollector stage_profile;
+        ASSERT_NO_THROW(
+            beammap.write_beammap_map_products<mapmaking::RawObs>(
+                buffer.get(), data_file_ptr, realization_file_ptr,
+                stage_profile, cleanup.path.string()));
+        EXPECT_TRUE(data_files.empty());
+        EXPECT_TRUE(realization_files.empty());
+
+        const std::size_t selected_map_count =
+            static_cast<std::size_t>(std::count(
+                shape.flags.begin(), shape.flags.end(), 0));
+        auto make_mapmaking_plan = [&](std::size_t map_count) {
+            citlali::config::MapmakingConfig request;
+            request.method = citlali::config::MapMethod::naive;
+            request.grouping = citlali::config::MapGrouping::detector;
+            citlali::pipeline::MapmakingExecutionPlan plan;
+            plan.reset_from_request(
+                request, citlali::config::ReductionType::beammap);
+            plan.begin_iteration();
+            plan.begin_observation(
+                0, "152390", map_count, 4.848136811e-6, map_count);
+            citlali::pipeline::complete_mapmaking_observation(plan);
+            citlali::pipeline::record_mapmaking_run_completed(plan);
+            return plan;
+        };
+
+        auto inconsistent_plan = beammap.noise_plan;
+        auto inconsistent_mapmaking =
+            make_mapmaking_plan(selected_map_count + 1);
+        EXPECT_THROW(
+            citlali::pipeline::record_noise_run_completed(
+                inconsistent_plan, inconsistent_mapmaking, false),
+            std::logic_error);
+
+        auto mapmaking = make_mapmaking_plan(selected_map_count);
+        ASSERT_NO_THROW(citlali::pipeline::record_noise_run_completed(
+            beammap.noise_plan, mapmaking, false));
+        EXPECT_EQ(
+            *beammap.noise_plan.realized.empirical_product_map_count,
+            selected_map_count);
+        EXPECT_EQ(
+            *beammap.noise_plan.realized.realization_image_write_count,
+            2U * selected_map_count);
+        ASSERT_NO_THROW(citlali::pipeline::write_noise_provenance_file(
+            cleanup.path, beammap.noise_plan));
+
+        const auto package = YAML::LoadFile(
+            citlali::pipeline::noise_provenance_path(cleanup.path).string());
+        const auto members = package["package"]["member_files"];
+        ASSERT_TRUE(members.IsSequence());
+        EXPECT_EQ(members.size(), 2U * shape.selected_array_count);
+
+        for (Eigen::Index array_index = 0;
+             array_index < shape.array_count; ++array_index) {
+            std::size_t selected_in_array = 0;
+            for (std::size_t detector_index = 0;
+                 detector_index < shape.arrays.size(); ++detector_index) {
+                if (shape.arrays[detector_index] == array_index &&
+                    shape.flags[detector_index] == 0) {
+                    ++selected_in_array;
+                }
+            }
+            const std::filesystem::path data_path =
+                data_bases[static_cast<std::size_t>(array_index)] +
+                "_flag0_good.fits";
+            const std::filesystem::path realization_path =
+                realization_bases[static_cast<std::size_t>(array_index)] +
+                "_flag0_good.fits";
+            ASSERT_TRUE(std::filesystem::exists(data_path));
+            ASSERT_TRUE(std::filesystem::exists(realization_path));
+            if (selected_in_array == 0) {
+                EXPECT_THROW(
+                    citlali::pipeline::validate_noise_fits_joins(data_path),
+                    std::runtime_error);
+                auto admitted_empty_plan = beammap.noise_plan;
+                citlali::pipeline::record_noise_published_member(
+                    admitted_empty_plan, data_path,
+                    citlali::pipeline::NoisePublishedMemberKind::fits);
+                EXPECT_THROW(
+                    citlali::pipeline::write_noise_provenance_file(
+                        cleanup.path, admitted_empty_plan),
+                    std::runtime_error);
+                continue;
+            }
+            const auto data_join =
+                citlali::pipeline::validate_noise_fits_joins(data_path);
+            const auto realization_join =
+                citlali::pipeline::validate_noise_fits_joins(
+                    realization_path);
+            EXPECT_EQ(
+                data_join.empirical_map_product_count, selected_in_array);
+            EXPECT_EQ(
+                realization_join.realization_image_count,
+                2U * selected_in_array);
+        }
+    }
 }
 
 TEST(science_map_fits_products,

@@ -203,10 +203,34 @@ void Beammap::write_split_beammap_map_products(
         beammap_map_product_split_helpers::log_split_output_filepaths(
             logger, *split_f_io, flag_value);
 
-        const auto published_data_paths =
-            citlali::pipeline::noise_fits_output_paths(*split_f_io);
-        const auto published_noise_paths =
-            citlali::pipeline::noise_fits_output_paths(*split_n_io);
+        std::set<Eigen::Index> published_file_indices;
+        for (const auto detector_index : detector_indices) {
+            const auto file_index =
+                map_indices.arrays_to_maps(detector_index);
+            if (file_index < 0 ||
+                file_index >= static_cast<Eigen::Index>(split_f_io->size())) {
+                throw std::logic_error(
+                    "split Beammap selected map has no output-file slot");
+            }
+            published_file_indices.insert(file_index);
+        }
+        std::vector<std::filesystem::path> published_data_paths;
+        std::vector<std::filesystem::path> published_noise_paths;
+        published_data_paths.reserve(published_file_indices.size());
+        published_noise_paths.reserve(published_file_indices.size());
+        for (const auto file_index : published_file_indices) {
+            published_data_paths.emplace_back(
+                split_f_io->at(file_index).filepath + ".fits");
+            if (!split_n_io->empty()) {
+                if (file_index >=
+                    static_cast<Eigen::Index>(split_n_io->size())) {
+                    throw std::logic_error(
+                        "split Beammap selected realization has no output-file slot");
+                }
+                published_noise_paths.emplace_back(
+                    split_n_io->at(file_index).filepath + ".fits");
+            }
+        }
         split_f_io->clear();
         split_n_io->clear();
 
