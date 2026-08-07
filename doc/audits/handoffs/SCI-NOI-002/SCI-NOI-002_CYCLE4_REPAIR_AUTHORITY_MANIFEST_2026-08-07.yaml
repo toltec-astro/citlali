@@ -1,0 +1,162 @@
+format_version: 1
+record_type: frozen_authority_manifest
+manifest_id: SCI-NOI-002-CYCLE4-REPAIR-2026-08-07
+package_id: SCI-NOI-002
+status: ready_pending_coordination_commit_and_push
+purpose: >-
+  Bounded engineering repair of the three Cycle 3 independent re-audit P1
+  package-join and actual-output-shape defects without scientific algorithm,
+  count/default, or production change.
+
+exact_application_start:
+  branch: codex/repair-sci-noi-002
+  commit: 390edf4f8c696551921c615f2439e956d240ec1d
+  parent: 63efd8b08a599d2d56a1716e3cbb2d3686d62b9f
+  tree: a82cdad542494c261d9095105813e157436766c8
+  required_origin_ref: origin/codex/repair-sci-noi-002
+  continuation_rule: existing_clean_repair_worktree_only
+  prohibited_bases: [cycle3_reaudit_commit, coordination_branch, audit_branch]
+
+resource_profile:
+  model: current_resource_balanced_repair_profile
+  effort: proportional_increase_only_for_ambiguous_cross_mode_package_correctness
+  parallelism: serial_no_delegation_or_subagents
+  stop_rule: stage1_checkpoint_then_one_bounded_commit_and_local_gates_then_coordinator_review
+
+authorities:
+  - id: SCI-NOI-002-CYCLE4-COORDINATOR-DISPOSITION
+    source: coordination_git_object
+    commit: containing_coordination_commit_supplied_at_dispatch
+    path: doc/audits/packages/SCI-NOI-002_CYCLE4_COORDINATOR_DISPOSITION_AND_REPAIR_HANDOFF_2026-08-07.md
+    sha256: bb8060f704fbc2abccffdf1fb1b5388364568653bed0b82bbbad242f213aec10
+    role: controlling_cycle4_scope_and_actual_output_shape_policy
+  - id: SCI-NOI-002-CYCLE4-REPAIR-PROMPT
+    source: coordination_git_object
+    commit: containing_coordination_commit_supplied_at_dispatch
+    path: doc/audits/prompts/SCI_NOI_002_CYCLE4_REPAIR_PROMPT.md
+    sha256: 2beda29726d3da4f13da83e277e26200431536ae11199f27231cf6e7c6896a27
+    role: controlling_execution_and_stop_rules
+  - id: SCI-NOI-002-CYCLE3-INDEPENDENT-REAUDIT
+    source: git_object
+    commit: b45da53708dcb05e22f284d6a815bab47caefa40
+    parent: 390edf4f8c696551921c615f2439e956d240ec1d
+    tree: 7fa37d19ba874a2bd07af737c7f344ba21bd21f4
+    path: doc/audits/packages/SCI-NOI-002_CYCLE3_INDEPENDENT_REAUDIT_2026-08-07.md
+    sha256: cef029918bc9923d2f20e479a1bfcda02027c658359c186835ceff2643b6a139
+    role: governing_candidate_assessment
+  - id: SCI-NOI-002-CYCLE3-REAUDIT-RESULT
+    source: git_object
+    commit: b45da53708dcb05e22f284d6a815bab47caefa40
+    path: doc/audits/results/SCI-NOI-002_CYCLE3_REAUDIT_RESULT_2026-08-07.yaml
+    sha256: e801fb991c146d0af3f522edbbee3dcc45f22975b4a08868546b0df11dbe4ecf
+    role: machine_readable_finding_and_gate_evidence
+  - id: SCI-NOI-002-CYCLE3-REAUDIT-PROPOSAL
+    source: git_object
+    commit: b45da53708dcb05e22f284d6a815bab47caefa40
+    path: doc/audits/proposals/SCI-NOI-002_CYCLE3_REAUDIT_LEDGER_UPDATE_PROPOSAL_2026-08-07.yaml
+    sha256: f46ee2c6f90bab5f81ba34a1a0c3d5a91badaa1b11031ce1e46dd0f964e13451
+    role: immutable_noncanonical_reaudit_and_provenance_proposal
+  - id: SCI-NOI-002-CYCLE2-FROZEN-AUTHORITY
+    source: coordination_git_object
+    commit: 287840715c8e4ae778ce57b7166de86e7b7dfa9c
+    path: doc/audits/handoffs/SCI-NOI-002/SCI-NOI-002_CYCLE2_REPAIR_AUTHORITY_MANIFEST_2026-08-06.yaml
+    sha256: 36602cd0ba779a3fe9d9419c3b0ed53d86e26eb4c887ec7b5d19c0442ad86202
+    role: inherited_scientific_decisions_and_prohibited_scope
+  - id: SCI-NOI-002-OWNER-DECISIONS-D001-D008
+    source: coordination_git_object
+    commit: 64ba81795110d89d8baf0ad7d645d16472c254c5
+    path: doc/audits/packages/SCI-NOI-002_OWNER_DECISION_BRIEF_2026-08-06.md
+    sha256: 3520172cfc11e8e34f280f9ebdf147ea414c7a3a4ca6109bad55354a5ff3cf71
+    role: inherited_settled_scientific_contract
+
+included_findings:
+  - SCI-NOI-002-C3RA-P1-001
+  - SCI-NOI-002-C3RA-P1-002
+  - SCI-NOI-002-C3RA-P1-003
+
+repair_decisions:
+  C4-R001: exact_compact_ECSV_and_NetCDF_missingness_CPP_Python_parity
+  C4-R002: mode_aware_successor_coadd_identity_cardinality_preserve_no_companion_policy
+  C4-R003: actual_split_Beammap_multimap_per_file_identity_scope_cardinality_and_unused_file_exclusion
+  C4-R004: deterministic_production_writer_to_final_package_positive_negative_fixtures
+
+finding_state:
+  closed: [SCI-NOI-002-F001, SCI-NOI-002-F002, SCI-NOI-002-F008]
+  open_for_cycle4: [SCI-NOI-002-F003]
+  conditioned_open_for_cycle4: [SCI-NOI-002-F004, SCI-NOI-002-F007]
+  conditioned_external: [SCI-NOI-002-F005]
+  held_external: [SCI-NOI-002-F006]
+
+decision_state:
+  RA-B001: not_closed
+  RA-B002: closed
+  RA-B003: not_closed
+  RA-B004: local_repair_pass_finding_open_conditioned
+  RA-R001: closed
+  RA-R002: closed
+
+allowed_application_paths:
+  - include/citlali/core/pipeline/map_source_table_output.h
+  - include/citlali/core/pipeline/mapdiag_netcdf_map_double_values.h
+  - include/citlali/core/pipeline/noise_execution_plan.h
+  - include/citlali/core/pipeline/noise_provenance.h
+  - include/citlali/core/pipeline/map_image_output_helpers.h
+  - include/citlali/core/engine/detail/beammap_map_product_writers_impl.h
+  - include/citlali/core/engine/detail/mapdiag_output_impl.h
+  - include/citlali/core/engine/detail/source_table_output_impl.h
+
+allowed_validator_contract_and_test_paths:
+  - tools/baseline/audit_reduction_run.py
+  - tools/baseline/test_audit_reduction_run.py
+  - tests/test_config_scaffold.cpp
+  - tests/test_science_map_fits_products.cpp
+  - validation/product_contracts.json
+
+path_expansion_rule: >-
+  Stop before editing any path outside the allowed lists and return the exact
+  narrow production or fixture need. No silent direct-reference expansion is
+  authorized in Cycle 4.
+
+required_contracts:
+  compact_join_missingness: exact_required_field_with_product_specific_value_and_CPP_Python_parity
+  successor_coadd_no_empirical_companion: preserved
+  successor_coadd_unscaled_NOI_empirical_map_count: zero
+  successor_coadd_scaled_coefficient: standalone_global_nonprecision_diagnostic_not_full_bundle_or_precision
+  split_Beammap_file_layout: existing_per_array_file_zero_one_or_multiple_selected_detector_maps
+  split_Beammap_identity: exact_logical_detector_map_grouping_with_product_identity_and_EXTNAME
+  split_Beammap_realization_scope: unique_within_logical_map_restart_allowed_only_across_distinct_maps
+  split_Beammap_count: selected_published_logical_maps_not_files_or_HDUs
+  empty_split_file_NOI_membership: prohibited
+  zero_selection_fallback: unchanged
+  package_publication: explicit_current_iteration_members_atomic_final_completion_unchanged
+  hash_policy: full_SHA256_and_v2_canonical_aggregate_unchanged
+
+required_local_gates:
+  - exact_ECSV_and_NetCDF_missingness_positive_negative_and_CPP_Python_parity
+  - successor_coadd_unscaled_and_scaled_only_writer_to_final_package_fixtures
+  - split_Beammap_one_and_multi_detector_per_file_writer_to_final_package_fixtures
+  - split_Beammap_empty_array_file_exclusion_and_duplicate_within_map_negative_fixtures
+  - active_baseline_auditor_and_contract_ledger_tests
+  - relevant_CPP_focused_tests_and_proportionate_citlali_cli_build
+  - full_CTest
+  - required_config_preflight
+  - JSON_YAML_validation
+  - git_diff_check_exact_path_and_prohibited_scope_audit
+
+provenance_correction:
+  XAUD_001_verified_sha256: dfcd59e9d59395ba84f7dfed1656690daae694872c2a1a40bf4f5c79f6abed3a
+  frozen_cycle2_63_hex_transcription_preserved: true
+  separate_handoff_required: false
+
+prohibited_scope:
+  - estimator_normalization_realization_or_sign_change
+  - coadd_Beammap_filter_or_mapmaking_numerical_change
+  - output_selection_order_filename_or_file_partition_change
+  - add_empirical_companions_to_successor_coadds
+  - configured_realization_count_or_default_change
+  - physical_noise_variance_precision_significance_or_aperture_uncertainty_claim
+  - dense_covariance_sign_stream_per_sample_ID_or_auxiliary_channel_substitution
+  - generic_publication_join_framework_new_helper_subsystem_or_product_class
+  - FLT_SRC_FRUIT_MODE_MAP_JINC_RTC_PTC_or_Wiener_algorithm_change
+  - Unity_local_astronomical_reduction_or_external_evidence
+  - application_integration_push_fresh_reaudit_canonical_ledger_or_production_change
