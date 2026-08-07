@@ -39,9 +39,13 @@ def make_apt(path: Path, mode: str, offsets: list[float]) -> None:
             "flag2": 0,
             "amp": 1.0,
             "amp_err": 0.01,
-            "x_t": 10.0 * uid + offset,
+            # Deliberately keep processed focal-plane coordinates independent
+            # of direction.  The renderer must use raw map-frame positions.
+            "x_t": 30.0 + uid,
+            "x_t_raw": 10.0 * uid + offset,
             "x_t_err": 0.05,
-            "y_t": -5.0 * uid,
+            "y_t": 20.0 + uid,
+            "y_t_raw": -5.0 * uid,
             "y_t_err": 0.05,
             "a_fwhm": 5.0,
             "b_fwhm": 5.5,
@@ -167,7 +171,15 @@ class SplitDirectionVisualizationTest(unittest.TestCase):
                 np.asarray(metrics["delta_parallel_right_minus_left_arcsec"]),
                 4.0,
             )
+            self.assertEqual(set(metrics["position_frame"]), {"raw_altaz_detector_map"})
+            np.testing.assert_allclose(
+                np.asarray(metrics["standard_x_t_raw"]), [0.0, 10.0],
+            )
             manifest = json.loads((output / "manifest.json").read_text())
+            self.assertEqual(
+                manifest["position_authority"]["centroid_columns"],
+                ["x_t_raw", "y_t_raw"],
+            )
             self.assertFalse(manifest["selection"]["uses_directional_displacement"])
             self.assertEqual(manifest["layout"]["maximum_supported_detectors_per_page"], 2)
             self.assertEqual(manifest["tool"]["sha256"], sha256_file(SCRIPT))

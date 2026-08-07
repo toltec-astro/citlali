@@ -85,12 +85,13 @@ one completed `all` reduction and creates the first visual review product. It:
 - selects up to 100 detectors from a requested array using only standard-APT
   quality and S/N (or a supplied, pre-existing UID list), never a measured
   left/right displacement;
-- renders the standard, left, and right maps on their common absolute WCS,
-  without recentering, with fitted centroids and the positive scan direction;
+- renders the standard, left, and right maps on their common raw AltAz WCS,
+  without recentering, with the matching `x_t_raw`/`y_t_raw` fitted centroids
+  and the positive scan direction;
 - renders common-coordinate contours, a left-minus-right map, and an
   along-scan profile for each detector;
-- reports right-minus-left parallel and perpendicular fitted-centroid
-  separations and a fit-derived timing-equivalent diagnostic; and
+- reports right-minus-left parallel and perpendicular raw-map-frame
+  fitted-centroid separations and a fit-derived timing-equivalent diagnostic;
 - writes a multipage PDF, ECSV selection and metric tables, a hash-bound input
   manifest, and output checksums.
 

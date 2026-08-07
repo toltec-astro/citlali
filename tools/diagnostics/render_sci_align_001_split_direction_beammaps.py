@@ -35,8 +35,8 @@ ARRAY_IDS = {"a1100": 0, "a1400": 1, "a2000": 2}
 MODES = ("standard", "left", "right")
 RAD_TO_ARCSEC = 180.0 * 3600.0 / math.pi
 REQUIRED_APT_COLUMNS = {
-    "uid", "array", "nw", "flag", "amp", "x_t", "x_t_err", "y_t",
-    "y_t_err", "a_fwhm", "b_fwhm", "sig2noise",
+    "uid", "array", "nw", "flag", "amp", "x_t", "x_t_raw", "x_t_err",
+    "y_t", "y_t_raw", "y_t_err", "a_fwhm", "b_fwhm", "sig2noise",
 }
 
 
@@ -420,8 +420,8 @@ def row_values(table: Table, index: int) -> dict[str, Any]:
     row = table[index]
     result = {name: finite_scalar(row[name]) for name in (
         "uid", "array", "nw", "flag", "flag2", "amp", "amp_err",
-        "x_t", "x_t_err", "y_t", "y_t_err", "a_fwhm", "b_fwhm",
-        "angle", "sig2noise",
+        "x_t", "x_t_raw", "x_t_err", "y_t", "y_t_raw", "y_t_err",
+        "a_fwhm", "b_fwhm", "angle", "sig2noise",
     ) if name in table.colnames}
     return result
 
@@ -434,8 +434,12 @@ def detector_metrics(
 ) -> dict[str, Any]:
     values = {mode: row_values(tables[mode], indices[mode][uid]) for mode in MODES}
     left, right = values["left"], values["right"]
-    dx = right["x_t"] - left["x_t"]
-    dy = right["y_t"] - left["y_t"]
+    # Detector-map WCS and the scan registry are both in the raw AltAz map
+    # frame.  x_t/y_t are subsequently reference-subtracted and may be
+    # derotated by process_apt(), so they cannot be projected onto this scan
+    # axis or used to locate a fitted source in the FITS image.
+    dx = right["x_t_raw"] - left["x_t_raw"]
+    dy = right["y_t_raw"] - left["y_t_raw"]
     parallel = dx * scan.axis_x + dy * scan.axis_y
     perpendicular = dx * scan.cross_x + dy * scan.cross_y
     variance_x = left["x_t_err"] ** 2 + right["x_t_err"] ** 2
@@ -449,8 +453,9 @@ def detector_metrics(
         "uid": uid,
         "array": int(values["standard"]["array"]),
         "nw": int(values["standard"]["nw"]),
-        "delta_x_right_minus_left_arcsec": dx,
-        "delta_y_right_minus_left_arcsec": dy,
+        "position_frame": "raw_altaz_detector_map",
+        "delta_x_raw_right_minus_left_arcsec": dx,
+        "delta_y_raw_right_minus_left_arcsec": dy,
         "delta_parallel_right_minus_left_arcsec": parallel,
         "delta_parallel_fit_sigma_arcsec": parallel_sigma,
         "delta_perpendicular_right_minus_left_arcsec": perpendicular,
@@ -464,8 +469,9 @@ def detector_metrics(
     }
     for mode in MODES:
         for key in (
-            "flag", "flag2", "sig2noise", "x_t", "x_t_err", "y_t",
-            "y_t_err", "a_fwhm", "b_fwhm", "amp", "amp_err",
+            "flag", "flag2", "sig2noise", "x_t", "x_t_raw", "x_t_err",
+            "y_t", "y_t_raw", "y_t_err", "a_fwhm", "b_fwhm", "amp",
+            "amp_err",
         ):
             if key in values[mode]:
                 result[f"{mode}_{key}"] = values[mode][key]
@@ -557,7 +563,8 @@ def render_detector(
     if any(maps[mode][0].shape != shape for mode in MODES):
         raise ContractError(f"uid={uid} standard/left/right shapes differ")
     x, y = image_coordinates(wcs, shape)
-    cx, cy = apt_values["standard"]["x_t"], apt_values["standard"]["y_t"]
+    cx = apt_values["standard"]["x_t_raw"]
+    cy = apt_values["standard"]["y_t_raw"]
     ys, xs = crop_mask(x, y, cx, cy, half_width)
     cropped = {
         mode: masked_signal(maps[mode][0], maps[mode][1])[ys, xs]
@@ -577,7 +584,7 @@ def render_detector(
         draw_map(
             axes[0, column], cropped[mode], extent,
             f"{mode}: flag={int(value.get('flag', -1))} S/N={value.get('sig2noise', math.nan):.1f}",
-            limits, (value["x_t"], value["y_t"]), *style[mode],
+            limits, (value["x_t_raw"], value["y_t_raw"]), *style[mode],
         )
         draw_direction_arrow(axes[0, column], scan, extent)
 
@@ -599,7 +606,7 @@ def render_detector(
         )
         marker, color = style[mode]
         value = apt_values[mode]
-        overlay.plot(value["x_t"], value["y_t"], marker=marker, color=color,
+        overlay.plot(value["x_t_raw"], value["y_t_raw"], marker=marker, color=color,
                      markersize=6, markerfacecolor="none", markeredgewidth=1.3,
                      label=mode)
     overlay.set_title("Unrecentered contours", fontsize=9)
@@ -635,8 +642,8 @@ def render_detector(
         profile = normalized_profile(bilinear(image, pixel_x, pixel_y))
         profile_ax.plot(offsets, profile, color=style[mode][1], label=mode, lw=1.2)
         center = (
-            (apt_values[mode]["x_t"] - cx) * scan.axis_x
-            + (apt_values[mode]["y_t"] - cy) * scan.axis_y
+            (apt_values[mode]["x_t_raw"] - cx) * scan.axis_x
+            + (apt_values[mode]["y_t_raw"] - cy) * scan.axis_y
         )
         profile_ax.axvline(center, color=style[mode][1], lw=0.8, alpha=0.7)
     profile_ax.axhline(0.0, color="0.7", lw=0.6)
@@ -792,7 +799,7 @@ def run(args: argparse.Namespace) -> None:
     if args.hero_selection is not None:
         input_paths.append(args.hero_selection.resolve())
     manifest = {
-        "schema": "sci-align-001-split-direction-beammap-visualization-v1",
+        "schema": "sci-align-001-split-direction-beammap-visualization-v2",
         "tool": {
             "path": str(Path(__file__).resolve()),
             "sha256": sha256_file(Path(__file__).resolve()),
@@ -825,6 +832,15 @@ def run(args: argparse.Namespace) -> None:
             "diagonal left/right beam-fit covariance only; "
             "no pixel independence claim"
         ),
+        "position_authority": {
+            "frame": "raw_altaz_detector_map",
+            "centroid_columns": ["x_t_raw", "y_t_raw"],
+            "fit_uncertainty_columns": ["x_t_err", "y_t_err"],
+            "reason": (
+                "detector FITS WCS and scan direction share the raw AltAz map frame; "
+                "x_t/y_t are reference-subtracted and may be derotated"
+            ),
+        },
         "inputs": [
             {"path": str(path), "size_bytes": path.stat().st_size, "sha256": sha256_file(path)}
             for path in sorted(set(input_paths))
