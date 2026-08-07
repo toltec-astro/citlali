@@ -101,5 +101,49 @@ uncertainty uses the diagonal left/right centroid-fit errors only and is not a
 claim that map pixels or detectors are independent. These diagnostic products
 do not authorize a timestamp correction or a claim of physical clock failure.
 
+The corrected owner-run ObsNum 150819 `all` reduction subsequently completed
+in 3h45m and passed the standard/left/right retained-product checks. Its
+100-detector a1100 review shows a coherent along-scan left/right displacement.
+Because 3C273 has a mostly cross-scan jet, the visualizer's non-mirrored
+profile structure is not by itself a clean filter test.
+
+`tools/diagnostics/analyze_sci_align_001_split_direction_transfer.py` provides
+that bounded follow-up without another Citlali reduction. It consumes the
+same independently fixed UID table and requires the matching retained
+`kernel_det_*_I` plane for every selected detector and every product. The
+synthetic kernel is generated inside RTC after calibration/extinction and is
+then carried through the subsequent RTC filters, PTC cleaning, and mapmaking.
+Therefore it directly tests that downstream transfer path, while explicitly
+remaining unable to test raw detector-data/timestamp association or operations
+that precede kernel generation.
+
+The diagnostic creates equal-detector median signal and kernel stacks in the
+raw AltAz map frame. Signal translations are fit in three masks defined only
+from the standard stack: nuclear core, significant mostly vertical support
+outside the core, and their union. Kernel translations use the nuclear mask.
+It also retains every detector's signal and kernel right-minus-left result.
+The descriptive decision tolerance is one-half of the diagnostic stack pixel,
+with a 0.25-arcsec floor:
+
+- a resolved, morphology-stable signal displacement with a centered kernel
+  strongly disfavors a downstream filtering/mapmaking artifact within the
+  kernel's scope;
+- a resolved signal displacement and a co-moving kernel favors such a
+  downstream transfer artifact;
+- unresolved, morphology-sensitive, or mixed results are inconclusive.
+
+This is a resolution-bounded diagnostic classification, not an
+independent-pixel likelihood or a formal confidence interval. The tool writes
+the detector table, stack-registration table, exact decision JSON, stack
+arrays, a two-page PDF, a hash-bound manifest, and checksums. It fails before
+creating its output directory if any required retained kernel is absent or if
+the signal/kernel shapes or WCS identities differ.
+
+The next owner-run mapmaker-dependence control is a new ObsNum 150819 `all`
+reduction cloned from the accepted retry2 configuration, changing only
+`mapmaking.method` to `naive` and the output root. The current reduction and
+review products remain immutable authorities; the naive run is not launched
+by the retained-product diagnostic.
+
 See `UNITY_RUNBOOK.md` for the owner-run 150819-first campaign and
 `RETURN_BUNDLE_SPEC.md` for return evidence.

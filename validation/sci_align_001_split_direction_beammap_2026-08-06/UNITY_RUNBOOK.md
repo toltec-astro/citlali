@@ -266,6 +266,105 @@ If an independently fixed hero UID table already exists, add
 table after looking at directional displacement. The automatic selection is
 network-balanced and uses only standard-APT quality and S/N.
 
+### Test the retained downstream transfer kernel
+
+This step launches no Citlali reduction and does not alter the completed
+products. Use the exact `selected_detectors.ecsv` frozen by the visual review.
+The job fails closed if any selected standard/left/right detector lacks its
+retained kernel plane or if a signal/kernel WCS identity differs.
+
+For the completed retry2 root and its already frozen raw-frame review:
+
+```bash
+export SCI_SPLIT_ROOT=/work/toltec/wilson/citlali_testing/beammaps/3c273/sci_align_001_split_direction_beammap_onepass_2026-08-06_retry2
+export SCI_VIZ_ROOT="$SCI_SPLIT_ROOT/review_o150819_a1100_raw_frame_v2"
+export SCI_TRANSFER_ROOT="$SCI_SPLIT_ROOT/transfer_o150819_a1100_v1"
+export SCI_TRANSFER_CACHE="$SCI_SPLIT_ROOT/_transfer_cache"
+
+test -f "$SCI_VIZ_ROOT/selected_detectors.ecsv"
+test ! -e "$SCI_TRANSFER_ROOT"
+mkdir -p "$SCI_TRANSFER_CACHE/matplotlib" "$SCI_TRANSFER_CACHE/xdg"
+```
+
+Submit the read-only diagnostic through Slurm so it survives a terminal
+disconnect:
+
+```bash
+cat > "$SCI_SPLIT_ROOT/jobs/run_o150819_transfer_v1.sbatch" <<EOF
+#!/usr/bin/env bash
+#SBATCH --job-name=sci-align-150819-transfer
+#SBATCH --time=04:00:00
+#SBATCH --mem=32G
+#SBATCH --cpus-per-task=1
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --partition=toltec-cpu
+#SBATCH --output=$SCI_SPLIT_ROOT/jobs/%x_%j.out
+#SBATCH --error=$SCI_SPLIT_ROOT/jobs/%x_%j.err
+#SBATCH --parsable
+set -euo pipefail
+cd $SCI_REPO
+OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+MPLBACKEND=Agg MPLCONFIGDIR=$SCI_TRANSFER_CACHE/matplotlib \
+XDG_CACHE_HOME=$SCI_TRANSFER_CACHE/xdg \
+python $SCI_REPO/tools/diagnostics/analyze_sci_align_001_split_direction_transfer.py \
+  --reduction-root $SCI_SPLIT_ROOT/o150819 \
+  --selection $SCI_VIZ_ROOT/selected_detectors.ecsv \
+  --output $SCI_TRANSFER_ROOT \
+  --array a1100 \
+  --minimum-clean-detectors 30
+EOF
+
+bash -n "$SCI_SPLIT_ROOT/jobs/run_o150819_transfer_v1.sbatch"
+transfer_job_id=$(sbatch "$SCI_SPLIT_ROOT/jobs/run_o150819_transfer_v1.sbatch")
+transfer_job_id=${transfer_job_id%%;*}
+printf 'obsnum=150819 transfer_job_id=%s\n' "$transfer_job_id" \
+  | tee "$SCI_SPLIT_ROOT/jobs/o150819_transfer_job_id.txt"
+```
+
+After the job leaves `squeue`:
+
+```bash
+sacct -X -j "$transfer_job_id" \
+  --format=JobID,JobName%32,State,ExitCode,Elapsed,MaxRSS,Start,End
+
+(cd "$SCI_TRANSFER_ROOT" && shasum -a 256 -c SHA256SUMS)
+python - "$SCI_TRANSFER_ROOT/diagnostic_decision.json" <<'PY'
+import json, sys
+doc = json.load(open(sys.argv[1]))
+for key in (
+    "classification",
+    "downstream_filtering_artifact_disposition",
+    "signal_nuclear_right_minus_left_arcsec",
+    "signal_core_plus_jet_right_minus_left_arcsec",
+    "kernel_right_minus_left_arcsec",
+):
+    print(f"{key}={doc.get(key)}")
+PY
+
+pdfinfo "$SCI_TRANSFER_ROOT/split_direction_transfer_o150819_a1100.pdf" \
+  | rg '^(Pages|Page size|File size)'
+```
+
+Require Slurm `COMPLETED`/`0:0`, checksum success, and two PDF pages. The
+decision JSON is scoped only to filtering/cleaning/mapmaking downstream of
+synthetic-kernel creation; it cannot exclude an FPGA/raw metadata-to-integration
+association error.
+
+### Pending mapmaker-dependence control: naive mapmaking
+
+After preserving the retained-kernel result, prepare a new ObsNum 150819
+`direction_mode: all` reduction from the exact accepted retry2 rendered config.
+Change only `mapmaking.method` from its retained value to `naive` and
+`runtime.output_dir` to a new, absent root. Preserve detector grouping,
+direction mode, all RTC/PTC/filtering settings, inputs, APT authority,
+`runtime.crop_detector_to_telescope_support: false`, executable, and commit.
+Before submission, write a manifest containing source/rendered config hashes
+and a machine-checked recursive diff allowlisting exactly those two YAML
+paths. Do not edit or reuse the accepted retry2 output root. Detailed launch
+commands remain pending until the retained source config and its exact current
+`mapmaking.method` value are reverified on Unity.
+
 ## 4. Replicate with 148670
 
 Only after 150819 passes:

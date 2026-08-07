@@ -96,10 +96,17 @@ freeze the application mainline.
   classifier. `all` requires detector grouping and retains approximately three
   observation map buffers rather than executing three reductions. The local
   CLI build, all 645 enabled CTests, 154 baseline-tool tests, the 123-test
-  config suite, and the full config preflight pass. No Unity reduction or
-  scientific split-map comparison has yet been
-  performed; the candidate is diagnostic-only and does not authorize a timing
-  correction. See
+  config suite, and the full config preflight pass. The corrected owner-run
+  ObsNum 150819 `all` reduction completed in 3h45m and passed its
+  standard/left/right product checks; a 100-detector a1100 visual review shows
+  a coherent along-scan displacement. A read-only follow-up now compares the
+  signal stacks with retained synthetic-kernel stacks using nuclear and
+  standard-only vertical-jet masks. Its scope begins at kernel generation
+  inside RTC, so it tests subsequent RTC filtering, PTC cleaning, and
+  mapmaking but not raw detector-data/timestamp association. A same-authority
+  `mapmaking.method: naive` re-reduction is recorded as the next Unity
+  mapmaker-dependence control. The candidate remains diagnostic-only and does
+  not authorize a timing correction. See
   [`validation/sci_align_001_split_direction_beammap_2026-08-06/README.md`](../validation/sci_align_001_split_direction_beammap_2026-08-06/README.md).
 - A 2026-08-02 bounded `SCI-ALIGN-001` repair candidate is complete on the
   isolated `codex/repair-sci-align-001` branch at application commit
