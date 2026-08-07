@@ -177,7 +177,9 @@ To show the help screen of the commandline interface:
     $ ./bin/citlali --help
 
 Please see the `API documentation
-<https://toltec-astro.github.io/citlali>`_ for details.
+<https://toltec-astro.github.io/citlali>`_ for programming details and the
+`repository documentation guide <doc/README.md>`_ for scientific conventions,
+product interpretation, validation evidence, and user-facing guides.
 
 
 License

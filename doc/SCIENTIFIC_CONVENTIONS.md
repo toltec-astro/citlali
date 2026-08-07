@@ -26,6 +26,12 @@ than one file or subsystem. A disagreement between this document, executable
 metadata, and actual writer behavior is a defect to resolve. It is not
 permission to choose whichever representation is convenient.
 
+Detailed derivations of reusable mathematical or statistical techniques do not
+belong here. They are registered once in
+[`doc/science/`](science/README.md), and every product or stage using the same
+technique refers to that stable method ID. Team-facing descriptions of what
+products measure and why they exist belong in [`doc/user/`](user/README.md).
+
 ## Capability Boundary
 
 | Reduction intent | Current execution status | Validated contract |

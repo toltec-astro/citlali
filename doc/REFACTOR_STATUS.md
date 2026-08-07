@@ -36,6 +36,29 @@ The live branch, upstream revision, gate, and import policy are recorded in
 [`INTEGRATION_LEDGER.md`](INTEGRATION_LEDGER.md). The durable rationale is
 [ADR 0008](adr/0008-application-mainline-and-build-adaptation-lanes.md).
 
+## Documentation Contract
+
+As of 2026-08-07, the [`doc/` documentation guide](README.md) governs routing
+for new user-visible scientific work. Team-facing workflow and product meaning
+belong under [`doc/user/`](user/README.md). Non-obvious reusable mathematics
+and statistics belong in the registered method library under
+[`doc/science/`](science/README.md). A technique is explained once and every
+pipeline stage using it links to the same stable method ID; audits and product
+guides do not duplicate derivations.
+
+The framework is intentionally demand-driven. A user-visible scientific change
+must update the applicable documentation before final acceptance, but no note
+or guide is created solely to populate the framework. Existing dated reports
+remain historical evidence and are not being reorganized wholesale.
+
+The previously approved `DOC-MAP-001` deliverable is the first queued user
+guide. It will combine a canonical map dictionary with a compact per-reduction
+rendering driven by effective and realized state, explaining what each emitted
+map measures without duplicating its provenance package. MAP-, NOI-, and
+filter-related work contributes stable semantics to this guide, which must
+close before production expansion and Phase 5 closeout. The queue entry itself
+changes no numerical behavior, output selection, or audit scope.
+
 ## 2026-08-05 SCI-MAP-001 Application Integration Candidate
 
 The final independent re-audit at

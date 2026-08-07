@@ -1,5 +1,9 @@
 # Validation Ledger
 
+This directory contains executable contracts and evidence. The documentation
+layer and its separation between user guidance, reusable scientific methods,
+and validation are described in [`doc/README.md`](../doc/README.md).
+
 `accepted_runs.json` is the machine-readable index of accepted Citlali
 refactor validation checkpoints. Large reduction products remain outside Git;
 each record stores enough identity, policy, and location information to find
