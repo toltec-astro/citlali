@@ -31,13 +31,12 @@ silently rewritten.
 
 ## Method Registry
 
-The registry is deliberately empty at framework creation. Register a method
-only alongside a stable implementation or accepted contract; do not reserve
-IDs for speculative work.
+Register a method only alongside a stable implementation or accepted contract;
+do not reserve IDs for speculative work.
 
 | Method ID | Note | Scientific purpose | Consumers | Status |
 | --- | --- | --- | --- | --- |
-| — | — | — | — | — |
+| `SCI-METHOD-WEIGHTED-MAP-NORMALIZATION-001` | [Ordinary positive-coefficient map normalization](SCI-METHOD-WEIGHTED-MAP-NORMALIZATION-001.md) | Normalize ordinary naive signal and matched companions while preserving nonprecision semantics | Naive observation maps; admitted observation coadds; matched kernel and declared linear companions | `validated_bounded` |
 
 ## Required Reference Form
 

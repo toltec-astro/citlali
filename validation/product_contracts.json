@@ -73,7 +73,7 @@
   "science_map_contracts": {
     "sci-map-001-f010-v1": {
       "schema_version": "citlali-science-map-contract-v1",
-      "audit_state": "addressed_pending_reaudit",
+      "audit_state": "accepted_bounded",
       "planes": [
         {
           "name": "geometric_hits_I",

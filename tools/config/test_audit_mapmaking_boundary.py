@@ -99,7 +99,7 @@ class MapmakingBoundaryAuditTest(unittest.TestCase):
             "schema_version": audit.EXPECTED_PRODUCT_REGISTRY_SCHEMA,
             "science_map_contracts": {
                 audit.EXPECTED_SCIENCE_MAP_CONTRACT: {
-                    "audit_state": "addressed_pending_reaudit",
+                    "audit_state": audit.EXPECTED_SCIENCE_MAP_AUDIT_STATE,
                     "planes": [
                         {"name": name}
                         for name in sorted(audit.EXPECTED_SCIENCE_MAP_PLANES)
@@ -131,7 +131,7 @@ class MapmakingBoundaryAuditTest(unittest.TestCase):
             "schema_version": audit.EXPECTED_PRODUCT_REGISTRY_SCHEMA,
             "science_map_contracts": {
                 audit.EXPECTED_SCIENCE_MAP_CONTRACT: {
-                    "audit_state": "addressed_pending_reaudit",
+                    "audit_state": audit.EXPECTED_SCIENCE_MAP_AUDIT_STATE,
                     "planes": [
                         {"name": name}
                         for name in sorted(audit.EXPECTED_SCIENCE_MAP_PLANES)
@@ -146,6 +146,38 @@ class MapmakingBoundaryAuditTest(unittest.TestCase):
                             "relationship": "bitwise_equal",
                             "deprecated": True,
                             "validity_authority": True,
+                        },
+                    },
+                }
+            },
+            "contracts": [
+                {"contract_id": contract_id}
+                for contract_id in audit.EXPECTED_SUCCESSOR_PRODUCT_CONTRACTS
+            ],
+        }
+
+        self.assertFalse(audit.product_contract_state(registry)["exact"])
+
+    def test_rejects_pre_acceptance_science_map_audit_state(self) -> None:
+        registry = {
+            "schema_version": audit.EXPECTED_PRODUCT_REGISTRY_SCHEMA,
+            "science_map_contracts": {
+                audit.EXPECTED_SCIENCE_MAP_CONTRACT: {
+                    "audit_state": "addressed_pending_reaudit",
+                    "planes": [
+                        {"name": name}
+                        for name in sorted(audit.EXPECTED_SCIENCE_MAP_PLANES)
+                    ],
+                    "aliases": {
+                        "coverage_I": {
+                            "canonical": "retained_exposure_I",
+                            "relationship": "bitwise_equal",
+                        },
+                        "coverage_bool_I": {
+                            "canonical": "science_policy_support_I",
+                            "relationship": "bitwise_equal",
+                            "deprecated": True,
+                            "validity_authority": False,
                         },
                     },
                 }

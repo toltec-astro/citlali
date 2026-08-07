@@ -188,9 +188,16 @@ NetCDF dimension requirements live in `validation/product_contracts.json`.
 ### Science-Map Bundle Identity And Coaddition
 
 The accepted `SCI-MAP-001` F009/F010 successor contract applies to ordinary
-naive, array-grouped Stokes-I observation and coadd maps. Its implementation is
-pending independent re-audit; this section states the accepted meaning and does
-not declare the repair conformant.
+naive, array-grouped Stokes-I observation and coadd maps. Its bounded
+implementation is conformant and its independent re-audit is complete;
+production remains `existing_use_only` because the dependencies named below
+remain open.
+
+The team-facing product explanation is
+[`DOC-MAP-001` Phase A](user/DOC-MAP-001_ORDINARY_NAIVE_MAPS.md). The shared
+normalization derivation is
+[SCI-METHOD-WEIGHTED-MAP-NORMALIZATION-001](science/SCI-METHOD-WEIGHTED-MAP-NORMALIZATION-001.md)
+and is not repeated here.
 
 An observation enters a coadd as one immutable ordered bundle. Admission
 includes grouping and slot identities, array/network/detector or group identity,
@@ -343,8 +350,9 @@ coadd files. Both inventories preserve their own ownership, admitted operator,
 component/shape identity, support/validity, cardinality, and provenance;
 required-output failures propagate.
 
-F009 and F010 remain `addressed_pending_reaudit`. F012 is owner-accepted only
-for the bounded external product/execution/SEQ-OMP claims stated in
+F009 and F010 are closed by the final independent re-audit. F012 is
+owner-accepted only for the bounded external product/execution/SEQ-OMP claims
+stated in
 `SCI-MAP-001_OWNER_SCOPE_EVIDENCE_AMENDMENT_2026-08-05.md`; every absent
 operational or internal-reconstruction lane remains an explicit limitation,
 and no Unity rerun is required solely for those absences.

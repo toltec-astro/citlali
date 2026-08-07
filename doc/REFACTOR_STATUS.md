@@ -51,13 +51,17 @@ must update the applicable documentation before final acceptance, but no note
 or guide is created solely to populate the framework. Existing dated reports
 remain historical evidence and are not being reorganized wholesale.
 
-The previously approved `DOC-MAP-001` deliverable is the first queued user
-guide. It will combine a canonical map dictionary with a compact per-reduction
-rendering driven by effective and realized state, explaining what each emitted
-map measures without duplicating its provenance package. MAP-, NOI-, and
-filter-related work contributes stable semantics to this guide, which must
-close before production expansion and Phase 5 closeout. The queue entry itself
-changes no numerical behavior, output selection, or audit scope.
+The previously approved `DOC-MAP-001` deliverable is the first user guide.
+[Phase A](user/DOC-MAP-001_ORDINARY_NAIVE_MAPS.md) now documents the completed
+ordinary-naive Stokes-I observation/coadd bundle and links its shared
+normalization to
+[SCI-METHOD-WEIGHTED-MAP-NORMALIZATION-001](science/SCI-METHOD-WEIGHTED-MAP-NORMALIZATION-001.md).
+NOI, JINC, filter, convolve, and other map-producing sections remain queued
+until their contracts stabilize. A future compact per-reduction rendering will
+be driven by effective and realized state and will link to, rather than
+duplicate, the provenance package. `DOC-MAP-001` must close before production
+expansion and Phase 5 closeout. This documentation changes no numerical
+behavior, output selection, or audit scope.
 
 ## 2026-08-05 SCI-MAP-001 Application Integration Candidate
 

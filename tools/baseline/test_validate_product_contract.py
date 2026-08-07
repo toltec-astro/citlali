@@ -206,6 +206,19 @@ class ValidateProductContractTest(unittest.TestCase):
         with self.assertRaisesRegex(product_contract.ContractError, "does not freeze"):
             product_contract.load_registry(self.write_registry(registry))
 
+    def test_science_map_schema_rejects_pre_acceptance_audit_state(self) -> None:
+        checked = (
+            Path(__file__).resolve().parents[2]
+            / "validation/product_contracts.json"
+        )
+        registry = copy.deepcopy(json.loads(checked.read_text(encoding="utf-8")))
+        registry["science_map_contracts"]["sci-map-001-f010-v1"][
+            "audit_state"
+        ] = "addressed_pending_reaudit"
+
+        with self.assertRaisesRegex(product_contract.ContractError, "accepted_bounded"):
+            product_contract.load_registry(self.write_registry(registry))
+
     def test_science_map_schema_rejects_alias_type_drift(self) -> None:
         checked = (
             Path(__file__).resolve().parents[2]

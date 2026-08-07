@@ -31,6 +31,7 @@ EXPECTED_PATH_SHA256 = (
 EXPECTED_PROVENANCE_SCHEMA = "citlali-mapmaking-provenance-v3"
 EXPECTED_PRODUCT_REGISTRY_SCHEMA = "citlali-product-contract-registry-v2"
 EXPECTED_SCIENCE_MAP_CONTRACT = "sci-map-001-f010-v1"
+EXPECTED_SCIENCE_MAP_AUDIT_STATE = "accepted_bounded"
 EXPECTED_SCIENCE_MAP_PLANES = {
     "geometric_hits_I",
     "contributing_hits_I",
@@ -311,7 +312,8 @@ def product_contract_state(registry: dict[str, object]) -> dict[str, object]:
     exact = bool(
         registry.get("schema_version") == EXPECTED_PRODUCT_REGISTRY_SCHEMA
         and isinstance(science_contract, dict)
-        and science_contract.get("audit_state") == "addressed_pending_reaudit"
+        and science_contract.get("audit_state")
+        == EXPECTED_SCIENCE_MAP_AUDIT_STATE
         and plane_names == EXPECTED_SCIENCE_MAP_PLANES
         and isinstance(aliases, dict)
         and aliases.get("coverage_I", {}).get("canonical")

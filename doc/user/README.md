@@ -12,14 +12,15 @@ ahead of unsettled behavior.
 
 | Guide ID | Scope | Status |
 | --- | --- | --- |
-| `DOC-MAP-001` | Compact static and realized explanation of what each emitted map measures | Queued; publish after the applicable MAP/NOI/filter product meanings stabilize |
+| [`DOC-MAP-001`](DOC-MAP-001_ORDINARY_NAIVE_MAPS.md) | What each emitted map measures | Phase A validated for the ordinary naive Stokes-I bundle; NOI/JINC/filter sections remain queued |
 
-`DOC-MAP-001` will have one canonical map dictionary plus a compact
-per-reduction rendering driven by the effective plan and realized observation
-state. It will list only emitted products and meaning-changing settings, and it
-will link to the provenance package rather than reproduce it. Citlali owns the
-semantics; TolTECA and TolProj may surface the guide but do not independently
-redefine the products.
+`DOC-MAP-001` has begun with the bounded, completed SCI-MAP-001 contract. Its
+later static dictionary will grow only as additional product contracts
+stabilize. A future compact per-reduction rendering will be driven by the
+effective plan and realized observation state, list only emitted products and
+meaning-changing settings, and link to the provenance package rather than
+reproduce it. Citlali owns the semantics; TolTECA and TolProj may surface the
+guide but do not independently redefine the products.
 
 ## What A Guide Must Answer
 

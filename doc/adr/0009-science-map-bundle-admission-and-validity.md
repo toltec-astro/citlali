@@ -1,7 +1,7 @@
 # ADR 0009: Science-Map Bundle Admission And Validity
 
-- **Status:** Accepted scientific contract; implementation pending independent
-  re-audit
+- **Status:** Accepted and implemented within bounded SCI-MAP-001 scope;
+  independent re-audit complete
 - **Recorded:** 2026-07-31
 - **Decision owners:** Citlali scientific/product owner and engineering
 
@@ -21,9 +21,11 @@ naive estimator and centered common-grid arithmetic. It does not authorize a
 new estimator, reprojection, interpolation, correlated GLS, covariance
 regularization, JINC mathematics, or a statistical-significance claim.
 
-This ADR records the durable scientific and product decision. F009 and F010
-remain `addressed_pending_reaudit`; accepting the contract is not acceptance of
-an implementation, validation bundle, or production expansion.
+This ADR records the durable scientific and product decision. Its bounded
+implementation was subsequently accepted by the final independent re-audit at
+`8fc716557ca78b0d220200a92be46fa3545797e9` and integrated at
+`d5015fe716971bf8ea617e8a187311bf5af05185`. That acceptance does not authorize
+production expansion or close the dependencies retained under F013.
 
 ## Decision
 
@@ -242,12 +244,12 @@ order and numerical result.
 - Historical accepted products remain immutable evidence under their original
   contracts. They are not retroactively relabeled as carrying the successor
   F010 bundle.
-- F009/F010 remain `addressed_pending_reaudit`. The fresh re-audit must assess
-  the exact repair SHA. F012 is owner-accepted only for the bounded external
-  product/execution/SEQ-OMP claims in the 2026-08-05 amendment; its named
-  missing lanes remain limitations and no Unity rerun is required solely for
-  them. Conclusions remain conditioned on `SCI-ALIGN-001`, `SCI-CAL-001`,
-  `SCI-AST-001`, `SCI-PTC-001`, and `SCI-VAL-001`.
+- F009/F010 are closed by the final independent re-audit. F012 is
+  owner-accepted only for the bounded external product/execution/SEQ-OMP claims
+  in the 2026-08-05 amendment; its named missing lanes remain limitations and
+  no Unity rerun is required solely for them. Conclusions remain conditioned
+  on `SCI-ALIGN-001`, `SCI-CAL-001`, `SCI-AST-001`, `SCI-PTC-001`, and
+  `SCI-VAL-001`.
 
 ## Rejected Alternatives
 
@@ -279,8 +281,11 @@ decision.
 - `SCI-MAP-001_BOUNDED_REPAIR_REAUDIT_HANDOFF_2026-07-31.md`
 - Independent re-audit package at
   `851035e67f63bdb2bacc122b17566877a9e6db97`
+- Final independent re-audit package at
+  `8fc716557ca78b0d220200a92be46fa3545797e9`
 - [`../../handoff/SCI-MAP-001_OWNER_SCOPE_EVIDENCE_AMENDMENT_2026-08-05.md`](../../handoff/SCI-MAP-001_OWNER_SCOPE_EVIDENCE_AMENDMENT_2026-08-05.md),
   SHA-256
   `52be19700b73659ba1847012d4cb0766407399cda5899570acb79bf5b45221f3`
 - [`../SCIENTIFIC_CONVENTIONS.md`](../SCIENTIFIC_CONVENTIONS.md)
 - [`../../validation/product_contracts.json`](../../validation/product_contracts.json)
+- [`../../handoff/SCI-MAP-001_APPLICATION_INTEGRATION_DECISION_2026-08-05.md`](../../handoff/SCI-MAP-001_APPLICATION_INTEGRATION_DECISION_2026-08-05.md)

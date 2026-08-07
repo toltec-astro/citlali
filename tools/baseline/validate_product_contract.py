@@ -31,6 +31,7 @@ except Exception:  # pragma: no cover - validation environment dependency
 SCHEMA_VERSION = "citlali-product-contract-registry-v2"
 RESULT_SCHEMA_VERSION = "citlali-product-contract-result-v1"
 SCIENCE_MAP_SCHEMA_VERSION = "citlali-science-map-contract-v1"
+SCIENCE_MAP_AUDIT_STATE = "accepted_bounded"
 SUPPORTED_MODES = {"point", "oof", "science", "beammap"}
 SUPPORTED_SCOPES = {
     "reduction",
@@ -104,9 +105,9 @@ def load_registry(path: Path) -> dict[str, Any]:
         contract = _mapping(value, context)
         if contract.get("schema_version") != SCIENCE_MAP_SCHEMA_VERSION:
             raise ContractError(f"{context}: unsupported schema_version")
-        if contract.get("audit_state") != "addressed_pending_reaudit":
+        if contract.get("audit_state") != SCIENCE_MAP_AUDIT_STATE:
             raise ContractError(
-                f"{context}.audit_state: must remain addressed_pending_reaudit"
+                f"{context}.audit_state: expected {SCIENCE_MAP_AUDIT_STATE}"
             )
         planes = _list(contract.get("planes"), f"{context}.planes")
         by_name: dict[str, dict[str, Any]] = {}
