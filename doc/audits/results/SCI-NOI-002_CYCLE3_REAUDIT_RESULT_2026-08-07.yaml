@@ -1,0 +1,405 @@
+format_version: 1
+record_type: independent_reaudit_result
+result_id: SCI-NOI-002-CYCLE3-REAUDIT-RESULT-2026-08-07
+date: 2026-08-07
+package_id: SCI-NOI-002
+cycle: 3
+role: independent_reauditor
+verdict: amend
+integration_ready: false
+production_status: existing_use_only
+astronomical_validation_complete: false
+
+target:
+  repair_commit: 390edf4f8c696551921c615f2439e956d240ec1d
+  repair_tree: a82cdad542494c261d9095105813e157436766c8
+  repair_parent: 63efd8b08a599d2d56a1716e3cbb2d3686d62b9f
+  repair_subject: "repair: finalize NOI filtered and one-plane contracts"
+  cumulative_cycle3_base: d1d19145df574571a894772fdc9410c86cba1041
+  cumulative_cycle3_base_tree: 826f601e2c3447765e5d1b25285ac365ee3fd120
+  prior_repair_base: 0bc4d95d6bb2117442d0ccdb79c57e42e0b79989
+  remote_ref: origin/codex/repair-sci-noi-002
+  remote_tip_verified: 390edf4f8c696551921c615f2439e956d240ec1d
+  cumulative_commit_count: 3
+  merge_base_is_cumulative_base: true
+  clean_entry_verified: true
+  audit_branch: codex/reaudit-sci-noi-002-cycle3
+  worktree: /Users/gwilson/.codex/worktrees/b251/citlali-refactor
+
+cycle3_chain:
+  - commit: d1d19145df574571a894772fdc9410c86cba1041
+    tree: 826f601e2c3447765e5d1b25285ac365ee3fd120
+    parent: 0bc4d95d6bb2117442d0ccdb79c57e42e0b79989
+  - commit: de18f061000255f7f042393ba4f68be6e1f211ee
+    tree: 47bc04cd8c64698d510b0cc3f74a69892eb25304
+    parent: d1d19145df574571a894772fdc9410c86cba1041
+  - commit: 63efd8b08a599d2d56a1716e3cbb2d3686d62b9f
+    tree: e70a37c2a6b0f010034abc13367b7b6b01d3dab4
+    parent: de18f061000255f7f042393ba4f68be6e1f211ee
+  - commit: 390edf4f8c696551921c615f2439e956d240ec1d
+    tree: a82cdad542494c261d9095105813e157436766c8
+    parent: 63efd8b08a599d2d56a1716e3cbb2d3686d62b9f
+
+cycle2_independent_reaudit:
+  commit: 00d39c0499d947c9bcc926b6f2f133e7cdbcbaba
+  tree: 53c494fa8de242412d3e8a1126a2a97633751c1b
+  parent: d1d19145df574571a894772fdc9410c86cba1041
+  remote_ref: origin/codex/reaudit-sci-noi-002-cycle2
+  artifacts:
+    report: c689ac09f90c904909d8bd77c4b95c454ea2875134c40a87dc8f1c8db8dbb7a6
+    result: f67885ea38dacf6ab8e370de85aee2277a03a440b492d95a9e59fc6a6bcda93f
+    proposal: 369a5b1dae42531a26a9a928d77c3ca4fd470579b7d4fa7f2b17860f13d533fb
+
+authority:
+  frozen_commit: 287840715c8e4ae778ce57b7166de86e7b7dfa9c
+  frozen_tree: d56ddbd4583a7cf9dd7ee5a27095db469b632cd4
+  exact_git_object_reads: true
+  artifact_digests_verified: true
+  artifacts:
+    - id: cycle2_repair_prompt
+      sha256: 42ba64a459f8496d4f167cc9fd32a0634023b37252249becd850b64b626e889d
+    - id: cycle2_authority_manifest
+      sha256: 36602cd0ba779a3fe9d9419c3b0ed53d86e26eb4c887ec7b5d19c0442ad86202
+    - id: cycle2_owner_decision
+      sha256: 3b8587564418632bcf9cddd417ebb30d08374127fd75420179c7b6050187559d
+    - id: cycle2_dispatch_readiness
+      sha256: 1ef66a8436d14d95dfb0fcf369706e743f7a3bf3248a72b4849cebed7e623dfa
+    - id: first_repair_prompt
+      sha256: 45fc19d6ccf0e55aa1c2a1189d97f72ffb9b51027c659580d7cbcc9415c4bc71
+    - id: first_repair_manifest
+      sha256: 6f4b84995c8cb118bdb182b9189c4b95464c4fe7e414b762debb8786e825ce79
+    - id: first_repair_readiness
+      sha256: 246c751397b2d138939372c7943e8187ba36658bbb7a5b8f96bb01edca0f4804
+    - id: owner_decision_brief
+      sha256: 3520172cfc11e8e34f280f9ebdf147ea414c7a3a4ca6109bad55354a5ff3cf71
+    - id: original_final_audit
+      sha256: 2874ffe950aed769f73277ed8f60ecab8860692d24e7c541f05a47a041a8a40d
+    - id: independent_core
+      sha256: 36781b766a2f57c9a3bd7e173ee8f1d85cba7f3d08afe2e67a403166f6b6d72d
+    - id: original_ledger_proposal
+      sha256: 5574d8e34fcfba8f4709d5848e79732ff3557a9817be25604375b9f3d4ec278d
+    - id: prior_independent_reaudit
+      sha256: a66ef3f17976a7149ef04d2fec08e2c1faa2947c4b883fddd651a3eb57e44517
+    - id: prior_reaudit_proposal
+      sha256: 6f9410fc2015bccba49001e337b063660387edd39f1879c0d5de7100dd1c970e
+    - id: noi001_r3
+      sha256: 27263ab3bf29ac8f098463455e540f13e783241a688ef2bc5cb15b1f2a4319da
+    - id: inbox_manifest
+      sha256: 1de9dbc5f9aca42f5a9f9b1f05b7b14c092ee9b443946d0c52eeb27c8da117b0
+    - id: SCI-NOI-002-XAUD-001
+      sha256: dfcd59e9d59395ba84f7dfed1656690daae694872c2a1a40bf4f5c79f6abed3a
+    - id: SCI-NOI-002-XAUD-002
+      sha256: 9eb6c778409d344ce73387f44ac4a5429a89d43b8e768c19bf3da1ed6967c1e5
+
+scope_authority:
+  pre_repair_cycle3_git_manifest_frozen: false
+  binding_confirmation: coordinator_cycle3_reaudit_continuation_directive
+  cumulative_13_paths_authorized: true
+  authorization_is_procedural_only: true
+  correctness_or_closure_implied: false
+  process_defect: SCI-NOI-002-C3RA-PROC-001
+  process_defect_is_application_finding: false
+  future_cycles_should_freeze_staged_authority: true
+
+artifacts:
+  report:
+    path: doc/audits/packages/SCI-NOI-002_CYCLE3_INDEPENDENT_REAUDIT_2026-08-07.md
+    sha256: cef029918bc9923d2f20e479a1bfcda02027c658359c186835ceff2643b6a139
+  ledger_update_proposal:
+    path: doc/audits/proposals/SCI-NOI-002_CYCLE3_REAUDIT_LEDGER_UPDATE_PROPOSAL_2026-08-07.yaml
+    sha256: f46ee2c6f90bab5f81ba34a1a0c3d5a91badaa1b11031ce1e46dd0f964e13451
+  result:
+    path: doc/audits/results/SCI-NOI-002_CYCLE3_REAUDIT_RESULT_2026-08-07.yaml
+    sha256: null
+    sha256_note: >-
+      The result cannot contain its own digest. The verified digest is supplied
+      in the containing commit handoff.
+
+diff:
+  cumulative_cycle3:
+    modified_existing_files: 13
+    additions: 2668
+    deletions: 384
+    added_files: 0
+    deleted_files: 0
+    renamed_files: 0
+    diff_check: pass
+    complete_hunk_review: true
+    paths:
+      - include/citlali/core/cli/reduction_execution.h
+      - include/citlali/core/engine/detail/beammap_map_product_writers_impl.h
+      - include/citlali/core/engine/detail/mapdiag_output_impl.h
+      - include/citlali/core/pipeline/map_image_output_helpers.h
+      - include/citlali/core/pipeline/mapdiag_netcdf_map_double_values.h
+      - include/citlali/core/pipeline/noise_execution_plan.h
+      - include/citlali/core/pipeline/noise_provenance.h
+      - include/citlali/core/pipeline/reduction_iteration_setup.h
+      - tests/test_config_scaffold.cpp
+      - tests/test_science_map_fits_products.cpp
+      - tools/baseline/audit_reduction_run.py
+      - tools/baseline/test_audit_reduction_run.py
+      - validation/product_contracts.json
+  prior_repair:
+    modified_existing_files: 21
+    additions: 2380
+    deletions: 547
+    complete_interaction_review: true
+    inherited_not_reedited_paths:
+      - include/citlali/core/engine/detail/lali_output_impl.h
+      - include/citlali/core/engine/detail/map_filter_execution_impl.h
+      - include/citlali/core/engine/detail/pointing_output_impl.h
+      - include/citlali/core/engine/detail/source_table_output_impl.h
+      - include/citlali/core/pipeline/fits_image_hdu_names_wcs.h
+      - include/citlali/core/pipeline/fits_image_metadata_keys.h
+      - include/citlali/core/pipeline/fits_image_units_kernels.h
+      - include/citlali/core/pipeline/noise_config_serialization.h
+      - src/citlali/core/mapmaking/map.cpp
+  combined_prior_repair_through_candidate:
+    modified_existing_files: 21
+    additions: 4707
+    deletions: 590
+    per_commit_union_paths: 22
+  unauthorized_application_path_found: false
+
+contract:
+  estimator_identity: conditional_finite_stack_scatter
+  ensemble_identity: source_imprinted_current
+  centering: empirical_completed_stack_mean
+  normalization: centered_sum_of_squares_divided_by_completed_R
+  physical_noise_variance_or_covariance: false
+  inverse_variance_precision_or_significance: false
+  aperture_uncertainty: false
+  compact_join_requires:
+    - package_id
+    - provenance_id
+    - product_identity
+    - product_version
+    - semantic_digest
+    - digest_kind
+    - missingness
+    - scope
+    - validity
+    - restriction
+  F005:
+    status: open
+    disposition: open_conditioned
+    parity_status: scope_blocked_not_applicable_pending_FLT
+    owner: SCI-FLT-001
+  F006:
+    status: open
+    manifest_state: held_external
+    owner: SCI-FRUIT-001
+    configuration_dependency_unchanged: true
+  auxiliary_channels_substitute_for_primary_x: false
+
+summary_counts:
+  P0: 0
+  P1: 3
+  P2: 0
+
+findings:
+  - id: SCI-NOI-002-C3RA-P1-001
+    severity: P1
+    title: compact_ECSV_and_NetCDF_joins_omit_required_missingness
+    status: open
+    evidence:
+      - include/citlali/core/pipeline/map_source_table_output.h:103
+      - include/citlali/core/pipeline/mapdiag_netcdf_map_double_values.h:52
+      - include/citlali/core/pipeline/noise_provenance.h:587
+      - include/citlali/core/pipeline/noise_provenance.h:643
+      - tools/baseline/audit_reduction_run.py:1532
+      - tools/baseline/audit_reduction_run.py:1560
+      - deterministic_missingness_fixture
+    impact: >-
+      ECSV and NetCDF products omit their compact missing/nonfinite
+      interpretation, while both validators enforce and accept an incomplete
+      schema.
+    affects: [SCI-NOI-002-C2RA-P1-004, SCI-NOI-002-RA-B001]
+
+  - id: SCI-NOI-002-C3RA-P1-002
+    severity: P1
+    title: successor_coadd_identity_and_cardinality_contradict_output_policy
+    status: open
+    evidence:
+      - include/citlali/core/pipeline/map_image_output_helpers.h:418
+      - include/citlali/core/pipeline/noise_execution_plan.h:388
+      - include/citlali/core/pipeline/noise_execution_plan.h:479
+      - include/citlali/core/pipeline/noise_provenance.h:445
+      - validation/product_contracts.json
+      - deterministic_scaled_only_and_unpublished_count_fixtures
+    impact: >-
+      A successor coadd with products enabled can fail final package
+      publication whether empirical weights are disabled (count without
+      member) or enabled (actual scaled-only join rejected).
+    affects: [SCI-NOI-002-C2RA-P1-003, SCI-NOI-002-RA-B001, SCI-NOI-002-RA-B003]
+
+  - id: SCI-NOI-002-C3RA-P1-003
+    severity: P1
+    title: split_detector_group_Beammap_files_cannot_satisfy_package_identity_rules
+    status: open
+    evidence:
+      - include/citlali/core/engine/detail/beammap_map_product_writers_impl.h:142
+      - include/citlali/core/engine/detail/beammap_map_product_writers_impl.h:179
+      - include/citlali/core/pipeline/fits_image_write_slots.h:12
+      - include/citlali/core/pipeline/noise_provenance.h:354
+      - deterministic_repeated_bundle_fixture
+    impact: >-
+      Actual per-array split files with multiple selected detector maps repeat
+      identities and realization scopes that the package validator forbids;
+      unused split-file slots are also admitted without joins.
+    narrow_selected_count_repair_passed: true
+    zero_selection_fallback_preserved: true
+    affects: [SCI-NOI-002-C2RA-P1-003, SCI-NOI-002-C2RA-P1-004, SCI-NOI-002-RA-B001, SCI-NOI-002-RA-B003]
+
+cycle2_repair_finding_disposition:
+  P1-001: closed
+  P1-002: closed
+  P1-003: not_closed
+  P1-004: not_closed
+  P1-005: local_repair_pass_finding_open_conditioned
+  P1-006: closed
+  P1-007: closed
+  P2-001: closed
+  P2-002: closed
+  P2-003: closed
+
+decision_disposition:
+  SCI-NOI-002-RA-B001: not_closed
+  SCI-NOI-002-RA-B002: closed
+  SCI-NOI-002-RA-B003: not_closed
+  SCI-NOI-002-RA-B004:
+    status: local_repair_pass_finding_open_conditioned
+    parity_status: scope_blocked_not_applicable_pending_FLT
+  SCI-NOI-002-RA-R001: closed
+  SCI-NOI-002-RA-R002: closed
+
+owner_decision_disposition:
+  D001: settled_unchanged
+  D002: settled_unchanged
+  D003: settled_qualified_package_provenance
+  D004: settled_unchanged
+  D005: settled_open_conditioned_pending_FLT
+  D006: settled_open_held_external_SCI_FRUIT_001
+  D007: settled_no_count_or_default_selection
+  D008: settled_proportional_evidence_only
+
+original_findings:
+  SCI-NOI-002-F001: closed
+  SCI-NOI-002-F002: closed
+  SCI-NOI-002-F003: open
+  SCI-NOI-002-F004: open_conditioned
+  SCI-NOI-002-F005:
+    status: open
+    disposition: open_conditioned
+    parity_status: scope_blocked_not_applicable_pending_FLT
+    owner: SCI-FLT-001
+  SCI-NOI-002-F006:
+    status: open
+    manifest_state: held_external
+    owner: SCI-FRUIT-001
+  SCI-NOI-002-F007: open_conditioned
+  SCI-NOI-002-F008: closed
+
+implementation_assessment:
+  publication_begins_after_current_iteration_layout: true
+  publication_begins_before_buffer_preparation: true
+  members_counters_and_completion_iteration_scoped: true
+  stale_final_pending_and_temporary_authorities_invalidated: true
+  atomic_pending_revalidation_and_rename: true
+  failure_pending_cleanup: true
+  saved_prior_FRUIT_iteration_authority_preserved: true
+  disabled_stack_derived_FITS_or_NetCDF_rejected: true
+  nonstack_ECSV_distinguished: true
+  literal_requested_enabled_zero_rejected: true
+  selected_Beammap_count_exact: true
+  zero_selection_fallback_unchanged: true
+  one_compatible_physical_plane: true
+  sig2noise_pixel_physical_plane_absent: true
+  in_memory_field_or_calculation_changed: false
+  v2_length_prefixed_digest_CPP_Python_parity: true
+  lexical_regular_all_component_nonsymlink_identity: true
+  canonical_order_and_lexical_resolved_uniqueness: true
+  compact_missingness_exact: false
+  successor_coadd_exact_identity_cardinality: false
+  split_Beammap_exact_identity_cardinality: false
+  bounded_mixed_validity_repair_passed: true
+  response_or_support_invented: false
+  FLT_mathematics_changed: false
+  Mapdiag_calculations_names_or_value_bindings_changed: false
+  Mapdiag_exact_regression_fixture: true
+
+numerical_scope:
+  only_cycle3_scientific_value_effect: >-
+    Approved mixed filtered-scatter classification remains fail-closed NaN
+    when supported values exist but none is finite.
+  other_direct_numerical_algorithm_change_found: false
+  estimator_normalization_changed: false
+  output_selection_or_order_changed: false
+  defaults_or_count_selection_changed: false
+  authorized_storage_product_layout_change: duplicate_sig2noise_pixel_HDU_removed
+  mapdiag_value_bindings_changed: false
+  forbidden_mathematics_or_auxiliary_channel_change_found: false
+  dense_covariance_added: false
+  per_sample_identity_added: false
+
+gates:
+  configure:
+    status: pass
+    local_compatibility_options_required: true
+    cached_dependency_source_limitation_disclosed: true
+  build:
+    status: pass
+    steps: 324
+    targets: [citlali_cli, citlali_test, citlali_science_map_fits_products_test, citlali_safety_test]
+  cli_version: v4.0.0-3638-g390edf4f8
+  focused_core: {passed: 59, failed: 0}
+  focused_fits: {passed: 30, failed: 0}
+  ctest: {registered: 620, runnable: 619, passed: 619, failed: 0, disabled: 1}
+  baseline_auditor_tests: {passed: 84, failed: 0}
+  contract_reduction_science_ledger_tests: {passed: 39, failed: 0}
+  config_preflight: {passed: true, tests: 127, coverage_percent: 100}
+  product_contract_json: {valid: true, contracts: 10}
+  validation_ledger: {valid: true, records: 60}
+  science_change_ledger: {valid: true, changes: 3, integration_commits: 5}
+  digest_golden_vector:
+    status: CPP_Python_pass
+    sha256: 9fa4aab8f2b41bb83a412019cf8ac158dbf332905cdd0ee711075158ea00863e
+  negative_fixtures:
+    ECSV_missingness_absent_validator_accepted: true
+    NetCDF_missingness_absent_validator_accepted: true
+    repeated_Beammap_bundle_rejected: true
+    scaled_only_coadd_bundle_rejected: true
+    empirical_count_without_FITS_rejected: true
+  clean_tree_and_path_accounting_after_commit: pending_containing_commit
+  unity: not_used
+  astronomical_reduction: not_run
+
+provenance_correction:
+  id: SCI-NOI-002-C3RA-PROC-002
+  frozen_cycle2_transcription_defect: true
+  transcribed_63_hex_value: dfcd59e9d59395ba84f7dfed1656690daae694872c2a1a40bf4f5c79f6abed3
+  verified_64_hex_value: dfcd59e9d59395ba84f7dfed1656690daae694872c2a1a40bf4f5c79f6abed3a
+  frozen_cycle2_artifacts_rewritten: false
+  canonical_source_and_inbox_already_correct: true
+  separate_handoff_required: false
+  ledger_proposal_records_correction: true
+
+handoffs:
+  new_separate_proposals: []
+  F005_to_FLT_preserved: true
+  F006_to_FRUIT_preserved: true
+  existing_handoffs_sufficient: true
+
+recommendation:
+  action: bounded_successor_repair_then_fresh_independent_reaudit
+  successor_base: 390edf4f8c696551921c615f2439e956d240ec1d
+  required_repairs:
+    - compact_ECSV_and_NetCDF_missingness
+    - mode_aware_successor_coadd_identity_and_cardinality
+    - actual_split_Beammap_multimap_identity_scope_cardinality_and_unused_file_admission
+    - production_writer_to_final_package_deterministic_fixtures
+  integrate_target: false
+  push_from_audit_task: false
+  launch_repair_from_audit_task: false
+  canonical_ledger_update_from_audit_task: false
+  stop_for_owner_coordinator_review: true
