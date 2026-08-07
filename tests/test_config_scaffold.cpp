@@ -3375,62 +3375,141 @@ TEST(config_scaffold, serializes_versioned_noise_provenance) {
     EXPECT_TRUE(found_scale_contract);
 }
 
-TEST(config_scaffold, mapdiag_noise_metadata_keeps_names_and_exact_joins) {
-    const auto scale_comment =
-        citlali::pipeline::mapdiag_noise_product_comment(
-            "scale", "map_noise_weight_scale",
-            "global_nonprecision_scale_diagnostic",
-            "sha256:bfb6d1ea365d1b8e82fd88aad0c2aac3ebb0a2f40f3b78c244f5b1ce9498a655",
-            "available_when_finite", "not_precision");
-    EXPECT_NE(
-        scale_comment.find("package_id=citlali-noise-products"),
-        std::string::npos);
-    EXPECT_NE(
-        scale_comment.find(
-            "citlali_noise_product_join_v1|variable=map_noise_weight_scale"),
-        std::string::npos);
-    EXPECT_NE(
-        scale_comment.find(
-            "provenance_id=noise_products_provenance.yaml"),
-        std::string::npos);
-    EXPECT_NE(
-        scale_comment.find(
-            "product_identity=global_nonprecision_scale_diagnostic"),
-        std::string::npos);
-    EXPECT_NE(
-        scale_comment.find("product_version=SCI-NOI-002-v1"),
-        std::string::npos);
-    EXPECT_NE(
-        scale_comment.find("digest_kind=semantic_contract_sha256"),
-        std::string::npos);
-    EXPECT_NE(scale_comment.find("scope=map_summary"), std::string::npos);
-    EXPECT_NE(
-        scale_comment.find("validity=available_when_finite"),
-        std::string::npos);
-    EXPECT_NE(
-        scale_comment.find("restriction=not_precision"),
-        std::string::npos);
-
-    const std::vector<double> values{1.0};
+TEST(config_scaffold,
+     mapdiag_noise_metadata_preserves_exact_order_values_and_joins) {
+    constexpr std::size_t mapdiag_double_count = 43;
+    std::array<std::vector<double>, mapdiag_double_count> sentinels;
+    for (std::size_t i = 0; i < sentinels.size(); ++i) {
+        const auto value = static_cast<double>(i) + 0.125;
+        sentinels[i] = {value, -value};
+    }
     citlali::pipeline::MapdiagMapDoubleValues map_values{
-        values, values, values, values, values, values, values, values,
-        values, values, values, values, values, values, values, values,
-        values, values, values, values, values, values, values, values,
-        values, values, values, values, values, values, values, values,
-        values, values, values, values, values, values, values, values,
-        values, values, values};
-    std::map<std::string, std::string> comments;
+        sentinels[0], sentinels[1], sentinels[2], sentinels[3],
+        sentinels[4], sentinels[5], sentinels[6], sentinels[7],
+        sentinels[8], sentinels[9], sentinels[10], sentinels[11],
+        sentinels[12], sentinels[13], sentinels[14], sentinels[15],
+        sentinels[16], sentinels[17], sentinels[18], sentinels[19],
+        sentinels[20], sentinels[21], sentinels[22], sentinels[23],
+        sentinels[24], sentinels[25], sentinels[26], sentinels[27],
+        sentinels[28], sentinels[29], sentinels[30], sentinels[31],
+        sentinels[32], sentinels[33], sentinels[34], sentinels[35],
+        sentinels[36], sentinels[37], sentinels[38], sentinels[39],
+        sentinels[40], sentinels[41], sentinels[42]};
+    struct MapdiagCall {
+        std::string name;
+        std::string comment;
+        std::vector<double> values;
+    };
+    std::vector<MapdiagCall> calls;
     citlali::pipeline::add_mapdiag_map_double_vars(
         [&](const std::string &name, const std::string &comment,
-            const std::vector<double> &) { comments[name] = comment; },
+            const std::vector<double> &values) {
+            calls.push_back({name, comment, values});
+        },
         map_values);
-    EXPECT_TRUE(comments.contains("map_noise_weight_median_ratio"));
-    EXPECT_TRUE(comments.contains("map_noise_weight_scale"));
-    EXPECT_TRUE(comments.contains("map_noise_products_s2n_sigma"));
-    EXPECT_NE(
-        comments.at("map_noise_products_s2n_sigma").find(
-            "product_identity=pooled_stack_scale_diagnostic"),
-        std::string::npos);
+
+    const std::array<const char *, mapdiag_double_count> expected_names{
+        "map_median_err",
+        "map_median_rms",
+        "map_weight_threshold",
+        "map_weight_sum",
+        "map_core_weight_sum",
+        "map_coverage_sum",
+        "map_coverage_max",
+        "map_core_coverage_median",
+        "map_empirical_to_formal_noise_ratio",
+        "map_noise_weight_median_ratio",
+        "map_noise_weight_scale",
+        "map_noise_products_s2n_sigma",
+        "map_noise_products_valid_pixels",
+        "map_peak_signal",
+        "map_peak_abs_sig2noise",
+        "map_core_peak_abs_sig2noise",
+        "map_noise_rms_p16",
+        "map_noise_rms_p84",
+        "map_core_tail_fraction_abs_gt3",
+        "map_core_tail_fraction_pos_gt3",
+        "map_core_tail_fraction_neg_lt3",
+        "map_core_tail_excess_abs_gt3",
+        "map_core_tail_excess_pos_gt3",
+        "map_core_tail_excess_neg_lt3",
+        "map_core_sig2noise_skew",
+        "map_noise_tail_fraction_abs_gt3",
+        "map_noise_tail_fraction_pos_gt3",
+        "map_noise_tail_fraction_neg_lt3",
+        "map_noise_tail_excess_abs_gt3",
+        "map_noise_tail_excess_pos_gt3",
+        "map_noise_tail_excess_neg_lt3",
+        "map_noise_sig2noise_skew",
+        "map_edge_guard_weight_threshold",
+        "map_edge_guard_hits_threshold",
+        "map_edge_guard_background_level",
+        "map_edge_guard_science_fraction",
+        "map_edge_guard_support_fraction",
+        "map_edge_guard_guardband_rms_pre",
+        "map_edge_guard_guardband_rms_post",
+        "map_edge_guard_exterior_rms_pre",
+        "map_edge_guard_exterior_rms_post",
+        "map_edge_guard_exterior_max_abs_pre",
+        "map_edge_guard_exterior_max_abs_post"};
+    const std::map<std::string, std::string> exact_noise_comments{
+        {
+            "map_noise_weight_median_ratio",
+            "median of the nonprecision normalization coefficient times conditional finite-stack scatter over the realized calibration support; citlali_noise_product_join_v1|variable=map_noise_weight_median_ratio|package_id=citlali-noise-products|provenance_id=noise_products_provenance.yaml|product_identity=global_nonprecision_scale_diagnostic|product_version=SCI-NOI-002-v1|semantic_digest=sha256:bfb6d1ea365d1b8e82fd88aad0c2aac3ebb0a2f40f3b78c244f5b1ce9498a655|digest_kind=semantic_contract_sha256|scope=map_summary|validity=available_when_finite_positive_calibration_support_exists|restriction=engineering_scale_diagnostic_not_precision_or_significance"
+        },
+        {
+            "map_noise_weight_scale",
+            "existing-use-only global scalar applied to the nonprecision normalization coefficient; citlali_noise_product_join_v1|variable=map_noise_weight_scale|package_id=citlali-noise-products|provenance_id=noise_products_provenance.yaml|product_identity=global_nonprecision_scale_diagnostic|product_version=SCI-NOI-002-v1|semantic_digest=sha256:bfb6d1ea365d1b8e82fd88aad0c2aac3ebb0a2f40f3b78c244f5b1ce9498a655|digest_kind=semantic_contract_sha256|scope=map_summary|validity=available_when_finite_positive_median_ratio_exists|restriction=nonprecision_scale_not_inverse_variance_or_precision"
+        },
+        {
+            "map_noise_products_s2n_sigma",
+            "pooled completed-stack scale of realization amplitudes multiplied by sqrt(nonprecision normalization coefficient); citlali_noise_product_join_v1|variable=map_noise_products_s2n_sigma|package_id=citlali-noise-products|provenance_id=noise_products_provenance.yaml|product_identity=pooled_stack_scale_diagnostic|product_version=SCI-NOI-002-v1|semantic_digest=sha256:1b3a38d18a451b9e35ffe9f9fed21b1f3107a8f9cd229386d16998ddff359e79|digest_kind=semantic_contract_sha256|scope=map_summary|validity=available_when_finite_pooled_stack_scale_exists|restriction=engineering_scale_diagnostic_not_calibrated_significance"
+        }};
+
+    const auto exact_bindings = [&](const auto &candidate) {
+        if (candidate.size() != expected_names.size()) {
+            return false;
+        }
+        for (std::size_t i = 0; i < candidate.size(); ++i) {
+            if (candidate[i].name != expected_names[i] ||
+                candidate[i].values != sentinels[i]) {
+                return false;
+            }
+        }
+        return true;
+    };
+    EXPECT_TRUE(exact_bindings(calls));
+    auto duplicate_call = calls;
+    duplicate_call.push_back(calls.back());
+    EXPECT_FALSE(exact_bindings(duplicate_call));
+    auto swapped_binding = calls;
+    std::swap(swapped_binding[9].values, swapped_binding[10].values);
+    EXPECT_FALSE(exact_bindings(swapped_binding));
+
+    ASSERT_EQ(calls.size(), expected_names.size());
+    std::map<std::string, std::size_t> call_counts;
+    for (std::size_t i = 0; i < calls.size(); ++i) {
+        SCOPED_TRACE(i);
+        EXPECT_EQ(calls[i].name, expected_names[i]);
+        EXPECT_EQ(calls[i].values, sentinels[i]);
+        ++call_counts[calls[i].name];
+        const auto exact_comment = exact_noise_comments.find(calls[i].name);
+        if (exact_comment != exact_noise_comments.end()) {
+            EXPECT_EQ(calls[i].comment, exact_comment->second);
+        }
+        EXPECT_EQ(calls[i].comment.find("jackknife variance"),
+                  std::string::npos);
+        EXPECT_EQ(calls[i].comment.find(
+                      "empirical scalar applied to formal weights"),
+                  std::string::npos);
+        EXPECT_EQ(calls[i].comment.find(
+                      "standard deviation of jackknife noise"),
+                  std::string::npos);
+    }
+    ASSERT_EQ(call_counts.size(), expected_names.size());
+    for (const auto *name : expected_names) {
+        EXPECT_EQ(call_counts.at(name), 1U) << name;
+    }
 }
 
 TEST(config_scaffold, atomically_writes_noise_provenance) {

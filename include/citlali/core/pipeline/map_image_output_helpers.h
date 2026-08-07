@@ -578,18 +578,21 @@ FilteredScatterValidity filtered_scatter_validity(
         support->cols() != scatter.cols()) {
         return {false, "support_invalid"};
     }
-    bool finite_supported_value = false;
+    bool supported_value = false;
     for (Eigen::Index row = 0; row < scatter.rows(); ++row) {
         for (Eigen::Index col = 0; col < scatter.cols(); ++col) {
-            if ((*support)(row, col) != 0 &&
-                std::isfinite(scatter(row, col))) {
-                finite_supported_value = true;
+            if ((*support)(row, col) != 0) {
+                supported_value = true;
+                if (std::isfinite(scatter(row, col))) {
+                    return {
+                        true, "available_where_finite_on_valid_support"};
+                }
             }
         }
     }
-    return finite_supported_value
+    return supported_value
         ? FilteredScatterValidity{
-              true, "available_where_finite_on_valid_support"}
+              false, "scatter_unavailable_or_nonfinite"}
         : FilteredScatterValidity{false, "support_invalid"};
 }
 
@@ -667,16 +670,6 @@ void add_coverage_support_image_hdus(
             coefficient_standardized_signal, wcs, source_epoch);
         add_legacy_pixel_snr_map_metadata(
             *fits_entry.hdus.back(), "");
-        add_noise_product_package_join(
-            *fits_entry.hdus.back(),
-            noise_coefficient_standardized_signal_product_id,
-            product_scope, product_validity,
-            "retained_legacy_name_engineering_standardization_not_significance");
-
-        add_map_hdu_with_wcs(
-            fits_entry, pixel_snr_map_hdu_name(map_name, stokes_suffix),
-            coefficient_standardized_signal, wcs, source_epoch);
-        add_pixel_snr_map_metadata(*fits_entry.hdus.back(), "");
         add_noise_product_package_join(
             *fits_entry.hdus.back(),
             noise_coefficient_standardized_signal_product_id,

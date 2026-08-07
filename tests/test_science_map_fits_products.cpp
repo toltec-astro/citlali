@@ -23,6 +23,7 @@
 #include <sstream>
 #include <string>
 #include <type_traits>
+#include <utility>
 #include <vector>
 
 namespace {
@@ -44,6 +45,7 @@ struct CapturedImage {
     std::string data_type;
     Eigen::Index rows = 0;
     Eigen::Index cols = 0;
+    std::vector<double> values;
 };
 
 struct CapturedFitsEntry {
@@ -68,7 +70,16 @@ struct CapturedFitsEntry {
         else {
             data_type = "unexpected";
         }
-        images.push_back({name, data_type, data.rows(), data.cols()});
+        std::vector<double> values;
+        values.reserve(static_cast<std::size_t>(data.size()));
+        for (Eigen::Index row = 0; row < data.rows(); ++row) {
+            for (Eigen::Index col = 0; col < data.cols(); ++col) {
+                values.push_back(
+                    static_cast<double>(data.derived()(row, col)));
+            }
+        }
+        images.push_back(
+            {name, data_type, data.rows(), data.cols(), std::move(values)});
         hdus.push_back(std::make_shared<CapturedHdu>());
     }
 
@@ -202,6 +213,13 @@ bool captured_has_image(const CapturedFitsEntry &entry,
         }
     }
     return false;
+}
+
+std::size_t captured_image_count(const CapturedFitsEntry &entry,
+                                 const std::string &name) {
+    return static_cast<std::size_t>(std::count_if(
+        entry.images.begin(), entry.images.end(),
+        [&](const auto &image) { return image.name == name; }));
 }
 
 void set_noise_stack(
@@ -409,6 +427,13 @@ TEST(science_map_fits_products,
         mapmaking::ScienceMapMaskPlane::Ones(2, 2);
     mapmaking::ScienceMapMaskPlane unsupported =
         mapmaking::ScienceMapMaskPlane::Zero(2, 2);
+    Eigen::MatrixXd finite_only_off_support(2, 2);
+    finite_only_off_support <<
+        1.0, 2.0,
+        std::numeric_limits<double>::quiet_NaN(),
+        std::numeric_limits<double>::quiet_NaN();
+    mapmaking::ScienceMapMaskPlane mixed_support(2, 2);
+    mixed_support << 0, 0, 1, 1;
 
     auto validity = citlali::pipeline::filtered_scatter_validity(
         1, finite_scatter, 1.0, &supported);
@@ -431,6 +456,11 @@ TEST(science_map_fits_products,
     EXPECT_STREQ(validity.status, "support_invalid");
 
     validity = citlali::pipeline::filtered_scatter_validity(
+        2, finite_only_off_support, 1.0, &mixed_support);
+    EXPECT_FALSE(validity.available);
+    EXPECT_STREQ(validity.status, "scatter_unavailable_or_nonfinite");
+
+    validity = citlali::pipeline::filtered_scatter_validity(
         2, finite_scatter, 1.0, &supported);
     EXPECT_TRUE(validity.available);
     EXPECT_STREQ(
@@ -438,7 +468,52 @@ TEST(science_map_fits_products,
 }
 
 TEST(science_map_fits_products,
-     retains_compatible_noise_planes_with_canonical_identity_metadata) {
+     mixed_filtered_scatter_fails_closed_with_exact_reason) {
+    auto map = make_science_map_buffer(false);
+    set_noise_stack(
+        *map,
+        {Eigen::MatrixXd::Constant(2, 2, -2.0),
+         Eigen::MatrixXd::Constant(2, 2, 2.0)});
+    mapmaking::science_map_finalize_realized_product_facts(*map, 0);
+    map->calc_noise_products(Eigen::Index{0}, false, true);
+    map->freeze_raw_science_parent();
+
+    const double unavailable =
+        std::numeric_limits<double>::quiet_NaN();
+    map->point_source_uncertainty[0] <<
+        1.0, 2.0, unavailable, unavailable;
+    map->sig2noise_point_source[0] << 10.0, 20.0, 30.0, 40.0;
+
+    CapturedFitsEntry output;
+    DummyWcs wcs;
+    citlali::pipeline::add_coverage_support_image_hdus(
+        output, map, 0, "", "I", wcs, 2000.0, true, true, false,
+        science_map_test_logger());
+
+    const auto &scatter =
+        captured_image(output, "point_source_uncertainty_I");
+    const auto &ratio =
+        captured_image(output, "sig2noise_point_source_I");
+    ASSERT_EQ(scatter.values.size(), 4U);
+    ASSERT_EQ(ratio.values.size(), 4U);
+    EXPECT_TRUE(std::all_of(
+        scatter.values.begin(), scatter.values.end(),
+        [](double value) { return std::isnan(value); }));
+    EXPECT_TRUE(std::all_of(
+        ratio.values.begin(), ratio.values.end(),
+        [](double value) { return std::isnan(value); }));
+    EXPECT_EQ(
+        captured_hdu(output, "point_source_uncertainty_I")
+            .keys.at("NOIVALID"),
+        "scatter_unavailable_or_nonfinite");
+    EXPECT_EQ(
+        captured_hdu(output, "sig2noise_point_source_I")
+            .keys.at("NOIVALID"),
+        "scatter_unavailable_or_nonfinite");
+}
+
+TEST(science_map_fits_products,
+     retains_one_compatible_noise_plane_with_canonical_identity_metadata) {
     auto map = make_science_map_buffer(false);
     set_noise_stack(
         *map,
@@ -490,18 +565,8 @@ TEST(science_map_fits_products,
     EXPECT_EQ(standardized.at("NOIPRID"),
               "coefficient_standardized_signal");
     EXPECT_EQ(standardized.find("ALIASOF"), standardized.end());
-    const auto &standardized_pixel =
-        captured_hdu(raw_support, "sig2noise_pixel_I").keys;
-    EXPECT_EQ(standardized_pixel.at("NOIPRID"),
-              standardized.at("NOIPRID"));
-    EXPECT_EQ(standardized_pixel.at("NOIDGST"),
-              standardized.at("NOIDGST"));
-    EXPECT_EQ(standardized_pixel.at("NOIVALID"),
-              standardized.at("NOIVALID"));
-    EXPECT_EQ(standardized_pixel.at("NOIRESTR"),
-              standardized.at("NOIRESTR"));
-    EXPECT_EQ(standardized_pixel.find("ALIASOF"),
-              standardized_pixel.end());
+    EXPECT_EQ(captured_image_count(raw_support, "sig2noise_I"), 1U);
+    EXPECT_FALSE(captured_has_image(raw_support, "sig2noise_pixel_I"));
 
     map->freeze_raw_science_parent();
     CapturedFitsEntry filtered_support;
@@ -509,6 +574,11 @@ TEST(science_map_fits_products,
         filtered_support, map, 0, "", "I", wcs, 2000.0, true, true,
         false, science_map_test_logger());
 
+    EXPECT_EQ(captured_image_count(filtered_support, "sig2noise_I"), 1U);
+    EXPECT_FALSE(captured_has_image(
+        filtered_support, "sig2noise_pixel_I"));
+    EXPECT_FALSE(captured_has_image(
+        filtered_support, "coefficient_standardized_signal_I"));
     EXPECT_FALSE(captured_has_image(
         filtered_support, "filtered_pixel_stack_scatter_I"));
     const auto &filtered_scatter = captured_hdu(
