@@ -158,9 +158,6 @@ citlali::session::ReductionResult run_reduction_processor_session(
         citlali::pipeline::runtime_output_dir(engine));
     logger->info("acquired exclusive Citlali output root: {}",
                  output_root_lease.output_root().string());
-    citlali::pipeline::begin_noise_product_publication(
-        engine.output_paths.redu_dir_name,
-        citlali::pipeline::noise_plan(engine));
 
     auto map_geometry =
         citlali::pipeline::make_reduction_map_geometry<TodProc>();

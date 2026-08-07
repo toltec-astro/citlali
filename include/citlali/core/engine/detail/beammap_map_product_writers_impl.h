@@ -216,6 +216,16 @@ void Beammap::write_split_beammap_map_products(
             citlali::pipeline::noise_data_fits_have_package_join(
                 run_noise_plan, false, *mb));
     }
+
+    constexpr bool is_coadd =
+        map_type == mapmaking::RawCoadd ||
+        map_type == mapmaking::FilteredCoadd;
+    constexpr bool is_filtered =
+        map_type == mapmaking::FilteredObs ||
+        map_type == mapmaking::FilteredCoadd;
+    citlali::pipeline::record_noise_selected_map_output_stage(
+        citlali::pipeline::noise_plan(*this), is_coadd, is_filtered,
+        *mb, n_selected_maps);
 }
 
 template <mapmaking::MapType map_type>
@@ -263,7 +273,7 @@ void Beammap::write_beammap_map_products(
     f_io->clear();
     n_io->clear();
 
-    if (map_output_started) {
+    if (map_output_started && !published_data_paths.empty()) {
         constexpr bool is_coadd =
             map_type == mapmaking::RawCoadd ||
             map_type == mapmaking::FilteredCoadd;
@@ -271,15 +281,9 @@ void Beammap::write_beammap_map_products(
             map_type == mapmaking::FilteredObs ||
             map_type == mapmaking::FilteredCoadd;
         auto &run_noise_plan = citlali::pipeline::noise_plan(*this);
-        if (published_data_paths.empty()) {
-            citlali::pipeline::record_noise_map_output_stage(
-                run_noise_plan, is_coadd, is_filtered, *mb);
-        }
-        else {
-            citlali::pipeline::record_noise_map_output_publication(
-                run_noise_plan, is_coadd, is_filtered, *mb,
-                published_data_paths, published_noise_paths);
-        }
+        citlali::pipeline::record_noise_map_output_publication(
+            run_noise_plan, is_coadd, is_filtered, *mb,
+            published_data_paths, published_noise_paths);
     }
 
     write_beammap_non_detector_map_diagnostics<map_type>(

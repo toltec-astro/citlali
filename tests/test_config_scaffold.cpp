@@ -1189,6 +1189,35 @@ struct FakeReductionIterationTodProc {
     }
 };
 
+struct FakeNoisePublicationIterationEngine
+    : FakeReductionIterationEngine {
+    citlali::pipeline::NoiseExecutionPlan noise_plan;
+};
+
+struct FakeNoisePublicationIterationTodProc
+    : FakeReductionIterationTodProc {
+    FakeNoisePublicationIterationEngine publication_engine;
+    std::vector<std::filesystem::path> iteration_output_dirs;
+    bool publication_started_when_output_dir_created = false;
+
+    FakeNoisePublicationIterationEngine &engine() {
+        return publication_engine;
+    }
+
+    void create_output_dir(
+        citlali::pipeline::StageProfileCollector &) {
+        ++create_output_dir_calls;
+        publication_started_when_output_dir_created =
+            publication_engine.noise_plan.publication_started;
+        const auto iteration_index = static_cast<std::size_t>(
+            publication_engine.iteration.fruit_iter);
+        const auto &output_dir = iteration_output_dirs.at(iteration_index);
+        std::filesystem::create_directories(output_dir);
+        publication_engine.output_paths.redu_dir_name = output_dir.string();
+        publication_engine.redu_dir_name = output_dir.string();
+    }
+};
+
 struct FakeCoaddTodProc {
     FakeEngine engine_state;
     int calc_cmb_size_calls = 0;
@@ -2282,12 +2311,29 @@ TEST(config_scaffold, rejects_enabled_zero_noise_count_without_defaulting) {
     citlali::config::NoiseConfig request;
     request.enabled = true;
     request.n_noise_maps = 0;
+    for (const bool mapmaking_enabled : {false, true}) {
+        citlali::pipeline::NoiseExecutionPlan plan;
+        EXPECT_THROW(
+            plan.reset_from_request(request, mapmaking_enabled),
+            std::invalid_argument);
+        EXPECT_FALSE(plan.initialized);
+    }
+    EXPECT_EQ(request.n_noise_maps, 0);
+}
+
+TEST(config_scaffold, accepts_disabled_zero_noise_request_as_zero_work) {
+    citlali::config::NoiseConfig request;
+    request.enabled = false;
+    request.n_noise_maps = 0;
     citlali::pipeline::NoiseExecutionPlan plan;
 
-    EXPECT_THROW(plan.reset_from_request(request, true),
-                 std::invalid_argument);
-    EXPECT_EQ(request.n_noise_maps, 0);
-    EXPECT_FALSE(plan.initialized);
+    EXPECT_NO_THROW(plan.reset_from_request(request, false));
+    citlali::pipeline::begin_noise_run_publication(plan);
+
+    EXPECT_TRUE(plan.initialized);
+    EXPECT_FALSE(plan.effective.enabled);
+    EXPECT_EQ(plan.effective.n_noise_maps, 0);
+    EXPECT_EQ(*plan.realized.noise_maps_per_scientific_map, 0U);
 }
 
 TEST(config_scaffold, records_exact_noise_joint_assignment_design) {
@@ -2491,6 +2537,42 @@ TEST(config_scaffold, records_full_observation_noise_outputs) {
     EXPECT_TRUE(noise.realized.uncertainty_use_valid);
     EXPECT_EQ(noise.realized.completion_basis,
               "observed_successful_publication_lifecycle");
+}
+
+TEST(config_scaffold,
+     records_selected_beammap_noise_outputs_without_full_buffer_counts) {
+    struct Buffer {
+        int n_noise = 2;
+        std::vector<int> signal = {0, 0, 0, 0};
+        std::vector<int> noise_variance = {0, 0, 0, 0};
+        std::vector<std::vector<int>> noise = {{}, {}, {}, {}};
+    } buffer;
+    citlali::config::NoiseConfig request;
+    request.enabled = true;
+    request.n_noise_maps = 2;
+    request.products_enabled = true;
+    request.write_realizations = true;
+    citlali::pipeline::NoiseExecutionPlan noise;
+    noise.reset_from_request(request, true);
+    citlali::pipeline::begin_noise_run_publication(noise);
+
+    citlali::pipeline::record_noise_selected_map_output_stage(
+        noise, false, false, buffer, 2);
+
+    EXPECT_EQ(*noise.realized.observation_scientific_map_count, 2U);
+    EXPECT_EQ(*noise.realized.observation_noise_realization_count, 4U);
+    EXPECT_EQ(*noise.realized.total_noise_realization_count, 4U);
+    EXPECT_EQ(*noise.realized.empirical_product_map_count, 2U);
+    EXPECT_EQ(*noise.realized.realization_image_write_count, 4U);
+
+    citlali::pipeline::begin_noise_run_publication(noise);
+    citlali::pipeline::record_noise_map_output_stage(
+        noise, false, false, buffer);
+
+    EXPECT_EQ(*noise.realized.observation_scientific_map_count, 4U);
+    EXPECT_EQ(*noise.realized.observation_noise_realization_count, 8U);
+    EXPECT_EQ(*noise.realized.empirical_product_map_count, 4U);
+    EXPECT_EQ(*noise.realized.realization_image_write_count, 8U);
 }
 
 TEST(config_scaffold, records_naive_coadd_observation_and_coadd_noise_cardinality) {
@@ -6957,6 +7039,192 @@ TEST(pipeline_execution, begins_reduction_iteration) {
     EXPECT_EQ(todproc.allocate_nmb_calls, 1);
     EXPECT_TRUE(todproc.engine().cmb.obsnums.empty());
     EXPECT_DOUBLE_EQ(todproc.engine().cmb.exposure_time, 0.0);
+}
+
+TEST(pipeline_execution,
+     begins_noise_publication_only_after_fresh_iteration_layout_exists) {
+    const auto root = std::filesystem::path(testing::TempDir()) /
+        "citlali_noise_fresh_iteration_publication";
+    const auto current_dir = root / "redu01";
+    std::filesystem::remove_all(root);
+
+    FakeNoisePublicationIterationTodProc todproc;
+    auto &engine = todproc.engine();
+    engine.typed_config.coadd.enabled = false;
+    engine.output_paths.redu_dir_name.clear();
+    engine.redu_dir_name.clear();
+    todproc.iteration_output_dirs = {current_dir};
+    engine.noise_plan.reset_from_request(
+        citlali::config::NoiseConfig{}, true);
+    std::vector<std::string> config_filepaths;
+    citlali::pipeline::StageProfileCollector stage_profile;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::begin_reduction_iteration(
+        todproc, config_filepaths, stage_profile, logger);
+
+    EXPECT_EQ(todproc.create_output_dir_calls, 1);
+    EXPECT_FALSE(todproc.publication_started_when_output_dir_created);
+    EXPECT_TRUE(std::filesystem::is_directory(current_dir));
+    EXPECT_EQ(engine.output_paths.redu_dir_name, current_dir.string());
+    EXPECT_TRUE(engine.noise_plan.publication_started);
+    std::filesystem::remove_all(root);
+}
+
+TEST(pipeline_execution,
+     reused_processor_does_not_touch_prior_noise_authority_before_layout) {
+    const auto root = std::filesystem::path(testing::TempDir()) /
+        "citlali_noise_reused_processor_publication";
+    const auto prior_dir = root / "prior";
+    const auto current_dir = root / "current";
+    std::filesystem::remove_all(root);
+    std::filesystem::create_directories(prior_dir);
+    const auto prior_authority =
+        citlali::pipeline::noise_provenance_path(prior_dir);
+    std::ofstream(prior_authority) << "prior-authority\n";
+
+    FakeNoisePublicationIterationTodProc todproc;
+    auto &engine = todproc.engine();
+    engine.typed_config.coadd.enabled = false;
+    engine.output_paths.redu_dir_name = prior_dir.string();
+    engine.redu_dir_name = prior_dir.string();
+    todproc.iteration_output_dirs = {current_dir};
+    engine.noise_plan.reset_from_request(
+        citlali::config::NoiseConfig{}, true);
+    std::vector<std::string> config_filepaths;
+    citlali::pipeline::StageProfileCollector stage_profile;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::begin_reduction_iteration(
+        todproc, config_filepaths, stage_profile, logger);
+
+    EXPECT_TRUE(std::filesystem::exists(prior_authority));
+    EXPECT_EQ(engine.output_paths.redu_dir_name, current_dir.string());
+    EXPECT_FALSE(std::filesystem::exists(
+        citlali::pipeline::noise_provenance_path(current_dir)));
+    std::filesystem::remove_all(root);
+}
+
+TEST(pipeline_execution,
+     reused_iteration_directory_resets_noise_members_and_counts) {
+    const auto root = std::filesystem::path(testing::TempDir()) /
+        "citlali_noise_reused_iteration_directory";
+    const auto shared_dir = root / "redu01";
+    std::filesystem::remove_all(root);
+
+    FakeNoisePublicationIterationTodProc todproc;
+    auto &engine = todproc.engine();
+    engine.typed_config.coadd.enabled = false;
+    engine.typed_config.timestream.fruit_loops.save_all_iters = false;
+    todproc.iteration_output_dirs = {shared_dir};
+    citlali::config::NoiseConfig request;
+    request.enabled = true;
+    request.n_noise_maps = 2;
+    request.products_enabled = true;
+    request.write_realizations = true;
+    engine.noise_plan.reset_from_request(request, true);
+    std::vector<std::string> config_filepaths;
+    citlali::pipeline::StageProfileCollector stage_profile;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::begin_reduction_iteration(
+        todproc, config_filepaths, stage_profile, logger);
+    citlali::pipeline::record_noise_published_member(
+        engine.noise_plan, shared_dir / "iteration0.fits",
+        citlali::pipeline::NoisePublishedMemberKind::fits);
+    citlali::pipeline::record_noise_map_output_stage(
+        engine.noise_plan, false, false, 1, 2, 1, 2);
+    const auto stale_authority =
+        citlali::pipeline::noise_provenance_path(shared_dir);
+    std::ofstream(stale_authority) << "iteration0-complete\n";
+
+    engine.iteration.fruit_iter = 1;
+    citlali::pipeline::begin_reduction_iteration(
+        todproc, config_filepaths, stage_profile, logger);
+
+    EXPECT_EQ(todproc.create_output_dir_calls, 1);
+    EXPECT_FALSE(std::filesystem::exists(stale_authority));
+    EXPECT_TRUE(engine.noise_plan.published_members.empty());
+    EXPECT_EQ(*engine.noise_plan.realized.total_noise_realization_count, 0U);
+    EXPECT_EQ(*engine.noise_plan.realized.empirical_product_map_count, 0U);
+    EXPECT_EQ(*engine.noise_plan.realized.realization_image_write_count, 0U);
+
+    citlali::pipeline::record_noise_published_member(
+        engine.noise_plan, shared_dir / "iteration1.fits",
+        citlali::pipeline::NoisePublishedMemberKind::fits);
+    citlali::pipeline::record_noise_map_output_stage(
+        engine.noise_plan, false, false, 1, 2, 1, 2);
+    ASSERT_EQ(engine.noise_plan.published_members.size(), 1U);
+    EXPECT_EQ(engine.noise_plan.published_members.front().path,
+              shared_dir / "iteration1.fits");
+    EXPECT_EQ(*engine.noise_plan.realized.total_noise_realization_count, 2U);
+    EXPECT_EQ(*engine.noise_plan.realized.empirical_product_map_count, 1U);
+    EXPECT_EQ(*engine.noise_plan.realized.realization_image_write_count, 2U);
+    std::filesystem::remove_all(root);
+}
+
+TEST(pipeline_execution,
+     failed_saved_iteration_preserves_prior_complete_noise_authority) {
+    const auto root = std::filesystem::path(testing::TempDir()) /
+        "citlali_noise_saved_iteration_failure";
+    const auto first_dir = root / "redu01";
+    const auto second_dir = root / "redu02";
+    std::filesystem::remove_all(root);
+    std::filesystem::create_directories(second_dir);
+    const auto second_authority =
+        citlali::pipeline::noise_provenance_path(second_dir);
+    std::ofstream(second_authority) << "stale-second-authority\n";
+
+    FakeNoisePublicationIterationTodProc todproc;
+    auto &engine = todproc.engine();
+    engine.typed_config.coadd.enabled = false;
+    engine.typed_config.timestream.fruit_loops.save_all_iters = true;
+    todproc.iteration_output_dirs = {first_dir, second_dir};
+    citlali::config::NoiseConfig request;
+    request.enabled = true;
+    request.n_noise_maps = 2;
+    request.products_enabled = false;
+    request.write_realizations = false;
+    engine.noise_plan.reset_from_request(request, true);
+    std::vector<std::string> config_filepaths;
+    citlali::pipeline::StageProfileCollector stage_profile;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::begin_reduction_iteration(
+        todproc, config_filepaths, stage_profile, logger);
+    citlali::pipeline::record_noise_map_output_stage(
+        engine.noise_plan, false, false, 1, 2, 0, 0);
+    citlali::pipeline::MapmakingExecutionPlan mapmaking;
+    mapmaking.reset_from_request(
+        citlali::config::MapmakingConfig{},
+        citlali::config::ReductionType::pointing);
+    mapmaking.begin_iteration();
+    mapmaking.begin_observation(0, "152389", 1, 4.848136811e-6, 1);
+    citlali::pipeline::complete_mapmaking_observation(mapmaking);
+    citlali::pipeline::record_mapmaking_run_completed(mapmaking);
+    citlali::pipeline::record_noise_run_completed(
+        engine.noise_plan, mapmaking, false);
+    citlali::pipeline::write_noise_provenance_file(
+        first_dir, engine.noise_plan);
+    const auto first_authority =
+        citlali::pipeline::noise_provenance_path(first_dir);
+    ASSERT_TRUE(std::filesystem::exists(first_authority));
+
+    engine.iteration.fruit_iter = 1;
+    citlali::pipeline::begin_reduction_iteration(
+        todproc, config_filepaths, stage_profile, logger);
+
+    EXPECT_EQ(todproc.create_output_dir_calls, 2);
+    EXPECT_TRUE(std::filesystem::exists(first_authority));
+    EXPECT_FALSE(std::filesystem::exists(second_authority));
+    EXPECT_FALSE(engine.noise_plan.realized.reduction_completed);
+    EXPECT_FALSE(engine.noise_plan.expected.initialized);
+    EXPECT_TRUE(engine.noise_plan.published_members.empty());
+    citlali::pipeline::record_noise_map_output_stage(
+        engine.noise_plan, false, false, 1, 2, 0, 0);
+    EXPECT_EQ(*engine.noise_plan.realized.total_noise_realization_count, 2U);
+    EXPECT_FALSE(std::filesystem::exists(second_authority));
+    std::filesystem::remove_all(root);
 }
 
 TEST(pipeline_execution, initializes_reduction_iterations) {

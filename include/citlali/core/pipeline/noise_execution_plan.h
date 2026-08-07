@@ -176,10 +176,9 @@ struct NoiseExecutionPlan {
     void reset_from_request(
         const citlali::config::NoiseConfig &request,
         bool mapmaking_enabled) {
-        if (mapmaking_enabled && request.enabled &&
-            request.n_noise_maps <= 0) {
+        if (request.enabled && request.n_noise_maps <= 0) {
             throw std::invalid_argument(
-                "enabled noise execution requires a positive effective realization count");
+                "enabled noise request requires a positive realization count");
         }
         initialized = true;
         requested = request;
@@ -413,6 +412,51 @@ void record_noise_map_output_stage(
     record_noise_map_output_stage(
         plan, is_coadd, is_filtered, scientific_map_count, noise_count,
         empirical_count, realization_write_count);
+}
+
+template <class MapBuffer>
+void record_noise_selected_map_output_stage(
+    NoiseExecutionPlan &plan, bool is_coadd, bool is_filtered,
+    const MapBuffer &map_buffer,
+    std::size_t published_scientific_map_count) {
+    if (!plan.effective.enabled) {
+        record_noise_map_output_stage(
+            plan, is_coadd, is_filtered, 0, 0, 0, 0);
+        return;
+    }
+    if (published_scientific_map_count == 0 ||
+        published_scientific_map_count > map_buffer.signal.size()) {
+        throw std::logic_error(
+            "selected noise map-output count is outside the map buffer");
+    }
+    if (map_buffer.n_noise <= 0) {
+        throw std::logic_error(
+            "enabled selected noise map-output buffer has no realizations");
+    }
+    if (plan.effective.products_enabled &&
+        published_scientific_map_count > map_buffer.noise_variance.size()) {
+        throw std::logic_error(
+            "selected empirical noise products are outside the map buffer");
+    }
+    if (plan.effective.write_realizations &&
+        published_scientific_map_count > map_buffer.noise.size()) {
+        throw std::logic_error(
+            "selected noise realizations are outside the map buffer");
+    }
+    const auto noise_count =
+        static_cast<std::size_t>(map_buffer.n_noise);
+    const auto empirical_count = plan.effective.products_enabled
+        ? published_scientific_map_count
+        : std::size_t{0};
+    const auto realization_write_count =
+        plan.effective.write_realizations
+            ? checked_noise_count_product(
+                  published_scientific_map_count, noise_count,
+                  "selected realization image writes")
+            : std::size_t{0};
+    record_noise_map_output_stage(
+        plan, is_coadd, is_filtered, published_scientific_map_count,
+        noise_count, empirical_count, realization_write_count);
 }
 
 template <class MapBuffer>

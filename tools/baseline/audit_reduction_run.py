@@ -1091,6 +1091,8 @@ def noise_provenance_semantic_errors(data: dict[str, Any]) -> list[str]:
             errors.append("noise effective count resolution is inconsistent")
         if effective["n_noise_maps"] != expected_count:
             errors.append("noise effective count does not follow activation policy")
+        if requested_enabled and requested["n_noise_maps"] <= 0:
+            errors.append("enabled noise requested count must be positive")
         if effective["enabled"] and effective["n_noise_maps"] <= 0:
             errors.append("enabled noise effective count must be positive")
         if resolution["count_zeroed_while_disabled"] != (

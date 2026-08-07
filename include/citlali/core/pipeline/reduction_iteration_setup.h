@@ -9,8 +9,10 @@
 #include <citlali/core/pipeline/iteration_lifecycle.h>
 #include <citlali/core/pipeline/iteration_output_layout.h>
 #include <citlali/core/pipeline/mapmaking_provenance_lifecycle.h>
+#include <citlali/core/pipeline/noise_provenance.h>
 #include <citlali/core/pipeline/pointing_provenance_lifecycle.h>
 #include <citlali/core/pipeline/post_processing_provenance_lifecycle.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/stage_profile.h>
 
 namespace citlali::pipeline {
@@ -30,6 +32,13 @@ void begin_reduction_iteration(TodProc &todproc,
     begin_beammap_run_if_available(engine);
     prepare_iteration_output_layout_if_needed(todproc, config_filepaths,
                                               stage_profile, logger);
+    if constexpr (has_noise_plan_v<decltype(engine)>) {
+        auto &plan = noise_plan(engine);
+        if (plan.initialized) {
+            begin_noise_product_publication(
+                engine.output_paths.redu_dir_name, plan);
+        }
+    }
     prepare_iteration_observation_buffers(todproc, logger);
 }
 

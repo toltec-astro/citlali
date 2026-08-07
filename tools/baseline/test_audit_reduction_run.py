@@ -1671,8 +1671,45 @@ class ProvenanceAuditTest(unittest.TestCase):
         document["realized"]["noise_maps_per_scientific_map"]["value"] = 0
 
         self.assertIn(
+            "enabled noise requested count must be positive",
+            audit.noise_provenance_semantic_errors(document),
+        )
+        self.assertIn(
             "enabled noise effective count must be positive",
             audit.noise_provenance_semantic_errors(document),
+        )
+
+    def test_rejects_requested_enabled_zero_when_mapmaking_disabled(
+        self,
+    ) -> None:
+        document = valid_noise_document(enabled=False)
+        document["requested"]["enabled"] = True
+        document["requested"]["n_noise_maps"] = 0
+        resolution = document["effective"]["resolution"]
+        resolution["mapmaking_enabled"] = False
+        resolution["requested_enabled"] = True
+        resolution["disabled_by_mapmaking"] = True
+        resolution["requested_n_noise_maps"] = 0
+        resolution["count_zeroed_while_disabled"] = False
+
+        errors = audit.noise_provenance_semantic_errors(document)
+
+        self.assertIn(
+            "enabled noise requested count must be positive", errors
+        )
+        self.assertNotIn(
+            "enabled noise effective count must be positive", errors
+        )
+
+    def test_accepts_requested_disabled_zero_noise_count(self) -> None:
+        document = valid_noise_document(enabled=False)
+        document["requested"]["n_noise_maps"] = 0
+        resolution = document["effective"]["resolution"]
+        resolution["requested_n_noise_maps"] = 0
+        resolution["count_zeroed_while_disabled"] = False
+
+        self.assertEqual(
+            audit.noise_provenance_semantic_errors(document), []
         )
 
     def test_rejects_missing_required_noise_products_provenance(self) -> None:
