@@ -14,7 +14,9 @@ import gzip
 import hashlib
 import json
 import math
+import os
 import re
+import stat
 import sys
 from collections import Counter
 from dataclasses import dataclass
@@ -203,6 +205,7 @@ PROVENANCE_SIDECARS = {
             ("package", "member_count"),
             ("package", "member_inventory_digest"),
             ("package", "member_inventory_digest_kind"),
+            ("package", "member_inventory_preimage_encoding"),
             ("package", "publication_state"),
             ("package", "complete"),
         ),
@@ -1316,6 +1319,13 @@ NOISE_PRODUCT_CONTRACTS = {
     ),
 }
 NOISE_PRODUCT_IDENTITIES = frozenset(NOISE_PRODUCT_CONTRACTS)
+NOISE_SEMANTIC_DIGEST_KIND = "semantic_contract_sha256"
+NOISE_COMPACT_MISSINGNESS = "nonfinite_unavailable"
+NOISE_NETCDF_JOIN_SCHEMA = "citlali_noise_product_join_v1"
+NOISE_MEMBER_INVENTORY_DIGEST_KIND = "sha256"
+NOISE_MEMBER_INVENTORY_PREIMAGE_ENCODING = (
+    "canonical_length_prefixed_member_records_v2"
+)
 
 
 def noise_product_semantic_digest(product_identity: str) -> str:
@@ -1325,14 +1335,124 @@ def noise_product_semantic_digest(product_identity: str) -> str:
     return "sha256:" + hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
 
-def fits_noise_member_joins(path: Path) -> tuple[list[str], int]:
+def noise_realization_scope_is_canonical(scope: str) -> bool:
+    prefix = "realization_map_index_"
+    if not scope.startswith(prefix):
+        return False
+    ordinal = scope[len(prefix):]
+    return bool(ordinal) and ordinal.isascii() and ordinal.isdigit() and (
+        ordinal == "0" or not ordinal.startswith("0")
+    )
+
+
+def noise_fits_join_matches_contract(values: dict[str, Any]) -> bool:
+    identity = str(values["NOIPRID"])
+    scope = str(values["NOISCOPE"])
+    validity = str(values["NOIVALID"])
+    restriction = str(values["NOIRESTR"])
+    if values["NOIMISS"] != NOISE_COMPACT_MISSINGNESS:
+        return False
+    map_scope = scope in {"raw_map_pixel", "filtered_map_pixel"}
+    if identity == "formal_nonprecision_coefficient_snapshot":
+        return (
+            map_scope
+            and validity == "available"
+            and restriction == "nonprecision_snapshot_not_inverse_variance"
+        )
+    if identity == "global_nonprecision_scaled_coefficient":
+        return (
+            map_scope
+            and validity in {"available", "unavailable"}
+            and restriction == "existing_use_only_nonprecision_not_precision"
+        )
+    if identity == "conditional_finite_stack_scatter":
+        if validity not in {"conditional_descriptive", "unavailable"}:
+            return False
+        return (
+            scope == "raw_map_pixel"
+            and restriction == (
+                "retained_legacy_name_not_physical_noise_variance_or_covariance"
+            )
+        ) or (
+            scope == "filtered_map_pixel"
+            and restriction == (
+                "retained_legacy_name_not_physical_noise_variance_"
+                "strict_parity_pending_FLT"
+            )
+        )
+    if identity == "coefficient_standardized_signal":
+        return (
+            map_scope
+            and validity in {"available_where_finite", "unavailable"}
+            and restriction == (
+                "retained_legacy_name_engineering_standardization_"
+                "not_significance"
+            )
+        )
+    if identity == "filtered_pixel_stack_scatter":
+        return (
+            scope == "filtered_map_pixel"
+            and validity in {
+                "available_where_finite_on_valid_support",
+                "R_lt_2",
+                "scatter_unavailable_or_nonfinite",
+                "response_invalid",
+                "support_invalid",
+            }
+            and restriction == (
+                "retained_legacy_name_not_aperture_uncertainty_"
+                "strict_parity_pending_FLT"
+            )
+        )
+    if identity == "conditional_stack_scatter_ratio":
+        return (
+            scope == "filtered_map_pixel"
+            and validity in {
+                "available_where_finite_positive_denominator_on_valid_support",
+                "R_lt_2",
+                "scatter_unavailable_or_nonfinite",
+                "response_invalid",
+                "support_invalid",
+            }
+            and restriction == (
+                "retained_legacy_name_conditional_descriptive_ratio_"
+                "not_significance"
+            )
+        )
+    if identity == "source_imprinted_current_realization":
+        return (
+            noise_realization_scope_is_canonical(scope)
+            and validity == "conditional_design_member"
+            and restriction == (
+                "source_imprinted_current_not_physical_noise_repeat"
+            )
+        )
+    return False
+
+
+def noise_fits_identity_is_empirical_map_product(identity: str) -> bool:
+    return identity in {
+        "conditional_finite_stack_scatter",
+        "formal_nonprecision_coefficient_snapshot",
+        "global_nonprecision_scaled_coefficient",
+        "coefficient_standardized_signal",
+        "filtered_pixel_stack_scatter",
+        "conditional_stack_scatter_ratio",
+    }
+
+
+def fits_noise_member_joins(
+    path: Path,
+) -> tuple[list[str], int, int, bool]:
     from astropy.io import fits
 
-    identities: set[str] = set()
+    identity_counts: Counter[str] = Counter()
+    empirical_scope: str | None = None
+    realization_scopes: set[str] = set()
     realization_count = 0
     keys = (
         "NOIPKG", "NOIPROV", "NOIPRID", "NOIPVER", "NOIDGST",
-        "NOISCOPE", "NOIVALID", "NOIRESTR",
+        "NOIDGKND", "NOISCOPE", "NOIVALID", "NOIRESTR", "NOIMISS",
     )
     with fits.open(path, memmap=False) as hdus:
         for hdu in hdus:
@@ -1347,21 +1467,65 @@ def fits_noise_member_joins(path: Path) -> tuple[list[str], int]:
                 or values["NOIPROV"] != "noise_products_provenance.yaml"
                 or values["NOIPVER"] != "SCI-NOI-002-v1"
                 or values["NOIDGST"] != noise_product_semantic_digest(identity)
+                or values["NOIDGKND"] != NOISE_SEMANTIC_DIGEST_KIND
                 or identity not in NOISE_PRODUCT_IDENTITIES
-                or not str(values["NOISCOPE"])
-                or not str(values["NOIVALID"])
-                or not str(values["NOIRESTR"])
+                or not noise_fits_join_matches_contract(values)
             ):
                 raise ValueError(f"invalid FITS noise-product join in {path}")
-            identities.add(identity)
+            identity_counts[identity] += 1
+            if (
+                identity != "source_imprinted_current_realization"
+                and identity_counts[identity] > 1
+            ):
+                raise ValueError(
+                    "duplicate non-realization FITS noise-product identity "
+                    f"{identity} in {path}"
+                )
+            if noise_fits_identity_is_empirical_map_product(identity):
+                scope = str(values["NOISCOPE"])
+                if empirical_scope is None:
+                    empirical_scope = scope
+                elif empirical_scope != scope:
+                    raise ValueError(
+                        f"mixed empirical FITS noise-product scopes in {path}"
+                    )
             if identity == "source_imprinted_current_realization":
+                scope = str(values["NOISCOPE"])
+                if scope in realization_scopes:
+                    raise ValueError(
+                        f"duplicate FITS noise-realization scope {scope} in {path}"
+                    )
+                realization_scopes.add(scope)
                 realization_count += 1
-    if not identities:
+    if not identity_counts:
         raise ValueError(f"admitted FITS member has no noise-product join: {path}")
-    return sorted(identities), realization_count
+    if realization_scopes != {
+        f"realization_map_index_{ordinal}"
+        for ordinal in range(realization_count)
+    }:
+        raise ValueError(
+            f"noncanonical FITS noise-realization scope sequence in {path}"
+        )
+    empirical_member = any(
+        noise_fits_identity_is_empirical_map_product(identity)
+        for identity in identity_counts
+    )
+    if empirical_member and (
+        realization_count
+        or identity_counts["formal_nonprecision_coefficient_snapshot"] != 1
+        or identity_counts["conditional_finite_stack_scatter"] != 1
+        or identity_counts["filtered_pixel_stack_scatter"]
+        != identity_counts["conditional_stack_scatter_ratio"]
+    ):
+        raise ValueError(
+            f"incomplete or mixed empirical FITS noise-product bundle in {path}"
+        )
+    return sorted(identity_counts), realization_count, int(empirical_member), True
 
 
-def ecsv_noise_member_joins(path: Path) -> tuple[list[str], int]:
+def ecsv_noise_member_joins(
+    path: Path,
+) -> tuple[list[str], int, int, bool]:
     from collections.abc import Mapping
     from astropy.table import Table
 
@@ -1376,16 +1540,88 @@ def ecsv_noise_member_joins(path: Path) -> tuple[list[str], int]:
         "product_identity": identity,
         "product_version": "SCI-NOI-002-v1",
         "semantic_digest": noise_product_semantic_digest(identity),
+        "digest_kind": NOISE_SEMANTIC_DIGEST_KIND,
+        "column": "sig2noise",
         "scope": "source_table_row",
         "validity": "finite_amplitude_and_finite_positive_full_map_rms",
         "restriction": "legacy_alias_deprecated_not_significance",
     }
-    if any(contract.get(key) != value for key, value in expected.items()):
+    if (
+        set(contract) != set(expected)
+        or any(contract.get(key) != value for key, value in expected.items())
+        or table.colnames.count(expected["column"]) != 1
+    ):
         raise ValueError(f"invalid ECSV noise-product join in {path}")
-    return [identity], 0
+    return [identity], 0, 0, False
 
 
-def netcdf_noise_member_joins(path: Path) -> tuple[list[str], int]:
+NOISE_NETCDF_JOIN_KEYS = (
+    "variable",
+    "package_id",
+    "provenance_id",
+    "product_identity",
+    "product_version",
+    "semantic_digest",
+    "digest_kind",
+    "scope",
+    "validity",
+    "restriction",
+)
+
+
+def noise_netcdf_join_record(
+    variable: str,
+    identity: str,
+    validity: str,
+    restriction: str,
+) -> str:
+    values = {
+        "variable": variable,
+        "package_id": "citlali-noise-products",
+        "provenance_id": "noise_products_provenance.yaml",
+        "product_identity": identity,
+        "product_version": "SCI-NOI-002-v1",
+        "semantic_digest": noise_product_semantic_digest(identity),
+        "digest_kind": NOISE_SEMANTIC_DIGEST_KIND,
+        "scope": "map_summary",
+        "validity": validity,
+        "restriction": restriction,
+    }
+    return NOISE_NETCDF_JOIN_SCHEMA + "|" + "|".join(
+        f"{key}={values[key]}" for key in NOISE_NETCDF_JOIN_KEYS
+    )
+
+
+def parse_noise_netcdf_join_comment(comment: str) -> dict[str, str]:
+    description, separator, record = comment.rpartition("; ")
+    if not separator or not description or record.count(
+        NOISE_NETCDF_JOIN_SCHEMA
+    ) != 1:
+        raise ValueError("missing or duplicate structured NetCDF noise-product join")
+    tokens = record.split("|")
+    if (
+        len(tokens) != len(NOISE_NETCDF_JOIN_KEYS) + 1
+        or tokens[0] != NOISE_NETCDF_JOIN_SCHEMA
+    ):
+        raise ValueError("invalid structured NetCDF noise-product join shape")
+    parsed: dict[str, str] = {}
+    for expected_key, token in zip(NOISE_NETCDF_JOIN_KEYS, tokens[1:]):
+        if token.count("=") != 1:
+            raise ValueError(
+                f"invalid structured NetCDF noise-product join field {expected_key}"
+            )
+        key, value = token.split("=", 1)
+        if key != expected_key or not value or key in parsed:
+            raise ValueError(
+                f"invalid structured NetCDF noise-product join field {expected_key}"
+            )
+        parsed[key] = value
+    return parsed
+
+
+def netcdf_noise_member_joins(
+    path: Path,
+) -> tuple[list[str], int, int, bool]:
     from netCDF4 import Dataset
 
     variables = {
@@ -1413,23 +1649,61 @@ def netcdf_noise_member_joins(path: Path) -> tuple[list[str], int]:
                     f"missing NetCDF noise-contract variable {name} in {path}"
                 )
             comment = str(getattr(dataset.variables[name], "comment", ""))
-            required = (
-                "package_id=citlali-noise-products",
-                "provenance_id=noise_products_provenance.yaml",
-                f"product_identity={identity}",
-                "product_version=SCI-NOI-002-v1",
-                "scope=map_summary",
-                f"validity={validity}",
-                f"restriction={restriction}",
+            expected_record = noise_netcdf_join_record(
+                name, identity, validity, restriction
             )
-            missing = [token for token in required if token not in comment]
-            if missing:
+            try:
+                parse_noise_netcdf_join_comment(comment)
+            except ValueError as exc:
                 raise ValueError(
                     f"invalid NetCDF noise-product join for {name} in {path}: "
-                    f"missing {', '.join(missing)}"
+                    f"{exc}"
+                ) from exc
+            if comment.rpartition("; ")[2] != expected_record:
+                raise ValueError(
+                    f"invalid NetCDF noise-product join for {name} in {path}"
                 )
             identities.add(identity)
-    return sorted(identities), 0
+        for name, variable in dataset.variables.items():
+            if name in variables:
+                continue
+            comment = str(getattr(variable, "comment", ""))
+            if NOISE_NETCDF_JOIN_SCHEMA in comment:
+                raise ValueError(
+                    f"unexpected NetCDF noise-contract variable {name} in {path}"
+                )
+    return sorted(identities), 0, 0, True
+
+
+def noise_member_inventory_preimage_v2(members: list[dict[str, Any]]) -> bytes:
+    relative_paths = [member["member_product_identity"] for member in members]
+    if relative_paths != sorted(relative_paths, key=lambda value: value.encode("utf-8")):
+        raise ValueError(
+            "noise package member inventory is not in canonical lexical order"
+        )
+    if len(relative_paths) != len(set(relative_paths)):
+        raise ValueError("noise package member inventory contains duplicate paths")
+
+    preimage = bytearray(b"citlali-noise-member-inventory-v2|")
+
+    def append_field(value: str) -> None:
+        encoded = value.encode("utf-8")
+        preimage.extend(str(len(encoded)).encode("ascii"))
+        preimage.extend(b":")
+        preimage.extend(encoded)
+
+    append_field(str(len(members)))
+    for member in members:
+        append_field(member["member_product_identity"])
+        append_field(member["sha256"])
+        append_field(str(member["size_bytes"]))
+    return bytes(preimage)
+
+
+def noise_member_inventory_digest_v2(members: list[dict[str, Any]]) -> str:
+    return "sha256:" + hashlib.sha256(
+        noise_member_inventory_preimage_v2(members)
+    ).hexdigest()
 
 
 def noise_package_integrity_errors(
@@ -1479,7 +1753,7 @@ def noise_package_integrity_errors(
                     noise_product_semantic_digest(identity)
                 ):
                     errors.append(f"{label} semantic digest is inconsistent")
-                if contract.get("digest_kind") != "semantic_contract_sha256":
+                if contract.get("digest_kind") != NOISE_SEMANTIC_DIGEST_KIND:
                     errors.append(f"{label} digest kind is inconsistent")
                 expected_scope, expected_restriction = (
                     NOISE_PRODUCT_CONTRACTS[identity]
@@ -1497,10 +1771,23 @@ def noise_package_integrity_errors(
         if package.get("member_count") != len(members):
             errors.append("noise package member count is inconsistent")
 
-        root = sidecar_path.parent.resolve(strict=True)
+        lexical_root = Path(os.path.abspath(sidecar_path.parent))
+        root_status = os.lstat(lexical_root)
+        if stat.S_ISLNK(root_status.st_mode) or not stat.S_ISDIR(
+            root_status.st_mode
+        ):
+            return errors + [
+                "noise package reduction root is non-directory or a symlink"
+            ]
+        root = lexical_root.resolve(strict=True)
         seen: set[str] = set()
-        canonical_inventory = ""
+        seen_resolved: set[Path] = set()
+        verified_inventory_records: list[dict[str, Any]] = []
+        previous_relative: bytes | None = None
         realization_count = 0
+        empirical_map_product_count = 0
+        contains_stack_derived_product = False
+        contains_empirical_netcdf = False
         for index, member in enumerate(members):
             label = f"noise package member {index}"
             if not isinstance(member, dict):
@@ -1523,9 +1810,45 @@ def noise_package_integrity_errors(
                 errors.append(f"duplicate noise package member: {relative}")
                 continue
             seen.add(relative)
-            candidate = sidecar_path.parent.joinpath(*parts)
-            if candidate.is_symlink():
-                errors.append(f"{label} is a symlink")
+            relative_bytes = relative.encode("utf-8")
+            if previous_relative is not None and (
+                previous_relative >= relative_bytes
+            ):
+                errors.append(
+                    "noise package member inventory is not in canonical "
+                    "lexical order"
+                )
+            previous_relative = relative_bytes
+
+            candidate = lexical_root.joinpath(*parts)
+            current = lexical_root
+            invalid_component = False
+            for component_index, part in enumerate(parts):
+                current = current / part
+                try:
+                    component_status = os.lstat(current)
+                except FileNotFoundError:
+                    errors.append(f"{label} is missing")
+                    invalid_component = True
+                    break
+                is_leaf = component_index == len(parts) - 1
+                if stat.S_ISLNK(component_status.st_mode):
+                    errors.append(
+                        f"{label} is a symlink"
+                        if is_leaf
+                        else f"{label} has a symlink path component: {current}"
+                    )
+                    invalid_component = True
+                    break
+                if is_leaf and not stat.S_ISREG(component_status.st_mode):
+                    errors.append(f"{label} is not a regular file")
+                    invalid_component = True
+                    break
+                if not is_leaf and not stat.S_ISDIR(component_status.st_mode):
+                    errors.append(f"{label} has a non-directory path component")
+                    invalid_component = True
+                    break
+            if invalid_component:
                 continue
             try:
                 resolved = candidate.resolve(strict=True)
@@ -1536,6 +1859,10 @@ def noise_package_integrity_errors(
             if not resolved.is_file():
                 errors.append(f"{label} is not a regular file")
                 continue
+            if resolved in seen_resolved:
+                errors.append(f"duplicate resolved noise package member: {relative}")
+                continue
+            seen_resolved.add(resolved)
 
             kind = member.get("member_kind")
             extensions = {"fits": ".fits", "ecsv": ".ecsv", "netcdf": ".nc"}
@@ -1556,11 +1883,26 @@ def noise_package_integrity_errors(
                 errors.append(f"{label} detached status is inconsistent")
 
             if kind == "fits":
-                identities, member_realizations = fits_noise_member_joins(resolved)
+                (
+                    identities,
+                    member_realizations,
+                    member_empirical_maps,
+                    member_is_stack_derived,
+                ) = fits_noise_member_joins(resolved)
             elif kind == "ecsv":
-                identities, member_realizations = ecsv_noise_member_joins(resolved)
+                (
+                    identities,
+                    member_realizations,
+                    member_empirical_maps,
+                    member_is_stack_derived,
+                ) = ecsv_noise_member_joins(resolved)
             else:
-                identities, member_realizations = netcdf_noise_member_joins(resolved)
+                (
+                    identities,
+                    member_realizations,
+                    member_empirical_maps,
+                    member_is_stack_derived,
+                ) = netcdf_noise_member_joins(resolved)
             listed_identities = member.get("joined_product_identities")
             if listed_identities != identities:
                 errors.append(f"{label} joined product identities are inconsistent")
@@ -1572,17 +1914,66 @@ def noise_package_integrity_errors(
                     f"{label} identity is absent from package contract inventory"
                 )
             realization_count += member_realizations
-            canonical_inventory += f"{relative}\n{digest}\n{size}\n"
+            empirical_map_product_count += member_empirical_maps
+            contains_stack_derived_product = (
+                contains_stack_derived_product or member_is_stack_derived
+            )
+            contains_empirical_netcdf = contains_empirical_netcdf or (
+                kind == "netcdf"
+            )
+            verified_inventory_records.append(
+                {
+                    "member_product_identity": relative,
+                    "sha256": digest,
+                    "size_bytes": size,
+                }
+            )
 
-        inventory_digest = "sha256:" + hashlib.sha256(
-            canonical_inventory.encode("utf-8")
-        ).hexdigest()
+        inventory_digest = noise_member_inventory_digest_v2(
+            verified_inventory_records
+        )
         if package.get("member_inventory_digest") != inventory_digest:
             errors.append("noise package aggregate inventory digest is inconsistent")
         if package.get("member_inventory_digest_kind") != (
-            "canonical_relative_path_file_sha256_size_v1"
+            NOISE_MEMBER_INVENTORY_DIGEST_KIND
         ):
             errors.append("noise package aggregate digest kind is inconsistent")
+        if package.get("member_inventory_preimage_encoding") != (
+            NOISE_MEMBER_INVENTORY_PREIMAGE_ENCODING
+        ):
+            errors.append("noise package aggregate preimage encoding is inconsistent")
+
+        effective = data["effective"]["config"]
+        observed_empirical_maps = available_count(
+            data["realized"]["empirical_product_map_count"],
+            "empirical_product_map_count",
+        )
+        if not effective["enabled"]:
+            if contains_stack_derived_product:
+                errors.append(
+                    "disabled noise package contains a stack-derived member"
+                )
+        elif not effective["products"]["enabled"]:
+            if (
+                empirical_map_product_count != 0
+                or contains_empirical_netcdf
+                or observed_empirical_maps != 0
+            ):
+                errors.append(
+                    "noise package contains empirical members while products "
+                    "are disabled"
+                )
+        else:
+            if empirical_map_product_count != observed_empirical_maps:
+                errors.append(
+                    "noise package empirical FITS inventory does not match "
+                    "observed empirical product maps"
+                )
+            if contains_empirical_netcdf and empirical_map_product_count == 0:
+                errors.append(
+                    "noise package contains empirical NetCDF diagnostics "
+                    "without empirical map products"
+                )
         observed_writes = available_count(
             data["realized"]["realization_image_write_count"],
             "realization_image_write_count",

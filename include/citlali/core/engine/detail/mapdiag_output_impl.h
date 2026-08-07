@@ -110,7 +110,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             citlali::pipeline::add_mapdiag_netcdf_vars(
                 fo, mapdiag_netcdf_vars);
         });
-    citlali::pipeline::record_noise_published_member(
-        citlali::pipeline::noise_plan(*this), mapdiag_path,
-        citlali::pipeline::NoisePublishedMemberKind::netcdf);
+    auto &run_noise_plan = citlali::pipeline::noise_plan(*this);
+    if (run_noise_plan.effective.enabled &&
+        run_noise_plan.effective.products_enabled) {
+        citlali::pipeline::record_noise_published_member(
+            run_noise_plan, mapdiag_path,
+            citlali::pipeline::NoisePublishedMemberKind::netcdf);
+    }
 }

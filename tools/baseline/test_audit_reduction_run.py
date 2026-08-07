@@ -390,12 +390,10 @@ def valid_noise_document(enabled: bool = True) -> dict:
             ],
             "member_files": [],
             "member_count": 0,
-            "member_inventory_digest": (
-                "sha256:e3b0c44298fc1c149afbf4c8996fb924"
-                "27ae41e4649b934ca495991b7852b855"
-            ),
-            "member_inventory_digest_kind": (
-                "canonical_relative_path_file_sha256_size_v1"
+            "member_inventory_digest": audit.noise_member_inventory_digest_v2([]),
+            "member_inventory_digest_kind": "sha256",
+            "member_inventory_preimage_encoding": (
+                "canonical_length_prefixed_member_records_v2"
             ),
             "publication_state": "complete",
             "complete": True,
@@ -404,7 +402,6 @@ def valid_noise_document(enabled: bool = True) -> dict:
 
 
 def refresh_noise_member_inventory(redu: Path, document: dict) -> None:
-    canonical = ""
     for member in document["package"]["member_files"]:
         identity = member["member_product_identity"]
         path = redu / identity
@@ -412,50 +409,86 @@ def refresh_noise_member_inventory(redu: Path, document: dict) -> None:
         size = path.stat().st_size
         member["sha256"] = digest
         member["size_bytes"] = size
-        canonical += f"{identity}\n{digest}\n{size}\n"
-    document["package"]["member_inventory_digest"] = "sha256:" + (
-        hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+    document["package"]["member_inventory_digest"] = (
+        audit.noise_member_inventory_digest_v2(
+            document["package"]["member_files"]
+        )
     )
 
 
-def add_valid_noise_member_inventory(redu: Path, document: dict) -> list[Path]:
+def valid_noise_fits_join(
+    identity: str,
+    scope: str,
+    validity: str,
+    restriction: str,
+) -> dict[str, str]:
+    return {
+        "NOIPKG": "citlali-noise-products",
+        "NOIPROV": "noise_products_provenance.yaml",
+        "NOIPRID": identity,
+        "NOIPVER": "SCI-NOI-002-v1",
+        "NOIDGST": audit.noise_product_semantic_digest(identity),
+        "NOIDGKND": "semantic_contract_sha256",
+        "NOISCOPE": scope,
+        "NOIVALID": validity,
+        "NOIRESTR": restriction,
+        "NOIMISS": "nonfinite_unavailable",
+    }
+
+
+def write_valid_noise_fits(path: Path) -> list[str]:
     import numpy as np
     from astropy.io import fits
+
+    joins = (
+        valid_noise_fits_join(
+            "formal_nonprecision_coefficient_snapshot",
+            "raw_map_pixel",
+            "available",
+            "nonprecision_snapshot_not_inverse_variance",
+        ),
+        valid_noise_fits_join(
+            "conditional_finite_stack_scatter",
+            "raw_map_pixel",
+            "conditional_descriptive",
+            "retained_legacy_name_not_physical_noise_variance_or_covariance",
+        ),
+    )
+    images = []
+    for join in joins:
+        image = fits.ImageHDU(np.ones((1, 1), dtype=float))
+        for key, value in join.items():
+            image.header[key] = value
+        images.append(image)
+    fits.HDUList([fits.PrimaryHDU(), *images]).writeto(path, overwrite=True)
+    return sorted(join["NOIPRID"] for join in joins)
+
+
+def write_valid_source_ecsv(path: Path) -> str:
     from astropy.table import Table
-    from netCDF4 import Dataset
 
-    fits_path = redu / "map.fits"
-    identity = "conditional_finite_stack_scatter"
-    image = fits.ImageHDU(np.ones((1, 1), dtype=float))
-    image.header["NOIPKG"] = "citlali-noise-products"
-    image.header["NOIPROV"] = "noise_products_provenance.yaml"
-    image.header["NOIPRID"] = identity
-    image.header["NOIPVER"] = "SCI-NOI-002-v1"
-    image.header["NOIDGST"] = audit.noise_product_semantic_digest(identity)
-    image.header["NOISCOPE"] = "raw_map_pixel"
-    image.header["NOIVALID"] = "conditional_descriptive"
-    image.header["NOIRESTR"] = "not_physical_noise_variance"
-    fits.HDUList([fits.PrimaryHDU(), image]).writeto(fits_path)
-
-    ecsv_path = redu / "sources.ecsv"
     source_identity = "fitted_amplitude_over_full_map_rms_ratio"
     source_table = Table({"array": [0], "sig2noise": [1.0]})
     source_table.meta["noise_product_contract"] = {
         "package_id": "citlali-noise-products",
         "provenance_id": "noise_products_provenance.yaml",
+        "column": "sig2noise",
         "product_identity": source_identity,
         "product_version": "SCI-NOI-002-v1",
         "semantic_digest": audit.noise_product_semantic_digest(
             source_identity
         ),
+        "digest_kind": "semantic_contract_sha256",
         "scope": "source_table_row",
         "validity": "finite_amplitude_and_finite_positive_full_map_rms",
         "restriction": "legacy_alias_deprecated_not_significance",
     }
-    source_table.write(ecsv_path, format="ascii.ecsv")
+    source_table.write(path, format="ascii.ecsv", overwrite=True)
+    return source_identity
 
-    netcdf_path = redu / "noise.nc"
-    variables = {
+
+def valid_noise_netcdf_contracts() -> dict[str, tuple[str, str, str]]:
+    return {
         "map_noise_weight_median_ratio": (
             "global_nonprecision_scale_diagnostic",
             "available_when_finite_positive_calibration_support_exists",
@@ -472,26 +505,56 @@ def add_valid_noise_member_inventory(redu: Path, document: dict) -> list[Path]:
             "engineering_scale_diagnostic_not_calibrated_significance",
         ),
     }
-    with Dataset(netcdf_path, "w") as dataset:
+
+
+def write_valid_noise_netcdf(path: Path) -> list[str]:
+    from netCDF4 import Dataset
+
+    variables = valid_noise_netcdf_contracts()
+    with Dataset(path, "w") as dataset:
         dataset.createDimension("n_maps", 1)
         for name, (product_identity, validity, restriction) in (
             variables.items()
         ):
             variable = dataset.createVariable(name, "f8", ("n_maps",))
             variable.comment = (
-                "package_id=citlali-noise-products; "
-                "provenance_id=noise_products_provenance.yaml; "
-                f"product_identity={product_identity}; "
-                "product_version=SCI-NOI-002-v1; scope=map_summary; "
-                f"validity={validity}; restriction={restriction}"
+                "fixture; "
+                + audit.noise_netcdf_join_record(
+                    name, product_identity, validity, restriction
+                )
             )
             variable[:] = [1.0]
+    return sorted({contract[0] for contract in variables.values()})
+
+
+def enable_single_map_empirical_noise(document: dict) -> None:
+    document["requested"]["products"]["enabled"] = True
+    document["effective"]["config"]["products"]["enabled"] = True
+    counts = {
+        "observation_scientific_map_count": 1,
+        "observation_noise_realization_count": 10,
+        "coadd_scientific_map_count": 0,
+        "coadd_noise_realization_count": 0,
+        "total_noise_realization_count": 10,
+        "empirical_product_map_count": 1,
+    }
+    for name, value in counts.items():
+        document["expected"][name] = value
+        document["realized"][name]["value"] = value
+
+
+def add_valid_noise_member_inventory(redu: Path, document: dict) -> list[Path]:
+    enable_single_map_empirical_noise(document)
+    fits_path = redu / "map.fits"
+    ecsv_path = redu / "sources.ecsv"
+    netcdf_path = redu / "noise.nc"
+    fits_identities = write_valid_noise_fits(fits_path)
+    source_identity = write_valid_source_ecsv(ecsv_path)
+    netcdf_identities = write_valid_noise_netcdf(netcdf_path)
 
     identities = {
-        "map.fits": [identity],
-        "noise.nc": sorted(
-            {contract[0] for contract in variables.values()}
-        ),
+        "map.fits": fits_identities,
+        "noise.nc": netcdf_identities,
         "sources.ecsv": [source_identity],
     }
     kinds = {".fits": "fits", ".nc": "netcdf", ".ecsv": "ecsv"}
@@ -1533,6 +1596,294 @@ class ProvenanceAuditTest(unittest.TestCase):
 
             self.assertTrue(noise["valid"], noise.get("semantic_errors"))
 
+    def test_disabled_noise_allows_only_non_stack_source_ecsv(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            document = valid_noise_document(enabled=False)
+            ecsv_path = redu / "sources.ecsv"
+            source_identity = write_valid_source_ecsv(ecsv_path)
+            document["package"]["member_files"] = [
+                {
+                    "member_product_identity": ecsv_path.name,
+                    "member_kind": "ecsv",
+                    "joined_product_identities": [source_identity],
+                    "digest_kind": "file_sha256",
+                    "detached_status": (
+                        "unverified_out_of_contract_without_package"
+                    ),
+                }
+            ]
+            document["package"]["member_count"] = 1
+            refresh_noise_member_inventory(redu, document)
+
+            self.assertEqual(
+                audit.noise_package_integrity_errors(
+                    document, redu / "noise_products_provenance.yaml"
+                ),
+                [],
+            )
+
+            fits_path = redu / "map.fits"
+            fits_identities = write_valid_noise_fits(fits_path)
+            document["package"]["member_files"] = [
+                {
+                    "member_product_identity": fits_path.name,
+                    "member_kind": "fits",
+                    "joined_product_identities": fits_identities,
+                    "digest_kind": "file_sha256",
+                    "detached_status": (
+                        "unverified_out_of_contract_without_package"
+                    ),
+                }
+            ]
+            refresh_noise_member_inventory(redu, document)
+            errors = audit.noise_package_integrity_errors(
+                document, redu / "noise_products_provenance.yaml"
+            )
+            self.assertIn(
+                "disabled noise package contains a stack-derived member",
+                errors,
+            )
+
+            netcdf_path = redu / "noise.nc"
+            netcdf_identities = write_valid_noise_netcdf(netcdf_path)
+            document["package"]["member_files"] = [
+                {
+                    "member_product_identity": netcdf_path.name,
+                    "member_kind": "netcdf",
+                    "joined_product_identities": netcdf_identities,
+                    "digest_kind": "file_sha256",
+                    "detached_status": (
+                        "unverified_out_of_contract_without_package"
+                    ),
+                }
+            ]
+            refresh_noise_member_inventory(redu, document)
+            errors = audit.noise_package_integrity_errors(
+                document, redu / "noise_products_provenance.yaml"
+            )
+            self.assertIn(
+                "disabled noise package contains a stack-derived member",
+                errors,
+            )
+
+    def test_enabled_noise_reconciles_empirical_identity_cardinality(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            missing = valid_noise_document()
+            enable_single_map_empirical_noise(missing)
+            errors = audit.noise_package_integrity_errors(
+                missing, redu / "noise_products_provenance.yaml"
+            )
+            self.assertIn(
+                "noise package empirical FITS inventory does not match "
+                "observed empirical product maps",
+                errors,
+            )
+
+            extra = valid_noise_document()
+            paths = add_valid_noise_member_inventory(redu, extra)
+            extra_fits = redu / "map_extra.fits"
+            extra_identities = write_valid_noise_fits(extra_fits)
+            extra["package"]["member_files"].append(
+                {
+                    "member_product_identity": extra_fits.name,
+                    "member_kind": "fits",
+                    "joined_product_identities": extra_identities,
+                    "digest_kind": "file_sha256",
+                    "detached_status": (
+                        "unverified_out_of_contract_without_package"
+                    ),
+                }
+            )
+            extra["package"]["member_files"].sort(
+                key=lambda member: member["member_product_identity"]
+            )
+            extra["package"]["member_count"] += 1
+            refresh_noise_member_inventory(redu, extra)
+            errors = audit.noise_package_integrity_errors(
+                extra, redu / "noise_products_provenance.yaml"
+            )
+            self.assertIn(
+                "noise package empirical FITS inventory does not match "
+                "observed empirical product maps",
+                errors,
+            )
+
+            inconsistent = valid_noise_document()
+            add_valid_noise_member_inventory(redu, inconsistent)
+            inconsistent["realized"]["empirical_product_map_count"][
+                "value"
+            ] = 2
+            errors = audit.noise_package_integrity_errors(
+                inconsistent, redu / "noise_products_provenance.yaml"
+            )
+            self.assertIn(
+                "noise package empirical FITS inventory does not match "
+                "observed empirical product maps",
+                errors,
+            )
+            self.assertTrue(all(path.exists() for path in paths))
+
+    def test_rejects_duplicate_non_realization_fits_identity(self) -> None:
+        from astropy.io import fits
+
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            document = valid_noise_document()
+            paths = add_valid_noise_member_inventory(redu, document)
+            with fits.open(paths[0], mode="update", memmap=False) as hdus:
+                hdus.append(hdus[1].copy())
+            refresh_noise_member_inventory(redu, document)
+
+            errors = audit.noise_package_integrity_errors(
+                document, redu / "noise_products_provenance.yaml"
+            )
+            self.assertTrue(
+                any(
+                    "duplicate non-realization FITS noise-product identity"
+                    in error
+                    for error in errors
+                ),
+                errors,
+            )
+
+    def test_counts_repeated_realization_identity_hdus(self) -> None:
+        import numpy as np
+        from astropy.io import fits
+
+        identity = "source_imprinted_current_realization"
+        images = []
+        for ordinal in range(2):
+            image = fits.ImageHDU(np.ones((1, 1), dtype=float))
+            values = {
+                "NOIPKG": "citlali-noise-products",
+                "NOIPROV": "noise_products_provenance.yaml",
+                "NOIPRID": identity,
+                "NOIPVER": "SCI-NOI-002-v1",
+                "NOIDGST": audit.noise_product_semantic_digest(identity),
+                "NOIDGKND": "semantic_contract_sha256",
+                "NOISCOPE": f"realization_map_index_{ordinal}",
+                "NOIVALID": "conditional_design_member",
+                "NOIRESTR": (
+                    "source_imprinted_current_not_physical_noise_repeat"
+                ),
+                "NOIMISS": "nonfinite_unavailable",
+            }
+            for key, value in values.items():
+                image.header[key] = value
+            images.append(image)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "realizations.fits"
+            fits.HDUList([fits.PrimaryHDU(), *images]).writeto(path)
+
+            identities, realization_count, empirical_count, stack = (
+                audit.fits_noise_member_joins(path)
+            )
+
+            self.assertEqual(identities, [identity])
+            self.assertEqual(realization_count, 2)
+            self.assertEqual(empirical_count, 0)
+            self.assertTrue(stack)
+
+    def test_fits_noise_join_rejects_wrong_or_missing_exact_fields(self) -> None:
+        from astropy.io import fits
+
+        wrong_values = {
+            "NOIDGKND": "file_sha256",
+            "NOIMISS": "zero_filled",
+            "NOISCOPE": "other_scope",
+            "NOIVALID": "other_validity",
+            "NOIRESTR": "other_restriction",
+            "NOIDGST": "sha256:incorrect",
+            "NOIPRID": "source_imprinted_current_realization",
+            "NOIPVER": "SCI-NOI-002-v0",
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "map.fits"
+            for key, wrong_value in wrong_values.items():
+                with self.subTest(key=key, case="missing"):
+                    write_valid_noise_fits(path)
+                    with fits.open(path, mode="update", memmap=False) as hdus:
+                        del hdus[1].header[key]
+                    with self.assertRaises(ValueError):
+                        audit.fits_noise_member_joins(path)
+                with self.subTest(key=key, case="wrong"):
+                    write_valid_noise_fits(path)
+                    with fits.open(path, mode="update", memmap=False) as hdus:
+                        hdus[1].header[key] = wrong_value
+                    with self.assertRaises(ValueError):
+                        audit.fits_noise_member_joins(path)
+
+    def test_ecsv_noise_join_requires_exact_structured_column_binding(self) -> None:
+        from astropy.table import Table
+
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "sources.ecsv"
+            write_valid_source_ecsv(path)
+            audit.ecsv_noise_member_joins(path)
+
+            table = Table.read(path, format="ascii.ecsv")
+            table.meta["noise_product_contract"]["column"] = "amp"
+            table.write(path, format="ascii.ecsv", overwrite=True)
+            with self.assertRaises(ValueError):
+                audit.ecsv_noise_member_joins(path)
+
+            write_valid_source_ecsv(path)
+            table = Table.read(path, format="ascii.ecsv")
+            del table.meta["noise_product_contract"]["digest_kind"]
+            table.write(path, format="ascii.ecsv", overwrite=True)
+            with self.assertRaises(ValueError):
+                audit.ecsv_noise_member_joins(path)
+
+            write_valid_source_ecsv(path)
+            table = Table.read(path, format="ascii.ecsv")
+            table.remove_column("sig2noise")
+            table.write(path, format="ascii.ecsv", overwrite=True)
+            with self.assertRaises(ValueError):
+                audit.ecsv_noise_member_joins(path)
+
+    def test_netcdf_noise_join_rejects_missing_duplicate_and_swapped_fields(
+        self,
+    ) -> None:
+        from netCDF4 import Dataset
+
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "noise.nc"
+            write_valid_noise_netcdf(path)
+            audit.netcdf_noise_member_joins(path)
+
+            def update_comment(transform) -> None:
+                with Dataset(path, "a") as dataset:
+                    variable = dataset.variables[
+                        "map_noise_weight_median_ratio"
+                    ]
+                    variable.comment = transform(str(variable.comment))
+
+            update_comment(
+                lambda comment: "|".join(
+                    token for token in comment.split("|")
+                    if not token.startswith("semantic_digest=")
+                )
+            )
+            with self.assertRaises(ValueError):
+                audit.netcdf_noise_member_joins(path)
+
+            write_valid_noise_netcdf(path)
+            update_comment(lambda comment: comment + "|scope=map_summary")
+            with self.assertRaises(ValueError):
+                audit.netcdf_noise_member_joins(path)
+
+            write_valid_noise_netcdf(path)
+            update_comment(
+                lambda comment: comment.replace(
+                    "variable=map_noise_weight_median_ratio",
+                    "variable=map_noise_weight_scale",
+                )
+            )
+            with self.assertRaises(ValueError):
+                audit.netcdf_noise_member_joins(path)
+
     def test_rejects_tampered_explicit_noise_inventory_member(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             redu = Path(directory)
@@ -1571,6 +1922,141 @@ class ProvenanceAuditTest(unittest.TestCase):
             )
 
             self.assertIn("noise package member 0 is a symlink", errors)
+
+    def test_rejects_intermediate_symlink_noise_inventory_member(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            real_dir = redu / "real"
+            real_dir.mkdir()
+            target = real_dir / "sources.ecsv"
+            source_identity = write_valid_source_ecsv(target)
+            alias = redu / "alias"
+            alias.symlink_to(real_dir, target_is_directory=True)
+            document = valid_noise_document(enabled=False)
+            document["package"]["member_files"] = [
+                {
+                    "member_product_identity": "alias/sources.ecsv",
+                    "member_kind": "ecsv",
+                    "joined_product_identities": [source_identity],
+                    "digest_kind": "file_sha256",
+                    "detached_status": (
+                        "unverified_out_of_contract_without_package"
+                    ),
+                }
+            ]
+            document["package"]["member_count"] = 1
+            refresh_noise_member_inventory(redu, document)
+
+            errors = audit.noise_package_integrity_errors(
+                document, redu / "noise_products_provenance.yaml"
+            )
+
+            self.assertTrue(
+                any("has a symlink path component" in error for error in errors),
+                errors,
+            )
+
+    def test_rejects_alternate_lexical_noise_member_spelling(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            real_dir = redu / "real"
+            real_dir.mkdir()
+            target = real_dir / "sources.ecsv"
+            source_identity = write_valid_source_ecsv(target)
+            document = valid_noise_document(enabled=False)
+            document["package"]["member_files"] = [
+                {
+                    "member_product_identity": "real/../real/sources.ecsv",
+                    "member_kind": "ecsv",
+                    "joined_product_identities": [source_identity],
+                    "sha256": audit.sha256_file(target),
+                    "size_bytes": target.stat().st_size,
+                    "digest_kind": "file_sha256",
+                    "detached_status": (
+                        "unverified_out_of_contract_without_package"
+                    ),
+                }
+            ]
+            document["package"]["member_count"] = 1
+            document["package"]["member_inventory_digest"] = (
+                audit.noise_member_inventory_digest_v2(
+                    document["package"]["member_files"]
+                )
+            )
+
+            errors = audit.noise_package_integrity_errors(
+                document, redu / "noise_products_provenance.yaml"
+            )
+
+            self.assertIn(
+                "noise package member 0 path is not normalized and relative",
+                errors,
+            )
+
+    def test_noise_inventory_v2_is_injective_for_newline_names(self) -> None:
+        newline = [
+            {
+                "member_product_identity": "line\nbreak.fits",
+                "sha256": "sha256:aaaaaaaa",
+                "size_bytes": 7,
+            }
+        ]
+        plain = [
+            {
+                "member_product_identity": "linebreak.fits",
+                "sha256": "sha256:aaaaaaaa",
+                "size_bytes": 7,
+            }
+        ]
+
+        self.assertNotEqual(
+            audit.noise_member_inventory_preimage_v2(newline),
+            audit.noise_member_inventory_preimage_v2(plain),
+        )
+        self.assertNotEqual(
+            audit.noise_member_inventory_digest_v2(newline),
+            audit.noise_member_inventory_digest_v2(plain),
+        )
+        self.assertEqual(
+            audit.noise_member_inventory_digest_v2(newline),
+            "sha256:9fa4aab8f2b41bb83a412019cf8ac158dbf332905cdd0ee711075158ea00863e",
+        )
+
+    def test_rejects_noncanonical_noise_inventory_with_matching_digest(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            document = valid_noise_document()
+            add_valid_noise_member_inventory(redu, document)
+            document["package"]["member_files"].reverse()
+
+            preimage = bytearray(b"citlali-noise-member-inventory-v2|")
+
+            def append_field(value: str) -> None:
+                encoded = value.encode("utf-8")
+                preimage.extend(str(len(encoded)).encode("ascii"))
+                preimage.extend(b":")
+                preimage.extend(encoded)
+
+            append_field(str(len(document["package"]["member_files"])))
+            for member in document["package"]["member_files"]:
+                append_field(member["member_product_identity"])
+                append_field(member["sha256"])
+                append_field(str(member["size_bytes"]))
+            document["package"]["member_inventory_digest"] = (
+                "sha256:" + hashlib.sha256(preimage).hexdigest()
+            )
+
+            errors = audit.noise_package_integrity_errors(
+                document, redu / "noise_products_provenance.yaml"
+            )
+
+            self.assertTrue(
+                any(
+                    "not in canonical lexical order" in error
+                    for error in errors
+                ),
+                errors,
+            )
 
     def test_rejects_partial_fits_noise_product_join(self) -> None:
         from astropy.io import fits

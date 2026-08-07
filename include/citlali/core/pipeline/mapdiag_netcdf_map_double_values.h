@@ -49,16 +49,22 @@ struct MapdiagMapDoubleValues {
 };
 
 inline std::string mapdiag_noise_product_comment(
-    const std::string &description, const std::string &product_identity,
-    const std::string &validity, const std::string &restriction) {
+    const std::string &description, const std::string &variable,
+    const std::string &product_identity,
+    const std::string &semantic_digest, const std::string &validity,
+    const std::string &restriction) {
     return description +
-        "; package_id=citlali-noise-products"
-        "; provenance_id=noise_products_provenance.yaml"
-        "; product_identity=" + product_identity +
-        "; product_version=SCI-NOI-002-v1"
-        "; scope=map_summary"
-        "; validity=" + validity +
-        "; restriction=" + restriction;
+        "; citlali_noise_product_join_v1"
+        "|variable=" + variable +
+        "|package_id=citlali-noise-products"
+        "|provenance_id=noise_products_provenance.yaml"
+        "|product_identity=" + product_identity +
+        "|product_version=SCI-NOI-002-v1"
+        "|semantic_digest=" + semantic_digest +
+        "|digest_kind=semantic_contract_sha256"
+        "|scope=map_summary"
+        "|validity=" + validity +
+        "|restriction=" + restriction;
 }
 
 template <class AddDouble>
@@ -94,21 +100,27 @@ void add_mapdiag_map_double_vars(
     add_double("map_noise_weight_median_ratio",
                mapdiag_noise_product_comment(
                    "median of the nonprecision normalization coefficient times conditional finite-stack scatter over the realized calibration support",
+                   "map_noise_weight_median_ratio",
                    "global_nonprecision_scale_diagnostic",
+                   "sha256:bfb6d1ea365d1b8e82fd88aad0c2aac3ebb0a2f40f3b78c244f5b1ce9498a655",
                    "available_when_finite_positive_calibration_support_exists",
                    "engineering_scale_diagnostic_not_precision_or_significance"),
                values.noise_weight_median_ratio);
     add_double("map_noise_weight_scale",
                mapdiag_noise_product_comment(
                    "existing-use-only global scalar applied to the nonprecision normalization coefficient",
+                   "map_noise_weight_scale",
                    "global_nonprecision_scale_diagnostic",
+                   "sha256:bfb6d1ea365d1b8e82fd88aad0c2aac3ebb0a2f40f3b78c244f5b1ce9498a655",
                    "available_when_finite_positive_median_ratio_exists",
                    "nonprecision_scale_not_inverse_variance_or_precision"),
                values.noise_weight_scale);
     add_double("map_noise_products_s2n_sigma",
                mapdiag_noise_product_comment(
                    "pooled completed-stack scale of realization amplitudes multiplied by sqrt(nonprecision normalization coefficient)",
+                   "map_noise_products_s2n_sigma",
                    "pooled_stack_scale_diagnostic",
+                   "sha256:1b3a38d18a451b9e35ffe9f9fed21b1f3107a8f9cd229386d16998ddff359e79",
                    "available_when_finite_pooled_stack_scale_exists",
                    "engineering_scale_diagnostic_not_calibrated_significance"),
                values.noise_products_s2n_sigma);

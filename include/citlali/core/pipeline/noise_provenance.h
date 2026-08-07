@@ -9,9 +9,14 @@
 
 #include <algorithm>
 #include <array>
+#include <cctype>
 #include <filesystem>
 #include <fstream>
+#include <initializer_list>
 #include <ios>
+#include <limits>
+#include <map>
+#include <optional>
 #include <set>
 #include <sstream>
 #include <stdexcept>
@@ -26,6 +31,16 @@ inline constexpr const char *noise_provenance_schema_version =
     "citlali-noise-products-provenance-v1";
 inline constexpr const char *noise_provenance_filename =
     noise_provenance_join_id;
+inline constexpr const char *noise_semantic_digest_kind =
+    "semantic_contract_sha256";
+inline constexpr const char *noise_compact_missingness =
+    "nonfinite_unavailable";
+inline constexpr const char *noise_netcdf_join_schema =
+    "citlali_noise_product_join_v1";
+inline constexpr const char *noise_member_inventory_digest_kind =
+    "sha256";
+inline constexpr const char *noise_member_inventory_preimage_encoding =
+    "canonical_length_prefixed_member_records_v2";
 
 struct NoiseProductContractDefinition {
     const char *identity;
@@ -73,6 +88,109 @@ inline bool noise_product_identity_is_declared(
         });
 }
 
+inline bool noise_join_value_is_one_of(
+    std::string_view value,
+    std::initializer_list<std::string_view> allowed) {
+    return std::find(allowed.begin(), allowed.end(), value) !=
+        allowed.end();
+}
+
+inline bool noise_realization_scope_is_canonical(
+    std::string_view scope) {
+    constexpr std::string_view prefix{"realization_map_index_"};
+    if (!scope.starts_with(prefix)) {
+        return false;
+    }
+    const auto ordinal = scope.substr(prefix.size());
+    if (ordinal.empty() ||
+        (ordinal.size() > 1 && ordinal.front() == '0')) {
+        return false;
+    }
+    return std::all_of(
+        ordinal.begin(), ordinal.end(), [](unsigned char value) {
+            return std::isdigit(value) != 0;
+        });
+}
+
+inline bool noise_fits_join_matches_contract(
+    std::string_view identity, std::string_view scope,
+    std::string_view validity, std::string_view restriction,
+    std::string_view missingness) {
+    if (missingness != noise_compact_missingness) {
+        return false;
+    }
+    const bool map_scope = noise_join_value_is_one_of(
+        scope, {"raw_map_pixel", "filtered_map_pixel"});
+    if (identity == noise_formal_coefficient_product_id) {
+        return map_scope && validity == "available" &&
+            restriction ==
+                "nonprecision_snapshot_not_inverse_variance";
+    }
+    if (identity == noise_scaled_coefficient_product_id) {
+        return map_scope &&
+            noise_join_value_is_one_of(
+                validity, {"available", "unavailable"}) &&
+            restriction ==
+                "existing_use_only_nonprecision_not_precision";
+    }
+    if (identity == noise_conditional_stack_scatter_product_id) {
+        if (!noise_join_value_is_one_of(
+                validity, {"conditional_descriptive", "unavailable"})) {
+            return false;
+        }
+        return (scope == "raw_map_pixel" &&
+                restriction ==
+                    "retained_legacy_name_not_physical_noise_variance_or_covariance") ||
+            (scope == "filtered_map_pixel" &&
+             restriction ==
+                 "retained_legacy_name_not_physical_noise_variance_strict_parity_pending_FLT");
+    }
+    if (identity == noise_coefficient_standardized_signal_product_id) {
+        return map_scope &&
+            noise_join_value_is_one_of(
+                validity, {"available_where_finite", "unavailable"}) &&
+            restriction ==
+                "retained_legacy_name_engineering_standardization_not_significance";
+    }
+    if (identity == noise_filtered_pixel_stack_scatter_product_id) {
+        return scope == "filtered_map_pixel" &&
+            noise_join_value_is_one_of(
+                validity,
+                {"available_where_finite_on_valid_support", "R_lt_2",
+                 "scatter_unavailable_or_nonfinite", "response_invalid",
+                 "support_invalid"}) &&
+            restriction ==
+                "retained_legacy_name_not_aperture_uncertainty_strict_parity_pending_FLT";
+    }
+    if (identity == noise_stack_scatter_ratio_product_id) {
+        return scope == "filtered_map_pixel" &&
+            noise_join_value_is_one_of(
+                validity,
+                {"available_where_finite_positive_denominator_on_valid_support",
+                 "R_lt_2", "scatter_unavailable_or_nonfinite",
+                 "response_invalid", "support_invalid"}) &&
+            restriction ==
+                "retained_legacy_name_conditional_descriptive_ratio_not_significance";
+    }
+    if (identity == noise_realization_product_id) {
+        return noise_realization_scope_is_canonical(scope) &&
+            validity == "conditional_design_member" &&
+            restriction ==
+                "source_imprinted_current_not_physical_noise_repeat";
+    }
+    return false;
+}
+
+inline bool noise_fits_identity_is_empirical_map_product(
+    std::string_view identity) {
+    return identity == noise_conditional_stack_scatter_product_id ||
+        identity == noise_formal_coefficient_product_id ||
+        identity == noise_scaled_coefficient_product_id ||
+        identity == noise_coefficient_standardized_signal_product_id ||
+        identity == noise_filtered_pixel_stack_scatter_product_id ||
+        identity == noise_stack_scatter_ratio_product_id;
+}
+
 inline YAML::Node noise_provenance_node(
     const NoiseExecutionPlan &plan) {
     YAML::Node root;
@@ -92,7 +210,7 @@ inline YAML::Node noise_provenance_node(
         product["product_version"] = noise_product_contract_version;
         product["semantic_digest"] =
             noise_product_semantic_digest(definition.identity);
-        product["digest_kind"] = "semantic_contract_sha256";
+        product["digest_kind"] = noise_semantic_digest_kind;
         product["scope"] = definition.scope;
         product["restriction"] = definition.restriction;
         inventory.push_back(product);
@@ -205,6 +323,8 @@ inline std::optional<std::string> read_noise_fits_string_key(
 struct NoiseMemberJoinValidation {
     std::vector<std::string> product_identities;
     std::size_t realization_image_count = 0;
+    std::size_t empirical_map_product_count = 0;
+    bool contains_stack_derived_product = false;
 };
 
 inline NoiseMemberJoinValidation validate_noise_fits_joins(
@@ -229,7 +349,9 @@ inline NoiseMemberJoinValidation validate_noise_fits_joins(
                 "failed to enumerate admitted FITS noise member " +
                 path.string());
         }
-        std::set<std::string> identities;
+        std::map<std::string, std::size_t> identity_counts;
+        std::optional<std::string> empirical_map_scope;
+        std::set<std::string> realization_scopes;
         for (int hdu_index = 1; hdu_index <= hdu_count; ++hdu_index) {
             int hdu_type = 0;
             fits_movabs_hdu(fits, hdu_index, &hdu_type, &status);
@@ -247,19 +369,25 @@ inline NoiseMemberJoinValidation validate_noise_fits_joins(
                 read_noise_fits_string_key(fits, "NOIPVER");
             const auto digest =
                 read_noise_fits_string_key(fits, "NOIDGST");
+            const auto digest_kind =
+                read_noise_fits_string_key(fits, "NOIDGKND");
             const auto scope =
                 read_noise_fits_string_key(fits, "NOISCOPE");
             const auto validity =
                 read_noise_fits_string_key(fits, "NOIVALID");
             const auto restriction =
                 read_noise_fits_string_key(fits, "NOIRESTR");
+            const auto missingness =
+                read_noise_fits_string_key(fits, "NOIMISS");
             const bool any_join = package || provenance || identity ||
-                version || digest || scope || validity || restriction;
+                version || digest || digest_kind || scope || validity ||
+                restriction || missingness;
             if (!any_join) {
                 continue;
             }
             if (!package || !provenance || !identity || !version ||
-                !digest || !scope || !validity || !restriction) {
+                !digest || !digest_kind || !scope || !validity ||
+                !restriction || !missingness) {
                 throw std::runtime_error(
                     "partial FITS noise-product join in " + path.string());
             }
@@ -267,24 +395,88 @@ inline NoiseMemberJoinValidation validate_noise_fits_joins(
                 *provenance != noise_provenance_join_id ||
                 *version != noise_product_contract_version ||
                 *digest != noise_product_semantic_digest(*identity) ||
+                *digest_kind != noise_semantic_digest_kind ||
                 !noise_product_identity_is_declared(*identity) ||
-                scope->empty() || validity->empty() ||
-                restriction->empty()) {
+                !noise_fits_join_matches_contract(
+                    *identity, *scope, *validity, *restriction,
+                    *missingness)) {
                 throw std::runtime_error(
                     "invalid FITS noise-product join in " + path.string());
             }
-            identities.insert(*identity);
+            auto &identity_count = identity_counts[*identity];
+            ++identity_count;
+            if (*identity != noise_realization_product_id &&
+                identity_count > 1) {
+                throw std::runtime_error(
+                    "duplicate non-realization FITS noise-product identity " +
+                    *identity + " in " + path.string());
+            }
+            if (noise_fits_identity_is_empirical_map_product(*identity)) {
+                if (!empirical_map_scope) {
+                    empirical_map_scope = *scope;
+                }
+                else if (*empirical_map_scope != *scope) {
+                    throw std::runtime_error(
+                        "mixed empirical FITS noise-product scopes in " +
+                        path.string());
+                }
+            }
             if (*identity == noise_realization_product_id) {
+                if (!realization_scopes.insert(*scope).second) {
+                    throw std::runtime_error(
+                        "duplicate FITS noise-realization scope " +
+                        *scope + " in " + path.string());
+                }
                 ++validation.realization_image_count;
             }
         }
-        if (identities.empty()) {
+        if (identity_counts.empty()) {
             throw std::runtime_error(
                 "admitted FITS member has no noise-product join: " +
                 path.string());
         }
-        validation.product_identities.assign(
-            identities.begin(), identities.end());
+        for (std::size_t ordinal = 0;
+             ordinal < validation.realization_image_count; ++ordinal) {
+            if (!realization_scopes.contains(
+                    "realization_map_index_" +
+                    std::to_string(ordinal))) {
+                throw std::runtime_error(
+                    "noncanonical FITS noise-realization scope sequence in " +
+                    path.string());
+            }
+        }
+        const bool empirical_member = std::any_of(
+            identity_counts.begin(), identity_counts.end(),
+            [](const auto &entry) {
+                return noise_fits_identity_is_empirical_map_product(
+                    entry.first);
+            });
+        if (empirical_member) {
+            const auto identity_count = [&](const char *identity_name) {
+                const auto item = identity_counts.find(identity_name);
+                return item == identity_counts.end()
+                    ? std::size_t{0}
+                    : item->second;
+            };
+            if (validation.realization_image_count != 0 ||
+                identity_count(noise_formal_coefficient_product_id) != 1 ||
+                identity_count(
+                    noise_conditional_stack_scatter_product_id) != 1 ||
+                identity_count(
+                    noise_filtered_pixel_stack_scatter_product_id) !=
+                    identity_count(noise_stack_scatter_ratio_product_id)) {
+                throw std::runtime_error(
+                    "incomplete or mixed empirical FITS noise-product bundle in " +
+                    path.string());
+            }
+            validation.empirical_map_product_count = 1;
+        }
+        validation.contains_stack_derived_product = true;
+        validation.product_identities.reserve(identity_counts.size());
+        for (const auto &[identity_name, count] : identity_counts) {
+            static_cast<void>(count);
+            validation.product_identities.push_back(identity_name);
+        }
     }
     catch (...) {
         int close_status = 0;
@@ -307,33 +499,175 @@ inline NoiseMemberJoinValidation validate_noise_ecsv_join(
         throw std::ios_base::failure(
             "failed to open admitted ECSV noise member " + path.string());
     }
-    std::ostringstream header;
+    std::ostringstream yaml_header;
     std::string line;
+    std::string data_header;
+    bool first_line = true;
     while (std::getline(stream, line)) {
         if (!line.empty() && line.front() != '#') {
+            data_header = line;
             break;
         }
-        header << line << '\n';
-    }
-    const std::string text = header.str();
-    const std::vector<std::string> required{
-        "noise_product_contract", noise_package_id,
-        noise_provenance_join_id,
-        noise_fitted_amplitude_rms_ratio_product_id,
-        noise_product_contract_version,
-        noise_product_semantic_digest(
-            noise_fitted_amplitude_rms_ratio_product_id),
-        "source_table_row",
-        "finite_amplitude_and_finite_positive_full_map_rms",
-        "legacy_alias_deprecated_not_significance"};
-    for (const auto &token : required) {
-        if (text.find(token) == std::string::npos) {
+        if (first_line) {
+            if (line != "# %ECSV 1.0") {
+                throw std::runtime_error(
+                    "invalid ECSV noise-product header in " +
+                    path.string());
+            }
+            first_line = false;
+            continue;
+        }
+        if (line.starts_with("# ")) {
+            yaml_header << line.substr(2) << '\n';
+        }
+        else if (line == "#") {
+            yaml_header << '\n';
+        }
+        else {
             throw std::runtime_error(
-                "invalid ECSV noise-product join in " + path.string() +
-                ": missing " + token);
+                "invalid ECSV noise-product header line in " +
+                path.string());
         }
     }
-    return {{noise_fitted_amplitude_rms_ratio_product_id}, 0};
+    if (first_line) {
+        throw std::runtime_error(
+            "empty ECSV noise-product member " + path.string());
+    }
+
+    YAML::Node document;
+    try {
+        document = YAML::Load(yaml_header.str());
+    }
+    catch (const YAML::Exception &error) {
+        throw std::runtime_error(
+            "invalid structured ECSV noise-product header in " +
+            path.string() + ": " + error.what());
+    }
+    const auto datatype = document["datatype"];
+    if (!datatype.IsSequence()) {
+        throw std::runtime_error(
+            "invalid ECSV noise-product datatype binding in " +
+            path.string());
+    }
+    std::size_t bound_column_count = 0;
+    for (const auto &column : datatype) {
+        if (column.IsMap() && column["name"] &&
+            column["name"].as<std::string>() == "sig2noise") {
+            ++bound_column_count;
+        }
+    }
+    std::istringstream data_columns{data_header};
+    std::size_t data_column_count = 0;
+    std::string data_column;
+    while (data_columns >> data_column) {
+        if (data_column == "sig2noise") {
+            ++data_column_count;
+        }
+    }
+    if (bound_column_count != 1 || data_column_count != 1) {
+        throw std::runtime_error(
+            "invalid ECSV noise-product column binding in " +
+            path.string());
+    }
+
+    const auto meta = document["meta"];
+    if (!meta.IsSequence()) {
+        throw std::runtime_error(
+            "admitted ECSV member has no structured noise-product join: " +
+            path.string());
+    }
+    YAML::Node contract;
+    std::size_t contract_count = 0;
+    for (const auto &entry : meta) {
+        if (entry.IsMap() && entry["noise_product_contract"]) {
+            contract = entry["noise_product_contract"];
+            ++contract_count;
+        }
+    }
+    const std::map<std::string, std::string> expected{
+        {"package_id", noise_package_id},
+        {"provenance_id", noise_provenance_join_id},
+        {"column", "sig2noise"},
+        {"product_identity",
+         noise_fitted_amplitude_rms_ratio_product_id},
+        {"product_version", noise_product_contract_version},
+        {"semantic_digest",
+         noise_product_semantic_digest(
+             noise_fitted_amplitude_rms_ratio_product_id)},
+        {"digest_kind", noise_semantic_digest_kind},
+        {"scope", "source_table_row"},
+        {"validity",
+         "finite_amplitude_and_finite_positive_full_map_rms"},
+        {"restriction",
+         "legacy_alias_deprecated_not_significance"}};
+    if (contract_count != 1 || !contract.IsMap() ||
+        contract.size() != expected.size()) {
+        throw std::runtime_error(
+            "invalid ECSV noise-product join in " + path.string());
+    }
+    for (const auto &[key, value] : expected) {
+        if (!contract[key] || !contract[key].IsScalar() ||
+            contract[key].as<std::string>() != value) {
+            throw std::runtime_error(
+                "invalid ECSV noise-product join in " + path.string() +
+                ": inconsistent " + key);
+        }
+    }
+    return {{noise_fitted_amplitude_rms_ratio_product_id}, 0, 0, false};
+}
+
+inline void validate_noise_netcdf_join_comment(
+    const std::string &comment, std::string_view variable,
+    std::string_view identity, std::string_view semantic_digest,
+    std::string_view validity, std::string_view restriction) {
+    const std::string marker =
+        std::string{"; "} + noise_netcdf_join_schema + "|";
+    const auto marker_pos = comment.find(marker);
+    if (marker_pos == std::string::npos || marker_pos == 0 ||
+        comment.find(marker, marker_pos + marker.size()) !=
+            std::string::npos) {
+        throw std::runtime_error(
+            "missing or duplicate structured NetCDF noise-product join");
+    }
+    const auto record = comment.substr(marker_pos + 2);
+    std::vector<std::string> tokens;
+    std::size_t begin = 0;
+    while (begin <= record.size()) {
+        const auto end = record.find('|', begin);
+        tokens.push_back(record.substr(begin, end - begin));
+        if (end == std::string::npos) {
+            break;
+        }
+        begin = end + 1;
+    }
+    const std::vector<std::pair<std::string, std::string>> expected{
+        {"variable", std::string{variable}},
+        {"package_id", noise_package_id},
+        {"provenance_id", noise_provenance_join_id},
+        {"product_identity", std::string{identity}},
+        {"product_version", noise_product_contract_version},
+        {"semantic_digest", std::string{semantic_digest}},
+        {"digest_kind", noise_semantic_digest_kind},
+        {"scope", "map_summary"},
+        {"validity", std::string{validity}},
+        {"restriction", std::string{restriction}}};
+    if (tokens.size() != expected.size() + 1 ||
+        tokens.front() != noise_netcdf_join_schema) {
+        throw std::runtime_error(
+            "invalid structured NetCDF noise-product join shape");
+    }
+    for (std::size_t index = 0; index < expected.size(); ++index) {
+        const auto &token = tokens[index + 1];
+        const auto separator = token.find('=');
+        if (separator == std::string::npos ||
+            token.find('=', separator + 1) != std::string::npos ||
+            token.substr(0, separator) != expected[index].first ||
+            token.substr(separator + 1) != expected[index].second) {
+            throw std::runtime_error(
+                "invalid structured NetCDF noise-product join field " +
+                expected[index].first);
+        }
+    }
 }
 
 inline NoiseMemberJoinValidation validate_noise_netcdf_joins(
@@ -374,24 +708,41 @@ inline NoiseMemberJoinValidation validate_noise_netcdf_joins(
             }
             std::string comment;
             comment_attribute.getValues(comment);
-            const std::vector<std::string> required{
-                std::string{"package_id="} + noise_package_id,
-                std::string{"provenance_id="} + noise_provenance_join_id,
-                std::string{"product_identity="} + contract.identity,
-                std::string{"product_version="} +
-                    noise_product_contract_version,
-                "scope=map_summary",
-                std::string{"validity="} + contract.validity,
-                std::string{"restriction="} + contract.restriction};
-            for (const auto &token : required) {
-                if (comment.find(token) == std::string::npos) {
-                    throw std::runtime_error(
-                        "invalid NetCDF noise-product join for " +
-                        std::string{contract.name} + " in " +
-                        path.string() + ": missing " + token);
-                }
+            try {
+                validate_noise_netcdf_join_comment(
+                    comment, contract.name, contract.identity,
+                    noise_product_semantic_digest(contract.identity),
+                    contract.validity,
+                    contract.restriction);
+            }
+            catch (const std::runtime_error &error) {
+                throw std::runtime_error(
+                    "invalid NetCDF noise-product join for " +
+                    std::string{contract.name} + " in " +
+                    path.string() + ": " + error.what());
             }
             identities.insert(contract.identity);
+        }
+        for (const auto &[name, variable] : file.getVars()) {
+            const bool expected = std::any_of(
+                variables.begin(), variables.end(),
+                [&](const auto &contract) {
+                    return name == contract.name;
+                });
+            if (expected) {
+                continue;
+            }
+            const auto comment_attribute = variable.getAtt("comment");
+            if (comment_attribute.isNull()) {
+                continue;
+            }
+            std::string comment;
+            comment_attribute.getValues(comment);
+            if (comment.find(noise_netcdf_join_schema) !=
+                std::string::npos) {
+                throw std::runtime_error(
+                    "unexpected NetCDF noise-contract variable " + name);
+            }
         }
     }
     catch (const netCDF::exceptions::NcException &error) {
@@ -402,6 +753,7 @@ inline NoiseMemberJoinValidation validate_noise_netcdf_joins(
     NoiseMemberJoinValidation validation;
     validation.product_identities.assign(
         identities.begin(), identities.end());
+    validation.contains_stack_derived_product = true;
     return validation;
 }
 
@@ -413,49 +765,58 @@ struct ValidatedNoiseMember {
     std::string sha256;
     std::uintmax_t size_bytes = 0;
     std::size_t realization_image_count = 0;
+    std::size_t empirical_map_product_count = 0;
+    bool contains_stack_derived_product = false;
 };
 
 inline std::vector<ValidatedNoiseMember> validate_noise_member_inventory(
     const std::filesystem::path &reduction_dir,
     const std::vector<NoisePublishedMember> &members) {
     std::error_code ec;
-    const auto root = std::filesystem::canonical(reduction_dir, ec);
-    if (ec || !std::filesystem::is_directory(root)) {
+    const auto lexical_root =
+        std::filesystem::absolute(reduction_dir, ec).lexically_normal();
+    if (ec) {
         throw std::ios_base::failure(
             "noise publication root is unavailable: " +
             reduction_dir.string());
     }
+    ec.clear();
+    const auto root_status =
+        std::filesystem::symlink_status(lexical_root, ec);
+    if (ec || std::filesystem::is_symlink(root_status) ||
+        !std::filesystem::is_directory(root_status)) {
+        throw std::ios_base::failure(
+            "noise publication root is missing, non-directory, or a symlink: " +
+            lexical_root.string());
+    }
+    ec.clear();
+    const auto root = std::filesystem::canonical(lexical_root, ec);
+    if (ec) {
+        throw std::ios_base::failure(
+            "cannot canonicalize noise publication root: " +
+            lexical_root.string());
+    }
 
     std::set<std::string> unique_paths;
+    std::set<std::string> unique_resolved_paths;
     std::vector<ValidatedNoiseMember> validated;
     validated.reserve(members.size());
     for (const auto &member : members) {
         ec.clear();
         const auto candidate = member.path.is_absolute()
-            ? member.path.lexically_normal()
-            : std::filesystem::absolute(member.path, ec).lexically_normal();
+            ? member.path
+            : std::filesystem::absolute(member.path, ec);
         if (ec) {
             throw std::runtime_error(
                 "cannot resolve noise package member path: " +
                 member.path.string());
         }
-        ec.clear();
-        const auto status = std::filesystem::symlink_status(candidate, ec);
-        if (ec || status.type() == std::filesystem::file_type::not_found ||
-            std::filesystem::is_symlink(status) ||
-            !std::filesystem::is_regular_file(status)) {
+        if (candidate.lexically_normal() != candidate) {
             throw std::runtime_error(
-                "noise package member is missing, non-regular, or a symlink: " +
+                "noise package member path is not lexically normalized: " +
                 candidate.string());
         }
-        ec.clear();
-        const auto canonical = std::filesystem::canonical(candidate, ec);
-        if (ec) {
-            throw std::runtime_error(
-                "cannot canonicalize noise package member: " +
-                candidate.string());
-        }
-        const auto relative = canonical.lexically_relative(root);
+        const auto relative = candidate.lexically_relative(lexical_root);
         bool outside_root = relative.empty() || relative.is_absolute();
         for (const auto &component : relative) {
             if (component == ".." || component == ".") {
@@ -468,9 +829,56 @@ inline std::vector<ValidatedNoiseMember> validate_noise_member_inventory(
                 candidate.string());
         }
         const std::string relative_name = relative.generic_string();
+        if (relative_name.find('\\') != std::string::npos ||
+            (lexical_root / relative) != candidate) {
+            throw std::runtime_error(
+                "noise package member path is not a canonical relative identity: " +
+                candidate.string());
+        }
         if (!unique_paths.insert(relative_name).second) {
             throw std::runtime_error(
                 "duplicate noise package member: " + relative_name);
+        }
+
+        auto lexical_component = lexical_root;
+        for (const auto &component : relative) {
+            lexical_component /= component;
+            ec.clear();
+            const auto status =
+                std::filesystem::symlink_status(lexical_component, ec);
+            const bool is_leaf = lexical_component == candidate;
+            if (ec || std::filesystem::is_symlink(status) ||
+                (is_leaf && !std::filesystem::is_regular_file(status)) ||
+                (!is_leaf && !std::filesystem::is_directory(status))) {
+                throw std::runtime_error(
+                    "noise package member has a missing, non-regular, or symlink path component: " +
+                    lexical_component.string());
+            }
+        }
+        ec.clear();
+        const auto canonical = std::filesystem::canonical(candidate, ec);
+        if (ec) {
+            throw std::runtime_error(
+                "cannot canonicalize noise package member: " +
+                candidate.string());
+        }
+        const auto canonical_relative = canonical.lexically_relative(root);
+        bool canonical_outside = canonical_relative.empty() ||
+            canonical_relative.is_absolute();
+        for (const auto &component : canonical_relative) {
+            if (component == ".." || component == ".") {
+                canonical_outside = true;
+            }
+        }
+        if (canonical_outside) {
+            throw std::runtime_error(
+                "noise package member resolves outside the reduction root: " +
+                candidate.string());
+        }
+        if (!unique_resolved_paths.insert(canonical.generic_string()).second) {
+            throw std::runtime_error(
+                "duplicate resolved noise package member: " +
+                canonical.string());
         }
         const auto extension = canonical.extension().string();
         const char *expected_extension = nullptr;
@@ -508,7 +916,9 @@ inline std::vector<ValidatedNoiseMember> validate_noise_member_inventory(
              std::move(joins.product_identities),
              citlali::utils::sha256_file(canonical),
              std::filesystem::file_size(canonical),
-             joins.realization_image_count});
+             joins.realization_image_count,
+             joins.empirical_map_product_count,
+             joins.contains_stack_derived_product});
     }
     std::sort(
         validated.begin(), validated.end(),
@@ -532,11 +942,97 @@ inline bool validated_noise_members_match(
             left[index].sha256 != right[index].sha256 ||
             left[index].size_bytes != right[index].size_bytes ||
             left[index].realization_image_count !=
-                right[index].realization_image_count) {
+                right[index].realization_image_count ||
+            left[index].empirical_map_product_count !=
+                right[index].empirical_map_product_count ||
+            left[index].contains_stack_derived_product !=
+                right[index].contains_stack_derived_product) {
             return false;
         }
     }
     return true;
+}
+
+inline void validate_noise_package_member_semantics(
+    const NoiseExecutionPlan &plan,
+    const std::vector<ValidatedNoiseMember> &members) {
+    std::size_t empirical_map_product_count = 0;
+    bool contains_stack_derived_product = false;
+    bool contains_empirical_netcdf = false;
+    for (const auto &member : members) {
+        if (empirical_map_product_count >
+            std::numeric_limits<std::size_t>::max() -
+                member.empirical_map_product_count) {
+            throw std::overflow_error(
+                "noise empirical-member inventory count overflow");
+        }
+        empirical_map_product_count +=
+            member.empirical_map_product_count;
+        contains_stack_derived_product =
+            contains_stack_derived_product ||
+            member.contains_stack_derived_product;
+        contains_empirical_netcdf = contains_empirical_netcdf ||
+            member.kind == NoisePublishedMemberKind::netcdf;
+    }
+
+    if (!plan.effective.enabled) {
+        if (contains_stack_derived_product) {
+            throw std::logic_error(
+                "disabled noise package contains a stack-derived member");
+        }
+        return;
+    }
+    if (!plan.realized.empirical_product_map_count) {
+        throw std::logic_error(
+            "noise package lacks an observed empirical-product count");
+    }
+    if (!plan.effective.products_enabled) {
+        if (empirical_map_product_count != 0 ||
+            contains_empirical_netcdf ||
+            *plan.realized.empirical_product_map_count != 0) {
+            throw std::logic_error(
+                "noise package contains empirical members while products are disabled");
+        }
+        return;
+    }
+    if (empirical_map_product_count !=
+        *plan.realized.empirical_product_map_count) {
+        throw std::logic_error(
+            "noise package empirical FITS inventory does not match observed empirical product maps");
+    }
+    if (contains_empirical_netcdf && empirical_map_product_count == 0) {
+        throw std::logic_error(
+            "noise package contains empirical NetCDF diagnostics without empirical map products");
+    }
+}
+
+inline void append_noise_member_inventory_field(
+    std::string &preimage, std::string_view value) {
+    preimage += std::to_string(value.size());
+    preimage.push_back(':');
+    preimage.append(value.data(), value.size());
+}
+
+inline std::string noise_member_inventory_preimage_v2(
+    const std::vector<ValidatedNoiseMember> &members) {
+    for (std::size_t index = 1; index < members.size(); ++index) {
+        if (members[index - 1].relative_path >=
+            members[index].relative_path) {
+            throw std::logic_error(
+                "noise package member inventory is not in canonical lexical order");
+        }
+    }
+    std::string preimage{"citlali-noise-member-inventory-v2|"};
+    append_noise_member_inventory_field(
+        preimage, std::to_string(members.size()));
+    for (const auto &member : members) {
+        append_noise_member_inventory_field(
+            preimage, member.relative_path);
+        append_noise_member_inventory_field(preimage, member.sha256);
+        append_noise_member_inventory_field(
+            preimage, std::to_string(member.size_bytes));
+    }
+    return preimage;
 }
 
 inline void write_noise_provenance_file(
@@ -553,6 +1049,7 @@ inline void write_noise_provenance_file(
     }
     const auto validated = validate_noise_member_inventory(
         reduction_dir, plan.published_members);
+    validate_noise_package_member_semantics(plan, validated);
     std::size_t realization_image_count = 0;
     for (const auto &member : validated) {
         if (realization_image_count >
@@ -572,7 +1069,6 @@ inline void write_noise_provenance_file(
 
     auto node = noise_provenance_node(plan);
     YAML::Node members{YAML::NodeType::Sequence};
-    std::string canonical_inventory;
     for (const auto &validated_member : validated) {
         YAML::Node member;
         member["member_product_identity"] =
@@ -591,18 +1087,19 @@ inline void write_noise_provenance_file(
         member["detached_status"] =
             "unverified_out_of_contract_without_package";
         members.push_back(member);
-        canonical_inventory += validated_member.relative_path + "\n" +
-            validated_member.sha256 + "\n" +
-            std::to_string(validated_member.size_bytes) + "\n";
     }
     node["package"]["member_files"] = members;
     node["package"]["member_count"] = validated.size();
+    const auto member_inventory_preimage =
+        noise_member_inventory_preimage_v2(validated);
     const auto member_inventory_digest =
-        "sha256:" + citlali::utils::sha256(canonical_inventory);
+        "sha256:" + citlali::utils::sha256(member_inventory_preimage);
     node["package"]["member_inventory_digest"] =
         member_inventory_digest;
     node["package"]["member_inventory_digest_kind"] =
-        "canonical_relative_path_file_sha256_size_v1";
+        noise_member_inventory_digest_kind;
+    node["package"]["member_inventory_preimage_encoding"] =
+        noise_member_inventory_preimage_encoding;
     node["package"]["publication_state"] = "complete";
     node["package"]["complete"] = true;
 
