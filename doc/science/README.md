@@ -15,6 +15,10 @@ scientific consequence belongs in engineering documentation or code.
 Most notes should fit in one or two pages. Longer treatment is appropriate
 only when the scientific argument genuinely requires it.
 
+These notes are rendered as GitHub-flavored Markdown. Use `$...$` for inline
+mathematics and `$$...$$` for display mathematics; do not use LaTeX document
+delimiters such as `\(...\)` or `\[...\]`, which GitHub does not render.
+
 ## One Technique, One Explanation
 
 Each method receives a stable ID of the form

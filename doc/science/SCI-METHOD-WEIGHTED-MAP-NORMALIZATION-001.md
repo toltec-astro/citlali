@@ -18,27 +18,27 @@ turn the normalization coefficient into a statistical precision.
 
 ## Definition
 
-At one output pixel, let the admitted contributions be indexed by (i). Each
-contribution has signal (x_i), strictly positive finite coefficient (u_i),
-and, when required, kernel value (k_i). In declared order Citlali accumulates
+At one output pixel, let the admitted contributions be indexed by $i$. Each
+contribution has signal $x_i$, strictly positive finite coefficient $u_i$,
+and, when required, kernel value $k_i$. In declared order Citlali accumulates
 
-\[
+$$
 Q = \sum_i u_i, \qquad
 N = \sum_i u_i x_i, \qquad
 K = \sum_i u_i k_i.
-\]
+$$
 
-Where the versioned normalization-support rule authorizes division and (Q)
+Where the versioned normalization-support rule authorizes division and $Q$
 is finite and positive, the normalized signal and kernel are
 
-\[
+$$
 \widehat{x} = \frac{N}{Q}, \qquad
 \widehat{k} = \frac{K}{Q}.
-\]
+$$
 
-For an observation map, (x_i) and (k_i) are admitted detector-sample
-values and (u_i) is the applicable detector coefficient. For a coadd,
-(x_i) and (k_i) are normalized observation-map values and (u_i) is that
+For an observation map, $x_i$ and $k_i$ are admitted detector-sample
+values and $u_i$ is the applicable detector coefficient. For a coadd,
+$x_i$ and $k_i$ are normalized observation-map values and $u_i$ is that
 observation map's realized `weight_I` coefficient after observation
 normalization and any declared global empirical coefficient rescaling.
 
@@ -55,34 +55,34 @@ or unrepresentable aggregates fail before partial live-product mutation.
 ## Properties
 
 For fixed coefficients and admitted membership, the estimator is linear in the
-signals. Because every admitted (u_i>0), it preserves a constant input and is
+signals. Because every admitted $u_i>0$, it preserves a constant input and is
 a convex weighted mean:
 
-\[
+$$
 x_i=c\ \forall i \Longrightarrow \widehat{x}=c,
 \qquad
 \min_i x_i \leq \widehat{x} \leq \max_i x_i.
-\]
+$$
 
 Normalizing the kernel with the same coefficients and membership carries the
 realized response alongside the signal rather than assuming it separately.
-The signal-centering operator is `L = I`: this method does not subtract a
+The signal-centering operator is $L = I$: this method does not subtract a
 mean, remove a null mode, or recenter a source.
 
 The general variance of the weighted mean is
 
-\[
+$$
 \operatorname{Var}(\widehat{x}) =
 \frac{1}{Q^2}
 \sum_{i,j} u_i u_j\operatorname{Cov}(x_i,x_j).
-\]
+$$
 
 Only if the contributions are mutually uncorrelated and
-(u_i=1/\operatorname{Var}(x_i)) does this reduce to
+$u_i=1/\operatorname{Var}(x_i)$ does this reduce to
 
-\[
+$$
 \operatorname{Var}(\widehat{x}) = \frac{1}{Q}.
-\]
+$$
 
 The SCI-MAP-001 contract does not establish those coefficient-calibration and
 covariance conditions. Therefore `weight_I` is a nonprecision gridding and
@@ -97,7 +97,7 @@ The equations apply only after the method-specific admission and support rules
 have selected contributions and authorized normalization. They do not define
 those rules. In particular:
 
-- `science_valid_I`, not (Q), is authoritative raw science validity;
+- `science_valid_I`, not $Q$, is authoritative raw science validity;
 - a finite normalized value does not imply science-policy support;
 - the method does not define a JINC signed-contribution estimator;
 - no GLS, covariance regularization, coadd uncertainty, or significance map is
@@ -138,5 +138,7 @@ than reproduce the derivation.
 
 ## Revision History
 
+- 2026-08-07: Corrected GitHub Markdown math delimiters; scientific content
+  unchanged.
 - 2026-08-07: Initial note, extracted without changing the accepted
   SCI-MAP-001 equations or scope.
