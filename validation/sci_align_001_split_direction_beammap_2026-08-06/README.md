@@ -139,11 +139,29 @@ arrays, a two-page PDF, a hash-bound manifest, and checksums. It fails before
 creating its output directory if any required retained kernel is absent or if
 the signal/kernel shapes or WCS identities differ.
 
-The next owner-run mapmaker-dependence control is a new ObsNum 150819 `all`
-reduction cloned from the accepted retry2 configuration, changing only
-`mapmaking.method` to `naive` and the output root. The current reduction and
-review products remain immutable authorities; the naive run is not launched
-by the retained-product diagnostic.
+The owner-run mapmaker-dependence control cloned the accepted retry2
+configuration, changing only `mapmaking.method` to `naive` and the output
+root. It completed in 1h43m with standard, left, and right maps/APTs. Its
+visual review retains the coherent along-scan displacement while exposing the
+expected sparse nearest-pixel support of naive mapmaking.
+
+A follow-up single-pass run disabled fruit loops, selected `standard`, retained
+the full processed timestream, and used the same naive detector mapmaking. It
+completed its processing iteration in about 11 minutes, then failed required
+product finalization because Beammap tried to update the PTC TOD
+`FRUITLOOPS_ITER` value before the deferred general TOD header had created the
+variable. The repair creates this mutable field with the initial PTC file
+schema. The existing scalar NetCDF writer is idempotent, so the later general
+header updates the same field rather than duplicating it. A focused lifecycle
+test covers schema creation, Beammap's iteration-time update, and the final
+auxiliary-metadata pass. The failed partial PTC is not accepted evidence; a
+fresh-root Unity retry is required.
+
+This is a confirmed engineering product-lifecycle defect, kept separate from
+the left/right timing interpretation. Its exact Unity trigger, root cause,
+repair alternatives, regression evidence, and future SCI-BEAM-001 routing are
+recorded in
+`../../handoff/SCI_ALIGN_001_PTC_ITERATION_METADATA_DEFECT_2026-08-07.md`.
 
 See `UNITY_RUNBOOK.md` for the owner-run 150819-first campaign and
 `RETURN_BUNDLE_SPEC.md` for return evidence.

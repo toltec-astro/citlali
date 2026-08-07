@@ -158,6 +158,12 @@ void Engine::create_tod_files() {
     citlali::pipeline::add_tod_stream_output_type_label(fo, output_stream);
     if constexpr (prod_t == engine_utils::toltecIO::ptc_timestream) {
         citlali::pipeline::add_ptc_eigenvalue_dim(fo, ptcproc.cleaner.n_calc);
+        // Beammap can publish retained processed chunks during its iteration,
+        // before add_tod_header() adds the remaining final metadata.  Create
+        // this required mutable field with the initial schema so that the
+        // iteration writer can update it transactionally.
+        citlali::pipeline::add_tod_fruit_loop_iteration_var(
+            fo, iteration.fruit_iter);
     }
 
     citlali::pipeline::add_observation_identity_vars(

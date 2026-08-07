@@ -93,11 +93,16 @@ inline void add_tod_signal_unit_var(netCDF::NcFile &fo,
     add_netcdf_var(fo, "BUNIT", signal_unit);
 }
 
+inline void add_tod_fruit_loop_iteration_var(netCDF::NcFile &fo,
+                                             int fruit_loop_iter) {
+    add_netcdf_var(fo, "FRUITLOOPS_ITER", fruit_loop_iter);
+}
+
 inline void add_tod_auxiliary_metadata_vars(netCDF::NcFile &fo,
                                             double sample_rate_hz,
                                             const std::string &apt_name,
                                             int fruit_loop_iter) {
     add_netcdf_var(fo, "SAMPRATE", sample_rate_hz);
     add_netcdf_var<std::string>(fo, "APT", apt_name);
-    add_netcdf_var(fo, "FRUITLOOPS_ITER", fruit_loop_iter);
+    add_tod_fruit_loop_iteration_var(fo, fruit_loop_iter);
 }

@@ -104,10 +104,21 @@ freeze the application mainline.
   standard-only vertical-jet masks. Its scope begins at kernel generation
   inside RTC, so it tests subsequent RTC filtering, PTC cleaning, and
   mapmaking but not raw detector-data/timestamp association. A same-authority
-  `mapmaking.method: naive` re-reduction is recorded as the next Unity
-  mapmaker-dependence control. The candidate remains diagnostic-only and does
-  not authorize a timing correction. See
+  `mapmaking.method: naive` re-reduction completed in 1h43m with all three
+  directional product families. A subsequent single-pass full-PTC extraction
+  completed its processing iteration but exposed a distinct confirmed
+  required-product engineering defect: Beammap attempted to update
+  `FRUITLOOPS_ITER` before the deferred TOD header had created that variable.
+  The local follow-up creates the mutable
+  field with the initial PTC schema and retains the later idempotent metadata
+  update; the exact lifecycle regression test and CLI build pass, while the
+  corrected Unity retry remains owner-run evidence. The candidate remains
+  diagnostic-only and does not authorize a timing correction. This product
+  lifecycle defect and its repair are logically separate from the measured
+  timing offset; see
   [`validation/sci_align_001_split_direction_beammap_2026-08-06/README.md`](../validation/sci_align_001_split_direction_beammap_2026-08-06/README.md).
+  The durable engineering handoff is
+  [`SCI_ALIGN_001_PTC_ITERATION_METADATA_DEFECT_2026-08-07.md`](../handoff/SCI_ALIGN_001_PTC_ITERATION_METADATA_DEFECT_2026-08-07.md).
 - A 2026-08-02 bounded `SCI-ALIGN-001` repair candidate is complete on the
   isolated `codex/repair-sci-align-001` branch at application commit
   `c77105b9b1676ec1ec74a9d560765954c5f1d5dd`; it is not accepted, merged,
