@@ -221,10 +221,11 @@ def classify_scans(ptc: PtcDetector) -> ScanClassification:
             raise ContractError(
                 f"scan row {scan_row} has invalid inclusive bounds {start_i}:{end_i}"
             )
-        if start_i != previous_end + 1:
+        if start_i <= previous_end:
             raise ContractError(
-                f"scan row {scan_row} is not contiguous after sample {previous_end}"
+                f"scan row {scan_row} overlaps or reverses after sample {previous_end}"
             )
+        preceding_unclassified = start_i - previous_end - 1
         previous_end = end_i
         slc = slice(start_i, end_i + 1)
         time = ptc.tel_time[slc]
@@ -253,6 +254,7 @@ def classify_scans(ptc: PtcDetector) -> ScanClassification:
             "start_sample_inclusive": start_i,
             "end_sample_inclusive": end_i,
             "sample_count": end_i - start_i + 1,
+            "preceding_unclassified_sample_count": preceding_unclassified,
             "start_time_sec": float(time[0]),
             "end_time_sec": float(time[-1]),
             "duration_sec": float(time[-1] - time[0]),
@@ -261,10 +263,6 @@ def classify_scans(ptc: PtcDetector) -> ScanClassification:
             "direction": direction,
             "detector_weight": float(ptc.weights[scan_row]),
         })
-    if previous_end != ptc.signal.size - 1:
-        raise ContractError(
-            f"scan table ends at {previous_end}, before final sample {ptc.signal.size - 1}"
-        )
     if not {"left", "right"}.issubset(set(sample_direction)):
         raise ContractError("self-contained scan classification lacks left or right scans")
     return ScanClassification(rows=rows, sample_direction=sample_direction)
@@ -408,7 +406,7 @@ def audit_mode(
         & (column >= 0) & (column < signal.shape[1])
     )
     per_sample_weight = scan_weight_per_sample(ptc)
-    mode_selected = np.ones(ptc.signal.size, dtype=bool)
+    mode_selected = direction != "outside"
     if mode != "standard":
         mode_selected = direction == mode
     accepted = (
@@ -579,7 +577,9 @@ def render_trajectory_page(
     time0 = float(ptc.tel_time[0])
     rel_time = ptc.tel_time - time0
     figure, axes = plt.subplots(2, 2, figsize=(11.0, 8.5))
-    colors = np.where(classification.sample_direction == "left", "tab:blue", "tab:orange")
+    colors = np.full(ptc.signal.size, "0.65", dtype=object)
+    colors[classification.sample_direction == "left"] = "tab:blue"
+    colors[classification.sample_direction == "right"] = "tab:orange"
     stride = max(1, ptc.signal.size // 25000)
     sample = slice(None, None, stride)
     axes[0, 0].scatter(
@@ -759,6 +759,12 @@ def run(args: argparse.Namespace) -> None:
         "network": ptc.nw,
         "fruitloops_iter": ptc.fruitloops_iter,
         "sample_count": int(ptc.signal.size),
+        "classified_science_sample_count": int(np.sum(
+            classification.sample_direction != "outside"
+        )),
+        "unclassified_sample_count": int(np.sum(
+            classification.sample_direction == "outside"
+        )),
         "scan_count": len(classification.rows),
         "left_scan_count": sum(row["direction"] == "left" for row in classification.rows),
         "right_scan_count": sum(row["direction"] == "right" for row in classification.rows),

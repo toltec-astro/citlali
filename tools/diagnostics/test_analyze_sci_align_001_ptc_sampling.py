@@ -55,9 +55,16 @@ def scan_samples() -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
         [-4.0, -2.0, 0.0, 2.0, 4.0],
     ]
     y_rows = [-2.0, -1.0, 1.0, 2.0]
-    x = np.asarray(x_rows, dtype=float).reshape(-1)
-    y = np.repeat(np.asarray(y_rows, dtype=float), 5)
-    direction = np.repeat(np.asarray(["left", "right", "left", "right"]), 5)
+    x = np.full(25, 9.0, dtype=float)
+    y = np.full(25, 9.0, dtype=float)
+    direction = np.full(25, "outside", dtype="U8")
+    for start, x_row, y_row, scan_direction in zip(
+        (1, 7, 13, 19), x_rows, y_rows,
+        ("left", "right", "left", "right"), strict=True,
+    ):
+        x[start:start + 5] = x_row
+        y[start:start + 5] = y_row
+        direction[start:start + 5] = scan_direction
     time = np.arange(x.size, dtype=float) * 0.01 + 1000.0
     return x, y, direction, time
 
@@ -84,7 +91,7 @@ def make_ptc(path: Path) -> None:
         dataset.createVariable("FRUITLOOPS_ITER", "i4", ("fruitloops_iter_dim",))
         dataset["signal"][:] = np.column_stack([np.linspace(1.0, 2.0, n_pts), np.ones(n_pts)])
         flags = np.zeros((n_pts, n_dets), dtype=float)
-        flags[2, 0] = 1.0
+        flags[3, 0] = 1.0
         dataset["flags"][:] = flags
         dataset["det_lon"][:] = np.column_stack([x, x + 0.25]) / RAD_TO_ARCSEC
         dataset["det_lat"][:] = np.column_stack([y, y + 0.25]) / RAD_TO_ARCSEC
@@ -92,7 +99,7 @@ def make_ptc(path: Path) -> None:
         dataset["alt_phys"][:] = (y + 3.0) / RAD_TO_ARCSEC
         dataset["TelTime"][:] = time
         dataset["TelUTC"][:] = time / 86400.0
-        dataset["scan_indices"][:] = np.asarray([[0, 4], [5, 9], [10, 14], [15, 19]])
+        dataset["scan_indices"][:] = np.asarray([[1, 5], [7, 11], [13, 17], [19, 23]])
         dataset["output_scan_index"][:] = np.arange(1, n_scans + 1)
         dataset["weights"][:] = 2.0
         dataset["apt_uid"][:] = [199.0, 200.0]
@@ -104,8 +111,8 @@ def make_ptc(path: Path) -> None:
 
 def support_for_mode(mode: str) -> np.ndarray:
     x, y, direction, _ = scan_samples()
-    accepted = np.ones(x.size, dtype=bool)
-    accepted[2] = False
+    accepted = direction != "outside"
+    accepted[3] = False
     if mode != "standard":
         accepted &= direction == mode
     result = np.zeros((21, 21), dtype=bool)
@@ -196,6 +203,7 @@ class PtcSamplingAuditTest(unittest.TestCase):
             self.assertEqual(manifest["fruitloops_iter"], 0)
             self.assertEqual(manifest["left_scan_count"], 2)
             self.assertEqual(manifest["right_scan_count"], 2)
+            self.assertEqual(manifest["unclassified_sample_count"], 5)
             self.assertLess(
                 manifest["trajectory_metrics"][
                     "detector_minus_telescope_step_residual_max_arcsec"

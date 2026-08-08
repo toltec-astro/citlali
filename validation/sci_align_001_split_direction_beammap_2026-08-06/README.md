@@ -169,7 +169,9 @@ recorded in
 PTC and the completed standard/left/right naive maps for one detector. It
 self-classifies scan direction from the retained telescope trajectory and
 replays Citlali's exact naive nearest-pixel assignment and sample-acceptance
-rules. The support audit distinguishes accepted-hit plus map support,
+rules. Ordered, non-overlapping raster science windows need not be contiguous;
+turnaround and inter-scan samples remain explicitly unclassified and cannot
+contribute reconstructed hits. The support audit distinguishes accepted-hit plus map support,
 accepted-hit only, map support only, and neither. It also compares final
 detector pointing with reported telescope pointing, including within-scan
 step residuals. White pixels with zero accepted hits are therefore
