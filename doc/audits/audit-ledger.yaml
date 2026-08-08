@@ -3909,7 +3909,7 @@ packages:
       - matched response/kernel or explicit response unavailability
       - typed direct validity, cause flags, influence support, eligibility, diagnostics, and covariance availability
       - lossless requested/effective/observation-resolved/realized provenance and product links
-  
+
     upstream_dependencies:
       - package_id: SCI-ALIGN-001
         status: open
@@ -3939,7 +3939,7 @@ packages:
           Exact coordinate/frame/topology validity, sample identity, and detector-row binding.
         consequence: >-
           Coordinate-aware masks/kernels and new coordinate-dependent claims remain conditioned.
-  
+
     downstream_consumers:
       - package_id: SCI-PTC-001
         status: existing_use_only
@@ -3950,7 +3950,7 @@ packages:
       - package_id: SCI-BEAM-001
         status: existing_use_only
         handoff_id: SCI-BEAM-001-XAUD-003
-  
+
     governing_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
     governing_parent: 4846fa4db39bd2f7d4ddc41f693836834cbc5ff4
     governing_tree: ab230a93b8fb310d58aefd7ac5da92e5d5e0f408
@@ -3962,7 +3962,7 @@ packages:
     final_audit_tree: 8b01ee4d8117816904d7f078682c0c62a2ea88ac
     audit_artifact_at_commit: doc/audits/packages/SCI-RTC-001_SCIENTIFIC_CONTRACT_AUDIT.tex
     final_audit_artifact_sha256: 169a0b6e013e727d5d04c25da5234e29def4ef79bc6f25a3f343bc675000301a
-  
+
     dispatch:
       status: audit_integrated_owner_decisions_recorded
       launch_date: 2026-08-08
@@ -3991,7 +3991,7 @@ packages:
         - SCI-RTC-001-XAUD-001
         - SCI-RTC-001-XAUD-003
       excluded_later_repair_commit: 5c6309125fef15f7c98e70a62b591c663944b130
-  
+
     independent_derivation:
       status: independent_core_frozen_and_coordinator_accepted
       path: doc/audits/packages/SCI-RTC-001_INDEPENDENT_CORE.tex
@@ -4009,7 +4009,7 @@ packages:
         and exactly eleven pre-core authority objects only. No RTC source,
         caller, test, diff/blame, prior RTC audit, or post-core handoff content
         was opened before freeze.
-  
+
     incoming_handoffs:
       - id: SCI-RTC-001-XAUD-002
         path: doc/audits/handoffs/SCI-RTC-001/SCI-RTC-001-XAUD-002.yaml
@@ -4070,7 +4070,7 @@ packages:
             AST validity/binding remains a dependency. Historical edge occurrence
             and active repair results were not inferred.
           affected_findings: [SCI-RTC-001-F005, SCI-RTC-001-F010]
-  
+
     outgoing_handoffs:
       - id: SCI-PTC-001-XAUD-005
         target_package: SCI-PTC-001
@@ -4090,7 +4090,7 @@ packages:
         audit_submission_sha256: 24cd271c5b27d9885c01002e063571a53aa7fd4517d34509ef8d2194e259e1a1
         canonical_sha256: 7dcaebc6713af30c093f31a9ace870d9a6cd59a61097fdff1c0bb83963d5808a
         status: submitted
-  
+
     owner_decision_record:
       path: doc/audits/packages/SCI-RTC-001_OWNER_DECISION_2026-08-08.md
       sha256: 5f5ebb52735a70510d75f5a6954ef825fc425c00e43ab0aadf2363f2e0609723
@@ -4101,7 +4101,7 @@ packages:
     validation_status: in_progress
     production_status: existing_use_only
     verdict: amend
-  
+
     implementation_assessment:
       governing_source: nonconformant
       claimed_operator: >-
@@ -4123,7 +4123,7 @@ packages:
         Positive subcontracts do not compensate for known calibration,
         replacement, causal-validity, kernel-response, mask, edge, provenance,
         dependency, and evidence nonconformities.
-  
+
     open_findings:
       - id: SCI-RTC-001-F001
         class: implementation_defect
@@ -4289,7 +4289,7 @@ packages:
         closure_gate: >-
           Approve or supersede D001-D004 in versioned equations/state before
           repair; implement only the selected policy and independently re-audit.
-  
+
     unresolved_scientific_decisions: []
     resolved_scientific_decisions:
       - id: SCI-RTC-001-D001
@@ -4332,7 +4332,7 @@ packages:
         Exact source and deterministic formula evidence establish known
         calibration, replacement, validity/support, response, mask, edge, and
         provenance mismatches. No exact compiled RTC suite is available.
-  
+
     proposed_future_exact_sha_evidence:
       status: proposed_not_requested_not_executed
       cost_classification: not_costly_if_focused_existing_successor_test_surface_exists
@@ -4351,7 +4351,7 @@ packages:
         coefficients, masks/donors, products, and digests; no required-data skip
         and zero unexpected error-level messages. Broad/costly work requires a
         separate FRAMEWORK-NUM-001 launch gate and owner authorization.
-  
+
     production_disposition:
       allowed_compatibility_only:
         - continued existing use already authorized by owning package records
@@ -4367,7 +4367,7 @@ packages:
         - unavailable complete response/kernel, causal validity/support, representative time, or required product identity
         - new use of synthesized, replaced, edge, or temporally influenced cells without approved eligibility/response/covariance
         - any use of this audit as repair, re-audit, integration, downstream launch, or production authorization
-  
+
     final_validation:
       latex_engine: tectonic_0.16.9_cache_only
       latex_compile: pass
@@ -4378,7 +4378,7 @@ packages:
       visual_result: pass_no_clipping_overlap_or_unreadable_glyphs
       yaml_validation: pass
       link_digest_vocabulary_git_diff_clean_checks: pass
-  
+
     cost_and_scope:
       cost_classification: not_costly
       broad_or_costly_execution_launched: false
