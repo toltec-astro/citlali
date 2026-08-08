@@ -1,0 +1,1072 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=0.8in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,longtable,array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+% The offline audit runtime has complete Latin Modern 7, 8, and 10 point
+% symbol outlines but no 5/6 point outlines.  Use the nearest complete face
+% for small table mathematics; this changes presentation only, not equations.
+\DeclareFontFamily{OMS}{lmsy}{\skewchar\font48}
+\DeclareFontShape{OMS}{lmsy}{m}{n}{%
+  <-7.5> lmsy7 <7.5-8.5> lmsy8 <8.5-> lmsy10}{}
+
+\makeatletter
+\g@addto@macro\UrlBreaks{%
+  \do\0\do\1\do\2\do\3\do\4\do\5\do\6\do\7\do\8\do\9%
+  \do\a\do\b\do\c\do\d\do\e\do\f}
+\makeatother
+
+\hypersetup{hidelinks,hypertexnames=false}
+\setlist{nosep,leftmargin=*}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+\renewcommand{\arraystretch}{1.16}
+\newcommand{\code}[1]{\nolinkurl{#1}}
+\newcommand{\avail}{\ensuremath{\mathrm{available}}}
+\newcommand{\unavail}{\ensuremath{\mathrm{unavailable}}}
+\newcommand{\given}{\,\vert\,}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\rank}{\operatorname{rank}}
+
+\title{SCI-RTC-001 Independent Mathematical Core\\
+Raw-timestream conditioning interface and temporal response}
+\author{Independent documentation-only scientific-contract audit}
+\date{2026-08-08}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This document freezes, before Citlali RTC source or submitted cross-audit
+handoffs are opened, a mathematical and scientific interface for conditioning
+aligned detector timestreams.  It defines the admissible identities, units,
+operators, response, covariance, validity, provenance, and provisional
+consumer boundaries against which application commit
+\code{46ad23888a40f5102cdfd50c06e49a549bdf8a20} will later be traced.  It is
+not a statement that the application implements this model.  The governing
+ALIGN, CAL, and AST states remain bounded as recorded below; in particular,
+new calibration use is fail-closed, ALIGN/AST conformity is conditioned, and
+PTC, VAL, and BEAM receive no production expansion from this document.
+\end{abstract}
+
+\tableofcontents
+
+\section{Freeze boundary, authority, and exposure}
+
+\subsection{Exact target and status}
+
+The application audit target is commit
+\code{46ad23888a40f5102cdfd50c06e49a549bdf8a20}, parent
+\code{4846fa4db39bd2f7d4ddc41f693836834cbc5ff4}, tree
+\code{ab230a93b8fb310d58aefd7ac5da92e5d5e0f408}.  The frozen dispatch content
+is commit \code{fff3f538ce04fb66d73ac3671f2bc6a10975baed}.  The prompt digest is
+\code{01c02c2b1057a5346caaf5c0a8efaa7c5b17dec90158dffe9020b6838ad3951c};
+the frozen manifest digest is
+\code{9f75e5df0184d73e90acec10cbf8c052fe7baad571a131ba8834f2acbbbccb1c}.
+The branch for this audit is \code{codex/audit-sci-rtc-001}.
+
+This core is a preregistered contract and falsification target.  A later source
+observation may establish conformity, a bounded equivalence, a contract gap,
+or nonconformity.  It may not retroactively alter these bytes.  Any correction
+after the freeze is a labeled successor revision.
+
+\subsection{Verified pre-core authority set}
+
+All eleven paths were recovered from their exact object commits and their
+SHA-256 digests matched the frozen manifest before their contents were read.
+Their manifest statuses and phase are part of the admitted authority boundary.
+
+\begin{longtable}{@{}p{0.20\linewidth}p{0.27\linewidth}p{0.47\linewidth}@{}}
+\toprule
+Authority ID & Object and digest & Bounded status used here \\
+\midrule
+\endhead
+ALIGN-OD1-OD8-C001 &
+\code{4f905f4f353e91847a303f4f3959654f3f03c302};
+\code{14c8044fe7a26c7ee1af7b8dea3472e9cb604471c91ca58dc93b662a7d3d9895} &
+Approved common-grid, timing, mapping, gap, scan, synthesized-sample,
+response/covariance, compact-identity, and HWPR decisions; implementation
+remains nonconformant and existing-use-only. \\
+ALIGN-P0-D001 &
+\code{86434df2cfb5b85d0ccd306150cb428321abdbb9};
+\code{0efe9d06bf02ceca473c92b00dce4c6d1ec9b6e564f226c9451f444ee5a6d66c} &
+Restricted legacy-inferred detector timestamp/counter adapter; no new
+absolute-time or producer-event claim. \\
+ALIGN-P0-D002 &
+\code{10981b29c1870e745b7f3c9cabed3c634a46427f};
+\code{7e4e2c02bf2e16035d6a2aceacaa4e07c7c528e08f09fdb2d0a9186d510465cd} &
+Bounded rate family, cadence, phase, strict half-cell admission, and union
+support authority. \\
+ALIGN-P0-D003 &
+\code{d500e33da1869bc1e20383a49484daddca9e7ea7};
+\code{a25b46ddec445a4164086aae248e3cbbfc70c7df8cb2c785c4c135d936e92d67} &
+Compact four-stage offset lifecycle and setup-boundary authority; nonzero
+offsets remain unavailable without producer authority. \\
+ALIGN-P0-D004 &
+\code{a3775bf3039461a6435f07938572dd23b3f03d47};
+\code{ea03c5b614c7ce64ab5ab071c48c07d2f4910b919941798e70668049e53faf78} &
+Restricted telescope registry, topology, units, aliases, validity, and no-HWPR
+scientific-use authority. \\
+ALIGN-P0-D005 &
+\code{99886afb84c0ef582cee070ec156342a2f0b3327};
+\code{b07c62103105f044269b68e6db1ee669f4293eabce6d0f145105f57337a683d4} &
+Compatibility-only Hold/scan disposition and bounded ALIGN sequencing; no
+acceptance or production expansion. \\
+CAL-D001-D005 &
+\code{e8bd929008140e2ea8b44bfdc80b0a531b488765};
+\code{1e2d44b76138734aaae5a7b241ae621deb1510c2de763b74be31a87e106d175c} &
+Approved successor calibration contract, including top-of-atmosphere
+calibration and separate responsivity; assessed implementation fail-closed. \\
+CAL-D001-OPACITY-001 &
+\code{4dabc750de69d53c852317ab77c735febd00a1b5};
+\code{64fd3ae9788c6a8e3db18ac5ea4f04799586b548f9e7ec12cc8c18f9cbf96e09} &
+Approved low-opacity geometric-transmission interpolation and strict domain
+checks. \\
+CAL-D002-IDENTITY-001 &
+\code{0a17d088aded7fc6c18a59522f5b2b2fce9749ad};
+\code{d40def5bb1450446abc858d2acfc1924c2f65276f8f48eec89cf05a171cdcf6a} &
+Layered acquisition, measured-APT, and optional-design identity; verified row
+order may be an admitted observation-local binding. \\
+CAL-D001-ACCURACY-001 &
+\code{353aaf196bc0a80ae6876f6947000a6903f32f2f};
+\code{ae295b717da3f9ed7129661e812b05847ff988500bb3d6f159b7ffae45cb2780} &
+Software correctness, representation fidelity, and observational accuracy are
+separate gates; successor atmosphere operator still requires selection. \\
+SCI-AST-001-D001-D008 &
+\code{8ee5b9fc192877106c4d5d747dfef75646edcfd9};
+\code{c2e8f2c18f2d96a27afd6b6a083408b17562e596ee1e2851a00de3d9c7e5e9d9} &
+Approved bounded AST sign/basis, TAN domain, frames, support, automatic WCS,
+map-center response, approximation, precision, validity, and provenance
+contract; findings and implementation remain open. \\
+\bottomrule
+\end{longtable}
+
+The manifest labels every row above \code{pre_core_authority}.  The three
+submitted records SCI-RTC-001-XAUD-002, -001, and -003 were verified only as
+opaque byte streams with their declared digests.  Their contents were not
+opened and they remain \code{post_core_evidence}.  The coordinator registry
+object \code{dd5894679bf12bf4a5fb551e871b3c6010ef9b9b} was verified to be a Git
+commit but was not used as mathematical authority.
+
+\subsection{Exposure log and independence claim}
+
+Before this freeze the auditor read: repository \code{AGENTS.md}; the TolTEC
+context skill and its repository/authority routing maps; the exact frozen
+dispatch prompt; the exact frozen manifest; and exactly the eleven authority
+objects in the table.  The routing maps were operational context only and did
+not supply RTC mathematics.  No RTC implementation content, diff, blame,
+caller, test, direct source reference, generated documentation, or prior RTC
+audit report was opened.  No content from any post-core handoff was displayed
+or read.  Hashing an opaque Git byte stream did not expose its content to the
+derivation.
+
+No inherited RTC source excerpt appeared in the delegation context.  General
+mathematical knowledge of calibration, state-space filters, multirate signal
+processing, and covariance propagation is a derivation method, not evidence
+about Citlali.  Accordingly, this is an independent mathematical core, but it
+does not claim ignorance of generic digital-signal-processing methods or of
+the quarantined path names stated by the dispatch.
+
+The later ALIGN processed-PTC scan-metadata repair at
+\code{5c6309125fef15f7c98e70a62b591c663944b130} is absent from the frozen
+manifest, was not opened, is not RTC authority, and belongs only to the later
+PTC/VAL queue.
+
+\subsection{Scope and fail-closed premise}
+
+The interface begins with aligned detector samples and admitted aligned
+coordinates and ends with the conditioned TOD, kernel/response, flags,
+validity, and provenance presented to PTC, VAL, and BEAM.  It does not reopen
+mature despike, FIR, IIR, or notch numerical internals unless Phase 2 finds a
+concrete contradiction with a required interface or response identity.
+
+ALIGN supplies only bounded common-grid and mapping facts and remains
+\code{existing_use_only}.  CAL supplies the successor factor meanings but its
+assessed implementation is \code{fail_closed} for new CAL-dependent science.
+AST supplies bounded coordinate facts while its repair waits behind ALIGN.
+Thus every calibrated, coordinate-dependent, exact-timing, absolute-response,
+or new-production conclusion in this core is conditional on the named
+upstream authority becoming conformant.  Unknown terms are unavailable, not
+zero; an unavailable required term fails the affected claim or product.
+
+\section{Identity, stages, and state taxonomy}
+
+\subsection{Indices and ordered identities}
+
+Let $o$ identify one observation.  Let $d\in\mathcal D_o$ identify an admitted
+detector through the layered acquisition key
+\[
+ \begin{aligned}
+  \iota_d=(&o,\hbox{Tune},\hbox{network/interface},\\
+            &\hbox{network-local tone or verified row slot},
+              \hbox{selected APT digest and row binding}).
+ \end{aligned}
+\]
+A dense global TOD column is a locator, not scientific identity.  Detector
+reordering is admissible only through a verified ordered-row contract or an
+explicit key map.  The measured Beammap row, its target-to-source matcher
+edge, and any design identity remain separate.
+
+Let native acquired rows be $r$, aligned input slots be
+$j=0,\ldots,N-1$, and conditioned output slots be
+$n=0,\ldots,N_y-1$.  The ALIGN detector-reference grid is
+\begin{equation}
+ t_j=t_0+j\Delta t,\qquad
+ \Delta t=(r_s f_{\rm ref})^{-1},\quad
+ r_s\in\{0.5,1,2,4\},\quad f_{\rm ref}=122.0703125\ {\rm Hz},
+ \tag{RTC-01}\label{eq:grid}
+\end{equation}
+conditioned on the approved ALIGN profile, strict slot admission, and exact
+upstream provenance.  The grid is in seconds on a qualified detector-reference
+clock.  It does not establish a producer epoch, integration event, or absolute
+timing accuracy.
+
+Every interval is half-open.  A sample identity is $(o,\iota_d,j,t_j)$ plus
+its acquisition and support state; a downsampled identity is
+$(o,\iota_d,n,t^{\rm out}_n)$ plus the exact contributing input support.  A
+science window, physical scan, processing chunk, context window, and output
+selection are distinct objects and never silently renumber one another.
+
+\subsection{Stage contract}
+
+\begin{longtable}{@{}p{0.13\linewidth}p{0.18\linewidth}p{0.18\linewidth}p{0.19\linewidth}p{0.22\linewidth}@{}}
+\toprule
+Stage & Shape/order & Signal unit & Time/coordinate association & Required validity and missing policy \\
+\midrule
+\endhead
+Acquired $x^{\rm acq}_{d,r}$ & Ragged native rows by admitted detector; native order retained & Declared detector raw unit $U^{\rm raw}_d$ & Native qualified coordinate; event/epoch may be unavailable & Original acquisition, finite/value validity, row identity, and packet/gap state distinct. Missing row is not NaN. \\
+Aligned $x^A_{d,j}$ & $|\mathcal D_o|\times N$ on common ordered slots & Same $U^{\rm raw}_d$ & Equation~\eqref{eq:grid}; aligned telescope fields carry declared radians, frame, and topology & Original-valid, original-invalid, synthesized continuity, unavailable, and guard states distinct. ALIGN-synthesized values have zero direct exposure and weight. \\
+Calibrated $x^C_{d,j}$ & Same detector/grid order & Initially top-of-atmosphere mJy/beam only when the CAL contract is conformant & Same sample time; signal has no coordinate frame, but pointing association retains its AST frame & Calibration factor, domain, detector binding, and provenance valid; otherwise unavailable/fail closed. \\
+Replaced $x^R_{d,j}$ & Same shape; may depend on other detector/time cells & Same calibrated unit if the exact donor/target conversion is valid & Target sample identity retained; donor identities/support explicitly linked & Original target and continuity replacement are distinct. Replacement is not an independent acquisition and defaults to zero direct science weight. \\
+Filtered $x^{F_k}_{d,j}$ & Same logical grid unless a declared filter changes support & Input dimension; plain mJy/beam semantics retained only with declared point-source normalization and response & Each output carries impulse support, phase and delay, edge and context identity & All required inputs finite and available or handled by one declared mask operator; edge, guard, and numerical validity explicit. \\
+Downsampled $y_{d,n}$ & $|\mathcal D_{\rm out}|\times N_y$; exact phase and index map & Filtered dimension and response-qualified photometric semantics & Output cadence, phase, representative time and full exposure and support declared & Alias policy, footprint flags, replacement and synthesis influence, edge loss, and eligibility aggregated without erasing causes. \\
+Outputs & TOD plus factorized kernel and response, typed flags and status, diagnostics, and four-stage provenance & Per-field units; never generic all-radians metadata & Stable observation, detector, scan, and grid identities and product links & Omitted, unavailable, invalid, masked, flagged, replaced, and ineligible are distinguishable. \\
+\bottomrule
+\end{longtable}
+
+For initial CAL scope, ``mJy/beam'' means top-of-atmosphere point-source peak
+normalization.  A filter may preserve the dimensional unit while changing the
+response.  It may retain the unqualified photometric label only if its exact
+normalization preserves the declared point-source response; otherwise the
+product must expose a response-qualified unit/identity or fail the photometric
+claim.
+
+\subsection{Four-stage scientific state}
+
+For every calibration, replacement, mask, filter, and decimation control,
+define the one-way tuple
+\begin{equation}
+ \Theta=(\Theta^{\rm req},\Theta^{\rm eff},
+          \Theta^{\rm obs},\Theta^{\rm real}).
+ \tag{RTC-02}\label{eq:state}
+\end{equation}
+Requested state preserves what was authored.  Effective state is the admitted
+typed plan after defaults and rejection.  Observation-resolved state binds
+that plan to exact headers, detectors, APTs, coordinates, rates, windows, and
+available support.  Realized state records what actually ran, in what order,
+with what coefficients/state, exceptions, output identity, and product
+digests.  Later stages never overwrite earlier authority.  A requested option
+that cannot be realized is rejected; it is not reported effective while
+ignored.
+
+At minimum the tuple records: algorithm and contract versions; enabled order;
+factor identities and digests; units and frames; input/output rates and phase;
+filter coefficients, normalization and convention; initial/final state;
+source-mask geometry and validity; replacement/donor policy and realized
+links; edge and finite policies; scan/science/context intervals; flag
+aggregation; response/kernel availability; and output links and counts.
+
+\subsection{Classification of quantities}
+
+The categories are: \emph{fixed} (defined by the frozen contract),
+\emph{selected} (chosen from an admitted finite policy/configuration set),
+\emph{fitted} (estimated in a named upstream fit), \emph{data-derived}
+(deterministically calculated from this observation), \emph{random} (modeled
+as a stochastic variable), and \emph{conditioned upon} (held fixed for a
+conditional claim while its uncertainty is separately represented).  A value
+may be fitted upstream and conditioned upon for one RTC execution; both facts
+must be recorded.
+
+\begin{longtable}{@{}p{0.24\linewidth}p{0.22\linewidth}p{0.48\linewidth}@{}}
+\toprule
+Quantity & Classification & Contract consequence \\
+\midrule
+Raw detector samples/noise & Random; observed data conditioned upon for a realized run & Statistical moments require a declared input model/covariance; observed bytes are not their expectation. \\
+ALIGN cadence/rate member & Selected from headers and approved family, then conditioned upon & Fixed within admitted observation; no arbitrary rate interpolation. \\
+ALIGN lattice phase and availability & Data-derived, then conditioned upon & Phase is the latest first valid timestamp under bounded ALIGN, not an absolute event claim. \\
+Absolute \code{flxscale} and beam/template & Fitted upstream, selected by artifact, conditioned upon; systematic nuisance & Exact selected artifact/detector binding and correlation scope required. \\
+Opacity/model and airmass & Opacity/model selected or observed; airmass data-derived from valid elevation; conditioned with nuisance uncertainty & Full sample airmass, model domain, positivity, and provenance required. \\
+Target-unit transfer & Fixed/selected & Initially identity into top-of-atmosphere mJy/beam; other units fail closed. \\
+Beammap \code{sens} & Fitted diagnostic/weight proxy, conditioned upon & Not a signal multiplier; stored top-of-atmosphere mJy/beam $\sqrt{\rm s}$ with declared exclusions. \\
+Relative responsivity $\rho_d$ & Fitted upstream, selected by measured APT, conditioned nuisance & Used only through a declared donor/target response convention; distinct from absolute calibration. \\
+Spike target mask & Data-derived under a selected detector & Makes the unconditional RTC operator data-dependent and generally nonlinear. \\
+Donor identity/weights & Selected by a fixed policy and data-derived from eligible candidates & Every realized target-to-donor link and validity must be reconstructible. \\
+Replacement scale/offset & Data-derived from conditioned factors; possibly systematic nuisance & Direction, units, and correlations required; unavailable factor fails replacement. \\
+Source coordinate/catalog & Selected/conditioned external authority; measured coordinates may be fitted & Frame, epoch, identity, validity, and product family required. \\
+Aligned pointing/focal-plane coordinate & Data-derived under ALIGN/AST and conditioned upon & Invalid coordinate is not ``outside mask'' and cannot silently become unmasked. \\
+Source mask and filter guard & Data-derived from conditioned geometry/support and selected policy & Mask is not validity or a flag; it can make filtering time-varying/nonlinear. \\
+FIR/IIR/notch coefficients & Fixed by algorithm version or selected; fitted/data-derived only if explicitly declared & Exact full-precision coefficients, ordering, normalization, and design provenance required. \\
+Initial/final filter state & Selected fixed rule or data-derived from admitted context & State identity is part of response; zero, steady-state, reflected, carried, and fitted states are not interchangeable. \\
+Flags & Data-derived under fixed/selected rules & Descriptive causes remain distinct; a flag is not automatically a mask, invalidity, or weight. \\
+Downsample factor and phase & Selected, then conditioned upon & Exact integer factor, input/output rate, phase, support and indexing required. \\
+Calibration/response uncertainties & Random nuisance variables when modeled; otherwise unavailable & Never silently set to zero or merged into conditional statistical weight. \\
+\bottomrule
+\end{longtable}
+
+\section{Independent operator derivation}
+
+\subsection{Alignment boundary}
+
+Let $A$ denote the already-realized, bounded ALIGN mapping from ragged native
+rows to the common grid.  Conditional on its mapping state $\alpha$,
+\begin{equation}
+  \mathbf x^A=A_{\alpha}\mathbf x^{\rm acq}+\mathbf a_{\alpha},
+  \tag{RTC-03}\label{eq:align}
+\end{equation}
+where $A_\alpha$ may include admitted interpolation or continuity-surrogate
+weights and $\mathbf a_\alpha$ covers any declared affine term.  Normal
+one-to-one original-valid mapping is implicit; exception intervals identify
+synthesized, unavailable, invalid, and guarded support.  If the necessary
+mapping weights or input covariance are unavailable, RTC cannot invent them.
+ALIGN-synthesized cells may supply only their approved continuity role and
+have no direct acquired exposure or independent weight.
+
+\subsection{Calibration before replacement}
+
+For a detector $d$ and slot $j$, define a raw-to-calibrated multiplier
+\begin{equation}
+ g_{dj}=g^{\rm flx}_{d}\,
+        g^{\rm ext}_{dj}\,g^{\rm unit}_{dj},\qquad
+ g^{\rm ext}_{dj}=\exp\!\left[\tau_{b(d),j}X_j\right],
+ \tag{RTC-04}\label{eq:gain}
+\end{equation}
+only on the approved positive finite model domain.  The exact continuous
+atmosphere representation, band, reference plane, source artifact, and model
+version are part of $g$.  Initially $g^{\rm unit}=1$ for top-of-atmosphere
+mJy/beam.  The \code{sens} field is not in equation~\eqref{eq:gain}; \code{fcf}
+cannot substitute for the factorization.
+
+The calibration operator is
+\begin{equation}
+  x^C_{dj}=g_{dj}x^A_{dj}+q^C_{dj},
+  \qquad \mathbf x^C=C_g\mathbf x^A+\mathbf q^C,
+  \tag{RTC-05}\label{eq:cal}
+\end{equation}
+where any additive term $q^C$ must be explicitly named and is zero only when
+the contract proves no additive calibration correction is applied.  Missing,
+duplicate, conflicting, nonfinite, or unproven detector/APT associations make
+$g_{dj}$ unavailable and fail the calibrated output.
+
+The candidate scientific order is ALIGN $\rightarrow$ calibration
+$\rightarrow$ replacement.  Let relative responsivity be defined for this
+core by the forward convention
+\begin{equation}
+ x^{\rm raw}_{dj}=\rho_d s_{dj}+b_{dj},
+ \quad [\rho_d]=U^{\rm raw}_d/[s].
+ \tag{RTC-06}\label{eq:respdef}
+\end{equation}
+If the persisted field uses the reciprocal convention, Phase 2 must apply and
+record that adapter rather than reuse the same symbol.  For donor $q$ replacing
+target $d$ in the calibrated domain, the multiplicative conversion required
+to equal raw-domain target substitution is
+\begin{equation}
+ \gamma_{d\leftarrow q,j}
+   =\frac{g_{dj}\rho_d}{g_{qj}\rho_q},\qquad
+ g_{dj}\left(\frac{\rho_d}{\rho_q}x^A_{qj}\right)
+   =\gamma_{d\leftarrow q,j}x^C_{qj}
+   \quad(q^C=0).
+ \tag{RTC-07}\label{eq:donorscale}
+\end{equation}
+With additive terms, equation~\eqref{eq:donorscale} requires the corresponding
+offset conversion.  Therefore an implementation that replaces before
+calibration can be scientifically equivalent to this order only if it proves
+equation~\eqref{eq:donorscale}, including factor direction, additive terms,
+time dependence, units, and validity.  Simple operator commutation must not be
+assumed.
+
+\subsection{Despike detection, donor selection, and replacement}
+
+Let $p_{dj}\in\{0,1\}$ be the realized target-replacement indicator.  Let
+$\mathcal Q_{dj}$ be the realized donor cells and $w_{dj,q\ell}$ their weights.
+Conditioned on selection state
+$\omega=(p,\mathcal Q,w,\gamma,\beta)$, define
+\begin{equation}
+ x^R_{dj}=(1-p_{dj})x^C_{dj}
+  +p_{dj}\left[
+    \sum_{(q,\ell)\in\mathcal Q_{dj}}
+      w_{dj,q\ell}\gamma_{d\leftarrow q,j\ell}x^C_{q\ell}
+    +\beta_{dj}\right],
+ \quad \sum_{q,\ell}w_{dj,q\ell}=1
+ \ \hbox{when normalization is claimed}.
+ \tag{RTC-08}\label{eq:replace}
+\end{equation}
+The offset $\beta$ covers a declared baseline or additive-factor conversion;
+it is not presumed zero.  In vector form,
+\begin{equation}
+ \mathbf x^R=B_{\omega}\mathbf x^C+\mathbf b_{\omega}.
+ \tag{RTC-09}\label{eq:replacevec}
+\end{equation}
+The detector that generates $p$, candidate eligibility, neighbor topology,
+donor score, tie rule, use of source masks/flags, same-time versus neighboring
+time selection, and fallback are scientific policy identities.  Once fixed,
+equation~\eqref{eq:replacevec} is affine.  Because $\omega$ is normally derived
+from the observed data, the unconditional operation is data-dependent and is
+not generally linear, unbiased, stationary, or Gaussian.
+
+A replaced target retains its target sample identity but links every donor and
+the exact target/donor response factors.  It is numerically computable only if
+all required donors and factors are admitted and finite.  It is not the
+original target acquisition and is correlated with every reused donor and
+every target sharing that donor.  Until a consumer-specific response and
+covariance contract admits it, replacement is continuity-only, has zero direct
+independent science weight/exposure, and remains visibly flagged.  A fallback
+that leaves the spike unchanged, inserts zero, copies an invalid donor, or
+silently clears a flag is not equivalent.
+
+\subsection{FIR, IIR, and notch stages}
+
+For each selected stage $k=1,\ldots,K$, record the stage type, order, exact
+coefficients, coefficient design provenance, normalization, precision,
+direction, boundary extension, initial/final state, mask operator, and finite
+policy.  A time-invariant FIR stage has
+\begin{equation}
+ x^{F_k}_{d,j}=\sum_{\ell\in\mathcal L_k}
+     h^{(k)}_{d,\ell}\,x^{F_{k-1}}_{d,j-\ell},
+ \qquad H^{(k)}_d(e^{i\omega})=
+     \sum_{\ell\in\mathcal L_k}h^{(k)}_{d,\ell}e^{-i\omega\ell}.
+ \tag{RTC-10}\label{eq:fir}
+\end{equation}
+Its DC normalization is $H^{(k)}_d(1)=\sum_\ell h^{(k)}_{d,\ell}$, not a
+label such as ``normalized.''  A causal IIR or notch stage is represented
+without hidden history by
+\begin{equation}
+ \mathbf s_{j+1}=A_k\mathbf s_j+B_k u_j,
+ \qquad v_j=C_k\mathbf s_j+D_k u_j,
+ \qquad \mathbf s_{j_0}=\mathbf s_{0,k},
+ \tag{RTC-11}\label{eq:iir}
+\end{equation}
+or by an exactly equivalent, coefficient-convention-qualified recurrence.
+Stability requires poles strictly inside the unit circle for a causal stable
+claim.  Forward/backward filtering, state carry across scans/chunks, state
+reset, steady-state initialization, reflected padding, and terminal-state
+handling are distinct operators.
+
+Mask handling is part of the operator.  For example, normalized masked FIR
+convolution would be
+\begin{equation}
+ v_j=\frac{\sum_\ell h_\ell m_{j-\ell}u_{j-\ell}}
+            {\sum_\ell h_\ell m_{j-\ell}},
+ \quad \left|\sum_\ell h_\ell m_{j-\ell}\right|>\epsilon_m,
+ \tag{RTC-12}\label{eq:maskedfir}
+\end{equation}
+with an explicit denominator rule.  Filtering a filled stream and restoring a
+mask, breaking into valid segments, zero-filling, renormalizing as above, and
+holding filter state through a mask are not interchangeable.  Equation
+\eqref{eq:maskedfir} is time-varying and data-dependent when $m$ is derived
+from data or coordinates, even if $h$ is fixed.
+
+Nonfinite values are never silently converted to zero.  Each stage must either
+reject required nonfinite input, mark the affected output unavailable with its
+exact transitive footprint, or apply one explicitly authorized replacement
+operator before filtering.  A NaN that poisons an IIR state must invalidate
+the state-dependent tail unless a declared reset/recovery rule proves a finite
+restart.
+
+\subsection{Source-mask construction}
+
+Let $\mathbf c_{dj}$ be the continuous coordinate associated with detector
+$d$ and slot $j$, constructed from admitted aligned pointing and focal-plane
+association under AST.  Let source $a$ have coordinate $\mathbf c_a$ in the
+same declared frame/epoch.  A generic realized source mask is
+\begin{equation}
+ m^{\rm src}_{dj}=
+ \mathbb I\!\left[
+ V^{\rm coord}_{dj}=1\ \land\
+ \exists a:\;d_{\mathcal F}(\mathbf c_{dj},\mathbf c_a)
+     \le r_a
+ \right],
+ \tag{RTC-13}\label{eq:sourcemask}
+\end{equation}
+where $d_{\mathcal F}$, topology, radius/shape, inclusive boundary, source
+catalog, frame $\mathcal F$, detector binding, and any temporal dilation are
+all recorded.  Point/OOF/Beammap ordinarily use admitted native AltAz
+tangent coordinates; Science ordinarily uses admitted equatorial J2000 TAN.
+No implicit frame conversion is authorized.
+
+Coordinate-invalid is not equivalent to outside-source and may not be encoded
+as $m^{\rm src}=0$.  If a required coordinate is invalid, unavailable,
+out-of-domain, or ambiguously associated, the coordinate-dependent mask and
+affected reduction fail closed.  Valid-but-outside-product support remains a
+separate state.  A source mask is a processing exclusion/control, not an
+acquisition fact, detector-validity flag, variance, or confidence value.
+
+\subsection{Downsampling and decimation}
+
+Let the final pre-decimation stream be $u_{d,j}$.  For integer factor $M\ge1$
+and phase $p\in\{0,\ldots,M-1\}$,
+\begin{equation}
+ y_{d,n}=u_{d,p+nM},\qquad
+ 0\le p+nM<N,\qquad f_{\rm out}=f_{\rm in}/M.
+ \tag{RTC-14}\label{eq:decimate}
+\end{equation}
+If an output is a block aggregate rather than point selection, its exact
+weights replace equation~\eqref{eq:decimate}; the code name
+``downsample'' cannot decide this.  The nominal output coordinate is
+\begin{equation}
+ t^{\rm out}_n=t_0+(p+nM)\Delta t,
+ \tag{RTC-15}\label{eq:outtime}
+\end{equation}
+only when that point is the declared timestamp convention.  A weighted-center,
+start, end, or integration-midpoint convention must be recorded instead and
+must retain the full contributing support.  Odd/even $M$, first and last
+partial blocks, and phase changes can alter cardinality and centering.
+
+Decimation requires a declared anti-alias response before selection.  If the
+preceding chain does not sufficiently suppress content above
+$f_{\rm out}/2$, an alias-free signal claim is unavailable.  Downsampling does
+not itself provide anti-aliasing.  Flags and validity over the contributing
+impulse/block footprint require exact aggregation rules; ``any,'' ``all,''
+bitwise OR, fractional support, and center-only are different policies.
+
+\subsection{Claimed complete operator}
+
+The preregistered interface operator is
+\begin{equation}
+ \boxed{
+ \mathbf y=
+ D_{M,p}\,F_{K,\theta_K}\cdots F_{1,\theta_1}\,
+ B_{\omega}\left[C_g(A_{\alpha}\mathbf x^{\rm acq}
+ +\mathbf a_{\alpha})+\mathbf q^C\right]
+ +\hbox{declared affine state terms}}
+ \tag{RTC-16}\label{eq:claimed}
+\end{equation}
+with chronological order read from right to left.  Mask, flag, context, and
+state choices are components of $\theta_k$ and $\omega$, not annotations
+outside the mathematics.  Conditional on all selections and states, the
+operator has affine form
+\begin{equation}
+ \mathbf y=L_{\Omega}\mathbf x^{\rm acq}+\mathbf b_{\Omega},
+ \quad
+ L_{\Omega}=D_{M,p}F_{K}\cdots F_1B_{\omega}C_gA_{\alpha},
+ \tag{RTC-17}\label{eq:affine}
+\end{equation}
+where $\Omega=(\alpha,g,\omega,\theta_{1:K},M,p,\hbox{windows})$ is the full
+realized state.  Equation~\eqref{eq:affine} is not an unconditional LTI claim.
+
+\section{Expectation, variance, covariance, and uncertainty}
+
+\subsection{Conditional statistical moments}
+
+For a declared input mean $\boldsymbol\mu_x$ and full statistical covariance
+$\Sigma_x$, conditional on a fixed realized state independent of the random
+noise,
+\begin{align}
+ \E[\mathbf y\given\Omega]
+   &=L_{\Omega}\boldsymbol\mu_x+\mathbf b_{\Omega},
+ \tag{RTC-18}\label{eq:mean}\\
+ \Sigma^{\rm stat}_{y\mid\Omega}
+   &=L_{\Omega}\Sigma_xL_{\Omega}^{\mathrm T}.
+ \tag{RTC-19}\label{eq:cov}
+\end{align}
+The formal marginal variance is
+$v^{\rm stat}_{a}=(\Sigma^{\rm stat}_{y\mid\Omega})_{aa}$; a conditional
+inverse variance is $1/v_a$ only when $0<v_a<\infty$.  It is not the diagonal
+of the full precision matrix, does not erase off-diagonal covariance, and does
+not supply total uncertainty.  Reused donors, overlapping FIR support, IIR
+memory, alignment interpolation, and decimation footprints naturally produce
+off-diagonal and cross-detector terms.
+
+If $\Sigma_x$ is unavailable, the full output covariance is unavailable.
+White, diagonal, stationary, or independent detector noise must not be
+invented.  A supplied validated covariance can be propagated for a requested
+bounded subset through the factorized operator; no dense observation-sized
+matrix is required as a standard product.
+
+\subsection{Data-dependent selection}
+
+When spike detection, donor selection, masking, coefficient fitting, state
+initialization, or flagging depends on the same random data, conditioning on
+$\Omega$ can create selection bias.  The unconditional moments obey
+\begin{align}
+ \E[\mathbf y]&=\E_{\Omega}\!\left[
+   \E(\mathbf y\mid\Omega)\right],
+ \tag{RTC-20}\label{eq:totalmean}\\
+ \Cov(\mathbf y)&=\E_{\Omega}\!\left[
+   \Cov(\mathbf y\mid\Omega)\right]
+  +\Cov_{\Omega}\!\left[
+   \E(\mathbf y\mid\Omega)\right].
+ \tag{RTC-21}\label{eq:totalcov}
+\end{align}
+Equations~\eqref{eq:mean}--\eqref{eq:cov} alone are therefore only conditional
+formal statistics.  An exact unconditional calculation requires the joint law
+of the samples and selectors.  If that law is not supplied, selection bias and
+selection covariance are explicitly unavailable rather than assumed zero.
+
+\subsection{Calibration, factor, and response systematics}
+
+Let $\boldsymbol\eta$ contain named nuisance parameters: detector
+\code{flxscale}, common calibrator scale, pointing-derived scale correction,
+opacity/atmosphere parameters, responsivities, donor scales, beam/template
+response, filter coefficients, time/cadence/phase where uncertain, and any
+other modeled response term.  For a differentiable conditional model,
+\begin{equation}
+ \Sigma_y^{\rm sys}\approx
+ J_{\eta}\Sigma_{\eta}J_{\eta}^{\mathrm T},
+ \qquad
+ J_{\eta}=\left.\frac{\partial\E[\mathbf y\mid\Omega,\eta]}
+                       {\partial\eta}\right|_{\eta_0}.
+ \tag{RTC-22}\label{eq:systematic}
+\end{equation}
+Cross terms with sample noise are required when nuisance estimates and
+timestream noise are correlated.  Nonlinear propagation or samples are
+required when linearization is inadequate.  Each nuisance records value,
+uncertainty, provenance, validity, and detector/array/observation/cohort/global
+correlation scope.  Common terms do not average down as independent samples.
+
+The total covariance is not advertised unless every term required by the
+claim is available:
+\begin{equation}
+ \Sigma_y^{\rm total}=Sigma_y^{\rm stat}+\Sigma_y^{\rm sys}
+   +\Sigma_y^{\rm selection}+\Sigma_y^{\rm model}
+   +\hbox{required cross terms}.
+ \tag{RTC-23}\label{eq:totalunc}
+\end{equation}
+An unavailable term remains labeled unavailable.  Conditional weights may be
+used only for a consumer that explicitly accepts their exclusions; they
+cannot support an absolute significance or total-error claim.
+
+\section{Temporal response}
+
+\subsection{Impulse, frequency, amplitude, and phase}
+
+For a fixed, infinite-support or steady-state, uniformly sampled, single-rate
+linear chain without masks, replacements, time-varying calibration, edges, or
+data-derived state, the pre-decimation impulse response is
+\begin{equation}
+ h^{\rm comb}_d=h^{(K)}_d*\cdots*h^{(1)}_d,
+ \quad
+ H^{\rm comb}_d(e^{i\omega})=
+   \prod_{k=1}^{K}H^{(k)}_d(e^{i\omega}).
+ \tag{RTC-24}\label{eq:combinedH}
+\end{equation}
+The amplitude response is $|H|$, power response $|H|^2$, phase
+$\phi(\omega)=\arg H$, and group delay
+\begin{equation}
+ \tau_g(\omega)=-\Delta t\,\frac{d}{d\omega}
+                 \operatorname{unwrap}\phi(\omega),
+ \tag{RTC-25}\label{eq:groupdelay}
+\end{equation}
+where the phase convention and undefined points at response zeros are stated.
+A zero-phase forward/backward filter has different magnitude, boundary, and
+effective order from a causal pass.  A notch must record center, bandwidth,
+depth, sampling rate, coefficient convention, and finite-precision realized
+zeros/poles.  Chained LTI filters commute only in the ideal convolution
+interior; state, masking, finite windows, nonlinear detection, precision, and
+edge rules generally make order observable.
+
+For output cell $(d,n)$ and input cell $(q,j)$, the exact local response is the
+Jacobian
+\begin{equation}
+ K_{dn,qj}=\frac{\partial y_{dn}}{\partial x^{\rm acq}_{qj}}.
+ \tag{RTC-26}\label{eq:kernel}
+\end{equation}
+This general kernel includes alignment, detector mixing from replacement,
+calibration, filter memory, and decimation.  It is a four-index sparse or
+factorized operator, not necessarily a one-dimensional per-detector kernel.
+For fixed selections it equals $L_{\Omega}$; at selection boundaries the
+derivative may be discontinuous or undefined.  A claimed one-dimensional
+kernel is valid only after proving detector separability and temporal
+invariance for the stated support.
+
+\subsection{Decimation and alias response}
+
+For an LTI prefilter $H$ followed by equation~\eqref{eq:decimate}, the output
+spectrum satisfies the multirate identity
+\begin{equation}
+ Y(e^{i\Omega})=\frac{1}{M}\sum_{r=0}^{M-1}
+ e^{i(\Omega+2\pi r)p/M}
+ H\!\left(e^{i(\Omega+2\pi r)/M}\right)
+ X\!\left(e^{i(\Omega+2\pi r)/M}\right),
+ \tag{RTC-27}\label{eq:alias}
+\end{equation}
+up to the explicitly selected Fourier/sign convention.  The $M$ folded bands
+show why rate, phase, and anti-alias attenuation are part of the response.
+An alias-free passband claim requires a preregistered input band and sufficient
+stopband rejection in every folded image.  If unknown high-frequency content
+can fold into band, the output response is conditional rather than alias-free.
+
+\subsection{Edges, masks, replacements, and LTI existence}
+
+For an FIR with support $\mathcal L$ and decimation point $p+nM$, the direct
+input support is
+\begin{equation}
+ \mathcal S_{n}=\{p+nM-\ell:\ell\in\mathcal L\},
+ \tag{RTC-28}\label{eq:support}
+\end{equation}
+expanded through every preceding filter and donor/alignment mapping.  IIR
+support extends to the state-reset/context boundary and, mathematically, can
+be infinite.  A finite guard is an approximation whose residual tail bound
+must be stated.  Output cells lacking complete required context are edge-
+invalid, guarded, or conditionally available under one declared rule; they are
+not ordinary interior samples.
+
+A scalar LTI transfer function exists only when all of the following hold on
+the claimed domain: uniform single-rate input; fixed coefficients and order;
+fixed calibration; fixed detector-separable replacement (normally identity);
+fixed mask; state independent of absolute time and data; translation-invariant
+boundary treatment or an interior region isolated from edges; no selector,
+clipping, normalization denominator, or coordinate mask derived from the
+signal; and no rate change, or an explicitly multirate/cyclostationary
+interpretation.  Otherwise the truthful response is the realized local kernel
+of equation~\eqref{eq:kernel}, an affine state-space operator, or a nonlinear
+input-output map.  ``Filter enabled'' is never a complete transfer identity.
+
+Masked or replaced samples influence neighbors through the realized kernel.
+That influence is intentional processing response, not new acquisition,
+exposure, or independent weight.  Edge loss, mask dilation, IIR recovery, and
+donor reuse must be carried into consumer eligibility and covariance.
+
+\section{Validity, flags, weights, and provenance}
+
+\subsection{Non-interchangeable concepts}
+
+For each detector/sample/product, maintain distinct state for:
+
+\begin{itemize}
+\item acquisition support: original, synthesized by ALIGN, unavailable, or no
+      row;
+\item original value validity and detector admission;
+\item numerical computability/finiteness at each RTC stage;
+\item coordinate validity, coordinate frame, and valid-but-outside-product
+      support;
+\item descriptive flags and their causes;
+\item processing masks, including source mask, spike target, and filter guard;
+\item RTC replacement identity and donor influence;
+\item temporal exposure/support and complete filter context;
+\item science eligibility for a named consumer;
+\item confidence or match quality with a defined interpretation;
+\item conditional variance, conditional inverse variance, full covariance,
+      response, and systematic uncertainty availability; and
+\item reconstructible provenance and exact product linkage.
+\end{itemize}
+
+NaN is a numeric value state, not a missing-row or validity ontology.  A flag
+does not automatically exclude a sample unless the consumer policy says so.
+A mask is an operator control, not proof of bad data.  Replacement can be
+finite while scientifically ineligible.  Variance is not confidence;
+inverse variance is not full precision; response is not weight; zero weight
+is not the same as absent exposure.
+
+For consumer $c$, eligibility is a named predicate, for example
+\begin{equation}
+ E^{(c)}_{dn}=
+ V^{\rm det}_d\land V^{\rm num}_{dn}\land V^{\rm coord,(c)}_{dn}
+ \land V^{\rm support,(c)}_{dn}\land
+ P^{(c)}(\hbox{flags,masks,replacement,response,provenance}),
+ \tag{RTC-29}\label{eq:eligibility}
+\end{equation}
+not a universal bit.  By default, ALIGN-synthesized and RTC-replaced samples
+have zero direct independent eligibility/weight while their propagated
+influence remains disclosed.  Any broader admission needs a separately
+approved consumer response and covariance rule.
+
+\subsection{Finite and missing policy}
+
+Required malformed structure, missing factor identity, invalid required
+coordinate, ambiguous frame, nonfinite required coefficient/state, invalid
+calibration domain, impossible donor conversion, unstable selected filter, or
+unrecoverable state poisoning fails before a required product is reported.
+Optional unavailable detail is labeled \unavail{} and must not alter values,
+flags, eligibility, or failure behavior.  Omitted fields are distinguished
+from present-invalid fields.  No sentinel value, zero, endpoint clamp, prior
+observation state, or stale buffer substitutes for unavailable authority.
+
+\subsection{Compact but exact provenance}
+
+The standard representation may be factorized and exception-based.  It must
+always permit reconstruction of:
+
+\begin{itemize}
+\item input observation, files/digests, detector keys, selected/matched APT
+      lineage, and ordered column binding;
+\item ALIGN grid, rate, phase, support, offsets, mapping version, exception
+      intervals, and acquired, synthesized, and guarded counts;
+\item each calibration factor and exclusion, atmosphere operator/domain,
+      beam/template, unit, nuisance scope, and whether it was applied;
+\item spike detector version, target intervals, donor links/weights,
+      responsivity convention, fallback, and replacement validity;
+\item every filter in chronological order, exact coefficients/digest,
+      precision, normalization, state, context, mask, edge, and finite policy;
+\item source-mask catalog/coordinate/frame/topology/geometry and invalidity;
+\item input/output rates, $M$, $p$, block/point convention, output timestamps,
+      cardinality, flag/support aggregation, and anti-alias claim;
+\item factorized response/kernel availability, covariance availability,
+      diagnostics/counts, and exact output product digests; and
+\item requested, effective, observation-resolved, and realized records written
+      atomically with no realized-to-requested backflow.
+\end{itemize}
+
+Dense per-sample provenance, response matrices, or covariance matrices are not
+required routinely.  Compact run intervals, coefficient/state records, and
+generative mappings are adequate only if they reproduce the exact operator and
+exceptions.  Optional detail must be numerically inert.
+
+\section{Output and provisional consumer contracts}
+
+\subsection{RTC output bundle}
+
+An RTC output is one atomic bundle, not an unqualified TOD array:
+\begin{equation}
+ \mathcal O_{\rm RTC}=
+ (\mathbf y,\mathcal I,\mathcal K,\mathcal F,\mathcal V,
+  \mathcal W,\mathcal P,\mathcal D),
+ \tag{RTC-30}\label{eq:bundle}
+\end{equation}
+where $\mathcal I$ is ordered sample/detector/scan/support identity,
+$\mathcal K$ is the exact factorized kernel/response or truthful availability,
+$\mathcal F$ typed flags and causes, $\mathcal V$ factorized validity and
+eligibility inputs, $\mathcal W$ conditional variance/weight and covariance
+availability, $\mathcal P$ four-stage provenance, and $\mathcal D$ diagnostics
+and counts.
+
+The TOD shape is $D_{\rm out}\times N_y$ with explicit memory and index order.
+The general kernel shape is
+\[
+ (D_{\rm out},N_y;D_{\rm in},N),
+\]
+represented sparsely or factorized when possible.  Flag and status
+cardinalities must be declared: detector-only,
+sample-only, detector-by-sample, interval, or product-level cannot be guessed.
+Diagnostics name their estimator, unit, support, mask, and validity.  Every
+field states missing and nonfinite policy and whether omission means not requested,
+not applicable, unavailable, or write failure.
+
+\subsection{PTC provisional input contract}
+
+PTC may consume only existing-use RTC output and receives no authorization to
+change correlated-mode/PCA mathematics.  Before cleaning or weight formation,
+it needs:
+
+\begin{itemize}
+\item exact TOD unit and calibration/beam/atmosphere status;
+\item detector/column binding and stable scan/science/context identities;
+\item input/output cadence, decimation phase, sample times and complete
+      temporal support;
+\item the realized filter order, kernel/transfer response, passband, phase,
+      group delay, edge/guard state, and alias limitation;
+\item original/synthesized/replaced influence, donor correlations, source
+      masks, flags, numerical and detector validity, and consumer eligibility;
+\item conditional variance/weight semantics and all unavailable covariance or
+      response-systematic terms; and
+\item exact requested/effective/resolved/realized provenance and product links.
+\end{itemize}
+
+PTC must not treat synthesized/replaced cells as independent observations,
+diagonalize unknown covariance silently, infer a flat transfer function, or
+use \code{sens} as an undocumented signal factor.  Unknown required response,
+sample identity, or validity fails the affected cleaning/weight claim.
+
+\subsection{VAL provisional input contract}
+
+VAL remains limited to its existing policy and receives no package-wide policy
+decision.  Eligibility evaluation needs exact cause-preserving state for:
+
+\begin{itemize}
+\item acquisition unavailable/original-invalid/ALIGN-synthesized support;
+\item spike target, RTC replacement, donor identity, replacement validity and
+      propagated influence;
+\item source masks versus coordinate-invalid and valid-outside-product states;
+\item filter edges, guards, incomplete IIR recovery, short/empty/unusable scan
+      identity, and downsample footprint;
+\item every nonfinite input/output and declared recovery or failure action;
+\item flags before and after conditioning and the exact aggregation rule; and
+\item calibration, response, provenance, conditional-weight, and uncertainty
+      availability for the validation claim being made.
+\end{itemize}
+
+VAL must not collapse replacement, mask, flag, invalidity, and ineligibility
+into one undocumented bit.  A finite value is not automatically eligible.  A
+test pass does not authorize production or repair.
+
+\subsection{BEAM provisional input contract}
+
+BEAM detector-map consumers need, without reopening fitting/calibration:
+
+\begin{itemize}
+\item exact observation-local detector binding to measured Beammap geometry,
+      including source-row association and any matcher validity;
+\item admitted aligned coordinate frame/topology, focal-plane basis/version,
+      scan/source-crossing identity, coordinate validity, and map support;
+\item top-of-atmosphere calibration and per-detector beam/template identity,
+      distinct from the realized RTC temporal/filter response;
+\item complete RTC amplitude/phase/delay response over source-crossing
+      frequencies, decimation/alias state, source-mask behavior, edge loss,
+      replacement influence, and detector/scan eligibility; and
+\item factor, kernel, flags, uncertainty availability, and four-stage
+      provenance sufficient to reproduce the selected samples.
+\end{itemize}
+
+The calibration beam is not the filtered product response.  A filter that
+attenuates or phase-shifts a crossing must expose that effect; BEAM must not
+infer an unchanged PSF or peak normalization.  Missing detector association,
+required coordinate validity, or response identity fails the detector-map
+claim.  No new BEAM fitting, calibration, or production mode is authorized.
+
+\section{Preregistered analytic limits and deterministic falsification}
+
+Every case below is preregistered before source inspection.  Phase 2 may map
+it to an existing focused deterministic test or a static calculation, but may
+not weaken the expected invariant after seeing the implementation.
+
+\begin{longtable}{@{}p{0.18\linewidth}p{0.34\linewidth}p{0.42\linewidth}@{}}
+\toprule
+Case & Construction and analytic expectation & Falsification condition \\
+\midrule
+\endhead
+Identity/no-filter & $g=1$, $p=0$, $K=0$, $M=1$, no mask; valid original samples.  Equation~\eqref{eq:claimed} gives exact input values, identities, units, and cardinality. & Any value/order/cardinality change, hidden calibration, flag loss, or nonidentity kernel. \\
+Calibration factor & One finite sample with independently chosen $g^{\rm flx}$, extinction, and unit factors; \code{sens} varied separately. & Output differs from equation~\eqref{eq:gain}, \code{sens} changes signal, missing airmass, invalid domain succeeds, or provenance cannot factor the multiplier. \\
+Impulse & Unit impulse at interior input cells, separately for target and donor detectors.  Output column equals equation~\eqref{eq:kernel}; its sum, peak, support and delay match declared normalization. & Missing/circularly wrapped edge energy, unexplained detector mixing, wrong support, normalization or phase. \\
+Step & Interior step with sufficient context.  Response is cumulative impulse response and settles according to DC gain/stability. & Undeclared overshoot, failure to settle, state leakage, or mismatch with impulse-derived response. \\
+Constant & Constant valid stream.  Output equals constant times realized DC gain after declared transient; a DC-preserving chain is exactly constant. & Drift, edge values advertised as interior, divide-by-zero mask normalization, or false DC-preservation claim. \\
+Ramp & Affine ramp through each FIR and admitted alignment mapping; compare analytic zeroth/first kernel moments. & Unexplained slope/offset, wrong phase, clipping, or claim of ramp preservation without the required moments. \\
+Sinusoid/passband & Bin-centered and off-bin sinusoids at DC, passband interior/edge, transition, stopband, and near output Nyquist with long context.  Amplitude/phase follow $H(e^{i\omega})$. & Measured gain/phase outside declared numerical tolerance, unrecorded frequency convention, or aliased component labeled passband signal. \\
+Notch & Sinusoids at realized notch center and symmetric offsets; compare exact coefficient response, depth, bandwidth, phase and state transient. & Center/depth/bandwidth mismatch, unstable pole, rate mismatch, or edge transient reported valid. \\
+Despike donor/target & Two or more detectors with unequal $g$ and $\rho$; one forced target and known donors, including reused donor.  Equation~\eqref{eq:donorscale} and full covariance predict values/correlation. & Reciprocal/direction error, row-identity error, invalid donor admitted, replacement unflagged, or independent weight assigned. \\
+Donor failure/tie & No eligible donor, exact score tie, duplicate key, nonfinite response, and fallback boundary. & Nondeterministic donor, stale donor, zero insertion, silent unchanged spike, or success without declared fallback. \\
+Invalid-coordinate mask & Valid inside/outside coordinates plus TAN-invalid, unavailable, wrong-frame, ambiguous detector binding and valid-outside-product cases. & Invalid becomes unmasked/outside, reaches geometry, is clamped to center/edge, or fails to preserve distinct cause. \\
+Mask boundary & Samples exactly inside, on, and outside declared source geometry and temporal dilation. & Undocumented strict/inclusive boundary, frame mismatch, asymmetric dilation, or inconsistent sequential result. \\
+FIR edge & Impulses/constants at first/last support cells and just inside complete context. & Padding, truncation, wrap, normalization, guard, or output selection differs from declared rule. \\
+IIR state/edge & Zero, impulse and constant inputs under declared initial state; split at scan/chunk boundaries and rejoin. & Hidden state carry/reset, prior-observation leakage, unbounded NaN poisoning, or split result contradicts declared state policy. \\
+Short scan & Lengths $0,1,L-1,L,L+1$ around each required support/guard and downsample block length; stable scan identity retained. & Crash, underflow, silent scan deletion/renumber, stale output, or ordinary-valid label without adequate support. \\
+Nonfinite & Inject NaN, $+\infty$, $-\infty$ into sample, coefficient, gain, responsivity, coordinate and state separately. & Silent zero/coercion, finite-looking output without cause, or undeclared transitive state contamination. \\
+Flags & One cause at each contributing input and combinations across a footprint; compare exact typed aggregation. & Cause erased, center-only behavior when footprint aggregation claimed, flag used as undocumented validity/weight, or optional detail changes results. \\
+Odd/even downsample & $M=2,3,4,5$ over lengths with exact and partial blocks; enumerate every allowed $p$. & Wrong $N_y$, dropped/duplicated sample, wrong partial rule, timestamp/support miscentering, or rate mismatch. \\
+Phase & Same impulse/sinusoid under all $p$ for fixed $M$; verify equation~\eqref{eq:alias} phase and output identity. & Same provenance for distinct phases, unreported delay, phase-dependent amplitude outside multirate prediction, or index-base error. \\
+Anti-alias & Two sinusoids separated by an integer multiple of $f_{\rm out}$, before and after declared prefilter. & Folded signal absent from response accounting, insufficient stopband labeled alias-free, or wrong image frequency. \\
+Sequential versus OpenMP & Byte-identical inputs and resolved state under sequential and supported OpenMP paths; compare values, kernel and state, donors, flags, counts and failures. & Difference beyond a preregistered floating reduction bound; any donor tie, flag, state, cardinality, or failure difference is unacceptable. \\
+Chained filters & At least two nontrivial stages in both declared and reversed order, with interior, mask, edge and state cases. & Provenance order differs from execution, order assumed commutative at edges/masks/state, or combined kernel differs from stage composition. \\
+Optional provenance & Run identical deterministic operator with allowed detailed provenance on/off. & Any numerical value, flag, eligibility, exposure, cardinality, or failure changes. \\
+Observation reset & Two observations with distinct constants, states, masks and rates processed sequentially. & State, coefficient, donor, mask, rate, flag, or product link leaks from the first to the second. \\
+\bottomrule
+\end{longtable}
+
+\subsection{Analytic limiting checks}
+
+Required limiting checks include: $\tau\rightarrow0$ gives unity extinction;
+$p\rightarrow0$ replacement gives identity; an exact donor with
+$g_d\rho_d=g_q\rho_q$ gives unit donor scale; filter coefficients approaching
+the Kronecker delta give identity; notch radius/width limits follow the exact
+coefficient convention; $M\rightarrow1,p=0$ gives no rate change; a source
+radius approaching zero selects only exact valid coincidences under the
+declared boundary; complete context approaches the interior LTI response; and
+a pole approaching the unit circle exposes increasing memory and never
+silently retains a stability claim at or outside it.
+
+\subsection{Standard-method disposition}
+
+No deterministic method explicitly required by the dispatch is omitted.
+Additional common methods are dispositioned as follows so absence is not
+mistaken for evidence:
+
+\begin{itemize}
+\item A broadband chirp is omitted from Phase 1 because the preregistered
+      impulse transform plus sinusoid grid tests identify the fixed linear
+      response without sweep-rate/window ambiguity.  It may be a focused
+      Phase-2 convenience, not replacement evidence.
+\item Monte Carlo/white-noise transfer and empirical covariance estimation are
+      omitted because no stochastic model, seed, trial count, or numerical
+      study is authorized.  Equations~\eqref{eq:cov}--\eqref{eq:totalcov}
+      state the exact requirement; a future costly study needs its own gate.
+\item Real-observation source injection, jackknife, split-map, and end-to-end
+      reductions are omitted because local Citlali reductions and broad
+      campaigns are prohibited.  Static or existing focused deterministic
+      tests cannot substitute for future exact-SHA evidence.
+\item Empirical system identification or fitted deconvolution is omitted
+      because it would estimate rather than trace the exact implemented
+      operator and could hide nonlinearity, edge behavior, or factor mistakes.
+\item Dense full-observation response/covariance materialization is omitted
+      because the authority permits compact/factorized representations and no
+      complete input covariance exists.  Bounded matrix fixtures remain
+      sufficient to falsify propagation algebra.
+\item Cross-validation against the three submitted handoffs is deferred by
+      design until after the frozen core and coordinator approval; opening
+      them now would violate independence.
+\item A production performance or numerical-tolerance campaign is omitted
+      because this phase makes no implementation observation and the dispatch
+      authorizes no broad or costly execution.  Floating tolerances must be
+      derived from the exact operation and representation before any focused
+      test, never from candidate output.
+\end{itemize}
+
+\section{Phase-2 questions and Tier-A reopen triggers}
+
+Without opening source, this core cannot decide the implemented calibration
+order, stored responsivity direction, detector/donor topology, filter types
+and order, coefficient conventions, initial/final state, mask behavior,
+decimation meaning, output products, or consumer admission.  Each remains an
+explicit source-tracing question, not a presumed defect.
+
+The first later source opening, only after coordinator approval, is intended
+to be \code{include/citlali/core/timestream/rtc/rtcproc.h}, followed only as
+direct static references require by the other two quarantined paths and the
+minimum callers/tests/product writers needed to close the interface.  Every
+additional path and reason must be logged before its content is used.  The
+three post-core handoffs are opened only after their digests are reverified and
+their first-open times recorded.
+
+A mature RTC numerical internal is reopened as Tier A only if source and a
+deterministic falsification establish a concrete contradiction such as:
+
+\begin{itemize}
+\item wrong factor direction/order or an invalid calibration/replacement unit;
+\item a requested filter/mask/state reported realized while ignored;
+\item unstable, misnormalized, rate-mismatched, or coefficient-convention-
+      inconsistent filtering;
+\item undeclared nonfinite coercion, state leakage, invalid donor use, or
+      nondeterministic parallel selection;
+\item decimation without the claimed anti-alias response, wrong rate/phase,
+      dropped support, or false output timestamp;
+\item an output/kernel/flag product that materially misstates the implemented
+      response, validity, or provenance; or
+\item a downstream consumer necessarily treating synthesized/replaced or
+      response-unknown samples as independent valid science.
+\end{itemize}
+
+Contract or evidence incompleteness alone remains a contract/evidence gap and
+does not authorize algorithm redesign.  No repair, re-audit, external request,
+production change, or downstream package launch follows automatically from a
+finding.
+
+\section{Frozen independent-core proposition}
+
+The claimed scientific interface is the state-conditioned operator in
+equation~\eqref{eq:claimed}, with exact ordered calibration, replacement,
+filtering and decimation; the conditional affine reduction in
+equation~\eqref{eq:affine}; the full moment and nuisance rules in
+equations~\eqref{eq:mean}--\eqref{eq:totalunc}; and the local or multirate
+response in equations~\eqref{eq:kernel}--\eqref{eq:alias}.  A scalar LTI
+transfer function is only a special interior case.  Masks, donor selection,
+replacement, finite boundaries, state, and decimation generally require a
+local factorized response and cause-preserving eligibility.
+
+The minimum downstream object is equation~\eqref{eq:bundle}.  TOD values alone
+are scientifically insufficient.  Unknown response, covariance, validity,
+coordinate, detector binding, factor identity, or provenance is explicitly
+unavailable and fails the claim that requires it.  Upstream ALIGN, CAL, and
+AST restrictions and downstream existing-use-only boundaries remain in force.
+
+These exact bytes are intended to be committed alone as the immutable Phase-1
+freeze.  They make no observation about the quarantined implementation and no
+production authorization.
+
+\end{document}
