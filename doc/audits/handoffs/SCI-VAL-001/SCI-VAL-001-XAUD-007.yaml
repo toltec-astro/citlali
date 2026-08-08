@@ -1,0 +1,123 @@
+format_version: 1
+id: SCI-VAL-001-XAUD-007
+created_date: 2026-08-08
+
+source:
+  package_id: SCI-RTC-001
+  role: independent_auditor
+  audit_branch: codex/audit-sci-rtc-001
+  audit_commit: pending_final_documentation_commit
+  governing_or_evidence_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+  finding_ids:
+    - SCI-RTC-001-F002
+    - SCI-RTC-001-F003
+    - SCI-RTC-001-F005
+    - SCI-RTC-001-F006
+    - SCI-RTC-001-F007
+    - SCI-RTC-001-F008
+    - SCI-RTC-001-F010
+    - SCI-RTC-001-F011
+
+target:
+  package_id: SCI-VAL-001
+
+priority: P0
+evidence_basis: observed_and_derived
+review_phase: post_core_evidence
+arrival: after_RTC_audit_completion
+status: proposed_unintegrated
+
+summary: >-
+  Current RTC flags protect direct replacement cells but do not encode the full
+  validity, mask, edge, non-finite, synthesis, or temporal-influence contract
+  required for downstream sample eligibility.
+claim: >-
+  Despike replacement remains directly flagged and ordinary map population
+  skips a flagged payload before inspection. However, RTC filters consume
+  flagged/replaced/synthesized/non-finite values without a declared mask
+  operator, while downsample flags OR only the corresponding factor-cell block.
+  Consequently unflagged values may carry invalid or replacement influence and
+  remain eligible. Source-mask coordinate failure becomes an all-false/partial
+  unprotected mask; observation-boundary FIR values may remain unchanged and
+  unflagged when the optional guard is absent. A finite/unflagged cell is not a
+  proof of valid independent RTC exposure.
+
+required_RTC_interface_facts:
+  replacement:
+    direct_target_flag_retained: true
+    donor_links_persisted: false
+    calibrated_scale_conformant: false
+    direct_science_eligibility: zero_by_frozen_core_pending_owner_decision
+  flags_and_validity:
+    direct_flag_authority_present: true
+    cause_specific_validity_present: false
+    transitive_filter_or_donor_influence_present: false
+    nonfinite_policy_in_filter_stages_explicit: false
+  source_mask:
+    coordinate_validity_admitted: false
+    invalid_coordinate_behavior: outside_or_unprotected
+    fail_closed: false
+  edges:
+    FIR_first_last_n_terms_overwritten: false
+    missing_context_always_flagged: false
+    science_profile_edge_guard_explicitly_enabled: false
+  downstream_eligibility_boundary:
+    direct_flag_skipped_before_payload: true
+    eligible_nonfinite_signal_or_kernel_fails: true
+    unflagged_temporally_influenced_cell_currently_admissible: true
+
+supports:
+  - >-
+    Preserve VAL existing_use_only and reject new eligibility/exposure claims
+    that equate finite and unflagged with original-valid, independent, or
+    response-complete.
+  - >-
+    Require separate origin, direct validity, influence support, mask cause,
+    edge/context, response, numerical validity, and consumer eligibility fields.
+  - >-
+    Add exact-successor fixtures for replacement, non-finite, source-mask,
+    edge/short-scan, filter impulse support, odd/even phase-zero decimation, and
+    sequential/OpenMP equivalence before RTC/VAL boundary re-audit.
+does_not_establish:
+  - This record does not audit VAL package-wide policy, map statistics, or estimators.
+  - It does not quantify a map bias or prove that a historical accepted product hit an edge case.
+  - It does not authorize repair, test execution, re-audit, or production change.
+
+requested_actions:
+  - add_or_update_dependency
+  - add_or_update_finding
+  - add_interface_test
+  - restrict_consumer
+  - preserve_existing_use_only
+affected_target_findings: []
+related_handoffs:
+  - SCI-PTC-001-XAUD-005
+  - SCI-BEAM-001-XAUD-003
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-RTC-001-independent-core
+    availability: repository_path
+    path: doc/audits/packages/SCI-RTC-001_INDEPENDENT_CORE.tex
+    sha256: d6cf49d1a5e17754c55cc4f2c8f4b4f5e276755f247496df888581d890be80b7
+    note: Frozen validity, support, eligibility, and falsification contract.
+  - id: SCI-RTC-001-local-evidence
+    availability: repository_path
+    path: doc/audits/evidence/SCI-RTC-001_LOCAL_EVIDENCE_2026-08-08.yaml
+    sha256: 1cb733544d6b9d6decb1794279d2e81249b00375071c01ee71f514135dcf6394
+    note: Exact-source replacement, flag, mask, edge, and bounded VAL trace.
+
+recipient_disposition:
+  status: pending_VAL_auditor_and_coordinator_review
+  late_arrival_route: not_applicable
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

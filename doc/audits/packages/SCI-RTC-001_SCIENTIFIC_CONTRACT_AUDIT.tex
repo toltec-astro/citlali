@@ -1,0 +1,692 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=0.72in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,longtable,array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+\DeclareFontFamily{OMS}{lmsy}{\skewchar\font48}
+\DeclareFontShape{OMS}{lmsy}{m}{n}{%
+  <-7.5> lmsy7 <7.5-8.5> lmsy8 <8.5-> lmsy10}{}
+
+\makeatletter
+\g@addto@macro\UrlBreaks{%
+  \do\0\do\1\do\2\do\3\do\4\do\5\do\6\do\7\do\8\do\9%
+  \do\a\do\b\do\c\do\d\do\e\do\f}
+\makeatother
+
+\hypersetup{hidelinks,hypertexnames=false}
+\setlist{nosep,leftmargin=*}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.52em}
+\setlength{\emergencystretch}{2em}
+\renewcommand{\arraystretch}{1.14}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcommand{\code}[1]{\nolinkurl{#1}}
+\newcommand{\status}[1]{\textbf{\nolinkurl{#1}}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Var}{\operatorname{Var}}
+
+\makeatletter
+\renewcommand*\l@section{\@dottedtocline{1}{0em}{2.3em}}
+\makeatother
+
+\title{SCI-RTC-001 Scientific-contract Audit\\
+Raw-timestream conditioning interface and temporal response}
+\author{Independent documentation-only scientific-contract audit}
+\date{2026-08-08}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+At application commit
+\code{46ad23888a40f5102cdfd50c06e49a549bdf8a20}, the RTC interface is
+\textbf{nonconformant}.  The implementation has useful positive controls---a
+typed one-way requested, effective, observation-resolved, and realized skeleton, validation that
+forbids downsampling without filtering, direct replacement flags, matched
+signal and kernel application for several filter stages, and fail-propagating
+provenance output---but these controls do not close the scientific contract.
+Current source applies a nonconforming extinction response, omits the
+calibration-factor ratio in calibrated-domain donor replacement, fails to
+propagate donor, filter, and IIR influence into validity, applies an enabled alt-az
+projection to signal but not kernel, fails open for invalid source-mask
+coordinates, permits unguarded observation-edge FIR values in the science
+profile, and does not persist enough realized identity to reconstruct the
+operator or product bundle.  ALIGN, CAL, and AST remain open conditioned
+dependencies.  Contract status is \status{proposed}, validation is
+\status{in_progress}, production remains \status{existing_use_only}, and the
+verdict proposal is \textbf{amend}.  This report authorizes no repair,
+re-audit, execution, downstream package launch, or production expansion.
+\end{abstract}
+
+\tableofcontents
+
+\section{Exact audit boundary and chronology}
+
+\subsection{Git and dispatch identity}
+
+The governing application commit is
+\code{46ad23888a40f5102cdfd50c06e49a549bdf8a20}, parent
+\code{4846fa4db39bd2f7d4ddc41f693836834cbc5ff4}, tree
+\code{ab230a93b8fb310d58aefd7ac5da92e5d5e0f408}.  The audit branch is
+\code{codex/audit-sci-rtc-001} in worktree
+\code{/Users/gwilson/.codex/worktrees/1697/citlali-refactor}.
+
+The dispatch bytes were independently recovered from Git object
+\code{fff3f538ce04fb66d73ac3671f2bc6a10975baed}.  The prompt path
+\code{doc/audits/prompts/SCI_RTC_001_AUDIT_PROMPT.md} matched SHA-256
+\code{01c02c2b1057a5346caaf5c0a8efaa7c5b17dec90158dffe9020b6838ad3951c}.
+The manifest path
+\code{doc/audits/handoffs/SCI-RTC-001/SCI-RTC-001_INBOX_AUTHORITY_MANIFEST_2026-08-08.yaml}
+matched
+\code{9f75e5df0184d73e90acec10cbf8c052fe7baad571a131ba8834f2acbbbccb1c}.
+The worktree was clean at the application SHA before Phase 1.
+
+The independent core is
+\code{doc/audits/packages/SCI-RTC-001_INDEPENDENT_CORE.tex}, SHA-256
+\code{d6cf49d1a5e17754c55cc4f2c8f4b4f5e276755f247496df888581d890be80b7}.
+It was committed alone as
+\code{3620434eb988662210b2466ee357ffc8f891aa58}, parent the governing
+application SHA, tree
+\code{3cafe771e15e0c6159e323f357ce3a5c76b01efa}, at
+\code{2026-08-08T17:50:49Z}.  The first application source content was opened
+at \code{2026-08-08T17:53:44Z}, beginning with
+\code{include/citlali/core/timestream/rtc/rtcproc.h}.  The first post-core
+handoff content was opened at \code{2026-08-08T18:07:36Z}.  Thus both events
+occurred after the immutable core freeze.  No successor core revision exists.
+
+\subsection{Frozen pre-core authority}
+
+Exactly the eleven manifest-declared objects were recovered from their object
+commits and digest-verified before they informed Phase 1.  Their authority was
+bounded; no active repair result was inferred.
+
+\begin{longtable}{@{}L{0.20\linewidth}L{0.25\linewidth}L{0.47\linewidth}@{}}
+\toprule
+ID & Object; SHA-256 & Admitted bounded role \\
+\midrule
+\endhead
+\code{ALIGN-OD1-OD8-C001} & \code{4f905f4f353e91847a303f4f3959654f3f03c302}; \code{14c8044fe7a26c7ee1af7b8dea3472e9cb604471c91ca58dc93b662a7d3d9895} & Approved abstract common-grid, mapping, origin/validity, gap, scan, support, response and covariance contract; implementation remains existing-use-only. \\
+\code{ALIGN-P0-D001} & \code{86434df2cfb5b85d0ccd306150cb428321abdbb9}; \code{0efe9d06bf02ceca473c92b00dce4c6d1ec9b6e564f226c9451f444ee5a6d66c} & Restricted legacy detector time/counter adapter; no new absolute-time claim. \\
+\code{ALIGN-P0-D002} & \code{10981b29c1870e745b7f3c9cabed3c634a46427f}; \code{7e4e2c02bf2e16035d6a2aceacaa4e07c7c528e08f09fdb2d0a9186d510465cd} & Bounded rate, cadence, phase, support, and admission authority. \\
+\code{ALIGN-P0-D003} & \code{d500e33da1869bc1e20383a49484daddca9e7ea7}; \code{a25b46ddec445a4164086aae248e3cbbfc70c7df8cb2c785c4c135d936e92d67} & Four-stage offset/setup authority; unproven nonzero offsets unavailable. \\
+\code{ALIGN-P0-D004} & \code{a3775bf3039461a6435f07938572dd23b3f03d47}; \code{ea03c5b614c7ce64ab5ab071c48c07d2f4910b919941798e70668049e53faf78} & Restricted telescope registry, topology, units, validity, aliases, and no-HWPR authority. \\
+\code{ALIGN-P0-D005} & \code{99886afb84c0ef582cee070ec156342a2f0b3327}; \code{b07c62103105f044269b68e6db1ee669f4293eabce6d0f145105f57337a683d4} & Compatibility-only Hold/scan disposition and sequencing. \\
+\code{CAL-D001-D005} & \code{e8bd929008140e2ea8b44bfdc80b0a531b488765}; \code{1e2d44b76138734aaae5a7b241ae621deb1510c2de763b74be31a87e106d175c} & Approved successor calibration meanings, top-of-atmosphere target, separate responsivity, strict validity; implementation fail-closed. \\
+\code{CAL-D001-OPACITY-001} & \code{4dabc750de69d53c852317ab77c735febd00a1b5}; \code{64fd3ae9788c6a8e3db18ac5ea4f04799586b548f9e7ec12cc8c18f9cbf96e09} & Approved geometric-transmission interpolation and domain checks. \\
+\code{CAL-D002-IDENTITY-001} & \code{0a17d088aded7fc6c18a59522f5b2b2fce9749ad}; \code{d40def5bb1450446abc858d2acfc1924c2f65276f8f48eec89cf05a171cdcf6a} & Layered acquisition/measured-APT binding and optional design identity. \\
+\code{CAL-D001-ACCURACY-001} & \code{353aaf196bc0a80ae6876f6947000a6903f32f2f}; \code{ae295b717da3f9ed7129661e812b05847ff988500bb3d6f159b7ffae45cb2780} & Separate correctness, representation-fidelity, and observational-accuracy gates. \\
+\code{SCI-AST-001-D001-D008} & \code{8ee5b9fc192877106c4d5d747dfef75646edcfd9}; \code{c2e8f2c18f2d96a27afd6b6a083408b17562e596ee1e2851a00de3d9c7e5e9d9} & Bounded sign/basis, TAN domain, frames, support, coordinate response, validity, precision, and provenance authority; repair remains open behind ALIGN. \\
+\bottomrule
+\end{longtable}
+
+The later ALIGN processed-PTC scan-metadata repair at
+\code{5c6309125fef15f7c98e70a62b591c663944b130} was excluded, not opened,
+and has no RTC authority.  It belongs only to the later PTC/VAL queue.
+
+\subsection{Exposure log and independence statement}
+
+Before core freeze the auditor read only repository instructions, the TolTEC
+context routing skill, the frozen prompt and manifest, and the eleven authority
+objects above.  No RTC source, source diff/blame, caller, test, generated source
+documentation, prior RTC audit, or post-core handoff content was exposed.  The
+delegation carried no implementation excerpt.  Generic mathematical knowledge
+of calibration, state-space filtering, multirate response, and covariance was
+the derivation method, not Citlali evidence.
+
+After coordinator approval, the source trace expanded from the three
+quarantined entry paths through direct static references only.  The complete
+path-by-path digest and opening reason is in
+\code{SCI-RTC-001_LOCAL_EVIDENCE_2026-08-08.yaml}; it covers RTC calibration,
+despiking, filters, downsampling, masks, typed resolution/provenance, scan and
+output paths, and only the bounded PTC/VAL/BEAM consumer surface.  Four older
+audit artifacts were opened after source inspection for formatting only and
+are explicitly labeled non-authoritative in that YAML.  No delegation,
+external review, network, Unity, or local Citlali reduction occurred.
+
+\section{Frozen independent contract and equations}
+
+\subsection{Identities, states, and operator}
+
+The frozen core distinguishes acquired rows, ALIGN slots, calibrated samples,
+continuity replacements, conditioned samples, decimated cells, and named
+output products.  Dense column or row position is a locator, not a detector or
+sample identity.  The admitted common grid is
+\begin{equation}
+t_j=t_0+j\Delta t,\qquad \Delta t=(r_s f_{\rm ref})^{-1},
+\quad r_s\in\{0.5,1,2,4\},\quad f_{\rm ref}=122.0703125\ {\rm Hz}.
+\tag{RTC-01}
+\end{equation}
+Requested, effective, observation-resolved, and realized state are immutable
+one-way stages.  A realized record must identify the exact factors,
+coefficients, order, states, phase, support, masks, donors, responses, output
+products, and digests; earlier authority is never overwritten.
+
+Let $A$ be the admitted ALIGN operator.  The factorized gain and calibrated
+signal are
+\begin{align}
+g_{dj}&=g^{\rm abs}_{d}g^{\rm atm}_{dj}g^{\rm unit}_{dj},
+\tag{RTC-04}\\
+\mathbf x^C&=C_g A\mathbf x+\mathbf q^C.
+\tag{RTC-05}
+\end{align}
+With forward raw responsivity $x^{\rm raw}_{dj}=\rho_d s_{dj}+b_{dj}$
+(RTC-06), calibrated-domain donor $q$ replacing target $d$ requires
+\begin{equation}
+\gamma_{d\leftarrow q,j}=\frac{g_{dj}\rho_d}{g_{qj}\rho_q}.
+\tag{RTC-07}
+\end{equation}
+Conditioned on the realized selection $\omega=(p,\mathcal Q,w,\gamma,\beta)$,
+\begin{align}
+x^R_{dj}&=(1-p_{dj})x^C_{dj}+p_{dj}\left[
+ \sum_{(q,\ell)\in\mathcal Q_{dj}}w_{dj,q\ell}
+ \gamma_{d\leftarrow q,j\ell}x^C_{q\ell}+\beta_{dj}\right],
+\tag{RTC-08}\\
+\mathbf x^R&=B_\omega\mathbf x^C+\mathbf b_\omega.
+\tag{RTC-09}
+\end{align}
+A replacement remains a target-identity continuity value with explicit donor
+links, zero direct independent science eligibility by default, and nonzero
+correlations wherever donors or supports are reused.
+
+A time-invariant FIR has $z_j=\sum_{r=-L_-}^{L_+}h_r x_{j-r}$ (RTC-10).
+Each IIR/notch stage has a declared state-space recursion
+$s_{j+1}=A_ks_j+B_kx_j$, $z_j=C_ks_j+D_kx_j$ (RTC-11).  A masked
+renormalizing FIR, when explicitly selected, is
+\begin{equation}
+z_j=\frac{\sum_r h_r m_{j-r}x_{j-r}}
+          {\sum_r h_r m_{j-r}},
+\tag{RTC-12}
+\end{equation}
+with a declared denominator failure rule; source masks remain distinct from
+validity and flags (RTC-13).
+
+For integer factor $M$ and phase $\phi$, the decimator is
+\begin{align}
+y_n&=z_{\phi+nM},\qquad
+\mathcal S_n=\bigcup_r\mathcal S(z_{\phi+nM-r}),
+\tag{RTC-14}\\
+t^{\rm out}_n&=t_0+(\phi+nM)\Delta t
+\quad\hbox{only for point-sample semantics.}
+\tag{RTC-15}
+\end{align}
+The claimed complete conditioned operator is
+\begin{align}
+\mathbf y&=D_{\phi,M}F_K\cdots F_1B_\omega C_gA\mathbf x
+ +D_{\phi,M}F_K\cdots F_1(B_\omega\mathbf q^C+\mathbf b_\omega)
+ +\mathbf b_F,
+\tag{RTC-16}\\
+\mathbf y&=L_\Omega\mathbf x+\mathbf a_\Omega
+\quad\hbox{conditioned on }\Omega.
+\tag{RTC-17}
+\end{align}
+Thus a global LTI transfer exists only when selection, masks, state, support,
+coefficients, factors, and boundaries are fixed in a stationary interior.
+
+\subsection{Moments, response, support, and bundle}
+
+Conditioned expectation and covariance are
+\begin{align}
+\E[\mathbf y\mid\Omega]&=L_\Omega\boldsymbol\mu_x+\mathbf a_\Omega,
+\tag{RTC-18}\\
+\Cov(\mathbf y\mid\Omega)&=L_\Omega\Sigma_xL_\Omega^{\rm T}.
+\tag{RTC-19}
+\end{align}
+Total moments add selection-state variation (RTC-20, RTC-21).  Calibration,
+response, model, and systematic nuisance terms propagate through declared
+Jacobians $J_\eta\Sigma_\eta J_\eta^{\rm T}$ (RTC-22), and total uncertainty
+is the sum of available statistical, selection, and systematic terms plus
+declared cross-covariances (RTC-23).  An absent covariance is unavailable,
+not diagonal or zero.
+
+For an admitted stationary interior, the combined transfer is
+\begin{equation}
+H_{\rm comb}(e^{i\omega})=e^{-i\omega\phi}
+ \prod_k H_k(e^{i\omega}),
+\tag{RTC-24}
+\end{equation}
+with group delay $-d\arg H/d\omega$ (RTC-25), the realized local Jacobian as
+the response where the operator is data-dependent (RTC-26), and an explicit
+post-decimation alias sum/bound rather than a high-cutoff label (RTC-27).
+Each output must carry the full causal/exposure support and causes (RTC-28),
+consumer eligibility is an explicit operator distinct from numerical
+computability or a flag (RTC-29), and the atomic bundle is TOD, response/kernel,
+typed validity/flags, factor identities, diagnostics, and four-stage provenance
+(RTC-30).
+
+\begin{longtable}{@{}L{0.16\linewidth}L{0.36\linewidth}L{0.38\linewidth}@{}}
+\toprule
+Core equations & Contract subject & Required falsification focus \\
+\midrule
+\endhead
+RTC-01--03 & grid, stage identity, ALIGN admission & cadence/phase, support, detector and scan identity \\
+RTC-04--07 & factorization, calibration, responsivity, donor conversion & factor table, airmass/q0, units, unequal $g$ and $\rho$ \\
+RTC-08--09 & data-derived affine replacement & donors, flags, no-donor, endpoints, covariance, determinism \\
+RTC-10--13 & FIR/IIR/notch and masks & impulse/constant/ramp/sinusoid/notch, state, finite and invalid mask cases \\
+RTC-14--15 & decimation, phase, time and support & odd/even $M$, endpoints, representative time, flag footprint \\
+RTC-16--17 & full conditioned affine operator & exact order, chained filters, signal/kernel equality \\
+RTC-18--23 & conditional/total moments and systematics & covariance availability, shared donors, calibration/response nuisances \\
+RTC-24--27 & transfer, delay, local response and aliasing & coefficient response, phase, source crossing, stopband bound \\
+RTC-28--30 & support, eligibility and atomic product bundle & edge/short scan, non-finite/flag influence, outputs/provenance \\
+\bottomrule
+\end{longtable}
+
+\section{Exact implemented operator at the governing SHA}
+
+\subsection{Observed stage order}
+
+The traced call order is: optional polarization; initialize \code{fcf};
+calibration; extinction; kernel construction; despike detection and donor
+replacement; pre-filter fixed/data-derived notches; symmetric FIR and
+configured notch; optional IIR highpass; edge-guard flagging; optional
+detector-local notches; outer-RTC capture; inner crop and optional phase-zero
+striding; post-decimation data-derived notches and flag-only diagnostic masks;
+signal-only alt-az destriping; diagnostics; then PTC.  Standard callers add APT,
+bad-detector, and duplicate-tone exclusions before RTC output/PTC use.
+
+Conditioned on all data-derived choices, a compact representation of the
+implemented inner signal path is
+\begin{equation}
+\mathbf y_{\rm impl}=
+P_XN_{\rm post}D_{0,M}S N_{\rm det}Q_{\rm HP}N_{\rm cfg}W N_{\rm pre}
+R_{\widehat\omega}C_{\rm impl}A\mathbf x+\mathbf a_{\rm impl}.
+\tag{IMP-01}
+\end{equation}
+Here $S$ selects the inner scan, $D_{0,M}$ is first-cell striding,
+$N_{\rm pre},N_{\rm det},N_{\rm post}$ can be data-derived notch cascades,
+$W$ is the FIR, $Q_{\rm HP}$ the highpass, and $P_X$ is the flag-conditioned
+alt-az template projection.  Flag/mask operations $\Phi_{\rm impl}$ evolve in
+parallel but are not the causal-support operator for (IMP-01).
+
+The kernel path is approximately
+\begin{equation}
+\mathbf k_{\rm impl}=
+N_{\rm post}D_{0,M}S N_{\rm det}Q_{\rm HP}N_{\rm cfg}W N_{\rm pre}\mathbf k_0,
+\tag{IMP-02}
+\end{equation}
+subject to which optional notch path was realized.  It omits
+$R_{\widehat\omega}$ donor mixing and $P_X$.  That is a concrete response
+contradiction and a named Tier-A reopen trigger limited to the interface and
+response: the audit does not redesign the mature algorithms.
+
+The outer RTC product stops after $N_{\rm det}$ and before $S,D_{0,M},
+N_{\rm post}$, post-filter masks, and $P_X$.  Therefore ``RTC'' without an
+explicit stage identity is ambiguous.
+
+\subsection{Calibration and replacement equations}
+
+The implemented detector multiplier before replacement is
+\begin{equation}
+g^{\rm impl}_{dj}=f^{\rm conv}_d f^{\rm flxscale}_d
+\exp(\widehat\tau_{b(d),j}),
+\tag{IMP-03}
+\end{equation}
+for the non-q0 path.  Source first derives a band opacity that is
+zenith-equivalent by division by airmass, then applies $\exp(\widehat\tau_b)$
+rather than the required sample line-of-sight factor.  The q0 path returns zero
+band opacity and hence unity correction.  No complete strict domain/factor
+identity gate is present.  \code{fcf} stores \code{flux_conversion_factor},
+then its mean extinction multiplier, but not \code{flxscale}; it is not the
+complete factor in (IMP-03).
+
+Replacement is executed after (IMP-03).  For each flagged target region,
+eligible donor residuals are divided by donor \code{responsivity}, averaged,
+multiplied by target \code{responsivity}, then added to a target linear
+baseline and a deterministic Gaussian-like fill.  Thus the multiplicative
+part is $\rho_d/\rho_q$, while RTC-07 requires
+$g_{dj}\rho_d/(g_{qj}\rho_q)$.  Donor responsivity and donor-region finiteness
+are checked; target responsivity is not.  No donor yields the baseline.  Every
+replaced target remains directly flagged, a positive control that does not
+prevent its value from entering later filters and influencing unflagged rows.
+
+\subsection{Filters, state, edges, and decimation}
+
+The FIR is a symmetric Kaiser-like $2n_{\rm terms}+1$ coefficient vector.  Its
+sum-normalization code is commented out.  A deterministic source-formula probe
+at $f_s=122.0703125$ Hz, $a_{\rm Gibbs}=50$, $n_{\rm terms}=32$ produced sums
+0.9995720037513057, 1.000116339580343, 0.9993723986695066, and
+1.0006199825360638 for 16, 20, 30, and 32 Hz respectively.  These are exact
+formula facts for the probe, not a compiled or astronomical bias claim.
+
+Only the valid-convolution interior overwrites input; the first and last
+$n_{\rm terms}$ rows retain their original values.  Outer context usually
+supplies interior support, but absent observation-boundary context is only
+flagged when the optional flag-mode edge guard is enabled.  Current science
+configuration enables a 32-term FIR and omits the RTC edge-guard block; Point,
+OOF, and Beammap explicitly enable it.
+
+Configured and data-derived notches use sequential biquad stages; the usual
+path is forward/reverse with odd extension.  The optional highpass is a
+repeated first-order recurrence with selected direction and zero initial state.
+These operations consume payloads without a typed validity mask or finite
+policy.  A global stationary transfer therefore does not exist across
+selection, flags, boundaries, and data-derived notches; only a conditioned
+local operator can be claimed.
+
+Downsampling selects rows $0,M,2M,\ldots$ and has
+$N_y=\lceil N/M\rceil$.  Telescope fields, pointing, angle, signal, and kernel
+use the same phase-zero stride.  Flags are OR-reduced over each adjacent
+$M$-cell block.  Typed validation positively forbids enabled downsampling
+without filtering and rejects \code{freq_high_Hz} above the output Nyquist.
+It does not demonstrate stopband attenuation or propagate the wider FIR/IIR
+and donor support into flags.  Output representative-time semantics remain
+implicit first-cell sampling.
+
+\subsection{Source mask and alt-az projection}
+
+Source protection is enabled only for the resolved pointing reduction path.
+The mask computes detector tangent position and marks a radius about map
+center.  Unsupported/empty coordinates and nonpositive or non-finite radius
+produce an all-false mask; non-finite coordinate rows are skipped.  A supported
+mode sets \code{info.valid=true} independent of complete coordinate validity,
+and RTC ignores this status.  Invalid coordinate therefore becomes outside or
+unprotected, contrary to the fail-closed RTC-13/RTC-29 boundary.
+
+Alt-az destriping builds time, azimuth, elevation, and optional derivative
+templates; selects rows using signal flags and finite telescope templates;
+solves detector-local least squares; and subtracts $X\widehat\beta$ from signal
+only.  For fixed good rows its linear response is a projection
+$P_X=I-X(X_G^{\rm T}X_G)^{-1}X_G^{\rm T}$ with the appropriate row-selection
+embedding.  Kernel is never transformed by $P_X$.  Both current science and
+Beammap configurations enable alt-az destriping and kernel generation, so this
+is exercised by declared current profiles rather than a dormant contradiction.
+
+\section{Source-to-equation conformity table}
+
+\begin{longtable}{@{}L{0.14\linewidth}L{0.29\linewidth}L{0.22\linewidth}L{0.27\linewidth}@{}}
+\toprule
+Equation & Governing source & Assessment & Exact consequence \\
+\midrule
+\endhead
+RTC-01--03 & observation rate, scan/context and ALIGN admission paths & conditioned/partial & Typed rate/context exists; exact origin, native mapping, synthesis, timing residual and stable scan support remain SCI-ALIGN-001 dependencies. \\
+RTC-04--05 & \code{rtc/calibrate.h}; RTC call order & nonconformant & Product includes \code{flxscale}, conversion and extinction, but extinction/q0/domain and complete factor identity violate frozen CAL authority. \\
+RTC-06--09 & \code{rtc/despike.h}; RTC after calibration & nonconformant & Donor scale uses only $\rho_d/\rho_q$, target $\rho$ can be invalid, donor links/factors are not persisted; direct target flag is retained. \\
+RTC-10 & \code{rtc/filter.h} FIR & partial; bundle nonconformant & Exact symmetric formula exists, normalization is implicit/unpersisted, edges remain input values, flags/finite state do not control convolution. \\
+RTC-11 & notch and highpass implementations & partial; bundle nonconformant & Coefficients/order can be reconstructed from source/config but realized full precision, state, data-derived selection and output response are not persisted. \\
+RTC-12--13 & filter payload use; \code{utils/pointing.h} & nonconformant & No declared masked filter denominator policy; coordinate invalidity becomes unprotected rather than fail closed. \\
+RTC-14--15 & \code{rtc/downsample.h}; RTC crop/stride & partial & Phase zero and ceiling cardinality are exact; value/support versus flag-block footprint differ and representative-time/support identity is incomplete. \\
+RTC-16--17 & \code{RTCProc::run} & nonconformant & Signal and kernel do not share donor replacement or alt-az projection; flags are not the causal-support operator. \\
+RTC-18--23 & output/provenance and bounded consumers & unavailable & No RTC conditional/full covariance, donor cross-covariance, selection term, calibration/response systematic, or availability product exists. \\
+RTC-24--27 & filter formulas/config/diagnostics & partial/unavailable & Interior conditioned response can be derived; exact realized combined transfer, phase/delay, local data-dependent response and alias bound are not an output. \\
+RTC-28--29 & flags, edge guard, map eligibility & nonconformant & Direct flags exist, but synthesis, replacement, filter, IIR, and edge influence and cause-specific eligibility are incomplete. \\
+RTC-30 & full, mini, outer, and inner output/provenance writers & nonconformant & Product components are split across modes and stages; factor tables, response, exact support, donor and mask identities, and product digests are absent. \\
+\bottomrule
+\end{longtable}
+
+\section{Products, provenance, and bounded consumers}
+
+\subsection{Product/consumer matrix}
+
+\begin{longtable}{@{}L{0.16\linewidth}L{0.25\linewidth}L{0.24\linewidth}L{0.27\linewidth}@{}}
+\toprule
+Product or consumer & Exact current identity & Positive control & Missing or restricted interpretation \\
+\midrule
+\endhead
+Inner RTC/PTC input & After crop and stride, RTC notches and masks, and signal-only alt-az; signal, flags, and optional kernel share shape & Direct replacement flags retained; signal and kernel share several filters and stride & Kernel omits replacement and alt-az response; causes, support, factors, and covariance are incomplete. \\
+Outer RTC output & Full outer context after primary filtering and detector notch, before inner crop, stride, post-mask, and alt-az stages & Explicit separate pointer capture & Not equivalent to inner RTC/PTC input; stage identity under a generic RTC label is insufficient. \\
+Full TOD & Double signal; flags written through an integer payload to a variable declared with a different numeric schema; includes richer metadata and optional kernel & Required writes participate in atomic completion count & Exact factor table/digest, causal support, response state and product linkage absent. \\
+Mini TOD & Float signal and byte flags; selected telescope/metadata subset & Compact explicit output mode & Omits kernel and detector pointing needed for complete response/coordinate reconstruction; reduced precision is a different product identity. \\
+RTC diagnostics & Per-scan/detector despike, line, mask and candidate summaries & Mutex-protected across scan farm & Diagnostics do not reconstruct donor links, full coefficient cascade, support, covariance, or complete realized state. \\
+PTC & Mean subtraction and data-derived cleaning consume signal/flags/kernel; approximate weights consume \code{fcf} and \code{sens} & Bounded caller applies APT/bad/duplicate exclusions & PTC math not audited; no matched complete RTC kernel or complete calibration factor/independence claim. \\
+VAL-like ordinary population & APT flag selects detector; directly flagged sample skipped before payload; eligible non-finite signal/kernel fails & Explicit-invalid skip and valid-nonfinite fail behavior & Unflagged cell influenced by replaced/synthesized/invalid support remains admissible. \\
+BEAM detector maps & Same RTC/PTC stream; source-aware rerun may use previous-fit centers; current Beammap enables kernel and alt-az & Shared path avoids a separate undocumented RTC implementation & Kernel omits enabled alt-az response; detector/scan/coordinate dependencies and real/simulation truth remain open. \\
+\bottomrule
+\end{longtable}
+
+\subsection{Four-stage provenance assessment}
+
+Requested, effective, observation-resolved, and realized nodes exist and are
+serialized atomically only after an initialized plan, observation start,
+execution completion, completed scan count, and required write count.  This is
+a meaningful positive control.  Observation state includes input/output sample
+rate, downsample factor, edge context, source-protection resolution, and
+extinction model selection.
+
+The realized lifecycle populates only completion, scan count, and required
+write count.  Optional flagged-sample and dynamic-notch counts are present in
+the schema but not populated by the traced lifecycle.  The record omits exact
+full-precision coefficients and order/state, selected data-derived notches,
+factor tables and artifact digests, detector bindings, source-mask coordinates
+and validity, donor/target links, replacement seed/regions, per-scan edge and
+support maps, decimation phase/representative-time declaration, response and
+covariance availability, output-stage identities, and product digests.  The
+four-node skeleton therefore conforms structurally but not scientifically to
+RTC-30.
+
+\section{Local evidence and standard methods}
+
+The machine-readable evidence artifact is
+\code{doc/audits/evidence/SCI-RTC-001_LOCAL_EVIDENCE_2026-08-08.yaml}, SHA-256
+\code{1cb733544d6b9d6decb1794279d2e81249b00375071c01ee71f514135dcf6394}.
+It binds every opened source path to the governing SHA, SHA-256, and reason;
+records chronology and inbound dispositions; gives exact commands/results;
+and states every prohibition.  No \code{build/} directory exists.  The
+inventory-only command \code{ctest --test-dir build -N} returned before test
+execution because that directory is absent.  No configure, build, install,
+download, alternate-worktree test substitution, local reduction, or broad
+suite was attempted.
+
+\begin{longtable}{@{}L{0.21\linewidth}L{0.27\linewidth}L{0.20\linewidth}L{0.24\linewidth}@{}}
+\toprule
+Method & Contract claim & Current evidence & Missing/future exact-SHA gate \\
+\midrule
+\endhead
+Analytic limits & identity, gain, donor conversion, constant/impulse, phase/support & Source equations and coefficient-sum probe; multiple contradictions observed & Focused compiled exact-successor fixtures after repair authorization. \\
+Small deterministic fixtures & calibration, replacement, filters, masks, edge, decimation, provenance & Existing tests cover typed config and narrow notch constants only & Every preregistered RTC case remains required. \\
+Synthetic signal/source injection & source crossing, local response, kernel equality & Not executed; static alt-az kernel contradiction is decisive & Deterministic injection, not a local reduction, at one successor SHA. \\
+Blank controls & false spike/notch/mask selection and output covariance & Not available & Applicable to data-derived selectors; requires separately authorized focused fixture. \\
+Sequential/OpenMP equivalence & values, flags, donors, diagnostics, products & Source uses per-scan farm, local despiker copy and locked diagnostics; no numerical equivalence test found & Exact fixture with deterministic order-insensitive tolerances and identical identities/digests. \\
+Simulation parity & RTC operator and product identity & Same broad path traced; no exact truth/equivalence test & Exact real/simulation fixture for enabled interface only. \\
+Astronomical/Unity reduction & operational response & Prohibited and not required by dispatch & Not requested. Any future external/costly evidence requires a separate launch gate. \\
+Noise realizations & selection/covariance and coverage & Not executed & Only after covariance/selection policy; not a substitute for analytic validity. \\
+Beam/photometric response & matched conditioned kernel & Static contradiction: enabled alt-az transforms signal only & Exact source-crossing response fixture after matched operator repair. \\
+Extended/iteration response & nonstationary modes and repeated pipeline use & Out of bounded RTC audit except interface identity & Owning downstream packages after frozen RTC/PTC interfaces. \\
+\bottomrule
+\end{longtable}
+
+\section{Incoming dispositions and outgoing handoffs}
+
+All three handoff digests were reverified immediately before their first
+content opening.  Each is older-SHA evidence, not governing-SHA authority.
+
+\begin{longtable}{@{}L{0.19\linewidth}L{0.18\linewidth}L{0.24\linewidth}L{0.31\linewidth}@{}}
+\toprule
+Inbound ID; digest & Source/basis & Disposition & Current-SHA use and limit \\
+\midrule
+\endhead
+\code{SCI-RTC-001-XAUD-002}; \code{01ee55506fe3c6643d0fdb0559bbce14fa038ac53155701c5bcbc71211fe9319} & ALIGN; observed at \code{9aae0e...} & acknowledged; dependency, finding, test, and restriction recorded & Independently corroborated current origin/support influence gap.  Did not promote historical scan behavior or bias magnitude. \\
+\code{SCI-RTC-001-XAUD-001}; \code{9497050f12d162d92b21479b0c9490fe06f6303b61548ae152152ff9587a504f} & CAL; observed at \code{9aae0e...} & acknowledged; dependencies, findings, tests, and restriction recorded & Current source independently establishes extinction and donor-factor mismatches.  Handoff does not establish filter behavior or authorize repair. \\
+\code{SCI-RTC-001-XAUD-003}; \code{5eff0782d3c1057ccccbc613e9304e5410b6c30155ca04a34ae285f26e9f95a8} & AST; observed at \code{9aae0e...} & acknowledged; dependency, finding, test, and restriction recorded & Current RTC independently fails open at source-mask admission.  Historical edge occurrence and AST repair results were not inferred. \\
+\bottomrule
+\end{longtable}
+
+Three bounded outgoing proposals were created; they are unintegrated and do
+not launch recipient audits.
+
+\begin{longtable}{@{}L{0.23\linewidth}L{0.17\linewidth}L{0.24\linewidth}L{0.28\linewidth}@{}}
+\toprule
+Outgoing ID; SHA-256 & Target & Required RTC fact & Restriction \\
+\midrule
+\endhead
+\code{SCI-PTC-001-XAUD-005}; \code{89ce799a6526f87025bc1d57cc0bf8a0234b149374920027beaa4cb18b94e289} & PTC & Inner sample/kernel/flag stage, transfer, factor identity, donor/filter influence & No new cleaning/weight/kernel/covariance claim; existing-use-only. \\
+\code{SCI-VAL-001-XAUD-007}; \code{2c0a47c9f7f4eed4820db133304108f8f52d9702c22762b19e09cb851cce14b0} & VAL & Replacement, flags, mask/coordinate validity, edge/non-finite/influence eligibility & Finite and unflagged is not sufficient; existing-use-only. \\
+\code{SCI-BEAM-001-XAUD-003}; \code{24cd271c5b27d9885c01002e063571a53aa7fd4517d34509ef8d2194e259e1a1} & BEAM & Matched conditioned response, detector/scan validity, source-aware/simulation provenance & No new beam/flux/kernel response claim; existing-use-only. \\
+\bottomrule
+\end{longtable}
+
+\section{Open findings}
+
+All findings are open.  A known mismatch is nonconformant.  Basis and
+confidence are independent of severity.  Every gate is falsifiable and binds
+an exact successor SHA; passing a test does not itself authorize production.
+
+\begin{longtable}{@{}L{0.14\linewidth}L{0.16\linewidth}L{0.07\linewidth}L{0.14\linewidth}L{0.39\linewidth}@{}}
+\toprule
+ID & Class & Sev. & Basis/conf. & Finding, owner, dependency, and closure gate \\
+\midrule
+\endfirsthead
+\toprule
+ID & Class & Sev. & Basis/conf. & Finding, owner, dependency, and closure gate \\
+\midrule
+\endhead
+\code{SCI-RTC-001-F001} & implementation defect & P0 & observed/high & RTC-entry extinction is nonconformant: non-q0 applies a zenith-equivalent opacity without sample airmass, q0 suppresses finite low-opacity correction, and strict factor/domain identity is absent. Owner: CAL repair plus RTC/CAL boundary. Dependency: approved CAL contract. Gate: exact factor table/binding, q0 and varying-airmass/invalid-domain fixtures, accepted independent re-audit. \\
+\code{SCI-RTC-001-F002} & implementation defect & P1 & observed/high & Post-calibration donor replacement applies only $\rho_d/\rho_q$, omitting $g_{dj}/g_{qj}$, does not admit target responsivity, and persists no donor/factor links. Owner: RTC despike interface. Dependency: SCI-CAL-001 factors/binding. Gate: unequal-$g$/unequal-$\rho$, invalid-target, no-donor, endpoint and deterministic-repeat fixtures exactly match RTC-07--09 and provenance. \\
+\code{SCI-RTC-001-F003} & implementation defect & P0 & observed/high & Filters consume flagged/replaced/synthesized/non-finite payloads while output flags cover neither donor/FIR/IIR influence nor full decimation support; kernel omits donor mixing. Unflagged science-eligible cells can carry invalid influence. Owner: RTC validity/response interface. Dependency: ALIGN origin/support. Gate: impulse/flag/non-finite/donor cases prove exact transitive causes, support, kernel/local response and consumer eligibility. \\
+\code{SCI-RTC-001-F004} & implementation defect & P0 & observed/high & Enabled alt-az projection modifies signal but not kernel in current science and Beammap profiles. Owner: RTC response/kernel interface. Dependency: valid telescope templates/flags. Gate: signal and kernel receive the same declared conditioned projection or response is explicitly unavailable; source-crossing and template-basis fixtures pass. This is a bounded Tier-A response reopen trigger. \\
+\code{SCI-RTC-001-F005} & implementation defect & P1 & observed/high & Invalid, unavailable, non-finite, empty, unsupported, or nonpositive-radius source geometry becomes outside/unprotected; caller ignores mask validity. Owner: RTC mask/AST boundary. Dependency: SCI-AST-001 and SCI-ALIGN-001. Gate: all invalid coordinate/frame/shape/radius/detector cases fail closed with cause-preserving output and valid controls. \\
+\code{SCI-RTC-001-F006} & implementation defect & P1 & observed/high & FIR leaves boundary cells unchanged; missing observation context is not always flagged, and current science config enables FIR while omitting the RTC guard. Owner: RTC edge/context interface and profile owner. Gate: first/last/short scan and missing-context fixtures establish one approved edge response, enforce it in every enabled profile, and persist realized support. \\
+\code{SCI-RTC-001-F007} & contract gap & P1 & observed/high & Four-stage provenance is shallow and RTC labels span different outer/inner/full/mini boundaries. Exact coefficients/state/order, factors/digests, donors, masks, phase/support, response/covariance availability, per-scan application and product links are absent. Owner: RTC lifecycle/product schema. Gate: reconstruct and replay the exact operator/bundle from serialized state; product round trips and digests match. \\
+\code{SCI-RTC-001-F008} & dependency gap & P0 & observed/high & RTC lacks a conformant ALIGN input carrying complete mapping, origin/validity, synthesis, scan partition, timing residual, support, response/covariance and eligibility. Owner: SCI-ALIGN-001 repair/coordinator. Gate: accepted re-audited ALIGN successor plus RTC admission and synthesized/endpoint influence fixtures. \\
+\code{SCI-RTC-001-F009} & dependency gap & P0 & observed/high & RTC absolute response and replacement remain conditioned because no accepted re-audited CAL successor supplies complete factor, opacity, APT binding, responsivity convention, validity and uncertainty at this SHA. Owner: SCI-CAL-001 repair/coordinator. Gate: accepted integrated CAL successor and RTC factor/replacement boundary re-audit at one exact SHA. \\
+\code{SCI-RTC-001-F010} & dependency gap & P0 & observed/high & RTC source masks and coordinate-aware kernels lack an accepted conformant AST coordinate/frame/validity and detector-row binding; AST waits behind ALIGN. Owner: SCI-AST-001/SCI-ALIGN-001/coordinator. Gate: accepted dependencies plus permutation, invalid-coordinate, frame, topology, source-mask and kernel-placement admission fixtures. \\
+\code{SCI-RTC-001-F011} & evidence gap & P1 & observed/high & No exact-governing compiled RTC suite or sequential/OpenMP fixture covers the frozen equations; the worktree has no build directory and existing tests are config/notch-only. Owner: future bounded validation implementer. Gate: every applicable preregistered case passes at the selected repair SHA with no required-data skip, followed by independent re-audit. \\
+\code{SCI-RTC-001-F012} & scientific policy decision & P1 & derived/high & Owner choices remain for continuity-value eligibility/influence, complete kernel response, explicit output-stage identity, and normalization/edge/state/decimation semantics. Source cannot choose these scientific meanings. Owner: RTC scientific/product owner. Gate: approve or supersede D001--D004 in versioned equations/state before repair; implement only the selected policy and re-audit. \\
+\bottomrule
+\end{longtable}
+
+\section{Owner decisions and dependencies}
+
+No new owner choice was needed to complete this audit: observed contradictions
+are reported as nonconformities.  The following choices are required before a
+repair can be specified; the audit proposes defaults but does not decide them.
+
+\begin{longtable}{@{}L{0.17\linewidth}L{0.31\linewidth}L{0.42\linewidth}@{}}
+\toprule
+Decision & Owner question & Proposed bounded disposition and required record \\
+\midrule
+\endhead
+\code{SCI-RTC-001-D001} & May replacement/synthesized values or their influenced neighbors carry science eligibility, exposure, and weight? & Adopt frozen-core default: continuity-only cells have zero direct independent eligibility; every downstream influence retains cause/support and a declared local response/covariance. Record consumer-specific exceptions explicitly. \\
+\code{SCI-RTC-001-D002} & What must the RTC kernel/response include? & Require every enabled conditioned linear/local-Jacobian stage affecting signal, including donor mixing and flag-conditioned alt-az projection; otherwise mark complete response unavailable. Never let a partial kernel imply full response. \\
+\code{SCI-RTC-001-D003} & What are the canonical RTC output stages? & Assign distinct immutable identities to outer pre-decimation RTC, inner PTC input, full TOD, mini TOD, diagnostics, and any processed product; forbid generic RTC equivalence without stage/product links. \\
+\code{SCI-RTC-001-D004} & Which FIR normalization, IIR/notch state, edge rule, decimation phase/time/support, and alias criterion are scientific authority? & Approve exact coefficients/conventions and bounds; persist full precision and realized state.  Phase-zero first-cell sampling may be retained only if explicitly selected and validated. \\
+\bottomrule
+\end{longtable}
+
+\begin{longtable}{@{}L{0.18\linewidth}L{0.19\linewidth}L{0.25\linewidth}L{0.30\linewidth}@{}}
+\toprule
+Dependency & Status & Stable fact admitted & Consequence for RTC \\
+\midrule
+\endhead
+\code{SCI-ALIGN-001} & active, existing-use-only & Frozen abstract grid, mapping, origin, and support contract only & Exact timing, synthesis, scan, support, covariance and new response claims remain conditioned; F008 open. \\
+\code{SCI-CAL-001} & active repair from governing SHA & Frozen factor, responsivity, opacity, and identity contract only & Absolute calibration, donor conversion and photometric response fail closed for new claims; F001/F002/F009 open. \\
+\code{SCI-AST-001} & repair held behind ALIGN & Frozen coordinate, frame, validity, and detector contract only & Coordinate masks/kernel placement and new coordinate-dependent claims remain conditioned; F005/F010 open. \\
+\code{SCI-PTC-001} & downstream, existing-use-only & PTC follows frozen RTC interface & Cannot close or reinterpret missing RTC response/support/factors. \\
+\code{SCI-VAL-001} & downstream, existing-use-only & VAL follows frozen RTC/PTC interfaces & Finite/unflagged cannot be expanded to complete eligibility. \\
+\code{SCI-BEAM-001} & downstream, existing-use-only & BEAM follows frozen PTC/VAL interfaces & No new beam/kernel/flux response claim while RTC kernel is incomplete. \\
+\bottomrule
+\end{longtable}
+
+\section{Status axes, verdict, and restrictions}
+
+\begin{center}
+\begin{tabular}{lllll}
+\toprule
+Contract & Implementation & Validation & Production & Verdict \\
+\midrule
+\textbf{proposed} & \textbf{nonconformant} & \status{in_progress} &
+\status{existing_use_only} & \textbf{amend} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Contract \textbf{proposed} means the immutable equations, source trace, and
+owner choices are ready for review, not approved.  Implementation
+\textbf{nonconformant} follows directly from known mismatches.  Validation is
+\status{in_progress} because static evidence is decisive for those mismatches
+but exact compiled falsification/equivalence evidence is absent.  Production
+\status{existing_use_only} inherits existing restrictions and grants no new
+consumer, profile, factor, coordinate, response, precision, support, or
+eligibility interpretation.
+
+\textbf{Allowed only under pre-existing compatibility authority:}
+continued existing use already authorized by owning package records, without
+using this audit to broaden meaning or tolerance.  The positive controls in
+this report may be cited only as narrow source facts, not as overall
+conformance.
+
+\textbf{Restricted pending closure:}
+\begin{itemize}
+\item new absolute calibration, photometry, transfer, covariance, inverse
+variance, kernel normalization, or beam-response claims;
+\item new PTC weight/cleaning interpretation or VAL eligibility/exposure that
+treats finite/unflagged as original-valid, independent, or complete-support;
+\item new coordinate-aware mask/kernel use without exact AST/ALIGN validity and
+detector/scan binding;
+\item equivalence among outer, inner, full, mini, diagnostic, simulated, or
+processed RTC products; and
+\item production expansion based on static positive controls, configuration
+validation, historical records, or a future test pass alone.
+\end{itemize}
+
+\textbf{Fail closed:}
+\begin{itemize}
+\item missing, duplicate, non-finite, nonpositive, out-of-domain, or unbound
+calibration, responsivity, coordinate, detector, or support authority;
+\item unavailable complete response or kernel, causal validity or support,
+representative time, or required product identity;
+\item any new scientific use of synthesized, replaced, edge, temporally
+influenced, or data-dependent cells without an approved eligibility/local
+response/covariance contract; and
+\item any attempt to use this report as repair, re-audit, integration,
+downstream launch, external-evidence request, or production authorization.
+\end{itemize}
+
+The current implementation does not enforce every proposed fail-closed rule;
+these are review/production restrictions, not claims of present behavior.
+
+\section{Proposed future exact-SHA evidence and audit stop}
+
+Static evidence decides the known formula, response, validity, and provenance
+contradictions.  It cannot establish exact compiled values, every runtime
+selection, or sequential/OpenMP equivalence.  After owner decisions,
+dependency closure, separately authorized repair, and selection of one exact
+successor SHA, a focused deterministic protocol should bind source parent/tree,
+config and input bytes, coefficients/factors/donors/masks, and output digests;
+exercise every preregistered calibration, donor, impulse, constant/ramp,
+sinusoid/notch, non-finite/flag, coordinate, edge/short-scan, odd/even
+decimation, signal/kernel, product/provenance, simulation, and parallel case;
+reject required-data skips; and require zero unexpected error-level messages.
+The exact proposed rows are in the local-evidence YAML.  This report does not
+request or execute that evidence.
+
+Cost classification is \status{not_costly}: only read-only Git/source probes,
+digest checks, YAML/link checks, a deterministic formula evaluation, and
+offline document compilation/rendering were used.  No broad or costly
+execution was launched.  Any future broad/costly study requires a separate
+\code{FRAMEWORK-NUM-001} register, preflight, review, readiness certificate,
+launch-gate pass, and owner authorization.
+
+This is the audit stop.  Only the eight frozen-prompt documentation artifacts
+may be present in the two audit commits.  No application code, test, build,
+validation artifact, configuration, production documentation, canonical
+ledger/registry, later repair, other package audit, Unity/external lane, or
+network state was changed or launched.  No repair, re-audit, integration,
+merge, rebase, cherry-pick, push, external contact, or production action was
+performed.
+
+\appendix
+\section{Artifact inventory at report freeze}
+
+\begin{longtable}{@{}L{0.34\linewidth}L{0.58\linewidth}@{}}
+\toprule
+Artifact & Identity/purpose \\
+\midrule
+\endhead
+\code{SCI-RTC-001_INDEPENDENT_CORE.tex} & Frozen pre-source mathematical contract; SHA-256 \code{d6cf49d1a5e17754c55cc4f2c8f4b4f5e276755f247496df888581d890be80b7}. \\
+\code{SCI-RTC-001_LOCAL_EVIDENCE_2026-08-08.yaml} & Exact path/digest trace, chronology, commands, observations, proposed future evidence, and scope guards; SHA-256 \code{1cb733544d6b9d6decb1794279d2e81249b00375071c01ee71f514135dcf6394}. \\
+\code{SCI-PTC-001-XAUD-005.yaml} & Bounded PTC input/weight/response handoff; SHA-256 \code{89ce799a6526f87025bc1d57cc0bf8a0234b149374920027beaa4cb18b94e289}. \\
+\code{SCI-VAL-001-XAUD-007.yaml} & Bounded validity/eligibility handoff; SHA-256 \code{2c0a47c9f7f4eed4820db133304108f8f52d9702c22762b19e09cb851cce14b0}. \\
+\code{SCI-BEAM-001-XAUD-003.yaml} & Bounded detector-map response/provenance handoff; SHA-256 \code{24cd271c5b27d9885c01002e063571a53aa7fd4517d34509ef8d2194e259e1a1}. \\
+\code{SCI-RTC-001_LEDGER_PROPOSAL_2026-08-08.yaml} & Machine-readable coordinator proposal; canonical ledger/registry unchanged. \\
+\code{SCI-RTC-001_OWNER_DECISION_BRIEF_2026-08-08.md} & Concise owner decisions, gates, and stop packet. \\
+\bottomrule
+\end{longtable}
+
+\end{document}

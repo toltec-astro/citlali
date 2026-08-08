@@ -1,0 +1,121 @@
+format_version: 1
+id: SCI-BEAM-001-XAUD-003
+created_date: 2026-08-08
+
+source:
+  package_id: SCI-RTC-001
+  role: independent_auditor
+  audit_branch: codex/audit-sci-rtc-001
+  audit_commit: pending_final_documentation_commit
+  governing_or_evidence_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+  finding_ids:
+    - SCI-RTC-001-F001
+    - SCI-RTC-001-F002
+    - SCI-RTC-001-F003
+    - SCI-RTC-001-F004
+    - SCI-RTC-001-F005
+    - SCI-RTC-001-F007
+    - SCI-RTC-001-F008
+    - SCI-RTC-001-F009
+    - SCI-RTC-001-F010
+    - SCI-RTC-001-F011
+
+target:
+  package_id: SCI-BEAM-001
+
+priority: P0
+evidence_basis: observed_and_derived
+review_phase: post_core_evidence
+arrival: after_RTC_audit_completion
+status: proposed_unintegrated
+
+summary: >-
+  Beammap detector-map consumers receive a kernel that omits an enabled
+  signal-conditioning projection and lacks complete detector/scan validity,
+  donor influence, calibrated response, and realized RTC provenance.
+claim: >-
+  The current Beammap profile enables RTC kernel generation and alt-az
+  destriping. RTC fits an unflagged-row, detector-local template projection and
+  subtracts it from signal only, never from kernel. The same RTC path also uses
+  flagged donor replacement and filtering without complete causal validity;
+  Beammap source-aware reruns can use previous-fit source centers but do not
+  repair the response mismatch. Simulation uses the same sample-population
+  boundary without an exact RTC truth/equivalence fixture. Therefore the
+  persisted kernel is not the complete realized detector-map response.
+
+required_RTC_interface_facts:
+  response:
+    configured_kernel_enabled: true
+    configured_altaz_destripe_enabled: true
+    signal_altaz_projection_applied: true
+    kernel_altaz_projection_applied: false
+    replacement_response_in_kernel: false
+    complete_detector_response_available: false
+  detector_and_scan_validity:
+    exact_APT_raw_binding_dependency: SCI-AST-001_and_SCI-CAL-001
+    aligned_origin_support_dependency: SCI-ALIGN-001
+    donor_links_and_influence_support_persisted: false
+    scan_context_and_output_stage_fully_persisted: false
+  provenance:
+    requested_effective_observation_realized_nodes_exist: true
+    exact_coefficients_factor_tables_masks_donors_and_product_digests: false
+  simulation:
+    shared_RTC_path: true
+    exact_real_sim_RTC_response_fixture_found: false
+
+supports:
+  - >-
+    Keep BEAM existing_use_only and fail closed on new beam amplitude, transfer,
+    kernel-normalization, detector-response, or uncertainty claims based on the
+    current RTC kernel.
+  - >-
+    Require a matched signal/kernel operator through every enabled conditioned
+    linear stage, or mark response unavailable; bind detector, scan, context,
+    source coordinate validity, factors, phase, flags, and product digests.
+  - >-
+    Add exact-successor source-crossing, alt-az-template, impulse, donor,
+    invalid-coordinate, edge, real/simulation, and sequential/OpenMP interface
+    fixtures before BEAM boundary re-audit.
+does_not_establish:
+  - This record does not audit BEAM fitting, calibration, source models, or mapmaking mathematics.
+  - It does not quantify a recovered beam or flux bias in an accepted run.
+  - It does not authorize RTC/BEAM repair, execution, re-audit, or production expansion.
+
+requested_actions:
+  - add_or_update_dependency
+  - add_or_update_finding
+  - add_interface_test
+  - restrict_consumer
+  - preserve_existing_use_only
+affected_target_findings: []
+related_handoffs:
+  - SCI-PTC-001-XAUD-005
+  - SCI-VAL-001-XAUD-007
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-RTC-001-independent-core
+    availability: repository_path
+    path: doc/audits/packages/SCI-RTC-001_INDEPENDENT_CORE.tex
+    sha256: d6cf49d1a5e17754c55cc4f2c8f4b4f5e276755f247496df888581d890be80b7
+    note: Frozen response/kernel and provisional BEAM input contract.
+  - id: SCI-RTC-001-local-evidence
+    availability: repository_path
+    path: doc/audits/evidence/SCI-RTC-001_LOCAL_EVIDENCE_2026-08-08.yaml
+    sha256: 1cb733544d6b9d6decb1794279d2e81249b00375071c01ee71f514135dcf6394
+    note: Exact-source RTC/Beammap configuration, response, validity, and provenance trace.
+
+recipient_disposition:
+  status: pending_BEAM_auditor_and_coordinator_review
+  late_arrival_route: not_applicable
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

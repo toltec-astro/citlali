@@ -1,0 +1,534 @@
+format_version: 1
+evidence_id: SCI-RTC-001-LOCAL-001
+package_id: SCI-RTC-001
+created_date: 2026-08-08
+role: independent_package_auditor
+scope: >-
+  Documentation-only, exact-source local evidence for the RTC conditioning
+  interface, response, validity, provenance, output products, and bounded
+  PTC/VAL/BEAM consumer boundaries. This record is evidence, not mathematical
+  authority, repair authorization, production approval, or a downstream audit.
+
+identity:
+  application_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+  application_parent: 4846fa4db39bd2f7d4ddc41f693836834cbc5ff4
+  application_tree: ab230a93b8fb310d58aefd7ac5da92e5d5e0f408
+  application_sha_role: governing_audit_snapshot
+  audit_branch: codex/audit-sci-rtc-001
+  worktree: /Users/gwilson/.codex/worktrees/1697/citlali-refactor
+  core_path: doc/audits/packages/SCI-RTC-001_INDEPENDENT_CORE.tex
+  core_sha256: d6cf49d1a5e17754c55cc4f2c8f4b4f5e276755f247496df888581d890be80b7
+  core_freeze_commit: 3620434eb988662210b2466ee357ffc8f891aa58
+  core_freeze_parent: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+  core_freeze_tree: 3cafe771e15e0c6159e323f357ce3a5c76b01efa
+  core_freeze_timestamp_utc: 2026-08-08T17:50:49Z
+
+frozen_dispatch:
+  object_commit: fff3f538ce04fb66d73ac3671f2bc6a10975baed
+  prompt:
+    path: doc/audits/prompts/SCI_RTC_001_AUDIT_PROMPT.md
+    sha256: 01c02c2b1057a5346caaf5c0a8efaa7c5b17dec90158dffe9020b6838ad3951c
+  inbox_manifest:
+    path: doc/audits/handoffs/SCI-RTC-001/SCI-RTC-001_INBOX_AUTHORITY_MANIFEST_2026-08-08.yaml
+    sha256: 9f75e5df0184d73e90acec10cbf8c052fe7baad571a131ba8834f2acbbbccb1c
+    coordinator_registry_commit: dd5894679bf12bf4a5fb551e871b3c6010ef9b9b
+    pre_core_authority_count: 11
+    post_core_handoff_count: 3
+  excluded_later_repair:
+    commit: 5c6309125fef15f7c98e70a62b591c663944b130
+    opened: false
+    authority: none_for_RTC
+    route: later_PTC_VAL_queue_only
+
+quarantine_chronology:
+  pre_core_application_source_opened: false
+  pre_core_post_core_handoff_content_opened: false
+  core_frozen_before_source_and_handoffs: true
+  first_application_source_open_utc: 2026-08-08T17:53:44Z
+  first_application_source_path: include/citlali/core/timestream/rtc/rtcproc.h
+  first_post_core_handoff_open_utc: 2026-08-08T18:07:36Z
+  first_post_core_handoff_id: SCI-RTC-001-XAUD-002
+  ordering_verified: true
+  note: >-
+    The independent-core bytes were hashed and committed alone before either
+    event. No successor revision of the frozen core was created.
+
+post_core_handoffs:
+  - id: SCI-RTC-001-XAUD-002
+    source_package: SCI-ALIGN-001
+    path: doc/audits/handoffs/SCI-RTC-001/SCI-RTC-001-XAUD-002.yaml
+    sha256: 01ee55506fe3c6643d0fdb0559bbce14fa038ac53155701c5bcbc71211fe9319
+    evidence_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+    disposition: acknowledged_dependency_and_restriction_only
+    current_sha_treatment: >-
+      Independently corroborated only the current input-origin/support gap and
+      its ability to influence filtering. The historical bias magnitude and
+      historical scan behavior were not promoted to the governing SHA.
+    affected_findings: [SCI-RTC-001-F003, SCI-RTC-001-F008]
+  - id: SCI-RTC-001-XAUD-001
+    source_package: SCI-CAL-001
+    path: doc/audits/handoffs/SCI-RTC-001/SCI-RTC-001-XAUD-001.yaml
+    sha256: 9497050f12d162d92b21479b0c9490fe06f6303b61548ae152152ff9587a504f
+    evidence_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+    disposition: acknowledged_dependency_findings_tests_and_restriction
+    current_sha_treatment: >-
+      Current source independently demonstrates the extinction and replacement
+      interface mismatches. The handoff does not establish current-SHA filter
+      behavior or authorize repair.
+    affected_findings: [SCI-RTC-001-F001, SCI-RTC-001-F002, SCI-RTC-001-F009]
+  - id: SCI-RTC-001-XAUD-003
+    source_package: SCI-AST-001
+    path: doc/audits/handoffs/SCI-RTC-001/SCI-RTC-001-XAUD-003.yaml
+    sha256: 5eff0782d3c1057ccccbc613e9304e5410b6c30155ca04a34ae285f26e9f95a8
+    evidence_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+    disposition: acknowledged_dependency_findings_tests_and_restriction
+    current_sha_treatment: >-
+      Current RTC source independently shows fail-open mask admission; AST
+      coordinate validity and detector binding remain named upstream
+      dependencies. Historical edge-case occurrence was not inferred.
+    affected_findings: [SCI-RTC-001-F005, SCI-RTC-001-F010]
+
+source_trace:
+  - path: include/citlali/core/timestream/rtc/rtcproc.h
+    sha256: 41693a6385c112bdde36f5590d8ac10b60514c56d5449aad30962e08a64f3549
+    reason: stage order, diagnostics, output split, edge guard, and alt-az destriping
+  - path: include/citlali/core/pipeline/raw_timestream_execution_plan.h
+    sha256: 255026241c9826963f1a6b7179542247862e52a34f16e9771c57a9086aaff358
+    reason: four-stage RTC authority container
+  - path: include/citlali/core/pipeline/raw_timestream_provenance.h
+    sha256: fc05464eb09214d612e86a5816a4e9592573401f80c323a097114e5f19589279
+    reason: serialized requested/effective/observation/realized state
+  - path: include/citlali/core/timestream/rtc/calibrate.h
+    sha256: d70a55278227b43cdd7de19bc67e4ddb332524d40e1455c5fa7a80ae5e2d11ee
+    reason: factor application and extinction equations
+  - path: include/citlali/core/timestream/rtc/filter.h
+    sha256: 830f0ab21235c0eb35552e65880fc05088595d112575759597966102c2249420
+    reason: FIR/notch/IIR coefficients, state, and edges
+  - path: include/citlali/core/timestream/rtc/downsample.h
+    sha256: 9a4a8a3c3673450c5b82cddcfe1904c9ed531668f7507de35274acee3ab008e3
+    reason: stride phase, output cardinality, and flag aggregation
+  - path: include/citlali/core/timestream/rtc/despike.h
+    sha256: dc66c0fc29900a266f31f5b4c4d3cc376292513328be9156ea773a082befbff2
+    reason: detection, donor admission, replacement arithmetic, and flags
+  - path: include/citlali/core/timestream/rtc/kernel.h
+    sha256: cfc86104d5a892e6cbbed3aa260047cb88ef6d4f9e4ec47e33a59841bc74fccd
+    reason: kernel construction and identity
+  - path: include/citlali/core/utils/pointing.h
+    sha256: d342c8369b01ec8ea97e91da014bc471737b0f15b5135aa312cad07ddedc6bc4
+    reason: source-mask geometry and validity
+  - path: include/citlali/core/pipeline/raw_timestream_resolution.h
+    sha256: c16c2b3be2b7d4a4c7ff0b3954208584d6dfa2593ac64de5dc665902d460653f
+    reason: effective RTC resolution
+  - path: include/citlali/core/pipeline/raw_timestream_authority.h
+    sha256: bcee4d2f790385aa350504adbb7eddd27e7a1aa6812ef255b0ec6e6f93743bf3
+    reason: one-way requested/effective authority
+  - path: include/citlali/core/pipeline/timestream_config_adapter_raw.h
+    sha256: 840f38ccb0f3da9cb11ef8666de209e66c8170c5f2f68bf5961974d52ff7b6b2
+    reason: legacy RTC adapter entry
+  - path: include/citlali/core/pipeline/timestream_config_adapter_raw_filtering.h
+    sha256: e20665ae567bc2fac925cb8582d0a58d4c7a45b9c90bd1d10ca74daeea7bad08
+    reason: filter/downsample adapter
+  - path: include/citlali/core/pipeline/timestream_config_adapter_raw_flagging.h
+    sha256: 26969f69ad15015df71b0ec6b3b7940295ed3529e3132d965b2ea128d6ace6c8
+    reason: flagging adapter
+  - path: include/citlali/core/engine/detail/rtc_config_impl.h
+    sha256: 625a58a9d181e87e0da1c2cd6b08b7be4cba9490e052a8f7077b8512a3e07fca
+    reason: runtime RTC installation
+  - path: include/citlali/core/pipeline/raw_timestream_observation_resolution.h
+    sha256: 93f4fd3f744ede0a5e7c632ca66dc701703e83edff35c925c76cb0d0e5b5f33f
+    reason: observation-resolved rate, guard, source, and extinction state
+  - path: include/citlali/core/pipeline/raw_timestream_observation_shadow.h
+    sha256: 6747412154295570458e919023d82f884c179e854cd8ae61fbe891f9a1a0c87b
+    reason: observation-state legacy shadow
+  - path: include/citlali/core/pipeline/raw_timestream_provenance_lifecycle.h
+    sha256: 48a40d03f8f4f6fd81cc3b4d237bdf8325ef1d828a5b6d94728f8c230269a62f
+    reason: realized completion and write counts
+  - path: include/citlali/core/pipeline/reduction_observation_inputs.h
+    sha256: 878a7774920456b26bc8d5a0d2f40cb67961b8fc18ff94380f7e1d817df7d0a9
+    reason: observation input binding
+  - path: include/citlali/core/engine/detail/observation_setup_impl.h
+    sha256: ac3656b9b58aa91e9338376d3b7fee7e1d5b9bb128345b4ce9e06db62cd5e9e7
+    reason: observation setup and RTC resolution
+  - path: include/citlali/core/pipeline/observation_sample_rate.h
+    sha256: eccbe5a5199f9f5072f0df0a10cafd462f8ac758aea1ac0c30276e7e62af4c97
+    reason: input/output rate identity
+  - path: include/citlali/core/pipeline/downsample_config.h
+    sha256: fae3631686cec78f9b04ae1012133e43033a9da130c41ae70264aaae85f9f7f2
+    reason: factor resolution
+  - path: include/citlali/core/config/timestream_config.h
+    sha256: 9382e2d000e91e44b8b6aa1b913fb608531b798e6c5896e4faeab524b716d228
+    reason: typed RTC request fields/defaults
+  - path: include/citlali/core/pipeline/raw_timestream_config_read.h
+    sha256: 2e1b4d207c66b7e437783ebea9e8a729cd461ad9a771849de46242a5ad2063e7
+    reason: typed raw-time-chunk reader
+  - path: include/citlali/core/pipeline/raw_filtering_config_read.h
+    sha256: c1d8c06e8457f661a86d86889bd3ab648b041bad6802a28a9487ea6e0c75c30d
+    reason: filter/IIR/downsample reader
+  - path: include/citlali/core/timestream/timestream.h
+    sha256: 83418ff0123e64dd8a7807b7e6a480848f422d0443ca302b0762862bacab1b78
+    reason: RTC/PTC caller and scan farm
+  - path: include/citlali/core/engine/detail/lali_run_impl.h
+    sha256: e76fa90cc5c8a4dae84fdd7a258ee834c62d389e65b323b3010d2f92b7f56341
+    reason: science caller and detector exclusions
+  - path: include/citlali/core/engine/detail/pointing_run_impl.h
+    sha256: 0200e17b209023d51e71e34506752d33f51082e4849bee1ab33732a301c85cab
+    reason: pointing caller and source-protection activation
+  - path: include/citlali/core/engine/detail/lali_timestream_output_impl.h
+    sha256: 8f1a80e55376bff7cd79704c8a4c007a659da5bc594cd0395fef61ca83fbe9a5
+    reason: science output stage selection
+  - path: include/citlali/core/engine/detail/pointing_timestream_output_impl.h
+    sha256: d09f44b270405caeb55b01354cd01cc50835667d971e35528a7ad5a5033ff8ae
+    reason: pointing output stage selection
+  - path: include/citlali/core/engine/detail/beammap_timestream_pipeline_impl.h
+    sha256: 1e3a4eb0e1fdbb08411650f39edb473aef577b3fe201c93864e0e0c81fe14b78
+    reason: Beammap RTC/PTC pipeline
+  - path: include/citlali/core/engine/detail/beammap_ptc_cleaning_impl.h
+    sha256: 5d529153763c82945482e73764d2156b08ebb9114b8690117c5cab48dc95d73a
+    reason: Beammap PTC boundary
+  - path: include/citlali/core/pipeline/timestream_scan_context.h
+    sha256: 1cb05a896b90e1085d23119ba950c2153bf03234dc6025eb323ee3eaa605bc1a
+    reason: inner/outer scan support
+  - path: include/citlali/core/pipeline/timestream_scan_generation.h
+    sha256: 84e2f14fc5523209ab402bfadfec6bca505ecf725a3c6fad695e5bb9db8a9370
+    reason: scan/context construction
+  - path: include/citlali/core/engine/detail/tod_file_output_impl.h
+    sha256: 3382f74a68178eec56b1a0b4d6949690f6149d8fdb42949a896a5a2e1fb5ac61
+    reason: full/mini TOD writer and types
+  - path: include/citlali/core/pipeline/timestream_output_context.h
+    sha256: 9cdb18eda54db07916b74ad18da793a457c0d4341ba30fca27732587a6da85fb
+    reason: output mode expectations
+  - path: include/citlali/core/pipeline/timestream_run_context.h
+    sha256: f42aee4f662e124197569c315bfef01cbf64679d9b2b50cf5086ebcbb62e2d2a
+    reason: runtime output context
+  - path: include/citlali/core/pipeline/output_policy.h
+    sha256: 9a09a9935b6997ebf929c0f3de9c48a97294a997d183f824b7a7afe4bef230fa
+    reason: RTC/PTC output policy
+  - path: include/citlali/core/timestream/ptc/ptcproc.h
+    sha256: 15f5da569fc65f02048cefb7b685116b32919c8e8ab60374a638bc46cf1508ab
+    reason: bounded PTC input cleaning/kernel/weight consumer trace
+  - path: include/citlali/core/engine/detail/beammap_source_aware_rtc_impl.h
+    sha256: 649ecb76c7066292276c2d1786d6590da61b978118b66bce6acd8f21d8ad2b57
+    reason: source-aware Beammap RTC rerun boundary
+  - path: include/citlali/core/engine/detail/beammap_pipeline_entry_impl.h
+    sha256: 6fbbcf7c7368896a002ef765ac0a15ddd20e3a9cf03cc56cca0d751617d8775a
+    reason: Beammap real/simulation entry
+  - path: include/citlali/core/pipeline/telescope_timestream_alignment.h
+    sha256: 554d9ada73464df530ec97a0b48524ec7f9c8830ee8fc9f85b4e1f393e1e9c7a
+    reason: RTC telescope-alignment admission
+  - path: include/citlali/core/pipeline/simulated_observation_indices.h
+    sha256: 6406a9bc711ec8970d51531232da4d74ddf61754b0ed51fc8913e6a8b567caef
+    reason: simulation identity reset
+  - path: include/citlali/core/pipeline/science_map_identity.h
+    sha256: 8263ff31cbb956dd09ba6106cc62436f87fdb537ba1e088e1d5cdba0424e379e
+    reason: map product identity boundary
+  - path: include/citlali/core/engine/detail/beammap_mapmaking_pass_impl.h
+    sha256: 7590ca2d835c03e49ddedb12b163fc312b0609f095deb96ef749931e2751b9e6
+    reason: Beammap detector-map consumer
+  - path: include/citlali/core/engine/detail/lali_map_population_impl.h
+    sha256: 539a78a33de9f240f30fcc5e172eb9f8d88c656d0dd4f3a779e87a03715d05f8
+    reason: science VAL-like population caller
+  - path: include/citlali/core/engine/detail/beammap_map_population_impl.h
+    sha256: fd86d362d04a85a487d1ed610bd243a13af643a0bc8c427497197b151b12d647
+    reason: Beammap population caller
+  - path: include/citlali/core/pipeline/tod_output_layout.h
+    sha256: 9f6250446cde023fdbee4f878e46f06b8dfc354e9a9ce00e894e9383dad8306f
+    reason: full/mini file layout
+  - path: include/citlali/core/pipeline/tod_data_core_vars.h
+    sha256: 93607b8040f27fc79c2135ed931fcabfce25360d6e180935741786a39d3571ba
+    reason: signal/kernel/flag persisted variables
+  - path: include/citlali/core/pipeline/raw_timestream_policy.h
+    sha256: a98413a37c7ce737f5c17fcab77de9f273a9c9df40132773fd1a085e9e9af099
+    reason: raw output policy defaults
+  - path: include/citlali/core/config/timestream_config_validation.h
+    sha256: a0e9835e19751819c297853a329a5646f0e9d0024cf4c17f670cabdcf950b014
+    reason: downsample/Nyquist validation
+  - path: tests/test_config_scaffold.cpp
+    sha256: 8e1cf0c00f6980d56e2d560fd10e21619834318fef8aee7e4320f974eedaee27
+    reason: existing typed-config/provenance test coverage only
+  - path: include/citlali/core/mapmaking/naive_mm.h
+    sha256: ab07891db7cdcb96cd7ca9451a35e6042e3b03289e649230806c676d03b6c3fb
+    reason: bounded VAL eligibility and non-finite admission
+  - path: include/citlali/core/mapmaking/science_map_contract.h
+    sha256: 90afef645fafdd8077e564b007d913396c1cb33a72a65232c8ea9f43067f035c
+    reason: current science-map validity contract
+  - path: include/citlali/core/pipeline/runtime_policy.h
+    sha256: 247e9362f77140031635f8bd7261505f0843328dcd6ebecd18bc28c4ec6e12a3
+    reason: sequential/OpenMP runtime policy
+  - path: include/citlali/core/pipeline/reduction_config_validation_logging.h
+    sha256: 571d017d1c9f55e7727e1bc285e711221a6dc2570006c7fa401cae51970159fb
+    reason: CLI validation propagation
+  - path: include/citlali/core/pipeline/observation_setup_validation.h
+    sha256: 92a715ba2662708b5e95b41208b7b5dc939b907f77307fd7e3cfe97f00cf575a
+    reason: observation setup failure boundary
+  - path: include/citlali/core/config/reduction_config.h
+    sha256: 524884aa778cd9277d939157797ab3f9b14bf982961042247b119f1b067cfdfc
+    reason: typed reduction configuration
+  - path: include/citlali/core/engine/detail/citlali_config_impl.h
+    sha256: 9491add5f41ba055b38f12e0822a045d6b3a61c48d78a55950ae716ef8424ba1
+    reason: configuration load/validate entry
+  - path: include/citlali/core/cli/reduction_runtime.h
+    sha256: c7359e1e47e2f079303d0b274c896af908aa9b31b430df05c93adc353c67a8c9
+    reason: CLI failure propagation
+  - path: include/citlali/core/pipeline/tod_metadata_unit_conversion.h
+    sha256: fa4169374d9caa4ccb98523a087c29e5d14a69ddb16032529b338ef8e4556742
+    reason: persisted unit conversion
+  - path: include/citlali/core/pipeline/tod_metadata_mapmaker_tau.h
+    sha256: 3748bc0a5244387943b90e6c3a4cc5110bce187ad5fdd8fdf188143332eedce9
+    reason: persisted mean-opacity metadata
+  - path: include/citlali/core/pipeline/raw_tod_output_context.h
+    sha256: 05500d016fd815ff8217c7c8305911672104200ca04ec10bcfecbbe348a8e24f
+    reason: raw TOD output identity
+  - path: config/tolteca/science/70_pipeline.yaml
+    sha256: 273c1582ecb0e2cd906e90bad58ce8f328cee59b97570734329d5d3aeedfba52
+    reason: current science RTC configuration
+  - path: config/tolteca/beammap/70_pipeline.yaml
+    sha256: 8bab688427884051ce608688b12a755e46d7125bf0740c0506824bea103f1732
+    reason: current Beammap RTC configuration
+  - path: config/tolteca/point/70_pipeline.yaml
+    sha256: a47989ad900db690353ae02d90981cd9606af3156f492c761d02822efb928eab
+    reason: current Point RTC configuration
+  - path: config/tolteca/oof/70_pipeline.yaml
+    sha256: bc608f70b662bb256bfa82ad83733ddd5d3cfb456acbb13a51c74e464611e72e
+    reason: current OOF RTC configuration
+  - path: tests/test_utils.cpp
+    sha256: 09382e85f2c9d9065c842e488e0013a71a22bedc38bf75021ca7ba7d92be46eb
+    reason: existing narrow filter test-name/content trace
+
+formatting_only_post_source_references:
+  authority_for_scientific_claims: none
+  paths:
+    - doc/audits/proposals/SCI-AST-001_LEDGER_PROPOSAL_2026-08-01.yaml
+    - doc/audits/evidence/SCI-AST-001_LOCAL_EVIDENCE_2026-08-01.yaml
+    - doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-004.yaml
+    - doc/audits/packages/SCI-AST-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+  note: >-
+    These dispatch-object artifacts were opened after the independent freeze
+    only to follow established document/YAML presentation. No AST result from
+    them was used unless independently traced or admitted through the frozen
+    manifest/handoff boundary.
+
+local_commands:
+  - id: SCI-RTC-001-L001
+    command: >-
+      git status --short --branch && git show -s
+      --format='%H%n%P%n%T%n%cI%n%ct'
+      3620434eb988662210b2466ee357ffc8f891aa58
+    exact_sha: 3620434eb988662210b2466ee357ffc8f891aa58
+    scope: branch, clean state, and core-freeze identity
+    result: pass
+    observed_summary: >-
+      Branch codex/audit-sci-rtc-001; no dirty paths; parent is the governing
+      application SHA; tree is 3cafe771e15e0c6159e323f357ce3a5c76b01efa;
+      timestamp converts to 2026-08-08T17:50:49Z.
+  - id: SCI-RTC-001-L002
+    command: >-
+      git show <exact-object>:<listed-path> | shasum -a 256
+    exact_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    scope: every application path in source_trace and every frozen dispatch object
+    result: pass
+    observed_summary: >-
+      All displayed application bytes came from the governing tree; all
+      source_trace digests above were computed from those exact bytes. Prompt,
+      manifest, core, and three handoff digests matched their declared values.
+  - id: SCI-RTC-001-L003
+    command: >-
+      rg -n <bounded RTC symbols> <source_trace paths>
+    exact_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    scope: direct static references for stage order, equations, products, and consumers
+    result: pass_with_findings
+    observed_summary: >-
+      Located the exact call order, factor/replacement formulas, filter and
+      downsample operations, source-mask admission, output stage splits,
+      four-stage provenance, and bounded PTC/VAL/BEAM consumers. Match-only
+      searches were navigation evidence; conclusions were made only after the
+      listed source content was opened.
+  - id: SCI-RTC-001-L004
+    command: |-
+      /Users/gwilson/tolteca/bin/python -c 'import json, math, numpy as np; fs=122.0703125; a=50.0; alpha=0.5842*(a-21.0)**0.4+0.07886*(a-21.0); out={};
+      for hz in (16.0,20.0,30.0,32.0):
+       n=32; k=np.arange(1,n+1,dtype=float); w=np.i0(alpha*np.sqrt(1.0-(k/n)**2))/np.i0(alpha); f=2.0*hz/fs; c=w*np.sin(np.pi*k*f)/(np.pi*k); h=np.r_[c[::-1],f,c]; out[str(int(hz))]={"coefficient_sum":float(h.sum()),"n_terms":n,"length":int(h.size)}
+      print(json.dumps({"fs_hz":fs,"a_gibbs":a,"results":out},sort_keys=True))'
+    exact_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    scope: deterministic direct evaluation of filter.h lines 60-101; no Citlali reduction
+    result: pass
+    observed_summary: >-
+      At fs=122.0703125 Hz, a_gibbs=50, n_terms=32, sums were
+      0.9995720037513057 (16 Hz), 1.000116339580343 (20 Hz),
+      0.9993723986695066 (30 Hz), and 1.0006199825360638 (32 Hz).
+      This establishes exact unnormalized response values for the probe, not a
+      universal bias magnitude or a compiled implementation result.
+  - id: SCI-RTC-001-L005
+    command: ctest --test-dir build -N
+    exact_sha: 3620434eb988662210b2466ee357ffc8f891aa58
+    scope: existence-only inventory of an exact-worktree compiled test surface
+    result: unavailable
+    exit_code: 1
+    observed_summary: >-
+      Failed to change working directory because build does not exist. No
+      configure, build, download, install, compiled test, or alternate-worktree
+      substitution was attempted.
+  - id: SCI-RTC-001-L006
+    command: >-
+      git show fff3f538ce04fb66d73ac3671f2bc6a10975baed:<handoff-path>
+    exact_sha: fff3f538ce04fb66d73ac3671f2bc6a10975baed
+    scope: three manifest-declared post-core handoffs after re-verifying digests
+    result: pass
+    observed_summary: >-
+      All three records were opened only after the core freeze and every record
+      received the bounded disposition recorded above.
+
+direct_observations:
+  - id: SCI-RTC-001-O001
+    claim: RTC stage order and output split are explicit.
+    result: >-
+      Calibration then extinction precede kernel creation and despike
+      replacement; pre/filter/notch/IIR stages precede outer capture; phase-zero
+      decimation, post-filter masks/notches, and signal-only alt-az destriping
+      produce the inner PTC input. Outer RTC is therefore not the same stage as
+      inner RTC/PTC input.
+  - id: SCI-RTC-001-O002
+    claim: RTC-entry absolute response is nonconformant with the frozen CAL authority.
+    result: >-
+      Signal is multiplied by flux_conversion_factor times APT flxscale.
+      Non-q0 tau is made zenith-equivalent by division by airmass and then
+      applied as exp(tau), while q0 returns zero tau. Required strict finite,
+      positivity, factor-identity, and top-of-atmosphere application semantics
+      are not realized.
+  - id: SCI-RTC-001-O003
+    claim: calibrated-domain replacement omits the calibration-factor ratio.
+    result: >-
+      Donor residuals are divided by donor responsivity, averaged, and
+      multiplied by target responsivity after calibration. Equation RTC-07
+      requires g_target*rho_target/(g_donor*rho_donor); source applies only the
+      rho ratio, does not validate target responsivity, and persists no donor
+      links or factor identities. Replaced target rows remain flagged.
+  - id: SCI-RTC-001-O004
+    claim: validity and influence support are not propagated through the realized operator.
+    result: >-
+      FIR/notch/IIR consume filled/flagged/non-finite payloads without a typed
+      mask operator. Phase-zero striding selects values while flags OR only the
+      corresponding factor-cell block. Neighboring unflagged outputs can depend
+      on replacement, synthesized, flagged, or non-finite cells; the kernel does
+      not include donor mixing and cause-specific influence is not persisted.
+  - id: SCI-RTC-001-O005
+    claim: an enabled signal operator is absent from the kernel.
+    result: >-
+      Alt-az destriping forms templates from time/az/el/derivatives, fits each
+      detector on unflagged rows, and subtracts X*beta from signal only. It does
+      not transform the kernel. Current science and Beammap configs enable both
+      alt-az destriping and kernel generation.
+  - id: SCI-RTC-001-O006
+    claim: source-mask invalidity fails open.
+    result: >-
+      Nonpositive/non-finite radius, unsupported/empty coordinate shape, and
+      non-finite coordinates yield an all-false or partial mask; the supported
+      mode sets info.valid true and RTC ignores that validity. Invalid
+      coordinate is therefore treated as outside/unprotected.
+  - id: SCI-RTC-001-O007
+    claim: edge response is profile-dependent and incompletely represented.
+    result: >-
+      FIR leaves first and last n_terms unchanged. Context is requested, but
+      only an enabled flag-mode edge guard marks missing observation-boundary
+      context. The current science config enables a 32-term FIR while omitting
+      the RTC edge_guard block; Point/OOF/Beammap explicitly enable it.
+  - id: SCI-RTC-001-O008
+    claim: typed configuration has a positive anti-alias dependency guard.
+    result: >-
+      Validation rejects enabled downsampling without filtering and rejects
+      filter high frequency above output Nyquist. It does not prove attenuation,
+      coefficient normalization, phase/support provenance, or alias bounds.
+  - id: SCI-RTC-001-O009
+    claim: four state axes exist but realized scientific provenance is incomplete.
+    result: >-
+      Requested/effective/observation/realized nodes are serialized atomically
+      after completion. Realized lifecycle records only completion, scan count,
+      and required write count; optional flagged/dynamic-notch counts are not
+      populated by the traced lifecycle. Exact coefficients, order/state,
+      calibration table/digests, donor links, masks, phase/support, per-scan
+      application, response availability, and product digests are absent.
+  - id: SCI-RTC-001-O010
+    claim: bounded consumers cannot recover the missing RTC semantics.
+    result: >-
+      PTC mean/PCA paths consume signal, flags, and kernel; approximate weights
+      use fcf and sens although fcf omits flxscale. Ordinary map population skips
+      directly flagged cells before payload inspection and fails on eligible
+      non-finite values, so unflagged neighbors influenced by invalid/replaced
+      cells remain admissible. Beammap uses the same RTC and enables the
+      signal-only destriper with a kernel.
+
+existing_test_surface:
+  tests_executed: []
+  opened_tests:
+    - path: tests/test_utils.cpp
+      coverage: notch settle monotonicity and zero-phase constant preservation
+      limitation: no full RTC response, replacement, support, kernel, provenance, or consumer fixture
+    - path: tests/test_config_scaffold.cpp
+      coverage: typed request/adaptation/resolution/provenance and downsample validation
+      limitation: no full RTC numerical or causal-validity fixture
+  exact_worktree_build_directory: absent
+  sequential_openmp_test_found: false
+  broad_test_campaign_launched: false
+
+proposed_future_exact_sha_evidence:
+  status: proposed_not_requested_not_executed
+  trigger: >-
+    Only after owner decisions, dependency closure, a separately authorized
+    bounded repair, and selection of one exact successor SHA.
+  protocol:
+    exact_sha_binding:
+      - record successor commit, parent, tree, config bytes, input fixture bytes, and output digests
+      - reject required-data skip and zero unexpected error-level messages
+    focused_deterministic_cases:
+      - identity/no-filter and exact stage-order controls
+      - constant-elevation and varying-airmass calibration including q0 and invalid domains
+      - unequal target/donor g and rho, invalid target rho, no-donor, endpoint, and deterministic-fill replacement
+      - impulse, constant, ramp, sinusoid, notch, chained-filter, and exact coefficient response
+      - flagged, non-finite, synthesized, replaced, edge, short-scan, and temporal-influence cause propagation
+      - odd/even downsample factor, phase zero, representative time, support, and alias attenuation
+      - valid/invalid/missing coordinate source-mask admission
+      - signal/kernel equality through the conditioned alt-az projection operator
+      - full/mini/outer/inner product identity and four-stage provenance round trip
+      - sequential/OpenMP value, flag, kernel, donor-link, and provenance equivalence
+    stop_rule: >-
+      No local reduction, Unity request, broad suite, or costly study is proposed
+      by this artifact. Any broad/costly study requires the separate
+      FRAMEWORK-NUM-001 launch gate and owner authorization.
+
+finding_support:
+  SCI-RTC-001-F001: [SCI-RTC-001-O002]
+  SCI-RTC-001-F002: [SCI-RTC-001-O003]
+  SCI-RTC-001-F003: [SCI-RTC-001-O004, SCI-RTC-001-XAUD-002]
+  SCI-RTC-001-F004: [SCI-RTC-001-O005]
+  SCI-RTC-001-F005: [SCI-RTC-001-O006, SCI-RTC-001-XAUD-003]
+  SCI-RTC-001-F006: [SCI-RTC-001-O007]
+  SCI-RTC-001-F007: [SCI-RTC-001-O001, SCI-RTC-001-O009]
+  SCI-RTC-001-F008: [SCI-RTC-001-O004, SCI-RTC-001-XAUD-002]
+  SCI-RTC-001-F009: [SCI-RTC-001-O002, SCI-RTC-001-XAUD-001]
+  SCI-RTC-001-F010: [SCI-RTC-001-O006, SCI-RTC-001-XAUD-003]
+  SCI-RTC-001-F011: [SCI-RTC-001-L005]
+  SCI-RTC-001-F012: [SCI-RTC-001-O001, SCI-RTC-001-O003, SCI-RTC-001-O004, SCI-RTC-001-O005]
+
+cost_and_scope:
+  cost_classification: not_costly
+  deterministic_formula_probe_only: true
+  broad_or_costly_execution_launched: false
+  local_citlali_reduction_launched: false
+  unity_accessed: false
+  external_system_or_person_contacted: false
+  network_accessed: false
+  software_installed_or_downloaded: false
+
+scope_guards:
+  application_code_modified: false
+  tests_modified: false
+  build_files_modified: false
+  validation_artifacts_modified: false
+  configuration_modified: false
+  production_documentation_modified: false
+  canonical_audit_ledger_modified: false
+  canonical_handoff_registry_modified: false
+  repair_attempted: false
+  reaudit_attempted: false
+  downstream_package_launched: false
+  delegation_used: false
+  push_performed: false

@@ -1,0 +1,131 @@
+format_version: 1
+id: SCI-PTC-001-XAUD-005
+created_date: 2026-08-08
+
+source:
+  package_id: SCI-RTC-001
+  role: independent_auditor
+  audit_branch: codex/audit-sci-rtc-001
+  audit_commit: pending_final_documentation_commit
+  governing_or_evidence_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+  finding_ids:
+    - SCI-RTC-001-F001
+    - SCI-RTC-001-F002
+    - SCI-RTC-001-F003
+    - SCI-RTC-001-F004
+    - SCI-RTC-001-F007
+    - SCI-RTC-001-F008
+    - SCI-RTC-001-F009
+    - SCI-RTC-001-F011
+
+target:
+  package_id: SCI-PTC-001
+
+priority: P0
+evidence_basis: observed_and_derived
+review_phase: post_core_evidence
+arrival: after_RTC_audit_completion
+status: proposed_unintegrated
+
+summary: >-
+  PTC receives an inner RTC signal/kernel/flag bundle whose calibrated response,
+  causal validity support, kernel equivalence, and exact realized provenance
+  are nonconformant or unavailable at the governing SHA.
+claim: >-
+  RTC's inner product follows calibration/extinction, flagged donor replacement,
+  FIR/notch/IIR conditioning, phase-zero striding when enabled, post-filter
+  flagging/notches, and signal-only alt-az destriping. The kernel follows most
+  configured filters and striding but not donor replacement or alt-az
+  destriping; flags do not cover the full donor/filter/IIR influence support.
+  Approximate PTC weight input fcf records flux_conversion_factor and mean
+  extinction but omits APT flxscale, so it is not the complete RTC calibration
+  factor. PTC cleaning/weight interpretation must not infer a matched response,
+  independent samples, or complete calibration from the present bundle.
+
+required_RTC_interface_facts:
+  sample:
+    stage_id: inner_RTC_PTC_input
+    value_path: post_decimation_post_RTC_masks_post_altaz_destripe
+    time_phase: phase_zero_stride_when_downsampled
+    exact_support_available: false
+    absolute_response_conformant: false
+  kernel:
+    present_when_requested: true
+    matched_to_filter_and_stride_subset: true
+    includes_donor_replacement_response: false
+    includes_altaz_destripe_response: false
+    complete_conditioned_response_available: false
+  flags:
+    direct_replacement_cells_remain_flagged: true
+    downsample_rule: OR_over_each_factor_cell_block
+    complete_FIR_IIR_donor_influence_support: false
+    cause_specific_provenance_available: false
+  transfer:
+    conditional_LTI_only: true
+    data_dependent_stages:
+      - spike detection and donor selection
+      - dynamic line selection
+      - flag-conditioned alt-az projection
+    exact_realized_coefficients_and_state_persisted: false
+  calibration_for_weights:
+    fcf_contains_flux_conversion_factor: true
+    fcf_contains_mean_extinction_factor_when_enabled: true
+    fcf_contains_APT_flxscale: false
+    complete_factor_identity_available: false
+
+supports:
+  - >-
+    Keep PTC existing_use_only and fail closed on new absolute weight, transfer,
+    covariance, or kernel-response claims until RTC/CAL/ALIGN dependencies and
+    RTC findings close at one re-audited successor SHA.
+  - >-
+    Require PTC admission to distinguish direct flags from temporal/donor
+    influence, and to bind every sample, kernel, factor, detector, scan, rate,
+    phase, and response identity.
+  - >-
+    Add focused interface fixtures for unequal calibration factors, donor
+    mixing, impulse support, flagged/non-finite influence, matched signal/kernel
+    projection, exact factor identity, and sequential/OpenMP equivalence.
+does_not_establish:
+  - This record does not audit PTC PCA/correlated-mode mathematics or weighting estimators.
+  - It does not quantify an astronomical bias or invalidate a particular accepted run.
+  - It does not authorize RTC/PTC repair, re-audit, execution, or production expansion.
+
+requested_actions:
+  - add_or_update_dependency
+  - add_or_update_finding
+  - add_interface_test
+  - restrict_consumer
+  - preserve_existing_use_only
+affected_target_findings: []
+related_handoffs:
+  - SCI-VAL-001-XAUD-007
+  - SCI-BEAM-001-XAUD-003
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-RTC-001-independent-core
+    availability: repository_path
+    path: doc/audits/packages/SCI-RTC-001_INDEPENDENT_CORE.tex
+    sha256: d6cf49d1a5e17754c55cc4f2c8f4b4f5e276755f247496df888581d890be80b7
+    note: Frozen equations RTC-01 through RTC-30 and provisional PTC input contract.
+  - id: SCI-RTC-001-local-evidence
+    availability: repository_path
+    path: doc/audits/evidence/SCI-RTC-001_LOCAL_EVIDENCE_2026-08-08.yaml
+    sha256: 1cb733544d6b9d6decb1794279d2e81249b00375071c01ee71f514135dcf6394
+    note: Exact-source stage, factor, support, product, and bounded PTC trace.
+
+recipient_disposition:
+  status: pending_PTC_auditor_and_coordinator_review
+  late_arrival_route: not_applicable
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null
