@@ -38,8 +38,9 @@ inline void validate(const MapmakingConfig &config, ValidationReport &report) {
     for (const auto &[array_name, shape] :
          config.jinc_filter.shape_params) {
         for (std::size_t index = 0; index < shape.size(); ++index) {
-            check_finite_value(
+            check_greater_than(
                 shape[index],
+                0.0,
                 {"mapmaking", "jinc_filter", "shape_params",
                  array_name, std::to_string(index)},
                 report);

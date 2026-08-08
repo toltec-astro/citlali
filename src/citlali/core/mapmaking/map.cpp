@@ -65,6 +65,166 @@ namespace {
     throw std::runtime_error(os.str());
 }
 
+void normalize_jinc_maps(
+    mapmaking::MapBuffer &buffer,
+    const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps) {
+    const auto map_count = buffer.signal.size();
+    auto &products = buffer.jinc_products;
+    if (buffer.grid_weight.size() != map_count ||
+        buffer.weight.size() != map_count ||
+        buffer.coverage.size() != map_count ||
+        products.denominator_sum_abs.size() != map_count ||
+        products.contributor_count.size() != map_count ||
+        products.formal_support.size() != map_count ||
+        (!buffer.kernel.empty() && buffer.kernel.size() != map_count) ||
+        (!buffer.noise.empty() && buffer.noise.size() != map_count)) {
+        throw std::runtime_error(
+            "JINC finalization requires a complete atomic accumulator inventory");
+    }
+
+    auto &summary = products.provenance.realized;
+    summary.map_count = map_count;
+    summary.total_pixel_count = 0;
+    summary.formally_supported_pixel_count = 0;
+    summary.exact_cancellation_pixel_count = 0;
+    summary.unresolved_cancellation_pixel_count = 0;
+    summary.invalid_q_pixel_count = 0;
+    summary.nonfinite_accumulator_pixel_count = 0;
+    summary.contributor_count_max = 0;
+    summary.rho_resolution_bound_max = 0.0;
+    summary.product_joins.clear();
+    buffer.normalize_support_diag.assign(map_count,
+                                         MapBuffer::NormalizeSupportDiag{});
+
+    for (std::size_t slot = 0; slot < map_count; ++slot) {
+        if (active_maps != nullptr &&
+            (slot >= static_cast<std::size_t>(active_maps->size()) ||
+             !(*active_maps)(static_cast<Eigen::Index>(slot)))) {
+            continue;
+        }
+        const auto rows = buffer.signal[slot].rows();
+        const auto cols = buffer.signal[slot].cols();
+        if (rows != buffer.n_rows || cols != buffer.n_cols ||
+            buffer.weight[slot].rows() != rows ||
+            buffer.weight[slot].cols() != cols ||
+            buffer.grid_weight[slot].rows() != rows ||
+            buffer.grid_weight[slot].cols() != cols ||
+            buffer.coverage[slot].rows() != rows ||
+            buffer.coverage[slot].cols() != cols ||
+            products.denominator_sum_abs[slot].rows() != rows ||
+            products.denominator_sum_abs[slot].cols() != cols ||
+            products.contributor_count[slot].rows() != rows ||
+            products.contributor_count[slot].cols() != cols ||
+            products.formal_support[slot].rows() != rows ||
+            products.formal_support[slot].cols() != cols) {
+            throw std::runtime_error(
+                "JINC finalization encountered a mismatched map shape");
+        }
+
+        MapBuffer::NormalizeSupportDiag diag;
+        diag.map_index = static_cast<Eigen::Index>(slot);
+        diag.n_total = rows * cols;
+        diag.use_grid_weight = true;
+        diag.support_weight_threshold = 0.0;
+        auto &formal_mask = products.formal_support[slot];
+        formal_mask.setZero();
+
+        for (Eigen::Index row = 0; row < rows; ++row) {
+            for (Eigen::Index col = 0; col < cols; ++col) {
+                ++summary.total_pixel_count;
+                const auto count =
+                    products.contributor_count[slot](row, col);
+                const auto result = finalize_jinc_accumulators(
+                    buffer.signal[slot](row, col),
+                    buffer.grid_weight[slot](row, col),
+                    buffer.weight[slot](row, col),
+                    products.denominator_sum_abs[slot](row, col),
+                    static_cast<std::size_t>(count));
+                summary.contributor_count_max = std::max(
+                    summary.contributor_count_max,
+                    static_cast<std::size_t>(count));
+                summary.rho_resolution_bound_max = std::max(
+                    summary.rho_resolution_bound_max,
+                    result.rho_resolution_bound);
+
+                bool companions_finite =
+                    std::isfinite(buffer.coverage[slot](row, col)) &&
+                    buffer.coverage[slot](row, col) >= 0.0;
+                if (!buffer.kernel.empty()) {
+                    companions_finite =
+                        companions_finite &&
+                        std::isfinite(buffer.kernel[slot](row, col));
+                }
+                if (!buffer.noise.empty()) {
+                    if (buffer.noise[slot].dimension(0) != rows ||
+                        buffer.noise[slot].dimension(1) != cols ||
+                        buffer.noise[slot].dimension(2) != buffer.n_noise) {
+                        throw std::runtime_error(
+                            "JINC finalization encountered a mismatched realization cube");
+                    }
+                    for (Eigen::Index realization = 0;
+                         realization < buffer.n_noise; ++realization) {
+                        companions_finite =
+                            companions_finite &&
+                            std::isfinite(buffer.noise[slot](
+                                row, col, realization));
+                    }
+                }
+                const bool supported =
+                    result.formal_support && companions_finite;
+                if (supported) {
+                    buffer.signal[slot](row, col) = result.signal;
+                    buffer.weight[slot](row, col) = result.formal_weight;
+                    const double denominator =
+                        buffer.grid_weight[slot](row, col);
+                    if (!buffer.kernel.empty()) {
+                        buffer.kernel[slot](row, col) /= denominator;
+                    }
+                    if (!buffer.noise.empty()) {
+                        for (Eigen::Index realization = 0;
+                             realization < buffer.n_noise; ++realization) {
+                            buffer.noise[slot](row, col, realization) /=
+                                denominator;
+                        }
+                    }
+                    formal_mask(row, col) = 1;
+                    ++summary.formally_supported_pixel_count;
+                    ++diag.n_retained;
+                }
+                else {
+                    buffer.signal[slot](row, col) = 0.0;
+                    buffer.weight[slot](row, col) = 0.0;
+                    buffer.coverage[slot](row, col) = 0.0;
+                    if (!buffer.kernel.empty()) {
+                        buffer.kernel[slot](row, col) = 0.0;
+                    }
+                    if (!buffer.noise.empty()) {
+                        for (Eigen::Index realization = 0;
+                             realization < buffer.n_noise; ++realization) {
+                            buffer.noise[slot](row, col, realization) = 0.0;
+                        }
+                    }
+                    ++diag.n_masked;
+                    if (!result.accumulators_finite || !companions_finite) {
+                        ++summary.nonfinite_accumulator_pixel_count;
+                    }
+                    else if (!result.q_positive) {
+                        ++summary.invalid_q_pixel_count;
+                    }
+                    else if (result.exact_cancellation) {
+                        ++summary.exact_cancellation_pixel_count;
+                    }
+                    else if (!result.numerically_resolved) {
+                        ++summary.unresolved_cancellation_pixel_count;
+                    }
+                }
+            }
+        }
+        buffer.normalize_support_diag[slot] = diag;
+    }
+    std::vector<Eigen::MatrixXd>().swap(buffer.grid_weight);
+}
+
 } // namespace
 
 // constructor
@@ -74,6 +234,10 @@ MapBuffer::MapBuffer() {}
 MapBuffer::MapBuffer(std::string _n): name(_n) {}
 
 void MapBuffer::normalize_maps(const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps) {
+    if (jinc_products.initialized) {
+        normalize_jinc_maps(*this, active_maps);
+        return;
+    }
     // vectors for maps
     const bool use_grid_weight = grid_weight.size() == signal.size();
     const bool realize_science_products =

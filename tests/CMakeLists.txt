@@ -24,6 +24,8 @@ target_sources(citlali_test
         reduction_restart_checkpoint_header.cpp
         wiener_filter_validation_header.cpp
         test_kids_input_validation.cpp
+        jinc_contract_header.cpp
+        test_jinc_map_contract.cpp
         test_learning_and_fruit_contracts.cpp
         test_map_fitter_lifecycle.cpp
         test_output_root_lease.cpp
@@ -56,6 +58,27 @@ add_executable(citlali_science_map_truth_test EXCLUDE_FROM_ALL
     test_science_map_contract.cpp
     test_science_map_provenance.cpp
     test_science_map_truth_suite.cpp
+)
+
+add_executable(citlali_jinc_map_contract_test EXCLUDE_FROM_ALL
+    jinc_contract_header.cpp
+    test_jinc_map_contract.cpp
+)
+set_target_properties(citlali_jinc_map_contract_test
+    PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+)
+target_link_libraries(citlali_jinc_map_contract_test
+    PRIVATE
+        citlali::citlali
+        GTest::gtest_main
+)
+add_dependencies(check citlali_jinc_map_contract_test)
+gtest_discover_tests(
+    citlali_jinc_map_contract_test
+        WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+        TEST_PREFIX "citlali::jinc::"
+        DISCOVERY_MODE PRE_TEST
 )
 set_target_properties(citlali_science_map_truth_test
     PROPERTIES

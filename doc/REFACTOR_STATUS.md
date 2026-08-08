@@ -133,6 +133,62 @@ this exact integration tip,
 work, Unity execution, realization-count recommendations, calibrated
 significance, and Conan-lane synchronization remain separate decisions.
 
+## 2026-08-08 SCI-MAP-002 Local JINC Repair Candidate
+
+The bounded SCI-MAP-002 application repair was prepared on
+`codex/repair-sci-map-002` directly from exact canonical application mainline
+`46ad23888a40f5102cdfd50c06e49a549bdf8a20`. That base contains accepted
+SCI-MAP-001 application source and the integrated SCI-NOI-002 product,
+identity, writer/finalizer, atomic-publication, and provenance seams. Frozen
+coordination authority is Git object
+`dd5894679bf12bf4a5fb551e871b3c6010ef9b9b` on
+`codex/scientific-audit-framework`; its bounded handoff, coordinator review,
+eight owner decisions, corrected scientific-contract audit, local evidence,
+ledger proposal, and applicable handoffs govern this candidate.
+
+The candidate preserves signed finite JINC lobes, phase-quantized point
+sampling, the fully populated square cache, and the established accumulators
+`N = sum(q_i c_i d_i)`, `C = sum(q_i c_i)`, and
+`Q = sum(q_i c_i^2)`. It finalizes signal as `N/C` and the distinct formal
+mapmaker weight as `C^2/Q`; replaces unit-bearing absolute conditioning gates
+with finite-state, positive-`Q`, exact-cancellation, and documented
+dimensionless realized-rho checks; and fails invalid selected-array identity or
+JINC parameter domains before deposition or publication. Formal support is
+authoritative, empirical policy may only downgrade it, coverage remains the
+formal-support-only coefficient-squared integration-time sum in seconds, and
+the kernel product is the realized processing-filtered source-template
+response finalized as `K/C`.
+
+One compact atomic mapmaking-provenance record per coherent observation or
+declared processing segment carries requested/effective digests, resolved
+array identities, realized numeric policy, and immutable product/HDU/digest
+joins. No per-sample, per-detector, or per-pixel provenance is added. The
+existing v3 provenance identity is retained because the new state is an
+additive realization record rather than a format break.
+
+The exact local tree passes all five required build targets and 634/634
+enabled Citlali CTests (one pre-existing disabled test). The focused fixtures
+cover signed direct equations; square edge, corner, and map-edge cropping with
+no radial predicate; phase-bin boundaries and bounded point-phase refinement;
+cancellation/rho, unit rescaling, finite-range and invalid-`Q` behavior;
+selected-array and parameter-domain admission; formal/empirical support;
+coverage seconds; kernel response; compact provenance joins; all-valid
+no-broadening; and sequential/concurrent agreement under the declared numeric
+policy. The complete baseline-tool suite passes 173/173 tests. The required
+config preflight passes 127/127 tests, all four mode kits, 8/8 compact
+compatibility cases with zero skips, 100% compact-surface coverage, and all
+typed boundary audits. The raw-execution census remains the exact canonical
+45-record digest
+`09572da976aec89d56506394420b478426a6efbd0942c864571a8f6f311da2f8`
+with zero review-required entries.
+
+This local candidate does not authorize Unity access, a reduction, evidence
+collection, re-audit, production-status change, parameter campaign, or
+algorithm broadening. Unity evidence and a fresh independent re-audit remain
+external gates. The provisional processed-PTC diagnostic-writer issue is
+outside this frozen repair, is unchanged, and is not used as positive JINC
+validation evidence.
+
 ## Historical 2026-07-31 SCI-MAP-001 Bounded Repair Lane
 
 This section preserves the repair-lane chronology and its candidate-time gate

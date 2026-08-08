@@ -657,6 +657,59 @@ TEST(science_map_fits_products, writes_canonical_typed_planes_and_aliases) {
     EXPECT_EQ(coverage_bool.at("WTTHRESH"), "3");
 }
 
+TEST(science_map_fits_products,
+     jinc_publishes_formal_weight_support_coverage_and_kernel_truth) {
+    auto map = std::make_shared<mapmaking::MapBuffer>("omb");
+    map->n_rows = 2;
+    map->n_cols = 2;
+    map->n_noise = 0;
+    map->sig_unit = "mJy/beam";
+    map->signal = {Eigen::MatrixXd::Ones(2, 2)};
+    map->weight = {Eigen::MatrixXd::Constant(2, 2, 2.0)};
+    map->coverage = {Eigen::MatrixXd::Constant(2, 2, 7.5)};
+    map->median_err = Eigen::VectorXd::Ones(1);
+    map->jinc_products.allocate(1, 2, 2);
+    map->jinc_products.formal_support[0] << 1, 0, 1, 1;
+    map->science_products.allocate(
+        1, 2, 2, false, false, false,
+        "method-specific contribution predicate unavailable");
+    CapturedFitsEntry primary;
+    CapturedFitsEntry support;
+    DummyWcs wcs;
+
+    citlali::pipeline::add_primary_map_image_hdus(
+        primary, map, 0, "", "I", wcs, 2000.0, false, false, false,
+        true, science_map_test_logger());
+    citlali::pipeline::add_coverage_support_image_hdus(
+        support, map, 0, "", "I", wcs, 2000.0, false, false, true,
+        science_map_test_logger());
+
+    const auto &weight = captured_hdu(primary, "weight_I").keys;
+    EXPECT_EQ(weight.at("JNCROLE"), "formal_mapmaker");
+    EXPECT_EQ(weight.at("ESTTYPE"), "conditional_formal_JINC_C2_over_Q");
+    EXPECT_EQ(weight.at("COVSTAT"), "unavailable");
+    EXPECT_EQ(captured_image_count(support, "coverage_I"), 1U);
+    EXPECT_EQ(captured_image_count(support, "coverage_bool_I"), 1U);
+    const auto &coverage = captured_hdu(support, "coverage_I").keys;
+    EXPECT_EQ(coverage.at("BUNIT"), "s");
+    EXPECT_EQ(coverage.at("ESTTYPE"), mapmaking::jinc_coverage_identity);
+    EXPECT_EQ(coverage.at("JNCSUP"), "formal_support_only");
+    const auto &formal_support =
+        captured_hdu(support, "coverage_bool_I").keys;
+    EXPECT_EQ(formal_support.at("VALAUTH"), "true");
+    EXPECT_EQ(formal_support.at("ESTTYPE"),
+              mapmaking::jinc_formal_support_identity);
+    EXPECT_EQ(formal_support.at("JNCCOND"),
+              mapmaking::jinc_conditioning_identity);
+    EXPECT_FALSE(captured_has_image(support, "science_valid_I"));
+
+    CapturedHdu kernel;
+    citlali::pipeline::add_jinc_kernel_map_metadata(kernel, map->sig_unit);
+    EXPECT_EQ(kernel.keys.at("ESTTYPE"),
+              "processing_filtered_template_JINC_K_over_C");
+    EXPECT_EQ(kernel.keys.at("JNCCNTR"), mapmaking::jinc_kernel_identity);
+}
+
 TEST(science_map_fits_products, skips_products_declared_unavailable) {
     auto map = make_science_map_buffer(false);
     CapturedFitsEntry output;

@@ -90,10 +90,16 @@ void adapt_jinc_filter_config_one_way(
     target.r_max = source.r_max;
     target.subpixel_n = source.subpixel_n;
     target.shape_params.clear();
+    if constexpr (requires { target.array_names.clear(); }) {
+        target.array_names.clear();
+    }
     for (const auto &[array_index, array_name] : array_name_map) {
         const auto &shape = source.shape_params.at(array_name);
         target.shape_params[array_index] = Eigen::Map<const Eigen::VectorXd>(
             shape.data(), static_cast<Eigen::Index>(shape.size()));
+        if constexpr (requires { target.array_names[array_index] = array_name; }) {
+            target.array_names[array_index] = array_name;
+        }
     }
 }
 

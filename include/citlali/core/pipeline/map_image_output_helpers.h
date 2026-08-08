@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/mapmaking/science_map_contract.h>
+#include <citlali/core/mapmaking/jinc_contract.h>
 #include <citlali/core/pipeline/fits_image_metadata.h>
 #include <citlali/core/pipeline/noise_execution_plan.h>
 
@@ -460,8 +461,16 @@ void add_primary_map_image_hdus(
         fits_entry, weight_map_hdu_name(map_name, stokes_suffix),
         mb->weight[i], wcs, source_epoch);
     const std::string weight_unit = map_weight_unit(mb->sig_unit);
-    add_weight_map_metadata(
-        *fits_entry.hdus.back(), weight_unit, empirical_weight_calibration);
+    if (mb->jinc_products.initialized) {
+        add_jinc_weight_map_metadata(
+            *fits_entry.hdus.back(), weight_unit,
+            empirical_weight_calibration);
+    }
+    else {
+        add_weight_map_metadata(
+            *fits_entry.hdus.back(), weight_unit,
+            empirical_weight_calibration);
+    }
     if (empirical_weight_calibration) {
         add_noise_product_package_join(
             *fits_entry.hdus.back(), noise_scaled_coefficient_product_id,
@@ -508,7 +517,14 @@ void add_primary_map_image_hdus(
         add_map_hdu_with_wcs(
             fits_entry, formal_weight_map_hdu_name(map_name, stokes_suffix),
             mb->weight_formal[i], wcs, source_epoch);
-        add_formal_weight_map_metadata(*fits_entry.hdus.back(), weight_unit);
+        if (mb->jinc_products.initialized) {
+            add_jinc_formal_weight_map_metadata(
+                *fits_entry.hdus.back(), weight_unit);
+        }
+        else {
+            add_formal_weight_map_metadata(
+                *fits_entry.hdus.back(), weight_unit);
+        }
         add_noise_product_package_join(
             *fits_entry.hdus.back(), noise_formal_coefficient_product_id,
             map_pixel_scope, "available",
@@ -552,7 +568,13 @@ void add_kernel_map_image_hdu(
         fwhm, map_name, fits_entry.filepath, logger);
     add_kernel_fwhm_key(*fits_entry.hdus.back(), fwhm);
     fits_entry.add_wcs(fits_entry.hdus.back(), wcs, source_epoch);
-    add_kernel_map_metadata(*fits_entry.hdus.back(), mb->sig_unit);
+    if (mb->jinc_products.initialized) {
+        add_jinc_kernel_map_metadata(
+            *fits_entry.hdus.back(), mb->sig_unit);
+    }
+    else {
+        add_kernel_map_metadata(*fits_entry.hdus.back(), mb->sig_unit);
+    }
 }
 
 struct FilteredScatterValidity {
@@ -603,6 +625,30 @@ void add_coverage_support_image_hdus(
     const Wcs &wcs, double source_epoch, bool is_filtered_output,
     bool empirical_noise_products_expected, bool coadd_product,
     const Logger &logger) {
+    if (mb->jinc_products.initialized) {
+        if (!has_map_image_slot(mb->coverage, i, mb->n_rows, mb->n_cols) ||
+            i < 0 ||
+            i >= static_cast<Eigen::Index>(
+                mb->jinc_products.formal_support.size()) ||
+            mb->jinc_products.formal_support[static_cast<std::size_t>(i)]
+                    .rows() != mb->n_rows ||
+            mb->jinc_products.formal_support[static_cast<std::size_t>(i)]
+                    .cols() != mb->n_cols) {
+            fail_required_output(
+                logger,
+                "JINC output lacks coefficient-squared coverage or authoritative formal support");
+        }
+        add_map_hdu_with_wcs(
+            fits_entry, coverage_map_hdu_name(map_name, stokes_suffix),
+            mb->coverage[static_cast<std::size_t>(i)], wcs, source_epoch);
+        add_jinc_coverage_map_metadata(*fits_entry.hdus.back());
+        add_map_hdu_with_wcs(
+            fits_entry,
+            coverage_mask_map_hdu_name(map_name, stokes_suffix),
+            mb->jinc_products.formal_support[static_cast<std::size_t>(i)],
+            wcs, source_epoch);
+        add_jinc_formal_support_map_metadata(*fits_entry.hdus.back());
+    }
     if (!mb->coverage.empty()) {
         const bool empirical_snr_available = has_map_image_slot(
             mb->sig2noise_pixel, i, mb->n_rows, mb->n_cols);

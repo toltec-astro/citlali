@@ -319,6 +319,67 @@ Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_
                 noise_fits_io->at(map_index), mb, i, map_name, stokes_suffix,
                 mb->wcs, source_epoch, median_rms);
         }
+        if (mb->jinc_products.initialized) {
+            if (i < 0 ||
+                i >= static_cast<Eigen::Index>(
+                    mb->jinc_products.formal_support.size())) {
+                citlali::pipeline::fail_required_output(
+                    logger,
+                    "JINC product publication lacks an authoritative formal-support slot");
+            }
+            auto &provenance = mb->jinc_products.provenance;
+            const std::string product_scope =
+                fmt::format("{}_map_slot_{}",
+                            is_filtered_output ? "filtered" : "raw",
+                            static_cast<long long>(i));
+            const std::string output_file =
+                fits_io->at(map_index).filepath;
+            auto join = [&](std::string product_identity,
+                            std::string hdu_name,
+                            const auto &plane) {
+                mapmaking::record_jinc_product_join(
+                    provenance,
+                    mapmaking::JincProductJoin{
+                        std::move(product_identity), product_scope,
+                        output_file, std::move(hdu_name),
+                        mapmaking::jinc_matrix_digest(plane)});
+            };
+            join("jinc-finalized-signal-N-over-C",
+                 citlali::pipeline::signal_map_hdu_name(
+                     map_name, stokes_suffix),
+                 mb->signal[static_cast<std::size_t>(i)]);
+            if (empirical_weight_calibration) {
+                join("jinc-empirical-working-weight",
+                     citlali::pipeline::weight_map_hdu_name(
+                         map_name, stokes_suffix),
+                     mb->weight[static_cast<std::size_t>(i)]);
+                join("jinc-conditional-formal-mapmaker-weight-C2-over-Q",
+                     citlali::pipeline::formal_weight_map_hdu_name(
+                         map_name, stokes_suffix),
+                     mb->weight_formal[static_cast<std::size_t>(i)]);
+            }
+            else {
+                join("jinc-conditional-formal-mapmaker-weight-C2-over-Q",
+                     citlali::pipeline::weight_map_hdu_name(
+                         map_name, stokes_suffix),
+                     mb->weight[static_cast<std::size_t>(i)]);
+            }
+            join("jinc-coefficient-squared-effective-integration-time",
+                 citlali::pipeline::coverage_map_hdu_name(
+                     map_name, stokes_suffix),
+                 mb->coverage[static_cast<std::size_t>(i)]);
+            join("jinc-authoritative-formal-support",
+                 citlali::pipeline::coverage_mask_map_hdu_name(
+                     map_name, stokes_suffix),
+                 mb->jinc_products.formal_support[
+                     static_cast<std::size_t>(i)]);
+            if (write_raw_kernel) {
+                join("jinc-processing-filtered-template-response-K-over-C",
+                     citlali::pipeline::kernel_map_hdu_name(
+                         map_name, stokes_suffix),
+                     mb->kernel[static_cast<std::size_t>(i)]);
+            }
+        }
         return first_hdu_index;
     } catch (const CCfits::FitsException &e) {
         throw std::runtime_error(

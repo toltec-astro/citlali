@@ -218,6 +218,45 @@
       "covariance_policy": "No GLS, covariance regularization, coadd uncertainty, inverse-variance, or significance claim is authorized; precision remains conditional on SCI-PTC-001 and named covariance evidence."
     }
   },
+  "jinc_map_contracts": {
+    "sci-map-002-jinc-v1": {
+      "audit_state": "addressed_pending_reaudit",
+      "estimator": "signed-N-over-C-formal-C2-over-Q-v1",
+      "accumulators": {
+        "numerator": "N=sum(q_i*c_i*d_i)",
+        "denominator": "C=sum(q_i*c_i)",
+        "formal_variance_accumulator": "Q=sum(q_i*c_i^2)",
+        "signal": "N/C",
+        "formal_weight": "C^2/Q"
+      },
+      "signed_coefficient_policy": "All finite signed JINC lobes are retained.",
+      "support_geometry": "fully-populated square cache with r_max as both the second-JINC-zero parameter and cache half-width; corners beyond radial r_max are intentional and no radial predicate is applied",
+      "phase_policy": "rounded-center residual-phase quantized point sampling; subpixel_n refines phase bins and is not pixel-area integration",
+      "conditioning_policy": {
+        "identity": "finite-positive-Q-exact-cancellation-and-rho-resolution-v1",
+        "summation_method": "naive-binary64-two-level-2gamma-n-sumabs-v1",
+        "rho": "abs(C)/sum(abs(q_i*c_i))",
+        "resolution_bound": "2*gamma_n where gamma_n=n*binary64_epsilon/(1-n*binary64_epsilon)",
+        "forbidden": "unit-bearing absolute C or Q thresholds"
+      },
+      "products": {
+        "weight_I": "conditional formal mapmaker weight C^2/Q unless an explicitly labeled empirical working weight is selected",
+        "coverage_bool_I": "authoritative formal-support uint8 mask; empirical policy may downgrade but never promote",
+        "coverage_I": "coefficient-squared effective integration time sum(c_i^2/f_s,i), in seconds, consumed only with formal support",
+        "kernel_I": "realized processing-filtered source-template response projected through JINC, K/C"
+      },
+      "provenance": "one compact atomic forward-only requested/effective/resolved/realized observation or declared-segment record with immutable output-file/HDU/content-digest joins",
+      "preserved_contracts": ["SCI-MAP-001", "SCI-NOI-002"],
+      "forbidden_claims": [
+        "geometric exposure",
+        "hit count",
+        "pixel-area integration",
+        "analytic unfiltered JINC kernel response",
+        "measured beam",
+        "covariance or inverse-variance precision"
+      ]
+    }
+  },
   "families": {
     "science_map_cube_altaz_v1": {
       "scientific_identity": "SCI-MAP-001 v1 array-grouped raw Stokes-I estimator bundle with nonprecision normalization coefficients and typed hit, exposure, support, validity, response, and alias products when the selected method supports them.",

@@ -54,6 +54,7 @@ void clear_map_matrix_products(MapBuffer &buffer) {
     std::vector<Eigen::MatrixXd>().swap(buffer.grid_weight);
     std::vector<Eigen::MatrixXd>().swap(buffer.pointing);
     buffer.science_products.clear();
+    buffer.jinc_products.clear();
     buffer.raw_science_parent.reset();
     buffer.clear_contribution_diag();
 }
@@ -77,7 +78,8 @@ void allocate_map_matrices(MapBuffer &buffer, Eigen::Index n_maps,
                            bool allocate_grid_weight, bool allocate_kernel,
                            bool allocate_coverage,
                            bool allocate_science_products = true,
-                           std::string science_product_absence_reason = {}) {
+                           std::string science_product_absence_reason = {},
+                           bool allocate_jinc_products = false) {
     const Eigen::MatrixXd zero_matrix =
         Eigen::MatrixXd::Zero(buffer.n_rows, buffer.n_cols);
 
@@ -101,6 +103,13 @@ void allocate_map_matrices(MapBuffer &buffer, Eigen::Index n_maps,
         allocate_science_products && !allocate_grid_weight,
         allocate_science_products,
         std::move(science_product_absence_reason));
+    if (allocate_jinc_products) {
+        buffer.jinc_products.allocate(
+            n_maps, buffer.n_rows, buffer.n_cols);
+    }
+    else {
+        buffer.jinc_products.clear();
+    }
 }
 
 template <class MapBuffer>

@@ -35,6 +35,8 @@ inline YAML::Node mapmaking_observation_provenance_node(
         node["science_state"]["absence_reason"] =
             observation.science_state_absence_reason;
     }
+    node["jinc_state"] = jinc_observation_state_node(
+        observation.jinc_state);
     return node;
 }
 
@@ -61,6 +63,12 @@ inline YAML::Node mapmaking_provenance_node(
         science_map_exact_double_node(plan.requested.coverage_cut);
     root["science_contract"]["cuts"]["effective"] =
         science_map_exact_double_node(plan.effective.coverage_cut);
+    root["jinc_contract"]["version"] =
+        std::string{mapmaking::jinc_contract_version};
+    root["jinc_contract"]["summation_method"] =
+        std::string{mapmaking::jinc_summation_identity};
+    root["jinc_contract"]["conditioning_policy"] =
+        std::string{mapmaking::jinc_conditioning_identity};
     root["observations"] =
         mapmaking_observations_provenance_node(plan.observations);
     root["coadd"] = mapmaking_coadd_state_node(plan.coadd);
