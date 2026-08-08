@@ -1,0 +1,134 @@
+format_version: 1
+target_package: SCI-RTC-001
+created_date: 2026-08-08
+coordinator_registry_commit: dd5894679bf12bf4a5fb551e871b3c6010ef9b9b
+manifest_status: frozen_for_dispatch
+
+governing_application:
+  branch: origin/codex/refactor-mainline
+  commit: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+  parent: 4846fa4db39bd2f7d4ddc41f693836834cbc5ff4
+  tree: ab230a93b8fb310d58aefd7ac5da92e5d5e0f408
+  status: verified_pushed_canonical_mainline
+
+pre_core_authority_objects:
+  - id: ALIGN-OD1-OD8-C001
+    package_id: SCI-ALIGN-001
+    path: doc/audits/packages/SCI-ALIGN-001_COORDINATOR_DECISION_2026-08-01.md
+    object_commit: 4f905f4f353e91847a303f4f3959654f3f03c302
+    sha256: 14c8044fe7a26c7ee1af7b8dea3472e9cb604471c91ca58dc93b662a7d3d9895
+    status: approved_bounded_contract_authority
+    review_phase: pre_core_authority
+  - id: ALIGN-P0-D001
+    package_id: SCI-ALIGN-001
+    path: doc/audits/packages/SCI-ALIGN-001_PHASE_ZERO_D001_DECISION_2026-08-01.md
+    object_commit: 86434df2cfb5b85d0ccd306150cb428321abdbb9
+    sha256: 0efe9d06bf02ceca473c92b00dce4c6d1ec9b6e564f226c9451f444ee5a6d66c
+    status: owner_resolved_bounded_existing_use_authority
+    review_phase: pre_core_authority
+  - id: ALIGN-P0-D002
+    package_id: SCI-ALIGN-001
+    path: doc/audits/packages/SCI-ALIGN-001_PHASE_ZERO_D002_DECISION_2026-08-01.md
+    object_commit: 10981b29c1870e745b7f3c9cabed3c634a46427f
+    sha256: 7e4e2c02bf2e16035d6a2aceacaa4e07c7c528e08f09fdb2d0a9186d510465cd
+    status: owner_resolved_bounded_rate_and_support_authority
+    review_phase: pre_core_authority
+  - id: ALIGN-P0-D003
+    package_id: SCI-ALIGN-001
+    path: doc/audits/packages/SCI-ALIGN-001_PHASE_ZERO_D003_DECISION_2026-08-01.md
+    object_commit: d500e33da1869bc1e20383a49484daddca9e7ea7
+    sha256: a25b46ddec445a4164086aae248e3cbbfc70c7df8cb2c785c4c135d936e92d67
+    status: owner_resolved_bounded_offset_and_admission_authority
+    review_phase: pre_core_authority
+  - id: ALIGN-P0-D004
+    package_id: SCI-ALIGN-001
+    path: doc/audits/packages/SCI-ALIGN-001_PHASE_ZERO_D004_DECISION_2026-08-01.md
+    object_commit: a3775bf3039461a6435f07938572dd23b3f03d47
+    sha256: ea03c5b614c7ce64ab5ab071c48c07d2f4910b919941798e70668049e53faf78
+    status: owner_resolved_bounded_registry_and_validity_authority
+    review_phase: pre_core_authority
+  - id: ALIGN-P0-D005
+    package_id: SCI-ALIGN-001
+    path: doc/audits/packages/SCI-ALIGN-001_PHASE_ZERO_D005_DECISION_2026-08-02.md
+    object_commit: 99886afb84c0ef582cee070ec156342a2f0b3327
+    sha256: b07c62103105f044269b68e6db1ee669f4293eabce6d0f145105f57337a683d4
+    status: owner_resolved_bounded_existing_use_and_phase_one_authority
+    review_phase: pre_core_authority
+  - id: CAL-D001-D005
+    package_id: SCI-CAL-001
+    path: doc/audits/packages/SCI-CAL-001_COORDINATOR_DECISION_2026-07-31.md
+    object_commit: e8bd929008140e2ea8b44bfdc80b0a531b488765
+    sha256: 1e2d44b76138734aaae5a7b241ae621deb1510c2de763b74be31a87e106d175c
+    status: approved_bounded_contract_authority
+    review_phase: pre_core_authority
+  - id: CAL-D001-OPACITY-001
+    package_id: SCI-CAL-001
+    path: doc/audits/packages/SCI-CAL-001_OPACITY_DECISION_AMENDMENT_2026-07-31.md
+    object_commit: 4dabc750de69d53c852317ab77c735febd00a1b5
+    sha256: 64fd3ae9788c6a8e3db18ac5ea4f04799586b548f9e7ec12cc8c18f9cbf96e09
+    status: approved_bounded_contract_amendment
+    review_phase: pre_core_authority
+  - id: CAL-D002-IDENTITY-001
+    package_id: SCI-CAL-001
+    path: doc/audits/packages/SCI-CAL-001_APT_IDENTITY_DECISION_AMENDMENT_2026-08-01.md
+    object_commit: 0a17d088aded7fc6c18a59522f5b2b2fce9749ad
+    sha256: d40def5bb1450446abc858d2acfc1924c2f65276f8f48eec89cf05a171cdcf6a
+    status: approved_bounded_identity_amendment
+    review_phase: pre_core_authority
+  - id: CAL-D001-ACCURACY-001
+    package_id: SCI-CAL-001
+    path: doc/audits/packages/SCI-CAL-001_ACCURACY_AND_MODEL_SCOPE_AMENDMENT_2026-08-01.md
+    object_commit: 353aaf196bc0a80ae6876f6947000a6903f32f2f
+    sha256: ae295b717da3f9ed7129661e812b05847ff988500bb3d6f159b7ffae45cb2780
+    status: approved_bounded_accuracy_and_model_scope_amendment
+    review_phase: pre_core_authority
+  - id: SCI-AST-001-D001-D008
+    package_id: SCI-AST-001
+    path: doc/audits/packages/SCI-AST-001_COORDINATOR_DECISION_2026-08-01.md
+    object_commit: 8ee5b9fc192877106c4d5d747dfef75646edcfd9
+    sha256: c2e8f2c18f2d96a27afd6b6a083408b17562e596ee1e2851a00de3d9c7e5e9d9
+    status: approved_bounded_contract_authority
+    review_phase: pre_core_authority
+
+handoffs:
+  - id: SCI-RTC-001-XAUD-002
+    source_package: SCI-ALIGN-001
+    path: doc/audits/handoffs/SCI-RTC-001/SCI-RTC-001-XAUD-002.yaml
+    sha256: 01ee55506fe3c6643d0fdb0559bbce14fa038ac53155701c5bcbc71211fe9319
+    status: submitted
+    review_phase: post_core_evidence
+  - id: SCI-RTC-001-XAUD-001
+    source_package: SCI-CAL-001
+    path: doc/audits/handoffs/SCI-RTC-001/SCI-RTC-001-XAUD-001.yaml
+    sha256: 9497050f12d162d92b21479b0c9490fe06f6303b61548ae152152ff9587a504f
+    status: submitted
+    review_phase: post_core_evidence
+  - id: SCI-RTC-001-XAUD-003
+    source_package: SCI-AST-001
+    path: doc/audits/handoffs/SCI-RTC-001/SCI-RTC-001-XAUD-003.yaml
+    sha256: 5eff0782d3c1057ccccbc613e9304e5410b6c30155ca04a34ae285f26e9f95a8
+    status: submitted
+    review_phase: post_core_evidence
+
+pre_core_authority_ids:
+  - ALIGN-OD1-OD8-C001
+  - ALIGN-P0-D001
+  - ALIGN-P0-D002
+  - ALIGN-P0-D003
+  - ALIGN-P0-D004
+  - ALIGN-P0-D005
+  - CAL-D001-D005
+  - CAL-D001-OPACITY-001
+  - CAL-D002-IDENTITY-001
+  - CAL-D001-ACCURACY-001
+  - SCI-AST-001-D001-D008
+post_core_evidence_ids:
+  - SCI-RTC-001-XAUD-002
+  - SCI-RTC-001-XAUD-001
+  - SCI-RTC-001-XAUD-003
+
+late_arrival_rule: explicit_amendment_reaudit_or_external_restriction
+late_arrival_effect: >-
+  A record absent from this manifest is not part of SCI-RTC-001. The
+  coordinator must hold it for fresh re-audit, authorize a dated amendment
+  preserving the frozen core, or impose a separate urgent restriction.

@@ -4,6 +4,64 @@ repository: /Users/gwilson/GitHub/citlali-refactor
 inventory_branch: codex/refactor-mainline
 inventory_governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
 inventory_date: 2026-07-31
+current_program_checkpoint:
+  record_date: 2026-08-08
+  record_path: >-
+    doc/audits/packages/SCIENTIFIC_AUDIT_PROGRAM_CHECKPOINT_2026-08-08.md
+  record_sha256: >-
+    364f8d31a434b61454ba5ebae5e928076dda495aeafb26842213e2ab0a807f98
+  canonical_application_mainline:
+    ref: origin/codex/refactor-mainline
+    commit: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    parent: 4846fa4db39bd2f7d4ddc41f693836834cbc5ff4
+    tree: ab230a93b8fb310d58aefd7ac5da92e5d5e0f408
+    status: verified_pushed_canonical_mainline
+  bounded_integrations:
+    SCI-MAP-001:
+      accepted_application_source: af0c849ce59a5f80e5efc8db435bb6662863052f
+      integration_commit: d5015fe716971bf8ea617e8a187311bf5af05185
+      production_status: existing_use_only
+      restriction: exact_application_mainline_record_only
+    SCI-NOI-002:
+      accepted_application_source: 5b29e13548a6fec884c67b192dec20c92f0bbb62
+      integration_commit: 4846fa4db39bd2f7d4ddc41f693836834cbc5ff4
+      production_status: existing_use_only
+      restriction: exact_application_mainline_record_only
+  active_lanes:
+    SCI-CAL-001: active_repair_from_46ad2388_no_result_admitted
+    SCI-MAP-002: active_repair_from_46ad2388_no_result_admitted
+    SCI-ALIGN-001: owner_managed_slow_evidence_active
+    SCI-AST-001: held_for_accepted_reaudited_ALIGN_successor
+    ENG-STATE-001: static_package_accepted_F001_F002_open
+  queue:
+    - SCI-RTC-001_ultra_next
+    - SCI-PTC-001_after_RTC
+    - SCI-VAL-001_after_PTC
+    - SCI-BEAM-001_after_frozen_PTC_VAL
+  held_readiness:
+    SCI-FLT-001: exact_repair_base_unresolved_until_integrated_CAL_successor
+  audit_admission: >-
+    no_blanket_ban_new_audits_repair_debt_dependencies_cost_and_scope_controlled
+  post_core_evidence_queue:
+    - id: ALIGN-3C273-PTC-VAL-POSTCORE-2026-08-08
+      source_task: 019fc822-9f45-72b1-91e9-775e80768d2a
+      targets: [SCI-PTC-001, SCI-VAL-001]
+      status: exact_post_core_queue_evidence_unintegrated_validation_pending
+      commit: 5c6309125fef15f7c98e70a62b591c663944b130
+      parent: 2ee6d5116a1acd6230694715d0d1d39bac2f9a77
+      tree: 247c04b4cd5f76005dc07fa63480008568c51ea4
+      handoff_object: >-
+        5c6309125fef15f7c98e70a62b591c663944b130:handoff/SCI_ALIGN_001_PTC_SCAN_METADATA_DEFECT_2026-08-08.md
+      handoff_sha256: >-
+        958d4494de801a08361945d046c92daec4b94e907c8317ad506cb1653c026553
+      local_bundle: >-
+        /Users/gwilson/GitHub/citlali-refactor/sci_align_001_ptc_scan_metadata_from_2ee6_5c630912.bundle
+      local_bundle_sha256: >-
+        b73aff50c7aeb14fd9af5b2e3055a92a3b2d2923443ce32de8d5f7f5c78686a5
+      rtc_effect: none_excluded_from_frozen_manifest
+      integration_status: not_integrated
+      external_validation_status: pending
+      next_gate: create_normal_post_core_handoffs_before_PTC_or_VAL_dispatch
 maintenance: >-
   hand_edited_general_ledger_with_narrow_schema_validated_costly_study_controls
 inventory_dependency_detail: >-
@@ -2157,7 +2215,7 @@ packages:
           decision_date: 2026-08-01
           record_path: >-
             doc/audits/packages/SCI-CAL-001_ACCURACY_AND_MODEL_SCOPE_AMENDMENT_2026-08-01.md
-          record_commit: 353aaf196ac2cabdd273f2a5760c80bec19cc885f
+          record_commit: 353aaf196bc0a80ae6876f6947000a6903f32f2f
           record_sha256: >-
             ae295b717da3f9ed7129661e812b05847ff988500bb3d6f159b7ffae45cb2780
         - decision_id: CAL-D002-IDENTITY-001
@@ -3745,15 +3803,49 @@ packages:
     downstream_consumers: [all scientific audit packages and external evidence reviewers]
     governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
     governing_sha_role: inventory_snapshot
-    audit_branch: null
-    audit_commit: null
+    audit_branch: codex/audit-eng-state-001
+    audit_commit: f68207c3a9cd59d42bc2642353cb3d8dd9b07dc9
+    static_audit_integration:
+      status: accepted_coordinator_ready_static_package
+      source_commit: f68207c3a9cd59d42bc2642353cb3d8dd9b07dc9
+      source_parent: 8a344e0cddf13bfdbb8e81b65b613ad8a0ad3ecf
+      source_tree: 9685d2c6c5e06653495f7f72459ada3e6f842a05
+      report_path: >-
+        doc/audits/packages/ENG-STATE-001_AUDIT_REPORT_2026-08-03.md
+      report_sha256: >-
+        1c329050c03e014af0d3f8fa5a58c50322ede9e4571c35e5b0970b31a65fe829
+      ledger_proposal_path: >-
+        doc/audits/proposals/ENG-STATE-001_LEDGER_PROPOSAL_2026-08-08.yaml
+      ledger_proposal_sha256: >-
+        2a3fba10ebd365e3a0e1658d402d07ba20bf349a1b86939014ba67a33d19c1d6
+      evidence_basis: static_only
+      application_or_validation_change: false
+      next_gate: fresh_static_scope_checkpoint_required
     independent_derivation: {status: not_started, sha256: null}
     contract_status: not_started
     implementation_status: not_assessed
     validation_status: not_started
     production_status: existing_use_only
     verdict: pending
-    open_findings: []
+    open_findings:
+      - id: ENG-STATE-001-F001
+        class: evidence_gap
+        severity: P1
+        evidence_basis: observed
+        status: open
+        summary: >-
+          The bounded static census found definitions but no call sites for
+          TimestreamOutputWriters completion checks.
+        next_gate: fresh_static_scope_checkpoint_for_writer_completion_callers
+      - id: ENG-STATE-001-F002
+        class: evidence_gap
+        severity: P1
+        evidence_basis: observed
+        status: open
+        summary: >-
+          The final CLI boundary was outside scope, so final structured-failure
+          exit/reporting disposition remains unassessed.
+        next_gate: fresh_static_scope_checkpoint_for_final_CLI_boundary
     unresolved_scientific_decisions: []
     local_evidence: []
     requested_unity_evidence: []
@@ -3788,6 +3880,8 @@ packages:
       - id: SCI-RTC-001-XAUD-002
         path: >-
           doc/audits/handoffs/SCI-RTC-001/SCI-RTC-001-XAUD-002.yaml
+        sha256: >-
+          01ee55506fe3c6643d0fdb0559bbce14fa038ac53155701c5bcbc71211fe9319
         source_package: SCI-ALIGN-001
         review_phase: post_core_evidence
         arrival: before_dispatch
@@ -3795,6 +3889,8 @@ packages:
       - id: SCI-RTC-001-XAUD-001
         path: >-
           doc/audits/handoffs/SCI-RTC-001/SCI-RTC-001-XAUD-001.yaml
+        sha256: >-
+          9497050f12d162d92b21479b0c9490fe06f6303b61548ae152152ff9587a504f
         source_package: SCI-CAL-001
         review_phase: post_core_evidence
         arrival: before_dispatch
@@ -3808,8 +3904,27 @@ packages:
         review_phase: post_core_evidence
         arrival: before_dispatch
         status: submitted
-    governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
-    governing_sha_role: inventory_snapshot
+    governing_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    governing_sha_role: audit_dispatch_base
+    audit_dispatch:
+      status: frozen_for_launch
+      dispatch_id: SCI-RTC-001-AUDIT-DISPATCH-2026-08-08
+      prompt_path: doc/audits/prompts/SCI_RTC_001_AUDIT_PROMPT.md
+      prompt_sha256: >-
+        01c02c2b1057a5346caaf5c0a8efaa7c5b17dec90158dffe9020b6838ad3951c
+      manifest_path: >-
+        doc/audits/handoffs/SCI-RTC-001/SCI-RTC-001_INBOX_AUTHORITY_MANIFEST_2026-08-08.yaml
+      manifest_sha256: >-
+        9f75e5df0184d73e90acec10cbf8c052fe7baad571a131ba8834f2acbbbccb1c
+      model: sol
+      effort: ultra
+      task_shape: decomposable_scientific
+      local_reduction_authorized: false
+      unity_authorized: false
+      delegation_authorized: false
+      application_change_authorized: false
+      repair_or_reaudit_authorized: false
+      stop_rule: coordinator_owner_review_after_bounded_audit
     audit_branch: null
     audit_commit: null
     independent_derivation: {status: not_started, sha256: null}
@@ -3880,6 +3995,16 @@ packages:
         arrival: before_dispatch
         status: submitted
     outgoing_handoffs: []
+    queued_post_core_evidence:
+      - id: ALIGN-3C273-PTC-VAL-POSTCORE-2026-08-08
+        source_commit: 5c6309125fef15f7c98e70a62b591c663944b130
+        handoff_object: >-
+          5c6309125fef15f7c98e70a62b591c663944b130:handoff/SCI_ALIGN_001_PTC_SCAN_METADATA_DEFECT_2026-08-08.md
+        handoff_sha256: >-
+          958d4494de801a08361945d046c92daec4b94e907c8317ad506cb1653c026553
+        status: exact_post_core_queue_evidence_unintegrated_validation_pending
+        pre_core_access: prohibited
+        next_gate: coordinator_integrated_handoff_before_PTC_dispatch
     governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
     governing_sha_role: inventory_snapshot
     audit_branch: null
@@ -3976,6 +4101,16 @@ packages:
         status: submitted
         supersedes: SCI-VAL-001-XAUD-005
     outgoing_handoffs: []
+    queued_post_core_evidence:
+      - id: ALIGN-3C273-PTC-VAL-POSTCORE-2026-08-08
+        source_commit: 5c6309125fef15f7c98e70a62b591c663944b130
+        handoff_object: >-
+          5c6309125fef15f7c98e70a62b591c663944b130:handoff/SCI_ALIGN_001_PTC_SCAN_METADATA_DEFECT_2026-08-08.md
+        handoff_sha256: >-
+          958d4494de801a08361945d046c92daec4b94e907c8317ad506cb1653c026553
+        status: exact_post_core_queue_evidence_unintegrated_validation_pending
+        pre_core_access: prohibited
+        next_gate: coordinator_integrated_handoff_before_VAL_dispatch
     governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
     governing_sha_role: inventory_snapshot
     audit_branch: null
@@ -4075,7 +4210,7 @@ packages:
       freeze_commit: bccc2614663c95aee66ed9b21b6025f5fb4e5f04
       freeze_timestamp_utc: 2026-08-03T16:54:20Z
       first_source_inspection_utc: 2026-08-03T17:16:58Z
-    contract_status: owner_contract_approved_repair_not_authorized
+    contract_status: approved
     repair_sequence:
       status: owner_approved
       decision_date: 2026-08-03
@@ -4085,7 +4220,7 @@ packages:
         freshly re-audited SCI-MAP-001 repair; do not repair the shared map
         product contract in parallel with SCI-MAP-002.
     implementation_status: nonconformant
-    validation_status: incomplete
+    validation_status: in_progress
     production_status: existing_use_only
     verdict: amend
     open_findings:
@@ -4475,19 +4610,35 @@ packages:
       - coverage_I, coverage_bool_I, kernel_I, and edge diagnostics
     upstream_dependencies:
       - package_id: SCI-MAP-001
+        status: conditioned
+        required_contract: >-
+          Accepted bounded MAP signal, nonprecision gridding/normalization
+          coefficient weight_I, kernel, facts/support/validity, raw scientific
+          validity versus numerical computability, and centered
+          coefficient-weighted observation coaddition at af0c849; separately
+          authorized FLT variance/precision remains required.
+        consequence: >-
+          MAP weight_I is not formal inverse variance. MAP validity remains
+          conditioned on SCI-PTC-001 and SCI-VAL-001, MAP production remains
+          existing_use_only, and no new filtered consumer is authorized.
+      - package_id: SCI-NOI-001
         status: open
         required_contract: >-
-          Map signal, formal weight, hits/coverage, validity, and normalization.
+          Noise-realization construction and propagation through the exact
+          admitted FLT operator, support, and validity boundary.
         consequence: >-
-          Candidate variance conformity and response/support interpretation
-          remain conditional, and no new filtered consumer is authorized.
+          No empirical filtered variance, covariance, standardized signal, or
+          significance claim is scientifically admitted from this dependency.
       - package_id: SCI-NOI-002
-        status: open
+        status: conditioned
         required_contract: >-
-          Noise/covariance, jackknife, empirical calibration, and S/N semantics.
+          The bounded integrated truthful noise-product and provenance
+          contracts at 5b29e135, retaining F005/RA-B004 under FLT and F006
+          under FRUIT; a compact aperture-uncertainty/covariance authority is
+          not supplied by integration.
         consequence: >-
-          Empirical weight and standardized-signal products remain restricted
-          and cannot establish calibrated significance.
+          Empirical weight and standardized-signal products remain restricted;
+          aperture uncertainty and covariance remain open FLT/NOI interfaces.
       - package_id: SCI-CAL-001
         status: open
         required_contract: >-
@@ -4560,13 +4711,21 @@ packages:
         confidence: high
         status: open
         owner: scientific_owner
+        owner_policy_status: resolved
+        remediation_status: approved_bounded
+        owner_decision_id: SCI-FLT-001-D001
         closure_gate: >-
-          Record whether to propagate, bound, or replace the same-map fill;
-          implement the accepted estimator and verify its covariance in local
-          fixtures and returned same-SHA evidence.
+          Implement the approved numerical-boundary policy: conservatively
+          erode the scientifically admitted region by the declared effective
+          filter footprint so no admitted output stencil reaches fill; verify
+          explicit edge/guard fixtures and sequential/OpenMP equality at the
+          exact successor, then obtain a fresh re-audit. No fill-covariance
+          calculation is required for invalid fill-influenced pixels.
         summary: >-
-          The exterior fill is a nonlinear same-map median, but its variance
-          and signal/fill cross-covariance are omitted.
+          The exterior fill is a nonlinear same-map median. Owner policy now
+          confines it to a numerical boundary device, but implementation and
+          evidence must still prove it cannot contaminate scientifically
+          admitted outputs.
       - id: SCI-FLT-001-F005
         class: scientific_policy_decision
         severity: P1
@@ -4574,13 +4733,18 @@ packages:
         confidence: high
         status: open
         owner: scientific_owner
+        owner_policy_status: resolved_by_SCI-FLT-001-D002
+        owner_decision_id: SCI-FLT-001-D002
         closure_gate: >-
-          Approve named response and absolute-support definitions, floors,
-          products, and metadata, then pass pre-registered blank and injection
-          gates.
+          Implement the approved convolved-kernel aperture-response contract;
+          verify identical realized signal/kernel operator, centering and
+          valid-region policy, explicit unit-source convention, and truthful
+          normalization/filter/input-kernel identity plus convenience metadata;
+          then pass focused fixtures and fresh re-audit.
         summary: >-
-          Response template/normalization, absolute support metric and floor,
-          and persisted response/support products are undecided.
+          The approved aperture contract uses a convolved mapmaking kernel and
+          valid-region mask, not an automatic response correction or continuous
+          response plane. Implementation and evidence remain outstanding.
       - id: SCI-FLT-001-F006
         class: scientific_policy_decision
         severity: P1
@@ -4588,13 +4752,17 @@ packages:
         confidence: high
         status: open
         owner: scientific_owner
+        owner_policy_status: resolved_by_SCI-FLT-001-D002
+        owner_decision_id: SCI-FLT-001-D002
         closure_gate: >-
-          Approve the post-smoothing photometric convention and any corrected
-          estimator, align units and aliases, and pass injection plus named
-          astronomical-recovery gates.
+          Implement the approved truthful unchanged-unit aperture contract,
+          retain convolved-amplitude compatibility aliases, verify kernel peak
+          and identically weighted aperture-response identities, and complete
+          the required CAL- and NOI-conditioned evidence plus fresh re-audit.
         summary: >-
-          Smoothed mJy/beam photometric meaning and any true point-source or
-          integrated-flux estimator are undecided.
+          Primary use is aperture photometry. Point-source response correction
+          is user-applied from the convolved kernel; no direct flux product or
+          automatic photometry is approved.
       - id: SCI-FLT-001-F007
         class: contract_gap
         severity: P2
@@ -4602,9 +4770,14 @@ packages:
         confidence: high
         status: open
         owner: scientific_owner
+        owner_policy_status: resolved_by_SCI-FLT-001-D003
+        owner_decision_id: SCI-FLT-001-D003
         closure_gate: >-
-          Approve and validate a covariance representation or explicitly
-          restrict every multi-pixel consumer that requires it.
+          Implement and verify the approved fail-closed restriction for every
+          covariance-dependent multi-pixel consumer, reproduce the robust
+          global empirical-pattern calibration with identical operator and full
+          realization provenance, then obtain fresh re-audit. A full covariance
+          representation is not required or authorized in FLT.
         summary: >-
           A variance plane omits filter-induced output-pixel covariance needed
           by multi-pixel significance and morphology.
@@ -4630,13 +4803,15 @@ packages:
         status: open
         owner: audit_coordinator
         closure_gate: >-
-          Close or explicitly condition SCI-MAP-001, SCI-NOI-002, and
-          SCI-CAL-001 through their package audits and propagate the resulting
-          restrictions into the convolve contract.
-        dependencies: [SCI-MAP-001, SCI-NOI-002, SCI-CAL-001]
+          Retain SCI-MAP-001 and SCI-NOI-002 as conditioned, obtain separately
+          authorized variance/precision and aperture-covariance identities,
+          and close or explicitly condition SCI-NOI-001 and SCI-CAL-001 before
+          propagating any resulting authorization into the convolve contract.
+        dependencies: [SCI-MAP-001, SCI-NOI-001, SCI-NOI-002, SCI-CAL-001]
         summary: >-
-          Map-weight, noise/covariance, and photometric input contracts remain
-          unresolved.
+          MAP and NOI-002 now supply bounded nonprecision/provenance facts only;
+          variance/precision, aperture covariance, and photometric input
+          contracts remain unresolved.
     addressed_findings:
       - id: SCI-FLT-001-F001
         class: implementation_defect
@@ -4674,12 +4849,7 @@ packages:
         summary: >-
           Dormant fractional taper uses inconsistent weight powers; accepted
           convolve configurations now reject that mode.
-    unresolved_scientific_decisions:
-      - propagate, bound, or replace the same-map median-fill covariance
-      - choose and normalize response and absolute-support products and floors
-      - define mJy/beam photometry after smoothing and any corrected estimator
-      - retain a global empirical scale or adopt a spatial empirical model
-      - define downstream representation or calibration of filtered covariance
+    unresolved_scientific_decisions: []
     local_evidence:
       - independent mathematical derivation and source trace in audit commit 800e8ae
       - analytic limiting cases and candidate focused-test inventory
@@ -4760,6 +4930,27 @@ packages:
     remediation_branch: codex/convolve-noise-correction
     remediation_commit: 02a198cbfb379eaf6ab279c5a3d44ee73ff90435
     remediation_role: pre_audit_candidate_requires_amendment
+    successor_repair_readiness:
+      status: held_readiness_only_no_launch
+      record_path: >-
+        doc/audits/packages/SCI-FLT-001_SUCCESSOR_REPAIR_DISPATCH_READINESS_2026-08-08.md
+      record_sha256: >-
+        21a61913aa69976118fba1efb70e90d2a20d54ab5add213096f47d0b2aee7b1c
+      canonical_application_mainline: >-
+        46ad23888a40f5102cdfd50c06e49a549bdf8a20
+      integrated_MAP_status: bounded_existing_use_only
+      integrated_NOI_status: bounded_existing_use_only
+      approved_D001_D003_amendment_object: >-
+        192e0d9b5e3be4eb20522d3319cae346168c4bce:doc/audits/packages/SCI-FLT-001_COORDINATOR_AMENDMENT_2026-08-05.md
+      approved_D001_D003_amendment_sha256: >-
+        965e9dd545c9b5bd7da4f15e08ab6ec3d96ac59b53c78873485eaead19ace661
+      exact_repair_base: null
+      repair_base_hold: >-
+        await_accepted_independently_reaudited_integrated_CAL_successor
+      repair_authorized: false
+      evidence_authorized: false
+      unity_authorized: false
+      reaudit_authorized: false
     re_audit_status: required
 
   - id: SCI-FLT-002

@@ -1,0 +1,117 @@
+format_version: 1
+proposal_kind: coordinator_review
+package:
+  id: ENG-STATE-001
+  tier: C
+  name: Scientific state, provenance, required products, and failure flow
+source_identity:
+  governing_application_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+  governing_sha_role: inventory_snapshot
+  audit_branch: codex/audit-eng-state-001
+  evidence_basis: static_only
+artifacts:
+  audit_report:
+    path: doc/audits/packages/ENG-STATE-001_AUDIT_REPORT_2026-08-03.md
+    sha256: 1c329050c03e014af0d3f8fa5a58c50322ede9e4571c35e5b0970b31a65fe829
+scope_guard:
+  included:
+    - requested_effective_observation_resolved_realized_authority
+    - lifecycle_ownership
+    - exact_sha_provenance
+    - required_product_publication
+    - reproducibility
+    - structured_failure_propagation
+  inspected_paths:
+    - include/citlali/core/session
+    - include/citlali/core/pipeline
+    - validation/product_contracts.json
+    - validation/accepted_runs.json
+    - tools/baseline/audit_reduction_run.py
+  excluded:
+    - scientific_estimators
+    - scientific_contracts
+    - units_response_validity_or_production_authorization
+    - application_code_or_test_changes
+    - builds_tests_reductions_or_unity_evidence
+    - repair_reaudit_integration_or_external_evidence
+positive_controls:
+  - id: ENG-STATE-001-PC001
+    claim: >-
+      ReductionSession owns an explicit ready/running/succeeded-or-failed
+      lifecycle and returns structured ReductionResult failures.
+    evidence_paths:
+      - include/citlali/core/session/reduction_session.h
+      - include/citlali/core/session/reduction_result.h
+  - id: ENG-STATE-001-PC002
+    claim: >-
+      Runtime and configuration-source provenance record requested/effective/
+      realized state and SHA-256 input/merged-config identities atomically.
+    evidence_paths:
+      - include/citlali/core/pipeline/runtime_provenance_output.h
+      - include/citlali/core/pipeline/config_source_manifest.h
+      - include/citlali/core/pipeline/atomic_yaml_output.h
+      - tools/baseline/audit_reduction_run.py
+  - id: ENG-STATE-001-PC003
+    claim: >-
+      Enabled required-product failures use a typed output error that maps to
+      a structured output_failed session result.
+    evidence_paths:
+      - include/citlali/core/pipeline/required_output_failure.h
+      - include/citlali/core/session/reduction_result.h
+      - validation/product_contracts.json
+findings:
+  - id: ENG-STATE-001-F001
+    class: evidence_gap
+    severity: P1
+    basis: observed
+    status: open
+    summary: >-
+      The authorized static caller census found definitions but no call sites
+      for TimestreamOutputWriters::rethrow_if_failed or verify_complete.
+    consequence: >-
+      Static evidence cannot prove that every required asynchronous timestream
+      write is checked before successful completion and provenance publication.
+    scope_limited: true
+  - id: ENG-STATE-001-F002
+    class: evidence_gap
+    severity: P1
+    basis: observed
+    status: open
+    summary: >-
+      The final CLI boundary is outside the approved source set, so final
+      exit/reporting disposition for structured reduction failures is unassessed.
+    consequence: >-
+      Required-output-to-CLI propagation is unconfirmed at the governing SHA.
+    scope_limited: true
+proposed_status_axes:
+  contract_status: not_started
+  implementation_status: not_assessed
+  validation_status: not_started
+  production_status: existing_use_only
+  verdict: pending
+  effect: unchanged
+proposed_coordinator_disposition: >-
+  Accept this static Tier C package as coordinator-ready; retain both findings
+  open, preserve all scientific contracts, consumer restrictions, and status
+  axes, and authorize no validation execution or repair from this proposal.
+proposed_next_gates:
+  - id: ENG-STATE-001-G001
+    type: coordinator_scope_checkpoint
+    purpose: >-
+      Name the concrete in-scope writer completion call sites needed to resolve
+      F001 by static evidence only.
+    prohibited_without_new_authorization:
+      - builds
+      - tests
+      - reductions
+      - repairs
+  - id: ENG-STATE-001-G002
+    type: coordinator_scope_checkpoint
+    purpose: >-
+      Name the final CLI boundary needed to resolve F002 by static evidence
+      only.
+    prohibited_without_new_authorization:
+      - builds
+      - tests
+      - reductions
+      - repairs

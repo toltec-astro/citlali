@@ -14,6 +14,38 @@ configuration, and validation authorities remain under `validation/` and
 `tools/config/`. This directory records scientific-contract work without
 replacing any of those authorities.
 
+## Current program checkpoint — 2026-08-08
+
+The pushed canonical application mainline is
+`origin/codex/refactor-mainline` at
+`46ad23888a40f5102cdfd50c06e49a549bdf8a20`. `SCI-MAP-001` and
+`SCI-NOI-002` are integrated only within the bounded contracts, limitations,
+and `existing_use_only` restrictions recorded on that exact application line.
+CAL and MAP-002 repairs are active from that base; no result from either active
+task is admitted by this checkpoint.
+
+ALIGN/3C273 evidence remains owner-managed and active, while AST repair waits
+for an accepted and re-audited ALIGN successor. RTC is next at Sol Ultra; PTC
+follows RTC, VAL follows PTC, and BEAM follows frozen PTC/VAL interfaces. FLT
+successor-repair dispatch remains held until CAL has an accepted, independently
+re-audited, integrated successor. The returned ENG-STATE-001 static package is
+accepted with F001/F002 open and unchanged package axes; further ENG work
+requires a fresh static-only scope checkpoint.
+
+The exact queue, active-lane boundaries, and provisional PTC/VAL routing
+placeholder are recorded in
+[`SCIENTIFIC_AUDIT_PROGRAM_CHECKPOINT_2026-08-08.md`](packages/SCIENTIFIC_AUDIT_PROGRAM_CHECKPOINT_2026-08-08.md).
+The RTC dispatch and frozen authority manifest are
+[`SCI_RTC_001_AUDIT_PROMPT.md`](prompts/SCI_RTC_001_AUDIT_PROMPT.md) and
+[`SCI-RTC-001_INBOX_AUTHORITY_MANIFEST_2026-08-08.yaml`](handoffs/SCI-RTC-001/SCI-RTC-001_INBOX_AUTHORITY_MANIFEST_2026-08-08.yaml).
+The smallest FLT readiness record is
+[`SCI-FLT-001_SUCCESSOR_REPAIR_DISPATCH_READINESS_2026-08-08.md`](packages/SCI-FLT-001_SUCCESSOR_REPAIR_DISPATCH_READINESS_2026-08-08.md).
+
+There is no blanket ban on new audits. New work must still enter through a
+bounded package, explicit dependencies, role separation, a frozen manifest,
+resource allocation, and the scope/cost checkpoints below. Repair debt,
+consumer restrictions, and concurrent scope are actively controlled.
+
 ## Purpose and non-goals
 
 The program exists to make the claimed estimator, its uncertainty and
