@@ -28,7 +28,7 @@ current_program_checkpoint:
       production_status: existing_use_only
       restriction: exact_application_mainline_record_only
   active_lanes:
-    SCI-CAL-001: active_repair_from_46ad2388_no_result_admitted
+    SCI-CAL-001: candidate_7894346_reaudited_rejected_F002_narrowly_closed_successor_repair_not_launched
     SCI-MAP-002: candidate_854a04b_reaudited_rejected_successor_repair_not_launched
     SCI-ALIGN-001: owner_managed_slow_evidence_active
     SCI-AST-001: held_for_accepted_reaudited_ALIGN_successor
@@ -2680,6 +2680,135 @@ packages:
         regression evidence only pending repair, validation, and fresh
         re-audit.
     verdict: amend
+    repair_reaudit_disposition:
+      status: exact_reaudit_integrated_candidate_rejected
+      candidate_commit: 7894346a91fa78ceb2a8b3d625335f466e5e1756
+      candidate_parent: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+      candidate_tree: 991f96c64e4d2d973ed5fc02630bfe29149109d9
+      reaudit_commit: 4140923de4ae33d36224493b5937e291bd552d30
+      reaudit_parent: 7894346a91fa78ceb2a8b3d625335f466e5e1756
+      reaudit_tree: 2f051f6831b25e0b297fb61905f40e5e17c6a925
+      reaudit_branch: codex/sci-cal-001-reaudit-20260808
+      coordination_authority:
+        commit: dd5894679bf12bf4a5fb551e871b3c6010ef9b9b
+        tree: e87b507a6dc5246da0f65e563d96b94824e61ba1
+      atmosphere_authority:
+        commit: 7156881bd1a47e8cece97b8c541a013c93ac03e1
+        tree: 316c5c5a0188ead742f55e21ae1bd62a89e02677
+      report:
+        path: >-
+          doc/audits/SCI-CAL-001_EXACT_REPAIR_REAUDIT_2026-08-08.md
+        sha256: >-
+          7a9eeae603871f3e2c157b123c15970dd2b2e472257479d100b02bea43101d34
+        immutable: true
+      ledger_proposal:
+        path: >-
+          doc/audits/proposals/SCI-CAL-001_REAUDIT_LEDGER_PROPOSAL_2026-08-08.yaml
+        sha256: >-
+          47a63a5c2a2fcc1000547dd5cdc64d24382818666e299b6629e92afff28e9ee2
+        disposition: applied_with_narrow_F002_closure
+        immutable: true
+      source_status:
+        object: >-
+          4140923de4ae33d36224493b5937e291bd552d30:doc/REFACTOR_STATUS.md
+        sha256: >-
+          14d3190c001b33f7ee094a269b99edc58287774f3803b0890788ca4badbfaefb
+        import_disposition: >-
+          digest_recorded_source_status_not_overlaid_on_current_coordination_line
+      coordinator_disposition:
+        path: >-
+          doc/audits/packages/SCI-CAL-001_REAUDIT_COORDINATOR_DISPOSITION_2026-08-08.md
+        sha256: >-
+          1cdc94e7d3deddb7d5eeb42337393291cc0c4f09eb6a206cee37ac1f204c339f
+      approved_operator_successor_material:
+        operator_id: am12_fixed_djf25_piecewise_linear_los_tau_v1
+        disposition: retain_without_downstream_or_production_authority
+        contract:
+          candidate_path: >-
+            data/calibration/sci_cal_001_fixed_djf25_full_domain_operator_contract.json
+          candidate_blob: e182fec875227eb63e5dc72ed9ee390fb66ba441
+          sha256: >-
+            7a064ff768a3de4f427f1338d94ef6cb9026d248f3c3c816fc3dfc96d156e36a
+          byte_identical_to_atmosphere_authority: true
+        nodes:
+          candidate_path: >-
+            data/calibration/sci_cal_001_fixed_djf25_full_domain_operator_nodes.csv
+          candidate_blob: e939ee4a66e71a18b9bece7c3daf8c4a9d374ebd
+          sha256: >-
+            fd688a4cd3f46585b08631bc63a562aed482feb9b24ec9ee0071b70db7eb8a5f
+          byte_identical_to_atmosphere_authority: true
+        generated_header:
+          candidate_path: >-
+            include/citlali/core/timestream/atmosphere_operator_nodes_generated.h
+          candidate_blob: 68482584d94d3cbd8714a9d93da2b2245039cb77
+          sha256: >-
+            d322bdc863ccb1292325c739865f772ef53f4e9f4101967752027ea0a2413262
+      finding_counts_after_reaudit:
+        narrowly_closed: 1
+        open_P0: 3
+        open_P1: 6
+        owner_decision_resolved_implementation_open_P1: 1
+      finding_dispositions:
+        - id: SCI-CAL-001-F002
+          prior_class: implementation_defect
+          prior_severity: P0
+          evidence_basis: observed
+          confidence: high
+          status: closed
+          closure_scope: narrow_implementation_only
+          owner: calibration_extinction_implementation
+          summary: >-
+            The finite-positive low-opacity unity plateau is removed. The
+            fixed operator interpolates LOS optical depth from the analytic
+            zero anchor through the first nonzero anchor with conformant exact
+            nodes, endpoints, monotonicity, and seam behavior.
+          noninferences:
+            - atmospheric_truth
+            - model_fidelity
+            - observational_calibration
+            - downstream_or_production_authority
+      local_validation_summary:
+        artifact_generator_check: pass
+        artifact_generator_tests: {passed: 3, failed: 0, skipped: 0}
+        focused_cpp_tests: {passed: 16, failed: 0, skipped: 0}
+        selected_fits_writer_test: {passed: 1, failed: 0, skipped: 0}
+        citlali_cli_build: pass
+        ctest_runnable_passed: 635
+        ctest_failed: 0
+        ctest_disabled_not_run: 1
+        config_preflight: {unit_tests: 127, mode_kits: 4, compatibility: 8, skipped: 0}
+        focused_raw_provenance_tests: {passed: 90, failed: 0, skipped: 0}
+        baseline_tool_tests: {passed: 174, failed: 0, skipped: 0}
+        product_contract_unit_tests: {passed: 23, failed: 0, skipped: 0}
+        unity_or_local_reductions_run: false
+        exact_sha_external_product_evidence: missing
+      candidate_accepted: false
+      contract_status: approved
+      implementation_status: nonconformant
+      validation_status: in_progress
+      production_status: fail_closed
+      verdict: amend
+      unity_evidence_supplied: false
+      repair_launched: false
+      reaudit_launched: false
+      FLT_or_downstream_audit_launched: false
+      merge_authorized: false
+      production_change_authorized: false
+      successor_repair_readiness:
+        status: scope_recorded_not_authorized
+        exact_base: unresolved_pending_separate_coordinator_owner_decision
+        preserve_fixed_operator: true
+        priority_blockers:
+          - SCI-CAL-001-F003
+          - SCI-CAL-001-F004
+        remaining_findings:
+          - SCI-CAL-001-F001
+          - SCI-CAL-001-F005
+          - SCI-CAL-001-F006
+          - SCI-CAL-001-F007
+          - SCI-CAL-001-F008
+          - SCI-CAL-001-F009
+          - SCI-CAL-001-F010
     implementation_assessment:
       governing_source: nonconformant
       proposed_narrow_use: >-
@@ -2703,16 +2832,6 @@ packages:
         summary: >-
           Extinction applies zenith-equivalent opacity without the
           airmass-relative exponent or a fixed calibration pivot.
-      - id: SCI-CAL-001-F002
-        class: implementation_defect
-        severity: P0
-        evidence_basis: observed
-        confidence: high
-        status: open
-        owner: calibration_extinction_implementation
-        summary: >-
-          The q0 branch returns unity for finite positive tau225 below the q25
-          threshold.
       - id: SCI-CAL-001-F003
         class: implementation_defect
         severity: P0
@@ -2721,7 +2840,10 @@ packages:
         status: open
         owner: calibration_validity_implementation
         summary: >-
-          Required non-finite, domain, coefficient, and beam failures do not
+          The complete calibration-factor product is not admitted atomically
+          before mutation or publication, and CAL.VALID represents only the
+          tau/extinction decision rather than complete calibration validity;
+          required factor, coefficient, unit, beam, and domain failures do not
           consistently fail closed.
       - id: SCI-CAL-001-F004
         class: implementation_defect
@@ -2797,7 +2919,9 @@ packages:
         severity: P1
         evidence_basis: owner_decision
         confidence: high
-        status: addressed_pending_reaudit
+        status: open
+        decision_status: owner_decision_resolved
+        implementation_aspect: nonconformant_to_owner_decision
         owner: calibration_photometry_owner
         decision_date: 2026-07-31
         decision_commit: e8bd929008140e2ea8b44bfdc80b0a531b488765
@@ -2807,9 +2931,11 @@ packages:
           matrix, factor semantics, uncertainty representation, and APT
           authority/identity chain are owner-approved.
         closure_gate: >-
-          Implement the approved contract on a separate repair branch, pass
-          exact factor, identity, response, unit, covariance, provenance, and
-          fail-closed fixtures, and complete a fresh exact-repair-SHA re-audit.
+          The owner decision is resolved, but the re-audited implementation is
+          nonconformant. Implement the approved contract on a separately
+          authorized successor, pass exact factor, identity, response, unit,
+          uncertainty, provenance, and fail-closed fixtures, and complete a
+          fresh exact-repair-SHA re-audit.
     unresolved_scientific_decisions:
       - >-
         CAL-ATM-CONF-001: the predecessor confirmation stopped invalid. Owner
@@ -2941,7 +3067,7 @@ packages:
         disposition of SCI-ALIGN-001.
     remediation_branch: null
     remediation_commit: null
-    re_audit_status: required
+    re_audit_status: complete
 
   - id: SCI-AST-001
     name: Pointing, astrometry, detector coordinates, and WCS

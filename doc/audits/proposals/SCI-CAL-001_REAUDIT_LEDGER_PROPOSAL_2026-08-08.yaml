@@ -1,0 +1,326 @@
+schema_version: sci-cal-001-reaudit-ledger-proposal-v1
+proposal_id: SCI-CAL-001-REAUDIT-2026-08-08
+audit_id: SCI-CAL-001
+proposal_only: true
+canonical_ledger_mutated: false
+proposal_status: coordinator_owner_review_required
+report_path: doc/audits/SCI-CAL-001_EXACT_REPAIR_REAUDIT_2026-08-08.md
+
+repair_identity:
+  commit: 7894346a91fa78ceb2a8b3d625335f466e5e1756
+  sole_parent: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+  tree: 991f96c64e4d2d973ed5fc02630bfe29149109d9
+  remote_ref: refs/remotes/origin/codex/repair-sci-cal-001-successor
+  live_remote_verified: true
+  initial_worktree_clean: true
+
+frozen_authority:
+  coordination:
+    commit: dd5894679bf12bf4a5fb551e871b3c6010ef9b9b
+    tree: e87b507a6dc5246da0f65e563d96b94824e61ba1
+    object_rehash_verified: true
+    canonical_ledger:
+      path: doc/audits/audit-ledger.yaml
+      blob: 6330df5915bae0d0d345d747d6d6334eeb5fbf6c
+      sha256: 9f120b1b6ae29d0d3ee72ab6f220c130dbe32a7321bb5944f1899a2ab7918ba7
+  atmosphere:
+    commit: 7156881bd1a47e8cece97b8c541a013c93ac03e1
+    tree: 316c5c5a0188ead742f55e21ae1bd62a89e02677
+    object_rehash_verified: true
+    authority_chronology: >-
+      The later fixed-DJF25 owner decision and machine contract supersede the
+      earlier q0-only implementation target and unresolved operator choice,
+      but not the fail-closed production status or remaining closure gates.
+    stale_package_readme_recorded: true
+
+proposed_disposition:
+  verdict: amend
+  contract_status: approved
+  implementation_status: nonconformant
+  validation_status: in_progress
+  production_status: fail_closed
+  re_audit_completed_for_exact_repair: true
+  production_change_authorized: false
+  merge_or_downstream_launch_authorized: false
+  next_authority: coordinator_and_scientific_owner
+
+approved_operator:
+  operator_id: am12_fixed_djf25_piecewise_linear_los_tau_v1
+  tau225_closed_interval: [0.0, 0.25]
+  elevation_deg_closed_interval: [25.0, 80.0]
+  science_regime_tau225_closed_interval: [0.0, 0.15]
+  engineering_regime_tau225_interval: "(0.15,0.25]"
+  x_ref: 0.0
+  full_sample_airmass_already_in_nodes: true
+  second_airmass_application: prohibited
+  elevation_interpolation: shape_preserving_pchip_per_nonzero_anchor
+  opacity_interpolation: piecewise_linear_in_los_optical_depth
+  zero_anchor: analytic_unity
+  operator_switch_at_tau015: false
+  supported_alpha: [-1, 0, 2, 4]
+  default_alpha: 0
+  alpha_interpolation_or_extrapolation: prohibited
+  anchors_tau225:
+    - "0"
+    - "0.0504874104674104401"
+    - "0.0883393725904400573"
+    - "0.15"
+    - "0.158313198574890929"
+    - "0.20"
+    - "0.25"
+  equations:
+    los_between_anchors: >-
+      L(q,e) = L(q0,e) + (q-q0)/(q1-q0) * (L(q1,e)-L(q0,e))
+    transmission: T = exp(-L)
+    extinction_correction: C = exp(L)
+    realized_signal: y[i,t] = x[i,t] * U[i] * flxscale[i] * C[array(i),alpha](tau225,elevation[t])
+    required_conditional_variance: v_prime = a^2 * v
+    required_conditional_inverse_variance: w_prime = w / a^2
+
+operator_artifacts:
+  contract:
+    path: data/calibration/sci_cal_001_fixed_djf25_full_domain_operator_contract.json
+    blob: e182fec875227eb63e5dc72ed9ee390fb66ba441
+    sha256: 7a064ff768a3de4f427f1338d94ef6cb9026d248f3c3c816fc3dfc96d156e36a
+    byte_identical_to_frozen_authority: true
+  nodes:
+    path: data/calibration/sci_cal_001_fixed_djf25_full_domain_operator_nodes.csv
+    blob: e939ee4a66e71a18b9bece7c3daf8c4a9d374ebd
+    sha256: fd688a4cd3f46585b08631bc63a562aed482feb9b24ec9ee0071b70db7eb8a5f
+    byte_identical_to_frozen_authority: true
+    column_count: 10
+    row_count: 1368
+    series_count: 72
+    series_31_node_count: 36
+    series_7_node_count: 36
+  generated_header:
+    path: include/citlali/core/timestream/atmosphere_operator_nodes_generated.h
+    blob: 68482584d94d3cbd8714a9d93da2b2245039cb77
+    sha256: d322bdc863ccb1292325c739865f772ef53f4e9f4101967752027ea0a2413262
+  reproducibility_scope:
+    final_artifact_validation_and_header_regeneration: pass
+    primary_scientific_evidence_to_contract_replay: not_run_external_dependencies
+
+finding_proposals:
+  - id: SCI-CAL-001-F001
+    severity: P0
+    canonical_status_before_review: open
+    implementation_aspect: core_equation_addressed
+    proposed_status: remain_open
+    blockers:
+      - kernel_and_conditional_weight_propagation_not_closed
+      - same_repair_sha_unity_not_supplied
+      - align_conditioned_sample_eligibility_not_established
+
+  - id: SCI-CAL-001-F002
+    severity: P0
+    canonical_status_before_review: open
+    implementation_aspect: conformant_for_selected_operator
+    proposed_status: narrow_implementation_closure_pending_coordinator
+    noninferences:
+      - science_numerical_fidelity
+      - atmospheric_truth
+      - observational_calibration_validity
+
+  - id: SCI-CAL-001-F003
+    severity: P0
+    canonical_status_before_review: open
+    implementation_aspect: partially_addressed
+    proposed_status: remain_open
+    blockers:
+      - coefficient_unit_beam_and_apt_value_validation_incomplete
+      - whole_observation_prepublication_atomicity_absent
+      - generic_cal_valid_semantics_incorrect
+      - invalid_state_matrix_incomplete
+
+  - id: SCI-CAL-001-F004
+    severity: P0
+    canonical_status_before_review: open
+    implementation_aspect: nonconformant
+    proposed_status: remain_open
+    blockers:
+      - verified_row_order_not_proven
+      - explicit_acquisition_key_join_absent
+      - roach_index_read_but_unused
+      - kids_tone_not_retained
+      - uid_mismatch_permutation_reorder_tests_absent
+      - digest_bound_real_artifact_identity_evidence_absent
+
+  - id: SCI-CAL-001-F005
+    severity: P1
+    canonical_status_before_review: open
+    implementation_aspect: not_addressed
+    proposed_status: remain_open
+    blockers:
+      - conditional_variance_transfer_not_explicit
+      - named_nuisance_model_absent
+      - availability_uncertainty_provenance_and_correlation_scopes_absent
+      - analytic_and_monte_carlo_covariance_gates_absent
+
+  - id: SCI-CAL-001-F006
+    severity: P1
+    canonical_status_before_review: addressed_pending_reaudit
+    implementation_aspect: nonconformant_to_owner_decision
+    proposed_status: owner_decision_resolved_implementation_open
+    blockers:
+      - legacy_mjy_sr_uk_and_jy_pixel_modes_remain_accepted
+      - point_source_peak_response_and_beam_template_contract_incomplete
+
+  - id: SCI-CAL-001-F007
+    severity: P1
+    canonical_status_before_review: open
+    implementation_aspect: partially_addressed
+    proposed_status: remain_open
+    blockers:
+      - apt_artifact_and_join_lineage_absent
+      - exact_multiplier_and_factor_decomposition_not_reconstructible
+      - beam_template_response_identity_absent
+      - conditional_and_nuisance_uncertainty_state_absent
+      - exact_sha_real_product_round_trip_absent
+
+  - id: SCI-CAL-001-F008
+    severity: P1
+    canonical_status_before_review: open
+    implementation_aspect: not_closed
+    proposed_status: remain_open
+    blockers:
+      - persisted_approved_factor_table_absent
+      - fcf_is_scalar_compatibility_value_excluding_flxscale
+      - rtc_ptc_donor_target_and_weight_transfer_fixtures_absent
+      - recipient_disposition_pending
+
+  - id: SCI-CAL-001-F009
+    severity: P1
+    canonical_status_before_review: open
+    implementation_aspect: improved_but_incomplete_local_evidence
+    proposed_status: remain_open
+    blockers:
+      - mandatory_local_falsification_and_covariance_matrix_incomplete
+      - exact_sha_unity_bundle_absent
+      - independent_standard_source_recovery_absent
+      - accepted_successor_epoch_and_product_audit_absent
+
+  - id: SCI-CAL-001-F010
+    severity: P1
+    canonical_status_before_review: open
+    implementation_aspect: conditioned_only
+    proposed_status: remain_open_conditioned
+    blockers:
+      - approved_align_implementation_and_evidence_absent
+      - late_align_xaud_recipient_disposition_pending
+      - exact_timestamp_by_timestamp_cal_consumption_not_proven
+
+closure_gate_proposals:
+  - gate: A_analytic_identities_and_interfaces
+    status: partial
+    missing:
+      - kernel_scaling
+      - conditional_variance_and_weight_scaling
+      - rank_one_common_gain
+      - approved_unit_fail_closed_semantics
+      - apt_row_and_key_semantics
+  - gate: B_deterministic_cal_t1_t6
+    status: partial
+    required_scalar_tolerance_eps: 64
+    required_covariance_relative_frobenius: 1.0e-12
+    required_covariance_absolute: 1.0e-14
+    missing:
+      - complete_scalar_and_covariance_matrix
+      - two_observation_order_invariance_and_state_isolation
+      - lossless_four_state_round_trip
+      - sequential_openmp_and_two_iteration_bitwise_matrix
+  - gate: C_synthetic_calibrated_sources
+    status: missing
+    required_airmass_count_minimum: 3
+    required_noisy_draws: 1000
+    mean_residual_max_mc_standard_errors: 3
+    covariance_residual_max_mc_standard_errors: 5
+  - gate: D_blank_and_nuisance_controls
+    status: missing
+    blank_mean_and_slope_max_predicted_standard_errors: 3
+    dense_common_nuisance_covariance_required: true
+  - gate: E_exact_sha_unity
+    status: missing
+  - gate: F_astronomical_standard
+    status: missing
+    per_measurement_normalized_residual_max: 3
+    array_weighted_mean_max_standard_errors: 2
+    ratio_airmass_slope_max_standard_errors: 2
+  - gate: G_recipient_dispositions
+    status: missing
+    recipients: [ALIGN, RTC, PTC, VAL, MAP, FLT, MODE, BEAM]
+  - gate: H_fresh_exact_repair_reaudit
+    status: performed_nonconformant_amend
+    coordinator_disposition_pending: true
+  - gate: I_production_state_authority
+    status: not_exercised
+    authorized_actor: coordinator_and_scientific_owner
+
+local_validation:
+  artifact_generator_check: pass
+  artifact_generator_tests: {passed: 3, failed: 0, skipped: 0}
+  focused_cpp_tests: {passed: 16, failed: 0, skipped: 0}
+  selected_fits_writer_test: {passed: 1, failed: 0, skipped: 0}
+  citlali_cli_build: pass
+  local_binary_sha256: 8425530a6c0407a59f85fd17cb5964adc0d0e5f0efe4170f3ecb1ff4c5d84d61
+  ctest:
+    runnable_passed: 635
+    failed: 0
+    disabled_not_run: 1
+    disabled_test: citlali::MapFitterLifecycle.ExactProductSequence
+    disabled_counted_as_pass: false
+  config_preflight:
+    status: pass
+    unit_tests_passed: 127
+    mode_kits_passed: 4
+    compatibility_passed: 8
+    skipped: 0
+    compact_surface_coverage_percent: 100.0
+  focused_raw_provenance_tests: {passed: 90, failed: 0, skipped: 0}
+  baseline_tool_tests: {passed: 174, failed: 0, skipped: 0}
+  product_contract_unit_tests: {passed: 23, failed: 0, skipped: 0}
+  actual_exact_sha_product_contract_audit: not_run_no_reduction_product
+  unexpected_runtime_error_level_output: false
+  required_data_skips: 0
+  unity_or_local_reductions_run: false
+  bootstrap_note: >-
+    The first sandboxed configure failed on blocked GitHub DNS; an approved
+    network retry succeeded. Third-party warnings remained but no Citlali test
+    or runtime error was observed.
+
+missing_external_evidence:
+  requested_unity_evidence:
+    - SCI-CAL-001-UNITY-001
+  exact_sha_binary_compiler_dependency_manifest: missing
+  ordered_configs_merged_digest_and_input_apt_tau_passband_bundle: missing
+  sequential_openmp_and_two_airmass_products_logs_and_digests: missing
+  updated_nondefault_unit_fail_closed_cases: missing
+  apt_identity_and_invalid_coefficient_prepublication_cases: missing
+  independent_standard_source_recovery_and_shared_covariance: missing
+  align_implementation_evidence_and_recipient_disposition: missing
+  accepted_successor_epoch_and_records: missing
+  intended_science_change_entry: missing
+  supplied_external_evidence: []
+
+prohibited_scope:
+  application_files_modified_by_reaudit: []
+  repair_performed: false
+  push_performed: false
+  unity_accessed: false
+  reductions_run: false
+  human_or_scientific_external_contact_performed: false
+  read_only_origin_identity_verification_performed: true
+  read_only_dependency_fetch_performed: true
+  external_write_or_message_performed: false
+  network_read_scope_disclosed: true
+  production_authorization: false
+  merge_performed: false
+  downstream_launch: false
+
+stop_condition:
+  state: returned_for_coordinator_owner_review
+  reason: >-
+    The selected atmosphere representation is faithful, but the exact repair
+    remains nonconformant on validity, detector/APT identity, supported-unit
+    enforcement, uncertainty, factor semantics, provenance, external evidence,
+    and ALIGN dependency closure.
