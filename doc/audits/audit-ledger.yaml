@@ -171,6 +171,24 @@ resource_allocation:
       ultra_trigger: none
       parallelism: none
       stop_rule: stop_after_scope_checkpoint
+    - dispatch_id: SCI-RTC-001-AUDIT-DISPATCH-2026-08-08
+      package_id: SCI-RTC-001
+      phase: full_interface_response_audit
+      dispatch_content_commit: fff3f538ce04fb66d73ac3671f2bc6a10975baed
+      model: sol
+      effort: ultra
+      task_shape: decomposable_scientific
+      rationale: >-
+        The Tier B RTC package requires reconciliation of independent
+        mathematical/temporal-response, implementation-interface,
+        product-validity-provenance, and PTC/VAL/BEAM consumer investigations.
+      ultra_trigger: >-
+        Four independent hard workstreams must reach one bounded interface
+        verdict without broadening mature RTC numerical internals.
+      parallelism: >-
+        none_no_delegation_one_auditor_preserves_workstream_separation_and_synthesizes
+      stop_rule: >-
+        stop_at_initial_scope_core_freeze_pre_broad_execution_and_final_owner_review
 scope_control:
   policy_id: FRAMEWORK-SCOPE-001
   status: active_for_future_dispatches_and_future_phases
@@ -199,6 +217,25 @@ scope_control:
         - delegation
         - independent_review
       approval: project_owner_dispatch_2026-08-03
+    - dispatch_id: SCI-RTC-001-AUDIT-DISPATCH-2026-08-08
+      package_id: SCI-RTC-001
+      checkpoint_status: required_initial_core_freeze_and_pre_broad_execution
+      dispatch_content_commit: fff3f538ce04fb66d73ac3671f2bc6a10975baed
+      local_reduction_authority: prohibited
+      unity_evidence_authority: prohibited
+      allowed_deliverable_class: exact_eight_path_RTC_audit_package
+      permitted_local_execution: >-
+        post_core_static_probes_focused_deterministic_existing_tests_and_LaTeX_only
+      prohibited_expansions:
+        - application_or_validation_edits
+        - broad_or_costly_execution
+        - local_reduction
+        - unity_or_external_contact
+        - delegation_or_independent_review
+        - repair_or_reaudit
+        - production_change
+        - another_package_launch
+      approval: project_owner_dispatch_2026-08-08
 
 controlled_vocabulary:
   tiers: [A, B, C]
@@ -3909,6 +3946,7 @@ packages:
     audit_dispatch:
       status: frozen_for_launch
       dispatch_id: SCI-RTC-001-AUDIT-DISPATCH-2026-08-08
+      dispatch_content_commit: fff3f538ce04fb66d73ac3671f2bc6a10975baed
       prompt_path: doc/audits/prompts/SCI_RTC_001_AUDIT_PROMPT.md
       prompt_sha256: >-
         01c02c2b1057a5346caaf5c0a8efaa7c5b17dec90158dffe9020b6838ad3951c
