@@ -208,6 +208,31 @@ continue the existing repair task from exact `0bc4d95d6`, never from the audit
 or coordination line. They authorize no estimator/filter change, counts or
 defaults, Unity/evidence work, integration, production expansion, or re-audit.
 
+### SCI-NOI-002 Cycle 4 final coordination — 2026-08-08
+
+The bounded repair/re-audit chain is complete. Exact application candidate
+`5b29e13548a6fec884c67b192dec20c92f0bbb62` passed its fresh independent Cycle
+4 re-audit at `6de648f5ae2b37f5bc65162feae221f19bb84a5a`. The controlled
+verdict is `retain`: the contract is `approved`, implementation is
+`conformant`, applicable deterministic validation is `complete`, and
+production remains `existing_use_only`.
+
+Cycle 4 requirements C4-R001--C4-R004 are satisfied. Cycle 3 P1 findings
+C3RA-P1-001--P1-003 close, as do original findings F003/F004/F007 and repair
+findings RA-B001/RA-B003 within their bounded contracts. F001/F002/F008 and
+RA-B002/RA-R001/RA-R002 retain prior closure. F005 and RA-B004 remain
+`open_conditioned` and SCI-FLT-001-owned; F006 remains `held_external` and
+SCI-FRUIT-001-owned. F004 closure does not validate significance or catalog
+claims, and F007 closure does not recommend a realization count or default.
+
+The accepted [independent report](packages/SCI-NOI-002_CYCLE4_INDEPENDENT_REAUDIT_2026-08-07.md),
+[machine-readable result](results/SCI-NOI-002_CYCLE4_REAUDIT_RESULT_2026-08-07.yaml),
+[ledger proposal](proposals/SCI-NOI-002_CYCLE4_REAUDIT_LEDGER_UPDATE_PROPOSAL_2026-08-07.yaml),
+and [coordinator closeout](packages/SCI-NOI-002_CYCLE4_COORDINATOR_CLOSEOUT_2026-08-08.md)
+bind the exact candidate, evidence, dispositions, and retained restrictions.
+This closeout neither integrates the application candidate onto the application
+mainline nor expands production. Both remain separate decisions.
+
 ### DOC-MAP-001 queued user-facing map-semantics guide — 2026-08-06
 
 The project owner requires a compact one-to-two-page explanation of what each

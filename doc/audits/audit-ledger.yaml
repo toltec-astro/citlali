@@ -5353,7 +5353,7 @@ packages:
         status: submitted_held_for_recipient_independent_core
         late_arrival_route: held_for_recipient_independent_core_then_post_core_review
     audit_dispatch:
-      status: cycle_1_reaudit_complete_amend_cycle_2_ready_pending_coordination_push
+      status: historical_initial_dispatch_cycle4_repair_reaudit_complete
       prepared_date: 2026-08-06
       governing_application_sha: d5015fe716971bf8ea617e8a187311bf5af05185
       proposed_audit_branch: codex/audit-sci-noi-002
@@ -5434,11 +5434,11 @@ packages:
         open, owner policy is resolved, and the successor repair dispatch is
         ready but unlaunched; no repair/evidence/integration/production action
         is authorized by this audit record.
-    governing_sha: d5015fe716971bf8ea617e8a187311bf5af05185
-    governing_sha_role: ready_dispatch_exact_application_snapshot
-    audit_branch: codex/audit-sci-noi-002
-    audit_commit: 4f1fec36f7802f3b5e8ac067377679946930983c
-    audit_parent_sha: f08a6da2ceebff03f498386f374980d13c5146a6
+    governing_sha: 5b29e13548a6fec884c67b192dec20c92f0bbb62
+    governing_sha_role: accepted_bounded_cycle4_application_candidate
+    audit_branch: codex/reaudit-sci-noi-002-cycle4
+    audit_commit: 6de648f5ae2b37f5bc65162feae221f19bb84a5a
+    audit_parent_sha: 5b29e13548a6fec884c67b192dec20c92f0bbb62
     independent_derivation:
       status: completed_accepted
       path: doc/audits/packages/SCI-NOI-002_INDEPENDENT_CORE.tex
@@ -5534,23 +5534,132 @@ packages:
       included_reaudit_findings: [SCI-NOI-002-RA-B001, SCI-NOI-002-RA-B002, SCI-NOI-002-RA-B003, SCI-NOI-002-RA-B004, SCI-NOI-002-RA-R001, SCI-NOI-002-RA-R002]
       physical_plane_policy: one_legacy_EXTNAME_plane_with_canonical_metadata_identity_no_duplicate_HDU
       prohibited: [scientific_algorithm_change, count_or_default_change, Unity, astronomical_evidence, integration, production_change, fresh_reaudit]
+    cycle_4_final_coordination:
+      status: complete_accepted_for_canonical_coordination
+      decision_date: 2026-08-08
+      controlled_verdict: retain
+      bounded_application_disposition: accept
+      exact_application_candidate: 5b29e13548a6fec884c67b192dec20c92f0bbb62
+      candidate_parent: 390edf4f8c696551921c615f2439e956d240ec1d
+      candidate_tree: 641c724f40a9fa9f322f09c703705239439d2374
+      repair_branch: codex/repair-sci-noi-002
+      independent_reaudit_branch: codex/reaudit-sci-noi-002-cycle4
+      independent_reaudit_commit: 6de648f5ae2b37f5bc65162feae221f19bb84a5a
+      independent_reaudit_parent: 5b29e13548a6fec884c67b192dec20c92f0bbb62
+      independent_reaudit_tree: 102bdbbb01e6c3c1de3302a368e8567e0c07d91c
+      artifact_integration_commit: 823d0a1a42eca599a726f5d4b8b0bd03eb8c6e73
+      containing_closeout_commit: out_of_band_self_reference
+      artifacts:
+        report:
+          path: >-
+            doc/audits/packages/SCI-NOI-002_CYCLE4_INDEPENDENT_REAUDIT_2026-08-07.md
+          sha256: >-
+            aa03f3bc94fda349c4f1bcb16274ad9fb21195a3aef26a58383d12fce2af37e5
+        result:
+          path: >-
+            doc/audits/results/SCI-NOI-002_CYCLE4_REAUDIT_RESULT_2026-08-07.yaml
+          sha256: >-
+            da6ed16e6a93fd10539bc001014818e99a45361cf0b2442ecc32738e3a2f6b8c
+        proposal:
+          path: >-
+            doc/audits/proposals/SCI-NOI-002_CYCLE4_REAUDIT_LEDGER_UPDATE_PROPOSAL_2026-08-07.yaml
+          sha256: >-
+            a42180d881f4db56870a9ecd5221a4da92338686e9b2f1209486eba3fa2305f1
+        coordinator_closeout:
+          path: >-
+            doc/audits/packages/SCI-NOI-002_CYCLE4_COORDINATOR_CLOSEOUT_2026-08-08.md
+          sha256: >-
+            2efc4d571dafaaf29450f4f9814e1b286193b7d44820161e1fa759cdcfeefcad
+      cycle4_repair_decisions:
+        C4-R001: satisfied
+        C4-R002: satisfied
+        C4-R003: satisfied
+        C4-R004: satisfied
+      cycle3_findings:
+        SCI-NOI-002-C3RA-P1-001: closed
+        SCI-NOI-002-C3RA-P1-002: closed
+        SCI-NOI-002-C3RA-P1-003: closed
+      repair_findings:
+        SCI-NOI-002-RA-B001: closed
+        SCI-NOI-002-RA-B002: closed
+        SCI-NOI-002-RA-B003: closed
+        SCI-NOI-002-RA-B004:
+          status: open_conditioned
+          parity_state: scope_blocked_not_applicable_pending_FLT
+          owner: SCI-FLT-001
+        SCI-NOI-002-RA-R001: closed
+        SCI-NOI-002-RA-R002: closed
+      original_findings:
+        SCI-NOI-002-F001: closed
+        SCI-NOI-002-F002: closed
+        SCI-NOI-002-F003: closed
+        SCI-NOI-002-F004: closed
+        SCI-NOI-002-F005:
+          status: open_conditioned
+          parity_state: scope_blocked_not_applicable_pending_FLT
+          owner: SCI-FLT-001
+        SCI-NOI-002-F006:
+          status: open
+          manifest_state: held_external
+          owner: SCI-FRUIT-001
+        SCI-NOI-002-F007: closed
+        SCI-NOI-002-F008: closed
+      validation_summary:
+        required_release_build_targets: {result: pass, count: 4}
+        focused_core: {passed: 40, failed: 0, skipped: 0}
+        focused_science_products: {passed: 2, failed: 0}
+        full_science_products: {passed: 32, failed: 0}
+        python_tests:
+          baseline_auditor: {passed: 88, failed: 0}
+          product_contract: {passed: 23, failed: 0}
+          reduction_validator: {passed: 9, failed: 0}
+          science_change_ledger: {passed: 7, failed: 0}
+        ctest:
+          registered: 624
+          runnable: 623
+          passed: 623
+          failed: 0
+          disabled_unrelated: 1
+          required_skips: 0
+        config_preflight:
+          result: pass
+          unit_tests_passed: 127
+          mode_kits_passed: 4
+          compact_compatibility_passed: 8
+          gaps: 0
+          coverage_percent: 100
+        unexpected_error_level_messages: 0
+        astronomical_validation: not_required_for_bounded_cycle4
+      retained_boundaries:
+        production_status: existing_use_only
+        application_mainline_integration_authorized: false
+        production_expansion_authorized: false
+        count_adequacy_or_default_recommendation: false
+        physical_noise_variance_or_precision_claim: false
+        significance_or_catalog_claim: false
+        F005_and_RA_B004_owned_by: SCI-FLT-001
+        F006_owned_by: SCI-FRUIT-001
+      next_gate: >-
+        Separately decide application-mainline integration of exact candidate
+        5b29e135; retain existing_use_only until applicable external consumer
+        work and a separate production decision are complete.
     contract_status: approved
-    implementation_status: nonconformant
-    implementation_disposition: cycle_1_not_integration_ready_bounded_cycle_2_publication_validation_completion_validity_and_storage_repair_required
-    validation_status: failed
-    validation_disposition: required_package_and_disabled_count_boundary_failed_cycle_2_local_gates_pending
+    implementation_status: conformant
+    implementation_disposition: accepted_bounded_cycle4_package_reconciliation
+    validation_status: complete
+    validation_disposition: bounded_cycle4_deterministic_writer_finalizer_auditor_and_configuration_complete
     production_status: existing_use_only
-    verdict: amend
+    verdict: retain
     closed_findings:
       - {id: SCI-NOI-002-F001, status: closed, disposition: closed_bounded_owner_accepted, closure_basis: first_repair_exact_deterministic_finite_stack_identity_and_fixture_contract}
       - {id: SCI-NOI-002-F002, status: closed, disposition: closed_bounded_owner_accepted, closure_basis: first_repair_exact_global_nonprecision_scale_identity_and_invalid_calibration_contract}
+      - {id: SCI-NOI-002-F003, status: closed, disposition: close_after_cycle4_reaudit, closure_basis: exact_package_provenance_integrity_compact_joins_and_actual_member_shapes}
+      - {id: SCI-NOI-002-F004, status: closed, disposition: close_after_cycle4_reaudit, closure_basis: distinct_descriptive_engineering_identities_and_detached_product_restrictions, prohibited_inference: SCI_SRC_significance_or_catalog_claim_validated}
+      - {id: SCI-NOI-002-F007, status: closed, disposition: close_bounded_existing_use_only_count_truth_contract, closure_basis: requested_effective_completed_and_incomplete_execution_accounting, prohibited_inference: count_adequacy_default_or_production_authority}
       - {id: SCI-NOI-002-F008, status: closed, disposition: closed_bounded_owner_accepted, closure_basis: deterministic_local_fixture_scope_only_no_astronomical_or_production_claim}
     active_finding_dispositions:
-      - {id: SCI-NOI-002-F003, status: open, disposition: open, cycle_2_findings: [SCI-NOI-002-RA-B001, SCI-NOI-002-RA-B002, SCI-NOI-002-RA-B004, SCI-NOI-002-RA-R001]}
-      - {id: SCI-NOI-002-F004, status: open, disposition: open_conditioned, cycle_2_findings: [SCI-NOI-002-RA-R001, SCI-NOI-002-RA-R002]}
       - {id: SCI-NOI-002-F005, status: open, disposition: open_conditioned, cycle_2_findings: [SCI-NOI-002-RA-B004], parity_state: scope_blocked_not_applicable_pending_FLT}
-      - {id: SCI-NOI-002-F006, status: open, disposition: open, owner: SCI-FRUIT-001, cycle_2_scope: excluded}
-      - {id: SCI-NOI-002-F007, status: open, disposition: open_conditioned, cycle_2_findings: [SCI-NOI-002-RA-B002, SCI-NOI-002-RA-B003]}
+      - {id: SCI-NOI-002-F006, status: open, disposition: held_external, owner: SCI-FRUIT-001, cycle_2_scope: excluded}
     pre_reaudit_open_findings_history:
       - {id: SCI-NOI-002-F001, class: contract_gap, severity: P1, evidence_basis: derived, confidence: high, status: open, owner: NOI-002_estimator_policy, owner_decision_id: SCI-NOI-002-D001, owner_decision_status: owner_decided_approved_pending_repair_and_reaudit, summary: "Exact d501 uses centered 1/R pixel scatter without target or joint-design correction; owner D001 now admits it only as empirically centered conditional finite-stack scatter for completed source_imprinted_current realizations.", closure_gate: "Implement D001 compact target/design/support/response/validity/normalization facts and R=1 invalid-for-uncertainty rule on an authorized successor, then re-audit; no physical-noise estimator or calibration claim is authorized."}
       - {id: SCI-NOI-002-F002, class: contract_gap, severity: P1, evidence_basis: derived, confidence: high, status: open, owner: NOI-002_with_MAP_and_FLT_interfaces, owner_decision_id: SCI-NOI-002-D002, owner_decision_status: owner_decided_approved_pending_repair_and_reaudit, summary: "Owner D002 retains alpha=1/median_D(q_p V_p) and alpha q_p only as global_nonprecision_scale_diagnostic; empty/nonfinite/invalid calibration is unavailable, not successful alpha=1 calibration.", closure_gate: "Implement compact D002 identity/calibration/overlap/validity facts and unavailable-invalid calibration behavior on an authorized successor, then re-audit; retain overwrite only as existing_use_only compatibility pending FLT/MODE review."}
@@ -5562,7 +5671,7 @@ packages:
       - {id: SCI-NOI-002-F008, class: evidence_gap, severity: P1, evidence_basis: owner_decision, confidence: high, status: open, owner: coordinator_and_eventual_exact_successor_verifier, owner_decision_id: SCI-NOI-002-D008, owner_decision_status: owner_decided_proportional_evidence_contract_pending_authorized_execution_and_reaudit, summary: "Owner D008 freezes small deterministic exact fixture classes and exact-repair-SHA-only astronomical validation; neither broad campaigns nor reduction success alone establish statistical validity.", closure_gate: "On an exact authorized repair SHA, complete D008 analytic/exact local and consumer fixtures, then only separately admitted astronomical validation with predeclared criteria and FRUIT routing, followed by re-audit; no empirical tolerance is invented here."}
     owner_decisions:
       - id: SCI-NOI-002-D001
-        status: owner_decided_approved_pending_repair_and_reaudit
+        status: settled_unchanged
         decision_date: 2026-08-06
         scope: conditional_finite_stack_descriptive_identity_only
         policy:
@@ -5575,7 +5684,7 @@ packages:
           separate_systematics: [calibration, extinction, persistent_detector_calibration]
         does_not_authorize: [physical_noise_implementation, evidence_request, default, count, Unity_action, repair]
       - id: SCI-NOI-002-D002
-        status: owner_decided_approved_pending_repair_and_reaudit
+        status: settled_unchanged
         decision_date: 2026-08-06
         scope: global_nonprecision_scale_diagnostic_only
         policy:
@@ -5588,7 +5697,7 @@ packages:
           longer_term_boundary: scaled_diagnostic_separate_from_authoritative_mapmaking_coefficient_unless_independent_validation_establishes_proportionality_to_named_physical_inverse_variance_target
         does_not_authorize: [implementation, evidence, Unity_action, default, count, production_change]
       - id: SCI-NOI-002-D003
-        status: owner_decided_qualified_package_level_contract_pending_implementation_and_reaudit
+        status: settled_qualified_package_provenance
         decision_date: 2026-08-06
         scope: compact_package_level_provenance_and_product_join_contract_only
         decision_numbering_note: owner_qualified_F003_direction_supersedes_the_audit_proposal_provisional_D003_label
@@ -5603,7 +5712,7 @@ packages:
           prohibited_data: [dense_covariance, sign_streams, per_sample_IDs, duplicated_metadata]
         does_not_authorize: [implementation, evidence, default_or_count_change, Unity_action, repair, production_change]
       - id: SCI-NOI-002-D004
-        status: owner_decided_approved_pending_implementation_and_reaudit
+        status: settled_unchanged
         decision_date: 2026-08-06
         scope: distinct_S_N_like_identity_and_truthful_labeling_only
         policy:
@@ -5617,7 +5726,7 @@ packages:
           required_SCI_SRC_001_validation: [response, null_behavior, search_behavior, selection_behavior, multiplicity_behavior]
         does_not_authorize: [implementation, repair, evidence, Unity_action, task_launch, default_or_count_change, production_action]
       - id: SCI-NOI-002-D005
-        status: owner_decided_approved_pending_implementation_and_reaudit
+        status: settled_open_conditioned_pending_FLT
         decision_date: 2026-08-06
         scope: filtered_stack_scatter_identity_and_fixed_measurement_projection_contract_only
         policy:
@@ -5631,7 +5740,7 @@ packages:
           prohibited_burden: [dense_covariance_product, expensive_per_pixel_matrix_calculations]
         does_not_authorize: [implementation, repair, evidence, Unity_action, task_launch, default_or_count_change, production_action]
       - id: SCI-NOI-002-D006
-        status: owner_decided_scientific_requirement_pending_SCI_FRUIT_001_implementation_and_reaudit
+        status: settled_open_held_external_SCI_FRUIT_001
         decision_date: 2026-08-06
         scope: FRUIT_scale_gate_boundary_and_future_bright_source_uncertainty_requirement_only
         policy:
@@ -5646,7 +5755,7 @@ packages:
           successor_method_selection: not_selected_split_sample_cross_fit_blank_aperture_or_other
         does_not_authorize: [implementation, repair, evidence, Unity_action, task_launch, default_or_count_change, production_action]
       - id: SCI-NOI-002-D007
-        status: owner_decided_configuration_boundary_pending_implementation_use_specific_evidence_and_reaudit
+        status: settled_no_count_or_default_selection
         decision_date: 2026-08-06
         scope: requested_effective_completed_realization_count_and_quicklook_boundary_only
         policy:
@@ -5662,7 +5771,7 @@ packages:
           prohibited_interpretation: user_configuration_value_as_production_or_scientific_authority
         does_not_authorize: [implementation, repair, evidence, Unity_action, task_launch, count_or_default_change, production_action]
       - id: SCI-NOI-002-D008
-        status: owner_decided_proportional_evidence_contract_pending_authorized_execution_and_reaudit
+        status: settled_proportional_evidence_only
         decision_date: 2026-08-06
         scope: proportional_exact_fixture_and_exact_repair_SHA_astronomical_validation_contract_only
         policy:
@@ -5678,10 +5787,13 @@ packages:
     requested_unity_evidence: []
     supplied_external_evidence: []
     remediation_branch: codex/repair-sci-noi-002
-    remediation_commit: 0bc4d95d6bb2117442d0ccdb79c57e42e0b79989
+    remediation_commit: 5b29e13548a6fec884c67b192dec20c92f0bbb62
     re_audit_status: complete
-    re_audit_disposition: amend_cycle_2_required
-    re_audit_gate: cycle_2_bounded_repair_completion_then_fresh_independent_reaudit_authorization_required
+    re_audit_disposition: retain_bounded_cycle4_accepted_existing_use_only
+    re_audit_gate: >-
+      Cycle 4 is complete; application-mainline integration and production
+      expansion remain separately authorized decisions, with F005/RA-B004
+      retained for SCI-FLT-001 and F006 retained for SCI-FRUIT-001.
 
   - id: SCI-FLT-001
     name: Map-domain convolve signal, uncertainty, response, and support

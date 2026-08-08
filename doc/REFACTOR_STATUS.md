@@ -136,6 +136,39 @@ chains or hard-code meanings that depend on configuration, but `DOC-MAP-001`
 must close before production expansion and Phase 5 closeout. It authorizes no
 numerical, configuration-default, output-selection, or audit-scope change.
 
+## 2026-08-08 SCI-NOI-002 Cycle 4 Final Coordination
+
+The SCI-NOI-002 bounded repair/re-audit chain is complete. Exact application
+candidate `5b29e13548a6fec884c67b192dec20c92f0bbb62`, whose parent is
+`390edf4f8c696551921c615f2439e956d240ec1d`, passed the fresh independent Cycle
+4 re-audit at `6de648f5ae2b37f5bc65162feae221f19bb84a5a`. The coordinator
+accepts the controlled `retain` verdict: contract `approved`, implementation
+`conformant`, applicable deterministic validation `complete`, and production
+`existing_use_only`.
+
+The accepted evidence includes all four required Release targets, 40/40
+focused core tests, 2/2 focused and 32/32 full science-product tests, 127
+applicable Python tests, 623/623 runnable CTests, and the complete 127-test
+configuration preflight. Exact paired C++/Python fixtures establish compact
+ECSV/NetCDF missingness, actual coadd membership and count reconciliation,
+preservation of configured standalone realization files, and split Beammap
+zero/one/multiple logical-map package behavior without changing estimator,
+normalization, filtering, mapmaking, count/default, or output-selection
+numerics.
+
+C4-R001--C4-R004 and Cycle 3 P1-001--P1-003 close. F003, F004, and
+F007 close within their bounded package, truthful-labeling, and count-truth
+contracts; F001, F002, and F008 retain prior closure. F005 and RA-B004 remain
+`open_conditioned` under SCI-FLT-001, and F006 remains `held_external` under
+SCI-FRUIT-001. No physical-noise variance, calibrated significance, catalog,
+count-adequacy, or recommended-default claim follows.
+
+The [coordinator closeout](audits/packages/SCI-NOI-002_CYCLE4_COORDINATOR_CLOSEOUT_2026-08-08.md)
+and its three immutable re-audit artifacts are now the current package record.
+The older Cycle 1/Cycle 2 sections below remain historical sequencing context.
+Application-mainline integration of `5b29e135...` and any production expansion
+remain separate explicit decisions.
+
 ## 2026-08-06 SCI-NOI-002 Cycle 1 Re-audit and Cycle 2 Repair Authority
 
 Exact repair candidate `0bc4d95d6bb2117442d0ccdb79c57e42e0b79989` completed a
