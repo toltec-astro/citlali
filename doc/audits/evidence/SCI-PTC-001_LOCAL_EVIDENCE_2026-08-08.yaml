@@ -1,0 +1,559 @@
+format_version: 1
+evidence_id: SCI-PTC-001-LOCAL-001
+package_id: SCI-PTC-001
+created_date: 2026-08-08
+role: independent_package_auditor
+scope: >-
+  Documentation-only, exact-source local evidence for the PTC correlated-mode
+  cleaning, detector-coefficient, validity/influence, response, covariance,
+  product, provenance, and bounded VAL/MAP/NOI/BEAM interface. This record is
+  evidence, not mathematical authority, an owner decision, repair or re-audit
+  authorization, downstream-package disposition, or production approval.
+
+identity:
+  application_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+  application_parent: 4846fa4db39bd2f7d4ddc41f693836834cbc5ff4
+  application_tree: ab230a93b8fb310d58aefd7ac5da92e5d5e0f408
+  application_sha_role: governing_audit_snapshot
+  audit_branch: codex/audit-sci-ptc-001
+  worktree: /Users/gwilson/.codex/worktrees/4dc5/citlali-refactor
+  core_path: doc/audits/packages/SCI-PTC-001_INDEPENDENT_CORE.tex
+  core_sha256: 82c0835f51ea9b1fa8a37489f289be89a8018a0b2700e84b1e25c2e4d2a013c2
+  core_freeze_commit: 66e8d6f98c3e22da74de4eea84e568a0b4cc6310
+  core_freeze_parent: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+  core_freeze_tree: b4775f0f18277b28497fbbc0b24a7b583b9c0980
+  core_freeze_timestamp_utc: 2026-08-08T19:45:04Z
+  report_path: doc/audits/packages/SCI-PTC-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+  report_sha256: c46a15c142d0938baf9576d84a19332e0d46b34852b4d59c0029ba00ac62d7e6
+
+frozen_dispatch:
+  content_commit: 70d191f3207d37cbdca3a77392668e93fb68c4fc
+  coordinator_registry_commit: 47c4632008c4fd78f2ab88106372d7ee11ee7711
+  final_coordinator_binding_commit: 6ee2608a0444fa7751a234ffdfb3b72108f92409
+  final_coordinator_binding_parent: 70d191f3207d37cbdca3a77392668e93fb68c4fc
+  final_coordinator_binding_tree: 95dd1096bcca6bd0fe2fc05ea89f7beda6b1b98f
+  prompt:
+    path: doc/audits/prompts/SCI_PTC_001_AUDIT_PROMPT.md
+    sha256: a34d2444c3f66a2a1056ebe5c552d16a31bd9f69035b5c6f34ddbb9bc90fd24b
+  inbox_manifest:
+    path: doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001_INBOX_AUTHORITY_MANIFEST_2026-08-08.yaml
+    sha256: 23913b37dfac7a106bcb281f9a1870616c99acf912a5a7aad59aed39e6bd67d3
+    pre_core_authority_count: 2
+    post_core_handoff_count: 5
+
+pre_core_authorities:
+  - id: SCI-RTC-001-D001-D004
+    path: doc/audits/packages/SCI-RTC-001_OWNER_DECISION_2026-08-08.md
+    object_commit: 47c4632008c4fd78f2ab88106372d7ee11ee7711
+    sha256: 5f5ebb52735a70510d75f5a6954ef825fc425c00e43ab0aadf2363f2e0609723
+    status: approved_owner_contract_authority_with_open_implementation_and_evidence_gates
+    use: upstream RTC product authority only
+  - id: SCI-PTC-001-XAUD-001
+    source_package: SCI-MAP-001
+    path: doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-001.yaml
+    object_commit: 47c4632008c4fd78f2ab88106372d7ee11ee7711
+    sha256: ba53e2c2e6af610112696f3edc87c92e43bc2530ac33b700fd5c64e76a8986fa
+    status: approved_nonprecision_rule_only
+    use: >-
+      MAP and coadd weights remain nonprecision unless PTC proves exact factor,
+      normalization, lifecycle, marginal-precision, independence, and retained
+      covariance conditions.
+
+quarantine_chronology:
+  pre_core_application_source_opened: false
+  pre_core_post_core_handoff_content_opened: false
+  core_frozen_before_source_and_handoffs: true
+  first_application_source_open_utc: 2026-08-08T19:47:43Z
+  first_application_source_path: include/citlali/core/timestream/ptc/ptcproc.h
+  second_quarantined_source_open_utc: 2026-08-08T19:51:20Z
+  second_quarantined_source_path: include/citlali/core/timestream/ptc/clean.h
+  execution_plan_and_provenance_open_utc: 2026-08-08T19:53:02Z
+  first_post_core_handoff_open_utc: 2026-08-08T19:59:58Z
+  first_post_core_handoff_id: SCI-PTC-001-XAUD-002
+  source_trace_sufficiently_fixed_before_post_core_open: true
+  ordering_verified: true
+  successor_core_revisions: []
+  note: >-
+    The independent-core bytes were hashed and committed alone before every
+    application-source and post-core event. No later evidence changed the core.
+
+post_core_handoffs:
+  - id: SCI-PTC-001-XAUD-002
+    source_package: SCI-MAP-001
+    path: doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-002.yaml
+    sha256: 0aed9f3a625193d882058e7602a6a785093ec2f077d2bdffd9008ac345f23f10
+    disposition: acknowledged_bounded_evidence_only
+    current_sha_treatment: >-
+      Independently corroborated the nonprecision/covariance restriction from
+      exact PTC coefficient and consumer source. No MAP finding was closed and
+      no downstream authority was promoted.
+    affected_findings: [SCI-PTC-001-F006]
+  - id: SCI-PTC-001-XAUD-003
+    source_package: SCI-CAL-001
+    path: doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-003.yaml
+    sha256: 7bb12dd0ece2727012b49988a7552da9c288e10b25eafacd60300f750f744435
+    disposition: acknowledged_dependency_and_restriction_only
+    current_sha_treatment: >-
+      Current source independently exposes incomplete coefficient factor
+      identity and covariance. No CAL repair/result was inferred or accepted.
+    affected_findings: [SCI-PTC-001-F006, SCI-PTC-001-F011]
+  - id: SCI-PTC-001-XAUD-004
+    source_package: SCI-AST-001
+    path: doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-004.yaml
+    sha256: 3e8f7805b27acffa550b749e3c6970167fc38d9d0d87e807ee43c487b7dfbf6d
+    disposition: acknowledged_dependency_and_restriction_only
+    current_sha_treatment: >-
+      Coordinate validity and detector identity remain dependencies at source
+      masks and feedback. No AST conclusion or active repair result was promoted.
+    affected_findings: [SCI-PTC-001-F012]
+  - id: SCI-PTC-001-XAUD-005
+    source_package: SCI-RTC-001
+    path: doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-005.yaml
+    sha256: 5fc8d94ba5af6053296004d3a35403a47f4e77c259fee92e28c92f3186a7ee24
+    audit_submission_sha256: 89ce799a6526f87025bc1d57cc0bf8a0234b149374920027beaa4cb18b94e289
+    source_audit_commit: 3319d7424c732c1c9fc300c336e4d428e6f91068
+    disposition: acknowledged_dependency_and_restriction_only
+    current_sha_treatment: >-
+      Incomplete incoming causal support, matched response, calibration factor,
+      and provenance remain open. Launching PTC did not accept or close RTC.
+    affected_findings: [SCI-PTC-001-F005, SCI-PTC-001-F010]
+  - id: SCI-PTC-001-XAUD-006
+    source_package: SCI-ALIGN-001
+    path: doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-006.yaml
+    sha256: 23ae2b52d0347006c9fc8362299c6ea9eae98b803e3a7698d2e2fb48ae336a7f
+    evidence_commit: 5c6309125fef15f7c98e70a62b591c663944b130
+    evidence_parent: 2ee6d5116a1acd6230694715d0d1d39bac2f9a77
+    evidence_tree: 247c04b4cd5f76005dc07fa63480008568c51ea4
+    evidence_object_sha256: 958d4494de801a08361945d046c92daec4b94e907c8317ad506cb1653c026553
+    evidence_bundle_sha256: b73aff50c7aeb14fd9af5b2e3055a92a3b2d2923443ce32de8d5f7f5c78686a5
+    governing_application_ancestor: false
+    governing_application_merge_base: 9aae0e669384c5c0c0dda93debc194d6b8dac787
+    disposition: acknowledged_exact_current_source_corroboration_only
+    current_sha_treatment: >-
+      Current source independently exhibits the variable-length extent defect.
+      The repair is outside governing ancestry, unintegrated, and not treated as
+      Unity-validated or accepted.
+    affected_findings: [SCI-PTC-001-F004]
+
+source_trace:
+  - path: include/citlali/core/timestream/ptc/ptcproc.h
+    sha256: 15f5da569fc65f02048cefb7b685116b32919c8e8ab60374a638bc46cf1508ab
+    reason: mean removal, cleaning orchestration, second pass, coefficient construction, and late flags
+  - path: include/citlali/core/timestream/ptc/clean.h
+    sha256: 65a8053d7267032c4e750ba18c509cf28af1931da12fdfe7c76b644b09a8d7f5
+    reason: covariance, grouping, null/MP/adaptive selection, eigensystem, and signal/kernel projection
+  - path: include/citlali/core/timestream/timestream.h
+    sha256: 83418ff0123e64dd8a7807b7e6a480848f422d0443ca302b0762862bacab1b78
+    reason: PTC call boundary, NetCDF append, scan indices, and static APT overwrite
+  - path: include/citlali/core/pipeline/timestream_config_adapter_processed.h
+    sha256: b882d7b5dc9946b53ff0b7e4270e041e2fae414074d0e4538113355542e07472
+    reason: one-way effective processed-config adapter
+  - path: include/citlali/core/pipeline/processed_timestream_execution_plan.h
+    sha256: 0e1e61fdaf9c0766a3c288a037fb2c98786f69e961e007d1d94b0bf380d2d186
+    reason: requested/effective/observation/realized state container
+  - path: include/citlali/core/pipeline/processed_timestream_provenance.h
+    sha256: 25a31768b309f43c463c2b6befc9476f25aeb69aec00573d0affaefc7fdc909e
+    reason: processed four-state serialization depth
+  - path: include/citlali/core/pipeline/timestream_output_provenance.h
+    sha256: 82033dc07a9ac6e189a26a970b6e71c8cc09ddf8447d01ae682bfeda5b3bf662
+    reason: output paths, counts, and product provenance boundary
+  - path: include/citlali/core/pipeline/timestream_invariant_validation.h
+    sha256: 36e965f045e70a4c942c21a429f30e8cd1b403adba722eb355d1e86c0bd620f8
+    reason: admitted signal/flag/weight invariants and failures
+  - path: include/citlali/core/pipeline/downsample_config.h
+    sha256: fae3631686cec78f9b04ae1012133e43033a9da130c41ae70264aaae85f9f7f2
+    reason: effective sample-rate resolution
+  - path: include/citlali/core/engine/detail/observation_setup_impl.h
+    sha256: ac3656b9b58aa91e9338376d3b7fee7e1d5b9bb128345b4ce9e06db62cd5e9e7
+    reason: native/effective observation rate installation
+  - path: include/citlali/core/engine/detail/ptc_line_audit_impl.h
+    sha256: fa27aa6cc98c781b70c777573b77d4a0405ec6df7a75a202ab4421bf603cd25b
+    reason: bounded line-diagnostic effective-rate check and exclusion of a false positive
+  - path: include/citlali/core/engine/detail/lali_run_impl.h
+    sha256: e76fa90cc5c8a4dae84fdd7a258ee834c62d389e65b323b3010d2f92b7f56341
+    reason: science scan concurrency, PTC order, and post-clean detector removal
+  - path: include/citlali/core/engine/detail/pointing_run_impl.h
+    sha256: 0200e17b209023d51e71e34506752d33f51082e4849bee1ab33732a301c85cab
+    reason: pointing scan concurrency, source protection, PTC order, and consumers
+  - path: include/citlali/core/engine/detail/beammap_ptc_cleaning_impl.h
+    sha256: 5d529153763c82945482e73764d2156b08ebb9114b8690117c5cab48dc95d73a
+    reason: bounded BEAM model-subtract/PTC/model-restore/weight boundary
+  - path: include/citlali/core/engine/detail/lali_timestream_output_impl.h
+    sha256: 8f1a80e55376bff7cd79704c8a4c007a659da5bc594cd0395fef61ca83fbe9a5
+    reason: science PTC output scheduling and failure propagation
+  - path: include/citlali/core/engine/detail/pointing_timestream_output_impl.h
+    sha256: d09f44b270405caeb55b01354cd01cc50835667d971e35528a7ad5a5033ff8ae
+    reason: pointing PTC output scheduling and failure propagation
+  - path: include/citlali/core/engine/detail/beammap_ptc_product_output_impl.h
+    sha256: 3f78ce74fb1ebde448b2a7b0e8416bc8433a712a473ff554330b7aefbadf93ff
+    reason: Beammap PTC product writer boundary
+  - path: include/citlali/core/engine/detail/tod_file_output_impl.h
+    sha256: 3382f74a68178eec56b1a0b4d6949690f6149d8fdb42949a896a5a2e1fb5ac61
+    reason: full/mini writer, SAMPRATE, coefficient units, and atomic creation
+  - path: include/citlali/core/engine/detail/ptcdiag_output_impl.h
+    sha256: ce9e2ca0a4e054b1e8b6e246e545b20489455028d7200354f779b54345de1adb
+    reason: PTC diagnostic writer, realized fragments, and SAMPRATE
+  - path: include/citlali/core/pipeline/tod_output_identity_metadata.h
+    sha256: 28f3649580f4da55b644c5e7aa3ed757e999b3bfda83a9b37179be7d183a2acc
+    reason: TOD stage and identity metadata
+  - path: include/citlali/core/pipeline/tod_stream_netcdf.h
+    sha256: 95d9c011a384f5b4003eddf104b23d73383463f6353becedc11bdc9f4074a7b2
+    reason: NetCDF stream append lifecycle
+  - path: include/citlali/core/pipeline/tod_data_core_vars.h
+    sha256: 93607b8040f27fc79c2135ed931fcabfce25360d6e180935741786a39d3571ba
+    reason: signal, kernel, flag, and coefficient variables
+  - path: include/citlali/core/pipeline/tod_data_static_metadata_vars.h
+    sha256: a59d1f020c0c4d6c94adccd2da7a3c8cc80801fb6eff94b00c3cf799dc8e06df
+    reason: static APT metadata definition and per-append overwrite target
+  - path: include/citlali/core/pipeline/ptcdiag_paths_dims.h
+    sha256: 907f7449dc92d5d6ca8824c87b5a1c665c985bd000ee4bbf571f77ee440d90f3
+    reason: PTC diagnostic paths, dimensions, and product identity
+  - path: include/citlali/core/mapmaking/naive_mm.h
+    sha256: ab07891db7cdcb96cd7ca9451a35e6042e3b03289e649230806c676d03b6c3fb
+    reason: direct flag admission, signal/kernel coefficients, coverage, and signed realization consumer
+  - path: include/citlali/core/mapmaking/jinc_mm.h
+    sha256: 65fd41b97e06048d2b4b2b0a6d6ecd175a22f1b415d1b52d925a7ec0da4c9e5b
+    reason: JINC coefficient, basis, normalization, and kernel consumer boundary
+  - path: include/citlali/core/mapmaking/ml_mm.h
+    sha256: 5fcc642c5a32213a3f51a985ed102adf9bb75c761f1025f0c13d01bcc2579b86
+    reason: ML coefficient-weighted system-row boundary
+  - path: include/citlali/core/pipeline/mapmaking_dispatch.h
+    sha256: f111be3054e55aea9a4dd36d03e8d29716a990985ea0ee5eed61a03480993c77
+    reason: exact mapmaker routing and consumer scope
+  - path: tests/test_science_map_truth_suite.cpp
+    sha256: 1f61839877ffb287cdbe9f293997ba4f703445446532349e13a959e48cc9db26
+    reason: existing narrow MAP eligibility/arithmetic evidence only
+  - path: tests/test_fruit_loop_recurrence.cpp
+    sha256: 1dfaa0677f291187dd88cafd3e26d8a2ccd49f958c1fda1595d3657cb5ba0138
+    reason: controlled fruit-loop recurrence evidence only
+  - path: tests/test_learning_and_fruit_contracts.cpp
+    sha256: b7eba3b2fa443b5067a4c2e2532a13958c65d60dc62275f06971672c11912863
+    reason: learning/fruit configuration and lifecycle coverage only
+  - path: tests/test_output_schema.cpp
+    sha256: b291db78971e8925866cfe9de58646cdab214ebe9184394cd404a05a6a627b45
+    reason: selected existing output-schema coverage only
+  - path: tests/test_config_scaffold.cpp
+    sha256: 8e1cf0c00f6980d56e2d560fd10e21619834318fef8aee7e4320f974eedaee27
+    reason: typed requested/effective/provenance configuration coverage only
+  - path: include/citlali/core/config/timestream_config.h
+    sha256: 9382e2d000e91e44b8b6aa1b913fb608531b798e6c5896e4faeab524b716d228
+    reason: PTC requested configuration fields and defaults
+  - path: include/citlali/core/config/timestream_config_validation.h
+    sha256: a0e9835e19751819c297853a329a5646f0e9d0024cf4c17f670cabdcf950b014
+    reason: configuration validity and selector/weight constraints
+  - path: include/citlali/core/pipeline/reduction_config_cleaning_netcdf.h
+    sha256: f293a21d95d39b408296204a7919e1a8ae91e8002f0e61c8d28045fa8205d86e
+    reason: persisted cleaning and weighting configuration fields
+  - path: include/citlali/core/engine/detail/lali_fruitloop_impl.h
+    sha256: fc480b6e64b6108954dfc7f9e6fe129d25db2fbf4d2209b2872492460da32fd8
+    reason: science model feedback/PTC recurrence boundary
+  - path: include/citlali/core/engine/detail/pointing_fruitloop_impl.h
+    sha256: eb6ca404a75fa56e04a7e515d1c81c48240fb0050891218bdd165faa8c520945
+    reason: pointing model feedback/PTC recurrence boundary
+  - path: include/citlali/core/engine/detail/lali_map_population_impl.h
+    sha256: 539a78a33de9f240f30fcc5e172eb9f8d88c656d0dd4f3a779e87a03715d05f8
+    reason: science direct validity and map-population boundary
+  - path: include/citlali/core/engine/detail/pointing_map_population_impl.h
+    sha256: 1eaa7b7e13e8196146a631f3b927a23733268946081dbe4119549c9e2820ba30
+    reason: pointing direct validity and map-population boundary
+  - path: include/citlali/core/engine/detail/beammap_map_population_impl.h
+    sha256: fd86d362d04a85a487d1ed610bd243a13af643a0bc8c427497197b151b12d647
+    reason: bounded BEAM direct validity and detector-map boundary
+  - path: include/citlali/core/pipeline/weight_validation_lifecycle.h
+    sha256: 5d029eb439fa650c0f3dabe42983690ba531e993666ce6d491f4f727aecdfbe0
+    reason: learned coefficient lifecycle and mutex-protected realized state
+  - path: src/citlali/core/pipeline/reduction_restart_checkpoint.cpp
+    sha256: b1d5b4ba0115ea66e43ea1742967917980b6291dd2e998d02e93c8d26008ea61
+    reason: restart persistence boundary for learned/reduction state
+
+local_commands:
+  - id: SCI-PTC-001-L001
+    command: >-
+      git status --short --branch; git rev-parse HEAD; git show -s
+      --format='%H%n%P%n%T%n%cI' 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    exact_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    scope: initial branch, clean state, application parent/tree, and timestamp identity
+    result: pass
+    observed_summary: >-
+      The worktree/index were clean at the application target before branch
+      creation; HEAD, parent, and tree matched the frozen assignment.
+  - id: SCI-PTC-001-L002
+    command: >-
+      git show 70d191f3207d37cbdca3a77392668e93fb68c4fc:<prompt-or-manifest-path>
+      | shasum -a 256
+    exact_sha: 70d191f3207d37cbdca3a77392668e93fb68c4fc
+    scope: independently recovered frozen prompt and manifest
+    result: pass
+    observed_summary: >-
+      Prompt and manifest bytes matched a34d2444...fd24b and
+      23913b37...67d3 exactly before audit work.
+  - id: SCI-PTC-001-L003
+    command: >-
+      git show 47c4632008c4fd78f2ab88106372d7ee11ee7711:<manifest-listed-path>
+      | shasum -a 256
+    exact_sha: 47c4632008c4fd78f2ab88106372d7ee11ee7711
+    scope: every pre-core authority and post-core handoff object
+    result: pass
+    observed_summary: >-
+      All seven manifest-listed object digests matched exactly. Post-core
+      objects remained opaque until the recorded opening time.
+  - id: SCI-PTC-001-L004
+    command: >-
+      git show 46ad23888a40f5102cdfd50c06e49a549bdf8a20:<source_trace-path>
+      | shasum -a 256
+    exact_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    scope: every exact application/test path in source_trace
+    result: pass
+    observed_summary: >-
+      Every displayed source byte came from the governing tree and produced
+      the source_trace digest recorded above.
+  - id: SCI-PTC-001-L005
+    command: |-
+      /Users/gwilson/tolteca/bin/python -c 'import math; x=[1.0,float("nan"),3.0]; f=[1.0,0.0,1.0]; terms=[a*b for a,b in zip(x,f)]; s=sum(terms); mean=s/sum(f); source_mean=0.0 if math.isnan(mean) else mean; print({"terms":terms,"raw_mean":mean,"source_mean_after_nan_fallback":source_mean,"expected_good_only_mean":2.0})'
+    exact_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    scope: exact implemented source-mask mean formula
+    result: fail_as_falsification_case
+    input: {signal: [1.0, .nan, 3.0], mask: [1.0, 0.0, 1.0]}
+    observed:
+      terms: [1.0, .nan, 3.0]
+      raw_mean: .nan
+      source_mean_after_nan_fallback: 0.0
+      expected_good_only_mean: 2.0
+    limit: scalar Python reproduction; compiled Citlali code and historical occurrence not tested
+  - id: SCI-PTC-001-L006
+    command: |-
+      /Users/gwilson/tolteca/bin/python -c 'previous=[0,605]; current_len=607; implemented=[v+current_len for v in previous]; expected=[previous[1]+1,previous[1]+current_len]; print({"previous":previous,"current_len":current_len,"implemented":implemented,"expected":expected,"gap_at_sample":expected[0]})'
+    exact_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    scope: exact implemented later-chunk scan-index formula
+    result: fail_as_falsification_case
+    observed:
+      previous: [0, 605]
+      current_len: 607
+      implemented: [607, 1212]
+      expected: [606, 1212]
+      gap_at_sample: 606
+    limit: scalar Python reproduction; NetCDF writer was not executed
+  - id: SCI-PTC-001-L007
+    command: |-
+      /Users/gwilson/tolteca/bin/python -c 'signal=[99.0,1.0,2.0,3.0]; good=[0,1,1,1]; shift=1; surrogate=[signal[(i-shift)%len(signal)] for i in range(len(signal))]; admitted=[surrogate[i] for i,g in enumerate(good) if g]; print({"signal":signal,"good":good,"shift":shift,"surrogate":surrogate,"admitted_under_unshifted_mask":admitted,"flagged_value_admitted":99.0 in admitted})'
+    exact_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    scope: null-selector shifted-signal/unshifted-mask admission
+    result: fail_as_falsification_case
+    observed:
+      signal: [99.0, 1.0, 2.0, 3.0]
+      good: [0, 1, 1, 1]
+      shift: 1
+      surrogate: [3.0, 99.0, 1.0, 2.0]
+      admitted_under_unshifted_mask: [99.0, 1.0, 2.0]
+      flagged_value_admitted: true
+    limit: scalar Python reproduction; full random selector distribution not executed
+  - id: SCI-PTC-001-L008
+    command: >-
+      git merge-base --is-ancestor 5c6309125fef15f7c98e70a62b591c663944b130
+      46ad23888a40f5102cdfd50c06e49a549bdf8a20; git merge-base
+      5c6309125fef15f7c98e70a62b591c663944b130
+      46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    exact_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    scope: ALIGN processed-PTC repair ancestry
+    result: repair_not_ancestor
+    observed_summary: >-
+      is-ancestor returned exit 1; merge base was
+      9aae0e669384c5c0c0dda93debc194d6b8dac787.
+  - id: SCI-PTC-001-L009
+    command: >-
+      rg -n '#[[:space:]]*include.*(timestream/ptc/(clean|ptcproc)|ptc/(clean|ptcproc))'
+      tests; test -d build
+    exact_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    scope: direct compiled-test surface and local build-tree availability
+    result: no_direct_test_include_and_no_build_directory
+    observed_summary: Both checks returned exit 1 with no direct PTC include match.
+  - id: SCI-PTC-001-L010
+    command: >-
+      tectonic --only-cached --keep-logs --outdir <temporary-directory>
+      doc/audits/packages/SCI-PTC-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    exact_sha: c46a15c142d0938baf9576d84a19332e0d46b34852b4d59c0029ba00ac62d7e6
+    scope: offline final-report compile and visual verification
+    result: pass
+    observed_summary: >-
+      Tectonic 0.16.9 cache-only compile, one automatic rerun, 17 letter pages,
+      no overfull boxes, one benign underfull paragraph, all pages visually
+      inspected with no clipping, overlap, or unreadable glyphs.
+  - id: SCI-PTC-001-L011
+    command: >-
+      /Users/gwilson/tolteca/bin/python -c 'import yaml, pathlib; ... yaml.safe_load(...)'
+    exact_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    scope: YAML syntax for the three outgoing handoffs and this evidence record
+    result: pass
+    observed_summary: All created YAML records parse with safe_load.
+
+observations:
+  - id: SCI-PTC-001-E001
+    basis: observed
+    confidence: high
+    finding_ids: [SCI-PTC-001-F001]
+    conclusion: >-
+      Arithmetic mask multiplication admits flagged NaN/Inf; null signal and
+      validity shifts differ; second-pass fallbacks can use flagged finite data.
+  - id: SCI-PTC-001-E002
+    basis: observed
+    confidence: high
+    finding_ids: [SCI-PTC-001-F002]
+    conclusion: >-
+      Second-pass, post-clean detector, and weight exclusions occur after
+      cross-detector mixing without recomputation or descendant invalidation.
+  - id: SCI-PTC-001-E003
+    basis: observed
+    confidence: high
+    finding_ids: [SCI-PTC-001-F003]
+    conclusion: >-
+      Cleaner/maps use effective d_fsmp while PTC and PTCdiag SAMPRATE use
+      native fsmp under downsampling. The separate PTC line audit derives the
+      effective rate and is not included in this defect.
+  - id: SCI-PTC-001-E004
+    basis: observed
+    confidence: high
+    finding_ids: [SCI-PTC-001-F004]
+    conclusion: >-
+      Later variable-length scan bounds advance both prior endpoints by current
+      length. A known ALIGN repair is outside governing ancestry.
+  - id: SCI-PTC-001-E005
+    basis: derived
+    confidence: high
+    finding_ids: [SCI-PTC-001-F005, SCI-PTC-001-F010]
+    conclusion: >-
+      The stored kernel is a fixed-realized-state response only, lacks
+      selection derivatives/uncertainty/unavailable identity, and inherits an
+      incomplete upstream RTC response/support object.
+  - id: SCI-PTC-001-E006
+    basis: observed
+    confidence: high
+    finding_ids: [SCI-PTC-001-F006, SCI-PTC-001-F011]
+    conclusion: >-
+      All five coefficient families are per-detector scalars, not full
+      precision; units/factor/normalization/lifecycle and covariance are incomplete.
+  - id: SCI-PTC-001-E007
+    basis: observed
+    confidence: high
+    finding_ids: [SCI-PTC-001-F007, SCI-PTC-001-F008]
+    conclusion: >-
+      Realized per-scan state is incomplete, static APT data are overwritten on
+      append, and append failure lacks an immutable complete-bundle marker.
+  - id: SCI-PTC-001-E008
+    basis: observed
+    confidence: high
+    finding_ids: [SCI-PTC-001-F009]
+    conclusion: >-
+      clean.enabled=false suppresses grouped cleaning but mean-centering still runs.
+  - id: SCI-PTC-001-E009
+    basis: observed
+    confidence: high
+    finding_ids: [SCI-PTC-001-F012]
+    conclusion: >-
+      PTC source masks/feedback lack accepted conformant coordinate validity and
+      detector-row binding at this SHA.
+  - id: SCI-PTC-001-E010
+    basis: observed
+    confidence: high
+    finding_ids: [SCI-PTC-001-F013]
+    conclusion: >-
+      No direct compiled PTC suite or exact sequential/OpenMP/product/simulation
+      comparison is available in this worktree.
+
+evidence_matrix:
+  analytic_and_static:
+    identity_no_clean: static_policy_contradiction_requires_D001
+    single_detector: source_guards_only_not_executed
+    identical_detectors: not_executed
+    rank_deficient_and_orthogonal_modes: source_guards_only_not_executed
+    scale_and_sign_invariance: not_executed
+    unequal_calibration_factors: unresolved_dependency_not_executed
+    constant_impulse_sinusoid_response: unavailable_complete_response_not_executed
+    source_mask_boundaries: static_partial_not_executed
+    selected_rejected_samples_detectors: static_failed_partial
+    nonfinite_and_causal_influence: deterministic_formula_probe_failed
+    scan_segmentation_and_variable_chunks: deterministic_formula_probe_failed
+    full_mini_product_identity: static_failed_partial
+    one_two_pass_behavior: static_failed_partial
+    sequential_OpenMP_equivalence: not_executed
+    simulation_parity: not_executed
+    covariance_and_map_weight_interpretation: analytic_static_failed
+  existing_tests:
+    opened_for_bounded_static_review:
+      - tests/test_science_map_truth_suite.cpp
+      - tests/test_fruit_loop_recurrence.cpp
+      - tests/test_learning_and_fruit_contracts.cpp
+      - tests/test_output_schema.cpp
+      - tests/test_config_scaffold.cpp
+    direct_PTC_header_coverage: false
+    compiled_or_run: false
+    reason_not_run: no_direct_PTC_test_and_no_build_directory_broad_build_prohibited
+  not_applicable_current_phase:
+    - method: local_Citlali_reduction
+      rationale: frozen dispatch explicitly prohibits reductions and names no current numerical study
+    - method: Unity_execution
+      rationale: frozen dispatch explicitly prohibits Unity and supplies no owner-approved successor request
+    - method: astronomical_recovery
+      rationale: exact interface contradictions already falsify conformance and no successor/data/config/tolerance is authorized
+    - method: blank_or_injected_source_campaign
+      rationale: applicable only under a separately authorized successor validation plan after response/eligibility decisions
+
+outgoing_handoff_records:
+  - id: SCI-VAL-001-XAUD-008
+    target_package: SCI-VAL-001
+    path: doc/audits/handoffs/SCI-VAL-001/SCI-VAL-001-XAUD-008.yaml
+    sha256: fdeaa3d18909a35b3caff85257f70e7f51ae6115ec07d172cbe96fd1b5007a32
+    status: proposed_unintegrated
+    includes_BEAM_later_route: true
+  - id: SCI-MAP-001-XAUD-004
+    target_package: SCI-MAP-001
+    path: doc/audits/handoffs/SCI-MAP-001/SCI-MAP-001-XAUD-004.yaml
+    sha256: 5c5221366d9fd66cffc3881cb8fad2f9b1fee990bfd581b4583cf0d1b72c53d2
+    status: proposed_unintegrated
+  - id: SCI-NOI-001-XAUD-001
+    target_package: SCI-NOI-001
+    path: doc/audits/handoffs/SCI-NOI-001/SCI-NOI-001-XAUD-001.yaml
+    sha256: eb9c8588e0c09d8a9882ed076ee0b8cc33ccad9c49319dea0b56e4419eee3c8c
+    status: proposed_unintegrated
+
+BEAM_routing:
+  handoff_created: false
+  launch_created: false
+  material_route: SCI-VAL-001-XAUD-008_and_owner_brief_only
+
+final_report_render:
+  latex_engine: tectonic_0.16.9_cache_only
+  latex_compile: pass
+  reruns_after_first: 1
+  pdf_sha256: 21853cbb75b6dc93cb28ca573557ef90385f75f51959e97358b2bcdc1b3dfbda
+  pdf_pages: 17
+  pdf_page_size: letter
+  rendered_png_pages_inspected: 17
+  visual_result: pass_no_clipping_overlap_or_unreadable_glyphs
+  overfull_boxes: 0
+  benign_underfull_paragraphs: 1
+  pdf_tracked: false
+
+cost_and_scope:
+  cost_classification: not_costly
+  broad_or_costly_execution_launched: false
+  local_Citlali_reduction_launched: false
+  Unity_accessed: false
+  network_or_external_system_accessed: false
+  external_contact_or_review: false
+  delegation_used: false
+  build_started: false
+  compiled_tests_run: false
+  application_code_modified: false
+  tests_build_validation_config_production_modified: false
+  canonical_ledger_or_registry_modified: false
+  repair_reaudit_integration_or_downstream_audit_launched: false
+  VAL_or_BEAM_launched: false
+  push_performed: false
+
+limits: >-
+  Source and formula evidence establish exact current-SHA contradictions and
+  bounded positive controls only. No compiled PTC execution, performance
+  result, product round trip, local reduction, Unity result, astronomical bias,
+  historical occurrence, repaired-successor result, or production authority is
+  inferred. A future test pass cannot replace an approved contract,
+  integration, and fresh independent re-audit.

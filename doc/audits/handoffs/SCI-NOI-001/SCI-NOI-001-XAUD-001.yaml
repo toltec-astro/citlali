@@ -1,0 +1,109 @@
+format_version: 1
+id: SCI-NOI-001-XAUD-001
+created_date: 2026-08-08
+
+source:
+  package_id: SCI-PTC-001
+  role: independent_package_auditor
+  audit_branch: codex/audit-sci-ptc-001
+  audit_commit: null
+  governing_or_evidence_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+  finding_ids:
+    - SCI-PTC-001-F001
+    - SCI-PTC-001-F002
+    - SCI-PTC-001-F005
+    - SCI-PTC-001-F006
+    - SCI-PTC-001-F007
+    - SCI-PTC-001-F010
+    - SCI-PTC-001-F013
+
+target:
+  package_id: SCI-NOI-001
+
+priority: P1
+evidence_basis: observed
+review_phase: post_core_evidence
+arrival: after_audit_completion
+status: submitted
+
+summary: >-
+  Current signed map realizations reuse coefficient-weighted PTC-cleaned data
+  and do not constitute independent noise draws, retained covariance, or a
+  calibrated significance model.
+claim: >-
+  Naive map noise paths multiply the same PTC-cleaned, per-detector
+  coefficient-weighted signal by signs while ordinary PTC cleaning has already
+  introduced data-dependent temporal and inter-detector correlation. PTC
+  supplies neither retained conditional/full covariance nor fitted-state,
+  calibration, response, or cross-observation uncertainty. The scalar
+  detector coefficients are nonprecision and the realized selection/random
+  state is incompletely persisted. Signed outputs may remain existing bounded
+  realizations, but they are not authority for independent draws, a noise
+  covariance, inverse variance, calibrated significance, or uncertainty
+  coverage.
+
+required_PTC_NOI_interface_facts:
+  input_signal: PTC_cleaned_data_dependent_timestream
+  coefficient_shape: per_detector_scalar
+  coefficient_is_precision: false
+  temporal_and_inter_detector_correlation_induced: true
+  retained_conditional_covariance_present: false
+  fitted_selection_and_response_uncertainty_present: false
+  sign_path_reuses_same_weighted_signal: true
+  independent_noise_draw_established: false
+  calibrated_significance_established: false
+  realized_random_and_selection_state_complete: false
+
+supports:
+  - >-
+    Preserve NOI existing_use_only and prohibit new covariance, independent-draw,
+    inverse-variance, calibrated-significance, or uncertainty-coverage claims
+    for current PTC-derived signed products.
+  - >-
+    Require an approved coefficient/covariance contract, exact realized PTC
+    state, random/sign identity, and covariance-aware fixtures before a future
+    NOI audit may expand interpretation.
+does_not_establish:
+  - This record does not audit NOI package-wide estimators, randomization policy, or products.
+  - It does not prove a historical signed realization failed a specific empirical tolerance.
+  - It does not authorize PTC or NOI repair, validation, re-audit, integration, or production change.
+
+requested_actions:
+  - add_or_update_dependency
+  - add_or_update_finding
+  - add_interface_test
+  - restrict_consumer
+  - preserve_existing_use_only
+affected_target_findings: []
+related_handoffs:
+  - SCI-MAP-001-XAUD-004
+  - SCI-PTC-001-XAUD-001
+  - SCI-PTC-001-XAUD-002
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-PTC-001-independent-core
+    availability: repository_path
+    path: doc/audits/packages/SCI-PTC-001_INDEPENDENT_CORE.tex
+    sha256: 82c0835f51ea9b1fa8a37489f289be89a8018a0b2700e84b1e25c2e4d2a013c2
+    note: Frozen covariance, coefficient, NOI, random-state, and fail-closed contract.
+  - id: SCI-PTC-001-final-audit-report
+    availability: repository_path
+    path: doc/audits/packages/SCI-PTC-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: c46a15c142d0938baf9576d84a19332e0d46b34852b4d59c0029ba00ac62d7e6
+    note: Exact signed-consumer trace, coefficient/covariance findings, and limits.
+
+recipient_disposition:
+  status: pending_NOI_auditor_and_coordinator_review
+  late_arrival_route: not_applicable
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

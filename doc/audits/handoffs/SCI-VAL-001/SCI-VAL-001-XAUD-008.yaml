@@ -1,0 +1,123 @@
+format_version: 1
+id: SCI-VAL-001-XAUD-008
+created_date: 2026-08-08
+
+source:
+  package_id: SCI-PTC-001
+  role: independent_package_auditor
+  audit_branch: codex/audit-sci-ptc-001
+  audit_commit: null
+  governing_or_evidence_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+  finding_ids:
+    - SCI-PTC-001-F001
+    - SCI-PTC-001-F002
+    - SCI-PTC-001-F005
+    - SCI-PTC-001-F007
+    - SCI-PTC-001-F010
+    - SCI-PTC-001-F012
+    - SCI-PTC-001-F013
+
+target:
+  package_id: SCI-VAL-001
+
+priority: P0
+evidence_basis: observed
+review_phase: post_core_evidence
+arrival: after_audit_completion
+status: submitted
+
+summary: >-
+  Direct finite and unflagged PTC output does not prove absence of invalid
+  causal influence, and the stored conditioned kernel does not establish the
+  response or uncertainty needed by VAL or a later BEAM audit.
+claim: >-
+  At the governing SHA, masked NaN/Inf arithmetic can contaminate PTC means,
+  covariance, selected state, and unflagged descendants; null surrogates shift
+  signal without shifting validity; and second-pass, post-clean detector, and
+  weight flags occur after cross-detector mixing without recomputation or
+  transitive invalidation. The kernel follows a fixed realized PTC basis but
+  omits data-dependent selection derivatives and inherits incomplete RTC
+  causal support/response. Therefore direct binary flags and the stored kernel
+  are insufficient authority for new eligibility, exposure, response,
+  transfer, beam, or response-uncertainty claims.
+
+required_PTC_interface_facts:
+  direct_validity:
+    binary_sample_flags_present: true
+    eligible_only_nonfinite_admission_conformant: false
+    cause_specific_validity_present: false
+    transitive_cross_detector_influence_present: false
+  late_exclusion:
+    second_pass_flags_after_cleaning: true
+    post_clean_detector_flags_after_cleaning: true
+    descendant_recomputation_or_invalidation_present: false
+  response:
+    conditioned_signal_derived_kernel_present_in_full_output: true
+    present_in_mini_output: false
+    unconditional_or_local_Jacobian_complete: false
+    upstream_RTC_response_complete: false
+    response_uncertainty_present: false
+    explicit_unavailable_state_present: false
+  BEAM_later_route:
+    beammap_consumes_PTC_cleaning_and_kernel_boundary: true
+    new_beam_or_transfer_claim_supported: false
+    BEAM_launched_by_this_record: false
+
+supports:
+  - >-
+    Preserve VAL existing_use_only and reject new eligibility/exposure claims
+    that equate finite and unflagged with original-valid, uninfluenced, or
+    statistically independent.
+  - >-
+    Require durable direct cause, transitive influence, source-mask support,
+    selected state, conditioned/local response class, uncertainty, and explicit
+    unavailable fields before expanding consumers.
+  - >-
+    Route the response facts to a future separately launched BEAM audit; until
+    then, no new global, extended-source, beam, or response-uncertainty use is
+    supported.
+does_not_establish:
+  - This record does not audit VAL eligibility policy, statistics, or package-wide behavior.
+  - It does not audit or launch BEAM and does not quantify a beam or map bias.
+  - It does not prove that any accepted historical product exercised an edge case.
+  - It does not authorize repair, validation execution, re-audit, or production change.
+
+requested_actions:
+  - add_or_update_dependency
+  - add_or_update_finding
+  - add_interface_test
+  - restrict_consumer
+  - preserve_existing_use_only
+affected_target_findings: []
+related_handoffs:
+  - SCI-VAL-001-XAUD-007
+  - SCI-PTC-001-XAUD-004
+  - SCI-PTC-001-XAUD-005
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-PTC-001-independent-core
+    availability: repository_path
+    path: doc/audits/packages/SCI-PTC-001_INDEPENDENT_CORE.tex
+    sha256: 82c0835f51ea9b1fa8a37489f289be89a8018a0b2700e84b1e25c2e4d2a013c2
+    note: Frozen validity, influence, response, and fail-closed consumer contract.
+  - id: SCI-PTC-001-final-audit-report
+    availability: repository_path
+    path: doc/audits/packages/SCI-PTC-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: c46a15c142d0938baf9576d84a19332e0d46b34852b4d59c0029ba00ac62d7e6
+    note: Exact-source findings, response analysis, consumer matrix, and evidence limits.
+
+recipient_disposition:
+  status: pending_VAL_auditor_and_coordinator_review
+  late_arrival_route: not_applicable
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

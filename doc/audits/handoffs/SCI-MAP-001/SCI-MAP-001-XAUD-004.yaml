@@ -1,0 +1,120 @@
+format_version: 1
+id: SCI-MAP-001-XAUD-004
+created_date: 2026-08-08
+
+source:
+  package_id: SCI-PTC-001
+  role: independent_package_auditor
+  audit_branch: codex/audit-sci-ptc-001
+  audit_commit: null
+  governing_or_evidence_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+  finding_ids:
+    - SCI-PTC-001-F005
+    - SCI-PTC-001-F006
+    - SCI-PTC-001-F007
+    - SCI-PTC-001-F010
+    - SCI-PTC-001-F011
+    - SCI-PTC-001-F013
+
+target:
+  package_id: SCI-MAP-001
+
+priority: P0
+evidence_basis: observed
+review_phase: post_core_evidence
+arrival: after_audit_completion
+status: submitted
+
+summary: >-
+  Every current PTC detector weight family is a nonprecision gridding
+  coefficient, while the stored kernel and scalar weights omit the covariance
+  and response authority needed for new MAP significance claims.
+claim: >-
+  The governing source constructs approximate, full, hybrid, validated, and
+  constant per-detector scalar coefficients, with optional correlation and
+  busy-row penalties. No family constructs temporal, inter-detector, or
+  cross-observation precision; factor identity, units, normalization, and
+  lifecycle are incomplete, and the constant family is dimensionless despite
+  a universal inverse-signal-squared file attribute. Naive, JINC, and ML paths
+  consume the coefficients in signal/kernel normalization or system rows. The
+  kernel is only a conditioned partial response and PTC publishes no retained
+  covariance. Those consumers cannot upgrade the inputs to inverse variance,
+  formal precision, response-complete normalization, or significance.
+
+required_PTC_MAP_interface_facts:
+  coefficient_shape: per_detector_scalar
+  coefficient_families:
+    - approximate
+    - full
+    - hybrid
+    - validated
+    - constant
+  temporal_precision_present: false
+  inter_detector_precision_present: false
+  cross_observation_precision_present: false
+  retained_PTC_covariance_present: false
+  coefficient_family_and_normalization_persisted_completely: false
+  universal_file_unit_valid_for_constant_family: false
+  conditioned_kernel_present_in_full_output: true
+  unconditional_response_or_uncertainty_present: false
+  direct_consumers:
+    - naive_MAP_numerator_denominator_and_kernel
+    - JINC_basis_normalization_and_kernel
+    - ML_linear_system_rows
+
+supports:
+  - >-
+    Preserve the MAP rule that PTC/coadd values are nonprecision coefficients
+    unless exact factor, normalization, lifecycle, marginal-precision, and
+    independence or full-covariance conditions are proved.
+  - >-
+    Keep MAP existing_use_only and prohibit new inverse-variance, significance,
+    response-complete, or covariance interpretations of current denominators
+    and weight attributes.
+  - >-
+    Require typed coefficient family/units/normalization/lifecycle plus explicit
+    conditioned-response and covariance availability before MAP re-audit.
+does_not_establish:
+  - This record does not re-audit the MAP estimator, JINC, ML, coaddition, or map products.
+  - It does not quantify a map bias or invalidate a particular accepted map.
+  - It does not authorize PTC, CAL, or MAP repair, re-audit, integration, or production expansion.
+
+requested_actions:
+  - add_or_update_dependency
+  - add_or_update_finding
+  - add_interface_test
+  - restrict_consumer
+  - preserve_existing_use_only
+affected_target_findings: []
+related_handoffs:
+  - SCI-PTC-001-XAUD-001
+  - SCI-PTC-001-XAUD-002
+  - SCI-PTC-001-XAUD-003
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-PTC-001-independent-core
+    availability: repository_path
+    path: doc/audits/packages/SCI-PTC-001_INDEPENDENT_CORE.tex
+    sha256: 82c0835f51ea9b1fa8a37489f289be89a8018a0b2700e84b1e25c2e4d2a013c2
+    note: Frozen coefficient, precision, covariance, response, and MAP contract.
+  - id: SCI-PTC-001-final-audit-report
+    availability: repository_path
+    path: doc/audits/packages/SCI-PTC-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: c46a15c142d0938baf9576d84a19332e0d46b34852b4d59c0029ba00ac62d7e6
+    note: Exact coefficient formulas, product/consumer trace, findings, and limits.
+
+recipient_disposition:
+  status: pending_MAP_auditor_and_coordinator_review
+  late_arrival_route: not_applicable
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

@@ -1,0 +1,960 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.82in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,booktabs,longtable,array,enumitem,hyperref,xcolor}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\setlength{\emergencystretch}{4em}
+\setlength{\tabcolsep}{3.2pt}
+\renewcommand{\arraystretch}{1.08}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\code}[1]{\nolinkurl{#1}}
+\newcommand{\digest}[8]{\code{#1}\allowbreak\code{#2}\allowbreak%
+  \code{#3}\allowbreak\code{#4}\allowbreak\code{#5}\allowbreak%
+  \code{#6}\allowbreak\code{#7}\allowbreak\code{#8}}
+\newcommand{\unknown}{\texttt{unavailable}}
+\newcommand{\yes}{\texttt{yes}}
+\newcommand{\no}{\texttt{no}}
+
+\title{Correlated-mode cleaning and detector-weight interface\\
+\large SCI-PTC-001 scientific-contract audit}
+\author{Independent package auditor}
+\date{2026-08-08}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The independently claimed PTC operator is a data-dependent, stateful
+correlated-mode transformation with cause-preserving validity, a conditioned
+local response, full covariance, explicitly nonprecision detector
+coefficients unless stronger conditions are proved, and immutable product
+identity.  At application SHA
+\code{46ad23888a40f5102cdfd50c06e49a549bdf8a20}, the implemented mean/PCA,
+selector, second-pass, and weighting paths realize useful bounded pieces of
+that operator, but they do not conform to its validity, response, covariance,
+sample-rate, variable-scan-extent, state, or product contracts.  The proposed
+verdict is \texttt{amend}: keep current accepted uses at
+\texttt{existing\_use\_only}, fail closed on every new response, precision,
+uncertainty, coordinate-validity, product-reconstruction, or consumer claim,
+and require an exact successor plus independent re-audit before expansion.
+\end{abstract}
+
+\section{Executive result and bounded scope}
+
+\begin{description}[style=nextline,leftmargin=0pt]
+\item[Package and tier]
+\code{SCI-PTC-001}, Tier B, correlated-mode cleaning and detector-weight
+interface.
+\item[Included transformation]
+Admitted inner-RTC detector timestream, kernel, flags, detector/APT state, and
+source-mask context through PTC mean removal, grouped correlated-mode
+selection/subtraction, optional second-pass flags, detector coefficients,
+processed TOD/diagnostics, and the direct VAL/MAP/NOI/BEAM boundary.
+\item[Explicit exclusions]
+No RTC, ALIGN, CAL, AST, VAL, MAP, NOI, BEAM, JINC, Wiener, fruit-loop, or
+source-fitting audit beyond its direct PTC interface.  No application repair,
+build, reduction, Unity access, production change, canonical coordination
+edit, downstream launch, or external contact was authorized or performed.
+\item[Strongest supported result]
+The implementation is \texttt{nonconformant}.  Four P0 implementation defects
+are exact-source established: invalid values can enter fitted/selected state;
+late invalidation does not close causal influence; downsampled PTC products
+advertise the native rate; and variable-length processed chunks receive
+incorrect scan bounds.  Further response, weight/covariance, provenance,
+product, policy, dependency, and evidence gaps remain open.
+\item[Consumer policy]
+Only already-authorized existing behavior remains in scope.  Detector weights
+are gridding coefficients, not precision; the stored kernel is not a complete
+global response; binary flags are not complete causal eligibility; and BEAM
+remains unlaunched.
+\end{description}
+
+\section{Authority, identity, and independence record}
+
+\begin{longtable}{L{0.245\linewidth}L{0.70\linewidth}}
+\toprule
+Field & Exact value and audit effect\\
+\midrule
+\endfirsthead
+\toprule
+Field & Exact value and audit effect\\
+\midrule
+\endhead
+Application target &
+\code{46ad23888a40f5102cdfd50c06e49a549bdf8a20};
+parent \code{4846fa4db39bd2f7d4ddc41f693836834cbc5ff4};
+tree \code{ab230a93b8fb310d58aefd7ac5da92e5d5e0f408}.\\
+Dispatch and binding &
+Frozen dispatch object
+\code{70d191f3207d37cbdca3a77392668e93fb68c4fc};
+registry/decision snapshot
+\code{47c4632008c4fd78f2ab88106372d7ee11ee7711};
+final coordinator binding
+\code{6ee2608a0444fa7751a234ffdfb3b72108f92409}.\\
+Prompt &
+\code{doc/audits/prompts/SCI_PTC_001_AUDIT_PROMPT.md};
+SHA-256
+\digest{a34d2444}{c3f66a2a}{1056ebe5}{c552d16a}{31bd9f69}{035b5c6f}{34ddbb9b}{c90fd24b}.\\
+Frozen manifest &
+\code{doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001_INBOX_AUTHORITY_MANIFEST_2026-08-08.yaml};
+SHA-256
+\digest{23913b37}{dfac7a10}{6bcb281f}{9a187061}{6c99acf9}{12a5a7aa}{d59aed39}{e6bd67d3}.\\
+Audit branch/worktree &
+\code{codex/audit-sci-ptc-001} in
+\code{/Users/gwilson/.codex/worktrees/4dc5/citlali-refactor}.\\
+Frozen independent core &
+\code{doc/audits/packages/SCI-PTC-001_INDEPENDENT_CORE.tex};
+SHA-256
+\digest{82c0835f}{51ea9b1f}{a8a37489}{f289be89}{a8018a0b}{2700e84b}{1e25c2e4}{d2a013c2}.\\
+Core freeze identity &
+Commit \code{66e8d6f98c3e22da74de4eea84e568a0b4cc6310};
+parent \code{46ad23888a40f5102cdfd50c06e49a549bdf8a20};
+tree \code{b4775f0f18277b28497fbbc0b24a7b583b9c0980};
+timestamp \code{2026-08-08T19:45:04Z}.\\
+Pre-core exposure &
+Only approved RTC decisions \code{SCI-RTC-001-D001--D004} and
+\code{SCI-PTC-001-XAUD-001}.  No application source or post-core handoff was
+opened before the immutable core commit.\\
+First application source &
+\code{2026-08-08T19:47:43Z},
+\code{include/citlali/core/timestream/ptc/ptcproc.h}, after coordinator
+acceptance of the immutable core.\\
+Additional quarantined source &
+\code{clean.h} at \code{2026-08-08T19:51:20Z}; execution-plan and provenance
+headers at \code{2026-08-08T19:53:02Z}.\\
+First post-core handoff &
+\code{SCI-PTC-001-XAUD-002} at
+\code{2026-08-08T19:59:58Z}, after the independent source trace was fixed.
+\code{XAUD-002--006} all matched their manifest digests.\\
+Prior implementation exposure &
+None known before launch.  The source-first and post-core ordering was
+maintained; no successor revision of the core was made.\\
+\bottomrule
+\end{longtable}
+
+The approved RTC decisions supplied upstream product authority, not proof of
+current implementation closure.  The pre-core MAP handoff supplied only the
+rule that map/coadd weights remain nonprecision unless PTC proves factor
+identity, normalization, lifecycle, marginal precision, and the required
+independence or full-covariance conditions.
+
+\section{Claimed and implemented operators}
+
+\subsection{Immutable claimed contract}
+
+For scan \(s\), admitted signal \(x_s\), direct-validity mask \(m_s\),
+detector/APT state \(a_s\), fixed policy \(\phi\), and realized
+data-dependent state \(\theta_s\), the frozen core claims
+\begin{align}
+  \theta_s &= T(x_s,m_s,a_s;\phi),\\
+  z_s &= F(x_s,m_s,a_s,\theta_s),\\
+  w_s &= W(z_s,m_s,a_s,\theta_s),\\
+  q_{s+1} &= G(q_s,x_s,m_s,a_s),\\
+  P_s &= (z_s,m_s^{\mathrm{out}},w_s,R_s,C_s,q_{s+1},
+          \mathcal I_s).
+\end{align}
+Here \(R_s\) is a bounded realized local response or \unknown{}, \(C_s\) is
+the declared covariance object or \unknown{}, and \(\mathcal I_s\) binds
+sample/detector/scan/stage, time/rate/phase, units, parentage, processing,
+validity causes, and product links.  This is the immutable target represented
+by \code{PTC-C1--PTC-C12} and equations
+\code{eq:theta-fit--eq:ptc-product} in the core.
+
+For fixed mask, fixed orthonormal detector-mode matrix \(V_k\), and no
+data-dependent selection derivative, the conditional special case is
+\begin{align}
+  \widehat c &= (x\odot g)V_k,\\
+  z &= x-\bigl(\widehat cV_k^{\mathsf T}\bigr)\odot g,\\
+  C_{z\mid\theta} &= A_\theta C_x A_\theta^{\mathsf T}.
+\end{align}
+The unconditional Jacobian must additionally include derivatives of fitted
+modes, selected \(k\), masks, thresholds, feedback, and state.  A kernel
+conditioned on one realized \(\theta\) is not that unconditional response.
+
+\subsection{Compact implemented operator}
+
+Source first subtracts, for every detector \(d\),
+\begin{equation}
+  \bar x_d^{\,\mathrm{src}} =
+  \frac{\sum_t x_{td}g_{td}}{\sum_t g_{td}},\qquad
+  x'_{td}=x_{td}-\bar x_d^{\,\mathrm{src}},
+  \label{eq:implemented-mean}
+\end{equation}
+with a NaN mean replaced by zero.  This occurs even when
+\code{clean.enabled=false}.  When cleaning is enabled, each configured group
+is processed sequentially.  The source forms a flag-masked pairwise
+covariance, solves detector eigenmodes, obtains \(k\) from a configured cut,
+standard-deviation cut, random circular-shift null, Marchenko--Pastur fit, or
+adaptive score, and applies
+\begin{equation}
+  z=x'-\left[((x'\odot g)V_k)V_k^{\mathsf T}\right]\odot g.
+  \label{eq:implemented-pca}
+\end{equation}
+The kernel follows Equation~\eqref{eq:implemented-mean} and then
+Equation~\eqref{eq:implemented-pca} using the signal-derived \(g,V_k,k\).
+The optional second pass subsequently derives residual events and mutates
+flags, without recomputing the already-cleaned signal/kernel.  Later detector
+outlier and weight-threshold stages can flag additional detector columns.
+
+Detector coefficients are selected by type:
+\begin{align}
+  w_d^{\mathrm{approx}} &=
+    \left[\sqrt{f_s}\,f^{\mathrm{cf}}_d\,s^{\mathrm{APT}}_d\right]^{-2},
+  \label{eq:implemented-approx}\\
+  w_d^{\mathrm{full}} &= \widehat{\Var}(z_d\mid g_d)^{-1},
+  \label{eq:implemented-full}\\
+  w_d^{\mathrm{hybrid}} &=
+    w_d^{\mathrm{approx}}\,
+    \operatorname{clip}\!\left[
+      \frac{w_d^{\mathrm{full}}/w_d^{\mathrm{approx}}}
+           {\operatorname{median}_{d\in A}
+             (w_d^{\mathrm{full}}/w_d^{\mathrm{approx}})}
+    \right],
+  \label{eq:implemented-hybrid}\\
+  w_d^{\mathrm{validated}} &= w_d^{\mathrm{approx}}p_d,\qquad
+  w_d^{\mathrm{constant}}=1,
+  \label{eq:implemented-other}
+\end{align}
+followed, when configured, by correlation penalties, busy-row suppression,
+median caps, and detector-wide threshold flags.  These are per-detector scalar
+coefficients.  No path constructs temporal, inter-detector, or
+cross-observation precision.
+
+\section{Source-to-contract conformity trace}
+
+\begin{longtable}{L{0.255\linewidth}L{0.145\linewidth}L{0.19\linewidth}L{0.33\linewidth}}
+\toprule
+Exact source path & Symbol/lines & Core target & Result\\
+\midrule
+\endfirsthead
+\toprule
+Exact source path & Symbol/lines & Core target & Result\\
+\midrule
+\endhead
+\code{timestream/ptc/ptcproc.h} &
+\code{subtract_mean}, 633--659 &
+\code{PTC-C1,C2,C4,C8} &
+Mean and kernel centering are explicit, but masked IEEE arithmetic admits
+flagged NaN/Inf influence and disabled cleaning is not identity.\\
+\code{timestream/ptc/ptcproc.h} &
+\code{run}, 661--1105 &
+\code{PTC-C2--C5,C8,C9} &
+Local cleaner copy and ordered group passes are positive controls.  Modes,
+cuts, and kernel are conditioned on data-derived state; source masks alter
+fit/subtraction support without becoming direct output flags.\\
+\code{timestream/ptc/clean.h} &
+\code{calc_cov_with_mask}, 387--407; \code{calc_eig_values}, 1933--2133 &
+\code{PTC-C2,C4,C6} &
+Pairwise overlap covariance and active-detector checks exist.  Multiplication
+by zero is not a non-finite admission operator and fitted-state uncertainty is
+absent.\\
+\code{timestream/ptc/clean.h} &
+\code{get_corr_groups}, 786--988 &
+\code{PTC-C3,C4,C9} &
+Correlation graph groups and fallback are realized but full selected
+membership/metric state is not carried by general provenance.\\
+\code{timestream/ptc/clean.h} &
+\code{get_null_model_index}, 991--1178 &
+\code{PTC-C2,C3,C4,C12} &
+Seeded circular shifts are deterministic for a call, but signal values shift
+without their validity mask; rejected values can enter surrogate admission.
+Realized shifts are not persisted.\\
+\code{timestream/ptc/clean.h} &
+\code{get_marchenko_pastur_index}, 1180--1416 &
+\code{PTC-C3,C4,C6} &
+Robust scaling, optional band limitation, overlap count, and MP bulk fit are
+implemented; selected realized state and selection uncertainty remain
+incomplete.\\
+\code{timestream/ptc/clean.h} &
+\code{select_adaptive_cut}, 1418--1931 &
+\code{PTC-C3,C4,C6} &
+Candidate scoring and chosen-\(k\) diagnostics exist.  The response remains
+conditioned on selection, and no uncertainty for the selection is produced.\\
+\code{timestream/ptc/clean.h} &
+\code{remove_eig_values}, 2136--2207 &
+\code{PTC-C4,C8,C9} &
+Equation~\eqref{eq:implemented-pca} is directly implemented for signal and
+kernel with the same realized basis and mask; this is a conditioned local
+operator only.\\
+\code{timestream/ptc/ptcproc.h} &
+\code{apply_second_pass_local}, 1108--1934 &
+\code{PTC-C2,C3,C9} &
+Residual events and summaries are implemented after PCA.  Fallback statistics
+can include flagged finite values; median synthesis affects smoothing without
+cause/influence closure; accepted events add flags after cleaning.\\
+\code{timestream/ptc/ptcproc.h} &
+\code{calc_weights}, 2213--3380 &
+\code{PTC-C3,C6,C7} &
+Five coefficient families, correlation penalties, validation state, and
+busy-row suppression are implemented.  They are not full precision and do not
+carry retained covariance.\\
+\code{timestream/ptc/ptcproc.h} &
+\code{reset_weights}, 3382--3567 &
+\code{PTC-C2,C7} &
+Median caps and detector-wide threshold flags are explicit; new exclusions
+occur after cross-detector cleaning without causal descendant invalidation.\\
+\code{pipeline/timestream_config_adapter_processed.h} &
+\code{apply_processed_*}, 73--end &
+\code{PTC-C3} &
+Effective typed config is copied one way.  Disabled cleaning sets
+\code{run_clean=false}, but source mean subtraction remains active.\\
+\code{pipeline/processed_timestream_execution_plan.h} and
+\code{processed_timestream_provenance.h} &
+plan and v2 serializer &
+\code{PTC-C3,C10} &
+Requested/effective config and a few resolutions are preserved atomically.
+Realized per-scan mode, support, coefficient, random, response, covariance, and
+product-link state is not.\\
+\code{engine/detail/lali_run_impl.h} and
+\code{pointing_run_impl.h} &
+scan farms, 27--165 and 30--179 &
+\code{PTC-C2,C5,C10} &
+RTC admission, learned masks, model subtraction, PTC, post-clean detector
+removal, weights, outputs, and maps are ordered.  Scans execute concurrently
+through one shared PTC processor with protected caches/state.\\
+\code{engine/detail/beammap_ptc_cleaning_impl.h} &
+PTC pass, 12--179 &
+\code{PTC-C5,C8,C11} &
+Beammap model subtraction/restoration, PTC cleaning, weights, and map use are
+direct.  Constant detector-mode coefficients can bypass PTC weights.  BEAM
+response/uncertainty is not established.\\
+\code{engine/detail/observation_setup_impl.h} and
+\code{pipeline/downsample_config.h} &
+sample-rate setup &
+\code{PTC-C1,C9,C10} &
+Cleaner and mapmakers use \code{telescope.d_fsmp}; downsampling resolves it as
+\code{fsmp/factor}.\\
+\code{engine/detail/tod_file_output_impl.h} and
+\code{ptcdiag_output_impl.h} &
+header writers &
+\code{PTC-C1,C10} &
+Both PTC TOD and PTC diagnostics write
+\code{SAMPRATE=telescope.fsmp}, contradicting the effective PTC rate when
+downsampled.\\
+\code{timestream/timestream.h} &
+\code{append_base_to_netcdf}, 3333--3549 &
+\code{PTC-C1,C10} &
+Signal/flags/pointing append at actual length, but variable-length
+\code{scan_indices} advance both previous endpoints by the current length.
+Static APT arrays are overwritten on every append.\\
+\code{pipeline/tod_data_core_vars.h},
+\code{tod_stream_netcdf.h}, and \code{ptcdiag_paths_dims.h} &
+PTC schema &
+\code{PTC-C7,C8,C10} &
+Full/mini signal and binary flags are typed; kernel is absent from mini and has
+\code{N/A} units; all coefficient types receive
+\code{(signal_unit)^-2}, including dimensionless constant weights.\\
+\code{engine/detail/lali_timestream_output_impl.h},
+\code{pointing_timestream_output_impl.h}, and
+\code{beammap_ptc_product_output_impl.h} &
+output scheduling &
+\code{PTC-C5,C10} &
+Standard scan writes are ordered and required failures propagate.  NetCDF
+creation is atomic, but subsequent appends can leave a partial file and no
+complete immutable bundle marker is written.\\
+\code{mapmaking/naive_mm.h} &
+ordinary accumulation, 360--470 &
+\code{PTC-C7,C8,C11} &
+Flags are direct-invalid authority; finite positive PTC coefficients multiply
+signal and kernel and form the denominator.  Noise realizations apply signs to
+the same weighted signal.\\
+\code{mapmaking/jinc_mm.h} and \code{ml_mm.h} &
+JINC/ML accumulation &
+\code{PTC-C7,C11} &
+PTC coefficients enter signal, gridding/normalization, kernel, and linear
+system rows.  No PTC covariance upgrades those coefficients to precision.\\
+\code{tests/test_science_map_truth_suite.cpp},
+\code{test_fruit_loop_recurrence.cpp}, and
+\code{test_output_schema.cpp} &
+existing narrow tests &
+\code{PTC-C12} &
+MAP eligibility/arithmetic, controlled fruit recurrence, and selected schema
+fields have tests.  No test includes \code{clean.h} or \code{ptcproc.h}
+directly.\\
+\bottomrule
+\end{longtable}
+
+\section{Validity, missing data, and causal influence}
+
+The implementation distinguishes direct sample flags and detector/APT flags,
+and mapmaking now refuses to inspect a directly flagged payload.  That is a
+useful downstream positive control, but it cannot recover influence already
+mixed into an unflagged descendant.
+
+\begin{enumerate}[leftmargin=*]
+\item Equation~\eqref{eq:implemented-mean} and the main covariance/projection
+use arithmetic multiplication by \(g\).  IEEE \(0\times\mathrm{NaN}\) is NaN.
+A focused exact-formula probe with \(x=(1,\mathrm{NaN},3)\) and
+\(g=(1,0,1)\) produced a NaN source mean, then the implementation's zero
+fallback, instead of the good-only mean 2.  Thus the flagged payload changes
+all unflagged output values without an output flag.
+\item Null surrogates circularly shift standardized signal columns but retain
+the original unshifted validity matrix.  A rejected value may therefore land
+at a destination marked good and enter the surrogate covariance and selected
+cut.
+\item Second-pass robust-statistic fallback uses all finite samples when fewer
+than eight eligible values exist.  Baseline smoothing substitutes the median
+for flagged/non-finite cells without recording which good outputs are
+influenced by those substitutions.
+\item Second-pass flags, post-clean bad-detector removal, and weight-threshold
+flags occur after the selected signal and kernel have already mixed detector
+information.  Only directly rejected cells/columns are marked; affected
+unflagged descendants are neither recomputed nor declared ineligible.
+\end{enumerate}
+
+These are failures of the approved influence contract, not a request to
+broaden mature PCA numerics.  The null-mask mismatch is a concrete selection
+contradiction and therefore a narrowly named Tier-A reopen trigger if it
+cannot be repaired at the admission/interface boundary.
+
+\section{Response, uncertainty, covariance, and detector coefficients}
+
+\subsection{Response}
+
+Applying the realized signal-derived \(V_k,k,g\) to a kernel provides
+\[
+  R_{\mathrm{cond}}=A_{\widehat\theta}R_{\mathrm{in}},
+\]
+conditional on the selected state.  It omits the response of
+\(\widehat\theta(x)\), discontinuities in selected \(k\), source-mask and
+second-pass selection, learned/fruit state, and uncertainty of all those
+terms.  The incoming RTC handoff additionally reports that the supplied
+kernel omits donor replacement and alt-az destriping response and lacks
+complete causal support.  PTC cannot turn that partial upstream object into a
+complete response by projecting it.
+
+The full PTC file may store a \code{kernel} variable; mini output omits it.
+The variable has units \code{N/A}, no explicit conditioned/local/global
+identity, no parent-response binding, no uncertainty, and no unavailable
+state.  Naive/JINC/ML map paths and Beammap use it directly.  Therefore:
+\begin{itemize}[leftmargin=*]
+\item a bounded realized conditioned kernel may be used only under its exact
+state once that state and upstream scope are supplied;
+\item a global transfer, absolute beam response, extended-source response, or
+response uncertainty is currently \unknown{}; and
+\item absence of a complete response must not be encoded as a plausible
+partial kernel.
+\end{itemize}
+
+\subsection{Uncertainty and covariance}
+
+For fixed state, the conditional covariance is
+\(A_{\widehat\theta}C_xA_{\widehat\theta}^{\mathsf T}\).  The implementation
+does not produce it.  It also does not produce the additional covariance from
+fitted/selected state, calibration, response, random selection, fruit-loop
+feedback, or systematics.  Cleaning explicitly creates temporal and
+inter-detector correlation; shared calibration and iteration create
+cross-product/cross-observation terms.  None is erased by a scalar detector
+coefficient.
+
+\subsection{Weight interpretation}
+
+\code{full} is inverse empirical per-detector residual scatter, not a full
+precision matrix.  \code{approximate} depends on the unresolved
+\code{fcf*sens} factor identity.  \code{hybrid} normalizes a residual-scatter
+ratio within array and clips it.  \code{validated} applies learned and
+heuristic factors.  \code{constant} is dimensionless.  Correlation and busy
+row penalties are additional heuristic coefficient changes.  No type proves
+the frozen core's marginal-precision equation plus independence, and no type
+provides full retained covariance.
+
+Accordingly, every PTC weight is a nonprecision gridding coefficient at this
+SHA.  The NetCDF \code{weights} unit attribute overstates at least the
+constant case and does not encode coefficient family, normalization,
+lifecycle, or covariance scope.  A map denominator, JINC squared-basis
+accumulator, ML row coefficient, or signed noise realization cannot acquire
+inverse-variance or significance authority from that attribute.
+
+\section{State, products, metadata, and provenance}
+
+\subsection{Four-state reconstruction}
+
+The typed configuration and one-way adapter provide a useful requested and
+effective-policy skeleton.  Observation setup resolves the effective sample
+rate and other run context.  The execution-plan/provenance path records the
+request, effective configuration, selected observation resolutions, and a
+bounded set of fruit-loop outcomes.  It does not reconstruct the exact
+operator that produced any one scan.
+
+In particular, the durable record does not bind every configured group to its
+realized detector membership, validity/source support, selector and selected
+mode count, null shift/random state, pass, coefficient family and factors,
+fallback, learned state, conditioned response, covariance status, or product
+parent.  Diagnostics expose some of these facts while a process is running,
+but a diagnostic variable is not an immutable four-state authority.  Static
+APT variables are overwritten when another scan is appended, so they cannot
+serve as scan-specific realized state.
+
+\subsection{Product and consumer matrix}
+
+\begin{longtable}{L{0.145\linewidth}L{0.20\linewidth}L{0.22\linewidth}L{0.19\linewidth}L{0.17\linewidth}}
+\toprule
+Stage/product & Operator/content & Identity and metadata & Direct consumer & Supported interpretation\\
+\midrule
+\endfirsthead
+\toprule
+Stage/product & Operator/content & Identity and metadata & Direct consumer & Supported interpretation\\
+\midrule
+\endhead
+Inner RTC input &
+RTC-conditioned signal, partial kernel, flags, detector/APT context &
+Effective rate is available in memory; complete influence, response, factor,
+and coordinate binding is not &
+PTC mean, cleaning, selectors, and weights &
+Bounded input only; no inference of independent samples or complete response\\
+PTC full TOD &
+Cleaned signal, binary flags, kernel, detector coefficients, pointing/static
+arrays &
+Kernel units are \code{N/A}; every coefficient gets signal-inverse-square
+units; \code{SAMPRATE} is native rather than effective when downsampled &
+Inspection, replay attempts, and map pipelines &
+Existing product only; not a reconstructible response and covariance bundle\\
+PTC mini TOD &
+Cleaned signal and flags with a reduced schema &
+Kernel is absent; stage/product relation to full output is not an immutable
+scientific equivalence &
+Reduced downstream/storage use &
+No response-complete or full-equivalent claim\\
+PTC diagnostics &
+Selected-mode, score, spectrum, and cleaning summaries &
+Useful realized fragments; header publishes native rate and state is not
+linked as one immutable scan bundle &
+Diagnostic review &
+Diagnostic evidence only, not product authority\\
+Processed multi-scan file &
+Appended scan signal/flags and overwritten static detector arrays &
+Variable-length scan bounds are wrong after the first unequal chunk; creation
+is atomic but later appends lack an immutable completeness marker &
+Later readers and provenance review &
+Not reconstructible/atomic across all appended scans\\
+Naive map path &
+Weighted signal/kernel accumulation and signed realizations &
+Direct flags gate payload; coverage is tracked separately using sample rate &
+MAP/NOI boundary &
+Coefficient-weighted estimator only; no inverse-variance or significance claim\\
+JINC/ML paths &
+Coefficient-weighted basis, kernel, normalization, or linear-system rows &
+No retained PTC covariance or precision identity &
+Specialized mapmakers &
+Existing bounded arithmetic only\\
+Beammap path &
+Model subtract, PTC, model restore, detector coefficient/map accumulation &
+No complete PTC local/global response or response uncertainty; constant mode
+can bypass PTC-derived coefficients &
+Future BEAM boundary &
+No new beam, transfer, or uncertainty claim; BEAM remains unlaunched\\
+Simulated obs. &
+Ordinary PTC path after upstream simulation handling and injection options &
+No PTC-specific parity state or retained comparison identity &
+Simulation consumers &
+No real/simulation equivalence claim\\
+\bottomrule
+\end{longtable}
+
+\subsection{Rate, extent, and atomicity contradictions}
+
+The in-memory cleaner and mapmakers use the effective
+\code{d_fsmp=fsmp/factor}.  The PTC TOD and diagnostic writers instead put
+\code{telescope.fsmp} in \code{SAMPRATE}.  A successfully written
+downsampled product therefore carries a scientifically false time/rate
+identity; this is not a mere provenance omission.
+
+For later processed chunks, the current scan-index rule adds the current
+length to both endpoints of the preceding interval.  With previous inclusive
+bounds \([0,605]\) and current length 607, it writes \([607,1212]\), while
+contiguity requires \([606,1212]\).  The error is negative or positive
+according to the length change.  The ALIGN handoff's repair commit
+\code{5c6309125fef15f7c98e70a62b591c663944b130} is not an ancestor of the
+governing application SHA and was neither treated as integrated nor
+Unity-validated.
+
+File creation uses an atomic replacement and required writer exceptions
+propagate, both positive controls.  Subsequent append operations mutate that
+file in place.  A later failure can therefore leave a partial multi-scan
+product, and there is no complete-bundle marker, per-component digest, parent
+digest, or immutable processing-stage identifier by which a consumer can
+prove completeness.
+
+\section{Sequential, parallel, iterative, and simulation paths}
+
+Configured cleaning groups execute in a defined sequence within a scan.  A
+fresh cleaner object is copied per call, while scan tasks may concurrently use
+one PTC processor.  Cache access and validation-weight state have explicit
+mutexes.  These are positive ownership controls, but no governing-SHA test
+establishes exact sequential/OpenMP equality of realized group selection,
+learned state, random shifts, coefficients, flags, signal, kernel, or products.
+Floating aggregation order can in principle perturb selected state near a
+threshold; that is a derived test requirement, not an observed current
+failure.
+
+Fruit-loop callers order model subtraction, PTC, map feedback, and state
+updates, but general PTC provenance does not serialize the complete state
+recurrence.  Existing recurrence tests cover controlled map feedback rather
+than the full PTC operator.  Simulated observations enter the same PTC calls,
+with nearby upstream tone-handling and optional source injection, but neither
+state nor tests prove real/simulated interface parity.  No local reduction,
+astronomical recovery, or simulation campaign was performed.
+
+\section{Inbound evidence disposition}
+
+Every quarantined post-core handoff was opened only after the independent
+source trace was sufficiently fixed.  Each record was checksum-verified and
+acknowledged as bounded evidence; none was accepted as scientific authority,
+used to close its source package, or used to infer an active repair result.
+
+\begin{longtable}{L{0.13\linewidth}L{0.13\linewidth}L{0.32\linewidth}L{0.34\linewidth}}
+\toprule
+ID & Source & Bounded claim considered & Recipient disposition\\
+\midrule
+\endfirsthead
+\toprule
+ID & Source & Bounded claim considered & Recipient disposition\\
+\midrule
+\endhead
+\code{XAUD-002} &
+MAP &
+MAP requires explicit precision/nonprecision and covariance identity at the
+PTC boundary &
+Acknowledged; independently corroborated by scalar coefficient construction
+and consumer trace; supports F006 and existing-use restriction only\\
+\code{XAUD-003} &
+CAL &
+PTC factor identity and calibration covariance are unresolved &
+Acknowledged dependency only; no CAL result or repair was accepted; supports
+F006/F011\\
+\code{XAUD-004} &
+AST &
+Coordinate validity and detector binding affect masks and feedback &
+Acknowledged dependency/restriction only; no AST package conclusion promoted;
+supports F012\\
+\code{XAUD-005} &
+RTC &
+Incoming causal support, matched kernel response, calibration factor, and
+provenance are incomplete &
+Acknowledged dependency/restriction only; the RTC handoff remains open and
+was not accepted or disposed; supports F005/F010\\
+\code{XAUD-006} &
+ALIGN &
+Processed PTC scan bounds need a variable-length repair &
+Acknowledged as corroborating exact current-source F004.  Repair
+\code{5c6309...} is outside the governing ancestry and remains unintegrated
+and unvalidated\\
+\bottomrule
+\end{longtable}
+
+The verified SHA-256 digests, in the same order, are:
+\begin{itemize}[leftmargin=*]
+\item \code{XAUD-002}: \digest{0aed9f3a}{625193d8}{82058e76}{02a6a785}{093ec2f0}{77d2bdff}{d9008ac3}{45f23f10};
+\item \code{XAUD-003}: \digest{7bb12dd0}{ece27270}{12b49988}{a7552da9}{c288e10b}{25eafacd}{60300f75}{0f744435};
+\item \code{XAUD-004}: \digest{3e8f7805}{b27acffa}{550b749e}{3c697016}{7fc38d9d}{0d87e807}{ee43c487}{b7dfbf6d};
+\item \code{XAUD-005}: \digest{5fc8d94b}{a5af6053}{296004d3}{a35403a4}{7f4e77c2}{59fee92e}{28c92f31}{86a7ee24}; and
+\item \code{XAUD-006}: \digest{23ae2b52}{d0347006}{c9fc8362}{299c6ea9}{eae98b80}{3e3a7698}{d2e2fb48}{ae336a7f}.
+\end{itemize}
+
+\section{Outgoing interface records}
+
+Three bounded proposed handoffs accompany this audit:
+\begin{itemize}[leftmargin=*]
+\item \code{SCI-VAL-001-XAUD-008} records that direct finite/unflagged status
+does not prove absence of invalid causal influence, and carries the complete
+response/BEAM-relevant restriction for later routing;
+\item \code{SCI-MAP-001-XAUD-004} records that PTC detector values are
+nonprecision coefficients and that conditioned kernel/covariance limitations
+remain attached to map use; and
+\item \code{SCI-NOI-001-XAUD-001} records that sign realizations multiply the
+same coefficient-weighted, PTC-cleaned data and do not establish a noise
+covariance, independent draw, or significance calibration.
+\end{itemize}
+All are proposed and unintegrated pending their owning auditors/coordinator.
+No separate BEAM file has material authority here: the material facts are
+routed in the VAL handoff and owner brief exactly as dispatched, and BEAM was
+not launched.
+
+\section{Validation and falsification record}
+
+\begin{longtable}{L{0.27\linewidth}L{0.17\linewidth}L{0.47\linewidth}}
+\toprule
+Case/method & Result & Exact scope and limitation\\
+\midrule
+\endfirsthead
+\toprule
+Case/method & Result & Exact scope and limitation\\
+\midrule
+\endhead
+Identity/no-clean &
+static contradiction &
+\code{clean.enabled=false} disables grouped cleaning but not source-mask mean
+subtraction.  Whether this is intentional mandatory centering is D001.\\
+Flagged non-finite admission &
+focused probe failed &
+Exact implemented mean formula on \((1,\mathrm{NaN},3)\), mask
+\((1,0,1)\), returns the zero fallback rather than the eligible mean 2.
+No compiled implementation was invoked.\\
+Null surrogate validity &
+focused probe failed &
+Circular shift by one of \((99,1,2,3)\) with validity \((0,1,1,1)\)
+admits 99 under the unshifted mask.  Exact selector arithmetic only.\\
+Variable full/mini chunks &
+focused probe failed &
+Previous \([0,605]\), current length 607 gives implemented
+\([607,1212]\) rather than \([606,1212]\).  Static formula only.\\
+Rate, units, product links &
+static failed/partial &
+Exact writer/schema trace establishes native-rate metadata, universal
+inverse-square weight units, missing mini kernel, mutable static APT state,
+and incomplete immutable links.\\
+Single/identical detectors; rank-deficient/orthogonal modes &
+not executed; required &
+Source contains active-detector and eigensolver guards, but no direct PTC test
+establishes the frozen analytic limits or degeneracy policy.\\
+Scale/sign invariance; unequal calibration factors &
+not executed; required &
+Exact formulas expose scale-sensitive selectors and unresolved factor
+identity.  A repaired exact successor and approved D004 are prerequisites.\\
+Constant/impulse/sinusoid; temporal/amplitude/extended response &
+not executed; required &
+The current complete upstream and unconditional PTC response is unavailable;
+testing a partial kernel cannot close F005/F010.\\
+Source-mask boundaries; selected/rejected samples/detectors; one/two pass &
+static failed/partial &
+Call order and late invalidation are exact-source observed.  Boundary and
+transitive-influence fixtures remain required after D002/D006.\\
+Sequential/OpenMP and scan-order equivalence &
+not executed; required &
+Ownership/mutex controls were inspected.  No compiled direct PTC fixture or
+persisted exact state establishes equality.\\
+Simulation parity &
+not executed; required &
+Common call routing was inspected; simulation random/injection state and
+exact parity are not persisted or tested.\\
+Covariance and MAP/NOI interpretation &
+analytic/static failed &
+Scalar coefficients cannot represent the induced temporal/inter-detector
+covariance; map and signed-realization paths consume them without an upgrade.\\
+Existing narrow tests &
+not run &
+Source inspection found MAP truth, fruit recurrence, learning, output-schema,
+and config tests, but none directly includes \code{clean.h} or
+\code{ptcproc.h}.  There is no \code{build/} directory.\\
+Local Citlali reduction, Unity, astronomical recovery &
+\code{not_applicable} in this audit phase &
+The frozen dispatch prohibits them, identifies no numerical/external study,
+and supplies no accepted repaired successor, dataset, configuration, or
+tolerance.  Such evidence could not cure exact interface contradictions.\\
+Blank control and injected-source campaign &
+\code{not_applicable} in this audit phase &
+These become applicable only to a separately authorized validation plan at an
+owner-approved exact successor after the response and eligibility contracts
+are fixed; no current result is inferred.\\
+\bottomrule
+\end{longtable}
+
+The three probes were deterministic, in-memory scalar/list calculations using
+\code{/Users/gwilson/tolteca/bin/python}.  They were not reductions, tests of
+compiled Citlali code, performance studies, or evidence of historical
+occurrence.  All other work was read-only Git, digest, link, YAML, static
+source, and offline document validation.  The audit cost class is
+\texttt{not\_costly}; no broad/costly checkpoint was crossed.
+
+\section{Findings and falsifiable closure gates}
+
+All findings are open.  Classification is independent of severity, evidence
+basis, and confidence.
+
+\begin{longtable}{L{0.10\linewidth}L{0.165\linewidth}L{0.09\linewidth}L{0.19\linewidth}L{0.35\linewidth}}
+\toprule
+ID & Class & Sev./ev. & Owner/deps. & Finding and closure gate\\
+\midrule
+\endfirsthead
+\toprule
+ID & Class & Sev./ev. & Owner/deps. & Finding and closure gate\\
+\midrule
+\endhead
+\code{F001} & implementation defect & P0, observed, high &
+PTC validity/cleaning; RTC validity &
+Masked NaN/Inf arithmetic, shifted-signal/unshifted-mask null selection, and
+finite flagged fallbacks admit invalid payloads.  Gate: exact eligible-only
+mean/covariance/null/fallback fixtures pass with cause-preserving outputs at a
+re-audited successor.\\
+\code{F002} & implementation defect & P0, observed, high &
+PTC validity/response; D002 &
+Second-pass, detector, and weight flags occur after cross-detector mixing
+without recompute or descendant invalidation.  Gate: adversarial late-reject
+fixtures prove the approved causal-influence policy for signal, kernel,
+weights, and every consumer.\\
+\code{F003} & implementation defect & P0, observed, high &
+PTC product metadata &
+Downsampled PTC and diagnostic files advertise native \code{SAMPRATE}.
+Gate: factor-one and factor-greater-than-one full/mini/diagnostic round trips
+bind cardinality, time, phase, and effective rate.\\
+\code{F004} & implementation defect & P0, observed, high &
+PTC product schema; ALIGN successor &
+Variable-length processed chunks receive wrong inclusive scan bounds.  Gate:
+an integrated accepted successor passes equal/increase/decrease/empty-policy
+extent fixtures and independent re-audit.\\
+\code{F005} & contract gap & P1, derived, high &
+PTC response owner; RTC/state dependencies &
+Stored kernel is only a conditioned partial response and has no local/global,
+derivative, uncertainty, or unavailable identity.  Gate: approved D003 plus
+impulse, sinusoid, source, extended, selection, and iteration fixtures establish the
+declared response or encode unavailable.\\
+\code{F006} & contract gap & P1, observed, high &
+PTC, MAP, NOI weight owners; CAL, MAP &
+Scalar coefficient families lack complete factor units, normalization,
+lifecycle, marginal-precision proof, and retained covariance.  Gate: approved
+D004, exact factor fixtures, covariance construction/retention, and consumer
+tests prove only the declared interpretations.\\
+\code{F007} & contract gap & P1, observed, high &
+PTC provenance/lifecycle &
+Requested/effective/observation-resolved/realized state is insufficient to
+reconstruct a scan operator.  Gate: deserialize and replay every realized
+group, mask, selector, pass, coefficient, state, response, covariance status,
+and product link with matching digests.\\
+\code{F008} & implementation defect & P1, observed, high &
+PTC product/atomicity &
+Static APT arrays are overwritten per append and later failure can leave a
+partial multi-scan file.  Gate: scan-specific immutable state plus injected
+append-failure and complete-bundle round trips prove atomic parentage.\\
+\code{F009} & scientific policy decision & P1, observed, high &
+PTC scientific owner; D001 &
+Disabled cleaning still source-mask mean-centers.  Gate: owner approves
+identity or mandatory-centering semantics in equations and configuration, and
+disabled/enabled fixtures conform exactly.\\
+\code{F010} & dependency gap & P0, observed, high &
+RTC owner/coordinator; SCI-RTC-001 &
+Incoming causal support, kernel response, factor identity, and provenance are
+incomplete.  Gate: accepted integrated RTC successor closes its gates at the
+same SHA and the RTC/PTC boundary is independently re-audited.\\
+\code{F011} & dependency gap & P1, observed, high &
+CAL owner/coordinator; SCI-CAL-001 &
+\code{fcf}, sensitivity, \code{flxscale}, binding, and shared covariance lack
+accepted complete authority.  Gate: accepted CAL successor plus unequal-factor,
+unit, binding, invalid-domain, and covariance fixtures at one exact SHA.\\
+\code{F012} & dependency gap & P0, observed, high &
+AST/ALIGN owners; SCI-AST-001/SCI-ALIGN-001 &
+Source masks and feedback lack accepted coordinate validity and detector-row
+binding.  Gate: accepted dependencies plus invalid/missing/frame/permutation/
+topology/mask-boundary admission fixtures fail closed.\\
+\code{F013} & evidence gap & P1, observed, high &
+future bounded validator; approved successor &
+No direct governing-SHA compiled PTC suite, exact sequential/OpenMP product
+comparison, or external product truth exists.  Gate: all applicable frozen-core
+cases pass without required-data skip or unexpected error-level messages,
+then a fresh independent re-audit accepts the result.\\
+\bottomrule
+\end{longtable}
+
+F001 and F002 are concrete validity/selection/feedback contradictions and are
+narrow Tier-A reopen triggers if they cannot be corrected at the interface
+boundary without changing the estimator.  F005 likewise triggers a Tier-A
+response review if a consumer requires an unconditional or extended-source
+response.  This audit does not itself launch that work.
+
+\section{Owner decisions required before repair}
+
+The audit proposes, but does not take, the following decisions:
+\begin{description}[style=nextline,leftmargin=0pt]
+\item[SCI-PTC-001-D001 --- disabled-clean semantics]
+Choose exact identity/no-clean or declare source-mask mean-centering a
+mandatory separately named stage.  Recommended default: identity when all PTC
+stages are disabled; expose centering independently if scientifically required.
+\item[SCI-PTC-001-D002 --- cause and influence]
+Choose the durable direct-cause/transitive-influence representation and when
+late exclusion requires recomputation versus explicit descendant
+ineligibility.  The approved scientific result must preserve causes and fail
+closed; implementation representation remains an owner choice.
+\item[SCI-PTC-001-D003 --- response product]
+Choose the supported response classes: conditioned operator, realized local
+Jacobian, global/extended transfer, uncertainty, and explicit unavailable
+state.  Recommended default: publish only what is computed and mark every
+stronger class unavailable.
+\item[SCI-PTC-001-D004 --- coefficient and covariance families]
+Approve factor identity, units, normalization scope, lifecycle, whether any
+family is a marginal precision, and how retained covariance is represented.
+Recommended default: type all current families as nonprecision coefficients.
+\item[SCI-PTC-001-D005 --- immutable product/state bundle]
+Choose canonical full/mini/diagnostic/simulated/processed identities,
+scan-specific APT/state representation, parent/digest links, append
+atomicity/completeness, and four-state replay requirements.
+\item[SCI-PTC-001-D006 --- missing-data and null policy]
+Approve eligible-only arithmetic, non-finite behavior, source-mask and
+fallback semantics, coupled surrogate signal/mask shifts, seed/shift
+persistence, and selection uncertainty.
+\end{description}
+
+No owner decision emerged during this audit.  Repair must wait for the
+relevant approved versioned choices and must not silently redefine the frozen
+core to match current output.
+
+\section{Axes, verdict, allowlist, and fail-closed policy}
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+Axis & Proposed value\\
+\midrule
+Contract status & \code{proposed}\\
+Implementation status & \code{nonconformant}\\
+Validation status & \code{in_progress}\\
+Production status & \code{existing_use_only}\\
+Verdict & \code{amend}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The allowlist contains only continued behavior already authorized by the
+owning integrated package records, exact static/digest/document checks, and
+future narrowly approved positive controls that do not imply overall
+conformance.  The following remain restricted:
+\begin{itemize}[leftmargin=*]
+\item any new precision, inverse-variance, significance, independent-noise,
+full covariance, photometric, transfer, kernel, beam, or response-uncertainty
+interpretation;
+\item any new eligibility/exposure claim equating finite/unflagged with
+uninfluenced or scientifically independent;
+\item any new coordinate-aware mask/feedback use without conformant AST/ALIGN
+binding, or calibration-weight use without conformant CAL authority;
+\item equivalence among RTC input, full, mini, diagnostic, simulated,
+processed, map, or beam products; and
+\item production expansion from this audit, historical output, static
+evidence, or a future test pass alone.
+\end{itemize}
+
+Fail closed on missing/non-finite/unbound detector, sample, rate, phase,
+factor, coordinate, support, parent, or processing identity; on unavailable
+complete response/covariance/causal eligibility; on a partial or incomplete
+multi-scan product; and on every consumer request outside the existing
+allowlist.  An exact approved successor, focused validation, integration, and
+fresh independent re-audit are necessary but not individually sufficient for
+production expansion.
+
+\section{Artifact and scope guard}
+
+The local evidence record is
+\code{doc/audits/evidence/SCI-PTC-001_LOCAL_EVIDENCE_2026-08-08.yaml}; the
+ledger proposal, owner brief, immutable core, report, and three handoffs
+complete the exact eight tracked deliverables.  Their digests and the final
+commit/parent/tree are supplied in the Git return to avoid circularity.
+
+No application, test, build, validation, configuration, production, canonical
+coordination, or other audit path changed.  No helper, schema, verifier,
+software install, network, external system, Unity, local reduction,
+delegation, repair, integration, re-audit, push, VAL launch, or BEAM launch
+occurred.
+
+\section{Conclusion}
+
+The mature implementation contains bounded useful mean/PCA, selector,
+coefficient, writer, and consumer mechanisms, but current positive controls do
+not establish the independent PTC interface.  Exact-source contradictions in
+validity, causal influence, rate, and scan extent, together with unresolved
+response, covariance, product, state, CAL/AST/ALIGN/RTC, and evidence gates,
+require \texttt{amend} and continued \texttt{existing\_use\_only}.  The next
+authorized action is coordinator/owner review of this package and D001--D006,
+not implementation or downstream expansion.
+
+\end{document}
