@@ -2,9 +2,9 @@
 
 Record ID: `SCI-PTC-001-COORDINATOR-DECISION-BRIEF-2026-08-08`
 
-Status: audit integrated; six scientific owner decisions ready; no decision,
-repair, validation execution, re-audit, downstream launch, or production
-change authorized.
+Status: audit integrated; D001 approved by the owner; D002--D006 remain ready
+for owner review. No repair, validation execution, re-audit, downstream
+launch, or production change is authorized.
 
 ## Verified audit authority
 
@@ -23,15 +23,22 @@ implementation findings, two additional P0 dependency findings, seven P1
 contract/policy/dependency/evidence findings, and all associated closure gates
 remain open.
 
-## Owner choices ready for review
+## Owner authority and remaining choices
 
-### `SCI-PTC-001-D001` — disabled-clean semantics
+### `SCI-PTC-001-D001` — PTC-disabled terminal mode — approved
 
-Choose whether all-disabled PTC is exact identity or source-mask mean-centering
-is a mandatory independent stage. Coordinator recommendation: exact identity
-when all PTC cleaning is disabled; if centering is required, name and serialize
-it separately in requested, effective, observation-resolved, and realized
-state.
+PTC-disabled is an RTC-only terminal mode. The stage dependency is
+`RTC -> optional PTC -> optional mapmaking`. If PTC is disabled, Citlali must
+bypass the entire PTC stage and mapmaking stage: no mean subtraction, PTC
+cleaning, PTC weighting, or PTC/map products are realized. It may emit the
+requested RTC timestream and diagnostic outputs.
+
+Mapmaking may not be enabled unless PTC is enabled. PTC may be enabled while
+mapmaking remains disabled when processed timestream outputs alone are wanted.
+PTC sub-options, including correlated cleaning and mean-centering, have meaning
+only when the PTC stage itself is enabled. This authority supersedes the
+earlier identity-versus-mandatory-centering wording in this coordinator brief;
+it does not rewrite the immutable audit proposal or auditor brief.
 
 ### `SCI-PTC-001-D002` — direct cause and transitive influence
 
@@ -97,7 +104,7 @@ or deferred; neither is a prerequisite for repairing F001/F002.
 
 ## Required order after owner review
 
-1. Record approved or superseding D001--D006 authority.
+1. Preserve approved D001 and record approved or superseding D002--D006 authority.
 2. Select one exact integrated application line with accepted RTC and relevant
    CAL/AST/ALIGN successors.
 3. Separately authorize a bounded PTC repair.

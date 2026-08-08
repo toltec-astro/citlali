@@ -34,7 +34,7 @@ current_program_checkpoint:
     SCI-AST-001: held_for_accepted_reaudited_ALIGN_successor
     ENG-STATE-001: static_package_accepted_F001_F002_open
   queue:
-    - SCI-PTC-001_owner_decisions_D001_D006_pending
+    - SCI-PTC-001_D001_approved_D002_D006_pending
     - SCI-VAL-001_unlaunched_PTC_handoff_pending_recipient_review
     - SCI-BEAM-001_after_frozen_PTC_VAL
   held_readiness:
@@ -4522,14 +4522,14 @@ packages:
     owner_decision_brief: doc/audits/packages/SCI-PTC-001_OWNER_DECISION_BRIEF_2026-08-08.md
     owner_decision_brief_sha256: eaaf7bc06988dcb4bc1ae2a7da235aab4ac5ebfd96850fb580d850d5c82a2752
     coordinator_decision_brief: doc/audits/packages/SCI-PTC-001_COORDINATOR_DECISION_BRIEF_2026-08-08.md
-    coordinator_decision_brief_sha256: 70de5d5da5418538fc185264015fff14ce6e2ba753aa7563b4ba165ec47fa78e
+    coordinator_decision_brief_sha256: cccd0a6c0d855faceef8581157a7e63c58352b8676e2e53c07e49348bcb9ad1f
     integrated_ledger_proposal:
       path: doc/audits/proposals/SCI-PTC-001_LEDGER_PROPOSAL_2026-08-08.yaml
       sha256: 8daabce7d0d585e82d233dadb3f535bb993a28c62acb351c4474272c525eee63
       disposition: applied_with_coordinator_identity_and_controlled_status_normalization
 
     dispatch:
-      status: audit_integrated_pending_owner_decisions
+      status: audit_integrated_D001_approved_D002_D006_pending
       launch_date: 2026-08-08
       launch_effort: ultra
       execution_profile: sol_ultra_no_delegation
@@ -4861,7 +4861,8 @@ packages:
         confidence: high
         status: open
         owner: PTC_scientific_product_owner
-        dependency: SCI-PTC-001-D001
+        dependency: approved SCI-PTC-001-D001; implementation and re-audit pending
+        owner_policy_status: resolved
         summary: >-
           clean.enabled=false still source-mask mean-centers, so disabled-clean
           identity is not defined by current behavior.
@@ -4926,12 +4927,6 @@ packages:
           unexpected error-level messages, followed by fresh independent re-audit.
 
     unresolved_scientific_decisions:
-      - id: SCI-PTC-001-D001
-        owner: PTC_scientific_product_owner
-        question: disabled-clean identity versus mandatory source-mask centering
-        proposed_disposition: >-
-          Make all-disabled PTC identity; expose centering as a separately named
-          stage if scientifically required.
       - id: SCI-PTC-001-D002
         owner: PTC_validity_and_response_owner
         question: scientific invariant for influence from a later-rejected input
@@ -4967,6 +4962,24 @@ packages:
           shifts, fail-closed support, and seed/algorithm/input identity for
           deterministic replay. Per-shift storage and selection uncertainty may
           be unavailable or deferred and do not block F001/F002 repair.
+
+    resolved_scientific_decisions:
+      - id: SCI-PTC-001-D001
+        owner: PTC_scientific_product_owner
+        disposition: approved
+        decision_date: 2026-08-08
+        authority: SCI-PTC-001-COORDINATOR-DECISION-BRIEF-2026-08-08
+        authority_path: >-
+          doc/audits/packages/SCI-PTC-001_COORDINATOR_DECISION_BRIEF_2026-08-08.md
+        authority_sha256: cccd0a6c0d855faceef8581157a7e63c58352b8676e2e53c07e49348bcb9ad1f
+        approved_contract: >-
+          The stage dependency is RTC to optional PTC to optional mapmaking.
+          PTC-disabled is an RTC-only terminal mode: bypass all mean
+          subtraction, PTC cleaning, PTC weighting, mapmaking, and PTC/map
+          products while permitting requested RTC timestream and diagnostic
+          outputs. Mapmaking requires PTC; PTC may run without mapmaking for
+          processed timestream outputs; PTC sub-options have meaning only when
+          the PTC stage is enabled.
 
     local_evidence:
       id: SCI-PTC-001-LOCAL-001
