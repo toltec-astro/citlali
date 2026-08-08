@@ -9,7 +9,7 @@ current_program_checkpoint:
   record_path: >-
     doc/audits/packages/SCIENTIFIC_AUDIT_PROGRAM_CHECKPOINT_2026-08-08.md
   record_sha256: >-
-    364f8d31a434b61454ba5ebae5e928076dda495aeafb26842213e2ab0a807f98
+    62a53ab8ba179c9641efde83888926f9d63aeb277d8a8abb851e3a0804101719
   canonical_application_mainline:
     ref: origin/codex/refactor-mainline
     commit: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
@@ -34,8 +34,7 @@ current_program_checkpoint:
     SCI-AST-001: held_for_accepted_reaudited_ALIGN_successor
     ENG-STATE-001: static_package_accepted_F001_F002_open
   queue:
-    - SCI-RTC-001_ultra_next
-    - SCI-PTC-001_after_RTC
+    - SCI-PTC-001_ultra_frozen_ready_not_launched
     - SCI-VAL-001_after_PTC
     - SCI-BEAM-001_after_frozen_PTC_VAL
   held_readiness:
@@ -46,7 +45,7 @@ current_program_checkpoint:
     - id: ALIGN-3C273-PTC-VAL-POSTCORE-2026-08-08
       source_task: 019fc822-9f45-72b1-91e9-775e80768d2a
       targets: [SCI-PTC-001, SCI-VAL-001]
-      status: exact_post_core_queue_evidence_unintegrated_validation_pending
+      status: PTC_handoff_integrated_VAL_queue_validation_pending
       commit: 5c6309125fef15f7c98e70a62b591c663944b130
       parent: 2ee6d5116a1acd6230694715d0d1d39bac2f9a77
       tree: 247c04b4cd5f76005dc07fa63480008568c51ea4
@@ -59,9 +58,11 @@ current_program_checkpoint:
       local_bundle_sha256: >-
         b73aff50c7aeb14fd9af5b2e3055a92a3b2d2923443ce32de8d5f7f5c78686a5
       rtc_effect: none_excluded_from_frozen_manifest
-      integration_status: not_integrated
+      PTC_handoff_id: SCI-PTC-001-XAUD-006
+      PTC_handoff_sha256: 23ae2b52d0347006c9fc8362299c6ea9eae98b803e3a7698d2e2fb48ae336a7f
+      integration_status: integrated_for_PTC_post_core_only_VAL_still_queued
       external_validation_status: pending
-      next_gate: create_normal_post_core_handoffs_before_PTC_or_VAL_dispatch
+      next_gate: PTC_independent_core_freeze_before_open_VAL_handoff_still_required
 maintenance: >-
   hand_edited_general_ledger_with_narrow_schema_validated_costly_study_controls
 inventory_dependency_detail: >-
@@ -189,6 +190,24 @@ resource_allocation:
         none_no_delegation_one_auditor_preserves_workstream_separation_and_synthesizes
       stop_rule: >-
         stop_at_initial_scope_core_freeze_pre_broad_execution_and_final_owner_review
+    - dispatch_id: SCI-PTC-001-AUDIT-DISPATCH-2026-08-08
+      package_id: SCI-PTC-001
+      phase: full_interface_response_covariance_audit
+      dispatch_content_commit: 70d191f3207d37cbdca3a77392668e93fb68c4fc
+      model: sol
+      effort: ultra
+      task_shape: decomposable_scientific
+      rationale: >-
+        The Tier B PTC package requires reconciliation of independent
+        mathematical cleaning/weight/covariance, implementation-interface,
+        product-validity-provenance, and VAL/MAP/NOI/BEAM consumer workstreams.
+      ultra_trigger: >-
+        Four independent hard investigations must reach one bounded interface
+        verdict without automatically reopening mature PTC numerical internals.
+      parallelism: >-
+        none_no_delegation_one_auditor_preserves_workstream_separation_and_synthesizes
+      stop_rule: >-
+        stop_at_initial_scope_core_freeze_pre_broad_execution_and_final_owner_review
 scope_control:
   policy_id: FRAMEWORK-SCOPE-001
   status: active_for_future_dispatches_and_future_phases
@@ -236,6 +255,25 @@ scope_control:
         - production_change
         - another_package_launch
       approval: project_owner_dispatch_2026-08-08
+    - dispatch_id: SCI-PTC-001-AUDIT-DISPATCH-2026-08-08
+      package_id: SCI-PTC-001
+      checkpoint_status: required_initial_core_freeze_and_pre_broad_execution
+      dispatch_content_commit: 70d191f3207d37cbdca3a77392668e93fb68c4fc
+      local_reduction_authority: prohibited
+      unity_evidence_authority: prohibited
+      allowed_deliverable_class: exact_eight_path_PTC_audit_package
+      permitted_local_execution: >-
+        post_core_static_probes_focused_deterministic_existing_tests_and_LaTeX_only
+      prohibited_expansions:
+        - application_or_validation_edits
+        - broad_or_costly_execution
+        - local_reduction
+        - unity_or_external_contact
+        - delegation_or_independent_review
+        - repair_or_reaudit
+        - production_change
+        - another_package_launch
+      approval: owner_launch_required_frozen_packet_only
 
 controlled_vocabulary:
   tiers: [A, B, C]
@@ -4466,7 +4504,35 @@ packages:
         status: submitted
     outgoing_handoffs: []
     governing_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
-    governing_sha_role: planned_audit_dispatch_snapshot
+    governing_sha_role: audit_dispatch_snapshot
+    audit_dispatch:
+      status: frozen_ready_not_launched
+      dispatch_id: SCI-PTC-001-AUDIT-DISPATCH-2026-08-08
+      dispatch_content_commit: 70d191f3207d37cbdca3a77392668e93fb68c4fc
+      coordinator_registry_commit: 47c4632008c4fd78f2ab88106372d7ee11ee7711
+      prompt_path: doc/audits/prompts/SCI_PTC_001_AUDIT_PROMPT.md
+      prompt_sha256: a34d2444c3f66a2a1056ebe5c552d16a31bd9f69035b5c6f34ddbb9bc90fd24b
+      manifest_path: >-
+        doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001_INBOX_AUTHORITY_MANIFEST_2026-08-08.yaml
+      manifest_sha256: 23913b37dfac7a106bcb281f9a1870616c99acf912a5a7aad59aed39e6bd67d3
+      model: sol
+      effort: ultra
+      task_shape: decomposable_scientific
+      pre_core_authority_ids: [SCI-RTC-001-D001-D004, SCI-PTC-001-XAUD-001]
+      post_core_evidence_ids:
+        - SCI-PTC-001-XAUD-002
+        - SCI-PTC-001-XAUD-003
+        - SCI-PTC-001-XAUD-004
+        - SCI-PTC-001-XAUD-005
+        - SCI-PTC-001-XAUD-006
+      local_reduction_authorized: false
+      unity_authorized: false
+      delegation_authorized: false
+      application_change_authorized: false
+      repair_or_reaudit_authorized: false
+      downstream_audit_authorized: false
+      launch_authority: owner_or_coordinator_separate_action_required
+      stop_rule: coordinator_owner_review_after_bounded_audit
     audit_branch: null
     audit_commit: null
     independent_derivation: {status: not_started, sha256: null}

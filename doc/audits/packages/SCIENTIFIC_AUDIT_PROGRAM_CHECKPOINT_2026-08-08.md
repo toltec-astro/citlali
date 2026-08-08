@@ -38,7 +38,7 @@ or dependency claim is inferred from those integrations.
 | `SCI-ALIGN-001` | Owner-managed ALIGN/3C273 evidence remains active and deliberately slow. | Frozen returned evidence and coordinator review. |
 | `SCI-AST-001` | Repair remains held. | Accepted and re-audited ALIGN successor, then exact AST repair-base selection. |
 | `SCI-RTC-001` | Audit `3319d742...` integrated; D001--D004 approved; axes remain `proposed` / `nonconformant` / `in_progress` / `existing_use_only`, verdict `amend`. | Upstream closure, separately authorized repair, focused exact-successor evidence, then independent re-audit. |
-| `SCI-PTC-001` | Next independent audit at Sol Ultra against exact application SHA `46ad2388...`; frozen dispatch preparation is procedurally safe. | Owner/coordinator launch of the frozen packet; RTC and ALIGN evidence remains post-core and undispositioned. |
+| `SCI-PTC-001` | Next independent audit at Sol Ultra against exact application SHA `46ad2388...`; packet `70d191f3...` is frozen and not launched. | Owner/coordinator launch of the exact packet; RTC and ALIGN evidence remains post-core and undispositioned. |
 | `SCI-VAL-001` | Queued after PTC. | Frozen RTC and PTC interfaces. |
 | `SCI-BEAM-001` | Queued after PTC/VAL. | Frozen PTC and VAL interfaces; existing upstream restrictions remain. |
 | `SCI-FLT-001` | Successor-repair dispatch readiness only; not authorized. | Exact repair base remains unresolved until CAL has an accepted, re-audited, integrated successor. |
@@ -90,10 +90,22 @@ The completed RTC audit brief's conservative dependency sequence governs
 acceptance or closure of RTC's outgoing handoffs and downstream scientific or
 production use. It does not prohibit launching a fresh PTC independent audit.
 PTC may launch against `46ad2388...` with `SCI-PTC-001-XAUD-001` as its only
-pre-core handoff and all observational or implementation records—including
+pre-core handoff, the approved RTC D001--D004 owner record as pre-core
+contract authority, and all observational or implementation records—including
 RTC `SCI-PTC-001-XAUD-005` and ALIGN `SCI-PTC-001-XAUD-006`—quarantined until
 the independent core is frozen. Launch does not disposition either handoff,
 authorize repair, or change production status.
+
+The exact frozen launch identities are prompt
+`doc/audits/prompts/SCI_PTC_001_AUDIT_PROMPT.md` at SHA-256
+`a34d2444c3f66a2a1056ebe5c552d16a31bd9f69035b5c6f34ddbb9bc90fd24b`
+and manifest
+`doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001_INBOX_AUTHORITY_MANIFEST_2026-08-08.yaml`
+at SHA-256
+`23913b37dfac7a106bcb281f9a1870616c99acf912a5a7aad59aed39e6bd67d3`,
+both frozen in dispatch-content commit
+`70d191f3207d37cbdca3a77392668e93fb68c4fc`. This coordination task did not
+launch it.
 
 ## Explicit non-authorizations
 
