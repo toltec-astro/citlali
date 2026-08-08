@@ -1,0 +1,1057 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\DeclareFontShape{T1}{lmr}{m}{n}{<-> ec-lmr10}{}
+\DeclareFontShape{T1}{lmr}{m}{it}{<-> ec-lmri10}{}
+\DeclareFontShape{T1}{lmr}{m}{sl}{<->ssub*lmr/m/it}{}
+\DeclareFontShape{T1}{lmr}{bx}{n}{<-> ec-lmbx10}{}
+\DeclareFontShape{T1}{lmr}{b}{n}{<->ssub*lmr/bx/n}{}
+\DeclareFontShape{T1}{lmr}{bx}{it}{<->ssub*lmr/bx/n}{}
+\DeclareFontShape{T1}{lmr}{m}{sc}{<-> ec-lmcsc10}{}
+\DeclareFontFamily{T1}{lmtt}{}
+\DeclareFontShape{T1}{lmtt}{m}{n}{<-> ec-lmtt10}{}
+\DeclareFontShape{T1}{lmtt}{m}{it}{<->ssub*lmtt/m/n}{}
+\DeclareFontShape{T1}{lmtt}{bx}{n}{<->ssub*lmtt/m/n}{}
+\usepackage[margin=0.82in]{geometry}
+\usepackage{amsmath}
+\usepackage{booktabs,longtable,array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{microtype}
+\DeclareMathSizes{10.95}{10.95}{8}{7}
+\DeclareMathSizes{10}{10}{8}{7}
+
+\newcommand{\pkg}{\texttt{SCI-PTC-001}}
+\newcommand{\appsha}{\texttt{46ad23888a40f5102cdfd50c06e49a549bdf8a20}}
+\newcommand{\NA}{{\scriptsize\ttfamily not\_applicable}}
+\newcommand{\unknown}{\texttt{unavailable}}
+\newcommand{\req}{\textbf{shall}}
+\newcommand{\R}{\mathbf{R}}
+\newcommand{\E}{\operatorname{E}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\given}{\,\middle|\,}
+\newcommand{\FreezeTime}{\texttt{2026-08-08T19:45:04Z}}
+\setlength{\emergencystretch}{3em}
+
+\title{SCI-PTC-001 Independent Mathematical Core\\
+Correlated-mode Cleaning and Detector-weight Interface}
+\author{Independent scientific-contract audit}
+\date{2026-08-08}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\parbox{0.95\linewidth}{
+\textbf{Frozen-core status.} This document is an implementation-blind,
+documentation-only derivation for application commit \appsha.  It is neither
+a statement of implemented behavior nor production authorization.  At the
+time its bytes were frozen, no application source, application test, or
+post-core handoff had been opened.  Contract statements below are hypotheses
+and fail-closed requirements to be traced after a separate coordinator
+approval.}}
+\end{center}
+
+\tableofcontents
+
+\section{Authority, scope, and independence boundary}
+
+\subsection{Frozen launch identity}
+
+The package identifier is \pkg, Tier B.  The exact launch identities are:
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.30\linewidth}
+                  >{\raggedright\arraybackslash}p{0.62\linewidth}}
+Application commit & {\small\ttfamily 46ad23888a40f5102cdfd50c06e49a549bdf8a20}\\
+Application parent & {\small\ttfamily 4846fa4db39bd2f7d4ddc41f693836834cbc5ff4}\\
+Application tree & {\small\ttfamily ab230a93b8fb310d58aefd7ac5da92e5d5e0f408}\\
+Frozen dispatch object & {\small\ttfamily 70d191f3207d37cbdca3a77392668e93fb68c4fc}\\
+Registry/decision snapshot & {\small\ttfamily 47c4632008c4fd78f2ab88106372d7ee11ee7711}\\
+Final coordinator binding & {\small\ttfamily 6ee2608a0444fa7751a234ffdfb3b72108f92409}\\
+Prompt SHA-256 & {\scriptsize\ttfamily a34d2444c3f66a2a1056ebe5c552d16a31bd9f69035b5c6f34ddbb9bc90fd24b}\\
+Manifest SHA-256 & {\scriptsize\ttfamily 23913b37dfac7a106bcb281f9a1870616c99acf912a5a7aad59aed39e6bd67d3}\\
+\end{longtable}
+The prompt and manifest digests matched the independently recovered bytes
+before substantive work.
+
+Only these two pre-core scientific authorities were read:
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.30\linewidth}
+                  >{\raggedright\arraybackslash}p{0.62\linewidth}}
+\texttt{SCI-RTC-001-D001-D004} &
+{\scriptsize\ttfamily 5f5ebb52735a70510d75f5a6954ef825fc425c00e43ab0aadf2363f2e0609723}\\
+\texttt{SCI-PTC-001-XAUD-001} &
+{\scriptsize\ttfamily ba53e2c2e6af610112696f3edc87c92e43bc2530ac33b700fd5c64e76a8986fa}\\
+\end{longtable}
+The launch prompt defines product intention and audit coverage, but supplies
+no evidence of implementation.  Repository instructions and TolTEC routing
+maps were read only as administrative constraints; no optional scientific
+reference was opened.  The contents of \texttt{SCI-PTC-001-XAUD-002} through
+\texttt{-006} and all quarantined application paths remained opaque.  Their
+bytes were passed only through a digest program to verify the manifest; that
+non-disclosive operation supplied no scientific content to this derivation.
+
+\subsection{Effect of the two authorities}
+
+The approved RTC decisions provide upstream contract assumptions, not proof
+that the target application satisfies them:
+\begin{enumerate}[label=\texttt{RTC-D00\arabic*},leftmargin=*]
+  \item replacement/synthesis corruption and all downstream influence make a
+  signal scientifically ineligible, with compact cause-preserving support
+  bookkeeping permitted;
+  \item every response-changing upstream stage is represented in the complete
+  conditioned response, or response is explicitly unavailable;
+  \item outer, inner, full, mini, diagnostic, simulated, and processed stages
+  have immutable identities and explicit parent/processing links; and
+  \item exact upstream filter and multirate semantics are serialized once per
+  coherent observation or processing segment, preserving the supported timing
+  lattice and approximately 8-ms rate relationships.
+\end{enumerate}
+Because the corresponding implementation and evidence gates remain open,
+PTC must fail closed when an admitted input does not actually supply these
+facts.
+
+The approved MAP authority says that map and coadd weights are nonprecision
+gridding coefficients by default.  A precision interpretation requires proof
+of the chosen PTC weighting object, normalization, lifecycle, marginal
+precision, independence, and retained covariance conditions.  Correlated GLS
+is deferred.  This core therefore never infers inverse variance from a field
+named ``weight'' or from a map denominator.
+
+\subsection{Normative posture and exclusions}
+
+This core derives the minimum truthful interface for a possibly nonlinear,
+data-dependent, stateful correlated-mode cleaner.  It does not select or
+redesign a numerical algorithm.  ``Shall'' denotes a condition that a later
+source trace must prove for the corresponding scientific claim.  If proof is
+absent, the claim is unavailable rather than approximately true.  RTC, ALIGN,
+CAL, AST, VAL, MAP, NOI, and BEAM are considered only at their direct PTC
+boundaries.  No application change, repair, re-audit, reduction, external
+execution, Unity access, production change, or downstream launch follows from
+this document.
+
+\section{Typed scientific domain}
+\label{sec:domain}
+
+\subsection{Identities, shapes, and ordering}
+
+Let an observation have immutable identifier $o$.  It contains ordered scans
+$s\in\mathcal S_o$; each scan may contain processing segments or chunks
+$g\in\mathcal G_{os}$.  Segment $g$ has an actual, possibly ragged extent
+$T_{osg}$, not a nominal fixed size.  Detector identity $d\in\mathcal D_o$ is
+an immutable APT-backed UID, never merely a transient column number.  Stage
+$q$ is an immutable product identity, not an adjective inferred from a path.
+The full datum identity is
+\begin{equation}
+  i=(o,s,g,t,d,q),\qquad 0\leq t<T_{osg}.
+  \label{eq:datum-id}
+\end{equation}
+Every array product \req{} serialize its axes, lengths, storage order, and the
+maps from integer positions to these identities.  A consumer shall not infer
+detector order from an APT row order, sample order from filename order, or
+stage from a directory name.  Any flattening uses a declared bijection
+$\nu(i)$; mathematical equations are independent of that storage choice.
+
+The sample timestamp is $\tau_{osgt}$ in a named time scale with declared
+epoch and units.  Its nominal rate is $f_{osg}$, while actual timestamps and
+gaps remain authoritative.  Resampling/filter semantics and input-output time
+registration belong to the upstream response record.  PTC must preserve or
+explicitly replace that record when it changes timing.  Scan and segment
+boundaries are causal boundaries unless the realized state explicitly records
+cross-boundary support.
+
+For a coherent segment, the admitted detector timestream is a matrix
+\begin{equation}
+ X^{(q)}_{osg}=\bigl[x_{td}\bigr]
+ \in (U_q\cup\{\mathrm{missing}\})^{T_{osg}\times D_{osg}},
+ \label{eq:input-shape}
+\end{equation}
+where $U_q$ is the declared signal unit at stage $q$.  Per-detector units are
+permitted only with an explicit calibration map to a common fitting unit.
+PTC coefficients and weights must state whether they act before or after that
+map.  A detector timestream is in the detector/readout signal frame; a source
+mask additionally identifies the sky-coordinate frame, projection, epoch,
+pointing product, and registration used to generate it.  Correlated-mode
+coefficients themselves have no sky-coordinate frame, but inherit the time,
+detector, unit, and stage identities of their operands.
+
+\subsection{Validity, flags, missing values, and influence}
+
+For each input datum define:
+\begin{itemize}[leftmargin=*]
+  \item direct validity $v_i\in\{0,1\}$;
+  \item a set-valued cause flag $\phi_i$ whose vocabulary and severity are
+  versioned;
+  \item a set-valued upstream influence record $\iota_i$, possibly represented
+  compactly as intervals, kernels, or segment support;
+  \item finite predicate $n_i=\mathbf 1\{x_i\in\R\}$; and
+  \item scientific eligibility $e_i$, which is not identical to any one of
+  the preceding fields.
+\end{itemize}
+Missing and non-finite are distinct: missing means no value is present;
+non-finite is a present IEEE value outside $\R$.  Neither may silently enter a
+fit, normalization, covariance estimate, convergence statistic, or detector
+weight.  Replacement or synthesis may create a finite computational value,
+but cannot restore scientific eligibility.  Cause flags are monotone under
+processing unless a new stage preserves the old causes and records a justified
+resolution state.  Unknown flag values and unknown validity semantics fail
+closed.
+
+For any output component $z_j$, causal influence is the transitive dependency
+set
+\begin{equation}
+ \mathcal I_j = \bigcup_{i:\,i\xrightarrow{\mathrm{dep}} j}
+   \left(\{i\}\cup\iota_i\right),
+ \label{eq:influence-set}
+\end{equation}
+where $i\xrightarrow{\mathrm{dep}}j$ means the realized algorithm allowed $x_i$ to affect
+$z_j$, a fitted parameter applied to $z_j$, a selection decision governing
+$z_j$, or a weight governing its later use.  This definition includes
+indirect fit-and-apply influence even when $\partial z_j/\partial x_i=0$ at a
+particular numeric point.  Compact over-approximations are acceptable;
+under-approximations are not.  Direct validity describes $j$ itself, while
+$\mathcal I_j$ describes what could have contaminated it.
+
+\subsection{Input assumptions and admission}
+
+The minimum input bundle is
+\begin{equation}
+ \mathcal X=(X,V,\Phi,\mathcal I,A,M,K_x,Q,\Pi),
+ \label{eq:input-bundle}
+\end{equation}
+where $A$ is immutable APT state, $M$ is the collection of masks, $K_x$ is the
+complete conditioned upstream response or an explicit unavailable state,
+$Q$ is stage identity, and $\Pi$ contains parent/processing provenance and
+timing semantics.  Admission to a fit is an explicit Boolean function
+\begin{equation}
+ a_i=A_{\rm fit}(v_i,n_i,\phi_i,\iota_i,M_i,A_d,q,
+                  \text{resolved state})\in\{0,1\}.
+ \label{eq:admission}
+\end{equation}
+Admission to subtraction, output retention, empirical estimation, simulation,
+and downstream science are separate functions.  One mask bit cannot safely
+stand for all five.  Every mask records polarity (included versus excluded),
+domain, generating stage, coordinate/time registration, boundary convention,
+and whether it controls fit, application, output, or feedback.
+
+\section{State, classification, and lifecycle}
+\label{sec:state}
+
+\subsection{Four state layers}
+
+The interface separates four immutable state layers:
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.20\linewidth}
+                  >{\raggedright\arraybackslash}p{0.72\linewidth}}
+\toprule
+Layer & Required content \\
+\midrule
+\endhead
+Requested $R$ & User-authored method request, components, thresholds, passes,
+source-mask request, normalization request, simulation request, and any
+explicit random seed.  Absence is distinguishable from an explicit value.\\
+Effective $E$ & Requested values after defaults, inheritance, compatibility
+rules, and disabled-feature resolution, with a field-by-field explanation of
+each change from $R$.\\
+Observation-resolved $O$ & Effective state bound to observation, scan, segment,
+APT, detector set, sample rate/times, stage, available masks, units, and
+upstream response.  Unsupported combinations are rejected here, not guessed.\\
+Realized $\Lambda$ & Everything learned, selected, or produced from data: admitted
+samples/detectors, fitted modes and coefficients, rank/tolerances, excluded
+modes, pass links, convergence path, iteration count, empirical factors,
+normalizations, replacement/synthesis influence, and random stream state.\\
+\bottomrule
+\end{longtable}
+Each layer has a canonical serialization, schema version, content digest, and
+immutable link to its predecessor.  Requested state cannot be reconstructed
+from realized state; realized state cannot overwrite what was requested.
+
+\subsection{Classification of every control or result}
+
+Every quantity used by the cleaner is tagged with exactly one primary class
+and any stated conditioning role:
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.17\linewidth}
+                  >{\raggedright\arraybackslash}p{0.31\linewidth}
+                  >{\raggedright\arraybackslash}p{0.43\linewidth}}
+\toprule
+Class & Examples & Contract consequence \\
+\midrule
+\endhead
+Fixed & algorithm identity, requested pass count, prescribed mask convention
+& Included in $R/E/O$; any observation-dependent replacement is recorded.\\
+Conditioned upon & APT UID/group, calibration state, upstream flags, parent
+response, sample lattice & Inference and covariance claims explicitly state
+the conditioning set.\\
+Fitted & mode amplitudes, regression coefficients, means/baselines & Estimate,
+normalization, fit support, unit, uncertainty, degeneracy handling, and
+application support are realized state.\\
+Selected & detectors, samples, components, rank, convergence branch, excluded
+modes & Selection rule, tie rule, threshold, candidates, accepted/rejected
+identities, and boundary behavior are realized state.\\
+Data-derived & PCA/common-mode basis, empirical scatter, detector factor,
+source mask derived from a first pass & The product is random even if the
+algorithm is deterministic; its reuse and feedback path are recorded.\\
+Random & simulation draws, randomized solver/PCA state & RNG family/version,
+seed, stream partition, draw identity, and determinism guarantee are recorded.\\
+\bottomrule
+\end{longtable}
+Flags, masks, thresholds, factors, weights, components, coefficients,
+selected supports, pass state, and convergence may not be serialized without
+these classifications.  A threshold is fixed only if it was fixed before
+seeing the observation; tuning it from the data makes it data-derived.
+
+\section{Abstract correlated-mode operator}
+\label{sec:operator}
+
+\subsection{Data-dependent and stateful definition}
+
+Let $m$ collect masks/admission fields, $a$ collect APT and calibration state,
+and $r$ collect effective/resolved controls.  For pass or iteration $k$,
+\begin{align}
+ \theta_k &= T_k(x,m,a,r,h_k),
+   \label{eq:theta-fit}\\
+ z_k &= F_k(x,m,a,r,\theta_k,h_k),
+   \label{eq:clean-op}\\
+ h_{k+1} &= G_k(h_k,x,m,a,r,\theta_k,z_k),
+   \label{eq:state-update}\\
+ w_k &= W_k(z_k,m,a,r,\theta_k,h_{k+1}).
+   \label{eq:weight-op}
+\end{align}
+Here $x=\operatorname{vec}(X)$, $\theta_k$ contains all fitted or selected
+cleaning quantities, $h_k$ is immutable input state for the iteration/pass,
+$z_k$ is cleaned TOD, and $w_k$ is a named weighting object.  The final
+product is
+\begin{equation}
+ (z,w,\Lambda)=\mathcal P(x,m,a,R;E,O,h_0),
+ \label{eq:ptc-product}
+\end{equation}
+with realized state $\Lambda$ sufficient to replay the fixed branch or declare why
+replay is impossible.  Equations~\eqref{eq:theta-fit}--\eqref{eq:ptc-product}
+make clear that conditioning on a realized $\theta$ is different from
+propagating the randomness and data dependence of $\theta(x)$.
+
+Feedback includes any use of $z_k$, its map, a source estimate, flags,
+detector statistics, or convergence statistic to construct $m$, $a$,
+$\theta_{k+1}$, or $h_{k+1}$.  Each feedback edge has a parent product, pass
+number, causal support, and stop rule.  A second pass is a new realized state,
+not an in-place relabeling of the first pass.
+
+\subsection{Conditioned linear-mode special case}
+
+Many mean, common-mode, template-regression, or PCA cleaners reduce, after
+selection is frozen, to a fitted-mode subtraction.  Let $y\in\R^N$ contain
+the admitted values, $B\in\R^{N\times r}$ the realized mode/template design,
+and $\Omega$ the declared positive-semidefinite fit coefficient matrix.  With an explicitly
+defined generalized inverse,
+\begin{align}
+ \widehat c &= (B^T\Omega B)^{+}B^T\Omega y,
+   \label{eq:mode-coeff}\\
+ \widehat u &= B\widehat c,
+   \label{eq:mode-estimate}\\
+ z &= L_{B,\Omega}y,
+ \quad L_{B,\Omega}=I-B(B^T\Omega B)^{+}B^T\Omega.
+   \label{eq:linear-cleaner}
+\end{align}
+The contract records the construction and units of $y$, $B$, and $\Omega$;
+centering/scaling; rank $r$; singular-value or eigenvalue tolerance;
+pseudoinverse convention; retained and excluded modes; ordering and tie
+rules; coefficient normalization; fit support; and subtraction support.
+Basis sign, rotation within a degenerate subspace, and reciprocal rescaling of
+$B$ and $c$ are gauge freedoms.  A physical claim attaches to the projected
+subspace and $B\widehat c$, not to an unpinned coefficient sign.
+
+If $B$, $\Omega$, rank, support, or selection is estimated from $y$, then
+Equation~\eqref{eq:linear-cleaner} is only a conditioned operator.  It is not
+a global linear transfer for the full procedure.  Robust means, medians,
+clipping, component thresholds, detector rejection, convergence branches,
+and source-mask feedback have the same consequence.
+
+\subsection{Mean/common-mode and PCA identities}
+
+A weighted common mode at time $t$ has the generic form
+\begin{equation}
+ \widehat q_t=
+ \frac{\sum_d a_{td}\alpha_{td}\,\widetilde x_{td}}
+      {\sum_d a_{td}\alpha_{td}},
+ \label{eq:common-mode}
+\end{equation}
+only when the denominator is finite and nonzero.  The interface must identify
+$\widetilde x$ (raw, centered, calibrated, normalized, or residual), the
+coefficient $\alpha$, its unit and provenance, and whether the same support is
+used when fitting and subtracting.  A median or robust location is a distinct
+nonlinear estimator and cannot be documented by Equation~\eqref{eq:common-mode}.
+
+For PCA/SVD, the realized matrix, missing-data policy, centering, scaling,
+orientation, covariance/Gram definition, component ordering, rank threshold,
+and tie convention determine the subspace.  ``Remove $r$ components'' is not
+sufficient.  The zero-rank and full-rank cases, and $N<D$ versus $N\ge D$,
+are explicitly defined.  A component excluded from subtraction may still
+have influenced selection and must appear in realized state.
+
+\subsection{Iteration and convergence}
+
+The realized trace is
+\begin{equation}
+ \mathcal H=(h_0,\theta_0,z_0,C_0,\ldots,h_K,\theta_K,z_K,C_K),
+ \label{eq:iteration-trace}
+\end{equation}
+where $C_k$ is the exact convergence statistic and decision.  The contract
+states maximum iterations, absolute/relative tolerance and unit, norm/support,
+NaN/empty behavior, minimum iteration count, tie comparison, converged versus
+exhausted state, and which $z_k$ is emitted.  Oscillation or rank changes are
+not silently called convergence.  One-pass and two-pass results have distinct
+parents and realized identities.
+
+Sequential and OpenMP execution are equivalent only if they consume the same
+resolved inputs and random streams and produce the same admitted identities,
+selected subspace, ranks, convergence decisions, validity/influence causes,
+stage/provenance, and scientific conclusions.  A predeclared numeric tolerance
+may cover floating reduction order for continuous values; it may not excuse a
+branch, component-count, mask, flag, or eligibility difference.  Deterministic
+tie and sign conventions are required where roundoff could alter selection.
+
+\section{Expectation, uncertainty, and covariance}
+\label{sec:uncertainty}
+
+\subsection{Estimator expectation and bias}
+
+Let the admitted input be
+\begin{equation}
+ x=\mu(\beta,\gamma)+\epsilon,
+ \qquad \E[\epsilon\mid\mathcal C]=0,
+ \qquad \Cov(\epsilon\mid\mathcal C)=C_x,
+ \label{eq:data-model}
+\end{equation}
+where $\beta$ is the scientific signal, $\gamma$ denotes calibration and
+systematic nuisance quantities, and $\mathcal C$ is the declared conditioning
+set.  Let $\eta(x)$ collect every fitted, selected, or feedback quantity
+entering the final operation, including $\theta(x)$, any data-derived mask,
+state branch, and weight that feeds back.  For the complete data-dependent
+cleaner $f(x)=F_{\rm tot}(x,\eta(x))$,
+\begin{equation}
+ \E[z\mid\beta,\gamma,\mathcal C]
+ =\int f\!\left(\mu(\beta,\gamma)+e\right)
+        p(e\mid\mathcal C)\,de,
+ \label{eq:exact-expectation}
+\end{equation}
+which generally differs from $f(\mu)$.  The estimator bias relative to a
+declared target response $R_\star\beta$ is
+\begin{equation}
+ b_z(\beta)=\E[z\mid\beta,\mathcal C]-R_\star\beta.
+ \label{eq:estimator-bias}
+\end{equation}
+No zero-bias claim follows merely because the fitted correlated component has
+zero sample mean.
+
+For a fixed realized branch at a differentiable point $x_0$, the complete
+Jacobian is
+\begin{equation}
+ J_x=\left.\frac{\partial F_{\rm tot}}{\partial x}\right|_{\eta}
+     +\left.\frac{\partial F_{\rm tot}}{\partial\eta}\right|_{x}
+       \frac{\partial\eta}{\partial x},
+ \label{eq:complete-jacobian}
+\end{equation}
+including mode, weight, mask, and feedback dependence where differentiable.
+At threshold, rank, clipping, mask, or convergence discontinuities a unique
+Jacobian may not exist.  The response is then represented by declared
+one-sided/finite perturbations on a stated domain or is \unknown.
+
+\subsection{Formal covariance}
+
+If all fitted/selected state is conditioned upon and the cleaner is the fixed
+linear operator $L$, the conditional formal covariance is
+\begin{equation}
+ C_{z\mid L}=L C_x L^T.
+ \label{eq:conditional-covariance}
+\end{equation}
+This matrix generally has temporal and inter-detector off-diagonal terms even
+when $C_x$ is diagonal.  For the complete differentiable procedure, the
+first-order covariance is
+\begin{equation}
+ C_z^{(1)}=J_x C_x J_x^T
+   +J_\gamma C_\gamma J_\gamma^T
+   +J_x C_{x\gamma}J_\gamma^T
+   +J_\gamma C_{\gamma x}J_x^T,
+ \label{eq:delta-covariance}
+\end{equation}
+with calibration/systematic covariance and cross-covariance included when
+applicable.  If $\eta$ is treated as an explicit random variable, the exact
+law of total covariance is
+\begin{equation}
+ \Cov(z\mid\mathcal C)=
+ \E\!\left[\Cov(z\mid\eta,\mathcal C)\mid\mathcal C\right]
+ +\Cov\!\left(\E[z\mid\eta,\mathcal C]\mid\mathcal C\right).
+ \label{eq:total-covariance}
+\end{equation}
+Using only the first term understates uncertainty whenever fitted modes,
+selection, or weights vary.  A covariance product states whether it is exact,
+conditional, first-order, empirical, modeled, or an approximation; its axes,
+units $U_z^2$, normalization, support, rank, and omitted correlations are
+machine-readable.
+
+Observation processing does not prove cross-observation independence.  For
+observations $o,o'$, $C_z^{oo'}$ may be nonzero through common calibration,
+atmosphere, APT errors, shared fitted models, or processing choices.  An absent
+cross-observation block means unknown, not zero.
+
+\subsection{Formal variance, empirical scatter, and systematic uncertainty}
+
+Formal marginal variance is the diagonal of a declared covariance model,
+\begin{equation}
+ \sigma^2_{i,\mathrm{formal}}=(C_z)_{ii}.
+ \label{eq:formal-variance}
+\end{equation}
+Empirical scatter is a statistic of a declared residual/support, for example
+\begin{equation}
+ \widehat s_d^2=
+ \frac{1}{\nu_d}\sum_{t\in\mathcal A_d}
+   \rho_{td}\bigl(z_{td}-\widehat\mu_d\bigr)^2,
+ \label{eq:empirical-scatter}
+\end{equation}
+with estimator, centering, coefficients $\rho$, effective degrees of freedom
+$\nu_d$, correlation correction, finite/flag policy, and lifecycle recorded.
+It is not automatically an unbiased variance estimate, and $1/\widehat s_d^2$
+is not automatically a precision.  Calibration/systematic uncertainty is a
+nuisance covariance or bounded error with identity and correlation domain; it
+must not be folded into empirical scatter without labeling.  Response
+uncertainty concerns uncertainty in how sky signal is transformed and remains
+distinct from residual-noise covariance.
+
+\subsection{Detector weights and normalization}
+
+Let $q_d=H_d(z,m,a,\theta,\Lambda)$ be a declared detector statistic and
+\begin{align}
+ \widetilde w_d &= g(q_d),
+   \label{eq:raw-detector-weight}\\
+ w_d &= \kappa(\widetilde w,\mathcal D_{\rm sel})\,\widetilde w_d.
+   \label{eq:normalized-detector-weight}
+\end{align}
+The interface records $H_d$, $g$, fit support, selected detector set,
+zero/negative/non-finite behavior, clipping, unit, normalization $\kappa$,
+normalization domain, and whether weights are fixed, fitted, selected, or
+data-derived.  Recomputing a weight creates a new realized product and cannot
+silently alter an earlier stage.  If $\widetilde w_d=\sigma_d^{-2}$ it has
+units $U_z^{-2}$; common normalizations may make $w_d$ dimensionless and
+destroy an absolute-precision interpretation while preserving relative
+gridding coefficients.
+
+A weight may be called marginal precision only if the target random variable,
+conditioning set, covariance, units, estimator, and lifecycle are stated and
+\begin{equation}
+ w_d=\left[\Var(\widehat y_d\mid\mathcal C)\right]^{-1}
+ \label{eq:marginal-precision}
+\end{equation}
+with no omitted normalization.  Combining such scalars as independent
+precision additionally requires the applicable covariance matrix to be
+diagonal on the selected support.  A detector weight cannot represent
+temporal covariance, inter-detector covariance, pixel coupling, or
+cross-observation covariance unless an explicit operator says how.
+
+\section{Response and transfer}
+\label{sec:response}
+
+\subsection{Complete conditioned response}
+
+Let $s$ be a small physical sky-signal perturbation in a named amplitude,
+spatial, temporal, and stage domain.  The admitted upstream data have complete
+conditioned response $K_x$ or explicit unavailable state:
+\begin{equation}
+ \delta x=K_x\,\delta s.
+ \label{eq:upstream-response}
+\end{equation}
+At a differentiable realized PTC state, the complete local response is
+\begin{equation}
+ K_{z,\mathrm{loc}}(x_0)=J_x(x_0)K_x.
+ \label{eq:local-response}
+\end{equation}
+It includes fit, selection, mask, weight-feedback, iteration, resampling, and
+all upstream response-changing stages.  A partial kernel must not be labeled
+as this complete response.  The response record identifies the conditioning
+state, perturbation convention and amplitude, causal support, time/rate,
+phase convention, detector identities, units, boundary handling, validity
+domain, numerical/analytic method, and uncertainty.  If $K_x$ is unavailable,
+or any response-changing PTC term is omitted, $K_z$ is unavailable.
+
+Response covariance or uncertainty is represented separately, e.g.
+\begin{equation}
+ C_{K_z}=\Cov\!\left(\operatorname{vec}K_z\mid\mathcal C\right),
+ \label{eq:response-covariance}
+\end{equation}
+or a declared low-rank/bounded approximation with omitted directions.  A
+deterministic kernel file without uncertainty is not proof of zero response
+uncertainty.
+
+\subsection{When a global transfer exists}
+
+A single global linear transfer $K_z$ independent of data exists only on a
+declared domain where all of the following hold: admission, masks, selected
+detectors/components/rank, coefficients or mode basis, iteration count and
+branch, weights that feed back, boundary rules, and upstream response are
+fixed; the mapping is linear; and time/space variation is represented in the
+operator.  Shift invariance is additionally required before a scalar Fourier
+transfer function is meaningful.  If these conditions fail, only a realized
+local response, a family of conditioned responses, or \unknown{} is truthful.
+
+The principal response dimensions are:
+\begin{description}[leftmargin=0.22\linewidth,style=nextline]
+  \item[Temporal and phase.] Impulse support, timestamp registration, gaps,
+  rate changes, segment edges, and any noncausal support are explicit.  A
+  sinusoidal gain/phase curve is valid only for a fixed linear time-invariant
+  region.
+  \item[Amplitude.] Clipping, robust weights, rank/component thresholds,
+  source selection, and convergence create amplitude-dependent or
+  discontinuous response.  Perturbation amplitude and side are recorded.
+  \item[Spatial/source mask.] The fit mask and application mask may differ.
+  Response depends on source position, pointing registration, mask dilation,
+  and boundary convention; crossing a derived-mask boundary can be
+  discontinuous.
+  \item[Common/PCA and detector.] Correlated-mode subtraction is a mixing
+  operator over samples and detectors.  It can attenuate any sky component
+  overlapping the selected subspace and induce detector covariance.
+  \item[Extended emission.] A mode common across detectors can be astronomical
+  rather than atmospheric.  No point-source response establishes response to
+  extended modes.
+  \item[Iteration/pass.] The response is the derivative or finite perturbation
+  of the complete recurrence, including feedback and stop decisions, not a
+  product of only the visible fixed filters.
+  \item[Map/beam.] Projection and gridding compose with Equation
+  \eqref{eq:local-response}; beam amplitude/shape and map significance require
+  the corresponding response and covariance, not only cleaned TOD.
+\end{description}
+
+\section{Quantities that must not be conflated}
+\label{sec:distinctions}
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.18\linewidth}
+                  >{\raggedright\arraybackslash}p{0.74\linewidth}}
+\toprule
+Quantity & Exact meaning \\
+\midrule
+\endhead
+Variance & A second central moment of a named random variable under a named
+conditioning set; unit $U^2$.\\
+Inverse variance / precision & Reciprocal variance for that exact marginal,
+or a matrix precision $C^{-1}$; not a generic quality score.\\
+Detector weight & A coefficient attached to a detector statistic with a named
+normalization and lifecycle; nonprecision by default.\\
+Normalization & Algebraic scale used to make an estimator or weighted sum
+well-defined; it need not quantify uncertainty.\\
+Support & Indices on which an operator fits, applies, or can depend.  Fit,
+subtraction, output, and response support may differ.\\
+Hits / coverage & Counts or weighted exposure in a bin; neither validity nor
+precision without additional proof.\\
+Direct validity & Whether the value itself satisfies stage-local rules.\\
+Causal influence & Inputs, fitted state, and decisions capable of affecting an
+output, including invalid/replaced upstream causes.\\
+Confidence & A calibrated probability/coverage statement with a model and
+level, never a synonym for weight.\\
+Response & Transformation from a physical input perturbation to output,
+including conditioning and uncertainty.\\
+Scientific eligibility & Fail-closed policy decision combining identity,
+validity, influence, response, covariance, provenance, and use-specific
+requirements.\\
+\bottomrule
+\end{longtable}
+
+These fields have separate types and names.  A consumer may derive one from
+another only through a versioned, tested rule whose assumptions are present
+in the product.
+
+\section{Product and provenance contract}
+\label{sec:products}
+
+Every raw, outer, inner, full, mini, diagnostic, simulated, and processed
+product has an immutable product UID, exact stage enum, observation/scan/
+segment/sample/detector extents, axes and ordering, signal units and frame,
+time/rate identity, flags/validity/influence policy, requested/effective/
+resolved/realized state digests, and atomic creation status.  It links to:
+\begin{enumerate}[leftmargin=*]
+  \item immutable direct parent product UID(s) and content identity;
+  \item processing activity UID, application commit, configuration/state
+  digests, and algorithm/schema versions;
+  \item APT/calibration/mask/pointing/response inputs by immutable identity;
+  \item prior pass or simulation truth parent where applicable; and
+  \item cleaned TOD, weight, response, covariance, diagnostic, and provenance
+  siblings by typed relation, never by a guessed filename.
+\end{enumerate}
+
+A product is published atomically only after required siblings and links are
+durable.  Partial output is explicitly incomplete and scientifically
+ineligible.  Full/mini products carry actual per-chunk start, stop, count, and
+global-index mapping; a final short chunk is not padded into scientific
+coverage.  Diagnostics never inherit science-product identity.  Simulated
+products identify truth, injected response, random generator/version, master
+seed, stream/substream mapping, and whether fitted state was learned from
+truth-contaminated data.
+
+The realized record contains, at minimum: method branch; candidate and
+selected detectors/samples/components; every threshold and its unit; fit and
+application masks; centering/scaling; fitted basis/coefficient identities;
+rank/degeneracy/tie decisions; excluded modes; all passes and parents;
+iteration trace and convergence/exhaustion; empirical detector statistics and
+weights before/after normalization; replacements/synthesis and propagated
+causes; response availability and identity; covariance availability and
+approximation class; and RNG state.  A digest without a resolvable canonical
+record is insufficient provenance.
+
+\section{Provisional fail-closed consumer contracts}
+\label{sec:consumers}
+
+These are boundary conditions, not audits or launches of the consumers.
+
+\subsection{VAL eligibility}
+
+VAL may admit a PTC product only when immutable identity and parent links,
+actual extents, units/time/detector mapping, direct validity, cause-preserving
+influence, realized state, complete response or an explicitly response-free
+validation purpose, and required covariance/approximation are available.
+Replacement/synthesis or influenced samples are excluded from scientific
+validation.  An unknown state is not a pass.  Validation of file readability
+or numerical finiteness does not establish scientific eligibility.
+
+\subsection{MAP weights and significance}
+
+For projection/design matrix $P$, diagonal coefficient matrix $W$, and
+cleaned vector $z$, ordinary normalized gridding has
+\begin{align}
+ \widehat m &= A z,
+ \quad A=(P^TWP)^{+}P^TW,
+   \label{eq:map-estimator}\\
+ C_m &= A C_z A^T.
+   \label{eq:map-covariance}
+\end{align}
+If the projection support, selection, or gridding coefficients are themselves
+data-derived, let $\xi(x)$ collect them.  The complete local map response is
+then
+\begin{equation}
+ J_m=A\,J_x+
+ \left.\frac{\partial\{A(\xi)z\}}{\partial\xi}\right|_{z}
+ \frac{\partial\xi}{\partial x},
+ \qquad K_{m,\mathrm{loc}}=J_m K_x.
+ \label{eq:map-local-response}
+\end{equation}
+The second term vanishes only when those quantities are fixed on the response
+domain; omitting it does not produce a complete response.
+The entries or diagonal of $P^TWP$ are normalization/gridding weights by
+default.  In the one-hot, independent selected-sample special case with
+$W=\diag(\sigma_i^{-2})$ in absolute units, the corresponding denominator is
+marginal precision.  Otherwise no inverse-variance or significance claim
+follows.  A truthful correlated GLS estimator would require
+\begin{equation}
+ \widehat m_{\rm GLS}=(P^TC_z^{-1}P)^{+}P^TC_z^{-1}z,
+ \qquad
+ C_{m,\rm GLS}=(P^TC_z^{-1}P)^{+},
+ \label{eq:gls-reference}
+\end{equation}
+under its rank/model conditions, but this equation is a reference contract,
+not authorization or evidence of a GLS implementation.  Cross-observation
+coadds likewise treat their coefficients as nonprecision until registered
+observation covariance and independence/precision conditions are proven.
+
+\subsection{NOI noise and covariance}
+
+NOI receives the exact PTC stage, selection, masks, response, weights, and
+realized cleaning state.  Residual TOD is not automatically a stationary or
+independent noise realization: fitted correlated modes, source leakage,
+selection, flags, and feedback can bias its spectrum and covariance.  NOI
+must identify which temporal, detector, pixel, and cross-observation
+correlations are represented, approximated, or unavailable.  A diagonal PSD
+or detector scatter cannot be promoted to the full $C_z$ without a falsifiable
+approximation and validity domain.
+
+\subsection{BEAM response and uncertainty}
+
+BEAM remains unlaunched.  Any later beam consumer requires the complete
+realized local PTC response over source position and amplitude, pointing and
+mask registration, causal support/phase/rate, calibration coupling, and
+response uncertainty.  A point-source transfer does not establish extended
+response; a fixed global kernel is unavailable when data-derived cleaning or
+mask feedback changes the operator.  BEAM-relevant facts are to be routed
+through the later VAL handoff and owner brief, not a new BEAM artifact here.
+
+\section{Preregistered analytic limits and deterministic falsification cases}
+\label{sec:falsification}
+
+All post-freeze probes must use exact application \appsha, declared finite
+inputs, immutable detector/sample identities, and recorded commands.  Expected
+results below are contract oracles, not claims about implementation.  Where a
+method branch does not support a case, it must reject it or return
+\unknown{} with the stated reason; silent fallback is a failure.
+
+\small
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.15\linewidth}
+                  >{\raggedright\arraybackslash}p{0.35\linewidth}
+                  >{\raggedright\arraybackslash}p{0.42\linewidth}}
+\toprule
+Case & Construction & Falsifiable oracle \\
+\midrule
+\endhead
+Identity / no clean & Disable all correlated-mode subtraction with finite,
+eligible input. & $z=x$, $J_x=I$, $K_z=K_x$, identities/flags preserved;
+weight behavior is explicitly disabled or separately defined, never inferred.\\
+Single detector & One admitted detector with constant plus impulse. & Mean/PCA
+branches either reject insufficient ensemble support or record the exact
+zero/attenuated response; they must not claim unchanged sky and full removal
+simultaneously.\\
+Identical detectors & Two or more identical columns, equal metadata. & Rank is
+one after declared centering; degeneracy/tie behavior is deterministic and
+the common component response is explicitly removed or unavailable.\\
+Rank deficient & Duplicate/zero columns and a threshold-straddling singular
+value. & Recorded rank, tolerance, pseudoinverse, retained/excluded subspace,
+and boundary decision reproduce the emitted subtraction.\\
+Orthogonal mode & Inject a vector exactly orthogonal in the declared fit
+metric to a fixed removed subspace. & Conditioned fixed-operator output
+preserves that vector; data-derived basis motion is separately included in
+$J_x$ or makes the global claim unavailable.\\
+Scale invariance & Multiply all admissible signal and dimensional thresholds
+by $c\ne0$. & Homogeneous branches give $z(cx)=c z(x)$ and weights transform
+with declared units; normalized weights obey their stated scale law.  Any
+fixed dimensionful threshold explains the failure of invariance.\\
+Sign/gauge invariance & Negate data or a basis vector; rotate a degenerate
+basis. & Physical subtraction and selected subspace are invariant under basis
+sign/allowed rotation; coefficient signs transform consistently.\\
+Source-mask boundary & Move one sample across each inclusive/exclusive mask
+edge and perturb a derived-mask threshold from both sides. & Fit, application,
+output, and feedback effects follow the serialized polarity/boundary rule;
+discontinuity is captured in response or marked unavailable.\\
+Sample selection & Toggle one otherwise finite sample between admitted and
+rejected. & Candidate/selected IDs, denominator/rank, fitted state, causal
+influence, and affected outputs change only according to declared support.\\
+Detector selection & Reject one high-weight, one zero-weight, and one
+degenerate detector in separate cases. & Selection occurs at its declared
+lifecycle point; no rejected detector silently enters fit, normalization,
+convergence, covariance, or response.\\
+Flags / non-finite & Place NaN, $+\infty$, missing, and each relevant cause flag
+inside/outside fit and application support. & None enters arithmetic silently;
+empty/zero support is explicit; causes and transitive influence propagate.\\
+Replacement influence & Replace one flagged sample used to fit a mode that is
+subtracted from many outputs. & All outputs depending on that fit carry a
+compact influence cause and are scientifically ineligible, even if finite.\\
+Unequal calibration & Two detectors observe equal physical signal with
+unequal conversion factors. & Fit occurs in a declared common unit or uses a
+dimensionally correct model; output amplitude and weight units transform
+consistently.\\
+Constant & Constant in time, separately common across detectors and confined
+to one detector. & Removed/preserved subspaces match the declared centering
+and mode model; zero denominators and full annihilation are explicit.\\
+Impulse & Unit impulse at interior and each segment edge, in one and all
+detectors. & Measured support, phase/time registration, detector mixing, edge
+rule, influence, and $K_{z,\rm loc}$ match the complete operator.\\
+Sinusoid & On-bin and off-bin sinusoids over several frequencies/phases. & A
+gain/phase statement is made only on an LTI fixed branch; otherwise localized
+response variation or unavailability is reported.\\
+Scan segmentation & Repeat identical data as one scan and as two scans with a
+boundary. & No cross-scan fit/state/support occurs unless explicitly resolved;
+boundary response and parent identities differ as declared.\\
+Full/mini ragged chunks & Use chunks of lengths $N$, $N-1$, $1$, and empty,
+with nonzero global offset. & Actual start/stop/count and index maps are exact;
+no stale/padded sample contributes to fit, weight, hits, or output.\\
+One/two pass & Run fixed one-pass and a second pass whose mask changes one
+sample. & Separate parents and state traces exist; second-pass selection and
+response include feedback; first-pass artifacts remain immutable.\\
+Convergence & Construct immediate, threshold-equal, oscillating, NaN, and
+maximum-iteration cases. & Comparison polarity, tolerance/unit, chosen iterate,
+converged/exhausted/error state, and complete trace follow the contract.\\
+Sequential / OpenMP & Run the same small deterministic case on both paths. &
+Identities, selection, rank, flags, eligibility, convergence, provenance, and
+scientific result match; continuous values meet a predeclared tolerance.\\
+Simulation state & Repeat with same seed/stream, then alter one stream ID. &
+Same state reproduces draws and results; changed stream changes only its
+assigned draws; truth never bypasses ordinary admission unless declared.\\
+Covariance & Use a small positive-definite $C_x$ with temporal and detector
+off-diagonals and a fixed analytic $L$. & Reported formal covariance equals
+$LC_xL^T$; diagonal-only alternatives declare omitted terms and cannot claim
+full covariance.\\
+Map-weight meaning & Two samples: first independent with unequal variance,
+then correlated; also multiply all weights by a common $c$. & Map estimate is
+invariant to common normalization; denominator changes with $c$ and is
+precision only in the exact independent absolute-inverse-variance case;
+Equation~\eqref{eq:map-covariance} gives actual uncertainty.\\
+Cross-observation & Two registered observations with a shared calibration
+nuisance. & Coadd covariance retains the shared term; absent covariance is
+unknown, not an independence assertion.\\
+Extended versus point & Inject a compact source and a detector-common extended
+mode with equal peak amplitude. & Distinct responses are reported; point
+response is not reused for the extended component.\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\section{Method coverage and exact omissions}
+\label{sec:methods}
+
+The frozen launch declares no numerical or external study.  The standard
+audit methods are dispositioned explicitly so that omission cannot be mistaken
+for a pass.
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.25\linewidth}
+                  >{\raggedright\arraybackslash}p{0.14\linewidth}
+                  >{\raggedright\arraybackslash}p{0.53\linewidth}}
+\toprule
+Method & Status & Exact rationale / preregistration \\
+\midrule
+\endhead
+Dimensional and identity analysis & applicable & Performed in
+Sections~\ref{sec:domain}, \ref{sec:uncertainty}, and \ref{sec:distinctions};
+later trace must bind every implementation quantity.\\
+Analytic limiting cases & applicable & Preregistered in
+Section~\ref{sec:falsification}, including identity, degeneracy, response, and
+covariance limits.\\
+Deterministic synthetic/static probe & applicable post-core & Permitted only
+after freeze; use the smallest in-memory or static harness already available,
+recording exact inputs/command/SHA.  It may falsify but not validate production.\\
+Metamorphic/invariance checks & applicable post-core & Scale, sign, ordering,
+segmentation, execution-path, and normalization relations are preregistered.\\
+Source-to-equation trace & applicable post-core & Mandatory Phase 2 work, but
+\NA{} to this implementation-blind core because opening source before freeze
+would violate independence.\\
+Existing narrow PTC tests & applicable post-core & May be run only after freeze
+and only if narrow/deterministic; no test name or expectation was consulted in
+Phase 1.\\
+Broad build/regression campaign & \NA & Explicitly prohibited and unnecessary
+to freeze a documentation contract; any later need requires a coordinator
+return and separate authorization.\\
+Local Citlali reduction / real-data replay & \NA & Explicitly prohibited; no
+local reduction is needed for the analytic interface, and passing one could
+not prove the contract.\\
+Unity build or reduction & \NA & Codex has no Unity authority and the launch
+explicitly prohibits Unity; only owner-supplied scoped evidence could be
+considered in a separately authorized phase.\\
+Monte Carlo coverage study & \NA & The launch plans no numerical study and the
+core makes no empirical coverage claim.  If Phase 2 relies on coverage,
+selection-frequency, or response-distribution claims, this becomes an owner
+authorization trigger rather than an implicit omission.\\
+Cross-implementation differential oracle & \NA & No independent approved PTC
+implementation or oracle is declared in the frozen manifest; comparing an
+unapproved implementation would add authority outside scope.\\
+External literature/data comparison & \NA & External contact/network/review
+and new scientific authority are prohibited; the core is derived from product
+intention and the two frozen authorities only.\\
+Independent second reviewer or delegation & \NA & Delegation, subagents, and
+external review are explicitly prohibited; the sole auditor owns all four
+later workstreams and synthesis.\\
+Production A/B or shadow execution & \NA & Production execution/change is
+outside an independent documentation audit and requires separate owner gates.\\
+\bottomrule
+\end{longtable}
+
+Standard cleaner families are covered at the interface level as follows.
+Arithmetic/weighted common means instantiate Equation~\eqref{eq:common-mode};
+template regression and fixed PCA/SVD instantiate
+Equations~\eqref{eq:mode-coeff}--\eqref{eq:linear-cleaner}; robust mean/median,
+clipping, and data-derived PCA instantiate the general nonlinear operator and
+local response.  Separate ICA, wavelet, Gaussian-process, or learned-model
+derivations are \NA{} because no such product intention or pre-core authority
+is declared.  If source inspection finds one, it must be traced as an
+implementation of Equations~\eqref{eq:theta-fit}--\eqref{eq:ptc-product}, with
+its additional state/response/covariance recorded; finding it does not permit
+silently adding a new authority or method class.
+
+\section{Numbered contract hypotheses for Phase 2}
+\label{sec:hypotheses}
+
+The following independent hypotheses are immutable trace targets.  A later
+audit may mark each conformant, nonconformant, partial, or unavailable, but
+must not rewrite the hypothesis to match source.
+
+\begin{enumerate}[label=\texttt{PTC-C\arabic*},leftmargin=*]
+  \item Every sample/detector/scan/segment/stage, unit/frame/time, axis/order,
+  validity, missing/non-finite rule, and upstream assumption is explicit as in
+  Equations~\eqref{eq:datum-id}--\eqref{eq:input-bundle}.
+  \item Fit, subtraction, output, empirical-estimation, and science admission
+  are distinct, cause-preserving functions; replacement/synthesis influence
+  obeys Equations~\eqref{eq:admission} and \eqref{eq:influence-set}.
+  \item Requested, effective, observation-resolved, and realized state are
+  immutable, linked, and sufficient to identify all fixed, conditioned,
+  fitted, selected, data-derived, and random quantities.
+  \item The implemented cleaner is exactly expressible by
+  Equations~\eqref{eq:theta-fit}--\eqref{eq:ptc-product}; mode normalization,
+  degeneracy, excluded modes, support, feedback, and convergence are complete.
+  \item Sequential and OpenMP paths preserve the same discrete scientific
+  state and meet a predeclared tolerance for continuous values.
+  \item Expectation, bias, formal covariance, empirical scatter,
+  calibration/systematic uncertainty, and response uncertainty are separately
+  typed; data-derived state is not treated as fixed without qualification.
+  \item Each detector weight has exact factor identity, units, normalization,
+  lifecycle, and covariance limits; it is nonprecision unless
+  Equation~\eqref{eq:marginal-precision} and independence conditions are proven.
+  \item Complete PTC response composes all upstream and PTC changes through
+  Equation~\eqref{eq:local-response}; missing or discontinuous terms yield a
+  bounded local response or \unknown, never a partial global kernel.
+  \item Temporal, detector, spatial/mask, amplitude, extended-mode,
+  iteration, map, and beam response domains and uncertainty are explicit.
+  \item Product stage identities, actual extents, parent/processing links,
+  sibling links, provenance, and atomicity satisfy Section~\ref{sec:products}.
+  \item VAL/MAP/NOI/BEAM consumers fail closed under
+  Section~\ref{sec:consumers}; map/coadd denominators remain nonprecision by
+  default and BEAM remains unlaunched.
+  \item Every applicable case in Section~\ref{sec:falsification} has a traced
+  implementation outcome or named unavailable state; every omitted method has
+  the exact \NA{} rationale in Section~\ref{sec:methods}.
+\end{enumerate}
+
+\section{Decision and reopen boundaries}
+
+No owner decision is made by this core.  A source discrepancy becomes a
+finding, not an invitation to redesign mature PTC numerics.  A Tier-A reopen
+trigger exists only if later evidence demonstrates a concrete contradiction
+in amplitude, selection, causal influence, response, covariance/precision,
+stage identity, or feedback behavior that cannot be repaired at the interface
+boundary while preserving the operator.  Algorithmic preference, code style,
+or unmeasured performance is not such a trigger.
+
+Fail-closed outcomes are part of the contract: unknown units/order/identity,
+unresolved admission, contaminated influence, incomplete response, ambiguous
+weight normalization, missing covariance needed for a precision claim,
+unlinked stage, or incomplete publication makes the affected scientific claim
+unavailable.  This does not by itself prohibit bounded existing production;
+the production axis remains \texttt{existing\_use\_only} until an owner acts.
+
+\section{Freeze and exposure record}
+\label{sec:freeze}
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.25\linewidth}
+                  >{\raggedright\arraybackslash}p{0.67\linewidth}}
+\toprule
+Event & Record \\
+\midrule
+\endhead
+Launch/administrative exposure & The coordinator-supplied launch text,
+\texttt{AGENTS.md}, the TolTEC context skill and its repository/authority
+routing maps, and the verified frozen prompt/manifest were read before the
+scientific derivation.  Exact client delivery/opening seconds were not
+captured; this occurred before 2026-08-08T19:27:27Z.  These materials exposed
+scope, identities, path names, and administrative status, not application
+implementation.\\
+Non-disclosive manifest check & All manifest-listed handoff bytes were streamed
+to SHA-256 only.  Their digests matched.  No post-core content was displayed,
+parsed, searched, diffed, or used.\\
+First scientific authority opening &
+\texttt{SCI-RTC-001-D001-D004} opened at
+\texttt{2026-08-08T19:27:27Z}; its verified SHA-256 is recorded above.\\
+Second scientific authority opening &
+\texttt{SCI-PTC-001-XAUD-001} opened at
+\texttt{2026-08-08T19:27:27Z}; its verified SHA-256 is recorded above.\\
+Prior application/post-core exposure & None in this audit.  No quarantined
+application path, application caller/test/reference, or
+\texttt{SCI-PTC-001-XAUD-002} through \texttt{-006} content was opened.\\
+Core byte freeze & \FreezeTime.  The SHA-256 and commit identity are reported
+at the mandatory coordinator checkpoint because embedding either would change
+the frozen bytes or create a self-reference.\\
+Next intended opening & None without explicit coordinator approval.  If Phase
+2 is approved, first record a UTC timestamp and open
+\path{include/citlali/core/timestream/ptc/ptcproc.h} from application commit
+\appsha, then follow the frozen source/post-core plan.\\
+\bottomrule
+\end{longtable}
+
+At freeze, the sole intended repository change is this file.  The next action
+is to commit it alone, return its exact digest/commit/parent/tree and offline
+render/static-validation results, and stop before any source or post-core
+opening.
+
+\end{document}
