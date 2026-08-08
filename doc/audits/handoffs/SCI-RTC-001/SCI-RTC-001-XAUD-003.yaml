@@ -68,15 +68,27 @@ evidence:
     note: Exact-source consumers plus singular and wrap probes.
 
 recipient_disposition:
-  status: pending
+  status: acknowledged
   late_arrival_route: not_applicable
-  actions: []
-  rationale: null
-  target_audit_branch: null
-  target_audit_commit: null
-  affected_findings: []
-  affected_dependencies: []
-  contract_or_report_locations: []
+  actions:
+    - dependency_recorded
+    - findings_opened
+    - future_interface_tests_recorded
+    - consumer_restriction_recorded
+  rationale: >-
+    Current RTC source independently fails open at source-mask admission; AST
+    validity/binding remains a dependency. Historical edge occurrence and
+    active repair results were not inferred.
+  target_audit_branch: codex/audit-sci-rtc-001
+  target_audit_commit: 3319d7424c732c1c9fc300c336e4d428e6f91068
+  affected_findings:
+    - SCI-RTC-001-F005
+    - SCI-RTC-001-F010
+  affected_dependencies:
+    - SCI-AST-001
+    - SCI-ALIGN-001
+  contract_or_report_locations:
+    - doc/audits/packages/SCI-RTC-001_SCIENTIFIC_CONTRACT_AUDIT.tex
 
 supersedes: null
 superseded_by: null

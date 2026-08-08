@@ -1,0 +1,83 @@
+format_version: 1
+id: SCI-PTC-001-XAUD-006
+created_date: 2026-08-08
+
+source:
+  package_id: SCI-ALIGN-001
+  role: coordinator
+  audit_branch: null
+  audit_commit: null
+  governing_or_evidence_sha: 5c6309125fef15f7c98e70a62b591c663944b130
+  finding_ids: []
+
+target:
+  package_id: SCI-PTC-001
+
+priority: P1
+evidence_basis: observed
+review_phase: post_core_evidence
+arrival: before_dispatch
+status: submitted
+
+summary: >-
+  A frozen ALIGN/3C273 repair record reports that processed PTC signal chunks
+  were appended at their actual variable lengths while scan metadata advanced
+  a repeated 606-sample window.
+claim: >-
+  At exact repair commit 5c6309125fef15f7c98e70a62b591c663944b130,
+  the processed-TOD metadata bounds were changed to use the pre-append sample
+  count and actual appended chunk length; this is exact post-core evidence for
+  the PTC product/metadata interface only.
+supports:
+  - >-
+    After the independent PTC core is frozen, inspect whether every processed
+    product's scan metadata and appended signal/flag/pointing extents share one
+    exact sample and scan identity.
+  - >-
+    Record the repair as a candidate exact-source interface regression and
+    preserve the unsupplied owner-run Unity validation gate.
+does_not_establish:
+  - integration of commit 5c6309125fef15f7c98e70a62b591c663944b130
+  - completion of the named Unity validation or scientific effect
+  - PTC estimator, cleaning, weighting, covariance, transfer, or production conformance
+  - authorization for repair, re-audit, execution, or production change
+
+requested_actions:
+  - add_or_update_finding
+  - add_interface_test
+  - preserve_existing_use_only
+affected_target_findings: []
+related_handoffs: []
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-ALIGN-001-PTC-SCAN-METADATA-REPAIR-HANDOFF
+    availability: hash_only
+    path: >-
+      5c6309125fef15f7c98e70a62b591c663944b130:handoff/SCI_ALIGN_001_PTC_SCAN_METADATA_DEFECT_2026-08-08.md
+    sha256: 958d4494de801a08361945d046c92daec4b94e907c8317ad506cb1653c026553
+    note: >-
+      Commit parent 2ee6d5116a1acd6230694715d0d1d39bac2f9a77; tree
+      247c04b4cd5f76005dc07fa63480008568c51ea4. Focused local checks are
+      reported passing; owner-run Unity validation remains unsupplied.
+  - id: SCI-ALIGN-001-PTC-SCAN-METADATA-BUNDLE
+    availability: external_reference
+    path: >-
+      /Users/gwilson/GitHub/citlali-refactor/sci_align_001_ptc_scan_metadata_from_2ee6_5c630912.bundle
+    sha256: b73aff50c7aeb14fd9af5b2e3055a92a3b2d2923443ce32de8d5f7f5c78686a5
+    note: Independently rehashed local bundle; not integrated or validated here.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: not_applicable
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

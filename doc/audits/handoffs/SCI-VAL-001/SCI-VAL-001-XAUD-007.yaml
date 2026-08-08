@@ -6,7 +6,7 @@ source:
   package_id: SCI-RTC-001
   role: independent_auditor
   audit_branch: codex/audit-sci-rtc-001
-  audit_commit: pending_final_documentation_commit
+  audit_commit: 3319d7424c732c1c9fc300c336e4d428e6f91068
   governing_or_evidence_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
   finding_ids:
     - SCI-RTC-001-F002
@@ -25,7 +25,7 @@ priority: P0
 evidence_basis: observed_and_derived
 review_phase: post_core_evidence
 arrival: after_RTC_audit_completion
-status: proposed_unintegrated
+status: submitted
 
 summary: >-
   Current RTC flags protect direct replacement cells but do not encode the full

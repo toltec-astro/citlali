@@ -76,15 +76,25 @@ evidence:
     note: Independent equations A1-A19 and tests T01-T18 frozen before source inspection.
 
 recipient_disposition:
-  status: pending
+  status: acknowledged
   late_arrival_route: not_applicable
-  actions: []
-  rationale: null
-  target_audit_branch: null
-  target_audit_commit: null
-  affected_findings: []
-  affected_dependencies: []
-  contract_or_report_locations: []
+  actions:
+    - dependency_recorded
+    - findings_opened
+    - future_interface_tests_recorded
+    - consumer_restriction_recorded
+  rationale: >-
+    Current source independently corroborates the input-origin/support
+    influence gap. Historical scan behavior and bias magnitude were not promoted.
+  target_audit_branch: codex/audit-sci-rtc-001
+  target_audit_commit: 3319d7424c732c1c9fc300c336e4d428e6f91068
+  affected_findings:
+    - SCI-RTC-001-F003
+    - SCI-RTC-001-F008
+  affected_dependencies:
+    - SCI-ALIGN-001
+  contract_or_report_locations:
+    - doc/audits/packages/SCI-RTC-001_SCIENTIFIC_CONTRACT_AUDIT.tex
 
 supersedes: null
 superseded_by: null

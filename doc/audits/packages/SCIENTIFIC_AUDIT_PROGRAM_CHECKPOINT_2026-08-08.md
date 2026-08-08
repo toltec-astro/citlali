@@ -37,8 +37,8 @@ or dependency claim is inferred from those integrations.
 | `SCI-MAP-002` | Repair active from exact base `46ad2388...`; no active-task result is admitted here. | Bounded repair return and fresh re-audit. |
 | `SCI-ALIGN-001` | Owner-managed ALIGN/3C273 evidence remains active and deliberately slow. | Frozen returned evidence and coordinator review. |
 | `SCI-AST-001` | Repair remains held. | Accepted and re-audited ALIGN successor, then exact AST repair-base selection. |
-| `SCI-RTC-001` | Next new audit, dispatched at Sol Ultra against exact application SHA `46ad2388...`. | Independent-core freeze, scoped interface/source review, then owner review. |
-| `SCI-PTC-001` | Queued after RTC. | Frozen RTC interface and its applicable handoffs. |
+| `SCI-RTC-001` | Audit `3319d742...` integrated; D001--D004 approved; axes remain `proposed` / `nonconformant` / `in_progress` / `existing_use_only`, verdict `amend`. | Upstream closure, separately authorized repair, focused exact-successor evidence, then independent re-audit. |
+| `SCI-PTC-001` | Next independent audit at Sol Ultra against exact application SHA `46ad2388...`; frozen dispatch preparation is procedurally safe. | Owner/coordinator launch of the frozen packet; RTC and ALIGN evidence remains post-core and undispositioned. |
 | `SCI-VAL-001` | Queued after PTC. | Frozen RTC and PTC interfaces. |
 | `SCI-BEAM-001` | Queued after PTC/VAL. | Frozen PTC and VAL interfaces; existing upstream restrictions remain. |
 | `SCI-FLT-001` | Successor-repair dispatch readiness only; not authorized. | Exact repair base remains unresolved until CAL has an accepted, re-audited, integrated successor. |
@@ -49,13 +49,13 @@ when their dependency facts, role separation, frozen manifests, resource
 choice, and checkpoint scope are explicit. Repair debt, consumer restrictions,
 cost, and concurrent scope remain actively controlled.
 
-## Exact post-core PTC/VAL routing queue
+## Exact post-core PTC/VAL routing
 
 Queue ID: `ALIGN-3C273-PTC-VAL-POSTCORE-2026-08-08`
 
 Source task: `019fc822-9f45-72b1-91e9-775e80768d2a`
 
-Status: `exact_post_core_queue_evidence_unintegrated_validation_pending`
+Status: canonical PTC handoff integrated; validation and recipient disposition pending
 
 The ALIGN/3C273 task froze repair commit
 `5c6309125fef15f7c98e70a62b591c663944b130`, parent
@@ -77,16 +77,27 @@ checks are reported passing, while the named owner-run Unity validation
 remains unsupplied. This record does not establish integration, external
 validation, scientific effect, or production authorization.
 
-The object is queued only as post-core evidence for future `SCI-PTC-001` and
-`SCI-VAL-001` routing. It is absent from the frozen RTC manifest, changes no
-RTC derivation or scope, and cannot be opened before either recipient's
-independent core is frozen. A future coordinator must create normal bounded
-handoff records before recipient dispatch; this queue record is not itself a
-canonical inbox handoff.
+The object is routed to `SCI-PTC-001` as canonical handoff
+`SCI-PTC-001-XAUD-006`, with current canonical SHA-256
+`23ae2b52d0347006c9fc8362299c6ea9eae98b803e3a7698d2e2fb48ae336a7f`.
+It remains queued for later VAL routing. It is absent from the frozen RTC
+manifest, changes no RTC derivation or scope, and cannot be opened before a
+recipient's independent core is frozen.
+
+## PTC launch sequencing conclusion
+
+The completed RTC audit brief's conservative dependency sequence governs
+acceptance or closure of RTC's outgoing handoffs and downstream scientific or
+production use. It does not prohibit launching a fresh PTC independent audit.
+PTC may launch against `46ad2388...` with `SCI-PTC-001-XAUD-001` as its only
+pre-core handoff and all observational or implementation records—including
+RTC `SCI-PTC-001-XAUD-005` and ALIGN `SCI-PTC-001-XAUD-006`—quarantined until
+the independent core is frozen. Launch does not disposition either handoff,
+authorize repair, or change production status.
 
 ## Explicit non-authorizations
 
 This checkpoint does not authorize application edits, audit science, repair,
 re-audit, broad or costly execution, local Citlali reductions, Unity activity,
-external contact, production change, or another package launch beyond the
-separately frozen RTC dispatch.
+external contact, production change, or PTC/BEAM launch. It records only that
+a separately frozen PTC independent-audit packet may be owner-launched.

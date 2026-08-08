@@ -25,19 +25,25 @@ CAL and MAP-002 repairs are active from that base; no result from either active
 task is admitted by this checkpoint.
 
 ALIGN/3C273 evidence remains owner-managed and active, while AST repair waits
-for an accepted and re-audited ALIGN successor. RTC is next at Sol Ultra; PTC
-follows RTC, VAL follows PTC, and BEAM follows frozen PTC/VAL interfaces. FLT
+for an accepted and re-audited ALIGN successor. The RTC audit at
+`3319d7424c732c1c9fc300c336e4d428e6f91068` is integrated, owner decisions
+D001--D004 are recorded, and its axes remain `proposed`, `nonconformant`,
+`in_progress`, and `existing_use_only`, with verdict `amend`. PTC is the next
+independent audit at Sol Ultra; VAL follows PTC, and BEAM follows frozen
+PTC/VAL interfaces. FLT
 successor-repair dispatch remains held until CAL has an accepted, independently
 re-audited, integrated successor. The returned ENG-STATE-001 static package is
 accepted with F001/F002 open and unchanged package axes; further ENG work
 requires a fresh static-only scope checkpoint.
 
-The exact queue, active-lane boundaries, and provisional PTC/VAL routing
-placeholder are recorded in
+The exact queue, active-lane boundaries, PTC launch interpretation, and exact
+post-core PTC/VAL routing are recorded in
 [`SCIENTIFIC_AUDIT_PROGRAM_CHECKPOINT_2026-08-08.md`](packages/SCIENTIFIC_AUDIT_PROGRAM_CHECKPOINT_2026-08-08.md).
-The RTC dispatch and frozen authority manifest are
+The completed RTC dispatch and frozen authority manifest are
 [`SCI_RTC_001_AUDIT_PROMPT.md`](prompts/SCI_RTC_001_AUDIT_PROMPT.md) and
 [`SCI-RTC-001_INBOX_AUTHORITY_MANIFEST_2026-08-08.yaml`](handoffs/SCI-RTC-001/SCI-RTC-001_INBOX_AUTHORITY_MANIFEST_2026-08-08.yaml).
+The owner decisions are
+[`SCI-RTC-001_OWNER_DECISION_2026-08-08.md`](packages/SCI-RTC-001_OWNER_DECISION_2026-08-08.md).
 The smallest FLT readiness record is
 [`SCI-FLT-001_SUCCESSOR_REPAIR_DISPATCH_READINESS_2026-08-08.md`](packages/SCI-FLT-001_SUCCESSOR_REPAIR_DISPATCH_READINESS_2026-08-08.md).
 

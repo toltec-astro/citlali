@@ -3894,91 +3894,503 @@ packages:
   - id: SCI-RTC-001
     name: Raw-timestream conditioning interface and temporal response
     tier: B
-    queue_wave: foundation_2
     scientific_scope: >-
-      Mature RTC calibration invocation, despiking/replacement, FIR/IIR/notch
-      filtering, edge guards, downsampling, source masks, flags, and temporal
-      transfer at its input/output interface.
-    known_code_areas:
-      - include/citlali/core/timestream/rtc/rtcproc.h
-      - include/citlali/core/pipeline/raw_timestream_execution_plan.h
-      - include/citlali/core/pipeline/raw_timestream_provenance.h
-    inputs: [aligned raw TOD, calibration, coordinates, configuration, flags]
-    outputs: [conditioned TOD and kernels, flags, transfer and diagnostics]
+      Conditioning of aligned detector timestreams through calibration,
+      extinction, despiking/replacement, FIR/IIR/notch stages, source protection,
+      downsampling, response/kernel/flags, temporal support, output products,
+      provenance, and bounded PTC/VAL/BEAM input contracts.
+    inputs:
+      - admitted ALIGN common-grid samples with exact detector, scan, origin, validity, and support identity
+      - approved CAL factor table, opacity/airmass operator, APT binding, responsivity convention, and validity
+      - approved AST coordinate/frame/validity and detector-row binding
+      - selected RTC request plus observation-resolved rate, context, mask, and output state
+    outputs:
+      - explicitly staged conditioned TOD with rate, phase, representative time, and causal support
+      - matched response/kernel or explicit response unavailability
+      - typed direct validity, cause flags, influence support, eligibility, diagnostics, and covariance availability
+      - lossless requested/effective/observation-resolved/realized provenance and product links
+  
     upstream_dependencies:
       - package_id: SCI-ALIGN-001
         status: open
+        current_lane_status: active_existing_use_only
+        finding_id: SCI-RTC-001-F008
+        required_contract: >-
+          Exact aligned detector and telescope sample mapping, origin/validity,
+          synthesis/gap action, scan identity, timing residual, support,
+          response/covariance availability, and eligibility.
+        consequence: >-
+          RTC exact timing/support and new response claims remain conditioned.
       - package_id: SCI-CAL-001
         status: open
+        current_lane_status: active_repair_from_governing_SHA
+        finding_id: SCI-RTC-001-F009
+        required_contract: >-
+          Complete factor identity, top-of-atmosphere opacity/airmass operator,
+          detector/APT binding, responsivity convention, validity, and uncertainty.
+        consequence: >-
+          Absolute calibration, replacement conversion, photometry, and response
+          fail closed for new claims.
       - package_id: SCI-AST-001
         status: open
-    downstream_consumers: [SCI-PTC-001, SCI-VAL-001, SCI-BEAM-001]
+        current_lane_status: repair_held_behind_ALIGN
+        finding_id: SCI-RTC-001-F010
+        required_contract: >-
+          Exact coordinate/frame/topology validity, sample identity, and detector-row binding.
+        consequence: >-
+          Coordinate-aware masks/kernels and new coordinate-dependent claims remain conditioned.
+  
+    downstream_consumers:
+      - package_id: SCI-PTC-001
+        status: existing_use_only
+        handoff_id: SCI-PTC-001-XAUD-005
+      - package_id: SCI-VAL-001
+        status: existing_use_only
+        handoff_id: SCI-VAL-001-XAUD-007
+      - package_id: SCI-BEAM-001
+        status: existing_use_only
+        handoff_id: SCI-BEAM-001-XAUD-003
+  
+    governing_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    governing_parent: 4846fa4db39bd2f7d4ddc41f693836834cbc5ff4
+    governing_tree: ab230a93b8fb310d58aefd7ac5da92e5d5e0f408
+    governing_sha_role: audit_dispatch_snapshot
+    audit_branch: codex/audit-sci-rtc-001
+    audit_worktree: /Users/gwilson/.codex/worktrees/1697/citlali-refactor
+    final_audit_commit: 3319d7424c732c1c9fc300c336e4d428e6f91068
+    final_audit_parent: 3620434eb988662210b2466ee357ffc8f891aa58
+    final_audit_tree: 8b01ee4d8117816904d7f078682c0c62a2ea88ac
+    audit_artifact_at_commit: doc/audits/packages/SCI-RTC-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    final_audit_artifact_sha256: 169a0b6e013e727d5d04c25da5234e29def4ef79bc6f25a3f343bc675000301a
+  
+    dispatch:
+      status: audit_integrated_owner_decisions_recorded
+      launch_date: 2026-08-08
+      launch_effort: ultra
+      execution_profile: sol_ultra_no_delegation
+      frozen_content_commit: fff3f538ce04fb66d73ac3671f2bc6a10975baed
+      coordinator_registry_commit: dd5894679bf12bf4a5fb551e871b3c6010ef9b9b
+      prompt_path: doc/audits/prompts/SCI_RTC_001_AUDIT_PROMPT.md
+      prompt_sha256: 01c02c2b1057a5346caaf5c0a8efaa7c5b17dec90158dffe9020b6838ad3951c
+      manifest_path: doc/audits/handoffs/SCI-RTC-001/SCI-RTC-001_INBOX_AUTHORITY_MANIFEST_2026-08-08.yaml
+      manifest_sha256: 9f75e5df0184d73e90acec10cbf8c052fe7baad571a131ba8834f2acbbbccb1c
+      pre_core_authority_ids:
+        - ALIGN-OD1-OD8-C001
+        - ALIGN-P0-D001
+        - ALIGN-P0-D002
+        - ALIGN-P0-D003
+        - ALIGN-P0-D004
+        - ALIGN-P0-D005
+        - CAL-D001-D005
+        - CAL-D001-OPACITY-001
+        - CAL-D002-IDENTITY-001
+        - CAL-D001-ACCURACY-001
+        - SCI-AST-001-D001-D008
+      post_core_evidence_ids:
+        - SCI-RTC-001-XAUD-002
+        - SCI-RTC-001-XAUD-001
+        - SCI-RTC-001-XAUD-003
+      excluded_later_repair_commit: 5c6309125fef15f7c98e70a62b591c663944b130
+  
+    independent_derivation:
+      status: independent_core_frozen_and_coordinator_accepted
+      path: doc/audits/packages/SCI-RTC-001_INDEPENDENT_CORE.tex
+      sha256: d6cf49d1a5e17754c55cc4f2c8f4b4f5e276755f247496df888581d890be80b7
+      freeze_commit: 3620434eb988662210b2466ee357ffc8f891aa58
+      freeze_parent: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+      freeze_tree: 3cafe771e15e0c6159e323f357ce3a5c76b01efa
+      freeze_timestamp_utc: 2026-08-08T17:50:49Z
+      first_application_source_open_utc: 2026-08-08T17:53:44Z
+      first_application_source_path: include/citlali/core/timestream/rtc/rtcproc.h
+      first_post_core_handoff_open_utc: 2026-08-08T18:07:36Z
+      successor_revisions: []
+      prior_exposure: >-
+        Repository instructions, TolTEC routing context, frozen prompt/manifest,
+        and exactly eleven pre-core authority objects only. No RTC source,
+        caller, test, diff/blame, prior RTC audit, or post-core handoff content
+        was opened before freeze.
+  
     incoming_handoffs:
       - id: SCI-RTC-001-XAUD-002
-        path: >-
-          doc/audits/handoffs/SCI-RTC-001/SCI-RTC-001-XAUD-002.yaml
-        sha256: >-
-          01ee55506fe3c6643d0fdb0559bbce14fa038ac53155701c5bcbc71211fe9319
+        path: doc/audits/handoffs/SCI-RTC-001/SCI-RTC-001-XAUD-002.yaml
+        dispatch_sha256: 01ee55506fe3c6643d0fdb0559bbce14fa038ac53155701c5bcbc71211fe9319
+        canonical_sha256: 5bde1b835d2b95187717fcf4d19ddc56b3042c24ab4c39c717bd3a05cd4e4bb2
         source_package: SCI-ALIGN-001
+        evidence_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
         review_phase: post_core_evidence
         arrival: before_dispatch
-        status: submitted
+        recipient_disposition:
+          status: acknowledged
+          actions:
+            - dependency_recorded
+            - findings_opened
+            - future_interface_tests_recorded
+            - consumer_restriction_recorded
+          rationale: >-
+            Current source independently corroborates the input-origin/support
+            influence gap. Historical scan behavior and bias magnitude were not promoted.
+          affected_findings: [SCI-RTC-001-F003, SCI-RTC-001-F008]
       - id: SCI-RTC-001-XAUD-001
-        path: >-
-          doc/audits/handoffs/SCI-RTC-001/SCI-RTC-001-XAUD-001.yaml
-        sha256: >-
-          9497050f12d162d92b21479b0c9490fe06f6303b61548ae152152ff9587a504f
+        path: doc/audits/handoffs/SCI-RTC-001/SCI-RTC-001-XAUD-001.yaml
+        dispatch_sha256: 9497050f12d162d92b21479b0c9490fe06f6303b61548ae152152ff9587a504f
+        canonical_sha256: 247dfc41ad257be0a9959c87028d46b001a3cc447243de924671904092161d6c
         source_package: SCI-CAL-001
+        evidence_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
         review_phase: post_core_evidence
         arrival: before_dispatch
-        status: submitted
+        recipient_disposition:
+          status: acknowledged
+          actions:
+            - dependency_recorded
+            - findings_opened
+            - future_interface_tests_recorded
+            - consumer_restriction_recorded
+          rationale: >-
+            Governing source independently demonstrates the extinction and
+            calibrated-domain replacement mismatches. The handoff does not
+            establish current filtering or authorize repair.
+          affected_findings: [SCI-RTC-001-F001, SCI-RTC-001-F002, SCI-RTC-001-F009]
       - id: SCI-RTC-001-XAUD-003
-        path: >-
-          doc/audits/handoffs/SCI-RTC-001/SCI-RTC-001-XAUD-003.yaml
-        sha256: >-
-          5eff0782d3c1057ccccbc613e9304e5410b6c30155ca04a34ae285f26e9f95a8
+        path: doc/audits/handoffs/SCI-RTC-001/SCI-RTC-001-XAUD-003.yaml
+        dispatch_sha256: 5eff0782d3c1057ccccbc613e9304e5410b6c30155ca04a34ae285f26e9f95a8
+        canonical_sha256: 89c631b2a25ada42e59dc0430501b17ddab317264d24948ebbf14456b99788a3
         source_package: SCI-AST-001
+        evidence_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
         review_phase: post_core_evidence
         arrival: before_dispatch
+        recipient_disposition:
+          status: acknowledged
+          actions:
+            - dependency_recorded
+            - findings_opened
+            - future_interface_tests_recorded
+            - consumer_restriction_recorded
+          rationale: >-
+            Current RTC source independently fails open at source-mask admission;
+            AST validity/binding remains a dependency. Historical edge occurrence
+            and active repair results were not inferred.
+          affected_findings: [SCI-RTC-001-F005, SCI-RTC-001-F010]
+  
+    outgoing_handoffs:
+      - id: SCI-PTC-001-XAUD-005
+        target_package: SCI-PTC-001
+        path: doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-005.yaml
+        audit_submission_sha256: 89ce799a6526f87025bc1d57cc0bf8a0234b149374920027beaa4cb18b94e289
+        canonical_sha256: 5fc8d94ba5af6053296004d3a35403a47f4e77c259fee92e28c92f3186a7ee24
         status: submitted
-    governing_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
-    governing_sha_role: audit_dispatch_base
-    audit_dispatch:
-      status: frozen_for_launch
-      dispatch_id: SCI-RTC-001-AUDIT-DISPATCH-2026-08-08
-      dispatch_content_commit: fff3f538ce04fb66d73ac3671f2bc6a10975baed
-      prompt_path: doc/audits/prompts/SCI_RTC_001_AUDIT_PROMPT.md
-      prompt_sha256: >-
-        01c02c2b1057a5346caaf5c0a8efaa7c5b17dec90158dffe9020b6838ad3951c
-      manifest_path: >-
-        doc/audits/handoffs/SCI-RTC-001/SCI-RTC-001_INBOX_AUTHORITY_MANIFEST_2026-08-08.yaml
-      manifest_sha256: >-
-        9f75e5df0184d73e90acec10cbf8c052fe7baad571a131ba8834f2acbbbccb1c
-      model: sol
-      effort: ultra
-      task_shape: decomposable_scientific
-      local_reduction_authorized: false
-      unity_authorized: false
-      delegation_authorized: false
-      application_change_authorized: false
-      repair_or_reaudit_authorized: false
-      stop_rule: coordinator_owner_review_after_bounded_audit
-    audit_branch: null
-    audit_commit: null
-    independent_derivation: {status: not_started, sha256: null}
-    contract_status: not_started
-    implementation_status: not_assessed
-    validation_status: not_started
+      - id: SCI-VAL-001-XAUD-007
+        target_package: SCI-VAL-001
+        path: doc/audits/handoffs/SCI-VAL-001/SCI-VAL-001-XAUD-007.yaml
+        audit_submission_sha256: 2c0a47c9f7f4eed4820db133304108f8f52d9702c22762b19e09cb851cce14b0
+        canonical_sha256: ca07517ca225bb70d2c767b6dabd7b327a320675394bf9cae81e009cee016a36
+        status: submitted
+      - id: SCI-BEAM-001-XAUD-003
+        target_package: SCI-BEAM-001
+        path: doc/audits/handoffs/SCI-BEAM-001/SCI-BEAM-001-XAUD-003.yaml
+        audit_submission_sha256: 24cd271c5b27d9885c01002e063571a53aa7fd4517d34509ef8d2194e259e1a1
+        canonical_sha256: 7dcaebc6713af30c093f31a9ace870d9a6cd59a61097fdff1c0bb83963d5808a
+        status: submitted
+  
+    owner_decision_record:
+      path: doc/audits/packages/SCI-RTC-001_OWNER_DECISION_2026-08-08.md
+      sha256: 5f5ebb52735a70510d75f5a6954ef825fc425c00e43ab0aadf2363f2e0609723
+      decision_date: 2026-08-08
+      decisions: [SCI-RTC-001-D001, SCI-RTC-001-D002, SCI-RTC-001-D003, SCI-RTC-001-D004]
+    contract_status: proposed
+    implementation_status: nonconformant
+    validation_status: in_progress
     production_status: existing_use_only
-    verdict: pending
-    open_findings: []
+    verdict: amend
+  
+    implementation_assessment:
+      governing_source: nonconformant
+      claimed_operator: >-
+        y = D F_K ... F_1 B_omega C_g A x plus the exact conditioned affine
+        offset, with matched response/kernel, causal support, typed validity,
+        covariance availability, eligibility, and four-stage product provenance.
+      implemented_operator: >-
+        y_impl = P_X N_post D_0 S N_det Q_HP N_cfg W N_pre R_hat C_impl A x
+        plus offsets; flags evolve separately. The kernel follows the filter and
+        stride subset but omits donor replacement and P_X.
+      positive_controls:
+        - typed requested/effective/observation-resolved/realized state skeleton
+        - downsampling rejected when filtering is disabled
+        - filter high frequency rejected above output Nyquist
+        - direct replacement targets remain flagged
+        - several configured filters and phase-zero stride apply to signal and kernel
+        - provenance publication requires completion and propagates required write failures
+      consequence: >-
+        Positive subcontracts do not compensate for known calibration,
+        replacement, causal-validity, kernel-response, mask, edge, provenance,
+        dependency, and evidence nonconformities.
+  
+    open_findings:
+      - id: SCI-RTC-001-F001
+        class: implementation_defect
+        severity: P0
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: SCI_CAL_repair_and_RTC_CAL_boundary
+        dependency: SCI-CAL-001 approved contract
+        summary: >-
+          RTC-entry extinction applies zenith-equivalent opacity without sample
+          airmass, q0 suppresses finite low-opacity correction, and strict factor/domain identity is absent.
+        closure_gate: >-
+          Exact factor table/binding plus q0, varying-airmass, and invalid-domain
+          fixtures conform at an accepted independently re-audited successor SHA.
+      - id: SCI-RTC-001-F002
+        class: implementation_defect
+        severity: P1
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: RTC_despike_interface
+        dependency: SCI-CAL-001 factors and binding
+        summary: >-
+          Calibrated-domain donor replacement omits the target/donor calibration
+          factor ratio, does not admit target responsivity, and persists no donor/factor links.
+        closure_gate: >-
+          Unequal-g/unequal-rho, invalid-target, no-donor, endpoint, and repeat
+          fixtures exactly match RTC-07 through RTC-09 and provenance.
+      - id: SCI-RTC-001-F003
+        class: implementation_defect
+        severity: P0
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: RTC_validity_response_interface
+        dependency: SCI-ALIGN-001 origin and support
+        summary: >-
+          Flags do not propagate donor/FIR/IIR influence or full decimation
+          support, filters consume invalid payloads, and kernel omits donor mixing.
+        closure_gate: >-
+          Impulse, flag, non-finite, synthesis, and donor fixtures prove exact
+          transitive causes, support, local response/kernel, and eligibility.
+      - id: SCI-RTC-001-F004
+        class: implementation_defect
+        severity: P0
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: RTC_response_kernel_interface
+        dependency: valid telescope templates and flags
+        tier_A_reopen_trigger: matched_conditioned_response_contradiction
+        summary: >-
+          Current science and Beammap profiles apply enabled alt-az projection to signal but not kernel.
+        closure_gate: >-
+          Signal and kernel share the declared conditioned projection or complete
+          response is unavailable; source-crossing and template-basis fixtures pass.
+      - id: SCI-RTC-001-F005
+        class: implementation_defect
+        severity: P1
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: RTC_mask_AST_boundary
+        dependency: SCI-AST-001 and SCI-ALIGN-001
+        summary: >-
+          Invalid/unavailable source geometry becomes outside or unprotected and caller ignores mask validity.
+        closure_gate: >-
+          Every invalid coordinate/frame/shape/radius/detector case fails closed
+          with cause-preserving output and valid controls.
+      - id: SCI-RTC-001-F006
+        class: implementation_defect
+        severity: P1
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: RTC_edge_context_interface_and_profile_owner
+        dependency: admitted scan context
+        summary: >-
+          FIR leaves boundary cells unchanged, missing observation context is not
+          always flagged, and current science enables FIR while omitting RTC edge guard.
+        closure_gate: >-
+          First/last/short-scan and missing-context fixtures establish and enforce
+          one approved response in every profile and persist realized support.
+      - id: SCI-RTC-001-F007
+        class: contract_gap
+        severity: P1
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: RTC_lifecycle_product_schema
+        dependency: owner decisions D002 through D004
+        summary: >-
+          Four-stage provenance is shallow and generic RTC labels span distinct
+          outer/inner/full/mini products without enough state to reconstruct the operator.
+        closure_gate: >-
+          Reconstruct/replay the exact operator and atomic bundle solely from
+          serialized state; product round trips and digests match.
+      - id: SCI-RTC-001-F008
+        class: dependency_gap
+        severity: P0
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: SCI_ALIGN_repair_and_coordinator
+        dependency: SCI-ALIGN-001
+        summary: >-
+          No conformant complete ALIGN mapping/origin/validity/synthesis/scan/timing/support interface is admitted.
+        closure_gate: >-
+          Accepted re-audited ALIGN successor plus RTC admission and synthesized/endpoint influence fixtures.
+      - id: SCI-RTC-001-F009
+        class: dependency_gap
+        severity: P0
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: SCI_CAL_repair_and_coordinator
+        dependency: SCI-CAL-001
+        summary: >-
+          No accepted re-audited CAL successor supplies complete factors,
+          opacity, binding, responsivity, validity, and uncertainty at this SHA.
+        closure_gate: >-
+          Accepted integrated CAL successor and RTC factor/replacement boundary re-audit at one exact SHA.
+      - id: SCI-RTC-001-F010
+        class: dependency_gap
+        severity: P0
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: SCI_AST_SCI_ALIGN_and_coordinator
+        dependency: SCI-AST-001 behind SCI-ALIGN-001
+        summary: >-
+          Source masks/kernels lack accepted conformant coordinate/frame/validity and detector-row binding.
+        closure_gate: >-
+          Accepted dependencies plus permutation, invalid-coordinate, frame,
+          topology, source-mask, and kernel-placement admission fixtures.
+      - id: SCI-RTC-001-F011
+        class: evidence_gap
+        severity: P1
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: future_bounded_validation_implementer
+        dependency: owner-approved repaired exact successor SHA
+        summary: >-
+          No exact-governing compiled RTC scientific or sequential/OpenMP suite
+          exists in this worktree; current tests are config/notch-only.
+        closure_gate: >-
+          Every applicable preregistered case passes at the selected repair SHA
+          with no required-data skip, followed by independent re-audit.
+      - id: SCI-RTC-001-F012
+        class: scientific_policy_decision
+        severity: P1
+        evidence_basis: derived
+        confidence: high
+        status: open
+        owner: RTC_scientific_product_owner
+        dependency: approved decisions SCI-RTC-001-D001 through D004; implementation and re-audit pending
+        owner_policy_status: resolved
+        summary: >-
+          Continuity/influence eligibility, complete kernel response, output-stage
+          identity, and filter/edge/state/decimation semantics require owner authority.
+        closure_gate: >-
+          Approve or supersede D001-D004 in versioned equations/state before
+          repair; implement only the selected policy and independently re-audit.
+  
     unresolved_scientific_decisions: []
-    local_evidence: []
-    requested_unity_evidence: []
-    supplied_external_evidence: []
-    remediation_branch: null
-    remediation_commit: null
-    re_audit_status: not_started
+    resolved_scientific_decisions:
+      - id: SCI-RTC-001-D001
+        disposition: approved
+        decision_date: 2026-08-08
+        authority: SCI-RTC-001-OWNER-DECISION-2026-08-08
+        summary: >-
+          Replacement/synthesis-corrupted signals and all downstream influenced
+          signals are scientifically ineligible; compact influence/support
+          bookkeeping is sufficient.
+      - id: SCI-RTC-001-D002
+        disposition: approved
+        decision_date: 2026-08-08
+        authority: SCI-RTC-001-OWNER-DECISION-2026-08-08
+        summary: >-
+          Every response-changing RTC stage is represented in the kernel or
+          realized local response, otherwise complete response is unavailable.
+      - id: SCI-RTC-001-D003
+        disposition: approved
+        decision_date: 2026-08-08
+        authority: SCI-RTC-001-OWNER-DECISION-2026-08-08
+        summary: >-
+          Outer, inner, full, mini, diagnostic, simulated, and processed RTC
+          products have immutable identities and explicit parent/process links.
+      - id: SCI-RTC-001-D004
+        disposition: approved_bounded
+        decision_date: 2026-08-08
+        authority: SCI-RTC-001-OWNER-DECISION-2026-08-08
+        summary: >-
+          Full-precision filter/multirate semantics are serialized per coherent
+          segment while preserving the timing lattice and supported 0.5x, 2x,
+          and 4x relationships; no DSP redesign or expensive computation.
+
+    local_evidence:
+      id: SCI-RTC-001-LOCAL-001
+      path: doc/audits/evidence/SCI-RTC-001_LOCAL_EVIDENCE_2026-08-08.yaml
+      sha256: 1cb733544d6b9d6decb1794279d2e81249b00375071c01ee71f514135dcf6394
+      status: complete_with_explicit_limits
+      conclusion: >-
+        Exact source and deterministic formula evidence establish known
+        calibration, replacement, validity/support, response, mask, edge, and
+        provenance mismatches. No exact compiled RTC suite is available.
+  
+    proposed_future_exact_sha_evidence:
+      status: proposed_not_requested_not_executed
+      cost_classification: not_costly_if_focused_existing_successor_test_surface_exists
+      cases:
+        - calibration q0, varying airmass, factor domain, and factor identity
+        - unequal-g/unequal-rho donor replacement, invalid target, no donor, endpoint, and repeatability
+        - impulse, constant, ramp, sinusoid, notch, chained-filter, and exact coefficient response
+        - synthesis, flag, non-finite, donor, edge, short-scan, and causal-influence support
+        - odd/even phase-zero downsampling, representative time, support, and alias attenuation
+        - valid/invalid/missing coordinate source-mask admission
+        - matched signal/kernel flag-conditioned alt-az projection
+        - full/mini/outer/inner product and four-stage provenance round trip
+        - sequential/OpenMP and real/simulation interface equivalence
+      guard: >-
+        Bind one exact repair SHA, parent/tree, configs/inputs, factors,
+        coefficients, masks/donors, products, and digests; no required-data skip
+        and zero unexpected error-level messages. Broad/costly work requires a
+        separate FRAMEWORK-NUM-001 launch gate and owner authorization.
+  
+    production_disposition:
+      allowed_compatibility_only:
+        - continued existing use already authorized by owning package records
+        - narrow positive source controls without overall conformance inference
+      restricted:
+        - new absolute calibration, photometry, transfer, covariance, inverse variance, kernel, or beam response claims
+        - new PTC cleaning/weight or VAL eligibility/exposure interpretation
+        - new coordinate-aware mask/kernel use without conformant AST/ALIGN binding
+        - equivalence among outer, inner, full, mini, diagnostic, simulated, or processed products
+        - production expansion based on static/config/historical evidence or a future test pass alone
+      fail_closed:
+        - missing, duplicate, non-finite, nonpositive, out-of-domain, or unbound factor/coordinate/detector/support authority
+        - unavailable complete response/kernel, causal validity/support, representative time, or required product identity
+        - new use of synthesized, replaced, edge, or temporally influenced cells without approved eligibility/response/covariance
+        - any use of this audit as repair, re-audit, integration, downstream launch, or production authorization
+  
+    final_validation:
+      latex_engine: tectonic_0.16.9_cache_only
+      latex_compile: pass
+      reruns_after_first: 1
+      pdf_pages: 19
+      pdf_page_size: letter
+      rendered_png_pages_inspected: 19
+      visual_result: pass_no_clipping_overlap_or_unreadable_glyphs
+      yaml_validation: pass
+      link_digest_vocabulary_git_diff_clean_checks: pass
+  
+    cost_and_scope:
+      cost_classification: not_costly
+      broad_or_costly_execution_launched: false
+      local_citlali_reduction_launched: false
+      unity_accessed: false
+      external_contact: false
+      delegation_used: false
+      application_code_modified: false
+      tests_build_validation_config_production_modified: false
+      canonical_ledger_or_registry_modified: false
+      repair_reaudit_integration_or_downstream_audit_launched: false
+      push_performed: false
 
   - id: SCI-PTC-001
     name: Correlated-mode cleaning and detector-weight interface
@@ -4005,6 +4417,7 @@ packages:
       - id: SCI-PTC-001-XAUD-001
         path: >-
           doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-001.yaml
+        sha256: ba53e2c2e6af610112696f3edc87c92e43bc2530ac33b700fd5c64e76a8986fa
         source_package: SCI-MAP-001
         review_phase: pre_core_authority
         arrival: before_dispatch
@@ -4012,6 +4425,7 @@ packages:
       - id: SCI-PTC-001-XAUD-002
         path: >-
           doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-002.yaml
+        sha256: 0aed9f3a625193d882058e7602a6a785093ec2f077d2bdffd9008ac345f23f10
         source_package: SCI-MAP-001
         review_phase: post_core_evidence
         arrival: before_dispatch
@@ -4019,6 +4433,7 @@ packages:
       - id: SCI-PTC-001-XAUD-003
         path: >-
           doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-003.yaml
+        sha256: 7bb12dd0ece2727012b49988a7552da9c288e10b25eafacd60300f750f744435
         source_package: SCI-CAL-001
         review_phase: post_core_evidence
         arrival: before_dispatch
@@ -4032,19 +4447,26 @@ packages:
         review_phase: post_core_evidence
         arrival: before_dispatch
         status: submitted
+      - id: SCI-PTC-001-XAUD-005
+        path: >-
+          doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-005.yaml
+        sha256: 5fc8d94ba5af6053296004d3a35403a47f4e77c259fee92e28c92f3186a7ee24
+        audit_submission_sha256: 89ce799a6526f87025bc1d57cc0bf8a0234b149374920027beaa4cb18b94e289
+        source_package: SCI-RTC-001
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted
+      - id: SCI-PTC-001-XAUD-006
+        path: >-
+          doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-006.yaml
+        sha256: 23ae2b52d0347006c9fc8362299c6ea9eae98b803e3a7698d2e2fb48ae336a7f
+        source_package: SCI-ALIGN-001
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted
     outgoing_handoffs: []
-    queued_post_core_evidence:
-      - id: ALIGN-3C273-PTC-VAL-POSTCORE-2026-08-08
-        source_commit: 5c6309125fef15f7c98e70a62b591c663944b130
-        handoff_object: >-
-          5c6309125fef15f7c98e70a62b591c663944b130:handoff/SCI_ALIGN_001_PTC_SCAN_METADATA_DEFECT_2026-08-08.md
-        handoff_sha256: >-
-          958d4494de801a08361945d046c92daec4b94e907c8317ad506cb1653c026553
-        status: exact_post_core_queue_evidence_unintegrated_validation_pending
-        pre_core_access: prohibited
-        next_gate: coordinator_integrated_handoff_before_PTC_dispatch
-    governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
-    governing_sha_role: inventory_snapshot
+    governing_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    governing_sha_role: planned_audit_dispatch_snapshot
     audit_branch: null
     audit_commit: null
     independent_derivation: {status: not_started, sha256: null}
