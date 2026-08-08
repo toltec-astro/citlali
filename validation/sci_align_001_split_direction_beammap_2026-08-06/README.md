@@ -185,8 +185,11 @@ detector-specific TOD. It joins same-run final-iteration signal/flags and
 same-run per-scan detector weights to the full-PTC pointing using the explicit
 one-based original scan identity. The map run's zero-based direction registry
 is converted explicitly and checked against direction independently derived
-from the full PTC. Duplicate uniform/dense retained slots must be bytewise
-identical before they are deduplicated. For detector map grouping the tool
+from the full PTC. The selected TOD retains each complete processed scan
+chunk, so the sample slice is the full PTC's persisted
+`raw_scan_indices` outer window; `scan_indices` is only the shorter inner
+science support and is not interchangeable. Duplicate uniform/dense retained
+slots must be bytewise identical before they are deduplicated. For detector map grouping the tool
 reconstructs the actual accumulation coordinates from telescope pointing plus
 retained pointing offsets; it deliberately does not use the later
 final-APT detector pointing. A selected hit missing from the corresponding

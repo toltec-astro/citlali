@@ -117,8 +117,10 @@ freeze the application mainline.
   detector-minus-telescope step residuals but cannot compare exact map support
   because the full PTC and maps are separate replays. A bounded follow-up now
   joins the map run's retained final-iteration signal/flags and scan weights to
-  the full-PTC pointing by explicit original scan identity and tests only those
-  selected scans. The candidate remains
+  the full-PTC pointing by explicit original scan identity and persisted outer
+  PTC-chunk bounds and tests only those selected scans. This distinction is
+  required because the full PTC's ordinary `scan_indices` retain a shorter
+  inner science window. The candidate remains
   diagnostic-only and does not authorize a timing correction. This product
   lifecycle defect and its repair are logically separate from the measured
   timing offset; see

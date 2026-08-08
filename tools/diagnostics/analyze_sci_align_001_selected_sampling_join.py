@@ -39,7 +39,6 @@ from matplotlib.colors import BoundaryNorm, ListedColormap  # noqa: E402
 from analyze_sci_align_001_ptc_sampling import (  # noqa: E402
     RAD_TO_ARCSEC,
     PtcDetector,
-    classify_scans,
     cxx_llround,
     load_ptc_detector,
     map_tables,
@@ -80,7 +79,7 @@ REQUIRED_DIAG_VARS = {
     "output_scan_index", "ptc_diag_uid", "ptc_detector_weight",
 }
 REQUIRED_REGISTRY_COLUMNS = {
-    "scan_index", "direction", "selected", "mode",
+    "scan_index", "sample_count", "direction", "selected", "mode",
 }
 
 
@@ -225,9 +224,73 @@ def load_map_pointing(ptc: PtcDetector) -> tuple[np.ndarray, np.ndarray]:
     )
 
 
+def load_full_ptc_outer_bounds(ptc: PtcDetector) -> np.ndarray:
+    with netCDF4.Dataset(ptc.path, mode="r") as dataset:
+        if "raw_scan_indices" not in dataset.variables:
+            raise ContractError("full PTC TOD lacks required raw_scan_indices")
+        variable = dataset.variables["raw_scan_indices"]
+        comment = str(getattr(variable, "comment", "")).lower()
+        if "output timebase" not in comment:
+            raise ContractError(
+                "full PTC raw_scan_indices does not declare the output timebase"
+            )
+        raw_bounds = read_int(variable)
+    expected = (ptc.output_scan_index.size, 4)
+    if raw_bounds.shape != expected:
+        raise ContractError(
+            f"full PTC raw_scan_indices shape {raw_bounds.shape} differs from {expected}"
+        )
+    outer = np.asarray(raw_bounds[:, 2:4], dtype=np.int64)
+    previous_end = -1
+    for row, (start, end) in enumerate(outer):
+        if start < 0 or end < start or end >= ptc.signal.size:
+            raise ContractError(
+                f"full PTC outer scan row {row} has invalid bounds {start}:{end}"
+            )
+        if start <= previous_end:
+            raise ContractError(
+                f"full PTC outer scan row {row} overlaps or reverses after {previous_end}"
+            )
+        previous_end = int(end)
+    return outer
+
+
+def classify_full_ptc_outer_direction(
+    ptc: PtcDetector, start: int, end: int, scan_id: int
+) -> str:
+    slc = slice(start, end + 1)
+    time = ptc.tel_time[slc]
+    az = ptc.az_phys[slc]
+    if time.size < 2 or np.any(~np.isfinite(time)) or np.any(~np.isfinite(az)):
+        raise ContractError(
+            f"full PTC outer scan {scan_id} lacks finite trajectory support"
+        )
+    if np.any(np.diff(time) <= 0.0):
+        raise ContractError(
+            f"full PTC outer scan {scan_id} has non-increasing TelTime"
+        )
+    centered_time = time - float(np.mean(time))
+    denominator = float(np.dot(centered_time, centered_time))
+    if denominator <= 0.0:
+        raise ContractError(f"full PTC outer scan {scan_id} has no time support")
+    slope = float(np.dot(centered_time, az - float(np.mean(az))) / denominator)
+    displacement = float(az[-1] - az[0])
+    if (
+        slope == 0.0
+        or displacement == 0.0
+        or math.copysign(1.0, slope) != math.copysign(1.0, displacement)
+    ):
+        raise ContractError(
+            f"full PTC outer scan {scan_id} has ambiguous azimuth direction: "
+            f"slope={slope} displacement={displacement}"
+        )
+    return "right" if slope > 0.0 else "left"
+
+
 @dataclass
 class RegistryRow:
     scan_id: int
+    sample_count: int
     direction: str
     selected: bool
 
@@ -262,9 +325,14 @@ def load_direction_registry(path: Path) -> dict[int, RegistryRow]:
         if scan_id in result:
             raise ContractError(f"direction registry duplicates scan {scan_id}")
         result[scan_id] = RegistryRow(
-            scan_id=scan_id, direction=direction,
+            scan_id=scan_id, sample_count=int(row["sample_count"]),
+            direction=direction,
             selected=parse_bool(row["selected"], "selected"),
         )
+        if result[scan_id].sample_count <= 0:
+            raise ContractError(
+                f"direction registry scan {scan_id} has invalid sample_count"
+            )
     if not result:
         raise ContractError("direction registry is empty")
     return result
@@ -303,10 +371,10 @@ def arrays_identical(left: np.ndarray, right: np.ndarray) -> bool:
 
 def join_selected_scans(
     ptc: PtcDetector,
+    outer_bounds: np.ndarray,
     selected: SelectedDetectorTod,
     weights: SameRunWeights,
     registry: dict[int, RegistryRow],
-    sample_direction: np.ndarray,
 ) -> tuple[list[JoinedScan], int]:
     full_rows = {int(scan_id): row for row, scan_id in enumerate(ptc.output_scan_index)}
     if len(full_rows) != ptc.output_scan_index.size:
@@ -326,18 +394,25 @@ def join_selected_scans(
         if not registry_row.selected:
             raise ContractError(f"selected TOD scan {scan_id} is disabled in map registry")
         full_row = full_rows[scan_id]
-        start, end = (int(value) for value in ptc.scan_indices[full_row])
+        start, end = (int(value) for value in outer_bounds[full_row])
         full_length = end - start + 1
         if full_length != n_samples:
             raise ContractError(
-                f"scan {scan_id} selected/full PTC length mismatch: "
+                f"scan {scan_id} selected/full-PTC outer length mismatch: "
                 f"selected={n_samples} full={full_length}"
             )
-        directions = set(sample_direction[start:end + 1])
-        if directions != {registry_row.direction}:
+        if registry_row.sample_count != n_samples:
             raise ContractError(
-                f"scan {scan_id} registry/full-PTC direction mismatch: "
-                f"registry={registry_row.direction} full={sorted(directions)}"
+                f"scan {scan_id} selected/registry length mismatch: "
+                f"selected={n_samples} registry={registry_row.sample_count}"
+            )
+        full_direction = classify_full_ptc_outer_direction(
+            ptc, start, end, scan_id
+        )
+        if full_direction != registry_row.direction:
+            raise ContractError(
+                f"scan {scan_id} registry/full-PTC outer direction mismatch: "
+                f"registry={registry_row.direction} full={full_direction}"
             )
         signal = np.asarray(selected.signal[slot, :n_samples], dtype=float)
         flags = np.asarray(selected.flags[slot, :n_samples], dtype=np.int64)
@@ -660,8 +735,8 @@ def run(args: argparse.Namespace) -> None:
     if args.uid < 0 or args.half_width_arcsec <= 0.0:
         raise ContractError("uid and half-width are outside their domains")
     ptc = load_ptc_detector(args.full_ptc_tod, args.uid)
-    classification = classify_scans(ptc)
     map_lat, map_lon = load_map_pointing(ptc)
+    outer_bounds = load_full_ptc_outer_bounds(ptc)
     raw_dir = discover_raw_dir(args.map_reduction_root)
     selected_path, diag_path, registry_path = discover_selected_inputs(raw_dir)
     selected = load_selected_detector_tod(selected_path, args.uid)
@@ -674,7 +749,7 @@ def run(args: argparse.Namespace) -> None:
     if (selected.array, selected.network) != (ptc.array, ptc.nw):
         raise ContractError("full PTC and selected TOD detector identities disagree")
     joined_scans, duplicate_slots = join_selected_scans(
-        ptc, selected, weights, registry, classification.sample_direction
+        ptc, outer_bounds, selected, weights, registry
     )
     apt_paths, apt_tables, apt_indices = map_tables(raw_dir)
     apt_values = {}
@@ -743,6 +818,11 @@ def run(args: argparse.Namespace) -> None:
             "one-based detector_tod_scan_index joined to one-based full-PTC and "
             "PTC-diagnostic output_scan_index; same-run registry zero-based scan_index "
             "is converted explicitly to one-based identity"
+        ),
+        "full_ptc_window_contract": (
+            "selected detector-TOD samples are complete PTC chunks and are joined to "
+            "raw_scan_indices outer_start/outer_end in the persisted full-PTC output "
+            "timebase; scan_indices contains the shorter inner science support"
         ),
         "map_pointing_contract": (
             "detector grouping suppresses detector focal-plane offsets during map accumulation; "

@@ -426,9 +426,11 @@ Jaccard values as an exact support failure.
 This bounded follow-up uses the map reduction's retained UID 199 detector TOD
 and PTC diagnostics for final-iteration signal, flags, and per-scan weights.
 It joins them to the full-PTC pointing by the documented one-based original
-scan identity. Only retained scans are tested. A selected-hit-only pixel is
-exact disagreement; a map-only pixel is explicitly untested because an
-unretained scan may support it.
+scan identity and uses each full PTC `raw_scan_indices` outer window. The
+ordinary `scan_indices` field is the shorter inner science support and cannot
+index the complete selected detector-TOD chunk. Only retained scans are
+tested. A selected-hit-only pixel is exact disagreement; a map-only pixel is
+explicitly untested because an unretained scan may support it.
 
 ```bash
 export SCI_REPO=/work/toltec/citlali_dev/citlali_refactor

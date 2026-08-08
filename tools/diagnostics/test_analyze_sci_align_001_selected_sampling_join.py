@@ -83,6 +83,7 @@ def make_full_ptc(path: Path) -> None:
         dataset.createDimension("n_dets", n_dets)
         dataset.createDimension("n_scans", n_scans)
         dataset.createDimension("n_scan_indices", 2)
+        dataset.createDimension("n_raw_scan_indices", 4)
         dataset.createDimension("fruitloops_iter_dim", 1)
         two_d = ("n_pts", "n_dets")
         for name in ("signal", "flags", "det_lat", "det_lon"):
@@ -100,6 +101,13 @@ def make_full_ptc(path: Path) -> None:
                 variable.units = "arcsec"
         dataset.createVariable(
             "scan_indices", "i4", ("n_scans", "n_scan_indices")
+        )
+        raw_scan_indices = dataset.createVariable(
+            "raw_scan_indices", "i4", ("n_scans", "n_raw_scan_indices")
+        )
+        raw_scan_indices.comment = (
+            "indices in output timebase: inner_start, inner_end, "
+            "outer_start, outer_end"
         )
         dataset.createVariable("output_scan_index", "i4", ("n_scans",))
         dataset.createVariable("weights", "f8", ("n_scans", "n_dets"))
@@ -119,8 +127,14 @@ def make_full_ptc(path: Path) -> None:
         dataset["TelTime"][:] = time
         dataset["TelUTC"][:] = time / 86400.0
         dataset["scan_indices"][:] = np.asarray(
-            [[1, 5], [7, 11], [13, 17], [19, 23]]
+            [[2, 4], [8, 10], [14, 16], [20, 22]]
         )
+        dataset["raw_scan_indices"][:] = np.asarray([
+            [2, 4, 1, 5],
+            [8, 10, 7, 11],
+            [14, 16, 13, 17],
+            [20, 22, 19, 23],
+        ])
         dataset["output_scan_index"][:] = np.arange(1, n_scans + 1)
         dataset["weights"][:] = 2.0
         dataset["apt_uid"][:] = [199.0, 200.0]
@@ -215,7 +229,9 @@ def make_ptcdiag(path: Path) -> None:
 
 
 def make_registry(path: Path) -> None:
-    columns = ["scan_index", "direction", "selected", "mode"]
+    columns = [
+        "scan_index", "sample_count", "direction", "selected", "mode"
+    ]
     with path.open("w", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=columns)
         writer.writeheader()
@@ -224,6 +240,7 @@ def make_registry(path: Path) -> None:
         ):
             writer.writerow({
                 "scan_index": scan_index,
+                "sample_count": 5,
                 "direction": direction,
                 "selected": "true",
                 "mode": "all",
