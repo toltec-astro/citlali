@@ -111,8 +111,14 @@ freeze the application mainline.
   `FRUITLOOPS_ITER` before the deferred TOD header had created that variable.
   The local follow-up creates the mutable
   field with the initial PTC schema and retains the later idempotent metadata
-  update; the exact lifecycle regression test and CLI build pass, while the
-  corrected Unity retry remains owner-run evidence. The candidate remains
+  update; the exact lifecycle regression test and CLI build pass, and the
+  corrected Unity retry completed with the required full PTC product. Its
+  first UID 199 audit confirms smooth 8.192-ms pointing and sub-0.00011-arcsec
+  detector-minus-telescope step residuals but cannot compare exact map support
+  because the full PTC and maps are separate replays. A bounded follow-up now
+  joins the map run's retained final-iteration signal/flags and scan weights to
+  the full-PTC pointing by explicit original scan identity and tests only those
+  selected scans. The candidate remains
   diagnostic-only and does not authorize a timing correction. This product
   lifecycle defect and its repair are logically separate from the measured
   timing offset; see

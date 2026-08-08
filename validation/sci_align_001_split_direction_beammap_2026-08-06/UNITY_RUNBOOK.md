@@ -416,6 +416,79 @@ pdfinfo "$SCI_SAMPLING_ROOT/ptc_sampling_audit_o150819_uid199.pdf" \
 sed -n '1,100p' "$SCI_SAMPLING_ROOT/mode_support_metrics.ecsv"
 ```
 
+The completed first audit is a pointing-continuity and geometric screen. Its
+map comparison crosses two replays and therefore does not have same-run
+signal flags, scan weights, or map-accumulation pointing. Do not interpret its
+Jaccard values as an exact support failure.
+
+### Join same-run selected PTC samples to the full-PTC pointing
+
+This bounded follow-up uses the map reduction's retained UID 199 detector TOD
+and PTC diagnostics for final-iteration signal, flags, and per-scan weights.
+It joins them to the full-PTC pointing by the documented one-based original
+scan identity. Only retained scans are tested. A selected-hit-only pixel is
+exact disagreement; a map-only pixel is explicitly untested because an
+unretained scan may support it.
+
+```bash
+export SCI_REPO=/work/toltec/citlali_dev/citlali_refactor
+export SCI_NAIVE_ROOT=/work/toltec/wilson/citlali_testing/beammaps/3c273/sci_align_001_split_direction_beammap_onepass_naive_2026-08-07
+export SCI_PTC_ROOT=/work/toltec/wilson/citlali_testing/beammaps/3c273/sci_align_001_naive_full_ptc_singlepass_150819_2026-08-07_retry1
+export SCI_PTC_TOD="$SCI_PTC_ROOT/o150819/redu00/150819/raw/full_ptc/toltec_commissioning_beammap_150819_ptc_timestream.nc"
+export SCI_SELECTED_JOIN_ROOT="$SCI_PTC_ROOT/review_uid199_naive_selected_join_v1"
+export SCI_SELECTED_JOIN_CACHE="$SCI_PTC_ROOT/_selected_join_cache"
+
+test -f "$SCI_PTC_TOD"
+test ! -e "$SCI_SELECTED_JOIN_ROOT"
+mkdir -p "$SCI_PTC_ROOT/jobs" \
+  "$SCI_SELECTED_JOIN_CACHE/matplotlib" "$SCI_SELECTED_JOIN_CACHE/xdg"
+
+cat > "$SCI_PTC_ROOT/jobs/run_o150819_uid199_selected_join_v1.sbatch" <<EOF
+#!/usr/bin/env bash
+#SBATCH --job-name=sci-align-150819-selected-join
+#SBATCH --time=04:00:00
+#SBATCH --mem=32G
+#SBATCH --cpus-per-task=1
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --partition=toltec-cpu
+#SBATCH --output=$SCI_PTC_ROOT/jobs/%x_%j.out
+#SBATCH --error=$SCI_PTC_ROOT/jobs/%x_%j.err
+#SBATCH --parsable
+set -euo pipefail
+cd $SCI_REPO
+OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+MPLBACKEND=Agg MPLCONFIGDIR=$SCI_SELECTED_JOIN_CACHE/matplotlib \
+XDG_CACHE_HOME=$SCI_SELECTED_JOIN_CACHE/xdg \
+python $SCI_REPO/tools/diagnostics/analyze_sci_align_001_selected_sampling_join.py \
+  --full-ptc-tod $SCI_PTC_TOD \
+  --map-reduction-root $SCI_NAIVE_ROOT/o150819 \
+  --output $SCI_SELECTED_JOIN_ROOT \
+  --uid 199 --array a1100 --half-width-arcsec 25
+EOF
+
+bash -n "$SCI_PTC_ROOT/jobs/run_o150819_uid199_selected_join_v1.sbatch"
+selected_join_job_id=$(sbatch \
+  "$SCI_PTC_ROOT/jobs/run_o150819_uid199_selected_join_v1.sbatch")
+selected_join_job_id=${selected_join_job_id%%;*}
+printf 'obsnum=150819 uid=199 selected_join_job_id=%s\n' \
+  "$selected_join_job_id" \
+  | tee "$SCI_PTC_ROOT/jobs/o150819_uid199_selected_join_job_id.txt"
+```
+
+After completion, require `COMPLETED`/`0:0`, successful checksums, and two PDF
+pages. The decisive per-mode fields are
+`selected_hit_supported_fraction` and `selected_hit_only_pixels`.
+
+```bash
+sacct -X -j "$selected_join_job_id" \
+  --format=JobID,JobName%36,State,ExitCode,Elapsed,MaxRSS,Start,End
+(cd "$SCI_SELECTED_JOIN_ROOT" && shasum -a 256 -c SHA256SUMS)
+pdfinfo "$SCI_SELECTED_JOIN_ROOT/selected_sampling_join_o150819_uid199.pdf" \
+  | rg '^(Pages|Page size|File size)'
+sed -n '1,100p' "$SCI_SELECTED_JOIN_ROOT/mode_selected_support.ecsv"
+```
+
 ### Completed mapmaker-dependence control: naive mapmaking
 
 After preserving the retained-kernel result, prepare a new ObsNum 150819

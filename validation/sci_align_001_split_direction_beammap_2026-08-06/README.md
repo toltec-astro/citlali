@@ -168,20 +168,32 @@ recorded in
 `tools/diagnostics/analyze_sci_align_001_ptc_sampling.py` consumes that full
 PTC and the completed standard/left/right naive maps for one detector. It
 self-classifies scan direction from the retained telescope trajectory and
-replays Citlali's exact naive nearest-pixel assignment and sample-acceptance
-rules. Ordered, non-overlapping raster science windows need not be contiguous;
-turnaround and inter-scan samples remain explicitly unclassified and cannot
-contribute reconstructed hits. The support audit distinguishes accepted-hit plus map support,
-accepted-hit only, map support only, and neither. It also compares final
-detector pointing with reported telescope pointing, including within-scan
-step residuals. White pixels with zero accepted hits are therefore
-demonstrated sparse nearest-pixel coverage; map-only or hit-only pixels expose
-a product/replay mismatch; and discontinuous detector-minus-telescope steps
-identify an upstream pointing problem. Because the retained full PTC and the
-directional maps are separate replays, the tool also reports the best bounded
-constant integer registration without treating that descriptive registration
-as physical motion. Outputs are a two-page PDF, scan and support ECSV tables,
-compressed hit-count arrays, a hash-bound manifest, and checksums.
+replays Citlali's naive nearest-pixel assignment. Ordered, non-overlapping
+raster science windows need not be contiguous; turnaround and inter-scan
+samples remain explicitly unclassified. The completed UID 199 audit confirms
+a continuous 8.192-ms pointing cadence and detector-minus-telescope step
+residuals below 0.00011 arcsec. It also shows the expected smooth horizontal
+scan tracks. Its pixel-support comparison is not exact, however: the retained
+full PTC and directional maps are separate replays, so signal flags, weights,
+and final fitted detector pointing are not the map run's accumulation state.
+The low cross-run Jaccard values therefore cannot classify individual white
+or colored pixels. They do not overturn the trajectory-continuity result.
+
+`tools/diagnostics/analyze_sci_align_001_selected_sampling_join.py` closes
+that retained-product gap for the scans saved by the map reduction's
+detector-specific TOD. It joins same-run final-iteration signal/flags and
+same-run per-scan detector weights to the full-PTC pointing using the explicit
+one-based original scan identity. The map run's zero-based direction registry
+is converted explicitly and checked against direction independently derived
+from the full PTC. Duplicate uniform/dense retained slots must be bytewise
+identical before they are deduplicated. For detector map grouping the tool
+reconstructs the actual accumulation coordinates from telescope pointing plus
+retained pointing offsets; it deliberately does not use the later
+final-APT detector pointing. A selected hit missing from the corresponding
+map is exact disagreement. A map pixel without a selected hit is untested,
+because any non-retained scan may support it. Outputs are a two-page PDF,
+joined-scan and selected-support ECSV tables, compressed hit-count arrays, a
+hash-bound manifest, and checksums.
 
 See `UNITY_RUNBOOK.md` for the owner-run 150819-first campaign and
 `RETURN_BUNDLE_SPEC.md` for return evidence.
