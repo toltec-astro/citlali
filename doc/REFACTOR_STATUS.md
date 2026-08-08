@@ -72,11 +72,64 @@ that changes this status, the integration ledger, and the dated
 [application-integration handoff](../handoff/SCI-MAP-001_APPLICATION_INTEGRATION_DECISION_2026-08-05.md);
 it is not a later application-source revision.
 
-`codex/refactor-mainline` remains unmoved at `9aae0e669`; the integration
-branch is a committed candidate for owner/coordinator review and later
-fast-forward. Production remains `existing_use_only`, no upstream dependency
-is closed by MAP acceptance, and neither production expansion nor Conan-lane
-import is authorized by this candidate.
+The owner subsequently fast-forwarded the verified MAP integration candidate
+onto `codex/refactor-mainline`; its documentation-only integration tip is
+`d5015fe716971bf8ea617e8a187311bf5af05185`, while exact accepted MAP
+application source remains `af0c849ce59a5f80e5efc8db435bb6662863052f`.
+Production remains `existing_use_only`, no upstream dependency is closed by
+MAP acceptance, and neither production expansion nor Conan-lane import was
+authorized by that integration.
+
+## 2026-08-08 SCI-NOI-002 Application Integration Candidate
+
+The project owner and coordinator authorize the bounded SCI-NOI-002
+application candidate for integration. Current application mainline
+`d5015fe716971bf8ea617e8a187311bf5af05185` is the direct merge-base and
+ancestor of accepted candidate
+`5b29e13548a6fec884c67b192dec20c92f0bbb62`; the candidate is exactly six
+commits ahead with no mainline divergence. The dedicated
+`codex/integrate-sci-noi-002` branch was therefore advanced by fast-forward,
+without conflict resolution, patch reconstruction, or audit/coordination
+history. Before the integration records were edited, its tree was the exact
+audited candidate tree `641c724f40a9fa9f322f09c703705239439d2374`.
+
+Independent Cycle 4 re-audit
+`6de648f5ae2b37f5bc65162feae221f19bb84a5a` and canonical coordinator
+closeout `d03ef80b31f704859ef836e368801dc17d92e76e` establish the bounded axes
+`approved`, `conformant`, `complete`, and `existing_use_only`, with controlled
+verdict `retain`. C4-R001--C4-R004 and Cycle 3 P1-001--P1-003 close. F001,
+F002, F003, F004, F007, and F008 are closed within their exact contracts.
+F005/RA-B004 remain `open_conditioned` under SCI-FLT-001, and F006 remains
+`held_external` under SCI-FRUIT-001.
+
+The exact candidate passed four of four required Release targets, 40/40
+focused core tests, 2/2 focused and 32/32 full science-product tests, 127
+applicable Python tests, 623/623 runnable CTests, and the complete 127-test
+configuration preflight with no required skip or gap. The accepted paired
+C++/Python matrix covers compact ECSV/NetCDF missingness, actual coadd
+membership/count truth, preservation of configured standalone realization
+files, and split Beammap zero/one/multiple logical-map packages. It found no
+estimator, normalization, realization-generation/sign, count/default,
+mapmaking/filter, output-selection/layout, physical-variance, or significance
+scope expansion.
+
+No astronomical reduction was required or claimed for this bounded closure.
+The current intended-science-change ledger requires every entry to cite an
+accepted reduction; it is deliberately unchanged rather than weakened or
+bound to an unrelated historical run. The exact audited
+`validation/product_contracts.json`, independent report/result/proposal, and
+canonical closeout remain the authority for the externally visible product-
+contract and schema corrections. Admitting deterministic audit evidence into
+that separate ledger would require a future framework decision.
+
+The documentation-only child of `5b29e135...` changes only this status, the
+integration ledger, and the dated
+[application-integration decision](../handoff/SCI-NOI-002_APPLICATION_INTEGRATION_DECISION_2026-08-08.md).
+It does not modify the accepted application bytes. After owner review and
+push, `codex/refactor-mainline` may be fast-forwarded to that exact integration
+tip. Production expansion, F005/F006 work, Unity execution, realization-count
+recommendations, calibrated significance, and Conan-lane synchronization
+remain separate decisions.
 
 ## Historical 2026-07-31 SCI-MAP-001 Bounded Repair Lane
 

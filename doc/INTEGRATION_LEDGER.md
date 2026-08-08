@@ -10,7 +10,8 @@ ADRs, and validation records.
 | Workstream | Authority | Purpose | Integration rule | State |
 | --- | --- | --- | --- | --- |
 | Refactored application | `codex/refactor-mainline` | Canonical source, tests, configuration, operational behavior, and validation history | Normal application changes land here after their affected gates | Active |
-| SCI-MAP-001 application integration candidate | `codex/integrate-sci-map-001`, with exact application source `af0c849ce59a5f80e5efc8db435bb6662863052f` from `codex/repair-sci-map-001` followed only by the containing documentation-only integration commit | Accepted bounded implementation, product/provenance contract, truth suites, owner-amended evidence, and frozen campaign/closeout history | After owner/coordinator review, fast-forward `codex/refactor-mainline` only to the verified integration-candidate tip; do not merge audit, coordination, or convolve/noise branches | Committed and locally verified candidate; bounded MAP contract accepted; production remains `existing_use_only` |
+| SCI-MAP-001 application integration | `codex/refactor-mainline` at `d5015fe716971bf8ea617e8a187311bf5af05185`, containing exact application source `af0c849ce59a5f80e5efc8db435bb6662863052f` followed only by its documentation-only integration record | Accepted bounded implementation, product/provenance contract, truth suites, owner-amended evidence, and frozen campaign/closeout history | Preserve as the application base for subsequent audited integrations; do not merge MAP audit or coordination branches | Integrated; bounded MAP contract accepted; production remains `existing_use_only` |
+| SCI-NOI-002 application integration candidate | `codex/integrate-sci-noi-002`, exact audited application source `5b29e13548a6fec884c67b192dec20c92f0bbb62` followed only by the containing documentation-only integration record | Accepted bounded conditional-stack, package-provenance, truthful-labeling/count, writer/finalizer, and validator contracts | After owner review, fast-forward `codex/refactor-mainline` only to the verified integration-candidate tip; do not merge repair, audit, or coordination branches | Local integration gates pass; production remains `existing_use_only`; F005/F006 remain external |
 | Conan 2 adaptation | `codex/conan2-adaptation` | Port the full application into the accepted Tula/Conan 2 architecture | Incorporate mainline regularly; return only after all build-integration gates pass | Active in `/Users/gwilson/GitHub/citlali-refactor-conan2` |
 | Historical structural refactor | `codex/structural-refactor` at `171487196` | Forensic pointer to the pre-follow-on integration tree | Do not resume as an application authority | Frozen |
 | Historical fruit-loop/raw-IQ topic | `codex/fruit-loop-calibration-reference` at `b02fef613` | Forensic pointer to the topic-named branch before mainline normalization | Do not resume as an application authority | Frozen locally; its existing remote remains historical |
@@ -65,10 +66,40 @@ new exact commits before importing subsequent upstream work.
 - The completed seven-case external campaign remains frozen historical
   evidence; do not repeat it. This application integration did not access
   Unity or the external corpus and closes no upstream dependency.
-- Owner review may fast-forward `codex/refactor-mainline` to the verified
-  integration-candidate tip. Production expansion and any subsequent Conan
-  adaptation import remain separate decisions; production stays
+- The owner fast-forwarded the verified integration candidate to application
+  mainline at `d5015fe716971bf8ea617e8a187311bf5af05185`. Production expansion
+  and Conan adaptation import remain separate decisions; production stays
   `existing_use_only`.
+
+### SCI-NOI-002 Application Integration
+
+- Final independent Cycle 4 re-audit
+  `6de648f5ae2b37f5bc65162feae221f19bb84a5a` and canonical coordinator
+  closeout `d03ef80b31f704859ef836e368801dc17d92e76e` accept exact application
+  source `5b29e13548a6fec884c67b192dec20c92f0bbb62` as `approved`,
+  `conformant`, `complete`, and `existing_use_only`, with controlled verdict
+  `retain`.
+- The integration branch starts at exact current mainline `d5015fe...` and
+  advances by an exact six-commit fast-forward to application tree
+  `641c724f40a9fa9f322f09c703705239439d2374`. No audit, coordination,
+  conflict-resolution, or patch-reconstruction commit enters the application
+  ancestry.
+- F001/F002/F003/F004/F007/F008 and the recorded Cycle 3/package repair
+  findings close within their bounded contracts. F005/RA-B004 remain
+  SCI-FLT-001-owned; F006 remains SCI-FRUIT-001-owned. No physical-noise,
+  calibrated-significance, count-adequacy, default, or production claim is
+  added.
+- The exact candidate passed all required build, focused/full product, Python,
+  CTest, and configuration gates. The later integration record is
+  documentation-only, so complete executable gates are not repeated.
+- The intended-science-change ledger remains unchanged because its current
+  policy requires an accepted reduction and the bounded audit required no
+  astronomical reduction. Do not weaken that gate or cite an unrelated run;
+  the exact product contracts and re-audit/closeout artifacts remain the
+  authority for this schema and labeling correction.
+- Owner review may fast-forward `codex/refactor-mainline` to the verified
+  integration-candidate tip. Production expansion and Conan-lane import remain
+  separate decisions.
 
 ### Conan 2 Adaptation Entry
 
@@ -109,6 +140,9 @@ The exit gates remain those in the build integration review:
   It becomes eligible for ordinary synchronization only after the owner
   fast-forwards the verified application-integration candidate into
   `codex/refactor-mainline`; MAP closure alone does not update the Conan lane.
+- Do not import the isolated SCI-NOI-002 repair directly into the Conan 2 lane.
+  It becomes eligible for ordinary synchronization only after its verified
+  application-integration candidate reaches `codex/refactor-mainline`.
 
 ## Repository Hygiene
 
