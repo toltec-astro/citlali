@@ -29,7 +29,7 @@ current_program_checkpoint:
       restriction: exact_application_mainline_record_only
   active_lanes:
     SCI-CAL-001: active_repair_from_46ad2388_no_result_admitted
-    SCI-MAP-002: active_repair_from_46ad2388_no_result_admitted
+    SCI-MAP-002: candidate_854a04b_reaudited_rejected_successor_repair_not_launched
     SCI-ALIGN-001: owner_managed_slow_evidence_active
     SCI-AST-001: held_for_accepted_reaudited_ALIGN_successor
     ENG-STATE-001: static_package_accepted_F001_F002_open
@@ -5341,10 +5341,186 @@ packages:
         Select a MAP-002 repair base only after it contains the accepted,
         freshly re-audited SCI-MAP-001 repair; do not repair the shared map
         product contract in parallel with SCI-MAP-002.
+      candidate_commit: 854a04b124e083e64706fd043e105182fee568af
+      candidate_outcome: rejected_by_corrected_independent_reaudit
+      successor_repair_authorized: false
     implementation_status: nonconformant
     validation_status: in_progress
+    validation_assessment: incomplete
     production_status: existing_use_only
     verdict: amend
+    repair_reaudit_disposition:
+      status: corrected_reaudit_integrated_candidate_rejected
+      candidate_commit: 854a04b124e083e64706fd043e105182fee568af
+      candidate_parent: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+      candidate_tree: 188ae8535b61a3f560fa992b3bac0a5196436e5b
+      initial_reaudit_commit: 4fa876d066a8bf7e6b971147a92f0b8b7ffd5c77
+      correction_successor_commit: 756e448361587d492d5bb72adfc7775bfad67851
+      correction_parent: 4fa876d066a8bf7e6b971147a92f0b8b7ffd5c77
+      correction_tree: 38ba3bbb6f9eb2e09ea163ab6a8ad5bebb2bf1ab
+      authority_object: dd5894679bf12bf4a5fb551e871b3c6010ef9b9b
+      authority_tree: e87b507a6dc5246da0f65e563d96b94824e61ba1
+      corrected_report:
+        path: doc/audits/packages/SCI-MAP-002_REAUDIT_2026-08-08.md
+        sha256: da2f04936c4fb191b8f54274623f779854222a2d97defba05617ff3abc5301f0
+        immutable: true
+      corrected_ledger_proposal:
+        path: >-
+          doc/audits/proposals/SCI-MAP-002_REAUDIT_LEDGER_PROPOSAL_2026-08-08.yaml
+        sha256: 48f1c264eefd55bf4044e4661aa283592938bf31c8338df83ee2d67076ab53f3
+        disposition: applied_with_controlled_validation_status_normalization
+        immutable: true
+      corrected_source_status:
+        object: >-
+          756e448361587d492d5bb72adfc7775bfad67851:doc/REFACTOR_STATUS.md
+        sha256: 48ea8a731c4e4d27968498a606a078c4a158e593a4fa71b0e058c6e7769fd4ed
+        import_disposition: >-
+          digest_recorded_source_status_not_overlaid_on_current_coordination_line
+      coordinator_disposition:
+        path: >-
+          doc/audits/packages/SCI-MAP-002_REAUDIT_COORDINATOR_DISPOSITION_2026-08-08.md
+        sha256: 402664a297bcf8cd7e861ad9e5dd3fe23fe57dc3d4eff8adeccf8ee6300afdfe
+      authority_artifact_digest_check:
+        expected_count: 14
+        recomputed_from_authority_object: true
+        result: pass_all_match_corrected_proposal
+      candidate_accepted: false
+      contract_status: approved
+      implementation_status: nonconformant
+      validation_status: in_progress
+      validation_assessment: incomplete
+      production_status: existing_use_only
+      verdict: amend
+      unity_evidence_supplied: false
+      repair_launched: false
+      reaudit_launched: false
+      downstream_or_BEAM_audit_launched: false
+      findings:
+        - id: SCI-MAP-002-RA-001
+          class: implementation_defect
+          severity: P0
+          evidence_basis: observed
+          confidence: high
+          status: open
+          owner: JINC_Beammap_iteration_state_and_provenance_owner
+          affected_original_findings:
+            - SCI-MAP-002-F001
+            - SCI-MAP-002-F004
+            - SCI-MAP-002-F007
+            - SCI-MAP-002-F008
+          summary: >-
+            Iterative Beammap resets fresh JINC N/C/Q buffers but retains
+            denominator_sum_abs and contributor_count, so later finalization
+            uses stale conditioning state; active-subset realized summaries
+            are incoherent.
+          closure_gate: >-
+            Reset all coupled iteration state atomically, preserve explicit
+            iteration/active-set identity, pass deterministic multi-iteration
+            and selective-convergence production-path tests, then re-audit.
+        - id: SCI-MAP-002-RA-002
+          class: contract_gap
+          severity: P1
+          evidence_basis: observed
+          confidence: high
+          status: open
+          owner: JINC_kernel_processing_and_coverage_provenance_owner
+          affected_original_findings: [SCI-MAP-002-F006, SCI-MAP-002-F007]
+          summary: >-
+            Kernel-template and processing identities are placeholders and do
+            not bind actual template, processing/filter state, or coverage
+            sample frequency.
+          closure_gate: >-
+            Persist compact exact template, processing, filter, and coverage-rate
+            identities and prove the production writer joins them correctly.
+        - id: SCI-MAP-002-RA-003
+          class: evidence_gap
+          severity: P1
+          evidence_basis: observed
+          confidence: high
+          status: open
+          owner: JINC_production_concurrency_validation_owner
+          affected_original_findings: [SCI-MAP-002-F008]
+          summary: >-
+            Sequential/concurrent agreement is tested only with scalar hand
+            sums, not production JINC population paths or a realized policy.
+          closure_gate: >-
+            Compare production sequential/concurrent population, membership,
+            masks, products, and cancellation-sensitive pixels under the
+            serialized policy at one exact successor SHA.
+        - id: SCI-MAP-002-RA-004
+          class: contract_gap
+          severity: P1
+          evidence_basis: observed
+          confidence: high
+          status: open
+          owner: JINC_selected_configuration_admission_owner
+          affected_original_findings: [SCI-MAP-002-F005]
+          summary: >-
+            Strict positivity admission is applied to inactive JINC settings
+            for naive mapmaking rather than only selected JINC execution.
+          closure_gate: >-
+            Restore inactive naive compatibility while enforcing approved
+            fail-closed admission for selected JINC arrays and products.
+        - id: SCI-MAP-002-RA-005
+          class: evidence_gap
+          severity: P1
+          evidence_basis: observed
+          confidence: high
+          status: open
+          owner: JINC_production_boundary_validation_owner
+          affected_original_findings:
+            - SCI-MAP-002-F002
+            - SCI-MAP-002-F003
+            - SCI-MAP-002-F005
+            - SCI-MAP-002-F006
+            - SCI-MAP-002-F007
+            - SCI-MAP-002-F008
+          summary: >-
+            Production-seam boundary, failure suppression, actual product join,
+            processing identity, and concurrency evidence remains incomplete.
+          closure_gate: >-
+            Pass the bounded production-seam matrix recorded in the corrected
+            report without required-data skips before fresh re-audit.
+      original_finding_reassessment:
+        SCI-MAP-002-F001: open
+        SCI-MAP-002-F002: addressed_validation_incomplete
+        SCI-MAP-002-F003: addressed_validation_incomplete
+        SCI-MAP-002-F004: open
+        SCI-MAP-002-F005: open
+        SCI-MAP-002-F006: open
+        SCI-MAP-002-F007: open
+        SCI-MAP-002-F008: open
+      local_gate_summary:
+        focused_tests: 13_of_13_passed
+        ctest: 648_of_648_enabled_passed_one_preexisting_disabled
+        baseline_tools: 173_of_173_passed
+        config_tests: 127_of_127_passed
+        required_data_skips: 0
+        unexpected_error_level_messages_in_passing_gates: 0
+        limitation: passing_gates_do_not_override_RA_001_through_RA_005
+      stop_rule: coordinator_and_owner_review_before_any_successor_repair
+    successor_repair_readiness:
+      status: bounded_definition_only_not_authorized_not_launched
+      coordinator_record: >-
+        doc/audits/packages/SCI-MAP-002_REAUDIT_COORDINATOR_DISPOSITION_2026-08-08.md
+      exact_base: unresolved_until_separate_owner_authorization
+      bounded_scope:
+        - coupled iterative Beammap JINC reset and coherent active-set summary
+        - compact actual template/processing/filter/coverage-rate provenance
+        - selected-JINC-only parameter admission with naive compatibility
+        - deterministic production-seam and sequential/concurrent tests
+      preserve:
+        - approved signed-lobe N/C/Q estimator and dimensionless conditioning
+        - square cache and phase-point subpixel response
+        - formal support, coefficient-squared coverage, and K/C meanings
+        - compact four-stage and immutable product provenance
+        - RTC/PTC and all other mature algorithms
+      prohibited:
+        - implementation_without_new_authorization
+        - Unity_or_external_evidence_request
+        - repair_or_reaudit_launch
+        - downstream_or_BEAM_audit_launch
+        - production_expansion
     open_findings:
       - {id: SCI-MAP-002-F001, class: implementation_defect, severity: P0, evidence_basis: observed_static_source, confidence: high, status: open, owner: map_product_validity_mask, summary: "coverage_bool can label zero or non-finite formal weight valid and cannot be an authoritative scientific support mask."}
       - {id: SCI-MAP-002-F002, class: contract_implementation_mismatch, severity: P1, evidence_basis: observed_static_source, confidence: high, status: open, owner: scientific_jinc_support_owner, summary: "r_max realizes a second-JINC zero and a square cache half-width, not a declared radial support boundary."}
@@ -5462,7 +5638,7 @@ packages:
     supplied_external_evidence: []
     remediation_branch: null
     remediation_commit: null
-    re_audit_status: not_started
+    re_audit_status: complete
     dispatch:
       status: audit_complete_coordinator_reviewed_owner_decision_pending
       dispatch_date: 2026-08-03

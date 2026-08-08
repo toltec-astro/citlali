@@ -1,0 +1,149 @@
+format_version: 1
+proposal_type: implementation_reaudit_ledger_record
+proposal_date: 2026-08-08
+coordinator_action: review_and_integrate_or_supersede
+canonical_ledger_modified: false
+canonical_handoff_registry_modified: false
+
+package:
+  id: SCI-MAP-002
+  candidate_commit: 854a04b124e083e64706fd043e105182fee568af
+  candidate_parent: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+  candidate_tree: 188ae8535b61a3f560fa992b3bac0a5196436e5b
+  verified_remote_tracking_ref: origin/codex/repair-sci-map-002
+  verified_remote_tracking_commit: 854a04b124e083e64706fd043e105182fee568af
+  authority_object: dd5894679bf12bf4a5fb551e871b3c6010ef9b9b
+  authority_tree: e87b507a6dc5246da0f65e563d96b94824e61ba1
+  reaudit_branch: codex/reaudit-sci-map-002
+  report_path: doc/audits/packages/SCI-MAP-002_REAUDIT_2026-08-08.md
+  report_sha256: da2f04936c4fb191b8f54274623f779854222a2d97defba05617ff3abc5301f0
+
+  authority_artifacts:
+    original_audit_sha256: d77bb5c8e555b43d5303ad2ce0a81e5baef42df2beb85347f9f98cab759d5239
+    original_evidence_sha256: 3a10f410dcb681a41bb2dee42b5ef1141a93a0de1362ce829dff0afa297855b8
+    support_decision_sha256: 8c6b53476e70c40f5ff98fde6e279c44d58406cc81ffaa86d34d6cf6cd93645a
+    subpixel_decision_sha256: 053cedd2a644850ea65db616661cc95a1d872f60945074d40e81d07397716aaa
+    conditioning_decision_sha256: 8f74aacdd9df5a9119c08d1e627ae7859ff1d87d7a8ecdbfac0d76acaa0eddcc
+    admission_decision_sha256: 811232b2e13644a1b8794a87ef6e62b95de0653d08aa26802097823bd55f8cab
+    mask_decision_sha256: 4d6d236e3b630f6608eb6dc36f8ee9041f7b623ea5f4adbc0f5e0c946a0b9f08
+    coverage_decision_sha256: 5413039d5deef53647187ae226b06c259ee750120f4444ad3bd6870fe8d8cb58
+    kernel_decision_sha256: 2ff6b03259e75d2fa96f4fe8c888c7db82ec7cae0c969617f17233aa15be2347
+    provenance_decision_sha256: bb3084e3905ae283266f066dd8406d5d48a787e5af6825b4a9ddf60edac5dd1f
+    coordinator_review_sha256: e409f87ae94855989624ac3fcffc2ae60d102e10611a3f86e6a4d27f602ee2af
+    provenance_correction_ack_sha256: 9196837da6092ec62239d306ee55de9a4bfe3b0e0ab756a1e4c0bf017c2e97a6
+    repair_reaudit_handoff_sha256: 11f6d5b173ce9980910a1970835c33098ee89bb89c9df0ec8e1b3170ed3e050f
+    original_ledger_proposal_sha256: 93eb40e598e2ac417c0f966843aa770730658984f2a14c4249bc99403be77881
+
+  disposition:
+    contract_status: approved
+    implementation_status: nonconformant
+    validation_status: incomplete
+    production_status: existing_use_only
+    verdict: amend
+    candidate_accepted: false
+    external_evidence_authorized: false
+    downstream_launch_authorized: false
+
+  equation_recomputation:
+    fixture:
+      q: [2.0, 3.0]
+      c: [1.0, -0.25]
+      d: [5.0, 8.0]
+    numerator_N: 4.0
+    denominator_C: 1.25
+    variance_Q: 2.1875
+    signal_N_over_C: 3.2
+    formal_weight_C2_over_Q: 0.7142857142857143
+    conditioning: abs_C_over_sum_abs_qc
+    resolution_bound: 2_gamma_n
+
+  findings:
+    - id: SCI-MAP-002-RA-001
+      severity: P0
+      status: open
+      affected_original_findings: [SCI-MAP-002-F001, SCI-MAP-002-F004, SCI-MAP-002-F007, SCI-MAP-002-F008]
+      summary: >-
+        Iterative and selectively active Beammap JINC passes reset N/C/Q-side
+        live planes but retain prior-pass denominator-sum-absolute and
+        contributor-count planes; realized summaries cover only the latest
+        active subset.
+    - id: SCI-MAP-002-RA-002
+      severity: P1
+      status: open
+      affected_original_findings: [SCI-MAP-002-F006, SCI-MAP-002-F007]
+      summary: >-
+        Realized kernel-template and processing identities are generic
+        placeholders and do not bind actual template, filters, notches,
+        masks/flags, PTC cleaning/PCA, or coverage sample frequency.
+    - id: SCI-MAP-002-RA-003
+      severity: P1
+      status: open
+      affected_original_findings: [SCI-MAP-002-F008]
+      summary: >-
+        The claimed sequential/concurrent test invokes only scalar hand sums
+        and the finalizer, not either production JINC population path or a
+        realized execution policy.
+    - id: SCI-MAP-002-RA-004
+      severity: P1
+      status: open
+      affected_original_findings: [SCI-MAP-002-F005]
+      summary: >-
+        Strict JINC shape positivity is applied unconditionally to inactive
+        naive requests rather than only selected JINC products.
+    - id: SCI-MAP-002-RA-005
+      severity: P1
+      status: open
+      affected_original_findings: [SCI-MAP-002-F002, SCI-MAP-002-F003, SCI-MAP-002-F005, SCI-MAP-002-F006, SCI-MAP-002-F007, SCI-MAP-002-F008]
+      summary: >-
+        Required production-seam boundary, failure suppression, actual
+        product-join, processing-chain identity, and sequential/concurrent
+        validation remains incomplete despite passing helper-level tests.
+
+  original_finding_reassessment:
+    SCI-MAP-002-F001: open
+    SCI-MAP-002-F002: addressed_validation_incomplete
+    SCI-MAP-002-F003: addressed_validation_incomplete
+    SCI-MAP-002-F004: open
+    SCI-MAP-002-F005: open
+    SCI-MAP-002-F006: open
+    SCI-MAP-002-F007: open
+    SCI-MAP-002-F008: open
+
+  local_gates:
+    focused_jinc_and_product_tests: {passed: 13, failed: 0, skipped: 0}
+    ctest: {passed: 648, failed: 0, disabled_preexisting: 1, required_data_skips: 0}
+    baseline_tools: {passed: 173, failed: 0, skipped: 0}
+    config_unit_tests: {passed: 127, failed: 0, skipped: 0}
+    config_mode_kits: {passed: 4, failed: 0, skipped: 0}
+    compact_compatibility: {passed: 8, failed: 0, skipped: 0}
+    builds:
+      citlali_cli: passed
+      citlali_test: passed
+      citlali_safety_test: passed
+      citlali_jinc_map_contract_test: passed
+      citlali_science_map_fits_products_test: passed
+    isolated_jinc_header: passed
+    product_contract_tests: passed
+    science_change_ledger: valid
+    validation_profile_registry: valid
+    unexpected_error_level_messages_in_passing_gates: 0
+
+  prohibited_scope_assessment:
+    parameter_values_or_campaign: absent
+    radial_cut: absent
+    pixel_area_integration: absent
+    geometric_exposure_reinterpretation: absent
+    rtc_ptc_filter_template_noise_wiener_changes: absent
+    high_cardinality_provenance: absent
+    estimator_covariance_gls_production_changes: absent
+    unapproved_inactive_config_behavior_broadening: present
+
+  human_evidence:
+    supplied_for_candidate: false
+    executed_by_reauditor: false
+    exact_sha_cases_still_specified: [U01, U02, U03, U04, U05]
+    conditional_case: U06_only_if_preexisting_checksum_pinned_unit_source_exists
+    current_action: do_not_launch_candidate
+    reason: source_level_nonconformance_must_be_reviewed_first
+
+  stop_rule: coordinator_and_owner_review_required
