@@ -22,6 +22,7 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
+import netCDF4  # noqa: E402
 import numpy as np  # noqa: E402
 from astropy.table import Table  # noqa: E402
 from matplotlib.backends.backend_pdf import PdfPages  # noqa: E402
@@ -33,6 +34,7 @@ from analyze_sci_align_001_ptc_sampling import (  # noqa: E402
     map_tables,
     output_checksums,
     pixel_size_rad_from_wcs,
+    read_float,
     sha256_file,
     write_json,
 )
@@ -87,6 +89,71 @@ class ReconstructedMap:
     flagged_sample_count: int
     nonfinite_sample_count: int
     outside_sample_count: int
+
+
+@dataclass(frozen=True)
+class PointingContract:
+    apt_x_t_arcsec: float
+    apt_y_t_arcsec: float
+    observed_offset_median_arcsec: float
+    expected_offset_median_arcsec: float
+    offset_model_max_residual_arcsec: float
+
+
+def validate_full_ptc_pointing_contract(
+    ptc: PtcDetector,
+    detector_map_lat: np.ndarray,
+    detector_map_lon: np.ndarray,
+) -> PointingContract:
+    """Validate physical stored pointing without using it for detector maps."""
+    with netCDF4.Dataset(ptc.path, mode="r") as dataset:
+        required = {"apt_x_t", "apt_y_t", "TelElAct"}
+        missing = sorted(required - set(dataset.variables))
+        if missing:
+            raise ContractError(
+                f"full PTC lacks detector-pointing contract variables: {missing}"
+            )
+        apt_x = float(read_float(
+            dataset.variables["apt_x_t"], ptc.detector_index
+        ))
+        apt_y = float(read_float(
+            dataset.variables["apt_y_t"], ptc.detector_index
+        ))
+        elevation = read_float(dataset.variables["TelElAct"])
+    if (
+        not math.isfinite(apt_x)
+        or not math.isfinite(apt_y)
+        or elevation.shape != ptc.signal.shape
+        or np.any(~np.isfinite(elevation))
+    ):
+        raise ContractError("full PTC detector offset/elevation contract is invalid")
+    if detector_map_lat.shape != ptc.signal.shape or detector_map_lon.shape != ptc.signal.shape:
+        raise ContractError("detector-map pointing geometry differs from the full PTC")
+
+    observed_lon = (ptc.det_lon - detector_map_lon) * RAD_TO_ARCSEC
+    observed_lat = (ptc.det_lat - detector_map_lat) * RAD_TO_ARCSEC
+    expected_lon = np.cos(elevation) * apt_x - np.sin(elevation) * apt_y
+    expected_lat = np.cos(elevation) * apt_y + np.sin(elevation) * apt_x
+    residual = np.hypot(
+        observed_lon - expected_lon,
+        observed_lat - expected_lat,
+    )
+    if np.any(~np.isfinite(residual)) or float(np.max(residual)) > 1.0e-5:
+        raise ContractError(
+            "stored full-PTC detector pointing does not match the expected "
+            "elevation-rotated APT offset"
+        )
+    return PointingContract(
+        apt_x_t_arcsec=apt_x,
+        apt_y_t_arcsec=apt_y,
+        observed_offset_median_arcsec=float(np.median(
+            np.hypot(observed_lon, observed_lat)
+        )),
+        expected_offset_median_arcsec=float(np.median(
+            np.hypot(expected_lon, expected_lat)
+        )),
+        offset_model_max_residual_arcsec=float(np.max(residual)),
+    )
 
 
 def load_registry(path: Path) -> dict[int, RegistryScan]:
@@ -510,11 +577,10 @@ def run(args: argparse.Namespace) -> None:
             f"uid={args.uid} full-PTC array {ptc.array} disagrees with {args.array}"
         )
     bounds = load_full_ptc_append_bounds(ptc)
-    recomputed_lat, recomputed_lon = load_map_pointing(ptc)
-    residual = np.hypot(ptc.det_lat - recomputed_lat, ptc.det_lon - recomputed_lon)
-    finite_residual = residual[np.isfinite(residual)]
-    if finite_residual.size != residual.size or float(np.max(finite_residual)) > 1.0e-12:
-        raise ContractError("stored detector pointing disagrees with telescope-plus-offset pointing")
+    detector_map_lat, detector_map_lon = load_map_pointing(ptc)
+    pointing_contract = validate_full_ptc_pointing_contract(
+        ptc, detector_map_lat, detector_map_lon
+    )
 
     raw_dir = discover_raw_dir(args.map_reduction_root)
     registry_path = raw_dir / "beammap_direction_scan_registry_all.csv"
@@ -555,7 +621,8 @@ def run(args: argparse.Namespace) -> None:
         x = (np.arange(shape[1], dtype=float) - (shape[1] - 1) / 2.0) * pixel_arcsec
         y = (np.arange(shape[0], dtype=float) - (shape[0] - 1) / 2.0) * pixel_arcsec
         maps = reconstruct_unthresholded_maps(
-            ptc, bounds, registry, ptc.det_lat, ptc.det_lon, shape, pixel_size_rad
+            ptc, bounds, registry, detector_map_lat, detector_map_lon,
+            shape, pixel_size_rad,
         )
         fits = fit_reconstructions(
             maps, x, y,
@@ -607,11 +674,31 @@ def run(args: argparse.Namespace) -> None:
         "pixel_size_arcsec": pixel_arcsec,
         "fit_half_width_arcsec": args.fit_half_width_arcsec,
         "plot_half_width_arcsec": args.plot_half_width_arcsec,
-        "pointing_crosscheck_max_residual_arcsec": float(np.max(finite_residual)) * RAD_TO_ARCSEC,
+        "pointing_contract": {
+            "stored_det_lat_lon_semantics": (
+                "physical detector pointing with elevation-rotated APT offsets"
+            ),
+            "detector_map_semantics": (
+                "telescope tangent pointing plus configured pointing offsets; "
+                "detector APT offsets suppressed"
+            ),
+            "apt_x_t_arcsec": pointing_contract.apt_x_t_arcsec,
+            "apt_y_t_arcsec": pointing_contract.apt_y_t_arcsec,
+            "observed_offset_median_arcsec": (
+                pointing_contract.observed_offset_median_arcsec
+            ),
+            "expected_offset_median_arcsec": (
+                pointing_contract.expected_offset_median_arcsec
+            ),
+            "offset_model_max_residual_arcsec": (
+                pointing_contract.offset_model_max_residual_arcsec
+            ),
+        },
         "mapmaking_contract": (
             "nearest-pixel C++ llround-equivalent binning; per-scan detector weight; "
-            "flag==0; finite signal; detector grouping uses stored det_lat/det_lon; "
-            "no coverage support threshold"
+            "flag==0; finite signal; detector grouping uses telescope-plus-pointing "
+            "offsets and suppresses physical detector APT offsets; no coverage "
+            "support threshold"
         ),
         "interpretation_boundary": (
             "The full PTC is a separate single-pass replay. This tests whether the "

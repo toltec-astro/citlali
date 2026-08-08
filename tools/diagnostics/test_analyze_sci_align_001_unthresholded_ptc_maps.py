@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import csv
 import json
+import math
 import os
 import subprocess
 import sys
@@ -191,6 +192,12 @@ class UnthresholdedPtcMapTest(unittest.TestCase):
             self.assertAlmostEqual(
                 row["delta_parallel_right_minus_left_arcsec"], -2.4, delta=0.08
             )
+            pointing = manifest["pointing_contract"]
+            self.assertAlmostEqual(
+                pointing["observed_offset_median_arcsec"], math.sqrt(13.0),
+                places=6,
+            )
+            self.assertLess(pointing["offset_model_max_residual_arcsec"], 1.0e-8)
             self.assertEqual(len(PdfReader(
                 output / "unthresholded_ptc_maps_o150819_uid199.pdf"
             ).pages), 2)
@@ -233,6 +240,10 @@ def make_end_to_end_ptc(path: Path) -> None:
     x, y, directions, signal = synthetic_scan_arrays()
     scan_count = directions.size
     samples_per_scan = signal.size // scan_count
+    elevation = 0.75
+    apt_x, apt_y = 3.0, -2.0
+    physical_lon_offset = math.cos(elevation) * apt_x - math.sin(elevation) * apt_y
+    physical_lat_offset = math.cos(elevation) * apt_y + math.sin(elevation) * apt_x
     with netCDF4.Dataset(path, mode="w") as dataset:
         dataset.createDimension("n_pts", None)
         dataset.createDimension("n_dets", 1)
@@ -258,13 +269,19 @@ def make_end_to_end_ptc(path: Path) -> None:
         dataset.createVariable("weights", "f8", ("n_scans", "n_dets"))
         for name in ("apt_uid", "apt_array", "apt_nw", "apt_flag"):
             dataset.createVariable(name, "f8", ("n_dets",))
+        for name in ("apt_x_t", "apt_y_t"):
+            variable = dataset.createVariable(name, "f8", ("n_dets",))
+            variable.units = "arcsec"
+        tel_el = dataset.createVariable("TelElAct", "f8", ("n_pts",))
+        tel_el.units = "rad"
         dataset.createVariable("FRUITLOOPS_ITER", "i4", ("fruitloops_iter_dim",))
         dataset["signal"][:] = signal[:, None]
         dataset["flags"][:] = 0.0
-        dataset["det_lon"][:] = (x / RAD_TO_ARCSEC)[:, None]
-        dataset["det_lat"][:] = (y / RAD_TO_ARCSEC)[:, None]
+        dataset["det_lon"][:] = ((x + physical_lon_offset) / RAD_TO_ARCSEC)[:, None]
+        dataset["det_lat"][:] = ((y + physical_lat_offset) / RAD_TO_ARCSEC)[:, None]
         dataset["az_phys"][:] = x / RAD_TO_ARCSEC
         dataset["alt_phys"][:] = y / RAD_TO_ARCSEC
+        dataset["TelElAct"][:] = elevation
         dataset["pointing_offset_az"][:] = 0.0
         dataset["pointing_offset_alt"][:] = 0.0
         dataset["TelTime"][:] = np.arange(signal.size, dtype=float) * 0.02 + 1000.0
@@ -281,6 +298,8 @@ def make_end_to_end_ptc(path: Path) -> None:
         dataset["apt_array"][:] = [0.0]
         dataset["apt_nw"][:] = [0.0]
         dataset["apt_flag"][:] = [0.0]
+        dataset["apt_x_t"][:] = [apt_x]
+        dataset["apt_y_t"][:] = [apt_y]
         dataset["FRUITLOOPS_ITER"][:] = [0]
 
 
