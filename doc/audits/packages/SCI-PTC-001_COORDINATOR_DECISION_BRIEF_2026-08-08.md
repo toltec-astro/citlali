@@ -2,9 +2,9 @@
 
 Record ID: `SCI-PTC-001-COORDINATOR-DECISION-BRIEF-2026-08-08`
 
-Status: audit integrated; D001 approved by the owner; D002--D006 remain ready
-for owner review. No repair, validation execution, re-audit, downstream
-launch, or production change is authorized.
+Status: audit integrated; D001 and D002 approved by the owner; D003--D006
+remain ready for owner review. No repair, validation execution, re-audit,
+downstream launch, or production change is authorized.
 
 ## Verified audit authority
 
@@ -18,10 +18,10 @@ launch, or production change is authorized.
 
 The package is accepted into coordination with `contract_status: proposed`,
 `implementation_status: nonconformant`, `validation_status: in_progress`,
-`production_status: existing_use_only`, and verdict `amend`. Four P0
-implementation findings, two additional P0 dependency findings, seven P1
-contract/policy/dependency/evidence findings, and all associated closure gates
-remain open.
+`production_status: existing_use_only`, and verdict `amend`. After the owner
+amendment of F002, three P0 implementation findings, two additional P0
+dependency findings, eight P1 contract/policy/dependency/evidence findings,
+and all associated closure gates remain open.
 
 ## Owner authority and remaining choices
 
@@ -40,14 +40,25 @@ only when the PTC stage itself is enabled. This authority supersedes the
 earlier identity-versus-mandatory-centering wording in this coordinator brief;
 it does not rewrite the immutable audit proposal or auditor brief.
 
-### `SCI-PTC-001-D002` — direct cause and transitive influence
+### `SCI-PTC-001-D002` — fit admission and post-fit decisions — approved
 
-Approve only this scientific invariant: no scientifically eligible output may
-retain influence from an input that is later rejected. The durable
-representation, compact bookkeeping, and choice between recomputation and
-explicit descendant invalidation are engineering decisions, provided the
-invariant is exact, fail-closed, and falsifiable for signal, kernel,
-coefficients, and every consumer.
+Inputs known to be invalid for estimating the PTC model must be excluded before
+fitted-state arithmetic. A later result requires refitting or fitted-product
+invalidation only when its typed cause explicitly reclassifies that input as
+fit-invalid. Residual-based post-PCA sample rejection, clean-state
+detector-quality selection, and coefficient-based preference are downstream
+eligibility/weighting decisions; they directly exclude or downweight the
+selected output only and do not automatically invalidate the PCA state or
+other detectors.
+
+Preserve at least cause and decision-stage semantics sufficient to distinguish
+`fit_invalid`, `postfit_output_reject`, and `weight_only`; exact representation
+remains engineering-owned. The complete successor authority is
+[`SCI-PTC-001_D002_OWNER_AMENDMENT_2026-08-08.md`](SCI-PTC-001_D002_OWNER_AMENDMENT_2026-08-08.md).
+
+The original blanket F002 P0 implementation-defect classification is
+withdrawn. F002 is a P1 contract/provenance gap in the current binary flag
+channel. F001 remains P0 and unchanged.
 
 ### `SCI-PTC-001-D003` — response product families
 
@@ -86,7 +97,19 @@ Approve eligible-only arithmetic, coupled surrogate signal/validity shifts,
 and fail-closed behavior when support is insufficient. Persist enough seed,
 algorithm, and input identity for deterministic replay. Storing every realized
 random shift and computing selection uncertainty may be explicitly unavailable
-or deferred; neither is a prerequisite for repairing F001/F002.
+or deferred; neither is a prerequisite for repairing F001 or the bounded F002
+cause/stage/provenance gap.
+
+## Tier-A reopen routing after the D002 amendment
+
+- F001 remains a narrow Tier-A reopen trigger if its invalid-input admission
+  contradiction cannot be repaired at the interface without changing the
+  estimator.
+- F002 does not independently reopen mature PTC numerics. It requires a typed
+  distinction among fit admission, post-fit output rejection, and weight-only
+  noncontribution. Only `fit_invalid` invokes refit or fitted-product
+  invalidation.
+- The frozen audit's consumer-dependent F005 response routing is unchanged.
 
 ## Dependencies and outgoing routing
 
@@ -96,15 +119,16 @@ or deferred; neither is a prerequisite for repairing F001/F002.
 - ALIGN commit `5c6309125fef15f7c98e70a62b591c663944b130` is acknowledged only
   as corroborating post-core evidence for F004. It is not integrated or
   treated as Unity-validated.
-- `SCI-VAL-001-XAUD-008`, `SCI-MAP-001-XAUD-004`, and
+- `SCI-VAL-001-XAUD-009`, `SCI-MAP-001-XAUD-004`, and
   `SCI-NOI-001-XAUD-001` are registered as submitted and pending recipient
-  review. They do not launch their targets. BEAM receives no separate launch
+  review. `SCI-VAL-001-XAUD-009` supersedes the overbroad `-008` submission.
+  They do not launch their targets. BEAM receives no separate launch
   or handoff; later BEAM-relevant facts remain routed through VAL and this
   brief.
 
 ## Required order after owner review
 
-1. Preserve approved D001 and record approved or superseding D002--D006 authority.
+1. Preserve approved D001/D002 and record approved or superseding D003--D006 authority.
 2. Select one exact integrated application line with accepted RTC and relevant
    CAL/AST/ALIGN successors.
 3. Separately authorize a bounded PTC repair.

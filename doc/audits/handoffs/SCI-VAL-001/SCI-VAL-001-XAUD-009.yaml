@@ -1,0 +1,132 @@
+format_version: 1
+id: SCI-VAL-001-XAUD-009
+created_date: 2026-08-08
+
+source:
+  package_id: SCI-PTC-001
+  role: project_owner_via_audit_coordinator
+  audit_branch: codex/audit-sci-ptc-001
+  audit_commit: 01ee247461d6c19bc4db81ccac4fec21af162c88
+  governing_or_evidence_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+  finding_ids:
+    - SCI-PTC-001-F001
+    - SCI-PTC-001-F002
+    - SCI-PTC-001-F005
+    - SCI-PTC-001-F007
+    - SCI-PTC-001-F010
+    - SCI-PTC-001-F012
+    - SCI-PTC-001-F013
+
+target:
+  package_id: SCI-VAL-001
+
+priority: P0
+evidence_basis: owner_decision
+review_phase: post_core_evidence
+arrival: after_audit_completion
+status: submitted
+
+summary: >-
+  Fit-admission invalidity, post-fit output rejection, and weight-only
+  noncontribution require distinct durable cause and decision-stage semantics;
+  ordinary post-fit quality selection does not retroactively invalidate PCA.
+claim: >-
+  At the governing SHA, F001 remains a P0 invalid-input admission defect:
+  masked NaN/Inf arithmetic can contaminate fitted state and descendants, and
+  null surrogates shift signal without coupled validity. F002 is instead a P1
+  contract gap because the binary flag channel does not durably distinguish
+  fit_invalid from postfit_output_reject or weight_only. Only a typed cause
+  explicitly classified fit_invalid requires refit or fitted-product
+  invalidation. Residual-based post-PCA sample rejection, clean-state
+  detector-quality selection, and coefficient-based preference directly
+  exclude or downweight selected outputs and do not automatically invalidate
+  the PCA state or other detectors. The conditioned kernel and incomplete RTC
+  causal support/response remain insufficient for new response or uncertainty
+  claims.
+
+required_PTC_interface_facts:
+  fit_admission:
+    eligible_only_nonfinite_admission_conformant: false
+    fit_invalid_excluded_before_fitted_state_arithmetic: false
+  typed_cause_and_decision_stage:
+    fit_invalid_distinguishable: false
+    postfit_output_reject_distinguishable: false
+    weight_only_distinguishable: false
+    exact_representation_engineering_owned: true
+  postfit_decisions:
+    postfit_quality_selection_requires_PCA_recompute: false
+    refit_or_fitted_product_invalidation_trigger: typed_fit_invalid_cause_only
+  response:
+    conditioned_signal_derived_kernel_present_in_full_output: true
+    present_in_mini_output: false
+    unconditional_or_local_Jacobian_complete: false
+    upstream_RTC_response_complete: false
+    response_uncertainty_present: false
+    explicit_unavailable_state_present: false
+  BEAM_later_route:
+    beammap_consumes_PTC_cleaning_and_kernel_boundary: true
+    new_beam_or_transfer_claim_supported: false
+    BEAM_launched_by_this_record: false
+
+supports:
+  - >-
+    Preserve VAL existing_use_only and require eligible-only fit admission for
+    inputs explicitly typed fit_invalid.
+  - >-
+    Preserve cause and decision-stage semantics for fit_invalid,
+    postfit_output_reject, and weight_only without prescribing representation.
+  - >-
+    Do not require PCA recomputation merely because a residual, clean-state
+    quality decision, or coefficient preference rejects or downweights an
+    output after fitting.
+  - >-
+    Route the unchanged response facts to a future separately launched BEAM
+    audit; no new global, extended-source, beam, or response-uncertainty use is
+    supported.
+does_not_establish:
+  - This record does not audit VAL eligibility policy, statistics, or package-wide behavior.
+  - It does not close F001 or F002 or establish implementation conformance.
+  - It does not require a specific flag encoding, refit mechanism, or invalidation representation.
+  - It does not audit or launch BEAM and does not quantify a beam or map bias.
+  - It does not authorize repair, validation execution, re-audit, production change, or any target launch.
+
+requested_actions:
+  - add_or_update_dependency
+  - add_or_update_finding
+  - add_interface_test
+  - restrict_consumer
+  - preserve_existing_use_only
+affected_target_findings: []
+related_handoffs:
+  - SCI-VAL-001-XAUD-008
+  - SCI-VAL-001-XAUD-007
+  - SCI-PTC-001-XAUD-004
+  - SCI-PTC-001-XAUD-005
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-PTC-001-D002-owner-amendment
+    availability: repository_path
+    path: doc/audits/packages/SCI-PTC-001_D002_OWNER_AMENDMENT_2026-08-08.md
+    sha256: f57f1afdfe561db9ebd49c51edf1c716c017838dce5ee1bca679e95ba5401e63
+    note: Owner-approved D002 and F002 successor disposition.
+  - id: SCI-PTC-001-final-audit-report
+    availability: repository_path
+    path: doc/audits/packages/SCI-PTC-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: c46a15c142d0938baf9576d84a19332e0d46b34852b4d59c0029ba00ac62d7e6
+    note: Immutable exact-source audit evidence, superseded only where the owner amendment says so.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: dated_amendment
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: SCI-VAL-001-XAUD-008
+superseded_by: null

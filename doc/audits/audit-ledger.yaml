@@ -34,8 +34,8 @@ current_program_checkpoint:
     SCI-AST-001: held_for_accepted_reaudited_ALIGN_successor
     ENG-STATE-001: static_package_accepted_F001_F002_open
   queue:
-    - SCI-PTC-001_D001_approved_D002_D006_pending
-    - SCI-VAL-001_unlaunched_PTC_handoff_pending_recipient_review
+    - SCI-PTC-001_D001_D002_approved_D003_D006_pending
+    - SCI-VAL-001_unlaunched_PTC_D002_successor_handoff_pending_recipient_review
     - SCI-BEAM-001_after_frozen_PTC_VAL
   held_readiness:
     SCI-FLT-001: exact_repair_base_unresolved_until_integrated_CAL_successor
@@ -4445,7 +4445,7 @@ packages:
       - approved AST/ALIGN coordinates, source-mask validity, detector-row binding, and scan extents
       - requested PTC policy plus effective, observation-resolved, and realized cleaning/weight state
     outputs:
-      - cleaned signal with direct validity causes and transitive influence eligibility
+      - cleaned signal with cause- and decision-stage-specific validity and eligibility
       - conditioned/local response or explicit response unavailability and uncertainty status
       - typed nonprecision detector coefficients or proved precision plus retained covariance
       - immutable full/mini/diagnostic/simulated/processed products and four-state provenance
@@ -4496,7 +4496,7 @@ packages:
     downstream_consumers:
       - package_id: SCI-VAL-001
         status: existing_use_only_pending_recipient_review
-        handoff_id: SCI-VAL-001-XAUD-008
+        handoff_id: SCI-VAL-001-XAUD-009
       - package_id: SCI-MAP-001
         status: existing_use_only_pending_recipient_review
         handoff_id: SCI-MAP-001-XAUD-004
@@ -4506,7 +4506,7 @@ packages:
       - package_id: SCI-BEAM-001
         status: existing_use_only_unlaunched
         handoff_id: null
-        material_route: SCI-VAL-001-XAUD-008_and_owner_brief
+        material_route: SCI-VAL-001-XAUD-009_and_owner_brief
 
     governing_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
     governing_parent: 4846fa4db39bd2f7d4ddc41f693836834cbc5ff4
@@ -4522,14 +4522,27 @@ packages:
     owner_decision_brief: doc/audits/packages/SCI-PTC-001_OWNER_DECISION_BRIEF_2026-08-08.md
     owner_decision_brief_sha256: eaaf7bc06988dcb4bc1ae2a7da235aab4ac5ebfd96850fb580d850d5c82a2752
     coordinator_decision_brief: doc/audits/packages/SCI-PTC-001_COORDINATOR_DECISION_BRIEF_2026-08-08.md
-    coordinator_decision_brief_sha256: cccd0a6c0d855faceef8581157a7e63c58352b8676e2e53c07e49348bcb9ad1f
+    coordinator_decision_brief_sha256: 52cdc7d691efb510e0c5e2cd8ad6e3817952995af9f719cbaf4b2e6af1adb793
     integrated_ledger_proposal:
       path: doc/audits/proposals/SCI-PTC-001_LEDGER_PROPOSAL_2026-08-08.yaml
       sha256: 8daabce7d0d585e82d233dadb3f535bb993a28c62acb351c4474272c525eee63
-      disposition: applied_with_coordinator_identity_and_controlled_status_normalization
+      disposition: >-
+        applied_with_coordinator_identity_and_controlled_status_normalization_then_D001_D002_owner_amendments
+    successor_owner_amendment:
+      id: SCI-PTC-001-D002-OWNER-AMENDMENT-2026-08-08
+      path: doc/audits/packages/SCI-PTC-001_D002_OWNER_AMENDMENT_2026-08-08.md
+      sha256: f57f1afdfe561db9ebd49c51edf1c716c017838dce5ee1bca679e95ba5401e63
+      decision_date: 2026-08-08
+      status: applied_to_canonical_coordination_state
+      immutable_audit_artifacts_changed: false
+      supersedes_in_coordination_state:
+        - original_blanket_D002_recommendation
+        - SCI-PTC-001-F002_P0_implementation_defect_classification
+        - SCI-PTC-001-F002_blanket_recompute_or_descendant_invalidation_gate
+        - SCI-PTC-001-F002_Tier_A_reopen_routing
 
     dispatch:
-      status: audit_integrated_D001_approved_D002_D006_pending
+      status: audit_integrated_D001_D002_approved_D003_D006_pending
       launch_date: 2026-08-08
       launch_effort: ultra
       execution_profile: sol_ultra_no_delegation
@@ -4684,7 +4697,13 @@ packages:
         target_package: SCI-VAL-001
         path: doc/audits/handoffs/SCI-VAL-001/SCI-VAL-001-XAUD-008.yaml
         audit_submission_sha256: fdeaa3d18909a35b3caff85257f70e7f51ae6115ec07d172cbe96fd1b5007a32
-        canonical_sha256: b7ab2bc2d09c193ae3c0c3aefd70763ec70407cb0d54aa0b8a438b0590810d41
+        canonical_sha256: 7f85804f47c9d3d9f3295bcb4702f36c8286373d23c7604ef4291d4346f9c6d0
+        status: superseded_by_SCI-VAL-001-XAUD-009
+        BEAM_later_route_included: true
+      - id: SCI-VAL-001-XAUD-009
+        target_package: SCI-VAL-001
+        path: doc/audits/handoffs/SCI-VAL-001/SCI-VAL-001-XAUD-009.yaml
+        canonical_sha256: a6c5b45884e98de5d502afb1deacc58c8eb5b39cbe772f44dce2bc598f0bdf5d
         status: submitted_pending_recipient_review
         BEAM_later_route_included: true
       - id: SCI-MAP-001-XAUD-004
@@ -4704,7 +4723,7 @@ packages:
         path: null
         sha256: null
         status: no_separate_handoff_created_package_not_launched
-        material_route: SCI-VAL-001-XAUD-008_and_owner_brief
+        material_route: SCI-VAL-001-XAUD-009_and_owner_brief
 
     contract_status: proposed
     implementation_status: nonconformant
@@ -4755,19 +4774,26 @@ packages:
           Eligible-only mean/covariance/null/fallback fixtures pass with exact
           cause-preserving outputs at an accepted independently re-audited successor.
       - id: SCI-PTC-001-F002
-        class: implementation_defect
-        severity: P0
+        class: contract_gap
+        severity: P1
         evidence_basis: observed
         confidence: high
         status: open
-        owner: PTC_validity_response_interface
-        dependency: SCI-PTC-001-D002
+        owner: PTC_validity_and_provenance_interface
+        dependency: approved SCI-PTC-001-D002; implementation and re-audit pending
+        owner_amendment_status: >-
+          original_blanket_P0_implementation_defect_classification_withdrawn
         summary: >-
-          Second-pass, post-clean detector, and weight flags occur after
-          cross-detector mixing without recomputation or descendant invalidation.
+          The current binary flag channel does not durably distinguish
+          fit-admission invalidity from post-fit output rejection or weight-only
+          noncontribution.
         closure_gate: >-
-          Adversarial late-reject fixtures prove the approved recompute/invalidate
-          policy for signal, kernel, coefficients, and every direct consumer.
+          Preserve cause and decision-stage semantics sufficient to distinguish
+          fit_invalid, postfit_output_reject, and weight_only. Prove fit-invalid
+          inputs are excluded before fitted-state arithmetic and that ordinary
+          post-fit rejection or weighting affects only the selected output.
+          Exact representation remains engineering-owned.
+        tier_A_reopen_trigger: false_owner_amended_to_bounded_contract_provenance_gap
       - id: SCI-PTC-001-F003
         class: implementation_defect
         severity: P0
@@ -4926,14 +4952,25 @@ packages:
           Every applicable frozen-core case passes without required-data skip or
           unexpected error-level messages, followed by fresh independent re-audit.
 
+    finding_count_summary:
+      total_open: 13
+      P0_implementation_defects: 3
+      P0_dependency_gaps: 2
+      P1_all_classes: 8
+      amendment_effect: >-
+        F002 moved from P0 implementation_defect to P1 contract_gap; F001 and
+        all other findings are unchanged.
+
+    tier_A_reopen_routing:
+      F001: >-
+        remains a narrow trigger only if invalid-input admission cannot be
+        repaired at the admission/interface boundary without changing the estimator
+      F002: >-
+        not a numerical reopen trigger; route to bounded typed cause,
+        decision-stage, and provenance contract work
+      F005: unchanged_consumer_dependent_response_routing
+
     unresolved_scientific_decisions:
-      - id: SCI-PTC-001-D002
-        owner: PTC_validity_and_response_owner
-        question: scientific invariant for influence from a later-rejected input
-        proposed_disposition: >-
-          Approve only that no scientifically eligible output may retain
-          influence from a later-rejected input. Representation and the
-          recompute-versus-invalidate mechanism remain engineering choices.
       - id: SCI-PTC-001-D003
         owner: PTC_response_product_owner
         question: conditioned, local-Jacobian, global/extended, uncertainty, and unavailable response classes
@@ -4961,7 +4998,8 @@ packages:
           Require eligible-only arithmetic, coupled signal/validity surrogate
           shifts, fail-closed support, and seed/algorithm/input identity for
           deterministic replay. Per-shift storage and selection uncertainty may
-          be unavailable or deferred and do not block F001/F002 repair.
+          be unavailable or deferred and do not block F001 or bounded F002
+          cause/stage/provenance repair.
 
     resolved_scientific_decisions:
       - id: SCI-PTC-001-D001
@@ -4971,7 +5009,7 @@ packages:
         authority: SCI-PTC-001-COORDINATOR-DECISION-BRIEF-2026-08-08
         authority_path: >-
           doc/audits/packages/SCI-PTC-001_COORDINATOR_DECISION_BRIEF_2026-08-08.md
-        authority_sha256: cccd0a6c0d855faceef8581157a7e63c58352b8676e2e53c07e49348bcb9ad1f
+        authority_sha256: 52cdc7d691efb510e0c5e2cd8ad6e3817952995af9f719cbaf4b2e6af1adb793
         approved_contract: >-
           The stage dependency is RTC to optional PTC to optional mapmaking.
           PTC-disabled is an RTC-only terminal mode: bypass all mean
@@ -4980,6 +5018,29 @@ packages:
           outputs. Mapmaking requires PTC; PTC may run without mapmaking for
           processed timestream outputs; PTC sub-options have meaning only when
           the PTC stage is enabled.
+      - id: SCI-PTC-001-D002
+        owner: PTC_validity_and_response_owner
+        disposition: approved_with_owner_amendment
+        decision_date: 2026-08-08
+        authority: SCI-PTC-001-D002-OWNER-AMENDMENT-2026-08-08
+        authority_path: >-
+          doc/audits/packages/SCI-PTC-001_D002_OWNER_AMENDMENT_2026-08-08.md
+        authority_sha256: f57f1afdfe561db9ebd49c51edf1c716c017838dce5ee1bca679e95ba5401e63
+        approved_contract: >-
+          Inputs known to be invalid for estimating the PTC model must be
+          excluded before fitted-state arithmetic. A later result requires
+          refitting or fitted-product invalidation only when its typed cause
+          explicitly reclassifies that input as fit-invalid. Residual-based
+          post-PCA sample rejection, clean-state detector-quality selection,
+          and coefficient-based preference are downstream eligibility/weighting
+          decisions; they directly exclude or downweight the selected output
+          only and do not automatically invalidate the PCA state or other
+          detectors.
+        minimum_semantics:
+          - fit_invalid
+          - postfit_output_reject
+          - weight_only
+        representation_owner: engineering
 
     local_evidence:
       id: SCI-PTC-001-LOCAL-001
@@ -5001,7 +5062,7 @@ packages:
         - flagged/non-finite eligible-only mean, covariance, selection, and projection
         - coupled null signal/mask shifts, deterministic seeds, shifts, and selection uncertainty
         - source-mask boundaries and selected/rejected sample/detector causal influence
-        - second-pass and post-clean late rejection recompute/invalidate behavior
+        - typed fit-invalid pre-fit exclusion and post-fit reject/weight-only output behavior
         - unequal calibration factors, every coefficient family, units, normalization, and invalid domains
         - constant, impulse, sinusoid, point, extended, conditioned, and local response
         - factor-one/downsampled rate, phase, cardinality, and full/mini/diagnostic identity
@@ -5141,6 +5202,26 @@ packages:
         arrival: before_dispatch
         status: submitted
         supersedes: SCI-VAL-001-XAUD-005
+      - id: SCI-VAL-001-XAUD-008
+        path: >-
+          doc/audits/handoffs/SCI-VAL-001/SCI-VAL-001-XAUD-008.yaml
+        sha256: >-
+          7f85804f47c9d3d9f3295bcb4702f36c8286373d23c7604ef4291d4346f9c6d0
+        source_package: SCI-PTC-001
+        review_phase: post_core_evidence
+        arrival: after_audit_completion
+        status: superseded
+        superseded_by: SCI-VAL-001-XAUD-009
+      - id: SCI-VAL-001-XAUD-009
+        path: >-
+          doc/audits/handoffs/SCI-VAL-001/SCI-VAL-001-XAUD-009.yaml
+        sha256: >-
+          a6c5b45884e98de5d502afb1deacc58c8eb5b39cbe772f44dce2bc598f0bdf5d
+        source_package: SCI-PTC-001
+        review_phase: post_core_evidence
+        arrival: after_audit_completion
+        status: submitted
+        supersedes: SCI-VAL-001-XAUD-008
     outgoing_handoffs: []
     queued_post_core_evidence:
       - id: ALIGN-3C273-PTC-VAL-POSTCORE-2026-08-08

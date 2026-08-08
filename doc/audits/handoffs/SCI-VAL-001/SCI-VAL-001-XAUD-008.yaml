@@ -24,7 +24,7 @@ priority: P0
 evidence_basis: observed
 review_phase: post_core_evidence
 arrival: after_audit_completion
-status: submitted
+status: superseded
 
 summary: >-
   Direct finite and unflagged PTC output does not prove absence of invalid
@@ -109,10 +109,14 @@ evidence:
     note: Exact-source findings, response analysis, consumer matrix, and evidence limits.
 
 recipient_disposition:
-  status: pending_recipient_review
+  status: superseded
   late_arrival_route: not_applicable
   actions: []
-  rationale: null
+  rationale: >-
+    Superseded before VAL dispatch by SCI-VAL-001-XAUD-009, which applies the
+    owner's approved D002 amendment and withdraws the blanket late-rejection
+    recompute/transitive-invalidation claim. No recipient scientific
+    disposition has been made.
   target_audit_branch: null
   target_audit_commit: null
   affected_findings: []
@@ -120,4 +124,4 @@ recipient_disposition:
   contract_or_report_locations: []
 
 supersedes: null
-superseded_by: null
+superseded_by: SCI-VAL-001-XAUD-009
