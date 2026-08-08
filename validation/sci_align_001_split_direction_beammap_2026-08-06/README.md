@@ -154,14 +154,32 @@ variable. The repair creates this mutable field with the initial PTC file
 schema. The existing scalar NetCDF writer is idempotent, so the later general
 header updates the same field rather than duplicating it. A focused lifecycle
 test covers schema creation, Beammap's iteration-time update, and the final
-auxiliary-metadata pass. The failed partial PTC is not accepted evidence; a
-fresh-root Unity retry is required.
+auxiliary-metadata pass. The failed partial PTC is not accepted evidence. The
+fresh-root Unity retry completed successfully and retained 153,360 samples,
+199 scans, 5,110 detectors, the required signal/flag/weight fields, detector
+and telescope pointing on the common timebase, and `FRUITLOOPS_ITER = 0`.
 
 This is a confirmed engineering product-lifecycle defect, kept separate from
 the left/right timing interpretation. Its exact Unity trigger, root cause,
 repair alternatives, regression evidence, and future SCI-BEAM-001 routing are
 recorded in
 `../../handoff/SCI_ALIGN_001_PTC_ITERATION_METADATA_DEFECT_2026-08-07.md`.
+
+`tools/diagnostics/analyze_sci_align_001_ptc_sampling.py` consumes that full
+PTC and the completed standard/left/right naive maps for one detector. It
+self-classifies scan direction from the retained telescope trajectory and
+replays Citlali's exact naive nearest-pixel assignment and sample-acceptance
+rules. The support audit distinguishes accepted-hit plus map support,
+accepted-hit only, map support only, and neither. It also compares final
+detector pointing with reported telescope pointing, including within-scan
+step residuals. White pixels with zero accepted hits are therefore
+demonstrated sparse nearest-pixel coverage; map-only or hit-only pixels expose
+a product/replay mismatch; and discontinuous detector-minus-telescope steps
+identify an upstream pointing problem. Because the retained full PTC and the
+directional maps are separate replays, the tool also reports the best bounded
+constant integer registration without treating that descriptive registration
+as physical motion. Outputs are a two-page PDF, scan and support ECSV tables,
+compressed hit-count arrays, a hash-bound manifest, and checksums.
 
 See `UNITY_RUNBOOK.md` for the owner-run 150819-first campaign and
 `RETURN_BUNDLE_SPEC.md` for return evidence.

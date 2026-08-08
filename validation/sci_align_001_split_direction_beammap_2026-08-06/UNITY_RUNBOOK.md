@@ -351,7 +351,72 @@ decision JSON is scoped only to filtering/cleaning/mapmaking downstream of
 synthetic-kernel creation; it cannot exclude an FPGA/raw metadata-to-integration
 association error.
 
-### Pending mapmaker-dependence control: naive mapmaking
+### Audit the naive-map sampling against the retained full PTC
+
+The mapmaker-dependence control and the repaired full-PTC replay are complete.
+Use the latter only as sample/pointing authority and the former as the
+standard/left/right map authority. This read-only job selects UID 199, derives
+direction from the retained `az_phys` trajectory, and replays the exact naive
+nearest-pixel support rule. It does not modify either reduction.
+
+```bash
+export SCI_NAIVE_ROOT=/work/toltec/wilson/citlali_testing/beammaps/3c273/sci_align_001_split_direction_beammap_onepass_naive_2026-08-07
+export SCI_PTC_ROOT=/work/toltec/wilson/citlali_testing/beammaps/3c273/sci_align_001_naive_full_ptc_singlepass_150819_2026-08-07_retry1
+export SCI_PTC_TOD="$SCI_PTC_ROOT/o150819/redu00/150819/raw/full_ptc/toltec_commissioning_beammap_150819_ptc_timestream.nc"
+export SCI_SAMPLING_ROOT="$SCI_PTC_ROOT/review_uid199_naive_sampling_v1"
+export SCI_SAMPLING_CACHE="$SCI_PTC_ROOT/_sampling_cache"
+
+test -f "$SCI_PTC_TOD"
+test ! -e "$SCI_SAMPLING_ROOT"
+mkdir -p "$SCI_PTC_ROOT/jobs" "$SCI_SAMPLING_CACHE/matplotlib" "$SCI_SAMPLING_CACHE/xdg"
+
+cat > "$SCI_PTC_ROOT/jobs/run_o150819_uid199_sampling_v1.sbatch" <<EOF
+#!/usr/bin/env bash
+#SBATCH --job-name=sci-align-150819-sampling
+#SBATCH --time=04:00:00
+#SBATCH --mem=32G
+#SBATCH --cpus-per-task=1
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --partition=toltec-cpu
+#SBATCH --output=$SCI_PTC_ROOT/jobs/%x_%j.out
+#SBATCH --error=$SCI_PTC_ROOT/jobs/%x_%j.err
+#SBATCH --parsable
+set -euo pipefail
+cd $SCI_REPO
+OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+MPLBACKEND=Agg MPLCONFIGDIR=$SCI_SAMPLING_CACHE/matplotlib \
+XDG_CACHE_HOME=$SCI_SAMPLING_CACHE/xdg \
+python $SCI_REPO/tools/diagnostics/analyze_sci_align_001_ptc_sampling.py \
+  --ptc-tod $SCI_PTC_TOD \
+  --map-reduction-root $SCI_NAIVE_ROOT/o150819 \
+  --output $SCI_SAMPLING_ROOT \
+  --uid 199 --array a1100 --half-width-arcsec 25
+EOF
+
+bash -n "$SCI_PTC_ROOT/jobs/run_o150819_uid199_sampling_v1.sbatch"
+sampling_job_id=$(sbatch "$SCI_PTC_ROOT/jobs/run_o150819_uid199_sampling_v1.sbatch")
+sampling_job_id=${sampling_job_id%%;*}
+printf 'obsnum=150819 uid=199 sampling_job_id=%s\n' "$sampling_job_id" \
+  | tee "$SCI_PTC_ROOT/jobs/o150819_uid199_sampling_job_id.txt"
+```
+
+After completion, require `COMPLETED`/`0:0`, successful checksums, and two PDF
+pages. Interpret black support pixels as agreement, orange as accepted-PTC-hit
+only, magenta as map-support only, and white as neither. Only the black/white
+pattern supports ordinary sparse nearest-pixel coverage; colored disagreement
+requires investigation of replay identity or retained-product semantics.
+
+```bash
+sacct -X -j "$sampling_job_id" \
+  --format=JobID,JobName%34,State,ExitCode,Elapsed,MaxRSS,Start,End
+(cd "$SCI_SAMPLING_ROOT" && shasum -a 256 -c SHA256SUMS)
+pdfinfo "$SCI_SAMPLING_ROOT/ptc_sampling_audit_o150819_uid199.pdf" \
+  | rg '^(Pages|Page size|File size)'
+sed -n '1,100p' "$SCI_SAMPLING_ROOT/mode_support_metrics.ecsv"
+```
+
+### Completed mapmaker-dependence control: naive mapmaking
 
 After preserving the retained-kernel result, prepare a new ObsNum 150819
 `direction_mode: all` reduction from the exact accepted retry2 rendered config.
@@ -361,9 +426,9 @@ direction mode, all RTC/PTC/filtering settings, inputs, APT authority,
 `runtime.crop_detector_to_telescope_support: false`, executable, and commit.
 Before submission, write a manifest containing source/rendered config hashes
 and a machine-checked recursive diff allowlisting exactly those two YAML
-paths. Do not edit or reuse the accepted retry2 output root. Detailed launch
-commands remain pending until the retained source config and its exact current
-`mapmaking.method` value are reverified on Unity.
+paths. Do not edit or reuse the accepted retry2 output root. The completed
+control satisfied that contract and is the map authority used by the sampling
+audit above.
 
 ## 4. Replicate with 148670
 
