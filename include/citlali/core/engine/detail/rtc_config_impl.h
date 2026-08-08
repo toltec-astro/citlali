@@ -46,9 +46,13 @@ void Engine::get_rtc_config(CT &config) {
     auto &raw_config =
         citlali::pipeline::timestream_config(*this).raw_time_chunk;
     if (!config_diag.has_errors()) {
+        rtcproc.calibration.select_reference_spectral_index(
+            citlali::pipeline::calibration_config(*this)
+                .reference.spectral_index_alpha);
         citlali::pipeline::initialize_raw_timestream_authority(
             typed_request,
             citlali::pipeline::interface_sync_config(*this),
+            citlali::pipeline::calibration_config(*this),
             citlali::pipeline::raw_timestream_plan(*this), raw_config,
             rtcproc, telescope.fsmp, ASEC_TO_RAD, FWHM_TO_STD);
     }

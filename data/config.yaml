@@ -147,6 +147,8 @@ runtime: # parameters to control how citlali runs
   parallel_policy: seq # parallelization policy (seq=sequential, omp=OpenMP parallelization)
   reduction_type: science # reduction engine (science, pointing, beammap)
   use_subdir: true # create "redu00, redu01,..." sub-directories.  increments automatically.
+calibration: # reduction-level calibration reference convention
+  reference_spectral_index_alpha: 0 # S_nu proportional to nu^alpha; supported exactly: -1, 0, 2, 4; omission defaults to 0
 timestream: # timestream reduction parameters
   type: xs # type of TOD (xs, rs, is, qs)
   enabled: true # enable or disable TOD processing (to be implemented)

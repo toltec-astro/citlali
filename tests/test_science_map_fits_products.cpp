@@ -1731,6 +1731,16 @@ TEST(science_map_fits_products,
         Beammap beammap;
         configure_production_beammap_writer(
             beammap, shape.arrays, shape.flags, shape.array_count);
+        if (shape_index == 0) {
+            beammap.typed_config.timestream.raw_time_chunk
+                .extinction_correction_enabled = true;
+            beammap.rtcproc.run_extinction = true;
+            beammap.rtcproc.calibration.select_reference_spectral_index(2.0);
+            beammap.rtcproc.calibration.setup(0.2);
+            beammap.telescope.tau_225_GHz = 0.2;
+            beammap.telescope.tel_data["TelElAct"] =
+                Eigen::VectorXd::Constant(2, 45.0 * pi / 180.0);
+        }
         citlali::pipeline::begin_noise_product_publication(
             cleanup.path, beammap.noise_plan);
         auto buffer = make_production_beammap_noise_buffer(
@@ -1849,6 +1859,38 @@ TEST(science_map_fits_products,
             EXPECT_EQ(
                 realization_join.realization_image_count,
                 2U * selected_in_array);
+            if (shape_index == 0 && array_index == 0) {
+                fitsfile *file = nullptr;
+                int status = 0;
+                ASSERT_EQ(
+                    fits_open_file(
+                        &file, data_path.c_str(), READONLY, &status),
+                    0);
+                EXPECT_EQ(
+                    read_required_fits_string(file, "CAL.OPERATOR_ID"),
+                    "am12_fixed_djf25_piecewise_linear_los_tau_v1");
+                EXPECT_DOUBLE_EQ(
+                    read_required_fits_double(file, "CAL.ALPHA.EFFECTIVE"),
+                    2.0);
+                EXPECT_DOUBLE_EQ(
+                    read_required_fits_double(file, "CAL.ALPHA.REALIZED"),
+                    2.0);
+                EXPECT_DOUBLE_EQ(
+                    read_required_fits_double(file, "CAL.TAU225"), 0.2);
+                EXPECT_EQ(
+                    read_required_fits_string(file, "CAL.QUALITY_REGIME"),
+                    "engineering_availability_regime");
+                EXPECT_DOUBLE_EQ(
+                    read_required_fits_double(file, "CAL.X_REF"), 0.0);
+                int valid = 0;
+                ASSERT_EQ(
+                    fits_read_key(
+                        file, TLOGICAL, "CAL.VALID", &valid, nullptr,
+                        &status),
+                    0);
+                EXPECT_NE(valid, 0);
+                EXPECT_EQ(fits_close_file(file, &status), 0);
+            }
         }
     }
 }

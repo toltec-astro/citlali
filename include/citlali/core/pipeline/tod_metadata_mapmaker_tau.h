@@ -61,4 +61,67 @@ void add_tod_mean_tau_vars(netCDF::NcFile &fo, bool extinction_enabled,
     else {
         add_zero_mean_tau_vars(fo, calib, array_name_map);
     }
+    const auto requested =
+        rtcproc.calibration.requested_reference_spectral_index_alpha();
+    add_netcdf_var(
+        fo, "CAL.ALPHA.REQUESTED_AVAILABLE", requested.has_value());
+    if (requested) {
+        add_netcdf_var(fo, "CAL.ALPHA.REQUESTED", *requested);
+    }
+    add_netcdf_var(
+        fo, "CAL.ALPHA.EFFECTIVE",
+        rtcproc.calibration.effective_reference_spectral_index_alpha());
+    add_netcdf_var(
+        fo, "CAL.ALPHA.REALIZED",
+        rtcproc.calibration.effective_reference_spectral_index_alpha());
+    add_netcdf_var(
+        fo, "CAL.ALPHA.DEFAULT_APPLIED",
+        rtcproc.calibration.reference_spectral_index_default_applied());
+    add_netcdf_var<std::string>(
+        fo, "CAL.OPERATOR_ID",
+        std::string{rtcproc.calibration.operator_id()});
+    add_netcdf_var<std::string>(
+        fo, "CAL.OPERATOR_CONTRACT_SHA256",
+        std::string{rtcproc.calibration.operator_contract_sha256()});
+    add_netcdf_var<std::string>(
+        fo, "CAL.NODE_TABLE_SHA256",
+        std::string{rtcproc.calibration.operator_nodes_sha256()});
+    add_netcdf_var<std::string>(
+        fo, "CAL.PASSBAND_SET_ID",
+        std::string{rtcproc.calibration.passband_set_id()});
+    add_netcdf_var<std::string>(
+        fo, "CAL.REFERENCE_PROFILE_ID",
+        std::string{rtcproc.calibration.reference_profile_id()});
+    add_netcdf_var<std::string>(
+        fo, "CAL.QUALITY_REGIME",
+        rtcproc.calibration.calibration_quality_regime);
+    add_netcdf_var(
+        fo, "CAL.VALID", rtcproc.calibration.calibration_valid);
+    add_netcdf_var<std::string>(
+        fo, "CAL.VALIDITY_REASON",
+        rtcproc.calibration.calibration_validity_reason);
+    const bool tau225_available =
+        std::isfinite(rtcproc.calibration.realized_tau225);
+    add_netcdf_var(fo, "CAL.TAU225_AVAILABLE", tau225_available);
+    if (tau225_available) {
+        add_netcdf_var(
+            fo, "CAL.TAU225", rtcproc.calibration.realized_tau225);
+    }
+    const bool reduction_max_tau225_available =
+        std::isfinite(rtcproc.calibration.reduction_maximum_tau225);
+    add_netcdf_var(
+        fo, "CAL.REDUCTION_MAX_TAU225_AVAILABLE",
+        reduction_max_tau225_available);
+    if (reduction_max_tau225_available) {
+        add_netcdf_var(
+            fo, "CAL.REDUCTION_MAX_TAU225",
+            rtcproc.calibration.reduction_maximum_tau225);
+    }
+    add_netcdf_var<std::string>(
+        fo, "CAL.REDUCTION_QUALITY_REGIME",
+        rtcproc.calibration.reduction_calibration_quality_regime);
+    add_netcdf_var<std::string>(
+        fo, "CAL.TAU_FRAME",
+        std::string{"line_of_sight_at_sample_elevation"});
+    add_netcdf_var(fo, "CAL.X_REF", 0.0);
 }

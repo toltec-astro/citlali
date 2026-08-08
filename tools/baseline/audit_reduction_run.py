@@ -319,10 +319,11 @@ PROVENANCE_SIDECARS = {
     },
     "raw_timestream": {
         "filename": "raw_timestream_provenance.yaml",
-        "schema_version": "citlali-raw-timestream-provenance-v2",
+        "schema_version": "citlali-raw-timestream-provenance-v3",
         "accepted_schema_versions": (
             "citlali-raw-timestream-provenance-v1",
             "citlali-raw-timestream-provenance-v2",
+            "citlali-raw-timestream-provenance-v3",
         ),
         "required_paths": (
             ("initialized",),
@@ -604,7 +605,10 @@ def raw_provenance_semantic_errors(data: dict[str, Any]) -> list[str]:
         if data["initialized"] is not True:
             errors.append("raw execution plan is not initialized")
 
-        if data.get("schema_version") == "citlali-raw-timestream-provenance-v2":
+        if data.get("schema_version") in {
+            "citlali-raw-timestream-provenance-v2",
+            "citlali-raw-timestream-provenance-v3",
+        }:
             requested_offsets = data["requested"]["interface_sync_offset"]
             effective_offsets = data["effective"]["config"][
                 "interface_sync_offset"
@@ -636,6 +640,115 @@ def raw_provenance_semantic_errors(data: dict[str, Any]) -> list[str]:
                         )
             if requested_offsets != effective_offsets:
                 errors.append("interface-sync requested/effective values differ")
+
+        if data.get("schema_version") == "citlali-raw-timestream-provenance-v3":
+            expected_identity = {
+                "atmosphere_operator_id":
+                    "am12_fixed_djf25_piecewise_linear_los_tau_v1",
+                "atmosphere_operator_contract_sha256":
+                    "7a064ff768a3de4f427f1338d94ef6cb9026d248f3c3c816fc3dfc96d156e36a",
+                "atmosphere_node_table_sha256":
+                    "fd688a4cd3f46585b08631bc63a562aed482feb9b24ec9ee0071b70db7eb8a5f",
+                "passband_set_id":
+                    "toltec-passband-set-v1:sha256:5e6f38f14bcae93a29ffe8362c52b15209f51aee4e48373b23aaa5ec2f8a6433",
+                "reference_profile_id":
+                    "LMT_DJF_25.amc:sha256:aeeeeb48bef422f2d9392b5d7a3d62ab1887fd9e7c10322d5246d914841ba866",
+            }
+            requested_calibration = data["requested"]["calibration"]
+            effective_calibration = data["effective"]["config"]["calibration"]
+            requested_alpha = requested_calibration[
+                "reference_spectral_index_alpha"
+            ]
+            effective_alpha = effective_calibration[
+                "reference_spectral_index_alpha"
+            ]
+            default_applied = effective_calibration[
+                "reference_spectral_index_default_applied"
+            ]
+            if effective_alpha not in {-1, 0, 2, 4}:
+                errors.append("effective calibration alpha is unsupported")
+            if type(default_applied) is not bool:
+                errors.append("calibration alpha default status is not boolean")
+            if requested_alpha.get("available") is True:
+                if requested_alpha.get("value") != effective_alpha:
+                    errors.append("requested/effective calibration alpha differs")
+                if default_applied is not False:
+                    errors.append("explicit calibration alpha is marked defaulted")
+            else:
+                if effective_alpha != 0 or default_applied is not True:
+                    errors.append("omitted calibration alpha did not default to zero")
+
+            observation_calibration = data["observation"]["value"]
+            realized_calibration = data["realized"]
+            for name in (
+                "tau225",
+                "reference_spectral_index_alpha",
+                "reference_spectral_index_default_applied",
+                *expected_identity,
+                "calibration_quality_regime",
+                "calibration_valid",
+                "calibration_validity_reason",
+            ):
+                for label, section in (
+                    ("observation", observation_calibration),
+                    ("realized", realized_calibration),
+                ):
+                    record = section.get(name)
+                    if not isinstance(record, dict) or record.get("available") is not True:
+                        errors.append(f"{label} calibration {name} is unavailable")
+
+            def calibration_value(section: dict[str, Any], name: str) -> Any:
+                record = section.get(name)
+                return record.get("value") if isinstance(record, dict) else None
+
+            for name, expected in expected_identity.items():
+                for label, section in (
+                    ("observation", observation_calibration),
+                    ("realized", realized_calibration),
+                ):
+                    if calibration_value(section, name) != expected:
+                        errors.append(f"{label} calibration {name} is not approved")
+
+            for name in (
+                "tau225",
+                "reference_spectral_index_alpha",
+                "reference_spectral_index_default_applied",
+                *expected_identity,
+                "calibration_quality_regime",
+                "calibration_valid",
+                "calibration_validity_reason",
+            ):
+                if calibration_value(observation_calibration, name) != calibration_value(
+                    realized_calibration, name
+                ):
+                    errors.append(f"observation/realized calibration {name} differs")
+
+            realized_alpha = calibration_value(
+                realized_calibration, "reference_spectral_index_alpha"
+            )
+            realized_default = calibration_value(
+                realized_calibration, "reference_spectral_index_default_applied"
+            )
+            if realized_alpha != effective_alpha or realized_default != default_applied:
+                errors.append("effective/realized calibration alpha differs")
+            tau225 = calibration_value(realized_calibration, "tau225")
+            if (
+                isinstance(tau225, bool)
+                or not isinstance(tau225, (int, float))
+                or not math.isfinite(float(tau225))
+                or not 0.0 <= float(tau225) <= 0.25
+            ):
+                errors.append("realized calibration tau225 is outside support")
+            elif calibration_value(realized_calibration, "calibration_valid") is True:
+                expected_regime = (
+                    "science_qualification_regime"
+                    if float(tau225) <= 0.15
+                    else "engineering_availability_regime"
+                )
+                if calibration_value(
+                    realized_calibration, "calibration_quality_regime"
+                ) != expected_regime:
+                    errors.append("calibration quality regime is inconsistent")
 
         observation = data["observation"]
         if observation.get("available") is not True:

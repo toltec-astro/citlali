@@ -490,6 +490,52 @@ at the pointing fitter's upper bound is not made interpretable by stable
 iteration-to-iteration motion or by disk normalization; it remains a
 measurement-limited PSF result.
 
+## SCI-CAL-001 Fixed DJF25 Atmosphere Operator
+
+The versioned calibration operator
+`am12_fixed_djf25_piecewise_linear_los_tau_v1` is the sole atmosphere
+operator for both the science-qualification and engineering-availability
+regimes. Its closed support is `0 <= tau225 <= 0.25` and
+`25 <= elevation <= 80 deg`. The `tau225=0.15` boundary changes truthful
+quality metadata only; it does not select another operator or interpolation
+path. Inputs outside the closed support, non-finite inputs, missing sample
+elevation, or unsupported array identity fail closed.
+
+The source-controlled contract and node table have SHA-256 identities
+`7a064ff768a3de4f427f1338d94ef6cb9026d248f3c3c816fc3dfc96d156e36a`
+and
+`fd688a4cd3f46585b08631bc63a562aed482feb9b24ec9ee0071b70db7eb8a5f`,
+respectively. The immutable nodes already represent line-of-sight optical
+depth at their sample elevations. Elevation interpolation is shape-preserving
+within each bound opacity surface, and interpolation between opacity anchors
+is piecewise linear in line-of-sight optical depth. Transmission is
+`exp(-tau_los)`, is exactly unity at `tau225=0`, is finite and positive over
+the supported domain, and is exact at the bound anchors and endpoints.
+
+Flux calibration uses the full sample airmass with the top-of-atmosphere
+pivot `X_ref=0`. Citlali therefore evaluates the selected surface directly at
+each sample elevation and does not multiply the resulting line-of-sight
+optical depth by a second airmass factor. The selected array/alpha surface and
+its shape-preserving derivatives are prepared once per reduction, not
+integrated through the bandpass per sample.
+
+`calibration.reference_spectral_index_alpha` is a reduction-level reference
+convention. Omission requests the documented default `alpha=0`; explicit
+values are supported only for `{-1, 0, 2, 4}`. Non-finite or other values are
+invalid, and interpolation or extrapolation in alpha is prohibited. Requested,
+effective, observation-resolved, and realized records distinguish an omitted
+default from an explicit zero and retain operator/profile identifiers, node
+and passband provenance/digests, quality regime, tau support, and calibration
+validity.
+
+Beammap fits receive the same sample-level corrected timestream surface as
+other reductions. The Beammap source flux and resulting `flxscale` retain
+their top-of-atmosphere reference plane; no second extinction factor is
+applied during fit conversion. This calibration contract appends metadata to
+existing required products but does not alter the approved `SCI-MAP-001`
+ordinary-naive estimator or `SCI-NOI-002` noise estimator, identity, validity,
+writer/finalizer, atomic-publication, or provenance behavior.
+
 ## Validity, Missing Data, And Non-Finite Values
 
 Required configuration scalars and vector elements are finite unless the

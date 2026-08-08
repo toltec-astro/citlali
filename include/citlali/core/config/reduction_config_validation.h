@@ -17,6 +17,7 @@ namespace citlali::config {
 inline ValidationReport validate(const ReductionConfig &config) {
     ValidationReport report;
     validate(config.runtime, report);
+    validate(config.calibration, report);
     validate(config.interface_sync, report);
     validate(config.timestream, report);
     validate(config.mapmaking, report);

@@ -112,6 +112,11 @@ rules:
     classification: user-facing
     owner: compact
     reason: Selects the reduction intent.
+  - id: user-calibration-reference-spectrum
+    pattern: calibration.reference_spectral_index_alpha
+    classification: user-facing
+    owner: compact
+    reason: Selects the supported reduction-level reference spectrum for calibrated map meaning; omission defaults to alpha zero.
   - id: user-output-dir
     pattern: runtime.output_dir
     classification: user-facing

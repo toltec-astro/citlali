@@ -55,6 +55,27 @@ inline void complete_raw_timestream_observation(
     plan.realized.completed_scan_count = completed_scan_count;
     plan.realized.required_timestream_write_count =
         required_timestream_write_count;
+    plan.realized.reference_spectral_index_alpha =
+        plan.observation->reference_spectral_index_alpha;
+    plan.realized.reference_spectral_index_default_applied =
+        plan.observation->reference_spectral_index_default_applied;
+    plan.realized.tau225 = plan.observation->tau225;
+    plan.realized.atmosphere_operator_id =
+        plan.observation->atmosphere_operator_id;
+    plan.realized.atmosphere_operator_contract_sha256 =
+        plan.observation->atmosphere_operator_contract_sha256;
+    plan.realized.atmosphere_node_table_sha256 =
+        plan.observation->atmosphere_node_table_sha256;
+    plan.realized.passband_set_id =
+        plan.observation->passband_set_id;
+    plan.realized.reference_profile_id =
+        plan.observation->reference_profile_id;
+    plan.realized.calibration_quality_regime =
+        plan.observation->calibration_quality_regime;
+    plan.realized.calibration_valid =
+        plan.observation->calibration_valid;
+    plan.realized.calibration_validity_reason =
+        plan.observation->calibration_validity_reason;
     plan.realized.execution_completed = true;
 }
 

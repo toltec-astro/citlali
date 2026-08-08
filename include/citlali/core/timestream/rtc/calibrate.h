@@ -1,155 +1,134 @@
 #pragma once
 
-#include <map>
-#include <string>
-#include <stdexcept>
+#include <citlali/core/timestream/atmosphere_operator.h>
+#include <citlali/core/timestream/timestream.h>
+#include <citlali/core/utils/constants.h>
+
 #include <Eigen/Core>
 
-#include <citlali/core/utils/constants.h>
-#include <citlali/core/timestream/extinction_model_selection.h>
-#include <citlali/core/timestream/timestream.h>
+#include <cmath>
+#include <limits>
+#include <map>
+#include <memory>
+#include <optional>
+#include <stdexcept>
+#include <string>
+#include <string_view>
 
 namespace timestream {
 
 class Calibration {
 public:
-    // get logger
     std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
 
-    // extinction model
-    std::string extinction_model;
+    std::string extinction_model{"N/A"};
+    std::string calibration_quality_regime{"not_applied"};
+    std::string reduction_calibration_quality_regime{"not_applied"};
+    std::string calibration_validity_reason{"extinction_not_applied"};
+    bool calibration_valid = false;
+    double realized_tau225 = std::numeric_limits<double>::quiet_NaN();
+    double reduction_maximum_tau225 =
+        std::numeric_limits<double>::quiet_NaN();
 
-    // coefficients for transmission ratios fit to order 6 polynomial
-    std::map<std::string,Eigen::VectorXd> tx_ratio_coeff;
-
-    std::map<std::string, double> tx_225_zenith = {
-        {"am_q0", 1.0},
-        {"am_q25", 0.9500275},
-        {"am_q50", 0.9142065},
-        {"am_q75", 0.8515054},
-        {"am_q95", 0.7337698},
-    };
-
-    void setup(double tau_225_zenith) {
-        extinction_model =
-            select_extinction_model(tau_225_zenith, tx_225_zenith);
-
-        // allocate transmission coefficients (order 6 polynomial)
-        tx_ratio_coeff["a1100"].resize(7);
-        tx_ratio_coeff["a1400"].resize(7);
-        tx_ratio_coeff["a2000"].resize(7);
-
-        // am_q0
-        if (extinction_model=="am_q0") {
-            tx_ratio_coeff["a1100"] << 0, 0, 0, 0, 0, 0, 0;
-            tx_ratio_coeff["a1400"] << 0, 0, 0, 0, 0, 0, 0;
-            tx_ratio_coeff["a2000"] << 0, 0, 0, 0, 0, 0, 0;
-        }
-
-        // am_q25
-        else if (extinction_model=="am_q25") {
-            tx_ratio_coeff["a1100"] << -0.12008024,  0.72422015, -1.81734478,  2.45313012, -1.92159695,  0.86918801, 0.78604295;
-            tx_ratio_coeff["a1400"] << 0.02619509, -0.15757661, 0.39400473, -0.52912696, 0.411213, -0.18360141, 1.04398466;
-            tx_ratio_coeff["a2000"] << 0.16726241, -1.00436302,  2.50507317, -3.35219659, 2.59080373, -1.14622096, 1.26931683;
-        }
-
-        // am_q50
-        else if (extinction_model=="am_q50") {
-            tx_ratio_coeff["a1100"] << -0.18770822,  1.13390437, -2.85173457,  3.8617083,  -3.03996805,  1.38624303,
-                                           0.65300169;
-            tx_ratio_coeff["a1400"] << 0.04292884, -0.25817762,  0.64533115, -0.86622214,  0.67267823, -0.29996916,
-                                           1.07167603;
-            tx_ratio_coeff["a2000"] << 0.35178447, -2.10859714,  5.24620825, -6.9952531,   5.37645792, -2.35675076,
-                                           1.54286813;
-        }
-
-        // am_q75
-        else if (extinction_model=="am_q75") {
-            tx_ratio_coeff["a1100"] << -0.28189529,  1.70842347, -4.31606883,  5.88248549, -4.67702093,  2.16747228,
-                                           0.4393435;
-            tx_ratio_coeff["a1400"] << 0.07581154, -0.45574885,  1.13852458, -1.52697451,  1.18425865, -0.5269455,
-                                           1.12531753;
-            tx_ratio_coeff["a2000"] << 0.79869908,  -4.77265095, 11.82393401, -15.67007557,  11.93052031,
-                                           -5.14788907,   2.14595898;
-        }
-
-        // am_q95
-        else if (extinction_model=="am_q95") {
-            tx_ratio_coeff["a1100"] <<  -1.21882233,   6.67068453, -14.96466875,  17.78045563, -12.10288687,
-                                           4.76050807,  -0.06765066;
-            tx_ratio_coeff["a1400"] << 0.76090502, -4.05867663,  8.78487281, -9.90872343,  6.2198602,  -2.13790165,
-                                           1.3668983;
-            tx_ratio_coeff["a2000"] << 16.0063036,   -84.30325144, 179.28096414, -197.05751682, 118.73627425,
-                                           -37.99279818, 6.55457576;
-        }
+    void select_reference_spectral_index(
+        std::optional<double> requested_alpha) {
+        atmosphere_operator_.select_reference_spectral_index(requested_alpha);
     }
 
-    // polynomial fit to transmission ratio as a function of elevation (radians)
-    template <typename DerivedA, typename DerivedB>
-    auto tau_polynomial(Eigen::DenseBase<DerivedA> &coeff, Eigen::DenseBase<DerivedB> &elev) {
-
-        return coeff(0)*pow(elev.derived().array(),6) + coeff(1)*pow(elev.derived().array(),5) +
-               coeff(2)*pow(elev.derived().array(),4) + coeff(3)*pow(elev.derived().array(),3) +
-               coeff(4)*pow(elev.derived().array(),2) + coeff(5)*pow(elev.derived().array(),1) +
-               coeff(6);
+    void setup(double tau225) {
+        calibration_quality_regime = std::string{
+            FixedDjf25AtmosphereOperator::quality_regime(tau225)};
+        if (!std::isfinite(reduction_maximum_tau225)
+            || tau225 > reduction_maximum_tau225) {
+            reduction_maximum_tau225 = tau225;
+        }
+        reduction_calibration_quality_regime = std::string{
+            FixedDjf25AtmosphereOperator::quality_regime(
+                reduction_maximum_tau225)};
+        extinction_model = std::string{
+            FixedDjf25AtmosphereOperator::operator_id()};
+        calibration_valid = true;
+        calibration_validity_reason = "valid";
+        realized_tau225 = tau225;
     }
 
-    // calculate tau for each toltec band for given elevations
+    void disable_extinction() {
+        extinction_model = "N/A";
+        calibration_quality_regime = "not_applied";
+        calibration_valid = false;
+        calibration_validity_reason = "extinction_not_applied";
+        realized_tau225 = std::numeric_limits<double>::quiet_NaN();
+    }
+
+    std::optional<double> requested_reference_spectral_index_alpha() const {
+        return atmosphere_operator_.requested_alpha();
+    }
+
+    double effective_reference_spectral_index_alpha() const {
+        return atmosphere_operator_.effective_alpha();
+    }
+
+    bool reference_spectral_index_default_applied() const {
+        return atmosphere_operator_.alpha_default_applied();
+    }
+
+    static constexpr std::string_view operator_id() {
+        return FixedDjf25AtmosphereOperator::operator_id();
+    }
+
+    static constexpr std::string_view operator_contract_sha256() {
+        return FixedDjf25AtmosphereOperator::contract_sha256();
+    }
+
+    static constexpr std::string_view operator_nodes_sha256() {
+        return FixedDjf25AtmosphereOperator::nodes_sha256();
+    }
+
+    static constexpr std::string_view passband_set_id() {
+        return FixedDjf25AtmosphereOperator::passband_set_id();
+    }
+
+    static constexpr std::string_view reference_profile_id() {
+        return FixedDjf25AtmosphereOperator::reference_profile_id();
+    }
+
     template <typename Derived>
-    auto calc_tau(Eigen::DenseBase<Derived> &, double);
+    auto calc_tau(const Eigen::DenseBase<Derived> &elev, double tau225) const;
 
-    // run flux calibration on the timestreams
     template <TCDataKind tcdata_kind, class calib_t>
     void calibrate_tod(TCData<tcdata_kind, Eigen::MatrixXd> &, calib_t &);
 
-    // run extinction correction on the timestreams
     template <TCDataKind tcdata_kind, class calib_t, typename tau_t>
-    void extinction_correction(TCData<tcdata_kind, Eigen::MatrixXd> &, calib_t &, tau_t &);
+    void extinction_correction(
+        TCData<tcdata_kind, Eigen::MatrixXd> &, calib_t &, const tau_t &);
+
+private:
+    FixedDjf25AtmosphereOperator atmosphere_operator_;
 };
 
 template <typename Derived>
-auto Calibration::calc_tau(Eigen::DenseBase<Derived> &elev, double tau_225_GHz) {
-
-    // tau at toltec freqs
-    std::map<int,Eigen::VectorXd> tau_freq;
-
-    if (extinction_model=="am_q0") {
-        tau_freq[0] = Eigen::VectorXd::Zero(elev.size());
-        tau_freq[1] = Eigen::VectorXd::Zero(elev.size());
-        tau_freq[2] = Eigen::VectorXd::Zero(elev.size());
-
-        return tau_freq;
+auto Calibration::calc_tau(
+    const Eigen::DenseBase<Derived> &elev, double tau225) const {
+    std::map<int, Eigen::VectorXd> los_tau_by_array;
+    for (int array_index = 0; array_index < 3; ++array_index) {
+        auto &values = los_tau_by_array[array_index];
+        values.resize(elev.size());
+        for (Eigen::Index sample = 0; sample < elev.size(); ++sample) {
+            const double elevation_rad = elev.derived()(sample);
+            if (!std::isfinite(elevation_rad)) {
+                throw std::domain_error("non-finite sample elevation");
+            }
+            const double elevation_deg = elevation_rad * 180.0 / pi;
+            values(sample) = atmosphere_operator_.line_of_sight_optical_depth(
+                array_index, tau225, elevation_deg);
+        }
     }
-
-    // zenith angle
-    auto cz = cos(pi/2 - elev.derived().array());
-    auto secz = 1. / cz;
-    auto A = secz * (1. - 0.0012 * (pow(secz.array(), 2) - 1.));
-
-    // observed 225 GHz tau
-    auto obs_tau_i = A*tau_225_GHz;
-
-    // 225 GHz transmission
-    auto tx = (-obs_tau_i).exp();
-
-    // a1100
-    auto tx_a1100 = tau_polynomial(tx_ratio_coeff["a1100"],elev).array()*tx.array();
-    tau_freq[0] = -(tx_a1100.array().log())/A.array();
-
-    // a1400
-    auto tx_a1400 = tau_polynomial(tx_ratio_coeff["a1400"],elev).array()*tx.array();
-    tau_freq[1] = -(tx_a1400.array().log())/A.array();
-
-    // a2000
-    auto tx_a2000 = tau_polynomial(tx_ratio_coeff["a2000"],elev).array()*tx.array();
-    tau_freq[2] = -(tx_a2000.array().log())/A.array();
-
-    return tau_freq;
+    return los_tau_by_array;
 }
 
 template <TCDataKind tcdata_kind, class calib_t>
-void Calibration::calibrate_tod(TCData<tcdata_kind, Eigen::MatrixXd> &in, calib_t &calib) {
-
+void Calibration::calibrate_tod(
+    TCData<tcdata_kind, Eigen::MatrixXd> &in, calib_t &calib) {
     if (calib.flux_conversion_factor.size() < in.scans.data.cols()) {
         throw std::runtime_error(
             "calibrate_tod flux_conversion_factor is shorter than detector count");
@@ -158,33 +137,62 @@ void Calibration::calibrate_tod(TCData<tcdata_kind, Eigen::MatrixXd> &in, calib_
         throw std::runtime_error(
             "calibrate_tod APT flxscale column is shorter than detector count");
     }
-
-    // loop through detectors
-    for (Eigen::Index i=0; i<in.scans.data.cols(); ++i) {
-        // flux conversion factor for non-mJy/beam units
+    for (Eigen::Index i = 0; i < in.scans.data.cols(); ++i) {
         in.fcf.data(i) = calib.flux_conversion_factor(i);
-
-        // data x flxscale x factor
-        in.scans.data.col(i) = in.scans.data.col(i).array()*in.fcf.data(i)*calib.apt["flxscale"](i);
+        in.scans.data.col(i) = in.scans.data.col(i).array()
+            * in.fcf.data(i) * calib.apt["flxscale"](i);
     }
 }
 
 template <TCDataKind tcdata_kind, class calib_t, typename tau_t>
-void Calibration::extinction_correction(TCData<tcdata_kind, Eigen::MatrixXd> &in, calib_t &calib, tau_t &tau_freq) {
+void Calibration::extinction_correction(
+    TCData<tcdata_kind, Eigen::MatrixXd> &in, calib_t &calib,
+    const tau_t &tau_freq) {
+    const Eigen::Index detector_count = in.scans.data.cols();
+    const Eigen::Index sample_count = in.scans.data.rows();
+    if (calib.apt["array"].size() < detector_count) {
+        throw std::runtime_error(
+            "extinction correction APT array column is shorter than detector count");
+    }
+    if (in.fcf.data.size() < detector_count) {
+        throw std::runtime_error(
+            "extinction correction factor vector is shorter than detector count");
+    }
 
-    // loop through detectors
-    for (Eigen::Index i=0; i<in.scans.data.cols(); ++i) {
-        // current array index in apt table
-        Eigen::Index array_index = calib.apt["array"](i);
+    for (Eigen::Index detector = 0; detector < detector_count; ++detector) {
+        const double raw_array_index = calib.apt["array"](detector);
+        if (!std::isfinite(raw_array_index)
+            || raw_array_index != std::floor(raw_array_index)
+            || raw_array_index < 0.0 || raw_array_index > 2.0) {
+            throw std::domain_error(
+                "extinction correction has an unsupported detector array index");
+        }
+        const int array_index = static_cast<int>(raw_array_index);
+        const auto found = tau_freq.find(array_index);
+        if (found == tau_freq.end() || found->second.size() != sample_count) {
+            throw std::domain_error(
+                "extinction correction is missing sample-aligned array support");
+        }
+        for (Eigen::Index sample = 0; sample < sample_count; ++sample) {
+            const double los_tau = found->second(sample);
+            const double factor = std::exp(los_tau);
+            if (!std::isfinite(los_tau) || los_tau < 0.0
+                || !std::isfinite(factor) || factor < 1.0) {
+                throw std::domain_error(
+                    "extinction correction contains invalid LOS optical depth");
+            }
+        }
+    }
 
-        // factor = 1 / exp(-tau_freq)
-        auto factor = 1./(-tau_freq[array_index]).array().exp();
-
-        // apply extinction correction to fcf
-        in.fcf.data(i) = (in.fcf.data(i)*factor).mean();
-
-        // data x factor
-        in.scans.data.col(i) = in.scans.data.col(i).array()*factor.array();
+    for (Eigen::Index detector = 0; detector < detector_count; ++detector) {
+        const int array_index =
+            static_cast<int>(calib.apt["array"](detector));
+        const auto factor = tau_freq.at(array_index).array().exp();
+        in.fcf.data(detector) =
+            (in.fcf.data(detector) * factor).mean();
+        in.scans.data.col(detector) =
+            in.scans.data.col(detector).array() * factor;
     }
 }
-} // namespace timestream
+
+}  // namespace timestream

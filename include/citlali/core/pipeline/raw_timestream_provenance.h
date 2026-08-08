@@ -14,7 +14,7 @@
 namespace citlali::pipeline {
 
 inline constexpr const char *raw_timestream_provenance_schema_version =
-    "citlali-raw-timestream-provenance-v2";
+    "citlali-raw-timestream-provenance-v3";
 inline constexpr const char *raw_timestream_provenance_filename =
     "raw_timestream_provenance.yaml";
 
@@ -125,6 +125,33 @@ inline YAML::Node raw_timestream_observation_state_node(
         raw_optional_scalar_node(observation->extinction_active);
     value["extinction_model"] =
         raw_optional_scalar_node(observation->extinction_model);
+    value["tau225"] = raw_optional_scalar_node(observation->tau225);
+    value["reference_spectral_index_alpha"] =
+        raw_optional_scalar_node(
+            observation->reference_spectral_index_alpha);
+    value["reference_spectral_index_default_applied"] =
+        raw_optional_scalar_node(
+            observation->reference_spectral_index_default_applied);
+    value["atmosphere_operator_id"] =
+        raw_optional_scalar_node(observation->atmosphere_operator_id);
+    value["atmosphere_operator_contract_sha256"] =
+        raw_optional_scalar_node(
+            observation->atmosphere_operator_contract_sha256);
+    value["atmosphere_node_table_sha256"] =
+        raw_optional_scalar_node(
+            observation->atmosphere_node_table_sha256);
+    value["passband_set_id"] =
+        raw_optional_scalar_node(observation->passband_set_id);
+    value["reference_profile_id"] =
+        raw_optional_scalar_node(observation->reference_profile_id);
+    value["calibration_quality_regime"] =
+        raw_optional_scalar_node(
+            observation->calibration_quality_regime);
+    value["calibration_valid"] =
+        raw_optional_scalar_node(observation->calibration_valid);
+    value["calibration_validity_reason"] =
+        raw_optional_scalar_node(
+            observation->calibration_validity_reason);
     return node;
 }
 
@@ -141,6 +168,49 @@ inline YAML::Node raw_timestream_realized_state_node(
     node["required_timestream_write_count"] =
         raw_optional_scalar_node(
             realized.required_timestream_write_count);
+    node["reference_spectral_index_alpha"] =
+        raw_optional_scalar_node(
+            realized.reference_spectral_index_alpha);
+    node["reference_spectral_index_default_applied"] =
+        raw_optional_scalar_node(
+            realized.reference_spectral_index_default_applied);
+    node["tau225"] = raw_optional_scalar_node(realized.tau225);
+    node["atmosphere_operator_id"] =
+        raw_optional_scalar_node(realized.atmosphere_operator_id);
+    node["atmosphere_operator_contract_sha256"] =
+        raw_optional_scalar_node(
+            realized.atmosphere_operator_contract_sha256);
+    node["atmosphere_node_table_sha256"] =
+        raw_optional_scalar_node(realized.atmosphere_node_table_sha256);
+    node["passband_set_id"] =
+        raw_optional_scalar_node(realized.passband_set_id);
+    node["reference_profile_id"] =
+        raw_optional_scalar_node(realized.reference_profile_id);
+    node["calibration_quality_regime"] =
+        raw_optional_scalar_node(realized.calibration_quality_regime);
+    node["calibration_valid"] =
+        raw_optional_scalar_node(realized.calibration_valid);
+    node["calibration_validity_reason"] =
+        raw_optional_scalar_node(realized.calibration_validity_reason);
+    return node;
+}
+
+inline YAML::Node calibration_reference_requested_node(
+    const citlali::config::CalibrationConfig &config) {
+    YAML::Node node;
+    node["reference_spectral_index_alpha"] =
+        raw_optional_scalar_node(
+            config.reference.spectral_index_alpha);
+    return node;
+}
+
+inline YAML::Node calibration_reference_effective_node(
+    const CalibrationReferenceEffectiveState &state) {
+    YAML::Node node;
+    node["reference_spectral_index_alpha"] =
+        state.spectral_index_alpha;
+    node["reference_spectral_index_default_applied"] =
+        state.default_applied;
     return node;
 }
 
@@ -150,10 +220,16 @@ inline YAML::Node raw_timestream_provenance_node(
     root["schema_version"] = raw_timestream_provenance_schema_version;
     root["initialized"] = plan.initialized;
     auto requested = raw_timestream_request_node(plan.requested);
+    requested["calibration"] =
+        calibration_reference_requested_node(
+            plan.calibration_requested);
     requested["interface_sync_offset"] =
         interface_sync_offset_config_node(plan.interface_sync_requested);
     root["requested"] = requested;
     auto effective = raw_timestream_request_node(plan.effective);
+    effective["calibration"] =
+        calibration_reference_effective_node(
+            plan.calibration_effective);
     effective["interface_sync_offset"] =
         interface_sync_offset_config_node(plan.interface_sync_effective);
     root["effective"]["config"] = effective;

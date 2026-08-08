@@ -70,6 +70,14 @@ authority_rules:
     resolution_stage: startup
     validation_source: include/citlali/core/config/runtime_config_validation.h
 
+  - id: calibration-reference
+    patterns: ['calibration*']
+    authority_domain: calibration-reference
+    modes: [pointing, oof, beammap, science]
+    state_class: requested
+    resolution_stage: effective-plan
+    validation_source: include/citlali/core/config/calibration_config_validation.h
+
   - id: timestream-core-output
     patterns:
       - 'timestream.enabled'

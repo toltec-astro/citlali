@@ -142,12 +142,11 @@ RawTimestreamObservationShadowReport begin_raw_timestream_observation_shadow(
     return report;
 }
 
-template <class TransmissionMap>
+template <class Calibration>
 RawTimestreamObservationShadowReport
 complete_raw_timestream_extinction_shadow(
     RawTimestreamExecutionPlan &plan, double tau_225_ghz,
-    const TransmissionMap &transmission_zenith, bool actual_active,
-    const std::string &actual_model) {
+    bool actual_active, const Calibration &calibration) {
     RawTimestreamObservationShadowReport report;
     if (!plan.initialized) {
         report.add_mismatch("raw timestream plan is not initialized");
@@ -159,15 +158,43 @@ complete_raw_timestream_extinction_shadow(
     }
 
     const auto extinction = resolve_raw_extinction_observation(
-        plan.requested.extinction_correction_enabled, tau_225_ghz,
-        transmission_zenith);
+        plan.requested.extinction_correction_enabled, tau_225_ghz);
     plan.observation->extinction_active = extinction.active;
     plan.observation->extinction_model = extinction.model;
+    plan.observation->tau225 = tau_225_ghz;
+    plan.observation->reference_spectral_index_alpha =
+        calibration.effective_reference_spectral_index_alpha();
+    plan.observation->reference_spectral_index_default_applied =
+        calibration.reference_spectral_index_default_applied();
+    plan.observation->atmosphere_operator_id =
+        std::string{calibration.operator_id()};
+    plan.observation->atmosphere_operator_contract_sha256 =
+        std::string{calibration.operator_contract_sha256()};
+    plan.observation->atmosphere_node_table_sha256 =
+        std::string{calibration.operator_nodes_sha256()};
+    plan.observation->passband_set_id =
+        std::string{calibration.passband_set_id()};
+    plan.observation->reference_profile_id =
+        std::string{calibration.reference_profile_id()};
+    plan.observation->calibration_quality_regime =
+        calibration.calibration_quality_regime;
+    plan.observation->calibration_valid = calibration.calibration_valid;
+    plan.observation->calibration_validity_reason =
+        calibration.calibration_validity_reason;
 
     compare_raw_observation_shadow_value(
         report, "extinction.active", extinction.active, actual_active);
     compare_raw_observation_shadow_value(
-        report, "extinction.model", extinction.model, actual_model);
+        report, "extinction.model", extinction.model,
+        calibration.extinction_model);
+    compare_raw_observation_shadow_value(
+        report, "calibration.reference_spectral_index_alpha",
+        plan.calibration_effective.spectral_index_alpha,
+        calibration.effective_reference_spectral_index_alpha());
+    compare_raw_observation_shadow_value(
+        report, "calibration.reference_spectral_index_default_applied",
+        plan.calibration_effective.default_applied,
+        calibration.reference_spectral_index_default_applied());
     return report;
 }
 

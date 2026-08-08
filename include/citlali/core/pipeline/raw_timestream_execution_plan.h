@@ -1,5 +1,6 @@
 #pragma once
 
+#include <citlali/core/config/calibration_config.h>
 #include <citlali/core/config/interface_sync_config.h>
 #include <citlali/core/config/timestream_config.h>
 #include <citlali/core/pipeline/raw_timestream_resolution.h>
@@ -21,6 +22,22 @@ struct RawTimestreamObservationState {
     std::optional<bool> source_protection_active;
     std::optional<bool> extinction_active;
     std::optional<std::string> extinction_model;
+    std::optional<double> tau225;
+    std::optional<double> reference_spectral_index_alpha;
+    std::optional<bool> reference_spectral_index_default_applied;
+    std::optional<std::string> atmosphere_operator_id;
+    std::optional<std::string> atmosphere_operator_contract_sha256;
+    std::optional<std::string> atmosphere_node_table_sha256;
+    std::optional<std::string> passband_set_id;
+    std::optional<std::string> reference_profile_id;
+    std::optional<std::string> calibration_quality_regime;
+    std::optional<bool> calibration_valid;
+    std::optional<std::string> calibration_validity_reason;
+};
+
+struct CalibrationReferenceEffectiveState {
+    double spectral_index_alpha = 0.0;
+    bool default_applied = true;
 };
 
 struct RawTimestreamRealizedState {
@@ -29,12 +46,25 @@ struct RawTimestreamRealizedState {
     std::optional<std::size_t> flagged_sample_count;
     std::optional<std::size_t> dynamic_notch_count;
     std::optional<std::size_t> required_timestream_write_count;
+    std::optional<double> reference_spectral_index_alpha;
+    std::optional<bool> reference_spectral_index_default_applied;
+    std::optional<double> tau225;
+    std::optional<std::string> atmosphere_operator_id;
+    std::optional<std::string> atmosphere_operator_contract_sha256;
+    std::optional<std::string> atmosphere_node_table_sha256;
+    std::optional<std::string> passband_set_id;
+    std::optional<std::string> reference_profile_id;
+    std::optional<std::string> calibration_quality_regime;
+    std::optional<bool> calibration_valid;
+    std::optional<std::string> calibration_validity_reason;
 };
 
 struct RawTimestreamExecutionPlan {
     bool initialized = false;
     citlali::config::RawTimeChunkConfig requested;
     citlali::config::RawTimeChunkConfig effective;
+    citlali::config::CalibrationConfig calibration_requested;
+    CalibrationReferenceEffectiveState calibration_effective;
     citlali::config::InterfaceSyncOffsetConfig interface_sync_requested;
     citlali::config::InterfaceSyncOffsetConfig interface_sync_effective;
     RawTimestreamEffectiveResolutions effective_resolutions;
@@ -44,10 +74,17 @@ struct RawTimestreamExecutionPlan {
     void reset_from_request(
         const citlali::config::RawTimeChunkConfig &request,
         const citlali::config::InterfaceSyncOffsetConfig
-            &interface_sync_request = {}) {
+            &interface_sync_request = {},
+        const citlali::config::CalibrationConfig
+            &calibration_request = {}) {
         initialized = true;
         requested = request;
         effective = request;
+        calibration_requested = calibration_request;
+        calibration_effective.spectral_index_alpha =
+            calibration_request.reference.spectral_index_alpha.value_or(0.0);
+        calibration_effective.default_applied =
+            !calibration_request.reference.spectral_index_alpha.has_value();
         interface_sync_requested = interface_sync_request;
         interface_sync_effective = interface_sync_request;
         effective_resolutions =
@@ -68,3 +105,4 @@ struct RawTimestreamExecutionPlan {
 };
 
 }  // namespace citlali::pipeline
+#include <citlali/core/config/calibration_config.h>

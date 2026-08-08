@@ -26,9 +26,9 @@ EXCLUDED_FILES = {
     "include/citlali/core/pipeline/timestream_config_adapter_raw_flagging.h",
     "include/citlali/core/pipeline/timestream_config_adapter_raw_line_audit.h",
 }
-EXPECTED_RECORD_COUNT = 45
+EXPECTED_RECORD_COUNT = 60
 EXPECTED_RECORD_SHA256 = (
-    "09572da976aec89d56506394420b478426a6efbd0942c864571a8f6f311da2f8"
+    "bf7d9c8d07851309d37d183517c0a8bc2c53919e895d941754832dc315bb244d"
 )
 
 EXECUTOR_OPERATIONS = {
@@ -39,6 +39,7 @@ EXECUTOR_OPERATIONS = {
     "apply_rtc_line_audit_fixed_notches",
     "apply_rtc_line_audit_shared_notches",
     "calibration.calc_tau",
+    "calibration.disable_extinction",
     "calibration.setup",
     "capture_rtc_line_audit",
     "clear_cached_diagnostics",
@@ -58,6 +59,7 @@ EXECUTOR_OPERATIONS = {
     "snapshot_source_protection_diag_summary",
 }
 OBSERVATION_STATE = {
+    "calibration",
     "calibration.extinction_model",
     "calibration.tx_225_zenith",
     "despiker.fsmp",
@@ -67,6 +69,20 @@ OBSERVATION_STATE = {
     "kernel.map_grouping",
 }
 OUTPUT_OR_REALIZED_STATE = {
+    "calibration.calibration_quality_regime",
+    "calibration.calibration_valid",
+    "calibration.calibration_validity_reason",
+    "calibration.effective_reference_spectral_index_alpha",
+    "calibration.operator_contract_sha256",
+    "calibration.operator_id",
+    "calibration.operator_nodes_sha256",
+    "calibration.passband_set_id",
+    "calibration.realized_tau225",
+    "calibration.reduction_calibration_quality_regime",
+    "calibration.reduction_maximum_tau225",
+    "calibration.reference_profile_id",
+    "calibration.reference_spectral_index_default_applied",
+    "calibration.requested_reference_spectral_index_alpha",
     "despiker.local_residual",
     "filter_edge_guard",
     "filter_edge_guard.context_samples",

@@ -31,9 +31,16 @@ void setup_observation_extinction(EngineT &engine) {
 
         // check tau (may be unnecessary now)
         if (!engine.telescope.sim_obs) {
+            const auto elevation =
+                engine.telescope.tel_data.find("TelElAct");
+            if (elevation == engine.telescope.tel_data.end()
+                || elevation->second.size() == 0) {
+                throw std::domain_error(
+                    "extinction correction requires sample elevation data");
+            }
             Eigen::VectorXd tau_el(1);
             // get mean elevation
-            tau_el << engine.telescope.tel_data["TelElAct"].mean();
+            tau_el << elevation->second.mean();
             // get tau at mean elevation for each band
             auto tau_freq = engine.rtcproc.calibration.calc_tau(
                 tau_el, engine.telescope.tau_225_GHz);
@@ -45,7 +52,7 @@ void setup_observation_extinction(EngineT &engine) {
         }
     }
     else {
-        engine.rtcproc.calibration.extinction_model = "N/A";
+        engine.rtcproc.calibration.disable_extinction();
     }
 
     if constexpr (citlali::pipeline::has_raw_timestream_plan_v<EngineT>) {
@@ -54,9 +61,8 @@ void setup_observation_extinction(EngineT &engine) {
             const auto shadow =
                 citlali::pipeline::complete_raw_timestream_extinction_shadow(
                     plan, engine.telescope.tau_225_GHz,
-                    engine.rtcproc.calibration.tx_225_zenith,
                     engine.rtcproc.run_extinction,
-                    engine.rtcproc.calibration.extinction_model);
+                    engine.rtcproc.calibration);
             if (!shadow.exact) {
                 engine.logger->error(
                     "typed raw extinction shadow differs from legacy state: {}",

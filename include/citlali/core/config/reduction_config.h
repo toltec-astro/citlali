@@ -15,6 +15,7 @@ namespace citlali::config {
 
 struct ReductionConfig {
     RuntimeConfig runtime;
+    CalibrationConfig calibration;
     InterfaceSyncOffsetConfig interface_sync;
     TimestreamConfig timestream;
     MapmakingConfig mapmaking;

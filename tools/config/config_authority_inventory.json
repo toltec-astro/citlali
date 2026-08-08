@@ -24,6 +24,18 @@
       "exit_gate": "Complete: redu27 validates the versioned requested, effective, and realized runtime sidecar and exact pre-existing point products."
     },
     {
+      "id": "calibration-reference",
+      "config_prefixes": ["calibration"],
+      "typed_owner": "citlali::config::ReductionConfig::calibration",
+      "loader": "include/citlali/core/pipeline/calibration_config_read.h",
+      "execution_authority": "typed",
+      "legacy_targets": ["Engine::rtcproc.calibration"],
+      "adapter_direction": "typed-to-legacy",
+      "migration_status": "typed-authoritative-with-adapter",
+      "provenance_status": "complete",
+      "exit_gate": "SCI-CAL-001 successor local deterministic gates and exact-repair-SHA external evidence plus fresh re-audit."
+    },
+    {
       "id": "timestream-core-output",
       "config_prefixes": ["timestream.enabled", "timestream.chunking", "timestream.output"],
       "typed_owner": "citlali::config::ReductionConfig::timestream",

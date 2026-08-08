@@ -64,6 +64,26 @@ inline void validate(const AstrometryConfig &config, ValidationReport &report) {
     validate(config.pointing_offsets, report);
 }
 
+inline void validate(const CalibrationReferenceConfig &config,
+                     ValidationReport &report) {
+    if (!config.spectral_index_alpha.has_value()) {
+        return;
+    }
+    const double alpha = *config.spectral_index_alpha;
+    if (!std::isfinite(alpha)
+        || (alpha != -1.0 && alpha != 0.0
+            && alpha != 2.0 && alpha != 4.0)) {
+        report.add_error(
+            {"calibration", "reference_spectral_index_alpha"},
+            "must be finite and exactly one of -1, 0, 2, or 4");
+    }
+}
+
+inline void validate(const CalibrationConfig &config,
+                     ValidationReport &report) {
+    validate(config.reference, report);
+}
+
 inline void validate(const BeammapArrayFluxConfig &config,
                      ValidationReport &report) {
     if (config.array_name.empty()) {

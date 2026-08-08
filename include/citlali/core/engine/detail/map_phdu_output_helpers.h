@@ -104,6 +104,78 @@ void add_phdu_extinction_apt_oof_section(
         fits_entry, array_name, logger, "MEAN_TAU", mean_tau,
         "mean tau (" + array_name + ")");
 
+    auto &hdu = fits_entry.pfits->pHDU();
+    const auto requested_alpha =
+        rtcproc.calibration.requested_reference_spectral_index_alpha();
+    hdu.addKey("CAL.ALPHA.REQUESTED_AVAILABLE",
+               requested_alpha.has_value(),
+               "Reference spectral index explicitly requested");
+    if (requested_alpha) {
+        hdu.addKey("CAL.ALPHA.REQUESTED", *requested_alpha,
+                   "Requested reference spectral index alpha");
+    }
+    hdu.addKey(
+        "CAL.ALPHA.EFFECTIVE",
+        rtcproc.calibration.effective_reference_spectral_index_alpha(),
+        "Effective reference spectral index alpha");
+    hdu.addKey(
+        "CAL.ALPHA.REALIZED",
+        rtcproc.calibration.effective_reference_spectral_index_alpha(),
+        "Realized reference spectral index alpha");
+    hdu.addKey(
+        "CAL.ALPHA.DEFAULT_APPLIED",
+        rtcproc.calibration.reference_spectral_index_default_applied(),
+        "Alpha zero supplied by omission default");
+    hdu.addKey("CAL.OPERATOR_ID",
+               std::string{rtcproc.calibration.operator_id()},
+               "Atmosphere operator identity");
+    hdu.addKey("CAL.OPERATOR_CONTRACT_SHA256",
+               std::string{rtcproc.calibration.operator_contract_sha256()},
+               "Atmosphere operator contract digest");
+    hdu.addKey("CAL.NODE_TABLE_SHA256",
+               std::string{rtcproc.calibration.operator_nodes_sha256()},
+               "Atmosphere operator node digest");
+    hdu.addKey("CAL.PASSBAND_SET_ID",
+               std::string{rtcproc.calibration.passband_set_id()},
+               "Passband provenance identity");
+    hdu.addKey("CAL.REFERENCE_PROFILE_ID",
+               std::string{rtcproc.calibration.reference_profile_id()},
+               "Reference atmosphere profile identity");
+    hdu.addKey("CAL.QUALITY_REGIME",
+               rtcproc.calibration.calibration_quality_regime,
+               "Calibration quality regime metadata");
+    hdu.addKey("CAL.VALID", rtcproc.calibration.calibration_valid,
+               "Calibration validity");
+    hdu.addKey("CAL.VALIDITY_REASON",
+               rtcproc.calibration.calibration_validity_reason,
+               "Calibration validity reason");
+    const bool tau225_available =
+        std::isfinite(rtcproc.calibration.realized_tau225);
+    hdu.addKey("CAL.TAU225_AVAILABLE", tau225_available,
+               "Realized tau225 is available");
+    if (tau225_available) {
+        hdu.addKey("CAL.TAU225", rtcproc.calibration.realized_tau225,
+                   "Realized 225 GHz zenith-opacity request");
+    }
+    const bool reduction_max_tau225_available =
+        std::isfinite(rtcproc.calibration.reduction_maximum_tau225);
+    hdu.addKey("CAL.REDUCTION_MAX_TAU225_AVAILABLE",
+               reduction_max_tau225_available,
+               "Reduction maximum tau225 is available");
+    if (reduction_max_tau225_available) {
+        hdu.addKey("CAL.REDUCTION_MAX_TAU225",
+                   rtcproc.calibration.reduction_maximum_tau225,
+                   "Maximum supported tau225 in this reduction");
+    }
+    hdu.addKey("CAL.REDUCTION_QUALITY_REGIME",
+               rtcproc.calibration.reduction_calibration_quality_regime,
+               "Reduction-level calibration quality regime");
+    hdu.addKey("CAL.TAU_FRAME",
+               std::string{"line_of_sight_at_sample_elevation"},
+               "Optical-depth coordinate frame");
+    hdu.addKey("CAL.X_REF", 0.0,
+               "Top-of-atmosphere calibration airmass pivot");
+
     citlali::pipeline::add_phdu_apt_key_if_single_observation(
         fits_entry, mb->obsnums, calib.apt_filepath, logger);
 

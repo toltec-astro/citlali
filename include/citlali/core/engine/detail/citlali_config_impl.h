@@ -4,6 +4,7 @@
 // Include this only after Engine has been declared.
 
 #include <citlali/core/pipeline/citlali_config_read.h>
+#include <citlali/core/pipeline/calibration_config_read.h>
 #include <citlali/core/pipeline/kids_external_config.h>
 #include <citlali/core/pipeline/interface_sync_config_adapter.h>
 #include <citlali/core/pipeline/post_processing_config_read.h>
@@ -15,6 +16,8 @@
 template<typename CT>
 void Engine::get_citlali_config(CT &config) {
     auto &runtime_config = citlali::pipeline::runtime_config(*this);
+    auto &calibration_config =
+        citlali::pipeline::calibration_config(*this);
     auto &interface_sync_config =
         citlali::pipeline::interface_sync_config(*this);
     auto &timestream_config = citlali::pipeline::timestream_config(*this);
@@ -45,6 +48,9 @@ void Engine::get_citlali_config(CT &config) {
         diagnostics.invalid_key_paths().push_back(
             {"runtime", "interp_over_gaps"});
     }
+
+    calibration_config = citlali::pipeline::read_calibration_config(
+        config, diagnostics);
 
     /* get timestream config */
     get_timestream_config(config);

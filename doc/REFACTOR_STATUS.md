@@ -133,6 +133,56 @@ this exact integration tip,
 work, Unity execution, realization-count recommendations, calibrated
 significance, and Conan-lane synchronization remain separate decisions.
 
+## 2026-08-08 SCI-CAL-001 Local Application Repair Candidate
+
+The bounded `SCI-CAL-001` application repair on
+`codex/repair-sci-cal-001-successor` is based directly on exact canonical
+application source `46ad23888a40f5102cdfd50c06e49a549bdf8a20`. The frozen
+scientific/operator authority is
+`7156881bd1a47e8cece97b8c541a013c93ac03e1`, and the frozen coordination
+authority is Git object
+`dd5894679bf12bf4a5fb551e871b3c6010ef9b9b`. No audit, evidence,
+coordination, or sibling-repository branch is in the application ancestry.
+
+The candidate source-controls and embeds the approved fixed-DJF25 operator
+contract and node artifact at exact SHA-256 identities
+`7a064ff768a3de4f427f1338d94ef6cb9026d248f3c3c816fc3dfc96d156e36a`
+and
+`fd688a4cd3f46585b08631bc63a562aed482feb9b24ec9ee0071b70db7eb8a5f`.
+It implements one closed-support, shape-preserving-elevation and
+piecewise-linear-LOS-opacity surface for `0 <= tau225 <= 0.25` and
+`25 <= elevation <= 80 deg`, with no operator switch at `tau225=0.15` and
+no second airmass factor. The reduction-level spectral-index reference
+defaults to zero on omission and accepts only `{-1,0,2,4}`. Requested,
+effective, observation-resolved, and realized calibration state plus operator,
+profile, node, passband, quality, and validity metadata are retained in the
+versioned raw provenance and required products. Beammap retains its
+top-of-atmosphere `flxscale` boundary and consumes the same sample-level
+surface once.
+
+Complete local deterministic gates pass on the candidate source: exact
+artifact digest/schema/generated-table parity; 10/10 focused operator,
+sample-LOS, Beammap-boundary, and fail-before-mutation tests; 90/90 focused
+raw-provenance audit tests; 174/174 baseline-tool tests; 26/26 product-contract
+and artifact tests; the `citlali_cli` and separately declared required test
+targets build; and 635/635 runnable CTests pass. The one non-run CTest is the
+pre-existing disabled `MapFitterLifecycle.ExactProductSequence`, not a
+required-data skip. The complete config preflight passes 127/127 unit tests,
+all four mode kits, all eight compact-compatibility cases, 100% compact
+surface coverage, 592-leaf schema parity, and the 60-record classified raw
+execution census with zero review-required entries at digest
+`bf7d9c8d07851309d37d183517c0a8bc2c53919e895d941754832dc315bb244d`.
+Public-header isolation and source diff checks also pass. No local Citlali
+reduction or Unity access was performed.
+
+This is a local repair candidate only. Exact-repair-SHA Unity evidence,
+returned product/log assessment, fresh independent re-audit, and coordinator
+disposition remain external gates. Production remains `existing_use_only`;
+no finding, dependency, production status, or re-audit status is changed by
+these local results. The approved `SCI-MAP-001` and `SCI-NOI-002` estimator,
+identity, validity, writer/finalizer, atomic-publication, and provenance
+contracts remain unchanged.
+
 ## Historical 2026-07-31 SCI-MAP-001 Bounded Repair Lane
 
 This section preserves the repair-lane chronology and its candidate-time gate

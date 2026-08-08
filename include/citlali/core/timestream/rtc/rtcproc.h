@@ -875,6 +875,14 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
     auto despiker_local = despiker;
     RTCSourceProtectionDiagSummary despike_source_summary;
 
+    std::map<int, Eigen::VectorXd> extinction_los_tau;
+    if (run_extinction) {
+        // Resolve and validate all sample-elevation support before any
+        // calibration mutates the timestream.
+        extinction_los_tau = calibration.calc_tau(
+            in.tel_data.data["TelElAct"], telescope.tau_225_GHz);
+    }
+
     if (run_calibrate) {
         logger->debug("calibrating timestream");
         // calibrate tod
@@ -885,10 +893,8 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
 
     if (run_extinction) {
         logger->debug("correcting extinction");
-        // calc tau at toltec frequencies
-        auto tau_freq = calibration.calc_tau(in.tel_data.data["TelElAct"], telescope.tau_225_GHz);
-        // correct for extinction
-        calibration.extinction_correction(in, calib, tau_freq);
+        calibration.extinction_correction(
+            in, calib, extinction_los_tau);
 
         in.status.extinction_corrected = true;
     }

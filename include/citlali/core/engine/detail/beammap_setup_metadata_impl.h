@@ -56,6 +56,32 @@ void Beammap::populate_beammap_tau_metadata() {
             calib.apt_meta[toltec_io.array_name_map[calib.arrays(i)]+"_tau"] = 0.;
         }
     }
+    calib.apt_meta["calibration_operator_id"] =
+        std::string{rtcproc.calibration.operator_id()};
+    calib.apt_meta["calibration_operator_contract_sha256"] =
+        std::string{rtcproc.calibration.operator_contract_sha256()};
+    calib.apt_meta["calibration_node_table_sha256"] =
+        std::string{rtcproc.calibration.operator_nodes_sha256()};
+    calib.apt_meta["calibration_passband_set_id"] =
+        std::string{rtcproc.calibration.passband_set_id()};
+    calib.apt_meta["calibration_reference_profile_id"] =
+        std::string{rtcproc.calibration.reference_profile_id()};
+    calib.apt_meta["calibration_reference_spectral_index_alpha"] =
+        rtcproc.calibration.effective_reference_spectral_index_alpha();
+    calib.apt_meta["calibration_reference_spectral_index_default_applied"] =
+        rtcproc.calibration.reference_spectral_index_default_applied();
+    calib.apt_meta["calibration_quality_regime"] =
+        rtcproc.calibration.calibration_quality_regime;
+    calib.apt_meta["calibration_valid"] =
+        rtcproc.calibration.calibration_valid;
+    calib.apt_meta["calibration_validity_reason"] =
+        rtcproc.calibration.calibration_validity_reason;
+    calib.apt_meta["calibration_tau_frame"] =
+        "line_of_sight_at_sample_elevation";
+    calib.apt_meta["calibration_x_ref"] = 0.0;
+    calib.apt_meta["flxscale_reference_plane"] = "top_of_atmosphere";
+    calib.apt_meta["flxscale_extinction_application"] =
+        "shared_tod_surface_once_before_fit_no_second_factor";
 }
 
 void Beammap::populate_beammap_header_metadata() {

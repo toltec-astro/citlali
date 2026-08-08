@@ -183,6 +183,48 @@ def valid_raw_v2_document() -> dict:
     return document
 
 
+def valid_raw_v3_document() -> dict:
+    document = valid_raw_v2_document()
+    document["schema_version"] = "citlali-raw-timestream-provenance-v3"
+    document["requested"]["calibration"] = {
+        "reference_spectral_index_alpha": {
+            "available": False,
+        },
+    }
+    document["effective"]["config"]["calibration"] = {
+        "reference_spectral_index_alpha": 0.0,
+        "reference_spectral_index_default_applied": True,
+    }
+    calibration_values = {
+        "tau225": 0.12,
+        "reference_spectral_index_alpha": 0.0,
+        "reference_spectral_index_default_applied": True,
+        "atmosphere_operator_id":
+            "am12_fixed_djf25_piecewise_linear_los_tau_v1",
+        "atmosphere_operator_contract_sha256":
+            "7a064ff768a3de4f427f1338d94ef6cb9026d248f3c3c816fc3dfc96d156e36a",
+        "atmosphere_node_table_sha256":
+            "fd688a4cd3f46585b08631bc63a562aed482feb9b24ec9ee0071b70db7eb8a5f",
+        "passband_set_id":
+            "toltec-passband-set-v1:sha256:5e6f38f14bcae93a29ffe8362c52b15209f51aee4e48373b23aaa5ec2f8a6433",
+        "reference_profile_id":
+            "LMT_DJF_25.amc:sha256:aeeeeb48bef422f2d9392b5d7a3d62ab1887fd9e7c10322d5246d914841ba866",
+        "calibration_quality_regime": "science_qualification_regime",
+        "calibration_valid": True,
+        "calibration_validity_reason": "valid",
+    }
+    observation = document["observation"]["value"]
+    observation["extinction_active"] = {"available": True, "value": True}
+    observation["extinction_model"] = {
+        "available": True,
+        "value": calibration_values["atmosphere_operator_id"],
+    }
+    for name, value in calibration_values.items():
+        observation[name] = {"available": True, "value": value}
+        document["realized"][name] = {"available": True, "value": value}
+    return document
+
+
 def valid_output_document() -> dict:
     return {
         "schema_version": "citlali-timestream-output-provenance-v1",
@@ -2905,6 +2947,31 @@ class ProvenanceAuditTest(unittest.TestCase):
             "effective interface-sync offset toltec12 is not finite",
             audit.raw_provenance_semantic_errors(document),
         )
+
+    def test_accepts_complete_sci_cal_001_raw_provenance_v3(self) -> None:
+        document = valid_raw_v3_document()
+
+        self.assertEqual(
+            audit.raw_provenance_semantic_errors(document), []
+        )
+
+    def test_rejects_sci_cal_001_identity_alpha_and_regime_tampering(self) -> None:
+        document = valid_raw_v3_document()
+        document["realized"]["atmosphere_node_table_sha256"]["value"] = "bad"
+        document["effective"]["config"]["calibration"][
+            "reference_spectral_index_alpha"
+        ] = 1.0
+        document["observation"]["value"]["tau225"]["value"] = 0.2
+        document["realized"]["tau225"]["value"] = 0.2
+
+        errors = audit.raw_provenance_semantic_errors(document)
+
+        self.assertIn(
+            "realized calibration atmosphere_node_table_sha256 is not approved",
+            errors,
+        )
+        self.assertIn("effective calibration alpha is unsupported", errors)
+        self.assertIn("calibration quality regime is inconsistent", errors)
 
     def test_rejects_incomplete_raw_provenance(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

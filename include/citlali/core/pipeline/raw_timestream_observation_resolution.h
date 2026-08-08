@@ -3,7 +3,7 @@
 #include <citlali/core/config/runtime_config.h>
 #include <citlali/core/config/timestream_config.h>
 #include <citlali/core/pipeline/raw_timestream_execution_plan.h>
-#include <citlali/core/timestream/extinction_model_selection.h>
+#include <citlali/core/timestream/atmosphere_operator.h>
 #include <citlali/core/timestream/filter_transient_samples.h>
 
 #include <algorithm>
@@ -312,17 +312,17 @@ struct RawExtinctionObservationResolution {
     std::string model{"N/A"};
 };
 
-template <class TransmissionMap>
 RawExtinctionObservationResolution resolve_raw_extinction_observation(
-    bool requested, double tau_225_ghz,
-    const TransmissionMap &transmission_zenith) {
+    bool requested, double tau_225_ghz) {
     if (!requested) {
         return {};
     }
+    (void)timestream::FixedDjf25AtmosphereOperator::quality_regime(
+        tau_225_ghz);
     return RawExtinctionObservationResolution{
         true, true,
-        timestream::select_extinction_model(
-            tau_225_ghz, transmission_zenith)};
+        std::string{
+            timestream::FixedDjf25AtmosphereOperator::operator_id()}};
 }
 
 inline RawTimestreamObservationState make_raw_timestream_observation_state(

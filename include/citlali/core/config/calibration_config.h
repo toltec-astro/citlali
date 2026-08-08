@@ -1,10 +1,19 @@
 #pragma once
 
+#include <optional>
 #include <string>
 #include <string_view>
 #include <vector>
 
 namespace citlali::config {
+
+struct CalibrationReferenceConfig {
+    std::optional<double> spectral_index_alpha;
+};
+
+struct CalibrationConfig {
+    CalibrationReferenceConfig reference;
+};
 
 inline constexpr const char *pointing_axis_az() {
     return "az";

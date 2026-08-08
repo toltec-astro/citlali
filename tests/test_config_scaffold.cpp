@@ -13,6 +13,7 @@
 #include <citlali/core/error/error.h>
 #include <citlali/core/pipeline/beammap_execution_plan.h>
 #include <citlali/core/pipeline/beammap_source_flux_config.h>
+#include <citlali/core/pipeline/calibration_config_read.h>
 #include <citlali/core/pipeline/coadd_config_read.h>
 #include <citlali/core/pipeline/coadd_execution_plan.h>
 #include <citlali/core/pipeline/coadd_provenance.h>
@@ -9652,6 +9653,62 @@ TEST(config_scaffold, resolves_raw_context_free_request_without_observation_data
     EXPECT_TRUE(resolution.corrections.extinction_correction_requested);
 }
 
+TEST(config_scaffold,
+     pointing_and_oof_quicklooks_use_alpha_zero_omission_default) {
+    auto config = tula::config::YamlConfig::from_str("reduction_type: Pointing\n");
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
+
+    const auto calibration =
+        citlali::pipeline::read_calibration_config(config, diagnostics);
+
+    EXPECT_FALSE(diagnostics.has_errors());
+    EXPECT_FALSE(calibration.reference.spectral_index_alpha.has_value());
+    timestream::Calibration runtime;
+    runtime.select_reference_spectral_index(
+        calibration.reference.spectral_index_alpha);
+    EXPECT_DOUBLE_EQ(
+        runtime.effective_reference_spectral_index_alpha(), 0.0);
+    EXPECT_TRUE(runtime.reference_spectral_index_default_applied());
+}
+
+TEST(config_scaffold, reads_supported_calibration_alpha_and_rejects_others) {
+    ensure_citlali_test_logger();
+    auto supported = tula::config::YamlConfig::from_str(R"yaml(
+calibration:
+  reference_spectral_index_alpha: 2
+)yaml");
+    citlali::pipeline::ConfigDiagnosticsState supported_diagnostics;
+    const auto calibration = citlali::pipeline::read_calibration_config(
+        supported, supported_diagnostics);
+    EXPECT_FALSE(supported_diagnostics.has_errors());
+    ASSERT_TRUE(calibration.reference.spectral_index_alpha.has_value());
+    EXPECT_DOUBLE_EQ(*calibration.reference.spectral_index_alpha, 2.0);
+
+    auto unsupported = tula::config::YamlConfig::from_str(R"yaml(
+calibration:
+  reference_spectral_index_alpha: 1
+)yaml");
+    citlali::pipeline::ConfigDiagnosticsState unsupported_diagnostics;
+    const auto rejected = citlali::pipeline::read_calibration_config(
+        unsupported, unsupported_diagnostics);
+    EXPECT_TRUE(unsupported_diagnostics.has_errors());
+    EXPECT_FALSE(rejected.reference.spectral_index_alpha.has_value());
+
+    citlali::config::ReductionConfig invalid;
+    for (const double alpha : {
+             -2.0, 1.0, 3.0,
+             std::numeric_limits<double>::infinity(),
+             std::numeric_limits<double>::quiet_NaN()}) {
+        invalid.calibration.reference.spectral_index_alpha = alpha;
+        const auto report = citlali::config::validate(invalid);
+        EXPECT_FALSE(report.ok());
+        ASSERT_FALSE(report.errors().empty());
+        EXPECT_EQ(
+            citlali::config::format_path(report.errors().front().path),
+            "calibration.reference_spectral_index_alpha");
+    }
+}
+
 TEST(config_scaffold, reads_raw_filtering_request_without_activation_loss) {
     ensure_citlali_test_logger();
     auto config = tula::config::YamlConfig::from_str(R"yaml(
@@ -10102,9 +10159,8 @@ TEST(config_scaffold, shadows_raw_observation_legacy_state_without_mutation) {
     rtcproc.calibration.setup(0.1);
     const auto extinction =
         citlali::pipeline::complete_raw_timestream_extinction_shadow(
-            plan, 0.1, rtcproc.calibration.tx_225_zenith,
-            rtcproc.run_extinction,
-            rtcproc.calibration.extinction_model);
+            plan, 0.1, rtcproc.run_extinction,
+            rtcproc.calibration);
 
     EXPECT_TRUE(extinction.exact) << extinction.diagnostic();
     EXPECT_TRUE(*plan.observation->extinction_active);
@@ -10188,8 +10244,7 @@ TEST(config_scaffold, reports_raw_observation_shadow_divergence) {
 
     const auto extinction =
         citlali::pipeline::complete_raw_timestream_extinction_shadow(
-            plan, 0.1, rtcproc.calibration.tx_225_zenith,
-            false, "N/A");
+            plan, 0.1, false, rtcproc.calibration);
     EXPECT_FALSE(extinction.exact);
     EXPECT_NE(extinction.diagnostic().find("extinction.active"),
               std::string::npos);
@@ -10239,9 +10294,12 @@ TEST(config_scaffold, serializes_versioned_raw_timestream_provenance) {
 
     citlali::pipeline::RawTimestreamExecutionPlan plan;
     citlali::config::InterfaceSyncOffsetConfig interface_sync_request;
+    citlali::config::CalibrationConfig calibration_request;
+    calibration_request.reference.spectral_index_alpha = 2.0;
     interface_sync_request.toltec_offset_sec[0] = 0.25;
     interface_sync_request.hwpr_offset_sec = -0.5;
-    plan.reset_from_request(request, interface_sync_request);
+    plan.reset_from_request(
+        request, interface_sync_request, calibration_request);
     plan.effective.downsample.factor = 3;
     auto &observation = plan.begin_observation();
     observation.native_sample_rate_hz = 120.0;
@@ -10252,18 +10310,33 @@ TEST(config_scaffold, serializes_versioned_raw_timestream_provenance) {
     observation.filter_edge_guard_parity_deferred = true;
     observation.source_protection_active = false;
     observation.extinction_active = true;
-    observation.extinction_model = "am_q50";
-    plan.realized.execution_completed = true;
-    plan.realized.completed_scan_count = 12;
+    observation.extinction_model =
+        std::string{timestream::FixedDjf25AtmosphereOperator::operator_id()};
+    observation.tau225 = 0.08;
+    observation.reference_spectral_index_alpha = 2.0;
+    observation.reference_spectral_index_default_applied = false;
+    observation.atmosphere_operator_id = observation.extinction_model;
+    observation.atmosphere_operator_contract_sha256 = std::string{
+        timestream::FixedDjf25AtmosphereOperator::contract_sha256()};
+    observation.atmosphere_node_table_sha256 = std::string{
+        timestream::FixedDjf25AtmosphereOperator::nodes_sha256()};
+    observation.passband_set_id = std::string{
+        timestream::FixedDjf25AtmosphereOperator::passband_set_id()};
+    observation.reference_profile_id = std::string{
+        timestream::FixedDjf25AtmosphereOperator::reference_profile_id()};
+    observation.calibration_quality_regime =
+        "science_qualification_regime";
+    observation.calibration_valid = true;
+    observation.calibration_validity_reason = "valid";
+    citlali::pipeline::complete_raw_timestream_observation(plan, 12, 24);
     plan.realized.flagged_sample_count = 34;
     plan.realized.dynamic_notch_count = 2;
-    plan.realized.required_timestream_write_count = 24;
 
     const auto node =
         citlali::pipeline::raw_timestream_provenance_node(plan);
 
     EXPECT_EQ(node["schema_version"].as<std::string>(),
-              "citlali-raw-timestream-provenance-v2");
+              "citlali-raw-timestream-provenance-v3");
     EXPECT_TRUE(node["initialized"].as<bool>());
     EXPECT_EQ(node["requested"]["downsample"]["factor"].as<int>(), 0);
     EXPECT_EQ(
@@ -10297,7 +10370,18 @@ TEST(config_scaffold, serializes_versioned_raw_timestream_provenance) {
                         .as<bool>());
     EXPECT_EQ(node["observation"]["value"]["extinction_model"]["value"]
                   .as<std::string>(),
-              "am_q50");
+              timestream::FixedDjf25AtmosphereOperator::operator_id());
+    EXPECT_DOUBLE_EQ(
+        node["requested"]["calibration"]
+            ["reference_spectral_index_alpha"]["value"].as<double>(),
+        2.0);
+    EXPECT_DOUBLE_EQ(
+        node["effective"]["config"]["calibration"]
+            ["reference_spectral_index_alpha"].as<double>(),
+        2.0);
+    EXPECT_FALSE(
+        node["effective"]["config"]["calibration"]
+            ["reference_spectral_index_default_applied"].as<bool>());
     EXPECT_TRUE(node["realized"]["execution_completed"].as<bool>());
     EXPECT_EQ(node["realized"]["completed_scan_count"]["value"]
                   .as<std::size_t>(),
@@ -10305,6 +10389,23 @@ TEST(config_scaffold, serializes_versioned_raw_timestream_provenance) {
     EXPECT_EQ(node["realized"]["required_timestream_write_count"]["value"]
                   .as<std::size_t>(),
               24U);
+    EXPECT_DOUBLE_EQ(
+        node["realized"]["tau225"]["value"].as<double>(), 0.08);
+    EXPECT_EQ(
+        node["realized"]["atmosphere_operator_contract_sha256"]["value"]
+            .as<std::string>(),
+        timestream::FixedDjf25AtmosphereOperator::contract_sha256());
+    EXPECT_EQ(
+        node["realized"]["atmosphere_node_table_sha256"]["value"]
+            .as<std::string>(),
+        timestream::FixedDjf25AtmosphereOperator::nodes_sha256());
+    EXPECT_EQ(
+        node["realized"]["passband_set_id"]["value"].as<std::string>(),
+        timestream::FixedDjf25AtmosphereOperator::passband_set_id());
+    EXPECT_EQ(
+        node["realized"]["calibration_validity_reason"]["value"]
+            .as<std::string>(),
+        "valid");
 }
 
 TEST(config_scaffold, serializes_unavailable_raw_observation_explicitly) {
@@ -10341,7 +10442,7 @@ TEST(config_scaffold, atomically_writes_raw_timestream_provenance) {
     EXPECT_FALSE(std::filesystem::exists(output_path.string() + ".tmp"));
     const auto stored = YAML::LoadFile(output_path.string());
     EXPECT_EQ(stored["schema_version"].as<std::string>(),
-              "citlali-raw-timestream-provenance-v2");
+              "citlali-raw-timestream-provenance-v3");
     EXPECT_TRUE(stored["initialized"].as<bool>());
     std::filesystem::remove_all(output_dir);
 }
@@ -10736,7 +10837,8 @@ TEST(config_scaffold, overlays_raw_observation_state_without_mutating_plan) {
     observation.filter_outer_context_samples = 23;
     observation.source_protection_active = true;
     observation.extinction_active = false;
-    observation.extinction_model = "am_q25";
+    observation.extinction_model = std::string{
+        timestream::FixedDjf25AtmosphereOperator::operator_id()};
 
     timestream::RTCProc rtcproc;
     citlali::pipeline::adapt_raw_timestream_config_one_way(
@@ -10750,7 +10852,9 @@ TEST(config_scaffold, overlays_raw_observation_state_without_mutating_plan) {
     EXPECT_EQ(rtcproc.filter_edge_guard.context_samples, 23);
     EXPECT_TRUE(rtcproc.despiker.source_protection_enabled);
     EXPECT_FALSE(rtcproc.run_extinction);
-    EXPECT_EQ(rtcproc.calibration.extinction_model, "am_q25");
+    EXPECT_EQ(
+        rtcproc.calibration.extinction_model,
+        timestream::FixedDjf25AtmosphereOperator::operator_id());
     EXPECT_EQ(plan.requested.downsample.factor, 0);
     EXPECT_EQ(plan.effective.downsample.factor, 0);
 
@@ -10919,7 +11023,7 @@ TEST(config_scaffold, raw_extinction_model_matches_legacy_calibration) {
     for (const double tau_225_ghz : {0.0, 0.03, 0.08, 0.2}) {
         const auto resolution =
             citlali::pipeline::resolve_raw_extinction_observation(
-                true, tau_225_ghz, calibration.tx_225_zenith);
+                true, tau_225_ghz);
         calibration.setup(tau_225_ghz);
         EXPECT_TRUE(resolution.requested);
         EXPECT_TRUE(resolution.active);
@@ -10928,7 +11032,7 @@ TEST(config_scaffold, raw_extinction_model_matches_legacy_calibration) {
 
     const auto disabled =
         citlali::pipeline::resolve_raw_extinction_observation(
-            false, 0.08, calibration.tx_225_zenith);
+            false, 0.08);
     EXPECT_FALSE(disabled.requested);
     EXPECT_FALSE(disabled.active);
     EXPECT_EQ(disabled.model, "N/A");
@@ -10951,7 +11055,7 @@ TEST(config_scaffold, constructs_complete_raw_observation_state) {
     timestream::Calibration calibration;
     const auto extinction =
         citlali::pipeline::resolve_raw_extinction_observation(
-            true, 0.08, calibration.tx_225_zenith);
+            true, 0.08);
 
     const auto state =
         citlali::pipeline::make_raw_timestream_observation_state(
