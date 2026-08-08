@@ -203,5 +203,17 @@ because any non-retained scan may support it. Outputs are a two-page PDF,
 joined-scan and selected-support ECSV tables, compressed hit-count arrays, a
 hash-bound manifest, and checksums.
 
+The completed unthresholded full-PTC reconstruction for ObsNum 150819 a1100
+UID 199 provides a separate support-threshold control. Its standard hit count,
+weight, and weighted-signal accumulations partition exactly into the left and
+right products. The right-minus-left parallel displacement is -2.6985 arcsec
+(-28.703 ms equivalent) before the final support threshold, compared with
+-2.5380 arcsec (-26.996 ms) in the retained Citlali APT. Thus final support
+thresholding or retained-pixel selection is strongly disfavored as the primary
+cause for this detector, while the exact upstream timing origin and any
+universal correction remain unresolved. The checksum-bound review, explicit
+limitations, and proposed smallest local follow-up are recorded in
+`UNTHRESHOLDED_FULL_PTC_EVIDENCE_2026-08-08.md`.
+
 See `UNITY_RUNBOOK.md` for the owner-run 150819-first campaign and
 `RETURN_BUNDLE_SPEC.md` for return evidence.
