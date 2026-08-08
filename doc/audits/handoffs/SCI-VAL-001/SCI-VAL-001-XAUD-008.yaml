@@ -6,7 +6,7 @@ source:
   package_id: SCI-PTC-001
   role: independent_package_auditor
   audit_branch: codex/audit-sci-ptc-001
-  audit_commit: null
+  audit_commit: 01ee247461d6c19bc4db81ccac4fec21af162c88
   governing_or_evidence_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
   finding_ids:
     - SCI-PTC-001-F001
@@ -109,7 +109,7 @@ evidence:
     note: Exact-source findings, response analysis, consumer matrix, and evidence limits.
 
 recipient_disposition:
-  status: pending_VAL_auditor_and_coordinator_review
+  status: pending_recipient_review
   late_arrival_route: not_applicable
   actions: []
   rationale: null

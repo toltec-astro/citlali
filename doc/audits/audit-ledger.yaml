@@ -9,7 +9,7 @@ current_program_checkpoint:
   record_path: >-
     doc/audits/packages/SCIENTIFIC_AUDIT_PROGRAM_CHECKPOINT_2026-08-08.md
   record_sha256: >-
-    62a53ab8ba179c9641efde83888926f9d63aeb277d8a8abb851e3a0804101719
+    1d670b82db0da4ada47b0b83d0f64840a7ad5a1530a10ae9c5e1e91189a20b14
   canonical_application_mainline:
     ref: origin/codex/refactor-mainline
     commit: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
@@ -34,8 +34,8 @@ current_program_checkpoint:
     SCI-AST-001: held_for_accepted_reaudited_ALIGN_successor
     ENG-STATE-001: static_package_accepted_F001_F002_open
   queue:
-    - SCI-PTC-001_ultra_frozen_ready_not_launched
-    - SCI-VAL-001_after_PTC
+    - SCI-PTC-001_owner_decisions_D001_D006_pending
+    - SCI-VAL-001_unlaunched_PTC_handoff_pending_recipient_review
     - SCI-BEAM-001_after_frozen_PTC_VAL
   held_readiness:
     SCI-FLT-001: exact_repair_base_unresolved_until_integrated_CAL_successor
@@ -4433,122 +4433,619 @@ packages:
   - id: SCI-PTC-001
     name: Correlated-mode cleaning and detector-weight interface
     tier: B
-    queue_wave: foundation_2
     scientific_scope: >-
-      Mature PTC mean/common-mode/PCA cleaning, source masking, second-pass
-      selection, detector weighting, flags, and the transfer and covariance
-      claims of the cleaned-TOD/mapmaking interface.
-    known_code_areas:
-      - include/citlali/core/timestream/ptc/ptcproc.h
-      - include/citlali/core/timestream/ptc/clean.h
-      - include/citlali/core/pipeline/processed_timestream_execution_plan.h
-      - include/citlali/core/pipeline/processed_timestream_provenance.h
-    inputs: [RTC TOD and kernels, flags, APT identity, source masks]
-    outputs: [cleaned TOD and kernels, evolved flags, detector weights, diagnostics]
+      Admitted RTC-stage detector timestreams, kernels/responses, flags,
+      detector/APT state, and source masks through PTC mean removal,
+      data-derived correlated-mode selection/subtraction, optional second pass,
+      detector coefficients, diagnostics, processed products, provenance, and
+      bounded VAL/MAP/NOI/BEAM consumer contracts.
+    inputs:
+      - admitted RTC signal/kernel/flags with exact detector, sample, scan, rate, phase, support, response, and validity identity
+      - approved CAL factor table, APT binding, coefficient-factor identity, and covariance
+      - approved AST/ALIGN coordinates, source-mask validity, detector-row binding, and scan extents
+      - requested PTC policy plus effective, observation-resolved, and realized cleaning/weight state
+    outputs:
+      - cleaned signal with direct validity causes and transitive influence eligibility
+      - conditioned/local response or explicit response unavailability and uncertainty status
+      - typed nonprecision detector coefficients or proved precision plus retained covariance
+      - immutable full/mini/diagnostic/simulated/processed products and four-state provenance
+
     upstream_dependencies:
       - package_id: SCI-RTC-001
         status: open
+        current_lane_status: audited_nonconformant_existing_use_only_successor_not_accepted
+        finding_id: SCI-PTC-001-F010
+        required_contract: >-
+          Complete admitted signal/kernel response, direct and transitive causal
+          support, sample/rate/phase identity, calibration-factor identity, and
+          reconstructible realized provenance at the same application SHA.
+        consequence: >-
+          New absolute response, independent-sample, covariance, and coefficient
+          factor claims fail closed.
+      - package_id: SCI-CAL-001
+        status: open
+        current_lane_status: active_repair_from_governing_SHA
+        finding_id: SCI-PTC-001-F011
+        required_contract: >-
+          Exact fcf/sensitivity/flxscale factor identity, detector/APT binding,
+          units, validity, normalization, and shared uncertainty/covariance.
+        consequence: >-
+          New precision, inverse-variance, calibrated-significance, and absolute
+          coefficient interpretations fail closed.
+      - package_id: SCI-ALIGN-001
+        status: open
+        current_lane_status: owner_managed_repair_evidence_not_integrated_or_Unity_validated
+        finding_id: SCI-PTC-001-F004
+        required_contract: >-
+          Exact contiguous scan/sample extents and accepted aligned sample,
+          origin, support, and detector identity.
+        consequence: >-
+          Variable-length processed products and new extent/reconstruction claims
+          fail closed.
       - package_id: SCI-AST-001
         status: open
-    downstream_consumers: [SCI-VAL-001, SCI-MAP-001, SCI-NOI-001, SCI-BEAM-001]
-    incoming_handoffs:
-      - id: SCI-PTC-001-XAUD-001
-        path: >-
-          doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-001.yaml
-        sha256: ba53e2c2e6af610112696f3edc87c92e43bc2530ac33b700fd5c64e76a8986fa
-        source_package: SCI-MAP-001
-        review_phase: pre_core_authority
-        arrival: before_dispatch
-        status: submitted
-      - id: SCI-PTC-001-XAUD-002
-        path: >-
-          doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-002.yaml
-        sha256: 0aed9f3a625193d882058e7602a6a785093ec2f077d2bdffd9008ac345f23f10
-        source_package: SCI-MAP-001
-        review_phase: post_core_evidence
-        arrival: before_dispatch
-        status: submitted
-      - id: SCI-PTC-001-XAUD-003
-        path: >-
-          doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-003.yaml
-        sha256: 7bb12dd0ece2727012b49988a7552da9c288e10b25eafacd60300f750f744435
-        source_package: SCI-CAL-001
-        review_phase: post_core_evidence
-        arrival: before_dispatch
-        status: submitted
-      - id: SCI-PTC-001-XAUD-004
-        path: >-
-          doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-004.yaml
-        sha256: >-
-          3e8f7805b27acffa550b749e3c6970167fc38d9d0d87e807ee43c487b7dfbf6d
-        source_package: SCI-AST-001
-        review_phase: post_core_evidence
-        arrival: before_dispatch
-        status: submitted
-      - id: SCI-PTC-001-XAUD-005
-        path: >-
-          doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-005.yaml
-        sha256: 5fc8d94ba5af6053296004d3a35403a47f4e77c259fee92e28c92f3186a7ee24
-        audit_submission_sha256: 89ce799a6526f87025bc1d57cc0bf8a0234b149374920027beaa4cb18b94e289
-        source_package: SCI-RTC-001
-        review_phase: post_core_evidence
-        arrival: before_dispatch
-        status: submitted
-      - id: SCI-PTC-001-XAUD-006
-        path: >-
-          doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-006.yaml
-        sha256: 23ae2b52d0347006c9fc8362299c6ea9eae98b803e3a7698d2e2fb48ae336a7f
-        source_package: SCI-ALIGN-001
-        review_phase: post_core_evidence
-        arrival: before_dispatch
-        status: submitted
-    outgoing_handoffs: []
+        current_lane_status: repair_held_behind_ALIGN
+        finding_id: SCI-PTC-001-F012
+        required_contract: >-
+          Exact coordinate frame/domain/validity, topology, source-mask identity,
+          and detector-row binding.
+        consequence: >-
+          New coordinate-aware mask, feedback, response, and eligibility claims
+          fail closed.
+
+    downstream_consumers:
+      - package_id: SCI-VAL-001
+        status: existing_use_only_pending_recipient_review
+        handoff_id: SCI-VAL-001-XAUD-008
+      - package_id: SCI-MAP-001
+        status: existing_use_only_pending_recipient_review
+        handoff_id: SCI-MAP-001-XAUD-004
+      - package_id: SCI-NOI-001
+        status: existing_use_only_pending_recipient_review
+        handoff_id: SCI-NOI-001-XAUD-001
+      - package_id: SCI-BEAM-001
+        status: existing_use_only_unlaunched
+        handoff_id: null
+        material_route: SCI-VAL-001-XAUD-008_and_owner_brief
+
     governing_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    governing_parent: 4846fa4db39bd2f7d4ddc41f693836834cbc5ff4
+    governing_tree: ab230a93b8fb310d58aefd7ac5da92e5d5e0f408
     governing_sha_role: audit_dispatch_snapshot
-    audit_dispatch:
-      status: frozen_ready_not_launched
-      dispatch_id: SCI-PTC-001-AUDIT-DISPATCH-2026-08-08
-      dispatch_content_commit: 70d191f3207d37cbdca3a77392668e93fb68c4fc
+    audit_branch: codex/audit-sci-ptc-001
+    audit_worktree: /Users/gwilson/.codex/worktrees/4dc5/citlali-refactor
+    final_audit_commit: 01ee247461d6c19bc4db81ccac4fec21af162c88
+    final_audit_parent: 66e8d6f98c3e22da74de4eea84e568a0b4cc6310
+    final_audit_tree: e6685c920ff37f1d4e51d27ecf23b73ac16087b5
+    audit_artifact_at_commit: doc/audits/packages/SCI-PTC-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    final_audit_artifact_sha256: c46a15c142d0938baf9576d84a19332e0d46b34852b4d59c0029ba00ac62d7e6
+    owner_decision_brief: doc/audits/packages/SCI-PTC-001_OWNER_DECISION_BRIEF_2026-08-08.md
+    owner_decision_brief_sha256: eaaf7bc06988dcb4bc1ae2a7da235aab4ac5ebfd96850fb580d850d5c82a2752
+    coordinator_decision_brief: doc/audits/packages/SCI-PTC-001_COORDINATOR_DECISION_BRIEF_2026-08-08.md
+    coordinator_decision_brief_sha256: 5f13de8d7e6c51559cfd44cfbba83a1120c811c1145dc22189f74888f88a0892
+    integrated_ledger_proposal:
+      path: doc/audits/proposals/SCI-PTC-001_LEDGER_PROPOSAL_2026-08-08.yaml
+      sha256: 8daabce7d0d585e82d233dadb3f535bb993a28c62acb351c4474272c525eee63
+      disposition: applied_with_coordinator_identity_and_controlled_status_normalization
+
+    dispatch:
+      status: audit_integrated_pending_owner_decisions
+      launch_date: 2026-08-08
+      launch_effort: ultra
+      execution_profile: sol_ultra_no_delegation
+      frozen_content_commit: 70d191f3207d37cbdca3a77392668e93fb68c4fc
       coordinator_registry_commit: 47c4632008c4fd78f2ab88106372d7ee11ee7711
+      final_coordinator_binding_commit: 6ee2608a0444fa7751a234ffdfb3b72108f92409
       prompt_path: doc/audits/prompts/SCI_PTC_001_AUDIT_PROMPT.md
       prompt_sha256: a34d2444c3f66a2a1056ebe5c552d16a31bd9f69035b5c6f34ddbb9bc90fd24b
-      manifest_path: >-
-        doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001_INBOX_AUTHORITY_MANIFEST_2026-08-08.yaml
+      manifest_path: doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001_INBOX_AUTHORITY_MANIFEST_2026-08-08.yaml
       manifest_sha256: 23913b37dfac7a106bcb281f9a1870616c99acf912a5a7aad59aed39e6bd67d3
-      model: sol
-      effort: ultra
-      task_shape: decomposable_scientific
-      pre_core_authority_ids: [SCI-RTC-001-D001-D004, SCI-PTC-001-XAUD-001]
+      pre_core_authority_ids:
+        - SCI-RTC-001-D001-D004
+        - SCI-PTC-001-XAUD-001
       post_core_evidence_ids:
         - SCI-PTC-001-XAUD-002
         - SCI-PTC-001-XAUD-003
         - SCI-PTC-001-XAUD-004
         - SCI-PTC-001-XAUD-005
         - SCI-PTC-001-XAUD-006
-      local_reduction_authorized: false
-      unity_authorized: false
-      delegation_authorized: false
-      application_change_authorized: false
-      repair_or_reaudit_authorized: false
-      downstream_audit_authorized: false
-      launch_authority: owner_or_coordinator_separate_action_required
-      stop_rule: coordinator_owner_review_after_bounded_audit
-    audit_branch: null
-    audit_commit: null
-    independent_derivation: {status: not_started, sha256: null}
-    contract_status: not_started
-    implementation_status: not_assessed
-    validation_status: not_started
+      excluded_unintegrated_repair_commit: 5c6309125fef15f7c98e70a62b591c663944b130
+
+    independent_derivation:
+      status: independent_core_frozen_and_coordinator_accepted
+      path: doc/audits/packages/SCI-PTC-001_INDEPENDENT_CORE.tex
+      sha256: 82c0835f51ea9b1fa8a37489f289be89a8018a0b2700e84b1e25c2e4d2a013c2
+      freeze_commit: 66e8d6f98c3e22da74de4eea84e568a0b4cc6310
+      freeze_parent: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+      freeze_tree: b4775f0f18277b28497fbbc0b24a7b583b9c0980
+      freeze_timestamp_utc: 2026-08-08T19:45:04Z
+      first_application_source_open_utc: 2026-08-08T19:47:43Z
+      first_application_source_path: include/citlali/core/timestream/ptc/ptcproc.h
+      first_post_core_handoff_open_utc: 2026-08-08T19:59:58Z
+      successor_revisions: []
+      prior_exposure: >-
+        Repository instructions, TolTEC routing context, frozen prompt/manifest,
+        approved RTC D001-D004, and SCI-PTC-001-XAUD-001 only. No PTC source,
+        caller, test, diff/blame, prior PTC audit, or post-core handoff content was
+        opened before freeze.
+
+    incoming_handoffs:
+      - id: SCI-PTC-001-XAUD-001
+        path: doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-001.yaml
+        dispatch_sha256: ba53e2c2e6af610112696f3edc87c92e43bc2530ac33b700fd5c64e76a8986fa
+        canonical_sha256: 04718e3691d57b22ed9f6e92fb183917aa68a005262f60cf0d1d5be11eb912b9
+        source_package: SCI-MAP-001
+        review_phase: pre_core_authority
+        arrival: before_dispatch
+        recipient_disposition:
+          status: acknowledged
+          actions:
+            - approved_pre_core_authority_applied
+            - dependency_recorded
+            - consumer_restriction_recorded
+          rationale: >-
+            The approved MAP nonprecision rule was applied in the frozen core;
+            no MAP implementation or result was promoted.
+          affected_findings: [SCI-PTC-001-F006]
+      - id: SCI-PTC-001-XAUD-002
+        path: doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-002.yaml
+        dispatch_sha256: 0aed9f3a625193d882058e7602a6a785093ec2f077d2bdffd9008ac345f23f10
+        canonical_sha256: 4c0d72cff1b034efdad0a9f7606e5c323fa5269e4be3b529cdda7fa72bad6dba
+        source_package: SCI-MAP-001
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        recipient_disposition:
+          status: acknowledged
+          actions:
+            - dependency_recorded
+            - finding_opened
+            - future_interface_tests_recorded
+            - consumer_restriction_recorded
+          rationale: >-
+            Current coefficient and consumer source independently corroborates
+            the nonprecision/covariance restriction; no MAP result is promoted.
+          affected_findings: [SCI-PTC-001-F006]
+      - id: SCI-PTC-001-XAUD-003
+        path: doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-003.yaml
+        dispatch_sha256: 7bb12dd0ece2727012b49988a7552da9c288e10b25eafacd60300f750f744435
+        canonical_sha256: 85d13740808139de10f4a6ceaa2e87f3aa674acdca6accc059dca2097a59b3b2
+        source_package: SCI-CAL-001
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        recipient_disposition:
+          status: acknowledged
+          actions:
+            - dependency_recorded
+            - findings_opened
+            - future_interface_tests_recorded
+            - consumer_restriction_recorded
+          rationale: >-
+            Current source independently exposes incomplete coefficient factor
+            identity and covariance. No CAL repair/result is accepted.
+          affected_findings: [SCI-PTC-001-F006, SCI-PTC-001-F011]
+      - id: SCI-PTC-001-XAUD-004
+        path: doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-004.yaml
+        dispatch_sha256: 3e8f7805b27acffa550b749e3c6970167fc38d9d0d87e807ee43c487b7dfbf6d
+        canonical_sha256: dd1a0504dcc67758c6bd01da54c0d21b610eb0554155e2310865cd04b680b2d9
+        source_package: SCI-AST-001
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        recipient_disposition:
+          status: acknowledged
+          actions:
+            - dependency_recorded
+            - finding_opened
+            - future_interface_tests_recorded
+            - consumer_restriction_recorded
+          rationale: >-
+            Coordinate validity and detector-row binding remain dependencies at
+            source masks/feedback; no AST conclusion or active result is promoted.
+          affected_findings: [SCI-PTC-001-F012]
+      - id: SCI-PTC-001-XAUD-005
+        path: doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-005.yaml
+        dispatch_sha256: 5fc8d94ba5af6053296004d3a35403a47f4e77c259fee92e28c92f3186a7ee24
+        canonical_sha256: 03978e12ea03df83c027538b5e8afd9fce8de2f37eab419532492717a1a0ce5e
+        source_package: SCI-RTC-001
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        recipient_disposition:
+          status: acknowledged_not_accepted_or_closed
+          actions:
+            - dependency_recorded
+            - findings_opened
+            - future_interface_tests_recorded
+            - consumer_restriction_recorded
+          rationale: >-
+            Incomplete incoming causal support, response, calibration factor, and
+            provenance remain open. PTC launch does not dispose RTC.
+          affected_findings: [SCI-PTC-001-F005, SCI-PTC-001-F010]
+      - id: SCI-PTC-001-XAUD-006
+        path: doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-006.yaml
+        dispatch_sha256: 23ae2b52d0347006c9fc8362299c6ea9eae98b803e3a7698d2e2fb48ae336a7f
+        canonical_sha256: e54480e45f0de2bff48294c74a03d6f8637cdc86f0402474f2bd3bfc9ae8959f
+        source_package: SCI-ALIGN-001
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        evidence_commit: 5c6309125fef15f7c98e70a62b591c663944b130
+        recipient_disposition:
+          status: acknowledged_current_source_corroboration_only
+          actions:
+            - finding_opened
+            - future_interface_tests_recorded
+            - product_restriction_recorded
+          rationale: >-
+            Current source independently exhibits the variable-length extent
+            defect. The repair is outside governing ancestry, unintegrated, and
+            not treated as Unity-validated.
+          affected_findings: [SCI-PTC-001-F004]
+
+    outgoing_handoffs:
+      - id: SCI-VAL-001-XAUD-008
+        target_package: SCI-VAL-001
+        path: doc/audits/handoffs/SCI-VAL-001/SCI-VAL-001-XAUD-008.yaml
+        audit_submission_sha256: fdeaa3d18909a35b3caff85257f70e7f51ae6115ec07d172cbe96fd1b5007a32
+        canonical_sha256: b7ab2bc2d09c193ae3c0c3aefd70763ec70407cb0d54aa0b8a438b0590810d41
+        status: submitted_pending_recipient_review
+        BEAM_later_route_included: true
+      - id: SCI-MAP-001-XAUD-004
+        target_package: SCI-MAP-001
+        path: doc/audits/handoffs/SCI-MAP-001/SCI-MAP-001-XAUD-004.yaml
+        audit_submission_sha256: 5c5221366d9fd66cffc3881cb8fad2f9b1fee990bfd581b4583cf0d1b72c53d2
+        canonical_sha256: 245fdcfcd9359ad8cb1e401b9c64ffde4dc265f42762d9d7adbb2b299927a941
+        status: submitted_pending_recipient_review
+      - id: SCI-NOI-001-XAUD-001
+        target_package: SCI-NOI-001
+        path: doc/audits/handoffs/SCI-NOI-001/SCI-NOI-001-XAUD-001.yaml
+        audit_submission_sha256: eb9c8588e0c09d8a9882ed076ee0b8cc33ccad9c49319dea0b56e4419eee3c8c
+        canonical_sha256: c62074370abf72a5b73195588edd4b70ee6c69d389650a7ea5402b0c907ffaa5
+        status: submitted_pending_recipient_review
+      - id: SCI-BEAM-001
+        target_package: SCI-BEAM-001
+        path: null
+        sha256: null
+        status: no_separate_handoff_created_package_not_launched
+        material_route: SCI-VAL-001-XAUD-008_and_owner_brief
+
+    contract_status: proposed
+    implementation_status: nonconformant
+    validation_status: in_progress
     production_status: existing_use_only
-    verdict: pending
-    open_findings: []
-    unresolved_scientific_decisions: []
-    local_evidence: []
-    requested_unity_evidence: []
-    supplied_external_evidence: []
-    remediation_branch: null
-    remediation_commit: null
-    re_audit_status: not_started
+    verdict: amend
+
+    implementation_assessment:
+      governing_source: nonconformant
+      claimed_operator: >-
+        theta=T(x,m,a;phi), z=F(x,m,a,theta), w=W(z,m,a,theta), and
+        q_(s+1)=G(q_s,x,m,a), with cause-preserving validity, bounded conditioned
+        or local response, declared covariance/uncertainty, exact four-state
+        identity, immutable parent/product links, and fail-closed consumers.
+      implemented_operator: >-
+        Per-detector source-mask mean subtraction followed, when enabled, by
+        sequential configured data-derived covariance/eigenmode selection and
+        projection for signal and a fixed-state kernel; optional post-PCA flags;
+        approximate/full/hybrid/validated/constant scalar detector coefficients;
+        then ordered PTC products and coefficient-weighted map/beam consumers.
+      positive_controls:
+        - local cleaner state per call and ordered group passes
+        - active-detector/covariance overlap checks and bounded diagnostics
+        - signal and kernel receive the same fixed realized PCA projection
+        - explicit cache and learned-weight mutex ownership
+        - one-way typed requested/effective configuration skeleton
+        - direct flags checked before ordinary map payload use
+        - atomic file creation and required writer failure propagation
+      consequence: >-
+        Positive subcontracts do not compensate for exact validity/influence,
+        rate, extent, response, covariance, provenance, product, policy,
+        dependency, and evidence nonconformities.
+
+    open_findings:
+      - id: SCI-PTC-001-F001
+        class: implementation_defect
+        severity: P0
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: PTC_validity_and_cleaning_interface
+        dependency: SCI-RTC-001 validity and SCI-PTC-001-D006
+        summary: >-
+          Masked NaN/Inf arithmetic, shifted-signal/unshifted-mask null selection,
+          and finite flagged fallbacks admit invalid payloads into fitted state
+          and unflagged descendants.
+        closure_gate: >-
+          Eligible-only mean/covariance/null/fallback fixtures pass with exact
+          cause-preserving outputs at an accepted independently re-audited successor.
+      - id: SCI-PTC-001-F002
+        class: implementation_defect
+        severity: P0
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: PTC_validity_response_interface
+        dependency: SCI-PTC-001-D002
+        summary: >-
+          Second-pass, post-clean detector, and weight flags occur after
+          cross-detector mixing without recomputation or descendant invalidation.
+        closure_gate: >-
+          Adversarial late-reject fixtures prove the approved recompute/invalidate
+          policy for signal, kernel, coefficients, and every direct consumer.
+      - id: SCI-PTC-001-F003
+        class: implementation_defect
+        severity: P0
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: PTC_TOD_metadata_owner
+        dependency: effective observation sample-rate authority
+        summary: >-
+          Downsampled PTC and PTCdiag products advertise native SAMPRATE rather
+          than the effective rate used by cleaning and maps.
+        closure_gate: >-
+          Factor-one and factor-greater-than-one full/mini/diagnostic round trips
+          bind cardinality, time, phase, and effective rate exactly.
+      - id: SCI-PTC-001-F004
+        class: implementation_defect
+        severity: P0
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: PTC_processed_product_owner_and_ALIGN_coordinator
+        dependency: SCI-ALIGN-001 accepted integrated successor
+        summary: >-
+          Variable-length processed chunks receive incorrect inclusive scan bounds;
+          the known repair is outside governing ancestry.
+        closure_gate: >-
+          An integrated accepted successor passes equal/increase/decrease and
+          empty-policy extent fixtures, then an independent re-audit accepts it.
+      - id: SCI-PTC-001-F005
+        class: contract_gap
+        severity: P1
+        evidence_basis: derived
+        confidence: high
+        status: open
+        owner: PTC_response_product_owner
+        dependency: SCI-PTC-001-D003 and SCI-RTC-001 complete response
+        summary: >-
+          Stored kernel is only a conditioned partial response and has no
+          local/global, derivative, uncertainty, parent-response, or explicit
+          unavailable identity.
+        closure_gate: >-
+          Approved D003 plus impulse/sinusoid/source/extended/selection/iteration
+          fixtures establish each declared response class or encode unavailable.
+      - id: SCI-PTC-001-F006
+        class: contract_gap
+        severity: P1
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: PTC_MAP_NOI_weight_and_covariance_owners
+        dependency: SCI-PTC-001-D004, SCI-CAL-001, and SCI-MAP-001
+        summary: >-
+          Scalar coefficient families lack complete factor units, normalization,
+          lifecycle, marginal-precision proof, and retained covariance.
+        closure_gate: >-
+          Approved D004, exact factor/unit/binding fixtures, covariance
+          construction/retention, and consumer tests prove only declared meanings.
+      - id: SCI-PTC-001-F007
+        class: contract_gap
+        severity: P1
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: PTC_provenance_lifecycle_owner
+        dependency: SCI-PTC-001-D005
+        summary: >-
+          Requested/effective/observation-resolved/realized state cannot
+          reconstruct the exact scan operator.
+        closure_gate: >-
+          Deserialize and replay every realized group, mask, selector, pass,
+          coefficient, learned/random state, response/covariance status, and
+          product link with matching digests.
+      - id: SCI-PTC-001-F008
+        class: implementation_defect
+        severity: P1
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: PTC_product_atomicity_owner
+        dependency: SCI-PTC-001-D005
+        summary: >-
+          Static APT arrays are overwritten per append and a later failure can
+          leave a partial multi-scan file without a complete-bundle marker.
+        closure_gate: >-
+          Scan-specific immutable state plus injected append-failure and
+          complete-bundle round trips prove atomic parentage and completeness.
+      - id: SCI-PTC-001-F009
+        class: scientific_policy_decision
+        severity: P1
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: PTC_scientific_product_owner
+        dependency: SCI-PTC-001-D001
+        summary: >-
+          clean.enabled=false still source-mask mean-centers, so disabled-clean
+          identity is not defined by current behavior.
+        closure_gate: >-
+          Owner approves identity or mandatory-centering equations/configuration,
+          and exact disabled/enabled fixtures conform.
+      - id: SCI-PTC-001-F010
+        class: dependency_gap
+        severity: P0
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: SCI_RTC_owner_and_coordinator
+        dependency: SCI-RTC-001
+        summary: >-
+          Incoming causal support, matched kernel response, calibration factor,
+          and realized provenance are incomplete.
+        closure_gate: >-
+          Accepted integrated RTC successor closes its gates at the same SHA and
+          the RTC/PTC boundary is independently re-audited.
+      - id: SCI-PTC-001-F011
+        class: dependency_gap
+        severity: P1
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: SCI_CAL_owner_and_coordinator
+        dependency: SCI-CAL-001
+        summary: >-
+          fcf, sensitivity, flxscale, detector binding, validity, units, and
+          shared covariance lack accepted complete authority.
+        closure_gate: >-
+          Accepted CAL successor plus unequal-factor, unit, binding,
+          invalid-domain, and covariance fixtures at one exact SHA.
+      - id: SCI-PTC-001-F012
+        class: dependency_gap
+        severity: P0
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: SCI_AST_SCI_ALIGN_owners_and_coordinator
+        dependency: SCI-AST-001 behind SCI-ALIGN-001
+        summary: >-
+          Source masks and feedback lack accepted coordinate validity and
+          detector-row binding.
+        closure_gate: >-
+          Accepted dependencies plus invalid/missing/frame/permutation/topology/
+          mask-boundary admission fixtures fail closed.
+      - id: SCI-PTC-001-F013
+        class: evidence_gap
+        severity: P1
+        evidence_basis: observed
+        confidence: high
+        status: open
+        owner: future_bounded_validation_implementer
+        dependency: owner-approved repaired exact successor SHA
+        summary: >-
+          No direct governing-SHA compiled PTC suite, exact sequential/OpenMP
+          product comparison, or external product truth exists.
+        closure_gate: >-
+          Every applicable frozen-core case passes without required-data skip or
+          unexpected error-level messages, followed by fresh independent re-audit.
+
+    unresolved_scientific_decisions:
+      - id: SCI-PTC-001-D001
+        owner: PTC_scientific_product_owner
+        question: disabled-clean identity versus mandatory source-mask centering
+        proposed_disposition: >-
+          Make all-disabled PTC identity; expose centering as a separately named
+          stage if scientifically required.
+      - id: SCI-PTC-001-D002
+        owner: PTC_validity_and_response_owner
+        question: direct-cause/transitive-influence representation and recompute versus invalidate policy
+        proposed_disposition: >-
+          Require cause-preserving fail-closed eligibility for signal, kernel,
+          coefficients, and consumers; owner selects the exact representation.
+      - id: SCI-PTC-001-D003
+        owner: PTC_response_product_owner
+        question: conditioned, local-Jacobian, global/extended, uncertainty, and unavailable response classes
+        proposed_disposition: >-
+          Publish only computed classes bound to exact state/upstream response and
+          mark every stronger class explicitly unavailable.
+      - id: SCI-PTC-001-D004
+        owner: PTC_MAP_NOI_weight_and_covariance_owners
+        question: factor identity, units, normalization, lifecycle, precision conditions, and retained covariance
+        proposed_disposition: >-
+          Type all current families as nonprecision coefficients unless complete
+          precision and covariance conditions are proved.
+      - id: SCI-PTC-001-D005
+        owner: PTC_product_and_provenance_owner
+        question: canonical product identities, scan state, parent/digests, append atomicity, and replay
+        proposed_disposition: >-
+          Require an immutable complete bundle and sufficient scan-specific state
+          to deserialize/replay the exact operator and links.
+      - id: SCI-PTC-001-D006
+        owner: PTC_missing_data_and_selection_owner
+        question: eligible arithmetic, non-finite/fallback policy, coupled null shifts, random state, and selection uncertainty
+        proposed_disposition: >-
+          Reject invalid payload before arithmetic, couple surrogate signal/mask,
+          persist realized state, and fail closed on insufficient eligible support.
+
+    local_evidence:
+      id: SCI-PTC-001-LOCAL-001
+      path: doc/audits/evidence/SCI-PTC-001_LOCAL_EVIDENCE_2026-08-08.yaml
+      sha256: 091059abd088b8bca58ca5a885e12620972c1f75f75574e33bfff8b0eb90b195
+      status: complete_with_explicit_limits
+      conclusion: >-
+        Exact source, 43 verified path digests, and three deterministic formula
+        probes establish current validity/influence, rate, extent, response,
+        weight/covariance, state, and product contradictions. No compiled PTC
+        execution or external product evidence is available.
+
+    proposed_future_exact_sha_evidence:
+      status: proposed_not_requested_not_executed
+      cost_classification: not_costly_if_focused_existing_successor_test_surface_exists
+      cases:
+        - disabled identity and separately enabled source-mask centering
+        - single and identical detectors, rank-deficient and orthogonal modes
+        - flagged/non-finite eligible-only mean, covariance, selection, and projection
+        - coupled null signal/mask shifts, deterministic seeds, shifts, and selection uncertainty
+        - source-mask boundaries and selected/rejected sample/detector causal influence
+        - second-pass and post-clean late rejection recompute/invalidate behavior
+        - unequal calibration factors, every coefficient family, units, normalization, and invalid domains
+        - constant, impulse, sinusoid, point, extended, conditioned, and local response
+        - factor-one/downsampled rate, phase, cardinality, and full/mini/diagnostic identity
+        - equal, increasing, and decreasing variable chunk extents
+        - four-state serialization/replay with parent and component digests
+        - injected append failure and immutable complete-bundle publication
+        - sequential/OpenMP and scan-order signal/state/kernel/coefficient/product equivalence
+        - real/simulation interface, random state, and injected-source parity
+        - retained covariance and MAP/NOI/BEAM fail-closed consumer interpretation
+      guard: >-
+        Bind one exact owner-approved repair SHA, parent/tree, configs, inputs,
+        factors, masks, seeds, state, products, and digests; no required-data skip
+        and zero unexpected error-level messages. Broad/costly work requires a
+        separate FRAMEWORK-NUM-001 launch gate and owner authorization.
+
+    production_disposition:
+      allowed_compatibility_only:
+        - continued existing use already authorized by owning integrated package records
+        - exact static, digest, YAML, link, and offline document checks without overall conformance inference
+      restricted:
+        - new precision, inverse variance, significance, independent-noise, covariance, photometry, transfer, kernel, beam, or response-uncertainty claims
+        - new VAL eligibility/exposure interpretations equating finite/unflagged with uninfluenced or independent
+        - new coordinate-aware mask/feedback use without conformant AST/ALIGN binding
+        - new coefficient-factor interpretation without conformant CAL authority
+        - equivalence among RTC input, full, mini, diagnostic, simulated, processed, map, or beam products
+        - production expansion from static/config/historical evidence or a future test pass alone
+      fail_closed:
+        - missing, non-finite, invalid, duplicate, or unbound detector/sample/rate/phase/factor/coordinate/support/product authority
+        - unavailable complete response, covariance, causal eligibility, uncertainty, or immutable product completeness
+        - any new consumer outside the existing allowlist
+        - any use of this audit as repair, validation, integration, re-audit, downstream launch, or production authorization
+
+    final_validation:
+      latex_engine: tectonic_0.16.9_cache_only
+      latex_compile: pass
+      reruns_after_first: 1
+      report_pdf_sha256: 21853cbb75b6dc93cb28ca573557ef90385f75f51959e97358b2bcdc1b3dfbda
+      pdf_pages: 17
+      pdf_page_size: letter
+      rendered_png_pages_inspected: 17
+      visual_result: pass_no_clipping_overlap_or_unreadable_glyphs
+      overfull_boxes: 0
+      benign_underfull_paragraphs: 1
+      yaml_validation: pass
+      link_digest_vocabulary_git_diff_clean_checks: pass
+
+    cost_and_scope:
+      cost_classification: not_costly
+      broad_or_costly_execution_launched: false
+      local_Citlali_reduction_launched: false
+      Unity_accessed: false
+      network_or_external_system_accessed: false
+      external_contact_or_review: false
+      delegation_used: false
+      build_started: false
+      compiled_tests_run: false
+      application_code_modified: false
+      tests_build_validation_config_production_modified: false
+      canonical_ledger_or_registry_modified: false
+      repair_reaudit_integration_or_downstream_audit_launched: false
+      VAL_or_BEAM_launched: false
+      push_performed: false
 
   - id: SCI-VAL-001
     name: Sample and detector validity, flags, and map eligibility

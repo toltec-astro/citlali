@@ -28,9 +28,11 @@ ALIGN/3C273 evidence remains owner-managed and active, while AST repair waits
 for an accepted and re-audited ALIGN successor. The RTC audit at
 `3319d7424c732c1c9fc300c336e4d428e6f91068` is integrated, owner decisions
 D001--D004 are recorded, and its axes remain `proposed`, `nonconformant`,
-`in_progress`, and `existing_use_only`, with verdict `amend`. PTC is the next
-independent audit at Sol Ultra; VAL follows PTC, and BEAM follows frozen
-PTC/VAL interfaces. FLT
+`in_progress`, and `existing_use_only`, with verdict `amend`. The PTC audit at
+`01ee247461d6c19bc4db81ccac4fec21af162c88` is integrated with the same
+bounded axes and verdict; owner choices D001--D006 are ready and unresolved.
+VAL, MAP, NOI, and BEAM remain unlaunched by this review and retain their
+existing restrictions. FLT
 successor-repair dispatch remains held until CAL has an accepted, independently
 re-audited, integrated successor. The returned ENG-STATE-001 static package is
 accepted with F001/F002 open and unchanged package axes; further ENG work
@@ -47,6 +49,8 @@ The owner decisions are
 The frozen, not-yet-launched PTC packet is
 [`SCI_PTC_001_AUDIT_PROMPT.md`](prompts/SCI_PTC_001_AUDIT_PROMPT.md) with
 [`SCI-PTC-001_INBOX_AUTHORITY_MANIFEST_2026-08-08.yaml`](handoffs/SCI-PTC-001/SCI-PTC-001_INBOX_AUTHORITY_MANIFEST_2026-08-08.yaml).
+The completed PTC coordinator review and six owner choices are
+[`SCI-PTC-001_COORDINATOR_DECISION_BRIEF_2026-08-08.md`](packages/SCI-PTC-001_COORDINATOR_DECISION_BRIEF_2026-08-08.md).
 The smallest FLT readiness record is
 [`SCI-FLT-001_SUCCESSOR_REPAIR_DISPATCH_READINESS_2026-08-08.md`](packages/SCI-FLT-001_SUCCESSOR_REPAIR_DISPATCH_READINESS_2026-08-08.md).
 

@@ -69,15 +69,24 @@ evidence:
     note: Independently rehashed local bundle; not integrated or validated here.
 
 recipient_disposition:
-  status: pending
+  status: acknowledged_current_source_corroboration_only
   late_arrival_route: not_applicable
-  actions: []
-  rationale: null
-  target_audit_branch: null
-  target_audit_commit: null
-  affected_findings: []
-  affected_dependencies: []
-  contract_or_report_locations: []
+  actions:
+    - finding_opened
+    - future_interface_tests_recorded
+    - product_restriction_recorded
+  rationale: >-
+    Governing source independently exhibits the variable-length extent defect.
+    Repair 5c6309125fef15f7c98e70a62b591c663944b130 remains outside the
+    governing ancestry, unintegrated, and not treated as Unity-validated.
+  target_audit_branch: codex/audit-sci-ptc-001
+  target_audit_commit: 01ee247461d6c19bc4db81ccac4fec21af162c88
+  affected_findings:
+    - SCI-PTC-001-F004
+  affected_dependencies:
+    - SCI-ALIGN-001
+  contract_or_report_locations:
+    - doc/audits/packages/SCI-PTC-001_SCIENTIFIC_CONTRACT_AUDIT.tex
 
 supersedes: null
 superseded_by: null

@@ -38,8 +38,8 @@ or dependency claim is inferred from those integrations.
 | `SCI-ALIGN-001` | Owner-managed ALIGN/3C273 evidence remains active and deliberately slow. | Frozen returned evidence and coordinator review. |
 | `SCI-AST-001` | Repair remains held. | Accepted and re-audited ALIGN successor, then exact AST repair-base selection. |
 | `SCI-RTC-001` | Audit `3319d742...` integrated; D001--D004 approved; axes remain `proposed` / `nonconformant` / `in_progress` / `existing_use_only`, verdict `amend`. | Upstream closure, separately authorized repair, focused exact-successor evidence, then independent re-audit. |
-| `SCI-PTC-001` | Next independent audit at Sol Ultra against exact application SHA `46ad2388...`; packet `70d191f3...` is frozen and not launched. | Owner/coordinator launch of the exact packet; RTC and ALIGN evidence remains post-core and undispositioned. |
-| `SCI-VAL-001` | Queued after PTC. | Frozen RTC and PTC interfaces. |
+| `SCI-PTC-001` | Audit `01ee2474...` integrated; axes are `proposed` / `nonconformant` / `in_progress` / `existing_use_only`, verdict `amend`; D001--D006 await owner choice. | Owner approves or supersedes the six decisions; no repair or re-audit is launched. |
+| `SCI-VAL-001` | Not launched; new PTC handoff `SCI-VAL-001-XAUD-008` is pending recipient review. | Later explicit sequencing decision after PTC owner review; current restrictions remain. |
 | `SCI-BEAM-001` | Queued after PTC/VAL. | Frozen PTC and VAL interfaces; existing upstream restrictions remain. |
 | `SCI-FLT-001` | Successor-repair dispatch readiness only; not authorized. | Exact repair base remains unresolved until CAL has an accepted, re-audited, integrated successor. |
 | `ENG-STATE-001` | Static Tier C package accepted into coordination; F001/F002 remain open P1 evidence gaps and all axes remain unchanged. | Fresh static-only scope checkpoint before any further ENG work. |
@@ -84,17 +84,13 @@ It remains queued for later VAL routing. It is absent from the frozen RTC
 manifest, changes no RTC derivation or scope, and cannot be opened before a
 recipient's independent core is frozen.
 
-## PTC launch sequencing conclusion
+## Completed PTC audit disposition
 
-The completed RTC audit brief's conservative dependency sequence governs
-acceptance or closure of RTC's outgoing handoffs and downstream scientific or
-production use. It does not prohibit launching a fresh PTC independent audit.
-PTC may launch against `46ad2388...` with `SCI-PTC-001-XAUD-001` as its only
-pre-core handoff, the approved RTC D001--D004 owner record as pre-core
-contract authority, and all observational or implementation records—including
-RTC `SCI-PTC-001-XAUD-005` and ALIGN `SCI-PTC-001-XAUD-006`—quarantined until
-the independent core is frozen. Launch does not disposition either handoff,
-authorize repair, or change production status.
+PTC audit commit `01ee247461d6c19bc4db81ccac4fec21af162c88`, parent/core
+`66e8d6f98c3e22da74de4eea84e568a0b4cc6310`, and tree
+`e6685c920ff37f1d4e51d27ecf23b73ac16087b5` were independently verified and
+integrated. The audit preserved the frozen pre/post-core partition and did not
+promote RTC or ALIGN evidence.
 
 The exact frozen launch identities are prompt
 `doc/audits/prompts/SCI_PTC_001_AUDIT_PROMPT.md` at SHA-256
@@ -104,8 +100,16 @@ and manifest
 at SHA-256
 `23913b37dfac7a106bcb281f9a1870616c99acf912a5a7aad59aed39e6bd67d3`,
 both frozen in dispatch-content commit
-`70d191f3207d37cbdca3a77392668e93fb68c4fc`. This coordination task did not
-launch it.
+`70d191f3207d37cbdca3a77392668e93fb68c4fc`. The completed audit does not
+authorize repair, re-audit, or downstream launch.
+
+The coordinator accepted verdict `amend` and the four status axes without
+relaxation. Decisions `SCI-PTC-001-D001` through `-D006` are ready for owner
+review in
+`doc/audits/packages/SCI-PTC-001_COORDINATOR_DECISION_BRIEF_2026-08-08.md`.
+Outgoing `SCI-VAL-001-XAUD-008`, `SCI-MAP-001-XAUD-004`, and
+`SCI-NOI-001-XAUD-001` are registered as submitted and pending recipient
+review. No recipient audit was launched.
 
 ## Explicit non-authorizations
 

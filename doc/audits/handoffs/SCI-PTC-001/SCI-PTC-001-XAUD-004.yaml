@@ -67,15 +67,25 @@ evidence:
     note: Exact-source PTC consumers plus projection, wrap, and APT traces.
 
 recipient_disposition:
-  status: pending
+  status: acknowledged
   late_arrival_route: not_applicable
-  actions: []
-  rationale: null
-  target_audit_branch: null
-  target_audit_commit: null
-  affected_findings: []
-  affected_dependencies: []
-  contract_or_report_locations: []
+  actions:
+    - dependency_recorded
+    - finding_opened
+    - future_interface_tests_recorded
+    - consumer_restriction_recorded
+  rationale: >-
+    Coordinate validity and detector-row binding remain dependencies at source
+    masks and feedback; no AST conclusion or active result is promoted.
+  target_audit_branch: codex/audit-sci-ptc-001
+  target_audit_commit: 01ee247461d6c19bc4db81ccac4fec21af162c88
+  affected_findings:
+    - SCI-PTC-001-F012
+  affected_dependencies:
+    - SCI-AST-001
+    - SCI-ALIGN-001
+  contract_or_report_locations:
+    - doc/audits/packages/SCI-PTC-001_SCIENTIFIC_CONTRACT_AUDIT.tex
 
 supersedes: null
 superseded_by: null
