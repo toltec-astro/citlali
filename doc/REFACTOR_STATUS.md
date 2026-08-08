@@ -112,7 +112,14 @@ freeze the application mainline.
   The local follow-up creates the mutable
   field with the initial PTC schema and retains the later idempotent metadata
   update; the exact lifecycle regression test and CLI build pass, and the
-  corrected Unity retry completed with the required full PTC product. Its
+  corrected Unity retry completed with the required full PTC arrays, but the
+  selected-scan join exposed a second distinct product defect: all 199 scan
+  metadata rows retained the first scan's 606-sample length even though the
+  writer appended variable-length chunks. The narrow local repair derives
+  non-outer scan bounds from the actual pre-append size and appended row count;
+  its variable-length regression, the earlier iteration-field regression, and
+  the CLI build pass. A fresh-root Unity replay remains required before the
+  PTC can serve as scan-bound authority. Its
   first UID 199 audit confirms smooth 8.192-ms pointing and sub-0.00011-arcsec
   detector-minus-telescope step residuals but cannot compare exact map support
   because the full PTC and maps are separate replays. A bounded follow-up now
@@ -127,6 +134,8 @@ freeze the application mainline.
   [`validation/sci_align_001_split_direction_beammap_2026-08-06/README.md`](../validation/sci_align_001_split_direction_beammap_2026-08-06/README.md).
   The durable engineering handoff is
   [`SCI_ALIGN_001_PTC_ITERATION_METADATA_DEFECT_2026-08-07.md`](../handoff/SCI_ALIGN_001_PTC_ITERATION_METADATA_DEFECT_2026-08-07.md).
+  The separate scan-bound defect is recorded in
+  [`SCI_ALIGN_001_PTC_SCAN_METADATA_DEFECT_2026-08-08.md`](../handoff/SCI_ALIGN_001_PTC_SCAN_METADATA_DEFECT_2026-08-08.md).
 - A 2026-08-02 bounded `SCI-ALIGN-001` repair candidate is complete on the
   isolated `codex/repair-sci-align-001` branch at application commit
   `c77105b9b1676ec1ec74a9d560765954c5f1d5dd`; it is not accepted, merged,

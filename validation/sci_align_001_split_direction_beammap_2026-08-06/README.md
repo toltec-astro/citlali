@@ -158,6 +158,12 @@ auxiliary-metadata pass. The failed partial PTC is not accepted evidence. The
 fresh-root Unity retry completed successfully and retained 153,360 samples,
 199 scans, 5,110 detectors, the required signal/flag/weight fields, detector
 and telescope pointing on the common timebase, and `FRUITLOOPS_ITER = 0`.
+The later selected-scan join established that this file's scan metadata is not
+valid for variable-length PTC chunks: every row retained the first scan's
+606-sample length. The arrays remain defect evidence, but a fresh replay after
+the narrow append-bound repair is required before using them as scan-bound
+authority. The distinct defect record is
+`../../handoff/SCI_ALIGN_001_PTC_SCAN_METADATA_DEFECT_2026-08-08.md`.
 
 This is a confirmed engineering product-lifecycle defect, kept separate from
 the left/right timing interpretation. Its exact Unity trigger, root cause,
@@ -186,9 +192,8 @@ same-run per-scan detector weights to the full-PTC pointing using the explicit
 one-based original scan identity. The map run's zero-based direction registry
 is converted explicitly and checked against direction independently derived
 from the full PTC. The selected TOD retains each complete processed scan
-chunk, so the sample slice is the full PTC's persisted
-`raw_scan_indices` outer window; `scan_indices` is only the shorter inner
-science support and is not interchangeable. Duplicate uniform/dense retained
+chunk, so the sample slice is the repaired full PTC's exact persisted append
+extent. Duplicate uniform/dense retained
 slots must be bytewise identical before they are deduplicated. For detector map grouping the tool
 reconstructs the actual accumulation coordinates from telescope pointing plus
 retained pointing offsets; it deliberately does not use the later

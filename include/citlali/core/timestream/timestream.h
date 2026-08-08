@@ -38,6 +38,7 @@
 #include <citlali/core/pipeline/fruit_loop_feedback_validation.h>
 #include <citlali/core/pipeline/fruit_loop_map_input_validation.h>
 #include <citlali/core/pipeline/sci_align_scan_contract.h>
+#include <citlali/core/pipeline/tod_output_append_bounds.h>
 #include <citlali/core/timestream/auxiliary_stream.h>
 #include <citlali/core/utils/fits_io.h>
 #include <citlali/core/utils/utils.h>
@@ -3526,20 +3527,19 @@ void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::M
             scan_indices(1) = scan_indices(0) + in.scans.data.rows() - 1;
         }
         else {
-            // start indices for data
-            std::vector<std::size_t> scan_indices_start_index = {TULA_SIZET(scan_row-1), 0};
-            // size for data
-            std::vector<std::size_t> scan_indices_size = {1, 2};
-            fo.getVar("scan_indices").getVar(scan_indices_start_index, scan_indices_size, scan_indices.data());
-
-            scan_indices = scan_indices.array() + in.scans.data.rows();
+            const auto bounds = citlali::pipeline::tod_output_append_bounds(
+                n_pts_exists, TULA_SIZET(in.scans.data.rows()));
+            scan_indices(0) = static_cast<double>(bounds[0]);
+            scan_indices(1) = static_cast<double>(bounds[1]);
         }
     }
 
     // otherwise, use size of this scan
     else {
-        scan_indices(0) = 0;
-        scan_indices(1) = in.scans.data.rows() - 1;
+        const auto bounds = citlali::pipeline::tod_output_append_bounds(
+            n_pts_exists, TULA_SIZET(in.scans.data.rows()));
+        scan_indices(0) = static_cast<double>(bounds[0]);
+        scan_indices(1) = static_cast<double>(bounds[1]);
     }
 
     if (output_outer_scan && in.scan_indices.data.size() >= 4) {

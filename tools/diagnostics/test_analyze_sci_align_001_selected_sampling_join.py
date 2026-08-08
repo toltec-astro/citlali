@@ -58,11 +58,11 @@ def scan_samples() -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
         [-4.0, -2.0, 0.0, 2.0, 4.0],
     ]
     y_rows = [-2.0, -1.0, 1.0, 2.0]
-    x = np.full(25, 9.0, dtype=float)
-    y = np.full(25, 9.0, dtype=float)
-    direction = np.full(25, "outside", dtype="U8")
+    x = np.empty(20, dtype=float)
+    y = np.empty(20, dtype=float)
+    direction = np.empty(20, dtype="U8")
     for start, x_row, y_row, scan_direction in zip(
-        (1, 7, 13, 19),
+        (0, 5, 10, 15),
         x_rows,
         y_rows,
         ("left", "right", "left", "right"),
@@ -127,13 +127,13 @@ def make_full_ptc(path: Path) -> None:
         dataset["TelTime"][:] = time
         dataset["TelUTC"][:] = time / 86400.0
         dataset["scan_indices"][:] = np.asarray(
-            [[2, 4], [8, 10], [14, 16], [20, 22]]
+            [[0, 4], [5, 9], [10, 14], [15, 19]]
         )
         dataset["raw_scan_indices"][:] = np.asarray([
-            [2, 4, 1, 5],
-            [8, 10, 7, 11],
-            [14, 16, 13, 17],
-            [20, 22, 19, 23],
+            [0, 4, 0, 4],
+            [5, 9, 5, 9],
+            [10, 14, 10, 14],
+            [15, 19, 15, 19],
         ])
         dataset["output_scan_index"][:] = np.arange(1, n_scans + 1)
         dataset["weights"][:] = 2.0
@@ -250,7 +250,7 @@ def make_registry(path: Path) -> None:
 def support_for_mode(mode: str) -> np.ndarray:
     x, y, direction, _ = scan_samples()
     accepted = direction != "outside"
-    accepted[3] = False
+    accepted[2] = False
     if mode != "standard":
         accepted &= direction == mode
     result = np.zeros((21, 21), dtype=bool)

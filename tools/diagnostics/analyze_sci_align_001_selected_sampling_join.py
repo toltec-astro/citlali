@@ -224,7 +224,7 @@ def load_map_pointing(ptc: PtcDetector) -> tuple[np.ndarray, np.ndarray]:
     )
 
 
-def load_full_ptc_outer_bounds(ptc: PtcDetector) -> np.ndarray:
+def load_full_ptc_append_bounds(ptc: PtcDetector) -> np.ndarray:
     with netCDF4.Dataset(ptc.path, mode="r") as dataset:
         if "raw_scan_indices" not in dataset.variables:
             raise ContractError("full PTC TOD lacks required raw_scan_indices")
@@ -240,22 +240,33 @@ def load_full_ptc_outer_bounds(ptc: PtcDetector) -> np.ndarray:
         raise ContractError(
             f"full PTC raw_scan_indices shape {raw_bounds.shape} differs from {expected}"
         )
-    outer = np.asarray(raw_bounds[:, 2:4], dtype=np.int64)
+    bounds = np.asarray(ptc.scan_indices, dtype=np.int64)
+    if not np.array_equal(raw_bounds[:, :2], bounds) or not np.array_equal(
+        raw_bounds[:, 2:4], bounds
+    ):
+        raise ContractError(
+            "full PTC raw/ordinary scan bounds disagree; the product is not a "
+            "repaired non-outer append authority"
+        )
     previous_end = -1
-    for row, (start, end) in enumerate(outer):
+    for row, (start, end) in enumerate(bounds):
         if start < 0 or end < start or end >= ptc.signal.size:
             raise ContractError(
-                f"full PTC outer scan row {row} has invalid bounds {start}:{end}"
+                f"full PTC appended scan row {row} has invalid bounds {start}:{end}"
             )
         if start <= previous_end:
             raise ContractError(
-                f"full PTC outer scan row {row} overlaps or reverses after {previous_end}"
+                f"full PTC appended scan row {row} overlaps or reverses after {previous_end}"
             )
         previous_end = int(end)
-    return outer
+    if previous_end != ptc.signal.size - 1:
+        raise ContractError(
+            "full PTC final scan bound does not reach the appended sample extent"
+        )
+    return bounds
 
 
-def classify_full_ptc_outer_direction(
+def classify_full_ptc_scan_direction(
     ptc: PtcDetector, start: int, end: int, scan_id: int
 ) -> str:
     slc = slice(start, end + 1)
@@ -263,16 +274,16 @@ def classify_full_ptc_outer_direction(
     az = ptc.az_phys[slc]
     if time.size < 2 or np.any(~np.isfinite(time)) or np.any(~np.isfinite(az)):
         raise ContractError(
-            f"full PTC outer scan {scan_id} lacks finite trajectory support"
+            f"full PTC scan {scan_id} lacks finite trajectory support"
         )
     if np.any(np.diff(time) <= 0.0):
         raise ContractError(
-            f"full PTC outer scan {scan_id} has non-increasing TelTime"
+            f"full PTC scan {scan_id} has non-increasing TelTime"
         )
     centered_time = time - float(np.mean(time))
     denominator = float(np.dot(centered_time, centered_time))
     if denominator <= 0.0:
-        raise ContractError(f"full PTC outer scan {scan_id} has no time support")
+        raise ContractError(f"full PTC scan {scan_id} has no time support")
     slope = float(np.dot(centered_time, az - float(np.mean(az))) / denominator)
     displacement = float(az[-1] - az[0])
     if (
@@ -281,7 +292,7 @@ def classify_full_ptc_outer_direction(
         or math.copysign(1.0, slope) != math.copysign(1.0, displacement)
     ):
         raise ContractError(
-            f"full PTC outer scan {scan_id} has ambiguous azimuth direction: "
+            f"full PTC scan {scan_id} has ambiguous azimuth direction: "
             f"slope={slope} displacement={displacement}"
         )
     return "right" if slope > 0.0 else "left"
@@ -371,7 +382,7 @@ def arrays_identical(left: np.ndarray, right: np.ndarray) -> bool:
 
 def join_selected_scans(
     ptc: PtcDetector,
-    outer_bounds: np.ndarray,
+    append_bounds: np.ndarray,
     selected: SelectedDetectorTod,
     weights: SameRunWeights,
     registry: dict[int, RegistryRow],
@@ -394,7 +405,7 @@ def join_selected_scans(
         if not registry_row.selected:
             raise ContractError(f"selected TOD scan {scan_id} is disabled in map registry")
         full_row = full_rows[scan_id]
-        start, end = (int(value) for value in outer_bounds[full_row])
+        start, end = (int(value) for value in append_bounds[full_row])
         full_length = end - start + 1
         if full_length != n_samples:
             raise ContractError(
@@ -406,12 +417,12 @@ def join_selected_scans(
                 f"scan {scan_id} selected/registry length mismatch: "
                 f"selected={n_samples} registry={registry_row.sample_count}"
             )
-        full_direction = classify_full_ptc_outer_direction(
+        full_direction = classify_full_ptc_scan_direction(
             ptc, start, end, scan_id
         )
         if full_direction != registry_row.direction:
             raise ContractError(
-                f"scan {scan_id} registry/full-PTC outer direction mismatch: "
+                f"scan {scan_id} registry/full-PTC direction mismatch: "
                 f"registry={registry_row.direction} full={full_direction}"
             )
         signal = np.asarray(selected.signal[slot, :n_samples], dtype=float)
@@ -736,7 +747,7 @@ def run(args: argparse.Namespace) -> None:
         raise ContractError("uid and half-width are outside their domains")
     ptc = load_ptc_detector(args.full_ptc_tod, args.uid)
     map_lat, map_lon = load_map_pointing(ptc)
-    outer_bounds = load_full_ptc_outer_bounds(ptc)
+    append_bounds = load_full_ptc_append_bounds(ptc)
     raw_dir = discover_raw_dir(args.map_reduction_root)
     selected_path, diag_path, registry_path = discover_selected_inputs(raw_dir)
     selected = load_selected_detector_tod(selected_path, args.uid)
@@ -749,7 +760,7 @@ def run(args: argparse.Namespace) -> None:
     if (selected.array, selected.network) != (ptc.array, ptc.nw):
         raise ContractError("full PTC and selected TOD detector identities disagree")
     joined_scans, duplicate_slots = join_selected_scans(
-        ptc, outer_bounds, selected, weights, registry
+        ptc, append_bounds, selected, weights, registry
     )
     apt_paths, apt_tables, apt_indices = map_tables(raw_dir)
     apt_values = {}
@@ -821,8 +832,8 @@ def run(args: argparse.Namespace) -> None:
         ),
         "full_ptc_window_contract": (
             "selected detector-TOD samples are complete PTC chunks and are joined to "
-            "raw_scan_indices outer_start/outer_end in the persisted full-PTC output "
-            "timebase; scan_indices contains the shorter inner science support"
+            "the repaired exact append extents; ordinary and raw inner/outer scan "
+            "bounds must be identical and cover the complete persisted output timebase"
         ),
         "map_pointing_contract": (
             "detector grouping suppresses detector focal-plane offsets during map accumulation; "

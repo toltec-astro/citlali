@@ -1,6 +1,7 @@
 #include <citlali/core/engine/detail/beammap_ptc_product_output_helpers.h>
 #include <citlali/core/pipeline/output_netcdf_metadata.h>
 #include <citlali/core/pipeline/ptcdiag_netcdf.h>
+#include <citlali/core/pipeline/tod_output_append_bounds.h>
 
 #include <gtest/gtest.h>
 
@@ -84,6 +85,21 @@ TEST(ptc_tod_schema, iteration_field_exists_before_final_header_and_updates) {
     }
 
     std::filesystem::remove(path);
+}
+
+TEST(tod_output_scan_metadata, follows_variable_length_append_extents) {
+    std::size_t existing_samples = 0;
+    for (const auto expected : std::vector<std::array<std::size_t, 2>>{
+             {0, 605}, {606, 1380}, {1381, 2131}, {2132, 2898}}) {
+        const auto appended_samples = expected[1] - expected[0] + 1;
+        const auto actual = citlali::pipeline::tod_output_append_bounds(
+            existing_samples, appended_samples);
+        EXPECT_EQ(actual, expected);
+        existing_samples = actual[1] + 1;
+    }
+    EXPECT_THROW(
+        citlali::pipeline::tod_output_append_bounds(existing_samples, 0),
+        std::invalid_argument);
 }
 
 }  // namespace
