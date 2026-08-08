@@ -80,7 +80,7 @@ Production remains `existing_use_only`, no upstream dependency is closed by
 MAP acceptance, and neither production expansion nor Conan-lane import was
 authorized by that integration.
 
-## 2026-08-08 SCI-NOI-002 Application Integration Candidate
+## 2026-08-08 SCI-NOI-002 Application Integration
 
 The project owner and coordinator authorize the bounded SCI-NOI-002
 application candidate for integration. Current application mainline
@@ -125,11 +125,13 @@ that separate ledger would require a future framework decision.
 The documentation-only child of `5b29e135...` changes only this status, the
 integration ledger, and the dated
 [application-integration decision](../handoff/SCI-NOI-002_APPLICATION_INTEGRATION_DECISION_2026-08-08.md).
-It does not modify the accepted application bytes. After owner review and
-push, `codex/refactor-mainline` may be fast-forwarded to that exact integration
-tip. Production expansion, F005/F006 work, Unity execution, realization-count
-recommendations, calibrated significance, and Conan-lane synchronization
-remain separate decisions.
+It does not modify the accepted application bytes. The owner fast-forwarded
+this exact integration tip,
+`4846fa4db39bd2f7d4ddc41f693836834cbc5ff4`, onto
+`codex/refactor-mainline`; the exact accepted application source remains
+`5b29e13548a6fec884c67b192dec20c92f0bbb62`. Production expansion, F005/F006
+work, Unity execution, realization-count recommendations, calibrated
+significance, and Conan-lane synchronization remain separate decisions.
 
 ## Historical 2026-07-31 SCI-MAP-001 Bounded Repair Lane
 
