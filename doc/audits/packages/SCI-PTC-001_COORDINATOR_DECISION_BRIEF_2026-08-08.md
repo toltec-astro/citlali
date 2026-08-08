@@ -35,11 +35,12 @@ state.
 
 ### `SCI-PTC-001-D002` — direct cause and transitive influence
 
-Choose the exact durable cause/influence representation and when late exclusion
-requires recomputation versus explicit descendant invalidation. Coordinator
-recommendation: require cause-preserving, fail-closed eligibility for signal,
-kernel, coefficients, and every consumer; representation may remain compact,
-but the behavior must be exact and falsifiable.
+Approve only this scientific invariant: no scientifically eligible output may
+retain influence from an input that is later rejected. The durable
+representation, compact bookkeeping, and choice between recomputation and
+explicit descendant invalidation are engineering decisions, provided the
+invariant is exact, fail-closed, and falsifiable for signal, kernel,
+coefficients, and every consumer.
 
 ### `SCI-PTC-001-D003` — response product families
 
@@ -56,26 +57,29 @@ Choose the factor identity, units, normalization scope, lifecycle,
 marginal-precision conditions, and retained covariance required for each
 coefficient family. Coordinator recommendation: type approximate, full,
 hybrid, validated, constant, correlation-penalized, and busy-row values as
-nonprecision coefficients unless complete precision/covariance conditions are
-proved. Current map denominators and the universal file unit do not establish
-significance or independent-noise authority.
+nonprecision coefficients unless complete precision conditions are proved.
+Covariance may be declared unavailable; constructing or retaining full
+covariance is not mandatory for the bounded repair. When unavailable, every
+stronger covariance, precision, significance, or independent-noise claim must
+fail closed. Current map denominators and the universal file unit establish
+none of those stronger claims.
 
 ### `SCI-PTC-001-D005` — immutable product and state bundle
 
-Choose canonical full, mini, diagnostic, simulated, and processed identities;
-scan-specific state; parent/digest links; append atomicity/completeness; and
-replay requirements. Coordinator recommendation: require an immutable complete
-bundle plus scan-specific realized state sufficient to deserialize and replay
-every group, mask, selector, pass, coefficient, learned/random state,
-response/covariance status, and product link.
+Approve the bounded repair minimum: correct full, mini, diagnostic, simulated,
+and processed product identity, rate, and extents; scan-specific detector
+binding; explicit parent/provenance links; and a completion/atomicity rule.
+Exhaustive serialization or replay of every selector, mode, random state,
+response state, and covariance state remains P1 work unless a declared
+consumer requires it; it is not a prerequisite for the bounded minimum.
 
 ### `SCI-PTC-001-D006` — missing-data, fallback, and null policy
 
-Choose eligible-only arithmetic, non-finite/fallback behavior, coupled
-surrogate signal/mask shifts, random-state persistence, and selection
-uncertainty. Coordinator recommendation: reject invalid payloads before
-arithmetic, transform surrogate signal and validity together, persist realized
-random/selection state, and fail closed when eligible support is insufficient.
+Approve eligible-only arithmetic, coupled surrogate signal/validity shifts,
+and fail-closed behavior when support is insufficient. Persist enough seed,
+algorithm, and input identity for deterministic replay. Storing every realized
+random shift and computing selection uncertainty may be explicitly unavailable
+or deferred; neither is a prerequisite for repairing F001/F002.
 
 ## Dependencies and outgoing routing
 
