@@ -26,9 +26,9 @@ EXCLUDED_FILES = {
     "include/citlali/core/pipeline/timestream_config_adapter_raw_flagging.h",
     "include/citlali/core/pipeline/timestream_config_adapter_raw_line_audit.h",
 }
-EXPECTED_RECORD_COUNT = 45
+EXPECTED_RECORD_COUNT = 47
 EXPECTED_RECORD_SHA256 = (
-    "09572da976aec89d56506394420b478426a6efbd0942c864571a8f6f311da2f8"
+    "9c1633f362fa0534ea1b9f66cba6122fcec3b299aefe59504f19116de61900fb"
 )
 
 EXECUTOR_OPERATIONS = {
@@ -55,6 +55,7 @@ EXECUTOR_OPERATIONS = {
     "reset_coherent_iq_mode_candidates",
     "snapshot_coherent_iq_mode_candidates",
     "snapshot_detector_diag_summary",
+    "snapshot_network_diag_summary",
     "snapshot_source_protection_diag_summary",
 }
 OBSERVATION_STATE = {
@@ -71,6 +72,7 @@ OUTPUT_OR_REALIZED_STATE = {
     "filter_edge_guard",
     "filter_edge_guard.context_samples",
     "filter_edge_guard.guard_samples",
+    "filter.w0s.size",
     "kernel",
     "kernel.has_source_centers",
     "line_audit",

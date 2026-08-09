@@ -12,6 +12,8 @@
 #include <iomanip>
 #include <limits>
 #include <map>
+#include <memory>
+#include <mutex>
 #include <optional>
 #include <sstream>
 #include <stdexcept>
@@ -290,9 +292,36 @@ struct JincObservationProvenance {
     std::string kernel_template_identity = "unavailable";
     std::string processing_configuration_identity = "unavailable";
     std::string processing_realization_identity = "unavailable";
+    bool processing_configuration_bound = false;
+    bool processing_realization_bound = false;
+    std::vector<std::pair<std::string, std::string>>
+        processing_configuration_facts;
+    std::vector<std::pair<std::string, std::string>>
+        processing_realization_facts;
     std::string coverage_sample_frequency_identity = "unavailable";
     double coverage_sample_frequency_hz = 0.0;
     JincRealizedSummary realized;
+};
+
+struct JincProcessingScanTrace {
+    std::size_t detector_count = 0;
+    std::size_t detector_sample_count = 0;
+    std::size_t rtc_flagged_sample_count = 0;
+    std::size_t ptc_flagged_sample_count = 0;
+    std::size_t apt_flagged_detector_count = 0;
+    std::size_t rtc_source_masked_sample_count = 0;
+    std::size_t ptc_mean_masked_sample_count = 0;
+    std::size_t pca_solve_count = 0;
+    std::size_t dynamic_notch_count = 0;
+    std::size_t detector_notch_count = 0;
+    std::string rtc_flags_digest = "unavailable";
+    std::string ptc_flags_digest = "unavailable";
+    std::string apt_flags_digest = "unavailable";
+    std::string map_indices_digest = "unavailable";
+    std::string ptc_signal_digest = "unavailable";
+    std::string ptc_kernel_digest = "unavailable";
+    std::string ptc_mean_mask_digest = "unavailable";
+    std::string pca_realization_digest = "unavailable";
 };
 
 struct JincProducts {
@@ -301,6 +330,9 @@ struct JincProducts {
     std::vector<JincCountPlane> contributor_count;
     std::vector<JincMaskPlane> formal_support;
     JincObservationProvenance provenance;
+    std::map<Eigen::Index, JincProcessingScanTrace> processing_scan_traces;
+    std::shared_ptr<std::mutex> processing_trace_mutex =
+        std::make_shared<std::mutex>();
 
     void clear() {
         initialized = false;
@@ -308,6 +340,7 @@ struct JincProducts {
         contributor_count.clear();
         formal_support.clear();
         provenance = {};
+        processing_scan_traces.clear();
     }
 
     void allocate(Eigen::Index map_count, Eigen::Index rows,
@@ -446,6 +479,21 @@ inline std::string jinc_processing_realization_identity(
           execution_completed ? "true" : "false"},
          {"completed_scan_count", optional_text(completed_scan_count)},
          {"dynamic_notch_count", optional_text(dynamic_notch_count)}});
+}
+
+inline bool jinc_processing_provenance_complete(
+    const JincObservationProvenance &provenance) {
+    return provenance.available &&
+           provenance.processing_configuration_bound &&
+           provenance.processing_realization_bound &&
+           provenance.kernel_template_identity != "unavailable" &&
+           provenance.processing_configuration_identity != "unavailable" &&
+           provenance.processing_realization_identity != "unavailable" &&
+           !provenance.processing_configuration_facts.empty() &&
+           !provenance.processing_realization_facts.empty() &&
+           provenance.coverage_sample_frequency_identity != "unavailable" &&
+           std::isfinite(provenance.coverage_sample_frequency_hz) &&
+           provenance.coverage_sample_frequency_hz > 0.0;
 }
 
 template <class Kernel>

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/pipeline/jinc_processing_provenance.h>
+
 // Beammap implementation detail.
 // Include this only after Beammap has been declared.
 
@@ -134,6 +136,9 @@ auto Beammap::run_timestream(
         if (!telescope.sim_obs) {
             calib_scan = rtcproc.remove_nearby_tones(ptcdata, calib_scan, map_grouping);
         }
+
+        citlali::pipeline::record_jinc_rtc_scan_state_if_available(
+            *this, ptcdata, calib_scan.apt, map_indices);
 
         if (output_flags.write_rtcdiag) {
             if (!output_writers.write_when_ready(

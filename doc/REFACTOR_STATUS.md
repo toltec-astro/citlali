@@ -237,6 +237,55 @@ No Citlali reduction, Unity access, push, re-audit, BEAM/downstream launch,
 production-status change, merge, or external contact is performed or implied.
 A fresh independent re-audit remains a proposed, unexecuted next handoff.
 
+## 2026-08-09 SCI-MAP-002 Second-Successor Repair Candidate
+
+The owner-authorized second-successor repair is prepared on
+`codex/repair-sci-map-002-successor-2` from exact application commit
+`6c74d214a49af5520f02ca071b5d513b14b58b03`. The approved SCI-MAP-002 JINC
+scientific contract is unchanged. Closed RA-001 active-subset iterative
+reset/finalization behavior and closed RA-004 selected-JINC-only positivity
+behavior are preserved; this candidate changes only RA-002, RA-003, and the
+nonduplicative local RA-005 seams.
+
+RA-002 now binds processing configuration only after observation setup has
+constructed the actual kernel, FIR, configured-notch, IIR, PTC-cleaner, edge-
+guard, sample-frequency, and population-topology state. Processing realization
+binds only after successful raw execution. Compact per-scan traces are reduced
+to ordered identities and counts for RTC/PTC flags, APT flags, map routing,
+source and mean masks, processed signal/kernel state, PCA eigensystems and
+applied cuts, configured/dynamic/per-detector notches, completed scans,
+detector topology, outer policy, kernel template, and the exact FITS product
+joins. Successful provenance rejects any required unavailable identity or
+missing binding; no per-sample, per-detector, or per-pixel provenance payload
+is serialized.
+
+RA-003 and local RA-005 evidence now enter through the production Beammap
+population dispatcher and production FITS writer. The deterministic matrix
+covers two scans, two maps, two detectors, ordinary sequential/OpenMP outer
+policies, detector grouping, a populated second active-subset pass, retained
+inactive-map state, exact writer joins, post-raw binding order, and required-
+output suppression before the first HDU when processing provenance is
+incomplete. Existing signed-lobe, support, coverage, kernel, RA-001, and
+RA-004 tests remain unchanged and pass.
+
+The candidate builds `citlali_cli`; passes 19/19 focused JINC tests, 34/34
+production science-map FITS tests, and 87/87 focused affected CTests; and
+passes all 663 enabled CTests among 664 discovered tests, with the one
+pre-existing disabled exact-product-sequence test not run. The complete
+baseline-tool suite passes 173/173 tests. The full config preflight passes
+127/127 tests, all four mode kits, 8/8 compact-compatibility cases, 100%
+compact-surface coverage, and all typed boundary audits. The authorized raw-
+execution census is 47 records with digest
+`9c1633f362fa0534ea1b9f66cba6122fcec3b299aefe59504f19116de61900fb`
+and zero review-required entries. The 60-record validation ledger and
+three-change/five-integration-commit science-change ledger validate, and the
+session-exit audit reports zero library/CLI exits and zero growth.
+
+Phase 5 readiness remains `preparing` and not promotion-ready for its existing
+external same-SHA, build-integration, and accepted-successor-baseline blockers.
+No Citlali reduction, Unity access, push, re-audit, BEAM/downstream launch,
+production authorization, merge, or external contact is performed or implied.
+
 ## Historical 2026-07-31 SCI-MAP-001 Bounded Repair Lane
 
 This section preserves the repair-lane chronology and its candidate-time gate

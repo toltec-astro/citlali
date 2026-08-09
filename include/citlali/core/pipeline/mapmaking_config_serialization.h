@@ -162,6 +162,19 @@ inline YAML::Node jinc_shape_params_node(
     return node;
 }
 
+inline YAML::Node jinc_processing_facts_node(
+    const std::vector<std::pair<std::string, std::string>> &facts) {
+    YAML::Node node(YAML::NodeType::Map);
+    for (const auto &[name, value] : facts) {
+        if (name.empty() || node[name]) {
+            throw std::logic_error(
+                "JINC processing facts require unique nonempty names");
+        }
+        node[name] = value;
+    }
+    return node;
+}
+
 inline YAML::Node jinc_observation_state_node(
     const std::optional<mapmaking::JincObservationProvenance> &state) {
     YAML::Node node;
@@ -211,8 +224,17 @@ inline YAML::Node jinc_observation_state_node(
         record.kernel_template_identity;
     node["realized"]["processing_configuration_identity"] =
         record.processing_configuration_identity;
+    node["realized"]["processing_configuration_bound"] =
+        record.processing_configuration_bound;
+    node["realized"]["processing_configuration_facts"] =
+        jinc_processing_facts_node(
+            record.processing_configuration_facts);
     node["realized"]["processing_realization_identity"] =
         record.processing_realization_identity;
+    node["realized"]["processing_realization_bound"] =
+        record.processing_realization_bound;
+    node["realized"]["processing_realization_facts"] =
+        jinc_processing_facts_node(record.processing_realization_facts);
     node["realized"]["coverage_sample_frequency_identity"] =
         record.coverage_sample_frequency_identity;
     node["realized"]["coverage_sample_frequency_hz"] =

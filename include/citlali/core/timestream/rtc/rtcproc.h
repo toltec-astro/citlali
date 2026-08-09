@@ -397,6 +397,16 @@ public:
         return it->second;
     }
 
+    std::vector<RTCNetworkDiagSummary> snapshot_network_diag_summary(
+        Eigen::Index scan_id) {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        const auto it = rtc_network_summary_by_scan.find(scan_id);
+        if (it == rtc_network_summary_by_scan.end()) {
+            return {};
+        }
+        return it->second;
+    }
+
     std::vector<RTCCoherentIqModeCandidateSummary>
     snapshot_coherent_iq_mode_candidates(Eigen::Index scan_id) {
         std::lock_guard<std::mutex> lock(

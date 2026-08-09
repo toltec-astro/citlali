@@ -20,6 +20,13 @@ Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_
     citlali::pipeline::require_primary_map_image_shapes(
         mb->signal, mb->weight, i, mb->n_rows, mb->n_cols, logger);
     citlali::pipeline::require_map_wcs_cardinality(mb->wcs, 4, logger);
+    if (mb->jinc_products.initialized &&
+        !mapmaking::jinc_processing_provenance_complete(
+            mb->jinc_products.provenance)) {
+        citlali::pipeline::fail_required_output(
+            logger,
+            "JINC product publication requires completed actual processing provenance");
+    }
     const bool is_filtered_output =
         citlali::pipeline::is_filtered_map_output(
             fits_io, map_fits_outputs.filtered_obs,
@@ -328,22 +335,6 @@ Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_
                     "JINC product publication lacks an authoritative formal-support slot");
             }
             auto &provenance = mb->jinc_products.provenance;
-            // Beammap may realize source-centered kernels after observation
-            // buffer allocation. Bind the product record to the template
-            // state that actually reaches the writer.
-            const auto &realized_rtc = rtcproc;
-            provenance.kernel_template_identity =
-                mapmaking::jinc_kernel_template_identity(
-                    realized_rtc.kernel,
-                    citlali::pipeline::raw_kernel_enabled(*this));
-            const auto &realized_raw =
-                citlali::pipeline::raw_timestream_plan(*this).realized;
-            provenance.processing_realization_identity =
-                mapmaking::jinc_processing_realization_identity(
-                    provenance.processing_configuration_identity,
-                    realized_raw.execution_completed,
-                    realized_raw.completed_scan_count,
-                    realized_raw.dynamic_notch_count);
             const std::string product_scope =
                 fmt::format("{}_map_slot_{}",
                             is_filtered_output ? "filtered" : "raw",

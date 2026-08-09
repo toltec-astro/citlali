@@ -4,8 +4,10 @@
 #include <citlali/core/engine/engine.h>
 #include <citlali/core/mapmaking/map.h>
 #include <citlali/core/pipeline/map_image_output_helpers.h>
+#include <citlali/core/pipeline/jinc_processing_provenance.h>
 #include <citlali/core/pipeline/mapmaking_provenance_lifecycle.h>
 #include <citlali/core/pipeline/noise_provenance.h>
+#include <citlali/core/pipeline/raw_timestream_provenance_lifecycle.h>
 #include <citlali/core/pipeline/science_map_provenance_serialization.h>
 #include <citlali/core/utils/fits_io.h>
 
@@ -2150,6 +2152,134 @@ TEST(science_map_fits_products,
     EXPECT_EQ(fits_close_file(coadd_file, &status), 0);
     status = 0;
     EXPECT_EQ(fits_close_file(coadd_noise_file, &status), 0);
+}
+
+TEST(science_map_fits_products,
+     jinc_writer_suppresses_incomplete_provenance_and_joins_bound_realization) {
+    const auto nonce = std::chrono::high_resolution_clock::now()
+                           .time_since_epoch()
+                           .count();
+    FitsDirectoryCleanup cleanup{
+        std::filesystem::path{"/private/tmp"} /
+        ("citlali-jinc-processing-writer-" + std::to_string(nonce))};
+    std::filesystem::create_directories(cleanup.path);
+
+    Engine engine;
+    configure_production_writer_engine(engine);
+    engine.typed_config.mapmaking.method =
+        citlali::config::MapMethod::jinc;
+    engine.typed_config.noise.enabled = false;
+    engine.typed_config.noise.write_realizations = false;
+    engine.typed_config.noise.products_enabled = false;
+    engine.typed_config.timestream.enabled = true;
+    engine.typed_config.timestream.raw_time_chunk.kernel.enabled = false;
+    engine.telescope.fsmp = 4.0;
+    engine.telescope.d_fsmp = 4.0;
+    engine.telescope.scan_indices = Eigen::MatrixXI::Zero(4, 1);
+    engine.rtcproc.kernel.type = "disabled";
+    engine.rtcproc.filter.iir_highpass_freq_Hz = 0.0;
+    engine.rtcproc.filter.iir_highpass_order = 1;
+    engine.rtcproc.filter.iir_highpass_zero_phase = false;
+    engine.rtcproc.filter.notch_zero_phase = true;
+    engine.ptcproc.logger = engine.logger;
+    engine.ptcproc.cleaner.logger = engine.logger;
+    engine.ptcproc.run_clean = false;
+    engine.ptcproc.mask_radius_arcsec = 0.0;
+    engine.ptcproc.cleaner.stddev_limit = 0.0;
+    engine.ptcproc.cleaner.tau = 0.0;
+    engine.ptcproc.cleaner.grouping.clear();
+
+    engine.raw_timestream_plan.reset_from_request(
+        engine.typed_config.timestream.raw_time_chunk,
+        engine.typed_config.interface_sync);
+    engine.raw_timestream_plan.begin_observation();
+    citlali::pipeline::reset_processed_timestream_execution_plan(
+        engine.processed_timestream_plan,
+        engine.typed_config.timestream);
+
+    auto prepared = make_production_science_map_buffer(
+        engine, false, 3, 4, {2.0, 1.5});
+    engine.omb = *prepared;
+    engine.omb.jinc_products.allocate(
+        1, engine.omb.n_rows, engine.omb.n_cols);
+    engine.omb.jinc_products.formal_support[0].setOnes();
+    auto map = std::shared_ptr<mapmaking::MapBuffer>(
+        &engine.omb, [](mapmaking::MapBuffer *) {});
+
+    decltype(engine.map_fits_outputs.obs) incomplete_files;
+    decltype(engine.map_fits_outputs.obs_noise) no_noise_files;
+    incomplete_files.emplace_back(
+        (cleanup.path / "incomplete_map").string());
+    auto *incomplete_file_ptr = &incomplete_files;
+    auto *no_noise_file_ptr = &no_noise_files;
+    EXPECT_THROW(
+        engine.write_maps(
+            incomplete_file_ptr, no_noise_file_ptr, map, 0),
+        std::runtime_error);
+    EXPECT_TRUE(incomplete_files[0].hdus.empty());
+    EXPECT_TRUE(
+        engine.omb.jinc_products.provenance.realized.product_joins.empty());
+
+    citlali::pipeline::bind_jinc_processing_configuration_if_available(
+        engine);
+    const auto &configuration =
+        engine.omb.jinc_products.provenance;
+    EXPECT_TRUE(configuration.processing_configuration_bound);
+    EXPECT_FALSE(configuration.processing_realization_bound);
+    EXPECT_EQ(configuration.processing_realization_identity, "unavailable");
+
+    using PtcData =
+        timestream::TCData<timestream::TCDataKind::PTC, Eigen::MatrixXd>;
+    engine.calib.apt["flag"] = Eigen::VectorXd::Zero(1);
+    PtcData ptc;
+    ptc.scans.data.resize(3, 1);
+    ptc.scans.data << 2.0, 4.0, 8.0;
+    ptc.kernel.data.resize(3, 1);
+    ptc.kernel.data << 1.0, 0.5, -0.25;
+    ptc.flags.data =
+        Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>::Constant(
+            3, 1, false);
+    ptc.flags.data(1, 0) = true;
+    ptc.index.data = 0;
+    Eigen::VectorXI map_indices(1);
+    map_indices << 0;
+
+    citlali::pipeline::record_jinc_rtc_scan_state_if_available(
+        engine, ptc, engine.calib.apt, map_indices);
+    engine.ptcproc.run(
+        ptc, ptc, engine.calib, engine.telescope.pixel_axes,
+        engine.omb.map_grouping);
+    citlali::pipeline::record_jinc_ptc_scan_state_if_available(
+        engine, ptc, engine.calib.apt, map_indices);
+    EXPECT_THROW(
+        citlali::pipeline::bind_jinc_processing_realization_if_available(
+            engine),
+        std::logic_error);
+
+    citlali::pipeline::complete_raw_timestream_observation(
+        engine.raw_timestream_plan, 1, 0);
+    ASSERT_NO_THROW(
+        citlali::pipeline::bind_jinc_processing_realization_if_available(
+            engine));
+    const auto &realized = engine.omb.jinc_products.provenance;
+    EXPECT_TRUE(realized.processing_realization_bound);
+    EXPECT_NE(realized.processing_realization_identity, "unavailable");
+    EXPECT_EQ(*engine.raw_timestream_plan.realized.flagged_sample_count, 1U);
+    EXPECT_EQ(*engine.raw_timestream_plan.realized.dynamic_notch_count, 0U);
+
+    decltype(engine.map_fits_outputs.obs) complete_files;
+    complete_files.emplace_back((cleanup.path / "complete_map").string());
+    auto *complete_file_ptr = &complete_files;
+    ASSERT_NO_THROW(engine.write_maps(
+        complete_file_ptr, no_noise_file_ptr, map, 0));
+    ASSERT_EQ(realized.realized.product_joins.size(), 4U);
+    EXPECT_EQ(realized.realized.product_joins[0].hdu_name, "signal_I");
+    EXPECT_EQ(realized.realized.product_joins[1].hdu_name, "weight_I");
+    EXPECT_EQ(realized.realized.product_joins[2].hdu_name, "coverage_I");
+    EXPECT_EQ(realized.realized.product_joins[3].hdu_name,
+              "coverage_bool_I");
+    incomplete_files[0].pfits.reset();
+    complete_files[0].pfits.reset();
 }
 
 TEST(science_map_fits_products,

@@ -3,10 +3,15 @@
 #include <citlali/core/config/mapmaking_config_validation.h>
 #include <citlali/core/mapmaking/jinc_contract.h>
 #include <citlali/core/mapmaking/jinc_mm.h>
+#include <citlali/core/mapmaking/naive_mm.h>
+#include <citlali/core/pipeline/beammap_map_population.h>
 #include <citlali/core/pipeline/beammap_mapmaking_policy.h>
 #include <citlali/core/pipeline/mapmaking_provenance.h>
 #include <citlali/core/pipeline/map_buffer_allocation.h>
 
+#include <spdlog/sinks/null_sink.h>
+
+#include <atomic>
 #include <cmath>
 #include <limits>
 #include <numeric>
@@ -535,6 +540,176 @@ TEST(jinc_map_contract,
 }
 
 TEST(jinc_map_contract,
+     beammap_production_dispatch_covers_outer_policies_grouping_and_active_passes) {
+    using PtcData =
+        timestream::TCData<timestream::TCDataKind::PTC, Eigen::MatrixXd>;
+    using Apt = std::map<std::string, Eigen::VectorXd>;
+    struct CalibScan {
+        Apt apt;
+    };
+    struct TelescopeStub {
+        std::string pixel_axes = "altaz";
+        double d_fsmp = 4.0;
+    } telescope;
+
+    constexpr Eigen::Index samples = 3;
+    constexpr Eigen::Index detectors = 2;
+    constexpr Eigen::Index maps = 2;
+    const double pixel_size_rad = ((1.1 / 1000.0) / 45.0) / 2.0;
+    auto logger = [] {
+        auto sink = std::make_shared<spdlog::sinks::null_sink_mt>();
+        return std::make_shared<spdlog::logger>(
+            "jinc-beammap-production-dispatch-test", sink);
+    }();
+
+    Apt apt;
+    apt["array"] = Eigen::Vector2d(0.0, 1.0);
+    apt["flag"] = Eigen::Vector2d::Zero();
+    apt["x_t"] = Eigen::Vector2d::Zero();
+    apt["y_t"] = Eigen::Vector2d::Zero();
+    apt["uid"] = Eigen::Vector2d(101.0, 202.0);
+    auto make_scan = [&](Eigen::Index scan_index) {
+        PtcData data;
+        data.scans.data.resize(samples, detectors);
+        data.scans.data <<
+            2.0 + scan_index, -1.0 - scan_index,
+            -1.0, 3.0,
+            4.0, 0.5 + scan_index;
+        data.kernel.data.resize(samples, detectors);
+        data.kernel.data <<
+            1.0, 0.5,
+            0.5, -0.25,
+            -0.25, 1.5;
+        data.flags.data =
+            Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>::Constant(
+                samples, detectors, false);
+        if (scan_index == 1) {
+            data.flags.data(1, 1) = true;
+        }
+        data.weights.data = Eigen::Vector2d(2.0, 3.0);
+        data.index.data = scan_index;
+        data.map_indices.data.resize(detectors);
+        data.map_indices.data << 0, 1;
+        data.tel_data.data["TelElAct"] = Eigen::VectorXd::Zero(samples);
+        data.tel_data.data["alt_phys"] = Eigen::VectorXd::Zero(samples);
+        data.tel_data.data["az_phys"] = Eigen::VectorXd::Zero(samples);
+        data.pointing_offsets_arcsec.data["az"] =
+            Eigen::VectorXd::Zero(samples);
+        data.pointing_offsets_arcsec.data["alt"] =
+            Eigen::VectorXd::Zero(samples);
+        return data;
+    };
+    auto make_scans = [&] {
+        return std::vector<PtcData>{make_scan(0), make_scan(1)};
+    };
+    const std::vector<CalibScan> calib_scans{{apt}, {apt}};
+
+    mapmaking::JincMapmaker jinc;
+    jinc.logger = logger;
+    jinc.r_max = 3.0;
+    jinc.subpixel_n = 1;
+    jinc.array_names = {{0, "a1100"}, {1, "a1400"}, {2, "a2000"}};
+    jinc.shape_params = {
+        {0, Eigen::Vector3d(1.1, 1.67, 2.0)},
+        {1, Eigen::Vector3d(1.1, 2.17, 2.0)},
+        {2, Eigen::Vector3d(1.1, 3.17, 2.0)},
+    };
+    jinc.allocate_jinc_matrix(pixel_size_rad);
+    mapmaking::NaiveMapmaker naive;
+    naive.logger = logger;
+
+    auto make_map = [&](const std::string &grouping,
+                        const std::string &policy) {
+        mapmaking::MapBuffer map{"omb"};
+        map.n_rows = 15;
+        map.n_cols = 15;
+        map.pixel_size_rad = pixel_size_rad;
+        map.map_grouping = grouping;
+        map.parallel_policy = policy;
+        citlali::pipeline::allocate_map_matrices(
+            map, maps, true, true, true, false, "", true);
+        return map;
+    };
+    mapmaking::MapBuffer no_coadd{"cmb"};
+
+    auto populate = [&](citlali::config::MapGrouping grouping,
+                        const std::string &outer_policy,
+                        mapmaking::MapBuffer &map, auto &scans,
+                        const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active) {
+        auto scan_calib = calib_scans;
+        std::vector<int> scan_in{0, 1};
+        std::vector<int> scan_out(2, 0);
+        std::atomic<int> progress{0};
+        citlali::pipeline::populate_beammap_maps_production(
+            grouping, citlali::config::MapMethod::jinc, outer_policy,
+            jinc, naive, map, no_coadd, scans, scan_calib, scan_in,
+            scan_out, telescope, apt.at("array"), false, active, logger,
+            [&] { progress.fetch_add(1, std::memory_order_relaxed); });
+        EXPECT_EQ(progress.load(std::memory_order_relaxed), 2);
+    };
+
+    auto sequential_scans = make_scans();
+    auto concurrent_scans = make_scans();
+    auto sequential = make_map("array", "seq");
+    auto concurrent = make_map("array", "omp");
+    populate(citlali::config::MapGrouping::array, "seq", sequential,
+             sequential_scans, nullptr);
+    populate(citlali::config::MapGrouping::array, "omp", concurrent,
+             concurrent_scans, nullptr);
+    sequential.normalize_maps();
+    concurrent.normalize_maps();
+    for (Eigen::Index map_index = 0; map_index < maps; ++map_index) {
+        EXPECT_TRUE(sequential.signal[map_index].isApprox(
+            concurrent.signal[map_index], 1e-14));
+        EXPECT_TRUE(sequential.weight[map_index].isApprox(
+            concurrent.weight[map_index], 1e-14));
+        EXPECT_TRUE(sequential.coverage[map_index].isApprox(
+            concurrent.coverage[map_index], 1e-14));
+        EXPECT_TRUE(sequential.kernel[map_index].isApprox(
+            concurrent.kernel[map_index], 1e-14));
+        EXPECT_EQ(sequential.jinc_products.formal_support[map_index],
+                  concurrent.jinc_products.formal_support[map_index]);
+    }
+
+    auto detector_scans = make_scans();
+    auto detector_map = make_map("detector", "omp");
+    populate(citlali::config::MapGrouping::detector, "omp", detector_map,
+             detector_scans, nullptr);
+    detector_map.normalize_maps();
+    ASSERT_EQ(
+        detector_map.jinc_products.provenance.realized.realization_pass_count,
+        1U);
+    const auto retained_signal = detector_map.signal[1];
+    const auto retained_weight = detector_map.weight[1];
+    const auto retained_support =
+        detector_map.jinc_products.formal_support[1];
+
+    Eigen::Matrix<bool, Eigen::Dynamic, 1> active(maps);
+    active << true, false;
+    std::uniform_int_distribution<int> bits(0, 1);
+    std::mt19937 generator(7);
+    citlali::pipeline::ensure_jinc_grid_weight_maps(
+        citlali::config::MapMethod::jinc, detector_map, maps, logger);
+    citlali::pipeline::reset_beammap_mapmaking_buffers(
+        detector_map, detector_scans, maps, true, false, false, detectors,
+        &active, bits, generator);
+    populate(citlali::config::MapGrouping::detector, "omp", detector_map,
+             detector_scans, &active);
+    detector_map.normalize_maps(&active);
+
+    const auto &realized = detector_map.jinc_products.provenance.realized;
+    EXPECT_EQ(realized.realization_pass_count, 2U);
+    ASSERT_EQ(realized.last_pass_active_map_indices.size(), 1U);
+    EXPECT_EQ(realized.last_pass_active_map_indices.front(), 0U);
+    EXPECT_EQ(realized.map_summaries[0].realization_pass, 2U);
+    EXPECT_EQ(realized.map_summaries[1].realization_pass, 1U);
+    EXPECT_TRUE(detector_map.signal[1].isApprox(retained_signal, 0.0));
+    EXPECT_TRUE(detector_map.weight[1].isApprox(retained_weight, 0.0));
+    EXPECT_EQ(detector_map.jinc_products.formal_support[1],
+              retained_support);
+}
+
+TEST(jinc_map_contract,
      actual_kernel_template_identity_tracks_loaded_and_source_center_state) {
     struct KernelStub {
         std::string type = "image";
@@ -592,9 +767,18 @@ TEST(jinc_map_contract, compact_forward_only_provenance_serializes_joins) {
             "actual-enabled-processing-operators-v1",
             {{"temporal_fir_enabled", "true"},
              {"ptc_clean_enabled", "false"}});
+    provenance.processing_configuration_bound = true;
+    provenance.processing_configuration_facts = {
+        {"temporal_fir_enabled", "true"},
+        {"ptc_clean_enabled", "false"}};
     provenance.processing_realization_identity =
         mapmaking::jinc_processing_realization_identity(
             provenance.processing_configuration_identity, true, 2, 1);
+    provenance.processing_realization_bound = true;
+    provenance.processing_realization_facts = {
+        {"raw_execution_completed", "true"},
+        {"completed_scan_count", "2"},
+        {"dynamic_notch_count", "1"}};
     EXPECT_NE(
         provenance.processing_realization_identity,
         mapmaking::jinc_processing_realization_identity(
@@ -634,6 +818,18 @@ TEST(jinc_map_contract, compact_forward_only_provenance_serializes_joins) {
         state["realized"]["processing_realization_identity"]
             .as<std::string>(),
         provenance.processing_realization_identity);
+    EXPECT_TRUE(
+        state["realized"]["processing_configuration_bound"].as<bool>());
+    EXPECT_TRUE(
+        state["realized"]["processing_realization_bound"].as<bool>());
+    EXPECT_EQ(
+        state["realized"]["processing_configuration_facts"]
+            ["temporal_fir_enabled"].as<std::string>(),
+        "true");
+    EXPECT_EQ(
+        state["realized"]["processing_realization_facts"]
+            ["dynamic_notch_count"].as<std::string>(),
+        "1");
     EXPECT_EQ(state["realized"]["summation_method"].as<std::string>(),
               mapmaking::jinc_summation_identity);
     EXPECT_EQ(state["realized"]["coverage_sample_frequency_hz"].as<double>(),

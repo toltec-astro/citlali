@@ -214,9 +214,10 @@ struct MapmakingExecutionPlan {
         }
         if (!provenance.available ||
             provenance.realized.map_count != observation.map_count ||
-            provenance.realized.product_joins.empty()) {
+            provenance.realized.product_joins.empty() ||
+            !mapmaking::jinc_processing_provenance_complete(provenance)) {
             throw std::logic_error(
-                "JINC observation state requires realized products and exact joins");
+                "JINC observation state requires complete realized processing and exact joins");
         }
         observation.jinc_state = std::move(provenance);
     }
