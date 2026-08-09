@@ -154,6 +154,35 @@ displacement, unresolved source association, temporal/astrometric response,
 unit/frame mismatch, or need to adjudicate event semantics, formula,
 uncertainty, or response promotes the package to Tier A before continuing.
 
+## 2026-08-09 SCI-PTC-001 D003 Owner Amendment
+
+The owner approved
+[`SCI-PTC-001-D003`](audits/packages/SCI-PTC-001_D003_OWNER_AMENDMENT_2026-08-09.md)
+with a corrected response identity. The existing stored PTC kernel is the
+collaboration's **estimated map-center point-source response** of the
+instrument after the declared RTC/PTC/analysis chain. It must remain bound to
+the exact band, analysis/configuration, detector/mask/selection, upstream,
+parent, and other realization state, and must state its calibration,
+validation, domain, and uncertainty status honestly.
+
+That estimate does not alone establish off-center or spatially varying
+response, extended-source response, arbitrary morphology/amplitude response,
+or a universal cross-band/cross-mode transfer function. Longer- and
+shorter-wavelength bands and distinct map modes are expected to differ.
+Unmeasured extensions are `not_computed_or_not_requested_for_this_product`,
+not categorically `unavailable`; `unavailable` is reserved for genuinely
+unsupported classes.
+
+The
+[optional transfer-characterization plan](audits/packages/SCI-PTC-001_OPTIONAL_TRANSFER_CHARACTERIZATION_PLAN_2026-08-09.md)
+would extend the map-center point-source estimate across position,
+scale/morphology, amplitude, band/mode, and realization uncertainty. It is not
+authorized or launched and is not an ordinary PTC repair, operation, or F005
+closure gate unless a consumer requests a stronger measured claim. D001/D002
+and the immutable audit remain unchanged; D004--D006 remain unresolved. No
+repair, Unity, reduction, MAP/BEAM/downstream work, re-audit, production
+change, external contact, or push is authorized.
+
 ## Current Integration Model
 
 As of 2026-07-31, `codex/refactor-mainline` is the canonical application

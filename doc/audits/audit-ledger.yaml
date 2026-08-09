@@ -9,7 +9,7 @@ current_program_checkpoint:
   record_path: >-
     doc/audits/packages/SCIENTIFIC_AUDIT_PROGRAM_CHECKPOINT_2026-08-08.md
   record_sha256: >-
-    6460911ce6db02f92b66209a33ae324190b32a04d84a23f81892b8d53ba2f6d3
+    0c3c5d98ed99e93ca2702695af3dd04808bdde381e449016fb885b18364bcd53
   canonical_application_mainline:
     ref: origin/codex/refactor-mainline
     commit: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
@@ -35,7 +35,7 @@ current_program_checkpoint:
     ENG-STATE-001: static_package_accepted_F001_F002_open
   queue:
     - SCI-RTC-001_phase_independent_repair_handoff_ready_not_launched
-    - SCI-PTC-001_D001_D002_approved_D003_D006_pending_internal_estimator_work_permitted_no_launch
+    - SCI-PTC-001_D001_D003_approved_D004_D006_pending_optional_transfer_plan_not_launched
     - SCI-VAL-001_unlaunched_PTC_D002_successor_handoff_pending_recipient_review
     - SCI-BEAM-001_held
     - SCI-TEL-INPUT-001_audit_owner_accepted_repair_scope_unresolved
@@ -5254,7 +5254,7 @@ packages:
       path: doc/audits/proposals/SCI-PTC-001_LEDGER_PROPOSAL_2026-08-08.yaml
       sha256: 8daabce7d0d585e82d233dadb3f535bb993a28c62acb351c4474272c525eee63
       disposition: >-
-        applied_with_coordinator_identity_and_controlled_status_normalization_then_D001_D002_owner_amendments
+        applied_with_coordinator_identity_and_controlled_status_normalization_then_D001_D003_owner_amendments
     successor_owner_amendment:
       id: SCI-PTC-001-D002-OWNER-AMENDMENT-2026-08-08
       path: doc/audits/packages/SCI-PTC-001_D002_OWNER_AMENDMENT_2026-08-08.md
@@ -5267,9 +5267,39 @@ packages:
         - SCI-PTC-001-F002_P0_implementation_defect_classification
         - SCI-PTC-001-F002_blanket_recompute_or_descendant_invalidation_gate
         - SCI-PTC-001-F002_Tier_A_reopen_routing
+    D003_owner_amendment:
+      id: SCI-PTC-001-D003-OWNER-AMENDMENT-2026-08-09
+      path: >-
+        doc/audits/packages/SCI-PTC-001_D003_OWNER_AMENDMENT_2026-08-09.md
+      sha256: >-
+        a939b0f7de0c96dc7146feaa535b7722509549d3edc1a9158c1b62768ec6a668
+      decision_date: 2026-08-09
+      status: applied_to_canonical_coordination_state
+      immutable_audit_D001_D002_artifacts_changed: false
+      supersedes_in_coordination_state:
+        - original_D003_mark_every_stronger_class_unavailable_recommendation
+        - SCI-PTC-001-F005_current_kernel_only_partial_or_unlabeled_identity
+        - SCI-PTC-001-F005_ordinary_closure_requires_broader_measured_response
+      response_status_vocabulary:
+        - computed_published
+        - not_computed_or_not_requested_for_this_product
+        - invalid
+        - unavailable
+      ordinary_kernel_class: estimated_map_center_point_source_response
+      ordinary_kernel_status: computed_published
+      estimated_qualifier_required: true
+      optional_transfer_characterization:
+        status: planned_not_authorized_not_launched
+        path: >-
+          doc/audits/packages/SCI-PTC-001_OPTIONAL_TRANSFER_CHARACTERIZATION_PLAN_2026-08-09.md
+        sha256: >-
+          2efb93461918fa39a903bd95737a43276f080c0e44782c7866026fe78a7e7c71
+        repair_gate: false
+        ordinary_operation_gate: false
+        separate_owner_launch_required: true
 
     dispatch:
-      status: audit_integrated_D001_D002_approved_D003_D006_pending
+      status: audit_integrated_D001_D003_approved_D004_D006_pending
       launch_date: 2026-08-08
       launch_effort: ultra
       execution_profile: sol_ultra_no_delegation
@@ -5556,14 +5586,21 @@ packages:
         confidence: high
         status: open
         owner: PTC_response_product_owner
-        dependency: SCI-PTC-001-D003 and SCI-RTC-001 complete response
+        dependency: approved SCI-PTC-001-D003 and exact upstream response identity/status
+        owner_policy_status: resolved_by_D003_amendment_implementation_and_reaudit_pending
         summary: >-
-          Stored kernel is only a conditioned partial response and has no
-          local/global, derivative, uncertainty, parent-response, or explicit
-          unavailable identity.
+          The stored kernel is the collaboration's estimated map-center
+          point-source response after the declared analysis chain, but lacks
+          durable exact identity, parent/configuration/state provenance,
+          domain, and calibration/validation/uncertainty status.
         closure_gate: >-
-          Approved D003 plus impulse/sinusoid/source/extended/selection/iteration
-          fixtures establish each declared response class or encode unavailable.
+          Ordinary products publish the kernel as the estimated map-center
+          point-source response, bind its exact parent/configuration/state and
+          domain, state calibration/validation/uncertainty status honestly,
+          and distinguish computed/published, not computed or not requested,
+          invalid, and genuinely unavailable. Stronger off-center, spatially
+          varying, extended, morphology/amplitude, cross-band, or cross-mode
+          claims require separately authorized optional exact-domain evidence.
       - id: SCI-PTC-001-F006
         class: contract_gap
         severity: P1
@@ -5695,15 +5732,14 @@ packages:
       F002: >-
         not a numerical reopen trigger; route to bounded typed cause,
         decision-stage, and provenance contract work
-      F005: unchanged_consumer_dependent_response_routing
+      F005: >-
+        ordinary typed closure is permitted by publishing the current estimated
+        map-center point-source response with exact provenance, domain, and
+        uncertainty/status; stronger off-center, spatially varying, extended,
+        morphology/amplitude, cross-band, or cross-mode claims route to the
+        optional exact-domain characterization and applicable Tier-A review
 
     unresolved_scientific_decisions:
-      - id: SCI-PTC-001-D003
-        owner: PTC_response_product_owner
-        question: conditioned, local-Jacobian, global/extended, uncertainty, and unavailable response classes
-        proposed_disposition: >-
-          Publish only computed classes bound to exact state/upstream response and
-          mark every stronger class explicitly unavailable.
       - id: SCI-PTC-001-D004
         owner: PTC_MAP_NOI_weight_and_covariance_owners
         question: factor identity, units, normalization, lifecycle, precision conditions, and covariance availability
@@ -5768,6 +5804,33 @@ packages:
           - postfit_output_reject
           - weight_only
         representation_owner: engineering
+      - id: SCI-PTC-001-D003
+        owner: PTC_response_product_owner
+        disposition: approved_with_owner_amendment
+        decision_date: 2026-08-09
+        authority: SCI-PTC-001-D003-OWNER-AMENDMENT-2026-08-09
+        authority_path: >-
+          doc/audits/packages/SCI-PTC-001_D003_OWNER_AMENDMENT_2026-08-09.md
+        authority_sha256: >-
+          a939b0f7de0c96dc7146feaa535b7722509549d3edc1a9158c1b62768ec6a668
+        approved_contract: >-
+          Publish the stored kernel as the estimated map-center point-source
+          response of the instrument after the declared RTC/PTC/analysis chain,
+          bound to exact band, analysis/configuration, detector/mask/selection,
+          upstream, parent, and realization state, with honest domain and
+          calibration/validation/uncertainty status. Distinguish computed and
+          published, not computed or not requested, invalid, and genuinely
+          unavailable. Do not extrapolate this estimate to off-center,
+          spatially varying, extended, arbitrary morphology/amplitude,
+          cross-band, or cross-mode response.
+        band_and_mode_policy: distinct_expected_no_equality_implied
+        optional_plan:
+          status: prepared_not_authorized_not_launched
+          path: >-
+            doc/audits/packages/SCI-PTC-001_OPTIONAL_TRANSFER_CHARACTERIZATION_PLAN_2026-08-09.md
+          sha256: >-
+            2efb93461918fa39a903bd95737a43276f080c0e44782c7866026fe78a7e7c71
+          required_only_for: stronger_measured_transfer_claim_in_exact_declared_domain
 
     local_evidence:
       id: SCI-PTC-001-LOCAL-001
@@ -5791,7 +5854,7 @@ packages:
         - source-mask boundaries and selected/rejected sample/detector causal influence
         - typed fit-invalid pre-fit exclusion and post-fit reject/weight-only output behavior
         - unequal calibration factors, every coefficient family, units, normalization, and invalid domains
-        - constant, impulse, sinusoid, point, extended, conditioned, and local response
+        - estimated map-center point-source identity, exact state/upstream binding, typed response-status, domain, uncertainty-status, and nonextrapolation fixtures
         - factor-one/downsampled rate, phase, cardinality, and full/mini/diagnostic identity
         - equal, increasing, and decreasing variable chunk extents
         - four-state serialization/replay with parent and component digests
@@ -5804,6 +5867,16 @@ packages:
         factors, masks, seeds, state, products, and digests; no required-data skip
         and zero unexpected error-level messages. Broad/costly work requires a
         separate FRAMEWORK-NUM-001 launch gate and owner authorization.
+      optional_transfer_characterization:
+        status: separate_plan_not_requested_not_executed
+        ordinary_repair_or_operation_gate: false
+        extends_existing_kernel_across:
+          - map_position
+          - spatial_scale_and_morphology
+          - amplitude_and_nonlinearity
+          - band_and_map_mode
+          - realization_uncertainty
+        required_for: stronger_measured_response_claim_outside_current_map_center_point_source_domain
 
     production_disposition:
       allowed_compatibility_only:
@@ -5818,7 +5891,8 @@ packages:
         - production expansion from static/config/historical evidence or a future test pass alone
       fail_closed:
         - missing, non-finite, invalid, duplicate, or unbound detector/sample/rate/phase/factor/coordinate/support/product authority
-        - unavailable complete response, covariance, causal eligibility, uncertainty, or immutable product completeness
+        - missing required typed response status or an unavailable response required by the requested stronger claim
+        - unavailable covariance, causal eligibility, uncertainty, or immutable product completeness
         - any new consumer outside the existing allowlist
         - any use of this audit as repair, validation, integration, re-audit, downstream launch, or production authorization
 

@@ -39,7 +39,7 @@ or dependency claim is inferred from those integrations.
 | `SCI-TEL-INPUT-001` | Audit `518e0ccb...` owner-accepted with axes `proposed` / `nonconformant` / `bounded_incomplete` / `existing_use_only`, verdict `amend`; F001--F010 remain open and TolTECA remains read-only. | Separate later owner decision on repair scope and ownership; no repair or re-audit is authorized. |
 | `SCI-AST-001` | Repair remains held. | Accepted and re-audited ALIGN successor, then exact AST repair-base selection. |
 | `SCI-RTC-001` | Audit `3319d742...` integrated; D001--D004 approved; axes remain `proposed` / `nonconformant` / `in_progress` / `existing_use_only`, verdict `amend`. | Upstream closure, separately authorized repair, focused exact-successor evidence, then independent re-audit. |
-| `SCI-PTC-001` | Audit `01ee2474...` integrated; axes are `proposed` / `nonconformant` / `in_progress` / `existing_use_only`, verdict `amend`; D001--D006 await owner choice. | Owner approves or supersedes the six decisions; no repair or re-audit is launched. |
+| `SCI-PTC-001` | Audit `01ee2474...` integrated; axes are `proposed` / `nonconformant` / `in_progress` / `existing_use_only`, verdict `amend`; D001--D003 approved and D004--D006 await owner choice. | Complete remaining owner decisions; no repair, optional transfer characterization, or re-audit is launched. |
 | `SCI-VAL-001` | Not launched; new PTC handoff `SCI-VAL-001-XAUD-008` is pending recipient review. | Later explicit sequencing decision after PTC owner review; current restrictions remain. |
 | `SCI-BEAM-001` | Queued after PTC/VAL. | Frozen PTC and VAL interfaces; existing upstream restrictions remain. |
 | `SCI-FLT-001` | Successor-repair dispatch readiness only; not authorized. | Exact repair base remains unresolved until CAL has an accepted, re-audited, integrated successor. |
@@ -183,9 +183,28 @@ both frozen in dispatch-content commit
 authorize repair, re-audit, or downstream launch.
 
 The coordinator accepted verdict `amend` and the four status axes without
-relaxation. Decisions `SCI-PTC-001-D001` through `-D006` are ready for owner
-review in
+relaxation. D001 and D002 remain approved under their prior exact records. The
+owner approved D003 with the successor amendment
+`doc/audits/packages/SCI-PTC-001_D003_OWNER_AMENDMENT_2026-08-09.md`; D004--D006
+remain ready for owner review in
 `doc/audits/packages/SCI-PTC-001_COORDINATOR_DECISION_BRIEF_2026-08-08.md`.
+
+D003 identifies the current stored kernel as the collaboration's **estimated
+map-center point-source response** of the instrument after the declared
+RTC/PTC/analysis chain. It remains conditioned on exact band,
+analysis/configuration, detector/mask/selection, upstream, parent, and
+realization state, with its calibration, validation, domain, and uncertainty
+status stated honestly. It does not alone establish off-center, spatially
+varying, extended-source, arbitrary morphology/amplitude, cross-band, or
+cross-mode response. Expected band/mode differences are explicit.
+
+The optional plan at
+`doc/audits/packages/SCI-PTC-001_OPTIONAL_TRANSFER_CHARACTERIZATION_PLAN_2026-08-09.md`
+would extend the current estimate across position, scale/morphology,
+amplitude, band/mode, and realization uncertainty. It is neither an ordinary
+F005 repair gate nor authorized evidence work. A consumer requesting a
+stronger measured claim requires separately authorized evidence for the exact
+declared domain.
 Outgoing `SCI-VAL-001-XAUD-008`, `SCI-MAP-001-XAUD-004`, and
 `SCI-NOI-001-XAUD-001` are registered as submitted and pending recipient
 review. No recipient audit was launched.
@@ -195,7 +214,8 @@ review. No recipient audit was launched.
 This checkpoint does not authorize application or TolTECA edits, audit science,
 repair, re-audit, broad or costly execution, local Citlali reductions, Unity
 activity, coordinator external contact, production change, or RTC/AST/PTC/
-BEAM launch, or TEL-INPUT repair/re-audit. The separately recorded
+BEAM launch, optional PTC transfer characterization, or TEL-INPUT
+repair/re-audit. The separately recorded
 owner-mediated ALIGN producer request is the sole evidence-acquisition
 authority. Every frozen packet or repair handoff still requires its named
 separate owner launch.
