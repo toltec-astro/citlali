@@ -28,7 +28,7 @@ current_program_checkpoint:
       production_status: existing_use_only
       restriction: exact_application_mainline_record_only
   active_lanes:
-    SCI-CAL-001: candidate_7894346_reaudited_rejected_F002_narrowly_closed_successor_repair_not_launched
+    SCI-CAL-001: successor_2_owner_scope_complete_base_7894346_proposed_repair_not_launched
     SCI-MAP-002: candidate_854a04b_reaudited_rejected_successor_repair_not_launched
     SCI-ALIGN-001: owner_managed_slow_evidence_active
     SCI-AST-001: held_for_accepted_reaudited_ALIGN_successor
@@ -2870,7 +2870,22 @@ packages:
         path: >-
           doc/audits/packages/SCI-CAL-001_REAUDIT_COORDINATOR_DISPOSITION_2026-08-08.md
         sha256: >-
-          1cdc94e7d3deddb7d5eeb42337393291cc0c4f09eb6a206cee37ac1f204c339f
+          2067d1dd18a0719c49d18d764e3e7d9aefafc7a81dc16ed3c5508b0468c15cc6
+      successor_2_owner_disposition:
+        status: owner_scope_complete_launch_not_authorized
+        path: >-
+          doc/audits/packages/SCI-CAL-001_SUCCESSOR_2_OWNER_DISPOSITIONS_2026-08-09.md
+        sha256: >-
+          f0e0500e0ba809c1b51a36f69a97a71ab980d66337f62a9ff6985309b43df1d6
+        handoff_path: >-
+          doc/audits/packages/SCI-CAL-001_SUCCESSOR_2_BOUNDED_REPAIR_HANDOFF_2026-08-09.md
+        handoff_sha256: >-
+          05d2db5c4c099943498f5458ccef44f6acc40553e30d382df60e0c59797bffbf
+        proposed_exact_base: 7894346a91fa78ceb2a8b3d625335f466e5e1756
+        proposed_base_parent: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+        proposed_base_tree: 991f96c64e4d2d973ed5fc02630bfe29149109d9
+        proposed_branch: codex/repair-sci-cal-001-successor-2
+        repair_launched: false
       approved_operator_successor_material:
         operator_id: am12_fixed_djf25_piecewise_linear_los_tau_v1
         disposition: retain_without_downstream_or_production_authority
@@ -2895,10 +2910,10 @@ packages:
           sha256: >-
             d322bdc863ccb1292325c739865f772ef53f4e9f4101967752027ea0a2413262
       finding_counts_after_reaudit:
-        narrowly_closed: 1
+        narrowly_closed: 2
         open_P0: 3
-        open_P1: 6
-        owner_decision_resolved_implementation_open_P1: 1
+        open_P1: 5
+        conditioned_external_dependencies: 2
       finding_dispositions:
         - id: SCI-CAL-001-F002
           prior_class: implementation_defect
@@ -2946,16 +2961,28 @@ packages:
       merge_authorized: false
       production_change_authorized: false
       successor_repair_readiness:
-        status: scope_recorded_not_authorized
-        exact_base: unresolved_pending_separate_coordinator_owner_decision
+        status: owner_scope_complete_launch_not_authorized
+        proposed_exact_base: 7894346a91fa78ceb2a8b3d625335f466e5e1756
+        proposed_branch: codex/repair-sci-cal-001-successor-2
         preserve_fixed_operator: true
-        priority_blockers:
+        bounded_implementation_findings:
           - SCI-CAL-001-F003
           - SCI-CAL-001-F004
+          - SCI-CAL-001-F005
+          - SCI-CAL-001-F007
+          - SCI-CAL-001-F008
+          - SCI-CAL-001-F009
+        narrowly_closed_findings:
+          - SCI-CAL-001-F002
+          - SCI-CAL-001-F006
+        conditioned_external_dependencies:
+          - SCI-CAL-001-F001
+          - SCI-CAL-001-F010
         remaining_findings:
           - SCI-CAL-001-F001
+          - SCI-CAL-001-F003
+          - SCI-CAL-001-F004
           - SCI-CAL-001-F005
-          - SCI-CAL-001-F006
           - SCI-CAL-001-F007
           - SCI-CAL-001-F008
           - SCI-CAL-001-F009
@@ -2983,6 +3010,13 @@ packages:
         summary: >-
           Extinction applies zenith-equivalent opacity without the
           airmass-relative exponent or a fixed calibration pivot.
+        successor_2_disposition: >-
+          Remains open and conditioned as external evidence. Kernel/response
+          and weight propagation beyond F005's existing recipients, accepted
+          ALIGN/AST authority, exact-SHA Unity and astronomical-standard
+          evidence, and empirical response fidelity do not broaden the
+          bounded implementation repair. Local implementation conformance may
+          precede them; production precision/accuracy remains fail closed.
       - id: SCI-CAL-001-F003
         class: implementation_defect
         severity: P0
@@ -2996,6 +3030,13 @@ packages:
           tau/extinction decision rather than complete calibration validity;
           required factor, coefficient, unit, beam, and domain failures do not
           consistently fail closed.
+        successor_2_disposition: >-
+          Unsupported requested units fail at configuration/startup before
+          analysis or output. Malformed or incompatible exact APT/raw bindings
+          fail at input admission but still before calibration, mutation, or
+          publication. Failures are typed, persistent, and cause-specific;
+          approved RTC-only or intentionally uncalibrated skip semantics stay
+          distinct from calibrated output.
       - id: SCI-CAL-001-F004
         class: implementation_defect
         severity: P0
@@ -3014,6 +3055,13 @@ packages:
             acquisition binding. Source-Beammap and design matching remain
             distinct provenance-bearing associations and need not be claimed
             100 percent correct.
+        successor_2_disposition: >-
+          Existing upstream legacy APT ECSV header/row lineage and available
+          modern TolAPT manifest lineage must be consumed, validated, and
+          propagated. Preserve selected-source association and applicable
+          validity; do not invent a lineage system, duplicate APT extensions,
+          require perfect design identity, or invent unavailable optional
+          provenance.
       - id: SCI-CAL-001-F005
         class: contract_gap
         severity: P1
@@ -3024,6 +3072,11 @@ packages:
         summary: >-
           Detector, common gain, extinction, beam, bandpass, and template
           systematic covariance is absent.
+        successor_2_disposition: >-
+          Scale only every existing affected conditional measurement variance
+          as V'=a^2 V and inverse-variance weight as W'=W/a^2. Create no new
+          uncertainty product. Nuisance covariance and total calibrated
+          uncertainty remain unavailable and must not be claimed.
       - id: SCI-CAL-001-F007
         class: contract_gap
         severity: P1
@@ -3034,6 +3087,12 @@ packages:
         summary: >-
           Products do not preserve the complete realized calibration identity,
           factors, validity, response, and covariance.
+        successor_2_disposition: >-
+          Reconstructibility is package-level: one canonical calibration
+          lineage record, one package-local exact selected APT copy and digest,
+          exact raw identity and factor definitions, and stable joins. Products
+          retain only the identity, validity, unit, and link needed to resolve
+          that record; do not duplicate APT extensions or factor tables.
       - id: SCI-CAL-001-F008
         class: contract_gap
         severity: P1
@@ -3044,6 +3103,12 @@ packages:
         summary: >-
           flxscale, responsivity, sens, and fcf lack one approved unit,
           reciprocal, normalization, and propagation contract.
+        successor_2_disposition: >-
+          Preserve exact once-only factor composition and the realized response
+          basis, including selected APT beam, mapmaker/kernel class, and
+          relevant filtering state. Empirical response fidelity, total
+          uncertainty, and nuisance covariance remain downstream or
+          unavailable and do not broaden the repair.
       - id: SCI-CAL-001-F009
         class: evidence_gap
         severity: P1
@@ -3054,6 +3119,13 @@ packages:
         summary: >-
           Full local fixtures, same-SHA Unity evidence, and standard-source
           recovery are absent.
+        successor_2_disposition: >-
+          Require exact-candidate engine success/failure and actual
+          writer/reopen fixtures, focused tests, full CTest, configuration
+          preflight, and applicable deterministic authority, baseline, and
+          product-contract gates. Unity operational confirmation is a later
+          small human-run exact-SHA task after owner integration/push;
+          astronomical response fidelity remains MAP/BEAM work.
       - id: SCI-CAL-001-F010
         class: dependency_gap
         severity: P1
@@ -3064,15 +3136,22 @@ packages:
         summary: >-
           Per-sample identity, elevation, gap/interpolation, and eligibility
           conclusions remain conditioned on open ALIGN.
+        successor_2_disposition: >-
+          Remains open and conditioned on accepted ALIGN/AST authority. The
+          bounded repair may implement approved abstract interfaces but may
+          not choose or rederive ALIGN/AST science or absorb external evidence
+          work. Local implementation conformance may precede this dependency;
+          associated production claims remain fail closed.
     addressed_findings:
       - id: SCI-CAL-001-F006
         class: scientific_policy_decision
         severity: P1
         evidence_basis: owner_decision
         confidence: high
-        status: open
+        status: closed
         decision_status: owner_decision_resolved
-        implementation_aspect: nonconformant_to_owner_decision
+        closure_scope: approved_mJy_per_beam_configuration_boundary_only
+        implementation_aspect: routed_to_open_F003_configuration_enforcement
         owner: calibration_photometry_owner
         decision_date: 2026-07-31
         decision_commit: e8bd929008140e2ea8b44bfdc80b0a531b488765
@@ -3082,11 +3161,11 @@ packages:
           matrix, factor semantics, uncertainty representation, and APT
           authority/identity chain are owner-approved.
         closure_gate: >-
-          The owner decision is resolved, but the re-audited implementation is
-          nonconformant. Implement the approved contract on a separately
-          authorized successor, pass exact factor, identity, response, unit,
-          uncertainty, provenance, and fail-closed fixtures, and complete a
-          fresh exact-repair-SHA re-audit.
+          Closed only for the approved top-of-atmosphere mJy/beam
+          configuration boundary. Other requested units remain unsupported
+          and must fail at the open F003 startup boundary. This closure does
+          not establish implementation conformity, response fidelity,
+          uncertainty completeness, or production authority.
     unresolved_scientific_decisions:
       - >-
         CAL-ATM-CONF-001: the predecessor confirmation stopped invalid. Owner

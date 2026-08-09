@@ -94,6 +94,38 @@ downstream audit, merge, operator adoption, or any production change. The
 exact successor base remains subject to a separate coordinator/owner launch
 decision.
 
+## Successor-2 owner consolidation
+
+The project owner's complete successor-2 dispositions are preserved in
+`doc/audits/packages/SCI-CAL-001_SUCCESSOR_2_OWNER_DISPOSITIONS_2026-08-09.md`
+(SHA-256
+`f0e0500e0ba809c1b51a36f69a97a71ab980d66337f62a9ff6985309b43df1d6`).
+That successor authority narrows and supersedes this record's generic repair
+readiness language without changing the immutable re-audit artifacts or the
+canonical axes.
+
+The smallest bounded repair handoff is
+`doc/audits/packages/SCI-CAL-001_SUCCESSOR_2_BOUNDED_REPAIR_HANDOFF_2026-08-09.md`
+(SHA-256
+`05d2db5c4c099943498f5458ccef44f6acc40553e30d382df60e0c59797bffbf`).
+It proposes application base
+`7894346a91fa78ceb2a8b3d625335f466e5e1756` (parent
+`46ad23888a40f5102cdfd50c06e49a549bdf8a20`, tree
+`991f96c64e4d2d973ed5fc02630bfe29149109d9`) and branch
+`codex/repair-sci-cal-001-successor-2` for separate owner launch approval.
+
+Closure accounting is now: F002 retains narrow structural closure; F006 is
+closed only for the approved `mJy/beam` configuration boundary; F003, F004,
+F005, F007, F008, and the local implementation portion of F009 define the
+bounded repair; and F001/F010 plus Unity, astronomical-standard, and empirical
+response-fidelity evidence remain conditioned external dependencies. Local
+implementation conformance may therefore precede those external results, but
+production precision/accuracy claims remain `fail_closed`.
+
+The repair remains unlaunched. This successor record does not authorize a
+branch or worktree, application/config/test edits, evidence execution, Unity,
+re-audit, downstream use, merge, push, or production change.
+
 ## Stop
 
 Return to the coordinator and scientific owner. Preserve `fail_closed`; do not
