@@ -1,12 +1,43 @@
 #pragma once
 
 #include <citlali/core/config/timestream_config.h>
+#include <citlali/core/pipeline/raw_timestream_execution_plan.h>
 
 #include <yaml-cpp/yaml.h>
 
 #include <string>
 
 namespace citlali::pipeline {
+
+inline YAML::Node raw_rtc_contract_node(
+    const RawRtcContractState &contract) {
+    YAML::Node node;
+    node["assigned_grid_authority"] = contract.assigned_grid_authority;
+    node["assigned_time_semantics"] = contract.assigned_time_semantics;
+    node["physical_event_semantics"] =
+        contract.physical_event_semantics;
+    node["lattice_label"] = contract.lattice_label;
+    node["phase_label"] = contract.phase_label;
+    node["representative_assigned_time_rule"] =
+        contract.representative_assigned_time_rule;
+    node["edge_rule"] = contract.edge_rule;
+    node["influence_support_policy"] =
+        contract.influence_support_policy;
+    node["operator_ordering"] = contract.operator_ordering;
+    node["fir_normalization"] = contract.fir_normalization;
+    node["downsample_normalization"] =
+        contract.downsample_normalization;
+    node["timing_sensitive_mask_accuracy"] =
+        contract.timing_sensitive_mask_accuracy;
+    node["detector_ordering"] = contract.detector_ordering;
+    node["scientific_eligibility_required"] =
+        contract.scientific_eligibility_required;
+    node["complete_response_or_unavailable_required"] =
+        contract.complete_response_or_unavailable_required;
+    node["source_mask_fail_closed_required"] =
+        contract.source_mask_fail_closed_required;
+    return node;
+}
 
 inline YAML::Node raw_source_protection_request_node(
     const citlali::config::TimestreamSourceProtectionConfig &config) {

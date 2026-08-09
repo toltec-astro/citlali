@@ -28,6 +28,114 @@ YAML::Node raw_optional_scalar_node(const std::optional<Value> &value) {
     return node;
 }
 
+inline YAML::Node raw_rtc_stage_realization_node(
+    const RawRtcStageRealization &stage) {
+    YAML::Node node;
+    node["stage_identity"] = stage.stage_identity;
+    node["parent_identity"] = stage.parent_identity;
+    node["process_identity"] = stage.process_identity;
+    node["observation_scope"] = stage.observation_scope;
+    node["process_label"] = stage.process_label;
+    node["stage_view"] = stage.stage_view;
+    node["assigned_grid_identity"] = stage.assigned_grid_identity;
+    node["physical_event_semantics"] =
+        stage.physical_event_semantics;
+    node["assigned_time_semantics"] = stage.assigned_time_semantics;
+    node["lattice_label"] = stage.lattice_label;
+    node["phase_label"] = stage.phase_label;
+    node["representative_assigned_time"]["rule"] =
+        stage.representative_assigned_time_rule;
+    node["representative_assigned_time"]["value_hex"] =
+        stage.representative_assigned_time_hex;
+    node["assigned_time_values_digest"] =
+        stage.assigned_time_values_digest;
+    node["edge_rule"] = stage.edge_rule;
+    node["influence_support_policy"] =
+        stage.influence_support_policy;
+    node["operator_ordering"] = stage.operator_ordering;
+    node["detector_ordering"] = stage.detector_ordering;
+    node["source_mask"]["identity"] = stage.source_mask_identity;
+    node["source_mask"]["frame"] = stage.source_mask_frame;
+    node["source_mask"]["admission"] = stage.source_mask_admission;
+    node["source_mask"]["reason"] = stage.source_mask_reason;
+    node["source_mask"]["timing_sensitive_accuracy"] =
+        stage.source_mask_timing_accuracy;
+    node["source_mask"]["admitted"] = stage.source_mask_admitted;
+    node["scan_id"] = stage.scan_id;
+    node["absolute_assigned_start"] = stage.absolute_assigned_start;
+    node["input_sample_count"] = stage.input_sample_count;
+    node["output_sample_count"] = stage.output_sample_count;
+    node["detector_count"] = stage.detector_count;
+    node["inner_start"] = stage.inner_start;
+    node["inner_sample_count"] = stage.inner_sample_count;
+    node["filter_guard_samples"] = stage.filter_guard_samples;
+    node["filter_context_samples"] = stage.filter_context_samples;
+    node["native_sample_rate_hz"] = stage.native_sample_rate_hz;
+    node["effective_sample_rate_hz"] = stage.effective_sample_rate_hz;
+    node["downsample_factor"] = stage.downsample_factor;
+    node["simulated"] = stage.simulated;
+    node["response"]["complete_available"] =
+        stage.complete_response_available;
+    node["response"]["signal_stage_bits"] = stage.signal_stage_bits;
+    node["response"]["response_stage_bits"] = stage.response_stage_bits;
+    node["response"]["unavailable_cause_bits"] =
+        stage.response_unavailable_cause_bits;
+    node["influence"]["sample_count"] = stage.influenced_sample_count;
+    node["influence"]["intervals"] = YAML::Node(YAML::NodeType::Sequence);
+    for (const auto &interval : stage.influence_intervals) {
+        YAML::Node value;
+        value["detector"] = interval.detector;
+        value["first_assigned_sample"] =
+            interval.first_assigned_sample;
+        value["last_assigned_sample"] =
+            interval.last_assigned_sample;
+        value["cause_bits"] = interval.cause_bits;
+        node["influence"]["intervals"].push_back(value);
+    }
+    auto coefficients = node["operator_coefficients"];
+    coefficients["fir_hex"] = stage.fir_coefficients_hex;
+    coefficients["notch_a_hex"] = stage.notch_a_coefficients_hex;
+    coefficients["notch_b_hex"] = stage.notch_b_coefficients_hex;
+    coefficients["iir_highpass_alpha_hex"] =
+        stage.iir_highpass_alpha_hex;
+    coefficients["iir_highpass_order"] = stage.iir_highpass_order;
+    coefficients["notch_zero_phase"] = stage.notch_zero_phase;
+    coefficients["iir_highpass_zero_phase"] =
+        stage.iir_highpass_zero_phase;
+    coefficients["fir_normalization"] = stage.fir_normalization;
+    coefficients["downsample_normalization"] =
+        stage.downsample_normalization;
+    coefficients["fir_state_reset"] = stage.fir_state_reset;
+    coefficients["notch_state_reset"] = stage.notch_state_reset;
+    coefficients["iir_highpass_state_reset"] =
+        stage.iir_highpass_state_reset;
+    coefficients["notch_section_layout"] =
+        stage.notch_section_layout;
+    return node;
+}
+
+inline YAML::Node raw_rtc_product_realization_node(
+    const RawRtcProductRealization &product) {
+    YAML::Node node;
+    node["product_identity"] = product.product_identity;
+    node["stage_identity"] = product.stage_identity;
+    node["parent_identity"] = product.parent_identity;
+    node["process_identity"] = product.process_identity;
+    node["completion_identity"] = product.completion_identity;
+    node["assigned_grid_identity"] = product.assigned_grid_identity;
+    node["physical_event_semantics"] =
+        product.physical_event_semantics;
+    node["product_kind"] = product.product_kind;
+    node["filepath"] = product.filepath;
+    node["scan_id"] = product.scan_id;
+    node["output_row"] = product.output_row;
+    node["mini_output"] = product.mini_output;
+    node["outer_output"] = product.outer_output;
+    node["simulated"] = product.simulated;
+    node["complete"] = product.complete;
+    return node;
+}
+
 inline YAML::Node interface_sync_offset_config_node(
     const citlali::config::InterfaceSyncOffsetConfig &config) {
     YAML::Node node;
@@ -106,6 +214,8 @@ inline YAML::Node raw_timestream_observation_state_node(
     }
 
     auto value = node["value"];
+    value["rtc_contract"] = raw_rtc_contract_node(
+        observation->rtc_contract);
     value["native_sample_rate_hz"] =
         raw_optional_scalar_node(observation->native_sample_rate_hz);
     value["effective_sample_rate_hz"] =
@@ -141,6 +251,19 @@ inline YAML::Node raw_timestream_realized_state_node(
     node["required_timestream_write_count"] =
         raw_optional_scalar_node(
             realized.required_timestream_write_count);
+    node["rtc"]["observation_scope"] = realized.rtc_observation_scope;
+    node["rtc"]["bundle_identity"] = realized.rtc_bundle_identity;
+    node["rtc"]["bundle_complete"] = realized.rtc_bundle_complete;
+    node["rtc"]["stages"] = YAML::Node(YAML::NodeType::Sequence);
+    for (const auto &stage : realized.rtc_stages) {
+        node["rtc"]["stages"].push_back(
+            raw_rtc_stage_realization_node(stage));
+    }
+    node["rtc"]["products"] = YAML::Node(YAML::NodeType::Sequence);
+    for (const auto &product : realized.rtc_products) {
+        node["rtc"]["products"].push_back(
+            raw_rtc_product_realization_node(product));
+    }
     return node;
 }
 
@@ -152,10 +275,14 @@ inline YAML::Node raw_timestream_provenance_node(
     auto requested = raw_timestream_request_node(plan.requested);
     requested["interface_sync_offset"] =
         interface_sync_offset_config_node(plan.interface_sync_requested);
+    requested["rtc_contract"] =
+        raw_rtc_contract_node(plan.requested_rtc_contract);
     root["requested"] = requested;
     auto effective = raw_timestream_request_node(plan.effective);
     effective["interface_sync_offset"] =
         interface_sync_offset_config_node(plan.interface_sync_effective);
+    effective["rtc_contract"] =
+        raw_rtc_contract_node(plan.effective_rtc_contract);
     root["effective"]["config"] = effective;
     root["effective"]["resolutions"] =
         raw_timestream_effective_resolutions_node(

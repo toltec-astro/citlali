@@ -101,6 +101,27 @@ void apply_gap_masks_to_rtc_flags(
 }
 
 template <class Engine, class RtcData>
+void bind_rtc_assigned_grid_segment(
+    Engine &engine, const RtcData &rtcdata,
+    const RtcScanSampleWindow &scan_window) {
+    const Eigen::Index assigned_start = rtcdata.scan_indices.data(0);
+    const Eigen::Index assigned_count = std::max<Eigen::Index>(
+        0, rtcdata.scan_indices.data(1) - assigned_start + 1);
+    auto &rtc_processor = engine.rtcproc;
+    const int downsample_factor =
+        rtc_processor.run_downsample
+            ? rtc_processor.downsampler.factor
+            : 1;
+    rtc_processor.bind_assigned_grid_segment(
+        rtcdata.index.data, scan_window.start, assigned_start, assigned_count,
+        rtcdata.scans.data.rows(), rtcdata.scans.data.cols(),
+        engine.telescope.fsmp, downsample_factor,
+        engine.telescope.sim_obs,
+        engine.telescope.project_id + ":" +
+            engine.observation_identity.obsnum);
+}
+
+template <class Engine, class RtcData>
 RtcScanSampleWindow prepare_standard_rtc_scan_context(
     Engine &engine, RtcData &rtcdata) {
     const auto scan_window = copy_rtc_scan_context(
@@ -117,6 +138,7 @@ RtcScanSampleWindow prepare_standard_rtc_scan_context(
             scan_window.start, engine.rtcproc.filter_edge_guard.context_samples,
             engine.logger);
     }
+    bind_rtc_assigned_grid_segment(engine, rtcdata, scan_window);
     return scan_window;
 }
 

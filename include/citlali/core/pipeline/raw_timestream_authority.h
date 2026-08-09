@@ -15,7 +15,11 @@ void initialize_raw_timestream_authority(
     citlali::config::RawTimeChunkConfig &effective_config,
     RtcProc &rtcproc, double native_sample_rate_hz,
     double arcsec_to_rad, double fwhm_to_std) {
+    rtcproc.reset_phase_independent_state();
     plan.reset_from_request(request, interface_sync_request);
+    plan.requested_rtc_contract.assigned_grid_authority =
+        std::string{RtcProc::assigned_grid_authority};
+    plan.effective_rtc_contract = plan.requested_rtc_contract;
     effective_config = plan.effective;
     adapt_raw_timestream_config_one_way(
         effective_config, rtcproc, arcsec_to_rad, fwhm_to_std);

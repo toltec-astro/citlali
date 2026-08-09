@@ -331,6 +331,7 @@ inline RawTimestreamObservationState make_raw_timestream_observation_state(
     const RawSourceProtectionObservationResolution &source_protection,
     const RawExtinctionObservationResolution &extinction) {
     RawTimestreamObservationState state;
+    state.rtc_contract = RawRtcContractState{};
     if (sample_rate.valid()) {
         state.native_sample_rate_hz = sample_rate.native_sample_rate_hz;
         state.effective_sample_rate_hz =

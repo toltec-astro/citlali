@@ -2,7 +2,10 @@
 
 #include <cmath>
 #include <limits>
+#include <set>
+#include <sstream>
 #include <string>
+#include <string_view>
 
 #include <boost/math/special_functions/bessel.hpp>
 
@@ -11,8 +14,222 @@
 #include <citlali/core/utils/constants.h>
 #include <citlali/core/utils/pointing.h>
 #include <citlali/core/utils/fits_io.h>
+#include <citlali/core/utils/sha256.h>
 
 namespace timestream {
+
+enum class RTCSourceMaskAdmissionStatus {
+    not_requested,
+    admitted,
+    unavailable_mode,
+    unavailable_radius,
+    unavailable_frame,
+    unavailable_shape,
+    unavailable_coordinates,
+    unavailable_detector_identity,
+    unavailable_validity,
+};
+
+inline constexpr std::string_view rtc_source_mask_admission_status_name(
+    RTCSourceMaskAdmissionStatus status) {
+    switch (status) {
+        case RTCSourceMaskAdmissionStatus::not_requested:
+            return "not_requested";
+        case RTCSourceMaskAdmissionStatus::admitted:
+            return "admitted";
+        case RTCSourceMaskAdmissionStatus::unavailable_mode:
+            return "unavailable_mode";
+        case RTCSourceMaskAdmissionStatus::unavailable_radius:
+            return "unavailable_radius";
+        case RTCSourceMaskAdmissionStatus::unavailable_frame:
+            return "unavailable_frame";
+        case RTCSourceMaskAdmissionStatus::unavailable_shape:
+            return "unavailable_shape";
+        case RTCSourceMaskAdmissionStatus::unavailable_coordinates:
+            return "unavailable_coordinates";
+        case RTCSourceMaskAdmissionStatus::unavailable_detector_identity:
+            return "unavailable_detector_identity";
+        case RTCSourceMaskAdmissionStatus::unavailable_validity:
+            return "unavailable_validity";
+    }
+    return "unavailable_validity";
+}
+
+struct RTCSourceMaskAdmission {
+    RTCSourceMaskAdmissionStatus status =
+        RTCSourceMaskAdmissionStatus::not_requested;
+    std::string identity;
+    std::string frame;
+    std::string detector_ordering = "apt_uid_column_order";
+    std::string reason;
+
+    [[nodiscard]] bool admitted() const {
+        return status == RTCSourceMaskAdmissionStatus::admitted;
+    }
+};
+
+template <class Values>
+bool rtc_source_mask_values_exact_shape_and_finite(
+    const Values &values, Eigen::Index expected_size) {
+    return values.size() == expected_size && values.allFinite();
+}
+
+template <class TCData, class Apt>
+RTCSourceMaskAdmission admit_rtc_source_mask(
+    const TCData &in, const Apt &apt, const std::string &pixel_axes,
+    const std::string &map_grouping, const std::string &mode,
+    double radius_arcsec) {
+    RTCSourceMaskAdmission result;
+    result.frame = pixel_axes;
+    if (mode.empty() || mode == "none") {
+        return result;
+    }
+    if (mode != "map_center_radius" &&
+        mode != "pointing_center_radius") {
+        result.status = RTCSourceMaskAdmissionStatus::unavailable_mode;
+        result.reason = "unsupported source-mask mode";
+        return result;
+    }
+    if (!std::isfinite(radius_arcsec) || radius_arcsec <= 0.0) {
+        result.status = RTCSourceMaskAdmissionStatus::unavailable_radius;
+        result.reason = "source-mask radius must be finite and positive";
+        return result;
+    }
+    const bool known_frame =
+        citlali::config::is_radec_map_pixel_axes(pixel_axes) ||
+        citlali::config::is_altaz_map_pixel_axes(pixel_axes) ||
+        citlali::config::is_galactic_map_pixel_axes(pixel_axes);
+    const bool known_grouping =
+        citlali::config::is_network_map_grouping(map_grouping) ||
+        citlali::config::is_array_map_grouping(map_grouping) ||
+        citlali::config::is_detector_map_grouping(map_grouping) ||
+        citlali::config::is_frequency_group_map_grouping(map_grouping);
+    if (!known_frame || !known_grouping) {
+        result.status = RTCSourceMaskAdmissionStatus::unavailable_frame;
+        result.reason = "source-mask frame or grouping is unavailable";
+        return result;
+    }
+
+    const Eigen::Index n_samples = in.scans.data.rows();
+    const Eigen::Index n_detectors = in.scans.data.cols();
+    if (n_samples <= 0 || n_detectors <= 0) {
+        result.status = RTCSourceMaskAdmissionStatus::unavailable_shape;
+        result.reason = "source-mask signal shape is empty";
+        return result;
+    }
+    const auto require_apt = [&](const char *name)
+        -> const typename Apt::mapped_type * {
+        const auto it = apt.find(name);
+        return it == apt.end() ? nullptr : &it->second;
+    };
+    const auto *uid = require_apt("uid");
+    const auto *flag = require_apt("flag");
+    const auto *x_t = require_apt("x_t");
+    const auto *y_t = require_apt("y_t");
+    if (uid == nullptr || flag == nullptr || x_t == nullptr ||
+        y_t == nullptr || uid->size() != n_detectors ||
+        flag->size() != n_detectors || x_t->size() != n_detectors ||
+        y_t->size() != n_detectors) {
+        result.status =
+            RTCSourceMaskAdmissionStatus::unavailable_detector_identity;
+        result.reason = "source-mask detector identity shape is unavailable";
+        return result;
+    }
+    if (!uid->allFinite() || !flag->allFinite() || !x_t->allFinite() ||
+        !y_t->allFinite()) {
+        result.status = RTCSourceMaskAdmissionStatus::unavailable_validity;
+        result.reason = "source-mask detector identity is non-finite";
+        return result;
+    }
+    std::set<long long> detector_uids;
+    for (Eigen::Index detector = 0; detector < n_detectors; ++detector) {
+        const double value = (*uid)(detector);
+        if (value < static_cast<double>(
+                        std::numeric_limits<long long>::min()) ||
+            value > static_cast<double>(
+                        std::numeric_limits<long long>::max())) {
+            result.status =
+                RTCSourceMaskAdmissionStatus::unavailable_detector_identity;
+            result.reason = "source-mask detector UID is out of range";
+            return result;
+        }
+        const auto integer_uid = static_cast<long long>(std::llround(value));
+        if (static_cast<double>(integer_uid) != value ||
+            !detector_uids.insert(integer_uid).second) {
+            result.status =
+                RTCSourceMaskAdmissionStatus::unavailable_detector_identity;
+            result.reason = "source-mask detector UID is non-integral or duplicate";
+            return result;
+        }
+    }
+
+    std::vector<std::string> telescope_fields{"TelElAct"};
+    if (citlali::config::is_radec_map_pixel_axes(pixel_axes)) {
+        telescope_fields.insert(
+            telescope_fields.end(), {"ActParAng", "dec_phys", "ra_phys"});
+    }
+    else if (citlali::config::is_altaz_map_pixel_axes(pixel_axes)) {
+        telescope_fields.insert(
+            telescope_fields.end(), {"alt_phys", "az_phys"});
+    }
+    else {
+        telescope_fields.insert(
+            telescope_fields.end(),
+            {"ActParAng", "ActGalAng", "b_phys", "l_phys"});
+    }
+    for (const auto &field : telescope_fields) {
+        const auto it = in.tel_data.data.find(field);
+        if (it == in.tel_data.data.end() ||
+            !rtc_source_mask_values_exact_shape_and_finite(
+                it->second, n_samples)) {
+            result.status =
+                RTCSourceMaskAdmissionStatus::unavailable_coordinates;
+            result.reason = "source-mask telescope coordinate is unavailable: " +
+                            field;
+            return result;
+        }
+    }
+    for (const std::string field : {"az", "alt"}) {
+        const auto it = in.pointing_offsets_arcsec.data.find(field);
+        if (it == in.pointing_offsets_arcsec.data.end() ||
+            !rtc_source_mask_values_exact_shape_and_finite(
+                it->second, n_samples)) {
+            result.status =
+                RTCSourceMaskAdmissionStatus::unavailable_coordinates;
+            result.reason = "source-mask pointing coordinate is unavailable: " +
+                            field;
+            return result;
+        }
+    }
+
+    std::ostringstream identity;
+    identity << "SCI-RTC-001-source-mask-v1|mode=" << mode
+             << "|frame=" << pixel_axes
+             << "|grouping=" << map_grouping
+             << "|radius_arcsec=" << std::hexfloat << radius_arcsec
+             << "|samples=" << n_samples
+             << "|detectors=" << n_detectors;
+    const auto append_values = [&](std::string_view name,
+                                   const auto &values) {
+        identity << '|' << name << '=';
+        for (Eigen::Index index = 0; index < values.size(); ++index) {
+            identity << std::hexfloat << values(index) << ',';
+        }
+    };
+    append_values("uid", *uid);
+    append_values("flag", *flag);
+    append_values("x_t", *x_t);
+    append_values("y_t", *y_t);
+    for (const auto &field : telescope_fields) {
+        append_values(field, in.tel_data.data.at(field));
+    }
+    append_values("pointing_az", in.pointing_offsets_arcsec.data.at("az"));
+    append_values("pointing_alt", in.pointing_offsets_arcsec.data.at("alt"));
+
+    result.status = RTCSourceMaskAdmissionStatus::admitted;
+    result.identity = "sha256:" + citlali::utils::sha256(identity.str());
+    return result;
+}
 
 class Kernel {
 public:

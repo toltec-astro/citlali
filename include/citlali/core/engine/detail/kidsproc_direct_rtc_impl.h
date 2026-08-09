@@ -25,11 +25,21 @@ auto KidsDataProc::populate_rtc_from_rawobs(const RawObs &rawobs, const Eigen::I
             result, data_type, [&](const auto &channel) {
                 Eigen::Index n_rows = channel.rows();
                 n_cols = channel.cols();
+                if (n_rows != n_pts || n_cols < 0 ||
+                    i + n_cols > n_det) {
+                    throw std::runtime_error(
+                        "direct RTC KIDs input shape does not match the assigned detector grid");
+                }
                 data.block(0, i, n_rows, n_cols) = channel;
             });
 
         // increment columns
         i += n_cols;
+    }
+
+    if (data.rows() != n_pts || i != n_det) {
+        throw std::runtime_error(
+            "direct RTC KIDs detector inventory is incomplete");
     }
 
     citlali::pipeline::require_finite_kids_input(

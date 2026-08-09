@@ -98,6 +98,8 @@ auto Beammap::run_timestream(
                 rtcdata, calib, alignment.network_masks, scan_window.start,
                 rtcproc.filter_edge_guard.context_samples, logger);
         }
+        citlali::pipeline::bind_rtc_assigned_grid_segment(
+            *this, rtcdata, scan_window);
 
         // create PTCData
         TCData<TCDataKind::PTC,Eigen::MatrixXd> ptcdata;

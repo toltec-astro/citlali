@@ -16,6 +16,12 @@ bool Lali::write_lali_rtc_outputs(
     Eigen::Index rtc_scan_row,
     bool write_this_rtc,
     const std::string &map_grouping) {
+    if (output_flags.write_rtcdiag ||
+        (write_this_rtc && output_flags.write_rtc)) {
+        auto &rtc_processor = rtcproc;
+        (void)rtc_processor.phase_independent_stage_for_scan(
+            ptcdata.index.data);
+    }
     if (output_flags.write_rtcdiag) {
         if (!output_writers.write_when_ready(
             output_writers.rtcdiag, ptcdata.index.data, [&] {

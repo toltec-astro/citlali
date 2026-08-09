@@ -31,6 +31,11 @@ void Engine::create_rtcdiag_file() {
         fo, "rtcdiag", std::stoi(observation_identity.obsnum),
         telescope.tel_header["Header.Source.Ra"](0),
         telescope.tel_header["Header.Source.Dec"](0));
+    fo.putAtt("rtc_contract_version", "SCI-RTC-001-v1");
+    fo.putAtt("rtc_assigned_grid_authority",
+              std::string{timestream::RTCProc::assigned_grid_authority});
+    fo.putAtt("rtc_physical_event_semantics", "unavailable");
+    fo.putAtt("rtc_product_kind", "rtc_diagnostic");
 
     const auto rtcdiag_dims =
         citlali::pipeline::add_rtcdiag_dims(

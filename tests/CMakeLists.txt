@@ -90,6 +90,69 @@ gtest_discover_tests(
         DISCOVERY_MODE PRE_TEST
 )
 
+# SCI-RTC-001 Phase 1: deterministic phase-independent validity/support and
+# complete signal/response parity on the existing assigned grid.  Keep this
+# isolated so the mandatory checkpoint can run without broad CTest execution.
+add_executable(citlali_rtc_phase_independent_operator_test EXCLUDE_FROM_ALL
+    test_rtc_phase_independent_operator.cpp
+)
+set_target_properties(citlali_rtc_phase_independent_operator_test
+    PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+)
+target_link_libraries(citlali_rtc_phase_independent_operator_test
+    PRIVATE
+        citlali::citlali
+        GTest::gtest_main
+)
+add_dependencies(check citlali_rtc_phase_independent_operator_test)
+gtest_discover_tests(
+    citlali_rtc_phase_independent_operator_test
+        WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+        TEST_PREFIX "citlali::rtc_phase_independent::"
+        DISCOVERY_MODE PRE_TEST
+)
+
+add_executable(citlali_rtc_phase_independent_provenance_test EXCLUDE_FROM_ALL
+    test_rtc_phase_independent_provenance.cpp
+)
+set_target_properties(citlali_rtc_phase_independent_provenance_test
+    PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+)
+target_link_libraries(citlali_rtc_phase_independent_provenance_test
+    PRIVATE
+        citlali::citlali
+        GTest::gtest_main
+)
+add_dependencies(check citlali_rtc_phase_independent_provenance_test)
+gtest_discover_tests(
+    citlali_rtc_phase_independent_provenance_test
+        WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+        TEST_PREFIX "citlali::rtc_phase_independent_provenance::"
+        DISCOVERY_MODE PRE_TEST
+)
+
+add_executable(citlali_rtc_phase_independent_production_paths_test EXCLUDE_FROM_ALL
+    test_rtc_phase_independent_production_paths.cpp
+)
+set_target_properties(citlali_rtc_phase_independent_production_paths_test
+    PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+)
+target_link_libraries(citlali_rtc_phase_independent_production_paths_test
+    PRIVATE
+        citlali::citlali
+        GTest::gtest_main
+)
+add_dependencies(check citlali_rtc_phase_independent_production_paths_test)
+gtest_discover_tests(
+    citlali_rtc_phase_independent_production_paths_test
+        WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+        TEST_PREFIX "citlali::rtc_phase_independent_production_paths::"
+        DISCOVERY_MODE PRE_TEST
+)
+
 # SCI-MAP-001-F001: the repaired ordinary primitive is a header-instantiated
 # template, so this focused target instruments the primitive and its
 # concurrent shared-map commit directly. It is intentionally excluded from

@@ -17,6 +17,7 @@
 template<typename CT>
 void Engine::get_rtc_config(CT &config) {
     logger->info("getting rtc config options");
+    rtcproc.reset_phase_independent_state();
     auto &config_diag = citlali::pipeline::config_diagnostics(*this);
     citlali::config::RawTimeChunkConfig typed_request;
     citlali::pipeline::raw_timestream_plan(*this) = {};

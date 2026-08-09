@@ -6,11 +6,16 @@
 #include <algorithm>
 #include <cmath>
 #include <complex>
+#include <cstdint>
+#include <filesystem>
 #include <limits>
 #include <map>
 #include <memory>
 #include <mutex>
 #include <numeric>
+#include <sstream>
+#include <stdexcept>
+#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -30,8 +35,975 @@ namespace timestream {
 
 using timestream::TCData;
 
+// SCI-RTC-001 phase-independent operator contract.  These types describe
+// validity and response only on the already-assigned sample grid.  They do
+// not assign a physical integration event, phase, centroid, or timing
+// correction to a sample row.
+enum class RTCPhysicalEventSemantics {
+    unavailable,
+};
+
+inline constexpr std::string_view rtc_physical_event_semantics_name(
+    RTCPhysicalEventSemantics semantics) {
+    switch (semantics) {
+        case RTCPhysicalEventSemantics::unavailable:
+            return "unavailable";
+    }
+    return "unavailable";
+}
+
+enum class RTCInfluenceCause : std::uint32_t {
+    none = 0,
+    input_ineligible = 1u << 0,
+    replacement_or_synthesis = 1u << 1,
+    nonfinite_payload = 1u << 2,
+    fir_support = 1u << 3,
+    recursive_filter_support = 1u << 4,
+    incomplete_filter_edge = 1u << 5,
+    decimation_support = 1u << 6,
+    source_mask_unavailable = 1u << 7,
+    post_filter_flagging = 1u << 8,
+};
+
+inline constexpr RTCInfluenceCause operator|(RTCInfluenceCause lhs,
+                                             RTCInfluenceCause rhs) {
+    return static_cast<RTCInfluenceCause>(
+        static_cast<std::uint32_t>(lhs) |
+        static_cast<std::uint32_t>(rhs));
+}
+
+inline constexpr RTCInfluenceCause operator&(RTCInfluenceCause lhs,
+                                             RTCInfluenceCause rhs) {
+    return static_cast<RTCInfluenceCause>(
+        static_cast<std::uint32_t>(lhs) &
+        static_cast<std::uint32_t>(rhs));
+}
+
+inline constexpr bool rtc_has_influence_cause(RTCInfluenceCause value,
+                                              RTCInfluenceCause cause) {
+    return (value & cause) != RTCInfluenceCause::none;
+}
+
+struct RTCInfluenceInterval {
+    Eigen::Index detector = -1;
+    Eigen::Index first_assigned_sample = 0;
+    Eigen::Index last_assigned_sample = -1;
+    RTCInfluenceCause causes = RTCInfluenceCause::none;
+};
+
+// Compact interval bookkeeping is sufficient to enforce D001 without adding
+// a dense per-sample provenance product.  Boolean RTC flags remain the
+// immediate consumer-admission surface; the intervals retain typed causes and
+// the exact assigned-grid support that made each output ineligible.
+class RTCInfluenceLedger {
+public:
+    RTCInfluenceLedger() = default;
+
+    RTCInfluenceLedger(Eigen::Index assigned_sample_count,
+                       Eigen::Index detector_count) {
+        reset(assigned_sample_count, detector_count);
+    }
+
+    void reset(Eigen::Index assigned_sample_count,
+               Eigen::Index detector_count) {
+        if (assigned_sample_count < 0 || detector_count < 0) {
+            throw std::invalid_argument(
+                "RTC influence ledger dimensions cannot be negative");
+        }
+        assigned_sample_count_ = assigned_sample_count;
+        detector_count_ = detector_count;
+        intervals_.clear();
+    }
+
+    [[nodiscard]] Eigen::Index assigned_sample_count() const {
+        return assigned_sample_count_;
+    }
+
+    [[nodiscard]] Eigen::Index detector_count() const {
+        return detector_count_;
+    }
+
+    [[nodiscard]] const std::vector<RTCInfluenceInterval> &intervals() const {
+        return intervals_;
+    }
+
+    void add_interval(Eigen::Index detector,
+                      Eigen::Index first_assigned_sample,
+                      Eigen::Index last_assigned_sample,
+                      RTCInfluenceCause causes) {
+        if (causes == RTCInfluenceCause::none) {
+            return;
+        }
+        if (detector < 0 || detector >= detector_count_ ||
+            first_assigned_sample < 0 ||
+            last_assigned_sample < first_assigned_sample ||
+            last_assigned_sample >= assigned_sample_count_) {
+            throw std::out_of_range(
+                "RTC influence interval is outside the assigned grid");
+        }
+        intervals_.push_back({detector, first_assigned_sample,
+                              last_assigned_sample, causes});
+        normalize();
+    }
+
+    template <typename Derived>
+    void mark_flagged(const Eigen::DenseBase<Derived> &flags,
+                      RTCInfluenceCause cause) {
+        require_shape(flags.rows(), flags.cols());
+        if (cause == RTCInfluenceCause::none) {
+            return;
+        }
+        for (Eigen::Index detector = 0; detector < detector_count_;
+             ++detector) {
+            Eigen::Index first = -1;
+            for (Eigen::Index sample = 0;
+                 sample <= assigned_sample_count_; ++sample) {
+                const bool flagged =
+                    sample < assigned_sample_count_ &&
+                    static_cast<bool>(flags.derived()(sample, detector));
+                if (flagged && first < 0) {
+                    first = sample;
+                }
+                if (!flagged && first >= 0) {
+                    intervals_.push_back(
+                        {detector, first, sample - 1, cause});
+                    first = -1;
+                }
+            }
+        }
+        normalize();
+    }
+
+    template <typename BeforeDerived, typename AfterDerived>
+    void mark_newly_flagged(
+        const Eigen::DenseBase<BeforeDerived> &before,
+        const Eigen::DenseBase<AfterDerived> &after,
+        RTCInfluenceCause cause =
+            RTCInfluenceCause::replacement_or_synthesis) {
+        require_shape(before.rows(), before.cols());
+        require_shape(after.rows(), after.cols());
+        Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> newly_flagged(
+            assigned_sample_count_, detector_count_);
+        for (Eigen::Index detector = 0; detector < detector_count_;
+             ++detector) {
+            for (Eigen::Index sample = 0;
+                 sample < assigned_sample_count_; ++sample) {
+                newly_flagged(sample, detector) =
+                    static_cast<bool>(after.derived()(sample, detector)) &&
+                    !static_cast<bool>(before.derived()(sample, detector));
+            }
+        }
+        mark_flagged(newly_flagged, cause);
+    }
+
+    template <typename Derived>
+    void mark_nonfinite(const Eigen::DenseBase<Derived> &signal) {
+        require_shape(signal.rows(), signal.cols());
+        Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> nonfinite(
+            assigned_sample_count_, detector_count_);
+        for (Eigen::Index detector = 0; detector < detector_count_;
+             ++detector) {
+            for (Eigen::Index sample = 0;
+                 sample < assigned_sample_count_; ++sample) {
+                nonfinite(sample, detector) =
+                    !std::isfinite(signal.derived()(sample, detector));
+            }
+        }
+        mark_flagged(nonfinite, RTCInfluenceCause::nonfinite_payload);
+    }
+
+    void propagate_fir(Eigen::Index half_support) {
+        if (half_support < 0) {
+            throw std::invalid_argument(
+                "RTC FIR half-support cannot be negative");
+        }
+        if (assigned_sample_count_ == 0) {
+            return;
+        }
+        const auto input = intervals_;
+        intervals_.clear();
+        for (const auto &interval : input) {
+            intervals_.push_back(
+                {interval.detector,
+                 std::max<Eigen::Index>(
+                     0, interval.first_assigned_sample - half_support),
+                 std::min<Eigen::Index>(
+                     assigned_sample_count_ - 1,
+                     interval.last_assigned_sample + half_support),
+                 interval.causes | RTCInfluenceCause::fir_support});
+        }
+        if (half_support > 0) {
+            const Eigen::Index edge = std::min(
+                half_support, assigned_sample_count_);
+            for (Eigen::Index detector = 0; detector < detector_count_;
+                 ++detector) {
+                intervals_.push_back(
+                    {detector, 0, edge - 1,
+                     RTCInfluenceCause::incomplete_filter_edge});
+                intervals_.push_back(
+                    {detector, assigned_sample_count_ - edge,
+                     assigned_sample_count_ - 1,
+                     RTCInfluenceCause::incomplete_filter_edge});
+            }
+        }
+        normalize();
+    }
+
+    void propagate_recursive_filter(bool zero_phase) {
+        if (assigned_sample_count_ == 0) {
+            return;
+        }
+        const auto input = intervals_;
+        intervals_.clear();
+        for (const auto &interval : input) {
+            intervals_.push_back(
+                {interval.detector,
+                 zero_phase ? 0 : interval.first_assigned_sample,
+                 assigned_sample_count_ - 1,
+                 interval.causes |
+                     RTCInfluenceCause::recursive_filter_support});
+        }
+        normalize();
+    }
+
+    [[nodiscard]] RTCInfluenceLedger downsample_phase_zero(
+        int factor) const {
+        if (factor <= 0) {
+            throw std::invalid_argument(
+                "RTC downsample factor must be positive");
+        }
+        const Eigen::Index output_samples =
+            (assigned_sample_count_ + factor - 1) / factor;
+        RTCInfluenceLedger output(output_samples, detector_count_);
+        for (const auto &interval : intervals_) {
+            output.intervals_.push_back(
+                {interval.detector,
+                 interval.first_assigned_sample / factor,
+                 interval.last_assigned_sample / factor,
+                 interval.causes |
+                     RTCInfluenceCause::decimation_support});
+        }
+        output.normalize();
+        return output;
+    }
+
+    [[nodiscard]] RTCInfluenceLedger slice(
+        Eigen::Index first_assigned_sample,
+        Eigen::Index sample_count) const {
+        if (first_assigned_sample < 0 || sample_count < 0 ||
+            first_assigned_sample + sample_count > assigned_sample_count_) {
+            throw std::out_of_range(
+                "RTC influence slice is outside the assigned grid");
+        }
+        RTCInfluenceLedger output(sample_count, detector_count_);
+        if (sample_count == 0) {
+            return output;
+        }
+        const Eigen::Index last_assigned_sample =
+            first_assigned_sample + sample_count - 1;
+        for (const auto &interval : intervals_) {
+            const Eigen::Index first = std::max(
+                first_assigned_sample, interval.first_assigned_sample);
+            const Eigen::Index last = std::min(
+                last_assigned_sample, interval.last_assigned_sample);
+            if (first <= last) {
+                output.intervals_.push_back(
+                    {interval.detector,
+                     first - first_assigned_sample,
+                     last - first_assigned_sample,
+                     interval.causes});
+            }
+        }
+        output.normalize();
+        return output;
+    }
+
+    [[nodiscard]] std::size_t influenced_sample_count() const {
+        std::vector<RTCInfluenceInterval> support = intervals_;
+        std::sort(
+            support.begin(), support.end(),
+            [](const RTCInfluenceInterval &lhs,
+               const RTCInfluenceInterval &rhs) {
+                if (lhs.detector != rhs.detector) {
+                    return lhs.detector < rhs.detector;
+                }
+                if (lhs.first_assigned_sample !=
+                    rhs.first_assigned_sample) {
+                    return lhs.first_assigned_sample <
+                           rhs.first_assigned_sample;
+                }
+                return lhs.last_assigned_sample <
+                       rhs.last_assigned_sample;
+            });
+        std::size_t count = 0;
+        Eigen::Index detector = -1;
+        Eigen::Index first = 0;
+        Eigen::Index last = -1;
+        auto finish = [&] {
+            if (last >= first) {
+                count += static_cast<std::size_t>(last - first + 1);
+            }
+        };
+        for (const auto &interval : support) {
+            if (interval.detector != detector ||
+                interval.first_assigned_sample > last + 1) {
+                finish();
+                detector = interval.detector;
+                first = interval.first_assigned_sample;
+                last = interval.last_assigned_sample;
+            }
+            else {
+                last = std::max(last, interval.last_assigned_sample);
+            }
+        }
+        finish();
+        return count;
+    }
+
+    template <typename Derived>
+    void enforce_ineligible_flags(Eigen::DenseBase<Derived> &flags) const {
+        require_shape(flags.rows(), flags.cols());
+        for (const auto &interval : intervals_) {
+            for (Eigen::Index sample = interval.first_assigned_sample;
+                 sample <= interval.last_assigned_sample; ++sample) {
+                flags.derived()(sample, interval.detector) = true;
+            }
+        }
+    }
+
+    [[nodiscard]] RTCInfluenceCause causes_at(
+        Eigen::Index assigned_sample, Eigen::Index detector) const {
+        if (assigned_sample < 0 ||
+            assigned_sample >= assigned_sample_count_ || detector < 0 ||
+            detector >= detector_count_) {
+            throw std::out_of_range(
+                "RTC influence query is outside the assigned grid");
+        }
+        RTCInfluenceCause causes = RTCInfluenceCause::none;
+        for (const auto &interval : intervals_) {
+            if (interval.detector == detector &&
+                assigned_sample >= interval.first_assigned_sample &&
+                assigned_sample <= interval.last_assigned_sample) {
+                causes = causes | interval.causes;
+            }
+        }
+        return causes;
+    }
+
+    [[nodiscard]] bool scientifically_eligible(
+        Eigen::Index assigned_sample, Eigen::Index detector) const {
+        return causes_at(assigned_sample, detector) ==
+               RTCInfluenceCause::none;
+    }
+
+private:
+    void require_shape(Eigen::Index rows, Eigen::Index cols) const {
+        if (rows != assigned_sample_count_ || cols != detector_count_) {
+            throw std::invalid_argument(
+                "RTC influence input shape does not match assigned grid");
+        }
+    }
+
+    void normalize() {
+        std::sort(
+            intervals_.begin(), intervals_.end(),
+            [](const RTCInfluenceInterval &lhs,
+               const RTCInfluenceInterval &rhs) {
+                if (lhs.detector != rhs.detector) {
+                    return lhs.detector < rhs.detector;
+                }
+                if (lhs.causes != rhs.causes) {
+                    return static_cast<std::uint32_t>(lhs.causes) <
+                           static_cast<std::uint32_t>(rhs.causes);
+                }
+                if (lhs.first_assigned_sample !=
+                    rhs.first_assigned_sample) {
+                    return lhs.first_assigned_sample <
+                           rhs.first_assigned_sample;
+                }
+                return lhs.last_assigned_sample <
+                       rhs.last_assigned_sample;
+            });
+        std::vector<RTCInfluenceInterval> compact;
+        compact.reserve(intervals_.size());
+        for (const auto &interval : intervals_) {
+            if (!compact.empty() &&
+                compact.back().detector == interval.detector &&
+                compact.back().causes == interval.causes &&
+                interval.first_assigned_sample <=
+                    compact.back().last_assigned_sample + 1) {
+                compact.back().last_assigned_sample = std::max(
+                    compact.back().last_assigned_sample,
+                    interval.last_assigned_sample);
+            }
+            else {
+                compact.push_back(interval);
+            }
+        }
+        intervals_ = std::move(compact);
+    }
+
+    Eigen::Index assigned_sample_count_ = 0;
+    Eigen::Index detector_count_ = 0;
+    std::vector<RTCInfluenceInterval> intervals_;
+};
+
+enum class RTCResponseStage : std::uint32_t {
+    none = 0,
+    replacement = 1u << 0,
+    fir = 1u << 1,
+    notch = 1u << 2,
+    iir_highpass = 1u << 3,
+    downsample = 1u << 4,
+    altaz_projection = 1u << 5,
+};
+
+enum class RTCResponseUnavailableCause : std::uint32_t {
+    none = 0,
+    response_missing = 1u << 0,
+    response_shape_mismatch = 1u << 1,
+    replacement_donor_mixing_unrepresented = 1u << 2,
+    projection_unrepresented = 1u << 3,
+    conditioned_dependency_unrepresented = 1u << 4,
+};
+
+inline constexpr RTCResponseStage operator|(RTCResponseStage lhs,
+                                            RTCResponseStage rhs) {
+    return static_cast<RTCResponseStage>(
+        static_cast<std::uint32_t>(lhs) |
+        static_cast<std::uint32_t>(rhs));
+}
+
+inline constexpr RTCResponseUnavailableCause operator|(
+    RTCResponseUnavailableCause lhs,
+    RTCResponseUnavailableCause rhs) {
+    return static_cast<RTCResponseUnavailableCause>(
+        static_cast<std::uint32_t>(lhs) |
+        static_cast<std::uint32_t>(rhs));
+}
+
+// Records every response-changing stage applied on the exact assigned grid.
+// Complete is true only when the response received every signal stage and no
+// stage was represented partially or guessed.
+class RTCResponseParity {
+public:
+    [[nodiscard]] RTCPhysicalEventSemantics physical_event_semantics() const {
+        return RTCPhysicalEventSemantics::unavailable;
+    }
+
+    [[nodiscard]] RTCResponseStage signal_stages() const {
+        return signal_stages_;
+    }
+
+    [[nodiscard]] RTCResponseStage response_stages() const {
+        return response_stages_;
+    }
+
+    [[nodiscard]] RTCResponseUnavailableCause unavailable_causes() const {
+        return unavailable_causes_;
+    }
+
+    [[nodiscard]] bool complete_response_available() const {
+        return unavailable_causes_ == RTCResponseUnavailableCause::none &&
+               signal_stages_ == response_stages_;
+    }
+
+    template <typename Operation>
+    void apply_matched_in_place(RTCResponseStage stage,
+                                Eigen::MatrixXd &signal,
+                                Eigen::MatrixXd *response,
+                                Operation operation) {
+        operation(signal);
+        signal_stages_ = signal_stages_ | stage;
+        if (response == nullptr) {
+            unavailable_causes_ = unavailable_causes_ |
+                                  RTCResponseUnavailableCause::response_missing;
+            return;
+        }
+        if (response->rows() != signal.rows() ||
+            response->cols() != signal.cols()) {
+            unavailable_causes_ =
+                unavailable_causes_ |
+                RTCResponseUnavailableCause::response_shape_mismatch;
+            return;
+        }
+        operation(*response);
+        response_stages_ = response_stages_ | stage;
+    }
+
+    template <typename Operation>
+    void apply_matched_transform(RTCResponseStage stage,
+                                 Eigen::MatrixXd &signal_input,
+                                 Eigen::MatrixXd &signal_output,
+                                 Eigen::MatrixXd *response_input,
+                                 Eigen::MatrixXd *response_output,
+                                 Operation operation) {
+        operation(signal_input, signal_output);
+        signal_stages_ = signal_stages_ | stage;
+        if (response_input == nullptr || response_output == nullptr) {
+            unavailable_causes_ = unavailable_causes_ |
+                                  RTCResponseUnavailableCause::response_missing;
+            return;
+        }
+        if (response_input->rows() != signal_input.rows() ||
+            response_input->cols() != signal_input.cols()) {
+            unavailable_causes_ =
+                unavailable_causes_ |
+                RTCResponseUnavailableCause::response_shape_mismatch;
+            return;
+        }
+        operation(*response_input, *response_output);
+        response_stages_ = response_stages_ | stage;
+    }
+
+    void mark_unrepresented_signal_stage(
+        RTCResponseStage stage,
+        RTCResponseUnavailableCause cause) {
+        if (cause == RTCResponseUnavailableCause::none) {
+            throw std::invalid_argument(
+                "unrepresented RTC response stage requires a cause");
+        }
+        signal_stages_ = signal_stages_ | stage;
+        unavailable_causes_ = unavailable_causes_ | cause;
+    }
+
+    void mark_matched_stage(RTCResponseStage stage,
+                            bool response_available,
+                            bool response_shape_matches = true) {
+        signal_stages_ = signal_stages_ | stage;
+        if (!response_available) {
+            unavailable_causes_ = unavailable_causes_ |
+                                  RTCResponseUnavailableCause::response_missing;
+            return;
+        }
+        if (!response_shape_matches) {
+            unavailable_causes_ =
+                unavailable_causes_ |
+                RTCResponseUnavailableCause::response_shape_mismatch;
+            return;
+        }
+        response_stages_ = response_stages_ | stage;
+    }
+
+    void mark_unavailable(RTCResponseUnavailableCause cause) {
+        if (cause == RTCResponseUnavailableCause::none) {
+            throw std::invalid_argument(
+                "unavailable RTC response requires a cause");
+        }
+        unavailable_causes_ = unavailable_causes_ | cause;
+    }
+
+private:
+    RTCResponseStage signal_stages_ = RTCResponseStage::none;
+    RTCResponseStage response_stages_ = RTCResponseStage::none;
+    RTCResponseUnavailableCause unavailable_causes_ =
+        RTCResponseUnavailableCause::none;
+};
+
 class RTCProc: public TCProc {
 public:
+    inline static constexpr std::string_view assigned_grid_authority =
+        "ALIGN-ASSIGNED-TIME-COMPAT-001";
+    inline static constexpr std::string_view assigned_time_semantics =
+        "compatibility_state_only";
+    inline static constexpr std::string_view downsample_phase_label =
+        "assigned_index_phase_zero";
+    inline static constexpr std::string_view detector_ordering =
+        "apt_uid_column_order";
+
+    struct RTCAssignedGridSegment {
+        bool bound = false;
+        Eigen::Index scan_id = -1;
+        Eigen::Index absolute_loaded_start = 0;
+        Eigen::Index absolute_assigned_start = 0;
+        Eigen::Index assigned_sample_count = 0;
+        Eigen::Index loaded_sample_count = 0;
+        Eigen::Index detector_count = 0;
+        double native_sample_rate_hz =
+            std::numeric_limits<double>::quiet_NaN();
+        int downsample_factor = 1;
+        bool simulated = false;
+        std::string observation_scope;
+        std::string process_label = "standard";
+        std::string assigned_grid_identity;
+    };
+
+    struct RTCStageProvenance {
+        std::string stage_identity;
+        std::string parent_identity;
+        std::string process_identity;
+        std::string observation_scope;
+        std::string process_label;
+        std::string stage_view;
+        std::string assigned_grid_identity;
+        std::string physical_event_semantics = "unavailable";
+        std::string assigned_time_semantics{
+            RTCProc::assigned_time_semantics};
+        std::string lattice_label = "existing_assigned_sample_lattice";
+        std::string phase_label{RTCProc::downsample_phase_label};
+        std::string representative_assigned_time_rule =
+            "phase_zero_first_cell_compatibility_value";
+        std::string representative_assigned_time_hex;
+        std::string assigned_time_values_digest;
+        std::string edge_rule =
+            "loaded_outer_context_then_exact_inner_crop";
+        std::string influence_support_policy = "typed_compact_intervals";
+        std::string operator_ordering =
+            "calibration>extinction>kernel>despike>pre_notch>fir>"
+            "configured_notch>iir_highpass>edge_guard>detector_notch>"
+            "inner_crop>phase_zero_downsample>post_notch>event_masks>"
+            "altaz_projection";
+        std::string fir_normalization =
+            "exact_realized_coefficients_no_additional_normalization";
+        std::string downsample_normalization =
+            "arithmetic_mean_one_over_factor";
+        std::string detector_ordering{RTCProc::detector_ordering};
+        std::string source_mask_identity;
+        std::string source_mask_frame;
+        std::string source_mask_admission = "not_requested";
+        std::string source_mask_reason;
+        std::string source_mask_timing_accuracy = "unavailable";
+        std::string fir_state_reset =
+            "stateless_valid_convolution_interior_input_edges_preserved";
+        std::string notch_state_reset =
+            "per_section_per_pass_x_history_first_input_y_history_"
+            "bsum_over_asum_times_first_input_odd_extension";
+        std::string iir_highpass_state_reset =
+            "per_order_per_pass_x_previous_first_input_y_previous_zero_"
+            "first_output_zero";
+        std::string notch_section_layout =
+            "ordered_sos_a_then_b_each_section_size_three";
+        Eigen::Index scan_id = -1;
+        Eigen::Index absolute_assigned_start = 0;
+        Eigen::Index input_sample_count = 0;
+        Eigen::Index output_sample_count = 0;
+        Eigen::Index detector_count = 0;
+        Eigen::Index inner_start = 0;
+        Eigen::Index inner_sample_count = 0;
+        Eigen::Index filter_guard_samples = 0;
+        Eigen::Index filter_context_samples = 0;
+        double native_sample_rate_hz =
+            std::numeric_limits<double>::quiet_NaN();
+        double effective_sample_rate_hz =
+            std::numeric_limits<double>::quiet_NaN();
+        int downsample_factor = 1;
+        bool simulated = false;
+        bool source_mask_admitted = false;
+        bool complete_response_available = false;
+        std::uint32_t signal_stage_bits = 0;
+        std::uint32_t response_stage_bits = 0;
+        std::uint32_t response_unavailable_cause_bits = 0;
+        std::size_t influenced_sample_count = 0;
+        std::vector<RTCInfluenceInterval> influence_intervals;
+        std::vector<std::string> fir_coefficients_hex;
+        std::vector<std::string> notch_a_coefficients_hex;
+        std::vector<std::string> notch_b_coefficients_hex;
+        std::string iir_highpass_alpha_hex;
+        int iir_highpass_order = 0;
+        bool notch_zero_phase = false;
+        bool iir_highpass_zero_phase = false;
+    };
+
+    struct RTCRealizedNotchCoefficients {
+        std::vector<std::string> a_hex;
+        std::vector<std::string> b_hex;
+
+        void append(const Filter &realized_filter) {
+            for (const auto &section : realized_filter.notch_a) {
+                for (Eigen::Index index = 0; index < section.size();
+                     ++index) {
+                    a_hex.push_back(
+                        RTCProc::rtc_hex_double(section(index)));
+                }
+            }
+            for (const auto &section : realized_filter.notch_b) {
+                for (Eigen::Index index = 0; index < section.size();
+                     ++index) {
+                    b_hex.push_back(
+                        RTCProc::rtc_hex_double(section(index)));
+                }
+            }
+        }
+    };
+
+    struct RTCProductProvenance {
+        std::string product_identity;
+        std::string stage_identity;
+        std::string parent_identity;
+        std::string process_identity;
+        std::string completion_identity;
+        std::string assigned_grid_identity;
+        std::string physical_event_semantics = "unavailable";
+        std::string product_kind;
+        std::string filepath;
+        Eigen::Index scan_id = -1;
+        Eigen::Index output_row = -1;
+        bool mini_output = false;
+        bool outer_output = false;
+        bool simulated = false;
+        bool complete = false;
+    };
+
+    struct RTCPhaseIndependentSnapshot {
+        std::string observation_scope;
+        std::vector<RTCStageProvenance> stages;
+        std::vector<RTCProductProvenance> products;
+    };
+
+    std::map<Eigen::Index, RTCAssignedGridSegment>
+        assigned_grid_segments_by_scan;
+    std::map<std::string, RTCStageProvenance> rtc_stage_provenance;
+    std::map<Eigen::Index, std::string> latest_stage_identity_by_scan;
+    std::map<Eigen::Index, std::string> outer_stage_identity_by_scan;
+    std::vector<RTCProductProvenance> rtc_product_provenance;
+    std::string rtc_observation_scope;
+    std::string rtc_process_label = "standard";
+    std::shared_ptr<std::mutex> rtc_phase_independent_mutex =
+        std::make_shared<std::mutex>();
+
+    static std::string rtc_hex_double(double value) {
+        std::ostringstream stream;
+        stream << std::hexfloat << value;
+        return stream.str();
+    }
+
+    static std::string rtc_identity(std::string_view kind,
+                                    const std::string &preimage) {
+        return std::string{kind} + ":sha256:" +
+               citlali::utils::sha256(preimage);
+    }
+
+    void reset_phase_independent_state() {
+        std::lock_guard<std::mutex> lock(*rtc_phase_independent_mutex);
+        assigned_grid_segments_by_scan.clear();
+        rtc_stage_provenance.clear();
+        latest_stage_identity_by_scan.clear();
+        outer_stage_identity_by_scan.clear();
+        rtc_product_provenance.clear();
+        rtc_observation_scope.clear();
+        rtc_process_label = "standard";
+    }
+
+    void set_phase_independent_process_label(std::string label) {
+        if (label.empty()) {
+            throw std::invalid_argument("RTC process label cannot be empty");
+        }
+        std::lock_guard<std::mutex> lock(*rtc_phase_independent_mutex);
+        rtc_process_label = std::move(label);
+    }
+
+    void bind_assigned_grid_segment(
+        Eigen::Index scan_id, Eigen::Index absolute_loaded_start,
+        Eigen::Index absolute_assigned_start,
+        Eigen::Index assigned_sample_count, Eigen::Index loaded_sample_count,
+        Eigen::Index detector_count, double native_sample_rate_hz,
+        int downsample_factor, bool simulated,
+        std::string observation_scope) {
+        if (scan_id < 0 || absolute_loaded_start < 0 ||
+            absolute_assigned_start < absolute_loaded_start ||
+            assigned_sample_count < 0 || loaded_sample_count < 0 ||
+            detector_count < 0 || !std::isfinite(native_sample_rate_hz) ||
+            native_sample_rate_hz <= 0.0 || downsample_factor <= 0 ||
+            observation_scope.empty()) {
+            throw std::invalid_argument(
+                "RTC assigned-grid segment is incomplete");
+        }
+        std::lock_guard<std::mutex> lock(*rtc_phase_independent_mutex);
+        if (rtc_observation_scope.empty()) {
+            rtc_observation_scope = observation_scope;
+        }
+        else if (rtc_observation_scope != observation_scope) {
+            assigned_grid_segments_by_scan.clear();
+            rtc_stage_provenance.clear();
+            latest_stage_identity_by_scan.clear();
+            outer_stage_identity_by_scan.clear();
+            rtc_product_provenance.clear();
+            rtc_observation_scope = observation_scope;
+            rtc_process_label = "standard";
+        }
+        std::ostringstream identity;
+        identity << assigned_grid_authority
+                 << "|observation=" << observation_scope
+                 << "|process=" << rtc_process_label
+                 << "|scan=" << scan_id
+                 << "|absolute_loaded_start=" << absolute_loaded_start
+                 << "|absolute_start=" << absolute_assigned_start
+                 << "|assigned_count=" << assigned_sample_count
+                 << "|loaded_count=" << loaded_sample_count
+                 << "|detectors=" << detector_count
+                 << "|native_rate_hz=" << std::hexfloat
+                 << native_sample_rate_hz
+                 << "|downsample_factor=" << downsample_factor
+                 << "|physical_event_semantics=unavailable";
+        RTCAssignedGridSegment segment;
+        segment.bound = true;
+        segment.scan_id = scan_id;
+        segment.absolute_loaded_start = absolute_loaded_start;
+        segment.absolute_assigned_start = absolute_assigned_start;
+        segment.assigned_sample_count = assigned_sample_count;
+        segment.loaded_sample_count = loaded_sample_count;
+        segment.detector_count = detector_count;
+        segment.native_sample_rate_hz = native_sample_rate_hz;
+        segment.downsample_factor = downsample_factor;
+        segment.simulated = simulated;
+        segment.observation_scope = std::move(observation_scope);
+        segment.process_label = rtc_process_label;
+        segment.assigned_grid_identity =
+            rtc_identity("rtc-assigned-grid", identity.str());
+        assigned_grid_segments_by_scan[scan_id] = std::move(segment);
+    }
+
+    RTCAssignedGridSegment require_assigned_grid_segment(
+        Eigen::Index scan_id, Eigen::Index loaded_sample_count,
+        Eigen::Index detector_count) const {
+        std::lock_guard<std::mutex> lock(*rtc_phase_independent_mutex);
+        const auto it = assigned_grid_segments_by_scan.find(scan_id);
+        if (it == assigned_grid_segments_by_scan.end() ||
+            !it->second.bound ||
+            it->second.loaded_sample_count != loaded_sample_count ||
+            it->second.detector_count != detector_count) {
+            throw std::logic_error(
+                "RTC assigned-grid context is missing or stale");
+        }
+        return it->second;
+    }
+
+    void publish_phase_independent_stage(RTCStageProvenance stage,
+                                         bool outer_stage = false) {
+        std::lock_guard<std::mutex> lock(*rtc_phase_independent_mutex);
+        if (outer_stage) {
+            outer_stage_identity_by_scan[stage.scan_id] =
+                stage.stage_identity;
+        }
+        else {
+            latest_stage_identity_by_scan[stage.scan_id] =
+                stage.stage_identity;
+        }
+        rtc_stage_provenance[stage.stage_identity] = std::move(stage);
+    }
+
+    RTCStageProvenance phase_independent_stage_for_scan(
+        Eigen::Index scan_id) const {
+        std::lock_guard<std::mutex> lock(*rtc_phase_independent_mutex);
+        const auto latest = latest_stage_identity_by_scan.find(scan_id);
+        if (latest == latest_stage_identity_by_scan.end()) {
+            throw std::logic_error("RTC stage identity is unavailable");
+        }
+        return rtc_stage_provenance.at(latest->second);
+    }
+
+    RTCProductProvenance make_phase_independent_product(
+        Eigen::Index scan_id, const std::string &filepath,
+        std::string product_kind, Eigen::Index output_row,
+        bool mini_output, bool outer_output) {
+        auto stage = phase_independent_stage_for_scan(scan_id);
+        if (outer_output) {
+            std::lock_guard<std::mutex> lock(*rtc_phase_independent_mutex);
+            const auto outer = outer_stage_identity_by_scan.find(scan_id);
+            if (outer == outer_stage_identity_by_scan.end()) {
+                throw std::logic_error(
+                    "RTC outer stage identity is unavailable");
+            }
+            stage = rtc_stage_provenance.at(outer->second);
+        }
+        const std::string canonical_path =
+            std::filesystem::path(filepath).filename().string();
+        RTCStageProvenance output_stage = stage;
+        output_stage.parent_identity = stage.stage_identity;
+        output_stage.stage_view = product_kind;
+        output_stage.stage_identity = rtc_identity(
+            "rtc-output-stage",
+            stage.stage_identity + "|kind=" + product_kind +
+                "|file=" + canonical_path +
+                "|mini=" + std::to_string(mini_output) +
+                "|outer=" + std::to_string(outer_output));
+        {
+            std::lock_guard<std::mutex> lock(*rtc_phase_independent_mutex);
+            rtc_stage_provenance[output_stage.stage_identity] =
+                output_stage;
+        }
+        RTCProductProvenance product;
+        product.stage_identity = output_stage.stage_identity;
+        product.parent_identity = stage.stage_identity;
+        product.process_identity = stage.process_identity;
+        product.assigned_grid_identity = stage.assigned_grid_identity;
+        product.product_kind = std::move(product_kind);
+        product.filepath = canonical_path;
+        product.scan_id = scan_id;
+        product.output_row = output_row;
+        product.mini_output = mini_output;
+        product.outer_output = outer_output;
+        product.simulated = stage.simulated;
+        product.complete = true;
+        const std::string product_preimage =
+            stage.observation_scope + "|kind=" + product.product_kind +
+            "|file=" + canonical_path +
+            "|mini=" + std::to_string(mini_output) +
+            "|outer=" + std::to_string(outer_output) +
+            "|simulated=" + std::to_string(stage.simulated);
+        product.product_identity =
+            rtc_identity("rtc-product", product_preimage);
+        product.completion_identity = rtc_identity(
+            "rtc-completion",
+            product.product_identity + "|stage=" +
+                output_stage.stage_identity +
+                "|scan=" + std::to_string(scan_id) +
+                "|row=" + std::to_string(output_row));
+        return product;
+    }
+
+    void record_phase_independent_product(RTCProductProvenance product) {
+        std::lock_guard<std::mutex> lock(*rtc_phase_independent_mutex);
+        const auto duplicate = std::find_if(
+            rtc_product_provenance.begin(), rtc_product_provenance.end(),
+            [&](const RTCProductProvenance &existing) {
+                return existing.completion_identity ==
+                       product.completion_identity;
+            });
+        if (duplicate != rtc_product_provenance.end()) {
+            throw std::logic_error("duplicate RTC product completion identity");
+        }
+        rtc_product_provenance.push_back(std::move(product));
+    }
+
+    RTCPhaseIndependentSnapshot snapshot_phase_independent_state() const {
+        std::lock_guard<std::mutex> lock(*rtc_phase_independent_mutex);
+        RTCPhaseIndependentSnapshot snapshot;
+        snapshot.observation_scope = rtc_observation_scope;
+        for (const auto &[identity, stage] : rtc_stage_provenance) {
+            (void)identity;
+            snapshot.stages.push_back(stage);
+        }
+        snapshot.products = rtc_product_provenance;
+        std::sort(
+            snapshot.products.begin(), snapshot.products.end(),
+            [](const RTCProductProvenance &lhs,
+               const RTCProductProvenance &rhs) {
+                return lhs.completion_identity < rhs.completion_identity;
+            });
+        return snapshot;
+    }
+
+    static void write_phase_independent_product_identity(
+        netCDF::NcFile &file, const RTCProductProvenance &product) {
+        file.putAtt("rtc_contract_version", "SCI-RTC-001-v1");
+        file.putAtt("rtc_product_identity", product.product_identity);
+        file.putAtt("rtc_process_identity", product.process_identity);
+        const std::string row_suffix =
+            "_row_" + std::to_string(product.output_row);
+        file.putAtt("rtc_stage_identity" + row_suffix,
+                    product.stage_identity);
+        file.putAtt("rtc_parent_identity" + row_suffix,
+                    product.parent_identity);
+        file.putAtt("rtc_completion_identity" + row_suffix,
+                    product.completion_identity);
+        file.putAtt("rtc_assigned_grid_authority",
+                    std::string{assigned_grid_authority});
+        file.putAtt("rtc_physical_event_semantics", "unavailable");
+        file.putAtt("rtc_product_kind", product.product_kind);
+        file.putAtt("rtc_simulated", product.simulated ? "true" : "false");
+    }
+
     // controls for timestream reduction
     bool run_timestream;
     bool run_pointing;
@@ -468,20 +1440,23 @@ public:
     // optionally apply a fixed census-derived RTC notch set before the residual dynamic audit
     template <typename tc_t>
     Eigen::Index apply_rtc_line_audit_fixed_notches(tc_t &, double fs_hz,
-                                                    const RTCLineAuditOptions &);
+                                                    const RTCLineAuditOptions &,
+                                                    RTCRealizedNotchCoefficients * = nullptr);
 
     // optionally apply chunk-level shared-line notches from the RTC line audit
     template <typename tc_t>
     Eigen::Index apply_rtc_line_audit_shared_notches(tc_t &, double fs_hz,
                                                      const RTCLineAuditOptions &,
-                                                     bool post_filter_stage = false);
+                                                     bool post_filter_stage = false,
+                                                     RTCRealizedNotchCoefficients * = nullptr);
 
     // optionally apply detector-local zero-phase notches from the available scan context
     template <typename tc_t>
     Eigen::Index apply_rtc_line_audit_detector_notches(tc_t &, double fs_hz,
                                                        const RTCLineAuditOptions &,
                                                        Eigen::Index diag_start_sample = 0,
-                                                       Eigen::Index diag_n_samples = -1);
+                                                       Eigen::Index diag_n_samples = -1,
+                                                       RTCRealizedNotchCoefficients * = nullptr);
 
     // configure and apply a standard flag guard around filtered scan edges
     void configure_filter_edge_guard(double fs_hz);
@@ -729,7 +1704,8 @@ template <typename tc_t>
 Eigen::Index RTCProc::apply_rtc_line_audit_fixed_notches(
     tc_t &in,
     double fs_hz,
-    const RTCLineAuditOptions &audit) {
+    const RTCLineAuditOptions &audit,
+    RTCRealizedNotchCoefficients *realized_coefficients) {
     if (!audit.enabled || !audit.fixed_notch_enabled ||
         !std::isfinite(fs_hz) || fs_hz <= 0.0) {
         return 0;
@@ -774,6 +1750,9 @@ Eigen::Index RTCProc::apply_rtc_line_audit_fixed_notches(
     fixed_notch_filter.iir(in.scans.data);
     if (run_kernel) {
         fixed_notch_filter.iir(in.kernel.data);
+    }
+    if (realized_coefficients != nullptr) {
+        realized_coefficients->append(fixed_notch_filter);
     }
 
     for (const auto &notch : applied_notches) {
@@ -861,6 +1840,222 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
     auto sl = in.scan_indices.data(1) - in.scan_indices.data(0) + 1;
     sl = std::max<Eigen::Index>(0, std::min<Eigen::Index>(sl, in.scans.data.rows() - si));
 
+    const auto assigned_segment = require_assigned_grid_segment(
+        in.index.data, in.scans.data.rows(), in.scans.data.cols());
+    if (assigned_segment.assigned_sample_count != sl ||
+        assigned_segment.absolute_assigned_start !=
+            in.scan_indices.data(0)) {
+        throw std::logic_error(
+            "RTC assigned-grid context does not match the inner scan");
+    }
+
+    RTCInfluenceLedger influence(in.scans.data.rows(),
+                                 in.scans.data.cols());
+    influence.mark_flagged(
+        in.flags.data, RTCInfluenceCause::input_ineligible);
+    influence.mark_nonfinite(in.scans.data);
+    RTCResponseParity response_parity;
+    RTCSourceMaskAdmission source_mask_admission;
+    RTCRealizedNotchCoefficients realized_notch_coefficients;
+    if (!run_kernel) {
+        response_parity.mark_unavailable(
+            RTCResponseUnavailableCause::response_missing);
+    }
+    if (run_calibrate || run_extinction) {
+        response_parity.mark_unavailable(
+            RTCResponseUnavailableCause::
+                conditioned_dependency_unrepresented);
+    }
+
+    auto make_stage_provenance = [&](const RTCInfluenceLedger &ledger,
+                                     const RTCResponseParity &parity,
+                                     std::string_view view) {
+        RTCStageProvenance stage;
+        stage.observation_scope = assigned_segment.observation_scope;
+        stage.process_label = assigned_segment.process_label;
+        stage.stage_view = std::string{view};
+        stage.parent_identity = assigned_segment.assigned_grid_identity;
+        stage.process_identity = rtc_identity(
+            "rtc-process", assigned_segment.observation_scope +
+                "|process=" + assigned_segment.process_label +
+                "|simulated=" +
+                std::to_string(assigned_segment.simulated));
+        stage.scan_id = assigned_segment.scan_id;
+        stage.absolute_assigned_start =
+            view == "outer" ? assigned_segment.absolute_loaded_start
+                            : assigned_segment.absolute_assigned_start;
+        stage.input_sample_count = in.scans.data.rows();
+        stage.output_sample_count = ledger.assigned_sample_count();
+        stage.detector_count = ledger.detector_count();
+        stage.inner_start = si;
+        stage.inner_sample_count = sl;
+        stage.filter_guard_samples = filter_edge_guard.guard_samples;
+        stage.filter_context_samples = filter_edge_guard.context_samples;
+        stage.native_sample_rate_hz = assigned_segment.native_sample_rate_hz;
+        stage.downsample_factor =
+            view == "outer" ? 1 : assigned_segment.downsample_factor;
+        stage.effective_sample_rate_hz =
+            assigned_segment.native_sample_rate_hz /
+            static_cast<double>(stage.downsample_factor);
+        stage.simulated = assigned_segment.simulated;
+        stage.source_mask_identity = source_mask_admission.identity;
+        stage.source_mask_frame = source_mask_admission.frame;
+        stage.source_mask_admission = std::string{
+            rtc_source_mask_admission_status_name(
+                source_mask_admission.status)};
+        stage.source_mask_reason = source_mask_admission.reason;
+        stage.source_mask_admitted = source_mask_admission.admitted();
+        stage.complete_response_available =
+            parity.complete_response_available();
+        stage.signal_stage_bits =
+            static_cast<std::uint32_t>(parity.signal_stages());
+        stage.response_stage_bits =
+            static_cast<std::uint32_t>(parity.response_stages());
+        stage.response_unavailable_cause_bits =
+            static_cast<std::uint32_t>(parity.unavailable_causes());
+        stage.influenced_sample_count =
+            ledger.influenced_sample_count();
+        stage.influence_intervals = ledger.intervals();
+        const auto &stage_time_data = view == "outer"
+            ? in.tel_data.data
+            : out.tel_data.data;
+        const auto assigned_time = stage_time_data.find("TelTime");
+        if (assigned_time == stage_time_data.end() ||
+            assigned_time->second.size() != stage.output_sample_count ||
+            !assigned_time->second.allFinite() ||
+            stage.output_sample_count <= 0) {
+            throw std::logic_error(
+                "RTC compatibility assigned-time values are unavailable");
+        }
+        std::ostringstream assigned_time_preimage;
+        assigned_time_preimage
+            << "ALIGN-ASSIGNED-TIME-COMPAT-001|semantics="
+            << assigned_time_semantics;
+        for (Eigen::Index index = 0;
+             index < assigned_time->second.size(); ++index) {
+            assigned_time_preimage
+                << "|value=" << rtc_hex_double(assigned_time->second(index));
+        }
+        stage.representative_assigned_time_hex =
+            rtc_hex_double(assigned_time->second(0));
+        stage.assigned_time_values_digest = rtc_identity(
+            "rtc-assigned-time-values", assigned_time_preimage.str());
+        if (run_tod_filter) {
+            for (Eigen::Index index = 0; index < filter.filter.size();
+                 ++index) {
+                stage.fir_coefficients_hex.push_back(
+                    rtc_hex_double(filter.filter(index)));
+            }
+        }
+        if (run_tod_filter && run_tod_notch) {
+            for (const auto &section : filter.notch_a) {
+                for (Eigen::Index index = 0; index < section.size(); ++index) {
+                    stage.notch_a_coefficients_hex.push_back(
+                        rtc_hex_double(section(index)));
+                }
+            }
+            for (const auto &section : filter.notch_b) {
+                for (Eigen::Index index = 0; index < section.size(); ++index) {
+                    stage.notch_b_coefficients_hex.push_back(
+                        rtc_hex_double(section(index)));
+                }
+            }
+        }
+        stage.notch_a_coefficients_hex.insert(
+            stage.notch_a_coefficients_hex.end(),
+            realized_notch_coefficients.a_hex.begin(),
+            realized_notch_coefficients.a_hex.end());
+        stage.notch_b_coefficients_hex.insert(
+            stage.notch_b_coefficients_hex.end(),
+            realized_notch_coefficients.b_hex.begin(),
+            realized_notch_coefficients.b_hex.end());
+        if (run_tod_iir_highpass) {
+            stage.iir_highpass_order = filter.iir_highpass_order;
+            stage.iir_highpass_zero_phase = filter.iir_highpass_zero_phase;
+        }
+        stage.notch_zero_phase =
+            (run_tod_filter && run_tod_notch)
+                ? filter.notch_zero_phase
+                : !realized_notch_coefficients.a_hex.empty();
+        if (run_tod_iir_highpass &&
+            filter.iir_highpass_freq_Hz > 0.0 &&
+            assigned_segment.native_sample_rate_hz > 0.0) {
+            const double dt = 1.0 / assigned_segment.native_sample_rate_hz;
+            const double rc = 1.0 /
+                (2.0 * pi * filter.iir_highpass_freq_Hz);
+            stage.iir_highpass_alpha_hex = rtc_hex_double(
+                rc / (rc + dt));
+        }
+        std::ostringstream grid;
+        grid << assigned_segment.assigned_grid_identity
+             << "|view=" << view
+             << "|output_samples=" << stage.output_sample_count
+             << "|factor=" << stage.downsample_factor
+             << "|phase=" << downsample_phase_label;
+        stage.assigned_grid_identity = rtc_identity(
+            "rtc-realized-assigned-grid", grid.str());
+        std::ostringstream identity;
+        identity << stage.parent_identity
+                 << "|process=" << stage.process_identity
+                 << "|view=" << view
+                 << "|grid=" << stage.assigned_grid_identity
+                 << "|signal_stages=" << stage.signal_stage_bits
+                 << "|response_stages=" << stage.response_stage_bits
+                 << "|response_unavailable="
+                 << stage.response_unavailable_cause_bits
+                 << "|assigned_time_values="
+                 << stage.assigned_time_values_digest
+                 << "|representative_assigned_time="
+                 << stage.representative_assigned_time_hex
+                 << "|representative_assigned_time_rule="
+                 << stage.representative_assigned_time_rule
+                 << "|assigned_time_semantics="
+                 << stage.assigned_time_semantics
+                 << "|physical_event_semantics="
+                 << stage.physical_event_semantics
+                 << "|edge_rule=" << stage.edge_rule
+                 << "|support_policy="
+                 << stage.influence_support_policy
+                 << "|operator_ordering=" << stage.operator_ordering
+                 << "|fir_normalization=" << stage.fir_normalization
+                 << "|downsample_normalization="
+                 << stage.downsample_normalization
+                 << "|fir_state_reset=" << stage.fir_state_reset
+                 << "|notch_state_reset=" << stage.notch_state_reset
+                 << "|iir_state_reset="
+                 << stage.iir_highpass_state_reset
+                 << "|notch_section_layout="
+                 << stage.notch_section_layout
+                 << "|source_mask=" << stage.source_mask_identity
+                 << "|source_mask_frame=" << stage.source_mask_frame
+                 << "|source_mask_admission="
+                 << stage.source_mask_admission
+                 << "|source_mask_timing_accuracy="
+                 << stage.source_mask_timing_accuracy
+                 << "|influenced=" << stage.influenced_sample_count;
+        for (const auto &interval : stage.influence_intervals) {
+            identity << "|interval=" << interval.detector << ':'
+                     << interval.first_assigned_sample << ':'
+                     << interval.last_assigned_sample << ':'
+                     << static_cast<std::uint32_t>(interval.causes);
+        }
+        for (const auto &value : stage.fir_coefficients_hex) {
+            identity << "|fir=" << value;
+        }
+        for (const auto &value : stage.notch_a_coefficients_hex) {
+            identity << "|notch_a=" << value;
+        }
+        for (const auto &value : stage.notch_b_coefficients_hex) {
+            identity << "|notch_b=" << value;
+        }
+        identity << "|iir_alpha=" << stage.iir_highpass_alpha_hex
+                 << "|iir_order=" << stage.iir_highpass_order
+                 << "|notch_zero_phase=" << stage.notch_zero_phase
+                 << "|iir_zero_phase=" << stage.iir_highpass_zero_phase;
+        stage.stage_identity = rtc_identity("rtc-stage", identity.str());
+        return stage;
+    };
+
     // calculate the polarization angle
     if (run_polarization) {
         polarization.calc_angle(in, calib);
@@ -923,9 +2118,24 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         despike_source_summary.radius_arcsec =
             despiker_local.source_protection_radius_arcsec;
         if (despiker_local.source_protection_enabled) {
+            source_mask_admission = admit_rtc_source_mask(
+                in, calib.apt, telescope.pixel_axes, map_grouping,
+                "map_center_radius",
+                despiker_local.source_protection_radius_arcsec);
+            if (!source_mask_admission.admitted()) {
+                throw std::runtime_error(
+                    "RTC source-mask admission failed closed: " +
+                    source_mask_admission.reason);
+            }
             auto [source_mask, source_info] = engine_utils::calc_source_protection_mask(
                 in, calib.apt, telescope.pixel_axes, map_grouping,
                 "map_center_radius", despiker_local.source_protection_radius_arcsec);
+            if (!source_info.valid ||
+                source_mask.rows() != in.scans.data.rows() ||
+                source_mask.cols() != in.scans.data.cols()) {
+                throw std::runtime_error(
+                    "RTC source-mask calculation did not preserve the admitted state");
+            }
             despike_source_summary.protected_samples =
                 static_cast<int>(source_info.protected_samples);
             despike_source_summary.total_samples =
@@ -974,6 +2184,16 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
             despiker_local.replace_spikes(in_scans, in_flags, calib.apt, start_index);
         }
 
+        influence.mark_flagged(
+            in.flags.data,
+            RTCInfluenceCause::replacement_or_synthesis);
+        if ((in.flags.data.array() == true).any()) {
+            response_parity.mark_unrepresented_signal_stage(
+                RTCResponseStage::replacement,
+                RTCResponseUnavailableCause::
+                    replacement_donor_mixing_unrepresented);
+        }
+
         {
             std::lock_guard<std::mutex> lock(*diag_summary_mutex);
             if (despike_source_summary.enabled) {
@@ -991,16 +2211,28 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
     Eigen::Index n_applied_line_audit_notches = 0;
     if (line_audit.enabled && line_audit.pre_filter_enabled) {
         n_applied_line_audit_notches +=
-            apply_rtc_line_audit_fixed_notches(in, telescope.fsmp, line_audit);
+            apply_rtc_line_audit_fixed_notches(
+                in, telescope.fsmp, line_audit,
+                &realized_notch_coefficients);
         capture_rtc_line_audit(in, calib, si, sl, line_audit, false);
         if (line_audit.apply_shared_notches) {
             n_applied_line_audit_notches +=
-                apply_rtc_line_audit_shared_notches(in, telescope.fsmp, line_audit, false);
+                apply_rtc_line_audit_shared_notches(
+                    in, telescope.fsmp, line_audit, false,
+                    &realized_notch_coefficients);
         }
         if (run_kernel && n_applied_line_audit_notches > 0) {
             log_kernel_matrix_diag(logger, "rtc after pre-filter line audit notches",
                                    in.kernel.data, in.index.data);
         }
+    }
+    if (n_applied_line_audit_notches > 0) {
+        influence.propagate_recursive_filter(true);
+        response_parity.mark_matched_stage(
+            RTCResponseStage::notch, run_kernel,
+            !run_kernel ||
+                (in.kernel.data.rows() == in.scans.data.rows() &&
+                 in.kernel.data.cols() == in.scans.data.cols()));
     }
 
     bool ran_tod_filter_stage = false;
@@ -1028,6 +2260,20 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
             }
             log_kernel_matrix_diag(logger, "rtc after tod filter", in.kernel.data, in.index.data);
         }
+        influence.propagate_fir(std::max<Eigen::Index>(0, filter.n_terms));
+        response_parity.mark_matched_stage(
+            RTCResponseStage::fir, run_kernel,
+            !run_kernel ||
+                (in.kernel.data.rows() == in.scans.data.rows() &&
+                 in.kernel.data.cols() == in.scans.data.cols()));
+        if (run_tod_notch) {
+            influence.propagate_recursive_filter(filter.notch_zero_phase);
+            response_parity.mark_matched_stage(
+                RTCResponseStage::notch, run_kernel,
+                !run_kernel ||
+                    (in.kernel.data.rows() == in.scans.data.rows() &&
+                     in.kernel.data.cols() == in.scans.data.cols()));
+        }
         ran_tod_filter_stage = true;
     }
 
@@ -1040,6 +2286,13 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
             filter.iir_highpass(in.kernel.data, telescope.fsmp);
             log_kernel_matrix_diag(logger, "rtc after highpass filter", in.kernel.data, in.index.data);
         }
+        influence.propagate_recursive_filter(
+            filter.iir_highpass_zero_phase);
+        response_parity.mark_matched_stage(
+            RTCResponseStage::iir_highpass, run_kernel,
+            !run_kernel ||
+                (in.kernel.data.rows() == in.scans.data.rows() &&
+                 in.kernel.data.cols() == in.scans.data.cols()));
         ran_tod_filter_stage = true;
     }
 
@@ -1047,7 +2300,11 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         in.status.tod_filtered = true;
     }
 
+    const auto flags_before_primary_edge_guard = in.flags.data;
     apply_filter_edge_guard(in, si, sl);
+    influence.mark_newly_flagged(
+        flags_before_primary_edge_guard, in.flags.data,
+        RTCInfluenceCause::incomplete_filter_edge);
     if (run_kernel) {
         log_kernel_matrix_diag(logger, "rtc after primary edge guard", in.kernel.data, in.index.data);
     }
@@ -1099,9 +2356,17 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
     if (post_line_audit.enabled && post_line_audit.post_filter_apply_detector_notches) {
         seed_rtc_detector_diag(in.index.data, in.scans.data.cols());
         const auto n_detector_notches =
-            apply_rtc_line_audit_detector_notches(in, telescope.fsmp, post_line_audit, si, sl);
+            apply_rtc_line_audit_detector_notches(
+                in, telescope.fsmp, post_line_audit, si, sl,
+                &realized_notch_coefficients);
         if (n_detector_notches > 0) {
             in.status.tod_filtered = true;
+            influence.propagate_recursive_filter(true);
+            response_parity.mark_matched_stage(
+                RTCResponseStage::notch, run_kernel,
+                !run_kernel ||
+                    (in.kernel.data.rows() == in.scans.data.rows() &&
+                     in.kernel.data.cols() == in.scans.data.cols()));
             if (run_kernel) {
                 log_kernel_matrix_diag(logger, "rtc after detector line audit notches",
                                        in.kernel.data, in.index.data);
@@ -1136,7 +2401,11 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                     std::max<Eigen::Index>(0, detector_guard_samples - pre_context),
                     std::max<Eigen::Index>(0, detector_guard_samples - post_context));
                 if (missing_guard > 0) {
+                    const auto flags_before_detector_guard = in.flags.data;
                     apply_filter_edge_guard(in, si, sl, missing_guard);
+                    influence.mark_newly_flagged(
+                        flags_before_detector_guard, in.flags.data,
+                        RTCInfluenceCause::incomplete_filter_edge);
                 }
             }
         }
@@ -1144,7 +2413,12 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
 
     if (tod_outer_output != nullptr) {
         *tod_outer_output = in;
+        publish_phase_independent_stage(
+            make_stage_provenance(influence, response_parity, "outer"),
+            true);
     }
+
+    RTCInfluenceLedger output_influence = influence.slice(si, sl);
 
     if (run_downsample) {
         logger->debug("downsampling data");
@@ -1201,6 +2475,14 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
             downsampler.downsample(in_kernel, out.kernel.data);
             log_kernel_matrix_diag(logger, "rtc output inner after downsample", out.kernel.data, in.index.data);
         }
+
+        output_influence =
+            output_influence.downsample_phase_zero(downsampler.factor);
+        response_parity.mark_matched_stage(
+            RTCResponseStage::downsample, run_kernel,
+            !run_kernel ||
+                (out.kernel.data.rows() == out.scans.data.rows() &&
+                 out.kernel.data.cols() == out.scans.data.cols()));
 
         in.status.downsampled = true;
     }
@@ -1261,7 +2543,9 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                 break;
             }
             const auto n_iter_notches =
-                apply_rtc_line_audit_shared_notches(out, post_filter_fs_hz, post_line_audit, true);
+                apply_rtc_line_audit_shared_notches(
+                    out, post_filter_fs_hz, post_line_audit, true,
+                    &realized_notch_coefficients);
             n_post_notches += n_iter_notches;
             if (n_iter_notches <= 0) {
                 break;
@@ -1269,6 +2553,12 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         }
         if (n_post_notches > 0) {
             out.status.tod_filtered = true;
+            output_influence.propagate_recursive_filter(true);
+            response_parity.mark_matched_stage(
+                RTCResponseStage::notch, run_kernel,
+                !run_kernel ||
+                    (out.kernel.data.rows() == out.scans.data.rows() &&
+                     out.kernel.data.cols() == out.scans.data.cols()));
             Eigen::Index post_guard_samples = 0;
             if (filter_edge_guard.apply_dynamic_notch) {
                 post_guard_samples =
@@ -1285,7 +2575,11 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                 post_guard_samples = std::max<Eigen::Index>(0, post_guard_samples);
             }
             if (post_guard_samples > 0) {
+                const auto flags_before_post_guard = out.flags.data;
                 apply_filter_edge_guard(out, 0, out.scans.data.rows(), post_guard_samples);
+                output_influence.mark_newly_flagged(
+                    flags_before_post_guard, out.flags.data,
+                    RTCInfluenceCause::incomplete_filter_edge);
             }
         }
     }
@@ -1306,6 +2600,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         capture_rtc_diagnostics(out, calib, true, true);
     }
 
+    const auto flags_before_event_masks = out.flags.data;
     if (network_step_mask.enabled) {
         apply_network_step_mask(out, calib);
     }
@@ -1313,7 +2608,21 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         apply_impulsive_coincidence_mask(out, calib);
     }
 
+    output_influence.mark_newly_flagged(
+        flags_before_event_masks, out.flags.data,
+        RTCInfluenceCause::post_filter_flagging);
+
     apply_altaz_destripe(out, calib);
+    if (altaz_destripe.enabled) {
+        response_parity.mark_unrepresented_signal_stage(
+            RTCResponseStage::altaz_projection,
+            RTCResponseUnavailableCause::projection_unrepresented);
+    }
+
+    output_influence.enforce_ineligible_flags(out.flags.data);
+    publish_phase_independent_stage(
+        make_stage_provenance(
+            output_influence, response_parity, "inner"));
 
     if (network_step_mask.enabled || impulsive_coincidence.enabled ||
         coherent_iq_mode_observer_enabled) {
@@ -2446,7 +3755,8 @@ template <typename tc_t>
 Eigen::Index RTCProc::apply_rtc_line_audit_shared_notches(tc_t &in,
                                                           double fs_hz,
                                                           const RTCLineAuditOptions &audit,
-                                                          bool post_filter_stage) {
+                                                          bool post_filter_stage,
+                                                          RTCRealizedNotchCoefficients *realized_coefficients) {
     if (!audit.enabled || !audit.apply_shared_notches ||
         !std::isfinite(fs_hz) || fs_hz <= 0.0) {
         return 0;
@@ -2818,6 +4128,9 @@ Eigen::Index RTCProc::apply_rtc_line_audit_shared_notches(tc_t &in,
     if (run_kernel) {
         dynamic_notch_filter.iir(in.kernel.data);
     }
+    if (realized_coefficients != nullptr) {
+        realized_coefficients->append(dynamic_notch_filter);
+    }
 
     for (auto &row : nw_summary) {
         auto diag = get_line_audit_diag(row);
@@ -2886,7 +4199,8 @@ Eigen::Index RTCProc::apply_rtc_line_audit_detector_notches(tc_t &in,
                                                             double fs_hz,
                                                             const RTCLineAuditOptions &audit,
                                                             Eigen::Index diag_start_sample,
-                                                            Eigen::Index diag_n_samples) {
+                                                            Eigen::Index diag_n_samples,
+                                                            RTCRealizedNotchCoefficients *realized_coefficients) {
     if (!audit.enabled || !audit.post_filter_apply_detector_notches ||
         !std::isfinite(fs_hz) || fs_hz <= 0.0) {
         return 0;
@@ -3438,6 +4752,9 @@ Eigen::Index RTCProc::apply_rtc_line_audit_detector_notches(tc_t &in,
         in.scans.data.col(det) = filtered_scan_col.col(0);
         if (has_kernel) {
             in.kernel.data.col(det) = filtered_kernel_col.col(0);
+        }
+        if (realized_coefficients != nullptr) {
+            realized_coefficients->append(detector_notch_filter);
         }
         diag.detector_notch_rms_after =
             robust_rms(in.scans.data.col(det), valid, diag_start_sample, diag_n_samples);
@@ -5459,6 +6776,10 @@ void RTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in
                                     Eigen::Index scan_row_index) {
     using netCDF::NcFile;
     using namespace netCDF::exceptions;
+    auto product = make_phase_independent_product(
+        in.index.data, filepath, "rtc_diagnostic",
+        scan_row_index >= 0 ? scan_row_index : in.index.data,
+        false, false);
 
     try {
         capture_rtc_diagnostics(in, calib, true, true);
@@ -5467,10 +6788,12 @@ void RTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in
         std::lock_guard<std::mutex> lock(predefs::netcdf_io_mutex());
         NcFile fo(filepath, netCDF::NcFile::write);
         write_cached_diagnostics_to_netcdf(fo, in, calib, scan_row_index);
+        write_phase_independent_product_identity(fo, product);
         fo.sync();
         fo.close();
 
         logger->info("rtc diagnostics sidecar chunk written to {}", filepath);
+        record_phase_independent_product(std::move(product));
     } catch (NcException &e) {
         logger->error(
             "required RTC diagnostics write failed; partial output may remain at {}: {}",
@@ -5485,6 +6808,11 @@ void RTCProc::append_to_netcdf(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, std
                                bool apply_det_offsets, Eigen::Index scan_row_index, bool mini_output) {
     using netCDF::NcFile;
     using namespace netCDF::exceptions;
+    auto product = make_phase_independent_product(
+        in.index.data, filepath,
+        mini_output ? "rtc_outer_mini" : "rtc_outer_full",
+        scan_row_index >= 0 ? scan_row_index : in.index.data,
+        mini_output, true);
 
     try {
         predefs::suppress_hdf5_diagnostics_for_this_thread();
@@ -5493,11 +6821,13 @@ void RTCProc::append_to_netcdf(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, std
 
         append_base_to_netcdf(fo, in, map_grouping, pixel_axes, pointing_offsets_arcsec, calib, apply_det_offsets,
                               scan_row_index, true, mini_output);
+        write_phase_independent_product_identity(fo, product);
 
         fo.sync();
         fo.close();
 
         logger->info("outer tod chunk written to {}", filepath);
+        record_phase_independent_product(std::move(product));
 
     } catch (NcException &e) {
         logger->error(
@@ -5513,6 +6843,11 @@ void RTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
                                bool apply_det_offsets, Eigen::Index scan_row_index, bool mini_output) {
     using netCDF::NcFile;
     using namespace netCDF::exceptions;
+    auto product = make_phase_independent_product(
+        in.index.data, filepath,
+        mini_output ? "rtc_inner_mini" : "rtc_inner_full",
+        scan_row_index >= 0 ? scan_row_index : in.index.data,
+        mini_output, false);
 
     try {
         capture_rtc_diagnostics(in, calib, true, true);
@@ -5526,6 +6861,7 @@ void RTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         append_base_to_netcdf(fo, in, map_grouping, pixel_axes, pointing_offsets_arcsec, calib, apply_det_offsets,
                               scan_row_index, false, mini_output);
         write_cached_diagnostics_to_netcdf(fo, in, calib, scan_row_index);
+        write_phase_independent_product_identity(fo, product);
 
         // sync file to make sure it gets updated
         fo.sync();
@@ -5533,6 +6869,7 @@ void RTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
         fo.close();
 
         logger->info("tod chunk written to {}", filepath);
+        record_phase_independent_product(std::move(product));
 
     } catch (NcException &e) {
         logger->error(
