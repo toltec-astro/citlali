@@ -21,8 +21,17 @@ The pushed canonical application mainline is
 `46ad23888a40f5102cdfd50c06e49a549bdf8a20`. `SCI-MAP-001` and
 `SCI-NOI-002` are integrated only within the bounded contracts, limitations,
 and `existing_use_only` restrictions recorded on that exact application line.
-CAL and MAP-002 repairs are active from that base; no result from either active
-task is admitted by this checkpoint.
+CAL retains its separately recorded bounded state. The MAP-002 third successor
+`86f1582fad92bdd0453bca3264ce39478b00c227` is independently re-audited at
+`a70424a69365d7ed20fb39c45bc6334cc9e7bafe` and
+[owner-accepted](packages/SCI-MAP-002_THIRD_SUCCESSOR_OWNER_ACCEPTANCE_2026-08-09.md)
+for the bounded repair findings only. Its axes are `approved`, `conformant`,
+`complete`, and `existing_use_only`, with verdict `accept`; no application
+merge, production expansion, Unity/reduction, BEAM, or downstream launch is
+authorized. The exact imported
+[re-audit report](packages/SCI-MAP-002_THIRD_SUCCESSOR_REAUDIT_2026-08-09.md)
+has SHA-256
+`fe07901504ad26916cab2c5589f452b1873c11ef215239653ed938f45eefd4d5`.
 
 ALIGN/3C273 evidence remains owner-managed and active, while AST repair waits
 for an accepted and re-audited ALIGN successor. The RTC audit at
@@ -613,7 +622,7 @@ package but does not define their estimators.
 | `SCI-RTC-001` | B | Mature RTC filtering/conditioning interface and temporal response | exact assigned-grid compatibility plus conditioned CAL/AST seams | Phase-independent repair handoff ready; not launched |
 | `SCI-PTC-001` | B | Mature correlated-mode cleaning, selection, and detector-weight interface | `SCI-RTC-001`, identified assigned grid; physical event timing unavailable | D001--D003 approved; D004--D006 pending; repair and optional response characterization unlaunched |
 | `SCI-VAL-001` | A | Cross-stage flags, detector/sample eligibility, non-finite policy, and map support | `SCI-ALIGN-001`, `SCI-RTC-001`, `SCI-PTC-001` | Foundation wave 2 |
-| `SCI-MAP-002` | B | Mature JINC gridding interface, normalization, support, and response | approved/shared `SCI-MAP-001` product contract | Map successor wave |
+| `SCI-MAP-002` | B | Mature JINC gridding interface, normalization, support, and response | approved/shared `SCI-MAP-001` product contract | Third successor owner-accepted `accept`; bounded findings closed; `existing_use_only`; no merge or downstream launch |
 | `SCI-NOI-001` | A | Jackknife/noise randomization and propagation through selected operators | `SCI-PTC-001`, `SCI-VAL-001`, `SCI-MAP-001` | Uncertainty wave 3 |
 | `SCI-NOI-002` | A | Empirical variance/covariance, global calibration, statistical weight, and S/N semantics | `SCI-NOI-001`, `SCI-MAP-001` | Uncertainty wave 3 |
 | `SCI-FLT-001` | A | Fixed map-domain `convolve` signal, uncertainty, response, and support | `SCI-MAP-001`, `SCI-NOI-002`, `SCI-CAL-001` | Existing audit; amend/re-audit wave 4 |

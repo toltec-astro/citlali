@@ -34,7 +34,7 @@ or dependency claim is inferred from those integrations.
 | Lane | Current bounded state | Next gate |
 | --- | --- | --- |
 | `SCI-CAL-001` | Repair active from exact base `46ad2388...`; no active-task result is admitted here. | Accepted, independently re-audited, and integrated successor. |
-| `SCI-MAP-002` | Repair active from exact base `46ad2388...`; no active-task result is admitted here. | Bounded repair return and fresh re-audit. |
+| `SCI-MAP-002` | Third successor `86f1582...` independently re-audited at `a70424a...` and owner-accepted with axes `approved` / `conformant` / `complete` / `existing_use_only`, verdict `accept`; bounded findings only are closed and no merge is authorized. | Separate owner decision for any application integration or production change; BEAM and downstream work remain held. |
 | `SCI-ALIGN-001` | Owner-managed ALIGN/3C273 evidence remains active and deliberately slow. | Frozen returned evidence and coordinator review. |
 | `SCI-TEL-INPUT-001` | Audit `518e0ccb...` owner-accepted with axes `proposed` / `nonconformant` / `bounded_incomplete` / `existing_use_only`, verdict `amend`; F001--F010 remain open and TolTECA remains read-only. | Separate later owner decision on repair scope and ownership; no repair or re-audit is authorized. |
 | `SCI-AST-001` | Repair remains held. | Accepted and re-audited ALIGN successor, then exact AST repair-base selection. |
@@ -57,6 +57,27 @@ Its paired planning sources are Citlali
 `origin/main` commit `2791e6a1e6349ad1d3ac549a648f41cbc51b98c7`.
 The completed audit preserved ALIGN observations as post-core evidence and
 did not admit them as physical timing authority.
+
+## Accepted SCI-MAP-002 third-successor disposition — 2026-08-09
+
+The owner accepted application candidate
+`86f1582fad92bdd0453bca3264ce39478b00c227` (parent
+`02f443bfeb85f3b2e12a6eff60f3a77e77fe342c`, tree
+`f655e96daa578bd77c9b16528c3aaadf882ee80d`) after independent re-audit
+commit `a70424a69365d7ed20fb39c45bc6334cc9e7bafe` (parent equal to the
+candidate, tree `35ff97e9d2a615d85145249f5782fc16fcb62e65`). The exact imported
+[re-audit report](SCI-MAP-002_THIRD_SUCCESSOR_REAUDIT_2026-08-09.md) has
+SHA-256
+`fe07901504ad26916cab2c5589f452b1873c11ef215239653ed938f45eefd4d5`;
+the [owner acceptance](SCI-MAP-002_THIRD_SUCCESSOR_OWNER_ACCEPTANCE_2026-08-09.md)
+records the canonical disposition.
+
+RA-001, RA-003, and RA-004 are closed and preserved; RA-002 and RA-005 are
+closed. Contract is `approved`, implementation `conformant`, validation
+`complete`, production `existing_use_only`, and verdict `accept`. This closes
+only the bounded SCI-MAP-002 repair findings. It does not merge or push the
+candidate, expand production, authorize Unity or reductions, launch BEAM or
+other downstream work, or authorize an external campaign.
 
 ## ALIGN-deferred compatibility amendment — 2026-08-09
 

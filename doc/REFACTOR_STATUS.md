@@ -183,6 +183,30 @@ and the immutable audit remain unchanged; D004--D006 remain unresolved. No
 repair, Unity, reduction, MAP/BEAM/downstream work, re-audit, production
 change, external contact, or push is authorized.
 
+## 2026-08-09 SCI-MAP-002 Third-Successor Acceptance
+
+The owner accepted the bounded SCI-MAP-002 third-successor disposition for
+application candidate `86f1582fad92bdd0453bca3264ce39478b00c227` (parent
+`02f443bfeb85f3b2e12a6eff60f3a77e77fe342c`, tree
+`f655e96daa578bd77c9b16528c3aaadf882ee80d`) and independent re-audit
+`a70424a69365d7ed20fb39c45bc6334cc9e7bafe` (tree
+`35ff97e9d2a615d85145249f5782fc16fcb62e65`). The exact
+[re-audit report](audits/packages/SCI-MAP-002_THIRD_SUCCESSOR_REAUDIT_2026-08-09.md)
+is preserved at SHA-256
+`fe07901504ad26916cab2c5589f452b1873c11ef215239653ed938f45eefd4d5`,
+and the
+[owner acceptance](audits/packages/SCI-MAP-002_THIRD_SUCCESSOR_OWNER_ACCEPTANCE_2026-08-09.md)
+records the bounded authority.
+
+RA-001, RA-003, and RA-004 are closed and preserved; RA-002 and RA-005 are
+closed. The canonical axes are contract `approved`, implementation
+`conformant`, validation `complete`, production `existing_use_only`, and
+verdict `accept`. This closes only the bounded MAP-002 repair findings and
+does not broaden estimator, JINC, Beammap, RTC/PTC science, configuration
+policy, product schema, or architecture. It does not merge or push the
+candidate, expand production, authorize Unity or reductions, launch BEAM or
+downstream work, or authorize an external campaign.
+
 ## Current Integration Model
 
 As of 2026-07-31, `codex/refactor-mainline` is the canonical application
