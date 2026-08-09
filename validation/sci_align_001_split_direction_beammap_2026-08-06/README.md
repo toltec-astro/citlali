@@ -218,16 +218,26 @@ limitations, and proposed smallest local follow-up are recorded in
 The approved local-only follow-up compares all stable networks in the three
 successful enhanced maps sharing frozen T0-vector group
 `roach-t0:44cf69da97d473965ef6`. The map-pair residuals after the fixed
-minus-one-slot prediction have unique, transitive modal states on the
-4.096-ms half-cadence lattice: 148670 = 0, 150819 = -3, and 151126 = -2.
+minus-one-slot prediction have a unique transitive assignment of pairwise
+modal nearest-half-cadence labels, up to a common additive offset: 148670 = 0,
+150819 = -3, and 151126 = -2 in 4.096-ms label units. This is compatible with
+or favors a common map-level acquisition/timestamp-semantics state; it does
+not identify one.
 Native phase changes are only tens of microseconds, every delivered
 PPS/PpsTime transition association remains same-row, and anomaly-free network
-controls retain the common timing bands. This disfavors native phase, the
+controls retain the common timing bands. Each pair has six clean controls; the
+fixed three-map intersection is networks 0, 4, 7, 11, and 12, and four of
+those five retain +1 for 150819 to 151126. This disfavors native phase, the
 measured slot residual alone, and delivered PPS increment anomalies as the
-primary explanation within this frozen group. It does not establish the
-upstream timestamp event, an FPGA association, a universal state, or a timing
-correction. Exact identities, limitations, and the bounded next owner decision
-are recorded in `SAME_T0_CADENCE_LATTICE_EVIDENCE_2026-08-08.md`.
+primary explanation within this frozen group. Only 23/33 records fall within
+the 1.96 diagonal-SE half-cadence envelope; covariance is unavailable, only
+three maps are in scope, and the half lattice nests the full lattice. The RMS
+comparison is descriptive, not formal model selection. The result does not
+establish the upstream timestamp event, hardware versus non-hardware origin,
+a universal state, or a timing correction. Exact identities, limitations,
+the bounded acquisition-boundary recommendation, and the orthogonal pending
+20-ms TolTECA/telescope-ingress audit are recorded in
+`SAME_T0_CADENCE_LATTICE_EVIDENCE_2026-08-08.md`.
 
 See `UNITY_RUNBOOK.md` for the owner-run 150819-first campaign and
 `RETURN_BUNDLE_SPEC.md` for return evidence.

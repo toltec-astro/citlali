@@ -17,12 +17,14 @@
 | 148670 | 151126 | -8.444458 | 0.023753 | -8.270742 | 0.657737 | 0.657737 | -2 | 11/11 | 8/11 | 8/11 |
 | 150819 | 151126 | 6.843495 | 0.014610 | 3.248104 | 3.295119 | 0.908390 | +1 | 10/11 | 0/11 | 7/11 |
 
-## Transitive half-cadence state check
+## Transitive assignment of modal nearest-half-cadence labels
 
 Reference observation: 148670.
-Map states in 4.096-ms units: `{"148670": 0, "150819": -3, "151126": -2}`.
+Unique transitive assignment, up to a common additive offset, in 4.096-ms label units: `{"148670": 0, "150819": -3, "151126": -2}`.
 All pair modes unique: true.
 Pair modes transitive: true.
+
+This label assignment is compatible with a common map-level acquisition or timestamp-semantics state; it does not identify one.
 
 Association classes: `{"same_row_only": 33}`.
 
@@ -32,6 +34,10 @@ Delivered association-class changes across pairs: 0.
 Increment-anomaly-class changes across pairs: 12.
 Records with observed variable metadata latency: 0.
 
+Each map pair has six networks that are anomaly-free in both maps. The fixed three-map intersection is networks 0, 4, 7, 11, and 12; four of those five retain the +1 label for 150819 to 151126, while network 12 has label 0.
+
+Only 23/33 pairwise records lie within the 1.96 diagonal-SE half-cadence envelope. Covariance is unavailable, only three maps are in scope, and the half-cadence lattice nests the full-cadence lattice. The lower half-lattice RMS is therefore descriptive rather than formal model selection.
+
 ## Interpretation boundary
 
-This is a descriptive comparison of delivered compact evidence. Diagonal timing SE is not cross-map covariance. Same-row delivered PPS/PpsTime pairing does not prove FPGA metadata-to-integration association. A common start/end/centroid convention cancels in pairwise differences. No result authorizes a timing correction.
+This is a descriptive comparison of delivered compact evidence. Diagonal timing SE is not cross-map covariance. Same-row delivered PPS/PpsTime pairing does not prove FPGA metadata-to-integration association. Hardware and non-hardware producer, timestamp-construction, and map-varying event-semantics explanations remain open. A common start/end/centroid convention cancels in pairwise differences. The orthogonal 20-ms TolTECA/telescope-ingress audit remains pending. No result authorizes a timing correction.

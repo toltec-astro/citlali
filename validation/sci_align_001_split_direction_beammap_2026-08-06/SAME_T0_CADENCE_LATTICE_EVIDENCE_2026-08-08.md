@@ -39,7 +39,7 @@ role, the common T0-vector group, cadence identity, stable map/network keys,
 and exact agreement among the retained timing/phase tables before writing an
 output directory.
 
-## Preregistered comparison
+## Comparison pre-specified before result inspection
 
 For each stable network and ordered map pair, the diagnostic computes:
 
@@ -52,8 +52,11 @@ For each stable network and ordered map pair, the diagnostic computes:
 - delivered PPS/PpsTime transition-association class;
 - PPS-time increment-anomaly class.
 
-Timing standard errors are combined diagonally only. They are descriptive
-because cross-map and cross-network covariance is unavailable.
+Timing standard errors are combined diagonally only. Cross-map and
+cross-network covariance is unavailable. The comparison contains only three
+maps, and the half-cadence lattice nests the full-cadence lattice. Therefore
+the envelope counts and RMS values below are descriptive checks, not formal
+model selection or independent-record inference.
 
 ## Results
 
@@ -65,17 +68,22 @@ All 33 map/network records and all 33 pairwise records were retained.
 | 148670 | 151126 | -8.444458 | 0.023753 | -8.270742 | -2 | 11/11 | 0.657737 |
 | 150819 | 151126 | +6.843495 | 0.014610 | +3.248104 | +1 | 10/11 | 0.908390 |
 
-The modal half-cadence indices are transitive. Taking ObsNum 148670 as zero,
-the unique map-level assignment is:
+The modal nearest-half-cadence labels are transitive. Up to a common additive
+offset, their unique transitive assignment is represented by taking ObsNum
+148670 as zero:
 
 - 148670: 0 half steps;
 - 150819: -3 half steps;
 - 151126: -2 half steps.
 
-Those states predict all three pair modes: -3, -2, and +1. The first two modes
-have 11/11 network support; the last has 10/11, with network 12 assigned to
-the neighboring zero index. Across all pairwise records, the half-cadence
-remainder RMS is 0.868 ms, compared with 2.733 ms on the full-cadence lattice.
+Those assigned labels reproduce all three pair modes: -3, -2, and +1. The
+first two modes have 11/11 network support; the last has 10/11, with network
+12 assigned to the neighboring zero index. Across all pairwise records, the
+half-cadence remainder RMS is 0.868 ms, compared with 2.733 ms on the
+full-cadence lattice. Only 23/33 records lie within the 1.96 diagonal-SE
+half-cadence envelope. Because covariance is unavailable and the half-cadence
+lattice contains every full-cadence point, the lower RMS is descriptive and
+does not by itself prefer a physical half-cadence model.
 
 Native phase is nearly unchanged compared with the timing displacement: the
 overall median absolute pairwise native-phase change is 0.0167 ms, while the
@@ -86,30 +94,39 @@ predict the map-to-map timing bands.
 All 33 delivered PPS/PpsTime transition associations are `same_row_only`,
 with no association-class change and no retained variable-latency flag.
 Increment-anomaly classes do change: 24 records are anomaly-free, eight are
-mixed isolated/consecutive, and one is consecutive-only. The same timing
-bands remain in the six networks that are anomaly-free on both sides of every
-map pair. Therefore the retained increment anomalies do not track the effect.
+mixed isolated/consecutive, and one is consecutive-only. Each pair has six
+networks that are anomaly-free in both maps. The fixed anomaly-free
+intersection across all three maps is five networks: 0, 4, 7, 11, and 12.
+Four of those five retain the modal +1 label in the 150819-to-151126 pair;
+network 12 has the neighboring zero label. The persistence in these controls
+strongly disfavors the retained increment anomalies as the primary cause, but
+does not make the records statistically independent.
 
 ## Falsified or strongly disfavored within this scope
 
 - A stable network-dependent native detector-frame phase, by itself, cannot
   explain the several-millisecond map-to-map timing changes in this same-T0
   group.
-- The preregistered fixed minus-one-slot relation using the measured
-  native-to-assigned-slot residual is not sufficient; its residual is not
-  centered near zero.
+- The fixed minus-one-slot relation pre-specified before result inspection,
+  using the measured native-to-assigned-slot residual, is not sufficient; its
+  residual is not centered near zero.
 - Delivered PPS-time increment anomalies are strongly disfavored as the
   primary cause because anomaly-free controls retain the same common bands.
 - A change in the delivered same-row versus adjacent-row PPS/PpsTime
   transition class cannot explain these three maps; that class is unchanged.
-- A single full-cadence-only lattice is a poorer description than the
-  half-cadence lattice for the pairs involving ObsNum 150819.
+- A single full-cadence-only lattice is descriptively poorer than the
+  half-cadence lattice for the pairs involving ObsNum 150819; this is not
+  formal model selection.
 
 ## Retained hypotheses and limits
 
-The transitive half-cadence result favors a map-level acquisition or timestamp
-semantics state after accounting for the measured network slot residual. It
-does not identify that state's physical origin. In particular:
+The unique transitive assignment of pairwise modal nearest-half-cadence labels,
+up to a common additive offset, is compatible with and favors a common
+map-level acquisition or timestamp-semantics state after accounting for the
+measured network slot residual. It does not identify such a state or its
+physical origin. Non-hardware alternatives, including producer/software
+association and map-varying timestamp semantics, remain in scope. In
+particular:
 
 - Stage-A lineage begins at the delivered raw detector-data/timestamp pair and
   cannot exclude FPGA-level metadata-to-integration association;
@@ -131,10 +148,15 @@ semantics audit for these exact three maps and networks. The audit should test
 whether detector samples, internal-clock counter, PPS counter, and their
 delivered timestamp can change association by an integer or half cadence
 between initializations while preserving the already frozen identities. It
-should begin with existing raw/counter evidence and producer documentation;
-it should not launch a reduction, modify Citlali, or fit a correction. If the
-required acquisition-level artifact or source is unavailable, that absence
-should be the explicit stopping result.
+should test hardware and non-hardware explanations without privileging either:
+FPGA metadata-to-integration association if evidence exists, host/producer
+counter association, timestamp construction, and map-varying start/end/
+centroid semantics. It should begin with existing raw/counter evidence and
+producer documentation; it should not launch a reduction, modify Citlali, or
+fit a correction. If the required acquisition-level artifact or source is
+unavailable, that absence should be the explicit stopping result.
 
-The separate bounded telescope-ingress amendment remains pending owner
-authorization and is not launched or resolved by this note.
+The orthogonal bounded 20-ms TolTECA/telescope-ingress audit remains pending
+owner authorization. It should retain its separate raw-to-recomputed row,
+timestamp-semantics, and provenance questions and is neither launched nor
+resolved by this note.
