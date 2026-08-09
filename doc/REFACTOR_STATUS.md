@@ -132,6 +132,16 @@ proceed only under later separate launches against the identified assigned
 grid, with physical timing and absolute placement unavailable. CAL and MAP
 retain their already approved bounded scopes; BEAM remains held.
 
+Remote preservation now records CAL successor-2 candidate
+`8b1534807f5abe4d80be2fbd45ed3838ed351509` at
+`origin/codex/repair-sci-cal-001-successor-2` and the ALIGN producer-authority
+request `1d682ee78ca5d85bd30673783a978265bd01048c` at
+`origin/codex/sci-align-001-producer-event-semantics-request`. The former is
+the already completed/re-audited candidate, not new closure or a new audit
+target. The latter preserves the request only; producer evidence remains
+unsupplied and unaccepted. Neither ref authorizes launch, repair, re-audit, or
+production change.
+
 Tier B remains valid only while the product consumes AST's coordinate-
 transformation authority and ALIGN's resampling authority. An observed row
 displacement, unresolved source association, temporal/astrometric response,

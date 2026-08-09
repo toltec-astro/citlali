@@ -92,6 +92,22 @@ The owner-mediated producer-authority evidence request remains read-only and
 pending return. `08f0a673...` is not physical integration-event
 identification and supplies no timing correction or prior.
 
+Remote preservation verified on 2026-08-09:
+
+- `origin/codex/repair-sci-cal-001-successor-2` is exactly
+  `8b1534807f5abe4d80be2fbd45ed3838ed351509` (parent
+  `7894346a91fa78ceb2a8b3d625335f466e5e1756`, tree
+  `ae205d935454b869412b214f34744224a31f8e7b`). This is the already completed
+  and re-audited CAL successor-2 candidate. The ref preservation is not a new
+  post-decision successor, audit launch, closure, integration, or production
+  authority.
+- `origin/codex/sci-align-001-producer-event-semantics-request` is exactly
+  `1d682ee78ca5d85bd30673783a978265bd01048c` (parent
+  `08f0a6733d1cb523ae78ccf9348ac6832b834e52`, tree
+  `58390255aff30492cd58c753ded87cc03130a485`). This preserves the authorized
+  producer-authority request remotely; it is not returned producer evidence,
+  physical-state identification, a correction, or acceptance.
+
 ## Exact post-core PTC/VAL routing
 
 Queue ID: `ALIGN-3C273-PTC-VAL-POSTCORE-2026-08-08`
