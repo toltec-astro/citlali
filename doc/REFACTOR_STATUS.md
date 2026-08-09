@@ -93,6 +93,33 @@ ordinary AST audit/handoffs and ALIGN phase-zero return applies only to their
 existing package records; it is not approval of D005, D006, a composition
 schema/registry change, or the closure pilot.
 
+## 2026-08-08 SCI-TEL-INPUT-001 Product Registration
+
+The project owner registered `SCI-TEL-INPUT-001`, **Telescope-file preparation,
+row identity, and Citlali ingress**, as a Tier B audit -> bounded
+repair -> independent re-audit product. The package spans the operational
+TolTECA raw `tel*.nc` to `*_recomputed.nc` producer boundary and Citlali
+telescope-file admission. It owns file association, raw/derived identity,
+one-to-one row and timestamp preservation, allowed NetCDF mutation, stale or
+partial cache rejection, and the ingress validity/provenance facts required by
+downstream consumers.
+
+ALIGN retains telescope-to-detector-grid mapping and scan/gap semantics; AST
+retains coordinate-transform scientific correctness; ENG-STATE retains the
+general lifecycle/provenance contract; and VAL retains downstream eligibility.
+The acquisition-counter/PPS event-semantics investigation remains orthogonal.
+The exact
+[registration record](audits/packages/SCI-TEL-INPUT-001_PRODUCT_REGISTRATION_2026-08-08.md)
+does not launch the audit, authorize TolTECA or Citlali edits, request Unity,
+approve a timing correction, or begin repair or re-audit. Production remains
+`existing_use_only` pending the full role-separated lifecycle.
+
+Tier B remains valid only while the product consumes AST's coordinate-
+transformation authority and ALIGN's resampling authority. An observed row
+displacement, unresolved source association, temporal/astrometric response,
+unit/frame mismatch, or need to adjudicate event semantics, formula,
+uncertainty, or response promotes the package to Tier A before continuing.
+
 ## Current Integration Model
 
 As of 2026-07-31, `codex/refactor-mainline` is the canonical application

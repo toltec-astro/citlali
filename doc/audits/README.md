@@ -59,6 +59,18 @@ bounded package, explicit dependencies, role separation, a frozen manifest,
 resource allocation, and the scope/cost checkpoints below. Repair debt,
 consumer restrictions, and concurrent scope are actively controlled.
 
+### Registered cross-repository telescope-ingress product
+
+On 2026-08-08 the project owner registered `SCI-TEL-INPUT-001`, **Telescope-
+file preparation, row identity, and Citlali ingress**, as a Tier B
+audit -> bounded repair -> independent re-audit product. It covers the
+operational TolTECA raw `tel*.nc` to `*_recomputed.nc` producer boundary and
+Citlali telescope-file admission while preserving ALIGN, AST, ENG-STATE, and
+VAL ownership of their adjacent contracts. The
+[product registration](packages/SCI-TEL-INPUT-001_PRODUCT_REGISTRATION_2026-08-08.md)
+does not dispatch the audit, authorize TolTECA or Citlali edits, request Unity,
+or approve a timing correction. Existing use remains `existing_use_only`.
+
 ## Purpose and non-goals
 
 The program exists to make the claimed estimator, its uncertainty and
@@ -520,6 +532,7 @@ validity, mode, and consumer prerequisites omitted from the drawing.
 
 ```mermaid
 flowchart LR
+    tel["SCI-TEL-INPUT-001 telescope ingress"]
     align["SCI-ALIGN-001 alignment and gaps"]
     cal["SCI-CAL-001 calibration and units"]
     ast["SCI-AST-001 pointing and astrometry"]
@@ -537,6 +550,7 @@ flowchart LR
     beam["SCI-BEAM-001 Beammap"]
     fruit["SCI-FRUIT-001 fruit-loop feedback"]
 
+    tel --> align
     align --> cal
     align --> ast
     align --> rtc --> ptc --> valid
@@ -569,7 +583,8 @@ package but does not define their estimators.
 | Package ID | Tier | Bounded package | Primary upstream packages | Queue |
 | --- | --- | --- | --- | --- |
 | `SCI-MAP-001` | A | Shared/naive mapmaking signal, formal weight, kernel, hits/coverage, validity, and observation coaddition | `SCI-CAL-001`, `SCI-AST-001`, `SCI-PTC-001`, `SCI-VAL-001` may begin as explicit abstract inputs | First new audit |
-| `SCI-ALIGN-001` | A | Sample/telescope alignment, scan slicing, and gap interpolation | external input identity | Foundation wave 1 |
+| `SCI-TEL-INPUT-001` | B | Raw telescope-file association, TolTECA preparation, row/time identity, allowed mutation, provenance, and Citlali admission | raw telescope producer event semantics | Cross-repository foundation; registered, not dispatched |
+| `SCI-ALIGN-001` | A | Sample/telescope alignment, scan slicing, and gap interpolation | `SCI-TEL-INPUT-001` | Foundation wave 1 |
 | `SCI-CAL-001` | A | Detector calibration, extinction, flux scaling, and map-unit transfer | `SCI-ALIGN-001` | Foundation wave 1 |
 | `SCI-AST-001` | A | Pointing corrections, detector coordinates, frames, and WCS | `SCI-ALIGN-001` | Foundation wave 1 |
 | `ENG-STATE-001` | C | Requested/effective/realized lifecycle, provenance, required products, and failure flow | architecture and product authorities | Parallel foundation wave |
@@ -593,6 +608,10 @@ implementation guess.
 
 Material deviations from the initial candidate decomposition are:
 
+- telescope-file preparation and Citlali admission are now a separate Tier B
+  cross-repository package upstream of ALIGN; any observed row displacement or
+  unresolved event, source-association, frame, uncertainty, or response
+  question promotes it to Tier A before that work continues;
 - alignment/gap interpolation is separated from flags/validity because it
   constructs values on a common sample axis, while validity selects which
   values may enter later estimators;

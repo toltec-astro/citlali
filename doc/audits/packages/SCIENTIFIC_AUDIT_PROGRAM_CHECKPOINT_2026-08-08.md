@@ -36,6 +36,7 @@ or dependency claim is inferred from those integrations.
 | `SCI-CAL-001` | Repair active from exact base `46ad2388...`; no active-task result is admitted here. | Accepted, independently re-audited, and integrated successor. |
 | `SCI-MAP-002` | Repair active from exact base `46ad2388...`; no active-task result is admitted here. | Bounded repair return and fresh re-audit. |
 | `SCI-ALIGN-001` | Owner-managed ALIGN/3C273 evidence remains active and deliberately slow. | Frozen returned evidence and coordinator review. |
+| `SCI-TEL-INPUT-001` | Tier B cross-repository audit -> bounded repair -> independent re-audit product registered; audit not dispatched. TolTECA remains read-only. | Freeze the exact Citlali/TolTECA source-set, prompt, and pre-/post-core inbox manifest; obtain explicit owner launch. Promote to Tier A first if the interface audit encounters a row displacement or unresolved event, source-association, frame, uncertainty, or response question. |
 | `SCI-AST-001` | Repair remains held. | Accepted and re-audited ALIGN successor, then exact AST repair-base selection. |
 | `SCI-RTC-001` | Audit `3319d742...` integrated; D001--D004 approved; axes remain `proposed` / `nonconformant` / `in_progress` / `existing_use_only`, verdict `amend`. | Upstream closure, separately authorized repair, focused exact-successor evidence, then independent re-audit. |
 | `SCI-PTC-001` | Audit `01ee2474...` integrated; axes are `proposed` / `nonconformant` / `in_progress` / `existing_use_only`, verdict `amend`; D001--D006 await owner choice. | Owner approves or supersedes the six decisions; no repair or re-audit is launched. |
@@ -48,6 +49,15 @@ This queue is not a blanket ban on new audits. New audits remain admissible
 when their dependency facts, role separation, frozen manifests, resource
 choice, and checkpoint scope are explicit. Repair debt, consumer restrictions,
 cost, and concurrent scope remain actively controlled.
+
+`SCI-TEL-INPUT-001` is registered by
+`doc/audits/packages/SCI-TEL-INPUT-001_PRODUCT_REGISTRATION_2026-08-08.md`.
+Its paired planning sources are Citlali
+`46ad23888a40f5102cdfd50c06e49a549bdf8a20` and operational TolTECA
+`origin/main` commit `2791e6a1e6349ad1d3ac549a648f41cbc51b98c7`.
+Registration does not admit ALIGN observations as authority; any existing
+raw/recomputed or same-T0 evidence remains post-core unless a future frozen
+manifest states otherwise.
 
 ## Exact post-core PTC/VAL routing
 
@@ -113,7 +123,8 @@ review. No recipient audit was launched.
 
 ## Explicit non-authorizations
 
-This checkpoint does not authorize application edits, audit science, repair,
-re-audit, broad or costly execution, local Citlali reductions, Unity activity,
-external contact, production change, or PTC/BEAM launch. It records only that
-a separately frozen PTC independent-audit packet may be owner-launched.
+This checkpoint does not authorize application or TolTECA edits, audit science,
+repair, re-audit, broad or costly execution, local Citlali reductions, Unity
+activity, external contact, production change, or PTC/BEAM/TEL-INPUT launch.
+It records only that separately frozen audit packets require their named owner
+launches.

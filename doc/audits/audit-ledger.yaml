@@ -9,7 +9,7 @@ current_program_checkpoint:
   record_path: >-
     doc/audits/packages/SCIENTIFIC_AUDIT_PROGRAM_CHECKPOINT_2026-08-08.md
   record_sha256: >-
-    1d670b82db0da4ada47b0b83d0f64840a7ad5a1530a10ae9c5e1e91189a20b14
+    7282f25fc05bdecb767449550baa33abfacee16f0bb46c0a74a0101d67568e3e
   canonical_application_mainline:
     ref: origin/codex/refactor-mainline
     commit: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
@@ -37,6 +37,7 @@ current_program_checkpoint:
     - SCI-PTC-001_D001_D002_approved_D003_D006_pending
     - SCI-VAL-001_unlaunched_PTC_D002_successor_handoff_pending_recipient_review
     - SCI-BEAM-001_after_frozen_PTC_VAL
+    - SCI-TEL-INPUT-001_registered_cross_repository_not_dispatched
   held_readiness:
     SCI-FLT-001: exact_repair_base_unresolved_until_integrated_CAL_successor
   audit_admission: >-
@@ -1278,6 +1279,140 @@ packages:
     remediation_commit: ed28dafb37f9113c0d3c95297148157129a90886
     re_audit_status: required
 
+  - id: SCI-TEL-INPUT-001
+    name: Telescope-file preparation, row identity, and Citlali ingress
+    tier: B
+    queue_wave: cross_repository_foundation
+    scientific_scope: >-
+      Selection and association of the operational raw telescope file,
+      TolTECA production of the derived recomputed telescope file, exact
+      row/time/state preservation, allowed pointing-variable mutation,
+      immutable raw/derived provenance, stale or partial product rejection,
+      and Citlali telescope-file admission before common-grid alignment.
+    tier_promotion_trigger: >-
+      Promote to Tier A before continuing if evidence shows a coherent row
+      displacement or unresolved source association, temporal or astrometric
+      response, unit/frame mismatch, or if the package must choose or rederive
+      event semantics, coordinate formulas, uncertainty, or response rather
+      than consume approved AST and ALIGN authorities.
+    known_code_areas:
+      - tolteca@origin/main:tolteca/reduce/engines/citlali.py
+      - tolteca@origin/main:tolteca/reduce/toltec/__init__.py
+      - tolteca@origin/main:tolteca/datamodels/fs/toltec.py
+      - tolteca@origin/main:tolteca/datamodels/io/toltec/tel.py
+      - include/citlali/core/pipeline/telescope_data_source.h
+      - include/citlali/core/pipeline/telescope_data_loading.h
+      - include/citlali/core/engine/telescope.h
+      - src/citlali/core/engine/telescope.cpp
+    inputs:
+      - raw telescope NetCDF identity, dimensions, variables, and timestamps
+      - observation and interface identifiers used for file association
+      - detector-input identity and time coverage presented to the reduction
+      - TolTECA producer implementation and version identity
+    outputs:
+      - derived telescope NetCDF with exactly allowlisted recomputed fields
+      - raw-to-derived row/time/state identity and provenance
+      - typed Citlali admission or fail-closed rejection state
+      - bounded downstream facts for ALIGN, AST, ENG-STATE, and VAL
+    upstream_dependencies: []
+    external_input_contract:
+      status: open_for_audit
+      required_fact: >-
+        The raw telescope producer supplies ordered row-centered or row-edge
+        timestamp semantics, coordinate and Hold variables paired to each
+        timestamp, native cadence and gap state, observation identity, and
+        acquisition bounds sufficient to prove association with the intended
+        detector inputs.
+      consequence: >-
+        The audit can derive a fail-closed interface contract, but absolute
+        phase and a physical plus/minus one-row interpretation remain
+        conditional until producer event semantics are established.
+    downstream_contract_authorities:
+      - package_id: SCI-ALIGN-001
+        status: approved
+        production_status: existing_use_only
+        required_contract: >-
+          ALIGN receives the intended telescope stream with exact native row,
+          time, cadence, gap, origin, validity, and coverage identity before
+          interpolation onto the detector grid.
+      - package_id: SCI-AST-001
+        status: approved
+        production_status: existing_use_only
+        required_contract: >-
+          AST receives recomputed coordinate values paired with the exact raw
+          telescope row and timestamp while retaining coordinate-transform
+          frame, sign, epoch, and response authority.
+      - package_id: ENG-STATE-001
+        status: open
+        required_contract: >-
+          Raw/derived source identity, producer version, completion, cache
+          admission, retry, and failure provenance are immutable and
+          reconstructible.
+      - package_id: SCI-VAL-001
+        status: open
+        required_contract: >-
+          Downstream eligibility can distinguish verified original rows,
+          recomputed fields, gaps, corrupt or stale products, and unresolved
+          producer state.
+    downstream_consumers:
+      - SCI-ALIGN-001
+      - SCI-AST-001
+      - ENG-STATE-001
+      - SCI-VAL-001
+    incoming_handoffs: []
+    outgoing_handoffs: []
+    candidate_post_core_evidence:
+      status: not_frozen_not_admitted
+      sources:
+        - existing raw/recomputed ALIGN corpus comparisons
+        - same-T0 cadence-lattice and acquisition-event-semantics evidence
+      rule: >-
+        Admit only through a frozen manifest after the independent core; this
+        registration does not convert observations into authority.
+    governing_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    governing_parent: 4846fa4db39bd2f7d4ddc41f693836834cbc5ff4
+    governing_tree: ab230a93b8fb310d58aefd7ac5da92e5d5e0f408
+    governing_sha_role: planned_citlali_consumer_snapshot
+    external_governing_sources:
+      - repository: tolteca
+        ref: origin/main
+        commit: 2791e6a1e6349ad1d3ac549a648f41cbc51b98c7
+        parent: 4acee1ccb11a13084834149c7d6e6685a87d3d6b
+        tree: 3f3e4b8136bf5528b203cb3bb8b474233bb27a85
+        role: operational_producer_snapshot
+    registration:
+      status: registered_not_dispatched
+      registration_date: 2026-08-08
+      record_path: >-
+        doc/audits/packages/SCI-TEL-INPUT-001_PRODUCT_REGISTRATION_2026-08-08.md
+      record_sha256: >-
+        512ad1413d2cbb17b1b585e42aa13beaba040fcc4ece095367cb8e8aa5c342fa
+      owner_authorization: register_audit_bounded_repair_independent_reaudit_product
+      planned_audit_branch: codex/audit-sci-tel-input-001
+      source_set_manifest_status: not_frozen
+      audit_authorized: false
+      repair_authorized: false
+      re_audit_authorized: false
+      tolteca_modification_authorized: false
+      unity_authorized: false
+      local_reduction_authorized: false
+    audit_branch: null
+    audit_commit: null
+    independent_derivation: {status: not_started, sha256: null}
+    contract_status: not_started
+    implementation_status: not_assessed
+    validation_status: not_started
+    production_status: existing_use_only
+    verdict: pending
+    open_findings: []
+    unresolved_scientific_decisions: []
+    local_evidence: []
+    requested_unity_evidence: []
+    supplied_external_evidence: []
+    remediation_branch: null
+    remediation_commit: null
+    re_audit_status: not_started
+
   - id: SCI-ALIGN-001
     name: Sample alignment, scan slicing, and gap interpolation
     tier: A
@@ -1292,8 +1427,24 @@ packages:
       - include/citlali/core/pipeline/timestream_scan_generation.h
     inputs: [raw detector and telescope samples, timestamps, interface offsets]
     outputs: [aligned samples, scan windows, timing-gap values and masks]
-    upstream_dependencies: []
+    upstream_dependencies:
+      - package_id: SCI-TEL-INPUT-001
+        status: open
+        required_contract: >-
+          The intended raw telescope stream and TolTECA-derived telescope file
+          have immutable source/version identity, exact row/time/state
+          preservation, declared native cadence and gaps, verified file-to-
+          observation association, allowlisted recomputation, and fail-closed
+          ingress validity.
+        consequence: >-
+          Existing ALIGN use remains existing-use-only, while new absolute
+          timing, support, astrometric-response, or one-row-displacement claims
+          remain conditioned on the TEL-INPUT audit and accepted successor.
     external_input_contract:
+      telescope_input_owner_package: SCI-TEL-INPUT-001
+      residual_external_inputs:
+        - raw_detector_stream
+        - optional_HWPR_stream
       status: open_for_audit
       required_fact: >-
         Each raw detector, telescope, and optional HWPR stream presented to
