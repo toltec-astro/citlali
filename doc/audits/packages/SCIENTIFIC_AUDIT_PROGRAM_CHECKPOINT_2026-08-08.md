@@ -39,7 +39,7 @@ or dependency claim is inferred from those integrations.
 | `SCI-TEL-INPUT-001` | Audit `518e0ccb...` owner-accepted with axes `proposed` / `nonconformant` / `bounded_incomplete` / `existing_use_only`, verdict `amend`; F001--F010 remain open and TolTECA remains read-only. | Separate later owner decision on repair scope and ownership; no repair or re-audit is authorized. |
 | `SCI-AST-001` | Repair remains held. | Accepted and re-audited ALIGN successor, then exact AST repair-base selection. |
 | `SCI-RTC-001` | Audit `3319d742...` integrated; D001--D004 approved; axes remain `proposed` / `nonconformant` / `in_progress` / `existing_use_only`, verdict `amend`. | Upstream closure, separately authorized repair, focused exact-successor evidence, then independent re-audit. |
-| `SCI-PTC-001` | Audit `01ee2474...` integrated; axes are `proposed` / `nonconformant` / `in_progress` / `existing_use_only`, verdict `amend`; D001--D005 approved and D006 awaits owner choice. | Complete the remaining owner decision; no repair, optional transfer characterization, or re-audit is launched. |
+| `SCI-PTC-001` | Audit `01ee2474...` integrated; axes are `approved` / `nonconformant` / `in_progress` / `existing_use_only`, verdict `amend`; D001--D006 are approved and the contract-decision set is complete. | Separately authorize any bounded repair; no repair, optional transfer characterization, validation, or re-audit is launched. |
 | `SCI-VAL-001` | Not launched; new PTC handoff `SCI-VAL-001-XAUD-008` is pending recipient review. | Later explicit sequencing decision after PTC owner review; current restrictions remain. |
 | `SCI-BEAM-001` | Queued after PTC/VAL. | Frozen PTC and VAL interfaces; existing upstream restrictions remain. |
 | `SCI-FLT-001` | Successor-repair dispatch readiness only; not authorized. | Exact repair base remains unresolved until CAL has an accepted, re-audited, integrated successor. |
@@ -203,16 +203,18 @@ both frozen in dispatch-content commit
 `70d191f3207d37cbdca3a77392668e93fb68c4fc`. The completed audit does not
 authorize repair, re-audit, or downstream launch.
 
-The coordinator accepted verdict `amend` and the four status axes without
-relaxation. D001 and D002 remain approved under their prior exact records. The
+The coordinator preserves verdict `amend` and the implementation, validation,
+and production axes without relaxation; D006 changes only the contract axis to
+`approved`. D001 and D002 remain approved under their prior exact records. The
 owner approved D003 with the successor amendment
 `doc/audits/packages/SCI-PTC-001_D003_OWNER_AMENDMENT_2026-08-09.md` and D004
 with
 `doc/audits/packages/SCI-PTC-001_D004_OWNER_AMENDMENT_2026-08-09.md`. The owner
 rejected and replaced the original D005 proposal with
-`doc/audits/packages/SCI-PTC-001_D005_OWNER_REPLACEMENT_2026-08-09.md`. D006
-remains ready for owner review in
-`doc/audits/packages/SCI-PTC-001_COORDINATOR_DECISION_BRIEF_2026-08-08.md`.
+`doc/audits/packages/SCI-PTC-001_D005_OWNER_REPLACEMENT_2026-08-09.md` and
+approved D006 with
+`doc/audits/packages/SCI-PTC-001_D006_OWNER_AMENDMENT_2026-08-09.md`.
+The D001--D006 contract-decision set is complete.
 
 D003 identifies the current stored kernel as the collaboration's **estimated
 map-center point-source response** of the instrument after the declared
@@ -251,6 +253,16 @@ state serialization is required only by a declared consumer or explicit
 reproducibility claim. Required-output failures propagate, declared diagnostic
 best effort is permitted, and no partial artifact may be represented as
 complete.
+
+D006 admits only eligible finite samples to fitted-state arithmetic and keeps
+flags, validity, eligibility, and finiteness distinct. Surrogates shift signal
+and their validity/eligibility masks together. Insufficient support becomes an
+explicit unavailable or rejected state, never a valid zero or fallback;
+fallbacks carry cause and decision stage. Randomness affecting a scientific
+output records seed, algorithm/version, and relevant input identity without
+requiring every realized shift absent a declared consumer. Selection
+uncertainty may be unavailable, and no calculated-uncertainty claim is allowed
+in that state.
 
 Outgoing `SCI-VAL-001-XAUD-008`, `SCI-MAP-001-XAUD-004`, and
 `SCI-NOI-001-XAUD-001` are registered as submitted and pending recipient

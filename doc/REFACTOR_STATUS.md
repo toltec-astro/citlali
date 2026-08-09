@@ -179,8 +179,9 @@ would extend the map-center point-source estimate across position,
 scale/morphology, amplitude, band/mode, and realization uncertainty. It is not
 authorized or launched and is not an ordinary PTC repair, operation, or F005
 closure gate unless a consumer requests a stronger measured claim. D001/D002
-and the immutable audit remain unchanged; D006 remains unresolved. No
-repair, Unity, reduction, MAP/BEAM/downstream work, re-audit, production
+and the immutable audit remain unchanged; the later D004--D006 records below
+complete the owner decision set. No repair, Unity, reduction,
+MAP/BEAM/downstream work, re-audit, production
 change, external contact, or push is authorized.
 
 ## 2026-08-09 SCI-PTC-001 D004 Owner Amendment
@@ -196,7 +197,8 @@ authority unless the complete stronger conditions are independently proved.
 Full covariance construction or retention is not mandatory; unavailable
 covariance must be explicit. Existing coefficient-weighted mapmaking remains
 permitted under these semantics. F006 remains a P1 implementation and
-re-audit gap, D006 remains unresolved, and the package axes remain
+re-audit gap; the later D005/D006 records below complete the contract. The
+package axes at the D004 checkpoint were
 `proposed`, `nonconformant`, `in_progress`, and `existing_use_only`, with
 verdict `amend`. D001--D003 and their bytes and meanings are unchanged. No PTC
 repair, optional characterization, Unity, reduction, downstream work,
@@ -225,11 +227,35 @@ failure does not invalidate an otherwise valid map.
 
 This replaces the original uniform immutable-bundle/replay proposal and its
 F007/F008 closure wording. F007/F008 remain open pending implementation and
-independent re-audit. D001--D004 authority bytes and meaning are unchanged,
-D006 remains unresolved, and package axes remain `proposed`, `nonconformant`,
-`in_progress`, and `existing_use_only`, with verdict `amend`. No repair,
+independent re-audit. D001--D004 authority bytes and meaning are unchanged;
+the following D006 amendment completes the contract. At the D005 checkpoint,
+package axes were `proposed`, `nonconformant`, `in_progress`, and `existing_use_only`,
+with verdict `amend`. No repair,
 characterization, validation, re-audit, downstream work, Unity, reduction,
 production change, merge, or push is authorized.
+
+## 2026-08-09 SCI-PTC-001 D006 Owner Amendment
+
+The owner approved
+[`SCI-PTC-001-D006`](audits/packages/SCI-PTC-001_D006_OWNER_AMENDMENT_2026-08-09.md),
+completing the D001--D006 contract-decision set. All fitted-state arithmetic
+admits only eligible finite samples; flags, validity, eligibility, and
+finiteness are distinct, and finite does not imply eligible. Shifted/null
+surrogates move signal and associated validity/eligibility masks together.
+
+Insufficient eligible support is explicitly unavailable or rejected, never a
+zero or fallback represented as a valid estimate. Fallbacks carry cause and
+decision stage. Randomness affecting scientific output records seed,
+algorithm/version, and relevant input identity; every realized shift need not
+be stored absent a declared consumer. Selection uncertainty may be explicitly
+unavailable, and no calculated-uncertainty claim is allowed in that state.
+
+The PTC contract axis is now `approved`. Implementation remains
+`nonconformant`, validation `in_progress`, production `existing_use_only`, and
+verdict `amend`. All applicable implementation, dependency, and evidence
+findings remain open. D001--D005 authority bytes and meaning are unchanged. No
+repair, characterization, validation execution, re-audit, downstream work,
+Unity, reduction, production change, merge, or push is authorized.
 
 ## 2026-08-09 SCI-MAP-002 Third-Successor Acceptance
 
