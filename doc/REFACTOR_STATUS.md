@@ -78,6 +78,20 @@ freeze the application mainline.
 
 ## Current Snapshot
 
+- A 2026-08-08 owner-authorized bounded `SCI-ALIGN-001` acquisition-boundary
+  event-semantics audit stops because essential producer evidence is
+  unavailable. The checksum-bound three-map/frozen-network evidence proves
+  delivered same-row detector/counter packaging and excludes a downstream
+  Citlali row permutation. Whole-row reassociation alone cannot reproduce the
+  odd half-cadence pair labels, while half-cadence association remains only a
+  descriptive compatibility, not a physical identification. Acquisition
+  hardware, upstream packet/index packaging, map-varying
+  start/end/effective-centroid semantics, and map fitting survive without
+  preference. No timing correction, retrieval, reduction, or telescope-ingress
+  reinterpretation is authorized. The smallest next step is an owner decision
+  on owner-mediated access to the exact FPGA/packetizer revision or an
+  authoritative event specification; see
+  [`validation/sci_align_001_acquisition_event_semantics_2026-08-08/REPORT.md`](../validation/sci_align_001_acquisition_event_semantics_2026-08-08/REPORT.md).
 - A 2026-08-06 owner-authorized `SCI-ALIGN-001` split-direction Beammap
   diagnostic candidate is implemented on the isolated
   `codex/sci-align-001-split-direction-beammap-validation` branch. The optional

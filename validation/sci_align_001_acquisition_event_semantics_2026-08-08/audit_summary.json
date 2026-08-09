@@ -1,0 +1,77 @@
+{
+  "cadence_tests": {
+    "cadence_sec": 0.008192,
+    "half_cadence_descriptively_compatible": true,
+    "half_cadence_physical_mechanism_identified": false,
+    "half_cadence_sec": 0.004096,
+    "integer_whole_row_only_exactly_compatible": false,
+    "pair_modal_half_labels": {
+      "148670->150819": -3,
+      "148670->151126": -2,
+      "150819->151126": 1
+    },
+    "transitive_half_states": {
+      "148670": 0,
+      "150819": -3,
+      "151126": -2
+    }
+  },
+  "correction_authorized": false,
+  "delivered_boundary": {
+    "all_delivered_pps_association_same_row": true,
+    "all_joined_raw_linkage_proved": true,
+    "compact_counter_maps": [
+      148670,
+      150819,
+      151126
+    ],
+    "direct_raw_maps": [
+      148670
+    ],
+    "direct_raw_network_count": 11,
+    "joined_compact_record_count": 33,
+    "variable_metadata_latency_observed": false
+  },
+  "identity": {
+    "frozen_group": "roach-t0:44cf69da97d473965ef6",
+    "head": "92cfa670a33255250895d68aaf26e8b01aa057bd",
+    "maps": {
+      "148670": "map:912d0ccf8b3539501f6c",
+      "150819": "map:1971b4dfddbc99932afb",
+      "151126": "map:d5fec4dcd0f16b424fb6"
+    },
+    "networks": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12
+    ],
+    "parent": "77c8a1a71cc79eb3aeacbd596c42b6dae33b3aa4",
+    "tree": "908825af674e3ea19c03cbb54441680dd4d6ad12"
+  },
+  "orthogonal_telescope_ingress": "not launched; facts handed to SCI-TEL-INPUT-001 only",
+  "physical_event_identified": false,
+  "pps_time_anomalies": {
+    "maximum_absolute_delivered_timestamp_step_residual_sec": 3.90625e-09,
+    "primary_cause_disposition": "strongly_disfavored",
+    "row_count": 1437
+  },
+  "producer_fpga_source_available": false,
+  "result": "STOP_REQUIRED_ESSENTIAL_PRODUCER_EVIDENCE_UNAVAILABLE",
+  "schema": "sci-align-001-acquisition-event-semantics-audit-v1",
+  "scope": "bounded read-only acquisition-boundary event-semantics audit",
+  "smallest_next_step": "Owner-mediated acquisition of the exact producer FPGA/packetizer source revision or an authoritative event-level specification that binds integration accumulation, counter capture, PPS ISR update, UDP assembly, and NetCDF row insertion. Stop before retrieval, execution, correction, or policy choice.",
+  "surviving_alternatives": [
+    "acquisition hardware integration-phase or capture state",
+    "upstream non-atomic or adjacent integration/metadata packaging",
+    "map-varying timestamp start/end/effective-centroid semantics",
+    "map fitting"
+  ]
+}
