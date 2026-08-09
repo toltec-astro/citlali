@@ -5,8 +5,10 @@
 #include <citlali/core/mapmaking/map.h>
 #include <citlali/core/pipeline/map_image_output_helpers.h>
 #include <citlali/core/pipeline/jinc_processing_provenance.h>
+#include <citlali/core/pipeline/mapmaking_provenance.h>
 #include <citlali/core/pipeline/mapmaking_provenance_lifecycle.h>
 #include <citlali/core/pipeline/noise_provenance.h>
+#include <citlali/core/pipeline/observation_output_execution.h>
 #include <citlali/core/pipeline/raw_timestream_provenance_lifecycle.h>
 #include <citlali/core/pipeline/science_map_provenance_serialization.h>
 #include <citlali/core/utils/fits_io.h>
@@ -2205,6 +2207,12 @@ TEST(science_map_fits_products,
     engine.omb.jinc_products.formal_support[0].setOnes();
     auto map = std::shared_ptr<mapmaking::MapBuffer>(
         &engine.omb, [](mapmaking::MapBuffer *) {});
+    engine.mapmaking_plan.reset_from_request(
+        engine.typed_config.mapmaking,
+        citlali::config::ReductionType::science);
+    engine.mapmaking_plan.begin_iteration();
+    engine.mapmaking_plan.begin_observation(
+        0, "152392", 1, engine.omb.pixel_size_rad, 1);
 
     decltype(engine.map_fits_outputs.obs) incomplete_files;
     decltype(engine.map_fits_outputs.obs_noise) no_noise_files;
@@ -2219,6 +2227,10 @@ TEST(science_map_fits_products,
     EXPECT_TRUE(incomplete_files[0].hdus.empty());
     EXPECT_TRUE(
         engine.omb.jinc_products.provenance.realized.product_joins.empty());
+    EXPECT_FALSE(
+        engine.mapmaking_plan.observations.back().outputs_completed);
+    EXPECT_FALSE(
+        engine.mapmaking_plan.observations.back().jinc_state.has_value());
 
     citlali::pipeline::bind_jinc_processing_configuration_if_available(
         engine);
@@ -2266,20 +2278,150 @@ TEST(science_map_fits_products,
     EXPECT_NE(realized.processing_realization_identity, "unavailable");
     EXPECT_EQ(*engine.raw_timestream_plan.realized.flagged_sample_count, 1U);
     EXPECT_EQ(*engine.raw_timestream_plan.realized.dynamic_notch_count, 0U);
+    const auto processing_only_provenance = realized;
+    auto realized_fact = [&](const std::string &name) {
+        const auto it = std::find_if(
+            realized.processing_realization_facts.begin(),
+            realized.processing_realization_facts.end(),
+            [&](const auto &fact) { return fact.first == name; });
+        if (it == realized.processing_realization_facts.end()) {
+            throw std::runtime_error("missing realized fact " + name);
+        }
+        return it->second;
+    };
+    EXPECT_NE(realized_fact("rtc_source_mask_identity"), "unavailable");
+    EXPECT_NE(realized_fact("rtc_notch_operator_identity"), "unavailable");
 
     decltype(engine.map_fits_outputs.obs) complete_files;
     complete_files.emplace_back((cleanup.path / "complete_map").string());
     auto *complete_file_ptr = &complete_files;
-    ASSERT_NO_THROW(engine.write_maps(
-        complete_file_ptr, no_noise_file_ptr, map, 0));
+    ASSERT_NO_THROW(citlali::pipeline::publish_required_observation_outputs(
+        [&] {
+            engine.write_maps(
+                complete_file_ptr, no_noise_file_ptr, map, 0);
+        },
+        [&] {
+            citlali::pipeline::complete_mapmaking_observation_if_available(
+                engine);
+        }));
     ASSERT_EQ(realized.realized.product_joins.size(), 4U);
     EXPECT_EQ(realized.realized.product_joins[0].hdu_name, "signal_I");
     EXPECT_EQ(realized.realized.product_joins[1].hdu_name, "weight_I");
     EXPECT_EQ(realized.realized.product_joins[2].hdu_name, "coverage_I");
     EXPECT_EQ(realized.realized.product_joins[3].hdu_name,
               "coverage_bool_I");
+    ASSERT_TRUE(
+        engine.mapmaking_plan.observations.back().outputs_completed);
+    ASSERT_TRUE(
+        engine.mapmaking_plan.observations.back().jinc_state.has_value());
+    const auto successful_joins = realized.realized.product_joins;
+    const auto successful_node =
+        citlali::pipeline::mapmaking_provenance_node(
+            engine.mapmaking_plan);
+    const auto serialized_success =
+        successful_node["observations"][0]["jinc_state"];
+    ASSERT_TRUE(serialized_success["available"].as<bool>());
+    ASSERT_EQ(
+        serialized_success["realized"]["product_joins"].size(),
+        successful_joins.size());
+    for (std::size_t index = 0; index < successful_joins.size(); ++index) {
+        const auto serialized =
+            serialized_success["realized"]["product_joins"][index];
+        EXPECT_EQ(serialized["product_identity"].as<std::string>(),
+                  successful_joins[index].product_identity);
+        EXPECT_EQ(serialized["product_scope"].as<std::string>(),
+                  successful_joins[index].product_scope);
+        EXPECT_EQ(serialized["output_file"].as<std::string>(),
+                  successful_joins[index].output_file);
+        EXPECT_EQ(serialized["hdu_name"].as<std::string>(),
+                  successful_joins[index].hdu_name);
+        EXPECT_EQ(serialized["content_digest"].as<std::string>(),
+                  successful_joins[index].content_digest);
+    }
+
+    engine.omb.jinc_products.provenance = processing_only_provenance;
+    ASSERT_TRUE(mapmaking::jinc_processing_provenance_complete(
+        engine.omb.jinc_products.provenance));
+    ASSERT_TRUE(engine.omb.jinc_products.provenance.realized.product_joins.empty());
+    engine.omb.jinc_products.formal_support.clear();
+    engine.mapmaking_plan.begin_iteration();
+    engine.mapmaking_plan.begin_observation(
+        1, "152393", 1, engine.omb.pixel_size_rad, 1);
+    decltype(engine.map_fits_outputs.obs) failed_files;
+    failed_files.emplace_back((cleanup.path / "failed_map").string());
+    auto *failed_file_ptr = &failed_files;
+    EXPECT_THROW(
+        citlali::pipeline::publish_required_observation_outputs(
+            [&] {
+                engine.write_maps(
+                    failed_file_ptr, no_noise_file_ptr, map, 0);
+            },
+            [&] {
+                citlali::pipeline::complete_mapmaking_observation_if_available(
+                    engine);
+            }),
+        std::runtime_error);
+    EXPECT_FALSE(failed_files[0].hdus.empty());
+    EXPECT_TRUE(
+        engine.omb.jinc_products.provenance.realized.product_joins.empty());
+    EXPECT_FALSE(
+        engine.mapmaking_plan.observations.back().outputs_completed);
+    EXPECT_FALSE(
+        engine.mapmaking_plan.observations.back().jinc_state.has_value());
+    const auto failed_node =
+        citlali::pipeline::mapmaking_provenance_node(
+            engine.mapmaking_plan);
+    EXPECT_FALSE(
+        failed_node["observations"][0]["jinc_state"]["available"]
+            .as<bool>());
     incomplete_files[0].pfits.reset();
     complete_files[0].pfits.reset();
+    failed_files[0].pfits.reset();
+}
+
+TEST(science_map_fits_products,
+     rtc_realization_records_exact_source_mask_and_fixed_notch_operators) {
+    Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> source_mask =
+        Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>::Constant(
+            4, 2, false);
+    source_mask(1, 0) = true;
+    const auto initial_mask_digest =
+        timestream::rtc_realization_matrix_digest(source_mask);
+    source_mask(2, 1) = true;
+    EXPECT_NE(initial_mask_digest,
+              timestream::rtc_realization_matrix_digest(source_mask));
+
+    timestream::RTCProc rtc;
+    rtc.logger = science_map_test_logger();
+    rtc.run_kernel = false;
+    rtc.line_audit.enabled = true;
+    rtc.line_audit.fixed_notch_enabled = true;
+    rtc.line_audit.fixed_notch_freqs_hz = {10.0, 20.0};
+    rtc.line_audit.fixed_notch_widths_hz = {0.5, 1.25};
+    using RtcData =
+        timestream::TCData<timestream::TCDataKind::RTC, Eigen::MatrixXd>;
+    RtcData data;
+    data.index.data = 7;
+    data.scans.data.resize(64, 1);
+    for (Eigen::Index row = 0; row < data.scans.data.rows(); ++row) {
+        data.scans.data(row, 0) =
+            std::sin(0.2 * static_cast<double>(row)) +
+            0.25 * std::cos(0.4 * static_cast<double>(row));
+    }
+    ASSERT_EQ(
+        rtc.apply_rtc_line_audit_fixed_notches(
+            data, 100.0, rtc.line_audit),
+        2);
+    const auto notches = rtc.snapshot_notch_operator_summary(7);
+    ASSERT_EQ(notches.size(), 2U);
+    EXPECT_EQ(notches[0].stage, "line_audit_fixed_pre");
+    EXPECT_EQ(notches[0].detector_index, -1);
+    EXPECT_DOUBLE_EQ(notches[0].center_hz, 10.0);
+    EXPECT_DOUBLE_EQ(notches[0].width_hz, 0.5);
+    EXPECT_TRUE(notches[0].zero_phase);
+    EXPECT_EQ(notches[1].stage, "line_audit_fixed_pre");
+    EXPECT_DOUBLE_EQ(notches[1].center_hz, 20.0);
+    EXPECT_DOUBLE_EQ(notches[1].width_hz, 1.25);
 }
 
 TEST(science_map_fits_products,

@@ -312,6 +312,8 @@ struct JincProcessingScanTrace {
     std::size_t rtc_source_masked_sample_count = 0;
     std::size_t ptc_mean_masked_sample_count = 0;
     std::size_t pca_solve_count = 0;
+    std::size_t configured_notch_applied_count = 0;
+    std::size_t fixed_notch_count = 0;
     std::size_t dynamic_notch_count = 0;
     std::size_t detector_notch_count = 0;
     std::string rtc_flags_digest = "unavailable";
@@ -320,6 +322,8 @@ struct JincProcessingScanTrace {
     std::string map_indices_digest = "unavailable";
     std::string ptc_signal_digest = "unavailable";
     std::string ptc_kernel_digest = "unavailable";
+    std::string rtc_source_mask_digest = "unavailable";
+    std::string rtc_notch_operators_digest = "unavailable";
     std::string ptc_mean_mask_digest = "unavailable";
     std::string pca_realization_digest = "unavailable";
 };

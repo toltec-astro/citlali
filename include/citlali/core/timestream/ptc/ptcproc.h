@@ -953,12 +953,6 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                                 in_scans_sub, flags_sub, apt_flags_sub, group, nw_index, arr_index);
                             const Eigen::Index configured_cut =
                                 cleaner_local.n_eig_to_cut[arr_index](indx);
-                            pca_realizations.push_back(PCARealizationSummary{
-                                effective_group, gidx, arr_index,
-                                configured_cut, configured_cut,
-                                forced_limit_index,
-                                ptc_realization_matrix_digest(evals),
-                                ptc_realization_matrix_digest(evecs)});
 
                             if (store_eigs) {
                                 Eigen::Index n_keep = std::min<Eigen::Index>(cleaner_local.n_calc, evals.size());
@@ -970,10 +964,17 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                                 }
                             }
 
-                            cleaner_local.remove_eig_values<timestream::Cleaner::SpectraBackend>(
+                            const Eigen::Index applied_cut =
+                                cleaner_local.remove_eig_values<timestream::Cleaner::SpectraBackend>(
                                 in_scans_sub, flags_sub, evals, evecs, out_scans_sub,
                                 cleaner_local.n_eig_to_cut[arr_index](indx), forced_limit_index,
                                 group, nw_index, arr_index);
+                            pca_realizations.push_back(PCARealizationSummary{
+                                effective_group, gidx, arr_index,
+                                configured_cut, applied_cut,
+                                forced_limit_index,
+                                ptc_realization_matrix_digest(evals),
+                                ptc_realization_matrix_digest(evecs)});
                             scatter_cols(out_scans_block, out_scans_sub, cols);
 
                             if (in.kernel.data.size()!=0) {
@@ -1097,21 +1098,27 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                     }
 
                     Eigen::Index k_to_apply = baseline_k;
+                    Eigen::Index applied_cut = 0;
                     if (adaptive_selector_for_group && adaptive_result.used &&
                         adaptive_result.chosen_cleaned_scans.rows() == out_scans_block.rows() &&
                         adaptive_result.chosen_cleaned_scans.cols() == out_scans_block.cols()) {
                         k_to_apply = adaptive_result.chosen_k;
                         out_scans_block = adaptive_result.chosen_cleaned_scans;
+                        applied_cut = std::max<Eigen::Index>(
+                            0, std::min<Eigen::Index>(
+                                   k_to_apply, evecs.cols()));
                     }
                     else if (adaptive_selector_for_group && adaptive_result.used) {
                         k_to_apply = adaptive_result.chosen_k;
-                        cleaner_local.remove_eig_values<timestream::Cleaner::SpectraBackend>(
+                        applied_cut =
+                            cleaner_local.remove_eig_values<timestream::Cleaner::SpectraBackend>(
                             in_scans_block, masked_flags, evals, evecs, out_scans_block,
                             k_to_apply, forced_limit_index,
                             effective_group, nw_index, arr_index);
                     }
                     else {
-                        cleaner_local.remove_eig_values<timestream::Cleaner::SpectraBackend>(
+                        applied_cut =
+                            cleaner_local.remove_eig_values<timestream::Cleaner::SpectraBackend>(
                             in_scans_block, masked_flags, evals, evecs, out_scans_block,
                             baseline_k, forced_limit_index,
                             effective_group, nw_index, arr_index);
@@ -1119,7 +1126,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
 
                     pca_realizations.push_back(PCARealizationSummary{
                         effective_group, key, arr_index, baseline_k,
-                        k_to_apply, forced_limit_index,
+                        applied_cut, forced_limit_index,
                         ptc_realization_matrix_digest(evals),
                         ptc_realization_matrix_digest(evecs)});
 

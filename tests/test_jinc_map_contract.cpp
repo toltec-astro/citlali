@@ -8,6 +8,7 @@
 #include <citlali/core/pipeline/beammap_mapmaking_policy.h>
 #include <citlali/core/pipeline/mapmaking_provenance.h>
 #include <citlali/core/pipeline/map_buffer_allocation.h>
+#include <citlali/core/timestream/ptc/clean.h>
 
 #include <spdlog/sinks/null_sink.h>
 
@@ -739,6 +740,56 @@ TEST(jinc_map_contract,
               mapmaking::jinc_kernel_template_identity(kernel, true));
     EXPECT_NE(initial,
               mapmaking::jinc_kernel_template_identity(kernel, false));
+}
+
+TEST(jinc_map_contract,
+     pca_removal_reports_the_forced_stddev_selected_and_clamped_cut) {
+    auto sink = std::make_shared<spdlog::sinks::null_sink_mt>();
+    auto logger = std::make_shared<spdlog::logger>(
+        "jinc-pca-applied-cut-test", sink);
+    timestream::Cleaner cleaner;
+    cleaner.logger = logger;
+    cleaner.n_calc = 0;
+
+    Eigen::MatrixXd scans(6, 4);
+    scans <<
+        1.0, 2.0, 3.0, 4.0,
+        2.0, 4.0, 6.0, 8.0,
+        3.0, 1.0, 4.0, 2.0,
+        4.0, 3.0, 2.0, 1.0,
+        5.0, 7.0, 6.0, 8.0,
+        6.0, 5.0, 8.0, 7.0;
+    const auto flags =
+        Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>::Constant(
+            scans.rows(), scans.cols(), false);
+    Eigen::VectorXd evals(4);
+    evals << 1000.0, 25.0, 4.0, 1.0;
+    const Eigen::MatrixXd evecs = Eigen::MatrixXd::Identity(4, 4);
+    Eigen::MatrixXd cleaned = scans;
+
+    cleaner.stddev_limit = 0.0;
+    const auto forced_and_clamped =
+        cleaner.remove_eig_values<timestream::Cleaner::SpectraBackend>(
+            scans, flags, evals, evecs, cleaned, 1, 99,
+            "array", -1, 0);
+    EXPECT_EQ(forced_and_clamped, 3);
+
+    cleaner.stddev_limit = 1.0;
+    const auto expected_stddev = cleaner.get_stddev_index(evals.head(3));
+    cleaned = scans;
+    const auto stddev_selected =
+        cleaner.remove_eig_values<timestream::Cleaner::SpectraBackend>(
+            scans, flags, evals, evecs, cleaned, 0, -1,
+            "array", -1, 0);
+    EXPECT_EQ(stddev_selected, expected_stddev);
+
+    cleaner.stddev_limit = 0.0;
+    cleaned = scans;
+    const auto configured =
+        cleaner.remove_eig_values<timestream::Cleaner::SpectraBackend>(
+            scans, flags, evals, evecs, cleaned, 2, -1,
+            "array", -1, 0);
+    EXPECT_EQ(configured, 2);
 }
 
 TEST(jinc_map_contract, compact_forward_only_provenance_serializes_joins) {

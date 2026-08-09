@@ -28,7 +28,7 @@ EXCLUDED_FILES = {
 }
 EXPECTED_RECORD_COUNT = 47
 EXPECTED_RECORD_SHA256 = (
-    "9c1633f362fa0534ea1b9f66cba6122fcec3b299aefe59504f19116de61900fb"
+    "37bbb9c4a1a7ed78e3d79571a4cd6e0e745af2520eddb24f54ca191d52d4d1bf"
 )
 
 EXECUTOR_OPERATIONS = {
@@ -56,6 +56,7 @@ EXECUTOR_OPERATIONS = {
     "snapshot_coherent_iq_mode_candidates",
     "snapshot_detector_diag_summary",
     "snapshot_network_diag_summary",
+    "snapshot_notch_operator_summary",
     "snapshot_source_protection_diag_summary",
 }
 OBSERVATION_STATE = {

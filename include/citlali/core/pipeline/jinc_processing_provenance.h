@@ -106,6 +106,18 @@ void bind_jinc_processing_configuration(Engine &engine) {
     const auto &rtc = engine.rtcproc;
     const auto &ptc = engine.ptcproc;
     const auto &cleaner = ptc.cleaner;
+    std::vector<double> configured_notch_widths_hz;
+    configured_notch_widths_hz.reserve(rtc.filter.w0s.size());
+    for (std::size_t index = 0; index < rtc.filter.w0s.size(); ++index) {
+        if (index >= rtc.filter.qs.size() ||
+            !std::isfinite(rtc.filter.qs[index]) ||
+            rtc.filter.qs[index] <= 0.0) {
+            throw std::logic_error(
+                "JINC configured notch identity requires finite-positive Q values");
+        }
+        configured_notch_widths_hz.push_back(
+            rtc.filter.w0s[index] / rtc.filter.qs[index]);
+    }
     std::vector<std::pair<std::string, std::string>> facts{
         {"raw_timestream_active",
          jinc_processing_bool_text(timestream_processing_enabled(engine))},
@@ -131,8 +143,20 @@ void bind_jinc_processing_configuration(Engine &engine) {
          mapmaking::jinc_matrix_digest(rtc.filter.filter)},
         {"configured_notch_centers_hz",
          jinc_processing_vector_text(rtc.filter.w0s)},
+        {"configured_notch_widths_hz",
+         jinc_processing_vector_text(configured_notch_widths_hz)},
         {"configured_notch_q", jinc_processing_vector_text(rtc.filter.qs)},
         {"configured_notch_count", std::to_string(rtc.filter.w0s.size())},
+        {"line_audit_fixed_notch_enabled",
+         jinc_processing_bool_text(rtc.line_audit.enabled &&
+                                   rtc.line_audit.pre_filter_enabled &&
+                                   rtc.line_audit.fixed_notch_enabled)},
+        {"line_audit_fixed_notch_centers_hz",
+         jinc_processing_vector_text(
+             rtc.line_audit.fixed_notch_freqs_hz)},
+        {"line_audit_fixed_notch_widths_hz",
+         jinc_processing_vector_text(
+             rtc.line_audit.fixed_notch_widths_hz)},
         {"iir_highpass_hz",
          mapmaking::jinc_double_hex(rtc.filter.iir_highpass_freq_Hz)},
         {"iir_highpass_order", std::to_string(rtc.filter.iir_highpass_order)},
@@ -182,7 +206,7 @@ void bind_jinc_processing_configuration(Engine &engine) {
     provenance.processing_configuration_facts = facts;
     provenance.processing_configuration_identity =
         mapmaking::jinc_realization_identity_digest(
-            "actual-enabled-processing-operators-v2", facts);
+            "actual-enabled-processing-operators-v3", facts);
     provenance.processing_configuration_bound = true;
     provenance.coverage_sample_frequency_identity =
         "effective-processed-timestream-sample-rate-telescope-d_fsmp-v1";
@@ -232,37 +256,61 @@ void record_jinc_rtc_scan_state_if_available(
         throw std::logic_error(
             "JINC RTC source-mask count cannot be negative");
     }
+    if (source.enabled && source.mask_digest == "unavailable") {
+        throw std::logic_error(
+            "JINC RTC source-mask identity is unavailable");
+    }
     trace.rtc_source_masked_sample_count = source.enabled
         ? static_cast<std::size_t>(source.protected_samples)
         : 0U;
-    for (const auto &network :
-         engine.rtcproc.snapshot_network_diag_summary(ptcdata.index.data)) {
-        if (network.line_audit_n_applied_notches < 0 ||
-            network.post_line_audit.n_applied_notches < 0) {
-            throw std::logic_error(
-                "JINC dynamic-notch count cannot be negative");
+    trace.rtc_source_mask_digest =
+        source.enabled ? source.mask_digest : "disabled";
+
+    const auto notches = engine.rtcproc.snapshot_notch_operator_summary(
+        ptcdata.index.data);
+    trace.configured_notch_applied_count = 0;
+    trace.fixed_notch_count = 0;
+    trace.dynamic_notch_count = 0;
+    trace.detector_notch_count = 0;
+    std::vector<std::pair<std::string, std::string>> notch_facts{
+        {"operator_count", std::to_string(notches.size())}};
+    for (std::size_t index = 0; index < notches.size(); ++index) {
+        const auto &notch = notches[index];
+        const auto prefix = "operator_" + std::to_string(index) + "_";
+        notch_facts.emplace_back(prefix + "stage", notch.stage);
+        notch_facts.emplace_back(
+            prefix + "detector_index",
+            std::to_string(notch.detector_index));
+        notch_facts.emplace_back(
+            prefix + "center_hz",
+            mapmaking::jinc_double_hex(notch.center_hz));
+        notch_facts.emplace_back(
+            prefix + "width_hz",
+            mapmaking::jinc_double_hex(notch.width_hz));
+        notch_facts.emplace_back(
+            prefix + "zero_phase",
+            jinc_processing_bool_text(notch.zero_phase));
+        if (notch.stage == "configured_tod") {
+            ++trace.configured_notch_applied_count;
         }
-        jinc_processing_add_count(
-            trace.dynamic_notch_count,
-            static_cast<std::size_t>(network.line_audit_n_applied_notches),
-            "JINC dynamic-notch count");
-        jinc_processing_add_count(
-            trace.dynamic_notch_count,
-            static_cast<std::size_t>(
-                network.post_line_audit.n_applied_notches),
-            "JINC dynamic-notch count");
-    }
-    for (const auto &detector :
-         engine.rtcproc.snapshot_detector_diag_summary(ptcdata.index.data)) {
-        if (detector.detector_notch_n_applied < 0) {
-            throw std::logic_error(
-                "JINC detector-notch count cannot be negative");
+        else if (notch.stage == "line_audit_fixed_pre") {
+            ++trace.fixed_notch_count;
         }
-        jinc_processing_add_count(
-            trace.detector_notch_count,
-            static_cast<std::size_t>(detector.detector_notch_n_applied),
-            "JINC detector-notch count");
+        else if (notch.stage == "line_audit_shared_pre" ||
+                 notch.stage == "line_audit_shared_post") {
+            ++trace.dynamic_notch_count;
+        }
+        else if (notch.stage == "line_audit_detector_post") {
+            ++trace.detector_notch_count;
+        }
+        else {
+            throw std::logic_error(
+                "JINC RTC notch realization has an unknown stage");
+        }
     }
+    trace.rtc_notch_operators_digest =
+        mapmaking::jinc_realization_identity_digest(
+            "actual-rtc-notch-operators-v1", notch_facts);
 }
 
 template <class Engine, class PtcData, class Apt, class MapIndices>
@@ -339,7 +387,7 @@ void record_jinc_ptc_scan_state_if_available(
     }
     trace.pca_realization_digest =
         mapmaking::jinc_realization_identity_digest(
-            "actual-ptc-pca-realization-v1", pca_facts);
+            "actual-ptc-pca-realization-v2", pca_facts);
 }
 
 template <class Engine>
@@ -375,9 +423,13 @@ void bind_jinc_processing_realization(Engine &engine) {
     std::size_t rtc_source_masked = 0;
     std::size_t ptc_mean_masked = 0;
     std::size_t pca_solves = 0;
+    std::size_t configured_notches_applied = 0;
+    std::size_t fixed_notches = 0;
     std::size_t dynamic_notches = 0;
     std::size_t detector_notches = 0;
     std::vector<std::pair<std::string, std::string>> trace_facts;
+    std::vector<std::pair<std::string, std::string>> source_mask_facts;
+    std::vector<std::pair<std::string, std::string>> notch_operator_facts;
     for (const auto &[scan, trace] : products.processing_scan_traces) {
         if (trace.rtc_flags_digest == "unavailable" ||
             trace.ptc_flags_digest == "unavailable" ||
@@ -385,6 +437,8 @@ void bind_jinc_processing_realization(Engine &engine) {
             trace.map_indices_digest == "unavailable" ||
             trace.ptc_signal_digest == "unavailable" ||
             trace.ptc_kernel_digest == "unavailable" ||
+            trace.rtc_source_mask_digest == "unavailable" ||
+            trace.rtc_notch_operators_digest == "unavailable" ||
             trace.ptc_mean_mask_digest == "unavailable" ||
             trace.pca_realization_digest == "unavailable") {
             throw std::logic_error(
@@ -408,6 +462,12 @@ void bind_jinc_processing_realization(Engine &engine) {
             "JINC PTC mean-mask count");
         jinc_processing_add_count(pca_solves, trace.pca_solve_count,
                                   "JINC PCA solve count");
+        jinc_processing_add_count(
+            configured_notches_applied,
+            trace.configured_notch_applied_count,
+            "JINC configured-notch applied count");
+        jinc_processing_add_count(fixed_notches, trace.fixed_notch_count,
+                                  "JINC fixed-notch count");
         jinc_processing_add_count(dynamic_notches, trace.dynamic_notch_count,
                                   "JINC dynamic-notch count");
         jinc_processing_add_count(detector_notches, trace.detector_notch_count,
@@ -437,6 +497,12 @@ void bind_jinc_processing_realization(Engine &engine) {
             prefix + "pca_solve_count",
             std::to_string(trace.pca_solve_count));
         trace_facts.emplace_back(
+            prefix + "configured_notch_applied_count",
+            std::to_string(trace.configured_notch_applied_count));
+        trace_facts.emplace_back(
+            prefix + "fixed_notch_count",
+            std::to_string(trace.fixed_notch_count));
+        trace_facts.emplace_back(
             prefix + "dynamic_notch_count",
             std::to_string(trace.dynamic_notch_count));
         trace_facts.emplace_back(
@@ -448,8 +514,26 @@ void bind_jinc_processing_realization(Engine &engine) {
         trace_facts.emplace_back(prefix + "map_indices", trace.map_indices_digest);
         trace_facts.emplace_back(prefix + "ptc_signal", trace.ptc_signal_digest);
         trace_facts.emplace_back(prefix + "ptc_kernel", trace.ptc_kernel_digest);
+        trace_facts.emplace_back(
+            prefix + "rtc_source_mask", trace.rtc_source_mask_digest);
+        trace_facts.emplace_back(
+            prefix + "rtc_notch_operators",
+            trace.rtc_notch_operators_digest);
         trace_facts.emplace_back(prefix + "ptc_mean_mask", trace.ptc_mean_mask_digest);
         trace_facts.emplace_back(prefix + "pca", trace.pca_realization_digest);
+        source_mask_facts.emplace_back(
+            prefix + "masked_sample_count",
+            std::to_string(trace.rtc_source_masked_sample_count));
+        source_mask_facts.emplace_back(
+            prefix + "identity", trace.rtc_source_mask_digest);
+        notch_operator_facts.emplace_back(
+            prefix + "operator_count",
+            std::to_string(trace.configured_notch_applied_count +
+                           trace.fixed_notch_count +
+                           trace.dynamic_notch_count +
+                           trace.detector_notch_count));
+        notch_operator_facts.emplace_back(
+            prefix + "identity", trace.rtc_notch_operators_digest);
     }
 
     raw_plan.realized.flagged_sample_count = ptc_flagged;
@@ -459,7 +543,15 @@ void bind_jinc_processing_realization(Engine &engine) {
             engine.rtcproc.kernel, raw_kernel_enabled(engine));
     const auto trace_identity =
         mapmaking::jinc_realization_identity_digest(
-            "actual-processing-scan-traces-v1", trace_facts);
+            "actual-processing-scan-traces-v2", trace_facts);
+    const auto source_mask_identity =
+        mapmaking::jinc_realization_identity_digest(
+            "actual-rtc-source-protection-masks-v1",
+            source_mask_facts);
+    const auto notch_operator_identity =
+        mapmaking::jinc_realization_identity_digest(
+            "actual-rtc-notch-operator-sequence-v1",
+            notch_operator_facts);
     std::vector<std::pair<std::string, std::string>> facts{
         {"configuration_identity",
          provenance.processing_configuration_identity},
@@ -478,8 +570,13 @@ void bind_jinc_processing_realization(Engine &engine) {
         {"pca_solve_count", std::to_string(pca_solves)},
         {"configured_notch_count",
          std::to_string(engine.rtcproc.filter.w0s.size())},
+        {"configured_notch_applied_count",
+         std::to_string(configured_notches_applied)},
+        {"fixed_notch_count", std::to_string(fixed_notches)},
         {"dynamic_notch_count", std::to_string(dynamic_notches)},
         {"detector_notch_count", std::to_string(detector_notches)},
+        {"rtc_source_mask_identity", source_mask_identity},
+        {"rtc_notch_operator_identity", notch_operator_identity},
         {"filter_application_scan_count",
          std::to_string(*raw_plan.realized.completed_scan_count)},
         {"population_grouping",
@@ -498,7 +595,7 @@ void bind_jinc_processing_realization(Engine &engine) {
     provenance.processing_realization_facts = facts;
     provenance.processing_realization_identity =
         mapmaking::jinc_realization_identity_digest(
-            "actual-processing-realization-v3", facts);
+            "actual-processing-realization-v4", facts);
     provenance.processing_realization_bound = true;
 }
 
