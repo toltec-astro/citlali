@@ -84,14 +84,12 @@ void normalize_jinc_maps(
 
     auto &summary = products.provenance.realized;
     summary.map_count = map_count;
-    summary.total_pixel_count = 0;
-    summary.formally_supported_pixel_count = 0;
-    summary.exact_cancellation_pixel_count = 0;
-    summary.unresolved_cancellation_pixel_count = 0;
-    summary.invalid_q_pixel_count = 0;
-    summary.nonfinite_accumulator_pixel_count = 0;
-    summary.contributor_count_max = 0;
-    summary.rho_resolution_bound_max = 0.0;
+    if (summary.map_summaries.size() != map_count) {
+        summary.map_summaries.assign(
+            map_count, mapmaking::JincMapRealizedSummary{});
+    }
+    ++summary.realization_pass_count;
+    summary.last_pass_active_map_indices.clear();
     summary.product_joins.clear();
     buffer.normalize_support_diag.assign(map_count,
                                          MapBuffer::NormalizeSupportDiag{});
@@ -102,6 +100,7 @@ void normalize_jinc_maps(
              !(*active_maps)(static_cast<Eigen::Index>(slot)))) {
             continue;
         }
+        summary.last_pass_active_map_indices.push_back(slot);
         const auto rows = buffer.signal[slot].rows();
         const auto cols = buffer.signal[slot].cols();
         if (rows != buffer.n_rows || cols != buffer.n_cols ||
@@ -128,10 +127,15 @@ void normalize_jinc_maps(
         diag.support_weight_threshold = 0.0;
         auto &formal_mask = products.formal_support[slot];
         formal_mask.setZero();
+        auto &map_summary = summary.map_summaries[slot];
+        map_summary = {};
+        map_summary.realized = true;
+        map_summary.realization_pass = summary.realization_pass_count;
+        map_summary.total_pixel_count =
+            static_cast<std::size_t>(rows * cols);
 
         for (Eigen::Index row = 0; row < rows; ++row) {
             for (Eigen::Index col = 0; col < cols; ++col) {
-                ++summary.total_pixel_count;
                 const auto count =
                     products.contributor_count[slot](row, col);
                 const auto result = finalize_jinc_accumulators(
@@ -140,11 +144,11 @@ void normalize_jinc_maps(
                     buffer.weight[slot](row, col),
                     products.denominator_sum_abs[slot](row, col),
                     static_cast<std::size_t>(count));
-                summary.contributor_count_max = std::max(
-                    summary.contributor_count_max,
+                map_summary.contributor_count_max = std::max(
+                    map_summary.contributor_count_max,
                     static_cast<std::size_t>(count));
-                summary.rho_resolution_bound_max = std::max(
-                    summary.rho_resolution_bound_max,
+                map_summary.rho_resolution_bound_max = std::max(
+                    map_summary.rho_resolution_bound_max,
                     result.rho_resolution_bound);
 
                 bool companions_finite =
@@ -188,7 +192,7 @@ void normalize_jinc_maps(
                         }
                     }
                     formal_mask(row, col) = 1;
-                    ++summary.formally_supported_pixel_count;
+                    ++map_summary.formally_supported_pixel_count;
                     ++diag.n_retained;
                 }
                 else {
@@ -206,21 +210,52 @@ void normalize_jinc_maps(
                     }
                     ++diag.n_masked;
                     if (!result.accumulators_finite || !companions_finite) {
-                        ++summary.nonfinite_accumulator_pixel_count;
+                        ++map_summary.nonfinite_accumulator_pixel_count;
                     }
                     else if (!result.q_positive) {
-                        ++summary.invalid_q_pixel_count;
+                        ++map_summary.invalid_q_pixel_count;
                     }
                     else if (result.exact_cancellation) {
-                        ++summary.exact_cancellation_pixel_count;
+                        ++map_summary.exact_cancellation_pixel_count;
                     }
                     else if (!result.numerically_resolved) {
-                        ++summary.unresolved_cancellation_pixel_count;
+                        ++map_summary.unresolved_cancellation_pixel_count;
                     }
                 }
             }
         }
         buffer.normalize_support_diag[slot] = diag;
+    }
+    summary.realized_map_count = 0;
+    summary.total_pixel_count = 0;
+    summary.formally_supported_pixel_count = 0;
+    summary.exact_cancellation_pixel_count = 0;
+    summary.unresolved_cancellation_pixel_count = 0;
+    summary.invalid_q_pixel_count = 0;
+    summary.nonfinite_accumulator_pixel_count = 0;
+    summary.contributor_count_max = 0;
+    summary.rho_resolution_bound_max = 0.0;
+    for (const auto &map_summary : summary.map_summaries) {
+        if (!map_summary.realized) {
+            continue;
+        }
+        ++summary.realized_map_count;
+        summary.total_pixel_count += map_summary.total_pixel_count;
+        summary.formally_supported_pixel_count +=
+            map_summary.formally_supported_pixel_count;
+        summary.exact_cancellation_pixel_count +=
+            map_summary.exact_cancellation_pixel_count;
+        summary.unresolved_cancellation_pixel_count +=
+            map_summary.unresolved_cancellation_pixel_count;
+        summary.invalid_q_pixel_count += map_summary.invalid_q_pixel_count;
+        summary.nonfinite_accumulator_pixel_count +=
+            map_summary.nonfinite_accumulator_pixel_count;
+        summary.contributor_count_max = std::max(
+            summary.contributor_count_max,
+            map_summary.contributor_count_max);
+        summary.rho_resolution_bound_max = std::max(
+            summary.rho_resolution_bound_max,
+            map_summary.rho_resolution_bound_max);
     }
     std::vector<Eigen::MatrixXd>().swap(buffer.grid_weight);
 }

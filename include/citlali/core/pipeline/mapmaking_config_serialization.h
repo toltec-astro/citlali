@@ -209,13 +209,27 @@ inline YAML::Node jinc_observation_state_node(
     }
     node["realized"]["kernel_template_identity"] =
         record.kernel_template_identity;
+    node["realized"]["processing_configuration_identity"] =
+        record.processing_configuration_identity;
     node["realized"]["processing_realization_identity"] =
         record.processing_realization_identity;
+    node["realized"]["coverage_sample_frequency_identity"] =
+        record.coverage_sample_frequency_identity;
+    node["realized"]["coverage_sample_frequency_hz"] =
+        record.coverage_sample_frequency_hz;
+    node["realized"]["coverage_sample_frequency_hz_hex"] =
+        mapmaking::jinc_double_hex(record.coverage_sample_frequency_hz);
     node["realized"]["summation_method"] =
         record.realized.summation_method;
     node["realized"]["conditioning_policy"] =
         record.realized.conditioning_policy;
     node["realized"]["map_count"] = record.realized.map_count;
+    node["realized"]["realized_map_count"] =
+        record.realized.realized_map_count;
+    node["realized"]["realization_pass_count"] =
+        record.realized.realization_pass_count;
+    node["realized"]["last_pass_active_map_indices"] =
+        record.realized.last_pass_active_map_indices;
     node["realized"]["total_pixel_count"] =
         record.realized.total_pixel_count;
     node["realized"]["formally_supported_pixel_count"] =
@@ -235,6 +249,32 @@ inline YAML::Node jinc_observation_state_node(
     node["realized"]["rho_resolution_bound_max_hex"] =
         mapmaking::jinc_double_hex(
             record.realized.rho_resolution_bound_max);
+    node["realized"]["map_summaries"] =
+        YAML::Node(YAML::NodeType::Sequence);
+    for (std::size_t index = 0;
+         index < record.realized.map_summaries.size(); ++index) {
+        const auto &map = record.realized.map_summaries[index];
+        YAML::Node map_node;
+        map_node["map_index"] = index;
+        map_node["realized"] = map.realized;
+        map_node["realization_pass"] = map.realization_pass;
+        map_node["total_pixel_count"] = map.total_pixel_count;
+        map_node["formally_supported_pixel_count"] =
+            map.formally_supported_pixel_count;
+        map_node["exact_cancellation_pixel_count"] =
+            map.exact_cancellation_pixel_count;
+        map_node["unresolved_cancellation_pixel_count"] =
+            map.unresolved_cancellation_pixel_count;
+        map_node["invalid_q_pixel_count"] = map.invalid_q_pixel_count;
+        map_node["nonfinite_accumulator_pixel_count"] =
+            map.nonfinite_accumulator_pixel_count;
+        map_node["contributor_count_max"] = map.contributor_count_max;
+        map_node["rho_resolution_bound_max"] =
+            map.rho_resolution_bound_max;
+        map_node["rho_resolution_bound_max_hex"] =
+            mapmaking::jinc_double_hex(map.rho_resolution_bound_max);
+        node["realized"]["map_summaries"].push_back(map_node);
+    }
     node["realized"]["product_joins"] =
         YAML::Node(YAML::NodeType::Sequence);
     for (const auto &join : record.realized.product_joins) {

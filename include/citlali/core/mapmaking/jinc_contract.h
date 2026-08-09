@@ -238,8 +238,24 @@ struct JincProductJoin {
     std::string content_digest;
 };
 
+struct JincMapRealizedSummary {
+    bool realized = false;
+    std::size_t realization_pass = 0;
+    std::size_t total_pixel_count = 0;
+    std::size_t formally_supported_pixel_count = 0;
+    std::size_t exact_cancellation_pixel_count = 0;
+    std::size_t unresolved_cancellation_pixel_count = 0;
+    std::size_t invalid_q_pixel_count = 0;
+    std::size_t nonfinite_accumulator_pixel_count = 0;
+    std::size_t contributor_count_max = 0;
+    double rho_resolution_bound_max = 0.0;
+};
+
 struct JincRealizedSummary {
     std::size_t map_count = 0;
+    std::size_t realized_map_count = 0;
+    std::size_t realization_pass_count = 0;
+    std::vector<std::size_t> last_pass_active_map_indices;
     std::size_t total_pixel_count = 0;
     std::size_t formally_supported_pixel_count = 0;
     std::size_t exact_cancellation_pixel_count = 0;
@@ -250,6 +266,7 @@ struct JincRealizedSummary {
     double rho_resolution_bound_max = 0.0;
     std::string summation_method{jinc_summation_identity};
     std::string conditioning_policy{jinc_conditioning_identity};
+    std::vector<JincMapRealizedSummary> map_summaries;
     std::vector<JincProductJoin> product_joins;
 };
 
@@ -271,7 +288,10 @@ struct JincObservationProvenance {
     std::string coverage_estimator{jinc_coverage_identity};
     std::string kernel_response{jinc_kernel_identity};
     std::string kernel_template_identity = "unavailable";
+    std::string processing_configuration_identity = "unavailable";
     std::string processing_realization_identity = "unavailable";
+    std::string coverage_sample_frequency_identity = "unavailable";
+    double coverage_sample_frequency_hz = 0.0;
     JincRealizedSummary realized;
 };
 
@@ -306,8 +326,8 @@ struct JincProducts {
         formal_support.assign(count, JincMaskPlane::Zero(rows, cols));
         provenance.available = true;
         provenance.realized.map_count = count;
-        provenance.realized.total_pixel_count = static_cast<std::size_t>(
-            map_count * rows * cols);
+        provenance.realized.map_summaries.assign(
+            count, JincMapRealizedSummary{});
     }
 };
 
@@ -390,6 +410,83 @@ std::string jinc_matrix_digest(const Matrix &matrix) {
         }
     }
     return "sha256:" + digest.finish();
+}
+
+inline std::string jinc_realization_identity_digest(
+    std::string_view identity,
+    const std::vector<std::pair<std::string, std::string>> &ordered_facts) {
+    citlali::utils::Sha256 digest;
+    auto add = [&](std::string_view value) {
+        digest.update(std::to_string(value.size()));
+        digest.update(":");
+        digest.update(value);
+        digest.update(";");
+    };
+    add(std::string{jinc_contract_version});
+    add(identity);
+    for (const auto &[name, value] : ordered_facts) {
+        add(name);
+        add(value);
+    }
+    return std::string{identity} + ":sha256:" + digest.finish();
+}
+
+inline std::string jinc_processing_realization_identity(
+    const std::string &configuration_identity, bool execution_completed,
+    std::optional<std::size_t> completed_scan_count,
+    std::optional<std::size_t> dynamic_notch_count) {
+    const auto optional_text = [](const auto &value) {
+        return value ? std::to_string(*value)
+                     : std::string{"unavailable"};
+    };
+    return jinc_realization_identity_digest(
+        "actual-processing-realization-v2",
+        {{"configuration_identity", configuration_identity},
+         {"raw_execution_completed",
+          execution_completed ? "true" : "false"},
+         {"completed_scan_count", optional_text(completed_scan_count)},
+         {"dynamic_notch_count", optional_text(dynamic_notch_count)}});
+}
+
+template <class Kernel>
+std::string jinc_kernel_template_identity(const Kernel &kernel,
+                                          bool enabled) {
+    std::vector<std::pair<std::string, std::string>> facts{
+        {"enabled", enabled ? "true" : "false"},
+        {"type", kernel.type},
+    };
+    if (enabled) {
+        std::ostringstream extensions;
+        for (const auto &name : kernel.img_ext_names) {
+            if (extensions.tellp() > 0) {
+                extensions << ',';
+            }
+            extensions << name;
+        }
+        facts.insert(
+            facts.end(),
+            {{"filepath", kernel.filepath},
+             {"fwhm_rad", jinc_double_hex(kernel.fwhm_rad)},
+             {"sigma_rad", jinc_double_hex(kernel.sigma_rad)},
+             {"sigma_limit", jinc_double_hex(kernel.sigma_limit)},
+             {"map_grouping", kernel.map_grouping},
+             {"image_extensions", extensions.str()},
+             {"source_lat_digest", jinc_matrix_digest(kernel.source_lat)},
+             {"source_lon_digest", jinc_matrix_digest(kernel.source_lon)},
+             {"source_a_fwhm_digest",
+              jinc_matrix_digest(kernel.source_a_fwhm_rad)},
+             {"source_b_fwhm_digest",
+              jinc_matrix_digest(kernel.source_b_fwhm_rad)},
+             {"source_valid_digest",
+              jinc_matrix_digest(kernel.source_valid)}});
+        for (std::size_t image = 0; image < kernel.images.size(); ++image) {
+            facts.emplace_back(
+                "image_" + std::to_string(image) + "_digest",
+                jinc_matrix_digest(kernel.images[image]));
+        }
+    }
+    return jinc_realization_identity_digest(
+        "actual-upstream-kernel-template-v1", facts);
 }
 
 inline bool jinc_formal_support_exact(

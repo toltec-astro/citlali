@@ -29,21 +29,23 @@ inline void validate(const MapmakingConfig &config, ValidationReport &report) {
         config.crval2_j2000, {"mapmaking", "crval2_J2000"}, report);
     check_finite_value(config.tan_ra, {"mapmaking", "tan_ra"}, report);
     check_finite_value(config.tan_dec, {"mapmaking", "tan_dec"}, report);
-    check_greater_than(
-        config.jinc_filter.r_max, 0.0,
-        {"mapmaking", "jinc_filter", "r_max"}, report);
-    check_minimum(
-        config.jinc_filter.subpixel_n, 1,
-        {"mapmaking", "jinc_filter", "subpixel_n"}, report);
-    for (const auto &[array_name, shape] :
-         config.jinc_filter.shape_params) {
-        for (std::size_t index = 0; index < shape.size(); ++index) {
-            check_greater_than(
-                shape[index],
-                0.0,
-                {"mapmaking", "jinc_filter", "shape_params",
-                 array_name, std::to_string(index)},
-                report);
+    if (is_jinc_map_method(config.method)) {
+        check_greater_than(
+            config.jinc_filter.r_max, 0.0,
+            {"mapmaking", "jinc_filter", "r_max"}, report);
+        check_minimum(
+            config.jinc_filter.subpixel_n, 1,
+            {"mapmaking", "jinc_filter", "subpixel_n"}, report);
+        for (const auto &[array_name, shape] :
+             config.jinc_filter.shape_params) {
+            for (std::size_t index = 0; index < shape.size(); ++index) {
+                check_greater_than(
+                    shape[index],
+                    0.0,
+                    {"mapmaking", "jinc_filter", "shape_params",
+                     array_name, std::to_string(index)},
+                    report);
+            }
         }
     }
     check_minimum(
