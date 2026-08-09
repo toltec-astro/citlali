@@ -179,9 +179,28 @@ would extend the map-center point-source estimate across position,
 scale/morphology, amplitude, band/mode, and realization uncertainty. It is not
 authorized or launched and is not an ordinary PTC repair, operation, or F005
 closure gate unless a consumer requests a stronger measured claim. D001/D002
-and the immutable audit remain unchanged; D004--D006 remain unresolved. No
+and the immutable audit remain unchanged; D005--D006 remain unresolved. No
 repair, Unity, reduction, MAP/BEAM/downstream work, re-audit, production
 change, external contact, or push is authorized.
+
+## 2026-08-09 SCI-PTC-001 D004 Owner Amendment
+
+The owner approved
+[`SCI-PTC-001-D004`](audits/packages/SCI-PTC-001_D004_OWNER_AMENDMENT_2026-08-09.md).
+Existing PTC detector-weight families remain valid scalar analysis and
+gridding coefficients. Every family must publish its identity, units,
+normalization scope, lifecycle, and applied factors. The coefficients are not
+formal precision, inverse variance, significance, or independent-noise
+authority unless the complete stronger conditions are independently proved.
+
+Full covariance construction or retention is not mandatory; unavailable
+covariance must be explicit. Existing coefficient-weighted mapmaking remains
+permitted under these semantics. F006 remains a P1 implementation and
+re-audit gap, D005--D006 remain unresolved, and the package axes remain
+`proposed`, `nonconformant`, `in_progress`, and `existing_use_only`, with
+verdict `amend`. D001--D003 and their bytes and meanings are unchanged. No PTC
+repair, optional characterization, Unity, reduction, downstream work,
+re-audit, production change, merge, or push is authorized.
 
 ## 2026-08-09 SCI-MAP-002 Third-Successor Acceptance
 

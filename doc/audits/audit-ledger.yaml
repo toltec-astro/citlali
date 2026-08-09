@@ -9,7 +9,7 @@ current_program_checkpoint:
   record_path: >-
     doc/audits/packages/SCIENTIFIC_AUDIT_PROGRAM_CHECKPOINT_2026-08-08.md
   record_sha256: >-
-    088ccff6c1b83cce8bec4ce241f112d9c75222cad7bd9a787a52c2cfc6002a08
+    79154f6a4eaf3d33718ab4844be887ddfb9b6e942602e018b86ba87d90a4b3a1
   canonical_application_mainline:
     ref: origin/codex/refactor-mainline
     commit: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
@@ -35,7 +35,7 @@ current_program_checkpoint:
     ENG-STATE-001: static_package_accepted_F001_F002_open
   queue:
     - SCI-RTC-001_phase_independent_repair_handoff_ready_not_launched
-    - SCI-PTC-001_D001_D003_approved_D004_D006_pending_optional_transfer_plan_not_launched
+    - SCI-PTC-001_D001_D004_approved_D005_D006_pending_optional_transfer_plan_not_launched
     - SCI-VAL-001_unlaunched_PTC_D002_successor_handoff_pending_recipient_review
     - SCI-BEAM-001_held
     - SCI-TEL-INPUT-001_audit_owner_accepted_repair_scope_unresolved
@@ -5161,7 +5161,7 @@ packages:
     outputs:
       - cleaned signal with cause- and decision-stage-specific validity and eligibility
       - conditioned/local response or explicit response unavailability and uncertainty status
-      - typed nonprecision detector coefficients or proved precision plus retained covariance
+      - typed scalar detector coefficients with explicit covariance availability; stronger precision only when independently proved
       - immutable full/mini/diagnostic/simulated/processed products and four-state provenance
 
     upstream_dependencies:
@@ -5254,7 +5254,7 @@ packages:
       path: doc/audits/proposals/SCI-PTC-001_LEDGER_PROPOSAL_2026-08-08.yaml
       sha256: 8daabce7d0d585e82d233dadb3f535bb993a28c62acb351c4474272c525eee63
       disposition: >-
-        applied_with_coordinator_identity_and_controlled_status_normalization_then_D001_D003_owner_amendments
+        applied_with_coordinator_identity_and_controlled_status_normalization_then_D001_D004_owner_amendments
     successor_owner_amendment:
       id: SCI-PTC-001-D002-OWNER-AMENDMENT-2026-08-08
       path: doc/audits/packages/SCI-PTC-001_D002_OWNER_AMENDMENT_2026-08-08.md
@@ -5297,9 +5297,34 @@ packages:
         repair_gate: false
         ordinary_operation_gate: false
         separate_owner_launch_required: true
+    D004_owner_amendment:
+      id: SCI-PTC-001-D004-OWNER-AMENDMENT-2026-08-09
+      path: >-
+        doc/audits/packages/SCI-PTC-001_D004_OWNER_AMENDMENT_2026-08-09.md
+      sha256: >-
+        dcc49babce9a89c242780f3a8bfba1f0187e4c05df2a0e50a45d55be5168b361
+      decision_date: 2026-08-09
+      status: applied_to_canonical_coordination_state
+      immutable_audit_D001_D003_artifacts_changed: false
+      coefficient_class: scalar_analysis_and_gridding_coefficient
+      required_family_metadata:
+        - identity
+        - units
+        - normalization_scope
+        - lifecycle
+        - applied_factors
+      prohibited_without_independent_complete_proof:
+        - formal_precision
+        - inverse_variance
+        - significance
+        - independent_noise_authority
+      covariance:
+        full_construction_or_retention_required: false
+        unavailable_status_must_be_explicit: true
+      existing_coefficient_weighted_mapmaking: permitted_under_approved_scalar_semantics
 
     dispatch:
-      status: audit_integrated_D001_D003_approved_D004_D006_pending
+      status: audit_integrated_D001_D004_approved_D005_D006_pending
       launch_date: 2026-08-08
       launch_effort: ultra
       execution_profile: sol_ultra_no_delegation
@@ -5608,13 +5633,19 @@ packages:
         confidence: high
         status: open
         owner: PTC_MAP_NOI_weight_and_covariance_owners
-        dependency: SCI-PTC-001-D004, SCI-CAL-001, and SCI-MAP-001
+        dependency: approved SCI-PTC-001-D004; SCI-CAL-001 and SCI-MAP-001 stronger-claim dependencies
+        owner_policy_status: resolved_by_D004_implementation_and_reaudit_pending
         summary: >-
-          Scalar coefficient families lack complete factor units, normalization,
-          lifecycle, marginal-precision proof, and retained covariance.
+          Scalar coefficient families lack complete published family identity,
+          units, normalization scope, lifecycle, applied factors, and explicit
+          covariance availability.
         closure_gate: >-
-          Approved D004, exact factor/unit/binding fixtures, covariance
-          construction/retention, and consumer tests prove only declared meanings.
+          Publish and test each approved scalar coefficient family identity,
+          units, normalization scope, lifecycle, applied factors, and covariance
+          status. Consumer tests must preserve existing coefficient-weighted
+          mapmaking while failing closed for unproved precision,
+          inverse-variance, significance, independent-noise, or covariance
+          claims. Full covariance construction or retention is not required.
       - id: SCI-PTC-001-F007
         class: contract_gap
         severity: P1
@@ -5740,13 +5771,6 @@ packages:
         optional exact-domain characterization and applicable Tier-A review
 
     unresolved_scientific_decisions:
-      - id: SCI-PTC-001-D004
-        owner: PTC_MAP_NOI_weight_and_covariance_owners
-        question: factor identity, units, normalization, lifecycle, precision conditions, and covariance availability
-        proposed_disposition: >-
-          Type all current families as nonprecision unless complete precision
-          conditions are proved. Covariance may be unavailable; full covariance
-          construction/retention is not mandatory when stronger claims fail closed.
       - id: SCI-PTC-001-D005
         owner: PTC_product_and_provenance_owner
         question: bounded product identity, extent, detector binding, provenance, and completion minimum
@@ -5831,6 +5855,27 @@ packages:
           sha256: >-
             2efb93461918fa39a903bd95737a43276f080c0e44782c7866026fe78a7e7c71
           required_only_for: stronger_measured_transfer_claim_in_exact_declared_domain
+      - id: SCI-PTC-001-D004
+        owner: PTC_MAP_NOI_weight_and_covariance_owners
+        disposition: approved_with_owner_amendment
+        decision_date: 2026-08-09
+        authority: SCI-PTC-001-D004-OWNER-AMENDMENT-2026-08-09
+        authority_path: >-
+          doc/audits/packages/SCI-PTC-001_D004_OWNER_AMENDMENT_2026-08-09.md
+        authority_sha256: >-
+          dcc49babce9a89c242780f3a8bfba1f0187e4c05df2a0e50a45d55be5168b361
+        approved_contract: >-
+          Existing PTC detector-weight families remain valid scalar analysis
+          and gridding coefficients. Publish each family identity, units,
+          normalization scope, lifecycle, and applied factors. Do not label or
+          consume them as formal precision, inverse variance, significance, or
+          independent-noise authority unless the complete stronger conditions
+          are independently proved. Full covariance construction or retention
+          is not mandatory; unavailable covariance must be explicit. Existing
+          coefficient-weighted mapmaking remains permitted under these
+          semantics.
+        full_covariance_required: false
+        unavailable_covariance_explicit: true
 
     local_evidence:
       id: SCI-PTC-001-LOCAL-001
