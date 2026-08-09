@@ -29,7 +29,7 @@ Identity digests are:
 - diagnostic tool SHA-256:
   `9c464ff2bb489fadcf43fc8ee7f873bb7a967d5ed1d82d59a42cb1c46fdae93a`;
 - result `SHA256SUMS` SHA-256:
-  `cdf313d08d22328698a384b0f61f05c935b85f10f3f7585e774794d9a9d1602e`.
+  `ab77361e5f330e6ace5bc76ca5827df7d65bfab7bd6da137421cfc8a65a5f50c`.
 
 `same_t0_cadence_lattice_protocol.json` contains the seven individual input
 digests. `same_t0_cadence_lattice_result_2026-08-08/input_identity.json`
