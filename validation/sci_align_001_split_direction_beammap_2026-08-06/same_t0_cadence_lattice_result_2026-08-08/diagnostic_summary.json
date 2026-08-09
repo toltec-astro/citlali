@@ -1,0 +1,243 @@
+{
+  "analysis_scope": "local_read_only_same_t0_pairwise_cadence_lattice",
+  "association_class_change_count": 0,
+  "association_class_counts": {
+    "same_row_only": 33
+  },
+  "cadence_sec": 0.008192,
+  "fixed_minus_one_residual_rms_sec": 0.008668722897446073,
+  "frozen_group": {
+    "expected_network_ids": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12
+    ],
+    "group_id": "roach-t0:44cf69da97d473965ef6",
+    "maps": [
+      {
+        "map_id": "map:912d0ccf8b3539501f6c",
+        "observation_number": 148670
+      },
+      {
+        "map_id": "map:1971b4dfddbc99932afb",
+        "observation_number": 150819
+      },
+      {
+        "map_id": "map:d5fec4dcd0f16b424fb6",
+        "observation_number": 151126
+      }
+    ]
+  },
+  "full_cadence_remainder_rms_sec": 0.0027329287144323166,
+  "full_cadence_within_1p96_diagonal_se_count": 8,
+  "half_cadence_remainder_rms_sec": 0.000867820900618981,
+  "half_cadence_sec": 0.004096,
+  "half_cadence_within_1p96_diagonal_se_count": 23,
+  "increment_anomaly_class_change_count": 12,
+  "increment_anomaly_class_counts": {
+    "consecutive_only": 1,
+    "mixed_isolated_and_consecutive": 8,
+    "none": 24
+  },
+  "input_identities": [
+    {
+      "name": "corpus_summary.json",
+      "path": "/Users/gwilson/foo/sci_align_001_campaign13/aggregate_campaign13_combined_11_of_13_complete_blocks_2026-08-06/corpus_summary.json",
+      "role": "aggregate schema, cadence, and interpretation boundary",
+      "sha256": "0b0f38aa8c8fe9cc0acd604ea5304d7b3fceefdf78d987b5621c382b86b82820",
+      "size_bytes": 19031
+    },
+    {
+      "name": "map_summary.csv",
+      "path": "/Users/gwilson/foo/sci_align_001_campaign13/aggregate_campaign13_combined_11_of_13_complete_blocks_2026-08-06/map_summary.csv",
+      "role": "map identity and pooled timing cross-check",
+      "sha256": "0009ee9dfca7def6fb800186f7bbb3eb594b00fbc6d0aa55e38764d39891c582",
+      "size_bytes": 16961
+    },
+    {
+      "name": "network_map_results.csv",
+      "path": "/Users/gwilson/foo/sci_align_001_campaign13/aggregate_campaign13_combined_11_of_13_complete_blocks_2026-08-06/network_map_results.csv",
+      "role": "per-network timing, native phase, slot residual, and delivered association fields",
+      "sha256": "670253f3f3cbbc4bd61ac43cfd328f5fdb8c41b64846beb5cd82523b91c25952",
+      "size_bytes": 162550
+    },
+    {
+      "name": "pps_time_increment_occurrence.csv",
+      "path": "/Users/gwilson/foo/sci_align_001_campaign13/aggregate_campaign13_combined_11_of_13_complete_blocks_2026-08-06/pps_time_increment_occurrence.csv",
+      "role": "per-map and per-network PPS-time increment anomaly census",
+      "sha256": "415760ea6c3fe6153a980c006584190089d7475e71f29e606ac6990ca0a63595",
+      "size_bytes": 19780
+    },
+    {
+      "name": "raw_pps_time_increment_anomalies.csv",
+      "path": "/Users/gwilson/foo/sci_align_001_campaign13/aggregate_campaign13_combined_11_of_13_complete_blocks_2026-08-06/raw_pps_time_increment_anomalies.csv",
+      "role": "delivered anomaly association and cluster-class cross-check",
+      "sha256": "97903900a22ffbf391054a13f75f93b38b6a888a40b36851b1c1048b679bd5bf",
+      "size_bytes": 836329
+    },
+    {
+      "name": "session_registry.csv",
+      "path": "/Users/gwilson/foo/sci_align_001_campaign13/aggregate_campaign13_combined_11_of_13_complete_blocks_2026-08-06/session_registry.csv",
+      "role": "frozen T0-vector group and map identity",
+      "sha256": "bf52b8b24b0a9cb4d85fb8f1577c82bd76d1ac2aeec28608830e06a7a593b15a",
+      "size_bytes": 3189
+    },
+    {
+      "name": "timing_phase_results.csv",
+      "path": "/Users/gwilson/foo/sci_align_001_campaign13/aggregate_campaign13_combined_11_of_13_complete_blocks_2026-08-06/timing_phase_results.csv",
+      "role": "raw-phase and map-level timing cross-check",
+      "sha256": "23a211126998b8ad0334d1235c4f8eb25c9911d7b6167f08dba057f4e63dd984",
+      "size_bytes": 120479
+    }
+  ],
+  "interpretation_boundaries": {
+    "adjacent_frame": "Report nearest integer-cadence index and residual after the fixed minus-one slot prediction; do not claim an FPGA association from delivered transition pairing.",
+    "half_cadence_semantics": "Report nearest half-cadence index and residual; a common start/end/centroid convention cancels in pairwise differences and cannot be proved or excluded here.",
+    "increment_anomaly": "Compare anomaly-class changes with all unchanged-network controls; anomaly occurrence is descriptive and never a timing-based cut.",
+    "native_phase": "Compare wrapped phase change with measured timing change and the fixed minus-one slot residual; no physical event meaning is assigned to the phase field.",
+    "universal_correction": "prohibited"
+  },
+  "joined_record_count": 33,
+  "median_abs_pairwise_native_phase_change_sec": 1.6733668307055208e-05,
+  "median_abs_pairwise_timing_change_sec": 0.00847668948586754,
+  "odd_half_cadence_index_count": 21,
+  "pair_summaries": [
+    {
+      "association_class_changed_count": 0,
+      "clean_control_median_abs_fixed_minus_one_residual_sec": 0.011585601568791064,
+      "clean_control_network_count": 6,
+      "fixed_minus_one_residual_rms_sec": 0.011897669072905502,
+      "full_cadence_remainder_rms_sec": 0.003334106754737593,
+      "full_cadence_within_1p96_diagonal_se_count": 0,
+      "half_cadence_remainder_rms_sec": 0.0010007738682138805,
+      "half_cadence_within_1p96_diagonal_se_count": 8,
+      "increment_anomaly_class_changed_count": 5,
+      "median_abs_delta_native_phase_wrapped_sec": 1.7701286644823504e-05,
+      "median_abs_delta_timing_sec": 0.014797973030640392,
+      "median_delta_slot_residual_sec": 0.002556980239866443,
+      "median_delta_timing_sec": -0.014797973030640392,
+      "median_fixed_minus_one_residual_sec": -0.012237805761445146,
+      "modal_half_cadence_index": -3,
+      "modal_half_cadence_index_count": 11,
+      "modal_half_cadence_index_fraction": 1.0,
+      "modal_half_cadence_index_unique": true,
+      "nearest_full_cadence_index_counts_json": "{\"-2\": 5, \"-1\": 6}",
+      "nearest_half_cadence_index_counts_json": "{\"-3\": 11}",
+      "network_count": 11,
+      "observation_a": 148670,
+      "observation_b": 150819,
+      "odd_half_cadence_index_count": 11
+    },
+    {
+      "association_class_changed_count": 0,
+      "clean_control_median_abs_fixed_minus_one_residual_sec": 0.008143270199816886,
+      "clean_control_network_count": 6,
+      "fixed_minus_one_residual_rms_sec": 0.008456059297684164,
+      "full_cadence_remainder_rms_sec": 0.0006577370163361312,
+      "full_cadence_within_1p96_diagonal_se_count": 8,
+      "half_cadence_remainder_rms_sec": 0.0006577370163361312,
+      "half_cadence_within_1p96_diagonal_se_count": 8,
+      "increment_anomaly_class_changed_count": 5,
+      "median_abs_delta_native_phase_wrapped_sec": 2.3753332363646643e-05,
+      "median_abs_delta_timing_sec": 0.008444457811514304,
+      "median_delta_slot_residual_sec": 0.0001950260222832712,
+      "median_delta_timing_sec": -0.008444457811514304,
+      "median_fixed_minus_one_residual_sec": -0.008270742440229715,
+      "modal_half_cadence_index": -2,
+      "modal_half_cadence_index_count": 11,
+      "modal_half_cadence_index_fraction": 1.0,
+      "modal_half_cadence_index_unique": true,
+      "nearest_full_cadence_index_counts_json": "{\"-1\": 11}",
+      "nearest_half_cadence_index_counts_json": "{\"-2\": 11}",
+      "network_count": 11,
+      "observation_a": 148670,
+      "observation_b": 151126,
+      "odd_half_cadence_index_count": 0
+    },
+    {
+      "association_class_changed_count": 0,
+      "clean_control_median_abs_fixed_minus_one_residual_sec": 0.0032341778584734256,
+      "clean_control_network_count": 6,
+      "fixed_minus_one_residual_rms_sec": 0.0035186363557200215,
+      "full_cadence_remainder_rms_sec": 0.0032951194576009563,
+      "full_cadence_within_1p96_diagonal_se_count": 0,
+      "half_cadence_remainder_rms_sec": 0.0009083903503972774,
+      "half_cadence_within_1p96_diagonal_se_count": 7,
+      "increment_anomaly_class_changed_count": 2,
+      "median_abs_delta_native_phase_wrapped_sec": 1.4609734327060593e-05,
+      "median_abs_delta_timing_sec": 0.0068434946962753415,
+      "median_delta_slot_residual_sec": -0.00303034875418015,
+      "median_delta_timing_sec": 0.0068434946962753415,
+      "median_fixed_minus_one_residual_sec": 0.00324810430373851,
+      "modal_half_cadence_index": 1,
+      "modal_half_cadence_index_count": 10,
+      "modal_half_cadence_index_fraction": 0.9090909090909091,
+      "modal_half_cadence_index_unique": true,
+      "nearest_full_cadence_index_counts_json": "{\"0\": 8, \"1\": 3}",
+      "nearest_half_cadence_index_counts_json": "{\"0\": 1, \"1\": 10}",
+      "network_count": 11,
+      "observation_a": 150819,
+      "observation_b": 151126,
+      "odd_half_cadence_index_count": 10
+    }
+  ],
+  "pairwise_record_count": 33,
+  "protocol_sha256": "4ba36fada3ae0dde2df93c8850734a2da3603b726937891eddc6722f6a4c4b7a",
+  "schema": "sci-align-001-same-t0-cadence-lattice-result-v1",
+  "tool": {
+    "path": "/Users/gwilson/GitHub/citlali-refactor-sci-align-split-direction/tools/diagnostics/analyze_sci_align_001_same_t0_cadence_lattice.py",
+    "sha256": "9c464ff2bb489fadcf43fc8ee7f873bb7a967d5ed1d82d59a42cb1c46fdae93a"
+  },
+  "transitive_half_cadence_state": {
+    "all_pair_modes_unique": true,
+    "complete": true,
+    "pair_checks": [
+      {
+        "consistent": true,
+        "modal_half_cadence_index": -3,
+        "network_count": 11,
+        "observation_a": 148670,
+        "observation_b": 150819,
+        "state_predicted_half_cadence_index": -3,
+        "support_count": 11,
+        "unique": true
+      },
+      {
+        "consistent": true,
+        "modal_half_cadence_index": -2,
+        "network_count": 11,
+        "observation_a": 148670,
+        "observation_b": 151126,
+        "state_predicted_half_cadence_index": -2,
+        "support_count": 11,
+        "unique": true
+      },
+      {
+        "consistent": true,
+        "modal_half_cadence_index": 1,
+        "network_count": 11,
+        "observation_a": 150819,
+        "observation_b": 151126,
+        "state_predicted_half_cadence_index": 1,
+        "support_count": 10,
+        "unique": true
+      }
+    ],
+    "reference_observation": 148670,
+    "state_half_cadence_indices": {
+      "148670": 0,
+      "150819": -3,
+      "151126": -2
+    },
+    "transitive": true
+  },
+  "variable_latency_observed_record_count": 0
+}

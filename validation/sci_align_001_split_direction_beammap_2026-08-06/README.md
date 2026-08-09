@@ -215,5 +215,19 @@ universal correction remain unresolved. The checksum-bound review, explicit
 limitations, and proposed smallest local follow-up are recorded in
 `UNTHRESHOLDED_FULL_PTC_EVIDENCE_2026-08-08.md`.
 
+The approved local-only follow-up compares all stable networks in the three
+successful enhanced maps sharing frozen T0-vector group
+`roach-t0:44cf69da97d473965ef6`. The map-pair residuals after the fixed
+minus-one-slot prediction have unique, transitive modal states on the
+4.096-ms half-cadence lattice: 148670 = 0, 150819 = -3, and 151126 = -2.
+Native phase changes are only tens of microseconds, every delivered
+PPS/PpsTime transition association remains same-row, and anomaly-free network
+controls retain the common timing bands. This disfavors native phase, the
+measured slot residual alone, and delivered PPS increment anomalies as the
+primary explanation within this frozen group. It does not establish the
+upstream timestamp event, an FPGA association, a universal state, or a timing
+correction. Exact identities, limitations, and the bounded next owner decision
+are recorded in `SAME_T0_CADENCE_LATTICE_EVIDENCE_2026-08-08.md`.
+
 See `UNITY_RUNBOOK.md` for the owner-run 150819-first campaign and
 `RETURN_BUNDLE_SPEC.md` for return evidence.

@@ -1,0 +1,88 @@
+{
+  "aggregate_root": "/Users/gwilson/foo/sci_align_001_campaign13/aggregate_campaign13_combined_11_of_13_complete_blocks_2026-08-06",
+  "aggregate_sha256sums_sha256": "bb6d821d9103930e94d425b4531a63c4f4b65fcb1aa5f7000afcb416a3e92388",
+  "frozen_group": {
+    "expected_network_ids": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12
+    ],
+    "group_id": "roach-t0:44cf69da97d473965ef6",
+    "maps": [
+      {
+        "map_id": "map:912d0ccf8b3539501f6c",
+        "observation_number": 148670
+      },
+      {
+        "map_id": "map:1971b4dfddbc99932afb",
+        "observation_number": 150819
+      },
+      {
+        "map_id": "map:d5fec4dcd0f16b424fb6",
+        "observation_number": 151126
+      }
+    ]
+  },
+  "inputs": [
+    {
+      "name": "corpus_summary.json",
+      "path": "/Users/gwilson/foo/sci_align_001_campaign13/aggregate_campaign13_combined_11_of_13_complete_blocks_2026-08-06/corpus_summary.json",
+      "role": "aggregate schema, cadence, and interpretation boundary",
+      "sha256": "0b0f38aa8c8fe9cc0acd604ea5304d7b3fceefdf78d987b5621c382b86b82820",
+      "size_bytes": 19031
+    },
+    {
+      "name": "map_summary.csv",
+      "path": "/Users/gwilson/foo/sci_align_001_campaign13/aggregate_campaign13_combined_11_of_13_complete_blocks_2026-08-06/map_summary.csv",
+      "role": "map identity and pooled timing cross-check",
+      "sha256": "0009ee9dfca7def6fb800186f7bbb3eb594b00fbc6d0aa55e38764d39891c582",
+      "size_bytes": 16961
+    },
+    {
+      "name": "network_map_results.csv",
+      "path": "/Users/gwilson/foo/sci_align_001_campaign13/aggregate_campaign13_combined_11_of_13_complete_blocks_2026-08-06/network_map_results.csv",
+      "role": "per-network timing, native phase, slot residual, and delivered association fields",
+      "sha256": "670253f3f3cbbc4bd61ac43cfd328f5fdb8c41b64846beb5cd82523b91c25952",
+      "size_bytes": 162550
+    },
+    {
+      "name": "pps_time_increment_occurrence.csv",
+      "path": "/Users/gwilson/foo/sci_align_001_campaign13/aggregate_campaign13_combined_11_of_13_complete_blocks_2026-08-06/pps_time_increment_occurrence.csv",
+      "role": "per-map and per-network PPS-time increment anomaly census",
+      "sha256": "415760ea6c3fe6153a980c006584190089d7475e71f29e606ac6990ca0a63595",
+      "size_bytes": 19780
+    },
+    {
+      "name": "raw_pps_time_increment_anomalies.csv",
+      "path": "/Users/gwilson/foo/sci_align_001_campaign13/aggregate_campaign13_combined_11_of_13_complete_blocks_2026-08-06/raw_pps_time_increment_anomalies.csv",
+      "role": "delivered anomaly association and cluster-class cross-check",
+      "sha256": "97903900a22ffbf391054a13f75f93b38b6a888a40b36851b1c1048b679bd5bf",
+      "size_bytes": 836329
+    },
+    {
+      "name": "session_registry.csv",
+      "path": "/Users/gwilson/foo/sci_align_001_campaign13/aggregate_campaign13_combined_11_of_13_complete_blocks_2026-08-06/session_registry.csv",
+      "role": "frozen T0-vector group and map identity",
+      "sha256": "bf52b8b24b0a9cb4d85fb8f1577c82bd76d1ac2aeec28608830e06a7a593b15a",
+      "size_bytes": 3189
+    },
+    {
+      "name": "timing_phase_results.csv",
+      "path": "/Users/gwilson/foo/sci_align_001_campaign13/aggregate_campaign13_combined_11_of_13_complete_blocks_2026-08-06/timing_phase_results.csv",
+      "role": "raw-phase and map-level timing cross-check",
+      "sha256": "23a211126998b8ad0334d1235c4f8eb25c9911d7b6167f08dba057f4e63dd984",
+      "size_bytes": 120479
+    }
+  ],
+  "protocol_path": "/Users/gwilson/GitHub/citlali-refactor-sci-align-split-direction/validation/sci_align_001_split_direction_beammap_2026-08-06/same_t0_cadence_lattice_protocol.json",
+  "protocol_sha256": "4ba36fada3ae0dde2df93c8850734a2da3603b726937891eddc6722f6a4c4b7a",
+  "schema": "sci-align-001-same-t0-input-identity-v1"
+}
