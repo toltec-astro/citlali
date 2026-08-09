@@ -71,6 +71,18 @@ VAL ownership of their adjacent contracts. The
 does not dispatch the audit, authorize TolTECA or Citlali edits, request Unity,
 or approve a timing correction. Existing use remains `existing_use_only`.
 
+On 2026-08-09 the owner adopted the
+[ALIGN-deferred compatibility boundary](packages/ALIGN_DEFERRED_COMPATIBILITY_BOUNDARY_OWNER_POLICY_2026-08-09.md).
+The exact assigned-time grid is a compatibility interface, never proof of the
+physical integration event. The frozen, not-yet-launched TEL packet is
+[`SCI_TEL_INPUT_001_AUDIT_PROMPT.md`](prompts/SCI_TEL_INPUT_001_AUDIT_PROMPT.md)
+with
+[`SCI-TEL-INPUT-001_INBOX_SOURCE_SET_MANIFEST_2026-08-09.yaml`](handoffs/SCI-TEL-INPUT-001/SCI-TEL-INPUT-001_INBOX_SOURCE_SET_MANIFEST_2026-08-09.yaml).
+ALIGN `08f0a673...` remains quarantined post-core evidence and an unavailable
+dependency, not a correction or pre-core authority. The
+[phase-independent RTC repair handoff](packages/SCI-RTC-001_PHASE_INDEPENDENT_BOUNDED_REPAIR_HANDOFF_2026-08-09.md)
+is also prepared but unlaunched. BEAM remains held.
+
 ## Purpose and non-goals
 
 The program exists to make the claimed estimator, its uncertainty and
@@ -583,13 +595,13 @@ package but does not define their estimators.
 | Package ID | Tier | Bounded package | Primary upstream packages | Queue |
 | --- | --- | --- | --- | --- |
 | `SCI-MAP-001` | A | Shared/naive mapmaking signal, formal weight, kernel, hits/coverage, validity, and observation coaddition | `SCI-CAL-001`, `SCI-AST-001`, `SCI-PTC-001`, `SCI-VAL-001` may begin as explicit abstract inputs | First new audit |
-| `SCI-TEL-INPUT-001` | B | Raw telescope-file association, TolTECA preparation, row/time identity, allowed mutation, provenance, and Citlali admission | raw telescope producer event semantics | Cross-repository foundation; registered, not dispatched |
+| `SCI-TEL-INPUT-001` | B | Raw telescope-file association, TolTECA preparation, row/time identity, allowed mutation, provenance, and Citlali admission | raw telescope producer event semantics unavailable; exact assigned-time compatibility interface only | Cross-repository foundation; frozen High dispatch ready, not launched |
 | `SCI-ALIGN-001` | A | Sample/telescope alignment, scan slicing, and gap interpolation | `SCI-TEL-INPUT-001` | Foundation wave 1 |
 | `SCI-CAL-001` | A | Detector calibration, extinction, flux scaling, and map-unit transfer | `SCI-ALIGN-001` | Foundation wave 1 |
-| `SCI-AST-001` | A | Pointing corrections, detector coordinates, frames, and WCS | `SCI-ALIGN-001` | Foundation wave 1 |
+| `SCI-AST-001` | A | Pointing corrections, detector coordinates, frames, and WCS | identified ALIGN assigned grid; physical event timing unavailable | Phase-independent coordinate mathematics admissible under separate launch; absolute placement fail closed |
 | `ENG-STATE-001` | C | Requested/effective/realized lifecycle, provenance, required products, and failure flow | architecture and product authorities | Parallel foundation wave |
-| `SCI-RTC-001` | B | Mature RTC filtering/conditioning interface and temporal response | `SCI-ALIGN-001`, `SCI-CAL-001`, `SCI-AST-001` | Foundation wave 2 |
-| `SCI-PTC-001` | B | Mature correlated-mode cleaning, selection, and detector-weight interface | `SCI-RTC-001`, `SCI-AST-001` | Foundation wave 2 |
+| `SCI-RTC-001` | B | Mature RTC filtering/conditioning interface and temporal response | exact assigned-grid compatibility plus conditioned CAL/AST seams | Phase-independent repair handoff ready; not launched |
+| `SCI-PTC-001` | B | Mature correlated-mode cleaning, selection, and detector-weight interface | `SCI-RTC-001`, identified assigned grid; physical event timing unavailable | Internal estimator work admissible under separate launch; no launch here |
 | `SCI-VAL-001` | A | Cross-stage flags, detector/sample eligibility, non-finite policy, and map support | `SCI-ALIGN-001`, `SCI-RTC-001`, `SCI-PTC-001` | Foundation wave 2 |
 | `SCI-MAP-002` | B | Mature JINC gridding interface, normalization, support, and response | approved/shared `SCI-MAP-001` product contract | Map successor wave |
 | `SCI-NOI-001` | A | Jackknife/noise randomization and propagation through selected operators | `SCI-PTC-001`, `SCI-VAL-001`, `SCI-MAP-001` | Uncertainty wave 3 |
@@ -598,7 +610,7 @@ package but does not define their estimators.
 | `SCI-FLT-002` | B | Mature Wiener and lowpass filtering interface, normalization, and response | `SCI-MAP-001`, `SCI-NOI-001`, `SCI-NOI-002` | Product wave 4 |
 | `SCI-SRC-001` | A | Generic map-domain source finding, Gaussian fitting, and source tables | map/filter, `SCI-NOI-002`, `SCI-AST-001` | Product wave 4 |
 | `SCI-MODE-001` | A | Pointing/OOF map fitting, significance, astrometric/shape products | `SCI-MAP-001`, `SCI-NOI-002`, `SCI-AST-001`, `SCI-CAL-001` | Mode wave 4 |
-| `SCI-BEAM-001` | A | Beammap detector-map iteration, priors, fits, flags, sensitivity, and APT products | calibration, astrometry, RTC/PTC, validity, mapmaking | Mode wave 4 |
+| `SCI-BEAM-001` | A | Beammap detector-map iteration, priors, fits, flags, sensitivity, and APT products | calibration, astrometry, RTC/PTC, validity, mapmaking | Held |
 | `SCI-FRUIT-001` | A | Science/pointing map-to-TOD feedback, state, convergence, and restart contract | map, uncertainty, filters, source/point products | Last; filtered inputs fail-closed |
 
 The first audit intentionally derives `SCI-MAP-001` against explicit abstract

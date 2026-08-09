@@ -1,0 +1,187 @@
+format_version: 1
+target_package: SCI-TEL-INPUT-001
+created_date: 2026-08-09
+coordinator_registry_commit: 5647330d056b0b8ba70d280c072a9f968ce062e6
+manifest_status: frozen_ready_not_launched
+launch_authority: false
+
+execution_profile:
+  model: sol
+  effort: high
+  task_shape: coherent_scientific_interface
+  delegation: prohibited
+  costly_or_external_study: none
+
+paired_governing_authorities:
+  citlali_consumer:
+    repository: citlali-refactor
+    ref: origin/codex/refactor-mainline
+    commit: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    parent: 4846fa4db39bd2f7d4ddc41f693836834cbc5ff4
+    tree: ab230a93b8fb310d58aefd7ac5da92e5d5e0f408
+    status: verified_exact_consumer_authority
+  tolteca_producer:
+    repository: tolteca
+    repository_mode: read_only
+    ref: origin/main
+    commit: 2791e6a1e6349ad1d3ac549a648f41cbc51b98c7
+    parent: 4acee1ccb11a13084834149c7d6e6685a87d3d6b
+    tree: 3f3e4b8136bf5528b203cb3bb8b474233bb27a85
+    status: verified_exact_operational_producer_authority
+
+pre_core_authority_objects:
+  - id: ALIGN-ASSIGNED-TIME-COMPAT-001
+    package_id: SCI-ALIGN-001
+    path: >-
+      doc/audits/packages/ALIGN_DEFERRED_COMPATIBILITY_BOUNDARY_OWNER_POLICY_2026-08-09.md
+    sha256: 15e27271f049b7522029240b6f1cc5ff86a8bfb323244663a5dcb2575d771123
+    object_commit_role: dispatch_content_commit_reported_after_commit
+    status: approved_owner_cross_audit_compatibility_authority
+    review_phase: pre_core_authority
+  - id: SCI-TEL-INPUT-001-REG-D001
+    package_id: SCI-TEL-INPUT-001
+    path: >-
+      doc/audits/packages/SCI-TEL-INPUT-001_PRODUCT_REGISTRATION_2026-08-08.md
+    object_commit: 9e175f3bed43366e81267011d7063ca4f39d9176
+    sha256: 512ad1413d2cbb17b1b585e42aa13beaba040fcc4ece095367cb8e8aa5c342fa
+    status: approved_product_registration_and_scope_authority
+    review_phase: pre_core_authority
+  - id: SCI-TEL-INPUT-001-ARCHITECTURE-001
+    path: doc/ARCHITECTURE.md
+    object_commit: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    sha256: d78571ab2da351fb2884b966b7dcbbd9e3d68d0c8c692a18f47159c2c7196f31
+    status: repository_architecture_authority
+    review_phase: pre_core_authority
+  - id: SCI-TEL-INPUT-001-CONVENTIONS-001
+    path: doc/SCIENTIFIC_CONVENTIONS.md
+    object_commit: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    sha256: 1970d7e31ccbcf77f890ea7c0854fde59d25b2fc745f909a74150360605d3049
+    status: repository_scientific_conventions_authority
+    review_phase: pre_core_authority
+
+quarantined_source_set:
+  rule: >-
+    These exact paths are identified and digest-bound but their contents,
+    diffs, callers, tests, and references remain closed until the independent
+    core is frozen and acknowledged.
+  citlali_consumer:
+    commit: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    paths:
+      - path: include/citlali/core/pipeline/telescope_data_source.h
+        blob: 9023dc0704e84f24cd684cf378bc327b903e310a
+        sha256: 5f12e1a690290924f332ace9177b35964f172d87f14b0418ef270953c753b914
+      - path: include/citlali/core/pipeline/telescope_data_loading.h
+        blob: 3c9f8e94dc3251b26ba15265f3a4a9407965a00c
+        sha256: 16ea90b7eefb57024ac7bf438699651a5070b32d3ff0c10e688d2338eb63fd2e
+      - path: include/citlali/core/engine/telescope.h
+        blob: 7291a360f2d5fe581d40dd1abd04760068e9345e
+        sha256: f8c419c85161c9fca550b9b3a644c6c65f3e87d7645e2287d9e57f4e265f21a7
+      - path: src/citlali/core/engine/telescope.cpp
+        blob: 9150043a4290b4b6c54edeb205ce18891b21c883
+        sha256: be518d193154209040196cb47597eeb5c48a6057222723d3432394d7ec1a5f49
+  tolteca_producer:
+    commit: 2791e6a1e6349ad1d3ac549a648f41cbc51b98c7
+    repository_mode: read_only
+    paths:
+      - path: tolteca/reduce/engines/citlali.py
+        blob: b963d6531ec7e0e3df893f88f17962476348da9f
+        sha256: 1e1b311aacdec2874a48858cf3911abf7ff1ae97dfda935f35994aebcf49f4f3
+      - path: tolteca/reduce/toltec/__init__.py
+        blob: 041c2c4c13bb0d172dce06fca077a3ecb7b3fd42
+        sha256: f79ce73fa828c52498126312feff056c92ec647f94946d6052d58fb88c83c13e
+      - path: tolteca/datamodels/fs/toltec.py
+        blob: 484c5f171f209a398fefdfa17700fe03a77d4b1d
+        sha256: 165d21256835300187bdfdeb4968fc8fce1a8885d9df7b7b3b29c97cee69dd44
+      - path: tolteca/datamodels/io/toltec/tel.py
+        blob: d30e600755b2e79effb5a7da66327976d7958b74
+        sha256: 54e2a64d99f734171a42348f05ba562bea1b6d97ae3168cc9c866d505b6ed859
+
+post_core_evidence_objects:
+  - id: SCI-TEL-INPUT-001-ALIGN-SAME-T0-001
+    source_package: SCI-ALIGN-001
+    commit: 92cfa670a33255250895d68aaf26e8b01aa057bd
+    parent: 77c8a1a71cc79eb3aeacbd596c42b6dae33b3aa4
+    tree: 908825af674e3ea19c03cbb54441680dd4d6ad12
+    object: >-
+      92cfa670a33255250895d68aaf26e8b01aa057bd:validation/sci_align_001_split_direction_beammap_2026-08-06/SAME_T0_CADENCE_LATTICE_EVIDENCE_2026-08-08.md
+    sha256: 5ae30ade1a132c5aa8da623cc7b8546c4326daaca3c68f4c4c807fbc5c431cb8
+    source_manifest_object: >-
+      92cfa670a33255250895d68aaf26e8b01aa057bd:validation/sci_align_001_split_direction_beammap_2026-08-06/SHA256SUMS
+    source_manifest_sha256: 649e529718d7487d19323c3cd8a82d2e991265f395d249aaf76cb170b2d7013e
+    review_phase: post_core_evidence
+    bounded_claim: descriptive_same_T0_half_cadence_lattice_only
+    limitations: >-
+      No physical origin, producer event contract, fixed correction, absolute
+      phase, or pre-core authority.
+  - id: SCI-TEL-INPUT-001-ALIGN-ACQ-EVENT-001
+    source_package: SCI-ALIGN-001
+    commit: 08f0a6733d1cb523ae78ccf9348ac6832b834e52
+    parent: 92cfa670a33255250895d68aaf26e8b01aa057bd
+    tree: cb46a319270e9a05a1763100ad3075bbf61b65dc
+    object: >-
+      08f0a6733d1cb523ae78ccf9348ac6832b834e52:validation/sci_align_001_acquisition_event_semantics_2026-08-08/SCI_TEL_INPUT_001_HANDOFF.md
+    sha256: 28a39458872e00d0c36c48eac79a3f1f1f154c1d5bb815159094fa60883257d2
+    review_phase: post_core_evidence
+    bounded_claims:
+      - delivered_detector_Dn_Tsn_row_lineage_preserved_through_Citlali
+      - integer_whole_row_reassociation_cannot_generate_odd_half_cadence_labels
+      - detector_PpsTime_is_not_telescope_PpsTime
+    limitations:
+      - physical_integration_event_unresolved
+      - no_telescope_rows_or_20ms_ingress_inspected
+      - no_timing_correction_or_prior
+      - not_pre_core_authority
+
+unavailable_dependencies:
+  - id: SCI-TEL-INPUT-001-DEP-ACQUISITION-EVENT-SEMANTICS-001
+    status: unavailable
+    authority_request_id: SCI-ALIGN-001-PRODUCER-AUTHORITY-REQUEST-001
+    required_fact: >-
+      Exact FPGA/packetizer/backend authority identifying the physical
+      integration event, counter/PPS association, UDP assembly, and NetCDF row
+      insertion represented by each delivered detector row.
+    compatibility_state: physical_event_semantics_unavailable
+    consumer_restrictions:
+      - no_half_or_whole_sample_correction
+      - no_physical_centroid_claim
+      - no_detector_time_as_absolute_oracle
+      - absolute_timing_and_subsample_placement_fail_closed
+      - timing_sensitive_source_mask_fidelity_fail_closed
+
+pre_core_authority_ids:
+  - ALIGN-ASSIGNED-TIME-COMPAT-001
+  - SCI-TEL-INPUT-001-REG-D001
+  - SCI-TEL-INPUT-001-ARCHITECTURE-001
+  - SCI-TEL-INPUT-001-CONVENTIONS-001
+post_core_evidence_ids:
+  - SCI-TEL-INPUT-001-ALIGN-SAME-T0-001
+  - SCI-TEL-INPUT-001-ALIGN-ACQ-EVENT-001
+unavailable_dependency_ids:
+  - SCI-TEL-INPUT-001-DEP-ACQUISITION-EVENT-SEMANTICS-001
+
+independent_core_quarantine:
+  pre_core_open_allowlist: pre_core_authority_ids_only
+  source_set_open_before_freeze: prohibited
+  post_core_evidence_open_before_freeze: prohibited
+  physical_event_semantics: unavailable
+  assigned_grid_rule: >-
+    Treat the exact identified assigned-time grid as a compatibility interface
+    only. Derive structural file/row/ingress contracts without selecting a
+    physical event, centroid, correction, offset prior, or absolute phase.
+  freeze_requirement: exact_bytes_sha256_commit_timestamp_and_return
+
+late_arrival_rule: explicit_amendment_reaudit_or_external_restriction
+late_arrival_effect: >-
+  An object absent from this manifest is outside SCI-TEL-INPUT-001. The
+  coordinator must hold it for a dated amendment preserving the independent
+  core, a fresh re-audit, or a separate urgent operational restriction.
+
+explicit_non_authorizations:
+  audit_launch: false
+  application_or_tolteca_edit: false
+  unity_or_reduction: false
+  external_contact: false
+  repair_or_reaudit: false
+  downstream_launch: false
+  production_change: false
+  push: false

@@ -59,6 +59,39 @@ Registration does not admit ALIGN observations as authority; any existing
 raw/recomputed or same-T0 evidence remains post-core unless a future frozen
 manifest states otherwise.
 
+## ALIGN-deferred compatibility amendment — 2026-08-09
+
+Owner policy `ALIGN-ASSIGNED-TIME-COMPAT-001` adopts the existing assigned-time
+grid only as an exact identified compatibility interface. Every affected
+contract/product binds that ALIGN/assigned-grid identity and records
+`physical_event_semantics: unavailable` or equivalent. No half-/whole-sample
+correction, physical centroid, detector-time absolute oracle, absolute timing,
+sub-sample placement, timing-sensitive source-mask fidelity, or correction is
+approved. When producer authority returns, only materially timing-sensitive
+seams and consumers are re-audited.
+
+Queue consequences are bounded:
+
+- CAL and MAP continue only under their already approved scopes.
+- The High-effort `SCI-TEL-INPUT-001` structural prompt and exact paired
+  Citlali/TolTECA manifest are frozen and ready for independent verification;
+  ALIGN `92cfa670...` and `08f0a673...` remain post-core evidence and the
+  physical event meaning remains an unavailable dependency. TEL is not
+  launched.
+- A phase-independent RTC repair handoff is ready against proposed application
+  base `46ad2388...` under D001--D004. It covers eligibility/influence,
+  complete response parity on the assigned grid, filter/edge/support, stage
+  identity, provenance, and local production tests. RTC repair is not launched.
+- AST coordinate mathematics and PTC internal-estimator work may proceed
+  against the identified assigned grid under a later separate launch, while
+  physical timing and absolute placement remain unavailable. This checkpoint
+  launches neither.
+- BEAM remains held.
+
+The owner-mediated producer-authority evidence request remains read-only and
+pending return. `08f0a673...` is not physical integration-event
+identification and supplies no timing correction or prior.
+
 ## Exact post-core PTC/VAL routing
 
 Queue ID: `ALIGN-3C273-PTC-VAL-POSTCORE-2026-08-08`
@@ -125,6 +158,7 @@ review. No recipient audit was launched.
 
 This checkpoint does not authorize application or TolTECA edits, audit science,
 repair, re-audit, broad or costly execution, local Citlali reductions, Unity
-activity, external contact, production change, or PTC/BEAM/TEL-INPUT launch.
-It records only that separately frozen audit packets require their named owner
-launches.
+activity, coordinator external contact, production change, or RTC/AST/PTC/
+BEAM/TEL-INPUT launch. The separately recorded owner-mediated ALIGN producer
+request is the sole evidence-acquisition authority. Every frozen packet or
+repair handoff still requires its named separate owner launch.

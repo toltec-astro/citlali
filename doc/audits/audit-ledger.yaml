@@ -5,11 +5,11 @@ inventory_branch: codex/refactor-mainline
 inventory_governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
 inventory_date: 2026-07-31
 current_program_checkpoint:
-  record_date: 2026-08-08
+  record_date: 2026-08-09
   record_path: >-
     doc/audits/packages/SCIENTIFIC_AUDIT_PROGRAM_CHECKPOINT_2026-08-08.md
   record_sha256: >-
-    7282f25fc05bdecb767449550baa33abfacee16f0bb46c0a74a0101d67568e3e
+    10c7b6d965af447b9db7ead26f8a6093cb54b911e399d10595363151b253c08e
   canonical_application_mainline:
     ref: origin/codex/refactor-mainline
     commit: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
@@ -30,18 +30,54 @@ current_program_checkpoint:
   active_lanes:
     SCI-CAL-001: successor_2_owner_scope_complete_base_7894346_proposed_repair_not_launched
     SCI-MAP-002: candidate_854a04b_reaudited_rejected_successor_repair_not_launched
-    SCI-ALIGN-001: owner_managed_slow_evidence_active
-    SCI-AST-001: held_for_accepted_reaudited_ALIGN_successor
+    SCI-ALIGN-001: assigned_grid_compatibility_policy_active_producer_authority_request_pending
+    SCI-AST-001: phase_independent_math_permitted_no_launch_absolute_placement_unavailable
     ENG-STATE-001: static_package_accepted_F001_F002_open
   queue:
-    - SCI-PTC-001_D001_D002_approved_D003_D006_pending
+    - SCI-RTC-001_phase_independent_repair_handoff_ready_not_launched
+    - SCI-PTC-001_D001_D002_approved_D003_D006_pending_internal_estimator_work_permitted_no_launch
     - SCI-VAL-001_unlaunched_PTC_D002_successor_handoff_pending_recipient_review
-    - SCI-BEAM-001_after_frozen_PTC_VAL
-    - SCI-TEL-INPUT-001_registered_cross_repository_not_dispatched
+    - SCI-BEAM-001_held
+    - SCI-TEL-INPUT-001_frozen_High_dispatch_ready_not_launched
   held_readiness:
     SCI-FLT-001: exact_repair_base_unresolved_until_integrated_CAL_successor
   audit_admission: >-
     no_blanket_ban_new_audits_repair_debt_dependencies_cost_and_scope_controlled
+  align_deferred_compatibility_policy:
+    id: ALIGN-ASSIGNED-TIME-COMPAT-001
+    status: approved_active
+    path: >-
+      doc/audits/packages/ALIGN_DEFERRED_COMPATIBILITY_BOUNDARY_OWNER_POLICY_2026-08-09.md
+    sha256: >-
+      15e27271f049b7522029240b6f1cc5ff86a8bfb323244663a5dcb2575d771123
+    assigned_grid_role: exact_identified_compatibility_interface_only
+    physical_event_semantics: unavailable
+    prohibited_inferences:
+      - guessed_half_or_whole_sample_correction
+      - physical_centroid
+      - detector_time_as_absolute_oracle
+      - absolute_timing_or_subsample_placement
+      - timing_sensitive_source_mask_fidelity
+    TEL_dispatch:
+      status: frozen_ready_not_launched
+      effort: high
+      prompt_path: doc/audits/prompts/SCI_TEL_INPUT_001_AUDIT_PROMPT.md
+      prompt_sha256: >-
+        5be13d39ce141f819719a406259b3f5096efe1183dcdec5c424f62dd4866368d
+      manifest_path: >-
+        doc/audits/handoffs/SCI-TEL-INPUT-001/SCI-TEL-INPUT-001_INBOX_SOURCE_SET_MANIFEST_2026-08-09.yaml
+      manifest_sha256: >-
+        55fb9c6091fd75c4fb69976b95024448e9bc0919e519351c39be92bedf1e32ea
+    RTC_repair_handoff:
+      status: ready_not_launched
+      path: >-
+        doc/audits/packages/SCI-RTC-001_PHASE_INDEPENDENT_BOUNDED_REPAIR_HANDOFF_2026-08-09.md
+      sha256: >-
+        872b7045d0eba1263c7615529004ee74ae16d649f1ad666aa441626537cddcb7
+      proposed_base: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+      proposed_branch: codex/repair-sci-rtc-001-phase-independent
+    AST_PTC_effect: phase_independent_work_permitted_under_separate_launch
+    BEAM_effect: held
   post_core_evidence_queue:
     - id: ALIGN-3C273-PTC-VAL-POSTCORE-2026-08-08
       source_task: 019fc822-9f45-72b1-91e9-775e80768d2a
@@ -209,6 +245,22 @@ resource_allocation:
         none_no_delegation_one_auditor_preserves_workstream_separation_and_synthesizes
       stop_rule: >-
         stop_at_initial_scope_core_freeze_pre_broad_execution_and_final_owner_review
+    - dispatch_id: SCI-TEL-INPUT-001-AUDIT-DISPATCH-2026-08-09
+      package_id: SCI-TEL-INPUT-001
+      phase: structural_file_row_identity_and_ingress_audit
+      dispatch_content_parent: 5647330d056b0b8ba70d280c072a9f968ce062e6
+      dispatch_content_commit_role: exact_commit_reported_after_commit
+      model: sol
+      effort: high
+      task_shape: coherent_scientific_interface
+      rationale: >-
+        The Tier B package is one bounded cross-repository structural interface
+        trace. Physical event semantics are unavailable and quarantined rather
+        than a separate hard workstream to resolve.
+      ultra_trigger: none
+      parallelism: none_no_delegation
+      stop_rule: >-
+        stop_at_initial_scope_core_freeze_pre_broad_execution_and_final_owner_review
 scope_control:
   policy_id: FRAMEWORK-SCOPE-001
   status: active_for_future_dispatches_and_future_phases
@@ -224,6 +276,22 @@ scope_control:
     Record the selected execution authority and any approved scope expansion
     in the phase dispatch record; silence prohibits a capability.
   scope_change_history:
+    - dispatch_id: SCI-TEL-INPUT-001-AUDIT-DISPATCH-2026-08-09
+      package_id: SCI-TEL-INPUT-001
+      checkpoint_status: required
+      local_reduction_authority: prohibited
+      unity_evidence_authority: prohibited
+      allowed_deliverable_class: nine_named_audit_artifacts_only
+      prohibited_expansions:
+        - producer_or_consumer_source_open_before_core_freeze
+        - post_core_ALIGN_evidence_open_before_core_freeze
+        - new_data_or_fixture_production
+        - event_semantics_or_timing_correction_choice
+        - broad_or_costly_execution
+        - application_or_coordination_edit
+        - delegation_or_external_contact
+      first_viable_artifact: frozen_independent_core
+      next_return: after_core_freeze_before_source_or_post_core_open
     - dispatch_id: ENG-STATE-001-SCOPE-CHECKPOINT-2026-08-03
       package_id: ENG-STATE-001
       checkpoint_status: required
@@ -1316,7 +1384,7 @@ packages:
       - bounded downstream facts for ALIGN, AST, ENG-STATE, and VAL
     upstream_dependencies: []
     external_input_contract:
-      status: open_for_audit
+      status: compatibility_boundary_owner_approved_producer_event_unavailable
       required_fact: >-
         The raw telescope producer supplies ordered row-centered or row-edge
         timestamp semantics, coordinate and Hold variables paired to each
@@ -1324,9 +1392,12 @@ packages:
         acquisition bounds sufficient to prove association with the intended
         detector inputs.
       consequence: >-
-        The audit can derive a fail-closed interface contract, but absolute
-        phase and a physical plus/minus one-row interpretation remain
-        conditional until producer event semantics are established.
+        The structural audit may proceed against the exact identified assigned
+        grid. Absolute phase, physical centroid, timing correction,
+        timing-sensitive source-mask fidelity, and physical plus/minus-one-row
+        interpretation remain unavailable until producer authority is accepted.
+      compatibility_policy_id: ALIGN-ASSIGNED-TIME-COMPAT-001
+      physical_event_semantics: unavailable
     downstream_contract_authorities:
       - package_id: SCI-ALIGN-001
         status: approved
@@ -1362,13 +1433,13 @@ packages:
     incoming_handoffs: []
     outgoing_handoffs: []
     candidate_post_core_evidence:
-      status: not_frozen_not_admitted
+      status: exact_objects_frozen_post_core_quarantined
       sources:
-        - existing raw/recomputed ALIGN corpus comparisons
-        - same-T0 cadence-lattice and acquisition-event-semantics evidence
+        - SCI-TEL-INPUT-001-ALIGN-SAME-T0-001
+        - SCI-TEL-INPUT-001-ALIGN-ACQ-EVENT-001
       rule: >-
-        Admit only through a frozen manifest after the independent core; this
-        registration does not convert observations into authority.
+        Open only through the frozen manifest after the independent core; no
+        observation becomes physical timing authority or a correction.
     governing_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
     governing_parent: 4846fa4db39bd2f7d4ddc41f693836834cbc5ff4
     governing_tree: ab230a93b8fb310d58aefd7ac5da92e5d5e0f408
@@ -1381,7 +1452,7 @@ packages:
         tree: 3f3e4b8136bf5528b203cb3bb8b474233bb27a85
         role: operational_producer_snapshot
     registration:
-      status: registered_not_dispatched
+      status: dispatch_frozen_not_launched
       registration_date: 2026-08-08
       record_path: >-
         doc/audits/packages/SCI-TEL-INPUT-001_PRODUCT_REGISTRATION_2026-08-08.md
@@ -1389,7 +1460,25 @@ packages:
         512ad1413d2cbb17b1b585e42aa13beaba040fcc4ece095367cb8e8aa5c342fa
       owner_authorization: register_audit_bounded_repair_independent_reaudit_product
       planned_audit_branch: codex/audit-sci-tel-input-001
-      source_set_manifest_status: not_frozen
+      dispatch_effort: high
+      prompt_path: doc/audits/prompts/SCI_TEL_INPUT_001_AUDIT_PROMPT.md
+      prompt_sha256: >-
+        5be13d39ce141f819719a406259b3f5096efe1183dcdec5c424f62dd4866368d
+      source_set_manifest_path: >-
+        doc/audits/handoffs/SCI-TEL-INPUT-001/SCI-TEL-INPUT-001_INBOX_SOURCE_SET_MANIFEST_2026-08-09.yaml
+      source_set_manifest_sha256: >-
+        55fb9c6091fd75c4fb69976b95024448e9bc0919e519351c39be92bedf1e32ea
+      source_set_manifest_status: frozen_ready_not_launched
+      pre_core_authority_ids:
+        - ALIGN-ASSIGNED-TIME-COMPAT-001
+        - SCI-TEL-INPUT-001-REG-D001
+        - SCI-TEL-INPUT-001-ARCHITECTURE-001
+        - SCI-TEL-INPUT-001-CONVENTIONS-001
+      post_core_evidence_ids:
+        - SCI-TEL-INPUT-001-ALIGN-SAME-T0-001
+        - SCI-TEL-INPUT-001-ALIGN-ACQ-EVENT-001
+      unavailable_dependency_ids:
+        - SCI-TEL-INPUT-001-DEP-ACQUISITION-EVENT-SEMANTICS-001
       audit_authorized: false
       repair_authorized: false
       re_audit_authorized: false
@@ -2356,6 +2445,17 @@ packages:
           boundaries, not new owner decisions; preserve exact no-move gates,
           avoid a new 2-arcsec reduction or MAP implementation, and proceed
           with bounded phase one.
+    assigned_time_compatibility_policy:
+      id: ALIGN-ASSIGNED-TIME-COMPAT-001
+      status: approved_active
+      path: >-
+        doc/audits/packages/ALIGN_DEFERRED_COMPATIBILITY_BOUNDARY_OWNER_POLICY_2026-08-09.md
+      sha256: >-
+        15e27271f049b7522029240b6f1cc5ff86a8bfb323244663a5dcb2575d771123
+      assigned_grid_role: exact_identified_compatibility_interface_only
+      physical_event_semantics: unavailable
+      producer_authority_status: unavailable_pending_return_and_acceptance
+      re_audit_on_return: timing_sensitive_seams_and_material_consumers_only
     producer_authority_evidence_request:
       id: SCI-ALIGN-001-PRODUCER-AUTHORITY-REQUEST-001
       status: owner_mediated_acquisition_authorized_evidence_not_supplied
@@ -3366,6 +3466,18 @@ packages:
           inputs, but implementation conformity and precise astrometric claims
           remain conditioned until ALIGN supplies and re-audits the approved
           interface without clamping, stale state, or false units.
+    assigned_grid_compatibility:
+      policy_id: ALIGN-ASSIGNED-TIME-COMPAT-001
+      status: phase_independent_coordinate_mathematics_permitted_no_launch
+      physical_event_semantics: unavailable
+      permitted: coordinate_projection_and_WCS_mathematics_on_exact_identified_assigned_grid
+      fail_closed:
+        - absolute_timing
+        - physical_sample_centroid
+        - sub_sample_astrometric_placement
+        - timing_sensitive_source_mask_fidelity
+        - timing_correction
+      task_launched: false
     downstream_consumers: [SCI-RTC-001, SCI-PTC-001, SCI-MAP-001, SCI-SRC-001, SCI-MODE-001, SCI-BEAM-001]
     incoming_handoffs:
       - id: SCI-AST-001-XAUD-001
@@ -4345,14 +4457,19 @@ packages:
     upstream_dependencies:
       - package_id: SCI-ALIGN-001
         status: open
-        current_lane_status: active_existing_use_only
+        current_lane_status: assigned_grid_compatibility_policy_active_producer_event_unavailable
         finding_id: SCI-RTC-001-F008
         required_contract: >-
           Exact aligned detector and telescope sample mapping, origin/validity,
           synthesis/gap action, scan identity, timing residual, support,
           response/covariance availability, and eligibility.
         consequence: >-
-          RTC exact timing/support and new response claims remain conditioned.
+          Phase-independent eligibility, response parity, filter/support, and
+          provenance repair may proceed on the exact assigned grid. Absolute
+          phase, physical centroid, timing correction, timing-sensitive mask
+          fidelity, and final AST placement remain conditioned.
+        compatibility_policy_id: ALIGN-ASSIGNED-TIME-COMPAT-001
+        physical_event_semantics: unavailable
       - package_id: SCI-CAL-001
         status: open
         current_lane_status: active_repair_from_governing_SHA
@@ -4528,6 +4645,31 @@ packages:
       sha256: 5f5ebb52735a70510d75f5a6954ef825fc425c00e43ab0aadf2363f2e0609723
       decision_date: 2026-08-08
       decisions: [SCI-RTC-001-D001, SCI-RTC-001-D002, SCI-RTC-001-D003, SCI-RTC-001-D004]
+    phase_independent_repair_handoff:
+      status: ready_not_launched
+      path: >-
+        doc/audits/packages/SCI-RTC-001_PHASE_INDEPENDENT_BOUNDED_REPAIR_HANDOFF_2026-08-09.md
+      sha256: >-
+        872b7045d0eba1263c7615529004ee74ae16d649f1ad666aa441626537cddcb7
+      proposed_base: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+      proposed_base_parent: 4846fa4db39bd2f7d4ddc41f693836834cbc5ff4
+      proposed_base_tree: ab230a93b8fb310d58aefd7ac5da92e5d5e0f408
+      proposed_branch: codex/repair-sci-rtc-001-phase-independent
+      owner_authority: [SCI-RTC-001-D001, SCI-RTC-001-D002, SCI-RTC-001-D003, SCI-RTC-001-D004]
+      compatibility_policy_id: ALIGN-ASSIGNED-TIME-COMPAT-001
+      physical_event_semantics: unavailable
+      scope:
+        - replacement_and_influence_eligibility
+        - complete_signal_kernel_or_local_response_parity_on_assigned_grid
+        - filter_edge_support_and_multirate_behavior
+        - immutable_stage_identity_and_provenance
+        - focused_local_production_tests
+      conditioned_exclusions:
+        - absolute_phase_or_timing_correction
+        - timing_sensitive_source_mask_accuracy
+        - physical_centroid_or_subsample_placement
+        - final_AST_placement
+      repair_authorized: false
     contract_status: proposed
     implementation_status: nonconformant
     validation_status: in_progress
@@ -4886,6 +5028,19 @@ packages:
         consequence: >-
           New coordinate-aware mask, feedback, response, and eligibility claims
           fail closed.
+
+    assigned_grid_compatibility:
+      policy_id: ALIGN-ASSIGNED-TIME-COMPAT-001
+      status: phase_independent_internal_estimator_work_permitted_no_launch
+      physical_event_semantics: unavailable
+      permitted: internal_estimator_mathematics_on_exact_identified_assigned_grid
+      fail_closed:
+        - absolute_timing_or_phase
+        - physical_sample_centroid
+        - sub_sample_astrometric_placement
+        - timing_sensitive_source_mask_fidelity
+        - timing_correction
+      task_launched: false
 
     downstream_consumers:
       - package_id: SCI-VAL-001
@@ -6819,6 +6974,10 @@ packages:
       - include/citlali/core/pipeline/beammap_provenance.h
     inputs: [detector maps and TOD, calibrator flux, priors, APT, mode policy]
     outputs: [detector fits/errors, convergence, flags/QC, sensitivity, APT and products]
+    queue_hold:
+      status: held
+      authority: ALIGN-ASSIGNED-TIME-COMPAT-001
+      effect: no_BEAM_launch_or_physical_timing_placement_claim
     upstream_dependencies:
       - package_id: SCI-CAL-001
         status: open

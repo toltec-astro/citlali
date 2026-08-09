@@ -114,6 +114,24 @@ does not launch the audit, authorize TolTECA or Citlali edits, request Unity,
 approve a timing correction, or begin repair or re-audit. Production remains
 `existing_use_only` pending the full role-separated lifecycle.
 
+## 2026-08-09 ALIGN-Deferred Compatibility Boundary
+
+The project owner approved `ALIGN-ASSIGNED-TIME-COMPAT-001`: the existing
+assigned-time grid is an exact identified compatibility interface, not proof
+of physical integration-event timing. Affected contracts/products must bind
+the assigned-grid identity and record physical event semantics as unavailable.
+No guessed sample correction, physical centroid, detector-time absolute-oracle
+claim, absolute/sub-sample placement, or timing-sensitive source-mask claim is
+admitted. Producer authority remains an owner-mediated read-only dependency;
+`08f0a673...` is post-core evidence only.
+
+The structural `SCI-TEL-INPUT-001` High dispatch is frozen but unlaunched. A
+phase-independent RTC repair handoff under D001--D004 is prepared but
+unlaunched. AST coordinate mathematics and PTC internal-estimator work may
+proceed only under later separate launches against the identified assigned
+grid, with physical timing and absolute placement unavailable. CAL and MAP
+retain their already approved bounded scopes; BEAM remains held.
+
 Tier B remains valid only while the product consumes AST's coordinate-
 transformation authority and ALIGN's resampling authority. An observed row
 displacement, unresolved source association, temporal/astrometric response,
