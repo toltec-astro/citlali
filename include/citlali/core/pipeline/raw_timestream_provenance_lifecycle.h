@@ -76,6 +76,48 @@ inline void complete_raw_timestream_observation(
         plan.observation->calibration_valid;
     plan.realized.calibration_validity_reason =
         plan.observation->calibration_validity_reason;
+    plan.realized.calibration_validity_detail =
+        plan.observation->calibration_validity_detail;
+    plan.realized.calibration_product_schema =
+        plan.observation->calibration_product_schema;
+    plan.realized.calibration_target_unit =
+        plan.observation->calibration_target_unit;
+    plan.realized.calibration_photometry_policy =
+        plan.observation->calibration_photometry_policy;
+    plan.realized.calibration_factor_composition =
+        plan.observation->calibration_factor_composition;
+    plan.realized.calibration_factor_provenance =
+        plan.observation->calibration_factor_provenance;
+    plan.realized.calibration_compatibility_fcf_semantics =
+        plan.observation->calibration_compatibility_fcf_semantics;
+    plan.realized.calibration_weight_recipient_semantics =
+        plan.observation->calibration_weight_recipient_semantics;
+    plan.realized.calibration_compact_covariance_state =
+        plan.observation->calibration_compact_covariance_state;
+    plan.realized.calibration_apt_artifact_sha256 =
+        plan.observation->calibration_apt_artifact_sha256;
+    plan.realized.calibration_acquisition_binding_sha256 =
+        plan.observation->calibration_acquisition_binding_sha256;
+    plan.realized.calibration_raw_observation_identity =
+        plan.observation->calibration_raw_observation_identity;
+    plan.realized.calibration_acquisition_binding_mode =
+        plan.observation->calibration_acquisition_binding_mode;
+    plan.realized.calibration_acquisition_key_schema =
+        plan.observation->calibration_acquisition_key_schema;
+    plan.realized.calibration_response_identity =
+        plan.observation->calibration_response_identity;
+    plan.realized.calibration_conditional_variance_transfer =
+        plan.observation->calibration_conditional_variance_transfer;
+    plan.realized.calibration_conditional_inverse_variance_transfer =
+        plan.observation->calibration_conditional_inverse_variance_transfer;
+    plan.realized.calibration_precision_limitation =
+        plan.observation->calibration_precision_limitation;
+    plan.realized.calibration_nuisance_states =
+        plan.observation->calibration_nuisance_states;
+    plan.realized.calibration_minimum_total_multiplier =
+        plan.observation->calibration_minimum_total_multiplier;
+    plan.realized.calibration_maximum_total_multiplier =
+        plan.observation->calibration_maximum_total_multiplier;
     plan.realized.execution_completed = true;
 }
 

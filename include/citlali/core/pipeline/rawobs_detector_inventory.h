@@ -1,12 +1,14 @@
 #pragma once
 
 #include <citlali/core/utils/netcdf_io.h>
+#include <citlali/core/utils/sha256.h>
 
 #include <fmt/core.h>
 #include <netcdf>
 #include <tula/eigen.h>
 
 #include <string>
+#include <sstream>
 #include <vector>
 
 namespace citlali::pipeline {
@@ -109,6 +111,30 @@ void populate_internal_apt_from_detector_inventory(
         inventory.n_dets,0,inventory.n_dets-1);
     calib.setup();
     calib.apt_filepath = "internally generated for beammap";
+    std::ostringstream identity;
+    identity << "beammap-internal-raw-detector-inventory-v1";
+    for (Eigen::Index index = 0;
+         index < static_cast<Eigen::Index>(inventory.nws.size()); ++index) {
+        identity << '|' << inventory.nws[static_cast<std::size_t>(index)]
+                 << ':' << inventory.dets[static_cast<std::size_t>(index)]
+                 << ':' << inventory.arrays[static_cast<std::size_t>(index)];
+    }
+    calib.apt_acquisition_binding.available = true;
+    calib.apt_acquisition_binding.valid = true;
+    calib.apt_acquisition_binding.mode =
+        "internal_raw_network_local_row_v1";
+    calib.apt_acquisition_binding.key_schema =
+        "raw_observation_artifact+network+network_local_row";
+    calib.apt_acquisition_binding.detail =
+        "Beammap internal APT constructed directly from the admitted raw detector inventory";
+    calib.apt_acquisition_binding.artifact_sha256 =
+        citlali::utils::sha256(identity.str());
+    calib.apt_acquisition_binding.binding_sha256 =
+        calib.apt_acquisition_binding.artifact_sha256;
+    calib.apt_acquisition_binding.raw_observation_identity = identity.str();
+    calib.apt_acquisition_binding.detector_count = inventory.n_dets;
+    calib.apt_acquisition_binding.network_count =
+        static_cast<Eigen::Index>(inventory.nws.size());
 }
 
 }  // namespace citlali::pipeline

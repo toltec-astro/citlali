@@ -3,9 +3,17 @@
 #include <citlali/core/engine/calib.h>
 #include <citlali/core/error/error.h>
 #include <citlali/core/utils/toltec_io.h>
+#include <citlali/core/utils/sha256.h>
 
+#include <algorithm>
+#include <charconv>
 #include <cmath>
+#include <iomanip>
+#include <limits>
+#include <set>
+#include <sstream>
 #include <stdexcept>
+#include <string_view>
 
 namespace {
 
@@ -20,13 +28,46 @@ std::string join_column_names(const std::vector<std::string> &names) {
     return result;
 }
 
+bool same_frequency_identity(double left, double right) {
+    if (!std::isfinite(left) || !std::isfinite(right)) {
+        return false;
+    }
+    const double scale = std::max({1.0, std::abs(left), std::abs(right)});
+    return std::abs(left - right) <=
+           64.0 * std::numeric_limits<double>::epsilon() * scale;
+}
+
+int interface_network_id(const std::string &interface_name) {
+    constexpr std::string_view prefix{"toltec"};
+    if (interface_name.rfind(prefix, 0) != 0 ||
+        interface_name.size() == prefix.size()) {
+        throw citlali::error::io(
+            "invalid TolTEC interface name for APT acquisition binding: " +
+            interface_name);
+    }
+    const auto suffix = std::string_view{interface_name}.substr(prefix.size());
+    int network = -1;
+    const auto parsed =
+        std::from_chars(suffix.data(), suffix.data() + suffix.size(), network);
+    if (parsed.ec != std::errc{} ||
+        parsed.ptr != suffix.data() + suffix.size() || network < 0) {
+        throw citlali::error::io(
+            "invalid TolTEC interface name for APT acquisition binding: " +
+            interface_name);
+    }
+    return network;
+}
+
 }  // namespace
 
 namespace engine {
 
 void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_filenames, std::vector<std::string> &interfaces) {
+    apt_acquisition_binding = {};
     // store apt filepath
     apt_filepath = filepath;
+    apt_acquisition_binding.artifact_sha256 =
+        citlali::utils::sha256_file(filepath);
     // read in the apt table
     auto [apt_temp, header, map_with_strs] = to_map_from_ecsv_mixted_type(filepath);
 
@@ -65,64 +106,198 @@ void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_f
             "APT table reference frame must be altaz");
     }
 
-    // set apt table
-    apt = apt_temp;
-
-    // A matched APT can retain fully flagged placeholder rows for a network
-    // that was absent from this observation. Restrict the table to the raw
-    // interfaces before setup validates its network and array groups.
-
-    // vectors to hold roach indices and missing roaches
-    std::vector<Eigen::Index> roach_indices, missing;
-    Eigen::Index n_dets_temp = 0;
-
-    // get roach indices from raw data files
-    for (Eigen::Index i=0; i<raw_filenames.size(); ++i) {
-        netCDF::NcFile fo(raw_filenames[i], netCDF::NcFile::read);
-        // get roach index
-        int roach_index;
-        fo.getVar("Header.Toltec.RoachIndex").getVar(&roach_index);
-        roach_indices.push_back(roach_index);
-        fo.close();
+    if (raw_filenames.empty() || raw_filenames.size() != interfaces.size()) {
+        throw citlali::error::io(
+            "APT acquisition binding requires one raw file for every interface");
     }
 
-    // vector to hold interface number
-    Eigen::VectorXi interfaces_vec(interfaces.size());
-
-    // get network interfaces
-    for (Eigen::Index i=0; i<interfaces.size(); ++i) {
-        interfaces_vec(i) = std::stoi(interfaces[i].substr(6));
-    }
-
-    // count up number of detectors
-    for (Eigen::Index i=0; i<interfaces.size(); ++i) {
-        n_dets_temp = n_dets_temp + (apt["nw"].array() == interfaces_vec(i)).count();
-    }
-
-    // clear apt
-    apt_temp.clear();
-    // populate apt temp
-    for (auto const& value: apt_header_keys) {
-        apt_temp[value].setZero(n_dets_temp);
-        Eigen::Index i = 0;
-        for (Eigen::Index j=0; j<apt["nw"].size(); ++j) {
-            if ((apt["nw"](j) == interfaces_vec.array()).any()) {
-                apt_temp[value](i) = apt[value](j);
-                i++;
-            }
+    const Eigen::Index apt_row_count = apt_temp["nw"].size();
+    for (const auto &key : apt_header_keys) {
+        if (apt_temp[key].size() != apt_row_count) {
+            throw citlali::error::io(
+                "APT required-column cardinality mismatch for " + key);
         }
     }
 
-    // clear apt
-    apt.clear();
-    // populate apt table
-    for (auto const& value: apt_header_keys) {
-        apt[value].setZero(n_dets_temp);
-        apt[value] = apt_temp[value];
+    struct RawNetworkIdentity {
+        int network = -1;
+        Eigen::VectorXd tone_frequency_hz;
+    };
+    std::vector<RawNetworkIdentity> raw_networks;
+    raw_networks.reserve(raw_filenames.size());
+    std::set<int> seen_networks;
+    Eigen::Index n_dets_temp = 0;
+
+    for (std::size_t index = 0; index < raw_filenames.size(); ++index) {
+        netCDF::NcFile fo(raw_filenames[index], netCDF::NcFile::read);
+        const int interface_network = interface_network_id(interfaces[index]);
+        int roach_index = -1;
+        fo.getVar("Header.Toltec.RoachIndex").getVar(&roach_index);
+        if (roach_index != interface_network) {
+            throw citlali::error::io(
+                "raw-file RoachIndex disagrees with interface identity for " +
+                interfaces[index]);
+        }
+        if (!seen_networks.insert(roach_index).second) {
+            throw citlali::error::io(
+                "duplicate TolTEC network in APT acquisition binding: " +
+                std::to_string(roach_index));
+        }
+
+        const auto signal = fo.getVar("Data.Toltec.Is");
+        const auto tone_var = fo.getVar("Header.Toltec.ToneFreq");
+        const auto lo_var = fo.getVar("Header.Toltec.LoCenterFreq");
+        if (signal.isNull() || signal.getDimCount() < 2 || tone_var.isNull() ||
+            tone_var.getDimCount() < 2 || lo_var.isNull()) {
+            throw citlali::error::io(
+                "raw acquisition identity is unavailable for network " +
+                std::to_string(roach_index));
+        }
+        const Eigen::Index detector_count = static_cast<Eigen::Index>(
+            signal.getDim(1).getSize());
+        const Eigen::Index sweep_count = static_cast<Eigen::Index>(
+            tone_var.getDim(0).getSize());
+        const Eigen::Index tone_count = static_cast<Eigen::Index>(
+            tone_var.getDim(1).getSize());
+        if (detector_count <= 0 || sweep_count <= 0 ||
+            tone_count != detector_count) {
+            throw citlali::error::io(
+                "raw detector/tone cardinality mismatch for network " +
+                std::to_string(roach_index));
+        }
+        Eigen::MatrixXd tone_frequency(tone_count, sweep_count);
+        tone_var.getVar(tone_frequency.data());
+        double lo_frequency = std::numeric_limits<double>::quiet_NaN();
+        lo_var.getVar(&lo_frequency);
+        if (!std::isfinite(lo_frequency)) {
+            throw citlali::error::io(
+                "non-finite raw LO frequency for network " +
+                std::to_string(roach_index));
+        }
+        RawNetworkIdentity identity;
+        identity.network = roach_index;
+        identity.tone_frequency_hz =
+            tone_frequency.col(0).array() + lo_frequency;
+        if (!identity.tone_frequency_hz.array().isFinite().all()) {
+            throw citlali::error::io(
+                "non-finite raw tone frequency for network " +
+                std::to_string(roach_index));
+        }
+        for (Eigen::Index left = 0; left < detector_count; ++left) {
+            for (Eigen::Index right = left + 1; right < detector_count; ++right) {
+                if (same_frequency_identity(identity.tone_frequency_hz(left),
+                                            identity.tone_frequency_hz(right))) {
+                    throw citlali::error::io(
+                        "duplicate raw acquisition tone key for network " +
+                        std::to_string(roach_index));
+                }
+            }
+        }
+        n_dets_temp += detector_count;
+        raw_networks.push_back(std::move(identity));
+        fo.close();
     }
 
-    // clear temporary apt
-    apt_temp.clear();
+    std::map<std::string, Eigen::VectorXd> ordered_apt;
+    for (const auto &key : apt_header_keys) {
+        ordered_apt[key].setZero(n_dets_temp);
+    }
+    ordered_apt["kids_tone"].setZero(n_dets_temp);
+
+    Eigen::Index output_row = 0;
+    std::vector<bool> used(static_cast<std::size_t>(apt_temp["nw"].size()), false);
+    for (const auto &raw : raw_networks) {
+        const Eigen::Index raw_count = raw.tone_frequency_hz.size();
+        const Eigen::Index apt_count =
+            (apt_temp["nw"].array() == raw.network).count();
+        if (apt_count != raw_count) {
+            throw citlali::error::io(
+                "APT/raw tone cardinality mismatch for network " +
+                std::to_string(raw.network));
+        }
+        for (Eigen::Index local_tone = 0; local_tone < raw_count;
+             ++local_tone) {
+            std::vector<Eigen::Index> matches;
+            for (Eigen::Index apt_row = 0; apt_row < apt_temp["nw"].size();
+                 ++apt_row) {
+                if (!used[static_cast<std::size_t>(apt_row)] &&
+                    apt_temp["nw"](apt_row) == raw.network &&
+                    same_frequency_identity(
+                        apt_temp["tone_freq"](apt_row),
+                        raw.tone_frequency_hz(local_tone))) {
+                    matches.push_back(apt_row);
+                }
+            }
+            if (matches.size() != 1) {
+                throw citlali::error::io(
+                    "APT acquisition key is missing or duplicated for network " +
+                    std::to_string(raw.network) + " local tone " +
+                    std::to_string(local_tone));
+            }
+            const Eigen::Index apt_row = matches.front();
+            used[static_cast<std::size_t>(apt_row)] = true;
+            for (const auto &key : apt_header_keys) {
+                ordered_apt[key](output_row) = apt_temp[key](apt_row);
+            }
+            ordered_apt["kids_tone"](output_row) =
+                static_cast<double>(local_tone);
+            ++output_row;
+        }
+    }
+    if (output_row != apt_row_count ||
+        std::find(used.begin(), used.end(), false) != used.end()) {
+        throw citlali::error::io(
+            "APT contains acquisition keys not present in the raw observation");
+    }
+
+    apt = std::move(ordered_apt);
+    apt_acquisition_binding.available = true;
+    apt_acquisition_binding.valid = true;
+    apt_acquisition_binding.mode =
+        "explicit_network_local_tone_frequency_join_v1";
+    apt_acquisition_binding.key_schema =
+        "raw_observation_artifact+network+network_local_tone_frequency";
+    apt_acquisition_binding.detail =
+        "unique complete raw/APT acquisition-key join; APT row order is not authoritative";
+    apt_acquisition_binding.detector_count = n_dets_temp;
+    apt_acquisition_binding.network_count =
+        static_cast<Eigen::Index>(raw_networks.size());
+    std::ostringstream raw_identity;
+    raw_identity << std::setprecision(std::numeric_limits<double>::max_digits10)
+                 << "raw-observation-acquisition-identity-v1";
+    for (std::size_t index = 0; index < raw_networks.size(); ++index) {
+        raw_identity << "|file=" << raw_filenames[index]
+                     << ",interface=" << interfaces[index]
+                     << ",network=" << raw_networks[index].network
+                     << ",tones=";
+        for (Eigen::Index tone = 0;
+             tone < raw_networks[index].tone_frequency_hz.size(); ++tone) {
+            if (tone != 0) {
+                raw_identity << ',';
+            }
+            raw_identity << raw_networks[index].tone_frequency_hz(tone);
+        }
+    }
+    apt_acquisition_binding.raw_observation_identity = raw_identity.str();
+    std::ostringstream binding_identity;
+    binding_identity
+        << std::setprecision(std::numeric_limits<double>::max_digits10)
+        << "apt-acquisition-binding-v1|apt_sha256="
+        << apt_acquisition_binding.artifact_sha256
+        << "|raw_identity=" << raw_identity.str()
+        << "|ordered_join=";
+    for (Eigen::Index row = 0; row < n_dets_temp; ++row) {
+        if (row != 0) {
+            binding_identity << ';';
+        }
+        binding_identity
+            << "network=" << apt["nw"](row)
+            << ",local_tone=" << apt["kids_tone"](row)
+            << ",tone_frequency_hz=" << apt["tone_freq"](row)
+            << ",uid=" << apt["uid"](row);
+    }
+    apt_acquisition_binding.binding_sha256 =
+        citlali::utils::sha256(binding_identity.str());
 
     // run setup on new apt table
     setup();
@@ -187,58 +362,16 @@ void Calib::get_hwpr(const std::string &filepath, bool sim_obs) {
 }
 
 void Calib::calc_flux_calibration(std::string units, double pixel_size_rad) {
+    (void)pixel_size_rad;
+    if (units != "mJy/beam") {
+        throw citlali::error::invalid_config(
+            "SCI-CAL-001 supports only top-of-atmosphere point-source-peak mJy/beam; unsupported unit " +
+            units);
+    }
     // flux conversion is per detector
     flux_conversion_factor.resize(n_dets);
     mean_flux_conversion_factor.clear();
-
-    // default is mJy/beam (apt should always be in mJy/beam)
-    if (units == "mJy/beam") {
-        flux_conversion_factor.setOnes();
-    }
-
-    // convert to MJy/sr
-    else if (units == "MJy/sr") {
-        for (Eigen::Index i=0; i<n_dets; ++i) {
-            // current detector's array
-            auto array = apt["array"](i);
-            // det fwhm
-            auto det_fwhm = (std::get<0>(array_fwhms[array]) + std::get<1>(array_fwhms[array]))/2;
-            // beam area
-            auto beam_area = 2.*pi*pow(det_fwhm*FWHM_TO_STD,2);
-            // get MJy/Sr
-            flux_conversion_factor(i) = mJY_ASEC_to_MJY_SR/beam_area;
-        }
-    }
-
-    // convert to Rayleigh-Jeans uK brightness temperature.
-    // mJy/beam is first converted to Jy/sr using the Gaussian beam solid angle.
-    else if (units == "uK") {
-        engine_utils::toltecIO toltec_io;
-        for (Eigen::Index i=0; i<n_dets; ++i) {
-            // current detector's array
-            auto array = apt["array"](i);
-            // array frequency
-            auto freq_Hz = toltec_io.array_freq_map[array];
-            // det fwhm
-            auto det_fwhm = (std::get<0>(array_fwhms[array]) + std::get<1>(array_fwhms[array]))/2;
-            // get uK
-            flux_conversion_factor(i) = engine_utils::mJy_beam_to_uK(1, freq_Hz, det_fwhm);
-        }
-    }
-
-    // convert to Jy/pixel
-    else if (units == "Jy/pixel") {
-        for (Eigen::Index i=0; i<n_dets; ++i) {
-            // current detector's array
-            auto array = apt["array"](i);
-            // det fwhm
-            auto det_fwhm = (std::get<0>(array_fwhms[array]) + std::get<1>(array_fwhms[array]))/2;
-            // beam area in steradians
-            auto beam_area_rad = 2.*pi*pow(det_fwhm*FWHM_TO_STD*ASEC_TO_RAD,2);
-            // get Jy/pixel
-            flux_conversion_factor(i) = 1e-3/beam_area_rad*pow(pixel_size_rad,2);
-        }
-    }
+    flux_conversion_factor.setOnes();
 
     // get mean flux conversion factor from all unflagged detectors
     for (Eigen::Index i=0; i<n_arrays; ++i) {

@@ -1888,7 +1888,19 @@ TEST(science_map_fits_products,
                         file, TLOGICAL, "CAL.VALID", &valid, nullptr,
                         &status),
                     0);
-                EXPECT_NE(valid, 0);
+                EXPECT_EQ(valid, 0);
+                EXPECT_EQ(
+                    read_required_fits_string(
+                        file, "CAL.VALIDITY_REASON"),
+                    "not_evaluated");
+                int extrema_available = 1;
+                ASSERT_EQ(
+                    fits_read_key(
+                        file, TLOGICAL,
+                        "CAL.TOTAL_MULTIPLIER_EXTREMA_AVAILABLE",
+                        &extrema_available, nullptr, &status),
+                    0);
+                EXPECT_EQ(extrema_available, 0);
                 EXPECT_EQ(fits_close_file(file, &status), 0);
             }
         }

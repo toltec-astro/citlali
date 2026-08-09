@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/timestream/atmosphere_operator.h>
+#include <citlali/core/timestream/calibration_product.h>
 #include <citlali/core/timestream/timestream.h>
 #include <citlali/core/utils/constants.h>
 
@@ -24,11 +25,31 @@ public:
     std::string extinction_model{"N/A"};
     std::string calibration_quality_regime{"not_applied"};
     std::string reduction_calibration_quality_regime{"not_applied"};
-    std::string calibration_validity_reason{"extinction_not_applied"};
+    std::string calibration_validity_reason{"not_evaluated"};
     bool calibration_valid = false;
     double realized_tau225 = std::numeric_limits<double>::quiet_NaN();
     double reduction_maximum_tau225 =
         std::numeric_limits<double>::quiet_NaN();
+    CalibrationProduct product;
+
+    void reset_product_admission() {
+        product = {};
+        calibration_valid = false;
+        calibration_validity_reason = "not_evaluated";
+    }
+
+    void admit_product(const CalibrationProductAdmissionInputs &inputs) {
+        product = admit_calibration_product(inputs);
+        calibration_valid = product.valid();
+        calibration_validity_reason =
+            std::string{to_string(product.validity_cause)};
+        if ((inputs.calibration_requested || inputs.extinction_requested) &&
+            !product.valid()) {
+            throw std::domain_error(
+                "complete calibration product rejected: " +
+                calibration_validity_reason + ": " + product.validity_detail);
+        }
+    }
 
     void select_reference_spectral_index(
         std::optional<double> requested_alpha) {
@@ -47,16 +68,12 @@ public:
                 reduction_maximum_tau225)};
         extinction_model = std::string{
             FixedDjf25AtmosphereOperator::operator_id()};
-        calibration_valid = true;
-        calibration_validity_reason = "valid";
         realized_tau225 = tau225;
     }
 
     void disable_extinction() {
         extinction_model = "N/A";
         calibration_quality_regime = "not_applied";
-        calibration_valid = false;
-        calibration_validity_reason = "extinction_not_applied";
         realized_tau225 = std::numeric_limits<double>::quiet_NaN();
     }
 
@@ -129,18 +146,25 @@ auto Calibration::calc_tau(
 template <TCDataKind tcdata_kind, class calib_t>
 void Calibration::calibrate_tod(
     TCData<tcdata_kind, Eigen::MatrixXd> &in, calib_t &calib) {
-    if (calib.flux_conversion_factor.size() < in.scans.data.cols()) {
+    (void)calib;
+    const Eigen::Index detector_count = in.scans.data.cols();
+    if (!product.valid()) {
         throw std::runtime_error(
-            "calibrate_tod flux_conversion_factor is shorter than detector count");
+            "calibrate_tod requires an admitted complete calibration product");
     }
-    if (calib.apt["flxscale"].size() < in.scans.data.cols()) {
+    if (product.signal_multiplier_without_extinction.size() != detector_count ||
+        product.target_unit_factor.size() != detector_count) {
         throw std::runtime_error(
-            "calibrate_tod APT flxscale column is shorter than detector count");
+            "calibrate_tod admitted product cardinality differs from detector count");
     }
-    for (Eigen::Index i = 0; i < in.scans.data.cols(); ++i) {
-        in.fcf.data(i) = calib.flux_conversion_factor(i);
+    if (in.fcf.data.size() != detector_count) {
+        throw std::runtime_error(
+            "calibrate_tod fcf cardinality differs from detector count");
+    }
+    for (Eigen::Index i = 0; i < detector_count; ++i) {
+        in.fcf.data(i) = product.target_unit_factor(i);
         in.scans.data.col(i) = in.scans.data.col(i).array()
-            * in.fcf.data(i) * calib.apt["flxscale"](i);
+            * product.signal_multiplier_without_extinction(i);
     }
 }
 
@@ -150,6 +174,10 @@ void Calibration::extinction_correction(
     const tau_t &tau_freq) {
     const Eigen::Index detector_count = in.scans.data.cols();
     const Eigen::Index sample_count = in.scans.data.rows();
+    if (!product.valid()) {
+        throw std::runtime_error(
+            "extinction correction requires an admitted complete calibration product");
+    }
     if (calib.apt["array"].size() < detector_count) {
         throw std::runtime_error(
             "extinction correction APT array column is shorter than detector count");

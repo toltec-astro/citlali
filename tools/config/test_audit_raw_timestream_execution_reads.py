@@ -43,6 +43,14 @@ class RawTimestreamExecutionReadAuditTest(unittest.TestCase):
             "executor_operation",
         )
         self.assertEqual(
+            audit.classify_access("calibration.admit_product"),
+            "executor_operation",
+        )
+        self.assertEqual(
+            audit.classify_access("calibration.product"),
+            "output_or_realized_state",
+        )
+        self.assertEqual(
             audit.classify_access("run_polarization"),
             "separate_polarimetry_domain",
         )

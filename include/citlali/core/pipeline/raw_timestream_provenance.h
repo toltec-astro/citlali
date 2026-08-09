@@ -152,6 +152,48 @@ inline YAML::Node raw_timestream_observation_state_node(
     value["calibration_validity_reason"] =
         raw_optional_scalar_node(
             observation->calibration_validity_reason);
+    value["calibration_validity_detail"] =
+        raw_optional_scalar_node(observation->calibration_validity_detail);
+    value["calibration_product_schema"] =
+        raw_optional_scalar_node(observation->calibration_product_schema);
+    value["calibration_target_unit"] =
+        raw_optional_scalar_node(observation->calibration_target_unit);
+    value["calibration_photometry_policy"] =
+        raw_optional_scalar_node(observation->calibration_photometry_policy);
+    value["calibration_factor_composition"] =
+        raw_optional_scalar_node(observation->calibration_factor_composition);
+    value["calibration_factor_provenance"] =
+        raw_optional_scalar_node(observation->calibration_factor_provenance);
+    value["calibration_compatibility_fcf_semantics"] =
+        raw_optional_scalar_node(observation->calibration_compatibility_fcf_semantics);
+    value["calibration_weight_recipient_semantics"] =
+        raw_optional_scalar_node(observation->calibration_weight_recipient_semantics);
+    value["calibration_compact_covariance_state"] =
+        raw_optional_scalar_node(observation->calibration_compact_covariance_state);
+    value["calibration_apt_artifact_sha256"] =
+        raw_optional_scalar_node(observation->calibration_apt_artifact_sha256);
+    value["calibration_acquisition_binding_sha256"] =
+        raw_optional_scalar_node(observation->calibration_acquisition_binding_sha256);
+    value["calibration_raw_observation_identity"] =
+        raw_optional_scalar_node(observation->calibration_raw_observation_identity);
+    value["calibration_acquisition_binding_mode"] =
+        raw_optional_scalar_node(observation->calibration_acquisition_binding_mode);
+    value["calibration_acquisition_key_schema"] =
+        raw_optional_scalar_node(observation->calibration_acquisition_key_schema);
+    value["calibration_response_identity"] =
+        raw_optional_scalar_node(observation->calibration_response_identity);
+    value["calibration_conditional_variance_transfer"] =
+        raw_optional_scalar_node(observation->calibration_conditional_variance_transfer);
+    value["calibration_conditional_inverse_variance_transfer"] =
+        raw_optional_scalar_node(observation->calibration_conditional_inverse_variance_transfer);
+    value["calibration_precision_limitation"] =
+        raw_optional_scalar_node(observation->calibration_precision_limitation);
+    value["calibration_nuisance_states"] =
+        raw_optional_scalar_node(observation->calibration_nuisance_states);
+    value["calibration_minimum_total_multiplier"] =
+        raw_optional_scalar_node(observation->calibration_minimum_total_multiplier);
+    value["calibration_maximum_total_multiplier"] =
+        raw_optional_scalar_node(observation->calibration_maximum_total_multiplier);
     return node;
 }
 
@@ -192,6 +234,48 @@ inline YAML::Node raw_timestream_realized_state_node(
         raw_optional_scalar_node(realized.calibration_valid);
     node["calibration_validity_reason"] =
         raw_optional_scalar_node(realized.calibration_validity_reason);
+    node["calibration_validity_detail"] =
+        raw_optional_scalar_node(realized.calibration_validity_detail);
+    node["calibration_product_schema"] =
+        raw_optional_scalar_node(realized.calibration_product_schema);
+    node["calibration_target_unit"] =
+        raw_optional_scalar_node(realized.calibration_target_unit);
+    node["calibration_photometry_policy"] =
+        raw_optional_scalar_node(realized.calibration_photometry_policy);
+    node["calibration_factor_composition"] =
+        raw_optional_scalar_node(realized.calibration_factor_composition);
+    node["calibration_factor_provenance"] =
+        raw_optional_scalar_node(realized.calibration_factor_provenance);
+    node["calibration_compatibility_fcf_semantics"] =
+        raw_optional_scalar_node(realized.calibration_compatibility_fcf_semantics);
+    node["calibration_weight_recipient_semantics"] =
+        raw_optional_scalar_node(realized.calibration_weight_recipient_semantics);
+    node["calibration_compact_covariance_state"] =
+        raw_optional_scalar_node(realized.calibration_compact_covariance_state);
+    node["calibration_apt_artifact_sha256"] =
+        raw_optional_scalar_node(realized.calibration_apt_artifact_sha256);
+    node["calibration_acquisition_binding_sha256"] =
+        raw_optional_scalar_node(realized.calibration_acquisition_binding_sha256);
+    node["calibration_raw_observation_identity"] =
+        raw_optional_scalar_node(realized.calibration_raw_observation_identity);
+    node["calibration_acquisition_binding_mode"] =
+        raw_optional_scalar_node(realized.calibration_acquisition_binding_mode);
+    node["calibration_acquisition_key_schema"] =
+        raw_optional_scalar_node(realized.calibration_acquisition_key_schema);
+    node["calibration_response_identity"] =
+        raw_optional_scalar_node(realized.calibration_response_identity);
+    node["calibration_conditional_variance_transfer"] =
+        raw_optional_scalar_node(realized.calibration_conditional_variance_transfer);
+    node["calibration_conditional_inverse_variance_transfer"] =
+        raw_optional_scalar_node(realized.calibration_conditional_inverse_variance_transfer);
+    node["calibration_precision_limitation"] =
+        raw_optional_scalar_node(realized.calibration_precision_limitation);
+    node["calibration_nuisance_states"] =
+        raw_optional_scalar_node(realized.calibration_nuisance_states);
+    node["calibration_minimum_total_multiplier"] =
+        raw_optional_scalar_node(realized.calibration_minimum_total_multiplier);
+    node["calibration_maximum_total_multiplier"] =
+        raw_optional_scalar_node(realized.calibration_maximum_total_multiplier);
     return node;
 }
 

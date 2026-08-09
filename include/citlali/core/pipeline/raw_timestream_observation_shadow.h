@@ -2,6 +2,7 @@
 
 #include <citlali/core/config/runtime_config.h>
 #include <citlali/core/pipeline/raw_timestream_observation_resolution.h>
+#include <citlali/core/timestream/calibration_product.h>
 
 #include <algorithm>
 #include <cmath>
@@ -181,6 +182,55 @@ complete_raw_timestream_extinction_shadow(
     plan.observation->calibration_valid = calibration.calibration_valid;
     plan.observation->calibration_validity_reason =
         calibration.calibration_validity_reason;
+    plan.observation->calibration_validity_detail =
+        calibration.product.validity_detail;
+    plan.observation->calibration_product_schema =
+        std::string{calibration.product.schema_version};
+    plan.observation->calibration_target_unit =
+        calibration.product.target_unit;
+    plan.observation->calibration_photometry_policy =
+        std::string{calibration.product.photometry_policy};
+    plan.observation->calibration_factor_composition =
+        std::string{calibration.product.factor_composition};
+    plan.observation->calibration_factor_provenance =
+        std::string{calibration.product.factor_provenance};
+    plan.observation->calibration_compatibility_fcf_semantics =
+        std::string{calibration.product.compatibility_fcf_semantics};
+    plan.observation->calibration_weight_recipient_semantics =
+        std::string{calibration.product.weight_recipient_semantics};
+    plan.observation->calibration_compact_covariance_state =
+        std::string{calibration.product.compact_covariance_state};
+    plan.observation->calibration_apt_artifact_sha256 =
+        calibration.product.apt_artifact_sha256;
+    plan.observation->calibration_acquisition_binding_sha256 =
+        calibration.product.acquisition_binding_sha256;
+    plan.observation->calibration_raw_observation_identity =
+        calibration.product.raw_observation_identity;
+    plan.observation->calibration_acquisition_binding_mode =
+        calibration.product.acquisition_binding_mode;
+    plan.observation->calibration_acquisition_key_schema =
+        calibration.product.acquisition_key_schema;
+    plan.observation->calibration_response_identity =
+        calibration.product.response_identity;
+    plan.observation->calibration_conditional_variance_transfer =
+        std::string{calibration.product.conditional_variance_transfer};
+    plan.observation->calibration_conditional_inverse_variance_transfer =
+        std::string{calibration.product.conditional_inverse_variance_transfer};
+    plan.observation->calibration_precision_limitation =
+        std::string{calibration.product.precision_limitation};
+    plan.observation->calibration_nuisance_states =
+        timestream::calibration_nuisance_state_summary(calibration.product);
+    const auto minimum_total_multiplier =
+        timestream::minimum_total_signal_multiplier(calibration.product);
+    const auto maximum_total_multiplier =
+        timestream::maximum_total_signal_multiplier(calibration.product);
+    if (std::isfinite(minimum_total_multiplier) &&
+        std::isfinite(maximum_total_multiplier)) {
+        plan.observation->calibration_minimum_total_multiplier =
+            minimum_total_multiplier;
+        plan.observation->calibration_maximum_total_multiplier =
+            maximum_total_multiplier;
+    }
 
     compare_raw_observation_shadow_value(
         report, "extinction.active", extinction.active, actual_active);

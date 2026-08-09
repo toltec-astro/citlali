@@ -33,6 +33,27 @@ struct RawTimestreamObservationState {
     std::optional<std::string> calibration_quality_regime;
     std::optional<bool> calibration_valid;
     std::optional<std::string> calibration_validity_reason;
+    std::optional<std::string> calibration_validity_detail;
+    std::optional<std::string> calibration_product_schema;
+    std::optional<std::string> calibration_target_unit;
+    std::optional<std::string> calibration_photometry_policy;
+    std::optional<std::string> calibration_factor_composition;
+    std::optional<std::string> calibration_factor_provenance;
+    std::optional<std::string> calibration_compatibility_fcf_semantics;
+    std::optional<std::string> calibration_weight_recipient_semantics;
+    std::optional<std::string> calibration_compact_covariance_state;
+    std::optional<std::string> calibration_apt_artifact_sha256;
+    std::optional<std::string> calibration_acquisition_binding_sha256;
+    std::optional<std::string> calibration_raw_observation_identity;
+    std::optional<std::string> calibration_acquisition_binding_mode;
+    std::optional<std::string> calibration_acquisition_key_schema;
+    std::optional<std::string> calibration_response_identity;
+    std::optional<std::string> calibration_conditional_variance_transfer;
+    std::optional<std::string> calibration_conditional_inverse_variance_transfer;
+    std::optional<std::string> calibration_precision_limitation;
+    std::optional<std::string> calibration_nuisance_states;
+    std::optional<double> calibration_minimum_total_multiplier;
+    std::optional<double> calibration_maximum_total_multiplier;
 };
 
 struct CalibrationReferenceEffectiveState {
@@ -57,6 +78,27 @@ struct RawTimestreamRealizedState {
     std::optional<std::string> calibration_quality_regime;
     std::optional<bool> calibration_valid;
     std::optional<std::string> calibration_validity_reason;
+    std::optional<std::string> calibration_validity_detail;
+    std::optional<std::string> calibration_product_schema;
+    std::optional<std::string> calibration_target_unit;
+    std::optional<std::string> calibration_photometry_policy;
+    std::optional<std::string> calibration_factor_composition;
+    std::optional<std::string> calibration_factor_provenance;
+    std::optional<std::string> calibration_compatibility_fcf_semantics;
+    std::optional<std::string> calibration_weight_recipient_semantics;
+    std::optional<std::string> calibration_compact_covariance_state;
+    std::optional<std::string> calibration_apt_artifact_sha256;
+    std::optional<std::string> calibration_acquisition_binding_sha256;
+    std::optional<std::string> calibration_raw_observation_identity;
+    std::optional<std::string> calibration_acquisition_binding_mode;
+    std::optional<std::string> calibration_acquisition_key_schema;
+    std::optional<std::string> calibration_response_identity;
+    std::optional<std::string> calibration_conditional_variance_transfer;
+    std::optional<std::string> calibration_conditional_inverse_variance_transfer;
+    std::optional<std::string> calibration_precision_limitation;
+    std::optional<std::string> calibration_nuisance_states;
+    std::optional<double> calibration_minimum_total_multiplier;
+    std::optional<double> calibration_maximum_total_multiplier;
 };
 
 struct RawTimestreamExecutionPlan {

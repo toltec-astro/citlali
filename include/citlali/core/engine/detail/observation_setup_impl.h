@@ -6,6 +6,7 @@
 #include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/config/config_value.h>
 #include <citlali/core/pipeline/observation_setup_validation.h>
+#include <citlali/core/pipeline/calibration_product_admission.h>
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/map_buffer_allocation.h>
 #include <citlali/core/pipeline/raw_timestream_observation_shadow.h>
@@ -55,6 +56,16 @@ void setup_observation_extinction(EngineT &engine) {
         engine.rtcproc.calibration.disable_extinction();
     }
 
+}
+
+template <class EngineT>
+void admit_observation_calibration_product(EngineT &engine) {
+    engine.rtcproc.calibration.reset_product_admission();
+    citlali::pipeline::admit_complete_calibration_product(engine);
+}
+
+template <class EngineT>
+void finalize_observation_calibration_shadow(EngineT &engine) {
     if constexpr (citlali::pipeline::has_raw_timestream_plan_v<EngineT>) {
         auto &plan = citlali::pipeline::raw_timestream_plan(engine);
         if (plan.initialized) {
@@ -251,7 +262,12 @@ void setup_observation_stats_buffers(
 
 void Engine::obsnum_setup(
     citlali::pipeline::StageProfileCollector &stage_profile) {
+    // This is the sole admission point for the complete observation-level
+    // calibration product. It precedes observation calibration-state changes,
+    // TOD mutation, and every diagnostic or map publication below.
+    citlali::engine_detail::admit_observation_calibration_product(*this);
     citlali::engine_detail::setup_observation_extinction(*this);
+    citlali::engine_detail::finalize_observation_calibration_shadow(*this);
     citlali::engine_detail::validate_observation_polarization_inputs(*this);
     citlali::engine_detail::setup_observation_timestream_processors(*this);
     citlali::engine_detail::setup_observation_map_wcs(*this);

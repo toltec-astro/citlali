@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/timestream/calibration_product.h>
+
 #include <citlali/core/pipeline/phdu_beammap.h>
 #include <citlali/core/pipeline/phdu_extinction.h>
 #include <citlali/core/pipeline/phdu_observation_metadata.h>
@@ -149,6 +151,69 @@ void add_phdu_extinction_apt_oof_section(
     hdu.addKey("CAL.VALIDITY_REASON",
                rtcproc.calibration.calibration_validity_reason,
                "Calibration validity reason");
+    const auto &product = rtcproc.calibration.product;
+    hdu.addKey("CAL.PRODUCT_SCHEMA", std::string{product.schema_version},
+               "Complete calibration product schema");
+    hdu.addKey("CAL.VALIDITY_DETAIL", product.validity_detail,
+               "Calibration validity detail");
+    hdu.addKey("CAL.TARGET_UNIT", product.target_unit,
+               "Admitted production unit");
+    hdu.addKey("CAL.PHOTOMETRY_POLICY", std::string{product.photometry_policy},
+               "Admitted point-source photometry policy");
+    hdu.addKey("CAL.FACTOR_COMPOSITION", std::string{product.factor_composition},
+               "Applied signal factor composition");
+    hdu.addKey("CAL.FACTOR_PROVENANCE", std::string{product.factor_provenance},
+               "Factor units, sources, recipients, and exclusions");
+    hdu.addKey("CAL.COMPATIBILITY_FCF_SEMANTICS",
+               std::string{product.compatibility_fcf_semantics},
+               "Compatibility fcf contents and exclusions");
+    hdu.addKey("CAL.WEIGHT_RECIPIENT_SEMANTICS",
+               std::string{product.weight_recipient_semantics},
+               "Conditional weight recipient rules");
+    hdu.addKey("CAL.COMPACT_COVARIANCE_STATE",
+               std::string{product.compact_covariance_state},
+               "Persisted nuisance covariance availability");
+    hdu.addKey("CAL.APT_ARTIFACT_SHA256", product.apt_artifact_sha256,
+               "Exact selected APT artifact digest");
+    hdu.addKey("CAL.ACQUISITION_BINDING_SHA256",
+               product.acquisition_binding_sha256,
+               "Observation-local acquisition binding digest");
+    hdu.addKey("CAL.ACQUISITION_BINDING_MODE", product.acquisition_binding_mode,
+               "APT/acquisition binding mode");
+    hdu.addKey("CAL.ACQUISITION_KEY_SCHEMA", product.acquisition_key_schema,
+               "APT/acquisition key schema");
+    hdu.addKey("CAL.RESPONSE_IDENTITY", product.response_identity,
+               "Originating and realized response identity");
+    hdu.addKey("CAL.CONDITIONAL_VARIANCE_TRANSFER",
+               std::string{product.conditional_variance_transfer},
+               "Conditional variance scaling rule");
+    hdu.addKey("CAL.CONDITIONAL_INVERSE_VARIANCE_TRANSFER",
+               std::string{product.conditional_inverse_variance_transfer},
+               "Conditional inverse-variance scaling rule");
+    hdu.addKey("CAL.PRECISION_LIMITATION",
+               std::string{product.precision_limitation},
+               "Limits of conditional precision products");
+    hdu.addKey("CAL.NUISANCE_STATES",
+               timestream::calibration_nuisance_state_summary(product),
+               "Nuisance availability and correlation scopes");
+    const auto minimum_total_multiplier =
+        timestream::minimum_total_signal_multiplier(product);
+    const auto maximum_total_multiplier =
+        timestream::maximum_total_signal_multiplier(product);
+    const bool total_multiplier_extrema_available =
+        std::isfinite(minimum_total_multiplier) &&
+        std::isfinite(maximum_total_multiplier);
+    hdu.addKey("CAL.TOTAL_MULTIPLIER_EXTREMA_AVAILABLE",
+               total_multiplier_extrema_available,
+               "Admitted total signal multiplier extrema are available");
+    if (total_multiplier_extrema_available) {
+        hdu.addKey("CAL.MINIMUM_TOTAL_MULTIPLIER",
+                   minimum_total_multiplier,
+                   "Minimum admitted total signal multiplier");
+        hdu.addKey("CAL.MAXIMUM_TOTAL_MULTIPLIER",
+                   maximum_total_multiplier,
+                   "Maximum admitted total signal multiplier");
+    }
     const bool tau225_available =
         std::isfinite(rtcproc.calibration.realized_tau225);
     hdu.addKey("CAL.TAU225_AVAILABLE", tau225_available,

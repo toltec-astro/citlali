@@ -1,0 +1,81 @@
+{
+  "schema": "sci-cal-001-successor-2-local-evidence-v1",
+  "date": "2026-08-08",
+  "application_parent": "7894346a91fa78ceb2a8b3d625335f466e5e1756",
+  "candidate_identity": "the commit containing this manifest; exact commit, parent, and tree are reported in the coordinator handoff",
+  "authority": {
+    "frozen_scientific_operator": "7156881bd1a47e8cece97b8c541a013c93ac03e1",
+    "frozen_coordination": "dd5894679bf12bf4a5fb551e871b3c6010ef9b9b",
+    "exact_reaudit": "4140923de4ae33d36224493b5937e291bd552d30",
+    "coordinator_disposition": "51894705a4467a5ccb4ee95b1c718f1fbecee1d6"
+  },
+  "preserved_f002": {
+    "operator_contract_sha256": "7a064ff768a3de4f427f1338d94ef6cb9026d248f3c3c816fc3dfc96d156e36a",
+    "node_table_sha256": "fd688a4cd3f46585b08631bc63a562aed482feb9b24ec9ee0071b70db7eb8a5f",
+    "generated_header_sha256": "d322bdc863ccb1292325c739865f772ef53f4e9f4101967752027ea0a2413262",
+    "source_bytes_changed": false
+  },
+  "finding_traceability": {
+    "SCI-CAL-001-F003": [
+      "calibration_product.admits_only_complete_atomic_product",
+      "calibration_product.rejects_every_invalid_required_factor_class",
+      "calibration_product.rejection_precedes_tod_mutation"
+    ],
+    "SCI-CAL-001-F004": [
+      "calib_apt_binding.explicit_join_is_invariant_to_apt_row_permutation",
+      "calib_apt_binding.network_file_reorder_preserves_keyed_rows",
+      "calib_apt_binding.rejects_missing_extra_duplicate_and_mismatched_keys",
+      "calib_apt_binding.rejects_unavailable_or_ambiguous_raw_identity",
+      "calib_apt_binding.rejects_interface_roach_identity_conflict"
+    ],
+    "SCI-CAL-001-F005": [
+      "calibration_product.transfers_only_conditional_variance_and_weight",
+      "calibration_product_weight_recipient.approximate_weight_uses_compatibility_fcf_without_double_flxscale",
+      "calibration_product.admits_only_complete_atomic_product"
+    ],
+    "SCI-CAL-001-F006": [
+      "calibration_product.rejects_unsupported_production_units",
+      "calib_unit_policy.production_path_accepts_only_mjy_per_beam",
+      "calibration_product.production_path_applies_each_factor_once"
+    ],
+    "SCI-CAL-001-F007": [
+      "typed raw observation and realized provenance round-trip tests in the affected CTest/config gates",
+      "calibration_product.production_tod_netcdf_metadata_round_trips_complete_contract",
+      "map FITS, Beammap APT, and raw sidecar production writers"
+    ],
+    "SCI-CAL-001-F008": [
+      "calibration_product.production_path_applies_each_factor_once",
+      "calibration_product_weight_recipient.approximate_weight_uses_compatibility_fcf_without_double_flxscale"
+    ],
+    "SCI-CAL-001-F009": [
+      "the deterministic tests listed above and the exact-source local gate results below"
+    ],
+    "SCI-CAL-001-F010": [
+      "not claimed; remains conditioned on SCI-ALIGN-001 and external evidence"
+    ]
+  },
+  "local_gates": {
+    "focused_calibration_tests": "pass: 30 tests from 7 suites",
+    "production_fits_tests": "pass: 32 tests from 1 suite",
+    "citlali_test_build": "pass",
+    "citlali_safety_test_build": "pass",
+    "citlali_science_map_fits_products_test_build": "pass",
+    "citlali_cli_build": "pass",
+    "ctest": "pass: 649 executed tests; 0 failures; MapFitterLifecycle.ExactProductSequence remains repository-disabled and was not run",
+    "config_preflight": "pass: require-all; 127 Python unit tests; all mode, compatibility, coverage, authority, boundary, and read-census gates pass",
+    "calibration_and_product_contract_python_tests": "pass: 116 tests",
+    "atmosphere_generator_check": "pass: 1368 rows, 72 series, exact contract and node digests",
+    "f002_byte_identity": "pass: contract, node CSV, and generated header unchanged from 7894346a91fa78ceb2a8b3d625335f466e5e1756",
+    "diff_check": "pass"
+  },
+  "explicitly_unresolved": [
+    "SCI-ALIGN-001 and SCI-AST-001 dependencies",
+    "exact-successor Unity reduction and returned product/log evidence",
+    "fresh independent SCI-CAL-001 re-audit",
+    "coordinator post-re-audit disposition",
+    "FLT/downstream launch and production authorization",
+    "unavailable nuisance covariance, response fidelity, and total-precision model"
+  ],
+  "local_reduction_performed": false,
+  "prohibited_actions_performed": []
+}

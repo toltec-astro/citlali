@@ -91,6 +91,8 @@
 #include <citlali/core/utils/fits_io.h>
 #include <kids/toltec/toltec.h>
 #include <citlali/core/timestream/rtc/rtcproc.h>
+#include <citlali/core/timestream/ptc/ptcproc.h>
+#include <citlali/core/engine/telescope.h>
 
 #include <gtest/gtest.h>
 #include <spdlog/sinks/null_sink.h>
@@ -10327,7 +10329,34 @@ TEST(config_scaffold, serializes_versioned_raw_timestream_provenance) {
     observation.calibration_quality_regime =
         "science_qualification_regime";
     observation.calibration_valid = true;
-    observation.calibration_validity_reason = "valid";
+    observation.calibration_validity_reason = "valid_complete_product";
+    observation.calibration_validity_detail = "complete product admitted";
+    observation.calibration_product_schema =
+        "sci-cal-001-complete-calibration-product-v1";
+    observation.calibration_target_unit = "mJy/beam";
+    observation.calibration_photometry_policy =
+        "top_of_atmosphere_point_source_peak_mJy_per_beam";
+    observation.calibration_factor_composition = "signal_prime=a*signal";
+    observation.calibration_factor_provenance = "factor-sentinel";
+    observation.calibration_compatibility_fcf_semantics = "fcf-sentinel";
+    observation.calibration_weight_recipient_semantics = "weight-sentinel";
+    observation.calibration_compact_covariance_state =
+        "unavailable;no_nuisance_covariance_invented";
+    observation.calibration_apt_artifact_sha256 = "apt-sha-sentinel";
+    observation.calibration_acquisition_binding_sha256 =
+        "binding-sha-sentinel";
+    observation.calibration_raw_observation_identity =
+        "raw-identity-sentinel";
+    observation.calibration_acquisition_binding_mode = "explicit-key";
+    observation.calibration_acquisition_key_schema = "artifact+network+tone";
+    observation.calibration_response_identity = "response-sentinel";
+    observation.calibration_conditional_variance_transfer = "v'=a^2*v";
+    observation.calibration_conditional_inverse_variance_transfer =
+        "w'=w/a^2";
+    observation.calibration_precision_limitation = "conditional-only";
+    observation.calibration_nuisance_states = "nuisance-sentinel";
+    observation.calibration_minimum_total_multiplier = 1.25;
+    observation.calibration_maximum_total_multiplier = 9.5;
     citlali::pipeline::complete_raw_timestream_observation(plan, 12, 24);
     plan.realized.flagged_sample_count = 34;
     plan.realized.dynamic_notch_count = 2;
@@ -10371,6 +10400,26 @@ TEST(config_scaffold, serializes_versioned_raw_timestream_provenance) {
     EXPECT_EQ(node["observation"]["value"]["extinction_model"]["value"]
                   .as<std::string>(),
               timestream::FixedDjf25AtmosphereOperator::operator_id());
+    EXPECT_EQ(node["observation"]["value"]
+                  ["calibration_validity_reason"]["value"].as<std::string>(),
+              "valid_complete_product");
+    EXPECT_EQ(node["observation"]["value"]
+                  ["calibration_apt_artifact_sha256"]["value"].as<std::string>(),
+              "apt-sha-sentinel");
+    EXPECT_EQ(node["observation"]["value"]
+                  ["calibration_acquisition_binding_sha256"]["value"]
+                      .as<std::string>(),
+              "binding-sha-sentinel");
+    EXPECT_EQ(node["observation"]["value"]
+                  ["calibration_factor_provenance"]["value"].as<std::string>(),
+              "factor-sentinel");
+    EXPECT_EQ(node["observation"]["value"]
+                  ["calibration_nuisance_states"]["value"].as<std::string>(),
+              "nuisance-sentinel");
+    EXPECT_DOUBLE_EQ(node["observation"]["value"]
+                         ["calibration_minimum_total_multiplier"]["value"]
+                             .as<double>(),
+                     1.25);
     EXPECT_DOUBLE_EQ(
         node["requested"]["calibration"]
             ["reference_spectral_index_alpha"]["value"].as<double>(),
@@ -10383,6 +10432,16 @@ TEST(config_scaffold, serializes_versioned_raw_timestream_provenance) {
         node["effective"]["config"]["calibration"]
             ["reference_spectral_index_default_applied"].as<bool>());
     EXPECT_TRUE(node["realized"]["execution_completed"].as<bool>());
+    EXPECT_EQ(node["realized"]["calibration_raw_observation_identity"]
+                  ["value"].as<std::string>(),
+              "raw-identity-sentinel");
+    EXPECT_EQ(node["realized"]["calibration_weight_recipient_semantics"]
+                  ["value"].as<std::string>(),
+              "weight-sentinel");
+    EXPECT_DOUBLE_EQ(node["realized"]
+                         ["calibration_maximum_total_multiplier"]["value"]
+                             .as<double>(),
+                     9.5);
     EXPECT_EQ(node["realized"]["completed_scan_count"]["value"]
                   .as<std::size_t>(),
               12U);
@@ -10405,7 +10464,90 @@ TEST(config_scaffold, serializes_versioned_raw_timestream_provenance) {
     EXPECT_EQ(
         node["realized"]["calibration_validity_reason"]["value"]
             .as<std::string>(),
-        "valid");
+        "valid_complete_product");
+}
+
+TEST(calibration_product,
+     production_tod_netcdf_metadata_round_trips_complete_contract) {
+    timestream::RTCProc rtcproc;
+    timestream::CalibrationProductAdmissionInputs inputs;
+    inputs.target_unit = "mJy/beam";
+    inputs.calibration_requested = true;
+    inputs.acquisition_identity_available = true;
+    inputs.acquisition_identity_valid = true;
+    inputs.acquisition_identity_detail = "deterministic NetCDF fixture";
+    inputs.apt_artifact_sha256 = "apt-artifact-digest-sentinel";
+    inputs.acquisition_binding_sha256 = "binding-digest-sentinel";
+    inputs.raw_observation_identity = "raw-observation-identity-sentinel";
+    inputs.acquisition_binding_mode = "explicit_fixture_join";
+    inputs.acquisition_key_schema = "fixture+network+local_tone";
+    inputs.response_identity = "originating=fixture;realized=identity";
+    inputs.target_unit_factor = Eigen::VectorXd::Constant(1, 2.0);
+    inputs.detector_flxscale = Eigen::VectorXd::Constant(1, 5.0);
+    inputs.detector_beam_major_fwhm_arcsec =
+        Eigen::VectorXd::Constant(1, 10.0);
+    inputs.detector_beam_minor_fwhm_arcsec =
+        Eigen::VectorXd::Constant(1, 9.0);
+    rtcproc.calibration.admit_product(inputs);
+
+    struct CalibMetadataFixture {
+        Eigen::VectorXi arrays;
+    } calib;
+    calib.arrays = Eigen::VectorXi::Zero(1);
+    std::map<int, std::string> array_name_map{{0, "a1100"}};
+    std::map<std::string, Eigen::VectorXd> telescope_data;
+
+    const auto path = std::filesystem::path(testing::TempDir()) /
+                      "citlali-calibration-product-metadata.nc";
+    std::filesystem::remove(path);
+    {
+        netCDF::NcFile file(path.string(), netCDF::NcFile::replace);
+        citlali::pipeline::add_tod_mean_tau_vars(
+            file, false, rtcproc, telescope_data, 0.0, calib,
+            array_name_map);
+    }
+
+    netCDF::NcFile file(path.string(), netCDF::NcFile::read);
+    int valid = 0;
+    file.getVar("CAL.VALID").getVar(&valid);
+    EXPECT_EQ(valid, 1);
+    double minimum_multiplier = 0.0;
+    double maximum_multiplier = 0.0;
+    file.getVar("CAL.MINIMUM_TOTAL_MULTIPLIER")
+        .getVar(&minimum_multiplier);
+    file.getVar("CAL.MAXIMUM_TOTAL_MULTIPLIER")
+        .getVar(&maximum_multiplier);
+    EXPECT_DOUBLE_EQ(minimum_multiplier, 10.0);
+    EXPECT_DOUBLE_EQ(maximum_multiplier, 10.0);
+
+    auto read_string = [&](const std::string &name) {
+        auto variable = file.getVar(name);
+        char *raw_value = nullptr;
+        const int status =
+            nc_get_var_string(file.getId(), variable.getId(), &raw_value);
+        EXPECT_EQ(status, NC_NOERR) << nc_strerror(status);
+        const std::string value = raw_value == nullptr
+            ? std::string{} : std::string{raw_value};
+        if (raw_value != nullptr) {
+            EXPECT_EQ(nc_free_string(1, &raw_value), NC_NOERR);
+        }
+        return value;
+    };
+    EXPECT_EQ(read_string("CAL.VALIDITY_REASON"),
+              "valid_complete_product");
+    EXPECT_EQ(read_string("CAL.TARGET_UNIT"), "mJy/beam");
+    EXPECT_EQ(read_string("CAL.APT_ARTIFACT_SHA256"),
+              "apt-artifact-digest-sentinel");
+    EXPECT_EQ(read_string("CAL.ACQUISITION_BINDING_SHA256"),
+              "binding-digest-sentinel");
+    EXPECT_NE(read_string("CAL.NUISANCE_STATES").find(
+                  "uncertainty:unavailable"),
+              std::string::npos);
+    EXPECT_NE(read_string("CAL.PRECISION_LIMITATION").find(
+                  "not_total_precision_or_significance"),
+              std::string::npos);
+    file.close();
+    std::filesystem::remove(path);
 }
 
 TEST(config_scaffold, serializes_unavailable_raw_observation_explicitly) {
@@ -11823,6 +11965,30 @@ TEST(pipeline_output_layout, warns_when_timing_gaps_are_present) {
     citlali::pipeline::record_timing_gaps_if_needed(engine, logger);
 
     EXPECT_EQ(logger->warn_calls, 1);
+}
+
+TEST(calibration_product_weight_recipient,
+     approximate_weight_uses_compatibility_fcf_without_double_flxscale) {
+    timestream::PTCProc processor;
+    processor.logger = std::make_shared<spdlog::logger>(
+        "calibration-weight-recipient-test",
+        std::make_shared<spdlog::sinks::null_sink_mt>());
+    processor.weighting_type = "approximate";
+    timestream::TCData<timestream::TCDataKind::PTC, Eigen::MatrixXd> data;
+    data.scans.data = Eigen::MatrixXd::Ones(2, 1);
+    data.fcf.data = Eigen::VectorXd::Constant(1, 3.0);
+    data.status.calibrated = true;
+    std::map<std::string, Eigen::VectorXd> apt;
+    apt["flag"] = Eigen::VectorXd::Zero(1);
+    // The raw sensitivity was 2 and flxscale was 5; the stored APT sensitivity
+    // already contains that factor exactly once.
+    apt["sens"] = Eigen::VectorXd::Constant(1, 10.0);
+    engine::Telescope telescope;
+    telescope.d_fsmp = 4.0;
+
+    processor.calc_weights(data, apt, telescope, false);
+    ASSERT_EQ(data.weights.data.size(), 1);
+    EXPECT_DOUBLE_EQ(data.weights.data(0), 1.0 / (60.0 * 60.0));
 }
 
 }  // namespace

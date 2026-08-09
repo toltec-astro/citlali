@@ -1,0 +1,183 @@
+#include <citlali/core/timestream/rtc/calibrate.h>
+
+#include <gtest/gtest.h>
+
+#include <Eigen/Core>
+
+#include <cmath>
+#include <limits>
+#include <map>
+#include <string>
+
+namespace {
+
+timestream::CalibrationProductAdmissionInputs valid_inputs(
+    Eigen::Index detector_count = 2, bool extinction = true) {
+    timestream::CalibrationProductAdmissionInputs inputs;
+    inputs.target_unit = "mJy/beam";
+    inputs.calibration_requested = true;
+    inputs.extinction_requested = extinction;
+    inputs.responsivity_required = true;
+    inputs.sensitivity_required = true;
+    inputs.beam_template_required = true;
+    inputs.acquisition_identity_available = true;
+    inputs.acquisition_identity_valid = true;
+    inputs.acquisition_identity_detail = "test explicit-key binding";
+    inputs.apt_artifact_sha256 = "test-apt-sha256";
+    inputs.acquisition_binding_sha256 = "test-binding-sha256";
+    inputs.raw_observation_identity = "test-raw-observation";
+    inputs.acquisition_binding_mode = "explicit_test_join";
+    inputs.acquisition_key_schema = "artifact+network+local_tone";
+    inputs.response_identity = "originating=test-beam;realized=identity";
+    inputs.target_unit_factor = Eigen::VectorXd::Ones(detector_count);
+    inputs.detector_flxscale = Eigen::VectorXd::Ones(detector_count);
+    inputs.detector_responsivity = Eigen::VectorXd::Ones(detector_count);
+    inputs.detector_sensitivity = Eigen::VectorXd::Ones(detector_count);
+    inputs.detector_beam_major_fwhm_arcsec =
+        Eigen::VectorXd::Constant(detector_count, 10.0);
+    inputs.detector_beam_minor_fwhm_arcsec =
+        Eigen::VectorXd::Constant(detector_count, 9.0);
+    inputs.minimum_extinction_correction =
+        Eigen::VectorXd::Ones(detector_count);
+    inputs.maximum_extinction_correction =
+        Eigen::VectorXd::Constant(detector_count, extinction ? 1.5 : 1.0);
+    return inputs;
+}
+
+struct CalibrationFixture {
+    std::map<std::string, Eigen::VectorXd> apt;
+};
+
+}  // namespace
+
+TEST(calibration_product, admits_only_complete_atomic_product) {
+    const auto product = timestream::admit_calibration_product(valid_inputs());
+    ASSERT_TRUE(product.valid());
+    EXPECT_EQ(product.validity_cause,
+              timestream::CalibrationValidityCause::valid_complete_product);
+    EXPECT_EQ(product.target_unit, "mJy/beam");
+    EXPECT_FALSE(product.apt_artifact_sha256.empty());
+    EXPECT_FALSE(product.response_identity.empty());
+    ASSERT_FALSE(product.nuisances.empty());
+    for (const auto &nuisance : product.nuisances) {
+        EXPECT_FALSE(nuisance.correlation_scope.empty());
+        EXPECT_NE(nuisance.uncertainty_source, "zero");
+        EXPECT_FALSE(nuisance.validity.empty());
+    }
+    EXPECT_EQ(product.nuisances.front().value_availability,
+              timestream::CalibrationNuisanceAvailability::available);
+    EXPECT_EQ(product.nuisances.front().availability,
+              timestream::CalibrationNuisanceAvailability::unavailable);
+}
+
+TEST(calibration_product, rejects_unsupported_production_units) {
+    for (const std::string unit : {"MJy/sr", "uK", "Jy/pixel", "Jy/beam"}) {
+        auto inputs = valid_inputs();
+        inputs.target_unit = unit;
+        const auto product = timestream::admit_calibration_product(inputs);
+        EXPECT_FALSE(product.valid());
+        EXPECT_EQ(product.validity_cause,
+                  timestream::CalibrationValidityCause::unsupported_target_unit);
+    }
+}
+
+TEST(calibration_product, rejects_every_invalid_required_factor_class) {
+    const double nan = std::numeric_limits<double>::quiet_NaN();
+    for (const int factor_class : {0, 1, 2, 3, 4, 5}) {
+        auto inputs = valid_inputs();
+        switch (factor_class) {
+            case 0: inputs.target_unit_factor(0) = nan; break;
+            case 1: inputs.detector_flxscale(0) = 0.0; break;
+            case 2: inputs.detector_responsivity(0) = nan; break;
+            case 3: inputs.detector_sensitivity(0) = -1.0; break;
+            case 4: inputs.detector_beam_major_fwhm_arcsec(0) = 0.0; break;
+            case 5: inputs.maximum_extinction_correction(0) = nan; break;
+        }
+        const auto product = timestream::admit_calibration_product(inputs);
+        EXPECT_FALSE(product.valid());
+        EXPECT_TRUE(
+            product.validity_cause ==
+                timestream::CalibrationValidityCause::invalid_required_factor ||
+            product.validity_cause ==
+                timestream::CalibrationValidityCause::invalid_atmosphere_support);
+    }
+}
+
+TEST(calibration_product, distinguishes_missing_from_invalid_required_factors) {
+    auto missing = valid_inputs();
+    missing.detector_responsivity.resize(0);
+    EXPECT_EQ(timestream::admit_calibration_product(missing).validity_cause,
+              timestream::CalibrationValidityCause::missing_required_factor);
+
+    auto invalid = valid_inputs();
+    invalid.detector_responsivity(0) = 0.0;
+    EXPECT_EQ(timestream::admit_calibration_product(invalid).validity_cause,
+              timestream::CalibrationValidityCause::invalid_required_factor);
+}
+
+TEST(calibration_product, preserves_acquisition_identity_failure_causes) {
+    auto unavailable = valid_inputs();
+    unavailable.acquisition_identity_available = false;
+    EXPECT_EQ(timestream::admit_calibration_product(unavailable).validity_cause,
+              timestream::CalibrationValidityCause::acquisition_identity_unavailable);
+
+    auto invalid = valid_inputs();
+    invalid.acquisition_identity_valid = false;
+    EXPECT_EQ(timestream::admit_calibration_product(invalid).validity_cause,
+              timestream::CalibrationValidityCause::acquisition_identity_invalid);
+}
+
+TEST(calibration_product, transfers_only_conditional_variance_and_weight) {
+    EXPECT_DOUBLE_EQ(timestream::transfer_conditional_variance(4.0, 3.0),
+                     36.0);
+    EXPECT_DOUBLE_EQ(
+        timestream::transfer_conditional_inverse_variance(0.25, 3.0),
+        0.25 / 9.0);
+    EXPECT_TRUE(std::isnan(timestream::transfer_conditional_variance(-1.0, 2.0)));
+    EXPECT_TRUE(std::isnan(
+        timestream::transfer_conditional_inverse_variance(1.0, 0.0)));
+}
+
+TEST(calibration_product, rejection_precedes_tod_mutation) {
+    timestream::Calibration calibration;
+    auto inputs = valid_inputs();
+    inputs.detector_flxscale(0) = 0.0;
+    EXPECT_THROW(calibration.admit_product(inputs), std::domain_error);
+    EXPECT_EQ(calibration.product.validity_cause,
+              timestream::CalibrationValidityCause::invalid_required_factor);
+
+    timestream::TCData<timestream::TCDataKind::RTC, Eigen::MatrixXd> data;
+    data.scans.data = Eigen::MatrixXd::Ones(2, 2);
+    data.fcf.data = Eigen::VectorXd::Ones(2);
+    const auto original = data.scans.data;
+    CalibrationFixture fixture;
+    EXPECT_THROW(calibration.calibrate_tod(data, fixture), std::runtime_error);
+    EXPECT_TRUE(data.scans.data.isApprox(original, 0.0));
+    EXPECT_TRUE(data.fcf.data.isOnes());
+}
+
+TEST(calibration_product, production_path_applies_each_factor_once) {
+    timestream::Calibration calibration;
+    auto inputs = valid_inputs(2, true);
+    inputs.target_unit_factor << 2.0, 3.0;
+    inputs.detector_flxscale << 5.0, 7.0;
+    inputs.minimum_extinction_correction << 2.0, 4.0;
+    inputs.maximum_extinction_correction = inputs.minimum_extinction_correction;
+    calibration.admit_product(inputs);
+
+    timestream::TCData<timestream::TCDataKind::RTC, Eigen::MatrixXd> data;
+    data.scans.data = Eigen::MatrixXd::Ones(1, 2);
+    data.fcf.data = Eigen::VectorXd::Ones(2);
+    CalibrationFixture fixture;
+    fixture.apt["array"] = (Eigen::Vector2d() << 0.0, 1.0).finished();
+    calibration.calibrate_tod(data, fixture);
+    std::map<int, Eigen::VectorXd> los;
+    los[0] = Eigen::VectorXd::Constant(1, std::log(2.0));
+    los[1] = Eigen::VectorXd::Constant(1, std::log(4.0));
+    calibration.extinction_correction(data, fixture, los);
+
+    EXPECT_DOUBLE_EQ(data.scans.data(0, 0), 2.0 * 5.0 * 2.0);
+    EXPECT_DOUBLE_EQ(data.scans.data(0, 1), 3.0 * 7.0 * 4.0);
+    EXPECT_DOUBLE_EQ(data.fcf.data(0), 2.0 * 2.0);
+    EXPECT_DOUBLE_EQ(data.fcf.data(1), 3.0 * 4.0);
+}

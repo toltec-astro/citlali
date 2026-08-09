@@ -183,6 +183,44 @@ these local results. The approved `SCI-MAP-001` and `SCI-NOI-002` estimator,
 identity, validity, writer/finalizer, atomic-publication, and provenance
 contracts remain unchanged.
 
+### Re-audit disposition and bounded successor-2 repair
+
+The independent exact-candidate re-audit at
+`4140923de4ae33d36224493b5937e291bd552d30` rejected application candidate
+`7894346a91fa78ceb2a8b3d625335f466e5e1756` as a complete `SCI-CAL-001`
+repair. That candidate closed only the narrow F002 fixed-atmosphere-operator
+contract. F003--F010 remained unresolved because complete calibration-product
+admission was tau-only, APT rows were positional, unsupported units and
+invalid factors were not uniformly fail-closed, conditional uncertainty and
+nuisance semantics were incomplete, realized provenance was insufficient,
+and the deterministic production fixtures did not cover those gates. The
+coordinator disposition at
+`51894705a4467a5ccb4ee95b1c718f1fbecee1d6` retained production
+`fail_closed` and authorized a bounded successor repair without importing
+audit or coordination history.
+
+The owner-approved successor is being prepared on
+`codex/repair-sci-cal-001-successor-2`, directly from exact rejected
+application source `7894346a91fa78ceb2a8b3d625335f466e5e1756`. Its bounded
+implementation adds atomic typed complete-product admission before
+observation calibration-state changes or publication, an explicit
+network/local-tone-frequency acquisition join with digest-bound observation
+identity, fail-closed top-of-atmosphere point-source-peak `mJy/beam` policy,
+separate factor/recipient and compatibility-`fcf` semantics, conditional
+variance/inverse-variance transfer, named nuisance availability/validity/
+correlation scopes, and realized CAL provenance on raw, TOD, map, and Beammap
+surfaces. The F002 contract, node table, generated header, and numerical
+operator remain byte-for-byte unchanged.
+
+The successor's deterministic local C++/Python, production-writer, config,
+artifact-identity, and build gates pass; exact candidate identity is reported
+in its coordinator handoff. These local results do not change the package
+verdict, production status, or external evidence state. F010 remains
+conditioned on `SCI-ALIGN-001`; astrometry/pointing closure remains with
+`SCI-AST-001`; exact-successor Unity reductions, returned logs/products,
+fresh independent re-audit, coordinator disposition, downstream/FLT launch,
+and production authorization remain external and unperformed.
+
 ## Historical 2026-07-31 SCI-MAP-001 Bounded Repair Lane
 
 This section preserves the repair-lane chronology and its candidate-time gate

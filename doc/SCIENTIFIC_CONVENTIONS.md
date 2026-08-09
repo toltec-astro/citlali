@@ -417,10 +417,14 @@ Units belong to values and products, not to variable names alone.
 | MJD support | days |
 | HWPR/telescope angular streams where emitted | rad unless the variable states otherwise |
 
-The mapmaking boundary accepts the established unit tokens `mJy/beam`,
-`MJy/sr`, `uK`, and `Jy/pixel`, and records conversion metadata. The active
-Phase 4 product snapshots use `mJy/beam`; accepting the other tokens does not
-erase the need to validate their conversion factors and downstream products.
+The low-level mapmaking compatibility boundary can describe the historical
+unit tokens `mJy/beam`, `MJy/sr`, `uK`, and `Jy/pixel`. The `SCI-CAL-001`
+production calibration boundary admits only top-of-atmosphere point-source-
+peak `mJy/beam`. `MJy/sr`, `Jy/pixel`, ambiguous `uK`, temperature units,
+extended-source calibration, and integrated-photometry meanings fail closed
+until their own beam-area, bandpass/color, WCS-pixel, response, uncertainty,
+and validation contracts are approved. Parsing a legacy token is not
+calibration-product admission.
 
 For configuration, the `unit` field in
 `tools/config/config_leaf_contract_resolved.json` is authoritative. A bare
@@ -535,6 +539,53 @@ applied during fit conversion. This calibration contract appends metadata to
 existing required products but does not alter the approved `SCI-MAP-001`
 ordinary-naive estimator or `SCI-NOI-002` noise estimator, identity, validity,
 writer/finalizer, atomic-publication, or provenance behavior.
+
+### Complete Calibration Product Admission
+
+Calibration validity is the state of one complete observation-level product,
+not a synonym for valid `tau225`. Before calibration state changes, TOD
+mutation, or output publication, the boundary atomically admits or rejects
+the target unit, selected APT artifact, observation-local acquisition binding,
+all required detector factors, originating beam/template, realized response
+identity, and complete observation elevation/atmosphere support. Cause-
+preserving validity states distinguish not evaluated, calibration not
+requested, unsupported unit, unavailable or invalid acquisition identity,
+missing or invalid required factor, invalid atmosphere support, and a valid
+complete product. A requested calibration or extinction correction with any
+invalid state fails closed.
+
+The external-APT acquisition binding is an explicit key join. Raw file order,
+interface name, `RoachIndex`, detector/tone cardinality, finite unique network-
+local tone frequencies, selected-APT network/tone keys, and complete one-to-
+one coverage are validated. The result is ordered by the raw observation,
+not by APT row position; APT-row permutations therefore preserve the joined
+detector records. Missing, extra, duplicate, unavailable, conflicting, or
+ambiguous acquisition keys fail closed. The exact selected APT digest,
+binding digest, key schema, mode, and raw-observation key inventory are
+retained. Beammap's internally generated APT uses its separate declared
+raw-network/local-row construction identity.
+
+For the admitted production path, the signal multiplier is
+`target_unit_factor * detector_flxscale * sample_extinction_correction`.
+`responsivity` is a relative despike donor/target factor and not absolute flux
+calibration. Beammap `sens` is the selected-APT
+`mJy/beam * sqrt(s)` value and already contains detector `flxscale`.
+Compatibility `fcf` is precisely target-unit transfer times scan-mean
+extinction; it excludes `flxscale`, is used with `sens` by approximate/hybrid
+conditional weighting, and is not authoritative total calibration. Full
+weights are derived from already calibrated samples. Constant coefficients
+remain nonprecision weights.
+
+Conditional statistical variance transfers under a valid multiplier `a` as
+`v' = a^2 v`, and conditional inverse variance as `w' = w / a^2`. Calibration
+and response systematics are separate named nuisance states for detector
+`flxscale`, common absolute scale, TolProj pointing fluxscale correction,
+WVR/atmosphere model, Beammap sensitivity estimation, and beam/template
+response. Each state records value availability, uncertainty availability,
+provenance, validity, and detector/array/observation/product correlation
+scope. Missing uncertainty is unavailable, never zero; no compact or dense
+covariance, response fidelity, total precision, or statistical significance
+is invented when the required information is absent.
 
 ## Validity, Missing Data, And Non-Finite Values
 

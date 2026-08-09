@@ -45,6 +45,34 @@ struct CalibrationFixture {
     std::map<std::string, Eigen::VectorXd> apt;
 };
 
+void admit_test_product(timestream::Calibration &calibration,
+                        Eigen::Index detector_count,
+                        bool extinction = true) {
+    timestream::CalibrationProductAdmissionInputs inputs;
+    inputs.target_unit = "mJy/beam";
+    inputs.calibration_requested = true;
+    inputs.extinction_requested = extinction;
+    inputs.acquisition_identity_available = true;
+    inputs.acquisition_identity_valid = true;
+    inputs.apt_artifact_sha256 = "test-apt";
+    inputs.acquisition_binding_sha256 = "test-binding-sha";
+    inputs.raw_observation_identity = "test-raw-observation";
+    inputs.acquisition_binding_mode = "test-binding";
+    inputs.acquisition_key_schema = "test-key";
+    inputs.response_identity = "test-response";
+    inputs.target_unit_factor = Eigen::VectorXd::Ones(detector_count);
+    inputs.detector_flxscale = Eigen::VectorXd::Ones(detector_count);
+    inputs.detector_beam_major_fwhm_arcsec =
+        Eigen::VectorXd::Ones(detector_count);
+    inputs.detector_beam_minor_fwhm_arcsec =
+        Eigen::VectorXd::Ones(detector_count);
+    inputs.minimum_extinction_correction =
+        Eigen::VectorXd::Ones(detector_count);
+    inputs.maximum_extinction_correction =
+        Eigen::VectorXd::Constant(detector_count, extinction ? 10.0 : 1.0);
+    calibration.admit_product(inputs);
+}
+
 }  // namespace
 
 TEST(calibration_atmosphere_operator, freezes_exact_artifact_identities) {
@@ -202,6 +230,7 @@ TEST(calibration_atmosphere_operator, uses_sample_elevation_los_nodes_once) {
     data.fcf.data = Eigen::VectorXd::Ones(1);
     CalibrationFixture fixture;
     fixture.apt["array"] = Eigen::VectorXd::Zero(1);
+    admit_test_product(calibration, 1);
     calibration.extinction_correction(data, fixture, los);
 
     EXPECT_DOUBLE_EQ(data.scans.data(0, 0), std::exp(los.at(0)(0)));
@@ -224,6 +253,7 @@ TEST(calibration_atmosphere_operator, rejects_invalid_factor_before_mutation) {
     los[1] = Eigen::Vector2d::Constant(0.2);
     los[1](1) = std::numeric_limits<double>::quiet_NaN();
     const auto original = data.scans.data;
+    admit_test_product(calibration, 2);
 
     EXPECT_THROW(
         calibration.extinction_correction(data, fixture, los),
@@ -245,6 +275,7 @@ TEST(calibration_atmosphere_operator,
     data.fcf.data = Eigen::VectorXd::Ones(1);
     CalibrationFixture fixture;
     fixture.apt["array"] = Eigen::VectorXd::Zero(1);
+    admit_test_product(calibration, 1);
     calibration.extinction_correction(data, fixture, los);
 
     const double top_of_atmosphere_source_flux_mjy = 1000.0;

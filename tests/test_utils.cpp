@@ -124,6 +124,22 @@ TEST(calibration, applies_detector_specific_flux_factors) {
     calib.apt["flxscale"] << 5.0, 7.0;
 
     timestream::Calibration calibration;
+    auto inputs = timestream::CalibrationProductAdmissionInputs{};
+    inputs.target_unit = "mJy/beam";
+    inputs.calibration_requested = true;
+    inputs.acquisition_identity_available = true;
+    inputs.acquisition_identity_valid = true;
+    inputs.apt_artifact_sha256 = "test-apt";
+    inputs.acquisition_binding_sha256 = "test-binding-sha";
+    inputs.raw_observation_identity = "test-raw-observation";
+    inputs.acquisition_binding_mode = "test-binding";
+    inputs.acquisition_key_schema = "test-key";
+    inputs.response_identity = "test-response";
+    inputs.target_unit_factor = calib.flux_conversion_factor;
+    inputs.detector_flxscale = calib.apt["flxscale"];
+    inputs.detector_beam_major_fwhm_arcsec = Eigen::Vector2d::Ones();
+    inputs.detector_beam_minor_fwhm_arcsec = Eigen::Vector2d::Ones();
+    calibration.admit_product(inputs);
     calibration.calibrate_tod(data, calib);
 
     EXPECT_TRUE(data.fcf.data.isApprox(calib.flux_conversion_factor));

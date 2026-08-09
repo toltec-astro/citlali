@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/timestream/calibration_product.h>
+
 // Beammap implementation detail.
 // Include this only after Beammap has been declared.
 
@@ -76,6 +78,58 @@ void Beammap::populate_beammap_tau_metadata() {
         rtcproc.calibration.calibration_valid;
     calib.apt_meta["calibration_validity_reason"] =
         rtcproc.calibration.calibration_validity_reason;
+    const auto &product = rtcproc.calibration.product;
+    calib.apt_meta["calibration_product_schema"] =
+        std::string{product.schema_version};
+    calib.apt_meta["calibration_validity_detail"] = product.validity_detail;
+    calib.apt_meta["calibration_target_unit"] = product.target_unit;
+    calib.apt_meta["calibration_photometry_policy"] =
+        std::string{product.photometry_policy};
+    calib.apt_meta["calibration_factor_composition"] =
+        std::string{product.factor_composition};
+    calib.apt_meta["calibration_factor_provenance"] =
+        std::string{product.factor_provenance};
+    calib.apt_meta["calibration_compatibility_fcf_semantics"] =
+        std::string{product.compatibility_fcf_semantics};
+    calib.apt_meta["calibration_weight_recipient_semantics"] =
+        std::string{product.weight_recipient_semantics};
+    calib.apt_meta["calibration_compact_covariance_state"] =
+        std::string{product.compact_covariance_state};
+    calib.apt_meta["calibration_apt_artifact_sha256"] =
+        product.apt_artifact_sha256;
+    calib.apt_meta["calibration_acquisition_binding_sha256"] =
+        product.acquisition_binding_sha256;
+    calib.apt_meta["calibration_raw_observation_identity"] =
+        product.raw_observation_identity;
+    calib.apt_meta["calibration_acquisition_binding_mode"] =
+        product.acquisition_binding_mode;
+    calib.apt_meta["calibration_acquisition_key_schema"] =
+        product.acquisition_key_schema;
+    calib.apt_meta["calibration_response_identity"] =
+        product.response_identity;
+    calib.apt_meta["calibration_conditional_variance_transfer"] =
+        std::string{product.conditional_variance_transfer};
+    calib.apt_meta["calibration_conditional_inverse_variance_transfer"] =
+        std::string{product.conditional_inverse_variance_transfer};
+    calib.apt_meta["calibration_precision_limitation"] =
+        std::string{product.precision_limitation};
+    calib.apt_meta["calibration_nuisance_states"] =
+        timestream::calibration_nuisance_state_summary(product);
+    const auto minimum_total_multiplier =
+        timestream::minimum_total_signal_multiplier(product);
+    const auto maximum_total_multiplier =
+        timestream::maximum_total_signal_multiplier(product);
+    const bool total_multiplier_extrema_available =
+        std::isfinite(minimum_total_multiplier) &&
+        std::isfinite(maximum_total_multiplier);
+    calib.apt_meta["calibration_total_multiplier_extrema_available"] =
+        total_multiplier_extrema_available;
+    if (total_multiplier_extrema_available) {
+        calib.apt_meta["calibration_minimum_total_multiplier"] =
+            minimum_total_multiplier;
+        calib.apt_meta["calibration_maximum_total_multiplier"] =
+            maximum_total_multiplier;
+    }
     calib.apt_meta["calibration_tau_frame"] =
         "line_of_sight_at_sample_elevation";
     calib.apt_meta["calibration_x_ref"] = 0.0;

@@ -13,6 +13,19 @@ namespace engine {
 
 class Calib {
 public:
+    struct AptAcquisitionBinding {
+        bool available = false;
+        bool valid = false;
+        std::string mode{"unavailable"};
+        std::string key_schema{"unavailable"};
+        std::string detail{"APT acquisition binding has not been evaluated"};
+        std::string artifact_sha256;
+        std::string binding_sha256;
+        std::string raw_observation_identity;
+        Eigen::Index detector_count = 0;
+        Eigen::Index network_count = 0;
+    };
+
     // get logger
     std::shared_ptr<spdlog::logger> logger = spdlog::get("citlali_logger");
 
@@ -20,6 +33,8 @@ public:
     std::string apt_filepath;
     // apt table
     std::map<std::string, Eigen::VectorXd> apt;
+    // admitted observation-local acquisition binding and artifact identity
+    AptAcquisitionBinding apt_acquisition_binding;
     // hwpr angle and timing
     Eigen::VectorXd hwpr_angle, hwpr_recvt;
     // pps timing

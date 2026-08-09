@@ -26,9 +26,9 @@ EXCLUDED_FILES = {
     "include/citlali/core/pipeline/timestream_config_adapter_raw_flagging.h",
     "include/citlali/core/pipeline/timestream_config_adapter_raw_line_audit.h",
 }
-EXPECTED_RECORD_COUNT = 60
+EXPECTED_RECORD_COUNT = 63
 EXPECTED_RECORD_SHA256 = (
-    "bf7d9c8d07851309d37d183517c0a8bc2c53919e895d941754832dc315bb244d"
+    "e089cc171301d772e5d2a5dea3a19549dc0411d78fe5c63a26cfde6835970c24"
 )
 
 EXECUTOR_OPERATIONS = {
@@ -38,8 +38,10 @@ EXECUTOR_OPERATIONS = {
     "apply_rtc_line_audit_detector_notches",
     "apply_rtc_line_audit_fixed_notches",
     "apply_rtc_line_audit_shared_notches",
+    "calibration.admit_product",
     "calibration.calc_tau",
     "calibration.disable_extinction",
+    "calibration.reset_product_admission",
     "calibration.setup",
     "capture_rtc_line_audit",
     "clear_cached_diagnostics",
@@ -77,6 +79,7 @@ OUTPUT_OR_REALIZED_STATE = {
     "calibration.operator_id",
     "calibration.operator_nodes_sha256",
     "calibration.passband_set_id",
+    "calibration.product",
     "calibration.realized_tau225",
     "calibration.reduction_calibration_quality_regime",
     "calibration.reduction_maximum_tau225",

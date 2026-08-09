@@ -100,6 +100,67 @@ void add_tod_mean_tau_vars(netCDF::NcFile &fo, bool extinction_enabled,
     add_netcdf_var<std::string>(
         fo, "CAL.VALIDITY_REASON",
         rtcproc.calibration.calibration_validity_reason);
+    const auto &product = rtcproc.calibration.product;
+    add_netcdf_var<std::string>(
+        fo, "CAL.PRODUCT_SCHEMA", std::string{product.schema_version});
+    add_netcdf_var<std::string>(
+        fo, "CAL.VALIDITY_DETAIL", product.validity_detail);
+    add_netcdf_var<std::string>(fo, "CAL.TARGET_UNIT", product.target_unit);
+    add_netcdf_var<std::string>(
+        fo, "CAL.PHOTOMETRY_POLICY", std::string{product.photometry_policy});
+    add_netcdf_var<std::string>(
+        fo, "CAL.FACTOR_COMPOSITION", std::string{product.factor_composition});
+    add_netcdf_var<std::string>(
+        fo, "CAL.FACTOR_PROVENANCE", std::string{product.factor_provenance});
+    add_netcdf_var<std::string>(
+        fo, "CAL.COMPATIBILITY_FCF_SEMANTICS",
+        std::string{product.compatibility_fcf_semantics});
+    add_netcdf_var<std::string>(
+        fo, "CAL.WEIGHT_RECIPIENT_SEMANTICS",
+        std::string{product.weight_recipient_semantics});
+    add_netcdf_var<std::string>(
+        fo, "CAL.COMPACT_COVARIANCE_STATE",
+        std::string{product.compact_covariance_state});
+    add_netcdf_var<std::string>(
+        fo, "CAL.APT_ARTIFACT_SHA256", product.apt_artifact_sha256);
+    add_netcdf_var<std::string>(
+        fo, "CAL.ACQUISITION_BINDING_SHA256",
+        product.acquisition_binding_sha256);
+    add_netcdf_var<std::string>(
+        fo, "CAL.RAW_OBSERVATION_IDENTITY", product.raw_observation_identity);
+    add_netcdf_var<std::string>(
+        fo, "CAL.ACQUISITION_BINDING_MODE", product.acquisition_binding_mode);
+    add_netcdf_var<std::string>(
+        fo, "CAL.ACQUISITION_KEY_SCHEMA", product.acquisition_key_schema);
+    add_netcdf_var<std::string>(
+        fo, "CAL.RESPONSE_IDENTITY", product.response_identity);
+    add_netcdf_var<std::string>(
+        fo, "CAL.CONDITIONAL_VARIANCE_TRANSFER",
+        std::string{product.conditional_variance_transfer});
+    add_netcdf_var<std::string>(
+        fo, "CAL.CONDITIONAL_INVERSE_VARIANCE_TRANSFER",
+        std::string{product.conditional_inverse_variance_transfer});
+    add_netcdf_var<std::string>(
+        fo, "CAL.PRECISION_LIMITATION", std::string{product.precision_limitation});
+    add_netcdf_var<std::string>(
+        fo, "CAL.NUISANCE_STATES",
+        timestream::calibration_nuisance_state_summary(product));
+    const auto minimum_total_multiplier =
+        timestream::minimum_total_signal_multiplier(product);
+    const auto maximum_total_multiplier =
+        timestream::maximum_total_signal_multiplier(product);
+    const bool total_multiplier_extrema_available =
+        std::isfinite(minimum_total_multiplier) &&
+        std::isfinite(maximum_total_multiplier);
+    add_netcdf_var(
+        fo, "CAL.TOTAL_MULTIPLIER_EXTREMA_AVAILABLE",
+        total_multiplier_extrema_available);
+    if (total_multiplier_extrema_available) {
+        add_netcdf_var(
+            fo, "CAL.MINIMUM_TOTAL_MULTIPLIER", minimum_total_multiplier);
+        add_netcdf_var(
+            fo, "CAL.MAXIMUM_TOTAL_MULTIPLIER", maximum_total_multiplier);
+    }
     const bool tau225_available =
         std::isfinite(rtcproc.calibration.realized_tau225);
     add_netcdf_var(fo, "CAL.TAU225_AVAILABLE", tau225_available);
