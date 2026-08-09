@@ -2356,6 +2356,44 @@ packages:
           boundaries, not new owner decisions; preserve exact no-move gates,
           avoid a new 2-arcsec reduction or MAP implementation, and proceed
           with bounded phase one.
+    producer_authority_evidence_request:
+      id: SCI-ALIGN-001-PRODUCER-AUTHORITY-REQUEST-001
+      status: owner_mediated_acquisition_authorized_evidence_not_supplied
+      authority: project_owner
+      decision_date: 2026-08-09
+      record_path: >-
+        doc/audits/packages/SCI-ALIGN-001_PRODUCER_AUTHORITY_EVIDENCE_REQUEST_AUTHORIZATION_2026-08-09.md
+      record_sha256: >-
+        6f813c23316c453a0badd999376194b69d5749d16f0b671340c14a1912dc6be4
+      accepted_bounded_context:
+        commit: 08f0a6733d1cb523ae78ccf9348ac6832b834e52
+        parent: 92cfa670a33255250895d68aaf26e8b01aa057bd
+        tree: cb46a319270e9a05a1763100ad3075bbf61b65dc
+        handoff_object: >-
+          08f0a6733d1cb523ae78ccf9348ac6832b834e52:validation/sci_align_001_acquisition_event_semantics_2026-08-08/SCI_TEL_INPUT_001_HANDOFF.md
+        handoff_sha256: >-
+          28a39458872e00d0c36c48eac79a3f1f1f154c1d5bb815159094fa60883257d2
+        classification: quarantined_post_core_evidence_unavailable_upstream_dependency
+        noninference: not_physical_detector_row_integration_event_identification
+      requested_authority_scope:
+        - exact_FPGA_packetizer_backend_source_revision_or_authoritative_event_specification
+        - integration_accumulation_and_boundary_event
+        - counter_capture_ordering
+        - PPS_update_ordering
+        - UDP_construction_segmentation_and_assembly
+        - NetCDF_row_insertion_event_binding
+      acquisition_mode: owner_mediated_read_only_analysis_only
+      producer_authority_status: unavailable_pending_return_and_acceptance
+      admission_gate: coordinator_and_owner_review_before_any_authority_or_manifest_use
+      exclusions:
+        - Unity
+        - reductions
+        - correction_or_repair
+        - application_test_or_config_change
+        - re_audit
+        - downstream_launch
+        - merge_or_push
+        - production_change
     requested_unity_evidence:
       - SCI-ALIGN-001-UNITY-001
     supplied_external_evidence: []
