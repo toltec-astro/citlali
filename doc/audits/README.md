@@ -39,7 +39,7 @@ for an accepted and re-audited ALIGN successor. The RTC audit at
 D001--D004 are recorded, and its axes remain `proposed`, `nonconformant`,
 `in_progress`, and `existing_use_only`, with verdict `amend`. The PTC audit at
 `01ee247461d6c19bc4db81ccac4fec21af162c88` is integrated with the same
-bounded axes and verdict. D001--D004 are owner-approved; D005--D006 remain
+bounded axes and verdict. D001--D005 are owner-approved; D006 remains
 unresolved. The [D003 owner amendment](packages/SCI-PTC-001_D003_OWNER_AMENDMENT_2026-08-09.md)
 identifies the current kernel as the estimated map-center point-source
 response after the declared analysis, and the separate
@@ -50,6 +50,11 @@ preserves existing detector-weight families as scalar analysis/gridding
 coefficients with exact family metadata and explicit covariance availability;
 it does not promote them to precision, inverse-variance, significance, or
 independent-noise authority.
+The [D005 owner replacement](packages/SCI-PTC-001_D005_OWNER_REPLACEMENT_2026-08-09.md)
+rejects the uniform immutable-bundle/replay proposal: the authoritative
+PTC-to-mapmaking state is the in-memory transformed timestream, while any
+persisted timestream declares a diagnostic or requested-derived role and
+carries provenance according to scientific authority and declared consumption.
 VAL, MAP, NOI, and BEAM remain unlaunched by this review and retain their
 existing restrictions. FLT
 successor-repair dispatch remains held until CAL has an accepted, independently
@@ -625,7 +630,7 @@ package but does not define their estimators.
 | `SCI-AST-001` | A | Pointing corrections, detector coordinates, frames, and WCS | identified ALIGN assigned grid; physical event timing unavailable | Phase-independent coordinate mathematics admissible under separate launch; absolute placement fail closed |
 | `ENG-STATE-001` | C | Requested/effective/realized lifecycle, provenance, required products, and failure flow | architecture and product authorities | Parallel foundation wave |
 | `SCI-RTC-001` | B | Mature RTC filtering/conditioning interface and temporal response | exact assigned-grid compatibility plus conditioned CAL/AST seams | Phase-independent repair handoff ready; not launched |
-| `SCI-PTC-001` | B | Mature correlated-mode cleaning, selection, and detector-weight interface | `SCI-RTC-001`, identified assigned grid; physical event timing unavailable | D001--D004 approved; D005--D006 pending; repair and optional response characterization unlaunched |
+| `SCI-PTC-001` | B | Mature correlated-mode cleaning, selection, and detector-weight interface | `SCI-RTC-001`, identified assigned grid; physical event timing unavailable | D001--D005 approved; D006 pending; repair and optional response characterization unlaunched |
 | `SCI-VAL-001` | A | Cross-stage flags, detector/sample eligibility, non-finite policy, and map support | `SCI-ALIGN-001`, `SCI-RTC-001`, `SCI-PTC-001` | Foundation wave 2 |
 | `SCI-MAP-002` | B | Mature JINC gridding interface, normalization, support, and response | approved/shared `SCI-MAP-001` product contract | Third successor owner-accepted `accept`; bounded findings closed; `existing_use_only`; no merge or downstream launch |
 | `SCI-NOI-001` | A | Jackknife/noise randomization and propagation through selected operators | `SCI-PTC-001`, `SCI-VAL-001`, `SCI-MAP-001` | Uncertainty wave 3 |

@@ -9,7 +9,7 @@ current_program_checkpoint:
   record_path: >-
     doc/audits/packages/SCIENTIFIC_AUDIT_PROGRAM_CHECKPOINT_2026-08-08.md
   record_sha256: >-
-    79154f6a4eaf3d33718ab4844be887ddfb9b6e942602e018b86ba87d90a4b3a1
+    efd432ef0b29776f0170557d8e4e99bdf6060908d501a3f92cb650a2cc46fac0
   canonical_application_mainline:
     ref: origin/codex/refactor-mainline
     commit: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
@@ -35,7 +35,7 @@ current_program_checkpoint:
     ENG-STATE-001: static_package_accepted_F001_F002_open
   queue:
     - SCI-RTC-001_phase_independent_repair_handoff_ready_not_launched
-    - SCI-PTC-001_D001_D004_approved_D005_D006_pending_optional_transfer_plan_not_launched
+    - SCI-PTC-001_D001_D005_approved_D006_pending_optional_transfer_plan_not_launched
     - SCI-VAL-001_unlaunched_PTC_D002_successor_handoff_pending_recipient_review
     - SCI-BEAM-001_held
     - SCI-TEL-INPUT-001_audit_owner_accepted_repair_scope_unresolved
@@ -5162,7 +5162,7 @@ packages:
       - cleaned signal with cause- and decision-stage-specific validity and eligibility
       - conditioned/local response or explicit response unavailability and uncertainty status
       - typed scalar detector coefficients with explicit covariance availability; stronger precision only when independently proved
-      - immutable full/mini/diagnostic/simulated/processed products and four-state provenance
+      - authoritative in-memory PTC-to-mapmaking state plus role-declared persisted products and material-state provenance
 
     upstream_dependencies:
       - package_id: SCI-RTC-001
@@ -5254,7 +5254,7 @@ packages:
       path: doc/audits/proposals/SCI-PTC-001_LEDGER_PROPOSAL_2026-08-08.yaml
       sha256: 8daabce7d0d585e82d233dadb3f535bb993a28c62acb351c4474272c525eee63
       disposition: >-
-        applied_with_coordinator_identity_and_controlled_status_normalization_then_D001_D004_owner_amendments
+        applied_with_coordinator_identity_and_controlled_status_normalization_then_D001_D005_owner_amendments
     successor_owner_amendment:
       id: SCI-PTC-001-D002-OWNER-AMENDMENT-2026-08-08
       path: doc/audits/packages/SCI-PTC-001_D002_OWNER_AMENDMENT_2026-08-08.md
@@ -5322,9 +5322,38 @@ packages:
         full_construction_or_retention_required: false
         unavailable_status_must_be_explicit: true
       existing_coefficient_weighted_mapmaking: permitted_under_approved_scalar_semantics
+    D005_owner_replacement:
+      id: SCI-PTC-001-D005-OWNER-REPLACEMENT-2026-08-09
+      path: >-
+        doc/audits/packages/SCI-PTC-001_D005_OWNER_REPLACEMENT_2026-08-09.md
+      sha256: >-
+        ce82c9bd7b1f081742ddc45595f72f2f937020abaece194a6afa666e366e6590
+      decision_date: 2026-08-09
+      status: applied_to_canonical_coordination_state
+      disposition: reject_and_replace_original_uniform_bundle_replay_proposal
+      immutable_audit_D001_D004_artifacts_changed: false
+      authoritative_interface: in_memory_PTC_transformed_timestream_to_mapmaking
+      authoritative_interface_fields:
+        - signal
+        - validity
+        - stable_detector_identity
+        - time_support_and_rate
+        - coefficient_semantics
+        - units
+        - material_realized_PTC_state
+      persisted_roles:
+        - diagnostic_artifact
+        - requested_derived_analysis_product
+      provenance_burden: follows_scientific_authority_and_declared_consumption
+      exhaustive_replay_default_required: false
+      output_policy:
+        required_output_failure_propagates: true
+        diagnostic_best_effort_permitted_when_declared: true
+        partial_may_be_complete: false
+        optional_diagnostic_failure_invalidates_valid_map: false
 
     dispatch:
-      status: audit_integrated_D001_D004_approved_D005_D006_pending
+      status: audit_integrated_D001_D005_approved_D006_pending
       launch_date: 2026-08-08
       launch_effort: ultra
       execution_profile: sol_ultra_no_delegation
@@ -5519,7 +5548,8 @@ packages:
         theta=T(x,m,a;phi), z=F(x,m,a,theta), w=W(z,m,a,theta), and
         q_(s+1)=G(q_s,x,m,a), with cause-preserving validity, bounded conditioned
         or local response, declared covariance/uncertainty, exact four-state
-        identity, immutable parent/product links, and fail-closed consumers.
+        identity, role-aware persisted-product identity, material-state
+        provenance, explicit output policy, and fail-closed consumers.
       implemented_operator: >-
         Per-detector source-mask mean subtraction followed, when enabled, by
         sequential configured data-derived covariance/eigenmode selection and
@@ -5653,14 +5683,20 @@ packages:
         confidence: high
         status: open
         owner: PTC_provenance_lifecycle_owner
-        dependency: SCI-PTC-001-D005
+        dependency: approved replacement SCI-PTC-001-D005; implementation and re-audit pending
+        owner_policy_status: resolved_by_D005_replacement_implementation_and_reaudit_pending
         summary: >-
-          Requested/effective/observation-resolved/realized state cannot
-          reconstruct the exact scan operator.
+          The current interface and persisted products do not durably distinguish
+          the authoritative in-memory PTC-to-mapmaking state from diagnostic and
+          requested-derived roles or bind the material realized state required
+          by each declared consumer.
         closure_gate: >-
-          Deserialize and replay every realized group, mask, selector, pass,
-          coefficient, learned/random state, response/covariance status, and
-          product link with matching digests.
+          Define and test the authoritative in-memory signal, validity, stable
+          detector identity, time/rate, coefficient, units, and material-state
+          contract. Final products record material RTC/PTC state; persisted PTC
+          products declare diagnostic or requested-derived role and carry only
+          the role- and consumer-required identity and provenance. Exhaustive
+          replay is required only for a declared consumer or reproducibility claim.
       - id: SCI-PTC-001-F008
         class: implementation_defect
         severity: P1
@@ -5668,13 +5704,19 @@ packages:
         confidence: high
         status: open
         owner: PTC_product_atomicity_owner
-        dependency: SCI-PTC-001-D005
+        dependency: approved replacement SCI-PTC-001-D005; implementation and re-audit pending
+        owner_policy_status: resolved_by_D005_replacement_implementation_and_reaudit_pending
         summary: >-
-          Static APT arrays are overwritten per append and a later failure can
-          leave a partial multi-scan file without a complete-bundle marker.
+          Static APT arrays are overwritten per append, and persisted PTC
+          artifacts lack a complete role-aware output-policy and
+          honest-completeness boundary; a later failure can leave a partial
+          multi-scan artifact without an unambiguous incomplete state.
         closure_gate: >-
-          Scan-specific immutable state plus injected append-failure and
-          complete-bundle round trips prove atomic parentage and completeness.
+          Round trips and injected failures prove required-output propagation,
+          declared diagnostic best effort, correct observation/scan and detector
+          identity, role-appropriate parent/material-state linkage, and that no
+          partial artifact is represented as complete. An optional diagnostic
+          failure must not invalidate an otherwise valid map.
       - id: SCI-PTC-001-F009
         class: scientific_policy_decision
         severity: P1
@@ -5771,13 +5813,6 @@ packages:
         optional exact-domain characterization and applicable Tier-A review
 
     unresolved_scientific_decisions:
-      - id: SCI-PTC-001-D005
-        owner: PTC_product_and_provenance_owner
-        question: bounded product identity, extent, detector binding, provenance, and completion minimum
-        proposed_disposition: >-
-          Require correct identity/rate/extents, scan-specific detector binding,
-          parent/provenance links, and completion/atomicity. Exhaustive state
-          serialization/replay remains P1 unless a declared consumer requires it.
       - id: SCI-PTC-001-D006
         owner: PTC_missing_data_and_selection_owner
         question: eligible arithmetic, coupled surrogate validity, support, and deterministic replay identity
@@ -5876,6 +5911,34 @@ packages:
           semantics.
         full_covariance_required: false
         unavailable_covariance_explicit: true
+      - id: SCI-PTC-001-D005
+        owner: PTC_product_and_provenance_owner
+        disposition: approved_reject_and_replace
+        decision_date: 2026-08-09
+        authority: SCI-PTC-001-D005-OWNER-REPLACEMENT-2026-08-09
+        authority_path: >-
+          doc/audits/packages/SCI-PTC-001_D005_OWNER_REPLACEMENT_2026-08-09.md
+        authority_sha256: >-
+          ce82c9bd7b1f081742ddc45595f72f2f937020abaece194a6afa666e366e6590
+        approved_contract: >-
+          The PTC-transformed timestream is the authoritative in-memory
+          intermediate at the PTC-to-mapmaking interface, not an independent
+          sky estimator. Final science products record material RTC/PTC state.
+          Persisted PTC timestreams declare diagnostic or requested-derived
+          role; persistence alone grants no science-product status. Provenance,
+          parentage, and replay burden follow scientific authority, declared
+          consumption, and explicit reproducibility claims. Required-output
+          failures propagate, declared diagnostics may be best effort, and no
+          partial artifact may be represented as complete.
+        supersedes:
+          - original_uniform_immutable_bundle_proposal
+          - original_exhaustive_replay_default
+          - SCI-PTC-001-F007_uniform_replay_closure_gate
+          - SCI-PTC-001-F008_uniform_bundle_closure_gate
+        persisted_roles:
+          - diagnostic_artifact
+          - requested_derived_analysis_product
+        exhaustive_replay_default_required: false
 
     local_evidence:
       id: SCI-PTC-001-LOCAL-001

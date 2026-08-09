@@ -179,7 +179,7 @@ would extend the map-center point-source estimate across position,
 scale/morphology, amplitude, band/mode, and realization uncertainty. It is not
 authorized or launched and is not an ordinary PTC repair, operation, or F005
 closure gate unless a consumer requests a stronger measured claim. D001/D002
-and the immutable audit remain unchanged; D005--D006 remain unresolved. No
+and the immutable audit remain unchanged; D006 remains unresolved. No
 repair, Unity, reduction, MAP/BEAM/downstream work, re-audit, production
 change, external contact, or push is authorized.
 
@@ -196,11 +196,40 @@ authority unless the complete stronger conditions are independently proved.
 Full covariance construction or retention is not mandatory; unavailable
 covariance must be explicit. Existing coefficient-weighted mapmaking remains
 permitted under these semantics. F006 remains a P1 implementation and
-re-audit gap, D005--D006 remain unresolved, and the package axes remain
+re-audit gap, D006 remains unresolved, and the package axes remain
 `proposed`, `nonconformant`, `in_progress`, and `existing_use_only`, with
 verdict `amend`. D001--D003 and their bytes and meanings are unchanged. No PTC
 repair, optional characterization, Unity, reduction, downstream work,
 re-audit, production change, merge, or push is authorized.
+
+## 2026-08-09 SCI-PTC-001 D005 Owner Replacement
+
+The owner approved a reject-and-replace disposition in
+[`SCI-PTC-001-D005`](audits/packages/SCI-PTC-001_D005_OWNER_REPLACEMENT_2026-08-09.md).
+The PTC-transformed timestream in memory is the authoritative intermediate at
+the PTC-to-mapmaking interface, not an independent sky estimator. Its contract
+binds signal, validity, stable detector identity, time support/rate,
+coefficient semantics, units, and material realized PTC state. Final maps and
+downstream science products record the material RTC/PTC processing state that
+affected them.
+
+Persisted PTC timestreams explicitly declare diagnostic or requested-derived
+role; persistence alone grants no science-product status. Diagnostics carry
+enough identity and honest completeness to prevent ambiguity without default
+archival replay. Requested-derived products additionally bind parent and
+consumer-required material state. Exhaustive internal-state serialization is
+required only by a declared consumer or explicit reproducibility claim.
+Required-output failures propagate, declared diagnostics may be best effort,
+and no partial artifact may be represented as complete; an optional diagnostic
+failure does not invalidate an otherwise valid map.
+
+This replaces the original uniform immutable-bundle/replay proposal and its
+F007/F008 closure wording. F007/F008 remain open pending implementation and
+independent re-audit. D001--D004 authority bytes and meaning are unchanged,
+D006 remains unresolved, and package axes remain `proposed`, `nonconformant`,
+`in_progress`, and `existing_use_only`, with verdict `amend`. No repair,
+characterization, validation, re-audit, downstream work, Unity, reduction,
+production change, merge, or push is authorized.
 
 ## 2026-08-09 SCI-MAP-002 Third-Successor Acceptance
 
