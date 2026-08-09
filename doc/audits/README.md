@@ -74,12 +74,17 @@ or approve a timing correction. Existing use remains `existing_use_only`.
 On 2026-08-09 the owner adopted the
 [ALIGN-deferred compatibility boundary](packages/ALIGN_DEFERRED_COMPATIBILITY_BOUNDARY_OWNER_POLICY_2026-08-09.md).
 The exact assigned-time grid is a compatibility interface, never proof of the
-physical integration event. The frozen, not-yet-launched TEL packet is
+physical integration event. The TEL packet was frozen as
 [`SCI_TEL_INPUT_001_AUDIT_PROMPT.md`](prompts/SCI_TEL_INPUT_001_AUDIT_PROMPT.md)
 with
 [`SCI-TEL-INPUT-001_INBOX_SOURCE_SET_MANIFEST_2026-08-09.yaml`](handoffs/SCI-TEL-INPUT-001/SCI-TEL-INPUT-001_INBOX_SOURCE_SET_MANIFEST_2026-08-09.yaml).
 ALIGN `08f0a673...` remains quarantined post-core evidence and an unavailable
-dependency, not a correction or pre-core authority. The
+dependency, not a correction or pre-core authority. The completed audit at
+`518e0ccb...` is [owner-accepted](packages/SCI-TEL-INPUT-001_OWNER_ACCEPTANCE_2026-08-09.md)
+with contract `proposed`, implementation `nonconformant`, validation
+`bounded_incomplete`, production `existing_use_only`, and verdict `amend`.
+F001--F010 and the Tier-A stops remain open; repair scope and ownership await a
+separate owner decision. The
 [phase-independent RTC repair handoff](packages/SCI-RTC-001_PHASE_INDEPENDENT_BOUNDED_REPAIR_HANDOFF_2026-08-09.md)
 is also prepared but unlaunched. BEAM remains held.
 
@@ -595,7 +600,7 @@ package but does not define their estimators.
 | Package ID | Tier | Bounded package | Primary upstream packages | Queue |
 | --- | --- | --- | --- | --- |
 | `SCI-MAP-001` | A | Shared/naive mapmaking signal, formal weight, kernel, hits/coverage, validity, and observation coaddition | `SCI-CAL-001`, `SCI-AST-001`, `SCI-PTC-001`, `SCI-VAL-001` may begin as explicit abstract inputs | First new audit |
-| `SCI-TEL-INPUT-001` | B | Raw telescope-file association, TolTECA preparation, row/time identity, allowed mutation, provenance, and Citlali admission | raw telescope producer event semantics unavailable; exact assigned-time compatibility interface only | Cross-repository foundation; frozen High dispatch ready, not launched |
+| `SCI-TEL-INPUT-001` | B | Raw telescope-file association, TolTECA preparation, row/time identity, allowed mutation, provenance, and Citlali admission | raw telescope producer event semantics unavailable; exact assigned-time compatibility interface only | Audit owner-accepted `amend`; F001--F010 open; repair not authorized |
 | `SCI-ALIGN-001` | A | Sample/telescope alignment, scan slicing, and gap interpolation | `SCI-TEL-INPUT-001` | Foundation wave 1 |
 | `SCI-CAL-001` | A | Detector calibration, extinction, flux scaling, and map-unit transfer | `SCI-ALIGN-001` | Foundation wave 1 |
 | `SCI-AST-001` | A | Pointing corrections, detector coordinates, frames, and WCS | identified ALIGN assigned grid; physical event timing unavailable | Phase-independent coordinate mathematics admissible under separate launch; absolute placement fail closed |

@@ -1,0 +1,46 @@
+format_version: 1
+handoff_id: SCI-VAL-001-XAUD-010
+source_package: SCI-TEL-INPUT-001
+target_package: SCI-VAL-001
+date: 2026-08-09
+status: bounded_claim_pending_target_review
+launch_authority: false
+
+source_authorities:
+  citlali_commit: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+  tolteca_read_only_commit: 2791e6a1e6349ad1d3ac549a648f41cbc51b98c7
+  independent_core_commit: e8f43c678fa001d6369d4ebd45985bb820e129b3
+
+supported_claims:
+  - no_typed_raw_parent_product_completion_cache_or_association_validity_is_admitted
+  - no_per_row_timestamp_order_cadence_gap_pointing_Hold_or_same_row_validity_is_carried
+  - no_separate_verified_original_verified_recomputed_missing_nonfinite_unavailable_or_rejected_state_is_carried
+  - no_exact_consumer_eligibility_record_reaches_ALIGN_AST_RTC_PTC_maps_or_products
+  - finite_or_plausible_values_can_reach_consumers_without_structural_contract_admission
+  - telescope_variable_read_failure_is_generally_warn_only
+
+required_producer_facts_for_target_policy:
+  - raw_parent_and_association_identity
+  - product_and_completion_identity
+  - row_count_order_first_last_and_lineage
+  - timestamp_finiteness_order_and_authorized_gap_classification
+  - pointing_state_Hold_and_recomputed_output_validity
+  - mutation_and_nonallowlisted_preservation_result
+  - accepted_units_frames_AST_authority_and_missingness_policy
+  - physical_event_semantics_unavailable
+
+target_owned_questions:
+  - downstream_eligibility_policy
+  - flag_vocabulary_and_consumption
+  - consumer_specific_fail_closed_response
+
+restrictions:
+  - no_downstream_validity_promotion
+  - no_finiteness_equals_validity_assumption
+  - no_event_semantics_or_timing_correction
+  - no_repair_or_downstream_launch_authorized
+
+evidence_limits:
+  - two_existing_pairs_supply_bounded_structure_facts_only
+  - preregistered_invalid_and_corruption_cases_were_not_executed
+  - no_general_consumer_eligibility_behavior_was_tested

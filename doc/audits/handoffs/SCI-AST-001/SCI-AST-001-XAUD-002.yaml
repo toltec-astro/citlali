@@ -1,0 +1,57 @@
+format_version: 1
+handoff_id: SCI-AST-001-XAUD-002
+source_package: SCI-TEL-INPUT-001
+target_package: SCI-AST-001
+date: 2026-08-09
+status: bounded_claim_pending_target_review
+launch_authority: false
+
+source_authorities:
+  citlali_commit: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+  tolteca_read_only_commit: 2791e6a1e6349ad1d3ac549a648f41cbc51b98c7
+  independent_core_commit: e8f43c678fa001d6369d4ebd45985bb820e129b3
+
+supported_claims:
+  - >-
+      Data.TelescopeBackend.SourceRaAct and
+      Data.TelescopeBackend.TelRaAct both map to the internal TelRa key.
+  - >-
+      Data.TelescopeBackend.SourceDecAct and
+      Data.TelescopeBackend.TelDecAct both map to the internal TelDec key.
+  - >-
+      The ordered source-key map loads Source-prefixed entries before
+      Tel-prefixed entries, so native TelRaAct and TelDecAct can overwrite the
+      recomputed SourceRaAct and SourceDecAct values.
+  - internal_TelRa_and_TelDec_feed_tangent_plane_RA_Dec_pointing
+  - recomputed_ActParAng_feeds_pointing_polarization_and_product_metadata
+  - no_AST_transform_authority_version_or_row_lineage_identity_is_published
+
+fixture_facts:
+  beammap_148670:
+    rows: 157219
+    all_three_allowlisted_arrays_changed: true
+    all_three_allowlisted_arrays_finite: true
+  pointing_152389:
+    rows: 3200
+    all_three_allowlisted_arrays_changed: true
+    all_three_allowlisted_arrays_finite: true
+  same_row_derivation_proved: false
+
+target_owned_questions:
+  - which_coordinate_variable_is_authoritative
+  - coordinate_transform_formula
+  - frame_epoch_sign_handedness_and_RA_wrapping
+  - parallactic_angle_correctness
+  - astrometric_response_and_uncertainty
+  - remedy_for_the_internal_alias_collision
+
+tier_A_stop:
+  triggered_for_any_scientific_remedy_choice: true
+  decision_made_by_source_audit: false
+
+restrictions:
+  - structural_publication_and_routing_claim_only
+  - no_coordinate_correctness_claim
+  - no_formula_rederivation
+  - no_temporal_or_astrometric_response_claim
+  - no_repair_or_downstream_launch_authorized

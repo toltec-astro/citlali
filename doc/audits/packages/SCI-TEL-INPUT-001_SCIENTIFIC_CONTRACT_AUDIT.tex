@@ -1,0 +1,387 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=0.72in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+
+\setlist{nosep,leftmargin=*}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.38em}
+\setlength{\emergencystretch}{3em}
+\newcommand{\pkg}{\texttt{SCI-TEL-INPUT-001}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\finding}[1]{\textbf{#1}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\title{\pkg\\Scientific Contract Audit}
+\author{Independent documentation-only review}
+\date{2026-08-09}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\fcolorbox{black}{gray!8}{\parbox{0.94\linewidth}{
+\textbf{Outcome.} The independently derived structural contract is internally
+complete, but the paired TolTECA producer and Citlali consumer do not conform
+to it.  The controlled verdict is \code{amend}.  Production remains
+\code{existing\_use\_only}; repair, re-audit, integration, and production
+expansion are not authorized.  Physical event semantics remain
+\code{unavailable}.}}
+\end{center}
+
+\section{Scope, authority, and disposition}
+
+This audit covers telescope-file selection, recomputation row identity, the
+three-variable mutation boundary, cache/completion/provenance, and Citlali
+ingress.  It is Tier B only while it consumes accepted ALIGN and AST
+authorities.  It does not choose event semantics, coordinate mathematics,
+temporal or astrometric response, uncertainty, a physical row displacement,
+or a timing correction.
+
+The exact paired authorities are:
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Authority & Object & Identity \\
+\midrule
+Citlali & commit & \code{46ad23888a40f5102cdfd50c06e49a549bdf8a20} \\
+& parent & \code{4846fa4db39bd2f7d4ddc41f693836834cbc5ff4} \\
+& tree & \code{ab230a93b8fb310d58aefd7ac5da92e5d5e0f408} \\
+TolTECA (read-only) & commit & \code{2791e6a1e6349ad1d3ac549a648f41cbc51b98c7} \\
+& parent & \code{4acee1ccb11a13084834149c7d6e6685a87d3d6b} \\
+& tree & \code{3f3e4b8136bf5528b203cb3bb8b474233bb27a85} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{longtable}{@{}L{0.23\linewidth}L{0.22\linewidth}L{0.47\linewidth}@{}}
+\toprule
+Axis & Status & Meaning in this audit \\
+\midrule
+\endhead
+Contract & \code{proposed} & Frozen independent core is internally complete;
+owner adoption remains pending. \\
+Implementation & \code{nonconformant} & Static source trace establishes
+material deviations from identity, completion, preservation, admission, and
+validity clauses. \\
+Validation & \code{bounded\_incomplete} & Two exact existing pairs establish
+bounded preservation and row facts, but cannot exercise the preregistered
+failure cases or prove general behavior. \\
+Production & \code{existing\_use\_only} & Existing use is preserved without a
+new timing, pointing, provenance, validity, or production claim. \\
+Verdict & \code{amend} & Owner-scoped repair followed by independent re-audit
+is required before contract acceptance. \\
+\bottomrule
+\end{longtable}
+
+These five values form the controlled vocabulary for this package result.
+They are a recommendation for owner disposition, not self-approval.
+
+\section{Frozen core and exposure log}
+
+The independent core was committed before any quarantined source or post-core
+evidence was opened:
+
+\begin{itemize}
+\item commit \code{e8f43c678fa001d6369d4ebd45985bb820e129b3};
+\item parent \code{46ad23888a40f5102cdfd50c06e49a549bdf8a20};
+\item tree \code{3e2e84891f1c7bba6afbb2fab559501c96aa9470};
+\item timestamp \code{2026-08-09T11:53:16-04:00}; and
+\item core SHA-256
+  \code{d6059f7d4ae1576adf1c34917c3656d081dcd9bdf997a1fe478f340807500601}.
+\end{itemize}
+
+Before that freeze, only the frozen dispatch/manifest and the four named
+pre-core authorities were exposed.  The first semantic source opening was the
+exact TolTECA \code{citlali.py} blob at
+\code{2026-08-09T12:07:13-04:00}.  The first post-core evidence opening was
+the exact SAME-T0 record at \code{2026-08-09T12:24:54-04:00}.  The first
+additional source path, opened only for core clause C1, was
+\code{reduction\_observation\_context.h} at
+\code{2026-08-09T12:25:34-04:00}.  Direct consumer traces were recorded no
+later than \code{2026-08-09T12:29:08-04:00}.  The two fixture pairs were not
+opened until the coordinator supplied their immutable identities and approved
+the bounded read-only check.
+
+\section{Method and evidence limits}
+
+The review first matched all eight manifest source blob digests, then read
+those exact objects.  Additional paths were opened only when a numbered core
+clause required the direct association, ALIGN, AST, ENG-STATE, VAL, or product
+consumer trace.  Fixture inspection used read-only NetCDF access with masking
+and scaling disabled.  No fixture, executable helper, schema, wrapper,
+verifier, reduction, build, test, external request, or data product was
+created.
+
+The two existing raw/recomputed pairs can demonstrate their own structure and
+typed logical bytes.  They cannot prove general selection, cache safety,
+atomicity, retry behavior, provenance, completion, same-row derivation, or
+physical event semantics.  No authorized cadence/gap tolerance was supplied,
+so interval extrema are recorded but \code{gap} is not inferred.
+
+\section{Source-to-clause trace}
+
+\begin{longtable}{@{}L{0.10\linewidth}L{0.42\linewidth}L{0.40\linewidth}@{}}
+\toprule
+Clause & Exact source scope & Direct fact \\
+\midrule
+\endhead
+C1 & TolTECA \code{citlali.py}, \code{toltec.py}, \code{tel.py},
+\code{basic\_obs\_data.py}; Citlali data-source and observation-context paths
+& Candidate association is metadata/path based; no exactly-one telescope
+candidate or digest-bound association is enforced. \\
+C2 & TolTECA \code{citlali.py} & Existing recomputed pathname is accepted as a
+cache hit; production copies to and mutates the final path directly. \\
+C3 & TolTECA \code{citlali.py}; Citlali \code{telescope.cpp}, input checks and
+raw-input implementation & No immutable raw/product/completion identity is
+admitted; telescope variables load independently into mutable state. \\
+C4 & TolTECA \code{citlali.py}; Citlali \code{telescope.cpp} and alignment
+helpers & No common row/order/time/cadence/duplicate/non-finite admission
+predicate precedes use. \\
+C5 & Citlali alignment dispatch, implementation, and helpers & Telescope data
+are interpolated onto the detector grid without a telescope gap-policy or
+per-series cardinality precondition. \\
+C6 & TolTECA recomputation; Citlali telescope key map and alignment helpers &
+No trusted row-lineage commitment exists; \code{Hold} is numerically
+interpolated downstream. \\
+C7 & TolTECA recomputation and both exact fixture pairs & Source permits five
+non-allowlisted additions when absent; the two fixtures happened to contain
+them already and changed only the three allowlisted arrays. \\
+C8 & Citlali telescope key map, pointing utility, polarization, TOD output, and
+map PHDU helper & Recomputed \code{ActParAng} has direct consumers;
+recomputed source RA/Dec share internal destinations with native telescope
+RA/Dec and can be overwritten during ordered loading. \\
+C9 & All ingress/lifecycle paths above & No requested/effective/resolved/
+realized telescope contract state or typed event-semantics state is carried. \\
+\bottomrule
+\end{longtable}
+
+\section{Findings}
+
+\begin{longtable}{@{}L{0.09\linewidth}L{0.13\linewidth}L{0.31\linewidth}L{0.38\linewidth}@{}}
+\toprule
+ID & Priority & Finding & Consequence and route \\
+\midrule
+\endhead
+\finding{F001} & High & Telescope selection/association is not immutable or
+unique.  TolTECA groups filename-derived metadata and processes every LMT item;
+Citlali receives one path without a bound source identity. & Zero, multiple,
+or mismatched candidates are not rejected with typed C1 failures.  Producer
+selection repair is owner-scoped. \\
+\finding{F002} & Critical & Cache reuse is based only on final-path existence;
+copy and append occur at that final path without atomic publication. & A stale
+or interrupted partial file can be reused as complete.  Route generalized
+completion/transaction obligations to ENG-STATE. \\
+\finding{F003} & High & No raw digest, association, producer/AST/schema version,
+resolved configuration, product digest, completion record, or row-lineage
+commitment binds the product. & Cache identity, retry determinism, provenance,
+and C1/C2/C6 admission cannot be established. \\
+\finding{F004} & High & TolTECA may add \nolinkurl{Header.Dcs.ObsGoal},
+\nolinkurl{Header.Map.MapCoord}, \nolinkurl{Header.Source.Epoch},
+\nolinkurl{Data.TelescopeBackend.TelUtc}, and
+\nolinkurl{Header.Radiometer.Tau} when
+absent. & Those additions are outside the frozen three-variable allowlist.
+The inspected fixtures did not realize this branch because the objects were
+already present. \\
+\finding{F005} & Critical & Producer and consumer lack fail-closed checks for
+row count/order, first/last row, timestamp state, cadence/gaps, duplicate or
+non-monotonic timestamps, non-finite required values, Hold transitions, and
+coherent same-row pairing. & Finite arrays can reach ALIGN/AST/RTC/map
+consumers without satisfying C3--C8. \\
+\finding{F006} & High & Citlali loads each telescope variable with its own
+dimension, treats failures as optional warnings, and mutates live telescope
+state before full validation. & Admission is neither common-shape nor
+transactional; failure may be logged and forgotten rather than propagated. \\
+\finding{F007} & High & \code{SourceRaAct}/\code{TelRaAct} both target
+\code{TelRa}; \code{SourceDecAct}/\code{TelDecAct} both target \code{TelDec}.
+Ordered map traversal loads \code{Tel*} after \code{Source*}. & Native values
+can overwrite recomputed source RA/Dec before tangent-plane pointing.  This is
+a structural routing defect; correctness or remedy is SCI-AST/Tier A. \\
+\finding{F008} & High & ALIGN interpolation uses \code{TelTime} cardinality for
+other telescope streams without validating equal sizes or ordered support, and
+interpolates row-valued \code{Hold}. & C4--C6 prerequisites are absent.
+Interpolation/gap/state response remains SCI-ALIGN-owned; no physical timing
+interpretation is made. \\
+\finding{F009} & High & Concrete telescope ingress has no immutable
+requested/effective/observation-resolved/realized transaction, completion, or
+provenance state. & Route the generalized lifecycle and required-product
+obligations to ENG-STATE. \\
+\finding{F010} & High & No typed producer/row/product validity or exact
+consumer-eligibility facts accompany telescope admission. & Route validity
+vocabulary and eligibility consumption to SCI-VAL; downstream validity claims
+remain unavailable. \\
+\bottomrule
+\end{longtable}
+
+\section{Bounded fixture evidence}
+
+\subsection{Beammap 148670}
+
+The approved raw and recomputed files have 70 dimensions, 326 variables, 50
+\code{time}-row variables, and \code{time}=157219 unlimited rows.  Normalized
+headers, dimension order, variable order, dtypes, shapes, and attributes are
+identical.  All 323 non-allowlisted variables have identical raw logical typed
+bytes, committed by SHA-256
+\begin{tabular}[t]{@{}l@{}}
+\code{5809cac772cbe17738325b416d23797a8}\\
+\code{972e4008e31670fe51d24f084d3b7e5}
+\end{tabular}.
+The non-allowlisted first- and last-row commitments are respectively
+\begin{tabular}[t]{@{}l@{}}
+\code{98fde27b4f662fee4e56583b3762ca024}\\
+\code{d8d40896534d990a78ae0d5e65c4420}
+\end{tabular}
+and
+\begin{tabular}[t]{@{}l@{}}
+\code{6c2516b873e5254a1cf0ce4e118c552a}\\
+\code{152b1fa82232cffe7c61012f53d4126a}
+\end{tabular}.
+
+Exactly the three allowlisted arrays changed; all 157219 elements differ in
+each, every output is finite, and each retains \code{float64(time)}.  Raw and
+recomputed \code{TelTime} bytes are identical.  \code{TelTime} is finite and
+strictly increasing with interval extrema 0.018999814987182617 and
+0.02113056182861328 in its declared seconds unit; it has zero duplicate or
+negative steps.  No gap count is assigned without an authorized gap policy.
+\code{Hold} bytes are identical and contain 1370 transitions, whose index-list
+commitment is
+\begin{tabular}[t]{@{}l@{}}
+\code{f10261a7f6a8c023a6506e7b19dba6c3}\\
+\code{c32703a4f182cb06343364fd6a3c9323}
+\end{tabular}.
+
+The separate telescope \code{PpsTime} array is unchanged and finite; it has
+154074 repeated adjacent values and no decreasing steps.  This is a recorded
+array fact, not a detector/telescope association or physical-event claim.
+\code{AcuTime} is unchanged and finite but has three decreasing steps; this is
+not silently promoted to the \code{TelTime} admission state.
+
+\subsection{Pointing 152389}
+
+The approved pair has 67 dimensions, 306 variables, 50 \code{time}-row
+variables, and \code{time}=3200 unlimited rows.  Normalized headers and all
+metadata are identical.  All 303 non-allowlisted variables have identical raw
+logical typed bytes, committed by SHA-256
+\begin{tabular}[t]{@{}l@{}}
+\code{684fbe0783e08cd8bdcb00ad3b044f54d}\\
+\code{b52c8e1af5854af11e1e49230dfe81d}
+\end{tabular}.
+The non-allowlisted first- and last-row commitments are respectively
+\begin{tabular}[t]{@{}l@{}}
+\code{b9cfcb513b0be3050b4e166f4467c53a}\\
+\code{2a3b340e0bd1681a7b16f3596e76a6b7}
+\end{tabular}
+and
+\begin{tabular}[t]{@{}l@{}}
+\code{191a9fb9b276cae3f10b67845f0faf51}\\
+\code{8ce86660a7e3dcf37905a7c60dd7f81c}
+\end{tabular}.
+
+Exactly the three allowlisted \code{float64(time)} arrays changed at all 3200
+elements and remain finite.  Raw and recomputed \code{TelTime} bytes are
+identical; values are finite and strictly increasing with interval extrema
+0.018999814987182617 and 0.020075321197509766 seconds and zero duplicate or
+negative steps.  Gap classification remains unavailable.  \code{Hold} is
+identical, finite, constant zero, and has no transition; therefore this pair
+does not exercise the preregistered Hold-transition case.  Telescope
+\code{PpsTime} is unchanged and finite with 3135 repeated adjacent values and
+no decreasing steps.
+
+\subsection{What the pairs do and do not establish}
+
+These pairs support a bounded realized preservation claim: same dimensions,
+metadata, row cardinality, non-allowlisted logical bytes, key timestamps, and
+Hold values, with changes confined to the three arrays.  They do not provide
+an independent derivation record capable of distinguishing a coherent
+equal-length plus/minus-one output displacement.  They also do not exercise a
+missing row, duplicate or non-monotonic \code{TelTime}, stale cache, partial
+file, non-finite required value, or unlisted-mutation branch.  A passing pair
+cannot supply the missing cache, completion, provenance, admission, gap-policy,
+or event authority.
+
+\section{Product and consumer matrix}
+
+\begin{longtable}{@{}L{0.24\linewidth}L{0.32\linewidth}L{0.36\linewidth}@{}}
+\toprule
+Input/product & Direct consumer path & Audit consequence \\
+\midrule
+\endhead
+\code{ActParAng} & Detector pointing, RTC polarization angle, TOD identity
+metadata, map PHDU mean angle & Requires admitted row lineage, accepted AST
+identity, unit/frame validity, and ALIGN support before use. \\
+\code{SourceRaAct}, \code{SourceDecAct} & Internal \code{TelRa}/\code{TelDec},
+tangent-plane RA/Dec, map/source-protection pointing & Native \code{Tel*Act}
+aliases can supersede recomputed values; scientific remedy is not selected. \\
+\code{TelTime} & Telescope-to-detector interpolation support; replaced with
+the common detector grid after alignment & Requires exact ordering, cadence/
+gap policy, coverage, and row-lineage admission; physical phase remains
+unavailable. \\
+\code{Hold} & Scan-state derivation and generic telescope interpolation & Raw
+fixture bytes/transitions are preserved, but downstream numeric interpolation
+does not preserve categorical row identity. \\
+Telescope \code{PpsTime} & Loaded telescope state and downstream telescope
+stream uses & Remains distinct from detector \code{PpsTime}; repeated values
+are descriptive, not a physical-event oracle. \\
+Recomputed file & TolTECA cache path and Citlali telescope loader & Filename
+existence is insufficient identity or completion; typed admission is absent. \\
+\bottomrule
+\end{longtable}
+
+\section{Inbound evidence and dependencies}
+
+The SAME-T0 record is dispositioned only as a descriptive three-map detector
+cadence lattice.  It supplies no physical cause, correction, prior, or
+telescope-row fact.  The acquisition-event handoff establishes bounded
+detector \code{D[n]}/\code{Ts[n]} row lineage and distinguishes detector from
+telescope \code{PpsTime}; it inspected no telescope rows or 20-ms ingress and
+does not identify a physical integration event.  Both are post-core evidence,
+not contract authority.
+
+The open dependency is the named acquisition-event producer authority.  Until
+it is returned and separately accepted, \code{physical\_event\_semantics}
+remains \code{unavailable}; no half- or whole-sample correction, physical
+centroid, detector-time absolute oracle, absolute timing, sub-sample placement,
+timing-sensitive source-mask fidelity, precision, or response claim is allowed.
+
+Four bounded outgoing handoffs accompany this report:
+
+\begin{itemize}
+\item SCI-ALIGN receives only the absent admission prerequisites and the
+  structural interpolation/Hold facts;
+\item SCI-AST receives only the publication-routing alias collision and need
+  for transform identity;
+\item ENG-STATE receives concrete cache/completion/transaction/provenance
+  defects; and
+\item SCI-VAL receives missing typed validity and eligibility facts.
+\end{itemize}
+
+None launches downstream work or authorizes a scientific decision.
+
+\section{Owner decision brief and restrictions}
+
+The recommended owner disposition is \code{amend}: preserve the independent
+core; authorize a separately scoped repair only after deciding repository
+ownership and obtaining explicit TolTECA maintainer opt-in for any TolTECA
+change; then require an independent re-audit against exact successor commits.
+The repair scope must keep selection/identity, atomic completion, row/preserve
+checks, transactional Citlali admission, and typed validity explicit.  Any
+decision about coordinate formula, alias remedy semantics, interpolation
+response, event meaning, timing offset, or physical row displacement is Tier A
+and requires separate owner authority.
+
+This audit performed no application, test, build, configuration, validation,
+production, TolTECA, or canonical coordination edit; no Unity access, local
+reduction, external contact, delegation, push, merge, repair, re-audit, or
+downstream launch; and no new fixture or data production.  The package stops
+for coordinator and owner review.
+
+\end{document}

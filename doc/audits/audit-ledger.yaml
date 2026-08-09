@@ -9,7 +9,7 @@ current_program_checkpoint:
   record_path: >-
     doc/audits/packages/SCIENTIFIC_AUDIT_PROGRAM_CHECKPOINT_2026-08-08.md
   record_sha256: >-
-    57414b2891ca7fc5c7bc8bacafbcc3e52ca92236acad77ab8feab023eb13c3b0
+    6460911ce6db02f92b66209a33ae324190b32a04d84a23f81892b8d53ba2f6d3
   canonical_application_mainline:
     ref: origin/codex/refactor-mainline
     commit: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
@@ -38,7 +38,7 @@ current_program_checkpoint:
     - SCI-PTC-001_D001_D002_approved_D003_D006_pending_internal_estimator_work_permitted_no_launch
     - SCI-VAL-001_unlaunched_PTC_D002_successor_handoff_pending_recipient_review
     - SCI-BEAM-001_held
-    - SCI-TEL-INPUT-001_frozen_High_dispatch_ready_not_launched
+    - SCI-TEL-INPUT-001_audit_owner_accepted_repair_scope_unresolved
   held_readiness:
     SCI-FLT-001: exact_repair_base_unresolved_until_integrated_CAL_successor
   audit_admission: >-
@@ -59,7 +59,7 @@ current_program_checkpoint:
       - absolute_timing_or_subsample_placement
       - timing_sensitive_source_mask_fidelity
     TEL_dispatch:
-      status: frozen_ready_not_launched
+      status: completed_owner_accepted_stopped
       effort: high
       prompt_path: doc/audits/prompts/SCI_TEL_INPUT_001_AUDIT_PROMPT.md
       prompt_sha256: >-
@@ -268,7 +268,7 @@ resource_allocation:
       package_id: SCI-TEL-INPUT-001
       phase: structural_file_row_identity_and_ingress_audit
       dispatch_content_parent: 5647330d056b0b8ba70d280c072a9f968ce062e6
-      dispatch_content_commit_role: exact_commit_reported_after_commit
+      dispatch_content_commit: 35d390a27e4fd5d00fb45b2924781e1266fc0e8d
       model: sol
       effort: high
       task_shape: coherent_scientific_interface
@@ -380,6 +380,7 @@ controlled_vocabulary:
     - not_started
     - planned
     - in_progress
+    - bounded_incomplete
     - external_pending
     - complete
     - failed
@@ -1450,7 +1451,43 @@ packages:
       - ENG-STATE-001
       - SCI-VAL-001
     incoming_handoffs: []
-    outgoing_handoffs: []
+    outgoing_handoffs:
+      - id: SCI-ALIGN-001-XAUD-001
+        target_package: SCI-ALIGN-001
+        path: >-
+          doc/audits/handoffs/SCI-ALIGN-001/SCI-ALIGN-001-XAUD-001.yaml
+        sha256: >-
+          41b88791d5df4408a277b9f8572e1a0622d7d0529d36a76ce947d8f3016af3ef
+        review_phase: post_core_evidence
+        status: pending_recipient_review
+        launch_authority: false
+      - id: SCI-AST-001-XAUD-002
+        target_package: SCI-AST-001
+        path: >-
+          doc/audits/handoffs/SCI-AST-001/SCI-AST-001-XAUD-002.yaml
+        sha256: >-
+          368f53002fb2f0aa2a17a76aafc63019cbb485e38b128b43063ef57e70862073
+        review_phase: post_core_evidence
+        status: pending_recipient_review
+        launch_authority: false
+      - id: ENG-STATE-001-XAUD-001
+        target_package: ENG-STATE-001
+        path: >-
+          doc/audits/handoffs/ENG-STATE-001/ENG-STATE-001-XAUD-001.yaml
+        sha256: >-
+          55ecf98c2d31295b6df9ec85ce93df8c82962bb9fc772da1d073c1c70b6bed92
+        review_phase: post_core_evidence
+        status: pending_recipient_review
+        launch_authority: false
+      - id: SCI-VAL-001-XAUD-010
+        target_package: SCI-VAL-001
+        path: >-
+          doc/audits/handoffs/SCI-VAL-001/SCI-VAL-001-XAUD-010.yaml
+        sha256: >-
+          3b4cf9fd9467c9d60d8fd1154515003fba52272b3350e1788025d014bff06cc7
+        review_phase: post_core_evidence
+        status: pending_recipient_review
+        launch_authority: false
     candidate_post_core_evidence:
       status: exact_objects_frozen_post_core_quarantined
       sources:
@@ -1471,7 +1508,7 @@ packages:
         tree: 3f3e4b8136bf5528b203cb3bb8b474233bb27a85
         role: operational_producer_snapshot
     registration:
-      status: dispatch_frozen_not_launched
+      status: audit_completed_owner_accepted
       registration_date: 2026-08-08
       record_path: >-
         doc/audits/packages/SCI-TEL-INPUT-001_PRODUCT_REGISTRATION_2026-08-08.md
@@ -1487,7 +1524,7 @@ packages:
         doc/audits/handoffs/SCI-TEL-INPUT-001/SCI-TEL-INPUT-001_INBOX_SOURCE_SET_MANIFEST_2026-08-09.yaml
       source_set_manifest_sha256: >-
         55fb9c6091fd75c4fb69976b95024448e9bc0919e519351c39be92bedf1e32ea
-      source_set_manifest_status: frozen_ready_not_launched
+      source_set_manifest_status: frozen_used_by_completed_audit
       pre_core_authority_ids:
         - ALIGN-ASSIGNED-TIME-COMPAT-001
         - SCI-TEL-INPUT-001-REG-D001
@@ -1498,28 +1535,134 @@ packages:
         - SCI-TEL-INPUT-001-ALIGN-ACQ-EVENT-001
       unavailable_dependency_ids:
         - SCI-TEL-INPUT-001-DEP-ACQUISITION-EVENT-SEMANTICS-001
-      audit_authorized: false
+      audit_authorized: true
+      audit_authority_status: exercised_complete
       repair_authorized: false
       re_audit_authorized: false
       tolteca_modification_authorized: false
       unity_authorized: false
       local_reduction_authorized: false
-    audit_branch: null
-    audit_commit: null
-    independent_derivation: {status: not_started, sha256: null}
-    contract_status: not_started
-    implementation_status: not_assessed
-    validation_status: not_started
+    audit_branch: codex/audit-sci-tel-input-001
+    audit_commit: 518e0ccb2fa3b54fa99212a05d33286506b59f80
+    audit_parent: e8f43c678fa001d6369d4ebd45985bb820e129b3
+    audit_tree: d67cc7308f6c24a3c10666fb361a123f9eec5b83
+    audit_status: completed_owner_accepted_stopped
+    independent_derivation:
+      status: frozen_accepted_immutable
+      commit: e8f43c678fa001d6369d4ebd45985bb820e129b3
+      path: >-
+        doc/audits/packages/SCI-TEL-INPUT-001_INDEPENDENT_CORE.tex
+      sha256: >-
+        d6059f7d4ae1576adf1c34917c3656d081dcd9bdf997a1fe478f340807500601
+    audit_artifacts:
+      final_report:
+        path: >-
+          doc/audits/packages/SCI-TEL-INPUT-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+        sha256: >-
+          26d05b1ed5c35a524a6953eb35feb96583fa9d2391133395d84031277270034c
+      local_evidence:
+        path: >-
+          doc/audits/evidence/SCI-TEL-INPUT-001_LOCAL_EVIDENCE_2026-08-09.yaml
+        sha256: >-
+          2c65f45b4ff8900128f6bdcaa5a1b2cc635805929247ce77c15bd73dbab7ced8
+      ledger_proposal:
+        path: >-
+          doc/audits/proposals/SCI-TEL-INPUT-001_LEDGER_PROPOSAL_2026-08-09.yaml
+        sha256: >-
+          7d9ead2686e0864dc0f3aeb839f60e7b9af71001c36ae1a23fa0d48f49094af5
+      owner_decision_brief:
+        path: >-
+          doc/audits/packages/SCI-TEL-INPUT-001_OWNER_DECISION_BRIEF_2026-08-09.md
+        sha256: >-
+          dadfa813def8a25e0c6b6bb7d5de0345596817e3a723747620d115fd19b29d10
+    owner_acceptance:
+      status: approved
+      decision_date: 2026-08-09
+      record_path: >-
+        doc/audits/packages/SCI-TEL-INPUT-001_OWNER_ACCEPTANCE_2026-08-09.md
+      record_sha256: >-
+        1ad35104619be7386d8c47a041a6d980117df917ea54b7ea51c36b2d42f9e685
+      immutable_core_preserved: true
+      physical_event_semantics: unavailable
+      repair_scope_status: separate_later_owner_decision
+      tolteca_status: read_only_separate_maintainer_opt_in_required
+      tier_A_stops:
+        - coordinate_alias_authority_or_remedy
+        - ALIGN_interpolation_response
+        - physical_integration_event_meaning
+        - physical_displacement_or_timing_correction
+        - uncertainty
+        - astrometric_response
+    contract_status: proposed
+    implementation_status: nonconformant
+    validation_status: bounded_incomplete
     production_status: existing_use_only
-    verdict: pending
-    open_findings: []
-    unresolved_scientific_decisions: []
-    local_evidence: []
+    verdict: amend
+    open_findings:
+      - id: SCI-TEL-INPUT-001-F001
+        priority: high
+        status: open
+        title: telescope_selection_and_association_not_unique_or_immutable
+        owner_route: tolteca_producer_and_citlali_ingress
+      - id: SCI-TEL-INPUT-001-F002
+        priority: critical
+        status: open
+        title: existence_only_cache_and_nonatomic_final_path_write
+        owner_route: tolteca_producer_with_ENG-STATE-001_handoff
+      - id: SCI-TEL-INPUT-001-F003
+        priority: high
+        status: open
+        title: product_identity_completion_and_row_lineage_provenance_absent
+        owner_route: tolteca_producer_and_citlali_ingress
+      - id: SCI-TEL-INPUT-001-F004
+        priority: high
+        status: open
+        title: source_can_add_nonallowlisted_NetCDF_objects
+        owner_route: tolteca_producer
+      - id: SCI-TEL-INPUT-001-F005
+        priority: critical
+        status: open
+        title: fail_closed_row_time_pairing_and_preservation_admission_absent
+        owner_route: tolteca_producer_and_citlali_ingress
+      - id: SCI-TEL-INPUT-001-F006
+        priority: high
+        status: open
+        title: independent_variable_loading_is_nontransactional_and_warn_only
+        owner_route: citlali_ingress
+      - id: SCI-TEL-INPUT-001-F007
+        priority: high
+        status: open_tier_A_remedy_required
+        title: recomputed_source_RA_Dec_share_and_lose_internal_destination
+        owner_route: SCI-AST-001
+      - id: SCI-TEL-INPUT-001-F008
+        priority: high
+        status: open_conditioned
+        title: alignment_preconditions_and_row_valued_Hold_semantics_absent
+        owner_route: SCI-ALIGN-001
+      - id: SCI-TEL-INPUT-001-F009
+        priority: high
+        status: open_conditioned
+        title: telescope_instance_lifecycle_and_transaction_state_absent
+        owner_route: ENG-STATE-001
+      - id: SCI-TEL-INPUT-001-F010
+        priority: high
+        status: open_conditioned
+        title: typed_ingress_validity_and_consumer_eligibility_facts_absent
+        owner_route: SCI-VAL-001
+    unresolved_scientific_decisions:
+      - repair_scope_and_repository_ownership
+    local_evidence:
+      - path: >-
+          doc/audits/evidence/SCI-TEL-INPUT-001_LOCAL_EVIDENCE_2026-08-09.yaml
+        sha256: >-
+          2c65f45b4ff8900128f6bdcaa5a1b2cc635805929247ce77c15bd73dbab7ced8
+        status: bounded_accepted_with_reported_limitations
     requested_unity_evidence: []
     supplied_external_evidence: []
     remediation_branch: null
     remediation_commit: null
-    re_audit_status: not_started
+    repair_status: not_authorized_scope_and_ownership_unresolved
+    re_audit_status: not_authorized
 
   - id: SCI-ALIGN-001
     name: Sample alignment, scan slicing, and gap interpolation

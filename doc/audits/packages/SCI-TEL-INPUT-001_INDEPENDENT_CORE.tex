@@ -1,0 +1,665 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=0.78in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage[hidelinks]{hyperref}
+
+\setlist{nosep,leftmargin=*}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.4em}
+\setlength{\emergencystretch}{3em}
+\newcommand{\pkg}{\texttt{SCI-TEL-INPUT-001}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\shall}{\textbf{shall}}
+\newcommand{\mustnot}{\textbf{shall not}}
+\newcommand{\failclosed}{\textbf{fail closed}}
+\newcommand{\typedunavailable}{\code{physical\_event\_semantics:}\allowbreak\ \code{unavailable}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\title{\pkg\\Independent Structural Core}
+\author{Independent pre-source derivation}
+\date{2026-08-09}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\fcolorbox{black}{gray!8}{\parbox{0.93\linewidth}{
+\textbf{Frozen-scope statement.}
+This document defines a structural contract for telescope-file selection,
+row identity, allowed mutation, cache publication, and Citlali admission.  It
+does not interpret the physical acquisition event represented by a detector or
+telescope row, rederive astrometric mathematics, choose a timing correction,
+or assess implementation.  The physical-event state is
+\typedunavailable.}}
+\end{center}
+
+\section{Identity, authority, and exposure boundary}
+
+\subsection{Package identity}
+
+The contract identity is \pkg, ``Telescope-file preparation, row identity,
+and Citlali ingress,'' Tier B.  The paired application authorities are:
+
+\begin{itemize}
+\item Citlali authority:
+  \begin{tabular}[t]{@{}ll@{}}
+  commit & \code{46ad23888a40f5102cdfd50c06e49a549bdf8a20} \\
+  parent & \code{4846fa4db39bd2f7d4ddc41f693836834cbc5ff4} \\
+  tree & \code{ab230a93b8fb310d58aefd7ac5da92e5d5e0f408}
+  \end{tabular}
+\item Read-only TolTECA authority:
+  \begin{tabular}[t]{@{}ll@{}}
+  commit & \code{2791e6a1e6349ad1d3ac549a648f41cbc51b98c7} \\
+  parent & \code{4acee1ccb11a13084834149c7d6e6685a87d3d6b} \\
+  tree & \code{3f3e4b8136bf5528b203cb3bb8b474233bb27a85}
+  \end{tabular}
+\end{itemize}
+
+An implementation, product, or validation claim is outside this core unless it
+binds these identities or a separately owner-approved successor.
+
+\subsection{Pre-core authority and prior exposure}
+
+Before the bytes of this core were frozen, the derivation opened only the
+frozen dispatch and manifest plus the following four allowlisted scientific
+authority objects, after independently matching their SHA-256 digests:
+
+\begin{longtable}{@{}L{0.27\linewidth}L{0.42\linewidth}L{0.16\linewidth}@{}}
+\toprule
+ID & Object & SHA-256 prefix \\
+\midrule
+\endhead
+\begin{tabular}[t]{@{}l@{}}\code{ALIGN-ASSIGNED-TIME-}\\
+\code{COMPAT-001}\end{tabular} &
+Owner policy for the assigned-time compatibility boundary &
+\code{15e27271f049} \\
+\begin{tabular}[t]{@{}l@{}}\code{SCI-TEL-INPUT-001-}\\
+\code{REG-D001}\end{tabular} &
+Product registration and scope authority &
+\code{512ad1413d2c} \\
+\begin{tabular}[t]{@{}l@{}}\code{SCI-TEL-INPUT-001-}\\
+\code{ARCHITECTURE-001}\end{tabular} &
+Citlali architecture at the application authority &
+\code{d78571ab2da3} \\
+\begin{tabular}[t]{@{}l@{}}\code{SCI-TEL-INPUT-001-}\\
+\code{CONVENTIONS-001}\end{tabular} &
+Citlali scientific conventions at the application authority &
+\code{1970d7e31ccb} \\
+\bottomrule
+\end{longtable}
+
+No quarantined TolTECA or Citlali source blob, caller, test, diff, blame,
+earlier audit interpretation, raw or recomputed corpus observation, or
+post-core ALIGN evidence was opened.  This is a derivation from authority and
+interface obligations, not a description of the current implementation.
+
+\subsection{Scientific stop boundary}
+
+This core treats the existing assigned-time grid only as an exact identified
+compatibility interface.  It establishes no physical integration-event,
+sample-start, sample-end, centroid, absolute phase, half-sample, whole-sample,
+or offset-prior meaning.  Detector \code{PpsTime} and telescope
+\code{PpsTime} are distinct facts and are never substituted for each other.
+
+Choosing or rederiving event semantics, coordinate mathematics, temporal or
+astrometric response, uncertainty, a physical row displacement, source
+association beyond exact structural identity, or any timing correction is a
+Tier A stop.  Absolute timing, sub-sample astrometric placement,
+timing-sensitive source-mask fidelity, physical timing correction, and every
+precision or accuracy claim materially dependent on those meanings remain
+unavailable and \failclosed.
+
+\section{Typed structural objects}
+
+All identities below are values, not filenames, row positions used as external
+identity, or mutable process state.  A digest is computed over a declared byte
+serialization and names its algorithm.  A path or modification time may be
+recorded for diagnostics but is never sufficient identity.
+
+\subsection{Raw telescope source identity}
+
+For one immutable raw telescope source define
+\[
+R = (I_{obs}, I_{acq}, I_{file}, D_{file}, S_{nc}, V_{producer}),
+\]
+where:
+
+\begin{itemize}
+\item $I_{obs}$ is the external observation identity, including the complete
+  producer identifiers needed to distinguish observations, subobservations,
+  scans, interfaces, or coherent segments when present;
+\item $I_{acq}$ is a typed acquisition-source identity.  It is structural
+  lineage only and carries the typed state\newline \typedunavailable;
+\item $I_{file}$ records the exact selected raw object, immutable size, and
+  stable diagnostic locator;
+\item $D_{file}$ is the digest of the complete raw file bytes;
+\item $S_{nc}$ is a deterministic NetCDF structural fingerprint covering group
+  paths, dimensions, variables, types, dimension vectors, attributes, storage
+  properties, and raw typed payloads; and
+\item $V_{producer}$ identifies the producer format/schema authority available
+  at selection time.
+\end{itemize}
+
+Once resolved, $R$ is immutable.  Re-reading the same path and obtaining a
+different size, digest, or structural fingerprint produces a new candidate
+identity and invalidates every cache entry bound to the former $R$.
+
+\subsection{Detector-input and reduction association}
+
+Define the ordered detector-input identity
+\[
+K = (I_{obs}, [D_{kid,0},\ldots,D_{kid,m-1}], I_{order}, I_{assigned}),
+\]
+where each detector digest is immutable, $I_{order}$ binds the exact input
+ordering, and $I_{assigned}$ binds the exact ALIGN/assigned-time implementation
+authority, coherent segment, detector/sample ordering, realized cadence/rate
+lattice, assigned values, requested/effective/realized offset or resampling
+state, parent stage, and processing identity.  Its event state is unavailable.
+
+Define a reduction association
+\[
+A = (I_{reduction}, I_{request}, R, K, I_{selection}, I_{association}).
+\]
+$I_{request}$ binds the accepted low-level Citlali request; $I_{selection}$
+binds the deterministic candidate and tie/error policy; and
+$I_{association}$ binds the exact observation and segment relationship between
+the raw telescope source, ordered detector inputs, and this reduction.
+
+The association \shall{} be resolved before recomputation or Citlali state
+mutation.  Zero candidates, multiple candidates without an already-authorized
+unique selection rule, mixed observation identities, ambiguous segment
+membership, or a detector/telescope/reduction identity mismatch is a typed
+failure.  Glob order, directory order, newest modification time, or ``first
+file found'' is not an association rule.
+
+\subsection{Recomputed product identity}
+
+For one derived telescope product define
+\[
+P = (R,A,V_{app},V_{ast},V_{contract},C_{resolved},M,D_{product},Q),
+\]
+where $V_{app}$ is the exact producer application identity, $V_{ast}$ is the
+accepted AST transform authority/version, $V_{contract}$ is this structural
+contract and output schema version, $C_{resolved}$ is the complete
+observation-resolved transform configuration, $M$ is the realized mutation
+manifest, $D_{product}$ is the complete product digest, and $Q$ is the
+completion and verification record.  Changing any tuple member creates a
+different product identity.
+
+$P$ is immutable after atomic completion.  A recomputed filename, file
+existence, successful open, or plausible numeric content does not establish
+$P$.
+
+\section{Row model and invariants}
+
+\subsection{Index, cardinality, and ordered record}
+
+Let the authoritative telescope row dimension have cardinality $N$.  A valid
+source has $N>0$ and zero-based ordered row indices
+\[
+i \in \{0,1,\ldots,N-1\}.
+\]
+The first row is exactly $i=0$ and the last row is exactly $i=N-1$; neither may
+be skipped, synthesized, truncated, wrapped, or treated as a sentinel.
+
+For each row define the structural record
+\[
+X_i=(i,T_i,G_i,H_i;\;Y_i),
+\]
+where $T_i$ is the recorded \code{TelTime} value and exact stored bits, $G_i$
+is the complete ordered set of pointing-state inputs consumed by the accepted
+AST authority, $H_i$ is \code{Hold}, and
+\[
+Y_i=(A^{par}_i,R^{src}_i,D^{src}_i),
+\]
+corresponding respectively to \code{ActParAng}, \code{SourceRaAct}, and
+\code{SourceDecAct}.
+This notation asserts row lineage only.  It does not state or rederive the
+mapping $G_i,H_i,T_i\mapsto Y_i$.
+
+The raw and recomputed product \shall{} have the same $N$, row order, dimension
+identity, and first/last row.  Every $Y_i$ \shall{} be computed from and remain
+paired with exactly $(T_i,G_i,H_i)$ at the same $i$.  No sorting, dropping,
+insertion, padding, nearest-row replacement, forward/back fill, interpolation,
+or one-row rotation is permitted in recomputation.
+
+\subsection{Timestamp and cadence state}
+
+Each timestamp carries its exact stored type, bits, declared unit, scale, and
+clock/producer identity.  No unit is inferred from the variable name.  A
+comparison in seconds is permitted only through an explicit recorded unit
+conversion; it remains an assigned-grid comparison, not a physical-event
+interpretation.
+
+For adjacent finite assigned timestamps define
+\[
+\Delta_i=T_i-T_{i-1},\qquad 1\le i<N.
+\]
+The registered nominal telescope cadence is 20 ms.  ``Nominal'' is not a
+tolerance.  The realized $\Delta_i$ sequence, finite status, exact duplicates,
+non-monotonic values, and gaps \shall{} be recorded.  Acceptance requires an
+exact, identity-bound cadence/gap policy.  This core does not invent its
+tolerance; if no authorized policy exists, cadence-dependent admission
+\failclosed{} rather than silently accepting approximate regularity.
+
+The following states are distinct:
+\begin{itemize}
+\item \code{present\_finite\_ordered}: the row and timestamp are present,
+  finite, and strictly later than the preceding row under the declared scale;
+\item \code{gap}: the row-to-row interval violates the bound policy without
+  asserting which physical event is absent;
+\item \code{duplicate}: the exact assigned timestamp repeats;
+\item \code{nonmonotonic}: the assigned timestamp decreases;
+\item \code{missing}: required row identity is absent; and
+\item \code{nonfinite}: a required timestamp or row value is non-finite under
+  its declared validity rules.
+\end{itemize}
+
+Missing and unavailable are typed states.  They \mustnot{} be represented by an
+undocumented NaN, zero, negative number, copied neighbor, or synthesized row.
+
+\subsection{Hold transitions and coherent row pairing}
+
+\code{Hold} is a row-valued state, not a file-level hint.  If
+$H_{k-1}\ne H_k$, both sides of the transition and the outputs at $k-1$ and
+$k$ \shall{} retain their original same-row pairing.  A transition never
+authorizes shifting an output, choosing a different timestamp, or changing
+AST mathematics.
+
+Length and monotonicity alone cannot prove row pairing: an equal-length
+plus-one or minus-one rotation may satisfy both.  Therefore the realized
+product identity \shall{} include a deterministic row-lineage commitment over,
+at minimum,
+\[
+(i,\mathrm{bits}(T_i),\mathrm{bits}(G_i),
+ \mathrm{bits}(H_i),\mathrm{bits}(Y_i))
+\]
+for every $i$, bound to the trusted producer/AST identity and raw-parent
+digest.  A self-reported digest recomputed after corruption is not independent
+evidence of correct pairing.  Admission requires a trusted derivation record
+or deterministic comparison capable of distinguishing the intended pairing
+from coherent $\pm1$ row displacement.
+
+\section{NetCDF preservation and mutation contract}
+
+\subsection{Closed mutation allowlist}
+
+The only variables that may be added or whose data may change are:
+\begin{enumerate}
+\item \code{ActParAng};
+\item \code{SourceRaAct}; and
+\item \code{SourceDecAct}.
+\end{enumerate}
+
+This is a closed allowlist.  Each allowlisted variable \shall{} use the exact
+authoritative telescope-row dimension and cardinality $N$, publish an explicit
+type, unit, coordinate frame/epoch/convention identifier, missing/non-finite
+policy, AST authority, and row-lineage identity, and have a value for every
+row.  Current telescope angular convention expects radians unless the variable
+explicitly states otherwise; a bare name never supplies a unit.  Coordinate
+frame, epoch, RA wrapping, sign, handedness, and parallactic-angle conventions
+come from accepted AST authority and are not chosen here.
+
+If an allowlisted variable already exists, replacement is permitted only under
+the exact output schema/version bound into $P$.  If it is absent, addition is
+permitted only with that same schema.  An undocumented type, dimension,
+attribute, fill, unit, or frame change is failure, not compatibility.
+
+\subsection{Preservation operator}
+
+For every dimension, group, and non-allowlisted variable, the transformation
+is the identity operator.  ``Bitwise preservation'' means:
+
+\begin{itemize}
+\item identical group path, name, declared type, dimension vector and order;
+\item identical dimension identity and cardinality, including unlimited-state
+  metadata;
+\item identical variable attributes and their typed payload bits;
+\item identical storage semantics needed to recover the same typed array,
+  including fill, endianness, chunking, compression, and checksums where
+  represented; and
+\item identical raw typed element bits in row-major logical order, including
+  NaN payloads and signed zero.
+\end{itemize}
+
+Physical byte offsets or container layout may change when NetCDF is rewritten;
+that does not weaken the element, metadata, ordering, or dimension invariants.
+Conversely, numerically equal decoded values are insufficient when their
+stored bits or required metadata differ.
+
+Global attributes, group attributes, provenance containers, or helper
+variables are not silently writable.  Required derivation provenance lives in
+the immutable product/completion record $P,Q$.  Embedding new provenance in
+NetCDF would expand the mutation class and requires an explicit successor to
+this core; it is not inferred here.
+
+The realized mutation manifest $M$ lists every added or changed allowlisted
+variable, its before/after presence and digest, and proves the identity result
+for everything outside the allowlist.  An unlisted mutation rejects the whole
+candidate before admission.
+
+\section{Cache, completion, retry, and provenance}
+
+\subsection{Cache key and source/version binding}
+
+A reusable cache key is a collision-resistant digest of a canonical
+serialization of at least
+\[
+(R,A,V_{app},V_{ast},V_{contract},C_{resolved},
+ \text{allowlist/schema identity}).
+\]
+The key includes exact raw bytes and structure, observation/detector/reduction
+association, row ordering, assigned-grid identity, application and transform
+versions, and complete resolved configuration.  Filename, directory, mtime,
+file existence, and a partially matching tuple are never cache keys.
+
+A candidate whose key or embedded completion record does not exactly match the
+current request is \code{stale} and \shall{} be rejected.  Cache reuse records
+the cache key, product digest, verification result, producer identity, raw
+parent, completion identity, and reuse event in realized provenance.
+
+\subsection{Atomic completion state machine}
+
+The allowed states are:
+\begin{center}
+\code{absent} $\longrightarrow$ \code{writing\_private}
+$\longrightarrow$ \code{verified\_private} $\longrightarrow$
+\code{complete}.
+\end{center}
+Only \code{complete} is reusable or admissible.  Production occurs at a unique
+private path inaccessible as a completed cache entry.  Before publication the
+producer closes and flushes the NetCDF object, verifies $R,A,N$, row
+invariants, mutation allowlist, preservation result, row-lineage commitment,
+schema, and complete digest, and durably writes $Q$.  Publication makes the
+verified data and matching completion record visible atomically under a
+single-winner or content-identical concurrency rule.
+
+A crash, cancellation, exception, writer collision, missing completion record,
+digest mismatch, open private path, truncated NetCDF object, or validation
+failure yields \code{partial} or \code{rejected}; it never advances to
+\code{complete}.  A completion filename or marker cannot override missing
+data, structural failure, or an error record.
+
+\subsection{Retry and deterministic provenance}
+
+A retry begins from the same immutable inputs or records a new identity.  It
+does not append to, repair in place, or bless a private/partial candidate.
+Private leftovers are quarantined or replaced through a separately named
+temporary object.  Two successful retries from the same complete identity
+tuple shall produce the same declared structural content, mutation manifest,
+row-lineage commitments, and scientific values under the registered
+determinism policy.  Volatile wall-clock diagnostics, if retained outside the
+scientific identity, are explicitly classified and cannot affect admission.
+
+The provenance chain is one-way:
+\[
+R\rightarrow A\rightarrow C_{resolved}\rightarrow P\rightarrow Q
+\rightarrow\text{Citlali admission}.
+\]
+No later stage rewrites raw, requested, effective, or observation-resolved
+identity to match what happened.
+
+\section{Citlali admission contract}
+
+Admission is a cold-boundary transaction.  All checks complete before any
+live telescope, observation, scan, ALIGN, AST, RTC/PTC, map, diagnostic,
+product, or provenance execution state is mutated.  Failure returns a typed
+error through the session boundary and cannot be logged and forgotten.
+
+\subsection{Required predicates}
+
+Citlali may admit $P$ only if all of the following are true:
+
+\begin{enumerate}[label=\textbf{C\arabic*.}]
+\item \textbf{Identity.} $R,A,P,Q$ exactly match the accepted reduction,
+  observation, ordered detector inputs, assigned-grid identity, application,
+  AST authority, schema, and resolved request.
+\item \textbf{Completion.} Atomic state is \code{complete}; all digests and
+  completion records match; no stale, private, partial, or ambiguous candidate
+  participates.
+\item \textbf{Cardinality and order.} $N>0$; the telescope dimension, row
+  indices, first and last rows, and order match the raw parent; no row is
+  inserted, dropped, duplicated, reordered, or padded.
+\item \textbf{Time structure.} Required timestamps are present and finite,
+  strictly ordered, and evaluated under the exact accepted cadence/gap policy;
+  all duplicate, non-monotonic, missing, non-finite, and gap states are
+  explicitly dispositioned.  No physical-event meaning is inferred.
+\item \textbf{Coverage.} The telescope assigned-time domain covers every
+  detector assigned-time value and support point required by the exact
+  registered ALIGN interface for the coherent segment.  The ALIGN-owned
+  interpolation, slicing, gap, edge, and support response is not rederived.
+  Missing policy identity or insufficient support fails closed.
+\item \textbf{Coherent pairing.} For every $i$, \code{TelTime}, pointing-state
+  inputs, \code{Hold}, \code{ActParAng}, \code{SourceRaAct}, and
+  \code{SourceDecAct} share the same row lineage.  The verification mechanism
+  can reject a coherent equal-length $\pm1$ output displacement.
+\item \textbf{Mutation and preservation.} $M$ contains only the three
+  allowlisted variables, their schemas are exact, and every other variable and
+  dimension satisfies the preservation operator.
+\item \textbf{Units, frames, and validity.} Every required variable carries an
+  accepted type, unit, frame/epoch/convention, shape, indexing, and
+  missing/non-finite policy.  No bare value receives an inferred unit or
+  validity.
+\item \textbf{Unavailable event state.} $P$, $Q$, and admitted observation
+  state explicitly carry \nolinkurl{physical_event_semantics} set to
+  \code{unavailable} and bind the exact assigned-grid identity.  No detector
+  time is promoted to an absolute oracle.
+\end{enumerate}
+
+Admission is all-or-nothing.  A failure leaves the prior run/observation state
+unchanged, prevents scientific execution for this candidate, identifies the
+failed predicate and object identity, and propagates as input/execution
+failure.  A finite or plausible downstream value cannot promote a failed row
+or product.
+
+\subsection{Typed failure vocabulary}
+
+At minimum, failure distinguishes
+\nolinkurl{source_not_found}, \nolinkurl{source_ambiguous},
+\nolinkurl{association_mismatch}, \nolinkurl{raw_identity_changed},
+\nolinkurl{cache_stale}, \nolinkurl{cache_partial},
+\nolinkurl{completion_mismatch}, \nolinkurl{row_count_mismatch},
+\nolinkurl{row_order_mismatch}, \nolinkurl{timestamp_missing},
+\nolinkurl{timestamp_nonfinite}, \nolinkurl{timestamp_duplicate},
+\nolinkurl{timestamp_nonmonotonic},
+\nolinkurl{cadence_or_gap_violation},
+\nolinkurl{coverage_insufficient}, \nolinkurl{row_pairing_mismatch},
+\nolinkurl{mutation_outside_allowlist},
+\nolinkurl{preservation_mismatch},
+\nolinkurl{unit_or_frame_unavailable}, and
+\nolinkurl{physical_event_semantics_unavailable} when a requested consumer
+requires the prohibited physical meaning.
+
+\section{Lifecycle and validity states}
+
+\subsection{One-way state resolution}
+
+The telescope-ingress state is partitioned as follows:
+
+\begin{longtable}{@{}L{0.18\linewidth}L{0.76\linewidth}@{}}
+\toprule
+State & Required content \\
+\midrule
+\endhead
+Requested & The accepted low-level request, input collection, reduction
+identity, explicit telescope-selection request if present, requested transform
+and output policy, and all expert values without claiming execution. \\
+Effective & Context-free activation, normalized deterministic selection rule,
+accepted contract/schema versions, and cache policy.  Disabled state does not
+rewrite requested expert values. \\
+Observation-resolved & Exact $R,K,A$, observation and coherent-segment
+identity, raw row dimension and structural digest, accepted AST authority,
+declared unit/frame/validity policies, cadence/gap policy identity, required
+ALIGN support domain, complete $C_{resolved}$, and
+\typedunavailable. \\
+Realized & Cache miss/reuse/retry result, exact $P,Q$, product and row-lineage
+digests, actual $N$, first/last rows, realized deltas and gap/duplicate counts,
+Hold-transition count, realized mutation manifest, preservation result,
+admission decision/failure, and completed product cardinality. \\
+\bottomrule
+\end{longtable}
+
+Resolution is strictly requested $\rightarrow$ effective $\rightarrow$
+observation-resolved $\rightarrow$ realized.  Observation availability and
+execution results never mutate the request.  A later observation receives new
+observation-resolved state and cannot inherit a previous observation's source,
+cache, transform, cadence, validity, or admission decision.
+
+\subsection{Row and product validity}
+
+Validity is separate from finiteness.  Each row records, without overloading a
+numeric sentinel:
+
+\begin{itemize}
+\item raw-parent presence and identity validity;
+\item timestamp presence, finiteness, order, cadence/gap classification;
+\item pointing-state and \code{Hold} presence/validity;
+\item recomputation availability and accepted AST identity;
+\item each output's presence, finiteness, unit/frame validity, and same-row
+  lineage; and
+\item the product-level completion, preservation, cache, association, and
+  admission result.
+\end{itemize}
+
+\code{verified\_original}, \code{verified\_recomputed}, \code{missing},
+\code{nonfinite}, \code{unavailable}, and \code{rejected} are not
+interchangeable.  Downstream consumers preserve raw-parent and row validity
+separately from their local numerical support and output validity.
+
+\section{Preregistered structural falsification cases}
+
+The following cases are frozen before source exposure.  They prescribe a
+structural response and do not assign physical timing meaning.
+
+\begin{longtable}{@{}L{0.20\linewidth}L{0.34\linewidth}L{0.40\linewidth}@{}}
+\toprule
+Case & Required observation/check & Required response and consequence \\
+\midrule
+\endhead
+First row & Compare raw and recomputed $X_0$, exact timestamp/input bits,
+same-row outputs, dimension membership, and lineage commitment. & Any omission,
+sentinel treatment, substitution, or displacement is
+\code{row\_pairing\_mismatch}; reject before admission. \\
+Last row & Compare raw and recomputed $X_{N-1}$ and prove no truncation,
+wrap, padding, or neighbor substitution. & Any mismatch rejects the complete
+candidate; a successful prefix does not establish completion. \\
+Hold transition & Select a recorded $k$ with $H_{k-1}\ne H_k$ and verify both
+sides, outputs, and row commitments. & A shifted state or output rejects as
+coherent-pairing failure.  Do not infer a transition time or physical sample
+centroid. \\
+Missing row & Remove or make unavailable one required native row in an exact
+fixture representation while retaining surrounding identities. & Detect
+cardinality/lineage or cadence-gap failure; do not close the gap, synthesize,
+interpolate, or renumber.  Admission fails. \\
+Duplicate timestamp & Duplicate one assigned timestamp without changing row
+count. & Classify \code{timestamp\_duplicate}; reject before ALIGN or AST use.
+No physical cause is assigned. \\
+Non-monotonic timestamp & Make one assigned timestamp less than its predecessor.
+& Classify \code{timestamp\_nonmonotonic}; reject before state mutation. \\
+Stale cache & Present a complete-looking product whose raw digest, association,
+application/AST version, resolved config, schema, or assigned-grid identity
+differs. & Classify \code{cache\_stale}; do not reuse or relabel.  A retry uses
+a new private candidate bound to the current tuple. \\
+Partial file & Present a truncated/private file, missing completion record, or
+digest/schema mismatch. & Classify \code{cache\_partial}; never treat as
+complete, repair in place, or admit. \\
+Coherent plus-one corruption & Replace $Y_i$ with $Y_{i+1}$ for applicable
+rows while preserving length and apparent timestamp order. & Row-lineage
+verification must reject even if ordinary cardinality/monotonicity passes.
+No statement is made about a physical time offset. \\
+Coherent minus-one corruption & Replace $Y_i$ with $Y_{i-1}$ for applicable
+rows while preserving length and apparent timestamp order. & Same required
+rejection and fail-closed consequence; no half/whole-sample correction is
+derived. \\
+Non-finite required value & Insert a non-finite timestamp, pointing input, or
+required recomputed output under a contract requiring finite data. & Preserve
+the typed invalid state, reject the candidate, and prevent downstream
+promotion by finite neighboring values. \\
+Unlisted mutation & Change any non-allowlisted variable, dimension, metadata,
+or typed payload bit. & \code{mutation\_outside\_allowlist} or
+\code{preservation\_mismatch}; reject the entire product. \\
+\bottomrule
+\end{longtable}
+
+These cases are specifications for later focused inspection of already
+existing exact fixtures only after the required checkpoint.  This core does
+not authorize producing fixtures, helpers, schemas, wrappers, verifiers,
+reductions, broad campaigns, or costly execution.
+
+\section{Downstream boundaries and restrictions}
+
+\begin{longtable}{@{}L{0.17\linewidth}L{0.38\linewidth}L{0.39\linewidth}@{}}
+\toprule
+Owner/consumer & Structurally available after admission & Still unavailable or
+owned elsewhere \\
+\midrule
+SCI-ALIGN-001 & Exact admitted telescope rows, assigned-grid identity,
+coverage/gap facts, row validity, and source/product provenance. & Native
+telescope-to-detector mapping, interpolation, scan slicing, gap treatment,
+edge/support response, physical phase, and timing correction. \\
+SCI-AST-001 & Same-row pointing-state inputs and faithful publication identity
+for the three recomputed outputs. & Coordinate transform formula, frame/epoch,
+sign, handedness, RA wrapping, parallactic-angle correctness, astrometric
+response, and uncertainty. \\
+ENG-STATE-001 & Concrete cache/completion, immutable provenance, transaction,
+and failure facts for this telescope-file instance. & General lifecycle and
+required-product framework changes or repairs. \\
+SCI-VAL-001 & Typed producer/ingress validity, structural rejection reasons,
+and exact consumer eligibility inputs. & Downstream eligibility policy and flag
+consumption. \\
+\begin{tabular}[t]{@{}l@{}}RTC/PTC/\\maps/Beammap\end{tabular} & Only a successfully admitted row stream with explicit
+identity and validity. & Timing-sensitive masks, absolute placement, precision,
+physical response, and any conclusion beyond their separately accepted
+contracts. \\
+\bottomrule
+\end{longtable}
+
+Existing operational use is not promoted by this core.  Until producer event
+authority is returned and separately accepted, consumers \mustnot{} claim
+absolute detector/telescope physical phase, a sample centroid, a half- or
+whole-sample correction, detector time as an absolute oracle, sub-sample
+astrometric placement, timing-sensitive source-mask fidelity, or a precision,
+accuracy, or response conclusion materially dependent on those meanings.
+
+If a consumer requires any unavailable meaning, the request fails with a typed
+dependency state.  It may not fall back silently to the assigned grid, a
+neighboring row, a guessed offset, or a finite output.
+
+\section{Core completion criteria}
+
+This independent structural core is internally complete when:
+
+\begin{enumerate}
+\item raw source, detector/reduction association, recomputed product, and
+  assigned-grid identities are explicit and immutable;
+\item row cardinality, ordering, first/last row, timestamps, cadence/gaps,
+  duplicates, missing/non-finite state, Hold transitions, and coherent pairing
+  have fail-closed rules;
+\item the three-variable mutation allowlist and identity preservation operator
+  are closed;
+\item cache binding, atomic completion, retry, stale/partial rejection, and
+  deterministic provenance are explicit;
+\item Citlali admission is transactional and produces typed failure;
+\item requested, effective, observation-resolved, and realized state are
+  one-way and separately recorded;
+\item all preregistered displacement cases have a derived structural
+  consequence; and
+\item \typedunavailable{} and every corresponding downstream restriction are
+  preserved without selecting a physical interpretation.
+\end{enumerate}
+
+Freezing this document does not assert that either implementation satisfies
+it.  The first implementation-source or post-core evidence opening may occur
+only after coordinator acknowledgement of the dedicated core commit.  Any
+correction to frozen bytes is a preserved successor, not an edit of this core.
+
+\end{document}

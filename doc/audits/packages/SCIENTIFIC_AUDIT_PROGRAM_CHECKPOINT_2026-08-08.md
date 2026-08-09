@@ -36,7 +36,7 @@ or dependency claim is inferred from those integrations.
 | `SCI-CAL-001` | Repair active from exact base `46ad2388...`; no active-task result is admitted here. | Accepted, independently re-audited, and integrated successor. |
 | `SCI-MAP-002` | Repair active from exact base `46ad2388...`; no active-task result is admitted here. | Bounded repair return and fresh re-audit. |
 | `SCI-ALIGN-001` | Owner-managed ALIGN/3C273 evidence remains active and deliberately slow. | Frozen returned evidence and coordinator review. |
-| `SCI-TEL-INPUT-001` | Tier B cross-repository audit -> bounded repair -> independent re-audit product registered; audit not dispatched. TolTECA remains read-only. | Freeze the exact Citlali/TolTECA source-set, prompt, and pre-/post-core inbox manifest; obtain explicit owner launch. Promote to Tier A first if the interface audit encounters a row displacement or unresolved event, source-association, frame, uncertainty, or response question. |
+| `SCI-TEL-INPUT-001` | Audit `518e0ccb...` owner-accepted with axes `proposed` / `nonconformant` / `bounded_incomplete` / `existing_use_only`, verdict `amend`; F001--F010 remain open and TolTECA remains read-only. | Separate later owner decision on repair scope and ownership; no repair or re-audit is authorized. |
 | `SCI-AST-001` | Repair remains held. | Accepted and re-audited ALIGN successor, then exact AST repair-base selection. |
 | `SCI-RTC-001` | Audit `3319d742...` integrated; D001--D004 approved; axes remain `proposed` / `nonconformant` / `in_progress` / `existing_use_only`, verdict `amend`. | Upstream closure, separately authorized repair, focused exact-successor evidence, then independent re-audit. |
 | `SCI-PTC-001` | Audit `01ee2474...` integrated; axes are `proposed` / `nonconformant` / `in_progress` / `existing_use_only`, verdict `amend`; D001--D006 await owner choice. | Owner approves or supersedes the six decisions; no repair or re-audit is launched. |
@@ -50,14 +50,13 @@ when their dependency facts, role separation, frozen manifests, resource
 choice, and checkpoint scope are explicit. Repair debt, consumer restrictions,
 cost, and concurrent scope remain actively controlled.
 
-`SCI-TEL-INPUT-001` is registered by
+`SCI-TEL-INPUT-001` was registered by
 `doc/audits/packages/SCI-TEL-INPUT-001_PRODUCT_REGISTRATION_2026-08-08.md`.
 Its paired planning sources are Citlali
 `46ad23888a40f5102cdfd50c06e49a549bdf8a20` and operational TolTECA
 `origin/main` commit `2791e6a1e6349ad1d3ac549a648f41cbc51b98c7`.
-Registration does not admit ALIGN observations as authority; any existing
-raw/recomputed or same-T0 evidence remains post-core unless a future frozen
-manifest states otherwise.
+The completed audit preserved ALIGN observations as post-core evidence and
+did not admit them as physical timing authority.
 
 ## ALIGN-deferred compatibility amendment — 2026-08-09
 
@@ -73,11 +72,9 @@ seams and consumers are re-audited.
 Queue consequences are bounded:
 
 - CAL and MAP continue only under their already approved scopes.
-- The High-effort `SCI-TEL-INPUT-001` structural prompt and exact paired
-  Citlali/TolTECA manifest are frozen and ready for independent verification;
-  ALIGN `92cfa670...` and `08f0a673...` remain post-core evidence and the
-  physical event meaning remains an unavailable dependency. TEL is not
-  launched.
+- The High-effort `SCI-TEL-INPUT-001` structural audit completed and is
+  owner-accepted. ALIGN `92cfa670...` and `08f0a673...` remain post-core
+  evidence and physical event meaning remains an unavailable dependency.
 - A phase-independent RTC repair handoff is ready against proposed application
   base `46ad2388...` under D001--D004. It covers eligibility/influence,
   complete response parity on the assigned grid, filter/edge/support, stage
@@ -91,6 +88,29 @@ Queue consequences are bounded:
 The owner-mediated producer-authority evidence request remains read-only and
 pending return. `08f0a673...` is not physical integration-event
 identification and supplies no timing correction or prior.
+
+## Completed TEL-INPUT audit disposition
+
+The owner accepted the immutable structural audit at final commit
+`518e0ccb2fa3b54fa99212a05d33286506b59f80`, parent/core
+`e8f43c678fa001d6369d4ebd45985bb820e129b3`, and tree
+`d67cc7308f6c24a3c10666fb361a123f9eec5b83`. The accepted axes are contract
+`proposed`, implementation `nonconformant`, validation `bounded_incomplete`,
+production `existing_use_only`, and verdict `amend`. Findings F001--F010
+remain open.
+
+The exact owner acceptance is
+`doc/audits/packages/SCI-TEL-INPUT-001_OWNER_ACCEPTANCE_2026-08-09.md`.
+`physical_event_semantics` remains unavailable, and all Tier-A stops for
+coordinate alias authority/remedy, ALIGN interpolation response, event
+meaning, physical displacement/timing correction, uncertainty, and
+astrometric response remain in force. Outbound handoffs
+`SCI-ALIGN-001-XAUD-001`, `SCI-AST-001-XAUD-002`,
+`ENG-STATE-001-XAUD-001`, and `SCI-VAL-001-XAUD-010` are bounded inputs
+pending recipient review and launch no recipient work.
+
+No repair scope or ownership is selected. TolTECA remains read-only, and any
+future TolTECA modification requires separate maintainer opt-in.
 
 Remote preservation verified on 2026-08-09:
 
@@ -175,6 +195,7 @@ review. No recipient audit was launched.
 This checkpoint does not authorize application or TolTECA edits, audit science,
 repair, re-audit, broad or costly execution, local Citlali reductions, Unity
 activity, coordinator external contact, production change, or RTC/AST/PTC/
-BEAM/TEL-INPUT launch. The separately recorded owner-mediated ALIGN producer
-request is the sole evidence-acquisition authority. Every frozen packet or
-repair handoff still requires its named separate owner launch.
+BEAM launch, or TEL-INPUT repair/re-audit. The separately recorded
+owner-mediated ALIGN producer request is the sole evidence-acquisition
+authority. Every frozen packet or repair handoff still requires its named
+separate owner launch.

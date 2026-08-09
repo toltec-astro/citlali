@@ -125,8 +125,14 @@ claim, absolute/sub-sample placement, or timing-sensitive source-mask claim is
 admitted. Producer authority remains an owner-mediated read-only dependency;
 `08f0a673...` is post-core evidence only.
 
-The structural `SCI-TEL-INPUT-001` High dispatch is frozen but unlaunched. A
-phase-independent RTC repair handoff under D001--D004 is prepared but
+The structural `SCI-TEL-INPUT-001` High audit completed at `518e0ccb...` and
+the owner accepted its frozen core and `amend` disposition. Contract remains
+`proposed`, implementation `nonconformant`, validation `bounded_incomplete`,
+and production `existing_use_only`; F001--F010 and all Tier-A stops remain
+open. The [owner acceptance](audits/packages/SCI-TEL-INPUT-001_OWNER_ACCEPTANCE_2026-08-09.md)
+selects no repair scope or ownership, launches no further work, and preserves
+TolTECA as read-only pending separate maintainer opt-in. A phase-independent
+RTC repair handoff under D001--D004 is prepared but
 unlaunched. AST coordinate mathematics and PTC internal-estimator work may
 proceed only under later separate launches against the identified assigned
 grid, with physical timing and absolute placement unavailable. CAL and MAP

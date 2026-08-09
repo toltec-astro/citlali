@@ -1,0 +1,334 @@
+format_version: 1
+package_id: SCI-TEL-INPUT-001
+record_date: 2026-08-09
+record_kind: bounded_documentation_only_local_evidence
+status: complete_pending_owner_review
+
+authorities:
+  citlali:
+    commit: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    parent: 4846fa4db39bd2f7d4ddc41f693836834cbc5ff4
+    tree: ab230a93b8fb310d58aefd7ac5da92e5d5e0f408
+  tolteca_read_only:
+    commit: 2791e6a1e6349ad1d3ac549a648f41cbc51b98c7
+    parent: 4acee1ccb11a13084834149c7d6e6685a87d3d6b
+    tree: 3f3e4b8136bf5528b203cb3bb8b474233bb27a85
+  frozen_dispatch_commit: 35d390a27e4fd5d00fb45b2924781e1266fc0e8d
+  frozen_prompt_sha256: 5be13d39ce141f819719a406259b3f5096efe1183dcdec5c424f62dd4866368d
+  frozen_manifest_sha256: 55fb9c6091fd75c4fb69976b95024448e9bc0919e519351c39be92bedf1e32ea
+
+independent_core:
+  path: doc/audits/packages/SCI-TEL-INPUT-001_INDEPENDENT_CORE.tex
+  commit: e8f43c678fa001d6369d4ebd45985bb820e129b3
+  parent: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+  tree: 3e2e84891f1c7bba6afbb2fab559501c96aa9470
+  timestamp: '2026-08-09T11:53:16-04:00'
+  sha256: d6059f7d4ae1576adf1c34917c3656d081dcd9bdf997a1fe478f340807500601
+  pre_source_freeze: true
+
+exposure_events:
+  first_semantic_source:
+    timestamp: '2026-08-09T12:07:13-04:00'
+    repository: tolteca
+    commit: 2791e6a1e6349ad1d3ac549a648f41cbc51b98c7
+    path: tolteca/reduce/engines/citlali.py
+    blob: b963d6531ec7e0e3df893f88f17962476348da9f
+  first_post_core_evidence:
+    timestamp: '2026-08-09T12:24:54-04:00'
+    object: >-
+      92cfa670a33255250895d68aaf26e8b01aa057bd:validation/sci_align_001_split_direction_beammap_2026-08-06/SAME_T0_CADENCE_LATTICE_EVIDENCE_2026-08-08.md
+  first_additional_source:
+    timestamp: '2026-08-09T12:25:34-04:00'
+    path: include/citlali/core/pipeline/reduction_observation_context.h
+    reason: core_C1_identity_and_association
+  direct_consumer_trace_recorded_by: '2026-08-09T12:29:08-04:00'
+
+manifest_source_objects:
+  - repository: citlali
+    path: include/citlali/core/pipeline/telescope_data_source.h
+    blob: 9023dc0704e84f24cd684cf378bc327b903e310a
+    sha256: 5f12e1a690290924f332ace9177b35964f172d87f14b0418ef270953c753b914
+  - repository: citlali
+    path: include/citlali/core/pipeline/telescope_data_loading.h
+    blob: 3c9f8e94dc3251b26ba15265f3a4a9407965a00c
+    sha256: 16ea90b7eefb57024ac7bf438699651a5070b32d3ff0c10e688d2338eb63fd2e
+  - repository: citlali
+    path: include/citlali/core/engine/telescope.h
+    blob: 7291a360f2d5fe581d40dd1abd04760068e9345e
+    sha256: f8c419c85161c9fca550b9b3a644c6c65f3e87d7645e2287d9e57f4e265f21a7
+  - repository: citlali
+    path: src/citlali/core/engine/telescope.cpp
+    blob: 9150043a4290b4b6c54edeb205ce18891b21c883
+    sha256: be518d193154209040196cb47597eeb5c48a6057222723d3432394d7ec1a5f49
+  - repository: tolteca
+    path: tolteca/reduce/engines/citlali.py
+    blob: b963d6531ec7e0e3df893f88f17962476348da9f
+    sha256: 1e1b311aacdec2874a48858cf3911abf7ff1ae97dfda935f35994aebcf49f4f3
+  - repository: tolteca
+    path: tolteca/reduce/toltec/__init__.py
+    blob: 041c2c4c13bb0d172dce06fca077a3ecb7b3fd42
+    sha256: f79ce73fa828c52498126312feff056c92ec647f94946d6052d58fb88c83c13e
+  - repository: tolteca
+    path: tolteca/datamodels/fs/toltec.py
+    blob: 484c5f171f209a398fefdfa17700fe03a77d4b1d
+    sha256: 165d21256835300187bdfdeb4968fc8fce1a8885d9df7b7b3b29c97cee69dd44
+  - repository: tolteca
+    path: tolteca/datamodels/io/toltec/tel.py
+    blob: d30e600755b2e79effb5a7da66327976d7958b74
+    sha256: 54e2a64d99f734171a42348f05ba562bea1b6d97ae3168cc9c866d505b6ed859
+
+clause_required_additional_objects:
+  - path: include/citlali/core/pipeline/reduction_observation_context.h
+    blob: 6a4501507016c0f56737c73f7c4dc0eb3d19e93e
+    sha256: 00daf27c893324a575a4fdda9aaa00745596d359445f74b8e0de309f566db762
+    reason: core_C1_identity_and_association
+  - path: include/citlali/core/pipeline/telescope_timestream_alignment.h
+    blob: 0219c1d768c484677af9fa2ba655dfe246a4f7e0
+    sha256: 554d9ada73464df530ec97a0b48524ec7f9c8830ee8fc9f85b4e1f393e1e9c7a
+    reason: core_C5_coverage_and_alignment_dispatch
+  - path: include/citlali/core/pipeline/observation_input_checks.h
+    blob: f2668a9af85d9fab9ddbeffa339cbaf547ec51fc
+    sha256: f17c9595b986a8fd63a408c780e317a2e80b3364ae553dd537274cfe04456a48
+    reason: core_C1_C3_C7_admission_order
+  - path: include/citlali/core/pipeline/initial_observation_setup.h
+    blob: d2ba8f3e8fdc820424a5b940ea99282341e5db81
+    sha256: 04a9612bf3d7b9c1756a3bbdbcbe972daa0b9b58318a71c0a2c704e81c814d5c
+    reason: core_C1_C3_C7_admission_order
+  - path: include/citlali/core/engine/detail/todproc_raw_input_impl.h
+    blob: b160fe50de02dc50889236d88ae062bbc43b5ca0
+    sha256: 999fb6fd817a14e80efaeb2a5f2fa2669640c89863490180d96e1d9493e75bb7
+    reason: core_C1_C3_input_checks
+  - path: include/citlali/core/engine/detail/todproc_alignment_impl.h
+    blob: 2a2cabd505b14256fcae6d71b93005b528865bda
+    sha256: dca46d45df1040e147373e735aacdc11692d1884d3fa5b10a45ee07ef64da93c
+    reason: core_C4_C5_C6_alignment_use
+  - path: include/citlali/core/pipeline/timestream_alignment_helpers.h
+    blob: aa58b0488f69c3e00d5422cfa10567b2bbe53d9a
+    sha256: 89ecc30e01f151a2faf105039a9d4bc72775e36b92ec140c283347e98245dfda
+    reason: core_C4_C5_C6_alignment_preconditions
+  - repository: tolteca
+    path: tolteca/datamodels/toltec/basic_obs_data.py
+    blob: dac40f484e53fb4192e6280eb18b20ab7e9fafbb
+    sha256: 9049adeec03e1d31bc027ff75180d246e26ee18dfac65dd4dca174629ce2814b
+    reason: core_C1_source_association
+  - path: include/citlali/core/utils/pointing.h
+    blob: 7e591aec3db83379d5fad4070dfad508e01a6eed
+    sha256: d342c8369b01ec8ea97e91da014bc471737b0f15b5135aa312cad07ddedc6bc4
+    reason: core_C6_C8_direct_AST_consumer
+  - path: include/citlali/core/engine/detail/tod_file_output_impl.h
+    blob: b02647a671277102b8ea2b31ead79f2ce37dedd1
+    sha256: 3382f74a68178eec56b1a0b4d6949690f6149d8fdb42949a896a5a2e1fb5ac61
+    reason: core_C8_product_consumer_matrix
+  - path: include/citlali/core/engine/detail/map_phdu_output_helpers.h
+    blob: 326ebc98709d6096d1e30e1af0d8bbfc767f8e07
+    sha256: 86e331dfa27481e2be8f0be649ffdf4859c7aea556fa3ec0e62bbff66a105d09
+    reason: core_C8_product_consumer_matrix
+  - path: include/citlali/core/timestream/rtc/polarization.h
+    blob: 4b0cf94cd5aa5035b792f1661885ea9d3da2afe2
+    sha256: 9c5528d1cff0b5e07742930cd524f57ad5ae06645f8f70744c78ca038f3f7788
+    reason: core_C8_direct_RTC_consequence
+
+post_core_evidence_dispositions:
+  - id: SCI-TEL-INPUT-001-ALIGN-SAME-T0-001
+    sha256: 5ae30ade1a132c5aa8da623cc7b8546c4326daaca3c68f4c4c807fbc5c431cb8
+    disposition: descriptive_detector_cadence_lattice_only
+    promoted_to_authority: false
+  - id: SCI-TEL-INPUT-001-ALIGN-ACQ-EVENT-001
+    sha256: 28a39458872e00d0c36c48eac79a3f1f1f154c1d5bb815159094fa60883257d2
+    disposition: bounded_detector_row_lineage_only
+    promoted_to_authority: false
+    telescope_rows_or_20ms_ingress_inspected: false
+    detector_and_telescope_PpsTime_distinct: true
+  - physical_event_semantics: unavailable
+
+inspection_method:
+  file_identity: stat_size_and_SHA256
+  header_compare: normalized_ncdump_header_exact_diff
+  data_access: netCDF4_read_only_auto_mask_and_scale_disabled
+  unchanged_commit_serialization: >-
+    NetCDF variable iteration order; UTF-8 variable-name bytes; one NUL byte;
+    then raw C-order logical typed element bytes. Physical container offsets and
+    padding are outside this commitment.
+  first_last_commit_serialization: >-
+    The same name/NUL serialization over the first or last element of each
+    non-allowlisted one-dimensional time variable in NetCDF variable order.
+  gap_policy: unavailable
+  helper_or_output_created: false
+
+fixture_pairs:
+  - id: beammap_148670
+    raw:
+      path: /Users/gwilson/work_toltec/local_data/citlali-validation/v1/beammaps/data/tel_toltec_2026-01-13_148670_00_0002.nc
+      size_bytes: 61063400
+      sha256: a4eccc358433aded7bf21e36d513502ad34f6e5e9b234d003f7fd43e1db0c36c
+    recomputed:
+      path: /Users/gwilson/work_toltec/local_data/2026-refactor/beammap/refactor/reduced/tel_toltec_2026-01-13_148670_00_0002_recomputed.nc
+      size_bytes: 61063400
+      sha256: e39f5b9e3066fd20086105964dd915ff67709142d699e8a18bb58cfd9da6b7ae
+    structure:
+      dimensions: 70
+      variables: 326
+      time_row_variables: 50
+      time_rows: 157219
+      time_unlimited: true
+      normalized_headers_equal: true
+      variable_order_equal: true
+      metadata_mismatch_count: 0
+    preservation:
+      unchanged_nonallowlisted_variables: 323
+      unexpected_changed_nonallowlisted: []
+      unchanged_logical_bytes_sha256: 5809cac772cbe17738325b416d23797a8972e4008e31670fe51d24f084d3b7e5
+      first_row_nonallowlisted_sha256: 98fde27b4f662fee4e56583b3762ca024d8d40896534d990a78ae0d5e65c4420
+      last_row_nonallowlisted_sha256: 6c2516b873e5254a1cf0ce4e118c552a152b1fa82232cffe7c61012f53d4126a
+    allowlisted:
+      - variable: Data.TelescopeBackend.SourceRaAct
+        dtype: float64
+        dimensions: [time]
+        different_elements: 157219
+        nonfinite_raw: 0
+        nonfinite_recomputed: 0
+        raw_sha256: a29d77990e42d746d0164b6840ad9caf319adb7300b0050cbd74b3228592a19b
+        recomputed_sha256: f93b953f53f5772f85284551369a87c97431d68de800aa43fbd11ca08e1138c6
+      - variable: Data.TelescopeBackend.SourceDecAct
+        dtype: float64
+        dimensions: [time]
+        different_elements: 157219
+        nonfinite_raw: 0
+        nonfinite_recomputed: 0
+        raw_sha256: 4243000c95d92bab34684d26b7e73f164a9282432de0983330004b8c7e355197
+        recomputed_sha256: 6142ea26beb94d3ebf05b692e80287836559b8d72c38f94dc64b4218017acd71
+      - variable: Data.TelescopeBackend.ActParAng
+        dtype: float64
+        dimensions: [time]
+        different_elements: 157219
+        nonfinite_raw: 0
+        nonfinite_recomputed: 0
+        raw_sha256: 8e6b97c5740f773eaf40b6c720e5210a31c5096eb68a620e2886576076da15e0
+        recomputed_sha256: df9447b2688d92c26f0430dd2f2237b421a665937dd007b549611c6b16fb0c22
+    TelTime:
+      bytes_equal: true
+      sha256: 4641366a331f7d328d0db00a52db04edb6f54081dd1f559822a3b79204e828a0
+      nonfinite: 0
+      duplicate_steps: 0
+      negative_steps: 0
+      positive_step_min: 0.018999814987182617
+      positive_step_max: 0.02113056182861328
+      gap_count: unavailable_without_authorized_policy
+    telescope_PpsTime:
+      bytes_equal: true
+      sha256: afb4390c6644cf8be3ca061ebde9aa9e64ca9f22680180d24f7ab067b2a0e0b5
+      nonfinite: 0
+      duplicate_steps: 154074
+      negative_steps: 0
+    AcuTime:
+      bytes_equal: true
+      nonfinite: 0
+      duplicate_steps: 0
+      negative_steps: 3
+    Hold:
+      bytes_equal: true
+      sha256: 518945e6570177e4e98aeed68794bc36c5255808495eb80153bf0518a1d3c7d2
+      nonfinite: 0
+      transitions: 1370
+      transition_indices_sha256: f10261a7f6a8c023a6506e7b19dba6c3c32703a4f182cb06343364fd6a3c9323
+  - id: pointing_152389
+    raw:
+      path: /Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data/tel_toltec_2026-02-19_152389_00_0002.nc
+      size_bytes: 1301180
+      sha256: 2aec5f1f2be8c365127fcf275a02eb0c780eeda9494cd225e50e50c4386a9392
+    recomputed:
+      path: /Users/gwilson/work_toltec/local_data/citlali-validation/v1/point/pointings_v22/reduced/tel_toltec_2026-02-19_152389_00_0002_recomputed.nc
+      size_bytes: 1301180
+      sha256: 377a81c754ee8b6516f31d7825323ff590eba3e504ac7144bd5b75e1dfaf3632
+    structure:
+      dimensions: 67
+      variables: 306
+      time_row_variables: 50
+      time_rows: 3200
+      time_unlimited: true
+      normalized_headers_equal: true
+      variable_order_equal: true
+      metadata_mismatch_count: 0
+    preservation:
+      unchanged_nonallowlisted_variables: 303
+      unexpected_changed_nonallowlisted: []
+      unchanged_logical_bytes_sha256: 684fbe0783e08cd8bdcb00ad3b044f54db52c8e1af5854af11e1e49230dfe81d
+      first_row_nonallowlisted_sha256: b9cfcb513b0be3050b4e166f4467c53a2a3b340e0bd1681a7b16f3596e76a6b7
+      last_row_nonallowlisted_sha256: 191a9fb9b276cae3f10b67845f0faf518ce86660a7e3dcf37905a7c60dd7f81c
+    allowlisted:
+      - variable: Data.TelescopeBackend.SourceRaAct
+        dtype: float64
+        dimensions: [time]
+        different_elements: 3200
+        nonfinite_raw: 0
+        nonfinite_recomputed: 0
+        raw_sha256: 5c9d983f3abe6cf9cb30d25d3ed361bd62043c8cbee677f99e610abf43f41cc8
+        recomputed_sha256: 16d8cea30f5d3de7f259dfd4a29353acb11d1e38a70e0eaadf235a967a7b8992
+      - variable: Data.TelescopeBackend.SourceDecAct
+        dtype: float64
+        dimensions: [time]
+        different_elements: 3200
+        nonfinite_raw: 0
+        nonfinite_recomputed: 0
+        raw_sha256: 5642f35b7d1f6c4218875d77ea0d2beb78d1f12b3051416565045778accb7546
+        recomputed_sha256: 6b47dd194fd240346210d34bfeda1e2023ac45b6b9f670ead96937f5a1446040
+      - variable: Data.TelescopeBackend.ActParAng
+        dtype: float64
+        dimensions: [time]
+        different_elements: 3200
+        nonfinite_raw: 0
+        nonfinite_recomputed: 0
+        raw_sha256: 77b3ca4f6af5c261e01020ba0dccf2e06485dbef10ab1ce243dd906afd51a646
+        recomputed_sha256: c11abd8b76994c25829b56cf62dc16c71d3eed27e0184da2d6dc03dd3efd6d00
+    TelTime:
+      bytes_equal: true
+      sha256: eb390dfdc5fc589dfeb150977995c94e4a2704bfd2a0f2c62b877d99f50aa62d
+      nonfinite: 0
+      duplicate_steps: 0
+      negative_steps: 0
+      positive_step_min: 0.018999814987182617
+      positive_step_max: 0.020075321197509766
+      gap_count: unavailable_without_authorized_policy
+    telescope_PpsTime:
+      bytes_equal: true
+      sha256: 88a0d24a2e5f1097f6bff57e3cd9280c735d4404d349ee6d92aacf56c08f3165
+      nonfinite: 0
+      duplicate_steps: 3135
+      negative_steps: 0
+    AcuTime:
+      bytes_equal: true
+      nonfinite: 0
+      duplicate_steps: 0
+      negative_steps: 0
+    Hold:
+      bytes_equal: true
+      sha256: c65206769723a13afe80c0d925531639ceef9c2eb97eee3b1b542739ec40597f
+      nonfinite: 0
+      transitions: 0
+      transition_indices_sha256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+
+evidence_limits:
+  proves_general_cache_safety: false
+  proves_atomicity: false
+  proves_retry_behavior: false
+  proves_provenance: false
+  proves_same_row_derivation: false
+  proves_physical_event_semantics: false
+  exercises_missing_row: false
+  exercises_duplicate_or_nonmonotonic_TelTime: false
+  exercises_stale_cache: false
+  exercises_partial_file: false
+  exercises_plus_or_minus_one_corruption: false
+  pointing_pair_exercises_Hold_transition: false
+
+prohibitions_observed:
+  unity_access: false
+  local_reduction: false
+  application_or_test_edit: false
+  tolteca_edit: false
+  external_contact: false
+  delegation: false
+  new_fixture_or_data_product: false
+  repair_or_reaudit: false
+  downstream_launch: false
+  push_or_merge: false

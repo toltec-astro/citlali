@@ -1,0 +1,128 @@
+format_version: 1
+record_kind: audit_ledger_proposal
+package_id: SCI-TEL-INPUT-001
+date: 2026-08-09
+proposal_status: pending_coordinator_and_owner_review
+canonical_ledger_edit_authorized: false
+
+application_authority:
+  citlali_commit: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+  tolteca_read_only_commit: 2791e6a1e6349ad1d3ac549a648f41cbc51b98c7
+audit_branch: codex/audit-sci-tel-input-001
+
+recommended_axes:
+  controlled_vocabulary:
+    contract_status: [proposed]
+    implementation_status: [nonconformant]
+    validation_status: [bounded_incomplete]
+    production_status: [existing_use_only]
+    verdict: [amend]
+  contract_status: proposed
+  implementation_status: nonconformant
+  validation_status: bounded_incomplete
+  production_status: existing_use_only
+  verdict: amend
+  owner_adoption_required: true
+  self_approval: false
+
+summary: >-
+  Preserve the frozen independent structural core. The exact TolTECA producer
+  and Citlali consumer authorities lack immutable selection/product identity,
+  cache source/version binding, atomic completion, row-lineage and preservation
+  admission, transactional failure, and typed validity. Two approved existing
+  raw/recomputed pairs provide bounded positive preservation evidence but do
+  not close the implementation findings or missing failure-case validation.
+
+findings:
+  - id: SCI-TEL-INPUT-001-F001
+    priority: high
+    status: open
+    title: telescope_selection_and_association_not_unique_or_immutable
+    owner_route: tolteca_producer_and_citlali_ingress
+  - id: SCI-TEL-INPUT-001-F002
+    priority: critical
+    status: open
+    title: existence_only_cache_and_nonatomic_final_path_write
+    owner_route: tolteca_producer_with_ENG-STATE-001_handoff
+  - id: SCI-TEL-INPUT-001-F003
+    priority: high
+    status: open
+    title: product_identity_completion_and_row_lineage_provenance_absent
+    owner_route: tolteca_producer_and_citlali_ingress
+  - id: SCI-TEL-INPUT-001-F004
+    priority: high
+    status: open
+    title: source_can_add_nonallowlisted_NetCDF_objects
+    owner_route: tolteca_producer
+  - id: SCI-TEL-INPUT-001-F005
+    priority: critical
+    status: open
+    title: fail_closed_row_time_pairing_and_preservation_admission_absent
+    owner_route: tolteca_producer_and_citlali_ingress
+  - id: SCI-TEL-INPUT-001-F006
+    priority: high
+    status: open
+    title: independent_variable_loading_is_nontransactional_and_warn_only
+    owner_route: citlali_ingress
+  - id: SCI-TEL-INPUT-001-F007
+    priority: high
+    status: open_tier_A_remedy_required
+    title: recomputed_source_RA_Dec_share_and_lose_internal_destination
+    owner_route: SCI-AST-001
+    restriction: structural_routing_finding_only_no_coordinate_decision
+  - id: SCI-TEL-INPUT-001-F008
+    priority: high
+    status: open_conditioned
+    title: alignment_preconditions_and_row_valued_Hold_semantics_absent
+    owner_route: SCI-ALIGN-001
+    restriction: no_physical_timing_or_interpolation_response_decision
+  - id: SCI-TEL-INPUT-001-F009
+    priority: high
+    status: open_conditioned
+    title: telescope_instance_lifecycle_and_transaction_state_absent
+    owner_route: ENG-STATE-001
+  - id: SCI-TEL-INPUT-001-F010
+    priority: high
+    status: open_conditioned
+    title: typed_ingress_validity_and_consumer_eligibility_facts_absent
+    owner_route: SCI-VAL-001
+
+bounded_fixture_evidence:
+  pairs: [beammap_148670, pointing_152389]
+  result: >-
+    Same normalized headers, dimensions, variable ordering, dtypes, attributes,
+    time cardinality, and exact non-allowlisted logical typed bytes within each
+    pair; exactly the three allowlisted arrays differ and remain finite.
+  limitations:
+    - cannot_prove_general_selection_or_cache_safety
+    - cannot_prove_atomicity_retry_or_provenance
+    - cannot_prove_same_row_derivation_or_reject_coherent_row_shift
+    - cannot_supply_cadence_gap_policy
+    - cannot_supply_physical_event_semantics
+    - does_not_exercise_preregistered_failure_cases
+
+dependencies:
+  - id: SCI-TEL-INPUT-001-DEP-ACQUISITION-EVENT-SEMANTICS-001
+    status: unavailable
+    consequence: >-
+      No event meaning, physical phase, correction, detector-time oracle,
+      absolute timing, sub-sample placement, or timing-sensitive response claim.
+
+recommended_owner_actions:
+  - adopt_or_amend_the_frozen_contract_without_editing_its_frozen_bytes
+  - assign_exact_repository_and_maintainer_authority_for_each_repair_finding
+  - require_explicit_TolTECA_maintainer_opt_in_before_any_TolTECA_edit
+  - preserve_Tier_A_stop_for_AST_ALIGN_or_event_semantics_decisions
+  - dispatch_a_bounded_repair_only_after_owner_disposition
+  - require_a_fresh_independent_reaudit_of_exact_successor_commits
+
+not_authorized:
+  - repair
+  - re_audit
+  - application_or_TolTECA_edit
+  - integration
+  - production_expansion
+  - unity_or_local_reduction
+  - external_contact
+  - downstream_launch
+  - push_or_merge

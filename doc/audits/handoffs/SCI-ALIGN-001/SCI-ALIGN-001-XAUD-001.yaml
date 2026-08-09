@@ -1,0 +1,57 @@
+format_version: 1
+handoff_id: SCI-ALIGN-001-XAUD-001
+source_package: SCI-TEL-INPUT-001
+target_package: SCI-ALIGN-001
+date: 2026-08-09
+status: bounded_claim_pending_target_review
+launch_authority: false
+
+source_authorities:
+  citlali_commit: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+  tolteca_read_only_commit: 2791e6a1e6349ad1d3ac549a648f41cbc51b98c7
+  independent_core_commit: e8f43c678fa001d6369d4ebd45985bb820e129b3
+
+supported_claims:
+  - Citlali_alignment_uses_TelTime_cardinality_as_the_interpolation_dimension
+  - per_telescope_series_equal_cardinality_is_not_validated_before_interpolation
+  - telescope_timestamp_monotonicity_duplicates_gaps_and_nonfinite_state_are_not_fail_closed_before_alignment
+  - row_valued_Hold_is_interpolated_with_the_generic_telescope_streams
+  - aligned_TelTime_and_TelUTC_are_replaced_with_the_common_detector_grid
+  - exact_telescope_source_product_row_and_validity_identity_is_not_supplied_to_ALIGNMENT
+
+fixture_facts:
+  beammap_148670:
+    TelTime_rows: 157219
+    TelTime_nonfinite: 0
+    TelTime_duplicate_steps: 0
+    TelTime_negative_steps: 0
+    Hold_transitions: 1370
+  pointing_152389:
+    TelTime_rows: 3200
+    TelTime_nonfinite: 0
+    TelTime_duplicate_steps: 0
+    TelTime_negative_steps: 0
+    Hold_transitions: 0
+  gap_policy: unavailable
+  generalization_from_two_pairs: prohibited
+
+target_owned_questions:
+  - native_telescope_to_detector_mapping
+  - interpolation_and_categorical_state_response
+  - scan_slicing_gap_and_edge_support_policy
+  - coverage_and_consumer_response
+  - physical_phase_or_timing_correction
+
+restrictions:
+  physical_event_semantics: unavailable
+  detector_and_telescope_PpsTime_are_distinct: true
+  no_start_end_centroid_or_phase_choice: true
+  no_half_or_whole_sample_correction: true
+  no_interpolation_repair_authorized: true
+  no_downstream_launch_authorized: true
+
+evidence_limits:
+  - same_T0_record_is_descriptive_detector_lattice_only
+  - acquisition_event_handoff_inspected_no_telescope_rows_or_20ms_ingress
+  - two_existing_pairs_cannot_prove_general_alignment_behavior
+  - no_authorized_cadence_gap_tolerance_was_supplied
