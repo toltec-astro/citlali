@@ -329,6 +329,22 @@ production authority.
 The `inputs` subtree is externally owned by TolTECA. Citlali validates its own
 low-level schema while preserving that explicit upstream boundary.
 
+### Learned RTC sampling
+
+Optional learned RTC sampling follows the same one-way state direction. A
+`learned` request first resolves a conservative metadata-derived bootstrap,
+then produces learned candidates, one immutable downstream-compatible apply
+plan, and finally realized execution state. Existing fixed behavior remains
+the compatibility default.
+
+The first implementation is observe-only: it calculates recommendations but
+does not change the established RTC factor, filter, time grid, flags, samples,
+or products. A later apply implementation requires a separate launch and uses
+one common observation cadence until heterogeneous downstream grids and
+transfer functions are explicitly supported. The durable policy and staged
+gates are [ADR 0009](adr/0009-learned-rtc-sampling-plan.md) and the
+[learned sampling plan](RTC_LEARNED_SAMPLING_PLAN_2026-08-09.md).
+
 ## State And Lifetime Ownership
 
 | Lifetime | Current owner | Architectural rule |

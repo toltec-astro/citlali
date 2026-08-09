@@ -21,6 +21,7 @@ duplicate changing implementation inventories or validation snapshots.
 | [0006](0006-fruit-loop-restart-checkpoint.md) | Accepted | Resume fruit loops from a required state-complete iteration checkpoint with absolute iteration identity and fail-closed compatibility checks |
 | [0007](0007-observe-only-coherent-raw-iq-event-sidecar.md) | Accepted | Score versioned network-specific coherent raw-I/Q modes for every present network at shared RTC-seeded epochs without changing science data |
 | [0008](0008-application-mainline-and-build-adaptation-lanes.md) | Accepted | Keep application development authoritative on one mainline while adapting Conan 2 in an isolated, regularly synchronized worktree |
+| [0009](0009-learned-rtc-sampling-plan.md) | Accepted | Resolve an optional RTC sampling plan through a conservative metadata bootstrap, learning, and an immutable apply boundary |
 
 Numbers are never reused. A materially different decision adds a new ADR and
 marks the old record superseded; do not rewrite the historical rationale.

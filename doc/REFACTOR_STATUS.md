@@ -257,6 +257,31 @@ findings remain open. D001--D005 authority bytes and meaning are unchanged. No
 repair, characterization, validation execution, re-audit, downstream work,
 Unity, reduction, production change, merge, or push is authorized.
 
+## 2026-08-09 RTC Learned Sampling Decision
+
+The owner approved an optional RTC `fixed | learned` sampling design. Learned
+mode uses a conservative metadata-derived bootstrap during learning, resolves
+an immutable downstream-compatible low-pass/downsampling plan, and executes
+that plan only in a later apply phase. “Optimal” means maximum safe sample
+reduction after astronomical-transfer, alias-rejection, sampling, and
+downstream-compatibility constraints pass.
+
+The bootstrap uses measured native cadence, approved beam identity, and the
+maximum valid telescope speed in each science-valid scan; speed percentiles
+remain diagnostics. The first realized plan is common across all arrays and
+scans. Learned masks crossing a cadence change require native-row/native-time
+identity, and learn-to-apply transfer changes cannot count as convergence.
+Physical event semantics and absolute timing/placement remain unavailable.
+
+[ADR 0009](adr/0009-learned-rtc-sampling-plan.md) records the durable policy,
+and the [detailed plan](RTC_LEARNED_SAMPLING_PLAN_2026-08-09.md) defines the
+analytical beam/FIR/phase-zero-decimator calculation. A
+[Stage A handoff](audits/packages/SCI-RTC-001_LEARNED_SAMPLING_STAGE_A_HANDOFF_2026-08-09.md)
+is prepared for an observe-only planner that cannot change science execution.
+No exact application base, numerical tolerance, implementation launch, Stage B
+apply behavior, reduction, Unity work, re-audit, production change, merge, or
+push is authorized by this decision.
+
 ## 2026-08-09 SCI-MAP-002 Third-Successor Acceptance
 
 The owner accepted the bounded SCI-MAP-002 third-successor disposition for
