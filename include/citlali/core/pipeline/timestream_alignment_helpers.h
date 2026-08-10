@@ -4,7 +4,12 @@
 #include <Eigen/Core>
 #include <tula/algorithm/mlinterp/mlinterp.hpp>
 
+#include <citlali/core/pipeline/timestream_alignment_state.h>
+
 #include <cmath>
+#include <algorithm>
+#include <array>
+#include <cstddef>
 #include <limits>
 #include <stdexcept>
 #include <string>
@@ -12,6 +17,133 @@
 #include <vector>
 
 namespace citlali::pipeline {
+
+template <class TelData>
+RtcSamplingSourceMotionSupport capture_rtc_sampling_source_motion(
+    const TelData &tel_data, double rad_to_arcsec) {
+    RtcSamplingSourceMotionSupport support;
+    const auto time_it = tel_data.find("TelTime");
+    const auto az_it = tel_data.find("TelAzAct");
+    const auto source_az_it = tel_data.find("SourceAz");
+    const auto el_it = tel_data.find("TelElAct");
+    const auto source_el_it = tel_data.find("SourceEl");
+    const auto az_cor_it = tel_data.find("TelAzCor");
+    const auto el_cor_it = tel_data.find("TelElCor");
+    if (time_it == tel_data.end() || az_it == tel_data.end() ||
+        source_az_it == tel_data.end() || el_it == tel_data.end() ||
+        source_el_it == tel_data.end() || az_cor_it == tel_data.end() ||
+        el_cor_it == tel_data.end() || !std::isfinite(rad_to_arcsec) ||
+        rad_to_arcsec <= 0.0) {
+        return support;
+    }
+
+    const std::array<std::size_t, 7> sizes{
+        static_cast<std::size_t>(time_it->second.size()),
+        static_cast<std::size_t>(az_it->second.size()),
+        static_cast<std::size_t>(source_az_it->second.size()),
+        static_cast<std::size_t>(el_it->second.size()),
+        static_cast<std::size_t>(source_el_it->second.size()),
+        static_cast<std::size_t>(az_cor_it->second.size()),
+        static_cast<std::size_t>(el_cor_it->second.size())};
+    const std::size_t n = sizes.front();
+    support.source_row_count = n;
+    if (!std::all_of(sizes.begin(), sizes.end(),
+                     [&](std::size_t size) { return size == n; })) {
+        support.reason = "unequal_source_column_lengths";
+        return support;
+    }
+    if (n < 2) {
+        support.reason = "insufficient_source_motion_rows";
+        return support;
+    }
+
+    support.intervals.reserve(static_cast<std::size_t>(n - 1));
+    auto tangent_point = [&](Eigen::Index i) {
+        double az_diff = az_it->second(i) - source_az_it->second(i);
+        if (az_diff > 0.9 * 2.0 * 3.14159265358979323846) {
+            az_diff -= 2.0 * 3.14159265358979323846;
+        }
+        else if (az_diff < -0.9 * 2.0 * 3.14159265358979323846) {
+            az_diff += 2.0 * 3.14159265358979323846;
+        }
+        const double alt = el_it->second(i) - source_el_it->second(i) -
+                           el_cor_it->second(i);
+        const double az =
+            std::cos(el_it->second(i) - el_cor_it->second(i)) * az_diff -
+            az_cor_it->second(i);
+        return std::pair<double, double>{az, alt};
+    };
+
+    for (std::size_t i = 0; i + 1 < n; ++i) {
+        RtcSamplingSourceMotionInterval interval;
+        interval.start_row_index = i;
+        interval.stop_row_index = i + 1;
+        interval.start_time_s = time_it->second(i);
+        interval.stop_time_s = time_it->second(i + 1);
+        interval.duration_s = interval.stop_time_s - interval.start_time_s;
+        const auto p0 = tangent_point(i);
+        const auto p1 = tangent_point(i + 1);
+        const double daz = p1.first - p0.first;
+        const double dalt = p1.second - p0.second;
+        if (!std::isfinite(interval.start_time_s) ||
+            !std::isfinite(interval.stop_time_s) ||
+            !std::isfinite(interval.duration_s) ||
+            !std::isfinite(daz) || !std::isfinite(dalt)) {
+            interval.reason = "invalid_nonfinite_source_interval";
+        }
+        else if (interval.duration_s <= 0.0) {
+            interval.reason = "invalid_nonpositive_source_interval";
+        }
+        else if (interval.duration_s > rtc_sampling_source_max_interval_s) {
+            interval.reason = "invalid_source_gap";
+        }
+        else if (std::abs(daz) > rtc_sampling_source_max_pointing_step_rad ||
+                 std::abs(dalt) > rtc_sampling_source_max_pointing_step_rad) {
+            interval.reason = "invalid_source_pointing_step";
+        }
+        else {
+            interval.speed_arcsec_s =
+                std::hypot(daz, dalt) / interval.duration_s * rad_to_arcsec;
+            if (!std::isfinite(interval.speed_arcsec_s) ||
+                interval.speed_arcsec_s < 0.0) {
+                interval.reason = "invalid_source_speed";
+            }
+            else if (interval.speed_arcsec_s >
+                     rtc_sampling_source_max_speed_arcsec_s) {
+                interval.reason = "invalid_source_speed_above_bound";
+            }
+            else {
+                interval.valid = true;
+                support.valid_interval_count++;
+                support.valid_duration_s += interval.duration_s;
+                if (interval.speed_arcsec_s >=
+                    rtc_sampling_source_min_eligible_speed_arcsec_s) {
+                    interval.eligible = true;
+                    interval.reason = "none";
+                    support.eligible_interval_count++;
+                    support.eligible_duration_s += interval.duration_s;
+                }
+                else {
+                    interval.reason = "excluded_low_velocity";
+                    support.low_velocity_excluded_count++;
+                    support.low_velocity_excluded_duration_s +=
+                        interval.duration_s;
+                }
+            }
+        }
+        if (!interval.valid) {
+            support.rejected_interval_count++;
+        }
+        support.intervals.push_back(std::move(interval));
+    }
+    support.interval_count = support.intervals.size();
+    support.status = support.valid_interval_count > 0 ? "available" : "unavailable";
+    support.reason = support.valid_interval_count > 0
+        ? (support.eligible_interval_count > 0 ? "none"
+                                               : "unavailable_low_velocity")
+        : "no_valid_source_motion_intervals";
+    return support;
+}
 
 inline Eigen::Index find_first_sample_at_or_after(
     const Eigen::VectorXd &times, double target_time,

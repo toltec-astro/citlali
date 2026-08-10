@@ -1,145 +1,212 @@
-# RTC learned sampling Stage A metrics
+# RTC learned-sampling Stage A successor metrics
 
-Date: 2026-08-09
+Date: 2026-08-10
 
-Status: implemented and locally validated; observe-only diagnostic candidate;
-no scientific tolerances, recommendation, selection, or apply behavior
+Status: bounded completion candidate; deterministic local gates pass;
+independent re-audit has not been launched
 
-## Authority and implementation identity
+## Authority and scope
 
-This implementation starts from the clean application branch
-`origin/codex/refactor-mainline` at
-`46ad23888a40f5102cdfd50c06e49a549bdf8a20` (parent
-`4846fa4db39bd2f7d4ddc41f693836834cbc5ff4`, tree
-`ab230a93b8fb310d58aefd7ac5da92e5d5e0f408`). The isolated implementation
-branch is `codex/rtc-learned-sampling-stage-a`. The nonconformant
-phase-independent RTC repair candidate `24f28ea9de6b4a1a3ff81d07944fa5fc2565f240`
-is not an ancestor and was not used as the base.
+This successor is implemented on
+`codex/repair-rtc-learned-sampling-stage-a-successor` from exact application
+base `6cbe119a59f8915c5aecf5eaf333425dd592993d`. Its frozen repair authority is
+handoff `SCI-RTC-001-LEARNED-SAMPLING-STAGE-A-REPAIR-READY-006` at
+coordination commit `3132d5d8c001ef32f185d4ece2038aa6d7ce1b5c`, plus the
+2026-08-10 owner clarification recorded for the beam-transfer and coherent
+tone conventions.
 
-The owner-approved design remains the documentation-only commit
-`cbb676d84bc58da4239a906a420a04a326968309`. This Stage A subset implements
-only its metrics path. Existing requested configuration, fixed execution,
-audit findings, and learned-sampling evidence remain separate states.
+The product remains observe-only. It enumerates, characterizes, and reports
+every admitted factor without ranking, recommending, selecting, or applying
+one. RTC/PTC/mapmaking inputs, flags, samples, timestamps, grids, weights,
+maps, and all science products other than the formative `rtcdiag` diagnostic
+are unchanged.
 
-Relevant existing typed configuration is
-`timestream.raw_time_chunk.filter.{enabled,a_gibbs,freq_low_Hz,freq_high_Hz,n_terms}`
-and `timestream.raw_time_chunk.downsample.*`. The diagnostic reads the typed
-effective raw-time-chunk configuration. It does not mutate it and it adds no
-execution consumer.
+## Source motion and cadence authority
 
-## What is measured
+Source-telescope motion is captured from authoritative raw telescope rows
+before detector-grid interpolation. A typed observation-scoped carrier in
+`TimestreamAlignmentState` owns only interval support needed by `rtcdiag`; it
+is replaced/reset for every observation and is never read by RTC, PTC, or
+mapmaking.
 
-The existing atomic `rtcdiag` writer now emits an unranked candidate matrix
-for every scan and array for which telescope motion and admitted APT beam
-metadata are available. It measures:
+The non-HWPR statistic is the empirical `v95` of valid eligible tangent-plane
+source-telescope speed magnitudes. `p99`, `p99.5`, and the raw maximum are
+diagnostics. Intervals above `3600 arcsec/s`, gaps above `0.1 s`, non-finite or
+non-positive intervals, and tangent-plane pointing steps above `0.01 rad` are
+rejected. These guards are versioned as
+`native-source-row-gap-jump-and-one-row-scan-boundary-v1`. Source columns must
+have equal lengths; unequal lengths fail closed without truncation. Valid
+intervals at or above `1.0 arcsec/s` are eligible; exactly `1.0 arcsec/s` is
+included. If none remains, dependent metrics use
+`unavailable_low_velocity`. Counts, durations, exclusions, coverage, and the
+pre-interpolation coordinate identity are persisted. A compact interval
+ledger records start/stop boundary identity, duration, speed, validity,
+eligibility, and stable cause-specific reason; it does not embed raw telescope
+samples.
 
-- the native detector sample rate and assigned native compatibility-grid
-  semantics;
-- valid physical-AltAz motion intervals from `TelTime`, `az_phys`, and
-  `alt_phys`, with a one-telescope-sample boundary guard;
-- the exact maximum valid scan speed as the primary scalar motion authority;
-- p50, p95, and p99.5 speed values as diagnostics only;
-- the scan-direction cross-section of the elliptical Gaussian array beam and
-  the valid interval with the shortest beam-crossing time;
-- every positive integer factor whose output Nyquist is not below the
-  configured FIR high-frequency edge;
-- the exact centered FIR coefficients produced by the current
-  `timestream::Filter` configuration, or the explicit identity response when
-  RTC FIR filtering is disabled; and
-- the exact analytical beam, FIR, and phase-zero decimator composition.
+Scan support is assigned by native source-row timestamps, not interval
+midpoints. For each scan, the first source row at or after the scan start and
+the last row at or before the scan stop are found, exactly one native row is
+excluded at each end, and only intervals whose two endpoint rows lie inside
+the remaining inclusive row range contribute. Partial overlaps, boundary
+exclusions, and their durations are persisted separately. Consecutive scans
+apply this rule independently.
 
-For a circular beam, samples per FWHM is exactly
+Requested, effective, and realized cadence and filter states are distinct.
+Actual `telescope.fsmp` is the realized native cadence; the raw plan owns the
+requested/effective cadence and filter configuration. The writer records the
+consistency result. Exact realized FIR coefficients come from the RTC filter
+object, or the explicit identity vector `[1]` when filtering is disabled.
+
+Requested, effective, ignored, and realized hardware-presence HWPR facts are
+also separate. Physical HWPR data do not imply scientific enablement. An
+effectively enabled HWPR observation retains only the factor-1 reference row;
+dependent astronomical metrics are unavailable with
+`unavailable_hwpr_sampling_contract`.
+
+## Beam and transfer identity
+
+The per-array beam-size authority is the fixed diffraction-derived Airy
+**intensity FWHM** `1.028 lambda / 50 m`: `4.66`, `5.94`, and `8.48 arcsec`
+for `a1100`, `a1400`, and `a2000`. These values only set the scale of the
+owner-selected circular-Gaussian temporal intensity model. The transfer shape
+is not an Airy-profile transform and no APT or measured-beam fallback exists.
+Unknown arrays are unavailable.
+
+For FWHM `theta` and eligible motion statistic `v95`, the persisted model is
 
 ```text
-N_beam = f_sample,out * theta_FWHM / v_max.
+sigma_t = theta / (2 sqrt(2 ln(2)) v95)
+B(f) = exp(-2 pi^2 sigma_t^2 f^2)
+B(0) = 1; phase(B) = 0; beam power = |B|^2.
 ```
 
-For an elliptical beam and varying scan direction, the implementation uses
-the more informative limiting crossing time across all valid intervals. The
-separate maximum-speed variable remains present and is never replaced by a
-percentile.
+For factor `M`, the phase-zero time-domain unit-complex-tone response folds
+exactly `M` unique periodic images over an explicit half-open interval. Every
+input tone has unit amplitude; there is no artificial `1/M` tone factor. Each
+image uses `B(f)` and the exact centered complex response of the realized RTC
+FIR. Amplitude, phase, power, and complex distortion are relative to the
+corresponding unaliased baseband. Factor 1 alias is exactly zero and its
+stopband status is `not_applicable_no_decimation`.
 
-The phase-zero decimator calculation explicitly sums every native-band alias
-image that folds onto each output-baseband frequency. The candidate metrics
-therefore use the realized FIR rather than an ideal brick-wall assumption.
-The integrated astronomical alias metric is folded compact-source power
-divided by desired compact-source power over the positive output baseband.
+The counterfactual is always `(M, phase=0, H_RTC_realized)`. Stage A neither
+synthesizes a candidate FIR nor infers candidate count from a configured
+filter edge. For each admitted scan-array pair:
 
-## Diagnostic schema
+```text
+N_beam(M) = theta_FWHM fs / (M v95)
+Mmax = floor(theta_FWHM fs / v95)
+candidates = {1, ..., max(1, Mmax)}.
+```
 
-Observation identity, `SAMPRATE`, array identity, filter configuration, and
-the APT path are already serialized in `rtcdiag` or are added as the beam
-authority. Stage A adds:
+The coefficient vector, SHA-256 digest, requested/effective/realized filter
+parameters, factor/phase binding, and identity-vector convention are
+persisted. The digest is SHA-256 over an unsigned 64-bit little-endian
+coefficient count followed by every realized IEEE-754 binary64 coefficient in
+little-endian realized order. Its convention is
+`sha256-u64le-count-then-ieee754-binary64le-realized-order-v1`.
 
-- `scan_speed_altaz_max_arcsec_s` and the three percentile diagnostics;
-- beam axes, position angle, limiting projected FWHM and limiting speed;
-- the unranked `rtc_sampling_candidate_factor` axis;
-- `rtc_sampling_realized_fir_coefficients`;
-- output rate and Nyquist;
-- samples per projected beam FWHM;
-- compact-source peak attenuation and FWHM broadening;
-- FIR response at the beam temporal half-power frequency;
-- astronomical alias-power ratio;
-- FIR stopband rejection and transition margin; and
-- raw FIR support delay and realized centered-software group delay.
+## Bounded characterization and applicability
 
-An availability status of `0` means computed and `-1` means required motion or
-beam metadata were unavailable. It is not a safe/unsafe label. Signed FIR
-"attenuation" may be slightly negative where passband ripple produces gain.
-No rank, selected-candidate field, recommendation, or acceptance field exists.
+Alias, relative-response, distortion, and stopband maxima use the
+deterministic `uniform-partition-global-lipschitz-enclosure-v1` method with 256
+partitions. The sampled maximum is a lower bound; an analytical derivative
+bound times the half-cell radius produces a conservative upper enclosure.
+The alias/relative-response domain is half-open
+`[-fs/(2M), fs/(2M))`, implemented with `nextafter` at the upper endpoint; the
+FIR stopband is closed `[fs/(2M), fs/2]`. The file records method, domain,
+partitions, analytic Lipschitz identity and per-metric value, evaluation
+counts, coefficient identity, lower/upper bounds, error enclosure, and
+independent per-metric status/reason. A zero enclosure is
+`numerical_converged`; a finite nonzero rigorous enclosure is
+`numerical_bounded_not_converged`, not an exact, worst-case, or
+tolerance-converged claim; evaluation failure is `numerical_failed`.
 
-Every file states:
+Resource preflight limits the implementation to 8192 factors per scan-array,
+8,000,000 total candidate rows, 50,000,000 estimated complex evaluations, and
+536,870,912 estimated `rtcdiag` bytes, using checked arithmetic. Every
+scan-array retains its full derived `Mmax` and its own range status. A pair
+above the 8192 limit is isolated while unaffected pairs remain evaluable when
+the rectangular product fits. If a global row, evaluation, or byte guard
+prevents the table, explicit product/range unavailability is emitted with no
+candidate dimension or factor-1 pseudo-table; the range is never silently
+truncated.
 
-> This is a metrics-only diagnostic. No candidate was selected and no RTC
-> behavior was changed.
+Finite-scan applicability uses the exact realized FIR tap count and centered
+left/right context, factor, phase zero, outer and science-scan boundaries,
+eligible assigned-grid support, and internal gaps. It reports candidate
+outputs, fully supported outputs, boundary/gap/other incomplete counts,
+longest run, duration, and fraction. `N_full == 0` is the sole hard Stage A
+boundary and yields `candidate_unusable_no_complete_context`. One full output
+means mathematical evaluability only. The separately reported actually
+applied RTC operator uses `scan_unusable_for_applied_rtc_operator` with
+`no_complete_context` at zero support; Stage A does not enforce that result.
 
-Physical detector integration-event semantics and absolute timing placement
-remain unavailable. The calculation is valid only on the assigned
-compatibility grid and does not authorize a timing correction.
+## `rtcdiag` v2 semantic breaks
 
-## What is intentionally not decided
+`RTC_DIAG_SCHEMA_VERSION` is now `rtcdiag-v2`, and algorithm identity is
+`rtc-learned-sampling-stage-a-v2`. The old maximum-speed/APT-projected-beam,
+filter-edge candidate enumeration, attenuation/broadening, incoherent
+alias-power, transition-margin, and software-delay Stage A fields are removed
+without compatibility aliases. They are replaced by:
 
-Stage A does not define response-loss, broadening, alias, stopband, sampling,
-or computational-cost tolerances. It does not call any candidate safe or
-unsafe, choose an optimal factor, generate learned/resolved/applied state, or
-change the factor, FIR, samples, flags, timestamps, time grid, RTC/PTC/map
-inputs, weights, maps, or products. It does not add source injection because
-the approved evidence path is analytical.
+- raw pre-interpolation motion support and `v95`/`p99`/`p99.5`/maximum;
+- fixed per-array FWHM plus explicit Gaussian-model and FWHM-authority IDs;
+- exact factor range, phase-zero unit-tone convention, FIR vector/digest, and
+  requested/effective/realized cadence, filter, and HWPR facts;
+- candidate, plan-transfer, applied-operator, alias, and stopband
+  status/reason fields using the persisted stable numeric vocabulary;
+- bounded coherent amplitude/phase/power/distortion, alias, and FIR stopband
+  fields with numerical evidence; and
+- exact complete-context counts and fractions.
 
-The following remain separate owner decisions:
+Metric values are non-authoritative unless their own domain-specific status
+is available or converged. The frozen vocabulary preserves prerequisite
+available/unavailable, candidate-not-evaluated prerequisite,
+candidate-range/table availability, plan-transfer available/unavailable,
+applied-operator not-applicable, numerical
+converged/bounded-not-converged/failed, and exact
+`not_applicable_no_decimation` distinctions. The product notice explicitly
+says no factor was ranked, recommended, selected, or applied.
 
-1. numerical scientific tolerances and the allowed factor/filter-cost policy;
-2. the candidate-specific FIR design policy if it is to differ from the
-   currently configured realized FIR family;
-3. native-cadence fallback versus failure by reduction role;
-4. generation and serialization of authoritative learned/resolved state;
-5. common-observation Stage B application and restart behavior; and
-6. any per-array/per-scan cadence, noise-aware objective, or downstream
-   heterogeneous-transfer handling.
+## Completion-candidate evidence and exclusions
 
-## Validation and example
+The dedicated translation unit and production CLI compile, and all 26 focused
+tests pass. They cover unequal-column failure,
+negative azimuth wrap, exact native-row boundary/partial/consecutive-scan
+support, gap and low-velocity identity, empirical percentiles, fixed beam
+authority, Gaussian normalization, coherent odd/even folding without `1/M`,
+factor-1 identity, factor-range independence from filter edges, analytic,
+narrow-extremum, long-FIR, broad-valid, singular and per-metric numerical
+fixtures, the independent byte-level coefficient digest, checked resource
+overflow/row/evaluation/byte/isolation/no-truncation behavior, exact complete
+context, requested/effective/realized HWPR and cadence matrices, file-presence
+negative control, observation reset and A/B state sentinels, atomic
+create/write/sync/rename cleanup, and production helper writer/reopen joins.
 
-The focused unit suite covers valid maximum-speed extraction with the boundary
-guard, invalid-gap rejection, elliptical beam cross-sections, exact FIR
-response, beam-times-FIR composition, phase-zero alias folding, deterministic
-factor enumeration/results, identity broadening, and the persisted unranked
-NetCDF schema and disclaimer.
+The local build cache was configured with the installed Homebrew OpenMP header
+and library, without a source-tree or product change. The full CTest inventory
+passes all 649 enabled tests; the pre-existing
+`MapFitterLifecycle.ExactProductSequence` is the sole disabled test. The
+baseline-tool suite passes 172/172 tests. The complete config preflight passes,
+including 127 Python tests, four mode kits, eight compact-compatibility cases,
+100% compact-surface coverage, all authority/boundary audits, and the unchanged
+45-record raw-execution census at digest
+`09572da976aec89d56506394420b478426a6efbd0942c864571a8f6f311da2f8`.
+The 60-record validation ledger and validation-profile registry validate; the
+Phase 5 readiness report executes successfully and truthfully remains
+`preparing`/not promotion-ready because its documented external promotion
+evidence is still absent.
 
-Local validation on the changed tree passed:
+Gate-driven corrections remained inside the approved paths: generic
+pre-interpolation source columns now normalize cardinalities to `size_t` before
+comparison; the unchanged product-registry identity remains v2 while the
+`rtcdiag` product alone advances to v2; and requested/effective/realized filter
+facts plus exact realized FIR coefficients are captured once by the rtcdiag
+output owner into a typed adapter before numerical consumption. No local
+science reduction, Unity work, push, merge, re-audit, or downstream launch
+occurred.
 
-- both `citlali_test` and `citlali_cli` builds;
-- 9/9 focused Stage A tests;
-- 632/632 runnable CTests, with one pre-existing disabled test;
-- 172/172 baseline-tool tests; and
-- the complete 127-test config preflight, all four mode kits, all eight compact
-  compatibility cases, 100% compact-surface coverage, all authority/boundary
-  audits, and the unchanged 45-record raw-execution census at digest
-  `09572da976aec89d56506394420b478426a6efbd0942c864571a8f6f311da2f8`.
-
-No representative science dataset was consumed because no local or Unity
-science reduction was authorized. The checked-in
-[`candidate_metrics.csv`](../validation/rtc_learned_sampling_stage_a_example_2026-08-09/candidate_metrics.csv)
-is a deterministic analytical example using 488.28125 Hz native sampling, a
-10 arcsec circular Gaussian beam, 100 arcsec/s maximum scan speed, and the
-existing 16 Hz, 32-term, 50 dB-Gibbs FIR family. It is an output-format
-example, not scientific evidence and not a recommendation.
+The checked-in `candidate_metrics.csv` is a compact deterministic
+output-format illustration. It is not observation evidence, a numerical gate,
+or a factor recommendation.

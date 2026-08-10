@@ -8,8 +8,10 @@
 #include <citlali/core/pipeline/scan_indices.h>
 #include <citlali/core/pipeline/telescope_data_loading.h>
 #include <citlali/core/pipeline/telescope_pointing.h>
+#include <citlali/core/pipeline/timestream_alignment_helpers.h>
 
 #include <cstddef>
+#include <citlali/core/utils/constants.h>
 
 namespace citlali::pipeline {
 
@@ -22,6 +24,9 @@ bool prepare_initial_observation_setup(TodProc &todproc, const RawObs &rawobs,
                                        std::size_t observation_index,
                                        const Logger &logger) {
     auto &engine = todproc.engine();
+    // Clear the observation-scoped diagnostic carrier before any setup step
+    // can return, so a failed or partial next observation cannot inherit it.
+    reset_rtc_sampling_source_motion(engine.alignment);
 
     configure_observation_calibration_with_context<IsBeammap>(
         todproc, rawobs, rawobs_kids_meta, observation_index, logger);
@@ -31,7 +36,21 @@ bool prepare_initial_observation_setup(TodProc &todproc, const RawObs &rawobs,
 
     check_observation_inputs(todproc, rawobs, logger);
     update_sample_rate_from_rawobs_meta(engine, rawobs_kids_meta, logger);
-    load_and_align_telescope_data(todproc, rawobs, logger);
+    // Preserve a compact, typed motion authority before telescope data are
+    // interpolated onto the detector grid.  This state is observation-scoped
+    // and has no execution consumer outside rtcdiag.
+    const auto tel_path = telescope_data_filepath(rawobs);
+    load_telescope_data_file(engine, tel_path, logger);
+    overwrite_map_center_if_configured(engine, logger);
+    engine.alignment.rtc_sampling_source_motion =
+        capture_rtc_sampling_source_motion(engine.telescope.tel_data,
+                                           RAD_TO_ASEC);
+    if (should_align_telescope_timestreams(engine)) {
+        align_telescope_timestreams(todproc, rawobs, logger);
+    }
+    else {
+        reset_simulated_telescope_indices(engine, rawobs);
+    }
     calculate_telescope_pointing(todproc, logger);
     calculate_scan_indices(engine, logger);
     calculate_initial_observation_map_dimensions(

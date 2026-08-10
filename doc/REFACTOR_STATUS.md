@@ -36,24 +36,31 @@ The live branch, upstream revision, gate, and import policy are recorded in
 [`INTEGRATION_LEDGER.md`](INTEGRATION_LEDGER.md). The durable rationale is
 [ADR 0008](adr/0008-application-mainline-and-build-adaptation-lanes.md).
 
-## 2026-08-09 RTC Learned-Sampling Stage A Metrics Candidate
+## 2026-08-10 RTC Learned-Sampling Stage A Successor Repair Completion Candidate
 
-An observe-only metrics implementation is prepared on
-`codex/rtc-learned-sampling-stage-a` from exact clean application base
-`46ad23888a40f5102cdfd50c06e49a549bdf8a20`. It adds analytical candidate
-sampling metrics to the existing atomic `rtcdiag` product using exact valid
-maximum scan speed, scan-projected APT beam response, the realized configured
-FIR, and phase-zero alias folding. It does not use the nonconformant RTC repair
-candidate `24f28ea9...` as its base.
+The bounded observe-only successor is a locally validated completion candidate
+on `codex/repair-rtc-learned-sampling-stage-a-successor`, based exactly on
+`6cbe119a59f8915c5aecf5eaf333425dd592993d` and governed by frozen handoff
+`SCI-RTC-001-LEARNED-SAMPLING-STAGE-A-REPAIR-READY-006`. It replaces the
+nonconformant Stage A diagnostic contract with pre-interpolation typed motion
+support, non-HWPR `v95`, fixed diffraction-derived array FWHM values used as
+the scale of an explicitly identified circular-Gaussian temporal model,
+unit-tone coherent phase-zero alias folding through the exact realized FIR,
+full factor enumeration independent of filter edge, conservative numerical
+enclosures, and exact complete-context applicability.
 
-The candidate is strictly metrics-only: it ranks or selects no factor, defines
-no scientific tolerance, creates no learned/resolved/applied plan, and changes
-no RTC execution, detector data, flags, timestamps, time grids, downstream
-inputs, maps, weights, or products. Physical integration-event semantics and
-absolute timing placement remain unavailable. See the dated
-[Stage A metrics note](RTC_LEARNED_SAMPLING_STAGE_A_METRICS_2026-08-09.md).
-Stage B, numerical tolerances, candidate-specific FIR policy, and any
-per-array/per-scan applied cadence remain separate owner decisions.
+`rtcdiag` intentionally advances to `rtcdiag-v2`; its Stage A algorithm is
+`rtc-learned-sampling-stage-a-v2`, and its schema
+and numerics are a semantic break. No factor is ranked, recommended, selected,
+or applied, and no RTC/PTC/mapmaking or non-`rtcdiag` science product changes.
+The configured OpenMP header/library binding now supports the full production
+CLI and test targets. All 26 focused tests and all 649 enabled CTests pass; the
+pre-existing `MapFitterLifecycle.ExactProductSequence` remains disabled. The
+172-test baseline-tool suite, complete config preflight (including its 127
+Python tests and exact 45-record raw-execution census), validation ledger,
+profile registry, and Phase 5 readiness report also pass. Phase 5 correctly
+remains `preparing` and not promotion-ready. See the dated
+[Stage A successor note](RTC_LEARNED_SAMPLING_STAGE_A_METRICS_2026-08-09.md).
 
 ## 2026-08-05 SCI-MAP-001 Application Integration Candidate
 

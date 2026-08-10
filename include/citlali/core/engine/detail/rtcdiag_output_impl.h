@@ -5,6 +5,10 @@
 
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 
+#include <algorithm>
+#include <cmath>
+#include <limits>
+
 void Engine::create_rtcdiag_file() {
     output_paths.rtcdiag_filename =
         citlali::pipeline::diagnostic_output_netcdf_filename<
@@ -26,6 +30,86 @@ void Engine::create_rtcdiag_file() {
             citlali::pipeline::raw_time_chunk_config(*this)
                 .downsample.enabled,
             telescope.fsmp, telescope.d_fsmp);
+    const auto &raw_plan = citlali::pipeline::raw_timestream_plan(*this);
+    const auto &realized_rtc = this->rtcproc;
+    const auto &polarimetry = citlali::pipeline::polarimetry_plan(*this);
+    const auto requested_hwpr_policy =
+        std::string{citlali::config::to_string(
+            polarimetry.requested.hwpr_policy)};
+    const auto effective_hwpr_policy =
+        std::string{citlali::config::to_string(
+            polarimetry.effective.hwpr_policy)};
+    const citlali::pipeline::RtcSamplingHwprState rtc_sampling_hwpr{
+        polarimetry.requested.enabled,
+        requested_hwpr_policy,
+        polarimetry.effective.enabled,
+        effective_hwpr_policy == "ignore",
+        calib.run_hwpr};
+    citlali::pipeline::RtcSamplingCadenceState rtc_sampling_cadence;
+    rtc_sampling_cadence.requested_factor =
+        raw_plan.requested.downsample.enabled
+            ? raw_plan.requested.downsample.factor : 1;
+    rtc_sampling_cadence.requested_output_hz =
+        raw_plan.requested.downsample.enabled &&
+                raw_plan.requested.downsample.factor <= 0
+            ? raw_plan.requested.downsample.downsampled_freq_Hz
+            : telescope.fsmp /
+                  std::max(1, rtc_sampling_cadence.requested_factor);
+    if (raw_plan.observation.has_value()) {
+        const auto &observation = *raw_plan.observation;
+        rtc_sampling_cadence.effective_native_hz =
+            observation.native_sample_rate_hz.value_or(
+                std::numeric_limits<double>::quiet_NaN());
+        rtc_sampling_cadence.effective_output_hz =
+            observation.effective_sample_rate_hz.value_or(
+                std::numeric_limits<double>::quiet_NaN());
+        rtc_sampling_cadence.effective_factor =
+            observation.downsample_factor.value_or(1);
+    }
+    rtc_sampling_cadence.realized_native_hz = telescope.fsmp;
+    rtc_sampling_cadence.realized_output_hz = rtc_fsmp;
+    rtc_sampling_cadence.realized_downsample_enabled =
+        realized_rtc.run_downsample;
+    rtc_sampling_cadence.realized_factor =
+        rtc_sampling_cadence.realized_downsample_enabled
+            ? realized_rtc.downsampler.factor : 1;
+    const auto cadence_equal = [](double a, double b) {
+        return std::isfinite(a) && std::isfinite(b) &&
+               std::abs(a - b) <=
+                   32.0 * std::numeric_limits<double>::epsilon() *
+                       std::max({1.0, std::abs(a), std::abs(b)});
+    };
+    rtc_sampling_cadence.consistent =
+        cadence_equal(rtc_sampling_cadence.effective_native_hz,
+                      rtc_sampling_cadence.realized_native_hz) &&
+        cadence_equal(rtc_sampling_cadence.effective_output_hz,
+                      rtc_sampling_cadence.realized_output_hz) &&
+        rtc_sampling_cadence.effective_factor ==
+            rtc_sampling_cadence.realized_factor;
+    citlali::pipeline::RtcSamplingFilterState rtc_sampling_filter;
+    rtc_sampling_filter.requested_enabled = raw_plan.requested.filter.enabled;
+    rtc_sampling_filter.effective_enabled = raw_plan.effective.filter.enabled;
+    rtc_sampling_filter.realized_enabled = realized_rtc.run_tod_filter;
+    rtc_sampling_filter.requested_a_gibbs = raw_plan.requested.filter.a_gibbs;
+    rtc_sampling_filter.effective_a_gibbs = raw_plan.effective.filter.a_gibbs;
+    rtc_sampling_filter.requested_low_hz = raw_plan.requested.filter.freq_low_Hz;
+    rtc_sampling_filter.effective_low_hz = raw_plan.effective.filter.freq_low_Hz;
+    rtc_sampling_filter.requested_high_hz = raw_plan.requested.filter.freq_high_Hz;
+    rtc_sampling_filter.effective_high_hz = raw_plan.effective.filter.freq_high_Hz;
+    rtc_sampling_filter.requested_n_terms = raw_plan.requested.filter.n_terms;
+    rtc_sampling_filter.effective_n_terms = raw_plan.effective.filter.n_terms;
+    if (rtc_sampling_filter.realized_enabled) {
+        rtc_sampling_filter.realized_a_gibbs = realized_rtc.filter.a_gibbs;
+        rtc_sampling_filter.realized_low_hz = realized_rtc.filter.freq_low_Hz;
+        rtc_sampling_filter.realized_high_hz = realized_rtc.filter.freq_high_Hz;
+        rtc_sampling_filter.realized_n_terms = realized_rtc.filter.n_terms;
+        if (realized_rtc.filter.filter.size() > 0) {
+            rtc_sampling_filter.realized_coefficients.assign(
+                realized_rtc.filter.filter.data(),
+                realized_rtc.filter.filter.data() +
+                    realized_rtc.filter.filter.size());
+        }
+    }
 
     citlali::pipeline::add_diagnostic_file_identity_vars(
         fo, "rtcdiag", std::stoi(observation_identity.obsnum),
@@ -44,25 +128,24 @@ void Engine::create_rtcdiag_file() {
 
     const auto scan_summary =
         citlali::pipeline::calculate_rtcdiag_scan_summary(
-            telescope, n_scans, rtcdiag_dims.n_scan_values, RAD_TO_ASEC,
-            fill_double, logger);
+            telescope, alignment.rtc_sampling_source_motion,
+            rtc_sampling_hwpr, n_scans, rtcdiag_dims.n_scan_values,
+            fill_double, fill_int, logger);
     citlali::pipeline::add_rtcdiag_scan_summary_outputs(
         fo, rtcdiag_dims.n_scans, rtcdiag_dims.scan_chunks, scan_summary);
 
     const auto scan_array_summary =
         citlali::pipeline::calculate_rtcdiag_scan_array_summary(
-            calib, citlali::pipeline::raw_time_chunk_config(*this),
-            scan_summary.scan_motion, telescope.fsmp,
-            n_scans, rtcdiag_dims.n_array_values,
-            rtcdiag_dims.n_scan_array_values, fill_double);
+            calib, rtc_sampling_filter, telescope, scan_summary,
+            rtc_sampling_hwpr, rtc_sampling_cadence, n_scans,
+            rtcdiag_dims.n_array_values,
+            rtcdiag_dims.n_scan_array_values, fill_double, fill_int);
     citlali::pipeline::add_rtcdiag_scan_array_summary_outputs(
         fo, rtcdiag_dims.scan_array, rtcdiag_dims.scan_array_chunks,
-        scan_array_summary);
-    add_netcdf_var(
-        fo, "RTC_SAMPLING_BEAM_AUTHORITY",
-        calib.apt_filepath.empty()
-            ? std::string{"APT path unavailable"}
-            : calib.apt_filepath);
+        scan_array_summary, rtc_sampling_hwpr, rtc_sampling_cadence,
+        alignment.rtc_sampling_source_motion,
+        std::string{"raw_timestream_provenance.yaml"},
+        CITLALI_GIT_VERSION);
 
     citlali::pipeline::add_rtcdiag_network_ids(
         fo, calib, rtcdiag_dims.n_nws, fill_int);

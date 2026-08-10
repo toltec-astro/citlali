@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <cmath>
 #include <limits>
+#include <numeric>
 #include <string>
 #include <tuple>
 #include <vector>

@@ -357,17 +357,19 @@
       "failure_policy": "Fatal when statistics output is enabled in the active profile."
     },
     "rtc_diagnostics": {
-      "scientific_identity": "Raw-timestream calibration and cleaning diagnostics by scan, detector, array, and network.",
+      "scientific_identity": "Raw-timestream calibration and cleaning diagnostics plus SCI-RTC-001 Stage A v2 observe-only learned-sampling characterization; no factor is ranked, recommended, selected, or applied.",
       "coordinate_frame": "Telescope/time and detector/network domains; pointing quantities retain their named physical frames.",
       "axes": [
         "scan",
         "detector",
         "array",
-        "network"
+        "network",
+        "unranked RTC sampling candidate",
+        "realized RTC FIR coefficient"
       ],
       "units_policy": "Per-variable NetCDF units are authoritative where present; N/A denotes dimensionless or categorical fields.",
       "indexing_policy": "output_scan_index is the one-based original scan number; NetCDF dimension positions and array indices are zero-based; physical detector identity is carried separately.",
-      "missing_value_policy": "Flags and availability variables govern validity; standardized fill attributes are incomplete known debt.",
+      "missing_value_policy": "Flags and availability variables govern legacy validity. Stage A v2 prerequisite, candidate-range/table, candidate, plan-transfer, applied-operator, and independent numerical metric status/reason fields govern their own values; values must be ignored unless that status is the relevant available or converged state. A bounded-not-converged numerical enclosure remains valid bounded evidence but is not tolerance-converged. The candidate dimension and table are intentionally absent when the persisted global resource status makes the product unavailable. Standardized fill attributes are incomplete known debt.",
       "failure_policy": "Fatal when RTC diagnostics are enabled in the active profile."
     },
     "ptc_diagnostics": {
@@ -1217,18 +1219,80 @@
         "n_scans",
         "n_dets",
         "n_arrays",
-        "n_nws_rtcdiag"
+        "n_nws_rtcdiag",
+        "n_rtc_sampling_fir_coefficients"
       ],
       "positive_dimensions": [
         "n_scans",
-        "n_dets"
+        "n_dets",
+        "n_rtc_sampling_fir_coefficients"
       ],
       "required_variables": [
         "output_scan_index",
         "rtc_diag_array_ids",
         "rtc_diag_network_ids",
-        "scan_duration_s"
-      ]
+        "scan_duration_s",
+        "RTC_DIAG_SCHEMA_VERSION",
+        "RTC_SAMPLING_ALGORITHM_VERSION",
+        "RTC_SAMPLING_BEAM_MODEL",
+        "RTC_SAMPLING_BEAM_FWHM_AUTHORITY",
+        "RTC_SAMPLING_ALIAS_CONVENTION",
+        "RTC_SAMPLING_STATUS_REASON_VOCABULARY",
+        "RTC_SAMPLING_NUMERICAL_METHOD",
+        "RTC_SAMPLING_NUMERICAL_DOMAIN",
+        "RTC_SAMPLING_NUMERICAL_ENCLOSURE",
+        "RTC_SAMPLING_NUMERICAL_PARTITIONS",
+        "RTC_SAMPLING_FIR_DIGEST",
+        "RTC_SAMPLING_FIR_DIGEST_CONVENTION",
+        "RTC_SAMPLING_FIR_STATUS",
+        "RTC_SAMPLING_FIR_REASON",
+        "RTC_SAMPLING_COUNTERFACTUAL_BINDING",
+        "RTC_SAMPLING_SOURCE_SUPPORT_AUTHORITY",
+        "RTC_SAMPLING_SOURCE_SUPPORT_COORDINATE_IDENTITY",
+        "RTC_SAMPLING_SOURCE_SUPPORT_REASON_CODE",
+        "RTC_SAMPLING_SOURCE_GUARD_VERSION",
+        "RTC_SAMPLING_SOURCE_MAX_INTERVAL_S",
+        "RTC_SAMPLING_SOURCE_MAX_POINTING_STEP_RAD",
+        "RTC_SAMPLING_SOURCE_BOUNDARY_GUARD_ROWS",
+        "RTC_SAMPLING_SOURCE_SCAN_BOUNDARY_CONVENTION",
+        "RTC_SAMPLING_SOURCE_SPEED_ELIGIBLE_MIN_ARCSEC_S",
+        "RTC_SAMPLING_HWPR_REQUESTED_ENABLED",
+        "RTC_SAMPLING_HWPR_EFFECTIVE_ENABLED",
+        "RTC_SAMPLING_HWPR_EFFECTIVE_IGNORED",
+        "RTC_SAMPLING_HWPR_REALIZED_HARDWARE_PRESENT",
+        "RTC_SAMPLING_CADENCE_REQUESTED_FACTOR",
+        "RTC_SAMPLING_CADENCE_EFFECTIVE_FACTOR",
+        "RTC_SAMPLING_CADENCE_REALIZED_FACTOR",
+        "RTC_SAMPLING_CADENCE_CONSISTENT",
+        "RTC_SAMPLING_MAX_CANDIDATES_PER_SCAN_ARRAY",
+        "RTC_SAMPLING_MAX_TOTAL_CANDIDATE_ROWS",
+        "RTC_SAMPLING_MAX_COMPLEX_EVALUATIONS",
+        "RTC_SAMPLING_MAX_ESTIMATED_RTCDIAG_BYTES",
+        "RTC_SAMPLING_CANDIDATE_TABLE_STATUS",
+        "RTC_SAMPLING_CANDIDATE_TABLE_REASON",
+        "RTC_SAMPLING_CANDIDATE_TABLE_AVAILABLE",
+        "RTC_SAMPLING_ESTIMATED_CANDIDATE_ROWS",
+        "RTC_SAMPLING_ESTIMATED_RECTANGULAR_STORAGE_CELLS",
+        "RTC_SAMPLING_ESTIMATED_COMPLEX_EVALUATIONS",
+        "RTC_SAMPLING_ESTIMATED_RTCDIAG_BYTES",
+        "rtc_sampling_motion_v95_arcsec_s",
+        "rtc_sampling_motion_boundary_guard_excluded_count",
+        "rtc_sampling_motion_partial_overlap_count",
+        "rtc_sampling_prerequisite_status",
+        "rtc_sampling_prerequisite_reason",
+        "rtc_sampling_candidate_mmax",
+        "rtc_sampling_candidate_range_status",
+        "rtc_sampling_candidate_range_reason",
+        "rtc_sampling_realized_fir_coefficients",
+        "rtc_sampling_applied_scan_status",
+        "rtc_sampling_applied_scan_reason"
+      ],
+      "scalar_equals": {
+        "RTC_DIAG_SCHEMA_VERSION": "rtcdiag-v2",
+        "RTC_SAMPLING_ALGORITHM_VERSION": "rtc-learned-sampling-stage-a-v2",
+        "RTC_SAMPLING_NUMERICAL_METHOD": "uniform-partition-global-lipschitz-enclosure-v1",
+        "RTC_SAMPLING_FIR_DIGEST_CONVENTION": "sha256-u64le-count-then-ieee754-binary64le-realized-order-v1"
+      }
     },
     "ptc_diagnostics": {
       "required_dimensions": [
