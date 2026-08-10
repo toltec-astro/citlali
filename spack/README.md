@@ -168,7 +168,7 @@ $HOME/tolteca/bin/python tools/build/run_spack_citlali_dev.py test
 The script validates the concrete graph before every action, runs CMake/Ninja
 inside the exact Citlali dependency environment, and embeds the concrete root
 DAG hash in the CLI. It does not reinstall dependencies or the Citlali
-package. The first native checkpoint passed all 533 enabled CTests; the sole
+package. The current native checkpoint passes all 539 enabled CTests; the sole
 disabled lifecycle test remains explicitly reported by CTest. A measured
 no-op invocation completed in 0.82 seconds.
 
@@ -191,6 +191,26 @@ Fortran compiler as declared externals. All Citlali, Kidscpp, Tula, and other
 C/C++ compilation remains exact Homebrew LLVM 20. The prerequisite checker
 verifies both host externals rather than allowing them to be selected
 silently.
+
+## Managed Deployment Identity
+
+Ordinary developer launches are labeled `unmanaged`. A release or acceptance
+activation must export all three deployment values together:
+
+```console
+export TOLTECA_CPP_ENV=/absolute/path/to/concrete/spack/environment
+export TOLTECA_SPACK_PROFILE=unity-gcc13
+export TOLTECA_SPACK_LOCK_SHA256="$(sha256sum "$TOLTECA_CPP_ENV/spack.lock" | awk '{print $1}')"
+```
+
+The lock must have exactly one root and its root DAG hash must equal the DAG
+compiled into the Citlali executable. A partial identity, malformed digest,
+missing lock, or DAG mismatch fails before reduction setup. `--version`
+reports the profile, lock digest, and `binding=dag-match`; FITS, NetCDF, and
+product-index metadata retain the same deployment identity. The activation
+layer is responsible for computing the lock digest from the real file;
+Citlali independently checks the scientifically relevant executable-to-DAG
+binding rather than trusting a profile label alone.
 
 ## Unity GCC 13 Acceptance Profile
 

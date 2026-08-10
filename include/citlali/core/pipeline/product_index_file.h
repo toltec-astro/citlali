@@ -1,5 +1,6 @@
 #pragma once
 
+#include <citlali/core/provenance/deployment_identity.h>
 #include <citlali/core/utils/utils.h>
 #include <citlali_config/gitversion.h>
 #include <kidscpp_config/gitversion.h>
@@ -21,6 +22,13 @@ inline YAML::Node make_product_index_metadata_node() {
     node["citlali_version"].push_back(CITLALI_GIT_VERSION);
     node["kids_version"].push_back(KIDSCPP_GIT_VERSION);
     node["tula_version"].push_back(TULA_GIT_VERSION);
+    const auto deployment = citlali::provenance::runtime_deployment_identity();
+    node["provenance/dag_hash"].push_back(
+        citlali::provenance::compiled_spack_dag_hash());
+    node["provenance/profile"].push_back(
+        citlali::provenance::deployment_profile_label(deployment));
+    node["provenance/lock_sha256"].push_back(
+        citlali::provenance::deployment_lock_label(deployment));
     return node;
 }
 

@@ -147,6 +147,21 @@ is reviewed as design evidence only and is not imported as application code.
 Exact-clean installed-package acceptance and Unity validation remain the next
 gates for this refreshed graph.
 
+The 2026-08-10 refresh supersedes that dependency snapshot with exact
+TulaCMake `6433cdab`, Tula `aa16c853`, and Kidscpp `498ece11`; upstream Citlali
+`ceb4335c` and TolTECA Deploy `0a6b896` are reviewed reference evidence only.
+The full refactored CLI builds natively with the new concrete root
+`u2qcns6o5rtnzzzblqvqsnbdr7uldxgf`, and all 539 enabled CTests pass. Managed
+activation now supplies a deployment profile, lock digest, and environment
+path. Citlali checks that the lock contains exactly its compiled root DAG
+before running and records the accepted identities in its version output and
+science-product metadata. Unmanaged developer launches remain explicit. A
+clean installed package now reports the exact source revision and managed DAG
+binding, preserves the full CLI surface, passes its independent consumer, and
+passes all 539 enabled developer CTests. The real Unity GCC 13.3 acceptance
+lane is still required; the upstream ARM64 development locks are not Unity
+evidence.
+
 ## 2026-07-26 Conan 2 Build Review
 
 The previously deferred TolTECA build implementation is now available and has

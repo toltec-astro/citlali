@@ -9,6 +9,7 @@ from typing import Sequence
 
 from spack_citlali_common import (
     deployment_target,
+    managed_deployment_environment,
     process_environment,
     run,
     spack_build_env_command,
@@ -86,6 +87,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     print(f"Spack root: {root_spec}")
     print(f"Spack DAG hash: {root_hash}")
     environment = process_environment(spack_python)
+    environment = managed_deployment_environment(
+        environment,
+        environment_path,
+        profile_name=profile.name,
+        expected_root_hash=root_hash,
+    )
     source_revision = run(
         ["git", "-C", str(source_root), "rev-parse", "--short=9", "HEAD"],
         environment=environment,
@@ -113,6 +120,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         root_hash,
         profile.provenance_compiler,
         "cxx=23",
+        f"profile={profile.name}",
+        "binding=dag-match",
     ):
         if required_text not in version_output:
             raise RuntimeError(

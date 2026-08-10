@@ -64,13 +64,18 @@ void add_phdu_identity_geometry_section(
     citlali::config::ReductionType reduction_type,
     citlali::config::TodType tod_type,
     citlali::config::MapGrouping map_grouping,
-    citlali::config::MapMethod map_method, double rad_to_deg,
-    const Logger &logger) {
+    citlali::config::MapMethod map_method, const std::string &spack_dag_hash,
+    const std::string &deployment_profile, const std::string &spack_lock_sha256,
+    double rad_to_deg, const Logger &logger) {
     citlali::pipeline::add_phdu_pipeline_identity_keys(
         fits_entry, telescope.source_name, calib.run_hwpr, array_name,
         citlali_version, kids_version, tula_version, telescope.project_id,
         reduction_type, telescope.obs_goal, tod_type, map_grouping,
         map_method);
+    auto &hdu = fits_entry.pfits->pHDU();
+    hdu.addKey("DAGHASH", spack_dag_hash, "Spack DAG hash");
+    hdu.addKey("DEPPROF", deployment_profile, "Deployment profile");
+    hdu.addKey("LOCKSHA", spack_lock_sha256, "Spack lock SHA-256");
 
     const double source_ra =
         citlali::pipeline::telescope_header_scalar(

@@ -14,6 +14,7 @@ repository="${workspace}/citlali"
 spack_root="${SPACK_ROOT:-${HOME}/work_toltec/spack-1.2.2}"
 spack_python="${SPACK_PYTHON:-/usr/bin/python3.12}"
 environment="${repository}/spack/environments/citlali-unity-gcc13"
+deployment_profile="unity-gcc13"
 jobs="${SLURM_CPUS_PER_TASK:-8}"
 job_id="${SLURM_JOB_ID:-manual}"
 manifest="${repository}/logs/citlali-spack-${job_id}.manifest.txt"
@@ -50,6 +51,10 @@ export SPACK_PYTHON="${spack_python}"
 # shellcheck disable=SC1091
 source "${SPACK_ROOT}/share/spack/setup-env.sh"
 
+export TOLTECA_CPP_ENV="${environment}"
+export TOLTECA_SPACK_PROFILE="${deployment_profile}"
+export TOLTECA_SPACK_LOCK_SHA256="$(sha256sum "${environment}/spack.lock" | awk '{print $1}')"
+
 "${SPACK_PYTHON}" tools/build/verify_spack_source_revisions.py \
     --workspace-root "${repository}/build/spack-sources" | tee "${manifest}"
 
@@ -64,6 +69,7 @@ source "${SPACK_ROOT}/share/spack/setup-env.sh"
     done
     echo "spack_version=$(spack --version)"
     echo "spack_lock_sha256=$(sha256sum "${environment}/spack.lock" | awk '{print $1}')"
+    echo "deployment_profile=${deployment_profile}"
 } | tee -a "${manifest}"
 
 spack -e "${environment}" find -cvl

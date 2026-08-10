@@ -1,6 +1,6 @@
 # TolTECA Spack Build Integration Review
 
-Date: 2026-07-31; updated 2026-08-04
+Date: 2026-07-31; updated 2026-08-10
 
 Status: architecture review complete; **Adapt with Spack** selected as the
 successor-build direction. The existing build remains the operational
@@ -13,20 +13,27 @@ The review used isolated checkouts at the exact pushed revisions:
 
 | Repository | Branch | Commit |
 | --- | --- | --- |
-| `toltec-astro/tula_cmake` | `v3.x_spack` | `e8b6721ebead47d2b54ea266b1c7a761bb508963` |
-| `toltec-astro/tula` | `v3.x_spack` | `47471cf7fd5b93f60c9fe1e420b551f11ef34bc8` |
-| `toltec-astro/kidscpp` | `v3.x_spack` | `006c980d17c9fff13fa0a71038fd5683a975ddcb` |
-| `toltec-astro/citlali` | `v3.x_spack` | `370992442a3076f1b0c7043e2aa61d4ccd5fac97` |
+| `toltec-astro/tula_cmake` | `v3.x_spack` | `6433cdabe7010d0af2d0ba69da7af27510391b80` |
+| `toltec-astro/tula` | `v3.x_spack` | `aa16c853c6b596c04ccdc90dc3acc4ce2006d947` |
+| `toltec-astro/kidscpp` | `v3.x_spack` | `498ece1113001ae2d42d96d9fc29152aea3eaaef` |
+| `toltec-astro/citlali` | `v3.x_spack` | `ceb4335c3f00b52af58ce2c09093b863040434b6` |
+| `toltec-astro/tolteca_deploy` | `main` | `0a6b896` (`v0.1.1`) |
 
 The reconciled design authority is the `design/` directory in the reviewed
 Tula CMake branch. The earlier Conan 2 review remains historical evidence but
 no longer governs the package-manager choice.
 
-The 2026-08-04 update adds immutable tag-based source-release recipes,
-machine-readable build provenance inputs, and a portable-versus-real-data test
-distinction. It does not change the installed `tula-netcdf-cxx4` target's
-incomplete NetCDF-C include interface; the bounded Citlali direct dependency
-remains necessary until that target is corrected upstream.
+The 2026-08-10 update clarifies the separation between immutable artifact
+identity and runtime deployment identity and advances the release/deployment
+design. It does not change the installed `tula-netcdf-cxx4` target's incomplete
+NetCDF-C include interface; the bounded Citlali direct dependency remains
+necessary until that target is corrected upstream. The reviewed
+`tolteca_deploy` release profiles are design evidence only: their committed
+Ubuntu ARM64 GCC 14/LLVM 20 locks do not replace the measured Unity x86_64
+GCC 13.3 acceptance profile owned by this lane.
+Tula's installed version header still reports `cxx_standard=0`, whereas
+Kidscpp and Citlali correctly report C++23. This is retained upstream metadata
+debt rather than a reason to falsify the effective compiler standard.
 
 ## Build-Owner Intent Clarification
 
@@ -142,15 +149,18 @@ On the review Mac:
 - the full refactored application builds all eight active compiled sources,
   generated configuration/version headers, production CLI, and complete test
   targets through the native Spack graph under C++23 and exact LLVM 20;
-- all 533 enabled CTests pass, with the one intentionally disabled lifecycle
+- all 539 enabled CTests pass, with the one intentionally disabled lifecycle
   test reported explicitly;
 - the full 123-test/four-mode config preflight passes;
 - the installed CLI preserves the complete operational help surface and an
   independent installed `find_package(citlali)` consumer passes; and
 - the CLI reports source dirty state, Kidscpp version, build type, compiler
-  family, Wiener variant, and concrete Spack root DAG hash. A persistent Ninja
-  tree provides a measured 0.82-second no-op build without restaging the
-  development package.
+  family, Wiener variant, and concrete Spack root DAG hash. Managed activation
+  supplies the profile, lock digest, and environment path; Citlali refuses to
+  run when that lock's root DAG differs from the compiled DAG and records the
+  accepted deployment identity in FITS, NetCDF, and product-index metadata. A
+  persistent Ninja tree provides a measured 0.82-second no-op build without
+  restaging the development package.
 - the 2026-08-03 upstream revisions replace the local NetCDF C++ and perflibs
   adapters with Tula CMake-owned packages, add the normalized CCfits target,
   and distinguish general pipeline OpenMP from Wiener OpenMP; the resulting
@@ -171,6 +181,13 @@ After the original review, all four upstream branches advanced. The current
 revisions recorded above were re-reviewed in isolated clean checkouts. Only
 Tula CMake, Tula, and Kidscpp are consumed as build inputs; upstream Citlali is
 a reference implementation and is not merged into the refactored application.
+The newest dependency tips build the full refactored CLI and pass all 533
+pre-existing enabled CTests in an isolated graph; with the six deployment
+identity tests added by this adaptation, the accepted tree passes 539 enabled
+tests. TolTECA Deploy's 20 focused Spack tests pass from an isolated package
+install. Its complete Python suite is not counted because the shared local
+TolTECA/Tollan/Pydantic environment is incompatible with that checkout and
+does not provide controlled deployment evidence.
 
 The complete production reduction matrix was not independently reproduced
 locally. The pinned-source workflow now reaches the full refactored Citlali
@@ -205,10 +222,10 @@ Citlali, Kidscpp, Tula, and other C/C++ application nodes remain exact LLVM 20.
 | Portable lock | Planned | Local locks are intentionally ignored; no release environment lock exists. |
 | Full refactored application | Pass locally | All eight active compiled sources, full header surface, generated inputs, library, CLI, and tests build through Spack. |
 | Full CLI and config | Pass locally | Full operational CLI/help and complete 123-test/four-mode config preflight pass. |
-| Source/dependency provenance | Partial | Source/dirty state, compiler, build type, OpenMP/Wiener variants, semantic package versions, concrete DAG hash, and exact first-party development revisions are checked; a complete embedded manifest and portable release lock remain open. |
+| Source/dependency provenance | Partial | Source/dirty state, compiler, build type, OpenMP/Wiener variants, semantic package versions, concrete DAG hash, exact first-party development revisions, and managed runtime lock-root binding are checked; a portable release lock and complete release manifest remain open. |
 | Direct dependencies | Pass | HDF5 and Zlib are explicit Citlali recipe and CMake target edges. |
 | Kidscpp compatibility | Pass pending product validation | A bounded V3 raw-timestream adapter compiles and is tested; legacy config remains accepted and the unused sweep fitter is omitted only in V3. Unity product validation remains. |
-| Full tests | Pass locally | All 533 enabled CTests and complete config preflight pass; baseline/ledger/exit gates remain part of final acceptance. |
+| Full tests | Pass locally | All 539 enabled CTests and complete config preflight pass; baseline/ledger/exit gates remain part of final acceptance. |
 | Unity operation | Not demonstrated | Existing Spack/module availability is promising but no Citlali environment or reduction has been tested there. |
 | Build timing | Partial | Persistent no-op build is 0.82 seconds; clean and representative incremental timing still need a formal campaign. |
 

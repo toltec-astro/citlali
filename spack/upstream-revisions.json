@@ -1,21 +1,21 @@
 {
   "schema_version": 1,
-  "reviewed_at": "2026-08-04",
+  "reviewed_at": "2026-08-10",
   "repositories": {
     "tula_cmake": {
       "url": "https://github.com/toltec-astro/tula_cmake.git",
       "branch": "v3.x_spack",
-      "commit": "e8b6721ebead47d2b54ea266b1c7a761bb508963"
+      "commit": "6433cdabe7010d0af2d0ba69da7af27510391b80"
     },
     "tula": {
       "url": "https://github.com/toltec-astro/tula.git",
       "branch": "v3.x_spack",
-      "commit": "47471cf7fd5b93f60c9fe1e420b551f11ef34bc8"
+      "commit": "aa16c853c6b596c04ccdc90dc3acc4ce2006d947"
     },
     "kidscpp": {
       "url": "https://github.com/toltec-astro/kidscpp.git",
       "branch": "v3.x_spack",
-      "commit": "006c980d17c9fff13fa0a71038fd5683a975ddcb"
+      "commit": "498ece1113001ae2d42d96d9fc29152aea3eaaef"
     }
   }
 }

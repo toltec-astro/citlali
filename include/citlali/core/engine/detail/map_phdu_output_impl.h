@@ -5,6 +5,7 @@
 
 #include <citlali/core/engine/detail/map_phdu_output_helpers.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
+#include <citlali/core/provenance/deployment_identity.h>
 
 template <typename fits_io_type, class map_buffer_t>
 void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
@@ -28,6 +29,7 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
     const auto &beammap_iteration_config = beammap_settings.iteration;
     const auto &beammap_phase_config = beammap_settings.phase_strategy;
     const auto &beammap_reference_config = beammap_settings.reference;
+    const auto deployment = citlali::provenance::runtime_deployment_identity();
 
     try {
     citlali::engine_detail::add_phdu_unit_conversion_section(
@@ -49,6 +51,9 @@ void Engine::add_phdu(fits_io_type &fits_io, map_buffer_t &mb, Eigen::Index i) {
         KIDSCPP_GIT_VERSION, TULA_GIT_VERSION,
         reduction_type, citlali::pipeline::timestream_config(*this).type,
         mapmaking_settings.grouping, mapmaking_settings.method,
+        citlali::provenance::compiled_spack_dag_hash(),
+        citlali::provenance::deployment_profile_label(deployment),
+        citlali::provenance::deployment_lock_label(deployment),
         RAD_TO_DEG, logger);
 
     logger->debug("adding beamsizes");

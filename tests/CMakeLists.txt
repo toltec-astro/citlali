@@ -26,6 +26,7 @@ target_sources(citlali_test
         test_calib_apt_filtering.cpp
         test_coherent_iq_mode_observer.cpp
         test_config_scaffold.cpp
+        test_deployment_identity.cpp
         test_external_config_provenance.cpp
         test_fruit_loop_recurrence.cpp
         test_kidscpp_raw_timestream_compat.cpp

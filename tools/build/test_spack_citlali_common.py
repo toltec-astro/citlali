@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import importlib.util
 import sys
@@ -16,6 +17,7 @@ sys.modules[SPEC.name] = MODULE
 SPEC.loader.exec_module(MODULE)
 EXPECTED_PACKAGES = MODULE.EXPECTED_PACKAGES
 validate_concrete_graph = MODULE.validate_concrete_graph
+managed_deployment_environment = MODULE.managed_deployment_environment
 
 
 class SpackCitlaliGraphTest(unittest.TestCase):
@@ -99,6 +101,33 @@ class SpackCitlaliGraphTest(unittest.TestCase):
             required_graph_packages=(),
         )
         self.assertEqual(root_hash, "a" * 32)
+
+    def test_managed_environment_binds_profile_lock_and_root(self) -> None:
+        self._write_lock()
+        result = managed_deployment_environment(
+            {"EXISTING": "value"},
+            self.environment,
+            profile_name="macos-llvm20",
+            expected_root_hash="a" * 32,
+        )
+        lock_bytes = (self.environment / "spack.lock").read_bytes()
+        self.assertEqual(result["EXISTING"], "value")
+        self.assertEqual(result["TOLTECA_CPP_ENV"], str(self.environment))
+        self.assertEqual(result["TOLTECA_SPACK_PROFILE"], "macos-llvm20")
+        self.assertEqual(
+            result["TOLTECA_SPACK_LOCK_SHA256"],
+            hashlib.sha256(lock_bytes).hexdigest(),
+        )
+
+    def test_managed_environment_rejects_wrong_root(self) -> None:
+        self._write_lock()
+        with self.assertRaisesRegex(RuntimeError, "accepted Citlali root"):
+            managed_deployment_environment(
+                {},
+                self.environment,
+                profile_name="macos-llvm20",
+                expected_root_hash="b" * 32,
+            )
 
 
 if __name__ == "__main__":

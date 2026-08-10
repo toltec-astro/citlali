@@ -12,6 +12,7 @@
 #include <citlali/core/cli/process_control.h>
 #include <citlali/core/cli/run_environment.h>
 #include <citlali/core/cli/standard_reduction_execution.h>
+#include <citlali/core/provenance/deployment_identity.h>
 
 using rc_t = citlali::cli::RuntimeConfig;
 
@@ -45,6 +46,7 @@ int main(int argc, char *argv[]) {
     // now with normal CLI interface
     return citlali::cli::run_with_exception_reporting([&]() {
         tula::logging::init();
+        citlali::provenance::require_runtime_deployment_matches_build();
         auto rc = citlali::cli::parse_args(argc, argv);
         SPDLOG_INFO("rc {}", rc.pformat());
         return citlali::cli::run_configured_process(

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <citlali/core/provenance/deployment_identity.h>
 #include <citlali_config/gitversion.h>
 #include <kidscpp_config/gitversion.h>
 #include <fmt/core.h>
@@ -29,12 +30,19 @@ inline std::string kidscpp_version_string() {
 
 inline std::string build_provenance_string() {
 #ifdef CITLALI_SPACK_DAG_HASH
-    return fmt::format("build {} dag={} compiler={}-{} cxx={} {} {}",
-                       CITLALI_BUILD_SYSTEM, CITLALI_SPACK_DAG_HASH,
-                       CITLALI_CMAKE_CXX_COMPILER_ID,
-                       CITLALI_CMAKE_CXX_COMPILER_VERSION,
-                       CITLALI_CMAKE_CXX_STANDARD,
-                       CITLALI_CMAKE_BUILD_TYPE, CITLALI_BUILD_VARIANTS);
+    const auto deployment = citlali::provenance::runtime_deployment_identity();
+    const auto binding = citlali::provenance::require_deployment_matches_build(
+        deployment, CITLALI_SPACK_DAG_HASH);
+    return fmt::format(
+        "build {} dag={} compiler={}-{} cxx={} {} {}; deployment "
+        "profile={} lock={} binding={}",
+        CITLALI_BUILD_SYSTEM, CITLALI_SPACK_DAG_HASH,
+        CITLALI_CMAKE_CXX_COMPILER_ID,
+        CITLALI_CMAKE_CXX_COMPILER_VERSION, CITLALI_CMAKE_CXX_STANDARD,
+        CITLALI_CMAKE_BUILD_TYPE, CITLALI_BUILD_VARIANTS,
+        citlali::provenance::deployment_profile_label(deployment),
+        citlali::provenance::deployment_lock_label(deployment),
+        citlali::provenance::deployment_binding_label(binding));
 #else
     return "";
 #endif

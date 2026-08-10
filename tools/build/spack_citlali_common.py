@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import platform
@@ -68,6 +69,33 @@ def process_environment(spack_python: Path) -> dict[str, str]:
     environment = dict(os.environ)
     environment["SPACK_PYTHON"] = str(spack_python)
     return environment
+
+
+def managed_deployment_environment(
+    environment: dict[str, str],
+    environment_path: Path,
+    *,
+    profile_name: str,
+    expected_root_hash: str,
+) -> dict[str, str]:
+    """Bind runtime deployment labels to the concrete Citlali root."""
+    lock_path = environment_path / "spack.lock"
+    lock_bytes = lock_path.read_bytes()
+    lock = json.loads(lock_bytes)
+    roots = lock.get("roots", [])
+    if len(roots) != 1 or roots[0].get("hash") != expected_root_hash:
+        raise RuntimeError(
+            "deployment environment does not contain the accepted Citlali root"
+        )
+    result = dict(environment)
+    result.update(
+        {
+            "TOLTECA_CPP_ENV": str(environment_path),
+            "TOLTECA_SPACK_PROFILE": profile_name,
+            "TOLTECA_SPACK_LOCK_SHA256": hashlib.sha256(lock_bytes).hexdigest(),
+        }
+    )
+    return result
 
 
 def validate_concrete_graph(
