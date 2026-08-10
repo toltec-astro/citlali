@@ -1,0 +1,347 @@
+format_version: 1
+record_id: SCI-RTC-001-LEARNED-SAMPLING-STAGE-A-REPAIR-FINDING-LEDGER-004
+record_date: 2026-08-10
+record_status: documentation_only_uncommitted_successor_resolution
+scope: stage_a_owner_resolutions_including_existing_filter_counterfactual
+
+coordination_base:
+  branch: codex/coordinate-rtc-ptc-queue
+  commit: c078179df5916c54b6ab0ee3789fcde925b43d87
+  parent: 6136f65ca81956cec5ceb9866303580409182257
+  tree: 5ed3283ec85fb8a4b5c8c712bc2f925fb651b9c2
+
+proposed_repair:
+  base: 6cbe119a59f8915c5aecf5eaf333425dd592993d
+  branch: codex/repair-rtc-learned-sampling-stage-a-successor
+  status: not_authorized_not_launched
+
+source_audit:
+  commit: 5ecd3c4b57cdd24c9fc263a054106516b2781d71
+  parent: 6cbe119a59f8915c5aecf5eaf333425dd592993d
+  tree: 5ec42039e0e93f824671be8c0808d0fcf5d797ad
+  findings_object: handoff/RTC_LEARNED_SAMPLING_STAGE_A_REAUDIT_FINDINGS_2026-08-10.csv
+  findings_sha256: d71e70fbc4a1b7f60b001789c888229bfc8ff24dc5651e1add57f1e1a0dab2fb
+  immutability: preserved
+
+owner_authority:
+  decision_date: 2026-08-10
+  source_path: /Users/gwilson/.codex/attachments/74b0b74f-8a66-425a-b720-b19bf3fee35a/pasted-text.txt
+  source_sha256: 3d46bc8771e1f28fa658db82de980a26433755a9852e9b3696b4cc5739b0f8cf
+
+successor_handoff:
+  path: doc/audits/packages/SCI-RTC-001_LEARNED_SAMPLING_STAGE_A_REPAIR_HANDOFF_2026-08-10.md
+  status: documentation_only_uncommitted_not_launched
+
+finding_resolutions:
+  - finding_id: RTC-A-007
+    audit_priority: P1
+    policy_status: owner_resolved
+    implementation_status: open
+    validation_status: not_started
+    characterization_vs_acceptability: separate
+    fixed_grid_claims:
+      exact: prohibited
+      worst_case: prohibited
+    approved_methods:
+      - analytical_where_available
+      - deterministic_bounded_calculation
+      - deterministic_adaptive_calculation
+    bounds_contract:
+      metrics:
+        - aliasing
+        - stopband_extrema
+      coefficient_authority: exact_realized_fir_coefficients
+      conservative_enclosure_required: true
+      broad_valid_enclosure_permitted: true
+      reporting_identity: bounded_evidence
+    reproducibility_state:
+      - method_and_version
+      - exact_coefficient_identity
+      - contracted_domain_and_partition_or_adaptive_state
+      - resource_and_evaluation_information
+      - bounds_and_error_enclosure
+      - convergence_status_and_reason
+      - relevant_numerical_settings
+    per_metric_validity:
+      independent: true
+      one_metric_failure_invalidates_unrelated_diagnostics: false
+    factor_one:
+      alias_contribution: exactly_zero
+      decimation_stopband: absent
+      stopband_metric_status: not_applicable_no_decimation
+    stage_a_semantics:
+      stopband_rejection: diagnostic_characterization_only
+      astronomical_alias_transfer: diagnostic_characterization_only
+      absolute_stopband_threshold_ranks_or_selects: false
+      arbitrary_precision_threshold_required: false
+    future_candidate_selection:
+      stage_a_scope: false
+      noise_psd_authority: empirical_or_otherwise_approved_representative_detector_noise_psd
+      white_noise_assumption_sufficient: false
+      attenuation_alone_sufficient: false
+      p_alias_expression: >-
+        sum_alias_bands integral S_x(f) |H_M(f)|^2 df
+      epsilon_alias_expression: P_alias / P_noise_retained
+      provisional_design_target:
+        expression: epsilon_alias <= approximately 0.01
+        meaning:
+          - order_one_percent_or_less_additional_retained_band_noise_variance
+          - about_twenty_db_below_retained_noise_in_power
+          - approximately_half_percent_rms_increase
+        status: future_science_driven_candidate_selection_target_only
+        stage_a_gate: false
+        stage_a_rank: false
+        stage_a_acceptance_criterion: false
+        numerical_precision_requirement: false
+    deterministic_validation:
+      - narrow_extremum
+      - long_filter
+      - independent_analytic_limit
+      - conservative_enclosure_and_convergence
+      - deliberately_broad_valid_enclosure
+      - nonconvergence_and_resource_status
+      - independent_per_metric_failure
+      - exact_coefficient_and_method_state_reproduction
+      - factor_one_zero_alias_and_not_applicable_stopband
+      - negative_control_fixed_grid_exact_or_worst_claim
+      - negative_control_white_noise_or_attenuation_selection
+      - negative_control_candidate_ranking
+
+  - finding_id: RTC-A-008
+    audit_priority: P1
+    policy_status: owner_resolved
+    implementation_status: open
+    validation_status: not_started
+    supersedes:
+      - arbitrary_positive_complete_context_minimum
+      - duration_based_support_proxy
+      - ambiguous_nonzero_insufficient_support_boundary
+    hard_stage_a_candidate_boundary:
+      predicate: N_full == 0
+      status: candidate_unusable_no_complete_context
+      meaning: zero_fully_supported_candidate_outputs
+    stronger_minima:
+      status: deferred
+      authority_required:
+        - later_observational_evidence
+        - named_downstream_scientific_requirement
+    exact_operator_support_inputs:
+      - realized_fir_coefficients_and_length
+      - left_and_right_context
+      - factor_and_phase
+      - scan_boundaries
+      - valid_eligible_support
+      - internal_gaps
+      - guards
+      - candidate_output_grid
+    candidate_semantics:
+      zero_full_outputs:
+        plan_response_may_be_reported: true
+        plan_response_is_observation_effective: false
+      one_or_more_full_outputs:
+        mathematically_evaluable: true
+        adequate: false
+        recommended: false
+        authorized: false
+    applied_operator_semantics:
+      zero_full_outputs:
+        status: scan_unusable_for_applied_rtc_operator
+        reason: no_complete_context
+        ultimate_production_requirement: fail_closed_before_valid_mapmaking_input
+      stage_a_behavior:
+        report_only: true
+        changes_flags: false
+        suppresses_products: false
+        changes_execution: false
+        changes_mapmaking_inputs: false
+      production_enforcement:
+        route: separate_rtc_sample_validity_production_task
+        status: not_authorized_not_launched
+    required_diagnostics:
+      - factor
+      - identity_or_fir_state
+      - tap_count
+      - left_context
+      - right_context
+      - total_eligible_input_support
+      - total_candidate_outputs
+      - fully_supported_output_count
+      - summed_complete_context_duration
+      - f_full_with_explicit_candidate_output_denominator
+      - incomplete_boundary_count_and_fraction
+      - incomplete_gap_count_and_fraction
+      - incomplete_other_count_and_fraction
+      - longest_contiguous_full_output_run
+      - plan_transfer_status
+      - observation_applicability_status
+      - stable_reason
+    optional_diagnostics:
+      - beam_crossing_count
+    prohibited_dependencies:
+      - new_map_weight_dependency
+    factor_one_identity_plan:
+      fir_context_required: false
+      independent_failure_reasons_preserved:
+        - cadence
+        - motion
+        - identity
+    transfer_contract:
+      expression: B(f) H_FIR(f) D(f)
+      identity: exact_complete_context_interior_plan_transfer
+      whole_finite_scan_transfer: false
+      incomplete_boundary_averaging: prohibited
+      one_full_output_implies_adequacy: false
+    deterministic_validation:
+      - N_equals_0_1_L_minus_1_L_L_plus_1
+      - exact_first_full_output_under_realized_phase
+      - internal_gaps_and_invalid_samples
+      - multiple_short_regions
+      - boundary_impulses
+      - identity_filter
+      - hypothetical_candidate_failure_without_scan_condemnation
+      - applied_zero_support_fail_closed_status
+      - plan_transfer_vs_observation_applicability
+      - expected_counts_from_actual_rtc_conventions
+
+decision_resolutions:
+  - decision_id: RTC-STAGE-A-HWPR-MOTION-ELIGIBILITY
+    related_findings:
+      - RTC-A-003
+      - RTC-A-004
+      - RTC-A-009
+      - RTC-A-010
+    policy_status: owner_resolved
+    implementation_status: open
+    validation_status: not_started
+    state_contract:
+      distinct_states:
+        - requested
+        - effective
+        - realized
+      physical_input_or_file_presence_implies_enabled: false
+    non_hwpr_routing:
+      applies_when:
+        - hwpr_absent
+        - hwpr_explicitly_ignored_by_effective_observation_plan
+      contract: approved_non_hwpr_v95_eligibility_and_candidate_contract
+    enabled_hwpr_routing:
+      scientific_basis: >-
+        Telescope v95 and the diffraction beam alone do not define the
+        astronomical passband because RTC precedes mapmaking and polarized
+        signal can occupy the 4*f_HWPR carrier plus scan-induced sidebands.
+      dependent_metric_status: unavailable
+      stable_reason: unavailable_hwpr_sampling_contract
+      non_hwpr_one_arcsec_per_second_rule_applies: false
+      telescope_only_candidate_range_applies: false
+      factor_one_identity_plan:
+        retained_as: provenance_and_reference
+        hwpr_dependent_metrics: unavailable
+        sampling_recommendation: false
+    future_enablement_authority_required:
+      - authoritative_rotation_frequency_and_phase_support
+      - validity_and_gap_handling
+      - four_times_hwpr_frequency_convention
+      - scan_sideband_extent
+      - combined_beam_fir_modulation_decimation_transfer
+      - enabled_polarimetry_validation_dataset_and_product_gate
+    current_scientific_status: >-
+      enabled_polarimetry_and_hwpr_unavailable_pending_scientific_contract_and_reference_gate
+    non_authorizations:
+      - hwpr_correction
+      - hwpr_threshold
+      - hwpr_candidate_selection
+      - production_behavior_change
+
+  - decision_id: RTC-STAGE-A-EXISTING-FILTER-COUNTERFACTUAL
+    related_findings:
+      - RTC-A-007
+      - RTC-A-008
+      - RTC-A-009
+      - RTC-A-011
+      - RTC-A-012
+    policy_status: owner_resolved
+    implementation_status: open
+    validation_status: not_started
+    semantic_identity:
+      expression: (M, H_RTC^realized)
+      name: existing_filter_counterfactual
+      stage_a_synthesizes_filter_per_m: false
+      binding: each_enumerated_m_and_phase_to_observation_effective_realized_rtc_filter
+    filtering_disabled:
+      coefficient_vector:
+        - 1
+      identity: explicit_identity_filter
+      dormant_settings_consumed: false
+    required_per_m_state:
+      - coefficient_vector
+      - coefficient_digest
+      - configured_filter_parameters
+      - requested_filter_state
+      - effective_filter_state
+      - realized_filter_state
+      - exact_m_phase_filter_binding
+      - relevant_filter_and_observation_identity_and_provenance
+    required_characterization:
+      - approved_astronomical_transfer
+      - bounded_aliasing
+      - stopband_characterization
+      - other_approved_stage_a_metrics
+      - obviously_poor_combinations
+    interpretation:
+      poor_result_means: m_performs_poorly_with_filter_realized_for_this_observation
+      m_is_scientifically_unsuitable: not_established
+      best_achievable_with_appropriate_antialias_filter: not_estimated
+      explicit_in_product_contract_and_provenance: true
+    selection_semantics:
+      rank: prohibited
+      recommendation: prohibited
+      acceptance: prohibited
+      rejection: prohibited
+    later_learned_plan:
+      stage_a_scope: false
+      jointly_selects:
+        - m
+        - factor_specific_fir
+      inputs:
+        - cadence
+        - scan_motion
+        - diffraction_beam
+        - astronomical_transfer_requirements
+        - approved_representative_detector_noise_psd
+        - cost
+        - epsilon_alias
+      epsilon_alias_expression: P_alias / P_noise_retained
+      provisional_future_target: <= approximately 0.01
+    prohibited_stage_a_features:
+      - user_supplied_fir_grids
+      - implicit_fir_design_rule
+      - m_specific_fir_synthesis
+      - best_achievable_filter_performance_claim
+    deterministic_validation:
+      - exact_m_phase_realized_filter_binding
+      - coefficient_vector_and_digest_roundtrip
+      - requested_effective_realized_filter_state
+      - disabled_filter_identity_vector_one
+      - dormant_filter_setting_independence
+      - obviously_poor_filter_m_combination_retained_without_ranking
+      - no_user_fir_grid_or_implicit_synthesis
+      - product_contract_and_provenance_interpretation
+
+next_unresolved_owner_issue:
+  issue_id: NONE-WITHIN-BOUNDED-STAGE-A-SCIENTIFIC-PRODUCT-CONTRACT
+  status: none_identified
+  current_boundary: owner_scientific_and_product_decisions_consolidated
+  remaining_open_work:
+    - implementation
+    - deterministic_evidence
+    - coordinator_freeze_and_verification
+    - explicit_owner_repair_launch_authorization
+  repair_authorized_or_launched: false
+
+non_authorizations:
+  - application_or_test_implementation
+  - production_flagging_or_map_input_change
+  - repair_or_reaudit_launch
+  - unity_access_or_reduction
+  - push_or_merge
+  - downstream_launch
