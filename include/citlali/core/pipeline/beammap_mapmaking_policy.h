@@ -8,6 +8,7 @@
 #include <array>
 #include <cstddef>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 
 namespace citlali::pipeline {
@@ -83,6 +84,24 @@ void reset_beammap_mapmaking_buffers(
         omb.weight[i].setZero();
         if (!omb.grid_weight.empty()) {
             omb.grid_weight[i].setZero();
+        }
+        if (omb.jinc_products.initialized) {
+            if (i >= static_cast<Eigen::Index>(
+                         omb.jinc_products.denominator_sum_abs.size()) ||
+                i >= static_cast<Eigen::Index>(
+                         omb.jinc_products.contributor_count.size()) ||
+                i >= static_cast<Eigen::Index>(
+                         omb.jinc_products.formal_support.size())) {
+                throw std::runtime_error(
+                    "Beammap JINC reset requires a complete conditioning inventory");
+            }
+            // These four planes are one iteration-owned conditioning state:
+            // C, sum(abs(q*c)), contributor count, and realized support.
+            // Reset them together for exactly the same active map subset as
+            // N and Q above.
+            omb.jinc_products.denominator_sum_abs[i].setZero();
+            omb.jinc_products.contributor_count[i].setZero();
+            omb.jinc_products.formal_support[i].setZero();
         }
 
         if (!omb.coverage.empty()) {

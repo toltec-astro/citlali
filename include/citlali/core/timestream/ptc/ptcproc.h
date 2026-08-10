@@ -7,12 +7,16 @@
 #include <complex>
 #include <cstdint>
 #include <exception>
+#include <iomanip>
 #include <limits>
 #include <map>
 #include <memory>
 #include <mutex>
 #include <numeric>
+#include <optional>
 #include <random>
+#include <sstream>
+#include <type_traits>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
@@ -28,6 +32,7 @@
 #include <citlali/core/pipeline/timestream_invariant_validation.h>
 #include <citlali/core/utils/utils.h>
 #include <citlali/core/utils/pointing.h>
+#include <citlali/core/utils/sha256.h>
 
 #include <citlali/core/timestream/timestream.h>
 #include <citlali/core/timestream/ptc/clean.h>
@@ -39,8 +44,76 @@ namespace timestream {
 
 using timestream::TCData;
 
+template <class Matrix>
+std::string ptc_realization_matrix_digest(const Matrix &matrix) {
+    citlali::utils::Sha256 digest;
+    auto add = [&](const std::string &value) {
+        digest.update(std::to_string(value.size()));
+        digest.update(":");
+        digest.update(value);
+        digest.update(";");
+    };
+    add(std::to_string(matrix.rows()));
+    add(std::to_string(matrix.cols()));
+    for (Eigen::Index col = 0; col < matrix.cols(); ++col) {
+        for (Eigen::Index row = 0; row < matrix.rows(); ++row) {
+            using Scalar = std::remove_cv_t<typename Matrix::Scalar>;
+            if constexpr (std::is_integral_v<Scalar>) {
+                add(std::to_string(static_cast<long long>(matrix(row, col))));
+            }
+            else {
+                std::ostringstream value;
+                value << std::hexfloat
+                      << static_cast<double>(matrix(row, col));
+                add(value.str());
+            }
+        }
+    }
+    return "sha256:" + digest.finish();
+}
+
 class PTCProc: public TCProc {
 public:
+    struct PCARealizationSummary {
+        std::string grouping;
+        Eigen::Index group_key = -1;
+        Eigen::Index array_index = -1;
+        Eigen::Index configured_cut = 0;
+        Eigen::Index applied_cut = 0;
+        Eigen::Index forced_limit_index = -1;
+        std::string eigenvalue_digest;
+        std::string eigenvector_digest;
+    };
+
+    struct MeanRealizationSummary {
+        bool mean_subtracted = false;
+        bool source_mask_applied = false;
+        std::size_t masked_sample_count = 0;
+        std::string mask_digest = "unavailable";
+    };
+
+    std::map<Eigen::Index, std::vector<PCARealizationSummary>>
+        pca_realization_summary_by_scan;
+    std::map<Eigen::Index, MeanRealizationSummary>
+        mean_realization_summary_by_scan;
+
+    std::vector<PCARealizationSummary>
+    snapshot_pca_realization_summary(Eigen::Index scan_id) {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        const auto it = pca_realization_summary_by_scan.find(scan_id);
+        return it == pca_realization_summary_by_scan.end()
+                   ? std::vector<PCARealizationSummary>{}
+                   : it->second;
+    }
+
+    std::optional<MeanRealizationSummary>
+    snapshot_mean_realization_summary(Eigen::Index scan_id) {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        const auto it = mean_realization_summary_by_scan.find(scan_id);
+        return it == mean_realization_summary_by_scan.end()
+                   ? std::optional<MeanRealizationSummary>{}
+                   : std::optional<MeanRealizationSummary>{it->second};
+    }
     // controls for timestream reduction
     bool run_clean;
     // median weight factor
@@ -664,15 +737,27 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
 
     Eigen::Index n_pts = in.scans.data.rows();
     Eigen::Index n_dets = in.scans.data.cols();
+    MeanRealizationSummary mean_realization;
+    mean_realization.mean_subtracted = true;
+    std::vector<PCARealizationSummary> pca_realizations;
 
     log_kernel_matrix_diag(logger, "ptc run input", in.kernel.data, in.index.data);
 
     // subtract mean from data and kernel, optionally masking the source region
     if (run_clean && mask_radius_arcsec > 0) {
         auto mean_flags = mask_region(in, calib, pixel_axes, map_grouping, n_pts, n_dets, 0);
+        mean_realization.source_mask_applied = true;
+        mean_realization.masked_sample_count =
+            static_cast<std::size_t>(mean_flags.array().count());
+        mean_realization.mask_digest =
+            ptc_realization_matrix_digest(mean_flags);
         subtract_mean(in, &mean_flags);
     }
     else {
+        mean_realization.masked_sample_count =
+            static_cast<std::size_t>(in.flags.data.array().count());
+        mean_realization.mask_digest =
+            ptc_realization_matrix_digest(in.flags.data);
         subtract_mean(in);
     }
     log_kernel_matrix_diag(logger, "ptc after subtract_mean", in.kernel.data, in.index.data);
@@ -866,6 +951,8 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                                 in_scans_sub, flags_sub, apt_flags_sub, cleaner_local.n_eig_to_cut[arr_index](indx));
                             Eigen::Index forced_limit_index = get_forced_limit_index_safe(
                                 in_scans_sub, flags_sub, apt_flags_sub, group, nw_index, arr_index);
+                            const Eigen::Index configured_cut =
+                                cleaner_local.n_eig_to_cut[arr_index](indx);
 
                             if (store_eigs) {
                                 Eigen::Index n_keep = std::min<Eigen::Index>(cleaner_local.n_calc, evals.size());
@@ -877,10 +964,17 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                                 }
                             }
 
-                            cleaner_local.remove_eig_values<timestream::Cleaner::SpectraBackend>(
+                            const Eigen::Index applied_cut =
+                                cleaner_local.remove_eig_values<timestream::Cleaner::SpectraBackend>(
                                 in_scans_sub, flags_sub, evals, evecs, out_scans_sub,
                                 cleaner_local.n_eig_to_cut[arr_index](indx), forced_limit_index,
                                 group, nw_index, arr_index);
+                            pca_realizations.push_back(PCARealizationSummary{
+                                effective_group, gidx, arr_index,
+                                configured_cut, applied_cut,
+                                forced_limit_index,
+                                ptc_realization_matrix_digest(evals),
+                                ptc_realization_matrix_digest(evecs)});
                             scatter_cols(out_scans_block, out_scans_sub, cols);
 
                             if (in.kernel.data.size()!=0) {
@@ -1004,25 +1098,37 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                     }
 
                     Eigen::Index k_to_apply = baseline_k;
+                    Eigen::Index applied_cut = 0;
                     if (adaptive_selector_for_group && adaptive_result.used &&
                         adaptive_result.chosen_cleaned_scans.rows() == out_scans_block.rows() &&
                         adaptive_result.chosen_cleaned_scans.cols() == out_scans_block.cols()) {
                         k_to_apply = adaptive_result.chosen_k;
                         out_scans_block = adaptive_result.chosen_cleaned_scans;
+                        applied_cut = std::max<Eigen::Index>(
+                            0, std::min<Eigen::Index>(
+                                   k_to_apply, evecs.cols()));
                     }
                     else if (adaptive_selector_for_group && adaptive_result.used) {
                         k_to_apply = adaptive_result.chosen_k;
-                        cleaner_local.remove_eig_values<timestream::Cleaner::SpectraBackend>(
+                        applied_cut =
+                            cleaner_local.remove_eig_values<timestream::Cleaner::SpectraBackend>(
                             in_scans_block, masked_flags, evals, evecs, out_scans_block,
                             k_to_apply, forced_limit_index,
                             effective_group, nw_index, arr_index);
                     }
                     else {
-                        cleaner_local.remove_eig_values<timestream::Cleaner::SpectraBackend>(
+                        applied_cut =
+                            cleaner_local.remove_eig_values<timestream::Cleaner::SpectraBackend>(
                             in_scans_block, masked_flags, evals, evecs, out_scans_block,
                             baseline_k, forced_limit_index,
                             effective_group, nw_index, arr_index);
                     }
+
+                    pca_realizations.push_back(PCARealizationSummary{
+                        effective_group, key, arr_index, baseline_k,
+                        applied_cut, forced_limit_index,
+                        ptc_realization_matrix_digest(evals),
+                        ptc_realization_matrix_digest(evecs)});
 
                     if (adaptive_selector_for_group) {
                         const double total_selector_msec = eig_solve_msec +
@@ -1101,6 +1207,13 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         else {
             apply_second_pass_local(out, calib, pixel_axes, map_grouping);
         }
+    }
+    {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        mean_realization_summary_by_scan[in.index.data] =
+            std::move(mean_realization);
+        pca_realization_summary_by_scan[in.index.data] =
+            std::move(pca_realizations);
     }
     log_kernel_matrix_diag(logger, "ptc run output", out.kernel.data, in.index.data);
 }
@@ -4741,6 +4854,8 @@ inline void PTCProc::clear_cached_diagnostics(Eigen::Index scan_id) {
         weight_corr_penalty_summary_by_scan.erase(scan_id);
         busy_row_suppression_summary_by_scan.erase(scan_id);
         adaptive_selector_summary_by_scan.erase(scan_id);
+        pca_realization_summary_by_scan.erase(scan_id);
+        mean_realization_summary_by_scan.erase(scan_id);
         second_pass_summary_by_scan.erase(scan_id);
         second_pass_added_flags_by_scan.erase(scan_id);
         high_weight_summary_by_scan.erase(scan_id);

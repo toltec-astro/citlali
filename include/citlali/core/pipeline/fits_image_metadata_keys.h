@@ -1,5 +1,6 @@
 #pragma once
 
+
 // Included by fits_image_metadata.h inside namespace citlali::pipeline.
 
 template <class Hdu>
@@ -231,6 +232,72 @@ template <class Hdu>
 void add_kernel_map_metadata(Hdu &hdu, const std::string &signal_unit) {
     add_image_unit_description_keys(hdu, signal_unit,
                                     kernel_map_description());
+}
+
+template <class Hdu>
+void add_jinc_kernel_map_metadata(Hdu &hdu,
+                                  const std::string &signal_unit) {
+    add_image_unit_type_description_keys(
+        hdu, signal_unit, "processing_filtered_template_JINC_K_over_C",
+        "JINC kernel-response estimator", jinc_kernel_map_description());
+    hdu.addKey("JNCCNTR", std::string{jinc_kernel_contract_identity()},
+               "JINC kernel-response contract");
+}
+
+template <class Hdu>
+void add_jinc_weight_map_metadata(Hdu &hdu,
+                                  const std::string &weight_unit,
+                                  bool empirical_calibration) {
+    add_image_unit_type_description_keys(
+        hdu, weight_unit,
+        empirical_calibration ? "empirical_working_weight"
+                              : "conditional_formal_JINC_C2_over_Q",
+        "JINC weight role",
+        jinc_working_weight_map_description(empirical_calibration));
+    hdu.addKey("JNCROLE",
+               std::string{empirical_calibration ? "working_empirical"
+                                                 : "formal_mapmaker"},
+               "JINC weight role");
+    hdu.addKey("JNCEST", std::string{jinc_estimator_contract_identity()},
+               "JINC estimator contract");
+    hdu.addKey("COVSTAT", std::string{"unavailable"},
+               "Cross-pixel/observation covariance status");
+}
+
+template <class Hdu>
+void add_jinc_formal_weight_map_metadata(
+    Hdu &hdu, const std::string &weight_unit) {
+    add_image_unit_type_description_keys(
+        hdu, weight_unit, "conditional_formal_JINC_C2_over_Q",
+        "JINC weight role", jinc_formal_weight_map_description());
+    hdu.addKey("JNCROLE", std::string{"formal_mapmaker"},
+               "JINC weight role");
+    hdu.addKey("JNCEST", std::string{jinc_estimator_contract_identity()},
+               "JINC estimator contract");
+    hdu.addKey("COVSTAT", std::string{"unavailable"},
+               "Cross-pixel/observation covariance status");
+}
+
+template <class Hdu>
+void add_jinc_coverage_map_metadata(Hdu &hdu) {
+    add_image_unit_type_description_keys(
+        hdu, "s", std::string{jinc_coverage_contract_identity()},
+        "JINC coverage estimator", jinc_coverage_map_description());
+    add_image_data_type_key(hdu, "float64");
+    hdu.addKey("JNCSUP", std::string{"formal_support_only"},
+               "JINC coverage consumption");
+}
+
+template <class Hdu>
+void add_jinc_formal_support_map_metadata(Hdu &hdu) {
+    add_image_unit_type_description_keys(
+        hdu, science_map_mask_unit(),
+        std::string{jinc_formal_support_contract_identity()},
+        "JINC support estimator", jinc_formal_support_map_description());
+    add_image_data_type_key(hdu, "uint8");
+    add_image_validity_authority_key(hdu, true);
+    hdu.addKey("JNCCOND", std::string{jinc_conditioning_contract_identity()},
+               "JINC conditioning contract");
 }
 
 template <class Hdu>

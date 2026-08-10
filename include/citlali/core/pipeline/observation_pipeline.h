@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/jinc_processing_provenance.h>
 #include <citlali/core/pipeline/stage_profile.h>
 
 namespace citlali::pipeline {
@@ -17,6 +18,7 @@ void setup_observation_pipeline(Engine &engine,
     logger->info("pipeline setup");
     const auto profile_scope = profile_stage(stage_profile, "observation.setup", logger);
     engine.setup(stage_profile);
+    bind_jinc_processing_configuration_if_available(engine);
 }
 
 template <class Engine, class KidsProc, class RawObs, class Logger>

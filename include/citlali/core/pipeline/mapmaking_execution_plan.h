@@ -4,6 +4,7 @@
 #include <citlali/core/config/runtime_config.h>
 #include <citlali/core/config/timestream_config.h>
 #include <citlali/core/mapmaking/science_map_contract.h>
+#include <citlali/core/mapmaking/jinc_contract.h>
 #include <citlali/core/pipeline/mapmaking_resolution.h>
 
 #include <algorithm>
@@ -64,6 +65,7 @@ struct MapmakingObservationState {
     std::vector<mapmaking::ScienceMapRealizedMap> realized_maps;
     std::string science_state_absence_reason =
         "science-map observation state not recorded";
+    std::optional<mapmaking::JincObservationProvenance> jinc_state;
 };
 
 struct MapmakingCoaddState {
@@ -197,6 +199,27 @@ struct MapmakingExecutionPlan {
         next.realized_maps = std::move(realized_maps);
         next.science_state_absence_reason = std::move(absence_reason);
         observation = std::move(next);
+    }
+
+    void record_observation_jinc_state(
+        mapmaking::JincObservationProvenance provenance) {
+        if (observations.empty()) {
+            throw std::logic_error(
+                "cannot record JINC state before observation begins");
+        }
+        auto &observation = observations.back();
+        if (observation.outputs_completed || observation.jinc_state) {
+            throw std::logic_error(
+                "JINC observation state is immutable after recording/output");
+        }
+        if (!provenance.available ||
+            provenance.realized.map_count != observation.map_count ||
+            provenance.realized.product_joins.empty() ||
+            !mapmaking::jinc_processing_provenance_complete(provenance)) {
+            throw std::logic_error(
+                "JINC observation state requires complete realized processing and exact joins");
+        }
+        observation.jinc_state = std::move(provenance);
     }
 
     MapmakingCoaddState &begin_coadd(

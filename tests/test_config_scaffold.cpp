@@ -4447,6 +4447,13 @@ TEST(config_scaffold, validates_typed_mapmaking_method_values) {
     citlali::config::validate(config, report);
 
     EXPECT_FALSE(report.ok());
+    EXPECT_EQ(report.error_count(), 2U);
+
+    config.method = citlali::config::MapMethod::jinc;
+    report = {};
+    citlali::config::validate(config, report);
+
+    EXPECT_FALSE(report.ok());
     EXPECT_EQ(report.error_count(), 5U);
 }
 

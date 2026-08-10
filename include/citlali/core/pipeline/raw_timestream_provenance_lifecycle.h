@@ -76,10 +76,12 @@ TimestreamOutputExpectations raw_observation_output_expectations(
 }
 
 template <bool IsBeammap, class Engine>
-std::optional<std::filesystem::path>
-publish_completed_raw_timestream_provenance(Engine &engine) {
+void complete_raw_timestream_observation_if_available(Engine &engine) {
     if constexpr (has_raw_timestream_plan_v<Engine>) {
         auto &plan = raw_timestream_plan(engine);
+        if (plan.realized.execution_completed) {
+            return;
+        }
         const auto expectations =
             raw_observation_output_expectations<IsBeammap>(engine);
         const Eigen::Index scan_count =
@@ -89,6 +91,15 @@ publish_completed_raw_timestream_provenance(Engine &engine) {
         complete_raw_timestream_observation(
             plan, raw_realized_count(scan_count, "completed scan count"),
             raw_required_timestream_write_count(expectations));
+    }
+}
+
+template <bool IsBeammap, class Engine>
+std::optional<std::filesystem::path>
+publish_completed_raw_timestream_provenance(Engine &engine) {
+    if constexpr (has_raw_timestream_plan_v<Engine>) {
+        auto &plan = raw_timestream_plan(engine);
+        complete_raw_timestream_observation_if_available<IsBeammap>(engine);
         const auto path = raw_timestream_provenance_path(
             engine.output_paths.obsnum_dir_name);
         write_raw_timestream_provenance_file(

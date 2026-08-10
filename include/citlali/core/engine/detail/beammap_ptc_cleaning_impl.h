@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/pipeline/jinc_processing_provenance.h>
+
 // Beammap PTC cleaning implementation detail.
 // Include this only after Beammap has been declared.
 
@@ -154,6 +156,10 @@ void Beammap::process_beammap_ptc_scan(
     restore_beammap_model_for_ptc_scan(scan_index, measurement_iter);
     remove_bad_beammap_dets_for_scan(scan_index, locator_iter, detector_grouping);
     apply_beammap_ptc_scan_weights(scan_index, measurement_iter, detector_grouping);
+
+    citlali::pipeline::record_jinc_ptc_scan_state_if_available(
+        *this, ptcs[scan_index], calib_scans[scan_index].apt,
+        ptcs[scan_index].map_indices.data);
 
     logger->debug("calculating stats");
     diagnostics.calc_stats(ptcs[scan_index]);

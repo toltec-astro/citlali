@@ -11,6 +11,9 @@
 #include <memory>
 #include <mutex>
 #include <numeric>
+#include <sstream>
+#include <string>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
@@ -18,6 +21,7 @@
 #include <citlali/core/timestream/timestream.h>
 #include <citlali/core/engine/io.h>
 #include <citlali/core/utils/pointing.h>
+#include <citlali/core/utils/sha256.h>
 
 #include <citlali/core/timestream/rtc/polarization.h>
 #include <citlali/core/timestream/rtc/kernel.h>
@@ -29,6 +33,35 @@
 namespace timestream {
 
 using timestream::TCData;
+
+template <class Matrix>
+std::string rtc_realization_matrix_digest(const Matrix &matrix) {
+    citlali::utils::Sha256 digest;
+    auto add = [&](const std::string &value) {
+        digest.update(std::to_string(value.size()));
+        digest.update(":");
+        digest.update(value);
+        digest.update(";");
+    };
+    add(std::to_string(matrix.rows()));
+    add(std::to_string(matrix.cols()));
+    for (Eigen::Index col = 0; col < matrix.cols(); ++col) {
+        for (Eigen::Index row = 0; row < matrix.rows(); ++row) {
+            using Scalar = std::remove_cv_t<typename Matrix::Scalar>;
+            if constexpr (std::is_integral_v<Scalar>) {
+                add(std::to_string(
+                    static_cast<long long>(matrix(row, col))));
+            }
+            else {
+                std::ostringstream value;
+                value << std::hexfloat
+                      << static_cast<double>(matrix(row, col));
+                add(value.str());
+            }
+        }
+    }
+    return "sha256:" + digest.finish();
+}
 
 class RTCProc: public TCProc {
 public:
@@ -376,12 +409,23 @@ public:
         int protected_samples = 0;
         int total_samples = 0;
         double radius_arcsec = std::numeric_limits<double>::quiet_NaN();
+        std::string mask_digest = "unavailable";
+    };
+
+    struct RTCNotchOperatorSummary {
+        std::string stage;
+        Eigen::Index detector_index = -1;
+        double center_hz = std::numeric_limits<double>::quiet_NaN();
+        double width_hz = std::numeric_limits<double>::quiet_NaN();
+        bool zero_phase = true;
     };
 
     std::map<Eigen::Index, std::vector<RTCDetectorDiagSummary>> rtc_detector_summary_by_scan;
     std::map<Eigen::Index, std::vector<RTCNetworkDiagSummary>> rtc_network_summary_by_scan;
     std::map<Eigen::Index, std::map<Eigen::Index, std::vector<RTCImpulsiveSnippetSummary>>> rtc_impulsive_summary_by_scan;
     std::map<Eigen::Index, RTCSourceProtectionDiagSummary> rtc_source_protection_summary_by_scan;
+    std::map<Eigen::Index, std::vector<RTCNotchOperatorSummary>>
+        rtc_notch_operators_by_scan;
     std::shared_ptr<std::mutex> diag_summary_mutex = std::make_shared<std::mutex>();
     std::map<Eigen::Index, std::vector<RTCCoherentIqModeCandidateSummary>>
         coherent_iq_mode_candidates_by_scan;
@@ -392,6 +436,16 @@ public:
         std::lock_guard<std::mutex> lock(*diag_summary_mutex);
         const auto it = rtc_detector_summary_by_scan.find(scan_id);
         if (it == rtc_detector_summary_by_scan.end()) {
+            return {};
+        }
+        return it->second;
+    }
+
+    std::vector<RTCNetworkDiagSummary> snapshot_network_diag_summary(
+        Eigen::Index scan_id) {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        const auto it = rtc_network_summary_by_scan.find(scan_id);
+        if (it == rtc_network_summary_by_scan.end()) {
             return {};
         }
         return it->second;
@@ -426,6 +480,39 @@ public:
             return {};
         }
         return it->second;
+    }
+
+    std::vector<RTCNotchOperatorSummary>
+    snapshot_notch_operator_summary(Eigen::Index scan_id) {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        const auto it = rtc_notch_operators_by_scan.find(scan_id);
+        return it == rtc_notch_operators_by_scan.end()
+                   ? std::vector<RTCNotchOperatorSummary>{}
+                   : it->second;
+    }
+
+    void reset_rtc_processing_realization(Eigen::Index scan_id) {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        rtc_source_protection_summary_by_scan.erase(scan_id);
+        rtc_notch_operators_by_scan.erase(scan_id);
+    }
+
+    void record_rtc_notch_operators(
+        Eigen::Index scan_id,
+        const std::vector<RTCNotchOperatorSummary> &operators) {
+        for (const auto &entry : operators) {
+            if (entry.stage.empty() ||
+                !std::isfinite(entry.center_hz) ||
+                entry.center_hz <= 0.0 ||
+                !std::isfinite(entry.width_hz) ||
+                entry.width_hz <= 0.0) {
+                throw std::logic_error(
+                    "RTC realized notch operator identity is incomplete");
+            }
+        }
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        auto &realized = rtc_notch_operators_by_scan[scan_id];
+        realized.insert(realized.end(), operators.begin(), operators.end());
     }
 
     // get config file
@@ -776,6 +863,15 @@ Eigen::Index RTCProc::apply_rtc_line_audit_fixed_notches(
         fixed_notch_filter.iir(in.kernel.data);
     }
 
+    std::vector<RTCNotchOperatorSummary> realized_notches;
+    realized_notches.reserve(applied_notches.size());
+    for (const auto &notch : applied_notches) {
+        realized_notches.push_back(RTCNotchOperatorSummary{
+            "line_audit_fixed_pre", -1, notch.freq_hz,
+            notch.width_hz, true});
+    }
+    record_rtc_notch_operators(in.index.data, realized_notches);
+
     for (const auto &notch : applied_notches) {
         logger->info(
             "rtc_line_audit apply_fixed_notch scan {}: center_hz={:.4f} width_hz={:.4f} zero_phase=true",
@@ -850,6 +946,8 @@ template<class calib_t, typename telescope_t>
 auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKind::PTC, Eigen::MatrixXd> &out,
                   calib_t &calib, telescope_t &telescope, double pixel_size_rad, std::string map_grouping,
                   TCData<TCDataKind::RTC, Eigen::MatrixXd> *tod_outer_output) {
+
+    reset_rtc_processing_realization(in.index.data);
 
     // number of points in scan
     Eigen::Index n_pts = in.scans.data.rows();
@@ -930,6 +1028,8 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                 static_cast<int>(source_info.protected_samples);
             despike_source_summary.total_samples =
                 static_cast<int>(source_mask.size());
+            despike_source_summary.mask_digest =
+                rtc_realization_matrix_digest(source_mask);
             despiker_local.source_protection_mask = std::move(source_mask);
             despiker_local.last_source_protection_sample_count =
                 source_info.protected_samples;
@@ -1027,6 +1127,29 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                 filter.iir(in.kernel.data);
             }
             log_kernel_matrix_diag(logger, "rtc after tod filter", in.kernel.data, in.index.data);
+        }
+        if (run_tod_notch) {
+            if (filter.notch_a.size() != filter.w0s.size() ||
+                filter.notch_b.size() != filter.w0s.size() ||
+                filter.qs.size() != filter.w0s.size()) {
+                throw std::logic_error(
+                    "RTC configured notch realization differs from the constructed filter sections");
+            }
+            std::vector<RTCNotchOperatorSummary> realized_notches;
+            realized_notches.reserve(filter.notch_a.size());
+            for (std::size_t notch = 0; notch < filter.notch_a.size(); ++notch) {
+                if (!std::isfinite(filter.qs[notch]) ||
+                    filter.qs[notch] <= 0.0) {
+                    throw std::logic_error(
+                        "RTC configured notch lacks a realized finite-positive Q");
+                }
+                realized_notches.push_back(RTCNotchOperatorSummary{
+                    "configured_tod", -1, filter.w0s[notch],
+                    filter.w0s[notch] / filter.qs[notch],
+                    filter.notch_zero_phase});
+            }
+            record_rtc_notch_operators(
+                in.index.data, realized_notches);
         }
         ran_tod_filter_stage = true;
     }
@@ -2818,6 +2941,15 @@ Eigen::Index RTCProc::apply_rtc_line_audit_shared_notches(tc_t &in,
     if (run_kernel) {
         dynamic_notch_filter.iir(in.kernel.data);
     }
+    std::vector<RTCNotchOperatorSummary> realized_notches;
+    realized_notches.reserve(applied_clusters.size());
+    for (const auto &cluster : applied_clusters) {
+        realized_notches.push_back(RTCNotchOperatorSummary{
+            post_filter_stage ? "line_audit_shared_post"
+                              : "line_audit_shared_pre",
+            -1, cluster.center_hz, cluster.width_hz, true});
+    }
+    record_rtc_notch_operators(in.index.data, realized_notches);
 
     for (auto &row : nw_summary) {
         auto diag = get_line_audit_diag(row);
@@ -3333,6 +3465,7 @@ Eigen::Index RTCProc::apply_rtc_line_audit_detector_notches(tc_t &in,
     Eigen::Index touched_dets = 0;
     Eigen::Index max_notches_per_det = 0;
     std::vector<double> primary_freqs;
+    std::vector<RTCNotchOperatorSummary> realized_notches;
 
     for (Eigen::Index det = 0; det < n_dets; ++det) {
         auto &diag = det_summary[static_cast<std::size_t>(det)];
@@ -3447,6 +3580,11 @@ Eigen::Index RTCProc::apply_rtc_line_audit_detector_notches(tc_t &in,
         diag.detector_notch_primary_width_hz = applied_peaks.front().applied_width_hz;
         diag.detector_notch_primary_prominence = applied_peaks.front().prominence;
         diag.detector_notch_primary_line_power_frac = applied_peaks.front().line_power_frac;
+        for (const auto &peak : applied_peaks) {
+            realized_notches.push_back(RTCNotchOperatorSummary{
+                "line_audit_detector_post", det, peak.freq_hz,
+                peak.applied_width_hz, true});
+        }
         total_notches += static_cast<Eigen::Index>(applied_peaks.size());
         max_notches_per_det =
             std::max<Eigen::Index>(max_notches_per_det, static_cast<Eigen::Index>(applied_peaks.size()));
@@ -3455,6 +3593,7 @@ Eigen::Index RTCProc::apply_rtc_line_audit_detector_notches(tc_t &in,
     }
 
     if (total_notches > 0) {
+        record_rtc_notch_operators(scan_id, realized_notches);
         logger->info(
             "rtc_line_audit apply_detector_notches scan {}: dets={} total_notches={} max_notches_per_det={} primary_freq_median_hz={:.4f} zero_phase=true kernel_filtered={}",
             scan_id + 1,

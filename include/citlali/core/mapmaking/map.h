@@ -13,6 +13,7 @@
 #include <citlali/core/utils/utils.h>
 #include <citlali/core/utils/fitting.h>
 #include <citlali/core/mapmaking/science_map_contract.h>
+#include <citlali/core/mapmaking/jinc_contract.h>
 
 namespace mapmaking {
 
@@ -85,6 +86,10 @@ public:
     // full-precision bundle identity. This state is owned by the map buffer
     // lifecycle rather than synchronized through Engine.
     ScienceMapProducts science_products;
+    // SCI-MAP-002 observation-owned JINC conditioning, formal-support, and
+    // compact provenance state.  This is deliberately separate from the
+    // ordinary-naive SCI-MAP-001 product bundle.
+    JincProducts jinc_products;
     // Once a downstream filter is about to mutate map-domain planes, this
     // const snapshot carries the already-validated raw F010 authority and raw
     // parent identities. Filtered computation never rewrites it.
