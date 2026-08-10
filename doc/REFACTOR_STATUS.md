@@ -133,6 +133,55 @@ this exact integration tip,
 work, Unity execution, realization-count recommendations, calibrated
 significance, and Conan-lane synchronization remain separate decisions.
 
+## 2026-08-10 SCI-MAP-002 Application Integration
+
+The project owner and coordinator authorize the owner-accepted SCI-MAP-002
+third-successor application candidate for bounded local integration. The
+dedicated `codex/integrate-sci-map-002` branch was created at exact canonical
+application target `46ad23888a40f5102cdfd50c06e49a549bdf8a20` and merged exact
+candidate `86f1582fad92bdd0453bca3264ce39478b00c227` with a no-fast-forward
+merge. Local merge commit `214484e21a00e0c11d86c2b0460ec98b969469f2`
+has those exact target and candidate commits as its first and second parents,
+respectively, and its tree is the accepted candidate tree
+`f655e96daa578bd77c9b16528c3aaadf882ee80d`. The complete four-commit MAP
+repair lineage is preserved without conflict resolution, patch
+reconstruction, squashing, rewriting, or application-byte alteration.
+
+Independent re-audit
+`a70424a69365d7ed20fb39c45bc6334cc9e7bafe`, report SHA-256
+`fe07901504ad26916cab2c5589f452b1873c11ef215239653ed938f45eefd4d5`,
+and canonical owner acceptance `3625bc1946910d8d6f13e82fa03f5815112d67a1`
+close RA-001 as preserved, RA-002, RA-003 as preserved, RA-004 as preserved,
+and RA-005. The accepted axes are `approved`, `conformant`, `complete`, and
+`existing_use_only`, with verdict `accept`. The 43 imported application paths
+are exactly the accepted candidate inventory. RTC-, PTC-, and Beammap-named
+touches remain MAP processing-provenance and application wiring; they do not
+authorize or introduce a separate CAL, RTC, PTC, Beammap, or unrelated
+scientific change.
+
+The exact integrated application bytes pass the six requested focused and
+application build targets plus the complete default build; 75/75 focused JINC
+and science-map FITS CTests; and all 666 enabled CTests among 667 discovered
+tests, with the one unchanged disabled exact-product-sequence test not run.
+The complete baseline-tool suite passes 173/173 tests, including 24/24 direct
+product-contract tests. The required config preflight passes 127/127 tests,
+all four mode kits, 8/8 compact-compatibility cases with zero skips, 100%
+compact-surface coverage, and every typed authority audit. The raw-execution
+census is 47 records with exact digest
+`37bbb9c4a1a7ed78e3d79571a4cd6e0e745af2520eddb24f54ca191d52d4d1bf`,
+zero review-required entries, and no drift. The 60-record validation ledger,
+three-change/five-integration-commit science-change ledger, four-active/eight-
+preparing validation-profile registry, product-contract JSON registry, and
+session-exit audit with zero library exits, CLI exits, or growth all pass.
+There are no required-data skips or unexpected error-level messages in the
+passing gates.
+
+This bounded local integration does not push or remotely merge the branch,
+authorize Unity access or a reduction, expand production, launch BEAM or
+other downstream work, start a re-audit, alter the accepted scientific
+contract, or synchronize the Conan lane. Owner-controlled push and any later
+application-mainline update remain separate actions.
+
 ## 2026-08-08 SCI-MAP-002 Local JINC Repair Candidate
 
 The bounded SCI-MAP-002 application repair was prepared on
