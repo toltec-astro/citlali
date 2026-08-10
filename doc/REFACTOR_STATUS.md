@@ -36,6 +36,25 @@ The live branch, upstream revision, gate, and import policy are recorded in
 [`INTEGRATION_LEDGER.md`](INTEGRATION_LEDGER.md). The durable rationale is
 [ADR 0008](adr/0008-application-mainline-and-build-adaptation-lanes.md).
 
+## 2026-08-09 RTC Learned-Sampling Stage A Metrics Candidate
+
+An observe-only metrics implementation is prepared on
+`codex/rtc-learned-sampling-stage-a` from exact clean application base
+`46ad23888a40f5102cdfd50c06e49a549bdf8a20`. It adds analytical candidate
+sampling metrics to the existing atomic `rtcdiag` product using exact valid
+maximum scan speed, scan-projected APT beam response, the realized configured
+FIR, and phase-zero alias folding. It does not use the nonconformant RTC repair
+candidate `24f28ea9...` as its base.
+
+The candidate is strictly metrics-only: it ranks or selects no factor, defines
+no scientific tolerance, creates no learned/resolved/applied plan, and changes
+no RTC execution, detector data, flags, timestamps, time grids, downstream
+inputs, maps, weights, or products. Physical integration-event semantics and
+absolute timing placement remain unavailable. See the dated
+[Stage A metrics note](RTC_LEARNED_SAMPLING_STAGE_A_METRICS_2026-08-09.md).
+Stage B, numerical tolerances, candidate-specific FIR policy, and any
+per-array/per-scan applied cadence remain separate owner decisions.
+
 ## 2026-08-05 SCI-MAP-001 Application Integration Candidate
 
 The final independent re-audit at

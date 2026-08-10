@@ -52,13 +52,17 @@ void Engine::create_rtcdiag_file() {
     const auto scan_array_summary =
         citlali::pipeline::calculate_rtcdiag_scan_array_summary(
             calib, citlali::pipeline::raw_time_chunk_config(*this),
-            scan_summary.scan_speed_p995_arcsec_s,
+            scan_summary.scan_motion, telescope.fsmp,
             n_scans, rtcdiag_dims.n_array_values,
-            rtcdiag_dims.n_scan_array_values, pi, FWHM_TO_STD,
-            fill_double);
+            rtcdiag_dims.n_scan_array_values, fill_double);
     citlali::pipeline::add_rtcdiag_scan_array_summary_outputs(
         fo, rtcdiag_dims.scan_array, rtcdiag_dims.scan_array_chunks,
         scan_array_summary);
+    add_netcdf_var(
+        fo, "RTC_SAMPLING_BEAM_AUTHORITY",
+        calib.apt_filepath.empty()
+            ? std::string{"APT path unavailable"}
+            : calib.apt_filepath);
 
     citlali::pipeline::add_rtcdiag_network_ids(
         fo, calib, rtcdiag_dims.n_nws, fill_int);

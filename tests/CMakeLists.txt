@@ -31,6 +31,7 @@ target_sources(citlali_test
         test_process_resource_snapshot.cpp
         test_rawobs_adc_snap.cpp
         test_reduction_session.cpp
+        test_rtc_learned_sampling_metrics.cpp
         test_science_map_provenance.cpp
         test_science_map_contract.cpp
         test_science_map_truth_suite.cpp

@@ -12,6 +12,8 @@
 #include <netcdf>
 
 #include <citlali/core/pipeline/reduction_config_netcdf.h>
+#include <citlali/core/pipeline/rtc_learned_sampling_metrics.h>
+#include <citlali/core/timestream/rtc/filter.h>
 #include <citlali/core/utils/netcdf_io.h>
 
 
