@@ -1,0 +1,22 @@
+{
+  "array": "a1100",
+  "axis_sign_model": "x=x0+h_az*sign(vx), y=y0+h_el*sign(vy); empirical map axes",
+  "fit_half_width_arcsec": 15.0,
+  "interpretation_limits": [
+    "descriptive model comparison; sector-centroid covariance is unavailable",
+    "does not identify a physical encoder, secondary, or timestamp mechanism",
+    "does not prescribe a pointing or timing correction"
+  ],
+  "map_half_width_arcsec": 80.0,
+  "map_pixel_arcsec": 2.0,
+  "minimum_speed_arcsec_s": 5.0,
+  "model_names": [
+    "constant",
+    "time_lag",
+    "axis_sign",
+    "joint"
+  ],
+  "schema": "sci-align-001-lissajous-pointing-protocol-v1",
+  "time_lag_model": "centroid = intercept + tau * map_velocity",
+  "velocity_sector_count": 8
+}
