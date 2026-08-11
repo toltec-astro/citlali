@@ -130,6 +130,7 @@ class PreparedObservation:
     eligible_networks: tuple[int, ...]
     common_support_sample_count: int
     scored_value_count: int
+    objective_normalization: float
     protocol: dict[str, Any]
 
 
@@ -291,6 +292,8 @@ def prepare(frozen: dict[str, Any], protocol: dict[str, Any]) -> PreparedObserva
     used_networks: set[int] = set()
     support_count = 0
     scored_count = 0
+    normalization_numerator = 0.0
+    normalization_denominator = 0.0
 
     with netCDF4.Dataset(ptc_path) as dataset:
         ptc_uid = np.asarray(dataset.variables["apt_uid"][:], dtype=np.int64)
@@ -400,8 +403,18 @@ def prepare(frozen: dict[str, Any], protocol: dict[str, Any]) -> PreparedObserva
             used_networks.update(map(int, geometry.network))
             support_count += recorded.size
             scored_count += int(np.count_nonzero(score))
+            normalization_numerator += float(np.sum(
+                weight[detector_keep]
+                * np.sum(np.where(score, residual * residual, 0.0), axis=0)
+            ))
+            normalization_denominator += float(np.sum(
+                weight[detector_keep] * np.sum(score, axis=0)
+            ))
     if len(scans_out) < int(support["minimum_retained_scan_count"]):
         raise ContractError(f"only {len(scans_out)} scans retain source-crossing support")
+    objective_normalization = normalization_numerator / normalization_denominator
+    if not math.isfinite(objective_normalization) or objective_normalization <= 0.0:
+        raise ContractError("fixed zero-model signal-energy normalization is invalid")
     axis_x, axis_y = scan_axis(displacements)
     return PreparedObservation(
         obsnum=obsnum,
@@ -415,6 +428,7 @@ def prepare(frozen: dict[str, Any], protocol: dict[str, Any]) -> PreparedObserva
         eligible_networks=tuple(sorted(used_networks)),
         common_support_sample_count=support_count,
         scored_value_count=scored_count,
+        objective_normalization=objective_normalization,
         protocol=protocol,
     )
 
@@ -517,7 +531,11 @@ def objective(values: np.ndarray, observation: PreparedObservation, model: str) 
         weight += item_weight
     if not math.isfinite(sse) or weight <= 0.0:
         return math.inf
-    return sse / weight
+    # Beammap residuals may be of order 1e-6 in native units.  Without this
+    # fixed, parameter-independent scale, L-BFGS-B can declare convergence at
+    # iteration zero because the entire objective is below its gradient
+    # tolerance.  Scaling does not change any optimum or model ordering.
+    return (sse / weight) / observation.objective_normalization
 
 
 def bounds_starts(
@@ -711,6 +729,7 @@ def run(args: argparse.Namespace) -> None:
             "retained_scan_count": len(observation.scans),
             "common_support_sample_count": observation.common_support_sample_count,
             "scored_value_count": observation.scored_value_count,
+            "objective_normalization_native_squared": observation.objective_normalization,
         },
         "scan_axis": {"x": observation.scan_axis_x, "y": observation.scan_axis_y},
         "model_results": fits,

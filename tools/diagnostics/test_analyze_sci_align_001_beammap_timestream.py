@@ -119,6 +119,10 @@ def synthetic_observation(tau_sec: float = 0.013) -> target.PreparedObservation:
         eligible_networks=tuple(range(6)),
         common_support_sample_count=support,
         scored_value_count=scored,
+        objective_normalization=float(np.mean([
+            np.nanmean(np.where(scan.score_mask, scan.residual_signal ** 2, np.nan))
+            for scan in scans
+        ])),
         protocol=protocol,
     )
 
@@ -253,6 +257,7 @@ class BeammapTimestreamTest(unittest.TestCase):
         observation = synthetic_observation(tau_sec=0.013)
         fit = target.fit_model(observation, "lag")
         self.assertEqual(fit["status"], "success")
+        self.assertGreater(fit["optimizer_iterations"], 0)
         self.assertAlmostEqual(fit["tau_ms"], 13.0, delta=0.25)
         self.assertAlmostEqual(
             fit["parameters"]["delta_x_arcsec"], 0.0, delta=0.05

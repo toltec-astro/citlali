@@ -1,6 +1,7 @@
 {
   "schema": "sci-align-001-beammap-timestream-protocol-v1",
-  "revision": 1,
+  "revision": 2,
+  "refreeze_reason": "the first real anchor exposed a documented numerical failure: every optimizer stopped at iteration zero because the native Beammap objective was approximately 8e-15 and therefore below the fixed gradient tolerance, while the independently evaluated tau profile had a different minimum; divide by one fixed pre-fit signal-energy scale without changing the optimum",
   "frozen_before_real_result_inspection": true,
   "scope": {
     "source": "3C273",
@@ -34,7 +35,8 @@
     "scan_definition": "one repaired same-timebase inclusive row of full-PTC scan_indices/raw_scan_indices",
     "edge_rule": "retain samples only when t plus or minus 50 ms stays within that scan",
     "baseline": "constant fitted per detector-scan on fixed off-source support",
-    "amplitude": "nonnegative and profiled independently per detector-scan"
+    "amplitude": "nonnegative and profiled independently per detector-scan",
+    "objective_normalization": "divide every model objective by the fixed PTC-weighted mean squared off-source-baseline-subtracted signal on the frozen scoring support; the scale is parameter-independent and cannot change an optimum or model ordering"
   },
   "models": {
     "constant": "global delta_x/delta_y relative to all standard-APT detector centers",

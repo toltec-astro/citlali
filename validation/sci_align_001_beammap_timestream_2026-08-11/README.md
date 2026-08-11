@@ -26,3 +26,11 @@ The required input is a repaired full-PTC `*_ptc_timestream.nc`, not the sparse
 per-detector source-crossing sidecar.  The sparse sidecar does not retain the
 complete telescope trajectory needed for exact within-scan `t + tau`
 interpolation.
+
+Revision 2 records a numerical repair prompted by the first real anchor, not
+by its fitted timing value.  With native Beammap residuals near `1e-6`, every
+L-BFGS-B fit stopped at iteration zero because the unscaled objective was near
+`8e-15`; an explicit tau grid simultaneously showed that the returned start
+was not the objective minimum.  All objectives are now divided by one fixed,
+pre-fit PTC-weighted signal-energy scale.  This dimensionless scaling cannot
+change an optimum or model ordering and is reported in the result manifest.
