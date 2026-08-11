@@ -42,3 +42,8 @@ scalar `1e-4` finite-difference step meant `1e-4 ms` for `tau`, which is too
 small for the float-valued Beammap signal.  Revision 3 uses the pointing
 fitter's already-validated unit-aware `0.01 ms` tau step while retaining
 `1e-4 arcsec` for spatial and hysteresis coordinates.
+
+The first valid real-data anchor is recorded in
+`LOCAL_O152307_EVIDENCE_2026-08-11.md`.  It establishes a working direct
+Beammap fit and pre-specifies the outcome interpretation for the decisive
+same-observation ObsNum 150819 direct-versus-map comparison.
