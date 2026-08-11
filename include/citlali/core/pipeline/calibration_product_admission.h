@@ -2,6 +2,7 @@
 
 #include <citlali/core/config/timestream_enums.h>
 #include <citlali/core/pipeline/raw_timestream_policy.h>
+#include <citlali/core/pipeline/raw_timestream_config_serialization.h>
 #include <citlali/core/timestream/calibration_product.h>
 
 #include <Eigen/Core>
@@ -10,10 +11,21 @@
 #include <iomanip>
 #include <limits>
 #include <sstream>
+#include <set>
 #include <stdexcept>
 #include <string>
+#include <type_traits>
 
 namespace citlali::pipeline {
+
+template <class Engine, class = void>
+struct has_complete_calibration_product : std::false_type {};
+
+template <class Engine>
+struct has_complete_calibration_product<
+    Engine, std::void_t<decltype(
+                std::declval<Engine &>().rtcproc.calibration.product)>>
+    : std::true_type {};
 
 template <class Calib>
 Eigen::VectorXd apt_column_or_empty(const Calib &calib,
@@ -25,8 +37,10 @@ Eigen::VectorXd apt_column_or_empty(const Calib &calib,
     return found->second;
 }
 
-template <class Engine>
-std::string calibration_response_identity(const Engine &engine) {
+template <class Engine, class AppliedResponseNotchHistory>
+std::string calibration_response_identity(
+    const Engine &engine,
+    const AppliedResponseNotchHistory &applied_response_notches) {
     const auto &raw = raw_time_chunk_config(engine);
     const auto &mapmaking = mapmaking_config(engine);
     const auto major = apt_column_or_empty(engine.calib, "a_fwhm");
@@ -38,8 +52,11 @@ std::string calibration_response_identity(const Engine &engine) {
          << "|b_fwhm=" << timestream::calibration_vector_identity(minor)
          << "|angle=" << timestream::calibration_vector_identity(angle);
     std::ostringstream identity;
+    const auto requested_state_sha256 = citlali::utils::sha256(
+        YAML::Dump(raw_timestream_request_node(raw)));
     identity << std::boolalpha << std::hexfloat
-        << "calibration-response-basis-provenance-v1"
+        << "calibration-response-basis-provenance-v2"
+        << ";requested_state_sha256=" << requested_state_sha256
         << ";originating_beam_state_sha256="
         << citlali::utils::sha256(beam.str())
         << ";originating_beam_fields=selected_APT(a_fwhm,b_fwhm,angle)"
@@ -50,21 +67,106 @@ std::string calibration_response_identity(const Engine &engine) {
         << ";realized_kernel_enabled=" << engine.rtcproc.run_kernel
         << ";realized_kernel_class="
         << (engine.rtcproc.run_kernel ? raw.kernel.type : "identity_response")
-        << ";realized_fir_enabled=" << engine.rtcproc.run_tod_filter
-        << ";realized_fir_low_hz=" << raw.filter.freq_low_Hz
-        << ";realized_fir_high_hz=" << raw.filter.freq_high_Hz
-        << ";realized_fir_terms=" << raw.filter.n_terms
-        << ";realized_fixed_notch_enabled=" << engine.rtcproc.run_tod_notch
+        << ";requested_fir_enabled=" << raw.filter.enabled
+        << ";effective_fir_enabled=" << engine.rtcproc.run_tod_filter
+        << ";realized_fir_state="
+        << (engine.rtcproc.run_tod_filter ? "applied" : "inactive");
+    if (engine.rtcproc.run_tod_filter) {
+        identity << ";realized_fir_low_hz=" << engine.rtcproc.filter.freq_low_Hz
+                 << ";realized_fir_high_hz=" << engine.rtcproc.filter.freq_high_Hz
+                 << ";realized_fir_terms=" << engine.rtcproc.filter.n_terms
+                 << ";realized_fir_a_gibbs=" << engine.rtcproc.filter.a_gibbs;
+    }
+    identity
+        << ";requested_fixed_notch_enabled=" << raw.filter.notch.enabled
+        << ";effective_fixed_notch_enabled=" << engine.rtcproc.run_tod_notch
+        << ";realized_fixed_notch_state="
+        << (engine.rtcproc.run_tod_notch ? "applied" : "inactive");
+    if (engine.rtcproc.run_tod_notch) {
+        identity << ";realized_fixed_notch_zero_phase="
+                 << engine.rtcproc.filter.notch_zero_phase;
+        for (std::size_t index = 0;
+             index < engine.rtcproc.filter.w0s.size(); ++index) {
+            const double center = engine.rtcproc.filter.w0s[index];
+            const double width = index < engine.rtcproc.filter.qs.size() &&
+                    engine.rtcproc.filter.qs[index] != 0.0
+                ? center / engine.rtcproc.filter.qs[index]
+                : std::numeric_limits<double>::quiet_NaN();
+            identity << ";realized_fixed_notch[" << index << "]="
+                     << center << ',' << width;
+        }
+    }
+    const auto &line_audit = engine.rtcproc.line_audit;
+    if (line_audit.enabled && line_audit.pre_filter_enabled &&
+        line_audit.fixed_notch_enabled) {
+        std::size_t applied_index = 0;
+        for (std::size_t index = 0;
+             index < line_audit.fixed_notch_freqs_hz.size(); ++index) {
+            const double center = line_audit.fixed_notch_freqs_hz[index];
+            const double width = line_audit.fixed_notch_widths_hz.empty()
+                ? std::numeric_limits<double>::quiet_NaN()
+                : line_audit.fixed_notch_widths_hz[
+                      std::min(index,
+                               line_audit.fixed_notch_widths_hz.size() - 1)];
+            if (!std::isfinite(center) || center <= 0.0 ||
+                center >= 0.5 * engine.telescope.fsmp ||
+                !std::isfinite(width) || width <= 0.0) {
+                continue;
+            }
+            identity << ";realized_line_audit_fixed_notch["
+                     << applied_index++ << "]=" << center << ',' << width
+                     << ",zero_phase=true";
+        }
+    }
+    identity
         << ";realized_iir_highpass_enabled="
         << engine.rtcproc.run_tod_iir_highpass
-        << ";realized_iir_highpass_hz=" << raw.iir_filter.freq_Hz
-        << ";realized_iir_highpass_order=" << raw.iir_filter.order
-        << ";realized_iir_zero_phase=" << raw.iir_filter.zero_phase
         << ";realized_downsample_enabled=" << engine.rtcproc.run_downsample
-        << ";realized_downsample_factor=" << engine.rtcproc.downsampler.factor
-        << ";normalization_contract=top_of_atmosphere_point_source_peak_mJy_per_beam"
-        << ";semantics=provenance_only_no_empirical_response_fidelity_or_covariance_claim";
+        << ";normalization_contract=top_of_atmosphere_point_source_peak_mJy_per_beam";
+    if (engine.rtcproc.run_tod_iir_highpass) {
+        identity << ";realized_iir_highpass_hz="
+                 << engine.rtcproc.filter.iir_highpass_freq_Hz
+                 << ";realized_iir_highpass_order="
+                 << engine.rtcproc.filter.iir_highpass_order
+                 << ";realized_iir_zero_phase="
+                 << engine.rtcproc.filter.iir_highpass_zero_phase;
+    }
+    if (engine.rtcproc.run_downsample) {
+        identity << ";realized_downsample_factor="
+                 << engine.rtcproc.downsampler.factor;
+    }
+    std::set<std::string> dynamic_notches;
+    for (const auto &[scan, notches] : applied_response_notches) {
+        for (std::size_t index = 0; index < notches.size(); ++index) {
+            const auto &notch = notches[index];
+            std::ostringstream value;
+            value << std::hexfloat << "scan=" << scan
+                  << ",stage=" << notch.stage
+                  << ",scope=" << notch.scope
+                  << ",det=" << notch.detector
+                  << ",ordinal=" << index
+                  << ",center_hz=" << notch.center_hz
+                  << ",width_hz=" << notch.width_hz
+                  << ",zero_phase=" << std::boolalpha
+                  << notch.zero_phase;
+            dynamic_notches.insert(value.str());
+        }
+    }
+    identity << ";realized_dynamic_line_audit_notch_count="
+             << dynamic_notches.size();
+    std::size_t dynamic_index = 0;
+    for (const auto &notch : dynamic_notches) {
+        identity << ";realized_dynamic_line_audit_notch["
+                 << dynamic_index++ << "]=" << notch;
+    }
+    identity << ";semantics=provenance_only_no_empirical_response_fidelity_or_covariance_claim";
     return identity.str();
+}
+
+template <class Engine>
+std::string calibration_response_identity(const Engine &engine) {
+    return calibration_response_identity(
+        engine, engine.rtcproc.snapshot_applied_response_notches());
 }
 
 template <class Calib>
@@ -212,6 +314,8 @@ make_calibration_product_admission_inputs(const Engine &engine) {
         Eigen::VectorXd::Ones(detector_count);
     inputs.maximum_extinction_correction =
         Eigen::VectorXd::Ones(detector_count);
+    inputs.applied_sample_extinction_state_sha256 = citlali::utils::sha256(
+        "sci-cal-001-applied-extinction-state-v1|active=false");
     if (!inputs.extinction_requested) {
         return inputs;
     }
@@ -224,6 +328,19 @@ make_calibration_product_admission_inputs(const Engine &engine) {
     }
     const auto los_by_array = engine.rtcproc.calibration.calc_tau(
         elevation->second, engine.telescope.tau_225_GHz);
+    std::ostringstream extinction_state;
+    extinction_state << "sci-cal-001-applied-extinction-state-v1|active=true";
+    timestream::append_calibration_identity_field(
+        extinction_state, "sample_elevation_sha256",
+        timestream::calibration_vector_identity(elevation->second));
+    for (const auto &[array_id, los] : los_by_array) {
+        timestream::append_calibration_identity_field(
+            extinction_state, "array_" + std::to_string(array_id) +
+                                  "_los_tau_sha256",
+            timestream::calibration_vector_identity(los));
+    }
+    inputs.applied_sample_extinction_state_sha256 =
+        citlali::utils::sha256(extinction_state.str());
     const auto array = apt_column_or_empty(engine.calib, "array");
     if (array.size() != detector_count) {
         inputs.minimum_extinction_correction.resize(0);
@@ -259,6 +376,43 @@ template <class Engine>
 void admit_complete_calibration_product(Engine &engine) {
     auto inputs = make_calibration_product_admission_inputs(engine);
     engine.rtcproc.calibration.admit_product(inputs);
+}
+
+template <class Engine>
+void finalize_complete_calibration_product_identity(Engine &engine) {
+    auto &product = engine.rtcproc.calibration.product;
+    const auto applied_response_notches =
+        engine.rtcproc.consume_applied_response_notches();
+    timestream::finalize_calibration_product_identity(
+        product,
+        calibration_response_identity(engine, applied_response_notches));
+    engine.calib.apt_meta["calibration_identity"] =
+        product.calibration_identity;
+    engine.calib.apt_meta["package_identity"] = product.package_identity;
+    engine.calib.apt_meta["calibration_response_identity"] =
+        product.response_identity;
+    if constexpr (has_raw_timestream_plan_v<Engine>) {
+        auto &plan = raw_timestream_plan(engine);
+        if (plan.observation) {
+            plan.observation->calibration_identity =
+                product.calibration_identity;
+            plan.observation->calibration_package_identity =
+                product.package_identity;
+            plan.observation->calibration_response_identity =
+                product.response_identity;
+            plan.observation->canonical_calibration_product = product;
+        }
+    }
+}
+
+template <class Engine>
+void finalize_complete_calibration_product_identity_if_available(
+    Engine &engine) {
+    if constexpr (has_complete_calibration_product<Engine>::value) {
+        if (engine.rtcproc.calibration.product.valid()) {
+            finalize_complete_calibration_product_identity(engine);
+        }
+    }
 }
 
 }  // namespace citlali::pipeline

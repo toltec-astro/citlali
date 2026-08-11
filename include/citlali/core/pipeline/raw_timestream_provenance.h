@@ -182,6 +182,8 @@ inline YAML::Node raw_timestream_observation_state_node(
         raw_optional_scalar_node(observation->calibration_acquisition_binding_sha256);
     value["calibration_identity"] =
         raw_optional_scalar_node(observation->calibration_identity);
+    value["calibration_package_identity"] =
+        raw_optional_scalar_node(observation->calibration_package_identity);
     value["calibration_factor_state_sha256"] =
         raw_optional_scalar_node(observation->calibration_factor_state_sha256);
     value["calibration_raw_observation_identity"] =
@@ -268,6 +270,8 @@ inline YAML::Node raw_timestream_realized_state_node(
         raw_optional_scalar_node(realized.calibration_acquisition_binding_sha256);
     node["calibration_identity"] =
         raw_optional_scalar_node(realized.calibration_identity);
+    node["calibration_package_identity"] =
+        raw_optional_scalar_node(realized.calibration_package_identity);
     node["calibration_factor_state_sha256"] =
         raw_optional_scalar_node(realized.calibration_factor_state_sha256);
     node["calibration_raw_observation_identity"] =
@@ -314,20 +318,7 @@ inline YAML::Node calibration_reference_effective_node(
 
 inline std::string calibration_package_identity(
     const timestream::CalibrationProduct &product) {
-    std::ostringstream preimage;
-    preimage << "sci-cal-001-calibration-package-v1";
-    timestream::append_calibration_identity_field(
-        preimage, "calibration_identity", product.calibration_identity);
-    timestream::append_calibration_identity_field(
-        preimage, "package_local_apt_path",
-        selected_calibration_apt_filename);
-    timestream::append_calibration_identity_field(
-        preimage, "package_local_apt_sha256",
-        product.apt_artifact_sha256);
-    timestream::append_calibration_identity_field(
-        preimage, "acquisition_binding_sha256",
-        product.acquisition_binding_sha256);
-    return citlali::utils::sha256(preimage.str());
+    return timestream::calibration_package_identity(product);
 }
 
 inline YAML::Node calibration_input_record_node(
@@ -354,7 +345,7 @@ inline YAML::Node canonical_calibration_lineage_node(
     auto value = node["value"];
     value["schema_version"] =
         "sci-cal-001-canonical-calibration-lineage-v1";
-    value["package_identity"] = calibration_package_identity(product);
+    value["package_identity"] = product.package_identity;
     value["calibration_identity"] = product.calibration_identity;
     value["component_identities"]["selected_apt_sha256"] =
         product.apt_artifact_sha256;
@@ -559,6 +550,8 @@ inline void write_raw_timestream_provenance_file(
 
     const auto &lineage = product->package_lineage;
     if (product->calibration_identity.empty() ||
+        product->package_identity.empty() ||
+        !product->applied_identity_finalized ||
         product->factor_state_sha256.empty() ||
         lineage.selected_apt_source_path.empty() ||
         lineage.selected_apt_sha256.empty() ||

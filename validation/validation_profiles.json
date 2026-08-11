@@ -68,7 +68,8 @@
         "comparator": "reduction_products",
         "include": [],
         "exclude": [
-          "citlali_profile.ecsv"
+          "citlali_profile.ecsv",
+          "selected_calibration_apt.ecsv"
         ],
         "include_timestream": true,
         "max_array_elements": 0,
@@ -109,7 +110,8 @@
         "comparator": "reduction_products",
         "include": [],
         "exclude": [
-          "citlali_profile.ecsv"
+          "citlali_profile.ecsv",
+          "selected_calibration_apt.ecsv"
         ],
         "include_timestream": true,
         "max_array_elements": 0,
@@ -181,7 +183,8 @@
         "comparator": "reduction_products",
         "include": [],
         "exclude": [
-          "citlali_profile.ecsv"
+          "citlali_profile.ecsv",
+          "selected_calibration_apt.ecsv"
         ],
         "include_timestream": true,
         "max_array_elements": 0,
@@ -225,7 +228,8 @@
         "comparator": "reduction_products",
         "include": [],
         "exclude": [
-          "citlali_profile.ecsv"
+          "citlali_profile.ecsv",
+          "selected_calibration_apt.ecsv"
         ],
         "include_timestream": true,
         "max_array_elements": 0,
@@ -269,7 +273,8 @@
         "comparator": "reduction_products",
         "include": [],
         "exclude": [
-          "citlali_profile.ecsv"
+          "citlali_profile.ecsv",
+          "selected_calibration_apt.ecsv"
         ],
         "include_timestream": true,
         "max_array_elements": 0,
@@ -383,7 +388,8 @@
         "comparator": "reduction_products",
         "include": [],
         "exclude": [
-          "citlali_profile.ecsv"
+          "citlali_profile.ecsv",
+          "selected_calibration_apt.ecsv"
         ],
         "include_timestream": true,
         "max_array_elements": 0,
@@ -427,7 +433,8 @@
         "comparator": "reduction_products",
         "include": [],
         "exclude": [
-          "citlali_profile.ecsv"
+          "citlali_profile.ecsv",
+          "selected_calibration_apt.ecsv"
         ],
         "include_timestream": true,
         "max_array_elements": 0,

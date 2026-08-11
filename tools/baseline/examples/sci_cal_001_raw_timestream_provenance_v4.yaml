@@ -1,0 +1,28 @@
+schema_version: citlali-raw-timestream-provenance-v4
+calibration_lineage:
+  available: true
+  value:
+    schema_version: sci-cal-001-canonical-calibration-lineage-v1
+    package_identity: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+    calibration_identity: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    component_identities:
+      selected_apt_sha256: cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+    selected_apt:
+      package_local_path: selected_calibration_apt.ecsv
+      package_local_sha256: cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+      copy_semantics: exact_byte_copy_digest_verified_required_output
+observation:
+  value:
+    calibration_identity:
+      available: true
+      value: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    calibration_package_identity:
+      available: true
+      value: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+realized:
+  calibration_identity:
+    available: true
+    value: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+  calibration_package_identity:
+    available: true
+    value: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb

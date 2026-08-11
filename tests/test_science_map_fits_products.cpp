@@ -612,6 +612,48 @@ TEST(science_map_fits_products,
         "available_where_finite_positive_denominator_on_valid_support");
 }
 
+TEST(science_map_fits_products,
+     production_noise_variance_I_scales_as_square_of_calibration_factor) {
+    auto produce_noise_variance = [](double calibration_factor) {
+        auto map = make_science_map_buffer(false);
+        map->signal[0].setConstant(2.0 * calibration_factor);
+        map->weight[0].setConstant(
+            1.0 / (calibration_factor * calibration_factor));
+        set_noise_stack(
+            *map,
+            {Eigen::MatrixXd::Constant(
+                 map->n_rows, map->n_cols, -2.0 * calibration_factor),
+             Eigen::MatrixXd::Constant(
+                 map->n_rows, map->n_cols, 2.0 * calibration_factor)});
+        map->science_products.bundle_identity->required_companions = {
+            "noise_realization_0_I", "noise_realization_1_I"};
+        mapmaking::science_map_finalize_realized_product_facts(*map, 0);
+        map->calc_noise_products(Eigen::Index{0}, false, true);
+
+        CapturedFitsEntry output;
+        DummyWcs wcs;
+        citlali::pipeline::add_primary_map_image_hdus(
+            output, map, 0, "", "I", wcs, 2000.0, false, true, false,
+            false, science_map_test_logger());
+        EXPECT_TRUE(captured_has_image(output, "noise_variance_I"));
+        return captured_image(output, "noise_variance_I").values;
+    };
+
+    const auto raw_variance = produce_noise_variance(1.0);
+    const double calibration_factor = 3.0;
+    const auto calibrated_variance =
+        produce_noise_variance(calibration_factor);
+    ASSERT_EQ(raw_variance.size(), calibrated_variance.size());
+    ASSERT_FALSE(raw_variance.empty());
+    for (std::size_t pixel = 0; pixel < raw_variance.size(); ++pixel) {
+        ASSERT_GT(raw_variance[pixel], 0.0) << "pixel=" << pixel;
+        EXPECT_DOUBLE_EQ(
+            calibrated_variance[pixel],
+            raw_variance[pixel] * calibration_factor * calibration_factor)
+            << "pixel=" << pixel;
+    }
+}
+
 TEST(science_map_fits_products, writes_canonical_typed_planes_and_aliases) {
     auto map = make_science_map_buffer();
     CapturedFitsEntry output;
@@ -943,6 +985,7 @@ TEST(science_map_fits_products,
     raw.kernel.enabled = true;
     raw.kernel.type = "gaussian";
     raw.filter.enabled = true;
+    raw.filter.a_gibbs = 42.0;
     raw.filter.freq_low_Hz = 0.2;
     raw.filter.freq_high_Hz = 16.0;
     raw.filter.n_terms = 32;
@@ -958,6 +1001,12 @@ TEST(science_map_fits_products,
     engine.rtcproc.run_tod_notch = true;
     engine.rtcproc.run_tod_iir_highpass = true;
     engine.rtcproc.run_downsample = true;
+    engine.rtcproc.filter.a_gibbs = 42.0;
+    engine.rtcproc.filter.freq_low_Hz = 0.2;
+    engine.rtcproc.filter.freq_high_Hz = 16.0;
+    engine.rtcproc.filter.n_terms = 32;
+    engine.rtcproc.filter.w0s = {10.0, 20.0};
+    engine.rtcproc.filter.qs = {20.0, 40.0};
     engine.rtcproc.downsampler.factor = 4;
     engine.calib.apt["a_fwhm"] = Eigen::VectorXd::Constant(1, 10.0);
     engine.calib.apt["b_fwhm"] = Eigen::VectorXd::Constant(1, 9.0);
@@ -973,9 +1022,11 @@ TEST(science_map_fits_products,
               std::string::npos);
     EXPECT_NE(identity.find("realized_kernel_class=gaussian"),
               std::string::npos);
-    EXPECT_NE(identity.find("realized_fir_enabled=true"),
+    EXPECT_NE(identity.find("realized_fir_state=applied"),
               std::string::npos);
-    EXPECT_NE(identity.find("realized_fixed_notch_enabled=true"),
+    EXPECT_NE(identity.find("realized_fir_a_gibbs=0x1.5p+5"),
+              std::string::npos);
+    EXPECT_NE(identity.find("realized_fixed_notch_state=applied"),
               std::string::npos);
     EXPECT_NE(identity.find("realized_iir_highpass_enabled=true"),
               std::string::npos);
@@ -987,6 +1038,50 @@ TEST(science_map_fits_products,
     engine.calib.apt["angle"](0) = 0.5;
     EXPECT_NE(citlali::pipeline::calibration_response_identity(engine),
               identity);
+}
+
+TEST(science_map_fits_products,
+     calibration_response_identity_distinguishes_secondary_detector_notches) {
+    Engine engine;
+    configure_production_writer_engine(engine);
+    engine.rtcproc.rtc_applied_response_notches_by_scan[3] = {
+        {"post_filter", "detector", 7, 11.0, 0.2, true},
+        {"post_filter", "detector", 7, 19.0, 0.4, true}};
+    const auto snapshot =
+        engine.rtcproc.snapshot_applied_response_notches();
+    ASSERT_EQ(snapshot.at(3).size(), 2U);
+    const auto first =
+        citlali::pipeline::calibration_response_identity(engine);
+    engine.rtcproc.rtc_applied_response_notches_by_scan[3][1]
+        .center_hz = 23.0;
+    const auto second =
+        citlali::pipeline::calibration_response_identity(engine);
+    EXPECT_NE(first, second);
+    EXPECT_NE(first.find("ordinal=1"), std::string::npos);
+    EXPECT_NE(first.find("center_hz=0x1.3p+4"), std::string::npos);
+    const auto consumed =
+        engine.rtcproc.consume_applied_response_notches();
+    ASSERT_EQ(consumed.at(3).size(), 2U);
+    EXPECT_TRUE(engine.rtcproc.snapshot_applied_response_notches().empty());
+}
+
+TEST(science_map_fits_products,
+     calibration_response_identity_keeps_dormant_request_out_of_realized_state) {
+    Engine engine;
+    configure_production_writer_engine(engine);
+    auto &raw = engine.typed_config.timestream.raw_time_chunk;
+    raw.filter.enabled = false;
+    raw.filter.a_gibbs = 31.0;
+    engine.rtcproc.run_tod_filter = false;
+    const auto first =
+        citlali::pipeline::calibration_response_identity(engine);
+    EXPECT_NE(first.find("realized_fir_state=inactive"), std::string::npos);
+    EXPECT_EQ(first.find("realized_fir_a_gibbs"), std::string::npos);
+    raw.filter.a_gibbs = 49.0;
+    const auto second =
+        citlali::pipeline::calibration_response_identity(engine);
+    EXPECT_NE(first, second);
+    EXPECT_EQ(second.find("realized_fir_a_gibbs"), std::string::npos);
 }
 
 template <class EngineType>
@@ -1057,6 +1152,7 @@ void admit_production_calibration_fixture(EngineType &engine) {
         std::move(lineage_row));
     engine.rtcproc.calibration.admit_product(inputs);
     ASSERT_TRUE(engine.rtcproc.calibration.product.valid());
+    citlali::pipeline::finalize_complete_calibration_product_identity(engine);
 }
 
 std::shared_ptr<ScienceMapBufferFixture> make_production_science_map_buffer(
@@ -2371,8 +2467,13 @@ TEST(science_map_fits_products,
                   .substr(0, acquisition_link.size()),
               acquisition_link);
     EXPECT_EQ(read_required_fits_long_string(file, "CAL.RESPONSE_IDENTITY")
-                  .find("calibration-response-basis-provenance-v1"),
+                  .find("calibration-response-basis-provenance-v2"),
               0U);
+    EXPECT_EQ(read_required_fits_long_string(
+                  file, "CALID"),
+              engine.rtcproc.calibration.product.calibration_identity);
+    EXPECT_EQ(read_required_fits_long_string(file, "CALPKGID"),
+              engine.rtcproc.calibration.product.package_identity);
     EXPECT_EQ(fits_close_file(file, &status), 0);
 }
 
@@ -2392,8 +2493,7 @@ TEST(science_map_fits_products,
     beammap.calib.apt_header_keys = {"uid", "flag", "flag2"};
     beammap.calib.apt["uid"] = Eigen::VectorXd::Constant(1, 42.0);
     beammap.calib.apt["flag"] = Eigen::VectorXd::Zero(1);
-    beammap.calib.apt_meta["calibration_identity"] =
-        "beammap-writer-fixture-calibration-identity";
+    admit_production_calibration_fixture(beammap);
 
     const auto base = beammap.write_beammap_apt_table();
     const auto path = std::filesystem::path(base + ".ecsv");
@@ -2408,7 +2508,9 @@ TEST(science_map_fits_products,
     EXPECT_EQ(header,
               (std::vector<std::string>{"uid", "flag", "flag2"}));
     EXPECT_EQ(meta["calibration_identity"].as<std::string>(),
-              "beammap-writer-fixture-calibration-identity");
+              beammap.rtcproc.calibration.product.calibration_identity);
+    EXPECT_EQ(meta["package_identity"].as<std::string>(),
+              beammap.rtcproc.calibration.product.package_identity);
 }
 
 TEST(science_map_fits_products,

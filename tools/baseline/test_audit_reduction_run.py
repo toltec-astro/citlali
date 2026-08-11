@@ -225,6 +225,24 @@ def valid_raw_v3_document() -> dict:
     return document
 
 
+def valid_raw_v4_document() -> dict:
+    document = valid_raw_v3_document()
+    fixture_path = (
+        Path(__file__).parent
+        / "examples/sci_cal_001_raw_timestream_provenance_v4.yaml"
+    )
+    fixture = yaml.safe_load(fixture_path.read_text(encoding="utf-8"))
+    document["schema_version"] = fixture["schema_version"]
+    document["calibration_lineage"] = fixture["calibration_lineage"]
+    for section in ("observation", "realized"):
+        target = document[section]
+        if section == "observation":
+            target = target["value"]
+        target.update(fixture[section]["value"] if section == "observation"
+                      else fixture[section])
+    return document
+
+
 def valid_output_document() -> dict:
     return {
         "schema_version": "citlali-timestream-output-provenance-v1",
@@ -2953,6 +2971,16 @@ class ProvenanceAuditTest(unittest.TestCase):
 
         self.assertEqual(
             audit.raw_provenance_semantic_errors(document), []
+        )
+
+    def test_accepts_checked_in_sci_cal_001_raw_provenance_v4_package(self) -> None:
+        document = valid_raw_v4_document()
+
+        self.assertEqual(audit.raw_provenance_semantic_errors(document), [])
+        document["calibration_lineage"]["value"]["package_identity"] = "bad"
+        self.assertIn(
+            "v4 package identity is not canonical sha256",
+            audit.raw_provenance_semantic_errors(document),
         )
 
     def test_rejects_sci_cal_001_identity_alpha_and_regime_tampering(self) -> None:

@@ -206,6 +206,8 @@ complete_raw_timestream_extinction_shadow(
         calibration.product.acquisition_binding_sha256;
     plan.observation->calibration_identity =
         calibration.product.calibration_identity;
+    plan.observation->calibration_package_identity =
+        calibration.product.package_identity;
     plan.observation->calibration_factor_state_sha256 =
         calibration.product.factor_state_sha256;
     plan.observation->calibration_raw_observation_identity =

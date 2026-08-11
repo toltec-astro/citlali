@@ -107,6 +107,8 @@ void Beammap::populate_beammap_tau_metadata() {
         product.acquisition_key_schema;
     calib.apt_meta["calibration_response_identity"] =
         product.response_identity;
+    calib.apt_meta["calibration_identity"] = product.calibration_identity;
+    calib.apt_meta["package_identity"] = product.package_identity;
     calib.apt_meta["calibration_conditional_variance_transfer"] =
         std::string{product.conditional_variance_transfer};
     calib.apt_meta["calibration_conditional_inverse_variance_transfer"] =

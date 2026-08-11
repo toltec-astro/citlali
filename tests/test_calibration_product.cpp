@@ -46,6 +46,8 @@ timestream::CalibrationProductAdmissionInputs valid_inputs(
     inputs.reference_spectral_index_alpha = 0.0;
     inputs.reference_spectral_index_default_applied = true;
     inputs.tau225 = 0.1;
+    inputs.applied_sample_extinction_state_sha256 =
+        "test-complete-sample-extinction-state";
     inputs.package_lineage.selected_apt_source_path = "/test/apt.ecsv";
     inputs.package_lineage.selected_apt_sha256 = inputs.apt_artifact_sha256;
     inputs.package_lineage.apt_row_association_sha256 =
@@ -135,6 +137,28 @@ TEST(calibration_product, admits_only_complete_atomic_product) {
               timestream::CalibrationNuisanceAvailability::available);
     EXPECT_EQ(product.nuisances.front().availability,
               timestream::CalibrationNuisanceAvailability::unavailable);
+}
+
+TEST(calibration_product,
+     complete_sample_extinction_identity_prevents_equal_extrema_collision) {
+    auto first_inputs = valid_inputs();
+    auto second_inputs = first_inputs;
+    first_inputs.applied_sample_extinction_state_sha256 =
+        "sample-sequence-digest-a";
+    second_inputs.applied_sample_extinction_state_sha256 =
+        "sample-sequence-digest-b";
+    const auto first =
+        timestream::admit_calibration_product(first_inputs);
+    const auto second =
+        timestream::admit_calibration_product(second_inputs);
+    ASSERT_TRUE(first.valid());
+    ASSERT_TRUE(second.valid());
+    EXPECT_EQ(first.minimum_extinction_correction,
+              second.minimum_extinction_correction);
+    EXPECT_EQ(first.maximum_extinction_correction,
+              second.maximum_extinction_correction);
+    EXPECT_NE(first.factor_state_sha256, second.factor_state_sha256);
+    EXPECT_NE(first.calibration_identity, second.calibration_identity);
 }
 
 TEST(calibration_product,
@@ -250,6 +274,47 @@ TEST(calibration_product, transfers_only_conditional_variance_and_weight) {
     EXPECT_TRUE(std::isnan(timestream::transfer_conditional_variance(-1.0, 2.0)));
     EXPECT_TRUE(std::isnan(
         timestream::transfer_conditional_inverse_variance(1.0, 0.0)));
+}
+
+TEST(calibration_product,
+     inventories_every_existing_calibration_recipient_truthfully) {
+    const std::string semantics{
+        timestream::CalibrationProduct::weight_recipient_semantics};
+    for (const std::string &recipient : {
+             "approximate_weight:", "hybrid_weight:",
+             "validated_weight:", "full_weight:", "constant_weight:",
+             "naive_map_signal:", "naive_map_weight:",
+             "noise_variance_I:"}) {
+        const auto begin = semantics.find(recipient);
+        ASSERT_NE(begin, std::string::npos)
+            << "missing recipient=" << recipient;
+        const auto end = semantics.find(';', begin);
+        ASSERT_NE(end, std::string::npos)
+            << "unterminated recipient=" << recipient;
+        const auto record = semantics.substr(begin, end - begin);
+        EXPECT_TRUE(record.find("coefficient=") != std::string::npos ||
+                    record.find("recipient=") != std::string::npos)
+            << "missing coefficient/recipient role=" << recipient;
+        for (const std::string &required_field : {
+                 "stage=", "units=", "normalization=", "support=",
+                 "calibration="}) {
+            EXPECT_NE(record.find(required_field), std::string::npos)
+                << "recipient=" << recipient
+                << " missing inventory field=" << required_field;
+        }
+    }
+    EXPECT_NE(semantics.find(
+                  "validated_weight:baseline=approximate_weight"),
+              std::string::npos);
+    EXPECT_NE(semantics.find(
+                  "selected_APT_sens_contains_flxscale_once"),
+              std::string::npos);
+    EXPECT_NE(semantics.find(
+                  "noise_variance_I:recipient=conditional_finite_stack_scatter_of_normalized_noise_realizations"),
+              std::string::npos);
+    EXPECT_NE(semantics.find(
+                  "all_total_precision_and_significance_claims_fail_closed_without_nuisance_covariance"),
+              std::string::npos);
 }
 
 TEST(calibration_product, rejection_precedes_tod_mutation) {

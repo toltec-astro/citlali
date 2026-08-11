@@ -1,0 +1,10 @@
+# %ECSV 1.0
+# ---
+# datatype:
+# - {name: uid, datatype: int64}
+# - {name: flxscale, unit: mJy / beam, datatype: float64}
+# meta: !!omap
+# - {calibration_fixture: SCI-CAL-001}
+# schema: astropy-2.0
+uid flxscale
+42 1.0

@@ -25,6 +25,13 @@ class ValidationProfilesTest(unittest.TestCase):
             if profile["status"] == "active"
             and profile["epoch_id"] == registry["active_epoch_id"]
         ]
+        for profile in registry["profiles"]:
+            if "exclude" not in profile["products"]:
+                continue
+            self.assertIn(
+                "selected_calibration_apt.ecsv",
+                profile["products"]["exclude"],
+            )
         self.assertEqual({profile["mode"] for profile in active}, profiles.SUPPORTED_MODES)
         self.assertEqual(len(active), len(profiles.SUPPORTED_MODES))
         self.assertGreaterEqual(len(registry["preparing_epoch_ids"]), 2)

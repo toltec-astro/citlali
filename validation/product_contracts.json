@@ -467,6 +467,15 @@
       "missing_value_policy": "detector_tod_n_samples bounds valid samples in each padded slot; flags mark invalid samples.",
       "failure_policy": "Fatal when Beammap detector-TOD output is enabled."
     },
+    "calibration_package_member": {
+      "scientific_identity": "Exact required package-local byte copy of the selected calibration APT joined by canonical CAL package identity.",
+      "coordinate_frame": "not_applicable",
+      "axes": ["selected APT rows and columns"],
+      "units_policy": "Selected APT ECSV column and metadata units are preserved byte-for-byte.",
+      "indexing_policy": "Selected APT row ordering and stable row association are preserved; row order is not an inferred detector identity.",
+      "missing_value_policy": "Absence is fatal for a calibrated package; no substitute APT is inferred.",
+      "failure_policy": "Required output failure is fatal and package publication is atomic."
+    },
     "profile_timing": {
       "scientific_identity": "Run stage/context elapsed-time instrumentation.",
       "coordinate_frame": "Not applicable.",
@@ -1610,6 +1619,15 @@
           "check_id": "timestream"
         },
         {
+          "entry_id": "selected-calibration-apt",
+          "family_id": "calibration_package_member",
+          "scope": "reduction",
+          "classification": "required",
+          "condition": "CAL package publication requires its selected APT member",
+          "pattern": "selected_calibration_apt.ecsv",
+          "checks": {"nonempty": true}
+        },
+        {
           "entry_id": "profile-timing",
           "family_id": "profile_timing",
           "scope": "reduction",
@@ -1722,6 +1740,15 @@
           "check_id": "ptc_diagnostics"
         },
         {
+          "entry_id": "selected-calibration-apt",
+          "family_id": "calibration_package_member",
+          "scope": "reduction",
+          "classification": "required",
+          "condition": "CAL package publication requires its selected APT member",
+          "pattern": "selected_calibration_apt.ecsv",
+          "checks": {"nonempty": true}
+        },
+        {
           "entry_id": "profile-timing",
           "family_id": "profile_timing",
           "scope": "reduction",
@@ -1832,6 +1859,15 @@
           "condition": "OOF processing publishes PTC diagnostics",
           "pattern": "{obs}/raw/*_pointing_{obs}_ptcdiag.nc",
           "check_id": "ptc_diagnostics"
+        },
+        {
+          "entry_id": "selected-calibration-apt",
+          "family_id": "calibration_package_member",
+          "scope": "reduction",
+          "classification": "required",
+          "condition": "CAL package publication requires its selected APT member",
+          "pattern": "selected_calibration_apt.ecsv",
+          "checks": {"nonempty": true}
         },
         {
           "entry_id": "profile-timing",
@@ -2010,6 +2046,15 @@
           "check_id": "map_diagnostics"
         },
         {
+          "entry_id": "selected-calibration-apt",
+          "family_id": "calibration_package_member",
+          "scope": "reduction",
+          "classification": "required",
+          "condition": "CAL package publication requires its selected APT member",
+          "pattern": "selected_calibration_apt.ecsv",
+          "checks": {"nonempty": true}
+        },
+        {
           "entry_id": "profile-timing",
           "family_id": "profile_timing",
           "scope": "reduction",
@@ -2140,6 +2185,15 @@
           },
           "pattern": "{obs}/raw/source_crossing_tod/*_beammap_{obs}_ptcdiag.nc",
           "check_id": "ptc_diagnostics"
+        },
+        {
+          "entry_id": "selected-calibration-apt",
+          "family_id": "calibration_package_member",
+          "scope": "reduction",
+          "classification": "required",
+          "condition": "CAL package publication requires its selected APT member",
+          "pattern": "selected_calibration_apt.ecsv",
+          "checks": {"nonempty": true}
         },
         {
           "entry_id": "profile-timing",
@@ -2285,6 +2339,15 @@
           },
           "pattern": "citlali_restart_checkpoint.nc",
           "check_id": "reduction_restart_checkpoint"
+        },
+        {
+          "entry_id": "selected-calibration-apt",
+          "family_id": "calibration_package_member",
+          "scope": "reduction",
+          "classification": "required",
+          "condition": "CAL package publication requires its selected APT member",
+          "pattern": "selected_calibration_apt.ecsv",
+          "checks": {"nonempty": true}
         },
         {
           "entry_id": "profile-timing",

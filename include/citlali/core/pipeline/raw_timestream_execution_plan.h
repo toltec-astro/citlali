@@ -46,6 +46,7 @@ struct RawTimestreamObservationState {
     std::optional<std::string> calibration_apt_artifact_sha256;
     std::optional<std::string> calibration_acquisition_binding_sha256;
     std::optional<std::string> calibration_identity;
+    std::optional<std::string> calibration_package_identity;
     std::optional<std::string> calibration_factor_state_sha256;
     std::optional<std::string> calibration_raw_observation_identity;
     std::optional<std::string> calibration_acquisition_binding_mode;
@@ -95,6 +96,7 @@ struct RawTimestreamRealizedState {
     std::optional<std::string> calibration_apt_artifact_sha256;
     std::optional<std::string> calibration_acquisition_binding_sha256;
     std::optional<std::string> calibration_identity;
+    std::optional<std::string> calibration_package_identity;
     std::optional<std::string> calibration_factor_state_sha256;
     std::optional<std::string> calibration_raw_observation_identity;
     std::optional<std::string> calibration_acquisition_binding_mode;

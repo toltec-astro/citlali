@@ -319,11 +319,12 @@ PROVENANCE_SIDECARS = {
     },
     "raw_timestream": {
         "filename": "raw_timestream_provenance.yaml",
-        "schema_version": "citlali-raw-timestream-provenance-v3",
+        "schema_version": "citlali-raw-timestream-provenance-v4",
         "accepted_schema_versions": (
             "citlali-raw-timestream-provenance-v1",
             "citlali-raw-timestream-provenance-v2",
             "citlali-raw-timestream-provenance-v3",
+            "citlali-raw-timestream-provenance-v4",
         ),
         "required_paths": (
             ("initialized",),
@@ -608,6 +609,7 @@ def raw_provenance_semantic_errors(data: dict[str, Any]) -> list[str]:
         if data.get("schema_version") in {
             "citlali-raw-timestream-provenance-v2",
             "citlali-raw-timestream-provenance-v3",
+            "citlali-raw-timestream-provenance-v4",
         }:
             requested_offsets = data["requested"]["interface_sync_offset"]
             effective_offsets = data["effective"]["config"][
@@ -641,7 +643,10 @@ def raw_provenance_semantic_errors(data: dict[str, Any]) -> list[str]:
             if requested_offsets != effective_offsets:
                 errors.append("interface-sync requested/effective values differ")
 
-        if data.get("schema_version") == "citlali-raw-timestream-provenance-v3":
+        if data.get("schema_version") in {
+            "citlali-raw-timestream-provenance-v3",
+            "citlali-raw-timestream-provenance-v4",
+        }:
             expected_identity = {
                 "atmosphere_operator_id":
                     "am12_fixed_djf25_piecewise_linear_los_tau_v1",
@@ -749,6 +754,53 @@ def raw_provenance_semantic_errors(data: dict[str, Any]) -> list[str]:
                     realized_calibration, "calibration_quality_regime"
                 ) != expected_regime:
                     errors.append("calibration quality regime is inconsistent")
+
+        if data.get("schema_version") == "citlali-raw-timestream-provenance-v4":
+            lineage = data.get("calibration_lineage")
+            if not isinstance(lineage, dict) or lineage.get("available") is not True:
+                errors.append("v4 canonical calibration lineage is unavailable")
+            else:
+                value = lineage.get("value")
+                if not isinstance(value, dict):
+                    errors.append("v4 canonical calibration lineage is not a mapping")
+                else:
+                    calibration_identity = value.get("calibration_identity")
+                    package_identity = value.get("package_identity")
+                    for label, identity in (
+                        ("calibration", calibration_identity),
+                        ("package", package_identity),
+                    ):
+                        if (
+                            not isinstance(identity, str)
+                            or len(identity) != 64
+                            or any(char not in "0123456789abcdef" for char in identity)
+                        ):
+                            errors.append(f"v4 {label} identity is not canonical sha256")
+                    selected = value.get("selected_apt", {})
+                    components = value.get("component_identities", {})
+                    if selected.get("package_local_path") != "selected_calibration_apt.ecsv":
+                        errors.append("v4 selected APT package-local path is not canonical")
+                    if selected.get("copy_semantics") != \
+                            "exact_byte_copy_digest_verified_required_output":
+                        errors.append("v4 selected APT copy semantics are not required/verified")
+                    if selected.get("package_local_sha256") != \
+                            components.get("selected_apt_sha256"):
+                        errors.append("v4 selected APT package/component digests differ")
+                    for section_name in ("observation", "realized"):
+                        section = data[section_name]
+                        if section_name == "observation":
+                            section = section.get("value", {})
+                        for field, expected in (
+                            ("calibration_identity", calibration_identity),
+                            ("calibration_package_identity", package_identity),
+                        ):
+                            record = section.get(field)
+                            if not isinstance(record, dict) or \
+                                    record.get("available") is not True or \
+                                    record.get("value") != expected:
+                                errors.append(
+                                    f"v4 {section_name} {field} does not join canonical lineage"
+                                )
 
         observation = data["observation"]
         if observation.get("available") is not True:

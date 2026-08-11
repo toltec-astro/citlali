@@ -26,9 +26,9 @@ EXCLUDED_FILES = {
     "include/citlali/core/pipeline/timestream_config_adapter_raw_flagging.h",
     "include/citlali/core/pipeline/timestream_config_adapter_raw_line_audit.h",
 }
-EXPECTED_RECORD_COUNT = 67
+EXPECTED_RECORD_COUNT = 82
 EXPECTED_RECORD_SHA256 = (
-    "9603bb76740d549eeb5cd6f7364d0cde2b8f14052006e006047922eb6dc62448"
+    "3c581622eb930ba1296d7a70bb14b63176e53270703cadb83d8f0484aad25918"
 )
 
 EXECUTOR_OPERATIONS = {
@@ -45,6 +45,7 @@ EXECUTOR_OPERATIONS = {
     "calibration.setup",
     "capture_rtc_line_audit",
     "clear_cached_diagnostics",
+    "consume_applied_response_notches",
     "count_rtc_line_audit_fixed_notches",
     "filter.make_filter",
     "filter.make_notch_filter",
@@ -80,6 +81,7 @@ OUTPUT_OR_REALIZED_STATE = {
     "calibration.operator_nodes_sha256",
     "calibration.passband_set_id",
     "calibration.product",
+    "calibration.product.valid",
     "calibration.realized_tau225",
     "calibration.reduction_calibration_quality_regime",
     "calibration.reduction_maximum_tau225",
@@ -90,6 +92,18 @@ OUTPUT_OR_REALIZED_STATE = {
     "filter_edge_guard",
     "filter_edge_guard.context_samples",
     "filter_edge_guard.guard_samples",
+    "filter.a_gibbs",
+    "filter.freq_high_Hz",
+    "filter.freq_low_Hz",
+    "filter.iir_highpass_freq_Hz",
+    "filter.iir_highpass_order",
+    "filter.iir_highpass_zero_phase",
+    "filter.n_terms",
+    "filter.notch_zero_phase",
+    "filter.qs",
+    "filter.qs.size",
+    "filter.w0s",
+    "filter.w0s.size",
     "kernel",
     "kernel.has_source_centers",
     "line_audit",
@@ -97,6 +111,7 @@ OUTPUT_OR_REALIZED_STATE = {
     "run_tod_filter",
     "run_tod_iir_highpass",
     "run_tod_notch",
+    "snapshot_applied_response_notches",
 }
 RAW_POLICY_READS = {"run_downsample", "run_extinction", "run_kernel"}
 

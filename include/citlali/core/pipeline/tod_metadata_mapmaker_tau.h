@@ -135,6 +135,10 @@ void add_tod_mean_tau_vars(netCDF::NcFile &fo, bool extinction_enabled,
     add_netcdf_var<std::string>(
         fo, "CAL.RESPONSE_IDENTITY", product.response_identity);
     add_netcdf_var<std::string>(
+        fo, "CAL.CALIBRATION_IDENTITY", product.calibration_identity);
+    add_netcdf_var<std::string>(
+        fo, "CAL.PACKAGE_IDENTITY", product.package_identity);
+    add_netcdf_var<std::string>(
         fo, "CAL.CONDITIONAL_VARIANCE_TRANSFER",
         std::string{product.conditional_variance_transfer});
     add_netcdf_var<std::string>(

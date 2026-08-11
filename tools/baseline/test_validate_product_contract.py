@@ -84,6 +84,23 @@ class ValidateProductContractTest(unittest.TestCase):
         self.assertEqual(result["classified_product_count"], 1)
         self.assertFalse(result["errors"])
 
+    def test_checked_in_selected_calibration_apt_is_required_and_classified(self) -> None:
+        repository = Path(__file__).resolve().parents[2]
+        registry = product_contract.load_registry(
+            repository / "validation/product_contracts.json"
+        )
+        fixture = repository / (
+            "tools/baseline/examples/sci_cal_001_selected_calibration_apt.ecsv"
+        )
+        self.assertTrue(fixture.is_file())
+        for contract in registry["contracts"]:
+            entries = [
+                entry for entry in contract["entries"]
+                if entry["pattern"] == "selected_calibration_apt.ecsv"
+            ]
+            self.assertEqual(len(entries), 1, contract["contract_id"])
+            self.assertEqual(entries[0]["classification"], "required")
+
     def test_rejects_missing_required_product(self) -> None:
         result = self.validate([self.entry()])
 

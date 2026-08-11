@@ -276,6 +276,59 @@ F001/F010, exact-candidate external execution, returned artifacts/logs,
 independent re-audit, coordinator disposition, and any production change
 remain explicitly conditioned and unperformed.
 
+### 2026-08-11 successor-4 bounded local technical repair snapshot
+
+The owner-authorized successor-4 technical repair on
+`codex/repair-sci-cal-001-successor-4` is based directly on exact successor-3
+application source `3af6faf996fa002b2647adca8f33991002d49ff1`. It changes only
+the bounded F005 recipient proof, F007/F008 complete applied-state identity
+and production joins, and the local F009 v4/package-copy consumers. It
+preserves the F002 fixed atmosphere operator and artifacts, F003 startup and
+admission failure boundary, F004 APT lineage/association boundary, and F006
+`mJy/beam` configuration boundary. F001 and F010 remain conditioned.
+
+The truthful recipient inventory now includes the existing validated weighting
+route, and deterministic production fixtures prove inverse-weight scaling and
+the actual nonzero-noise `noise_variance_I` `a^2` transfer without changing
+calibration, weighting, variance, or mapmaking arithmetic. Canonical
+calibration, response, and package identities bind the complete applied
+sample-elevation/per-array extinction state; active FIR `a_gibbs`; applied
+fixed-notch zero-phase, center, and width state; and every applied shared and
+detector dynamic notch. Requested, effective, and realized state remain
+distinct, and dormant disabled settings are not labelled realized. One
+post-RTC finalizer supplies identical calibration/package joins to map FITS,
+TOD NetCDF, Beammap ECSV, and required v4 raw provenance/package publication.
+RTC retains the already calculated notch metadata behind explicit snapshot
+and atomic-consume operations; no RTC numerical operation changes.
+
+The executable v4 audit accepts v1--v4 compatibility and validates canonical
+lineage and the digest-verified package-local
+`selected_calibration_apt.ecsv`. That member is required by all six applicable
+product contracts and classified by every applicable mode profile/baseline
+comparison policy. Required publication remains atomic and fail-closed for
+missing, stale, conflicting, partial, or failed output.
+
+Complete deterministic local gates pass: all four required build targets;
+618/618 normal tests; 14/14 safety tests; 38/38 production-FITS tests; 2/2
+public-header linkage tests; 6/6 explicit failure-safe publication tests; and
+670/670 runnable CTests. The sole non-run CTest is the pre-existing disabled
+`MapFitterLifecycle.ExactProductSequence`. Baseline tools pass 177/177 and the
+focused atmosphere/product-contract gate passes 27/27. Complete config
+preflight passes 127 tests, all four mode kits, all eight compatibility cases,
+100% compact-surface coverage, 592-leaf schema parity, zero review-required
+config reads, and the 82-record raw-execution census with zero review-required
+entries or drift at digest
+`3c581622eb930ba1296d7a70bb14b63176e53270703cadb83d8f0484aad25918`.
+Validation/profile/science ledgers, readiness reporting, fixed-operator
+artifact checks, raw boundary audits, and the zero-growth session-exit audit
+also pass with no unexpected gate errors.
+
+This is a local candidate/gate handback only. It does not close findings,
+change the approved/nonconformant/in-progress/fail-closed axes, authorize
+production, launch re-audit or downstream work, request external execution,
+or alter the conditioned F001/F010 dependencies. No local reduction or Unity
+access was performed.
+
 ## Historical 2026-07-31 SCI-MAP-001 Bounded Repair Lane
 
 This section preserves the repair-lane chronology and its candidate-time gate

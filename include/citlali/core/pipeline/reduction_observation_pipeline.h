@@ -20,6 +20,7 @@ void run_reduction_observation_pipeline(TodProc &todproc, KidsProc &kidsproc,
     load_observation_fruit_loop_maps_if_needed<IsBeammap>(engine, logger);
     setup_and_run_observation_pipeline(
         engine, kidsproc, rawobs, stage_profile, logger);
+    finalize_complete_calibration_product_identity_if_available(engine);
     write_coherent_iq_mode_sidecar_if_requested(
         engine, rawobs, logger);
     write_observation_outputs_and_accumulate<RawObsMap, FilteredObsMap,

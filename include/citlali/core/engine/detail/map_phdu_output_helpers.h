@@ -184,6 +184,14 @@ void add_phdu_extinction_apt_oof_section(
                "APT/acquisition key schema");
     hdu.addKey("CAL.RESPONSE_IDENTITY", product.response_identity,
                "Originating and realized response identity");
+    hdu.addKey("CAL.CALIBRATION_IDENTITY", product.calibration_identity,
+               "Canonical complete applied calibration identity");
+    hdu.addKey("CAL.PACKAGE_IDENTITY", product.package_identity,
+               "Canonical calibration package identity");
+    hdu.addKey("CALID", product.calibration_identity,
+               "Canonical complete applied calibration identity");
+    hdu.addKey("CALPKGID", product.package_identity,
+               "Canonical calibration package identity");
     hdu.addKey("CAL.CONDITIONAL_VARIANCE_TRANSFER",
                std::string{product.conditional_variance_transfer},
                "Conditional variance scaling rule");

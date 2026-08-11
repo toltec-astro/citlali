@@ -700,7 +700,10 @@ timestream::CalibrationProduct canonical_calibration_fixture(
     row.stable_association = "selected-apt-ordered-row-v2|fixture";
     row.retained_fields.push_back({"uid", "int64", "42"});
     lineage.ordered_rows.push_back(std::move(row));
-    return timestream::admit_calibration_product(inputs);
+    auto product = timestream::admit_calibration_product(inputs);
+    timestream::finalize_calibration_product_identity(
+        product, product.response_identity);
+    return product;
 }
 
 citlali::pipeline::RawTimestreamExecutionPlan canonical_calibration_plan(
@@ -712,6 +715,7 @@ citlali::pipeline::RawTimestreamExecutionPlan canonical_calibration_plan(
     auto &observation = plan.begin_observation();
     observation.calibration_valid = product.valid();
     observation.calibration_identity = product.calibration_identity;
+    observation.calibration_package_identity = product.package_identity;
     observation.calibration_factor_state_sha256 =
         product.factor_state_sha256;
     observation.calibration_apt_artifact_sha256 =
@@ -10711,6 +10715,9 @@ TEST(calibration_product,
     inputs.detector_beam_minor_fwhm_arcsec =
         Eigen::VectorXd::Constant(1, 9.0);
     rtcproc.calibration.admit_product(inputs);
+    timestream::finalize_calibration_product_identity(
+        rtcproc.calibration.product,
+        "calibration-response-basis-provenance-v2;fixture=netcdf");
 
     struct CalibMetadataFixture {
         Eigen::VectorXi arrays;
@@ -10762,6 +10769,10 @@ TEST(calibration_product,
               "apt-artifact-digest-sentinel");
     EXPECT_EQ(read_string("CAL.ACQUISITION_BINDING_SHA256"),
               "binding-digest-sentinel");
+    EXPECT_EQ(read_string("CAL.CALIBRATION_IDENTITY"),
+              rtcproc.calibration.product.calibration_identity);
+    EXPECT_EQ(read_string("CAL.PACKAGE_IDENTITY"),
+              rtcproc.calibration.product.package_identity);
     EXPECT_NE(read_string("CAL.NUISANCE_STATES").find(
                   "uncertainty:unavailable"),
               std::string::npos);
@@ -12411,33 +12422,50 @@ TEST(calibration_product_weight_recipient,
 }
 
 TEST(calibration_product_weight_recipient,
-     approximate_and_hybrid_use_the_same_sens_compatibility_fcf_route) {
-    for (const std::string weighting_type : {"approximate", "hybrid"}) {
-        timestream::PTCProc processor;
-        processor.logger = std::make_shared<spdlog::logger>(
-            "calibration-weight-route-" + weighting_type,
-            std::make_shared<spdlog::sinks::null_sink_mt>());
-        processor.weighting_type = weighting_type;
-        timestream::TCData<timestream::TCDataKind::PTC, Eigen::MatrixXd>
-            data;
-        data.scans.data.resize(4, 1);
-        data.scans.data << 1.0, 2.0, 4.0, 8.0;
-        data.flags.data =
-            Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>::Constant(
-                4, 1, false);
-        data.fcf.data = Eigen::VectorXd::Constant(1, 3.0);
-        data.status.calibrated = true;
-        std::map<std::string, Eigen::VectorXd> apt;
-        apt["flag"] = Eigen::VectorXd::Zero(1);
-        apt["sens"] = Eigen::VectorXd::Constant(1, 10.0);
-        apt["array"] = Eigen::VectorXd::Zero(1);
-        apt["uid"] = Eigen::VectorXd::Constant(1, 17.0);
-        engine::Telescope telescope;
-        telescope.d_fsmp = 4.0;
+     approximate_hybrid_and_validated_share_the_production_baseline_route) {
+    for (const std::string weighting_type : {
+             "approximate", "hybrid", "validated"}) {
+        auto calculate_weight = [&](double compatibility_fcf) {
+            timestream::PTCProc processor;
+            processor.logger = std::make_shared<spdlog::logger>(
+                "calibration-weight-route-" + weighting_type,
+                std::make_shared<spdlog::sinks::null_sink_mt>());
+            processor.weighting_type = weighting_type;
+            if (weighting_type == "validated") {
+                EXPECT_TRUE(processor.weight_validation_is_enabled());
+            }
+            timestream::TCData<timestream::TCDataKind::PTC,
+                               Eigen::MatrixXd> data;
+            data.scans.data.resize(4, 1);
+            data.scans.data << 1.0, 2.0, 4.0, 8.0;
+            data.flags.data =
+                Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>::Constant(
+                    4, 1, false);
+            data.fcf.data =
+                Eigen::VectorXd::Constant(1, compatibility_fcf);
+            data.status.calibrated = true;
+            std::map<std::string, Eigen::VectorXd> apt;
+            apt["flag"] = Eigen::VectorXd::Zero(1);
+            apt["sens"] = Eigen::VectorXd::Constant(1, 10.0);
+            apt["array"] = Eigen::VectorXd::Zero(1);
+            apt["uid"] = Eigen::VectorXd::Constant(1, 17.0);
+            engine::Telescope telescope;
+            telescope.d_fsmp = 4.0;
 
-        processor.calc_weights(data, apt, telescope, false);
-        ASSERT_EQ(data.weights.data.size(), 1);
-        EXPECT_DOUBLE_EQ(data.weights.data(0), 1.0 / (60.0 * 60.0))
+            processor.calc_weights(data, apt, telescope, false);
+            EXPECT_EQ(data.weights.data.size(), 1);
+            return data.weights.data(0);
+        };
+
+        const double raw_weight = calculate_weight(3.0);
+        const double calibration_factor = 2.0;
+        const double calibrated_weight =
+            calculate_weight(3.0 * calibration_factor);
+        EXPECT_DOUBLE_EQ(raw_weight, 1.0 / (60.0 * 60.0))
+            << "weighting_type=" << weighting_type;
+        EXPECT_DOUBLE_EQ(
+            calibrated_weight,
+            raw_weight / (calibration_factor * calibration_factor))
             << "weighting_type=" << weighting_type;
     }
 }

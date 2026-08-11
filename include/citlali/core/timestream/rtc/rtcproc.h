@@ -248,6 +248,10 @@ public:
     FilterEdgeGuardOptions filter_edge_guard;
 
     struct RTCDetectorDiagSummary : DespikeDetectorDiagSummary {
+        struct AppliedNotch {
+            double center_hz = std::numeric_limits<double>::quiet_NaN();
+            double width_hz = std::numeric_limits<double>::quiet_NaN();
+        };
         Eigen::Index det = -1;
         double final_flagged_frac = std::numeric_limits<double>::quiet_NaN();
         int final_region_count = 0;
@@ -271,8 +275,18 @@ public:
         double detector_notch_primary_width_hz = std::numeric_limits<double>::quiet_NaN();
         double detector_notch_primary_prominence = std::numeric_limits<double>::quiet_NaN();
         double detector_notch_primary_line_power_frac = std::numeric_limits<double>::quiet_NaN();
+        std::vector<AppliedNotch> detector_applied_notches;
         double detector_notch_rms_before = std::numeric_limits<double>::quiet_NaN();
         double detector_notch_rms_after = std::numeric_limits<double>::quiet_NaN();
+    };
+
+    struct RTCAppliedResponseNotch {
+        std::string stage;
+        std::string scope;
+        Eigen::Index detector = -1;
+        double center_hz = std::numeric_limits<double>::quiet_NaN();
+        double width_hz = std::numeric_limits<double>::quiet_NaN();
+        bool zero_phase = true;
     };
 
     struct RTCNetworkDiagSummary {
@@ -378,7 +392,11 @@ public:
         double radius_arcsec = std::numeric_limits<double>::quiet_NaN();
     };
 
+    using RTCAppliedResponseNotchHistory =
+        std::map<Eigen::Index, std::vector<RTCAppliedResponseNotch>>;
+
     std::map<Eigen::Index, std::vector<RTCDetectorDiagSummary>> rtc_detector_summary_by_scan;
+    RTCAppliedResponseNotchHistory rtc_applied_response_notches_by_scan;
     std::map<Eigen::Index, std::vector<RTCNetworkDiagSummary>> rtc_network_summary_by_scan;
     std::map<Eigen::Index, std::map<Eigen::Index, std::vector<RTCImpulsiveSnippetSummary>>> rtc_impulsive_summary_by_scan;
     std::map<Eigen::Index, RTCSourceProtectionDiagSummary> rtc_source_protection_summary_by_scan;
@@ -395,6 +413,20 @@ public:
             return {};
         }
         return it->second;
+    }
+
+    RTCAppliedResponseNotchHistory
+    snapshot_applied_response_notches() const {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        return rtc_applied_response_notches_by_scan;
+    }
+
+    RTCAppliedResponseNotchHistory
+    consume_applied_response_notches() {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        RTCAppliedResponseNotchHistory result;
+        result.swap(rtc_applied_response_notches_by_scan);
+        return result;
     }
 
     std::vector<RTCCoherentIqModeCandidateSummary>
@@ -1094,6 +1126,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                 row.detector_notch_primary_width_hz = old.detector_notch_primary_width_hz;
                 row.detector_notch_primary_prominence = old.detector_notch_primary_prominence;
                 row.detector_notch_primary_line_power_frac = old.detector_notch_primary_line_power_frac;
+                row.detector_applied_notches = old.detector_applied_notches;
                 row.detector_notch_rms_before = old.detector_notch_rms_before;
                 row.detector_notch_rms_after = old.detector_notch_rms_after;
             }
@@ -2824,6 +2857,15 @@ Eigen::Index RTCProc::apply_rtc_line_audit_shared_notches(tc_t &in,
     if (run_kernel) {
         dynamic_notch_filter.iir(in.kernel.data);
     }
+    {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        auto &history = rtc_applied_response_notches_by_scan[in.index.data];
+        for (const auto &cluster : applied_clusters) {
+            history.push_back({
+                post_filter_stage ? "post_filter" : "pre_filter",
+                "shared", -1, cluster.center_hz, cluster.width_hz, true});
+        }
+    }
 
     for (auto &row : nw_summary) {
         auto diag = get_line_audit_diag(row);
@@ -3347,6 +3389,7 @@ Eigen::Index RTCProc::apply_rtc_line_audit_detector_notches(tc_t &in,
         diag.detector_notch_primary_width_hz = nan;
         diag.detector_notch_primary_prominence = nan;
         diag.detector_notch_primary_line_power_frac = nan;
+        diag.detector_applied_notches.clear();
         diag.detector_notch_rms_before = nan;
         diag.detector_notch_rms_after = nan;
 
@@ -3453,6 +3496,11 @@ Eigen::Index RTCProc::apply_rtc_line_audit_detector_notches(tc_t &in,
         diag.detector_notch_primary_width_hz = applied_peaks.front().applied_width_hz;
         diag.detector_notch_primary_prominence = applied_peaks.front().prominence;
         diag.detector_notch_primary_line_power_frac = applied_peaks.front().line_power_frac;
+        diag.detector_applied_notches.reserve(applied_peaks.size());
+        for (const auto &peak : applied_peaks) {
+            diag.detector_applied_notches.push_back(
+                {peak.freq_hz, peak.applied_width_hz});
+        }
         total_notches += static_cast<Eigen::Index>(applied_peaks.size());
         max_notches_per_det =
             std::max<Eigen::Index>(max_notches_per_det, static_cast<Eigen::Index>(applied_peaks.size()));
@@ -3473,6 +3521,13 @@ Eigen::Index RTCProc::apply_rtc_line_audit_detector_notches(tc_t &in,
 
     {
         std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        auto &history = rtc_applied_response_notches_by_scan[scan_id];
+        for (const auto &row : det_summary) {
+            for (const auto &notch : row.detector_applied_notches) {
+                history.push_back({"post_filter", "detector", row.det,
+                                   notch.center_hz, notch.width_hz, true});
+            }
+        }
         rtc_detector_summary_by_scan[scan_id] = std::move(det_summary);
     }
     return total_notches;

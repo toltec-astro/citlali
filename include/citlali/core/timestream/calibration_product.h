@@ -165,6 +165,7 @@ struct CalibrationProductAdmissionInputs {
     std::string acquisition_binding_mode;
     std::string acquisition_key_schema;
     std::string response_identity;
+    std::string applied_sample_extinction_state_sha256;
     std::string atmosphere_operator_id;
     std::string atmosphere_operator_contract_sha256;
     std::string atmosphere_node_table_sha256;
@@ -209,9 +210,30 @@ struct CalibrationProduct {
         "excludes_detector_flxscale_because_selected_APT_sens_already_contains_flxscale;"
         "not_authoritative_total_calibration";
     static constexpr std::string_view weight_recipient_semantics =
-        "approximate_or_hybrid_weight=(sqrt(sample_rate)*fcf*selected_APT_sens)^-2;"
-        "full_weight=conditional_inverse_variance_from_already_calibrated_samples;"
-        "constant_weight=nonprecision_coefficient;"
+        "approximate_weight:coefficient=(sqrt(sample_rate)*compatibility_fcf*selected_APT_sens)^-2,"
+        "stage=PTCProc::calc_weights,units=(mJy/beam)^-2,normalization=none,"
+        "support=unflagged_detector,calibration=compatibility_fcf_once_and_selected_APT_sens_contains_flxscale_once;"
+        "hybrid_weight:baseline=approximate_weight,coefficient=dimensionless_residual_variance_correction,"
+        "stage=PTCProc::calc_weights,units=(mJy/beam)^-2,normalization=array_median_full_over_approx_bounded,"
+        "support=unflagged_detector_with_valid_approximate_weight,calibration=no_additional_factor;"
+        "validated_weight:baseline=approximate_weight,coefficient=dimensionless_validation_factor_with_optional_cap,"
+        "stage=PTCProc::calc_weights,units=(mJy/beam)^-2,normalization=validated_weight_policy,"
+        "support=unflagged_detector_with_valid_approximate_weight,calibration=no_additional_factor;"
+        "full_weight:coefficient=conditional_inverse_variance_of_already_calibrated_samples,"
+        "stage=PTCProc::calc_weights,units=(mJy/beam)^-2,normalization=sample_variance,"
+        "support=unflagged_samples,calibration=already_applied_once;"
+        "constant_weight:coefficient=unity,stage=PTCProc::calc_weights,units=dimensionless,"
+        "normalization=none,support=unflagged_detector,calibration=not_a_precision_recipient;"
+        "naive_map_signal:recipient=weighted_mean_of_already_calibrated_samples,"
+        "stage=NaiveMapmaker_then_MapBuffer::normalize_maps,units=mJy/beam,normalization=sum_weight,"
+        "support=positive_accumulated_weight,calibration=already_applied_once;"
+        "naive_map_weight:recipient=sum_of_already_scaled_inverse_variance_coefficients,"
+        "stage=NaiveMapmaker_then_MapBuffer::normalize_maps,units=(mJy/beam)^-2,normalization=none,"
+        "support=positive_accumulated_weight,calibration=no_second_factor;"
+        "noise_variance_I:recipient=conditional_finite_stack_scatter_of_normalized_noise_realizations,"
+        "stage=MapBuffer::calc_noise_products_then_FITS,units=(mJy/beam)^2,"
+        "normalization=completed_realization_count,support=finite_completed_noise_realization_stack,"
+        "calibration=realizations_already_calibrated_once;"
         "all_total_precision_and_significance_claims_fail_closed_without_nuisance_covariance";
     static constexpr std::string_view compact_covariance_state =
         "unavailable;no_nuisance_covariance_invented";
@@ -233,7 +255,10 @@ struct CalibrationProduct {
     std::string acquisition_key_schema;
     std::string response_identity;
     std::string calibration_identity;
+    std::string package_identity;
     std::string factor_state_sha256;
+    std::string applied_sample_extinction_state_sha256;
+    bool applied_identity_finalized = false;
     std::string atmosphere_operator_id;
     std::string atmosphere_operator_contract_sha256;
     std::string atmosphere_node_table_sha256;
@@ -295,6 +320,12 @@ inline std::string admitted_factor_state_identity(
     append_calibration_identity_field(
         stream, "maximum_extinction_correction_sha256",
         calibration_vector_identity(inputs.maximum_extinction_correction));
+    append_calibration_identity_field(
+        stream, "applied_sample_extinction_state_sha256",
+        inputs.applied_sample_extinction_state_sha256.empty()
+            ? citlali::utils::sha256(
+                  "sci-cal-001-applied-extinction-state-v1|active=false")
+            : inputs.applied_sample_extinction_state_sha256);
     return citlali::utils::sha256(stream.str());
 }
 
@@ -363,6 +394,61 @@ inline std::string admitted_calibration_identity(
     return citlali::utils::sha256(stream.str());
 }
 
+inline std::string calibration_package_identity(
+    const CalibrationProduct &product) {
+    std::ostringstream preimage;
+    preimage << "sci-cal-001-calibration-package-v2";
+    append_calibration_identity_field(
+        preimage, "calibration_identity", product.calibration_identity);
+    append_calibration_identity_field(
+        preimage, "package_local_apt_path", "selected_calibration_apt.ecsv");
+    append_calibration_identity_field(
+        preimage, "package_local_apt_sha256", product.apt_artifact_sha256);
+    append_calibration_identity_field(
+        preimage, "acquisition_binding_sha256",
+        product.acquisition_binding_sha256);
+    return citlali::utils::sha256(preimage.str());
+}
+
+inline void finalize_calibration_product_identity(
+    CalibrationProduct &product, std::string response_identity) {
+    if (!product.valid()) {
+        throw std::logic_error(
+            "cannot finalize an invalid calibration product identity");
+    }
+    product.response_identity = std::move(response_identity);
+    CalibrationProductAdmissionInputs inputs;
+    inputs.target_unit = product.target_unit;
+    inputs.apt_artifact_sha256 = product.apt_artifact_sha256;
+    inputs.apt_row_association_sha256 = product.apt_row_association_sha256;
+    inputs.apt_observation_identity = product.apt_observation_identity;
+    inputs.apt_matched_observation_identity =
+        product.apt_matched_observation_identity;
+    inputs.apt_selected_source = product.apt_selected_source;
+    inputs.tolapt_manifest_association_sha256 =
+        product.tolapt_manifest_association_sha256;
+    inputs.acquisition_binding_sha256 = product.acquisition_binding_sha256;
+    inputs.raw_observation_identity = product.raw_observation_identity;
+    inputs.response_identity = product.response_identity;
+    inputs.atmosphere_operator_id = product.atmosphere_operator_id;
+    inputs.atmosphere_operator_contract_sha256 =
+        product.atmosphere_operator_contract_sha256;
+    inputs.atmosphere_node_table_sha256 =
+        product.atmosphere_node_table_sha256;
+    inputs.passband_set_id = product.passband_set_id;
+    inputs.reference_profile_id = product.reference_profile_id;
+    inputs.reference_spectral_index_alpha =
+        product.reference_spectral_index_alpha;
+    inputs.reference_spectral_index_default_applied =
+        product.reference_spectral_index_default_applied;
+    inputs.tau225 = product.tau225;
+    inputs.package_lineage = product.package_lineage;
+    product.calibration_identity = admitted_calibration_identity(
+        inputs, product.factor_state_sha256);
+    product.package_identity = calibration_package_identity(product);
+    product.applied_identity_finalized = true;
+}
+
 inline CalibrationProduct reject_calibration_product(
     const CalibrationProductAdmissionInputs &inputs,
     CalibrationValidityCause cause, std::string detail) {
@@ -384,6 +470,8 @@ inline CalibrationProduct reject_calibration_product(
     result.acquisition_binding_mode = inputs.acquisition_binding_mode;
     result.acquisition_key_schema = inputs.acquisition_key_schema;
     result.response_identity = inputs.response_identity;
+    result.applied_sample_extinction_state_sha256 =
+        inputs.applied_sample_extinction_state_sha256;
     result.atmosphere_operator_id = inputs.atmosphere_operator_id;
     result.atmosphere_operator_contract_sha256 =
         inputs.atmosphere_operator_contract_sha256;
@@ -457,6 +545,12 @@ inline CalibrationProduct admit_calibration_product(
         return reject_calibration_product(
             inputs, CalibrationValidityCause::missing_required_factor,
             "calibration response-basis or fixed-operator provenance is unavailable");
+    }
+    if (inputs.extinction_requested &&
+        inputs.applied_sample_extinction_state_sha256.empty()) {
+        return reject_calibration_product(
+            inputs, CalibrationValidityCause::invalid_atmosphere_support,
+            "complete applied sample-elevation/extinction identity is unavailable");
     }
     if (inputs.package_lineage.modern_tolapt_manifest_available &&
         (inputs.package_lineage.modern_tolapt_manifest_path.empty() ||
@@ -587,9 +681,15 @@ inline CalibrationProduct admit_calibration_product(
     result.acquisition_binding_mode = inputs.acquisition_binding_mode;
     result.acquisition_key_schema = inputs.acquisition_key_schema;
     result.response_identity = inputs.response_identity;
+    result.applied_sample_extinction_state_sha256 =
+        inputs.applied_sample_extinction_state_sha256.empty()
+            ? citlali::utils::sha256(
+                  "sci-cal-001-applied-extinction-state-v1|active=false")
+            : inputs.applied_sample_extinction_state_sha256;
     result.factor_state_sha256 = admitted_factor_state_identity(inputs);
     result.calibration_identity = admitted_calibration_identity(
         inputs, result.factor_state_sha256);
+    result.package_identity = calibration_package_identity(result);
     result.atmosphere_operator_id = inputs.atmosphere_operator_id;
     result.atmosphere_operator_contract_sha256 =
         inputs.atmosphere_operator_contract_sha256;

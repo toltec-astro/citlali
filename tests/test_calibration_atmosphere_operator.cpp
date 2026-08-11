@@ -52,6 +52,11 @@ void admit_test_product(timestream::Calibration &calibration,
     inputs.target_unit = "mJy/beam";
     inputs.calibration_requested = true;
     inputs.extinction_requested = extinction;
+    if (extinction) {
+        inputs.applied_sample_extinction_state_sha256 =
+            citlali::utils::sha256(
+                "sci-cal-001-synthetic-applied-extinction-state-v1|active=true");
+    }
     inputs.acquisition_identity_available = true;
     inputs.acquisition_identity_valid = true;
     inputs.apt_lineage_available = true;
