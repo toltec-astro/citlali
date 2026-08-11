@@ -1,0 +1,196 @@
+{
+  "schema": "sci-align-001-lissajous-timestream-protocol-v1",
+  "refreeze_revision": 5,
+  "refreeze_reason": "real bootstrap gate failure 01: an otherwise numerically converged but multimodal distribution must extend in 250-realization increments through the frozen 1500 maximum before acceptance or persistent-multimodality failure",
+  "frozen_before_new_real_timestream_fit_inspection": true,
+  "repository_base_commit": "6ec08656fd5c12607e806f55389cc094aa4b6a2d",
+  "branch": "codex/sci-align-001-lissajous-timestream-fit",
+  "scope": {
+    "source": "3C273",
+    "array": "a1100",
+    "pointing_count": 22,
+    "bracket_group_count": 11,
+    "selection_change_prohibited": true,
+    "high_snr_classification_authority": "frozen map-space selection",
+    "unity_access": false,
+    "production_code_change": false
+  },
+  "input_authority": {
+    "selection_manifest": "../sci_align_001_lissajous_pointing_2026-08-10/selected_pointings.json",
+    "selection_manifest_sha256": "b6e517112988cfe2cea8846cd474cca3649beb7a5355f19c8a6e18074870020a",
+    "selection_sha256s_sha256": "6c3e35486cd32a43932877889b914a6d9fa17134922dd2b1fe1d3e1da4cc32ce",
+    "map_corpus_manifest_sha256": "398949ac5b2f784a1c14a210d2c39925ab93e06fc440383789a1d484ed23032b",
+    "map_corpus_table_sha256": "1b95394113c1f41105ec32b9a001a4cb6fdf9a6a2211fdf0fee95c20adcb258c",
+    "map_corpus_sha256s_sha256": "410ba53903da01f36d78f602911211dec73b761ff782642bd65ab670acd132eb",
+    "map_per_observation_sha256s_required": true
+  },
+  "sign_convention": {
+    "coordinate_shift": "PTC signal at recorded t is evaluated at the complete detector coordinate reconstructed from telescope state at t + tau",
+    "negative_tau": "the signal is best registered with an earlier telescope state",
+    "map_comparison": "the committed map coefficient obeys centroid=x0+tau_map_slope*v, so tau_map_coordinate_shift=-tau_map_slope and delta_tau=tau_timestream-tau_map_coordinate_shift"
+  },
+  "common_support": {
+    "scan_definition": "one row of PTC scan_indices with inclusive endpoints",
+    "whole_scan_resampling_unit": "all retained samples and all eligible a1100 detectors in one PTC scan_indices row, including that scan's PTC weights, flags, amplitude nuisances, and baseline nuisance",
+    "maximum_abs_tau_sec": 0.05,
+    "edge_rule": "retain a recorded sample only when both t-0.05 s and t+0.05 s lie inside the same scan time interval",
+    "interpolation_across_scan_boundary": false,
+    "support_invariant_with_tau_and_model": true,
+    "angular_interpolation": "unwrap each angular state independently inside each scan, linearly interpolate the unwrapped series, and use sine/cosine for TelElAct-dependent rotation",
+    "linear_interpolation_fields": [
+      "pointing_offset_az",
+      "pointing_offset_alt"
+    ],
+    "angular_interpolation_fields": [
+      "az_phys",
+      "alt_phys",
+      "TelElAct"
+    ]
+  },
+  "eligibility": {
+    "array_id": 0,
+    "apt_flag_required": 0,
+    "sample_flag_required": 0,
+    "finite_signal_coordinate_and_weight_required": true,
+    "positive_ptc_weight_required": true,
+    "detector_identity": "apt_uid",
+    "network_identity": "apt_nw",
+    "reference_center": "frozen a1100 PPT x_t/y_t, used only for fixed support and initialization",
+    "source_scoring_radius_arcsec": 35.0,
+    "baseline_training_min_radius_arcsec": 45.0,
+    "minimum_scored_samples_per_detector_scan": 8,
+    "minimum_baseline_samples_per_detector_scan": 30,
+    "timing_outlier_removal": false
+  },
+  "source_model": {
+    "form": "profiled nonnegative detector amplitude times a common elliptical Gaussian core plus a detector-scan baseline",
+    "source_x_y_free": true,
+    "source_center_bounds_relative_to_ppt_arcsec": 12.0,
+    "primary_beam": "a1100 PPT a_fwhm, b_fwhm, and angle fixed per observation",
+    "beam_sensitivity": "jointly fit common major/minor FWHM and angle",
+    "free_beam_fwhm_bounds_arcsec": [
+      3.0,
+      20.0
+    ],
+    "primary_baseline": "constant per detector per scan, fitted only on the fixed off-source support",
+    "baseline_sensitivity": "linear in normalized within-scan time per detector per scan, fitted only on the fixed off-source support",
+    "source_crossing_used_to_fit_baseline": false,
+    "detector_amplitude": "profiled independently per detector-scan and constrained nonnegative",
+    "point_objective": "sum of PTC-weighted squared residuals on the fixed source-scoring support after off-source baseline and detector amplitude profiling"
+  },
+  "models": {
+    "constant": "free static x0/y0; tau=0 and no direction-sign displacement",
+    "lag": "free static x0/y0 and one scalar tau",
+    "hysteresis": "free static x0/y0 with x-center h_az*sign(v_az) and y-center h_el*sign(v_el); tau=0",
+    "joint": "free static x0/y0, scalar tau, h_az, and h_el",
+    "hysteresis_half_separation_bounds_arcsec": [-5.0, 5.0],
+    "lag_search_bounds_ms": [-50.0, 50.0],
+    "boundary_failure_margin_ms": 1.0,
+    "optimizer": "deterministic bounded L-BFGS-B from the Cartesian product of tau starts {-25,0,+25} ms where applicable and sign-term starts {(0,0),(-1,-1),(-1,+1),(+1,-1),(+1,+1)} arcsec where applicable; retain the best finite converged solution",
+    "objective_profile_tau_grid_ms": {
+      "minimum": -50.0,
+      "maximum": 50.0,
+      "count": 41,
+      "profiled_parameters": "all non-tau global parameters allowed by the model"
+    }
+  },
+  "derivative_crosscheck": {
+    "status": "diagnostic_only",
+    "template": "delta_d approximately tau times amplitude times velocity dot Gaussian gradient",
+    "finite_difference_step_ms": 1.0,
+    "agreement_tolerance_ms": 2.0,
+    "agreement_applicability": "synthetic injected regimes and real fits with absolute exact tau <= 25 ms and no boundary or identifiability flag"
+  },
+  "blocked_prediction": {
+    "fold": "leave exactly one complete PTC scan_indices row out",
+    "training": "fit all tested timing/hysteresis/global source parameters on the remaining scans",
+    "heldout": "hold global timing/hysteresis/source/beam parameters fixed and reprofile only held-out detector amplitudes and off-source baselines",
+    "score": "held-out PTC-weighted squared residual divided by held-out positive weight-sample sum on fixed source-scoring support",
+    "winner": "lowest finite held-out score",
+    "naive_timestream_bic_prohibited": true
+  },
+  "bootstrap": {
+    "seed_formula": "2026081000 + pointing_obsnum",
+    "draw": "sample n_scans whole-scan row indices with replacement; scan multiplicity weights its complete profiled objective and map accumulator",
+    "minimum_successful_timestream_replicates": 500,
+    "timestream_checkpoint_counts": [250, 500],
+    "timestream_increment_if_not_converged": 250,
+    "maximum_timestream_replicates": 1500,
+    "timestream_convergence": {
+      "median_change_max_ms": 0.5,
+      "interval_endpoint_change_max_ms": 0.75,
+      "p_tau_negative_change_max": 0.03
+    },
+    "paired_map_initial_target": 250,
+    "paired_map_justification": "each paired map replicate reconstructs and fits eight velocity-sector maps, making it materially more expensive than the profiled timestream objective",
+    "paired_map_checkpoint_counts": [100, 200, 250],
+    "paired_map_increment_if_not_converged": 50,
+    "paired_map_maximum": 500,
+    "paired_map_minimum_successful": 200,
+    "paired_map_convergence": {
+      "delta_median_change_max_ms": 0.75,
+      "delta_interval_endpoint_change_max_ms": 1.5,
+      "covariance_relative_change_max": 0.2
+    },
+    "paired_difference": "for identical deterministic scan draws b, delta_tau_b=tau_timestream_b-tau_map_coordinate_shift_b, where tau_map_coordinate_shift_b is the negative of the committed centroid-versus-velocity coefficient",
+    "reported_intervals_percent": [68, 95],
+    "multimodality_rule": "flag more than one Gaussian-KDE local maximum above 20 percent of the global maximum within the central 99 percent bootstrap range",
+    "resumable": true,
+    "large_realization_arrays_committed": false
+  },
+  "map_bootstrap": {
+    "estimator": "the committed eight-sector nearest-pixel map reconstruction, Gaussian sector centroids, and scalar velocity model",
+    "same_scan_draws_as_timestream": true,
+    "map_point_estimate_authenticated_not_uncertainty_free": true,
+    "reported": [
+      "paired delta intervals",
+      "covariance of timestream and map tau",
+      "correlation",
+      "sign agreement"
+    ]
+  },
+  "sensitivities": {
+    "beam": ["fixed", "free"],
+    "baseline": ["constant", "linear"],
+    "model_sensitive_tau_change_ms": 3.0,
+    "model_sensitive_interval_rule": "also flag when either sensitivity estimate lies outside the primary 68 percent bootstrap interval",
+    "per_network_minimum_detector_count": 25,
+    "per_network_minimum_scored_sample_count": 200,
+    "leave_one_network_out": true,
+    "network_selection_by_fitted_tau": false
+  },
+  "anchor_gate": {
+    "pointing_obsnum": 150818,
+    "selection_reason": "pre-existing high-S/N anchor used by the committed zero-lag coordinate gate",
+    "implementation_change_allowed_only_for": [
+      "documented numerical failure",
+      "documented coordinate-reconstruction failure",
+      "documented residual-diagnostic failure"
+    ],
+    "change_based_on_tau_proximity_prohibited": true,
+    "after_change": "rerun all synthetic tests, document the failure and repair, refreeze implementation identity, then and only then inspect another real observation"
+  },
+  "corpus": {
+    "primary_sets": ["all_22", "frozen_high_snr"],
+    "resampling_unit": "one of the 11 frozen before/after beammap bracket groups, retaining both pointings together",
+    "corpus_bootstrap_replicates": 5000,
+    "robust_comparison": [
+      "median paired difference",
+      "Theil-Sen slope/intercept",
+      "robust scatter",
+      "before-after consistency",
+      "observations driving disagreement"
+    ]
+  },
+  "stop_conditions": [
+    "synthetic injected lag or sign convention is not recovered",
+    "tau is strongly degenerate with source position or beam width",
+    "bootstrap remains multimodal or fails convergence at its maximum count",
+    "optimum lies within 1 ms of a lag boundary",
+    "tau changes materially under the frozen beam or baseline sensitivities",
+    "required PTC fields cannot support exact wrap-safe within-scan interpolation",
+    "coordinate reconstruction or zero-lag centroid gate fails",
+    "production Citlali changes or regenerated reductions would be required"
+  ],
+  "interpretation_boundary": "tests relative registration of delivered PTC signal and delivered telescope-coordinate trajectory; independent of map binning and sector centroid reduction but not independent of upstream PTC processing; does not identify a hardware or software cause"
+}

@@ -1,0 +1,17 @@
+{
+  "schema": "sci-align-001-lissajous-timestream-implementation-freeze-v1",
+  "stage": "post-map-sign-convention-repair-before-non-anchor-real-data",
+  "repository_base_commit": "6ec08656fd5c12607e806f55389cc094aa4b6a2d",
+  "branch": "codex/sci-align-001-lissajous-timestream-fit",
+  "implementation_sha256": "ad727470480cfed0094cd52cf5bf96705e40d30e74ace00dfcec1c1339a601a8",
+  "test_sha256": "82c035aff8ca551e2d0438ae5c5ee99da3eec64bb4ee5e27473bcd71c92b3ae7",
+  "protocol_sha256": "5366dd8cfe963e29bf273a7c764637f9b85586f211963920acdc95b2610f9ad1",
+  "synthetic_test_count": 9,
+  "synthetic_test_status": "pass",
+  "repair_authority": "ANCHOR_COORDINATE_CONVENTION_FAILURE_01.md",
+  "timestream_estimator_changed": false,
+  "map_estimator_changed": false,
+  "comparison_sign_transform_added": true,
+  "sample_support_changed": false,
+  "real_observations_inspected_before_this_freeze": [150818]
+}

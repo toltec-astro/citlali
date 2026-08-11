@@ -1,0 +1,18 @@
+{
+  "schema": "sci-align-001-lissajous-timestream-implementation-freeze-v1",
+  "stage": "post-multimodal-convergence-repair-before-bootstrap-extension",
+  "repository_base_commit": "6ec08656fd5c12607e806f55389cc094aa4b6a2d",
+  "branch": "codex/sci-align-001-lissajous-timestream-fit",
+  "implementation_sha256": "69bb07f9bd3b3fbce1c602184fc8631a4f7d782ae51a279c0d2300002ed5ef2e",
+  "test_sha256": "53e4246b912579fd9202b765c4944c1f7398cf042c554ebea29e163f9b3287ff",
+  "protocol_sha256": "da4cbc9385fcd02630592ae77a8bb3e1ecbbe4591edc9010d82e74e202060d48",
+  "synthetic_test_count": 10,
+  "synthetic_test_status": "pass",
+  "repair_authority": "REAL_BOOTSTRAP_GATE_FAILURE_01.md",
+  "estimator_changed": false,
+  "resampling_draws_changed": false,
+  "convergence_gate_changed": true,
+  "real_observations_completed_before_this_freeze": [
+    131920, 131926, 133542, 133544, 135396, 135398, 136278, 136280, 150818
+  ]
+}

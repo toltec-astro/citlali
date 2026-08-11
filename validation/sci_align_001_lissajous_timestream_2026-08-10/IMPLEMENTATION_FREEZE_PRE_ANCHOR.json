@@ -1,0 +1,14 @@
+{
+  "schema": "sci-align-001-lissajous-timestream-implementation-freeze-v1",
+  "stage": "after_all_synthetic_gates_before_anchor_fit",
+  "real_timestream_fits_inspected": 0,
+  "repository_base_commit": "6ec08656fd5c12607e806f55389cc094aa4b6a2d",
+  "protocol_sha256": "30b4530e158c434596994cf2022fb8a34537e837243e0fe3491a2dc78a25226e",
+  "implementation_sha256": "22f4dc5e19cad81b9d86e48030061df07aa23bc0f1bd7e70ac7b0ebc3094c3b0",
+  "test_sha256": "8cba42305879a0872b41a0dff2008df3f00d56a876b0d90bbefccb62e4808729",
+  "synthetic_test_count": 7,
+  "synthetic_test_status": "pass",
+  "synthetic_gate_failure_note": "SYNTHETIC_GATE_FAILURE_01.md",
+  "anchor_obsnum": 150818,
+  "change_after_anchor_rule": "only a documented numerical, coordinate-reconstruction, or residual-diagnostic failure may prompt an implementation change; after a change all synthetic tests rerun and a successor freeze is required before another real observation"
+}

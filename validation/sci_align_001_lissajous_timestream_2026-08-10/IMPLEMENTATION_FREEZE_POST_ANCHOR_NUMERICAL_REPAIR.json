@@ -1,0 +1,15 @@
+{
+  "schema": "sci-align-001-lissajous-timestream-implementation-freeze-v1",
+  "stage": "post-anchor-numerical-repair-before-anchor-reinspection",
+  "repository_base_commit": "6ec08656fd5c12607e806f55389cc094aa4b6a2d",
+  "branch": "codex/sci-align-001-lissajous-timestream-fit",
+  "implementation_sha256": "f73740343a6440c4cf4152aa3572f9a790172d56094662a129baf977ca9a822a",
+  "test_sha256": "558fda2b3b77765fcb84a801722fb04e207615577f6c464c4e5e87d80ac58e50",
+  "protocol_sha256": "86b1bd0e3bd821e2f9cc2b91f5e581355a3f9a90521a3320bf5e848ba2baf401",
+  "synthetic_test_count": 8,
+  "synthetic_test_status": "pass",
+  "repair_authority": "ANCHOR_NUMERICAL_FAILURE_01.md",
+  "forward_model_changed": false,
+  "sample_support_changed": false,
+  "real_observations_inspected_before_this_freeze": [150818]
+}

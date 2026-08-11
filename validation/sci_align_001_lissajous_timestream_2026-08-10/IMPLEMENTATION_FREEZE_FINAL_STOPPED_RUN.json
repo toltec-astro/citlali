@@ -1,0 +1,23 @@
+{
+  "schema": "sci-align-001-lissajous-timestream-implementation-freeze-v1",
+  "status": "final_stopped_run",
+  "repository_base_commit": "6ec08656fd5c12607e806f55389cc094aa4b6a2d",
+  "branch": "codex/sci-align-001-lissajous-timestream-fit",
+  "implementation_sha256": "b78577e29fcd7f327373ac64250a4c7b708a87a2ed4f277dfb8582c279075d70",
+  "test_sha256": "53e4246b912579fd9202b765c4944c1f7398cf042c554ebea29e163f9b3287ff",
+  "current_protocol_sha256": "da4cbc9385fcd02630592ae77a8bb3e1ecbbe4591edc9010d82e74e202060d48",
+  "point_fit_protocol_sha256": "5366dd8cfe963e29bf273a7c764637f9b85586f211963920acdc95b2610f9ad1",
+  "selection_sha256": "b6e517112988cfe2cea8846cd474cca3649beb7a5355f19c8a6e18074870020a",
+  "stop_observation": 136280,
+  "stop_result_sha256": "065c9cb932692485bff62663e22088666706ca4006bc34ab5225c6a4eecec017",
+  "stop_result_sha256s_sha256": "bbd5e6ad6c6370f7e0b911ea3901a77a6e039ab504afad181494bb69c92a1e47",
+  "preserved_initial_500_result_sha256": "e761529824e1a572f0afd7eab2d027ffece8025a9607803b79b680c648b4eb0f",
+  "stop_condition": "bootstrap remains multimodal at maximum count",
+  "timestream_bootstrap_count": 1500,
+  "paired_map_bootstrap_count": 250,
+  "kde_peak_count": 2,
+  "unopened_observation_count": 13,
+  "corpus_inference_permitted": false,
+  "production_code_changed": false,
+  "unity_accessed": false
+}

@@ -1,0 +1,36 @@
+{
+  "corpus_level_summary_computed": false,
+  "exact_optimizer_start_pileup_count": 361,
+  "kde_peak_count": 2,
+  "opened_observations": [
+    131920,
+    131926,
+    133542,
+    133544,
+    135396,
+    135398,
+    136278,
+    136280,
+    150818
+  ],
+  "schema": "sci-align-001-lissajous-timestream-stop-summary-v1",
+  "status": "stopped_at_pre_specified_gate",
+  "stop_condition": "bootstrap remains multimodal at maximum count",
+  "stop_observation": 136280,
+  "timestream_bootstrap_count": 1500,
+  "unopened_observations": [
+    148669,
+    148671,
+    150820,
+    151125,
+    151127,
+    151599,
+    151601,
+    151949,
+    151951,
+    152450,
+    152452,
+    152881,
+    152883
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "schema": "sci-align-001-lissajous-timestream-implementation-freeze-v1",
+  "stage": "post-multimodal-lineage-repair-before-bootstrap-extension",
+  "repository_base_commit": "6ec08656fd5c12607e806f55389cc094aa4b6a2d",
+  "branch": "codex/sci-align-001-lissajous-timestream-fit",
+  "implementation_sha256": "b78577e29fcd7f327373ac64250a4c7b708a87a2ed4f277dfb8582c279075d70",
+  "test_sha256": "53e4246b912579fd9202b765c4944c1f7398cf042c554ebea29e163f9b3287ff",
+  "protocol_sha256": "da4cbc9385fcd02630592ae77a8bb3e1ecbbe4591edc9010d82e74e202060d48",
+  "accepted_predecessor_protocol_sha256": "5366dd8cfe963e29bf273a7c764637f9b85586f211963920acdc95b2610f9ad1",
+  "synthetic_test_count": 10,
+  "synthetic_test_status": "pass",
+  "estimator_changed": false,
+  "resampling_draws_changed": false,
+  "protocol_lineage_recording_changed": true,
+  "real_observations_completed_before_this_freeze": [
+    131920, 131926, 133542, 133544, 135396, 135398, 136278, 136280, 150818
+  ]
+}

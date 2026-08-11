@@ -1,0 +1,167 @@
+{
+  "rows": [
+    {
+      "map_result": {
+        "coordinate_shift_tau_ms": -32.83582681286767,
+        "obs_sha256s_sha256": "33d944ecd60105a7c49784dcb99e63e504ac73b8db929d82272e39c4f8015a5a",
+        "raw_centroid_slope_tau_ms": 32.83582681286767,
+        "result_path": "/Users/gwilson/.codex/visualizations/2026/08/03/019fc822-9f45-72b1-91e9-775e80768d2a/sci_align_001_lissajous_pointing_2026-08-10/o131920/result.json",
+        "result_sha256": "efbb3309efb3dd73d47e270269a388890559daf5f2b3be0cea3a03ee4b2e9f3f"
+      },
+      "pointing_obsnum": 131920,
+      "ppt_path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/diagnostics/standard_trial/batch01/reduced/redu00/131920/raw/ppt_commissioning_pointing_131920_citlali.ecsv",
+      "ppt_sha256": "535c7003af14f40cdaffd32f70ef24800cef7219628d5645775220f2dad29e8f",
+      "protocol_sha256": "5366dd8cfe963e29bf273a7c764637f9b85586f211963920acdc95b2610f9ad1",
+      "ptc_path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/diagnostics/standard_trial/batch01/reduced/redu00/131920/raw/toltec_commissioning_pointing_131920_ptc_timestream.nc",
+      "ptc_sha256": "7bbdf10c7b21fcc9d75998d6a561f9ee76aa88646f54206fb801445ff78c262c",
+      "result_sha256": "86d14f3848530be6593d9ff3ebf41e49114bc68f94ac683d1d371a5cfcb1f970",
+      "result_sha256s_sha256": "ad998bfca461f0acef1380101fae9b26e81f0a696944a6d2202ec585e0b6c3b9",
+      "selection_sha256": "b6e517112988cfe2cea8846cd474cca3649beb7a5355f19c8a6e18074870020a"
+    },
+    {
+      "map_result": {
+        "coordinate_shift_tau_ms": 12.039938411050333,
+        "obs_sha256s_sha256": "cab5f1e3d895162442408ada0cebc38e0c0a95c1958dfaf2691e2d787131cc1b",
+        "raw_centroid_slope_tau_ms": -12.039938411050333,
+        "result_path": "/Users/gwilson/.codex/visualizations/2026/08/03/019fc822-9f45-72b1-91e9-775e80768d2a/sci_align_001_lissajous_pointing_2026-08-10/o131926/result.json",
+        "result_sha256": "cdc5b0dc37886d83a1948d5f6878a8b7684577fe7b39f97ee5f48d3f935e0d6d"
+      },
+      "pointing_obsnum": 131926,
+      "ppt_path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/diagnostics/standard_trial/batch02/reduced/redu00/131926/raw/ppt_commissioning_pointing_131926_citlali.ecsv",
+      "ppt_sha256": "45720c68e99983c553ff7df31534957b8d8103d608c9cdbcb5174c9cbae87d82",
+      "protocol_sha256": "5366dd8cfe963e29bf273a7c764637f9b85586f211963920acdc95b2610f9ad1",
+      "ptc_path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/diagnostics/standard_trial/batch02/reduced/redu00/131926/raw/toltec_commissioning_pointing_131926_ptc_timestream.nc",
+      "ptc_sha256": "9b23e769e51d843f8cf8368fcd8114e6478cb8becf1361d727122cd535931967",
+      "result_sha256": "04725c62b850a61dca46b1677ec1010ceb54d999e720f0e6289a09656fcfeb9e",
+      "result_sha256s_sha256": "896943e0770656f112c37942d1ada2ad6fff3ba49253453e69ded8b65c5a8f51",
+      "selection_sha256": "b6e517112988cfe2cea8846cd474cca3649beb7a5355f19c8a6e18074870020a"
+    },
+    {
+      "map_result": {
+        "coordinate_shift_tau_ms": 12.417283655576483,
+        "obs_sha256s_sha256": "034fbbb04f6655c572568146e6e0cd3b6460483502faf85e040e4fa45e8b4ef0",
+        "raw_centroid_slope_tau_ms": -12.417283655576483,
+        "result_path": "/Users/gwilson/.codex/visualizations/2026/08/03/019fc822-9f45-72b1-91e9-775e80768d2a/sci_align_001_lissajous_pointing_2026-08-10/o133542/result.json",
+        "result_sha256": "1ac5515bd83d89ae683d80a48ea1e2045eece880023121cfdbd05797439834cc"
+      },
+      "pointing_obsnum": 133542,
+      "ppt_path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/diagnostics/standard_trial/batch02/reduced/redu00/133542/raw/ppt_commissioning_pointing_133542_citlali.ecsv",
+      "ppt_sha256": "36028a7dfaa43fe4a6a087d91a939f551ea7b2f3bba641a6a2b2a00fce63c4d7",
+      "protocol_sha256": "5366dd8cfe963e29bf273a7c764637f9b85586f211963920acdc95b2610f9ad1",
+      "ptc_path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/diagnostics/standard_trial/batch02/reduced/redu00/133542/raw/toltec_commissioning_pointing_133542_ptc_timestream.nc",
+      "ptc_sha256": "12ec24b11da17eef5d0a85c958b7c6dff87a857bf1e21d5a6dfd7f9703d7a67a",
+      "result_sha256": "d179718fc70af3b2ae40acabff98294a4999f44700f998ca52882416216348ad",
+      "result_sha256s_sha256": "6b0afd1f2bba86d29274d221955d74aa62627bf556c6680fd9e92cd3681d889e",
+      "selection_sha256": "b6e517112988cfe2cea8846cd474cca3649beb7a5355f19c8a6e18074870020a"
+    },
+    {
+      "map_result": {
+        "coordinate_shift_tau_ms": 11.256621723715554,
+        "obs_sha256s_sha256": "1f632768069e89351bf8093af1b8ed743a9bb93bee5f6ae7d6dd346b94de9c37",
+        "raw_centroid_slope_tau_ms": -11.256621723715554,
+        "result_path": "/Users/gwilson/.codex/visualizations/2026/08/03/019fc822-9f45-72b1-91e9-775e80768d2a/sci_align_001_lissajous_pointing_2026-08-10/o133544/result.json",
+        "result_sha256": "ca1efc7dcdf45e8b4823bf9f7e9f1ba2ae051cbeb49c64d8c6c45fa04dd95992"
+      },
+      "pointing_obsnum": 133544,
+      "ppt_path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/diagnostics/standard_trial/batch02/reduced/redu00/133544/raw/ppt_commissioning_pointing_133544_citlali.ecsv",
+      "ppt_sha256": "6ec48f0118bdda499355fdd49bec09f86910c54876a9bbaca831c8292b7732a6",
+      "protocol_sha256": "5366dd8cfe963e29bf273a7c764637f9b85586f211963920acdc95b2610f9ad1",
+      "ptc_path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/diagnostics/standard_trial/batch02/reduced/redu00/133544/raw/toltec_commissioning_pointing_133544_ptc_timestream.nc",
+      "ptc_sha256": "69d2214e68288b3ccc32d67101f51da11e13273f880d8978f7b1089fcc92f739",
+      "result_sha256": "81f07d6b5201daba02b96ff7e3e44c47f8bfed4ed7d5fbde32ec50a09a920e09",
+      "result_sha256s_sha256": "75d2d586192272d3bf2ec92d9920c632434fc2d8fecb4cac73bbbde860f97b2e",
+      "selection_sha256": "b6e517112988cfe2cea8846cd474cca3649beb7a5355f19c8a6e18074870020a"
+    },
+    {
+      "map_result": {
+        "coordinate_shift_tau_ms": 15.602097178185836,
+        "obs_sha256s_sha256": "15f49b6cfe10664eb5be004bf50a85ccd426148bc73ecc6a24685e7a820c1e9e",
+        "raw_centroid_slope_tau_ms": -15.602097178185836,
+        "result_path": "/Users/gwilson/.codex/visualizations/2026/08/03/019fc822-9f45-72b1-91e9-775e80768d2a/sci_align_001_lissajous_pointing_2026-08-10/o135396/result.json",
+        "result_sha256": "15f8cba5f9a90b956ddc40304b25dec7a054d7da3e7d32fa8341a0f626cc03f5"
+      },
+      "pointing_obsnum": 135396,
+      "ppt_path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/diagnostics/standard_trial/batch03/reduced/redu00/135396/raw/ppt_commissioning_pointing_135396_citlali.ecsv",
+      "ppt_sha256": "949c64f0067cb82350fc78ad80eff98ed1523d85f6f0f1833533df2ca7a5634b",
+      "protocol_sha256": "5366dd8cfe963e29bf273a7c764637f9b85586f211963920acdc95b2610f9ad1",
+      "ptc_path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/diagnostics/standard_trial/batch03/reduced/redu00/135396/raw/toltec_commissioning_pointing_135396_ptc_timestream.nc",
+      "ptc_sha256": "7ce8f3af35d526ee3d94f8b66c549d797c4a5e89d1e1c44385a5168c9fe6581e",
+      "result_sha256": "fe0aa30cd65c74a537ff5320918634b7859b543813979fb117bbe90007f46ad5",
+      "result_sha256s_sha256": "bbe86721032d6f7dda0f4eaf262d5b17459fdc34096c6ddd8ddfb400c40f3ccc",
+      "selection_sha256": "b6e517112988cfe2cea8846cd474cca3649beb7a5355f19c8a6e18074870020a"
+    },
+    {
+      "map_result": {
+        "coordinate_shift_tau_ms": 17.951936243105315,
+        "obs_sha256s_sha256": "3a5c6b7cd298898f73bcecf39eeb65e60750569a732983468c772c98ba129e3b",
+        "raw_centroid_slope_tau_ms": -17.951936243105315,
+        "result_path": "/Users/gwilson/.codex/visualizations/2026/08/03/019fc822-9f45-72b1-91e9-775e80768d2a/sci_align_001_lissajous_pointing_2026-08-10/o135398/result.json",
+        "result_sha256": "3fac95cacf824542e1ef9ae80e2094b990f61ca54a873b1fc072c4b86a893bec"
+      },
+      "pointing_obsnum": 135398,
+      "ppt_path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/diagnostics/standard_trial/batch03/reduced/redu00/135398/raw/ppt_commissioning_pointing_135398_citlali.ecsv",
+      "ppt_sha256": "a5a5556b0b08ce0fce06dfb30f054eb0f228469f13f5c2d252e45451ef7b1ee9",
+      "protocol_sha256": "5366dd8cfe963e29bf273a7c764637f9b85586f211963920acdc95b2610f9ad1",
+      "ptc_path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/diagnostics/standard_trial/batch03/reduced/redu00/135398/raw/toltec_commissioning_pointing_135398_ptc_timestream.nc",
+      "ptc_sha256": "3cf96735b17b20b58ee74264af5ebb758da15de6a51cc8f44101729e479f2d62",
+      "result_sha256": "2053af06241c3ca1dd2fef142c62ac7fa5c31b7466f149fba83ee1ff18784527",
+      "result_sha256s_sha256": "20fd6ba8922e35c21597389ceff06d3349a912172f8386d83a6f740976bca651",
+      "selection_sha256": "b6e517112988cfe2cea8846cd474cca3649beb7a5355f19c8a6e18074870020a"
+    },
+    {
+      "map_result": {
+        "coordinate_shift_tau_ms": 12.842762928131405,
+        "obs_sha256s_sha256": "d349c0ad69c0e52b3ef30b64c47f214dc7892dd5da32b3ee9ee74cc76d938d00",
+        "raw_centroid_slope_tau_ms": -12.842762928131405,
+        "result_path": "/Users/gwilson/.codex/visualizations/2026/08/03/019fc822-9f45-72b1-91e9-775e80768d2a/sci_align_001_lissajous_pointing_2026-08-10/o136278/result.json",
+        "result_sha256": "e50a58e36c6c6f8d4c036032ace5d01b51037df9730460b32e7ee2961c25e5eb"
+      },
+      "pointing_obsnum": 136278,
+      "ppt_path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/diagnostics/standard_trial/batch03/reduced/redu00/136278/raw/ppt_commissioning_pointing_136278_citlali.ecsv",
+      "ppt_sha256": "9643e2925da16e35c9477aca1f4abd253260242b5dffbce600ebf27e1f62c9ab",
+      "protocol_sha256": "5366dd8cfe963e29bf273a7c764637f9b85586f211963920acdc95b2610f9ad1",
+      "ptc_path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/diagnostics/standard_trial/batch03/reduced/redu00/136278/raw/toltec_commissioning_pointing_136278_ptc_timestream.nc",
+      "ptc_sha256": "61dc76cad148ea2ec3e82aaa8e9f00042aa4ad1f09de89327692c689d9a22e57",
+      "result_sha256": "e4745425a904cef132b460d3788abe941d53417db128b073233490595b7c0296",
+      "result_sha256s_sha256": "c4820dda6ca58abc9a24e577c0164386c1ba3740ec5408bb3987336b33a0dcca",
+      "selection_sha256": "b6e517112988cfe2cea8846cd474cca3649beb7a5355f19c8a6e18074870020a"
+    },
+    {
+      "map_result": {
+        "coordinate_shift_tau_ms": 7.790339463607854,
+        "obs_sha256s_sha256": "f2fd8092abbf94ad9c00c83cc9de250a8976cc0e0579c90e3b382d0543e441e2",
+        "raw_centroid_slope_tau_ms": -7.790339463607854,
+        "result_path": "/Users/gwilson/.codex/visualizations/2026/08/03/019fc822-9f45-72b1-91e9-775e80768d2a/sci_align_001_lissajous_pointing_2026-08-10/o136280/result.json",
+        "result_sha256": "7210874a4bc06a74b6697599e8f163a57557a5fb6a2fbca0ce87b103d888c8d8"
+      },
+      "pointing_obsnum": 136280,
+      "ppt_path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/diagnostics/standard_trial/batch03/reduced/redu00/136280/raw/ppt_commissioning_pointing_136280_citlali.ecsv",
+      "ppt_sha256": "5d9d042d315946c6b37f70c8ef3a9e439e4eb6bba74723794c600b937dc21c9e",
+      "protocol_sha256": "5366dd8cfe963e29bf273a7c764637f9b85586f211963920acdc95b2610f9ad1",
+      "ptc_path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/diagnostics/standard_trial/batch03/reduced/redu00/136280/raw/toltec_commissioning_pointing_136280_ptc_timestream.nc",
+      "ptc_sha256": "49e251842fc861dbed7161097d8eef2831a491a3cd463dd62ac00ec878823f78",
+      "result_sha256": "065c9cb932692485bff62663e22088666706ca4006bc34ab5225c6a4eecec017",
+      "result_sha256s_sha256": "bbd5e6ad6c6370f7e0b911ea3901a77a6e039ab504afad181494bb69c92a1e47",
+      "selection_sha256": "b6e517112988cfe2cea8846cd474cca3649beb7a5355f19c8a6e18074870020a"
+    },
+    {
+      "map_result": {
+        "coordinate_shift_tau_ms": 5.549281593032191,
+        "obs_sha256s_sha256": "e3e4682071a0c2e87e5dd3c9edf4ef0de04d0cf2d6b2f6ea9962a7ef497197b9",
+        "raw_centroid_slope_tau_ms": -5.549281593032191,
+        "result_path": "/Users/gwilson/.codex/visualizations/2026/08/03/019fc822-9f45-72b1-91e9-775e80768d2a/sci_align_001_lissajous_pointing_2026-08-10/o150818/result.json",
+        "result_sha256": "f0d16636896197ebfbdc26cec21872ef91f88d1659ddd612bbbdcefd22c29502"
+      },
+      "pointing_obsnum": 150818,
+      "ppt_path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/diagnostics/standard_trial/batch05/reduced/redu00/150818/raw/ppt_commissioning_pointing_150818_citlali.ecsv",
+      "ppt_sha256": "7ddc4f841aa8cdb4623d8d185e690ab221f857cc8836b55305367a948e650e13",
+      "protocol_sha256": "5366dd8cfe963e29bf273a7c764637f9b85586f211963920acdc95b2610f9ad1",
+      "ptc_path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/diagnostics/standard_trial/batch05/reduced/redu00/150818/raw/toltec_commissioning_pointing_150818_ptc_timestream.nc",
+      "ptc_sha256": "be8f5a73bcad965885dcb5e066113f53e4173254fc351a2ef8ad24116de9e42e",
+      "result_sha256": "5f262fccb28ca404bc0825811dff5de27eb1f10702b82c644722bb62a376b4fe",
+      "result_sha256s_sha256": "ca6b820d3601102c04035782faf866764ded1f0c9e544ab8473d226865acddec",
+      "selection_sha256": "b6e517112988cfe2cea8846cd474cca3649beb7a5355f19c8a6e18074870020a"
+    }
+  ],
+  "schema": "sci-align-001-lissajous-timestream-partial-input-identities-v1"
+}
