@@ -33,6 +33,19 @@ authorized. The exact imported
 has SHA-256
 `fe07901504ad26916cab2c5589f452b1873c11ef215239653ed938f45eefd4d5`.
 
+On 2026-08-11 the owner accepted the `SCI-CAL-001` successor-3
+[return-for-repair disposition](packages/SCI-CAL-001_SUCCESSOR_3_OWNER_ACCEPTANCE_2026-08-11.md)
+for candidate `3af6faf996fa002b2647adca8f33991002d49ff1`, audited at
+`0b597ec5eaaf52477c995af6f2f4fa3eddb2a5de`. F003/F004 close,
+F002/F006 retain their bounded closures, F005/F007/F008/local F009 remain
+open, and F001/F010 remain conditioned. The CAL axes stay `approved`,
+`nonconformant`, `in_progress`, and `fail_closed`, with verdict `amend`. The
+frozen [successor-4 handoff](packages/SCI-CAL-001_SUCCESSOR_4_BOUNDED_REPAIR_HANDOFF_2026-08-11.md)
+and [finding ledger](proposals/SCI-CAL-001_SUCCESSOR_4_REPAIR_FINDING_LEDGER_2026-08-11.yaml)
+authorize only a later role-separated repair against exact pushed base
+`3af6faf996fa...`; they do not launch it or authorize Unity, reductions,
+production, re-audit, merge, push, or downstream work.
+
 ALIGN/3C273 evidence remains owner-managed and active, while AST repair waits
 for an accepted and re-audited ALIGN successor. The RTC audit at
 `3319d7424c732c1c9fc300c336e4d428e6f91068` is integrated, owner decisions

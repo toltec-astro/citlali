@@ -29,13 +29,14 @@ current_program_checkpoint:
       production_status: existing_use_only
       restriction: exact_application_mainline_record_only
   active_lanes:
-    SCI-CAL-001: successor_2_owner_scope_complete_base_7894346_proposed_repair_not_launched
+    SCI-CAL-001: successor_3_return_accepted_successor_4_authorized_not_launched
     SCI-MAP-002: third_successor_86f1582_reaudited_owner_accepted_bounded_findings_closed_no_merge
     SCI-ALIGN-001: assigned_grid_compatibility_policy_active_producer_authority_request_pending
     SCI-AST-001: phase_independent_math_permitted_no_launch_absolute_placement_unavailable
     SCI-RTC-001: core_phase_independent_and_stage_a_separate_stage_a_successor_3_authorized_not_launched
     ENG-STATE-001: static_package_accepted_F001_F002_open
   queue:
+    - SCI-CAL-001_successor_4_bounded_technical_repair_authorized_pending_role_separated_READY_and_launch
     - SCI-RTC-001_phase_independent_repair_handoff_ready_not_launched
     - SCI-RTC-001_stage_a_successor_2_return_accepted_successor_3_authorized_pending_role_separated_launch
     - SCI-PTC-001_D001_D006_approved_contract_complete_repair_and_optional_transfer_plan_not_launched
@@ -3224,6 +3225,93 @@ packages:
             already_completed_reaudited_successor_2_candidate_not_new_post_decision_successor
           closure_effect: none
           new_audit_or_reaudit_authorized: false
+      successor_3_reaudit_disposition:
+        status: owner_accepted_amend_return_for_bounded_technical_repair
+        candidate:
+          branch: codex/repair-sci-cal-001-successor-3
+          commit: 3af6faf996fa002b2647adca8f33991002d49ff1
+          parent: 8b1534807f5abe4d80be2fbd45ed3838ed351509
+          tree: 16130eb6deba3f9d8b5a8f1d1fae126084b63c95
+          patch_sha256: >-
+            4558d541a82b2a1f5c4406825c277a2f7317b6d4c788f4bbaf699a385d471bdf
+          accepted_as_complete_closure: false
+        independent_reaudit:
+          branch: codex/reaudit-sci-cal-001-successor-3-20260811
+          commit: 0b597ec5eaaf52477c995af6f2f4fa3eddb2a5de
+          parent: 3af6faf996fa002b2647adca8f33991002d49ff1
+          tree: 1766cdea7d03fc8259caffe5604dbbcbb28ac038
+          report:
+            path: >-
+              doc/audits/SCI-CAL-001_SUCCESSOR_3_REAUDIT_2026-08-11.md
+            sha256: >-
+              ee0f8c40e31300fd5c547b45d086a5e97f7be52e45d453016c0ade28c014e59a
+            immutable: true
+          evidence:
+            path: >-
+              doc/audits/evidence/SCI-CAL-001_SUCCESSOR_3_LOCAL_EVIDENCE_2026-08-11.yaml
+            sha256: >-
+              7245872f044fc15a7cdb631ea02b70a9746cba1351bc942c1dde8bffa2b25a6f
+            immutable: true
+        owner_acceptance:
+          path: >-
+            doc/audits/packages/SCI-CAL-001_SUCCESSOR_3_OWNER_ACCEPTANCE_2026-08-11.md
+          sha256: >-
+            73bd190349dd2ccd3405baa4cab294deb4e87c576367a54dbc44b3014a52a9e1
+          decision_date: 2026-08-11
+        accepted_finding_states:
+          closed_or_retained:
+            - SCI-CAL-001-F002
+            - SCI-CAL-001-F003
+            - SCI-CAL-001-F004
+            - SCI-CAL-001-F006
+          open_bounded_technical_repair:
+            - SCI-CAL-001-F005
+            - SCI-CAL-001-F007
+            - SCI-CAL-001-F008
+            - SCI-CAL-001-F009-local
+          open_conditioned_unchanged:
+            - SCI-CAL-001-F001
+            - SCI-CAL-001-F010
+          no_new_scientific_decision_required: true
+        controlled_axes:
+          contract_status: approved
+          implementation_status: nonconformant
+          validation_status: in_progress
+          production_status: fail_closed
+          verdict: amend
+        successor_4_repair:
+          status: owner_authorized_not_launched
+          proposed_exact_base: 3af6faf996fa002b2647adca8f33991002d49ff1
+          proposed_branch: codex/repair-sci-cal-001-successor-4
+          role_separation_required: true
+          ready_checkpoint_required: true
+          handoff:
+            path: >-
+              doc/audits/packages/SCI-CAL-001_SUCCESSOR_4_BOUNDED_REPAIR_HANDOFF_2026-08-11.md
+            sha256: >-
+              036de8014ae959bdbc237d3ba3a79ee399479d56f66d8455f51b821455b003e7
+          finding_ledger:
+            path: >-
+              doc/audits/proposals/SCI-CAL-001_SUCCESSOR_4_REPAIR_FINDING_LEDGER_2026-08-11.yaml
+            sha256: >-
+              0b00972f2c02d65a4f2137e37a0b5f19e1756bd3fe339b10764a27128ff67877
+          bounded_findings:
+            - SCI-CAL-001-F005
+            - SCI-CAL-001-F007
+            - SCI-CAL-001-F008
+            - SCI-CAL-001-F009-local
+          preserved_closures:
+            - SCI-CAL-001-F002
+            - SCI-CAL-001-F003
+            - SCI-CAL-001-F004
+            - SCI-CAL-001-F006
+          conditioned_outside_scope:
+            - SCI-CAL-001-F001
+            - SCI-CAL-001-F010
+          repair_launched: false
+          reaudit_launched: false
+          unity_or_reduction_authorized: false
+          production_or_downstream_authorized: false
       approved_operator_successor_material:
         operator_id: am12_fixed_djf25_piecewise_linear_los_tau_v1
         disposition: retain_without_downstream_or_production_authority
@@ -3337,6 +3425,12 @@ packages:
         - full_covariance_or_significance
         - beammap_apt_promotion
         - calibration_dependent_feedback
+    open_findings_authority_note: >-
+      This list preserves the original finding definitions and successor-2
+      dispositions. Current status is governed by
+      repair_reaudit_disposition.successor_3_reaudit_disposition; F003 and
+      F004 are closed there, while F001, F005, F007, F008, local F009, and
+      F010 remain open in their recorded scopes.
     open_findings:
       - id: SCI-CAL-001-F001
         class: implementation_defect
@@ -3360,7 +3454,7 @@ packages:
         severity: P0
         evidence_basis: observed
         confidence: high
-        status: open
+        status: closed
         owner: calibration_validity_implementation
         summary: >-
           The complete calibration-factor product is not admitted atomically
@@ -3375,12 +3469,16 @@ packages:
           publication. Failures are typed, persistent, and cause-specific;
           approved RTC-only or intentionally uncalibrated skip semantics stay
           distinct from calibrated output.
+        successor_3_disposition: >-
+          Closed and conformant at the accepted startup and admission
+          boundary. Successor-4 must preserve the behavior and regression
+          evidence without broadening units or skip semantics.
       - id: SCI-CAL-001-F004
         class: implementation_defect
         severity: P0
         evidence_basis: observed
         confidence: high
-        status: open
+        status: closed
         owner: calibration_identity_implementation
         summary: >-
           External APT coefficients bind to TOD columns by position without a
@@ -3400,6 +3498,11 @@ packages:
           validity; do not invent a lineage system, duplicate APT extensions,
           require perfect design identity, or invent unavailable optional
           provenance.
+        successor_3_disposition: >-
+          Closed and conformant within the accepted structural association
+          claim. Successor-4 must preserve truthful legacy lineage and the
+          explicit optional modern association without promoting unverified
+          producer or scientific authority.
       - id: SCI-CAL-001-F005
         class: contract_gap
         severity: P1

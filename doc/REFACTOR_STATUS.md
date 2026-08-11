@@ -17,6 +17,37 @@ The project will improve the existing tree incrementally. It will not restart
 as a broad rewrite and will not rewrite the granular history of the validated
 branch. The exact validated tree will remain available for forensic review.
 
+## 2026-08-11 CAL Successor-3 Return And Successor-4 Authority
+
+The owner accepted the independent `SCI-CAL-001` successor-3 verdict `amend`
+and return for bounded technical repair. The exact candidate is
+`3af6faf996fa002b2647adca8f33991002d49ff1`, independently re-audited at
+`0b597ec5eaaf52477c995af6f2f4fa3eddb2a5de`. The immutable imported
+[report](audits/SCI-CAL-001_SUCCESSOR_3_REAUDIT_2026-08-11.md) and
+[local evidence](audits/evidence/SCI-CAL-001_SUCCESSOR_3_LOCAL_EVIDENCE_2026-08-11.yaml)
+are bound by the
+[owner acceptance](audits/packages/SCI-CAL-001_SUCCESSOR_3_OWNER_ACCEPTANCE_2026-08-11.md).
+
+F003 and F004 are closed and conformant within their approved boundaries;
+F002 and F006 retain their prior bounded closures. F005, F007, F008, and the
+local implementation portion of F009 remain open. F001 and F010 remain open
+and conditioned without change. No new scientific decision or algorithmic
+redesign is authorized. The CAL axes remain `approved`, `nonconformant`,
+`in_progress`, and `fail_closed`, with verdict `amend`.
+
+The owner authorized the frozen
+[successor-4 repair handoff](audits/packages/SCI-CAL-001_SUCCESSOR_4_BOUNDED_REPAIR_HANDOFF_2026-08-11.md)
+and its
+[finding ledger](audits/proposals/SCI-CAL-001_SUCCESSOR_4_REPAIR_FINDING_LEDGER_2026-08-11.yaml)
+from exact pushed base `3af6faf996fa002b2647adca8f33991002d49ff1` on
+proposed branch `codex/repair-sci-cal-001-successor-4`. Successor-4 is limited
+to completing existing-recipient F005 proof, complete applied-state identity
+and production product joins for F007/F008, and executable v4/package-copy
+contract synchronization for local F009. A later role-separated repair must
+pass the handoff READY checkpoint; this coordination update does not launch
+it or authorize Unity, reductions, production, merge, push, re-audit, or
+downstream work.
+
 ## 2026-08-11 RTC Stage A Successor-2 Return And Core Phase-Zero Authority
 
 The owner accepted the independent **RETURN FOR REPAIR** disposition for the

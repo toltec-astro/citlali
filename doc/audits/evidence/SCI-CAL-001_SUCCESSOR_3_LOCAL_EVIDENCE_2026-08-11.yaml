@@ -1,0 +1,248 @@
+schema_version: sci-cal-001-independent-local-evidence-v1
+recorded_at: 2026-08-11
+auditor:
+  role: fresh_role_separated_independent_technical_auditor
+  audit_branch: codex/reaudit-sci-cal-001-successor-3-20260811
+  repair_task_id: 019ff115-f03d-75f0-81d8-88b5f165669c
+candidate:
+  ref: codex/repair-sci-cal-001-successor-3
+  sha: 3af6faf996fa002b2647adca8f33991002d49ff1
+  parent: 8b1534807f5abe4d80be2fbd45ed3838ed351509
+  tree: 16130eb6deba3f9d8b5a8f1d1fae126084b63c95
+  parent_patch_sha256: 4558d541a82b2a1f5c4406825c277a2f7317b6d4c788f4bbaf699a385d471bdf
+  changed_path_count: 18
+  changed_paths:
+    - doc/REFACTOR_STATUS.md
+    - include/citlali/core/config/reduction_config_validation.h
+    - include/citlali/core/engine/calib.h
+    - include/citlali/core/pipeline/calibration_product_admission.h
+    - include/citlali/core/pipeline/raw_timestream_execution_plan.h
+    - include/citlali/core/pipeline/raw_timestream_observation_shadow.h
+    - include/citlali/core/pipeline/raw_timestream_provenance.h
+    - include/citlali/core/pipeline/raw_timestream_provenance_lifecycle.h
+    - include/citlali/core/timestream/calibration_product.h
+    - src/citlali/core/engine/calib.cpp
+    - tests/test_calib_apt_filtering.cpp
+    - tests/test_calibration_atmosphere_operator.cpp
+    - tests/test_calibration_product.cpp
+    - tests/test_config_scaffold.cpp
+    - tests/test_science_map_fits_products.cpp
+    - tests/test_utils.cpp
+    - tools/config/audit_interface_sync_boundary.py
+    - tools/config/audit_raw_timestream_execution_reads.py
+  worktree_entry_state: clean_exact_candidate
+  index_entry_state: clean_exact_candidate
+  remote_identity: live_origin_ref_exact_sha_verified_at_ready
+  role_separation: verified_distinct_from_repair_task
+scope:
+  application_mutation: false
+  config_mutation: false
+  test_mutation: false
+  build_system_mutation: false
+  validation_product_mutation: false
+  canonical_coordination_mutation: false
+  citlali_reduction: false
+  unity_access_or_request: false
+  external_coordination: false
+  push_or_merge: false
+  downstream_launch: false
+  production_authorization: false
+  numerical_algorithm_broadening: false
+  audit_artifacts_only: true
+build:
+  configuration: Release
+  tests_enabled: true
+  fresh_configuration: true
+  public_dependency_retrieval: true
+  targets:
+    - citlali_cli
+    - citlali_test
+    - citlali_safety_test
+    - citlali_science_map_fits_products_test
+  result: passed
+  candidate_build_failures: 0
+  warning_scope: third_party_only
+checks:
+  - id: successor_3_focused_cal_matrix
+    result: passed
+    passed: 24
+    failed: 0
+    normal_target_tests: 21
+    writer_target_tests: 3
+    coverage:
+      - startup_unit_rejection
+      - legacy_and_optional_modern_apt_lineage
+      - canonical_identity_and_package_publication
+      - scalar_and_existing_recipient_factor_transfer
+      - required_copy_yaml_failure_paths
+      - actual_fits_and_beammap_writer_reopen
+  - id: corrected_broad_cal_fixtures
+    result: passed
+    passed: 6
+    failed: 0
+    suites: 3
+  - id: normal_test_binary
+    command: build/tests/citlali_test --gtest_brief=1
+    result: passed
+    passed: 616
+    failed: 0
+    disabled: 1
+  - id: safety_test_binary
+    command: build/tests/citlali_safety_test --gtest_brief=1
+    result: passed
+    passed: 14
+    failed: 0
+  - id: full_ctest
+    command: ctest --test-dir build --output-on-failure
+    result: passed
+    enumerated: 666
+    runnable: 665
+    passed: 665
+    failed: 0
+    disabled: 1
+    disabled_test: MapFitterLifecycle.ExactProductSequence
+    disabled_state: pre_existing
+  - id: baseline_python_unittest
+    command: "/Users/gwilson/tolteca/bin/python -m unittest discover -s tools/baseline -p 'test_*.py' -v"
+    result: passed
+    passed: 174
+    failed: 0
+  - id: targeted_atmosphere_product_contract_tests
+    command: "/Users/gwilson/tolteca/bin/python -m pytest -q tools/calibration/test_generate_atmosphere_operator_nodes.py tools/baseline/test_validate_product_contract.py"
+    result: passed
+    passed: 26
+    failed: 0
+  - id: checked_in_validation_ledger
+    command: /Users/gwilson/tolteca/bin/python tools/baseline/validate_validation_ledger.py
+    result: passed
+    records: 60
+  - id: config_preflight
+    command: /Users/gwilson/tolteca/bin/python tools/config/run_config_preflight.py --require-all
+    result: passed
+    unit_tests_passed: 127
+    unit_tests_failed: 0
+    kits: 4
+    compatibility_checks_passed: 8
+    compatibility_checks_failed: 0
+    leaf_coverage_percent: 100
+    schema_leaves: 592
+    schema_executable_leaves: 590
+    schema_non_executable_leaves: 2
+    schema_nodes: 748
+    authority_domains: 16
+    config_read_files: 27
+    config_read_sites: 132
+    config_read_accesses: 134
+    config_read_review_required: 0
+    raw_execution_records: 67
+    raw_execution_review_required: 0
+    raw_execution_census_sha256: 9603bb76740d549eeb5cd6f7364d0cde2b8f14052006e006047922eb6dc62448
+  - id: raw_timestream_execution_read_tests
+    command: /Users/gwilson/tolteca/bin/python tools/config/test_audit_raw_timestream_execution_reads.py -v
+    result: passed
+    passed: 3
+    failed: 0
+  - id: raw_timestream_boundary_tests
+    command: /Users/gwilson/tolteca/bin/python tools/config/test_audit_raw_timestream_boundary.py -v
+    result: passed
+    passed: 12
+    failed: 0
+  - id: atmosphere_generator
+    command: /Users/gwilson/tolteca/bin/python tools/calibration/generate_atmosphere_operator_nodes.py --check
+    result: passed
+    rows: 1368
+    series: 72
+  - id: candidate_diff_check
+    command: git diff --check 8b1534807f5abe4d80be2fbd45ed3838ed351509 3af6faf996fa002b2647adca8f33991002d49ff1
+    result: passed
+  - id: candidate_patch_digest
+    result: passed
+    sha256: 4558d541a82b2a1f5c4406825c277a2f7317b6d4c788f4bbaf699a385d471bdf
+  - id: synthetic_v4_reduction_audit_consumer_probe
+    result: nonconformity_reproduced
+    schema_version: citlali-raw-timestream-provenance-v4
+    schema_ok: false
+    valid: false
+fixed_atmosphere_artifacts:
+  byte_identical_to_parent: true
+  contract:
+    path: data/calibration/sci_cal_001_fixed_djf25_full_domain_operator_contract.json
+    sha256: 7a064ff768a3de4f427f1338d94ef6cb9026d248f3c3c816fc3dfc96d156e36a
+  nodes:
+    path: data/calibration/sci_cal_001_fixed_djf25_full_domain_operator_nodes.csv
+    sha256: fd688a4cd3f46585b08631bc63a562aed482feb9b24ec9ee0071b70db7eb8a5f
+  generated_header:
+    path: include/citlali/core/timestream/atmosphere_operator_nodes_generated.h
+    sha256: d322bdc863ccb1292325c739865f772ef53f4e9f4101967752027ea0a2413262
+  production_operator:
+    path: include/citlali/core/timestream/atmosphere_operator.h
+    sha256: 3fd4352d05e77e07c1e354b7e4124733505064667968676d8d4e94315017d584
+  inference_limit: structural_conformance_only_no_model_fidelity_claim
+independent_observations:
+  f003:
+    disposition: closed_conformant
+    unsupported_calibrated_unit_rejected_at_initial_validation: true
+    rejection_before_observation_analysis_or_output_work: true
+  f004:
+    disposition: closed_conformant_within_structural_association_claim
+    truthful_legacy_lineage: true
+    optional_modern_tolapt_association_explicitly_verified: true
+    unverified_association_used_as_authority: false
+  f005:
+    disposition: open_partially_addressed
+    inherited_signal_route_exactly_once_by_static_trace: true
+    inherited_weight_routes_scale_covariant_by_static_trace: true
+    approximate_and_hybrid_deterministic_proof: true
+    validated_deterministic_proof: false
+    validated_metadata_inventory: false
+    actual_noise_variance_recipient_deterministic_proof: false
+    candidate_naive_fixture_n_noise: 0
+  f006:
+    disposition: retain_bounded_closure_unchanged
+    approved_target_unit: mJy/beam
+  f007:
+    disposition: open_partially_addressed
+    calibration_identity_distinct_from_acquisition_binding: true
+    package_identity_distinct_from_calibration_identity: true
+    required_copy_yaml_failure_safe: true
+    full_sample_extinction_trajectory_in_factor_identity: false
+    individual_products_link_calibration_identity: false
+    individual_products_link_package_identity: false
+  f008:
+    disposition: open_partially_addressed
+    no_empirical_fidelity_or_covariance_overclaim: true
+    fir_a_gibbs_in_response_identity: false
+    fixed_notch_parameters_in_response_identity: false
+    dynamic_applied_notches_in_response_identity: false
+    configured_values_truthfully_distinguished_from_realized_values: false
+  local_f009:
+    disposition: open_partially_addressed
+    canonical_package_writer_tests_pass: true
+    raw_provenance_writer_schema: citlali-raw-timestream-provenance-v4
+    baseline_auditor_accepts_v4: false
+    product_registry_classifies_selected_calibration_apt: false
+    strict_profiles_account_for_selected_calibration_apt: false
+    checked_in_v4_package_baseline_fixture: false
+unchanged_conditioned_findings:
+  f001: open_conditioned
+  f010: open_conditioned
+unchanged_closed_findings:
+  f002: retain_narrow_structural_closure
+  f006: retain_bounded_target_unit_closure
+scope_assessment:
+  changed_numerical_recipient_files: 0
+  changed_rtc_ptc_map_beam_algorithm_files: 0
+  new_uncertainty_or_covariance_product: false
+  scientific_scope_broadening: false
+evidence_classification: local_deterministic_only
+disposition:
+  contract: approved
+  implementation: nonconformant
+  validation: in_progress
+  production: fail_closed
+  verdict: amend
+  owner_brief: return_f005_f007_f008_and_local_f009_for_bounded_technical_repair
+authorization_effect: none
+audit_artifacts:
+  - doc/audits/SCI-CAL-001_SUCCESSOR_3_REAUDIT_2026-08-11.md
+  - doc/audits/evidence/SCI-CAL-001_SUCCESSOR_3_LOCAL_EVIDENCE_2026-08-11.yaml
