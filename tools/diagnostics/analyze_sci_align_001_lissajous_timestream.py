@@ -759,9 +759,10 @@ def fit_observation_model(
     initial: np.ndarray | None = None,
 ) -> dict[str, Any]:
     bounds, starts = parameter_bounds_and_starts(observation, model, beam_mode)
+    supplied_initial = initial is not None
     if initial is not None:
         starts = [np.asarray(initial, dtype=float)]
-    results = []
+    finite_results = []
     for start in starts:
         result = minimize(
             observation_objective,
@@ -780,10 +781,30 @@ def fit_observation_model(
             },
         )
         if math.isfinite(float(result.fun)):
-            results.append(result)
-    if not results:
-        return {"status": "fit_failed", "message": "no finite optimizer result"}
-    best = min(results, key=lambda item: float(item.fun))
+            finite_results.append(result)
+    if supplied_initial and not any(bool(item.success) for item in finite_results):
+        fallback = fit_observation_model(
+            observation,
+            model,
+            beam_mode=beam_mode,
+            baseline_mode=baseline_mode,
+            scan_multiplicity=scan_multiplicity,
+            network_include=network_include,
+            initial=None,
+        )
+        fallback["optimizer_initial_fallback_used"] = True
+        fallback["optimizer_initial_failure_messages"] = [
+            str(item.message) for item in finite_results
+        ]
+        return fallback
+    if not finite_results:
+        return {
+            "status": "fit_failed",
+            "message": "no finite optimizer result",
+            "optimizer_attempt_count": len(starts),
+            "optimizer_finite_result_count": 0,
+        }
+    best = min(finite_results, key=lambda item: float(item.fun))
     parameters = parameter_dict(np.asarray(best.x), model, beam_mode)
     beam = beam_from_parameters(parameters, observation.beam, beam_mode)
     lag_bounds = observation.protocol["models"]["lag_search_bounds_ms"]
@@ -816,6 +837,12 @@ def fit_observation_model(
         "optimizer_success": bool(best.success),
         "optimizer_message": str(best.message),
         "optimizer_iterations": int(best.nit),
+        "optimizer_attempt_count": len(starts),
+        "optimizer_finite_result_count": len(finite_results),
+        "optimizer_converged_result_count": sum(
+            bool(item.success) for item in finite_results
+        ),
+        "optimizer_initial_fallback_used": False,
         "parameters": parameters,
         "tau_ms": tau_ms,
         "boundary": boundary,

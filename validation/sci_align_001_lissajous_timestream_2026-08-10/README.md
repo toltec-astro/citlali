@@ -27,13 +27,21 @@ secondary-mirror, or raw-data cause and cannot authorize a correction.
 No Unity access, reduction regeneration, production Citlali edit, production
 configuration edit, merge, rebase, push, or correction is in scope.
 
-## Final disposition
+## Current disposition
 
 The run stopped at the frozen persistent-multimodality gate after opening 9
-of the 22 selected pointings. ObsNum 136280 remained bimodal after the full
-1,500 successful exact whole-scan bootstrap realizations. The other 13
-pointings were not opened, and no all-22 or high-S/N corpus inference was
-computed.
+of the 22 selected pointings. A successor read-only audit then proved that 361
+of the nominally successful ObsNum 136280 bootstrap fits had actually stopped
+abnormally at iteration zero and been accepted only because their objective
+was finite. The historical 1,500-draw distribution and its paired statistics
+are therefore contaminated, not evidence for a second physical mode.
+
+The diagnostic-only repair is now refrozen at protocol revision 6 after all
+11 synthetic tests and the full config preflight passed. No real observation
+has been fit with the repair. The other 13 pointings remain unopened, and no
+all-22 or high-S/N corpus inference has been computed. The next permitted
+real-data action, only if the owner approves it, is a fresh ObsNum 136280-only
+run in a new output root; its old bootstrap checkpoint cannot be resumed.
 
 The bounded result is documented in `REPORT.md`. Compact authenticated values
 are in `partial_observation_results.ecsv` and

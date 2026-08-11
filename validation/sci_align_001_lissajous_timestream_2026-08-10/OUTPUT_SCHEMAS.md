@@ -33,3 +33,7 @@ Schema `sci-align-001-lissajous-timestream-observation-result-v1` is emitted as
 `SHA256SUMS` authenticates compact tables, objective/profile PDF, resumable
 bootstrap work array, and result. Large realization arrays are intentionally
 not copied into this Git package.
+
+Revision-6 results also retain optimizer attempt, finite-result, converged-
+result, and inherited-start fallback fields. A bootstrap checkpoint produced
+before revision 6 is not reusable for the ObsNum 136280 rerun.

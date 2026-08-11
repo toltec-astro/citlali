@@ -6,6 +6,8 @@ import math
 import sys
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import patch
 
 import numpy as np
 
@@ -159,6 +161,36 @@ def synthetic_observation(
 
 
 class LissajousTimestreamTest(unittest.TestCase):
+    def test_failed_finite_optimizer_is_rejected_and_initial_fit_retries(self) -> None:
+        observation = synthetic_observation()
+        initial = np.asarray([0.0, 0.0, 11.728])
+        failed = SimpleNamespace(
+            success=False,
+            fun=10.0,
+            x=initial,
+            message="ABNORMAL",
+            nit=0,
+        )
+        converged = [
+            SimpleNamespace(
+                success=True,
+                fun=objective,
+                x=np.asarray([0.0, 0.0, tau_ms]),
+                message="CONVERGENCE",
+                nit=5,
+            )
+            for objective, tau_ms in ((9.0, -3.0), (8.0, 7.5), (8.5, 18.0))
+        ]
+        with patch.object(target, "minimize", side_effect=[failed, *converged]):
+            fit = target.fit_observation_model(
+                observation, "lag", initial=initial
+            )
+        self.assertEqual(fit["status"], "success", fit)
+        self.assertTrue(fit["optimizer_initial_fallback_used"])
+        self.assertEqual(fit["optimizer_initial_failure_messages"], ["ABNORMAL"])
+        self.assertTrue(fit["optimizer_success"])
+        self.assertAlmostEqual(fit["tau_ms"], 7.5)
+
     def test_multimodal_bootstrap_cannot_converge_at_500(self) -> None:
         protocol = target.load_protocol(PROTOCOL)
         rng = np.random.default_rng(1234)

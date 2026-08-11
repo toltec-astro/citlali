@@ -1,7 +1,7 @@
 {
   "schema": "sci-align-001-lissajous-timestream-protocol-v1",
-  "refreeze_revision": 5,
-  "refreeze_reason": "real bootstrap gate failure 01: an otherwise numerically converged but multimodal distribution must extend in 250-realization increments through the frozen 1500 maximum before acceptance or persistent-multimodality failure",
+  "refreeze_revision": 6,
+  "refreeze_reason": "real bootstrap optimizer failure 02: a finite but abnormal zero-iteration result from the bootstrap inherited start must not be retained without retrying the frozen deterministic multistart set",
   "frozen_before_new_real_timestream_fit_inspection": true,
   "repository_base_commit": "6ec08656fd5c12607e806f55389cc094aa4b6a2d",
   "branch": "codex/sci-align-001-lissajous-timestream-fit",
@@ -86,7 +86,7 @@
     "hysteresis_half_separation_bounds_arcsec": [-5.0, 5.0],
     "lag_search_bounds_ms": [-50.0, 50.0],
     "boundary_failure_margin_ms": 1.0,
-    "optimizer": "deterministic bounded L-BFGS-B from the Cartesian product of tau starts {-25,0,+25} ms where applicable and sign-term starts {(0,0),(-1,-1),(-1,+1),(+1,-1),(+1,+1)} arcsec where applicable; retain the best finite converged solution",
+    "optimizer": "deterministic bounded L-BFGS-B from the Cartesian product of tau starts {-25,0,+25} ms where applicable and sign-term starts {(0,0),(-1,-1),(-1,+1),(+1,-1),(+1,+1)} arcsec where applicable; bootstrap fits first use the authenticated point solution, but a finite non-converged inherited-start result is discarded and retried with the frozen multistart set; retain the lowest finite multistart objective and report optimizer status",
     "objective_profile_tau_grid_ms": {
       "minimum": -50.0,
       "maximum": 50.0,

@@ -26,7 +26,7 @@ done
 The original run used `fit-anchor` only for ObsNum 150818 and
 `analyze-observation` for each subsequently opened observation. After the
 documented 500-realization multimodality gate repair and complete synthetic
-rerun, the exact frozen command for the stop case was:
+rerun, the exact historical command for the stop case was:
 
 ```bash
 MPLBACKEND=Agg "$SCI_PYTHON" \
@@ -38,6 +38,13 @@ MPLBACKEND=Agg "$SCI_PYTHON" \
   --obsnum 136280 \
   --output "$SCI_RESULT_ROOT/o136280"
 ```
+
+Do not run that extension command under protocol revision 6. The successor
+optimizer audit proved that the existing ObsNum 136280 bootstrap work array
+contains 361 abnormal zero-iteration fits. If the owner authorizes a repaired
+136280 run, it must use `analyze-observation` in a new, absent output root so
+none of the contaminated checkpoint values can be reused. No such rerun is
+part of the current freeze.
 
 The compact partial tables are a deterministic field projection of the nine
 checksum-valid `result.json` documents. Recreate them in a temporary directory
