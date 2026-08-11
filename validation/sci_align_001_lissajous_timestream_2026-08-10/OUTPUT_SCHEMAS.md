@@ -37,3 +37,20 @@ not copied into this Git package.
 Revision-6 results also retain optimizer attempt, finite-result, converged-
 result, and inherited-start fallback fields. A bootstrap checkpoint produced
 before revision 6 is not reusable for the ObsNum 136280 rerun.
+
+Instrumented successors add `progress.jsonl` and `run_state.json` without
+changing the observation-result schema. Progress records carry UTC and
+monotonic elapsed time, stage or fit identity, optimizer disposition, and
+bootstrap counts where applicable. `run_state.json` uses schema
+`sci-align-001-lissajous-runtime-state-v1`; only `status=complete` is a
+completed run. A wall-limit stop publishes no `result.json`.
+
+## Per-observation fit visualization
+
+`visualize_sci_align_001_lissajous_fit.py` creates a separate checksum-bound
+package from a completed result. Its identity, support audit, deterministic
+fit-unit selection, exact model/objective validation, tables, PDFs, PNGs, and
+copied renderer are covered by the package `SHA256SUMS`. Fit units are
+contiguous True blocks of the frozen score mask for one detector and scan.
+Retained PTC-weight residuals are explicitly labeled `sqrt(weight)`-scaled,
+not standardized sigma residuals.

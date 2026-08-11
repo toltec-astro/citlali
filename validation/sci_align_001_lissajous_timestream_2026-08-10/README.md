@@ -36,12 +36,18 @@ abnormally at iteration zero and been accepted only because their objective
 was finite. The historical 1,500-draw distribution and its paired statistics
 are therefore contaminated, not evidence for a second physical mode.
 
-The diagnostic-only repair is now refrozen at protocol revision 6 after all
-11 synthetic tests and the full config preflight passed. No real observation
-has been fit with the repair. The other 13 pointings remain unopened, and no
-all-22 or high-S/N corpus inference has been computed. The next permitted
-real-data action, only if the owner approves it, is a fresh ObsNum 136280-only
-run in a new output root; its old bootstrap checkpoint cannot be resumed.
+The diagnostic-only optimizer repair was refrozen at protocol revision 6 after
+all 11 synthetic tests and the full config preflight passed. Its first fresh
+ObsNum 136280 attempt was owner-stopped after 66 minutes because the runner had
+no stage-level progress, fallback census, or enforceable runtime bound. The
+process was actively computing and left no partial artifact, but that was not
+enough to establish normal progress. Runtime instrumentation and a generalized
+authenticated fit-visualization tool are now installed without changing the
+numerical protocol. ObsNum 136280 is deferred; the next bounded lifecycle
+validation uses the previously successful bright anchor ObsNum 150818 with a
+1,800-second wall limit. The other 13 pointings remain unopened, and no all-22
+or high-S/N corpus inference has been computed. See
+`REAL_RUNTIME_OBSERVABILITY_STOP_03.md`.
 
 The bounded result is documented in `REPORT.md`. Compact authenticated values
 are in `partial_observation_results.ecsv` and

@@ -14,9 +14,10 @@ import contextlib
 import hashlib
 import json
 import math
-import os
 import shutil
 import sys
+import time
+from datetime import datetime, timezone
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable, Sequence
@@ -44,6 +45,109 @@ BASELINE_NAMES = ("constant", "linear")
 
 class ContractError(RuntimeError):
     """An input or result violates the frozen diagnostic contract."""
+
+
+@dataclass
+class RunMonitor:
+    """Durable progress and wall-clock guard for one diagnostic execution."""
+
+    output: Path
+    maximum_wall_seconds: float | None = None
+
+    def __post_init__(self) -> None:
+        if self.maximum_wall_seconds is not None and self.maximum_wall_seconds <= 0:
+            raise ContractError("maximum wall time must be positive")
+        self.started_monotonic = time.monotonic()
+        self.progress_path = self.output / "progress.jsonl"
+        self.event_count = 0
+        self.optimizer_attempt_count = 0
+        self.optimizer_fallback_count = 0
+
+    def elapsed_seconds(self) -> float:
+        return time.monotonic() - self.started_monotonic
+
+    def emit(self, event: str, **fields: Any) -> None:
+        record = {
+            "event": event,
+            "event_index": self.event_count,
+            "elapsed_seconds": self.elapsed_seconds(),
+            "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+            **fields,
+        }
+        with self.progress_path.open("a") as handle:
+            handle.write(json.dumps(record, sort_keys=True) + "\n")
+            handle.flush()
+        self.event_count += 1
+        summary = " ".join(
+            f"{key}={value}" for key, value in fields.items()
+            if key in {
+                "stage", "fit_label", "model", "attempt_index", "status",
+                "completed", "target", "reason",
+            }
+        )
+        if event in {
+            "run_start", "run_complete", "stage_start", "stage_end",
+            "optimizer_fallback", "bootstrap_progress",
+            "runtime_limit_exceeded",
+        }:
+            print(
+                f"progress elapsed_s={record['elapsed_seconds']:.3f} "
+                f"event={event}{(' ' + summary) if summary else ''}",
+                file=sys.stderr,
+                flush=True,
+            )
+
+    def check_deadline(self, location: str) -> None:
+        if (
+            self.maximum_wall_seconds is not None
+            and self.elapsed_seconds() >= self.maximum_wall_seconds
+        ):
+            self.emit(
+                "runtime_limit_exceeded",
+                stage=location,
+                status="stopped",
+                maximum_wall_seconds=self.maximum_wall_seconds,
+            )
+            raise ContractError(
+                f"maximum wall time of {self.maximum_wall_seconds:g} seconds "
+                f"exceeded at {location}"
+            )
+
+    @contextlib.contextmanager
+    def stage(self, name: str) -> Iterable[None]:
+        self.check_deadline(name)
+        started = self.elapsed_seconds()
+        self.emit("stage_start", stage=name)
+        try:
+            yield
+        except BaseException as error:
+            self.emit(
+                "stage_end",
+                stage=name,
+                status="failed",
+                duration_seconds=self.elapsed_seconds() - started,
+                error_type=type(error).__name__,
+                error_message=str(error),
+            )
+            raise
+        self.emit(
+            "stage_end",
+            stage=name,
+            status="success",
+            duration_seconds=self.elapsed_seconds() - started,
+        )
+
+    def state(self, status: str, **fields: Any) -> dict[str, Any]:
+        return {
+            "schema": "sci-align-001-lissajous-runtime-state-v1",
+            "status": status,
+            "elapsed_seconds": self.elapsed_seconds(),
+            "maximum_wall_seconds": self.maximum_wall_seconds,
+            "progress_event_count": self.event_count,
+            "optimizer_attempt_count": self.optimizer_attempt_count,
+            "optimizer_fallback_count": self.optimizer_fallback_count,
+            **fields,
+        }
 
 
 def map_centroid_tau_to_coordinate_shift_ms(tau_ms: float) -> float:
@@ -727,7 +831,11 @@ def observation_objective(
     baseline_mode: str,
     scan_multiplicity: np.ndarray | None = None,
     network_include: set[int] | None = None,
+    monitor: RunMonitor | None = None,
+    objective_label: str = "observation_objective",
 ) -> float:
+    if monitor is not None:
+        monitor.check_deadline(objective_label)
     parameters = parameter_dict(values, model, beam_mode)
     beam = beam_from_parameters(parameters, observation.beam, beam_mode)
     if scan_multiplicity is None:
@@ -757,19 +865,32 @@ def fit_observation_model(
     scan_multiplicity: np.ndarray | None = None,
     network_include: set[int] | None = None,
     initial: np.ndarray | None = None,
+    monitor: RunMonitor | None = None,
+    fit_label: str = "observation_fit",
 ) -> dict[str, Any]:
     bounds, starts = parameter_bounds_and_starts(observation, model, beam_mode)
     supplied_initial = initial is not None
     if initial is not None:
         starts = [np.asarray(initial, dtype=float)]
     finite_results = []
-    for start in starts:
+    for attempt_index, start in enumerate(starts):
+        if monitor is not None:
+            monitor.check_deadline(fit_label)
+            monitor.optimizer_attempt_count += 1
+            monitor.emit(
+                "optimizer_attempt_start",
+                fit_label=fit_label,
+                model=model,
+                attempt_index=attempt_index,
+                supplied_initial=supplied_initial,
+            )
+        attempt_started = time.monotonic()
         result = minimize(
             observation_objective,
             start,
             args=(
                 observation, model, beam_mode, baseline_mode,
-                scan_multiplicity, network_include,
+                scan_multiplicity, network_include, monitor, fit_label,
             ),
             method="L-BFGS-B",
             bounds=bounds,
@@ -780,9 +901,30 @@ def fit_observation_model(
                 "eps": optimizer_finite_difference_steps(model, beam_mode),
             },
         )
+        if monitor is not None:
+            monitor.emit(
+                "optimizer_attempt_end",
+                fit_label=fit_label,
+                model=model,
+                attempt_index=attempt_index,
+                status="converged" if bool(result.success) else "nonconverged",
+                optimizer_message=str(result.message),
+                optimizer_iterations=int(result.nit),
+                objective=float(result.fun),
+                duration_seconds=time.monotonic() - attempt_started,
+            )
         if math.isfinite(float(result.fun)):
             finite_results.append(result)
     if supplied_initial and not any(bool(item.success) for item in finite_results):
+        if monitor is not None:
+            monitor.optimizer_fallback_count += 1
+            monitor.emit(
+                "optimizer_fallback",
+                fit_label=fit_label,
+                model=model,
+                status="multistart",
+                reason="supplied_initial_did_not_converge",
+            )
         fallback = fit_observation_model(
             observation,
             model,
@@ -791,6 +933,8 @@ def fit_observation_model(
             scan_multiplicity=scan_multiplicity,
             network_include=network_include,
             initial=None,
+            monitor=monitor,
+            fit_label=f"{fit_label}.fallback",
         )
         fallback["optimizer_initial_fallback_used"] = True
         fallback["optimizer_initial_failure_messages"] = [
@@ -990,6 +1134,8 @@ def fit_at_fixed_tau(
     initial_fit: dict[str, Any],
     *,
     baseline_mode: str = "constant",
+    monitor: RunMonitor | None = None,
+    fit_label: str = "fixed_tau_profile",
 ) -> dict[str, Any]:
     """Profile x0/y0 while holding exact-shift tau fixed."""
     full_bounds, _ = parameter_bounds_and_starts(observation, "lag", "fixed")
@@ -999,6 +1145,8 @@ def fit_at_fixed_tau(
         return observation_objective(
             np.asarray([xy[0], xy[1], tau_ms]),
             observation, "lag", "fixed", baseline_mode,
+            monitor=monitor,
+            objective_label=fit_label,
         )
 
     result = minimize(
@@ -1023,24 +1171,52 @@ def fit_at_fixed_tau(
 
 
 def objective_profile(
-    observation: PreparedObservation, lag_fit: dict[str, Any]
+    observation: PreparedObservation,
+    lag_fit: dict[str, Any],
+    monitor: RunMonitor | None = None,
 ) -> list[dict[str, Any]]:
     spec = observation.protocol["models"]["objective_profile_tau_grid_ms"]
     grid = np.linspace(
         float(spec["minimum"]), float(spec["maximum"]), int(spec["count"])
     )
-    return [fit_at_fixed_tau(observation, tau, lag_fit) for tau in grid]
+    rows = []
+    for index, tau in enumerate(grid):
+        if monitor is not None:
+            monitor.emit(
+                "profile_point_start",
+                stage="objective_profile",
+                completed=index,
+                target=len(grid),
+                tau_ms=float(tau),
+            )
+        rows.append(fit_at_fixed_tau(
+            observation,
+            tau,
+            lag_fit,
+            monitor=monitor,
+            fit_label=f"objective_profile[{index}]",
+        ))
+    return rows
 
 
 def heldout_model_comparison(
     observation: PreparedObservation,
     full_fits: dict[str, dict[str, Any]],
+    monitor: RunMonitor | None = None,
 ) -> dict[str, Any]:
     """Leave one complete PTC scan row out and score held-out residuals."""
     rows = []
     winners = {name: 0 for name in MODEL_NAMES}
     n_scan = len(observation.scans)
     for heldout in range(n_scan):
+        if monitor is not None:
+            monitor.emit(
+                "heldout_fold_start",
+                stage="heldout_model_comparison",
+                completed=heldout,
+                target=n_scan,
+                heldout_scan_row=heldout,
+            )
         multiplicity = np.ones(n_scan, dtype=float)
         multiplicity[heldout] = 0.0
         scores: dict[str, float] = {}
@@ -1049,6 +1225,8 @@ def heldout_model_comparison(
             training = fit_observation_model(
                 observation, model, scan_multiplicity=multiplicity,
                 initial=initial,
+                monitor=monitor,
+                fit_label=f"heldout[{heldout}].{model}",
             )
             if training["status"] not in {"success", "boundary_failure"}:
                 scores[model] = math.inf
@@ -1371,6 +1549,7 @@ def bootstrap_observation(
     lag_fit: dict[str, Any],
     map_scans: list[MapScanAccumulator],
     output: Path,
+    monitor: RunMonitor | None = None,
 ) -> dict[str, Any]:
     spec = observation.protocol["bootstrap"]
     n_scan = len(observation.scans)
@@ -1411,12 +1590,22 @@ def bootstrap_observation(
                 observation, "lag",
                 scan_multiplicity=multiplicities[index].astype(float),
                 initial=initial,
+                monitor=monitor,
+                fit_label=f"bootstrap.timestream[{index}]",
             )
             if fit["status"] == "success":
                 timestream[index] = float(fit["tau_ms"])
+            completed = int(np.count_nonzero(np.isfinite(timestream)))
             if (index + 1) % 25 == 0:
                 checkpoint()
-            completed = int(np.count_nonzero(np.isfinite(timestream)))
+                if monitor is not None:
+                    monitor.emit(
+                        "bootstrap_progress",
+                        stage="timestream_bootstrap",
+                        completed=completed,
+                        target=ts_target,
+                        attempted=index + 1,
+                    )
             if completed >= ts_target:
                 break
         finite_ts = timestream[np.isfinite(timestream)]
@@ -1435,6 +1624,8 @@ def bootstrap_observation(
     map_convergence: dict[str, Any] = {"status": "not_evaluated"}
     while True:
         for index in range(map_target):
+            if monitor is not None:
+                monitor.check_deadline(f"bootstrap.map[{index}]")
             if np.isfinite(map_values[index]):
                 continue
             result = fit_map_resample(
@@ -1445,6 +1636,14 @@ def bootstrap_observation(
                 map_values[index] = float(result["coordinate_shift_tau_ms"])
             if (index + 1) % 25 == 0:
                 checkpoint()
+                if monitor is not None:
+                    monitor.emit(
+                        "bootstrap_progress",
+                        stage="paired_map_bootstrap",
+                        completed=int(np.count_nonzero(np.isfinite(map_values))),
+                        target=map_target,
+                        attempted=index + 1,
+                    )
         paired_good = (
             np.isfinite(timestream[:map_target])
             & np.isfinite(map_values[:map_target])
@@ -1492,11 +1691,14 @@ def bootstrap_observation(
 
 
 def sensitivity_fits(
-    observation: PreparedObservation, primary: dict[str, Any]
+    observation: PreparedObservation,
+    primary: dict[str, Any],
+    monitor: RunMonitor | None = None,
 ) -> dict[str, Any]:
     fixed_initial = fit_to_optimizer_vector(primary, "lag", "fixed")
     linear = fit_observation_model(
-        observation, "lag", baseline_mode="linear", initial=fixed_initial
+        observation, "lag", baseline_mode="linear", initial=fixed_initial,
+        monitor=monitor, fit_label="sensitivity.linear_baseline_fixed_beam",
     )
     free_initial = np.concatenate([
         fixed_initial,
@@ -1507,13 +1709,16 @@ def sensitivity_fits(
         ]),
     ])
     free = fit_observation_model(
-        observation, "lag", beam_mode="free", initial=free_initial
+        observation, "lag", beam_mode="free", initial=free_initial,
+        monitor=monitor, fit_label="sensitivity.constant_baseline_free_beam",
     )
     return {"linear_baseline_fixed_beam": linear, "constant_baseline_free_beam": free}
 
 
 def network_sensitivity(
-    observation: PreparedObservation, primary: dict[str, Any]
+    observation: PreparedObservation,
+    primary: dict[str, Any],
+    monitor: RunMonitor | None = None,
 ) -> list[dict[str, Any]]:
     spec = observation.protocol["sensitivities"]
     initial = fit_to_optimizer_vector(primary, "lag", "fixed")
@@ -1542,7 +1747,8 @@ def network_sensitivity(
                 })
                 continue
             fit = fit_observation_model(
-                observation, "lag", network_include=set(included), initial=initial
+                observation, "lag", network_include=set(included), initial=initial,
+                monitor=monitor, fit_label=f"network.{kind}[{network}]",
             )
             rows.append({
                 "kind": kind,
@@ -1632,103 +1838,186 @@ def write_observation_plots(
 
 
 def analyze_observation(args: argparse.Namespace) -> None:
-    protocol = load_protocol(args.protocol)
-    selection = load_selection(
-        args.selection, protocol["input_authority"]["selection_manifest_sha256"]
-    )
-    row = selected_row(selection, args.obsnum)
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
     if (output / "result.json").exists():
         raise ContractError(f"completed output already exists: {output}")
-    observation = prepare_observation(row, protocol)
-    coordinate_gate = coordinate_reconstruction_gate(observation)
-    map_result = authenticated_map_result(args.map_root.resolve(), row)
-    full_fits = {
-        model: fit_observation_model(observation, model) for model in MODEL_NAMES
-    }
-    primary = full_fits["lag"]
-    if primary["status"] != "success":
-        raise ContractError(f"obs {args.obsnum}: primary lag fit failed")
-    profile = objective_profile(observation, primary)
-    derivative = derivative_tau_estimate(observation, full_fits["constant"])
-    blocked = heldout_model_comparison(observation, full_fits)
-    sensitivities = sensitivity_fits(observation, primary)
-    network_rows = network_sensitivity(observation, primary)
-    map_scans = map_scan_accumulators(observation.ptc_path, protocol)
-    if len(map_scans) != len(observation.scans):
-        raise ContractError("map and timestream scan-row counts differ")
-    bootstrap = bootstrap_observation(observation, primary, map_scans, output)
-    sensitivity_status = model_sensitivity_status(
-        primary, sensitivities, bootstrap, protocol
+    monitor = RunMonitor(output, args.maximum_wall_seconds)
+    monitor.emit(
+        "run_start",
+        stage="analyze_observation",
+        obsnum=args.obsnum,
+        maximum_wall_seconds=args.maximum_wall_seconds,
     )
-    Table(rows=profile).write(output / "objective_profile.ecsv", format="ascii.ecsv")
-    Table(rows=blocked["folds"]).write(
-        output / "blocked_prediction.ecsv", format="ascii.ecsv"
+    write_json(output / "run_state.json", monitor.state(
+        "running", obsnum=args.obsnum, current_stage="initialization"
+    ))
+    try:
+        with monitor.stage("authenticate_inputs"):
+            protocol = load_protocol(args.protocol)
+            selection = load_selection(
+                args.selection,
+                protocol["input_authority"]["selection_manifest_sha256"],
+            )
+            row = selected_row(selection, args.obsnum)
+        with monitor.stage("prepare_observation"):
+            observation = prepare_observation(row, protocol)
+        with monitor.stage("coordinate_reconstruction_gate"):
+            coordinate_gate = coordinate_reconstruction_gate(observation)
+        with monitor.stage("authenticate_map_result"):
+            map_result = authenticated_map_result(args.map_root.resolve(), row)
+        with monitor.stage("full_model_fits"):
+            full_fits = {
+                model: fit_observation_model(
+                    observation,
+                    model,
+                    monitor=monitor,
+                    fit_label=f"full.{model}",
+                )
+                for model in MODEL_NAMES
+            }
+        primary = full_fits["lag"]
+        if primary["status"] != "success":
+            raise ContractError(f"obs {args.obsnum}: primary lag fit failed")
+        with monitor.stage("objective_profile"):
+            profile = objective_profile(observation, primary, monitor)
+        with monitor.stage("derivative_crosscheck"):
+            derivative = derivative_tau_estimate(
+                observation, full_fits["constant"]
+            )
+        with monitor.stage("heldout_model_comparison"):
+            blocked = heldout_model_comparison(observation, full_fits, monitor)
+        with monitor.stage("sensitivity_fits"):
+            sensitivities = sensitivity_fits(observation, primary, monitor)
+        with monitor.stage("network_sensitivity"):
+            network_rows = network_sensitivity(observation, primary, monitor)
+        with monitor.stage("map_scan_accumulators"):
+            map_scans = map_scan_accumulators(observation.ptc_path, protocol)
+            if len(map_scans) != len(observation.scans):
+                raise ContractError("map and timestream scan-row counts differ")
+        with monitor.stage("bootstrap"):
+            bootstrap = bootstrap_observation(
+                observation, primary, map_scans, output, monitor
+            )
+        with monitor.stage("model_sensitivity_status"):
+            sensitivity_status = model_sensitivity_status(
+                primary, sensitivities, bootstrap, protocol
+            )
+    except BaseException as error:
+        write_json(output / "run_state.json", monitor.state(
+            "failed",
+            obsnum=args.obsnum,
+            error_type=type(error).__name__,
+            error_message=str(error),
+        ))
+        raise
+
+    try:
+        with monitor.stage("write_outputs"):
+            Table(rows=profile).write(
+                output / "objective_profile.ecsv", format="ascii.ecsv"
+            )
+            Table(rows=blocked["folds"]).write(
+                output / "blocked_prediction.ecsv", format="ascii.ecsv"
+            )
+            Table(rows=network_rows).write(
+                output / "network_sensitivity.ecsv", format="ascii.ecsv"
+            )
+            model_rows = []
+            for model, fit in full_fits.items():
+                model_rows.append({
+                    "model": model, "status": fit["status"],
+                    "objective": fit["objective"], "tau_ms": fit["tau_ms"],
+                    "x0_arcsec": fit["parameters"]["x0_arcsec"],
+                    "y0_arcsec": fit["parameters"]["y0_arcsec"],
+                    "h_az_arcsec": fit["parameters"].get("h_az_arcsec", math.nan),
+                    "h_el_arcsec": fit["parameters"].get("h_el_arcsec", math.nan),
+                })
+            Table(rows=model_rows).write(
+                output / "point_model_results.ecsv", format="ascii.ecsv"
+            )
+            pdf_name = write_observation_plots(
+                output, observation.obsnum, profile, primary, bootstrap
+            )
+            result = {
+                "schema": (
+                    "sci-align-001-lissajous-timestream-observation-result-v1"
+                ),
+                "obsnum": observation.obsnum,
+                "beammap_obsnum": int(row["beammap_obsnum"]),
+                "brightness_stratum": row["brightness_stratum"],
+                "input": {
+                    "ptc_path": str(observation.ptc_path),
+                    "ptc_sha256": row["ptc_sha256"],
+                    "ppt_path": str(observation.ppt_path),
+                    "ppt_sha256": row["ppt_sha256"],
+                    "protocol_sha256": sha256_file(args.protocol),
+                    "selection_sha256": sha256_file(args.selection),
+                    "map_result": map_result,
+                },
+                "support": {
+                    "scan_count": len(observation.scans),
+                    "eligible_uid_count": observation.eligible_uid_count,
+                    "eligible_networks": observation.eligible_networks,
+                    "common_support_sample_count": (
+                        observation.common_support_sample_count
+                    ),
+                    "scored_value_count": observation.scored_value_count,
+                    "map_support_difference": (
+                        "committed map estimator retains its full scan support "
+                        "and map eligibility; exact timestream estimator uses "
+                        "frozen +/-50-ms common edge trim and source-scoring "
+                        "eligibility"
+                    ),
+                },
+                "coordinate_gate": coordinate_gate,
+                "point_model_results": full_fits,
+                "derivative_crosscheck": derivative,
+                "blocked_prediction": blocked,
+                "sensitivity_fits": sensitivities,
+                "model_sensitivity": sensitivity_status,
+                "bootstrap": bootstrap,
+                "primary_tau_ms": float(primary["tau_ms"]),
+                "map_coordinate_shift_tau_ms": (
+                    map_result["coordinate_shift_tau_ms"]
+                ),
+                "point_difference_ms": (
+                    float(primary["tau_ms"])
+                    - map_result["coordinate_shift_tau_ms"]
+                ),
+                "sign_agreement": bool(
+                    np.sign(primary["tau_ms"])
+                    == np.sign(map_result["coordinate_shift_tau_ms"])
+                ),
+                "runtime_monitor": {
+                    "maximum_wall_seconds": args.maximum_wall_seconds,
+                    "progress_log": "progress.jsonl",
+                    "run_state": "run_state.json",
+                },
+            }
+            write_json(output / "result.json", result)
+    except BaseException as error:
+        write_json(output / "run_state.json", monitor.state(
+            "failed",
+            obsnum=args.obsnum,
+            error_type=type(error).__name__,
+            error_message=str(error),
+        ))
+        raise
+    monitor.emit(
+        "run_complete",
+        stage="analyze_observation",
+        status="success",
+        obsnum=observation.obsnum,
     )
-    Table(rows=network_rows).write(
-        output / "network_sensitivity.ecsv", format="ascii.ecsv"
-    )
-    model_rows = []
-    for model, fit in full_fits.items():
-        model_rows.append({
-            "model": model, "status": fit["status"],
-            "objective": fit["objective"], "tau_ms": fit["tau_ms"],
-            "x0_arcsec": fit["parameters"]["x0_arcsec"],
-            "y0_arcsec": fit["parameters"]["y0_arcsec"],
-            "h_az_arcsec": fit["parameters"].get("h_az_arcsec", math.nan),
-            "h_el_arcsec": fit["parameters"].get("h_el_arcsec", math.nan),
-        })
-    Table(rows=model_rows).write(
-        output / "point_model_results.ecsv", format="ascii.ecsv"
-    )
-    pdf_name = write_observation_plots(
-        output, observation.obsnum, profile, primary, bootstrap
-    )
-    result = {
-        "schema": "sci-align-001-lissajous-timestream-observation-result-v1",
-        "obsnum": observation.obsnum,
-        "beammap_obsnum": int(row["beammap_obsnum"]),
-        "brightness_stratum": row["brightness_stratum"],
-        "input": {
-            "ptc_path": str(observation.ptc_path),
-            "ptc_sha256": row["ptc_sha256"],
-            "ppt_path": str(observation.ppt_path),
-            "ppt_sha256": row["ppt_sha256"],
-            "protocol_sha256": sha256_file(args.protocol),
-            "selection_sha256": sha256_file(args.selection),
-            "map_result": map_result,
-        },
-        "support": {
-            "scan_count": len(observation.scans),
-            "eligible_uid_count": observation.eligible_uid_count,
-            "eligible_networks": observation.eligible_networks,
-            "common_support_sample_count": observation.common_support_sample_count,
-            "scored_value_count": observation.scored_value_count,
-            "map_support_difference": "committed map estimator retains its full scan support and map eligibility; exact timestream estimator uses frozen +/-50-ms common edge trim and source-scoring eligibility",
-        },
-        "coordinate_gate": coordinate_gate,
-        "point_model_results": full_fits,
-        "derivative_crosscheck": derivative,
-        "blocked_prediction": blocked,
-        "sensitivity_fits": sensitivities,
-        "model_sensitivity": sensitivity_status,
-        "bootstrap": bootstrap,
-        "primary_tau_ms": float(primary["tau_ms"]),
-        "map_coordinate_shift_tau_ms": map_result["coordinate_shift_tau_ms"],
-        "point_difference_ms": (
-            float(primary["tau_ms"]) - map_result["coordinate_shift_tau_ms"]
-        ),
-        "sign_agreement": bool(
-            np.sign(primary["tau_ms"])
-            == np.sign(map_result["coordinate_shift_tau_ms"])
-        ),
-    }
-    write_json(output / "result.json", result)
+    write_json(output / "run_state.json", monitor.state(
+        "complete", obsnum=observation.obsnum, current_stage="complete"
+    ))
     names = [
         "blocked_prediction.ecsv", "bootstrap_work.npz",
         "network_sensitivity.ecsv", "objective_profile.ecsv",
-        "point_model_results.ecsv", pdf_name, "result.json",
+        "point_model_results.ecsv", "progress.jsonl", "run_state.json",
+        pdf_name, "result.json",
     ]
     write_checksums(output, names)
     print(
@@ -1825,6 +2114,14 @@ def parser() -> argparse.ArgumentParser:
     analyze.add_argument("--map-root", type=Path, required=True)
     analyze.add_argument("--obsnum", type=int, required=True)
     analyze.add_argument("--output", type=Path, required=True)
+    analyze.add_argument(
+        "--maximum-wall-seconds",
+        type=float,
+        help=(
+            "stop with a durable failed run_state.json when this wall-clock "
+            "limit is reached; checked inside every timestream objective"
+        ),
+    )
     extend = sub.add_parser("extend-bootstrap")
     extend.add_argument("--protocol", type=Path, required=True)
     extend.add_argument("--selection", type=Path, required=True)

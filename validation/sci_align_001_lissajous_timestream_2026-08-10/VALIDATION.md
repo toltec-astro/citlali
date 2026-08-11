@@ -2,13 +2,18 @@
 
 Validation was run with `$HOME/tolteca/bin/python` and headless Matplotlib.
 
-- `test_analyze_sci_align_001_lissajous_timestream.py`: 11 tests passed in
-  49.327 seconds. The suite includes injected zero, negative, positive,
+- `test_analyze_sci_align_001_lissajous_timestream.py` together with
+  `test_visualize_sci_align_001_lissajous_fit.py`: 15 tests passed in 47.768
+  seconds. The suite includes injected zero, negative, positive,
   static-offset, pure-hysteresis, and joint regimes; irregular scan sampling,
   flags, detector gains, baselines, correlated noise, wrap-safe interpolation,
   invariant common support, derivative agreement, convergence gates, and the
-  abnormal inherited-start multistart fallback regression.
-- `py_compile`: estimator, test, and compact-result projection passed.
+  abnormal inherited-start multistart fallback regression. It also covers the
+  runtime deadline/event contract, deterministic fixed-support identities,
+  contiguous fit-unit construction, and exact model-component objective
+  reconstruction.
+- `py_compile`: estimator, generalized visualization renderer, and both focused
+  test modules passed.
 - `tools/config/run_config_preflight.py --require-all`: 123 unit tests passed;
   8 compact compatibility cases passed; no skips, warnings, gaps, review
   requirements, or boundary drift.
@@ -26,6 +31,14 @@ Validation was run with `$HOME/tolteca/bin/python` and headless Matplotlib.
   draws and visually exposes the opposing scan-6/scan-7 and residual-MSE
   associations. Its checksum manifests and the optimizer-probe manifest both
   verify.
+- The generalized visualization renderer was exercised end-to-end against an
+  authenticated ObsNum 150818 software-QA fixture adapted only to the current
+  protocol identity. It produced 49 pages across six PDFs: 16 detailed
+  detector/crossing pages, 12 all-crossing residual-atlas pages, 14 weighted
+  residual-footprint pages, five objective-profile pages, one model-adequacy
+  page, and one standard-map context page. Every page was rendered and visually
+  inspected; the output checksum manifest verified. This fixture validates the
+  software and layout only and is not retained as new scientific evidence.
 - The final validation-package `SHA256SUMS` manifest verifies every retained
   file.
 - The final staged diagnostic diff passes `git diff --cached --check`.
