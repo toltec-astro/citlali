@@ -26,9 +26,9 @@ EXCLUDED_FILES = {
     "include/citlali/core/pipeline/timestream_config_adapter_raw_flagging.h",
     "include/citlali/core/pipeline/timestream_config_adapter_raw_line_audit.h",
 }
-EXPECTED_RECORD_COUNT = 63
+EXPECTED_RECORD_COUNT = 67
 EXPECTED_RECORD_SHA256 = (
-    "e089cc171301d772e5d2a5dea3a19549dc0411d78fe5c63a26cfde6835970c24"
+    "9603bb76740d549eeb5cd6f7364d0cde2b8f14052006e006047922eb6dc62448"
 )
 
 EXECUTOR_OPERATIONS = {
@@ -94,6 +94,9 @@ OUTPUT_OR_REALIZED_STATE = {
     "kernel.has_source_centers",
     "line_audit",
     "remove_bad_dets_window_sec",
+    "run_tod_filter",
+    "run_tod_iir_highpass",
+    "run_tod_notch",
 }
 RAW_POLICY_READS = {"run_downsample", "run_extinction", "run_kernel"}
 

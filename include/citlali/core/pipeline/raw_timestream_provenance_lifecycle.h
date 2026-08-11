@@ -98,6 +98,10 @@ inline void complete_raw_timestream_observation(
         plan.observation->calibration_apt_artifact_sha256;
     plan.realized.calibration_acquisition_binding_sha256 =
         plan.observation->calibration_acquisition_binding_sha256;
+    plan.realized.calibration_identity =
+        plan.observation->calibration_identity;
+    plan.realized.calibration_factor_state_sha256 =
+        plan.observation->calibration_factor_state_sha256;
     plan.realized.calibration_raw_observation_identity =
         plan.observation->calibration_raw_observation_identity;
     plan.realized.calibration_acquisition_binding_mode =

@@ -23,12 +23,68 @@ timestream::CalibrationProductAdmissionInputs valid_inputs(
     inputs.acquisition_identity_available = true;
     inputs.acquisition_identity_valid = true;
     inputs.acquisition_identity_detail = "test explicit-key binding";
+    inputs.apt_lineage_available = true;
+    inputs.apt_lineage_valid = true;
+    inputs.apt_lineage_detail = "test selected-row lineage";
     inputs.apt_artifact_sha256 = "test-apt-sha256";
+    inputs.apt_row_association_sha256 = "test-row-association-sha256";
+    inputs.apt_observation_identity = "134723";
+    inputs.apt_matched_observation_identity = "137389";
+    inputs.apt_selected_source = "Neptune";
+    inputs.tolapt_manifest_association_sha256 =
+        "test-tolapt-manifest-association-sha256";
     inputs.acquisition_binding_sha256 = "test-binding-sha256";
     inputs.raw_observation_identity = "test-raw-observation";
     inputs.acquisition_binding_mode = "explicit_test_join";
     inputs.acquisition_key_schema = "artifact+network+local_tone";
     inputs.response_identity = "originating=test-beam;realized=identity";
+    inputs.atmosphere_operator_id = "test-fixed-operator";
+    inputs.atmosphere_operator_contract_sha256 = "test-operator-contract";
+    inputs.atmosphere_node_table_sha256 = "test-node-table";
+    inputs.passband_set_id = "test-passband";
+    inputs.reference_profile_id = "test-reference-profile";
+    inputs.reference_spectral_index_alpha = 0.0;
+    inputs.reference_spectral_index_default_applied = true;
+    inputs.tau225 = 0.1;
+    inputs.package_lineage.selected_apt_source_path = "/test/apt.ecsv";
+    inputs.package_lineage.selected_apt_sha256 = inputs.apt_artifact_sha256;
+    inputs.package_lineage.apt_row_association_sha256 =
+        inputs.apt_row_association_sha256;
+    inputs.package_lineage.modern_tolapt_manifest_available = true;
+    inputs.package_lineage.modern_tolapt_manifest_path =
+        "/test/tolapt/manifest.yaml";
+    inputs.package_lineage.modern_tolapt_manifest_sha256 =
+        "test-tolapt-manifest-sha256";
+    inputs.package_lineage.modern_tolapt_contract_version = "tolapt.run.v1";
+    inputs.package_lineage.modern_tolapt_run_id = "test-run";
+    inputs.package_lineage.modern_tolapt_output_key = "matched_design_apt";
+    inputs.package_lineage.modern_tolapt_output_path = "matched.ecsv";
+    inputs.package_lineage.tolapt_manifest_association_sha256 =
+        inputs.tolapt_manifest_association_sha256;
+    inputs.package_lineage.modern_tolapt_design_input =
+        {"design.ecsv", "test-design-sha256", 1,
+         "2026-08-09T00:00:00Z"};
+    inputs.package_lineage.modern_tolapt_measured_input =
+        {"measured.ecsv", "test-measured-sha256", 1,
+         "2026-08-09T00:00:01Z"};
+    inputs.package_lineage.raw_artifacts.push_back(
+        {"test-raw.nc", "test-raw-sha256", "toltec0", 0,
+         std::vector<double>(static_cast<std::size_t>(detector_count),
+                             1.0e9)});
+    for (Eigen::Index detector = 0; detector < detector_count; ++detector) {
+        timestream::CalibrationLineageRow row;
+        row.ordered_detector_index = detector;
+        row.selected_source_row_index = detector;
+        row.network = 0;
+        row.network_local_tone = detector;
+        row.absolute_tone_frequency_hz = 1.0e9;
+        row.uid = std::to_string(detector);
+        row.eligible = true;
+        row.validity_basis = "test-valid-row";
+        row.stable_association = "test-stable-association-" +
+            std::to_string(detector);
+        inputs.package_lineage.ordered_rows.push_back(std::move(row));
+    }
     inputs.target_unit_factor = Eigen::VectorXd::Ones(detector_count);
     inputs.detector_flxscale = Eigen::VectorXd::Ones(detector_count);
     inputs.detector_responsivity = Eigen::VectorXd::Ones(detector_count);
@@ -57,7 +113,18 @@ TEST(calibration_product, admits_only_complete_atomic_product) {
               timestream::CalibrationValidityCause::valid_complete_product);
     EXPECT_EQ(product.target_unit, "mJy/beam");
     EXPECT_FALSE(product.apt_artifact_sha256.empty());
+    EXPECT_EQ(product.apt_row_association_sha256,
+              "test-row-association-sha256");
+    EXPECT_EQ(product.apt_observation_identity, "134723");
+    EXPECT_EQ(product.apt_matched_observation_identity, "137389");
+    EXPECT_EQ(product.apt_selected_source, "Neptune");
+    EXPECT_EQ(product.tolapt_manifest_association_sha256,
+              "test-tolapt-manifest-association-sha256");
     EXPECT_FALSE(product.response_identity.empty());
+    EXPECT_FALSE(product.calibration_identity.empty());
+    EXPECT_NE(product.calibration_identity,
+              product.acquisition_binding_sha256);
+    EXPECT_FALSE(product.factor_state_sha256.empty());
     ASSERT_FALSE(product.nuisances.empty());
     for (const auto &nuisance : product.nuisances) {
         EXPECT_FALSE(nuisance.correlation_scope.empty());
@@ -68,6 +135,43 @@ TEST(calibration_product, admits_only_complete_atomic_product) {
               timestream::CalibrationNuisanceAvailability::available);
     EXPECT_EQ(product.nuisances.front().availability,
               timestream::CalibrationNuisanceAvailability::unavailable);
+}
+
+TEST(calibration_product,
+     canonical_identity_binds_complete_admitted_state_not_only_acquisition) {
+    const auto baseline =
+        timestream::admit_calibration_product(valid_inputs());
+    ASSERT_TRUE(baseline.valid());
+
+    auto changed_unit_factor = valid_inputs();
+    changed_unit_factor.target_unit_factor(0) = 2.0;
+    const auto factor_product =
+        timestream::admit_calibration_product(changed_unit_factor);
+    ASSERT_TRUE(factor_product.valid());
+    EXPECT_EQ(factor_product.acquisition_binding_sha256,
+              baseline.acquisition_binding_sha256);
+    EXPECT_NE(factor_product.factor_state_sha256,
+              baseline.factor_state_sha256);
+    EXPECT_NE(factor_product.calibration_identity,
+              baseline.calibration_identity);
+
+    auto changed_response = valid_inputs();
+    changed_response.response_identity += ";filtering=fir";
+    const auto response_product =
+        timestream::admit_calibration_product(changed_response);
+    ASSERT_TRUE(response_product.valid());
+    EXPECT_EQ(response_product.acquisition_binding_sha256,
+              baseline.acquisition_binding_sha256);
+    EXPECT_NE(response_product.calibration_identity,
+              baseline.calibration_identity);
+
+    auto changed_source_association = valid_inputs();
+    changed_source_association.apt_selected_source = "Uranus";
+    const auto source_product =
+        timestream::admit_calibration_product(changed_source_association);
+    ASSERT_TRUE(source_product.valid());
+    EXPECT_NE(source_product.calibration_identity,
+              baseline.calibration_identity);
 }
 
 TEST(calibration_product, rejects_unsupported_production_units) {
@@ -125,6 +229,16 @@ TEST(calibration_product, preserves_acquisition_identity_failure_causes) {
     invalid.acquisition_identity_valid = false;
     EXPECT_EQ(timestream::admit_calibration_product(invalid).validity_cause,
               timestream::CalibrationValidityCause::acquisition_identity_invalid);
+
+    auto invalid_lineage = valid_inputs();
+    invalid_lineage.apt_lineage_valid = false;
+    invalid_lineage.apt_lineage_detail = "conflicting selected APT lineage";
+    const auto lineage_product =
+        timestream::admit_calibration_product(invalid_lineage);
+    EXPECT_EQ(lineage_product.validity_cause,
+              timestream::CalibrationValidityCause::acquisition_identity_invalid);
+    EXPECT_EQ(lineage_product.validity_detail,
+              "conflicting selected APT lineage");
 }
 
 TEST(calibration_product, transfers_only_conditional_variance_and_weight) {

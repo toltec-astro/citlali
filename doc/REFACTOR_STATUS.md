@@ -221,6 +221,61 @@ conditioned on `SCI-ALIGN-001`; astrometry/pointing closure remains with
 fresh independent re-audit, coordinator disposition, downstream/FLT launch,
 and production authorization remain external and unperformed.
 
+### 2026-08-11 successor-3 bounded local repair snapshot
+
+The owner-authorized `SCI-CAL-001` successor-3 application repair is based
+directly on exact successor-2 source
+`8b1534807f5abe4d80be2fbd45ed3838ed351509`. It preserves F002's fixed-
+atmosphere structural closure and F006's bounded top-of-atmosphere
+`mJy/beam` policy while completing only the bounded local work for F003,
+F004, F005, F007, F008, and the local portion of F009. F001 and F010 remain
+conditioned external dependencies.
+
+Unsupported requested calibrated units now fail during initial typed-config
+validation, before observation/APT analysis, TOD mutation, output creation,
+or publication. Calibration admission retains legacy selected-APT ECSV
+observation and available row identity, and consumes modern `tolapt.run.v1`
+lineage only through an explicit unique selected-output path/digest contract.
+When present, the exact TolAPT design and measured input path, SHA-256, byte
+size, and UTC mtime plus mixed-type selected-row associations are retained.
+The ordered-row v2 identity binds source row, retained names/types/values,
+eligibility, and validity basis. Exact raw artifact identities and stable
+network/local-tone-frequency joins are retained without inventing absent
+legacy facts.
+
+The canonical calibration identity is distinct from acquisition binding and
+binds the complete admitted calibration state: selected APT and row/source
+association, optional contract-bound TolAPT lineage, raw acquisition,
+target unit, exact once-only factor/operator state, validity, and declared
+realized mapmaker/kernel/filtering response-basis provenance. Package identity
+remains separate. Required package publication atomically binds the v4 raw
+provenance YAML to a digest-verified package-local
+`selected_calibration_apt.ecsv`, with rollback or fail-closed behavior for
+missing, stale, partial, or conflicting copies. Individual TOD/FITS products
+retain minimal stable linkage to that canonical package. Existing signal,
+conditional-variance, and inverse-variance recipients alone are transformed;
+no uncertainty/covariance product or total-uncertainty claim is introduced.
+
+Complete local deterministic gates pass: `citlali_test`, the science-map FITS
+test binary, `citlali_cli`, and the separately required
+`citlali_safety_test` build; the focused calibration/writer matrix passes
+24/24; all six broad-gate regression fixtures pass; and the full CTest gate
+passes 665/665 executed tests. The sole non-run test is the pre-existing
+disabled `MapFitterLifecycle.ExactProductSequence`. Raw execution-read and
+boundary audits pass 3/3 and 12/12, baseline tools pass 174/174, and complete
+config preflight passes its 127 tests, all four mode kits, eight compact-
+compatibility cases, 100% surface coverage, 592-leaf schema parity, and the
+67-record realized/execution census with zero review-required entries at
+digest
+`9603bb76740d549eeb5cd6f7364d0cde2b8f14052006e006047922eb6dc62448`.
+Source diff checks pass. No reduction or Unity access was performed.
+
+This remains a local application repair only, not integration, re-audit,
+downstream launch, production authorization, or external evidence closure.
+F001/F010, exact-candidate external execution, returned artifacts/logs,
+independent re-audit, coordinator disposition, and any production change
+remain explicitly conditioned and unperformed.
+
 ## Historical 2026-07-31 SCI-MAP-001 Bounded Repair Lane
 
 This section preserves the repair-lane chronology and its candidate-time gate

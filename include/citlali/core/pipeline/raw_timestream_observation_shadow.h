@@ -204,6 +204,10 @@ complete_raw_timestream_extinction_shadow(
         calibration.product.apt_artifact_sha256;
     plan.observation->calibration_acquisition_binding_sha256 =
         calibration.product.acquisition_binding_sha256;
+    plan.observation->calibration_identity =
+        calibration.product.calibration_identity;
+    plan.observation->calibration_factor_state_sha256 =
+        calibration.product.factor_state_sha256;
     plan.observation->calibration_raw_observation_identity =
         calibration.product.raw_observation_identity;
     plan.observation->calibration_acquisition_binding_mode =
@@ -220,6 +224,10 @@ complete_raw_timestream_extinction_shadow(
         std::string{calibration.product.precision_limitation};
     plan.observation->calibration_nuisance_states =
         timestream::calibration_nuisance_state_summary(calibration.product);
+    if (calibration.product.valid()) {
+        plan.observation->canonical_calibration_product =
+            calibration.product;
+    }
     const auto minimum_total_multiplier =
         timestream::minimum_total_signal_multiplier(calibration.product);
     const auto maximum_total_multiplier =

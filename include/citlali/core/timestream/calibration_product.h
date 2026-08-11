@@ -1,9 +1,13 @@
 #pragma once
 
+#include <citlali/core/utils/sha256.h>
+
 #include <Eigen/Core>
 
 #include <algorithm>
 #include <cmath>
+#include <cstdint>
+#include <iomanip>
 #include <limits>
 #include <sstream>
 #include <string>
@@ -80,6 +84,63 @@ struct CalibrationNuisanceState {
     std::string limitation;
 };
 
+struct CalibrationLineageInputRecord {
+    std::string path;
+    std::string sha256;
+    std::uint64_t bytes = 0;
+    std::string mtime_utc;
+};
+
+struct CalibrationLineageRowField {
+    std::string name;
+    std::string ecsv_datatype;
+    std::string value;
+};
+
+struct CalibrationLineageRow {
+    Eigen::Index ordered_detector_index = -1;
+    Eigen::Index selected_source_row_index = -1;
+    int network = -1;
+    Eigen::Index network_local_tone = -1;
+    double absolute_tone_frequency_hz =
+        std::numeric_limits<double>::quiet_NaN();
+    std::string uid;
+    bool eligible = false;
+    std::string validity_basis;
+    std::string stable_association;
+    std::vector<CalibrationLineageRowField> retained_fields;
+};
+
+struct CalibrationRawArtifact {
+    std::string path;
+    std::string sha256;
+    std::string interface;
+    int network = -1;
+    std::vector<double> absolute_tone_frequency_hz;
+};
+
+struct CalibrationPackageLineage {
+    std::string selected_apt_source_path;
+    std::string selected_apt_sha256;
+    std::string apt_row_association_sha256;
+    std::string apt_observation_identity;
+    std::string apt_matched_observation_identity;
+    std::string apt_selected_source;
+    bool legacy_metadata_available = false;
+    bool modern_tolapt_manifest_available = false;
+    std::string modern_tolapt_manifest_path;
+    std::string modern_tolapt_manifest_sha256;
+    std::string modern_tolapt_contract_version;
+    std::string modern_tolapt_run_id;
+    std::string modern_tolapt_output_key;
+    std::string modern_tolapt_output_path;
+    CalibrationLineageInputRecord modern_tolapt_design_input;
+    CalibrationLineageInputRecord modern_tolapt_measured_input;
+    std::string tolapt_manifest_association_sha256;
+    std::vector<CalibrationLineageRow> ordered_rows;
+    std::vector<CalibrationRawArtifact> raw_artifacts;
+};
+
 struct CalibrationProductAdmissionInputs {
     std::string target_unit;
     bool calibration_requested = false;
@@ -90,12 +151,29 @@ struct CalibrationProductAdmissionInputs {
     bool acquisition_identity_available = false;
     bool acquisition_identity_valid = false;
     std::string acquisition_identity_detail;
+    bool apt_lineage_available = false;
+    bool apt_lineage_valid = false;
+    std::string apt_lineage_detail;
     std::string apt_artifact_sha256;
+    std::string apt_row_association_sha256;
+    std::string apt_observation_identity;
+    std::string apt_matched_observation_identity;
+    std::string apt_selected_source;
+    std::string tolapt_manifest_association_sha256;
     std::string acquisition_binding_sha256;
     std::string raw_observation_identity;
     std::string acquisition_binding_mode;
     std::string acquisition_key_schema;
     std::string response_identity;
+    std::string atmosphere_operator_id;
+    std::string atmosphere_operator_contract_sha256;
+    std::string atmosphere_node_table_sha256;
+    std::string passband_set_id;
+    std::string reference_profile_id;
+    double reference_spectral_index_alpha = 0.0;
+    bool reference_spectral_index_default_applied = true;
+    double tau225 = std::numeric_limits<double>::quiet_NaN();
+    CalibrationPackageLineage package_lineage;
     Eigen::VectorXd target_unit_factor;
     Eigen::VectorXd detector_flxscale;
     Eigen::VectorXd detector_responsivity;
@@ -144,11 +222,27 @@ struct CalibrationProduct {
     std::string validity_detail{"calibration product has not been evaluated"};
     std::string target_unit;
     std::string apt_artifact_sha256;
+    std::string apt_row_association_sha256;
+    std::string apt_observation_identity;
+    std::string apt_matched_observation_identity;
+    std::string apt_selected_source;
+    std::string tolapt_manifest_association_sha256;
     std::string acquisition_binding_sha256;
     std::string raw_observation_identity;
     std::string acquisition_binding_mode;
     std::string acquisition_key_schema;
     std::string response_identity;
+    std::string calibration_identity;
+    std::string factor_state_sha256;
+    std::string atmosphere_operator_id;
+    std::string atmosphere_operator_contract_sha256;
+    std::string atmosphere_node_table_sha256;
+    std::string passband_set_id;
+    std::string reference_profile_id;
+    double reference_spectral_index_alpha = 0.0;
+    bool reference_spectral_index_default_applied = true;
+    double tau225 = std::numeric_limits<double>::quiet_NaN();
+    CalibrationPackageLineage package_lineage;
     Eigen::VectorXd target_unit_factor;
     Eigen::VectorXd detector_flxscale;
     Eigen::VectorXd signal_multiplier_without_extinction;
@@ -168,6 +262,107 @@ inline bool finite_positive_vector(const Eigen::VectorXd &values) {
            (values.array().isFinite() && (values.array() > 0.0)).all();
 }
 
+inline void append_calibration_identity_field(
+    std::ostringstream &stream, std::string_view name,
+    std::string_view value) {
+    stream << '|' << name.size() << ':' << name << '=' << value.size()
+           << ':' << value;
+}
+
+inline std::string calibration_vector_identity(
+    const Eigen::VectorXd &values) {
+    std::ostringstream stream;
+    stream << "calibration-vector-hexfloat-v1|count=" << values.size();
+    for (Eigen::Index index = 0; index < values.size(); ++index) {
+        stream << '|' << index << '=' << std::hexfloat << values(index);
+    }
+    return citlali::utils::sha256(stream.str());
+}
+
+inline std::string admitted_factor_state_identity(
+    const CalibrationProductAdmissionInputs &inputs) {
+    std::ostringstream stream;
+    stream << "sci-cal-001-admitted-factor-state-v1";
+    append_calibration_identity_field(
+        stream, "target_unit_factor_sha256",
+        calibration_vector_identity(inputs.target_unit_factor));
+    append_calibration_identity_field(
+        stream, "detector_flxscale_sha256",
+        calibration_vector_identity(inputs.detector_flxscale));
+    append_calibration_identity_field(
+        stream, "minimum_extinction_correction_sha256",
+        calibration_vector_identity(inputs.minimum_extinction_correction));
+    append_calibration_identity_field(
+        stream, "maximum_extinction_correction_sha256",
+        calibration_vector_identity(inputs.maximum_extinction_correction));
+    return citlali::utils::sha256(stream.str());
+}
+
+inline std::string admitted_calibration_identity(
+    const CalibrationProductAdmissionInputs &inputs,
+    std::string_view factor_state_sha256) {
+    std::ostringstream stream;
+    stream << "sci-cal-001-canonical-calibration-identity-v1";
+    append_calibration_identity_field(
+        stream, "selected_apt_source_path",
+        inputs.package_lineage.selected_apt_source_path);
+    append_calibration_identity_field(
+        stream, "selected_apt_sha256", inputs.apt_artifact_sha256);
+    append_calibration_identity_field(
+        stream, "apt_row_association_sha256",
+        inputs.apt_row_association_sha256);
+    append_calibration_identity_field(
+        stream, "apt_observation_identity", inputs.apt_observation_identity);
+    append_calibration_identity_field(
+        stream, "apt_matched_observation_identity",
+        inputs.apt_matched_observation_identity);
+    append_calibration_identity_field(
+        stream, "apt_selected_source", inputs.apt_selected_source);
+    append_calibration_identity_field(
+        stream, "tolapt_manifest_association_sha256",
+        inputs.tolapt_manifest_association_sha256);
+    append_calibration_identity_field(
+        stream, "acquisition_binding_sha256",
+        inputs.acquisition_binding_sha256);
+    append_calibration_identity_field(
+        stream, "raw_observation_identity",
+        inputs.raw_observation_identity);
+    append_calibration_identity_field(
+        stream, "target_unit", inputs.target_unit);
+    append_calibration_identity_field(
+        stream, "factor_composition", CalibrationProduct::factor_composition);
+    append_calibration_identity_field(
+        stream, "factor_provenance", CalibrationProduct::factor_provenance);
+    append_calibration_identity_field(
+        stream, "factor_state_sha256", factor_state_sha256);
+    append_calibration_identity_field(
+        stream, "atmosphere_operator_id", inputs.atmosphere_operator_id);
+    append_calibration_identity_field(
+        stream, "atmosphere_operator_contract_sha256",
+        inputs.atmosphere_operator_contract_sha256);
+    append_calibration_identity_field(
+        stream, "atmosphere_node_table_sha256",
+        inputs.atmosphere_node_table_sha256);
+    append_calibration_identity_field(
+        stream, "passband_set_id", inputs.passband_set_id);
+    append_calibration_identity_field(
+        stream, "reference_profile_id", inputs.reference_profile_id);
+    std::ostringstream reference_state;
+    reference_state << std::hexfloat
+                    << inputs.reference_spectral_index_alpha
+                    << ";default="
+                    << (inputs.reference_spectral_index_default_applied
+                            ? "true" : "false")
+                    << ";tau225=" << inputs.tau225;
+    append_calibration_identity_field(
+        stream, "reference_and_tau_state", reference_state.str());
+    append_calibration_identity_field(
+        stream, "response_basis_provenance", inputs.response_identity);
+    append_calibration_identity_field(
+        stream, "validity", "valid_complete_product");
+    return citlali::utils::sha256(stream.str());
+}
+
 inline CalibrationProduct reject_calibration_product(
     const CalibrationProductAdmissionInputs &inputs,
     CalibrationValidityCause cause, std::string detail) {
@@ -176,11 +371,32 @@ inline CalibrationProduct reject_calibration_product(
     result.validity_detail = std::move(detail);
     result.target_unit = inputs.target_unit;
     result.apt_artifact_sha256 = inputs.apt_artifact_sha256;
+    result.apt_row_association_sha256 =
+        inputs.apt_row_association_sha256;
+    result.apt_observation_identity = inputs.apt_observation_identity;
+    result.apt_matched_observation_identity =
+        inputs.apt_matched_observation_identity;
+    result.apt_selected_source = inputs.apt_selected_source;
+    result.tolapt_manifest_association_sha256 =
+        inputs.tolapt_manifest_association_sha256;
     result.acquisition_binding_sha256 = inputs.acquisition_binding_sha256;
     result.raw_observation_identity = inputs.raw_observation_identity;
     result.acquisition_binding_mode = inputs.acquisition_binding_mode;
     result.acquisition_key_schema = inputs.acquisition_key_schema;
     result.response_identity = inputs.response_identity;
+    result.atmosphere_operator_id = inputs.atmosphere_operator_id;
+    result.atmosphere_operator_contract_sha256 =
+        inputs.atmosphere_operator_contract_sha256;
+    result.atmosphere_node_table_sha256 =
+        inputs.atmosphere_node_table_sha256;
+    result.passband_set_id = inputs.passband_set_id;
+    result.reference_profile_id = inputs.reference_profile_id;
+    result.reference_spectral_index_alpha =
+        inputs.reference_spectral_index_alpha;
+    result.reference_spectral_index_default_applied =
+        inputs.reference_spectral_index_default_applied;
+    result.tau225 = inputs.tau225;
+    result.package_lineage = inputs.package_lineage;
     return result;
 }
 
@@ -195,6 +411,23 @@ inline CalibrationProduct admit_calibration_product(
         return reject_calibration_product(
             inputs, CalibrationValidityCause::unsupported_target_unit,
             "SCI-CAL-001 supports only top-of-atmosphere point-source-peak mJy/beam");
+    }
+    if (!inputs.apt_lineage_available || !inputs.apt_lineage_valid) {
+        return reject_calibration_product(
+            inputs, CalibrationValidityCause::acquisition_identity_invalid,
+            inputs.apt_lineage_detail.empty()
+                ? "selected APT lineage is unavailable or invalid"
+                : inputs.apt_lineage_detail);
+    }
+    if (inputs.package_lineage.selected_apt_source_path.empty() ||
+        inputs.package_lineage.selected_apt_sha256 !=
+            inputs.apt_artifact_sha256 ||
+        inputs.apt_row_association_sha256.empty() ||
+        inputs.package_lineage.apt_row_association_sha256 !=
+            inputs.apt_row_association_sha256) {
+        return reject_calibration_product(
+            inputs, CalibrationValidityCause::acquisition_identity_invalid,
+            "selected APT artifact and ordered row lineage are incomplete or inconsistent");
     }
     if (!inputs.acquisition_identity_available) {
         return reject_calibration_product(
@@ -215,12 +448,66 @@ inline CalibrationProduct admit_calibration_product(
             inputs, CalibrationValidityCause::acquisition_identity_unavailable,
             "calibration artifact or acquisition-binding provenance is unavailable");
     }
+    if (inputs.response_identity.empty() ||
+        inputs.atmosphere_operator_id.empty() ||
+        inputs.atmosphere_operator_contract_sha256.empty() ||
+        inputs.atmosphere_node_table_sha256.empty() ||
+        inputs.passband_set_id.empty() ||
+        inputs.reference_profile_id.empty()) {
+        return reject_calibration_product(
+            inputs, CalibrationValidityCause::missing_required_factor,
+            "calibration response-basis or fixed-operator provenance is unavailable");
+    }
+    if (inputs.package_lineage.modern_tolapt_manifest_available &&
+        (inputs.package_lineage.modern_tolapt_manifest_path.empty() ||
+         inputs.package_lineage.modern_tolapt_manifest_sha256.empty() ||
+         inputs.package_lineage.modern_tolapt_contract_version.empty() ||
+         inputs.package_lineage.modern_tolapt_run_id.empty() ||
+         inputs.package_lineage.modern_tolapt_output_key.empty() ||
+         inputs.package_lineage.modern_tolapt_output_path.empty() ||
+         inputs.package_lineage.tolapt_manifest_association_sha256.empty() ||
+         inputs.package_lineage.tolapt_manifest_association_sha256 !=
+             inputs.tolapt_manifest_association_sha256 ||
+         inputs.package_lineage.modern_tolapt_design_input.path.empty() ||
+         inputs.package_lineage.modern_tolapt_design_input.sha256.empty() ||
+         inputs.package_lineage.modern_tolapt_design_input.mtime_utc.empty() ||
+         inputs.package_lineage.modern_tolapt_measured_input.path.empty() ||
+         inputs.package_lineage.modern_tolapt_measured_input.sha256.empty() ||
+         inputs.package_lineage.modern_tolapt_measured_input.mtime_utc.empty())) {
+        return reject_calibration_product(
+            inputs, CalibrationValidityCause::acquisition_identity_invalid,
+            "contract-associated TolAPT manifest provenance is incomplete or inconsistent");
+    }
+    if (!inputs.package_lineage.modern_tolapt_manifest_available &&
+        (!inputs.tolapt_manifest_association_sha256.empty() ||
+         !inputs.package_lineage.tolapt_manifest_association_sha256.empty())) {
+        return reject_calibration_product(
+            inputs, CalibrationValidityCause::acquisition_identity_invalid,
+            "TolAPT manifest association is present without an admitted modern manifest");
+    }
 
     const Eigen::Index detector_count = inputs.detector_flxscale.size();
     if (detector_count <= 0 || inputs.target_unit_factor.size() != detector_count) {
         return reject_calibration_product(
             inputs, CalibrationValidityCause::missing_required_factor,
             "target-unit and detector-flxscale factor cardinalities differ");
+    }
+    std::size_t raw_tone_count = 0;
+    for (const auto &artifact : inputs.package_lineage.raw_artifacts) {
+        raw_tone_count += artifact.absolute_tone_frequency_hz.size();
+        if (artifact.path.empty() || artifact.sha256.empty() ||
+            artifact.interface.empty() || artifact.network < 0) {
+            return reject_calibration_product(
+                inputs, CalibrationValidityCause::acquisition_identity_invalid,
+                "raw acquisition artifact provenance is incomplete");
+        }
+    }
+    if (inputs.package_lineage.ordered_rows.size() !=
+            static_cast<std::size_t>(detector_count) ||
+        raw_tone_count != static_cast<std::size_t>(detector_count)) {
+        return reject_calibration_product(
+            inputs, CalibrationValidityCause::acquisition_identity_invalid,
+            "raw acquisition and selected APT stable-join cardinalities differ");
     }
     if (!finite_positive_vector(inputs.target_unit_factor) ||
         !finite_positive_vector(inputs.detector_flxscale)) {
@@ -287,11 +574,35 @@ inline CalibrationProduct admit_calibration_product(
         : "complete factor, acquisition, and unit product admitted; extinction not requested";
     result.target_unit = inputs.target_unit;
     result.apt_artifact_sha256 = inputs.apt_artifact_sha256;
+    result.apt_row_association_sha256 =
+        inputs.apt_row_association_sha256;
+    result.apt_observation_identity = inputs.apt_observation_identity;
+    result.apt_matched_observation_identity =
+        inputs.apt_matched_observation_identity;
+    result.apt_selected_source = inputs.apt_selected_source;
+    result.tolapt_manifest_association_sha256 =
+        inputs.tolapt_manifest_association_sha256;
     result.acquisition_binding_sha256 = inputs.acquisition_binding_sha256;
     result.raw_observation_identity = inputs.raw_observation_identity;
     result.acquisition_binding_mode = inputs.acquisition_binding_mode;
     result.acquisition_key_schema = inputs.acquisition_key_schema;
     result.response_identity = inputs.response_identity;
+    result.factor_state_sha256 = admitted_factor_state_identity(inputs);
+    result.calibration_identity = admitted_calibration_identity(
+        inputs, result.factor_state_sha256);
+    result.atmosphere_operator_id = inputs.atmosphere_operator_id;
+    result.atmosphere_operator_contract_sha256 =
+        inputs.atmosphere_operator_contract_sha256;
+    result.atmosphere_node_table_sha256 =
+        inputs.atmosphere_node_table_sha256;
+    result.passband_set_id = inputs.passband_set_id;
+    result.reference_profile_id = inputs.reference_profile_id;
+    result.reference_spectral_index_alpha =
+        inputs.reference_spectral_index_alpha;
+    result.reference_spectral_index_default_applied =
+        inputs.reference_spectral_index_default_applied;
+    result.tau225 = inputs.tau225;
+    result.package_lineage = inputs.package_lineage;
     result.target_unit_factor = inputs.target_unit_factor;
     result.detector_flxscale = inputs.detector_flxscale;
     result.signal_multiplier_without_extinction =

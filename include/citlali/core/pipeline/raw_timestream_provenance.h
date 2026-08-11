@@ -3,20 +3,26 @@
 #include <citlali/core/pipeline/atomic_yaml_output.h>
 #include <citlali/core/pipeline/raw_timestream_config_serialization.h>
 #include <citlali/core/pipeline/raw_timestream_execution_plan.h>
+#include <citlali/core/utils/sha256.h>
 
 #include <yaml-cpp/yaml.h>
 
 #include <filesystem>
+#include <fstream>
 #include <optional>
+#include <sstream>
 #include <stdexcept>
 #include <string>
+#include <system_error>
 
 namespace citlali::pipeline {
 
 inline constexpr const char *raw_timestream_provenance_schema_version =
-    "citlali-raw-timestream-provenance-v3";
+    "citlali-raw-timestream-provenance-v4";
 inline constexpr const char *raw_timestream_provenance_filename =
     "raw_timestream_provenance.yaml";
+inline constexpr const char *selected_calibration_apt_filename =
+    "selected_calibration_apt.ecsv";
 
 template <class Value>
 YAML::Node raw_optional_scalar_node(const std::optional<Value> &value) {
@@ -174,6 +180,10 @@ inline YAML::Node raw_timestream_observation_state_node(
         raw_optional_scalar_node(observation->calibration_apt_artifact_sha256);
     value["calibration_acquisition_binding_sha256"] =
         raw_optional_scalar_node(observation->calibration_acquisition_binding_sha256);
+    value["calibration_identity"] =
+        raw_optional_scalar_node(observation->calibration_identity);
+    value["calibration_factor_state_sha256"] =
+        raw_optional_scalar_node(observation->calibration_factor_state_sha256);
     value["calibration_raw_observation_identity"] =
         raw_optional_scalar_node(observation->calibration_raw_observation_identity);
     value["calibration_acquisition_binding_mode"] =
@@ -256,6 +266,10 @@ inline YAML::Node raw_timestream_realized_state_node(
         raw_optional_scalar_node(realized.calibration_apt_artifact_sha256);
     node["calibration_acquisition_binding_sha256"] =
         raw_optional_scalar_node(realized.calibration_acquisition_binding_sha256);
+    node["calibration_identity"] =
+        raw_optional_scalar_node(realized.calibration_identity);
+    node["calibration_factor_state_sha256"] =
+        raw_optional_scalar_node(realized.calibration_factor_state_sha256);
     node["calibration_raw_observation_identity"] =
         raw_optional_scalar_node(realized.calibration_raw_observation_identity);
     node["calibration_acquisition_binding_mode"] =
@@ -298,6 +312,173 @@ inline YAML::Node calibration_reference_effective_node(
     return node;
 }
 
+inline std::string calibration_package_identity(
+    const timestream::CalibrationProduct &product) {
+    std::ostringstream preimage;
+    preimage << "sci-cal-001-calibration-package-v1";
+    timestream::append_calibration_identity_field(
+        preimage, "calibration_identity", product.calibration_identity);
+    timestream::append_calibration_identity_field(
+        preimage, "package_local_apt_path",
+        selected_calibration_apt_filename);
+    timestream::append_calibration_identity_field(
+        preimage, "package_local_apt_sha256",
+        product.apt_artifact_sha256);
+    timestream::append_calibration_identity_field(
+        preimage, "acquisition_binding_sha256",
+        product.acquisition_binding_sha256);
+    return citlali::utils::sha256(preimage.str());
+}
+
+inline YAML::Node calibration_input_record_node(
+    const timestream::CalibrationLineageInputRecord &record) {
+    YAML::Node node;
+    node["path"] = record.path;
+    node["sha256"] = record.sha256;
+    node["bytes"] = record.bytes;
+    node["mtime_utc"] = record.mtime_utc;
+    return node;
+}
+
+inline YAML::Node canonical_calibration_lineage_node(
+    const std::optional<RawTimestreamObservationState> &observation) {
+    YAML::Node node;
+    const bool available = observation.has_value() &&
+        observation->canonical_calibration_product.has_value();
+    node["available"] = available;
+    if (!available) {
+        return node;
+    }
+    const auto &product = *observation->canonical_calibration_product;
+    const auto &lineage = product.package_lineage;
+    auto value = node["value"];
+    value["schema_version"] =
+        "sci-cal-001-canonical-calibration-lineage-v1";
+    value["package_identity"] = calibration_package_identity(product);
+    value["calibration_identity"] = product.calibration_identity;
+    value["component_identities"]["selected_apt_sha256"] =
+        product.apt_artifact_sha256;
+    value["component_identities"]["selected_apt_row_association_sha256"] =
+        product.apt_row_association_sha256;
+    value["component_identities"]["raw_acquisition_binding_sha256"] =
+        product.acquisition_binding_sha256;
+    value["component_identities"]["admitted_factor_state_sha256"] =
+        product.factor_state_sha256;
+    value["component_identities"]["tolapt_manifest_association_sha256"] =
+        product.tolapt_manifest_association_sha256;
+
+    auto apt = value["selected_apt"];
+    apt["source_path"] = lineage.selected_apt_source_path;
+    apt["source_sha256"] = lineage.selected_apt_sha256;
+    apt["package_local_path"] = selected_calibration_apt_filename;
+    apt["package_local_sha256"] = product.apt_artifact_sha256;
+    apt["copy_semantics"] = "exact_byte_copy_digest_verified_required_output";
+    apt["observation_identity"] = lineage.apt_observation_identity;
+    apt["matched_observation_identity"] =
+        lineage.apt_matched_observation_identity;
+    apt["selected_source"] = lineage.apt_selected_source;
+    apt["legacy_metadata_available"] = lineage.legacy_metadata_available;
+
+    auto modern = apt["tolapt_manifest"];
+    modern["available"] = lineage.modern_tolapt_manifest_available;
+    if (lineage.modern_tolapt_manifest_available) {
+        auto modern_value = modern["value"];
+        modern_value["path"] = lineage.modern_tolapt_manifest_path;
+        modern_value["sha256"] = lineage.modern_tolapt_manifest_sha256;
+        modern_value["contract_version"] =
+            lineage.modern_tolapt_contract_version;
+        modern_value["run_id"] = lineage.modern_tolapt_run_id;
+        modern_value["selected_output_key"] =
+            lineage.modern_tolapt_output_key;
+        modern_value["selected_output_path"] =
+            lineage.modern_tolapt_output_path;
+        modern_value["association_sha256"] =
+            lineage.tolapt_manifest_association_sha256;
+        modern_value["inputs"]["design_apt"] =
+            calibration_input_record_node(
+                lineage.modern_tolapt_design_input);
+        modern_value["inputs"]["measured_apt"] =
+            calibration_input_record_node(
+                lineage.modern_tolapt_measured_input);
+    }
+
+    auto acquisition = value["raw_acquisition"];
+    acquisition["raw_observation_identity"] =
+        product.raw_observation_identity;
+    acquisition["binding_mode"] = product.acquisition_binding_mode;
+    acquisition["key_schema"] = product.acquisition_key_schema;
+    acquisition["binding_sha256"] = product.acquisition_binding_sha256;
+    auto artifacts = acquisition["artifacts"];
+    for (const auto &artifact : lineage.raw_artifacts) {
+        YAML::Node item;
+        item["path"] = artifact.path;
+        item["sha256"] = artifact.sha256;
+        item["interface"] = artifact.interface;
+        item["roach_index"] = artifact.network;
+        for (const auto tone : artifact.absolute_tone_frequency_hz) {
+            item["absolute_tone_frequency_hz"].push_back(tone);
+        }
+        artifacts.push_back(item);
+    }
+
+    auto joins = value["stable_joins"];
+    joins["ordered_row_association_sha256"] =
+        lineage.apt_row_association_sha256;
+    joins["apt_row_order_authoritative"] = false;
+    for (const auto &row : lineage.ordered_rows) {
+        YAML::Node item;
+        item["ordered_detector_index"] = row.ordered_detector_index;
+        item["selected_apt_source_row_index"] =
+            row.selected_source_row_index;
+        item["raw_network"] = row.network;
+        item["raw_network_local_tone"] = row.network_local_tone;
+        item["absolute_tone_frequency_hz"] =
+            row.absolute_tone_frequency_hz;
+        item["uid"] = row.uid;
+        item["eligible"] = row.eligible;
+        item["validity_basis"] = row.validity_basis;
+        item["stable_association"] = row.stable_association;
+        for (const auto &field : row.retained_fields) {
+            YAML::Node retained;
+            retained["name"] = field.name;
+            retained["ecsv_datatype"] = field.ecsv_datatype;
+            retained["value"] = field.value;
+            item["retained_fields"].push_back(retained);
+        }
+        joins["ordered_detector_apt_rows"].push_back(item);
+    }
+
+    auto factors = value["factor_operator_state"];
+    factors["target_unit"] = product.target_unit;
+    factors["photometry_policy"] = std::string{product.photometry_policy};
+    factors["factor_composition"] = std::string{product.factor_composition};
+    factors["factor_provenance"] = std::string{product.factor_provenance};
+    factors["factor_state_sha256"] = product.factor_state_sha256;
+    factors["atmosphere_operator_id"] = product.atmosphere_operator_id;
+    factors["atmosphere_operator_contract_sha256"] =
+        product.atmosphere_operator_contract_sha256;
+    factors["atmosphere_node_table_sha256"] =
+        product.atmosphere_node_table_sha256;
+    factors["passband_set_id"] = product.passband_set_id;
+    factors["reference_profile_id"] = product.reference_profile_id;
+    factors["reference_spectral_index_alpha"] =
+        product.reference_spectral_index_alpha;
+    factors["reference_spectral_index_default_applied"] =
+        product.reference_spectral_index_default_applied;
+    factors["tau225"] = product.tau225;
+    factors["conditional_variance_transfer"] =
+        std::string{product.conditional_variance_transfer};
+    factors["conditional_inverse_variance_transfer"] =
+        std::string{product.conditional_inverse_variance_transfer};
+    value["response_basis"]["provenance"] = product.response_identity;
+    value["response_basis"]["semantics"] =
+        "declared_realized_state_only_no_empirical_response_validation";
+    value["precision_limitation"] = std::string{product.precision_limitation};
+    value["nuisance_states"] =
+        timestream::calibration_nuisance_state_summary(product);
+    return node;
+}
+
 inline YAML::Node raw_timestream_provenance_node(
     const RawTimestreamExecutionPlan &plan) {
     YAML::Node root;
@@ -324,12 +505,19 @@ inline YAML::Node raw_timestream_provenance_node(
         raw_timestream_observation_state_node(plan.observation);
     root["realized"] =
         raw_timestream_realized_state_node(plan.realized);
+    root["calibration_lineage"] =
+        canonical_calibration_lineage_node(plan.observation);
     return root;
 }
 
 inline std::filesystem::path raw_timestream_provenance_path(
     const std::filesystem::path &reduction_dir) {
     return reduction_dir / raw_timestream_provenance_filename;
+}
+
+inline std::filesystem::path selected_calibration_apt_path(
+    const std::filesystem::path &reduction_dir) {
+    return reduction_dir / selected_calibration_apt_filename;
 }
 
 inline void write_raw_timestream_provenance_file(
@@ -352,9 +540,94 @@ inline void write_raw_timestream_provenance_file(
         throw std::logic_error(
             "cannot write raw timestream provenance without realized counts");
     }
-    write_yaml_file_atomic(
-        raw_timestream_provenance_path(reduction_dir),
-        raw_timestream_provenance_node(plan));
+    const auto yaml_path = raw_timestream_provenance_path(reduction_dir);
+    const bool calibration_required =
+        plan.effective.flux_calibration_enabled;
+    const auto *product = plan.observation &&
+            plan.observation->canonical_calibration_product
+        ? &*plan.observation->canonical_calibration_product
+        : nullptr;
+    if (calibration_required &&
+        (product == nullptr || !product->valid())) {
+        throw std::logic_error(
+            "calibrated raw timestream provenance requires an admitted canonical calibration product");
+    }
+    if (product == nullptr) {
+        write_yaml_file_atomic(yaml_path, raw_timestream_provenance_node(plan));
+        return;
+    }
+
+    const auto &lineage = product->package_lineage;
+    if (product->calibration_identity.empty() ||
+        product->factor_state_sha256.empty() ||
+        lineage.selected_apt_source_path.empty() ||
+        lineage.selected_apt_sha256.empty() ||
+        lineage.selected_apt_sha256 != product->apt_artifact_sha256) {
+        throw std::logic_error(
+            "canonical calibration lineage is incomplete or internally inconsistent");
+    }
+    const std::filesystem::path source_path{
+        lineage.selected_apt_source_path};
+    if (!std::filesystem::is_regular_file(source_path)) {
+        throw std::ios_base::failure(
+            "selected calibration APT source is unavailable: " +
+            source_path.string());
+    }
+    if (citlali::utils::sha256_file(source_path) !=
+        product->apt_artifact_sha256) {
+        throw std::runtime_error(
+            "selected calibration APT source digest changed before publication");
+    }
+
+    const auto destination_path =
+        selected_calibration_apt_path(reduction_dir);
+    auto temporary_path = destination_path;
+    temporary_path += ".tmp";
+    bool destination_created = false;
+    try {
+        std::error_code equivalent_error;
+        const bool source_is_destination =
+            std::filesystem::exists(destination_path) &&
+            std::filesystem::equivalent(
+                source_path, destination_path, equivalent_error) &&
+            !equivalent_error;
+        if (std::filesystem::exists(destination_path)) {
+            if (citlali::utils::sha256_file(destination_path) !=
+                product->apt_artifact_sha256) {
+                throw std::runtime_error(
+                    "existing package-local selected calibration APT has a conflicting digest");
+            }
+        }
+        else if (!source_is_destination) {
+            std::error_code ignored;
+            std::filesystem::remove(temporary_path, ignored);
+            std::filesystem::copy_file(
+                source_path, temporary_path,
+                std::filesystem::copy_options::overwrite_existing);
+            if (citlali::utils::sha256_file(temporary_path) !=
+                product->apt_artifact_sha256) {
+                throw std::runtime_error(
+                    "staged package-local selected calibration APT digest mismatch");
+            }
+            std::filesystem::rename(temporary_path, destination_path);
+            destination_created = true;
+        }
+        if (!std::filesystem::is_regular_file(destination_path) ||
+            citlali::utils::sha256_file(destination_path) !=
+                product->apt_artifact_sha256) {
+            throw std::runtime_error(
+                "package-local selected calibration APT is missing or stale");
+        }
+        write_yaml_file_atomic(yaml_path, raw_timestream_provenance_node(plan));
+    }
+    catch (...) {
+        std::error_code ignored;
+        std::filesystem::remove(temporary_path, ignored);
+        if (destination_created) {
+            std::filesystem::remove(destination_path, ignored);
+        }
+        throw;
+    }
 }
 
 }  // namespace citlali::pipeline

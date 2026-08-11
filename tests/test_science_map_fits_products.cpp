@@ -4,6 +4,7 @@
 #include <citlali/core/engine/engine.h>
 #include <citlali/core/mapmaking/map.h>
 #include <citlali/core/pipeline/map_image_output_helpers.h>
+#include <citlali/core/pipeline/calibration_product_admission.h>
 #include <citlali/core/pipeline/mapmaking_provenance_lifecycle.h>
 #include <citlali/core/pipeline/noise_provenance.h>
 #include <citlali/core/pipeline/science_map_provenance_serialization.h>
@@ -932,6 +933,132 @@ void configure_production_writer_engine(Engine &engine) {
     engine.rtcproc.polarization.stokes_params[0] = "I";
 }
 
+TEST(science_map_fits_products,
+     calibration_response_basis_binds_realized_mapmaker_kernel_and_filters) {
+    Engine engine;
+    configure_production_writer_engine(engine);
+    engine.typed_config.mapmaking.method =
+        citlali::config::MapMethod::jinc;
+    auto &raw = engine.typed_config.timestream.raw_time_chunk;
+    raw.kernel.enabled = true;
+    raw.kernel.type = "gaussian";
+    raw.filter.enabled = true;
+    raw.filter.freq_low_Hz = 0.2;
+    raw.filter.freq_high_Hz = 16.0;
+    raw.filter.n_terms = 32;
+    raw.filter.notch.enabled = true;
+    raw.iir_filter.enabled = true;
+    raw.iir_filter.freq_Hz = 0.1;
+    raw.iir_filter.order = 2;
+    raw.iir_filter.zero_phase = true;
+    raw.downsample.enabled = true;
+    raw.downsample.factor = 4;
+    engine.rtcproc.run_kernel = true;
+    engine.rtcproc.run_tod_filter = true;
+    engine.rtcproc.run_tod_notch = true;
+    engine.rtcproc.run_tod_iir_highpass = true;
+    engine.rtcproc.run_downsample = true;
+    engine.rtcproc.downsampler.factor = 4;
+    engine.calib.apt["a_fwhm"] = Eigen::VectorXd::Constant(1, 10.0);
+    engine.calib.apt["b_fwhm"] = Eigen::VectorXd::Constant(1, 9.0);
+    engine.calib.apt["angle"] = Eigen::VectorXd::Constant(1, 0.25);
+
+    const auto identity =
+        citlali::pipeline::calibration_response_identity(engine);
+    EXPECT_NE(identity.find("realized_mapmaker_class=jinc"),
+              std::string::npos);
+    EXPECT_NE(identity.find("realized_map_grouping=array"),
+              std::string::npos);
+    EXPECT_NE(identity.find("realized_kernel_enabled=true"),
+              std::string::npos);
+    EXPECT_NE(identity.find("realized_kernel_class=gaussian"),
+              std::string::npos);
+    EXPECT_NE(identity.find("realized_fir_enabled=true"),
+              std::string::npos);
+    EXPECT_NE(identity.find("realized_fixed_notch_enabled=true"),
+              std::string::npos);
+    EXPECT_NE(identity.find("realized_iir_highpass_enabled=true"),
+              std::string::npos);
+    EXPECT_NE(identity.find("realized_downsample_enabled=true"),
+              std::string::npos);
+    EXPECT_NE(identity.find("no_empirical_response_fidelity"),
+              std::string::npos);
+
+    engine.calib.apt["angle"](0) = 0.5;
+    EXPECT_NE(citlali::pipeline::calibration_response_identity(engine),
+              identity);
+}
+
+template <class EngineType>
+void admit_production_calibration_fixture(EngineType &engine) {
+    timestream::CalibrationProductAdmissionInputs inputs;
+    inputs.target_unit = "mJy/beam";
+    inputs.calibration_requested = true;
+    inputs.acquisition_identity_available = true;
+    inputs.acquisition_identity_valid = true;
+    inputs.acquisition_identity_detail = "production writer fixture";
+    inputs.apt_lineage_available = true;
+    inputs.apt_lineage_valid = true;
+    inputs.apt_lineage_detail = "production writer lineage fixture";
+    inputs.apt_artifact_sha256 =
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+    inputs.apt_row_association_sha256 =
+        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
+    inputs.apt_observation_identity = "152390";
+    inputs.apt_selected_source = "Neptune";
+    inputs.acquisition_binding_sha256 =
+        "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc";
+    inputs.raw_observation_identity = "production-writer-raw-identity";
+    inputs.acquisition_binding_mode = "production_writer_fixture_join";
+    inputs.acquisition_key_schema = "fixture+network+local_tone";
+    inputs.response_identity =
+        "calibration-response-basis-provenance-v1;"
+        "originating_beam=fixture;realized_mapmaker_class=naive;"
+        "realized_map_grouping=array;realized_filtering=disabled;"
+        "semantics=provenance_only";
+    inputs.atmosphere_operator_id =
+        std::string{engine.rtcproc.calibration.operator_id()};
+    inputs.atmosphere_operator_contract_sha256 =
+        std::string{engine.rtcproc.calibration.operator_contract_sha256()};
+    inputs.atmosphere_node_table_sha256 =
+        std::string{engine.rtcproc.calibration.operator_nodes_sha256()};
+    inputs.passband_set_id =
+        std::string{engine.rtcproc.calibration.passband_set_id()};
+    inputs.reference_profile_id =
+        std::string{engine.rtcproc.calibration.reference_profile_id()};
+    inputs.tau225 = 0.0;
+    inputs.target_unit_factor = Eigen::VectorXd::Ones(1);
+    inputs.detector_flxscale = Eigen::VectorXd::Constant(1, 2.0);
+    inputs.detector_beam_major_fwhm_arcsec =
+        Eigen::VectorXd::Constant(1, 10.0);
+    inputs.detector_beam_minor_fwhm_arcsec =
+        Eigen::VectorXd::Constant(1, 9.0);
+    inputs.minimum_extinction_correction = Eigen::VectorXd::Ones(1);
+    inputs.maximum_extinction_correction = Eigen::VectorXd::Ones(1);
+    inputs.package_lineage.selected_apt_source_path = "fixture.ecsv";
+    inputs.package_lineage.selected_apt_sha256 =
+        inputs.apt_artifact_sha256;
+    inputs.package_lineage.apt_row_association_sha256 =
+        inputs.apt_row_association_sha256;
+    inputs.package_lineage.raw_artifacts.push_back(
+        {"fixture-raw.nc", "fixture-raw-digest", "toltec0", 0,
+         {1.0e9}});
+    timestream::CalibrationLineageRow lineage_row;
+    lineage_row.ordered_detector_index = 0;
+    lineage_row.selected_source_row_index = 0;
+    lineage_row.network = 0;
+    lineage_row.network_local_tone = 0;
+    lineage_row.absolute_tone_frequency_hz = 1.0e9;
+    lineage_row.uid = "0";
+    lineage_row.eligible = true;
+    lineage_row.validity_basis = "fixture-valid-row";
+    lineage_row.stable_association = "fixture-stable-row";
+    inputs.package_lineage.ordered_rows.push_back(
+        std::move(lineage_row));
+    engine.rtcproc.calibration.admit_product(inputs);
+    ASSERT_TRUE(engine.rtcproc.calibration.product.valid());
+}
+
 std::shared_ptr<ScienceMapBufferFixture> make_production_science_map_buffer(
     const Engine &engine, bool coadd, Eigen::Index rows, Eigen::Index cols,
     const std::array<double, 2> &reference_pixel) {
@@ -1196,6 +1323,27 @@ std::string read_required_fits_string(fitsfile *file, const char *key) {
         throw std::runtime_error(std::string{"missing FITS string key "} + key);
     }
     return value;
+}
+
+std::string read_required_fits_long_string(fitsfile *file,
+                                           const char *key) {
+    char *value = nullptr;
+    int status = 0;
+    if (fits_read_key_longstr(file, key, &value, nullptr, &status) != 0) {
+        throw std::runtime_error(
+            std::string{"missing FITS long string key "} + key);
+    }
+    const std::string result = value == nullptr
+        ? std::string{} : std::string{value};
+    if (value != nullptr) {
+        int free_status = 0;
+        fits_free_memory(value, &free_status);
+        if (free_status != 0) {
+            throw std::runtime_error(
+                std::string{"cannot free FITS long string key "} + key);
+        }
+    }
+    return result;
 }
 
 void move_to_required_image(fitsfile *file, const std::string &name) {
@@ -2151,6 +2299,116 @@ TEST(science_map_fits_products,
     EXPECT_EQ(fits_close_file(coadd_file, &status), 0);
     status = 0;
     EXPECT_EQ(fits_close_file(coadd_noise_file, &status), 0);
+}
+
+TEST(science_map_fits_products,
+     admitted_calibration_round_trips_through_actual_map_fits_writer) {
+    const auto nonce = std::chrono::high_resolution_clock::now()
+                           .time_since_epoch()
+                           .count();
+    FitsDirectoryCleanup cleanup{
+        std::filesystem::path{"/private/tmp"} /
+        ("citlali-admitted-calibration-map-writer-" +
+         std::to_string(nonce))};
+    Engine engine;
+    configure_production_writer_engine(engine);
+    admit_production_calibration_fixture(engine);
+    engine.output_paths.obsnum_dir_name = cleanup.path.string() + "/obs/";
+    engine.observation_identity.obsnum = "152390";
+    engine.calib.array_fwhms[0] = {10.0, 9.0};
+    engine.calib.array_pas[0] = 0.0;
+    engine.calib.array_beam_areas[0] = 1.0;
+    engine.calib.apt_filepath = "fixture.ecsv";
+    engine.toltec_io.array_freq_map[0] = 270.0e9;
+    engine.telescope.fsmp = 1.0;
+    engine.telescope.source_name = "calibration-writer-fixture";
+    engine.telescope.project_id = "SCI-CAL-001";
+    engine.telescope.obs_goal = "science";
+    engine.telescope.tel_header["Header.Source.Ra"] =
+        Eigen::VectorXd::Constant(1, 1.0);
+    engine.telescope.tel_header["Header.Source.Dec"] =
+        Eigen::VectorXd::Constant(1, 0.5);
+    engine.telescope.tel_data["TelElAct"] =
+        Eigen::VectorXd::Constant(1, 0.8);
+    engine.telescope.tel_data["TelAzAct"] =
+        Eigen::VectorXd::Constant(1, 1.2);
+    engine.telescope.tel_data["ActParAng"] =
+        Eigen::VectorXd::Constant(1, 0.1);
+    std::filesystem::create_directories(cleanup.path / "obs" / "raw");
+    ASSERT_NO_THROW(engine.create_obs_map_files());
+    auto observation = make_production_science_map_buffer(
+        engine, false, 5, 7, {3.0, 2.0});
+    auto *map_files = &engine.map_fits_outputs.obs;
+    auto *noise_files = &engine.map_fits_outputs.obs_noise;
+    ASSERT_NO_THROW(engine.add_phdu(map_files, observation, 0));
+    ASSERT_NO_THROW(engine.add_phdu(noise_files, observation, 0));
+    ASSERT_NO_THROW(engine.write_maps(
+        map_files, noise_files, observation, 0));
+    const auto path = engine.map_fits_outputs.obs[0].filepath + ".fits";
+    engine.map_fits_outputs.obs[0].pfits.reset();
+    engine.map_fits_outputs.obs_noise[0].pfits.reset();
+
+    fitsfile *file = nullptr;
+    int status = 0;
+    ASSERT_EQ(fits_open_file(&file, path.c_str(), READONLY, &status), 0);
+    int valid = 0;
+    ASSERT_EQ(fits_read_key(
+                  file, TLOGICAL, "CAL.VALID", &valid, nullptr, &status),
+              0);
+    EXPECT_EQ(valid, 1);
+    EXPECT_EQ(read_required_fits_string(file, "CAL.TARGET_UNIT"),
+              "mJy/beam");
+    const auto apt_link = read_required_fits_long_string(
+        file, "CAL.APT_ARTIFACT_SHA256");
+    const auto acquisition_link = read_required_fits_long_string(
+        file, "CAL.ACQUISITION_BINDING_SHA256");
+    EXPECT_GE(apt_link.size(), 32U);
+    EXPECT_GE(acquisition_link.size(), 32U);
+    EXPECT_EQ(engine.rtcproc.calibration.product.apt_artifact_sha256
+                  .substr(0, apt_link.size()),
+              apt_link);
+    EXPECT_EQ(engine.rtcproc.calibration.product.acquisition_binding_sha256
+                  .substr(0, acquisition_link.size()),
+              acquisition_link);
+    EXPECT_EQ(read_required_fits_long_string(file, "CAL.RESPONSE_IDENTITY")
+                  .find("calibration-response-basis-provenance-v1"),
+              0U);
+    EXPECT_EQ(fits_close_file(file, &status), 0);
+}
+
+TEST(science_map_fits_products,
+     actual_beammap_apt_writer_reopens_published_ecsv) {
+    const auto nonce = std::chrono::high_resolution_clock::now()
+                           .time_since_epoch()
+                           .count();
+    FitsDirectoryCleanup cleanup{
+        std::filesystem::path{"/private/tmp"} /
+        ("citlali-beammap-apt-writer-" + std::to_string(nonce))};
+    Beammap beammap;
+    configure_production_beammap_writer(beammap, {0}, {0}, 1);
+    beammap.output_paths.obsnum_dir_name = cleanup.path.string() + "/obs/";
+    beammap.observation_identity.obsnum = "152390";
+    std::filesystem::create_directories(cleanup.path / "obs" / "raw");
+    beammap.calib.apt_header_keys = {"uid", "flag", "flag2"};
+    beammap.calib.apt["uid"] = Eigen::VectorXd::Constant(1, 42.0);
+    beammap.calib.apt["flag"] = Eigen::VectorXd::Zero(1);
+    beammap.calib.apt_meta["calibration_identity"] =
+        "beammap-writer-fixture-calibration-identity";
+
+    const auto base = beammap.write_beammap_apt_table();
+    const auto path = std::filesystem::path(base + ".ecsv");
+    ASSERT_TRUE(std::filesystem::is_regular_file(path));
+    ASSERT_FALSE(std::filesystem::exists(path.string() + ".tmp"));
+    const auto [table, header, meta] = to_matrix_from_ecsv(path.string());
+    ASSERT_EQ(table.rows(), 1);
+    ASSERT_EQ(table.cols(), 3);
+    EXPECT_DOUBLE_EQ(table(0, 0), 42.0);
+    EXPECT_DOUBLE_EQ(table(0, 1), 0.0);
+    EXPECT_DOUBLE_EQ(table(0, 2), 0.0);
+    EXPECT_EQ(header,
+              (std::vector<std::string>{"uid", "flag", "flag2"}));
+    EXPECT_EQ(meta["calibration_identity"].as<std::string>(),
+              "beammap-writer-fixture-calibration-identity");
 }
 
 TEST(science_map_fits_products,

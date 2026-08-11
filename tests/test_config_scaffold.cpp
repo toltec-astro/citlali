@@ -13,6 +13,7 @@
 #include <citlali/core/error/error.h>
 #include <citlali/core/pipeline/beammap_execution_plan.h>
 #include <citlali/core/pipeline/beammap_source_flux_config.h>
+#include <citlali/core/pipeline/calibration_product_admission.h>
 #include <citlali/core/pipeline/calibration_config_read.h>
 #include <citlali/core/pipeline/coadd_config_read.h>
 #include <citlali/core/pipeline/coadd_execution_plan.h>
@@ -89,6 +90,7 @@
 #include <citlali/core/pipeline/timestream_run_context.h>
 #include <citlali/core/pipeline/tod_output_state.h>
 #include <citlali/core/utils/fits_io.h>
+#include <citlali/core/mapmaking/naive_mm.h>
 #include <kids/toltec/toltec.h>
 #include <citlali/core/timestream/rtc/rtcproc.h>
 #include <citlali/core/timestream/ptc/ptcproc.h>
@@ -571,6 +573,11 @@ struct FakeEngine {
     template <class Config>
     void get_citlali_config(Config &) {
         ++get_citlali_config_calls;
+        if (typed_config.timestream.raw_time_chunk.flux_calibration_enabled &&
+            typed_config.mapmaking.unit != "mJy/beam") {
+            config_diagnostics.invalid_keys.push_back(
+                {"mapmaking", "cunit"});
+        }
         if (inject_config_error) {
             config_diagnostics.invalid_keys.push_back(
                 {"mapmaking", "pixel_size"});
@@ -592,6 +599,129 @@ struct FakeRawProvenanceEngine {
         Eigen::MatrixXi scan_indices;
     } telescope;
 };
+
+timestream::CalibrationProduct canonical_calibration_fixture(
+    const std::filesystem::path &selected_apt_path,
+    bool modern_tolapt = false) {
+    timestream::CalibrationProductAdmissionInputs inputs;
+    inputs.target_unit = "mJy/beam";
+    inputs.calibration_requested = true;
+    inputs.acquisition_identity_available = true;
+    inputs.acquisition_identity_valid = true;
+    inputs.acquisition_identity_detail = "canonical writer fixture";
+    inputs.apt_lineage_available = true;
+    inputs.apt_lineage_valid = true;
+    inputs.apt_lineage_detail = "canonical writer selected APT";
+    inputs.apt_artifact_sha256 =
+        citlali::utils::sha256_file(selected_apt_path);
+    inputs.apt_row_association_sha256 =
+        citlali::utils::sha256("canonical-writer-row-association");
+    inputs.apt_observation_identity = "152390";
+    inputs.apt_matched_observation_identity = "152391";
+    inputs.apt_selected_source = "Neptune";
+    inputs.acquisition_binding_sha256 =
+        citlali::utils::sha256("canonical-writer-acquisition-binding");
+    inputs.raw_observation_identity =
+        "raw-observation-acquisition-identity-v1|fixture";
+    inputs.acquisition_binding_mode =
+        "explicit_network_local_tone_frequency_join_v1";
+    inputs.acquisition_key_schema =
+        "raw_observation_artifact+network+network_local_tone_frequency";
+    inputs.response_identity =
+        "calibration-response-basis-provenance-v1;"
+        "originating_beam=fixture;realized_mapmaker_class=naive;"
+        "realized_map_grouping=array;realized_kernel_enabled=false;"
+        "realized_fir_enabled=false;semantics=provenance_only";
+    inputs.atmosphere_operator_id =
+        std::string{timestream::FixedDjf25AtmosphereOperator::operator_id()};
+    inputs.atmosphere_operator_contract_sha256 =
+        std::string{timestream::FixedDjf25AtmosphereOperator::contract_sha256()};
+    inputs.atmosphere_node_table_sha256 =
+        std::string{timestream::FixedDjf25AtmosphereOperator::nodes_sha256()};
+    inputs.passband_set_id =
+        std::string{timestream::FixedDjf25AtmosphereOperator::passband_set_id()};
+    inputs.reference_profile_id =
+        std::string{timestream::FixedDjf25AtmosphereOperator::reference_profile_id()};
+    inputs.reference_spectral_index_alpha = 0.0;
+    inputs.reference_spectral_index_default_applied = true;
+    inputs.tau225 = 0.1;
+    inputs.target_unit_factor = Eigen::VectorXd::Ones(1);
+    inputs.detector_flxscale = Eigen::VectorXd::Constant(1, 2.0);
+    inputs.detector_beam_major_fwhm_arcsec =
+        Eigen::VectorXd::Constant(1, 10.0);
+    inputs.detector_beam_minor_fwhm_arcsec =
+        Eigen::VectorXd::Constant(1, 9.0);
+    inputs.minimum_extinction_correction = Eigen::VectorXd::Ones(1);
+    inputs.maximum_extinction_correction = Eigen::VectorXd::Ones(1);
+    auto &lineage = inputs.package_lineage;
+    lineage.selected_apt_source_path = selected_apt_path.string();
+    lineage.selected_apt_sha256 = inputs.apt_artifact_sha256;
+    lineage.apt_row_association_sha256 =
+        inputs.apt_row_association_sha256;
+    lineage.apt_observation_identity = inputs.apt_observation_identity;
+    lineage.apt_matched_observation_identity =
+        inputs.apt_matched_observation_identity;
+    lineage.apt_selected_source = inputs.apt_selected_source;
+    lineage.legacy_metadata_available = true;
+    if (modern_tolapt) {
+        inputs.tolapt_manifest_association_sha256 =
+            citlali::utils::sha256("tolapt-selected-output-association-v2");
+        lineage.modern_tolapt_manifest_available = true;
+        lineage.modern_tolapt_manifest_path = "tolapt-run/manifest.yaml";
+        lineage.modern_tolapt_manifest_sha256 =
+            citlali::utils::sha256("tolapt-manifest-fixture");
+        lineage.modern_tolapt_contract_version = "tolapt.run.v1";
+        lineage.modern_tolapt_run_id = "fixture-run";
+        lineage.modern_tolapt_output_key = "matched_design_apt";
+        lineage.modern_tolapt_output_path = "matched_design.ecsv";
+        lineage.tolapt_manifest_association_sha256 =
+            inputs.tolapt_manifest_association_sha256;
+        lineage.modern_tolapt_design_input = {
+            "/inputs/design.ecsv",
+            citlali::utils::sha256("design-input"), 1234,
+            "2026-08-09T12:00:00Z"};
+        lineage.modern_tolapt_measured_input = {
+            "/inputs/measured.ecsv",
+            citlali::utils::sha256("measured-input"), 5678,
+            "2026-08-09T12:01:00Z"};
+    }
+    lineage.raw_artifacts.push_back(
+        {"raw-toltec0.nc", citlali::utils::sha256("raw-fixture"),
+         "toltec0", 0, {1.0e9}});
+    timestream::CalibrationLineageRow row;
+    row.ordered_detector_index = 0;
+    row.selected_source_row_index = 4;
+    row.network = 0;
+    row.network_local_tone = 0;
+    row.absolute_tone_frequency_hz = 1.0e9;
+    row.uid = "42";
+    row.eligible = true;
+    row.validity_basis = "selected_APT_flag_eq_0";
+    row.stable_association = "selected-apt-ordered-row-v2|fixture";
+    row.retained_fields.push_back({"uid", "int64", "42"});
+    lineage.ordered_rows.push_back(std::move(row));
+    return timestream::admit_calibration_product(inputs);
+}
+
+citlali::pipeline::RawTimestreamExecutionPlan canonical_calibration_plan(
+    const timestream::CalibrationProduct &product) {
+    citlali::config::RawTimeChunkConfig request;
+    request.flux_calibration_enabled = true;
+    citlali::pipeline::RawTimestreamExecutionPlan plan;
+    plan.reset_from_request(request);
+    auto &observation = plan.begin_observation();
+    observation.calibration_valid = product.valid();
+    observation.calibration_identity = product.calibration_identity;
+    observation.calibration_factor_state_sha256 =
+        product.factor_state_sha256;
+    observation.calibration_apt_artifact_sha256 =
+        product.apt_artifact_sha256;
+    observation.calibration_acquisition_binding_sha256 =
+        product.acquisition_binding_sha256;
+    observation.canonical_calibration_product = product;
+    citlali::pipeline::complete_raw_timestream_observation(plan, 1, 1);
+    return plan;
+}
 
 struct FakeFlxscaleCorrection {
     double factor = 1.0;
@@ -5047,6 +5177,22 @@ TEST(config_scaffold, validates_top_level_config_values) {
     EXPECT_EQ(report.error_count(), 8U);
 }
 
+TEST(config_scaffold,
+     rejects_unsupported_calibrated_unit_but_preserves_uncalibrated_request) {
+    citlali::config::ReductionConfig config;
+    config.timestream.raw_time_chunk.flux_calibration_enabled = true;
+    config.mapmaking.unit = "MJy/sr";
+
+    const auto rejected = citlali::config::validate(config);
+    ASSERT_FALSE(rejected.ok());
+    ASSERT_EQ(rejected.error_count(), 1U);
+    EXPECT_EQ(rejected.errors().front().path,
+              (citlali::config::ConfigPath{"mapmaking", "cunit"}));
+
+    config.timestream.raw_time_chunk.flux_calibration_enabled = false;
+    EXPECT_TRUE(citlali::config::validate(config).ok());
+}
+
 TEST(config_scaffold, accepts_checked_low_level_config_schema) {
     const auto config = tula::config::YamlConfig::from_str(
         citlali::citlali_default_config_content);
@@ -6364,6 +6510,47 @@ TEST(cli_reduction_runtime, rejects_invalid_reduction_runtime) {
 
     EXPECT_EQ(enable_debug_calls, 0);
     EXPECT_EQ(configure_threads_calls, 0);
+    EXPECT_EQ(logger->error_calls, 2);
+}
+
+TEST(cli_reduction_runtime,
+     rejects_unsupported_calibrated_unit_before_observation_or_output_work) {
+    FakeInitialObservationTodProc todproc;
+    auto &engine = todproc.engine();
+    engine.typed_config.timestream.raw_time_chunk.flux_calibration_enabled =
+        true;
+    engine.typed_config.mapmaking.unit = "uK";
+    engine.typed_config.runtime.interp_over_gaps = true;
+    const auto output_root = std::filesystem::temp_directory_path() /
+        "citlali-unsupported-calibration-unit-must-not-exist";
+    std::error_code cleanup_error;
+    std::filesystem::remove_all(output_root, cleanup_error);
+    engine.typed_config.runtime.output_dir = output_root.string();
+    FakeCitlaliConfig config;
+    auto logger = std::make_shared<FakeLogger>();
+    int enable_debug_calls = 0;
+    int configure_threads_calls = 0;
+
+    EXPECT_FALSE(citlali::cli::prepare_reduction_runtime(
+        todproc, config, logger, [&]() { ++enable_debug_calls; },
+        [&](auto &) { ++configure_threads_calls; }));
+
+    EXPECT_EQ(engine.get_citlali_config_calls, 1);
+    EXPECT_EQ(enable_debug_calls, 0);
+    EXPECT_EQ(configure_threads_calls, 0);
+    EXPECT_EQ(engine.calib.get_apt_calls, 0);
+    EXPECT_EQ(todproc.get_apt_from_files_calls, 0);
+    EXPECT_EQ(todproc.calc_map_num_calls, 0);
+    EXPECT_EQ(todproc.calc_omb_size_calls, 0);
+    EXPECT_EQ(todproc.create_output_dir_calls, 0);
+    EXPECT_EQ(engine.setup_calls, 0);
+    EXPECT_EQ(engine.pipeline_calls, 0);
+    EXPECT_EQ(engine.output_calls, 0);
+    EXPECT_EQ(
+        engine.config_diagnostics.invalid_key_paths(),
+        (citlali::pipeline::ConfigDiagnosticsState::key_vec_t{
+            {"mapmaking", "cunit"}}));
+    EXPECT_FALSE(std::filesystem::exists(output_root));
     EXPECT_EQ(logger->error_calls, 2);
 }
 
@@ -10365,7 +10552,7 @@ TEST(config_scaffold, serializes_versioned_raw_timestream_provenance) {
         citlali::pipeline::raw_timestream_provenance_node(plan);
 
     EXPECT_EQ(node["schema_version"].as<std::string>(),
-              "citlali-raw-timestream-provenance-v3");
+              "citlali-raw-timestream-provenance-v4");
     EXPECT_TRUE(node["initialized"].as<bool>());
     EXPECT_EQ(node["requested"]["downsample"]["factor"].as<int>(), 0);
     EXPECT_EQ(
@@ -10476,12 +10663,47 @@ TEST(calibration_product,
     inputs.acquisition_identity_available = true;
     inputs.acquisition_identity_valid = true;
     inputs.acquisition_identity_detail = "deterministic NetCDF fixture";
+    inputs.apt_lineage_available = true;
+    inputs.apt_lineage_valid = true;
+    inputs.apt_lineage_detail = "deterministic NetCDF APT lineage";
     inputs.apt_artifact_sha256 = "apt-artifact-digest-sentinel";
+    inputs.apt_row_association_sha256 =
+        "apt-row-association-digest-sentinel";
     inputs.acquisition_binding_sha256 = "binding-digest-sentinel";
     inputs.raw_observation_identity = "raw-observation-identity-sentinel";
     inputs.acquisition_binding_mode = "explicit_fixture_join";
     inputs.acquisition_key_schema = "fixture+network+local_tone";
     inputs.response_identity = "originating=fixture;realized=identity";
+    inputs.atmosphere_operator_id =
+        std::string{rtcproc.calibration.operator_id()};
+    inputs.atmosphere_operator_contract_sha256 =
+        std::string{rtcproc.calibration.operator_contract_sha256()};
+    inputs.atmosphere_node_table_sha256 =
+        std::string{rtcproc.calibration.operator_nodes_sha256()};
+    inputs.passband_set_id =
+        std::string{rtcproc.calibration.passband_set_id()};
+    inputs.reference_profile_id =
+        std::string{rtcproc.calibration.reference_profile_id()};
+    inputs.package_lineage.selected_apt_source_path = "fixture.ecsv";
+    inputs.package_lineage.selected_apt_sha256 =
+        inputs.apt_artifact_sha256;
+    inputs.package_lineage.apt_row_association_sha256 =
+        inputs.apt_row_association_sha256;
+    inputs.package_lineage.raw_artifacts.push_back(
+        {"fixture-raw.nc", "fixture-raw-digest", "toltec0", 0,
+         {1.0e9}});
+    timestream::CalibrationLineageRow lineage_row;
+    lineage_row.ordered_detector_index = 0;
+    lineage_row.selected_source_row_index = 0;
+    lineage_row.network = 0;
+    lineage_row.network_local_tone = 0;
+    lineage_row.absolute_tone_frequency_hz = 1.0e9;
+    lineage_row.uid = "0";
+    lineage_row.eligible = true;
+    lineage_row.validity_basis = "fixture-valid-row";
+    lineage_row.stable_association = "fixture-stable-row";
+    inputs.package_lineage.ordered_rows.push_back(
+        std::move(lineage_row));
     inputs.target_unit_factor = Eigen::VectorXd::Constant(1, 2.0);
     inputs.detector_flxscale = Eigen::VectorXd::Constant(1, 5.0);
     inputs.detector_beam_major_fwhm_arcsec =
@@ -10500,12 +10722,12 @@ TEST(calibration_product,
     const auto path = std::filesystem::path(testing::TempDir()) /
                       "citlali-calibration-product-metadata.nc";
     std::filesystem::remove(path);
-    {
-        netCDF::NcFile file(path.string(), netCDF::NcFile::replace);
+    write_netcdf_atomic(path.string(), [&](netCDF::NcFile &file) {
         citlali::pipeline::add_tod_mean_tau_vars(
             file, false, rtcproc, telescope_data, 0.0, calib,
             array_name_map);
-    }
+    });
+    EXPECT_FALSE(std::filesystem::exists(path.string() + ".tmp"));
 
     netCDF::NcFile file(path.string(), netCDF::NcFile::read);
     int valid = 0;
@@ -10584,7 +10806,7 @@ TEST(config_scaffold, atomically_writes_raw_timestream_provenance) {
     EXPECT_FALSE(std::filesystem::exists(output_path.string() + ".tmp"));
     const auto stored = YAML::LoadFile(output_path.string());
     EXPECT_EQ(stored["schema_version"].as<std::string>(),
-              "citlali-raw-timestream-provenance-v3");
+              "citlali-raw-timestream-provenance-v4");
     EXPECT_TRUE(stored["initialized"].as<bool>());
     std::filesystem::remove_all(output_dir);
 }
@@ -10617,6 +10839,178 @@ TEST(config_scaffold, raw_timestream_provenance_failure_propagates) {
         std::logic_error);
 }
 
+TEST(config_scaffold,
+     engine_lifecycle_publishes_required_canonical_calibration_package) {
+    const auto root = std::filesystem::path(testing::TempDir()) /
+        "citlali_canonical_calibration_package_test";
+    std::filesystem::remove_all(root);
+    const auto input_dir = root / "input";
+    const auto output_dir = root / "output";
+    std::filesystem::create_directories(input_dir);
+    std::filesystem::create_directories(output_dir);
+    const auto source_apt = input_dir / "selected.ecsv";
+    {
+        std::ofstream stream(source_apt, std::ios::binary);
+        stream << "# %ECSV 1.0\n# fixture selected APT\nuid\n42\n";
+    }
+    const auto product = canonical_calibration_fixture(source_apt, true);
+    ASSERT_TRUE(product.valid());
+    ASSERT_FALSE(product.calibration_identity.empty());
+    EXPECT_NE(product.calibration_identity,
+              product.acquisition_binding_sha256);
+
+    FakeRawProvenanceEngine engine;
+    engine.raw_timestream_plan = canonical_calibration_plan(product);
+    engine.output_paths.obsnum_dir_name = output_dir.string();
+    engine.telescope.scan_indices.resize(2, 1);
+    const auto published =
+        citlali::pipeline::publish_completed_raw_timestream_provenance<false>(
+            engine);
+    ASSERT_TRUE(published.has_value());
+
+    const auto copied =
+        citlali::pipeline::selected_calibration_apt_path(output_dir);
+    ASSERT_TRUE(std::filesystem::is_regular_file(copied));
+    EXPECT_EQ(citlali::utils::sha256_file(copied),
+              product.apt_artifact_sha256);
+    EXPECT_EQ(std::filesystem::file_size(copied),
+              std::filesystem::file_size(source_apt));
+    EXPECT_FALSE(std::filesystem::exists(copied.string() + ".tmp"));
+
+    const auto stored = YAML::LoadFile(published->string());
+    EXPECT_EQ(stored["schema_version"].as<std::string>(),
+              "citlali-raw-timestream-provenance-v4");
+    ASSERT_TRUE(stored["calibration_lineage"]["available"].as<bool>());
+    const auto lineage = stored["calibration_lineage"]["value"];
+    EXPECT_EQ(lineage["schema_version"].as<std::string>(),
+              "sci-cal-001-canonical-calibration-lineage-v1");
+    EXPECT_EQ(lineage["calibration_identity"].as<std::string>(),
+              product.calibration_identity);
+    EXPECT_NE(lineage["package_identity"].as<std::string>(),
+              product.calibration_identity);
+    EXPECT_EQ(lineage["selected_apt"]["package_local_path"]
+                  .as<std::string>(),
+              "selected_calibration_apt.ecsv");
+    EXPECT_EQ(lineage["selected_apt"]["package_local_sha256"]
+                  .as<std::string>(),
+              product.apt_artifact_sha256);
+    ASSERT_TRUE(lineage["selected_apt"]["tolapt_manifest"]
+                        ["available"].as<bool>());
+    const auto modern = lineage["selected_apt"]["tolapt_manifest"]
+                               ["value"];
+    EXPECT_EQ(modern["contract_version"].as<std::string>(),
+              "tolapt.run.v1");
+    EXPECT_EQ(modern["inputs"]["design_apt"]["path"].as<std::string>(),
+              "/inputs/design.ecsv");
+    EXPECT_EQ(modern["inputs"]["design_apt"]["bytes"].as<std::uint64_t>(),
+              1234U);
+    EXPECT_EQ(modern["inputs"]["measured_apt"]["path"].as<std::string>(),
+              "/inputs/measured.ecsv");
+    EXPECT_EQ(lineage["raw_acquisition"]["artifacts"].size(), 1U);
+    EXPECT_EQ(lineage["raw_acquisition"]["artifacts"][0]["interface"]
+                  .as<std::string>(),
+              "toltec0");
+    ASSERT_EQ(lineage["stable_joins"]["ordered_detector_apt_rows"]
+                  .size(),
+              1U);
+    EXPECT_EQ(lineage["stable_joins"]["ordered_detector_apt_rows"][0]
+                      ["selected_apt_source_row_index"].as<int>(),
+              4);
+    EXPECT_NE(lineage["response_basis"]["semantics"].as<std::string>()
+                  .find("no_empirical_response_validation"),
+              std::string::npos);
+    std::filesystem::remove_all(root);
+}
+
+TEST(config_scaffold,
+     canonical_calibration_publication_rolls_back_copy_when_yaml_fails) {
+    const auto root = std::filesystem::path(testing::TempDir()) /
+        "citlali_canonical_calibration_rollback_test";
+    std::filesystem::remove_all(root);
+    const auto input_dir = root / "input";
+    const auto output_dir = root / "output";
+    std::filesystem::create_directories(input_dir);
+    std::filesystem::create_directories(output_dir);
+    const auto source_apt = input_dir / "selected.ecsv";
+    {
+        std::ofstream stream(source_apt, std::ios::binary);
+        stream << "exact selected APT bytes\n";
+    }
+    const auto product = canonical_calibration_fixture(source_apt);
+    auto plan = canonical_calibration_plan(product);
+    const auto yaml_path =
+        citlali::pipeline::raw_timestream_provenance_path(output_dir);
+    std::filesystem::create_directory(yaml_path.string() + ".tmp");
+
+    EXPECT_THROW(
+        citlali::pipeline::write_raw_timestream_provenance_file(
+            output_dir, plan),
+        std::ios_base::failure);
+    EXPECT_FALSE(std::filesystem::exists(yaml_path));
+    EXPECT_FALSE(std::filesystem::exists(
+        citlali::pipeline::selected_calibration_apt_path(output_dir)));
+    EXPECT_FALSE(std::filesystem::exists(
+        citlali::pipeline::selected_calibration_apt_path(output_dir)
+            .string() + ".tmp"));
+    std::filesystem::remove_all(root);
+}
+
+TEST(config_scaffold,
+     canonical_calibration_publication_rejects_stale_source_or_copy) {
+    const auto root = std::filesystem::path(testing::TempDir()) /
+        "citlali_canonical_calibration_stale_test";
+    std::filesystem::remove_all(root);
+    const auto input_dir = root / "input";
+    const auto source_apt = input_dir / "selected.ecsv";
+    std::filesystem::create_directories(input_dir);
+    {
+        std::ofstream stream(source_apt, std::ios::binary);
+        stream << "admitted bytes\n";
+    }
+    const auto product = canonical_calibration_fixture(source_apt);
+    const auto plan = canonical_calibration_plan(product);
+
+    const auto stale_source_output = root / "stale-source-output";
+    std::filesystem::create_directories(stale_source_output);
+    {
+        std::ofstream stream(source_apt, std::ios::binary | std::ios::trunc);
+        stream << "changed after admission\n";
+    }
+    EXPECT_THROW(
+        citlali::pipeline::write_raw_timestream_provenance_file(
+            stale_source_output, plan),
+        std::runtime_error);
+    EXPECT_FALSE(std::filesystem::exists(
+        citlali::pipeline::raw_timestream_provenance_path(
+            stale_source_output)));
+    EXPECT_FALSE(std::filesystem::exists(
+        citlali::pipeline::selected_calibration_apt_path(
+            stale_source_output)));
+
+    {
+        std::ofstream stream(source_apt, std::ios::binary | std::ios::trunc);
+        stream << "admitted bytes\n";
+    }
+    const auto stale_copy_output = root / "stale-copy-output";
+    std::filesystem::create_directories(stale_copy_output);
+    const auto stale_copy =
+        citlali::pipeline::selected_calibration_apt_path(stale_copy_output);
+    {
+        std::ofstream stream(stale_copy, std::ios::binary);
+        stream << "conflicting copy\n";
+    }
+    EXPECT_THROW(
+        citlali::pipeline::write_raw_timestream_provenance_file(
+            stale_copy_output, plan),
+        std::runtime_error);
+    EXPECT_FALSE(std::filesystem::exists(
+        citlali::pipeline::raw_timestream_provenance_path(
+            stale_copy_output)));
+    EXPECT_NE(citlali::utils::sha256_file(stale_copy),
+              product.apt_artifact_sha256);
+    std::filesystem::remove_all(root);
+}
+
 TEST(config_scaffold, rejects_incomplete_raw_timestream_provenance) {
     const auto output_dir =
         std::filesystem::path(testing::TempDir()) /
@@ -10644,6 +11038,31 @@ TEST(config_scaffold, rejects_incomplete_raw_timestream_provenance) {
         std::logic_error);
     EXPECT_FALSE(std::filesystem::exists(
         citlali::pipeline::raw_timestream_provenance_path(output_dir)));
+    std::filesystem::remove_all(output_dir);
+}
+
+TEST(config_scaffold,
+     calibrated_provenance_rejects_missing_canonical_lineage_without_output) {
+    const auto output_dir =
+        std::filesystem::path(testing::TempDir()) /
+        "citlali_missing_canonical_calibration_lineage_test";
+    std::filesystem::remove_all(output_dir);
+    std::filesystem::create_directories(output_dir);
+    citlali::config::RawTimeChunkConfig request;
+    request.flux_calibration_enabled = true;
+    citlali::pipeline::RawTimestreamExecutionPlan plan;
+    plan.reset_from_request(request);
+    plan.begin_observation();
+    citlali::pipeline::complete_raw_timestream_observation(plan, 1, 1);
+
+    EXPECT_THROW(
+        citlali::pipeline::write_raw_timestream_provenance_file(
+            output_dir, plan),
+        std::logic_error);
+    EXPECT_FALSE(std::filesystem::exists(
+        citlali::pipeline::raw_timestream_provenance_path(output_dir)));
+    EXPECT_FALSE(std::filesystem::exists(
+        citlali::pipeline::selected_calibration_apt_path(output_dir)));
     std::filesystem::remove_all(output_dir);
 }
 
@@ -11989,6 +12408,158 @@ TEST(calibration_product_weight_recipient,
     processor.calc_weights(data, apt, telescope, false);
     ASSERT_EQ(data.weights.data.size(), 1);
     EXPECT_DOUBLE_EQ(data.weights.data(0), 1.0 / (60.0 * 60.0));
+}
+
+TEST(calibration_product_weight_recipient,
+     approximate_and_hybrid_use_the_same_sens_compatibility_fcf_route) {
+    for (const std::string weighting_type : {"approximate", "hybrid"}) {
+        timestream::PTCProc processor;
+        processor.logger = std::make_shared<spdlog::logger>(
+            "calibration-weight-route-" + weighting_type,
+            std::make_shared<spdlog::sinks::null_sink_mt>());
+        processor.weighting_type = weighting_type;
+        timestream::TCData<timestream::TCDataKind::PTC, Eigen::MatrixXd>
+            data;
+        data.scans.data.resize(4, 1);
+        data.scans.data << 1.0, 2.0, 4.0, 8.0;
+        data.flags.data =
+            Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>::Constant(
+                4, 1, false);
+        data.fcf.data = Eigen::VectorXd::Constant(1, 3.0);
+        data.status.calibrated = true;
+        std::map<std::string, Eigen::VectorXd> apt;
+        apt["flag"] = Eigen::VectorXd::Zero(1);
+        apt["sens"] = Eigen::VectorXd::Constant(1, 10.0);
+        apt["array"] = Eigen::VectorXd::Zero(1);
+        apt["uid"] = Eigen::VectorXd::Constant(1, 17.0);
+        engine::Telescope telescope;
+        telescope.d_fsmp = 4.0;
+
+        processor.calc_weights(data, apt, telescope, false);
+        ASSERT_EQ(data.weights.data.size(), 1);
+        EXPECT_DOUBLE_EQ(data.weights.data(0), 1.0 / (60.0 * 60.0))
+            << "weighting_type=" << weighting_type;
+    }
+}
+
+TEST(calibration_product_weight_recipient,
+     full_weight_is_inverse_variance_of_already_calibrated_samples) {
+    auto calculate_full_weight = [](double signal_multiplier) {
+        timestream::PTCProc processor;
+        processor.logger = std::make_shared<spdlog::logger>(
+            "calibration-full-weight-" +
+                std::to_string(signal_multiplier),
+            std::make_shared<spdlog::sinks::null_sink_mt>());
+        processor.weighting_type = "full";
+        timestream::TCData<timestream::TCDataKind::PTC, Eigen::MatrixXd>
+            data;
+        data.scans.data.resize(4, 1);
+        data.scans.data << 1.0, 2.0, 4.0, 8.0;
+        data.scans.data *= signal_multiplier;
+        data.flags.data =
+            Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>::Constant(
+                4, 1, false);
+        std::map<std::string, Eigen::VectorXd> apt;
+        apt["flag"] = Eigen::VectorXd::Zero(1);
+        engine::Telescope telescope;
+        processor.calc_weights(data, apt, telescope, false);
+        return data.weights.data(0);
+    };
+
+    const double raw_weight = calculate_full_weight(1.0);
+    const double multiplier = 6.0;
+    const double calibrated_weight = calculate_full_weight(multiplier);
+    ASSERT_TRUE(std::isfinite(raw_weight));
+    ASSERT_GT(raw_weight, 0.0);
+    EXPECT_DOUBLE_EQ(calibrated_weight,
+                     raw_weight / (multiplier * multiplier));
+}
+
+TEST(calibration_product_weight_recipient,
+     naive_map_derives_scaled_signal_and_inverse_weight_without_second_pass) {
+    auto run_map = [](double signal_multiplier) {
+        using Data = timestream::TCData<timestream::TCDataKind::PTC,
+                                        Eigen::MatrixXd>;
+        Data data;
+        data.scans.data.resize(2, 1);
+        data.scans.data << 1.0, 3.0;
+        data.scans.data *= signal_multiplier;
+        data.kernel.data = Eigen::MatrixXd::Ones(2, 1);
+        data.flags.data =
+            Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>::Constant(
+                2, 1, false);
+        data.weights.data = Eigen::VectorXd::Constant(
+            1, 4.0 / (signal_multiplier * signal_multiplier));
+        data.tel_data.data["TelElAct"] = Eigen::VectorXd::Zero(2);
+        data.tel_data.data["alt_phys"] = Eigen::VectorXd::Zero(2);
+        data.tel_data.data["az_phys"] = Eigen::VectorXd::Zero(2);
+        data.pointing_offsets_arcsec.data["az"] = Eigen::VectorXd::Zero(2);
+        data.pointing_offsets_arcsec.data["alt"] = Eigen::VectorXd::Zero(2);
+
+        std::map<std::string, Eigen::VectorXd> apt;
+        apt["array"] = Eigen::VectorXd::Zero(1);
+        apt["flag"] = Eigen::VectorXd::Zero(1);
+        apt["x_t"] = Eigen::VectorXd::Zero(1);
+        apt["y_t"] = Eigen::VectorXd::Zero(1);
+        apt["uid"] = Eigen::VectorXd::Constant(1, 17.0);
+
+        mapmaking::MapBuffer map{"omb"};
+        map.n_rows = 1;
+        map.n_cols = 1;
+        map.pixel_size_rad = 1.0e-5;
+        map.map_grouping = "array";
+        map.parallel_policy = "seq";
+        map.sig_unit = "mJy/beam";
+        map.cov_cut = 0.0;
+        map.n_noise = 0;
+        citlali::pipeline::allocate_map_matrices(
+            map, 1, false, true, true, true);
+        mapmaking::ScienceMapBundleIdentity identity;
+        identity.grouping = "array";
+        identity.signal_unit = "mJy/beam";
+        identity.estimator_identity =
+            "ordinary-naive-normalized-gridding-v1";
+        identity.response_identity = "fixture-response";
+        identity.required_companions = {"kernel_I"};
+        identity.wcs.coordinate_frame = "altaz";
+        identity.wcs.projection = "TAN";
+        identity.wcs.axis_types = {"AZ---TAN", "ALT--TAN"};
+        identity.wcs.axis_units = {"deg", "deg"};
+        identity.wcs.pixel_scale = {-1.0e-5, 1.0e-5};
+        identity.wcs.reference_world = {0.0, 0.0};
+        identity.wcs.reference_pixel = {1.0, 1.0};
+        identity.wcs.source_epoch = 2000.0;
+        identity.rows = 1;
+        identity.cols = 1;
+        mapmaking::ScienceMapSlotIdentity slot;
+        slot.ordered_slot = 0;
+        slot.grouping = "array";
+        slot.group_identity = "array:0";
+        slot.array_identity = 0;
+        slot.stokes_identity = 0;
+        slot.frequency_hz = 2.0e11;
+        identity.ordered_slots.push_back(slot);
+        map.science_products.bundle_identity = identity;
+        map.science_products.identity_admitted = true;
+
+        mapmaking::MapBuffer unused_coadd{"cmb"};
+        Eigen::VectorXi map_indices = Eigen::VectorXi::Zero(1);
+        std::string pixel_axes = "altaz";
+        mapmaking::NaiveMapmaker mapmaker;
+        mapmaker.run_polarization = false;
+        mapmaker.populate_maps_naive(
+            data, map, unused_coadd, map_indices, pixel_axes, apt, 1.0,
+            false, false);
+        map.normalize_maps();
+        return std::pair{map.signal.at(0)(0, 0), map.weight.at(0)(0, 0)};
+    };
+
+    const auto raw = run_map(1.0);
+    const double multiplier = 6.0;
+    const auto calibrated = run_map(multiplier);
+    EXPECT_DOUBLE_EQ(calibrated.first, raw.first * multiplier);
+    EXPECT_DOUBLE_EQ(calibrated.second,
+                     raw.second / (multiplier * multiplier));
 }
 
 }  // namespace

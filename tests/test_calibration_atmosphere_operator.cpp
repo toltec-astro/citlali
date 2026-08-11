@@ -54,12 +54,54 @@ void admit_test_product(timestream::Calibration &calibration,
     inputs.extinction_requested = extinction;
     inputs.acquisition_identity_available = true;
     inputs.acquisition_identity_valid = true;
+    inputs.apt_lineage_available = true;
+    inputs.apt_lineage_valid = true;
+    inputs.apt_lineage_detail = "synthetic atmosphere-operator fixture";
     inputs.apt_artifact_sha256 = "test-apt";
+    inputs.apt_row_association_sha256 = "test-row-association";
     inputs.acquisition_binding_sha256 = "test-binding-sha";
     inputs.raw_observation_identity = "test-raw-observation";
     inputs.acquisition_binding_mode = "test-binding";
     inputs.acquisition_key_schema = "test-key";
     inputs.response_identity = "test-response";
+    inputs.atmosphere_operator_id = std::string{calibration.operator_id()};
+    inputs.atmosphere_operator_contract_sha256 =
+        std::string{calibration.operator_contract_sha256()};
+    inputs.atmosphere_node_table_sha256 =
+        std::string{calibration.operator_nodes_sha256()};
+    inputs.passband_set_id = std::string{calibration.passband_set_id()};
+    inputs.reference_profile_id =
+        std::string{calibration.reference_profile_id()};
+    inputs.reference_spectral_index_alpha =
+        calibration.effective_reference_spectral_index_alpha();
+    inputs.reference_spectral_index_default_applied =
+        calibration.reference_spectral_index_default_applied();
+    inputs.package_lineage.selected_apt_source_path =
+        "synthetic-atmosphere-operator-apt.ecsv";
+    inputs.package_lineage.selected_apt_sha256 =
+        inputs.apt_artifact_sha256;
+    inputs.package_lineage.apt_row_association_sha256 =
+        inputs.apt_row_association_sha256;
+    inputs.package_lineage.legacy_metadata_available = true;
+    inputs.package_lineage.raw_artifacts.push_back(
+        {"synthetic-atmosphere-operator-raw.nc", "test-raw-sha256",
+         "toltec0", 0,
+         std::vector<double>(static_cast<std::size_t>(detector_count),
+                             1.0e9)});
+    for (Eigen::Index detector = 0; detector < detector_count; ++detector) {
+        timestream::CalibrationLineageRow row;
+        row.ordered_detector_index = detector;
+        row.selected_source_row_index = detector;
+        row.network = 0;
+        row.network_local_tone = detector;
+        row.absolute_tone_frequency_hz = 1.0e9;
+        row.uid = std::to_string(detector);
+        row.eligible = true;
+        row.validity_basis = "synthetic-valid-row";
+        row.stable_association =
+            "synthetic-atmosphere-row-" + std::to_string(detector);
+        inputs.package_lineage.ordered_rows.push_back(std::move(row));
+    }
     inputs.target_unit_factor = Eigen::VectorXd::Ones(detector_count);
     inputs.detector_flxscale = Eigen::VectorXd::Ones(detector_count);
     inputs.detector_beam_major_fwhm_arcsec =

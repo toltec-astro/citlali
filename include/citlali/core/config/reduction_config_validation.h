@@ -28,6 +28,12 @@ inline ValidationReport validate(const ReductionConfig &config) {
     validate(config.beammap, report);
     validate(config.beammap_photometry, report);
     validate(config.astrometry, report);
+    if (config.timestream.raw_time_chunk.flux_calibration_enabled &&
+        config.mapmaking.unit != "mJy/beam") {
+        report.add_error(
+            {"mapmaking", "cunit"},
+            "supports only top-of-atmosphere point-source-peak mJy/beam when flux calibration is enabled");
+    }
     if (config.timestream.fruit_loops.injected_source_test.enabled &&
         config.runtime.reduction_type != ReductionType::pointing) {
         report.add_error(

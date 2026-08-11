@@ -4,6 +4,7 @@
 #include <citlali/core/config/interface_sync_config.h>
 #include <citlali/core/config/timestream_config.h>
 #include <citlali/core/pipeline/raw_timestream_resolution.h>
+#include <citlali/core/timestream/calibration_product.h>
 
 #include <cstddef>
 #include <optional>
@@ -44,6 +45,8 @@ struct RawTimestreamObservationState {
     std::optional<std::string> calibration_compact_covariance_state;
     std::optional<std::string> calibration_apt_artifact_sha256;
     std::optional<std::string> calibration_acquisition_binding_sha256;
+    std::optional<std::string> calibration_identity;
+    std::optional<std::string> calibration_factor_state_sha256;
     std::optional<std::string> calibration_raw_observation_identity;
     std::optional<std::string> calibration_acquisition_binding_mode;
     std::optional<std::string> calibration_acquisition_key_schema;
@@ -54,6 +57,8 @@ struct RawTimestreamObservationState {
     std::optional<std::string> calibration_nuisance_states;
     std::optional<double> calibration_minimum_total_multiplier;
     std::optional<double> calibration_maximum_total_multiplier;
+    std::optional<timestream::CalibrationProduct>
+        canonical_calibration_product;
 };
 
 struct CalibrationReferenceEffectiveState {
@@ -89,6 +94,8 @@ struct RawTimestreamRealizedState {
     std::optional<std::string> calibration_compact_covariance_state;
     std::optional<std::string> calibration_apt_artifact_sha256;
     std::optional<std::string> calibration_acquisition_binding_sha256;
+    std::optional<std::string> calibration_identity;
+    std::optional<std::string> calibration_factor_state_sha256;
     std::optional<std::string> calibration_raw_observation_identity;
     std::optional<std::string> calibration_acquisition_binding_mode;
     std::optional<std::string> calibration_acquisition_key_schema;

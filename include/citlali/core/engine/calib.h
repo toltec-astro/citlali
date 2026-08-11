@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Eigen/Core>
+#include <cstdint>
 #include <string>
 #include <vector>
 #include <map>
@@ -13,7 +14,70 @@ namespace engine {
 
 class Calib {
 public:
+    struct AptRowLineageField {
+        std::string name;
+        std::string ecsv_datatype;
+        std::string value;
+    };
+
+    struct AptRowLineage {
+        Eigen::Index ordered_detector_index = -1;
+        Eigen::Index selected_source_row_index = -1;
+        std::string uid;
+        std::string det_id;
+        std::string det_id_right;
+        std::string measured_row_id;
+        std::string design_row_id;
+        std::string modern_match_id;
+        std::string measured_id;
+        std::string matched_design_id;
+        std::string match_status;
+        bool eligible = false;
+        std::string validity_basis;
+        std::string stable_association;
+        std::vector<AptRowLineageField> retained_fields;
+    };
+
+    struct TolaptInputRecord {
+        std::string path;
+        std::string sha256;
+        std::uint64_t bytes = 0;
+        std::string mtime_utc;
+    };
+
+    struct AptLineage {
+        bool available = false;
+        bool valid = false;
+        std::string detail{"selected APT lineage has not been evaluated"};
+        std::string selected_apt_path;
+        std::string selected_apt_sha256;
+        std::string observation_identity;
+        std::string matched_observation_identity;
+        std::string selected_source;
+        bool legacy_metadata_available = false;
+        bool modern_tolapt_manifest_available = false;
+        std::string modern_tolapt_manifest_path;
+        std::string modern_tolapt_manifest_sha256;
+        std::string modern_tolapt_contract_version;
+        std::string modern_tolapt_run_id;
+        std::string modern_tolapt_output_key;
+        std::string modern_tolapt_output_path;
+        TolaptInputRecord modern_tolapt_design_input;
+        TolaptInputRecord modern_tolapt_measured_input;
+        std::string modern_tolapt_association_sha256;
+        std::string row_association_sha256;
+        std::vector<AptRowLineage> ordered_rows;
+    };
+
     struct AptAcquisitionBinding {
+        struct RawArtifact {
+            std::string path;
+            std::string sha256;
+            std::string interface;
+            int network = -1;
+            std::vector<double> absolute_tone_frequency_hz;
+        };
+
         bool available = false;
         bool valid = false;
         std::string mode{"unavailable"};
@@ -24,6 +88,7 @@ public:
         std::string raw_observation_identity;
         Eigen::Index detector_count = 0;
         Eigen::Index network_count = 0;
+        std::vector<RawArtifact> raw_artifacts;
     };
 
     // get logger
@@ -35,6 +100,8 @@ public:
     std::map<std::string, Eigen::VectorXd> apt;
     // admitted observation-local acquisition binding and artifact identity
     AptAcquisitionBinding apt_acquisition_binding;
+    // selected-source and row lineage retained from the exact admitted APT
+    AptLineage apt_lineage;
     // hwpr angle and timing
     Eigen::VectorXd hwpr_angle, hwpr_recvt;
     // pps timing
