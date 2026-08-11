@@ -1,0 +1,206 @@
+format_version: 1
+record_id: SCI-RTC-001-LEARNED-SAMPLING-STAGE-A-SUCCESSOR-REPAIR-LEDGER-005
+record_date: 2026-08-11
+record_status: documentation_only_frozen_successor_repair_authority
+scope: sra_001_through_sra_009_only
+
+application_base:
+  branch: codex/repair-rtc-learned-sampling-stage-a-successor
+  commit: 66c96757164af2c83ee1449d00fea30d131a7e3f
+  parent: 6cbe119a59f8915c5aecf5eaf333425dd592993d
+  tree: f7ec30c021f30101f453043cedbd0f6773763ff1
+  patch_sha256: d0ce6490baad81e447f08dab04e434d771d0e83e5a6def57068c86743f1d6805
+
+frozen_predecessor_authority:
+  coordination_commit: 3132d5d8c001ef32f185d4ece2038aa6d7ce1b5c
+  supersession: narrow_overlay_only
+  preserved_positive_controls: true
+
+source_reaudit:
+  commit: 923eca42a8f892a18774df8f483dd78404807d59
+  parent: 66c96757164af2c83ee1449d00fea30d131a7e3f
+  tree: 17cc4d00b75ed06beecb64776c4d7b8fba4381ee
+  report_sha256: a4f5a662be4b4a7d9569152dd6220444b45eb490a523a74cf5367e639c987214
+  evidence_sha256: d368c9f3f699c60c1f27a33d53db1f64b2b932aaf03319969646abb6ffe6133f
+  findings_sha256: ef42bb65c1763f8453e9a26c0452cfcc3665234767f1b5176f8f1a8788459b9b
+  disposition: return_for_repair
+  owner_disposition: accepted
+
+proposed_repair:
+  branch: codex/repair-rtc-learned-sampling-stage-a-successor-2
+  base: 66c96757164af2c83ee1449d00fea30d131a7e3f
+  reasoning_effort: high
+  status: authorized_pending_ready_checkpoint
+  role_separation: application_repair_only
+
+owner_decisions:
+  - decision_id: RTC-STAGE-A-HWPR-UNSUPPORTED
+    decision_date: 2026-08-11
+    status: approved
+    current_capability: total_intensity_only
+    enabled_hwpr_analysis: unsupported_deferred
+    preexecution_policy: reject_enabled_polarimetry_request
+    diagnostic_fallback_status: unsupported_hwpr
+    candidate_metrics_when_hwpr_dependent: absent
+    prohibited_authorities:
+      - stale_calib_run_hwpr
+      - serialized_legacy_enum_inference
+      - physical_file_presence_as_enablement
+      - new_requested_effective_realized_hwpr_lifecycle
+    future_exit_condition: confidence_in_total_intensity_then_separate_hwpr_contract_and_validation
+
+  - decision_id: RTC-STAGE-A-EXACT-TOTAL-INTENSITY-CONTEXT
+    decision_date: 2026-08-11
+    status: approved
+    context_authority:
+      - total_intensity_science_flags
+      - finite_value_policy
+      - motion_eligibility
+      - realized_filter_guards
+      - factor_and_phase
+      - scan_boundaries
+      - per_detector_validity
+    motion_only_is_complete_context: false
+    required_exclusion_categories:
+      - boundary_context
+      - internal_gap
+      - low_velocity_motion
+      - invalid_or_overlimit_motion
+      - science_flag
+      - nonfinite_input
+      - realized_filter_guard
+      - other_if_nonzero_and_defined
+    per_metric_availability_independent: true
+    stage_a_changes_production_validity: false
+
+  - decision_id: RTC-STAGE-A-VERSIONED-RTCDIAG-SUCCESSOR
+    decision_date: 2026-08-11
+    status: approved
+    existing_contract_mutation: prohibited
+    successor_contract_required: true
+    preparing_validation_profile_required: true
+    consumer_migration: explicit
+    backward_aliases_required: false
+    table_available_requires:
+      - candidate_dimension
+      - complete_candidate_rows
+      - count_dimension_array_cardinality_consistency
+      - factor_phase_status_reason_and_metric_validity
+      - requested_effective_realized_cadence_and_filter_identity
+      - exact_fir_coefficients_and_digest
+      - observation_scan_array_and_source_support_identity
+      - exact_40_hex_citlali_commit
+      - canonical_raw_input_manifest_join
+      - compact_exact_rerun_method_state
+    integer_scalar_conditions: normalize_or_equivalent_truthful_handling
+    exhaustive_intermediate_replay: not_required
+
+  - decision_id: RTC-STAGE-A-CADENCE-PROVENANCE
+    decision_date: 2026-08-11
+    status: approved
+    distinct_values:
+      - requested_cadence
+      - effective_cadence
+      - realized_native_time_grid_cadence
+    calculation_authority: valid_realized_cadence
+    consistency_statuses:
+      - requested_to_effective
+      - effective_to_realized
+    mismatch_hidden_or_overwritten: false
+    mismatch_blocks_truthful_realized_diagnostic: false
+    invalid_realized_cadence: dependent_metrics_unavailable
+
+  - decision_id: RTC-STAGE-A-ATOMIC-RTCDIAG-SUCCESSOR
+    decision_date: 2026-08-11
+    status: approved
+    preferred_artifact: self_contained_single_file
+    publication:
+      - construct_complete_temporary_artifact
+      - validate_close_and_sync
+      - atomic_replace_final
+    destructive_predelete: prohibited
+    postpublication_append: prohibited
+    auxiliary_fallback: generation_specific_set_with_manifest_committed_last
+    failure_policy:
+      - propagate_required_output_failure
+      - preserve_prior_complete_generation
+      - advertise_no_partial_generation
+      - remove_only_task_created_temporaries
+    bounded_scope_expansion:
+      - shared_netcdf_atomic_helper
+      - existing_ordered_rtcdiag_append_owner
+
+finding_closure:
+  - finding_id: SRA-001
+    priority: P1
+    status: repair_authorized
+    closure: same_observation_reset_capture_consume
+    evidence:
+      - a_b_and_b_a
+      - failed_and_partial_observation
+      - repeated_observation
+      - permitted_parallel_noninterference
+
+  - finding_id: SRA-002
+    priority: P1
+    status: owner_resolved_repair_authorized
+    closure: remove_stale_hwpr_dependency_and_enforce_unsupported_capability
+
+  - finding_id: SRA-003
+    priority: P1
+    status: owner_resolved_repair_authorized
+    closure: exact_total_intensity_validity_and_guard_context_with_categories
+
+  - finding_id: SRA-004
+    priority: P1
+    status: technical_repair_authorized
+    closure: overflow_checked_actual_work_and_storage_bounds_or_preflight_rejection
+
+  - finding_id: SRA-005
+    priority: P1
+    status: owner_resolved_repair_authorized
+    closure: versioned_successor_contract_profile_and_conditional_schema
+
+  - finding_id: SRA-006
+    priority: P2
+    status: technical_repair_authorized
+    closure: exact_40_hex_commit_required_written_reopened_and_validated
+
+  - finding_id: SRA-007
+    priority: P1
+    status: technical_repair_authorized
+    closure: independent_production_boundary_evidence
+
+  - finding_id: SRA-008
+    priority: P2
+    status: owner_resolved_repair_authorized
+    closure: requested_effective_realized_cadence_and_consistency
+
+  - finding_id: SRA-009
+    priority: P1
+    status: owner_resolved_scope_expanded_repair_authorized
+    closure: end_to_end_atomic_required_successor_publication
+
+preserved_stage_a_boundary:
+  observe_only: true
+  rank: prohibited
+  recommend: prohibited
+  accept_candidate_factor: prohibited
+  select: prohibited
+  apply: prohibited
+  stage_b: prohibited
+  production_authorization: prohibited
+  unity_or_reduction: prohibited
+  ptcdiag_change: prohibited
+  downstream_launch: prohibited
+
+next_checkpoint:
+  name: READY
+  owner: coordinator
+  continuation_requires:
+    - exact_git_and_remote_identity
+    - fresh_clean_worktree_and_absent_new_branch
+    - exact_path_and_test_traceability
+    - no_new_scientific_choice
+    - bounded_atomic_and_product_contract_scope
+  repair_may_edit_before_approval: false
