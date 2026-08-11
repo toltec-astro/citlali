@@ -17,6 +17,40 @@ The project will improve the existing tree incrementally. It will not restart
 as a broad rewrite and will not rewrite the granular history of the validated
 branch. The exact validated tree will remain available for forensic review.
 
+## 2026-08-11 RTC Stage A Successor-2 Return And Core Phase-Zero Authority
+
+The owner accepted the independent **RETURN FOR REPAIR** disposition for the
+learned-sampling Stage A successor-2 candidate
+`cbb2fd767e0676906d1413ae84022270bee1a667`, audited at
+`f935f25c48b80861eb81a61133b20fc8e4fa4cf0`. All SRA-001 through SRA-009
+remain open through exactly 15 finding-register rows, `S2RA-001` through
+`S2RA-015` (11 P1 and four P2). The audit required no new scientific decision.
+The exact imported [report](audits/packages/RTC_LEARNED_SAMPLING_STAGE_A_SUCCESSOR_2_REAUDIT_2026-08-11.md),
+[evidence](audits/packages/RTC_LEARNED_SAMPLING_STAGE_A_SUCCESSOR_2_REAUDIT_EVIDENCE_2026-08-11.md),
+and [finding register](audits/packages/RTC_LEARNED_SAMPLING_STAGE_A_SUCCESSOR_2_REAUDIT_FINDINGS_2026-08-11.csv)
+are bound by the
+[owner acceptance](audits/packages/SCI-RTC-001_LEARNED_SAMPLING_STAGE_A_SUCCESSOR_2_OWNER_ACCEPTANCE_2026-08-11.md).
+
+The owner authorized the bounded
+[successor-3 repair handoff](audits/packages/SCI-RTC-001_LEARNED_SAMPLING_STAGE_A_SUCCESSOR_3_REPAIR_HANDOFF_2026-08-11.md)
+and its [15-finding ledger](audits/proposals/SCI-RTC-001_LEARNED_SAMPLING_STAGE_A_SUCCESSOR_3_REPAIR_FINDING_LEDGER_2026-08-11.yaml)
+against exact base `cbb2fd767e...`. A subsequent application repair must be
+role-separated and pass its own READY checkpoint; no repair task is launched
+by this coordination update.
+
+For the separate phase-independent core RTC line, the
+[core downsampling amendment](audits/packages/SCI-RTC-001_CORE_PHASE_ZERO_DOWNSAMPLING_OWNER_AMENDMENT_2026-08-11.md)
+preserves phase-zero point selection as authoritative. Arithmetic-mean
+downsampling is not authorized, and future core repair must publish truthful
+support, flag/validity, time-grid, transfer, and realized-state provenance.
+This does not identify physical event timing and does not broaden Stage A.
+
+Application integration remains MAP followed by accepted CAL consolidation.
+Stage A remains separate until independently re-audited and accepted. The RTC
+axes remain `proposed`, `nonconformant`, `in_progress`, and
+`existing_use_only`, with verdict `amend`; no production, Stage B, Unity,
+reduction, merge, push, or downstream authority follows.
+
 ## 2026-08-02 Numerical Proportionality And Cost Control
 
 The project owner directed a framework-level corrective action after the

@@ -6,6 +6,7 @@ inventory_governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
 inventory_date: 2026-07-31
 current_program_checkpoint:
   record_date: 2026-08-09
+  coordination_update_date: 2026-08-11
   record_path: >-
     doc/audits/packages/SCIENTIFIC_AUDIT_PROGRAM_CHECKPOINT_2026-08-08.md
   record_sha256: >-
@@ -32,15 +33,22 @@ current_program_checkpoint:
     SCI-MAP-002: third_successor_86f1582_reaudited_owner_accepted_bounded_findings_closed_no_merge
     SCI-ALIGN-001: assigned_grid_compatibility_policy_active_producer_authority_request_pending
     SCI-AST-001: phase_independent_math_permitted_no_launch_absolute_placement_unavailable
+    SCI-RTC-001: core_phase_independent_and_stage_a_separate_stage_a_successor_3_authorized_not_launched
     ENG-STATE-001: static_package_accepted_F001_F002_open
   queue:
     - SCI-RTC-001_phase_independent_repair_handoff_ready_not_launched
+    - SCI-RTC-001_stage_a_successor_2_return_accepted_successor_3_authorized_pending_role_separated_launch
     - SCI-PTC-001_D001_D006_approved_contract_complete_repair_and_optional_transfer_plan_not_launched
     - SCI-VAL-001_unlaunched_PTC_D002_successor_handoff_pending_recipient_review
     - SCI-BEAM-001_held
     - SCI-TEL-INPUT-001_audit_owner_accepted_repair_scope_unresolved
   held_readiness:
     SCI-FLT-001: exact_repair_base_unresolved_until_integrated_CAL_successor
+  integration_sequence:
+    application:
+      - MAP
+      - accepted_CAL_consolidation
+    learned_sampling_stage_a: separate_until_independently_reaudited_and_accepted
   audit_admission: >-
     no_blanket_ban_new_audits_repair_debt_dependencies_cost_and_scope_controlled
   align_deferred_compatibility_policy:
@@ -76,6 +84,20 @@ current_program_checkpoint:
         872b7045d0eba1263c7615529004ee74ae16d649f1ad666aa441626537cddcb7
       proposed_base: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
       proposed_branch: codex/repair-sci-rtc-001-phase-independent
+      phase_zero_downsampling_amendment:
+        status: owner_approved_not_launched
+        path: >-
+          doc/audits/packages/SCI-RTC-001_CORE_PHASE_ZERO_DOWNSAMPLING_OWNER_AMENDMENT_2026-08-11.md
+        sha256: >-
+          421f86d4fa17ee03b9ee772c8b6adb6f2d47f3df0e9e873b038ba4889332bb69
+        authoritative_operator: phase_zero_point_selection
+        arithmetic_mean_downsampling: not_authorized
+        required_provenance:
+          - support
+          - flags_validity_eligibility_and_causes
+          - selected_time_and_output_grid
+          - realized_filter_multirate_transfer
+        physical_event_semantics: unavailable
     AST_PTC_effect: phase_independent_work_permitted_under_separate_launch
     BEAM_effect: held
   remote_preservation:
@@ -4848,6 +4870,73 @@ packages:
         - physical_centroid_or_subsample_placement
         - final_AST_placement
       repair_authorized: false
+    core_phase_zero_downsampling_amendment:
+      status: owner_approved_not_launched
+      path: >-
+        doc/audits/packages/SCI-RTC-001_CORE_PHASE_ZERO_DOWNSAMPLING_OWNER_AMENDMENT_2026-08-11.md
+      sha256: >-
+        421f86d4fa17ee03b9ee772c8b6adb6f2d47f3df0e9e873b038ba4889332bb69
+      authoritative_operator: phase_zero_point_selection
+      arithmetic_mean_downsampling: not_authorized
+      required_provenance:
+        - exact_support
+        - flags_validity_eligibility_and_causes
+        - representative_time_and_output_grid
+        - exact_realized_filter_and_multirate_transfer
+      stage_a_effect: none
+      physical_event_semantics: unavailable
+    learned_sampling_stage_a:
+      line_separation: distinct_from_phase_independent_core_RTC
+      successor_2_reaudit:
+        status: return_for_repair_owner_accepted
+        candidate: cbb2fd767e0676906d1413ae84022270bee1a667
+        candidate_parent: 66c96757164af2c83ee1449d00fea30d131a7e3f
+        candidate_tree: 4727864c7ca4f078649fcf6473a7225d5d3aa9f8
+        candidate_patch_sha256: >-
+          d1521fbc0a5afdfcfa61b41c57ba483b1d69969a45115829d2f8d973a51c9c39
+        audit_branch: codex/reaudit-rtc-learned-sampling-stage-a-successor-2-20260811
+        audit_commit: f935f25c48b80861eb81a61133b20fc8e4fa4cf0
+        audit_parent: cbb2fd767e0676906d1413ae84022270bee1a667
+        audit_tree: be21aff93642a6a419bf6a1d1b21f8ceff015257
+        report_path: >-
+          doc/audits/packages/RTC_LEARNED_SAMPLING_STAGE_A_SUCCESSOR_2_REAUDIT_2026-08-11.md
+        report_sha256: >-
+          6ad44cd732215041294e6514a1900daac64d7713543b655e625d450b535eec42
+        evidence_path: >-
+          doc/audits/packages/RTC_LEARNED_SAMPLING_STAGE_A_SUCCESSOR_2_REAUDIT_EVIDENCE_2026-08-11.md
+        evidence_sha256: >-
+          8e01ed71e8e043888efaec0e81fe22477928e8983b7fef2538a0c1ead1f36bfe
+        finding_register_path: >-
+          doc/audits/packages/RTC_LEARNED_SAMPLING_STAGE_A_SUCCESSOR_2_REAUDIT_FINDINGS_2026-08-11.csv
+        finding_register_sha256: >-
+          095a731124974d8a53c298140073d4c48ac2e1a6f30df81b133260f04d5f89c4
+        finding_count: 15
+        P1_count: 11
+        P2_count: 4
+        findings: S2RA-001_through_S2RA-015_all_open
+        original_findings: SRA-001_through_SRA-009_all_open
+        no_new_science_decision_required: true
+      owner_acceptance:
+        path: >-
+          doc/audits/packages/SCI-RTC-001_LEARNED_SAMPLING_STAGE_A_SUCCESSOR_2_OWNER_ACCEPTANCE_2026-08-11.md
+        sha256: >-
+          41126d59f9b6d99d926b16580d057b21ce00eb5921cd17570061b22b19553763
+        decision_date: 2026-08-11
+      successor_3_repair_handoff:
+        status: authorized_pending_role_separated_launch
+        base: cbb2fd767e0676906d1413ae84022270bee1a667
+        proposed_branch: codex/repair-rtc-learned-sampling-stage-a-successor-3
+        handoff_path: >-
+          doc/audits/packages/SCI-RTC-001_LEARNED_SAMPLING_STAGE_A_SUCCESSOR_3_REPAIR_HANDOFF_2026-08-11.md
+        handoff_sha256: >-
+          b128af57f932dfca293f25c7cf0f57618771688588459a69acf869bbd4b11f4b
+        finding_ledger_path: >-
+          doc/audits/proposals/SCI-RTC-001_LEARNED_SAMPLING_STAGE_A_SUCCESSOR_3_REPAIR_FINDING_LEDGER_2026-08-11.yaml
+        finding_ledger_sha256: >-
+          af9546fd94e2a3537a9110f7179d5a3506b53c90f4fccdabb94feea0542c0181
+        finding_scope: S2RA-001_through_S2RA-015_only
+        launched: false
+        integration_status: separate_until_independently_reaudited_and_accepted
     contract_status: proposed
     implementation_status: nonconformant
     validation_status: in_progress

@@ -37,7 +37,21 @@ ALIGN/3C273 evidence remains owner-managed and active, while AST repair waits
 for an accepted and re-audited ALIGN successor. The RTC audit at
 `3319d7424c732c1c9fc300c336e4d428e6f91068` is integrated, owner decisions
 D001--D004 are recorded, and its axes remain `proposed`, `nonconformant`,
-`in_progress`, and `existing_use_only`, with verdict `amend`. The PTC audit at
+`in_progress`, and `existing_use_only`, with verdict `amend`.
+
+On 2026-08-11 the owner accepted the learned-sampling Stage A successor-2
+[return-for-repair disposition](packages/SCI-RTC-001_LEARNED_SAMPLING_STAGE_A_SUCCESSOR_2_OWNER_ACCEPTANCE_2026-08-11.md)
+at audit commit `f935f25c...`. Exactly 15 findings, `S2RA-001` through
+`S2RA-015` (11 P1 and four P2), remain open. The
+[successor-3 handoff](packages/SCI-RTC-001_LEARNED_SAMPLING_STAGE_A_SUCCESSOR_3_REPAIR_HANDOFF_2026-08-11.md)
+and [finding ledger](proposals/SCI-RTC-001_LEARNED_SAMPLING_STAGE_A_SUCCESSOR_3_REPAIR_FINDING_LEDGER_2026-08-11.yaml)
+are authorized for a later role-separated launch but do not launch it. The
+separate [core phase-zero amendment](packages/SCI-RTC-001_CORE_PHASE_ZERO_DOWNSAMPLING_OWNER_AMENDMENT_2026-08-11.md)
+preserves phase-zero point selection and rejects arithmetic-mean downsampling.
+Core RTC and Stage A remain separate. Integration remains MAP followed by
+accepted CAL consolidation; Stage A remains separate until accepted.
+
+The PTC audit at
 `01ee247461d6c19bc4db81ccac4fec21af162c88` is integrated with contract
 `approved`, implementation `nonconformant`, validation `in_progress`,
 production `existing_use_only`, and verdict `amend`. D001--D006 are
@@ -636,7 +650,7 @@ package but does not define their estimators.
 | `SCI-CAL-001` | A | Detector calibration, extinction, flux scaling, and map-unit transfer | `SCI-ALIGN-001` | Foundation wave 1 |
 | `SCI-AST-001` | A | Pointing corrections, detector coordinates, frames, and WCS | identified ALIGN assigned grid; physical event timing unavailable | Phase-independent coordinate mathematics admissible under separate launch; absolute placement fail closed |
 | `ENG-STATE-001` | C | Requested/effective/realized lifecycle, provenance, required products, and failure flow | architecture and product authorities | Parallel foundation wave |
-| `SCI-RTC-001` | B | Mature RTC filtering/conditioning interface and temporal response | exact assigned-grid compatibility plus conditioned CAL/AST seams | Phase-independent repair handoff ready; not launched |
+| `SCI-RTC-001` | B | Mature RTC filtering/conditioning interface and temporal response | exact assigned-grid compatibility plus conditioned CAL/AST seams | Core phase-independent handoff retains phase-zero point selection; Stage A successor-2 returned and successor-3 handoff authorized; lines separate and unlaunched |
 | `SCI-PTC-001` | B | Mature correlated-mode cleaning, selection, and detector-weight interface | `SCI-RTC-001`, identified assigned grid; physical event timing unavailable | D001--D006 approved; contract complete; implementation nonconformant; repair and optional response characterization unlaunched |
 | `SCI-VAL-001` | A | Cross-stage flags, detector/sample eligibility, non-finite policy, and map support | `SCI-ALIGN-001`, `SCI-RTC-001`, `SCI-PTC-001` | Foundation wave 2 |
 | `SCI-MAP-002` | B | Mature JINC gridding interface, normalization, support, and response | approved/shared `SCI-MAP-001` product contract | Third successor owner-accepted `accept`; bounded findings closed; `existing_use_only`; no merge or downstream launch |

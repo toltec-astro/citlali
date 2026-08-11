@@ -1,0 +1,169 @@
+format_version: 1
+record_id: SCI-RTC-001-LEARNED-SAMPLING-STAGE-A-SUCCESSOR-3-REPAIR-LEDGER-001
+record_date: 2026-08-11
+record_status: owner_authorized_pending_role_separated_launch
+scope: S2RA-001_through_S2RA-015_only
+
+coordination_authority:
+  branch: codex/coordinate-rtc-ptc-queue
+  commit: 3fe0aa30eaa0d8848dbb39eb720457326c0b43ba
+  parent: 3132d5d8c001ef32f185d4ece2038aa6d7ce1b5c
+  tree: d753f3ed7445e5a54ae792583c50af08aa88c7ae
+
+application_base:
+  ref: origin/codex/repair-rtc-learned-sampling-stage-a-successor-2
+  commit: cbb2fd767e0676906d1413ae84022270bee1a667
+  parent: 66c96757164af2c83ee1449d00fea30d131a7e3f
+  tree: 4727864c7ca4f078649fcf6473a7225d5d3aa9f8
+  patch_sha256: d1521fbc0a5afdfcfa61b41c57ba483b1d69969a45115829d2f8d973a51c9c39
+
+source_reaudit:
+  branch: codex/reaudit-rtc-learned-sampling-stage-a-successor-2-20260811
+  commit: f935f25c48b80861eb81a61133b20fc8e4fa4cf0
+  parent: cbb2fd767e0676906d1413ae84022270bee1a667
+  tree: be21aff93642a6a419bf6a1d1b21f8ceff015257
+  disposition: return_for_repair
+  owner_disposition: accepted
+  no_new_science_decision_required: true
+  report:
+    path: doc/audits/packages/RTC_LEARNED_SAMPLING_STAGE_A_SUCCESSOR_2_REAUDIT_2026-08-11.md
+    sha256: 6ad44cd732215041294e6514a1900daac64d7713543b655e625d450b535eec42
+  evidence:
+    path: doc/audits/packages/RTC_LEARNED_SAMPLING_STAGE_A_SUCCESSOR_2_REAUDIT_EVIDENCE_2026-08-11.md
+    sha256: 8e01ed71e8e043888efaec0e81fe22477928e8983b7fef2538a0c1ead1f36bfe
+  finding_register:
+    path: doc/audits/packages/RTC_LEARNED_SAMPLING_STAGE_A_SUCCESSOR_2_REAUDIT_FINDINGS_2026-08-11.csv
+    sha256: 095a731124974d8a53c298140073d4c48ac2e1a6f30df81b133260f04d5f89c4
+    total: 15
+    P1: 11
+    P2: 4
+    status: all_open
+
+owner_acceptance:
+  path: doc/audits/packages/SCI-RTC-001_LEARNED_SAMPLING_STAGE_A_SUCCESSOR_2_OWNER_ACCEPTANCE_2026-08-11.md
+  decision_date: 2026-08-11
+  candidate_accepted: false
+  return_for_repair_accepted: true
+  successor_3_handoff_authorized: true
+
+proposed_repair:
+  branch: codex/repair-rtc-learned-sampling-stage-a-successor-3
+  base: cbb2fd767e0676906d1413ae84022270bee1a667
+  role: application_repair_only
+  role_separation_required: true
+  status: authorized_pending_ready_checkpoint_and_launch
+  launched: false
+
+finding_closure:
+  - finding_id: S2RA-001
+    severity: P1
+    sra_ids: [SRA-001]
+    status: open_repair_authorized
+    closure: preinterpolation_carrier_and_same_observation_lifecycle
+  - finding_id: S2RA-002
+    severity: P1
+    sra_ids: [SRA-002]
+    status: open_repair_authorized
+    closure: remove_stale_hwpr_dependency_and_enforce_unsupported_seam
+  - finding_id: S2RA-003
+    severity: P1
+    sra_ids: [SRA-003]
+    status: open_repair_authorized
+    closure: native_total_intensity_counterfactual_without_double_decimation
+  - finding_id: S2RA-004
+    severity: P1
+    sra_ids: [SRA-003]
+    status: open_repair_authorized
+    closure: guarded_mutually_exclusive_exclusion_counts_and_fractions
+  - finding_id: S2RA-005
+    severity: P1
+    sra_ids: [SRA-004]
+    status: open_repair_authorized
+    closure: exact_overflow_safe_work_allocation_serialization_and_manifest_preflight
+  - finding_id: S2RA-006
+    severity: P1
+    sra_ids: [SRA-005]
+    status: open_repair_authorized
+    closure: executable_conditional_shape_cardinality_state_and_digest_contract
+  - finding_id: S2RA-007
+    severity: P1
+    sra_ids: [SRA-005]
+    status: open_repair_authorized
+    closure: exact_mode_specific_contract_and_preparing_profile_identity
+  - finding_id: S2RA-008
+    severity: P1
+    sra_ids: [SRA-005, SRA-009]
+    status: open_repair_authorized
+    closure: canonical_raw_input_membership_identity_and_digest_join
+  - finding_id: S2RA-009
+    severity: P1
+    sra_ids: [SRA-009]
+    status: open_repair_authorized
+    closure: generation_atomic_required_publication_and_prior_good_join
+  - finding_id: S2RA-010
+    severity: P1
+    sra_ids: [SRA-001, SRA-007]
+    status: open_repair_authorized
+    closure: independent_oracles_and_production_lifecycle_noninterference_evidence
+  - finding_id: S2RA-011
+    severity: P1
+    sra_ids: [SRA-008]
+    status: open_repair_authorized
+    closure: epoch_aware_realized_cadence
+  - finding_id: S2RA-012
+    severity: P2
+    sra_ids: [SRA-008]
+    status: open_repair_authorized
+    closure: independent_requested_effective_realized_cadence_state_and_consistency
+  - finding_id: S2RA-013
+    severity: P2
+    sra_ids: [SRA-006]
+    status: open_repair_authorized
+    closure: ordinary_build_refresh_or_fail_exact_40_hex_source_identity
+  - finding_id: S2RA-014
+    severity: P2
+    sra_ids: [SRA-004]
+    status: open_repair_authorized
+    closure: retain_exact_large_finite_mmax_and_report_resource_limit
+  - finding_id: S2RA-015
+    severity: P2
+    sra_ids: [SRA-001]
+    status: open_repair_authorized
+    closure: full_observation_index_obsnum_telescope_path_consumer_binding
+
+preserved_stage_a_boundary:
+  existing_scientific_decisions: binding
+  no_new_science_decision: true
+  observe_only: true
+  ranking: prohibited
+  recommendation: prohibited
+  factor_acceptance: prohibited
+  selection_or_application: prohibited
+  stage_b: prohibited
+  production_change: prohibited
+  ptcdiag_change: prohibited
+  unity_or_reduction: prohibited
+  downstream_launch: prohibited
+
+core_rtc_separation:
+  phase_independent_core_repair: separate
+  phase_zero_amendment: doc/audits/packages/SCI-RTC-001_CORE_PHASE_ZERO_DOWNSAMPLING_OWNER_AMENDMENT_2026-08-11.md
+  import_core_findings_into_stage_a: prohibited
+
+program_sequence:
+  application_integration:
+    - MAP
+    - accepted_CAL_consolidation
+  stage_a_integration: separate_until_independently_reaudited_and_accepted
+
+next_checkpoint:
+  name: READY
+  owner: coordinator
+  role_separated_task_required: true
+  repair_may_edit_before_approval: false
+  continuation_requires:
+    - exact_pushed_base_branch_parent_tree_and_patch
+    - fresh_clean_worktree_and_absent_successor_3_branch
+    - exact_15_finding_path_and_test_traceability
+    - no_new_scientific_choice
+    - bounded_resource_contract_identity_and_atomic_publication_design
