@@ -18,6 +18,9 @@
 #include <citlali/core/timestream/timestream.h>
 #include <citlali/core/engine/io.h>
 #include <citlali/core/utils/pointing.h>
+#include <citlali/core/utils/netcdf_io.h>
+#include <citlali/core/pipeline/rtc_learned_sampling_metrics.h>
+#include <citlali/core/pipeline/timestream_alignment_helpers.h>
 
 #include <citlali/core/timestream/rtc/polarization.h>
 #include <citlali/core/timestream/rtc/kernel.h>
@@ -382,6 +385,9 @@ public:
     std::map<Eigen::Index, std::vector<RTCNetworkDiagSummary>> rtc_network_summary_by_scan;
     std::map<Eigen::Index, std::map<Eigen::Index, std::vector<RTCImpulsiveSnippetSummary>>> rtc_impulsive_summary_by_scan;
     std::map<Eigen::Index, RTCSourceProtectionDiagSummary> rtc_source_protection_summary_by_scan;
+    std::map<Eigen::Index,
+             Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>>
+        rtc_realized_filter_guard_mask_by_scan;
     std::shared_ptr<std::mutex> diag_summary_mutex = std::make_shared<std::mutex>();
     std::map<Eigen::Index, std::vector<RTCCoherentIqModeCandidateSummary>>
         coherent_iq_mode_candidates_by_scan;
@@ -488,7 +494,9 @@ public:
 
     template <typename tc_t>
     void apply_filter_edge_guard(tc_t &, Eigen::Index start_sample, Eigen::Index n_samples,
-                                 Eigen::Index guard_samples_override = -1);
+                                 Eigen::Index guard_samples_override = -1,
+                                 Eigen::Matrix<bool, Eigen::Dynamic,
+                                               Eigen::Dynamic> *guard_mask = nullptr);
 
     // optional az/el template subtraction on the RTC output chunk
     template <typename calib_t>
@@ -511,6 +519,12 @@ public:
     template <typename calib_t>
     void write_cached_diagnostics_to_netcdf(netCDF::NcFile &, TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
                                             calib_t &, Eigen::Index scan_row_index = -1);
+
+    template <typename calib_t>
+    void write_rtc_sampling_validity_to_netcdf(
+        netCDF::NcFile &, TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
+        calib_t &, Eigen::Index scan_row_index,
+        const Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> &guard_mask);
 
     // clear cached RTC summaries for one scan after all output products are written
     void clear_cached_diagnostics(Eigen::Index scan_id);
@@ -609,7 +623,9 @@ template <typename tc_t>
 void RTCProc::apply_filter_edge_guard(tc_t &in,
                                       Eigen::Index start_sample,
                                       Eigen::Index n_samples,
-                                      Eigen::Index guard_samples_override) {
+                                      Eigen::Index guard_samples_override,
+                                      Eigen::Matrix<bool, Eigen::Dynamic,
+                                                    Eigen::Dynamic> *guard_mask) {
     const bool prev_guarded = in.status.filter_edge_guarded;
     const int prev_pre_samples = in.status.filter_edge_guard_pre_samples;
     const int prev_post_samples = in.status.filter_edge_guard_post_samples;
@@ -638,6 +654,21 @@ void RTCProc::apply_filter_edge_guard(tc_t &in,
 
     const Eigen::Index pre = std::min(guard_samples, n_samples);
     const Eigen::Index post = std::min(guard_samples, n_samples - pre);
+    if (guard_mask != nullptr) {
+        if (guard_mask->rows() != in.flags.data.rows() ||
+            guard_mask->cols() != in.flags.data.cols()) {
+            guard_mask->setConstant(in.flags.data.rows(), in.flags.data.cols(),
+                                    false);
+        }
+        if (pre > 0) {
+            guard_mask->block(start_sample, 0, pre,
+                              guard_mask->cols()).setConstant(true);
+        }
+        if (post > 0) {
+            guard_mask->block(start_sample + n_samples - post, 0, post,
+                              guard_mask->cols()).setConstant(true);
+        }
+    }
     if (pre > 0) {
         in.flags.data.block(start_sample, 0, pre, in.flags.data.cols()).setConstant(true);
     }
@@ -860,6 +891,9 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
     // end index of inner scans
     auto sl = in.scan_indices.data(1) - in.scan_indices.data(0) + 1;
     sl = std::max<Eigen::Index>(0, std::min<Eigen::Index>(sl, in.scans.data.rows() - si));
+    Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> native_guard_mask =
+        Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>::Constant(
+            in.flags.data.rows(), in.flags.data.cols(), false);
 
     // calculate the polarization angle
     if (run_polarization) {
@@ -1047,7 +1081,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         in.status.tod_filtered = true;
     }
 
-    apply_filter_edge_guard(in, si, sl);
+    apply_filter_edge_guard(in, si, sl, -1, &native_guard_mask);
     if (run_kernel) {
         log_kernel_matrix_diag(logger, "rtc after primary edge guard", in.kernel.data, in.index.data);
     }
@@ -1136,7 +1170,8 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                     std::max<Eigen::Index>(0, detector_guard_samples - pre_context),
                     std::max<Eigen::Index>(0, detector_guard_samples - post_context));
                 if (missing_guard > 0) {
-                    apply_filter_edge_guard(in, si, sl, missing_guard);
+                    apply_filter_edge_guard(in, si, sl, missing_guard,
+                                            &native_guard_mask);
                 }
             }
         }
@@ -1146,6 +1181,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         *tod_outer_output = in;
     }
 
+    Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> output_guard_mask;
     if (run_downsample) {
         logger->debug("downsampling data");
         // get the block of out scans that corresponds to the inner scan indices
@@ -1160,6 +1196,10 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         downsampler.downsample(in_scans, out.scans.data);
         // downsample flags
         downsampler.downsample_flags(in_flags, out.flags.data);
+        Eigen::Ref<Eigen::Matrix<bool,Eigen::Dynamic,Eigen::Dynamic>>
+            native_guard_inner = native_guard_mask.block(
+                si, 0, sl, native_guard_mask.cols());
+        downsampler.downsample_flags(native_guard_inner, output_guard_mask);
 
         // loop through telescope meta data and downsample
         logger->debug("downsampling telescope");
@@ -1210,6 +1250,8 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         out.scans.data = in.scans.data.block(si, 0, sl, in.scans.data.cols());
         // copy flags
         out.flags.data = in.flags.data.block(si, 0, sl, in.flags.data.cols());
+        output_guard_mask = native_guard_mask.block(
+            si, 0, sl, native_guard_mask.cols());
         // copy kernel
         if (run_kernel) {
             out.kernel.data = in.kernel.data.block(si, 0, sl, in.kernel.data.cols());
@@ -1285,7 +1327,9 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                 post_guard_samples = std::max<Eigen::Index>(0, post_guard_samples);
             }
             if (post_guard_samples > 0) {
-                apply_filter_edge_guard(out, 0, out.scans.data.rows(), post_guard_samples);
+                apply_filter_edge_guard(out, 0, out.scans.data.rows(),
+                                        post_guard_samples,
+                                        &output_guard_mask);
             }
         }
     }
@@ -1320,6 +1364,11 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         capture_rtc_diagnostics(out, calib, false, false);
     }
     capture_coherent_iq_mode_candidates(out.index.data, calib);
+    {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        rtc_realized_filter_guard_mask_by_scan[out.index.data] =
+            std::move(output_guard_mask);
+    }
 
     // empty rtcdata
     in.scans.data.resize(0,0);
@@ -5438,6 +5487,295 @@ void RTCProc::write_cached_diagnostics_to_netcdf(netCDF::NcFile &fo,
     }
 }
 
+template <typename calib_t>
+void RTCProc::write_rtc_sampling_validity_to_netcdf(
+    netCDF::NcFile &file,
+    TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_t &calib,
+    Eigen::Index scan_row_index,
+    const Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> &guard_mask) {
+    namespace pipeline = citlali::pipeline;
+    if (scan_row_index < 0 || guard_mask.rows() != in.scans.data.rows() ||
+        guard_mask.cols() != in.scans.data.cols() ||
+        in.flags.data.rows() != in.scans.data.rows() ||
+        in.flags.data.cols() != in.scans.data.cols()) {
+        throw DataIOError(
+            "rtcdiag exact validity accounting has a missing or mismatched guard mask");
+    }
+    const auto time_it = in.tel_data.data.find("TelTime");
+    if (time_it == in.tel_data.data.end() ||
+        time_it->second.size() != in.scans.data.rows()) {
+        throw DataIOError(
+            "rtcdiag exact validity accounting requires the realized TelTime grid");
+    }
+
+    const auto interval_dim = file.getDim("n_rtc_sampling_source_intervals");
+    const std::size_t n_intervals = interval_dim.isNull()
+        ? 0 : interval_dim.getSize();
+    std::vector<double> interval_start(n_intervals);
+    std::vector<double> interval_stop(n_intervals);
+    std::vector<int> interval_valid(n_intervals);
+    std::vector<int> interval_eligible(n_intervals);
+    std::vector<int> interval_reason(n_intervals);
+    if (n_intervals > 0) {
+        file.getVar("rtc_sampling_source_interval_start_time_s").getVar(
+            interval_start.data());
+        file.getVar("rtc_sampling_source_interval_stop_time_s").getVar(
+            interval_stop.data());
+        file.getVar("rtc_sampling_source_interval_valid").getVar(
+            interval_valid.data());
+        file.getVar("rtc_sampling_source_interval_eligible").getVar(
+            interval_eligible.data());
+        file.getVar("rtc_sampling_source_interval_reason").getVar(
+            interval_reason.data());
+    }
+
+    using Category = pipeline::RtcSamplingContextCategory;
+    const std::array<const char *, pipeline::rtc_sampling_context_category_count>
+        count_variables{{
+            "rtc_sampling_input_fully_supported_count",
+            "rtc_sampling_input_boundary_context_count",
+            "rtc_sampling_input_internal_gap_count",
+            "rtc_sampling_input_low_velocity_motion_count",
+            "rtc_sampling_input_invalid_or_overlimit_motion_count",
+            "rtc_sampling_input_per_detector_invalid_count",
+            "rtc_sampling_input_science_flag_count",
+            "rtc_sampling_input_nonfinite_input_count",
+            "rtc_sampling_input_realized_filter_guard_count",
+            "rtc_sampling_input_unclassified_count"}};
+    std::vector<std::array<std::size_t,
+                           pipeline::rtc_sampling_context_category_count>>
+        counts(static_cast<std::size_t>(calib.n_arrays));
+    std::vector<std::size_t> totals(static_cast<std::size_t>(calib.n_arrays),
+                                    0);
+    std::vector<Category> cell_categories(
+        static_cast<std::size_t>(in.scans.data.rows() * in.scans.data.cols()),
+        Category::unclassified);
+
+    for (Eigen::Index row = 0; row < in.scans.data.rows(); ++row) {
+        const double time = time_it->second(row);
+        Category motion = Category::internal_gap;
+        if (const auto interval =
+                pipeline::rtc_sampling_source_interval_at_time(
+                    interval_start, interval_stop, time)) {
+                if (interval_eligible[*interval] != 0) {
+                    motion = Category::fully_supported;
+                }
+                else if (interval_valid[*interval] != 0) {
+                    motion = Category::low_velocity_motion;
+                }
+                else if (interval_reason[*interval] == static_cast<int>(
+                             pipeline::RtcSamplingReasonCode::invalid_source_gap)) {
+                    motion = Category::internal_gap;
+                }
+                else {
+                    motion = Category::invalid_or_overlimit_motion;
+                }
+        }
+        for (Eigen::Index detector = 0; detector < in.scans.data.cols();
+             ++detector) {
+            const int array_id =
+                static_cast<int>(calib.apt["array"](detector));
+            Eigen::Index array_index = -1;
+            for (Eigen::Index i = 0; i < calib.n_arrays; ++i) {
+                if (calib.arrays(i) == array_id) {
+                    array_index = i;
+                    break;
+                }
+            }
+            if (array_index < 0) {
+                throw DataIOError(
+                    "rtcdiag detector has no authoritative array identity");
+            }
+            Category category = motion;
+            if (category == Category::fully_supported &&
+                calib.apt["flag"](detector) != 0) {
+                category = Category::per_detector_invalid;
+            }
+            // The separately captured guard wins over the final flag matrix.
+            // Consequently science_flag is exactly final_flag AND NOT guard.
+            if (category == Category::fully_supported &&
+                guard_mask(row, detector)) {
+                category = Category::realized_filter_guard;
+            }
+            if (category == Category::fully_supported &&
+                in.flags.data(row, detector) &&
+                !guard_mask(row, detector)) {
+                category = Category::science_flag;
+            }
+            if (category == Category::fully_supported &&
+                (!std::isfinite(in.scans.data(row, detector)) ||
+                 !std::isfinite(time))) {
+                category = Category::nonfinite_input;
+            }
+            const auto category_index = static_cast<std::size_t>(category);
+            if (category_index >= counts[static_cast<std::size_t>(array_index)].size()) {
+                category = Category::unclassified;
+            }
+            counts[static_cast<std::size_t>(array_index)]
+                  [static_cast<std::size_t>(category)]++;
+            totals[static_cast<std::size_t>(array_index)]++;
+            cell_categories[static_cast<std::size_t>(
+                row * in.scans.data.cols() + detector)] = category;
+        }
+    }
+
+    const auto candidate_dim = file.getDim("n_rtc_sampling_candidates");
+    std::vector<int> candidate_factors;
+    std::vector<int> candidate_phases;
+    double realized_native_hz = std::numeric_limits<double>::quiet_NaN();
+    if (!candidate_dim.isNull()) {
+        candidate_factors.resize(candidate_dim.getSize());
+        candidate_phases.resize(candidate_dim.getSize());
+        file.getVar("rtc_sampling_candidate_factor").getVar(
+            candidate_factors.data());
+        file.getVar("rtc_sampling_candidate_phase").getVar(
+            candidate_phases.data());
+        file.getVar("RTC_SAMPLING_CADENCE_REALIZED_NATIVE_HZ").getVar(
+            &realized_native_hz);
+    }
+    const std::array<const char *, pipeline::rtc_sampling_context_category_count>
+        detector_output_count_variables{{
+            "rtc_sampling_detector_output_fully_supported_count",
+            "rtc_sampling_detector_output_boundary_context_count",
+            "rtc_sampling_detector_output_internal_gap_count",
+            "rtc_sampling_detector_output_low_velocity_motion_count",
+            "rtc_sampling_detector_output_invalid_or_overlimit_motion_count",
+            "rtc_sampling_detector_output_per_detector_invalid_count",
+            "rtc_sampling_detector_output_science_flag_count",
+            "rtc_sampling_detector_output_nonfinite_input_count",
+            "rtc_sampling_detector_output_realized_filter_guard_count",
+            "rtc_sampling_detector_output_unclassified_count"}};
+
+    for (Eigen::Index array_index = 0; array_index < calib.n_arrays;
+         ++array_index) {
+        const auto &array_counts = counts[static_cast<std::size_t>(array_index)];
+        const auto accounted = std::accumulate(
+            array_counts.begin(), array_counts.end(), std::size_t{0});
+        const auto total = totals[static_cast<std::size_t>(array_index)];
+        if (accounted != total ||
+            array_counts[static_cast<std::size_t>(Category::unclassified)] != 0 ||
+            total > static_cast<std::size_t>(std::numeric_limits<int>::max())) {
+            throw DataIOError(
+                "rtcdiag validity categories do not sum exactly to detector cells");
+        }
+        const std::vector<std::size_t> start{
+            static_cast<std::size_t>(scan_row_index),
+            static_cast<std::size_t>(array_index)};
+        const std::vector<std::size_t> count{1, 1};
+        const int total_int = static_cast<int>(total);
+        file.getVar("rtc_sampling_input_total_detector_cells").putVar(
+            start, count, &total_int);
+        for (std::size_t category = 0; category < count_variables.size();
+             ++category) {
+            const int value = static_cast<int>(array_counts[category]);
+            file.getVar(count_variables[category]).putVar(start, count, &value);
+        }
+
+        if (candidate_dim.isNull()) {
+            continue;
+        }
+        std::vector<Eigen::Index> detectors;
+        for (Eigen::Index detector = 0; detector < in.scans.data.cols();
+             ++detector) {
+            if (static_cast<int>(calib.apt["array"](detector)) ==
+                calib.arrays(array_index)) {
+                detectors.push_back(detector);
+            }
+        }
+        if (detectors.empty()) {
+            throw DataIOError(
+                "rtcdiag array has no detectors for exact context accounting");
+        }
+        pipeline::RtcSamplingContextDomain domain;
+        domain.n_times = in.scans.data.rows();
+        domain.n_detectors = static_cast<Eigen::Index>(detectors.size());
+        domain.categories.reserve(static_cast<std::size_t>(domain.n_times) *
+                                  detectors.size());
+        for (Eigen::Index row = 0; row < domain.n_times; ++row) {
+            for (const auto detector : detectors) {
+                domain.categories.push_back(cell_categories[static_cast<std::size_t>(
+                    row * in.scans.data.cols() + detector)]);
+            }
+        }
+        for (std::size_t candidate = 0;
+             candidate < candidate_factors.size(); ++candidate) {
+            const std::vector<std::size_t> candidate_start{
+                static_cast<std::size_t>(scan_row_index),
+                static_cast<std::size_t>(array_index), candidate};
+            const std::vector<std::size_t> candidate_count{1, 1, 1};
+            int tap_count = -1;
+            int existing_status = -1;
+            file.getVar("rtc_sampling_fir_tap_count").getVar(
+                candidate_start, candidate_count, &tap_count);
+            file.getVar("rtc_sampling_candidate_status").getVar(
+                candidate_start, candidate_count, &existing_status);
+            if (tap_count <= 0 || candidate_factors[candidate] <= 0) {
+                continue;
+            }
+            const auto context =
+                pipeline::calculate_rtc_sampling_complete_context(
+                    domain, 0, domain.n_times - 1, 0, domain.n_times - 1,
+                    candidate_factors[candidate], candidate_phases[candidate],
+                    static_cast<std::size_t>(tap_count), realized_native_hz);
+            if (context.detector_output_cell_count >
+                    static_cast<std::size_t>(std::numeric_limits<int>::max()) ||
+                context.candidate_output_count >
+                    static_cast<std::size_t>(std::numeric_limits<int>::max()) ||
+                context.full_output_count >
+                    static_cast<std::size_t>(std::numeric_limits<int>::max())) {
+                throw DataIOError(
+                    "rtcdiag candidate context count exceeds int storage");
+            }
+            const auto put_int = [&](const char *name, std::size_t value) {
+                if (value > static_cast<std::size_t>(
+                                std::numeric_limits<int>::max())) {
+                    throw DataIOError(
+                        "rtcdiag candidate context category exceeds int storage");
+                }
+                const int stored = static_cast<int>(value);
+                file.getVar(name).putVar(candidate_start, candidate_count,
+                                         &stored);
+            };
+            put_int("rtc_sampling_detector_output_cell_count",
+                    context.detector_output_cell_count);
+            for (std::size_t category = 0;
+                 category < detector_output_count_variables.size();
+                 ++category) {
+                put_int(detector_output_count_variables[category],
+                        context.detector_output_category_count[category]);
+            }
+            put_int("rtc_sampling_eligible_input_support",
+                    context.eligible_input_support);
+            put_int("rtc_sampling_candidate_output_count",
+                    context.candidate_output_count);
+            put_int("rtc_sampling_full_output_count",
+                    context.full_output_count);
+            put_int("rtc_sampling_incomplete_boundary_count",
+                    context.incomplete_boundary_count);
+            put_int("rtc_sampling_incomplete_gap_count",
+                    context.incomplete_gap_count);
+            put_int("rtc_sampling_incomplete_other_count",
+                    context.incomplete_other_count);
+            put_int("rtc_sampling_longest_full_run", context.longest_full_run);
+            file.getVar("rtc_sampling_full_duration_s").putVar(
+                candidate_start, candidate_count, &context.full_duration_s);
+            file.getVar("rtc_sampling_full_fraction").putVar(
+                candidate_start, candidate_count, &context.full_fraction);
+            if (existing_status == static_cast<int>(
+                    pipeline::RtcSamplingStatusCode::candidate_evaluable) ||
+                existing_status == static_cast<int>(
+                    pipeline::RtcSamplingStatusCode::candidate_unusable_no_complete_context)) {
+                const int status = static_cast<int>(context.candidate_status);
+                const int reason = static_cast<int>(context.candidate_reason);
+                file.getVar("rtc_sampling_candidate_status").putVar(
+                    candidate_start, candidate_count, &status);
+                file.getVar("rtc_sampling_candidate_reason").putVar(
+                    candidate_start, candidate_count, &reason);
+            }
+        }
+    }
+}
+
 inline void RTCProc::clear_cached_diagnostics(Eigen::Index scan_id) {
     {
         std::lock_guard<std::mutex> lock(*diag_cache_mutex);
@@ -5449,6 +5787,7 @@ inline void RTCProc::clear_cached_diagnostics(Eigen::Index scan_id) {
         rtc_network_summary_by_scan.erase(scan_id);
         rtc_impulsive_summary_by_scan.erase(scan_id);
         rtc_source_protection_summary_by_scan.erase(scan_id);
+        rtc_realized_filter_guard_mask_by_scan.erase(scan_id);
     }
 }
 
@@ -5461,12 +5800,30 @@ void RTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in
     using namespace netCDF::exceptions;
 
     try {
+        if (!is_netcdf_atomic_staging_path(filepath)) {
+            throw DataIOError(
+                "RTC diagnostics append refused after atomic publication: " +
+                filepath);
+        }
+        Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> guard_mask;
+        {
+            std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+            const auto guard =
+                rtc_realized_filter_guard_mask_by_scan.find(in.index.data);
+            if (guard == rtc_realized_filter_guard_mask_by_scan.end()) {
+                throw DataIOError(
+                    "required realized RTC filter-guard mask was not captured");
+            }
+            guard_mask = guard->second;
+        }
         capture_rtc_diagnostics(in, calib, true, true);
 
         predefs::suppress_hdf5_diagnostics_for_this_thread();
         std::lock_guard<std::mutex> lock(predefs::netcdf_io_mutex());
         NcFile fo(filepath, netCDF::NcFile::write);
         write_cached_diagnostics_to_netcdf(fo, in, calib, scan_row_index);
+        write_rtc_sampling_validity_to_netcdf(
+            fo, in, calib, scan_row_index, guard_mask);
         fo.sync();
         fo.close();
 

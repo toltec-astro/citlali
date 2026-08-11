@@ -36,31 +36,52 @@ The live branch, upstream revision, gate, and import policy are recorded in
 [`INTEGRATION_LEDGER.md`](INTEGRATION_LEDGER.md). The durable rationale is
 [ADR 0008](adr/0008-application-mainline-and-build-adaptation-lanes.md).
 
-## 2026-08-10 RTC Learned-Sampling Stage A Successor Repair Completion Candidate
+## 2026-08-11 RTC Learned-Sampling Stage A Successor Repair 2
 
-The bounded observe-only successor is a locally validated completion candidate
-on `codex/repair-rtc-learned-sampling-stage-a-successor`, based exactly on
-`6cbe119a59f8915c5aecf5eaf333425dd592993d` and governed by frozen handoff
-`SCI-RTC-001-LEARNED-SAMPLING-STAGE-A-REPAIR-READY-006`. It replaces the
-nonconformant Stage A diagnostic contract with pre-interpolation typed motion
-support, non-HWPR `v95`, fixed diffraction-derived array FWHM values used as
-the scale of an explicitly identified circular-Gaussian temporal model,
-unit-tone coherent phase-zero alias folding through the exact realized FIR,
-full factor enumeration independent of filter edge, conservative numerical
-enclosures, and exact complete-context applicability.
+The role-separated SRA-001 through SRA-009 repair is a locally validated
+completion candidate on
+`codex/repair-rtc-learned-sampling-stage-a-successor-2`, created from exact
+application base `66c96757164af2c83ee1449d00fea30d131a7e3f` under frozen
+authority `3fe0aa30eaa0d8848dbb39eb720457326c0b43ba`.
 
-`rtcdiag` intentionally advances to `rtcdiag-v2`; its Stage A algorithm is
-`rtc-learned-sampling-stage-a-v2`, and its schema
-and numerics are a semantic break. No factor is ranked, recommended, selected,
-or applied, and no RTC/PTC/mapmaking or non-`rtcdiag` science product changes.
-The configured OpenMP header/library binding now supports the full production
-CLI and test targets. All 26 focused tests and all 649 enabled CTests pass; the
-pre-existing `MapFitterLifecycle.ExactProductSequence` remains disabled. The
-172-test baseline-tool suite, complete config preflight (including its 127
-Python tests and exact 45-record raw-execution census), validation ledger,
-profile registry, and Phase 5 readiness report also pass. Phase 5 correctly
-remains `preparing` and not promotion-ready. See the dated
+The successor product is `rtcdiag-v3` /
+`rtc-learned-sampling-stage-a-v3`, with embedded generic declaration
+`sci-rtc-001-stage-a-successor-products-v1` and four thin executable wrapper
+contracts `sci-rtc-001-stage-a-successor-{point,oof,beammap,science}-products-v1`.
+Each wrapper inherits its established mode contract and overrides only
+its native RTC entry (`rtc-diagnostics` for point/OOF,
+`source-crossing-rtc-diagnostics` for Beammap, and
+`observation-rtc-diagnostics` for science) with
+`rtc_diagnostics_stage_a_successor_v3`. Preparing
+profiles exist for all four modes; the point profile remains
+`sci-rtc-001-stage-a-successor-v1`, with mode-suffixed OOF, Beammap, and science
+profiles. The existing `rtc_diagnostics` check is unchanged. The repair binds
+reset/capture/consume to one observation, supports
+total-intensity diagnostics without legacy HWPR inference, rejects explicit
+HWPR-dependent diagnostic state as `unsupported_hwpr`, measures realized
+cadence from the native time grid, applies checked actual-work/storage guards,
+requires a full 40-hex source identity and canonical raw-manifest join, and
+publishes one complete self-contained sidecar through adjacent staging and a
+single atomic replacement with no post-publication append.
+
+Exact complete-context accounting now classifies every detector-output cell.
+The separately captured realized filter guard precedes residual/pre-guard
+science flags, so the two categories cannot swallow one another; category
+counts are mutually exclusive and sum to the exact cell total. Temporal
+`N_full` means at least one production-valid detector has complete context and
+remains mathematical evaluability only. Fixed beam, `v95`, factor enumeration,
+coherent candidate, numerical enclosure, and realized-FIR authorities remain
+unchanged. No factor is ranked, recommended, selected, or applied, and no
+RTC/PTC/map-input, map, weight, filter, cadence, non-`rtcdiag`, or production
+science behavior changes. See the dated
 [Stage A successor note](RTC_LEARNED_SAMPLING_STAGE_A_METRICS_2026-08-09.md).
+The production CLI and all test targets build; all 653 enabled CTests pass and
+the pre-existing `MapFitterLifecycle.ExactProductSequence` remains the sole
+disabled test. The 177-test baseline suite, 38 focused product/profile tests,
+complete config preflight (including 127 Python tests and the unchanged
+45-record raw-execution census), both checked-in ledgers, the preparing-profile
+registry, and the zero-growth session-exit audit pass. No independent re-audit
+has been launched.
 
 ## 2026-08-05 SCI-MAP-001 Application Integration Candidate
 

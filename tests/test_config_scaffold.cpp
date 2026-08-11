@@ -62,6 +62,7 @@
 #include <citlali/core/pipeline/raw_timestream_observation_shadow.h>
 #include <citlali/core/pipeline/raw_timestream_provenance.h>
 #include <citlali/core/pipeline/raw_timestream_provenance_lifecycle.h>
+#include <citlali/core/pipeline/rtcdiag_scan_summary.h>
 #include <citlali/core/pipeline/config_parse_tracking.h>
 #include <citlali/core/pipeline/raw_filtering_config_read.h>
 #include <citlali/core/pipeline/raw_flagging_config_read.h>
@@ -4746,6 +4747,19 @@ TEST(config_scaffold, rejects_enabled_polarimetry_capability) {
     EXPECT_FALSE(plan.capability.enabled_capability_available);
     EXPECT_FALSE(plan.capability.request_accepted);
     EXPECT_TRUE(plan.capability.disabled_by_capability);
+
+    citlali::pipeline::RtcSamplingHwprState diagnostic_mode;
+    EXPECT_TRUE(diagnostic_mode.supported());
+    EXPECT_EQ(citlali::pipeline::to_string(diagnostic_mode.analysis_mode),
+              "total_intensity");
+    diagnostic_mode.analysis_mode =
+        citlali::pipeline::RtcSamplingHwprState::AnalysisMode::hwpr_dependent;
+    EXPECT_FALSE(diagnostic_mode.supported());
+    EXPECT_EQ(citlali::pipeline::to_string(diagnostic_mode.analysis_mode),
+              "hwpr_dependent");
+    EXPECT_EQ(citlali::pipeline::to_string(
+                  citlali::pipeline::RtcSamplingReasonCode::unsupported_hwpr),
+              "unsupported_hwpr");
 }
 
 TEST(config_scaffold, records_disabled_polarimetry_provenance) {

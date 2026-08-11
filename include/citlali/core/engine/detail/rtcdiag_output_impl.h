@@ -8,9 +8,11 @@
 #include <algorithm>
 #include <cmath>
 #include <limits>
+#include <regex>
+#include <stdexcept>
 
 void Engine::create_rtcdiag_file() {
-    output_paths.rtcdiag_filename =
+    const auto rtcdiag_final_path =
         citlali::pipeline::diagnostic_output_netcdf_filename<
             engine_utils::toltecIO::toltec,
             engine_utils::toltecIO::rtcdiag,
@@ -20,7 +22,8 @@ void Engine::create_rtcdiag_file() {
             citlali::pipeline::runtime_reduction_type(*this),
             observation_identity.obsnum, telescope.sim_obs);
 
-    write_netcdf_atomic(output_paths.rtcdiag_filename, [&](netCDF::NcFile &fo) {
+    output_paths.rtcdiag_filename = write_netcdf_staging(
+        rtcdiag_final_path, [&](netCDF::NcFile &fo) {
 
     const int fill_int = citlali::pipeline::rtcdiag_fill_int();
     const double fill_double = citlali::pipeline::rtcdiag_fill_double();
@@ -32,19 +35,10 @@ void Engine::create_rtcdiag_file() {
             telescope.fsmp, telescope.d_fsmp);
     const auto &raw_plan = citlali::pipeline::raw_timestream_plan(*this);
     const auto &realized_rtc = this->rtcproc;
-    const auto &polarimetry = citlali::pipeline::polarimetry_plan(*this);
-    const auto requested_hwpr_policy =
-        std::string{citlali::config::to_string(
-            polarimetry.requested.hwpr_policy)};
-    const auto effective_hwpr_policy =
-        std::string{citlali::config::to_string(
-            polarimetry.effective.hwpr_policy)};
+    // Supported diagnostics are explicitly total-intensity. They do not
+    // inspect legacy HWPR flags, enum spellings, files, or hardware presence.
     const citlali::pipeline::RtcSamplingHwprState rtc_sampling_hwpr{
-        polarimetry.requested.enabled,
-        requested_hwpr_policy,
-        polarimetry.effective.enabled,
-        effective_hwpr_policy == "ignore",
-        calib.run_hwpr};
+        citlali::pipeline::RtcSamplingHwprState::AnalysisMode::total_intensity};
     citlali::pipeline::RtcSamplingCadenceState rtc_sampling_cadence;
     rtc_sampling_cadence.requested_factor =
         raw_plan.requested.downsample.enabled
@@ -66,26 +60,16 @@ void Engine::create_rtcdiag_file() {
         rtc_sampling_cadence.effective_factor =
             observation.downsample_factor.value_or(1);
     }
-    rtc_sampling_cadence.realized_native_hz = telescope.fsmp;
-    rtc_sampling_cadence.realized_output_hz = rtc_fsmp;
     rtc_sampling_cadence.realized_downsample_enabled =
         realized_rtc.run_downsample;
     rtc_sampling_cadence.realized_factor =
         rtc_sampling_cadence.realized_downsample_enabled
             ? realized_rtc.downsampler.factor : 1;
-    const auto cadence_equal = [](double a, double b) {
-        return std::isfinite(a) && std::isfinite(b) &&
-               std::abs(a - b) <=
-                   32.0 * std::numeric_limits<double>::epsilon() *
-                       std::max({1.0, std::abs(a), std::abs(b)});
-    };
-    rtc_sampling_cadence.consistent =
-        cadence_equal(rtc_sampling_cadence.effective_native_hz,
-                      rtc_sampling_cadence.realized_native_hz) &&
-        cadence_equal(rtc_sampling_cadence.effective_output_hz,
-                      rtc_sampling_cadence.realized_output_hz) &&
-        rtc_sampling_cadence.effective_factor ==
-            rtc_sampling_cadence.realized_factor;
+    const auto realized_time = telescope.tel_data.find("TelTime");
+    if (realized_time != telescope.tel_data.end()) {
+        citlali::pipeline::measure_rtc_sampling_realized_cadence(
+            rtc_sampling_cadence, realized_time->second);
+    }
     citlali::pipeline::RtcSamplingFilterState rtc_sampling_filter;
     rtc_sampling_filter.requested_enabled = raw_plan.requested.filter.enabled;
     rtc_sampling_filter.effective_enabled = raw_plan.effective.filter.enabled;
@@ -111,6 +95,19 @@ void Engine::create_rtcdiag_file() {
         }
     }
 
+    const auto &source_support = alignment.rtc_sampling_source_motion;
+    if (!source_support.observation_identity_available ||
+        source_support.observation_obsnum != observation_identity.obsnum) {
+        throw std::runtime_error(
+            "rtcdiag Stage A source motion is not bound to the active observation");
+    }
+    const std::string full_commit{CITLALI_GIT_COMMIT_FULL};
+    if (!std::regex_match(full_commit, std::regex{"[0-9a-f]{40}"}) ||
+        CITLALI_GIT_WORKTREE_DIRTY != 0) {
+        throw std::runtime_error(
+            "rtcdiag successor requires a clean exact 40-hex Citlali source identity");
+    }
+
     citlali::pipeline::add_diagnostic_file_identity_vars(
         fo, "rtcdiag", std::stoi(observation_identity.obsnum),
         telescope.tel_header["Header.Source.Ra"](0),
@@ -128,7 +125,7 @@ void Engine::create_rtcdiag_file() {
 
     const auto scan_summary =
         citlali::pipeline::calculate_rtcdiag_scan_summary(
-            telescope, alignment.rtc_sampling_source_motion,
+            telescope, source_support,
             rtc_sampling_hwpr, n_scans, rtcdiag_dims.n_scan_values,
             fill_double, fill_int, logger);
     citlali::pipeline::add_rtcdiag_scan_summary_outputs(
@@ -143,9 +140,9 @@ void Engine::create_rtcdiag_file() {
     citlali::pipeline::add_rtcdiag_scan_array_summary_outputs(
         fo, rtcdiag_dims.scan_array, rtcdiag_dims.scan_array_chunks,
         scan_array_summary, rtc_sampling_hwpr, rtc_sampling_cadence,
-        alignment.rtc_sampling_source_motion,
+        source_support,
         std::string{"raw_timestream_provenance.yaml"},
-        CITLALI_GIT_VERSION);
+        full_commit);
 
     citlali::pipeline::add_rtcdiag_network_ids(
         fo, calib, rtcdiag_dims.n_nws, fill_int);

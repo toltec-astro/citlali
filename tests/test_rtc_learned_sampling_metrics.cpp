@@ -2,7 +2,27 @@
 
 #include <citlali/core/config/timestream_config.h>
 #include <citlali/core/pipeline/rtc_learned_sampling_metrics.h>
+
+// rtcdiag_netcdf.h transitively includes legacy header-defined PTC helpers.
+// test_config_scaffold.cpp already emits those helpers in the combined test
+// binary, so keep this test translation unit's copies private by name.
+#define add_weight_selection_config_vars                                    \
+    rtc_sampling_test_add_weight_selection_config_vars
+#define add_cleaner_mode_config_vars                                        \
+    rtc_sampling_test_add_cleaner_mode_config_vars
+#define add_fruit_loop_iteration_config_vars                                \
+    rtc_sampling_test_add_fruit_loop_iteration_config_vars
+#define add_ptcdiag_compact_config_vars                                     \
+    rtc_sampling_test_add_ptcdiag_compact_config_vars
+#define add_fruit_loops_config_vars                                         \
+    rtc_sampling_test_add_fruit_loops_config_vars
 #include <citlali/core/pipeline/rtcdiag_netcdf.h>
+#undef add_fruit_loops_config_vars
+#undef add_ptcdiag_compact_config_vars
+#undef add_fruit_loop_iteration_config_vars
+#undef add_cleaner_mode_config_vars
+#undef add_weight_selection_config_vars
+
 #include <citlali/core/pipeline/timestream_alignment_helpers.h>
 
 #include <Eigen/Core>
@@ -11,8 +31,10 @@
 #include <cmath>
 #include <complex>
 #include <filesystem>
+#include <fstream>
 #include <limits>
 #include <map>
+#include <numeric>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -138,6 +160,25 @@ TEST(RtcLearnedSamplingMetrics, CapturesPreInterpolationSupportAndThresholds) {
     EXPECT_EQ(support.intervals[3].reason, "invalid_source_gap");
     EXPECT_EQ(support.intervals[2].reason,
               "invalid_source_speed_above_bound");
+}
+
+TEST(RtcLearnedSamplingMetrics,
+     SourceIntervalLookupHasStableSharedEndpointAuthority) {
+    const std::vector<double> starts{0.0, 1.0};
+    const std::vector<double> stops{1.0, 2.0};
+    EXPECT_EQ(citlali::pipeline::rtc_sampling_source_interval_at_time(
+                  starts, stops, 1.0),
+              std::optional<std::size_t>{0});
+    EXPECT_EQ(citlali::pipeline::rtc_sampling_source_interval_at_time(
+                  starts, stops, 1.5),
+              std::optional<std::size_t>{1});
+    EXPECT_FALSE(citlali::pipeline::rtc_sampling_source_interval_at_time(
+                     starts, stops,
+                     std::numeric_limits<double>::quiet_NaN())
+                     .has_value());
+    EXPECT_FALSE(citlali::pipeline::rtc_sampling_source_interval_at_time(
+                     starts, std::vector<double>{1.0}, 0.5)
+                     .has_value());
 }
 
 TEST(RtcLearnedSamplingMetrics, UnequalSourceColumnsFailClosedWithoutTruncation) {
@@ -394,7 +435,7 @@ TEST(RtcLearnedSamplingMetrics, BoundedCharacterizationEnclosesDenseAdversary) {
 
 TEST(RtcLearnedSamplingMetrics, ResourcePreflightIsCheckedAndNeverTruncates) {
     const auto isolated = citlali::pipeline::rtc_sampling_resource_preflight(
-        {9000, 3}, {1, 1}, 1, 1);
+        {9000, 3}, {1, 1}, {1, 1}, {1, 1}, {1, 1});
     EXPECT_EQ(isolated.range_status[0],
               citlali::pipeline::RtcSamplingStatusCode::candidate_range_resource_limit);
     EXPECT_EQ(isolated.range_status[1],
@@ -404,7 +445,7 @@ TEST(RtcLearnedSamplingMetrics, ResourcePreflightIsCheckedAndNeverTruncates) {
     EXPECT_EQ(isolated.logical_candidate_rows, 3u);
 
     const auto overflow = citlali::pipeline::rtc_sampling_resource_preflight(
-        {2}, {1}, std::numeric_limits<std::size_t>::max(), 1);
+        {2}, {1}, {1}, {std::numeric_limits<std::size_t>::max()}, {2});
     EXPECT_FALSE(overflow.table_available);
     EXPECT_EQ(overflow.table_reason,
               citlali::pipeline::RtcSamplingReasonCode::arithmetic_overflow);
@@ -413,7 +454,7 @@ TEST(RtcLearnedSamplingMetrics, ResourcePreflightIsCheckedAndNeverTruncates) {
     const std::vector<unsigned char> admitted(1001, 1);
     const auto row_limited =
         citlali::pipeline::rtc_sampling_resource_preflight(
-            too_many_rows, admitted, 0, 0);
+            too_many_rows, admitted);
     EXPECT_FALSE(row_limited.table_available);
     EXPECT_GT(row_limited.logical_candidate_rows,
               citlali::pipeline::rtc_sampling_max_candidate_rows);
@@ -422,17 +463,17 @@ TEST(RtcLearnedSamplingMetrics, ResourcePreflightIsCheckedAndNeverTruncates) {
 
     const auto evaluation_limited =
         citlali::pipeline::rtc_sampling_resource_preflight(
-            {8192}, {1},
-            citlali::pipeline::rtc_sampling_max_complex_evaluations / 8192 + 1,
-            0);
+            {2}, {1},
+            {citlali::pipeline::rtc_sampling_max_actual_work_units},
+            {1}, {1});
     EXPECT_FALSE(evaluation_limited.table_available);
-    EXPECT_EQ(evaluation_limited.candidate_axis_size, 8192u);
+    EXPECT_EQ(evaluation_limited.candidate_axis_size, 2u);
     EXPECT_EQ(evaluation_limited.table_reason,
               citlali::pipeline::RtcSamplingReasonCode::numerical_resource_limit);
 
     const auto byte_limited =
         citlali::pipeline::rtc_sampling_resource_preflight(
-            {10}, {1}, 0,
+            {10}, {1}, {1}, {1}, {1},
             citlali::pipeline::rtc_sampling_max_estimated_rtcdiag_bytes / 10 + 1);
     EXPECT_FALSE(byte_limited.table_available);
     EXPECT_EQ(byte_limited.candidate_axis_size, 10u);
@@ -440,7 +481,8 @@ TEST(RtcLearnedSamplingMetrics, ResourcePreflightIsCheckedAndNeverTruncates) {
               citlali::pipeline::RtcSamplingReasonCode::candidate_table_storage_limit);
 }
 
-TEST(RtcLearnedSamplingMetrics, ProductionResourceLimitIsolatesOneScanArray) {
+TEST(RtcLearnedSamplingMetrics,
+     ProductionResourcePreflightSeparatesRangeAndWorkLimits) {
     FakeCalib calib;
     calib.n_arrays = 2;
     calib.arrays.resize(2);
@@ -452,7 +494,10 @@ TEST(RtcLearnedSamplingMetrics, ProductionResourceLimitIsolatesOneScanArray) {
     auto summary = available_scan_summary();
     summary.scan_motion[0].speed_p95_arcsec_s = 1.0;
     citlali::pipeline::RtcSamplingCadenceState cadence;
-    cadence.consistent = true;
+    cadence.realized_valid = true;
+    cadence.realized_reason = citlali::pipeline::RtcSamplingReasonCode::none;
+    cadence.requested_effective_consistency = "consistent";
+    cadence.effective_realized_consistency = "consistent";
     cadence.effective_native_hz = 1000.0;
     cadence.realized_native_hz = 1000.0;
     cadence.effective_output_hz = 1000.0;
@@ -466,11 +511,14 @@ TEST(RtcLearnedSamplingMetrics, ProductionResourceLimitIsolatesOneScanArray) {
         citlali::pipeline::RtcSamplingStatusCode::candidate_range_available));
     EXPECT_EQ(values.candidate_range_status[1], static_cast<int>(
         citlali::pipeline::RtcSamplingStatusCode::candidate_range_resource_limit));
-    ASSERT_TRUE(values.candidate_table_available);
-    ASSERT_EQ(values.candidate_factors.size(), 4660u);
-    EXPECT_NE(values.candidate_status[0], -999);
-    EXPECT_EQ(values.candidate_status[4660], -999);
+    EXPECT_FALSE(values.candidate_table_available);
+    EXPECT_TRUE(values.candidate_factors.empty());
+    EXPECT_TRUE(values.candidate_status.empty());
     EXPECT_EQ(values.estimated_candidate_rows, 4660u);
+    EXPECT_EQ(values.candidate_table_reason,
+              citlali::pipeline::RtcSamplingReasonCode::numerical_resource_limit);
+    EXPECT_GT(values.estimated_actual_work_units,
+              citlali::pipeline::rtc_sampling_max_actual_work_units);
 }
 
 TEST(RtcLearnedSamplingMetrics, FirDigestIsOrderSensitiveAndRepeatable) {
@@ -528,6 +576,54 @@ TEST(RtcLearnedSamplingMetrics, CompleteContextZeroIsSoleHardBoundary) {
     }
 }
 
+TEST(RtcLearnedSamplingMetrics,
+     DetectorContextAccountingSeparatesGuardFromResidualScienceFlag) {
+    using Category = citlali::pipeline::RtcSamplingContextCategory;
+    citlali::pipeline::RtcSamplingContextDomain domain;
+    domain.n_times = 3;
+    domain.n_detectors = 2;
+    domain.categories = {
+        Category::fully_supported, Category::fully_supported,
+        Category::science_flag, Category::realized_filter_guard,
+        Category::fully_supported, Category::fully_supported};
+    const auto result =
+        citlali::pipeline::calculate_rtc_sampling_complete_context(
+            domain, 0, 2, 0, 2, 1, 0, 1, 10.0);
+    EXPECT_EQ(result.detector_output_cell_count, 6u);
+    EXPECT_EQ(result.detector_output_category_count[static_cast<std::size_t>(
+                  Category::science_flag)], 1u);
+    EXPECT_EQ(result.detector_output_category_count[static_cast<std::size_t>(
+                  Category::realized_filter_guard)], 1u);
+    EXPECT_EQ(std::accumulate(
+                  result.detector_output_category_count.begin(),
+                  result.detector_output_category_count.end(),
+                  std::size_t{0}),
+              result.detector_output_cell_count);
+    EXPECT_EQ(result.full_output_count, 2u);
+}
+
+TEST(RtcLearnedSamplingMetrics, RealizedCadenceComesFromAssignedTimeGrid) {
+    citlali::pipeline::RtcSamplingCadenceState cadence;
+    cadence.requested_output_hz = 10.0;
+    cadence.effective_output_hz = 10.0;
+    cadence.requested_factor = 1;
+    cadence.effective_factor = 1;
+    const Eigen::Vector4d assigned{0.0, 0.1, 0.2, 0.3};
+    citlali::pipeline::measure_rtc_sampling_realized_cadence(
+        cadence, assigned);
+    EXPECT_TRUE(cadence.realized_valid);
+    EXPECT_DOUBLE_EQ(cadence.realized_native_hz, 10.0);
+    EXPECT_DOUBLE_EQ(cadence.realized_output_hz, 10.0);
+    EXPECT_EQ(cadence.effective_realized_consistency, "consistent");
+
+    const Eigen::Vector4d irregular{0.0, 0.1, 0.21, 0.3};
+    citlali::pipeline::measure_rtc_sampling_realized_cadence(
+        cadence, irregular);
+    EXPECT_FALSE(cadence.realized_valid);
+    EXPECT_EQ(cadence.realized_reason,
+              citlali::pipeline::RtcSamplingReasonCode::irregular_realized_cadence);
+}
+
 TEST(RtcLearnedSamplingMetrics, TypedCarrierResetsBetweenObservations) {
     citlali::pipeline::TimestreamAlignmentState state;
     state.rtc_sampling_source_motion =
@@ -535,9 +631,16 @@ TEST(RtcLearnedSamplingMetrics, TypedCarrierResetsBetweenObservations) {
             source_rows({0.0, 0.02}, {0.0, 0.04}), rad_to_arcsec);
     ASSERT_EQ(state.rtc_sampling_source_motion.interval_count, 1u);
     ASSERT_EQ(state.rtc_sampling_source_motion.eligible_interval_count, 1u);
+    citlali::pipeline::bind_rtc_sampling_source_observation_identity(
+        state.rtc_sampling_source_motion, 4, "obs-4", "tel-4.nc");
+    EXPECT_TRUE(citlali::pipeline::rtc_sampling_source_observation_matches(
+        state.rtc_sampling_source_motion, 4, "obs-4", "tel-4.nc"));
+    EXPECT_FALSE(citlali::pipeline::rtc_sampling_source_observation_matches(
+        state.rtc_sampling_source_motion, 5, "obs-5", "tel-5.nc"));
     citlali::pipeline::reset_rtc_sampling_source_motion(state);
     EXPECT_EQ(state.rtc_sampling_source_motion.interval_count, 0u);
     EXPECT_TRUE(state.rtc_sampling_source_motion.intervals.empty());
+    EXPECT_FALSE(state.rtc_sampling_source_motion.observation_identity_available);
     EXPECT_EQ(state.rtc_sampling_source_motion.reason,
               "missing_source_motion_columns");
     state.rtc_sampling_source_motion =
@@ -564,12 +667,12 @@ TEST(RtcLearnedSamplingMetrics, ProductionSummarySeparatesHwprAndCadenceStates) 
     cadence.requested_factor = 2;
     cadence.effective_factor = 2;
     cadence.realized_factor = 2;
-    cadence.consistent = true;
+    cadence.realized_valid = true;
+    cadence.realized_reason = citlali::pipeline::RtcSamplingReasonCode::none;
+    cadence.requested_effective_consistency = "consistent";
+    cadence.effective_realized_consistency = "consistent";
 
     citlali::pipeline::RtcSamplingHwprState file_present_disabled;
-    file_present_disabled.requested_enabled = true;
-    file_present_disabled.effective_enabled = false;
-    file_present_disabled.realized_hardware_present = true;
     const auto disabled =
         citlali::pipeline::calculate_rtcdiag_scan_array_summary(
             calib, sampling_filter_state(plan, rtc), telescope, scan_summary,
@@ -580,8 +683,6 @@ TEST(RtcLearnedSamplingMetrics, ProductionSummarySeparatesHwprAndCadenceStates) 
         citlali::pipeline::RtcSamplingStatusCode::scan_usable_for_applied_rtc_operator));
 
     auto ignored = file_present_disabled;
-    ignored.effective_enabled = true;
-    ignored.effective_ignored = true;
     const auto ignored_values =
         citlali::pipeline::calculate_rtcdiag_scan_array_summary(
             calib, sampling_filter_state(plan, rtc), telescope, scan_summary,
@@ -591,7 +692,8 @@ TEST(RtcLearnedSamplingMetrics, ProductionSummarySeparatesHwprAndCadenceStates) 
         citlali::pipeline::RtcSamplingStatusCode::prerequisite_available));
 
     auto enabled = ignored;
-    enabled.effective_ignored = false;
+    enabled.analysis_mode =
+        citlali::pipeline::RtcSamplingHwprState::AnalysisMode::hwpr_dependent;
     const auto enabled_values =
         citlali::pipeline::calculate_rtcdiag_scan_array_summary(
             calib, sampling_filter_state(plan, rtc), telescope, scan_summary,
@@ -600,19 +702,19 @@ TEST(RtcLearnedSamplingMetrics, ProductionSummarySeparatesHwprAndCadenceStates) 
     EXPECT_EQ(enabled_values.prerequisite_status[0], static_cast<int>(
         citlali::pipeline::RtcSamplingStatusCode::prerequisite_unavailable));
     EXPECT_EQ(enabled_values.prerequisite_reason[0], static_cast<int>(
-        citlali::pipeline::RtcSamplingReasonCode::unavailable_hwpr_sampling_contract));
+        citlali::pipeline::RtcSamplingReasonCode::unsupported_hwpr));
     EXPECT_EQ(enabled_values.candidate_mmax[0], 1);
-    ASSERT_TRUE(enabled_values.candidate_table_available);
-    ASSERT_EQ(enabled_values.candidate_factors, std::vector<int>{1});
-    EXPECT_EQ(enabled_values.candidate_status[0], static_cast<int>(
-        citlali::pipeline::RtcSamplingStatusCode::candidate_not_evaluated_prerequisite));
-    EXPECT_EQ(enabled_values.candidate_plan_transfer_status[0], static_cast<int>(
-        citlali::pipeline::RtcSamplingStatusCode::plan_transfer_unavailable));
+    EXPECT_FALSE(enabled_values.candidate_table_available);
+    EXPECT_TRUE(enabled_values.candidate_factors.empty());
+    EXPECT_TRUE(enabled_values.candidate_status.empty());
+    EXPECT_TRUE(enabled_values.candidate_plan_transfer_status.empty());
     EXPECT_EQ(enabled_values.applied_scan_status[0], static_cast<int>(
         citlali::pipeline::RtcSamplingStatusCode::applied_operator_not_applicable));
 
     auto inconsistent = cadence;
-    inconsistent.consistent = false;
+    inconsistent.realized_valid = false;
+    inconsistent.realized_reason =
+        citlali::pipeline::RtcSamplingReasonCode::cadence_state_mismatch;
     const auto mismatch =
         citlali::pipeline::calculate_rtcdiag_scan_array_summary(
             calib, sampling_filter_state(plan, rtc), telescope, scan_summary,
@@ -696,7 +798,15 @@ TEST(RtcLearnedSamplingMetrics, AtomicRtcdiagFailuresLeaveNoPartialArtifact) {
 
     const auto assert_absent = [](const std::filesystem::path &path) {
         EXPECT_FALSE(std::filesystem::exists(path));
-        EXPECT_FALSE(std::filesystem::exists(path.string() + ".tmp"));
+        if (std::filesystem::exists(path.parent_path())) {
+            for (const auto &entry :
+                 std::filesystem::directory_iterator(path.parent_path())) {
+                EXPECT_EQ(entry.path().filename().string().find(
+                              path.filename().string() +
+                              netcdf_atomic_staging_marker),
+                          std::string::npos);
+            }
+        }
     };
 
     const auto create_failure = root / "missing" / "create.nc";
@@ -705,13 +815,21 @@ TEST(RtcLearnedSamplingMetrics, AtomicRtcdiagFailuresLeaveNoPartialArtifact) {
     assert_absent(create_failure);
 
     const auto write_failure = root / "write.nc";
+    write_netcdf_atomic(write_failure.string(), [](netCDF::NcFile &fo) {
+        add_netcdf_var(fo, "PRIOR_GOOD", 1);
+    });
     EXPECT_THROW(
         write_netcdf_atomic(write_failure.string(), [](netCDF::NcFile &fo) {
             add_netcdf_var(fo, "BEFORE_FAILURE", 1);
             throw std::runtime_error("injected write failure");
         }),
         std::runtime_error);
-    assert_absent(write_failure);
+    ASSERT_TRUE(std::filesystem::is_regular_file(write_failure));
+    {
+        netCDF::NcFile prior(write_failure.string(), netCDF::NcFile::read);
+        EXPECT_FALSE(prior.getVar("PRIOR_GOOD").isNull());
+        EXPECT_TRUE(prior.getVar("BEFORE_FAILURE").isNull());
+    }
 
     const auto sync_failure = root / "sync.nc";
     EXPECT_THROW(
@@ -733,13 +851,19 @@ TEST(RtcLearnedSamplingMetrics, AtomicRtcdiagFailuresLeaveNoPartialArtifact) {
         DataIOError);
     EXPECT_TRUE(std::filesystem::is_directory(rename_failure));
     EXPECT_TRUE(std::filesystem::is_directory(marker));
-    EXPECT_FALSE(std::filesystem::exists(rename_failure.string() + ".tmp"));
+    for (const auto &entry : std::filesystem::directory_iterator(root)) {
+        EXPECT_EQ(entry.path().filename().string().find(
+                      rename_failure.filename().string() +
+                      netcdf_atomic_staging_marker),
+                  std::string::npos);
+    }
     std::filesystem::remove_all(root, ec);
 }
 
 TEST(RtcLearnedSamplingMetrics, PersistsSuccessorSchemaAndNoSelection) {
     citlali::pipeline::RtcDiagScanArraySummaryData values;
     values.candidate_factors = {1};
+    values.candidate_phases = {0};
     values.fir_coefficients = {1.0};
     values.fir_digest = citlali::pipeline::rtc_sampling_fir_digest({1.0});
     values.fir_status =
@@ -807,16 +931,21 @@ TEST(RtcLearnedSamplingMetrics, PersistsSuccessorSchemaAndNoSelection) {
     values.estimated_rectangular_storage_cells = 1;
 
     const auto path = std::filesystem::temp_directory_path() /
-                      "citlali_rtc_sampling_stage_a_v2.nc";
-    std::error_code ec; std::filesystem::remove(path, ec);
-    write_netcdf_atomic(path.string(), [&](netCDF::NcFile &file) {
+                      "citlali_rtc_sampling_stage_a_v3.nc";
+    const auto manifest_path = std::filesystem::temp_directory_path() /
+                               "citlali_rtc_sampling_raw_manifest.yaml";
+    std::error_code ec;
+    std::filesystem::remove(path, ec);
+    std::filesystem::remove(manifest_path, ec);
+    {
+        std::ofstream manifest(manifest_path);
+        manifest << "schema_version: citlali-raw-timestream-provenance-v1\n";
+    }
+    const auto write_stage = [&]() {
+      return write_netcdf_staging(path.string(), [&](netCDF::NcFile &file) {
         const auto scan = file.addDim("n_scans", 1);
         const auto array = file.addDim("n_arrays", 1);
         citlali::pipeline::RtcSamplingHwprState hwpr;
-        hwpr.requested_enabled = true;
-        hwpr.requested_policy = "automatic";
-        hwpr.effective_enabled = false;
-        hwpr.realized_hardware_present = true;
         citlali::pipeline::RtcSamplingCadenceState cadence;
         cadence.requested_output_hz = 50.0;
         cadence.effective_native_hz = 100.0;
@@ -826,14 +955,26 @@ TEST(RtcLearnedSamplingMetrics, PersistsSuccessorSchemaAndNoSelection) {
         cadence.requested_factor = 2;
         cadence.effective_factor = 2;
         cadence.realized_factor = 2;
-        cadence.consistent = true;
-        const auto support =
+        cadence.realized_valid = true;
+        cadence.realized_reason =
+            citlali::pipeline::RtcSamplingReasonCode::none;
+        cadence.requested_effective_consistency = "consistent";
+        cadence.effective_realized_consistency = "consistent";
+        auto support =
             citlali::pipeline::capture_rtc_sampling_source_motion(
                 source_rows({0.0, 0.02}, {0.0, 0.04}), rad_to_arcsec);
+        citlali::pipeline::bind_rtc_sampling_source_observation_identity(
+            support, 0, "000001", "telescope.nc");
         citlali::pipeline::add_rtcdiag_scan_array_summary_outputs(
             file, {scan, array}, {1, 1}, values, hwpr, cadence, support,
-            "raw_timestream_provenance.yaml", "test-commit");
-    });
+            "raw_timestream_provenance.yaml",
+            "0123456789abcdef0123456789abcdef01234567");
+      });
+    };
+    const auto staging_path = write_stage();
+    EXPECT_EQ(citlali::pipeline::finalize_rtcdiag_successor_staging(
+                  staging_path, manifest_path),
+              path.string());
     {
         netCDF::NcFile file(path.string(), netCDF::NcFile::read);
         const auto get_string = [&](const char *name) {
@@ -845,9 +986,9 @@ TEST(RtcLearnedSamplingMetrics, PersistsSuccessorSchemaAndNoSelection) {
             }
             return value;
         };
-        EXPECT_EQ(get_string("RTC_DIAG_SCHEMA_VERSION"), "rtcdiag-v2");
+        EXPECT_EQ(get_string("RTC_DIAG_SCHEMA_VERSION"), "rtcdiag-v3");
         EXPECT_EQ(get_string("RTC_SAMPLING_ALGORITHM_VERSION"),
-                  "rtc-learned-sampling-stage-a-v2");
+                  "rtc-learned-sampling-stage-a-v3");
         EXPECT_EQ(get_string("RTC_SAMPLING_FIR_DIGEST_CONVENTION"),
                   "sha256-u64le-count-then-ieee754-binary64le-realized-order-v1");
         EXPECT_EQ(get_string("RTC_SAMPLING_SOURCE_GUARD_VERSION"),
@@ -877,10 +1018,13 @@ TEST(RtcLearnedSamplingMetrics, PersistsSuccessorSchemaAndNoSelection) {
         EXPECT_FALSE(file.getVar("rtc_sampling_source_interval_reason").isNull());
         EXPECT_FALSE(file.getVar("rtc_sampling_source_interval_start_row").isNull());
         EXPECT_FALSE(file.getVar("rtc_sampling_full_output_count").isNull());
-        int requested_hwpr = 0;
-        int effective_hwpr = 1;
-        int hardware_present = 0;
-        int cadence_consistent = 0;
+        EXPECT_FALSE(file.getVar(
+            "rtc_sampling_detector_output_cell_count").isNull());
+        EXPECT_FALSE(file.getVar(
+            "rtc_sampling_detector_output_science_flag_count").isNull());
+        EXPECT_FALSE(file.getVar(
+            "rtc_sampling_detector_output_realized_filter_guard_count").isNull());
+        int cadence_realized_valid = 0;
         int requested_factor = 0;
         int effective_factor = 0;
         int realized_factor = 0;
@@ -888,10 +1032,8 @@ TEST(RtcLearnedSamplingMetrics, PersistsSuccessorSchemaAndNoSelection) {
         int boundary_guard_rows = 0;
         double max_interval_s = 0.0;
         double max_pointing_step_rad = 0.0;
-        file.getVar("RTC_SAMPLING_HWPR_REQUESTED_ENABLED").getVar(&requested_hwpr);
-        file.getVar("RTC_SAMPLING_HWPR_EFFECTIVE_ENABLED").getVar(&effective_hwpr);
-        file.getVar("RTC_SAMPLING_HWPR_REALIZED_HARDWARE_PRESENT").getVar(&hardware_present);
-        file.getVar("RTC_SAMPLING_CADENCE_CONSISTENT").getVar(&cadence_consistent);
+        file.getVar("RTC_SAMPLING_CADENCE_REALIZED_VALID").getVar(
+            &cadence_realized_valid);
         file.getVar("RTC_SAMPLING_CADENCE_REQUESTED_FACTOR").getVar(&requested_factor);
         file.getVar("RTC_SAMPLING_CADENCE_EFFECTIVE_FACTOR").getVar(&effective_factor);
         file.getVar("RTC_SAMPLING_CADENCE_REALIZED_FACTOR").getVar(&realized_factor);
@@ -902,10 +1044,10 @@ TEST(RtcLearnedSamplingMetrics, PersistsSuccessorSchemaAndNoSelection) {
             &max_interval_s);
         file.getVar("RTC_SAMPLING_SOURCE_MAX_POINTING_STEP_RAD").getVar(
             &max_pointing_step_rad);
-        EXPECT_EQ(requested_hwpr, 1);
-        EXPECT_EQ(effective_hwpr, 0);
-        EXPECT_EQ(hardware_present, 1);
-        EXPECT_EQ(cadence_consistent, 1);
+        EXPECT_EQ(get_string("RTC_SAMPLING_ANALYSIS_MODE"),
+                  "total_intensity");
+        EXPECT_EQ(get_string("RTC_SAMPLING_HWPR_REASON"), "none");
+        EXPECT_EQ(cadence_realized_valid, 1);
         EXPECT_EQ(requested_factor, 2);
         EXPECT_EQ(effective_factor, 2);
         EXPECT_EQ(realized_factor, 2);
@@ -918,7 +1060,30 @@ TEST(RtcLearnedSamplingMetrics, PersistsSuccessorSchemaAndNoSelection) {
         EXPECT_TRUE(file.getVar("rtc_sampling_candidate_selected").isNull());
         EXPECT_TRUE(file.getVar("scan_array_beam_major_fwhm_arcsec").isNull());
     }
+    for (const auto stage : {
+             citlali::pipeline::RtcdiagFinalizeFailureStage::manifest,
+             citlali::pipeline::RtcdiagFinalizeFailureStage::provenance,
+             citlali::pipeline::RtcdiagFinalizeFailureStage::validation,
+             citlali::pipeline::RtcdiagFinalizeFailureStage::sync,
+             citlali::pipeline::RtcdiagFinalizeFailureStage::close,
+             citlali::pipeline::RtcdiagFinalizeFailureStage::publish}) {
+        const auto failed_staging = write_stage();
+        EXPECT_THROW(
+            citlali::pipeline::finalize_rtcdiag_successor_staging(
+                failed_staging, manifest_path, stage),
+            DataIOError);
+        EXPECT_FALSE(std::filesystem::exists(failed_staging));
+        netCDF::NcFile prior(path.string(), netCDF::NcFile::read);
+        EXPECT_FALSE(prior.getVar("RTC_SAMPLING_PRODUCT_CONTRACT_ID").isNull());
+    }
+    const auto refused_stage = write_stage();
+    cleanup_netcdf_atomic_staging(refused_stage);
+    EXPECT_THROW(
+        citlali::pipeline::finalize_rtcdiag_successor_staging(
+            path.string(), manifest_path),
+        DataIOError);
     std::filesystem::remove(path, ec);
+    std::filesystem::remove(manifest_path, ec);
 }
 
 TEST(RtcLearnedSamplingMetrics, ResourceUnavailableWriterEmitsNoTruncatedTable) {

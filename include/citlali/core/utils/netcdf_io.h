@@ -1,45 +1,177 @@
 #pragma once
 
 #include <algorithm>
+#include <atomic>
+#include <cerrno>
 #include <cctype>
 #include <filesystem>
+#include <fcntl.h>
 #include <netcdf>
+#include <sstream>
 #include <string>
 #include <system_error>
 #include <type_traits>
+#include <utility>
+#include <unistd.h>
 #include <vector>
 
 struct DataIOError : public std::runtime_error {
     using std::runtime_error::runtime_error;
 };
 
-template <typename Writer>
-void write_netcdf_atomic(const std::string &final_path, Writer &&writer) {
-    namespace fs = std::filesystem;
-    const fs::path final_file(final_path);
-    const fs::path temp_file(final_path + ".tmp");
-    std::error_code ec;
-    fs::remove(temp_file, ec);
+inline constexpr const char *netcdf_atomic_staging_marker =
+    ".citlali-stage.";
 
-    try {
-        netCDF::NcFile fo(temp_file.string(), netCDF::NcFile::replace);
-        writer(fo);
-        fo.sync();
-        fo.close();
+enum class NetcdfAtomicFailureStage {
+    none,
+    create,
+    write,
+    sync,
+    close,
+    publish,
+};
 
-        ec.clear();
-        fs::remove(final_file, ec);
-        ec.clear();
-        fs::rename(temp_file, final_file, ec);
-        if (ec) {
-            throw DataIOError(
-                "failed to atomically rename netCDF temp file " +
-                temp_file.string() + " -> " + final_file.string() + ": " +
-                ec.message());
+inline void inject_netcdf_atomic_failure(
+    NetcdfAtomicFailureStage configured, NetcdfAtomicFailureStage current) {
+    if (configured == current) {
+        throw DataIOError("injected netCDF atomic lifecycle failure");
+    }
+}
+
+inline bool netcdf_atomic_decimal_component(const std::string &value) {
+    return !value.empty() && std::all_of(
+        value.begin(), value.end(),
+        [](unsigned char c) { return std::isdigit(c) != 0; });
+}
+
+inline bool is_netcdf_atomic_staging_path(const std::string &path) {
+    const auto marker = path.rfind(netcdf_atomic_staging_marker);
+    if (marker == std::string::npos || marker == 0) {
+        return false;
+    }
+    const auto suffix = path.substr(
+        marker + std::char_traits<char>::length(
+                     netcdf_atomic_staging_marker));
+    const auto separator = suffix.find('.');
+    return separator != std::string::npos &&
+           suffix.find('.', separator + 1) == std::string::npos &&
+           netcdf_atomic_decimal_component(suffix.substr(0, separator)) &&
+           suffix.substr(0, separator) == std::to_string(::getpid()) &&
+           netcdf_atomic_decimal_component(suffix.substr(separator + 1));
+}
+
+inline std::string netcdf_atomic_final_path_from_staging(
+    const std::string &staging_path) {
+    const auto marker = staging_path.rfind(netcdf_atomic_staging_marker);
+    if (!is_netcdf_atomic_staging_path(staging_path)) {
+        throw DataIOError("not a Citlali netCDF staging path: " +
+                          staging_path);
+    }
+    return staging_path.substr(0, marker);
+}
+
+inline std::string reserve_netcdf_atomic_staging_path(
+    const std::string &final_path,
+    NetcdfAtomicFailureStage failure = NetcdfAtomicFailureStage::none) {
+    inject_netcdf_atomic_failure(failure, NetcdfAtomicFailureStage::create);
+    static std::atomic<unsigned long long> sequence{0};
+    for (int attempt = 0; attempt < 128; ++attempt) {
+        std::ostringstream name;
+        name << final_path << netcdf_atomic_staging_marker
+             << static_cast<unsigned long long>(::getpid()) << "."
+             << sequence.fetch_add(1, std::memory_order_relaxed);
+        const auto staging = name.str();
+        const int descriptor = ::open(
+            staging.c_str(), O_CREAT | O_EXCL | O_WRONLY, 0600);
+        if (descriptor >= 0) {
+            if (::close(descriptor) != 0) {
+                std::error_code ec;
+                std::filesystem::remove(staging, ec);
+                throw DataIOError("failed to close reserved netCDF staging file " +
+                                  staging);
+            }
+            return staging;
         }
-    } catch (...) {
-        ec.clear();
-        fs::remove(temp_file, ec);
+        if (errno != EEXIST) {
+            throw DataIOError("failed to reserve adjacent netCDF staging file for " +
+                              final_path + ": " +
+                              std::error_code(errno, std::generic_category()).message());
+        }
+    }
+    throw DataIOError("exhausted unique adjacent netCDF staging names for " +
+                      final_path);
+}
+
+inline void cleanup_netcdf_atomic_staging(const std::string &staging_path) {
+    if (!is_netcdf_atomic_staging_path(staging_path)) {
+        return;
+    }
+    std::error_code ec;
+    std::filesystem::remove(staging_path, ec);
+}
+
+inline std::string publish_netcdf_atomic_staging(
+    const std::string &staging_path) {
+    namespace fs = std::filesystem;
+    const std::string final_path =
+        netcdf_atomic_final_path_from_staging(staging_path);
+    std::error_code ec;
+    if (!fs::is_regular_file(staging_path, ec) || ec) {
+        throw DataIOError("netCDF staging artifact is not a regular file: " +
+                          staging_path);
+    }
+    ec.clear();
+    // On the supported local POSIX filesystems this is one atomic replacement.
+    // Do not pre-delete the prior final: any failure therefore preserves it.
+    fs::rename(staging_path, final_path, ec);
+    if (ec) {
+        throw DataIOError("failed to atomically publish netCDF staging file " +
+                          staging_path + " -> " + final_path + ": " +
+                          ec.message());
+    }
+    return final_path;
+}
+
+template <typename Writer>
+std::string write_netcdf_staging(const std::string &final_path,
+                                 Writer &&writer,
+                                 NetcdfAtomicFailureStage failure =
+                                     NetcdfAtomicFailureStage::none) {
+    const std::string staging_path =
+        reserve_netcdf_atomic_staging_path(final_path, failure);
+    try {
+        netCDF::NcFile fo(staging_path, netCDF::NcFile::replace);
+        writer(fo);
+        inject_netcdf_atomic_failure(failure,
+                                     NetcdfAtomicFailureStage::write);
+        inject_netcdf_atomic_failure(failure,
+                                     NetcdfAtomicFailureStage::sync);
+        fo.sync();
+        inject_netcdf_atomic_failure(failure,
+                                     NetcdfAtomicFailureStage::close);
+        fo.close();
+        return staging_path;
+    }
+    catch (...) {
+        cleanup_netcdf_atomic_staging(staging_path);
+        throw;
+    }
+}
+
+template <typename Writer>
+void write_netcdf_atomic(
+    const std::string &final_path, Writer &&writer,
+    NetcdfAtomicFailureStage failure = NetcdfAtomicFailureStage::none) {
+    std::string staging_path;
+    try {
+        staging_path = write_netcdf_staging(
+            final_path, std::forward<Writer>(writer), failure);
+        inject_netcdf_atomic_failure(failure,
+                                     NetcdfAtomicFailureStage::publish);
+        (void)publish_netcdf_atomic_staging(staging_path);
+    }
+    catch (...) {
+        cleanup_netcdf_atomic_staging(staging_path);
         throw;
     }
 }

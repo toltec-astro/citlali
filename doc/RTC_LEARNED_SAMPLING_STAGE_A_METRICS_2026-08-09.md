@@ -1,19 +1,18 @@
 # RTC learned-sampling Stage A successor metrics
 
-Date: 2026-08-10
+Date: 2026-08-11
 
-Status: bounded completion candidate; deterministic local gates pass;
-independent re-audit has not been launched
+Status: successor repair 2 locally validated completion candidate; independent
+re-audit has not been launched
 
 ## Authority and scope
 
-This successor is implemented on
-`codex/repair-rtc-learned-sampling-stage-a-successor` from exact application
-base `6cbe119a59f8915c5aecf5eaf333425dd592993d`. Its frozen repair authority is
-handoff `SCI-RTC-001-LEARNED-SAMPLING-STAGE-A-REPAIR-READY-006` at
-coordination commit `3132d5d8c001ef32f185d4ece2038aa6d7ce1b5c`, plus the
-2026-08-10 owner clarification recorded for the beam-transfer and coherent
-tone conventions.
+This narrow SRA-001 through SRA-009 repair is implemented on
+`codex/repair-rtc-learned-sampling-stage-a-successor-2` from exact application
+base `66c96757164af2c83ee1449d00fea30d131a7e3f`. Its frozen successor repair
+authority is coordination commit
+`3fe0aa30eaa0d8848dbb39eb720457326c0b43ba`; all unaffected predecessor
+scientific authorities and positive controls remain binding.
 
 The product remains observe-only. It enumerates, characterizes, and reports
 every admitted factor without ranking, recommending, selecting, or applying
@@ -24,10 +23,12 @@ are unchanged.
 ## Source motion and cadence authority
 
 Source-telescope motion is captured from authoritative raw telescope rows
-before detector-grid interpolation. A typed observation-scoped carrier in
-`TimestreamAlignmentState` owns only interval support needed by `rtcdiag`; it
-is replaced/reset for every observation and is never read by RTC, PTC, or
-mapmaking.
+before detector-grid interpolation. The reduction-observation input owner
+resets the typed `TimestreamAlignmentState` carrier before loading an
+observation, captures it immediately after that observation's telescope rows
+are loaded, and binds observation index, obsnum, and telescope path. The
+`rtcdiag` writer consumes the carrier only when all three identities still
+match. It is never read by RTC, PTC, or mapmaking.
 
 The non-HWPR statistic is the empirical `v95` of valid eligible tangent-plane
 source-telescope speed magnitudes. `p99`, `p99.5`, and the raw maximum are
@@ -53,16 +54,21 @@ exclusions, and their durations are persisted separately. Consecutive scans
 apply this rule independently.
 
 Requested, effective, and realized cadence and filter states are distinct.
-Actual `telescope.fsmp` is the realized native cadence; the raw plan owns the
-requested/effective cadence and filter configuration. The writer records the
-consistency result. Exact realized FIR coefficients come from the RTC filter
-object, or the explicit identity vector `[1]` when filtering is disabled.
+Realized native cadence is measured from exact `TelTime` differences; missing,
+non-finite, non-positive, or irregular grids fail dependent metrics with a
+cause-specific reason. Valid Stage A calculations use realized cadence even
+when requested-to-effective or effective-to-realized consistency is
+`mismatch`; both consistency results remain separately persisted. Exact
+realized FIR coefficients come from the RTC filter object, or the explicit
+identity vector `[1]` when filtering is disabled.
 
-Requested, effective, ignored, and realized hardware-presence HWPR facts are
-also separate. Physical HWPR data do not imply scientific enablement. An
-effectively enabled HWPR observation retains only the factor-1 reference row;
-dependent astronomical metrics are unavailable with
-`unavailable_hwpr_sampling_contract`.
+Citlali remains total-intensity only. Supported diagnostics use an explicit
+`total_intensity` analysis mode and do not consult `calib.run_hwpr`, serialized
+legacy state, or HWPR-file presence. The existing capability gate rejects an
+enabled polarimetry request before scientific execution. If the diagnostic API
+is explicitly given `hwpr_dependent`, it reports `unsupported_hwpr` and emits
+no candidate dimension or candidate rows; no HWPR lifecycle or transfer model
+is invented.
 
 ## Beam and transfer identity
 
@@ -123,29 +129,63 @@ independent per-metric status/reason. A zero enclosure is
 tolerance-converged claim; evaluation failure is `numerical_failed`.
 
 Resource preflight limits the implementation to 8192 factors per scan-array,
-8,000,000 total candidate rows, 50,000,000 estimated complex evaluations, and
-536,870,912 estimated `rtcdiag` bytes, using checked arithmetic. Every
-scan-array retains its full derived `Mmax` and its own range status. A pair
-above the 8192 limit is isolated while unaffected pairs remain evaluable when
-the rectangular product fits. If a global row, evaluation, or byte guard
-prevents the table, explicit product/range unavailability is emitted with no
-candidate dimension or factor-1 pseudo-table; the range is never silently
-truncated.
+8,000,000 total candidate rows, 500,000,000 actual work units, and 536,870,912
+estimated `rtcdiag` bytes, using checked add/multiply throughout. With
+`Q = 257`, factor `M`, realized FIR tap count `L`, production-valid detector
+count `D`, and native sample count `N`, the charged work is
+
+```text
+numerical(M=1) = L
+numerical(M>=2) = L [ M(6Q+1) + 2Q+4 ]
+context(M) = D [ floor((N-1)/M)+1 ] L
+actual = sum over every admitted scan-array-factor of numerical + context.
+```
+
+Serialized storage charges every rectangular candidate cell at exactly 40
+int32 plus 43 binary64 fields (`504 bytes`) and adds every realized FIR vector
+at `8L` bytes. Every scan-array retains its full derived `Mmax` and its own
+range status. A pair above the 8192 limit is isolated while unaffected pairs
+remain evaluable when the rectangular product fits. Overflow, global row,
+actual-work, or storage rejection occurs before partial evaluation and emits
+explicit unavailability with no candidate dimension or factor-1 pseudo-table;
+the range is never silently truncated.
 
 Finite-scan applicability uses the exact realized FIR tap count and centered
-left/right context, factor, phase zero, outer and science-scan boundaries,
-eligible assigned-grid support, and internal gaps. It reports candidate
-outputs, fully supported outputs, boundary/gap/other incomplete counts,
-longest run, duration, and fraction. `N_full == 0` is the sole hard Stage A
-boundary and yields `candidate_unusable_no_complete_context`. One full output
-means mathematical evaluability only. The separately reported actually
-applied RTC operator uses `scan_unusable_for_applied_rtc_operator` with
-`no_complete_context` at zero support; Stage A does not enforce that result.
+left/right context, factor, phase zero, boundaries, motion eligibility, exact
+per-detector validity, finite values, science flags, and the separately
+captured realized filter-guard mask. Input construction assigns each
+detector-time cell one category. Deterministic precedence is motion gap,
+low-velocity, invalid/over-limit, per-detector invalid, realized filter guard,
+residual/pre-guard science flag, non-finite input, then fully supported. The
+science category is explicitly `flag && !guard`, so a guard cannot be swallowed
+by the flag it produced. Candidate detector-output category counts are mutually
+exclusive, sum exactly to the detector-output-cell total, and require
+`unclassified == 0`.
 
-## `rtcdiag` v2 semantic breaks
+Temporal `N_full` counts an output when at least one production-valid detector
+has complete context; detector-output counts retain exact per-detector
+validity. `N_full == 0` remains the sole hard Stage A boundary and yields
+`candidate_unusable_no_complete_context`. One full output is mathematical
+evaluability only, with no adequacy threshold. The separately reported actually
+applied RTC operator retains its prior status semantics; Stage A does not
+enforce the diagnostic result.
 
-`RTC_DIAG_SCHEMA_VERSION` is now `rtcdiag-v2`, and algorithm identity is
-`rtc-learned-sampling-stage-a-v2`. The old maximum-speed/APT-projected-beam,
+## `rtcdiag` v3 successor contract and publication
+
+`RTC_DIAG_SCHEMA_VERSION` is `rtcdiag-v3`, algorithm identity is
+`rtc-learned-sampling-stage-a-v3`, embedded generic product declaration is
+`sci-rtc-001-stage-a-successor-products-v1`, point validation-profile ID is
+`sci-rtc-001-stage-a-successor-v1`, and contract epoch is
+`sci-rtc-001-stage-a-successor-2026-08-11`. The profile remains `preparing`.
+The OOF, Beammap, and science profiles use deterministic mode suffixes. Four
+thin `sci-rtc-001-stage-a-successor-{mode}-products-v1` wrappers inherit the
+matching established mode contract and override only its native RTC entry:
+`rtc-diagnostics` for point/OOF, `source-crossing-rtc-diagnostics` for
+Beammap, and `observation-rtc-diagnostics` for science. Every override changes
+only `check_id` to `rtc_diagnostics_stage_a_successor_v3`; file scope, pattern,
+classification, cardinality, and every non-rtcdiag entry remain unchanged.
+
+The old maximum-speed/APT-projected-beam,
 filter-edge candidate enumeration, attenuation/broadening, incoherent
 alias-power, transition-margin, and software-delay Stage A fields are removed
 without compatibility aliases. They are replaced by:
@@ -158,7 +198,29 @@ without compatibility aliases. They are replaced by:
   status/reason fields using the persisted stable numeric vocabulary;
 - bounded coherent amplitude/phase/power/distortion, alias, and FIR stopband
   fields with numerical evidence; and
-- exact complete-context counts and fractions.
+- exact detector-output complete-context counts, mutually exclusive exclusion
+  categories, and temporal counts/fractions.
+
+Candidate availability is an executable conditional contract. Available (`1`)
+requires the candidate dimension, declared count equality, and all 81
+candidate arrays with that exact trailing dimension. Unavailable (`0`) forbids
+the dimension and every candidate array. Integer scalar conditions are
+normalized before comparison. Both malformed available and residual-row
+unavailable products are adversarial validator fixtures. The contract also
+requires the exact 40-lowercase-hex `RTC_SAMPLING_CITLALI_COMMIT`, rejects a
+dirty production build identity, and embeds the canonical raw-input-manifest
+bytes, SHA-256, and reference into the self-contained product.
+
+The output owner reserves a unique adjacent
+`.citlali-stage.<pid>.<sequence>` file with `O_EXCL` mode `0600`. All setup,
+scan rows, candidate tables, identity, and manifest provenance are written to
+that staging path; RTC diagnostic append refuses any published path. The
+finalizer reopens and validates the complete artifact, syncs, closes, verifies
+the regular file, and performs one same-directory atomic rename without
+pre-deleting the prior final. Create, write, scan append, provenance,
+validation, sync, close, and rename failures propagate, clean only the
+recognized task staging artifact, advertise no partial generation, and
+preserve any prior good final. Nothing appends after publication.
 
 Metric values are non-authoritative unless their own domain-specific status
 is available or converged. The frozen vocabulary preserves prerequisite
@@ -171,41 +233,33 @@ says no factor was ranked, recommended, selected, or applied.
 
 ## Completion-candidate evidence and exclusions
 
-The dedicated translation unit and production CLI compile, and all 26 focused
-tests pass. They cover unequal-column failure,
-negative azimuth wrap, exact native-row boundary/partial/consecutive-scan
-support, gap and low-velocity identity, empirical percentiles, fixed beam
-authority, Gaussian normalization, coherent odd/even folding without `1/M`,
-factor-1 identity, factor-range independence from filter edges, analytic,
-narrow-extremum, long-FIR, broad-valid, singular and per-metric numerical
-fixtures, the independent byte-level coefficient digest, checked resource
-overflow/row/evaluation/byte/isolation/no-truncation behavior, exact complete
-context, requested/effective/realized HWPR and cadence matrices, file-presence
-negative control, observation reset and A/B state sentinels, atomic
-create/write/sync/rename cleanup, and production helper writer/reopen joins.
+Focused evidence covers independent source-motion interval lookup,
+same-observation identity reset/match, explicit total-intensity/HWPR diagnostic
+routing, realized-cadence measurement, checked actual-work and storage
+formulas, detector-level context precedence and exact sums, full source
+identity, unique adjacent staging, prior-good preservation, publication
+ordering, and executable candidate-table cardinality. The contract fixture
+derives its malformed cases independently of the production writer.
 
-The local build cache was configured with the installed Homebrew OpenMP header
-and library, without a source-tree or product change. The full CTest inventory
-passes all 649 enabled tests; the pre-existing
-`MapFitterLifecycle.ExactProductSequence` is the sole disabled test. The
-baseline-tool suite passes 172/172 tests. The complete config preflight passes,
-including 127 Python tests, four mode kits, eight compact-compatibility cases,
-100% compact-surface coverage, all authority/boundary audits, and the unchanged
-45-record raw-execution census at digest
+The production CLI and every registered test target compile. The local build
+uses an unmodified Ceres 2.1 source snapshot, matching Citlali/kidscpp's legacy
+parameterization API, and the installed macOS 13.3 SDK to avoid newer-library
+format-overload drift; these are build inputs only and make no source or
+product change. All 653 enabled CTests pass; the pre-existing
+`MapFitterLifecycle.ExactProductSequence` remains the sole disabled test. The
+baseline-tool suite passes 177/177, including 38/38 focused product-contract
+and validation-profile tests. The complete config preflight passes its 127
+Python tests, four mode kits, eight compact-compatibility cases, 100% compact
+surface coverage, all authority/boundary audits, and the unchanged 45-record
+raw-execution census at digest
 `09572da976aec89d56506394420b478426a6efbd0942c864571a8f6f311da2f8`.
-The 60-record validation ledger and validation-profile registry validate; the
-Phase 5 readiness report executes successfully and truthfully remains
-`preparing`/not promotion-ready because its documented external promotion
-evidence is still absent.
+The 60-record validation ledger, three-change/five-integration-commit intended
+science ledger, four-mode preparing profile registry, and session-exit audit
+(`library_exits=0`, `cli_exits=0`, `growth=0`) also pass. No skipped test is
+counted as successful evidence.
 
-Gate-driven corrections remained inside the approved paths: generic
-pre-interpolation source columns now normalize cardinalities to `size_t` before
-comparison; the unchanged product-registry identity remains v2 while the
-`rtcdiag` product alone advances to v2; and requested/effective/realized filter
-facts plus exact realized FIR coefficients are captured once by the rtcdiag
-output owner into a typed adapter before numerical consumption. No local
-science reduction, Unity work, push, merge, re-audit, or downstream launch
-occurred.
+No local science reduction, Unity work, push, merge, re-audit, downstream
+launch, or production authorization occurred.
 
 The checked-in `candidate_metrics.csv` is a compact deterministic
 output-format illustration. It is not observation evidence, a numerical gate,

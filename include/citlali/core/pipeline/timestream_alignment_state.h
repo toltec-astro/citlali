@@ -3,6 +3,7 @@
 #include <map>
 #include <limits>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include <Eigen/Core>
@@ -40,6 +41,10 @@ struct RtcSamplingSourceMotionSupport {
         "delta-source-altaz-tangent-plane-v1"};
     std::string status{"unavailable"};
     std::string reason{"missing_source_motion_columns"};
+    bool observation_identity_available = false;
+    std::size_t observation_index = std::numeric_limits<std::size_t>::max();
+    std::string observation_obsnum;
+    std::string telescope_source_path;
     std::size_t source_row_count = 0;
     std::size_t interval_count = 0;
     std::size_t valid_interval_count = 0;
@@ -51,6 +56,27 @@ struct RtcSamplingSourceMotionSupport {
     double low_velocity_excluded_duration_s = 0.0;
     std::vector<RtcSamplingSourceMotionInterval> intervals;
 };
+
+inline void bind_rtc_sampling_source_observation_identity(
+    RtcSamplingSourceMotionSupport &support, std::size_t observation_index,
+    std::string observation_obsnum, std::string telescope_source_path) {
+    support.observation_index = observation_index;
+    support.observation_obsnum = std::move(observation_obsnum);
+    support.telescope_source_path = std::move(telescope_source_path);
+    support.observation_identity_available =
+        !support.observation_obsnum.empty() &&
+        !support.telescope_source_path.empty();
+}
+
+inline bool rtc_sampling_source_observation_matches(
+    const RtcSamplingSourceMotionSupport &support,
+    std::size_t observation_index, const std::string &observation_obsnum,
+    const std::string &telescope_source_path) {
+    return support.observation_identity_available &&
+           support.observation_index == observation_index &&
+           support.observation_obsnum == observation_obsnum &&
+           support.telescope_source_path == telescope_source_path;
+}
 
 struct TimestreamAlignmentState {
     Eigen::VectorXd common_time;

@@ -26,9 +26,9 @@ namespace citlali::pipeline {
 inline constexpr double rtc_sampling_pi =
     3.141592653589793238462643383279502884;
 inline constexpr const char *rtc_sampling_schema_version =
-    "rtcdiag-v2";
+    "rtcdiag-v3";
 inline constexpr const char *rtc_sampling_algorithm_version =
-    "rtc-learned-sampling-stage-a-v2";
+    "rtc-learned-sampling-stage-a-v3";
 inline constexpr const char *rtc_sampling_beam_model =
     "circular-gaussian-temporal-intensity-v1";
 inline constexpr const char *rtc_sampling_beam_fwhm_authority =
@@ -42,10 +42,18 @@ inline constexpr const char *rtc_sampling_fir_digest_convention =
 inline constexpr std::size_t rtc_sampling_numerical_partitions = 256;
 inline constexpr std::size_t rtc_sampling_max_candidates = 8192;
 inline constexpr std::size_t rtc_sampling_max_candidate_rows = 8000000;
-inline constexpr std::size_t rtc_sampling_max_complex_evaluations = 50000000;
+inline constexpr std::size_t rtc_sampling_max_actual_work_units = 500000000;
+// Compatibility spelling for the predecessor metadata field. The successor
+// value now bounds total checked work, not a helper-only evaluation estimate.
+inline constexpr std::size_t rtc_sampling_max_complex_evaluations =
+    rtc_sampling_max_actual_work_units;
 inline constexpr std::size_t rtc_sampling_max_estimated_rtcdiag_bytes =
     536870912;
-inline constexpr std::size_t rtc_sampling_estimated_candidate_row_bytes = 512;
+inline constexpr std::size_t rtc_sampling_candidate_integer_fields = 40;
+inline constexpr std::size_t rtc_sampling_candidate_double_fields = 43;
+inline constexpr std::size_t rtc_sampling_estimated_candidate_row_bytes =
+    rtc_sampling_candidate_integer_fields * sizeof(std::int32_t) +
+    rtc_sampling_candidate_double_fields * sizeof(double);
 
 enum class RtcSamplingStatusCode : int {
     prerequisite_available = 0,
@@ -103,6 +111,30 @@ enum class RtcSamplingReasonCode : int {
     candidate_table_storage_limit = 31,
     bounded_enclosure_nonzero = 32,
     no_guarded_source_motion_support = 33,
+    missing_requested_cadence = 34,
+    invalid_requested_cadence = 35,
+    missing_effective_cadence = 36,
+    invalid_effective_cadence = 37,
+    missing_realized_cadence = 38,
+    nonfinite_realized_cadence = 39,
+    nonpositive_realized_cadence = 40,
+    irregular_realized_cadence = 41,
+    requested_effective_cadence_mismatch = 42,
+    effective_realized_cadence_mismatch = 43,
+    unsupported_hwpr = 44,
+    science_flag_exclusion = 45,
+    nonfinite_input_exclusion = 46,
+    realized_filter_guard_exclusion = 47,
+    per_detector_invalid_exclusion = 48,
+    boundary_context_exclusion = 49,
+    internal_gap_exclusion = 50,
+    low_velocity_motion_exclusion = 51,
+    invalid_or_overlimit_motion_exclusion = 52,
+    unclassified_context = 53,
+    source_identity_unavailable = 54,
+    source_identity_dirty = 55,
+    raw_manifest_unavailable = 56,
+    raw_manifest_mismatch = 57,
 };
 
 inline constexpr std::string_view to_string(RtcSamplingStatusCode value) {
@@ -201,6 +233,54 @@ inline constexpr std::string_view to_string(RtcSamplingReasonCode value) {
             return "bounded_enclosure_nonzero";
         case RtcSamplingReasonCode::no_guarded_source_motion_support:
             return "no_guarded_source_motion_support";
+        case RtcSamplingReasonCode::missing_requested_cadence:
+            return "missing_requested_cadence";
+        case RtcSamplingReasonCode::invalid_requested_cadence:
+            return "invalid_requested_cadence";
+        case RtcSamplingReasonCode::missing_effective_cadence:
+            return "missing_effective_cadence";
+        case RtcSamplingReasonCode::invalid_effective_cadence:
+            return "invalid_effective_cadence";
+        case RtcSamplingReasonCode::missing_realized_cadence:
+            return "missing_realized_cadence";
+        case RtcSamplingReasonCode::nonfinite_realized_cadence:
+            return "nonfinite_realized_cadence";
+        case RtcSamplingReasonCode::nonpositive_realized_cadence:
+            return "nonpositive_realized_cadence";
+        case RtcSamplingReasonCode::irregular_realized_cadence:
+            return "irregular_realized_cadence";
+        case RtcSamplingReasonCode::requested_effective_cadence_mismatch:
+            return "requested_effective_cadence_mismatch";
+        case RtcSamplingReasonCode::effective_realized_cadence_mismatch:
+            return "effective_realized_cadence_mismatch";
+        case RtcSamplingReasonCode::unsupported_hwpr:
+            return "unsupported_hwpr";
+        case RtcSamplingReasonCode::science_flag_exclusion:
+            return "science_flag_exclusion";
+        case RtcSamplingReasonCode::nonfinite_input_exclusion:
+            return "nonfinite_input_exclusion";
+        case RtcSamplingReasonCode::realized_filter_guard_exclusion:
+            return "realized_filter_guard_exclusion";
+        case RtcSamplingReasonCode::per_detector_invalid_exclusion:
+            return "per_detector_invalid_exclusion";
+        case RtcSamplingReasonCode::boundary_context_exclusion:
+            return "boundary_context_exclusion";
+        case RtcSamplingReasonCode::internal_gap_exclusion:
+            return "internal_gap_exclusion";
+        case RtcSamplingReasonCode::low_velocity_motion_exclusion:
+            return "low_velocity_motion_exclusion";
+        case RtcSamplingReasonCode::invalid_or_overlimit_motion_exclusion:
+            return "invalid_or_overlimit_motion_exclusion";
+        case RtcSamplingReasonCode::unclassified_context:
+            return "unclassified_context";
+        case RtcSamplingReasonCode::source_identity_unavailable:
+            return "source_identity_unavailable";
+        case RtcSamplingReasonCode::source_identity_dirty:
+            return "source_identity_dirty";
+        case RtcSamplingReasonCode::raw_manifest_unavailable:
+            return "raw_manifest_unavailable";
+        case RtcSamplingReasonCode::raw_manifest_mismatch:
+            return "raw_manifest_mismatch";
     }
     return "numerical_nonfinite";
 }
@@ -235,7 +315,21 @@ inline std::string rtc_sampling_status_reason_vocabulary() {
         "29=unequal_source_column_lengths,30=arithmetic_overflow,"
         "31=candidate_table_storage_limit,"
         "32=bounded_enclosure_nonzero,"
-        "33=no_guarded_source_motion_support";
+        "33=no_guarded_source_motion_support,34=missing_requested_cadence,"
+        "35=invalid_requested_cadence,36=missing_effective_cadence,"
+        "37=invalid_effective_cadence,38=missing_realized_cadence,"
+        "39=nonfinite_realized_cadence,40=nonpositive_realized_cadence,"
+        "41=irregular_realized_cadence,"
+        "42=requested_effective_cadence_mismatch,"
+        "43=effective_realized_cadence_mismatch,44=unsupported_hwpr,"
+        "45=science_flag_exclusion,46=nonfinite_input_exclusion,"
+        "47=realized_filter_guard_exclusion,"
+        "48=per_detector_invalid_exclusion,49=boundary_context_exclusion,"
+        "50=internal_gap_exclusion,51=low_velocity_motion_exclusion,"
+        "52=invalid_or_overlimit_motion_exclusion,"
+        "53=unclassified_context,54=source_identity_unavailable,"
+        "55=source_identity_dirty,56=raw_manifest_unavailable,"
+        "57=raw_manifest_mismatch";
 }
 
 inline RtcSamplingReasonCode rtc_sampling_source_interval_reason_code(
@@ -662,6 +756,91 @@ RtcSamplingBoundedMaximum rtc_sampling_bounded_maximum(
     return result;
 }
 
+enum class RtcSamplingContextCategory : unsigned char {
+    fully_supported = 0,
+    boundary_context = 1,
+    internal_gap = 2,
+    low_velocity_motion = 3,
+    invalid_or_overlimit_motion = 4,
+    per_detector_invalid = 5,
+    science_flag = 6,
+    nonfinite_input = 7,
+    realized_filter_guard = 8,
+    unclassified = 9,
+};
+
+inline constexpr std::size_t rtc_sampling_context_category_count = 10;
+
+inline constexpr unsigned char rtc_sampling_context_precedence(
+    RtcSamplingContextCategory value) {
+    switch (value) {
+        case RtcSamplingContextCategory::fully_supported: return 0;
+        case RtcSamplingContextCategory::boundary_context: return 1;
+        case RtcSamplingContextCategory::internal_gap: return 2;
+        case RtcSamplingContextCategory::low_velocity_motion: return 3;
+        case RtcSamplingContextCategory::invalid_or_overlimit_motion: return 4;
+        case RtcSamplingContextCategory::per_detector_invalid: return 5;
+        // The realized guard precedes residual science flags so a guard cell
+        // can never be swallowed by the flag that the guard itself produced.
+        case RtcSamplingContextCategory::realized_filter_guard: return 6;
+        case RtcSamplingContextCategory::science_flag: return 7;
+        case RtcSamplingContextCategory::nonfinite_input: return 8;
+        case RtcSamplingContextCategory::unclassified: return 9;
+    }
+    return 9;
+}
+
+inline constexpr std::string_view to_string(RtcSamplingContextCategory value) {
+    switch (value) {
+        case RtcSamplingContextCategory::fully_supported:
+            return "fully_supported";
+        case RtcSamplingContextCategory::boundary_context:
+            return "boundary_context";
+        case RtcSamplingContextCategory::internal_gap:
+            return "internal_gap";
+        case RtcSamplingContextCategory::low_velocity_motion:
+            return "low_velocity_motion";
+        case RtcSamplingContextCategory::invalid_or_overlimit_motion:
+            return "invalid_or_overlimit_motion";
+        case RtcSamplingContextCategory::per_detector_invalid:
+            return "per_detector_invalid";
+        case RtcSamplingContextCategory::science_flag:
+            return "science_flag";
+        case RtcSamplingContextCategory::nonfinite_input:
+            return "nonfinite_input";
+        case RtcSamplingContextCategory::realized_filter_guard:
+            return "realized_filter_guard";
+        case RtcSamplingContextCategory::unclassified:
+            return "unclassified";
+    }
+    return "unclassified";
+}
+
+struct RtcSamplingContextDomain {
+    Eigen::Index n_times = 0;
+    Eigen::Index n_detectors = 0;
+    // Row-major [time, detector]. Every cell has exactly one category.
+    std::vector<RtcSamplingContextCategory> categories;
+
+    bool valid() const {
+        if (n_times < 0 || n_detectors < 0) {
+            return false;
+        }
+        const auto times = static_cast<std::size_t>(n_times);
+        const auto detectors = static_cast<std::size_t>(n_detectors);
+        return (times == 0 || detectors <=
+                    std::numeric_limits<std::size_t>::max() / times) &&
+               times * detectors == categories.size();
+    }
+
+    RtcSamplingContextCategory at(Eigen::Index time,
+                                  Eigen::Index detector) const {
+        return categories[static_cast<std::size_t>(time) *
+                              static_cast<std::size_t>(n_detectors) +
+                          static_cast<std::size_t>(detector)];
+    }
+};
+
 struct RtcSamplingCompleteContext {
     RtcSamplingStatusCode candidate_status =
         RtcSamplingStatusCode::candidate_unusable_no_complete_context;
@@ -678,10 +857,121 @@ struct RtcSamplingCompleteContext {
     std::size_t incomplete_boundary_count = 0;
     std::size_t incomplete_gap_count = 0;
     std::size_t incomplete_other_count = 0;
+    std::size_t detector_output_cell_count = 0;
+    std::array<std::size_t, rtc_sampling_context_category_count>
+        detector_output_category_count{};
     std::size_t longest_full_run = 0;
     double full_duration_s = 0.0;
     double full_fraction = std::numeric_limits<double>::quiet_NaN();
 };
+
+inline RtcSamplingCompleteContext calculate_rtc_sampling_complete_context(
+    const RtcSamplingContextDomain &domain, Eigen::Index outer_start,
+    Eigen::Index outer_stop, Eigen::Index scan_start, Eigen::Index scan_stop,
+    int factor, int phase, std::size_t tap_count,
+    double native_sample_rate_hz) {
+    RtcSamplingCompleteContext result;
+    result.factor = factor;
+    result.phase = phase;
+    result.tap_count = tap_count;
+    result.left_context = tap_count > 0
+        ? static_cast<Eigen::Index>((tap_count - 1) / 2) : 0;
+    result.right_context = tap_count > 0
+        ? static_cast<Eigen::Index>(tap_count - 1) - result.left_context : 0;
+    if (!domain.valid() || domain.n_detectors <= 0 || scan_stop < scan_start ||
+        factor <= 0 || phase < 0 || phase >= factor || scan_start < 0 ||
+        outer_start > scan_start || outer_stop < scan_stop ||
+        native_sample_rate_hz <= 0.0) {
+        result.candidate_reason = RtcSamplingReasonCode::invalid_output_grid;
+        return result;
+    }
+    result.eligible_input_support = static_cast<std::size_t>(std::count(
+        domain.categories.begin(), domain.categories.end(),
+        RtcSamplingContextCategory::fully_supported));
+
+    std::size_t current_run = 0;
+    for (Eigen::Index output = scan_start + phase; output <= scan_stop;
+         output += factor) {
+        result.candidate_output_count++;
+        bool temporal_full = false;
+        for (Eigen::Index detector = 0; detector < domain.n_detectors;
+             ++detector) {
+            RtcSamplingContextCategory category =
+                RtcSamplingContextCategory::fully_supported;
+            const Eigen::Index first = output - result.left_context;
+            const Eigen::Index last = output + result.right_context;
+            if (first < outer_start || last > outer_stop || first < 0 ||
+                last >= domain.n_times) {
+                category = RtcSamplingContextCategory::boundary_context;
+            }
+            else {
+                // Input construction subtracts realized_filter_guard from
+                // science_flag. The explicit precedence also keeps a guard
+                // elsewhere in the realized FIR window from being swallowed
+                // by a residual science flag.
+                for (Eigen::Index i = first; i <= last; ++i) {
+                    const auto input_category = domain.at(i, detector);
+                    if (input_category ==
+                        RtcSamplingContextCategory::fully_supported) {
+                        continue;
+                    }
+                    if (category ==
+                            RtcSamplingContextCategory::fully_supported ||
+                        rtc_sampling_context_precedence(input_category) <
+                            rtc_sampling_context_precedence(category)) {
+                        category = input_category;
+                    }
+                }
+            }
+            const auto category_index = static_cast<std::size_t>(category);
+            if (category_index >= result.detector_output_category_count.size()) {
+                result.candidate_reason =
+                    RtcSamplingReasonCode::unclassified_context;
+                return result;
+            }
+            result.detector_output_category_count[category_index]++;
+            result.detector_output_cell_count++;
+            temporal_full = temporal_full ||
+                category == RtcSamplingContextCategory::fully_supported;
+        }
+        if (temporal_full) {
+            result.full_output_count++;
+            current_run++;
+            result.longest_full_run =
+                std::max(result.longest_full_run, current_run);
+        }
+        else {
+            current_run = 0;
+        }
+    }
+    result.incomplete_boundary_count =
+        result.detector_output_category_count[static_cast<std::size_t>(
+            RtcSamplingContextCategory::boundary_context)];
+    result.incomplete_gap_count =
+        result.detector_output_category_count[static_cast<std::size_t>(
+            RtcSamplingContextCategory::internal_gap)];
+    result.incomplete_other_count = result.detector_output_cell_count -
+        result.detector_output_category_count[0] -
+        result.incomplete_boundary_count - result.incomplete_gap_count;
+    const auto accounted = std::accumulate(
+        result.detector_output_category_count.begin(),
+        result.detector_output_category_count.end(), std::size_t{0});
+    if (accounted != result.detector_output_cell_count) {
+        result.candidate_reason = RtcSamplingReasonCode::unclassified_context;
+        return result;
+    }
+    if (result.candidate_output_count > 0) {
+        result.full_fraction = static_cast<double>(result.full_output_count) /
+                               result.candidate_output_count;
+    }
+    result.full_duration_s = result.full_output_count * factor /
+                             native_sample_rate_hz;
+    if (result.full_output_count > 0) {
+        result.candidate_status = RtcSamplingStatusCode::candidate_evaluable;
+        result.candidate_reason = RtcSamplingReasonCode::none;
+    }
+    return result;
+}
 
 inline RtcSamplingCompleteContext calculate_rtc_sampling_complete_context(
     const std::vector<unsigned char> &eligible_grid, Eigen::Index outer_start,
@@ -810,14 +1100,57 @@ struct RtcSamplingResourcePreflight {
     std::size_t logical_candidate_rows = 0;
     std::size_t rectangular_storage_cells = 0;
     std::size_t estimated_complex_evaluations = 0;
+    std::size_t estimated_context_work_units = 0;
+    std::size_t estimated_actual_work_units = 0;
+    std::size_t estimated_auxiliary_storage_bytes = 0;
     std::size_t estimated_rtcdiag_bytes = 0;
 };
+
+inline bool rtc_sampling_candidate_work_units(
+    std::size_t factor, std::size_t tap_count, std::size_t detector_count,
+    std::size_t native_sample_count, std::size_t &numerical_work,
+    std::size_t &context_work) {
+    constexpr std::size_t q = rtc_sampling_numerical_partitions + 1;
+    if (factor == 0 || tap_count == 0) {
+        return false;
+    }
+    if (factor == 1) {
+        numerical_work = tap_count;
+    }
+    else {
+        std::size_t factor_term = 0;
+        std::size_t six_q_plus_one = 0;
+        std::size_t two_q_plus_four = 0;
+        if (!rtc_sampling_checked_multiply(6, q, six_q_plus_one) ||
+            !rtc_sampling_checked_add(six_q_plus_one, 1,
+                                      six_q_plus_one) ||
+            !rtc_sampling_checked_multiply(factor, six_q_plus_one,
+                                           factor_term) ||
+            !rtc_sampling_checked_multiply(2, q, two_q_plus_four) ||
+            !rtc_sampling_checked_add(two_q_plus_four, 4,
+                                      two_q_plus_four) ||
+            !rtc_sampling_checked_add(factor_term, two_q_plus_four,
+                                      factor_term) ||
+            !rtc_sampling_checked_multiply(tap_count, factor_term,
+                                           numerical_work)) {
+            return false;
+        }
+    }
+    const std::size_t output_count = native_sample_count == 0
+        ? 0 : (native_sample_count - 1) / factor + 1;
+    std::size_t detector_outputs = 0;
+    return rtc_sampling_checked_multiply(detector_count, output_count,
+                                         detector_outputs) &&
+           rtc_sampling_checked_multiply(detector_outputs, tap_count,
+                                         context_work);
+}
 
 inline RtcSamplingResourcePreflight rtc_sampling_resource_preflight(
     const std::vector<int> &derived_mmax,
     const std::vector<unsigned char> &prerequisite_available,
-    std::size_t evaluations_per_candidate =
-        8 * (rtc_sampling_numerical_partitions + 1),
+    const std::vector<std::size_t> &tap_counts = {},
+    const std::vector<std::size_t> &detector_counts = {},
+    const std::vector<std::size_t> &native_sample_counts = {},
     std::size_t estimated_candidate_row_bytes =
         rtc_sampling_estimated_candidate_row_bytes) {
     RtcSamplingResourcePreflight result;
@@ -826,7 +1159,10 @@ inline RtcSamplingResourcePreflight rtc_sampling_resource_preflight(
         n, RtcSamplingStatusCode::candidate_not_evaluated_prerequisite);
     result.range_reason.assign(
         n, RtcSamplingReasonCode::prerequisite_unavailable);
-    if (prerequisite_available.size() != n) {
+    if (prerequisite_available.size() != n ||
+        (!tap_counts.empty() && tap_counts.size() != n) ||
+        (!detector_counts.empty() && detector_counts.size() != n) ||
+        (!native_sample_counts.empty() && native_sample_counts.size() != n)) {
         result.table_reason = RtcSamplingReasonCode::arithmetic_overflow;
         return result;
     }
@@ -856,16 +1192,38 @@ inline RtcSamplingResourcePreflight rtc_sampling_resource_preflight(
             break;
         }
         result.logical_candidate_rows = updated_rows;
+        const std::size_t tap_count = tap_counts.empty() ? 1 : tap_counts[i];
+        const std::size_t detector_count = detector_counts.empty()
+            ? 1 : detector_counts[i];
+        const std::size_t native_sample_count = native_sample_counts.empty()
+            ? 1 : native_sample_counts[i];
+        for (std::size_t factor = 1; factor <= range; ++factor) {
+            std::size_t numerical_work = 0;
+            std::size_t context_work = 0;
+            std::size_t updated_numerical = 0;
+            std::size_t updated_context = 0;
+            if (!rtc_sampling_candidate_work_units(
+                    factor, tap_count, detector_count, native_sample_count,
+                    numerical_work, context_work) ||
+                !rtc_sampling_checked_add(
+                    result.estimated_complex_evaluations, numerical_work,
+                    updated_numerical) ||
+                !rtc_sampling_checked_add(
+                    result.estimated_context_work_units, context_work,
+                    updated_context)) {
+                arithmetic_ok = false;
+                break;
+            }
+            result.estimated_complex_evaluations = updated_numerical;
+            result.estimated_context_work_units = updated_context;
+        }
+        if (!arithmetic_ok) {
+            break;
+        }
     }
     if (!arithmetic_ok) {
         result.table_reason = RtcSamplingReasonCode::arithmetic_overflow;
         return result;
-    }
-    // Preserve a factor-1 provenance/reference slot when no scientific range
-    // can be derived. It is not counted as an evaluated candidate row and its
-    // cells remain candidate_not_evaluated_prerequisite.
-    if (result.candidate_axis_size == 0 && n > 0) {
-        result.candidate_axis_size = 1;
     }
     if (result.candidate_axis_size == 0) {
         return result;
@@ -875,14 +1233,15 @@ inline RtcSamplingResourcePreflight rtc_sampling_resource_preflight(
             RtcSamplingReasonCode::candidate_range_resource_limit;
         return result;
     }
-    if (!rtc_sampling_checked_multiply(
-            result.logical_candidate_rows, evaluations_per_candidate,
-            result.estimated_complex_evaluations)) {
+    if (!rtc_sampling_checked_add(
+            result.estimated_complex_evaluations,
+            result.estimated_context_work_units,
+            result.estimated_actual_work_units)) {
         result.table_reason = RtcSamplingReasonCode::arithmetic_overflow;
         return result;
     }
-    if (result.estimated_complex_evaluations >
-        rtc_sampling_max_complex_evaluations) {
+    if (result.estimated_actual_work_units >
+        rtc_sampling_max_actual_work_units) {
         result.table_reason = RtcSamplingReasonCode::numerical_resource_limit;
         return result;
     }
@@ -893,6 +1252,26 @@ inline RtcSamplingResourcePreflight rtc_sampling_resource_preflight(
             result.rectangular_storage_cells,
             estimated_candidate_row_bytes,
             result.estimated_rtcdiag_bytes)) {
+        result.table_reason = RtcSamplingReasonCode::arithmetic_overflow;
+        return result;
+    }
+    for (std::size_t i = 0; i < n; ++i) {
+        const auto tap_count = tap_counts.empty() ? 1 : tap_counts[i];
+        std::size_t coefficient_bytes = 0;
+        std::size_t updated_auxiliary = 0;
+        if (!rtc_sampling_checked_multiply(tap_count, sizeof(double),
+                                           coefficient_bytes) ||
+            !rtc_sampling_checked_add(result.estimated_auxiliary_storage_bytes,
+                                      coefficient_bytes,
+                                      updated_auxiliary)) {
+            result.table_reason = RtcSamplingReasonCode::arithmetic_overflow;
+            return result;
+        }
+        result.estimated_auxiliary_storage_bytes = updated_auxiliary;
+    }
+    if (!rtc_sampling_checked_add(result.estimated_rtcdiag_bytes,
+                                  result.estimated_auxiliary_storage_bytes,
+                                  result.estimated_rtcdiag_bytes)) {
         result.table_reason = RtcSamplingReasonCode::arithmetic_overflow;
         return result;
     }

@@ -68,6 +68,10 @@ bool prepare_reduction_observation_inputs(
     std::size_t observation_index, DateObsFactory &&date_obs_factory,
     const Logger &logger) {
     auto &engine = todproc.engine();
+    // This is the sole reset owner. Capture below occurs after this same
+    // observation's telescope source is loaded and consumption occurs during
+    // this observation's rtcdiag setup/finalization.
+    reset_rtc_sampling_source_motion(engine.alignment);
 
     if (!prepare_reduction_observation_calibration_state<IsBeammap>(
             todproc, rawobs, rawobs_kids_meta, has_multiple_inputs,
@@ -86,6 +90,8 @@ bool prepare_reduction_observation_inputs(
     calculate_reduction_observation_flux_calibration(engine, logger);
     load_and_point_reduction_observation_telescope_data_if_needed(
         todproc, rawobs, has_multiple_inputs, logger);
+    capture_reduction_observation_rtc_sampling_source_motion(
+        todproc, rawobs, observation_index);
     append_reduction_observation_date(
         engine, make_reduction_observation_date_obs(
                     std::forward<DateObsFactory>(date_obs_factory), engine));

@@ -11,12 +11,34 @@
 #include <array>
 #include <cstddef>
 #include <limits>
+#include <optional>
 #include <stdexcept>
 #include <string>
 #include <utility>
 #include <vector>
 
 namespace citlali::pipeline {
+
+inline std::optional<std::size_t> rtc_sampling_source_interval_at_time(
+    const std::vector<double> &interval_start,
+    const std::vector<double> &interval_stop, double time) {
+    if (interval_start.size() != interval_stop.size() ||
+        !std::isfinite(time)) {
+        return std::nullopt;
+    }
+    for (std::size_t interval = 0; interval < interval_start.size();
+         ++interval) {
+        if (std::isfinite(interval_start[interval]) &&
+            std::isfinite(interval_stop[interval]) &&
+            time >= interval_start[interval] &&
+            time <= interval_stop[interval]) {
+            // Adjacent intervals share their endpoint. The earlier interval is
+            // authoritative, matching the source-motion capture order.
+            return interval;
+        }
+    }
+    return std::nullopt;
+}
 
 template <class TelData>
 RtcSamplingSourceMotionSupport capture_rtc_sampling_source_motion(

@@ -961,8 +961,12 @@ def validate_netcdf(
                 actual = scalar_value(name)
                 if actual is None:
                     continue
+                # JSON object keys are strings while NetCDF integer scalars
+                # normalize to Python int. Accept only the exact normalized
+                # spelling; do not silently skip integer-conditioned rules.
+                variant_key = str(actual)
                 conditional = expanded_names(
-                    variants.get(actual, []), arrays
+                    variants.get(variant_key, variants.get(actual, [])), arrays
                 )
                 missing_conditional = missing_patterns(
                     variables, conditional
@@ -971,6 +975,164 @@ def validate_netcdf(
                     errors.append(
                         f"NetCDF scalar {name!r}={actual!r} requires "
                         f"variables {missing_conditional}"
+                    )
+            for rule_name, inventory, label in (
+                ("forbidden_variables_by_scalar", variables, "variables"),
+                ("forbidden_dimensions_by_scalar", dimensions, "dimensions"),
+            ):
+                for name, variants in checks.get(rule_name, {}).items():
+                    actual = scalar_value(name)
+                    if actual is None:
+                        continue
+                    forbidden = expanded_names(
+                        variants.get(str(actual), variants.get(actual, [])), arrays
+                    )
+                    present = [
+                        value for value in forbidden
+                        if any(fnmatch.fnmatchcase(candidate, value)
+                               for candidate in inventory)
+                    ]
+                    if present:
+                        errors.append(
+                            f"NetCDF scalar {name!r}={actual!r} forbids "
+                            f"{label} {present}"
+                        )
+            for name, variants in checks.get(
+                "required_dimensions_by_scalar", {}
+            ).items():
+                actual = scalar_value(name)
+                if actual is None:
+                    continue
+                conditional = expanded_names(
+                    variants.get(str(actual), variants.get(actual, [])), arrays
+                )
+                missing_conditional = missing_patterns(dimensions, conditional)
+                if missing_conditional:
+                    errors.append(
+                        f"NetCDF scalar {name!r}={actual!r} requires "
+                        f"dimensions {missing_conditional}"
+                    )
+            for dimension_name, scalar_name in checks.get(
+                "dimension_size_equals_scalar", {}
+            ).items():
+                actual = scalar_value(scalar_name)
+                if actual is None or dimension_name not in dataset.dimensions:
+                    continue
+                dimension_size = len(dataset.dimensions[dimension_name])
+                if dimension_size != int(actual):
+                    errors.append(
+                        f"NetCDF dimension {dimension_name!r} has size "
+                        f"{dimension_size}; {scalar_name!r}={actual!r}"
+                    )
+            for condition_name, variants in checks.get(
+                "variable_trailing_dimension_by_scalar", {}
+            ).items():
+                actual = scalar_value(condition_name)
+                if actual is None:
+                    continue
+                requirements = variants.get(
+                    str(actual), variants.get(actual, {})
+                )
+                for variable_name, dimension_name in requirements.items():
+                    if variable_name not in dataset.variables:
+                        continue
+                    variable_dimensions = dataset.variables[variable_name].dimensions
+                    if not variable_dimensions or variable_dimensions[-1] != dimension_name:
+                        errors.append(
+                            f"NetCDF variable {variable_name!r} trailing "
+                            f"dimension={variable_dimensions[-1:]!r}; expected "
+                            f"{dimension_name!r}"
+                        )
+            for condition_name, rule in checks.get(
+                "conditional_variable_set_by_scalar", {}
+            ).items():
+                actual = scalar_value(condition_name)
+                if actual is None:
+                    continue
+                dimension_name = rule["dimension"]
+                member_names = expanded_names(rule["variables"], arrays)
+                available_value = rule.get("available_value", 1)
+                unavailable_value = rule.get("unavailable_value", 0)
+                if actual == available_value:
+                    if dimension_name not in dataset.dimensions:
+                        errors.append(
+                            f"NetCDF scalar {condition_name!r}={actual!r} "
+                            f"requires dimension {dimension_name!r}"
+                        )
+                    missing_members = missing_patterns(variables, member_names)
+                    if missing_members:
+                        errors.append(
+                            f"NetCDF scalar {condition_name!r}={actual!r} "
+                            f"requires complete conditional variable set "
+                            f"{missing_members}"
+                        )
+                    for variable_name in member_names:
+                        if variable_name not in dataset.variables:
+                            continue
+                        variable_dimensions = dataset.variables[
+                            variable_name
+                        ].dimensions
+                        if (not variable_dimensions or
+                                variable_dimensions[-1] != dimension_name):
+                            errors.append(
+                                f"NetCDF conditional variable "
+                                f"{variable_name!r} trailing dimension="
+                                f"{variable_dimensions[-1:]!r}; expected "
+                                f"{dimension_name!r}"
+                            )
+                elif actual == unavailable_value:
+                    if dimension_name in dataset.dimensions:
+                        errors.append(
+                            f"NetCDF scalar {condition_name!r}={actual!r} "
+                            f"forbids dimension {dimension_name!r}"
+                        )
+                    present_members = [
+                        name for name in member_names if name in dataset.variables
+                    ]
+                    if present_members:
+                        errors.append(
+                            f"NetCDF scalar {condition_name!r}={actual!r} "
+                            f"forbids conditional variables {present_members}"
+                        )
+                else:
+                    errors.append(
+                        f"NetCDF scalar {condition_name!r}={actual!r}; "
+                        f"expected conditional values {available_value!r} or "
+                        f"{unavailable_value!r}"
+                    )
+            for name, pattern in checks.get("scalar_regex", {}).items():
+                actual = scalar_value(name)
+                if actual is not None and re.fullmatch(pattern, str(actual)) is None:
+                    errors.append(
+                        f"NetCDF scalar {name!r}={actual!r} does not match "
+                        f"{pattern!r}"
+                    )
+            for name in checks.get("nonempty_string_scalars", []):
+                actual = scalar_value(name)
+                if actual is not None and (
+                    not isinstance(actual, str) or not actual
+                ):
+                    errors.append(f"NetCDF scalar {name!r} is empty")
+            for total_name, part_names in checks.get(
+                "sum_variables_equals", {}
+            ).items():
+                if total_name not in dataset.variables:
+                    continue
+                missing_parts = [
+                    name for name in part_names if name not in dataset.variables
+                ]
+                if missing_parts:
+                    continue
+                total_values = np.asarray(dataset.variables[total_name][...])
+                part_sum = np.zeros_like(total_values, dtype=np.int64)
+                for part_name in part_names:
+                    part_sum += np.asarray(
+                        dataset.variables[part_name][...], dtype=np.int64
+                    )
+                if not np.array_equal(total_values, part_sum):
+                    errors.append(
+                        f"NetCDF variables {part_names!r} do not sum exactly "
+                        f"to {total_name!r}"
                     )
             for name in checks.get("positive_dimensions", []):
                 matches = [

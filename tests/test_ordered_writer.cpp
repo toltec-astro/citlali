@@ -1,5 +1,6 @@
 #include <citlali/core/cli/exception_reporting.h>
 #include <citlali/core/pipeline/timestream_output_context.h>
+#include <citlali/core/utils/netcdf_io.h>
 
 #include <gtest/gtest.h>
 
@@ -233,6 +234,80 @@ TEST(ordered_writer, netcdf_failure_leaves_diagnosed_partial_product_and_next_ru
     EXPECT_EQ(read_rows(path), (std::array<int, 3>{10, 20, 30}));
 
     std::filesystem::remove(path);
+}
+
+TEST(ordered_writer,
+     required_netcdf_publication_preserves_prior_generation_until_commit) {
+    const auto final_path = std::filesystem::path(::testing::TempDir()) /
+                            "citlali_atomic_ordered_writer.nc";
+    std::filesystem::remove(final_path);
+    write_netcdf_atomic(final_path.string(), [](netCDF::NcFile &file) {
+        const int value = 7;
+        file.addVar("generation", netCDF::ncInt).putVar(&value);
+    });
+
+    for (const auto stage : {
+             NetcdfAtomicFailureStage::create,
+             NetcdfAtomicFailureStage::write,
+             NetcdfAtomicFailureStage::sync,
+             NetcdfAtomicFailureStage::close,
+             NetcdfAtomicFailureStage::publish}) {
+        EXPECT_THROW(
+            write_netcdf_atomic(
+                final_path.string(),
+                [](netCDF::NcFile &file) {
+                    const int value = 99;
+                    file.addVar("generation", netCDF::ncInt).putVar(&value);
+                },
+                stage),
+            DataIOError);
+        netCDF::NcFile file(final_path.string(), netCDF::NcFile::read);
+        int value = 0;
+        file.getVar("generation").getVar(&value);
+        EXPECT_EQ(value, 7);
+        for (const auto &entry :
+             std::filesystem::directory_iterator(final_path.parent_path())) {
+            EXPECT_NE(entry.path().filename().string().rfind(
+                          final_path.filename().string() +
+                              netcdf_atomic_staging_marker,
+                          0),
+                      0u);
+        }
+    }
+
+    EXPECT_THROW(
+        write_netcdf_staging(final_path.string(), [](netCDF::NcFile &file) {
+            const int value = 8;
+            file.addVar("generation", netCDF::ncInt).putVar(&value);
+            throw std::runtime_error("injected pre-publication failure");
+        }),
+        std::runtime_error);
+    {
+        netCDF::NcFile file(final_path.string(), netCDF::NcFile::read);
+        int value = 0;
+        file.getVar("generation").getVar(&value);
+        EXPECT_EQ(value, 7);
+    }
+
+    const auto staging = write_netcdf_staging(
+        final_path.string(), [](netCDF::NcFile &file) {
+            const int value = 8;
+            file.addVar("generation", netCDF::ncInt).putVar(&value);
+        });
+    EXPECT_TRUE(is_netcdf_atomic_staging_path(staging));
+    EXPECT_EQ(netcdf_atomic_final_path_from_staging(staging),
+              final_path.string());
+    EXPECT_EQ(publish_netcdf_atomic_staging(staging), final_path.string());
+    EXPECT_FALSE(std::filesystem::exists(staging));
+    {
+        netCDF::NcFile file(final_path.string(), netCDF::NcFile::read);
+        int value = 0;
+        file.getVar("generation").getVar(&value);
+        EXPECT_EQ(value, 8);
+    }
+    cleanup_netcdf_atomic_staging(final_path.string());
+    EXPECT_TRUE(std::filesystem::exists(final_path));
+    std::filesystem::remove(final_path);
 }
 
 }  // namespace

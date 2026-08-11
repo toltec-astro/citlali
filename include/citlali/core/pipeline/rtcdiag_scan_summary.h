@@ -3,12 +3,22 @@
 // Included by rtcdiag_netcdf.h inside namespace citlali::pipeline.
 
 struct RtcSamplingHwprState {
-    bool requested_enabled = false;
-    std::string requested_policy{"automatic"};
-    bool effective_enabled = false;
-    bool effective_ignored = false;
-    bool realized_hardware_present = false;
+    enum class AnalysisMode {
+        total_intensity,
+        hwpr_dependent,
+    };
+    AnalysisMode analysis_mode = AnalysisMode::total_intensity;
+
+    bool supported() const {
+        return analysis_mode == AnalysisMode::total_intensity;
+    }
 };
+
+inline constexpr std::string_view to_string(
+    RtcSamplingHwprState::AnalysisMode mode) {
+    return mode == RtcSamplingHwprState::AnalysisMode::total_intensity
+        ? "total_intensity" : "hwpr_dependent";
+}
 
 struct RtcSamplingCadenceState {
     double requested_output_hz = std::numeric_limits<double>::quiet_NaN();
@@ -20,8 +30,92 @@ struct RtcSamplingCadenceState {
     int effective_factor = 1;
     int realized_factor = 1;
     bool realized_downsample_enabled = false;
-    bool consistent = false;
+    bool realized_valid = false;
+    std::string requested_effective_consistency{"unavailable_missing"};
+    std::string effective_realized_consistency{"unavailable_missing"};
+    RtcSamplingReasonCode realized_reason =
+        RtcSamplingReasonCode::missing_realized_cadence;
 };
+
+inline bool rtc_sampling_cadence_equal(double a, double b) {
+    return std::isfinite(a) && std::isfinite(b) &&
+           std::abs(a - b) <=
+               32.0 * std::numeric_limits<double>::epsilon() *
+                   std::max({1.0, std::abs(a), std::abs(b)});
+}
+
+inline std::string rtc_sampling_cadence_consistency(
+    double left_hz, int left_factor, double right_hz, int right_factor) {
+    if (!std::isfinite(left_hz) || !std::isfinite(right_hz)) {
+        return "unavailable_nonfinite";
+    }
+    if (left_hz <= 0.0 || right_hz <= 0.0 || left_factor <= 0 ||
+        right_factor <= 0) {
+        return "unavailable_nonpositive";
+    }
+    return rtc_sampling_cadence_equal(left_hz, right_hz) &&
+                   left_factor == right_factor
+        ? "consistent" : "mismatch";
+}
+
+inline void measure_rtc_sampling_realized_cadence(
+    RtcSamplingCadenceState &cadence, const Eigen::VectorXd &time_grid) {
+    cadence.realized_valid = false;
+    cadence.realized_reason =
+        RtcSamplingReasonCode::missing_realized_cadence;
+    if (time_grid.size() < 2) {
+        return;
+    }
+    std::vector<double> intervals;
+    intervals.reserve(static_cast<std::size_t>(time_grid.size() - 1));
+    for (Eigen::Index i = 1; i < time_grid.size(); ++i) {
+        const double interval = time_grid(i) - time_grid(i - 1);
+        if (!std::isfinite(interval)) {
+            cadence.realized_reason =
+                RtcSamplingReasonCode::nonfinite_realized_cadence;
+            return;
+        }
+        if (interval <= 0.0) {
+            cadence.realized_reason =
+                RtcSamplingReasonCode::nonpositive_realized_cadence;
+            return;
+        }
+        intervals.push_back(interval);
+    }
+    std::sort(intervals.begin(), intervals.end());
+    const double median = intervals[intervals.size() / 2];
+    const double tolerance = std::max(
+        1.0e-9, 64.0 * std::numeric_limits<double>::epsilon() * median);
+    if (std::any_of(intervals.begin(), intervals.end(), [&](double interval) {
+            return std::abs(interval - median) > tolerance;
+        })) {
+        cadence.realized_reason =
+            RtcSamplingReasonCode::irregular_realized_cadence;
+        return;
+    }
+    cadence.realized_native_hz = 1.0 / median;
+    cadence.realized_factor = cadence.realized_downsample_enabled
+        ? cadence.realized_factor : 1;
+    if (cadence.realized_factor <= 0 ||
+        !std::isfinite(cadence.realized_native_hz) ||
+        cadence.realized_native_hz <= 0.0) {
+        cadence.realized_reason =
+            RtcSamplingReasonCode::nonpositive_realized_cadence;
+        return;
+    }
+    cadence.realized_output_hz =
+        cadence.realized_native_hz / cadence.realized_factor;
+    cadence.realized_valid = true;
+    cadence.realized_reason = RtcSamplingReasonCode::none;
+    cadence.requested_effective_consistency =
+        rtc_sampling_cadence_consistency(
+            cadence.requested_output_hz, cadence.requested_factor,
+            cadence.effective_output_hz, cadence.effective_factor);
+    cadence.effective_realized_consistency =
+        rtc_sampling_cadence_consistency(
+            cadence.effective_output_hz, cadence.effective_factor,
+            cadence.realized_output_hz, cadence.realized_factor);
+}
 
 struct RtcSamplingFilterState {
     bool requested_enabled = false;
@@ -142,11 +236,11 @@ RtcDiagScanSummaryData calculate_rtcdiag_scan_summary(
             continue;
         }
         values.scan_duration_s[i] = time_it->second(stop) - time_it->second(start);
-        if (hwpr.effective_enabled && !hwpr.effective_ignored) {
+        if (!hwpr.supported()) {
             RtcSamplingScanMotion unavailable;
             unavailable.duration_s = values.scan_duration_s[i];
             unavailable.reason =
-                RtcSamplingReasonCode::unavailable_hwpr_sampling_contract;
+                RtcSamplingReasonCode::unsupported_hwpr;
             values.scan_motion[i] = unavailable;
         }
         else {
@@ -225,6 +319,7 @@ inline void add_rtcdiag_scan_summary_outputs(
 
 struct RtcDiagScanArraySummaryData {
     std::vector<int> candidate_factors;
+    std::vector<int> candidate_phases;
     std::vector<double> fir_coefficients;
     std::string fir_digest;
     RtcSamplingStatusCode fir_status =
@@ -330,8 +425,31 @@ struct RtcDiagScanArraySummaryData {
     std::size_t estimated_candidate_rows = 0;
     std::size_t estimated_rectangular_storage_cells = 0;
     std::size_t estimated_complex_evaluations = 0;
+    std::size_t estimated_context_work_units = 0;
+    std::size_t estimated_actual_work_units = 0;
+    std::size_t estimated_auxiliary_storage_bytes = 0;
     std::size_t estimated_rtcdiag_bytes = 0;
 };
+
+template <class Calib>
+auto rtc_sampling_array_detector_count(const Calib &calib,
+                                       Eigen::Index array_index, int)
+    -> decltype(calib.apt["array"], calib.n_dets, std::size_t{}) {
+    std::size_t count = 0;
+    const int array_id = calib.arrays(array_index);
+    for (Eigen::Index detector = 0; detector < calib.n_dets; ++detector) {
+        if (static_cast<int>(calib.apt["array"](detector)) == array_id) {
+            ++count;
+        }
+    }
+    return count;
+}
+
+template <class Calib>
+std::size_t rtc_sampling_array_detector_count(const Calib &,
+                                              Eigen::Index, long) {
+    return 1;
+}
 
 template <class Calib, class Telescope>
 RtcDiagScanArraySummaryData calculate_rtcdiag_scan_array_summary(
@@ -398,21 +516,35 @@ RtcDiagScanArraySummaryData calculate_rtcdiag_scan_array_summary(
 
     std::vector<unsigned char> include_in_resource_preflight(
         n_scan_array_values, 0);
+    std::vector<std::size_t> resource_tap_counts(
+        n_scan_array_values, values.fir_coefficients.size());
+    std::vector<std::size_t> resource_detector_counts(
+        n_scan_array_values, 1);
+    std::vector<std::size_t> resource_native_sample_counts(
+        n_scan_array_values, 0);
     for (Eigen::Index scan = 0; scan < n_scans; ++scan) {
         for (Eigen::Index arr_i = 0; arr_i < calib.n_arrays; ++arr_i) {
             const std::size_t flat = static_cast<std::size_t>(scan) *
                                          n_array_values +
                                      static_cast<std::size_t>(arr_i);
             const auto beam = rtc_sampling_beam_authority(calib.arrays(arr_i));
+            resource_detector_counts[flat] =
+                rtc_sampling_array_detector_count(calib, arr_i, 0);
+            const auto scan_start = telescope.scan_indices(0, scan);
+            const auto scan_stop = telescope.scan_indices(1, scan);
+            if (scan_start >= 0 && scan_stop >= scan_start) {
+                resource_native_sample_counts[flat] =
+                    static_cast<std::size_t>(scan_stop - scan_start + 1);
+            }
             values.beam_fwhm_arcsec[flat] = beam.fwhm_arcsec;
             const auto &motion = scan_summary.scan_motion[
                 static_cast<std::size_t>(scan)];
-            if (!cadence.consistent) {
+            if (!cadence.realized_valid) {
                 values.applied_scan_status[flat] =
                     static_cast<int>(
                         RtcSamplingStatusCode::applied_operator_not_applicable);
                 values.applied_scan_reason[flat] = static_cast<int>(
-                    RtcSamplingReasonCode::cadence_state_mismatch);
+                    cadence.realized_reason);
             }
             else if (values.fir_status !=
                      RtcSamplingStatusCode::plan_transfer_available) {
@@ -422,12 +554,12 @@ RtcDiagScanArraySummaryData calculate_rtcdiag_scan_array_summary(
                 values.applied_scan_reason[flat] =
                     static_cast<int>(values.fir_reason);
             }
-            else if (hwpr.effective_enabled && !hwpr.effective_ignored) {
+            else if (!hwpr.supported()) {
                 values.applied_scan_status[flat] =
                     static_cast<int>(
                         RtcSamplingStatusCode::applied_operator_not_applicable);
                 values.applied_scan_reason[flat] = static_cast<int>(
-                    RtcSamplingReasonCode::unavailable_hwpr_sampling_contract);
+                    RtcSamplingReasonCode::unsupported_hwpr);
             }
             else if (motion.status !=
                      RtcSamplingStatusCode::prerequisite_available) {
@@ -450,7 +582,8 @@ RtcDiagScanArraySummaryData calculate_rtcdiag_scan_array_summary(
                         telescope.scan_indices(3, scan),
                         telescope.scan_indices(0, scan),
                         telescope.scan_indices(1, scan), applied_factor, 0,
-                        values.fir_coefficients.size(), telescope.fsmp);
+                        values.fir_coefficients.size(),
+                        cadence.realized_native_hz);
                 values.applied_scan_status[flat] = static_cast<int>(
                     applied_context.full_output_count > 0
                         ? RtcSamplingStatusCode::scan_usable_for_applied_rtc_operator
@@ -460,11 +593,11 @@ RtcDiagScanArraySummaryData calculate_rtcdiag_scan_array_summary(
                         ? RtcSamplingReasonCode::none
                         : RtcSamplingReasonCode::no_complete_context);
             }
-            if (!cadence.consistent) {
+            if (!cadence.realized_valid) {
                 values.prerequisite_status[flat] = static_cast<int>(
                     RtcSamplingStatusCode::prerequisite_unavailable);
                 values.prerequisite_reason[flat] = static_cast<int>(
-                    RtcSamplingReasonCode::cadence_state_mismatch);
+                    cadence.realized_reason);
                 continue;
             }
             if (values.fir_status !=
@@ -482,11 +615,11 @@ RtcDiagScanArraySummaryData calculate_rtcdiag_scan_array_summary(
                     static_cast<int>(beam.reason);
                 continue;
             }
-            if (hwpr.effective_enabled && !hwpr.effective_ignored) {
+            if (!hwpr.supported()) {
                 values.prerequisite_status[flat] = static_cast<int>(
                     RtcSamplingStatusCode::prerequisite_unavailable);
                 values.prerequisite_reason[flat] = static_cast<int>(
-                    RtcSamplingReasonCode::unavailable_hwpr_sampling_contract);
+                    RtcSamplingReasonCode::unsupported_hwpr);
                 values.candidate_mmax[flat] = 1;
                 continue;
             }
@@ -499,7 +632,7 @@ RtcDiagScanArraySummaryData calculate_rtcdiag_scan_array_summary(
                 continue;
             }
             const int mmax = rtc_sampling_candidate_mmax(
-                beam.fwhm_arcsec, telescope.fsmp,
+                beam.fwhm_arcsec, cadence.realized_native_hz,
                 motion.speed_p95_arcsec_s);
             if (mmax < 0) {
                 values.prerequisite_status[flat] = static_cast<int>(
@@ -520,7 +653,9 @@ RtcDiagScanArraySummaryData calculate_rtcdiag_scan_array_summary(
     }
 
     const auto resource = rtc_sampling_resource_preflight(
-        values.candidate_mmax, include_in_resource_preflight);
+        values.candidate_mmax, include_in_resource_preflight,
+        resource_tap_counts, resource_detector_counts,
+        resource_native_sample_counts);
     for (std::size_t i = 0; i < n_scan_array_values; ++i) {
         values.candidate_range_status[i] =
             static_cast<int>(resource.range_status[i]);
@@ -539,6 +674,12 @@ RtcDiagScanArraySummaryData calculate_rtcdiag_scan_array_summary(
         resource.rectangular_storage_cells;
     values.estimated_complex_evaluations =
         resource.estimated_complex_evaluations;
+    values.estimated_context_work_units =
+        resource.estimated_context_work_units;
+    values.estimated_actual_work_units =
+        resource.estimated_actual_work_units;
+    values.estimated_auxiliary_storage_bytes =
+        resource.estimated_auxiliary_storage_bytes;
     values.estimated_rtcdiag_bytes = resource.estimated_rtcdiag_bytes;
     if (!values.candidate_table_available) {
         return values;
@@ -546,6 +687,7 @@ RtcDiagScanArraySummaryData calculate_rtcdiag_scan_array_summary(
 
     values.candidate_factors.resize(resource.candidate_axis_size);
     std::iota(values.candidate_factors.begin(), values.candidate_factors.end(), 1);
+    values.candidate_phases.assign(resource.candidate_axis_size, 0);
 
     const std::size_t table_size = resource.rectangular_storage_cells;
     auto table_int = [&]() { return std::vector<int>(table_size, fill_int); };
@@ -644,7 +786,8 @@ RtcDiagScanArraySummaryData calculate_rtcdiag_scan_array_summary(
                     continue;
                 }
                 const auto metrics = calculate_rtc_sampling_candidate_metrics(
-                    factor, telescope.fsmp, values.fir_coefficients,
+                    factor, cadence.realized_native_hz,
+                    values.fir_coefficients,
                     values.temporal_sigma_s[flat]);
                 const auto context = calculate_rtc_sampling_complete_context(
                     scan_summary.eligible_grid_by_scan[
@@ -652,7 +795,8 @@ RtcDiagScanArraySummaryData calculate_rtcdiag_scan_array_summary(
                     telescope.scan_indices(2, scan),
                     telescope.scan_indices(3, scan), telescope.scan_indices(0, scan),
                     telescope.scan_indices(1, scan), factor, 0,
-                    values.fir_coefficients.size(), telescope.fsmp);
+                    values.fir_coefficients.size(),
+                    cadence.realized_native_hz);
                 values.candidate_status[table] = static_cast<int>(context.candidate_status);
                 values.candidate_reason[table] = static_cast<int>(context.candidate_reason);
                 values.candidate_plan_transfer_status[table] =
@@ -797,6 +941,14 @@ inline void add_rtcdiag_scan_array_summary_outputs(netCDF::NcFile &fo,
     add_netcdf_var(fo, "RTC_SAMPLING_SOURCE_SUPPORT_COORDINATE_IDENTITY", source_support.coordinate_identity);
     add_netcdf_var(fo, "RTC_SAMPLING_SOURCE_SUPPORT_STATUS", source_support.status);
     add_netcdf_var(fo, "RTC_SAMPLING_SOURCE_SUPPORT_REASON", source_support.reason);
+    add_netcdf_var(fo, "RTC_SAMPLING_SOURCE_OBSERVATION_IDENTITY_AVAILABLE",
+                   source_support.observation_identity_available);
+    add_netcdf_var(fo, "RTC_SAMPLING_SOURCE_OBSERVATION_INDEX",
+                   static_cast<long long>(source_support.observation_index));
+    add_netcdf_var(fo, "RTC_SAMPLING_SOURCE_OBSNUM",
+                   source_support.observation_obsnum);
+    add_netcdf_var(fo, "RTC_SAMPLING_SOURCE_TELESCOPE_PATH",
+                   source_support.telescope_source_path);
     add_netcdf_var(
         fo, "RTC_SAMPLING_SOURCE_SUPPORT_REASON_CODE",
         static_cast<int>(rtc_sampling_source_support_reason_code(
@@ -889,11 +1041,13 @@ inline void add_rtcdiag_scan_array_summary_outputs(netCDF::NcFile &fo,
     }
     add_netcdf_var(fo, "RTC_SAMPLING_RAW_MANIFEST_REFERENCE", raw_manifest_reference);
     add_netcdf_var(fo, "RTC_SAMPLING_CITLALI_COMMIT", commit);
-    add_netcdf_var(fo, "RTC_SAMPLING_HWPR_REQUESTED_ENABLED", hwpr.requested_enabled);
-    add_netcdf_var(fo, "RTC_SAMPLING_HWPR_REQUESTED_POLICY", hwpr.requested_policy);
-    add_netcdf_var(fo, "RTC_SAMPLING_HWPR_EFFECTIVE_ENABLED", hwpr.effective_enabled);
-    add_netcdf_var(fo, "RTC_SAMPLING_HWPR_EFFECTIVE_IGNORED", hwpr.effective_ignored);
-    add_netcdf_var(fo, "RTC_SAMPLING_HWPR_REALIZED_HARDWARE_PRESENT", hwpr.realized_hardware_present);
+    add_netcdf_var(fo, "RTC_SAMPLING_ANALYSIS_MODE",
+                   std::string{to_string(hwpr.analysis_mode)});
+    add_netcdf_var(fo, "RTC_SAMPLING_HWPR_STATUS",
+                   std::string{hwpr.supported()
+                       ? "prerequisite_available" : "unsupported_hwpr"});
+    add_netcdf_var(fo, "RTC_SAMPLING_HWPR_REASON",
+                   std::string{hwpr.supported() ? "none" : "unsupported_hwpr"});
     add_netcdf_var(fo, "RTC_SAMPLING_CADENCE_REQUESTED_OUTPUT_HZ", cadence.requested_output_hz);
     add_netcdf_var(fo, "RTC_SAMPLING_CADENCE_EFFECTIVE_NATIVE_HZ", cadence.effective_native_hz);
     add_netcdf_var(fo, "RTC_SAMPLING_CADENCE_EFFECTIVE_OUTPUT_HZ", cadence.effective_output_hz);
@@ -902,19 +1056,31 @@ inline void add_rtcdiag_scan_array_summary_outputs(netCDF::NcFile &fo,
     add_netcdf_var(fo, "RTC_SAMPLING_CADENCE_REQUESTED_FACTOR", cadence.requested_factor);
     add_netcdf_var(fo, "RTC_SAMPLING_CADENCE_EFFECTIVE_FACTOR", cadence.effective_factor);
     add_netcdf_var(fo, "RTC_SAMPLING_CADENCE_REALIZED_FACTOR", cadence.realized_factor);
-    add_netcdf_var(fo, "RTC_SAMPLING_CADENCE_CONSISTENT", cadence.consistent);
-    add_netcdf_var(fo, "RTC_SAMPLING_CADENCE_CONSISTENCY_REASON", std::string{cadence.consistent ? "none" : "cadence_state_mismatch"});
+    add_netcdf_var(fo, "RTC_SAMPLING_CADENCE_REALIZED_VALID",
+                   cadence.realized_valid);
+    add_netcdf_var(fo, "RTC_SAMPLING_CADENCE_REALIZED_REASON",
+                   std::string{to_string(cadence.realized_reason)});
+    add_netcdf_var(fo, "RTC_SAMPLING_CADENCE_REQUESTED_EFFECTIVE_CONSISTENCY",
+                   cadence.requested_effective_consistency);
+    add_netcdf_var(fo, "RTC_SAMPLING_CADENCE_EFFECTIVE_REALIZED_CONSISTENCY",
+                   cadence.effective_realized_consistency);
     add_netcdf_var(fo, "RTC_SAMPLING_MAX_CANDIDATES_PER_SCAN_ARRAY", static_cast<double>(rtc_sampling_max_candidates));
     add_netcdf_var(fo, "RTC_SAMPLING_MAX_TOTAL_CANDIDATE_ROWS", static_cast<double>(rtc_sampling_max_candidate_rows));
-    add_netcdf_var(fo, "RTC_SAMPLING_MAX_COMPLEX_EVALUATIONS", static_cast<double>(rtc_sampling_max_complex_evaluations));
+    add_netcdf_var(fo, "RTC_SAMPLING_MAX_ACTUAL_WORK_UNITS", static_cast<double>(rtc_sampling_max_actual_work_units));
     add_netcdf_var(fo, "RTC_SAMPLING_MAX_ESTIMATED_RTCDIAG_BYTES", static_cast<double>(rtc_sampling_max_estimated_rtcdiag_bytes));
     add_netcdf_var(fo, "RTC_SAMPLING_ESTIMATED_CANDIDATE_ROW_BYTES", static_cast<double>(rtc_sampling_estimated_candidate_row_bytes));
     add_netcdf_var(fo, "RTC_SAMPLING_CANDIDATE_TABLE_STATUS", static_cast<int>(values.candidate_table_status));
     add_netcdf_var(fo, "RTC_SAMPLING_CANDIDATE_TABLE_REASON", static_cast<int>(values.candidate_table_reason));
     add_netcdf_var(fo, "RTC_SAMPLING_CANDIDATE_TABLE_AVAILABLE", values.candidate_table_available);
+    add_netcdf_var(fo, "RTC_SAMPLING_CANDIDATE_COUNT",
+                   static_cast<long long>(values.candidate_table_available
+                       ? values.candidate_factors.size() : 0));
     add_netcdf_var(fo, "RTC_SAMPLING_ESTIMATED_CANDIDATE_ROWS", static_cast<double>(values.estimated_candidate_rows));
     add_netcdf_var(fo, "RTC_SAMPLING_ESTIMATED_RECTANGULAR_STORAGE_CELLS", static_cast<double>(values.estimated_rectangular_storage_cells));
     add_netcdf_var(fo, "RTC_SAMPLING_ESTIMATED_COMPLEX_EVALUATIONS", static_cast<double>(values.estimated_complex_evaluations));
+    add_netcdf_var(fo, "RTC_SAMPLING_ESTIMATED_CONTEXT_WORK_UNITS", static_cast<double>(values.estimated_context_work_units));
+    add_netcdf_var(fo, "RTC_SAMPLING_ESTIMATED_ACTUAL_WORK_UNITS", static_cast<double>(values.estimated_actual_work_units));
+    add_netcdf_var(fo, "RTC_SAMPLING_ESTIMATED_AUXILIARY_STORAGE_BYTES", static_cast<double>(values.estimated_auxiliary_storage_bytes));
     add_netcdf_var(fo, "RTC_SAMPLING_ESTIMATED_RTCDIAG_BYTES", static_cast<double>(values.estimated_rtcdiag_bytes));
 
     auto add_sa_d = [&](const char *n, const char *u, const char *c, const auto &d) {
@@ -932,6 +1098,29 @@ inline void add_rtcdiag_scan_array_summary_outputs(netCDF::NcFile &fo,
     add_sa_i("rtc_sampling_applied_scan_reason", "cause for applied-operator scan status; no_complete_context is report-only in Stage A", values.applied_scan_reason);
     add_sa_d("rtc_sampling_beam_fwhm_arcsec", "arcsec", "fixed diffraction-derived FWHM used only as the circular-Gaussian scale", values.beam_fwhm_arcsec);
     add_sa_d("rtc_sampling_temporal_sigma_s", "s", "theta/(2 sqrt(2 ln2) v95)", values.temporal_sigma_s);
+    add_netcdf_var(
+        fo, "RTC_SAMPLING_CONTEXT_CATEGORY_PRECEDENCE",
+        std::string{
+            "motion_internal_gap,motion_low_velocity,motion_invalid_or_overlimit,"
+            "per_detector_invalid,realized_filter_guard,science_flag_without_guard,"
+            "nonfinite_input,fully_supported; mutually-exclusive sum-to-total-v1"});
+    const std::vector<int> zero_scan_array(values.prerequisite_status.size(), 0);
+    add_sa_i("rtc_sampling_input_total_detector_cells",
+             "total production detector-time cells; category counts sum exactly to this value",
+             zero_scan_array);
+    for (const auto &[name, comment] : std::array<std::pair<const char *, const char *>, 10>{
+             {{"rtc_sampling_input_fully_supported_count", "fully supported production input cells"},
+              {"rtc_sampling_input_boundary_context_count", "boundary/context exclusions (input-domain value is zero; candidate-domain boundary is separate)"},
+              {"rtc_sampling_input_internal_gap_count", "cells excluded by missing internal source-motion support"},
+              {"rtc_sampling_input_low_velocity_motion_count", "cells excluded by valid source motion below 1 arcsec/s"},
+              {"rtc_sampling_input_invalid_or_overlimit_motion_count", "cells excluded by invalid or over-limit source motion"},
+              {"rtc_sampling_input_per_detector_invalid_count", "cells excluded by final per-detector validity"},
+              {"rtc_sampling_input_science_flag_count", "pre-guard or residual science flags; realized guard is explicitly subtracted"},
+              {"rtc_sampling_input_nonfinite_input_count", "cells excluded by non-finite signal or time"},
+              {"rtc_sampling_input_realized_filter_guard_count", "cells in the separately captured realized filter-guard mask"},
+              {"rtc_sampling_input_unclassified_count", "must remain zero"}}}) {
+        add_sa_i(name, comment, zero_scan_array);
+    }
 
     const auto fir_dim = fo.addDim("n_rtc_sampling_fir_coefficients", values.fir_coefficients.size());
     auto fir_var = fo.addVar("rtc_sampling_realized_fir_coefficients", netCDF::ncDouble, fir_dim);
@@ -946,6 +1135,11 @@ inline void add_rtcdiag_scan_array_summary_outputs(netCDF::NcFile &fo,
     factor_var.putAtt("units", "N/A");
     factor_var.putAtt("comment", "unranked rectangular candidate axis; cells above a scan-array Mmax are fill values, and a resource-limited scan-array has no evaluated cells");
     factor_var.putVar(values.candidate_factors.data());
+    auto phase_var = fo.addVar("rtc_sampling_candidate_phase", netCDF::ncInt,
+                               candidate_dim);
+    phase_var.putAtt("units", "N/A");
+    phase_var.putAtt("comment", "fixed coherent phase-zero authority");
+    phase_var.putVar(values.candidate_phases.data());
     auto dims = scan_array_dims; dims.push_back(candidate_dim);
     auto chunks = scan_array_chunks; chunks.push_back(values.candidate_factors.size());
     auto add_i = [&](const char *n, const char *c, const auto &d) { add_rtc_sampling_table_int(fo, n, c, dims, chunks, d); };
@@ -1015,6 +1209,24 @@ inline void add_rtcdiag_scan_array_summary_outputs(netCDF::NcFile &fo,
     add_i("rtc_sampling_incomplete_boundary_count", "outputs missing observation/outer boundary context", values.incomplete_boundary_count);
     add_i("rtc_sampling_incomplete_gap_count", "outputs intersecting invalid/ineligible source support", values.incomplete_gap_count);
     add_i("rtc_sampling_incomplete_other_count", "other incomplete outputs", values.incomplete_other_count);
+    const std::vector<int> zero_candidate_context(values.candidate_status.size(), 0);
+    add_i("rtc_sampling_detector_output_cell_count",
+          "exact detector-output cells classified for this factor and phase",
+          zero_candidate_context);
+    for (const auto &[name, comment] :
+         std::array<std::pair<const char *, const char *>, 10>{
+             {{"rtc_sampling_detector_output_fully_supported_count", "detector-output cells with complete production-valid context"},
+              {"rtc_sampling_detector_output_boundary_context_count", "detector-output cells excluded by observation or scan boundary context"},
+              {"rtc_sampling_detector_output_internal_gap_count", "detector-output cells excluded by an internal source-motion gap"},
+              {"rtc_sampling_detector_output_low_velocity_motion_count", "detector-output cells excluded by valid low-velocity motion"},
+              {"rtc_sampling_detector_output_invalid_or_overlimit_motion_count", "detector-output cells excluded by invalid or over-limit motion"},
+              {"rtc_sampling_detector_output_per_detector_invalid_count", "detector-output cells excluded by exact detector validity"},
+              {"rtc_sampling_detector_output_science_flag_count", "detector-output cells excluded by residual pre-guard science flags"},
+              {"rtc_sampling_detector_output_nonfinite_input_count", "detector-output cells excluded by non-finite signal or time"},
+              {"rtc_sampling_detector_output_realized_filter_guard_count", "detector-output cells excluded by the separately captured realized guard"},
+              {"rtc_sampling_detector_output_unclassified_count", "must remain zero"}}}) {
+        add_i(name, comment, zero_candidate_context);
+    }
     add_i("rtc_sampling_longest_full_run", "longest contiguous run of complete outputs", values.longest_full_run);
     add_d("rtc_sampling_full_duration_s", "s", "N_full*M/fs", values.full_duration_s);
     add_d("rtc_sampling_full_fraction", "N/A", "N_full/N_candidate_outputs", values.full_fraction);

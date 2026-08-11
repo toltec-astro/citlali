@@ -1,5 +1,6 @@
 import copy
 import json
+import re
 import tempfile
 import unittest
 from pathlib import Path
@@ -754,6 +755,179 @@ class ValidateProductContractTest(unittest.TestCase):
             [self.entry(pattern="product.nc", checks=checks)]
         )
         self.assertTrue(result["passed"], result["errors"])
+
+    @unittest.skipIf(product_contract.netCDF4 is None, "netCDF4 is unavailable")
+    def test_integer_scalar_drives_candidate_cardinality_rules(self) -> None:
+        import netCDF4
+
+        path = self.reduction / "product.nc"
+        with netCDF4.Dataset(path, "w") as dataset:
+            dataset.createDimension("scalar", 1)
+            available = dataset.createVariable("available", "i4", ("scalar",))
+            available[0] = 1
+            count = dataset.createVariable("count", "i8", ("scalar",))
+            count[0] = 2
+            dataset.createDimension("candidate", 2)
+            dataset.createVariable("factor", "i4", ("candidate",))[:] = [1, 2]
+
+        checks = {
+            "required_dimensions_by_scalar": {
+                "available": {"1": ["candidate"]},
+            },
+            "required_variables_by_scalar": {
+                "available": {"1": ["factor", "reason"]},
+            },
+            "dimension_size_equals_scalar": {"candidate": "count"},
+            "variable_trailing_dimension_by_scalar": {
+                "available": {"1": {"factor": "candidate"}},
+            },
+        }
+        result = self.validate([self.entry(pattern="product.nc", checks=checks)])
+        self.assertFalse(result["passed"])
+        self.assertTrue(any("reason" in error for error in result["errors"]))
+
+        with netCDF4.Dataset(path, "a") as dataset:
+            dataset.createVariable("reason", "i4", ("candidate",))[:] = [0, 0]
+        result = self.validate([self.entry(pattern="product.nc", checks=checks)])
+        self.assertTrue(result["passed"], result["errors"])
+
+    @unittest.skipIf(product_contract.netCDF4 is None, "netCDF4 is unavailable")
+    def test_unavailable_candidate_table_forbids_residual_rows(self) -> None:
+        import netCDF4
+
+        path = self.reduction / "product.nc"
+        with netCDF4.Dataset(path, "w") as dataset:
+            dataset.createDimension("scalar", 1)
+            available = dataset.createVariable("available", "i4", ("scalar",))
+            available[0] = 0
+            dataset.createDimension("candidate", 1)
+            dataset.createVariable("factor", "i4", ("candidate",))[:] = [1]
+
+        checks = {
+            "forbidden_dimensions_by_scalar": {
+                "available": {"0": ["candidate"]},
+            },
+            "forbidden_variables_by_scalar": {
+                "available": {"0": ["factor"]},
+            },
+        }
+        result = self.validate([self.entry(pattern="product.nc", checks=checks)])
+        self.assertFalse(result["passed"])
+        self.assertTrue(any("forbids" in error for error in result["errors"]))
+
+    @unittest.skipIf(product_contract.netCDF4 is None, "netCDF4 is unavailable")
+    def test_conditional_candidate_set_requires_every_member_and_axis(self) -> None:
+        import netCDF4
+
+        path = self.reduction / "product.nc"
+        with netCDF4.Dataset(path, "w") as dataset:
+            available = dataset.createVariable("available", "i4")
+            available.assignValue(1)
+            dataset.createDimension("candidate", 2)
+            dataset.createVariable("factor", "i4", ("candidate",))[:] = [1, 2]
+            dataset.createDimension("wrong", 2)
+            dataset.createVariable("reason", "i4", ("wrong",))[:] = [0, 0]
+
+        checks = {
+            "conditional_variable_set_by_scalar": {
+                "available": {
+                    "available_value": 1,
+                    "unavailable_value": 0,
+                    "dimension": "candidate",
+                    "variables": ["factor", "reason", "status"],
+                },
+            },
+        }
+        result = self.validate([self.entry(pattern="product.nc", checks=checks)])
+        self.assertFalse(result["passed"])
+        self.assertTrue(any("complete conditional variable set" in error
+                            for error in result["errors"]))
+        self.assertTrue(any("conditional variable 'reason'" in error
+                            for error in result["errors"]))
+
+        with netCDF4.Dataset(path, "a") as dataset:
+            dataset.createVariable("status", "i4", ("candidate",))[:] = [0, 0]
+        result = self.validate([self.entry(pattern="product.nc", checks=checks)])
+        self.assertFalse(result["passed"])
+
+        path.unlink()
+        with netCDF4.Dataset(path, "w") as dataset:
+            available = dataset.createVariable("available", "i4")
+            available.assignValue(0)
+            dataset.createDimension("candidate", 1)
+            dataset.createVariable("factor", "i4", ("candidate",))[:] = [1]
+        result = self.validate([self.entry(pattern="product.nc", checks=checks)])
+        self.assertFalse(result["passed"])
+        self.assertTrue(any("forbids dimension" in error
+                            for error in result["errors"]))
+
+    def test_successor_candidate_inventory_matches_writer_and_finalizer(self) -> None:
+        repository = Path(__file__).resolve().parents[2]
+        registry = json.loads(
+            (repository / "validation/product_contracts.json").read_text()
+        )
+        contract_variables = set(
+            registry["checks"]["rtc_diagnostics_stage_a_successor_v3"]
+            ["conditional_variable_set_by_scalar"]
+            ["RTC_SAMPLING_CANDIDATE_TABLE_AVAILABLE"]["variables"]
+        )
+        writer = (repository / "include/citlali/core/pipeline/"
+                  "rtcdiag_scan_summary.h").read_text()
+        writer = writer[writer.index("const auto candidate_dim"):]
+        writer_variables = set(re.findall(
+            r'"(rtc_sampling_[a-z0-9_]+)"', writer
+        ))
+        finalizer = (repository / "include/citlali/core/pipeline/"
+                     "rtcdiag_netcdf.h").read_text()
+        finalizer = finalizer[
+            finalizer.index("rtcdiag_successor_candidate_variables"):
+            finalizer.index("inline std::string read_required_rtcdiag_manifest")
+        ]
+        finalizer_variables = set(re.findall(
+            r'"(rtc_sampling_[a-z0-9_]+)"', finalizer
+        ))
+        self.assertEqual(len(contract_variables), 81)
+        self.assertEqual(contract_variables, writer_variables)
+        self.assertEqual(contract_variables, finalizer_variables)
+
+    def test_successor_mode_wrappers_only_replace_rtcdiag_check(self) -> None:
+        repository = Path(__file__).resolve().parents[2]
+        registry = json.loads(
+            (repository / "validation/product_contracts.json").read_text()
+        )
+        contracts = {
+            contract["contract_id"]: contract
+            for contract in registry["contracts"]
+        }
+        native_entry = {
+            "point": "rtc-diagnostics",
+            "oof": "rtc-diagnostics",
+            "beammap": "source-crossing-rtc-diagnostics",
+            "science": "observation-rtc-diagnostics",
+        }
+        for mode in ("point", "oof", "beammap", "science"):
+            wrapper_id = (
+                f"sci-rtc-001-stage-a-successor-{mode}-products-v1"
+            )
+            wrapper = contracts[wrapper_id]
+            self.assertEqual(
+                wrapper["extends_contract_id"],
+                f"phase4-{mode}-products-v1",
+            )
+            self.assertEqual(
+                wrapper["entry_overrides"],
+                {
+                    native_entry[mode]: {
+                        "check_id":
+                            "rtc_diagnostics_stage_a_successor_v3",
+                    },
+                },
+            )
+        self.assertEqual(
+            registry["checks"]["rtc_diagnostics_stage_a_successor_v3"]
+            ["scalar_equals"]["RTC_SAMPLING_PRODUCT_CONTRACT_ID"],
+            "sci-rtc-001-stage-a-successor-products-v1",
+        )
 
 
 if __name__ == "__main__":
