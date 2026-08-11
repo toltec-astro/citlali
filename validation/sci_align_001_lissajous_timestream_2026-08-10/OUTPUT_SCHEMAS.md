@@ -45,6 +45,38 @@ bootstrap counts where applicable. `run_state.json` uses schema
 `sci-align-001-lissajous-runtime-state-v1`; only `status=complete` is a
 completed run. A wall-limit stop publishes no `result.json`.
 
+## Per-observation fit gate
+
+`fit-gate` creates schema `sci-align-001-lissajous-fit-gate-v1` in
+`fit_gate.json`, accompanied by `fit_gate_model_results.ecsv`,
+`fit_gate_optimizer_audit.ecsv`, `fit_gate_scan_metrics.ecsv`, the exact
+`fit_gate_progress.jsonl` slice, and
+`lissajous_fit_gate_o<obsnum>.pdf`. `FIT_GATE_SHA256SUMS` authenticates this
+immutable first-phase package. Its automatic status tests only structural and
+numerical validity; tau is explicitly excluded from acceptance. A failed fit
+still publishes a gate package, but cannot be resumed.
+
+`resume-observation --owner-review-approved` reauthenticates that package and
+loads its full-data fits without refitting. The source implementation digest is
+part of the gate identity.
+
+## Post-gate stage checkpoint
+
+`stage_checkpoint.json` uses schema
+`sci-align-001-lissajous-stage-checkpoint-v1`. Its identity binds the fit-gate
+document, fit-gate checksum manifest, and source implementation. The associated
+`STAGE_CHECKPOINT_SHA256SUMS` covers the state plus each completed stage file:
+objective profile, derivative cross-check, held-out model comparison,
+sensitivity fits, and network sensitivity. Files are written atomically and
+verified before the stage is considered reusable.
+
+## Runtime audit
+
+`audit-runtime` projects any retained `progress.jsonl` into schema
+`sci-align-001-lissajous-runtime-audit-v1`, plus stage, optimizer-family, and
+optimizer-attempt ECSV tables. It is a read-only performance diagnostic and
+does not reconstruct missing historical function-evaluation counts.
+
 ## Per-observation fit visualization
 
 `visualize_sci_align_001_lissajous_fit.py` creates a separate checksum-bound

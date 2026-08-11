@@ -68,3 +68,7 @@ is the previously successful bright anchor ObsNum 150818, in a new output root,
 with an explicit 1,800-second wall limit. Its purpose is to validate normal
 instrumented lifecycle and the installed renderer, not to reopen or extend the
 corpus inference. No timing correction follows from this run.
+
+This planned action was superseded after the bounded anchor attempts by the
+mandatory seven-minute gate and resumable-stage contract in
+`FIT_GATE_CHECKPOINT_RUNTIME_AUDIT_04.md`.

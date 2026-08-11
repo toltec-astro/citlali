@@ -42,9 +42,9 @@ MPLBACKEND=Agg "$SCI_PYTHON" \
 Do not run that extension command under protocol revision 6. The successor
 optimizer audit proved that the existing ObsNum 136280 bootstrap work array
 contains 361 abnormal zero-iteration fits. If the owner authorizes a repaired
-136280 run, it must use `analyze-observation` in a new, absent output root so
-none of the contaminated checkpoint values can be reused. No such rerun is
-part of the current freeze.
+136280 run, it must begin with `fit-gate` in a new, absent output root so none
+of the contaminated checkpoint values can be reused. No such rerun is part of
+the current freeze.
 
 The compact partial tables are a deterministic field projection of the nine
 checksum-valid `result.json` documents. Recreate them in a temporary directory
@@ -65,3 +65,37 @@ done
 ```
 
 No bootstrap arrays are committed.
+
+## Current gated execution contract
+
+The legacy `analyze-observation` entry point now fails closed. For an absent
+new output root, the only permitted first command is:
+
+```bash
+MPLBACKEND=Agg MPLCONFIGDIR="$(mktemp -d)" XDG_CACHE_HOME="$(mktemp -d)" \
+  "$SCI_PYTHON" \
+  tools/diagnostics/analyze_sci_align_001_lissajous_timestream.py \
+  fit-gate \
+  --protocol "$SCI_PACKAGE/frozen_protocol.json" \
+  --selection "$SCI_SELECTION" \
+  --map-root "$SCI_MAP_ROOT" \
+  --obsnum 150818 \
+  --output "$SCI_RESULT_ROOT/o150818_fit_gate_successor" \
+  --maximum-wall-seconds 900
+```
+
+This command must finish and stop. Verify `FIT_GATE_SHA256SUMS`, inspect every
+PDF page and the structural status, and do not infer approval from the fitted
+tau. Only after a separate owner decision may the exact same command inputs be
+passed to `resume-observation` with `--owner-review-approved`. Completed
+post-gate stages are checksum-verified and reused if the resumed process is
+later interrupted.
+
+The stopped 3,600-second ObsNum 150818 progress log can be projected without
+running a fit:
+
+```bash
+"$SCI_PYTHON" \
+  tools/diagnostics/analyze_sci_align_001_lissajous_timestream.py \
+  audit-runtime --progress /path/to/progress.jsonl --output /absent/output
+```

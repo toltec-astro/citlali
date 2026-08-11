@@ -60,6 +60,9 @@ class RunMonitor:
         self.started_monotonic = time.monotonic()
         self.progress_path = self.output / "progress.jsonl"
         self.event_count = 0
+        if self.progress_path.exists():
+            with self.progress_path.open() as handle:
+                self.event_count = sum(1 for _ in handle)
         self.optimizer_attempt_count = 0
         self.optimizer_fallback_count = 0
 
@@ -167,13 +170,23 @@ def write_json(path: Path, value: Any) -> None:
     path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n")
 
 
-def write_checksums(root: Path, names: Iterable[str]) -> None:
+def write_json_atomic(path: Path, value: Any) -> None:
+    temporary = path.with_name(f".{path.name}.tmp")
+    temporary.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n")
+    temporary.replace(path)
+
+
+def write_checksums(
+    root: Path,
+    names: Iterable[str],
+    manifest_name: str = "SHA256SUMS",
+) -> None:
     lines = [f"{sha256_file(root / name)}  {name}" for name in sorted(names)]
-    (root / "SHA256SUMS").write_text("\n".join(lines) + "\n")
+    (root / manifest_name).write_text("\n".join(lines) + "\n")
 
 
-def verify_sha256s(root: Path) -> None:
-    path = root / "SHA256SUMS"
+def verify_sha256s(root: Path, manifest_name: str = "SHA256SUMS") -> None:
+    path = root / manifest_name
     if not path.is_file():
         raise ContractError(f"checksum manifest is missing: {path}")
     for line in path.read_text().splitlines():
@@ -910,6 +923,8 @@ def fit_observation_model(
                 status="converged" if bool(result.success) else "nonconverged",
                 optimizer_message=str(result.message),
                 optimizer_iterations=int(result.nit),
+                optimizer_function_evaluations=int(getattr(result, "nfev", -1)),
+                optimizer_gradient_evaluations=int(getattr(result, "njev", -1)),
                 objective=float(result.fun),
                 duration_seconds=time.monotonic() - attempt_started,
             )
@@ -981,6 +996,8 @@ def fit_observation_model(
         "optimizer_success": bool(best.success),
         "optimizer_message": str(best.message),
         "optimizer_iterations": int(best.nit),
+        "optimizer_function_evaluations": int(getattr(best, "nfev", -1)),
+        "optimizer_gradient_evaluations": int(getattr(best, "njev", -1)),
         "optimizer_attempt_count": len(starts),
         "optimizer_finite_result_count": len(finite_results),
         "optimizer_converged_result_count": sum(
@@ -1837,15 +1854,691 @@ def write_observation_plots(
     return pdf_name
 
 
-def analyze_observation(args: argparse.Namespace) -> None:
+def observation_support_summary(
+    observation: PreparedObservation,
+) -> dict[str, Any]:
+    return {
+        "scan_count": len(observation.scans),
+        "eligible_uid_count": observation.eligible_uid_count,
+        "eligible_networks": list(observation.eligible_networks),
+        "common_support_sample_count": observation.common_support_sample_count,
+        "scored_value_count": observation.scored_value_count,
+        "map_support_difference": (
+            "committed map estimator retains its full scan support and map "
+            "eligibility; exact timestream estimator uses frozen +/-50-ms "
+            "common edge trim and source-scoring eligibility"
+        ),
+    }
+
+
+def optimizer_audit_rows(progress_path: Path) -> list[dict[str, Any]]:
+    """Project durable optimizer events into a compact speed-audit table."""
+    rows = []
+    for line in progress_path.read_text().splitlines():
+        record = json.loads(line)
+        if record.get("event") != "optimizer_attempt_end":
+            continue
+        rows.append({
+            "fit_label": record["fit_label"],
+            "model": record["model"],
+            "attempt_index": int(record["attempt_index"]),
+            "status": record["status"],
+            "duration_seconds": float(record["duration_seconds"]),
+            "objective": float(record["objective"]),
+            "optimizer_iterations": int(record["optimizer_iterations"]),
+            "optimizer_function_evaluations": int(
+                record.get("optimizer_function_evaluations", -1)
+            ),
+            "optimizer_gradient_evaluations": int(
+                record.get("optimizer_gradient_evaluations", -1)
+            ),
+            "optimizer_message": record["optimizer_message"],
+        })
+    return rows
+
+
+def fit_label_family(label: str) -> str:
+    return label.split("[", 1)[0].split(".", 1)[0]
+
+
+def runtime_audit(progress_path: Path) -> dict[str, Any]:
+    records = [
+        json.loads(line) for line in progress_path.read_text().splitlines()
+    ]
+    attempts = optimizer_audit_rows(progress_path)
+    stage_rows = [{
+        "stage": row["stage"],
+        "status": row["status"],
+        "duration_seconds": float(row["duration_seconds"]),
+        "error_type": row.get("error_type", ""),
+    } for row in records if row.get("event") == "stage_end"]
+    fallback_rows = [
+        row for row in records if row.get("event") == "optimizer_fallback"
+    ]
+    families = sorted({
+        fit_label_family(row["fit_label"]) for row in attempts
+    })
+    family_rows = []
+    for family in families:
+        selected = [
+            row for row in attempts
+            if fit_label_family(row["fit_label"]) == family
+        ]
+        family_rows.append({
+            "family": family,
+            "attempt_count": len(selected),
+            "converged_count": sum(
+                row["status"] == "converged" for row in selected
+            ),
+            "fallback_count": sum(
+                fit_label_family(row["fit_label"]) == family
+                for row in fallback_rows
+            ),
+            "total_attempt_seconds": float(sum(
+                row["duration_seconds"] for row in selected
+            )),
+            "median_attempt_seconds": float(np.median([
+                row["duration_seconds"] for row in selected
+            ])),
+            "total_function_evaluations": int(sum(
+                max(0, row["optimizer_function_evaluations"])
+                for row in selected
+            )),
+        })
+    return {
+        "schema": "sci-align-001-lissajous-runtime-audit-v1",
+        "progress_path": str(progress_path.resolve()),
+        "progress_sha256": sha256_file(progress_path),
+        "event_count": len(records),
+        "maximum_elapsed_seconds": max(
+            (float(row["elapsed_seconds"]) for row in records), default=0.0
+        ),
+        "optimizer_attempt_count": len(attempts),
+        "optimizer_fallback_count": len(fallback_rows),
+        "stage_rows": stage_rows,
+        "family_rows": family_rows,
+        "attempt_rows": attempts,
+    }
+
+
+def audit_runtime_command(args: argparse.Namespace) -> None:
+    progress = args.progress.resolve()
+    if not progress.is_file():
+        raise ContractError(f"progress log is missing: {progress}")
     output = args.output.resolve()
-    output.mkdir(parents=True, exist_ok=True)
+    if output.exists():
+        raise ContractError(f"runtime-audit output already exists: {output}")
+    output.mkdir(parents=True)
+    audit = runtime_audit(progress)
+    Table(rows=audit["stage_rows"]).write(
+        output / "stage_durations.ecsv", format="ascii.ecsv"
+    )
+    Table(rows=audit["family_rows"]).write(
+        output / "optimizer_families.ecsv", format="ascii.ecsv"
+    )
+    Table(rows=audit["attempt_rows"]).write(
+        output / "optimizer_attempts.ecsv", format="ascii.ecsv"
+    )
+    write_json(output / "runtime_audit.json", audit)
+    write_checksums(output, [
+        "optimizer_attempts.ecsv", "optimizer_families.ecsv",
+        "runtime_audit.json", "stage_durations.ecsv",
+    ])
+    verify_sha256s(output)
+    print(f"runtime audit complete: output={output}")
+
+
+def fit_gate_scan_rows(
+    observation: PreparedObservation,
+    primary: dict[str, Any],
+    constant: dict[str, Any],
+) -> list[dict[str, Any]]:
+    """Return scan diagnostics without turning the fitted tau into a gate."""
+    primary_parameters = dict(primary["parameters"])
+    zero_parameters = dict(primary_parameters)
+    zero_parameters["tau_sec"] = 0.0
+    constant_parameters = dict(constant["parameters"])
+    beam = beam_from_parameters(primary_parameters, observation.beam, "fixed")
+    rows = []
+    for scan in observation.scans:
+        best_sse, best_weight, count, _ = scan_profiled_objective(
+            scan, primary_parameters, "lag", beam, "constant"
+        )
+        zero_sse, zero_weight, _, _ = scan_profiled_objective(
+            scan, zero_parameters, "lag", beam, "constant"
+        )
+        constant_sse, constant_weight, _, _ = scan_profiled_objective(
+            scan, constant_parameters, "constant", beam, "constant"
+        )
+        rows.append({
+            "scan_row": scan.scan_row,
+            "output_scan_index": scan.output_scan_index,
+            "scored_sample_count": count,
+            "best_weighted_mse": best_sse / best_weight,
+            "tau0_weighted_mse": zero_sse / zero_weight,
+            "constant_weighted_mse": constant_sse / constant_weight,
+            "tau0_minus_best_weighted_mse": (
+                zero_sse / zero_weight - best_sse / best_weight
+            ),
+        })
+    return rows
+
+
+def scan_aggregate_profile(
+    scan: PreparedScan,
+    parameters: dict[str, float],
+    beam: BeamGeometry,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Return weighted aggregate data/model profiles for visual review."""
+    x, y, _, _ = scan.coordinates(parameters.get("tau_sec", 0.0))
+    template = gaussian_beam(
+        x,
+        y,
+        np.full(scan.recorded_time.shape, parameters["x0_arcsec"])[:, None],
+        np.full(scan.recorded_time.shape, parameters["y0_arcsec"])[:, None],
+        beam,
+    )
+    signal = scan.residual_by_baseline["constant"]
+    mask = scan.score_mask
+    cross = np.sum(np.where(mask, template * signal, 0.0), axis=0)
+    square = np.sum(np.where(mask, template * template, 0.0), axis=0)
+    amplitude = np.maximum(np.divide(
+        cross, square, out=np.zeros_like(cross), where=square > 1.0e-16
+    ), 0.0)
+    model = template * amplitude[None, :]
+    weights = mask * scan.ptc_weight[None, :]
+    denominator = np.sum(weights, axis=1)
+    data_profile = np.divide(
+        np.sum(weights * signal, axis=1),
+        denominator,
+        out=np.full(denominator.shape, np.nan),
+        where=denominator > 0.0,
+    )
+    model_profile = np.divide(
+        np.sum(weights * model, axis=1),
+        denominator,
+        out=np.full(denominator.shape, np.nan),
+        where=denominator > 0.0,
+    )
+    relative_ms = 1000.0 * (
+        scan.recorded_time - np.median(scan.recorded_time)
+    )
+    return relative_ms, data_profile, model_profile
+
+
+def write_fit_gate_pdf(
+    output: Path,
+    observation: PreparedObservation,
+    full_fits: dict[str, dict[str, Any]],
+    scan_rows: list[dict[str, Any]],
+) -> str:
+    """Render a preliminary, explicitly non-inferential fit review."""
+    name = f"lissajous_fit_gate_o{observation.obsnum}.pdf"
+    primary = full_fits["lag"]
+    with PdfPages(output / name) as pdf:
+        fig, axes = plt.subplots(1, 2, figsize=(11, 4.8), constrained_layout=True)
+        objectives = np.asarray([
+            float(full_fits[model].get("objective", math.nan))
+            for model in MODEL_NAMES
+        ])
+        finite_objectives = objectives[np.isfinite(objectives)]
+        objective_floor = (
+            float(np.min(finite_objectives))
+            if finite_objectives.size else 0.0
+        )
+        axes[0].bar(MODEL_NAMES, objectives - objective_floor)
+        axes[0].set_ylabel("objective - minimum (descriptive)")
+        axes[0].set_title("Full-observation models")
+        attempts = [
+            int(full_fits[model].get("optimizer_attempt_count", 0))
+            for model in MODEL_NAMES
+        ]
+        converged = [
+            int(full_fits[model].get("optimizer_converged_result_count", 0))
+            for model in MODEL_NAMES
+        ]
+        x = np.arange(len(MODEL_NAMES))
+        axes[1].bar(x - 0.18, attempts, width=0.36, label="attempted")
+        axes[1].bar(x + 0.18, converged, width=0.36, label="converged")
+        axes[1].set_xticks(x, MODEL_NAMES)
+        axes[1].set_ylabel("optimizer starts")
+        axes[1].set_title("Multistart census")
+        axes[1].legend()
+        tau_text = (
+            f"{float(primary['tau_ms']):.3f} ms"
+            if "tau_ms" in primary else "unavailable"
+        )
+        fig.suptitle(
+            f"Obs {observation.obsnum} fit gate; tau is reported, not gated: "
+            f"{tau_text}; primary status={primary.get('status', 'missing')}"
+        )
+        pdf.savefig(fig)
+        plt.close(fig)
+
+        if not scan_rows or "parameters" not in primary:
+            fig, ax = plt.subplots(figsize=(9, 5), constrained_layout=True)
+            ax.axis("off")
+            ax.text(
+                0.02, 0.95,
+                "Structural fit-gate failure\n\n"
+                "Per-scan residual and source-profile diagnostics are "
+                "unavailable because the required full-observation lag and "
+                "constant fits did not both produce finite parameter sets.\n\n"
+                "The checksum-bound model and optimizer tables remain the "
+                "review evidence. Resume is prohibited.",
+                va="top", ha="left", wrap=True,
+            )
+            pdf.savefig(fig)
+            plt.close(fig)
+            return name
+
+        fig, axes = plt.subplots(2, 1, figsize=(9, 7), constrained_layout=True)
+        scan_index = [row["scan_row"] for row in scan_rows]
+        axes[0].plot(
+            scan_index,
+            [row["best_weighted_mse"] for row in scan_rows],
+            "o-",
+            label="best lag",
+        )
+        axes[0].plot(
+            scan_index,
+            [row["tau0_weighted_mse"] for row in scan_rows],
+            "o-",
+            label="tau=0, reprofiled amplitudes",
+        )
+        axes[0].set_ylabel("weighted MSE")
+        axes[0].set_title("Per-scan residual diagnostic")
+        axes[0].legend()
+        axes[1].bar(
+            scan_index,
+            [row["tau0_minus_best_weighted_mse"] for row in scan_rows],
+        )
+        axes[1].axhline(0.0, color="0.4", linewidth=0.8)
+        axes[1].set_xlabel("complete PTC scan row")
+        axes[1].set_ylabel("tau=0 minus best weighted MSE")
+        axes[1].set_title("Timing-information concentration (descriptive)")
+        pdf.savefig(fig)
+        plt.close(fig)
+
+        ranked = sorted(
+            scan_rows,
+            key=lambda row: (
+                -abs(row["tau0_minus_best_weighted_mse"]), row["scan_row"]
+            ),
+        )[:4]
+        fig, axes = plt.subplots(2, 2, figsize=(11, 7.5), constrained_layout=True)
+        beam = beam_from_parameters(
+            primary["parameters"], observation.beam, "fixed"
+        )
+        for ax, row in zip(axes.flat, ranked):
+            scan = observation.scans[int(row["scan_row"])]
+            time_ms, data_profile, model_profile = scan_aggregate_profile(
+                scan, primary["parameters"], beam
+            )
+            ax.plot(time_ms, data_profile, linewidth=0.8, label="weighted data")
+            ax.plot(time_ms, model_profile, linewidth=1.2, label="best model")
+            ax.set_title(f"scan row {scan.scan_row}")
+            ax.set_xlabel("time from scan midpoint (ms)")
+            ax.set_ylabel("weighted aggregate signal")
+            ax.legend(fontsize="small")
+        for ax in list(axes.flat)[len(ranked):]:
+            ax.axis("off")
+        fig.suptitle("Highest descriptive timing-leverage scans")
+        pdf.savefig(fig)
+        plt.close(fig)
+    return name
+
+
+def fit_gate_quality_summary(
+    coordinate_gate: dict[str, Any],
+    full_fits: dict[str, dict[str, Any]],
+    scan_rows: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """Apply only structural/numerical gates; never gate on fitted tau."""
+    primary = full_fits["lag"]
+    structural_checks = {
+        "coordinate_reconstruction": coordinate_gate.get("status") == "pass",
+        "primary_fit_success": primary.get("status") == "success",
+        "primary_not_at_search_boundary": not bool(primary.get("boundary")),
+        "all_model_fits_successful": all(
+            full_fits[name].get("status") == "success"
+            for name in MODEL_NAMES
+        ),
+        "all_model_objectives_finite": all(
+            math.isfinite(float(full_fits[name].get("objective", math.nan)))
+            for name in MODEL_NAMES
+        ),
+        "scan_residual_metrics_available": bool(scan_rows),
+        "all_scans_have_finite_residual_metrics": all(
+            math.isfinite(float(row["best_weighted_mse"])) for row in scan_rows
+        ),
+    }
+    return {
+        "automatic_structural_status": (
+            "pass" if all(structural_checks.values()) else "fail"
+        ),
+        "structural_checks": structural_checks,
+        "owner_review_required": True,
+        "owner_review_dimensions": [
+            "multistart objective consistency",
+            "compact-source model adequacy",
+            "coherent residual structure",
+            "scan/detector timing-information concentration",
+            "sufficient scan and network diversity",
+        ],
+        "tau_used_as_gate": False,
+        "disposition": "stop_after_fit_gate_pending_owner_review",
+    }
+
+
+def fit_gate_input_identity(
+    args: argparse.Namespace,
+    row: dict[str, Any],
+    map_result: dict[str, Any],
+) -> dict[str, Any]:
+    return {
+        "ptc_path": row["ptc_path"],
+        "ptc_sha256": row["ptc_sha256"],
+        "ppt_path": row["ppt_path"],
+        "ppt_sha256": row["ppt_sha256"],
+        "protocol_path": str(args.protocol.resolve()),
+        "protocol_sha256": sha256_file(args.protocol),
+        "selection_path": str(args.selection.resolve()),
+        "selection_sha256": sha256_file(args.selection),
+        "map_result": map_result,
+        "implementation_path": str(Path(__file__).resolve()),
+        "implementation_sha256": sha256_file(Path(__file__).resolve()),
+    }
+
+
+def write_fit_gate_checkpoint(
+    args: argparse.Namespace,
+    output: Path,
+    observation: PreparedObservation,
+    row: dict[str, Any],
+    coordinate_gate: dict[str, Any],
+    map_result: dict[str, Any],
+    full_fits: dict[str, dict[str, Any]],
+    monitor: RunMonitor,
+) -> dict[str, Any]:
+    primary = full_fits["lag"]
+    scan_rows = []
+    if (
+        "parameters" in primary
+        and "parameters" in full_fits["constant"]
+    ):
+        scan_rows = fit_gate_scan_rows(
+            observation, primary, full_fits["constant"]
+        )
+    scan_names = [
+        "scan_row", "output_scan_index", "scored_sample_count",
+        "best_weighted_mse", "tau0_weighted_mse",
+        "constant_weighted_mse", "tau0_minus_best_weighted_mse",
+    ]
+    scan_table = (
+        Table(rows=scan_rows)
+        if scan_rows else
+        Table(
+            names=scan_names,
+            dtype=[int, int, int, float, float, float, float],
+        )
+    )
+    scan_table.write(
+        output / "fit_gate_scan_metrics.ecsv", format="ascii.ecsv"
+    )
+    model_rows = [{
+        "model": model,
+        "status": fit.get("status", "missing"),
+        "objective": fit.get("objective", math.nan),
+        "tau_ms": fit.get("tau_ms", math.nan),
+        "x0_arcsec": fit.get("parameters", {}).get("x0_arcsec", math.nan),
+        "y0_arcsec": fit.get("parameters", {}).get("y0_arcsec", math.nan),
+        "h_az_arcsec": fit.get("parameters", {}).get(
+            "h_az_arcsec", math.nan
+        ),
+        "h_el_arcsec": fit.get("parameters", {}).get(
+            "h_el_arcsec", math.nan
+        ),
+        "optimizer_attempt_count": fit.get("optimizer_attempt_count", 0),
+        "optimizer_converged_result_count": (
+            fit.get("optimizer_converged_result_count", 0)
+        ),
+        "optimizer_function_evaluations": (
+            fit.get("optimizer_function_evaluations", -1)
+        ),
+    } for model, fit in full_fits.items()]
+    Table(rows=model_rows).write(
+        output / "fit_gate_model_results.ecsv", format="ascii.ecsv"
+    )
+    speed_rows = optimizer_audit_rows(monitor.progress_path)
+    Table(rows=speed_rows).write(
+        output / "fit_gate_optimizer_audit.ecsv", format="ascii.ecsv"
+    )
+    pdf_name = write_fit_gate_pdf(
+        output, observation, full_fits, scan_rows
+    )
+    gate = {
+        "schema": "sci-align-001-lissajous-fit-gate-v1",
+        "obsnum": observation.obsnum,
+        "beammap_obsnum": int(row["beammap_obsnum"]),
+        "brightness_stratum": row["brightness_stratum"],
+        "input": fit_gate_input_identity(args, row, map_result),
+        "support": observation_support_summary(observation),
+        "coordinate_gate": coordinate_gate,
+        "point_model_results": full_fits,
+        "quality_gate": fit_gate_quality_summary(
+            coordinate_gate, full_fits, scan_rows
+        ),
+        "speed_audit": {
+            "optimizer_attempt_count": monitor.optimizer_attempt_count,
+            "optimizer_fallback_count": monitor.optimizer_fallback_count,
+            "record_count": len(speed_rows),
+            "total_attempt_seconds": float(sum(
+                row["duration_seconds"] for row in speed_rows
+            )),
+        },
+        "resume_contract": {
+            "requires_owner_review": True,
+            "resume_command": "resume-observation",
+            "refit_full_models": False,
+            "tau_used_as_gate": False,
+        },
+    }
+    write_json(output / "fit_gate.json", gate)
+    shutil.copy2(monitor.progress_path, output / "fit_gate_progress.jsonl")
+    immutable_names = [
+        "fit_gate.json",
+        "fit_gate_model_results.ecsv",
+        "fit_gate_optimizer_audit.ecsv",
+        "fit_gate_progress.jsonl",
+        "fit_gate_scan_metrics.ecsv",
+        pdf_name,
+    ]
+    write_checksums(output, immutable_names, "FIT_GATE_SHA256SUMS")
+    verify_sha256s(output, "FIT_GATE_SHA256SUMS")
+    return gate
+
+
+def load_fit_gate_checkpoint(
+    args: argparse.Namespace,
+    output: Path,
+    row: dict[str, Any],
+    observation: PreparedObservation,
+    coordinate_gate: dict[str, Any],
+    map_result: dict[str, Any],
+) -> dict[str, Any]:
+    verify_sha256s(output, "FIT_GATE_SHA256SUMS")
+    gate = json.loads((output / "fit_gate.json").read_text())
+    if gate.get("schema") != "sci-align-001-lissajous-fit-gate-v1":
+        raise ContractError("unsupported fit-gate checkpoint schema")
+    if int(gate["obsnum"]) != args.obsnum:
+        raise ContractError("fit-gate observation identity mismatch")
+    expected = fit_gate_input_identity(args, row, map_result)
+    if gate["input"] != expected:
+        raise ContractError("fit-gate input or implementation identity mismatch")
+    if gate["support"] != observation_support_summary(observation):
+        raise ContractError("fit-gate support identity mismatch")
+    if gate["coordinate_gate"] != coordinate_gate:
+        raise ContractError("fit-gate coordinate identity mismatch")
+    if gate["quality_gate"]["automatic_structural_status"] != "pass":
+        raise ContractError("fit-gate structural checks did not pass")
+    if not args.owner_review_approved:
+        raise ContractError(
+            "fit-gate resume requires explicit --owner-review-approved"
+        )
+    return gate
+
+
+STAGE_CHECKPOINT_FILES = {
+    "objective_profile": "checkpoint_objective_profile.json",
+    "derivative_crosscheck": "checkpoint_derivative_crosscheck.json",
+    "heldout_model_comparison": "checkpoint_heldout_model_comparison.json",
+    "sensitivity_fits": "checkpoint_sensitivity_fits.json",
+    "network_sensitivity": "checkpoint_network_sensitivity.json",
+}
+
+
+def stage_checkpoint_identity(output: Path) -> dict[str, Any]:
+    return {
+        "fit_gate_sha256": sha256_file(output / "fit_gate.json"),
+        "fit_gate_sha256s_sha256": sha256_file(output / "FIT_GATE_SHA256SUMS"),
+        "implementation_sha256": sha256_file(Path(__file__).resolve()),
+    }
+
+
+def load_stage_checkpoints(output: Path) -> dict[str, Any]:
+    manifest = output / "STAGE_CHECKPOINT_SHA256SUMS"
+    state_path = output / "stage_checkpoint.json"
+    if not manifest.exists() and not state_path.exists():
+        return {
+            "schema": "sci-align-001-lissajous-stage-checkpoint-v1",
+            "identity": stage_checkpoint_identity(output),
+            "completed_stages": [],
+            "values": {},
+        }
+    if not manifest.is_file() or not state_path.is_file():
+        raise ContractError("stage checkpoint manifest/state pairing is incomplete")
+    verify_sha256s(output, "STAGE_CHECKPOINT_SHA256SUMS")
+    state = json.loads(state_path.read_text())
+    if state.get("schema") != "sci-align-001-lissajous-stage-checkpoint-v1":
+        raise ContractError("unsupported stage checkpoint schema")
+    if state["identity"] != stage_checkpoint_identity(output):
+        raise ContractError("stage checkpoint identity mismatch")
+    values = {}
+    for stage in state["completed_stages"]:
+        if stage not in STAGE_CHECKPOINT_FILES:
+            raise ContractError(f"unknown completed checkpoint stage: {stage}")
+        values[stage] = json.loads(
+            (output / STAGE_CHECKPOINT_FILES[stage]).read_text()
+        )
+    state["values"] = values
+    return state
+
+
+def save_stage_checkpoint(
+    output: Path,
+    state: dict[str, Any],
+    stage: str,
+    value: Any,
+) -> None:
+    if stage not in STAGE_CHECKPOINT_FILES:
+        raise ContractError(f"unsupported checkpoint stage: {stage}")
+    write_json_atomic(output / STAGE_CHECKPOINT_FILES[stage], value)
+    completed = list(state["completed_stages"])
+    if stage not in completed:
+        completed.append(stage)
+    persisted = {
+        "schema": "sci-align-001-lissajous-stage-checkpoint-v1",
+        "identity": stage_checkpoint_identity(output),
+        "completed_stages": completed,
+    }
+    write_json_atomic(output / "stage_checkpoint.json", persisted)
+    names = [
+        "stage_checkpoint.json",
+        *(STAGE_CHECKPOINT_FILES[name] for name in completed),
+    ]
+    temporary_manifest = output / ".STAGE_CHECKPOINT_SHA256SUMS.tmp"
+    lines = [
+        f"{sha256_file(output / name)}  {name}" for name in sorted(names)
+    ]
+    temporary_manifest.write_text("\n".join(lines) + "\n")
+    temporary_manifest.replace(output / "STAGE_CHECKPOINT_SHA256SUMS")
+    verify_sha256s(output, "STAGE_CHECKPOINT_SHA256SUMS")
+    state["completed_stages"] = completed
+    state.setdefault("values", {})[stage] = value
+
+
+def fit_gate_observation(args: argparse.Namespace) -> None:
+    output = args.output.resolve()
+    if output.exists():
+        raise ContractError(f"fit-gate output already exists: {output}")
+    output.mkdir(parents=True)
+    monitor = RunMonitor(output, args.maximum_wall_seconds)
+    monitor.emit(
+        "run_start", stage="fit_gate", obsnum=args.obsnum,
+        maximum_wall_seconds=args.maximum_wall_seconds,
+    )
+    try:
+        with monitor.stage("authenticate_inputs"):
+            protocol = load_protocol(args.protocol)
+            selection = load_selection(
+                args.selection,
+                protocol["input_authority"]["selection_manifest_sha256"],
+            )
+            row = selected_row(selection, args.obsnum)
+        with monitor.stage("prepare_observation"):
+            observation = prepare_observation(row, protocol)
+        with monitor.stage("coordinate_reconstruction_gate"):
+            coordinate_gate = coordinate_reconstruction_gate(observation)
+        with monitor.stage("authenticate_map_result"):
+            map_result = authenticated_map_result(args.map_root.resolve(), row)
+        with monitor.stage("full_model_fits"):
+            full_fits = {
+                model: fit_observation_model(
+                    observation, model, monitor=monitor,
+                    fit_label=f"full.{model}",
+                )
+                for model in MODEL_NAMES
+            }
+        with monitor.stage("write_fit_gate"):
+            gate = write_fit_gate_checkpoint(
+                args, output, observation, row, coordinate_gate,
+                map_result, full_fits, monitor,
+            )
+    except BaseException as error:
+        write_json(output / "run_state.json", monitor.state(
+            "failed", obsnum=args.obsnum, error_type=type(error).__name__,
+            error_message=str(error),
+        ))
+        raise
+    monitor.emit(
+        "run_complete", stage="fit_gate", status="fit_gate_complete",
+        obsnum=args.obsnum,
+    )
+    write_json(output / "run_state.json", monitor.state(
+        "fit_gate_complete", obsnum=args.obsnum,
+        current_stage="awaiting_owner_review",
+        automatic_structural_status=(
+            gate["quality_gate"]["automatic_structural_status"]
+        ),
+    ))
+    print(
+        f"fit gate complete: obs={args.obsnum} "
+        f"review={output / 'lissajous_fit_gate_o{}.pdf'.format(args.obsnum)} "
+        f"output={output}"
+    )
+
+
+def resume_observation(args: argparse.Namespace) -> None:
+    output = args.output.resolve()
+    if not output.is_dir():
+        raise ContractError(f"fit-gate output is missing: {output}")
     if (output / "result.json").exists():
         raise ContractError(f"completed output already exists: {output}")
     monitor = RunMonitor(output, args.maximum_wall_seconds)
     monitor.emit(
         "run_start",
-        stage="analyze_observation",
+        stage="resume_observation",
         obsnum=args.obsnum,
         maximum_wall_seconds=args.maximum_wall_seconds,
     )
@@ -1866,31 +2559,49 @@ def analyze_observation(args: argparse.Namespace) -> None:
             coordinate_gate = coordinate_reconstruction_gate(observation)
         with monitor.stage("authenticate_map_result"):
             map_result = authenticated_map_result(args.map_root.resolve(), row)
-        with monitor.stage("full_model_fits"):
-            full_fits = {
-                model: fit_observation_model(
-                    observation,
-                    model,
-                    monitor=monitor,
-                    fit_label=f"full.{model}",
-                )
-                for model in MODEL_NAMES
-            }
+        with monitor.stage("authenticate_fit_gate"):
+            fit_gate = load_fit_gate_checkpoint(
+                args, output, row, observation, coordinate_gate, map_result
+            )
+            full_fits = fit_gate["point_model_results"]
+            checkpoints = load_stage_checkpoints(output)
         primary = full_fits["lag"]
         if primary["status"] != "success":
             raise ContractError(f"obs {args.obsnum}: primary lag fit failed")
-        with monitor.stage("objective_profile"):
-            profile = objective_profile(observation, primary, monitor)
-        with monitor.stage("derivative_crosscheck"):
-            derivative = derivative_tau_estimate(
+
+        def checkpointed(stage: str, function: Any) -> Any:
+            if stage in checkpoints["values"]:
+                monitor.emit(
+                    "stage_checkpoint_reused", stage=stage, status="success"
+                )
+                return checkpoints["values"][stage]
+            with monitor.stage(stage):
+                value = function()
+                save_stage_checkpoint(output, checkpoints, stage, value)
+                return value
+
+        profile = checkpointed(
+            "objective_profile",
+            lambda: objective_profile(observation, primary, monitor),
+        )
+        derivative = checkpointed(
+            "derivative_crosscheck",
+            lambda: derivative_tau_estimate(
                 observation, full_fits["constant"]
-            )
-        with monitor.stage("heldout_model_comparison"):
-            blocked = heldout_model_comparison(observation, full_fits, monitor)
-        with monitor.stage("sensitivity_fits"):
-            sensitivities = sensitivity_fits(observation, primary, monitor)
-        with monitor.stage("network_sensitivity"):
-            network_rows = network_sensitivity(observation, primary, monitor)
+            ),
+        )
+        blocked = checkpointed(
+            "heldout_model_comparison",
+            lambda: heldout_model_comparison(observation, full_fits, monitor),
+        )
+        sensitivities = checkpointed(
+            "sensitivity_fits",
+            lambda: sensitivity_fits(observation, primary, monitor),
+        )
+        network_rows = checkpointed(
+            "network_sensitivity",
+            lambda: network_sensitivity(observation, primary, monitor),
+        )
         with monitor.stage("map_scan_accumulators"):
             map_scans = map_scan_accumulators(observation.ptc_path, protocol)
             if len(map_scans) != len(observation.scans):
@@ -1954,22 +2665,12 @@ def analyze_observation(args: argparse.Namespace) -> None:
                     "protocol_sha256": sha256_file(args.protocol),
                     "selection_sha256": sha256_file(args.selection),
                     "map_result": map_result,
-                },
-                "support": {
-                    "scan_count": len(observation.scans),
-                    "eligible_uid_count": observation.eligible_uid_count,
-                    "eligible_networks": observation.eligible_networks,
-                    "common_support_sample_count": (
-                        observation.common_support_sample_count
-                    ),
-                    "scored_value_count": observation.scored_value_count,
-                    "map_support_difference": (
-                        "committed map estimator retains its full scan support "
-                        "and map eligibility; exact timestream estimator uses "
-                        "frozen +/-50-ms common edge trim and source-scoring "
-                        "eligibility"
+                    "fit_gate_sha256": sha256_file(output / "fit_gate.json"),
+                    "fit_gate_sha256s_sha256": sha256_file(
+                        output / "FIT_GATE_SHA256SUMS"
                     ),
                 },
+                "support": observation_support_summary(observation),
                 "coordinate_gate": coordinate_gate,
                 "point_model_results": full_fits,
                 "derivative_crosscheck": derivative,
@@ -2006,7 +2707,7 @@ def analyze_observation(args: argparse.Namespace) -> None:
         raise
     monitor.emit(
         "run_complete",
-        stage="analyze_observation",
+        stage="resume_observation",
         status="success",
         obsnum=observation.obsnum,
     )
@@ -2015,14 +2716,27 @@ def analyze_observation(args: argparse.Namespace) -> None:
     ))
     names = [
         "blocked_prediction.ecsv", "bootstrap_work.npz",
+        "FIT_GATE_SHA256SUMS", "fit_gate.json",
+        "fit_gate_model_results.ecsv", "fit_gate_optimizer_audit.ecsv",
+        "fit_gate_progress.jsonl", "fit_gate_scan_metrics.ecsv",
+        f"lissajous_fit_gate_o{observation.obsnum}.pdf",
         "network_sensitivity.ecsv", "objective_profile.ecsv",
         "point_model_results.ecsv", "progress.jsonl", "run_state.json",
+        "STAGE_CHECKPOINT_SHA256SUMS", "stage_checkpoint.json",
+        *(STAGE_CHECKPOINT_FILES[name] for name in STAGE_CHECKPOINT_FILES),
         pdf_name, "result.json",
     ]
     write_checksums(output, names)
     print(
         f"observation complete: obs={observation.obsnum} "
         f"tau_ms={primary['tau_ms']:.6f} output={output}"
+    )
+
+
+def analyze_observation(args: argparse.Namespace) -> None:
+    raise ContractError(
+        "direct full analysis is disabled: run fit-gate, review its PDF and "
+        "quality record, then run resume-observation with explicit owner approval"
     )
 
 
@@ -2122,6 +2836,28 @@ def parser() -> argparse.ArgumentParser:
             "limit is reached; checked inside every timestream objective"
         ),
     )
+    gate = sub.add_parser("fit-gate")
+    gate.add_argument("--protocol", type=Path, required=True)
+    gate.add_argument("--selection", type=Path, required=True)
+    gate.add_argument("--map-root", type=Path, required=True)
+    gate.add_argument("--obsnum", type=int, required=True)
+    gate.add_argument("--output", type=Path, required=True)
+    gate.add_argument("--maximum-wall-seconds", type=float)
+    resume = sub.add_parser("resume-observation")
+    resume.add_argument("--protocol", type=Path, required=True)
+    resume.add_argument("--selection", type=Path, required=True)
+    resume.add_argument("--map-root", type=Path, required=True)
+    resume.add_argument("--obsnum", type=int, required=True)
+    resume.add_argument("--output", type=Path, required=True)
+    resume.add_argument("--maximum-wall-seconds", type=float)
+    resume.add_argument(
+        "--owner-review-approved",
+        action="store_true",
+        help="confirm that the checksum-bound fit-gate package was reviewed",
+    )
+    audit = sub.add_parser("audit-runtime")
+    audit.add_argument("--progress", type=Path, required=True)
+    audit.add_argument("--output", type=Path, required=True)
     extend = sub.add_parser("extend-bootstrap")
     extend.add_argument("--protocol", type=Path, required=True)
     extend.add_argument("--selection", type=Path, required=True)
@@ -2210,6 +2946,12 @@ def main() -> int:
             fit_anchor(args)
         elif args.command == "analyze-observation":
             analyze_observation(args)
+        elif args.command == "fit-gate":
+            fit_gate_observation(args)
+        elif args.command == "resume-observation":
+            resume_observation(args)
+        elif args.command == "audit-runtime":
+            audit_runtime_command(args)
         elif args.command == "extend-bootstrap":
             extend_observation_bootstrap(args)
         else:  # pragma: no cover

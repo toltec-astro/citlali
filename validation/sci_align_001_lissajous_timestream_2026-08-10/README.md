@@ -42,12 +42,22 @@ ObsNum 136280 attempt was owner-stopped after 66 minutes because the runner had
 no stage-level progress, fallback census, or enforceable runtime bound. The
 process was actively computing and left no partial artifact, but that was not
 enough to establish normal progress. Runtime instrumentation and a generalized
-authenticated fit-visualization tool are now installed without changing the
-numerical protocol. ObsNum 136280 is deferred; the next bounded lifecycle
-validation uses the previously successful bright anchor ObsNum 150818 with a
-1,800-second wall limit. The other 13 pointings remain unopened, and no all-22
-or high-S/N corpus inference has been computed. See
-`REAL_RUNTIME_OBSERVABILITY_STOP_03.md`.
+authenticated fit-visualization tool were then installed without changing the
+numerical protocol. Two bounded ObsNum 150818 lifecycle attempts showed that
+the full model fits take about seven minutes, but the held-out refits dominate
+the downstream cost. The 3,600-second attempt completed held-out and network
+diagnostics before stopping in bootstrap; it published no scientific result.
+
+Direct full execution is now disabled. Every new observation must first stop
+after a checksum-bound `fit-gate` package containing model, optimizer,
+per-scan, and visual diagnostics. Resume requires explicit owner review and
+does not repeat the full fits. Every later expensive deterministic stage is
+also atomically checkpointed and reused after interruption. The fitted tau is
+reported at the gate but is never an acceptance criterion. ObsNum 136280
+remains deferred; no further real observation has been opened. The other 13
+pointings remain unopened, and no all-22 or high-S/N corpus inference has been
+computed. See `REAL_RUNTIME_OBSERVABILITY_STOP_03.md` and
+`FIT_GATE_CHECKPOINT_RUNTIME_AUDIT_04.md`.
 
 The bounded result is documented in `REPORT.md`. Compact authenticated values
 are in `partial_observation_results.ecsv` and

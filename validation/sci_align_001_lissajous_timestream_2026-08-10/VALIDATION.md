@@ -3,7 +3,7 @@
 Validation was run with `$HOME/tolteca/bin/python` and headless Matplotlib.
 
 - `test_analyze_sci_align_001_lissajous_timestream.py` together with
-  `test_visualize_sci_align_001_lissajous_fit.py`: 15 tests passed in 47.768
+  `test_visualize_sci_align_001_lissajous_fit.py`: 23 tests passed in 47.648
   seconds. The suite includes injected zero, negative, positive,
   static-offset, pure-hysteresis, and joint regimes; irregular scan sampling,
   flags, detector gains, baselines, correlated noise, wrap-safe interpolation,
@@ -42,6 +42,16 @@ Validation was run with `$HOME/tolteca/bin/python` and headless Matplotlib.
 - The final validation-package `SHA256SUMS` manifest verifies every retained
   file.
 - The final staged diagnostic diff passes `git diff --cached --check`.
+
+The fit-gate/checkpoint successor adds regressions for monotonic progress-log
+append, runtime stage/family projection, tau-independent gate disposition,
+failed scan-diagnostic rejection, prohibition of direct full execution,
+atomic stage-checkpoint round trip and tamper rejection, and bit-identical
+fit-vector/objective reconstruction after JSON serialization. A successful
+synthetic gate PDF (three pages) and a structural-failure gate PDF (two pages)
+were rendered completely and inspected; all text, axes, legends, and failure
+disposition were legible with no clipping or overlap. The exact final focused
+test and preflight counts are recorded in the successor implementation freeze.
 
 The 32 pre-existing owner bundle files remain untracked and untouched. They
 are why no global clean-worktree claim is made.

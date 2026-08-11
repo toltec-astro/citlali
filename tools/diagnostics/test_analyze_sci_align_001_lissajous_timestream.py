@@ -163,6 +163,19 @@ def synthetic_observation(
 
 
 class LissajousTimestreamTest(unittest.TestCase):
+    def test_run_monitor_appends_with_monotonic_event_indices(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            first = target.RunMonitor(root)
+            first.emit("first")
+            second = target.RunMonitor(root)
+            second.emit("second")
+            rows = [
+                json.loads(line)
+                for line in (root / "progress.jsonl").read_text().splitlines()
+            ]
+        self.assertEqual([row["event_index"] for row in rows], [0, 1])
+
     def test_run_monitor_records_progress_and_enforces_deadline(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -180,6 +193,51 @@ class LissajousTimestreamTest(unittest.TestCase):
             ["run_start", "runtime_limit_exceeded"],
         )
         self.assertEqual(rows[-1]["stage"], "synthetic_objective")
+
+    def test_runtime_audit_groups_stages_attempts_and_fallbacks(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            records = [
+                {
+                    "event": "optimizer_attempt_end",
+                    "elapsed_seconds": 3.0,
+                    "fit_label": "full.lag",
+                    "model": "lag",
+                    "attempt_index": 0,
+                    "status": "converged",
+                    "duration_seconds": 2.5,
+                    "objective": 1.0,
+                    "optimizer_iterations": 4,
+                    "optimizer_function_evaluations": 20,
+                    "optimizer_gradient_evaluations": 5,
+                    "optimizer_message": "ok",
+                },
+                {
+                    "event": "optimizer_fallback",
+                    "elapsed_seconds": 3.1,
+                    "fit_label": "bootstrap.timestream[0]",
+                },
+                {
+                    "event": "stage_end",
+                    "elapsed_seconds": 7.0,
+                    "stage": "full_model_fits",
+                    "status": "success",
+                    "duration_seconds": 6.5,
+                },
+            ]
+            progress = root / "progress.jsonl"
+            progress.write_text(
+                "\n".join(json.dumps(row) for row in records) + "\n"
+            )
+            audit = target.runtime_audit(progress)
+        self.assertEqual(audit["event_count"], 3)
+        self.assertEqual(audit["optimizer_attempt_count"], 1)
+        self.assertEqual(audit["optimizer_fallback_count"], 1)
+        self.assertEqual(audit["family_rows"][0]["family"], "full")
+        self.assertEqual(
+            audit["family_rows"][0]["total_function_evaluations"], 20
+        )
+        self.assertEqual(audit["stage_rows"][0]["stage"], "full_model_fits")
 
     def test_failed_finite_optimizer_is_rejected_and_initial_fit_retries(self) -> None:
         observation = synthetic_observation()
@@ -215,6 +273,99 @@ class LissajousTimestreamTest(unittest.TestCase):
         self.assertAlmostEqual(fit["tau_ms"], 7.5)
         self.assertEqual(monitor.optimizer_attempt_count, 4)
         self.assertEqual(monitor.optimizer_fallback_count, 1)
+
+    def test_stage_checkpoint_roundtrip_and_tamper_rejection(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            target.write_json(root / "fit_gate.json", {"identity": "test"})
+            target.write_checksums(
+                root, ["fit_gate.json"], "FIT_GATE_SHA256SUMS"
+            )
+            state = target.load_stage_checkpoints(root)
+            value = [{"tau_ms": -3.25, "objective": 10.5}]
+            target.save_stage_checkpoint(
+                root, state, "objective_profile", value
+            )
+            restored = target.load_stage_checkpoints(root)
+            self.assertEqual(restored["values"]["objective_profile"], value)
+            self.assertEqual(
+                restored["completed_stages"], ["objective_profile"]
+            )
+            target.write_json(
+                root / target.STAGE_CHECKPOINT_FILES["objective_profile"],
+                [{"tau_ms": 99.0}],
+            )
+            with self.assertRaisesRegex(target.ContractError, "checksum mismatch"):
+                target.load_stage_checkpoints(root)
+
+    def test_fit_gate_structural_status_never_depends_on_tau(self) -> None:
+        scan_rows = [{"best_weighted_mse": 1.0}]
+
+        def fits(tau_ms: float) -> dict[str, dict[str, object]]:
+            return {
+                name: {
+                    "status": "success",
+                    "objective": 10.0 + index,
+                    "boundary": False,
+                    "tau_ms": tau_ms if name in {"lag", "joint"} else 0.0,
+                }
+                for index, name in enumerate(target.MODEL_NAMES)
+            }
+
+        negative = target.fit_gate_quality_summary(
+            {"status": "pass"}, fits(-49.0), scan_rows
+        )
+        positive = target.fit_gate_quality_summary(
+            {"status": "pass"}, fits(49.0), scan_rows
+        )
+        self.assertEqual(negative, positive)
+        self.assertFalse(negative["tau_used_as_gate"])
+        self.assertEqual(negative["automatic_structural_status"], "pass")
+
+    def test_fit_gate_rejects_missing_scan_diagnostics(self) -> None:
+        fits = {
+            name: {
+                "status": "success",
+                "objective": 10.0,
+                "boundary": False,
+                "tau_ms": 0.0,
+            }
+            for name in target.MODEL_NAMES
+        }
+        quality = target.fit_gate_quality_summary(
+            {"status": "pass"}, fits, []
+        )
+        self.assertEqual(quality["automatic_structural_status"], "fail")
+        self.assertFalse(
+            quality["structural_checks"]["scan_residual_metrics_available"]
+        )
+
+    def test_fit_gate_support_identity_survives_json_roundtrip(self) -> None:
+        support = target.observation_support_summary(synthetic_observation())
+        self.assertEqual(support, json.loads(json.dumps(support)))
+
+    def test_direct_full_analysis_is_disabled(self) -> None:
+        with self.assertRaisesRegex(target.ContractError, "run fit-gate"):
+            target.analyze_observation(SimpleNamespace())
+
+    def test_checkpointed_fit_is_numerically_identical_after_json_roundtrip(
+        self,
+    ) -> None:
+        observation = synthetic_observation(tau_sec=-0.006)
+        fit = target.fit_observation_model(
+            observation, "lag", baseline_mode="linear"
+        )
+        restored = json.loads(json.dumps(fit))
+        before = target.fit_to_optimizer_vector(fit, "lag", "fixed")
+        after = target.fit_to_optimizer_vector(restored, "lag", "fixed")
+        self.assertTrue(np.array_equal(before, after))
+        before_objective = target.observation_objective(
+            before, observation, "lag", "fixed", "linear"
+        )
+        after_objective = target.observation_objective(
+            after, observation, "lag", "fixed", "linear"
+        )
+        self.assertEqual(before_objective, after_objective)
 
     def test_multimodal_bootstrap_cannot_converge_at_500(self) -> None:
         protocol = target.load_protocol(PROTOCOL)
