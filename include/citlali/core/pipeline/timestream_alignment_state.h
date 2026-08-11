@@ -57,6 +57,13 @@ struct RtcSamplingSourceMotionSupport {
     std::vector<RtcSamplingSourceMotionInterval> intervals;
 };
 
+struct RtcSamplingObservationIdentity {
+    bool available = false;
+    std::size_t observation_index = std::numeric_limits<std::size_t>::max();
+    std::string observation_obsnum;
+    std::string telescope_source_path;
+};
+
 inline void bind_rtc_sampling_source_observation_identity(
     RtcSamplingSourceMotionSupport &support, std::size_t observation_index,
     std::string observation_obsnum, std::string telescope_source_path) {
@@ -88,6 +95,7 @@ struct TimestreamAlignmentState {
     std::vector<Eigen::Index> end_indices;
     Eigen::Index hwpr_start_index = 0;
     Eigen::Index hwpr_end_index = 0;
+    RtcSamplingObservationIdentity rtc_sampling_active_observation;
     RtcSamplingSourceMotionSupport rtc_sampling_source_motion;
 };
 
@@ -104,7 +112,73 @@ inline void clear_gap_alignment_state(TimestreamAlignmentState &state) {
 
 inline void reset_rtc_sampling_source_motion(
     TimestreamAlignmentState &state) {
+    state.rtc_sampling_active_observation = {};
     state.rtc_sampling_source_motion = {};
 }
+
+inline void begin_rtc_sampling_source_observation(
+    TimestreamAlignmentState &state, std::size_t observation_index,
+    std::string observation_obsnum, std::string telescope_source_path) {
+    reset_rtc_sampling_source_motion(state);
+    auto &identity = state.rtc_sampling_active_observation;
+    identity.observation_index = observation_index;
+    identity.observation_obsnum = std::move(observation_obsnum);
+    identity.telescope_source_path = std::move(telescope_source_path);
+    identity.available = !identity.observation_obsnum.empty() &&
+                         !identity.telescope_source_path.empty();
+}
+
+inline bool rtc_sampling_active_observation_matches(
+    const TimestreamAlignmentState &state, std::size_t observation_index,
+    const std::string &observation_obsnum,
+    const std::string &telescope_source_path) {
+    const auto &identity = state.rtc_sampling_active_observation;
+    return identity.available &&
+           identity.observation_index == observation_index &&
+           identity.observation_obsnum == observation_obsnum &&
+           identity.telescope_source_path == telescope_source_path;
+}
+
+inline bool rtc_sampling_source_matches_active_observation(
+    const TimestreamAlignmentState &state) {
+    const auto &identity = state.rtc_sampling_active_observation;
+    return identity.available && rtc_sampling_source_observation_matches(
+        state.rtc_sampling_source_motion, identity.observation_index,
+        identity.observation_obsnum, identity.telescope_source_path);
+}
+
+inline void bind_rtc_sampling_source_to_active_observation(
+    TimestreamAlignmentState &state) {
+    const auto &identity = state.rtc_sampling_active_observation;
+    if (!identity.available) {
+        return;
+    }
+    bind_rtc_sampling_source_observation_identity(
+        state.rtc_sampling_source_motion, identity.observation_index,
+        identity.observation_obsnum, identity.telescope_source_path);
+}
+
+class RtcSamplingSourceObservationGuard {
+public:
+    explicit RtcSamplingSourceObservationGuard(
+        TimestreamAlignmentState &state) : state_{state} {}
+
+    RtcSamplingSourceObservationGuard(
+        const RtcSamplingSourceObservationGuard &) = delete;
+    RtcSamplingSourceObservationGuard &operator=(
+        const RtcSamplingSourceObservationGuard &) = delete;
+
+    ~RtcSamplingSourceObservationGuard() {
+        if (!committed_) {
+            reset_rtc_sampling_source_motion(state_);
+        }
+    }
+
+    void commit() noexcept { committed_ = true; }
+
+private:
+    TimestreamAlignmentState &state_;
+    bool committed_ = false;
+};
 
 }  // namespace citlali::pipeline

@@ -68,10 +68,7 @@ bool prepare_reduction_observation_inputs(
     std::size_t observation_index, DateObsFactory &&date_obs_factory,
     const Logger &logger) {
     auto &engine = todproc.engine();
-    // This is the sole reset owner. Capture below occurs after this same
-    // observation's telescope source is loaded and consumption occurs during
-    // this observation's rtcdiag setup/finalization.
-    reset_rtc_sampling_source_motion(engine.alignment);
+    RtcSamplingSourceObservationGuard rtc_sampling_guard{engine.alignment};
 
     if (!prepare_reduction_observation_calibration_state<IsBeammap>(
             todproc, rawobs, rawobs_kids_meta, has_multiple_inputs,
@@ -86,12 +83,30 @@ bool prepare_reduction_observation_inputs(
     load_reduction_observation_detector_diagnostics(todproc, rawobs, logger);
     prepare_reduction_observation_output_layout(
         engine, rawobs_kids_meta, logger);
+    const auto telescope_source = telescope_data_filepath(rawobs);
+    if (has_multiple_inputs) {
+        begin_rtc_sampling_source_observation(
+            engine.alignment, observation_index,
+            engine.observation_identity.obsnum, telescope_source);
+    }
+    else if (!rtc_sampling_active_observation_matches(
+                 engine.alignment, observation_index,
+                 engine.observation_identity.obsnum, telescope_source) ||
+             !rtc_sampling_source_matches_active_observation(
+                 engine.alignment)) {
+        logger->error(
+            "rtcdiag Stage A initial source carrier does not match the active reduction observation");
+        return false;
+    }
     load_reduction_observation_hwpr_data_if_requested(engine, rawobs, logger);
     calculate_reduction_observation_flux_calibration(engine, logger);
-    load_and_point_reduction_observation_telescope_data_if_needed(
+    load_capture_and_point_reduction_observation_telescope_data_if_needed(
         todproc, rawobs, has_multiple_inputs, logger);
-    capture_reduction_observation_rtc_sampling_source_motion(
-        todproc, rawobs, observation_index);
+    if (!rtc_sampling_source_matches_active_observation(engine.alignment)) {
+        logger->error(
+            "rtcdiag Stage A source carrier was not captured for the active reduction observation");
+        return false;
+    }
     append_reduction_observation_date(
         engine, make_reduction_observation_date_obs(
                     std::forward<DateObsFactory>(date_obs_factory), engine));
@@ -101,6 +116,7 @@ bool prepare_reduction_observation_inputs(
     allocate_reduction_observation_map_buffers_if_needed(
         todproc, map_extents, map_coords, observation_index, logger);
     update_reduction_observation_exposure_time(engine);
+    rtc_sampling_guard.commit();
     return true;
 }
 

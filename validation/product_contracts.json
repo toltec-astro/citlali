@@ -1254,6 +1254,7 @@
         "RTC_SAMPLING_ALGORITHM_VERSION",
         "RTC_SAMPLING_PRODUCT_CONTRACT_ID",
         "RTC_SAMPLING_VALIDATION_PROFILE_ID",
+        "RTC_SAMPLING_PRODUCT_MODE",
         "RTC_SAMPLING_CONTRACT_EPOCH",
         "RTC_SAMPLING_BEAM_MODEL",
         "RTC_SAMPLING_BEAM_FWHM_AUTHORITY",
@@ -1334,20 +1335,113 @@
         "rtc_sampling_input_science_flag_count",
         "rtc_sampling_input_nonfinite_input_count",
         "rtc_sampling_input_realized_filter_guard_count",
-        "rtc_sampling_input_unclassified_count"
+        "rtc_sampling_input_unclassified_count",
+        "rtc_sampling_input_fully_supported_fraction",
+        "rtc_sampling_input_boundary_context_fraction",
+        "rtc_sampling_input_internal_gap_fraction",
+        "rtc_sampling_input_low_velocity_motion_fraction",
+        "rtc_sampling_input_invalid_or_overlimit_motion_fraction",
+        "rtc_sampling_input_per_detector_invalid_fraction",
+        "rtc_sampling_input_science_flag_fraction",
+        "rtc_sampling_input_nonfinite_input_fraction",
+        "rtc_sampling_input_realized_filter_guard_fraction",
+        "rtc_sampling_input_unclassified_fraction",
+        "RTC_SAMPLING_CADENCE_EFFECTIVE_NATIVE_HZ",
+        "RTC_SAMPLING_CADENCE_REALIZED_NATIVE_HZ",
+        "RTC_SAMPLING_CONTEXT_CATEGORY_PRECEDENCE",
+        "RTC_SAMPLING_ESTIMATED_CANDIDATE_ROW_BYTES",
+        "RTC_SAMPLING_FILTER_EFFECTIVE_A_GIBBS",
+        "RTC_SAMPLING_FILTER_EFFECTIVE_ENABLED",
+        "RTC_SAMPLING_FILTER_EFFECTIVE_HIGH_HZ",
+        "RTC_SAMPLING_FILTER_EFFECTIVE_LOW_HZ",
+        "RTC_SAMPLING_FILTER_EFFECTIVE_N_TERMS",
+        "RTC_SAMPLING_FILTER_REALIZED_A_GIBBS",
+        "RTC_SAMPLING_FILTER_REALIZED_ENABLED",
+        "RTC_SAMPLING_FILTER_REALIZED_HIGH_HZ",
+        "RTC_SAMPLING_FILTER_REALIZED_LOW_HZ",
+        "RTC_SAMPLING_FILTER_REALIZED_N_TERMS",
+        "RTC_SAMPLING_FILTER_REQUESTED_A_GIBBS",
+        "RTC_SAMPLING_FILTER_REQUESTED_ENABLED",
+        "RTC_SAMPLING_FILTER_REQUESTED_HIGH_HZ",
+        "RTC_SAMPLING_FILTER_REQUESTED_LOW_HZ",
+        "RTC_SAMPLING_FILTER_REQUESTED_N_TERMS",
+        "RTC_SAMPLING_METRICS_NOTICE",
+        "RTC_SAMPLING_SOURCE_ELIGIBLE_DURATION_S",
+        "RTC_SAMPLING_SOURCE_ELIGIBLE_FRACTION",
+        "RTC_SAMPLING_SOURCE_ELIGIBLE_INTERVAL_COUNT",
+        "RTC_SAMPLING_SOURCE_INTERVAL_COUNT",
+        "RTC_SAMPLING_SOURCE_LOW_VELOCITY_EXCLUDED_COUNT",
+        "RTC_SAMPLING_SOURCE_LOW_VELOCITY_EXCLUDED_DURATION_S",
+        "RTC_SAMPLING_SOURCE_REJECTED_INTERVAL_COUNT",
+        "RTC_SAMPLING_SOURCE_ROW_COUNT",
+        "RTC_SAMPLING_SOURCE_SPEED_VALID_MAX_ARCSEC_S",
+        "RTC_SAMPLING_SOURCE_SUPPORT_REASON",
+        "RTC_SAMPLING_SOURCE_SUPPORT_STATUS",
+        "RTC_SAMPLING_SOURCE_VALID_DURATION_S",
+        "RTC_SAMPLING_SOURCE_VALID_INTERVAL_COUNT",
+        "rtc_sampling_beam_fwhm_arcsec",
+        "rtc_sampling_motion_boundary_guard_excluded_duration_s",
+        "rtc_sampling_motion_eligible_duration_s",
+        "rtc_sampling_motion_eligible_fraction",
+        "rtc_sampling_motion_eligible_interval_count",
+        "rtc_sampling_motion_low_velocity_excluded_count",
+        "rtc_sampling_motion_low_velocity_excluded_duration_s",
+        "rtc_sampling_motion_max_arcsec_s",
+        "rtc_sampling_motion_overlapping_interval_count",
+        "rtc_sampling_motion_p995_arcsec_s",
+        "rtc_sampling_motion_p99_arcsec_s",
+        "rtc_sampling_motion_partial_overlap_duration_s",
+        "rtc_sampling_motion_reason",
+        "rtc_sampling_motion_rejected_interval_count",
+        "rtc_sampling_motion_source_interval_count",
+        "rtc_sampling_motion_status",
+        "rtc_sampling_motion_valid_duration_s",
+        "rtc_sampling_motion_valid_interval_count",
+        "rtc_sampling_temporal_sigma_s"
       ],
       "scalar_equals": {
         "RTC_DIAG_SCHEMA_VERSION": "rtcdiag-v3",
         "RTC_SAMPLING_ALGORITHM_VERSION": "rtc-learned-sampling-stage-a-v3",
-        "RTC_SAMPLING_PRODUCT_CONTRACT_ID": "sci-rtc-001-stage-a-successor-products-v1",
-        "RTC_SAMPLING_VALIDATION_PROFILE_ID": "sci-rtc-001-stage-a-successor-v1",
         "RTC_SAMPLING_CONTRACT_EPOCH": "sci-rtc-001-stage-a-successor-2026-08-11",
         "RTC_SAMPLING_ANALYSIS_MODE": "total_intensity",
         "RTC_SAMPLING_HWPR_STATUS": "prerequisite_available",
         "RTC_SAMPLING_HWPR_REASON": "none",
         "RTC_SAMPLING_NUMERICAL_METHOD": "uniform-partition-global-lipschitz-enclosure-v1",
         "RTC_SAMPLING_FIR_DIGEST_CONVENTION": "sha256-u64le-count-then-ieee754-binary64le-realized-order-v1"
+        ,"RTC_SAMPLING_RAW_MANIFEST_REFERENCE": "embedded:citlali-rtcdiag-raw-input-manifest-v1"
+        ,"RTC_SAMPLING_CONTEXT_CATEGORY_PRECEDENCE": "boundary_context,motion_internal_gap,motion_low_velocity,motion_invalid_or_overlimit,per_detector_invalid,realized_filter_guard,science_flag_without_guard,nonfinite_input,fully_supported; mutually-exclusive sum-to-total-v1"
+        ,"RTC_SAMPLING_STATUS_REASON_VOCABULARY": "status:0=prerequisite_available,1=prerequisite_unavailable,2=candidate_range_available,3=candidate_range_resource_limit,4=candidate_not_evaluated_prerequisite,5=candidate_evaluable,6=candidate_unusable_no_complete_context,7=plan_transfer_available,8=plan_transfer_unavailable,9=scan_usable_for_applied_rtc_operator,10=scan_unusable_for_applied_rtc_operator,11=applied_operator_not_applicable,12=numerical_converged,13=numerical_bounded_not_converged,14=numerical_failed,15=not_applicable_no_decimation,16=candidate_table_available,17=candidate_table_unavailable_resource_limit;reason:0=none,1=missing_cadence,2=invalid_cadence,3=cadence_state_mismatch,4=missing_source_motion,5=invalid_source_motion,6=unavailable_low_velocity,7=unavailable_hwpr_sampling_contract,8=unknown_array,9=missing_beam,10=missing_fir,11=invalid_fir,12=missing_output_grid,13=invalid_output_grid,14=candidate_range_resource_limit,15=prerequisite_unavailable,16=no_complete_context,17=numerical_resource_limit,18=numerical_nonfinite,19=numerical_singular_reference,20=not_applicable_no_decimation,21=hwpr_state_unavailable,22=insufficient_source_motion_rows,23=invalid_source_nonfinite_interval,24=invalid_source_nonpositive_interval,25=invalid_source_gap,26=invalid_source_pointing_step,27=invalid_source_speed_above_bound,28=excluded_low_velocity,29=unequal_source_column_lengths,30=arithmetic_overflow,31=candidate_table_storage_limit,32=bounded_enclosure_nonzero,33=no_guarded_source_motion_support,34=missing_requested_cadence,35=invalid_requested_cadence,36=missing_effective_cadence,37=invalid_effective_cadence,38=missing_realized_cadence,39=nonfinite_realized_cadence,40=nonpositive_realized_cadence,41=irregular_realized_cadence,42=requested_effective_cadence_mismatch,43=effective_realized_cadence_mismatch,44=unsupported_hwpr,45=science_flag_exclusion,46=nonfinite_input_exclusion,47=realized_filter_guard_exclusion,48=per_detector_invalid_exclusion,49=boundary_context_exclusion,50=internal_gap_exclusion,51=low_velocity_motion_exclusion,52=invalid_or_overlimit_motion_exclusion,53=unclassified_context,54=source_identity_unavailable,55=source_identity_dirty,56=raw_manifest_unavailable,57=raw_manifest_mismatch"
       },
+      "scalar_one_of": {
+        "RTC_SAMPLING_PRODUCT_MODE": ["point", "oof", "beammap", "science"],
+        "RTC_SAMPLING_PRODUCT_CONTRACT_ID": [
+          "sci-rtc-001-stage-a-successor-point-products-v1",
+          "sci-rtc-001-stage-a-successor-oof-products-v1",
+          "sci-rtc-001-stage-a-successor-beammap-products-v1",
+          "sci-rtc-001-stage-a-successor-science-products-v1"
+        ],
+        "RTC_SAMPLING_VALIDATION_PROFILE_ID": [
+          "sci-rtc-001-stage-a-successor-v1",
+          "sci-rtc-001-stage-a-successor-oof-v1",
+          "sci-rtc-001-stage-a-successor-beammap-v1",
+          "sci-rtc-001-stage-a-successor-science-v1"
+        ]
+      },
+      "scalar_tuples_allowed": [
+        {
+          "scalars": [
+            "RTC_SAMPLING_PRODUCT_MODE",
+            "RTC_SAMPLING_PRODUCT_CONTRACT_ID",
+            "RTC_SAMPLING_VALIDATION_PROFILE_ID"
+          ],
+          "allowed": [
+            ["point", "sci-rtc-001-stage-a-successor-point-products-v1", "sci-rtc-001-stage-a-successor-v1"],
+            ["oof", "sci-rtc-001-stage-a-successor-oof-products-v1", "sci-rtc-001-stage-a-successor-oof-v1"],
+            ["beammap", "sci-rtc-001-stage-a-successor-beammap-products-v1", "sci-rtc-001-stage-a-successor-beammap-v1"],
+            ["science", "sci-rtc-001-stage-a-successor-science-products-v1", "sci-rtc-001-stage-a-successor-science-v1"]
+          ]
+        }
+      ],
       "scalar_regex": {
         "RTC_SAMPLING_CITLALI_COMMIT": "[0-9a-f]{40}",
         "RTC_SAMPLING_RAW_MANIFEST_SHA256": "[0-9a-f]{64}"
@@ -1357,6 +1451,16 @@
         "RTC_SAMPLING_SOURCE_TELESCOPE_PATH",
         "RTC_SAMPLING_RAW_MANIFEST_REFERENCE",
         "RTC_SAMPLING_RAW_MANIFEST_CANONICAL_BYTES"
+      ],
+      "sha256_string_scalar_relations": {
+        "RTC_SAMPLING_RAW_MANIFEST_SHA256": "RTC_SAMPLING_RAW_MANIFEST_CANONICAL_BYTES"
+      },
+      "fir_digest_relations": [
+        {
+          "digest_scalar": "RTC_SAMPLING_FIR_DIGEST",
+          "coefficient_variable": "rtc_sampling_realized_fir_coefficients",
+          "convention": "sha256-u64le-count-then-ieee754-binary64le-realized-order-v1"
+        }
       ],
       "required_dimensions_by_scalar": {
         "RTC_SAMPLING_CANDIDATE_TABLE_AVAILABLE": {
@@ -1459,6 +1563,11 @@
       "dimension_size_equals_scalar": {
         "n_rtc_sampling_candidates": "RTC_SAMPLING_CANDIDATE_COUNT"
       },
+      "scalar_equals_by_scalar": {
+        "RTC_SAMPLING_CANDIDATE_TABLE_AVAILABLE": {
+          "0": {"RTC_SAMPLING_CANDIDATE_COUNT": 0}
+        }
+      },
       "variable_trailing_dimension_by_scalar": {
         "RTC_SAMPLING_CANDIDATE_TABLE_AVAILABLE": {
           "1": {
@@ -1484,6 +1593,11 @@
           "available_value": 1,
           "unavailable_value": 0,
           "dimension": "n_rtc_sampling_candidates",
+          "context_dimensions": ["n_scans", "n_arrays"],
+          "axis_only_variables": [
+            "rtc_sampling_candidate_factor",
+            "rtc_sampling_candidate_phase"
+          ],
           "variables": [
             "rtc_sampling_alias_amplitude_max_lower",
             "rtc_sampling_alias_amplitude_max_upper",
@@ -1500,16 +1614,26 @@
             "rtc_sampling_candidate_reason",
             "rtc_sampling_candidate_status",
             "rtc_sampling_detector_output_boundary_context_count",
+            "rtc_sampling_detector_output_boundary_context_fraction",
             "rtc_sampling_detector_output_cell_count",
             "rtc_sampling_detector_output_fully_supported_count",
+            "rtc_sampling_detector_output_fully_supported_fraction",
             "rtc_sampling_detector_output_internal_gap_count",
+            "rtc_sampling_detector_output_internal_gap_fraction",
             "rtc_sampling_detector_output_invalid_or_overlimit_motion_count",
+            "rtc_sampling_detector_output_invalid_or_overlimit_motion_fraction",
             "rtc_sampling_detector_output_low_velocity_motion_count",
+            "rtc_sampling_detector_output_low_velocity_motion_fraction",
             "rtc_sampling_detector_output_nonfinite_input_count",
+            "rtc_sampling_detector_output_nonfinite_input_fraction",
             "rtc_sampling_detector_output_per_detector_invalid_count",
+            "rtc_sampling_detector_output_per_detector_invalid_fraction",
             "rtc_sampling_detector_output_realized_filter_guard_count",
+            "rtc_sampling_detector_output_realized_filter_guard_fraction",
             "rtc_sampling_detector_output_science_flag_count",
+            "rtc_sampling_detector_output_science_flag_fraction",
             "rtc_sampling_detector_output_unclassified_count",
+            "rtc_sampling_detector_output_unclassified_fraction",
             "rtc_sampling_distortion_reason",
             "rtc_sampling_distortion_status",
             "rtc_sampling_eligible_input_support",
@@ -1594,7 +1718,39 @@
           "rtc_sampling_detector_output_realized_filter_guard_count",
           "rtc_sampling_detector_output_unclassified_count"
         ]
-      }
+      },
+      "category_fraction_relations": [
+        {
+          "total": "rtc_sampling_input_total_detector_cells",
+          "counts": [
+            "rtc_sampling_input_fully_supported_count",
+            "rtc_sampling_input_boundary_context_count",
+            "rtc_sampling_input_internal_gap_count",
+            "rtc_sampling_input_low_velocity_motion_count",
+            "rtc_sampling_input_invalid_or_overlimit_motion_count",
+            "rtc_sampling_input_per_detector_invalid_count",
+            "rtc_sampling_input_science_flag_count",
+            "rtc_sampling_input_nonfinite_input_count",
+            "rtc_sampling_input_realized_filter_guard_count",
+            "rtc_sampling_input_unclassified_count"
+          ]
+        },
+        {
+          "total": "rtc_sampling_detector_output_cell_count",
+          "counts": [
+            "rtc_sampling_detector_output_fully_supported_count",
+            "rtc_sampling_detector_output_boundary_context_count",
+            "rtc_sampling_detector_output_internal_gap_count",
+            "rtc_sampling_detector_output_low_velocity_motion_count",
+            "rtc_sampling_detector_output_invalid_or_overlimit_motion_count",
+            "rtc_sampling_detector_output_per_detector_invalid_count",
+            "rtc_sampling_detector_output_science_flag_count",
+            "rtc_sampling_detector_output_nonfinite_input_count",
+            "rtc_sampling_detector_output_realized_filter_guard_count",
+            "rtc_sampling_detector_output_unclassified_count"
+          ]
+        }
+      ]
     },
     "ptc_diagnostics": {
       "required_dimensions": [

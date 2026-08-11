@@ -94,6 +94,52 @@ endif()
 target_compile_definitions(citlali PUBLIC
     CITLALI_GIT_COMMIT_FULL="${CITLALI_GIT_COMMIT_FULL_VALUE}"
     CITLALI_GIT_WORKTREE_DIRTY=${CITLALI_GIT_WORKTREE_DIRTY_VALUE})
+
+# Re-evaluate the source identity on every ordinary build.  The configured
+# constants remain the compile-time identity, while this target makes a stale
+# clean identity a hard build failure after any ref/index/worktree transition.
+set(CITLALI_SOURCE_IDENTITY_CHECK_SCRIPT
+    "${CMAKE_CURRENT_BINARY_DIR}/citlali_source_identity_check.cmake")
+file(WRITE "${CITLALI_SOURCE_IDENTITY_CHECK_SCRIPT}" [=[
+execute_process(
+    COMMAND git rev-parse HEAD
+    WORKING_DIRECTORY "${CITLALI_SOURCE_DIR}"
+    OUTPUT_VARIABLE current_commit
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    RESULT_VARIABLE commit_result)
+execute_process(
+    COMMAND git status --porcelain --untracked-files=no
+    WORKING_DIRECTORY "${CITLALI_SOURCE_DIR}"
+    OUTPUT_VARIABLE dirty_output
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    RESULT_VARIABLE dirty_result)
+if(NOT commit_result EQUAL 0 OR NOT dirty_result EQUAL 0)
+    message(FATAL_ERROR "Citlali could not refresh the ordinary-build source identity")
+endif()
+string(LENGTH "${current_commit}" current_commit_length)
+if(NOT current_commit_length EQUAL 40 OR
+   NOT current_commit MATCHES "^[0-9a-f]+$")
+    message(FATAL_ERROR "Citlali ordinary build resolved a non-40-hex source identity")
+endif()
+if(dirty_output STREQUAL "")
+    set(current_dirty 0)
+else()
+    set(current_dirty 1)
+endif()
+if(NOT current_commit STREQUAL CITLALI_CONFIGURED_COMMIT OR
+   NOT current_dirty EQUAL CITLALI_CONFIGURED_DIRTY)
+    message(FATAL_ERROR
+        "Citlali source identity changed after configure; rerun CMake before building")
+endif()
+]=])
+add_custom_target(citlali_source_identity_check ALL
+    COMMAND "${CMAKE_COMMAND}"
+        -DCITLALI_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
+        -DCITLALI_CONFIGURED_COMMIT=${CITLALI_GIT_COMMIT_FULL_VALUE}
+        -DCITLALI_CONFIGURED_DIRTY=${CITLALI_GIT_WORKTREE_DIRTY_VALUE}
+        -P "${CITLALI_SOURCE_IDENTITY_CHECK_SCRIPT}"
+    VERBATIM)
+add_dependencies(citlali citlali_source_identity_check)
 target_sources(citlali
     PRIVATE
     "src/citlali/core/config/timestream_enums.cpp"

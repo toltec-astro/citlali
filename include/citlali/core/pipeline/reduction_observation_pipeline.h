@@ -6,6 +6,7 @@
 #include <citlali/core/pipeline/observation_pipeline.h>
 #include <citlali/core/pipeline/raw_timestream_provenance_lifecycle.h>
 #include <citlali/core/pipeline/rtcdiag_netcdf.h>
+#include <citlali/core/pipeline/runtime_policy.h>
 #include <citlali/core/pipeline/stage_profile.h>
 
 namespace citlali::pipeline {
@@ -27,6 +28,26 @@ void run_reduction_observation_pipeline(TodProc &todproc, KidsProc &kidsproc,
         write_observation_outputs_and_accumulate<RawObsMap, FilteredObsMap,
                                                  FitMaps>(
             todproc, stage_profile, logger);
+        std::optional<RtcdiagRawInputManifest> rtcdiag_raw_manifest;
+        std::optional<RtcdiagSuccessorProductIdentity> rtcdiag_identity;
+        if (!engine.output_paths.rtcdiag_filename.empty()) {
+            if constexpr (requires {
+                              rawobs.data_items();
+                              rawobs.name();
+                              engine.telescope.obs_goal;
+                          }) {
+                rtcdiag_raw_manifest =
+                    make_rtcdiag_raw_input_manifest(rawobs);
+                rtcdiag_identity = rtcdiag_successor_identity_for_mode(
+                    rtcdiag_successor_mode(
+                        runtime_reduction_type(engine),
+                        engine.telescope.obs_goal));
+            }
+            else {
+                throw std::logic_error(
+                    "rtcdiag product identity/raw membership unavailable");
+            }
+        }
         const auto raw_provenance_path =
             publish_completed_raw_timestream_provenance<IsBeammap>(engine);
         if (raw_provenance_path) {
@@ -37,7 +58,7 @@ void run_reduction_observation_pipeline(TodProc &todproc, KidsProc &kidsproc,
             engine.output_paths.rtcdiag_filename =
                 finalize_rtcdiag_successor_staging(
                     engine.output_paths.rtcdiag_filename,
-                    raw_provenance_path);
+                    *rtcdiag_raw_manifest, *rtcdiag_identity);
             logger->info("complete RTC diagnostics published atomically: {}",
                          engine.output_paths.rtcdiag_filename);
         }

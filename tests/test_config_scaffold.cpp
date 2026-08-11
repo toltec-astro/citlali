@@ -100,6 +100,7 @@
 #include <array>
 #include <cmath>
 #include <functional>
+#include <future>
 #include <filesystem>
 #include <fstream>
 #include <initializer_list>
@@ -1271,6 +1272,7 @@ struct FakeTelescopeTodProc {
     int interp_pointing_calls = 0;
     int get_tone_freqs_from_files_calls = 0;
     int get_adc_snap_from_files_calls = 0;
+    bool rewrite_telescope_during_alignment = false;
 
     FakeEngine &engine() { return engine_state; }
 
@@ -1278,10 +1280,22 @@ struct FakeTelescopeTodProc {
 
     void align_timestreams(const FakeRawObs &) {
         ++align_timestreams_calls;
+        if (rewrite_telescope_during_alignment) {
+            engine_state.telescope.tel_data["TelTime"].values =
+                {100.0, 100.5, 101.0};
+            engine_state.telescope.tel_data["TelAzAct"].values =
+                {0.0, 0.0, 0.0};
+        }
     }
 
     void align_timestreams_gaps(const FakeRawObs &) {
         ++align_timestreams_gaps_calls;
+        if (rewrite_telescope_during_alignment) {
+            engine_state.telescope.tel_data["TelTime"].values =
+                {100.0, 100.5, 101.0};
+            engine_state.telescope.tel_data["TelAzAct"].values =
+                {0.0, 0.0, 0.0};
+        }
     }
 
     void interp_pointing() { ++interp_pointing_calls; }
@@ -1294,6 +1308,16 @@ struct FakeTelescopeTodProc {
         ++get_adc_snap_from_files_calls;
     }
 };
+
+void set_fake_rtc_sampling_source_rows(FakeEngine &engine) {
+    engine.telescope.tel_data["TelTime"].values = {0.0, 0.02, 0.04};
+    engine.telescope.tel_data["TelAzAct"].values = {
+        0.0, 2.0 / (RAD_TO_ASEC), 4.0 / (RAD_TO_ASEC)};
+    for (const std::string key : {"SourceAz", "TelElAct", "SourceEl",
+                                  "TelAzCor", "TelElCor"}) {
+        engine.telescope.tel_data[key].values = {0.0, 0.0, 0.0};
+    }
+}
 
 struct FakeObservationMapTodProc {
     FakeEngine engine_state;
@@ -7989,6 +8013,41 @@ TEST(pipeline_execution, prepares_initial_observation_setup) {
     EXPECT_EQ(map_coords, (std::vector<int>{404}));
 }
 
+TEST(pipeline_execution,
+     captures_initial_rtc_sampling_carrier_before_telescope_alignment) {
+    FakeInitialObservationTodProc todproc;
+    set_fake_rtc_sampling_source_rows(todproc.engine());
+    todproc.rewrite_telescope_during_alignment = true;
+    FakeRawObs rawobs;
+    rawobs.tel.path = "/data/native-tel.nc";
+    std::vector<FakeRawObsMeta> rawobs_kids_meta = {{122.0, 102}};
+    std::vector<int> map_extents;
+    std::vector<int> map_coords;
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_TEMPLATE_TRUE(citlali::pipeline::prepare_initial_observation_setup<false>(
+        todproc, rawobs, rawobs_kids_meta, map_extents, map_coords, 0, logger));
+
+    const auto &alignment = todproc.engine().alignment;
+    ASSERT_TRUE(citlali::pipeline::rtc_sampling_source_matches_active_observation(
+        alignment));
+    EXPECT_TRUE(citlali::pipeline::rtc_sampling_active_observation_matches(
+        alignment, 0, "000102", "/data/native-tel.nc"));
+    ASSERT_EQ(alignment.rtc_sampling_source_motion.intervals.size(), 2U);
+    EXPECT_DOUBLE_EQ(
+        alignment.rtc_sampling_source_motion.intervals[0].start_time_s, 0.0);
+    EXPECT_DOUBLE_EQ(
+        alignment.rtc_sampling_source_motion.intervals[0].stop_time_s, 0.02);
+    EXPECT_EQ(alignment.rtc_sampling_source_motion.eligible_interval_count, 2U)
+        << alignment.rtc_sampling_source_motion.intervals[0].speed_arcsec_s
+        << " " << alignment.rtc_sampling_source_motion.intervals[0].reason;
+    EXPECT_EQ(todproc.engine().telescope.tel_data["TelTime"].values,
+              (std::vector<double>{100.0, 100.5, 101.0}));
+    // The stale legacy field is intentionally true, but it cannot affect the
+    // source carrier captured before the legacy alignment branch.
+    EXPECT_TRUE(todproc.engine().calib.run_hwpr);
+}
+
 TEST(pipeline_execution, prepares_initial_observation) {
     FakeInitialObservationTodProc todproc;
     FakeCitlaliConfig config;
@@ -8273,6 +8332,73 @@ TEST(pipeline_execution, prepares_reduction_observation_inputs) {
 }
 
 TEST(pipeline_execution,
+     captures_each_reduction_rtc_sampling_carrier_before_alignment) {
+    FakeInitialObservationTodProc todproc;
+    set_fake_rtc_sampling_source_rows(todproc.engine());
+    todproc.rewrite_telescope_during_alignment = true;
+    FakeRawObs rawobs;
+    rawobs.tel.path = "/data/observation-1-tel.nc";
+    std::vector<FakeRawObsMeta> rawobs_kids_meta = {{122.0, 103}};
+    std::vector<int> map_extents = {11};
+    std::vector<int> map_coords = {22};
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_TEMPLATE_TRUE(citlali::pipeline::prepare_reduction_observation_inputs<false>(
+        todproc, rawobs, rawobs_kids_meta, true, map_extents, map_coords, 0,
+        [](auto &) { return std::string{"2026-01-01T00:00:00"}; },
+        logger));
+
+    const auto &alignment = todproc.engine().alignment;
+    ASSERT_TRUE(citlali::pipeline::rtc_sampling_source_matches_active_observation(
+        alignment));
+    EXPECT_TRUE(citlali::pipeline::rtc_sampling_active_observation_matches(
+        alignment, 0, "000103", "/data/observation-1-tel.nc"));
+    ASSERT_EQ(alignment.rtc_sampling_source_motion.intervals.size(), 2U);
+    EXPECT_DOUBLE_EQ(
+        alignment.rtc_sampling_source_motion.intervals[0].stop_time_s, 0.02);
+    EXPECT_EQ(alignment.rtc_sampling_source_motion.eligible_interval_count, 2U)
+        << alignment.rtc_sampling_source_motion.intervals[0].speed_arcsec_s
+        << " " << alignment.rtc_sampling_source_motion.intervals[0].reason;
+    EXPECT_TRUE(todproc.engine().calib.run_hwpr);
+}
+
+TEST(pipeline_execution,
+     reuses_matching_single_observation_native_carrier_and_rejects_stale_path) {
+    FakeInitialObservationTodProc todproc;
+    set_fake_rtc_sampling_source_rows(todproc.engine());
+    FakeRawObs rawobs;
+    rawobs.tel.path = "/data/single-tel.nc";
+    std::vector<FakeRawObsMeta> rawobs_kids_meta = {{122.0, 104}};
+    std::vector<int> map_extents;
+    std::vector<int> map_coords;
+    auto logger = std::make_shared<FakeLogger>();
+    ASSERT_TRUE((citlali::pipeline::prepare_initial_observation_setup<false>(
+        todproc, rawobs, rawobs_kids_meta, map_extents, map_coords, 0,
+        logger)));
+    ASSERT_EQ(todproc.engine().telescope.get_tel_data_calls, 1);
+
+    ASSERT_TRUE((citlali::pipeline::prepare_reduction_observation_inputs<false>(
+        todproc, rawobs, rawobs_kids_meta, false, map_extents, map_coords, 0,
+        [](auto &) { return std::string{"2026-01-01T00:00:00"}; },
+        logger)));
+    EXPECT_EQ(todproc.engine().telescope.get_tel_data_calls, 1);
+    EXPECT_TRUE(citlali::pipeline::rtc_sampling_source_matches_active_observation(
+        todproc.engine().alignment));
+
+    auto mismatched = rawobs;
+    mismatched.tel.path = "/data/different-tel.nc";
+    EXPECT_TEMPLATE_FALSE(citlali::pipeline::prepare_reduction_observation_inputs<false>(
+        todproc, mismatched, rawobs_kids_meta, false, map_extents, map_coords, 0,
+        [](auto &) { return std::string{"2026-01-01T00:00:00"}; },
+        logger));
+    EXPECT_FALSE(todproc.engine()
+                     .alignment.rtc_sampling_active_observation.available);
+    EXPECT_FALSE(todproc.engine()
+                     .alignment.rtc_sampling_source_motion
+                     .observation_identity_available);
+}
+
+TEST(pipeline_execution,
      production_input_policy_records_legacy_coadd_metadata_once) {
     FakeInitialObservationTodProc todproc;
     todproc.engine().typed_config.coadd.enabled = true;
@@ -8320,6 +8446,8 @@ TEST(pipeline_execution,
 TEST(pipeline_execution,
      rejects_reduction_observation_inputs_on_bad_sample_rate) {
     FakeInitialObservationTodProc todproc;
+    citlali::pipeline::begin_rtc_sampling_source_observation(
+        todproc.engine().alignment, 7, "stale", "stale-tel.nc");
     auto &downsample = todproc.engine()
                            .typed_config.timestream.raw_time_chunk.downsample;
     downsample.enabled = true;
@@ -8339,6 +8467,11 @@ TEST(pipeline_execution,
     EXPECT_EQ(todproc.get_tone_freqs_from_files_calls, 0);
     EXPECT_TRUE(todproc.engine().observation_dates.date_obs.empty());
     EXPECT_EQ(todproc.allocate_omb_calls, 0);
+    EXPECT_FALSE(todproc.engine()
+                     .alignment.rtc_sampling_active_observation.available);
+    EXPECT_FALSE(todproc.engine()
+                     .alignment.rtc_sampling_source_motion
+                     .observation_identity_available);
 }
 
 TEST(pipeline_execution, coadds_observation) {
@@ -8789,6 +8922,14 @@ TEST(pipeline_execution, runs_reduction_iterations) {
         todproc.engine().typed_config.timestream);
     FakeCitlaliConfig config;
     FakeIOCoordinator co{{FakeRawObs{}}};
+    set_fake_rtc_sampling_source_rows(todproc.engine());
+    citlali::pipeline::begin_rtc_sampling_source_observation(
+        todproc.engine().alignment, 0, "000102",
+        co.raw_inputs.front().teldata().filepath());
+    citlali::pipeline::capture_reduction_observation_rtc_sampling_source_motion(
+        todproc, co.raw_inputs.front());
+    ASSERT_TRUE(citlali::pipeline::rtc_sampling_source_matches_active_observation(
+        todproc.engine().alignment));
     std::vector<std::string> config_filepaths;
     std::vector<int> map_extents = {11};
     std::vector<int> map_coords = {22};
@@ -11733,6 +11874,99 @@ TEST(pipeline_output_layout, warns_when_timing_gaps_are_present) {
     citlali::pipeline::record_timing_gaps_if_needed(engine, logger);
 
     EXPECT_EQ(logger->warn_calls, 1);
+}
+
+TEST(RtcLearnedSamplingMetrics, ExactBaseABDiagnosticCaptureIsNonInterfering) {
+    const auto make_native = [](Eigen::Index scan_id, double offset) {
+        timestream::TCData<timestream::TCDataKind::RTC, Eigen::MatrixXd> data;
+        data.index.data = scan_id;
+        data.scans.data.resize(5, 2);
+        data.scans.data << 1.0 + offset, 2.0 + offset,
+                           3.0 + offset, 4.0 + offset,
+                           5.0 + offset, 6.0 + offset,
+                           7.0 + offset, 8.0 + offset,
+                           9.0 + offset, 10.0 + offset;
+        data.flags.data =
+            Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>::Constant(
+                5, 2, false);
+        data.flags.data(2, 0) = true;
+        data.tel_data.data["TelTime"] =
+            (Eigen::VectorXd(5) << 10.0, 10.1, 10.2, 10.3, 10.4).finished();
+        return data;
+    };
+    const auto verify_capture = [&](timestream::RTCProc &proc,
+                                    auto &native) {
+        const auto samples_before = native.scans.data;
+        const auto flags_before = native.flags.data;
+        const auto time_before = native.tel_data.data.at("TelTime");
+        Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> guard =
+            Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>::Constant(
+                5, 2, false);
+        guard(1, 1) = true;
+        proc.capture_rtc_sampling_native_context(native, 1, 3, guard);
+        EXPECT_TRUE((native.scans.data.array() == samples_before.array()).all());
+        EXPECT_TRUE((native.flags.data.array() == flags_before.array()).all());
+        EXPECT_TRUE((native.tel_data.data.at("TelTime").array() ==
+                     time_before.array()).all());
+        const auto &snapshot =
+            proc.rtc_sampling_native_context_by_scan.at(native.index.data);
+        EXPECT_EQ(snapshot.n_rows, 5);
+        EXPECT_EQ(snapshot.scan_start, 1);
+        EXPECT_EQ(snapshot.scan_stop, 3);
+        EXPECT_NE(snapshot.cell_state[3] & 4U, 0U);
+        EXPECT_NE(snapshot.cell_state[4] & 1U, 0U);
+    };
+
+    // A/B and B/A invoke the actual production-owned snapshot seam in both
+    // orders and compare the RTC payload itself, not unrelated local vectors.
+    timestream::RTCProc a_then_b;
+    auto a = make_native(1, 0.0);
+    auto b = make_native(2, 100.0);
+    verify_capture(a_then_b, a);
+    verify_capture(a_then_b, b);
+    timestream::RTCProc b_then_a;
+    auto a_reversed = make_native(1, 0.0);
+    auto b_reversed = make_native(2, 100.0);
+    verify_capture(b_then_a, b_reversed);
+    verify_capture(b_then_a, a_reversed);
+    EXPECT_EQ(a_then_b.rtc_sampling_native_context_by_scan.at(1).cell_state,
+              b_then_a.rtc_sampling_native_context_by_scan.at(1).cell_state);
+
+    // A failed capture leaves no partial diagnostic context; a repeated scan
+    // replaces only that scan's snapshot, and permitted parallel scans remain
+    // independently keyed under the lifecycle mutex.
+    Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> invalid_guard =
+        Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>::Constant(
+            4, 2, false);
+    auto failed = make_native(3, 0.0);
+    EXPECT_THROW(a_then_b.capture_rtc_sampling_native_context(
+                     failed, 1, 3, invalid_guard),
+                 DataIOError);
+    EXPECT_FALSE(a_then_b.rtc_sampling_native_context_by_scan.contains(3));
+    auto repeated = make_native(1, 200.0);
+    verify_capture(a_then_b, repeated);
+    EXPECT_DOUBLE_EQ(
+        a_then_b.rtc_sampling_native_context_by_scan.at(1).time_s.front(),
+        10.0);
+
+    timestream::RTCProc parallel;
+    auto parallel_a = make_native(10, 0.0);
+    auto parallel_b = make_native(11, 1.0);
+    Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> guard =
+        Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>::Constant(
+            5, 2, false);
+    auto first = std::async(std::launch::async, [&] {
+        parallel.capture_rtc_sampling_native_context(
+            parallel_a, 1, 3, guard);
+    });
+    auto second = std::async(std::launch::async, [&] {
+        parallel.capture_rtc_sampling_native_context(
+            parallel_b, 1, 3, guard);
+    });
+    first.get();
+    second.get();
+    EXPECT_TRUE(parallel.rtc_sampling_native_context_by_scan.contains(10));
+    EXPECT_TRUE(parallel.rtc_sampling_native_context_by_scan.contains(11));
 }
 
 }  // namespace

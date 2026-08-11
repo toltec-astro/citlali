@@ -24,6 +24,8 @@ bool prepare_initial_observation_setup(TodProc &todproc, const RawObs &rawobs,
                                        std::size_t observation_index,
                                        const Logger &logger) {
     auto &engine = todproc.engine();
+    reset_rtc_sampling_source_motion(engine.alignment);
+    RtcSamplingSourceObservationGuard rtc_sampling_guard{engine.alignment};
     configure_observation_calibration_with_context<IsBeammap>(
         todproc, rawobs, rawobs_kids_meta, observation_index, logger);
     if (!apply_flxscale_correction(engine, rawobs, logger)) {
@@ -33,7 +35,12 @@ bool prepare_initial_observation_setup(TodProc &todproc, const RawObs &rawobs,
     check_observation_inputs(todproc, rawobs, logger);
     update_sample_rate_from_rawobs_meta(engine, rawobs_kids_meta, logger);
     const auto tel_path = telescope_data_filepath(rawobs);
+    begin_rtc_sampling_source_observation(
+        engine.alignment, observation_index,
+        format_obsnum(obsnum_from_rawobs_meta(rawobs_kids_meta, logger)),
+        tel_path);
     load_telescope_data_file(engine, tel_path, logger);
+    capture_reduction_observation_rtc_sampling_source_motion(todproc, rawobs);
     overwrite_map_center_if_configured(engine, logger);
     if (should_align_telescope_timestreams(engine)) {
         align_telescope_timestreams(todproc, rawobs, logger);
@@ -45,6 +52,7 @@ bool prepare_initial_observation_setup(TodProc &todproc, const RawObs &rawobs,
     calculate_scan_indices(engine, logger);
     calculate_initial_observation_map_dimensions(
         todproc, map_extents, map_coords, logger);
+    rtc_sampling_guard.commit();
     return true;
 }
 

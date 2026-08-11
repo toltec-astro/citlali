@@ -4,6 +4,7 @@
 // Include this only after Engine has been declared.
 
 #include <citlali/core/pipeline/reduction_config_accessors.h>
+#include <citlali/core/pipeline/obsnum_format.h>
 
 #include <algorithm>
 #include <cmath>
@@ -60,16 +61,18 @@ void Engine::create_rtcdiag_file() {
         rtc_sampling_cadence.effective_factor =
             observation.downsample_factor.value_or(1);
     }
+    rtc_sampling_cadence.requested_factor =
+        citlali::pipeline::rtc_sampling_requested_factor(
+            rtc_sampling_cadence.effective_native_hz,
+            rtc_sampling_cadence.requested_factor,
+            rtc_sampling_cadence.requested_output_hz);
+    citlali::pipeline::update_rtc_sampling_requested_effective_consistency(
+        rtc_sampling_cadence);
     rtc_sampling_cadence.realized_downsample_enabled =
         realized_rtc.run_downsample;
     rtc_sampling_cadence.realized_factor =
         rtc_sampling_cadence.realized_downsample_enabled
             ? realized_rtc.downsampler.factor : 1;
-    const auto realized_time = telescope.tel_data.find("TelTime");
-    if (realized_time != telescope.tel_data.end()) {
-        citlali::pipeline::measure_rtc_sampling_realized_cadence(
-            rtc_sampling_cadence, realized_time->second);
-    }
     citlali::pipeline::RtcSamplingFilterState rtc_sampling_filter;
     rtc_sampling_filter.requested_enabled = raw_plan.requested.filter.enabled;
     rtc_sampling_filter.effective_enabled = raw_plan.effective.filter.enabled;
@@ -96,11 +99,26 @@ void Engine::create_rtcdiag_file() {
     }
 
     const auto &source_support = alignment.rtc_sampling_source_motion;
-    if (!source_support.observation_identity_available ||
+    if (!citlali::pipeline::rtc_sampling_source_matches_active_observation(
+            alignment) ||
         source_support.observation_obsnum != observation_identity.obsnum) {
         throw std::runtime_error(
             "rtcdiag Stage A source motion is not bound to the active observation");
     }
+    if constexpr (citlali::pipeline::has_astrometry_plan_v<Engine>) {
+        const auto &plan = citlali::pipeline::astrometry_plan(*this);
+        if (!plan.active_observation_index ||
+            *plan.active_observation_index != source_support.observation_index ||
+            source_support.observation_index >= plan.observations.size() ||
+            citlali::pipeline::format_obsnum(
+                plan.observations[source_support.observation_index].obsnum) !=
+                source_support.observation_obsnum) {
+            throw std::runtime_error(
+                "rtcdiag Stage A source motion differs from the production observation index or obsnum");
+        }
+    }
+    citlali::pipeline::measure_rtc_sampling_realized_cadence_from_source(
+        rtc_sampling_cadence, source_support);
     const std::string full_commit{CITLALI_GIT_COMMIT_FULL};
     if (!std::regex_match(full_commit, std::regex{"[0-9a-f]{40}"}) ||
         CITLALI_GIT_WORKTREE_DIRTY != 0) {
@@ -136,12 +154,13 @@ void Engine::create_rtcdiag_file() {
             calib, rtc_sampling_filter, telescope, scan_summary,
             rtc_sampling_hwpr, rtc_sampling_cadence, n_scans,
             rtcdiag_dims.n_array_values,
-            rtcdiag_dims.n_scan_array_values, fill_double, fill_int);
+            rtcdiag_dims.n_scan_array_values, fill_double, fill_int,
+            source_support.intervals.size());
     citlali::pipeline::add_rtcdiag_scan_array_summary_outputs(
         fo, rtcdiag_dims.scan_array, rtcdiag_dims.scan_array_chunks,
         scan_array_summary, rtc_sampling_hwpr, rtc_sampling_cadence,
         source_support,
-        std::string{"raw_timestream_provenance.yaml"},
+        std::string{citlali::pipeline::rtcdiag_raw_input_manifest_reference},
         full_commit);
 
     citlali::pipeline::add_rtcdiag_network_ids(

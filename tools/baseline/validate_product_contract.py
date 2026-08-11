@@ -6,8 +6,10 @@ from __future__ import annotations
 import argparse
 import copy
 import fnmatch
+import hashlib
 import json
 import re
+import struct
 import sys
 from pathlib import Path
 from typing import Any
@@ -955,6 +957,17 @@ def validate_netcdf(
                         f"NetCDF scalar {name!r}={actual!r}; "
                         f"expected one of {expected_values!r}"
                     )
+            for rule in checks.get("scalar_tuples_allowed", []):
+                names = rule["scalars"]
+                actual = tuple(scalar_value(name) for name in names)
+                if any(value is None for value in actual):
+                    continue
+                allowed = {tuple(values) for values in rule["allowed"]}
+                if actual not in allowed:
+                    errors.append(
+                        f"NetCDF scalar tuple {tuple(names)!r}={actual!r}; "
+                        f"expected one of {sorted(allowed)!r}"
+                    )
             for name, variants in checks.get(
                 "required_variables_by_scalar", {}
             ).items():
@@ -1025,6 +1038,23 @@ def validate_netcdf(
                         f"{dimension_size}; {scalar_name!r}={actual!r}"
                     )
             for condition_name, variants in checks.get(
+                "scalar_equals_by_scalar", {}
+            ).items():
+                actual = scalar_value(condition_name)
+                if actual is None:
+                    continue
+                requirements = variants.get(
+                    str(actual), variants.get(actual, {})
+                )
+                for scalar_name, expected in requirements.items():
+                    conditioned = scalar_value(scalar_name)
+                    if conditioned is not None and conditioned != expected:
+                        errors.append(
+                            f"NetCDF scalar {condition_name!r}={actual!r} "
+                            f"requires {scalar_name!r}={expected!r}; got "
+                            f"{conditioned!r}"
+                        )
+            for condition_name, variants in checks.get(
                 "variable_trailing_dimension_by_scalar", {}
             ).items():
                 actual = scalar_value(condition_name)
@@ -1072,14 +1102,35 @@ def validate_netcdf(
                         variable_dimensions = dataset.variables[
                             variable_name
                         ].dimensions
-                        if (not variable_dimensions or
-                                variable_dimensions[-1] != dimension_name):
-                            errors.append(
-                                f"NetCDF conditional variable "
-                                f"{variable_name!r} trailing dimension="
-                                f"{variable_dimensions[-1:]!r}; expected "
-                                f"{dimension_name!r}"
+                        axis_only = set(rule.get("axis_only_variables", []))
+                        context_dimensions = rule.get("context_dimensions")
+                        if context_dimensions is not None:
+                            expected_dimensions = (
+                                [dimension_name]
+                                if variable_name in axis_only
+                                else list(context_dimensions) + [dimension_name]
                             )
+                            dimensions_match = (
+                                list(variable_dimensions) == expected_dimensions
+                            )
+                        else:
+                            dimensions_match = bool(variable_dimensions) and \
+                                variable_dimensions[-1] == dimension_name
+                        if not dimensions_match:
+                            if context_dimensions is not None:
+                                errors.append(
+                                    f"NetCDF conditional variable "
+                                    f"{variable_name!r} dimensions="
+                                    f"{list(variable_dimensions)!r}; expected "
+                                    f"{expected_dimensions!r}"
+                                )
+                            else:
+                                errors.append(
+                                    f"NetCDF conditional variable "
+                                    f"{variable_name!r} trailing dimension="
+                                    f"{variable_dimensions[-1:]!r}; expected "
+                                    f"{dimension_name!r}"
+                                )
                 elif actual == unavailable_value:
                     if dimension_name in dataset.dimensions:
                         errors.append(
@@ -1100,6 +1151,27 @@ def validate_netcdf(
                         f"expected conditional values {available_value!r} or "
                         f"{unavailable_value!r}"
                     )
+            for condition_name, variants in checks.get(
+                "exact_variable_dimensions_by_scalar", {}
+            ).items():
+                actual = scalar_value(condition_name)
+                if actual is None:
+                    continue
+                requirements = variants.get(
+                    str(actual), variants.get(actual, {})
+                )
+                for variable_name, expected_dimensions in requirements.items():
+                    if variable_name not in dataset.variables:
+                        continue
+                    actual_dimensions = list(
+                        dataset.variables[variable_name].dimensions
+                    )
+                    if actual_dimensions != expected_dimensions:
+                        errors.append(
+                            f"NetCDF variable {variable_name!r} dimensions="
+                            f"{actual_dimensions!r}; expected exact "
+                            f"{expected_dimensions!r}"
+                        )
             for name, pattern in checks.get("scalar_regex", {}).items():
                 actual = scalar_value(name)
                 if actual is not None and re.fullmatch(pattern, str(actual)) is None:
@@ -1113,6 +1185,42 @@ def validate_netcdf(
                     not isinstance(actual, str) or not actual
                 ):
                     errors.append(f"NetCDF scalar {name!r} is empty")
+            for digest_name, bytes_name in checks.get(
+                "sha256_string_scalar_relations", {}
+            ).items():
+                digest = scalar_value(digest_name)
+                canonical = scalar_value(bytes_name)
+                if digest is None or canonical is None:
+                    continue
+                if not isinstance(canonical, str):
+                    errors.append(
+                        f"NetCDF scalar {bytes_name!r} is not a string"
+                    )
+                    continue
+                expected = hashlib.sha256(
+                    canonical.encode("utf-8")
+                ).hexdigest()
+                if digest != expected:
+                    errors.append(
+                        f"NetCDF scalar {digest_name!r} does not equal "
+                        f"SHA-256 of {bytes_name!r}"
+                    )
+            for rule in checks.get("fir_digest_relations", []):
+                digest = scalar_value(rule["digest_scalar"])
+                variable_name = rule["coefficient_variable"]
+                if digest is None or variable_name not in dataset.variables:
+                    continue
+                coefficients = np.asarray(
+                    dataset.variables[variable_name][...], dtype="<f8"
+                ).reshape(-1)
+                preimage = struct.pack("<Q", coefficients.size) + \
+                    coefficients.tobytes(order="C")
+                expected = hashlib.sha256(preimage).hexdigest()
+                if digest != expected:
+                    errors.append(
+                        f"NetCDF scalar {rule['digest_scalar']!r} does not "
+                        f"match {variable_name!r} under {rule['convention']!r}"
+                    )
             for total_name, part_names in checks.get(
                 "sum_variables_equals", {}
             ).items():
@@ -1133,6 +1241,54 @@ def validate_netcdf(
                     errors.append(
                         f"NetCDF variables {part_names!r} do not sum exactly "
                         f"to {total_name!r}"
+                    )
+            for rule in checks.get("category_fraction_relations", []):
+                total_name = rule["total"]
+                count_names = rule["counts"]
+                fraction_names = rule.get("fractions", [
+                    name.removesuffix("_count") + "_fraction"
+                    for name in count_names
+                ])
+                if (total_name not in dataset.variables or
+                        len(count_names) != len(fraction_names) or
+                        any(name not in dataset.variables
+                            for name in count_names + fraction_names)):
+                    continue
+                totals = np.asarray(
+                    dataset.variables[total_name][...], dtype=np.int64
+                )
+                fraction_sum = np.zeros_like(totals, dtype=np.float64)
+                for count_name, fraction_name in zip(
+                    count_names, fraction_names
+                ):
+                    counts = np.asarray(
+                        dataset.variables[count_name][...], dtype=np.int64
+                    )
+                    fractions = np.asarray(
+                        dataset.variables[fraction_name][...],
+                        dtype=np.float64,
+                    )
+                    expected = np.divide(
+                        counts, totals,
+                        out=np.zeros_like(fractions, dtype=np.float64),
+                        where=totals != 0,
+                    )
+                    if (counts.shape != totals.shape or
+                            fractions.shape != totals.shape or
+                            not np.all(np.isfinite(fractions)) or
+                            not np.allclose(fractions, expected, rtol=0.0,
+                                            atol=1e-12)):
+                        errors.append(
+                            f"NetCDF category fraction {fraction_name!r} "
+                            f"does not equal {count_name!r}/{total_name!r}"
+                        )
+                    fraction_sum += fractions
+                expected_sum = np.where(totals == 0, 0.0, 1.0)
+                if not np.allclose(fraction_sum, expected_sum,
+                                   rtol=0.0, atol=1e-12):
+                    errors.append(
+                        f"NetCDF category fractions for {total_name!r} "
+                        "do not sum to the normalized total"
                     )
             for name in checks.get("positive_dimensions", []):
                 matches = [

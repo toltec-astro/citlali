@@ -5,6 +5,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+import numpy as np
+
 from tools.baseline import validate_product_contract as product_contract
 
 
@@ -861,6 +863,101 @@ class ValidateProductContractTest(unittest.TestCase):
         self.assertTrue(any("forbids dimension" in error
                             for error in result["errors"]))
 
+    @unittest.skipIf(product_contract.netCDF4 is None, "netCDF4 is unavailable")
+    def test_conditional_candidate_set_rejects_collapsed_full_shape(self) -> None:
+        import netCDF4
+
+        path = self.reduction / "product.nc"
+        with netCDF4.Dataset(path, "w") as dataset:
+            dataset.createDimension("scan", 2)
+            dataset.createDimension("array", 3)
+            dataset.createDimension("candidate", 2)
+            available = dataset.createVariable("available", "i4")
+            available.assignValue(1)
+            dataset.createVariable("factor", "i4", ("candidate",))[:] = [1, 2]
+            dataset.createVariable("metric", "f8", ("candidate",))[:] = [0, 0]
+        checks = {
+            "conditional_variable_set_by_scalar": {
+                "available": {
+                    "dimension": "candidate",
+                    "context_dimensions": ["scan", "array"],
+                    "axis_only_variables": ["factor"],
+                    "variables": ["factor", "metric"],
+                }
+            }
+        }
+        result = self.validate([self.entry(pattern="product.nc", checks=checks)])
+        self.assertFalse(result["passed"])
+        self.assertTrue(any("expected ['scan', 'array', 'candidate']" in error
+                            for error in result["errors"]))
+
+    @unittest.skipIf(product_contract.netCDF4 is None, "netCDF4 is unavailable")
+    def test_unavailable_candidate_requires_zero_declared_count(self) -> None:
+        import netCDF4
+
+        path = self.reduction / "product.nc"
+        with netCDF4.Dataset(path, "w") as dataset:
+            available = dataset.createVariable("available", "i4")
+            available.assignValue(0)
+            count = dataset.createVariable("count", "i8")
+            count.assignValue(7)
+        checks = {
+            "scalar_equals_by_scalar": {
+                "available": {"0": {"count": 0}}
+            }
+        }
+        result = self.validate([self.entry(pattern="product.nc", checks=checks)])
+        self.assertFalse(result["passed"])
+        self.assertTrue(any("requires 'count'=0" in error
+                            for error in result["errors"]))
+
+    @unittest.skipIf(product_contract.netCDF4 is None, "netCDF4 is unavailable")
+    def test_recomputes_manifest_and_fir_digest_relations(self) -> None:
+        import hashlib
+        import struct
+        import netCDF4
+
+        path = self.reduction / "product.nc"
+        canonical = "citlali-rtcdiag-raw-input-manifest-v1\nmember_count=1\n"
+        coefficients = np.asarray([0.25, 0.75], dtype="<f8")
+        fir_preimage = struct.pack("<Q", 2) + coefficients.tobytes()
+        with netCDF4.Dataset(path, "w") as dataset:
+            dataset.createDimension("scalar", 1)
+            canonical_var = dataset.createVariable(
+                "canonical", str, ("scalar",)
+            )
+            canonical_var[0] = canonical
+            manifest_digest = dataset.createVariable(
+                "manifest_digest", str, ("scalar",)
+            )
+            manifest_digest[0] = hashlib.sha256(
+                canonical.encode("utf-8")).hexdigest()
+            dataset.createDimension("tap", 2)
+            dataset.createVariable("coefficients", "f8", ("tap",))[:] = coefficients
+            fir_digest = dataset.createVariable(
+                "fir_digest", str, ("scalar",)
+            )
+            fir_digest[0] = hashlib.sha256(fir_preimage).hexdigest()
+        checks = {
+            "sha256_string_scalar_relations": {
+                "manifest_digest": "canonical"
+            },
+            "fir_digest_relations": [{
+                "digest_scalar": "fir_digest",
+                "coefficient_variable": "coefficients",
+                "convention": "test-u64le-double-v1",
+            }],
+        }
+        result = self.validate([self.entry(pattern="product.nc", checks=checks)])
+        self.assertTrue(result["passed"], result["errors"])
+        with netCDF4.Dataset(path, "a") as dataset:
+            dataset.variables["manifest_digest"][0] = "0" * 64
+            dataset.variables["fir_digest"][0] = "f" * 64
+        result = self.validate([self.entry(pattern="product.nc", checks=checks)])
+        self.assertFalse(result["passed"])
+        self.assertEqual(sum("does not" in error or "does not match" in error
+                             for error in result["errors"]), 2)
+
     def test_successor_candidate_inventory_matches_writer_and_finalizer(self) -> None:
         repository = Path(__file__).resolve().parents[2]
         registry = json.loads(
@@ -886,7 +983,7 @@ class ValidateProductContractTest(unittest.TestCase):
         finalizer_variables = set(re.findall(
             r'"(rtc_sampling_[a-z0-9_]+)"', finalizer
         ))
-        self.assertEqual(len(contract_variables), 81)
+        self.assertEqual(len(contract_variables), 91)
         self.assertEqual(contract_variables, writer_variables)
         self.assertEqual(contract_variables, finalizer_variables)
 
@@ -923,11 +1020,17 @@ class ValidateProductContractTest(unittest.TestCase):
                     },
                 },
             )
-        self.assertEqual(
-            registry["checks"]["rtc_diagnostics_stage_a_successor_v3"]
-            ["scalar_equals"]["RTC_SAMPLING_PRODUCT_CONTRACT_ID"],
-            "sci-rtc-001-stage-a-successor-products-v1",
+        successor_check = registry["checks"][
+            "rtc_diagnostics_stage_a_successor_v3"
+        ]
+        self.assertNotIn(
+            "RTC_SAMPLING_PRODUCT_CONTRACT_ID",
+            successor_check["scalar_equals"],
         )
+        allowed = successor_check["scalar_tuples_allowed"][0]["allowed"]
+        self.assertEqual(len(allowed), 4)
+        self.assertEqual({values[0] for values in allowed},
+                         {"point", "oof", "beammap", "science"})
 
 
 if __name__ == "__main__":

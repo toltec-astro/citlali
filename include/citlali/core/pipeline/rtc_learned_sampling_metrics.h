@@ -50,10 +50,14 @@ inline constexpr std::size_t rtc_sampling_max_complex_evaluations =
 inline constexpr std::size_t rtc_sampling_max_estimated_rtcdiag_bytes =
     536870912;
 inline constexpr std::size_t rtc_sampling_candidate_integer_fields = 40;
-inline constexpr std::size_t rtc_sampling_candidate_double_fields = 43;
+inline constexpr std::size_t rtc_sampling_candidate_double_fields = 53;
 inline constexpr std::size_t rtc_sampling_estimated_candidate_row_bytes =
     rtc_sampling_candidate_integer_fields * sizeof(std::int32_t) +
     rtc_sampling_candidate_double_fields * sizeof(double);
+inline constexpr std::size_t rtc_sampling_source_interval_serialized_bytes =
+    4 * sizeof(double) + 5 * sizeof(std::int32_t);
+inline constexpr std::size_t rtc_sampling_source_interval_runtime_bytes =
+    2 * sizeof(double) + 3 * sizeof(std::int32_t);
 
 enum class RtcSamplingStatusCode : int {
     prerequisite_available = 0,
@@ -1039,33 +1043,38 @@ inline RtcSamplingCompleteContext calculate_rtc_sampling_complete_context(
     return result;
 }
 
-inline int rtc_sampling_candidate_mmax(double fwhm_arcsec,
-                                       double native_sample_rate_hz,
-                                       double speed_p95_arcsec_s) {
+inline long long rtc_sampling_candidate_mmax(double fwhm_arcsec,
+                                             double native_sample_rate_hz,
+                                             double speed_p95_arcsec_s) {
     if (!std::isfinite(fwhm_arcsec) ||
         !std::isfinite(native_sample_rate_hz) ||
         !std::isfinite(speed_p95_arcsec_s) || fwhm_arcsec <= 0.0 ||
         native_sample_rate_hz <= 0.0 || speed_p95_arcsec_s <= 0.0) {
         return -1;
     }
-    const double value = std::floor(
-        fwhm_arcsec * native_sample_rate_hz / speed_p95_arcsec_s);
-    if (!std::isfinite(value) || value > std::numeric_limits<int>::max()) {
+    const long double value = std::floor(
+        static_cast<long double>(fwhm_arcsec) *
+        static_cast<long double>(native_sample_rate_hz) /
+        static_cast<long double>(speed_p95_arcsec_s));
+    if (!std::isfinite(value) ||
+        value > static_cast<long double>(
+                    std::numeric_limits<long long>::max())) {
         return -1;
     }
-    return static_cast<int>(value);
+    return static_cast<long long>(value);
 }
 
 inline std::vector<int> rtc_sampling_supported_factors(
     double fwhm_arcsec, double native_sample_rate_hz,
     double speed_p95_arcsec_s) {
-    const int mmax = rtc_sampling_candidate_mmax(
+    const long long mmax = rtc_sampling_candidate_mmax(
         fwhm_arcsec, native_sample_rate_hz, speed_p95_arcsec_s);
-    if (mmax < 0) {
+    if (mmax < 0 ||
+        mmax > static_cast<long long>(rtc_sampling_max_candidates)) {
         return {};
     }
     std::vector<int> factors(
-        static_cast<std::size_t>(std::max(1, mmax)));
+        static_cast<std::size_t>(std::max(1LL, mmax)));
     std::iota(factors.begin(), factors.end(), 1);
     return factors;
 }
@@ -1106,6 +1115,13 @@ struct RtcSamplingResourcePreflight {
     std::size_t estimated_rtcdiag_bytes = 0;
 };
 
+struct RtcSamplingResourceContext {
+    std::size_t source_interval_count = 0;
+    std::size_t input_row_count = 0;
+    std::size_t input_detector_count = 0;
+    std::size_t manifest_bytes = 0;
+};
+
 inline bool rtc_sampling_candidate_work_units(
     std::size_t factor, std::size_t tap_count, std::size_t detector_count,
     std::size_t native_sample_count, std::size_t &numerical_work,
@@ -1118,13 +1134,15 @@ inline bool rtc_sampling_candidate_work_units(
         numerical_work = tap_count;
     }
     else {
+        std::size_t response_count = 0;
         std::size_t factor_term = 0;
         std::size_t six_q_plus_one = 0;
         std::size_t two_q_plus_four = 0;
         if (!rtc_sampling_checked_multiply(6, q, six_q_plus_one) ||
             !rtc_sampling_checked_add(six_q_plus_one, 1,
                                       six_q_plus_one) ||
-            !rtc_sampling_checked_multiply(factor, six_q_plus_one,
+            !rtc_sampling_checked_add(factor, 1, response_count) ||
+            !rtc_sampling_checked_multiply(response_count, six_q_plus_one,
                                            factor_term) ||
             !rtc_sampling_checked_multiply(2, q, two_q_plus_four) ||
             !rtc_sampling_checked_add(two_q_plus_four, 4,
@@ -1138,21 +1156,25 @@ inline bool rtc_sampling_candidate_work_units(
     }
     const std::size_t output_count = native_sample_count == 0
         ? 0 : (native_sample_count - 1) / factor + 1;
+    std::size_t context_domain_count = 0;
     std::size_t detector_outputs = 0;
-    return rtc_sampling_checked_multiply(detector_count, output_count,
+    return rtc_sampling_checked_add(detector_count, 1,
+                                    context_domain_count) &&
+           rtc_sampling_checked_multiply(context_domain_count, output_count,
                                          detector_outputs) &&
            rtc_sampling_checked_multiply(detector_outputs, tap_count,
                                          context_work);
 }
 
 inline RtcSamplingResourcePreflight rtc_sampling_resource_preflight(
-    const std::vector<int> &derived_mmax,
+    const std::vector<long long> &derived_mmax,
     const std::vector<unsigned char> &prerequisite_available,
     const std::vector<std::size_t> &tap_counts = {},
     const std::vector<std::size_t> &detector_counts = {},
     const std::vector<std::size_t> &native_sample_counts = {},
     std::size_t estimated_candidate_row_bytes =
-        rtc_sampling_estimated_candidate_row_bytes) {
+        rtc_sampling_estimated_candidate_row_bytes,
+    const RtcSamplingResourceContext &context = {}) {
     RtcSamplingResourcePreflight result;
     const auto n = derived_mmax.size();
     result.range_status.assign(
@@ -1167,19 +1189,56 @@ inline RtcSamplingResourcePreflight rtc_sampling_resource_preflight(
         return result;
     }
     bool arithmetic_ok = true;
+    std::size_t input_cells = 0;
+    std::size_t interval_lookup_work = 0;
+    std::size_t classification_and_copy_work = 0;
+    std::size_t base_context_work = 0;
+    std::size_t source_storage_bytes = 0;
+    std::size_t category_storage_bytes = 0;
+    if (!rtc_sampling_checked_multiply(
+            context.input_row_count, context.input_detector_count,
+            input_cells) ||
+        !rtc_sampling_checked_multiply(
+            context.input_row_count, context.source_interval_count,
+            interval_lookup_work) ||
+        !rtc_sampling_checked_multiply(input_cells, 2,
+                                       classification_and_copy_work) ||
+        !rtc_sampling_checked_add(interval_lookup_work,
+                                  classification_and_copy_work,
+                                  base_context_work) ||
+        !rtc_sampling_checked_multiply(
+            context.source_interval_count,
+            rtc_sampling_source_interval_serialized_bytes +
+                rtc_sampling_source_interval_runtime_bytes,
+            source_storage_bytes) ||
+        !rtc_sampling_checked_multiply(
+            input_cells, 2 * sizeof(RtcSamplingContextCategory),
+            category_storage_bytes) ||
+        !rtc_sampling_checked_add(source_storage_bytes,
+                                  category_storage_bytes,
+                                  result.estimated_auxiliary_storage_bytes) ||
+        !rtc_sampling_checked_add(
+            result.estimated_auxiliary_storage_bytes,
+            context.manifest_bytes,
+            result.estimated_auxiliary_storage_bytes)) {
+        result.table_reason = RtcSamplingReasonCode::arithmetic_overflow;
+        return result;
+    }
+    result.estimated_context_work_units = base_context_work;
     for (std::size_t i = 0; i < n; ++i) {
         if (prerequisite_available[i] == 0) {
             continue;
         }
-        const std::size_t range = static_cast<std::size_t>(
-            std::max(1, derived_mmax[i]));
-        if (range > rtc_sampling_max_candidates) {
+        const long long exact_range = std::max(1LL, derived_mmax[i]);
+        if (exact_range >
+            static_cast<long long>(rtc_sampling_max_candidates)) {
             result.range_status[i] =
                 RtcSamplingStatusCode::candidate_range_resource_limit;
             result.range_reason[i] =
                 RtcSamplingReasonCode::candidate_range_resource_limit;
             continue;
         }
+        const std::size_t range = static_cast<std::size_t>(exact_range);
         result.range_status[i] =
             RtcSamplingStatusCode::candidate_range_available;
         result.range_reason[i] = RtcSamplingReasonCode::none;
