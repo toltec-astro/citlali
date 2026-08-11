@@ -1,0 +1,54 @@
+{
+  "schema": "sci-align-001-beammap-timestream-protocol-v1",
+  "revision": 1,
+  "frozen_before_real_result_inspection": true,
+  "scope": {
+    "source": "3C273",
+    "array": "a1100",
+    "stage": "baseline point-estimate validation",
+    "uncertainties_deferred_by_owner": true,
+    "production_code_change": false
+  },
+  "coordinate_contract": {
+    "signal_time_convention": "evaluate detector-grouped Beammap telescope-plus-pointing coordinate at recorded t + tau",
+    "negative_tau": "the signal is best registered with an earlier delivered telescope state",
+    "map_comparison": "the existing Beammap timing equivalent is (right centroid minus left centroid)/(right rate minus left rate) and has the opposite sign from this direct t+tau coordinate-shift tau; compare direct tau to the negative of that map value",
+    "detector_apt_offsets": "suppressed, matching detector-grouped Beammap mapmaking",
+    "center_authority": "per-detector x_t_raw/y_t_raw from the direction-blind standard APT",
+    "shape_authority": "per-detector a_fwhm/b_fwhm/angle from the direction-blind standard APT",
+    "directional_apt_products": "prohibited"
+  },
+  "selection": {
+    "maximum_detectors": 100,
+    "method": "network-balanced round-robin of descending standard-APT S/N",
+    "quality": "a1100 standard flag=0, flag2=0 when present, finite positive amplitude/width/SNR and finite nonnegative centroid errors",
+    "selection_uses_directional_displacement": false
+  },
+  "support": {
+    "maximum_abs_tau_sec": 0.05,
+    "source_scoring_radius_arcsec": 25.0,
+    "baseline_training_min_radius_arcsec": 40.0,
+    "minimum_scored_samples_per_detector_scan": 8,
+    "minimum_baseline_samples_per_detector_scan": 30,
+    "minimum_retained_scan_count": 8,
+    "scan_definition": "one repaired same-timebase inclusive row of full-PTC scan_indices/raw_scan_indices",
+    "edge_rule": "retain samples only when t plus or minus 50 ms stays within that scan",
+    "baseline": "constant fitted per detector-scan on fixed off-source support",
+    "amplitude": "nonnegative and profiled independently per detector-scan"
+  },
+  "models": {
+    "constant": "global delta_x/delta_y relative to all standard-APT detector centers",
+    "lag": "constant model plus one common tau in the complete t+tau coordinate",
+    "scan_hysteresis": "constant model plus a half-separation along the data-derived principal scan axis times sign of projected velocity",
+    "joint": "constant plus both common tau and scan-axis hysteresis",
+    "center_correction_bound_arcsec": 12.0,
+    "lag_search_bounds_ms": [-50.0, 50.0],
+    "scan_hysteresis_bounds_arcsec": [-5.0, 5.0],
+    "objective_profile_tau_grid_ms": {
+      "minimum": -50.0,
+      "maximum": 50.0,
+      "count": 41
+    }
+  },
+  "interpretation_boundary": "A direct within-full-PTC comparison to the map-centroid timing equivalent. It does not identify hardware versus software cause, establish universality, or authorize a correction."
+}
