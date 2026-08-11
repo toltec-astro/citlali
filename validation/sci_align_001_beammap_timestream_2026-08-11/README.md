@@ -34,3 +34,11 @@ L-BFGS-B fit stopped at iteration zero because the unscaled objective was near
 was not the objective minimum.  All objectives are now divided by one fixed,
 pre-fit PTC-weighted signal-energy scale.  This dimensionless scaling cannot
 change an optimum or model ordering and is reported in the result manifest.
+
+The same anchor then exposed a second numerical failure before interpretation:
+the spatial coordinates moved, but `tau` remained exactly at a multistart seed
+even though the independent objective profile was lower elsewhere.  The
+scalar `1e-4` finite-difference step meant `1e-4 ms` for `tau`, which is too
+small for the float-valued Beammap signal.  Revision 3 uses the pointing
+fitter's already-validated unit-aware `0.01 ms` tau step while retaining
+`1e-4 arcsec` for spatial and hysteresis coordinates.

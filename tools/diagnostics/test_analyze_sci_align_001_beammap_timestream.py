@@ -279,6 +279,12 @@ class BeammapTimestreamTest(unittest.TestCase):
             places=15,
         )
 
+    def test_optimizer_uses_millisecond_specific_finite_difference_step(self) -> None:
+        np.testing.assert_allclose(
+            target.optimizer_steps("joint"),
+            [1.0e-4, 1.0e-4, 0.01, 1.0e-4],
+        )
+
     def test_varying_scan_speed_distinguishes_lag_from_fixed_hysteresis(self) -> None:
         observation = synthetic_observation(tau_sec=0.013)
         lag = target.fit_model(observation, "lag")

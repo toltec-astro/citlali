@@ -1,7 +1,7 @@
 {
   "schema": "sci-align-001-beammap-timestream-protocol-v1",
-  "revision": 2,
-  "refreeze_reason": "the first real anchor exposed a documented numerical failure: every optimizer stopped at iteration zero because the native Beammap objective was approximately 8e-15 and therefore below the fixed gradient tolerance, while the independently evaluated tau profile had a different minimum; divide by one fixed pre-fit signal-energy scale without changing the optimum",
+  "revision": 3,
+  "refreeze_reason": "the same first real anchor exposed two documented numerical failures before any timing interpretation: (1) every optimizer initially stopped at iteration zero because the native Beammap objective was approximately 8e-15 and below the fixed gradient tolerance, repaired by one parameter-independent signal-energy normalization; (2) after that repair the lag and joint fits moved spatial parameters but left tau exactly at a multistart seed while the independent tau profile had a lower objective elsewhere, repaired by the pointing fitter's already-validated unit-aware 0.01-ms tau finite-difference step",
   "frozen_before_real_result_inspection": true,
   "scope": {
     "source": "3C273",
@@ -46,6 +46,7 @@
     "center_correction_bound_arcsec": 12.0,
     "lag_search_bounds_ms": [-50.0, 50.0],
     "scan_hysteresis_bounds_arcsec": [-5.0, 5.0],
+    "optimizer_finite_difference_steps": "1e-4 arcsec for position/hysteresis coordinates and 0.01 ms for tau, matching the validated pointing fitter's unit-aware tau step",
     "objective_profile_tau_grid_ms": {
       "minimum": -50.0,
       "maximum": 50.0,

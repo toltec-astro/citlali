@@ -571,13 +571,26 @@ def bounds_starts(
     return bounds, starts
 
 
+def optimizer_steps(model: str) -> np.ndarray:
+    """Finite-difference steps in each optimizer coordinate's native unit."""
+    return np.asarray([
+        0.01 if name == "tau_ms" else 1.0e-4
+        for name in parameter_names(model)
+    ])
+
+
 def fit_model(observation: PreparedObservation, model: str) -> dict[str, Any]:
     bounds, starts = bounds_starts(observation, model)
     results = [
         minimize(
             objective, start, args=(observation, model), method="L-BFGS-B",
             bounds=bounds,
-            options={"maxiter": 400, "ftol": 1.0e-12, "gtol": 1.0e-8, "eps": 1.0e-4},
+            options={
+                "maxiter": 400,
+                "ftol": 1.0e-12,
+                "gtol": 1.0e-8,
+                "eps": optimizer_steps(model),
+            },
         )
         for start in starts
     ]
