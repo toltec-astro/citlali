@@ -17,6 +17,34 @@ The project will improve the existing tree incrementally. It will not restart
 as a broad rewrite and will not rewrite the granular history of the validated
 branch. The exact validated tree will remain available for forensic review.
 
+## 2026-08-11 CAL Successor-4 Return And Successor-5 Authority
+
+The owner accepted the independent `SCI-CAL-001` successor-4 verdict `amend`
+and return for bounded successor-5 repair. Exact candidate
+`693f1b107855e3ae9b36617323ca14aac868f304` was independently re-audited at
+`7163dfa45b269b04e9525c224ec1cb5c4525ea61`. The exact imported
+[report](audits/SCI-CAL-001_SUCCESSOR_4_REAUDIT_2026-08-11.md) and
+[local evidence](audits/evidence/SCI-CAL-001_SUCCESSOR_4_LOCAL_EVIDENCE_2026-08-11.yaml)
+are bound by the
+[owner acceptance](audits/packages/SCI-CAL-001_SUCCESSOR_4_OWNER_ACCEPTANCE_2026-08-11.md).
+
+F002, F003, F004, and F006 retain their bounded closures. F001 and F010 remain
+conditioned. F005, F007, F008, and local F009 remain open and return under the
+owner-resolved factor-placement, homogeneous-coadd, observation-lifecycle,
+package-first-publication, and per-observation-layout authority. The CAL axes
+remain `approved`, `nonconformant`, `in_progress`, and `fail_closed`, with
+verdict `amend`.
+
+The frozen
+[successor-5 repair handoff](audits/packages/SCI-CAL-001_SUCCESSOR_5_BOUNDED_REPAIR_HANDOFF_2026-08-11.md)
+and [finding ledger](audits/proposals/SCI-CAL-001_SUCCESSOR_5_REPAIR_FINDING_LEDGER_2026-08-11.yaml)
+use exact pushed base `693f1b107855e3ae9b36617323ca14aac868f304`,
+proposed branch `codex/repair-sci-cal-001-successor-5`, and an exact initial
+27-path repair ceiling. A later role-separated task must pass its READY
+checkpoint. This coordination update does not launch repair or re-audit,
+modify application code, access Unity, run reductions, change production,
+merge, push, or launch downstream work.
+
 ## 2026-08-11 CAL Successor-3 Return And Successor-4 Authority
 
 The owner accepted the independent `SCI-CAL-001` successor-3 verdict `amend`

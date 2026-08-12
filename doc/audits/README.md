@@ -33,6 +33,19 @@ authorized. The exact imported
 has SHA-256
 `fe07901504ad26916cab2c5589f452b1873c11ef215239653ed938f45eefd4d5`.
 
+On 2026-08-11 the owner accepted the `SCI-CAL-001` successor-4
+[return-for-repair disposition](packages/SCI-CAL-001_SUCCESSOR_4_OWNER_ACCEPTANCE_2026-08-11.md)
+for candidate `693f1b107855e3ae9b36617323ca14aac868f304`, audited at
+`7163dfa45b269b04e9525c224ec1cb5c4525ea61`. F002/F003/F004/F006 retain
+their bounded closures, F001/F010 remain conditioned, and
+F005/F007/F008/local F009 remain open. The CAL axes stay `approved`,
+`nonconformant`, `in_progress`, and `fail_closed`, with verdict `amend`. The
+frozen [successor-5 handoff](packages/SCI-CAL-001_SUCCESSOR_5_BOUNDED_REPAIR_HANDOFF_2026-08-11.md)
+and [finding ledger](proposals/SCI-CAL-001_SUCCESSOR_5_REPAIR_FINDING_LEDGER_2026-08-11.yaml)
+record the owner-resolved bounded repair and exact 27-path ceiling against
+base `693f1b107855...`; they do not launch repair or authorize Unity,
+reductions, production, re-audit, merge, push, or downstream work.
+
 On 2026-08-11 the owner accepted the `SCI-CAL-001` successor-3
 [return-for-repair disposition](packages/SCI-CAL-001_SUCCESSOR_3_OWNER_ACCEPTANCE_2026-08-11.md)
 for candidate `3af6faf996fa002b2647adca8f33991002d49ff1`, audited at

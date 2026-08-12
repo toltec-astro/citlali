@@ -1,0 +1,471 @@
+schema_version: sci-cal-001-successor-4-independent-local-evidence-v1
+recorded_at: 2026-08-11
+
+auditor:
+  role: fresh_role_separated_independent_technical_auditor
+  audit_branch: codex/reaudit-sci-cal-001-successor-4-20260811
+  substantive_exposure_after_ready_approval: true
+  repair_task_conclusions_assumed: false
+
+candidate:
+  live_ref: origin/codex/repair-sci-cal-001-successor-4
+  sha: 693f1b107855e3ae9b36617323ca14aac868f304
+  parent: 3af6faf996fa002b2647adca8f33991002d49ff1
+  tree: fb317a7862ff474c118d229bb45320adb560b3bc
+  parent_patch_sha256: 59ba71493377630be5bff5164d779aa43d14ee1e788c002707f1f4fe62d5902d
+  changed_path_count: 26
+  changed_paths:
+    - doc/REFACTOR_STATUS.md
+    - include/citlali/core/engine/detail/beammap_setup_metadata_impl.h
+    - include/citlali/core/engine/detail/map_phdu_output_helpers.h
+    - include/citlali/core/pipeline/calibration_product_admission.h
+    - include/citlali/core/pipeline/raw_timestream_execution_plan.h
+    - include/citlali/core/pipeline/raw_timestream_observation_shadow.h
+    - include/citlali/core/pipeline/raw_timestream_provenance.h
+    - include/citlali/core/pipeline/raw_timestream_provenance_lifecycle.h
+    - include/citlali/core/pipeline/reduction_observation_pipeline.h
+    - include/citlali/core/pipeline/tod_metadata_mapmaker_tau.h
+    - include/citlali/core/timestream/calibration_product.h
+    - include/citlali/core/timestream/rtc/rtcproc.h
+    - tests/test_calibration_atmosphere_operator.cpp
+    - tests/test_calibration_product.cpp
+    - tests/test_config_scaffold.cpp
+    - tests/test_science_map_fits_products.cpp
+    - tools/baseline/audit_reduction_run.py
+    - tools/baseline/examples/sci_cal_001_raw_timestream_provenance_v4.yaml
+    - tools/baseline/examples/sci_cal_001_selected_calibration_apt.ecsv
+    - tools/baseline/test_audit_reduction_run.py
+    - tools/baseline/test_compare_reduction_products.py
+    - tools/baseline/test_validate_product_contract.py
+    - tools/baseline/test_validation_profiles.py
+    - tools/config/audit_raw_timestream_execution_reads.py
+    - validation/product_contracts.json
+    - validation/validation_profiles.json
+  worktree_entry_state: clean_exact_candidate
+  index_entry_state: clean_exact_candidate
+  remote_identity: live_origin_exact_sha_verified_at_ready
+  role_separation: verified_distinct_from_repair_and_prior_audit_worktrees
+  classification: application_candidate
+
+frozen_coordination_authority:
+  ref: origin/codex/coordinate-rtc-ptc-queue
+  commit: aaa578f12a1bacc9476d8067d9f1554029b67f89
+  prior_accepted_successor_3_audit_commit: 0b597ec5eaaf52477c995af6f2f4fa3eddb2a5de
+  artifacts:
+    successor_3_report:
+      sha256: ee0f8c40e31300fd5c547b45d086a5e97f7be52e45d453016c0ade28c014e59a
+      exact: true
+    successor_3_evidence:
+      sha256: 7245872f044fc15a7cdb631ea02b70a9746cba1351bc942c1dde8bffa2b25a6f
+      exact: true
+    owner_acceptance:
+      sha256: 73bd190349dd2ccd3405baa4cab294deb4e87c576367a54dbc44b3014a52a9e1
+      exact: true
+    successor_4_repair_handoff:
+      sha256: 036de8014ae959bdbc237d3ba3a79ee399479d56f66d8455f51b821455b003e7
+      exact: true
+    successor_4_finding_ledger:
+      sha256: 0b00972f2c02d65a4f2137e37a0b5f19e1756bd3fe339b10764a27128ff67877
+      exact: true
+
+ready_checkpoint:
+  coordinator_approved: true
+  exact_candidate_identity: true
+  clean_fresh_role_separated_worktree: true
+  frozen_objects_and_digests_exact: true
+  proposed_branch_absent_locally_before_creation: true
+  proposed_branch_absent_remote_tracking_before_creation: true
+  proposed_branch_absent_live_origin_before_creation: true
+  exact_26_path_inventory: true
+  finding_exposure_map_approved: true
+  deterministic_test_plan_approved: true
+  documentation_only_artifact_ceiling_approved: true
+  branch_created_directly_at_candidate_after_approval: true
+
+scope:
+  application_mutation: false
+  config_mutation: false
+  test_mutation: false
+  build_system_mutation: false
+  validation_product_mutation: false
+  registry_mutation: false
+  profile_mutation: false
+  baseline_policy_mutation: false
+  canonical_coordination_mutation: false
+  citlali_reduction: false
+  astronomical_source_injection: false
+  unity_access_or_request: false
+  external_contact: false
+  push_or_merge: false
+  downstream_launch: false
+  production_authorization: false
+  repair_performed: false
+  numerical_algorithm_broadening: false
+  audit_artifacts_only: true
+
+build:
+  configuration: Release
+  tests_enabled: true
+  fresh_role_separated_configuration: true
+  fresh_candidate_compilation: true
+  candidate_outputs_reused_from_repair_worktree: false
+  network_access: false
+  dependency_source_mode: local_dependency_sources_from_identity_matched_candidate_build
+  public_fetch_attempt_blocked_by_audit_network_prohibition: true
+  cmake_policy_compatibility_override: "3.5"
+  targets:
+    - citlali_cli
+    - citlali_test
+    - citlali_safety_test
+    - citlali_science_map_fits_products_test
+  result: passed
+  candidate_build_failures: 0
+  warning_scope: third_party_only
+
+checks:
+  - id: full_ctest
+    command: ctest --test-dir build_audit_exact --output-on-failure
+    result: passed
+    enumerated: 671
+    runnable: 670
+    passed: 670
+    failed: 0
+    disabled: 1
+    disabled_test: MapFitterLifecycle.ExactProductSequence
+    disabled_state: pre_existing
+  - id: normal_test_binary
+    command: build_audit_exact/tests/citlali_test --gtest_brief=1
+    result: passed
+    passed: 618
+    failed: 0
+    disabled: 1
+  - id: safety_test_binary
+    command: build_audit_exact/tests/citlali_safety_test --gtest_brief=1
+    result: passed
+    passed: 14
+    failed: 0
+  - id: science_map_fits_test_binary
+    command: build_audit_exact/tests/citlali_science_map_fits_products_test --gtest_brief=1
+    result: passed
+    passed: 38
+    failed: 0
+  - id: baseline_python_unittest
+    command: "/Users/gwilson/tolteca/bin/python -m unittest discover -s tools/baseline -p 'test_*.py' -v"
+    result: passed
+    passed: 177
+    failed: 0
+  - id: changed_baseline_python_suites
+    command: "/Users/gwilson/tolteca/bin/python -m pytest -q -p no:cacheprovider tools/baseline/test_audit_reduction_run.py tools/baseline/test_compare_reduction_products.py tools/baseline/test_validate_product_contract.py tools/baseline/test_validation_profiles.py"
+    result: passed
+    passed: 128
+    subtests_passed: 26
+    failed: 0
+  - id: targeted_atmosphere_product_contract_tests
+    command: "/Users/gwilson/tolteca/bin/python -m pytest -q -p no:cacheprovider tools/calibration/test_generate_atmosphere_operator_nodes.py tools/baseline/test_validate_product_contract.py"
+    result: passed
+    passed: 27
+    failed: 0
+  - id: checked_in_validation_ledger
+    command: /Users/gwilson/tolteca/bin/python tools/baseline/validate_validation_ledger.py
+    result: passed
+    records: 60
+  - id: checked_in_science_change_ledger
+    command: /Users/gwilson/tolteca/bin/python tools/baseline/validate_science_change_ledger.py
+    result: passed
+    changes: 3
+    integration_commits: 5
+  - id: validation_profile_registry
+    command: /Users/gwilson/tolteca/bin/python tools/baseline/validation_profiles.py --list
+    result: passed
+    active_profiles: 4
+    preparing_profiles: 8
+  - id: config_preflight
+    command: /Users/gwilson/tolteca/bin/python tools/config/run_config_preflight.py --require-all
+    result: passed
+    unit_tests_passed: 127
+    unit_tests_failed: 0
+    kits: 4
+    compatibility_checks_passed: 8
+    compatibility_checks_failed: 0
+    leaf_coverage_percent: 100
+    schema_leaves: 592
+    schema_executable_leaves: 590
+    schema_non_executable_leaves: 2
+    schema_nodes: 748
+    authority_domains: 16
+    config_read_files: 27
+    config_read_sites: 132
+    config_read_accesses: 134
+    config_read_review_required: 0
+    raw_execution_records: 82
+    raw_execution_review_required: 0
+    raw_execution_drift: false
+    raw_execution_census_sha256: 3c581622eb930ba1296d7a70bb14b63176e53270703cadb83d8f0484aad25918
+  - id: raw_execution_census_standalone
+    command: /Users/gwilson/tolteca/bin/python tools/config/audit_raw_timestream_execution_reads.py --fail-on-review --fail-on-drift
+    result: passed
+    records: 82
+    review_required: 0
+    drift: false
+    sha256: 3c581622eb930ba1296d7a70bb14b63176e53270703cadb83d8f0484aad25918
+  - id: atmosphere_generator
+    command: /Users/gwilson/tolteca/bin/python tools/calibration/generate_atmosphere_operator_nodes.py --check
+    result: passed
+    rows: 1368
+    series: 72
+  - id: candidate_diff_check
+    command: git diff --check 3af6faf996fa002b2647adca8f33991002d49ff1 693f1b107855e3ae9b36617323ca14aac868f304
+    result: passed
+  - id: candidate_patch_digest
+    result: passed
+    sha256: 59ba71493377630be5bff5164d779aa43d14ee1e788c002707f1f4fe62d5902d
+  - id: candidate_changed_path_inventory
+    result: passed
+    paths: 26
+
+bounded_counterexamples:
+  f005_production_correction:
+    result: nonconformity_reproduced
+    factor_a: 3.0
+    source_path: /private/tmp/sci-cal-f005-audit.1EIr0X/f005_production_counterexample.cpp
+    source_sha256: 7f8f5409551c2f526e601908c2453d8e360b7eee4a701016de772720a04af9eb
+    compile_run_script: /private/tmp/sci-cal-f005-audit.1EIr0X/compile_and_run.sh
+    compile_run_script_sha256: 6759922686e444b46984b8f5e06f9e2214fbf9f2f0a5e5bd0b99e897b80d00a0
+    command: zsh /private/tmp/sci-cal-f005-audit.1EIr0X/compile_and_run.sh
+    command_result: passed_reproduction
+    fresh_audit_build_libraries_reproduced_same_result: true
+    selected_apt_before:
+      flxscale: 1.0
+      sens: 2.0
+    production_correction:
+      corrected_flxscale: 3.0
+      corrected_sens: 2.0
+      compatibility_fcf: 1.0
+    raw_signal: 2.0
+    calibrated_signal: 6.0
+    raw_noise_realizations: [-2.0, 2.0]
+    calibrated_noise_realizations: [-6.0, 6.0]
+    raw_noise_variance_I: 4.0
+    calibrated_noise_variance_I: 36.0
+    weights:
+      approximate:
+        raw: 0.25
+        required: 0.027777777777777776
+        actual: 0.25
+        conformant: false
+      hybrid:
+        raw: 0.25
+        required: 0.027777777777777776
+        actual: 0.25
+        conformant: false
+      validated:
+        raw: 0.25
+        required: 0.027777777777777776
+        actual: 0.25
+        conformant: false
+      full:
+        raw: 0.49999999999999994
+        required: 0.055555555555555552
+        actual: 0.055555555555555566
+        conformant: true
+    candidate_test_coverage_gap: candidate_scales_compatibility_fcf_not_production_flxscale_correction
+  f007_repeated_finalizer:
+    result: nonconformity_reproduced
+    source_path: /private/tmp/sci_cal_f007_finalize_counterexample.cpp
+    source_sha256: c8581745ca433dcb0c1ebe27b5818186e41b5ecf1c997752f97489e026ef451e
+    compile_command: /usr/bin/c++ -std=c++20 -Iinclude -I/opt/homebrew/include/eigen3 /private/tmp/sci_cal_f007_finalize_counterexample.cpp -o /private/tmp/sci_cal_f007_finalize_counterexample_root
+    run_result:
+      finalized: true
+      calibration_changed: true
+      package_changed: true
+  f007_ptc_fixed_notch_collision:
+    result: nonconformity_established_by_production_source_trace
+    same_requested_state: true
+    differing_actual_state: ptc_fixed_notch_skipped_vs_applied
+    identity_distinguishes_state: false
+    dynamic_history_empty: true
+  f007_dynamic_phase_collision:
+    result: nonconformity_established_by_production_source_trace
+    rtc_vs_ptc_phase_recorded: false
+    ptc_iteration_recorded: false
+    model_subtraction_state_recorded: false
+    scan_scope_detector_geometry_recorded: true
+  f009_v4_semantic_mutations:
+    result: nonconformity_reproduced
+    cases:
+      fixture:
+        semantic_errors: []
+      missing_both_selected_apt_digests:
+        semantic_errors: []
+      noncanonical_lineage_schema:
+        semantic_errors: []
+      arbitrary_joined_package_identity:
+        semantic_errors: []
+      arbitrary_joined_calibration_identity:
+        semantic_errors: []
+    fixture_claimed_selected_apt_sha256: cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+    fixture_actual_selected_apt_sha256: f5c609c91ecc0bc83f3d84c4dfd0daf7b1542d149f915d40495368be60c75bd5
+    fixture_digest_matches: false
+  f009_actual_layout_contract:
+    result: nonconformity_reproduced
+    actual_path: 000042/selected_calibration_apt.ecsv
+    contract_scope: reduction
+    contract_pattern: selected_calibration_apt.ecsv
+    matched_paths: []
+    unclassified_paths:
+      - 000042/selected_calibration_apt.ecsv
+    passed: false
+  f009_joint_false_acceptance:
+    result: nonconformity_reproduced
+    probe_scope: raw_provenance_gate_plus_bounded_selected_apt_contract_entry_only
+    complete_profile_audit_exercised: false
+    full_materialized_product_contract_exercised: false
+    raw_sidecar_path: 000042/raw_timestream_provenance.yaml
+    timestream_output_sidecar_path: 000042/timestream_output_provenance.yaml
+    selected_apt_path: selected_calibration_apt.ecsv
+    sibling_selected_apt_exists: false
+    raw_gate_valid: true
+    raw_schema_ok: true
+    raw_semantic_errors: []
+    bounded_selected_apt_contract_passed: true
+    bounded_selected_apt_contract_errors: []
+  f009_uncalibrated_v4:
+    result: false_rejection_reproduced
+    requested_flux_calibration_enabled: false
+    effective_flux_calibration_enabled: false
+    calibration_lineage_available: false
+    audit_errors:
+      - v4 canonical calibration lineage is unavailable
+
+fixed_atmosphere_artifacts:
+  byte_identical_to_parent: true
+  contract:
+    path: data/calibration/sci_cal_001_fixed_djf25_full_domain_operator_contract.json
+    blob: e182fec875227eb63e5dc72ed9ee390fb66ba441
+    sha256: 7a064ff768a3de4f427f1338d94ef6cb9026d248f3c3c816fc3dfc96d156e36a
+  nodes:
+    path: data/calibration/sci_cal_001_fixed_djf25_full_domain_operator_nodes.csv
+    blob: e939ee4a66e71a18b9bece7c3daf8c4a9d374ebd
+    sha256: fd688a4cd3f46585b08631bc63a562aed482feb9b24ec9ee0071b70db7eb8a5f
+  generated_header:
+    path: include/citlali/core/timestream/atmosphere_operator_nodes_generated.h
+    blob: 68482584d94d3cbd8714a9d93da2b2245039cb77
+    sha256: d322bdc863ccb1292325c739865f772ef53f4e9f4101967752027ea0a2413262
+  production_operator:
+    path: include/citlali/core/timestream/atmosphere_operator.h
+    blob: cc1ef850fb650b2ecb7cd6bc9620b36a4caa126d
+    sha256: 3fd4352d05e77e07c1e354b7e4124733505064667968676d8d4e94315017d584
+  inference_limit: structural_conformance_only_no_model_fidelity_claim
+
+preservation:
+  f002:
+    disposition: retain_narrow_structural_closure
+    fixed_artifacts_byte_identical: true
+    generator_exact: true
+    focused_atmosphere_tests_passed: 10
+  f003:
+    disposition: closed_preserved
+    reduction_config_validation_blob_parent_and_candidate: 93e2c576ae58b99dda461ee463de137ce99eaedd
+    cli_reduction_execution_blob_parent_and_candidate: 6a92025f54d91327fbe15e9324eaf37b354d01a8
+    unsupported_calibrated_unit_rejected_at_initial_validation: true
+    rejection_before_output_lease_or_observation_work: true
+    uncalibrated_request_preserved: true
+  f004:
+    disposition: closed_preserved_within_structural_association_claim
+    calib_header_blob_parent_and_candidate: 19e844df971efb939af260ee0cc5bc8bd03417eb
+    calib_source_blob_parent_and_candidate: 09050f56752fc37dc72484479aa1eb5a2b65c6bc
+    calib_lineage_test_blob_parent_and_candidate: 54b310da831a5e823b1500c0cb2f462649272b09
+    truthful_legacy_lineage: true
+    optional_modern_tolapt_association_explicitly_verified: true
+    selected_source_digest_and_ordered_row_association_retained: true
+  f006:
+    disposition: retain_bounded_target_unit_closure
+    approved_target_unit: mJy/beam
+    additional_calibrated_units_admitted: false
+  f001:
+    disposition: open_conditioned
+  f010:
+    disposition: open_conditioned
+
+independent_findings:
+  f005:
+    disposition: open_nonconformant
+    actual_noise_variance_I_nonzero_realization_a_squared: true
+    full_weight_inverse_square_transfer: true
+    approximate_weight_inverse_square_transfer_on_production_correction: false
+    hybrid_weight_inverse_square_transfer_on_production_correction: false
+    validated_weight_inverse_square_transfer_on_production_correction: false
+    recipient_inventory_truthful_for_corrected_observation: false
+    candidate_arithmetic_redesign_detected: false
+    scientific_factor_placement_choice_required: true
+  f007:
+    disposition: open_nonconformant
+    complete_sample_elevation_identity: true
+    per_array_los_tau_identity: true
+    active_fir_a_gibbs_bound: true
+    active_standard_fixed_notch_state_bound: true
+    recorded_dynamic_notch_geometry_complete: true
+    applied_ptc_fixed_notch_state_bound: false
+    rtc_vs_ptc_dynamic_phase_bound: false
+    immutable_requested_state_bound: false
+    separate_effective_state_bound: false
+    disabled_mapmaker_not_labelled_realized: false
+    tod_only_netcdf_joins_complete: false
+    multi_observation_coadd_cal_membership_complete: false
+  f008:
+    disposition: open_nonconformant
+    snapshot_atomic: true
+    consume_atomic: true
+    normal_production_finalizer_call_count: 1
+    repeated_finalizer_safe: false
+    history_observation_owned: false
+    stale_history_leak_excluded: false
+    linked_outputs_transactional_with_package: false
+    empirical_response_fidelity_overclaim: false
+    total_uncertainty_or_covariance_overclaim: false
+  local_f009:
+    disposition: open_nonconformant
+    writer_single_package_publication_failure_safe: true
+    v1_v3_compatibility_preserved: true
+    materialized_contracts_with_required_entry: 10
+    baseline_options_accounting_for_basename: 7
+    actual_per_observation_path_matches_contract: false
+    actual_multi_observation_cardinality_matches_contract: false
+    v4_sibling_digest_verified_by_executable_audit_consumer: false
+    v4_package_identity_recomputed_by_executable_audit_consumer: false
+    checked_in_fixture_digest_consistent: false
+    forged_selected_member_rejected_by_bounded_f009_integrity_surfaces: false
+    uncalibrated_writer_state_accepted: false
+    actual_application_selected_member_layout_accepted_by_bounded_entry: false
+    local_integrity_surface_fail_open: true
+    overall_production_axis_fail_closed: true
+
+scope_assessment:
+  rtcproc_changed_scientific_behavior: false
+  rtc_detection_or_selection_change: false
+  rtc_filter_arithmetic_change: false
+  rtc_flagging_scan_or_cadence_change: false
+  changed_weighting_or_mapmaking_arithmetic_files: 0
+  new_uncertainty_or_covariance_product: false
+  empirical_response_fidelity_claim_added: false
+  unexpected_science_scope_broadening: false
+  unexpected_cross_package_broadening: false
+  unexpected_production_authority_broadening: false
+  f005_repair_requires_owner_scientific_choice: true
+  coadd_membership_or_cross_output_transaction_change_requires_owner_architecture_choice: true
+
+evidence_classification: local_deterministic_only
+
+disposition:
+  contract: approved
+  implementation: nonconformant
+  validation: in_progress
+  production: fail_closed
+  verdict: amend
+  owner_brief: return_F005_F007_F008_and_local_F009_for_minimal_bounded_owner_directed_repair
+
+authorization_effect: none
+
+audit_artifacts:
+  - doc/audits/SCI-CAL-001_SUCCESSOR_4_REAUDIT_2026-08-11.md
+  - doc/audits/evidence/SCI-CAL-001_SUCCESSOR_4_LOCAL_EVIDENCE_2026-08-11.yaml
