@@ -1,0 +1,60 @@
+{
+  "schema": "sci-align-001-lissajous-crossing-support-protocol-v1",
+  "revision": 1,
+  "status": "frozen_before_successor_real_fit_inspection",
+  "reason": "The first campaign fit-gate review exposed that a contiguous 35-arcsec score-mask segment can contain multiple geometrically distinct source passages. This successor restores the previously validated event identity before another real fit is inspected.",
+  "historical_authority": {
+    "description": "Authenticated 2026-08-11 tau-zero/PPT-centered 22-observation crossing-support protocol",
+    "protocol_sha256": "012fce31e106790fec3ab04baa1deff5c544219981b08a827b2899495267df75",
+    "sha256s_sha256": "3b383deaac7e3dd44359c5573369f57cebe40d182ce690eb6ced4ca23fc8e3a1"
+  },
+  "base_timestream_protocol": {
+    "path": "frozen_protocol.json",
+    "sha256": "8bbfe6016d40b7e966ee8d4ee8ef3127162fe365c39133cac4586214487c26ce",
+    "immutable_fit_core_sha256": "4a609c78d9b45f0c3b464096550921e866d146b62075d190166e5a24a02e6876",
+    "campaign_mutable_top_level_fields": [
+      "scope",
+      "input_authority",
+      "corpus",
+      "campaign"
+    ]
+  },
+  "support": {
+    "source_center": "checksum-bound retained a1100 PPT x_t/y_t",
+    "discovery_tau_sec": 0.0,
+    "crossing_radius_elliptical_fwhm": 0.5,
+    "fit_half_window_elliptical_fwhm": 1.5,
+    "event_completeness": "reject a half-power block touching either retained scan edge",
+    "window_combination": "union overlapping accepted event windows within one detector-scan for the numerical objective; preserve every event identity for visualization",
+    "mask_intersection": "fixed event windows intersected with the base frozen 35-arcsec score mask and validity mask",
+    "minimum_scored_samples_per_detector_scan": 8
+  },
+  "model_contract": {
+    "amplitude": "one profiled nonnegative amplitude per retained detector-scan",
+    "baseline": "reuse the base fitter's off-source constant baseline; source-crossing samples never train it",
+    "competing_models": [
+      "constant",
+      "lag",
+      "two_axis_hysteresis",
+      "joint_lag_and_two_axis_hysteresis"
+    ],
+    "event_selection_uses_fitted_parameter": false
+  },
+  "visualization_contract": {
+    "individual_unit": "one accepted half-power crossing event, never one broad score-mask segment",
+    "required_context": "show the full local event window, objective support, nearby excluded samples, tau-zero and fitted trajectories, fitted model, and residual",
+    "required_census": "show accepted and rejected event counts and rejection reasons",
+    "required_strata": [
+      "all accepted events",
+      "azimuth velocity positive",
+      "azimuth velocity negative",
+      "elevation velocity positive",
+      "elevation velocity negative"
+    ]
+  },
+  "interpretation": {
+    "uncertainty": "deferred during baseline algorithm validation",
+    "permitted": "point estimates, objective profiles, deterministic event and scan diagnostics",
+    "prohibited": "formal significance, causal identification, universal correction, or release of the remaining campaign before owner review of ObsNum 150818"
+  }
+}

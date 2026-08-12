@@ -16,6 +16,16 @@
     "slurm_memory": "32G",
     "slurm_time": "01:00:00"
   },
+  "event_fit_successor": {
+    "crossing_support": "tau-zero/PPT-centered separate contiguous passages through the 0.5 elliptical-FWHM contour",
+    "fit_window": "+/-1.5 local elliptical-FWHM crossing times intersected with frozen score and validity masks",
+    "numerical_overlap": "union only within one detector-scan objective mask",
+    "visualization_unit": "one geometric crossing event per detail page",
+    "pilot_obsnum": 150818,
+    "pilot_owner_review_required_before_remaining_65": true,
+    "array_concurrency": 4,
+    "uncertainty_status": "deferred during baseline algorithm validation"
+  },
   "map_prerequisite": {
     "models": [
       "constant",

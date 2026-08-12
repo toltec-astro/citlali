@@ -71,6 +71,16 @@ and show individual crossings. The remaining 65 gates remain blocked pending
 owner review of that artifact. See
 `FIT_GATE_SOURCE_PROFILE_VISUALIZATION_FAILURE_05.md`.
 
+The supplementary renderer was then found to retain a second coarse unit: a
+single broad score-mask segment can contain more than one geometric source
+passage. The event-support successor restores the earlier tau-zero/PPT-centered
+crossing definition, independently reproduces the authenticated ObsNum 150818
+support and +4.106-ms direct lag fit, and supplies one event per detail page,
+direction-separated stacks, and an objective profile. All 39 related tests and
+the complete three-PDF visual inspection pass. A Unity pilot is prepared; the
+remaining 65 gates stay blocked until its identities and visuals receive owner
+review. See `EVENT_SUPPORT_SUCCESSOR_VALIDATION_06.md`.
+
 The bounded result is documented in `REPORT.md`. Compact authenticated values
 are in `partial_observation_results.ecsv` and
 `partial_observation_results.json`; exact input and result identities are in
@@ -82,3 +92,5 @@ paired-bootstrap diagnostics for the anchor and stopping observation.
 `PREEXISTING_WORKTREE_STATE.txt` records the complete 32-file owner-owned
 untracked state seen before this work. Those files remain untouched, so only
 the scoped diagnostic diff—not the entire worktree—is described as clean.
+At the start of the 2026-08-12 event-support successor, the worktree contained
+36 owner-owned untracked bundle files; those also remain untouched.

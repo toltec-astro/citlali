@@ -183,6 +183,80 @@ source-aligned profile rather than the rejected common-timestamp average; the
 latter contains one detector/scan crossing per page. Stop again for owner
 review. The 65-observation array is not yet authorized.
 
+That supplementary renderer was still too coarse: it represented one broad
+35-arcsec score-mask segment as one visual crossing even when a detector
+passed through the half-power contour more than once. The event-support
+successor restores the earlier checksum-bound, tau-zero/PPT-centered crossing
+definition and also uses it for the numerical objective. Each contiguous
+passage through the 0.5 elliptical-FWHM contour is retained as a separate
+event. Its +/-1.5-FWHM window is intersected with the frozen score/valid mask;
+overlaps are unioned only within the detector-scan numerical mask, never in
+the event catalog or individual-event PDF.
+
+The local ObsNum 150818 gate reproduced the authenticated earlier support
+exactly: 962 geometric events, 907 complete events, 730 retained
+detector-scan groups, 546 detectors, and 24,298 scored values. It completed
+all four point fits and three PDFs in under one minute on the local reference
+machine. The lag point estimate was +4.106 ms, matching the earlier direct
+event-support fit; this numerical agreement was not used to define or accept
+the support. The first two individual pages deliberately show both distinct
+UID 1051 / scan-row 0 passages.
+
+Run the same event gate on Unity into new output roots:
+
+```bash
+event_pilot_job_id=$(sbatch --parsable --export=ALL \
+  "$SCI_PACKAGE/run_event_fit_gate_pilot_on_unity.sbatch")
+event_pilot_job_id=${event_pilot_job_id%%;*}
+printf 'event_pilot_job_id=%s\n' "$event_pilot_job_id"
+
+squeue -j "$event_pilot_job_id" \
+  -o "%.18i %.30j %.8T %.10M %.4C %R"
+tail -F "/work/toltec/wilson/sci-align-event-pilot_${event_pilot_job_id}.out"
+```
+
+Completion is `event pilot complete: obs=150818`. Verify both layers:
+
+```bash
+export SCI_EVENT_PILOT="$SCI_CAMPAIGN_ROOT/event_fit_results_v1/o150818"
+export SCI_EVENT_REVIEW="$SCI_CAMPAIGN_ROOT/event_review_results_v1/o150818"
+(cd "$SCI_EVENT_PILOT" && shasum -a 256 -c FIT_GATE_SHA256SUMS)
+(cd "$SCI_EVENT_REVIEW" && shasum -a 256 -c SHA256SUMS)
+```
+
+Inspect all pages of `event_crossing_validation_o150818.pdf`, both pages of
+`event_source_aligned_stacks_o150818.pdf`, and
+`event_tau_profile_o150818.pdf`. The first PDF uses one event per page,
+includes the full local context and geometry, and deliberately contains both
+passages of the first multi-event detector-scan. Stop if events are merged,
+the source is absent from the context, support does not bracket a crossing,
+or the objective profile is malformed.
+
+The remaining array is prepared but must not be submitted until that Unity
+pilot reproduces the local event identity and passes owner visual review. Once
+approved, it applies the identical event algorithm and renderer to the other
+65 observations with four-way concurrency:
+
+```bash
+event_array_job_id=$(sbatch --parsable --export=ALL \
+  "$SCI_PACKAGE/run_event_fit_gate_remaining_array_on_unity.sbatch")
+event_array_job_id=${event_array_job_id%%;*}
+printf 'event_array_job_id=%s\n' "$event_array_job_id"
+```
+
+After all 65 tasks complete, create the checksum-bound 66-observation census:
+
+```bash
+event_audit_job_id=$(sbatch --parsable --export=ALL \
+  "$SCI_PACKAGE/run_event_fit_campaign_audit_on_unity.sbatch")
+event_audit_job_id=${event_audit_job_id%%;*}
+printf 'event_audit_job_id=%s\n' "$event_audit_job_id"
+```
+
+The census reports authenticated point estimates, support, objective
+improvements, elevation, and input/output identities. It does not estimate
+uncertainty, select a causal model, or prescribe a correction.
+
 ## 4. Remaining 65 bounded fit gates
 
 Only after the supplementary source review passes, add the checksum-bound
