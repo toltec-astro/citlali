@@ -259,6 +259,39 @@ The census reports authenticated point estimates, support, objective
 improvements, elevation, and input/output identities. It does not estimate
 uncertainty, select a causal model, or prescribe a correction.
 
+After that census verifies all 66 observations, the owner may run the
+post-campaign network audit without reopening the PTC fits:
+
+```bash
+network_audit_job_id=$(sbatch --parsable --export=ALL \
+  "$SCI_PACKAGE/run_event_fit_network_audit_on_unity.sbatch")
+network_audit_job_id=${network_audit_job_id%%;*}
+printf 'network_audit_job_id=%s\n' "$network_audit_job_id"
+
+squeue -j "$network_audit_job_id" \
+  -o "%.18i %.36j %.8T %.10M %.4C %R"
+tail -F "/work/toltec/wilson/sci-align-event-network-audit_${network_audit_job_id}.out"
+```
+
+Completion is `network audit complete`. Verify the four checksum-bound files:
+
+```bash
+export SCI_NETWORK_AUDIT="$SCI_CAMPAIGN_ROOT/event_centroid_fit_network_audit_v1"
+(cd "$SCI_NETWORK_AUDIT" && shasum -a 256 -c SHA256SUMS)
+```
+
+`observation_results.ecsv` adds exact 8.192-ms cadence residuals to the
+authenticated pooled census. `observation_network_results.ecsv` contains the
+same frozen event-centroid models fit independently within each stable network
+ID, together with support, objective improvements, conditioning, boundary
+flags, and pooled-minus-network comparisons. `network_summary.ecsv` gives a
+descriptive cross-observation census. These network fits retain the frozen
+primary event qualification but use a network-specific constant-model MAD
+scale. They do not recover native detector-frame phase: the retained PTC/event
+products do not contain the raw counter fields needed for that separate join.
+No uncertainty, correction, or causal classification is authorized by this
+post-campaign audit.
+
 ## 4. Remaining 65 bounded fit gates
 
 Only after the supplementary source review passes, add the checksum-bound
