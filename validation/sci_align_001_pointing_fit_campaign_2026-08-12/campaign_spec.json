@@ -3,7 +3,8 @@
   "automatic_selection": "a1100 PPT sig2noise >= 60",
   "expected_observation_count": 66,
   "fit_gate": {
-    "maximum_wall_seconds": 1800,
+    "checkpoint_lifecycle": "atomic checksum-bound checkpoint after each completed full model",
+    "maximum_wall_seconds": 2700,
     "models": [
       "constant",
       "lag",
@@ -12,7 +13,7 @@
     ],
     "owner_review_required": true,
     "slurm_memory": "32G",
-    "slurm_time": "00:45:00"
+    "slurm_time": "01:00:00"
   },
   "map_prerequisite": {
     "models": [

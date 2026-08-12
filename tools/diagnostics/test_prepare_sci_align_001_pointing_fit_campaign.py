@@ -139,6 +139,9 @@ class CampaignTest(unittest.TestCase):
         self.assertEqual(selection["row_count"], 2)
         self.assertEqual(protocol["scope"]["pointing_count"], 2)
         self.assertEqual(
+            protocol["campaign"]["fit_gate_maximum_wall_seconds"], 2700
+        )
+        self.assertEqual(
             protocol["input_authority"]["selection_manifest_sha256"],
             campaign.sha256_file(output / "frozen/selected_pointings.json"),
         )
@@ -150,6 +153,17 @@ class CampaignTest(unittest.TestCase):
             "--owner-review-approved",
             (output / "jobs/resume.commands.txt").read_text(),
         )
+        gate_commands = (output / "jobs/fit_gate.commands.txt").read_text()
+        self.assertIn(
+            "run_sci_align_001_lissajous_fit_gate_checkpointed.py",
+            gate_commands,
+        )
+        self.assertIn("--maximum-wall-seconds 2700", gate_commands)
+        self.assertNotIn(" fit-gate ", gate_commands)
+        self.assertIn(
+            "#SBATCH --time=01:00:00",
+            (output / "jobs/run_fit_gate_pilot.sbatch").read_text(),
+        )
         self.assertIn(
             "--existing-observation-root",
             (output / "jobs/run_map_aggregate.sbatch").read_text(),
@@ -158,6 +172,33 @@ class CampaignTest(unittest.TestCase):
             subprocess.run(["bash", "-n", path], check=True)
         campaign.verify_manifest(output, "PREPARATION_SHA256SUMS")
         campaign.verify_manifest(output / "jobs", "JOB_SHA256SUMS")
+
+        with mock.patch.object(campaign, "git_commit", return_value="e" * 40):
+            campaign.amend_fit_gates(argparse.Namespace(
+                campaign_root=output,
+                repo_root=repo,
+                python="python",
+                array_concurrency=2,
+            ))
+        successor = output / campaign.FIT_GATE_SUCCESSOR_DIRECTORY
+        campaign.verify_manifest(successor)
+        campaign.verify_manifest(output, "FIT_GATE_AMENDMENT_SHA256SUMS")
+        commands = (
+            successor / "fit_gate_remaining.commands.txt"
+        ).read_text().splitlines()
+        self.assertEqual(len(commands), 1)
+        self.assertIn(
+            "run_sci_align_001_lissajous_fit_gate_checkpointed.py", commands[0]
+        )
+        amendment = json.loads(
+            (output / "fit_gate_amendment_checkpointed_v2.json").read_text()
+        )
+        self.assertFalse(amendment["numerical_arithmetic_changed"])
+        self.assertEqual(amendment["remaining_observation_count"], 1)
+        subprocess.run(
+            ["bash", "-n", successor / "run_fit_gate_remaining_array.sbatch"],
+            check=True,
+        )
 
     def test_map_run_one_owns_only_observation_directory(self) -> None:
         selection_dir = self.root / "selection"

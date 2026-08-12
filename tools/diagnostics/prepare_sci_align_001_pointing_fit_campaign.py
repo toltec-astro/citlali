@@ -30,6 +30,9 @@ import analyze_sci_align_001_lissajous_pointing as map_space
 
 
 PILOT_OBSNUM = 150818
+FIT_GATE_MAXIMUM_WALL_SECONDS = 2700
+FIT_GATE_SLURM_TIME = "01:00:00"
+FIT_GATE_SUCCESSOR_DIRECTORY = "jobs_checkpointed_v2"
 
 
 class ContractError(RuntimeError):
@@ -125,7 +128,7 @@ def campaign_protocol(
             "map prerequisites; pilot fit gate; remaining fit gates; owner "
             "review; explicitly approved checkpointed resumes"
         ),
-        "fit_gate_maximum_wall_seconds": 1800,
+        "fit_gate_maximum_wall_seconds": FIT_GATE_MAXIMUM_WALL_SECONDS,
         "resume_maximum_wall_seconds": 144000,
     }
     protocol["scope"].update({
@@ -188,6 +191,43 @@ def sbatch_header(
     return lines
 
 
+def fit_gate_command(
+    root: Path, repo: Path, python: str, obsnum: int,
+) -> str:
+    return shell_join([
+        python,
+        repo / "tools/diagnostics/run_sci_align_001_lissajous_fit_gate_checkpointed.py",
+        "--protocol", root / "frozen/timestream_protocol.json",
+        "--selection", root / "frozen/selected_pointings.json",
+        "--map-root", root / "map_results", "--obsnum", str(obsnum),
+        "--output", root / "fit_results" / f"o{obsnum}",
+        "--maximum-wall-seconds", str(FIT_GATE_MAXIMUM_WALL_SECONDS),
+    ])
+
+
+def command_array_script(
+    *, name: str, command_table: Path, count: int, concurrency: int,
+    output: Path, error: Path, runtime_cache: Path, time: str, memory: str,
+) -> str:
+    header = sbatch_header(
+        name, array=f"0-{count - 1}%{concurrency}", output=output,
+        error=error, time=time, memory=memory,
+    )
+    body = [
+        f"mkdir -p {shlex.quote(str(runtime_cache / 'matplotlib'))} "
+        f"{shlex.quote(str(runtime_cache / 'xdg'))}",
+        "export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1",
+        "export MPLBACKEND=Agg",
+        f"export MPLCONFIGDIR={shlex.quote(str(runtime_cache / 'matplotlib'))}",
+        f"export XDG_CACHE_HOME={shlex.quote(str(runtime_cache / 'xdg'))}",
+        f"command_table={shlex.quote(str(command_table))}",
+        'command=$(sed -n "$((SLURM_ARRAY_TASK_ID + 1))p" "$command_table")',
+        'test -n "$command"',
+        'bash -c "$command"',
+    ]
+    return "\n".join([*header, *body]) + "\n"
+
+
 def write_campaign_scripts(
     root: Path, repo: Path, python: str, obsnums: list[int], concurrency: int,
 ) -> list[str]:
@@ -209,13 +249,7 @@ def write_campaign_scripts(
             "--obsnum", str(obsnum),
         ]))
         fit_output = fit_root / f"o{obsnum}"
-        gate_commands.append(shell_join([
-            python, repo / "tools/diagnostics/analyze_sci_align_001_lissajous_timestream.py",
-            "fit-gate", "--protocol", frozen / "timestream_protocol.json",
-            "--selection", frozen / "selected_pointings.json",
-            "--map-root", map_root, "--obsnum", str(obsnum),
-            "--output", fit_output, "--maximum-wall-seconds", "1800",
-        ]))
+        gate_commands.append(fit_gate_command(root, repo, python, obsnum))
         resume_commands.append(shell_join([
             python, repo / "tools/diagnostics/analyze_sci_align_001_lissajous_timestream.py",
             "resume-observation", "--protocol", frozen / "timestream_protocol.json",
@@ -233,24 +267,12 @@ def write_campaign_scripts(
         (jobs / name).write_text("\n".join(lines) + "\n")
 
     def array_script(name: str, table: str, count: int, time: str, memory: str) -> str:
-        header = sbatch_header(
-            name, array=f"0-{count - 1}%{concurrency}",
-            output=logs / "%x_%A_%a.out", error=logs / "%x_%A_%a.err",
+        return command_array_script(
+            name=name, command_table=jobs / table, count=count,
+            concurrency=concurrency, output=logs / "%x_%A_%a.out",
+            error=logs / "%x_%A_%a.err", runtime_cache=runtime_cache,
             time=time, memory=memory,
         )
-        body = [
-            f"mkdir -p {shlex.quote(str(runtime_cache / 'matplotlib'))} "
-            f"{shlex.quote(str(runtime_cache / 'xdg'))}",
-            "export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1",
-            "export MPLBACKEND=Agg",
-            f"export MPLCONFIGDIR={shlex.quote(str(runtime_cache / 'matplotlib'))}",
-            f"export XDG_CACHE_HOME={shlex.quote(str(runtime_cache / 'xdg'))}",
-            f"command_table={shlex.quote(str(jobs / table))}",
-            'command=$(sed -n "$((SLURM_ARRAY_TASK_ID + 1))p" "$command_table")',
-            'test -n "$command"',
-            'bash -c "$command"',
-        ]
-        return "\n".join([*header, *body]) + "\n"
 
     (jobs / "run_map_array.sbatch").write_text(array_script(
         "sci-align-map", "map.commands.txt", len(obsnums), "04:00:00", "32G"
@@ -279,7 +301,7 @@ def write_campaign_scripts(
     pilot = sbatch_header(
         "sci-align-fit-pilot", array=None,
         output=logs / "%x_%j.out", error=logs / "%x_%j.err",
-        time="00:45:00", memory="32G",
+        time=FIT_GATE_SLURM_TIME, memory="32G",
     )
     pilot.extend([
         f"mkdir -p {shlex.quote(str(runtime_cache / 'matplotlib'))} "
@@ -299,7 +321,7 @@ def write_campaign_scripts(
     )
     (jobs / "run_fit_gate_remaining_array.sbatch").write_text(array_script(
         "sci-align-fit-gate", "fit_gate_remaining.commands.txt", len(remaining),
-        "00:45:00", "32G",
+        FIT_GATE_SLURM_TIME, "32G",
     ))
     (jobs / "run_resume_array.sbatch").write_text(array_script(
         "sci-align-resume", "resume.commands.txt", len(obsnums), "48:00:00", "32G"
@@ -432,6 +454,124 @@ def freeze(args: argparse.Namespace) -> None:
     )
 
 
+def amend_fit_gates(args: argparse.Namespace) -> None:
+    """Add checkpointed gate jobs without mutating the frozen campaign."""
+    root = args.campaign_root.resolve()
+    repo = args.repo_root.resolve()
+    verify_manifest(root, "PREPARATION_SHA256SUMS")
+    verify_manifest(root / "jobs", "JOB_SHA256SUMS")
+    verify_manifest(root / "frozen", "SELECTION_SHA256SUMS")
+    preparation = json.loads((root / "campaign_preparation.json").read_text())
+    if (
+        preparation.get("schema")
+        != "sci-align-001-pointing-fit-campaign-preparation-v1"
+    ):
+        raise ContractError("unsupported campaign preparation schema")
+    selection_path = root / "frozen/selected_pointings.json"
+    selection = json.loads(selection_path.read_text())
+    obsnums = [int(row["pointing_obsnum"]) for row in selection["rows"]]
+    if len(obsnums) != int(preparation["observation_count"]):
+        raise ContractError("campaign selection count changed")
+    if obsnums.count(PILOT_OBSNUM) != 1:
+        raise ContractError("campaign does not contain exactly one pilot")
+    fit_root = root / "fit_results"
+    unexpected = sorted(
+        path.name for path in fit_root.glob("o*")
+        if not (
+            path.name == f"o{PILOT_OBSNUM}"
+            or path.name.startswith(f"o{PILOT_OBSNUM}_")
+        )
+    ) if fit_root.exists() else []
+    if unexpected:
+        raise ContractError(
+            "non-pilot fit output exists before gate amendment: "
+            + ", ".join(unexpected)
+        )
+    jobs = root / FIT_GATE_SUCCESSOR_DIRECTORY
+    outer_manifest = root / "FIT_GATE_AMENDMENT_SHA256SUMS"
+    amendment_path = root / "fit_gate_amendment_checkpointed_v2.json"
+    if jobs.exists() or outer_manifest.exists() or amendment_path.exists():
+        raise ContractError("checkpointed fit-gate amendment already exists")
+    logs = jobs / "logs"
+    jobs.mkdir(parents=True)
+    logs.mkdir()
+    remaining = [obsnum for obsnum in obsnums if obsnum != PILOT_OBSNUM]
+    commands = [
+        fit_gate_command(root, repo, args.python, obsnum)
+        for obsnum in remaining
+    ]
+    command_name = "fit_gate_remaining.commands.txt"
+    script_name = "run_fit_gate_remaining_array.sbatch"
+    (jobs / command_name).write_text("\n".join(commands) + "\n")
+    (jobs / script_name).write_text(command_array_script(
+        name="sci-align-fit-gate-v2", command_table=jobs / command_name,
+        count=len(commands), concurrency=args.array_concurrency,
+        output=logs / "%x_%A_%a.out", error=logs / "%x_%A_%a.err",
+        runtime_cache=root / "_runtime_cache", time=FIT_GATE_SLURM_TIME,
+        memory="32G",
+    ))
+    write_checksums(jobs, [command_name, script_name], "SHA256SUMS")
+    numerical = (
+        repo / "tools/diagnostics/analyze_sci_align_001_lissajous_timestream.py"
+    )
+    orchestrator = (
+        repo / "tools/diagnostics/"
+        "run_sci_align_001_lissajous_fit_gate_checkpointed.py"
+    )
+    amendment = {
+        "schema": "sci-align-001-pointing-fit-gate-amendment-v2",
+        "source_campaign_preparation_sha256": sha256_file(
+            root / "campaign_preparation.json"
+        ),
+        "source_preparation_sha256s_sha256": sha256_file(
+            root / "PREPARATION_SHA256SUMS"
+        ),
+        "selection_sha256": sha256_file(selection_path),
+        "source_repository_commit": preparation["repository_commit"],
+        "amendment_repository_commit": git_commit(repo),
+        "pilot_obsnum": PILOT_OBSNUM,
+        "pilot_excluded_from_successor_array": True,
+        "remaining_observation_count": len(remaining),
+        "remaining_obsnums": remaining,
+        "numerical_implementation_path": str(numerical),
+        "numerical_implementation_sha256": sha256_file(numerical),
+        "checkpoint_orchestrator_path": str(orchestrator),
+        "checkpoint_orchestrator_sha256": sha256_file(orchestrator),
+        "numerical_arithmetic_changed": False,
+        "fit_gate_maximum_wall_seconds": FIT_GATE_MAXIMUM_WALL_SECONDS,
+        "slurm_time": FIT_GATE_SLURM_TIME,
+        "slurm_memory": "32G",
+        "array_concurrency": args.array_concurrency,
+        "triggering_evidence": {
+            "obsnum": PILOT_OBSNUM,
+            "failed_bound_seconds": 1800,
+            "failure_stage": "full.joint",
+            "completed_optimizer_attempt_count": 23,
+            "completed_joint_attempt_count": 14,
+            "completed_joint_attempt_seconds": 1500.50,
+            "peak_rss_kbytes": 401512,
+            "operational_change_decision_preceded_timing_result_inspection": True,
+        },
+        "lifecycle_stop": (
+            "remaining fit gates only; owner review remains mandatory before "
+            "any resume-observation work"
+        ),
+        "job_sha256s_sha256": sha256_file(jobs / "SHA256SUMS"),
+    }
+    write_json(amendment_path, amendment)
+    write_checksums(root, [
+        "PREPARATION_SHA256SUMS",
+        "fit_gate_amendment_checkpointed_v2.json",
+        f"{FIT_GATE_SUCCESSOR_DIRECTORY}/SHA256SUMS",
+    ], "FIT_GATE_AMENDMENT_SHA256SUMS")
+    verify_manifest(root, "FIT_GATE_AMENDMENT_SHA256SUMS")
+    verify_manifest(jobs)
+    print(
+        f"fit-gate amendment complete: remaining={len(remaining)} "
+        f"output={jobs}"
+    )
+
+
 def audit_gates(args: argparse.Namespace) -> None:
     selection = json.loads(args.selection.read_text())
     rows = []
@@ -504,6 +644,11 @@ def parser() -> argparse.ArgumentParser:
     freeze_parser.add_argument("--output-root", type=Path, required=True)
     freeze_parser.add_argument("--python", default="python")
     freeze_parser.add_argument("--array-concurrency", type=int, default=4)
+    amend = sub.add_parser("amend-fit-gates")
+    amend.add_argument("--campaign-root", type=Path, required=True)
+    amend.add_argument("--repo-root", type=Path, required=True)
+    amend.add_argument("--python", default="python")
+    amend.add_argument("--array-concurrency", type=int, default=4)
     audit = sub.add_parser("audit-gates")
     audit.add_argument("--selection", type=Path, required=True)
     audit.add_argument("--fit-root", type=Path, required=True)
@@ -518,6 +663,10 @@ def main() -> int:
             if args.array_concurrency < 1:
                 raise ContractError("array concurrency must be positive")
             freeze(args)
+        elif args.command == "amend-fit-gates":
+            if args.array_concurrency < 1:
+                raise ContractError("array concurrency must be positive")
+            amend_fit_gates(args)
         elif args.command == "audit-gates":
             audit_gates(args)
         else:  # pragma: no cover

@@ -18,6 +18,15 @@ and El direction-sign half-offsets), and `joint`. The map prerequisites use
 the same frozen PTC/PPT identity and retain `constant`, `time_lag`,
 `axis_sign`, and `joint` results for the eventual paired comparison.
 
+The first owner-run pilot established that this gate is CPU-bound rather than
+I/O- or memory-bound. It reached the original 1,800-second limit during the
+last joint-model multistart after completing 23 optimizer attempts (14 joint),
+with 401,512 kB peak RSS. No fit gate or scientific result was exposed. That
+runtime evidence, before inspection of any fitted timing value, authorized an
+orchestration-only successor: 2,700 seconds inside a 60-minute Slurm job and
+an atomic checksum-bound checkpoint after every completed full model. The
+numerical fitter, starts, objective, bounds, and result schema are unchanged.
+
 ## 1. Unity environment and freeze job
 
 After fetching the associated commit on Unity, start from a fresh shell:
@@ -108,9 +117,13 @@ pilot_job_id=${pilot_job_id%%;*}
 squeue -j "$pilot_job_id" -o "%.18i %.30j %.8T %.10M %.4C %R"
 ```
 
-Expected runtime is roughly seven minutes; the numerical runner has a
-1,800-second wall limit and Slurm has a 45-minute outer limit. Completion is
-`fit gate complete: obs=150818`. Then verify:
+The original generated pilot script used a 1,800-second inner limit. The owner
+preserved that bounded failure and started one clean retry with a 2,700-second
+limit before this successor was written. That retry remains valid because the
+numerical implementation was deliberately left byte-identical. Completion is
+`fit gate complete: obs=150818`. The measured failed attempt shows that a gate
+can require roughly 30--45 minutes, not the preliminary seven-minute estimate.
+Then verify:
 
 ```bash
 export SCI_PILOT="$SCI_CAMPAIGN_ROOT/fit_results/o150818"
@@ -138,11 +151,31 @@ structural gate. Stop here if the pilot is malformed or pathological.
 
 ## 4. Remaining 65 bounded fit gates
 
-Only after the pilot review:
+First add the checksum-bound operational amendment to the already frozen
+campaign. This writes a new directory and does not alter the original frozen
+selection, protocol, preparation, maps, jobs, pilot, or resume scripts:
+
+```bash
+cd "$SCI_REPO"
+python tools/diagnostics/prepare_sci_align_001_pointing_fit_campaign.py \
+  amend-fit-gates \
+  --campaign-root "$SCI_CAMPAIGN_ROOT" \
+  --repo-root "$SCI_REPO" \
+  --python python \
+  --array-concurrency 4
+
+(cd "$SCI_CAMPAIGN_ROOT" && \
+  shasum -a 256 -c FIT_GATE_AMENDMENT_SHA256SUMS)
+(cd "$SCI_CAMPAIGN_ROOT/jobs_checkpointed_v2" && \
+  shasum -a 256 -c SHA256SUMS)
+```
+
+The amendment refuses to run if a non-pilot fit output already exists. Only
+after the pilot review, submit the successor array (not the original script):
 
 ```bash
 fit_gate_array_job_id=$(sbatch --parsable \
-  "$SCI_CAMPAIGN_ROOT/jobs/run_fit_gate_remaining_array.sbatch")
+  "$SCI_CAMPAIGN_ROOT/jobs_checkpointed_v2/run_fit_gate_remaining_array.sbatch")
 fit_gate_array_job_id=${fit_gate_array_job_id%%;*}
 printf 'fit_gate_array_job_id=%s\n' "$fit_gate_array_job_id"
 
@@ -152,7 +185,11 @@ squeue -j "$fit_gate_array_job_id" \
 
 The `%4` array throttle permits four simultaneous observations. When it has
 left the queue, inspect task states with `sacct -X -j "$fit_gate_array_job_id"`
-and make the checksum-bound census:
+and make the checksum-bound census. A task interrupted after one or more
+models may be resubmitted with the identical command; it authenticates and
+reuses only the completed models whose full checkpoint identity still
+matches. A completed fit gate remains compatible with the unchanged
+`resume-observation` implementation.
 
 ```bash
 export SCI_GATE_AUDIT="$SCI_CAMPAIGN_ROOT/fit_gate_audit_v1"
