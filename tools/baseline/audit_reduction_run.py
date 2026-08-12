@@ -17,6 +17,7 @@ import math
 import os
 import re
 import stat
+import struct
 import sys
 from collections import Counter
 from dataclasses import dataclass
@@ -641,6 +642,468 @@ def recompute_calibration_package_identity(
     return hashlib.sha256(preimage.encode("utf-8")).hexdigest()
 
 
+def typed_calibration_identity_field(name: str, kind: str, value: str) -> str:
+    return (
+        f"|{len(name)}:{name}:{len(kind)}:{kind}:"
+        f"{len(value)}:{value}"
+    )
+
+
+def cxx_hexfloat(value: float) -> str:
+    """Return the finite binary64 spelling emitted by C++ std::hexfloat."""
+    bits = struct.unpack(">Q", struct.pack(">d", value))[0]
+    sign = "-" if bits >> 63 else ""
+    exponent_bits = (bits >> 52) & 0x7FF
+    fraction = bits & ((1 << 52) - 1)
+    if exponent_bits == 0x7FF:
+        raise ValueError("non-finite canonical calibration value")
+    if exponent_bits == 0 and fraction == 0:
+        return f"{sign}0x0p+0"
+    if exponent_bits:
+        exponent = exponent_bits - 1023
+        fraction_hex = f"{fraction:013x}".rstrip("0")
+        significand = "1" + (f".{fraction_hex}" if fraction_hex else "")
+    else:
+        leading_bit = fraction.bit_length() - 1
+        exponent = leading_bit - 1074
+        remainder = fraction - (1 << leading_bit)
+        shifted = remainder << (52 - leading_bit)
+        fraction_hex = f"{shifted:013x}".rstrip("0")
+        significand = "1" + (f".{fraction_hex}" if fraction_hex else "")
+    exponent_text = f"+{exponent}" if exponent >= 0 else str(exponent)
+    return f"{sign}0x{significand}p{exponent_text}"
+
+
+def calibration_vector_identity_from_basis(
+    basis: Any, label: str,
+) -> tuple[str, list[float]]:
+    if not isinstance(basis, dict):
+        raise ValueError(f"{label} identity basis is not a mapping")
+    if basis.get("schema_version") != "calibration-vector-hexfloat-v1":
+        raise ValueError(f"{label} vector schema is invalid")
+    count = basis.get("count")
+    values = basis.get("values")
+    if isinstance(count, bool) or not isinstance(count, int) or count < 0:
+        raise ValueError(f"{label} vector count is invalid")
+    if not isinstance(values, list) or len(values) != count:
+        raise ValueError(f"{label} vector cardinality is inconsistent")
+    parsed: list[float] = []
+    preimage = f"calibration-vector-hexfloat-v1|count={count}"
+    for index, encoded in enumerate(values):
+        if not isinstance(encoded, str):
+            raise ValueError(f"{label} vector value {index} is not text")
+        try:
+            value = float.fromhex(encoded)
+        except ValueError as error:
+            raise ValueError(
+                f"{label} vector value {index} is not canonical hexfloat"
+            ) from error
+        if not math.isfinite(value) or cxx_hexfloat(value) != encoded:
+            raise ValueError(
+                f"{label} vector value {index} is not canonical hexfloat"
+            )
+        parsed.append(value)
+        preimage += f"|{index}={encoded}"
+    digest = hashlib.sha256(preimage.encode("utf-8")).hexdigest()
+    if basis.get("sha256") != digest:
+        raise ValueError(f"{label} vector digest does not recompute")
+    return digest, parsed
+
+
+def recompute_applied_extinction_state(
+    state: Any,
+) -> tuple[str, bool]:
+    if not isinstance(state, dict):
+        raise ValueError("applied extinction identity basis is not a mapping")
+    if state.get("schema_version") != \
+            "sci-cal-001-applied-extinction-state-basis-v1":
+        raise ValueError("applied extinction identity basis schema is invalid")
+    if state.get("available") is not True or type(state.get("active")) is not bool:
+        raise ValueError("applied extinction identity basis is unavailable")
+    active = state["active"]
+    if not active:
+        if set(state) != {
+            "schema_version", "available", "active", "sha256",
+        }:
+            raise ValueError("inactive extinction identity basis is not empty")
+        digest = hashlib.sha256(
+            b"sci-cal-001-applied-extinction-state-v1|active=false"
+        ).hexdigest()
+    else:
+        sample_digest, samples = calibration_vector_identity_from_basis(
+            state.get("sample_elevation_rad"), "sample elevation"
+        )
+        arrays = state.get("los_tau_by_array")
+        if not isinstance(arrays, list) or not arrays:
+            raise ValueError("active extinction LOS-tau basis is incomplete")
+        preimage = "sci-cal-001-applied-extinction-state-v1|active=true"
+        preimage += calibration_identity_field(
+            "sample_elevation_sha256", sample_digest
+        )
+        observed_indices: list[int] = []
+        for item in arrays:
+            if not isinstance(item, dict) or set(item) != {"array_index", "los_tau"}:
+                raise ValueError("active extinction LOS-tau entry is invalid")
+            array_index = item["array_index"]
+            if isinstance(array_index, bool) or not isinstance(array_index, int):
+                raise ValueError("active extinction array identity is invalid")
+            los_digest, los_values = calibration_vector_identity_from_basis(
+                item["los_tau"], f"array {array_index} LOS tau"
+            )
+            if len(los_values) != len(samples):
+                raise ValueError("active extinction vector cardinalities differ")
+            observed_indices.append(array_index)
+            preimage += calibration_identity_field(
+                f"array_{array_index}_los_tau_sha256", los_digest
+            )
+        if observed_indices != [0, 1, 2]:
+            raise ValueError("active extinction arrays are not exactly ordered 0,1,2")
+        digest = hashlib.sha256(preimage.encode("utf-8")).hexdigest()
+    if state.get("sha256") != digest:
+        raise ValueError("applied extinction state digest does not recompute")
+    return digest, active
+
+
+def recompute_admitted_factor_state(factors: Any) -> str:
+    if not isinstance(factors, dict):
+        raise ValueError("v4 factor-operator lineage is not a mapping")
+    basis = factors.get("identity_basis")
+    if not isinstance(basis, dict) or basis.get("schema_version") != \
+            "sci-cal-001-admitted-factor-identity-basis-v1":
+        raise ValueError("admitted-factor identity basis schema is invalid")
+    target_digest, target = calibration_vector_identity_from_basis(
+        basis.get("target_unit_factor"), "target-unit factor"
+    )
+    flxscale_digest, flxscale = calibration_vector_identity_from_basis(
+        basis.get("detector_flxscale"), "detector flxscale"
+    )
+    minimum_digest, minimum = calibration_vector_identity_from_basis(
+        basis.get("minimum_extinction_correction"),
+        "minimum extinction correction",
+    )
+    maximum_digest, maximum = calibration_vector_identity_from_basis(
+        basis.get("maximum_extinction_correction"),
+        "maximum extinction correction",
+    )
+    cardinalities = {len(target), len(flxscale), len(minimum), len(maximum)}
+    if cardinalities == {0} or len(cardinalities) != 1:
+        raise ValueError("admitted-factor vector cardinalities differ")
+    if any(
+        not math.isfinite(value) or value <= 0.0
+        for vector in (target, flxscale, minimum, maximum)
+        for value in vector
+    ):
+        raise ValueError("admitted-factor identity basis is non-finite or non-positive")
+    extinction_digest, extinction_active = recompute_applied_extinction_state(
+        basis.get("applied_sample_extinction_state")
+    )
+    applied = factors.get("observation_flxscale_correction_applied")
+    correction = factors.get("applied_observation_flxscale_correction")
+    if type(applied) is not bool or isinstance(correction, bool) or \
+            not isinstance(correction, (int, float)) or \
+            not math.isfinite(float(correction)) or float(correction) <= 0.0:
+        raise ValueError("observation correction factor state is invalid")
+    if not extinction_active and any(value != 1.0 for value in minimum + maximum):
+        raise ValueError("inactive extinction and factor vectors conflict")
+    preimage = "sci-cal-001-admitted-factor-state-v1"
+    for name, value in (
+        ("target_unit_factor_sha256", target_digest),
+        ("observation_flxscale_correction_applied", "true" if applied else "false"),
+        ("applied_observation_flxscale_correction", cxx_hexfloat(float(correction))),
+        ("observation_flxscale_correction_state", factors.get(
+            "observation_flxscale_correction_state"
+        )),
+        ("observation_flxscale_correction_source_identity", factors.get(
+            "observation_flxscale_correction_source_identity"
+        )),
+        ("observation_flxscale_correction_recipient_identity", factors.get(
+            "observation_flxscale_correction_recipient_identity"
+        )),
+        ("detector_flxscale_sha256", flxscale_digest),
+        ("minimum_extinction_correction_sha256", minimum_digest),
+        ("maximum_extinction_correction_sha256", maximum_digest),
+        ("applied_sample_extinction_state_sha256", extinction_digest),
+    ):
+        if not isinstance(value, str):
+            raise ValueError(f"admitted-factor field {name} is invalid")
+        preimage += calibration_identity_field(name, value)
+    digest = hashlib.sha256(preimage.encode("utf-8")).hexdigest()
+    if factors.get("factor_state_sha256") != digest:
+        raise ValueError("v4 admitted-factor state identity does not recompute")
+    return digest
+
+
+def recompute_ordered_row_association(
+    stable_joins: Any, selected_apt_sha256: str,
+) -> str:
+    if not isinstance(stable_joins, dict):
+        raise ValueError("v4 stable-join lineage is not a mapping")
+    if stable_joins.get("apt_row_order_authoritative") is not False:
+        raise ValueError("v4 selected APT row order is incorrectly authoritative")
+    rows = stable_joins.get("ordered_detector_apt_rows")
+    if not isinstance(rows, list) or not rows:
+        raise ValueError("v4 ordered detector/APT rows are incomplete")
+    preimage = "selected-apt-row-association-v2"
+    preimage += typed_calibration_identity_field(
+        "apt_sha256", "sha256", selected_apt_sha256
+    )
+    for expected_index, row in enumerate(rows):
+        if not isinstance(row, dict):
+            raise ValueError("v4 ordered detector/APT row is not a mapping")
+        ordered_index = row.get("ordered_detector_index")
+        source_index = row.get("selected_apt_source_row_index")
+        if ordered_index != expected_index or isinstance(source_index, bool) or \
+                not isinstance(source_index, int) or source_index < 0:
+            raise ValueError("v4 ordered detector/APT row indices are invalid")
+        retained = row.get("retained_fields")
+        if not isinstance(retained, list) or not retained:
+            raise ValueError("v4 ordered detector/APT retained fields are incomplete")
+        stable = "selected-apt-ordered-row-v2"
+        stable += typed_calibration_identity_field(
+            "ordered_detector_index", "index", str(ordered_index)
+        )
+        stable += typed_calibration_identity_field(
+            "selected_source_row_index", "index", str(source_index)
+        )
+        retained_names: list[str] = []
+        for field in retained:
+            if not isinstance(field, dict) or set(field) != {
+                "name", "ecsv_datatype", "value",
+            }:
+                raise ValueError("v4 retained APT row field is invalid")
+            name = field["name"]
+            datatype = field["ecsv_datatype"]
+            value = field["value"]
+            if not all(isinstance(item, str) and item for item in (
+                name, datatype, value,
+            )):
+                raise ValueError("v4 retained APT row field is incomplete")
+            retained_names.append(name)
+            stable += typed_calibration_identity_field(name, datatype, value)
+        if len(retained_names) != len(set(retained_names)) or \
+                "uid" not in retained_names or "flag" not in retained_names:
+            raise ValueError("v4 retained APT row fields are conflicting")
+        eligible = row.get("eligible")
+        validity_basis = row.get("validity_basis")
+        if type(eligible) is not bool or not isinstance(validity_basis, str) or \
+                not validity_basis:
+            raise ValueError("v4 ordered detector/APT row validity is invalid")
+        stable += typed_calibration_identity_field(
+            "eligible", "bool", "true" if eligible else "false"
+        )
+        stable += typed_calibration_identity_field(
+            "validity_basis", "string", validity_basis
+        )
+        if row.get("stable_association") != stable:
+            raise ValueError("v4 ordered-row stable association does not recompute")
+        preimage += typed_calibration_identity_field(
+            "ordered_row", "typed_row_association", stable
+        )
+    digest = hashlib.sha256(preimage.encode("utf-8")).hexdigest()
+    if stable_joins.get("ordered_row_association_sha256") != digest:
+        raise ValueError("v4 ordered-row association identity does not recompute")
+    return digest
+
+
+def recompute_raw_acquisition_binding(
+    raw_acquisition: Any, stable_joins: dict[str, Any],
+    selected_apt_sha256: str, row_digest: str,
+) -> tuple[str, str]:
+    if not isinstance(raw_acquisition, dict):
+        raise ValueError("v4 raw-acquisition lineage is not a mapping")
+    artifacts = raw_acquisition.get("artifacts")
+    rows = stable_joins.get("ordered_detector_apt_rows")
+    if not isinstance(artifacts, list) or not artifacts or not isinstance(rows, list):
+        raise ValueError("v4 raw-acquisition payload is incomplete")
+    raw_identity = "raw-observation-acquisition-identity-v2"
+    tone_count = 0
+    networks: list[int] = []
+    for artifact in artifacts:
+        if not isinstance(artifact, dict):
+            raise ValueError("v4 raw acquisition artifact is invalid")
+        path = artifact.get("path")
+        digest = artifact.get("sha256")
+        interface = artifact.get("interface")
+        network = artifact.get("roach_index")
+        tones = artifact.get("absolute_tone_frequency_hz")
+        if not isinstance(path, str) or not path or not canonical_sha256(digest) or \
+                not isinstance(interface, str) or not interface or \
+                isinstance(network, bool) or not isinstance(network, int) or \
+                network < 0 or not isinstance(tones, list) or not tones:
+            raise ValueError("v4 raw acquisition artifact is incomplete")
+        if interface != f"toltec{network}":
+            raise ValueError("v4 raw acquisition interface/network identity conflicts")
+        artifact_identity = "raw-artifact-v1"
+        for name, kind, value in (
+            ("path", "string", path),
+            ("sha256", "sha256", digest),
+            ("interface", "string", interface),
+            ("network", "int", str(network)),
+        ):
+            artifact_identity += typed_calibration_identity_field(name, kind, value)
+        for tone in tones:
+            if isinstance(tone, bool) or not isinstance(tone, (int, float)) or \
+                    not math.isfinite(float(tone)):
+                raise ValueError("v4 raw acquisition tone frequency is invalid")
+            artifact_identity += typed_calibration_identity_field(
+                "absolute_tone_frequency_hz", "float64", format(float(tone), ".17g")
+            )
+            tone_count += 1
+        raw_identity += typed_calibration_identity_field(
+            "artifact", "typed_raw_artifact", artifact_identity
+        )
+        networks.append(network)
+    if networks != sorted(set(networks)) or tone_count != len(rows):
+        raise ValueError("v4 raw acquisition artifact cardinality/order is invalid")
+    if raw_acquisition.get("raw_observation_identity") != raw_identity:
+        raise ValueError("v4 raw observation identity does not recompute")
+    binding = "apt-acquisition-binding-v2"
+    binding += typed_calibration_identity_field(
+        "apt_sha256", "sha256", selected_apt_sha256
+    )
+    binding += typed_calibration_identity_field(
+        "raw_identity", "typed_raw_identity", raw_identity
+    )
+    binding += typed_calibration_identity_field(
+        "selected_row_association_sha256", "sha256", row_digest
+    )
+    for row in rows:
+        join = "apt-raw-ordered-join-v1"
+        for name, kind, value in (
+            ("network", "int", str(row.get("raw_network"))),
+            ("network_local_tone", "index", str(row.get("raw_network_local_tone"))),
+            ("absolute_tone_frequency_hz", "float64", format(
+                float(row.get("absolute_tone_frequency_hz")), ".17g"
+            )),
+            ("uid", "int64", str(row.get("uid"))),
+        ):
+            join += typed_calibration_identity_field(name, kind, value)
+        binding += typed_calibration_identity_field(
+            "ordered_join", "typed_join", join
+        )
+    digest = hashlib.sha256(binding.encode("utf-8")).hexdigest()
+    if raw_acquisition.get("binding_sha256") != digest:
+        raise ValueError("v4 raw-acquisition binding identity does not recompute")
+    return digest, raw_identity
+
+
+def recompute_tolapt_manifest_association(
+    selected: dict[str, Any], selected_apt_sha256: str,
+) -> str:
+    manifest = selected.get("tolapt_manifest")
+    if not isinstance(manifest, dict) or type(manifest.get("available")) is not bool:
+        raise ValueError("v4 TolAPT-manifest lineage is invalid")
+    if not manifest["available"]:
+        if set(manifest) != {"available"}:
+            raise ValueError("unavailable TolAPT-manifest lineage is not empty")
+        return ""
+    value = manifest.get("value")
+    if not isinstance(value, dict):
+        raise ValueError("available TolAPT-manifest lineage is incomplete")
+    association = "tolapt-selected-output-association-v2"
+    for name, kind, item in (
+        ("manifest_sha256", "sha256", value.get("sha256")),
+        ("contract_version", "string", value.get("contract_version")),
+        ("run_id", "string", value.get("run_id")),
+    ):
+        if not isinstance(item, str) or not item:
+            raise ValueError("available TolAPT-manifest lineage is incomplete")
+        association += typed_calibration_identity_field(name, kind, item)
+    inputs = value.get("inputs")
+    if not isinstance(inputs, dict):
+        raise ValueError("available TolAPT-manifest input lineage is incomplete")
+    for key in ("design_apt", "measured_apt"):
+        record = inputs.get(key)
+        if not isinstance(record, dict):
+            raise ValueError("available TolAPT-manifest input lineage is incomplete")
+        prefix = f"inputs.{key}"
+        for suffix, kind in (
+            ("path", "string"), ("sha256", "sha256"),
+            ("bytes", "uint64"), ("mtime_utc", "utc_timestamp"),
+        ):
+            item = record.get(suffix)
+            if suffix == "bytes":
+                if isinstance(item, bool) or not isinstance(item, int) or item < 0:
+                    raise ValueError("available TolAPT-manifest input lineage is invalid")
+                item = str(item)
+            if not isinstance(item, str) or not item:
+                raise ValueError("available TolAPT-manifest input lineage is incomplete")
+            association += typed_calibration_identity_field(
+                f"{prefix}.{suffix}", kind, item
+            )
+    for name, kind, item in (
+        ("output_key", "string", value.get("selected_output_key")),
+        ("output_path", "run_relative_path", value.get("selected_output_path")),
+        ("selected_output_sha256", "sha256", selected_apt_sha256),
+    ):
+        if not isinstance(item, str) or not item:
+            raise ValueError("available TolAPT-manifest output lineage is incomplete")
+        association += typed_calibration_identity_field(name, kind, item)
+    digest = hashlib.sha256(association.encode("utf-8")).hexdigest()
+    if value.get("association_sha256") != digest:
+        raise ValueError("v4 TolAPT-manifest association identity does not recompute")
+    return digest
+
+
+def recompute_admitted_calibration_identity(
+    value: dict[str, Any], selected_digest: str, row_digest: str,
+    acquisition_digest: str, factor_digest: str, manifest_digest: str,
+) -> str:
+    selected = value["selected_apt"]
+    acquisition = value["raw_acquisition"]
+    factors = value["factor_operator_state"]
+    response = value.get("response_basis")
+    if not isinstance(response, dict) or not isinstance(response.get("provenance"), str) or \
+            not response["provenance"]:
+        raise ValueError("v4 response-basis provenance is unavailable")
+    alpha = factors.get("reference_spectral_index_alpha")
+    default_applied = factors.get("reference_spectral_index_default_applied")
+    tau225 = factors.get("tau225")
+    if any(
+        isinstance(item, bool) or not isinstance(item, (int, float))
+        or not math.isfinite(float(item))
+        for item in (alpha, tau225)
+    ) or type(default_applied) is not bool:
+        raise ValueError("v4 reference spectral-index/tau state is invalid")
+    reference_state = (
+        f"{cxx_hexfloat(float(alpha))}"
+        f";default={'true' if default_applied else 'false'}"
+        f";tau225={cxx_hexfloat(float(tau225))}"
+    )
+    preimage = "sci-cal-001-canonical-calibration-identity-v1"
+    fields = (
+        ("selected_apt_source_path", selected.get("source_path")),
+        ("selected_apt_sha256", selected_digest),
+        ("apt_row_association_sha256", row_digest),
+        ("apt_observation_identity", selected.get("observation_identity")),
+        ("apt_matched_observation_identity", selected.get("matched_observation_identity")),
+        ("apt_selected_source", selected.get("selected_source")),
+        ("tolapt_manifest_association_sha256", manifest_digest),
+        ("acquisition_binding_sha256", acquisition_digest),
+        ("raw_observation_identity", acquisition.get("raw_observation_identity")),
+        ("target_unit", factors.get("target_unit")),
+        ("factor_composition", factors.get("factor_composition")),
+        ("factor_provenance", factors.get("factor_provenance")),
+        ("factor_state_sha256", factor_digest),
+        ("atmosphere_operator_id", factors.get("atmosphere_operator_id")),
+        ("atmosphere_operator_contract_sha256", factors.get("atmosphere_operator_contract_sha256")),
+        ("atmosphere_node_table_sha256", factors.get("atmosphere_node_table_sha256")),
+        ("passband_set_id", factors.get("passband_set_id")),
+        ("reference_profile_id", factors.get("reference_profile_id")),
+        ("reference_and_tau_state", reference_state),
+        ("response_basis_provenance", response["provenance"]),
+        ("validity", "valid_complete_product"),
+    )
+    for name, item in fields:
+        if not isinstance(item, str):
+            raise ValueError(f"v4 calibration identity field {name} is invalid")
+        preimage += calibration_identity_field(name, item)
+    digest = hashlib.sha256(preimage.encode("utf-8")).hexdigest()
+    if value.get("calibration_identity") != digest:
+        raise ValueError("v4 calibration identity does not recompute")
+    return digest
+
+
 def raw_provenance_semantic_errors(
     data: dict[str, Any], provenance_path: Path | None = None,
 ) -> list[str]:
@@ -821,6 +1284,12 @@ def raw_provenance_semantic_errors(
                     errors.append(
                         "uncalibrated v4 unexpectedly publishes calibration lineage"
                     )
+                elif not isinstance(lineage, dict) or lineage != {
+                    "available": False
+                }:
+                    errors.append(
+                        "uncalibrated v4 unavailable calibration lineage is partial"
+                    )
                 if sibling_path is not None and sibling_path.exists():
                     errors.append(
                         "uncalibrated v4 unexpectedly publishes a selected APT member"
@@ -853,7 +1322,9 @@ def raw_provenance_semantic_errors(
                             "v4 canonical calibration components are incomplete"
                         )
                         components = components if isinstance(components, dict) else {}
-                    for name in CANONICAL_CALIBRATION_COMPONENTS:
+                    for name in CANONICAL_CALIBRATION_COMPONENTS - {
+                        "tolapt_manifest_association_sha256"
+                    }:
                         if not canonical_sha256(components.get(name)):
                             errors.append(
                                 f"v4 calibration component {name} is not canonical sha256"
@@ -895,60 +1366,67 @@ def raw_provenance_semantic_errors(
                     elif selected_package_digest != sha256_file(sibling_path):
                         errors.append("v4 selected APT sibling digest differs")
 
-                    raw_acquisition = value.get("raw_acquisition")
-                    if not isinstance(raw_acquisition, dict):
-                        errors.append("v4 raw-acquisition lineage is not a mapping")
-                        raw_acquisition = {}
-                    acquisition_digest = raw_acquisition.get("binding_sha256")
-                    if acquisition_digest != components.get(
-                        "raw_acquisition_binding_sha256"
-                    ):
-                        errors.append(
-                            "v4 raw-acquisition component digest differs"
-                        )
-
                     stable_joins = value.get("stable_joins")
-                    if not isinstance(stable_joins, dict):
-                        errors.append("v4 stable-join lineage is not a mapping")
-                        stable_joins = {}
-                    if stable_joins.get("ordered_row_association_sha256") != \
-                            components.get("selected_apt_row_association_sha256"):
-                        errors.append("v4 selected-row component digest differs")
-
                     factor_state = value.get("factor_operator_state")
-                    if not isinstance(factor_state, dict):
-                        errors.append("v4 factor-operator lineage is not a mapping")
-                        factor_state = {}
-                    if factor_state.get("factor_state_sha256") != \
-                            components.get("admitted_factor_state_sha256"):
-                        errors.append("v4 factor-state component digest differs")
-
-                    tolapt = selected.get("tolapt_manifest")
-                    if not isinstance(tolapt, dict) or \
-                            type(tolapt.get("available")) is not bool:
-                        errors.append("v4 TolAPT-manifest lineage is invalid")
-                    elif tolapt["available"]:
-                        tolapt_value = tolapt.get("value")
-                        if not isinstance(tolapt_value, dict) or \
-                                tolapt_value.get("association_sha256") != \
-                                components.get(
-                                    "tolapt_manifest_association_sha256"
-                                ):
-                            errors.append(
+                    raw_acquisition = value.get("raw_acquisition")
+                    try:
+                        row_digest = recompute_ordered_row_association(
+                            stable_joins, selected_package_digest
+                        )
+                        if row_digest != components.get(
+                            "selected_apt_row_association_sha256"
+                        ):
+                            raise ValueError(
+                                "v4 selected-row component digest differs"
+                            )
+                        acquisition_digest, _ = \
+                            recompute_raw_acquisition_binding(
+                                raw_acquisition, stable_joins,
+                                selected_package_digest, row_digest,
+                            )
+                        if acquisition_digest != components.get(
+                            "raw_acquisition_binding_sha256"
+                        ):
+                            raise ValueError(
+                                "v4 raw-acquisition component digest differs"
+                            )
+                        factor_digest = recompute_admitted_factor_state(
+                            factor_state
+                        )
+                        if factor_digest != components.get(
+                            "admitted_factor_state_sha256"
+                        ):
+                            raise ValueError(
+                                "v4 factor-state component digest differs"
+                            )
+                        manifest_digest = \
+                            recompute_tolapt_manifest_association(
+                                selected, selected_package_digest
+                            )
+                        if manifest_digest != components.get(
+                            "tolapt_manifest_association_sha256"
+                        ):
+                            raise ValueError(
                                 "v4 TolAPT-manifest component digest differs"
                             )
-
-                    if (
-                        canonical_sha256(calibration_identity)
-                        and canonical_sha256(selected_package_digest)
-                        and canonical_sha256(acquisition_digest)
-                        and package_identity != recompute_calibration_package_identity(
-                            calibration_identity,
-                            selected_package_digest,
-                            acquisition_digest,
-                        )
-                    ):
-                        errors.append("v4 package identity does not recompute")
+                        calibration_identity = \
+                            recompute_admitted_calibration_identity(
+                                value, selected_package_digest, row_digest,
+                                acquisition_digest, factor_digest,
+                                manifest_digest,
+                            )
+                        expected_package = \
+                            recompute_calibration_package_identity(
+                                calibration_identity,
+                                selected_package_digest,
+                                acquisition_digest,
+                            )
+                        if package_identity != expected_package:
+                            raise ValueError(
+                                "v4 package identity does not recompute"
+                            )
+                    except (KeyError, TypeError, ValueError) as error:
+                        errors.append(str(error))
                     for section_name in ("observation", "realized"):
                         section = data[section_name]
                         if section_name == "observation":

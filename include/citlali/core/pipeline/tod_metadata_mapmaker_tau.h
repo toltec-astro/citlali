@@ -124,6 +124,21 @@ void add_tod_mean_tau_vars(netCDF::NcFile &fo, bool extinction_enabled,
     add_netcdf_var<std::string>(
         fo, "CAL.COMPACT_COVARIANCE_STATE",
         std::string{product.compact_covariance_state});
+    add_netcdf_var(
+        fo, "CAL.OBSERVATION_FLXSCALE_CORRECTION_APPLIED",
+        product.observation_flxscale_correction_applied);
+    add_netcdf_var(
+        fo, "CAL.APPLIED_OBSERVATION_FLXSCALE_CORRECTION",
+        product.applied_observation_flxscale_correction);
+    add_netcdf_var<std::string>(
+        fo, "CAL.OBSERVATION_FLXSCALE_CORRECTION_STATE",
+        product.observation_flxscale_correction_state);
+    add_netcdf_var<std::string>(
+        fo, "CAL.OBSERVATION_FLXSCALE_CORRECTION_SOURCE_IDENTITY",
+        product.observation_flxscale_correction_source_identity);
+    add_netcdf_var<std::string>(
+        fo, "CAL.OBSERVATION_FLXSCALE_CORRECTION_RECIPIENT_IDENTITY",
+        product.observation_flxscale_correction_recipient_identity);
     add_netcdf_var<std::string>(
         fo, "CAL.APT_ARTIFACT_SHA256", product.apt_artifact_sha256);
     add_netcdf_var<std::string>(
@@ -137,12 +152,15 @@ void add_tod_mean_tau_vars(netCDF::NcFile &fo, bool extinction_enabled,
         fo, "CAL.ACQUISITION_KEY_SCHEMA", product.acquisition_key_schema);
     add_netcdf_var<std::string>(
         fo, "CAL.RESPONSE_IDENTITY", product.response_identity);
-    add_netcdf_var<std::string>(
-        fo, "CAL.CALIBRATION_IDENTITY", product.calibration_identity);
-    add_netcdf_var<std::string>(
-        fo, "CAL.PACKAGE_IDENTITY", product.package_identity);
-    add_netcdf_var<std::string>(fo, "CALID", product.calibration_identity);
-    add_netcdf_var<std::string>(fo, "CALPKGID", product.package_identity);
+    add_netcdf_var(fo, "CAL.JOIN_AVAILABLE", product.valid());
+    if (product.valid()) {
+        add_netcdf_var<std::string>(
+            fo, "CAL.CALIBRATION_IDENTITY", product.calibration_identity);
+        add_netcdf_var<std::string>(
+            fo, "CAL.PACKAGE_IDENTITY", product.package_identity);
+        add_netcdf_var<std::string>(fo, "CALID", product.calibration_identity);
+        add_netcdf_var<std::string>(fo, "CALPKGID", product.package_identity);
+    }
     add_netcdf_var<std::string>(
         fo, "CAL.CONDITIONAL_VARIANCE_TRANSFER",
         std::string{product.conditional_variance_transfer});

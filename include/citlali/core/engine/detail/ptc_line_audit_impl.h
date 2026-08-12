@@ -69,6 +69,9 @@ Eigen::Index Engine::apply_model_protected_ptc_line_audit(
     timestream::RTCProc::RTCResponseApplicationContext application_context;
     application_context.phase = "ptc";
     application_context.stage = "model_protected";
+    application_context.reduced_observation_identity =
+        observation_identity.obsnum;
+    application_context.fruit_iteration = iteration.fruit_iter;
     application_context.scan = ptcdata.index.data;
     application_context.ptc_iteration = ptc_iteration;
     application_context.model_subtracted = model_subtracted;

@@ -176,6 +176,21 @@ inline YAML::Node raw_timestream_observation_state_node(
         raw_optional_scalar_node(observation->calibration_weight_recipient_semantics);
     value["calibration_compact_covariance_state"] =
         raw_optional_scalar_node(observation->calibration_compact_covariance_state);
+    value["observation_flxscale_correction_applied"] =
+        raw_optional_scalar_node(
+            observation->observation_flxscale_correction_applied);
+    value["applied_observation_flxscale_correction"] =
+        raw_optional_scalar_node(
+            observation->applied_observation_flxscale_correction);
+    value["observation_flxscale_correction_state"] =
+        raw_optional_scalar_node(
+            observation->observation_flxscale_correction_state);
+    value["observation_flxscale_correction_source_identity"] =
+        raw_optional_scalar_node(
+            observation->observation_flxscale_correction_source_identity);
+    value["observation_flxscale_correction_recipient_identity"] =
+        raw_optional_scalar_node(
+            observation->observation_flxscale_correction_recipient_identity);
     value["calibration_apt_artifact_sha256"] =
         raw_optional_scalar_node(observation->calibration_apt_artifact_sha256);
     value["calibration_acquisition_binding_sha256"] =
@@ -264,6 +279,21 @@ inline YAML::Node raw_timestream_realized_state_node(
         raw_optional_scalar_node(realized.calibration_weight_recipient_semantics);
     node["calibration_compact_covariance_state"] =
         raw_optional_scalar_node(realized.calibration_compact_covariance_state);
+    node["observation_flxscale_correction_applied"] =
+        raw_optional_scalar_node(
+            realized.observation_flxscale_correction_applied);
+    node["applied_observation_flxscale_correction"] =
+        raw_optional_scalar_node(
+            realized.applied_observation_flxscale_correction);
+    node["observation_flxscale_correction_state"] =
+        raw_optional_scalar_node(
+            realized.observation_flxscale_correction_state);
+    node["observation_flxscale_correction_source_identity"] =
+        raw_optional_scalar_node(
+            realized.observation_flxscale_correction_source_identity);
+    node["observation_flxscale_correction_recipient_identity"] =
+        raw_optional_scalar_node(
+            realized.observation_flxscale_correction_recipient_identity);
     node["calibration_apt_artifact_sha256"] =
         raw_optional_scalar_node(realized.calibration_apt_artifact_sha256);
     node["calibration_acquisition_binding_sha256"] =
@@ -328,6 +358,19 @@ inline YAML::Node calibration_input_record_node(
     node["sha256"] = record.sha256;
     node["bytes"] = record.bytes;
     node["mtime_utc"] = record.mtime_utc;
+    return node;
+}
+
+inline YAML::Node calibration_vector_identity_basis_node(
+    const Eigen::VectorXd &values) {
+    YAML::Node node;
+    node["schema_version"] = "calibration-vector-hexfloat-v1";
+    node["count"] = values.size();
+    node["sha256"] = timestream::calibration_vector_identity(values);
+    for (Eigen::Index index = 0; index < values.size(); ++index) {
+        node["values"].push_back(
+            timestream::calibration_hexfloat(values(index)));
+    }
     return node;
 }
 
@@ -445,6 +488,51 @@ inline YAML::Node canonical_calibration_lineage_node(
     factors["factor_composition"] = std::string{product.factor_composition};
     factors["factor_provenance"] = std::string{product.factor_provenance};
     factors["factor_state_sha256"] = product.factor_state_sha256;
+    auto factor_basis = factors["identity_basis"];
+    factor_basis["schema_version"] =
+        "sci-cal-001-admitted-factor-identity-basis-v1";
+    factor_basis["target_unit_factor"] =
+        calibration_vector_identity_basis_node(
+            product.identity_target_unit_factor);
+    factor_basis["detector_flxscale"] =
+        calibration_vector_identity_basis_node(product.detector_flxscale);
+    factor_basis["minimum_extinction_correction"] =
+        calibration_vector_identity_basis_node(
+            product.minimum_extinction_correction);
+    factor_basis["maximum_extinction_correction"] =
+        calibration_vector_identity_basis_node(
+            product.maximum_extinction_correction);
+    auto extinction = factor_basis["applied_sample_extinction_state"];
+    extinction["schema_version"] =
+        "sci-cal-001-applied-extinction-state-basis-v1";
+    extinction["available"] =
+        product.applied_sample_extinction_state.available;
+    extinction["active"] = product.applied_sample_extinction_state.active;
+    extinction["sha256"] =
+        product.applied_sample_extinction_state_sha256;
+    if (product.applied_sample_extinction_state.active) {
+        extinction["sample_elevation_rad"] =
+            calibration_vector_identity_basis_node(
+                product.applied_sample_extinction_state.sample_elevation_rad);
+        for (const auto &[array_id, values] :
+             product.applied_sample_extinction_state.los_tau_by_array) {
+            YAML::Node item;
+            item["array_index"] = array_id;
+            item["los_tau"] =
+                calibration_vector_identity_basis_node(values);
+            extinction["los_tau_by_array"].push_back(item);
+        }
+    }
+    factors["observation_flxscale_correction_applied"] =
+        product.observation_flxscale_correction_applied;
+    factors["applied_observation_flxscale_correction"] =
+        product.applied_observation_flxscale_correction;
+    factors["observation_flxscale_correction_state"] =
+        product.observation_flxscale_correction_state;
+    factors["observation_flxscale_correction_source_identity"] =
+        product.observation_flxscale_correction_source_identity;
+    factors["observation_flxscale_correction_recipient_identity"] =
+        product.observation_flxscale_correction_recipient_identity;
     factors["atmosphere_operator_id"] = product.atmosphere_operator_id;
     factors["atmosphere_operator_contract_sha256"] =
         product.atmosphere_operator_contract_sha256;

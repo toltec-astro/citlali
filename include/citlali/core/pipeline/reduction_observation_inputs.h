@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/pipeline/flux_calibration.h>
+#include <citlali/core/pipeline/flxscale_correction.h>
 #include <citlali/core/pipeline/hwpr_loading.h>
 #include <citlali/core/pipeline/observation_buffers.h>
 #include <citlali/core/pipeline/observation_detector_diagnostics.h>
@@ -20,6 +21,13 @@
 #include <utility>
 
 namespace citlali::pipeline {
+
+template <class Engine, class RawObs, class Logger>
+bool prepare_reduction_observation_flux_calibration_state(
+    Engine &engine, const RawObs &rawobs, const Logger &logger) {
+    calculate_reduction_observation_flux_calibration(engine, logger);
+    return apply_flxscale_correction(engine, rawobs, logger);
+}
 
 template <bool IsBeammap, class TodProc, class RawObs, class RawObsKidsMeta,
           class Logger>
@@ -43,7 +51,9 @@ bool prepare_reduction_observation_sample_rate(Engine &engine,
         if (plan.initialized) {
             const auto shadow = begin_raw_timestream_observation_shadow(
                 plan, runtime_reduction_type(engine), engine.telescope.fsmp,
-                engine.telescope.d_fsmp, engine.rtcproc);
+                engine.telescope.d_fsmp, engine.rtcproc,
+                engine.observation_identity.obsnum,
+                engine.iteration.fruit_iter);
             if (!shadow.exact) {
                 logger->error(
                     "typed raw observation shadow differs from legacy state: {}",
@@ -83,7 +93,10 @@ bool prepare_reduction_observation_inputs(
     prepare_reduction_observation_output_layout(
         engine, rawobs_kids_meta, logger);
     load_reduction_observation_hwpr_data_if_requested(engine, rawobs, logger);
-    calculate_reduction_observation_flux_calibration(engine, logger);
+    if (!prepare_reduction_observation_flux_calibration_state(
+            engine, rawobs, logger)) {
+        return false;
+    }
     load_and_point_reduction_observation_telescope_data_if_needed(
         todproc, rawobs, has_multiple_inputs, logger);
     append_reduction_observation_date(

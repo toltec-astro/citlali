@@ -203,6 +203,15 @@ TEST(calibration_product,
         true;
     changed_observation_correction.applied_observation_flxscale_correction =
         3.0;
+    changed_observation_correction.observation_flxscale_correction_state =
+        "applied_once";
+    changed_observation_correction
+        .observation_flxscale_correction_source_identity =
+            std::string{timestream::CalibrationProduct::
+                            observation_correction_source_identity};
+    changed_observation_correction
+        .observation_flxscale_correction_recipient_identity =
+            changed_observation_correction.raw_observation_identity;
     const auto observation_correction_product =
         timestream::admit_calibration_product(changed_observation_correction);
     ASSERT_TRUE(observation_correction_product.valid());
@@ -220,6 +229,12 @@ TEST(calibration_product,
     inputs.detector_sensitivity << 10.0, 14.0;
     inputs.observation_flxscale_correction_applied = true;
     inputs.applied_observation_flxscale_correction = 3.0;
+    inputs.observation_flxscale_correction_state = "applied_once";
+    inputs.observation_flxscale_correction_source_identity =
+        std::string{timestream::CalibrationProduct::
+                        observation_correction_source_identity};
+    inputs.observation_flxscale_correction_recipient_identity =
+        inputs.raw_observation_identity;
     const auto source_flxscale = inputs.detector_flxscale;
     const auto source_sensitivity = inputs.detector_sensitivity;
 
@@ -234,6 +249,13 @@ TEST(calibration_product,
         3.0 * source_flxscale, 0.0));
     EXPECT_TRUE(product.observation_flxscale_correction_applied);
     EXPECT_DOUBLE_EQ(product.applied_observation_flxscale_correction, 3.0);
+    EXPECT_EQ(product.observation_flxscale_correction_state,
+              "applied_once");
+    EXPECT_EQ(product.observation_flxscale_correction_source_identity,
+              timestream::CalibrationProduct::
+                  observation_correction_source_identity);
+    EXPECT_EQ(product.observation_flxscale_correction_recipient_identity,
+              inputs.raw_observation_identity);
     const auto nuisance = std::find_if(
         product.nuisances.begin(), product.nuisances.end(),
         [](const auto &state) {
@@ -286,6 +308,32 @@ TEST(calibration_product, rejects_every_invalid_required_factor_class) {
             product.validity_cause ==
                 timestream::CalibrationValidityCause::invalid_atmosphere_support);
     }
+}
+
+TEST(calibration_product,
+     rejects_overflow_and_underflow_only_visible_after_factor_composition) {
+    auto overflow = valid_inputs(1, false);
+    overflow.target_unit_factor(0) = std::numeric_limits<double>::max();
+    overflow.detector_flxscale(0) = 2.0;
+    const auto overflow_product =
+        timestream::admit_calibration_product(overflow);
+    EXPECT_FALSE(overflow_product.valid());
+    EXPECT_EQ(overflow_product.validity_cause,
+              timestream::CalibrationValidityCause::invalid_required_factor);
+    EXPECT_EQ(overflow_product.validity_detail,
+              "composed calibration factor is non-finite or non-positive");
+
+    auto underflow = valid_inputs(1, false);
+    underflow.target_unit_factor(0) =
+        std::numeric_limits<double>::denorm_min();
+    underflow.detector_flxscale(0) = 0.5;
+    const auto underflow_product =
+        timestream::admit_calibration_product(underflow);
+    EXPECT_FALSE(underflow_product.valid());
+    EXPECT_EQ(underflow_product.validity_cause,
+              timestream::CalibrationValidityCause::invalid_required_factor);
+    EXPECT_EQ(underflow_product.validity_detail,
+              "composed calibration factor is non-finite or non-positive");
 }
 
 TEST(calibration_product, distinguishes_missing_from_invalid_required_factors) {

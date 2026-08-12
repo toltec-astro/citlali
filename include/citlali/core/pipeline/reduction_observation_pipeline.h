@@ -33,6 +33,12 @@ void run_reduction_observation_pipeline(TodProc &todproc, KidsProc &kidsproc,
     setup_and_run_observation_pipeline(
         engine, kidsproc, rawobs, stage_profile, logger);
     finalize_complete_calibration_product_identity_if_available(engine);
+    if constexpr (IsBeammap) {
+        // Beammap setup captures pre-execution facts. Final calibration
+        // metadata is populated only after the applied response and product
+        // identities have been finalized.
+        engine.populate_beammap_tau_metadata();
+    }
     write_coherent_iq_mode_sidecar_if_requested(
         engine, rawobs, logger);
     const auto raw_provenance_path =

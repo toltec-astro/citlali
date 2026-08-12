@@ -43,6 +43,13 @@ struct RawTimestreamObservationState {
     std::optional<std::string> calibration_compatibility_fcf_semantics;
     std::optional<std::string> calibration_weight_recipient_semantics;
     std::optional<std::string> calibration_compact_covariance_state;
+    std::optional<bool> observation_flxscale_correction_applied;
+    std::optional<double> applied_observation_flxscale_correction;
+    std::optional<std::string> observation_flxscale_correction_state;
+    std::optional<std::string>
+        observation_flxscale_correction_source_identity;
+    std::optional<std::string>
+        observation_flxscale_correction_recipient_identity;
     std::optional<std::string> calibration_apt_artifact_sha256;
     std::optional<std::string> calibration_acquisition_binding_sha256;
     std::optional<std::string> calibration_identity;
@@ -93,6 +100,13 @@ struct RawTimestreamRealizedState {
     std::optional<std::string> calibration_compatibility_fcf_semantics;
     std::optional<std::string> calibration_weight_recipient_semantics;
     std::optional<std::string> calibration_compact_covariance_state;
+    std::optional<bool> observation_flxscale_correction_applied;
+    std::optional<double> applied_observation_flxscale_correction;
+    std::optional<std::string> observation_flxscale_correction_state;
+    std::optional<std::string>
+        observation_flxscale_correction_source_identity;
+    std::optional<std::string>
+        observation_flxscale_correction_recipient_identity;
     std::optional<std::string> calibration_apt_artifact_sha256;
     std::optional<std::string> calibration_acquisition_binding_sha256;
     std::optional<std::string> calibration_identity;

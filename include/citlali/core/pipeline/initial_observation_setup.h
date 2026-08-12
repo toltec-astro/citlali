@@ -25,7 +25,7 @@ bool prepare_initial_observation_setup(TodProc &todproc, const RawObs &rawobs,
 
     configure_observation_calibration_with_context<IsBeammap>(
         todproc, rawobs, rawobs_kids_meta, observation_index, logger);
-    if (!apply_flxscale_correction(engine, rawobs, logger)) {
+    if (!validate_flxscale_correction(engine, rawobs, logger)) {
         return false;
     }
 

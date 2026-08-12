@@ -367,6 +367,93 @@ evidence, complete scientific closure, downstream launch, or a change to the
 approved/nonconformant/in-progress/fail-closed package axes. No reduction,
 Unity access or request, push, merge, or re-audit was performed.
 
+### 2026-08-12 successor-6 bounded local technical repair checkpoint
+
+The owner-authorized successor-6 application repair on
+`codex/repair-sci-cal-001-successor-6` starts directly from exact successor-5
+source `5dfc414a13fe69e6b063608906d87e3b30491ec7`. It remains limited to F005,
+F007, F008, and the local implementation portion of F009. F002's fixed
+atmosphere operator and artifacts, F003's startup/admission boundary, F004's
+selected-APT lineage and association boundary, and F006's calibrated
+`mJy/beam` boundary retain their accepted bounded closures. F001 and F010
+remain conditioned and outside this repair.
+
+F005 now initializes and resets the correction carrier at the production
+observation boundary, preserves source APT `flxscale` and sensitivity, rejects
+non-finite, non-positive, overflowed, or underflowed composed factors before
+scientific mutation, and persists the exact applied scalar, once-only state,
+and source/recipient identities. Production-shaped tests reach nonzero map,
+weight, and `noise_variance_I` recipients while preserving the accepted
+approximate/hybrid/validated inverse-square and full-weight behavior.
+
+F007/F008 bind response identity to immutable requested input, the actual
+coefficient-defining sample rate, reduced-observation ownership, and explicit
+fruit-iteration state. TOD-only execution reopens with finalized CALID/PKGID;
+homogeneous contributor joins succeed and heterogeneous joins fail closed.
+Calibrated Beammap finalizes before linked metadata, publishes the canonical
+package before dependents, and stages, synchronizes, reopens, validates, and
+atomically replaces each linked TOD artifact. True unavailable, interruption,
+reuse, multiscan, repeated-finalization, and observation-reset paths are
+explicit. Per-artifact atomicity remains mandatory; no global transaction or
+rollback architecture is added.
+
+For local F009, the owner selected a separate current-production candidate
+epoch while preserving historical validation evidence. Preparing epoch
+`sci-cal-001-production-candidate-2026-08-12` contains point, OOF, science,
+and Beammap profiles bound to distinct `sci-cal-001-current-*-products-v1`
+contracts. Current production candidates require raw provenance v4 and exact
+per-observation calibrated-member lineage; v1--v3 remain recognized and
+semantically validated as historical evidence but are not current-production
+admissible. Effectively uncalibrated v4 requires both lineage and the selected
+APT member to be absent. Accepted-run records and historical reduction bytes
+are unchanged, and the new epoch remains `preparing` rather than active.
+
+The producer serializes exact hexadecimal preimages for the pre-composition
+target-unit factor, detector `flxscale`, extinction extrema, and complete
+inactive or sample-elevation/per-array-LOS-tau state. The executable consumer
+recomputes every vector, extinction state, factor state, ordered-row and raw
+binding, optional TolAPT association, CALID, component join, and package
+identity from those bases and sibling bytes. Production-shaped distinct
+multi-observation fixtures reject missing, stale, forged, conflicting,
+partial, reordered, and tampered states. The role-separated Phase 1, Phase 2,
+and Phase 3 focused checkpoints are coordinator-accepted.
+
+Complete deterministic local gates pass in the repository-authorized fresh
+Release/test build tree: the full build and all four required test targets,
+the CLI smoke test, 622/622 normal tests, 14/14 safety tests, 31/31 science-map
+truth tests, 49/49 production FITS-product tests, 2/2 public-header linkage
+tests, and 6/6 explicit failure-safe publication tests. Full CTest passes all
+685 runnable cases; the sole non-run case is the pre-existing disabled
+`MapFitterLifecycle.ExactProductSequence`. The F002--F009 focused C++ gates
+pass 42/42, 5/5, and 16/16. Baseline tools pass 190/190; the focused F009
+matrix passes 141 tests and 46 subtests; and the fixed-operator/product-contract
+gate passes 32 tests and two subtests. Full configuration preflight passes its
+127 tests, four mode kits, eight compatibility cases, 100% compact-surface
+coverage, 592-leaf schema parity, all authority audits, and the 88-record raw
+execution census with zero review-required entries or drift at digest
+`1a60280fbde4749b0c753f305e98f2917bcbd4ba570e02f20468169f57218f96`.
+Validation/profile/science ledgers, ordinary readiness reporting, fixed-
+operator artifact checks, and the zero-growth session-exit audit also pass.
+
+The separately exercised historical Phase-5 readiness-fixture verification
+remains **failed and owner-waived for this bounded CAL commit**, never passed:
+Beammap and OOF match their recorded gate states, while point has six and
+science has twelve historical product-contract errors because those immutable
+fixtures contain the forbidden `sig2noise_pixel_I` extension. The owner
+classified that drift as pre-existing historical-product evidence outside
+successor-6 scope. Historical fixture bytes, declared fixture outcomes, the
+readiness verifier, product contracts, and accepted-run records remain
+unchanged. The prohibition on `sig2noise_pixel_I` remains binding for all new
+or current production products, including every preparing v4 current-
+production candidate contract.
+
+This remains an implementation/validation candidate only. The package axes
+remain `approved`, `nonconformant`, `in_progress`, and `fail_closed`, with
+verdict `amend`, pending an exact-commit independent re-audit and later owner
+disposition. It does not authorize production, integration, external
+execution, Unity access or request, a reduction, re-audit launch, downstream
+work, merge, or push.
+
 ## Historical 2026-07-31 SCI-MAP-001 Bounded Repair Lane
 
 This section preserves the repair-lane chronology and its candidate-time gate

@@ -285,6 +285,8 @@ public:
     struct RTCAppliedResponseNotch {
         std::string phase = "rtc";
         std::string stage;
+        std::string reduced_observation_identity;
+        Eigen::Index fruit_iteration = -1;
         Eigen::Index scan = -1;
         Eigen::Index ptc_iteration = -1;
         bool model_subtracted = false;
@@ -294,6 +296,7 @@ public:
         std::string geometry = "center_hz_width_hz";
         double center_hz = std::numeric_limits<double>::quiet_NaN();
         double width_hz = std::numeric_limits<double>::quiet_NaN();
+        double sample_rate_hz = std::numeric_limits<double>::quiet_NaN();
         std::string phase_convention = "zero_phase_forward_reverse";
         bool zero_phase = true;
 
@@ -320,17 +323,20 @@ public:
     struct RTCResponseApplicationContext {
         std::string phase;
         std::string stage;
+        std::string reduced_observation_identity;
+        Eigen::Index fruit_iteration;
         Eigen::Index scan;
         Eigen::Index ptc_iteration;
         bool model_subtracted;
 
         RTCResponseApplicationContext()
-            : phase("rtc"), scan(-1), ptc_iteration(-1),
+            : phase("rtc"), fruit_iteration(-1), scan(-1), ptc_iteration(-1),
               model_subtracted(false) {}
     };
 
     struct FinalizedCalibrationJoin {
         std::string observation_identity;
+        Eigen::Index fruit_iteration = -1;
         std::string calibration_identity;
         std::string package_identity;
     };
@@ -446,6 +452,8 @@ public:
     RTCAppliedResponseNotchHistory finalized_applied_response_notches_by_scan;
     bool applied_response_history_observation_active = false;
     bool applied_response_history_finalized = false;
+    std::string active_reduced_observation_identity;
+    Eigen::Index active_fruit_iteration = -1;
     std::map<Eigen::Index, Eigen::Index> ptc_response_iteration_by_scan;
     std::vector<FinalizedCalibrationJoin> finalized_calibration_joins;
     std::map<Eigen::Index, std::vector<RTCNetworkDiagSummary>> rtc_network_summary_by_scan;
@@ -456,6 +464,21 @@ public:
         coherent_iq_mode_candidates_by_scan;
     std::shared_ptr<std::mutex> coherent_iq_mode_candidate_mutex =
         std::make_shared<std::mutex>();
+
+    void begin_reduced_observation(std::string observation_identity,
+                                   Eigen::Index fruit_iteration) {
+        if (observation_identity.empty() || fruit_iteration < 0) {
+            throw std::logic_error(
+                "reduced observation lifecycle requires observation and fruit-iteration identity");
+        }
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        if (active_fruit_iteration != fruit_iteration) {
+            finalized_calibration_joins.clear();
+            active_fruit_iteration = fruit_iteration;
+        }
+        active_reduced_observation_identity =
+            std::move(observation_identity);
+    }
 
     std::vector<RTCDetectorDiagSummary> snapshot_detector_diag_summary(Eigen::Index scan_id) {
         std::lock_guard<std::mutex> lock(*diag_summary_mutex);
@@ -503,6 +526,13 @@ public:
             throw std::logic_error(
                 "cannot record an applied response notch after observation finalization");
         }
+        if (notch.reduced_observation_identity.empty()) {
+            notch.reduced_observation_identity =
+                active_reduced_observation_identity;
+        }
+        if (notch.fruit_iteration < 0) {
+            notch.fruit_iteration = active_fruit_iteration;
+        }
         applied_response_history_observation_active = true;
         rtc_applied_response_notches_by_scan[notch.scan].push_back(
             std::move(notch));
@@ -511,6 +541,9 @@ public:
     RTCAppliedResponseNotchHistory
     consume_applied_response_notches() {
         std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        if (!applied_response_history_observation_active) {
+            return {};
+        }
         if (applied_response_history_finalized) {
             return finalized_applied_response_notches_by_scan;
         }
@@ -530,6 +563,11 @@ public:
                 "finalized calibration join requires observation, CALID, and PKGID");
         }
         std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        if (active_reduced_observation_identity != observation_identity ||
+            active_fruit_iteration < 0) {
+            throw std::logic_error(
+                "finalized calibration join is not owned by the active reduced observation");
+        }
         const auto found = std::find_if(
             finalized_calibration_joins.begin(),
             finalized_calibration_joins.end(),
@@ -545,7 +583,8 @@ public:
             return;
         }
         finalized_calibration_joins.push_back(
-            {std::move(observation_identity), calibration_identity,
+            {std::move(observation_identity), active_fruit_iteration,
+             calibration_identity,
              package_identity});
     }
 
@@ -982,6 +1021,9 @@ Eigen::Index RTCProc::apply_rtc_line_audit_fixed_notches(
         RTCAppliedResponseNotch record;
         record.phase = context.phase;
         record.stage = context.stage;
+        record.reduced_observation_identity =
+            context.reduced_observation_identity;
+        record.fruit_iteration = context.fruit_iteration;
         record.scan = context.scan;
         record.ptc_iteration = context.ptc_iteration;
         record.model_subtracted = context.model_subtracted;
@@ -989,6 +1031,7 @@ Eigen::Index RTCProc::apply_rtc_line_audit_fixed_notches(
         record.ordinal = static_cast<Eigen::Index>(ordinal);
         record.center_hz = notch.freq_hz;
         record.width_hz = notch.width_hz;
+        record.sample_rate_hz = fs_hz;
         record.phase_convention = "zero_phase_forward_reverse";
         record.zero_phase = true;
         record_applied_response_notch(std::move(record));
@@ -1268,6 +1311,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                 record.ordinal = static_cast<Eigen::Index>(ordinal);
                 record.center_hz = center_hz;
                 record.width_hz = width_hz;
+                record.sample_rate_hz = telescope.fsmp;
                 record.phase_convention = filter.notch_zero_phase
                     ? "zero_phase_forward_reverse"
                     : "causal_forward";
@@ -3083,6 +3127,9 @@ Eigen::Index RTCProc::apply_rtc_line_audit_shared_notches(tc_t &in,
         RTCAppliedResponseNotch record;
         record.phase = context.phase;
         record.stage = context.stage;
+        record.reduced_observation_identity =
+            context.reduced_observation_identity;
+        record.fruit_iteration = context.fruit_iteration;
         record.scan = context.scan;
         record.ptc_iteration = context.ptc_iteration;
         record.model_subtracted = context.model_subtracted;
@@ -3090,6 +3137,7 @@ Eigen::Index RTCProc::apply_rtc_line_audit_shared_notches(tc_t &in,
         record.ordinal = static_cast<Eigen::Index>(ordinal);
         record.center_hz = cluster.center_hz;
         record.width_hz = cluster.width_hz;
+        record.sample_rate_hz = fs_hz;
         record.phase_convention = "zero_phase_forward_reverse";
         record.zero_phase = true;
         record_applied_response_notch(std::move(record));
@@ -3765,6 +3813,9 @@ Eigen::Index RTCProc::apply_rtc_line_audit_detector_notches(tc_t &in,
             RTCAppliedResponseNotch record;
             record.phase = context.phase;
             record.stage = context.stage;
+            record.reduced_observation_identity =
+                context.reduced_observation_identity;
+            record.fruit_iteration = context.fruit_iteration;
             record.scan = context.scan;
             record.ptc_iteration = context.ptc_iteration;
             record.model_subtracted = context.model_subtracted;
@@ -3773,6 +3824,7 @@ Eigen::Index RTCProc::apply_rtc_line_audit_detector_notches(tc_t &in,
             record.ordinal = static_cast<Eigen::Index>(ordinal);
             record.center_hz = notch.center_hz;
             record.width_hz = notch.width_hz;
+            record.sample_rate_hz = fs_hz;
             record.phase_convention = "zero_phase_forward_reverse";
             record.zero_phase = true;
             record_applied_response_notch(std::move(record));

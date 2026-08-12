@@ -16,6 +16,11 @@ import yaml
 import numpy as np
 
 try:
+    from .audit_reduction_run import raw_provenance_semantic_errors
+except ImportError:  # pragma: no cover - direct script execution
+    from audit_reduction_run import raw_provenance_semantic_errors
+
+try:
     from astropy.io import fits
     from astropy.table import Table
 except Exception:  # pragma: no cover - validation environment dependency
@@ -1008,6 +1013,25 @@ def validate_ecsv(
     return errors
 
 
+def validate_yaml(path: Path, checks: dict[str, Any]) -> list[str]:
+    errors: list[str] = []
+    try:
+        value = yaml.safe_load(path.read_text(encoding="utf-8"))
+        if not isinstance(value, dict):
+            return ["YAML root is not a mapping"]
+        expected_schema = checks.get("schema_version")
+        if expected_schema is not None and value.get("schema_version") != expected_schema:
+            errors.append(
+                f"schema_version is {value.get('schema_version')!r}; "
+                f"expected {expected_schema!r}"
+            )
+        if checks.get("current_calibration_package") is True:
+            errors.extend(raw_provenance_semantic_errors(value, path))
+    except Exception as error:
+        errors.append(f"cannot read YAML: {error}")
+    return errors
+
+
 def validate_file(
     path: Path, checks: dict[str, Any], arrays: list[str]
 ) -> list[str]:
@@ -1021,6 +1045,8 @@ def validate_file(
         errors.extend(validate_netcdf(path, checks, arrays))
     elif suffix == ".ecsv":
         errors.extend(validate_ecsv(path, checks, arrays))
+    elif suffix in {".yaml", ".yml"}:
+        errors.extend(validate_yaml(path, checks))
     return errors
 
 

@@ -109,6 +109,16 @@ inline void complete_raw_timestream_observation(
         plan.observation->calibration_weight_recipient_semantics;
     plan.realized.calibration_compact_covariance_state =
         plan.observation->calibration_compact_covariance_state;
+    plan.realized.observation_flxscale_correction_applied =
+        plan.observation->observation_flxscale_correction_applied;
+    plan.realized.applied_observation_flxscale_correction =
+        plan.observation->applied_observation_flxscale_correction;
+    plan.realized.observation_flxscale_correction_state =
+        plan.observation->observation_flxscale_correction_state;
+    plan.realized.observation_flxscale_correction_source_identity =
+        plan.observation->observation_flxscale_correction_source_identity;
+    plan.realized.observation_flxscale_correction_recipient_identity =
+        plan.observation->observation_flxscale_correction_recipient_identity;
     plan.realized.calibration_apt_artifact_sha256 =
         plan.observation->calibration_apt_artifact_sha256;
     plan.realized.calibration_acquisition_binding_sha256 =

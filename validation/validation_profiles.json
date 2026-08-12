@@ -3,7 +3,8 @@
   "active_epoch_id": "phase4-structural-closeout-2026-07-16",
   "preparing_epoch_ids": [
     "phase5-v2.1-candidate-2026-07-24",
-    "sci-map-001-repair-2026-07-31"
+    "sci-map-001-repair-2026-07-31",
+    "sci-cal-001-production-candidate-2026-08-12"
   ],
   "evolution_policy": {
     "accepted_snapshots_are_immutable": true,
@@ -20,20 +21,30 @@
     {
       "epoch_id": "phase4-structural-closeout-2026-07-16",
       "status": "active",
+      "admission_scope": "historical_validation_evidence",
       "established_date": "2026-07-16",
       "purpose": "Behavior-preserving structural-refactor closeout snapshots before post-refactor scientific development resumes."
     },
     {
       "epoch_id": "phase5-v2.1-candidate-2026-07-24",
       "status": "preparing",
+      "admission_scope": "historical_validation_evidence",
       "established_date": "2026-07-24",
       "purpose": "Prepared successor profiles for the self-contained TolPROJ V2.1 validation suite; promotion requires an accepted same-SHA four-mode matrix."
     },
     {
       "epoch_id": "sci-map-001-repair-2026-07-31",
       "status": "preparing",
+      "admission_scope": "historical_validation_evidence",
       "established_date": "2026-07-31",
       "purpose": "Non-promoted successor profiles for independent exact-repair-SHA re-audit of the bounded SCI-MAP-001 F001-F011 implementation."
+    },
+    {
+      "epoch_id": "sci-cal-001-production-candidate-2026-08-12",
+      "status": "preparing",
+      "admission_scope": "current_production_candidate",
+      "established_date": "2026-08-12",
+      "purpose": "Non-promoted successor profiles for current-generation SCI-CAL-001 v4 calibration packages and new reductions; historical v1-v3 artifacts remain validation evidence only."
     }
   ],
   "profiles": [
@@ -69,7 +80,7 @@
         "include": [],
         "exclude": [
           "citlali_profile.ecsv",
-          "*/selected_calibration_apt.ecsv"
+          "selected_calibration_apt.ecsv"
         ],
         "include_timestream": true,
         "max_array_elements": 0,
@@ -111,7 +122,7 @@
         "include": [],
         "exclude": [
           "citlali_profile.ecsv",
-          "*/selected_calibration_apt.ecsv"
+          "selected_calibration_apt.ecsv"
         ],
         "include_timestream": true,
         "max_array_elements": 0,
@@ -184,7 +195,7 @@
         "include": [],
         "exclude": [
           "citlali_profile.ecsv",
-          "*/selected_calibration_apt.ecsv"
+          "selected_calibration_apt.ecsv"
         ],
         "include_timestream": true,
         "max_array_elements": 0,
@@ -229,7 +240,7 @@
         "include": [],
         "exclude": [
           "citlali_profile.ecsv",
-          "*/selected_calibration_apt.ecsv"
+          "selected_calibration_apt.ecsv"
         ],
         "include_timestream": true,
         "max_array_elements": 0,
@@ -274,7 +285,7 @@
         "include": [],
         "exclude": [
           "citlali_profile.ecsv",
-          "*/selected_calibration_apt.ecsv"
+          "selected_calibration_apt.ecsv"
         ],
         "include_timestream": true,
         "max_array_elements": 0,
@@ -389,7 +400,7 @@
         "include": [],
         "exclude": [
           "citlali_profile.ecsv",
-          "*/selected_calibration_apt.ecsv"
+          "selected_calibration_apt.ecsv"
         ],
         "include_timestream": true,
         "max_array_elements": 0,
@@ -434,7 +445,7 @@
         "include": [],
         "exclude": [
           "citlali_profile.ecsv",
-          "*/selected_calibration_apt.ecsv"
+          "selected_calibration_apt.ecsv"
         ],
         "include_timestream": true,
         "max_array_elements": 0,
@@ -502,6 +513,128 @@
           "polarimetry",
           "astrometry",
           "config_source_manifest"
+        ]
+      },
+      "config": {
+        "policy": "exact_except_bindings",
+        "binding_policy_id": "tolteca-native-project-bindings-v1",
+        "ignore_paths": []
+      },
+      "products": {
+        "comparator": "beammap_scientific_equivalence",
+        "scientific_profile": "validation/profiles/beammap_scientific_equivalence_v1.json"
+      }
+    },
+    {
+      "profile_id": "sci-cal-001-current-point-v1",
+      "epoch_id": "sci-cal-001-production-candidate-2026-08-12",
+      "mode": "point",
+      "status": "preparing",
+      "admission_scope": "current_production_candidate",
+      "baseline_record_id": null,
+      "product_contract_id": "sci-cal-001-current-point-products-v1",
+      "audit": {
+        "expected_mode": null,
+        "expected_label": null,
+        "required_provenance": [
+          "runtime", "processed", "raw", "mapmaking", "coadd",
+          "noise_products", "pointing", "post_processing", "kids_external",
+          "polarimetry", "astrometry", "config_source_manifest"
+        ]
+      },
+      "config": {
+        "policy": "exact_except_bindings",
+        "binding_policy_id": "tolteca-native-project-bindings-v1",
+        "ignore_paths": []
+      },
+      "products": {
+        "comparator": "reduction_products",
+        "include": [],
+        "exclude": ["citlali_profile.ecsv"],
+        "include_timestream": true,
+        "max_array_elements": 0,
+        "atol": 0.0,
+        "rtol": 0.0,
+        "frac_floor": 1e-12,
+        "strict": true
+      }
+    },
+    {
+      "profile_id": "sci-cal-001-current-oof-v1",
+      "epoch_id": "sci-cal-001-production-candidate-2026-08-12",
+      "mode": "oof",
+      "status": "preparing",
+      "admission_scope": "current_production_candidate",
+      "baseline_record_id": null,
+      "product_contract_id": "sci-cal-001-current-oof-products-v1",
+      "audit": {
+        "expected_mode": null,
+        "expected_label": null,
+        "required_provenance": [
+          "runtime", "processed", "raw", "mapmaking", "coadd",
+          "noise_products", "pointing", "post_processing", "kids_external",
+          "polarimetry", "astrometry", "config_source_manifest"
+        ]
+      },
+      "config": {
+        "policy": "exact_except_bindings",
+        "binding_policy_id": "tolteca-native-project-bindings-v1",
+        "ignore_paths": []
+      },
+      "products": {
+        "comparator": "reduction_products",
+        "include": [],
+        "exclude": ["citlali_profile.ecsv"],
+        "include_timestream": true,
+        "max_array_elements": 0,
+        "atol": 0.0,
+        "rtol": 0.0,
+        "frac_floor": 1e-12,
+        "strict": true
+      }
+    },
+    {
+      "profile_id": "sci-cal-001-current-science-v1",
+      "epoch_id": "sci-cal-001-production-candidate-2026-08-12",
+      "mode": "science",
+      "status": "preparing",
+      "admission_scope": "current_production_candidate",
+      "baseline_record_id": null,
+      "product_contract_id": "sci-cal-001-current-science-products-v1",
+      "audit": {
+        "expected_mode": null,
+        "expected_label": null,
+        "required_provenance": [
+          "runtime", "processed", "raw", "mapmaking", "coadd",
+          "noise_products", "pointing", "post_processing", "kids_external",
+          "polarimetry", "astrometry", "config_source_manifest"
+        ]
+      },
+      "config": {
+        "policy": "exact_except_bindings",
+        "binding_policy_id": "tolteca-native-project-bindings-v1",
+        "ignore_paths": []
+      },
+      "products": {
+        "comparator": "science_scientific_equivalence",
+        "scientific_profile": "validation/profiles/science_scientific_equivalence_v2.json"
+      }
+    },
+    {
+      "profile_id": "sci-cal-001-current-beammap-v1",
+      "epoch_id": "sci-cal-001-production-candidate-2026-08-12",
+      "mode": "beammap",
+      "status": "preparing",
+      "admission_scope": "current_production_candidate",
+      "baseline_record_id": null,
+      "product_contract_id": "sci-cal-001-current-beammap-products-v1",
+      "audit": {
+        "expected_mode": null,
+        "expected_label": null,
+        "required_provenance": [
+          "runtime", "processed", "raw", "mapmaking", "coadd",
+          "noise_products", "post_processing", "beammap", "kids_external",
+          "polarimetry", "astrometry", "config_source_manifest"
         ]
       },
       "config": {

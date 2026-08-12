@@ -6,6 +6,140 @@
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/raw_timestream_policy.h>
 
+#include <filesystem>
+#include <optional>
+#include <string>
+#include <system_error>
+#include <utility>
+
+namespace citlali::engine_detail {
+
+template <class Update, class Validate>
+void publish_linked_tod_atomic(const std::filesystem::path &final_path,
+                               Update &&update, Validate &&validate) {
+    namespace fs = std::filesystem;
+    fs::path staged_path{final_path.string() + ".calibration-link.tmp"};
+    std::error_code ec;
+    fs::remove(staged_path, ec);
+    try {
+        fs::copy_file(final_path, staged_path,
+                      fs::copy_options::overwrite_existing);
+        {
+            netCDF::NcFile staged(
+                staged_path.string(), netCDF::NcFile::write);
+            std::forward<Update>(update)(staged);
+            staged.sync();
+            staged.close();
+        }
+        {
+            netCDF::NcFile staged(
+                staged_path.string(), netCDF::NcFile::read);
+            std::forward<Validate>(validate)(staged);
+            staged.close();
+        }
+        ec.clear();
+        fs::rename(staged_path, final_path, ec);
+        if (ec) {
+            throw DataIOError(
+                "failed to atomically replace linked TOD " +
+                staged_path.string() + " -> " + final_path.string() +
+                ": " + ec.message());
+        }
+    }
+    catch (...) {
+        ec.clear();
+        fs::remove(staged_path, ec);
+        ec.clear();
+        fs::remove(final_path, ec);
+        throw;
+    }
+}
+
+inline std::optional<std::string> tod_link_string(
+    netCDF::NcFile &file, const std::string &name) {
+    const auto variable = file.getVar(name);
+    if (variable.isNull()) {
+        return std::nullopt;
+    }
+    char *raw_value = nullptr;
+    const int status =
+        nc_get_var_string(file.getId(), variable.getId(), &raw_value);
+    if (status != NC_NOERR) {
+        throw DataIOError(
+            "failed to read staged TOD calibration link " + name + ": " +
+            nc_strerror(status));
+    }
+    const std::string value = raw_value == nullptr
+        ? std::string{} : std::string{raw_value};
+    if (raw_value != nullptr) {
+        const int free_status = nc_free_string(1, &raw_value);
+        if (free_status != NC_NOERR) {
+            throw DataIOError(
+                "failed to release staged TOD calibration link " + name);
+        }
+    }
+    return value;
+}
+
+template <class Product>
+void validate_tod_calibration_link(netCDF::NcFile &file,
+                                   const Product &product) {
+    const auto join_available = file.getVar("CAL.JOIN_AVAILABLE");
+    if (join_available.isNull()) {
+        throw DataIOError(
+            "staged TOD is missing CAL.JOIN_AVAILABLE");
+    }
+    int stored_join_available = 0;
+    join_available.getVar(&stored_join_available);
+    if (static_cast<bool>(stored_join_available) != product.valid()) {
+        throw DataIOError(
+            "staged TOD calibration join availability is inconsistent");
+    }
+    const auto calibration_identity = tod_link_string(file, "CALID");
+    const auto package_identity = tod_link_string(file, "CALPKGID");
+    if (!product.valid()) {
+        if (calibration_identity || package_identity) {
+            throw DataIOError(
+                "unavailable TOD calibration join carries CALID or CALPKGID");
+        }
+        return;
+    }
+    if (!calibration_identity || !package_identity ||
+        *calibration_identity != product.calibration_identity ||
+        *package_identity != product.package_identity) {
+        throw DataIOError(
+            "staged TOD CALID/CALPKGID link is missing or inconsistent");
+    }
+    int correction_applied = 0;
+    double correction_factor = 0.0;
+    file.getVar("CAL.OBSERVATION_FLXSCALE_CORRECTION_APPLIED")
+        .getVar(&correction_applied);
+    file.getVar("CAL.APPLIED_OBSERVATION_FLXSCALE_CORRECTION")
+        .getVar(&correction_factor);
+    if (static_cast<bool>(correction_applied) !=
+            product.observation_flxscale_correction_applied ||
+        correction_factor !=
+            product.applied_observation_flxscale_correction ||
+        tod_link_string(file, "CAL.OBSERVATION_FLXSCALE_CORRECTION_STATE") !=
+            std::optional<std::string>{
+                product.observation_flxscale_correction_state} ||
+        tod_link_string(
+            file,
+            "CAL.OBSERVATION_FLXSCALE_CORRECTION_SOURCE_IDENTITY") !=
+            std::optional<std::string>{
+                product.observation_flxscale_correction_source_identity} ||
+        tod_link_string(
+            file,
+            "CAL.OBSERVATION_FLXSCALE_CORRECTION_RECIPIENT_IDENTITY") !=
+            std::optional<std::string>{
+                product.observation_flxscale_correction_recipient_identity}) {
+        throw DataIOError(
+            "staged TOD observation correction metadata is inconsistent");
+    }
+}
+
+}  // namespace citlali::engine_detail
+
 template <class map_buffer_t>
 void Engine::add_tod_header(map_buffer_t &mb) {
     const auto &beammap_settings = citlali::pipeline::beammap_config(*this);
@@ -23,7 +157,21 @@ void Engine::add_tod_header(map_buffer_t &mb) {
 
     // loop through viles
     for (const auto & [fkey, fval]: output_paths.tod_filename) {
-        netCDF::NcFile fo(fval, netCDF::NcFile::write);
+        const std::filesystem::path final_path{fval};
+        {
+            netCDF::NcFile existing(
+                final_path.string(), netCDF::NcFile::read);
+            if (!existing.getVar("CAL.JOIN_AVAILABLE").isNull()) {
+                citlali::engine_detail::validate_tod_calibration_link(
+                    existing, rtcproc.calibration.product);
+                existing.close();
+                continue;
+            }
+            existing.close();
+        }
+        citlali::engine_detail::publish_linked_tod_atomic(
+            final_path,
+            [&](netCDF::NcFile &fo) {
 
         // add unit conversions
         if (raw_timestream_settings.flux_calibration_enabled) {
@@ -122,7 +270,11 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             fo, citlali::pipeline::fruit_loops_config(*this), calib,
             toltec_io.array_name_map);
 
-        fo.close();
+            },
+            [&](netCDF::NcFile &staged) {
+                citlali::engine_detail::validate_tod_calibration_link(
+                    staged, rtcproc.calibration.product);
+            });
     }
 }
 

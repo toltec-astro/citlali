@@ -25,13 +25,29 @@ class ValidationProfilesTest(unittest.TestCase):
             if profile["status"] == "active"
             and profile["epoch_id"] == registry["active_epoch_id"]
         ]
+        epochs = {epoch["epoch_id"]: epoch for epoch in registry["epochs"]}
+        self.assertEqual(
+            epochs[registry["active_epoch_id"]]["admission_scope"],
+            "historical_validation_evidence",
+        )
+        current_epoch = "sci-cal-001-production-candidate-2026-08-12"
+        self.assertEqual(
+            epochs[current_epoch]["admission_scope"],
+            "current_production_candidate",
+        )
         for profile in registry["profiles"]:
-            if "exclude" not in profile["products"]:
-                continue
-            self.assertIn(
-                "*/selected_calibration_apt.ecsv",
-                profile["products"]["exclude"],
-            )
+            if "exclude" in profile["products"]:
+                excluded = profile["products"]["exclude"]
+                if profile["epoch_id"] == current_epoch:
+                    self.assertNotIn("selected_calibration_apt.ecsv", excluded)
+                    self.assertNotIn("*/selected_calibration_apt.ecsv", excluded)
+                else:
+                    self.assertIn("selected_calibration_apt.ecsv", excluded)
+            if profile["epoch_id"] == current_epoch:
+                self.assertEqual(
+                    profile["admission_scope"],
+                    "current_production_candidate",
+                )
         self.assertEqual({profile["mode"] for profile in active}, profiles.SUPPORTED_MODES)
         self.assertEqual(len(active), len(profiles.SUPPORTED_MODES))
         self.assertGreaterEqual(len(registry["preparing_epoch_ids"]), 2)
@@ -43,6 +59,7 @@ class ValidationProfilesTest(unittest.TestCase):
             "sci-map-001-repair-2026-07-31",
             registry["preparing_epoch_ids"],
         )
+        self.assertIn(current_epoch, registry["preparing_epoch_ids"])
         for epoch_id in registry["preparing_epoch_ids"]:
             preparing = [
                 profile

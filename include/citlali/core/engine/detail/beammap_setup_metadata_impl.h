@@ -79,9 +79,17 @@ void Beammap::populate_beammap_tau_metadata() {
     calib.apt_meta["calibration_validity_reason"] =
         rtcproc.calibration.calibration_validity_reason;
     const auto &product = rtcproc.calibration.product;
-    if (product.valid()) {
-        timestream::require_finalized_calibration_product_join(product);
+    const bool finalized_join_available =
+        product.valid() && product.applied_identity_finalized;
+    calib.apt_meta["calibration_join_available"] =
+        finalized_join_available;
+    calib.apt_meta["calibration_join_state"] =
+        finalized_join_available ? "finalized"
+        : product.valid() ? "pending_finalization" : "unavailable";
+    if (!finalized_join_available) {
+        return;
     }
+    timestream::require_finalized_calibration_product_join(product);
     calib.apt_meta["calibration_product_schema"] =
         std::string{product.schema_version};
     calib.apt_meta["calibration_validity_detail"] = product.validity_detail;
@@ -98,6 +106,16 @@ void Beammap::populate_beammap_tau_metadata() {
         std::string{product.weight_recipient_semantics};
     calib.apt_meta["calibration_compact_covariance_state"] =
         std::string{product.compact_covariance_state};
+    calib.apt_meta["observation_flxscale_correction_applied"] =
+        product.observation_flxscale_correction_applied;
+    calib.apt_meta["applied_observation_flxscale_correction"] =
+        product.applied_observation_flxscale_correction;
+    calib.apt_meta["observation_flxscale_correction_state"] =
+        product.observation_flxscale_correction_state;
+    calib.apt_meta["observation_flxscale_correction_source_identity"] =
+        product.observation_flxscale_correction_source_identity;
+    calib.apt_meta["observation_flxscale_correction_recipient_identity"] =
+        product.observation_flxscale_correction_recipient_identity;
     calib.apt_meta["calibration_apt_artifact_sha256"] =
         product.apt_artifact_sha256;
     calib.apt_meta["calibration_acquisition_binding_sha256"] =

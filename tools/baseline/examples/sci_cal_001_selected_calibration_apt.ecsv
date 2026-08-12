@@ -2,9 +2,17 @@
 # ---
 # datatype:
 # - {name: uid, datatype: int64}
+# - {name: nw, datatype: int64}
+# - {name: tone_freq, unit: Hz, datatype: float64}
+# - {name: flag, datatype: int64}
 # - {name: flxscale, unit: mJy / beam, datatype: float64}
+# - {name: sens, unit: mJy / beam, datatype: float64}
+# - {name: a_fwhm, unit: arcsec, datatype: float64}
+# - {name: b_fwhm, unit: arcsec, datatype: float64}
+# - {name: angle, unit: rad, datatype: float64}
+# - {name: array, datatype: int64}
 # meta: !!omap
 # - {calibration_fixture: SCI-CAL-001}
 # schema: astropy-2.0
-uid flxscale
-42 1.0
+uid nw tone_freq flag flxscale sens a_fwhm b_fwhm angle array
+42 0 500000000.0 0 1.0 2.0 10.0 9.0 0.0 0

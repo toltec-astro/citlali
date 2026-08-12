@@ -80,12 +80,24 @@ struct has_observation_applied_response_history<
             .begin_observation_applied_response_history())>>
     : std::true_type {};
 
+template <class RtcProc, class = void>
+struct has_reduced_observation_lifecycle : std::false_type {};
+
+template <class RtcProc>
+struct has_reduced_observation_lifecycle<
+    RtcProc,
+    std::void_t<decltype(
+        std::declval<RtcProc &>().begin_reduced_observation(
+            std::declval<std::string>(), std::declval<Eigen::Index>()))>>
+    : std::true_type {};
+
 template <class RtcProc>
 RawTimestreamObservationShadowReport begin_raw_timestream_observation_shadow(
     RawTimestreamExecutionPlan &plan,
     citlali::config::ReductionType reduction_type,
     double native_sample_rate_hz, double actual_effective_sample_rate_hz,
-    RtcProc &rtcproc) {
+    RtcProc &rtcproc, std::string reduced_observation_identity = {},
+    Eigen::Index fruit_iteration = -1) {
     RawTimestreamObservationShadowReport report;
     if (!plan.initialized) {
         report.add_mismatch("raw timestream plan is not initialized");
@@ -108,6 +120,12 @@ RawTimestreamObservationShadowReport begin_raw_timestream_observation_shadow(
             reduction_type, plan.requested.despike);
 
     auto &observation = plan.begin_observation();
+    if constexpr (has_reduced_observation_lifecycle<RtcProc>::value) {
+        if (!reduced_observation_identity.empty() && fruit_iteration >= 0) {
+            rtcproc.begin_reduced_observation(
+                std::move(reduced_observation_identity), fruit_iteration);
+        }
+    }
     if constexpr (has_observation_applied_response_history<RtcProc>::value) {
         rtcproc.begin_observation_applied_response_history();
     }
@@ -215,6 +233,16 @@ complete_raw_timestream_extinction_shadow(
         std::string{calibration.product.weight_recipient_semantics};
     plan.observation->calibration_compact_covariance_state =
         std::string{calibration.product.compact_covariance_state};
+    plan.observation->observation_flxscale_correction_applied =
+        calibration.product.observation_flxscale_correction_applied;
+    plan.observation->applied_observation_flxscale_correction =
+        calibration.product.applied_observation_flxscale_correction;
+    plan.observation->observation_flxscale_correction_state =
+        calibration.product.observation_flxscale_correction_state;
+    plan.observation->observation_flxscale_correction_source_identity =
+        calibration.product.observation_flxscale_correction_source_identity;
+    plan.observation->observation_flxscale_correction_recipient_identity =
+        calibration.product.observation_flxscale_correction_recipient_identity;
     plan.observation->calibration_apt_artifact_sha256 =
         calibration.product.apt_artifact_sha256;
     plan.observation->calibration_acquisition_binding_sha256 =

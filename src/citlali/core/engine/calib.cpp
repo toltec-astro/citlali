@@ -1044,10 +1044,12 @@ void Calib::calc_flux_calibration(std::string units, double pixel_size_rad) {
             "SCI-CAL-001 supports only top-of-atmosphere point-source-peak mJy/beam; unsupported unit " +
             units);
     }
-    // flux conversion is per detector
-    flux_conversion_factor.resize(n_dets);
-    mean_flux_conversion_factor.clear();
-    flux_conversion_factor.setOnes();
+    // Build the next observation-owned compatibility carrier without
+    // mutating the selected APT. Commit it only after setup succeeds so a
+    // failed observation cannot leave partially reset/applied state.
+    Eigen::VectorXd next_flux_conversion_factor =
+        Eigen::VectorXd::Ones(n_dets);
+    std::map<std::string, double> next_mean_flux_conversion_factor;
 
     // get mean flux conversion factor from all unflagged detectors
     for (Eigen::Index i=0; i<n_arrays; ++i) {
@@ -1060,7 +1062,8 @@ void Calib::calc_flux_calibration(std::string units, double pixel_size_rad) {
         for (const auto &j: array_detector_indices[array]) {
             // if good
             if (apt["flag"](j)==0) {
-                mean_flux_conversion_factor[name] += flux_conversion_factor(j);
+                next_mean_flux_conversion_factor[name] +=
+                    next_flux_conversion_factor(j);
                 n_good_dets++;
             }
         }
@@ -1069,8 +1072,12 @@ void Calib::calc_flux_calibration(std::string units, double pixel_size_rad) {
                 "cannot calculate mean flux conversion factor: array has no unflagged detectors");
         }
         // calculate mean flux conversion factor
-        mean_flux_conversion_factor[name] = mean_flux_conversion_factor[name]/n_good_dets;
+        next_mean_flux_conversion_factor[name] =
+            next_mean_flux_conversion_factor[name] / n_good_dets;
     }
+    flux_conversion_factor = std::move(next_flux_conversion_factor);
+    mean_flux_conversion_factor =
+        std::move(next_mean_flux_conversion_factor);
 }
 
 void Calib::setup() {

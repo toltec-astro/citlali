@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import math
 import tempfile
 import unittest
 from pathlib import Path
@@ -225,7 +226,299 @@ def valid_raw_v3_document() -> dict:
     return document
 
 
-def valid_raw_v4_document() -> dict:
+def _vector_basis(values: list[float]) -> dict:
+    encoded = [audit.cxx_hexfloat(value) for value in values]
+    preimage = f"calibration-vector-hexfloat-v1|count={len(encoded)}"
+    for index, value in enumerate(encoded):
+        preimage += f"|{index}={value}"
+    return {
+        "schema_version": "calibration-vector-hexfloat-v1",
+        "count": len(encoded),
+        "sha256": hashlib.sha256(preimage.encode("utf-8")).hexdigest(),
+        "values": encoded,
+    }
+
+
+def _production_v4_lineage(obsnum: str) -> dict:
+    selected_digest = hashlib.sha256(
+        selected_calibration_fixture_path().read_bytes()
+    ).hexdigest()
+    stable = "selected-apt-ordered-row-v2"
+    for name, kind, value in (
+        ("ordered_detector_index", "index", "0"),
+        ("selected_source_row_index", "index", "0"),
+        ("uid", "int64", "42"),
+        ("flag", "int64", "0"),
+        ("eligible", "bool", "true"),
+        ("validity_basis", "string", "selected_APT_flag_eq_0"),
+    ):
+        stable += audit.typed_calibration_identity_field(name, kind, value)
+    row = {
+        "ordered_detector_index": 0,
+        "selected_apt_source_row_index": 0,
+        "raw_network": 0,
+        "raw_network_local_tone": 0,
+        "absolute_tone_frequency_hz": 500000000.0,
+        "uid": "42",
+        "eligible": True,
+        "validity_basis": "selected_APT_flag_eq_0",
+        "stable_association": stable,
+        "retained_fields": [
+            {"name": "uid", "ecsv_datatype": "int64", "value": "42"},
+            {"name": "flag", "ecsv_datatype": "int64", "value": "0"},
+        ],
+    }
+    stable_joins = {
+        "ordered_row_association_sha256": "",
+        "apt_row_order_authoritative": False,
+        "ordered_detector_apt_rows": [row],
+    }
+    row_preimage = "selected-apt-row-association-v2"
+    row_preimage += audit.typed_calibration_identity_field(
+        "apt_sha256", "sha256", selected_digest
+    )
+    row_preimage += audit.typed_calibration_identity_field(
+        "ordered_row", "typed_row_association", stable
+    )
+    row_digest = hashlib.sha256(row_preimage.encode("utf-8")).hexdigest()
+    stable_joins["ordered_row_association_sha256"] = row_digest
+
+    raw_path = f"/raw/{obsnum}/toltec0.nc"
+    raw_digest = hashlib.sha256(raw_path.encode("utf-8")).hexdigest()
+    artifact_identity = "raw-artifact-v1"
+    for name, kind, value in (
+        ("path", "string", raw_path),
+        ("sha256", "sha256", raw_digest),
+        ("interface", "string", "toltec0"),
+        ("network", "int", "0"),
+        ("absolute_tone_frequency_hz", "float64", "500000000"),
+    ):
+        artifact_identity += audit.typed_calibration_identity_field(
+            name, kind, value
+        )
+    raw_identity = "raw-observation-acquisition-identity-v2"
+    raw_identity += audit.typed_calibration_identity_field(
+        "artifact", "typed_raw_artifact", artifact_identity
+    )
+    binding = "apt-acquisition-binding-v2"
+    for name, kind, value in (
+        ("apt_sha256", "sha256", selected_digest),
+        ("raw_identity", "typed_raw_identity", raw_identity),
+        ("selected_row_association_sha256", "sha256", row_digest),
+    ):
+        binding += audit.typed_calibration_identity_field(name, kind, value)
+    join = "apt-raw-ordered-join-v1"
+    for name, kind, value in (
+        ("network", "int", "0"),
+        ("network_local_tone", "index", "0"),
+        ("absolute_tone_frequency_hz", "float64", "500000000"),
+        ("uid", "int64", "42"),
+    ):
+        join += audit.typed_calibration_identity_field(name, kind, value)
+    binding += audit.typed_calibration_identity_field(
+        "ordered_join", "typed_join", join
+    )
+    binding_digest = hashlib.sha256(binding.encode("utf-8")).hexdigest()
+    raw_acquisition = {
+        "raw_observation_identity": raw_identity,
+        "binding_mode": "explicit_network_local_tone_frequency_join_v1",
+        "key_schema": (
+            "raw_observation_artifact+network+network_local_tone_frequency"
+        ),
+        "binding_sha256": binding_digest,
+        "artifacts": [{
+            "path": raw_path,
+            "sha256": raw_digest,
+            "interface": "toltec0",
+            "roach_index": 0,
+            "absolute_tone_frequency_hz": [500000000.0],
+        }],
+    }
+
+    sample = [1.0]
+    los = {0: [0.1], 1: [0.2], 2: [0.3]}
+    sample_basis = _vector_basis(sample)
+    los_basis = {array: _vector_basis(values) for array, values in los.items()}
+    extinction_preimage = (
+        "sci-cal-001-applied-extinction-state-v1|active=true"
+    )
+    extinction_preimage += audit.calibration_identity_field(
+        "sample_elevation_sha256", sample_basis["sha256"]
+    )
+    for array, basis in los_basis.items():
+        extinction_preimage += audit.calibration_identity_field(
+            f"array_{array}_los_tau_sha256", basis["sha256"]
+        )
+    extinction_digest = hashlib.sha256(
+        extinction_preimage.encode("utf-8")
+    ).hexdigest()
+    correction = math.exp(0.1)
+    factor_basis = {
+        "schema_version": "sci-cal-001-admitted-factor-identity-basis-v1",
+        "target_unit_factor": _vector_basis([1.0]),
+        "detector_flxscale": _vector_basis([1.0]),
+        "minimum_extinction_correction": _vector_basis([correction]),
+        "maximum_extinction_correction": _vector_basis([correction]),
+        "applied_sample_extinction_state": {
+            "schema_version": "sci-cal-001-applied-extinction-state-basis-v1",
+            "available": True,
+            "active": True,
+            "sha256": extinction_digest,
+            "sample_elevation_rad": sample_basis,
+            "los_tau_by_array": [
+                {"array_index": array, "los_tau": basis}
+                for array, basis in los_basis.items()
+            ],
+        },
+    }
+    factor_provenance = (
+        "target_unit_factor=unity_dimensionless_for_mJy_per_beam;"
+        "applied_observation_flxscale_correction=observation_metadata_scalar,"
+        "multiplicative,source_APT_immutable;"
+        "detector_flxscale=selected_APT_flxscale[mJy_per_beam_per_xs],"
+        "multiplicative;sample_extinction=exp(line_of_sight_optical_depth),"
+        "multiplicative;responsivity=despike_donor_target_relative_response_only,"
+        "not_absolute_flux;sens=selected_APT_sens[mJy_per_beam_sqrt_s],"
+        "already_contains_flxscale;beam_axes=selected_APT_a_fwhm_b_fwhm[arcsec],"
+        "response_identity_only"
+    )
+    factors = {
+        "target_unit": "mJy/beam",
+        "photometry_policy": "point_source_peak_top_of_atmosphere",
+        "factor_composition": (
+            "signal_prime=signal*target_unit_factor*"
+            "applied_observation_flxscale_correction*detector_flxscale*"
+            "sample_extinction_correction"
+        ),
+        "factor_provenance": factor_provenance,
+        "factor_state_sha256": "",
+        "identity_basis": factor_basis,
+        "observation_flxscale_correction_applied": False,
+        "applied_observation_flxscale_correction": 1.0,
+        "observation_flxscale_correction_state": "not_applied",
+        "observation_flxscale_correction_source_identity": "not_applied",
+        "observation_flxscale_correction_recipient_identity": "",
+        "atmosphere_operator_id": (
+            "am12_fixed_djf25_piecewise_linear_los_tau_v1"
+        ),
+        "atmosphere_operator_contract_sha256": (
+            "7a064ff768a3de4f427f1338d94ef6cb9026d248f3c3c816fc3dfc96d156e36a"
+        ),
+        "atmosphere_node_table_sha256": (
+            "fd688a4cd3f46585b08631bc63a562aed482feb9b24ec9ee0071b70db7eb8a5f"
+        ),
+        "passband_set_id": (
+            "toltec-passband-set-v1:sha256:"
+            "5e6f38f14bcae93a29ffe8362c52b15209f51aee4e48373b23aaa5ec2f8a6433"
+        ),
+        "reference_profile_id": (
+            "LMT_DJF_25.amc:sha256:"
+            "aeeeeb48bef422f2d9392b5d7a3d62ab1887fd9e7c10322d5246d914841ba866"
+        ),
+        "reference_spectral_index_alpha": 0.0,
+        "reference_spectral_index_default_applied": True,
+        "tau225": 0.12,
+        "conditional_variance_transfer": "fixture-conditional-variance",
+        "conditional_inverse_variance_transfer": (
+            "fixture-conditional-inverse-variance"
+        ),
+    }
+    factor_preimage = "sci-cal-001-admitted-factor-state-v1"
+    for name, value in (
+        ("target_unit_factor_sha256", factor_basis["target_unit_factor"]["sha256"]),
+        ("observation_flxscale_correction_applied", "false"),
+        ("applied_observation_flxscale_correction", "0x1p+0"),
+        ("observation_flxscale_correction_state", "not_applied"),
+        ("observation_flxscale_correction_source_identity", "not_applied"),
+        ("observation_flxscale_correction_recipient_identity", ""),
+        ("detector_flxscale_sha256", factor_basis["detector_flxscale"]["sha256"]),
+        ("minimum_extinction_correction_sha256", factor_basis["minimum_extinction_correction"]["sha256"]),
+        ("maximum_extinction_correction_sha256", factor_basis["maximum_extinction_correction"]["sha256"]),
+        ("applied_sample_extinction_state_sha256", extinction_digest),
+    ):
+        factor_preimage += audit.calibration_identity_field(name, value)
+    factor_digest = hashlib.sha256(factor_preimage.encode("utf-8")).hexdigest()
+    factors["factor_state_sha256"] = factor_digest
+
+    selected = {
+        "source_path": "/upstream/selected_calibration_apt.ecsv",
+        "source_sha256": selected_digest,
+        "package_local_path": "selected_calibration_apt.ecsv",
+        "package_local_sha256": selected_digest,
+        "copy_semantics": "exact_byte_copy_digest_verified_required_output",
+        "observation_identity": "148670",
+        "matched_observation_identity": "148670",
+        "selected_source": "Uranus",
+        "legacy_metadata_available": True,
+        "tolapt_manifest": {"available": False},
+    }
+    response = {
+        "provenance": (
+            "calibration-response-basis-provenance-v3;"
+            f"requested_state_sha256={hashlib.sha256(obsnum.encode()).hexdigest()};"
+            "requested_state_source=raw_timestream_plan.requested;"
+            "fruit_iteration=0;semantics=provenance_only_no_empirical_"
+            "response_fidelity_or_covariance_claim"
+        ),
+        "semantics": (
+            "declared_realized_state_only_no_empirical_response_validation"
+        ),
+    }
+    value = {
+        "schema_version": audit.CANONICAL_CALIBRATION_LINEAGE_SCHEMA,
+        "package_identity": "",
+        "calibration_identity": "",
+        "component_identities": {
+            "selected_apt_sha256": selected_digest,
+            "selected_apt_row_association_sha256": row_digest,
+            "raw_acquisition_binding_sha256": binding_digest,
+            "admitted_factor_state_sha256": factor_digest,
+            "tolapt_manifest_association_sha256": "",
+        },
+        "selected_apt": selected,
+        "raw_acquisition": raw_acquisition,
+        "stable_joins": stable_joins,
+        "factor_operator_state": factors,
+        "response_basis": response,
+    }
+    reference_state = "0x0p+0;default=true;tau225=" + audit.cxx_hexfloat(0.12)
+    calibration_preimage = "sci-cal-001-canonical-calibration-identity-v1"
+    for name, field in (
+        ("selected_apt_source_path", selected["source_path"]),
+        ("selected_apt_sha256", selected_digest),
+        ("apt_row_association_sha256", row_digest),
+        ("apt_observation_identity", selected["observation_identity"]),
+        ("apt_matched_observation_identity", selected["matched_observation_identity"]),
+        ("apt_selected_source", selected["selected_source"]),
+        ("tolapt_manifest_association_sha256", ""),
+        ("acquisition_binding_sha256", binding_digest),
+        ("raw_observation_identity", raw_identity),
+        ("target_unit", factors["target_unit"]),
+        ("factor_composition", factors["factor_composition"]),
+        ("factor_provenance", factors["factor_provenance"]),
+        ("factor_state_sha256", factor_digest),
+        ("atmosphere_operator_id", factors["atmosphere_operator_id"]),
+        ("atmosphere_operator_contract_sha256", factors["atmosphere_operator_contract_sha256"]),
+        ("atmosphere_node_table_sha256", factors["atmosphere_node_table_sha256"]),
+        ("passband_set_id", factors["passband_set_id"]),
+        ("reference_profile_id", factors["reference_profile_id"]),
+        ("reference_and_tau_state", reference_state),
+        ("response_basis_provenance", response["provenance"]),
+        ("validity", "valid_complete_product"),
+    ):
+        calibration_preimage += audit.calibration_identity_field(name, field)
+    calibration_digest = hashlib.sha256(
+        calibration_preimage.encode("utf-8")
+    ).hexdigest()
+    package_digest = audit.recompute_calibration_package_identity(
+        calibration_digest, selected_digest, binding_digest
+    )
+    value["calibration_identity"] = calibration_digest
+    value["package_identity"] = package_digest
+    return value
+
+
+def valid_raw_v4_document(obsnum: str = "000042") -> dict:
     document = valid_raw_v3_document()
     fixture_path = (
         Path(__file__).parent
@@ -236,13 +529,20 @@ def valid_raw_v4_document() -> dict:
     document["effective"]["config"]["flux_calibration"] = {
         "enabled": True,
     }
-    document["calibration_lineage"] = fixture["calibration_lineage"]
-    for section in ("observation", "realized"):
-        target = document[section]
-        if section == "observation":
-            target = target["value"]
-        target.update(fixture[section]["value"] if section == "observation"
-                      else fixture[section])
+    document["calibration_lineage"] = {
+        "available": True,
+        "value": _production_v4_lineage(obsnum),
+    }
+    value = document["calibration_lineage"]["value"]
+    for section in (document["observation"]["value"], document["realized"]):
+        section["calibration_identity"] = {
+            "available": True,
+            "value": value["calibration_identity"],
+        }
+        section["calibration_package_identity"] = {
+            "available": True,
+            "value": value["package_identity"],
+        }
     return document
 
 
@@ -265,7 +565,7 @@ def write_raw_v4_observation(
     provenance_path = observation / "raw_timestream_provenance.yaml"
     provenance_path.write_text(
         yaml.safe_dump(
-            document if document is not None else valid_raw_v4_document(),
+            document if document is not None else valid_raw_v4_document(obsnum),
             sort_keys=False,
         ),
         encoding="utf-8",
@@ -3012,6 +3312,15 @@ class ProvenanceAuditTest(unittest.TestCase):
         )
 
     def test_accepts_checked_in_sci_cal_001_raw_provenance_v4_package(self) -> None:
+        fixture_path = (
+            Path(__file__).parent
+            / "examples/sci_cal_001_raw_timestream_provenance_v4.yaml"
+        )
+        checked_in = yaml.safe_load(fixture_path.read_text(encoding="utf-8"))
+        self.assertEqual(
+            checked_in["calibration_lineage"]["value"],
+            _production_v4_lineage("000042"),
+        )
         with tempfile.TemporaryDirectory() as directory:
             redu = Path(directory)
             document = valid_raw_v4_document()
@@ -3028,13 +3337,126 @@ class ProvenanceAuditTest(unittest.TestCase):
                 audit.raw_provenance_semantic_errors(document, path),
             )
 
+    def test_cpp_hexfloat_identity_anchors_recompute_exactly(self) -> None:
+        anchors = {
+            (1.0,): (
+                "0x1p+0",
+                "e651fd05d98b2429fbd1355727fd4e9c7d417582aaf721a67b302ac5c14ab452",
+            ),
+            (0.1,): (
+                "0x1.999999999999ap-4",
+                "89aff723c29a37066da16373861de8e5c133523586b04665d59589888ee44145",
+            ),
+            (0.2,): (
+                "0x1.999999999999ap-3",
+                "b68fbad5b4721cd1923602ecef1d1505f8ca57ac90bb7d86f7583f7da1796773",
+            ),
+            (0.3,): (
+                "0x1.3333333333333p-2",
+                "1cfb12cd2e88e3cd883662a056d1ae76f9df1fa50775801906388d6dc0d5a74d",
+            ),
+            (float.fromhex("0x0.0000000000001p-1022"),): (
+                "0x1p-1074",
+                "1f4ccbc78d1976097dff6c10b2c8620c129b68af79f6da1c27b22ba913de6204",
+            ),
+        }
+        for values, (encoded, digest) in anchors.items():
+            with self.subTest(values=values):
+                basis = _vector_basis(list(values))
+                self.assertEqual(basis["values"], [encoded])
+                self.assertEqual(basis["sha256"], digest)
+                self.assertEqual(
+                    audit.calibration_vector_identity_from_basis(
+                        basis, "C++ anchor"
+                    )[0],
+                    digest,
+                )
+        lineage = _production_v4_lineage("000042")
+        extinction = lineage["factor_operator_state"]["identity_basis"][
+            "applied_sample_extinction_state"
+        ]
+        self.assertEqual(
+            extinction["sha256"],
+            "b2043d14a309d6e124e287b0c30b3828d3da340d6cf6bd8d675d519fd2cb7ea4",
+        )
+
+    def test_rejects_tampered_factor_basis_and_declared_identity_forgery(
+        self,
+    ) -> None:
+        cases: list[tuple[str, dict, str]] = []
+
+        tampered_value = valid_raw_v4_document()
+        tampered_value["calibration_lineage"]["value"][
+            "factor_operator_state"
+        ]["identity_basis"]["target_unit_factor"]["values"][0] = "0x1p+1"
+        cases.append((
+            "basis-value",
+            tampered_value,
+            "target-unit factor vector digest does not recompute",
+        ))
+
+        tampered_extinction = valid_raw_v4_document()
+        tampered_extinction["calibration_lineage"]["value"][
+            "factor_operator_state"
+        ]["identity_basis"]["applied_sample_extinction_state"][
+            "los_tau_by_array"
+        ][1]["array_index"] = 0
+        cases.append((
+            "extinction-order",
+            tampered_extinction,
+            "active extinction arrays are not exactly ordered 0,1,2",
+        ))
+
+        partial = valid_raw_v4_document()
+        partial["calibration_lineage"]["value"][
+            "factor_operator_state"
+        ]["identity_basis"].pop("detector_flxscale")
+        cases.append((
+            "partial-factor-basis",
+            partial,
+            "detector flxscale identity basis is not a mapping",
+        ))
+
+        forged_factor = valid_raw_v4_document()
+        forged = forged_factor["calibration_lineage"]["value"]
+        forged["factor_operator_state"]["factor_state_sha256"] = "4" * 64
+        forged["component_identities"]["admitted_factor_state_sha256"] = (
+            "4" * 64
+        )
+        cases.append((
+            "declared-factor",
+            forged_factor,
+            "v4 admitted-factor state identity does not recompute",
+        ))
+
+        for name, document, expected in cases:
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as directory:
+                path = write_raw_v4_observation(
+                    Path(directory), "000042", document
+                )
+                self.assertIn(
+                    expected,
+                    audit.raw_provenance_semantic_errors(document, path),
+                )
+
     def test_accepts_single_and_multi_observation_v4_package_layouts(self) -> None:
         for observation_count in (1, 2):
             with self.subTest(observation_count=observation_count), \
                     tempfile.TemporaryDirectory() as directory:
                 redu = Path(directory)
+                identities = set()
                 for index in range(observation_count):
-                    write_raw_v4_observation(redu, f"{42 + index:06d}")
+                    obsnum = f"{42 + index:06d}"
+                    document = valid_raw_v4_document(obsnum)
+                    identities.add((
+                        document["calibration_lineage"]["value"][
+                            "calibration_identity"
+                        ],
+                        document["calibration_lineage"]["value"][
+                            "package_identity"
+                        ],
+                    ))
+                    write_raw_v4_observation(redu, obsnum, document)
 
                 raw = audit.audit_provenance_sidecars(
                     redu, require_raw=True
@@ -3043,6 +3465,7 @@ class ProvenanceAuditTest(unittest.TestCase):
                 self.assertTrue(raw["valid"])
                 self.assertEqual(raw["count"], observation_count)
                 self.assertTrue(raw["observation_coverage_ok"])
+                self.assertEqual(len(identities), observation_count)
 
     def test_rejects_missing_tampered_stale_conflicting_and_forged_v4_members(
         self,
@@ -3158,6 +3581,22 @@ class ProvenanceAuditTest(unittest.TestCase):
 
             self.assertIn(
                 "uncalibrated v4 unexpectedly publishes a selected APT member",
+                audit.raw_provenance_semantic_errors(document, path),
+            )
+
+    def test_rejects_uncalibrated_v4_with_partial_hidden_lineage(self) -> None:
+        document = valid_raw_v4_document()
+        document["effective"]["config"]["flux_calibration"]["enabled"] = False
+        document["calibration_lineage"] = {
+            "available": False,
+            "value": document["calibration_lineage"]["value"],
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            path = write_raw_v4_observation(
+                Path(directory), "000042", document, write_member=False
+            )
+            self.assertIn(
+                "uncalibrated v4 unavailable calibration lineage is partial",
                 audit.raw_provenance_semantic_errors(document, path),
             )
 

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <citlali/core/pipeline/flxscale_correction.h>
 #include <citlali/core/pipeline/kids_metadata.h>
 #include <citlali/core/pipeline/observation_calibration_config.h>
 
@@ -21,9 +20,6 @@ bool configure_reduction_observation_calibration_if_needed(
     auto &engine = todproc.engine();
     configure_observation_calibration_with_context<IsBeammap>(
         todproc, rawobs, rawobs_kids_meta, observation_index, logger);
-    if (!apply_flxscale_correction(engine, rawobs, logger)) {
-        return false;
-    }
 
     update_sample_rate_from_rawobs_meta(engine, rawobs_kids_meta, logger);
     return true;

@@ -331,6 +331,7 @@ struct FakeEngine {
     int configure_map_pixel_contribution_targets_calls = 0;
     std::string last_map_pixel_contribution_target;
     int create_obs_map_files_calls = 0;
+    int add_tod_header_calls = 0;
     int output_calls = 0;
     bool output_throws = false;
     int run_wiener_filter_calls = 0;
@@ -375,6 +376,9 @@ struct FakeEngine {
         void calc_median_err() { ++calc_median_err_calls; }
         void calc_median_rms() { ++calc_median_rms_calls; }
     } omb;
+
+    template <class MapBuffer>
+    void add_tod_header(MapBuffer &) { ++add_tod_header_calls; }
 
     struct {
         bool normalize_error = false;
@@ -6644,16 +6648,17 @@ TEST(cli_tod_processor_selection, rejects_unknown_processor_type) {
     EXPECT_EQ(logger->info_calls, 0);
 }
 
-TEST(pipeline_preflight, applies_flxscale_correction_when_present) {
+TEST(pipeline_preflight,
+     fails_closed_without_observation_owned_flxscale_correction_state) {
     FakeEngine engine;
     engine.calib.apt["flxscale"].value = 2.0;
     FakeFlxscaleCorrection correction{1.5};
     FakeRawObs rawobs{&correction, "obs"};
     auto logger = std::make_shared<FakeLogger>();
 
-    EXPECT_TRUE(citlali::pipeline::apply_flxscale_correction(
+    EXPECT_FALSE(citlali::pipeline::apply_flxscale_correction(
         engine, rawobs, logger));
-    EXPECT_DOUBLE_EQ(engine.calib.apt["flxscale"].value, 3.0);
+    EXPECT_DOUBLE_EQ(engine.calib.apt["flxscale"].value, 2.0);
 }
 
 TEST(pipeline_preflight, skips_absent_flxscale_correction) {
@@ -8561,6 +8566,25 @@ TEST(pipeline_execution, writes_raw_observation_outputs) {
     EXPECT_EQ(todproc.engine().create_obs_map_files_calls, 1);
     EXPECT_EQ(todproc.engine().output_calls, 1);
     EXPECT_EQ(logger->info_calls, 5);
+}
+
+TEST(pipeline_execution,
+     tod_only_observation_publishes_finalized_calibration_header) {
+    FakeCoaddTodProc todproc;
+    todproc.engine().typed_config.mapmaking.enabled = false;
+    todproc.engine().typed_config.timestream.output.type =
+        citlali::config::TodOutputType::rtc;
+    todproc.engine().output_paths.tod_filename =
+        {{"rtc", "/tmp/finalized-tod-only.nc"}};
+    citlali::pipeline::StageProfileCollector stage_profile;
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::write_raw_observation_outputs<FakeMapType::RawObs>(
+        todproc, stage_profile, logger);
+
+    EXPECT_EQ(todproc.engine().create_obs_map_files_calls, 0);
+    EXPECT_EQ(todproc.engine().output_calls, 0);
+    EXPECT_EQ(todproc.engine().add_tod_header_calls, 1);
 }
 
 TEST(pipeline_execution, skips_raw_noise_products_when_disabled) {
@@ -10533,6 +10557,13 @@ TEST(config_scaffold, serializes_versioned_raw_timestream_provenance) {
     observation.calibration_weight_recipient_semantics = "weight-sentinel";
     observation.calibration_compact_covariance_state =
         "unavailable;no_nuisance_covariance_invented";
+    observation.observation_flxscale_correction_applied = true;
+    observation.applied_observation_flxscale_correction = 3.0;
+    observation.observation_flxscale_correction_state = "applied_once";
+    observation.observation_flxscale_correction_source_identity =
+        "raw_observation_metadata:flxscale_correction";
+    observation.observation_flxscale_correction_recipient_identity =
+        "raw-identity-sentinel";
     observation.calibration_apt_artifact_sha256 = "apt-sha-sentinel";
     observation.calibration_acquisition_binding_sha256 =
         "binding-sha-sentinel";
@@ -10607,6 +10638,18 @@ TEST(config_scaffold, serializes_versioned_raw_timestream_provenance) {
     EXPECT_EQ(node["observation"]["value"]
                   ["calibration_nuisance_states"]["value"].as<std::string>(),
               "nuisance-sentinel");
+    EXPECT_TRUE(node["observation"]["value"]
+                    ["observation_flxscale_correction_applied"]["value"]
+                        .as<bool>());
+    EXPECT_DOUBLE_EQ(
+        node["observation"]["value"]
+            ["applied_observation_flxscale_correction"]["value"]
+                .as<double>(),
+        3.0);
+    EXPECT_EQ(node["observation"]["value"]
+                  ["observation_flxscale_correction_state"]["value"]
+                      .as<std::string>(),
+              "applied_once");
     EXPECT_DOUBLE_EQ(node["observation"]["value"]
                          ["calibration_minimum_total_multiplier"]["value"]
                              .as<double>(),
@@ -10629,6 +10672,17 @@ TEST(config_scaffold, serializes_versioned_raw_timestream_provenance) {
     EXPECT_EQ(node["realized"]["calibration_weight_recipient_semantics"]
                   ["value"].as<std::string>(),
               "weight-sentinel");
+    EXPECT_TRUE(node["realized"]
+                    ["observation_flxscale_correction_applied"]["value"]
+                        .as<bool>());
+    EXPECT_DOUBLE_EQ(
+        node["realized"]["applied_observation_flxscale_correction"]
+            ["value"].as<double>(),
+        3.0);
+    EXPECT_EQ(node["realized"]
+                  ["observation_flxscale_correction_recipient_identity"]
+                  ["value"].as<std::string>(),
+              "raw-identity-sentinel");
     EXPECT_DOUBLE_EQ(node["realized"]
                          ["calibration_maximum_total_multiplier"]["value"]
                              .as<double>(),

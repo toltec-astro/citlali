@@ -3,39 +3,39 @@ calibration_lineage:
   available: true
   value:
     schema_version: sci-cal-001-canonical-calibration-lineage-v1
-    package_identity: 3b25b6e108fdf5abb18767a9ae5ade619ae43bc8e0079363a0c45c1649d9b099
-    calibration_identity: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    package_identity: facf38e684f90dc2c632feeb8379f387e0be79c93177cfa043f17124ffbc20ab
+    calibration_identity: d19e8a91a75b2bb40b063241227964ca2863fb0e4b8d8786aa14228b354dd1f4
     component_identities:
-      selected_apt_sha256: f5c609c91ecc0bc83f3d84c4dfd0daf7b1542d149f915d40495368be60c75bd5
-      selected_apt_row_association_sha256: dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-      raw_acquisition_binding_sha256: eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-      admitted_factor_state_sha256: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-      tolapt_manifest_association_sha256: '1111111111111111111111111111111111111111111111111111111111111111'
+      selected_apt_sha256: 8c18f6268523f7db45b18c9d6eb5eb7c99f355b46f1a0eedd5c858fa9e9430aa
+      selected_apt_row_association_sha256: b9bd7befdd8dc7d038c07badd5926dfeaec74406ba3af1e5a422ad9b4542e2e5
+      raw_acquisition_binding_sha256: d05c81c95bfe6c4784d2a36f2d884813f5a8de146241f301c1cceeb091f9e8a7
+      admitted_factor_state_sha256: 99323791dbbb3c7cb9e882a59fdccd1cafaa0d4154e96a2d6434f369ac68cf74
+      tolapt_manifest_association_sha256: ''
     selected_apt:
       source_path: /upstream/selected_calibration_apt.ecsv
-      source_sha256: f5c609c91ecc0bc83f3d84c4dfd0daf7b1542d149f915d40495368be60c75bd5
+      source_sha256: 8c18f6268523f7db45b18c9d6eb5eb7c99f355b46f1a0eedd5c858fa9e9430aa
       package_local_path: selected_calibration_apt.ecsv
-      package_local_sha256: f5c609c91ecc0bc83f3d84c4dfd0daf7b1542d149f915d40495368be60c75bd5
+      package_local_sha256: 8c18f6268523f7db45b18c9d6eb5eb7c99f355b46f1a0eedd5c858fa9e9430aa
       copy_semantics: exact_byte_copy_digest_verified_required_output
-      observation_identity: '000042'
-      matched_observation_identity: '000042'
+      observation_identity: '148670'
+      matched_observation_identity: '148670'
       selected_source: Uranus
       legacy_metadata_available: true
       tolapt_manifest:
         available: false
     raw_acquisition:
-      raw_observation_identity: '000042'
-      binding_mode: explicit_fixture_join
-      key_schema: artifact+network+local_tone
-      binding_sha256: eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+      raw_observation_identity: raw-observation-acquisition-identity-v2|8:artifact:18:typed_raw_artifact:246:raw-artifact-v1|4:path:6:string:22:/raw/000042/toltec0.nc|6:sha256:6:sha256:64:bbb374aa1e49f416ef8a86f67db40c9de60ccda8f1463c2ae54056aea9816afd|9:interface:6:string:7:toltec0|7:network:3:int:1:0|26:absolute_tone_frequency_hz:7:float64:9:500000000
+      binding_mode: explicit_network_local_tone_frequency_join_v1
+      key_schema: raw_observation_artifact+network+network_local_tone_frequency
+      binding_sha256: d05c81c95bfe6c4784d2a36f2d884813f5a8de146241f301c1cceeb091f9e8a7
       artifacts:
-        - path: /raw/toltec0.nc
-          sha256: '2222222222222222222222222222222222222222222222222222222222222222'
+        - path: /raw/000042/toltec0.nc
+          sha256: bbb374aa1e49f416ef8a86f67db40c9de60ccda8f1463c2ae54056aea9816afd
           interface: toltec0
           roach_index: 0
           absolute_tone_frequency_hz: [500000000.0]
     stable_joins:
-      ordered_row_association_sha256: dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+      ordered_row_association_sha256: b9bd7befdd8dc7d038c07badd5926dfeaec74406ba3af1e5a422ad9b4542e2e5
       apt_row_order_authoritative: false
       ordered_detector_apt_rows:
         - ordered_detector_index: 0
@@ -43,28 +43,92 @@ calibration_lineage:
           raw_network: 0
           raw_network_local_tone: 0
           absolute_tone_frequency_hz: 500000000.0
-          uid: 42
+          uid: '42'
           eligible: true
-          validity_basis: selected
-          stable_association: true
+          validity_basis: selected_APT_flag_eq_0
+          stable_association: selected-apt-ordered-row-v2|22:ordered_detector_index:5:index:1:0|25:selected_source_row_index:5:index:1:0|3:uid:5:int64:2:42|4:flag:5:int64:1:0|8:eligible:4:bool:4:true|14:validity_basis:6:string:22:selected_APT_flag_eq_0
+          retained_fields:
+            - {name: uid, ecsv_datatype: int64, value: '42'}
+            - {name: flag, ecsv_datatype: int64, value: '0'}
     factor_operator_state:
       target_unit: mJy/beam
-      factor_state_sha256: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+      photometry_policy: point_source_peak_top_of_atmosphere
+      factor_composition: signal_prime=signal*target_unit_factor*applied_observation_flxscale_correction*detector_flxscale*sample_extinction_correction
+      factor_provenance: target_unit_factor=unity_dimensionless_for_mJy_per_beam;applied_observation_flxscale_correction=observation_metadata_scalar,multiplicative,source_APT_immutable;detector_flxscale=selected_APT_flxscale[mJy_per_beam_per_xs],multiplicative;sample_extinction=exp(line_of_sight_optical_depth),multiplicative;responsivity=despike_donor_target_relative_response_only,not_absolute_flux;sens=selected_APT_sens[mJy_per_beam_sqrt_s],already_contains_flxscale;beam_axes=selected_APT_a_fwhm_b_fwhm[arcsec],response_identity_only
+      factor_state_sha256: 99323791dbbb3c7cb9e882a59fdccd1cafaa0d4154e96a2d6434f369ac68cf74
+      identity_basis:
+        schema_version: sci-cal-001-admitted-factor-identity-basis-v1
+        target_unit_factor:
+          schema_version: calibration-vector-hexfloat-v1
+          count: 1
+          sha256: e651fd05d98b2429fbd1355727fd4e9c7d417582aaf721a67b302ac5c14ab452
+          values: ['0x1p+0']
+        detector_flxscale:
+          schema_version: calibration-vector-hexfloat-v1
+          count: 1
+          sha256: e651fd05d98b2429fbd1355727fd4e9c7d417582aaf721a67b302ac5c14ab452
+          values: ['0x1p+0']
+        minimum_extinction_correction:
+          schema_version: calibration-vector-hexfloat-v1
+          count: 1
+          sha256: 639d6259d3b18f32f8464b52681e5d54736e81da46a88043ba8a95cd97b7b52d
+          values: ['0x1.1aec7b35a00d4p+0']
+        maximum_extinction_correction:
+          schema_version: calibration-vector-hexfloat-v1
+          count: 1
+          sha256: 639d6259d3b18f32f8464b52681e5d54736e81da46a88043ba8a95cd97b7b52d
+          values: ['0x1.1aec7b35a00d4p+0']
+        applied_sample_extinction_state:
+          schema_version: sci-cal-001-applied-extinction-state-basis-v1
+          available: true
+          active: true
+          sha256: b2043d14a309d6e124e287b0c30b3828d3da340d6cf6bd8d675d519fd2cb7ea4
+          sample_elevation_rad:
+            schema_version: calibration-vector-hexfloat-v1
+            count: 1
+            sha256: e651fd05d98b2429fbd1355727fd4e9c7d417582aaf721a67b302ac5c14ab452
+            values: ['0x1p+0']
+          los_tau_by_array:
+            - array_index: 0
+              los_tau:
+                schema_version: calibration-vector-hexfloat-v1
+                count: 1
+                sha256: 89aff723c29a37066da16373861de8e5c133523586b04665d59589888ee44145
+                values: ['0x1.999999999999ap-4']
+            - array_index: 1
+              los_tau:
+                schema_version: calibration-vector-hexfloat-v1
+                count: 1
+                sha256: b68fbad5b4721cd1923602ecef1d1505f8ca57ac90bb7d86f7583f7da1796773
+                values: ['0x1.999999999999ap-3']
+            - array_index: 2
+              los_tau:
+                schema_version: calibration-vector-hexfloat-v1
+                count: 1
+                sha256: 1cfb12cd2e88e3cd883662a056d1ae76f9df1fa50775801906388d6dc0d5a74d
+                values: ['0x1.3333333333333p-2']
+      observation_flxscale_correction_applied: false
+      applied_observation_flxscale_correction: 1.0
+      observation_flxscale_correction_state: not_applied
+      observation_flxscale_correction_source_identity: not_applied
+      observation_flxscale_correction_recipient_identity: ''
+      atmosphere_operator_id: am12_fixed_djf25_piecewise_linear_los_tau_v1
+      atmosphere_operator_contract_sha256: 7a064ff768a3de4f427f1338d94ef6cb9026d248f3c3c816fc3dfc96d156e36a
+      atmosphere_node_table_sha256: fd688a4cd3f46585b08631bc63a562aed482feb9b24ec9ee0071b70db7eb8a5f
+      passband_set_id: toltec-passband-set-v1:sha256:5e6f38f14bcae93a29ffe8362c52b15209f51aee4e48373b23aaa5ec2f8a6433
+      reference_profile_id: LMT_DJF_25.amc:sha256:aeeeeb48bef422f2d9392b5d7a3d62ab1887fd9e7c10322d5246d914841ba866
+      reference_spectral_index_alpha: 0.0
+      reference_spectral_index_default_applied: true
+      tau225: 0.12
+      conditional_variance_transfer: fixture-conditional-variance
+      conditional_inverse_variance_transfer: fixture-conditional-inverse-variance
     response_basis:
-      provenance: fixture-response
+      provenance: calibration-response-basis-provenance-v3;requested_state_sha256=9e3acb89b9d56624b229a2a8f0811e3b21b2eeb6fea8d439b37e0fa92d9a38df;requested_state_source=raw_timestream_plan.requested;fruit_iteration=0;semantics=provenance_only_no_empirical_response_fidelity_or_covariance_claim
       semantics: declared_realized_state_only_no_empirical_response_validation
 observation:
   value:
-    calibration_identity:
-      available: true
-      value: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-    calibration_package_identity:
-      available: true
-      value: 3b25b6e108fdf5abb18767a9ae5ade619ae43bc8e0079363a0c45c1649d9b099
+    calibration_identity: {available: true, value: d19e8a91a75b2bb40b063241227964ca2863fb0e4b8d8786aa14228b354dd1f4}
+    calibration_package_identity: {available: true, value: facf38e684f90dc2c632feeb8379f387e0be79c93177cfa043f17124ffbc20ab}
 realized:
-  calibration_identity:
-    available: true
-    value: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-  calibration_package_identity:
-    available: true
-    value: 3b25b6e108fdf5abb18767a9ae5ade619ae43bc8e0079363a0c45c1649d9b099
+  calibration_identity: {available: true, value: d19e8a91a75b2bb40b063241227964ca2863fb0e4b8d8786aa14228b354dd1f4}
+  calibration_package_identity: {available: true, value: facf38e684f90dc2c632feeb8379f387e0be79c93177cfa043f17124ffbc20ab}

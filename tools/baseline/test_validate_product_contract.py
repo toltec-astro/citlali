@@ -4,7 +4,14 @@ import tempfile
 import unittest
 from pathlib import Path
 
+import yaml
+
 from tools.baseline import validate_product_contract as product_contract
+from tools.baseline.test_audit_reduction_run import (
+    valid_raw_v3_document,
+    valid_raw_v4_document,
+    write_raw_v4_observation,
+)
 
 
 class ValidateProductContractTest(unittest.TestCase):
@@ -84,7 +91,7 @@ class ValidateProductContractTest(unittest.TestCase):
         self.assertEqual(result["classified_product_count"], 1)
         self.assertFalse(result["errors"])
 
-    def test_checked_in_selected_calibration_apt_is_conditional_per_observation(
+    def test_checked_in_contracts_split_historical_and_current_admission(
         self,
     ) -> None:
         repository = Path(__file__).resolve().parents[2]
@@ -96,23 +103,103 @@ class ValidateProductContractTest(unittest.TestCase):
         )
         self.assertTrue(fixture.is_file())
         for contract in registry["contracts"]:
-            entries = [
+            selected_entries = [
                 entry for entry in contract["entries"]
                 if entry["pattern"] == "{obs}/selected_calibration_apt.ecsv"
             ]
-            self.assertEqual(len(entries), 1, contract["contract_id"])
-            entry = entries[0]
-            self.assertEqual(entry["scope"], "per_observation")
-            self.assertEqual(entry["classification"], "config_conditional")
-            self.assertEqual(
-                entry["required_when"],
-                {
-                    "path": (
-                        "timestream.raw_time_chunk.flux_calibration.enabled"
-                    ),
-                    "equals": True,
-                },
+            provenance_entries = [
+                entry for entry in contract["entries"]
+                if entry["pattern"] == "{obs}/raw_timestream_provenance.yaml"
+            ]
+            if contract["contract_id"].startswith("sci-cal-001-current-"):
+                self.assertEqual(
+                    contract["admission_scope"],
+                    "current_production_candidate",
+                )
+                self.assertEqual(len(selected_entries), 1)
+                self.assertEqual(
+                    selected_entries[0]["classification"],
+                    "optional_diagnostic",
+                )
+                self.assertEqual(len(provenance_entries), 1)
+                self.assertEqual(
+                    provenance_entries[0]["checks"],
+                    {
+                        "schema_version": (
+                            "citlali-raw-timestream-provenance-v4"
+                        ),
+                        "current_calibration_package": True,
+                    },
+                )
+            else:
+                self.assertFalse(selected_entries, contract["contract_id"])
+                self.assertFalse(provenance_entries, contract["contract_id"])
+
+    def test_current_contract_yaml_check_rejects_legacy_and_accepts_exact_v4(
+        self,
+    ) -> None:
+        checks = {
+            "schema_version": "citlali-raw-timestream-provenance-v4",
+            "current_calibration_package": True,
+        }
+        observation = self.reduction / "000042"
+        observation.mkdir()
+        legacy_path = observation / "raw_timestream_provenance.yaml"
+        legacy_path.write_text(
+            yaml.safe_dump(valid_raw_v3_document(), sort_keys=False),
+            encoding="utf-8",
+        )
+        self.assertTrue(any(
+            "expected 'citlali-raw-timestream-provenance-v4'" in error
+            for error in product_contract.validate_file(
+                legacy_path, checks, ["a1100", "a1400", "a2000"]
             )
+        ))
+
+        legacy_path.unlink()
+        observation.rmdir()
+        current_path = write_raw_v4_observation(
+            self.reduction, "000042", valid_raw_v4_document("000042")
+        )
+        self.assertEqual(
+            product_contract.validate_file(
+                current_path, checks, ["a1100", "a1400", "a2000"]
+            ),
+            [],
+        )
+
+    def test_current_contract_yaml_check_owns_uncalibrated_membership(self) -> None:
+        checks = {
+            "schema_version": "citlali-raw-timestream-provenance-v4",
+            "current_calibration_package": True,
+        }
+        document = valid_raw_v4_document("000042")
+        document["effective"]["config"]["flux_calibration"]["enabled"] = False
+        document["calibration_lineage"] = {"available": False}
+        for section in (document["observation"]["value"], document["realized"]):
+            section["calibration_identity"] = {"available": False}
+            section["calibration_package_identity"] = {"available": False}
+        path = write_raw_v4_observation(
+            self.reduction, "000042", document, write_member=False
+        )
+        self.assertEqual(
+            product_contract.validate_file(
+                path, checks, ["a1100", "a1400", "a2000"]
+            ),
+            [],
+        )
+        (path.parent / "selected_calibration_apt.ecsv").write_bytes(
+            (
+                Path(__file__).parent
+                / "examples/sci_cal_001_selected_calibration_apt.ecsv"
+            ).read_bytes()
+        )
+        self.assertIn(
+            "uncalibrated v4 unexpectedly publishes a selected APT member",
+            product_contract.validate_file(
+                path, checks, ["a1100", "a1400", "a2000"]
+            ),
+        )
 
     def test_selected_calibration_contract_accepts_single_and_multi_layouts(
         self,

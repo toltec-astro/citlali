@@ -157,7 +157,7 @@ void add_phdu_extinction_apt_oof_section(
     }
     auto calibration_join =
         timestream::RTCProc::FinalizedCalibrationJoin{
-            {}, product.calibration_identity, product.package_identity};
+            {}, -1, product.calibration_identity, product.package_identity};
     if (product.valid() && mb->science_products.initialized &&
         mb->science_products.is_coadd) {
         calibration_join =
@@ -184,6 +184,21 @@ void add_phdu_extinction_apt_oof_section(
     hdu.addKey("CAL.COMPACT_COVARIANCE_STATE",
                std::string{product.compact_covariance_state},
                "Persisted nuisance covariance availability");
+    hdu.addKey("CAL.OBS_FLXSCALE_APPLIED",
+               product.observation_flxscale_correction_applied,
+               "Observation flxscale correction was applied once");
+    hdu.addKey("CAL.OBS_FLXSCALE_FACTOR",
+               product.applied_observation_flxscale_correction,
+               "Applied observation flxscale correction scalar");
+    hdu.addKey("CAL.OBS_FLXSCALE_STATE",
+               product.observation_flxscale_correction_state,
+               "Observation flxscale correction lifecycle state");
+    hdu.addKey("CAL.OBS_FLXSCALE_SOURCE",
+               product.observation_flxscale_correction_source_identity,
+               "Observation correction immutable source identity");
+    hdu.addKey("CAL.OBS_FLXSCALE_RECIPIENT",
+               product.observation_flxscale_correction_recipient_identity,
+               "Observation correction recipient identity");
     hdu.addKey("CAL.APT_ARTIFACT_SHA256", product.apt_artifact_sha256,
                "Exact selected APT artifact digest");
     hdu.addKey("CAL.ACQUISITION_BINDING_SHA256",

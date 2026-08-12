@@ -476,6 +476,15 @@
       "missing_value_policy": "Absence is fatal for a calibrated package; no substitute APT is inferred.",
       "failure_policy": "Required output failure is fatal and package publication is atomic."
     },
+    "current_calibration_package_provenance": {
+      "scientific_identity": "Current-production SCI-CAL-001 v4 per-observation calibration package provenance with recomputed selected-APT, detector-row, raw-acquisition, factor-state, calibration, and package identities.",
+      "coordinate_frame": "Sample extinction basis uses radians for elevation and dimensionless line-of-sight tau; other package joins are coordinate-independent identities.",
+      "axes": ["observation", "selected APT row", "raw detector tone", "timestream sample", "TolTEC array"],
+      "units_policy": "Floating-point calibration identity preimages use exact canonical hexadecimal representations; ECSV and provenance fields retain their declared physical units.",
+      "indexing_policy": "One v4 provenance artifact and, when effectively calibrated, exactly one selected APT member are owned by each observation directory; stable detector joins and arrays 0,1,2 are explicitly ordered.",
+      "missing_value_policy": "Effectively calibrated v4 observations require complete canonical lineage and the exact sibling APT. Effectively uncalibrated v4 observations require both lineage and sibling APT to be absent. v1-v3 are historical schemas and are not current-production admissible.",
+      "failure_policy": "Missing, stale, forged, conflicting, partial, impossible, or non-atomic package publication is fatal."
+    },
     "profile_timing": {
       "scientific_identity": "Run stage/context elapsed-time instrumentation.",
       "coordinate_frame": "Not applicable.",
@@ -1619,19 +1628,6 @@
           "check_id": "timestream"
         },
         {
-          "entry_id": "selected-calibration-apt",
-          "family_id": "calibration_package_member",
-          "scope": "per_observation",
-          "classification": "config_conditional",
-          "condition": "effective flux calibration requires one selected APT member per observation",
-          "required_when": {
-            "path": "timestream.raw_time_chunk.flux_calibration.enabled",
-            "equals": true
-          },
-          "pattern": "{obs}/selected_calibration_apt.ecsv",
-          "checks": {"nonempty": true}
-        },
-        {
           "entry_id": "profile-timing",
           "family_id": "profile_timing",
           "scope": "reduction",
@@ -1744,19 +1740,6 @@
           "check_id": "ptc_diagnostics"
         },
         {
-          "entry_id": "selected-calibration-apt",
-          "family_id": "calibration_package_member",
-          "scope": "per_observation",
-          "classification": "config_conditional",
-          "condition": "effective flux calibration requires one selected APT member per observation",
-          "required_when": {
-            "path": "timestream.raw_time_chunk.flux_calibration.enabled",
-            "equals": true
-          },
-          "pattern": "{obs}/selected_calibration_apt.ecsv",
-          "checks": {"nonempty": true}
-        },
-        {
           "entry_id": "profile-timing",
           "family_id": "profile_timing",
           "scope": "reduction",
@@ -1867,19 +1850,6 @@
           "condition": "OOF processing publishes PTC diagnostics",
           "pattern": "{obs}/raw/*_pointing_{obs}_ptcdiag.nc",
           "check_id": "ptc_diagnostics"
-        },
-        {
-          "entry_id": "selected-calibration-apt",
-          "family_id": "calibration_package_member",
-          "scope": "per_observation",
-          "classification": "config_conditional",
-          "condition": "effective flux calibration requires one selected APT member per observation",
-          "required_when": {
-            "path": "timestream.raw_time_chunk.flux_calibration.enabled",
-            "equals": true
-          },
-          "pattern": "{obs}/selected_calibration_apt.ecsv",
-          "checks": {"nonempty": true}
         },
         {
           "entry_id": "profile-timing",
@@ -2058,19 +2028,6 @@
           "check_id": "map_diagnostics"
         },
         {
-          "entry_id": "selected-calibration-apt",
-          "family_id": "calibration_package_member",
-          "scope": "per_observation",
-          "classification": "config_conditional",
-          "condition": "effective flux calibration requires one selected APT member per observation",
-          "required_when": {
-            "path": "timestream.raw_time_chunk.flux_calibration.enabled",
-            "equals": true
-          },
-          "pattern": "{obs}/selected_calibration_apt.ecsv",
-          "checks": {"nonempty": true}
-        },
-        {
           "entry_id": "profile-timing",
           "family_id": "profile_timing",
           "scope": "reduction",
@@ -2201,19 +2158,6 @@
           },
           "pattern": "{obs}/raw/source_crossing_tod/*_beammap_{obs}_ptcdiag.nc",
           "check_id": "ptc_diagnostics"
-        },
-        {
-          "entry_id": "selected-calibration-apt",
-          "family_id": "calibration_package_member",
-          "scope": "per_observation",
-          "classification": "config_conditional",
-          "condition": "effective flux calibration requires one selected APT member per observation",
-          "required_when": {
-            "path": "timestream.raw_time_chunk.flux_calibration.enabled",
-            "equals": true
-          },
-          "pattern": "{obs}/selected_calibration_apt.ecsv",
-          "checks": {"nonempty": true}
         },
         {
           "entry_id": "profile-timing",
@@ -2359,19 +2303,6 @@
           },
           "pattern": "citlali_restart_checkpoint.nc",
           "check_id": "reduction_restart_checkpoint"
-        },
-        {
-          "entry_id": "selected-calibration-apt",
-          "family_id": "calibration_package_member",
-          "scope": "per_observation",
-          "classification": "config_conditional",
-          "condition": "effective flux calibration requires one selected APT member per observation",
-          "required_when": {
-            "path": "timestream.raw_time_chunk.flux_calibration.enabled",
-            "equals": true
-          },
-          "pattern": "{obs}/selected_calibration_apt.ecsv",
-          "checks": {"nonempty": true}
         },
         {
           "entry_id": "profile-timing",
@@ -2527,6 +2458,122 @@
           "check_id": "sci_map_detector_group_v1"
         }
       }
+    },
+    {
+      "contract_id": "sci-cal-001-current-point-products-v1",
+      "profile_id": "sci-cal-001-current-point-v1",
+      "extends_contract_id": "sci-map-001-point-products-v1",
+      "admission_scope": "current_production_candidate",
+      "entry_additions": [
+        {
+          "entry_id": "current-calibration-provenance",
+          "family_id": "current_calibration_package_provenance",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "every current-production observation publishes exactly one finalized v4 provenance artifact",
+          "pattern": "{obs}/raw_timestream_provenance.yaml",
+          "checks": {
+            "schema_version": "citlali-raw-timestream-provenance-v4",
+            "current_calibration_package": true
+          }
+        },
+        {
+          "entry_id": "current-selected-calibration-apt",
+          "family_id": "calibration_package_member",
+          "scope": "per_observation",
+          "classification": "optional_diagnostic",
+          "condition": "v4 provenance semantics require exactly one member when effectively calibrated and forbid it when effectively uncalibrated",
+          "pattern": "{obs}/selected_calibration_apt.ecsv",
+          "checks": {"nonempty": true}
+        }
+      ]
+    },
+    {
+      "contract_id": "sci-cal-001-current-oof-products-v1",
+      "profile_id": "sci-cal-001-current-oof-v1",
+      "extends_contract_id": "sci-map-001-oof-products-v1",
+      "admission_scope": "current_production_candidate",
+      "entry_additions": [
+        {
+          "entry_id": "current-calibration-provenance",
+          "family_id": "current_calibration_package_provenance",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "every current-production observation publishes exactly one finalized v4 provenance artifact",
+          "pattern": "{obs}/raw_timestream_provenance.yaml",
+          "checks": {
+            "schema_version": "citlali-raw-timestream-provenance-v4",
+            "current_calibration_package": true
+          }
+        },
+        {
+          "entry_id": "current-selected-calibration-apt",
+          "family_id": "calibration_package_member",
+          "scope": "per_observation",
+          "classification": "optional_diagnostic",
+          "condition": "v4 provenance semantics require exactly one member when effectively calibrated and forbid it when effectively uncalibrated",
+          "pattern": "{obs}/selected_calibration_apt.ecsv",
+          "checks": {"nonempty": true}
+        }
+      ]
+    },
+    {
+      "contract_id": "sci-cal-001-current-science-products-v1",
+      "profile_id": "sci-cal-001-current-science-v1",
+      "extends_contract_id": "sci-map-001-science-products-v1",
+      "admission_scope": "current_production_candidate",
+      "entry_additions": [
+        {
+          "entry_id": "current-calibration-provenance",
+          "family_id": "current_calibration_package_provenance",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "every current-production observation publishes exactly one finalized v4 provenance artifact",
+          "pattern": "{obs}/raw_timestream_provenance.yaml",
+          "checks": {
+            "schema_version": "citlali-raw-timestream-provenance-v4",
+            "current_calibration_package": true
+          }
+        },
+        {
+          "entry_id": "current-selected-calibration-apt",
+          "family_id": "calibration_package_member",
+          "scope": "per_observation",
+          "classification": "optional_diagnostic",
+          "condition": "v4 provenance semantics require exactly one member when effectively calibrated and forbid it when effectively uncalibrated",
+          "pattern": "{obs}/selected_calibration_apt.ecsv",
+          "checks": {"nonempty": true}
+        }
+      ]
+    },
+    {
+      "contract_id": "sci-cal-001-current-beammap-products-v1",
+      "profile_id": "sci-cal-001-current-beammap-v1",
+      "extends_contract_id": "sci-map-001-beammap-products-v1",
+      "admission_scope": "current_production_candidate",
+      "entry_additions": [
+        {
+          "entry_id": "current-calibration-provenance",
+          "family_id": "current_calibration_package_provenance",
+          "scope": "per_observation",
+          "classification": "required",
+          "condition": "every current-production observation publishes exactly one finalized v4 provenance artifact",
+          "pattern": "{obs}/raw_timestream_provenance.yaml",
+          "checks": {
+            "schema_version": "citlali-raw-timestream-provenance-v4",
+            "current_calibration_package": true
+          }
+        },
+        {
+          "entry_id": "current-selected-calibration-apt",
+          "family_id": "calibration_package_member",
+          "scope": "per_observation",
+          "classification": "optional_diagnostic",
+          "condition": "v4 provenance semantics require exactly one member when effectively calibrated and forbid it when effectively uncalibrated",
+          "pattern": "{obs}/selected_calibration_apt.ecsv",
+          "checks": {"nonempty": true}
+        }
+      ]
     }
   ]
 }

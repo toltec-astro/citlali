@@ -9,9 +9,11 @@
 #include <cstdint>
 #include <iomanip>
 #include <limits>
+#include <map>
 #include <sstream>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <vector>
 
 namespace timestream {
@@ -119,6 +121,13 @@ struct CalibrationRawArtifact {
     std::vector<double> absolute_tone_frequency_hz;
 };
 
+struct CalibrationAppliedExtinctionStateBasis {
+    bool available = false;
+    bool active = false;
+    Eigen::VectorXd sample_elevation_rad;
+    std::map<int, Eigen::VectorXd> los_tau_by_array;
+};
+
 struct CalibrationPackageLineage {
     std::string selected_apt_source_path;
     std::string selected_apt_sha256;
@@ -166,6 +175,7 @@ struct CalibrationProductAdmissionInputs {
     std::string acquisition_key_schema;
     std::string response_identity;
     std::string applied_sample_extinction_state_sha256;
+    CalibrationAppliedExtinctionStateBasis applied_sample_extinction_state;
     std::string atmosphere_operator_id;
     std::string atmosphere_operator_contract_sha256;
     std::string atmosphere_node_table_sha256;
@@ -178,6 +188,9 @@ struct CalibrationProductAdmissionInputs {
     Eigen::VectorXd target_unit_factor;
     bool observation_flxscale_correction_applied = false;
     double applied_observation_flxscale_correction = 1.0;
+    std::string observation_flxscale_correction_state{"not_applied"};
+    std::string observation_flxscale_correction_source_identity{"not_applied"};
+    std::string observation_flxscale_correction_recipient_identity;
     Eigen::VectorXd detector_flxscale;
     Eigen::VectorXd detector_responsivity;
     Eigen::VectorXd detector_sensitivity;
@@ -200,6 +213,8 @@ struct CalibrationProduct {
         "conditional_only;excludes_calibration_and_response_systematics;not_total_precision_or_significance";
     static constexpr std::string_view photometry_policy =
         "top_of_atmosphere_point_source_peak_mJy_per_beam";
+    static constexpr std::string_view observation_correction_source_identity =
+        "raw_observation_metadata:flxscale_correction";
     static constexpr std::string_view factor_provenance =
         "target_unit_factor=unity_dimensionless_for_mJy_per_beam;"
         "applied_observation_flxscale_correction=observation_metadata_scalar,multiplicative,source_APT_immutable;"
@@ -261,6 +276,7 @@ struct CalibrationProduct {
     std::string package_identity;
     std::string factor_state_sha256;
     std::string applied_sample_extinction_state_sha256;
+    CalibrationAppliedExtinctionStateBasis applied_sample_extinction_state;
     bool applied_identity_finalized = false;
     std::string atmosphere_operator_id;
     std::string atmosphere_operator_contract_sha256;
@@ -271,9 +287,13 @@ struct CalibrationProduct {
     bool reference_spectral_index_default_applied = true;
     double tau225 = std::numeric_limits<double>::quiet_NaN();
     CalibrationPackageLineage package_lineage;
+    Eigen::VectorXd identity_target_unit_factor;
     Eigen::VectorXd target_unit_factor;
     bool observation_flxscale_correction_applied = false;
     double applied_observation_flxscale_correction = 1.0;
+    std::string observation_flxscale_correction_state{"not_applied"};
+    std::string observation_flxscale_correction_source_identity{"not_applied"};
+    std::string observation_flxscale_correction_recipient_identity;
     Eigen::VectorXd detector_flxscale;
     Eigen::VectorXd signal_multiplier_without_extinction;
     Eigen::VectorXd minimum_extinction_correction;
@@ -299,12 +319,38 @@ inline void append_calibration_identity_field(
            << ':' << value;
 }
 
+inline std::string calibration_hexfloat(double value) {
+    std::ostringstream stream;
+    stream << std::hexfloat << value;
+    return stream.str();
+}
+
 inline std::string calibration_vector_identity(
     const Eigen::VectorXd &values) {
     std::ostringstream stream;
     stream << "calibration-vector-hexfloat-v1|count=" << values.size();
     for (Eigen::Index index = 0; index < values.size(); ++index) {
-        stream << '|' << index << '=' << std::hexfloat << values(index);
+        stream << '|' << index << '=' << calibration_hexfloat(values(index));
+    }
+    return citlali::utils::sha256(stream.str());
+}
+
+inline std::string applied_sample_extinction_state_identity(
+    const CalibrationAppliedExtinctionStateBasis &basis) {
+    if (!basis.active) {
+        return citlali::utils::sha256(
+            "sci-cal-001-applied-extinction-state-v1|active=false");
+    }
+    std::ostringstream stream;
+    stream << "sci-cal-001-applied-extinction-state-v1|active=true";
+    append_calibration_identity_field(
+        stream, "sample_elevation_sha256",
+        calibration_vector_identity(basis.sample_elevation_rad));
+    for (const auto &[array_id, los_tau] : basis.los_tau_by_array) {
+        append_calibration_identity_field(
+            stream, "array_" + std::to_string(array_id) +
+                        "_los_tau_sha256",
+            calibration_vector_identity(los_tau));
     }
     return citlali::utils::sha256(stream.str());
 }
@@ -326,6 +372,15 @@ inline std::string admitted_factor_state_identity(
         stream, "applied_observation_flxscale_correction",
         observation_correction.str());
     append_calibration_identity_field(
+        stream, "observation_flxscale_correction_state",
+        inputs.observation_flxscale_correction_state);
+    append_calibration_identity_field(
+        stream, "observation_flxscale_correction_source_identity",
+        inputs.observation_flxscale_correction_source_identity);
+    append_calibration_identity_field(
+        stream, "observation_flxscale_correction_recipient_identity",
+        inputs.observation_flxscale_correction_recipient_identity);
+    append_calibration_identity_field(
         stream, "detector_flxscale_sha256",
         calibration_vector_identity(inputs.detector_flxscale));
     append_calibration_identity_field(
@@ -337,8 +392,8 @@ inline std::string admitted_factor_state_identity(
     append_calibration_identity_field(
         stream, "applied_sample_extinction_state_sha256",
         inputs.applied_sample_extinction_state_sha256.empty()
-            ? citlali::utils::sha256(
-                  "sci-cal-001-applied-extinction-state-v1|active=false")
+            ? applied_sample_extinction_state_identity(
+                  inputs.applied_sample_extinction_state)
             : inputs.applied_sample_extinction_state_sha256);
     return citlali::utils::sha256(stream.str());
 }
@@ -502,10 +557,18 @@ inline CalibrationProduct reject_calibration_product(
     result.response_identity = inputs.response_identity;
     result.applied_sample_extinction_state_sha256 =
         inputs.applied_sample_extinction_state_sha256;
+    result.applied_sample_extinction_state =
+        inputs.applied_sample_extinction_state;
     result.observation_flxscale_correction_applied =
         inputs.observation_flxscale_correction_applied;
     result.applied_observation_flxscale_correction =
         inputs.applied_observation_flxscale_correction;
+    result.observation_flxscale_correction_state =
+        inputs.observation_flxscale_correction_state;
+    result.observation_flxscale_correction_source_identity =
+        inputs.observation_flxscale_correction_source_identity;
+    result.observation_flxscale_correction_recipient_identity =
+        inputs.observation_flxscale_correction_recipient_identity;
     result.atmosphere_operator_id = inputs.atmosphere_operator_id;
     result.atmosphere_operator_contract_sha256 =
         inputs.atmosphere_operator_contract_sha256;
@@ -580,11 +643,26 @@ inline CalibrationProduct admit_calibration_product(
             inputs, CalibrationValidityCause::missing_required_factor,
             "calibration response-basis or fixed-operator provenance is unavailable");
     }
-    if (inputs.extinction_requested &&
-        inputs.applied_sample_extinction_state_sha256.empty()) {
+    if (inputs.applied_sample_extinction_state.available &&
+        inputs.extinction_requested &&
+        (!inputs.applied_sample_extinction_state.active ||
+         inputs.applied_sample_extinction_state.sample_elevation_rad.size() <= 0 ||
+         inputs.applied_sample_extinction_state.los_tau_by_array.empty())) {
         return reject_calibration_product(
             inputs, CalibrationValidityCause::invalid_atmosphere_support,
             "complete applied sample-elevation/extinction identity is unavailable");
+    }
+    if (inputs.applied_sample_extinction_state.available &&
+        ((!inputs.extinction_requested &&
+         (inputs.applied_sample_extinction_state.active ||
+          inputs.applied_sample_extinction_state.sample_elevation_rad.size() != 0 ||
+          !inputs.applied_sample_extinction_state.los_tau_by_array.empty())) ||
+        inputs.applied_sample_extinction_state_sha256 !=
+            applied_sample_extinction_state_identity(
+                inputs.applied_sample_extinction_state))) {
+        return reject_calibration_product(
+            inputs, CalibrationValidityCause::invalid_atmosphere_support,
+            "applied sample-extinction identity basis is inconsistent");
     }
     if (inputs.package_lineage.modern_tolapt_manifest_available &&
         (inputs.package_lineage.modern_tolapt_manifest_path.empty() ||
@@ -637,8 +715,20 @@ inline CalibrationProduct admit_calibration_product(
             inputs, CalibrationValidityCause::acquisition_identity_invalid,
             "raw acquisition and selected APT stable-join cardinalities differ");
     }
-    if ((!inputs.observation_flxscale_correction_applied &&
-         inputs.applied_observation_flxscale_correction != 1.0) ||
+    const bool correction_state_valid =
+        inputs.observation_flxscale_correction_applied
+            ? inputs.observation_flxscale_correction_state == "applied_once" &&
+                  inputs.observation_flxscale_correction_source_identity ==
+                      CalibrationProduct::observation_correction_source_identity &&
+                  !inputs.observation_flxscale_correction_recipient_identity.empty() &&
+                  inputs.observation_flxscale_correction_recipient_identity ==
+                      inputs.raw_observation_identity
+            : inputs.applied_observation_flxscale_correction == 1.0 &&
+                  inputs.observation_flxscale_correction_state == "not_applied" &&
+                  inputs.observation_flxscale_correction_source_identity ==
+                      "not_applied" &&
+                  inputs.observation_flxscale_correction_recipient_identity.empty();
+    if (!correction_state_valid ||
         !finite_positive_vector(inputs.target_unit_factor) ||
         !std::isfinite(inputs.applied_observation_flxscale_correction) ||
         inputs.applied_observation_flxscale_correction <= 0.0 ||
@@ -698,6 +788,33 @@ inline CalibrationProduct admit_calibration_product(
             "observation extinction support is incomplete or invalid");
     }
 
+    Eigen::VectorXd composed_target_factor(detector_count);
+    Eigen::VectorXd composed_signal_factor(detector_count);
+    for (Eigen::Index detector = 0; detector < detector_count; ++detector) {
+        composed_target_factor(detector) =
+            inputs.target_unit_factor(detector) *
+            inputs.applied_observation_flxscale_correction;
+        composed_signal_factor(detector) =
+            composed_target_factor(detector) *
+            inputs.detector_flxscale(detector);
+        const double minimum_total = composed_signal_factor(detector) *
+            (inputs.extinction_requested
+                 ? inputs.minimum_extinction_correction(detector) : 1.0);
+        const double maximum_total = composed_signal_factor(detector) *
+            (inputs.extinction_requested
+                 ? inputs.maximum_extinction_correction(detector) : 1.0);
+        if (!std::isfinite(composed_target_factor(detector)) ||
+            composed_target_factor(detector) <= 0.0 ||
+            !std::isfinite(composed_signal_factor(detector)) ||
+            composed_signal_factor(detector) <= 0.0 ||
+            !std::isfinite(minimum_total) || minimum_total <= 0.0 ||
+            !std::isfinite(maximum_total) || maximum_total <= 0.0) {
+            return reject_calibration_product(
+                inputs, CalibrationValidityCause::invalid_required_factor,
+                "composed calibration factor is non-finite or non-positive");
+        }
+    }
+
     CalibrationProduct result;
     result.admitted = true;
     result.validity_cause = CalibrationValidityCause::valid_complete_product;
@@ -721,9 +838,11 @@ inline CalibrationProduct admit_calibration_product(
     result.response_identity = inputs.response_identity;
     result.applied_sample_extinction_state_sha256 =
         inputs.applied_sample_extinction_state_sha256.empty()
-            ? citlali::utils::sha256(
-                  "sci-cal-001-applied-extinction-state-v1|active=false")
+            ? applied_sample_extinction_state_identity(
+                  inputs.applied_sample_extinction_state)
             : inputs.applied_sample_extinction_state_sha256;
+    result.applied_sample_extinction_state =
+        inputs.applied_sample_extinction_state;
     result.factor_state_sha256 = admitted_factor_state_identity(inputs);
     result.calibration_identity = admitted_calibration_identity(
         inputs, result.factor_state_sha256);
@@ -745,14 +864,20 @@ inline CalibrationProduct admit_calibration_product(
         inputs.observation_flxscale_correction_applied;
     result.applied_observation_flxscale_correction =
         inputs.applied_observation_flxscale_correction;
+    result.observation_flxscale_correction_state =
+        inputs.observation_flxscale_correction_state;
+    result.observation_flxscale_correction_source_identity =
+        inputs.observation_flxscale_correction_source_identity;
+    result.observation_flxscale_correction_recipient_identity =
+        inputs.observation_flxscale_correction_recipient_identity;
     // calibrate_tod consumes this established compatibility carrier. The
     // canonical identity above retains the conceptual target-unit and
     // observation-correction factors separately.
-    result.target_unit_factor = inputs.target_unit_factor.array() *
-        inputs.applied_observation_flxscale_correction;
+    result.identity_target_unit_factor = inputs.target_unit_factor;
+    result.target_unit_factor = std::move(composed_target_factor);
     result.detector_flxscale = inputs.detector_flxscale;
     result.signal_multiplier_without_extinction =
-        result.target_unit_factor.array() * inputs.detector_flxscale.array();
+        std::move(composed_signal_factor);
     result.minimum_extinction_correction = inputs.extinction_requested
         ? inputs.minimum_extinction_correction
         : Eigen::VectorXd::Ones(detector_count);

@@ -11,6 +11,7 @@
 #include <citlali/core/pipeline/mapmaking_provenance_lifecycle.h>
 #include <citlali/core/pipeline/noise_provenance.h>
 #include <citlali/core/pipeline/raw_timestream_provenance_lifecycle.h>
+#include <citlali/core/pipeline/reduction_observation_inputs.h>
 #include <citlali/core/pipeline/reduction_observation_pipeline.h>
 #include <citlali/core/pipeline/science_map_provenance_serialization.h>
 #include <citlali/core/utils/fits_io.h>
@@ -29,6 +30,7 @@
 #include <cstring>
 #include <filesystem>
 #include <map>
+#include <limits>
 #include <memory>
 #include <stdexcept>
 #include <sstream>
@@ -277,16 +279,29 @@ struct F005Correction {
 
 struct F005RawObservation {
     const F005Correction *correction = nullptr;
+    std::string observation_name{"f005-production-observation"};
     const F005Correction *flxscale_correction() const { return correction; }
-    std::string name() const { return "f005-production-observation"; }
+    const std::string &name() const { return observation_name; }
 };
 
 struct F005CorrectionEngine {
-    struct {
+    struct Calib {
         std::map<std::string, Eigen::VectorXd> apt;
         Eigen::VectorXd flux_conversion_factor;
         std::map<std::string, double> mean_flux_conversion_factor;
+        int setup_calls = 0;
+
+        void calc_flux_calibration(const std::string &, double) {
+            ++setup_calls;
+            flux_conversion_factor =
+                Eigen::VectorXd::Ones(apt.at("flxscale").size());
+            mean_flux_conversion_factor.clear();
+        }
     } calib;
+    struct {
+        std::string sig_unit{"mJy/beam"};
+        double pixel_size_rad = 1.0e-5;
+    } omb;
 };
 
 struct F005AppliedCorrectionState {
@@ -299,14 +314,19 @@ F005AppliedCorrectionState apply_f005_production_correction(double factor) {
     F005CorrectionEngine engine;
     engine.calib.apt["flxscale"] = Eigen::VectorXd::Ones(1);
     engine.calib.apt["sens"] = Eigen::VectorXd::Constant(1, 2.0);
-    engine.calib.flux_conversion_factor = Eigen::VectorXd::Ones(1);
     const auto source_flxscale = engine.calib.apt.at("flxscale");
     const auto source_sensitivity = engine.calib.apt.at("sens");
     const F005Correction correction{factor};
-    const F005RawObservation rawobs{&correction};
-    if (!citlali::pipeline::apply_flxscale_correction(
+    const F005RawObservation rawobs{&correction,
+                                    "f005-production-observation"};
+    if (!citlali::pipeline::
+             prepare_reduction_observation_flux_calibration_state(
             engine, rawobs, science_map_test_logger())) {
         throw std::runtime_error("valid F005 production correction rejected");
+    }
+    if (engine.calib.setup_calls != 1) {
+        throw std::runtime_error(
+            "F005 correction did not follow production carrier setup");
     }
     if (!engine.calib.apt.at("flxscale").isApprox(source_flxscale, 0.0) ||
         !engine.calib.apt.at("sens").isApprox(source_sensitivity, 0.0)) {
@@ -408,6 +428,15 @@ timestream::CalibrationProductAdmissionInputs f005_admission_inputs(
     inputs.observation_flxscale_correction_applied = correction_applied;
     inputs.applied_observation_flxscale_correction =
         correction_applied ? state.applied_correction : 1.0;
+    inputs.observation_flxscale_correction_state =
+        correction_applied ? "applied_once" : "not_applied";
+    inputs.observation_flxscale_correction_source_identity =
+        correction_applied
+            ? std::string{timestream::CalibrationProduct::
+                              observation_correction_source_identity}
+            : "not_applied";
+    inputs.observation_flxscale_correction_recipient_identity =
+        correction_applied ? inputs.raw_observation_identity : std::string{};
     inputs.detector_flxscale =
         Eigen::VectorXd::Constant(1, state.source_flxscale);
     inputs.detector_responsivity = Eigen::VectorXd::Ones(1);
@@ -419,6 +448,10 @@ timestream::CalibrationProductAdmissionInputs f005_admission_inputs(
         Eigen::VectorXd::Constant(1, 9.0);
     inputs.minimum_extinction_correction = Eigen::VectorXd::Ones(1);
     inputs.maximum_extinction_correction = Eigen::VectorXd::Ones(1);
+    inputs.applied_sample_extinction_state.available = true;
+    inputs.applied_sample_extinction_state_sha256 =
+        timestream::applied_sample_extinction_state_identity(
+            inputs.applied_sample_extinction_state);
     return inputs;
 }
 
@@ -879,6 +912,77 @@ TEST(science_map_fits_products,
 }
 
 TEST(science_map_fits_products,
+     production_correction_setup_owns_reset_reuse_and_composition_failure) {
+    F005CorrectionEngine engine;
+    engine.calib.apt["flxscale"] = Eigen::VectorXd::Ones(1);
+    engine.calib.apt["sens"] = Eigen::VectorXd::Constant(1, 2.0);
+    const auto source_flxscale = engine.calib.apt.at("flxscale");
+    const auto source_sensitivity = engine.calib.apt.at("sens");
+    const auto logger = science_map_test_logger();
+    const std::string state_key{
+        citlali::pipeline::observation_flxscale_correction_state_key};
+
+    const F005Correction first_correction{3.0};
+    const F005RawObservation first{&first_correction, "observation-a"};
+    ASSERT_TRUE(citlali::pipeline::
+                    prepare_reduction_observation_flux_calibration_state(
+                        engine, first, logger));
+    ASSERT_EQ(engine.calib.setup_calls, 1);
+    ASSERT_DOUBLE_EQ(engine.calib.flux_conversion_factor(0), 3.0);
+    ASSERT_DOUBLE_EQ(engine.calib.mean_flux_conversion_factor.at(state_key),
+                     3.0);
+
+    const auto applied_once = engine.calib.flux_conversion_factor;
+    EXPECT_FALSE(citlali::pipeline::apply_flxscale_correction(
+        engine, first, logger));
+    EXPECT_TRUE(engine.calib.flux_conversion_factor.isApprox(
+        applied_once, 0.0));
+
+    const F005Correction second_correction{4.0};
+    const F005RawObservation second{&second_correction, "observation-b"};
+    ASSERT_TRUE(citlali::pipeline::
+                    prepare_reduction_observation_flux_calibration_state(
+                        engine, second, logger));
+    EXPECT_EQ(engine.calib.setup_calls, 2);
+    EXPECT_DOUBLE_EQ(engine.calib.flux_conversion_factor(0), 4.0);
+    EXPECT_DOUBLE_EQ(engine.calib.mean_flux_conversion_factor.at(state_key),
+                     4.0);
+
+    const F005RawObservation uncorrected{nullptr, "observation-c"};
+    ASSERT_TRUE(citlali::pipeline::
+                    prepare_reduction_observation_flux_calibration_state(
+                        engine, uncorrected, logger));
+    EXPECT_EQ(engine.calib.setup_calls, 3);
+    EXPECT_TRUE(engine.calib.flux_conversion_factor.isOnes());
+    EXPECT_EQ(engine.calib.mean_flux_conversion_factor.count(state_key), 0U);
+
+    engine.calib.flux_conversion_factor(0) =
+        std::numeric_limits<double>::max();
+    const F005Correction overflow_correction{2.0};
+    const F005RawObservation overflow{&overflow_correction, "overflow"};
+    EXPECT_FALSE(citlali::pipeline::apply_flxscale_correction(
+        engine, overflow, logger));
+    EXPECT_EQ(engine.calib.flux_conversion_factor(0),
+              std::numeric_limits<double>::max());
+    EXPECT_EQ(engine.calib.mean_flux_conversion_factor.count(state_key), 0U);
+
+    engine.calib.flux_conversion_factor(0) =
+        std::numeric_limits<double>::denorm_min();
+    const F005Correction underflow_correction{0.5};
+    const F005RawObservation underflow{&underflow_correction, "underflow"};
+    EXPECT_FALSE(citlali::pipeline::apply_flxscale_correction(
+        engine, underflow, logger));
+    EXPECT_EQ(engine.calib.flux_conversion_factor(0),
+              std::numeric_limits<double>::denorm_min());
+    EXPECT_EQ(engine.calib.mean_flux_conversion_factor.count(state_key), 0U);
+
+    EXPECT_TRUE(engine.calib.apt.at("flxscale").isApprox(
+        source_flxscale, 0.0));
+    EXPECT_TRUE(engine.calib.apt.at("sens").isApprox(
+        source_sensitivity, 0.0));
+}
+
+TEST(science_map_fits_products,
      production_observation_correction_reaches_weights_maps_and_noise_variance_I) {
     const F005AppliedCorrectionState uncorrected{1.0, 2.0, 1.0};
     const double correction_factor = 3.0;
@@ -1283,6 +1387,7 @@ TEST(science_map_fits_products,
     engine.calib.apt["a_fwhm"] = Eigen::VectorXd::Constant(1, 10.0);
     engine.calib.apt["b_fwhm"] = Eigen::VectorXd::Constant(1, 9.0);
     engine.calib.apt["angle"] = Eigen::VectorXd::Constant(1, 0.25);
+    engine.raw_timestream_plan.reset_from_request(raw);
 
     const auto identity =
         citlali::pipeline::calibration_response_identity(engine);
@@ -1364,6 +1469,7 @@ TEST(science_map_fits_products,
     raw.filter.enabled = false;
     raw.filter.a_gibbs = 31.0;
     engine.rtcproc.run_tod_filter = false;
+    engine.raw_timestream_plan.reset_from_request(raw);
     const auto first =
         citlali::pipeline::calibration_response_identity(engine);
     EXPECT_NE(first.find("effective_fir_state=inactive"), std::string::npos);
@@ -1371,8 +1477,43 @@ TEST(science_map_fits_products,
     raw.filter.a_gibbs = 49.0;
     const auto second =
         citlali::pipeline::calibration_response_identity(engine);
-    EXPECT_NE(first, second);
+    EXPECT_EQ(first, second);
     EXPECT_EQ(second.find("effective_fir_a_gibbs"), std::string::npos);
+    engine.raw_timestream_plan.requested.filter.a_gibbs = 51.0;
+    EXPECT_NE(citlali::pipeline::calibration_response_identity(engine),
+              first);
+}
+
+TEST(science_map_fits_products,
+     calibration_response_identity_binds_notch_application_sample_rate) {
+    const auto identity_at_sample_rate = [](double sample_rate_hz) {
+        Engine engine;
+        configure_production_writer_engine(engine);
+        engine.telescope.fsmp = sample_rate_hz;
+        engine.raw_timestream_plan.reset_from_request(
+            engine.typed_config.timestream.raw_time_chunk);
+        engine.rtcproc.begin_reduced_observation("152390", 0);
+        engine.rtcproc.begin_observation_applied_response_history();
+
+        timestream::RTCProc::RTCAppliedResponseNotch notch;
+        notch.stage = "configured_filter";
+        notch.scan = 0;
+        notch.scope = "fixed";
+        notch.ordinal = 0;
+        notch.center_hz = 10.0;
+        notch.width_hz = 2.0;
+        notch.sample_rate_hz = sample_rate_hz;
+        engine.rtcproc.record_applied_response_notch(std::move(notch));
+        return citlali::pipeline::calibration_response_identity(engine);
+    };
+
+    const auto at_100_hz = identity_at_sample_rate(100.0);
+    const auto at_200_hz = identity_at_sample_rate(200.0);
+    EXPECT_NE(at_100_hz, at_200_hz);
+    EXPECT_NE(at_100_hz.find("sample_rate_hz=0x1.9p+6"),
+              std::string::npos);
+    EXPECT_NE(at_200_hz.find("sample_rate_hz=0x1.9p+7"),
+              std::string::npos);
 }
 
 TEST(science_map_fits_products,
@@ -1532,6 +1673,7 @@ TEST(science_map_fits_products,
             EXPECT_FALSE(record.phase_convention.empty());
             EXPECT_TRUE(std::isfinite(record.center_hz));
             EXPECT_TRUE(std::isfinite(record.width_hz));
+            EXPECT_DOUBLE_EQ(record.sample_rate_hz, 64.0);
         }
     }
 }
@@ -1539,6 +1681,10 @@ TEST(science_map_fits_products,
 TEST(science_map_fits_products,
      response_history_lifecycle_resets_and_preserves_finalized_snapshot) {
     timestream::RTCProc rtcproc;
+    EXPECT_FALSE(rtcproc.applied_response_history_available());
+    EXPECT_TRUE(rtcproc.consume_applied_response_notches().empty());
+    EXPECT_FALSE(rtcproc.applied_response_history_available());
+    rtcproc.begin_reduced_observation("observation-a", 0);
     rtcproc.begin_observation_applied_response_history();
     timestream::RTCProc::RTCAppliedResponseNotch interrupted;
     interrupted.scan = 0;
@@ -1553,6 +1699,7 @@ TEST(science_map_fits_products,
     EXPECT_TRUE(rtcproc.snapshot_applied_response_notches().empty());
     const auto unavailable = rtcproc.consume_applied_response_notches();
     EXPECT_TRUE(unavailable.empty());
+    EXPECT_TRUE(rtcproc.applied_response_history_available());
     EXPECT_TRUE(rtcproc.consume_applied_response_notches().empty());
     EXPECT_THROW(rtcproc.record_applied_response_notch(interrupted),
                  std::logic_error);
@@ -1576,26 +1723,41 @@ TEST(science_map_fits_products,
     const auto reused = rtcproc.consume_applied_response_notches();
     ASSERT_EQ(reused.size(), 1U);
     EXPECT_DOUBLE_EQ(reused.at(0).front().center_hz, 12.0);
+    EXPECT_EQ(reused.at(0).front().reduced_observation_identity,
+              "observation-a");
+    EXPECT_EQ(reused.at(0).front().fruit_iteration, 0);
 }
 
 TEST(science_map_fits_products,
      finalized_joins_are_idempotent_homogeneous_and_fail_closed) {
     timestream::RTCProc rtcproc;
+    rtcproc.begin_reduced_observation("obs-a", 0);
     rtcproc.record_finalized_calibration_join("obs-a", "cal-a", "pkg-a");
     EXPECT_NO_THROW(rtcproc.record_finalized_calibration_join(
         "obs-a", "cal-a", "pkg-a"));
     EXPECT_THROW(rtcproc.record_finalized_calibration_join(
                      "obs-a", "cal-b", "pkg-b"),
                  std::logic_error);
+    rtcproc.begin_reduced_observation("obs-b", 0);
     rtcproc.record_finalized_calibration_join("obs-b", "cal-a", "pkg-a");
     const auto homogeneous =
         rtcproc.homogeneous_calibration_join({"obs-a", "obs-b"});
     EXPECT_EQ(homogeneous.calibration_identity, "cal-a");
     EXPECT_EQ(homogeneous.package_identity, "pkg-a");
+    rtcproc.begin_reduced_observation("obs-c", 0);
     rtcproc.record_finalized_calibration_join("obs-c", "cal-c", "pkg-c");
     EXPECT_THROW(rtcproc.homogeneous_calibration_join({"obs-a", "obs-c"}),
                  std::logic_error);
     EXPECT_THROW(rtcproc.homogeneous_calibration_join({"obs-missing"}),
+                 std::logic_error);
+
+    rtcproc.begin_reduced_observation("obs-a", 1);
+    EXPECT_TRUE(rtcproc.finalized_calibration_joins.empty());
+    EXPECT_NO_THROW(rtcproc.record_finalized_calibration_join(
+        "obs-a", "cal-fruit-1", "pkg-fruit-1"));
+    ASSERT_EQ(rtcproc.finalized_calibration_joins.size(), 1U);
+    EXPECT_EQ(rtcproc.finalized_calibration_joins.front().fruit_iteration, 1);
+    EXPECT_THROW(rtcproc.homogeneous_calibration_join({"obs-a", "obs-b"}),
                  std::logic_error);
 
     citlali::pipeline::RawTimestreamExecutionPlan plan;
@@ -1673,7 +1835,15 @@ TEST(science_map_fits_products,
 }
 
 template <class EngineType>
-void admit_production_calibration_fixture(EngineType &engine) {
+void admit_production_calibration_fixture(EngineType &engine,
+                                          bool finalize = true,
+                                          bool active_extinction = false) {
+    if (engine.observation_identity.obsnum.empty()) {
+        engine.observation_identity.obsnum = "152390";
+    }
+    engine.rtcproc.begin_reduced_observation(
+        engine.observation_identity.obsnum, engine.iteration.fruit_iter);
+    engine.rtcproc.begin_observation_applied_response_history();
     timestream::CalibrationProductAdmissionInputs inputs;
     inputs.target_unit = "mJy/beam";
     inputs.calibration_requested = true;
@@ -1711,6 +1881,14 @@ void admit_production_calibration_fixture(EngineType &engine) {
         std::string{engine.rtcproc.calibration.reference_profile_id()};
     inputs.tau225 = 0.0;
     inputs.target_unit_factor = Eigen::VectorXd::Ones(1);
+    inputs.observation_flxscale_correction_applied = true;
+    inputs.applied_observation_flxscale_correction = 3.0;
+    inputs.observation_flxscale_correction_state = "applied_once";
+    inputs.observation_flxscale_correction_source_identity =
+        std::string{timestream::CalibrationProduct::
+                        observation_correction_source_identity};
+    inputs.observation_flxscale_correction_recipient_identity =
+        inputs.raw_observation_identity;
     inputs.detector_flxscale = Eigen::VectorXd::Constant(1, 2.0);
     inputs.detector_beam_major_fwhm_arcsec =
         Eigen::VectorXd::Constant(1, 10.0);
@@ -1718,6 +1896,26 @@ void admit_production_calibration_fixture(EngineType &engine) {
         Eigen::VectorXd::Constant(1, 9.0);
     inputs.minimum_extinction_correction = Eigen::VectorXd::Ones(1);
     inputs.maximum_extinction_correction = Eigen::VectorXd::Ones(1);
+    inputs.applied_sample_extinction_state.available = true;
+    if (active_extinction) {
+        inputs.extinction_requested = true;
+        inputs.minimum_extinction_correction =
+            Eigen::VectorXd::Constant(1, std::exp(0.1));
+        inputs.maximum_extinction_correction =
+            inputs.minimum_extinction_correction;
+        auto &state = inputs.applied_sample_extinction_state;
+        state.active = true;
+        state.sample_elevation_rad = Eigen::VectorXd::Ones(1);
+        state.los_tau_by_array.emplace(
+            0, Eigen::VectorXd::Constant(1, 0.1));
+        state.los_tau_by_array.emplace(
+            1, Eigen::VectorXd::Constant(1, 0.2));
+        state.los_tau_by_array.emplace(
+            2, Eigen::VectorXd::Constant(1, 0.3));
+    }
+    inputs.applied_sample_extinction_state_sha256 =
+        timestream::applied_sample_extinction_state_identity(
+            inputs.applied_sample_extinction_state);
     inputs.package_lineage.selected_apt_source_path = "fixture.ecsv";
     inputs.package_lineage.selected_apt_sha256 =
         inputs.apt_artifact_sha256;
@@ -1740,7 +1938,33 @@ void admit_production_calibration_fixture(EngineType &engine) {
         std::move(lineage_row));
     engine.rtcproc.calibration.admit_product(inputs);
     ASSERT_TRUE(engine.rtcproc.calibration.product.valid());
-    citlali::pipeline::finalize_complete_calibration_product_identity(engine);
+    if (finalize) {
+        citlali::pipeline::finalize_complete_calibration_product_identity(
+            engine);
+    }
+}
+
+TEST(science_map_fits_products,
+     reused_calibrator_apt_joins_distinct_reduced_observations) {
+    Engine engine;
+    configure_production_writer_engine(engine);
+    engine.observation_identity.obsnum = "science-observation-a";
+    admit_production_calibration_fixture(engine);
+    const auto calibration_identity =
+        engine.rtcproc.calibration.product.calibration_identity;
+    const auto package_identity =
+        engine.rtcproc.calibration.product.package_identity;
+
+    engine.observation_identity.obsnum = "science-observation-b";
+    admit_production_calibration_fixture(engine);
+    EXPECT_EQ(engine.rtcproc.calibration.product.calibration_identity,
+              calibration_identity);
+    EXPECT_EQ(engine.rtcproc.calibration.product.package_identity,
+              package_identity);
+    const auto joined = engine.rtcproc.homogeneous_calibration_join(
+        {"science-observation-a", "science-observation-b"});
+    EXPECT_EQ(joined.calibration_identity, calibration_identity);
+    EXPECT_EQ(joined.package_identity, package_identity);
 }
 
 TEST(science_map_fits_products,
@@ -1783,6 +2007,207 @@ TEST(science_map_fits_products,
               engine.rtcproc.calibration.product.package_identity);
     EXPECT_EQ(read_string("CAL.CALIBRATION_IDENTITY"), read_string("CALID"));
     EXPECT_EQ(read_string("CAL.PACKAGE_IDENTITY"), read_string("CALPKGID"));
+    int correction_applied = 0;
+    double correction_factor = 0.0;
+    file.getVar("CAL.OBSERVATION_FLXSCALE_CORRECTION_APPLIED")
+        .getVar(&correction_applied);
+    file.getVar("CAL.APPLIED_OBSERVATION_FLXSCALE_CORRECTION")
+        .getVar(&correction_factor);
+    EXPECT_EQ(correction_applied, 1);
+    EXPECT_DOUBLE_EQ(correction_factor, 3.0);
+    EXPECT_EQ(read_string("CAL.OBSERVATION_FLXSCALE_CORRECTION_STATE"),
+              "applied_once");
+    EXPECT_EQ(
+        read_string(
+            "CAL.OBSERVATION_FLXSCALE_CORRECTION_SOURCE_IDENTITY"),
+        timestream::CalibrationProduct::
+            observation_correction_source_identity);
+    EXPECT_EQ(
+        read_string(
+            "CAL.OBSERVATION_FLXSCALE_CORRECTION_RECIPIENT_IDENTITY"),
+        "production-writer-raw-identity");
+    file.close();
+
+    citlali::pipeline::RawTimestreamExecutionPlan plan;
+    plan.reset_from_request(citlali::config::RawTimeChunkConfig{});
+    plan.begin_observation().canonical_calibration_product =
+        engine.rtcproc.calibration.product;
+    const auto provenance =
+        citlali::pipeline::raw_timestream_provenance_node(plan);
+    const auto factors = provenance["calibration_lineage"]["value"]
+        ["factor_operator_state"];
+    EXPECT_TRUE(
+        factors["observation_flxscale_correction_applied"].as<bool>());
+    EXPECT_DOUBLE_EQ(
+        factors["applied_observation_flxscale_correction"].as<double>(),
+        3.0);
+    EXPECT_EQ(
+        factors["observation_flxscale_correction_state"].as<std::string>(),
+        "applied_once");
+    const auto basis = factors["identity_basis"];
+    EXPECT_EQ(
+        basis["schema_version"].as<std::string>(),
+        "sci-cal-001-admitted-factor-identity-basis-v1");
+    const auto target = basis["target_unit_factor"];
+    EXPECT_EQ(target["count"].as<int>(), 1);
+    EXPECT_EQ(target["values"][0].as<std::string>(), "0x1p+0");
+    EXPECT_EQ(
+        target["sha256"].as<std::string>(),
+        timestream::calibration_vector_identity(Eigen::VectorXd::Ones(1)));
+    const auto flxscale = basis["detector_flxscale"];
+    EXPECT_EQ(flxscale["values"][0].as<std::string>(), "0x1p+1");
+    const auto extinction = basis["applied_sample_extinction_state"];
+    EXPECT_TRUE(extinction["available"].as<bool>());
+    EXPECT_FALSE(extinction["active"].as<bool>());
+    EXPECT_EQ(
+        extinction["sha256"].as<std::string>(),
+        timestream::applied_sample_extinction_state_identity(
+            engine.rtcproc.calibration.product
+                .applied_sample_extinction_state));
+    std::filesystem::remove(path);
+}
+
+TEST(science_map_fits_products,
+     active_extinction_identity_basis_roundtrips_exact_hexfloat_yaml) {
+    EXPECT_EQ(
+        timestream::calibration_hexfloat(
+            std::numeric_limits<double>::denorm_min()),
+        "0x1p-1074");
+    Engine engine;
+    configure_production_writer_engine(engine);
+    admit_production_calibration_fixture(engine, true, true);
+    citlali::pipeline::RawTimestreamExecutionPlan plan;
+    plan.reset_from_request(citlali::config::RawTimeChunkConfig{});
+    plan.begin_observation().canonical_calibration_product =
+        engine.rtcproc.calibration.product;
+
+    const auto serialized = YAML::Dump(
+        citlali::pipeline::raw_timestream_provenance_node(plan));
+    const auto reopened = YAML::Load(serialized);
+    const auto factors = reopened["calibration_lineage"]["value"]
+        ["factor_operator_state"];
+    const auto basis = factors["identity_basis"];
+    EXPECT_EQ(
+        basis["target_unit_factor"]["sha256"].as<std::string>(),
+        "e651fd05d98b2429fbd1355727fd4e9c7d417582aaf721a67b302ac5c14ab452");
+    EXPECT_EQ(
+        basis["minimum_extinction_correction"]["values"][0]
+            .as<std::string>(),
+        "0x1.1aec7b35a00d4p+0");
+    EXPECT_EQ(
+        basis["minimum_extinction_correction"]["sha256"].as<std::string>(),
+        "639d6259d3b18f32f8464b52681e5d54736e81da46a88043ba8a95cd97b7b52d");
+    const auto extinction = basis["applied_sample_extinction_state"];
+    EXPECT_TRUE(extinction["available"].as<bool>());
+    EXPECT_TRUE(extinction["active"].as<bool>());
+    EXPECT_EQ(
+        extinction["sample_elevation_rad"]["values"][0].as<std::string>(),
+        "0x1p+0");
+    EXPECT_EQ(
+        extinction["los_tau_by_array"][0]["los_tau"]["values"][0]
+            .as<std::string>(),
+        "0x1.999999999999ap-4");
+    EXPECT_EQ(
+        extinction["los_tau_by_array"][1]["los_tau"]["values"][0]
+            .as<std::string>(),
+        "0x1.999999999999ap-3");
+    EXPECT_EQ(
+        extinction["los_tau_by_array"][2]["los_tau"]["values"][0]
+            .as<std::string>(),
+        "0x1.3333333333333p-2");
+    EXPECT_EQ(
+        extinction["sha256"].as<std::string>(),
+        "b2043d14a309d6e124e287b0c30b3828d3da340d6cf6bd8d675d519fd2cb7ea4");
+}
+
+TEST(science_map_fits_products,
+     actual_tod_link_publication_is_atomic_and_excludes_interruption) {
+    const auto path = std::filesystem::path(testing::TempDir()) /
+        "citlali-f008-actual-tod-link.nc";
+    std::filesystem::remove(path);
+    std::filesystem::remove(path.string() + ".calibration-link.tmp");
+    write_netcdf_atomic(path.string(), [](netCDF::NcFile &file) {
+        add_netcdf_var(file, "TOD.SKELETON", 1);
+    });
+
+    const auto publish = [&](bool fail_validation) {
+        citlali::engine_detail::publish_linked_tod_atomic(
+            path,
+            [](netCDF::NcFile &staged) {
+                add_netcdf_var(staged, "CAL.JOIN_AVAILABLE", true);
+                add_netcdf_var(
+                    staged, "CALID", std::string{"calibration-id"});
+                add_netcdf_var(
+                    staged, "CALPKGID", std::string{"package-id"});
+            },
+            [&](netCDF::NcFile &staged) {
+                EXPECT_FALSE(staged.getVar("TOD.SKELETON").isNull());
+                EXPECT_FALSE(staged.getVar("CALID").isNull());
+                EXPECT_FALSE(staged.getVar("CALPKGID").isNull());
+                if (fail_validation) {
+                    throw DataIOError("interrupted before atomic replace");
+                }
+            });
+    };
+
+    ASSERT_NO_THROW(publish(false));
+    EXPECT_FALSE(std::filesystem::exists(
+        path.string() + ".calibration-link.tmp"));
+    {
+        netCDF::NcFile file(path.string(), netCDF::NcFile::read);
+        EXPECT_FALSE(file.getVar("CALID").isNull());
+        EXPECT_FALSE(file.getVar("CALPKGID").isNull());
+        file.close();
+    }
+
+    write_netcdf_atomic(path.string(), [](netCDF::NcFile &file) {
+        add_netcdf_var(file, "TOD.SKELETON", 1);
+    });
+    EXPECT_THROW(publish(true), DataIOError);
+    EXPECT_FALSE(std::filesystem::exists(path));
+    EXPECT_FALSE(std::filesystem::exists(
+        path.string() + ".calibration-link.tmp"));
+
+    write_netcdf_atomic(path.string(), [](netCDF::NcFile &file) {
+        add_netcdf_var(file, "TOD.SKELETON", 1);
+    });
+    EXPECT_THROW(
+        citlali::engine_detail::publish_linked_tod_atomic(
+            path,
+            [](netCDF::NcFile &staged) {
+                add_netcdf_var(staged, "CALID", std::string{"partial"});
+                throw DataIOError("interrupted during staged write");
+            },
+            [](netCDF::NcFile &) {}),
+        DataIOError);
+    EXPECT_FALSE(std::filesystem::exists(path));
+    EXPECT_FALSE(std::filesystem::exists(
+        path.string() + ".calibration-link.tmp"));
+}
+
+TEST(science_map_fits_products,
+     inactive_calibration_publishes_true_unavailable_tod_join) {
+    timestream::RTCProc rtcproc;
+    struct CalibMetadataFixture {
+        Eigen::VectorXi arrays = Eigen::VectorXi::Zero(1);
+    } calib;
+    std::map<int, std::string> array_names{{0, "a1100"}};
+    std::map<std::string, Eigen::VectorXd> telescope_data;
+    const auto path = std::filesystem::path(testing::TempDir()) /
+        "citlali-f008-inactive-calibration.nc";
+    std::filesystem::remove(path);
+    write_netcdf_atomic(path.string(), [&](netCDF::NcFile &file) {
+        citlali::pipeline::add_tod_mean_tau_vars(
+            file, false, rtcproc, telescope_data, 0.0,
+            calib, array_names);
+    });
+
+    netCDF::NcFile file(path.string(), netCDF::NcFile::read);
+    int join_available = 1;
+    file.getVar("CAL.JOIN_AVAILABLE").getVar(&join_available);
+    EXPECT_EQ(join_available, 0);
+    EXPECT_TRUE(file.getVar("CALID").isNull());
+    EXPECT_TRUE(file.getVar("CALPKGID").isNull());
     file.close();
     std::filesystem::remove(path);
 }
@@ -3106,8 +3531,24 @@ TEST(science_map_fits_products,
               engine.rtcproc.calibration.product.calibration_identity);
     EXPECT_EQ(read_required_fits_long_string(file, "CALPKGID"),
               engine.rtcproc.calibration.product.package_identity);
+    int correction_applied = 0;
+    double correction_factor = 0.0;
+    ASSERT_EQ(fits_read_key(
+                  file, TLOGICAL, "CAL.OBS_FLXSCALE_APPLIED",
+                  &correction_applied, nullptr, &status),
+              0);
+    ASSERT_EQ(fits_read_key(
+                  file, TDOUBLE, "CAL.OBS_FLXSCALE_FACTOR",
+                  &correction_factor, nullptr, &status),
+              0);
+    EXPECT_EQ(correction_applied, 1);
+    EXPECT_DOUBLE_EQ(correction_factor, 3.0);
+    EXPECT_EQ(read_required_fits_long_string(
+                  file, "CAL.OBS_FLXSCALE_STATE"),
+              "applied_once");
     EXPECT_EQ(fits_close_file(file, &status), 0);
 
+    engine.rtcproc.begin_reduced_observation("152391", 0);
     engine.rtcproc.record_finalized_calibration_join(
         "152391", engine.rtcproc.calibration.product.calibration_identity,
         engine.rtcproc.calibration.product.package_identity);
@@ -3136,6 +3577,7 @@ TEST(science_map_fits_products,
               engine.rtcproc.calibration.product.package_identity);
     EXPECT_EQ(fits_close_file(coadd_file, &status), 0);
 
+    engine.rtcproc.begin_reduced_observation("152392", 0);
     engine.rtcproc.record_finalized_calibration_join(
         "152392", "heterogeneous-calid", "heterogeneous-pkgid");
     auto heterogeneous_coadd = make_production_science_map_buffer(
@@ -3167,7 +3609,23 @@ TEST(science_map_fits_products,
     beammap.calib.apt_header_keys = {"uid", "flag", "flag2"};
     beammap.calib.apt["uid"] = Eigen::VectorXd::Constant(1, 42.0);
     beammap.calib.apt["flag"] = Eigen::VectorXd::Zero(1);
-    admit_production_calibration_fixture(beammap);
+    admit_production_calibration_fixture(beammap, false);
+    ASSERT_NO_THROW(beammap.populate_beammap_tau_metadata());
+    EXPECT_FALSE(beammap.calib.apt_meta["calibration_join_available"]
+                     .as<bool>());
+    EXPECT_EQ(beammap.calib.apt_meta["calibration_join_state"]
+                  .as<std::string>(),
+              "pending_finalization");
+    EXPECT_FALSE(
+        beammap.rtcproc.calibration.product.applied_identity_finalized);
+    citlali::pipeline::finalize_complete_calibration_product_identity(
+        beammap);
+    ASSERT_NO_THROW(beammap.populate_beammap_tau_metadata());
+    EXPECT_TRUE(beammap.calib.apt_meta["calibration_join_available"]
+                    .as<bool>());
+    EXPECT_EQ(beammap.calib.apt_meta["calibration_join_state"]
+                  .as<std::string>(),
+              "finalized");
 
     const auto base = beammap.write_beammap_apt_table();
     const auto path = std::filesystem::path(base + ".ecsv");
@@ -3185,6 +3643,14 @@ TEST(science_map_fits_products,
               beammap.rtcproc.calibration.product.calibration_identity);
     EXPECT_EQ(meta["package_identity"].as<std::string>(),
               beammap.rtcproc.calibration.product.package_identity);
+    EXPECT_TRUE(
+        meta["observation_flxscale_correction_applied"].as<bool>());
+    EXPECT_DOUBLE_EQ(
+        meta["applied_observation_flxscale_correction"].as<double>(),
+        3.0);
+    EXPECT_EQ(meta["observation_flxscale_correction_state"]
+                  .as<std::string>(),
+              "applied_once");
 }
 
 TEST(science_map_fits_products,

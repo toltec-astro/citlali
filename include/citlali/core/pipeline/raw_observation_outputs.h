@@ -3,7 +3,22 @@
 #include <citlali/core/pipeline/raw_map_outputs.h>
 #include <citlali/core/pipeline/stage_profile.h>
 
+#include <memory>
+#include <type_traits>
+#include <utility>
+
 namespace citlali::pipeline {
+
+template <class Engine, class = void>
+struct has_tod_only_finalized_header_publication : std::false_type {};
+
+template <class Engine>
+struct has_tod_only_finalized_header_publication<
+    Engine, std::void_t<decltype(
+        std::declval<Engine &>().add_tod_header(
+            std::declval<decltype(
+                std::addressof(std::declval<Engine &>().omb)) &>()))>>
+    : std::true_type {};
 
 template <class Engine>
 bool should_output_raw_observation_maps(const Engine &engine) {
@@ -46,6 +61,17 @@ void write_raw_observation_outputs(TodProc &todproc,
         engine, stage_profile, logger);
     output_raw_observation_maps_if_needed<RawObsMap>(
         engine, stage_profile, logger);
+    using EngineType = std::remove_reference_t<decltype(engine)>;
+    if constexpr (
+        has_tod_only_finalized_header_publication<EngineType>::value) {
+        if (!should_output_raw_observation_maps(engine) &&
+            tod_output_files_available(engine)) {
+            // Map writers attach the finalized link when mapmaking is active.
+            // TOD-only operation must publish the same finalized metadata.
+            auto *observation_map = std::addressof(engine.omb);
+            engine.add_tod_header(observation_map);
+        }
+    }
 }
 
 }  // namespace citlali::pipeline

@@ -3,6 +3,9 @@
 #include <citlali/core/pipeline/flxscale_correction_logging.h>
 #include <citlali/core/pipeline/flxscale_correction_metadata.h>
 
+#include <Eigen/Core>
+
+#include <cmath>
 #include <string>
 #include <string_view>
 #include <type_traits>
@@ -16,11 +19,6 @@ inline constexpr std::string_view observation_flxscale_correction_state_key =
 template <class Engine>
 bool has_apt_flxscale_column(const Engine &engine) {
     return engine.calib.apt.count("flxscale") != 0;
-}
-
-template <class Engine>
-void multiply_apt_flxscale_column(Engine &engine, double factor) {
-    engine.calib.apt["flxscale"].array() *= factor;
 }
 
 template <class Engine, class = void>
@@ -45,14 +43,19 @@ bool record_observation_flxscale_correction(Engine &engine, double factor) {
     if (summary.count(key) != 0) {
         return false;
     }
-    state.array() *= factor;
+    const Eigen::VectorXd composed = state.array() * factor;
+    if (!(state.array().isFinite() && (state.array() > 0.0)).all() ||
+        !(composed.array().isFinite() && (composed.array() > 0.0)).all()) {
+        return false;
+    }
+    state = composed;
     summary[key] = factor;
     return true;
 }
 
 template <class Engine, class RawObs, class Logger>
-bool apply_flxscale_correction(Engine &engine, const RawObs &rawobs,
-                               const Logger &logger) {
+bool validate_flxscale_correction(const Engine &engine, const RawObs &rawobs,
+                                  const Logger &logger) {
     const auto *flxscale_corr = flxscale_correction_metadata(rawobs);
     if (!has_flxscale_correction(flxscale_corr)) {
         return true;
@@ -67,6 +70,20 @@ bool apply_flxscale_correction(Engine &engine, const RawObs &rawobs,
         log_missing_flxscale_column(rawobs, logger);
         return false;
     }
+    return true;
+}
+
+template <class Engine, class RawObs, class Logger>
+bool apply_flxscale_correction(Engine &engine, const RawObs &rawobs,
+                               const Logger &logger) {
+    if (!validate_flxscale_correction(engine, rawobs, logger)) {
+        return false;
+    }
+    const auto *flxscale_corr = flxscale_correction_metadata(rawobs);
+    if (!has_flxscale_correction(flxscale_corr)) {
+        return true;
+    }
+    const double factor = flxscale_correction_factor(*flxscale_corr);
 
     if constexpr (has_observation_flxscale_correction_state<Engine>::value) {
         if (engine.calib.mean_flux_conversion_factor.count(
@@ -79,17 +96,19 @@ bool apply_flxscale_correction(Engine &engine, const RawObs &rawobs,
         }
         if (!record_observation_flxscale_correction(engine, factor)) {
             logger->error(
-                "observation flxscale correction state has incorrect "
-                "cardinality for observation {}",
+                "observation flxscale correction state is unavailable, "
+                "already applied, or composes to a non-finite/non-positive "
+                "factor for observation {}",
                 rawobs.name());
             return false;
         }
     }
     else {
-        // Preserve the narrow legacy adapter used by configuration-only
-        // scaffolds. Production engines carry the correction separately so
-        // the source APT and source sensitivity remain immutable.
-        multiply_apt_flxscale_column(engine, factor);
+        logger->error(
+            "observation flxscale correction requires observation-owned "
+            "applied state for observation {}; source APT remains unchanged",
+            rawobs.name());
+        return false;
     }
     log_applied_flxscale_correction(factor, rawobs, logger);
     return true;
