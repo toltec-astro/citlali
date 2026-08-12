@@ -17,6 +17,38 @@ The project will improve the existing tree incrementally. It will not restart
 as a broad rewrite and will not rewrite the granular history of the validated
 branch. The exact validated tree will remain available for forensic review.
 
+## 2026-08-12 CAL Successor-5 Return And Successor-6 Authority
+
+The owner accepted the independent `SCI-CAL-001` successor-5 verdict `amend`
+and return for bounded successor-6 repair. Exact pushed candidate
+`5dfc414a13fe69e6b063608906d87e3b30491ec7` was independently re-audited at
+`900b7f8b3dac59246f7628a116923de07f678b16`. The immutable imported
+[report](audits/SCI-CAL-001_SUCCESSOR_5_REAUDIT_2026-08-12.md) and
+[local evidence](audits/evidence/SCI-CAL-001_SUCCESSOR_5_LOCAL_EVIDENCE_2026-08-12.yaml)
+are bound by the
+[owner acceptance](audits/packages/SCI-CAL-001_SUCCESSOR_5_OWNER_ACCEPTANCE_2026-08-12.md).
+
+F002, F003, F004, and F006 retain their bounded closures. F001 and F010 remain
+conditioned. F005, F007, F008, and local F009 remain open for production
+correction lifecycle, immutable and observation-owned joins, valid
+finalization and atomic linked publication, and legacy-aware executable
+lineage integrity. The CAL axes remain `approved`, `nonconformant`,
+`in_progress`, and `fail_closed`, with verdict `amend`.
+
+The frozen
+[successor-6 repair handoff](audits/packages/SCI-CAL-001_SUCCESSOR_6_BOUNDED_REPAIR_HANDOFF_2026-08-12.md)
+and [finding ledger](audits/proposals/SCI-CAL-001_SUCCESSOR_6_REPAIR_FINDING_LEDGER_2026-08-12.yaml)
+use exact pushed base `5dfc414a13fe69e6b063608906d87e3b30491ec7`,
+proposed branch `codex/repair-sci-cal-001-successor-6`, and an exact initial
+33-path ceiling. A later role-separated task must pass its READY checkpoint.
+It may not silently resolve the active v1--v3 contract contradiction: if
+legacy behavior cannot coexist with the v4 requirement, it stops for the
+owner to preserve the legacy epoch, create a successor contract/profile
+epoch, or explicitly supersede the affected authority. Per-artifact atomic
+publication remains mandatory. This update does not launch repair/re-audit,
+modify application code, access Unity, run reductions, change production,
+merge, push, contact external parties, or launch downstream work.
+
 ## 2026-08-11 CAL Successor-4 Return And Successor-5 Authority
 
 The owner accepted the independent `SCI-CAL-001` successor-4 verdict `amend`

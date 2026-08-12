@@ -1,0 +1,538 @@
+format_version: 1
+record_id: SCI-CAL-001-SUCCESSOR-5-INDEPENDENT-REAUDIT-LOCAL-EVIDENCE-001
+record_date: 2026-08-12
+evidence_classification: local_deterministic_only
+auditor_role: fresh_role_separated_independent_technical_auditor
+
+candidate:
+  requested_ref: origin/codex/repair-sci-cal-001-successor-5
+  local_ref_before_audit: codex/repair-sci-cal-001-successor-5
+  commit: 5dfc414a13fe69e6b063608906d87e3b30491ec7
+  parent: 693f1b107855e3ae9b36617323ca14aac868f304
+  parent_count: 1
+  tree: 72e4df08bc3677290b03d1c39457ea049f8db813
+  patch_sha256: 1c9e634c574da60c40cf7e2808b1ec1ac25d1fa8f80cd4de7cb31230365cf7d8
+  changed_path_count: 23
+  changed_path_status:
+    modified: 23
+    added: 0
+    deleted: 0
+    renamed: 0
+  changed_paths:
+    - doc/REFACTOR_STATUS.md
+    - include/citlali/core/engine/detail/beammap_setup_metadata_impl.h
+    - include/citlali/core/engine/detail/map_phdu_output_helpers.h
+    - include/citlali/core/engine/detail/ptc_line_audit_impl.h
+    - include/citlali/core/pipeline/calibration_product_admission.h
+    - include/citlali/core/pipeline/flxscale_correction.h
+    - include/citlali/core/pipeline/raw_timestream_observation_shadow.h
+    - include/citlali/core/pipeline/raw_timestream_provenance_lifecycle.h
+    - include/citlali/core/pipeline/reduction_observation_pipeline.h
+    - include/citlali/core/pipeline/tod_metadata_mapmaker_tau.h
+    - include/citlali/core/timestream/calibration_product.h
+    - include/citlali/core/timestream/rtc/rtcproc.h
+    - tests/test_calibration_product.cpp
+    - tests/test_science_map_fits_products.cpp
+    - tools/baseline/audit_reduction_run.py
+    - tools/baseline/examples/sci_cal_001_raw_timestream_provenance_v4.yaml
+    - tools/baseline/test_audit_reduction_run.py
+    - tools/baseline/test_compare_reduction_products.py
+    - tools/baseline/test_validate_product_contract.py
+    - tools/baseline/test_validation_profiles.py
+    - tools/config/audit_raw_timestream_execution_reads.py
+    - validation/product_contracts.json
+    - validation/validation_profiles.json
+  diff_stat:
+    insertions: 2026
+    deletions: 212
+  application_classified: true
+  all_paths_within_frozen_repair_ceiling: true
+  unclassified_paths: []
+
+ready_checkpoint:
+  required: true
+  returned_before_substantive_exposure: true
+  coordinator_accepted: true
+  candidate_identity_verified_local: true
+  candidate_identity_verified_live_origin: true
+  exact_patch_and_path_inventory_verified: true
+  worktree_clean: true
+  index_clean: true
+  initial_head_detached_at_candidate: true
+  initial_head_reflog_entries: 1
+  initial_worktree: /Users/gwilson/.codex/worktrees/c2ea/citlali-refactor
+  git_dir: /Users/gwilson/GitHub/citlali/.git/worktrees/citlali-refactor5
+  role_separation:
+    repair_worktree: /Users/gwilson/.codex/worktrees/e33a/citlali-refactor
+    coordination_worktree: /Users/gwilson/.codex/worktrees/b4ac/citlali-refactor
+    predecessor_reaudit_worktree: /Users/gwilson/.codex/worktrees/b0e6/citlali-refactor
+    physically_separate: true
+  proposed_audit_branch: codex/reaudit-sci-cal-001-successor-5-20260812
+  proposed_branch_absent_local_before_creation: true
+  proposed_branch_absent_remote_tracking_before_creation: true
+  proposed_branch_absent_live_origin_before_creation: true
+  branch_created_only_after_acceptance: true
+  branch_base: 5dfc414a13fe69e6b063608906d87e3b30491ec7
+  audit_branch_documentation_only: true
+  artifact_ceiling: 2
+  allowed_artifacts:
+    - doc/audits/SCI-CAL-001_SUCCESSOR_5_REAUDIT_2026-08-12.md
+    - doc/audits/evidence/SCI-CAL-001_SUCCESSOR_5_LOCAL_EVIDENCE_2026-08-12.yaml
+
+frozen_authority:
+  coordination_commit: 7b341a5fb1c96080f4c3513f62a4f12441f2443d
+  coordination_parent: aaa578f12a1bacc9476d8067d9f1554029b67f89
+  coordination_tree: ac6efb7d368c011c77a5d181226f83d844fe74bd
+  coordination_connectivity_verified: true
+  coordination_live_origin_verified: true
+  artifacts:
+    - role: successor_4_owner_acceptance
+      path: doc/audits/packages/SCI-CAL-001_SUCCESSOR_4_OWNER_ACCEPTANCE_2026-08-11.md
+      sha256: d01d329d08e3622f7e2329e1f889a19f47d0b24858453b2e60ed85e6b8bbce2d
+      git_blob: a58d4677bc9c6f6a136774fcebb8fd89eacf1d71
+      size_bytes: 5575
+    - role: successor_5_bounded_repair_handoff
+      path: doc/audits/packages/SCI-CAL-001_SUCCESSOR_5_BOUNDED_REPAIR_HANDOFF_2026-08-11.md
+      sha256: 28cb3732eaf4b43c4850dceefb836f099b0591b2feeb358a7bc5f1585c445a33
+      git_blob: a98b52e6b0087e664dd997bb370bb667c4620137
+      size_bytes: 10467
+    - role: successor_5_finding_ledger
+      path: doc/audits/proposals/SCI-CAL-001_SUCCESSOR_5_REPAIR_FINDING_LEDGER_2026-08-11.yaml
+      sha256: faf2f867a69062d040101bd4d2e969057e4fafb2e9ab3da8770f4fc1e821d45b
+      git_blob: 377580d93a815d52f12a21404a6e5f0509d9c675
+      size_bytes: 9937
+    - role: accepted_successor_4_reaudit_report
+      path: doc/audits/SCI-CAL-001_SUCCESSOR_4_REAUDIT_2026-08-11.md
+      sha256: 47a7bc888a2c5b1981e96287b46c20392146f073f1cdb5cc092e842ddeeb9d9c
+      git_blob: ed38ff0b2e47a09f016a8d30f1c078aacb14967d
+      size_bytes: 27091
+    - role: accepted_successor_4_local_evidence
+      path: doc/audits/evidence/SCI-CAL-001_SUCCESSOR_4_LOCAL_EVIDENCE_2026-08-11.yaml
+      sha256: 597f8fe2c9106e287cc1eda9e341ff8c50d0d90d151add8cf703904cbfae44a0
+      git_blob: e2a6ce96f1918b6137c16b2b9c9725891370a7c3
+      size_bytes: 19252
+  supplied_hash_matches_in_frozen_tree: 5
+  supplied_hash_collisions_in_frozen_tree: 0
+
+prohibitions_observed:
+  application_edit: false
+  configuration_edit: false
+  test_edit: false
+  build_system_edit: false
+  validation_product_edit: false
+  canonical_coordination_edit: false
+  candidate_repair: false
+  push: false
+  merge: false
+  unity_access_or_request: false
+  astronomical_reduction: false
+  source_injection: false
+  external_contact: false
+  downstream_task_creation: false
+  production_authorization: false
+  new_scientific_choice: false
+  heterogeneous_coadd_schema: false
+  global_transaction_or_rollback_layer: false
+  audit_artifacts_only: true
+
+preservation:
+  f002:
+    disposition: bounded_closure_preserved
+    operator_contract_sha256: 7a064ff768a3de4f427f1338d94ef6cb9026d248f3c3c816fc3dfc96d156e36a
+    operator_nodes_sha256: fd688a4cd3f46585b08631bc63a562aed482feb9b24ec9ee0071b70db7eb8a5f
+    generated_header_sha256: d322bdc863ccb1292325c739865f772ef53f4e9f4101967752027ea0a2413262
+    production_operator_sha256: 3fd4352d05e77e07c1e354b7e4124733505064667968676d8d4e94315017d584
+    parent_byte_identical: true
+    focused_cpp_tests_passed: 10
+    fidelity_or_uncertainty_claim: false
+  f003:
+    disposition: bounded_closure_preserved
+    typed_validation_blob: 93e2c576ae58b99dda461ee463de137ce99eaedd
+    cli_execution_boundary_blob: 6a92025f54d91327fbe15e9324eaf37b354d01a8
+    parent_byte_identical: true
+    unsupported_calibrated_unit_fails_at_startup_boundary: true
+    intentionally_uncalibrated_request_supported: true
+  f004:
+    disposition: bounded_closure_preserved
+    calib_header_blob: 19e844df971efb939af260ee0cc5bc8bd03417eb
+    calib_implementation_blob: 09050f56752fc37dc72484479aa1eb5a2b65c6bc
+    focused_lineage_test_blob: 54b310da831a5e823b1500c0cb2f462649272b09
+    parent_byte_identical: true
+    focused_apt_binding_lineage_unit_tests_passed: 9
+    legacy_manifest_unavailable_lineage_valid_in_producer: true
+  f006:
+    disposition: bounded_closure_preserved
+    calibrated_target_unit: mJy/beam
+    additional_calibrated_units_admitted: false
+    response_fidelity_claim: false
+  f001:
+    disposition: open_conditioned_unchanged
+    new_authorized_evidence: false
+  f010:
+    disposition: open_conditioned_unchanged
+    new_authorized_evidence: false
+
+build:
+  build_dir: /private/tmp/citlali-sci-cal-001-s5-reaudit-20260812-build
+  source_dir: /Users/gwilson/.codex/worktrees/c2ea/citlali-refactor
+  candidate_gitversion: 5dfc414a1
+  configuration: Release
+  tests_discovered_and_built: true
+  fresh_candidate_compilation: true
+  repair_candidate_binaries_reused: false
+  network_dependency_used: false
+  dependency_mode: already_present_local_source_trees_and_installed_libraries
+  configuration_retries_before_success: 2
+  retry_causes:
+    - default_logging_dependency_policy_selected_unavailable_conan_cmake_configure
+    - installed_eigen_5_selected_before_explicit_eigen_3_prefix
+  candidate_binaries_or_object_files_created_by_failed_configuration_attempts: false
+  cmake_cache_or_configuration_state_created_by_failed_configuration_attempts: true
+  final_configuration_result: passed
+  final_incremental_configuration_command: "cmake -S . -B /private/tmp/citlali-sci-cal-001-s5-reaudit-20260812-build -DEigen3_DIR=/opt/homebrew/opt/eigen@3/share/eigen3/cmake '-DCMAKE_PREFIX_PATH=/opt/homebrew;/opt/homebrew/opt/eigen@3;/opt/homebrew/opt/libomp;/opt/homebrew/opt/netcdf;/opt/homebrew/opt/hdf5;/opt/homebrew/opt/ccfits;/opt/homebrew/opt/cfitsio;/opt/homebrew/opt/fftw;/opt/homebrew/opt/boost'"
+  final_incremental_configuration_inherited_explicit_local_dependency_cache_policy: true
+  cmake_cache_sha256: 4d8fa4e2a5cd83f50d03b02e0d71dd470ad5cdbf450a6bb0992bd8374b2ee98c
+  build_commands:
+    - cmake --build /private/tmp/citlali-sci-cal-001-s5-reaudit-20260812-build -j 8
+    - cmake --build /private/tmp/citlali-sci-cal-001-s5-reaudit-20260812-build --target citlali_test citlali_safety_test citlali_science_map_fits_products_test citlali_science_map_truth_test -j 8
+  result: passed
+  candidate_build_failures: 0
+  warning_scope: third_party_only
+  targets:
+    - name: citlali_cli
+      path: /private/tmp/citlali-sci-cal-001-s5-reaudit-20260812-build/bin/citlali
+      sha256: ffeca6bf0a1ac350cd480091e1816d25e2e590e6a9c8056b3ea535648c1d8954
+    - name: citlali_test
+      path: /private/tmp/citlali-sci-cal-001-s5-reaudit-20260812-build/tests/citlali_test
+      sha256: de0c7ab2849a7b6d76028345396a074b8a5b1d2cb9ecd97578d3528cf89e266e
+    - name: citlali_safety_test
+      path: /private/tmp/citlali-sci-cal-001-s5-reaudit-20260812-build/tests/citlali_safety_test
+      sha256: 6e55fed91f76cb2e5fd68b6f1fe90ce757928ee68bad717c21e9b9296f291c9b
+    - name: citlali_science_map_fits_products_test
+      path: /private/tmp/citlali-sci-cal-001-s5-reaudit-20260812-build/tests/citlali_science_map_fits_products_test
+      sha256: 218917b48c6cfaa28e2e22b6e410dbfde24d364d43f3a1e4109922f169b6497d
+    - name: citlali_science_map_truth_test
+      path: /private/tmp/citlali-sci-cal-001-s5-reaudit-20260812-build/tests/citlali_science_map_truth_test
+      sha256: 9cd7a911858a23f6b7fd02a41c6066dc8051eae94349f7aa3658de5a368515eb
+
+checks:
+  - id: fresh_cli_help_smoke
+    command: /private/tmp/citlali-sci-cal-001-s5-reaudit-20260812-build/bin/citlali --help
+    result: passed
+    exit_code: 0
+  - id: full_ctest
+    command: ctest --test-dir /private/tmp/citlali-sci-cal-001-s5-reaudit-20260812-build -j 8 --output-on-failure
+    result: passed
+    enumerated: 678
+    runnable: 677
+    passed: 677
+    failed: 0
+    disabled: 1
+    disabled_test: MapFitterLifecycle.ExactProductSequence
+    disabled_state: pre_existing
+  - id: normal_test_binary
+    command: /private/tmp/citlali-sci-cal-001-s5-reaudit-20260812-build/tests/citlali_test --gtest_brief=1
+    result: passed
+    passed: 620
+    failed: 0
+    disabled: 1
+  - id: safety_test_binary
+    command: /private/tmp/citlali-sci-cal-001-s5-reaudit-20260812-build/tests/citlali_safety_test --gtest_brief=1
+    result: passed
+    passed: 14
+    failed: 0
+  - id: science_map_fits_test_binary
+    command: /private/tmp/citlali-sci-cal-001-s5-reaudit-20260812-build/tests/citlali_science_map_fits_products_test --gtest_brief=1
+    result: passed
+    passed: 43
+    failed: 0
+  - id: science_map_truth_test_binary
+    command: /private/tmp/citlali-sci-cal-001-s5-reaudit-20260812-build/tests/citlali_science_map_truth_test --gtest_brief=1
+    result: passed
+    passed: 31
+    failed: 0
+  - id: focused_atmosphere_cpp
+    command: "/private/tmp/citlali-sci-cal-001-s5-reaudit-20260812-build/tests/citlali_test --gtest_filter=citlali::calibration_atmosphere_operator.* --gtest_brief=1"
+    result: passed
+    passed: 10
+  - id: focused_apt_cpp
+    command: "/private/tmp/citlali-sci-cal-001-s5-reaudit-20260812-build/tests/citlali_test --gtest_filter=citlali::calib_apt_*.*:citlali::calib_unit_policy.* --gtest_brief=1"
+    result: passed
+    passed: 9
+  - id: focused_calibration_product_cpp
+    command: "/private/tmp/citlali-sci-cal-001-s5-reaudit-20260812-build/tests/citlali_test --gtest_filter=citlali::calibration_product.* --gtest_brief=1"
+    result: passed
+    passed: 14
+  - id: focused_successor_routes_cpp
+    command: "/private/tmp/citlali-sci-cal-001-s5-reaudit-20260812-build/tests/citlali_science_map_fits_products_test --gtest_filter=*calibration*:*response_history*:*canonical_package*:*tod_only*:*beammap_apt* --gtest_brief=1"
+    result: passed
+    passed: 9
+  - id: baseline_python_unittest
+    command: "/Users/gwilson/tolteca/bin/python -m unittest discover -s tools/baseline -p 'test_*.py' -v"
+    result: passed
+    passed: 185
+    failed: 0
+  - id: changed_baseline_python_suites
+    command: "/Users/gwilson/tolteca/bin/python -m pytest -q -p no:cacheprovider tools/baseline/test_audit_reduction_run.py tools/baseline/test_compare_reduction_products.py tools/baseline/test_validate_product_contract.py tools/baseline/test_validation_profiles.py"
+    result: passed
+    passed: 136
+    failed: 0
+  - id: targeted_atmosphere_product_contract_python
+    command: "/Users/gwilson/tolteca/bin/python -m pytest -q -p no:cacheprovider tools/calibration/test_generate_atmosphere_operator_nodes.py tools/baseline/test_validate_product_contract.py"
+    result: passed
+    tests_passed: 30
+    subtests_passed: 2
+    failed: 0
+  - id: validation_ledger
+    command: /Users/gwilson/tolteca/bin/python tools/baseline/validate_validation_ledger.py
+    result: passed
+    records: 60
+  - id: science_change_ledger
+    command: /Users/gwilson/tolteca/bin/python tools/baseline/validate_science_change_ledger.py
+    result: passed
+    changes: 3
+    integration_commits: 5
+  - id: validation_profile_registry
+    command: /Users/gwilson/tolteca/bin/python tools/baseline/validation_profiles.py --list
+    result: passed
+    active_epoch: phase4-structural-closeout-2026-07-16
+    active_profiles: 4
+    preparing_profiles: 8
+  - id: config_preflight
+    command: /Users/gwilson/tolteca/bin/python tools/config/run_config_preflight.py --require-all
+    result: passed
+    unit_tests_passed: 127
+    unit_tests_failed: 0
+    mode_kits: 4
+    compatibility_cases_passed: 8
+    compatibility_cases_failed: 0
+    surface_coverage_percent: 100.0
+    schema_leaves: 592
+    schema_executable_leaves: 590
+    schema_non_executable_leaves: 2
+    schema_nodes: 748
+    authority_domains: 16
+    config_read_files: 27
+    config_read_sites: 132
+    config_read_accesses: 134
+    config_read_review_required: 0
+    raw_execution_records: 87
+    raw_execution_review_required: 0
+    raw_execution_drift: false
+    raw_execution_census_sha256: 6f850cbdf06458db3c408080a933149a87d97874e79d2a6161f4ba1c5757e488
+  - id: raw_execution_census_standalone
+    command: /Users/gwilson/tolteca/bin/python tools/config/audit_raw_timestream_execution_reads.py --fail-on-review --fail-on-drift
+    result: passed
+    records: 87
+    review_required: 0
+    drift: false
+    sha256: 6f850cbdf06458db3c408080a933149a87d97874e79d2a6161f4ba1c5757e488
+    classifications:
+      executor: 32
+      observation_state: 7
+      output_or_realized: 41
+      raw_policy: 3
+      polarimetry: 4
+  - id: atmosphere_generator
+    command: /Users/gwilson/tolteca/bin/python tools/calibration/generate_atmosphere_operator_nodes.py --check
+    result: passed
+    rows: 1368
+    series: 72
+  - id: candidate_diff_check
+    command: git diff --check 693f1b107855e3ae9b36617323ca14aac868f304 5dfc414a13fe69e6b063608906d87e3b30491ec7
+    result: passed
+  - id: candidate_patch_digest
+    command: git diff --binary 693f1b107855e3ae9b36617323ca14aac868f304 5dfc414a13fe69e6b063608906d87e3b30491ec7 | shasum -a 256
+    result: passed
+    sha256: 1c9e634c574da60c40cf7e2808b1ec1ac25d1fa8f80cd4de7cb31230365cf7d8
+  - id: candidate_changed_path_inventory
+    result: passed
+    paths: 23
+  - id: accepted_point_baseline_product_contract
+    command: /Users/gwilson/tolteca/bin/python tools/baseline/validate_product_contract.py /Users/gwilson/work_toltec/local_data/2026-refactor/point/refactor/reduced/redu66 --contract phase4-point-products-v1
+    result: rejected_reproduced_compatibility_contradiction
+    exit_code: 1
+    baseline_raw_provenance_schema: citlali-raw-timestream-provenance-v2
+    baseline_raw_provenance_sha256: c5c826f9ed9415a110ce2aff2c51d14dc16e6efab7b0cb8723b6487d7a6cdc44
+    baseline_effective_flux_calibration: true
+    baseline_selected_apt_sibling_exists: false
+    baseline_v2_semantic_errors: []
+    candidate_error: "selected-calibration-apt: pattern '152389/selected_calibration_apt.ecsv' matched 0; requires at least 1"
+    predecessor_contract_registry_sha256: 44e0bfc0277a155a1f9877776f1e9f5f50cfa2522bf3d79be6218ec48262bf9f
+    predecessor_contract_result: rejected_same_accepted_v2_baseline
+    predecessor_error: "selected-calibration-apt: pattern 'selected_calibration_apt.ecsv' matched 0; requires at least 1"
+    inherited_compatibility_contradiction_resolved: false
+    candidate_modified_active_contract_despite_frozen_stop_rule: true
+    unrelated_existing_map_contract_errors: 6
+  - id: accepted_point_profile_self_comparison
+    command: /Users/gwilson/tolteca/bin/python tools/baseline/validate_reduction.py /Users/gwilson/work_toltec/local_data/2026-refactor/point/refactor/reduced/redu66 --profile phase4-point-152389-v1 --baseline /Users/gwilson/work_toltec/local_data/2026-refactor/point/refactor/reduced/redu66
+    result: rejected_reproduced_active_profile_break
+    exit_code: 1
+    audit_gate: failed
+    config_gate: passed
+    contract_gate: failed
+    strict_product_comparison: passed
+
+bounded_counterexamples:
+  f005_production_and_extreme_factors:
+    result: nonconformities_reproduced
+    source_path: /private/tmp/sci_cal_f005_s5_counterexample.cpp
+    source_sha256: fb62fc3f5e2eeace8e07411a0a1058d32eaa6891f401b466fdfe1b6bc1e3e85f
+    compile_command: /usr/bin/c++ -std=c++20 -Iinclude -I/opt/homebrew/include/eigen3 /private/tmp/sci_cal_f005_s5_counterexample.cpp -o /private/tmp/sci_cal_f005_s5_counterexample_root
+    executable_path: /private/tmp/sci_cal_f005_s5_counterexample_root
+    executable_sha256: 6cb6bf945b0f35a2b3ca5b71d33754f8a6c78506b479458762b26c67f82ad927
+    output_sha256: 7f098ba8c9e7bbf60649566566c3070d7f02c8624944277738ffa188c2c22112
+    output:
+      - "fresh_apply=false carrier_size=0 source_flxscale_unchanged=true source_sens_unchanged=true"
+      - "high_valid=true high_multiplier=inf high_multiplier_finite=false"
+      - "low_valid=true low_multiplier=0 low_multiplier_positive=false"
+  f007_join_and_requested_state:
+    result: nonconformities_reproduced
+    source_path: /private/tmp/sci_cal_f007_join_counterexample.cpp
+    source_sha256: 3ef9cfa643ea6884363b1b0015eb42423c5a102ae78b861f12599c66a83c6bf4
+    compile_command: make -f /private/tmp/Makefile.sci_cal_f007_join
+    executable_path: /private/tmp/sci_cal_f007_join_counterexample
+    executable_sha256: 1413a327ea713b3ca5b3db2c42fe633e3a617ca0b93b6e5490cc2878a3244d7e
+    output_sha256: 6490c0d00b454c29d439a1107d8e1617d1a119f68ba8dcc50afcd4f50a763a46
+    output:
+      - "reused_apt_key_error=repeat observation finalization conflicts with the original calibration join"
+      - "output_obs_lookup_error=coadd contributor has no finalized calibration join: 152390"
+      - "reused_apt_rejected=true output_obs_lookup_rejected=true"
+      - "immutable_request_preserved=true response_changed_from_live_effective_mutation=true"
+  f007_filter_geometry_sample_rate:
+    result: identity_collision_reproduced
+    source_path: /private/tmp/sci_cal_f007_filter_geometry_counterexample.cpp
+    source_sha256: e52e3a2553e739f2d396bc1b2f96e247df47492ab99dbe01bf5c669e18c392b0
+    executable_path: /private/tmp/sci_cal_f007_filter_geometry_counterexample
+    executable_sha256: 7e467f667de1bc0b9fea0837c9be3f3735c626db216e391c96b7d1ba8e0d9615
+    output_sha256: b6f4c0ad7611fd160b2f9d0745d3c2b59d2a04c10b4506a170377940c3f8e409
+    output:
+      - same_recorded_geometry=true
+      - center_hz=10 width_hz=2 phase_convention=zero_phase_forward_reverse
+      - fs_a_hz=100 fs_b_hz=200 coefficient_delta=0.65143128109757631
+  f009_integrity_and_multi_observation:
+    result: false_accept_and_false_reject_reproduced
+    source_path: /private/tmp/sci_cal_f009_s5_counterexamples.py
+    source_sha256: bff7bfae2c7163533af4af36bd3edda277e74db10b4ad7ce9fb3542170d3c017
+    command: PYTHONDONTWRITEBYTECODE=1 /Users/gwilson/tolteca/bin/python /private/tmp/sci_cal_f009_s5_counterexamples.py
+    output_sha256: 679abfe8465514f50e41b09f87ed8781acdb160682750b570877f7b467511da6
+    selected_apt_fixture_sha256: f5c609c91ecc0bc83f3d84c4dfd0daf7b1542d149f915d40495368be60c75bd5
+    raw_v4_fixture_sha256: 4c978778b0b379ab7678817efc7ec3befacbbfc680991410c4f22a84dbc317fc
+    output:
+      - "impossible_manifest_pair_errors=[]"
+      - "legacy_empty_manifest_association_errors=['v4 calibration component tolapt_manifest_association_sha256 is not canonical sha256']"
+      - "tampered_ordered_row_errors=[]"
+      - "tampered_factor_state_errors=[]"
+      - "duplicated_package_multiosb=valid:True count:2 coverage:True"
+
+finding_evidence:
+  f005:
+    disposition: open_nonconformant
+    production_correction_initial_carrier_available: false
+    production_correction_survives_later_flux_setup: false
+    production_route_reaches_admission: false
+    production_source_apt_immutable_when_carrier_branch_selected: true
+    production_source_sensitivity_immutable: true
+    generic_fallback_source_apt_immutable: false
+    correction_state_observation_owned: false
+    multi_observation_duplicate_state_excluded: false
+    composed_multiplier_revalidated: false
+    overflow_product_rejected: false
+    underflow_zero_product_rejected: false
+    downstream_moderate_sample_factor_once_if_manually_injected: true
+    downstream_approximate_inverse_square_if_manually_injected: true
+    downstream_hybrid_inherits_approximate: true
+    downstream_validated_inherits_approximate: true
+    downstream_full_weight_unchanged: true
+    nonzero_realizations_and_noise_variance_I_reachable_if_manually_injected: true
+    real_production_test_exercises_initial_and_later_setup_order: false
+    applied_scalar_persisted_truthfully: false
+  f007:
+    disposition: open_nonconformant
+    actual_fixed_application_recorded_after_filter: true
+    actual_shared_application_recorded_after_filter: true
+    actual_detector_application_recorded_after_filter: true
+    required_record_fields_present_except_sample_rate: true
+    duplicates_and_order_preserved: true
+    dormant_stages_labelled_realized: false
+    immutable_requested_state_used_for_requested_digest: false
+    live_effective_state_mislabeled_requested: true
+    sample_rate_bound_into_actual_operator_identity: false
+    tod_only_finalized_join_published_by_production_route: false
+    coadd_join_key_matches_reduced_observation_identity: false
+    isolated_homogeneous_join_helper_conformant: true
+    isolated_heterogeneous_join_fails_closed: true
+    fruit_iteration_bound_into_ptc_application_identity: false
+    retained_join_registry_fruit_lifecycle_safe: false
+  f008:
+    disposition: open_nonconformant
+    history_reset_on_successful_observation_begin: true
+    reused_scan_history_reset_in_helper: true
+    multiscan_history_isolated_in_helper: true
+    consume_snapshot_immutable: true
+    repeat_same_response_finalization_idempotent: true
+    repeat_conflicting_response_finalization_rejected: true
+    process_global_or_static_state_added: false
+    canonical_package_helper_orders_package_first: true
+    calibrated_beammap_reaches_finalizer: false
+    dependent_tod_header_updated_atomically: false
+    unresolved_partial_tod_link_excluded: false
+    true_unavailable_history_tested: false
+    actual_dependent_writer_failure_tested: false
+    orphan_canonical_package_policy_preserved: true
+  local_f009:
+    disposition: open_nonconformant
+    actual_writer_path: "{obs}/selected_calibration_apt.ecsv"
+    actual_writer_path_matches_contract: true
+    per_observation_conditional_contract_entries: 6
+    supported_uncalibrated_v4_without_member_valid: true
+    actual_sibling_hash_verified: true
+    selected_source_package_component_digest_join_checked: true
+    package_identity_recomputed_from_claimed_calid_apt_and_acquisition: true
+    legacy_manifest_unavailable_producer_state_valid: true
+    legacy_manifest_unavailable_consumer_state_valid: false
+    impossible_manifest_false_nonempty_association_rejected: false
+    ordered_row_payload_digest_recomputed: false
+    raw_acquisition_payload_digest_recomputed: false
+    factor_payload_digest_recomputed: false
+    response_payload_calid_recomputed: false
+    copied_multi_observation_identity_rejected: false
+    v1_v4_schema_list_accepted_by_semantic_consumer: true
+    v1_v3_product_contract_compatibility_preserved: false
+    active_accepted_snapshot_immutable_policy_preserved: false
+    active_profile_comparison_weakened_by_nested_member_exclusion: true
+    local_integrity_surface_fail_open: true
+    controlled_production_axis_fail_closed: true
+
+scope_assessment:
+  expected_repair_paths_only: true
+  unexpected_unclassified_file: false
+  rtc_detection_or_selection_change: false
+  rtc_filter_coefficient_arithmetic_change: false
+  rtc_flagging_scan_or_cadence_change: false
+  mapmaking_algorithm_change: false
+  numerical_change_outside_authorized_f005: false
+  new_uncertainty_or_covariance_product: false
+  empirical_response_fidelity_claim_added: false
+  cross_package_architecture_change: false
+  global_transaction_architecture_change: false
+  raw_census_weakened: false
+  validation_profile_comparison_weakened: true
+  active_contract_modified_despite_inherited_compatibility_contradiction: true
+  false_status_claims_detected: true
+  scientific_choice_made_by_auditor: false
+  architecture_expansion_made_by_auditor: false
+
+disposition:
+  contract: approved
+  implementation: nonconformant
+  validation: in_progress
+  production: fail_closed
+  verdict: amend
+  candidate_complete_closure_accepted: false
+  owner_brief: return_F005_F007_F008_and_local_F009_for_new_bounded_owner_directed_repair
+  authorization_effect: none
+
+audit_artifacts:
+  - doc/audits/SCI-CAL-001_SUCCESSOR_5_REAUDIT_2026-08-12.md
+  - doc/audits/evidence/SCI-CAL-001_SUCCESSOR_5_LOCAL_EVIDENCE_2026-08-12.yaml

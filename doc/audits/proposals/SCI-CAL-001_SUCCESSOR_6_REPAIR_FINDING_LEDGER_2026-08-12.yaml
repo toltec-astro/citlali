@@ -1,0 +1,251 @@
+format_version: 1
+record_id: SCI-CAL-001-SUCCESSOR-6-REPAIR-FINDING-LEDGER-001
+record_date: 2026-08-12
+record_status: owner_authorized_pending_role_separated_ready_and_launch
+scope: F005_F007_F008_and_local_F009_only
+
+coordination_authority:
+  branch: codex/coordinate-rtc-ptc-queue
+  commit: 7b341a5fb1c96080f4c3513f62a4f12441f2443d
+  parent: aaa578f12a1bacc9476d8067d9f1554029b67f89
+  tree: ac6efb7d368c011c77a5d181226f83d844fe74bd
+
+application_base:
+  ref: origin/codex/repair-sci-cal-001-successor-5
+  commit: 5dfc414a13fe69e6b063608906d87e3b30491ec7
+  parent: 693f1b107855e3ae9b36617323ca14aac868f304
+  tree: 72e4df08bc3677290b03d1c39457ea049f8db813
+  patch_sha256: 1c9e634c574da60c40cf7e2808b1ec1ac25d1fa8f80cd4de7cb31230365cf7d8
+
+source_reaudit:
+  branch: codex/reaudit-sci-cal-001-successor-5-20260812
+  commit: 900b7f8b3dac59246f7628a116923de07f678b16
+  parent: 5dfc414a13fe69e6b063608906d87e3b30491ec7
+  tree: 880a632c6f51e919176bc78dc9a1d1a0361d8fa9
+  documentation_patch_sha256: 476f8fb872c9d10ef6f2f040e271c01d6a1788c26248cd287346806bcd3d510c
+  disposition: amend_return_for_bounded_successor_6_repair
+  owner_disposition: accepted
+  report:
+    path: doc/audits/SCI-CAL-001_SUCCESSOR_5_REAUDIT_2026-08-12.md
+    sha256: 7f3a484cf5d446647313659a3d6d3103805837ecbb3a9d77034d49bb5762234a
+    immutable: true
+  evidence:
+    path: doc/audits/evidence/SCI-CAL-001_SUCCESSOR_5_LOCAL_EVIDENCE_2026-08-12.yaml
+    sha256: e6d8d721c02d22683a0ca8500efcd66d1e53c00b85d9529f92bd1c7ccbc64206
+    immutable: true
+
+owner_acceptance:
+  path: doc/audits/packages/SCI-CAL-001_SUCCESSOR_5_OWNER_ACCEPTANCE_2026-08-12.md
+  sha256: 825f67f874f0ec444f2d3250b08174ef9c1b9ceaf35e87e8a33e236af991ea5f
+  decision_date: 2026-08-12
+  successor_6_scope_authorized: true
+
+proposed_repair:
+  branch: codex/repair-sci-cal-001-successor-6
+  base: 5dfc414a13fe69e6b063608906d87e3b30491ec7
+  role: application_technical_repair_only
+  role_separation_required: true
+  initial_ready_checkpoint_required: true
+  status: authorized_not_launched
+  launched: false
+  handoff_path: doc/audits/packages/SCI-CAL-001_SUCCESSOR_6_BOUNDED_REPAIR_HANDOFF_2026-08-12.md
+
+controlled_axes:
+  contract: approved
+  implementation: nonconformant
+  validation: in_progress
+  production: fail_closed
+  verdict: amend
+
+finding_accounting:
+  total: 10
+  closed_or_bounded_closure_retained: 4
+  open_bounded_repair: 4
+  open_conditioned_external: 2
+
+finding_dispositions:
+  - finding_id: SCI-CAL-001-F001
+    status: open
+    dependency_status: conditioned
+    successor_6_role: outside_repair
+  - finding_id: SCI-CAL-001-F002
+    status: closed
+    successor_6_role: preserve_narrow_structural_closure
+  - finding_id: SCI-CAL-001-F003
+    status: closed
+    successor_6_role: preserve_startup_and_admission_closure
+  - finding_id: SCI-CAL-001-F004
+    status: closed
+    successor_6_role: preserve_APT_lineage_and_association_closure
+  - finding_id: SCI-CAL-001-F005
+    status: open
+    repair_authorized: true
+    successor_6_role: production_correction_lifecycle_and_truthful_applied_state
+    required_closure:
+      - correction_carrier_initialized_before_application
+      - observation_owned_once_only_lifecycle
+      - composed_factor_finite_positive_fail_closed
+      - source_APT_and_source_sensitivity_immutable
+      - fallback_preserves_source_immutability
+      - applied_scalar_state_and_recipients_persisted_truthfully
+  - finding_id: SCI-CAL-001-F006
+    status: closed
+    successor_6_role: preserve_mJy_per_beam_configuration_boundary
+  - finding_id: SCI-CAL-001-F007
+    status: open
+    repair_authorized: true
+    successor_6_role: immutable_requested_state_and_observation_owned_complete_joins
+    required_closure:
+      - requested_identity_from_immutable_requested_state
+      - TOD_only_finalized_CALID_and_PKGID
+      - reduced_observation_and_contributor_join_ownership
+      - sample_rate_complete_operator_identity
+      - fruit_and_iteration_lifecycle_identity
+      - differing_contributor_CALIDs_fail_closed
+  - finding_id: SCI-CAL-001-F008
+    status: open
+    repair_authorized: true
+    successor_6_role: valid_finalization_order_and_atomic_linked_publication
+    required_closure:
+      - calibrated_Beammap_finalization_order
+      - canonical_package_before_dependent_products
+      - atomic_linked_TOD_publication
+      - observation_owned_join_reset
+      - true_unavailable_and_interrupted_lifecycle
+      - no_partial_artifact_represented_complete
+    per_artifact_atomic_publication: mandatory
+    global_cross_output_transaction: prohibited
+  - finding_id: SCI-CAL-001-F009
+    qualifier: local_implementation_portion_only
+    status: open
+    repair_authorized: true
+    successor_6_role: legacy_aware_payload_recomputation_and_production_shaped_identity
+    required_closure:
+      - valid_legacy_optional_modern_lineage
+      - recompute_serialized_payload_identities
+      - production_shaped_multi_observation_identity
+      - active_legacy_contract_compatibility_or_owner_stop
+  - finding_id: SCI-CAL-001-F010
+    status: open
+    dependency_status: conditioned
+    successor_6_role: outside_repair
+
+authority_sensitive_stop:
+  issue: active_v1_v3_contract_contradiction
+  silent_resolution_permitted: false
+  trigger: accepted_legacy_behavior_cannot_coexist_with_v4_requirement
+  required_owner_choices:
+    - preserve_legacy_epoch
+    - create_successor_contract_profile_epoch
+    - explicitly_supersede_affected_authority
+  repair_must_stop_before_choice: true
+
+initial_changed_path_ceiling:
+  count: 33
+  expansion_rule: stop_for_coordinator_and_owner_review
+  all_paths_must_exist_at_base: true
+  paths:
+    - src/citlali/core/engine/calib.cpp
+    - include/citlali/core/engine/detail/beammap_setup_impl.h
+    - include/citlali/core/engine/detail/beammap_setup_metadata_impl.h
+    - include/citlali/core/engine/detail/map_phdu_output_helpers.h
+    - include/citlali/core/engine/detail/tod_file_output_impl.h
+    - include/citlali/core/engine/detail/ptc_line_audit_impl.h
+    - include/citlali/core/pipeline/calibration_product_admission.h
+    - include/citlali/core/pipeline/flxscale_correction.h
+    - include/citlali/core/pipeline/initial_observation_setup.h
+    - include/citlali/core/pipeline/raw_observation_outputs.h
+    - include/citlali/core/pipeline/raw_timestream_execution_plan.h
+    - include/citlali/core/pipeline/raw_timestream_observation_shadow.h
+    - include/citlali/core/pipeline/raw_timestream_provenance.h
+    - include/citlali/core/pipeline/raw_timestream_provenance_lifecycle.h
+    - include/citlali/core/pipeline/reduction_observation_calibration.h
+    - include/citlali/core/pipeline/reduction_observation_inputs.h
+    - include/citlali/core/pipeline/reduction_observation_pipeline.h
+    - include/citlali/core/pipeline/tod_metadata_mapmaker_tau.h
+    - include/citlali/core/timestream/calibration_product.h
+    - include/citlali/core/timestream/rtc/rtcproc.h
+    - tests/test_calibration_product.cpp
+    - tests/test_science_map_fits_products.cpp
+    - tools/baseline/audit_reduction_run.py
+    - tools/baseline/examples/sci_cal_001_raw_timestream_provenance_v4.yaml
+    - tools/baseline/examples/sci_cal_001_selected_calibration_apt.ecsv
+    - tools/baseline/test_audit_reduction_run.py
+    - tools/baseline/test_compare_reduction_products.py
+    - tools/baseline/test_validate_product_contract.py
+    - tools/baseline/test_validation_profiles.py
+    - tools/baseline/validate_product_contract.py
+    - validation/product_contracts.json
+    - validation/validation_profiles.json
+    - doc/REFACTOR_STATUS.md
+
+required_focused_evidence:
+  F005:
+    - corrected_and_uncorrected_production_setup
+    - extreme_composed_factor_fail_closed
+    - observation_reuse_and_duplicate_application
+    - fallback_source_immutability
+    - nonzero_map_and_noise_variance_I_transfer
+    - persisted_applied_scalar_state_and_recipient_provenance
+  F007:
+    - immutable_requested_state_mutation_probe
+    - equal_notch_geometry_different_sample_rates
+    - TOD_only_writer_reopen_finalized_join
+    - calibrator_science_APT_reuse_with_distinct_reduced_observations
+    - homogeneous_and_heterogeneous_coadds
+    - fruit_iteration_and_reused_scan_lifecycles
+  F008:
+    - calibrated_Beammap_production_order
+    - canonical_package_before_dependent_product
+    - linked_TOD_atomic_interruption
+    - true_unavailable_and_inactive_lifecycle
+    - repeat_finalization_reused_scan_and_multiscan
+    - no_unresolved_or_partial_linked_product
+  local_F009:
+    - valid_legacy_no_manifest_and_optional_modern_lineage
+    - missing_tampered_stale_conflicting_and_forged_payloads
+    - raw_row_factor_response_CALID_and_package_identity_recomputation
+    - distinct_production_shaped_multi_observation_packages
+    - supported_uncalibrated_v4
+    - all_affected_active_legacy_baselines
+
+preservation_gates:
+  - F002_fixed_atmosphere_operator
+  - F003_startup_and_admission
+  - F004_APT_lineage_and_association
+  - F006_mJy_per_beam_boundary
+  - F001_and_F010_conditioned_outside_scope
+  - per_artifact_atomic_publication
+  - active_legacy_authority_until_explicit_owner_choice
+
+prohibitions:
+  - silent_v1_v3_contract_resolution
+  - per_artifact_atomicity_weakening
+  - source_APT_or_source_sensitivity_mutation
+  - calibration_arithmetic_weighting_variance_or_mapmaking_redesign
+  - heterogeneous_coadd_membership_schema
+  - global_cross_output_transaction_or_rollback_architecture
+  - new_uncertainty_or_covariance_product
+  - empirical_response_fidelity_claim
+  - cross_package_expansion
+  - local_science_reduction
+  - unity_access_or_request
+  - production_change
+  - downstream_launch
+  - external_contact
+  - merge
+  - push
+
+next_checkpoint:
+  name: READY
+  owner: coordinator
+  role_separated_task_required: true
+  repair_may_edit_before_approval: false
+  continuation_requires:
+    - exact_live_pushed_base_branch_parent_tree_and_patch
+    - fresh_clean_worktree_and_absent_successor_6_branch
+    - exact_33_path_finding_to_change_test_traceability
+    - preservation_plan_for_F002_F003_F004_F006
+    - confirmation_F001_F010_remain_conditioned_and_outside_scope
+    - explicit_v1_v3_authority_stop
+    - mandatory_per_artifact_atomicity
