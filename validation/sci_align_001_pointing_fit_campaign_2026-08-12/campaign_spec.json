@@ -18,8 +18,10 @@
   },
   "event_fit_successor": {
     "crossing_support": "tau-zero/PPT-centered separate contiguous passages through the 0.5 elliptical-FWHM contour",
-    "fit_window": "+/-1.5 local elliptical-FWHM crossing times intersected with frozen score and validity masks",
-    "numerical_overlap": "union only within one detector-scan objective mask",
+    "fit_window": "+/-1.5 local elliptical-FWHM crossing times intersected with frozen score and validity masks; adjacent passages in one detector-scan are partitioned at their sample midpoint",
+    "source_quality": "positive-amplitude interior spatial matched-filter peak with primary correlation >=0.5 and frozen 0.4/0.5/0.6 sensitivity",
+    "numerical_overlap": "prohibited between local centroid events; geometric event identities remain unchanged",
+    "corpus_estimator": "equal-total-weight-per-detector Huber regression of signed spatial event centroids",
     "visualization_unit": "one geometric crossing event per detail page",
     "pilot_obsnum": 150818,
     "pilot_owner_review_required_before_remaining_65": true,

@@ -187,20 +187,22 @@ That supplementary renderer was still too coarse: it represented one broad
 35-arcsec score-mask segment as one visual crossing even when a detector
 passed through the half-power contour more than once. The event-support
 successor restores the earlier checksum-bound, tau-zero/PPT-centered crossing
-definition and also uses it for the numerical objective. Each contiguous
+definition and uses the resulting event identities for local spatial
+matched-filter centroids. Each contiguous
 passage through the 0.5 elliptical-FWHM contour is retained as a separate
 event. Its +/-1.5-FWHM window is intersected with the frozen score/valid mask;
-overlaps are unioned only within the detector-scan numerical mask, never in
-the event catalog or individual-event PDF.
+adjacent passages within one detector-scan are partitioned at their
+integer-sample midpoint so no sample enters two local centroids.
 
-The local ObsNum 150818 gate reproduced the authenticated earlier support
-exactly: 962 geometric events, 907 complete events, 730 retained
-detector-scan groups, 546 detectors, and 24,298 scored values. It completed
-all four point fits and three PDFs in under one minute on the local reference
-machine. The lag point estimate was +4.106 ms, matching the earlier direct
-event-support fit; this numerical agreement was not used to define or accept
-the support. The first two individual pages deliberately show both distinct
-UID 1051 / scan-row 0 passages.
+The repaired local ObsNum 150818 gate reproduced 962 geometric and 907
+complete event identities, assessed all 907, and qualified 776 using the
+pre-specified primary morphology threshold. It completed event profiling,
+all four robust angular models, and checksum output in 1.73 seconds on the
+local reference machine. The lag point estimate was +4.046 ms; its proximity
+to earlier values was not used to define or accept the estimator. The first
+review explicitly includes qualified compact crossings, morphology rejections,
+unbracketed centroids, insufficient events, the largest robust residuals, and
+both passages of the first multi-event detector-scan.
 
 Run the same event gate on Unity into new output roots:
 
@@ -218,19 +220,19 @@ tail -F "/work/toltec/wilson/sci-align-event-pilot_${event_pilot_job_id}.out"
 Completion is `event pilot complete: obs=150818`. Verify both layers:
 
 ```bash
-export SCI_EVENT_PILOT="$SCI_CAMPAIGN_ROOT/event_fit_results_v1/o150818"
-export SCI_EVENT_REVIEW="$SCI_CAMPAIGN_ROOT/event_review_results_v1/o150818"
+export SCI_EVENT_PILOT="$SCI_CAMPAIGN_ROOT/event_centroid_fit_results_v1/o150818"
+export SCI_EVENT_REVIEW="$SCI_CAMPAIGN_ROOT/event_centroid_review_results_v1/o150818"
 (cd "$SCI_EVENT_PILOT" && shasum -a 256 -c FIT_GATE_SHA256SUMS)
 (cd "$SCI_EVENT_REVIEW" && shasum -a 256 -c SHA256SUMS)
 ```
 
-Inspect all pages of `event_crossing_validation_o150818.pdf`, both pages of
-`event_source_aligned_stacks_o150818.pdf`, and
-`event_tau_profile_o150818.pdf`. The first PDF uses one event per page,
+Inspect all pages of `event_centroid_validation_o150818.pdf`, both pages of
+`event_centroid_stacks_o150818.pdf`, and
+`event_centroid_tau_profile_o150818.pdf`. The first PDF uses one event per page,
 includes the full local context and geometry, and deliberately contains both
 passages of the first multi-event detector-scan. Stop if events are merged,
-the source is absent from the context, support does not bracket a crossing,
-or the objective profile is malformed.
+qualified pages do not show a compact source, rejected and qualified counts
+are conflated, or the robust objective profile is malformed.
 
 The remaining array is prepared but must not be submitted until that Unity
 pilot reproduces the local event identity and passes owner visual review. Once

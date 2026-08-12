@@ -81,6 +81,22 @@ the complete three-PDF visual inspection pass. A Unity pilot is prepared; the
 remaining 65 gates stay blocked until its identities and visuals receive owner
 review. See `EVENT_SUPPORT_SUCCESSOR_VALIDATION_06.md`.
 
+The Unity event pilot passed its checksums but the one-event pages then proved
+that the single common-centroid raw-SSE objective fits a material subset of
+real compact crossings badly. A fixed +/-50-ms event gate was explicitly
+rejected because it would manufacture a speed selection. The current
+successor instead profiles each complete geometric event on a symmetric
+spatial grid, qualifies only positive, bracketed compact-source centroids, and
+fits those angular displacements with equal total base weight per detector and
+a common Huber loss. Adjacent passages in one detector-scan are partitioned at
+their sample midpoint. On the sole permitted anchor, 776 of 907 assessed
+complete events qualify and the robust lag is +4.046 ms; all four model designs
+are full rank, but uncertainty remains intentionally deferred. The complete
+local three-PDF review passes. The remaining 65 observations are still blocked
+pending an owner-run Unity reproduction and visual review. See
+`REAL_EVENT_MODEL_ADEQUACY_FAILURE_07.md` and
+`event_centroid_protocol.json`.
+
 The bounded result is documented in `REPORT.md`. Compact authenticated values
 are in `partial_observation_results.ecsv` and
 `partial_observation_results.json`; exact input and result identities are in

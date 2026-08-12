@@ -1,0 +1,65 @@
+{
+  "schema": "sci-align-001-lissajous-event-centroid-protocol-v1",
+  "revision": 1,
+  "status": "frozen_after_anchor_residual_failure_before_any_nonanchor_fit",
+  "reason": "The ObsNum 150818 event review proves that a geometry-correct compact crossing can be fit poorly by the single common-centroid forward model; raw detector-weighted SSE is therefore not the corpus estimator.",
+  "crossing_authority": {
+    "path": "crossing_support_protocol.json",
+    "sha256": "8b20a76709d4626c6e57d0b8e0ed4da727410a9b8058820a248a121194b3aa34"
+  },
+  "source_quality": {
+    "input_events": "accepted complete geometric events",
+    "minimum_scored_samples_per_event": 8,
+    "overlapping_geometric_window_rule": "within one detector-scan, partition adjacent accepted event windows at floor((closest_i+closest_j)/2)+1 so every scored sample belongs to at most one local centroid",
+    "trajectory_center_grid_effective_fwhm": {
+      "minimum": -1.25,
+      "maximum": 1.25,
+      "count": 101,
+      "endpoint_peak_disposition": "reject_as_unbracketed"
+    },
+    "template": "fixed PPT elliptical Gaussian translated only along the local tau-zero event trajectory",
+    "profiled_nuisance": "event-local intercept and positive amplitude",
+    "score": "maximum Pearson correlation after local mean removal over the symmetric spatial grid",
+    "primary_minimum_correlation": 0.5,
+    "correlation_sensitivity_thresholds": [
+      0.4,
+      0.5,
+      0.6
+    ],
+    "qualification": "finite interior peak, positive amplitude, and correlation at or above threshold",
+    "fitted_global_tau_used_for_qualification": false
+  },
+  "centroid_estimator": {
+    "measurement": "parabolic refinement of the matched-filter maximum expressed as signed along-trajectory angular displacement from the PPT center",
+    "models": {
+      "constant": "s = ux*x0 + uy*y0",
+      "lag": "s = ux*x0 + uy*y0 - speed_arcsec_per_ms*tau_ms",
+      "hysteresis": "s = ux*x0 + uy*y0 + ux*sign(vx)*h_az + uy*sign(vy)*h_el",
+      "joint": "sum of the lag and hysteresis terms"
+    },
+    "sign_convention": "positive tau evaluates telescope coordinates later, so the source centroid in recorded-coordinate space shifts by -velocity*tau",
+    "base_weight": "each detector has unit total weight divided equally among its qualified events",
+    "robust_loss": "Huber IRLS with one common constant-model MAD scale",
+    "huber_tuning": 1.5,
+    "bounds": {
+      "x0_y0_arcsec": [-12.0, 12.0],
+      "tau_ms": [-50.0, 50.0],
+      "h_az_h_el_arcsec": [-5.0, 5.0]
+    },
+    "minimum_qualified_events": 30,
+    "minimum_qualified_detectors": 20,
+    "uncertainty": "deferred during baseline algorithm validation"
+  },
+  "required_visuals": [
+    "individual compact-source-qualified and rejected event profiles",
+    "locally aligned qualified and rejected morphology stacks",
+    "global-model-aligned direction stacks",
+    "measured-versus-predicted event centroids and robust residuals",
+    "profiled robust objective versus tau",
+    "truthful geometric, assessed, qualified, rejected, and fitted counts"
+  ],
+  "interpretation": {
+    "permitted": "baseline point estimates, objective and threshold sensitivity, event residual diagnostics",
+    "prohibited": "formal significance, uncertainty, causal identification, universal correction, or release of non-anchor observations before owner review"
+  }
+}

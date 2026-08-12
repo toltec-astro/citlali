@@ -41,7 +41,9 @@ def audit_row(
         return row
     analysis.verify_sha256s(fit_directory, "FIT_GATE_SHA256SUMS")
     gate = json.loads((fit_directory / "fit_gate.json").read_text())
-    if gate.get("schema") != "sci-align-001-lissajous-event-fit-gate-v1":
+    if gate.get("schema") != (
+        "sci-align-001-lissajous-event-centroid-fit-gate-v1"
+    ):
         raise CampaignAuditError(f"unsupported event gate for ObsNum {obsnum}")
     identity = gate["input"]
     if identity["ptc_sha256"] != selected["ptc_sha256"]:
@@ -53,13 +55,16 @@ def audit_row(
         return row
     analysis.verify_sha256s(review_directory)
     review = json.loads((review_directory / "manifest.json").read_text())
-    if review.get("schema") != "sci-align-001-lissajous-event-fit-review-v1":
+    if review.get("schema") != (
+        "sci-align-001-lissajous-event-centroid-review-v1"
+    ):
         raise CampaignAuditError(f"unsupported event review for ObsNum {obsnum}")
     fit_sha = analysis.sha256_file(fit_directory / "fit_gate.json")
     if review["fit_gate_sha256"] != fit_sha:
         raise CampaignAuditError(f"review fit identity changed for ObsNum {obsnum}")
     fits = gate["point_model_results"]
-    census = gate["crossing_support"]["census"]
+    crossing_census = gate["crossing_census"]
+    centroid_census = gate["centroid_census"]
     constant = fits["constant"]
     lag = fits["lag"]
     hysteresis = fits["hysteresis"]
@@ -71,15 +76,27 @@ def audit_row(
 
     row.update({
         "status": "complete",
-        "geometric_event_count": int(census["geometric_event_count"]),
-        "complete_event_count": int(census["accepted_event_count"]),
+        "geometric_event_count": int(crossing_census["geometric_event_count"]),
+        "complete_event_count": int(crossing_census["accepted_event_count"]),
+        "assessed_event_count": int(centroid_census["assessed_event_count"]),
+        "qualified_event_count": int(
+            centroid_census["primary_qualified_event_count"]
+        ),
+        "rejected_event_count": int(
+            centroid_census["primary_rejected_event_count"]
+        ),
+        "qualified_detector_count": int(
+            centroid_census["primary_qualified_detector_count"]
+        ),
         "retained_detector_scan_count": int(
-            census["retained_detector_scan_count"]
+            crossing_census["retained_detector_scan_count"]
         ),
         "retained_unique_detector_count": int(
-            census["retained_unique_detector_count"]
+            crossing_census["retained_unique_detector_count"]
         ),
-        "scored_value_count": int(census["retained_scored_sample_count"]),
+        "scored_value_count": int(
+            crossing_census["retained_scored_sample_count"]
+        ),
         "lag_tau_ms": float(lag["tau_ms"]),
         "lag_objective_improvement_fraction": improvement(lag),
         "hysteresis_az_half_offset_arcsec": parameter(
@@ -134,7 +151,9 @@ def run(args: argparse.Namespace) -> None:
         output / "event_fit_campaign_status.ecsv", format="ascii.ecsv"
     )
     manifest = {
-        "schema": "sci-align-001-lissajous-event-fit-campaign-audit-v1",
+        "schema": (
+            "sci-align-001-lissajous-event-centroid-fit-campaign-audit-v1"
+        ),
         "selection_path": str(args.selection.resolve()),
         "selection_sha256": analysis.sha256_file(args.selection.resolve()),
         "protocol_path": str(args.protocol.resolve()),

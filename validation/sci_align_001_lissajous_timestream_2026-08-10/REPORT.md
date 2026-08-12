@@ -125,6 +125,41 @@ result, observation result, and observation checksum manifest.
 files present before branch creation. They were not modified. A clean scoped
 diagnostic diff is claimed; a globally clean worktree is not.
 
+## Event-centroid successor (anchor only)
+
+The first Unity event-support review falsified the adequacy of raw
+detector-weighted SSE around one common centroid as the campaign estimator:
+recognizable compact crossings were visibly missed. The replacement keeps the
+signal-blind tau-zero geometric event catalog, but measures every complete
+event with a local spatial matched filter. Quality requires an interior peak,
+positive amplitude, at least eight scored samples, and correlation at or above
+the pre-specified primary value 0.5. The 0.4 and 0.6 thresholds are retained as
+sensitivity results. Qualification never uses a global fitted tau.
+
+For ObsNum 150818, the revised local gate retains 962 geometric events and 907
+complete events. It assesses all 907, qualifies 776 events from 530 detector
+UIDs, and rejects 131: 75 for insufficient samples, 36 for an unbracketed
+matched-filter peak, and 20 for correlation below 0.5. Adjacent passages in a
+single detector-scan are partitioned at their sample midpoint. The qualified
+locally aligned stack is compact, and every reported census agrees with its
+actual numerical arrays.
+
+The equal-total-weight-per-detector robust point fits are:
+
+| Model | tau (ms) | h_az (arcsec) | h_el (arcsec) | robust objective (arcsec^2) |
+|:--|--:|--:|--:|--:|
+| constant | 0 | - | - | 1.44546 |
+| lag | +4.04584 | - | - | 1.41349 |
+| hysteresis | 0 | -0.26119 | -0.10530 | 1.42007 |
+| joint | +4.25337 | -0.09373 | +0.10896 | 1.41212 |
+
+All model designs are full rank and no optimum is at a bound. Individual
+centroid residuals remain broad (lag-model RMS 1.76 arcsec), so the point
+estimates are ensemble registration summaries rather than precise per-event
+predictions. Uncertainty, covariance with the map estimator, formal model
+selection, causality, and any correction remain deferred. No non-anchor result
+has been opened under this estimator.
+
 The point fits and initial 500-realization bootstraps bind protocol revision 4,
 SHA256 `5366dd8cfe963e29bf273a7c764637f9b85586f211963920acdc95b2610f9ad1`.
 Revision 5 changes only the convergence gate to require unimodality and binds

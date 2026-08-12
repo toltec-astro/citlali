@@ -17,6 +17,7 @@ set -euo pipefail
 
 protocol="$SCI_CAMPAIGN_ROOT/frozen/timestream_protocol.json"
 crossing_protocol="$SCI_REPO/validation/sci_align_001_lissajous_timestream_2026-08-10/crossing_support_protocol.json"
+centroid_protocol="$SCI_REPO/validation/sci_align_001_lissajous_timestream_2026-08-10/event_centroid_protocol.json"
 selection="$SCI_CAMPAIGN_ROOT/frozen/selected_pointings.json"
 map_root="$SCI_CAMPAIGN_ROOT/map_results"
 obsnum=$(python - "$selection" "$SLURM_ARRAY_TASK_ID" <<'PY'
@@ -34,8 +35,8 @@ if len(obsnums) != 65:
 print(obsnums[int(sys.argv[2])])
 PY
 )
-fit_root="$SCI_CAMPAIGN_ROOT/event_fit_results_v1/o${obsnum}"
-review_root="$SCI_CAMPAIGN_ROOT/event_review_results_v1/o${obsnum}"
+fit_root="$SCI_CAMPAIGN_ROOT/event_centroid_fit_results_v1/o${obsnum}"
+review_root="$SCI_CAMPAIGN_ROOT/event_centroid_review_results_v1/o${obsnum}"
 mplconfig="$SCI_CAMPAIGN_ROOT/_runtime_cache/event_${obsnum}_matplotlib"
 xdg_cache="$SCI_CAMPAIGN_ROOT/_runtime_cache/event_${obsnum}_xdg"
 mkdir -p "$mplconfig" "$xdg_cache"
@@ -49,6 +50,7 @@ else
   python "$SCI_REPO/tools/diagnostics/run_sci_align_001_lissajous_event_fit_gate.py" \
     --protocol "$protocol" \
     --crossing-protocol "$crossing_protocol" \
+    --centroid-protocol "$centroid_protocol" \
     --selection "$selection" \
     --map-root "$map_root" \
     --obsnum "$obsnum" \
@@ -59,9 +61,10 @@ fi
 if test -f "$review_root/manifest.json"; then
   (cd "$review_root" && shasum -a 256 -c SHA256SUMS)
 else
-  python "$SCI_REPO/tools/diagnostics/render_sci_align_001_lissajous_event_fit_gate.py" \
+  python "$SCI_REPO/tools/diagnostics/render_sci_align_001_lissajous_event_centroid_fit_gate.py" \
     --protocol "$protocol" \
     --crossing-protocol "$crossing_protocol" \
+    --centroid-protocol "$centroid_protocol" \
     --selection "$selection" \
     --fit-gate-root "$fit_root" \
     --obsnum "$obsnum" \
