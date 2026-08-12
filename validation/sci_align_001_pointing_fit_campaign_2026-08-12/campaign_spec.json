@@ -1,0 +1,46 @@
+{
+  "array_concurrency": 4,
+  "automatic_selection": "a1100 PPT sig2noise >= 60",
+  "expected_observation_count": 66,
+  "fit_gate": {
+    "maximum_wall_seconds": 1800,
+    "models": [
+      "constant",
+      "lag",
+      "hysteresis",
+      "joint"
+    ],
+    "owner_review_required": true,
+    "slurm_memory": "32G",
+    "slurm_time": "00:45:00"
+  },
+  "map_prerequisite": {
+    "models": [
+      "constant",
+      "time_lag",
+      "axis_sign",
+      "joint"
+    ],
+    "reason": "authenticate the same-PTC map estimator required by the paired timestream/map comparison"
+  },
+  "morphology_disposition": "pass_with_recorded_aberration_structure",
+  "pilot_obsnum": 150818,
+  "resume": {
+    "generated_but_submission_prohibited_before_owner_review": true,
+    "maximum_wall_seconds": 144000,
+    "slurm_memory": "32G",
+    "slurm_time": "48:00:00"
+  },
+  "schema": "sci-align-001-pointing-fit-campaign-spec-v1",
+  "selection_is_independent_of_timing_results": true,
+  "source_quality_package": "../sci_align_001_pointing_source_quality_2026-08-12",
+  "stage_order": [
+    "freeze Unity PTC and PPT identities",
+    "map-space prerequisite array and aggregate",
+    "known-successful ObsNum 150818 fit gate",
+    "owner inspection of the pilot gate",
+    "remaining 65 fit gates",
+    "campaign gate audit",
+    "stop for owner review"
+  ]
+}

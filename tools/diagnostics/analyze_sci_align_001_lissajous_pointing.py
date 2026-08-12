@@ -637,6 +637,37 @@ def run(args: argparse.Namespace) -> None:
     print(f"analysis complete: pointings={len(rows)} output={output}")
 
 
+def run_one(args: argparse.Namespace) -> None:
+    """Analyze exactly one frozen observation into a shared corpus root.
+
+    Each Slurm array task owns a distinct ``o<obsnum>`` directory.  The
+    corpus-level files are deliberately left to the existing ``aggregate``
+    command after every array task has completed.
+    """
+    selection_dir = args.selection_dir.resolve()
+    selection, protocol = load_frozen_selection(selection_dir)
+    rows = [
+        row for row in selection["rows"]
+        if int(row["pointing_obsnum"]) == args.obsnum
+    ]
+    if len(rows) != 1:
+        raise ContractError(
+            f"selection does not contain exactly one obs {args.obsnum}"
+        )
+    row = rows[0]
+    output = args.output_root.resolve()
+    output.mkdir(parents=True, exist_ok=True)
+    observation_output = output / f"o{args.obsnum}"
+    if observation_output.exists():
+        raise ContractError(f"output already exists: {observation_output}")
+    if sha256_file(Path(row["ptc_path"])) != row["ptc_sha256"]:
+        raise ContractError(f"obs {args.obsnum}: PTC identity changed")
+    if sha256_file(Path(row["ppt_path"])) != row["ppt_sha256"]:
+        raise ContractError(f"obs {args.obsnum}: PPT identity changed")
+    analyze_pointing_isolated(row, protocol, observation_output)
+    print(f"analyzed pointing obs={args.obsnum} output={observation_output}")
+
+
 def aggregate_results(
     selection_dir: Path,
     output: Path,
@@ -686,6 +717,21 @@ def aggregate_results(
     write_checksums(output, [
         "corpus_model_results.ecsv", "corpus_model_summary.pdf", "manifest.json"
     ])
+
+
+def verify_observation_results(output: Path, rows: list[dict[str, Any]]) -> None:
+    """Authenticate every isolated observation before corpus aggregation."""
+    for row in rows:
+        obsnum = int(row["pointing_obsnum"])
+        root = output / f"o{obsnum}"
+        checksums = root / "SHA256SUMS"
+        if not checksums.is_file():
+            raise ContractError(f"obs {obsnum}: SHA256SUMS is missing")
+        for line in checksums.read_text().splitlines():
+            expected, name = line.split(maxsplit=1)
+            path = root / name.strip()
+            if sha256_file(path) != expected:
+                raise ContractError(f"obs {obsnum}: checksum mismatch: {path.name}")
 
 
 def plot_corpus_summary(table: Table, path: Path) -> None:
@@ -745,8 +791,20 @@ def aggregate(args: argparse.Namespace) -> None:
     selection_dir = args.selection_dir.resolve()
     selection, _ = load_frozen_selection(selection_dir)
     rows = selection["rows"]
-    aggregate_results(selection_dir, args.output.resolve(), rows)
-    print(f"aggregate complete: pointings={len(rows)} output={args.output.resolve()}")
+    output = args.output.resolve()
+    if args.existing_observation_root:
+        source = args.existing_observation_root.resolve()
+        if output != source:
+            raise ContractError(
+                "--output must equal --existing-observation-root"
+            )
+    elif output.exists():
+        raise ContractError(f"output already exists: {output}")
+    else:
+        output.mkdir(parents=True)
+    verify_observation_results(output, rows)
+    aggregate_results(selection_dir, output, rows)
+    print(f"aggregate complete: pointings={len(rows)} output={output}")
 
 
 def parser() -> argparse.ArgumentParser:
@@ -761,9 +819,15 @@ def parser() -> argparse.ArgumentParser:
     run_parser.add_argument("--output", type=Path, required=True)
     run_parser.add_argument("--obsnum", type=int, action="append")
     run_parser.set_defaults(function=run)
+    run_one_parser = sub.add_parser("run-one")
+    run_one_parser.add_argument("--selection-dir", type=Path, required=True)
+    run_one_parser.add_argument("--output-root", type=Path, required=True)
+    run_one_parser.add_argument("--obsnum", type=int, required=True)
+    run_one_parser.set_defaults(function=run_one)
     aggregate_parser = sub.add_parser("aggregate")
     aggregate_parser.add_argument("--selection-dir", type=Path, required=True)
     aggregate_parser.add_argument("--output", type=Path, required=True)
+    aggregate_parser.add_argument("--existing-observation-root", type=Path)
     aggregate_parser.set_defaults(function=aggregate)
     return result
 
