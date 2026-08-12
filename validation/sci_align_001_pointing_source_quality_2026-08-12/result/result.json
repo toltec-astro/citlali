@@ -1,0 +1,14 @@
+{
+  "automatic_morphology_exclusion": false,
+  "contact_sheet_order": "descending strongest absolute smoothed off-core residual fraction; order is review prioritization, not an exclusion ranking",
+  "frozen_input_path": "/Users/gwilson/GitHub/citlali-refactor/validation/sci_align_001_pointing_source_quality_2026-08-12/frozen/frozen_input.json",
+  "frozen_input_sha256": "aa734cd5f9c902620c6175c8c4db8578ad338f54c4a0b957e7ce738e8ca91937",
+  "observation_count": 108,
+  "protocol_sha256": "a4ee5020462934730f609d156d5c986ec441bf10b40623ebdfcf1a7181b323ba",
+  "ptc_signal_samples_read": false,
+  "schema": "sci-align-001-pointing-source-quality-result-v1",
+  "snr_fail_count": 42,
+  "snr_pass_count": 66,
+  "snr_threshold_inclusive": 60.0,
+  "timing_results_used": false
+}

@@ -1,0 +1,28 @@
+{
+  "automatic_selection": {
+    "array": "a1100",
+    "field": "a1100.sig2noise",
+    "minimum_inclusive": 60.0,
+    "only_automatic_quality_exclusion": true
+  },
+  "morphology": {
+    "automatic_exclusion": false,
+    "component_peak_fraction_threshold": 0.1,
+    "component_sigma_threshold": 5.0,
+    "display_half_width_arcsec": 35.0,
+    "maximum_fit_radius_arcsec": 30.0,
+    "minimum_component_beam_fraction": 0.1,
+    "minimum_fit_radius_arcsec": 15.0,
+    "noise_inner_radius_fwhm": 1.5,
+    "residual_smoothing_arcsec": 1.0,
+    "review_core_radius_fwhm": 0.75,
+    "secondary_peak_fraction_threshold": 0.15,
+    "secondary_peak_sigma_threshold": 5.0,
+    "width_and_axis_ratio_disposition": "descriptive_only"
+  },
+  "prohibitions": {
+    "ptc_signal_samples_read": false,
+    "timing_fit_results_used": false
+  },
+  "schema": "sci-align-001-pointing-source-quality-protocol-v1"
+}
