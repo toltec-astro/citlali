@@ -1,0 +1,35 @@
+{
+  "accepted_observation_count": 66,
+  "automatic_morphology_exclusions": 0,
+  "disposition": "pass_with_recorded_aberration_structure",
+  "evidence_identities": {
+    "contact_sheet_pdf_sha256": "21668adaad40bba48a20f0c8e77951ec4ca79ba25548151ba0ebe54f305fdca4",
+    "pointing_source_quality_ecsv_sha256": "948babc555f912fb8df8cea35c928ffb9a25e42332336f1f2d2f578e205f0392",
+    "snr_selected_pointings_ecsv_sha256": "9a1306ad9e7ff1275ea4c75381650a08eddd6bf71fbd5bf7b41970098ee36022"
+  },
+  "interpretation": {
+    "competing_source_peak_disposition": "strongly_disfavored_by_visual_inspection",
+    "observed_structure": [
+      "expected but unwanted aberration lobes",
+      "coma",
+      "astigmatism in some observations"
+    ],
+    "primary_crossing_confusion": "not considered likely"
+  },
+  "quantitative_context": {
+    "maximum_strongest_absolute_smoothed_residual_fraction": 0.37153179241478085,
+    "median_strongest_absolute_smoothed_residual_fraction": 0.08306549,
+    "p75_strongest_absolute_smoothed_residual_fraction": 0.11269735,
+    "p90_strongest_absolute_smoothed_residual_fraction": 0.17948917
+  },
+  "review_date": "2026-08-12",
+  "review_scope": "all 66 rows in the checksum-bound S/N-selected table",
+  "reviewer_authority": "project-owner visual disposition supplied in the SCI-ALIGN-001 task",
+  "schema": "sci-align-001-pointing-human-morphology-review-v1",
+  "sensitivity_requirements": [
+    "retain aberration metrics as covariates rather than selection gates",
+    "compare timing results for the full cohort and with the strongest-aberration observations removed",
+    "compare empirical map-derived source templates with symmetric Gaussian templates where feasible"
+  ],
+  "timing_causality_claim": "none"
+}

@@ -56,4 +56,25 @@ secondary-peak candidates are overlaid. The PDF SHA256 is
 The bounded conclusion is only that the S/N gate reduces the available
 pointing corpus from 108 to 66 and that the retained set now has an explicit
 human morphology-review surface. No morphology disposition has been assigned,
-and no timing result entered either the selection or the review ordering.
+by the numerical audit, and no timing result entered either the selection or
+the review ordering. The subsequent project-owner disposition is recorded
+separately below.
+
+## Project-owner morphology disposition
+
+After reviewing the complete contact sheet, the project owner identified the
+secondary structures as expected but unwanted aberration lobes, principally
+coma with astigmatism in some observations. They are not considered plausible
+competing identifications of the primary source crossing. All 66 S/N-selected
+observations therefore receive the disposition
+`pass_with_recorded_aberration_structure`; none is excluded on morphology.
+
+The typical strongest absolute smoothed residual is near 10% of the fitted
+primary amplitude (median 8.3%, 75th percentile 11.3%), although the tail is
+materially larger (90th percentile 17.9%, maximum 37.2%). Static asymmetric
+beam structure can still interact with a symmetric source template and scan
+angle, so the residual metrics remain sensitivity covariates. The timing study
+will compare the full cohort with the strongest-aberration observations
+removed and, where feasible, compare empirical map-derived templates with
+symmetric Gaussian templates. This disposition makes no timing-causality
+claim.
