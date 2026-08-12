@@ -12,6 +12,7 @@
       "joint"
     ],
     "owner_review_required": true,
+    "source_aligned_supplementary_review_required": true,
     "slurm_memory": "32G",
     "slurm_time": "01:00:00"
   },
@@ -40,6 +41,7 @@
     "map-space prerequisite array and aggregate",
     "known-successful ObsNum 150818 fit gate",
     "owner inspection of the pilot gate",
+    "source-aligned supplementary pilot review",
     "remaining 65 fit gates",
     "campaign gate audit",
     "stop for owner review"

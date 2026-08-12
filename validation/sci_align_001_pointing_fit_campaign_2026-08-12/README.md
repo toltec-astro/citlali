@@ -149,11 +149,46 @@ The fitted value is not an acceptance criterion. Inspect source crossings,
 model/data overlays, objective behavior, optimizer census, residuals, and the
 structural gate. Stop here if the pilot is malformed or pathological.
 
+The first successful pilot exposed a visualization-only failure: page 3
+averaged focal-plane detectors at common timestamps, although their source
+crossings occur at different times. The numerical fit remains immutable. Run
+the checksum-bound supplementary renderer, which authenticates and exactly
+reconstructs the recorded lag objective before making detector-source-aligned
+stacks and individual crossing pages:
+
+```bash
+test ! -e "$SCI_CAMPAIGN_ROOT/fit_results/o150818_source_review_v1"
+
+source_review_job_id=$(sbatch --parsable --export=ALL \
+  "$SCI_PACKAGE/render_pilot_source_review_on_unity.sbatch")
+source_review_job_id=${source_review_job_id%%;*}
+printf 'source_review_job_id=%s\n' "$source_review_job_id"
+
+squeue -j "$source_review_job_id" \
+  -o "%.18i %.30j %.8T %.10M %.4C %R"
+tail -F "/work/toltec/wilson/sci-align-source-review_${source_review_job_id}.out"
+```
+
+Completion is `source review complete: obs=150818`. Verify and inspect:
+
+```bash
+export SCI_SOURCE_REVIEW="$SCI_CAMPAIGN_ROOT/fit_results/o150818_source_review_v1"
+(cd "$SCI_SOURCE_REVIEW" && shasum -a 256 -c SHA256SUMS)
+find "$SCI_SOURCE_REVIEW" -maxdepth 1 -type f -printf '%f\n' | sort
+```
+
+Download and inspect both `source_aligned_crossing_stacks_o150818.pdf` and
+`source_crossing_validation_o150818.pdf`. The former must show a compact
+source-aligned profile rather than the rejected common-timestamp average; the
+latter contains one detector/scan crossing per page. Stop again for owner
+review. The 65-observation array is not yet authorized.
+
 ## 4. Remaining 65 bounded fit gates
 
-First add the checksum-bound operational amendment to the already frozen
-campaign. This writes a new directory and does not alter the original frozen
-selection, protocol, preparation, maps, jobs, pilot, or resume scripts:
+Only after the supplementary source review passes, add the checksum-bound
+operational amendment to the already frozen campaign. This writes a new
+directory and does not alter the original frozen selection, protocol,
+preparation, maps, jobs, pilot, or resume scripts:
 
 ```bash
 cd "$SCI_REPO"
@@ -171,7 +206,7 @@ python tools/diagnostics/prepare_sci_align_001_pointing_fit_campaign.py \
 ```
 
 The amendment refuses to run if a non-pilot fit output already exists. Only
-after the pilot review, submit the successor array (not the original script):
+after both pilot reviews, submit the successor array (not the original script):
 
 ```bash
 fit_gate_array_job_id=$(sbatch --parsable \

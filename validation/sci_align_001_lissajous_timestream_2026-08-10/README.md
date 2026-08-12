@@ -59,6 +59,18 @@ pointings remain unopened, and no all-22 or high-S/N corpus inference has been
 computed. See `REAL_RUNTIME_OBSERVABILITY_STOP_03.md` and
 `FIT_GATE_CHECKPOINT_RUNTIME_AUDIT_04.md`.
 
+The new 66-pointing high-S/N campaign completed its isolated ObsNum 150818
+pilot fit gate in 1,868.66 seconds. All machine structural checks passed, but
+owner inspection identified that the fit-gate PDF's page-3 source profiles
+again averaged focal-plane detectors at common timestamps even though their
+source crossings occur at different times. The numerical objective keeps
+detectors separate, so the fit remains immutable while its compact-source
+adequacy visualization is rejected. A supplementary renderer is frozen to
+align each detector crossing by signed distance along its own local trajectory
+and show individual crossings. The remaining 65 gates remain blocked pending
+owner review of that artifact. See
+`FIT_GATE_SOURCE_PROFILE_VISUALIZATION_FAILURE_05.md`.
+
 The bounded result is documented in `REPORT.md`. Compact authenticated values
 are in `partial_observation_results.ecsv` and
 `partial_observation_results.json`; exact input and result identities are in
