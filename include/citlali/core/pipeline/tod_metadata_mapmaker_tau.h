@@ -101,6 +101,9 @@ void add_tod_mean_tau_vars(netCDF::NcFile &fo, bool extinction_enabled,
         fo, "CAL.VALIDITY_REASON",
         rtcproc.calibration.calibration_validity_reason);
     const auto &product = rtcproc.calibration.product;
+    if (product.valid()) {
+        timestream::require_finalized_calibration_product_join(product);
+    }
     add_netcdf_var<std::string>(
         fo, "CAL.PRODUCT_SCHEMA", std::string{product.schema_version});
     add_netcdf_var<std::string>(
@@ -138,6 +141,8 @@ void add_tod_mean_tau_vars(netCDF::NcFile &fo, bool extinction_enabled,
         fo, "CAL.CALIBRATION_IDENTITY", product.calibration_identity);
     add_netcdf_var<std::string>(
         fo, "CAL.PACKAGE_IDENTITY", product.package_identity);
+    add_netcdf_var<std::string>(fo, "CALID", product.calibration_identity);
+    add_netcdf_var<std::string>(fo, "CALPKGID", product.package_identity);
     add_netcdf_var<std::string>(
         fo, "CAL.CONDITIONAL_VARIANCE_TRANSFER",
         std::string{product.conditional_variance_transfer});

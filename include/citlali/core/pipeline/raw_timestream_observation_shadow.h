@@ -10,6 +10,7 @@
 #include <limits>
 #include <sstream>
 #include <string>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
@@ -68,12 +69,23 @@ inline void compare_raw_observation_shadow_value(
     }
 }
 
+template <class RtcProc, class = void>
+struct has_observation_applied_response_history : std::false_type {};
+
+template <class RtcProc>
+struct has_observation_applied_response_history<
+    RtcProc,
+    std::void_t<decltype(
+        std::declval<RtcProc &>()
+            .begin_observation_applied_response_history())>>
+    : std::true_type {};
+
 template <class RtcProc>
 RawTimestreamObservationShadowReport begin_raw_timestream_observation_shadow(
     RawTimestreamExecutionPlan &plan,
     citlali::config::ReductionType reduction_type,
     double native_sample_rate_hz, double actual_effective_sample_rate_hz,
-    const RtcProc &rtcproc) {
+    RtcProc &rtcproc) {
     RawTimestreamObservationShadowReport report;
     if (!plan.initialized) {
         report.add_mismatch("raw timestream plan is not initialized");
@@ -96,6 +108,9 @@ RawTimestreamObservationShadowReport begin_raw_timestream_observation_shadow(
             reduction_type, plan.requested.despike);
 
     auto &observation = plan.begin_observation();
+    if constexpr (has_observation_applied_response_history<RtcProc>::value) {
+        rtcproc.begin_observation_applied_response_history();
+    }
     observation.native_sample_rate_hz = sample_rate.native_sample_rate_hz;
     observation.effective_sample_rate_hz =
         sample_rate.effective_sample_rate_hz;

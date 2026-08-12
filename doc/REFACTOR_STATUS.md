@@ -329,6 +329,44 @@ production, launch re-audit or downstream work, request external execution,
 or alter the conditioned F001/F010 dependencies. No local reduction or Unity
 access was performed.
 
+### 2026-08-11 successor-5 bounded local technical repair handback
+
+The owner-authorized successor-5 application repair on
+`codex/repair-sci-cal-001-successor-5` is based directly on exact successor-4
+source `693f1b107855e3ae9b36617323ca14aac868f304`. It is limited to F005,
+F007, F008, and the local implementation portion of F009. The repair preserves
+the accepted bounded closures for F002's fixed atmosphere operator and
+artifacts, F003's startup/admission boundary, F004's immutable selected-APT
+lineage and stable association, and F006's calibrated `mJy/beam` boundary.
+F001 and F010 remain conditioned and outside this repair.
+
+F005 now carries an explicit observation-owned applied `flxscale` correction
+without mutating the source APT or sensitivity, applies it once to samples,
+and transfers only approximate-derived weights by the required inverse square;
+the full-weight route is unchanged. F007/F008 record fixed/shared/detector
+RTC/PTC notch applications at their actual application points, separate
+requested/effective/realized identity, reset response history per observation,
+preserve safe repeat finalization, bind finalized CALID/PKGID joins to TOD and
+homogeneous coadds, reject heterogeneous coadds, and publish the validated
+canonical package before dependent linked products without adding a global
+rollback transaction.
+
+The local F009 consumer and contracts use the production path
+`{obs}/selected_calibration_apt.ecsv` exactly once per effectively calibrated
+observation. Supported effectively uncalibrated v4 output remains valid without
+the member. The executable audit hashes the actual sibling, requires canonical
+lineage and complete component identities, checks source/component/package
+digest joins, and recomputes package identity. Production-shaped single- and
+multi-observation fixtures cover missing, tampered, stale, conflicting,
+forged, uncalibrated, and partial-publication cases while retaining v1--v3
+compatibility.
+
+This entry is a local repair handback only. It does not claim independent audit
+acceptance, integration, production authorization, Unity or astronomical
+evidence, complete scientific closure, downstream launch, or a change to the
+approved/nonconformant/in-progress/fail-closed package axes. No reduction,
+Unity access or request, push, merge, or re-audit was performed.
+
 ## Historical 2026-07-31 SCI-MAP-001 Bounded Repair Lane
 
 This section preserves the repair-lane chronology and its candidate-time gate

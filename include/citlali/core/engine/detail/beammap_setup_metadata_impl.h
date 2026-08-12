@@ -79,6 +79,9 @@ void Beammap::populate_beammap_tau_metadata() {
     calib.apt_meta["calibration_validity_reason"] =
         rtcproc.calibration.calibration_validity_reason;
     const auto &product = rtcproc.calibration.product;
+    if (product.valid()) {
+        timestream::require_finalized_calibration_product_join(product);
+    }
     calib.apt_meta["calibration_product_schema"] =
         std::string{product.schema_version};
     calib.apt_meta["calibration_validity_detail"] = product.validity_detail;

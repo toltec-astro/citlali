@@ -4,6 +4,7 @@
 
 #include <Eigen/Core>
 
+#include <algorithm>
 #include <cmath>
 #include <limits>
 #include <map>
@@ -196,6 +197,62 @@ TEST(calibration_product,
     ASSERT_TRUE(source_product.valid());
     EXPECT_NE(source_product.calibration_identity,
               baseline.calibration_identity);
+
+    auto changed_observation_correction = valid_inputs();
+    changed_observation_correction.observation_flxscale_correction_applied =
+        true;
+    changed_observation_correction.applied_observation_flxscale_correction =
+        3.0;
+    const auto observation_correction_product =
+        timestream::admit_calibration_product(changed_observation_correction);
+    ASSERT_TRUE(observation_correction_product.valid());
+    EXPECT_NE(observation_correction_product.factor_state_sha256,
+              baseline.factor_state_sha256);
+    EXPECT_NE(observation_correction_product.calibration_identity,
+              baseline.calibration_identity);
+}
+
+TEST(calibration_product,
+     carries_observation_correction_without_mutating_source_factors) {
+    auto inputs = valid_inputs();
+    inputs.target_unit_factor << 1.0, 1.0;
+    inputs.detector_flxscale << 5.0, 7.0;
+    inputs.detector_sensitivity << 10.0, 14.0;
+    inputs.observation_flxscale_correction_applied = true;
+    inputs.applied_observation_flxscale_correction = 3.0;
+    const auto source_flxscale = inputs.detector_flxscale;
+    const auto source_sensitivity = inputs.detector_sensitivity;
+
+    const auto product = timestream::admit_calibration_product(inputs);
+
+    ASSERT_TRUE(product.valid());
+    EXPECT_TRUE(inputs.detector_flxscale.isApprox(source_flxscale, 0.0));
+    EXPECT_TRUE(inputs.detector_sensitivity.isApprox(source_sensitivity, 0.0));
+    EXPECT_TRUE(product.detector_flxscale.isApprox(source_flxscale, 0.0));
+    EXPECT_TRUE(product.target_unit_factor.isConstant(3.0));
+    EXPECT_TRUE(product.signal_multiplier_without_extinction.isApprox(
+        3.0 * source_flxscale, 0.0));
+    EXPECT_TRUE(product.observation_flxscale_correction_applied);
+    EXPECT_DOUBLE_EQ(product.applied_observation_flxscale_correction, 3.0);
+    const auto nuisance = std::find_if(
+        product.nuisances.begin(), product.nuisances.end(),
+        [](const auto &state) {
+            return state.id == "tolproj_pointing_flxscale_correction";
+        });
+    ASSERT_NE(nuisance, product.nuisances.end());
+    EXPECT_EQ(nuisance->value_availability,
+              timestream::CalibrationNuisanceAvailability::available);
+    EXPECT_EQ(nuisance->validity, "valid_applied_value");
+}
+
+TEST(calibration_product,
+     rejects_unlabelled_nonunit_observation_correction) {
+    auto inputs = valid_inputs();
+    inputs.applied_observation_flxscale_correction = 3.0;
+    const auto product = timestream::admit_calibration_product(inputs);
+    EXPECT_FALSE(product.valid());
+    EXPECT_EQ(product.validity_cause,
+              timestream::CalibrationValidityCause::invalid_required_factor);
 }
 
 TEST(calibration_product, rejects_unsupported_production_units) {

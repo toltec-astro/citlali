@@ -600,7 +600,50 @@ def processed_provenance_semantic_errors(data: dict[str, Any]) -> list[str]:
     return errors
 
 
-def raw_provenance_semantic_errors(data: dict[str, Any]) -> list[str]:
+CANONICAL_CALIBRATION_LINEAGE_SCHEMA = (
+    "sci-cal-001-canonical-calibration-lineage-v1"
+)
+CANONICAL_CALIBRATION_COMPONENTS = {
+    "selected_apt_sha256",
+    "selected_apt_row_association_sha256",
+    "raw_acquisition_binding_sha256",
+    "admitted_factor_state_sha256",
+    "tolapt_manifest_association_sha256",
+}
+SELECTED_CALIBRATION_APT_FILENAME = "selected_calibration_apt.ecsv"
+
+
+def canonical_sha256(value: Any) -> bool:
+    return bool(
+        isinstance(value, str)
+        and len(value) == 64
+        and all(char in "0123456789abcdef" for char in value)
+    )
+
+
+def calibration_identity_field(name: str, value: str) -> str:
+    return f"|{len(name)}:{name}={len(value)}:{value}"
+
+
+def recompute_calibration_package_identity(
+    calibration_identity: str,
+    selected_apt_sha256: str,
+    acquisition_binding_sha256: str,
+) -> str:
+    preimage = "sci-cal-001-calibration-package-v2"
+    for name, value in (
+        ("calibration_identity", calibration_identity),
+        ("package_local_apt_path", SELECTED_CALIBRATION_APT_FILENAME),
+        ("package_local_apt_sha256", selected_apt_sha256),
+        ("acquisition_binding_sha256", acquisition_binding_sha256),
+    ):
+        preimage += calibration_identity_field(name, value)
+    return hashlib.sha256(preimage.encode("utf-8")).hexdigest()
+
+
+def raw_provenance_semantic_errors(
+    data: dict[str, Any], provenance_path: Path | None = None,
+) -> list[str]:
     errors: list[str] = []
     try:
         if data["initialized"] is not True:
@@ -756,36 +799,156 @@ def raw_provenance_semantic_errors(data: dict[str, Any]) -> list[str]:
                     errors.append("calibration quality regime is inconsistent")
 
         if data.get("schema_version") == "citlali-raw-timestream-provenance-v4":
+            flux_calibration = data["effective"]["config"].get(
+                "flux_calibration", {}
+            ).get("enabled")
+            if type(flux_calibration) is not bool:
+                errors.append(
+                    "v4 effective flux-calibration state is not boolean"
+                )
             lineage = data.get("calibration_lineage")
-            if not isinstance(lineage, dict) or lineage.get("available") is not True:
+            lineage_available = bool(
+                isinstance(lineage, dict)
+                and lineage.get("available") is True
+            )
+            sibling_path = (
+                provenance_path.parent / SELECTED_CALIBRATION_APT_FILENAME
+                if provenance_path is not None
+                else None
+            )
+            if flux_calibration is False:
+                if lineage_available:
+                    errors.append(
+                        "uncalibrated v4 unexpectedly publishes calibration lineage"
+                    )
+                if sibling_path is not None and sibling_path.exists():
+                    errors.append(
+                        "uncalibrated v4 unexpectedly publishes a selected APT member"
+                    )
+            elif not lineage_available:
                 errors.append("v4 canonical calibration lineage is unavailable")
             else:
                 value = lineage.get("value")
                 if not isinstance(value, dict):
                     errors.append("v4 canonical calibration lineage is not a mapping")
                 else:
+                    if value.get("schema_version") != \
+                            CANONICAL_CALIBRATION_LINEAGE_SCHEMA:
+                        errors.append(
+                            "v4 canonical calibration lineage schema is invalid"
+                        )
                     calibration_identity = value.get("calibration_identity")
                     package_identity = value.get("package_identity")
                     for label, identity in (
                         ("calibration", calibration_identity),
                         ("package", package_identity),
                     ):
-                        if (
-                            not isinstance(identity, str)
-                            or len(identity) != 64
-                            or any(char not in "0123456789abcdef" for char in identity)
-                        ):
+                        if not canonical_sha256(identity):
                             errors.append(f"v4 {label} identity is not canonical sha256")
-                    selected = value.get("selected_apt", {})
-                    components = value.get("component_identities", {})
-                    if selected.get("package_local_path") != "selected_calibration_apt.ecsv":
+
+                    components = value.get("component_identities")
+                    if not isinstance(components, dict) or \
+                            set(components) != CANONICAL_CALIBRATION_COMPONENTS:
+                        errors.append(
+                            "v4 canonical calibration components are incomplete"
+                        )
+                        components = components if isinstance(components, dict) else {}
+                    for name in CANONICAL_CALIBRATION_COMPONENTS:
+                        if not canonical_sha256(components.get(name)):
+                            errors.append(
+                                f"v4 calibration component {name} is not canonical sha256"
+                            )
+
+                    selected = value.get("selected_apt")
+                    if not isinstance(selected, dict):
+                        errors.append("v4 selected APT lineage is not a mapping")
+                        selected = {}
+                    if selected.get("package_local_path") != \
+                            SELECTED_CALIBRATION_APT_FILENAME:
                         errors.append("v4 selected APT package-local path is not canonical")
                     if selected.get("copy_semantics") != \
                             "exact_byte_copy_digest_verified_required_output":
                         errors.append("v4 selected APT copy semantics are not required/verified")
-                    if selected.get("package_local_sha256") != \
-                            components.get("selected_apt_sha256"):
-                        errors.append("v4 selected APT package/component digests differ")
+                    selected_source_digest = selected.get("source_sha256")
+                    selected_package_digest = selected.get("package_local_sha256")
+                    selected_component_digest = components.get(
+                        "selected_apt_sha256"
+                    )
+                    if not canonical_sha256(selected_source_digest):
+                        errors.append("v4 selected APT source digest is invalid")
+                    if not canonical_sha256(selected_package_digest):
+                        errors.append("v4 selected APT package digest is invalid")
+                    if not (
+                        selected_source_digest
+                        == selected_package_digest
+                        == selected_component_digest
+                    ):
+                        errors.append(
+                            "v4 selected APT source/package/component digests differ"
+                        )
+                    if sibling_path is None:
+                        errors.append(
+                            "v4 calibrated provenance path is unavailable for sibling validation"
+                        )
+                    elif not sibling_path.is_file():
+                        errors.append("v4 selected APT sibling member is missing")
+                    elif selected_package_digest != sha256_file(sibling_path):
+                        errors.append("v4 selected APT sibling digest differs")
+
+                    raw_acquisition = value.get("raw_acquisition")
+                    if not isinstance(raw_acquisition, dict):
+                        errors.append("v4 raw-acquisition lineage is not a mapping")
+                        raw_acquisition = {}
+                    acquisition_digest = raw_acquisition.get("binding_sha256")
+                    if acquisition_digest != components.get(
+                        "raw_acquisition_binding_sha256"
+                    ):
+                        errors.append(
+                            "v4 raw-acquisition component digest differs"
+                        )
+
+                    stable_joins = value.get("stable_joins")
+                    if not isinstance(stable_joins, dict):
+                        errors.append("v4 stable-join lineage is not a mapping")
+                        stable_joins = {}
+                    if stable_joins.get("ordered_row_association_sha256") != \
+                            components.get("selected_apt_row_association_sha256"):
+                        errors.append("v4 selected-row component digest differs")
+
+                    factor_state = value.get("factor_operator_state")
+                    if not isinstance(factor_state, dict):
+                        errors.append("v4 factor-operator lineage is not a mapping")
+                        factor_state = {}
+                    if factor_state.get("factor_state_sha256") != \
+                            components.get("admitted_factor_state_sha256"):
+                        errors.append("v4 factor-state component digest differs")
+
+                    tolapt = selected.get("tolapt_manifest")
+                    if not isinstance(tolapt, dict) or \
+                            type(tolapt.get("available")) is not bool:
+                        errors.append("v4 TolAPT-manifest lineage is invalid")
+                    elif tolapt["available"]:
+                        tolapt_value = tolapt.get("value")
+                        if not isinstance(tolapt_value, dict) or \
+                                tolapt_value.get("association_sha256") != \
+                                components.get(
+                                    "tolapt_manifest_association_sha256"
+                                ):
+                            errors.append(
+                                "v4 TolAPT-manifest component digest differs"
+                            )
+
+                    if (
+                        canonical_sha256(calibration_identity)
+                        and canonical_sha256(selected_package_digest)
+                        and canonical_sha256(acquisition_digest)
+                        and package_identity != recompute_calibration_package_identity(
+                            calibration_identity,
+                            selected_package_digest,
+                            acquisition_digest,
+                        )
+                    ):
+                        errors.append("v4 package identity does not recompute")
                     for section_name in ("observation", "realized"):
                         section = data[section_name]
                         if section_name == "observation":
@@ -3821,7 +3984,9 @@ def audit_provenance_sidecars(
                             processed_provenance_semantic_errors(data)
                         )
                     elif name == "raw_timestream":
-                        semantic_errors = raw_provenance_semantic_errors(data)
+                        semantic_errors = raw_provenance_semantic_errors(
+                            data, path
+                        )
                     elif name == "mapmaking":
                         semantic_errors = (
                             mapmaking_provenance_semantic_errors(data)

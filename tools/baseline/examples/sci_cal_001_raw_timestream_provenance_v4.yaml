@@ -3,14 +3,56 @@ calibration_lineage:
   available: true
   value:
     schema_version: sci-cal-001-canonical-calibration-lineage-v1
-    package_identity: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+    package_identity: 3b25b6e108fdf5abb18767a9ae5ade619ae43bc8e0079363a0c45c1649d9b099
     calibration_identity: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
     component_identities:
-      selected_apt_sha256: cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+      selected_apt_sha256: f5c609c91ecc0bc83f3d84c4dfd0daf7b1542d149f915d40495368be60c75bd5
+      selected_apt_row_association_sha256: dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+      raw_acquisition_binding_sha256: eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+      admitted_factor_state_sha256: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+      tolapt_manifest_association_sha256: '1111111111111111111111111111111111111111111111111111111111111111'
     selected_apt:
+      source_path: /upstream/selected_calibration_apt.ecsv
+      source_sha256: f5c609c91ecc0bc83f3d84c4dfd0daf7b1542d149f915d40495368be60c75bd5
       package_local_path: selected_calibration_apt.ecsv
-      package_local_sha256: cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+      package_local_sha256: f5c609c91ecc0bc83f3d84c4dfd0daf7b1542d149f915d40495368be60c75bd5
       copy_semantics: exact_byte_copy_digest_verified_required_output
+      observation_identity: '000042'
+      matched_observation_identity: '000042'
+      selected_source: Uranus
+      legacy_metadata_available: true
+      tolapt_manifest:
+        available: false
+    raw_acquisition:
+      raw_observation_identity: '000042'
+      binding_mode: explicit_fixture_join
+      key_schema: artifact+network+local_tone
+      binding_sha256: eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+      artifacts:
+        - path: /raw/toltec0.nc
+          sha256: '2222222222222222222222222222222222222222222222222222222222222222'
+          interface: toltec0
+          roach_index: 0
+          absolute_tone_frequency_hz: [500000000.0]
+    stable_joins:
+      ordered_row_association_sha256: dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+      apt_row_order_authoritative: false
+      ordered_detector_apt_rows:
+        - ordered_detector_index: 0
+          selected_apt_source_row_index: 0
+          raw_network: 0
+          raw_network_local_tone: 0
+          absolute_tone_frequency_hz: 500000000.0
+          uid: 42
+          eligible: true
+          validity_basis: selected
+          stable_association: true
+    factor_operator_state:
+      target_unit: mJy/beam
+      factor_state_sha256: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+    response_basis:
+      provenance: fixture-response
+      semantics: declared_realized_state_only_no_empirical_response_validation
 observation:
   value:
     calibration_identity:
@@ -18,11 +60,11 @@ observation:
       value: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
     calibration_package_identity:
       available: true
-      value: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+      value: 3b25b6e108fdf5abb18767a9ae5ade619ae43bc8e0079363a0c45c1649d9b099
 realized:
   calibration_identity:
     available: true
     value: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   calibration_package_identity:
     available: true
-    value: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+    value: 3b25b6e108fdf5abb18767a9ae5ade619ae43bc8e0079363a0c45c1649d9b099

@@ -52,6 +52,21 @@ inline void complete_raw_timestream_observation(
         throw std::logic_error(
             "cannot complete raw timestream plan before observation begins");
     }
+    if (plan.realized.execution_completed) {
+        if (plan.realized.completed_scan_count != completed_scan_count ||
+            plan.realized.required_timestream_write_count !=
+                required_timestream_write_count ||
+            plan.realized.calibration_identity !=
+                plan.observation->calibration_identity ||
+            plan.realized.calibration_package_identity !=
+                plan.observation->calibration_package_identity ||
+            plan.realized.calibration_response_identity !=
+                plan.observation->calibration_response_identity) {
+            throw std::logic_error(
+                "repeat raw observation finalization conflicts with the consumed snapshot");
+        }
+        return;
+    }
     plan.realized.completed_scan_count = completed_scan_count;
     plan.realized.required_timestream_write_count =
         required_timestream_write_count;
@@ -155,9 +170,21 @@ publish_completed_raw_timestream_provenance(Engine &engine) {
             timestream_processing_enabled(engine)
                 ? engine.telescope.scan_indices.cols()
                 : 0;
-        complete_raw_timestream_observation(
-            plan, raw_realized_count(scan_count, "completed scan count"),
-            raw_required_timestream_write_count(expectations));
+        if (!plan.realized.execution_completed) {
+            complete_raw_timestream_observation(
+                plan, raw_realized_count(scan_count, "completed scan count"),
+                raw_required_timestream_write_count(expectations));
+        }
+        else {
+            if (!plan.realized.completed_scan_count ||
+                !plan.realized.required_timestream_write_count) {
+                throw std::logic_error(
+                    "finalized raw observation snapshot is missing required counts");
+            }
+            complete_raw_timestream_observation(
+                plan, *plan.realized.completed_scan_count,
+                *plan.realized.required_timestream_write_count);
+        }
         const auto path = raw_timestream_provenance_path(
             engine.output_paths.obsnum_dir_name);
         write_raw_timestream_provenance_file(

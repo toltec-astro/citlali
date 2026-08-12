@@ -176,6 +176,8 @@ struct CalibrationProductAdmissionInputs {
     double tau225 = std::numeric_limits<double>::quiet_NaN();
     CalibrationPackageLineage package_lineage;
     Eigen::VectorXd target_unit_factor;
+    bool observation_flxscale_correction_applied = false;
+    double applied_observation_flxscale_correction = 1.0;
     Eigen::VectorXd detector_flxscale;
     Eigen::VectorXd detector_responsivity;
     Eigen::VectorXd detector_sensitivity;
@@ -189,7 +191,7 @@ struct CalibrationProduct {
     static constexpr std::string_view schema_version =
         "sci-cal-001-complete-calibration-product-v1";
     static constexpr std::string_view factor_composition =
-        "signal_prime=signal*target_unit_factor*detector_flxscale*sample_extinction_correction";
+        "signal_prime=signal*target_unit_factor*applied_observation_flxscale_correction*detector_flxscale*sample_extinction_correction";
     static constexpr std::string_view conditional_variance_transfer =
         "variance_prime=total_signal_multiplier^2*conditional_variance";
     static constexpr std::string_view conditional_inverse_variance_transfer =
@@ -200,19 +202,20 @@ struct CalibrationProduct {
         "top_of_atmosphere_point_source_peak_mJy_per_beam";
     static constexpr std::string_view factor_provenance =
         "target_unit_factor=unity_dimensionless_for_mJy_per_beam;"
+        "applied_observation_flxscale_correction=observation_metadata_scalar,multiplicative,source_APT_immutable;"
         "detector_flxscale=selected_APT_flxscale[mJy_per_beam_per_xs],multiplicative;"
         "sample_extinction=exp(line_of_sight_optical_depth),multiplicative;"
         "responsivity=despike_donor_target_relative_response_only,not_absolute_flux;"
         "sens=selected_APT_sens[mJy_per_beam_sqrt_s],already_contains_flxscale;"
         "beam_axes=selected_APT_a_fwhm_b_fwhm[arcsec],response_identity_only";
     static constexpr std::string_view compatibility_fcf_semantics =
-        "fcf=target_unit_factor_times_scan_mean_extinction;"
+        "fcf=target_unit_factor_times_applied_observation_flxscale_correction_times_scan_mean_extinction;"
         "excludes_detector_flxscale_because_selected_APT_sens_already_contains_flxscale;"
         "not_authoritative_total_calibration";
     static constexpr std::string_view weight_recipient_semantics =
         "approximate_weight:coefficient=(sqrt(sample_rate)*compatibility_fcf*selected_APT_sens)^-2,"
         "stage=PTCProc::calc_weights,units=(mJy/beam)^-2,normalization=none,"
-        "support=unflagged_detector,calibration=compatibility_fcf_once_and_selected_APT_sens_contains_flxscale_once;"
+        "support=unflagged_detector,calibration=target_unit_factor_once_and_applied_observation_flxscale_correction_once_and_selected_APT_sens_contains_flxscale_once_from_immutable_source_APT;"
         "hybrid_weight:baseline=approximate_weight,coefficient=dimensionless_residual_variance_correction,"
         "stage=PTCProc::calc_weights,units=(mJy/beam)^-2,normalization=array_median_full_over_approx_bounded,"
         "support=unflagged_detector_with_valid_approximate_weight,calibration=no_additional_factor;"
@@ -269,6 +272,8 @@ struct CalibrationProduct {
     double tau225 = std::numeric_limits<double>::quiet_NaN();
     CalibrationPackageLineage package_lineage;
     Eigen::VectorXd target_unit_factor;
+    bool observation_flxscale_correction_applied = false;
+    double applied_observation_flxscale_correction = 1.0;
     Eigen::VectorXd detector_flxscale;
     Eigen::VectorXd signal_multiplier_without_extinction;
     Eigen::VectorXd minimum_extinction_correction;
@@ -311,6 +316,15 @@ inline std::string admitted_factor_state_identity(
     append_calibration_identity_field(
         stream, "target_unit_factor_sha256",
         calibration_vector_identity(inputs.target_unit_factor));
+    std::ostringstream observation_correction;
+    observation_correction << std::hexfloat
+                           << inputs.applied_observation_flxscale_correction;
+    append_calibration_identity_field(
+        stream, "observation_flxscale_correction_applied",
+        inputs.observation_flxscale_correction_applied ? "true" : "false");
+    append_calibration_identity_field(
+        stream, "applied_observation_flxscale_correction",
+        observation_correction.str());
     append_calibration_identity_field(
         stream, "detector_flxscale_sha256",
         calibration_vector_identity(inputs.detector_flxscale));
@@ -416,6 +430,13 @@ inline void finalize_calibration_product_identity(
         throw std::logic_error(
             "cannot finalize an invalid calibration product identity");
     }
+    if (product.applied_identity_finalized) {
+        if (product.response_identity != response_identity) {
+            throw std::logic_error(
+                "repeat calibration finalization conflicts with the consumed response snapshot");
+        }
+        return;
+    }
     product.response_identity = std::move(response_identity);
     CalibrationProductAdmissionInputs inputs;
     inputs.target_unit = product.target_unit;
@@ -449,6 +470,15 @@ inline void finalize_calibration_product_identity(
     product.applied_identity_finalized = true;
 }
 
+inline void require_finalized_calibration_product_join(
+    const CalibrationProduct &product) {
+    if (!product.valid() || !product.applied_identity_finalized ||
+        product.calibration_identity.empty() || product.package_identity.empty()) {
+        throw std::logic_error(
+            "dependent calibrated product requires a finalized CALID/PKGID join");
+    }
+}
+
 inline CalibrationProduct reject_calibration_product(
     const CalibrationProductAdmissionInputs &inputs,
     CalibrationValidityCause cause, std::string detail) {
@@ -472,6 +502,10 @@ inline CalibrationProduct reject_calibration_product(
     result.response_identity = inputs.response_identity;
     result.applied_sample_extinction_state_sha256 =
         inputs.applied_sample_extinction_state_sha256;
+    result.observation_flxscale_correction_applied =
+        inputs.observation_flxscale_correction_applied;
+    result.applied_observation_flxscale_correction =
+        inputs.applied_observation_flxscale_correction;
     result.atmosphere_operator_id = inputs.atmosphere_operator_id;
     result.atmosphere_operator_contract_sha256 =
         inputs.atmosphere_operator_contract_sha256;
@@ -603,11 +637,15 @@ inline CalibrationProduct admit_calibration_product(
             inputs, CalibrationValidityCause::acquisition_identity_invalid,
             "raw acquisition and selected APT stable-join cardinalities differ");
     }
-    if (!finite_positive_vector(inputs.target_unit_factor) ||
+    if ((!inputs.observation_flxscale_correction_applied &&
+         inputs.applied_observation_flxscale_correction != 1.0) ||
+        !finite_positive_vector(inputs.target_unit_factor) ||
+        !std::isfinite(inputs.applied_observation_flxscale_correction) ||
+        inputs.applied_observation_flxscale_correction <= 0.0 ||
         !finite_positive_vector(inputs.detector_flxscale)) {
         return reject_calibration_product(
             inputs, CalibrationValidityCause::invalid_required_factor,
-            "target-unit or detector-flxscale factor is non-finite or non-positive");
+            "target-unit, observation correction, or detector-flxscale factor is non-finite or non-positive");
     }
     if (inputs.responsivity_required &&
         inputs.detector_responsivity.size() != detector_count) {
@@ -703,10 +741,18 @@ inline CalibrationProduct admit_calibration_product(
         inputs.reference_spectral_index_default_applied;
     result.tau225 = inputs.tau225;
     result.package_lineage = inputs.package_lineage;
-    result.target_unit_factor = inputs.target_unit_factor;
+    result.observation_flxscale_correction_applied =
+        inputs.observation_flxscale_correction_applied;
+    result.applied_observation_flxscale_correction =
+        inputs.applied_observation_flxscale_correction;
+    // calibrate_tod consumes this established compatibility carrier. The
+    // canonical identity above retains the conceptual target-unit and
+    // observation-correction factors separately.
+    result.target_unit_factor = inputs.target_unit_factor.array() *
+        inputs.applied_observation_flxscale_correction;
     result.detector_flxscale = inputs.detector_flxscale;
     result.signal_multiplier_without_extinction =
-        inputs.target_unit_factor.array() * inputs.detector_flxscale.array();
+        result.target_unit_factor.array() * inputs.detector_flxscale.array();
     result.minimum_extinction_correction = inputs.extinction_requested
         ? inputs.minimum_extinction_correction
         : Eigen::VectorXd::Ones(detector_count);
@@ -726,10 +772,20 @@ inline CalibrationProduct admit_calibration_product(
          "unavailable", "array_or_observation",
          "upstream_calibrator_model", "unavailable",
          "shared absolute-scale covariance unavailable"},
-        {"tolproj_pointing_flxscale_correction", unavailable, unavailable,
-         "upstream_lineage_unavailable", "observation",
-         "selected_APT_lineage", "unavailable",
-         "correction lineage retained by the selected artifact; uncertainty unavailable"},
+        {"tolproj_pointing_flxscale_correction",
+         inputs.observation_flxscale_correction_applied
+             ? available : not_applicable,
+         inputs.observation_flxscale_correction_applied
+             ? unavailable : not_applicable,
+         inputs.observation_flxscale_correction_applied
+             ? "valid_applied_value" : "not_applied",
+         "observation",
+         inputs.observation_flxscale_correction_applied
+             ? "observation_flxscale_correction_metadata" : "not_applied",
+         "unavailable",
+         inputs.observation_flxscale_correction_applied
+             ? "explicit correction value applied once; uncertainty unavailable"
+             : "no observation correction was supplied"},
         {"wvr_atmosphere_model",
          inputs.extinction_requested ? available : not_applicable,
          inputs.extinction_requested ? unavailable : not_applicable,

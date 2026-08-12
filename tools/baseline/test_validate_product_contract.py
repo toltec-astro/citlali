@@ -84,7 +84,9 @@ class ValidateProductContractTest(unittest.TestCase):
         self.assertEqual(result["classified_product_count"], 1)
         self.assertFalse(result["errors"])
 
-    def test_checked_in_selected_calibration_apt_is_required_and_classified(self) -> None:
+    def test_checked_in_selected_calibration_apt_is_conditional_per_observation(
+        self,
+    ) -> None:
         repository = Path(__file__).resolve().parents[2]
         registry = product_contract.load_registry(
             repository / "validation/product_contracts.json"
@@ -96,10 +98,119 @@ class ValidateProductContractTest(unittest.TestCase):
         for contract in registry["contracts"]:
             entries = [
                 entry for entry in contract["entries"]
-                if entry["pattern"] == "selected_calibration_apt.ecsv"
+                if entry["pattern"] == "{obs}/selected_calibration_apt.ecsv"
             ]
             self.assertEqual(len(entries), 1, contract["contract_id"])
-            self.assertEqual(entries[0]["classification"], "required")
+            entry = entries[0]
+            self.assertEqual(entry["scope"], "per_observation")
+            self.assertEqual(entry["classification"], "config_conditional")
+            self.assertEqual(
+                entry["required_when"],
+                {
+                    "path": (
+                        "timestream.raw_time_chunk.flux_calibration.enabled"
+                    ),
+                    "equals": True,
+                },
+            )
+
+    def test_selected_calibration_contract_accepts_single_and_multi_layouts(
+        self,
+    ) -> None:
+        fixture = Path(__file__).parent / (
+            "examples/sci_cal_001_selected_calibration_apt.ecsv"
+        )
+        entry = self.entry(
+            scope="per_observation",
+            classification="config_conditional",
+            condition="effective calibration",
+            required_when={"path": "calibration.enabled", "equals": True},
+            pattern="{obs}/selected_calibration_apt.ecsv",
+        )
+        for observation_count in (1, 2):
+            with self.subTest(observation_count=observation_count):
+                for child in list(self.reduction.iterdir()):
+                    if child.is_dir():
+                        for member in child.iterdir():
+                            member.unlink()
+                        child.rmdir()
+                for index in range(observation_count):
+                    observation = self.reduction / f"{42 + index:06d}"
+                    observation.mkdir()
+                    (observation / "selected_calibration_apt.ecsv").write_bytes(
+                        fixture.read_bytes()
+                    )
+
+                result = self.validate(
+                    [entry], {"calibration": {"enabled": True}}
+                )
+
+                self.assertTrue(result["passed"], result["errors"])
+                self.assertEqual(
+                    result["classified_product_count"], observation_count
+                )
+
+    def test_selected_calibration_contract_rejects_partial_publication(
+        self,
+    ) -> None:
+        fixture = Path(__file__).parent / (
+            "examples/sci_cal_001_selected_calibration_apt.ecsv"
+        )
+        for obsnum in ("000042", "000043"):
+            (self.reduction / obsnum).mkdir()
+        (self.reduction / "000042/selected_calibration_apt.ecsv").write_bytes(
+            fixture.read_bytes()
+        )
+        entry = self.entry(
+            scope="per_observation",
+            classification="config_conditional",
+            condition="effective calibration",
+            required_when={"path": "calibration.enabled", "equals": True},
+            pattern="{obs}/selected_calibration_apt.ecsv",
+        )
+
+        result = self.validate(
+            [entry], {"calibration": {"enabled": True}}
+        )
+
+        self.assertFalse(result["passed"])
+        self.assertTrue(any(
+            "000043/selected_calibration_apt.ecsv" in error
+            and "requires at least 1" in error
+            for error in result["errors"]
+        ))
+
+    def test_selected_calibration_contract_accepts_uncalibrated_absence_only(
+        self,
+    ) -> None:
+        observation = self.reduction / "000042"
+        observation.mkdir()
+        entry = self.entry(
+            scope="per_observation",
+            classification="config_conditional",
+            condition="effective calibration",
+            required_when={"path": "calibration.enabled", "equals": True},
+            pattern="{obs}/selected_calibration_apt.ecsv",
+        )
+
+        result = self.validate(
+            [entry], {"calibration": {"enabled": False}}
+        )
+        self.assertTrue(result["passed"], result["errors"])
+
+        (observation / "selected_calibration_apt.ecsv").write_bytes(
+            (
+                Path(__file__).parent
+                / "examples/sci_cal_001_selected_calibration_apt.ecsv"
+            ).read_bytes()
+        )
+        result = self.validate(
+            [entry], {"calibration": {"enabled": False}}
+        )
+        self.assertFalse(result["passed"])
+        self.assertTrue(any(
+            "allows at most 0" in error for error in result["errors"]
+        ))
 
     def test_rejects_missing_required_product(self) -> None:
         result = self.validate([self.entry()])

@@ -11,6 +11,8 @@
 #include <memory>
 #include <mutex>
 #include <numeric>
+#include <stdexcept>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -281,12 +283,56 @@ public:
     };
 
     struct RTCAppliedResponseNotch {
+        std::string phase = "rtc";
         std::string stage;
+        Eigen::Index scan = -1;
+        Eigen::Index ptc_iteration = -1;
+        bool model_subtracted = false;
         std::string scope;
         Eigen::Index detector = -1;
+        Eigen::Index ordinal = -1;
+        std::string geometry = "center_hz_width_hz";
         double center_hz = std::numeric_limits<double>::quiet_NaN();
         double width_hz = std::numeric_limits<double>::quiet_NaN();
+        std::string phase_convention = "zero_phase_forward_reverse";
         bool zero_phase = true;
+
+        RTCAppliedResponseNotch() = default;
+
+        RTCAppliedResponseNotch(std::string legacy_stage,
+                                std::string legacy_scope,
+                                Eigen::Index legacy_detector,
+                                double legacy_center_hz,
+                                double legacy_width_hz,
+                                bool legacy_zero_phase)
+            : stage(std::move(legacy_stage)),
+              scope(std::move(legacy_scope)),
+              detector(legacy_detector),
+              center_hz(legacy_center_hz),
+              width_hz(legacy_width_hz),
+              phase_convention(
+                  legacy_zero_phase
+                      ? "zero_phase_forward_reverse"
+                      : "causal_forward"),
+              zero_phase(legacy_zero_phase) {}
+    };
+
+    struct RTCResponseApplicationContext {
+        std::string phase;
+        std::string stage;
+        Eigen::Index scan;
+        Eigen::Index ptc_iteration;
+        bool model_subtracted;
+
+        RTCResponseApplicationContext()
+            : phase("rtc"), scan(-1), ptc_iteration(-1),
+              model_subtracted(false) {}
+    };
+
+    struct FinalizedCalibrationJoin {
+        std::string observation_identity;
+        std::string calibration_identity;
+        std::string package_identity;
     };
 
     struct RTCNetworkDiagSummary {
@@ -397,6 +443,11 @@ public:
 
     std::map<Eigen::Index, std::vector<RTCDetectorDiagSummary>> rtc_detector_summary_by_scan;
     RTCAppliedResponseNotchHistory rtc_applied_response_notches_by_scan;
+    RTCAppliedResponseNotchHistory finalized_applied_response_notches_by_scan;
+    bool applied_response_history_observation_active = false;
+    bool applied_response_history_finalized = false;
+    std::map<Eigen::Index, Eigen::Index> ptc_response_iteration_by_scan;
+    std::vector<FinalizedCalibrationJoin> finalized_calibration_joins;
     std::map<Eigen::Index, std::vector<RTCNetworkDiagSummary>> rtc_network_summary_by_scan;
     std::map<Eigen::Index, std::map<Eigen::Index, std::vector<RTCImpulsiveSnippetSummary>>> rtc_impulsive_summary_by_scan;
     std::map<Eigen::Index, RTCSourceProtectionDiagSummary> rtc_source_protection_summary_by_scan;
@@ -421,11 +472,114 @@ public:
         return rtc_applied_response_notches_by_scan;
     }
 
+    void begin_observation_applied_response_history() {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        rtc_applied_response_notches_by_scan.clear();
+        finalized_applied_response_notches_by_scan.clear();
+        ptc_response_iteration_by_scan.clear();
+        applied_response_history_observation_active = true;
+        applied_response_history_finalized = false;
+    }
+
+    bool applied_response_history_available() const {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        return applied_response_history_observation_active;
+    }
+
+    Eigen::Index begin_ptc_response_iteration(Eigen::Index scan_id) {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        if (applied_response_history_finalized) {
+            throw std::logic_error(
+                "cannot begin a PTC response iteration after observation finalization");
+        }
+        applied_response_history_observation_active = true;
+        auto &next = ptc_response_iteration_by_scan[scan_id];
+        return next++;
+    }
+
+    void record_applied_response_notch(RTCAppliedResponseNotch notch) {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        if (applied_response_history_finalized) {
+            throw std::logic_error(
+                "cannot record an applied response notch after observation finalization");
+        }
+        applied_response_history_observation_active = true;
+        rtc_applied_response_notches_by_scan[notch.scan].push_back(
+            std::move(notch));
+    }
+
     RTCAppliedResponseNotchHistory
     consume_applied_response_notches() {
         std::lock_guard<std::mutex> lock(*diag_summary_mutex);
-        RTCAppliedResponseNotchHistory result;
-        result.swap(rtc_applied_response_notches_by_scan);
+        if (applied_response_history_finalized) {
+            return finalized_applied_response_notches_by_scan;
+        }
+        finalized_applied_response_notches_by_scan.swap(
+            rtc_applied_response_notches_by_scan);
+        applied_response_history_finalized = true;
+        return finalized_applied_response_notches_by_scan;
+    }
+
+    void record_finalized_calibration_join(
+        std::string observation_identity,
+        const std::string &calibration_identity,
+        const std::string &package_identity) {
+        if (observation_identity.empty() || calibration_identity.empty() ||
+            package_identity.empty()) {
+            throw std::logic_error(
+                "finalized calibration join requires observation, CALID, and PKGID");
+        }
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        const auto found = std::find_if(
+            finalized_calibration_joins.begin(),
+            finalized_calibration_joins.end(),
+            [&](const auto &join) {
+                return join.observation_identity == observation_identity;
+            });
+        if (found != finalized_calibration_joins.end()) {
+            if (found->calibration_identity != calibration_identity ||
+                found->package_identity != package_identity) {
+                throw std::logic_error(
+                    "repeat observation finalization conflicts with the original calibration join");
+            }
+            return;
+        }
+        finalized_calibration_joins.push_back(
+            {std::move(observation_identity), calibration_identity,
+             package_identity});
+    }
+
+    FinalizedCalibrationJoin homogeneous_calibration_join(
+        const std::vector<std::string> &observation_identities) const {
+        if (observation_identities.empty()) {
+            throw std::logic_error(
+                "coadd calibration join requires contributing observations");
+        }
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        FinalizedCalibrationJoin result;
+        for (const auto &observation_identity : observation_identities) {
+            const auto found = std::find_if(
+                finalized_calibration_joins.begin(),
+                finalized_calibration_joins.end(),
+                [&](const auto &join) {
+                    return join.observation_identity == observation_identity;
+                });
+            if (found == finalized_calibration_joins.end()) {
+                throw std::logic_error(
+                    "coadd contributor has no finalized calibration join: " +
+                    observation_identity);
+            }
+            if (result.calibration_identity.empty()) {
+                result = *found;
+                continue;
+            }
+            if (found->calibration_identity != result.calibration_identity ||
+                found->package_identity != result.package_identity) {
+                throw std::logic_error(
+                    "heterogeneous coadd calibration identities are unsupported");
+            }
+        }
+        result.observation_identity.clear();
         return result;
     }
 
@@ -500,20 +654,23 @@ public:
     // optionally apply a fixed census-derived RTC notch set before the residual dynamic audit
     template <typename tc_t>
     Eigen::Index apply_rtc_line_audit_fixed_notches(tc_t &, double fs_hz,
-                                                    const RTCLineAuditOptions &);
+                                                    const RTCLineAuditOptions &,
+                                                    const RTCResponseApplicationContext & = {});
 
     // optionally apply chunk-level shared-line notches from the RTC line audit
     template <typename tc_t>
     Eigen::Index apply_rtc_line_audit_shared_notches(tc_t &, double fs_hz,
                                                      const RTCLineAuditOptions &,
-                                                     bool post_filter_stage = false);
+                                                     bool post_filter_stage = false,
+                                                     const RTCResponseApplicationContext & = {});
 
     // optionally apply detector-local zero-phase notches from the available scan context
     template <typename tc_t>
     Eigen::Index apply_rtc_line_audit_detector_notches(tc_t &, double fs_hz,
                                                        const RTCLineAuditOptions &,
                                                        Eigen::Index diag_start_sample = 0,
-                                                       Eigen::Index diag_n_samples = -1);
+                                                       Eigen::Index diag_n_samples = -1,
+                                                       const RTCResponseApplicationContext & = {});
 
     // configure and apply a standard flag guard around filtered scan edges
     void configure_filter_edge_guard(double fs_hz);
@@ -761,7 +918,8 @@ template <typename tc_t>
 Eigen::Index RTCProc::apply_rtc_line_audit_fixed_notches(
     tc_t &in,
     double fs_hz,
-    const RTCLineAuditOptions &audit) {
+    const RTCLineAuditOptions &audit,
+    const RTCResponseApplicationContext &application_context) {
     if (!audit.enabled || !audit.fixed_notch_enabled ||
         !std::isfinite(fs_hz) || fs_hz <= 0.0) {
         return 0;
@@ -808,7 +966,32 @@ Eigen::Index RTCProc::apply_rtc_line_audit_fixed_notches(
         fixed_notch_filter.iir(in.kernel.data);
     }
 
-    for (const auto &notch : applied_notches) {
+    auto context = application_context;
+    if (context.phase.empty()) {
+        context.phase = "rtc";
+    }
+    if (context.stage.empty()) {
+        context.stage = "pre_filter";
+    }
+    if (context.scan < 0) {
+        context.scan = in.index.data;
+    }
+    for (std::size_t ordinal = 0; ordinal < applied_notches.size();
+         ++ordinal) {
+        const auto &notch = applied_notches[ordinal];
+        RTCAppliedResponseNotch record;
+        record.phase = context.phase;
+        record.stage = context.stage;
+        record.scan = context.scan;
+        record.ptc_iteration = context.ptc_iteration;
+        record.model_subtracted = context.model_subtracted;
+        record.scope = "fixed";
+        record.ordinal = static_cast<Eigen::Index>(ordinal);
+        record.center_hz = notch.freq_hz;
+        record.width_hz = notch.width_hz;
+        record.phase_convention = "zero_phase_forward_reverse";
+        record.zero_phase = true;
+        record_applied_response_notch(std::move(record));
         logger->info(
             "rtc_line_audit apply_fixed_notch scan {}: center_hz={:.4f} width_hz={:.4f} zero_phase=true",
             in.index.data + 1,
@@ -1065,6 +1248,32 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                 filter.iir(in.kernel.data);
             }
             log_kernel_matrix_diag(logger, "rtc after tod filter", in.kernel.data, in.index.data);
+        }
+        if (run_tod_notch) {
+            for (std::size_t ordinal = 0; ordinal < filter.w0s.size();
+                 ++ordinal) {
+                const double center_hz = filter.w0s[ordinal];
+                const double q = ordinal < filter.qs.size()
+                    ? filter.qs[ordinal]
+                    : std::numeric_limits<double>::quiet_NaN();
+                const double width_hz =
+                    std::isfinite(q) && q != 0.0
+                        ? center_hz / q
+                        : std::numeric_limits<double>::quiet_NaN();
+                RTCAppliedResponseNotch record;
+                record.phase = "rtc";
+                record.stage = "configured_filter";
+                record.scan = in.index.data;
+                record.scope = "fixed";
+                record.ordinal = static_cast<Eigen::Index>(ordinal);
+                record.center_hz = center_hz;
+                record.width_hz = width_hz;
+                record.phase_convention = filter.notch_zero_phase
+                    ? "zero_phase_forward_reverse"
+                    : "causal_forward";
+                record.zero_phase = filter.notch_zero_phase;
+                record_applied_response_notch(std::move(record));
+            }
         }
         ran_tod_filter_stage = true;
     }
@@ -2485,7 +2694,8 @@ template <typename tc_t>
 Eigen::Index RTCProc::apply_rtc_line_audit_shared_notches(tc_t &in,
                                                           double fs_hz,
                                                           const RTCLineAuditOptions &audit,
-                                                          bool post_filter_stage) {
+                                                          bool post_filter_stage,
+                                                          const RTCResponseApplicationContext &application_context) {
     if (!audit.enabled || !audit.apply_shared_notches ||
         !std::isfinite(fs_hz) || fs_hz <= 0.0) {
         return 0;
@@ -2857,14 +3067,32 @@ Eigen::Index RTCProc::apply_rtc_line_audit_shared_notches(tc_t &in,
     if (run_kernel) {
         dynamic_notch_filter.iir(in.kernel.data);
     }
-    {
-        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
-        auto &history = rtc_applied_response_notches_by_scan[in.index.data];
-        for (const auto &cluster : applied_clusters) {
-            history.push_back({
-                post_filter_stage ? "post_filter" : "pre_filter",
-                "shared", -1, cluster.center_hz, cluster.width_hz, true});
-        }
+    auto context = application_context;
+    if (context.phase.empty()) {
+        context.phase = "rtc";
+    }
+    if (context.stage.empty()) {
+        context.stage = post_filter_stage ? "post_filter" : "pre_filter";
+    }
+    if (context.scan < 0) {
+        context.scan = in.index.data;
+    }
+    for (std::size_t ordinal = 0; ordinal < applied_clusters.size();
+         ++ordinal) {
+        const auto &cluster = applied_clusters[ordinal];
+        RTCAppliedResponseNotch record;
+        record.phase = context.phase;
+        record.stage = context.stage;
+        record.scan = context.scan;
+        record.ptc_iteration = context.ptc_iteration;
+        record.model_subtracted = context.model_subtracted;
+        record.scope = "shared";
+        record.ordinal = static_cast<Eigen::Index>(ordinal);
+        record.center_hz = cluster.center_hz;
+        record.width_hz = cluster.width_hz;
+        record.phase_convention = "zero_phase_forward_reverse";
+        record.zero_phase = true;
+        record_applied_response_notch(std::move(record));
     }
 
     for (auto &row : nw_summary) {
@@ -2934,7 +3162,8 @@ Eigen::Index RTCProc::apply_rtc_line_audit_detector_notches(tc_t &in,
                                                             double fs_hz,
                                                             const RTCLineAuditOptions &audit,
                                                             Eigen::Index diag_start_sample,
-                                                            Eigen::Index diag_n_samples) {
+                                                            Eigen::Index diag_n_samples,
+                                                            const RTCResponseApplicationContext &application_context) {
     if (!audit.enabled || !audit.post_filter_apply_detector_notches ||
         !std::isfinite(fs_hz) || fs_hz <= 0.0) {
         return 0;
@@ -3519,15 +3748,38 @@ Eigen::Index RTCProc::apply_rtc_line_audit_detector_notches(tc_t &in,
             has_kernel);
     }
 
+    auto context = application_context;
+    if (context.phase.empty()) {
+        context.phase = "rtc";
+    }
+    if (context.stage.empty()) {
+        context.stage = "post_filter";
+    }
+    if (context.scan < 0) {
+        context.scan = scan_id;
+    }
+    for (const auto &row : det_summary) {
+        for (std::size_t ordinal = 0;
+             ordinal < row.detector_applied_notches.size(); ++ordinal) {
+            const auto &notch = row.detector_applied_notches[ordinal];
+            RTCAppliedResponseNotch record;
+            record.phase = context.phase;
+            record.stage = context.stage;
+            record.scan = context.scan;
+            record.ptc_iteration = context.ptc_iteration;
+            record.model_subtracted = context.model_subtracted;
+            record.scope = "detector";
+            record.detector = row.det;
+            record.ordinal = static_cast<Eigen::Index>(ordinal);
+            record.center_hz = notch.center_hz;
+            record.width_hz = notch.width_hz;
+            record.phase_convention = "zero_phase_forward_reverse";
+            record.zero_phase = true;
+            record_applied_response_notch(std::move(record));
+        }
+    }
     {
         std::lock_guard<std::mutex> lock(*diag_summary_mutex);
-        auto &history = rtc_applied_response_notches_by_scan[scan_id];
-        for (const auto &row : det_summary) {
-            for (const auto &notch : row.detector_applied_notches) {
-                history.push_back({"post_filter", "detector", row.det,
-                                   notch.center_hz, notch.width_hz, true});
-            }
-        }
         rtc_detector_summary_by_scan[scan_id] = std::move(det_summary);
     }
     return total_notches;

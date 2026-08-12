@@ -26,9 +26,9 @@ EXCLUDED_FILES = {
     "include/citlali/core/pipeline/timestream_config_adapter_raw_flagging.h",
     "include/citlali/core/pipeline/timestream_config_adapter_raw_line_audit.h",
 }
-EXPECTED_RECORD_COUNT = 82
+EXPECTED_RECORD_COUNT = 87
 EXPECTED_RECORD_SHA256 = (
-    "3c581622eb930ba1296d7a70bb14b63176e53270703cadb83d8f0484aad25918"
+    "6f850cbdf06458db3c408080a933149a87d97874e79d2a6161f4ba1c5757e488"
 )
 
 EXECUTOR_OPERATIONS = {
@@ -38,6 +38,8 @@ EXECUTOR_OPERATIONS = {
     "apply_rtc_line_audit_detector_notches",
     "apply_rtc_line_audit_fixed_notches",
     "apply_rtc_line_audit_shared_notches",
+    "begin_observation_applied_response_history",
+    "begin_ptc_response_iteration",
     "calibration.admit_product",
     "calibration.calc_tau",
     "calibration.disable_extinction",
@@ -52,6 +54,8 @@ EXECUTOR_OPERATIONS = {
     "kernel.clear_source_centers",
     "kernel.set_source_centers",
     "kernel.setup",
+    "homogeneous_calibration_join",
+    "record_finalized_calibration_join",
     "remove_bad_dets",
     "remove_flagged_dets",
     "remove_nearby_tones",
@@ -112,6 +116,7 @@ OUTPUT_OR_REALIZED_STATE = {
     "run_tod_iir_highpass",
     "run_tod_notch",
     "snapshot_applied_response_notches",
+    "applied_response_history_available",
 }
 RAW_POLICY_READS = {"run_downsample", "run_extinction", "run_kernel"}
 

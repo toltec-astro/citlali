@@ -233,6 +233,9 @@ def valid_raw_v4_document() -> dict:
     )
     fixture = yaml.safe_load(fixture_path.read_text(encoding="utf-8"))
     document["schema_version"] = fixture["schema_version"]
+    document["effective"]["config"]["flux_calibration"] = {
+        "enabled": True,
+    }
     document["calibration_lineage"] = fixture["calibration_lineage"]
     for section in ("observation", "realized"):
         target = document[section]
@@ -241,6 +244,41 @@ def valid_raw_v4_document() -> dict:
         target.update(fixture[section]["value"] if section == "observation"
                       else fixture[section])
     return document
+
+
+def selected_calibration_fixture_path() -> Path:
+    return (
+        Path(__file__).parent
+        / "examples/sci_cal_001_selected_calibration_apt.ecsv"
+    )
+
+
+def write_raw_v4_observation(
+    reduction: Path,
+    obsnum: str,
+    document: dict | None = None,
+    *,
+    write_member: bool = True,
+) -> Path:
+    observation = reduction / obsnum
+    observation.mkdir(parents=True)
+    provenance_path = observation / "raw_timestream_provenance.yaml"
+    provenance_path.write_text(
+        yaml.safe_dump(
+            document if document is not None else valid_raw_v4_document(),
+            sort_keys=False,
+        ),
+        encoding="utf-8",
+    )
+    (observation / "timestream_output_provenance.yaml").write_text(
+        yaml.safe_dump(valid_output_document(), sort_keys=False),
+        encoding="utf-8",
+    )
+    if write_member:
+        (observation / "selected_calibration_apt.ecsv").write_bytes(
+            selected_calibration_fixture_path().read_bytes()
+        )
+    return provenance_path
 
 
 def valid_output_document() -> dict:
@@ -2974,14 +3012,174 @@ class ProvenanceAuditTest(unittest.TestCase):
         )
 
     def test_accepts_checked_in_sci_cal_001_raw_provenance_v4_package(self) -> None:
-        document = valid_raw_v4_document()
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            document = valid_raw_v4_document()
+            path = write_raw_v4_observation(redu, "000042", document)
 
-        self.assertEqual(audit.raw_provenance_semantic_errors(document), [])
-        document["calibration_lineage"]["value"]["package_identity"] = "bad"
-        self.assertIn(
-            "v4 package identity is not canonical sha256",
-            audit.raw_provenance_semantic_errors(document),
+            self.assertEqual(
+                audit.raw_provenance_semantic_errors(document, path), []
+            )
+            document["calibration_lineage"]["value"][
+                "package_identity"
+            ] = "bad"
+            self.assertIn(
+                "v4 package identity is not canonical sha256",
+                audit.raw_provenance_semantic_errors(document, path),
+            )
+
+    def test_accepts_single_and_multi_observation_v4_package_layouts(self) -> None:
+        for observation_count in (1, 2):
+            with self.subTest(observation_count=observation_count), \
+                    tempfile.TemporaryDirectory() as directory:
+                redu = Path(directory)
+                for index in range(observation_count):
+                    write_raw_v4_observation(redu, f"{42 + index:06d}")
+
+                raw = audit.audit_provenance_sidecars(
+                    redu, require_raw=True
+                )["raw_timestream"]
+
+                self.assertTrue(raw["valid"])
+                self.assertEqual(raw["count"], observation_count)
+                self.assertTrue(raw["observation_coverage_ok"])
+
+    def test_rejects_missing_tampered_stale_conflicting_and_forged_v4_members(
+        self,
+    ) -> None:
+        cases = {}
+
+        missing = valid_raw_v4_document()
+        cases["missing"] = (
+            missing,
+            False,
+            "v4 selected APT sibling member is missing",
         )
+
+        tampered = valid_raw_v4_document()
+        cases["tampered"] = (
+            tampered,
+            True,
+            "v4 selected APT sibling digest differs",
+        )
+
+        stale = valid_raw_v4_document()
+        stale["calibration_lineage"]["value"]["selected_apt"][
+            "source_sha256"
+        ] = "2" * 64
+        cases["stale-source"] = (
+            stale,
+            True,
+            "v4 selected APT source/package/component digests differ",
+        )
+
+        conflicting = valid_raw_v4_document()
+        conflicting["calibration_lineage"]["value"][
+            "component_identities"
+        ]["raw_acquisition_binding_sha256"] = "3" * 64
+        cases["conflicting-component"] = (
+            conflicting,
+            True,
+            "v4 raw-acquisition component digest differs",
+        )
+
+        noncanonical = valid_raw_v4_document()
+        noncanonical["calibration_lineage"]["value"][
+            "schema_version"
+        ] = "not-canonical"
+        cases["noncanonical-schema"] = (
+            noncanonical,
+            True,
+            "v4 canonical calibration lineage schema is invalid",
+        )
+
+        incomplete = valid_raw_v4_document()
+        incomplete["calibration_lineage"]["value"][
+            "component_identities"
+        ].pop("selected_apt_row_association_sha256")
+        cases["incomplete-components"] = (
+            incomplete,
+            True,
+            "v4 canonical calibration components are incomplete",
+        )
+
+        forged = valid_raw_v4_document()
+        forged_value = forged["calibration_lineage"]["value"]
+        forged_value["package_identity"] = "4" * 64
+        for section in (forged["observation"]["value"], forged["realized"]):
+            section["calibration_package_identity"]["value"] = "4" * 64
+        cases["forged-package"] = (
+            forged,
+            True,
+            "v4 package identity does not recompute",
+        )
+
+        for name, (document, write_member, expected_error) in cases.items():
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as directory:
+                redu = Path(directory)
+                path = write_raw_v4_observation(
+                    redu, "000042", document, write_member=write_member
+                )
+                if name == "tampered":
+                    (path.parent / "selected_calibration_apt.ecsv").write_text(
+                        "tampered\n", encoding="utf-8"
+                    )
+
+                self.assertIn(
+                    expected_error,
+                    audit.raw_provenance_semantic_errors(document, path),
+                )
+
+    def test_accepts_effectively_uncalibrated_v4_without_member(self) -> None:
+        document = valid_raw_v4_document()
+        document["effective"]["config"]["flux_calibration"]["enabled"] = False
+        document["calibration_lineage"] = {"available": False}
+        for section in (document["observation"]["value"], document["realized"]):
+            section["calibration_identity"] = {"available": False}
+            section["calibration_package_identity"] = {"available": False}
+
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            path = write_raw_v4_observation(
+                redu, "000042", document, write_member=False
+            )
+
+            self.assertEqual(
+                audit.raw_provenance_semantic_errors(document, path), []
+            )
+
+    def test_rejects_uncalibrated_v4_with_conflicting_member(self) -> None:
+        document = valid_raw_v4_document()
+        document["effective"]["config"]["flux_calibration"]["enabled"] = False
+        document["calibration_lineage"] = {"available": False}
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            path = write_raw_v4_observation(redu, "000042", document)
+
+            self.assertIn(
+                "uncalibrated v4 unexpectedly publishes a selected APT member",
+                audit.raw_provenance_semantic_errors(document, path),
+            )
+
+    def test_rejects_partial_multi_observation_v4_package_publication(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            write_raw_v4_observation(redu, "000042")
+            write_raw_v4_observation(
+                redu, "000043", write_member=False
+            )
+
+            raw = audit.audit_provenance_sidecars(
+                redu, require_raw=True
+            )["raw_timestream"]
+
+            self.assertFalse(raw["valid"])
+            self.assertTrue(raw["files"][0]["valid"])
+            self.assertFalse(raw["files"][1]["valid"])
+            self.assertIn(
+                "v4 selected APT sibling member is missing",
+                raw["files"][1]["semantic_errors"],
+            )
 
     def test_rejects_sci_cal_001_identity_alpha_and_regime_tampering(self) -> None:
         document = valid_raw_v3_document()

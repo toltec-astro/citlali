@@ -152,6 +152,17 @@ void add_phdu_extinction_apt_oof_section(
                rtcproc.calibration.calibration_validity_reason,
                "Calibration validity reason");
     const auto &product = rtcproc.calibration.product;
+    if (product.valid()) {
+        timestream::require_finalized_calibration_product_join(product);
+    }
+    auto calibration_join =
+        timestream::RTCProc::FinalizedCalibrationJoin{
+            {}, product.calibration_identity, product.package_identity};
+    if (product.valid() && mb->science_products.initialized &&
+        mb->science_products.is_coadd) {
+        calibration_join =
+            rtcproc.homogeneous_calibration_join(mb->obsnums);
+    }
     hdu.addKey("CAL.PRODUCT_SCHEMA", std::string{product.schema_version},
                "Complete calibration product schema");
     hdu.addKey("CAL.VALIDITY_DETAIL", product.validity_detail,
@@ -184,13 +195,14 @@ void add_phdu_extinction_apt_oof_section(
                "APT/acquisition key schema");
     hdu.addKey("CAL.RESPONSE_IDENTITY", product.response_identity,
                "Originating and realized response identity");
-    hdu.addKey("CAL.CALIBRATION_IDENTITY", product.calibration_identity,
+    hdu.addKey("CAL.CALIBRATION_IDENTITY",
+               calibration_join.calibration_identity,
                "Canonical complete applied calibration identity");
-    hdu.addKey("CAL.PACKAGE_IDENTITY", product.package_identity,
+    hdu.addKey("CAL.PACKAGE_IDENTITY", calibration_join.package_identity,
                "Canonical calibration package identity");
-    hdu.addKey("CALID", product.calibration_identity,
+    hdu.addKey("CALID", calibration_join.calibration_identity,
                "Canonical complete applied calibration identity");
-    hdu.addKey("CALPKGID", product.package_identity,
+    hdu.addKey("CALPKGID", calibration_join.package_identity,
                "Canonical calibration package identity");
     hdu.addKey("CAL.CONDITIONAL_VARIANCE_TRANSFER",
                std::string{product.conditional_variance_transfer},

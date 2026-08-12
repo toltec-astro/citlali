@@ -1621,10 +1621,14 @@
         {
           "entry_id": "selected-calibration-apt",
           "family_id": "calibration_package_member",
-          "scope": "reduction",
-          "classification": "required",
-          "condition": "CAL package publication requires its selected APT member",
-          "pattern": "selected_calibration_apt.ecsv",
+          "scope": "per_observation",
+          "classification": "config_conditional",
+          "condition": "effective flux calibration requires one selected APT member per observation",
+          "required_when": {
+            "path": "timestream.raw_time_chunk.flux_calibration.enabled",
+            "equals": true
+          },
+          "pattern": "{obs}/selected_calibration_apt.ecsv",
           "checks": {"nonempty": true}
         },
         {
@@ -1742,10 +1746,14 @@
         {
           "entry_id": "selected-calibration-apt",
           "family_id": "calibration_package_member",
-          "scope": "reduction",
-          "classification": "required",
-          "condition": "CAL package publication requires its selected APT member",
-          "pattern": "selected_calibration_apt.ecsv",
+          "scope": "per_observation",
+          "classification": "config_conditional",
+          "condition": "effective flux calibration requires one selected APT member per observation",
+          "required_when": {
+            "path": "timestream.raw_time_chunk.flux_calibration.enabled",
+            "equals": true
+          },
+          "pattern": "{obs}/selected_calibration_apt.ecsv",
           "checks": {"nonempty": true}
         },
         {
@@ -1863,10 +1871,14 @@
         {
           "entry_id": "selected-calibration-apt",
           "family_id": "calibration_package_member",
-          "scope": "reduction",
-          "classification": "required",
-          "condition": "CAL package publication requires its selected APT member",
-          "pattern": "selected_calibration_apt.ecsv",
+          "scope": "per_observation",
+          "classification": "config_conditional",
+          "condition": "effective flux calibration requires one selected APT member per observation",
+          "required_when": {
+            "path": "timestream.raw_time_chunk.flux_calibration.enabled",
+            "equals": true
+          },
+          "pattern": "{obs}/selected_calibration_apt.ecsv",
           "checks": {"nonempty": true}
         },
         {
@@ -2048,10 +2060,14 @@
         {
           "entry_id": "selected-calibration-apt",
           "family_id": "calibration_package_member",
-          "scope": "reduction",
-          "classification": "required",
-          "condition": "CAL package publication requires its selected APT member",
-          "pattern": "selected_calibration_apt.ecsv",
+          "scope": "per_observation",
+          "classification": "config_conditional",
+          "condition": "effective flux calibration requires one selected APT member per observation",
+          "required_when": {
+            "path": "timestream.raw_time_chunk.flux_calibration.enabled",
+            "equals": true
+          },
+          "pattern": "{obs}/selected_calibration_apt.ecsv",
           "checks": {"nonempty": true}
         },
         {
@@ -2189,10 +2205,14 @@
         {
           "entry_id": "selected-calibration-apt",
           "family_id": "calibration_package_member",
-          "scope": "reduction",
-          "classification": "required",
-          "condition": "CAL package publication requires its selected APT member",
-          "pattern": "selected_calibration_apt.ecsv",
+          "scope": "per_observation",
+          "classification": "config_conditional",
+          "condition": "effective flux calibration requires one selected APT member per observation",
+          "required_when": {
+            "path": "timestream.raw_time_chunk.flux_calibration.enabled",
+            "equals": true
+          },
+          "pattern": "{obs}/selected_calibration_apt.ecsv",
           "checks": {"nonempty": true}
         },
         {
@@ -2343,10 +2363,14 @@
         {
           "entry_id": "selected-calibration-apt",
           "family_id": "calibration_package_member",
-          "scope": "reduction",
-          "classification": "required",
-          "condition": "CAL package publication requires its selected APT member",
-          "pattern": "selected_calibration_apt.ecsv",
+          "scope": "per_observation",
+          "classification": "config_conditional",
+          "condition": "effective flux calibration requires one selected APT member per observation",
+          "required_when": {
+            "path": "timestream.raw_time_chunk.flux_calibration.enabled",
+            "equals": true
+          },
+          "pattern": "{obs}/selected_calibration_apt.ecsv",
           "checks": {"nonempty": true}
         },
         {

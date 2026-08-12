@@ -21,8 +21,16 @@ class CompareReductionProductsTest(unittest.TestCase):
         ]
         self.assertTrue(comparable)
         self.assertTrue(all(
-            "selected_calibration_apt.ecsv" in profile["products"]["exclude"]
+            "*/selected_calibration_apt.ecsv" in profile["products"]["exclude"]
             for profile in comparable
+        ))
+        self.assertTrue(compare.path_matches(
+            "000042/selected_calibration_apt.ecsv",
+            ["*/selected_calibration_apt.ecsv"],
+        ))
+        self.assertFalse(compare.path_matches(
+            "selected_calibration_apt.ecsv",
+            ["*/selected_calibration_apt.ecsv"],
         ))
 
     def test_accepts_oof_as_validation_mode(self) -> None:

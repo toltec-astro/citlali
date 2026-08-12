@@ -64,12 +64,21 @@ Eigen::Index Engine::apply_model_protected_ptc_line_audit(
 
     Eigen::Index total_notches = 0;
     Eigen::Index max_notches_per_timestream = 0;
+    const Eigen::Index ptc_iteration =
+        rtcproc.begin_ptc_response_iteration(ptcdata.index.data);
+    timestream::RTCProc::RTCResponseApplicationContext application_context;
+    application_context.phase = "ptc";
+    application_context.stage = "model_protected";
+    application_context.scan = ptcdata.index.data;
+    application_context.ptc_iteration = ptc_iteration;
+    application_context.model_subtracted = model_subtracted;
 
     if (audit.fixed_notch_enabled) {
         const Eigen::Index n_fixed_sections =
             rtcproc.count_rtc_line_audit_fixed_notches(fs_hz, audit);
         const auto n_fixed =
-            rtcproc.apply_rtc_line_audit_fixed_notches(ptcdata, fs_hz, audit);
+            rtcproc.apply_rtc_line_audit_fixed_notches(
+                ptcdata, fs_hz, audit, application_context);
         total_notches += n_fixed;
         if (n_fixed > 0) {
             max_notches_per_timestream += n_fixed_sections;
@@ -83,7 +92,8 @@ Eigen::Index Engine::apply_model_protected_ptc_line_audit(
             rtcproc.capture_rtc_line_audit(
                 ptcdata, calib_for_scan, 0, ptcdata.scans.data.rows(), audit, true);
             const auto n_shared =
-                rtcproc.apply_rtc_line_audit_shared_notches(ptcdata, fs_hz, audit, true);
+                rtcproc.apply_rtc_line_audit_shared_notches(
+                    ptcdata, fs_hz, audit, true, application_context);
             total_notches += n_shared;
             if (n_shared > 0) {
                 max_notches_per_timestream += n_shared;
@@ -97,7 +107,8 @@ Eigen::Index Engine::apply_model_protected_ptc_line_audit(
     if (audit.post_filter_apply_detector_notches) {
         const auto n_detector =
             rtcproc.apply_rtc_line_audit_detector_notches(
-                ptcdata, fs_hz, audit, 0, ptcdata.scans.data.rows());
+                ptcdata, fs_hz, audit, 0, ptcdata.scans.data.rows(),
+                application_context);
         total_notches += n_detector;
         if (n_detector > 0) {
             if (audit.detector_notch_max_notches > 0) {

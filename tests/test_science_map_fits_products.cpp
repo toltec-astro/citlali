@@ -2,13 +2,20 @@
 
 #include <citlali/core/engine/beammap.h>
 #include <citlali/core/engine/engine.h>
+#include <citlali/core/engine/telescope.h>
 #include <citlali/core/mapmaking/map.h>
+#include <citlali/core/mapmaking/naive_mm.h>
+#include <citlali/core/pipeline/flxscale_correction.h>
 #include <citlali/core/pipeline/map_image_output_helpers.h>
 #include <citlali/core/pipeline/calibration_product_admission.h>
 #include <citlali/core/pipeline/mapmaking_provenance_lifecycle.h>
 #include <citlali/core/pipeline/noise_provenance.h>
+#include <citlali/core/pipeline/raw_timestream_provenance_lifecycle.h>
+#include <citlali/core/pipeline/reduction_observation_pipeline.h>
 #include <citlali/core/pipeline/science_map_provenance_serialization.h>
 #include <citlali/core/utils/fits_io.h>
+#include <citlali/core/timestream/ptc/ptcproc.h>
+#include <citlali/core/timestream/rtc/calibrate.h>
 
 #include <fitsio.h>
 #include <spdlog/sinks/null_sink.h>
@@ -26,6 +33,7 @@
 #include <stdexcept>
 #include <sstream>
 #include <string>
+#include <tuple>
 #include <type_traits>
 #include <utility>
 #include <vector>
@@ -260,6 +268,264 @@ std::shared_ptr<mapmaking::MapBuffer> make_noise_product_fixture(
     map->weight = {weight};
     set_noise_stack(*map, realizations);
     return map;
+}
+
+struct F005Correction {
+    double factor = 1.0;
+    double value() const { return factor; }
+};
+
+struct F005RawObservation {
+    const F005Correction *correction = nullptr;
+    const F005Correction *flxscale_correction() const { return correction; }
+    std::string name() const { return "f005-production-observation"; }
+};
+
+struct F005CorrectionEngine {
+    struct {
+        std::map<std::string, Eigen::VectorXd> apt;
+        Eigen::VectorXd flux_conversion_factor;
+        std::map<std::string, double> mean_flux_conversion_factor;
+    } calib;
+};
+
+struct F005AppliedCorrectionState {
+    double source_flxscale = 1.0;
+    double source_sensitivity = 1.0;
+    double applied_correction = 1.0;
+};
+
+F005AppliedCorrectionState apply_f005_production_correction(double factor) {
+    F005CorrectionEngine engine;
+    engine.calib.apt["flxscale"] = Eigen::VectorXd::Ones(1);
+    engine.calib.apt["sens"] = Eigen::VectorXd::Constant(1, 2.0);
+    engine.calib.flux_conversion_factor = Eigen::VectorXd::Ones(1);
+    const auto source_flxscale = engine.calib.apt.at("flxscale");
+    const auto source_sensitivity = engine.calib.apt.at("sens");
+    const F005Correction correction{factor};
+    const F005RawObservation rawobs{&correction};
+    if (!citlali::pipeline::apply_flxscale_correction(
+            engine, rawobs, science_map_test_logger())) {
+        throw std::runtime_error("valid F005 production correction rejected");
+    }
+    if (!engine.calib.apt.at("flxscale").isApprox(source_flxscale, 0.0) ||
+        !engine.calib.apt.at("sens").isApprox(source_sensitivity, 0.0)) {
+        throw std::runtime_error("F005 production correction mutated source APT");
+    }
+    const auto state = engine.calib.mean_flux_conversion_factor.find(
+        std::string{
+            citlali::pipeline::observation_flxscale_correction_state_key});
+    if (state == engine.calib.mean_flux_conversion_factor.end()) {
+        throw std::runtime_error("F005 production correction state missing");
+    }
+    if (citlali::pipeline::apply_flxscale_correction(
+            engine, rawobs, science_map_test_logger())) {
+        throw std::runtime_error(
+            "duplicate F005 production correction was not rejected");
+    }
+    if (engine.calib.flux_conversion_factor(0) != factor ||
+        !engine.calib.apt.at("flxscale").isApprox(source_flxscale, 0.0) ||
+        !engine.calib.apt.at("sens").isApprox(source_sensitivity, 0.0)) {
+        throw std::runtime_error(
+            "duplicate F005 correction changed applied or source state");
+    }
+    const double admitted_correction =
+        citlali::pipeline::applied_observation_flxscale_correction(
+            engine.calib.flux_conversion_factor, 1, state->second);
+    if (admitted_correction != factor) {
+        throw std::runtime_error(
+            "F005 production correction was not admitted exactly");
+    }
+    return {source_flxscale(0), source_sensitivity(0), admitted_correction};
+}
+
+timestream::CalibrationProductAdmissionInputs f005_admission_inputs(
+    const F005AppliedCorrectionState &state, bool correction_applied) {
+    timestream::CalibrationProductAdmissionInputs inputs;
+    inputs.target_unit = "mJy/beam";
+    inputs.calibration_requested = true;
+    inputs.responsivity_required = true;
+    inputs.sensitivity_required = true;
+    inputs.beam_template_required = true;
+    inputs.acquisition_identity_available = true;
+    inputs.acquisition_identity_valid = true;
+    inputs.acquisition_identity_detail = "f005-production-binding";
+    inputs.apt_lineage_available = true;
+    inputs.apt_lineage_valid = true;
+    inputs.apt_lineage_detail = "f005-production-lineage";
+    inputs.apt_artifact_sha256 = "f005-production-apt";
+    inputs.apt_row_association_sha256 = "f005-production-row-association";
+    inputs.apt_observation_identity = "42";
+    inputs.apt_matched_observation_identity = "42";
+    inputs.apt_selected_source = "f005-production-source";
+    inputs.tolapt_manifest_association_sha256 =
+        "f005-production-manifest-association";
+    inputs.acquisition_binding_sha256 = "f005-production-binding-sha";
+    inputs.raw_observation_identity = "f005-production-raw";
+    inputs.acquisition_binding_mode = "explicit";
+    inputs.acquisition_key_schema = "artifact+network+local_tone";
+    inputs.response_identity = "f005-production-response";
+    inputs.applied_sample_extinction_state_sha256 =
+        "f005-production-no-extinction";
+    inputs.atmosphere_operator_id = "f005-production-operator";
+    inputs.atmosphere_operator_contract_sha256 =
+        "f005-production-operator-contract";
+    inputs.atmosphere_node_table_sha256 = "f005-production-node-table";
+    inputs.passband_set_id = "f005-production-passband";
+    inputs.reference_profile_id = "f005-production-reference";
+    inputs.tau225 = 0.1;
+    auto &lineage = inputs.package_lineage;
+    lineage.selected_apt_source_path = "/f005/apt.ecsv";
+    lineage.selected_apt_sha256 = inputs.apt_artifact_sha256;
+    lineage.apt_row_association_sha256 = inputs.apt_row_association_sha256;
+    lineage.modern_tolapt_manifest_available = true;
+    lineage.modern_tolapt_manifest_path = "/f005/manifest.yaml";
+    lineage.modern_tolapt_manifest_sha256 = "f005-production-manifest";
+    lineage.modern_tolapt_contract_version = "tolapt.run.v1";
+    lineage.modern_tolapt_run_id = "f005-production-run";
+    lineage.modern_tolapt_output_key = "matched_design_apt";
+    lineage.modern_tolapt_output_path = "matched.ecsv";
+    lineage.tolapt_manifest_association_sha256 =
+        inputs.tolapt_manifest_association_sha256;
+    lineage.modern_tolapt_design_input =
+        {"design.ecsv", "f005-design", 1, "2026-08-11T00:00:00Z"};
+    lineage.modern_tolapt_measured_input =
+        {"measured.ecsv", "f005-measured", 1, "2026-08-11T00:00:01Z"};
+    lineage.raw_artifacts.push_back(
+        {"raw.nc", "f005-raw", "toltec0", 0, {1.0e9}});
+    timestream::CalibrationLineageRow row;
+    row.ordered_detector_index = 0;
+    row.selected_source_row_index = 0;
+    row.network = 0;
+    row.network_local_tone = 0;
+    row.absolute_tone_frequency_hz = 1.0e9;
+    row.uid = "17";
+    row.eligible = true;
+    row.validity_basis = "f005-valid";
+    row.stable_association = "f005-stable";
+    lineage.ordered_rows.push_back(row);
+    inputs.target_unit_factor = Eigen::VectorXd::Ones(1);
+    inputs.observation_flxscale_correction_applied = correction_applied;
+    inputs.applied_observation_flxscale_correction =
+        correction_applied ? state.applied_correction : 1.0;
+    inputs.detector_flxscale =
+        Eigen::VectorXd::Constant(1, state.source_flxscale);
+    inputs.detector_responsivity = Eigen::VectorXd::Ones(1);
+    inputs.detector_sensitivity =
+        Eigen::VectorXd::Constant(1, state.source_sensitivity);
+    inputs.detector_beam_major_fwhm_arcsec =
+        Eigen::VectorXd::Constant(1, 10.0);
+    inputs.detector_beam_minor_fwhm_arcsec =
+        Eigen::VectorXd::Constant(1, 9.0);
+    inputs.minimum_extinction_correction = Eigen::VectorXd::Ones(1);
+    inputs.maximum_extinction_correction = Eigen::VectorXd::Ones(1);
+    return inputs;
+}
+
+struct F005CalibrationFixture {
+    std::map<std::string, Eigen::VectorXd> apt;
+};
+
+struct F005ProductionResult {
+    double sample = 0.0;
+    double compatibility_fcf = 0.0;
+    double detector_weight = 0.0;
+    double map_signal = 0.0;
+    double map_weight = 0.0;
+    double realization_minus = 0.0;
+    double realization_plus = 0.0;
+    double noise_variance_I = 0.0;
+};
+
+F005ProductionResult run_f005_production_route(
+    const std::string &mode, const F005AppliedCorrectionState &state,
+    bool correction_applied) {
+    using Data =
+        timestream::TCData<timestream::TCDataKind::PTC, Eigen::MatrixXd>;
+    timestream::Calibration calibration;
+    calibration.logger = science_map_test_logger();
+    calibration.admit_product(
+        f005_admission_inputs(state, correction_applied));
+
+    Data data;
+    data.scans.data.resize(2, 1);
+    data.scans.data << 1.0, 3.0;
+    data.flags.data =
+        Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>::Constant(
+            2, 1, false);
+    data.fcf.data = Eigen::VectorXd::Ones(1);
+    data.noise.data.resize(2, 1);
+    data.noise.data << -1.0, 1.0;
+    data.index.data = 0;
+    F005CalibrationFixture calibration_fixture;
+    calibration_fixture.apt["array"] = Eigen::VectorXd::Zero(1);
+    calibration.calibrate_tod(data, calibration_fixture);
+    data.status.calibrated = true;
+
+    std::map<std::string, Eigen::VectorXd> apt;
+    apt["array"] = Eigen::VectorXd::Zero(1);
+    apt["flag"] = Eigen::VectorXd::Zero(1);
+    apt["sens"] =
+        Eigen::VectorXd::Constant(1, state.source_sensitivity);
+    apt["uid"] = Eigen::VectorXd::Constant(1, 17.0);
+    apt["x_t"] = Eigen::VectorXd::Zero(1);
+    apt["y_t"] = Eigen::VectorXd::Zero(1);
+    timestream::PTCProc processor;
+    processor.logger = science_map_test_logger();
+    processor.weighting_type = mode;
+    engine::Telescope telescope;
+    telescope.d_fsmp = 1.0;
+    processor.calc_weights(data, apt, telescope, false);
+
+    data.kernel.data = Eigen::MatrixXd::Ones(2, 1);
+    data.tel_data.data["TelElAct"] = Eigen::VectorXd::Zero(2);
+    data.tel_data.data["alt_phys"] = Eigen::VectorXd::Zero(2);
+    data.tel_data.data["az_phys"] = Eigen::VectorXd::Zero(2);
+    data.pointing_offsets_arcsec.data["az"] = Eigen::VectorXd::Zero(2);
+    data.pointing_offsets_arcsec.data["alt"] = Eigen::VectorXd::Zero(2);
+
+    mapmaking::MapBuffer map{"omb"};
+    map.n_rows = 1;
+    map.n_cols = 1;
+    map.pixel_size_rad = 1.0e-5;
+    map.map_grouping = "array";
+    map.parallel_policy = "seq";
+    map.sig_unit = "mJy/beam";
+    map.cov_cut = 0.0;
+    map.n_noise = 2;
+    map.randomize_dets = false;
+    map.signal.emplace_back(Eigen::MatrixXd::Zero(1, 1));
+    map.weight.emplace_back(Eigen::MatrixXd::Zero(1, 1));
+    map.noise.emplace_back(1, 1, 2);
+    map.noise.back().setZero();
+    mapmaking::MapBuffer unused_coadd{"cmb"};
+    Eigen::VectorXi map_indices = Eigen::VectorXi::Zero(1);
+    std::string pixel_axes = "altaz";
+    mapmaking::NaiveMapmaker mapmaker;
+    mapmaker.run_polarization = false;
+    mapmaker.populate_maps_naive(
+        data, map, unused_coadd, map_indices, pixel_axes, apt, 1.0,
+        true, true);
+    map.normalize_maps();
+    const double realization_minus = map.noise[0](0, 0, 0);
+    const double realization_plus = map.noise[0](0, 0, 1);
+    map.calc_noise_products(Eigen::Index{0}, false, true);
+    map.median_err = Eigen::VectorXd::Ones(1);
+
+    CapturedFitsEntry output;
+    DummyWcs wcs;
+    auto *map_ptr = &map;
+    citlali::pipeline::add_primary_map_image_hdus(
+        output, map_ptr, 0, "", "I", wcs, 2000.0, false, true,
+        false, false, science_map_test_logger());
+    const auto &variance = captured_image(output, "noise_variance_I").values;
+    if (variance.size() != 1) {
+        throw std::runtime_error("F005 noise_variance_I publication missing");
+    }
+    return {
+        data.scans.data(0, 0), data.fcf.data(0), data.weights.data(0),
+        map.signal[0](0, 0), map.weight[0](0, 0), realization_minus,
+        realization_plus, variance.front()};
 }
 
 TEST(science_map_fits_products,
@@ -613,44 +879,50 @@ TEST(science_map_fits_products,
 }
 
 TEST(science_map_fits_products,
-     production_noise_variance_I_scales_as_square_of_calibration_factor) {
-    auto produce_noise_variance = [](double calibration_factor) {
-        auto map = make_science_map_buffer(false);
-        map->signal[0].setConstant(2.0 * calibration_factor);
-        map->weight[0].setConstant(
-            1.0 / (calibration_factor * calibration_factor));
-        set_noise_stack(
-            *map,
-            {Eigen::MatrixXd::Constant(
-                 map->n_rows, map->n_cols, -2.0 * calibration_factor),
-             Eigen::MatrixXd::Constant(
-                 map->n_rows, map->n_cols, 2.0 * calibration_factor)});
-        map->science_products.bundle_identity->required_companions = {
-            "noise_realization_0_I", "noise_realization_1_I"};
-        mapmaking::science_map_finalize_realized_product_facts(*map, 0);
-        map->calc_noise_products(Eigen::Index{0}, false, true);
+     production_observation_correction_reaches_weights_maps_and_noise_variance_I) {
+    const F005AppliedCorrectionState uncorrected{1.0, 2.0, 1.0};
+    const double correction_factor = 3.0;
+    const auto corrected =
+        apply_f005_production_correction(correction_factor);
+    EXPECT_DOUBLE_EQ(corrected.source_flxscale,
+                     uncorrected.source_flxscale);
+    EXPECT_DOUBLE_EQ(corrected.source_sensitivity,
+                     uncorrected.source_sensitivity);
+    EXPECT_DOUBLE_EQ(corrected.applied_correction, correction_factor);
 
-        CapturedFitsEntry output;
-        DummyWcs wcs;
-        citlali::pipeline::add_primary_map_image_hdus(
-            output, map, 0, "", "I", wcs, 2000.0, false, true, false,
-            false, science_map_test_logger());
-        EXPECT_TRUE(captured_has_image(output, "noise_variance_I"));
-        return captured_image(output, "noise_variance_I").values;
-    };
-
-    const auto raw_variance = produce_noise_variance(1.0);
-    const double calibration_factor = 3.0;
-    const auto calibrated_variance =
-        produce_noise_variance(calibration_factor);
-    ASSERT_EQ(raw_variance.size(), calibrated_variance.size());
-    ASSERT_FALSE(raw_variance.empty());
-    for (std::size_t pixel = 0; pixel < raw_variance.size(); ++pixel) {
-        ASSERT_GT(raw_variance[pixel], 0.0) << "pixel=" << pixel;
-        EXPECT_DOUBLE_EQ(
-            calibrated_variance[pixel],
-            raw_variance[pixel] * calibration_factor * calibration_factor)
-            << "pixel=" << pixel;
+    for (const std::string mode :
+         {"approximate", "hybrid", "validated", "full"}) {
+        SCOPED_TRACE(mode);
+        const auto raw =
+            run_f005_production_route(mode, uncorrected, false);
+        const auto applied =
+            run_f005_production_route(mode, corrected, true);
+        EXPECT_DOUBLE_EQ(raw.sample, 1.0);
+        EXPECT_DOUBLE_EQ(applied.sample, correction_factor);
+        EXPECT_DOUBLE_EQ(raw.compatibility_fcf, 1.0);
+        EXPECT_DOUBLE_EQ(applied.compatibility_fcf, correction_factor);
+        EXPECT_NEAR(
+            applied.detector_weight,
+            raw.detector_weight /
+                (correction_factor * correction_factor),
+            1.0e-14);
+        EXPECT_NEAR(applied.map_signal,
+                    raw.map_signal * correction_factor, 1.0e-14);
+        EXPECT_NEAR(
+            applied.map_weight,
+            raw.map_weight / (correction_factor * correction_factor),
+            1.0e-14);
+        EXPECT_NE(raw.realization_minus, 0.0);
+        EXPECT_NE(raw.realization_plus, 0.0);
+        EXPECT_NEAR(applied.realization_minus,
+                    raw.realization_minus * correction_factor, 1.0e-14);
+        EXPECT_NEAR(applied.realization_plus,
+                    raw.realization_plus * correction_factor, 1.0e-14);
+        ASSERT_GT(raw.noise_variance_I, 0.0);
+        EXPECT_NEAR(
+            applied.noise_variance_I,
+            raw.noise_variance_I * correction_factor * correction_factor,
+            1.0e-14);
     }
 }
 
@@ -976,7 +1248,7 @@ void configure_production_writer_engine(Engine &engine) {
 }
 
 TEST(science_map_fits_products,
-     calibration_response_basis_binds_realized_mapmaker_kernel_and_filters) {
+     calibration_response_basis_separates_requested_effective_and_actual) {
     Engine engine;
     configure_production_writer_engine(engine);
     engine.typed_config.mapmaking.method =
@@ -1014,24 +1286,27 @@ TEST(science_map_fits_products,
 
     const auto identity =
         citlali::pipeline::calibration_response_identity(engine);
-    EXPECT_NE(identity.find("realized_mapmaker_class=jinc"),
+    EXPECT_NE(identity.find("effective_mapmaker_class=jinc"),
               std::string::npos);
-    EXPECT_NE(identity.find("realized_map_grouping=array"),
+    EXPECT_NE(identity.find("effective_map_grouping=array"),
               std::string::npos);
-    EXPECT_NE(identity.find("realized_kernel_enabled=true"),
+    EXPECT_NE(identity.find("effective_kernel_enabled=true"),
               std::string::npos);
-    EXPECT_NE(identity.find("realized_kernel_class=gaussian"),
+    EXPECT_NE(identity.find("effective_kernel_class=gaussian"),
               std::string::npos);
-    EXPECT_NE(identity.find("realized_fir_state=applied"),
+    EXPECT_NE(identity.find("effective_fir_state=scheduled"),
               std::string::npos);
-    EXPECT_NE(identity.find("realized_fir_a_gibbs=0x1.5p+5"),
+    EXPECT_NE(identity.find("effective_fir_a_gibbs=0x1.5p+5"),
               std::string::npos);
-    EXPECT_NE(identity.find("realized_fixed_notch_state=applied"),
+    EXPECT_NE(identity.find("effective_fixed_notch_state=scheduled"),
               std::string::npos);
-    EXPECT_NE(identity.find("realized_iir_highpass_enabled=true"),
+    EXPECT_NE(identity.find("effective_iir_highpass_enabled=true"),
               std::string::npos);
-    EXPECT_NE(identity.find("realized_downsample_enabled=true"),
+    EXPECT_NE(identity.find("effective_downsample_enabled=true"),
               std::string::npos);
+    EXPECT_NE(identity.find("actual_applied_notch_count=0"),
+              std::string::npos);
+    EXPECT_EQ(identity.find("actual_applied_notch[0]"), std::string::npos);
     EXPECT_NE(identity.find("no_empirical_response_fidelity"),
               std::string::npos);
 
@@ -1044,9 +1319,21 @@ TEST(science_map_fits_products,
      calibration_response_identity_distinguishes_secondary_detector_notches) {
     Engine engine;
     configure_production_writer_engine(engine);
-    engine.rtcproc.rtc_applied_response_notches_by_scan[3] = {
-        {"post_filter", "detector", 7, 11.0, 0.2, true},
-        {"post_filter", "detector", 7, 19.0, 0.4, true}};
+    engine.rtcproc.begin_observation_applied_response_history();
+    for (const auto &[ordinal, center, width] :
+         std::vector<std::tuple<Eigen::Index, double, double>>{
+             {0, 11.0, 0.2}, {1, 19.0, 0.4}}) {
+        timestream::RTCProc::RTCAppliedResponseNotch notch;
+        notch.phase = "rtc";
+        notch.stage = "post_filter";
+        notch.scan = 3;
+        notch.scope = "detector";
+        notch.detector = 7;
+        notch.ordinal = ordinal;
+        notch.center_hz = center;
+        notch.width_hz = width;
+        engine.rtcproc.record_applied_response_notch(std::move(notch));
+    }
     const auto snapshot =
         engine.rtcproc.snapshot_applied_response_notches();
     ASSERT_EQ(snapshot.at(3).size(), 2U);
@@ -1063,6 +1350,10 @@ TEST(science_map_fits_products,
         engine.rtcproc.consume_applied_response_notches();
     ASSERT_EQ(consumed.at(3).size(), 2U);
     EXPECT_TRUE(engine.rtcproc.snapshot_applied_response_notches().empty());
+    const auto repeated = engine.rtcproc.consume_applied_response_notches();
+    ASSERT_EQ(repeated.at(3).size(), 2U);
+    EXPECT_DOUBLE_EQ(repeated.at(3)[1].center_hz,
+                     consumed.at(3)[1].center_hz);
 }
 
 TEST(science_map_fits_products,
@@ -1075,13 +1366,310 @@ TEST(science_map_fits_products,
     engine.rtcproc.run_tod_filter = false;
     const auto first =
         citlali::pipeline::calibration_response_identity(engine);
-    EXPECT_NE(first.find("realized_fir_state=inactive"), std::string::npos);
-    EXPECT_EQ(first.find("realized_fir_a_gibbs"), std::string::npos);
+    EXPECT_NE(first.find("effective_fir_state=inactive"), std::string::npos);
+    EXPECT_EQ(first.find("effective_fir_a_gibbs"), std::string::npos);
     raw.filter.a_gibbs = 49.0;
     const auto second =
         citlali::pipeline::calibration_response_identity(engine);
     EXPECT_NE(first, second);
-    EXPECT_EQ(second.find("realized_fir_a_gibbs"), std::string::npos);
+    EXPECT_EQ(second.find("effective_fir_a_gibbs"), std::string::npos);
+}
+
+TEST(science_map_fits_products,
+     actual_notch_application_points_record_complete_rtc_and_ptc_state) {
+    using Data =
+        timestream::TCData<timestream::TCDataKind::PTC, Eigen::MatrixXd>;
+    timestream::RTCProc rtcproc;
+    rtcproc.logger = science_map_test_logger();
+    rtcproc.run_kernel = false;
+    rtcproc.begin_observation_applied_response_history();
+
+    Data data;
+    data.scans.data = Eigen::MatrixXd::Zero(256, 2);
+    data.flags.data =
+        Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>::Constant(
+            256, 2, false);
+    data.index.data = 4;
+    for (Eigen::Index sample = 0; sample < data.scans.data.rows(); ++sample) {
+        const double phase =
+            2.0 * pi * 8.0 * static_cast<double>(sample) / 64.0;
+        data.scans.data(sample, 0) = std::sin(phase);
+        data.scans.data(sample, 1) = 0.8 * std::sin(phase);
+    }
+
+    auto audit = rtcproc.line_audit;
+    audit.enabled = true;
+    audit.fixed_notch_enabled = true;
+    audit.fixed_notch_freqs_hz = {8.0};
+    audit.fixed_notch_widths_hz = {0.5};
+    ASSERT_EQ(rtcproc.apply_rtc_line_audit_fixed_notches(
+                  data, 64.0, audit),
+              1);
+
+    data.index.data = 5;
+    audit.fixed_notch_enabled = false;
+    audit.apply_shared_notches = true;
+    audit.apply_min_support_networks = 1;
+    audit.apply_min_detector_frac = 0.0;
+    audit.apply_min_common_mode_prominence = 0.0;
+    audit.apply_max_notches = 1;
+    timestream::RTCProc::RTCNetworkDiagSummary network;
+    network.nw = 0;
+    timestream::RTCProc::RTCLineAuditSharedCandidate candidate;
+    candidate.freq_hz = 8.0;
+    candidate.width_hz = 0.5;
+    candidate.freq_min_hz = 7.75;
+    candidate.freq_max_hz = 8.25;
+    candidate.detector_frac = 1.0;
+    candidate.common_mode_prominence = 1000.0;
+    candidate.notch_score = 1000.0;
+    candidate.recommend_notch = true;
+    network.line_audit_shared_candidates.push_back(candidate);
+    network.post_line_audit.shared_candidates.push_back(candidate);
+    rtcproc.rtc_network_summary_by_scan[5] = {network};
+    ASSERT_EQ(rtcproc.apply_rtc_line_audit_shared_notches(
+                  data, 64.0, audit, false),
+              1);
+
+    data.index.data = 6;
+    for (Eigen::Index sample = 0; sample < data.scans.data.rows(); ++sample) {
+        const double phase =
+            2.0 * pi * 8.0 * static_cast<double>(sample) / 64.0;
+        data.scans.data(sample, 0) = std::sin(phase) +
+            0.01 * std::sin(2.0 * pi * 3.0 *
+                            static_cast<double>(sample) / 64.0);
+        data.scans.data(sample, 1) = 0.8 * std::sin(phase) +
+            0.01 * std::cos(2.0 * pi * 5.0 *
+                            static_cast<double>(sample) / 64.0);
+    }
+    audit.apply_shared_notches = false;
+    audit.post_filter_apply_detector_notches = true;
+    audit.line_min_hz = 2.0;
+    audit.line_max_hz = 20.0;
+    audit.segment_sec = 2.0;
+    audit.min_segment_sec = 1.0;
+    audit.min_windows = 1;
+    audit.min_good_frac = 0.9;
+    audit.continuum_radius_bins = 2;
+    audit.detector_notch_min_prominence = 2.0;
+    audit.detector_notch_min_line_power_frac = 0.0;
+    audit.detector_notch_max_notches = 1;
+    audit.detector_notch_min_width_hz = 0.25;
+    audit.detector_notch_max_width_hz = 1.0;
+    ASSERT_GT(rtcproc.apply_rtc_line_audit_detector_notches(
+                  data, 64.0, audit, 0, data.scans.data.rows()),
+              0);
+
+    data.index.data = 7;
+    audit.post_filter_apply_detector_notches = false;
+    audit.fixed_notch_enabled = true;
+    timestream::RTCProc::RTCResponseApplicationContext ptc_context;
+    ptc_context.phase = "ptc";
+    ptc_context.stage = "model_protected";
+    ptc_context.scan = 7;
+    ptc_context.ptc_iteration = 2;
+    ptc_context.model_subtracted = true;
+    ASSERT_EQ(rtcproc.apply_rtc_line_audit_fixed_notches(
+                  data, 64.0, audit, ptc_context),
+              1);
+
+    data.index.data = 8;
+    audit.fixed_notch_enabled = false;
+    audit.apply_shared_notches = true;
+    rtcproc.rtc_network_summary_by_scan[8] = {network};
+    ptc_context.scan = 8;
+    ptc_context.ptc_iteration = 3;
+    ASSERT_EQ(rtcproc.apply_rtc_line_audit_shared_notches(
+                  data, 64.0, audit, true, ptc_context),
+              1);
+
+    data.index.data = 9;
+    for (Eigen::Index sample = 0; sample < data.scans.data.rows(); ++sample) {
+        const double phase =
+            2.0 * pi * 8.0 * static_cast<double>(sample) / 64.0;
+        data.scans.data(sample, 0) = std::sin(phase) +
+            0.01 * std::sin(2.0 * pi * 3.0 *
+                            static_cast<double>(sample) / 64.0);
+        data.scans.data(sample, 1) = 0.8 * std::sin(phase) +
+            0.01 * std::cos(2.0 * pi * 5.0 *
+                            static_cast<double>(sample) / 64.0);
+    }
+    audit.apply_shared_notches = false;
+    audit.post_filter_apply_detector_notches = true;
+    ptc_context.scan = 9;
+    ptc_context.ptc_iteration = 4;
+    ASSERT_GT(rtcproc.apply_rtc_line_audit_detector_notches(
+                  data, 64.0, audit, 0, data.scans.data.rows(),
+                  ptc_context),
+              0);
+
+    const auto history = rtcproc.snapshot_applied_response_notches();
+    ASSERT_EQ(history.at(4).size(), 1U);
+    EXPECT_EQ(history.at(4).front().phase, "rtc");
+    EXPECT_EQ(history.at(4).front().scope, "fixed");
+    EXPECT_EQ(history.at(4).front().ordinal, 0);
+    ASSERT_EQ(history.at(5).size(), 1U);
+    EXPECT_EQ(history.at(5).front().scope, "shared");
+    ASSERT_FALSE(history.at(6).empty());
+    EXPECT_EQ(history.at(6).front().scope, "detector");
+    EXPECT_GE(history.at(6).front().detector, 0);
+    ASSERT_EQ(history.at(7).size(), 1U);
+    EXPECT_EQ(history.at(7).front().phase, "ptc");
+    EXPECT_EQ(history.at(7).front().ptc_iteration, 2);
+    EXPECT_TRUE(history.at(7).front().model_subtracted);
+    ASSERT_EQ(history.at(8).size(), 1U);
+    EXPECT_EQ(history.at(8).front().phase, "ptc");
+    EXPECT_EQ(history.at(8).front().scope, "shared");
+    EXPECT_EQ(history.at(8).front().ptc_iteration, 3);
+    ASSERT_FALSE(history.at(9).empty());
+    EXPECT_EQ(history.at(9).front().phase, "ptc");
+    EXPECT_EQ(history.at(9).front().scope, "detector");
+    EXPECT_EQ(history.at(9).front().ptc_iteration, 4);
+    for (const auto &[scan, records] : history) {
+        for (const auto &record : records) {
+            EXPECT_EQ(record.scan, scan);
+            EXPECT_EQ(record.geometry, "center_hz_width_hz");
+            EXPECT_FALSE(record.phase_convention.empty());
+            EXPECT_TRUE(std::isfinite(record.center_hz));
+            EXPECT_TRUE(std::isfinite(record.width_hz));
+        }
+    }
+}
+
+TEST(science_map_fits_products,
+     response_history_lifecycle_resets_and_preserves_finalized_snapshot) {
+    timestream::RTCProc rtcproc;
+    rtcproc.begin_observation_applied_response_history();
+    timestream::RTCProc::RTCAppliedResponseNotch interrupted;
+    interrupted.scan = 0;
+    interrupted.stage = "pre_filter";
+    interrupted.scope = "fixed";
+    interrupted.ordinal = 0;
+    interrupted.center_hz = 8.0;
+    interrupted.width_hz = 0.5;
+    rtcproc.record_applied_response_notch(interrupted);
+
+    rtcproc.begin_observation_applied_response_history();
+    EXPECT_TRUE(rtcproc.snapshot_applied_response_notches().empty());
+    const auto unavailable = rtcproc.consume_applied_response_notches();
+    EXPECT_TRUE(unavailable.empty());
+    EXPECT_TRUE(rtcproc.consume_applied_response_notches().empty());
+    EXPECT_THROW(rtcproc.record_applied_response_notch(interrupted),
+                 std::logic_error);
+
+    rtcproc.begin_observation_applied_response_history();
+    for (const Eigen::Index scan : {0, 1}) {
+        auto record = interrupted;
+        record.scan = scan;
+        record.center_hz += static_cast<double>(scan);
+        rtcproc.record_applied_response_notch(std::move(record));
+    }
+    const auto multiscan = rtcproc.consume_applied_response_notches();
+    ASSERT_EQ(multiscan.size(), 2U);
+    EXPECT_EQ(multiscan.at(0).front().scan, 0);
+    EXPECT_EQ(multiscan.at(1).front().scan, 1);
+
+    rtcproc.begin_observation_applied_response_history();
+    auto reused_scan = interrupted;
+    reused_scan.center_hz = 12.0;
+    rtcproc.record_applied_response_notch(reused_scan);
+    const auto reused = rtcproc.consume_applied_response_notches();
+    ASSERT_EQ(reused.size(), 1U);
+    EXPECT_DOUBLE_EQ(reused.at(0).front().center_hz, 12.0);
+}
+
+TEST(science_map_fits_products,
+     finalized_joins_are_idempotent_homogeneous_and_fail_closed) {
+    timestream::RTCProc rtcproc;
+    rtcproc.record_finalized_calibration_join("obs-a", "cal-a", "pkg-a");
+    EXPECT_NO_THROW(rtcproc.record_finalized_calibration_join(
+        "obs-a", "cal-a", "pkg-a"));
+    EXPECT_THROW(rtcproc.record_finalized_calibration_join(
+                     "obs-a", "cal-b", "pkg-b"),
+                 std::logic_error);
+    rtcproc.record_finalized_calibration_join("obs-b", "cal-a", "pkg-a");
+    const auto homogeneous =
+        rtcproc.homogeneous_calibration_join({"obs-a", "obs-b"});
+    EXPECT_EQ(homogeneous.calibration_identity, "cal-a");
+    EXPECT_EQ(homogeneous.package_identity, "pkg-a");
+    rtcproc.record_finalized_calibration_join("obs-c", "cal-c", "pkg-c");
+    EXPECT_THROW(rtcproc.homogeneous_calibration_join({"obs-a", "obs-c"}),
+                 std::logic_error);
+    EXPECT_THROW(rtcproc.homogeneous_calibration_join({"obs-missing"}),
+                 std::logic_error);
+
+    citlali::pipeline::RawTimestreamExecutionPlan plan;
+    plan.reset_from_request(citlali::config::RawTimeChunkConfig{});
+    auto &observation = plan.begin_observation();
+    observation.calibration_identity = "cal-a";
+    observation.calibration_package_identity = "pkg-a";
+    observation.calibration_response_identity = "response-a";
+    citlali::pipeline::complete_raw_timestream_observation(plan, 2, 3);
+    EXPECT_NO_THROW(citlali::pipeline::complete_raw_timestream_observation(
+        plan, 2, 3));
+    EXPECT_THROW(citlali::pipeline::complete_raw_timestream_observation(
+                     plan, 3, 3),
+                 std::logic_error);
+}
+
+TEST(science_map_fits_products,
+     canonical_package_precedes_dependents_and_survives_later_failure) {
+    std::vector<std::string> events;
+    const auto package =
+        citlali::pipeline::publish_canonical_package_before_linked_products(
+            [&]() {
+                events.push_back("package_published_and_validated");
+                return std::string{"canonical-package"};
+            },
+            [&]() { events.push_back("dependent_published"); });
+    EXPECT_EQ(package, "canonical-package");
+    EXPECT_EQ(events,
+              (std::vector<std::string>{
+                  "package_published_and_validated", "dependent_published"}));
+
+    events.clear();
+    EXPECT_THROW(
+        citlali::pipeline::publish_canonical_package_before_linked_products(
+            [&]() {
+                events.push_back("package_published_and_validated");
+                return std::string{"orphan-package"};
+            },
+            [&]() {
+                events.push_back("dependent_failed_before_publication");
+                throw std::runtime_error("dependent output failed");
+            }),
+        std::runtime_error);
+    EXPECT_EQ(events,
+              (std::vector<std::string>{
+                  "package_published_and_validated",
+                  "dependent_failed_before_publication"}));
+
+    const auto package_dir = std::filesystem::path(testing::TempDir()) /
+        "citlali-f008-package-first-failure";
+    std::filesystem::remove_all(package_dir);
+    std::filesystem::create_directories(package_dir);
+    citlali::pipeline::RawTimestreamExecutionPlan plan;
+    plan.reset_from_request(citlali::config::RawTimeChunkConfig{});
+    plan.begin_observation();
+    citlali::pipeline::complete_raw_timestream_observation(plan, 2, 1);
+    const auto dependent_path = package_dir / "dependent-product.fits";
+    EXPECT_THROW(
+        citlali::pipeline::publish_canonical_package_before_linked_products(
+            [&]() {
+                citlali::pipeline::write_raw_timestream_provenance_file(
+                    package_dir, plan);
+                return citlali::pipeline::raw_timestream_provenance_path(
+                    package_dir);
+            },
+            [&]() {
+                throw std::runtime_error(
+                    "dependent failed before atomic publication");
+            }),
+        std::runtime_error);
+    EXPECT_TRUE(std::filesystem::is_regular_file(
+        citlali::pipeline::raw_timestream_provenance_path(package_dir)));
+    EXPECT_FALSE(std::filesystem::exists(dependent_path));
+    std::filesystem::remove_all(package_dir);
 }
 
 template <class EngineType>
@@ -1153,6 +1741,50 @@ void admit_production_calibration_fixture(EngineType &engine) {
     engine.rtcproc.calibration.admit_product(inputs);
     ASSERT_TRUE(engine.rtcproc.calibration.product.valid());
     citlali::pipeline::finalize_complete_calibration_product_identity(engine);
+}
+
+TEST(science_map_fits_products,
+     tod_only_metadata_reopens_with_finalized_calid_and_pkgid) {
+    Engine engine;
+    configure_production_writer_engine(engine);
+    admit_production_calibration_fixture(engine);
+    engine.calib.arrays.resize(1);
+    engine.calib.arrays.setZero();
+    std::map<int, std::string> array_names{{0, "a1100"}};
+    std::map<std::string, Eigen::VectorXd> telescope_data;
+    const auto path = std::filesystem::path(testing::TempDir()) /
+        "citlali-f007-tod-only-calibration-join.nc";
+    std::filesystem::remove(path);
+    write_netcdf_atomic(path.string(), [&](netCDF::NcFile &file) {
+        citlali::pipeline::add_tod_mean_tau_vars(
+            file, false, engine.rtcproc, telescope_data, 0.0,
+            engine.calib, array_names);
+    });
+
+    netCDF::NcFile file(path.string(), netCDF::NcFile::read);
+    const auto read_string = [&](const std::string &name) {
+        auto variable = file.getVar(name);
+        char *raw_value = nullptr;
+        const int status =
+            nc_get_var_string(file.getId(), variable.getId(), &raw_value);
+        if (status != NC_NOERR) {
+            throw std::runtime_error(nc_strerror(status));
+        }
+        const std::string value = raw_value == nullptr
+            ? std::string{} : std::string{raw_value};
+        if (raw_value != nullptr) {
+            nc_free_string(1, &raw_value);
+        }
+        return value;
+    };
+    EXPECT_EQ(read_string("CALID"),
+              engine.rtcproc.calibration.product.calibration_identity);
+    EXPECT_EQ(read_string("CALPKGID"),
+              engine.rtcproc.calibration.product.package_identity);
+    EXPECT_EQ(read_string("CAL.CALIBRATION_IDENTITY"), read_string("CALID"));
+    EXPECT_EQ(read_string("CAL.PACKAGE_IDENTITY"), read_string("CALPKGID"));
+    file.close();
+    std::filesystem::remove(path);
 }
 
 std::shared_ptr<ScienceMapBufferFixture> make_production_science_map_buffer(
@@ -2467,7 +3099,7 @@ TEST(science_map_fits_products,
                   .substr(0, acquisition_link.size()),
               acquisition_link);
     EXPECT_EQ(read_required_fits_long_string(file, "CAL.RESPONSE_IDENTITY")
-                  .find("calibration-response-basis-provenance-v2"),
+                  .find("calibration-response-basis-provenance-v3"),
               0U);
     EXPECT_EQ(read_required_fits_long_string(
                   file, "CALID"),
@@ -2475,6 +3107,48 @@ TEST(science_map_fits_products,
     EXPECT_EQ(read_required_fits_long_string(file, "CALPKGID"),
               engine.rtcproc.calibration.product.package_identity);
     EXPECT_EQ(fits_close_file(file, &status), 0);
+
+    engine.rtcproc.record_finalized_calibration_join(
+        "152391", engine.rtcproc.calibration.product.calibration_identity,
+        engine.rtcproc.calibration.product.package_identity);
+    engine.observation_dates.date_obs = {
+        "2026-08-11T00:00:00", "2026-08-11T00:01:00"};
+    auto homogeneous_coadd = make_production_science_map_buffer(
+        engine, true, 5, 7, {3.0, 2.0});
+    homogeneous_coadd->obsnums = {"152390", "152391"};
+    decltype(engine.map_fits_outputs.coadd) homogeneous_files;
+    const auto homogeneous_base =
+        (cleanup.path / "homogeneous_coadd").string();
+    homogeneous_files.emplace_back(homogeneous_base);
+    auto *homogeneous_file_ptr = &homogeneous_files;
+    ASSERT_NO_THROW(engine.add_phdu(
+        homogeneous_file_ptr, homogeneous_coadd, 0));
+    homogeneous_files[0].pfits.reset();
+    fitsfile *coadd_file = nullptr;
+    status = 0;
+    ASSERT_EQ(fits_open_file(
+                  &coadd_file, (homogeneous_base + ".fits").c_str(),
+              READONLY, &status),
+              0);
+    EXPECT_EQ(read_required_fits_long_string(coadd_file, "CALID"),
+              engine.rtcproc.calibration.product.calibration_identity);
+    EXPECT_EQ(read_required_fits_long_string(coadd_file, "CALPKGID"),
+              engine.rtcproc.calibration.product.package_identity);
+    EXPECT_EQ(fits_close_file(coadd_file, &status), 0);
+
+    engine.rtcproc.record_finalized_calibration_join(
+        "152392", "heterogeneous-calid", "heterogeneous-pkgid");
+    auto heterogeneous_coadd = make_production_science_map_buffer(
+        engine, true, 5, 7, {3.0, 2.0});
+    heterogeneous_coadd->obsnums = {"152390", "152392"};
+    decltype(engine.map_fits_outputs.coadd) heterogeneous_files;
+    heterogeneous_files.emplace_back(
+        (cleanup.path / "heterogeneous_coadd").string());
+    auto *heterogeneous_file_ptr = &heterogeneous_files;
+    EXPECT_THROW(engine.add_phdu(
+                     heterogeneous_file_ptr, heterogeneous_coadd, 0),
+                 std::runtime_error);
+    EXPECT_TRUE(heterogeneous_files[0].hdus.empty());
 }
 
 TEST(science_map_fits_products,
