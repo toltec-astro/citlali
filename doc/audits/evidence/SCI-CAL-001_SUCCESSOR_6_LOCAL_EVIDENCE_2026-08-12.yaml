@@ -1,0 +1,528 @@
+format_version: 1
+record_id: SCI-CAL-001-SUCCESSOR-6-INDEPENDENT-REAUDIT-LOCAL-EVIDENCE-001
+record_date: "2026-08-12"
+evidence_classification: local_deterministic_only
+auditor_role: fresh_role_separated_independent_technical_auditor
+
+candidate:
+  requested_ref: origin/codex/repair-sci-cal-001-successor-6
+  repair_branch: codex/repair-sci-cal-001-successor-6
+  commit: 211e2f16f6354609de3ce6c6ee526d8aa4c6c59c
+  parent: 5dfc414a13fe69e6b063608906d87e3b30491ec7
+  parent_count: 1
+  tree: 5ed203711ad5242aafb029373b416afdd1232081
+  patch_sha256: 2ff5928b48c516e70500e6f3190366e4e05243a3ba6327e18cad3251e1858019
+  patch_command: >-
+    git diff --binary 5dfc414a13fe69e6b063608906d87e3b30491ec7
+    211e2f16f6354609de3ce6c6ee526d8aa4c6c59c | shasum -a 256
+  changed_path_inventory_sha256: 2693bfa966c0a198b5b8276d6cd19834b87d252371164591f0ea1b248f898e5f
+  changed_path_inventory_command: >-
+    git diff-tree --no-commit-id --name-status --no-renames -r
+    5dfc414a13fe69e6b063608906d87e3b30491ec7
+    211e2f16f6354609de3ce6c6ee526d8aa4c6c59c
+  changed_path_count: 34
+  changed_path_status:
+    modified: 34
+    added: 0
+    deleted: 0
+    renamed: 0
+  diff_stat:
+    insertions: 2877
+    deletions: 292
+  changed_paths:
+    - doc/REFACTOR_STATUS.md
+    - include/citlali/core/engine/detail/beammap_setup_metadata_impl.h
+    - include/citlali/core/engine/detail/map_phdu_output_helpers.h
+    - include/citlali/core/engine/detail/ptc_line_audit_impl.h
+    - include/citlali/core/engine/detail/tod_file_output_impl.h
+    - include/citlali/core/pipeline/calibration_product_admission.h
+    - include/citlali/core/pipeline/flxscale_correction.h
+    - include/citlali/core/pipeline/initial_observation_setup.h
+    - include/citlali/core/pipeline/raw_observation_outputs.h
+    - include/citlali/core/pipeline/raw_timestream_execution_plan.h
+    - include/citlali/core/pipeline/raw_timestream_observation_shadow.h
+    - include/citlali/core/pipeline/raw_timestream_provenance.h
+    - include/citlali/core/pipeline/raw_timestream_provenance_lifecycle.h
+    - include/citlali/core/pipeline/reduction_observation_calibration.h
+    - include/citlali/core/pipeline/reduction_observation_inputs.h
+    - include/citlali/core/pipeline/reduction_observation_pipeline.h
+    - include/citlali/core/pipeline/tod_metadata_mapmaker_tau.h
+    - include/citlali/core/timestream/calibration_product.h
+    - include/citlali/core/timestream/rtc/rtcproc.h
+    - src/citlali/core/engine/calib.cpp
+    - tests/test_calibration_product.cpp
+    - tests/test_config_scaffold.cpp
+    - tests/test_science_map_fits_products.cpp
+    - tools/baseline/audit_reduction_run.py
+    - tools/baseline/examples/sci_cal_001_raw_timestream_provenance_v4.yaml
+    - tools/baseline/examples/sci_cal_001_selected_calibration_apt.ecsv
+    - tools/baseline/test_audit_reduction_run.py
+    - tools/baseline/test_compare_reduction_products.py
+    - tools/baseline/test_validate_product_contract.py
+    - tools/baseline/test_validation_profiles.py
+    - tools/baseline/validate_product_contract.py
+    - tools/config/audit_raw_timestream_execution_reads.py
+    - validation/product_contracts.json
+    - validation/validation_profiles.json
+  diff_check: passed
+  identity_verified_local_object: true
+  identity_verified_local_branch: true
+  identity_verified_remote_tracking_ref: true
+  identity_verified_live_origin: true
+  origin_url: git@github.com:toltec-astro/citlali.git
+
+ready_checkpoint:
+  required: true
+  returned_before_substantive_exposure: true
+  initial_authority_contradiction_reported: true
+  contradiction:
+    frozen_ceiling: 33
+    candidate_path_count: 34
+    frozen_allowlist_intersection: 32
+    outside_original_allowlist:
+      - tests/test_config_scaffold.cpp
+      - tools/config/audit_raw_timestream_execution_reads.py
+    originally_allowed_but_unchanged:
+      - include/citlali/core/engine/detail/beammap_setup_impl.h
+  coordinator_approved_ready_with_owner_clarification: true
+  final_owner_authorized_ceiling: 35
+  final_candidate_paths_authorized: 34
+  unclassified_candidate_paths: []
+  worktree: /Users/gwilson/.codex/worktrees/db19/citlali-refactor
+  git_dir: /Users/gwilson/GitHub/citlali/.git/worktrees/citlali-refactor7
+  repair_worktree: /Users/gwilson/.codex/worktrees/a3a3/citlali-refactor
+  initial_head_detached_at_candidate: true
+  initial_worktree_clean: true
+  initial_index_clean: true
+  role_separated: true
+  proposed_branch_absent_local_before_creation: true
+  proposed_branch_absent_remote_tracking_before_creation: true
+  proposed_branch_absent_live_origin_before_creation: true
+  audit_branch: codex/reaudit-sci-cal-001-successor-6-20260812
+  branch_created_only_after_approval: true
+  branch_base: 211e2f16f6354609de3ce6c6ee526d8aa4c6c59c
+  documentation_only_artifact_ceiling: 2
+  allowed_artifacts:
+    - doc/audits/SCI-CAL-001_SUCCESSOR_6_REAUDIT_2026-08-12.md
+    - doc/audits/evidence/SCI-CAL-001_SUCCESSOR_6_LOCAL_EVIDENCE_2026-08-12.yaml
+
+frozen_authority:
+  coordination_commit: 2f132ae6ab01660b3ea51bd31e69e7065c25ec0d
+  coordination_parent: 7b341a5fb1c96080f4c3513f62a4f12441f2443d
+  coordination_tree: 20f81891dd490acc96a266229cdb8aa0e5913abd
+  coordination_subject: "docs(audits): authorize CAL successor-6 repair"
+  coordination_object_rehashed_exactly: true
+  coordination_live_origin_verified: true
+  artifacts:
+    - role: successor_6_bounded_repair_handoff
+      path: doc/audits/packages/SCI-CAL-001_SUCCESSOR_6_BOUNDED_REPAIR_HANDOFF_2026-08-12.md
+      git_blob: 8daff98432fd6fbca0609839f9b56aea0f1340ce
+      size_bytes: 10879
+      sha256: 3de68392de61544349bae808661ea9b0ca31719c6388c4f4caffa055a21974de
+    - role: successor_6_finding_ledger
+      path: doc/audits/proposals/SCI-CAL-001_SUCCESSOR_6_REPAIR_FINDING_LEDGER_2026-08-12.yaml
+      git_blob: f583452c1ac9755e00df0e6151255ea2bcdeb0dd
+      size_bytes: 10162
+      sha256: 417f501d1961c4b6c7528c4f2e75e4fb0face22d24568fa66ecc560e8ab5074a
+    - role: successor_5_owner_acceptance
+      path: doc/audits/packages/SCI-CAL-001_SUCCESSOR_5_OWNER_ACCEPTANCE_2026-08-12.md
+      git_blob: 12233290d471421996e7d61c2589b9c41f4552d3
+      size_bytes: 3095
+      sha256: 825f67f874f0ec444f2d3250b08174ef9c1b9ceaf35e87e8a33e236af991ea5f
+    - role: accepted_successor_5_reaudit_report
+      path: doc/audits/SCI-CAL-001_SUCCESSOR_5_REAUDIT_2026-08-12.md
+      git_blob: 7d409ed4dbeeb43e9ecc72d914f29b08ba493799
+      size_bytes: 27470
+      sha256: 7f3a484cf5d446647313659a3d6d3103805837ecbb3a9d77034d49bb5762234a
+    - role: accepted_successor_5_local_evidence
+      path: doc/audits/evidence/SCI-CAL-001_SUCCESSOR_5_LOCAL_EVIDENCE_2026-08-12.yaml
+      git_blob: 4041e989e93bd6b49ab9cfe450d453eea18d9c99
+      size_bytes: 26681
+      sha256: e6d8d721c02d22683a0ca8500efcd66d1e53c00b85d9529f92bd1c7ccbc64206
+
+owner_clarification:
+  source: explicit_project_owner_instructions_relayed_in_source_coordination_thread
+  precedence: supersedes_only_obsolete_frozen_33_path_ceiling
+  expanded_paths:
+    - path: tests/test_config_scaffold.cpp
+      allowed_purpose: fail_closed_no_mutation_fallback_expectation
+      candidate_change_matches_purpose: true
+    - path: tools/config/audit_raw_timestream_execution_reads.py
+      allowed_purpose: classify_begin_reduced_observation_and_update_stable_census
+      candidate_change_matches_purpose: true
+      expected_record_count: 88
+      expected_record_sha256: 1a60280fbde4749b0c753f305e98f2917bcbd4ba570e02f20468169f57218f96
+      exclusion_or_suppression_added: false
+  scientific_or_architectural_boundary_superseded: false
+  gate_or_stop_boundary_superseded: false
+  additional_path_expansion_authorized: false
+
+prohibitions_observed:
+  application_edit: false
+  configuration_edit: false
+  test_edit: false
+  build_system_edit: false
+  validation_product_edit: false
+  canonical_coordination_edit: false
+  candidate_repair: false
+  push: false
+  merge: false
+  unity_access_or_request: false
+  astronomical_reduction: false
+  scientific_or_arithmetic_redesign: false
+  source_injection: false
+  external_contact: false
+  downstream_task_creation: false
+  production_authorization: false
+  global_transaction_architecture: false
+  audit_artifacts_only: true
+
+build:
+  source_dir: /Users/gwilson/.codex/worktrees/db19/citlali-refactor
+  build_dir: /Users/gwilson/.codex/worktrees/db19/citlali-refactor/build
+  build_dir_gitignored: true
+  configuration: Release
+  tests_enabled: true
+  fresh_candidate_compilation: true
+  candidate_gitversion: 211e2f16f
+  cli_version: v4.0.0-3647-g211e2f16f
+  bootstrap_command: BUILD_TESTS=ON make local-bootstrap
+  first_bootstrap_attempt:
+    result: infrastructure_failed
+    cause: sandbox_network_dns_unavailable_while_fetching_kidscpp
+    candidate_failure: false
+  approved_network_retry:
+    result: passed
+  target_build_command: >-
+    cmake --build build --target citlali_cli citlali_test
+    citlali_safety_test citlali_science_map_truth_test
+    citlali_science_map_fits_products_test -j 8
+  target_build_result: passed
+  artifacts:
+    - path: build/CMakeCache.txt
+      sha256: dbc941439cae24e5263b0f375474f76e11e52c03a3681216d7f06d16ccc73819
+    - path: build/bin/citlali
+      sha256: 00485a616e58d310fd01428464eb0d7076bb16ea6ea0f7b8386d1cebc464a193
+    - path: build/tests/citlali_test
+      sha256: 41de1953418ae623eb88186ded6d8ede284305a67885bf1ae357885752f75b0d
+    - path: build/tests/citlali_safety_test
+      sha256: f2a29587e3c2714927f2ad2967718647670ce8d83ddc63267d287aeced62fd0f
+    - path: build/tests/citlali_science_map_fits_products_test
+      sha256: e2da585cf558e4c2f2e90c961afb2063681e9c816e390d42095416be90f50ee7
+    - path: build/tests/citlali_science_map_truth_test
+      sha256: 13dacd93eacb26b0075366c48e7ee3cd7ca0900aef572af9eee6874808b05b69
+
+checks_run:
+  - id: candidate_identity_and_patch
+    result: passed
+    candidate_commit: 211e2f16f6354609de3ce6c6ee526d8aa4c6c59c
+    candidate_parent: 5dfc414a13fe69e6b063608906d87e3b30491ec7
+    candidate_tree: 5ed203711ad5242aafb029373b416afdd1232081
+    patch_sha256: 2ff5928b48c516e70500e6f3190366e4e05243a3ba6327e18cad3251e1858019
+  - id: candidate_diff_check
+    command: >-
+      git diff --check 5dfc414a13fe69e6b063608906d87e3b30491ec7
+      211e2f16f6354609de3ce6c6ee526d8aa4c6c59c
+    result: passed
+  - id: fresh_release_test_build
+    result: passed
+    candidate_build_failures: 0
+    infrastructure_retries: 1
+  - id: focused_f005_and_preservation_cpp
+    command: >-
+      ./build/tests/citlali_test
+      --gtest_filter='calibration_product.*:calibration_atmosphere_operator.*:calib_apt_filtering.*:pipeline_preflight.*flxscale*:reduction_config_validation.*:config_scaffold.*unsupported_calibrated_unit*'
+    result: passed
+    passed: 30
+    failed: 0
+    coverage_note: calib_apt_filtering_pattern_selected_no_separately_named_suite
+  - id: focused_f007_f008_fits_products_cpp
+    binary: /private/tmp/citlali-sci-cal-001-s6-broad-authority-gEISEt/tests/citlali_science_map_fits_products_test
+    binary_sha256: 9f38c1e9996cc1e4d1fe79ba57c968e35bf034595beb55f95c1fcc18e561c461
+    filter:
+      - science_map_fits_products.calibration_response_basis_separates_requested_effective_and_actual
+      - science_map_fits_products.calibration_response_identity_distinguishes_secondary_detector_notches
+      - science_map_fits_products.calibration_response_identity_keeps_dormant_request_out_of_realized_state
+      - science_map_fits_products.calibration_response_identity_binds_notch_application_sample_rate
+      - science_map_fits_products.actual_notch_application_points_record_complete_rtc_and_ptc_state
+      - science_map_fits_products.response_history_lifecycle_resets_and_preserves_finalized_snapshot
+      - science_map_fits_products.finalized_joins_are_idempotent_homogeneous_and_fail_closed
+      - science_map_fits_products.canonical_package_precedes_dependents_and_survives_later_failure
+      - science_map_fits_products.reused_calibrator_apt_joins_distinct_reduced_observations
+      - science_map_fits_products.tod_only_metadata_reopens_with_finalized_calid_and_pkgid
+      - science_map_fits_products.actual_tod_link_publication_is_atomic_and_excludes_interruption
+      - science_map_fits_products.inactive_calibration_publishes_true_unavailable_tod_join
+      - science_map_fits_products.admitted_calibration_round_trips_through_actual_map_fits_writer
+      - science_map_fits_products.actual_beammap_apt_writer_reopens_published_ecsv
+    result: passed
+    passed: 14
+    failed: 0
+    closes_reported_counterexamples: false
+  - id: focused_tod_only_scaffold_cpp
+    binary: /private/tmp/citlali-sci-cal-001-s6-broad-authority-gEISEt/tests/citlali_test
+    binary_sha256: 01e3851c08ca4a82cc21589e700feffa32f0fb7a8daefa2a2089481ddc5142fc
+    filter: pipeline_execution.tod_only_observation_publishes_finalized_calibration_header
+    result: passed
+    passed: 1
+    failed: 0
+    end_to_end_atomic_publication_proof: false
+
+checks_not_run_after_mandatory_stop:
+  stop_triggered_by:
+    - F007_nonconformant_response_identity
+    - F008_nonconformant_per_artifact_publication
+    - F009_forgery_false_acceptance
+    - F009_validation_profile_authority_contradiction
+  checks:
+    - full_ctest
+    - full_normal_test_binary
+    - full_safety_test_binary
+    - full_science_map_fits_products_binary
+    - full_science_map_truth_binary
+    - public_header_linkage_tests
+    - explicit_failure_safe_publication_suite
+    - baseline_python_unittest_discovery
+    - focused_baseline_pytest_matrix
+    - validation_ledger
+    - science_change_ledger
+    - validation_profile_registry_listing
+    - config_preflight_require_all
+    - raw_execution_census_standalone
+    - atmosphere_generator_check
+    - ordinary_phase5_readiness
+    - phase5_readiness_verify_fixtures
+    - session_exit_zero_growth_audit
+  candidate_status_claims_complete_matrix_passed: true
+  independent_reproduction_claimed_for_unrun_checks: false
+  all_nonwaived_gates_independently_reproducible_before_stop: not_established
+
+historical_fixture_gate:
+  command: >-
+    /Users/gwilson/tolteca/bin/python tools/baseline/phase5_readiness.py
+    --verify-fixtures
+  authoritative_result: failed_owner_waived
+  passed: false
+  audit_execution: not_rerun_after_mandatory_stop
+  beammap_recorded_outcome_matches: true
+  oof_recorded_outcome_matches: true
+  point_historical_product_errors: 6
+  science_historical_product_errors: 12
+  cause: immutable_historical_fits_contain_forbidden_sig2noise_pixel_I
+  waiver_scope: pre_existing_historical_product_drift_only
+  new_current_sig2noise_pixel_I_admitted: false
+  candidate_status_records_failed_waived_never_passed_truth: true
+  unchanged_objects:
+    - path: validation/accepted_runs.json
+      git_blob: 8e5fa67ddbdab94bbf4e0770039d08f806224971
+      sha256: 4a134dcdd14e0444d96875547f628a3353574cc66574dd9a559bcf59dafb94bb
+    - path: validation/phase5_validation_readiness.json
+      git_blob: 0b592054fbf12af152a156ad3830481618d2bd06
+      sha256: b9daf6ab3973d2d35968ab27d2b7c75eca8534d2baeb6af9bb43725261f04755
+    - path: tools/baseline/phase5_readiness.py
+      git_blob: 794379673c77024d9e7b8b4e0fe63f4d909d4764
+      sha256: 3a27fa5279c75432aa0939cbcc2add2db4d30df92379f6bf511ff281202b2af7
+  historical_fixture_paths_changed_by_candidate: false
+  historical_contract_bodies_match_pre_cal_authority: true
+  historical_contract_comparison_base: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+
+preservation:
+  f001:
+    disposition: open_conditioned_unchanged
+    new_authorized_evidence: false
+  f002:
+    disposition: bounded_closure_preserved
+    parent_byte_identical: true
+    operator_contract_sha256: 7a064ff768a3de4f427f1338d94ef6cb9026d248f3c3c816fc3dfc96d156e36a
+    operator_nodes_sha256: fd688a4cd3f46585b08631bc63a562aed482feb9b24ec9ee0071b70db7eb8a5f
+    generated_header_sha256: d322bdc863ccb1292325c739865f772ef53f4e9f4101967752027ea0a2413262
+    production_operator_sha256: 3fd4352d05e77e07c1e354b7e4124733505064667968676d8d4e94315017d584
+    fidelity_or_uncertainty_claim: false
+  f003:
+    disposition: bounded_closure_preserved
+    startup_and_execution_boundary_parent_byte_identical: true
+    unsupported_calibrated_unit_rejected: true
+    intentionally_uncalibrated_request_supported: true
+  f004:
+    disposition: bounded_closure_preserved
+    apt_load_filter_lineage_join_unchanged: true
+    selected_source_immutable: true
+  f006:
+    disposition: bounded_closure_preserved
+    calibrated_target_unit: mJy/beam
+    additional_calibrated_units_admitted: false
+  f010:
+    disposition: open_conditioned_unchanged
+    new_authorized_evidence: false
+
+finding_evidence:
+  f005:
+    disposition: closed_bounded_local_technical
+    production_initial_setup_applies_before_carrier_initialization: false
+    observation_local_carrier_initialized_before_application: true
+    failure_leaves_prior_state_unchanged: true
+    duplicate_application_rejected_before_mutation: true
+    missing_initialized_state_rejected: true
+    nonfinite_operand_rejected: true
+    nonpositive_operand_rejected: true
+    composed_overflow_rejected: true
+    composed_zero_underflow_rejected: true
+    selected_apt_flxscale_mutated: false
+    selected_apt_sensitivity_mutated: false
+    fallback_internal_ones_carrier: true
+    applied_scalar_persisted: true
+    applied_state_persisted: true
+    source_identity_persisted: true
+    recipient_identity_persisted: true
+    sample_multiplier_once: true
+    approximate_weight_inverse_square: true
+    hybrid_weight_inverse_square: true
+    validated_weight_inverse_square: true
+    full_weight_from_calibrated_samples: true
+    nonzero_map_recipient_traced: true
+    noise_variance_I_recipient_traced: true
+    constant_weight_nonprecision_coverage_note: nonblocking
+  f007:
+    disposition: open_nonconformant
+    immutable_requested_yaml_hashed: true
+    notch_sample_rate_serialized: true
+    fir_sample_rate_serialized: false
+    fir_coefficients_depend_on_sample_rate: true
+    iir_highpass_sample_rate_serialized: false
+    iir_highpass_coefficients_depend_on_sample_rate: true
+    reduced_observation_identity_carried_in_runtime_record: true
+    reduced_observation_identity_in_canonical_response_preimage: false
+    candidate_sample_rate_test_notch_only: true
+    response_identity_collision_counterexample_source_trace: true
+    reduced_observation_join_registration: true
+    fruit_transition_registry_reset: true
+    repeated_same_finalization_idempotent: true
+    conflicting_finalization_rejected: true
+    heterogeneous_join_rejected: true
+    tod_only_dispatch_present: true
+  f008:
+    disposition: open_nonconformant
+    canonical_package_invoked_before_dependents: true
+    canonical_yaml_reopened_and_semantically_validated_before_dependents: false
+    canonical_yaml_file_fsync: false
+    canonical_yaml_directory_fsync: false
+    linked_fits_written_to_stage_path: false
+    linked_fits_late_failure_can_leave_final_partial: true
+    beammap_ecsv_staged: true
+    beammap_ecsv_reopened_and_validated_in_writer: false
+    beammap_ecsv_prior_final_removed_before_rename: true
+    tod_staged: true
+    tod_netcdf_sync: true
+    tod_reopened_and_join_validated: true
+    tod_failure_cleanup_present: true
+    tod_os_fsync_or_directory_sync: false
+    global_transaction_required: false
+  local_f009:
+    disposition: open_nonconformant
+    exact_hex_float_encoder_present: true
+    normal_and_subnormal_anchors_present: true
+    self_declared_vector_and_factor_recomputed: true
+    selected_apt_digest_checked: true
+    selected_apt_ecsv_values_parsed_and_bound_to_factor_basis: false
+    immutable_requested_yaml_recomputed_by_consumer: false
+    requested_response_provenance_treated_as_opaque_nonempty_text: true
+    observation_identity_bound_to_provenance_parent_directory: false
+    complete_observation_realized_state_join_checked: false
+    current_contract_exact_v4_required: true
+    generic_historical_v1_v4_recognition: true
+    v1_v3_current_production_admissible: false
+    redu66_current_production_admissible: false
+    active_epoch_changed: false
+    successor_epoch_status: preparing
+    successor_profiles_status: preparing
+    accepted_runs_rewritten: false
+    production_promotion: false
+    forged_factor_package_accepted: true
+    forged_factor_package_errors: []
+    selected_apt_digest_unchanged: 8c18f6268523f7db45b18c9d6eb5eb7c99f355b46f1a0eedd5c858fa9e9430aa
+    forged_detector_flxscale:
+      original_hex: 0x1p+0
+      forged_hex: 0x1p+1
+    recomputed_factorid: 6a479a545b9a03fa085440ea9b9104660ad7c4cafb9bc2d6a3a0d3d57830a7a9
+    recomputed_calid: 50c9ae03504e543fae70036577c09a3420f00025e2661f9dc812b06e438c38e1
+    recomputed_pkgid: e27a96c6242bb44d4adacc6c2d1203e27bc788babbc6ef2a5b94fedbc799e0c6
+    copied_package_path_identity_false_acceptance_source_trace: true
+    mismatched_observation_realized_fields_accepted: true
+
+validation_profile_authority_contradiction:
+  stop_level: true
+  pre_cal_base: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+  immediate_parent_exclusion: "*/selected_calibration_apt.ecsv"
+  candidate_exclusion: selected_calibration_apt.ecsv
+  comparator_matches_basename: true
+  nested_selected_apt_members_suppressed: true
+  frozen_no_profile_weakening_boundary_violated: true
+  later_owner_expansion_authorizes_profile_rewrite: false
+  affected_profiles:
+    - profile_id: phase4-point-152389-v1
+      epoch: phase4-structural-closeout-2026-07-16
+      status: active
+    - profile_id: phase4-oof-152385-152387-v1
+      epoch: phase4-structural-closeout-2026-07-16
+      status: active
+    - profile_id: phase4-beammap-148670-v1
+      epoch: phase4-structural-closeout-2026-07-16
+      status: active
+    - profile_id: phase5-point-152389-v2
+      epoch: phase5-v2.1-candidate-2026-07-24
+      status: preparing
+    - profile_id: phase5-oof-152385-152387-v2
+      epoch: phase5-v2.1-candidate-2026-07-24
+      status: preparing
+    - profile_id: sci-map-001-point-152389-v1
+      epoch: sci-map-001-repair-2026-07-31
+      status: preparing
+    - profile_id: sci-map-001-oof-152385-152387-v1
+      epoch: sci-map-001-repair-2026-07-31
+      status: preparing
+
+scope_assessment:
+  candidate_paths_within_final_owner_authority: true
+  unexpected_candidate_path: false
+  rtc_detection_or_selection_change: false
+  rtc_filter_coefficient_arithmetic_change: false
+  rtc_flagging_scan_or_cadence_change: false
+  ptc_weight_arithmetic_change: false
+  naive_mapmaking_arithmetic_change: false
+  map_normalization_arithmetic_change: false
+  atmosphere_arithmetic_change: false
+  numerical_change_outside_authorized_f005: false
+  historical_fixture_bytes_changed: false
+  historical_product_contract_bodies_changed_from_pre_cal_authority: false
+  accepted_runs_changed: false
+  readiness_manifest_changed: false
+  readiness_verifier_changed: false
+  active_or_preexisting_validation_profiles_weakened: true
+  scientific_choice_made_by_auditor: false
+  architecture_expansion_made_by_auditor: false
+
+disposition:
+  scientific_contract: approved
+  implementation: nonconformant
+  validation_readiness: in_progress
+  historical_fixture_gate: failed_owner_waived_never_passed
+  production: fail_closed
+  verdict: amend
+  f001: open_conditioned
+  f002: bounded_closure_preserved
+  f003: bounded_closure_preserved
+  f004: bounded_closure_preserved
+  f005: closed_bounded_local_technical
+  f006: bounded_closure_preserved
+  f007: open_nonconformant
+  f008: open_nonconformant
+  f009: open_nonconformant
+  f010: open_conditioned
+  candidate_complete_closure_accepted: false
+  production_authorized: false
+  next_action: stop_for_coordinator_verification_and_owner_review
+  automatic_repair_or_reaudit: false
+  authorization_effect: none
+
+audit_artifacts:
+  - doc/audits/SCI-CAL-001_SUCCESSOR_6_REAUDIT_2026-08-12.md
+  - doc/audits/evidence/SCI-CAL-001_SUCCESSOR_6_LOCAL_EVIDENCE_2026-08-12.yaml

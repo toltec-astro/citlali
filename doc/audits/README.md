@@ -33,6 +33,24 @@ authorized. The exact imported
 has SHA-256
 `fe07901504ad26916cab2c5589f452b1873c11ef215239653ed938f45eefd4d5`.
 
+On 2026-08-12 the owner accepted the `SCI-CAL-001` successor-6
+[return-for-repair disposition](packages/SCI-CAL-001_SUCCESSOR_6_OWNER_ACCEPTANCE_2026-08-12.md)
+for exact pushed candidate `211e2f16f6354609de3ce6c6ee526d8aa4c6c59c`,
+audited at `24e00dbfee31a13db2c00c7e9706216a67ec0c42`. The exact
+[report](SCI-CAL-001_SUCCESSOR_6_REAUDIT_2026-08-12.md) and
+[evidence](evidence/SCI-CAL-001_SUCCESSOR_6_LOCAL_EVIDENCE_2026-08-12.yaml)
+are immutable. F002--F006 retain bounded closures, F001/F010 remain
+conditioned, and F007/F008/local F009 remain open. The CAL axes stay
+`approved`, `nonconformant`, `in_progress`, and `fail_closed`, with verdict
+`amend`. The frozen
+[successor-7 handoff](packages/SCI-CAL-001_SUCCESSOR_7_BOUNDED_REPAIR_HANDOFF_2026-08-12.md)
+and [finding ledger](proposals/SCI-CAL-001_SUCCESSOR_7_REPAIR_FINDING_LEDGER_2026-08-12.yaml)
+record the exact 22-path ceiling, response-identity-only F007 scope,
+per-artifact F008 publication, authoritative F009 package joins, and exact
+seven-profile restoration. Historical readiness remains failed-owner-waived,
+never passed; no repair, Unity, reduction, production, re-audit, merge, push,
+external contact, or downstream work is launched.
+
 On 2026-08-12 the owner accepted the `SCI-CAL-001` successor-5
 [return-for-repair disposition](packages/SCI-CAL-001_SUCCESSOR_5_OWNER_ACCEPTANCE_2026-08-12.md)
 for exact pushed candidate `5dfc414a13fe69e6b063608906d87e3b30491ec7`,

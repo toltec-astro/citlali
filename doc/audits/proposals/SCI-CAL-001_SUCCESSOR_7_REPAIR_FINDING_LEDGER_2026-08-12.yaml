@@ -1,0 +1,254 @@
+format_version: 1
+record_id: SCI-CAL-001-SUCCESSOR-7-REPAIR-FINDING-LEDGER-001
+record_date: 2026-08-12
+record_status: owner_authorized_pending_role_separated_ready_and_launch
+scope: F007_F008_and_local_F009_only
+
+coordination_authority:
+  branch: codex/coordinate-rtc-ptc-queue
+  commit: 2f132ae6ab01660b3ea51bd31e69e7065c25ec0d
+  parent: 7b341a5fb1c96080f4c3513f62a4f12441f2443d
+  tree: 20f81891dd490acc96a266229cdb8aa0e5913abd
+
+application_base:
+  ref: origin/codex/repair-sci-cal-001-successor-6
+  commit: 211e2f16f6354609de3ce6c6ee526d8aa4c6c59c
+  parent: 5dfc414a13fe69e6b063608906d87e3b30491ec7
+  tree: 5ed203711ad5242aafb029373b416afdd1232081
+  patch_sha256: 2ff5928b48c516e70500e6f3190366e4e05243a3ba6327e18cad3251e1858019
+
+source_reaudit:
+  branch: codex/reaudit-sci-cal-001-successor-6-20260812
+  commit: 24e00dbfee31a13db2c00c7e9706216a67ec0c42
+  parent: 211e2f16f6354609de3ce6c6ee526d8aa4c6c59c
+  tree: e8e05ec8d87bf48caee7aea65454c5811cea02dc
+  documentation_patch_sha256: b21ca73be75fa66f6a9d8a75215234b2200092842616fe5d609da5ff9089e799
+  disposition: amend_return_for_bounded_successor_7_repair
+  owner_disposition: accepted
+  report:
+    path: doc/audits/SCI-CAL-001_SUCCESSOR_6_REAUDIT_2026-08-12.md
+    sha256: 9f9305d3324f67dbcb4bac6a510115dc9c1108be7d7cc2ddd376e724653cfbbd
+    immutable: true
+  evidence:
+    path: doc/audits/evidence/SCI-CAL-001_SUCCESSOR_6_LOCAL_EVIDENCE_2026-08-12.yaml
+    sha256: 0953e3030a27c2b3d6bd7c623413d4f4290b5d1e7ca2c7ca9608c2a8e10ab9be
+    immutable: true
+
+owner_acceptance:
+  path: doc/audits/packages/SCI-CAL-001_SUCCESSOR_6_OWNER_ACCEPTANCE_2026-08-12.md
+  sha256: 84a0bdc4a867a079a13db83200475c13237a9befaefde1ecec75165b2d9f0092
+  decision_date: 2026-08-12
+  successor_7_scope_authorized: true
+
+proposed_repair:
+  branch: codex/repair-sci-cal-001-successor-7
+  base: 211e2f16f6354609de3ce6c6ee526d8aa4c6c59c
+  role: application_technical_repair_only
+  role_separation_required: true
+  initial_ready_checkpoint_required: true
+  status: authorized_not_launched
+  launched: false
+  handoff_path: doc/audits/packages/SCI-CAL-001_SUCCESSOR_7_BOUNDED_REPAIR_HANDOFF_2026-08-12.md
+
+controlled_axes:
+  contract: approved
+  implementation: nonconformant
+  validation: in_progress
+  production: fail_closed
+  verdict: amend
+
+finding_accounting:
+  total: 10
+  closed_or_bounded_closure_retained: 5
+  open_bounded_repair: 3
+  open_conditioned_external: 2
+
+finding_dispositions:
+  - finding_id: SCI-CAL-001-F001
+    status: open
+    dependency_status: conditioned
+    successor_7_role: outside_repair
+  - finding_id: SCI-CAL-001-F002
+    status: closed
+    successor_7_role: preserve_narrow_structural_closure
+  - finding_id: SCI-CAL-001-F003
+    status: closed
+    successor_7_role: preserve_startup_and_admission_closure
+  - finding_id: SCI-CAL-001-F004
+    status: closed
+    successor_7_role: preserve_APT_lineage_and_association_closure
+  - finding_id: SCI-CAL-001-F005
+    status: closed
+    closure_scope: bounded_local_technical
+    successor_7_role: preserve_production_correction_lifecycle_closure
+  - finding_id: SCI-CAL-001-F006
+    status: closed
+    successor_7_role: preserve_mJy_per_beam_configuration_boundary
+  - finding_id: SCI-CAL-001-F007
+    status: open
+    repair_authorized: true
+    successor_7_role: complete_realized_response_identity_preimages_only
+    required_closure:
+      - FIR_application_sample_rate_in_response_preimage
+      - IIR_highpass_application_sample_rate_in_response_preimage
+      - reduced_observation_identity_in_actual_notch_serialization
+    prohibited_change:
+      - RTC_coefficient_arithmetic
+      - RTC_filter_or_notch_behavior
+      - RTC_flagging_cadence_time_grid_or_signal
+  - finding_id: SCI-CAL-001-F008
+    status: open
+    repair_authorized: true
+    successor_7_role: mandatory_per_artifact_publication
+    required_artifacts:
+      - canonical_calibration_YAML
+      - CAL_linked_FITS
+      - Beammap_ECSV
+    required_sequence:
+      - stage
+      - synchronize
+      - close
+      - reopen
+      - validate
+      - atomic_replace
+    per_artifact_atomic_publication: mandatory
+    global_transaction_or_rollback: prohibited
+  - finding_id: SCI-CAL-001-F009
+    qualifier: local_implementation_portion_only
+    status: open
+    repair_authorized: true
+    successor_7_role: authoritative_inputs_ownership_joins_and_profile_restoration
+    required_closure:
+      - selected_APT_values_bound_to_factor_basis
+      - authoritative_requested_config_preimage_recomputed
+      - package_observation_bound_to_directory_owner
+      - complete_observation_realized_calibration_state_join
+      - exactly_seven_preexisting_profile_snapshots_restored
+    weakened_profile_ids:
+      - phase4-point-152389-v1
+      - phase4-oof-152385-152387-v1
+      - phase4-beammap-148670-v1
+      - phase5-point-152389-v2
+      - phase5-oof-152385-152387-v2
+      - sci-map-001-point-152389-v1
+      - sci-map-001-oof-152385-152387-v1
+    accepted_profiles_or_runs_may_be_rewritten: false
+    new_profile_or_contract_policy: successor_under_existing_preparing_current_production_authority_only_if_exact_in_scope_need
+  - finding_id: SCI-CAL-001-F010
+    status: open
+    dependency_status: conditioned
+    successor_7_role: outside_repair
+
+initial_changed_path_ceiling:
+  count: 22
+  expansion_rule: stop_for_coordinator_and_owner_review
+  all_paths_must_exist_at_base: true
+  paths:
+    - include/citlali/core/engine/detail/beammap_apt_table_output_impl.h
+    - include/citlali/core/engine/detail/beammap_map_product_writers_impl.h
+    - include/citlali/core/engine/detail/lali_output_impl.h
+    - include/citlali/core/engine/detail/map_phdu_output_helpers.h
+    - include/citlali/core/pipeline/atomic_yaml_output.h
+    - include/citlali/core/pipeline/calibration_product_admission.h
+    - include/citlali/core/pipeline/raw_timestream_execution_plan.h
+    - include/citlali/core/pipeline/raw_timestream_observation_shadow.h
+    - include/citlali/core/pipeline/raw_timestream_provenance.h
+    - include/citlali/core/pipeline/raw_timestream_provenance_lifecycle.h
+    - include/citlali/core/pipeline/reduction_observation_pipeline.h
+    - include/citlali/core/utils/ecsv_io.h
+    - include/citlali/core/utils/fits_io.h
+    - tests/test_science_map_fits_products.cpp
+    - tools/baseline/audit_reduction_run.py
+    - tools/baseline/examples/sci_cal_001_raw_timestream_provenance_v4.yaml
+    - tools/baseline/examples/sci_cal_001_selected_calibration_apt.ecsv
+    - tools/baseline/test_audit_reduction_run.py
+    - tools/baseline/test_compare_reduction_products.py
+    - tools/baseline/test_validation_profiles.py
+    - validation/validation_profiles.json
+    - doc/REFACTOR_STATUS.md
+
+required_focused_evidence:
+  F007:
+    - FIR_equal_Hz_different_sample_rate_identity_separation
+    - IIR_highpass_equal_Hz_different_sample_rate_identity_separation
+    - actual_notch_reduced_observation_identity_separation
+    - dormant_stage_semantics_preserved
+    - no_RTC_numerical_behavior_change
+  F008:
+    - canonical_YAML_reopen_parse_and_identity_recompute_before_dependents
+    - FITS_late_write_close_reopen_failure_atomicity
+    - complete_FITS_CALID_PKGID_readback
+    - Beammap_ECSV_reopen_structure_and_join_validation
+    - existing_final_preserved_until_valid_replacement
+    - stage_cleanup_and_interruption
+    - TOD_atomic_publication_regression
+  local_F009:
+    - demonstrated_selected_APT_flxscale_forgery_rejected
+    - selected_APT_row_and_value_tampering_rejected
+    - requested_preimage_mutation_and_digest_mismatch_rejected
+    - copied_package_directory_identity_rejected
+    - full_observation_realized_state_mismatch_rejected
+    - valid_legacy_optional_modern_lineage
+    - distinct_production_shaped_multi_observation_packages
+    - supported_uncalibrated_v4
+    - exactly_seven_profile_snapshots_match_predecessor_authority
+
+historical_readiness_boundary:
+  gate: phase5_readiness_--verify-fixtures
+  status: failed_owner_waived_never_passed
+  point_historical_product_errors: 6
+  science_historical_product_errors: 12
+  cause: immutable_historical_FITS_contain_prohibited_sig2noise_pixel_I
+  waiver_scope: pre_existing_historical_product_drift_only
+  sig2noise_pixel_I_new_or_current_products: prohibited
+  v4_current_production_candidate_status: preparing
+  immutable_objects:
+    - path: validation/accepted_runs.json
+      sha256: 4a134dcdd14e0444d96875547f628a3353574cc66574dd9a559bcf59dafb94bb
+    - path: validation/phase5_validation_readiness.json
+      sha256: b9daf6ab3973d2d35968ab27d2b7c75eca8534d2baeb6af9bb43725261f04755
+    - path: tools/baseline/phase5_readiness.py
+      sha256: 3a27fa5279c75432aa0939cbcc2add2db4d30df92379f6bf511ff281202b2af7
+
+preservation_gates:
+  - F002_fixed_atmosphere_operator
+  - F003_startup_and_admission
+  - F004_APT_lineage_and_association
+  - F005_bounded_local_technical_closure
+  - F006_mJy_per_beam_boundary
+  - F001_and_F010_conditioned_outside_scope
+  - historical_profiles_contracts_runs_and_declared_outcomes
+  - current_v4_epoch_profiles_and_contracts_remain_preparing
+  - sig2noise_pixel_I_prohibited_for_new_current_products
+
+prohibitions:
+  - RTC_coefficient_filter_notch_or_other_numerical_behavior_change
+  - PTC_weighting_mapmaking_normalization_or_atmosphere_arithmetic_change
+  - accepted_profile_contract_run_or_historical_snapshot_weakening
+  - global_cross_output_transaction_or_rollback_architecture
+  - new_uncertainty_or_covariance_product
+  - empirical_response_fidelity_claim
+  - production_promotion
+  - cross_package_expansion
+  - local_science_reduction
+  - unity_access_or_request
+  - downstream_launch
+  - external_contact
+  - re_audit
+  - merge
+  - push
+
+next_checkpoint:
+  name: READY
+  owner: coordinator
+  role_separated_task_required: true
+  repair_may_edit_before_approval: false
+  continuation_requires:
+    - exact_live_pushed_base_branch_parent_tree_and_patch
+    - fresh_clean_worktree_and_absent_successor_7_branch
+    - exact_22_path_finding_to_change_test_traceability
+    - preservation_plan_for_F002_F003_F004_F005_F006
+    - confirmation_F001_F010_remain_conditioned_and_outside_scope
+    - historical_failed_waived_gate_truth
+    - exact_seven_profile_restoration_plan
+    - no_RTC_numerical_change_global_transaction_or_production_promotion
