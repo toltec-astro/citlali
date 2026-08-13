@@ -1,0 +1,2051 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://toltec.astro.umass.edu/schemas/citlali-frozen-lane-handoff-packet-v1.json",
+  "title": "Citlali frozen-lane handoff packet",
+  "description": "Exact-SHA lane or combined-candidate conformance packet. Schema validity is not acceptance or promotion authority.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "packet_identity",
+    "implementation_candidate",
+    "packet_container",
+    "freeze_snapshot",
+    "authority",
+    "repository_scope",
+    "ancestry",
+    "changed_scope",
+    "independent_disposition",
+    "scientific_change",
+    "gate_policy",
+    "gate_results",
+    "generated_evidence",
+    "local_evidence",
+    "unity_evidence",
+    "external_dependencies",
+    "claims",
+    "attestations",
+    "approvals"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "citlali-frozen-lane-handoff-packet-v1"
+    },
+    "packet_identity": {
+      "$ref": "#/$defs/packet_identity"
+    },
+    "implementation_candidate": {
+      "$ref": "#/$defs/implementation_candidate"
+    },
+    "packet_container": {
+      "$ref": "#/$defs/packet_container"
+    },
+    "freeze_snapshot": {
+      "$ref": "#/$defs/freeze_snapshot"
+    },
+    "authority": {
+      "$ref": "#/$defs/authority"
+    },
+    "repository_scope": {
+      "$ref": "#/$defs/repository_scope"
+    },
+    "ancestry": {
+      "$ref": "#/$defs/ancestry"
+    },
+    "changed_scope": {
+      "$ref": "#/$defs/changed_scope"
+    },
+    "independent_disposition": {
+      "$ref": "#/$defs/independent_disposition"
+    },
+    "scientific_change": {
+      "$ref": "#/$defs/scientific_change"
+    },
+    "gate_policy": {
+      "$ref": "#/$defs/gate_policy"
+    },
+    "gate_results": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/gate_result"
+      }
+    },
+    "generated_evidence": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/generated_evidence"
+      }
+    },
+    "local_evidence": {
+      "$ref": "#/$defs/local_evidence"
+    },
+    "unity_evidence": {
+      "$ref": "#/$defs/unity_evidence"
+    },
+    "external_dependencies": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "$ref": "#/$defs/external_dependency"
+      }
+    },
+    "claims": {
+      "$ref": "#/$defs/claims"
+    },
+    "attestations": {
+      "$ref": "#/$defs/attestations"
+    },
+    "approvals": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/approval"
+      }
+    }
+  },
+  "$defs": {
+    "git_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "nullable_git_sha": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/git_sha"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "nullable_sha256": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/sha256"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "nullable_timestamp": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/timestamp"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "nonempty_string": {
+      "type": "string",
+      "minLength": 1
+    },
+    "string_array": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/nonempty_string"
+      }
+    },
+    "nonempty_string_array": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/nonempty_string"
+      }
+    },
+    "repo_path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+    },
+    "ref_name": {
+      "type": "string",
+      "pattern": "^refs/(heads|remotes|tags)/[A-Za-z0-9._/-]+$"
+    },
+    "blocking_stage": {
+      "enum": [
+        "lane_handoff",
+        "intermediate_freeze",
+        "combined_freeze",
+        "combined_acceptance",
+        "mainline_promotion",
+        "refactor_apt_generation",
+        "refactor_apt_activation",
+        "production_end_to_end"
+      ]
+    },
+    "packet_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "packet_id",
+        "lane_id",
+        "packet_kind",
+        "recorded_at",
+        "lifecycle_state",
+        "target_stage"
+      ],
+      "properties": {
+        "packet_id": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "lane_id": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "packet_kind": {
+          "enum": [
+            "cal_lane",
+            "align_lane",
+            "combined"
+          ]
+        },
+        "recorded_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "lifecycle_state": {
+          "enum": [
+            "preparing",
+            "frozen",
+            "returned_for_repair",
+            "blocked",
+            "authority_decision_required"
+          ]
+        },
+        "target_stage": {
+          "enum": [
+            "lane_handoff",
+            "combined_acceptance"
+          ]
+        }
+      }
+    },
+    "implementation_candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_ref",
+        "snapshot_started_at",
+        "snapshot_finished_at",
+        "start_tip_sha",
+        "end_tip_sha",
+        "commit_sha",
+        "parent_shas",
+        "tree_sha",
+        "authorized_base_sha",
+        "authorized_base_tree",
+        "merge_base_sha",
+        "ahead_count",
+        "behind_count",
+        "standard_binary_patch_sha256",
+        "name_status_sha256",
+        "embedded_version",
+        "implementation_frozen",
+        "worktree_clean"
+      ],
+      "properties": {
+        "source_ref": {
+          "$ref": "#/$defs/ref_name"
+        },
+        "snapshot_started_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "snapshot_finished_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "start_tip_sha": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "end_tip_sha": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "commit_sha": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "parent_shas": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/git_sha"
+          }
+        },
+        "tree_sha": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "authorized_base_sha": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "authorized_base_tree": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "merge_base_sha": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "ahead_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "behind_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "standard_binary_patch_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "name_status_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "embedded_version": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "implementation_frozen": {
+          "type": "boolean"
+        },
+        "worktree_clean": {
+          "type": "boolean"
+        }
+      }
+    },
+    "packet_container": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "commit_sha",
+        "tree_sha",
+        "separate_from_implementation"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "uncommitted_packet",
+            "documentation_only_commit"
+          ]
+        },
+        "commit_sha": {
+          "$ref": "#/$defs/nullable_git_sha"
+        },
+        "tree_sha": {
+          "$ref": "#/$defs/nullable_git_sha"
+        },
+        "separate_from_implementation": {
+          "const": true
+        }
+      }
+    },
+    "freeze_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "availability",
+        "start_sha",
+        "end_sha",
+        "verify_local"
+      ],
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "availability": {
+          "enum": [
+            "available",
+            "unavailable"
+          ]
+        },
+        "start_sha": {
+          "$ref": "#/$defs/nullable_git_sha"
+        },
+        "end_sha": {
+          "$ref": "#/$defs/nullable_git_sha"
+        },
+        "verify_local": {
+          "type": "boolean"
+        }
+      }
+    },
+    "freeze_snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "refs",
+        "tip_moved"
+      ],
+      "properties": {
+        "refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/freeze_ref"
+          }
+        },
+        "tip_moved": {
+          "type": "boolean"
+        }
+      }
+    },
+    "authority_path": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "blob_sha"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/repo_path"
+        },
+        "blob_sha": {
+          "$ref": "#/$defs/git_sha"
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "convergence_base_decision",
+        "owner_decision_refs",
+        "authority_paths"
+      ],
+      "properties": {
+        "convergence_base_decision": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "owner_decision_refs": {
+          "$ref": "#/$defs/nonempty_string_array"
+        },
+        "authority_paths": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/authority_path"
+          }
+        }
+      }
+    },
+    "repository_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "citlali",
+        "tolproj",
+        "tolteca",
+        "compensation_elsewhere_allowed"
+      ],
+      "properties": {
+        "citlali": {
+          "const": "repairable_in_current_authorized_repository_scope"
+        },
+        "tolproj": {
+          "const": "repairable_only_in_separately_reviewed_repository_lane"
+        },
+        "tolteca": {
+          "const": "blocked_deferred_read_only"
+        },
+        "compensation_elsewhere_allowed": {
+          "const": false
+        }
+      }
+    },
+    "history_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "commit_sha",
+        "parent_shas",
+        "tree_sha",
+        "purpose",
+        "categories",
+        "import_disposition"
+      ],
+      "properties": {
+        "commit_sha": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "parent_shas": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/git_sha"
+          }
+        },
+        "tree_sha": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "purpose": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "categories": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "application",
+              "test",
+              "validation",
+              "documentation",
+              "generated_input",
+              "generated_evidence",
+              "audit",
+              "failed_repair",
+              "coordination",
+              "contaminating_dependency"
+            ]
+          }
+        },
+        "import_disposition": {
+          "enum": [
+            "include_application",
+            "exclude_non_application",
+            "reconstruct_required"
+          ]
+        }
+      }
+    },
+    "excluded_history_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "commit_sha",
+        "tree_sha",
+        "category",
+        "reason"
+      ],
+      "properties": {
+        "commit_sha": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "tree_sha": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "category": {
+          "enum": [
+            "audit",
+            "failed_repair",
+            "abandoned",
+            "generated_evidence",
+            "coordination",
+            "contaminating_dependency"
+          ]
+        },
+        "reason": {
+          "$ref": "#/$defs/nonempty_string"
+        }
+      }
+    },
+    "source_dependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dependency_id",
+        "repository",
+        "commit_sha",
+        "classification",
+        "disposition",
+        "owner",
+        "reason"
+      ],
+      "properties": {
+        "dependency_id": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "repository": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "commit_sha": {
+          "$ref": "#/$defs/nullable_git_sha"
+        },
+        "classification": {
+          "enum": [
+            "base_present",
+            "lane_local",
+            "cross_lane",
+            "separately_promoted",
+            "external_blocked",
+            "contaminating"
+          ]
+        },
+        "disposition": {
+          "enum": [
+            "imported",
+            "reconstructed",
+            "independently_required",
+            "excluded",
+            "deferred"
+          ]
+        },
+        "owner": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "reason": {
+          "$ref": "#/$defs/nonempty_string"
+        }
+      }
+    },
+    "ancestry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "application_history",
+        "excluded_history",
+        "source_dependencies"
+      ],
+      "properties": {
+        "application_history": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/history_entry"
+          }
+        },
+        "excluded_history": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/excluded_history_entry"
+          }
+        },
+        "source_dependencies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/source_dependency"
+          }
+        }
+      }
+    },
+    "changed_path": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "path",
+        "blob_sha",
+        "category",
+        "owner"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "A",
+            "M",
+            "D",
+            "T"
+          ]
+        },
+        "path": {
+          "$ref": "#/$defs/repo_path"
+        },
+        "blob_sha": {
+          "$ref": "#/$defs/nullable_git_sha"
+        },
+        "category": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "owner": {
+          "$ref": "#/$defs/nonempty_string"
+        }
+      }
+    },
+    "interface": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "interface",
+        "path",
+        "architectural_owner",
+        "scientific_owners",
+        "lifecycle_owner",
+        "classification",
+        "required_evidence",
+        "future_stage_owner"
+      ],
+      "properties": {
+        "interface": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "path": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/repo_path"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "architectural_owner": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "scientific_owners": {
+          "$ref": "#/$defs/nonempty_string_array"
+        },
+        "lifecycle_owner": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "classification": {
+          "enum": [
+            "additive",
+            "textual_conflict",
+            "semantic_conflict",
+            "coupled"
+          ]
+        },
+        "required_evidence": {
+          "$ref": "#/$defs/nonempty_string_array"
+        },
+        "future_stage_owner": {
+          "$ref": "#/$defs/nonempty_string"
+        }
+      }
+    },
+    "changed_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "paths",
+        "interfaces",
+        "affected_modes",
+        "governed_change_kinds"
+      ],
+      "properties": {
+        "paths": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/changed_path"
+          }
+        },
+        "interfaces": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/interface"
+          }
+        },
+        "affected_modes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "point",
+              "oof",
+              "science",
+              "beammap"
+            ]
+          }
+        },
+        "governed_change_kinds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "structural",
+              "provenance",
+              "algorithm",
+              "numerical",
+              "default",
+              "schema",
+              "scientific_product"
+            ]
+          }
+        }
+      }
+    },
+    "disposition_axes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scientific_contract",
+        "implementation",
+        "validation_readiness",
+        "historical_fixture",
+        "production",
+        "verdict"
+      ],
+      "properties": {
+        "scientific_contract": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "implementation": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "validation_readiness": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "historical_fixture": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "production": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "verdict": {
+          "$ref": "#/$defs/nonempty_string"
+        }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "finding_id",
+        "status",
+        "owner",
+        "blocking_stage",
+        "rationale",
+        "evidence_ids",
+        "changed_at_candidate"
+      ],
+      "properties": {
+        "finding_id": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "status": {
+          "enum": [
+            "closed",
+            "accepted",
+            "conditioned",
+            "open",
+            "blocked"
+          ]
+        },
+        "owner": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "blocking_stage": {
+          "$ref": "#/$defs/blocking_stage"
+        },
+        "rationale": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "evidence_ids": {
+          "$ref": "#/$defs/string_array"
+        },
+        "changed_at_candidate": {
+          "type": "boolean"
+        }
+      }
+    },
+    "independent_disposition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "review_commit_sha",
+        "review_tree_sha",
+        "report_path",
+        "report_sha256",
+        "axes",
+        "findings"
+      ],
+      "properties": {
+        "review_commit_sha": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "review_tree_sha": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "report_path": {
+          "$ref": "#/$defs/repo_path"
+        },
+        "report_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "axes": {
+          "$ref": "#/$defs/disposition_axes"
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/finding"
+          }
+        }
+      }
+    },
+    "scientific_change": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "owner_basis",
+        "ledger_path",
+        "ledger_blob_sha",
+        "change_ids",
+        "predecessor_epoch_id",
+        "successor_epoch_id",
+        "successor_epoch_status",
+        "profile_ids"
+      ],
+      "properties": {
+        "state": {
+          "enum": [
+            "none",
+            "declared"
+          ]
+        },
+        "owner_basis": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "ledger_path": {
+          "$ref": "#/$defs/repo_path"
+        },
+        "ledger_blob_sha": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "change_ids": {
+          "$ref": "#/$defs/string_array"
+        },
+        "predecessor_epoch_id": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/nonempty_string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "successor_epoch_id": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/nonempty_string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "successor_epoch_status": {
+          "enum": [
+            "none",
+            "preparing",
+            "active"
+          ]
+        },
+        "profile_ids": {
+          "$ref": "#/$defs/string_array"
+        }
+      }
+    },
+    "omission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority",
+        "reason"
+      ],
+      "properties": {
+        "authority": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        }
+      }
+    },
+    "gate_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required_gate_ids",
+        "required_modes",
+        "unity_required",
+        "unity_omission"
+      ],
+      "properties": {
+        "required_gate_ids": {
+          "$ref": "#/$defs/nonempty_string_array"
+        },
+        "required_modes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "point",
+              "oof",
+              "science",
+              "beammap"
+            ]
+          }
+        },
+        "unity_required": {
+          "type": "boolean"
+        },
+        "unity_omission": {
+          "$ref": "#/$defs/omission"
+        }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_id",
+        "location_kind",
+        "path_or_uri",
+        "source_commit_sha",
+        "originating_candidate_sha",
+        "sha256"
+      ],
+      "properties": {
+        "artifact_id": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "location_kind": {
+          "enum": [
+            "repository_blob",
+            "local_artifact",
+            "human_supplied_external"
+          ]
+        },
+        "path_or_uri": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "source_commit_sha": {
+          "$ref": "#/$defs/nullable_git_sha"
+        },
+        "originating_candidate_sha": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "gate_candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sha",
+        "tree",
+        "base_sha"
+      ],
+      "properties": {
+        "sha": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "tree": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "base_sha": {
+          "$ref": "#/$defs/git_sha"
+        }
+      }
+    },
+    "gate_action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "command_argv",
+        "procedure"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "local_command",
+            "human_mediated_unity",
+            "document_review"
+          ]
+        },
+        "command_argv": {
+          "$ref": "#/$defs/string_array"
+        },
+        "procedure": {
+          "type": "string"
+        }
+      }
+    },
+    "gate_owners": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "execution",
+        "architectural",
+        "scientific",
+        "evidence"
+      ],
+      "properties": {
+        "execution": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "architectural": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "scientific": {
+          "$ref": "#/$defs/nonempty_string_array"
+        },
+        "evidence": {
+          "$ref": "#/$defs/nonempty_string"
+        }
+      }
+    },
+    "nullable_nonnegative_integer": {
+      "oneOf": [
+        {
+          "type": "integer",
+          "minimum": 0
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "gate_metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "exit_status",
+        "unexpected_error_count",
+        "unexplained_required_output_failure_count",
+        "missing_required_output_count",
+        "skipped_required_comparison_count"
+      ],
+      "properties": {
+        "exit_status": {
+          "$ref": "#/$defs/nullable_nonnegative_integer"
+        },
+        "unexpected_error_count": {
+          "$ref": "#/$defs/nullable_nonnegative_integer"
+        },
+        "unexplained_required_output_failure_count": {
+          "$ref": "#/$defs/nullable_nonnegative_integer"
+        },
+        "missing_required_output_count": {
+          "$ref": "#/$defs/nullable_nonnegative_integer"
+        },
+        "skipped_required_comparison_count": {
+          "$ref": "#/$defs/nullable_nonnegative_integer"
+        }
+      }
+    },
+    "gate_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "gate_id",
+        "gate_version",
+        "domain",
+        "scope",
+        "required",
+        "timing",
+        "blocking_stage",
+        "candidate",
+        "inputs",
+        "action",
+        "outputs",
+        "criteria",
+        "result",
+        "omission",
+        "owners",
+        "evidence_reference",
+        "claim_constraints",
+        "started_at",
+        "finished_at",
+        "metrics",
+        "interface_contract",
+        "apt_phase_contract"
+      ],
+      "properties": {
+        "gate_id": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "gate_version": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "domain": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "scope": {
+          "enum": [
+            "cal",
+            "align",
+            "overlap",
+            "combined",
+            "external"
+          ]
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "timing": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "lane_freeze",
+              "order_selection",
+              "post_first_import",
+              "intermediate_freeze",
+              "post_second_import",
+              "combined_freeze",
+              "human_unity",
+              "pre_acceptance",
+              "post_software_apt_generation",
+              "preproduction_sample_generation",
+              "human_unity_beam_campaign",
+              "refactor_library_curation",
+              "shadow_cross_generation_comparison",
+              "refactor_generation_activation",
+              "post_activation_regeneration"
+            ]
+          }
+        },
+        "blocking_stage": {
+          "$ref": "#/$defs/blocking_stage"
+        },
+        "candidate": {
+          "$ref": "#/$defs/gate_candidate"
+        },
+        "inputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/artifact"
+          }
+        },
+        "action": {
+          "$ref": "#/$defs/gate_action"
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/artifact"
+          }
+        },
+        "criteria": {
+          "$ref": "#/$defs/nonempty_string_array"
+        },
+        "result": {
+          "enum": [
+            "not_run",
+            "pass",
+            "fail",
+            "blocked",
+            "conditioned",
+            "not_applicable",
+            "omitted"
+          ]
+        },
+        "omission": {
+          "$ref": "#/$defs/omission"
+        },
+        "owners": {
+          "$ref": "#/$defs/gate_owners"
+        },
+        "evidence_reference": {
+          "type": "string"
+        },
+        "claim_constraints": {
+          "$ref": "#/$defs/string_array"
+        },
+        "started_at": {
+          "$ref": "#/$defs/nullable_timestamp"
+        },
+        "finished_at": {
+          "$ref": "#/$defs/nullable_timestamp"
+        },
+        "metrics": {
+          "$ref": "#/$defs/gate_metrics"
+        },
+        "interface_contract": {
+          "$ref": "#/$defs/interface_contract"
+        },
+        "apt_phase_contract": {
+          "$ref": "#/$defs/apt_phase_contract"
+        }
+      }
+    },
+    "apt_mode_route": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "applicable",
+        "actual_direction",
+        "route_producer_repository",
+        "route_consumer_repository",
+        "tolapt_role",
+        "nonapplicability_authority",
+        "nonapplicability_reason"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "point",
+            "oof",
+            "science",
+            "beammap"
+          ]
+        },
+        "applicable": {
+          "type": "boolean"
+        },
+        "actual_direction": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "route_producer_repository": {
+          "type": "string"
+        },
+        "route_consumer_repository": {
+          "type": "string"
+        },
+        "tolapt_role": {
+          "enum": [
+            "offline_downstream",
+            "offline_package_exchange",
+            "precomputed_input",
+            "not_in_path"
+          ]
+        },
+        "nonapplicability_authority": {
+          "type": "string"
+        },
+        "nonapplicability_reason": {
+          "type": "string"
+        }
+      }
+    },
+    "interface_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "applicable",
+        "interface_id",
+        "producer_repository",
+        "consumer_repository",
+        "producer_commit_sha",
+        "producer_tree_sha",
+        "consumer_commit_sha",
+        "consumer_tree_sha",
+        "owner_repositories",
+        "producer_artifact_schema",
+        "consumer_preflight",
+        "stable_scoped_keys",
+        "exact_artifact_sha256",
+        "mapping_sha256",
+        "counterexamples",
+        "readiness_status",
+        "blocking_dependencies",
+        "mode_routes"
+      ],
+      "properties": {
+        "applicable": {
+          "type": "boolean"
+        },
+        "interface_id": {
+          "type": "string"
+        },
+        "producer_repository": {
+          "type": "string"
+        },
+        "consumer_repository": {
+          "type": "string"
+        },
+        "producer_commit_sha": {
+          "$ref": "#/$defs/nullable_git_sha"
+        },
+        "producer_tree_sha": {
+          "$ref": "#/$defs/nullable_git_sha"
+        },
+        "consumer_commit_sha": {
+          "$ref": "#/$defs/nullable_git_sha"
+        },
+        "consumer_tree_sha": {
+          "$ref": "#/$defs/nullable_git_sha"
+        },
+        "owner_repositories": {
+          "$ref": "#/$defs/string_array"
+        },
+        "producer_artifact_schema": {
+          "type": "string"
+        },
+        "consumer_preflight": {
+          "type": "string"
+        },
+        "stable_scoped_keys": {
+          "$ref": "#/$defs/string_array"
+        },
+        "exact_artifact_sha256": {
+          "$ref": "#/$defs/nullable_sha256"
+        },
+        "mapping_sha256": {
+          "$ref": "#/$defs/nullable_sha256"
+        },
+        "counterexamples": {
+          "$ref": "#/$defs/string_array"
+        },
+        "readiness_status": {
+          "enum": [
+            "not_run",
+            "pass",
+            "fail",
+            "blocked",
+            "conditioned",
+            "not_applicable"
+          ]
+        },
+        "blocking_dependencies": {
+          "$ref": "#/$defs/string_array"
+        },
+        "mode_routes": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/apt_mode_route"
+          }
+        }
+      }
+    },
+    "apt_software_revision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "role",
+        "commit_sha",
+        "tree_sha",
+        "dirty",
+        "acceptance_evidence_sha256"
+      ],
+      "properties": {
+        "repository": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "role": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "commit_sha": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "tree_sha": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "dirty": {
+          "type": "boolean"
+        },
+        "acceptance_evidence_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "apt_phase_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "applicable",
+        "phase_id",
+        "readiness_status",
+        "software_revisions",
+        "generation_id",
+        "generation_root",
+        "software_revision_set_sha256",
+        "config_manifest_sha256",
+        "raw_data_manifest_sha256",
+        "cohort_manifest_sha256",
+        "artifact_manifest_sha256",
+        "component_manifest_sha256",
+        "membership_sha256",
+        "mapping_sha256",
+        "transformation_sha256",
+        "application_sha256",
+        "quarantine_manifest_sha256",
+        "rollback_manifest_sha256",
+        "network_count",
+        "artifact_scope_count",
+        "complete_case_count",
+        "permutation_case_count",
+        "rejection_case_count",
+        "legacy_input_count",
+        "mixed_generation_count",
+        "selected_artifacts_all_contract_generated",
+        "immutable_generation",
+        "historical_evidence_only",
+        "blocking_dependencies"
+      ],
+      "properties": {
+        "applicable": {
+          "type": "boolean"
+        },
+        "phase_id": {
+          "type": "string"
+        },
+        "readiness_status": {
+          "enum": [
+            "not_run",
+            "pass",
+            "fail",
+            "blocked",
+            "conditioned",
+            "not_applicable"
+          ]
+        },
+        "software_revisions": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/apt_software_revision"
+          }
+        },
+        "generation_id": {
+          "type": "string"
+        },
+        "generation_root": {
+          "type": "string"
+        },
+        "software_revision_set_sha256": {
+          "$ref": "#/$defs/nullable_sha256"
+        },
+        "config_manifest_sha256": {
+          "$ref": "#/$defs/nullable_sha256"
+        },
+        "raw_data_manifest_sha256": {
+          "$ref": "#/$defs/nullable_sha256"
+        },
+        "cohort_manifest_sha256": {
+          "$ref": "#/$defs/nullable_sha256"
+        },
+        "artifact_manifest_sha256": {
+          "$ref": "#/$defs/nullable_sha256"
+        },
+        "component_manifest_sha256": {
+          "$ref": "#/$defs/nullable_sha256"
+        },
+        "membership_sha256": {
+          "$ref": "#/$defs/nullable_sha256"
+        },
+        "mapping_sha256": {
+          "$ref": "#/$defs/nullable_sha256"
+        },
+        "transformation_sha256": {
+          "$ref": "#/$defs/nullable_sha256"
+        },
+        "application_sha256": {
+          "$ref": "#/$defs/nullable_sha256"
+        },
+        "quarantine_manifest_sha256": {
+          "$ref": "#/$defs/nullable_sha256"
+        },
+        "rollback_manifest_sha256": {
+          "$ref": "#/$defs/nullable_sha256"
+        },
+        "network_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "artifact_scope_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "complete_case_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "permutation_case_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rejection_case_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "legacy_input_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "mixed_generation_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "selected_artifacts_all_contract_generated": {
+          "type": "boolean"
+        },
+        "immutable_generation": {
+          "type": "boolean"
+        },
+        "historical_evidence_only": {
+          "type": "boolean"
+        },
+        "blocking_dependencies": {
+          "$ref": "#/$defs/string_array"
+        }
+      }
+    },
+    "generated_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_id",
+        "source_commit_sha",
+        "originating_candidate_sha",
+        "command_argv",
+        "input_artifacts",
+        "output_artifacts",
+        "environment",
+        "retention_location"
+      ],
+      "properties": {
+        "evidence_id": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "source_commit_sha": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "originating_candidate_sha": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "command_argv": {
+          "$ref": "#/$defs/nonempty_string_array"
+        },
+        "input_artifacts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/artifact"
+          }
+        },
+        "output_artifacts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/artifact"
+          }
+        },
+        "environment": {
+          "$ref": "#/$defs/nonempty_string_array"
+        },
+        "retention_location": {
+          "$ref": "#/$defs/nonempty_string"
+        }
+      }
+    },
+    "local_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate_sha",
+        "candidate_tree",
+        "gate_ids",
+        "clean_after_gates",
+        "evidence_references"
+      ],
+      "properties": {
+        "candidate_sha": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "candidate_tree": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "gate_ids": {
+          "$ref": "#/$defs/string_array"
+        },
+        "clean_after_gates": {
+          "type": "boolean"
+        },
+        "evidence_references": {
+          "$ref": "#/$defs/string_array"
+        }
+      }
+    },
+    "unity_row": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "profile_id",
+        "run_id",
+        "candidate_sha",
+        "candidate_tree",
+        "embedded_version",
+        "binary_sha256",
+        "config_sha256",
+        "input_manifest_sha256",
+        "output_manifest_sha256",
+        "report_sha256",
+        "log_sha256",
+        "retrieved_at",
+        "retrieved_by",
+        "retrieval_source",
+        "provided_by_authorized_human",
+        "result",
+        "unexpected_error_count",
+        "unexplained_required_output_failure_count",
+        "missing_required_output_count",
+        "skipped_required_comparison_count"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "point",
+            "oof",
+            "science",
+            "beammap"
+          ]
+        },
+        "profile_id": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "run_id": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "candidate_sha": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "candidate_tree": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "embedded_version": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "binary_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "config_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "input_manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "output_manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "report_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "log_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "retrieved_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "retrieved_by": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "retrieval_source": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "provided_by_authorized_human": {
+          "const": true
+        },
+        "result": {
+          "enum": [
+            "pass",
+            "fail",
+            "blocked",
+            "omitted"
+          ]
+        },
+        "unexpected_error_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "unexplained_required_output_failure_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "missing_required_output_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "skipped_required_comparison_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "unity_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "human_mediated_only",
+        "codex_accessed_unity",
+        "dependency_environment_sha256",
+        "omission",
+        "rows"
+      ],
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "human_mediated_only": {
+          "const": true
+        },
+        "codex_accessed_unity": {
+          "const": false
+        },
+        "dependency_environment_sha256": {
+          "$ref": "#/$defs/nullable_sha256"
+        },
+        "omission": {
+          "$ref": "#/$defs/omission"
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/unity_row"
+          }
+        }
+      }
+    },
+    "external_dependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dependency_id",
+        "repository",
+        "classification",
+        "status",
+        "owner",
+        "boundary",
+        "evidence_authority",
+        "finding_ids",
+        "exit_condition",
+        "blocking_stage",
+        "read_only",
+        "compensation_elsewhere_allowed",
+        "resolved_commit_sha",
+        "resolved_tree_sha",
+        "closure_evidence_sha256"
+      ],
+      "properties": {
+        "dependency_id": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "repository": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "classification": {
+          "enum": [
+            "repairable_in_current_authorized_repository_scope",
+            "repairable_only_in_separately_reviewed_repository_lane",
+            "blocked_deferred_at_tolteca",
+            "external_owner_dependency"
+          ]
+        },
+        "status": {
+          "enum": [
+            "open",
+            "blocked",
+            "deferred",
+            "closed"
+          ]
+        },
+        "owner": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "boundary": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "evidence_authority": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "finding_ids": {
+          "$ref": "#/$defs/nonempty_string_array"
+        },
+        "exit_condition": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "blocking_stage": {
+          "$ref": "#/$defs/blocking_stage"
+        },
+        "read_only": {
+          "type": "boolean"
+        },
+        "compensation_elsewhere_allowed": {
+          "const": false
+        },
+        "resolved_commit_sha": {
+          "$ref": "#/$defs/nullable_git_sha"
+        },
+        "resolved_tree_sha": {
+          "$ref": "#/$defs/nullable_git_sha"
+        },
+        "closure_evidence_sha256": {
+          "$ref": "#/$defs/nullable_sha256"
+        }
+      }
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "supported",
+        "conditioned",
+        "prohibited",
+        "cross_repository_apt_conformance",
+        "production_end_to_end_apt_contract",
+        "refactor_apt_generation_selected",
+        "refactor_reductions_regenerated",
+        "legacy_lineage_used_as_refactor_input",
+        "legacy_selection_equivalence_required",
+        "new_contract_sample_artifact_milestone_met",
+        "real_end_to_end_apt_chain_conformance",
+        "scientific_readiness",
+        "production_readiness",
+        "refactor_apt_library_validated"
+      ],
+      "properties": {
+        "supported": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "source_static",
+              "unit",
+              "synthetic_counterexample",
+              "schema_contract",
+              "historical_cross_generation_comparison"
+            ]
+          }
+        },
+        "conditioned": {
+          "$ref": "#/$defs/string_array"
+        },
+        "prohibited": {
+          "$ref": "#/$defs/nonempty_string_array"
+        },
+        "cross_repository_apt_conformance": {
+          "const": false
+        },
+        "production_end_to_end_apt_contract": {
+          "const": false
+        },
+        "refactor_apt_generation_selected": {
+          "const": false
+        },
+        "refactor_reductions_regenerated": {
+          "const": false
+        },
+        "legacy_lineage_used_as_refactor_input": {
+          "const": false
+        },
+        "legacy_selection_equivalence_required": {
+          "const": false
+        },
+        "new_contract_sample_artifact_milestone_met": {
+          "const": false
+        },
+        "real_end_to_end_apt_chain_conformance": {
+          "const": false
+        },
+        "scientific_readiness": {
+          "const": false
+        },
+        "production_readiness": {
+          "const": false
+        },
+        "refactor_apt_library_validated": {
+          "const": false
+        }
+      }
+    },
+    "attestations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "application_history_separated",
+        "zero_unexplained_required_output_failures",
+        "zero_unexpected_error_logs",
+        "no_skipped_required_comparisons",
+        "requested_effective_observation_realized_checked",
+        "product_inventory_checked",
+        "scientific_conventions_checked",
+        "same_sha_local",
+        "same_sha_local_unity",
+        "compensating_identity_or_admission_weakening"
+      ],
+      "properties": {
+        "application_history_separated": {
+          "type": "boolean"
+        },
+        "zero_unexplained_required_output_failures": {
+          "type": "boolean"
+        },
+        "zero_unexpected_error_logs": {
+          "type": "boolean"
+        },
+        "no_skipped_required_comparisons": {
+          "type": "boolean"
+        },
+        "requested_effective_observation_realized_checked": {
+          "type": "boolean"
+        },
+        "product_inventory_checked": {
+          "type": "boolean"
+        },
+        "scientific_conventions_checked": {
+          "type": "boolean"
+        },
+        "same_sha_local": {
+          "type": "boolean"
+        },
+        "same_sha_local_unity": {
+          "type": "boolean"
+        },
+        "compensating_identity_or_admission_weakening": {
+          "const": false
+        }
+      }
+    },
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "owner",
+        "status",
+        "candidate_sha",
+        "candidate_tree",
+        "recorded_at",
+        "conditions"
+      ],
+      "properties": {
+        "role": {
+          "enum": [
+            "lane_owner",
+            "scientific_owner",
+            "independent_auditor",
+            "coordinator"
+          ]
+        },
+        "owner": {
+          "$ref": "#/$defs/nonempty_string"
+        },
+        "status": {
+          "enum": [
+            "pending",
+            "approved",
+            "conditioned",
+            "rejected"
+          ]
+        },
+        "candidate_sha": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "candidate_tree": {
+          "$ref": "#/$defs/git_sha"
+        },
+        "recorded_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "conditions": {
+          "$ref": "#/$defs/string_array"
+        }
+      }
+    }
+  }
+}
