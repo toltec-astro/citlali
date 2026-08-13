@@ -33,6 +33,26 @@ authorized. The exact imported
 has SHA-256
 `fe07901504ad26916cab2c5589f452b1873c11ef215239653ed938f45eefd4d5`.
 
+On 2026-08-13 the owner accepted the `SCI-CAL-001` successor-7
+[return-for-repair disposition](packages/SCI-CAL-001_SUCCESSOR_7_OWNER_ACCEPTANCE_2026-08-13.md)
+for exact pushed candidate `9037314fd84241fa535c486d4ffb28966bb0394d`,
+audited at `0461d1e6ce484d52bf654afcfc563703943fb847`. The exact
+[report](SCI-CAL-001_SUCCESSOR_7_REAUDIT_2026-08-13.md) and
+[evidence](evidence/SCI-CAL-001_SUCCESSOR_7_LOCAL_EVIDENCE_2026-08-13.yaml)
+are immutable. F002--F007 retain their accepted bounded dispositions,
+F001/F010 remain conditioned, and F008/local F009 remain open only for the
+four bounded F008-A/F008-B/F009-A/F009-B defects. The CAL axes stay
+`approved`, `nonconformant`, `in_progress`, and `fail_closed`, with verdict
+`amend`. The frozen
+[successor-8 handoff](packages/SCI-CAL-001_SUCCESSOR_8_BOUNDED_REPAIR_HANDOFF_2026-08-13.md)
+and [finding ledger](proposals/SCI-CAL-001_SUCCESSOR_8_REPAIR_FINDING_LEDGER_2026-08-13.yaml)
+record the exact nine-path ceiling, focused counterexamples, and complete
+fresh broad matrix. Historical readiness remains
+`failed_owner_waived_never_passed`, `sig2noise_pixel_I` remains prohibited for
+new/current products, and the v4 epoch/profiles remain `preparing`. No repair,
+Unity, reduction, production, re-audit, merge, push, external contact, or
+downstream work is launched.
+
 On 2026-08-12 the owner accepted the `SCI-CAL-001` successor-6
 [return-for-repair disposition](packages/SCI-CAL-001_SUCCESSOR_6_OWNER_ACCEPTANCE_2026-08-12.md)
 for exact pushed candidate `211e2f16f6354609de3ce6c6ee526d8aa4c6c59c`,

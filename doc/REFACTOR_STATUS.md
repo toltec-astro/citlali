@@ -17,6 +17,43 @@ The project will improve the existing tree incrementally. It will not restart
 as a broad rewrite and will not rewrite the granular history of the validated
 branch. The exact validated tree will remain available for forensic review.
 
+## 2026-08-13 CAL Successor-7 Return And Successor-8 Authority
+
+The owner accepted the independent `SCI-CAL-001` successor-7 verdict `amend`
+and return for bounded successor-8 repair. Exact pushed candidate
+`9037314fd84241fa535c486d4ffb28966bb0394d` was independently re-audited at
+`0461d1e6ce484d52bf654afcfc563703943fb847`. The immutable imported
+[report](audits/SCI-CAL-001_SUCCESSOR_7_REAUDIT_2026-08-13.md) and
+[local evidence](audits/evidence/SCI-CAL-001_SUCCESSOR_7_LOCAL_EVIDENCE_2026-08-13.yaml)
+are bound by the
+[owner acceptance](audits/packages/SCI-CAL-001_SUCCESSOR_7_OWNER_ACCEPTANCE_2026-08-13.md).
+
+F002--F006 retain their accepted bounded closures. F007 retains its accepted
+source-conformant response-identity repair without a new runtime-gate claim.
+F001 and F010 remain conditioned. F008 and local F009 remain open only for
+F008-A/F008-B required Pointing and Science Wiener-filtered FITS publication
+and F009-A/F009-B exact YAML scalar semantics and exact package-local
+selected-APT membership coverage. The CAL axes remain `approved`,
+`nonconformant`, `in_progress`, and `fail_closed`, with verdict `amend`.
+
+The frozen
+[successor-8 repair handoff](audits/packages/SCI-CAL-001_SUCCESSOR_8_BOUNDED_REPAIR_HANDOFF_2026-08-13.md)
+and [finding ledger](audits/proposals/SCI-CAL-001_SUCCESSOR_8_REPAIR_FINDING_LEDGER_2026-08-13.yaml)
+use exact pushed base `9037314fd84241fa535c486d4ffb28966bb0394d`,
+proposed branch `codex/repair-sci-cal-001-successor-8`, and an exact nine-path
+ceiling. The repair first closes the four focused executable counterexamples
+and then runs the complete fresh broad matrix. It authorizes no arithmetic or
+science redesign, global transaction, unrelated writer refactor, validation
+weakening, or production promotion.
+
+The historical readiness-fixture gate remains
+`failed_owner_waived_never_passed`, solely for six point plus twelve science
+immutable historical `sig2noise_pixel_I` errors. The extension remains
+prohibited for new/current products, and the v4 epoch/contracts/profiles
+remain `preparing`. This coordination update does not launch repair or
+re-audit, modify application code, access Unity, run reductions, change
+production, merge, push, contact external parties, or launch downstream work.
+
 ## 2026-08-12 CAL Successor-6 Return And Successor-7 Authority
 
 The owner accepted the independent `SCI-CAL-001` successor-6 verdict `amend`

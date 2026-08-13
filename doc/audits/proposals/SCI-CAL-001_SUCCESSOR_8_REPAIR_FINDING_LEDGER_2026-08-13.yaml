@@ -1,0 +1,254 @@
+format_version: 1
+record_id: SCI-CAL-001-SUCCESSOR-8-REPAIR-FINDING-LEDGER-001
+record_date: 2026-08-13
+record_status: owner_authorized_pending_role_separated_ready_and_launch
+scope: F008_A_F008_B_F009_A_F009_B_only
+
+coordination_authority:
+  branch: codex/coordinate-rtc-ptc-queue
+  commit: 87af719885fe73c1f292c97efb92026c4405ba05
+  parent: 2f132ae6ab01660b3ea51bd31e69e7065c25ec0d
+  tree: f182c7ff792c0e8f27c1a6c3f5eda3eb446ab1b1
+
+application_base:
+  ref: origin/codex/repair-sci-cal-001-successor-7
+  commit: 9037314fd84241fa535c486d4ffb28966bb0394d
+  parent: 211e2f16f6354609de3ce6c6ee526d8aa4c6c59c
+  tree: 9d2095159ac208a1096519a6fa710172275d3b73
+  patch_sha256: e761c4c25070ea7b925f8e75c05c5dbec05c1849132312f279112482dcded4e0
+
+source_reaudit:
+  branch: codex/reaudit-sci-cal-001-successor-7-20260813
+  commit: 0461d1e6ce484d52bf654afcfc563703943fb847
+  parent: 9037314fd84241fa535c486d4ffb28966bb0394d
+  tree: 902bfc1a67a41ac16eda8b60a8be6690cb915ad0
+  documentation_patch_sha256: 8ccdcdf0575ff0fc0aaf47ab18a9c3843544930dc4ac851f8f9e59193e75b911
+  disposition: amend_return_for_bounded_successor_8_repair
+  owner_disposition: accepted
+  report:
+    path: doc/audits/SCI-CAL-001_SUCCESSOR_7_REAUDIT_2026-08-13.md
+    sha256: 93e57a60aba11ed3f2996b08f0b35b639d7d2abc86466adedff9428e74ee33bc
+    immutable: true
+  evidence:
+    path: doc/audits/evidence/SCI-CAL-001_SUCCESSOR_7_LOCAL_EVIDENCE_2026-08-13.yaml
+    sha256: 974bc36e9a28647eda5b4932a1f0b85e79f8a4c9d3f97fbf6dcc92b6c2544029
+    immutable: true
+
+owner_acceptance:
+  path: doc/audits/packages/SCI-CAL-001_SUCCESSOR_7_OWNER_ACCEPTANCE_2026-08-13.md
+  sha256: 53631061cf1faa10a21ffb810830fc923d7072f3046f8d2e932acb1aa15c7f39
+  decision_date: 2026-08-13
+  successor_8_scope_authorized: true
+
+proposed_repair:
+  branch: codex/repair-sci-cal-001-successor-8
+  base: 9037314fd84241fa535c486d4ffb28966bb0394d
+  role: application_technical_repair_only
+  role_separation_required: true
+  initial_ready_checkpoint_required: true
+  status: authorized_not_launched
+  launched: false
+  handoff_path: doc/audits/packages/SCI-CAL-001_SUCCESSOR_8_BOUNDED_REPAIR_HANDOFF_2026-08-13.md
+
+controlled_axes:
+  contract: approved
+  implementation: nonconformant
+  validation: in_progress
+  production: fail_closed
+  verdict: amend
+
+finding_accounting:
+  total: 10
+  closed_or_bounded_disposition_retained: 6
+  open_bounded_repair: 2
+  open_conditioned_external: 2
+  repair_subfindings: 4
+
+finding_dispositions:
+  - finding_id: SCI-CAL-001-F001
+    status: open
+    dependency_status: conditioned
+    successor_8_role: outside_repair
+  - finding_id: SCI-CAL-001-F002
+    status: closed
+    successor_8_role: preserve_narrow_structural_closure
+  - finding_id: SCI-CAL-001-F003
+    status: closed
+    successor_8_role: preserve_startup_and_admission_closure
+  - finding_id: SCI-CAL-001-F004
+    status: closed
+    successor_8_role: preserve_APT_lineage_and_association_closure
+  - finding_id: SCI-CAL-001-F005
+    status: closed
+    closure_scope: bounded_local_technical
+    successor_8_role: preserve_production_correction_lifecycle_closure
+  - finding_id: SCI-CAL-001-F006
+    status: closed
+    successor_8_role: preserve_mJy_per_beam_configuration_boundary
+  - finding_id: SCI-CAL-001-F007
+    status: retained_source_conformant
+    independent_runtime_gate: not_rerun_after_mandatory_stop
+    successor_8_role: preserve_response_identity_only_repair
+    RTC_numerical_or_behavioral_change_authorized: false
+  - finding_id: SCI-CAL-001-F008
+    status: open
+    repair_authorized: true
+    successor_8_role: required_FITS_publication_only
+    subfindings:
+      - id: F008-A
+        scope: Pointing_RawObs_FilteredObs_RawCoadd_FilteredCoadd_data_and_noise
+        required_closure:
+          - publish_every_required_artifact_before_owner_clear
+          - stage_synchronize_close_reopen_validate_atomic_replace
+          - preserve_existing_valid_final_on_failure
+          - record_publication_only_after_success
+      - id: F008-B
+        scope: Science_Wiener_filtered_observation_and_coadd_data_and_noise
+        required_closure:
+          - publish_every_required_artifact_before_owner_clear
+          - remove_false_already_written_lifecycle_assumption
+          - stage_synchronize_close_reopen_validate_atomic_replace
+          - preserve_existing_valid_final_on_failure
+    prohibited_change:
+      - global_cross_output_transaction_or_rollback
+      - unrelated_writer_redesign
+      - scientific_output_content_or_arithmetic
+  - finding_id: SCI-CAL-001-F009
+    qualifier: local_implementation_portion_only
+    status: open
+    repair_authorized: true
+    successor_8_role: exact_requested_scalar_and_selected_APT_coverage
+    subfindings:
+      - id: F009-A
+        required_closure:
+          - exact_recursive_YAML_scalar_type_and_value_comparison
+          - boolean_true_not_equal_integer_one
+          - cause_specific_fail_closed_semantic_error
+      - id: F009-B
+        required_closure:
+          - exact_package_local_selected_APT_membership_coverage
+          - reject_unused_extra_missing_duplicate_or_out_of_range_rows
+          - preserve_valid_legacy_optional_modern_and_uncalibrated_semantics
+  - finding_id: SCI-CAL-001-F010
+    status: open
+    dependency_status: conditioned
+    successor_8_role: outside_repair
+
+exact_changed_path_ceiling:
+  count: 9
+  expansion_rule: stop_for_coordinator_and_owner_review
+  all_paths_must_exist_at_base: true
+  paths:
+    - include/citlali/core/engine/detail/pointing_output_impl.h
+    - include/citlali/core/pipeline/map_filtering_setup_outputs.h
+    - include/citlali/core/pipeline/filtered_observation_outputs.h
+    - include/citlali/core/pipeline/filtered_coadd_outputs.h
+    - tests/test_config_scaffold.cpp
+    - tests/test_science_map_fits_products.cpp
+    - tools/baseline/audit_reduction_run.py
+    - tools/baseline/test_audit_reduction_run.py
+    - doc/REFACTOR_STATUS.md
+
+required_focused_evidence:
+  F008_A:
+    - all_four_Pointing_map_types_data_and_noise_actual_owner_lifecycle
+    - final_exists_and_reopens_with_complete_required_HDU_and_join_state
+    - publication_precedes_owner_clear_and_publication_bookkeeping
+    - stage_cleanup_after_success_and_failure
+    - existing_valid_final_preserved_across_injected_failure_matrix
+  F008_B:
+    - Science_Wiener_observation_and_coadd_data_and_noise_actual_lifecycle
+    - successful_atomic_publication_precedes_any_post_filter_skip
+    - absent_or_failed_publication_not_represented_as_already_written
+    - final_reopen_join_validation_and_stage_cleanup
+    - existing_valid_final_preserved_across_injected_failure_matrix
+  F009_A:
+    - boolean_true_integer_one_counterexample_rejected
+    - exact_typed_scalar_and_nested_structure_matches_accepted
+    - null_string_number_and_boolean_type_collisions_rejected
+    - recomputed_self_consistent_identity_does_not_bypass_type_check
+  F009_B:
+    - extra_unused_selected_APT_row_counterexample_rejected
+    - missing_duplicate_out_of_range_reordered_and_tampered_rows_rejected
+    - exact_membership_coverage_accepted
+    - valid_legacy_optional_modern_lineage_preserved
+    - supported_effectively_uncalibrated_v4_preserved
+
+fresh_broad_gate_plan:
+  prior_candidate_results_may_be_adopted_as_fresh_evidence: false
+  focused_counterexamples_must_pass_first: true
+  gates:
+    - exact_candidate_configuration_and_build
+    - citlali_cli_build
+    - affected_Cpp_test_binaries
+    - full_CTest
+    - public_header_isolation_and_linkage_matrix
+    - config_preflight_require_all
+    - baseline_Python_unittest_discovery
+    - focused_baseline_and_product_comparison_matrix
+    - validation_product_contract_gate
+    - validation_profile_gate
+    - validation_ledger_gate
+    - science_change_ledger_gate
+    - raw_execution_census
+    - atmosphere_generator_check
+    - session_exit_zero_growth_audit
+    - complete_YAML_FITS_ECSV_TOD_failure_safe_publication_suite
+    - ordinary_phase5_readiness
+    - historical_phase5_readiness_verify_fixtures_exact_waived_reproduction
+  commands_results_skips_and_unavailable_prerequisites_recorded: true
+
+historical_readiness_boundary:
+  gate: phase5_readiness_--verify-fixtures
+  status: failed_owner_waived_never_passed
+  point_historical_product_errors: 6
+  science_historical_product_errors: 12
+  cause: immutable_historical_FITS_contain_prohibited_sig2noise_pixel_I
+  waiver_scope: pre_existing_historical_product_drift_only
+  sig2noise_pixel_I_new_or_current_products: prohibited
+  v4_current_production_candidate_status: preparing
+  immutable_objects:
+    - path: validation/accepted_runs.json
+      sha256: 4a134dcdd14e0444d96875547f628a3353574cc66574dd9a559bcf59dafb94bb
+    - path: validation/phase5_validation_readiness.json
+      sha256: b9daf6ab3973d2d35968ab27d2b7c75eca8534d2baeb6af9bb43725261f04755
+    - path: tools/baseline/phase5_readiness.py
+      sha256: 3a27fa5279c75432aa0939cbcc2add2db4d30df92379f6bf511ff281202b2af7
+
+preservation_gates:
+  - F002_through_F007_accepted_bounded_dispositions
+  - F001_and_F010_conditioned_outside_scope
+  - historical_profiles_contracts_runs_verifier_and_declared_outcomes
+  - current_v4_epoch_profiles_and_contracts_remain_preparing
+  - sig2noise_pixel_I_prohibited_for_new_current_products
+
+prohibitions:
+  - science_or_arithmetic_redesign
+  - RTC_PTC_mapmaking_or_atmosphere_numerical_change
+  - global_cross_output_transaction_or_rollback_architecture
+  - unrelated_writer_refactor
+  - validation_weakening
+  - accepted_profile_contract_run_or_historical_snapshot_rewrite
+  - production_promotion
+  - local_science_reduction
+  - unity_access_or_request
+  - downstream_launch
+  - external_contact
+  - re_audit
+  - merge
+  - push
+
+next_checkpoint:
+  name: READY
+  owner: coordinator
+  role_separated_task_required: true
+  repair_may_edit_before_approval: false
+  continuation_requires:
+    - exact_live_pushed_base_branch_parent_tree_and_patch
+    - fresh_clean_worktree_and_absent_successor_8_branch
+    - exact_nine_path_finding_change_test_traceability
+    - focused_counterexample_plan_before_broad_tests
+    - preservation_plan_for_F002_through_F007
+    - confirmation_F001_F010_remain_conditioned_and_outside_scope
+    - historical_failed_waived_gate_truth_and_v4_preparing_state
+    - no_science_redesign_global_transaction_or_production_promotion
