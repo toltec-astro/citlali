@@ -13,6 +13,15 @@ REGISTRY = REPO_ROOT / "validation/validation_profiles.json"
 LEDGER = REPO_ROOT / "validation/accepted_runs.json"
 PRODUCT_CONTRACTS = REPO_ROOT / "validation/product_contracts.json"
 BINDING_POLICIES = REPO_ROOT / "validation/config_binding_policies.json"
+RESTORED_SELECTED_APT_PROFILE_IDS = {
+    "phase4-point-152389-v1",
+    "phase4-oof-152385-152387-v1",
+    "phase4-beammap-148670-v1",
+    "phase5-point-152389-v2",
+    "phase5-oof-152385-152387-v2",
+    "sci-map-001-point-152389-v1",
+    "sci-map-001-oof-152385-152387-v1",
+}
 
 
 class ValidationProfilesTest(unittest.TestCase):
@@ -35,19 +44,22 @@ class ValidationProfilesTest(unittest.TestCase):
             epochs[current_epoch]["admission_scope"],
             "current_production_candidate",
         )
+        restored = set()
         for profile in registry["profiles"]:
             if "exclude" in profile["products"]:
                 excluded = profile["products"]["exclude"]
-                if profile["epoch_id"] == current_epoch:
-                    self.assertNotIn("selected_calibration_apt.ecsv", excluded)
+                self.assertNotIn("selected_calibration_apt.ecsv", excluded)
+                if profile["profile_id"] in RESTORED_SELECTED_APT_PROFILE_IDS:
+                    self.assertIn("*/selected_calibration_apt.ecsv", excluded)
+                    restored.add(profile["profile_id"])
+                elif profile["epoch_id"] == current_epoch:
                     self.assertNotIn("*/selected_calibration_apt.ecsv", excluded)
-                else:
-                    self.assertIn("selected_calibration_apt.ecsv", excluded)
             if profile["epoch_id"] == current_epoch:
                 self.assertEqual(
                     profile["admission_scope"],
                     "current_production_candidate",
                 )
+        self.assertEqual(restored, RESTORED_SELECTED_APT_PROFILE_IDS)
         self.assertEqual({profile["mode"] for profile in active}, profiles.SUPPORTED_MODES)
         self.assertEqual(len(active), len(profiles.SUPPORTED_MODES))
         self.assertGreaterEqual(len(registry["preparing_epoch_ids"]), 2)

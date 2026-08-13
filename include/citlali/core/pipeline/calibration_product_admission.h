@@ -101,7 +101,9 @@ std::string calibration_response_identity(
         identity << ";effective_fir_low_hz=" << engine.rtcproc.filter.freq_low_Hz
                  << ";effective_fir_high_hz=" << engine.rtcproc.filter.freq_high_Hz
                  << ";effective_fir_terms=" << engine.rtcproc.filter.n_terms
-                 << ";effective_fir_a_gibbs=" << engine.rtcproc.filter.a_gibbs;
+                 << ";effective_fir_a_gibbs=" << engine.rtcproc.filter.a_gibbs
+                 << ";effective_fir_application_sample_rate_hz="
+                 << engine.telescope.fsmp;
     }
     identity
         << ";requested_fixed_notch_enabled="
@@ -158,7 +160,9 @@ std::string calibration_response_identity(
                  << ";effective_iir_highpass_order="
                  << engine.rtcproc.filter.iir_highpass_order
                  << ";effective_iir_zero_phase="
-                 << engine.rtcproc.filter.iir_highpass_zero_phase;
+                 << engine.rtcproc.filter.iir_highpass_zero_phase
+                 << ";effective_iir_highpass_application_sample_rate_hz="
+                 << engine.telescope.fsmp;
     }
     if (engine.rtcproc.run_downsample) {
         identity << ";effective_downsample_factor="
@@ -170,6 +174,8 @@ std::string calibration_response_identity(
             std::ostringstream value;
             value << std::hexfloat << "phase=" << notch.phase
                   << ",stage=" << notch.stage
+                  << ",reduced_observation_identity="
+                  << notch.reduced_observation_identity
                   << ",fruit_iteration=" << notch.fruit_iteration
                   << ",scan=" << (notch.scan >= 0 ? notch.scan : scan)
                   << ",ptc_iteration=" << notch.ptc_iteration

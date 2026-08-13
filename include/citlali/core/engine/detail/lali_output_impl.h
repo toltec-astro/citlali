@@ -29,6 +29,12 @@ void Lali::finalize_lali_map_fits_outputs(
     };
 
     try {
+        for (auto &output : data_outputs) {
+            output.publish_atomically();
+        }
+        for (auto &output : noise_outputs) {
+            output.publish_atomically();
+        }
         std::vector<FitsOutput>().swap(data_outputs);
         std::vector<FitsOutput>().swap(noise_outputs);
     } catch (const CCfits::FitsError &e) {

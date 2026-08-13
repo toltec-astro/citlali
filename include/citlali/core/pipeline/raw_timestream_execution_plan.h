@@ -14,6 +14,7 @@
 namespace citlali::pipeline {
 
 struct RawTimestreamObservationState {
+    std::optional<std::string> reduced_observation_identity;
     std::optional<double> native_sample_rate_hz;
     std::optional<double> effective_sample_rate_hz;
     std::optional<int> downsample_factor;
@@ -80,6 +81,7 @@ struct RawTimestreamRealizedState {
     std::optional<std::size_t> flagged_sample_count;
     std::optional<std::size_t> dynamic_notch_count;
     std::optional<std::size_t> required_timestream_write_count;
+    std::optional<std::string> reduced_observation_identity;
     std::optional<double> reference_spectral_index_alpha;
     std::optional<bool> reference_spectral_index_default_applied;
     std::optional<double> tau225;
@@ -123,6 +125,88 @@ struct RawTimestreamRealizedState {
     std::optional<double> calibration_minimum_total_multiplier;
     std::optional<double> calibration_maximum_total_multiplier;
 };
+
+inline bool raw_calibration_snapshot_matches(
+    const RawTimestreamObservationState &observation,
+    const RawTimestreamRealizedState &realized) {
+    return observation.reduced_observation_identity ==
+               realized.reduced_observation_identity &&
+        observation.reference_spectral_index_alpha ==
+               realized.reference_spectral_index_alpha &&
+        observation.reference_spectral_index_default_applied ==
+               realized.reference_spectral_index_default_applied &&
+        observation.tau225 == realized.tau225 &&
+        observation.atmosphere_operator_id ==
+               realized.atmosphere_operator_id &&
+        observation.atmosphere_operator_contract_sha256 ==
+               realized.atmosphere_operator_contract_sha256 &&
+        observation.atmosphere_node_table_sha256 ==
+               realized.atmosphere_node_table_sha256 &&
+        observation.passband_set_id == realized.passband_set_id &&
+        observation.reference_profile_id == realized.reference_profile_id &&
+        observation.calibration_quality_regime ==
+               realized.calibration_quality_regime &&
+        observation.calibration_valid == realized.calibration_valid &&
+        observation.calibration_validity_reason ==
+               realized.calibration_validity_reason &&
+        observation.calibration_validity_detail ==
+               realized.calibration_validity_detail &&
+        observation.calibration_product_schema ==
+               realized.calibration_product_schema &&
+        observation.calibration_target_unit ==
+               realized.calibration_target_unit &&
+        observation.calibration_photometry_policy ==
+               realized.calibration_photometry_policy &&
+        observation.calibration_factor_composition ==
+               realized.calibration_factor_composition &&
+        observation.calibration_factor_provenance ==
+               realized.calibration_factor_provenance &&
+        observation.calibration_compatibility_fcf_semantics ==
+               realized.calibration_compatibility_fcf_semantics &&
+        observation.calibration_weight_recipient_semantics ==
+               realized.calibration_weight_recipient_semantics &&
+        observation.calibration_compact_covariance_state ==
+               realized.calibration_compact_covariance_state &&
+        observation.observation_flxscale_correction_applied ==
+               realized.observation_flxscale_correction_applied &&
+        observation.applied_observation_flxscale_correction ==
+               realized.applied_observation_flxscale_correction &&
+        observation.observation_flxscale_correction_state ==
+               realized.observation_flxscale_correction_state &&
+        observation.observation_flxscale_correction_source_identity ==
+               realized.observation_flxscale_correction_source_identity &&
+        observation.observation_flxscale_correction_recipient_identity ==
+               realized.observation_flxscale_correction_recipient_identity &&
+        observation.calibration_apt_artifact_sha256 ==
+               realized.calibration_apt_artifact_sha256 &&
+        observation.calibration_acquisition_binding_sha256 ==
+               realized.calibration_acquisition_binding_sha256 &&
+        observation.calibration_identity == realized.calibration_identity &&
+        observation.calibration_package_identity ==
+               realized.calibration_package_identity &&
+        observation.calibration_factor_state_sha256 ==
+               realized.calibration_factor_state_sha256 &&
+        observation.calibration_raw_observation_identity ==
+               realized.calibration_raw_observation_identity &&
+        observation.calibration_acquisition_binding_mode ==
+               realized.calibration_acquisition_binding_mode &&
+        observation.calibration_acquisition_key_schema ==
+               realized.calibration_acquisition_key_schema &&
+        observation.calibration_response_identity ==
+               realized.calibration_response_identity &&
+        observation.calibration_conditional_variance_transfer ==
+               realized.calibration_conditional_variance_transfer &&
+        observation.calibration_conditional_inverse_variance_transfer ==
+               realized.calibration_conditional_inverse_variance_transfer &&
+        observation.calibration_precision_limitation ==
+               realized.calibration_precision_limitation &&
+        observation.calibration_nuisance_states ==
+               realized.calibration_nuisance_states &&
+        observation.calibration_minimum_total_multiplier ==
+               realized.calibration_minimum_total_multiplier &&
+        observation.calibration_maximum_total_multiplier ==
+               realized.calibration_maximum_total_multiplier;
+}
 
 struct RawTimestreamExecutionPlan {
     bool initialized = false;

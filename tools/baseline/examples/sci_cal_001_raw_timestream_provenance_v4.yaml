@@ -3,8 +3,9 @@ calibration_lineage:
   available: true
   value:
     schema_version: sci-cal-001-canonical-calibration-lineage-v1
-    package_identity: facf38e684f90dc2c632feeb8379f387e0be79c93177cfa043f17124ffbc20ab
-    calibration_identity: d19e8a91a75b2bb40b063241227964ca2863fb0e4b8d8786aa14228b354dd1f4
+    package_identity: 3d536c10ac58eeb0dc0adc763d6c8d4b5e08dc9219aa5654b6145589e308c632
+    calibration_identity: 1b95b564f0982997270facb689b7c2de970fdcfe5c4106fef8a9d2544af25bf7
+    package_observation_identity: '000042'
     component_identities:
       selected_apt_sha256: 8c18f6268523f7db45b18c9d6eb5eb7c99f355b46f1a0eedd5c858fa9e9430aa
       selected_apt_row_association_sha256: b9bd7befdd8dc7d038c07badd5926dfeaec74406ba3af1e5a422ad9b4542e2e5
@@ -51,10 +52,14 @@ calibration_lineage:
             - {name: uid, ecsv_datatype: int64, value: '42'}
             - {name: flag, ecsv_datatype: int64, value: '0'}
     factor_operator_state:
+      product_schema: sci-cal-001-complete-calibration-product-v1
       target_unit: mJy/beam
       photometry_policy: point_source_peak_top_of_atmosphere
       factor_composition: signal_prime=signal*target_unit_factor*applied_observation_flxscale_correction*detector_flxscale*sample_extinction_correction
       factor_provenance: target_unit_factor=unity_dimensionless_for_mJy_per_beam;applied_observation_flxscale_correction=observation_metadata_scalar,multiplicative,source_APT_immutable;detector_flxscale=selected_APT_flxscale[mJy_per_beam_per_xs],multiplicative;sample_extinction=exp(line_of_sight_optical_depth),multiplicative;responsivity=despike_donor_target_relative_response_only,not_absolute_flux;sens=selected_APT_sens[mJy_per_beam_sqrt_s],already_contains_flxscale;beam_axes=selected_APT_a_fwhm_b_fwhm[arcsec],response_identity_only
+      compatibility_fcf_semantics: fixture-compatibility-fcf-semantics
+      weight_recipient_semantics: fixture-weight-recipient-semantics
+      compact_covariance_state: unavailable;no_nuisance_covariance_invented
       factor_state_sha256: 99323791dbbb3c7cb9e882a59fdccd1cafaa0d4154e96a2d6434f369ac68cf74
       identity_basis:
         schema_version: sci-cal-001-admitted-factor-identity-basis-v1
@@ -122,9 +127,19 @@ calibration_lineage:
       tau225: 0.12
       conditional_variance_transfer: fixture-conditional-variance
       conditional_inverse_variance_transfer: fixture-conditional-inverse-variance
+      minimum_total_multiplier: 1.1051709180756477
+      maximum_total_multiplier: 1.1051709180756477
     response_basis:
-      provenance: calibration-response-basis-provenance-v3;requested_state_sha256=9e3acb89b9d56624b229a2a8f0811e3b21b2eeb6fea8d439b37e0fa92d9a38df;requested_state_source=raw_timestream_plan.requested;fruit_iteration=0;semantics=provenance_only_no_empirical_response_fidelity_or_covariance_claim
+      provenance: calibration-response-basis-provenance-v3;requested_state_sha256=ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356;requested_state_source=raw_timestream_plan.requested;fruit_iteration=0;semantics=provenance_only_no_empirical_response_fidelity_or_covariance_claim
+      requested_config_preimage:
+        serialization: yaml-request-node-v1
+        value: '{}
+
+          '
+        sha256: ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356
       semantics: declared_realized_state_only_no_empirical_response_validation
+    precision_limitation: conditional_only;excludes_calibration_and_response_systematics;not_total_precision_or_significance
+    nuisance_states: fixture-nuisance-state-summary
 observation:
   value:
     calibration_identity: {available: true, value: d19e8a91a75b2bb40b063241227964ca2863fb0e4b8d8786aa14228b354dd1f4}

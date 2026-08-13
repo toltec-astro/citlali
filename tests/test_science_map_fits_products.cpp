@@ -29,6 +29,7 @@
 #include <cstdint>
 #include <cstring>
 #include <filesystem>
+#include <fstream>
 #include <map>
 #include <limits>
 #include <memory>
@@ -1403,9 +1404,15 @@ TEST(science_map_fits_products,
               std::string::npos);
     EXPECT_NE(identity.find("effective_fir_a_gibbs=0x1.5p+5"),
               std::string::npos);
+    EXPECT_NE(identity.find(
+                  "effective_fir_application_sample_rate_hz="),
+              std::string::npos);
     EXPECT_NE(identity.find("effective_fixed_notch_state=scheduled"),
               std::string::npos);
     EXPECT_NE(identity.find("effective_iir_highpass_enabled=true"),
+              std::string::npos);
+    EXPECT_NE(identity.find(
+                  "effective_iir_highpass_application_sample_rate_hz="),
               std::string::npos);
     EXPECT_NE(identity.find("effective_downsample_enabled=true"),
               std::string::npos);
@@ -1468,20 +1475,97 @@ TEST(science_map_fits_products,
     auto &raw = engine.typed_config.timestream.raw_time_chunk;
     raw.filter.enabled = false;
     raw.filter.a_gibbs = 31.0;
+    raw.iir_filter.enabled = false;
+    raw.iir_filter.freq_Hz = 0.1;
     engine.rtcproc.run_tod_filter = false;
+    engine.rtcproc.run_tod_iir_highpass = false;
     engine.raw_timestream_plan.reset_from_request(raw);
     const auto first =
         citlali::pipeline::calibration_response_identity(engine);
     EXPECT_NE(first.find("effective_fir_state=inactive"), std::string::npos);
     EXPECT_EQ(first.find("effective_fir_a_gibbs"), std::string::npos);
+    EXPECT_EQ(first.find("effective_fir_application_sample_rate_hz"),
+              std::string::npos);
+    EXPECT_NE(first.find("effective_iir_highpass_enabled=false"),
+              std::string::npos);
+    EXPECT_EQ(first.find(
+                  "effective_iir_highpass_application_sample_rate_hz"),
+              std::string::npos);
     raw.filter.a_gibbs = 49.0;
     const auto second =
         citlali::pipeline::calibration_response_identity(engine);
     EXPECT_EQ(first, second);
     EXPECT_EQ(second.find("effective_fir_a_gibbs"), std::string::npos);
+    EXPECT_EQ(second.find("effective_fir_application_sample_rate_hz"),
+              std::string::npos);
+    EXPECT_EQ(second.find(
+                  "effective_iir_highpass_application_sample_rate_hz"),
+              std::string::npos);
     engine.raw_timestream_plan.requested.filter.a_gibbs = 51.0;
     EXPECT_NE(citlali::pipeline::calibration_response_identity(engine),
               first);
+}
+
+TEST(science_map_fits_products,
+     calibration_response_identity_binds_fir_application_sample_rate) {
+    const auto identity_at_sample_rate = [](double sample_rate_hz) {
+        Engine engine;
+        configure_production_writer_engine(engine);
+        engine.telescope.fsmp = sample_rate_hz;
+        auto &raw = engine.typed_config.timestream.raw_time_chunk;
+        raw.filter.enabled = true;
+        raw.filter.freq_low_Hz = 0.2;
+        raw.filter.freq_high_Hz = 16.0;
+        raw.filter.n_terms = 32;
+        raw.filter.a_gibbs = 42.0;
+        engine.rtcproc.run_tod_filter = true;
+        engine.rtcproc.filter.freq_low_Hz = 0.2;
+        engine.rtcproc.filter.freq_high_Hz = 16.0;
+        engine.rtcproc.filter.n_terms = 32;
+        engine.rtcproc.filter.a_gibbs = 42.0;
+        engine.raw_timestream_plan.reset_from_request(raw);
+        return citlali::pipeline::calibration_response_identity(engine);
+    };
+
+    const auto at_100_hz = identity_at_sample_rate(100.0);
+    const auto at_200_hz = identity_at_sample_rate(200.0);
+    EXPECT_NE(at_100_hz, at_200_hz);
+    EXPECT_NE(at_100_hz.find(
+                  "effective_fir_application_sample_rate_hz=0x1.9p+6"),
+              std::string::npos);
+    EXPECT_NE(at_200_hz.find(
+                  "effective_fir_application_sample_rate_hz=0x1.9p+7"),
+              std::string::npos);
+}
+
+TEST(science_map_fits_products,
+     calibration_response_identity_binds_iir_highpass_application_sample_rate) {
+    const auto identity_at_sample_rate = [](double sample_rate_hz) {
+        Engine engine;
+        configure_production_writer_engine(engine);
+        engine.telescope.fsmp = sample_rate_hz;
+        auto &raw = engine.typed_config.timestream.raw_time_chunk;
+        raw.iir_filter.enabled = true;
+        raw.iir_filter.freq_Hz = 0.1;
+        raw.iir_filter.order = 2;
+        raw.iir_filter.zero_phase = true;
+        engine.rtcproc.run_tod_iir_highpass = true;
+        engine.rtcproc.filter.iir_highpass_freq_Hz = 0.1;
+        engine.rtcproc.filter.iir_highpass_order = 2;
+        engine.rtcproc.filter.iir_highpass_zero_phase = true;
+        engine.raw_timestream_plan.reset_from_request(raw);
+        return citlali::pipeline::calibration_response_identity(engine);
+    };
+
+    const auto at_100_hz = identity_at_sample_rate(100.0);
+    const auto at_200_hz = identity_at_sample_rate(200.0);
+    EXPECT_NE(at_100_hz, at_200_hz);
+    EXPECT_NE(at_100_hz.find(
+                  "effective_iir_highpass_application_sample_rate_hz=0x1.9p+6"),
+              std::string::npos);
+    EXPECT_NE(at_200_hz.find(
+                  "effective_iir_highpass_application_sample_rate_hz=0x1.9p+7"),
+              std::string::npos);
 }
 
 TEST(science_map_fits_products,
@@ -1513,6 +1597,40 @@ TEST(science_map_fits_products,
     EXPECT_NE(at_100_hz.find("sample_rate_hz=0x1.9p+6"),
               std::string::npos);
     EXPECT_NE(at_200_hz.find("sample_rate_hz=0x1.9p+7"),
+              std::string::npos);
+}
+
+TEST(science_map_fits_products,
+     calibration_response_identity_binds_actual_notch_reduced_observation) {
+    const auto identity_for_observation = [](const std::string &observation) {
+        Engine engine;
+        configure_production_writer_engine(engine);
+        engine.telescope.fsmp = 100.0;
+        engine.raw_timestream_plan.reset_from_request(
+            engine.typed_config.timestream.raw_time_chunk);
+        engine.rtcproc.begin_reduced_observation(observation, 0);
+        engine.rtcproc.begin_observation_applied_response_history();
+
+        timestream::RTCProc::RTCAppliedResponseNotch notch;
+        notch.stage = "configured_filter";
+        notch.scan = 0;
+        notch.scope = "fixed";
+        notch.ordinal = 0;
+        notch.center_hz = 10.0;
+        notch.width_hz = 2.0;
+        notch.sample_rate_hz = 100.0;
+        engine.rtcproc.record_applied_response_notch(std::move(notch));
+        return citlali::pipeline::calibration_response_identity(engine);
+    };
+
+    const auto observation_152390 = identity_for_observation("152390");
+    const auto observation_152391 = identity_for_observation("152391");
+    EXPECT_NE(observation_152390, observation_152391);
+    EXPECT_NE(observation_152390.find(
+                  "reduced_observation_identity=152390"),
+              std::string::npos);
+    EXPECT_NE(observation_152391.find(
+                  "reduced_observation_identity=152391"),
               std::string::npos);
 }
 
@@ -1968,6 +2086,83 @@ TEST(science_map_fits_products,
 }
 
 TEST(science_map_fits_products,
+     canonical_yaml_reopens_recomputes_identities_and_preserves_prior_final) {
+    const auto package_dir = std::filesystem::path(testing::TempDir()) /
+        "citlali-f008-canonical-yaml-readback";
+    std::filesystem::remove_all(package_dir);
+    std::filesystem::create_directories(package_dir);
+    const auto source_apt = package_dir / "source-selected-apt.ecsv";
+    {
+        std::ofstream output(source_apt, std::ios::out | std::ios::trunc);
+        output << "# %ECSV 1.0\n"
+                  "# ---\n"
+                  "# datatype:\n"
+                  "# - {name: uid, datatype: int64}\n"
+                  "# schema: astropy-2.0\n"
+                  "uid\n42\n";
+    }
+
+    Engine engine;
+    configure_production_writer_engine(engine);
+    admit_production_calibration_fixture(engine, false);
+    auto &product = engine.rtcproc.calibration.product;
+    product.package_lineage.selected_apt_source_path = source_apt.string();
+    product.package_lineage.apt_observation_identity =
+        product.apt_observation_identity;
+    product.package_lineage.apt_matched_observation_identity =
+        product.apt_matched_observation_identity;
+    product.package_lineage.apt_selected_source =
+        product.apt_selected_source;
+    product.apt_artifact_sha256 =
+        citlali::utils::sha256_file(source_apt);
+    product.package_lineage.selected_apt_sha256 =
+        product.apt_artifact_sha256;
+    citlali::pipeline::finalize_complete_calibration_product_identity(
+        engine);
+
+    citlali::pipeline::RawTimestreamExecutionPlan plan;
+    plan.reset_from_request(citlali::config::RawTimeChunkConfig{});
+    auto &observation = plan.begin_observation();
+    observation.reduced_observation_identity = "152390";
+    observation.canonical_calibration_product = product;
+    citlali::pipeline::complete_raw_timestream_observation(plan, 2, 1);
+    ASSERT_NO_THROW(
+        citlali::pipeline::write_raw_timestream_provenance_file(
+            package_dir, plan));
+
+    const auto yaml_path =
+        citlali::pipeline::raw_timestream_provenance_path(package_dir);
+    const auto reopened = YAML::LoadFile(yaml_path.string());
+    const auto lineage = reopened["calibration_lineage"]["value"];
+    EXPECT_EQ(lineage["calibration_identity"].as<std::string>(),
+              product.calibration_identity);
+    EXPECT_EQ(lineage["package_identity"].as<std::string>(),
+              product.package_identity);
+    EXPECT_EQ(
+        citlali::pipeline::recomputed_calibration_identity(product),
+        product.calibration_identity);
+    EXPECT_EQ(
+        timestream::calibration_package_identity(product),
+        product.package_identity);
+    const auto accepted_digest = citlali::utils::sha256_file(yaml_path);
+
+    auto forged_plan = plan;
+    auto &forged_product = *forged_plan.observation
+        ->canonical_calibration_product;
+    forged_product.package_identity =
+        "forged-package-identity-that-does-not-recompute";
+    EXPECT_THROW(
+        citlali::pipeline::write_raw_timestream_provenance_file(
+            package_dir, forged_plan),
+        std::runtime_error);
+    EXPECT_EQ(citlali::utils::sha256_file(yaml_path), accepted_digest);
+    EXPECT_FALSE(std::filesystem::exists(yaml_path.string() + ".tmp"));
+    EXPECT_FALSE(std::filesystem::exists(
+        yaml_path.string() + ".replace-backup"));
+    std::filesystem::remove_all(package_dir);
+}
+
+TEST(science_map_fits_products,
      tod_only_metadata_reopens_with_finalized_calid_and_pkgid) {
     Engine engine;
     configure_production_writer_engine(engine);
@@ -2030,12 +2225,35 @@ TEST(science_map_fits_products,
 
     citlali::pipeline::RawTimestreamExecutionPlan plan;
     plan.reset_from_request(citlali::config::RawTimeChunkConfig{});
-    plan.begin_observation().canonical_calibration_product =
+    auto &observation = plan.begin_observation();
+    observation.reduced_observation_identity = "000042";
+    observation.canonical_calibration_product =
         engine.rtcproc.calibration.product;
     const auto provenance =
         citlali::pipeline::raw_timestream_provenance_node(plan);
-    const auto factors = provenance["calibration_lineage"]["value"]
-        ["factor_operator_state"];
+    const auto lineage = provenance["calibration_lineage"]["value"];
+    EXPECT_EQ(
+        lineage["package_observation_identity"].as<std::string>(),
+        "000042");
+    const auto requested_preimage =
+        lineage["response_basis"]["requested_config_preimage"];
+    const auto expected_requested_preimage = YAML::Dump(
+        citlali::pipeline::raw_timestream_request_node(plan.requested));
+    EXPECT_EQ(
+        requested_preimage["serialization"].as<std::string>(),
+        "yaml-request-node-v1");
+    EXPECT_EQ(
+        requested_preimage["value"].as<std::string>(),
+        expected_requested_preimage);
+    EXPECT_EQ(
+        requested_preimage["sha256"].as<std::string>(),
+        citlali::utils::sha256(expected_requested_preimage));
+    EXPECT_NE(
+        lineage["response_basis"]["provenance"].as<std::string>().find(
+            "requested_state_sha256=" +
+            citlali::utils::sha256(expected_requested_preimage)),
+        std::string::npos);
+    const auto factors = lineage["factor_operator_state"];
     EXPECT_TRUE(
         factors["observation_flxscale_correction_applied"].as<bool>());
     EXPECT_DOUBLE_EQ(
@@ -2064,6 +2282,9 @@ TEST(science_map_fits_products,
         timestream::applied_sample_extinction_state_identity(
             engine.rtcproc.calibration.product
                 .applied_sample_extinction_state));
+    citlali::pipeline::complete_raw_timestream_observation(plan, 0, 0);
+    EXPECT_TRUE(citlali::pipeline::raw_calibration_snapshot_matches(
+        *plan.observation, plan.realized));
     std::filesystem::remove(path);
 }
 
@@ -2607,7 +2828,7 @@ TEST(science_map_fits_products, preserves_native_fits_scalar_types) {
     output.add_hdu("counts", counts);
     output.add_hdu("mask", mask);
     output.add_hdu("values", values);
-    output.pfits.reset();
+    output.publish_atomically();
 
     fitsfile *file = nullptr;
     int status = 0;
@@ -2654,6 +2875,127 @@ TEST(science_map_fits_products, preserves_native_fits_scalar_types) {
 }
 
 TEST(science_map_fits_products,
+     fits_publication_failure_matrix_preserves_existing_complete_final) {
+    const auto nonce = std::chrono::high_resolution_clock::now()
+                           .time_since_epoch()
+                           .count();
+    const std::string base =
+        "/private/tmp/citlali-f008-fits-publication-" +
+        std::to_string(nonce);
+    const auto final_path = std::filesystem::path(base + ".fits");
+    const auto stage_path = std::filesystem::path(base + ".fits.tmp");
+    const auto backup_path =
+        std::filesystem::path(base + ".fits.replace-backup");
+    FitsFileCleanup cleanup{final_path.string()};
+    using FitsOutput =
+        fitsIO<file_type_enum::write_fits, CCfits::ExtHDU *>;
+
+    const auto configure = [](FitsOutput &output,
+                              const std::string &calibration_identity,
+                              const std::string &package_identity,
+                              double value) {
+        output.pfits->pHDU().addKey(
+            "CALID", calibration_identity,
+            "Canonical complete applied calibration identity");
+        output.pfits->pHDU().addKey(
+            "CALPKGID", package_identity,
+            "Canonical calibration package identity");
+        output.require_calibration_join(
+            calibration_identity, package_identity);
+        Eigen::MatrixXd image(1, 1);
+        image(0, 0) = value;
+        output.add_hdu("signal_I", image);
+    };
+
+    {
+        FitsOutput accepted{base};
+        configure(accepted, "accepted-calid", "accepted-pkgid", 1.0);
+        accepted.publish_atomically();
+    }
+    const auto accepted_digest =
+        citlali::utils::sha256_file(final_path);
+
+    const std::array<FitsOutput::PublicationCheckpoint, 5> failures = {
+        FitsOutput::PublicationCheckpoint::after_hdu_write,
+        FitsOutput::PublicationCheckpoint::after_library_flush,
+        FitsOutput::PublicationCheckpoint::after_close,
+        FitsOutput::PublicationCheckpoint::before_reopen,
+        FitsOutput::PublicationCheckpoint::after_reopen};
+    for (const auto failure : failures) {
+        FitsOutput replacement{base};
+        configure(replacement, "replacement-calid", "replacement-pkgid",
+                  2.0);
+        EXPECT_THROW(
+            replacement.publish_atomically(
+                [&](FitsOutput::PublicationCheckpoint checkpoint) {
+                    if (checkpoint == failure) {
+                        throw std::runtime_error(
+                            "injected late write/close/reopen interruption");
+                    }
+                }),
+            std::exception);
+        EXPECT_EQ(citlali::utils::sha256_file(final_path), accepted_digest);
+        EXPECT_FALSE(std::filesystem::exists(stage_path));
+        EXPECT_FALSE(std::filesystem::exists(backup_path));
+    }
+
+    {
+        FitsOutput conflicting_join{base};
+        conflicting_join.pfits->pHDU().addKey(
+            "CALID", std::string{"wrong-calid"}, "wrong join");
+        conflicting_join.pfits->pHDU().addKey(
+            "CALPKGID", std::string{"wrong-pkgid"}, "wrong join");
+        conflicting_join.require_calibration_join(
+            "required-calid", "required-pkgid");
+        Eigen::MatrixXd image = Eigen::MatrixXd::Ones(1, 1);
+        conflicting_join.add_hdu("signal_I", image);
+        EXPECT_THROW(conflicting_join.publish_atomically(), std::exception);
+        EXPECT_EQ(citlali::utils::sha256_file(final_path), accepted_digest);
+        EXPECT_FALSE(std::filesystem::exists(stage_path));
+    }
+
+    {
+        FitsOutput structurally_incomplete{base};
+        configure(structurally_incomplete, "replacement-calid",
+                  "replacement-pkgid", 3.0);
+        EXPECT_THROW(
+            structurally_incomplete.publish_atomically(
+                [&](FitsOutput::PublicationCheckpoint checkpoint) {
+                    if (checkpoint ==
+                        FitsOutput::PublicationCheckpoint::before_reopen) {
+                        std::ofstream truncated(
+                            structurally_incomplete.staged_path(),
+                            std::ios::out | std::ios::trunc);
+                        truncated << "not-a-complete-fits-file";
+                    }
+                }),
+            std::exception);
+        EXPECT_EQ(citlali::utils::sha256_file(final_path), accepted_digest);
+        EXPECT_FALSE(std::filesystem::exists(stage_path));
+    }
+
+    {
+        FitsOutput replacement{base};
+        configure(replacement, "replacement-calid", "replacement-pkgid",
+                  4.0);
+        ASSERT_NO_THROW(replacement.publish_atomically());
+    }
+    EXPECT_NE(citlali::utils::sha256_file(final_path), accepted_digest);
+    EXPECT_FALSE(std::filesystem::exists(stage_path));
+    EXPECT_FALSE(std::filesystem::exists(backup_path));
+    fitsfile *file = nullptr;
+    int status = 0;
+    ASSERT_EQ(fits_open_file(
+                  &file, final_path.c_str(), READONLY, &status),
+              0);
+    EXPECT_EQ(read_required_fits_long_string(file, "CALID"),
+              "replacement-calid");
+    EXPECT_EQ(read_required_fits_long_string(file, "CALPKGID"),
+              "replacement-pkgid");
+    EXPECT_EQ(fits_close_file(file, &status), 0);
+}
+
+TEST(science_map_fits_products,
      round_trips_complete_f010_bundle_metadata_aliases_and_wcs) {
     const auto nonce = std::chrono::high_resolution_clock::now()
                            .time_since_epoch()
@@ -2669,7 +3011,7 @@ TEST(science_map_fits_products,
     citlali::pipeline::add_science_map_product_image_hdus(
         output, map, 0, "", "I", map->wcs, 2000.0,
         science_map_test_logger());
-    output.pfits.reset();
+    output.publish_atomically();
 
     fitsfile *file = nullptr;
     int status = 0;
@@ -2800,7 +3142,7 @@ TEST(science_map_fits_products,
     citlali::pipeline::add_science_map_product_image_hdus(
         output, map, 0, "", "I", map->wcs, 2000.0,
         science_map_test_logger(), true);
-    output.pfits.reset();
+    output.publish_atomically();
 
     fitsfile *file = nullptr;
     int status = 0;
@@ -2897,6 +3239,12 @@ TEST(science_map_fits_products,
         const std::vector<std::filesystem::path>
             observation_realization_paths{
                 observation_realization_base + ".fits"};
+        for (auto &output : observation_data_files) {
+            output.publish_atomically();
+        }
+        for (auto &output : observation_realization_files) {
+            output.publish_atomically();
+        }
         observation_data_files.clear();
         observation_realization_files.clear();
         ASSERT_NO_THROW(
@@ -2927,6 +3275,12 @@ TEST(science_map_fits_products,
             data_base + ".fits"};
         const std::vector<std::filesystem::path> realization_paths{
             realization_base + ".fits"};
+        for (auto &output : data_files) {
+            output.publish_atomically();
+        }
+        for (auto &output : realization_files) {
+            output.publish_atomically();
+        }
         data_files.clear();
         realization_files.clear();
         ASSERT_NO_THROW(
@@ -3278,11 +3632,11 @@ TEST(science_map_fits_products,
     EXPECT_EQ(failed_observation->wcs.crpix, failed_wcs.crpix);
     EXPECT_EQ(failed_observation->wcs.crval, failed_wcs.crval);
 
-    engine.map_fits_outputs.obs[0].pfits.reset();
-    engine.map_fits_outputs.obs_noise[0].pfits.reset();
-    engine.map_fits_outputs.coadd[0].pfits.reset();
-    engine.map_fits_outputs.coadd_noise[0].pfits.reset();
-    failed_map_files[0].pfits.reset();
+    engine.map_fits_outputs.obs[0].publish_atomically();
+    engine.map_fits_outputs.obs_noise[0].publish_atomically();
+    engine.map_fits_outputs.coadd[0].publish_atomically();
+    engine.map_fits_outputs.coadd_noise[0].publish_atomically();
+    failed_map_files[0].discard_staged_output();
 
     fitsfile *observation_file = nullptr;
     fitsfile *observation_noise_file = nullptr;
@@ -3498,8 +3852,8 @@ TEST(science_map_fits_products,
     ASSERT_NO_THROW(engine.write_maps(
         map_files, noise_files, observation, 0));
     const auto path = engine.map_fits_outputs.obs[0].filepath + ".fits";
-    engine.map_fits_outputs.obs[0].pfits.reset();
-    engine.map_fits_outputs.obs_noise[0].pfits.reset();
+    engine.map_fits_outputs.obs[0].publish_atomically();
+    engine.map_fits_outputs.obs_noise[0].publish_atomically();
 
     fitsfile *file = nullptr;
     int status = 0;
@@ -3564,7 +3918,7 @@ TEST(science_map_fits_products,
     auto *homogeneous_file_ptr = &homogeneous_files;
     ASSERT_NO_THROW(engine.add_phdu(
         homogeneous_file_ptr, homogeneous_coadd, 0));
-    homogeneous_files[0].pfits.reset();
+    homogeneous_files[0].publish_atomically();
     fitsfile *coadd_file = nullptr;
     status = 0;
     ASSERT_EQ(fits_open_file(
@@ -3651,6 +4005,115 @@ TEST(science_map_fits_products,
     EXPECT_EQ(meta["observation_flxscale_correction_state"]
                   .as<std::string>(),
               "applied_once");
+}
+
+TEST(science_map_fits_products,
+     beammap_ecsv_atomic_publication_round_trips_nonfinite_diagnostics) {
+    const auto nonce = std::chrono::high_resolution_clock::now()
+                           .time_since_epoch()
+                           .count();
+    FitsDirectoryCleanup cleanup{
+        std::filesystem::path{"/private/tmp"} /
+        ("citlali-beammap-apt-nonfinite-writer-" +
+         std::to_string(nonce))};
+    Beammap beammap;
+    configure_production_beammap_writer(
+        beammap, {0, 0, 0}, {0, 0, 0}, 1);
+    beammap.output_paths.obsnum_dir_name =
+        cleanup.path.string() + "/obs/";
+    beammap.observation_identity.obsnum = "152390";
+    std::filesystem::create_directories(cleanup.path / "obs" / "raw");
+    beammap.calib.apt_header_keys = {
+        "uid", "final_prior_d2", "flag", "flag2"};
+    beammap.calib.apt["uid"] =
+        Eigen::VectorXd::LinSpaced(3, 42.0, 44.0);
+    beammap.calib.apt["final_prior_d2"].resize(3);
+    beammap.calib.apt["final_prior_d2"] <<
+        std::numeric_limits<double>::quiet_NaN(),
+        std::numeric_limits<double>::infinity(),
+        -std::numeric_limits<double>::infinity();
+    admit_production_calibration_fixture(beammap, false);
+    ASSERT_NO_THROW(beammap.populate_beammap_tau_metadata());
+    citlali::pipeline::finalize_complete_calibration_product_identity(
+        beammap);
+    ASSERT_NO_THROW(beammap.populate_beammap_tau_metadata());
+
+    const auto base = beammap.write_beammap_apt_table();
+    const auto path = std::filesystem::path(base + ".ecsv");
+    ASSERT_TRUE(std::filesystem::is_regular_file(path));
+    ASSERT_FALSE(std::filesystem::exists(path.string() + ".tmp"));
+    ASSERT_FALSE(std::filesystem::exists(
+        path.string() + ".replace-backup"));
+
+    const auto [table, header, meta] =
+        read_uniform_float64_ecsv(path.string());
+    ASSERT_EQ(table.rows(), 3);
+    ASSERT_EQ(table.cols(), 4);
+    EXPECT_EQ(header, (std::vector<std::string>{
+                          "uid", "final_prior_d2", "flag", "flag2"}));
+    EXPECT_TRUE(std::isnan(table(0, 1)));
+    EXPECT_EQ(table(1, 1), std::numeric_limits<double>::infinity());
+    EXPECT_EQ(table(2, 1), -std::numeric_limits<double>::infinity());
+    EXPECT_EQ(meta["calibration_identity"].as<std::string>(),
+              beammap.rtcproc.calibration.product.calibration_identity);
+    EXPECT_EQ(meta["package_identity"].as<std::string>(),
+              beammap.rtcproc.calibration.product.package_identity);
+}
+
+TEST(science_map_fits_products,
+     beammap_ecsv_interruption_preserves_existing_valid_final) {
+    const auto nonce = std::chrono::high_resolution_clock::now()
+                           .time_since_epoch()
+                           .count();
+    const auto base = std::filesystem::path{"/private/tmp"} /
+        ("citlali-f008-beammap-ecsv-" + std::to_string(nonce));
+    const auto final_path = std::filesystem::path(base.string() + ".ecsv");
+    FitsFileCleanup cleanup{final_path.string()};
+    std::vector<std::string> header{"uid", "flag"};
+    YAML::Node accepted_meta;
+    accepted_meta["calibration_join_available"] = true;
+    accepted_meta["calibration_identity"] = "accepted-calid";
+    accepted_meta["package_identity"] = "accepted-pkgid";
+    Eigen::MatrixXd accepted(1, 2);
+    accepted << 42.0, 0.0;
+    ASSERT_NO_THROW(to_ecsv_from_matrix(
+        base.string(), accepted, header, accepted_meta));
+    const auto accepted_digest =
+        citlali::utils::sha256_file(final_path);
+
+    YAML::Node replacement_meta;
+    replacement_meta["calibration_join_available"] = true;
+    replacement_meta["calibration_identity"] = "replacement-calid";
+    replacement_meta["package_identity"] = "replacement-pkgid";
+    Eigen::MatrixXd replacement(1, 2);
+    replacement << 84.0, 1.0;
+    EXPECT_THROW(
+        to_ecsv_from_matrix_validated(
+            base.string(), replacement, header, replacement_meta,
+            [](const Eigen::MatrixXd &,
+               const std::vector<std::string> &, const YAML::Node &) {
+                throw std::runtime_error(
+                    "interrupted after ECSV reopen validation");
+            }),
+        citlali::error::Error);
+    EXPECT_EQ(citlali::utils::sha256_file(final_path), accepted_digest);
+    EXPECT_FALSE(std::filesystem::exists(final_path.string() + ".tmp"));
+    EXPECT_FALSE(std::filesystem::exists(
+        final_path.string() + ".replace-backup"));
+
+    ASSERT_NO_THROW(to_ecsv_from_matrix(
+        base.string(), replacement, header, replacement_meta));
+    const auto [reopened_table, reopened_header, reopened_meta] =
+        to_matrix_from_ecsv(final_path.string());
+    ASSERT_EQ(reopened_table.rows(), 1);
+    ASSERT_EQ(reopened_table.cols(), 2);
+    EXPECT_DOUBLE_EQ(reopened_table(0, 0), 84.0);
+    EXPECT_EQ(reopened_header, header);
+    EXPECT_EQ(reopened_meta["calibration_identity"].as<std::string>(),
+              "replacement-calid");
+    EXPECT_EQ(reopened_meta["package_identity"].as<std::string>(),
+              "replacement-pkgid");
+    EXPECT_FALSE(std::filesystem::exists(final_path.string() + ".tmp"));
 }
 
 TEST(science_map_fits_products,

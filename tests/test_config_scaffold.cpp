@@ -604,8 +604,15 @@ struct FakeRawProvenanceEngine {
     } telescope;
 };
 
+citlali::config::RawTimeChunkConfig canonical_calibration_request() {
+    citlali::config::RawTimeChunkConfig request;
+    request.flux_calibration_enabled = true;
+    return request;
+}
+
 timestream::CalibrationProduct canonical_calibration_fixture(
     const std::filesystem::path &selected_apt_path,
+    const citlali::config::RawTimeChunkConfig &request,
     bool modern_tolapt = false) {
     timestream::CalibrationProductAdmissionInputs inputs;
     inputs.target_unit = "mJy/beam";
@@ -631,8 +638,12 @@ timestream::CalibrationProduct canonical_calibration_fixture(
         "explicit_network_local_tone_frequency_join_v1";
     inputs.acquisition_key_schema =
         "raw_observation_artifact+network+network_local_tone_frequency";
+    const auto requested_state_sha256 = citlali::utils::sha256(
+        YAML::Dump(citlali::pipeline::raw_timestream_request_node(request)));
     inputs.response_identity =
         "calibration-response-basis-provenance-v1;"
+        "requested_state_sha256=" + requested_state_sha256 + ";"
+        "requested_state_source=raw_timestream_plan.requested;"
         "originating_beam=fixture;realized_mapmaker_class=naive;"
         "realized_map_grouping=array;realized_kernel_enabled=false;"
         "realized_fir_enabled=false;semantics=provenance_only";
@@ -711,12 +722,14 @@ timestream::CalibrationProduct canonical_calibration_fixture(
 }
 
 citlali::pipeline::RawTimestreamExecutionPlan canonical_calibration_plan(
-    const timestream::CalibrationProduct &product) {
-    citlali::config::RawTimeChunkConfig request;
-    request.flux_calibration_enabled = true;
+    const timestream::CalibrationProduct &product,
+    const citlali::config::RawTimeChunkConfig &request,
+    const std::string &reduced_observation_identity) {
     citlali::pipeline::RawTimestreamExecutionPlan plan;
     plan.reset_from_request(request);
     auto &observation = plan.begin_observation();
+    observation.reduced_observation_identity =
+        reduced_observation_identity;
     observation.calibration_valid = product.valid();
     observation.calibration_identity = product.calibration_identity;
     observation.calibration_package_identity = product.package_identity;
@@ -10918,14 +10931,19 @@ TEST(config_scaffold,
         std::ofstream stream(source_apt, std::ios::binary);
         stream << "# %ECSV 1.0\n# fixture selected APT\nuid\n42\n";
     }
-    const auto product = canonical_calibration_fixture(source_apt, true);
+    const auto request = canonical_calibration_request();
+    const auto product = canonical_calibration_fixture(
+        source_apt, request, true);
     ASSERT_TRUE(product.valid());
     ASSERT_FALSE(product.calibration_identity.empty());
     EXPECT_NE(product.calibration_identity,
               product.acquisition_binding_sha256);
 
     FakeRawProvenanceEngine engine;
-    engine.raw_timestream_plan = canonical_calibration_plan(product);
+    const auto owning_observation_identity =
+        output_dir.filename().string();
+    engine.raw_timestream_plan = canonical_calibration_plan(
+        product, request, owning_observation_identity);
     engine.output_paths.obsnum_dir_name = output_dir.string();
     engine.telescope.scan_indices.resize(2, 1);
     const auto published =
@@ -10947,6 +10965,15 @@ TEST(config_scaffold,
               "citlali-raw-timestream-provenance-v4");
     ASSERT_TRUE(stored["calibration_lineage"]["available"].as<bool>());
     const auto lineage = stored["calibration_lineage"]["value"];
+    EXPECT_EQ(stored["observation"]["value"]
+                      ["reduced_observation_identity"]["value"]
+                          .as<std::string>(),
+              owning_observation_identity);
+    EXPECT_EQ(stored["realized"]["reduced_observation_identity"]
+                      ["value"].as<std::string>(),
+              owning_observation_identity);
+    EXPECT_EQ(lineage["package_observation_identity"].as<std::string>(),
+              owning_observation_identity);
     EXPECT_EQ(lineage["schema_version"].as<std::string>(),
               "sci-cal-001-canonical-calibration-lineage-v1");
     EXPECT_EQ(lineage["calibration_identity"].as<std::string>(),
@@ -11001,11 +11028,19 @@ TEST(config_scaffold,
         std::ofstream stream(source_apt, std::ios::binary);
         stream << "exact selected APT bytes\n";
     }
-    const auto product = canonical_calibration_fixture(source_apt);
-    auto plan = canonical_calibration_plan(product);
+    const auto request = canonical_calibration_request();
+    const auto product = canonical_calibration_fixture(source_apt, request);
+    auto plan = canonical_calibration_plan(
+        product, request, output_dir.filename().string());
     const auto yaml_path =
         citlali::pipeline::raw_timestream_provenance_path(output_dir);
     std::filesystem::create_directory(yaml_path.string() + ".tmp");
+    {
+        std::ofstream blocker(
+            std::filesystem::path(yaml_path.string() + ".tmp") /
+            "nonempty-stage-blocker");
+        blocker << "preserve nonempty injected stage directory\n";
+    }
 
     EXPECT_THROW(
         citlali::pipeline::write_raw_timestream_provenance_file(
@@ -11032,18 +11067,20 @@ TEST(config_scaffold,
         std::ofstream stream(source_apt, std::ios::binary);
         stream << "admitted bytes\n";
     }
-    const auto product = canonical_calibration_fixture(source_apt);
-    const auto plan = canonical_calibration_plan(product);
+    const auto request = canonical_calibration_request();
+    const auto product = canonical_calibration_fixture(source_apt, request);
 
     const auto stale_source_output = root / "stale-source-output";
     std::filesystem::create_directories(stale_source_output);
+    const auto stale_source_plan = canonical_calibration_plan(
+        product, request, stale_source_output.filename().string());
     {
         std::ofstream stream(source_apt, std::ios::binary | std::ios::trunc);
         stream << "changed after admission\n";
     }
     EXPECT_THROW(
         citlali::pipeline::write_raw_timestream_provenance_file(
-            stale_source_output, plan),
+            stale_source_output, stale_source_plan),
         std::runtime_error);
     EXPECT_FALSE(std::filesystem::exists(
         citlali::pipeline::raw_timestream_provenance_path(
@@ -11058,6 +11095,8 @@ TEST(config_scaffold,
     }
     const auto stale_copy_output = root / "stale-copy-output";
     std::filesystem::create_directories(stale_copy_output);
+    const auto stale_copy_plan = canonical_calibration_plan(
+        product, request, stale_copy_output.filename().string());
     const auto stale_copy =
         citlali::pipeline::selected_calibration_apt_path(stale_copy_output);
     {
@@ -11066,7 +11105,7 @@ TEST(config_scaffold,
     }
     EXPECT_THROW(
         citlali::pipeline::write_raw_timestream_provenance_file(
-            stale_copy_output, plan),
+            stale_copy_output, stale_copy_plan),
         std::runtime_error);
     EXPECT_FALSE(std::filesystem::exists(
         citlali::pipeline::raw_timestream_provenance_path(

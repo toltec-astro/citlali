@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/error/error.h>
+#include <citlali/core/pipeline/atomic_yaml_output.h>
 
 #include <tula/algorithm/ei_stats.h>
 #include <tula/algorithm/index.h>
@@ -10,7 +11,11 @@
 
 #include <tula/ecsv/core.h>
 #include <csv_parser/parser.hpp>
+#include <cerrno>
+#include <cstdlib>
 #include <filesystem>
+#include <cmath>
+#include <functional>
 #include <sstream>
 #include <stdexcept>
 #include <system_error>
@@ -18,6 +23,79 @@
 #include <tula/formatter/container.h>
 #include <tula/formatter/matrix.h>
 #include <yaml-cpp/node/emit.h>
+
+inline double parse_uniform_float64_ecsv_token(const std::string &token) {
+    if (token.empty()) {
+        throw datatable::ParseError("empty float64 field in ECSV data");
+    }
+    errno = 0;
+    char *end = nullptr;
+    const double value = std::strtod(token.c_str(), &end);
+    if (end == token.c_str() ||
+        end != token.c_str() + token.size() || errno == ERANGE) {
+        throw datatable::ParseError(
+            "malformed float64 field in ECSV data: " + token);
+    }
+    return value;
+}
+
+inline auto read_uniform_float64_ecsv(const std::string &filepath) {
+    using namespace tula::ecsv;
+
+    try {
+        std::ifstream stream(filepath);
+        if (!stream) {
+            throw datatable::ParseError(
+                "unable to open ECSV file " + filepath);
+        }
+        auto ecsv_header = ECSVHeader::read(stream);
+        if (!check_uniform_dtype<double>(ecsv_header.datatypes())) {
+            throw datatable::ParseError(
+                "ECSV table is not uniformly float64");
+        }
+        auto header = tula::container_utils::to_stdvec(
+            ecsv_header.colnames());
+        if (header.empty()) {
+            throw datatable::ParseError("ECSV table has no columns");
+        }
+
+        std::vector<std::vector<double>> rows;
+        auto parser = aria::csv::CsvParser(stream).delimiter(
+            ecsv_header.delimiter());
+        for (const auto &row : parser) {
+            if (row.size() != header.size()) {
+                throw datatable::ParseError(
+                    "ECSV data row width does not match its header");
+            }
+            std::vector<double> values;
+            values.reserve(row.size());
+            for (const auto &field : row) {
+                values.push_back(parse_uniform_float64_ecsv_token(field));
+            }
+            rows.push_back(std::move(values));
+        }
+
+        Eigen::MatrixXd table(
+            static_cast<Eigen::Index>(rows.size()),
+            static_cast<Eigen::Index>(header.size()));
+        for (Eigen::Index row = 0; row < table.rows(); ++row) {
+            for (Eigen::Index column = 0; column < table.cols(); ++column) {
+                table(row, column) = rows[static_cast<std::size_t>(row)]
+                    [static_cast<std::size_t>(column)];
+            }
+        }
+        YAML::Node meta = ecsv_header.meta();
+        return std::tuple{table, header, meta};
+    }
+    catch (const datatable::ParseError &) {
+        throw;
+    }
+    catch (const std::exception &error) {
+        throw datatable::ParseError(
+            "unable to parse uniform float64 ECSV " + filepath + ": " +
+            error.what());
+    }
+}
 
 // create Eigen::Matrix from ecsv file
 inline auto to_matrix_from_ecsv(std::string filepath) {
@@ -32,8 +110,8 @@ inline auto to_matrix_from_ecsv(std::string filepath) {
     YAML::Node meta_;
 
     try {
-        table = datatable::read<double, datatable::Format::ecsv>(
-            filepath, &header, &meta_);
+        std::tie(table, header, meta_) =
+            read_uniform_float64_ecsv(filepath);
 
     } catch (datatable::ParseError &e) {
         logger->warn("unable to read apt table file as ECSV {}: {}", filepath,
@@ -50,9 +128,11 @@ inline auto to_matrix_from_ecsv(std::string filepath) {
     return std::tuple {table, header, meta_};
 }
 
-// create ecsv file from Eigen::Matrix
-template <typename Derived>
-inline void to_ecsv_from_matrix(std::string filepath, Eigen::DenseBase<Derived> &table, std::vector<std::string> header, YAML::Node meta) {
+template <typename Derived, class Validator>
+inline void to_ecsv_from_matrix_validated(
+    std::string filepath, Eigen::DenseBase<Derived> &table,
+    std::vector<std::string> header, YAML::Node meta,
+    Validator &&validator) {
     namespace fs = std::filesystem;
     const fs::path final_path(filepath + ".ecsv");
     const fs::path temp_path(final_path.string() + ".tmp");
@@ -61,15 +141,37 @@ inline void to_ecsv_from_matrix(std::string filepath, Eigen::DenseBase<Derived> 
     try {
         datatable::write<datatable::Format::ecsv>(
             temp_path.string(), table, header, std::vector<int>{}, meta);
-        ec.clear();
-        fs::remove(final_path, ec);
-        ec.clear();
-        fs::rename(temp_path, final_path, ec);
-        if (ec) {
-            throw citlali::error::output(
-                "failed to publish ECSV temp file " + temp_path.string() +
-                " -> " + final_path.string() + ": " + ec.message());
+        citlali::pipeline::atomic_output::synchronize_file(temp_path);
+
+        auto [reopened_table, reopened_header, reopened_meta] =
+            read_uniform_float64_ecsv(temp_path.string());
+        if (reopened_table.rows() != table.rows() ||
+            reopened_table.cols() != table.cols() ||
+            reopened_header != header) {
+            throw std::runtime_error(
+                "reopened ECSV structure does not match the staged table");
         }
+        for (Eigen::Index row = 0; row < table.rows(); ++row) {
+            for (Eigen::Index column = 0; column < table.cols(); ++column) {
+                const double expected =
+                    static_cast<double>(table.derived()(row, column));
+                const double actual = reopened_table(row, column);
+                if (expected != actual &&
+                    !(std::isnan(expected) && std::isnan(actual))) {
+                    throw std::runtime_error(
+                        "reopened ECSV values do not match the staged table");
+                }
+            }
+        }
+        if (!citlali::pipeline::atomic_output::yaml_nodes_equivalent(
+                meta, reopened_meta)) {
+            throw std::runtime_error(
+                "reopened ECSV metadata does not match the staged table");
+        }
+        std::invoke(std::forward<Validator>(validator),
+                    reopened_table, reopened_header, reopened_meta);
+        citlali::pipeline::atomic_output::replace_atomically(
+            temp_path, final_path);
     } catch (const std::exception &e) {
         ec.clear();
         fs::remove(temp_path, ec);
@@ -82,6 +184,17 @@ inline void to_ecsv_from_matrix(std::string filepath, Eigen::DenseBase<Derived> 
         throw citlali::error::output(
             "failed to write required ECSV output " + final_path.string());
     }
+}
+
+// create ecsv file from Eigen::Matrix
+template <typename Derived>
+inline void to_ecsv_from_matrix(
+    std::string filepath, Eigen::DenseBase<Derived> &table,
+    std::vector<std::string> header, YAML::Node meta) {
+    to_ecsv_from_matrix_validated(
+        std::move(filepath), table, std::move(header), std::move(meta),
+        [](const Eigen::MatrixXd &, const std::vector<std::string> &,
+           const YAML::Node &) {});
 }
 
 inline auto to_map_from_ecsv_mixted_type(std::string filepath) {

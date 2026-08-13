@@ -21,8 +21,27 @@ std::string Beammap::write_beammap_apt_table() {
     Eigen::MatrixXd apt_table =
         beammap_apt_table_output_helpers::apt_table(calib, flag2);
 
-    to_ecsv_from_matrix(
-        apt_filename, apt_table, calib.apt_header_keys, calib.apt_meta);
+    const auto &product = rtcproc.calibration.product;
+    if (product.valid()) {
+        timestream::require_finalized_calibration_product_join(product);
+    }
+    to_ecsv_from_matrix_validated(
+        apt_filename, apt_table, calib.apt_header_keys, calib.apt_meta,
+        [&](const Eigen::MatrixXd &, const std::vector<std::string> &,
+            const YAML::Node &reopened_meta) {
+            const bool join_available =
+                reopened_meta["calibration_join_available"].as<bool>();
+            if ((product.valid() &&
+                 (!join_available ||
+                  reopened_meta["calibration_identity"].as<std::string>() !=
+                      product.calibration_identity ||
+                  reopened_meta["package_identity"].as<std::string>() !=
+                      product.package_identity)) ||
+                (!product.valid() && join_available)) {
+                throw std::runtime_error(
+                    "reopened Beammap ECSV CALID/PKGID join is incomplete");
+            }
+        });
 
     logger->info("done writing apt table {}.ecsv", apt_filename);
     return apt_filename;

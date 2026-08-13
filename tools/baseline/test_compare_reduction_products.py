@@ -20,27 +20,27 @@ class CompareReductionProductsTest(unittest.TestCase):
             if "exclude" in profile["products"]
         ]
         self.assertTrue(comparable)
-        historical = [
+        restored_ids = {
+            "phase4-point-152389-v1",
+            "phase4-oof-152385-152387-v1",
+            "phase4-beammap-148670-v1",
+            "phase5-point-152389-v2",
+            "phase5-oof-152385-152387-v2",
+            "sci-map-001-point-152389-v1",
+            "sci-map-001-oof-152385-152387-v1",
+        }
+        restored = [
             profile for profile in comparable
-            if profile["epoch_id"] !=
-            "sci-cal-001-production-candidate-2026-08-12"
+            if profile["profile_id"] in restored_ids
         ]
-        current = [
-            profile for profile in comparable
-            if profile["epoch_id"] ==
-            "sci-cal-001-production-candidate-2026-08-12"
-        ]
-        self.assertTrue(historical)
-        self.assertTrue(current)
-        self.assertTrue(all(
-            "selected_calibration_apt.ecsv" in profile["products"]["exclude"]
-            for profile in historical
-        ))
+        self.assertEqual(
+            {profile["profile_id"] for profile in restored}, restored_ids
+        )
         self.assertTrue(all(
             "selected_calibration_apt.ecsv" not in profile["products"]["exclude"]
-            and "*/selected_calibration_apt.ecsv" not in
+            and "*/selected_calibration_apt.ecsv" in
             profile["products"]["exclude"]
-            for profile in current
+            for profile in restored
         ))
         self.assertTrue(compare.path_matches(
             "000042/selected_calibration_apt.ecsv",

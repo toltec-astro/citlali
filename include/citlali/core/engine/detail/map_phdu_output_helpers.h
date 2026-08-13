@@ -219,6 +219,9 @@ void add_phdu_extinction_apt_oof_section(
                "Canonical complete applied calibration identity");
     hdu.addKey("CALPKGID", calibration_join.package_identity,
                "Canonical calibration package identity");
+    fits_entry.require_calibration_join(
+        calibration_join.calibration_identity,
+        calibration_join.package_identity);
     hdu.addKey("CAL.CONDITIONAL_VARIANCE_TRANSFER",
                std::string{product.conditional_variance_transfer},
                "Conditional variance scaling rule");

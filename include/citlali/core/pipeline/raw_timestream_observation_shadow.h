@@ -120,6 +120,10 @@ RawTimestreamObservationShadowReport begin_raw_timestream_observation_shadow(
             reduction_type, plan.requested.despike);
 
     auto &observation = plan.begin_observation();
+    if (!reduced_observation_identity.empty()) {
+        observation.reduced_observation_identity =
+            reduced_observation_identity;
+    }
     if constexpr (has_reduced_observation_lifecycle<RtcProc>::value) {
         if (!reduced_observation_identity.empty() && fruit_iteration >= 0) {
             rtcproc.begin_reduced_observation(

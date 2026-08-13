@@ -239,7 +239,10 @@ def _vector_basis(values: list[float]) -> dict:
     }
 
 
-def _production_v4_lineage(obsnum: str) -> dict:
+def _production_v4_lineage(
+    obsnum: str, requested_raw: dict | None = None,
+    detector_flxscale: float = 1.0,
+) -> dict:
     selected_digest = hashlib.sha256(
         selected_calibration_fixture_path().read_bytes()
     ).hexdigest()
@@ -356,7 +359,7 @@ def _production_v4_lineage(obsnum: str) -> dict:
     factor_basis = {
         "schema_version": "sci-cal-001-admitted-factor-identity-basis-v1",
         "target_unit_factor": _vector_basis([1.0]),
-        "detector_flxscale": _vector_basis([1.0]),
+        "detector_flxscale": _vector_basis([detector_flxscale]),
         "minimum_extinction_correction": _vector_basis([correction]),
         "maximum_extinction_correction": _vector_basis([correction]),
         "applied_sample_extinction_state": {
@@ -383,6 +386,7 @@ def _production_v4_lineage(obsnum: str) -> dict:
         "response_identity_only"
     )
     factors = {
+        "product_schema": "sci-cal-001-complete-calibration-product-v1",
         "target_unit": "mJy/beam",
         "photometry_policy": "point_source_peak_top_of_atmosphere",
         "factor_composition": (
@@ -391,6 +395,13 @@ def _production_v4_lineage(obsnum: str) -> dict:
             "sample_extinction_correction"
         ),
         "factor_provenance": factor_provenance,
+        "compatibility_fcf_semantics": (
+            "fixture-compatibility-fcf-semantics"
+        ),
+        "weight_recipient_semantics": "fixture-weight-recipient-semantics",
+        "compact_covariance_state": (
+            "unavailable;no_nuisance_covariance_invented"
+        ),
         "factor_state_sha256": "",
         "identity_basis": factor_basis,
         "observation_flxscale_correction_applied": False,
@@ -422,6 +433,8 @@ def _production_v4_lineage(obsnum: str) -> dict:
         "conditional_inverse_variance_transfer": (
             "fixture-conditional-inverse-variance"
         ),
+        "minimum_total_multiplier": math.exp(0.1),
+        "maximum_total_multiplier": math.exp(0.1),
     }
     factor_preimage = "sci-cal-001-admitted-factor-state-v1"
     for name, value in (
@@ -452,14 +465,24 @@ def _production_v4_lineage(obsnum: str) -> dict:
         "legacy_metadata_available": True,
         "tolapt_manifest": {"available": False},
     }
+    requested_raw = {} if requested_raw is None else requested_raw
+    requested_preimage = yaml.safe_dump(requested_raw, sort_keys=False)
+    requested_digest = hashlib.sha256(
+        requested_preimage.encode("utf-8")
+    ).hexdigest()
     response = {
         "provenance": (
             "calibration-response-basis-provenance-v3;"
-            f"requested_state_sha256={hashlib.sha256(obsnum.encode()).hexdigest()};"
+            f"requested_state_sha256={requested_digest};"
             "requested_state_source=raw_timestream_plan.requested;"
             "fruit_iteration=0;semantics=provenance_only_no_empirical_"
             "response_fidelity_or_covariance_claim"
         ),
+        "requested_config_preimage": {
+            "serialization": "yaml-request-node-v1",
+            "value": requested_preimage,
+            "sha256": requested_digest,
+        },
         "semantics": (
             "declared_realized_state_only_no_empirical_response_validation"
         ),
@@ -468,6 +491,7 @@ def _production_v4_lineage(obsnum: str) -> dict:
         "schema_version": audit.CANONICAL_CALIBRATION_LINEAGE_SCHEMA,
         "package_identity": "",
         "calibration_identity": "",
+        "package_observation_identity": obsnum,
         "component_identities": {
             "selected_apt_sha256": selected_digest,
             "selected_apt_row_association_sha256": row_digest,
@@ -480,6 +504,11 @@ def _production_v4_lineage(obsnum: str) -> dict:
         "stable_joins": stable_joins,
         "factor_operator_state": factors,
         "response_basis": response,
+        "precision_limitation": (
+            "conditional_only;excludes_calibration_and_response_systematics;"
+            "not_total_precision_or_significance"
+        ),
+        "nuisance_states": "fixture-nuisance-state-summary",
     }
     reference_state = "0x0p+0;default=true;tau225=" + audit.cxx_hexfloat(0.12)
     calibration_preimage = "sci-cal-001-canonical-calibration-identity-v1"
@@ -529,20 +558,82 @@ def valid_raw_v4_document(obsnum: str = "000042") -> dict:
     document["effective"]["config"]["flux_calibration"] = {
         "enabled": True,
     }
+    requested_raw = dict(document["requested"])
+    requested_raw.pop("calibration", None)
+    requested_raw.pop("interface_sync_offset", None)
     document["calibration_lineage"] = {
         "available": True,
-        "value": _production_v4_lineage(obsnum),
+        "value": _production_v4_lineage(obsnum, requested_raw),
     }
     value = document["calibration_lineage"]["value"]
+    factors = value["factor_operator_state"]
+    acquisition = value["raw_acquisition"]
+    selected = value["selected_apt"]
+    state = {
+        "reduced_observation_identity": obsnum,
+        "calibration_validity_detail": "fixture-validity-detail",
+        "calibration_product_schema": (
+            factors["product_schema"]
+        ),
+        "calibration_target_unit": factors["target_unit"],
+        "calibration_photometry_policy": factors["photometry_policy"],
+        "calibration_factor_composition": factors["factor_composition"],
+        "calibration_factor_provenance": factors["factor_provenance"],
+        "calibration_compatibility_fcf_semantics": (
+            factors["compatibility_fcf_semantics"]
+        ),
+        "calibration_weight_recipient_semantics": (
+            factors["weight_recipient_semantics"]
+        ),
+        "calibration_compact_covariance_state": (
+            factors["compact_covariance_state"]
+        ),
+        "observation_flxscale_correction_applied": factors[
+            "observation_flxscale_correction_applied"
+        ],
+        "applied_observation_flxscale_correction": factors[
+            "applied_observation_flxscale_correction"
+        ],
+        "observation_flxscale_correction_state": factors[
+            "observation_flxscale_correction_state"
+        ],
+        "observation_flxscale_correction_source_identity": factors[
+            "observation_flxscale_correction_source_identity"
+        ],
+        "observation_flxscale_correction_recipient_identity": factors[
+            "observation_flxscale_correction_recipient_identity"
+        ],
+        "calibration_apt_artifact_sha256": selected["package_local_sha256"],
+        "calibration_acquisition_binding_sha256": acquisition[
+            "binding_sha256"
+        ],
+        "calibration_identity": value["calibration_identity"],
+        "calibration_package_identity": value["package_identity"],
+        "calibration_factor_state_sha256": factors["factor_state_sha256"],
+        "calibration_raw_observation_identity": acquisition[
+            "raw_observation_identity"
+        ],
+        "calibration_acquisition_binding_mode": acquisition["binding_mode"],
+        "calibration_acquisition_key_schema": acquisition["key_schema"],
+        "calibration_response_identity": value["response_basis"]["provenance"],
+        "calibration_conditional_variance_transfer": factors[
+            "conditional_variance_transfer"
+        ],
+        "calibration_conditional_inverse_variance_transfer": factors[
+            "conditional_inverse_variance_transfer"
+        ],
+        "calibration_precision_limitation": value["precision_limitation"],
+        "calibration_nuisance_states": value["nuisance_states"],
+        "calibration_minimum_total_multiplier": factors[
+            "minimum_total_multiplier"
+        ],
+        "calibration_maximum_total_multiplier": factors[
+            "maximum_total_multiplier"
+        ],
+    }
     for section in (document["observation"]["value"], document["realized"]):
-        section["calibration_identity"] = {
-            "available": True,
-            "value": value["calibration_identity"],
-        }
-        section["calibration_package_identity"] = {
-            "available": True,
-            "value": value["package_identity"],
-        }
+        for name, item in state.items():
+            section[name] = {"available": True, "value": item}
     return document
 
 
@@ -3438,6 +3529,133 @@ class ProvenanceAuditTest(unittest.TestCase):
                     expected,
                     audit.raw_provenance_semantic_errors(document, path),
                 )
+
+    def test_rejects_self_consistent_flxscale_forgery_against_exact_apt(
+        self,
+    ) -> None:
+        document = valid_raw_v4_document()
+        forged = _production_v4_lineage(
+            "000042", {}, detector_flxscale=2.0
+        )
+        document["calibration_lineage"]["value"] = forged
+        for section in (document["observation"]["value"], document["realized"]):
+            section["calibration_factor_state_sha256"]["value"] = forged[
+                "factor_operator_state"
+            ]["factor_state_sha256"]
+            section["calibration_identity"]["value"] = forged[
+                "calibration_identity"
+            ]
+            section["calibration_package_identity"]["value"] = forged[
+                "package_identity"
+            ]
+        with tempfile.TemporaryDirectory() as directory:
+            path = write_raw_v4_observation(
+                Path(directory), "000042", document
+            )
+
+            errors = audit.raw_provenance_semantic_errors(document, path)
+
+        self.assertIn(
+            "v4 selected APT flxscale differs from admitted factor state",
+            errors,
+        )
+
+    def test_rejects_requested_preimage_mutation_and_declared_mismatch(
+        self,
+    ) -> None:
+        cases: list[tuple[str, dict, str]] = []
+        requested_mutation = valid_raw_v4_document()
+        requested_mutation["requested"]["forged_stage"] = {"enabled": True}
+        cases.append((
+            "requested-mutation",
+            requested_mutation,
+            "v4 requested-config preimage differs from requested raw config",
+        ))
+        preimage_mutation = valid_raw_v4_document()
+        preimage_mutation["calibration_lineage"]["value"]["response_basis"][
+            "requested_config_preimage"
+        ]["value"] += "# forged\n"
+        cases.append((
+            "preimage-mutation",
+            preimage_mutation,
+            "v4 requested-config preimage digest does not recompute",
+        ))
+        declared_mismatch = valid_raw_v4_document()
+        declared_mismatch["calibration_lineage"]["value"]["response_basis"][
+            "requested_config_preimage"
+        ]["sha256"] = "1" * 64
+        cases.append((
+            "declared-digest",
+            declared_mismatch,
+            "v4 requested-config preimage digest does not recompute",
+        ))
+        for name, document, expected in cases:
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as directory:
+                path = write_raw_v4_observation(
+                    Path(directory), "000042", document
+                )
+                self.assertIn(
+                    expected,
+                    audit.raw_provenance_semantic_errors(document, path),
+                )
+
+    def test_rejects_copied_package_and_material_state_mismatches(self) -> None:
+        copied = valid_raw_v4_document("000042")
+        with tempfile.TemporaryDirectory() as directory:
+            path = write_raw_v4_observation(
+                Path(directory), "000043", copied
+            )
+            self.assertIn(
+                "v4 package observation identity differs from owning directory",
+                audit.raw_provenance_semantic_errors(copied, path),
+            )
+
+        cases = {
+            "factor": ("calibration_factor_state_sha256", "f" * 64),
+            "response": ("calibration_response_identity", "forged-response"),
+            "raw": ("calibration_raw_observation_identity", "forged-raw"),
+            "target-unit": ("calibration_target_unit", "Jy/beam"),
+            "schema": ("calibration_product_schema", "forged-schema"),
+            "correction-state": (
+                "observation_flxscale_correction_state", "forged-state"
+            ),
+        }
+        for name, (field, forged_value) in cases.items():
+            document = valid_raw_v4_document()
+            for section in (
+                document["observation"]["value"], document["realized"],
+            ):
+                section[field]["value"] = forged_value
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as directory:
+                path = write_raw_v4_observation(
+                    Path(directory), "000042", document
+                )
+                self.assertIn(
+                    f"v4 observation calibration {field} does not join canonical lineage",
+                    audit.raw_provenance_semantic_errors(document, path),
+                )
+
+        conflicting = valid_raw_v4_document()
+        conflicting["realized"]["calibration_target_unit"]["value"] = "Jy/beam"
+        with tempfile.TemporaryDirectory() as directory:
+            path = write_raw_v4_observation(
+                Path(directory), "000042", conflicting
+            )
+            self.assertIn(
+                "v4 observation/realized calibration calibration_target_unit differs",
+                audit.raw_provenance_semantic_errors(conflicting, path),
+            )
+
+        partial = valid_raw_v4_document()
+        partial["realized"].pop("calibration_response_identity")
+        with tempfile.TemporaryDirectory() as directory:
+            path = write_raw_v4_observation(
+                Path(directory), "000042", partial
+            )
+            self.assertIn(
+                "v4 observation/realized calibration calibration_response_identity is unavailable",
+                audit.raw_provenance_semantic_errors(partial, path),
+            )
 
     def test_accepts_single_and_multi_observation_v4_package_layouts(self) -> None:
         for observation_count in (1, 2):

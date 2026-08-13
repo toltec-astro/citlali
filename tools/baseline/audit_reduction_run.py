@@ -612,6 +612,38 @@ CANONICAL_CALIBRATION_COMPONENTS = {
     "tolapt_manifest_association_sha256",
 }
 SELECTED_CALIBRATION_APT_FILENAME = "selected_calibration_apt.ecsv"
+V4_CALIBRATION_STATE_FIELDS = (
+    "reduced_observation_identity",
+    "calibration_validity_detail",
+    "calibration_product_schema",
+    "calibration_target_unit",
+    "calibration_photometry_policy",
+    "calibration_factor_composition",
+    "calibration_factor_provenance",
+    "calibration_compatibility_fcf_semantics",
+    "calibration_weight_recipient_semantics",
+    "calibration_compact_covariance_state",
+    "observation_flxscale_correction_applied",
+    "applied_observation_flxscale_correction",
+    "observation_flxscale_correction_state",
+    "observation_flxscale_correction_source_identity",
+    "observation_flxscale_correction_recipient_identity",
+    "calibration_apt_artifact_sha256",
+    "calibration_acquisition_binding_sha256",
+    "calibration_identity",
+    "calibration_package_identity",
+    "calibration_factor_state_sha256",
+    "calibration_raw_observation_identity",
+    "calibration_acquisition_binding_mode",
+    "calibration_acquisition_key_schema",
+    "calibration_response_identity",
+    "calibration_conditional_variance_transfer",
+    "calibration_conditional_inverse_variance_transfer",
+    "calibration_precision_limitation",
+    "calibration_nuisance_states",
+    "calibration_minimum_total_multiplier",
+    "calibration_maximum_total_multiplier",
+)
 
 
 def canonical_sha256(value: Any) -> bool:
@@ -831,6 +863,225 @@ def recompute_admitted_factor_state(factors: Any) -> str:
     if factors.get("factor_state_sha256") != digest:
         raise ValueError("v4 admitted-factor state identity does not recompute")
     return digest
+
+
+def validate_selected_apt_factor_binding(
+    path: Path, stable_joins: Any, factors: Any,
+) -> None:
+    from astropy.table import Table
+
+    if not isinstance(stable_joins, dict) or not isinstance(factors, dict):
+        raise ValueError("v4 selected-APT factor binding is incomplete")
+    try:
+        table = Table.read(path, format="ascii.ecsv")
+    except Exception as error:
+        raise ValueError("v4 selected APT sibling is not valid ECSV") from error
+    required_columns = {"uid", "nw", "tone_freq", "flag", "flxscale"}
+    if not required_columns.issubset(table.colnames):
+        raise ValueError("v4 selected APT sibling columns are incomplete")
+    rows = stable_joins.get("ordered_detector_apt_rows")
+    basis = factors.get("identity_basis")
+    if not isinstance(rows, list) or not isinstance(basis, dict):
+        raise ValueError("v4 selected-APT factor binding is incomplete")
+    _, flxscale = calibration_vector_identity_from_basis(
+        basis.get("detector_flxscale"), "detector flxscale"
+    )
+    if len(rows) != len(flxscale):
+        raise ValueError("v4 selected-APT/factor detector cardinalities differ")
+    source_indices: set[int] = set()
+    for detector_index, row in enumerate(rows):
+        source_index = row.get("selected_apt_source_row_index")
+        if isinstance(source_index, bool) or not isinstance(source_index, int) or \
+                not 0 <= source_index < len(table) or \
+                source_index in source_indices:
+            raise ValueError("v4 selected-APT source row binding is invalid")
+        source_indices.add(source_index)
+        apt_row = table[source_index]
+        try:
+            uid = str(apt_row["uid"])
+            network = int(apt_row["nw"])
+            tone_frequency = float(apt_row["tone_freq"])
+            flag = int(apt_row["flag"])
+            apt_flxscale = float(apt_row["flxscale"])
+        except (TypeError, ValueError) as error:
+            raise ValueError(
+                "v4 selected APT sibling row values are invalid"
+            ) from error
+        if not math.isfinite(tone_frequency) or not math.isfinite(apt_flxscale):
+            raise ValueError("v4 selected APT sibling row values are non-finite")
+        retained = {
+            field.get("name"): field.get("value")
+            for field in row.get("retained_fields", [])
+            if isinstance(field, dict)
+        }
+        if uid != row.get("uid") or uid != retained.get("uid") or \
+                str(flag) != retained.get("flag") or \
+                network != row.get("raw_network") or \
+                tone_frequency != row.get("absolute_tone_frequency_hz") or \
+                (flag == 0) != row.get("eligible"):
+            raise ValueError(
+                "v4 selected APT sibling row differs from serialized detector join"
+            )
+        local_tone = sum(
+            int(table[index]["nw"]) == network
+            for index in range(source_index)
+        )
+        if local_tone != row.get("raw_network_local_tone"):
+            raise ValueError(
+                "v4 selected APT sibling row order differs from detector join"
+            )
+        if apt_flxscale != flxscale[detector_index]:
+            raise ValueError(
+                "v4 selected APT flxscale differs from admitted factor state"
+            )
+
+
+def validate_requested_response_preimage(
+    data: dict[str, Any], response: Any,
+) -> str:
+    if not isinstance(response, dict):
+        raise ValueError("v4 response-basis provenance is unavailable")
+    preimage = response.get("requested_config_preimage")
+    if not isinstance(preimage, dict) or set(preimage) != {
+        "serialization", "value", "sha256",
+    } or preimage.get("serialization") != "yaml-request-node-v1" or \
+            not isinstance(preimage.get("value"), str) or \
+            not canonical_sha256(preimage.get("sha256")):
+        raise ValueError("v4 requested-config preimage is incomplete")
+    serialized = preimage["value"]
+    digest = hashlib.sha256(serialized.encode("utf-8")).hexdigest()
+    if preimage["sha256"] != digest:
+        raise ValueError("v4 requested-config preimage digest does not recompute")
+    if yaml is None:
+        raise ValueError("v4 requested-config preimage YAML parser is unavailable")
+    try:
+        requested_from_preimage = yaml.safe_load(serialized)
+    except Exception as error:
+        raise ValueError("v4 requested-config preimage is not valid YAML") from error
+    requested = data.get("requested")
+    if not isinstance(requested, dict):
+        raise ValueError("v4 requested raw config is unavailable")
+    requested_raw = dict(requested)
+    requested_raw.pop("calibration", None)
+    requested_raw.pop("interface_sync_offset", None)
+    if requested_from_preimage != requested_raw:
+        raise ValueError(
+            "v4 requested-config preimage differs from requested raw config"
+        )
+    provenance = response.get("provenance")
+    if not isinstance(provenance, str):
+        raise ValueError("v4 response-basis provenance is unavailable")
+    matches = re.findall(r"(?:^|;)requested_state_sha256=([^;]+)", provenance)
+    sources = re.findall(r"(?:^|;)requested_state_source=([^;]+)", provenance)
+    if matches != [digest] or sources != ["raw_timestream_plan.requested"]:
+        raise ValueError(
+            "v4 requested-response identity does not match requested-config preimage"
+        )
+    return digest
+
+
+def validate_v4_calibration_state_joins(
+    data: dict[str, Any], value: dict[str, Any], provenance_path: Path | None,
+) -> None:
+    observation = data.get("observation", {}).get("value", {})
+    realized = data.get("realized", {})
+    for field in V4_CALIBRATION_STATE_FIELDS:
+        observation_record = observation.get(field)
+        realized_record = realized.get(field)
+        if not isinstance(observation_record, dict) or \
+                observation_record.get("available") is not True or \
+                not isinstance(realized_record, dict) or \
+                realized_record.get("available") is not True:
+            raise ValueError(
+                f"v4 observation/realized calibration {field} is unavailable"
+            )
+        if observation_record.get("value") != realized_record.get("value"):
+            raise ValueError(
+                f"v4 observation/realized calibration {field} differs"
+            )
+    package_observation = value.get("package_observation_identity")
+    if not isinstance(package_observation, str) or not package_observation:
+        raise ValueError("v4 package observation identity is unavailable")
+    if observation["reduced_observation_identity"]["value"] != \
+            package_observation:
+        raise ValueError(
+            "v4 package observation identity differs from observation state"
+        )
+    if provenance_path is None:
+        raise ValueError(
+            "v4 calibrated provenance path is unavailable for observation binding"
+        )
+    if provenance_path.parent.name != package_observation:
+        raise ValueError(
+            "v4 package observation identity differs from owning directory"
+        )
+    selected = value["selected_apt"]
+    acquisition = value["raw_acquisition"]
+    factors = value["factor_operator_state"]
+    response = value["response_basis"]
+    expected = {
+        "calibration_product_schema": factors.get("product_schema"),
+        "calibration_target_unit": factors.get("target_unit"),
+        "calibration_photometry_policy": factors.get("photometry_policy"),
+        "calibration_factor_composition": factors.get("factor_composition"),
+        "calibration_factor_provenance": factors.get("factor_provenance"),
+        "calibration_compatibility_fcf_semantics": factors.get(
+            "compatibility_fcf_semantics"
+        ),
+        "calibration_weight_recipient_semantics": factors.get(
+            "weight_recipient_semantics"
+        ),
+        "calibration_compact_covariance_state": factors.get(
+            "compact_covariance_state"
+        ),
+        "observation_flxscale_correction_applied": factors.get(
+            "observation_flxscale_correction_applied"
+        ),
+        "applied_observation_flxscale_correction": factors.get(
+            "applied_observation_flxscale_correction"
+        ),
+        "observation_flxscale_correction_state": factors.get(
+            "observation_flxscale_correction_state"
+        ),
+        "observation_flxscale_correction_source_identity": factors.get(
+            "observation_flxscale_correction_source_identity"
+        ),
+        "observation_flxscale_correction_recipient_identity": factors.get(
+            "observation_flxscale_correction_recipient_identity"
+        ),
+        "calibration_apt_artifact_sha256": selected.get("package_local_sha256"),
+        "calibration_acquisition_binding_sha256": acquisition.get(
+            "binding_sha256"
+        ),
+        "calibration_identity": value.get("calibration_identity"),
+        "calibration_package_identity": value.get("package_identity"),
+        "calibration_factor_state_sha256": factors.get("factor_state_sha256"),
+        "calibration_raw_observation_identity": acquisition.get(
+            "raw_observation_identity"
+        ),
+        "calibration_acquisition_binding_mode": acquisition.get("binding_mode"),
+        "calibration_acquisition_key_schema": acquisition.get("key_schema"),
+        "calibration_response_identity": response.get("provenance"),
+        "calibration_conditional_variance_transfer": factors.get(
+            "conditional_variance_transfer"
+        ),
+        "calibration_conditional_inverse_variance_transfer": factors.get(
+            "conditional_inverse_variance_transfer"
+        ),
+        "calibration_precision_limitation": value.get("precision_limitation"),
+        "calibration_nuisance_states": value.get("nuisance_states"),
+        "calibration_minimum_total_multiplier": factors.get(
+            "minimum_total_multiplier"
+        ),
+        "calibration_maximum_total_multiplier": factors.get(
+            "maximum_total_multiplier"
+        ),
+    }
+    for field, expected_value in expected.items():
+        if observation[field]["value"] != expected_value:
+            raise ValueError(
+                f"v4 observation calibration {field} does not join canonical lineage"
+            )
 
 
 def recompute_ordered_row_association(
@@ -1370,6 +1621,9 @@ def raw_provenance_semantic_errors(
                     factor_state = value.get("factor_operator_state")
                     raw_acquisition = value.get("raw_acquisition")
                     try:
+                        validate_requested_response_preimage(
+                            data, value.get("response_basis")
+                        )
                         row_digest = recompute_ordered_row_association(
                             stable_joins, selected_package_digest
                         )
@@ -1393,6 +1647,10 @@ def raw_provenance_semantic_errors(
                         factor_digest = recompute_admitted_factor_state(
                             factor_state
                         )
+                        if sibling_path is not None and sibling_path.is_file():
+                            validate_selected_apt_factor_binding(
+                                sibling_path, stable_joins, factor_state
+                            )
                         if factor_digest != components.get(
                             "admitted_factor_state_sha256"
                         ):
@@ -1425,6 +1683,9 @@ def raw_provenance_semantic_errors(
                             raise ValueError(
                                 "v4 package identity does not recompute"
                             )
+                        validate_v4_calibration_state_joins(
+                            data, value, provenance_path
+                        )
                     except (KeyError, TypeError, ValueError) as error:
                         errors.append(str(error))
                     for section_name in ("observation", "realized"):

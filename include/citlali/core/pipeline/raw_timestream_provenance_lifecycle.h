@@ -56,12 +56,8 @@ inline void complete_raw_timestream_observation(
         if (plan.realized.completed_scan_count != completed_scan_count ||
             plan.realized.required_timestream_write_count !=
                 required_timestream_write_count ||
-            plan.realized.calibration_identity !=
-                plan.observation->calibration_identity ||
-            plan.realized.calibration_package_identity !=
-                plan.observation->calibration_package_identity ||
-            plan.realized.calibration_response_identity !=
-                plan.observation->calibration_response_identity) {
+            !raw_calibration_snapshot_matches(
+                *plan.observation, plan.realized)) {
             throw std::logic_error(
                 "repeat raw observation finalization conflicts with the consumed snapshot");
         }
@@ -70,6 +66,8 @@ inline void complete_raw_timestream_observation(
     plan.realized.completed_scan_count = completed_scan_count;
     plan.realized.required_timestream_write_count =
         required_timestream_write_count;
+    plan.realized.reduced_observation_identity =
+        plan.observation->reduced_observation_identity;
     plan.realized.reference_spectral_index_alpha =
         plan.observation->reference_spectral_index_alpha;
     plan.realized.reference_spectral_index_default_applied =

@@ -14,6 +14,7 @@
 #include <stdexcept>
 #include <string>
 #include <system_error>
+#include <utility>
 
 namespace citlali::pipeline {
 
@@ -112,6 +113,8 @@ inline YAML::Node raw_timestream_observation_state_node(
     }
 
     auto value = node["value"];
+    value["reduced_observation_identity"] =
+        raw_optional_scalar_node(observation->reduced_observation_identity);
     value["native_sample_rate_hz"] =
         raw_optional_scalar_node(observation->native_sample_rate_hz);
     value["effective_sample_rate_hz"] =
@@ -237,6 +240,8 @@ inline YAML::Node raw_timestream_realized_state_node(
     node["required_timestream_write_count"] =
         raw_optional_scalar_node(
             realized.required_timestream_write_count);
+    node["reduced_observation_identity"] =
+        raw_optional_scalar_node(realized.reduced_observation_identity);
     node["reference_spectral_index_alpha"] =
         raw_optional_scalar_node(
             realized.reference_spectral_index_alpha);
@@ -351,6 +356,140 @@ inline std::string calibration_package_identity(
     return timestream::calibration_package_identity(product);
 }
 
+inline std::string recomputed_calibration_identity(
+    const timestream::CalibrationProduct &product) {
+    timestream::CalibrationProductAdmissionInputs inputs;
+    inputs.target_unit = product.target_unit;
+    inputs.apt_artifact_sha256 = product.apt_artifact_sha256;
+    inputs.apt_row_association_sha256 = product.apt_row_association_sha256;
+    inputs.apt_observation_identity = product.apt_observation_identity;
+    inputs.apt_matched_observation_identity =
+        product.apt_matched_observation_identity;
+    inputs.apt_selected_source = product.apt_selected_source;
+    inputs.tolapt_manifest_association_sha256 =
+        product.tolapt_manifest_association_sha256;
+    inputs.acquisition_binding_sha256 =
+        product.acquisition_binding_sha256;
+    inputs.raw_observation_identity = product.raw_observation_identity;
+    inputs.response_identity = product.response_identity;
+    inputs.atmosphere_operator_id = product.atmosphere_operator_id;
+    inputs.atmosphere_operator_contract_sha256 =
+        product.atmosphere_operator_contract_sha256;
+    inputs.atmosphere_node_table_sha256 =
+        product.atmosphere_node_table_sha256;
+    inputs.passband_set_id = product.passband_set_id;
+    inputs.reference_profile_id = product.reference_profile_id;
+    inputs.reference_spectral_index_alpha =
+        product.reference_spectral_index_alpha;
+    inputs.reference_spectral_index_default_applied =
+        product.reference_spectral_index_default_applied;
+    inputs.tau225 = product.tau225;
+    inputs.package_lineage = product.package_lineage;
+    return timestream::admitted_calibration_identity(
+        inputs, product.factor_state_sha256);
+}
+
+inline std::pair<std::string, std::string>
+recomputed_calibration_join_from_yaml(const YAML::Node &reopened) {
+    const auto lineage = reopened["calibration_lineage"]["value"];
+    const auto components = lineage["component_identities"];
+    const auto apt = lineage["selected_apt"];
+    const auto acquisition = lineage["raw_acquisition"];
+    const auto factors = lineage["factor_operator_state"];
+    timestream::CalibrationProductAdmissionInputs inputs;
+    inputs.target_unit = factors["target_unit"].as<std::string>();
+    inputs.apt_artifact_sha256 =
+        components["selected_apt_sha256"].as<std::string>();
+    inputs.apt_row_association_sha256 =
+        components["selected_apt_row_association_sha256"].as<std::string>();
+    inputs.apt_observation_identity =
+        apt["observation_identity"].as<std::string>();
+    inputs.apt_matched_observation_identity =
+        apt["matched_observation_identity"].as<std::string>();
+    inputs.apt_selected_source = apt["selected_source"].as<std::string>();
+    inputs.tolapt_manifest_association_sha256 =
+        components["tolapt_manifest_association_sha256"].as<std::string>();
+    inputs.acquisition_binding_sha256 =
+        acquisition["binding_sha256"].as<std::string>();
+    inputs.raw_observation_identity =
+        acquisition["raw_observation_identity"].as<std::string>();
+    inputs.response_identity =
+        lineage["response_basis"]["provenance"].as<std::string>();
+    inputs.atmosphere_operator_id =
+        factors["atmosphere_operator_id"].as<std::string>();
+    inputs.atmosphere_operator_contract_sha256 =
+        factors["atmosphere_operator_contract_sha256"].as<std::string>();
+    inputs.atmosphere_node_table_sha256 =
+        factors["atmosphere_node_table_sha256"].as<std::string>();
+    inputs.passband_set_id =
+        factors["passband_set_id"].as<std::string>();
+    inputs.reference_profile_id =
+        factors["reference_profile_id"].as<std::string>();
+    inputs.reference_spectral_index_alpha =
+        factors["reference_spectral_index_alpha"].as<double>();
+    inputs.reference_spectral_index_default_applied =
+        factors["reference_spectral_index_default_applied"].as<bool>();
+    inputs.tau225 = factors["tau225"].as<double>();
+    inputs.package_lineage.selected_apt_source_path =
+        apt["source_path"].as<std::string>();
+    const auto calibration_identity =
+        timestream::admitted_calibration_identity(
+            inputs, factors["factor_state_sha256"].as<std::string>());
+    timestream::CalibrationProduct package_basis;
+    package_basis.calibration_identity = calibration_identity;
+    package_basis.apt_artifact_sha256 = inputs.apt_artifact_sha256;
+    package_basis.acquisition_binding_sha256 =
+        inputs.acquisition_binding_sha256;
+    return {
+        calibration_identity,
+        timestream::calibration_package_identity(package_basis)};
+}
+
+inline void validate_canonical_calibration_yaml_readback(
+    const YAML::Node &reopened,
+    const timestream::CalibrationProduct &product) {
+    const auto recomputed_calibration =
+        recomputed_calibration_identity(product);
+    const auto recomputed_package =
+        timestream::calibration_package_identity(product);
+    const auto reopened_join =
+        recomputed_calibration_join_from_yaml(reopened);
+    if (recomputed_calibration != product.calibration_identity ||
+        recomputed_package != product.package_identity ||
+        reopened_join.first != recomputed_calibration ||
+        reopened_join.second != recomputed_package) {
+        throw std::runtime_error(
+            "canonical calibration identities do not recompute before publication");
+    }
+    const auto lineage = reopened["calibration_lineage"];
+    if (!lineage || !lineage["available"].as<bool>() ||
+        !lineage["value"]) {
+        throw std::runtime_error(
+            "reopened canonical calibration lineage is unavailable");
+    }
+    const auto value = lineage["value"];
+    if (value["calibration_identity"].as<std::string>() !=
+            recomputed_calibration ||
+        value["package_identity"].as<std::string>() !=
+            recomputed_package) {
+        throw std::runtime_error(
+            "reopened canonical calibration CALID/PKGID join does not recompute");
+    }
+    const auto response = value["response_basis"];
+    const auto preimage = response["requested_config_preimage"];
+    const auto serialized = preimage["value"].as<std::string>();
+    const auto requested_digest = citlali::utils::sha256(serialized);
+    if (preimage["serialization"].as<std::string>() !=
+            "yaml-request-node-v1" ||
+        preimage["sha256"].as<std::string>() != requested_digest ||
+        response["provenance"].as<std::string>().find(
+            "requested_state_sha256=" + requested_digest) ==
+                std::string::npos) {
+        throw std::runtime_error(
+            "reopened requested calibration-response preimage does not recompute");
+    }
+}
+
 inline YAML::Node calibration_input_record_node(
     const timestream::CalibrationLineageInputRecord &record) {
     YAML::Node node;
@@ -375,7 +514,8 @@ inline YAML::Node calibration_vector_identity_basis_node(
 }
 
 inline YAML::Node canonical_calibration_lineage_node(
-    const std::optional<RawTimestreamObservationState> &observation) {
+    const RawTimestreamExecutionPlan &plan) {
+    const auto &observation = plan.observation;
     YAML::Node node;
     const bool available = observation.has_value() &&
         observation->canonical_calibration_product.has_value();
@@ -390,6 +530,8 @@ inline YAML::Node canonical_calibration_lineage_node(
         "sci-cal-001-canonical-calibration-lineage-v1";
     value["package_identity"] = product.package_identity;
     value["calibration_identity"] = product.calibration_identity;
+    value["package_observation_identity"] =
+        observation->reduced_observation_identity.value_or("");
     value["component_identities"]["selected_apt_sha256"] =
         product.apt_artifact_sha256;
     value["component_identities"]["selected_apt_row_association_sha256"] =
@@ -483,10 +625,18 @@ inline YAML::Node canonical_calibration_lineage_node(
     }
 
     auto factors = value["factor_operator_state"];
+    factors["product_schema"] =
+        std::string{product.schema_version};
     factors["target_unit"] = product.target_unit;
     factors["photometry_policy"] = std::string{product.photometry_policy};
     factors["factor_composition"] = std::string{product.factor_composition};
     factors["factor_provenance"] = std::string{product.factor_provenance};
+    factors["compatibility_fcf_semantics"] =
+        std::string{product.compatibility_fcf_semantics};
+    factors["weight_recipient_semantics"] =
+        std::string{product.weight_recipient_semantics};
+    factors["compact_covariance_state"] =
+        std::string{product.compact_covariance_state};
     factors["factor_state_sha256"] = product.factor_state_sha256;
     auto factor_basis = factors["identity_basis"];
     factor_basis["schema_version"] =
@@ -549,7 +699,19 @@ inline YAML::Node canonical_calibration_lineage_node(
         std::string{product.conditional_variance_transfer};
     factors["conditional_inverse_variance_transfer"] =
         std::string{product.conditional_inverse_variance_transfer};
+    factors["minimum_total_multiplier"] =
+        timestream::minimum_total_signal_multiplier(product);
+    factors["maximum_total_multiplier"] =
+        timestream::maximum_total_signal_multiplier(product);
     value["response_basis"]["provenance"] = product.response_identity;
+    const auto requested_preimage =
+        YAML::Dump(raw_timestream_request_node(plan.requested));
+    value["response_basis"]["requested_config_preimage"]
+        ["serialization"] = "yaml-request-node-v1";
+    value["response_basis"]["requested_config_preimage"]["value"] =
+        requested_preimage;
+    value["response_basis"]["requested_config_preimage"]["sha256"] =
+        citlali::utils::sha256(requested_preimage);
     value["response_basis"]["semantics"] =
         "declared_realized_state_only_no_empirical_response_validation";
     value["precision_limitation"] = std::string{product.precision_limitation};
@@ -585,7 +747,7 @@ inline YAML::Node raw_timestream_provenance_node(
     root["realized"] =
         raw_timestream_realized_state_node(plan.realized);
     root["calibration_lineage"] =
-        canonical_calibration_lineage_node(plan.observation);
+        canonical_calibration_lineage_node(plan);
     return root;
 }
 
@@ -632,8 +794,14 @@ inline void write_raw_timestream_provenance_file(
             "calibrated raw timestream provenance requires an admitted canonical calibration product");
     }
     if (product == nullptr) {
-        write_yaml_file_atomic(yaml_path, raw_timestream_provenance_node(plan));
+        write_yaml_file_atomic(
+            yaml_path, raw_timestream_provenance_node(plan));
         return;
+    }
+    if (!plan.observation->reduced_observation_identity.has_value() ||
+        plan.observation->reduced_observation_identity->empty()) {
+        throw std::logic_error(
+            "calibrated raw timestream package requires a reduced observation identity");
     }
 
     const auto &lineage = product->package_lineage;
@@ -690,7 +858,9 @@ inline void write_raw_timestream_provenance_file(
                 throw std::runtime_error(
                     "staged package-local selected calibration APT digest mismatch");
             }
-            std::filesystem::rename(temporary_path, destination_path);
+            atomic_output::synchronize_file(temporary_path);
+            atomic_output::replace_atomically(
+                temporary_path, destination_path);
             destination_created = true;
         }
         if (!std::filesystem::is_regular_file(destination_path) ||
@@ -699,7 +869,13 @@ inline void write_raw_timestream_provenance_file(
             throw std::runtime_error(
                 "package-local selected calibration APT is missing or stale");
         }
-        write_yaml_file_atomic(yaml_path, raw_timestream_provenance_node(plan));
+        const auto node = raw_timestream_provenance_node(plan);
+        write_yaml_file_atomic_validated(
+            yaml_path, node,
+            [&](const YAML::Node &reopened) {
+                validate_canonical_calibration_yaml_readback(
+                    reopened, *product);
+            });
     }
     catch (...) {
         std::error_code ignored;

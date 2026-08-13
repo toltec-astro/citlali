@@ -454,6 +454,76 @@ disposition. It does not authorize production, integration, external
 execution, Unity access or request, a reduction, re-audit launch, downstream
 work, merge, or push.
 
+### 2026-08-12 successor-7 bounded local technical repair handback
+
+The owner-authorized successor-7 repair on
+`codex/repair-sci-cal-001-successor-7` starts directly from exact successor-6
+source `211e2f16f6354609de3ce6c6ee526d8aa4c6c59c`. F007 now binds realized FIR
+and IIR-highpass identities to their coefficient-defining application sample
+rate and every canonical actual-notch identity to its reduced observation,
+without changing requested/effective/realized separation, dormant-stage
+semantics, coefficients, filter selection, or numerical execution. F008
+stages, synchronizes, closes, reopens, structurally and cryptographically
+validates, and atomically replaces canonical calibration YAML, CAL-linked
+FITS, and Beammap ECSV artifacts per artifact. Existing valid finals survive
+failed replacements, stages are cleaned, and canonical-package-before-
+dependent ordering remains explicit; no global transaction was added.
+
+Local F009 independently reconstructs the producer's exact requested-state
+preimage and response identities, binds package and realized observation
+ownership, and checks every material raw, factor, response, unit, schema,
+correction-state, CALID, and PKGID join. The exact package-local selected APT
+rows and factors are parsed and bound to serialized factor state, so sibling
+row/value tampering, copied packages, stale digests, partial publication, and
+conflicting identities fail closed. Valid optional-modern legacy lineage,
+distinct multi-observation packages, and effectively uncalibrated v4 remain
+supported. Exactly seven historical profile objects were restored to their
+predecessor-scoped `*/selected_calibration_apt.ecsv` comparison policy. The
+`sci-cal-001-production-candidate-2026-08-12` epoch and all four current v4
+profiles remain `preparing`; no accepted run, profile epoch, or historical
+fixture was promoted or rewritten.
+
+Atomic ECSV readback now uses one strict uniform-float64 parser that accepts
+the writer's complete-token `nan`, `inf`, and `-inf` values while rejecting
+empty, malformed, trailing, width, dimension, header, and metadata mismatches.
+A production-shaped nonfinite Beammap publication regression preserves exact
+structure and CALID/PKGID joins. Synthetic canonical-publication fixtures now
+supply the production-required requested-state and reduced-observation
+identities; the rollback fixture retains its intended late write failure and
+cleanup assertions. Production admission, failure ordering, atomicity, and
+scientific arithmetic are unchanged.
+
+The complete restarted deterministic gate matrix passes: all required build
+targets and CLI smoke; 622/622 normal, 14/14 safety, 31/31 science-map truth,
+56/56 FITS/product, 2/2 public-header linkage, and 6/6 explicit publication-
+failure tests; and all 692 runnable CTests. The sole non-run case remains the
+pre-existing disabled `MapFitterLifecycle.ExactProductSequence`. Baseline
+tools pass 193/193, focused local-F009 tests pass 115/115, and the fixed
+operator/product-contract gate passes 32/32. Full config preflight passes 127
+tests, four mode kits, eight compatibility cases, 100% compact coverage,
+592-leaf schema parity, every authority audit, and the stable 88-record raw
+execution census with `review_required=0`, no drift, and digest
+`39855eee65816e816edee44e9a6271e7940158c2cbc26c018efa8f7e09fcbdc8`.
+Validation, profile, product-contract, and science-change authorities,
+ordinary readiness, fixed-operator artifacts, and the zero-growth session-
+exit audit also pass.
+
+The separate `phase5_readiness.py --verify-fixtures` gate remains
+**failed_owner_waived_never_passed**, not passed: its exit status is 3 solely
+for the established six point and twelve science historical
+`sig2noise_pixel_I` errors. Beammap and OOF retain their recorded gate states.
+The accepted-run registry, readiness record, verifier, contracts, declared
+outcomes, and fixture bytes remain immutable, and `sig2noise_pixel_I` remains
+prohibited for every new/current product.
+
+F002--F006 retain their bounded closures. This repair closes the local F007,
+F008, and F009 implementation findings only; F001 and F010 remain conditioned
+and outside scope. The package remains an implementation candidate with the
+same approved/nonconformant/in-progress/fail-closed axes and `amend` verdict.
+It does not authorize production, integration, push, merge, external
+execution, Unity access or request, reductions, re-audit launch, or downstream
+work.
+
 ## Historical 2026-07-31 SCI-MAP-001 Bounded Repair Lane
 
 This section preserves the repair-lane chronology and its candidate-time gate

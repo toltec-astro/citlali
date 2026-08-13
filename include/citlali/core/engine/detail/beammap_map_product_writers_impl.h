@@ -3,6 +3,17 @@
 // Beammap implementation detail.
 // Include this only after Beammap has been declared.
 
+namespace beammap_map_product_publication {
+
+template <class FitsOutputs>
+void publish_atomically(FitsOutputs &outputs) {
+    for (auto &output : outputs) {
+        output.publish_atomically();
+    }
+}
+
+}  // namespace beammap_map_product_publication
+
 template <mapmaking::MapType map_type>
 void Beammap::write_standard_beammap_map_entries(
     mapmaking::MapBuffer *mb,
@@ -231,6 +242,8 @@ void Beammap::write_split_beammap_map_products(
                     split_n_io->at(file_index).filepath + ".fits");
             }
         }
+        beammap_map_product_publication::publish_atomically(*split_f_io);
+        beammap_map_product_publication::publish_atomically(*split_n_io);
         split_f_io->clear();
         split_n_io->clear();
 
@@ -293,7 +306,11 @@ void Beammap::write_beammap_map_products(
     const auto published_noise_paths =
         citlali::pipeline::noise_fits_output_paths(*n_io);
 
-    // clear fits file vectors to ensure its closed.
+    beammap_map_product_publication::publish_atomically(*f_io);
+    beammap_map_product_publication::publish_atomically(*n_io);
+
+    // Publication closes, reopens, validates, and atomically replaces each
+    // final file before the handles are released.
     f_io->clear();
     n_io->clear();
 
