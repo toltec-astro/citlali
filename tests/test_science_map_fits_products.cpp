@@ -2,6 +2,7 @@
 
 #include <citlali/core/engine/beammap.h>
 #include <citlali/core/engine/engine.h>
+#include <citlali/core/engine/pointing.h>
 #include <citlali/core/engine/telescope.h>
 #include <citlali/core/mapmaking/map.h>
 #include <citlali/core/mapmaking/naive_mm.h>
@@ -2993,6 +2994,312 @@ TEST(science_map_fits_products,
     EXPECT_EQ(read_required_fits_long_string(file, "CALPKGID"),
               "replacement-pkgid");
     EXPECT_EQ(fits_close_file(file, &status), 0);
+}
+
+using F008FitsOutput =
+    fitsIO<file_type_enum::write_fits, CCfits::ExtHDU *>;
+
+enum class F008PublicationFailure {
+    write,
+    synchronize,
+    close,
+    reopen,
+    validate,
+    replace
+};
+
+const char *f008_failure_name(F008PublicationFailure failure) {
+    switch (failure) {
+        case F008PublicationFailure::write:
+            return "write";
+        case F008PublicationFailure::synchronize:
+            return "synchronize";
+        case F008PublicationFailure::close:
+            return "close";
+        case F008PublicationFailure::reopen:
+            return "reopen";
+        case F008PublicationFailure::validate:
+            return "validate";
+        case F008PublicationFailure::replace:
+            return "replace";
+    }
+    return "unknown";
+}
+
+void configure_f008_output(F008FitsOutput &output,
+                           const std::string &calibration_identity,
+                           const std::string &package_identity,
+                           double value) {
+    output.pfits->pHDU().addKey(
+        "CALID", calibration_identity,
+        "Canonical complete applied calibration identity");
+    output.pfits->pHDU().addKey(
+        "CALPKGID", package_identity,
+        "Canonical calibration package identity");
+    output.require_calibration_join(
+        calibration_identity, package_identity);
+    Eigen::MatrixXd image(1, 1);
+    image(0, 0) = value;
+    output.add_hdu("signal_I", image);
+}
+
+void verify_f008_final(const std::filesystem::path &path,
+                       const std::string &calibration_identity,
+                       const std::string &package_identity) {
+    fitsfile *file = nullptr;
+    int status = 0;
+    ASSERT_EQ(fits_open_file(&file, path.c_str(), READONLY, &status), 0);
+    EXPECT_EQ(read_required_fits_long_string(file, "CALID"),
+              calibration_identity);
+    EXPECT_EQ(read_required_fits_long_string(file, "CALPKGID"),
+              package_identity);
+    ASSERT_EQ(fits_movnam_hdu(
+                  file, IMAGE_HDU, const_cast<char *>("signal_I"), 0,
+                  &status),
+              0);
+    long dimensions[4] = {};
+    int dimension_count = 0;
+    ASSERT_EQ(fits_get_img_dim(file, &dimension_count, &status), 0);
+    ASSERT_EQ(fits_get_img_size(file, 4, dimensions, &status), 0);
+    ASSERT_EQ(dimension_count, 4);
+    for (const auto dimension : dimensions) {
+        EXPECT_EQ(dimension, 1);
+    }
+    EXPECT_EQ(fits_close_file(file, &status), 0);
+}
+
+void invalidate_f008_calibration_join(
+    const std::filesystem::path &staged_path) {
+    fitsfile *file = nullptr;
+    int status = 0;
+    if (fits_open_file(&file, staged_path.c_str(), READWRITE, &status) != 0) {
+        throw std::runtime_error("unable to reopen staged FITS for tamper");
+    }
+    char invalid_calid[] = "invalid-calid";
+    if (fits_update_key(file, TSTRING, const_cast<char *>("CALID"),
+                        invalid_calid, nullptr, &status) != 0) {
+        fits_close_file(file, &status);
+        throw std::runtime_error("unable to tamper staged FITS CALID");
+    }
+    if (fits_close_file(file, &status) != 0) {
+        throw std::runtime_error("unable to close tampered staged FITS");
+    }
+}
+
+void seed_f008_final(const std::string &base, double value) {
+    F008FitsOutput accepted{base};
+    configure_f008_output(
+        accepted, "accepted-calid", "accepted-pkgid", value);
+    accepted.publish_atomically();
+}
+
+template <mapmaking::MapType MapType>
+void exercise_f008_owner_lifecycle_matrix(
+    const std::filesystem::path &root, bool science_wiener_owner) {
+    const std::string route = [] {
+        if constexpr (MapType == mapmaking::RawObs) {
+            return "raw_observation";
+        }
+        else if constexpr (MapType == mapmaking::FilteredObs) {
+            return "filtered_observation";
+        }
+        else if constexpr (MapType == mapmaking::RawCoadd) {
+            return "raw_coadd";
+        }
+        else {
+            static_assert(MapType == mapmaking::FilteredCoadd);
+            return "filtered_coadd";
+        }
+    }();
+    const std::array<F008PublicationFailure, 6> failures = {
+        F008PublicationFailure::write,
+        F008PublicationFailure::synchronize,
+        F008PublicationFailure::close,
+        F008PublicationFailure::reopen,
+        F008PublicationFailure::validate,
+        F008PublicationFailure::replace};
+    const std::array<std::string, 2> artifact_families = {"data", "noise"};
+
+    for (const auto failure : failures) {
+        for (const auto &target_family : artifact_families) {
+            SCOPED_TRACE(route + "/" + target_family + "/" +
+                         f008_failure_name(failure));
+            const auto case_root =
+                root / (route + "-" + target_family + "-" +
+                        f008_failure_name(failure));
+            std::filesystem::create_directories(case_root);
+            const auto data_base = (case_root / "data").string();
+            const auto noise_base = (case_root / "noise").string();
+            const auto target_base =
+                target_family == "data" ? data_base : noise_base;
+            const auto data_final =
+                std::filesystem::path(data_base + ".fits");
+            const auto noise_final =
+                std::filesystem::path(noise_base + ".fits");
+            const auto target_final =
+                std::filesystem::path(target_base + ".fits");
+            const auto target_backup = std::filesystem::path(
+                target_base + ".fits.replace-backup");
+
+            seed_f008_final(data_base, 1.0);
+            seed_f008_final(noise_base, 2.0);
+            const auto accepted_target_digest =
+                citlali::utils::sha256_file(target_final);
+
+            std::vector<F008FitsOutput> data_outputs;
+            std::vector<F008FitsOutput> noise_outputs;
+            data_outputs.emplace_back(data_base);
+            noise_outputs.emplace_back(noise_base);
+            configure_f008_output(
+                data_outputs[0], "replacement-calid", "replacement-pkgid",
+                3.0);
+            configure_f008_output(
+                noise_outputs[0], "replacement-calid", "replacement-pkgid",
+                4.0);
+            const auto data_stage = data_outputs[0].staged_path();
+            const auto noise_stage = noise_outputs[0].staged_path();
+
+            if (failure == F008PublicationFailure::replace) {
+                std::filesystem::create_directories(target_backup);
+                std::ofstream marker(target_backup / "nonempty");
+                marker << "force replacement preservation failure";
+            }
+
+            bool publication_recorded = false;
+            const auto publish_with_failure = [&](F008FitsOutput &output) {
+                if (output.filepath != target_base) {
+                    output.publish_atomically();
+                    return;
+                }
+                output.publish_atomically(
+                    [&](F008FitsOutput::PublicationCheckpoint checkpoint) {
+                        if (failure == F008PublicationFailure::write &&
+                            checkpoint == F008FitsOutput::
+                                PublicationCheckpoint::after_hdu_write) {
+                            throw std::runtime_error(
+                                "injected required FITS write failure");
+                        }
+                        if (failure == F008PublicationFailure::synchronize &&
+                            checkpoint == F008FitsOutput::
+                                PublicationCheckpoint::after_hdu_write) {
+                            std::error_code ignored;
+                            std::filesystem::remove(
+                                output.staged_path(), ignored);
+                        }
+                        if (failure == F008PublicationFailure::close &&
+                            checkpoint == F008FitsOutput::
+                                PublicationCheckpoint::after_close) {
+                            throw std::runtime_error(
+                                "injected required FITS close failure");
+                        }
+                        if (failure == F008PublicationFailure::reopen &&
+                            checkpoint == F008FitsOutput::
+                                PublicationCheckpoint::before_reopen) {
+                            std::error_code ignored;
+                            std::filesystem::remove(
+                                output.staged_path(), ignored);
+                        }
+                        if (failure == F008PublicationFailure::validate &&
+                            checkpoint == F008FitsOutput::
+                                PublicationCheckpoint::before_reopen) {
+                            invalidate_f008_calibration_join(
+                                output.staged_path());
+                        }
+                    });
+            };
+            const auto invoke_owner = [&](auto &&publisher) {
+                if (science_wiener_owner) {
+                    citlali::pipeline::finalize_map_filter_fits_outputs(
+                        &data_outputs, &noise_outputs,
+                        "filtered science maps", science_map_test_logger(),
+                        std::forward<decltype(publisher)>(publisher));
+                    publication_recorded = true;
+                }
+                else {
+                    citlali::pipeline::finalize_pointing_map_fits_outputs(
+                        &data_outputs, &noise_outputs,
+                        std::forward<decltype(publisher)>(publisher),
+                        [&] { publication_recorded = true; });
+                }
+            };
+
+            EXPECT_THROW(invoke_owner(publish_with_failure), std::exception);
+            EXPECT_FALSE(publication_recorded);
+            EXPECT_FALSE(data_outputs.empty());
+            EXPECT_FALSE(noise_outputs.empty());
+            EXPECT_EQ(citlali::utils::sha256_file(target_final),
+                      accepted_target_digest);
+            data_outputs.clear();
+            noise_outputs.clear();
+            EXPECT_FALSE(std::filesystem::exists(data_stage));
+            EXPECT_FALSE(std::filesystem::exists(noise_stage));
+            std::error_code ignored;
+            std::filesystem::remove_all(target_backup, ignored);
+
+            data_outputs.emplace_back(data_base);
+            noise_outputs.emplace_back(noise_base);
+            configure_f008_output(
+                data_outputs[0], "retry-calid", "retry-pkgid", 5.0);
+            configure_f008_output(
+                noise_outputs[0], "retry-calid", "retry-pkgid", 6.0);
+            const auto retry_data_stage = data_outputs[0].staged_path();
+            const auto retry_noise_stage = noise_outputs[0].staged_path();
+            publication_recorded = false;
+            invoke_owner([](F008FitsOutput &output) {
+                output.publish_atomically();
+            });
+
+            EXPECT_TRUE(publication_recorded);
+            EXPECT_TRUE(data_outputs.empty());
+            EXPECT_TRUE(noise_outputs.empty());
+            EXPECT_FALSE(std::filesystem::exists(retry_data_stage));
+            EXPECT_FALSE(std::filesystem::exists(retry_noise_stage));
+            EXPECT_NE(citlali::utils::sha256_file(target_final),
+                      accepted_target_digest);
+            verify_f008_final(
+                data_final, "retry-calid", "retry-pkgid");
+            verify_f008_final(
+                noise_final, "retry-calid", "retry-pkgid");
+        }
+    }
+}
+
+TEST(science_map_fits_products,
+     pointing_owner_lifecycle_covers_all_map_data_noise_failure_routes) {
+    const auto nonce = std::chrono::high_resolution_clock::now()
+                           .time_since_epoch()
+                           .count();
+    FitsDirectoryCleanup cleanup{
+        std::filesystem::path{"/private/tmp"} /
+        ("citlali-f008-pointing-owner-matrix-" +
+         std::to_string(nonce))};
+    std::filesystem::create_directories(cleanup.path);
+
+    exercise_f008_owner_lifecycle_matrix<mapmaking::RawObs>(
+        cleanup.path, false);
+    exercise_f008_owner_lifecycle_matrix<mapmaking::FilteredObs>(
+        cleanup.path, false);
+    exercise_f008_owner_lifecycle_matrix<mapmaking::RawCoadd>(
+        cleanup.path, false);
+    exercise_f008_owner_lifecycle_matrix<mapmaking::FilteredCoadd>(
+        cleanup.path, false);
+}
+
+TEST(science_map_fits_products,
+     science_wiener_owner_lifecycle_covers_obs_coadd_data_noise_failures) {
+    const auto nonce = std::chrono::high_resolution_clock::now()
+                           .time_since_epoch()
+                           .count();
+    FitsDirectoryCleanup cleanup{
+        std::filesystem::path{"/private/tmp"} /
+        ("citlali-f008-science-wiener-matrix-" +
+         std::to_string(nonce))};
+    std::filesystem::create_directories(cleanup.path);
+
+    exercise_f008_owner_lifecycle_matrix<mapmaking::FilteredObs>(
+        cleanup.path, true);
+    exercise_f008_owner_lifecycle_matrix<mapmaking::FilteredCoadd>(
+        cleanup.path, true);
 }
 
 TEST(science_map_fits_products,

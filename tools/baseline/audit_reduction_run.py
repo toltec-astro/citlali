@@ -934,6 +934,35 @@ def validate_selected_apt_factor_binding(
             raise ValueError(
                 "v4 selected APT flxscale differs from admitted factor state"
             )
+    if source_indices != set(range(len(table))):
+        raise ValueError(
+            "v4 selected-APT source row coverage is incomplete"
+        )
+
+
+def yaml_values_exactly_equal(left: Any, right: Any) -> bool:
+    if type(left) is not type(right):
+        return False
+    if isinstance(left, dict):
+        if len(left) != len(right):
+            return False
+        unmatched = list(right.items())
+        for left_key, left_value in left.items():
+            for index, (right_key, right_value) in enumerate(unmatched):
+                if yaml_values_exactly_equal(left_key, right_key):
+                    if not yaml_values_exactly_equal(left_value, right_value):
+                        return False
+                    unmatched.pop(index)
+                    break
+            else:
+                return False
+        return not unmatched
+    if isinstance(left, list):
+        return len(left) == len(right) and all(
+            yaml_values_exactly_equal(left_item, right_item)
+            for left_item, right_item in zip(left, right)
+        )
+    return left == right
 
 
 def validate_requested_response_preimage(
@@ -964,7 +993,7 @@ def validate_requested_response_preimage(
     requested_raw = dict(requested)
     requested_raw.pop("calibration", None)
     requested_raw.pop("interface_sync_offset", None)
-    if requested_from_preimage != requested_raw:
+    if not yaml_values_exactly_equal(requested_from_preimage, requested_raw):
         raise ValueError(
             "v4 requested-config preimage differs from requested raw config"
         )

@@ -107,14 +107,29 @@ MapFilterOutputTargets<FitsVector> prepare_map_filter_outputs(
     return filter_outputs;
 }
 
+template <class FitsVector, class Logger, class Publisher>
+void finalize_map_filter_fits_outputs(
+    FitsVector *filtered_fits_io, FitsVector *filtered_noise_fits_io,
+    const char *map_label, const Logger &logger, Publisher &&publisher) {
+    logger->info("publishing {} FITS outputs", map_label);
+    for (auto &output : *filtered_fits_io) {
+        publisher(output);
+    }
+    for (auto &output : *filtered_noise_fits_io) {
+        publisher(output);
+    }
+    filtered_fits_io->clear();
+    filtered_noise_fits_io->clear();
+    logger->info("finished publishing {} FITS outputs", map_label);
+}
+
 template <class FitsVector, class Logger>
 void finalize_map_filter_fits_outputs(
     FitsVector *filtered_fits_io, FitsVector *filtered_noise_fits_io,
     const char *map_label, const Logger &logger) {
-    logger->info("finalizing {} FITS handles", map_label);
-    filtered_fits_io->clear();
-    filtered_noise_fits_io->clear();
-    logger->info("finished finalizing {} FITS handles", map_label);
+    finalize_map_filter_fits_outputs(
+        filtered_fits_io, filtered_noise_fits_io, map_label, logger,
+        [](auto &output) { output.publish_atomically(); });
 }
 
 template <class FitsVector, class Logger>

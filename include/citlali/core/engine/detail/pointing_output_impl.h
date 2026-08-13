@@ -6,6 +6,35 @@
 #include <citlali/core/pipeline/pointing_fit_table_metrics.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 
+namespace citlali::pipeline {
+
+template <class FitsIoVector, class Publisher, class Recorder>
+void finalize_pointing_map_fits_outputs(
+    FitsIoVector *data_outputs, FitsIoVector *noise_outputs,
+    Publisher &&publisher, Recorder &&recorder) {
+    for (auto &output : *data_outputs) {
+        publisher(output);
+    }
+    for (auto &output : *noise_outputs) {
+        publisher(output);
+    }
+    data_outputs->clear();
+    noise_outputs->clear();
+    recorder();
+}
+
+template <class FitsIoVector, class Recorder>
+void finalize_pointing_map_fits_outputs(
+    FitsIoVector *data_outputs, FitsIoVector *noise_outputs,
+    Recorder &&recorder) {
+    finalize_pointing_map_fits_outputs(
+        data_outputs, noise_outputs,
+        [](auto &output) { output.publish_atomically(); },
+        recorder);
+}
+
+}  // namespace citlali::pipeline
+
 Eigen::MatrixXf Pointing::make_pointing_ppt_table(mapmaking::MapBuffer *mb) {
     Eigen::MatrixXf ppt_table(
         map_indices.n_maps,
@@ -206,17 +235,23 @@ void Pointing::output(
         const auto published_noise_paths =
             citlali::pipeline::noise_fits_output_paths(*n_io);
 
-        // clear fits file vectors to ensure its closed.
-        f_io->clear();
-        n_io->clear();
-
+        // Required Pointing FITS outputs own staged files. Publish every data
+        // and noise artifact before clearing those owners or recording the
+        // completed output lifecycle. Publication failure propagates and
+        // preserves each pre-existing final through the per-artifact atomic
+        // replacement contract.
         constexpr bool is_coadd = map_type == mapmaking::RawCoadd ||
             map_type == mapmaking::FilteredCoadd;
         constexpr bool is_filtered = map_type == mapmaking::FilteredObs ||
             map_type == mapmaking::FilteredCoadd;
-        citlali::pipeline::record_noise_map_output_publication(
-            citlali::pipeline::noise_plan(*this), is_coadd, is_filtered,
-            *mb, published_data_paths, published_noise_paths);
+        citlali::pipeline::finalize_pointing_map_fits_outputs(
+            f_io, n_io,
+            [&] {
+                citlali::pipeline::record_noise_map_output_publication(
+                    citlali::pipeline::noise_plan(*this), is_coadd,
+                    is_filtered, *mb, published_data_paths,
+                    published_noise_paths);
+            });
 
         // write psd and histogram files
         logger->debug("writing psds");

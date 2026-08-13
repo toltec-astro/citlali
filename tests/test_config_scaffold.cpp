@@ -335,6 +335,7 @@ struct FakeEngine {
     int output_calls = 0;
     bool output_throws = false;
     int run_wiener_filter_calls = 0;
+    bool run_wiener_filter_throws = false;
     int find_sources_calls = 0;
     int fit_maps_calls = 0;
     int setup_calls = 0;
@@ -544,6 +545,10 @@ struct FakeEngine {
     template <auto MapType, class MapBuffer>
     void run_wiener_filter(MapBuffer &) {
         ++run_wiener_filter_calls;
+        if (run_wiener_filter_throws) {
+            throw std::runtime_error(
+                "injected Wiener publication lifecycle failure");
+        }
     }
 
     template <auto MapType, class MapBuffer>
@@ -8682,9 +8687,35 @@ TEST(pipeline_execution, skips_post_filter_observation_output_for_science) {
     citlali::pipeline::write_filtered_observation_outputs<
         FakeMapType::FilteredObs, false>(todproc, stage_profile, logger);
 
+    EXPECT_EQ(todproc.engine().run_wiener_filter_calls, 1);
     EXPECT_EQ(todproc.engine().omb.calc_noise_products_calls, 0);
     EXPECT_EQ(todproc.engine().output_calls, 0);
     EXPECT_EQ(logger->info_calls, 10);
+}
+
+TEST(pipeline_execution,
+     science_observation_skip_follows_successful_wiener_publication_only) {
+    FakeCoaddTodProc todproc;
+    todproc.engine().run_wiener_filter_throws = true;
+    citlali::pipeline::StageProfileCollector stage_profile;
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_THROW(
+        (citlali::pipeline::write_filtered_observation_outputs<
+            FakeMapType::FilteredObs, false>(
+            todproc, stage_profile, logger)),
+        std::runtime_error);
+    EXPECT_EQ(todproc.engine().run_wiener_filter_calls, 1);
+    EXPECT_EQ(todproc.engine().omb.calc_noise_products_calls, 0);
+    EXPECT_EQ(todproc.engine().output_calls, 0);
+
+    todproc.engine().run_wiener_filter_throws = false;
+    EXPECT_NO_THROW(
+        (citlali::pipeline::write_filtered_observation_outputs<
+            FakeMapType::FilteredObs, false>(
+            todproc, stage_profile, logger)));
+    EXPECT_EQ(todproc.engine().run_wiener_filter_calls, 2);
+    EXPECT_EQ(todproc.engine().output_calls, 0);
 }
 
 TEST(pipeline_execution, writes_observation_outputs_without_accumulation) {
@@ -9156,9 +9187,34 @@ TEST(pipeline_execution, skips_post_filter_coadd_output_for_science) {
     citlali::pipeline::write_filtered_coadd_outputs<
         FakeMapType::FilteredCoadd>(todproc, stage_profile, logger);
 
+    EXPECT_EQ(todproc.engine().run_wiener_filter_calls, 1);
     EXPECT_EQ(todproc.engine().cmb.calc_noise_products_calls, 0);
     EXPECT_EQ(todproc.engine().output_calls, 0);
     EXPECT_EQ(logger->info_calls, 10);
+}
+
+TEST(pipeline_execution,
+     science_coadd_skip_follows_successful_wiener_publication_only) {
+    FakeCoaddTodProc todproc;
+    todproc.engine().run_wiener_filter_throws = true;
+    citlali::pipeline::StageProfileCollector stage_profile;
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_THROW(
+        (citlali::pipeline::write_filtered_coadd_outputs<
+            FakeMapType::FilteredCoadd>(todproc, stage_profile, logger)),
+        std::runtime_error);
+    EXPECT_EQ(todproc.engine().run_wiener_filter_calls, 1);
+    EXPECT_EQ(todproc.engine().cmb.calc_noise_products_calls, 0);
+    EXPECT_EQ(todproc.engine().output_calls, 0);
+
+    todproc.engine().run_wiener_filter_throws = false;
+    EXPECT_NO_THROW(
+        (citlali::pipeline::write_filtered_coadd_outputs<
+            FakeMapType::FilteredCoadd>(
+            todproc, stage_profile, logger)));
+    EXPECT_EQ(todproc.engine().run_wiener_filter_calls, 2);
+    EXPECT_EQ(todproc.engine().output_calls, 0);
 }
 
 TEST(pipeline_execution, skips_iteration_coadd_outputs_when_coadd_disabled) {

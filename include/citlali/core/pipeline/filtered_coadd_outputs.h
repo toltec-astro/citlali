@@ -7,7 +7,7 @@
 namespace citlali::pipeline {
 
 template <auto FilteredCoaddMap, class Engine, class Logger>
-void filter_coadd_maps(Engine &engine,
+bool filter_coadd_maps(Engine &engine,
                        StageProfileCollector &stage_profile,
                        const Logger &logger) {
     if constexpr (requires { engine.cmb.freeze_raw_science_parent(); }) {
@@ -17,6 +17,7 @@ void filter_coadd_maps(Engine &engine,
         engine, engine.cmb, stage_profile, logger, "filtering coadded maps");
     record_post_processing_filter_completed_if_available(
         engine, PostProcessingMapContext::coadd);
+    return filtered_map_written_during_filtering(engine);
 }
 
 template <class Engine, class Logger>
@@ -51,11 +52,13 @@ void find_filtered_coadd_sources_if_needed(Engine &engine,
 template <auto FilteredCoaddMap, class Engine, class Logger>
 void output_filtered_coadd_maps_if_needed(Engine &engine,
                                           StageProfileCollector &stage_profile,
-                                          const Logger &logger) {
-    output_filtered_maps_if_needed<FilteredCoaddMap>(
-        engine, stage_profile, logger, "outputting filtered coadded files",
-        "filtered coadded files already written during Wiener filtering; "
-        "skipping post-filter output stage");
+                                          const Logger &logger,
+                                          bool published_during_filtering) {
+    output_map_if_needed<FilteredCoaddMap>(
+        engine, stage_profile, logger, !published_during_filtering,
+        "outputting filtered coadded files",
+        "filtered coadded files atomically published during Wiener "
+        "filtering; skipping duplicate post-filter output stage");
 }
 
 template <auto FilteredCoaddMap, class TodProc, class Logger>
@@ -67,7 +70,8 @@ void write_filtered_coadd_outputs(TodProc &todproc,
     const auto profile_scope =
         profile_stage(stage_profile, "filtered_coadd.outputs", logger);
 
-    filter_coadd_maps<FilteredCoaddMap>(engine, stage_profile, logger);
+    const bool published_during_filtering =
+        filter_coadd_maps<FilteredCoaddMap>(engine, stage_profile, logger);
     calculate_filtered_coadd_noise_products_if_needed(
         engine, stage_profile, logger);
     calculate_filtered_coadd_map_diagnostics(
@@ -75,7 +79,7 @@ void write_filtered_coadd_outputs(TodProc &todproc,
     find_filtered_coadd_sources_if_needed<FilteredCoaddMap>(
         engine, stage_profile, logger);
     output_filtered_coadd_maps_if_needed<FilteredCoaddMap>(
-        engine, stage_profile, logger);
+        engine, stage_profile, logger, published_during_filtering);
 }
 
 template <auto FilteredCoaddMap, class TodProc, class Logger>

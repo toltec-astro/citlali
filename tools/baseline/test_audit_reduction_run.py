@@ -3599,6 +3599,193 @@ class ProvenanceAuditTest(unittest.TestCase):
                     audit.raw_provenance_semantic_errors(document, path),
                 )
 
+    def test_rejects_self_consistent_requested_yaml_scalar_type_forgery(
+        self,
+    ) -> None:
+        document = valid_raw_v4_document()
+        document["requested"]["semantic_probe"] = {
+            "nested": [{"enabled": True}],
+        }
+        forged = _production_v4_lineage(
+            "000042", {"semantic_probe": {"nested": [{"enabled": 1}]}}
+        )
+        document["calibration_lineage"]["value"] = forged
+        for section in (
+            document["observation"]["value"], document["realized"],
+        ):
+            section["calibration_response_identity"]["value"] = forged[
+                "response_basis"
+            ]["provenance"]
+            section["calibration_identity"]["value"] = forged[
+                "calibration_identity"
+            ]
+            section["calibration_package_identity"]["value"] = forged[
+                "package_identity"
+            ]
+
+        with tempfile.TemporaryDirectory() as directory:
+            path = write_raw_v4_observation(
+                Path(directory), "000042", document
+            )
+
+            self.assertIn(
+                "v4 requested-config preimage differs from requested raw config",
+                audit.raw_provenance_semantic_errors(document, path),
+            )
+
+    def test_rejects_unused_package_local_selected_apt_row(self) -> None:
+        document = valid_raw_v4_document()
+        value = document["calibration_lineage"]["value"]
+        with tempfile.TemporaryDirectory() as directory:
+            selected_apt = Path(directory) / "selected_calibration_apt.ecsv"
+            selected_apt.write_text(
+                selected_calibration_fixture_path().read_text(encoding="utf-8")
+                + "43 0 600000000.0 0 1.0 2.0 10.0 9.0 0.0 0\n",
+                encoding="utf-8",
+            )
+
+            with self.assertRaisesRegex(
+                ValueError,
+                "v4 selected-APT source row coverage is incomplete",
+            ):
+                audit.validate_selected_apt_factor_binding(
+                    selected_apt,
+                    value["stable_joins"],
+                    value["factor_operator_state"],
+                )
+
+    def test_requested_yaml_comparison_is_recursive_type_and_value_exact(
+        self,
+    ) -> None:
+        expected = {
+            "null": None,
+            "string": "1",
+            "integer": 1,
+            "number": 1.0,
+            "boolean": True,
+            "nested": [{"enabled": False, "count": 2}],
+        }
+        exact = yaml.safe_load(yaml.safe_dump(expected, sort_keys=False))
+        self.assertTrue(audit.yaml_values_exactly_equal(expected, exact))
+
+        mutations = {
+            "null-string": ("null", "null"),
+            "string-integer": ("string", 1),
+            "integer-boolean": ("integer", True),
+            "integer-float": ("integer", 1.0),
+            "number-integer": ("number", 1),
+            "boolean-integer": ("boolean", 1),
+        }
+        for name, (field, value) in mutations.items():
+            with self.subTest(name=name):
+                actual = yaml.safe_load(
+                    yaml.safe_dump(expected, sort_keys=False)
+                )
+                actual[field] = value
+                self.assertFalse(
+                    audit.yaml_values_exactly_equal(expected, actual)
+                )
+        nested = yaml.safe_load(yaml.safe_dump(expected, sort_keys=False))
+        nested["nested"][0]["enabled"] = 0
+        self.assertFalse(audit.yaml_values_exactly_equal(expected, nested))
+
+    def test_selected_apt_membership_binding_matrix(self) -> None:
+        document = valid_raw_v4_document()
+        value = document["calibration_lineage"]["value"]
+        fixture_lines = selected_calibration_fixture_path().read_text(
+            encoding="utf-8"
+        ).splitlines()
+        header = "\n".join(fixture_lines[:-1]) + "\n"
+        first_row = fixture_lines[-1]
+        second_row = "43 0 600000000.0 0 1.0 2.0 10.0 9.0 0.0 0"
+
+        base_joins = yaml.safe_load(yaml.safe_dump(value["stable_joins"]))
+        second_join = yaml.safe_load(
+            yaml.safe_dump(base_joins["ordered_detector_apt_rows"][0])
+        )
+        second_join.update({
+            "ordered_detector_index": 1,
+            "selected_apt_source_row_index": 1,
+            "raw_network_local_tone": 1,
+            "absolute_tone_frequency_hz": 600000000.0,
+            "uid": "43",
+        })
+        second_join["retained_fields"][0]["value"] = "43"
+        base_joins["ordered_detector_apt_rows"].append(second_join)
+        base_factors = yaml.safe_load(
+            yaml.safe_dump(value["factor_operator_state"])
+        )
+        base_factors["identity_basis"]["detector_flxscale"] = (
+            _vector_basis([1.0, 1.0])
+        )
+
+        cases = (
+            "exact",
+            "extra",
+            "missing",
+            "duplicate",
+            "out-of-range",
+            "reordered",
+            "partial",
+            "conflicting",
+            "tampered",
+        )
+        for case in cases:
+            with self.subTest(case=case), \
+                    tempfile.TemporaryDirectory() as directory:
+                joins = yaml.safe_load(yaml.safe_dump(base_joins))
+                factors = yaml.safe_load(yaml.safe_dump(base_factors))
+                apt_rows = [first_row, second_row]
+                expected_error = None
+                if case == "extra":
+                    joins = value["stable_joins"]
+                    factors = value["factor_operator_state"]
+                    expected_error = "source row coverage is incomplete"
+                elif case == "missing":
+                    apt_rows = [first_row]
+                    expected_error = "source row binding is invalid"
+                elif case == "duplicate":
+                    joins["ordered_detector_apt_rows"][1][
+                        "selected_apt_source_row_index"
+                    ] = 0
+                    expected_error = "source row binding is invalid"
+                elif case == "out-of-range":
+                    joins["ordered_detector_apt_rows"][1][
+                        "selected_apt_source_row_index"
+                    ] = 2
+                    expected_error = "source row binding is invalid"
+                elif case == "reordered":
+                    apt_rows.reverse()
+                    expected_error = "row differs from serialized detector join"
+                elif case == "partial":
+                    joins["ordered_detector_apt_rows"][0][
+                        "retained_fields"
+                    ] = joins["ordered_detector_apt_rows"][0][
+                        "retained_fields"
+                    ][1:]
+                    expected_error = "row differs from serialized detector join"
+                elif case == "conflicting":
+                    joins["ordered_detector_apt_rows"][0]["uid"] = "99"
+                    expected_error = "row differs from serialized detector join"
+                elif case == "tampered":
+                    apt_rows[1] = second_row.replace(" 1.0 2.0 ", " 2.0 2.0 ")
+                    expected_error = "flxscale differs from admitted factor state"
+
+                selected_apt = Path(directory) / "selected_calibration_apt.ecsv"
+                selected_apt.write_text(
+                    header + "\n".join(apt_rows) + "\n",
+                    encoding="utf-8",
+                )
+                if expected_error is None:
+                    audit.validate_selected_apt_factor_binding(
+                        selected_apt, joins, factors
+                    )
+                else:
+                    with self.assertRaisesRegex(ValueError, expected_error):
+                        audit.validate_selected_apt_factor_binding(
+                            selected_apt, joins, factors
+                        )
+
     def test_rejects_copied_package_and_material_state_mismatches(self) -> None:
         copied = valid_raw_v4_document("000042")
         with tempfile.TemporaryDirectory() as directory:

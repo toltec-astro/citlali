@@ -524,6 +524,69 @@ It does not authorize production, integration, push, merge, external
 execution, Unity access or request, reductions, re-audit launch, or downstream
 work.
 
+### 2026-08-13 successor-8 bounded local technical repair handback
+
+The owner-authorized successor-8 repair on
+`codex/repair-sci-cal-001-successor-8` starts directly from exact successor-7
+source `9037314fd84241fa535c486d4ffb28966bb0394d`. F008 now publishes every
+required Pointing RawObs, FilteredObs, RawCoadd, and FilteredCoadd data/noise
+FITS artifact per artifact before clearing its owner, and records publication
+only after success. Science Wiener-filtered observation and coadd data/noise
+FITS follow the same publish-before-clear lifecycle; their post-filter skip is
+conditioned on successful Wiener publication rather than an assumed prior
+write. Injected write, synchronize, close, reopen, validate, and replace
+failures preserve existing valid finals, remove stages, propagate before
+owner clearing or recording, and permit truthful retry. No global transaction,
+writer redesign, or scientific arithmetic change was added.
+
+Local F009 compares requested YAML preimages recursively by exact scalar type
+and value, so boolean `true` is distinct from integer `1` while valid typed
+nested mappings, sequences, nulls, strings, and numbers remain supported.
+Effectively calibrated raw-provenance v4 packages now require the declared
+ordered detector-row association to cover exactly every package-local selected
+APT row. Missing, duplicate, unused/extra, out-of-range, reordered, conflicting,
+or tampered rows fail closed while valid exact coverage, recomputed identities,
+legacy optional lineage, and effectively uncalibrated v4 remain unchanged.
+
+The complete deterministic matrix was restarted in a fresh repository-authorized
+macOS Release/test build tree under `/private/tmp`. All required build targets
+and CLI smoke pass; direct suites pass 624/624 normal, 14/14 safety, 31/31
+science-map truth, and 58/58 FITS/product tests. Public-header linkage passes
+2/2 and explicit YAML/FITS/ECSV/TOD failure-safe publication coverage passes
+6/6. Full CTest passes all 696 runnable cases out of 697 discovered; the sole
+non-run case remains the pre-existing disabled
+`MapFitterLifecycle.ExactProductSequence`. Retained focused F008 gates pass
+3/3 FITS lifecycle and 2/2 Science sequencing tests, and focused F009 passes
+13/13.
+
+Complete baseline discovery passes 197/197 and the fixed-operator/product-
+contract gate passes 32/32. Full config preflight passes 127/127 tests, all
+four mode kits, all eight compatibility cases, 100% compact coverage,
+592-leaf schema parity, and every authority audit. The stable raw-execution
+census remains 88 records with `review_required=0`, no drift, and digest
+`39855eee65816e816edee44e9a6271e7940158c2cbc26c018efa8f7e09fcbdc8`.
+The product/profile authorities, 60-record validation ledger, three-change/
+five-commit science ledger, ordinary readiness, fixed atmosphere artifacts,
+and zero-growth session-exit audit also pass their required checks. The
+`sci-cal-001-production-candidate-2026-08-12` epoch and all four current v4
+profiles remain `preparing`; no production authorization or accepted-run,
+profile, contract, evidence, or fixture rewrite occurred.
+
+The separately rerun historical `phase5_readiness.py --verify-fixtures` gate
+remains exactly **failed_owner_waived_never_passed**, not passed: exit status 3
+is confined to the immutable six Pointing plus twelve Science historical
+`sig2noise_pixel_I` errors, with Beammap and OOF retaining their recorded gate
+states. Historical fixture bytes and authorities remain unchanged, and
+`sig2noise_pixel_I` remains prohibited for every new/current product.
+
+F002--F007 retain their accepted bounded dispositions. F001 and F010 remain
+conditioned and outside scope. The package axes remain `approved`,
+`nonconformant`, `in_progress`, and `fail_closed`, with verdict `amend`, until
+an exact-commit independent re-audit and later owner disposition. This is a
+local implementation/validation candidate only; it does not authorize
+production, integration, external execution, Unity access or request,
+reductions, re-audit launch, downstream work, merge, or push.
+
 ## Historical 2026-07-31 SCI-MAP-001 Bounded Repair Lane
 
 This section preserves the repair-lane chronology and its candidate-time gate

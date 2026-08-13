@@ -8,7 +8,7 @@
 namespace citlali::pipeline {
 
 template <auto FilteredObsMap, class Engine, class Logger>
-void filter_observation_maps(Engine &engine,
+bool filter_observation_maps(Engine &engine,
                              StageProfileCollector &stage_profile,
                              const Logger &logger) {
     if constexpr (requires { engine.omb.freeze_raw_science_parent(); }) {
@@ -18,6 +18,7 @@ void filter_observation_maps(Engine &engine,
         engine, engine.omb, stage_profile, logger, "filtering obs maps");
     record_post_processing_filter_completed_if_available(
         engine, PostProcessingMapContext::observation);
+    return filtered_map_written_during_filtering(engine);
 }
 
 template <class Engine, class Logger>
@@ -67,11 +68,13 @@ void find_and_fit_filtered_observation_maps_if_needed(
 template <auto FilteredObsMap, class Engine, class Logger>
 void output_filtered_observation_maps_if_needed(Engine &engine,
                                                 StageProfileCollector &stage_profile,
-                                                const Logger &logger) {
-    output_filtered_maps_if_needed<FilteredObsMap>(
-        engine, stage_profile, logger, "outputting filtered obs files",
-        "filtered obs files already written during Wiener filtering; "
-        "skipping post-filter output stage");
+                                                const Logger &logger,
+                                                bool published_during_filtering) {
+    output_map_if_needed<FilteredObsMap>(
+        engine, stage_profile, logger, !published_during_filtering,
+        "outputting filtered obs files",
+        "filtered obs files atomically published during Wiener filtering; "
+        "skipping duplicate post-filter output stage");
 }
 
 template <auto FilteredObsMap, bool FitMaps, class TodProc, class Logger>
@@ -83,7 +86,9 @@ void write_filtered_observation_outputs(TodProc &todproc,
     const auto profile_scope =
         profile_stage(stage_profile, "filtered_observation.outputs", logger);
 
-    filter_observation_maps<FilteredObsMap>(engine, stage_profile, logger);
+    const bool published_during_filtering =
+        filter_observation_maps<FilteredObsMap>(
+            engine, stage_profile, logger);
     calculate_filtered_observation_noise_products_if_needed(
         engine, stage_profile, logger);
     calculate_filtered_observation_map_diagnostics(
@@ -92,7 +97,7 @@ void write_filtered_observation_outputs(TodProc &todproc,
                                                      FitMaps>(
         engine, stage_profile, logger);
     output_filtered_observation_maps_if_needed<FilteredObsMap>(
-        engine, stage_profile, logger);
+        engine, stage_profile, logger, published_during_filtering);
 }
 
 template <auto FilteredObsMap, bool FitMaps, class TodProc, class Logger>
