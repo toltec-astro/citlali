@@ -80,6 +80,28 @@ gtest_discover_tests(
         TEST_PREFIX "citlali::jinc::"
         DISCOVERY_MODE PRE_TEST
 )
+
+add_executable(citlali_sci_align_test EXCLUDE_FROM_ALL
+    test_sci_align_partial_cohort.cpp
+    test_sci_align_pca_placeholder_invariance.cpp
+    test_sci_align_native_scatter.cpp
+)
+set_target_properties(citlali_sci_align_test
+    PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+)
+target_link_libraries(citlali_sci_align_test
+    PRIVATE
+        citlali::citlali
+        GTest::gtest_main
+)
+add_dependencies(check citlali_sci_align_test)
+gtest_discover_tests(
+    citlali_sci_align_test
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        TEST_PREFIX "citlali::sci_align::"
+        DISCOVERY_MODE PRE_TEST
+)
 set_target_properties(citlali_science_map_truth_test
     PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
