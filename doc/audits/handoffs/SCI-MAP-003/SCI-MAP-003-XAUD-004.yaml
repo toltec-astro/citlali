@@ -1,0 +1,92 @@
+format_version: 1
+id: SCI-MAP-003-XAUD-004
+created_date: 2026-08-14
+
+source:
+  package_id: SCI-PTC-001
+  role: owner
+  audit_branch: codex/coordinate-rtc-ptc-queue
+  audit_commit: a8824c98c57cb3a5c2d78f65c49f0d4693a4d9dc
+  governing_or_evidence_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+  finding_ids:
+    - SCI-PTC-001-F005
+
+target:
+  package_id: SCI-MAP-003
+
+priority: P1
+evidence_basis: owner_decision
+review_phase: pre_core_authority
+arrival: before_dispatch
+status: submitted
+
+summary: >-
+  PTC D003 identifies the current kernel as an estimated map-center point-source
+  response with exact band/mode/configuration/selection/realization scope and
+  explicit unavailable or invalid states.
+claim: >-
+  SCI-MAP-003 may begin from the bounded estimated map-center response identity
+  but may not promote it to an off-center, spatially varying, extended-source,
+  arbitrary-morphology/amplitude, or universal cross-band/cross-mode transfer.
+supports:
+  - >-
+    The response binds exact band, analysis/configuration, detector/mask/
+    selection state, realization state, and every applicable upstream response.
+  - >-
+    Response status distinguishes computed_published,
+    not_computed_or_not_requested_for_this_product, invalid, and unavailable.
+  - >-
+    Distinct bands and map/reduction modes are expected to have different
+    transfer functions; substitution is not authorized.
+does_not_establish:
+  - conformity of PTC implementation at governing application SHA 46ad2388
+  - execution or acceptance of the optional transfer-characterization plan
+  - off-center, extended-source, nonlinear, or universal response
+  - the MAP-003 quotient, denominator domain, uncertainty, or consumer contract
+
+requested_actions:
+  - add_or_update_dependency
+  - preserve_map_center_estimated_response_scope
+  - fail_closed_for_unmeasured_response_extensions
+affected_target_findings: []
+related_handoffs: []
+
+authority_for_pre_core_review:
+  authority_kind: approved_owner_contract_amendment
+  contract_status: approved
+  approval_date: 2026-08-09
+  owner_decision_commit: a8824c98c57cb3a5c2d78f65c49f0d4693a4d9dc
+  approved_contract: >-
+    Use only the D003 estimated_map_center_point_source_response identity,
+    exact binding requirements, typed response states, and declared limits.
+  artifact_ref: a8824c98c57cb3a5c2d78f65c49f0d4693a4d9dc
+  artifact_path: doc/audits/packages/SCI-PTC-001_D003_OWNER_AMENDMENT_2026-08-09.md
+  artifact_sha256: a939b0f7de0c96dc7146feaa535b7722509549d3edc1a9158c1b62768ec6a668
+  relevant_sections:
+    - Approved D003 response contract
+    - F005 disposition
+
+evidence:
+  - id: SCI-PTC-001-D003
+    availability: repository_path
+    ref: a8824c98c57cb3a5c2d78f65c49f0d4693a4d9dc
+    path: doc/audits/packages/SCI-PTC-001_D003_OWNER_AMENDMENT_2026-08-09.md
+    sha256: a939b0f7de0c96dc7146feaa535b7722509549d3edc1a9158c1b62768ec6a668
+    status: approved_owner_contract_authority_implementation_nonconformant
+    note: >-
+      D003 alone is pre-core authority. The optional plan, implementation
+      assessment, and broader response evidence remain quarantined post-core.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: not_applicable
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

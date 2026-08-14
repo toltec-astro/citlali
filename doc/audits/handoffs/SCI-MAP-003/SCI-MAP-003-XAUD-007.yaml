@@ -1,0 +1,71 @@
+format_version: 1
+id: SCI-MAP-003-XAUD-007
+created_date: 2026-08-14
+
+source:
+  package_id: SCI-FRUIT-001
+  role: coordinator
+  audit_branch: codex/coordinate-sci-map-003-registration
+  audit_commit: 5c5a7fad052ac433207c1c6c61355b53c61a476c
+  governing_or_evidence_sha: 5c5a7fad052ac433207c1c6c61355b53c61a476c
+  finding_ids: []
+
+target:
+  package_id: SCI-MAP-003
+
+priority: P1
+evidence_basis: observed
+review_phase: post_core_evidence
+arrival: before_dispatch
+status: submitted
+
+summary: >-
+  SCI-FRUIT-001 is not started and supplies no approved final iteration/pass or
+  delivered-map/kernel relation for the OOF residual-transfer parent.
+claim: >-
+  The FRUIT dependency is open. SCI-MAP-003 must identify the exact terminal
+  iteration/pass and the relation of realized feedback state to the delivered
+  OOF map and normalized kernel before transfer construction can be available.
+supports:
+  - recording an explicit open SCI-FRUIT-001 dependency
+  - requiring exact terminal iteration/pass and parent-state identity
+  - keeping transfer production unavailable when final parentage is ambiguous
+does_not_establish:
+  - a fruit-loop estimator, convergence rule, terminal-state contract, or restart policy
+  - that the delivered map and kernel correspond to any inferred iteration
+  - implementation behavior at governing application SHA 46ad2388
+  - closure or satisfaction of the SCI-FRUIT-001 dependency
+
+requested_actions:
+  - add_or_update_dependency
+  - open_dependency_or_finding_after_independent_core
+  - fail_closed_on_iteration_or_parent_identity_mismatch
+affected_target_findings: []
+related_handoffs: []
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-FRUIT-001-CANONICAL-LEDGER-STATE-001
+    availability: repository_path
+    ref: 5c5a7fad052ac433207c1c6c61355b53c61a476c
+    path: doc/audits/audit-ledger.yaml
+    sha256: 28449cefead083a8b9867a3f4efd7efafd3430a35ab6a803b27fabf5aecb3d26
+    status: not_started_not_assessed_not_started_existing_use_only_pending
+    note: >-
+      This exact canonical ledger observation is post-core evidence of a
+      missing dependency contract, not pre-core scientific authority.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: not_applicable
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

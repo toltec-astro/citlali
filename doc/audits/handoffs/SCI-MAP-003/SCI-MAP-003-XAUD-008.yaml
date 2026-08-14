@@ -1,0 +1,72 @@
+format_version: 1
+id: SCI-MAP-003-XAUD-008
+created_date: 2026-08-14
+
+source:
+  package_id: SCI-MODE-001
+  role: coordinator
+  audit_branch: codex/coordinate-sci-map-003-registration
+  audit_commit: 5c5a7fad052ac433207c1c6c61355b53c61a476c
+  governing_or_evidence_sha: 5c5a7fad052ac433207c1c6c61355b53c61a476c
+  finding_ids: []
+
+target:
+  package_id: SCI-MAP-003
+
+priority: P1
+evidence_basis: observed
+review_phase: post_core_evidence
+arrival: before_dispatch
+status: submitted
+
+summary: >-
+  SCI-MODE-001 is not started and supplies no approved OOF product association
+  or LMTOOF consumer admission contract.
+claim: >-
+  The MODE dependency is open. Owner direction requires a transfer to remain
+  fixed within one LMTOOF solve and to be recomputed between OOF cycles, but
+  SCI-MODE-001 must still define the product association, consumer admission,
+  failure behavior, and nuisance-amplitude policy before any use is allowed.
+supports:
+  - recording an explicit open SCI-MODE-001 dependency
+  - preserving fixed-within-solve and recomputed-between-cycles as required owner facts
+  - keeping the new LMTOOF consumer fail closed pending an approved MODE contract
+does_not_establish:
+  - an approved SCI-MODE-001 contract or LMTOOF interface
+  - a persisted representation, exchange format, or nuisance-amplitude decision
+  - implementation behavior in Citlali or LMTOOF
+  - closure or satisfaction of the SCI-MODE-001 dependency
+
+requested_actions:
+  - add_or_update_dependency
+  - open_dependency_or_owner_decision_after_independent_core
+  - preserve_fail_closed_LMTOOF_consumer_state
+affected_target_findings: []
+related_handoffs: []
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-MODE-001-CANONICAL-LEDGER-STATE-001
+    availability: repository_path
+    ref: 5c5a7fad052ac433207c1c6c61355b53c61a476c
+    path: doc/audits/audit-ledger.yaml
+    sha256: 28449cefead083a8b9867a3f4efd7efafd3430a35ab6a803b27fabf5aecb3d26
+    status: not_started_not_assessed_not_started_existing_use_only_pending
+    note: >-
+      This exact canonical ledger observation is post-core evidence of a
+      missing consumer contract, not pre-core scientific authority.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: not_applicable
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

@@ -1,0 +1,97 @@
+format_version: 1
+id: SCI-MAP-003-XAUD-001
+created_date: 2026-08-14
+
+source:
+  package_id: SCI-MAP-001
+  role: owner
+  audit_branch: codex/audit-sci-map-001
+  audit_commit: b9e1e9a9b2fe492c402d8c7b0cf7e5a36c136a53
+  governing_or_evidence_sha: b9e1e9a9b2fe492c402d8c7b0cf7e5a36c136a53
+  finding_ids:
+    - SCI-MAP-001-F009
+    - SCI-MAP-001-F010
+
+target:
+  package_id: SCI-MAP-003
+
+priority: P1
+evidence_basis: owner_decision
+review_phase: pre_core_authority
+arrival: before_dispatch
+status: submitted
+
+summary: >-
+  The approved MAP-001 contract supplies the shared map-product identity,
+  parent, WCS/unit, support/validity, required-output, and publication
+  vocabulary needed to define one exact OOF product cell.
+claim: >-
+  SCI-MAP-003 must bind its reference, final kernel, transfer, validity domain,
+  and publication state to an admitted SCI-MAP-001 product identity and must
+  keep upstream eligibility, estimator contribution, numerical support,
+  science-policy support, and authoritative science validity distinct.
+supports:
+  - >-
+    Product identity includes admitted WCS, frame, units, response, required
+    companions, and exact parentage rather than only finite array values.
+  - >-
+    Authoritative validity requires normalization support, science-policy
+    support, finite signal and required companions, and admitted product
+    identity.
+  - >-
+    Existing MAP use remains bounded and does not authorize a new response
+    interpretation or consumer.
+does_not_establish:
+  - conformity of MAP-001 implementation at governing application SHA 46ad2388
+  - a JINC-specific kernel identity or transfer estimator
+  - an FFT convention, denominator rule, or LMTOOF consumer contract
+  - closure of MAP-001 upstream CAL, AST, PTC, or VAL dependencies
+
+requested_actions:
+  - add_or_update_dependency
+  - bind_product_identity_and_parentage
+  - preserve_fail_closed_consumer_restriction
+affected_target_findings: []
+related_handoffs: []
+
+authority_for_pre_core_review:
+  authority_kind: approved_contract_owner_decision
+  contract_status: approved
+  approval_date: 2026-07-31
+  owner_decision_commit: b9e1e9a9b2fe492c402d8c7b0cf7e5a36c136a53
+  approved_contract: >-
+    Use the approved bounded MAP product identity, parentage, WCS/unit,
+    support/validity, required-output, and publication distinctions only.
+  artifact_ref: b9e1e9a9b2fe492c402d8c7b0cf7e5a36c136a53
+  artifact_path: >-
+    doc/audits/packages/SCI-MAP-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+  artifact_sha256: 6c8decef93f5607bc9e8dfc84e31aee67f45fa5c695fc80563c7e7064f78d556
+  relevant_sections:
+    - Project-owner decisions and bounded handoff / F009 and F010
+    - Response, hits, exposure, support, validity, product, and consumer matrix
+
+evidence:
+  - id: SCI-MAP-001-APPROVED-CONTRACT-001
+    availability: repository_path
+    ref: b9e1e9a9b2fe492c402d8c7b0cf7e5a36c136a53
+    path: doc/audits/packages/SCI-MAP-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: 6c8decef93f5607bc9e8dfc84e31aee67f45fa5c695fc80563c7e7064f78d556
+    status: approved_bounded_contract_authority
+    note: >-
+      Only the cited approved contract facts are pre-core authority. Source
+      traces, implementation findings, and unaccepted conclusions within the
+      broader report remain quarantined.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: not_applicable
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

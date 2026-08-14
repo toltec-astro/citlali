@@ -1,0 +1,382 @@
+format_version: 1
+target_package: SCI-MAP-003
+created_date: 2026-08-14
+packet_base_commit: 5c5a7fad052ac433207c1c6c61355b53c61a476c
+coordinator_registry_commit: null
+manifest_status: phase_2_uncommitted_frozen_for_coordinator_review_not_dispatch_authority
+
+governing_application:
+  branch: origin/codex/refactor-mainline
+  commit: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+  parent: 4846fa4db39bd2f7d4ddc41f693836834cbc5ff4
+  tree: ab230a93b8fb310d58aefd7ac5da92e5d5e0f408
+  status: exact_pushed_application_mainline_selected_at_registration
+  launch_rule: >-
+    Revalidate the ref and exact SHA before separate dispatch. Any change
+    requires a coordinator amendment and refrozen packet; silent substitution
+    is prohibited.
+
+pre_core_open_policy: >-
+  Before the independent core freeze, the auditor may open only this manifest,
+  the five handoff files classified pre_core_authority, the accepted
+  SCI-MAP-003 registration record, and the three project-level authorities
+  explicitly marked pre_core_open_allowed. Referenced broad audit artifacts
+  serve as digest-bound provenance for the exact abstraction in a handoff and
+  are not themselves openable pre-core when source_artifact_pre_core_open_allowed
+  is false.
+
+pre_core_authority_objects:
+  - id: SCI-MAP-003-REG-D001
+    package_id: SCI-MAP-003
+    ref: 5c5a7fad052ac433207c1c6c61355b53c61a476c
+    source_sha: 5c5a7fad052ac433207c1c6c61355b53c61a476c
+    path: doc/audits/packages/SCI-MAP-003_PRODUCT_REGISTRATION_2026-08-14.md
+    sha256: b3c81a9186e3fb68e0209654427b14dcf81793a832bba47e8357d262c0072ae8
+    status: owner_approved_tier_A_registration_not_dispatched
+    review_phase: pre_core_authority
+    pre_core_open_allowed: true
+    rationale: >-
+      This exact accepted owner registration defines package identity, bounded
+      starting estimator, scope, exclusions, dependencies, required questions,
+      consumer restriction, lifecycle, and explicit nondecisions.
+  - id: SCI-MAP-003-PROJECT-ARCHITECTURE-001
+    package_id: SCI-MAP-003
+    ref: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    source_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    path: doc/ARCHITECTURE.md
+    sha256: d78571ab2da351fb2884b966b7dcbbd9e3d68d0c8c692a18f47159c2c7196f31
+    status: canonical_project_architecture_at_governing_source
+    review_phase: pre_core_authority
+    pre_core_open_allowed: true
+    rationale: >-
+      Repository-level component ownership and dependency direction are
+      project authority and do not supply package implementation observations.
+  - id: SCI-MAP-003-PROJECT-SCIENTIFIC-CONVENTIONS-001
+    package_id: SCI-MAP-003
+    ref: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    source_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    path: doc/SCIENTIFIC_CONVENTIONS.md
+    sha256: 1970d7e31ccbcf77f890ea7c0854fde59d25b2fc745f909a74150360605d3049
+    status: canonical_project_scientific_conventions_at_governing_source
+    review_phase: pre_core_authority
+    pre_core_open_allowed: true
+    rationale: >-
+      Canonical identities, units, frames, indexing, validity, and provenance
+      vocabulary are approved project authority, not a transfer derivation.
+  - id: SCI-MAP-003-PROJECT-PRODUCT-CONTRACTS-001
+    package_id: SCI-MAP-003
+    ref: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    source_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    path: validation/product_contracts.json
+    sha256: f98d57f713c9a9efa2d602c5c5d90a741fd42d97be764944871a44ad640bf32d
+    status: canonical_executable_product_contract_at_governing_source
+    review_phase: pre_core_authority
+    pre_core_open_allowed: true
+    rationale: >-
+      The executable map-product vocabulary and current required-cardinality
+      contract are project authority; they do not authorize a new transfer
+      product or LMTOOF consumer.
+
+handoffs:
+  - id: SCI-MAP-003-XAUD-001
+    source_package: SCI-MAP-001
+    ref: working_tree_phase_2_exact_bytes
+    source_sha: b9e1e9a9b2fe492c402d8c7b0cf7e5a36c136a53
+    path: doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-001.yaml
+    sha256: 02601475819b1e64df0975098c70898f0db7b4d3b975eedaa5f3125692f8f809
+    status: submitted_uncommitted_coordinator_review
+    review_phase: pre_core_authority
+    pre_core_open_allowed: true
+    source_artifact_pre_core_open_allowed: false
+    rationale: >-
+      Only the compact approved MAP F009/F010 abstraction in the handoff is
+      pre-core; the broader MAP audit source/evidence content remains
+      quarantined and MAP implementation/dependencies remain open.
+  - id: SCI-MAP-003-XAUD-002
+    source_package: SCI-MAP-002
+    ref: working_tree_phase_2_exact_bytes
+    source_sha: 3192609a0f9ef2ab377aea77a53d987d1df5fe3a
+    path: doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-002.yaml
+    sha256: 9708a2ddd0a1b95079037cee110a2c51c0b26bc20f349b09fd817a48a024035d
+    status: submitted_uncommitted_coordinator_review
+    review_phase: pre_core_authority
+    pre_core_open_allowed: true
+    source_artifact_pre_core_open_allowed: true
+    rationale: >-
+      Exact owner-approved D003 kernel identity defines the K/C numerator;
+      implementation conformity and the unintegrated successor do not enter
+      the independent core.
+  - id: SCI-MAP-003-XAUD-003
+    source_package: SCI-RTC-001
+    ref: working_tree_phase_2_exact_bytes
+    source_sha: 47c4632008c4fd78f2ab88106372d7ee11ee7711
+    path: doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-003.yaml
+    sha256: 1db43ab766d4f80ec691fdffac4f32b064b76f196a2ad25df030a62b69b2f884
+    status: submitted_uncommitted_coordinator_review
+    review_phase: pre_core_authority
+    pre_core_open_allowed: true
+    source_artifact_pre_core_open_allowed: false
+    rationale: >-
+      Only owner-approved RTC D002 complete-response-or-unavailable and D003
+      immutable-stage rules are pre-core. The proposed package, audit result,
+      source trace, and open findings remain quarantined.
+  - id: SCI-MAP-003-XAUD-004
+    source_package: SCI-PTC-001
+    ref: working_tree_phase_2_exact_bytes
+    source_sha: a8824c98c57cb3a5c2d78f65c49f0d4693a4d9dc
+    path: doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-004.yaml
+    sha256: 20d73f69f9c4413da970e96b6d3c4e85a3426550482df6e37b06f164db3c1893
+    status: submitted_uncommitted_coordinator_review
+    review_phase: pre_core_authority
+    pre_core_open_allowed: true
+    source_artifact_pre_core_open_allowed: true
+    rationale: >-
+      Exact owner-approved D003 supplies only the bounded estimated map-center
+      point-source response and restrictions; implementation and optional
+      characterization remain post-core.
+  - id: SCI-MAP-003-XAUD-005
+    source_package: SCI-AST-001
+    ref: working_tree_phase_2_exact_bytes
+    source_sha: 8ee5b9fc192877106c4d5d747dfef75646edcfd9
+    path: doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-005.yaml
+    sha256: 27f36350feb0a126f5045d6b64a98afc44ccaf3c339f102c30cc390daf6779ac
+    status: submitted_uncommitted_coordinator_review
+    review_phase: pre_core_authority
+    pre_core_open_allowed: true
+    source_artifact_pre_core_open_allowed: true
+    rationale: >-
+      Exact approved bounded AST decisions supply map/WCS/frame/axis/center/
+      precision/invalidity rules only; implementation and ALIGN-dependent
+      absolute placement remain open.
+  - id: SCI-MAP-003-XAUD-006
+    source_package: SCI-VAL-001
+    ref: working_tree_phase_2_exact_bytes
+    source_sha: 5c5a7fad052ac433207c1c6c61355b53c61a476c
+    path: doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-006.yaml
+    sha256: 877f9cec7f7f9fd698a0226289effbc6ab46315aa280b60cba283e05aedba6ed
+    status: submitted_uncommitted_coordinator_review
+    review_phase: post_core_evidence
+    pre_core_open_allowed: false
+    source_artifact_pre_core_open_allowed: false
+    rationale: >-
+      VAL is not started. The exact ledger observation proves only an open
+      dependency and cannot supply pre-core eligibility or validity authority.
+  - id: SCI-MAP-003-XAUD-007
+    source_package: SCI-FRUIT-001
+    ref: working_tree_phase_2_exact_bytes
+    source_sha: 5c5a7fad052ac433207c1c6c61355b53c61a476c
+    path: doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-007.yaml
+    sha256: 801928c460745b748163027191d20f5873110db937aa508e95542206e5623498
+    status: submitted_uncommitted_coordinator_review
+    review_phase: post_core_evidence
+    pre_core_open_allowed: false
+    source_artifact_pre_core_open_allowed: false
+    rationale: >-
+      FRUIT is not started. The ledger supplies only an open terminal-
+      iteration/parentage dependency, not a feedback or iteration contract.
+  - id: SCI-MAP-003-XAUD-008
+    source_package: SCI-MODE-001
+    ref: working_tree_phase_2_exact_bytes
+    source_sha: 5c5a7fad052ac433207c1c6c61355b53c61a476c
+    path: doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-008.yaml
+    sha256: c84cb142813333c0499bde7275d61f940f593fd92875d527bf420bb4003d0087
+    status: submitted_uncommitted_coordinator_review
+    review_phase: post_core_evidence
+    pre_core_open_allowed: false
+    source_artifact_pre_core_open_allowed: false
+    rationale: >-
+      MODE is not started. The ledger supplies only an open OOF association and
+      LMTOOF admission dependency, not an approved consumer contract.
+
+post_core_evidence_objects:
+  - id: SCI-MAP-003-GOVERNING-IMPLEMENTATION-001
+    package_id: SCI-MAP-003
+    ref: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    source_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    tree: ab230a93b8fb310d58aefd7ac5da92e5d5e0f408
+    path: exact_quarantined_path_set_below
+    digest: per_path_sha256_below
+    status: quarantined_current_source_not_open_before_core
+    review_phase: post_core_evidence
+    rationale: >-
+      These exact implementation paths construct/process/deposit/normalize the
+      tracer and kernel, execute feedback, publish maps, or route OOF output;
+      they are implementation observations, never mathematical authority.
+    paths:
+      - path: include/citlali/core/timestream/rtc/kernel.h
+        sha256: cfc86104d5a892e6cbbed3aa260047cb88ef6d4f9e4ec47e33a59841bc74fccd
+      - path: include/citlali/core/timestream/rtc/rtcproc.h
+        sha256: 41693a6385c112bdde36f5590d8ac10b60514c56d5449aad30962e08a64f3549
+      - path: include/citlali/core/timestream/ptc/ptcproc.h
+        sha256: 15f5da569fc65f02048cefb7b685116b32919c8e8ab60374a638bc46cf1508ab
+      - path: include/citlali/core/mapmaking/jinc_mm.h
+        sha256: 65fd41b97e06048d2b4b2b0a6d6ecd175a22f1b415d1b52d925a7ec0da4c9e5b
+      - path: src/citlali/core/mapmaking/map.cpp
+        sha256: 5fd6171b4295729a8e832d6727b17953efad673cc744654fe36ac1d9349b4f7f
+      - path: include/citlali/core/engine/detail/lali_fruitloop_impl.h
+        sha256: fc480b6e64b6108954dfc7f9e6fe129d25db2fbf4d2209b2872492460da32fd8
+      - path: include/citlali/core/engine/detail/pointing_fruitloop_impl.h
+        sha256: eb6ca404a75fa56e04a7e515d1c81c48240fb0050891218bdd165faa8c520945
+      - path: include/citlali/core/pipeline/reduction_iteration_loop.h
+        sha256: 553a33ca0ba0849cb7cb8ce99b7542a0951b76d4ff27ea2a7c78d2c11266d9ef
+      - path: include/citlali/core/engine/detail/map_image_output_impl.h
+        sha256: c6151bcbdc59fa6f3f724da06e98a489ef96db68e3c71d7800a94221c83de0b3
+      - path: include/citlali/core/engine/detail/lali_output_impl.h
+        sha256: 6aef5af69e5ee0f703de3c15fc260d7406387613d86c1338c47f04a7d580910e
+      - path: include/citlali/core/engine/detail/pointing_output_impl.h
+        sha256: 8d955512ef7c351308a10fdaf5e00a39475852e60c78112e111a809222aa9278
+      - path: include/citlali/core/engine/detail/map_phdu_output_impl.h
+        sha256: 7a424e68aacfc682d8949632609a03297359303911c477fec4281d930770ce61
+      - path: include/citlali/core/pipeline/phdu_oof.h
+        sha256: 7279de3c3adfdf19928294ff8f4389654cfa9cdb6676d9f65d00b527c50cce40
+  - id: SCI-MAP-001-AUDIT-REPORT-NONAUTHORITY-001
+    package_id: SCI-MAP-001
+    ref: b9e1e9a9b2fe492c402d8c7b0cf7e5a36c136a53
+    source_sha: b9e1e9a9b2fe492c402d8c7b0cf7e5a36c136a53
+    path: doc/audits/packages/SCI-MAP-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: 6c8decef93f5607bc9e8dfc84e31aee67f45fa5c695fc80563c7e7064f78d556
+    status: quarantined_except_exact_approved_abstraction_in_XAUD_001
+    review_phase: post_core_evidence
+    rationale: >-
+      The broad report contains source/evidence findings. Only the compact
+      approved facts reproduced in XAUD-001 are admitted pre-core.
+  - id: SCI-MAP-002-UNINTEGRATED-ACCEPTANCE-001
+    package_id: SCI-MAP-002
+    ref: 8fc3b3dc549532f254bc814ef76f9a606c2a8059
+    source_sha: 8fc3b3dc549532f254bc814ef76f9a606c2a8059
+    path: doc/audits/packages/SCI-MAP-002_THIRD_SUCCESSOR_OWNER_ACCEPTANCE_2026-08-09.md
+    sha256: 6a0f8a24e5574667c38b0fffd0081a30bd5693c17fcee654cd9c8a9438b01ccc
+    status: owner_accepted_bounded_successor_not_integrated
+    review_phase: post_core_evidence
+    rationale: >-
+      Acceptance of a different unintegrated application successor cannot
+      establish implementation conformity at governing source 46ad2388.
+  - id: SCI-MAP-002-UNINTEGRATED-REAUDIT-001
+    package_id: SCI-MAP-002
+    ref: 8fc3b3dc549532f254bc814ef76f9a606c2a8059
+    source_sha: 8fc3b3dc549532f254bc814ef76f9a606c2a8059
+    path: doc/audits/packages/SCI-MAP-002_THIRD_SUCCESSOR_REAUDIT_2026-08-09.md
+    sha256: fe07901504ad26916cab2c5589f452b1873c11ef215239653ed938f45eefd4d5
+    status: accepted_reaudit_of_unintegrated_successor
+    review_phase: post_core_evidence
+    rationale: >-
+      This result concerns successor 86f1582, not governing source 46ad2388,
+      and may be considered only after the independent core freeze.
+  - id: SCI-RTC-001-AUDIT-RESULT-001
+    package_id: SCI-RTC-001
+    ref: 8fc3b3dc549532f254bc814ef76f9a606c2a8059
+    source_sha: 3319d7424c732c1c9fc300c336e4d428e6f91068
+    path: doc/audits/packages/SCI-RTC-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: 169a0b6e013e727d5d04c25da5234e29def4ef79bc6f25a3f343bc675000301a
+    status: accepted_into_coordination_package_proposed_implementation_nonconformant
+    review_phase: post_core_evidence
+    rationale: >-
+      The report contains implementation/source observations and unaccepted
+      package conclusions; only owner D002/D003 in XAUD-003 are pre-core.
+  - id: SCI-PTC-001-AUDIT-RESULT-001
+    package_id: SCI-PTC-001
+    ref: 8fc3b3dc549532f254bc814ef76f9a606c2a8059
+    source_sha: 01ee247461d6c19bc4db81ccac4fec21af162c88
+    path: doc/audits/packages/SCI-PTC-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: c46a15c142d0938baf9576d84a19332e0d46b34852b4d59c0029ba00ac62d7e6
+    status: coordinated_audit_result_implementation_nonconformant
+    review_phase: post_core_evidence
+    rationale: >-
+      The report contains source observations and findings; only the exact
+      owner-approved D003 abstraction in XAUD-004 is pre-core.
+  - id: SCI-PTC-001-OPTIONAL-TRANSFER-PLAN-001
+    package_id: SCI-PTC-001
+    ref: 8fc3b3dc549532f254bc814ef76f9a606c2a8059
+    source_sha: 8fc3b3dc549532f254bc814ef76f9a606c2a8059
+    path: doc/audits/packages/SCI-PTC-001_OPTIONAL_TRANSFER_CHARACTERIZATION_PLAN_2026-08-09.md
+    sha256: 2efb93461918fa39a903bd95737a43276f080c0e44782c7866026fe78a7e7c71
+    status: optional_plan_prepared_not_authorized_not_launched
+    review_phase: post_core_evidence
+    rationale: >-
+      An optional unlaunched plan is validation context, not scientific
+      authority or a primary owner for the MAP-003 product.
+  - id: SCI-MAP-003-HISTORICAL-HANDOFF-001
+    package_id: SCI-MAP-003
+    ref: 2094d730280555d49d61000eeb1e0fb42dc6595b
+    source_sha: 2094d730280555d49d61000eeb1e0fb42dc6595b
+    path: handoff/HANDOFF_2026-08-14.md
+    sha256: 29cf03cdb55f8bacf20e1ad94b96504632e54f68c742ffe582d837c35e89f488
+    status: historical_design_and_implementation_observation_not_canonical_authority
+    review_phase: post_core_evidence
+    rationale: >-
+      Owner-approved facts were distilled into the registration record; the
+      historical branch and its implementation observations remain evidence.
+  - id: SCI-MAP-003-PROTOTYPE-001
+    package_id: SCI-MAP-003
+    ref: local_read_only_exact_path
+    source_sha: null_not_git
+    path: /Users/gwilson/foo/transfer_function/test_kernel_jinc.py
+    sha256: 65d5f1ee95f09ca290594bbf239950bce932e56d6186f9818102beee6311d1dd
+    status: verified_external_informal_prototype_not_imported
+    review_phase: post_core_evidence
+    rationale: >-
+      Cross-spectrum and JINC/Hankel mechanics are design evidence; hard-coded
+      parameters, normalization, shortcut, real projection, and plots are not
+      production authority.
+  - id: SCI-MAP-003-PROTOTYPE-002
+    package_id: SCI-MAP-003
+    ref: local_read_only_exact_path
+    source_sha: null_not_git
+    path: /Users/gwilson/foo/transfer_function/test_kernel_2.py
+    sha256: b16ba174cbd75dc6685332f7187f33038cad537a845befd4c52ef98d08f91824
+    status: verified_external_informal_prototype_not_imported
+    review_phase: post_core_evidence
+    rationale: >-
+      The box/sinc limiting mechanics are design evidence; the informal script
+      and its hard-coded synthetic choices are not production authority.
+
+pre_core_authority_ids:
+  - SCI-MAP-003-REG-D001
+  - SCI-MAP-003-PROJECT-ARCHITECTURE-001
+  - SCI-MAP-003-PROJECT-SCIENTIFIC-CONVENTIONS-001
+  - SCI-MAP-003-PROJECT-PRODUCT-CONTRACTS-001
+  - SCI-MAP-003-XAUD-001
+  - SCI-MAP-003-XAUD-002
+  - SCI-MAP-003-XAUD-003
+  - SCI-MAP-003-XAUD-004
+  - SCI-MAP-003-XAUD-005
+
+post_core_evidence_ids:
+  - SCI-MAP-003-XAUD-006
+  - SCI-MAP-003-XAUD-007
+  - SCI-MAP-003-XAUD-008
+  - SCI-MAP-003-GOVERNING-IMPLEMENTATION-001
+  - SCI-MAP-001-AUDIT-REPORT-NONAUTHORITY-001
+  - SCI-MAP-002-UNINTEGRATED-ACCEPTANCE-001
+  - SCI-MAP-002-UNINTEGRATED-REAUDIT-001
+  - SCI-RTC-001-AUDIT-RESULT-001
+  - SCI-PTC-001-AUDIT-RESULT-001
+  - SCI-PTC-001-OPTIONAL-TRANSFER-PLAN-001
+  - SCI-MAP-003-HISTORICAL-HANDOFF-001
+  - SCI-MAP-003-PROTOTYPE-001
+  - SCI-MAP-003-PROTOTYPE-002
+
+classification_counts:
+  direct_pre_core_authority_objects: 4
+  pre_core_authority_handoffs: 5
+  direct_post_core_evidence_objects: 10
+  post_core_evidence_handoffs: 3
+  total_classified_objects: 22
+
+late_arrival_rule: explicit_amendment_reaudit_or_external_restriction
+late_arrival_effect: >-
+  An object absent from this manifest is not part of the future SCI-MAP-003
+  audit. The coordinator must hold it for a fresh re-audit, authorize a dated
+  amendment preserving the frozen core, or impose an urgent restriction
+  independently of the scientific derivation.
+
+packet_state:
+  independent_audit_prompt: not_created_not_authorized_in_phase_2
+  coordinator_return_artifact: not_created_not_authorized_in_phase_2
+  audit_launch: not_authorized
+  numerical_execution: not_authorized
+  application_or_LMTOOF_edit: not_authorized
+  reduction_or_Unity: not_authorized
+  external_contact: not_authorized
+  repair_reaudit_integration_production: not_authorized
+  merge_rebase_push: not_authorized

@@ -268,6 +268,36 @@ Ultra, delegation, and parallel workstreams are not authorized by this
 registration. A later change requires its own written trigger, independence
 boundaries, synthesis owner, and stop rule.
 
+## Phase 2 inbound packet checkpoint
+
+The following eight inbound handoffs are prepared in the accepted dependency
+order. They are uncommitted coordination artifacts for review, not audit
+dispatch authority:
+
+1. `SCI-MAP-003-XAUD-001` -- `SCI-MAP-001` -- `pre_core_authority`;
+2. `SCI-MAP-003-XAUD-002` -- `SCI-MAP-002` -- `pre_core_authority`;
+3. `SCI-MAP-003-XAUD-003` -- `SCI-RTC-001` -- `pre_core_authority`;
+4. `SCI-MAP-003-XAUD-004` -- `SCI-PTC-001` -- `pre_core_authority`;
+5. `SCI-MAP-003-XAUD-005` -- `SCI-AST-001` -- `pre_core_authority`;
+6. `SCI-MAP-003-XAUD-006` -- `SCI-VAL-001` -- `post_core_evidence`;
+7. `SCI-MAP-003-XAUD-007` -- `SCI-FRUIT-001` -- `post_core_evidence`; and
+8. `SCI-MAP-003-XAUD-008` -- `SCI-MODE-001` -- `post_core_evidence`.
+
+The frozen inbox authority manifest is
+`doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003_INBOX_AUTHORITY_MANIFEST_2026-08-14.yaml`,
+SHA-256
+`a6c36b7c0416e1f03ce88b8004712db666c625a95cf521787cfad5ad28d27603`.
+Its status is
+`phase_2_uncommitted_frozen_for_coordinator_review_not_dispatch_authority`.
+It contains 9 `pre_core_authority` objects and 13
+`post_core_evidence` objects. Only the exact owner-approved abstractions
+explicitly admitted by the manifest may be opened before an independent core
+freeze. Open or conditioned dependency consequences remain unchanged and
+must not be promoted into accepted implementation authority.
+
+No independent-audit prompt or coordinator-return artifact exists. The
+packet is not dispatchable and no audit has been launched.
+
 ## Registration disposition and next checkpoint
 
 - contract status: `not_started`
@@ -279,10 +309,11 @@ boundaries, synthesis owner, and stop rule.
 - re-audit status: `not_started`
 - independent audit: not launched
 
-This registration bundle is the first viable artifact. Stop after committing
-and verifying this record plus the bounded README and ledger updates. Do not
-create cross-audit handoff records, a frozen authority manifest, or an
-independent-audit prompt until the coordinator accepts that mandatory return.
+This uncommitted Phase 2 packet is the next viable artifact. Stop after
+verifying this record, the ledger bindings, the eight inbound handoffs, and
+the frozen authority manifest. Obtain coordinator acceptance before any
+commit and before creating an independent-audit prompt or coordinator-return
+artifact.
 
 This record does not authorize application, test, configuration, validation,
 or LMTOOF edits; numerical execution; a local or Unity reduction; an external

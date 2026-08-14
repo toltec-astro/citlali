@@ -1,0 +1,92 @@
+format_version: 1
+id: SCI-MAP-003-XAUD-002
+created_date: 2026-08-14
+
+source:
+  package_id: SCI-MAP-002
+  role: owner
+  audit_branch: codex/coordinate-rtc-ptc-queue
+  audit_commit: 3192609a0f9ef2ab377aea77a53d987d1df5fe3a
+  governing_or_evidence_sha: 3192609a0f9ef2ab377aea77a53d987d1df5fe3a
+  finding_ids: []
+
+target:
+  package_id: SCI-MAP-003
+
+priority: P1
+evidence_basis: owner_decision
+review_phase: pre_core_authority
+arrival: before_dispatch
+status: submitted
+
+summary: >-
+  SCI-MAP-002-D003-KERNEL-001 defines the final normalized JINC K/C plane as
+  the realized processing-filtered source-template response projected through
+  JINC.
+claim: >-
+  SCI-MAP-003 consumes the exact final normalized JINC kernel as its numerator;
+  it must not repeat synthetic JINC convolution, apply another global JINC
+  normalization, or relabel the plane as an analytic beam or measured PSF.
+supports:
+  - >-
+    K/C is accumulated from the processed kernel timestream and normalized by
+    the same formal JINC support denominator.
+  - >-
+    Kernel provenance binds template identity and realized enabled RTC/PTC,
+    filter, mask, flag, JINC, conditioning, and product state.
+  - >-
+    Downstream consumers may not renormalize or relabel the kernel without a
+    separately approved response contract.
+does_not_establish:
+  - conformity of the JINC implementation at governing application SHA 46ad2388
+  - integration of owner-accepted application successor 86f1582
+  - the reference g, quotient H, denominator domain, or LMTOOF interface
+  - closure of MAP-002 dependencies on MAP-001 or VAL-001
+
+requested_actions:
+  - add_or_update_dependency
+  - consume_final_normalized_kernel_without_redeposition_or_renormalization
+  - audit_exact_governing_source_conformity_post_core
+affected_target_findings: []
+related_handoffs: []
+
+authority_for_pre_core_review:
+  authority_kind: approved_owner_contract_decision
+  contract_status: approved
+  approval_date: 2026-08-03
+  owner_decision_commit: 3192609a0f9ef2ab377aea77a53d987d1df5fe3a
+  approved_contract: >-
+    The final JINC kernel is the realized processing-filtered source-template
+    response projected through JINC and normalized as K/C.
+  artifact_ref: 3192609a0f9ef2ab377aea77a53d987d1df5fe3a
+  artifact_path: >-
+    doc/audits/packages/SCI-MAP-002_KERNEL_IDENTITY_OWNER_DECISION_2026-08-03.md
+  artifact_sha256: 2ff6b03259e75d2fa96f4fe8c888c7db82ec7cae0c969617f17233aa15be2347
+  relevant_sections:
+    - Decision
+
+evidence:
+  - id: SCI-MAP-002-D003-KERNEL-001
+    availability: repository_path
+    ref: 3192609a0f9ef2ab377aea77a53d987d1df5fe3a
+    path: >-
+      doc/audits/packages/SCI-MAP-002_KERNEL_IDENTITY_OWNER_DECISION_2026-08-03.md
+    sha256: 2ff6b03259e75d2fa96f4fe8c888c7db82ec7cae0c969617f17233aa15be2347
+    status: approved_owner_contract_authority
+    note: >-
+      This exact owner decision is pre-core. The unintegrated successor,
+      re-audit result, and current source conformity remain post-core.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: not_applicable
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

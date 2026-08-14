@@ -1,0 +1,92 @@
+format_version: 1
+id: SCI-MAP-003-XAUD-003
+created_date: 2026-08-14
+
+source:
+  package_id: SCI-RTC-001
+  role: owner
+  audit_branch: codex/coordinate-rtc-ptc-queue
+  audit_commit: 47c4632008c4fd78f2ab88106372d7ee11ee7711
+  governing_or_evidence_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+  finding_ids:
+    - SCI-RTC-001-F012
+
+target:
+  package_id: SCI-MAP-003
+
+priority: P1
+evidence_basis: owner_decision
+review_phase: pre_core_authority
+arrival: before_dispatch
+status: submitted
+
+summary: >-
+  RTC owner decisions D002 and D003 require a complete conditioned response or
+  an honest unavailable state and immutable stage identities with explicit
+  parent/processing links.
+claim: >-
+  SCI-MAP-003 may treat only the approved RTC complete-response and immutable-
+  identity rules as pre-core authority; the exact discrete Gaussian tracer and
+  conformity of the governing implementation remain open audit questions.
+supports:
+  - >-
+    Every response-changing RTC stage must be represented in the kernel or
+    realized local response; a partial kernel is never the complete response.
+  - >-
+    If the complete response cannot be represented truthfully and economically,
+    response is unavailable.
+  - >-
+    Outer, inner, full, mini, diagnostic, simulated, and processed RTC products
+    retain distinct immutable stage identities and parent/processing links.
+does_not_establish:
+  - the exact APT row or detector mixture, Gaussian amplitude, truncation, or pixelization
+  - conformity of RTC implementation at governing application SHA 46ad2388
+  - closure of RTC findings or ALIGN, CAL, and AST dependencies
+  - an approved MAP-003 transfer, uncertainty, or production consumer
+
+requested_actions:
+  - add_or_update_dependency
+  - derive_exact_reference_identity_independently
+  - fail_closed_if_complete_conditioned_response_is_unavailable
+affected_target_findings: []
+related_handoffs: []
+
+authority_for_pre_core_review:
+  authority_kind: approved_bounded_owner_decisions
+  contract_status: proposed
+  approval_date: 2026-08-08
+  owner_decision_commit: 47c4632008c4fd78f2ab88106372d7ee11ee7711
+  approved_contract: >-
+    Apply only SCI-RTC-001-D002 complete-response-or-unavailable and D003
+    immutable-stage-identity rules.
+  artifact_ref: 47c4632008c4fd78f2ab88106372d7ee11ee7711
+  artifact_path: doc/audits/packages/SCI-RTC-001_OWNER_DECISION_2026-08-08.md
+  artifact_sha256: 5f5ebb52735a70510d75f5a6954ef825fc425c00e43ab0aadf2363f2e0609723
+  relevant_sections:
+    - SCI-RTC-001-D002 — complete conditioned response
+    - SCI-RTC-001-D003 — immutable stage identities
+
+evidence:
+  - id: SCI-RTC-001-D002-D003
+    availability: repository_path
+    ref: 47c4632008c4fd78f2ab88106372d7ee11ee7711
+    path: doc/audits/packages/SCI-RTC-001_OWNER_DECISION_2026-08-08.md
+    sha256: 5f5ebb52735a70510d75f5a6954ef825fc425c00e43ab0aadf2363f2e0609723
+    status: approved_bounded_owner_authority_package_still_proposed
+    note: >-
+      Only D002 and D003 are admitted pre-core. The audit report, source trace,
+      open findings, and implementation observations remain post-core.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: not_applicable
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

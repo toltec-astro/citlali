@@ -1,0 +1,93 @@
+format_version: 1
+id: SCI-MAP-003-XAUD-005
+created_date: 2026-08-14
+
+source:
+  package_id: SCI-AST-001
+  role: owner
+  audit_branch: codex/coordinate-rtc-ptc-queue
+  audit_commit: 8ee5b9fc192877106c4d5d747dfef75646edcfd9
+  governing_or_evidence_sha: 8ee5b9fc192877106c4d5d747dfef75646edcfd9
+  finding_ids: []
+
+target:
+  package_id: SCI-MAP-003
+
+priority: P1
+evidence_basis: owner_decision
+review_phase: pre_core_authority
+arrival: before_dispatch
+status: submitted
+
+summary: >-
+  AST D001-D008 supply bounded approved frame, tangent-plane domain, centered
+  WCS, axis/handedness, map-center response, precision, metadata, and invalidity
+  rules for map products.
+claim: >-
+  SCI-MAP-003 must preserve the exact admitted map/WCS axis order, center,
+  pixel scale, orientation/handedness, frame, precision, and invalidity of its
+  parent OOF cell and may not silently reinterpret FFT axes or centering.
+supports:
+  - >-
+    Automatic WCS preserves the established centered-map reference pixel,
+    product-family frame split, and realized source authority.
+  - >-
+    Singular, non-finite, inconsistent, or outside-declared-domain coordinates
+    have explicit invalid states and cannot be represented as valid center data.
+  - >-
+    Product-level WCS and coordinate authorities preserve precision, pixel
+    scale, orientation/handedness, frame, epoch, and indexing semantics.
+does_not_establish:
+  - absolute placement while ALIGN event semantics remain unavailable
+  - conformity of AST implementation at governing application SHA 46ad2388
+  - an FFT frequency-axis convention or transfer-product representation
+  - off-center response or dense covariance authority
+
+requested_actions:
+  - add_or_update_dependency
+  - bind_parent_WCS_axis_center_and_precision
+  - fail_closed_on_coordinate_or_identity_mismatch
+affected_target_findings: []
+related_handoffs: []
+
+authority_for_pre_core_review:
+  authority_kind: approved_bounded_contract_authority
+  contract_status: approved
+  approval_date: 2026-08-01
+  owner_decision_commit: 8ee5b9fc192877106c4d5d747dfef75646edcfd9
+  approved_contract: >-
+    Apply only the bounded D001-D008 map/WCS frame, domain, centered-reference,
+    response, precision, metadata, and invalidity rules relevant to the exact
+    OOF product cell.
+  artifact_ref: 8ee5b9fc192877106c4d5d747dfef75646edcfd9
+  artifact_path: doc/audits/packages/SCI-AST-001_COORDINATOR_DECISION_2026-08-01.md
+  artifact_sha256: c2e8f2c18f2d96a27afd6b6a083408b17562e596ee1e2851a00de3d9c7e5e9d9
+  relevant_sections:
+    - SCI-AST-001-D001 through D003
+    - SCI-AST-001-D005, D006, and D008
+
+evidence:
+  - id: SCI-AST-001-D001-D008
+    availability: repository_path
+    ref: 8ee5b9fc192877106c4d5d747dfef75646edcfd9
+    path: doc/audits/packages/SCI-AST-001_COORDINATOR_DECISION_2026-08-01.md
+    sha256: c2e8f2c18f2d96a27afd6b6a083408b17562e596ee1e2851a00de3d9c7e5e9d9
+    status: approved_bounded_contract_authority_implementation_nonconformant
+    note: >-
+      Only the cited approved contract decisions are pre-core. Implementation
+      findings, ALIGN-dependent placement, and source observations remain
+      quarantined.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: not_applicable
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null
