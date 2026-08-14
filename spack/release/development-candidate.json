@@ -7,9 +7,9 @@
     "citlali": {
       "repository_url": "https://github.com/toltec-astro/citlali.git",
       "review_branch": "codex/build-adaptation",
-      "source_commit": "6d497fc31d47054db791eead9aa0894d6ab0362a",
+      "source_commit": "b8e80fb1562b0ab9974a4c5fb183682ab2d351cc",
       "source_archive": null,
-      "recipe_commit": "6d497fc31d47054db791eead9aa0894d6ab0362a",
+      "recipe_commit": "0dc5db2ccde818838d30b192eb43bb0d43b18309",
       "recipe_archive": null
     },
     "tula_cmake": {
@@ -17,7 +17,7 @@
       "review_branch": "v3.x_spack",
       "source_commit": "6433cdabe7010d0af2d0ba69da7af27510391b80",
       "source_archive": null,
-      "recipe_commit": "6433cdabe7010d0af2d0ba69da7af27510391b80",
+      "recipe_commit": "d3c0ad6e646d2a37c9f66b48a42d99a3059d2338",
       "recipe_archive": null
     },
     "tula": {
@@ -25,7 +25,7 @@
       "review_branch": "v3.x_spack",
       "source_commit": "aa16c853c6b596c04ccdc90dc3acc4ce2006d947",
       "source_archive": null,
-      "recipe_commit": "aa16c853c6b596c04ccdc90dc3acc4ce2006d947",
+      "recipe_commit": "6de0a44a79d035e3c851e5f2a34e02d79f3745f4",
       "recipe_archive": null
     },
     "kidscpp": {
@@ -33,7 +33,7 @@
       "review_branch": "v3.x_spack",
       "source_commit": "498ece1113001ae2d42d96d9fc29152aea3eaaef",
       "source_archive": null,
-      "recipe_commit": "498ece1113001ae2d42d96d9fc29152aea3eaaef",
+      "recipe_commit": "4850383da810b6daf721e4fd8b35f2545e275f04",
       "recipe_archive": null
     }
   },
@@ -74,8 +74,8 @@
     }
   },
   "recipe_source_audit": {
-    "path": "validation/release_recipe_source_audit_2026-08-14.json",
-    "sha256": "c2a39a86968ba0bcec9194e5e11a8f3b2e640cf4db5947a24e9998f6bb66d258"
+    "path": "validation/release_recipe_source_audit_accepted_2026-08-14.json",
+    "sha256": "b4687555d91ecb0ca65a6de7f1d007091eb61d1ee044ae49416212d90e146c78"
   },
   "buildcache": {
     "mode": "source-build-default",
@@ -91,11 +91,13 @@
       "validation/build_timing/20260814T111058-0400-macos-llvm20/build-timing.json",
       "validation/build_timing/20260814T152240+0000-unity-gcc13/build-timing.json",
       "validation/fixtures/kidscpp_real_reader_pointing_152389_v1.json",
-      "validation/release_recipe_source_audit_2026-08-14.json"
+      "validation/release_recipe_source_audit_2026-08-14.json",
+      "validation/release_recipe_source_audit_accepted_2026-08-14.json"
     ],
     "remaining": [
       "publish immutable source and recipe archives with SHA-256 values",
-      "publish recipe revisions whose package versions resolve every accepted source revision",
+      "approve immutable package-version names for the accepted source bindings",
+      "publish the accepted repository-owned recipe revisions",
       "generate source-based release environments and committed profile locks",
       "propagate managed deployment identity through the TolTECA launch boundary",
       "accept one frozen same-SHA point, OOF, science, and Beammap matrix"

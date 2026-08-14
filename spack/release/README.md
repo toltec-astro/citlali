@@ -73,12 +73,18 @@ Before generating either profile lock, audit the decentralized recipes:
 $HOME/tolteca/bin/python tools/build/audit_release_recipe_sources.py
 ```
 
-The 2026-08-14 development candidate is intentionally blocked: Citlali's
-recipe has no immutable source, all seven Tula CMake package recipes identify
-an older commit, and the Tula and Kidscpp recipes also identify older commits.
-The checked report is
-`validation/release_recipe_source_audit_2026-08-14.json`. Do not generate a
-release profile or lock until a later recipe revision makes this audit pass.
+The initial 2026-08-14 audit is retained as evidence of the discovered gap:
+Citlali's recipe had no immutable source, all seven Tula CMake package recipes
+identified an older commit, and the Tula and Kidscpp recipes also identified
+older commits. Repository-owned, metadata-only follow-up commits now bind all
+ten recipes to the exact accepted source revisions. The passing local audit is
+`validation/release_recipe_source_audit_accepted_2026-08-14.json`; the source
+and recipe identities and publication caveat are recorded in
+`doc/RELEASE_RECIPE_ALIGNMENT_2026-08-14.md`.
+
+This passing audit permits release-profile work only after the four recipe
+commits are reviewed and published by their owning repositories. It does not
+itself publish a release, source archive, recipe archive, or portable lock.
 
 Validate the current development candidate with:
 

@@ -1,0 +1,180 @@
+{
+  "schema_version": "citlali-release-recipe-audit-v1",
+  "release_id": "citlali-spack-adaptation-candidate-2026-08-14",
+  "manifest_state": "development-candidate",
+  "status": "accepted",
+  "package_count": 10,
+  "failure_count": 0,
+  "packages": [
+    {
+      "repository": "citlali",
+      "package": "citlali",
+      "source_commit": "b8e80fb1562b0ab9974a4c5fb183682ab2d351cc",
+      "recipe_commit": "0dc5db2ccde818838d30b192eb43bb0d43b18309",
+      "recipe_path": "spack/spack_repo/toltec/citlali/packages/citlali/package.py",
+      "accepted": true,
+      "reason": "Git source matches accepted repository and commit",
+      "versions": [
+        {
+          "version": "4.0.0",
+          "commit": "b8e80fb1562b0ab9974a4c5fb183682ab2d351cc",
+          "url": null,
+          "sha256": null
+        }
+      ]
+    },
+    {
+      "repository": "tula_cmake",
+      "package": "tula-cmake",
+      "source_commit": "6433cdabe7010d0af2d0ba69da7af27510391b80",
+      "recipe_commit": "d3c0ad6e646d2a37c9f66b48a42d99a3059d2338",
+      "recipe_path": "spack_repo/toltec/tula_cmake/packages/tula_cmake/package.py",
+      "accepted": true,
+      "reason": "Git source matches accepted repository and commit",
+      "versions": [
+        {
+          "version": "3.2.0",
+          "commit": "6433cdabe7010d0af2d0ba69da7af27510391b80",
+          "url": null,
+          "sha256": null
+        }
+      ]
+    },
+    {
+      "repository": "tula_cmake",
+      "package": "tula-logging",
+      "source_commit": "6433cdabe7010d0af2d0ba69da7af27510391b80",
+      "recipe_commit": "d3c0ad6e646d2a37c9f66b48a42d99a3059d2338",
+      "recipe_path": "spack_repo/toltec/tula_cmake/packages/tula_logging/package.py",
+      "accepted": true,
+      "reason": "Git source matches accepted repository and commit",
+      "versions": [
+        {
+          "version": "1.0.0",
+          "commit": "6433cdabe7010d0af2d0ba69da7af27510391b80",
+          "url": null,
+          "sha256": null
+        }
+      ]
+    },
+    {
+      "repository": "tula_cmake",
+      "package": "tula-yaml-cpp",
+      "source_commit": "6433cdabe7010d0af2d0ba69da7af27510391b80",
+      "recipe_commit": "d3c0ad6e646d2a37c9f66b48a42d99a3059d2338",
+      "recipe_path": "spack_repo/toltec/tula_cmake/packages/tula_yaml_cpp/package.py",
+      "accepted": true,
+      "reason": "Git source matches accepted repository and commit",
+      "versions": [
+        {
+          "version": "0.8.0",
+          "commit": "6433cdabe7010d0af2d0ba69da7af27510391b80",
+          "url": null,
+          "sha256": null
+        }
+      ]
+    },
+    {
+      "repository": "tula_cmake",
+      "package": "tula-eigen3",
+      "source_commit": "6433cdabe7010d0af2d0ba69da7af27510391b80",
+      "recipe_commit": "d3c0ad6e646d2a37c9f66b48a42d99a3059d2338",
+      "recipe_path": "spack_repo/toltec/tula_cmake/packages/tula_eigen3/package.py",
+      "accepted": true,
+      "reason": "Git source matches accepted repository and commit",
+      "versions": [
+        {
+          "version": "3.4.0",
+          "commit": "6433cdabe7010d0af2d0ba69da7af27510391b80",
+          "url": null,
+          "sha256": null
+        }
+      ]
+    },
+    {
+      "repository": "tula_cmake",
+      "package": "tula-ccfits",
+      "source_commit": "6433cdabe7010d0af2d0ba69da7af27510391b80",
+      "recipe_commit": "d3c0ad6e646d2a37c9f66b48a42d99a3059d2338",
+      "recipe_path": "spack_repo/toltec/tula_cmake/packages/tula_ccfits/package.py",
+      "accepted": true,
+      "reason": "Git source matches accepted repository and commit",
+      "versions": [
+        {
+          "version": "1.0.0",
+          "commit": "6433cdabe7010d0af2d0ba69da7af27510391b80",
+          "url": null,
+          "sha256": null
+        }
+      ]
+    },
+    {
+      "repository": "tula_cmake",
+      "package": "tula-netcdf-cxx4",
+      "source_commit": "6433cdabe7010d0af2d0ba69da7af27510391b80",
+      "recipe_commit": "d3c0ad6e646d2a37c9f66b48a42d99a3059d2338",
+      "recipe_path": "spack_repo/toltec/tula_cmake/packages/tula_netcdf_cxx4/package.py",
+      "accepted": true,
+      "reason": "Git source matches accepted repository and commit",
+      "versions": [
+        {
+          "version": "4.3.1",
+          "commit": "6433cdabe7010d0af2d0ba69da7af27510391b80",
+          "url": null,
+          "sha256": null
+        }
+      ]
+    },
+    {
+      "repository": "tula_cmake",
+      "package": "tula-perflibs",
+      "source_commit": "6433cdabe7010d0af2d0ba69da7af27510391b80",
+      "recipe_commit": "d3c0ad6e646d2a37c9f66b48a42d99a3059d2338",
+      "recipe_path": "spack_repo/toltec/tula_cmake/packages/tula_perflibs/package.py",
+      "accepted": true,
+      "reason": "Git source matches accepted repository and commit",
+      "versions": [
+        {
+          "version": "0.1.0",
+          "commit": "6433cdabe7010d0af2d0ba69da7af27510391b80",
+          "url": null,
+          "sha256": null
+        }
+      ]
+    },
+    {
+      "repository": "tula",
+      "package": "tula",
+      "source_commit": "aa16c853c6b596c04ccdc90dc3acc4ce2006d947",
+      "recipe_commit": "6de0a44a79d035e3c851e5f2a34e02d79f3745f4",
+      "recipe_path": "spack_repo/toltec/tula/packages/tula/package.py",
+      "accepted": true,
+      "reason": "Git source matches accepted repository and commit",
+      "versions": [
+        {
+          "version": "3.1.0",
+          "commit": "aa16c853c6b596c04ccdc90dc3acc4ce2006d947",
+          "url": null,
+          "sha256": null
+        }
+      ]
+    },
+    {
+      "repository": "kidscpp",
+      "package": "kidscpp",
+      "source_commit": "498ece1113001ae2d42d96d9fc29152aea3eaaef",
+      "recipe_commit": "4850383da810b6daf721e4fd8b35f2545e275f04",
+      "recipe_path": "spack_repo/toltec/kidscpp/packages/kidscpp/package.py",
+      "accepted": true,
+      "reason": "Git source matches accepted repository and commit",
+      "versions": [
+        {
+          "version": "3.1.0",
+          "commit": "498ece1113001ae2d42d96d9fc29152aea3eaaef",
+          "url": null,
+          "sha256": null
+        }
+      ]
+    }
+  ]
+}

@@ -146,6 +146,14 @@ close that mismatch. Archives, profile release locks, deployment propagation,
 and the same-SHA four-mode acceptance matrix also remain open.
 `tolteca_deploy` remains external and unchanged.
 
+On 2026-08-14, isolated metadata-only commits in each owning repository bound
+the ten canonical package recipes to the exact accepted source revisions. The
+manifest now records the tested source and later recipe revisions separately,
+and the local recipe/source audit passes 10/10 with zero failures. These are
+proposed recipe revisions pending maintainer review and publication; no source
+archive, recipe archive, portable release profile, or release lock has been
+generated. Normal `develop:`-based work remains unchanged.
+
 The first user-supplied Unity inventory is now recorded operational evidence:
 Ubuntu 24.04 x86_64 exposes GCC/G++/GFortran 13.3 and Clang 18.1, CMake 3.30 through the
 TolTECA environment, Python 3.12, and no user-callable Spack or Ninja command.

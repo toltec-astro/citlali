@@ -120,12 +120,12 @@ the effective C++23 standard; the Tula metadata defect remains upstream debt.
   confirms the CLI translation unit as the dominant development cost on both
   hosts.
 - The Citlali-owned release schema, validator, bundle layout, source-build
-  fallback, and signed-buildcache policy are accepted in ADR 0010. The checked
-  development candidate passes, but release production remains open: publish
-  immutable source and recipe archives/checksums, obtain repository-owned
-  recipe revisions that pass the ten-package source audit, and then generate
-  one source-based, host-path-free lock for each supported profile. No lock is
-  generated from the currently mismatched recipes.
+  fallback, and signed-buildcache policy are accepted in ADR 0010. Proposed
+  repository-owned metadata commits now bind all ten canonical recipes to the
+  exact accepted sources, and the local manifest-bound audit passes 10/10.
+  Release production remains open: review and publish those recipe revisions,
+  publish immutable source and recipe archives/checksums, and only then
+  generate one source-based, host-path-free lock for each supported profile.
 
 ### Spack Adaptation Exit
 
