@@ -1,0 +1,874 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{array,booktabs,longtable}
+\usepackage{url}
+
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\FFT}{\mathcal{F}}
+\newcommand{\IFFT}{\mathcal{F}^{-1}}
+\newcommand{\ind}{\mathbf{1}}
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\NA}{\texttt{unavailable}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\title{SCI-MAP-003 Independent Scientific Core\\
+OOF Residual Transfer-Function Estimation and Product}
+\author{Independent Tier-A audit, Phase 1}
+\date{Frozen candidate prepared 2026-08-14}
+
+\begin{document}
+\maketitle
+
+\section{Immutable status, scope, and independence}
+
+This file is the independent scientific core required by package
+\texttt{SCI-MAP-003}.  It derives a conditional mathematical contract for an
+observation/reduction-specific, complex, two-dimensional OOF residual transfer
+and records every scientific choice that cannot be made from the admitted
+pre-core authority.  It is not an implementation assessment, repair,
+validation result, consumer authorization, or production decision.
+
+All scientific reasoning and all bytes of this core were produced under the
+owner-selected Sol Ultra setting.  Earlier Medium activity was limited to
+read-only intake metadata and is not scientific evidence.  No numerical
+fixture was executed.  No Citlali or LMTOOF run, local reduction, Unity access,
+network access, external contact, delegation, or parallel scientific
+workstream occurred.
+
+The audit branch is \texttt{codex/audit-sci-map-003}, in the isolated worktree
+\path{/private/tmp/citlali-audit-sci-map-003}, based exactly on governing
+application commit
+\texttt{46ad23888a40f5102cdfd50c06e49a549bdf8a20}, parent
+\texttt{4846fa4db39bd2f7d4ddc41f693836834cbc5ff4}, tree
+\texttt{ab230a93b8fb310d58aefd7ac5da92e5d5e0f408}.
+
+The only created audit artifact before the independent-core freeze is this
+path:
+\begin{center}
+\path{doc/audits/packages/SCI-MAP-003_INDEPENDENT_CORE.tex}.
+\end{center}
+No rendered artifact, evidence manifest, canonical ledger edit, canonical
+handoff edit, application/test/build/configuration/validation edit, or helper
+is part of Phase 1.
+
+\subsection{Ordered pre-core exposure record}
+
+Every object was digest-verified before first content exposure.  The manifest
+is control-plane input; the following nine content objects are the complete
+scientific authority set.  Timestamps are UTC first-open events in this Ultra
+Phase-1 task.
+
+\begin{longtable}{@{}L{0.07\textwidth}L{0.23\textwidth}L{0.45\textwidth}L{0.17\textwidth}@{}}
+\toprule
+Order & ID & Exact ref and path & First opened \\
+\midrule
+\endhead
+0 & manifest &
+\texttt{8fb893639bdf504968186867790cf1b140b2ff54}:\newline
+\path{doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003_INBOX_AUTHORITY_MANIFEST_2026-08-14.yaml} &
+2026-08-14 14:57:42 \\
+1 & \texttt{REG-D001} &
+\texttt{5c5a7fad052ac433207c1c6c61355b53c61a476c}:\newline
+\path{doc/audits/packages/SCI-MAP-003_PRODUCT_REGISTRATION_2026-08-14.md} &
+2026-08-14 14:57:42 \\
+2 & architecture &
+\texttt{46ad23888a40f5102cdfd50c06e49a549bdf8a20}:\newline
+\path{doc/ARCHITECTURE.md} & 2026-08-14 14:57:46 \\
+3 & conventions &
+\texttt{46ad23888a40f5102cdfd50c06e49a549bdf8a20}:\newline
+\path{doc/SCIENTIFIC_CONVENTIONS.md} & 2026-08-14 14:57:51 \\
+4 & products &
+\texttt{46ad23888a40f5102cdfd50c06e49a549bdf8a20}:\newline
+\path{validation/product_contracts.json} & 2026-08-14 14:57:55 \\
+5 & \texttt{XAUD-001} &
+\texttt{b3e500117ab273d38d5055e82683a49015d028cf}:\newline
+\path{doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-001.yaml} &
+2026-08-14 14:59:13 \\
+6 & \texttt{XAUD-002} & same ref, \path{doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-002.yaml} & 2026-08-14 14:59:18 \\
+7 & \texttt{XAUD-003} & same ref, \path{doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-003.yaml} & 2026-08-14 14:59:24 \\
+8 & \texttt{XAUD-004} & same ref, \path{doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-004.yaml} & 2026-08-14 14:59:30 \\
+9 & \texttt{XAUD-005} & same ref, \path{doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-005.yaml} & 2026-08-14 14:59:37 \\
+\bottomrule
+\end{longtable}
+
+The verified SHA-256 values, in the same order, are
+\texttt{3b77493a7f821fd4c0251f64d1786778be90965764bee46484e6b4709f7a4a49},
+\texttt{b3c81a9186e3fb68e0209654427b14dcf81793a832bba47e8357d262c0072ae8},
+\texttt{d78571ab2da351fb2884b966b7dcbbd9e3d68d0c8c692a18f47159c2c7196f31},
+\texttt{1970d7e31ccbcf77f890ea7c0854fde59d25b2fc745f909a74150360605d3049},
+\texttt{f98d57f713c9a9efa2d602c5c5d90a741fd42d97be764944871a44ad640bf32d},
+\texttt{02601475819b1e64df0975098c70898f0db7b4d3b975eedaa5f3125692f8f809},
+\texttt{9708a2ddd0a1b95079037cee110a2c51c0b26bc20f349b09fd817a48a024035d},
+\texttt{1db43ab766d4f80ec691fdffac4f32b064b76f196a2ad25df030a62b69b2f884},
+\texttt{20d73f69f9c4413da970e96b6d3c4e85a3426550482df6e37b06f164db3c1893},
+and
+\texttt{27f36350feb0a126f5045d6b64a98afc44ccaf3c339f102c30cc390daf6779ac}.
+
+The complete 2,445-line product-contract object was read through end of file in
+bounded chunks after its first-open event.  Repository \texttt{AGENTS.md}, the
+TolTEC context skill, and its two routing maps were procedural instructions,
+not scientific evidence.  No quarantined implementation path, application
+source diff, post-core object or handoff payload, broader source artifact,
+historical handoff, or prototype was opened.  Names and digests of quarantined
+objects visible inside the admitted prompt/manifest are metadata, not content
+exposure.
+
+\section{Scientific claim and conditionality}
+
+For one exact OOF/JINC product cell, let an exact discrete reference tracer
+$g$ and the final normalized response kernel $k$ live on the same admitted map
+grid.  The proposed transformation is
+\[
+ (g,k,\mathcal I) \longrightarrow (\widehat H,\mathcal D,\mathcal I_H)
+ \longrightarrow P_{\mathrm{pred}}(\theta),
+\]
+where $\mathcal I$ is immutable observation/reduction/product identity,
+$\mathcal D$ is an admitted Fourier-domain set, and $\mathcal I_H$ is the
+persisted transfer identity.  This is system identification from a known
+tracer and its final response.  It is not deconvolution of an observed OOF map.
+
+The independent result is conditional:
+
+\begin{quote}
+If $g$ and $k$ are finite, identity-compatible realizations of the same exact
+linear, shift-invariant working-grid experiment, and if a denominator domain
+and all grid operators are approved, then the frequency-by-frequency
+least-squares transfer is $\widehat H=G^*K/|G|^2$ on that domain.  The admitted
+authority does not yet identify the exact $g$, terminal $k$ parent, validity
+eligibility, denominator policy, padding/windowing operator, uncertainty
+product, persistence schema, or LMTOOF association.  Therefore no actual
+transfer product or LMTOOF consumer is presently available.
+\end{quote}
+
+The ordinary claim is only an effective map-center, point-source,
+linearized response for one exact observation/reduction, band, mode,
+configuration, detector/mask selection, realization, map slot, and terminal
+iteration/pass.  It is neither a universal instrument transfer nor a claim
+about off-center, spatially varying, extended, arbitrary-morphology, nonlinear,
+cross-band, cross-mode, or cross-iteration behavior.
+
+\section{Exact mathematical objects}
+
+\subsection{Spatial grid, axes, frame, and indexing}
+
+Let the admitted parent plane have shape $N_y\times N_x$, with memory indices
+\[
+ r\in\{0,\ldots,N_y-1\},\qquad c\in\{0,\ldots,N_x-1\}.
+\]
+The first array dimension is the row/elevation-like dimension and the second
+is the column/azimuth-like dimension.  For the OOF parent, FITS axis 1 is
+\texttt{AZOFFSET}, FITS axis 2 is \texttt{ELOFFSET}, and both spatial world
+axes are AltAz tangent-plane offsets in arcseconds about the admitted map
+center.  FITS/WCS pixel coordinates are one-based; the in-memory $(r,c)$
+indices and Fourier indices below are zero-based.  Axis sign, orientation,
+handedness, pixel scale, epoch/frame, and center come from the full-precision
+parent WCS, never from array position or a nominal plotting convention.
+
+Let $A$ be the full-precision local $2\times2$ linear WCS map, in
+arcseconds per pixel, from column/row displacement to
+azimuth/elevation tangent-plane displacement.  If
+$c_0=\mathrm{CRPIX1}-1$ and $r_0=\mathrm{CRPIX2}-1$, then locally
+\[
+ \begin{bmatrix}x_{r,c}\\y_{r,c}\end{bmatrix}
+ = A\begin{bmatrix}c-c_0\\r-r_0\end{bmatrix}.
+\]
+A singular, non-finite, inconsistent, identity-mismatched, or out-of-domain
+WCS makes transfer construction unavailable.  A fractional reference pixel
+does not authorize resampling or independent peak recentering.
+
+The exact parent shape, WCS, map slot, Stokes identity (the validated lane is
+Stokes I, typed index 0), array/band identity, and signal/kernel unit must be
+identical for $g$ and $k$.  General reprojection, interpolation, fractional
+alignment, or implicit recentering is not admitted.
+
+\subsection{Reference, response, and Fourier objects}
+
+The spatial objects are
+\[
+ g,k\in\R^{N_y\times N_x}.
+\]
+Both carry map-signal/kernel unit \texttt{mJy/beam} under the admitted current
+product convention.  Their physical pixel values must be finite on the exact
+rectangular working support presented to the transform.  A mask, missing
+pixel, NaN, or infinite value cannot be silently replaced by zero.  Any
+masking, inpainting, zero-fill, window, crop, or padding is a separately named
+linear operator and part of product identity.
+
+The reference $g$ is the exact discrete APT-Gaussian tracer after the selected
+APT rows/detector mixture, amplitude, truncation, centering, pixelization, and
+every admitted response-changing preparation.  Those selections are not yet
+specified by authority (nondecision ND-G).  The response $k$ is the exact final
+normalized JINC $K/C$ plane: the realized processing-filtered source-template
+response projected through JINC and normalized by the same formal support
+denominator.  It must not be convolved through JINC or globally normalized a
+second time.  It is not relabeled as an analytic beam or measured PSF.
+
+For mathematical reference this core uses the unshifted, forward-unnormalized
+two-dimensional DFT pair
+\begin{align}
+ X_{p,q}=\FFT[x]_{p,q}
+ &=\sum_{r=0}^{N_y-1}\sum_{c=0}^{N_x-1}
+ x_{r,c}\exp\!\left[-2\pi i\left(\frac{pr}{N_y}+\frac{qc}{N_x}\right)\right],\\
+ x_{r,c}=\IFFT[X]_{r,c}
+ &=\frac{1}{N_xN_y}\sum_{p=0}^{N_y-1}\sum_{q=0}^{N_x-1}
+ X_{p,q}\exp\!\left[+2\pi i\left(\frac{pr}{N_y}+\frac{qc}{N_x}\right)\right].
+\end{align}
+Thus $G=\FFT[g]$ and $K=\FFT[k]$ have identical transform-dependent units,
+and their quotient $H$ is dimensionless.  A different matched normalization
+is mathematically equivalent for $H$ but must be named for persistence and
+forward synthesis.  \texttt{fftshift} is display/storage ordering, not a new
+scientific axis; if used it must be applied consistently and recorded.
+
+Define wrapped signed frequency indices
+\[
+ \widetilde q=\begin{cases}q,&q\leq\lfloor N_x/2\rfloor,\\q-N_x,&\text{otherwise},\end{cases}
+ \quad
+ \widetilde p=\begin{cases}p,&p\leq\lfloor N_y/2\rfloor,\\p-N_y,&\text{otherwise}.
+ \end{cases}
+\]
+Nyquist-bin sign at even length is a storage convention that must be frozen;
+the conjugate-pair identity is authoritative.  The corresponding world
+spatial-frequency vector is
+\[
+ \boldsymbol\nu_{p,q}=A^{-T}
+ \begin{bmatrix}\widetilde q/N_x\\\widetilde p/N_y\end{bmatrix}
+ \quad\text{cycles per arcsecond}.
+\]
+This dual-WCS construction preserves axis sign, orientation, handedness, and
+pixel scale.  A radial coordinate $\|\boldsymbol\nu\|$ may be diagnostic, but
+radialization is not the product.
+
+Using one common array origin for $g$ and $k$ preserves relative phase.
+Changing to a common centered-coordinate Fourier convention multiplies both
+transforms by the same phase and cancels in $K/G$.  Recentring $g$ and $k$
+independently changes their relative phase and is forbidden.  Padding,
+cropping, apodization, and boundary conditions do not generally cancel and
+remain nondecision ND-GRID.
+
+\subsection{Estimator and admitted denominator domain}
+
+On the exact working grid, the effective model is
+\[
+ k=h\circledast g+e,
+ \qquad K_{p,q}=H^{\mathrm{true}}_{p,q}G_{p,q}+E_{p,q},
+\]
+where $\circledast$ is circular convolution under the stated DFT.  A claim of
+linear rather than circular convolution requires an explicit zero-padding and
+crop operator.  The residual $e$ includes stochastic error and model
+discrepancy; the equation is an approximation limited to the admitted
+map-center response.
+
+Let $d_{p,q}=|G_{p,q}|^2$.  The denominator domain must be a versioned set
+\[
+ \mathcal D=\{(p,q): I_{p,q}=1,\ G_{p,q},K_{p,q},d_{p,q}\text{ finite},
+ \ d_{p,q}\ \bowtie\ \tau_{p,q},\ B_{p,q}=1\},
+\]
+where $I$ is input/identity validity, $B$ is an independently declared
+frequency-band restriction, $\tau$ is an exact threshold reference, and
+$\bowtie$ is the frozen boundary comparator.  None of $\tau$, $B$, tapering,
+or the at-threshold comparator is approved by the admitted authority
+(nondecision ND-DEN).  Zero denominator is always excluded.
+
+For $(p,q)\in\mathcal D$, the unregularized one-regressor complex
+least-squares estimator is
+\begin{equation}
+ \widehat H_{p,q}
+ =\frac{G_{p,q}^{*}K_{p,q}}{|G_{p,q}|^2}
+ =\frac{K_{p,q}}{G_{p,q}}.
+ \label{eq:estimator}
+\end{equation}
+Outside $\mathcal D$, $H$ is missing/invalid, not numerically zero.  A
+Tikhonov/Wiener denominator, clipping, extrapolation, interpolation, or
+high-frequency fill is a different estimator and is not authorized.  A taper
+$T_{p,q}$ is a distinct response factor and must be persisted rather than
+hidden in $H$.
+
+The product is the pair $(\widehat H,\mathcal D)$ plus exact identity, not a
+bare complex array.  Because inverse transformation needs a complete spectrum,
+LMTOOF also requires an approved synthesis operator $S_{\mathcal D}$ that
+defines excluded frequencies and any taper.  No such operator is approved;
+therefore the forward consumer remains unavailable even if values on
+$\mathcal D$ can be computed.
+
+\subsection{Forward-model operator}
+
+For an approved consumer and an optical prediction
+$P_{\mathrm{opt}}(\theta)$ on the identical working grid and in a declared
+compatible amplitude unit,
+\begin{equation}
+ P_{\mathrm{pred}}(\theta)=
+ \IFFT\!\left[S_{\mathcal D}(\widehat H)\,
+ \FFT\!\left(P_{\mathrm{opt}}(\theta)\right)\right].
+ \label{eq:forward}
+\end{equation}
+The FFT convention, grid, padding/crop/window operator, axes, and parent
+identity must match those of $H$.  $H$ is constructed once per exact OOF
+observation/reduction and is fixed for every trial $\theta$ within that one
+LMTOOF solve.  Trial aberrations are never transfer-construction inputs.  A
+later telescope correction requires a later OOF observation/reduction and a
+new transfer identity; $H$ is not updated inside a solve.
+
+If $P_{\mathrm{opt}}$ is in \texttt{mJy/beam}, the predicted plane retains
+that unit because $H$ is dimensionless.  If the optical model is normalized or
+dimensionless, its conversion and any nuisance amplitude are a separately
+fitted consumer parameter.  Authority has not selected that amplitude
+contract (ND-AMP).
+
+\section{Variable classification}
+
+Classification is conditional on the exact product identity.  ``Fixed'' does
+not mean universally known; it means fixed within one constructed transfer or
+one LMTOOF solve.
+
+\begin{longtable}{@{}L{0.18\textwidth}L{0.22\textwidth}L{0.51\textwidth}@{}}
+\toprule
+Object & Classification & Meaning \\
+\midrule
+\endhead
+$\mathcal I$, application SHA, observation/reduction, band/mode, map slot,
+WCS, shape, iteration/pass & conditioned upon; fixed within product & Exact
+identity gates.  Selection occurs upstream and must be immutable here. \\
+APT rows, detector mixture, masks, map cell, terminal parent & selected;
+conditioned upon & Selection changes $g$, $k$, and the claim; no marginalization
+is implied. \\
+$g$ & selected and data-derived; fixed conditional on exact APT/calibration;
+potentially random under calibration uncertainty & Exact discrete reference.
+Its approved construction is currently unavailable. \\
+$k$ & data-derived random realization; conditioned upon selected reduction &
+Final normalized response plane.  Its measurement/reduction noise and response
+uncertainty are not supplied. \\
+$G,K,d$ & data-derived deterministic transforms conditional on realized
+$g,k$ & Complex transforms and denominator power. \\
+$\tau,B,\bowtie,T,S_{\mathcal D}$ & selected; possibly data-derived; fixed once
+effective/realized & Conditioning and synthesis policy.  No selection is yet
+approved. \\
+$\mathcal D$ & selected and data-derived; conditioned upon policy and $g$ &
+Frequency admission, not confidence or general science validity. \\
+$\widehat H$ & fitted/data-derived; random if $g$ or $k$ is random; fixed within
+one solve & Complex two-dimensional estimated response. \\
+$\theta$ & fitted by a later LMTOOF consumer & Not an input to transfer
+construction. \\
+LMTOOF nuisance amplitude & fitted if separately approved & Must not be hidden
+by normalizing $H$; currently a nondecision. \\
+$P_{\mathrm{opt}}(\theta)$ & fitted-model prediction, conditioned upon optical
+model and trial $\theta$ & Optical physics is outside SCI-MAP-003 ownership. \\
+$P_{\mathrm{pred}}(\theta)$ & data-derived model prediction & Conditional on
+fixed $H$, synthesis policy, and optical prediction. \\
+Calibration, WCS, RTC/PTC/JINC, terminal-iteration errors & random or systematic
+nuisance variables, conditioned upon if not modeled & Must be represented,
+bounded, or declared unavailable; never absorbed silently into confidence. \\
+\bottomrule
+\end{longtable}
+
+\section{Expectation and uncertainty contract}
+
+\subsection{Conditionally exact reference}
+
+If $G$ is treated as fixed and
+$K=H^{\mathrm{true}}G+E$, then on $\mathcal D$
+\[
+ \E[\widehat H_{j}\mid G,\mathcal D]
+ =H^{\mathrm{true}}_{j}+\frac{G_j^*}{|G_j|^2}\E[E_j\mid G,\mathcal D].
+\]
+The estimator is conditionally unbiased only if the residual is conditionally
+zero mean and domain selection introduces no unmodeled selection effect.  With
+Hermitian complex covariance
+\[
+ C_K(j,\ell)=\E[(K_j-\E K_j)(K_\ell-\E K_\ell)^*],
+\]
+the full conditional covariance is
+\begin{equation}
+ C_H(j,\ell)=
+ \frac{G_j^*}{|G_j|^2}\,C_K(j,\ell)\,
+ \frac{G_\ell}{|G_\ell|^2},
+ \qquad
+ \Var(\widehat H_j\mid G)=\frac{C_K(j,j)}{|G_j|^2}.
+ \label{eq:cov-fixed-g}
+\end{equation}
+For a general complex process, the pseudocovariance
+$P_H(j,\ell)=a_jP_K(j,\ell)a_\ell$, with
+$a_j=G_j^*/|G_j|^2$, is also required.  Per-frequency variances do not replace
+off-diagonal covariance and do not establish independence.
+
+\subsection{Uncertain reference and joint covariance}
+
+If both $G$ and $K$ are uncertain, the quotient is nonlinear and is generally
+biased.  First-order perturbation gives
+\[
+ \delta H_j\simeq \frac{\delta K_j}{G_j}
+ -\frac{K_j}{G_j^2}\delta G_j.
+\]
+Let $z=(K,G)$ and
+$J_j=(1/G_j,-K_j/G_j^2)$.  To first order,
+\[
+ C_H(j,\ell)\simeq J_j\,C_z(j,\ell)\,J_\ell^\dagger,
+\]
+with the corresponding pseudocovariance and all $G$--$K$ cross terms.
+Near the denominator boundary this linearization may fail; threshold selection
+itself is then random and requires a selection-aware method or exclusion.
+
+No admitted authority supplies $C_K$, $C_G$, their cross-covariance,
+pseudocovariance, a sampling distribution, repeat-observation empirical
+distribution, or a calibration/systematic error model.  Consequently:
+\begin{itemize}
+\item formal variance and full covariance are mathematically defined above but
+numerically \NA;
+\item empirical uncertainty is \NA, because no authorized repeat or synthetic
+execution exists;
+\item calibration/systematic uncertainty from APT amplitude/mixture, map
+calibration, WCS, masks, RTC/PTC/JINC response, and terminal iteration is
+\NA;
+\item response uncertainty is \NA; $H$ must not be advertised as exact merely
+because the quotient is deterministic for realized inputs; and
+\item confidence intervals, inverse-variance weighting, likelihood weights,
+and LMTOOF uncertainty propagation are unauthorized.
+\end{itemize}
+
+For fixed $P_{\mathrm{opt}}$, prediction covariance would be the linear
+propagation of $C_H$ through Equation~\ref{eq:forward}.  Optical-model and
+fitted-parameter covariance are separate consumer-owned terms.  Because neither
+$C_H$ nor an approved synthesis operator exists, prediction covariance is
+currently \NA.
+
+\section{Distinct support, validity, and response objects}
+
+\begin{longtable}{@{}L{0.18\textwidth}L{0.28\textwidth}L{0.45\textwidth}@{}}
+\toprule
+Object & Scientific meaning & Prohibited conflation \\
+\midrule
+\endhead
+Variance/covariance & Second moments of a named random estimator, with squared
+units or cross-units & Not inferred from coefficient, hits, coverage, or finite
+population. \\
+Inverse variance & Precision only under an approved covariance model &
+\texttt{weight\_I} is nonprecision by default and cannot be promoted. \\
+Geometric hits & Finite in-bounds projections before eligibility/selection &
+Not exposure, contribution, precision, or validity. \\
+Contributing hits & Terms admitted by a named estimator predicate & Not
+geometric opportunity or confidence.  Current JINC F010 contribution facts are
+explicitly unavailable. \\
+Coverage/exposure & Detector-seconds or other named opportunity/retention fact
+& Not unique wall time, support, response, precision, or validity. \\
+Numerical support & Where an operation/division/population is possible under a
+named rule & Does not authorize scientific use. \\
+Science-policy support & Result of a separate science cut & Not validity by
+itself. \\
+Authoritative validity & Identity plus required support, policy, finite values,
+and required companions & Cannot be promoted by finite $g,k,H$, positive
+coefficient, coverage, or a local mask. \\
+Denominator admission $\mathcal D$ & Frequencies where the quotient is allowed
+under the exact denominator/band policy & Not a probability, confidence,
+spatial validity, or high-frequency extrapolation license. \\
+Response $H$ & Complex dimensionless operator on the admitted Fourier grid &
+Not a PSF, analytic beam, radial amplitude curve, covariance, or confidence. \\
+Confidence & Inferential probability/coverage under a stochastic model &
+Unavailable; no substitute plane is admitted. \\
+Output validity & Whether persisted $H$, its domain, metadata, and companions
+form a complete product & Separate from input validity and operator-local
+support. \\
+\bottomrule
+\end{longtable}
+
+The product status vocabulary is exactly
+\texttt{computed\_published},
+\texttt{not\_computed\_or\_not\_requested\_for\_this\_product},
+\texttt{invalid}, and \texttt{unavailable}.  Missing parent, identity mismatch,
+non-finite input, incomplete terminal state, invalid WCS, or unapproved
+denominator/synthesis policy cannot be encoded as a finite zero response.
+
+\section{Configuration and realization lifecycle}
+
+The one-way lifecycle is:
+\[
+ \text{requested}\rightarrow\text{effective}\rightarrow
+ \text{observation-resolved}\rightarrow\text{realized}.
+\]
+
+\begin{description}
+\item[Requested.] Whether a transfer is requested; requested publication and
+consumer intent; requested RTC/PTC/JINC, map, padding/window, denominator, and
+uncertainty policies.  Disabled expert values remain requested facts, not
+executed behavior.
+\item[Effective.] Context-free activation, required/optional publication,
+representation, DFT normalization/order, grid operator, denominator algorithm,
+comparator, taper/synthesis rule, and failure policy after validation.
+\item[Observation-resolved.] Exact observation/reduction, array/band/mode/map
+slot, APT rows and detector mixture, calibration, masks, WCS/shape, parent
+map/kernel, sample-dependent RTC/PTC/JINC state, threshold values, and selected
+terminal iteration/pass.
+\item[Realized.] Exact $g$ and $k$ bytes/digests, transforms, denominator
+values, admitted-domain mask/count, response values, status, excluded-frequency
+reasons, uncertainty availability, persisted product digest, and completion or
+failure state.
+\end{description}
+
+Later stages never rewrite earlier authority.  Provenance reports state; it is
+not an execution control path.  A later observation after telescope correction
+creates a new realization and transfer identity.
+
+\section{Product identity and minimum persistence contract}
+
+Any future persisted transfer must bind, losslessly and immutably:
+\begin{itemize}
+\item observation, reduction, governing application SHA, algorithm/version,
+configuration digest, TolTEC array/band, mode/intent, map slot, and Stokes;
+\item APT identity and selected detector/row mixture; calibration and source
+template identity; source, eligibility, mask, flag, and validity policies;
+\item requested, effective, observation-resolved, and realized RTC/PTC/JINC
+states, including every response-changing stage or an honest unavailable
+state;
+\item exact parent map and final normalized kernel identity/digest, fruit-loop
+iteration/pass, terminal state, and parent chain;
+\item $N_y,N_x$, full-precision parent WCS, frame, axes, units, index bases,
+DFT normalization/order, centering/origin, boundary condition, padding, crop,
+and window;
+\item complex two-dimensional $H$ without real projection or radialization,
+the separate domain mask $\mathcal D$, denominator values or lossless
+reference, threshold/comparator/band/taper/synthesis identities, DC treatment,
+and excluded-bin reasons;
+\item uncertainty/covariance availability and identity, typed product status,
+required/optional publication, required companions, failure reason, and exact
+product digest; and
+\item consumer allowlist and fixed-within-solve/recompute-between-cycles rule.
+\end{itemize}
+
+Real/imaginary planes or an exactly invertible complex encoding are admissible
+representations in principle.  Amplitude/phase alone must define zero-amplitude
+phase behavior and preserve exact reconstruction.  No storage format, path,
+schema version, required/optional publication rule, or covariance
+representation is approved (ND-PUB and ND-UNC).  The transfer product therefore
+remains \NA.
+
+\section{Ten required decisions and explicit nondecisions}
+
+\begin{longtable}{@{}L{0.05\textwidth}L{0.24\textwidth}L{0.62\textwidth}@{}}
+\toprule
+No. & Topic & Independent-core disposition \\
+\midrule
+\endhead
+1 & Exact discrete $g$ & \textbf{ND-G, owner decision required.}  Freeze APT
+identity/rows or detector mixture, weights, amplitude and unit, Gaussian
+parameters, truncation/support, center, pixelization, WCS, masks, and relation
+to the LMTOOF nominal optical model.  Until then $g$ is unavailable. \\
+2 & Exact final $k$ & \textbf{Partly decided.}  Consume exactly the final
+normalized JINC $K/C$ plane without redeposition or renormalization.  Bind all
+realized response-changing stages.  \textbf{ND-K:} terminal fruit-loop
+iteration/pass, exact parent, complete RTC response, and VAL eligibility remain
+open; partial response means unavailable. \\
+3 & Complex/real and 2-D/radial & \textbf{Decided.}  The primary product is
+complex and two-dimensional.  Preserve phase and Hermitian information.
+Real projection, magnitude-only storage, radialization, or unity normalization
+requires a later derived-product decision. \\
+4 & FFT/grid convention & \textbf{Mathematical reference decided; production
+policy open.}  Equations use the explicit DFT and dual-WCS axes above.
+\textbf{ND-GRID:} padding, crop, window, boundary condition, persisted ordering,
+Nyquist sign, and any handling of invalid spatial pixels require approval. \\
+5 & Denominator/domain & \textbf{ND-DEN, owner decision required.}  Freeze the
+denominator reference, absolute/relative/noise basis, threshold, comparator,
+band, taper, excluded-bin state, and synthesis rule.  No regularization or
+extrapolation is inferred. \\
+6 & DC/amplitude & \textbf{Decided in part.}  If DC is admitted, retain measured
+$H_{0,0}=K_{0,0}/G_{0,0}$, including sign/amplitude; do not force unity.
+\textbf{ND-AMP:} LMTOOF optical units and any separate fitted nuisance amplitude
+are unresolved. \\
+7 & Approximation limits & \textbf{Decided.}  Exact-cell, map-center,
+point-source-template, linearized, observation/reduction-, band/mode-,
+configuration-, selection-, realization-, and iteration-specific only.
+Off-center, spatially varying, arbitrary morphology/amplitude, extended,
+nonlinear, cross-band/mode, or universal claims fail closed. \\
+8 & Representation/publication & \textbf{Minimum metadata derived; ND-PUB.}
+Persist complex $H$, separate domain and status, exact parent digests and
+provenance.  Format/path/schema, association, required/optional policy, and
+failure surface require owner decisions. \\
+9 & LMTOOF behavior & \textbf{Lifecycle decided; admission open.}  Hold $H$
+fixed within one solve; recompute from a new OOF reduction after correction;
+never use trial aberrations to construct it.  \textbf{ND-MODE:} SCI-MODE-001
+association/admission/failure policy is open, so every LMTOOF use is forbidden. \\
+10 & Evidence/adoption & \textbf{Classes identified, evidence unsupplied.}
+Local analytic/synthetic fixtures are preregistered but held.  Retained
+observation evidence, exact external/human evidence, and telescope-gain
+evidence need later protocols and authorization.  No validation or production
+adoption follows. \\
+\bottomrule
+\end{longtable}
+
+\section{Named nondecisions and falsifiable closure gates}
+
+\begin{longtable}{@{}L{0.13\textwidth}L{0.34\textwidth}L{0.44\textwidth}@{}}
+\toprule
+ID & Nondecision & Falsifiable closure gate \\
+\midrule
+\endhead
+ND-G & Exact discrete tracer & Owner-approved contract and fixture name every
+input row/weight, Gaussian parameter, unit, support, center, pixelization,
+WCS, mask, and digest; two independent reconstructions are byte-identical or
+within a frozen arithmetic bound. \\
+ND-K & Terminal normalized response parent & SCI-RTC-001, SCI-VAL-001, and
+SCI-FRUIT-001 establish complete-response-or-unavailable, eligibility, and
+terminal iteration/parent identity; the selected $k$ digest matches the
+published parent chain. \\
+ND-GRID & Working-grid operator & One versioned operator names boundary,
+padding, crop, window, origin, FFT normalization/order, WCS dual axes, and
+invalid-pixel policy; odd/even and orientation fixtures pass without hidden
+recentering. \\
+ND-DEN & Denominator and synthesis & Owner freezes $d$, $\tau$, comparator,
+band, taper, excluded state, and $S_{\mathcal D}$; below/at/above-boundary and
+zero/non-finite cases return exactly the registered statuses. \\
+ND-AMP & Consumer amplitude & LMTOOF owner freezes optical units, calibration,
+and whether a distinct nuisance amplitude is fitted; scalar fixtures prove
+that $H$ itself retains measured DC/amplitude. \\
+ND-UNC & Uncertainty/covariance & An approved estimator supplies formal and/or
+empirical $G,K,H$ covariance (and pseudocovariance/cross terms where needed),
+systematic terms, persistence, and propagation; coverage is demonstrated on
+named fixtures/data. \\
+ND-VAL & Input/output validity & SCI-VAL-001 defines applicable sample,
+detector, spatial, parent, denominator, output, non-finite, and support rules;
+invalid inputs cannot produce a valid finite transfer. \\
+ND-PUB & Product schema/publication & Versioned schema and product contract
+define complex encoding, domain/status, metadata, cardinality, association,
+required/optional policy, atomic failure, and digest; required-output failure
+propagates. \\
+ND-MODE & OOF association and LMTOOF admission & SCI-MODE-001 freezes exact OOF
+association, allowed consumer/version, identity checks, fixed/recompute rule,
+and fail-closed behavior; deliberate mismatch cases are rejected. \\
+ND-EVID & Validation and production evidence & All authorized local fixtures,
+retained observation cases, external requests, and telescope-gain protocol
+meet preregistered tolerances and stop rules; a separate owner decision still
+authorizes production. \\
+\bottomrule
+\end{longtable}
+
+Any failed gate leaves the affected object \texttt{invalid} or \NA.  A late
+object cannot rewrite this frozen core; it requires a dated amendment that
+preserves this file, a fresh re-audit, or an independently authorized urgent
+restriction.
+
+\section{Preregistered analytic and synthetic cases---execution held}
+
+These cases are specifications, not results.  Execution is not authorized.
+The provisional class is \texttt{not\_costly}: one serial local process,
+binary64 arrays no larger than $129\times129$, less than 20 MiB transient
+memory, less than 10 CPU-seconds estimated total, no Citlali reduction, no
+LMTOOF, no external scheduling/data, no network, and no durable output beyond
+a separately authorized result record.  Any expansion requires
+reclassification.
+
+For cases 1--4 and 6--8 use a base $N_y=8$, $N_x=10$ periodic grid and
+$\delta_{a,b}[r,c]=1$ at $(r,c)=(a,b)$ and zero elsewhere.  Conceptual expected
+values are exact.  A later binary64 execution uses
+\[
+ T(X)=64\,\epsilon_{64}\,N_xN_y
+ \max(1,\|X\|_\infty)
+\]
+as the maximum complex absolute-error bound for one forward/inverse identity,
+and $2T$ for a composed forward-closure identity.  Metadata, masks, status,
+cardinality, and identity rejection are exact.  Phase is compared through the
+complex number, never by a wrapped phase angle, and only where expected
+amplitude is nonzero.  A library-specific tighter bound may be added only by a
+successor preregistration; this bound may not be widened after seeing results.
+
+\begin{longtable}{@{}L{0.05\textwidth}L{0.24\textwidth}L{0.62\textwidth}@{}}
+\toprule
+No. & Construction & Expected identity, metric, and invalid state \\
+\midrule
+\endhead
+1 & Exact identity & Set $g=k=\delta_{2,3}$.  On every admitted bin,
+$\widehat H=1+0i$, including DC; $\IFFT(\widehat H G)=g$.  Maximum complex error
+must be at most $T(1)$ and no bin may be excluded when the registered domain
+admits $|G|^2=1$. \\
+2 & Signed scalar/DC & For $\alpha\in\{2,-3/2\}$ set $g=\delta_{2,3}$ and
+$k=\alpha g$.  Expect $H=\alpha$ on all admitted bins and
+$H_{0,0}=\alpha$.  Any forced unity, absolute value, lost sign, or separate
+normalization fails. \\
+3 & Integer/subpixel shift & Integer case:
+$k=\delta_{(2+2)\bmod8,(3-1)\bmod10}$, expecting
+$H_{p,q}=\exp[-2\pi i(2p/8-q/10)]$.  Subpixel case: define
+$K=G\exp[-2\pi i((1/4)p/8+(-3/8)q/10)]$ and $k=\IFFT K$; expect that phase ramp
+and a real $k$ to within $T(k)$.  Independent peak recentering must fail the
+phase expectation. \\
+4 & Box/sinc pair & Set $g=\delta_{0,0}$ and
+$k_{r,c}=1/15$ for $r\in\{-1,0,1\}\bmod8$ and
+$c\in\{-2,-1,0,1,2\}\bmod10$, zero otherwise.  Expect the exact product of
+finite Dirichlet factors
+$H_{p,q}=\frac{1}{3}\sum_{u=-1}^{1}e^{-2\pi ipu/8}
+\frac{1}{5}\sum_{v=-2}^{2}e^{-2\pi iqv/10}$, with its signed zeros/lobes and
+DC one.  A magnitude-only sinc fails. \\
+5 & JINC/Hankel limit & Use three centered square grids
+$(N,\Delta)=(65,1),(129,1),(129,1/2)$, with
+$x=(c-(N-1)/2)\Delta$, $y=(r-(N-1)/2)\Delta$.  Sample
+$j(\rho)=2J_1(\rho)/\rho$, $j(0)=1$, with
+$\rho=\pi\sqrt{x^2+y^2}/4$, and set it to zero for
+$\sqrt{x^2+y^2}>12$; use each exact discrete DFT as reference.  The
+$(65,1)\rightarrow(129,1)$ pair tests increased extent at fixed sampling and
+the $(65,1)\rightarrow(129,1/2)$ pair tests finer sampling at fixed extent.
+Compare a radial diagnostic only with the corresponding continuum Hankel
+limiting shape inside one quarter of the smaller Nyquist domain.  The discrete
+result is authoritative; continuum equality is not claimed.  Failure of the
+interior relative $L_2$ discrepancy to decrease under either controlled
+refinement falsifies that continuum-approximation claim but not the discrete
+transform. \\
+6 & Asymmetric response & Set $g=\delta_{0,0}$ and
+$k=\delta_{0,0}+0.3\delta_{1,2}-0.2\delta_{3,1}$.  Expect
+$H=1+0.3e^{-2\pi i(p/8+2q/10)}-0.2e^{-2\pi i(3p/8+q/10)}$.
+It is complex, two-dimensional, and Hermitian as a spectrum of real $k$.
+Real projection, radial averaging, or magnitude-only storage must exceed the
+closure bound and fail. \\
+7 & Forward closure & For every prior real case, form
+$k_{\mathcal D}=\IFFT[S_{\mathcal D}(\widehat H)G]$ and compare with the
+identically projected $\IFFT[S_{\mathcal D}(K)]$.  Require relative $L_2$
+error at most $128\epsilon_{64}N_xN_y$ and maximum error at most $2T(k)$.
+Comparison with unprojected $k$ is forbidden when $\mathcal D$ is incomplete. \\
+8 & Denominator boundary & At one non-DC bin construct $|G|^2$ at
+$\tau(1-4\epsilon_{64})$, exactly $\tau$, and
+$\tau(1+4\epsilon_{64})$, plus zero, NaN, and infinity cases, with finite $K$.
+Below is excluded, above is admitted, and the exact-threshold result follows
+the frozen comparator $\bowtie$; execution is blocked until that comparator is
+approved.  Zero/non-finite inputs are invalid/unavailable.  A taper must be
+reported separately from admission. \\
+9 & Odd/even, WCS, grid operators & Use shapes $7\times9$ and $8\times10$,
+delta tracers at the full-precision WCS reference, and WCS matrices
+$A=\mathrm{diag}(-1,1)$ and
+$A=\begin{bmatrix}0&1\\-1&0\end{bmatrix}$ arcsec/pixel.  Verify
+$A^{-T}$ frequency axes, conjugate pairing, center/origin behavior, and
+one-based/zero-based conversion exactly.  Separately declare identity,
+zero-padding-to-double-shape then crop, and Hann-window operators; an undeclared
+operator or shape/WCS change is an identity failure, not a tolerance case. \\
+10 & Hermitian and deliberate non-Hermitian & For real $g,k$ and a
+conjugate-symmetric domain require
+$H_{-p,-q}=H_{p,q}^*$ and inverse imaginary leakage at most $T(k)$.  Then add
+$i/4$ to one member of a non-self-conjugate pair only; the inverse must be
+complex with imaginary norm above $T(k)$.  Automatic real projection is a
+failure, not cleanup. \\
+11 & Deliberate identity mismatches & Starting from an otherwise admissible
+record, mutate exactly one of observation, reduction/parent digest, band,
+mode, configuration digest, iteration/pass, shape, axis order, WCS
+sign/scale/center, or object digest.  Each mutation must reject before quotient,
+publication, LMTOOF prediction, or any live state change.  No numerical
+tolerance applies. \\
+\bottomrule
+\end{longtable}
+
+No case may be executed until the exact denominator/grid nondecisions relevant
+to it are frozen, a manager authorizes execution, and the case protocol is
+committed without changing this core.  The costly
+\texttt{SCI-MAP-003-REDUCTION-LMTOOF-TELESCOPE-PLAN} remains held; it requires
+the complete numerical-control framework, source guard census after this
+freeze, evidence-salvage plan, independent review, readiness certificate,
+mechanical launch gate, and separate human/external authority.
+
+\subsection{Evidence classes required before adoption}
+
+\begin{longtable}{@{}L{0.18\textwidth}L{0.36\textwidth}L{0.37\textwidth}@{}}
+\toprule
+Class & Minimum exact evidence & Current state \\
+\midrule
+\endhead
+Local analytic/synthetic & All eleven frozen cases; exact implementation and
+product identity; registered metrics/tolerances; denominator sensitivity;
+forward closure; exact mismatch failures; serial and any separately claimed
+parallel equivalence & Preregistered \texttt{not\_costly}; execution held. \\
+Retained observation/reduction & Owner-selected immutable OOF reductions for
+every proposed band/mode/configuration/selection lane; exact $g,k,H$, terminal
+parent and digests; complete RTC/PTC/JINC/VAL/FRUIT states; repeat or split data
+capable of testing response stability and uncertainty; no missing required
+products or unexpected errors & Dataset IDs and protocol unsupplied; no
+retained artifact opened. \\
+External LMTOOF & Human-supplied, timestamped and scoped optical-model inputs,
+OOF association, consumer version, fitted parameters/covariance, predicted
+maps, residuals, and exact identity checks, under a frozen protocol independent
+of this derivation & Costly and held; no request issued and no external contact. \\
+Telescope gain/closed-loop & Predeclared relation between fitted aberration,
+commanded correction, and a later independently reduced OOF cycle; sign,
+units, gain, saturation/stability limits, recomputation identity, stop
+conditions, and withheld validation cases & Costly and held; requires separate
+human/telescope authority and cannot be inferred from map closure. \\
+Production adoption & All preceding evidence plus closed ND gates, independent
+implementation audit, authorized repair if needed, fresh re-audit of the exact
+successor, required-product/failure tests, and an explicit owner production
+decision & Not authorized; successful validation alone is insufficient. \\
+\bottomrule
+\end{longtable}
+
+\section{Provisional consumer allowlist and fail-closed matrix}
+
+\begin{longtable}{@{}L{0.24\textwidth}L{0.18\textwidth}L{0.49\textwidth}@{}}
+\toprule
+Consumer/use & State & Rule \\
+\midrule
+\endhead
+Existing OOF reduction and existing interpretation &
+\texttt{existing\_use\_only} & Remains allowed under its existing contract and
+must not depend on, publish, or imply the new transfer. \\
+This independent audit/core & allowed, nonproduction & May reason from the
+nine authorities and preregister held cases; no numerical or source evidence. \\
+Transfer construction/publication & fail closed & Unavailable until ND-G,
+ND-K, ND-GRID, ND-DEN, ND-VAL, ND-PUB, and required identity gates close. \\
+LMTOOF forward prediction or fitting & fail closed & No consumer admission;
+ND-AMP, ND-UNC, ND-MODE, synthesis, and identity gates remain open. \\
+Cross-band, cross-mode, later-iteration substitution & forbidden & Requires a
+new exact transfer identity and separately admitted evidence. \\
+Off-center, extended, arbitrary-morphology, spatially varying, or nonlinear
+use & forbidden & Outside the bounded map-center linearized point-source claim. \\
+Magnitude-only, real, radial, unity-normalized derived transfer & forbidden &
+Requires a separate owner-approved derived product preserving primary parent
+identity and information-loss status. \\
+Informal prototypes or historical artifacts & quarantined & Cannot be imported,
+modified, or treated as authority; post-core evidence only if later admitted. \\
+Production, telescope correction, or automatic control & forbidden & Requires
+separate validation and production decisions after audit, repair, and fresh
+re-audit. \\
+\bottomrule
+\end{longtable}
+
+\section{Coverage matrix and stop condition}
+
+\begin{longtable}{@{}L{0.34\textwidth}L{0.23\textwidth}L{0.34\textwidth}@{}}
+\toprule
+Required dimension & Covered in & Status \\
+\midrule
+\endhead
+Identity, shape, axes, units, frames, indexing, parentage & Exact mathematical
+objects; product identity & Conditional; named open parents \\
+State, validity, missing/non-finite policy & Distinct objects; lifecycle &
+Fail closed \\
+Estimator and forward operator & Equations~\ref{eq:estimator} and
+\ref{eq:forward} & Derived; domain/synthesis open \\
+Random/fixed/fitted/selected/data-derived/conditioned classification & Variable
+classification & Complete \\
+Expectation, variance, full covariance, empirical, calibration/systematic,
+response uncertainty & Expectation and uncertainty contract & Equations
+derived; numerical products unavailable \\
+Spatial/morphology, band/mode, amplitude, denominator, iteration limits & Claim;
+ten decisions & Bounded/fail closed \\
+Variance, inverse variance, support, validity, hits, coverage, confidence,
+response, denominator admission distinctions & Distinct-object table &
+Complete \\
+Requested/effective/observation-resolved/realized state & Lifecycle & Complete \\
+$g+k+\mathcal I\to H/\mathcal D\to$ persisted product $\to$ prediction & Claim,
+estimator, product, forward operator & Conditional chain explicit \\
+Ten required questions & Ten-decision table & 10/10, with named nondecisions \\
+Unresolved choices and falsifiable gates & Nondecision/gate table & 10 named gates \\
+Eleven analytic/synthetic cases & Preregistered cases & 11/11, execution held \\
+Provisional consumer allowlist & Consumer matrix & Existing use only; new uses
+fail closed \\
+Local/retained/external/telescope evidence & Decision 10 and cost paragraph &
+Identified, not supplied or executed \\
+\bottomrule
+\end{longtable}
+
+The first viable artifact is this exact file frozen by SHA-256 and an immutable
+commit.  The next return point is immediately after that freeze.  Before a
+separate coordinator acceptance, do not open any quarantined source,
+application diff, post-core object/handoff, broader source artifact,
+historical handoff, or prototype; do not render a PDF or execute a fixture;
+and do not begin implementation assessment, repair, re-audit, integration,
+push, merge, rebase, production authorization, external contact, Unity access,
+LMTOOF, or a reduction.
+
+\end{document}
