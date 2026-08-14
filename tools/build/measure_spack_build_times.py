@@ -139,7 +139,6 @@ def timed_command(
     if completed.returncode != 0:
         tail = log_path.read_text(errors="replace").splitlines()[-80:]
         print("\n".join(tail))
-        raise RuntimeError(f"timing stage failed: {name}")
     return result
 
 
@@ -273,6 +272,25 @@ def main(argv: Sequence[str] | None = None) -> int:
         manifest["stages"].append(result)
         manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
 
+    def run_stage(
+        *,
+        name: str,
+        command: Sequence[str],
+        metadata: dict | None = None,
+    ) -> dict:
+        result = timed_command(
+            name=name,
+            command=command,
+            environment=environment,
+            log_path=output_dir / f"{name}.log",
+        )
+        if metadata:
+            result.update(metadata)
+        record(result)
+        if result["returncode"] != 0:
+            raise RuntimeError(f"timing stage failed: {name}")
+        return result
+
     try:
         configure = configure_command(
             source_root=source_root,
@@ -281,45 +299,24 @@ def main(argv: Sequence[str] | None = None) -> int:
             root_hash=root_hash,
             fresh=True,
         )
-        record(
-            timed_command(
-                name="clean_configure",
-                command=spack_build_env_command(spack, environment_path, configure),
-                environment=environment,
-                log_path=output_dir / "clean_configure.log",
-            )
+        run_stage(
+            name="clean_configure",
+            command=spack_build_env_command(spack, environment_path, configure),
         )
         build = spack_build_env_command(
             spack,
             environment_path,
             build_command(build_dir=build_dir, jobs=args.jobs),
         )
-        record(
-            timed_command(
-                name="clean_build",
-                command=build,
-                environment=environment,
-                log_path=output_dir / "clean_build.log",
-            )
-        )
-        record(
-            timed_command(
-                name="no_op_build",
-                command=build,
-                environment=environment,
-                log_path=output_dir / "no_op_build.log",
-            )
-        )
+        run_stage(name="clean_build", command=build)
+        run_stage(name="no_op_build", command=build)
         for index, incremental_path in enumerate(incremental_paths, start=1):
             with timestamp_touch(incremental_path) as touch:
-                result = timed_command(
+                run_stage(
                     name=f"incremental_build_{index}",
                     command=build,
-                    environment=environment,
-                    log_path=output_dir / f"incremental_build_{index}.log",
+                    metadata={"input": touch},
                 )
-                result["input"] = touch
-                record(result)
     finally:
         manifest["completed_at"] = datetime.now().astimezone().isoformat()
         manifest["build_dir_retained"] = args.keep_build_dir

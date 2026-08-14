@@ -112,6 +112,10 @@ the effective C++23 standard; the Tula metadata defect remains upstream debt.
 - The macOS graph builds CFITSIO 4.3.0 from source and declares Homebrew FFTW
   plus GCC 15 Fortran as checked host externals; all C/C++ application code is
   LLVM 20.
+- The formal clean native build campaign at exact source `3a4defda5` records
+  5.93 seconds configure, 161.60 seconds clean build, 0.94 seconds no-op, and
+  173.22 seconds for the header-dominant CLI translation unit. The matching
+  Unity GCC 13 campaign remains the build-timing gate.
 - Promote the checked development revision manifest into immutable release
   sources and a portable release lock.
 
