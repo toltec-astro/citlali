@@ -220,8 +220,22 @@ across those four output callbacks while leaving scan computation parallel.
 Its fresh native LLVM 20/C++23 Spack build passes all 540 enabled CTests,
 including a cross-stream serialization regression, all 31 build-tool tests,
 all 135 baseline-tool tests, and the complete 123-test/four-mode config
-preflight. A fresh Unity package build and managed point rerun are required
-before this operational smoke gate can pass.
+preflight. The exact repair commit `b8e80fb15` subsequently completed the
+interactive Unity acceptance workflow with six CPUs and 16 GB. Two completed
+point runs reproduced all 1,930 compared scientific records exactly and the
+HDF5 failure did not recur. Their 66.43- and 67.72-second iteration times are
+close to one another; the increase from the unsafe 61.84-second run is
+consistent with removing overlapping NetCDF writes but is not a controlled
+performance result.
+
+Managed deployment propagation remains open. Direct invocation of the
+installed executable with the three deployment variables reports
+`profile=unity-gcc13`, the accepted lock digest, and `binding=dag-match`, but
+the same environment applied to `tolteca reduce` produces science products
+marked `profile=unmanaged`. The project assigns this launch-boundary contract
+to the external TolTECA deployment owner and will not add a competing
+Citlali- or TolProj-local wrapper. A deployment-owned propagation fix and one
+short point rerun are required to close the managed-operation gate.
 
 ## 2026-07-26 Conan 2 Build Review
 

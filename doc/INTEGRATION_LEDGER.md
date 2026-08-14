@@ -100,8 +100,14 @@ the effective C++23 standard; the Tula metadata defect remains upstream debt.
   gate. Its managed rerun exposed concurrent NetCDF-C/HDF5 access across the
   independently ordered timestream output streams and segfaulted during file
   close. A shared output-I/O serialization repair passes the full local build,
-  CTest, config, build-tool, and baseline-tool gates; a fresh Unity package
-  build and managed point rerun remain pending.
+  CTest, config, build-tool, and baseline-tool gates. Exact repair commit
+  `b8e80fb15` then passed the interactive Unity acceptance workflow, and two
+  completed point runs reproduced all 1,930 compared scientific records
+  exactly without another HDF5 failure. Direct Citlali invocation accepts the
+  managed profile, lock, and DAG binding, but TolTECA-launched products remain
+  marked unmanaged. That propagation contract is assigned to the external
+  deployment owner; this repository will not add a competing local wrapper.
+  One deployment-owned fix and managed point rerun remain pending.
 - The macOS graph builds CFITSIO 4.3.0 from source and declares Homebrew FFTW
   plus GCC 15 Fortran as checked host externals; all C/C++ application code is
   LLVM 20.
