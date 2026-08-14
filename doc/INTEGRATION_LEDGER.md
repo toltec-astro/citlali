@@ -79,7 +79,13 @@ the effective C++23 standard; the Tula metadata defect remains upstream debt.
   user-callable Spack.
   A user-owned Spack 1.2.2 `unity-gcc13` profile and prerequisite gate are now
   prepared. Its earlier lock is superseded by the upstream-adapter graph;
-  fresh concretization and execution evidence remain pending.
+  fresh concretization passed at lock SHA-256 `d2204524bc170cf9e9458a9f83f2730f4e44c78fe628eb01f7d9f8dee0c52f72`.
+  Unity job `62888690` installed the full graph and passed all 539 enabled
+  developer CTests at exact Citlali `0add18c24`, but stopped before installed
+  CLI/consumer acceptance because the expected Linux Spack development build
+  directory was not ignored and the clean-source gate rejected it. The
+  hygiene rule is corrected; a fresh exact-SHA acceptance job and point run
+  remain pending.
 - The macOS graph builds CFITSIO 4.3.0 from source and declares Homebrew FFTW
   plus GCC 15 Fortran as checked host externals; all C/C++ application code is
   LLVM 20.

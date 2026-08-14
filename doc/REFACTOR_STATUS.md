@@ -162,6 +162,19 @@ passes all 539 enabled developer CTests. The real Unity GCC 13.3 acceptance
 lane is still required; the upstream ARM64 development locks are not Unity
 evidence.
 
+The first exact-source Unity GCC 13.3 attempt, Slurm job `62888690`, used
+Citlali `0add18c24f45580cca7637449b6ff02ca92c9d11`, dependency lock SHA-256
+`d2204524bc170cf9e9458a9f83f2730f4e44c78fe628eb01f7d9f8dee0c52f72`,
+and concrete root `elcot6ah6jtv3onjjmqerxaznnshumqh`. Spack installed the
+full package, the persistent developer build completed, and all 539 enabled
+CTests passed; the pre-existing `MapFitterLifecycle.ExactProductSequence`
+remained explicitly disabled. The job then failed before installed-CLI and
+consumer acceptance because Spack's expected Linux development build
+directory was not ignored and the clean-source gate rejected it. This is a
+build-lane hygiene failure, not a compilation or test failure. The Linux
+development build directory is now ignored consistently with the existing
+macOS Spack build directory; a fresh exact-SHA Unity job remains required.
+
 ## 2026-07-26 Conan 2 Build Review
 
 The previously deferred TolTECA build implementation is now available and has

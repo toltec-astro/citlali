@@ -226,7 +226,7 @@ Citlali, Kidscpp, Tula, and other C/C++ application nodes remain exact LLVM 20.
 | Direct dependencies | Pass | HDF5 and Zlib are explicit Citlali recipe and CMake target edges. |
 | Kidscpp compatibility | Pass pending product validation | A bounded V3 raw-timestream adapter compiles and is tested; legacy config remains accepted and the unused sweep fitter is omitted only in V3. Unity product validation remains. |
 | Full tests | Pass locally | All 539 enabled CTests and complete config preflight pass; baseline/ledger/exit gates remain part of final acceptance. |
-| Unity operation | Not demonstrated | Existing Spack/module availability is promising but no Citlali environment or reduction has been tested there. |
+| Unity operation | Partial | Exact-source job `62888690` installed the GCC 13.3 graph and passed all 539 enabled developer CTests at `0add18c24`; an unignored expected Linux development build directory tripped the clean-source gate before installed CLI/consumer acceptance. The hygiene fix requires a fresh job, followed by a point reduction. |
 | Build timing | Partial | Persistent no-op build is 0.82 seconds; clean and representative incremental timing still need a formal campaign. |
 
 ## Required Adaptation Work
