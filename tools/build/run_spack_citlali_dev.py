@@ -18,6 +18,45 @@ from spack_citlali_common import (
 from spack_citlali_profiles import PROFILES, get_profile
 
 
+def configure_command(
+    *,
+    source_root: Path,
+    build_dir: Path,
+    profile,
+    root_hash: str,
+    fresh: bool,
+) -> list[str]:
+    """Return the canonical CMake configure command for a build profile."""
+    return [
+        "cmake",
+        *(["--fresh"] if fresh else []),
+        "-G",
+        profile.cmake_generator,
+        "-S",
+        str(source_root / "cmake/spack"),
+        "-B",
+        str(build_dir),
+        f"-DCMAKE_C_COMPILER={profile.c_compiler}",
+        f"-DCMAKE_CXX_COMPILER={profile.cxx_compiler}",
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+        *[
+            argument.format(deployment_target=deployment_target())
+            for argument in profile.cmake_platform_arguments
+        ],
+        "-DCITLALI_BUILD_CLI=ON",
+        "-DCITLALI_BUILD_TESTS=ON",
+        "-DCITLALI_ENABLE_OPENMP=ON",
+        "-DCITLALI_USE_WIENER_FILTER_OMP=ON",
+        f"-DCITLALI_SPACK_DAG_HASH={root_hash}",
+    ]
+
+
+def build_command(*, build_dir: Path, jobs: int) -> list[str]:
+    """Return the canonical CMake build command."""
+    return ["cmake", "--build", str(build_dir), "-j", str(jobs)]
+
+
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     source_root = Path(__file__).resolve().parents[2]
     parser = argparse.ArgumentParser(description=__doc__)
@@ -87,29 +126,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     environment = process_environment(spack_python)
 
     if args.action in {"configure", "all"}:
-        configure = [
-            "cmake",
-            *(["--fresh"] if args.fresh else []),
-            "-G",
-            profile.cmake_generator,
-            "-S",
-            str(source_root / "cmake/spack"),
-            "-B",
-            str(build_dir),
-            f"-DCMAKE_C_COMPILER={profile.c_compiler}",
-            f"-DCMAKE_CXX_COMPILER={profile.cxx_compiler}",
-            "-DCMAKE_BUILD_TYPE=Release",
-            "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
-            *[
-                argument.format(deployment_target=deployment_target())
-                for argument in profile.cmake_platform_arguments
-            ],
-            "-DCITLALI_BUILD_CLI=ON",
-            "-DCITLALI_BUILD_TESTS=ON",
-            "-DCITLALI_ENABLE_OPENMP=ON",
-            "-DCITLALI_USE_WIENER_FILTER_OMP=ON",
-            f"-DCITLALI_SPACK_DAG_HASH={root_hash}",
-        ]
+        configure = configure_command(
+            source_root=source_root,
+            build_dir=build_dir,
+            profile=profile,
+            root_hash=root_hash,
+            fresh=args.fresh,
+        )
         run(
             spack_build_env_command(spack, environment_path, configure),
             environment=environment,
@@ -120,7 +143,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             spack_build_env_command(
                 spack,
                 environment_path,
-                ["cmake", "--build", str(build_dir), "-j", str(args.jobs)],
+                build_command(build_dir=build_dir, jobs=args.jobs),
             ),
             environment=environment,
         )

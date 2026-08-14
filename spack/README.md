@@ -175,6 +175,37 @@ package. The current native checkpoint passes all 539 enabled CTests; the sole
 disabled lifecycle test remains explicitly reported by CTest. A measured
 no-op invocation completed in 0.82 seconds.
 
+Use the timing harness for comparable clean, no-op, and incremental evidence:
+
+```console
+$HOME/tolteca/bin/python tools/build/measure_spack_build_times.py -j 8
+```
+
+The harness creates a disposable empty build tree, records clean configure and
+build times, immediately repeats the build as a no-op, then touches only the
+timestamp of `src/citlali/cli/main.cpp` and measures the resulting CLI rebuild.
+It restores the original timestamp, verifies that source bytes did not change,
+removes the disposable build tree, and writes JSON plus per-stage logs under
+`build/build-timing-results/`. Additional representative inputs may be supplied
+with repeated `--incremental-input` options.
+
+On Unity, run the same campaign from an allocated compute node:
+
+```console
+REPO="$HOME/work_toltec/citlali_spack_acceptance/citlali"
+cd "$REPO"
+
+/usr/bin/python3.12 tools/build/measure_spack_build_times.py \
+  --profile unity-gcc13 \
+  --spack "$HOME/work_toltec/spack-1.2.2/bin/spack" \
+  --spack-python /usr/bin/python3.12 \
+  -j "${SLURM_CPUS_PER_TASK:-6}"
+```
+
+Accepted timing evidence requires a clean checkout. `--allow-dirty` exists
+only for developing and testing the harness; such a campaign is labeled with
+the recorded dirty paths and is not release evidence.
+
 After installing a candidate, run the installed-artifact gate:
 
 ```console
