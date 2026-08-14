@@ -1,0 +1,940 @@
+\documentclass[10pt]{article}
+
+\usepackage[margin=0.72in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{array,booktabs,longtable}
+\usepackage{enumitem}
+\usepackage{xurl}
+\usepackage[hidelinks]{hyperref}
+
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcommand{\code}[1]{\texttt{\detokenize{#1}}}
+\newcommand{\NA}{\textsc{n/a}}
+
+\title{SCI-MAP-003 Scientific-Contract Audit\\
+Phase-2 First Viable Report}
+\author{Independent Tier-A audit}
+\date{2026-08-14}
+
+\begin{document}
+\maketitle
+
+\section{Controlled result and stop point}
+
+This is the first viable, uncommitted Phase-2 implementation/evidence audit
+against the operative independent core.  It is a report proposal, not a
+contract amendment, implementation repair, validation result, ledger update,
+consumer authorization, or production authorization.  The controlled result
+is:
+\begin{verbatim}
+contract_status: proposed
+implementation_status: nonconformant
+validation_status: not_started
+production_status: existing_use_only
+verdict: amend
+\end{verbatim}
+
+The report stops before rendering, compilation, staging, commit, numerical
+execution, repair, re-audit, integration, publication, or external activity.
+All findings remain open.  Post-core evidence is evidence only and does not
+rewrite or outrank the frozen independent core.
+
+\subsection{Exact repository, branch, and authority identity}
+
+\begin{longtable}{@{}L{0.20\textwidth}L{0.73\textwidth}@{}}
+\toprule
+Field & Exact value \\
+\midrule
+\endhead
+Audit worktree &
+\path{/private/tmp/citlali-audit-sci-map-003} \\
+Audit branch &
+\code{codex/audit-sci-map-003}; no upstream \\
+Operative successor core commit &
+\code{c0bd689598c8bc1c20114248a45822b13d6ba2f2} \\
+Successor parent / tree &
+\code{3eecd9f4c6ccf9c9a5c509908b2689a8a0e1a80a} /
+\code{3b5bc14959d82f5f52c0afa7079c6988ee56ae9c} \\
+Successor standard binary patch SHA-256 &
+\code{1b2ba96b44c65352a82aa67c29cd4854229165b872200cacc3d81531afc36a7e} \\
+Successor path / SHA-256 &
+\path{doc/audits/packages/SCI-MAP-003_INDEPENDENT_CORE_SUCCESSOR_001.tex};
+\code{5fb256b18566d725267d25737163f97dd1d5bbd463ba77ed33960e977a5dfed4} \\
+Frozen predecessor commit / file SHA-256 &
+\code{3eecd9f4c6ccf9c9a5c509908b2689a8a0e1a80a} /
+\code{d6eac8499191f65396d3bc743d5aea70e055ad6342dd812e67d68d31d436073e} \\
+Governing application ref / SHA &
+\code{origin/codex/refactor-mainline} /
+\code{46ad23888a40f5102cdfd50c06e49a549bdf8a20} \\
+Governing parent / tree &
+\code{4846fa4db39bd2f7d4ddc41f693836834cbc5ff4} /
+\code{ab230a93b8fb310d58aefd7ac5da92e5d5e0f408} \\
+Packet ref / commit / parent / tree &
+\code{origin/codex/coordinate-sci-map-003-registration} /
+\code{8fb893639bdf504968186867790cf1b140b2ff54} /
+\code{b3e500117ab273d38d5055e82683a49015d028cf} /
+\code{ba91a1cf619401b165060a5b5e31600ed0844d24} \\
+Packet standard binary patch SHA-256 &
+\code{f7516017a3fc2e694334cde5c09392cdb5d29cf55cb1fe22d5a76f1decedd543} \\
+Prompt path / SHA-256 &
+\path{doc/audits/prompts/SCI_MAP_003_AUDIT_PROMPT.md};
+\code{306b201c81526da203ae671e189f70b489d8c8a595cdc6aa1e502fab479564bc} \\
+Final manifest path / SHA-256 &
+\path{doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003_INBOX_AUTHORITY_MANIFEST_2026-08-14.yaml};
+\code{3b77493a7f821fd4c0251f64d1786778be90965764bee46484e6b4709f7a4a49} \\
+Accepted Phase-2 freeze / manifest SHA-256 &
+\code{b3e500117ab273d38d5055e82683a49015d028cf} /
+\code{a6c36b7c0416e1f03ce88b8004712db666c625a95cf521787cfad5ad28d27603} \\
+\bottomrule
+\end{longtable}
+
+The predecessor was frozen first.  The owner then selected the mandatory
+odd-dimension rule, and successor 001 replaced the predecessor as the
+operative core without changing the predecessor bytes.  Every Fourier working
+kernel is odd-dimensional: an even parent loses its final high-index edge on
+that axis; the identical crop applies to kernel, reference, support, and
+validity; retained WCS coordinates are unchanged; no recentering,
+interpolation, window, or renormalization occurs; the already-normalized
+response is cropped once; and any later padding must also be odd.
+
+All independent Phase-1 core reasoning and all present Phase-2 scientific
+assessment occurred under the owner-selected Sol Ultra setting.  Earlier
+Medium activity was limited to accepted read-only intake metadata and is not
+scientific evidence.  An already-completed delegated analytic check had seen
+only the obsolete predecessor Case-3 Nyquist issue; that unavoidable prior
+exposure produced no Phase-2 source/evidence claim and is not used here.
+
+\section{Scope and exposure ledger}
+
+All frozen object/path digests were checked before content exposure.  No
+unlisted or late object was opened.  The exact 13 post-core evidence objects
+were opened in manifest order.  Object 4 is the manifest's one governing
+implementation object and contains exactly 13 path members.
+
+\begin{longtable}{@{}L{0.035\textwidth}L{0.28\textwidth}L{0.48\textwidth}L{0.13\textwidth}@{}}
+\toprule
+\# & Evidence object & Exact ref/path or member set & First open (UTC) \\
+\midrule
+\endhead
+1 & \code{SCI-MAP-003-XAUD-006} &
+\code{b3e500117ab273d38d5055e82683a49015d028cf}:
+\path{doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-006.yaml};
+SHA-256 \code{877f9cec7f7f9fd698a0226289effbc6ab46315aa280b60cba283e05aedba6ed} &
+16:03:14 \\
+2 & \code{SCI-MAP-003-XAUD-007} &
+same ref:
+\path{doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-007.yaml};
+SHA-256 \code{801928c460745b748163027191d20f5873110db937aa508e95542206e5623498} &
+16:03:14, after object 1 \\
+3 & \code{SCI-MAP-003-XAUD-008} &
+same ref:
+\path{doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-008.yaml};
+SHA-256 \code{c84cb142813333c0499bde7275d61f940f593fd92875d527bf420bb4003d0087} &
+16:03:15 \\
+4 & \code{SCI-MAP-003-GOVERNING-IMPLEMENTATION-001} &
+exact 13-path set at governing SHA
+\code{46ad23888a40f5102cdfd50c06e49a549bdf8a20}; member chronology and digests
+are recorded below & 16:03:47--16:07:03 \\
+5 & \code{SCI-MAP-001-AUDIT-REPORT-NONAUTHORITY-001} &
+\code{b9e1e9a9b2fe492c402d8c7b0cf7e5a36c136a53}:
+\path{doc/audits/packages/SCI-MAP-001_SCIENTIFIC_CONTRACT_AUDIT.tex};
+SHA-256 \code{6c8decef93f5607bc9e8dfc84e31aee67f45fa5c695fc80563c7e7064f78d556} &
+16:07:12 \\
+6 & \code{SCI-MAP-002-UNINTEGRATED-ACCEPTANCE-001} &
+\code{8fc3b3dc549532f254bc814ef76f9a606c2a8059}:
+\path{doc/audits/packages/SCI-MAP-002_THIRD_SUCCESSOR_OWNER_ACCEPTANCE_2026-08-09.md};
+SHA-256 \code{6a0f8a24e5574667c38b0fffd0081a30bd5693c17fcee654cd9c8a9438b01ccc} &
+16:07:30 \\
+7 & \code{SCI-MAP-002-UNINTEGRATED-REAUDIT-001} &
+same ref:
+\path{doc/audits/packages/SCI-MAP-002_THIRD_SUCCESSOR_REAUDIT_2026-08-09.md};
+SHA-256 \code{fe07901504ad26916cab2c5589f452b1873c11ef215239653ed938f45eefd4d5} &
+16:07:37 \\
+8 & \code{SCI-RTC-001-AUDIT-RESULT-001} &
+\code{3319d7424c732c1c9fc300c336e4d428e6f91068}:
+\path{doc/audits/packages/SCI-RTC-001_SCIENTIFIC_CONTRACT_AUDIT.tex};
+SHA-256 \code{169a0b6e013e727d5d04c25da5234e29def4ef79bc6f25a3f343bc675000301a} &
+16:07:43 \\
+9 & \code{SCI-PTC-001-AUDIT-RESULT-001} &
+\code{01ee247461d6c19bc4db81ccac4fec21af162c88}:
+\path{doc/audits/packages/SCI-PTC-001_SCIENTIFIC_CONTRACT_AUDIT.tex};
+SHA-256 \code{c46a15c142d0938baf9576d84a19332e0d46b34852b4d59c0029ba00ac62d7e6} &
+16:08:04 \\
+10 & \code{SCI-PTC-001-OPTIONAL-TRANSFER-PLAN-001} &
+\code{8fc3b3dc549532f254bc814ef76f9a606c2a8059}:
+\path{doc/audits/packages/SCI-PTC-001_OPTIONAL_TRANSFER_CHARACTERIZATION_PLAN_2026-08-09.md};
+SHA-256 \code{2efb93461918fa39a903bd95737a43276f080c0e44782c7866026fe78a7e7c71} &
+16:08:22 \\
+11 & \code{SCI-MAP-003-HISTORICAL-HANDOFF-001} &
+\code{2094d730280555d49d61000eeb1e0fb42dc6595b}:
+\path{handoff/HANDOFF_2026-08-14.md};
+SHA-256 \code{29cf03cdb55f8bacf20e1ad94b96504632e54f68c742ffe582d837c35e89f488} &
+16:08:26 \\
+12 & \code{SCI-MAP-003-PROTOTYPE-001} &
+\path{/Users/gwilson/foo/transfer_function/test_kernel_jinc.py};
+SHA-256 \code{65d5f1ee95f09ca290594bbf239950bce932e56d6186f9818102beee6311d1dd} &
+16:08:31 \\
+13 & \code{SCI-MAP-003-PROTOTYPE-002} &
+\path{/Users/gwilson/foo/transfer_function/test_kernel_2.py};
+SHA-256 \code{b16ba174cbd75dc6685332f7187f33038cad537a845befd4c52ef98d08f91824} &
+16:08:37 \\
+\bottomrule
+\end{longtable}
+
+\subsection{Governing implementation member chronology}
+
+\begin{longtable}{@{}L{0.035\textwidth}L{0.53\textwidth}L{0.31\textwidth}L{0.075\textwidth}@{}}
+\toprule
+\# & Exact path & SHA-256 & UTC \\
+\midrule
+\endhead
+1 & \path{include/citlali/core/timestream/rtc/kernel.h} &
+\code{cfc86104d5a892e6cbbed3aa260047cb88ef6d4f9e4ec47e33a59841bc74fccd} & 16:03:47 \\
+2 & \path{include/citlali/core/timestream/rtc/rtcproc.h} &
+\code{41693a6385c112bdde36f5590d8ac10b60514c56d5449aad30962e08a64f3549} & 16:05:20 \\
+3 & \path{include/citlali/core/timestream/ptc/ptcproc.h} &
+\code{15f5da569fc65f02048cefb7b685116b32919c8e8ab60374a638bc46cf1508ab} & 16:05:39 \\
+4 & \path{include/citlali/core/mapmaking/jinc_mm.h} &
+\code{65fd41b97e06048d2b4b2b0a6d6ecd175a22f1b415d1b52d925a7ec0da4c9e5b} & 16:06:03 \\
+5 & \path{src/citlali/core/mapmaking/map.cpp} &
+\code{5fd6171b4295729a8e832d6727b17953efad673cc744654fe36ac1d9349b4f7f} & 16:06:19 \\
+6 & \path{include/citlali/core/engine/detail/lali_fruitloop_impl.h} &
+\code{fc480b6e64b6108954dfc7f9e6fe129d25db2fbf4d2209b2872492460da32fd8} & 16:06:28 \\
+7 & \path{include/citlali/core/engine/detail/pointing_fruitloop_impl.h} &
+\code{eb6ca404a75fa56e04a7e515d1c81c48240fb0050891218bdd165faa8c520945} & 16:06:34 \\
+8 & \path{include/citlali/core/pipeline/reduction_iteration_loop.h} &
+\code{553a33ca0ba0849cb7cb8ce99b7542a0951b76d4ff27ea2a7c78d2c11266d9ef} & 16:06:39 \\
+9 & \path{include/citlali/core/engine/detail/map_image_output_impl.h} &
+\code{c6151bcbdc59fa6f3f724da06e98a489ef96db68e3c71d7800a94221c83de0b3} & 16:06:45 \\
+10 & \path{include/citlali/core/engine/detail/lali_output_impl.h} &
+\code{6aef5af69e5ee0f703de3c15fc260d7406387613d86c1338c47f04a7d580910e} & 16:06:50 \\
+11 & \path{include/citlali/core/engine/detail/pointing_output_impl.h} &
+\code{8d955512ef7c351308a10fdaf5e00a39475852e60c78112e111a809222aa9278} & 16:06:55 \\
+12 & \path{include/citlali/core/engine/detail/map_phdu_output_impl.h} &
+\code{7a424e68aacfc682d8949632609a03297359303911c477fec4281d930770ce61} & 16:06:59 \\
+13 & \path{include/citlali/core/pipeline/phdu_oof.h} &
+\code{7279de3c3adfdf19928294ff8f4389654cfa9cdb6676d9f65d00b527c50cce40} & 16:07:03 \\
+\bottomrule
+\end{longtable}
+
+The packet-frozen audit template was opened at 16:09:10 UTC for formatting
+only, after a content-free absence check showed it did not exist at the
+governing application SHA.  Its SHA-256 is
+\code{6de80e22b8981cdcb38e0aaaedb9233d056d52f0de4dbf266ab8d9489fefaeed}.
+It is not scientific evidence.
+
+There was zero forbidden Phase-2 exposure: no source outside the exact
+13-member governing set, no diff to another source revision, no late/unlisted
+evidence, and no imported or executed prototype.  No network, Unity,
+Citlali/LMTOOF/reduction run, external contact, or numerical fixture occurred.
+
+\section{Frozen mathematical contract used for comparison}
+
+Let $J_{ai}$ be the realized JINC deposition coefficient from eligible sample
+$i$ into map cell $a$, $d_i$ the signal timestream, $k_i$ the propagated
+source-kernel timestream, $q_i$ the admitted per-sample scalar weight, and
+$c_i$ the coefficient used by the current mapper.  The source trace implements
+the serial accumulators
+\[
+ S_a=\sum_i q_i c_i d_i J_{ai},\qquad
+ C_a=\sum_i q_i c_i J_{ai},\qquad
+ Q_a=\sum_i q_i c_i^2 J_{ai},\qquad
+ K^{\rm num}_a=\sum_i q_i c_i k_i J_{ai},
+\]
+followed, where its local support predicates pass, by
+\[
+ m_a=S_a/C_a,\qquad k^{\rm final}_a=K^{\rm num}_a/C_a,\qquad
+ w^{\rm formal}_a=C_a^2/Q_a .
+\]
+These equations describe the inspected implementation; they do not promote
+$q$, $c$, coverage, or $w^{\rm formal}$ to a validated precision or
+covariance.  They also do not establish that $k^{\rm final}$ is the complete
+terminal response.
+
+The successor core then requires, on a common retained odd grid and WCS,
+\[
+ g,k\in\mathbb{R}^{N_y\times N_x},\quad N_y,N_x\ {\rm odd},\qquad
+ G=\operatorname{FFT}(g),\quad K=\operatorname{FFT}(k),
+\]
+\[
+ \widehat H_{p,q}=\frac{G_{p,q}^{*}K_{p,q}}{|G_{p,q}|^2}
+                 =\frac{K_{p,q}}{G_{p,q}}\quad ((p,q)\in\mathcal D),
+\]
+with explicit missing/invalid state outside $\mathcal D$.  Its numbered
+equations are: forward DFT (successor Eq.~1), inverse DFT (Eq.~2), complex
+quotient estimator \code{eq:estimator} (Eq.~3), consumer forward operator
+\code{eq:forward} (Eq.~4), and fixed-reference covariance
+\code{eq:cov-fixed-g} (Eq.~5).  The exact odd crop, dual WCS, full identity,
+domain, status, synthesis operator, and uncertainty rules surrounding those
+equations are inseparable parts of the claim.
+
+\section{End-to-end implementation trace}
+
+\begin{longtable}{@{}L{0.135\textwidth}L{0.28\textwidth}L{0.30\textwidth}L{0.20\textwidth}@{}}
+\toprule
+Stage & Governing-SHA observation & Successor-core comparison & Disposition \\
+\midrule
+\endhead
+Gaussian tracer &
+\code{Kernel} constructs Gaussian, Airy, or FITS time-domain tracers.
+The symmetric Gaussian has unit peak, configuration/fitted/APT widths,
+per-detector pointing/source centers, and a hard three-sigma truncation. &
+No persisted exact map-plane $g$, selected detector mixture, common retained
+WCS/crop, aligned masks, or construction digest exists.  Therefore ND-G is
+open and $G$ in Eqs.~1 and 3 has no admissible parent. &
+Nonconformant; F001, F002. \\
+RTC &
+The kernel exists before despiking.  Signal and kernel share notch, FIR,
+high-pass, and downsample operations, but donor replacement and final AltAz
+projection change signal without an equivalent kernel response; flags do not
+encode complete causal support. &
+The propagated tracer is a partial conditioned response, not the complete
+response-or-unavailable object required for $k$.  Immutable complete stage
+identity is absent. &
+Nonconformant; F002. \\
+PTC &
+Mean subtraction and PCA apply signal-derived realized modes to the kernel.
+Late second-pass, detector, and weight flags occur after mixing.  Full
+response-family covariance is absent, and scalar coefficients are not
+validated precision. &
+The implementation can represent one conditioned map-center partial
+response, consistent with the bounded D003 idea, but it does not establish
+complete $k$, validity, or Eq.~5 uncertainty. &
+Conditional abstraction only; F002, F006. \\
+Serial JINC &
+Signal, coefficient, formal accumulator, coverage/noise diagnostics, and
+kernel numerator are deposited via thread-local scratch and mutex-protected
+merge.  Kernel admission has no complete finite/validity predicate. &
+The $K^{\rm num}/C$ arithmetic is conditionally consistent with the accepted
+MAP-002 numerator identity.  It does not close upstream response identity or
+VAL eligibility. &
+Conditioned/partial; F002. \\
+Parallel JINC &
+The detector-parallel lambda mutates shared signal, grid-weight, formal-weight,
+coverage, kernel, noise, and diagnostic arrays without private reduction or
+synchronization. &
+The outcome is schedule-dependent with data races; it cannot be the same
+realized estimator as the serial path and cannot support an immutable digest. &
+Nonconformant implementation defect; F003. \\
+Normalization/map &
+\code{normalize_maps} requires finite $|C|>10^{-8}$ and positive formal
+accumulator, computes $C^2/Q$, and divides signal, kernel, and noise by $C$.
+No transfer-domain construction follows.  A separate even trim used by map
+PSD is not the owner-selected crop. &
+The required one-time high-edge crop, common 7-by-9 fixture behavior, odd
+later padding, Eqs.~1--3, domain $\mathcal D$, and status are absent. &
+Nonconformant; F004. \\
+Fruit-loop state &
+Fruit hooks subtract and add a map through the signal timestream and
+recalculate weights/noise; the kernel is not updated by that feedback.  The
+iteration shell records convergence but the admitted paths do not bind a
+unique terminal pass/restart/delivered map-kernel pair. &
+ND-K and SCI-FRUIT-001 remain open.  There is no proven terminal parent for
+$k$ and no realized state suitable for a transfer digest. &
+Unavailable; F002, F009. \\
+Publication/provenance &
+The inspected writers preserve useful map identity, WCS, cardinality, required
+failure checks, aliases, and can write the raw kernel. &
+They do not persist $g$, cropped $k$, $G$, $K$, complex $H$, $\mathcal D$,
+four-state status, response uncertainty, crop identity, or full parent chain. &
+Contract gap; F005, F006. \\
+OOF association &
+The OOF primary-header route records scalar values such as RMS, wavelength,
+M2, and aperture facts.  No transfer-product association or LMTOOF admission
+was found. &
+Eq.~4 is not implemented; fixed-within-solve/recompute-between-cycles,
+nuisance amplitude, synthesis, association, mismatch rejection, and failure
+policy remain open. &
+Fail closed; F007--F009. \\
+\bottomrule
+\end{longtable}
+
+\subsection{Numbered-equation conformity}
+
+\begin{longtable}{@{}L{0.10\textwidth}L{0.27\textwidth}L{0.42\textwidth}L{0.14\textwidth}@{}}
+\toprule
+Core equation & Required object & Governing implementation result & Status \\
+\midrule
+\endhead
+Eq.~1 & Exact two-dimensional forward DFT on common odd retained WCS, with
+wrapped signed frequency axes and identity & No construction or persistence of
+$G$ or $K$ for the transfer product; no odd crop or dual-WCS frequency
+identity. & nonconformant \\
+Eq.~2 & Matched inverse DFT and explicit synthesis state & No approved
+$S_{\mathcal D}$, excluded-bin behavior, or LMTOOF inverse path. &
+nonconformant \\
+Eq.~3 & Complex $G^*K/|G|^2$ on separately persisted $\mathcal D$ &
+No quotient, threshold/comparator/band policy, complex product, or invalid
+outside-domain state. & nonconformant \\
+Eq.~4 & Fixed-within-solve transfer applied to a compatible optical
+prediction, with exact association & No Citlali publication/association and
+no admitted LMTOOF consumer. & unavailable \\
+Eq.~5 & Named $C_K$ propagated to full $C_H$, with pseudocovariance and
+systematic/response terms as applicable & No $C_K$, $C_G$, cross-covariance,
+pseudocovariance, empirical uncertainty, or declared response uncertainty
+product. & unavailable \\
+\bottomrule
+\end{longtable}
+
+Sequential execution is only conditionally interpretable at its narrow
+deposition/normalization step; the full source-to-consumer chain is
+nonconformant.  Parallel execution is independently nonconformant because the
+shared mutations are not a deterministic reduction.  Neither path has been
+executed during this audit.
+
+\section{Findings}
+
+The vocabulary and priorities below are controlled by the frozen prompt.
+Basis identifies what supports a finding; it is not confidence.
+Confidence does not close a dependency.  Every finding is open.
+
+\begin{longtable}{@{}L{0.065\textwidth}L{0.14\textwidth}L{0.055\textwidth}L{0.28\textwidth}L{0.14\textwidth}L{0.25\textwidth}@{}}
+\toprule
+ID / class & Finding & Pri. & Basis / confidence & Owner & Falsifiable closure gate \\
+\midrule
+\endhead
+F001 \newline \code{contract_gap} &
+No exact discrete $g$ &
+P1 &
+Successor ND-G compared with \code{kernel.h} and the product writers.  No
+admissible map-plane tracer identity, mixture, common crop/WCS, mask, or digest
+exists.  Confidence: high. &
+SCI-RTC-001 and SCI-MAP-003 owners &
+Freeze every APT row/weight, Gaussian parameter, amplitude/unit, truncation,
+center, pixelization, WCS, mask, crop, and digest; two independent
+reconstructions meet a preregistered byte or arithmetic identity. \\
+F002 \newline \code{dependency_gap} &
+No admissible complete final $k$ parent &
+P0 &
+RTC donor/projection asymmetry, conditioned PTC response, incomplete kernel
+admission, unresolved terminal fruit state, and unintegrated MAP-002 successor.
+Post-core RTC/PTC reports corroborate but do not authorize.  Confidence: high. &
+SCI-RTC-001, SCI-PTC-001, SCI-MAP-002, SCI-VAL-001, and SCI-FRUIT-001 owners &
+Complete-response-or-unavailable, eligibility, and terminal-pass contracts
+close; the exact serial pre-crop normalized kernel and once-cropped $k$ have
+immutable parent/stage/digest identity at the governing application SHA. \\
+F003 \newline \code{implementation_defect} &
+Parallel JINC shared-array data races &
+P0 &
+\code{jinc_mm.h} detector-parallel lambda mutates the same map accumulators
+without private reduction, lock, atomics, or disjoint-cell proof.  Confidence:
+high from static source trace; no runtime claim is made. &
+SCI-MAP-002 / Citlali mapmaker owner &
+An authorized repair provides race-free private/deterministic reduction or
+proved disjoint writes; thread-sanitizer evidence and preregistered
+serial-versus-parallel byte/tolerance equivalence pass for all accumulators,
+then a fresh independent audit accepts the exact repair SHA. \\
+F004 \newline \code{contract_gap} &
+Odd grid, transform, quotient, and domain absent &
+P1 &
+\code{map.cpp} has local normalization and an unrelated PSD trim, but no
+$C_{\rm odd}$ product crop, odd-target padding rule, dual WCS, Eqs.~1--3,
+$\mathcal D$, or synthesis.  Confidence: high. &
+SCI-MAP-003 with SCI-MAP-001 and SCI-AST-001 interfaces &
+The exact owner crop and aligned planes are implemented and persisted; Cases
+1--4 and 6--11 pass after ND-GRID and ND-DEN are frozen. \\
+F005 \newline \code{contract_gap} &
+Transfer product schema and provenance absent &
+P1 &
+Writers publish existing map/kernel products but no complex $H$, domain,
+four-state status, odd-crop identity, complete response parent, or OOF/LMTOOF
+association.  Confidence: high. &
+SCI-MAP-003, SCI-MAP-001, and SCI-MODE-001 owners &
+A versioned product contract defines representation, cardinality, exact
+identity/provenance, aliases, association, required/optional behavior, atomic
+failure, and digest; deliberate mismatch/publication tests pass. \\
+F006 \newline \code{contract_gap} &
+Response uncertainty and covariance unavailable &
+P1 &
+No named $C_K$, $C_G$, cross-covariance, pseudocovariance, systematic model,
+repeat distribution, or propagation to Eq.~5 was found.  Existing weight and
+coverage planes are not precision.  Confidence: high. &
+SCI-MAP-003 with RTC/PTC/VAL and later LMTOOF owners &
+An approved estimator and persistence contract supplies or explicitly marks
+unavailable every formal, empirical, calibration/systematic, and response
+uncertainty term; named coverage/calibration tests satisfy a frozen protocol. \\
+F007 \newline \code{scientific_policy_decision} &
+Remaining grid/domain/synthesis policy open &
+P1 &
+Successor ND-GRID and ND-DEN intentionally leave boundary condition, extra
+padding/window, invalid-pixel treatment, FFT ordering, threshold, comparator,
+band, taper, excluded-bin state, and $S_{\mathcal D}$ undecided.  Confidence:
+exact core statement. &
+SCI-MAP-003 owner, with AST/VAL interfaces &
+One owner decision freezes every operator and boundary value before
+implementation or Case 7/8 execution; at/below/above threshold and operator
+identity cases then pass unchanged. \\
+F008 \newline \code{scientific_policy_decision} &
+Amplitude, uncertainty, publication, and consumer admission open &
+P1 &
+Successor ND-AMP, ND-UNC, ND-PUB, and ND-MODE; no later admitted authority
+closes them.  Confidence: exact core and handoff state. &
+SCI-MAP-003, SCI-MODE-001, SCI-VAL-001, and LMTOOF product owners &
+Separate owner decisions freeze optical units/nuisance amplitude, uncertainty,
+product schema, OOF association, fixed/recompute lifecycle, allowed consumer
+version, identity rejection, and failure policy. \\
+F009 \newline \code{dependency_gap} &
+VAL, FRUIT, and MODE packages not started &
+P0 &
+XAUD-006, XAUD-007, and XAUD-008 are post-core observations of exact canonical
+ledger state, not scientific authority.  Each reports
+\code{not_started}.  Confidence: high for recorded state. &
+SCI-VAL-001, SCI-FRUIT-001, and SCI-MODE-001 owners &
+Each package produces an owner-approved bounded contract and accepted
+implementation/evidence result for its named interface; a dated re-audit
+admits it without rewriting either frozen core. \\
+F010 \newline \code{evidence_gap} &
+No validation or adoption evidence &
+P1 &
+All eleven local cases, retained reductions, external LMTOOF work, and
+telescope-gain studies were held.  The real evidence index is empty.
+Confidence: exact audit action record. &
+SCI-MAP-003 validation owner and separately authorized external/telescope
+owners &
+After contracts and implementation blockers close, separately authorized
+preregistered studies pass unchanged under FRAMEWORK-NUM-001 controls,
+followed by independent review and an explicit production decision. \\
+\bottomrule
+\end{longtable}
+
+\section{Dependencies and exact nondecisions}
+
+\begin{longtable}{@{}L{0.14\textwidth}L{0.16\textwidth}L{0.34\textwidth}L{0.28\textwidth}@{}}
+\toprule
+Dependency & State & Consequence now & Closure condition \\
+\midrule
+\endhead
+SCI-MAP-001 & open &
+Existing bounded map identity is usable, but governing-SHA product conformity,
+new transfer publication, and validity remain unestablished. &
+Exact OOF-cell parent, WCS/unit/validity, required-output, schema, and
+implementation conformance are accepted. \\
+SCI-MAP-002 & conditioned &
+The owner-approved final normalized $K/C$ identity is authority; only the
+serial arithmetic is conditionally recognizable.  Accepted successor
+\code{86f1582} is unintegrated and cannot establish governing-SHA conformity. &
+Race-free exact governing implementation conforms to D003 and all parent/VAL
+gates, with fresh audit. \\
+SCI-RTC-001 & open &
+The complete-response-or-unavailable rule applies; current tracer/RTC path is
+partial. &
+Exact $g$ and every response-changing stage are represented with immutable
+parentage, or response is honestly unavailable. \\
+SCI-PTC-001 & conditioned &
+Only the bounded estimated map-center point-source abstraction applies; no
+off-center, extended, nonlinear, or universal claim. &
+Exact selection/realization response family and needed uncertainty/validity
+interfaces conform at the governing SHA. \\
+SCI-AST-001 & conditioned &
+Exact parent WCS/frame/axes/precision rules apply, but ALIGN-dependent absolute
+placement and transfer dual-axis implementation remain open. &
+Common retained WCS/crop and dual-frequency axes pass orientation and identity
+fixtures without silent recentering. \\
+SCI-VAL-001 & open / not started &
+Sample, detector, map/kernel, denominator, output, support, and non-finite
+validity are unavailable. &
+Owner-approved VAL contract and conforming fail-closed implementation. \\
+SCI-FRUIT-001 & open / not started &
+No unique terminal iteration/pass or delivered map/kernel relationship. &
+Owner-approved terminal/restart/parent-state contract and conforming evidence. \\
+SCI-MODE-001 & open / not started &
+No OOF association or LMTOOF consumer admission; Eq.~4 is unavailable. &
+Approved association, units/amplitude, fixed/recompute lifecycle, version,
+identity checks, and failure policy. \\
+\bottomrule
+\end{longtable}
+
+The ten successor nondecisions retain their exact meaning:
+\begin{description}[style=nextline,leftmargin=1.2in]
+\item[ND-G] exact discrete tracer construction is unselected (F001).
+\item[ND-K] complete terminal normalized response parent is unavailable (F002).
+\item[ND-GRID] the mandatory odd crop is decided; every other boundary,
+padding, window, ordering, and invalid-pixel rule remains open (F004, F007).
+\item[ND-DEN] denominator threshold/reference/comparator/band/taper/excluded
+state and synthesis operator remain open (F004, F007).
+\item[ND-AMP] optical-model unit conversion or nuisance amplitude remains open
+(F008).
+\item[ND-UNC] formal/empirical/systematic/response uncertainty remains open and
+cannot be inferred from current scalar planes (F006, F008).
+\item[ND-VAL] input, parent, denominator, spatial, and output validity remains
+open (F002, F009).
+\item[ND-PUB] versioned representation, path/schema, association, and required
+failure behavior remain open (F005, F008).
+\item[ND-MODE] OOF association and LMTOOF admission/failure policy remain open
+(F008, F009).
+\item[ND-EVID] all validation/adoption evidence and the separate production
+decision remain open (F010).
+\end{description}
+
+\section{Ten required decisions: Phase-2 disposition}
+
+\begin{longtable}{@{}L{0.045\textwidth}L{0.22\textwidth}L{0.65\textwidth}@{}}
+\toprule
+\# & Question & Audit disposition \\
+\midrule
+\endhead
+1 & Exact discrete $g$ &
+Unchanged ND-G.  Current Gaussian construction is insufficiently identified
+and is not a common retained map-plane reference.  F001 open. \\
+2 & Exact final $k$ &
+The once-cropped final normalized $K/C$ definition remains operative, but the
+current governing chain cannot establish a complete terminal parent.  F002
+open; status unavailable. \\
+3 & Complex/real; 2-D/radial &
+Unchanged: primary $H$ must be complex and two-dimensional with phase and
+Hermitian information.  No current product exists; no real, magnitude-only,
+radial, or unity-normalized substitute is admitted. \\
+4 & FFT/grid convention &
+Unchanged mandatory odd working shape and explicit DFT/dual-WCS reference.
+Implementation absent.  Remaining ND-GRID requires owner decision. \\
+5 & Denominator/domain &
+Unchanged ND-DEN.  No threshold, comparator, band, taper, exclusion state, or
+synthesis policy is implemented or selected. \\
+6 & DC/amplitude &
+Unchanged: retain admitted measured DC including sign and amplitude; never
+force unity.  ND-AMP remains open and no LMTOOF amplitude consumer is admitted. \\
+7 & Approximation limits &
+Unchanged: exact cell, map-center, point-source-template, linearized,
+observation/reduction/band/mode/configuration/selection/realization/
+iteration-specific only.  All broader uses fail closed. \\
+8 & Representation/publication &
+Unchanged minimum identity plus ND-PUB.  Current raw-kernel writer is not the
+complex transfer product.  F005 open. \\
+9 & LMTOOF behavior &
+Unchanged lifecycle: fixed within one solve and recomputed from a new reduction
+between OOF cycles.  ND-MODE keeps all use forbidden; Eq.~4 is unavailable. \\
+10 & Evidence/adoption &
+Unchanged.  Evidence classes are specified, none was executed or supplied, and
+no validation or production decision follows.  F010 open. \\
+\bottomrule
+\end{longtable}
+
+No new scientific choice is made by this audit.  Findings F007 and F008
+explicitly preserve the decisions for their owners rather than selecting
+defaults.
+
+\section{Eleven preregistered cases and numerical-control status}
+
+The successor cases remain preregistered, not results.  No array, FFT, fixture,
+Citlali path, LMTOOF path, or reduction was executed.  The common Fourier
+working fixture for Cases 1--4 and 6--8 is $7\times9$; wrapped signed
+frequencies apply; the tolerance form is unchanged and uses $N_xN_y=63$.
+
+\begin{longtable}{@{}L{0.045\textwidth}L{0.22\textwidth}L{0.25\textwidth}L{0.40\textwidth}@{}}
+\toprule
+\# & Case & State / FRAMEWORK-NUM-001 & Exact hold rationale \\
+\midrule
+\endhead
+1 & Identity &
+\code{execution_held}; \code{not_started} &
+No implemented transfer product/domain and no separate execution authority. \\
+2 & Signed scalar/DC &
+\code{execution_held}; \code{not_started} &
+ND-DEN remains open; no numerical execution authorization. \\
+3 & Integer/subpixel shift &
+\code{execution_held}; \code{not_started} &
+Accepted 7-by-9 wrapped-frequency, $(1/4,-3/8)$ periodic band-limited
+construction is unchanged; implementation and execution are held. \\
+4 & Box/sinc pair &
+\code{execution_held}; \code{not_started} &
+Exact 7-by-9 moduli/DFT denominators are frozen; no execution authority. \\
+5 & JINC/Hankel limit &
+\code{execution_held}; \code{not_started} &
+The discrete transforms at 65/129 grids remain authoritative; prototype
+inspection is not execution or validation. \\
+6 & Asymmetric response &
+\code{execution_held}; \code{not_started} &
+No complex two-dimensional transfer implementation; no execution authority. \\
+7 & Forward closure &
+\code{execution_held}; \code{not_started} &
+No approved $\mathcal D$ or $S_{\mathcal D}$; comparison must remain to the
+identically projected target, never an unprojected $k$. \\
+8 & Denominator boundary &
+\code{execution_held}; \code{not_started} &
+ND-DEN has not selected the exact-threshold comparator or remaining policy. \\
+9 & Odd crop/WCS/operators &
+\code{execution_held}; \code{not_started} &
+The deterministic 8-by-10 to 7-by-9 high-edge crop, aligned planes/WCS, no
+recenter/interpolation/window/renormalization, and odd later padding are frozen
+but not implemented or authorized for execution. \\
+10 & Hermitian/non-Hermitian &
+\code{execution_held}; \code{not_started} &
+No complex product/inverse synthesis path and no execution authorization. \\
+11 & Deliberate identity mismatch &
+\code{execution_held}; \code{not_started} &
+No versioned product/consumer schema against which to execute rejection; no
+execution authorization. \\
+\bottomrule
+\end{longtable}
+
+Each case retains the planning classification \code{not_costly}: one local
+serial process, binary64 arrays no larger than 129-by-129, under 20 MiB
+transient memory, and under 10 estimated CPU-seconds total.  This is a cost
+classification only.  FRAMEWORK-NUM-001 controls are not instantiated and
+launch status is \code{held} for every case.  The separate
+\code{SCI-MAP-003-REDUCTION-LMTOOF-TELESCOPE-PLAN} is costly,
+FRAMEWORK-NUM-001 \code{not_started}, control readiness false, and launch
+\code{held}; it needs a complete control framework, guard census,
+evidence-salvage plan, independent review, readiness certificate, mechanical
+launch gate, and separate human/external authorization.
+
+\section{Evidence still required}
+
+\begin{longtable}{@{}L{0.18\textwidth}L{0.48\textwidth}L{0.25\textwidth}@{}}
+\toprule
+Class & Exact evidence needed & Current state \\
+\midrule
+\endhead
+Local analytic/synthetic &
+All eleven unchanged successor cases; exact implementation and product
+identity; registered metrics/tolerances; serial and any claimed parallel
+equivalence; denominator sensitivity; forward closure; exact mismatch
+failures. &
+Not executed; FRAMEWORK-NUM-001 not started; real index empty. \\
+Local static/tooling &
+Race-free parallel design proof and sanitizer result; isolated public product
+contract and failure surfaces; deterministic crop/WCS/digest proof; no
+unexpected error-level messages. &
+Not authorized in this phase; no build, test, config gate, sanitizer, or
+helper created. \\
+Retained observation/reduction &
+Owner-selected immutable OOF reductions for every proposed band/mode/config/
+selection lane; exact $g,k,H$, terminal parent/digests, complete
+RTC/PTC/JINC/VAL/FRUIT states, and repeat/split data able to test response
+stability and uncertainty. &
+Dataset IDs and protocol unsupplied; no retained data/reduction opened. \\
+External LMTOOF &
+Human-supplied timestamped optical inputs, exact OOF association, consumer
+version, fitted parameters/covariance, predicted maps, residuals, and identity
+checks under a frozen independent protocol. &
+Costly and held; no request sent, no contact, no external artifact. \\
+Telescope gain/closed loop &
+Predeclared relation among fitted aberration, commanded correction, and a
+later independently reduced OOF cycle, including sign, units, gain,
+saturation/stability limits, recomputation identity, stop conditions, and
+withheld validation cases. &
+Costly and held; separate human/telescope authority required. \\
+Production adoption &
+Closed ND gates, accepted repair at exact SHA, fresh independent re-audit,
+complete required-output/failure evidence, all preregistered evidence, and
+explicit owner production decision. &
+Forbidden; successful validation alone would not authorize production. \\
+\bottomrule
+\end{longtable}
+
+\section{Inbound handoff dispositions}
+
+These are report proposals only.  No canonical handoff or ledger is edited,
+and no handoff closes a finding or promotes post-core evidence to authority.
+
+\begin{longtable}{@{}L{0.15\textwidth}L{0.16\textwidth}L{0.61\textwidth}@{}}
+\toprule
+Inbound ID & Proposed disposition & Bounded rationale and effect \\
+\midrule
+\endhead
+XAUD-001 & accept bounded pre-core authority &
+Use the approved MAP-001 identity/WCS/unit/support/validity/publication
+distinctions.  Do not infer governing implementation conformity.  Supports
+F004/F005 dependencies; closes none. \\
+XAUD-002 & accept bounded pre-core authority &
+Use final normalized JINC $K/C$ as the numerator parent without redeposition or
+renormalization.  The accepted \code{86f1582} successor remains unintegrated;
+F002/F003/F004 stay open. \\
+XAUD-003 & accept bounded pre-core authority &
+Apply RTC complete-response-or-unavailable and immutable-stage identity only.
+Current source is partial; F001/F002 remain open. \\
+XAUD-004 & accept bounded pre-core authority &
+Apply only the conditioned map-center point-source D003 abstraction and typed
+states/limits.  Current conformity and extensions are not established;
+F002/F006 remain open. \\
+XAUD-005 & accept bounded pre-core authority &
+Apply exact parent WCS/frame/axis/center/precision/invalidity rules.  Do not
+infer ALIGN placement or transfer dual axes; F004 remains open. \\
+XAUD-006 & accept as post-core dependency evidence &
+Records SCI-VAL-001 not started; supplies no validity rule.  Opens/supports
+F009 and preserves fail-closed state. \\
+XAUD-007 & accept as post-core dependency evidence &
+Records SCI-FRUIT-001 not started; supplies no terminal iteration/parent rule.
+Opens/supports F002/F009. \\
+XAUD-008 & accept as post-core dependency evidence &
+Records SCI-MODE-001 not started; supplies no OOF association or LMTOOF
+admission.  Opens/supports F008/F009. \\
+\bottomrule
+\end{longtable}
+
+\subsection{Proposed outbound IDs}
+
+The following identifiers are reserved only as proposals for coordinator
+review; no file, registry entry, external message, or canonical state exists:
+\begin{itemize}
+\item \code{SCI-MAP-003-XAUD-009} to SCI-MAP-002: F003 parallel JINC race and
+the exact serial/parallel closure gate;
+\item \code{SCI-MAP-003-XAUD-010} to SCI-RTC-001: F001/F002 exact tracer and
+complete-response parent requirements;
+\item \code{SCI-MAP-003-XAUD-011} to SCI-PTC-001: conditioned response,
+late-selection, covariance, and response-family gaps;
+\item \code{SCI-MAP-003-XAUD-012} to SCI-MAP-001: odd-cropped transfer product,
+identity, publication, and required-failure interface;
+\item \code{SCI-MAP-003-XAUD-013} to SCI-AST-001: retained WCS and dual-frequency
+axis conformance interface;
+\item \code{SCI-MAP-003-XAUD-014} to SCI-VAL-001: input/parent/domain/output
+validity and non-finite interface;
+\item \code{SCI-MAP-003-XAUD-015} to SCI-FRUIT-001: terminal pass/restart and
+delivered map-kernel parent identity;
+\item \code{SCI-MAP-003-XAUD-016} to SCI-MODE-001: OOF association, LMTOOF
+admission, amplitude, fixed/recompute lifecycle, and failure interface.
+\end{itemize}
+
+\section{Product and consumer disposition}
+
+\begin{longtable}{@{}L{0.25\textwidth}L{0.18\textwidth}L{0.49\textwidth}@{}}
+\toprule
+Product or consumer & State & Exact boundary \\
+\midrule
+\endhead
+Existing OOF/map reduction and existing interpretation &
+\code{existing_use_only} &
+May continue only under its existing contract.  It must not depend on,
+publish, or imply the SCI-MAP-003 transfer. \\
+Existing raw kernel/map writers &
+restricted to existing use &
+Their current products and aliases are not $g$, cropped $k$, $H$,
+$\mathcal D$, uncertainty, or LMTOOF admission. \\
+Independent core and this audit &
+allowed, nonproduction &
+May preserve frozen reasoning and report evidence/findings within the exact
+audit scope; may not become an application dependency. \\
+Transfer construction/publication &
+fail closed / unavailable &
+F001--F009 and ND-G, ND-K, ND-GRID, ND-DEN, ND-VAL, and ND-PUB block it. \\
+LMTOOF forward prediction/fitting &
+fail closed / unavailable &
+Eq.~4, synthesis, ND-AMP, ND-UNC, ND-MODE, product association, and identity
+checks are absent. \\
+Cross-band/mode/config/iteration substitution &
+forbidden &
+Every transfer is bound to one exact identity and terminal realization. \\
+Off-center, extended, spatially varying, arbitrary-morphology/amplitude, or
+nonlinear use &
+forbidden &
+Outside the accepted map-center, point-source-template, linearized claim. \\
+Real, magnitude-only, radial, or unity-normalized derivative &
+forbidden &
+Requires a separate approved derived-product contract that preserves primary
+parent identity and declares information loss. \\
+Historical artifacts and prototypes &
+quarantined &
+Read-only evidence only; never imported, modified, executed, or treated as
+authority. \\
+Production, telescope correction, or automatic control &
+forbidden &
+Requires completed evidence, accepted repair/re-audit, and separate owner and
+human/telescope authorization. \\
+\bottomrule
+\end{longtable}
+
+\section{Machine-readable ledger proposal}
+
+This block is embedded only in the report.  It is not a canonical ledger
+mutation.
+
+\begin{verbatim}
+format_version: 1
+proposal_only: true
+package_id: SCI-MAP-003
+date: 2026-08-14
+audit_branch: codex/audit-sci-map-003
+governing_application_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+independent_core:
+  predecessor:
+    commit: 3eecd9f4c6ccf9c9a5c509908b2689a8a0e1a80a
+    sha256: d6eac8499191f65396d3bc743d5aea70e055ad6342dd812e67d68d31d436073e
+    status: frozen_preserved
+  operative_successor:
+    id: SCI-MAP-003-INDEPENDENT-CORE-SUCCESSOR-001
+    commit: c0bd689598c8bc1c20114248a45822b13d6ba2f2
+    sha256: 5fb256b18566d725267d25737163f97dd1d5bbd463ba77ed33960e977a5dfed4
+    status: accepted_operative
+status:
+  contract_status: proposed
+  implementation_status: nonconformant
+  validation_status: not_started
+  production_status: existing_use_only
+  verdict: amend
+findings:
+  - {id: SCI-MAP-003-F001, class: contract_gap, priority: P1, status: open}
+  - {id: SCI-MAP-003-F002, class: dependency_gap, priority: P0, status: open}
+  - {id: SCI-MAP-003-F003, class: implementation_defect, priority: P0, status: open}
+  - {id: SCI-MAP-003-F004, class: contract_gap, priority: P1, status: open}
+  - {id: SCI-MAP-003-F005, class: contract_gap, priority: P1, status: open}
+  - {id: SCI-MAP-003-F006, class: contract_gap, priority: P1, status: open}
+  - {id: SCI-MAP-003-F007, class: scientific_policy_decision, priority: P1, status: open}
+  - {id: SCI-MAP-003-F008, class: scientific_policy_decision, priority: P1, status: open}
+  - {id: SCI-MAP-003-F009, class: dependency_gap, priority: P0, status: open}
+  - {id: SCI-MAP-003-F010, class: evidence_gap, priority: P1, status: open}
+dependencies:
+  SCI-MAP-001: open
+  SCI-MAP-002: conditioned
+  SCI-RTC-001: open
+  SCI-PTC-001: conditioned
+  SCI-AST-001: conditioned
+  SCI-VAL-001: not_started
+  SCI-FRUIT-001: not_started
+  SCI-MODE-001: not_started
+incoming_handoffs:
+  SCI-MAP-003-XAUD-001: accept_bounded_pre_core_authority
+  SCI-MAP-003-XAUD-002: accept_bounded_pre_core_authority
+  SCI-MAP-003-XAUD-003: accept_bounded_pre_core_authority
+  SCI-MAP-003-XAUD-004: accept_bounded_pre_core_authority
+  SCI-MAP-003-XAUD-005: accept_bounded_pre_core_authority
+  SCI-MAP-003-XAUD-006: accept_post_core_dependency_evidence
+  SCI-MAP-003-XAUD-007: accept_post_core_dependency_evidence
+  SCI-MAP-003-XAUD-008: accept_post_core_dependency_evidence
+proposed_outgoing_handoff_ids:
+  - SCI-MAP-003-XAUD-009
+  - SCI-MAP-003-XAUD-010
+  - SCI-MAP-003-XAUD-011
+  - SCI-MAP-003-XAUD-012
+  - SCI-MAP-003-XAUD-013
+  - SCI-MAP-003-XAUD-014
+  - SCI-MAP-003-XAUD-015
+  - SCI-MAP-003-XAUD-016
+validation:
+  cases_preregistered: 11
+  cases_executed: 0
+  framework_num_001: not_started
+  real_evidence_index: []
+  local_launch: held
+  costly_launch: held
+consumer:
+  existing_products: existing_use_only
+  transfer_publication: fail_closed
+  lmtoof: fail_closed
+  production: forbidden
+\end{verbatim}
+
+\section{Scope integrity, limitations, and return}
+
+This report has one authorized artifact path:
+\path{doc/audits/packages/SCI-MAP-003_SCIENTIFIC_CONTRACT_AUDIT.tex}.
+The Git index must remain empty, and the worktree must remain clean outside
+this one untracked path at the checkpoint.
+
+Only static reading and proportional offline text/scope checks are authorized.
+The static trace can establish the presence or absence of named code and the
+parallel shared-write structure; it cannot establish runtime frequency,
+scientific magnitude, numerical tolerances, race manifestation, retained-data
+behavior, performance, or telescope gain.  Those are not inferred.
+
+No numerical fixture, Citlali run, LMTOOF run, reduction, Unity access,
+network use, external contact, rendering, PDF/auxiliary file, compile, build,
+test, config/validation run, application edit, validation edit, canonical
+ledger/handoff edit, helper/schema/dependency, second path, repair, re-audit,
+integration, push, merge, rebase, or production action occurred.
+
+The next return point is this exact first viable uncommitted report after
+non-rendering checks.  Coordinator acceptance is required before any later
+artifact, render/compile, stage/commit, numerical execution, repair, re-audit,
+handoff/ledger mutation, or Phase-2 continuation.
+
+\end{document}
