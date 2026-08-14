@@ -222,7 +222,7 @@ Citlali, Kidscpp, Tula, and other C/C++ application nodes remain exact LLVM 20.
 | Compiler matrix | Pass in development | GCC 14 and LLVM 20 pass in Ubuntu, native macOS LLVM 20 passes through the full application, and Unity GCC 13.3 passes the complete build and test gate. Release support policy remains separate. |
 | Native developer bootstrap | Pass | Exact LLVM 20/Spack host gate, source-built full graph, persistent Ninja workflow, and installed-artifact gate pass locally; the corresponding Unity GCC 13.3 workflow also passes. |
 | Real-data fixtures | Pass | The published manifest binds pointing observation 152389, network 0, scan 2 by basename, byte size, and SHA-256; the installed Kidscpp reader verifies it and passes without making the external payload part of Git. |
-| Release source identity | Partial | Exact development revisions and the release-manifest contract are machine-readable and checked; immutable release archives/checksums remain open. |
+| Release source identity | Partial | Exact development revisions and the release-manifest contract are machine-readable and checked. Source and recipe revisions now have distinct identities. The first ten-package audit is blocked because current recipe revisions do not resolve the accepted development sources; immutable source/recipe archives remain open. |
 | Portable lock | Partial | ADR 0010 defines one source-based, host-path-free lock per supported platform/compiler profile and rejects development paths; the release locks have not yet been generated and accepted. |
 | Full refactored application | Pass | All eight active compiled sources, full header surface, generated inputs, library, CLI, and tests build through Spack on native macOS and Unity. |
 | Full CLI and config | Pass locally | Full operational CLI/help and complete 123-test/four-mode config preflight pass. |
@@ -246,9 +246,10 @@ Citlali, Kidscpp, Tula, and other C/C++ application nodes remain exact LLVM 20.
    LLVM 20 and a compatible OpenMP runtime.
 4. Add a user-owned Unity environment using the installed
    Spack/compiler/module facts retrieved by the user.
-5. Instantiate the accepted release-bundle contract with immutable source
-   archives/checksums and one source-based, host-path-free lock per supported
-   profile.
+5. Publish repository-owned recipe revisions that resolve the accepted source
+   revisions, then instantiate the release-bundle contract with immutable
+   source/recipe archives and one source-based, host-path-free lock per
+   supported profile.
 6. Ensure dependencies such as CFITSIO can build from the declared graph or
    are explicitly documented as required environment externals.
 
@@ -305,10 +306,10 @@ changes are isolated and require product validation.
 
 ## Remaining Open Evidence
 
-1. Produce and accept the release bundle now defined by ADR 0010: immutable
-   source archives/checksums and source-based macOS LLVM 20 and Unity GCC 13
-   profile locks. The buildcache policy is already explicit and defaults to
-   source builds.
+1. Close the checked recipe/source audit, then produce the release bundle
+   defined by ADR 0010: immutable source and recipe archives/checksums and
+   source-based macOS LLVM 20 and Unity GCC 13 profile locks. The buildcache
+   policy is already explicit and defaults to source builds.
 2. Demonstrate the managed user-owned Unity reduction workflow after the
    external launch-boundary propagation fix.
 3. Freeze and validate the same-SHA point, OOF, science, and Beammap matrix.

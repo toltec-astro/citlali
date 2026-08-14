@@ -12,6 +12,7 @@
     "sources",
     "spack",
     "profiles",
+    "recipe_source_audit",
     "buildcache",
     "acceptance"
   ],
@@ -51,6 +52,7 @@
         "unity-gcc13": {"$ref": "#/$defs/profile"}
       }
     },
+    "recipe_source_audit": {"$ref": "#/$defs/checkedFile"},
     "buildcache": {
       "type": "object",
       "required": [
@@ -122,13 +124,22 @@
     },
     "source": {
       "type": "object",
-      "required": ["repository_url", "review_branch", "commit", "archive"],
+      "required": [
+        "repository_url",
+        "review_branch",
+        "source_commit",
+        "source_archive",
+        "recipe_commit",
+        "recipe_archive"
+      ],
       "additionalProperties": false,
       "properties": {
         "repository_url": {"type": "string", "minLength": 1},
         "review_branch": {"type": "string", "minLength": 1},
-        "commit": {"$ref": "#/$defs/gitCommit"},
-        "archive": {"$ref": "#/$defs/archive"}
+        "source_commit": {"$ref": "#/$defs/gitCommit"},
+        "source_archive": {"$ref": "#/$defs/archive"},
+        "recipe_commit": {"$ref": "#/$defs/gitCommit"},
+        "recipe_archive": {"$ref": "#/$defs/archive"}
       }
     },
     "observedLock": {

@@ -17,8 +17,10 @@ keeps completed work machine-readable without overstating release readiness.
 
 A release bundle must contain:
 
-- one exact commit and an HTTPS archive checksum for Citlali, Tula CMake, Tula,
-  and Kidscpp;
+- separate exact source and recipe revisions, with HTTPS archive checksums, for
+  Citlali, Tula CMake, Tula, and Kidscpp;
+- an accepted audit proving that every recipe revision resolves its declared
+  source revision;
 - one source-based `spack.yaml` and concrete `spack.lock` for each supported
   platform profile;
 - no `develop` entries or absolute `dev_path` source bindings;
@@ -30,6 +32,12 @@ Locks are portable within their declared platform/compiler profile, not across
 unlike operating systems and compilers. macOS LLVM 20 and Unity GCC 13 thus
 have separate locks while sharing one release manifest and source set.
 
+Source and recipe revisions are deliberately separate. A repository first
+freezes the source revision to be built, then publishes a later recipe revision
+that names that immutable source. Treating them as one commit would make a
+self-hosted recipe depend on source identity that could not exist until after
+the recipe commit was created.
+
 ## Bundle Layout
 
 The release producer should publish the manifest adjacent to the artifacts it
@@ -40,10 +48,8 @@ archive's checksum without creating a circular identity.
 citlali-<release-id>/
   manifest.json
   sources/
-    citlali-<commit>.tar.gz
-    tula_cmake-<commit>.tar.gz
-    tula-<commit>.tar.gz
-    kidscpp-<commit>.tar.gz
+    <repository>-source-<commit>.tar.gz
+    <repository>-recipes-<commit>.tar.gz
   profiles/
     macos-llvm20/
       spack.yaml
@@ -57,7 +63,22 @@ The manifest schema is `release-manifest.schema.json`. The repository validator
 hashes every bundled source archive and profile file, requires each source URL
 to identify its declared commit, rejects paths that escape the bundle root,
 checks the declared root DAG in each lock, and rejects any nested `dev_path`
-value. Validation therefore does not depend on network access.
+value. The manifest also checksum-binds the recipe/source audit and requires it
+to cover every repository. Validation therefore does not depend on network
+access.
+
+Before generating either profile lock, audit the decentralized recipes:
+
+```console
+$HOME/tolteca/bin/python tools/build/audit_release_recipe_sources.py
+```
+
+The 2026-08-14 development candidate is intentionally blocked: Citlali's
+recipe has no immutable source, all seven Tula CMake package recipes identify
+an older commit, and the Tula and Kidscpp recipes also identify older commits.
+The checked report is
+`validation/release_recipe_source_audit_2026-08-14.json`. Do not generate a
+release profile or lock until a later recipe revision makes this audit pass.
 
 Validate the current development candidate with:
 
@@ -83,8 +104,9 @@ unsigned cache is never an accepted release input.
 
 ## Ownership Boundary
 
-Citlali owns this schema, validator, source identities, profile requirements,
-and acceptance evidence. The deployment system owns installation locations,
+Citlali owns this schema, validator, profile requirements, and acceptance
+evidence. Each source repository owns its source publication and decentralized
+package recipes. The deployment system owns installation locations,
 activation, and propagation of the selected profile and lock identity into
 TolTECA-launched reductions. This repository does not modify or vendor
 `tolteca_deploy`.

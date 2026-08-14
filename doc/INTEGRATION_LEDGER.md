@@ -122,8 +122,10 @@ the effective C++23 standard; the Tula metadata defect remains upstream debt.
 - The Citlali-owned release schema, validator, bundle layout, source-build
   fallback, and signed-buildcache policy are accepted in ADR 0010. The checked
   development candidate passes, but release production remains open: publish
-  immutable archives/checksums and one source-based, host-path-free lock for
-  each supported profile, then close its remaining acceptance evidence.
+  immutable source and recipe archives/checksums, obtain repository-owned
+  recipe revisions that pass the ten-package source audit, and then generate
+  one source-based, host-path-free lock for each supported profile. No lock is
+  generated from the currently mismatched recipes.
 
 ### Spack Adaptation Exit
 

@@ -102,6 +102,43 @@ def _contains_key(value: Any, key: str) -> bool:
     return False
 
 
+def _validate_source_archive(
+    repository_root: Path,
+    name: str,
+    archive: Any,
+    *,
+    archive_name: str,
+    commit: str,
+    repository_url: str,
+    require_release: bool,
+) -> None:
+    label = f"sources.{name}.{archive_name}"
+    if archive is None:
+        if require_release:
+            raise ValueError(f"{label} is required for release")
+        return
+    archive = _require_mapping(archive, label)
+    _require_exact_keys(
+        archive,
+        ("path", "url", "sha256", "immutable"),
+        label,
+    )
+    _validate_checked_file(repository_root, archive, label)
+    url = _require_string(archive.get("url"), f"{label}.url")
+    digest = _require_string(archive.get("sha256"), f"{label}.sha256")
+    if not url.startswith("https://"):
+        raise ValueError(f"{label}.url must use HTTPS")
+    expected_repository = repository_url.removesuffix(".git").rstrip("/")
+    if not url.startswith(f"{expected_repository}/"):
+        raise ValueError(f"{label}.url must use the declared repository")
+    if commit not in url:
+        raise ValueError(f"{label}.url must identify the declared commit")
+    if _SHA256.fullmatch(digest) is None:
+        raise ValueError(f"{label}.sha256 must be lowercase SHA-256")
+    if archive.get("immutable") is not True:
+        raise ValueError(f"{label} must be marked immutable")
+
+
 def _validate_source(
     repository_root: Path,
     name: str,
@@ -112,7 +149,14 @@ def _validate_source(
     source = _require_mapping(record, f"sources.{name}")
     _require_exact_keys(
         source,
-        ("repository_url", "review_branch", "commit", "archive"),
+        (
+            "repository_url",
+            "review_branch",
+            "source_commit",
+            "source_archive",
+            "recipe_commit",
+            "recipe_archive",
+        ),
         f"sources.{name}",
     )
     repository_url = _require_string(
@@ -122,41 +166,40 @@ def _validate_source(
     if not repository_url.startswith("https://github.com/toltec-astro/"):
         raise ValueError(f"sources.{name}.repository_url is not an accepted URL")
     _require_string(source.get("review_branch"), f"sources.{name}.review_branch")
-    commit = _require_string(source.get("commit"), f"sources.{name}.commit")
-    if _GIT_COMMIT.fullmatch(commit) is None:
-        raise ValueError(f"sources.{name}.commit must be a full lowercase Git SHA")
-
-    archive = source.get("archive")
-    if archive is None:
-        if require_release:
-            raise ValueError(f"sources.{name}.archive is required for release")
-        return
-    archive = _require_mapping(archive, f"sources.{name}.archive")
-    _require_exact_keys(
-        archive,
-        ("path", "url", "sha256", "immutable"),
-        f"sources.{name}.archive",
+    source_commit = _require_string(
+        source.get("source_commit"),
+        f"sources.{name}.source_commit",
     )
-    _validate_checked_file(
+    recipe_commit = _require_string(
+        source.get("recipe_commit"),
+        f"sources.{name}.recipe_commit",
+    )
+    for label, commit in (
+        ("source_commit", source_commit),
+        ("recipe_commit", recipe_commit),
+    ):
+        if _GIT_COMMIT.fullmatch(commit) is None:
+            raise ValueError(
+                f"sources.{name}.{label} must be a full lowercase Git SHA"
+            )
+    _validate_source_archive(
         repository_root,
-        archive,
-        f"sources.{name}.archive",
+        name,
+        source.get("source_archive"),
+        archive_name="source_archive",
+        commit=source_commit,
+        repository_url=repository_url,
+        require_release=require_release,
     )
-    url = _require_string(archive.get("url"), f"sources.{name}.archive.url")
-    digest = _require_string(
-        archive.get("sha256"),
-        f"sources.{name}.archive.sha256",
+    _validate_source_archive(
+        repository_root,
+        name,
+        source.get("recipe_archive"),
+        archive_name="recipe_archive",
+        commit=recipe_commit,
+        repository_url=repository_url,
+        require_release=require_release,
     )
-    if not url.startswith("https://"):
-        raise ValueError(f"sources.{name}.archive.url must use HTTPS")
-    if commit not in url:
-        raise ValueError(
-            f"sources.{name}.archive.url must identify the declared commit"
-        )
-    if _SHA256.fullmatch(digest) is None:
-        raise ValueError(f"sources.{name}.archive.sha256 must be lowercase SHA-256")
-    if archive.get("immutable") is not True:
-        raise ValueError(f"sources.{name}.archive must be marked immutable")
 
 
 def _validate_release_lock(
@@ -313,6 +356,74 @@ def _validate_buildcache(record: Any) -> None:
             raise ValueError("invalid buildcache signing-key fingerprint")
 
 
+def _validate_recipe_source_audit(
+    repository_root: Path,
+    record: Any,
+    *,
+    manifest: dict[str, Any],
+    require_release: bool,
+) -> None:
+    label = "recipe_source_audit"
+    identity = _require_mapping(record, label)
+    _require_exact_keys(identity, ("path", "sha256"), label)
+    path = _validate_checked_file(repository_root, identity, label)
+    report = _require_mapping(json.loads(path.read_text()), label)
+    _require_exact_keys(
+        report,
+        (
+            "schema_version",
+            "release_id",
+            "manifest_state",
+            "status",
+            "package_count",
+            "failure_count",
+            "packages",
+        ),
+        label,
+    )
+    if report.get("schema_version") != "citlali-release-recipe-audit-v1":
+        raise ValueError("unsupported recipe source audit schema")
+    if report.get("release_id") != manifest.get("release_id"):
+        raise ValueError("recipe source audit release_id differs from manifest")
+    if report.get("manifest_state") != manifest.get("manifest_state"):
+        raise ValueError("recipe source audit state differs from manifest")
+    packages = report.get("packages")
+    if not isinstance(packages, list) or not packages:
+        raise ValueError("recipe source audit packages must be a non-empty array")
+    if report.get("package_count") != len(packages):
+        raise ValueError("recipe source audit package count is inconsistent")
+
+    sources = manifest["sources"]
+    repositories_seen = set()
+    failure_count = 0
+    for index, package in enumerate(packages):
+        package = _require_mapping(package, f"{label}.packages[{index}]")
+        repository = package.get("repository")
+        if repository not in sources:
+            raise ValueError(f"recipe source audit has unknown repository {repository}")
+        source = sources[repository]
+        if package.get("source_commit") != source.get("source_commit"):
+            raise ValueError(
+                f"recipe source audit source commit differs for {repository}"
+            )
+        if package.get("recipe_commit") != source.get("recipe_commit"):
+            raise ValueError(
+                f"recipe source audit recipe commit differs for {repository}"
+            )
+        repositories_seen.add(repository)
+        if package.get("accepted") is not True:
+            failure_count += 1
+    if repositories_seen != set(sources):
+        raise ValueError("recipe source audit does not cover every source repository")
+    if report.get("failure_count") != failure_count:
+        raise ValueError("recipe source audit failure count is inconsistent")
+    expected_status = "accepted" if failure_count == 0 else "blocked"
+    if report.get("status") != expected_status:
+        raise ValueError("recipe source audit status is inconsistent")
+    if require_release and failure_count:
+        raise ValueError("release requires an accepted recipe source audit")
+
+
 def validate_manifest(
     manifest_path: Path,
     *,
@@ -331,6 +442,7 @@ def validate_manifest(
             "sources",
             "spack",
             "profiles",
+            "recipe_source_audit",
             "buildcache",
             "acceptance",
         ),
@@ -381,6 +493,13 @@ def validate_manifest(
             profiles[name],
             require_release=release_required,
         )
+
+    _validate_recipe_source_audit(
+        repository_root,
+        manifest.get("recipe_source_audit"),
+        manifest=manifest,
+        require_release=release_required,
+    )
 
     _validate_buildcache(manifest.get("buildcache"))
     acceptance = _require_mapping(manifest.get("acceptance"), "acceptance")

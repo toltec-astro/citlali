@@ -39,11 +39,13 @@ Run the candidate gate with:
 
 ```console
 $HOME/tolteca/bin/python tools/build/validate_release_manifest.py
+$HOME/tolteca/bin/python tools/build/audit_release_recipe_sources.py
 ```
 
 The stricter `--require-release` gate remains intentionally blocked until
-immutable source archives, source-based profile environments and locks,
-deployment propagation, and the frozen same-SHA four-mode matrix are accepted.
+immutable source and recipe archives, recipe/source alignment, source-based
+profile environments and locks, deployment propagation, and the frozen
+same-SHA four-mode matrix are accepted.
 
 ## Prerequisite Check
 

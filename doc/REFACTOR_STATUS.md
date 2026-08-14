@@ -134,13 +134,17 @@ The Citlali-owned release-composition contract is now defined by
 [`spack/release/`](../spack/release/README.md) and
 [ADR 0010](adr/0010-release-bundle-contract.md). Its validator distinguishes a
 checked development candidate from a release, verifies repository inputs and
-checksums, requires exact immutable first-party source archives, requires one
-source-based lock without development paths per supported profile, and makes
-buildcache trust explicit while retaining source reconstruction. The current
-candidate passes its development gate but is deliberately not release-ready:
-archives, profile release locks, deployment propagation, and the same-SHA
-four-mode acceptance matrix remain open. `tolteca_deploy` remains external and
-unchanged.
+checksums, separates immutable first-party source and recipe revisions,
+requires a checked audit proving every recipe resolves its accepted source,
+requires one source-based lock without development paths per supported
+profile, and makes buildcache trust explicit while retaining source
+reconstruction. The first audit is correctly blocked for all ten first-party
+package recipes: Citlali is unbound and the Tula CMake, Tula, and Kidscpp
+recipes identify older sources than the accepted development revisions. No
+release profile will be generated until repository-owned recipe revisions
+close that mismatch. Archives, profile release locks, deployment propagation,
+and the same-SHA four-mode acceptance matrix also remain open.
+`tolteca_deploy` remains external and unchanged.
 
 The first user-supplied Unity inventory is now recorded operational evidence:
 Ubuntu 24.04 x86_64 exposes GCC/G++/GFortran 13.3 and Clang 18.1, CMake 3.30 through the

@@ -18,10 +18,14 @@ scientific acceptance, or provenance requirements.
 ## Decision
 
 Citlali owns a versioned release-manifest schema and an executable validator.
-One manifest binds the exact Citlali, Tula CMake, Tula, and Kidscpp commits to
-immutable HTTPS archives and SHA-256 values. It also binds the Spack revision,
-accepted evidence, build-cache trust policy, and one source-based environment
-plus concrete lock for each supported platform/compiler profile.
+One manifest separately binds the exact Citlali, Tula CMake, Tula, and Kidscpp
+source revisions and recipe revisions to immutable HTTPS archives and SHA-256
+values. A checked audit must prove that every decentralized recipe revision
+resolves its declared source revision. The separation is necessary because a
+self-hosted package recipe is normally updated after the source revision it
+pins. The manifest also binds the Spack revision, accepted evidence,
+build-cache trust policy, and one source-based environment plus concrete lock
+for each supported platform/compiler profile.
 
 A release lock contains no `develop` or `dev_path` source binding. Portability
 means that the bundle can be reconstructed on another compatible host within
@@ -49,6 +53,8 @@ modify that tooling in this lane.
 - Each supported profile receives its own reviewed lock and compiler policy.
 - Branch names remain review context; full commits and archive checksums are
   authoritative.
+- Source-based profile generation stops when recipe revisions do not resolve
+  the accepted source revisions; development overrides are not release proof.
 - A release is blocked until every manifest remainder is closed and its
   acceptance status is `accepted`.
 
@@ -75,5 +81,6 @@ acceptance evidence.
 
 - [`../../spack/release/README.md`](../../spack/release/README.md)
 - [`../../spack/release/development-candidate.json`](../../spack/release/development-candidate.json)
+- [`../../validation/release_recipe_source_audit_2026-08-14.json`](../../validation/release_recipe_source_audit_2026-08-14.json)
 - [`../TOLTECA_SPACK_BUILD_INTEGRATION_REVIEW_2026-07-31.md`](../TOLTECA_SPACK_BUILD_INTEGRATION_REVIEW_2026-07-31.md)
 - [`../BUILD_TIMING_BASELINE_2026-08-14.md`](../BUILD_TIMING_BASELINE_2026-08-14.md)

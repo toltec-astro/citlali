@@ -24,8 +24,10 @@ class ReleaseManifestTest(unittest.TestCase):
             self.environment_paths[profile] = path
         self.evidence = self.root / "evidence.txt"
         self.evidence.write_text("accepted evidence\n")
+        self.recipe_audit = self.root / "recipe-audit.json"
         self.manifest_path = self.root / "manifest.json"
         self.manifest = self.make_candidate()
+        self.write_recipe_audit(accepted=False)
         self.write_manifest()
 
     def tearDown(self) -> None:
@@ -40,8 +42,10 @@ class ReleaseManifestTest(unittest.TestCase):
             sources[name] = {
                 "repository_url": f"https://github.com/toltec-astro/{name}.git",
                 "review_branch": "release-test",
-                "commit": f"{index:x}" * 40,
-                "archive": None,
+                "source_commit": f"{index:x}" * 40,
+                "source_archive": None,
+                "recipe_commit": f"{index + 4:x}" * 40,
+                "recipe_archive": None,
             }
         profiles = {}
         for profile, path in self.environment_paths.items():
@@ -68,6 +72,7 @@ class ReleaseManifestTest(unittest.TestCase):
             "sources": sources,
             "spack": {"version": "1.2.2", "commit": "a" * 40},
             "profiles": profiles,
+            "recipe_source_audit": {},
             "buildcache": {
                 "mode": "source-build-default",
                 "source_build_fallback": True,
@@ -84,21 +89,57 @@ class ReleaseManifestTest(unittest.TestCase):
     def write_manifest(self) -> None:
         self.manifest_path.write_text(json.dumps(self.manifest))
 
+    def write_recipe_audit(self, *, accepted: bool) -> None:
+        packages = []
+        for name, source in self.manifest["sources"].items():
+            packages.append(
+                {
+                    "repository": name,
+                    "package": name,
+                    "source_commit": source["source_commit"],
+                    "recipe_commit": source["recipe_commit"],
+                    "recipe_path": f"{name}/package.py",
+                    "accepted": accepted,
+                    "reason": "test audit",
+                    "versions": [],
+                }
+            )
+        failure_count = 0 if accepted else len(packages)
+        self.recipe_audit.write_text(
+            json.dumps(
+                {
+                    "schema_version": "citlali-release-recipe-audit-v1",
+                    "release_id": self.manifest["release_id"],
+                    "manifest_state": self.manifest["manifest_state"],
+                    "status": "accepted" if accepted else "blocked",
+                    "package_count": len(packages),
+                    "failure_count": failure_count,
+                    "packages": packages,
+                }
+            )
+        )
+        self.manifest["recipe_source_audit"] = {
+            "path": self.recipe_audit.name,
+            "sha256": sha256(self.recipe_audit),
+        }
+
     def make_release(self, *, include_develop_path: bool = False) -> None:
         self.manifest["manifest_state"] = "release"
         self.manifest["release_id"] = "citlali-test-release"
         for name, source in self.manifest["sources"].items():
-            archive = self.root / f"{name}-{source['commit']}.tar.gz"
-            archive.write_bytes(f"archive for {name}\n".encode())
-            source["archive"] = {
-                "path": archive.name,
-                "url": (
-                    f"https://github.com/toltec-astro/{name}/archive/"
-                    f"{source['commit']}.tar.gz"
-                ),
-                "sha256": sha256(archive),
-                "immutable": True,
-            }
+            for identity in ("source", "recipe"):
+                commit = source[f"{identity}_commit"]
+                archive = self.root / f"{name}-{identity}-{commit}.tar.gz"
+                archive.write_bytes(f"{identity} archive for {name}\n".encode())
+                source[f"{identity}_archive"] = {
+                    "path": archive.name,
+                    "url": (
+                        f"https://github.com/toltec-astro/{name}/archive/"
+                        f"{commit}.tar.gz"
+                    ),
+                    "sha256": sha256(archive),
+                    "immutable": True,
+                }
         for profile, record in self.manifest["profiles"].items():
             environment = self.root / f"{profile}-release.yaml"
             environment.write_text("spack:\n  specs: [citlali]\n")
@@ -129,6 +170,7 @@ class ReleaseManifestTest(unittest.TestCase):
             "evidence": [self.evidence.name],
             "remaining": [],
         }
+        self.write_recipe_audit(accepted=True)
         self.write_manifest()
 
     def test_accepts_development_candidate(self) -> None:
@@ -171,11 +213,50 @@ class ReleaseManifestTest(unittest.TestCase):
 
     def test_release_rejects_archive_not_bound_to_commit(self) -> None:
         self.make_release()
-        self.manifest["sources"]["citlali"]["archive"]["url"] = (
+        self.manifest["sources"]["citlali"]["source_archive"]["url"] = (
             "https://github.com/toltec-astro/citlali/archive/main.tar.gz"
         )
         self.write_manifest()
         with self.assertRaisesRegex(ValueError, "declared commit"):
+            validate_manifest(
+                self.manifest_path,
+                repository_root=self.root,
+                require_release=True,
+            )
+
+    def test_release_rejects_recipe_archive_not_bound_to_recipe_commit(self) -> None:
+        self.make_release()
+        self.manifest["sources"]["citlali"]["recipe_archive"]["url"] = (
+            "https://github.com/toltec-astro/citlali/archive/main.tar.gz"
+        )
+        self.write_manifest()
+        with self.assertRaisesRegex(ValueError, "declared commit"):
+            validate_manifest(
+                self.manifest_path,
+                repository_root=self.root,
+                require_release=True,
+            )
+
+    def test_release_rejects_archive_from_wrong_repository(self) -> None:
+        self.make_release()
+        source = self.manifest["sources"]["citlali"]
+        source["source_archive"]["url"] = (
+            "https://github.com/other/citlali/archive/"
+            f"{source['source_commit']}.tar.gz"
+        )
+        self.write_manifest()
+        with self.assertRaisesRegex(ValueError, "declared repository"):
+            validate_manifest(
+                self.manifest_path,
+                repository_root=self.root,
+                require_release=True,
+            )
+
+    def test_release_rejects_blocked_recipe_source_audit(self) -> None:
+        self.make_release()
+        self.write_recipe_audit(accepted=False)
+        self.write_manifest()
+        with self.assertRaisesRegex(ValueError, "accepted recipe source audit"):
             validate_manifest(
                 self.manifest_path,
                 repository_root=self.root,
