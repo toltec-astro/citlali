@@ -1,0 +1,25 @@
+{
+  "schema_version": "citlali-real-data-fixture-manifest-v1",
+  "fixture_id": "toltec-pointing-152389-network0-scan2-v1",
+  "description": "Raw TolTEC network-0 timestream used by the installed Kidscpp reader acceptance test.",
+  "observation": {
+    "obsnum": 152389,
+    "subobsnum": 0,
+    "scannum": 2,
+    "interface": "toltec0"
+  },
+  "file": {
+    "basename": "toltec0_152389_000_0002_2026_02_19_06_34_38.nc",
+    "size_bytes": 39239240,
+    "sha256": "3c8572ca2e90a4f073840607e07404feff638a8234972f2091974606b7885021"
+  },
+  "storage": {
+    "payload_in_git": false,
+    "validation_suite_relative_path": "point/data/toltec0_152389_000_0002_2026_02_19_06_34_38.nc"
+  },
+  "consumer_contract": {
+    "format": "TolTEC raw timestream NetCDF",
+    "reader": "Kidscpp RawTimeStream",
+    "operation": "open file and read a two-sample I/Q slice"
+  }
+}

@@ -197,9 +197,13 @@ of seven discovered tests successfully but failed the historical real-file
 test at its missing path. Because an empty CMake-provided
 `TOLTECA_TEST_DATA_ROOT` is treated as present, that test does not skip and its
 invalid-stride companion can pass for the wrong reason. This limitation is
-recorded rather than counted as a green package suite. The separate current-
-file reader gate above is valid data-path evidence, not a substitute for an
-immutable shared fixture. Docker is not a prerequisite for acceptance.
+recorded rather than counted as a green package suite. Citlali instead
+publishes a path-independent content manifest for a current pointing file;
+the installed-reader gate verifies its basename, byte size, and SHA-256 before
+opening the external payload and reading a two-sample I/Q slice. That gate
+passes under the exact native LLVM 20 graph and replaces the inaccessible
+historical fixture as acceptance evidence. Docker is not a prerequisite for
+acceptance.
 
 The local Citlali recipe uses source-buildable `cfitsio@4.3.0`, the version
 available in the current builtin Spack repository, rather than relying on the
@@ -217,7 +221,7 @@ Citlali, Kidscpp, Tula, and other C/C++ application nodes remain exact LLVM 20.
 | NetCDF C++ propagation | Pass upstream | Tula CMake owns a normalized target that does not depend on missing NetCDF C++ pkg-config metadata. |
 | Compiler matrix | Pass in development | GCC 14 and LLVM 20 pass in Ubuntu, native macOS LLVM 20 passes through the full application, and Unity GCC 13.3 passes the complete build and test gate. Release support policy remains separate. |
 | Native developer bootstrap | Pass | Exact LLVM 20/Spack host gate, source-built full graph, persistent Ninja workflow, and installed-artifact gate pass locally; the corresponding Unity GCC 13.3 workflow also passes. |
-| Real-data fixtures | Partial | A current pointing file passes the independent reader gate with recorded SHA-256, but the shared historical fixture has no accessible immutable manifest. |
+| Real-data fixtures | Pass | The published manifest binds pointing observation 152389, network 0, scan 2 by basename, byte size, and SHA-256; the installed Kidscpp reader verifies it and passes without making the external payload part of Git. |
 | Release source identity | Partial | Exact development revisions are machine-readable and checked; immutable release archives/checksums remain open. |
 | Portable lock | Planned | Local locks are intentionally ignored; no release environment lock exists. |
 | Full refactored application | Pass | All eight active compiled sources, full header surface, generated inputs, library, CLI, and tests build through Spack on native macOS and Unity. |
@@ -236,7 +240,8 @@ Citlali, Kidscpp, Tula, and other C/C++ application nodes remain exact LLVM 20.
 1. Maintain the checked first-party source manifest and Citlali-owned
    build-source preparation command; keep deployment tooling and containers
    optional and external.
-2. Identify an accessible real-data fixture and record an immutable manifest.
+2. Maintain the content-addressed real-data fixture manifest and keep the
+   external payload available to acceptance environments.
 3. Add and verify the required native macOS environment using exact Homebrew
    LLVM 20 and a compatible OpenMP runtime.
 4. Add a user-owned Unity environment using the installed
@@ -298,15 +303,13 @@ changes are isolated and require product validation.
 
 ## Remaining Open Evidence
 
-1. Identify the real-data fixture and publish an immutable manifest without
-   requiring the large payload to live in Git.
-2. Define exact first-party dependency source revisions in addition to the
+1. Define exact first-party dependency source revisions in addition to the
    concrete DAG identity already exposed by Citlali.
-3. Define release repository composition, immutable sources, lock, and
+2. Define release repository composition, immutable sources, lock, and
    buildcache trust policy.
-4. Measure clean and representative incremental builds in addition to the
+3. Measure clean and representative incremental builds in addition to the
    accepted no-op timing.
-5. Demonstrate the user-owned Unity environment and reduction workflow.
+4. Demonstrate the user-owned Unity environment and reduction workflow.
 
 These are implementation and acceptance gaps, not unresolved policy questions
 and not reasons to require a local container.

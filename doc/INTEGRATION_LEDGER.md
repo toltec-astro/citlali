@@ -61,8 +61,10 @@ the effective C++23 standard; the Tula metadata defect remains upstream debt.
 - The native Kidscpp environment now includes an explicit Spack
   `llvm-openmp@20.1.8` edge. Kidscpp installs from source, its independent
   installed consumer passes, and a separate reader consumer opens a current
-  raw TolTEC file and reads a two-sample I/Q slice. The historical upstream
-  real-data fixture still needs an accessible immutable manifest.
+  raw TolTEC file and reads a two-sample I/Q slice. The external payload for
+  pointing observation 152389, network 0, scan 2 is bound to a checked
+  path-independent manifest by basename, byte size, and SHA-256. The
+  historical upstream fixture is not used as acceptance evidence.
 - Citlali now consumes upstream-owned `tula-ccfits`, `tula-netcdf-cxx4`, and
   `tula-perflibs` targets. Its temporary package and CMake adapters have been
   removed, and general pipeline OpenMP is distinct from Wiener OpenMP.
@@ -72,7 +74,6 @@ the effective C++23 standard; the Tula metadata defect remains upstream debt.
   source dirty state and concrete Spack DAG identity. Managed launches also
   require their runtime environment lock to contain that exact root DAG and
   record the deployment profile and lock digest in product metadata.
-- Identify an accessible real-data fixture and publish an immutable manifest.
 - Add a user-owned Unity environment based on user-supplied
   Spack/compiler/module facts. The first inventory identifies Ubuntu 24.04,
   GCC/G++/GFortran 13.3, CMake 3.30, Python 3.12, no Ninja, and no

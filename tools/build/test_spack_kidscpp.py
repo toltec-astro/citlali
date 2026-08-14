@@ -42,6 +42,63 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+FIXTURE_MANIFEST_SCHEMA = "citlali-real-data-fixture-manifest-v1"
+
+
+def validate_fixture_manifest(fixture: Path, manifest_path: Path) -> dict:
+    """Verify that a real-data fixture has the published content identity."""
+    manifest = json.loads(manifest_path.read_text())
+    if manifest.get("schema_version") != FIXTURE_MANIFEST_SCHEMA:
+        raise RuntimeError(
+            f"unsupported fixture manifest schema in {manifest_path}"
+        )
+    fixture_id = manifest.get("fixture_id")
+    file_identity = manifest.get("file")
+    if not isinstance(fixture_id, str) or not fixture_id:
+        raise RuntimeError(
+            f"fixture manifest is missing fixture_id: {manifest_path}"
+        )
+    if not isinstance(file_identity, dict):
+        raise RuntimeError(
+            f"fixture manifest is missing file identity: {manifest_path}"
+        )
+
+    expected_name = file_identity.get("basename")
+    expected_size = file_identity.get("size_bytes")
+    expected_sha256 = file_identity.get("sha256")
+    if not isinstance(expected_name, str) or not expected_name:
+        raise RuntimeError(
+            f"fixture manifest has invalid basename: {manifest_path}"
+        )
+    if not isinstance(expected_size, int) or expected_size < 1:
+        raise RuntimeError(
+            f"fixture manifest has invalid size: {manifest_path}"
+        )
+    if (
+        not isinstance(expected_sha256, str)
+        or len(expected_sha256) != 64
+        or any(character not in "0123456789abcdef" for character in expected_sha256)
+    ):
+        raise RuntimeError(f"fixture manifest has invalid sha256: {manifest_path}")
+
+    actual = {
+        "basename": fixture.name,
+        "size_bytes": fixture.stat().st_size,
+        "sha256": _sha256(fixture),
+    }
+    expected = {
+        "basename": expected_name,
+        "size_bytes": expected_size,
+        "sha256": expected_sha256,
+    }
+    if actual != expected:
+        raise RuntimeError(
+            f"real-data fixture does not match {fixture_id}: "
+            f"expected {expected}, got {actual}"
+        )
+    return manifest
+
+
 def _assert_concrete_graph(environment_path: Path) -> None:
     lock_path = environment_path / "spack.lock"
     if not lock_path.is_file():
@@ -116,9 +173,14 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         help="raw TolTEC timestream used by the real-reader acceptance test",
     )
     parser.add_argument(
+        "--fixture-manifest",
+        type=Path,
+        help="content-identity manifest for --fixture",
+    )
+    parser.add_argument(
         "--require-real-data",
         action="store_true",
-        help="fail unless --fixture is supplied",
+        help="fail unless --fixture and --fixture-manifest are supplied",
     )
     return parser.parse_args(argv)
 
@@ -182,8 +244,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         if not path.exists():
             raise FileNotFoundError(path)
 
+    if (args.fixture is None) != (args.fixture_manifest is None):
+        raise ValueError(
+            "--fixture and --fixture-manifest must be supplied together"
+        )
     if args.require_real_data and args.fixture is None:
-        raise ValueError("--require-real-data requires --fixture")
+        raise ValueError(
+            "--require-real-data requires --fixture and --fixture-manifest"
+        )
 
     process_environment = dict(os.environ)
     process_environment["SPACK_PYTHON"] = str(spack_python)
@@ -208,8 +276,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0
 
     fixture = args.fixture.expanduser().resolve()
+    fixture_manifest = args.fixture_manifest.expanduser().resolve()
     if not fixture.is_file():
         raise FileNotFoundError(fixture)
+    if not fixture_manifest.is_file():
+        raise FileNotFoundError(fixture_manifest)
+    manifest = validate_fixture_manifest(fixture, fixture_manifest)
+    print(f"real-data fixture id: {manifest['fixture_id']}")
+    print(f"real-data fixture manifest: {fixture_manifest}")
     print(f"real-data fixture: {fixture}")
     print(f"real-data fixture sha256: {_sha256(fixture)}")
     _configure_build_test(

@@ -88,8 +88,13 @@ Kidscpp installs from source, its independent installed consumer passes, and a
 separate reader consumer opens a current raw pointing file and reads a
 two-sample I/Q slice. The 2026-08-04 upstream revision cleanly separates
 portable generated-input tests from the optional historical real-file test,
-so an unavailable large fixture is no longer counted as a skipped success. An
-accessible immutable fixture manifest remains open for the real-data gate.
+so an unavailable large fixture is no longer counted as a skipped success.
+The project now publishes a path-independent content manifest for pointing
+observation 152389, network 0, scan 2. The acceptance tool verifies its
+basename, byte size, and SHA-256 before the installed Kidscpp reader opens the
+external payload and reads a two-sample I/Q slice. That gate passes under the
+exact native LLVM 20 graph; the historical upstream fixture is no longer an
+acceptance dependency.
 
 The full native-Mac application checkpoint is now complete locally. The
 parallel Spack CMake project builds all eight active refactor implementation
