@@ -7,6 +7,145 @@
     "optional_diagnostic_failure": "must be reported and must not masquerade as a complete enabled product",
     "evolution": "Contracts are immutable within a validation epoch. An intentional product or scientific-schema change requires a successor contract and validation profile."
   },
+  "artifact_contracts": {
+    "apt-prod-001-canonical-baseline-apt-v1": {
+      "artifact_contract_id": "apt-prod-001-canonical-baseline-apt-v1",
+      "contract_schema_version": "citlali-canonical-apt-product-contract-v1",
+      "schema_version": "citlali-canonical-apt-v1",
+      "activation_state": "unactivated",
+      "artifact_kind": "canonical_apt_ecsv",
+      "validator": "citlali-canonical-apt-v1",
+      "artifact_suffix": ".ecsv",
+      "producer": "citlali",
+      "output_role": "beammap-baseline-apt",
+      "profile": "citlali-beammap-baseline-apt-v1",
+      "coordinate_frame": "altaz",
+      "field_registry": "citlali-canonical-apt-field-registry-v1",
+      "baseline_field_registry": "citlali-canonical-apt-baseline-fields-v1",
+      "extension_registry": "citlali-canonical-apt-extension-registry-v1",
+      "framing_encoding": "citlali-labelled-type-length-v1",
+      "semantic_scope": "citlali-canonical-apt-semantic-sha256-v1",
+      "envelope_scope": "citlali-canonical-apt-envelope-sha256-v1",
+      "byte_transport_scope": "citlali-canonical-apt-byte-transport-sha256-v1",
+      "receipt_schema": "citlali-canonical-apt-publication-receipt-v1",
+      "receipt_suffix": ".sha256",
+      "ecsv": {
+        "version": "1.0",
+        "schema": "astropy-2.0",
+        "delimiter": ",",
+        "line_ending": "LF",
+        "final_lf": true,
+        "null_cell": "unquoted-empty-v1",
+        "string_cell": "quoted-utf8-single-line-v1",
+        "canonical_reserialization": true
+      },
+      "historical_input_policy": "historical-test-only; never a current production input",
+      "downstream_state": "no production ingestion or validation-profile activation",
+      "cal_closure": "not claimed; APT binding is separate from CAL physical-science closure",
+      "uid_contract": {
+        "datatype": "int64",
+        "minimum": 0,
+        "maximum": 9007199254740991,
+        "scope": "artifact-local row key only; never persistent detector identity",
+        "dense_required": false
+      },
+      "raw_relation": "one unique toltecN input per network N in 0..12 with positive channel_count; rows are a complete bijection over every (network, channel) pair",
+      "raw_manifest_contract": {
+        "network_minimum": 0,
+        "network_maximum": 12,
+        "interface_template": "toltec{network}",
+        "channel_count_minimum": 1,
+        "channel_count_maximum": 9007199254740992,
+        "relation": "complete-bijection",
+        "array_by_network": [[0, 6, 0], [7, 10, 1], [11, 12, 2]]
+      },
+      "occurrence_contract": "opaque issuer-provided publication occurrence, distinct from semantic content and not derived from content, path, or time",
+      "receipt_contract": {
+        "line_count": 5,
+        "field_order": ["scope", "envelope_sha256", "byte_sha256", "byte_count"],
+        "suffix_append": true,
+        "completion_marker": true
+      },
+      "protected_names": [
+        "uid", "tone_freq", "array", "nw", "kids_tone",
+        "schema_version", "profile", "field_registry", "framing_encoding",
+        "semantic_scope", "semantic_sha256", "envelope_scope", "envelope_sha256",
+        "byte_transport_scope", "occurrence", "event_reference", "output_role",
+        "producer", "software_revision", "configuration_reference", "event_time_utc",
+        "observation", "subobservation", "scan", "raw_manifest", "network", "channel",
+        "interface", "channel_count", "scientific_context", "project_id", "source_name",
+        "observation_time_utc", "coordinate_frame"
+      ],
+      "integer_domains": {
+        "flag": [0, 1],
+        "flag2_minimum": 0,
+        "flag2_maximum": 255,
+        "nonnegative": ["converge_iter", "rfi_masked_samples", "rfi_masked_scans", "scan_band_masked_samples", "scan_band_masked_rows", "template_npix"],
+        "scan_band_masked_edge": [0, 1, 2, 3],
+        "scan_band_mask_rejected": [0, 1],
+        "cal_amp_method": [0, 1],
+        "kids_flag": "exact-signed-int64-unrestricted"
+      },
+      "core_fields": [
+        {"name": "uid", "datatype": "int64", "unit": "N/A", "nullable": false, "authority": "canonical-issuer", "description": "exact nonnegative artifact-local row key; never persistent detector identity", "identity_role": "artifact-local-row-key"},
+        {"name": "tone_freq", "datatype": "float64", "unit": "Hz", "nullable": false, "authority": "raw-readout", "description": "raw readout tone-frequency attribute; not identity", "identity_role": "nonidentity-attribute"},
+        {"name": "array", "datatype": "int64", "unit": "N/A", "nullable": false, "authority": "network-map", "description": "canonical TolTEC array enum; not row identity", "identity_role": "nonidentity-attribute"},
+        {"name": "nw", "datatype": "int64", "unit": "N/A", "nullable": false, "authority": "raw-manifest", "description": "raw-manifest network key", "identity_role": "raw-channel-relation"},
+        {"name": "kids_tone", "datatype": "int64", "unit": "N/A", "nullable": false, "authority": "raw-manifest", "description": "zero-based raw channel key within network", "identity_role": "raw-channel-relation"}
+      ],
+      "required_fields": [
+        {"name": "a_fwhm", "datatype": "float64", "unit": "arcsec", "nullable": true, "authority": "producer", "authority_reference": "citlali:beammap-fit-v1", "nonfinite": "nan-token", "registry": "citlali-canonical-apt-baseline-fields-v1", "description": "fitted azimuthal FWHM", "identity_role": "nonidentity"},
+        {"name": "a_fwhm_err", "datatype": "float64", "unit": "arcsec", "nullable": true, "authority": "producer", "authority_reference": "citlali:beammap-fit-v1", "nonfinite": "nan-token", "registry": "citlali-canonical-apt-baseline-fields-v1", "description": "fitted azimuthal FWHM error", "identity_role": "nonidentity"},
+        {"name": "amp", "datatype": "float64", "unit": "xs", "nullable": true, "authority": "producer", "authority_reference": "citlali:beammap-fit-v1", "nonfinite": "nan-token", "registry": "citlali-canonical-apt-baseline-fields-v1", "description": "fitted amplitude", "identity_role": "nonidentity"},
+        {"name": "amp_err", "datatype": "float64", "unit": "xs", "nullable": true, "authority": "producer", "authority_reference": "citlali:beammap-fit-v1", "nonfinite": "nan-token", "registry": "citlali-canonical-apt-baseline-fields-v1", "description": "fitted amplitude error", "identity_role": "nonidentity"},
+        {"name": "angle", "datatype": "float64", "unit": "rad", "nullable": true, "authority": "producer", "authority_reference": "citlali:beammap-fit-v1", "nonfinite": "nan-token", "registry": "citlali-canonical-apt-baseline-fields-v1", "description": "fitted rotation angle", "identity_role": "nonidentity"},
+        {"name": "angle_err", "datatype": "float64", "unit": "rad", "nullable": true, "authority": "producer", "authority_reference": "citlali:beammap-fit-v1", "nonfinite": "nan-token", "registry": "citlali-canonical-apt-baseline-fields-v1", "description": "fitted angle uncertainty", "identity_role": "nonidentity"},
+        {"name": "b_fwhm", "datatype": "float64", "unit": "arcsec", "nullable": true, "authority": "producer", "authority_reference": "citlali:beammap-fit-v1", "nonfinite": "nan-token", "registry": "citlali-canonical-apt-baseline-fields-v1", "description": "fitted altitude FWHM", "identity_role": "nonidentity"},
+        {"name": "b_fwhm_err", "datatype": "float64", "unit": "arcsec", "nullable": true, "authority": "producer", "authority_reference": "citlali:beammap-fit-v1", "nonfinite": "nan-token", "registry": "citlali-canonical-apt-baseline-fields-v1", "description": "fitted altitude FWHM error", "identity_role": "nonidentity"},
+        {"name": "converge_iter", "datatype": "int64", "unit": "N/A", "nullable": false, "authority": "producer", "authority_reference": "citlali:beammap-fit-v1", "nonfinite": "reject", "registry": "citlali-canonical-apt-baseline-fields-v1", "description": "beammap convergence iteration", "identity_role": "nonidentity"},
+        {"name": "derot_elev", "datatype": "float64", "unit": "rad", "nullable": true, "authority": "producer", "authority_reference": "citlali:beammap-geometry-v1", "nonfinite": "nan-token", "registry": "citlali-canonical-apt-baseline-fields-v1", "description": "derotation elevation angle", "identity_role": "nonidentity"},
+        {"name": "fg", "datatype": "int64", "unit": "N/A", "nullable": true, "authority": "unavailable", "authority_reference": "authority-unresolved-v1", "nonfinite": "reject", "registry": "citlali-canonical-apt-baseline-fields-v1", "description": "frequency group; authority unresolved and nonidentity", "identity_role": "nonidentity"},
+        {"name": "flag", "datatype": "int64", "unit": "N/A", "nullable": false, "authority": "producer", "authority_reference": "citlali:beammap-quality-v1", "nonfinite": "reject", "registry": "citlali-canonical-apt-baseline-fields-v1", "description": "bad detector flag; closed values {0,1}", "identity_role": "nonidentity"},
+        {"name": "flxscale", "datatype": "float64", "unit": "mJy/beam/xs", "nullable": true, "authority": "producer", "authority_reference": "citlali:beammap-calibration-v1", "nonfinite": "nan-token", "registry": "citlali-canonical-apt-baseline-fields-v1", "description": "flux conversion scale", "identity_role": "nonidentity"},
+        {"name": "loc", "datatype": "int64", "unit": "N/A", "nullable": true, "authority": "unavailable", "authority_reference": "authority-unresolved-v1", "nonfinite": "reject", "registry": "citlali-canonical-apt-baseline-fields-v1", "description": "location; authority unresolved and nonidentity", "identity_role": "nonidentity"},
+        {"name": "ori", "datatype": "int64", "unit": "N/A", "nullable": true, "authority": "unavailable", "authority_reference": "authority-unresolved-v1", "nonfinite": "reject", "registry": "citlali-canonical-apt-baseline-fields-v1", "description": "orientation; authority unresolved and nonidentity", "identity_role": "nonidentity"},
+        {"name": "pg", "datatype": "int64", "unit": "N/A", "nullable": true, "authority": "unavailable", "authority_reference": "authority-unresolved-v1", "nonfinite": "reject", "registry": "citlali-canonical-apt-baseline-fields-v1", "description": "polarization group; authority unresolved and nonidentity", "identity_role": "nonidentity"},
+        {"name": "responsivity", "datatype": "float64", "unit": "N/A", "nullable": true, "authority": "unavailable", "authority_reference": "authority-unresolved-v1", "nonfinite": "nan-token", "registry": "citlali-canonical-apt-baseline-fields-v1", "description": "responsivity; physical authority unresolved", "identity_role": "nonidentity"},
+        {"name": "sens", "datatype": "float64", "unit": "mJy/beam x s^0.5", "nullable": true, "authority": "producer", "authority_reference": "citlali:beammap-calibration-v1", "nonfinite": "nan-token", "registry": "citlali-canonical-apt-baseline-fields-v1", "description": "sensitivity", "identity_role": "nonidentity"},
+        {"name": "sig2noise", "datatype": "float64", "unit": "N/A", "nullable": true, "authority": "producer", "authority_reference": "citlali:beammap-fit-v1", "nonfinite": "nan-token", "registry": "citlali-canonical-apt-baseline-fields-v1", "description": "fitted signal to noise", "identity_role": "nonidentity"},
+        {"name": "x_t", "datatype": "float64", "unit": "arcsec", "nullable": true, "authority": "producer", "authority_reference": "citlali:beammap-geometry-v1", "nonfinite": "nan-token", "registry": "citlali-canonical-apt-baseline-fields-v1", "description": "fitted azimuthal offset", "identity_role": "nonidentity"},
+        {"name": "x_t_derot", "datatype": "float64", "unit": "arcsec", "nullable": true, "authority": "producer", "authority_reference": "citlali:beammap-geometry-v1", "nonfinite": "nan-token", "registry": "citlali-canonical-apt-baseline-fields-v1", "description": "derotated azimuthal offset", "identity_role": "nonidentity"},
+        {"name": "x_t_err", "datatype": "float64", "unit": "arcsec", "nullable": true, "authority": "producer", "authority_reference": "citlali:beammap-fit-v1", "nonfinite": "nan-token", "registry": "citlali-canonical-apt-baseline-fields-v1", "description": "fitted azimuthal offset error", "identity_role": "nonidentity"},
+        {"name": "x_t_raw", "datatype": "float64", "unit": "arcsec", "nullable": true, "authority": "producer", "authority_reference": "citlali:beammap-geometry-v1", "nonfinite": "nan-token", "registry": "citlali-canonical-apt-baseline-fields-v1", "description": "raw azimuthal offset", "identity_role": "nonidentity"},
+        {"name": "y_t", "datatype": "float64", "unit": "arcsec", "nullable": true, "authority": "producer", "authority_reference": "citlali:beammap-geometry-v1", "nonfinite": "nan-token", "registry": "citlali-canonical-apt-baseline-fields-v1", "description": "fitted altitude offset", "identity_role": "nonidentity"},
+        {"name": "y_t_derot", "datatype": "float64", "unit": "arcsec", "nullable": true, "authority": "producer", "authority_reference": "citlali:beammap-geometry-v1", "nonfinite": "nan-token", "registry": "citlali-canonical-apt-baseline-fields-v1", "description": "derotated altitude offset", "identity_role": "nonidentity"},
+        {"name": "y_t_err", "datatype": "float64", "unit": "arcsec", "nullable": true, "authority": "producer", "authority_reference": "citlali:beammap-fit-v1", "nonfinite": "nan-token", "registry": "citlali-canonical-apt-baseline-fields-v1", "description": "fitted altitude offset error", "identity_role": "nonidentity"},
+        {"name": "y_t_raw", "datatype": "float64", "unit": "arcsec", "nullable": true, "authority": "producer", "authority_reference": "citlali:beammap-geometry-v1", "nonfinite": "nan-token", "registry": "citlali-canonical-apt-baseline-fields-v1", "description": "raw altitude offset", "identity_role": "nonidentity"}
+      ],
+      "optional_extensions": [
+        {"name": "cal_amp", "datatype": "float64", "unit": "xs", "nullable": true, "authority": "producer", "authority_reference": "citlali:beammap-empirical-calibration-v1", "nonfinite": "nan-token", "registry": "citlali-canonical-apt-extension-registry-v1", "description": "beammap calibration amplitude", "identity_role": "nonidentity"},
+        {"name": "cal_amp_method", "datatype": "int64", "unit": "N/A", "nullable": false, "authority": "producer", "authority_reference": "citlali:beammap-empirical-calibration-v1", "nonfinite": "reject", "registry": "citlali-canonical-apt-extension-registry-v1", "description": "calibration amplitude method code {0,1}", "identity_role": "nonidentity"},
+        {"name": "cal_amp_over_fit_amp", "datatype": "float64", "unit": "N/A", "nullable": true, "authority": "producer", "authority_reference": "citlali:beammap-empirical-calibration-v1", "nonfinite": "nan-token", "registry": "citlali-canonical-apt-extension-registry-v1", "description": "calibration amplitude divided by fit amplitude", "identity_role": "nonidentity"},
+        {"name": "final_prior_d2", "datatype": "float64", "unit": "N/A", "nullable": true, "authority": "producer", "authority_reference": "citlali:beammap-soft-prior-v1", "nonfinite": "nan-token", "registry": "citlali-canonical-apt-extension-registry-v1", "description": "nearest soft-prior Mahalanobis distance squared", "identity_role": "nonidentity"},
+        {"name": "final_prior_slot_index", "datatype": "int64", "unit": "N/A", "nullable": true, "authority": "producer", "authority_reference": "citlali:beammap-soft-prior-v1", "nonfinite": "reject", "registry": "citlali-canonical-apt-extension-registry-v1", "description": "nearest soft-prior slot; nonidentity", "identity_role": "nonidentity"},
+        {"name": "flag2", "datatype": "int64", "unit": "N/A", "nullable": false, "authority": "producer", "authority_reference": "citlali:beammap-quality-v1", "nonfinite": "reject", "registry": "citlali-canonical-apt-extension-registry-v1", "description": "bitwise Beammap quality flag; allowed mask 0xff", "identity_role": "nonidentity"},
+        {"name": "kids_flag", "datatype": "int64", "unit": "N/A", "nullable": false, "authority": "copied-declared", "authority_reference": "kids:fit-report-v1", "nonfinite": "reject", "registry": "citlali-canonical-apt-extension-registry-v1", "description": "imported KIDs model-fit flag; exact integral values, nonidentity", "identity_role": "nonidentity"},
+        {"name": "map_peak_amp", "datatype": "float64", "unit": "xs", "nullable": true, "authority": "producer", "authority_reference": "citlali:beammap-empirical-calibration-v1", "nonfinite": "nan-token", "registry": "citlali-canonical-apt-extension-registry-v1", "description": "baseline-subtracted local map peak", "identity_role": "nonidentity"},
+        {"name": "map_peak_amp_over_fit_amp", "datatype": "float64", "unit": "N/A", "nullable": true, "authority": "producer", "authority_reference": "citlali:beammap-empirical-calibration-v1", "nonfinite": "nan-token", "registry": "citlali-canonical-apt-extension-registry-v1", "description": "map peak divided by fit amplitude", "identity_role": "nonidentity"},
+        {"name": "rfi_masked_samples", "datatype": "int64", "unit": "samples", "nullable": false, "authority": "producer", "authority_reference": "citlali:beammap-mask-diagnostics-v1", "nonfinite": "reject", "registry": "citlali-canonical-apt-extension-registry-v1", "description": "number of samples masked by rfi_mask", "identity_role": "nonidentity"},
+        {"name": "rfi_masked_scans", "datatype": "int64", "unit": "scans", "nullable": false, "authority": "producer", "authority_reference": "citlali:beammap-mask-diagnostics-v1", "nonfinite": "reject", "registry": "citlali-canonical-apt-extension-registry-v1", "description": "number of scans masked by rfi_mask", "identity_role": "nonidentity"},
+        {"name": "scan_band_mask_rejected", "datatype": "int64", "unit": "N/A", "nullable": false, "authority": "producer", "authority_reference": "citlali:beammap-mask-diagnostics-v1", "nonfinite": "reject", "registry": "citlali-canonical-apt-extension-registry-v1", "description": "scan-band mask rejection code {0,1}", "identity_role": "nonidentity"},
+        {"name": "scan_band_masked_edge", "datatype": "int64", "unit": "N/A", "nullable": false, "authority": "producer", "authority_reference": "citlali:beammap-mask-diagnostics-v1", "nonfinite": "reject", "registry": "citlali-canonical-apt-extension-registry-v1", "description": "scan-band edge code {0,1,2,3}", "identity_role": "nonidentity"},
+        {"name": "scan_band_masked_rows", "datatype": "int64", "unit": "rows", "nullable": false, "authority": "producer", "authority_reference": "citlali:beammap-mask-diagnostics-v1", "nonfinite": "reject", "registry": "citlali-canonical-apt-extension-registry-v1", "description": "number of detector-map edge rows masked", "identity_role": "nonidentity"},
+        {"name": "scan_band_masked_samples", "datatype": "int64", "unit": "samples", "nullable": false, "authority": "producer", "authority_reference": "citlali:beammap-mask-diagnostics-v1", "nonfinite": "reject", "registry": "citlali-canonical-apt-extension-registry-v1", "description": "number of samples masked by scan_band_mask", "identity_role": "nonidentity"},
+        {"name": "template_amp", "datatype": "float64", "unit": "xs", "nullable": true, "authority": "producer", "authority_reference": "citlali:beammap-empirical-calibration-v1", "nonfinite": "nan-token", "registry": "citlali-canonical-apt-extension-registry-v1", "description": "empirical template matched amplitude", "identity_role": "nonidentity"},
+        {"name": "template_amp_over_fit_amp", "datatype": "float64", "unit": "N/A", "nullable": true, "authority": "producer", "authority_reference": "citlali:beammap-empirical-calibration-v1", "nonfinite": "nan-token", "registry": "citlali-canonical-apt-extension-registry-v1", "description": "template amplitude divided by fit amplitude", "identity_role": "nonidentity"},
+        {"name": "template_npix", "datatype": "int64", "unit": "pix", "nullable": false, "authority": "producer", "authority_reference": "citlali:beammap-empirical-calibration-v1", "nonfinite": "reject", "registry": "citlali-canonical-apt-extension-registry-v1", "description": "empirical template fitted pixel count", "identity_role": "nonidentity"},
+        {"name": "template_offset", "datatype": "float64", "unit": "xs", "nullable": true, "authority": "producer", "authority_reference": "citlali:beammap-empirical-calibration-v1", "nonfinite": "nan-token", "registry": "citlali-canonical-apt-extension-registry-v1", "description": "empirical template fitted offset", "identity_role": "nonidentity"},
+        {"name": "template_resid_rms", "datatype": "float64", "unit": "xs", "nullable": true, "authority": "producer", "authority_reference": "citlali:beammap-empirical-calibration-v1", "nonfinite": "nan-token", "registry": "citlali-canonical-apt-extension-registry-v1", "description": "empirical template residual RMS", "identity_role": "nonidentity"}
+      ]
+    }
+  },
   "global_conventions": {
     "array_identity": [
       "a1100",
@@ -47,8 +186,8 @@
         "beammap_apt_table",
         "beammap_fit_qc"
       ],
-      "fact": "Units are recorded in table metadata rather than Astropy column unit fields.",
-      "disposition": "Treat metadata as the current authority. Moving units onto columns is a successor schema change."
+      "fact": "Legacy pointing/Beammap table units are recorded in table metadata rather than Astropy column unit fields; this debt does not describe canonical baseline APT v1.",
+      "disposition": "Treat legacy metadata as the historical authority. Canonical baseline APT v1 is a separate unactivated artifact contract with typed Astropy column units; do not rewrite historical profiles."
     },
     {
       "debt_id": "diagnostic-missing-values",
@@ -274,7 +413,7 @@
       "coordinate_frame": "AltAz tangent-plane azimuth/elevation offsets around the Beammap source.",
       "axes": ["azimuth offset", "elevation offset", "frequency", "Stokes"],
       "units_policy": "Signal/kernel use map signal units and weight_I is a nonprecision normalization coefficient; F010 count/exposure/mask units are not applicable because those planes are absent.",
-      "indexing_policy": "FITS/WCS pixels are one-based; detector identity remains linked through the APT uid contract.",
+      "indexing_policy": "FITS/WCS pixels are one-based; any APT uid association is artifact-local and valid only inside an explicitly bound source-artifact occurrence.",
       "missing_value_policy": "The eight F010 planes plus coverage_I and coverage_bool_I are explicitly absent for detector grouping in this v1 contract; no omitted plane may be inferred.",
       "failure_policy": "Fatal for required Beammap output; emitting a forbidden F010 or compatibility plane is a contract failure.",
       "science_map_contract_id": "sci-map-001-f010-v1"
@@ -344,7 +483,7 @@
       "failure_policy": "Fatal when diagnostic products are enabled in the active profile."
     },
     "detector_stats": {
-      "scientific_identity": "Detector, array, and chunk statistics plus detector identity/calibration columns.",
+      "scientific_identity": "Detector, array, and chunk statistics plus artifact-local detector-row/calibration columns.",
       "coordinate_frame": "Detector and acquisition-chunk domains; fitted detector positions use telescope offsets where present.",
       "axes": [
         "detector",
@@ -352,7 +491,7 @@
         "chunk"
       ],
       "units_policy": "Per-variable NetCDF units are authoritative where present.",
-      "indexing_policy": "Zero-based NetCDF array indexing; detector identity uses apt_uid rather than row position.",
+      "indexing_policy": "Zero-based NetCDF array indexing; apt_uid is an artifact-local copied association rather than persistent detector identity.",
       "missing_value_policy": "Detector flags determine usability; explicit standardized fill attributes are incomplete known debt.",
       "failure_policy": "Fatal when statistics output is enabled in the active profile."
     },
@@ -366,7 +505,7 @@
         "network"
       ],
       "units_policy": "Per-variable NetCDF units are authoritative where present; N/A denotes dimensionless or categorical fields.",
-      "indexing_policy": "output_scan_index is the one-based original scan number; NetCDF dimension positions and array indices are zero-based; physical detector identity is carried separately.",
+      "indexing_policy": "output_scan_index is the one-based original scan number; NetCDF dimension positions and array indices are zero-based; detector association is artifact-local and carried separately.",
       "missing_value_policy": "Flags and availability variables govern validity; standardized fill attributes are incomplete known debt.",
       "failure_policy": "Fatal when RTC diagnostics are enabled in the active profile."
     },
@@ -379,7 +518,7 @@
         "network"
       ],
       "units_policy": "Per-variable NetCDF units are authoritative where present; N/A denotes dimensionless or categorical fields.",
-      "indexing_policy": "output_scan_index is the one-based original scan number; NetCDF dimension positions are zero-based; ptc_diag_uid carries stable detector identity.",
+      "indexing_policy": "output_scan_index is the one-based original scan number; NetCDF dimension positions are zero-based; ptc_diag_uid carries an artifact-local row association only.",
       "missing_value_policy": "Detector flags and diagnostic availability govern validity; fill metadata is incomplete known debt.",
       "failure_policy": "Fatal when PTC diagnostics are enabled in the active profile."
     },
@@ -391,7 +530,7 @@
         "detector"
       ],
       "units_policy": "signal uses the recorded signal unit; flags are dimensionless; telescope variables carry per-variable units.",
-      "indexing_policy": "Samples and detector rows are zero-based; apt_uid carries stable detector identity.",
+      "indexing_policy": "Samples and detector rows are zero-based; apt_uid carries an artifact-local row association only.",
       "missing_value_policy": "flags identify invalid samples; padded/outer-context policy is recorded in the file.",
       "failure_policy": "Fatal when RTC timestream output is enabled."
     },
@@ -403,7 +542,7 @@
         "detector"
       ],
       "units_policy": "signal and weights derive from the recorded signal unit; flags are dimensionless.",
-      "indexing_policy": "Samples and detector rows are zero-based; apt_uid carries stable detector identity.",
+      "indexing_policy": "Samples and detector rows are zero-based; apt_uid carries an artifact-local row association only.",
       "missing_value_policy": "flags identify invalid samples; weight validity is explicit.",
       "failure_policy": "Fatal when PTC timestream output is enabled."
     },
@@ -428,18 +567,18 @@
         "Stokes"
       ],
       "units_policy": "Signal/kernel use mJy/beam and weights use inverse squared signal units.",
-      "indexing_policy": "FITS/WCS pixels are one-based; det_N extension identity follows the detector map index and is linked to APT uid fields.",
+      "indexing_policy": "FITS/WCS pixels are one-based; det_N is a product position and any linked APT uid remains artifact-local to its bound occurrence.",
       "missing_value_policy": "Invalid pixels may be non-finite; detector-group flags and positive weights determine validity.",
       "failure_policy": "Fatal for Beammap map output."
     },
     "beammap_apt_table": {
-      "scientific_identity": "Final detector identity, calibration, fitted beam, pointing, sensitivity, flag, and KIDs quantities.",
+      "scientific_identity": "Artifact-local detector rows with calibration, fitted beam, pointing, sensitivity, flag, and KIDs quantities.",
       "coordinate_frame": "Detector focal-plane/telescope offsets with raw and derotated variants explicitly named.",
       "axes": [
         "detector"
       ],
       "units_policy": "Current units are recorded in ECSV table metadata; Astropy column units are known debt.",
-      "indexing_policy": "uid is the stable detector identity; rows are not an external detector identifier.",
+      "indexing_policy": "uid is an exact artifact-local row key only; it is neither persistent detector identity nor an external detector identifier.",
       "missing_value_policy": "flag, flag2, convergence, and fit fields govern validity of numerical columns.",
       "failure_policy": "Fatal for successful Beammap completion."
     },
@@ -450,7 +589,7 @@
         "detector"
       ],
       "units_policy": "Current units are recorded in ECSV table metadata; Astropy column units are known debt.",
-      "indexing_policy": "uid is the stable detector identity; slot indices are zero-based internal candidate slots.",
+      "indexing_policy": "uid is an artifact-local row key only; slot indices are zero-based internal candidate slots.",
       "missing_value_policy": "good_fit, converged, flag, flag2, and no-candidate reason fields govern validity.",
       "failure_policy": "Fatal when Beammap fit-QC output is enabled in the active profile."
     },
@@ -463,7 +602,7 @@
         "sample"
       ],
       "units_policy": "signal uses the PTC signal unit; source distances and fitted offsets use arcsec; flags are dimensionless.",
-      "indexing_policy": "Detector uid is explicit; slot, scan, and sample bounds are zero-based.",
+      "indexing_policy": "Artifact-local detector-row uid is explicit; slot, scan, and sample bounds are zero-based.",
       "missing_value_policy": "detector_tod_n_samples bounds valid samples in each padded slot; flags mark invalid samples.",
       "failure_policy": "Fatal when Beammap detector-TOD output is enabled."
     },

@@ -20,6 +20,8 @@ Use these companion authorities:
   accepted validation snapshots;
 - [`SCIENTIFIC_CONVENTIONS.md`](SCIENTIFIC_CONVENTIONS.md) for scientific
   identities, units, coordinate frames, indexing, and validity;
+- [`CANONICAL_APT_V1.md`](CANONICAL_APT_V1.md) for the accepted, currently
+  unactivated Citlali-produced canonical Beammap baseline APT contract;
 - [`RETAINED_DEBT.md`](RETAINED_DEBT.md) for deliberate limitations, role
   owners, reopening triggers, and exit conditions;
 - [`adr/README.md`](adr/README.md) for durable consequential decisions;
@@ -262,7 +264,7 @@ scientific data path.
 ```mermaid
 flowchart LR
     inputs["KIDs and telescope inputs"]
-    calibration["APT, calibration, astrometry, photometry"]
+    calibration["Existing APT/calibration, astrometry, and photometry inputs"]
     rtc["RTC<br/>raw timestream corrections"]
     ptc["PTC<br/>cleaning and weighting"]
     mapmaking["Naive, JINC, or ML mapmaking"]
@@ -271,13 +273,22 @@ flowchart LR
     filter["Wiener or configured map filtering"]
     fit["Source finding, fitting, and mode finalization"]
     output["Versioned products and provenance"]
+    canonicalapt["Candidate canonical Beammap baseline APT output"]
 
     inputs --> rtc --> ptc --> mapmaking --> obs
     calibration --> rtc
     calibration --> mapmaking
     obs --> coadd --> filter --> fit --> output
     obs --> filter
+    fit -. "typed output adapter" .-> canonicalapt
 ```
+
+The candidate canonical baseline APT is an output-only product constructed at
+the Beammap product boundary from current raw/telescope inventory and the
+unchanged Beammap table values. It does not feed RTC, PTC, mapmaking, or fitting.
+The existing APT/calibration input arrow above refers to established calibration
+ingestion, not permission to seed the canonical producer from historical APTs.
+Historical APTs remain historical or test-only for this new contract.
 
 RTC, PTC, JINC, and Wiener implementations are mature, performance-sensitive
 code. The structural architecture supplies checked inputs, explicit failure
@@ -395,6 +406,14 @@ Optional diagnostics must be explicitly classified as optional; a catch-all
 log-and-continue policy is not acceptable. Ordered concurrent writers must
 cancel safely and wake every waiter after a failure.
 
+For the candidate canonical baseline APT, the adjacent envelope-bound receipt
+is the publication-completion transition. The producer stages and rereads the
+typed ECSV, recomputes semantic, envelope, and exact-byte identities, publishes
+the artifact without replacement, revalidates it, and publishes the receipt
+last. The receipt is not a product-identity or raw-relation sidecar and cannot
+substitute for the embedded contract. This candidate protocol is not yet an
+active production-profile requirement.
+
 A successful reduction has:
 
 - a successful session result and zero exit status;
@@ -411,6 +430,28 @@ Scientific product identity does not come from filesystem position alone.
 and CSV families for point, OOF, science, and Beammap. The contract checker
 resolves configuration-controlled requirements in both directions: what was
 requested must be delivered, and what was disabled must not appear.
+
+The unactivated `apt-prod-001-canonical-baseline-apt-v1` artifact contract is a
+separate producer/product seam. Its `contract_schema_version` describes the
+executable contract object; its `schema_version` pins the embedded ECSV schema
+`citlali-canonical-apt-v1`. It admits only the exact built-in structural,
+required, and optional field catalogs documented in
+[`CANONICAL_APT_V1.md`](CANONICAL_APT_V1.md). A general C++ strict-extension
+seam does not authorize self-declared artifact fields. New registry members
+require a successor accepted artifact contract.
+
+The canonical APT uses three deliberately separate identities:
+
+- order-independent semantic SHA-256 for schema, scientific context, raw
+  relation, declarations, and values;
+- envelope SHA-256 for semantic identity plus opaque occurrence/event and
+  producer provenance; and
+- byte-transport SHA-256 for exact canonical ECSV bytes.
+
+`uid` in this artifact is only a unique nonnegative artifact-local row key in
+the exact v1 range `0..2^53-1`; it is not persistent detector identity. The
+embedded `uid -> (network, channel)` relation is complete against the raw
+manifest. Persistent measured-detector and tune identities remain omitted.
 
 Provenance records the accepted config source, requested state, effective
 plans, observation-resolved decisions, and realized execution where those
@@ -557,11 +598,14 @@ Validation is layered according to blast radius:
    behavior.
 2. **Config preflight:** schema, leaf authority, one-way adapter, compact
    compatibility, and provenance coverage.
-3. **Run audit:** completion, log severity, required provenance, and structural
+3. **Standalone artifact contract:** exact canonical ECSV parsing and
+   reserialization, fixed catalog and value-domain admission, raw-manifest
+   bijection, independent digest recomputation, and envelope-bound receipt.
+4. **Run audit:** completion, log severity, required provenance, and structural
    product contract.
-4. **Numerical comparison:** profile-specific exact or scientific-tolerance
+5. **Numerical comparison:** profile-specific exact or scientific-tolerance
    comparison against an immutable accepted snapshot.
-5. **Performance evidence:** naturally collected timing/RSS records, with a
+6. **Performance evidence:** naturally collected timing/RSS records, with a
    controlled campaign only when a defined trigger is present.
 
 The canonical candidate command is `tools/baseline/validate_reduction.py` with
@@ -586,6 +630,8 @@ Future work must preserve these invariants:
 - Library code never calls `exit()` and never chooses process policy.
 - Scientific identity, units, frame, shape, indexing, and validity are checked
   at subsystem boundaries.
+- An APT `uid` is treated only within its declared artifact scope; no code may
+  infer persistent detector identity from an artifact-local row key.
 - Mature hot algorithms change only from evidence and receive proportionate
   scientific and performance validation.
 - A successful validation does not skip required products or tolerate
@@ -603,7 +649,9 @@ The following debt remains visible and bounded:
   classification rather than a precise typed error.
 - Legacy and placeholder sources remain physically beside active code even
   though this document now classifies them.
-- Some NetCDF and ECSV products lack complete unit/fill metadata.
+- Some NetCDF and legacy ECSV products lack complete unit/fill metadata. The
+  canonical APT v1 candidate instead carries exact unit, nullability,
+  authority, and non-finite declarations.
 - Build and dependency reproducibility cannot be closed until the deferred
   TolTECA integration direction is known.
 - External library consumption and concurrent in-process reductions are not

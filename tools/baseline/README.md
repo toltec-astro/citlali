@@ -75,6 +75,28 @@ policy. See
 `doc/PHASE4_SCIENTIFIC_PRODUCT_CONTRACT_2026-07-16.md` for the contract scope
 and known metadata debt.
 
+Canonical baseline APT v1 is a separate, standalone artifact contract. It is
+not referenced by an accepted validation profile and does not change the
+historical generic Beammap APT checks. Validate one producer-owned ECSV and its
+exact adjacent completion receipt manually with:
+
+```bash
+$HOME/tolteca/bin/python tools/baseline/validate_product_contract.py \
+  /path/to/beammap_apt.ecsv \
+  --artifact-contract apt-prod-001-canonical-baseline-apt-v1
+```
+
+The artifact mode reads the ECSV and `<apt>.ecsv.sha256` receipt as one bound
+pair, requires exact canonical serialization, independently recomputes the
+semantic and occurrence-bound envelope SHA-256 values, and verifies the exact
+byte SHA-256/count. A zero status means the pair is conformant to the
+unactivated contract; it is not production-profile acceptance. Static
+validation confirms the visible completion marker and its binding, but the
+producer tests remain the authority for receipt-last publication ordering,
+failure cleanup, raw-source equality, and unchanged science. Historical APTs
+remain historical/test-only and are neither migrated nor admitted through this
+mode.
+
 Accepted profiles are versioned snapshots. Future intentional product changes
 create successor validation epochs with a predecessor comparison and recorded
 scientific rationale; they do not rewrite or loosen an old profile.
@@ -500,6 +522,9 @@ installation/interpolation counts without reading large products.
 - `validate_validation_ledger.py`: validates required identity, config hash,
   completion, comparison, and accepted-difference fields in the checked-in
   `validation/accepted_runs.json` ledger.
+- `validate_product_contract.py`: validates historical profile-bound reduction
+  contracts and, through its separate `--artifact-contract` selector, an
+  unactivated canonical baseline APT v1 ECSV/receipt pair.
 - `examples/tiny_reduction/`: a fake tiny output directory for checking the
   tools without a Citlali reduction.
 - `examples/tiny_manifest.json`: an illustrative manifest shape for the tiny
@@ -549,7 +574,8 @@ $HOME/tolteca/bin/python tools/baseline/compare_reduction_products.py \
 `compare_beammap_scientific_equivalence.py` applies the scientific-owner
 accepted, scale-aware Beammap gate in
 `validation/profiles/beammap_scientific_equivalence_v1.json`. It requires exact
-detector identities, flags, and split-FITS product sets, then checks APT
+artifact-local detector row/UID membership, flags, and split-FITS product sets,
+then checks APT
 quantities and per-detector signal/weight/kernel RMS differences against the
 versioned profile.
 

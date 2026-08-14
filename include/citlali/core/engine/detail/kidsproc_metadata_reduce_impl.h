@@ -2,6 +2,24 @@
 
 // Implementation detail included by kidsproc.h.
 
+#include <cstdint>
+
+namespace kidsproc_metadata_reduce_detail {
+
+// A fit matrix and its schema are one value. Network/obsid and the selected
+// source are retained on that same value so Beammap can bind the ordered
+// import back to the authoritative raw manifest without parallel vectors or a
+// second header read.
+struct LoadedFitReport {
+    std::int64_t network = 0;
+    std::int64_t observation = 0;
+    std::string source;
+    std::vector<std::string> header;
+    Eigen::MatrixXd model;
+};
+
+}  // namespace kidsproc_metadata_reduce_detail
+
 auto KidsDataProc::get_data_item_meta(const RawObs::DataItem &data_item) {
     namespace kidsdata = predefs::kidsdata;
     auto source = data_item.filepath();
@@ -107,8 +125,8 @@ auto KidsDataProc::load_data_item(const RawObs::DataItem &data_item,
 }
 
 auto KidsDataProc::load_fit_report(const RawObs &rawobs) {
-    std::vector<Eigen::MatrixXd> kids_models;
-    std::vector<std::string> header;
+    std::vector<kidsproc_metadata_reduce_detail::LoadedFitReport> reports;
+    reports.reserve(rawobs.kidsdata().size());
 
     for (const auto &data_item : rawobs.kidsdata()) {
         auto meta = get_data_item_meta(data_item);
@@ -133,24 +151,26 @@ auto KidsDataProc::load_fit_report(const RawObs &rawobs) {
             throw std::runtime_error(
                 fmt::format("no fit report location specified."));
         }
+        if (filepath.empty()) {
+            throw std::runtime_error("selected KIDs fit report path is empty");
+        }
         logger->info("use fitreport file {}", filepath);
-        //std::vector<std::string> header;
-        header.clear();
+        std::vector<std::string> header;
         Eigen::MatrixXd table;
         using meta_t = kids::KidsData<>::meta_t;
         meta_t meta_cal{};
 
         try {
+            std::vector<std::string> ecsv_header;
             YAML::Node meta_;
             table = datatable::read<double, datatable::Format::ecsv>(
-                filepath, &header, &meta_);
+                filepath, &ecsv_header, &meta_);
             auto meta_map =
                 tula::ecsv::meta_to_map<typename meta_t::storage_t::key_type,
                                         typename meta_t::storage_t::mapped_type>(
                     meta_, &meta_);
             meta_cal = meta_t{std::move(meta_map)};
-
-            kids_models.push_back(std::move(table));
+            header = std::move(ecsv_header);
             if (!meta_.IsNull()) {
                 logger->warn("un recongnized meta:\n{}", YAML::Dump(meta_));
             }
@@ -158,9 +178,13 @@ auto KidsDataProc::load_fit_report(const RawObs &rawobs) {
             logger->warn("unable to read fitreport file as ECSV {}: {}", filepath,
                         e.what());
             try {
+                // Never reuse a header partially populated by the failed ECSV
+                // parser. The successful fallback owns both this fresh header
+                // and the matrix returned by the same read call.
+                std::vector<std::string> ascii_header;
                 table = datatable::read<double, datatable::Format::ascii>(filepath,
-                                                                          &header);
-                kids_models.push_back(std::move(table));
+                                                                          &ascii_header);
+                header = std::move(ascii_header);
 
             } catch (datatable::ParseError &e) {
                 logger->warn("unable to read fitreport file as ASCII {}: {}",
@@ -171,12 +195,19 @@ auto KidsDataProc::load_fit_report(const RawObs &rawobs) {
         logger->info("meta_cal: {}", meta_cal.pformat());
         logger->info("table {}",table);
         logger->info("header {}",header);
-
-        //return std::tuple{
-        //                  kids::ToneAxis(std::move(table).transpose(), std::move(header)),
-        //                  std::move(meta_cal)};
+        if (header.empty() ||
+            table.cols() != static_cast<Eigen::Index>(header.size())) {
+            throw std::runtime_error(
+                "KIDs fit report has an empty or matrix-inconsistent header");
+        }
+        reports.push_back({
+            static_cast<std::int64_t>(meta.get_typed<int>("roachid")),
+            static_cast<std::int64_t>(meta.get_typed<int>("obsid")),
+            filepath,
+            std::move(header),
+            std::move(table),
+        });
     }
 
-    return std::tuple{std::move(kids_models), std::move(header)};
+    return reports;
 }
-

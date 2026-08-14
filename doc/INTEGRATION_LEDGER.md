@@ -12,6 +12,7 @@ ADRs, and validation records.
 | Refactored application | `codex/refactor-mainline` | Canonical source, tests, configuration, operational behavior, and validation history | Normal application changes land here after their affected gates | Active |
 | SCI-MAP-001 application integration | `codex/refactor-mainline` at `d5015fe716971bf8ea617e8a187311bf5af05185`, containing exact application source `af0c849ce59a5f80e5efc8db435bb6662863052f` followed only by its documentation-only integration record | Accepted bounded implementation, product/provenance contract, truth suites, owner-amended evidence, and frozen campaign/closeout history | Preserve as the application base for subsequent audited integrations; do not merge MAP audit or coordination branches | Integrated; bounded MAP contract accepted; production remains `existing_use_only` |
 | SCI-NOI-002 application integration | `codex/refactor-mainline` at `4846fa4db39bd2f7d4ddc41f693836834cbc5ff4`, containing exact audited application source `5b29e13548a6fec884c67b192dec20c92f0bbb62` followed only by its documentation-only integration record | Accepted bounded conditional-stack, package-provenance, truthful-labeling/count, writer/finalizer, and validator contracts | Preserve as the application base; do not merge repair, audit, or coordination branches | Integrated; production remains `existing_use_only`; F005/F006 remain external |
+| APT-PROD-001 canonical baseline APT v1 | `codex/repair-apt-prod-001-canonical-baseline-v1`, created from exact application base `46ad23888a40f5102cdfd50c06e49a549bdf8a20`; frozen audit authority `6cf83a21169516303db1fa30d26f4be32a813844`; exact candidate commit pending | Typed Citlali-only Beammap baseline APT producer, embedded raw relation, semantic/envelope/transport identities, executable artifact contract, and receipt-last publication | Verify and integrate only the coherent exact candidate after owner disposition; never merge the audit branch or infer downstream activation | Active bounded candidate; artifact contract unactivated; no production/downstream admission |
 | Conan 2 adaptation | `codex/conan2-adaptation` | Port the full application into the accepted Tula/Conan 2 architecture | Incorporate mainline regularly; return only after all build-integration gates pass | Active in `/Users/gwilson/GitHub/citlali-refactor-conan2` |
 | Historical structural refactor | `codex/structural-refactor` at `171487196` | Forensic pointer to the pre-follow-on integration tree | Do not resume as an application authority | Frozen |
 | Historical fruit-loop/raw-IQ topic | `codex/fruit-loop-calibration-reference` at `b02fef613` | Forensic pointer to the topic-named branch before mainline normalization | Do not resume as an application authority | Frozen locally; its existing remote remains historical |
@@ -39,6 +40,38 @@ new exact commits before importing subsequent upstream work.
   validation required by the behavior touched.
 - Record intentional scientific changes separately from refactoring and build
   integration.
+
+### APT-PROD-001 Canonical Baseline APT v1 Candidate
+
+- Accepted identity is artifact-local only: `uid` is a unique, sparse-
+  permitted, nonnegative exact `int64` in `0..2^53-1`, never persistent
+  detector identity. The artifact embeds a complete bijection from UID rows to
+  the declared `(network, channel)` raw inventory; persistent detector and tune
+  identities are omitted.
+- The fixed standalone contract admits five protected structural fields, the
+  exact 27-field baseline registry, and only the exact 20-field optional
+  extension allowlist. A general C++ strict-extension seam does not activate
+  custom artifact fields. `fg`, `pg`, `ori`, and `loc` remain nonidentity
+  semantic content under nullable unavailable authority.
+- Optional `kids_flag` is copied-declared from `kids:fit-report-v1` as an exact
+  signed, potentially nonbinary `int64`. It is distinct from `flag` and
+  `flag2`, and is absent for simulation without a fit report.
+- Semantic content, publication occurrence/envelope, and byte transport have
+  separate versioned SHA-256 scopes. The adjacent envelope-bound receipt is
+  published last after staged and final reread/recomputation and never replaces
+  the embedded semantics or raw relation.
+- Required candidate gates include focused model/codec/adapter/writer tests,
+  independent fixed-vector recomputation, executable artifact-contract tests,
+  full retained CTest and baseline-tool gates, config preflight, CLI build,
+  exact changed-path and patch/commit/parent/tree verification, clean state,
+  and proof of unchanged science/detector set/order. Results are not recorded
+  here until the exact coherent candidate is supplied and independently
+  verified.
+- The artifact contract remains `unactivated`: no validation-profile change,
+  downstream ingestion, historical migration/repair, CAL closure, production
+  expansion, external-repository change, or audit/coordination branch movement
+  follows from this candidate. Owner-controlled push/integration and any later
+  downstream admission are separate decisions.
 
 ### SCI-MAP-001 Application Integration
 
@@ -143,6 +176,11 @@ The exit gates remain those in the build integration review:
 - Do not import the isolated SCI-NOI-002 repair directly into the Conan 2 lane.
   It becomes eligible for ordinary synchronization only after its verified
   application-integration candidate reaches `codex/refactor-mainline`.
+- Do not import APT-PROD-001 into the Conan 2 lane or any downstream consumer
+  from its repair branch. It becomes eligible for ordinary synchronization
+  only after exact candidate verification and owner-controlled integration into
+  `codex/refactor-mainline`; integration still does not imply downstream
+  artifact admission.
 
 ## Repository Hygiene
 

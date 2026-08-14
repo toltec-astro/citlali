@@ -11,6 +11,7 @@ target_sources(citlali_test
     PRIVATE
         test_astrometry_config_plan.cpp
         test_beammap_config_plan.cpp
+        test_canonical_apt_v1.cpp
         test_calib_apt_filtering.cpp
         test_coherent_iq_mode_observer.cpp
         test_config_scaffold.cpp

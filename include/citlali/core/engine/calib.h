@@ -1,15 +1,85 @@
 #pragma once
 
 #include <Eigen/Core>
+#include <array>
+#include <cstdint>
+#include <functional>
+#include <fstream>
+#include <iomanip>
+#include <locale>
 #include <string>
+#include <string_view>
+#include <sstream>
+#include <stdexcept>
 #include <vector>
 #include <map>
 #include <netcdf>
 
+#include <citlali/core/pipeline/canonical_apt_v1.h>
 #include <citlali/core/utils/ecsv_io.h>
 #include <citlali/core/utils/netcdf_io.h>
 
 namespace engine {
+
+struct CanonicalAptRawRowBinding {
+    std::int64_t uid = 0;
+    std::int64_t network = 0;
+    std::int64_t channel = 0;
+    std::int64_t array = 0;
+    double tone_frequency_hz = 0.0;
+
+    friend bool operator==(const CanonicalAptRawRowBinding &,
+                           const CanonicalAptRawRowBinding &) = default;
+};
+
+struct CanonicalAptIssuance {
+    std::string occurrence;
+    std::string event_reference;
+};
+
+inline std::string make_canonical_apt_entropy_reference(
+    std::string_view prefix) {
+    // Occurrence issuance is explicitly injectable, and the production
+    // default draws from the operating-system CSPRNG. It is never derived
+    // from content, paths, clocks, or detector identity.
+    std::array<unsigned char, 32> bytes{};
+    std::ifstream entropy("/dev/urandom", std::ios::binary);
+    if (!entropy) {
+        throw std::runtime_error(
+            "canonical APT OS entropy source is unavailable");
+    }
+    entropy.read(reinterpret_cast<char *>(bytes.data()),
+                 static_cast<std::streamsize>(bytes.size()));
+    if (entropy.gcount() != static_cast<std::streamsize>(bytes.size()) ||
+        !entropy) {
+        throw std::runtime_error(
+            "canonical APT OS entropy source returned a short read");
+    }
+    std::ostringstream stream;
+    stream.imbue(std::locale::classic());
+    stream << prefix;
+    for (const auto byte : bytes) {
+        stream << std::hex << std::nouppercase << std::setfill('0')
+               << std::setw(2) << static_cast<unsigned int>(byte);
+    }
+    return stream.str();
+}
+
+inline CanonicalAptIssuance make_canonical_apt_entropy_issuance() {
+    return {
+        make_canonical_apt_entropy_reference("apt-occurrence:entropy/"),
+        make_canonical_apt_entropy_reference("apt-event:entropy/"),
+    };
+}
+
+struct CanonicalAptProducerState {
+    bool raw_inventory_ready = false;
+    citlali::pipeline::canonical_apt_v1::RawManifest raw_manifest;
+    std::vector<CanonicalAptRawRowBinding> rows;
+    std::function<CanonicalAptIssuance()> issuance_factory = [] {
+        return make_canonical_apt_entropy_issuance();
+    };
+};
 
 class Calib {
 public:
@@ -18,6 +88,12 @@ public:
 
     // apt filepath
     std::string apt_filepath;
+
+    // Producer-owned transient authority for a canonical Beammap APT. This
+    // captures the raw input/channel relation before any fit or calibration
+    // work and issues a fresh opaque occurrence at publication. Neither UID
+    // nor the occurrence is a persistent detector identity.
+    CanonicalAptProducerState canonical_apt_producer;
     // apt table
     std::map<std::string, Eigen::VectorXd> apt;
     // hwpr angle and timing

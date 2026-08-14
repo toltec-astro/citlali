@@ -36,6 +36,47 @@ The live branch, upstream revision, gate, and import policy are recorded in
 [`INTEGRATION_LEDGER.md`](INTEGRATION_LEDGER.md). The durable rationale is
 [ADR 0008](adr/0008-application-mainline-and-build-adaptation-lanes.md).
 
+## 2026-08-14 APT-PROD-001 Canonical Baseline APT v1 Candidate
+
+The project owner accepted the frozen APT-E2E-001 audit at
+`6cf83a21169516303db1fa30d26f4be32a813844` as architectural authority and
+authorized the bounded Citlali-only producer package on
+`codex/repair-apt-prod-001-canonical-baseline-v1`, created from exact
+application base `46ad23888a40f5102cdfd50c06e49a549bdf8a20`.
+
+The candidate defines the accepted `citlali-canonical-apt-v1` artifact model,
+typed canonical ECSV codec, exact built-in field registry, order-independent
+semantic SHA-256, occurrence-bound envelope SHA-256, separate exact-byte
+transport SHA-256, raw manifest and complete `uid -> (network, channel)`
+relation, executable artifact validator seam, and receipt-last no-replace
+publication protocol. The Beammap adapter preserves the existing detector set,
+row order, ToneFreq bits, exact integral values, and scientific table values;
+any drift remains a stop condition rather than an allowed schema change.
+
+The accepted identity decision is narrow: `uid` is a unique nonnegative exact
+`int64` artifact-local row key in `0..2^53-1`, sparse permitted, and never a
+persistent detector identity. Persistent measured-detector identity and tune
+identity are omitted. Required nullable `fg`, `pg`, `ori`, and `loc` remain
+nonidentity semantic content under explicit unresolved authority. Optional
+`kids_flag` preserves the exact signed KIDs fit-report flag under declared
+`kids:fit-report-v1` authority and remains distinct from `flag` and `flag2`;
+simulation omits it when no fit report exists.
+
+The candidate artifact contract in `validation/product_contracts.json` remains
+explicitly `unactivated`. It does not amend an active validation profile,
+activate downstream ingestion, migrate or repair historical APTs, establish
+CAL physical-science closure, or change matcher, calibration, fit, map, RTC,
+PTC, or detector-selection policy. Historical APTs remain historical/test-only
+for this producer. TolTECA, TolProj, TolAPT, `toltec_beammap`, CAL, and ALIGN
+remain outside this package.
+
+The normative contract is
+[`CANONICAL_APT_V1.md`](CANONICAL_APT_V1.md), with durable rationale in
+[ADR 0010](adr/0010-canonical-baseline-apt-v1.md). Final required gate results,
+the coherent implementation commit and its parent/tree/patch identities,
+independent verification, owner-controlled push/integration, and any later
+downstream admission are intentionally not claimed by this candidate record.
+
 ## 2026-08-05 SCI-MAP-001 Application Integration Candidate
 
 The final independent re-audit at
@@ -356,8 +397,9 @@ freeze the application mainline.
 
 - A 2026-07-30 coherent raw-I/Q event investigation has produced the first
   mode-aware observe-only production slice. The current RTC/PTC learning
-  path records accepted intervals per detector UID and compacts only within
-  that UID, so a physical network event loses its tone-vector identity and
+  path records accepted intervals per detector UID (a run-scoped row key, not
+  persistent identity) and compacts only within that UID, so a physical
+  network event loses its tone-vector identity and
   fans out into many records. A versioned, fail-closed template schema,
   non-mutating classifier, alternating-half evaluation, typed configuration,
   strict template loader, all-network observation sidecar, and focused C++/
@@ -1455,8 +1497,9 @@ no final provenance schema version, output filename, or writer yet; effective-
 resolution and realized-state component serialization now also use explicit
 availability records. Beammap `redu14` (`4b0126e7`) completed cleanly and
 exactly reproduces accepted refactor `redu11` across all 5,234 detector maps.
-It also passes the versioned OG scientific-equivalence profile with exact
-detector identities, flags, and product sets. The matched beammap gate is
+It also passes the versioned OG scientific-equivalence profile with the exact
+artifact-local detector-row/UID set and order (not cross-observation UID
+persistence), flags, and product sets. The matched beammap gate is
 therefore closed. `Engine` now owns and initializes the processed execution
 plan, processed runtime accessors select its effective snapshot, and cleaner,
 weighting, source-protection, interpolation, iteration-policy, and completed-
@@ -1769,7 +1812,8 @@ relative difference of `6.23e-14`, and runtime is 709.597 seconds versus
 699.904 seconds. Both version-2 sidecars report complete, internally
 consistent observation/coadd cardinality. Beammap `redu01` is exact against
 `redu00`: its 529-leaf merged config is unchanged, all non-map ECSV/NetCDF
-products compare exactly, all 5,234 detector identities and flags are exact,
+products compare exactly, the artifact-local detector-row/UID set, order, and
+all 5,234 flags are exact (without claiming cross-observation UID persistence),
 and every accepted good/bad signal, weight, and kernel map has zero RMS
 difference. Its strict audit reports zero issues, 198 completed PTC chunks,
 and one completed 5,234-map observation with no coadd; runtime is 3449.262
@@ -2252,8 +2296,10 @@ provenance remain owner decisions.
   products, both APT tables, RTC/PTC diagnostics, and the complete detector-TOD
   `signal`/`flags` arrays have zero changed records. The matched OG Beammap pair
   is also deterministic. Scientific-owner review accepted the bounded OG to
-  refactor differences on 2026-07-11: detector identities and flags are exact;
-  the worst good-detector signal and weight RMS-relative differences are
+  refactor differences on 2026-07-11: the artifact-local detector-row/UID set,
+  order, and flags are exact (without claiming cross-observation UID
+  persistence); the worst good-detector signal and weight RMS-relative
+  differences are
   0.625% and 0.308%; sensitivity differs by at most 0.255%; and positional and
   FWHM differences are sub-microarcsecond. The versioned
   `beammap-scientific-equivalence-v1` gate now enforces these limits and the
@@ -2371,8 +2417,9 @@ maximum-iteration termination, and exactly one required detector-TOD write at
 iteration two with shape 5,234 detectors by 20 slots and 788 maximum samples.
 
 Against `redu02`, the merged configuration is byte-identical. The accepted
-Beammap profile reports exact detector identity, flags, APT quantities, and
-all good/bad signal, weight, and kernel maps. The strict full-depth comparison
+Beammap profile reports the exact artifact-local detector-row/UID set and order
+(not cross-observation UID persistence), flags, APT quantities, and all
+good/bad signal, weight, and kernel maps. The strict full-depth comparison
 excludes only volatile `citlali_profile.ecsv` timing, reads all 12 scientific
 products including detector TOD and six split FITS files, and finds no missing,
 extra, skipped, or changed records.
@@ -2420,9 +2467,10 @@ The run completed all 198 PTC chunks with zero error-level messages. Its valid
 respective source-identity and calibrator-flux authorities and records the
 three required installed array fluxes. The strict full-depth comparison reads
 all 12 scientific products, including detector TOD and six split FITS files,
-and finds no missing, extra, skipped, or changed records. The dedicated
-Beammap profile also reports exact detector identity, flags, APT quantities,
-and good/bad signal, weight, and kernel maps.
+and finds no missing, extra, skipped, or changed records. The dedicated Beammap
+profile also reports the exact artifact-local detector-row/UID set and order
+(not cross-observation UID persistence), flags, APT quantities, and good/bad
+signal, weight, and kernel maps.
 
 The total log interval is 3,661.793 seconds versus 3,609.307 seconds for
 `redu03` (+1.45%). The dominant mapmaking interval is 0.53% faster; the
@@ -2629,8 +2677,9 @@ The added astrometry record captures one constant zero-offset application over
 The zero-tolerance full-depth comparison reads all 12 products and 16,453
 records, including complete detector TOD and six split FITS cubes, with zero
 changed, skipped, missing, or extra records. The dedicated Beammap scientific-
-equivalence profile reports exact detector identities, flags, APT quantities,
-and signal/weight/kernel maps for all 4,980 good and 254 bad detectors.
+equivalence profile reports the exact artifact-local detector-row/UID set and
+order (not cross-observation UID persistence), flags, APT quantities, and
+signal/weight/kernel maps for all 4,980 good and 254 bad detectors.
 
 The 4,136.440-second total interval is 13.0% slower than `redu04`, but the
 dominant mapmaking interval is 1.3% faster. The increase is concentrated in PTC
@@ -2960,8 +3009,12 @@ silently choose among these:
 - The future scientific meaning of hardware-polarization controls and the
   contract required to make enabled polarimetry a supported capability.
 - Allowed calibration or analysis fallbacks and their required diagnostics.
-- Canonical detector/network/array identities, coordinate frames, units,
-  missing-value sentinels, and table schemas.
+- Any future persistent measured-detector namespace and lifecycle. Canonical
+  APT v1 already fixes its `uid` as artifact-local only and must not be read as
+  a persistence claim.
+- Future evolution of network/array mappings, coordinate-frame support, units,
+  missing-value encodings, and table schemas outside already fixed versioned
+  product contracts.
 - OOF scientific intent and the acceptance tolerances for each mode.
 - Whether any future caller needs concurrent reductions in one process.
 - The measured-channel contract and missing-data policy for future R analysis.
@@ -2982,6 +3035,9 @@ ancestry, patch identity, and evidence links with
 units, frames, indexing, validity, provenance states, and change-to-validation
 routing. Product-specific executable requirements remain in
 `validation/product_contracts.json`.
+`doc/CANONICAL_APT_V1.md` is the normative human contract for the accepted but
+unactivated canonical Beammap baseline APT schema, identities, raw relation,
+field registry, ECSV encoding, and receipt-last publication.
 `doc/ARCHITECTURE.md` is the canonical human reference for the active software
 entry, component and dependency direction, lifecycle ownership, compatibility
 boundaries, failure flow, source classification, and extension routing.

@@ -21,7 +21,8 @@ duplicate changing implementation inventories or validation snapshots.
 | [0006](0006-fruit-loop-restart-checkpoint.md) | Accepted | Resume fruit loops from a required state-complete iteration checkpoint with absolute iteration identity and fail-closed compatibility checks |
 | [0007](0007-observe-only-coherent-raw-iq-event-sidecar.md) | Accepted | Score versioned network-specific coherent raw-I/Q modes for every present network at shared RTC-seeded epochs without changing science data |
 | [0008](0008-application-mainline-and-build-adaptation-lanes.md) | Accepted | Keep application development authoritative on one mainline while adapting Conan 2 in an isolated, regularly synchronized worktree |
-| [0009](0009-science-map-bundle-admission-and-validity.md) | Accepted scientific contract; implementation pending independent re-audit | Admit complete full-precision science-map bundles atomically, retain centered-integer `L = I` coaddition with nonprecision coefficients, and persist distinct support and validity facts |
+| [0009](0009-science-map-bundle-admission-and-validity.md) | Accepted | Admit complete full-precision science-map bundles atomically, retain centered-integer `L = I` coaddition with nonprecision coefficients, and persist distinct support and validity facts |
+| [0010](0010-canonical-baseline-apt-v1.md) | Accepted; candidate implementation unactivated | Define a typed Citlali-produced baseline APT with artifact-local UID, embedded raw-channel relation, distinct semantic/envelope/transport identities, and receipt-last publication |
 
 Numbers are never reused. A materially different decision adds a new ADR and
 marks the old record superseded; do not rewrite the historical rationale.

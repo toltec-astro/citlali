@@ -26,6 +26,12 @@ than one file or subsystem. A disagreement between this document, executable
 metadata, and actual writer behavior is a defect to resolve. It is not
 permission to choose whichever representation is convenient.
 
+The exact accepted but currently unactivated Citlali-produced baseline APT
+semantics are specified in [`CANONICAL_APT_V1.md`](CANONICAL_APT_V1.md). Its
+artifact contract is present in `validation/product_contracts.json` with
+`activation_state: unactivated`; it is not yet part of an active validation
+profile or downstream input contract.
+
 ## Capability Boundary
 
 | Reduction intent | Current execution status | Validated contract |
@@ -76,20 +82,52 @@ network ID from a container position.
 
 ### Detectors
 
-`apt_uid` or `uid` is the detector identity used to join detector-resolved
-products. `ptc_diag_uid` is the corresponding PTC diagnostic identity. A
-detector index is a zero-based row or column position in the current APT,
-timestream matrix, map group, or fit workspace. Row order is not an external
-detector identity.
+In canonical baseline APT v1, `uid` is an exact nonnegative `int64`
+artifact-local row key only. It is unique within that artifact, may be sparse,
+and is constrained to `0..2^53-1`; it is never a persistent measured-detector
+identity. `apt_uid` and `ptc_diag_uid` in legacy or other versioned products
+retain only the scope declared by their own product contract. Their shared
+integer spelling does not prove equality across observations, APT occurrences,
+calibration tables, or campaigns.
 
-Use UID fields for joins across products. The current contract does not claim
-that an arbitrary row number is stable across observations or calibration
-tables, nor does it establish a stronger long-term UID lifetime than the
-upstream APT provides.
+A detector index is a zero-based row or column position in the current APT,
+timestream matrix, map group, or fit workspace. Row order is not an external
+detector identity. Cross-product joins require an explicitly shared occurrence,
+raw-channel relation, or other product-declared namespace; UID equality alone
+is insufficient. No persistent measured-detector namespace is currently
+authoritative.
 
 Beammap `det_N` FITS extension labels identify detector-map slots and are linked
 to detector UID fields in the Beammap APT/QC products. `N` is not itself a
-detector UID.
+detector UID, and such within-output linkage does not grant UID persistence.
+
+### Canonical Baseline APT v1
+
+The canonical Beammap baseline APT embeds the complete relation
+`uid -> (nw, kids_tone)` and a manifest with exactly one canonical `toltecN`
+interface and positive channel count per present network. Rows are a complete
+bijection over declared `(network, channel)` pairs; the same channel number may
+appear in different networks. Networks 0--6 map to array 0, 7--10 to array 1,
+and 11--12 to array 2. A duplicate/split input for one network fails closed in
+v1, and no tune identity is reconstructed.
+
+All registered fields have exact type, unit, nullability, authority reference,
+non-finite policy, and registry declarations. Every registered declaration and
+value is semantic content, even though its `identity_role` is `nonidentity`.
+In particular, required `fg`, `pg`, `ori`, and `loc` preserve current values
+under nullable `unavailable` authority; they remain outside detector identity
+and are never silently reconstructed. `responsivity` likewise has unresolved
+physical authority.
+
+Optional `kids_flag` is the exact signed `int64` KIDs fit-report flag under
+copied-declared `kids:fit-report-v1` authority. It admits nonbinary values and
+is distinct from baseline `flag` and Beammap quality-mask `flag2`. It is omitted
+when no KIDs fit report exists, including simulation.
+
+Semantic SHA-256 is independent of row, raw-input, and registered-declaration
+presentation order. A separate envelope SHA-256 binds semantic content to an
+opaque occurrence/event and producer provenance. A third SHA-256 covers exact
+ECSV transport bytes. None of those scopes promotes UID to persistent identity.
 
 ### Maps And Stokes
 
@@ -136,7 +174,9 @@ polarimetry is rejected and those products are not scientifically validated.
 The primary RTC/PTC detector timestream is a matrix with samples on rows and
 detectors on columns. Sample flags have the corresponding sample-by-detector
 shape. PTC detector weights and detector metadata are joined by detector row
-within the object and by UID across persisted products.
+within the object. A join across persisted products is valid only when the
+products explicitly share the same scoped UID namespace or carry another
+authoritative relation; an equal artifact-local UID is not enough.
 
 Telescope streams align with the timestream sample axis after the configured
 interface synchronization, gap handling, filtering, edge-guard, and
@@ -163,9 +203,11 @@ boundary enum live in
 
 The fruit-loop restart checkpoint stores operational state, not QA history.
 Its sample masks are the canonical disjoint interval union keyed by
-observation, zero-based scan, application stage, and detector UID. Its detector
-penalties retain their scientific identity and effective value. Schema v2 also
-stores accumulated/finalized PTC weight-validation sums, counts, detector
+observation, zero-based scan, application stage, and the exact restart's scoped
+detector UID. This does not extend UID beyond the unchanged input/reduction
+scope. Detector penalties retain that scoped association and effective value.
+Schema v2 also stores accumulated/finalized PTC weight-validation sums, counts,
+detector
 factors, and validity flags, and rejects a changed processed-timestream policy.
 Bounded event vectors, housekeeping matches, summaries, and
 dropped-diagnostic counters do not affect later flags or weights and are
@@ -518,9 +560,12 @@ Persisted scientific products use these current validity rules:
   a related floating-point diagnostic is unavailable.
 
 Several diagnostic NetCDF families do not yet have complete `_FillValue` or
-`missing_value` attributes. ECSV units also live in table metadata rather than
-column unit fields. These are recorded schema debts. Until a successor schema
-is approved, current flags, finite-value rules, and existing metadata remain
+`missing_value` attributes. Some legacy ECSV units also live only in table
+metadata rather than column unit declarations. These are recorded schema
+debts. Canonical baseline APT v1 does not inherit that ambiguity: it emits
+physical units in ECSV column declarations and carries the complete exact
+unit/nullability/authority/non-finite registry in metadata. For each historical
+schema, current flags, finite-value rules, and existing metadata remain
 authoritative; callers must not silently assign a new sentinel interpretation.
 
 ## Configuration And Provenance States
@@ -564,6 +609,14 @@ A required or enabled output write failure fails the reduction. Optional
 diagnostics may be absent only when their contract classifies them as optional;
 their absence must not masquerade as a complete requested product. Completion
 markers do not override missing products or error-level log records.
+
+For canonical baseline APT v1, the exact adjacent `.ecsv.sha256` receipt is an
+envelope-bound publication completion marker. The artifact is staged, parsed,
+and independently recomputed; the final artifact is published and revalidated
+before the receipt is made visible last. The receipt does not substitute for
+embedded semantic identity or the raw-channel relation. A missing receipt means
+an incomplete publication, while a post-hoc valid pair cannot by itself prove
+the historical order of directory-entry visibility.
 
 ## Determinism And Numerical Acceptance
 
@@ -614,12 +667,13 @@ Plain R-derived modes must not clean the primary science stream by convenience.
 
 The following are not silently resolved by this document:
 
-- the guaranteed lifetime of detector UID identity across future APT versions
-  and observing campaigns;
+- an authoritative persistent measured-detector namespace and lifecycle;
+  canonical APT v1 resolves this negatively by keeping `uid` artifact-local
+  only, so persistence requires separate proof and a successor contract;
 - whether future instrument changes preserve the current network-ID mapping and
   ordering;
 - complete units and standardized missing-value metadata for diagnostic NetCDF
-  and ECSV products;
+  and legacy ECSV products;
 - an explicit canonical RA wrapping/sign/epoch policy beyond the current
   recorded J2000 WCS behavior;
 - scientifically acceptable fallback policy for future missing calibration,
@@ -644,6 +698,7 @@ policy, and validation dataset before implementation relies on it.
 | OOF-specific products or multi-observation pointing state | OOF profile |
 | Coadds, fruit loops, celestial WCS, or science post-processing | Science profile |
 | Beammap calibration, detector maps/TOD, fits, QC, or split outputs | Beammap profile |
+| Canonical baseline APT schema, field registry, raw relation, digests, ECSV bytes, or publication receipt | Focused C++ producer/codec tests plus the standalone executable artifact contract; any science or detector/order drift also requires the Beammap numerical profile and is a package stop |
 | Product inventory, units, frames, indexing, or missing-data semantics | Product contract plus mode numerical profile; intentional changes require a successor contract |
 | Provenance state | Full relevant provenance audit and exact low-level config comparison |
 | Enabled polarimetry or R execution | No ordinary refactor gate is sufficient; approve the scientific contract and reference dataset first |
