@@ -1,9 +1,19 @@
 format_version: 1
 target_package: SCI-MAP-003
 created_date: 2026-08-14
-packet_base_commit: 5c5a7fad052ac433207c1c6c61355b53c61a476c
-coordinator_registry_commit: null
-manifest_status: phase_2_uncommitted_frozen_for_coordinator_review_not_dispatch_authority
+packet_base_commit: b3e500117ab273d38d5055e82683a49015d028cf
+coordinator_registry_commit: pending_final_commit_external_coordinator_response
+manifest_status: final_packet_prepared_not_launched_pending_final_commit
+
+accepted_manifest_handoff_freeze:
+  commit: b3e500117ab273d38d5055e82683a49015d028cf
+  parent: 5c5a7fad052ac433207c1c6c61355b53c61a476c
+  tree: 9e79dde73df9c3655e43f35e1beebb5d1413603a
+  standard_binary_patch_sha256: >-
+    5b0ba32cebc76726c255fd78b7a30ca67f1f0e8dd053a64bd07e074440431f8e
+  accepted_phase_2_manifest_sha256: >-
+    a6c36b7c0416e1f03ce88b8004712db666c625a95cf521787cfad5ad28d27603
+  status: accepted_committed_authority_evidence_content_freeze
 
 governing_application:
   branch: origin/codex/refactor-mainline
@@ -80,11 +90,11 @@ pre_core_authority_objects:
 handoffs:
   - id: SCI-MAP-003-XAUD-001
     source_package: SCI-MAP-001
-    ref: working_tree_phase_2_exact_bytes
+    ref: b3e500117ab273d38d5055e82683a49015d028cf
     source_sha: b9e1e9a9b2fe492c402d8c7b0cf7e5a36c136a53
     path: doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-001.yaml
     sha256: 02601475819b1e64df0975098c70898f0db7b4d3b975eedaa5f3125692f8f809
-    status: submitted_uncommitted_coordinator_review
+    status: accepted_committed_phase_2_freeze
     review_phase: pre_core_authority
     pre_core_open_allowed: true
     source_artifact_pre_core_open_allowed: false
@@ -94,11 +104,11 @@ handoffs:
       quarantined and MAP implementation/dependencies remain open.
   - id: SCI-MAP-003-XAUD-002
     source_package: SCI-MAP-002
-    ref: working_tree_phase_2_exact_bytes
+    ref: b3e500117ab273d38d5055e82683a49015d028cf
     source_sha: 3192609a0f9ef2ab377aea77a53d987d1df5fe3a
     path: doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-002.yaml
     sha256: 9708a2ddd0a1b95079037cee110a2c51c0b26bc20f349b09fd817a48a024035d
-    status: submitted_uncommitted_coordinator_review
+    status: accepted_committed_phase_2_freeze
     review_phase: pre_core_authority
     pre_core_open_allowed: true
     source_artifact_pre_core_open_allowed: true
@@ -108,11 +118,11 @@ handoffs:
       the independent core.
   - id: SCI-MAP-003-XAUD-003
     source_package: SCI-RTC-001
-    ref: working_tree_phase_2_exact_bytes
+    ref: b3e500117ab273d38d5055e82683a49015d028cf
     source_sha: 47c4632008c4fd78f2ab88106372d7ee11ee7711
     path: doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-003.yaml
     sha256: 1db43ab766d4f80ec691fdffac4f32b064b76f196a2ad25df030a62b69b2f884
-    status: submitted_uncommitted_coordinator_review
+    status: accepted_committed_phase_2_freeze
     review_phase: pre_core_authority
     pre_core_open_allowed: true
     source_artifact_pre_core_open_allowed: false
@@ -122,11 +132,11 @@ handoffs:
       source trace, and open findings remain quarantined.
   - id: SCI-MAP-003-XAUD-004
     source_package: SCI-PTC-001
-    ref: working_tree_phase_2_exact_bytes
+    ref: b3e500117ab273d38d5055e82683a49015d028cf
     source_sha: a8824c98c57cb3a5c2d78f65c49f0d4693a4d9dc
     path: doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-004.yaml
     sha256: 20d73f69f9c4413da970e96b6d3c4e85a3426550482df6e37b06f164db3c1893
-    status: submitted_uncommitted_coordinator_review
+    status: accepted_committed_phase_2_freeze
     review_phase: pre_core_authority
     pre_core_open_allowed: true
     source_artifact_pre_core_open_allowed: true
@@ -136,11 +146,11 @@ handoffs:
       characterization remain post-core.
   - id: SCI-MAP-003-XAUD-005
     source_package: SCI-AST-001
-    ref: working_tree_phase_2_exact_bytes
+    ref: b3e500117ab273d38d5055e82683a49015d028cf
     source_sha: 8ee5b9fc192877106c4d5d747dfef75646edcfd9
     path: doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-005.yaml
     sha256: 27f36350feb0a126f5045d6b64a98afc44ccaf3c339f102c30cc390daf6779ac
-    status: submitted_uncommitted_coordinator_review
+    status: accepted_committed_phase_2_freeze
     review_phase: pre_core_authority
     pre_core_open_allowed: true
     source_artifact_pre_core_open_allowed: true
@@ -150,11 +160,11 @@ handoffs:
       absolute placement remain open.
   - id: SCI-MAP-003-XAUD-006
     source_package: SCI-VAL-001
-    ref: working_tree_phase_2_exact_bytes
+    ref: b3e500117ab273d38d5055e82683a49015d028cf
     source_sha: 5c5a7fad052ac433207c1c6c61355b53c61a476c
     path: doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-006.yaml
     sha256: 877f9cec7f7f9fd698a0226289effbc6ab46315aa280b60cba283e05aedba6ed
-    status: submitted_uncommitted_coordinator_review
+    status: accepted_committed_phase_2_freeze
     review_phase: post_core_evidence
     pre_core_open_allowed: false
     source_artifact_pre_core_open_allowed: false
@@ -163,11 +173,11 @@ handoffs:
       dependency and cannot supply pre-core eligibility or validity authority.
   - id: SCI-MAP-003-XAUD-007
     source_package: SCI-FRUIT-001
-    ref: working_tree_phase_2_exact_bytes
+    ref: b3e500117ab273d38d5055e82683a49015d028cf
     source_sha: 5c5a7fad052ac433207c1c6c61355b53c61a476c
     path: doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-007.yaml
     sha256: 801928c460745b748163027191d20f5873110db937aa508e95542206e5623498
-    status: submitted_uncommitted_coordinator_review
+    status: accepted_committed_phase_2_freeze
     review_phase: post_core_evidence
     pre_core_open_allowed: false
     source_artifact_pre_core_open_allowed: false
@@ -176,11 +186,11 @@ handoffs:
       iteration/parentage dependency, not a feedback or iteration contract.
   - id: SCI-MAP-003-XAUD-008
     source_package: SCI-MODE-001
-    ref: working_tree_phase_2_exact_bytes
+    ref: b3e500117ab273d38d5055e82683a49015d028cf
     source_sha: 5c5a7fad052ac433207c1c6c61355b53c61a476c
     path: doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-008.yaml
     sha256: c84cb142813333c0499bde7275d61f940f593fd92875d527bf420bb4003d0087
-    status: submitted_uncommitted_coordinator_review
+    status: accepted_committed_phase_2_freeze
     review_phase: post_core_evidence
     pre_core_open_allowed: false
     source_artifact_pre_core_open_allowed: false
@@ -371,8 +381,16 @@ late_arrival_effect: >-
   independently of the scientific derivation.
 
 packet_state:
-  independent_audit_prompt: not_created_not_authorized_in_phase_2
-  coordinator_return_artifact: not_created_not_authorized_in_phase_2
+  independent_audit_prompt: prepared_not_launched_separate_owner_launch_required
+  independent_audit_prompt_path: doc/audits/prompts/SCI_MAP_003_AUDIT_PROMPT.md
+  independent_audit_prompt_sha256: >-
+    306b201c81526da203ae671e189f70b489d8c8a595cdc6aa1e502fab479564bc
+  coordinator_return_artifact: prepared_uncommitted_checkpoint
+  coordinator_return_path: >-
+    doc/audits/packages/SCI-MAP-003_REGISTRATION_COORDINATOR_RETURN_2026-08-14.md
+  coordinator_return_sha256: >-
+    ca6deb3926fd3b46057c7b9ef1d2e132d62e3daa1c1783c7fdacf6373e38b142
+  phase_3_commit_tree_patch: pending_final_commit_external_coordinator_response
   audit_launch: not_authorized
   numerical_execution: not_authorized
   application_or_LMTOOF_edit: not_authorized

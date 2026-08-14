@@ -268,11 +268,15 @@ Ultra, delegation, and parallel workstreams are not authorized by this
 registration. A later change requires its own written trigger, independence
 boundaries, synthesis owner, and stop rule.
 
-## Phase 2 inbound packet checkpoint
+## Frozen inbound packet and prepared dispatch documents
 
-The following eight inbound handoffs are prepared in the accepted dependency
-order. They are uncommitted coordination artifacts for review, not audit
-dispatch authority:
+The following eight inbound handoffs are frozen in the accepted dependency
+order at Phase-2 commit
+`b3e500117ab273d38d5055e82683a49015d028cf`, parent
+`5c5a7fad052ac433207c1c6c61355b53c61a476c`, tree
+`9e79dde73df9c3655e43f35e1beebb5d1413603a`, standard binary patch
+SHA-256
+`5b0ba32cebc76726c255fd78b7a30ca67f1f0e8dd053a64bd07e074440431f8e`:
 
 1. `SCI-MAP-003-XAUD-001` -- `SCI-MAP-001` -- `pre_core_authority`;
 2. `SCI-MAP-003-XAUD-002` -- `SCI-MAP-002` -- `pre_core_authority`;
@@ -285,18 +289,28 @@ dispatch authority:
 
 The frozen inbox authority manifest is
 `doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003_INBOX_AUTHORITY_MANIFEST_2026-08-14.yaml`,
-SHA-256
-`a6c36b7c0416e1f03ce88b8004712db666c625a95cf521787cfad5ad28d27603`.
-Its status is
-`phase_2_uncommitted_frozen_for_coordinator_review_not_dispatch_authority`.
+with final-packet working SHA-256
+`3b77493a7f821fd4c0251f64d1786778be90965764bee46484e6b4709f7a4a49`.
+It preserves its accepted Phase-2 authority/evidence content digest
+`a6c36b7c0416e1f03ce88b8004712db666c625a95cf521787cfad5ad28d27603`
+and is `final_packet_prepared_not_launched_pending_final_commit`.
 It contains 9 `pre_core_authority` objects and 13
 `post_core_evidence` objects. Only the exact owner-approved abstractions
 explicitly admitted by the manifest may be opened before an independent core
 freeze. Open or conditioned dependency consequences remain unchanged and
 must not be promoted into accepted implementation authority.
 
-No independent-audit prompt or coordinator-return artifact exists. The
-packet is not dispatchable and no audit has been launched.
+The prepared independent-audit prompt is
+`doc/audits/prompts/SCI_MAP_003_AUDIT_PROMPT.md`, SHA-256
+`306b201c81526da203ae671e189f70b489d8c8a595cdc6aa1e502fab479564bc`.
+The coordinator return is
+`doc/audits/packages/SCI-MAP-003_REGISTRATION_COORDINATOR_RETURN_2026-08-14.md`,
+SHA-256
+`ca6deb3926fd3b46057c7b9ef1d2e132d62e3daa1c1783c7fdacf6373e38b142`.
+These documents make the packet reviewable for a separate owner launch
+decision; they do not launch the audit. The eventual Phase-3 commit, tree, and
+standard patch digest are intentionally pending the final commit and must be
+reported externally rather than self-referenced inside these bytes.
 
 ## Registration disposition and next checkpoint
 
@@ -309,11 +323,11 @@ packet is not dispatchable and no audit has been launched.
 - re-audit status: `not_started`
 - independent audit: not launched
 
-This uncommitted Phase 2 packet is the next viable artifact. Stop after
-verifying this record, the ledger bindings, the eight inbound handoffs, and
-the frozen authority manifest. Obtain coordinator acceptance before any
-commit and before creating an independent-audit prompt or coordinator-return
-artifact.
+This uncommitted five-path final packet is the next viable artifact. Stop
+after verifying the manifest, this record, the ledger, audit prompt, and
+coordinator return. Obtain coordinator acceptance before commit. After any
+separately authorized commit, stop again; only Grant's separate launch
+decision may create the fresh audit task and worktree.
 
 This record does not authorize application, test, configuration, validation,
 or LMTOOF edits; numerical execution; a local or Unity reduction; an external

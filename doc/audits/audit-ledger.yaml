@@ -7408,11 +7408,11 @@ packages:
     name: OOF residual transfer-function estimation and product
     tier: A
     queue_wave: map_product_after_SCI_MAP_002_before_SCI_MODE_001_LMTOOF_admission
-    registration_status: registered_not_dispatched
+    registration_status: final_packet_prepared_not_dispatched_pending_commit
     registration_date: 2026-08-14
     registration_record: >-
       doc/audits/packages/SCI-MAP-003_PRODUCT_REGISTRATION_2026-08-14.md
-    registration_record_sha256: d87d3b9e2252c7ade3cbd1c978c835575d14d2038efcb732171103d383dad281
+    registration_record_sha256: 34fa9f3596223cf1220b3fa5ce4c40381c4d90e17082f98f36e3d03a2ebedd2c
     registration_authority: project_owner
     registration_coordination_base:
       branch: codex/coordinate-rtc-ptc-queue
@@ -7569,62 +7569,79 @@ packages:
         path: doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-001.yaml
         sha256: 02601475819b1e64df0975098c70898f0db7b4d3b975eedaa5f3125692f8f809
         review_phase: pre_core_authority
-        status: submitted_uncommitted_coordinator_review
+        status: accepted_committed_phase_2_freeze
       - id: SCI-MAP-003-XAUD-002
         source_package: SCI-MAP-002
         path: doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-002.yaml
         sha256: 9708a2ddd0a1b95079037cee110a2c51c0b26bc20f349b09fd817a48a024035d
         review_phase: pre_core_authority
-        status: submitted_uncommitted_coordinator_review
+        status: accepted_committed_phase_2_freeze
       - id: SCI-MAP-003-XAUD-003
         source_package: SCI-RTC-001
         path: doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-003.yaml
         sha256: 1db43ab766d4f80ec691fdffac4f32b064b76f196a2ad25df030a62b69b2f884
         review_phase: pre_core_authority
-        status: submitted_uncommitted_coordinator_review
+        status: accepted_committed_phase_2_freeze
       - id: SCI-MAP-003-XAUD-004
         source_package: SCI-PTC-001
         path: doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-004.yaml
         sha256: 20d73f69f9c4413da970e96b6d3c4e85a3426550482df6e37b06f164db3c1893
         review_phase: pre_core_authority
-        status: submitted_uncommitted_coordinator_review
+        status: accepted_committed_phase_2_freeze
       - id: SCI-MAP-003-XAUD-005
         source_package: SCI-AST-001
         path: doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-005.yaml
         sha256: 27f36350feb0a126f5045d6b64a98afc44ccaf3c339f102c30cc390daf6779ac
         review_phase: pre_core_authority
-        status: submitted_uncommitted_coordinator_review
+        status: accepted_committed_phase_2_freeze
       - id: SCI-MAP-003-XAUD-006
         source_package: SCI-VAL-001
         path: doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-006.yaml
         sha256: 877f9cec7f7f9fd698a0226289effbc6ab46315aa280b60cba283e05aedba6ed
         review_phase: post_core_evidence
-        status: submitted_uncommitted_coordinator_review
+        status: accepted_committed_phase_2_freeze
       - id: SCI-MAP-003-XAUD-007
         source_package: SCI-FRUIT-001
         path: doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-007.yaml
         sha256: 801928c460745b748163027191d20f5873110db937aa508e95542206e5623498
         review_phase: post_core_evidence
-        status: submitted_uncommitted_coordinator_review
+        status: accepted_committed_phase_2_freeze
       - id: SCI-MAP-003-XAUD-008
         source_package: SCI-MODE-001
         path: doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-008.yaml
         sha256: c84cb142813333c0499bde7275d61f940f593fd92875d527bf420bb4003d0087
         review_phase: post_core_evidence
-        status: submitted_uncommitted_coordinator_review
+        status: accepted_committed_phase_2_freeze
     frozen_inbox_manifest:
-      status: phase_2_uncommitted_frozen_for_coordinator_review_not_dispatch_authority
+      status: final_packet_prepared_not_launched_pending_final_commit
       path: >-
         doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003_INBOX_AUTHORITY_MANIFEST_2026-08-14.yaml
-      sha256: a6c36b7c0416e1f03ce88b8004712db666c625a95cf521787cfad5ad28d27603
+      sha256: 3b77493a7f821fd4c0251f64d1786778be90965764bee46484e6b4709f7a4a49
+      accepted_phase_2_freeze:
+        commit: b3e500117ab273d38d5055e82683a49015d028cf
+        parent: 5c5a7fad052ac433207c1c6c61355b53c61a476c
+        tree: 9e79dde73df9c3655e43f35e1beebb5d1413603a
+        standard_binary_patch_sha256: >-
+          5b0ba32cebc76726c255fd78b7a30ca67f1f0e8dd053a64bd07e074440431f8e
+        manifest_sha256: >-
+          a6c36b7c0416e1f03ce88b8004712db666c625a95cf521787cfad5ad28d27603
       pre_core_authority_count: 9
       post_core_evidence_count: 13
     audit_dispatch:
-      status: not_created_not_launched
-      prompt_path: null
+      status: prompt_prepared_not_launched_separate_owner_launch_required
+      prompt_path: doc/audits/prompts/SCI_MAP_003_AUDIT_PROMPT.md
+      prompt_sha256: 306b201c81526da203ae671e189f70b489d8c8a595cdc6aa1e502fab479564bc
+      preparation_base_commit: b3e500117ab273d38d5055e82683a49015d028cf
+      final_packet_commit: pending_final_commit_external_coordinator_response
       audit_branch: null
       audit_worktree: null
       independent_core: not_started
+    coordinator_return:
+      status: prepared_uncommitted_checkpoint
+      path: >-
+        doc/audits/packages/SCI-MAP-003_REGISTRATION_COORDINATOR_RETURN_2026-08-14.md
+      sha256: ca6deb3926fd3b46057c7b9ef1d2e132d62e3daa1c1783c7fdacf6373e38b142
+      final_commit_tree_patch: pending_final_commit_external_coordinator_response
     resource_plan:
       registration_and_dispatch_preparation: Terra_High
       launch_checkpoint_and_source_inventory: Terra_High
@@ -7676,10 +7693,10 @@ packages:
       - cross_band_or_cross_mode_substitution
       - new_production_default_or_consumer_authorization
     next_checkpoint: >-
-      Stop with the exact uncommitted Phase 2 registration, ledger, eight
-      handoffs, and frozen authority manifest after validation. Coordinator
-      acceptance is required before commit and before creation of any
-      independent-audit prompt or coordinator-return artifact.
+      Stop with the exact uncommitted five-path final packet after validation.
+      Coordinator acceptance is required before commit. After an authorized
+      commit, report its identity externally and stop; a separate owner launch
+      is required to create the audit task and worktree.
 
   - id: SCI-NOI-001
     name: Noise and jackknife realization construction and propagation
