@@ -8,9 +8,10 @@ class Citlali(CMakePackage):
     """Build the refactored Citlali library and production CLI."""
 
     homepage = "https://github.com/toltec-astro/citlali"
+    git = "https://github.com/toltec-astro/citlali.git"
     root_cmakelists_dir = "cmake/spack"
 
-    version("4.0.0")
+    version("4.0.0", commit="b8e80fb1562b0ab9974a4c5fb183682ab2d351cc")
 
     variant(
         "openmp",
