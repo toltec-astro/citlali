@@ -89,7 +89,12 @@ the effective C++23 standard; the Tula metadata defect remains upstream debt.
   compiler, DAG, profile, lock, and managed-binding identities. A checker-only
   assumption that Git abbreviations are always nine characters stopped the
   job before the independent installed consumer. Dynamic abbreviation
-  matching is corrected; a fresh exact-SHA acceptance job and point run remain
+  matching was corrected in `7ee2c4f7`. Unity job `62890572` then closed the
+  build gate at that exact commit: both executions of all 539 enabled CTests
+  and the independent installed consumer passed, and the complete manifest
+  binds executable SHA-256 `89a159c508f3f51bd0556105486fb4dadccf6bce525a6d0ceff99f53da04145e`
+  to the accepted source, dependency, compiler, DAG, profile, and lock
+  identities. A point smoke reduction using this installed executable remains
   pending.
 - The macOS graph builds CFITSIO 4.3.0 from source and declares Homebrew FFTW
   plus GCC 15 Fortran as checked host externals; all C/C++ application code is

@@ -189,6 +189,20 @@ abbreviation against the full source commit. The independent installed
 consumer did not run after this checker-only failure; one fresh exact-SHA job
 and then a point reduction remain required.
 
+The third exact-source attempt, job `62890572`, closes the Unity build and
+installed-package gates at Citlali
+`7ee2c4f7c7bdc04846966032587ce458ee9be62d`. It used the same lock and
+concrete root, installed the full package, passed source hygiene, passed both
+executions of all 539 enabled developer CTests, and passed the independent
+installed consumer `1/1`. The expected lifecycle test remained explicitly
+disabled. The completed manifest records installed executable SHA-256
+`89a159c508f3f51bd0556105486fb4dadccf6bce525a6d0ceff99f53da04145e` and
+the CLI reports source `7ee2c4f7`, Kidscpp 3.1.0, GCC 13.3/C++23, concrete
+DAG `elcot6ah6jtv3onjjmqerxaznnshumqh`, deployment profile `unity-gcc13`,
+the accepted lock digest, and `binding=dag-match`. The job completed without
+stderr diagnostics beyond GNU Time output. A Unity point reduction using
+this exact installed executable is now the remaining operational smoke gate.
+
 ## 2026-07-26 Conan 2 Build Review
 
 The previously deferred TolTECA build implementation is now available and has

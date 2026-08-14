@@ -213,21 +213,21 @@ Citlali, Kidscpp, Tula, and other C/C++ application nodes remain exact LLVM 20.
 | --- | --- | --- |
 | Dependency ownership | Pass | Spack owns one concrete graph; Tula CMake is CMake-only. |
 | First-party package identity | Pass in development | Tula CMake, Tula, Kidscpp, and Citlali are explicit decentralized packages. |
-| Installed package consumers | Pass locally | Native Tula, Kidscpp, and full refactored Citlali installed consumers pass. |
+| Installed package consumers | Pass | Native Tula, Kidscpp, and full refactored Citlali installed consumers pass; the Citlali consumer also passes on Unity GCC 13.3. |
 | NetCDF C++ propagation | Pass upstream | Tula CMake owns a normalized target that does not depend on missing NetCDF C++ pkg-config metadata. |
-| Compiler matrix | Partial | GCC 14 and LLVM 20 pass in Ubuntu, and native macOS LLVM 20 passes through the full application; Unity remains unmeasured. |
-| Native developer bootstrap | Pass locally | Exact LLVM 20/Spack host gate, source-built full graph, persistent Ninja workflow, and installed-artifact gate pass. |
+| Compiler matrix | Pass in development | GCC 14 and LLVM 20 pass in Ubuntu, native macOS LLVM 20 passes through the full application, and Unity GCC 13.3 passes the complete build and test gate. Release support policy remains separate. |
+| Native developer bootstrap | Pass | Exact LLVM 20/Spack host gate, source-built full graph, persistent Ninja workflow, and installed-artifact gate pass locally; the corresponding Unity GCC 13.3 workflow also passes. |
 | Real-data fixtures | Partial | A current pointing file passes the independent reader gate with recorded SHA-256, but the shared historical fixture has no accessible immutable manifest. |
 | Release source identity | Partial | Exact development revisions are machine-readable and checked; immutable release archives/checksums remain open. |
 | Portable lock | Planned | Local locks are intentionally ignored; no release environment lock exists. |
-| Full refactored application | Pass locally | All eight active compiled sources, full header surface, generated inputs, library, CLI, and tests build through Spack. |
+| Full refactored application | Pass | All eight active compiled sources, full header surface, generated inputs, library, CLI, and tests build through Spack on native macOS and Unity. |
 | Full CLI and config | Pass locally | Full operational CLI/help and complete 123-test/four-mode config preflight pass. |
 | Source/dependency provenance | Partial | Source/dirty state, compiler, build type, OpenMP/Wiener variants, semantic package versions, concrete DAG hash, exact first-party development revisions, and managed runtime lock-root binding are checked; a portable release lock and complete release manifest remain open. |
 | Direct dependencies | Pass | HDF5 and Zlib are explicit Citlali recipe and CMake target edges. |
 | Kidscpp compatibility | Pass pending product validation | A bounded V3 raw-timestream adapter compiles and is tested; legacy config remains accepted and the unused sweep fitter is omitted only in V3. Unity product validation remains. |
-| Full tests | Pass locally | All 539 enabled CTests and complete config preflight pass; baseline/ledger/exit gates remain part of final acceptance. |
-| Unity operation | Partial | Exact-source jobs `62888690` and `62889350` installed the GCC 13.3 graph and passed all 539 enabled developer CTests. The second job at `34b83df51` passed source hygiene and verified the installed CLI's source, package, compiler, DAG, profile, lock, and managed-binding identities. A fixed-width Git-abbreviation assumption in the checker stopped it before the independent installed consumer; the checker repair requires a fresh job, followed by a point reduction. |
-| Build timing | Partial | Persistent no-op build is 0.82 seconds; clean and representative incremental timing still need a formal campaign. |
+| Full tests | Pass in current environments | All 539 enabled CTests pass on native macOS LLVM 20 and Unity GCC 13.3; complete config preflight passes locally. Baseline/ledger/exit gates remain part of final acceptance. |
+| Unity operation | Partial | Exact-source job `62890572` at `7ee2c4f7` installs the GCC 13.3 graph, passes source hygiene, both executions of all 539 enabled CTests, the independent installed consumer, and complete managed provenance. A point reduction using the recorded installed executable remains. |
+| Build timing | Partial | Persistent local no-op build is 0.82 seconds. Unity job `62890572` spent 6m51s in package installation and completed the full acceptance workflow in 13m24s; representative incremental timing still needs a formal campaign. |
 
 ## Required Adaptation Work
 
