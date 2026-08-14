@@ -231,7 +231,7 @@ Citlali, Kidscpp, Tula, and other C/C++ application nodes remain exact LLVM 20.
 | Kidscpp compatibility | Pass pending product validation | A bounded V3 raw-timestream adapter compiles and is tested; legacy config remains accepted and the unused sweep fitter is omitted only in V3. Unity product validation remains. |
 | Full tests | Pass in current environments | All 539 enabled CTests pass on native macOS LLVM 20 and Unity GCC 13.3; complete config preflight passes locally. Baseline/ledger/exit gates remain part of final acceptance. |
 | Unity operation | Partial | Exact-source job `62890572` at `7ee2c4f7` installs the GCC 13.3 graph, passes source hygiene, both executions of all 539 enabled CTests, the independent installed consumer, and complete managed provenance. A later point smoke exposed concurrent NetCDF-C/HDF5 output access and segfaulted during file close. Repair commit `b8e80fb15` passes the full local gate and interactive Unity acceptance; two subsequent point runs reproduce all 1,930 scientific comparison records exactly without recurrence. Direct Citlali invocation verifies the managed profile, lock, and DAG binding, but TolTECA-launched products remain marked unmanaged. The external deployment owner now owns that propagation fix and one final managed point rerun. |
-| Build timing | Partial | The clean native LLVM 20 campaign at `3a4defda5` records 5.93 s configure, 161.60 s clean build, 0.94 s no-op, and 173.22 s for the header-dominant CLI translation unit. Unity job `62890572` spent 6m51s in package installation and completed the full acceptance workflow in 13m24s; the matching Unity GCC 13 campaign remains. |
+| Build timing | Pass | The clean native LLVM 20 campaign at `3a4defda5` records 5.93 s configure, 161.60 s clean build, 0.94 s no-op, and 173.22 s for the CLI translation unit. The clean Unity GCC 13 campaign at `4f9c7e55a` records 20.16, 315.56, 4.98, and 277.38 s respectively. Exact manifests and logs are committed. |
 
 ## Required Adaptation Work
 
@@ -303,14 +303,11 @@ changes are isolated and require product validation.
 
 ## Remaining Open Evidence
 
-1. Define exact first-party dependency source revisions in addition to the
-   concrete DAG identity already exposed by Citlali.
-2. Define release repository composition, immutable sources, lock, and
+1. Define release repository composition, immutable sources, lock, and
    buildcache trust policy.
-3. Measure the matching clean, no-op, and representative incremental campaign
-   on Unity GCC 13; the native LLVM 20 campaign is complete.
-4. Demonstrate the managed user-owned Unity reduction workflow after the
+2. Demonstrate the managed user-owned Unity reduction workflow after the
    external launch-boundary propagation fix.
+3. Freeze and validate the same-SHA point, OOF, science, and Beammap matrix.
 
 These are implementation and acceptance gaps, not unresolved policy questions
 and not reasons to require a local container.

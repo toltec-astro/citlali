@@ -1,0 +1,6 @@
+[ 20%] Built target citlali
+[ 34%] Building CXX object CMakeFiles/citlali_cli.dir/home/toltec_umass_edu/work_toltec/citlali_spack_acceptance/citlali/src/citlali/cli/main.cpp.o
+[ 34%] Built target citlali_safety_test
+[ 97%] Built target citlali_test
+[100%] Linking CXX executable citlali
+[100%] Built target citlali_cli

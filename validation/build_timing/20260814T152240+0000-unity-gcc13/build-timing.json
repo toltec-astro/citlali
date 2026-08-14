@@ -1,0 +1,128 @@
+{
+  "schema_version": "citlali-build-timing-v1",
+  "campaign_id": "20260814T152240+0000",
+  "profile": "unity-gcc13",
+  "source": {
+    "revision": "4f9c7e55ab41c2d7ca88ffee86bc9e60e8c5727b",
+    "status": []
+  },
+  "host": {
+    "hostname": "toltec-cpu002",
+    "platform": "Linux-6.8.0-136-generic-x86_64-with-glibc2.39",
+    "cpu_count": 32
+  },
+  "build": {
+    "jobs": 6,
+    "generator": "Unix Makefiles",
+    "build_type": "Release",
+    "build_dir": "/work/toltec/citlali_spack_acceptance/citlali/build/spack-citlali-timing-276oxiz4",
+    "spack_environment": "/work/toltec/citlali_spack_acceptance/citlali/spack/environments/citlali-unity-gcc13",
+    "spack_root_hash": "elcot6ah6jtv3onjjmqerxaznnshumqh",
+    "spack_root_spec": "citlali@4.0.0+openmp+tests+wiener_openmp %cxx=gcc@13.3.0 ^cfitsio@4.3.0~fortran ^fftw@3.3.10~mpi ^hdf5@1.14.6~fortran+hl~mpi+shared~szip ^netcdf-c@4.10.0~blosc+shared+szip+zstd build_system=cmake ^openblas~fortran ^tula@3.1.0+cli+ecsv+enum~fitting+grppi+netcdf+openmp+perflibs"
+  },
+  "incremental_inputs": [
+    "src/citlali/cli/main.cpp"
+  ],
+  "stages": [
+    {
+      "name": "clean_configure",
+      "command": [
+        "/work/toltec/spack-1.2.2/bin/spack",
+        "-e",
+        "/work/toltec/citlali_spack_acceptance/citlali/spack/environments/citlali-unity-gcc13",
+        "build-env",
+        "citlali",
+        "--",
+        "cmake",
+        "--fresh",
+        "-G",
+        "Unix Makefiles",
+        "-S",
+        "/work/toltec/citlali_spack_acceptance/citlali/cmake/spack",
+        "-B",
+        "/work/toltec/citlali_spack_acceptance/citlali/build/spack-citlali-timing-276oxiz4",
+        "-DCMAKE_C_COMPILER=/usr/bin/gcc",
+        "-DCMAKE_CXX_COMPILER=/usr/bin/g++",
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+        "-DCITLALI_BUILD_CLI=ON",
+        "-DCITLALI_BUILD_TESTS=ON",
+        "-DCITLALI_ENABLE_OPENMP=ON",
+        "-DCITLALI_USE_WIENER_FILTER_OMP=ON",
+        "-DCITLALI_SPACK_DAG_HASH=elcot6ah6jtv3onjjmqerxaznnshumqh"
+      ],
+      "started_at": "2026-08-14T15:22:40.524589+00:00",
+      "elapsed_seconds": 20.157035663025454,
+      "returncode": 0,
+      "log": "clean_configure.log"
+    },
+    {
+      "name": "clean_build",
+      "command": [
+        "/work/toltec/spack-1.2.2/bin/spack",
+        "-e",
+        "/work/toltec/citlali_spack_acceptance/citlali/spack/environments/citlali-unity-gcc13",
+        "build-env",
+        "citlali",
+        "--",
+        "cmake",
+        "--build",
+        "/work/toltec/citlali_spack_acceptance/citlali/build/spack-citlali-timing-276oxiz4",
+        "-j",
+        "6"
+      ],
+      "started_at": "2026-08-14T15:23:00.684803+00:00",
+      "elapsed_seconds": 315.5558689989848,
+      "returncode": 0,
+      "log": "clean_build.log"
+    },
+    {
+      "name": "no_op_build",
+      "command": [
+        "/work/toltec/spack-1.2.2/bin/spack",
+        "-e",
+        "/work/toltec/citlali_spack_acceptance/citlali/spack/environments/citlali-unity-gcc13",
+        "build-env",
+        "citlali",
+        "--",
+        "cmake",
+        "--build",
+        "/work/toltec/citlali_spack_acceptance/citlali/build/spack-citlali-timing-276oxiz4",
+        "-j",
+        "6"
+      ],
+      "started_at": "2026-08-14T15:28:16.245484+00:00",
+      "elapsed_seconds": 4.980285587953404,
+      "returncode": 0,
+      "log": "no_op_build.log"
+    },
+    {
+      "name": "incremental_build_1",
+      "command": [
+        "/work/toltec/spack-1.2.2/bin/spack",
+        "-e",
+        "/work/toltec/citlali_spack_acceptance/citlali/spack/environments/citlali-unity-gcc13",
+        "build-env",
+        "citlali",
+        "--",
+        "cmake",
+        "--build",
+        "/work/toltec/citlali_spack_acceptance/citlali/build/spack-citlali-timing-276oxiz4",
+        "-j",
+        "6"
+      ],
+      "started_at": "2026-08-14T15:28:21.230419+00:00",
+      "elapsed_seconds": 277.37973835796583,
+      "returncode": 0,
+      "log": "incremental_build_1.log",
+      "input": {
+        "path": "/work/toltec/citlali_spack_acceptance/citlali/src/citlali/cli/main.cpp",
+        "sha256": "0189b8270911731b5f1e2056fdf37449b8574413a03fa82b9ba53a0ceb4eaa0a",
+        "original_mtime_ns": 1786703587533332925,
+        "touched_mtime_ns": 1786721301229449358
+      }
+    }
+  ],
+  "completed_at": "2026-08-14T15:32:58.617636+00:00",
+  "build_dir_retained": false
+}

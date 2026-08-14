@@ -122,13 +122,13 @@ release lock, the user-owned Unity environment, point smoke run, and same-SHA
 four-mode validation matrix remain open. The legacy build therefore remains
 the operational fallback.
 
-The first formal build-timing campaign is complete at clean source
-`3a4defda5`. Under the native LLVM 20/Ninja profile with eight jobs, clean
-configure took 5.93 seconds, the full 44-action build took 161.60 seconds, a
-no-op took 0.94 seconds, and rebuilding only the production CLI translation
-unit took 173.22 seconds. The result confirms that build-system startup is
-small and the header-dominant CLI compile is the development bottleneck. The
-matching Unity GCC 13 campaign remains before the timing gate is complete.
+The formal build-timing gate is complete. At clean source `3a4defda5`, the
+native LLVM 20/Ninja campaign recorded 5.93 seconds configure, 161.60 seconds
+clean build, 0.94 seconds no-op, and 173.22 seconds for the production CLI
+translation unit. At clean source `4f9c7e55a`, the Unity GCC 13/Make campaign
+recorded 20.16, 315.56, 4.98, and 277.38 seconds respectively. Both results
+show small build-system overhead and a header-dominant CLI compile as the
+development bottleneck; they do not claim a cross-host performance ranking.
 
 The first user-supplied Unity inventory is now recorded operational evidence:
 Ubuntu 24.04 x86_64 exposes GCC/G++/GFortran 13.3 and Clang 18.1, CMake 3.30 through the

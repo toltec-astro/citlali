@@ -114,8 +114,11 @@ the effective C++23 standard; the Tula metadata defect remains upstream debt.
   LLVM 20.
 - The formal clean native build campaign at exact source `3a4defda5` records
   5.93 seconds configure, 161.60 seconds clean build, 0.94 seconds no-op, and
-  173.22 seconds for the header-dominant CLI translation unit. The matching
-  Unity GCC 13 campaign remains the build-timing gate.
+  173.22 seconds for the header-dominant CLI translation unit. The Unity GCC
+  13 campaign at clean source `4f9c7e55a` records 20.16, 315.56, 4.98, and
+  277.38 seconds respectively. This closes the formal build-timing gate and
+  confirms the CLI translation unit as the dominant development cost on both
+  hosts.
 - Promote the checked development revision manifest into immutable release
   sources and a portable release lock.
 
