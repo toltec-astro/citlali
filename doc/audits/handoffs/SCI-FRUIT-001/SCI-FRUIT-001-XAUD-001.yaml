@@ -1,0 +1,92 @@
+format_version: 1
+id: SCI-FRUIT-001-XAUD-001
+created_date: 2026-08-14
+
+source:
+  package_id: SCI-MAP-003
+  role: independent_tier_a_auditor
+  audit_branch: codex/audit-sci-map-003
+  audit_commit: 65d1abb88b6d8fa0c3235a3d62ef9a2ab3122839
+  governing_or_evidence_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+  finding_ids: [SCI-MAP-003-F002, SCI-MAP-003-F009]
+
+target: {package_id: SCI-FRUIT-001}
+priority: P0
+evidence_basis: observed
+review_phase: post_core_evidence
+arrival: before_dispatch
+status: submitted
+
+summary: >-
+  SCI-MAP-003 retains the terminal-pass, restart, and delivered map-kernel
+  parent identity requirements for the unlaunched FRUIT package.
+claim: >-
+  SCI-FRUIT-001 remains not started and supplies no owner-approved terminal
+  pass, restart, or delivered map-kernel parent-state contract.
+frozen_audit_traceability:
+  frozen_audit_proposal_label: SCI-MAP-003-XAUD-015
+  mapping_kind: immutable_evidence_label_to_canonical_target_id
+  canonical_id_alias: false
+  evidence_classification: post_core_evidence
+  promoted_to_pre_core_authority: false
+  source_audit_patch_sha256: d0709105113d9604d15b2940b2a6af087280fa95d3f2c068a2ab7f940207792e
+finding_traceability:
+  - id: SCI-MAP-003-F002
+    owner: >-
+      SCI-RTC-001, SCI-PTC-001, SCI-MAP-002, SCI-VAL-001, and SCI-FRUIT-001
+      owners
+    closure_gate: >-
+      Complete-response-or-unavailable, eligibility, and terminal-pass
+      contracts close; the exact serial pre-crop normalized kernel and
+      once-cropped k have immutable parent/stage/digest identity at the
+      governing application SHA.
+  - id: SCI-MAP-003-F009
+    owner: SCI-VAL-001, SCI-FRUIT-001, and SCI-MODE-001 owners
+    closure_gate: >-
+      Each package produces an owner-approved bounded contract and accepted
+      implementation/evidence result for its named interface; a dated re-audit
+      admits it without rewriting either frozen core.
+dependency_traceability:
+  package_id: SCI-FRUIT-001
+  status: open
+  package_lifecycle_status: not_started
+  closure_condition: >-
+    Owner-approved terminal/restart/parent-state contract and conforming evidence.
+supports:
+  - Preserve the exact terminal, restart, parent-state, and lifecycle requirements for future FRUIT dispatch.
+does_not_establish:
+  - FRUIT dispatch, contract amendment, recipient acceptance, repair, evidence, re-audit, or package launch.
+  - Closure of F002, F009, or any dependency.
+  - Promotion of post-core evidence to pre-core authority.
+requested_actions: [informational_only]
+affected_target_findings: []
+related_handoffs: []
+authority_for_pre_core_review: null
+evidence:
+  - id: SCI-MAP-003-frozen-audit-report
+    availability: hash_only
+    path: 65d1abb88b6d8fa0c3235a3d62ef9a2ab3122839:doc/audits/packages/SCI-MAP-003_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: 2cbad1fd11ff8851b66202197f881c48f8c0f5cc5d08f376256d6dfdb8eb1764
+    note: Immutable post-core evidence; no scientific-authority promotion.
+  - id: SCI-MAP-003-frozen-predecessor-core
+    availability: hash_only
+    path: 3eecd9f4c6ccf9c9a5c509908b2689a8a0e1a80a:doc/audits/packages/SCI-MAP-003_INDEPENDENT_CORE.tex
+    sha256: d6eac8499191f65396d3bc743d5aea70e055ad6342dd812e67d68d31d436073e
+    note: Frozen predecessor core, preserved byte-for-byte.
+  - id: SCI-MAP-003-operative-successor-core
+    availability: hash_only
+    path: c0bd689598c8bc1c20114248a45822b13d6ba2f2:doc/audits/packages/SCI-MAP-003_INDEPENDENT_CORE_SUCCESSOR_001.tex
+    sha256: 5fb256b18566d725267d25737163f97dd1d5bbd463ba77ed33960e977a5dfed4
+    note: Accepted operative core, preserved byte-for-byte.
+recipient_disposition:
+  status: pending
+  late_arrival_route: not_applicable
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+supersedes: null
+superseded_by: null

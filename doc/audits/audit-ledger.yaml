@@ -30,12 +30,12 @@ current_program_checkpoint:
       restriction: exact_application_mainline_record_only
   active_lanes:
     SCI-CAL-001: successor_6_return_accepted_successor_7_authorized_not_launched
-    SCI-MAP-002: third_successor_86f1582_reaudited_owner_accepted_bounded_findings_closed_no_merge
+    SCI-MAP-002: third_successor_86f1582_owner_accepted_ownership_001_e6c8d126_committed_awaiting_owner_push_not_integrated
     SCI-ALIGN-001: assigned_grid_compatibility_policy_active_producer_authority_request_pending
     SCI-AST-001: phase_independent_math_permitted_no_launch_absolute_placement_unavailable
     SCI-RTC-001: core_phase_independent_and_stage_a_separate_stage_a_successor_3_authorized_not_launched
     ENG-STATE-001: static_package_accepted_F001_F002_open
-    SCI-MAP-003: completed_audit_disposition_registered_amend_F001_F010_open_phase_2_handoffs_prepared_not_dispatched
+    SCI-MAP-003: completed_audit_disposition_registered_amend_F001_F010_open_phase_2_handoffs_registered_not_delivered
   queue:
     - SCI-CAL-001_successor_7_bounded_technical_repair_authorized_pending_role_separated_READY_and_launch
     - SCI-RTC-001_phase_independent_repair_handoff_ready_not_launched
@@ -44,7 +44,7 @@ current_program_checkpoint:
     - SCI-VAL-001_unlaunched_PTC_D002_successor_handoff_pending_recipient_review
     - SCI-BEAM-001_held
     - SCI-TEL-INPUT-001_audit_owner_accepted_repair_scope_unresolved
-    - SCI-MAP-003_completed_audit_registered_amend_after_MAP_002_before_MODE_LMTOOF_admission_phase_2_not_dispatched
+    - SCI-MAP-003_completed_audit_registered_amend_after_MAP_002_before_MODE_LMTOOF_admission_phase_2_registered_not_delivered
   held_readiness:
     SCI-FLT-001: exact_repair_base_unresolved_until_integrated_CAL_successor
   integration_sequence:
@@ -593,6 +593,17 @@ packages:
         review_phase: post_core_evidence
         arrival: after_audit_completion
         status: submitted
+        late_arrival_route: held_for_reaudit
+      - id: SCI-MAP-001-XAUD-005
+        path: >-
+          doc/audits/handoffs/SCI-MAP-001/SCI-MAP-001-XAUD-005.yaml
+        sha256: >-
+          a3c87f884eaba51e376c9f6bb7d3fb83359a8a628545b98cd2466f07914c062e
+        source_package: SCI-MAP-003
+        review_phase: post_core_evidence
+        arrival: after_audit_completion
+        status: submitted
+        recipient_disposition: pending
         late_arrival_route: held_for_reaudit
     outgoing_handoffs:
       - id: SCI-PTC-001-XAUD-001
@@ -4210,6 +4221,17 @@ packages:
             - SCI-AST-001-F013
           affected_dependencies: [SCI-ALIGN-001]
           target_audit_commit: 429e1b5361683ba15c8d897ba22bdc4c4d03bf91
+      - id: SCI-AST-001-XAUD-003
+        path: >-
+          doc/audits/handoffs/SCI-AST-001/SCI-AST-001-XAUD-003.yaml
+        sha256: >-
+          8ab23b3663d80c2bea65cf3c4ae452929e15ea81fc3ebf1259a3d9700cb77b22
+        source_package: SCI-MAP-003
+        review_phase: post_core_evidence
+        arrival: after_audit_completion
+        status: submitted
+        recipient_disposition: pending
+        late_arrival_route: held_for_reaudit
     outgoing_handoffs:
       - id: SCI-MAP-001-XAUD-003
         target_package: SCI-MAP-001
@@ -5325,6 +5347,18 @@ packages:
             AST validity/binding remains a dependency. Historical edge occurrence
             and active repair results were not inferred.
           affected_findings: [SCI-RTC-001-F005, SCI-RTC-001-F010]
+      - id: SCI-RTC-001-XAUD-004
+        path: doc/audits/handoffs/SCI-RTC-001/SCI-RTC-001-XAUD-004.yaml
+        canonical_sha256: 5428ea02ce1fe25b97daef4167675143cb4590a0d6ea2dd828796c2e69a4d1db
+        source_package: SCI-MAP-003
+        evidence_sha: 65d1abb88b6d8fa0c3235a3d62ef9a2ab3122839
+        review_phase: post_core_evidence
+        arrival: after_audit_completion
+        status: submitted
+        recipient_disposition:
+          status: pending
+          late_arrival_route: held_for_reaudit
+          actions: []
 
     outgoing_handoffs:
       - id: SCI-PTC-001-XAUD-005
@@ -6127,6 +6161,18 @@ packages:
             defect. The repair is outside governing ancestry, unintegrated, and
             not treated as Unity-validated.
           affected_findings: [SCI-PTC-001-F004]
+      - id: SCI-PTC-001-XAUD-007
+        path: doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-007.yaml
+        canonical_sha256: 5fd883d87adbc545f6a5c6ef601a4b3b46393954031cb6ab512739592567736c
+        source_package: SCI-MAP-003
+        evidence_sha: 65d1abb88b6d8fa0c3235a3d62ef9a2ab3122839
+        review_phase: post_core_evidence
+        arrival: after_audit_completion
+        status: submitted
+        recipient_disposition:
+          status: pending
+          late_arrival_route: held_for_reaudit
+          actions: []
 
     outgoing_handoffs:
       - id: SCI-VAL-001-XAUD-008
@@ -6775,6 +6821,17 @@ packages:
         arrival: after_audit_completion
         status: submitted
         supersedes: SCI-VAL-001-XAUD-008
+      - id: SCI-VAL-001-XAUD-011
+        path: >-
+          doc/audits/handoffs/SCI-VAL-001/SCI-VAL-001-XAUD-011.yaml
+        sha256: >-
+          73e3ef8d6746549da394a79e311f6fe53dfe8b930b68cc15fcb254ce280af1cc
+        source_package: SCI-MAP-003
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted
+        recipient_disposition: pending
+        late_arrival_route: not_applicable
     outgoing_handoffs: []
     queued_post_core_evidence:
       - id: ALIGN-3C273-PTC-VAL-POSTCORE-2026-08-08
@@ -6851,6 +6908,17 @@ packages:
         recipient_disposition: >-
           Incorporated solely as a prohibition on treating the completed
           SCI-MAP-001 naive cases as JINC evidence. It closes no JINC fact.
+      - id: SCI-MAP-002-XAUD-002
+        path: >-
+          doc/audits/handoffs/SCI-MAP-002/SCI-MAP-002-XAUD-002.yaml
+        sha256: >-
+          78784b31ab550d227b60e7f2b210dcadac1dd06d48419d4e2aa7ecdaeffc49d8
+        source_package: SCI-MAP-003
+        review_phase: post_core_evidence
+        arrival: after_audit_completion
+        status: submitted
+        recipient_disposition: pending
+        late_arrival_route: held_for_reaudit
     governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
     governing_sha_role: inventory_snapshot
     audit_branch: codex/audit-sci-map-002
@@ -7408,7 +7476,7 @@ packages:
     name: OOF residual transfer-function estimation and product
     tier: A
     queue_wave: map_product_after_SCI_MAP_002_before_SCI_MODE_001_LMTOOF_admission
-    registration_status: completed_audit_disposition_registered_phase_2_prepared_not_dispatched
+    registration_status: completed_audit_disposition_registered_phase_2_registered_not_delivered
     registration_date: 2026-08-14
     registration_record: >-
       doc/audits/packages/SCI-MAP-003_PRODUCT_REGISTRATION_2026-08-14.md
@@ -7542,7 +7610,7 @@ packages:
       never substitute silently.
     audit_disposition:
       id: SCI-MAP-003-DISP-001
-      status: phase_1_registered_phase_2_prepared_not_dispatched
+      status: phase_2_registered_not_delivered
       date: 2026-08-14
       registration_base:
         ref: origin/codex/coordinate-sci-map-003-registration
@@ -7553,11 +7621,11 @@ packages:
       disposition_record:
         path: >-
           doc/audits/packages/SCI-MAP-003_AUDIT_DISPOSITION_2026-08-14.md
-        sha256: 51bbe3b4d1c3aabee937bb314d79cd687aae823fc5bd4ce9bea92f32562cf7dd
+        sha256: 7999e09871c77dad6c2c0c45a60aeb62739ebec70e31554f2fe3537a0f75eab4
       ledger_proposal:
         path: >-
           doc/audits/proposals/SCI-MAP-003_LEDGER_PROPOSAL_2026-08-14.yaml
-        sha256: 6815cf0eeb64e435479bb9d11de072d99d33e7218522c79623f4489af0d9a061
+        sha256: c083bf42eafcae518b3a947390900c48207ca72c16f22f39d1ee79b02688fade
       immutable_audit_evidence:
         classification: post_core_evidence
         promoted_to_pre_core_authority: false
@@ -7644,8 +7712,14 @@ packages:
         - {id: SCI-MAP-003-XAUD-007, disposition: accept_post_core_dependency_evidence, review_phase: post_core_evidence}
         - {id: SCI-MAP-003-XAUD-008, disposition: accept_post_core_dependency_evidence, review_phase: post_core_evidence}
       phase_2_handoff_preparation:
-        status: prepared_not_dispatched
-        handoff_files_created: false
+        status: registered_not_delivered
+        handoff_files_created: true
+        canonical_registry_records: 8
+        recipient_delivery: false
+        recipient_acknowledgment: false
+        recipient_acceptance: false
+        recipient_package_launch: false
+        repair_or_reaudit_launch: false
         schema_exception: false
         mapping:
           - frozen_audit_proposal_label: SCI-MAP-003-XAUD-009
@@ -7672,6 +7746,52 @@ packages:
           - frozen_audit_proposal_label: SCI-MAP-003-XAUD-016
             canonical_handoff_id: SCI-MODE-001-XAUD-003
             target_package: SCI-MODE-001
+        F003_current_coordinator_disposition:
+          frozen_report_claim_preserved_as_post_core_history: true
+          production_shared_array_collision_demonstrated: false
+          production_ownership: unique_per_detector_map
+          scan_invocation: sequential
+          ownership_package: SCI-MAP-002-OWNERSHIP-001
+          task: 01a00127-b5f4-74a2-a4bb-88c102277aea
+          enforcement_point: before_diagnostics_mutation_or_parallel_launch
+          functional_phase_1_checkpoint: coordinator_accepted
+          valid_path_matrix: 1_2_4_8_24_of_24
+          worker_arithmetic: unchanged
+          tsan_disposition: superseded_not_passed_not_waived
+          apple_tsan_cross_region_stack_lifetime_reports: 91
+          alternate_llvm: unusable
+          implementation_commit:
+            commit: e6c8d126157674a9990abc8d1e96ce2dd69f9374
+            parent_base: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+            tree: c69aa1718178d892a4c9d71fbeb931b55ed2d607
+            standard_binary_patch_sha256: >-
+              d20cf7cde7e6397e9876e048f9401217dcc7592414e1dc94cbd669043ecb55aa
+            paths:
+              - include/citlali/core/mapmaking/jinc_mm.h
+              - tests/test_jinc_parallel_ownership.cpp
+              - tests/CMakeLists.txt
+          final_applicable_gates:
+            valid_path_matrix: 24_of_24_across_1_2_4_8
+            worker_arithmetic: unchanged
+            ctest_runnable: 629_of_629_passed
+            established_disabled_test: 1
+            config: 127_of_127_passed
+            ledgers: valid
+            scope: clean
+          lifecycle: committed_awaiting_owner_push
+          pushed: false
+          integrated: false
+          accepted: false
+          promoted: false
+          production_ready: false
+          later_independent_review: conditioned_only_where_frozen_package_requires
+          prohibited_new_requests:
+            - locks
+            - atomics
+            - private_reduction
+            - serial_fallback
+            - duplicate_repair
+            - new_sanitizer_task
       authority_effect: >-
         The audit and all post-core implementation observations remain
         evidence only. No report conclusion or post-core object is promoted
@@ -7679,6 +7799,7 @@ packages:
       scientific_content_change: false
       queue_semantics_change: false
       repair_authorized: false
+      phase_2_registry_integrated: true
       phase_2_dispatched: false
     contract_status: proposed
     implementation_status: nonconformant
@@ -7878,8 +7999,88 @@ packages:
         review_phase: post_core_evidence
         status: accepted_committed_phase_2_freeze
         completed_audit_disposition: accept_post_core_dependency_evidence
-    outgoing_handoffs: []
-    outgoing_handoff_status: phase_2_prepared_not_dispatched_no_registry_files
+    outgoing_handoffs:
+      - id: SCI-MAP-002-XAUD-002
+        frozen_audit_proposal_label: SCI-MAP-003-XAUD-009
+        target_package: SCI-MAP-002
+        path: doc/audits/handoffs/SCI-MAP-002/SCI-MAP-002-XAUD-002.yaml
+        sha256: 78784b31ab550d227b60e7f2b210dcadac1dd06d48419d4e2aa7ecdaeffc49d8
+        review_phase: post_core_evidence
+        arrival: after_audit_completion
+        status: submitted
+        recipient_disposition: pending
+        late_arrival_route: held_for_reaudit
+      - id: SCI-RTC-001-XAUD-004
+        frozen_audit_proposal_label: SCI-MAP-003-XAUD-010
+        target_package: SCI-RTC-001
+        path: doc/audits/handoffs/SCI-RTC-001/SCI-RTC-001-XAUD-004.yaml
+        sha256: 5428ea02ce1fe25b97daef4167675143cb4590a0d6ea2dd828796c2e69a4d1db
+        review_phase: post_core_evidence
+        arrival: after_audit_completion
+        status: submitted
+        recipient_disposition: pending
+        late_arrival_route: held_for_reaudit
+      - id: SCI-PTC-001-XAUD-007
+        frozen_audit_proposal_label: SCI-MAP-003-XAUD-011
+        target_package: SCI-PTC-001
+        path: doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-007.yaml
+        sha256: 5fd883d87adbc545f6a5c6ef601a4b3b46393954031cb6ab512739592567736c
+        review_phase: post_core_evidence
+        arrival: after_audit_completion
+        status: submitted
+        recipient_disposition: pending
+        late_arrival_route: held_for_reaudit
+      - id: SCI-MAP-001-XAUD-005
+        frozen_audit_proposal_label: SCI-MAP-003-XAUD-012
+        target_package: SCI-MAP-001
+        path: doc/audits/handoffs/SCI-MAP-001/SCI-MAP-001-XAUD-005.yaml
+        sha256: a3c87f884eaba51e376c9f6bb7d3fb83359a8a628545b98cd2466f07914c062e
+        review_phase: post_core_evidence
+        arrival: after_audit_completion
+        status: submitted
+        recipient_disposition: pending
+        late_arrival_route: held_for_reaudit
+      - id: SCI-AST-001-XAUD-003
+        frozen_audit_proposal_label: SCI-MAP-003-XAUD-013
+        target_package: SCI-AST-001
+        path: doc/audits/handoffs/SCI-AST-001/SCI-AST-001-XAUD-003.yaml
+        sha256: 8ab23b3663d80c2bea65cf3c4ae452929e15ea81fc3ebf1259a3d9700cb77b22
+        review_phase: post_core_evidence
+        arrival: after_audit_completion
+        status: submitted
+        recipient_disposition: pending
+        late_arrival_route: held_for_reaudit
+      - id: SCI-VAL-001-XAUD-011
+        frozen_audit_proposal_label: SCI-MAP-003-XAUD-014
+        target_package: SCI-VAL-001
+        path: doc/audits/handoffs/SCI-VAL-001/SCI-VAL-001-XAUD-011.yaml
+        sha256: 73e3ef8d6746549da394a79e311f6fe53dfe8b930b68cc15fcb254ce280af1cc
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted
+        recipient_disposition: pending
+        late_arrival_route: not_applicable
+      - id: SCI-FRUIT-001-XAUD-001
+        frozen_audit_proposal_label: SCI-MAP-003-XAUD-015
+        target_package: SCI-FRUIT-001
+        path: doc/audits/handoffs/SCI-FRUIT-001/SCI-FRUIT-001-XAUD-001.yaml
+        sha256: 8b0919fcfda18e338dbf3f1a8538d86dd29660e9fb0d605e0620373d93b1dd18
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted
+        recipient_disposition: pending
+        late_arrival_route: not_applicable
+      - id: SCI-MODE-001-XAUD-003
+        frozen_audit_proposal_label: SCI-MAP-003-XAUD-016
+        target_package: SCI-MODE-001
+        path: doc/audits/handoffs/SCI-MODE-001/SCI-MODE-001-XAUD-003.yaml
+        sha256: 2d1d556a81f0c3bab7bae6c2e0f6fd425278456b5c0ec6ab06cee55c79f87251
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted
+        recipient_disposition: pending
+        late_arrival_route: not_applicable
+    outgoing_handoff_status: phase_2_registered_not_delivered_pending_recipient_review
     frozen_inbox_manifest:
       status: consumed_by_completed_audit_exact_evidence
       path: >-
@@ -7961,10 +8162,10 @@ packages:
       - cross_band_or_cross_mode_substitution
       - new_production_default_or_consumer_authorization
     next_checkpoint: >-
-      Stop with the exact uncommitted four-path Phase-1 disposition packet
-      after validation. Phase 2 is prepared but not dispatched. Separate
-      coordinator authorization is required before creating any target
-      handoff file, committing Phase 1, or taking any downstream action.
+      Stop with the exact uncommitted twelve-path Phase-2 registration packet
+      after validation. Eight canonical handoffs are registered but not
+      delivered, acknowledged, accepted, or launched. Separate coordinator
+      authorization is required before commit or any downstream action.
 
   - id: SCI-NOI-001
     name: Noise and jackknife realization construction and propagation
@@ -8558,6 +8759,17 @@ packages:
         review_phase: post_core_evidence
         arrival: before_dispatch
         status: submitted
+      - id: SCI-MODE-001-XAUD-003
+        path: >-
+          doc/audits/handoffs/SCI-MODE-001/SCI-MODE-001-XAUD-003.yaml
+        sha256: >-
+          2d1d556a81f0c3bab7bae6c2e0f6fd425278456b5c0ec6ab06cee55c79f87251
+        source_package: SCI-MAP-003
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted
+        recipient_disposition: pending
+        late_arrival_route: not_applicable
     governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
     governing_sha_role: inventory_snapshot
     audit_branch: null
@@ -8675,6 +8887,18 @@ packages:
       - package_id: SCI-MODE-001
         status: open
     downstream_consumers: [final iterative science and pointing reductions]
+    incoming_handoffs:
+      - id: SCI-FRUIT-001-XAUD-001
+        path: >-
+          doc/audits/handoffs/SCI-FRUIT-001/SCI-FRUIT-001-XAUD-001.yaml
+        sha256: >-
+          8b0919fcfda18e338dbf3f1a8538d86dd29660e9fb0d605e0620373d93b1dd18
+        source_package: SCI-MAP-003
+        review_phase: post_core_evidence
+        arrival: before_dispatch
+        status: submitted
+        recipient_disposition: pending
+        late_arrival_route: not_applicable
     governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
     governing_sha_role: inventory_snapshot
     audit_branch: null

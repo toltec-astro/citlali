@@ -241,12 +241,34 @@ as immutable post-core evidence at exact pushed audit commit
 `proposed`, implementation `nonconformant`, validation `not_started`,
 production `existing_use_only`, and verdict `amend`. Exactly F001--F010 remain
 open with the owners and closure gates frozen by the audit. Eight outbound
-handoffs have target-prefixed canonical IDs reserved by a one-to-one
-administrative mapping, but Phase 2 is only prepared and not dispatched: no
-handoff file or registry entry exists yet. The audit report and post-core
+handoffs are registered under target-prefixed canonical IDs through the exact
+one-to-one administrative mapping. Phase 2 is `registered_not_delivered`:
+canonical status `submitted` and recipient disposition `pending` record only
+registry integration, not delivery, acknowledgment, acceptance, an evidence
+request, repair, re-audit, package launch, or downstream action. Five
+completed-audit arrivals are held for re-audit; VAL, FRUIT, and MODE remain
+before dispatch with no package launch. The audit report and post-core
 implementation observations are not pre-core authority. Queue order,
 scientific content, existing-use restrictions, and all downstream holds are
 unchanged.
+
+The MAP-002 handoff preserves the frozen F003 P0 race claim and its original
+TSan/equivalence gate solely as immutable post-core history. Its current
+canonical disposition records unique production per-detector map ownership,
+sequential scan invocation, and no demonstrated production shared-array
+collision. `SCI-MAP-002-OWNERSHIP-001` task
+`01a00127-b5f4-74a2-a4bb-88c102277aea` is coherently committed at
+`e6c8d126157674a9990abc8d1e96ce2dd69f9374` from exact parent/base
+`46ad23888a40f5102cdfd50c06e49a549bdf8a20`, tree
+`c69aa1718178d892a4c9d71fbeb931b55ed2d607`, and standard binary patch
+SHA-256 `d20cf7cde7e6397e9876e048f9401217dcc7592414e1dc94cbd669043ecb55aa`.
+The three-path commit passed 24/24 across 1/2/4/8 with unchanged worker
+arithmetic, full CTest 629/629 runnable with only the established disabled
+test, config 127/127, valid ledgers, and clean scope. TSan is superseded—not
+passed or waived—for that pre-parallel contract-hardening mission. The commit
+awaits owner push and is not pushed, integrated, accepted, promoted, or
+production-ready; later independent review remains conditioned only where the
+frozen package requires it.
 
 ## Purpose and non-goals
 
@@ -768,8 +790,8 @@ package but does not define their estimators.
 | `SCI-RTC-001` | B | Mature RTC filtering/conditioning interface and temporal response | exact assigned-grid compatibility plus conditioned CAL/AST seams | Core phase-independent handoff retains phase-zero point selection; Stage A successor-2 returned and successor-3 handoff authorized; lines separate and unlaunched |
 | `SCI-PTC-001` | B | Mature correlated-mode cleaning, selection, and detector-weight interface | `SCI-RTC-001`, identified assigned grid; physical event timing unavailable | D001--D006 approved; contract complete; implementation nonconformant; repair and optional response characterization unlaunched |
 | `SCI-VAL-001` | A | Cross-stage flags, detector/sample eligibility, non-finite policy, and map support | `SCI-ALIGN-001`, `SCI-RTC-001`, `SCI-PTC-001` | Foundation wave 2 |
-| `SCI-MAP-002` | B | Mature JINC gridding interface, normalization, support, and response | approved/shared `SCI-MAP-001` product contract | Third successor owner-accepted `accept`; bounded findings closed; `existing_use_only`; no merge or downstream launch |
-| `SCI-MAP-003` | A | OOF residual transfer-function estimator, validity domain, persisted response, and LMTOOF admission boundary | `SCI-MAP-001`, `SCI-MAP-002`, `SCI-RTC-001`, `SCI-PTC-001`, `SCI-VAL-001`, `SCI-AST-001`, `SCI-FRUIT-001`, `SCI-MODE-001` | Completed audit registered `amend`; F001--F010 open; Phase 2 handoffs prepared, not dispatched; after MAP-002 and before MODE LMTOOF admission; new product and consumer fail closed |
+| `SCI-MAP-002` | B | Mature JINC gridding interface, normalization, support, and response | approved/shared `SCI-MAP-001` product contract | Third successor owner-accepted `accept`; ownership hardening committed at `e6c8d126` awaiting owner push; not pushed or integrated; `existing_use_only`; no downstream launch |
+| `SCI-MAP-003` | A | OOF residual transfer-function estimator, validity domain, persisted response, and LMTOOF admission boundary | `SCI-MAP-001`, `SCI-MAP-002`, `SCI-RTC-001`, `SCI-PTC-001`, `SCI-VAL-001`, `SCI-AST-001`, `SCI-FRUIT-001`, `SCI-MODE-001` | Completed audit registered `amend`; F001--F010 open; eight Phase-2 handoffs registered, not delivered or launched; after MAP-002 and before MODE LMTOOF admission; new product and consumer fail closed |
 | `SCI-NOI-001` | A | Jackknife/noise randomization and propagation through selected operators | `SCI-PTC-001`, `SCI-VAL-001`, `SCI-MAP-001` | Uncertainty wave 3 |
 | `SCI-NOI-002` | A | Empirical variance/covariance, global calibration, statistical weight, and S/N semantics | `SCI-NOI-001`, `SCI-MAP-001` | Uncertainty wave 3 |
 | `SCI-FLT-001` | A | Fixed map-domain `convolve` signal, uncertainty, response, and support | `SCI-MAP-001`, `SCI-NOI-002`, `SCI-CAL-001` | Existing audit; amend/re-audit wave 4 |

@@ -1,0 +1,167 @@
+format_version: 1
+id: SCI-MAP-002-XAUD-002
+created_date: 2026-08-14
+
+source:
+  package_id: SCI-MAP-003
+  role: independent_tier_a_auditor
+  audit_branch: codex/audit-sci-map-003
+  audit_commit: 65d1abb88b6d8fa0c3235a3d62ef9a2ab3122839
+  governing_or_evidence_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+  finding_ids: [SCI-MAP-003-F003]
+
+target:
+  package_id: SCI-MAP-002
+
+priority: P0
+evidence_basis: observed
+review_phase: post_core_evidence
+arrival: after_audit_completion
+status: submitted
+
+summary: >-
+  Production detector grouping provides unique per-detector map ownership and
+  sequential scan invocation; no production shared-array collision is
+  demonstrated, and SCI-MAP-002-OWNERSHIP-001 is committed at exact SHA
+  e6c8d126157674a9990abc8d1e96ce2dd69f9374 awaiting owner push.
+claim: >-
+  The current production trace establishes unique per-detector map ownership
+  for detector grouping and sequential invocation across scans. Task
+  01a00127-b5f4-74a2-a4bb-88c102277aea, SCI-MAP-002-OWNERSHIP-001, enforces
+  the ownership and destination precondition eagerly before diagnostics,
+  mutation, or parallel launch. It is coherently committed at exact SHA
+  e6c8d126157674a9990abc8d1e96ce2dd69f9374 from parent/base
+  46ad23888a40f5102cdfd50c06e49a549bdf8a20 with tree
+  c69aa1718178d892a4c9d71fbeb931b55ed2d607 and standard binary patch SHA-256
+  d20cf7cde7e6397e9876e048f9401217dcc7592414e1dc94cbd669043ecb55aa.
+  The exact three paths are jinc_mm.h, test_jinc_parallel_ownership.cpp, and
+  tests/CMakeLists.txt. Final applicable gates passed: 24/24 across the 1/2/4/8
+  valid-path matrix with worker arithmetic unchanged, full CTest 629/629
+  runnable with only the established disabled test, config 127/127, valid
+  ledgers, and clean scope. TSan is superseded, not passed or waived, for this
+  corrected pre-parallel contract-hardening mission: independent Apple TSan
+  produced 91 cross-region stack/lifetime reports despite GRPPI's
+  implicit-barrier OpenMP loop, and alternate LLVM was unusable. The committed
+  task is awaiting owner push; it is not pushed, integrated, accepted,
+  promoted, or production-ready. Any later independent review remains
+  conditioned only where the frozen package requires it.
+
+frozen_audit_traceability:
+  frozen_audit_proposal_label: SCI-MAP-003-XAUD-009
+  mapping_kind: immutable_evidence_label_to_canonical_target_id
+  canonical_id_alias: false
+  report_claim: Parallel JINC shared-array data races
+  report_basis: >-
+    jinc_mm.h detector-parallel lambda mutates the same map accumulators
+    without private reduction, lock, atomics, or disjoint-cell proof.
+  evidence_classification: post_core_evidence
+  promoted_to_pre_core_authority: false
+  source_audit_patch_sha256: d0709105113d9604d15b2940b2a6af087280fa95d3f2c068a2ab7f940207792e
+
+frozen_finding_traceability:
+  - id: SCI-MAP-003-F003
+    owner: SCI-MAP-002 / Citlali mapmaker owner
+    dependency_state: conditioned
+    closure_gate: >-
+      An authorized repair provides race-free private/deterministic reduction
+      or proved disjoint writes; thread-sanitizer evidence and preregistered
+      serial-versus-parallel byte/tolerance equivalence pass for all
+      accumulators, then a fresh independent audit accepts the exact repair
+      SHA.
+
+current_coordinator_disposition:
+  production_shared_array_collision_demonstrated: false
+  ownership_fact: unique_per_detector_map_ownership
+  scan_invocation: sequential
+  ownership_package: SCI-MAP-002-OWNERSHIP-001
+  task: 01a00127-b5f4-74a2-a4bb-88c102277aea
+  enforcement_point: before_diagnostics_mutation_or_parallel_launch
+  functional_phase_1_checkpoint: coordinator_accepted
+  valid_path_matrix: 1_2_4_8_24_of_24
+  worker_arithmetic: unchanged
+  tsan_disposition: superseded_not_passed_not_waived
+  implementation_commit:
+    commit: e6c8d126157674a9990abc8d1e96ce2dd69f9374
+    parent_base: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    tree: c69aa1718178d892a4c9d71fbeb931b55ed2d607
+    standard_binary_patch_sha256: d20cf7cde7e6397e9876e048f9401217dcc7592414e1dc94cbd669043ecb55aa
+    paths:
+      - include/citlali/core/mapmaking/jinc_mm.h
+      - tests/test_jinc_parallel_ownership.cpp
+      - tests/CMakeLists.txt
+  final_applicable_gates:
+    valid_path_matrix: 24_of_24_across_1_2_4_8
+    worker_arithmetic: unchanged
+    ctest_runnable: 629_of_629_passed
+    established_disabled_test: 1
+    config: 127_of_127_passed
+    ledgers: valid
+    scope: clean
+  lifecycle: committed_awaiting_owner_push
+  pushed: false
+  integrated: false
+  accepted: false
+  promoted: false
+  production_ready: false
+  later_independent_review: conditioned_only_where_frozen_package_requires
+
+supports:
+  - Track the frozen F003 evidence without treating it as current production truth.
+  - Track the exact committed ownership implementation while it awaits owner push.
+  - Preserve the proved-disjoint-writes branch of the frozen closure history.
+does_not_establish:
+  - A production shared-array collision or current production race.
+  - Closure of F003, acceptance of the active task, or production authorization.
+  - A request for locks, atomics, private reduction, serial fallback, duplicate repair, or a new sanitizer task.
+  - Promotion of the frozen audit report or later implementation observations to pre-core authority.
+
+requested_actions:
+  - informational_only
+  - add_or_update_dependency
+affected_target_findings: []
+related_handoffs: []
+
+authority_for_pre_core_review: null
+
+evidence:
+  - id: SCI-MAP-003-frozen-audit-report
+    availability: hash_only
+    path: >-
+      65d1abb88b6d8fa0c3235a3d62ef9a2ab3122839:doc/audits/packages/SCI-MAP-003_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: 2cbad1fd11ff8851b66202197f881c48f8c0f5cc5d08f376256d6dfdb8eb1764
+    note: >-
+      Immutable post-core audit evidence containing the original P0 race claim
+      and TSan/equivalence closure gate; not current production truth.
+  - id: SCI-MAP-003-frozen-predecessor-core
+    availability: hash_only
+    path: >-
+      3eecd9f4c6ccf9c9a5c509908b2689a8a0e1a80a:doc/audits/packages/SCI-MAP-003_INDEPENDENT_CORE.tex
+    sha256: d6eac8499191f65396d3bc743d5aea70e055ad6342dd812e67d68d31d436073e
+    note: Frozen predecessor core; unchanged and not rewritten by this handoff.
+  - id: SCI-MAP-003-operative-successor-core
+    availability: hash_only
+    path: >-
+      c0bd689598c8bc1c20114248a45822b13d6ba2f2:doc/audits/packages/SCI-MAP-003_INDEPENDENT_CORE_SUCCESSOR_001.tex
+    sha256: 5fb256b18566d725267d25737163f97dd1d5bbd463ba77ed33960e977a5dfed4
+    note: Accepted operative core; unchanged and not rewritten by this handoff.
+  - id: SCI-MAP-002-OWNERSHIP-001-commit-patch
+    availability: hash_only
+    path: e6c8d126157674a9990abc8d1e96ce2dd69f9374
+    sha256: d20cf7cde7e6397e9876e048f9401217dcc7592414e1dc94cbd669043ecb55aa
+    note: >-
+      Exact coherent three-path implementation commit; committed and awaiting
+      owner push, not pushed, integrated, accepted, promoted, or production-ready.
+
+recipient_disposition:
+  status: pending
+  late_arrival_route: held_for_reaudit
+  actions: []
+  rationale: null
+  target_audit_branch: null
+  target_audit_commit: null
+  affected_findings: []
+  affected_dependencies: []
+  contract_or_report_locations: []
+
+supersedes: null
+superseded_by: null

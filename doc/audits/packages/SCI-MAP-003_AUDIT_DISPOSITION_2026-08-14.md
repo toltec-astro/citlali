@@ -4,8 +4,8 @@ Record ID: `SCI-MAP-003-DISP-001`
 
 Date: 2026-08-14
 
-Status: Phase 1 audit disposition registered; Phase 2 handoffs prepared but
-not dispatched
+Status: Phase 1 audit disposition registered; Phase 2 canonical handoffs
+registered but not delivered
 
 This documentation-only record registers the completed `SCI-MAP-003`
 scientific-contract audit without changing its scientific content or frozen
@@ -229,9 +229,54 @@ coordinator-approved one-to-one mapping is:
 | `SCI-MAP-003-XAUD-015` | `SCI-FRUIT-001-XAUD-001` | `SCI-FRUIT-001` |
 | `SCI-MAP-003-XAUD-016` | `SCI-MODE-001-XAUD-003` | `SCI-MODE-001` |
 
-Only the target-prefixed values are canonical handoff IDs. Phase 2 is
-`prepared_not_dispatched`: no handoff file, registry entry, message, recipient
-review, recipient package launch, or downstream task is created by Phase 1.
+Only the target-prefixed values are canonical handoff IDs. Phase 2 is now
+`registered_not_delivered`: eight canonical files exist in their target
+inboxes with submission status `submitted` and recipient disposition
+`pending`. Registration is not delivery, acknowledgment, acceptance, an
+evidence request, repair, re-audit, recipient package launch, or downstream
+action. Five records arriving after completed audits are
+`held_for_reaudit`; the unlaunched VAL, FRUIT, and MODE records use
+`not_applicable` while they remain before dispatch.
+
+### F003 frozen evidence and current coordinator disposition
+
+The immutable audit report retains its P0 F003 claim, “Parallel JINC
+shared-array data races,” and the original closure gate requiring a race-free
+private/deterministic reduction or proved disjoint writes, TSan evidence,
+serial-versus-parallel equivalence for all accumulators, and fresh independent
+audit acceptance. That exact language remains explicitly labelled frozen
+post-core evidence/history. It is not rewritten or promoted to pre-core
+authority.
+
+The current canonical disposition is different. Production detector grouping
+provides unique per-detector map ownership and sequential scan invocation; no
+production shared-array collision is demonstrated. The bounded work is
+`SCI-MAP-002-OWNERSHIP-001`, task
+`01a00127-b5f4-74a2-a4bb-88c102277aea`, which enforces the ownership and
+destination precondition eagerly before diagnostics, mutation, or parallel
+launch. It is coherently committed at
+`e6c8d126157674a9990abc8d1e96ce2dd69f9374`, parent/base
+`46ad23888a40f5102cdfd50c06e49a549bdf8a20`, tree
+`c69aa1718178d892a4c9d71fbeb931b55ed2d607`, with standard binary patch
+SHA-256 `d20cf7cde7e6397e9876e048f9401217dcc7592414e1dc94cbd669043ecb55aa`.
+Its exact paths are `include/citlali/core/mapmaking/jinc_mm.h`,
+`tests/test_jinc_parallel_ownership.cpp`, and `tests/CMakeLists.txt`.
+
+Final applicable gates passed: the 1/2/4/8 valid-path matrix passed 24/24
+with worker arithmetic unchanged; full CTest passed 629/629 runnable tests
+with only the established disabled test; config passed 127/127; ledgers are
+valid; and scope is clean.
+
+TSan is superseded, not passed or waived, for this corrected pre-parallel
+contract-hardening mission. Independent Apple TSan produced 91 cross-region
+stack/lifetime reports despite GRPPI's implicit-barrier OpenMP loop, and
+alternate LLVM was unusable. TSan is therefore not an active closure
+condition for the ownership task. The lifecycle is
+`committed_awaiting_owner_push`: it is not pushed, integrated, accepted,
+promoted, or production-ready. Any later independent review remains
+conditioned only where the frozen package requires it. This registration does
+not request locks, atomics, private reduction, serial fallback, duplicate
+repair, or a new sanitizer task.
 
 ## Product and authority boundary
 
@@ -244,13 +289,13 @@ review, recipient package launch, or downstream task is created by Phase 1.
   authority and not an application dependency.
 - No post-core implementation observation is promoted to pre-core authority.
 
-## Phase-1 ceiling and next gate
+## Phase-2 ceiling and next gate
 
-Phase 1 is limited to this disposition, its machine-readable ledger proposal,
-`doc/audits/README.md`, and `doc/audits/audit-ledger.yaml`. Phase 2 requires a
-separate coordinator authorization and must create each target-prefixed
-handoff from the immutable source claim without changing its finding, owner,
-dependency, priority, closure gate, scientific content, or evidence class.
+Phase 2 is limited to the eight target-prefixed handoff files plus this
+disposition, its machine-readable ledger proposal, `doc/audits/README.md`, and
+`doc/audits/audit-ledger.yaml`. The first viable checkpoint remains
+uncommitted pending coordinator verification. No recipient or downstream
+activity is authorized.
 
 This record does not authorize application, test, configuration, validation-
 product, audit, re-audit, repair, numerical, evidence-request, external,

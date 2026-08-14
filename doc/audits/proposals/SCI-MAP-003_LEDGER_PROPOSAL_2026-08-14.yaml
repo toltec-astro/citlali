@@ -3,7 +3,7 @@ record_kind: audit_disposition_ledger_proposal
 record_id: SCI-MAP-003-DISP-001
 package_id: SCI-MAP-003
 date: 2026-08-14
-proposal_status: phase_1_registered_phase_2_prepared_not_dispatched
+proposal_status: phase_2_registered_not_delivered
 canonical_ledger_edit_authorized: true
 scientific_content_change: false
 
@@ -213,44 +213,121 @@ inbound_handoff_dispositions:
   - {id: SCI-MAP-003-XAUD-008, disposition: accept_post_core_dependency_evidence, review_phase: post_core_evidence}
 
 phase_2_handoff_preparation:
-  status: prepared_not_dispatched
-  handoff_files_created: false
+  status: registered_not_delivered
+  handoff_files_created: true
+  canonical_registry_records: 8
+  recipient_delivery: false
+  recipient_acknowledgment: false
+  recipient_acceptance: false
+  recipient_package_launch: false
+  repair_or_reaudit_launch: false
   schema_exception: false
   mapping:
     - frozen_audit_proposal_label: SCI-MAP-003-XAUD-009
       canonical_handoff_id: SCI-MAP-002-XAUD-002
       target_package: SCI-MAP-002
       summary: F003 parallel JINC race and the exact serial/parallel closure gate
+      path: doc/audits/handoffs/SCI-MAP-002/SCI-MAP-002-XAUD-002.yaml
+      finding_ids: [SCI-MAP-003-F003]
+      priority: P0
+      dependency_status: conditioned
+      arrival: after_audit_completion
+      late_arrival_route: held_for_reaudit
+      current_disposition: >-
+        Production detector grouping provides unique per-detector map
+        ownership and sequential scan invocation; no production shared-array
+        collision is demonstrated. SCI-MAP-002-OWNERSHIP-001 task
+        01a00127-b5f4-74a2-a4bb-88c102277aea is coherently committed at
+        e6c8d126157674a9990abc8d1e96ce2dd69f9374 from parent/base
+        46ad23888a40f5102cdfd50c06e49a549bdf8a20 with tree
+        c69aa1718178d892a4c9d71fbeb931b55ed2d607 and standard binary patch
+        SHA-256 d20cf7cde7e6397e9876e048f9401217dcc7592414e1dc94cbd669043ecb55aa.
+        Final applicable gates passed: 24/24 across 1/2/4/8, full CTest
+        629/629 runnable with only the established disabled test, config
+        127/127, valid ledgers, and clean scope. TSan remains superseded, not
+        passed or waived. The commit awaits owner push and is not pushed,
+        integrated, accepted, promoted, or production-ready.
+      implementation_paths:
+        - include/citlali/core/mapmaking/jinc_mm.h
+        - tests/test_jinc_parallel_ownership.cpp
+        - tests/CMakeLists.txt
+      lifecycle: committed_awaiting_owner_push
+      later_independent_review: conditioned_only_where_frozen_package_requires
     - frozen_audit_proposal_label: SCI-MAP-003-XAUD-010
       canonical_handoff_id: SCI-RTC-001-XAUD-004
       target_package: SCI-RTC-001
       summary: F001/F002 exact tracer and complete-response parent requirements
+      path: doc/audits/handoffs/SCI-RTC-001/SCI-RTC-001-XAUD-004.yaml
+      finding_ids: [SCI-MAP-003-F001, SCI-MAP-003-F002]
+      priority: P0
+      dependency_status: open
+      arrival: after_audit_completion
+      late_arrival_route: held_for_reaudit
     - frozen_audit_proposal_label: SCI-MAP-003-XAUD-011
       canonical_handoff_id: SCI-PTC-001-XAUD-007
       target_package: SCI-PTC-001
       summary: conditioned response, late-selection, covariance, and response-family gaps
+      path: doc/audits/handoffs/SCI-PTC-001/SCI-PTC-001-XAUD-007.yaml
+      finding_ids: [SCI-MAP-003-F002, SCI-MAP-003-F006]
+      priority: P0
+      dependency_status: conditioned
+      arrival: after_audit_completion
+      late_arrival_route: held_for_reaudit
     - frozen_audit_proposal_label: SCI-MAP-003-XAUD-012
       canonical_handoff_id: SCI-MAP-001-XAUD-005
       target_package: SCI-MAP-001
       summary: odd-cropped transfer product, identity, publication, and required-failure interface
+      path: doc/audits/handoffs/SCI-MAP-001/SCI-MAP-001-XAUD-005.yaml
+      finding_ids: [SCI-MAP-003-F004, SCI-MAP-003-F005]
+      priority: P1
+      dependency_status: open
+      arrival: after_audit_completion
+      late_arrival_route: held_for_reaudit
     - frozen_audit_proposal_label: SCI-MAP-003-XAUD-013
       canonical_handoff_id: SCI-AST-001-XAUD-003
       target_package: SCI-AST-001
       summary: retained WCS and dual-frequency axis conformance interface
+      path: doc/audits/handoffs/SCI-AST-001/SCI-AST-001-XAUD-003.yaml
+      finding_ids: [SCI-MAP-003-F004, SCI-MAP-003-F007]
+      priority: P1
+      dependency_status: conditioned
+      arrival: after_audit_completion
+      late_arrival_route: held_for_reaudit
     - frozen_audit_proposal_label: SCI-MAP-003-XAUD-014
       canonical_handoff_id: SCI-VAL-001-XAUD-011
       target_package: SCI-VAL-001
       summary: input/parent/domain/output validity and non-finite interface
+      path: doc/audits/handoffs/SCI-VAL-001/SCI-VAL-001-XAUD-011.yaml
+      finding_ids: [SCI-MAP-003-F002, SCI-MAP-003-F006, SCI-MAP-003-F007, SCI-MAP-003-F008, SCI-MAP-003-F009]
+      priority: P0
+      dependency_status: open
+      package_lifecycle_status: not_started
+      arrival: before_dispatch
+      late_arrival_route: not_applicable
     - frozen_audit_proposal_label: SCI-MAP-003-XAUD-015
       canonical_handoff_id: SCI-FRUIT-001-XAUD-001
       target_package: SCI-FRUIT-001
       summary: terminal pass/restart and delivered map-kernel parent identity
+      path: doc/audits/handoffs/SCI-FRUIT-001/SCI-FRUIT-001-XAUD-001.yaml
+      finding_ids: [SCI-MAP-003-F002, SCI-MAP-003-F009]
+      priority: P0
+      dependency_status: open
+      package_lifecycle_status: not_started
+      arrival: before_dispatch
+      late_arrival_route: not_applicable
     - frozen_audit_proposal_label: SCI-MAP-003-XAUD-016
       canonical_handoff_id: SCI-MODE-001-XAUD-003
       target_package: SCI-MODE-001
       summary: >-
         OOF association, LMTOOF admission, amplitude, fixed/recompute lifecycle,
         and failure interface
+      path: doc/audits/handoffs/SCI-MODE-001/SCI-MODE-001-XAUD-003.yaml
+      finding_ids: [SCI-MAP-003-F005, SCI-MAP-003-F008, SCI-MAP-003-F009]
+      priority: P0
+      dependency_status: open
+      package_lifecycle_status: not_started
+      arrival: before_dispatch
+      late_arrival_route: not_applicable
 
 consumer_boundary:
   existing_oof: existing_use_only
@@ -259,7 +336,7 @@ consumer_boundary:
   production: forbidden
 
 not_authorized:
-  - phase_2_handoff_file_creation_or_dispatch
+  - phase_2_commit_or_recipient_delivery
   - application_test_config_or_validation_product_edit
   - audit_or_reaudit
   - repair
