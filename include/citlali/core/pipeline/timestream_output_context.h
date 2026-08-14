@@ -4,7 +4,9 @@
 #include <citlali/core/pipeline/output_policy.h>
 
 #include <exception>
+#include <functional>
 #include <memory>
+#include <mutex>
 #include <sstream>
 #include <string>
 #include <utility>
@@ -30,6 +32,7 @@ struct TimestreamOutputWriters {
     std::shared_ptr<OrderedWriter> ptc;
     std::shared_ptr<OrderedWriter> rtcdiag;
     std::shared_ptr<OrderedWriter> ptcdiag;
+    std::shared_ptr<std::mutex> netcdf_io_mutex;
     std::shared_ptr<OutputFailureState> failure_state;
 
     void cancel_all(std::exception_ptr error) const noexcept {
@@ -48,13 +51,28 @@ struct TimestreamOutputWriters {
         const std::shared_ptr<OrderedWriter> &writer,
         Eigen::Index index,
         Write &&write) const {
-        if (writer == nullptr) {
+        if (writer == nullptr || netcdf_io_mutex == nullptr) {
             cancel_all(std::make_exception_ptr(
                 std::logic_error("required output writer is not configured")));
             return false;
         }
         try {
-            writer->write_when_ready(index, std::forward<Write>(write));
+            writer->write_when_ready(index, [&] {
+                // NetCDF-C/HDF5 file operations are not safe to overlap across
+                // the independently ordered output streams.
+                std::lock_guard<std::mutex> lock(*netcdf_io_mutex);
+                if (failure_state != nullptr) {
+                    failure_state->rethrow_if_failed();
+                }
+                try {
+                    std::invoke(write);
+                } catch (...) {
+                    if (failure_state != nullptr) {
+                        failure_state->record(std::current_exception());
+                    }
+                    throw;
+                }
+            });
         } catch (...) {
             cancel_all(std::current_exception());
             return false;
@@ -148,6 +166,7 @@ inline TimestreamOutputWriters make_timestream_output_writers(
         make_ordered_writer_if(flags.write_ptc),
         make_ordered_writer_if(flags.write_rtcdiag),
         make_ordered_writer_if(flags.write_ptcdiag),
+        std::make_shared<std::mutex>(),
         std::move(failure_state),
     };
 }

@@ -94,8 +94,14 @@ the effective C++23 standard; the Tula metadata defect remains upstream debt.
   and the independent installed consumer passed, and the complete manifest
   binds executable SHA-256 `89a159c508f3f51bd0556105486fb4dadccf6bce525a6d0ceff99f53da04145e`
   to the accepted source, dependency, compiler, DAG, profile, and lock
-  identities. A point smoke reduction using this installed executable remains
-  pending.
+  identities. An unmanaged point smoke completed with an exact effective
+  config, complete product contract, unchanged common pointing-fit columns,
+  and negligible map differences, but could not close the managed provenance
+  gate. Its managed rerun exposed concurrent NetCDF-C/HDF5 access across the
+  independently ordered timestream output streams and segfaulted during file
+  close. A shared output-I/O serialization repair passes the full local build,
+  CTest, config, build-tool, and baseline-tool gates; a fresh Unity package
+  build and managed point rerun remain pending.
 - The macOS graph builds CFITSIO 4.3.0 from source and declares Homebrew FFTW
   plus GCC 15 Fortran as checked host externals; all C/C++ application code is
   LLVM 20.

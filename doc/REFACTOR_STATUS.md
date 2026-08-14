@@ -203,6 +203,26 @@ the accepted lock digest, and `binding=dag-match`. The job completed without
 stderr diagnostics beyond GNU Time output. A Unity point reduction using
 this exact installed executable is now the remaining operational smoke gate.
 
+The first point smoke with that installed executable completed in 61.9
+seconds with no warning, error, or critical diagnostics. Its effective config
+and product contract passed, the common pointing-fit columns were exactly
+unchanged, and FITS differences against the earlier validation epoch were
+numerically negligible. That launch did not inherit the managed deployment
+variables, however, so its products correctly recorded `profile=unmanaged`
+and it did not close the managed-operation gate.
+
+The 2026-08-14 managed rerun then exposed a nondeterministic reliability
+defect after PTC diagnostics output: HDF5 1.14.6 segfaulted while closing a
+NetCDF file on a `libgomp` worker. Source inspection showed that RTC TOD, PTC
+TOD, RTC diagnostics, and PTC diagnostics each had independent ordering but
+could enter NetCDF-C/HDF5 concurrently. The candidate repair shares one mutex
+across those four output callbacks while leaving scan computation parallel.
+Its fresh native LLVM 20/C++23 Spack build passes all 540 enabled CTests,
+including a cross-stream serialization regression, all 31 build-tool tests,
+all 135 baseline-tool tests, and the complete 123-test/four-mode config
+preflight. A fresh Unity package build and managed point rerun are required
+before this operational smoke gate can pass.
+
 ## 2026-07-26 Conan 2 Build Review
 
 The previously deferred TolTECA build implementation is now available and has

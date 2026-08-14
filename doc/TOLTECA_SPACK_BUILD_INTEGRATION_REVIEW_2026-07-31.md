@@ -226,7 +226,7 @@ Citlali, Kidscpp, Tula, and other C/C++ application nodes remain exact LLVM 20.
 | Direct dependencies | Pass | HDF5 and Zlib are explicit Citlali recipe and CMake target edges. |
 | Kidscpp compatibility | Pass pending product validation | A bounded V3 raw-timestream adapter compiles and is tested; legacy config remains accepted and the unused sweep fitter is omitted only in V3. Unity product validation remains. |
 | Full tests | Pass in current environments | All 539 enabled CTests pass on native macOS LLVM 20 and Unity GCC 13.3; complete config preflight passes locally. Baseline/ledger/exit gates remain part of final acceptance. |
-| Unity operation | Partial | Exact-source job `62890572` at `7ee2c4f7` installs the GCC 13.3 graph, passes source hygiene, both executions of all 539 enabled CTests, the independent installed consumer, and complete managed provenance. A point reduction using the recorded installed executable remains. |
+| Unity operation | Partial | Exact-source job `62890572` at `7ee2c4f7` installs the GCC 13.3 graph, passes source hygiene, both executions of all 539 enabled CTests, the independent installed consumer, and complete managed provenance. An unmanaged point smoke completed with scientifically equivalent products, but the managed rerun exposed concurrent NetCDF-C/HDF5 output access and segfaulted during file close. The locally verified serialization repair still requires a fresh Unity package build and managed point rerun. |
 | Build timing | Partial | Persistent local no-op build is 0.82 seconds. Unity job `62890572` spent 6m51s in package installation and completed the full acceptance workflow in 13m24s; representative incremental timing still needs a formal campaign. |
 
 ## Required Adaptation Work
