@@ -11,6 +11,7 @@ from spack_citlali_common import (
     deployment_target,
     managed_deployment_environment,
     process_environment,
+    require_matching_source_revision,
     run,
     spack_build_env_command,
     validate_concrete_graph,
@@ -94,7 +95,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         expected_root_hash=root_hash,
     )
     source_revision = run(
-        ["git", "-C", str(source_root), "rev-parse", "--short=9", "HEAD"],
+        ["git", "-C", str(source_root), "rev-parse", "HEAD"],
         environment=environment,
     ).splitlines()[-1]
     source_status = run(
@@ -113,9 +114,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         raise FileNotFoundError(executable)
 
     version_output = run([str(executable), "--version"], environment=environment)
+    require_matching_source_revision(version_output, source_revision)
     for required_text in (
         "v4.0.0-",
-        source_revision,
         "kids 3.1.0",
         root_hash,
         profile.provenance_compiler,

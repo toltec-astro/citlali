@@ -18,6 +18,7 @@ SPEC.loader.exec_module(MODULE)
 EXPECTED_PACKAGES = MODULE.EXPECTED_PACKAGES
 validate_concrete_graph = MODULE.validate_concrete_graph
 managed_deployment_environment = MODULE.managed_deployment_environment
+require_matching_source_revision = MODULE.require_matching_source_revision
 
 
 class SpackCitlaliGraphTest(unittest.TestCase):
@@ -127,6 +128,38 @@ class SpackCitlaliGraphTest(unittest.TestCase):
                 self.environment,
                 profile_name="macos-llvm20",
                 expected_root_hash="b" * 32,
+            )
+
+
+class SpackCitlaliSourceRevisionTest(unittest.TestCase):
+    source_revision = "34b83df514847695e8c17648eb7b66e75e97b7d3"
+
+    def test_accepts_dynamic_git_abbreviation(self) -> None:
+        reported = require_matching_source_revision(
+            "v4.0.0-3642-g34b83df5 (2026-08-14T11:16:05)\n"
+            "kids 3.1.0 (spack-package)\n",
+            self.source_revision,
+        )
+        self.assertEqual(reported, "34b83df5")
+
+    def test_accepts_longer_matching_abbreviation(self) -> None:
+        reported = require_matching_source_revision(
+            "v4.0.0-3642-g34b83df51484-dirty (2026-08-14T11:16:05)",
+            self.source_revision,
+        )
+        self.assertEqual(reported, "34b83df51484")
+
+    def test_rejects_mismatched_abbreviation(self) -> None:
+        with self.assertRaisesRegex(RuntimeError, "does not match"):
+            require_matching_source_revision(
+                "v4.0.0-3642-gdeadbee (2026-08-14T11:16:05)",
+                self.source_revision,
+            )
+
+    def test_rejects_missing_revision(self) -> None:
+        with self.assertRaisesRegex(RuntimeError, "exactly one Git revision"):
+            require_matching_source_revision(
+                "v4.0.0 (2026-08-14T11:16:05)", self.source_revision
             )
 
 

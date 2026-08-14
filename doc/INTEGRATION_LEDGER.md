@@ -83,9 +83,14 @@ the effective C++23 standard; the Tula metadata defect remains upstream debt.
   Unity job `62888690` installed the full graph and passed all 539 enabled
   developer CTests at exact Citlali `0add18c24`, but stopped before installed
   CLI/consumer acceptance because the expected Linux Spack development build
-  directory was not ignored and the clean-source gate rejected it. The
-  hygiene rule is corrected; a fresh exact-SHA acceptance job and point run
-  remain pending.
+  directory was not ignored and the clean-source gate rejected it. Job
+  `62889350` at exact Citlali `34b83df51` then passed that hygiene gate and all
+  539 enabled CTests; its installed CLI reported the correct source, package,
+  compiler, DAG, profile, lock, and managed-binding identities. A checker-only
+  assumption that Git abbreviations are always nine characters stopped the
+  job before the independent installed consumer. Dynamic abbreviation
+  matching is corrected; a fresh exact-SHA acceptance job and point run remain
+  pending.
 - The macOS graph builds CFITSIO 4.3.0 from source and declares Homebrew FFTW
   plus GCC 15 Fortran as checked host externals; all C/C++ application code is
   LLVM 20.

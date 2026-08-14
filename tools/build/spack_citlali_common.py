@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 import platform
+import re
 import subprocess
 from pathlib import Path
 from typing import Sequence
@@ -27,6 +28,32 @@ EXPECTED_PACKAGES = {
     "cfitsio": ("4.3.0", "builtin"),
     "hdf5": ("1.14.6", "builtin"),
 }
+
+_VERSION_SOURCE_REVISION = re.compile(
+    r"^v\S*?-g([0-9a-f]{7,40})(?:-dirty)?(?:\s|$)", re.MULTILINE
+)
+
+
+def require_matching_source_revision(
+    version_output: str, source_revision: str
+) -> str:
+    """Require the CLI's Git abbreviation to identify the source commit."""
+    if re.fullmatch(r"[0-9a-f]{40}", source_revision) is None:
+        raise ValueError("source revision must be a full lowercase Git SHA-1")
+
+    revisions = _VERSION_SOURCE_REVISION.findall(version_output)
+    if len(revisions) != 1:
+        raise RuntimeError(
+            "installed CLI version output must contain exactly one Git revision"
+        )
+
+    reported_revision = revisions[0]
+    if not source_revision.startswith(reported_revision):
+        raise RuntimeError(
+            "installed CLI source revision does not match the source tree: "
+            f"reported={reported_revision} expected={source_revision}"
+        )
+    return reported_revision
 
 
 def validate_first_party_sources(source_root: Path) -> None:

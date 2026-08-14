@@ -173,7 +173,21 @@ consumer acceptance because Spack's expected Linux development build
 directory was not ignored and the clean-source gate rejected it. This is a
 build-lane hygiene failure, not a compilation or test failure. The Linux
 development build directory is now ignored consistently with the existing
-macOS Spack build directory; a fresh exact-SHA Unity job remains required.
+macOS Spack build directory.
+
+The second exact-source attempt, job `62889350`, used Citlali
+`34b83df514847695e8c17648eb7b66e75e97b7d3` with the same accepted lock and
+concrete root. The full package and persistent developer build again
+completed, all 539 enabled CTests passed, and the clean-source gate passed.
+The installed CLI then reported the correct source prefix `34b83df5`, Kidscpp
+identity, GCC 13.3/C++23 build identity, concrete DAG, deployment profile,
+lock digest, and `binding=dag-match`. The acceptance checker nevertheless
+failed because it requested a fixed nine-character Git abbreviation from the
+source tree while Git's generated version header selected the valid
+eight-character abbreviation. The checker now compares the reported dynamic
+abbreviation against the full source commit. The independent installed
+consumer did not run after this checker-only failure; one fresh exact-SHA job
+and then a point reduction remain required.
 
 ## 2026-07-26 Conan 2 Build Review
 
