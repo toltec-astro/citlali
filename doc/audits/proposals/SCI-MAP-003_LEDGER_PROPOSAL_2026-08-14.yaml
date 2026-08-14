@@ -1,0 +1,273 @@
+format_version: 1
+record_kind: audit_disposition_ledger_proposal
+record_id: SCI-MAP-003-DISP-001
+package_id: SCI-MAP-003
+date: 2026-08-14
+proposal_status: phase_1_registered_phase_2_prepared_not_dispatched
+canonical_ledger_edit_authorized: true
+scientific_content_change: false
+
+canonical_registration_base:
+  ref: origin/codex/coordinate-sci-map-003-registration
+  commit: 8fb893639bdf504968186867790cf1b140b2ff54
+  parent: b3e500117ab273d38d5055e82683a49015d028cf
+  tree: ba91a1cf619401b165060a5b5e31600ed0844d24
+  branch: codex/register-sci-map-003-audit-disposition
+
+immutable_audit_evidence:
+  classification: post_core_evidence
+  promoted_to_pre_core_authority: false
+  ref: origin/codex/audit-sci-map-003
+  commit: 65d1abb88b6d8fa0c3235a3d62ef9a2ab3122839
+  parent: c0bd689598c8bc1c20114248a45822b13d6ba2f2
+  tree: 782a3fbed69a3b729ec20fafa6dfa6d4c20a283b
+  standard_binary_patch_sha256: d0709105113d9604d15b2940b2a6af087280fa95d3f2c068a2ab7f940207792e
+  report:
+    object: >-
+      65d1abb88b6d8fa0c3235a3d62ef9a2ab3122839:doc/audits/packages/SCI-MAP-003_SCIENTIFIC_CONTRACT_AUDIT.tex
+    sha256: 2cbad1fd11ff8851b66202197f881c48f8c0f5cc5d08f376256d6dfdb8eb1764
+  independent_core:
+    predecessor:
+      object: >-
+        3eecd9f4c6ccf9c9a5c509908b2689a8a0e1a80a:doc/audits/packages/SCI-MAP-003_INDEPENDENT_CORE.tex
+      sha256: d6eac8499191f65396d3bc743d5aea70e055ad6342dd812e67d68d31d436073e
+      status: frozen_preserved
+    operative_successor:
+      id: SCI-MAP-003-INDEPENDENT-CORE-SUCCESSOR-001
+      object: >-
+        c0bd689598c8bc1c20114248a45822b13d6ba2f2:doc/audits/packages/SCI-MAP-003_INDEPENDENT_CORE_SUCCESSOR_001.tex
+      sha256: 5fb256b18566d725267d25737163f97dd1d5bbd463ba77ed33960e977a5dfed4
+      status: accepted_operative
+
+recommended_axes:
+  contract_status: proposed
+  implementation_status: nonconformant
+  validation_status: not_started
+  production_status: existing_use_only
+  verdict: amend
+
+findings:
+  - id: SCI-MAP-003-F001
+    class: contract_gap
+    priority: P1
+    status: open
+    finding: No exact discrete g
+    owner: SCI-RTC-001 and SCI-MAP-003 owners
+    closure_gate: >-
+      Freeze every APT row/weight, Gaussian parameter, amplitude/unit,
+      truncation, center, pixelization, WCS, mask, crop, and digest; two
+      independent reconstructions meet a preregistered byte or arithmetic
+      identity.
+  - id: SCI-MAP-003-F002
+    class: dependency_gap
+    priority: P0
+    status: open
+    finding: No admissible complete final k parent
+    owner: >-
+      SCI-RTC-001, SCI-PTC-001, SCI-MAP-002, SCI-VAL-001, and SCI-FRUIT-001
+      owners
+    closure_gate: >-
+      Complete-response-or-unavailable, eligibility, and terminal-pass
+      contracts close; the exact serial pre-crop normalized kernel and
+      once-cropped k have immutable parent/stage/digest identity at the
+      governing application SHA.
+  - id: SCI-MAP-003-F003
+    class: implementation_defect
+    priority: P0
+    status: open
+    finding: Parallel JINC shared-array data races
+    owner: SCI-MAP-002 / Citlali mapmaker owner
+    closure_gate: >-
+      An authorized repair provides race-free private/deterministic reduction
+      or proved disjoint writes; thread-sanitizer evidence and preregistered
+      serial-versus-parallel byte/tolerance equivalence pass for all
+      accumulators, then a fresh independent audit accepts the exact repair
+      SHA.
+  - id: SCI-MAP-003-F004
+    class: contract_gap
+    priority: P1
+    status: open
+    finding: Odd grid, transform, quotient, and domain absent
+    owner: SCI-MAP-003 with SCI-MAP-001 and SCI-AST-001 interfaces
+    closure_gate: >-
+      The exact owner crop and aligned planes are implemented and persisted;
+      Cases 1--4 and 6--11 pass after ND-GRID and ND-DEN are frozen.
+  - id: SCI-MAP-003-F005
+    class: contract_gap
+    priority: P1
+    status: open
+    finding: Transfer product schema and provenance absent
+    owner: SCI-MAP-003, SCI-MAP-001, and SCI-MODE-001 owners
+    closure_gate: >-
+      A versioned product contract defines representation, cardinality, exact
+      identity/provenance, aliases, association, required/optional behavior,
+      atomic failure, and digest; deliberate mismatch/publication tests pass.
+  - id: SCI-MAP-003-F006
+    class: contract_gap
+    priority: P1
+    status: open
+    finding: Response uncertainty and covariance unavailable
+    owner: SCI-MAP-003 with RTC/PTC/VAL and later LMTOOF owners
+    closure_gate: >-
+      An approved estimator and persistence contract supplies or explicitly
+      marks unavailable every formal, empirical, calibration/systematic, and
+      response uncertainty term; named coverage/calibration tests satisfy a
+      frozen protocol.
+  - id: SCI-MAP-003-F007
+    class: scientific_policy_decision
+    priority: P1
+    status: open
+    finding: Remaining grid/domain/synthesis policy open
+    owner: SCI-MAP-003 owner, with AST/VAL interfaces
+    closure_gate: >-
+      One owner decision freezes every operator and boundary value before
+      implementation or Case 7/8 execution; at/below/above threshold and
+      operator identity cases then pass unchanged.
+  - id: SCI-MAP-003-F008
+    class: scientific_policy_decision
+    priority: P1
+    status: open
+    finding: Amplitude, uncertainty, publication, and consumer admission open
+    owner: >-
+      SCI-MAP-003, SCI-MODE-001, SCI-VAL-001, and LMTOOF product owners
+    closure_gate: >-
+      Separate owner decisions freeze optical units/nuisance amplitude,
+      uncertainty, product schema, OOF association, fixed/recompute lifecycle,
+      allowed consumer version, identity rejection, and failure policy.
+  - id: SCI-MAP-003-F009
+    class: dependency_gap
+    priority: P0
+    status: open
+    finding: VAL, FRUIT, and MODE packages not started
+    owner: SCI-VAL-001, SCI-FRUIT-001, and SCI-MODE-001 owners
+    closure_gate: >-
+      Each package produces an owner-approved bounded contract and accepted
+      implementation/evidence result for its named interface; a dated re-audit
+      admits it without rewriting either frozen core.
+  - id: SCI-MAP-003-F010
+    class: evidence_gap
+    priority: P1
+    status: open
+    finding: No validation or adoption evidence
+    owner: >-
+      SCI-MAP-003 validation owner and separately authorized external/telescope
+      owners
+    closure_gate: >-
+      After contracts and implementation blockers close, separately
+      authorized preregistered studies pass unchanged under FRAMEWORK-NUM-001
+      controls, followed by independent review and an explicit production
+      decision.
+
+dependencies:
+  - package_id: SCI-MAP-001
+    status: open
+    closure_condition: >-
+      Exact OOF-cell parent, WCS/unit/validity, required-output, schema, and
+      implementation conformance are accepted.
+  - package_id: SCI-MAP-002
+    status: conditioned
+    closure_condition: >-
+      Race-free exact governing implementation conforms to D003 and all
+      parent/VAL gates, with fresh audit.
+  - package_id: SCI-RTC-001
+    status: open
+    closure_condition: >-
+      Exact g and every response-changing stage are represented with immutable
+      parentage, or response is honestly unavailable.
+  - package_id: SCI-PTC-001
+    status: conditioned
+    closure_condition: >-
+      Exact selection/realization response family and needed
+      uncertainty/validity interfaces conform at the governing SHA.
+  - package_id: SCI-AST-001
+    status: conditioned
+    closure_condition: >-
+      Common retained WCS/crop and dual-frequency axes pass orientation and
+      identity fixtures without silent recentering.
+  - package_id: SCI-VAL-001
+    status: open
+    package_lifecycle_status: not_started
+    closure_condition: >-
+      Owner-approved VAL contract and conforming fail-closed implementation.
+  - package_id: SCI-FRUIT-001
+    status: open
+    package_lifecycle_status: not_started
+    closure_condition: >-
+      Owner-approved terminal/restart/parent-state contract and conforming
+      evidence.
+  - package_id: SCI-MODE-001
+    status: open
+    package_lifecycle_status: not_started
+    closure_condition: >-
+      Approved association, units/amplitude, fixed/recompute lifecycle,
+      version, identity checks, and failure policy.
+
+inbound_handoff_dispositions:
+  - {id: SCI-MAP-003-XAUD-001, disposition: accept_bounded_pre_core_authority, review_phase: pre_core_authority}
+  - {id: SCI-MAP-003-XAUD-002, disposition: accept_bounded_pre_core_authority, review_phase: pre_core_authority}
+  - {id: SCI-MAP-003-XAUD-003, disposition: accept_bounded_pre_core_authority, review_phase: pre_core_authority}
+  - {id: SCI-MAP-003-XAUD-004, disposition: accept_bounded_pre_core_authority, review_phase: pre_core_authority}
+  - {id: SCI-MAP-003-XAUD-005, disposition: accept_bounded_pre_core_authority, review_phase: pre_core_authority}
+  - {id: SCI-MAP-003-XAUD-006, disposition: accept_post_core_dependency_evidence, review_phase: post_core_evidence}
+  - {id: SCI-MAP-003-XAUD-007, disposition: accept_post_core_dependency_evidence, review_phase: post_core_evidence}
+  - {id: SCI-MAP-003-XAUD-008, disposition: accept_post_core_dependency_evidence, review_phase: post_core_evidence}
+
+phase_2_handoff_preparation:
+  status: prepared_not_dispatched
+  handoff_files_created: false
+  schema_exception: false
+  mapping:
+    - frozen_audit_proposal_label: SCI-MAP-003-XAUD-009
+      canonical_handoff_id: SCI-MAP-002-XAUD-002
+      target_package: SCI-MAP-002
+      summary: F003 parallel JINC race and the exact serial/parallel closure gate
+    - frozen_audit_proposal_label: SCI-MAP-003-XAUD-010
+      canonical_handoff_id: SCI-RTC-001-XAUD-004
+      target_package: SCI-RTC-001
+      summary: F001/F002 exact tracer and complete-response parent requirements
+    - frozen_audit_proposal_label: SCI-MAP-003-XAUD-011
+      canonical_handoff_id: SCI-PTC-001-XAUD-007
+      target_package: SCI-PTC-001
+      summary: conditioned response, late-selection, covariance, and response-family gaps
+    - frozen_audit_proposal_label: SCI-MAP-003-XAUD-012
+      canonical_handoff_id: SCI-MAP-001-XAUD-005
+      target_package: SCI-MAP-001
+      summary: odd-cropped transfer product, identity, publication, and required-failure interface
+    - frozen_audit_proposal_label: SCI-MAP-003-XAUD-013
+      canonical_handoff_id: SCI-AST-001-XAUD-003
+      target_package: SCI-AST-001
+      summary: retained WCS and dual-frequency axis conformance interface
+    - frozen_audit_proposal_label: SCI-MAP-003-XAUD-014
+      canonical_handoff_id: SCI-VAL-001-XAUD-011
+      target_package: SCI-VAL-001
+      summary: input/parent/domain/output validity and non-finite interface
+    - frozen_audit_proposal_label: SCI-MAP-003-XAUD-015
+      canonical_handoff_id: SCI-FRUIT-001-XAUD-001
+      target_package: SCI-FRUIT-001
+      summary: terminal pass/restart and delivered map-kernel parent identity
+    - frozen_audit_proposal_label: SCI-MAP-003-XAUD-016
+      canonical_handoff_id: SCI-MODE-001-XAUD-003
+      target_package: SCI-MODE-001
+      summary: >-
+        OOF association, LMTOOF admission, amplitude, fixed/recompute lifecycle,
+        and failure interface
+
+consumer_boundary:
+  existing_oof: existing_use_only
+  transfer_publication: fail_closed
+  lmtoof: fail_closed
+  production: forbidden
+
+not_authorized:
+  - phase_2_handoff_file_creation_or_dispatch
+  - application_test_config_or_validation_product_edit
+  - audit_or_reaudit
+  - repair
+  - numerical_execution
+  - evidence_request
+  - external_contact
+  - unity_or_reduction
+  - integration
+  - merge_rebase_or_push
+  - production_action
+  - downstream_launch

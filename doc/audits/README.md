@@ -234,6 +234,20 @@ manifest, prompt, numerical study, application or LMTOOF edit, repair,
 re-audit, integration, production expansion, merge, rebase, or push is
 launched by this record.
 
+The completed independent audit is now registered by
+[`SCI-MAP-003-DISP-001`](packages/SCI-MAP-003_AUDIT_DISPOSITION_2026-08-14.md)
+as immutable post-core evidence at exact pushed audit commit
+`65d1abb88b6d8fa0c3235a3d62ef9a2ab3122839`. Its axes are contract
+`proposed`, implementation `nonconformant`, validation `not_started`,
+production `existing_use_only`, and verdict `amend`. Exactly F001--F010 remain
+open with the owners and closure gates frozen by the audit. Eight outbound
+handoffs have target-prefixed canonical IDs reserved by a one-to-one
+administrative mapping, but Phase 2 is only prepared and not dispatched: no
+handoff file or registry entry exists yet. The audit report and post-core
+implementation observations are not pre-core authority. Queue order,
+scientific content, existing-use restrictions, and all downstream holds are
+unchanged.
+
 ## Purpose and non-goals
 
 The program exists to make the claimed estimator, its uncertainty and
@@ -755,7 +769,7 @@ package but does not define their estimators.
 | `SCI-PTC-001` | B | Mature correlated-mode cleaning, selection, and detector-weight interface | `SCI-RTC-001`, identified assigned grid; physical event timing unavailable | D001--D006 approved; contract complete; implementation nonconformant; repair and optional response characterization unlaunched |
 | `SCI-VAL-001` | A | Cross-stage flags, detector/sample eligibility, non-finite policy, and map support | `SCI-ALIGN-001`, `SCI-RTC-001`, `SCI-PTC-001` | Foundation wave 2 |
 | `SCI-MAP-002` | B | Mature JINC gridding interface, normalization, support, and response | approved/shared `SCI-MAP-001` product contract | Third successor owner-accepted `accept`; bounded findings closed; `existing_use_only`; no merge or downstream launch |
-| `SCI-MAP-003` | A | OOF residual transfer-function estimator, validity domain, persisted response, and LMTOOF admission boundary | `SCI-MAP-001`, `SCI-MAP-002`, `SCI-RTC-001`, `SCI-PTC-001`, `SCI-VAL-001`, `SCI-AST-001`, `SCI-FRUIT-001`, `SCI-MODE-001` | Registered, unlaunched; after MAP-002 and before MODE LMTOOF admission; new product and consumer fail closed |
+| `SCI-MAP-003` | A | OOF residual transfer-function estimator, validity domain, persisted response, and LMTOOF admission boundary | `SCI-MAP-001`, `SCI-MAP-002`, `SCI-RTC-001`, `SCI-PTC-001`, `SCI-VAL-001`, `SCI-AST-001`, `SCI-FRUIT-001`, `SCI-MODE-001` | Completed audit registered `amend`; F001--F010 open; Phase 2 handoffs prepared, not dispatched; after MAP-002 and before MODE LMTOOF admission; new product and consumer fail closed |
 | `SCI-NOI-001` | A | Jackknife/noise randomization and propagation through selected operators | `SCI-PTC-001`, `SCI-VAL-001`, `SCI-MAP-001` | Uncertainty wave 3 |
 | `SCI-NOI-002` | A | Empirical variance/covariance, global calibration, statistical weight, and S/N semantics | `SCI-NOI-001`, `SCI-MAP-001` | Uncertainty wave 3 |
 | `SCI-FLT-001` | A | Fixed map-domain `convolve` signal, uncertainty, response, and support | `SCI-MAP-001`, `SCI-NOI-002`, `SCI-CAL-001` | Existing audit; amend/re-audit wave 4 |
