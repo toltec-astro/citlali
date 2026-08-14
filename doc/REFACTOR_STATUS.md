@@ -145,6 +145,51 @@ coherent candidate commit is eligible for owner push only after the complete
 Phase-C broad and retained gates pass; this record does not authorize that
 push, downstream launch, or production use.
 
+## 2026-08-14 APT-STAGE-D-001 Real-Data Producer Repair Candidate
+
+An owner-mediated Unity Beammap run at accepted APT-PROD-002 source
+`20feebc26f5ab36f3db04d05835de6ac907fd2e6` reached the real observation
+pipeline and completed its reduction iterations, then failed before canonical
+APT publication with `KIDs fit-report field is protected, duplicate, or absent
+from the canonical v1 registry: f_out`. The run therefore proves the real KMP
+loader and baseline overlay are reachable, but it produced no accepted Stage-D
+ECSV-plus-receipt artifact and authorizes no downstream work.
+
+The failure was a bounded baseline-adapter defect. Real KMP fit-report headers
+contain observation-specific `fr`, `f_out`, and `Qr` fields and may contain
+other diagnostics, while the canonical baseline contract admits only fields
+already registered for that baseline plus the exact `flag -> kids_flag`
+mapping. The adapter incorrectly required every source header field to be a
+baseline field. The repair candidate on
+`codex/repair-apt-stage-d-kmp-overlay` retains each admitted field's original
+source-column index, overlays only baseline-registered fields, and omits
+unregistered observation/diagnostic fields from the baseline artifact. It
+continues to fail closed on report/raw binding, per-report header drift,
+shape/cardinality errors, protected or duplicate names, literal `kids_flag` or
+`flag2`, and lossy typed conversion. Detector membership and order, raw
+identity, `ToneFreq`, legacy flags, observation-specific KMP authority, and all
+reduction science remain unchanged.
+
+The realistic focused fixture now presents
+`fr,f_out,Qr,flag,diagnostic_chi2,fg` in the same bound report and verifies
+source-index selection, exact nonbinary `kids_flag`, registered `fg`, omitted
+observation/unknown fields, and unchanged `ToneFreq`. Local validation passes:
+the CLI, general test, safety test, science-map truth, and science-map FITS
+targets build; 662/662 enabled CTests pass across 663 registrations with only
+the established disabled test; focused canonical C++ tests pass 39/39;
+baseline Python tests pass 198/198; product-contract tests pass 49/49; strict
+protocol tests pass 4/4; canonical public-header isolation passes 3/3; config
+compatibility passes 8/8 with zero skips and 100% compact-surface coverage;
+the 60-record validation ledger and science-change ledger are valid; and
+`git diff --check` passes.
+
+APT-STAGE-D-001 remains pending an owner-run, isolated-output Unity rerun and a
+separate role-independent comparison of the returned raw inventory, legacy
+APT, canonical baseline/observation ECSV, receipt, hashes, logs, identities,
+orders, units, values, and exact flags. No Stage-D product is accepted here.
+TolProj, TolAPT, `toltec_beammap`, TolTECA, ingestion, CAL, and ALIGN APT work
+remain stopped until the owner explicitly accepts that actual product.
+
 ## 2026-08-05 SCI-MAP-001 Application Integration Candidate
 
 The final independent re-audit at

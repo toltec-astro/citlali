@@ -152,8 +152,14 @@ inline apt::Value typed_legacy_value(double value,
     throw apt::ContractError("unsupported canonical Beammap field type");
 }
 
+struct CanonicalKidsOverlayColumn {
+    Eigen::Index source_index = 0;
+    std::string name;
+    apt::RegisteredField contract;
+};
+
 template <class FitReports>
-std::vector<std::string> preflight_atomic_kids_fit_reports(
+std::vector<CanonicalKidsOverlayColumn> preflight_atomic_kids_fit_reports(
     const FitReports &reports, const apt::RawManifest &raw_manifest) {
     if (reports.size() != raw_manifest.inputs.size() || reports.empty()) {
         throw apt::ContractError(
@@ -163,12 +169,12 @@ std::vector<std::string> preflight_atomic_kids_fit_reports(
     if (header.empty()) {
         throw apt::ContractError("atomic KIDs fit-report header is empty");
     }
-    std::vector<std::string> names;
-    names.reserve(header.size());
+    std::vector<CanonicalKidsOverlayColumn> overlay_columns;
+    overlay_columns.reserve(header.size());
     std::set<std::string> unique;
-    std::vector<apt::RegisteredField> contracts;
-    contracts.reserve(header.size());
-    for (const auto &source_name : header) {
+    for (std::size_t source_index = 0; source_index < header.size();
+         ++source_index) {
+        const auto &source_name = header[source_index];
         // The accepted legacy source field is `flag`; the canonical artifact
         // name `kids_flag` is producer-owned and is not itself an admitted
         // input spelling. This also keeps `flag` and `flag2` collision-free.
@@ -178,15 +184,22 @@ std::vector<std::string> preflight_atomic_kids_fit_reports(
                 "literal source kids_flag/flag2 is not an admitted KIDs fit-report field");
         }
         const auto name = normalized_kids_model_name(source_name);
-        const auto contract = canonical_registered_field(name);
-        if (!contract || apt::detail::protected_contract_name(name) ||
+        if (apt::detail::protected_contract_name(name) ||
             !unique.insert(name).second) {
             throw apt::ContractError(
-                "KIDs fit-report field is protected, duplicate, or absent from the canonical v1 registry: " +
+                "KIDs fit-report field is protected or duplicate: " +
                 name);
         }
-        names.push_back(name);
-        contracts.push_back(*contract);
+        const auto contract = canonical_registered_field(name);
+        if (!contract) {
+            // A real KMP report contains observation-specific model fields
+            // such as fr, f_out, and Qr and may contain other diagnostics.
+            // Those source bytes belong to the observation contract; they do
+            // not acquire baseline field meaning merely by being present.
+            continue;
+        }
+        overlay_columns.push_back({
+            static_cast<Eigen::Index>(source_index), name, *contract});
     }
     for (std::size_t input_index = 0; input_index < reports.size();
          ++input_index) {
@@ -210,21 +223,20 @@ std::vector<std::string> preflight_atomic_kids_fit_reports(
                 "KIDs fit-report rows/columns disagree with its bound raw input/header");
         }
         for (Eigen::Index row = 0; row < model.rows(); ++row) {
-            for (Eigen::Index column = 0; column < model.cols(); ++column) {
+            for (const auto &column : overlay_columns) {
                 (void)typed_legacy_value(
-                    model(row, column),
-                    contracts[static_cast<std::size_t>(column)]);
+                    model(row, column.source_index), column.contract);
             }
         }
     }
-    return names;
+    return overlay_columns;
 }
 
 template <class Calib, class FitReports>
 void apply_atomic_kids_fit_report_overlay(
     Calib &calib, const FitReports &reports,
     const apt::RawManifest &raw_manifest) {
-    const auto names =
+    const auto overlay_columns =
         preflight_atomic_kids_fit_reports(reports, raw_manifest);
 
     Eigen::Index total_rows = 0;
@@ -247,18 +259,17 @@ void apply_atomic_kids_fit_report_overlay(
     // name, registry, protected-field, and conversion failures therefore
     // leave the current scientific state untouched.
     std::vector<std::pair<std::string, Eigen::VectorXd>> columns;
-    columns.reserve(names.size());
-    for (Eigen::Index column = 0;
-         column < static_cast<Eigen::Index>(names.size()); ++column) {
+    columns.reserve(overlay_columns.size());
+    for (const auto &column : overlay_columns) {
         Eigen::VectorXd values(calib.n_dets);
         Eigen::Index offset = 0;
         for (const auto &report : reports) {
             const auto &model = report.model;
-            values.segment(offset, model.rows()) = model.col(column);
+            values.segment(offset, model.rows()) =
+                model.col(column.source_index);
             offset += model.rows();
         }
-        columns.emplace_back(names[static_cast<std::size_t>(column)],
-                             std::move(values));
+        columns.emplace_back(column.name, std::move(values));
     }
 
     for (auto &[name, values] : columns) {

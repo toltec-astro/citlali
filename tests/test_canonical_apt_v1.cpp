@@ -1957,6 +1957,28 @@ std::vector<PhaseBBoundFitReport> make_phase_b_bound_fit_reports() {
     return reports;
 }
 
+std::vector<PhaseBBoundFitReport>
+make_phase_b_realistic_bound_fit_reports() {
+    std::vector<PhaseBBoundFitReport> reports(2);
+    reports[0].network = 0;
+    reports[0].observation = 152389;
+    reports[0].source = "fit-report-toltec0.ecsv";
+    reports[0].header = {
+        "fr", "f_out", "Qr", "flag", "diagnostic_chi2", "fg"};
+    reports[0].model.resize(2, 6);
+    reports[0].model <<
+        1.20e9, 1.21e9, 10000.0, 3.0, 9.5, 2.0,
+        1.40e9, 1.41e9, 20000.0, -7.0, 8.5, 3.0;
+    reports[1].network = 7;
+    reports[1].observation = 152389;
+    reports[1].source = "fit-report-toltec7.ecsv";
+    reports[1].header = reports[0].header;
+    reports[1].model.resize(1, 6);
+    reports[1].model <<
+        1.25e9, 1.26e9, 30000.0, 42.0, 7.5, 4.0;
+    return reports;
+}
+
 PhaseBLegacyFixture make_phase_b_legacy_fixture() {
     PhaseBLegacyFixture fixture;
     const auto inventory = make_phase_b_inventory();
@@ -2286,7 +2308,7 @@ TEST(canonical_apt_v1_phase_b,
 }
 
 TEST(canonical_apt_v1_phase_b,
-     adapter_rejects_manifest_drift_unknown_fields_and_lossy_integers) {
+     adapter_rejects_manifest_drift_and_lossy_integers_while_omitting_unknown_kmp_fields) {
     const auto expect_adapter_failure = [](auto mutate) {
         auto fixture = make_phase_b_legacy_fixture();
         mutate(fixture);
@@ -2336,10 +2358,9 @@ TEST(canonical_apt_v1_phase_b,
     for (auto &report : unknown_reports) {
         report.header = {"runtime_surprise"};
     }
-    EXPECT_THROW(apt_producer::preflight_atomic_kids_fit_reports(
-                     unknown_reports,
-                     fixture.calib.canonical_apt_producer.raw_manifest),
-                 apt::ContractError);
+    EXPECT_NO_THROW(apt_producer::preflight_atomic_kids_fit_reports(
+        unknown_reports,
+        fixture.calib.canonical_apt_producer.raw_manifest));
     auto literal_canonical_reports = reports;
     for (auto &report : literal_canonical_reports) {
         report.header = {"kids_flag"};
@@ -2349,15 +2370,15 @@ TEST(canonical_apt_v1_phase_b,
                      fixture.calib.canonical_apt_producer.raw_manifest),
                  apt::ContractError);
 
-    const auto headers_before_failure = fixture.calib.apt_header_keys;
-    const auto apt_before_failure = fixture.calib.apt;
-    EXPECT_THROW(apt_producer::apply_atomic_kids_fit_report_overlay(
-                     fixture.calib, unknown_reports,
-                     fixture.calib.canonical_apt_producer.raw_manifest),
-                 apt::ContractError);
-    EXPECT_EQ(fixture.calib.apt_header_keys, headers_before_failure);
-    ASSERT_EQ(fixture.calib.apt.size(), apt_before_failure.size());
-    for (const auto &[name, before] : apt_before_failure) {
+    const auto headers_before_ignored_overlay = fixture.calib.apt_header_keys;
+    const auto apt_before_ignored_overlay = fixture.calib.apt;
+    EXPECT_NO_THROW(apt_producer::apply_atomic_kids_fit_report_overlay(
+        fixture.calib, unknown_reports,
+        fixture.calib.canonical_apt_producer.raw_manifest));
+    EXPECT_EQ(fixture.calib.apt_header_keys,
+              headers_before_ignored_overlay);
+    ASSERT_EQ(fixture.calib.apt.size(), apt_before_ignored_overlay.size());
+    for (const auto &[name, before] : apt_before_ignored_overlay) {
         const auto &after = fixture.calib.apt.at(name);
         ASSERT_EQ(after.size(), before.size()) << name;
         for (Eigen::Index index = 0; index < before.size(); ++index) {
@@ -2391,6 +2412,53 @@ TEST(canonical_apt_v1_phase_b,
                      fixture.calib, reports,
                      fixture.calib.canonical_apt_producer.raw_manifest),
                  apt::ContractError);
+}
+
+TEST(canonical_apt_v1_phase_b,
+     realistic_fit_report_omits_observation_and_unknown_fields_from_baseline) {
+    auto fixture = make_phase_b_legacy_fixture();
+    const auto tone_before = fixture.calib.apt.at("tone_freq");
+    const auto reports = make_phase_b_realistic_bound_fit_reports();
+
+    const auto overlay_columns =
+        apt_producer::preflight_atomic_kids_fit_reports(
+            reports, fixture.calib.canonical_apt_producer.raw_manifest);
+    ASSERT_EQ(overlay_columns.size(), 2U);
+    EXPECT_EQ(overlay_columns[0].source_index, 3);
+    EXPECT_EQ(overlay_columns[0].name, "kids_flag");
+    EXPECT_EQ(overlay_columns[1].source_index, 5);
+    EXPECT_EQ(overlay_columns[1].name, "fg");
+
+    ASSERT_NO_THROW(apt_producer::apply_atomic_kids_fit_report_overlay(
+        fixture.calib, reports,
+        fixture.calib.canonical_apt_producer.raw_manifest));
+    EXPECT_EQ(fixture.calib.apt.at("kids_flag"),
+              (Eigen::Vector3d{} << 3.0, -7.0, 42.0).finished());
+    EXPECT_EQ(fixture.calib.apt.at("fg"),
+              (Eigen::Vector3d{} << 2.0, 3.0, 4.0).finished());
+    EXPECT_EQ(fixture.calib.apt.at("tone_freq"), tone_before);
+
+    for (const auto name : {"fr", "f_out", "Qr", "diagnostic_chi2",
+                            "kids_fr", "kids_f_out", "kids_Qr"}) {
+        EXPECT_EQ(fixture.calib.apt.find(name), fixture.calib.apt.end())
+            << name;
+        EXPECT_EQ(std::find(fixture.calib.apt_header_keys.begin(),
+                            fixture.calib.apt_header_keys.end(), name),
+                  fixture.calib.apt_header_keys.end())
+            << name;
+    }
+
+    const auto document = apt_producer::make_canonical_document(
+        fixture.calib, fixture.flag2, phase_b_context());
+    for (const auto name : {"fr", "f_out", "Qr", "diagnostic_chi2",
+                            "kids_fr", "kids_f_out", "kids_Qr"}) {
+        EXPECT_EQ(std::count_if(
+                      document.registered_fields.begin(),
+                      document.registered_fields.end(),
+                      [&](const auto &field) { return field.name == name; }),
+                  0)
+            << name;
+    }
 }
 
 TEST(canonical_apt_v1_phase_b,
