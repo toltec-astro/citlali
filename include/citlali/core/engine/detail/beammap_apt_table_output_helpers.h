@@ -6,6 +6,7 @@
 
 #include <citlali/core/engine/calib.h>
 #include <citlali/core/engine/detail/beammap_apt_keys.h>
+#include <citlali/core/pipeline/canonical_artifact_publication.h>
 #include <citlali/core/pipeline/canonical_apt_ecsv.h>
 
 #include <Eigen/Core>
@@ -36,6 +37,8 @@
 namespace beammap_apt_table_output_helpers {
 
 namespace apt = citlali::pipeline::canonical_apt_v1;
+namespace publication =
+    citlali::pipeline::canonical_artifact_publication;
 
 template <class Calib, class Flag2>
 Eigen::MatrixXd apt_table(Calib &calib, const Flag2 &flag2) {
@@ -68,14 +71,13 @@ struct CanonicalAptDocumentContext {
 inline void inject_issuance_context(
     CanonicalAptDocumentContext &context,
     const engine::CanonicalAptProducerState &producer) {
-    if (!producer.issuance_factory) {
+    publication::OpaqueIssuance issuance;
+    try {
+        issuance = publication::issue_opaque(producer.issuance_factory);
+    } catch (const publication::PublicationError &error) {
         throw apt::ContractError(
-            "canonical Beammap APT has no occurrence issuance factory");
-    }
-    const auto issuance = producer.issuance_factory();
-    if (issuance.occurrence.empty() || issuance.event_reference.empty()) {
-        throw apt::ContractError(
-            "canonical Beammap APT occurrence/event issuer returned an empty reference");
+            "canonical Beammap APT occurrence/event issuance failed: " +
+            std::string(error.what()));
     }
     context.occurrence = issuance.occurrence;
     context.event_reference = issuance.event_reference;
@@ -525,110 +527,29 @@ inline std::string canonical_apt_receipt_bytes(
         throw apt::ContractError(
             "canonical APT publication receipt has invalid scope or digest");
     }
-    std::ostringstream stream;
-    stream.imbue(std::locale::classic());
-    stream << "citlali-canonical-apt-publication-receipt-v1\n"
-           << "scope=" << transport.scope << '\n'
-           << "envelope_sha256=" << transport.envelope_sha256 << '\n'
-           << "byte_sha256=" << transport.sha256 << '\n'
-           << "byte_count=" << transport.byte_count << '\n';
-    return stream.str();
+    return publication::canonical_receipt_bytes(
+        {std::string(publication::receipt_schema_v1), transport.scope,
+         transport.envelope_sha256, transport.sha256,
+         transport.byte_count});
 }
 
 inline apt::ByteTransportHash parse_canonical_apt_receipt(
     std::string_view bytes) {
-    if (bytes.find('\r') != std::string_view::npos || bytes.empty() ||
-        bytes.back() != '\n') {
+    try {
+        const auto receipt = publication::parse_canonical_receipt(
+            bytes, publication::receipt_schema_v1,
+            apt::byte_transport_scope_v1);
+        return {receipt.scope, receipt.envelope_sha256,
+                receipt.byte_sha256, receipt.byte_count};
+    } catch (const publication::PublicationError &error) {
         throw apt::ContractError(
-            "canonical APT receipt must be exact LF-terminated text");
-    }
-    std::vector<std::string_view> lines;
-    std::size_t start = 0;
-    while (start < bytes.size()) {
-        const auto end = bytes.find('\n', start);
-        lines.push_back(bytes.substr(start, end - start));
-        start = end + 1;
-    }
-    if (lines.size() != 5 ||
-        lines[0] != "citlali-canonical-apt-publication-receipt-v1") {
-        throw apt::ContractError(
-            "canonical APT receipt schema or field count is invalid");
-    }
-    const auto value = [](std::string_view line, std::string_view prefix) {
-        if (!line.starts_with(prefix) || line.size() == prefix.size()) {
-            throw apt::ContractError(
-                "canonical APT receipt has a missing/misordered field");
-        }
-        return line.substr(prefix.size());
-    };
-    apt::ByteTransportHash transport;
-    transport.scope = value(lines[1], "scope=");
-    transport.envelope_sha256 = value(lines[2], "envelope_sha256=");
-    transport.sha256 = value(lines[3], "byte_sha256=");
-    const auto count = value(lines[4], "byte_count=");
-    const auto [end, error] = std::from_chars(
-        count.data(), count.data() + count.size(), transport.byte_count);
-    if (error != std::errc{} || end != count.data() + count.size() ||
-        transport.scope != apt::byte_transport_scope_v1 ||
-        !apt::is_sha256_reference(transport.envelope_sha256) ||
-        !apt::is_sha256_reference(transport.sha256) ||
-        canonical_apt_receipt_bytes(transport) != bytes) {
-        throw apt::ContractError(
-            "canonical APT receipt is not exact canonical v1 text");
-    }
-    return transport;
-}
-
-inline std::string read_binary_file(const std::filesystem::path &path) {
-    std::ifstream stream(path, std::ios::binary);
-    if (!stream) {
-        throw std::runtime_error("failed to open canonical APT file: " +
-                                 path.string());
-    }
-    std::string bytes{std::istreambuf_iterator<char>(stream),
-                      std::istreambuf_iterator<char>()};
-    if (stream.bad()) {
-        throw std::runtime_error("failed to read canonical APT file: " +
-                                 path.string());
-    }
-    return bytes;
-}
-
-inline void write_binary_file(const std::filesystem::path &path,
-                              std::string_view bytes) {
-    std::ofstream stream(path, std::ios::binary | std::ios::out | std::ios::trunc);
-    if (!stream) {
-        throw std::runtime_error("failed to create staged canonical APT file: " +
-                                 path.string());
-    }
-    stream.write(bytes.data(), static_cast<std::streamsize>(bytes.size()));
-    stream.flush();
-    if (!stream) {
-        throw std::runtime_error("failed to write staged canonical APT file: " +
-                                 path.string());
-    }
-    stream.close();
-    if (!stream) {
-        throw std::runtime_error("failed to close staged canonical APT file: " +
-                                 path.string());
+            "canonical APT receipt validation failed: " +
+            std::string(error.what()));
     }
 }
 
-enum class PublicationStage {
-    ecsv_staged,
-    ecsv_validated,
-    receipt_staged,
-    receipt_validated,
-    before_ecsv_publish,
-    ecsv_published,
-    before_receipt_publish,
-};
-
-struct CanonicalAptPublicationHooks {
-    std::function<void(PublicationStage, const std::filesystem::path &,
-                       const std::filesystem::path &)>
-        on_stage;
-};
+using PublicationStage = publication::PublicationStage;
+using CanonicalAptPublicationHooks = publication::PublicationHooks;
 
 struct CanonicalAptPublicationResult {
     std::filesystem::path ecsv_path;
@@ -637,150 +558,29 @@ struct CanonicalAptPublicationResult {
     apt::ByteTransportHash transport;
 };
 
-inline void notify_publication_stage(
-    const CanonicalAptPublicationHooks &hooks, PublicationStage stage,
-    const std::filesystem::path &staged_ecsv,
-    const std::filesystem::path &staged_receipt) {
-    if (hooks.on_stage) {
-        hooks.on_stage(stage, staged_ecsv, staged_receipt);
-    }
-}
-
 inline void validate_canonical_apt_bytes_and_receipt(
     std::string_view bytes, const apt::ByteTransportHash &transport) {
     (void)apt::parse_ecsv_with_transport(bytes, transport);
 }
 
+inline void validate_canonical_apt_bytes_and_receipt(
+    std::string_view bytes, std::string_view receipt_bytes) {
+    const auto transport = parse_canonical_apt_receipt(receipt_bytes);
+    validate_canonical_apt_bytes_and_receipt(bytes, transport);
+}
+
 inline CanonicalAptPublicationResult validate_published_canonical_apt(
     const std::filesystem::path &ecsv_path,
     const std::filesystem::path &receipt_path) {
-    const auto bytes = read_binary_file(ecsv_path);
-    const auto transport =
-        parse_canonical_apt_receipt(read_binary_file(receipt_path));
-    const auto parsed = apt::parse_ecsv_with_transport(bytes, transport);
-    return {ecsv_path, receipt_path, parsed.declared_digests, transport};
-}
-
-class StagingDirectoryGuard {
-public:
-    explicit StagingDirectoryGuard(
-        const std::filesystem::path &output_path) {
-        const auto parent = output_path.parent_path();
-        if (parent.empty() || !std::filesystem::is_directory(parent)) {
-            throw std::runtime_error(
-                "canonical APT output parent directory does not exist");
-        }
-        for (int attempt = 0; attempt < 16; ++attempt) {
-            const auto suffix =
-                engine::make_canonical_apt_entropy_reference("");
-            // Assign the member before creation: once create_directory
-            // succeeds, construction has no remaining throwing operation.
-            path_ = parent /
-                ("." + output_path.filename().string() + ".stage-" +
-                 suffix);
-            std::error_code error;
-            if (std::filesystem::create_directory(path_, error)) {
-                return;
-            }
-            if (error && error != std::errc::file_exists) {
-                throw std::runtime_error(
-                    "failed to reserve canonical APT staging directory: " +
-                    error.message());
-            }
-        }
-        throw std::runtime_error(
-            "failed to reserve a unique canonical APT staging directory");
-    }
-
-    StagingDirectoryGuard(const StagingDirectoryGuard &) = delete;
-    StagingDirectoryGuard &operator=(const StagingDirectoryGuard &) = delete;
-
-    ~StagingDirectoryGuard() { (void)cleanup(); }
-
-    const std::filesystem::path &path() const noexcept { return path_; }
-
-    bool cleanup() noexcept {
-        if (path_.empty()) {
-            return true;
-        }
-        // A test failpoint or local permission drift must not strand staged
-        // files silently. Restore owner traversal/write permission on the
-        // private directory, then report whether removal is complete.
-        std::error_code permission_error;
-        std::filesystem::permissions(
-            path_, std::filesystem::perms::owner_all,
-            std::filesystem::perm_options::add, permission_error);
-        std::error_code cleanup_error;
-        std::filesystem::remove_all(path_, cleanup_error);
-        std::error_code existence_error;
-        const bool remains = std::filesystem::exists(path_, existence_error);
-        return !permission_error && !cleanup_error && !existence_error &&
-            !remains;
-    }
-
-private:
-    std::filesystem::path path_;
-};
-
-inline void make_publication_source_read_only(
-    const std::filesystem::path &path) {
-    std::error_code error;
-    std::filesystem::permissions(
-        path,
-        std::filesystem::perms::owner_read |
-            std::filesystem::perms::group_read |
-            std::filesystem::perms::others_read,
-        std::filesystem::perm_options::replace, error);
-    if (error) {
-        throw std::runtime_error(
-            "failed to protect staged canonical APT publication source: " +
-            error.message());
-    }
-}
-
-inline bool remove_if_owned_hard_link(
-    const std::filesystem::path &staged,
-    const std::filesystem::path &published) noexcept {
-    std::error_code existence_error;
-    if (!std::filesystem::exists(published, existence_error) &&
-        !existence_error) {
-        return true;
-    }
-    std::error_code equivalent_error;
-    const bool owned = std::filesystem::exists(staged, equivalent_error) &&
-        !equivalent_error && std::filesystem::exists(published, equivalent_error) &&
-        !equivalent_error &&
-        std::filesystem::equivalent(staged, published, equivalent_error) &&
-        !equivalent_error;
-    if (!owned) {
-        return false;
-    }
-    std::error_code remove_error;
-    return std::filesystem::remove(published, remove_error) && !remove_error;
-}
-
-inline void publish_no_replace_hard_link(
-    const std::filesystem::path &staged,
-    const std::filesystem::path &published) {
-    std::error_code error;
-    std::filesystem::create_hard_link(staged, published, error);
-    if (error) {
-        throw std::runtime_error(
-            "canonical APT no-overwrite publication failed: " +
-            published.string() + ": " + error.message());
-    }
-}
-
-inline void require_owned_publication_alias(
-    const std::filesystem::path &alias,
-    const std::filesystem::path &owner) {
-    std::error_code error;
-    if (!std::filesystem::exists(alias, error) || error ||
-        !std::filesystem::exists(owner, error) || error ||
-        !std::filesystem::equivalent(alias, owner, error) || error) {
-        throw std::runtime_error(
-            "canonical APT staged publication entry changed after validation");
-    }
+    std::optional<apt::ParsedEcsv> parsed;
+    std::optional<apt::ByteTransportHash> transport;
+    publication::validate_published_canonical_artifact(
+        ecsv_path, receipt_path,
+        [&](std::string_view bytes, std::string_view receipt_bytes) {
+            transport = parse_canonical_apt_receipt(receipt_bytes);
+            parsed = apt::parse_ecsv_with_transport(bytes, *transport);
+        });
+    return {ecsv_path, receipt_path, parsed->declared_digests, *transport};
 }
 
 inline CanonicalAptPublicationResult publish_canonical_apt(
@@ -801,115 +601,30 @@ inline CanonicalAptPublicationResult publish_canonical_apt(
     const auto intended = apt::serialize_ecsv(document);
     CanonicalAptPublicationResult result{
         ecsv_path, receipt_path, intended.digests, intended.transport};
-    StagingDirectoryGuard staging(ecsv_path);
-    const auto staged_ecsv = staging.path() / ecsv_path.filename();
-    const auto staged_receipt = staging.path() / receipt_path.filename();
-    const auto ecsv_owner = staging.path() / ".owner-ecsv";
-    const auto receipt_owner = staging.path() / ".owner-receipt";
-    bool ecsv_published = false;
-    bool receipt_published = false;
-    try {
-        write_binary_file(staged_ecsv, intended.bytes);
-        notify_publication_stage(hooks, PublicationStage::ecsv_staged,
-                                 staged_ecsv, staged_receipt);
-        const auto staged_bytes = read_binary_file(staged_ecsv);
-        const auto staged_parsed = apt::parse_ecsv_with_transport(
-            staged_bytes, intended.transport);
-        if (!(staged_parsed.declared_digests.semantic_sha256 ==
-                  intended.digests.semantic_sha256) ||
-            !(staged_parsed.declared_digests.envelope_sha256 ==
-                  intended.digests.envelope_sha256) ||
-            staged_parsed.computed_transport.sha256 !=
-                intended.transport.sha256 ||
-            staged_parsed.computed_transport.byte_count !=
-                intended.transport.byte_count) {
-            throw std::runtime_error(
-                "staged canonical APT reread disagrees with intended integrity values");
-        }
-        notify_publication_stage(hooks, PublicationStage::ecsv_validated,
-                                 staged_ecsv, staged_receipt);
-
-        write_binary_file(staged_receipt,
-                          canonical_apt_receipt_bytes(intended.transport));
-        notify_publication_stage(hooks, PublicationStage::receipt_staged,
-                                 staged_ecsv, staged_receipt);
-        const auto staged_transport = parse_canonical_apt_receipt(
-            read_binary_file(staged_receipt));
-        validate_canonical_apt_bytes_and_receipt(staged_bytes,
-                                                 staged_transport);
-        notify_publication_stage(hooks, PublicationStage::receipt_validated,
-                                 staged_ecsv, staged_receipt);
-
-        make_publication_source_read_only(staged_ecsv);
-        make_publication_source_read_only(staged_receipt);
-        publish_no_replace_hard_link(staged_ecsv, ecsv_owner);
-        publish_no_replace_hard_link(staged_receipt, receipt_owner);
-
-        // Recheck before the no-replace operations for a clear diagnostic;
-        // create_hard_link remains the atomic race-closing primitive.
-        if (std::filesystem::exists(ecsv_path) ||
-            std::filesystem::exists(receipt_path)) {
-            throw std::runtime_error(
-                "canonical APT destination appeared during staging");
-        }
-        notify_publication_stage(hooks, PublicationStage::before_ecsv_publish,
-                                 staged_ecsv, staged_receipt);
-        require_owned_publication_alias(staged_ecsv, ecsv_owner);
-        require_owned_publication_alias(staged_receipt, receipt_owner);
-        publish_no_replace_hard_link(ecsv_owner, ecsv_path);
-        ecsv_published = true;
-        notify_publication_stage(hooks, PublicationStage::ecsv_published,
-                                 staged_ecsv, staged_receipt);
-
-        // Validate the exact final artifact against the staged receipt before
-        // making that receipt visible as the sole completion marker.
-        validate_canonical_apt_bytes_and_receipt(read_binary_file(ecsv_path),
-                                                 staged_transport);
-        notify_publication_stage(hooks,
-                                 PublicationStage::before_receipt_publish,
-                                 staged_ecsv, staged_receipt);
-        require_owned_publication_alias(staged_ecsv, ecsv_owner);
-        require_owned_publication_alias(staged_receipt, receipt_owner);
-        // The hook is a test seam; always re-read after it before making the
-        // completion marker visible.
-        const auto final_prepublication_transport =
-            parse_canonical_apt_receipt(read_binary_file(receipt_owner));
-        validate_canonical_apt_bytes_and_receipt(read_binary_file(ecsv_path),
-                                                 final_prepublication_transport);
-        if (final_prepublication_transport.sha256 != intended.transport.sha256 ||
-            final_prepublication_transport.envelope_sha256 !=
-                intended.transport.envelope_sha256 ||
-            final_prepublication_transport.byte_count !=
-                intended.transport.byte_count) {
-            throw std::runtime_error(
-                "canonical APT staged receipt changed before publication");
-        }
-        publish_no_replace_hard_link(receipt_owner, receipt_path);
-        receipt_published = true;
-        // Receipt publication is deliberately the final fallible operation.
-        // Every byte reachable through both final hard links was reread after
-        // the last hook immediately above; receipt visibility is the sole
-        // completion transition. Cleanup is best-effort and nonthrowing.
-        (void)staging.cleanup();
-        return result;
-    } catch (...) {
-        bool rollback_ok = true;
-        if (receipt_published) {
-            rollback_ok = remove_if_owned_hard_link(receipt_owner,
-                                                     receipt_path) &&
-                rollback_ok;
-        }
-        if (ecsv_published) {
-            rollback_ok = remove_if_owned_hard_link(ecsv_owner, ecsv_path) &&
-                rollback_ok;
-        }
-        const bool cleanup_ok = staging.cleanup();
-        if (!rollback_ok || !cleanup_ok) {
-            throw std::runtime_error(
-                "canonical APT publication failed and owned output cleanup was incomplete");
-        }
-        throw;
-    }
+    const auto receipt_bytes =
+        canonical_apt_receipt_bytes(intended.transport);
+    publication::PublicationPlan plan{
+        ecsv_path, receipt_path, intended.bytes, receipt_bytes,
+        [&](std::string_view bytes, std::string_view receipt) {
+            const auto transport = parse_canonical_apt_receipt(receipt);
+            const auto parsed =
+                apt::parse_ecsv_with_transport(bytes, transport);
+            if (parsed.declared_digests.semantic_sha256 !=
+                    intended.digests.semantic_sha256 ||
+                parsed.declared_digests.envelope_sha256 !=
+                    intended.digests.envelope_sha256 ||
+                parsed.computed_transport.scope != intended.transport.scope ||
+                parsed.computed_transport.envelope_sha256 !=
+                    intended.transport.envelope_sha256 ||
+                parsed.computed_transport.sha256 != intended.transport.sha256 ||
+                parsed.computed_transport.byte_count !=
+                    intended.transport.byte_count) {
+                throw std::runtime_error(
+                    "canonical APT reread disagrees with intended integrity values");
+            }
+        }};
+    (void)publication::publish_canonical_artifact(plan, hooks);
+    return result;
 }
 
 }  // namespace beammap_apt_table_output_helpers

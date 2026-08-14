@@ -22,6 +22,9 @@ Use these companion authorities:
   identities, units, coordinate frames, indexing, and validity;
 - [`CANONICAL_APT_V1.md`](CANONICAL_APT_V1.md) for the accepted, currently
   unactivated Citlali-produced canonical Beammap baseline APT contract;
+- [`CANONICAL_APT_OBSERVATION_V1.md`](CANONICAL_APT_OBSERVATION_V1.md) for the
+  accepted, currently unactivated observation-specific canonical APT contract
+  and machine boundary;
 - [`RETAINED_DEBT.md`](RETAINED_DEBT.md) for deliberate limitations, role
   owners, reopening triggers, and exit conditions;
 - [`adr/README.md`](adr/README.md) for durable consequential decisions;
@@ -80,7 +83,7 @@ The active CMake graph has two production targets:
 | Target | Role | Active implementation |
 | --- | --- | --- |
 | `citlali` / `citlali::citlali` | Static library and shared include/dependency boundary | Eight compiled implementation files plus the header-defined numerical and orchestration graph |
-| `citlali_cli` | Production executable, emitted as `citlali` | `src/citlali/cli/main.cpp`, linked to `citlali::citlali` |
+| `citlali_cli` | Production executable, emitted as `citlali` | `src/citlali/cli/main.cpp` plus the unactivated canonical-APT protocol adapter, linked to `citlali::citlali` |
 
 The eight compiled library sources currently cover timestream enum
 definitions, output-root leasing, restart-checkpoint publication, calibration,
@@ -92,12 +95,18 @@ desired final compilation boundary.
 The only supported production executable entry is
 `src/citlali/cli/main.cpp`. It:
 
-1. handles the uncontaminated default-config dump path;
-2. initializes logging and parses process arguments;
-3. applies process-control policy such as dry-run handling;
-4. configures and restores the CLI run environment; and
-5. invokes the standard reduction session, reports diagnostics, and returns
+1. dispatches the explicit versioned canonical-APT contract protocol, when
+   requested, before reduction configuration or logging is initialized;
+2. handles the uncontaminated default-config dump path;
+3. initializes logging and parses process arguments;
+4. applies process-control policy such as dry-run handling;
+5. configures and restores the CLI run environment; and
+6. invokes the standard reduction session, reports diagnostics, and returns
    the selected process exit code.
+
+The contract protocol is a strict JSON request/response control boundary. It
+does not serialize APT scientific data as JSON, enter ordinary reduction
+dispatch, or activate the candidate product in a production profile.
 
 No scientific processor or reusable library component may choose a process
 exit code.
@@ -414,6 +423,12 @@ last. The receipt is not a product-identity or raw-relation sidecar and cannot
 substitute for the embedded contract. This candidate protocol is not yet an
 active production-profile requirement.
 
+The observation-specific candidate uses the same completion rule for exactly
+one final `.apt.ecsv` and its adjacent receipt. Its complete target and relation
+records are integrity-covered metadata inside that ECSV, not separately
+published products. Publication refuses to replace either final path, makes the
+receipt visible last, and treats a missing receipt as incomplete.
+
 A successful reduction has:
 
 - a successful session result and zero exit status;
@@ -453,6 +468,87 @@ the exact v1 range `0..2^53-1`; it is not persistent detector identity. The
 embedded `uid -> (network, channel)` relation is complete against the raw
 manifest. Persistent measured-detector and tune identities remain omitted.
 
+### Canonical Observation APT v1 Candidate
+
+APT-PROD-002 preserves the established APT-family ECSV product model while
+removing row-position correspondence from the observation application
+boundary. Its persisted result is exactly one observation-specific canonical
+APT ECSV plus its envelope-bound receipt. The target manifest and generalized
+match relation remain complete typed logical records and integrity-covered
+provenance embedded in the final ECSV; neither is independently published in
+v1. JSON is used only by the strict versioned machine request/response
+protocol, never as an APT scientific-data representation.
+
+Every target, relation, and output reference binds the verified parent schema,
+semantic/envelope identities, opaque artifact occurrence, and a key meaningful
+only inside that occurrence. The final output receives a new opaque
+Citlali-issued occurrence and new output-local `uid` values. Baseline, target,
+relation, and output keys do not establish a persistent detector identity, and
+row or sequence position is never an identity. Target source order, target
+application order, seed source order, and output presentation order are
+separate complete permutations recorded only as nonidentity facts.
+
+The embedded relation retains its complete accepted cardinality and
+referential integrity: every target is exactly matched or unmatched, every
+baseline seed is exactly matched or unused, and every pair is named
+reciprocally by both endpoint dispositions. Unmatched or unused dispositions
+have no fabricated endpoint. Pair and disposition keys share one
+relation-occurrence-local namespace, so a collision fails closed. One-to-many
+and many-to-one pair sets are valid contract shapes; Citlali validates their
+representation but does not select or implement matcher policy. A caller that
+starts from matcher ordinals must translate them back to occurrence-scoped
+local references before invoking the protocol.
+
+Citlali owns the schemas, closed field registries, canonical serialization and
+digests, baseline reread and verification, output occurrence/event and
+software-revision issuance, ECSV codec, receipt, and no-replace publication.
+TolProj remains the legitimate value issuer for target/relation logical
+occurrences and envelope context, selected observation/raw/KMP/network/channel
+facts, match pairs and dispositions, matcher/network evidence, and associated
+observation-specific provenance. Supplying those values does not transfer
+contract, encoding, final-output issuance, publication, or matcher-policy
+authority.
+
+The target and relation retain their accepted logical semantic and envelope
+preimages even though they are embedded rather than separately transported.
+The final observation APT has its own semantic, envelope, and exact-byte
+transport identities; embedding does not collapse any of those scopes.
+
+The observation registry authorizes only `kids_fr`, `kids_f_out`, `kids_Qr`,
+and optional `kids_flag`. Extra unregistered KMP diagnostics may remain in an
+immutable source whose complete byte count and digest are bound, but their
+presence grants no canonical meaning. They are not copied into output,
+interpreted, assigned units, or accepted as identity, matching,
+transformation, output, or authority facts. Adding another diagnostic requires
+a separately accepted field-specific successor contract; there is no generic
+column or diagnostic-bag seam.
+
+Per output field, the embedded transformation evidence records exact typed
+before and after values, source authority and row, relation pair where
+applicable, and provenance. The only v1 operations preserve an authorized
+target field or copy an exact verified baseline value for a selected pair,
+using typed null for an unmatched target's baseline-derived field. Structural
+and raw-relation fields cannot be issuer-declared transformations. The
+immutable baseline bytes, its occurrence and receipt, every baseline quantity
+admitted by the closed output catalog with its unit, and the complete lineage
+remain explicitly bound. Target `kids_flag`, when present, is reserved against
+the baseline field of the same name so the baseline copy cannot overwrite or
+supply it.
+
+This candidate boundary is unactivated: it is absent from validation profiles,
+accepted runs, ingestion, CAL, ALIGN, and production/downstream dispatch. It
+does not modify ordinary Beammap production, detector membership/order,
+scientific values, TolProj matching policy, or any sibling repository.
+
+Its accepted implementation limitations are deliberately retained. The
+receipt-last protocol is not an `fsync`/crash-durable transaction before the
+receipt becomes visible; an interruption can leave a receipt-absent incomplete
+artifact. A stdout write can fail after successful receipt publication and
+therefore report a false-negative acknowledgement; the protocol's `validate`
+operation recovers the authoritative published state. The protocol has no
+owner-specified absolute stdin size quota. These limitations do not weaken the
+rule that only a valid ECSV-and-receipt pair is complete.
+
 Provenance records the accepted config source, requested state, effective
 plans, observation-resolved decisions, and realized execution where those
 facts exist. Provenance is evidence about the run, not an alternative control
@@ -467,7 +563,7 @@ frames, units, indexing, and missing values is defined in
 
 | Path | Architectural role |
 | --- | --- |
-| `src/citlali/cli` and `include/citlali/core/cli` | Process adapter, config file loading, standard mode selection, result reporting, and runtime environment policy |
+| `src/citlali/cli` and `include/citlali/core/cli` | Process adapter, config file loading, standard mode selection, result reporting, runtime environment policy, and the unactivated strict-JSON canonical-APT contract protocol |
 | `include/citlali/core/session` | Reusable sequential run and structured result boundary |
 | `include/citlali/core/config` | Typed configuration values, enums, validation, and runtime planning |
 | `include/citlali/core/pipeline` | Reduction/iteration/observation orchestration, execution plans, cold-boundary validation, output policy, provenance, and compatibility adapters |
@@ -600,7 +696,8 @@ Validation is layered according to blast radius:
    compatibility, and provenance coverage.
 3. **Standalone artifact contract:** exact canonical ECSV parsing and
    reserialization, fixed catalog and value-domain admission, raw-manifest
-   bijection, independent digest recomputation, and envelope-bound receipt.
+   bijection, complete embedded observation target/relation validation,
+   independent digest recomputation, and envelope-bound receipt.
 4. **Run audit:** completion, log severity, required provenance, and structural
    product contract.
 5. **Numerical comparison:** profile-specific exact or scientific-tolerance
@@ -632,6 +729,9 @@ Future work must preserve these invariants:
   at subsystem boundaries.
 - An APT `uid` is treated only within its declared artifact scope; no code may
   infer persistent detector identity from an artifact-local row key.
+- Observation APT joins use occurrence-scoped local references, never row or
+  sequence position, and relation coverage remains complete for both target
+  and baseline-seed domains.
 - Mature hot algorithms change only from evidence and receive proportionate
   scientific and performance validation.
 - A successful validation does not skip required products or tolerate

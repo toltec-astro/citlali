@@ -144,6 +144,462 @@
         {"name": "template_offset", "datatype": "float64", "unit": "xs", "nullable": true, "authority": "producer", "authority_reference": "citlali:beammap-empirical-calibration-v1", "nonfinite": "nan-token", "registry": "citlali-canonical-apt-extension-registry-v1", "description": "empirical template fitted offset", "identity_role": "nonidentity"},
         {"name": "template_resid_rms", "datatype": "float64", "unit": "xs", "nullable": true, "authority": "producer", "authority_reference": "citlali:beammap-empirical-calibration-v1", "nonfinite": "nan-token", "registry": "citlali-canonical-apt-extension-registry-v1", "description": "empirical template residual RMS", "identity_role": "nonidentity"}
       ]
+    },
+    "apt-prod-002-observation-target-manifest-v1": {
+      "artifact_contract_id": "apt-prod-002-observation-target-manifest-v1",
+      "contract_schema_version": "citlali-canonical-observation-artifact-contract-v1",
+      "schema_version": "citlali-observation-target-manifest-v1",
+      "activation_state": "unactivated",
+      "artifact_kind": "canonical_observation_target_manifest",
+      "validator": "citlali-observation-target-manifest-v1",
+      "persistence_state": "embedded-logical-record-v1",
+      "contract_authority": "citlali",
+      "observation_value_issuer": "tolproj",
+      "framing_encoding": "citlali-labelled-type-length-v1",
+      "semantic_scope": "citlali-observation-target-manifest-semantic-sha256-v1",
+      "envelope_scope": "citlali-observation-target-manifest-envelope-sha256-v1",
+      "occurrence_contract": "opaque issuer-provided artifact occurrence; distinct from content and not derived from content, path, time, uid, or table order",
+      "local_key_contract": "opaque target-artifact-local row key; unique within one target occurrence and never persistent detector identity",
+      "raw_relation_contract": "one authoritative raw/KMP source binding per represented network with a complete bijection over every selected (network, interface, channel) target row; the raw header must equal the target observation, while the exact KMP header remains immutable fallback/source provenance and may differ without tune-identity reconstruction",
+      "sequence_contract": ["target_source_sequence", "target_application_sequence"],
+      "field_authorization_registry": {
+        "registry": "citlali-observation-target-fields-v1",
+        "source_field_map_profile": "citlali-kmp-source-field-map-v1",
+        "source_column_map": {"fr": "kids_fr", "f_out": "kids_f_out", "Qr": "kids_Qr", "flag": "kids_flag"},
+        "required_source_columns": ["fr", "f_out", "Qr"],
+        "optional_source_columns": ["flag"],
+        "required_field_names": ["kids_Qr", "kids_f_out", "kids_fr"],
+        "optional_field_names": ["kids_flag"],
+        "authorized_use_roles": {
+          "identity": [],
+          "matching": ["kids_Qr", "kids_fr"],
+          "application": ["kids_f_out"],
+          "transformation": [],
+          "output": ["kids_Qr", "kids_f_out", "kids_flag", "kids_fr"],
+          "authority": ["kids_Qr", "kids_f_out", "kids_flag", "kids_fr"]
+        },
+        "registered_fields": [
+          {"name": "kids_Qr", "source_column": "Qr", "datatype": "float64", "unit": "N/A", "nullable": false, "nonfinite": "reject", "authority": "copied-declared", "authority_reference": "kids:model-params-v1", "registry": "citlali-observation-target-fields-v1", "description": "imported KIDs resonator Qr; finite with no positivity rule, nonidentity", "identity_role": "nonidentity"},
+          {"name": "kids_f_out", "source_column": "f_out", "datatype": "float64", "unit": "Hz", "nullable": false, "nonfinite": "reject", "authority": "copied-declared", "authority_reference": "kids:model-params-v1", "registry": "citlali-observation-target-fields-v1", "description": "imported KIDs output tone frequency; finite, nonidentity", "identity_role": "nonidentity"},
+          {"name": "kids_flag", "source_column": "flag", "datatype": "int64", "unit": "N/A", "nullable": false, "nonfinite": "reject", "authority": "copied-declared", "authority_reference": "kids:fit-report-v1", "registry": "citlali-observation-target-fields-v1", "description": "imported KIDs model-fit flag; exact signed integral values, nonidentity", "identity_role": "nonidentity"},
+          {"name": "kids_fr", "source_column": "fr", "datatype": "float64", "unit": "Hz", "nullable": false, "nonfinite": "reject", "authority": "copied-declared", "authority_reference": "kids:model-params-v1", "registry": "citlali-observation-target-fields-v1", "description": "imported KIDs resonant frequency; finite, nonidentity", "identity_role": "nonidentity"}
+        ],
+        "unknown_source_diagnostics": "permitted in the immutable KMP source and not individually promoted, framed, output, typed, or granted authority; the complete source bytes remain transitively semantic-integrity-bound by the canonical KMP content_sha256 and byte_count",
+        "artifact_self_registration": "reject",
+        "policy": "exactly the three required model fields plus optional artifact-level kids_flag; no generic payload, diagnostic bag, design field, Beammap field, or issuer-selected authority is admitted"
+      },
+      "record_schemas": {
+        "issuance_envelope": {
+          "cardinality": "exactly-one",
+          "unknown_members": "reject",
+          "members": [
+            {"name": "occurrence", "datatype": "opaque", "unit": "N/A", "nullable": false, "authority": "tolproj", "cardinality": "exactly-one", "identity_role": "artifact-occurrence"},
+            {"name": "event_reference", "datatype": "opaque", "unit": "N/A", "nullable": false, "authority": "tolproj", "cardinality": "exactly-one", "identity_role": "event-reference"},
+            {"name": "software_revision", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "tolproj", "cardinality": "exactly-one", "identity_role": "envelope-context"},
+            {"name": "configuration_reference", "datatype": "opaque", "unit": "N/A", "nullable": false, "authority": "tolproj", "cardinality": "exactly-one", "identity_role": "envelope-context"},
+            {"name": "event_time_utc", "datatype": "utc-timestamp", "unit": "UTC", "nullable": false, "authority": "tolproj", "cardinality": "exactly-one", "identity_role": "envelope-context"}
+          ]
+        },
+        "observation_identity": {
+          "cardinality": "exactly-one",
+          "unknown_members": "reject",
+          "members": [
+            {"name": "observation", "datatype": "int64-decimal", "unit": "N/A", "nullable": false, "authority": "source-header", "cardinality": "exactly-one", "identity_role": "observation-context"},
+            {"name": "subobservation", "datatype": "int64-decimal", "unit": "N/A", "nullable": false, "authority": "source-header", "cardinality": "exactly-one", "identity_role": "observation-context"},
+            {"name": "scan", "datatype": "int64-decimal", "unit": "N/A", "nullable": false, "authority": "source-header", "cardinality": "exactly-one", "identity_role": "observation-context"}
+          ]
+        },
+        "typed_field": {
+          "cardinality": "three-required-plus-optional-kids-flag",
+          "unknown_members": "reject",
+          "members": [
+            {"name": "name", "datatype": "enum:kids_Qr|kids_f_out|kids_flag|kids_fr", "unit": "N/A", "nullable": false, "authority": "citlali-target-field-registry", "cardinality": "exactly-one", "identity_role": "field-name"},
+            {"name": "source_column", "datatype": "enum:Qr|f_out|flag|fr", "unit": "N/A", "nullable": false, "authority": "citlali-target-field-registry", "cardinality": "exactly-one", "identity_role": "immutable-source-column-relation"},
+            {"name": "datatype", "datatype": "enum:int64|float64", "unit": "N/A", "nullable": false, "authority": "citlali-target-field-registry", "cardinality": "exactly-one", "identity_role": "field-schema"},
+            {"name": "unit", "datatype": "enum:Hz|N/A", "unit": "N/A", "nullable": false, "authority": "citlali-target-field-registry", "cardinality": "exactly-one", "identity_role": "field-schema"},
+            {"name": "nullable", "datatype": "bool", "unit": "N/A", "nullable": false, "authority": "citlali-target-field-registry", "cardinality": "exactly-one-false", "identity_role": "field-schema"},
+            {"name": "nonfinite", "datatype": "enum:reject", "unit": "N/A", "nullable": false, "authority": "citlali-target-field-registry", "cardinality": "exactly-one", "identity_role": "field-schema"},
+            {"name": "authority", "datatype": "enum:copied-declared", "unit": "N/A", "nullable": false, "authority": "citlali-target-field-registry", "cardinality": "exactly-one", "identity_role": "field-authority"},
+            {"name": "authority_reference", "datatype": "enum:kids:model-params-v1|kids:fit-report-v1", "unit": "N/A", "nullable": false, "authority": "citlali-target-field-registry", "cardinality": "exactly-one", "identity_role": "field-authority"},
+            {"name": "registry", "datatype": "enum:citlali-observation-target-fields-v1", "unit": "N/A", "nullable": false, "authority": "citlali-target-field-registry", "cardinality": "exactly-one", "identity_role": "field-schema"},
+            {"name": "description", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "citlali-target-field-registry", "cardinality": "exactly-one", "identity_role": "nonidentity-description"}
+            ,{"name": "identity_role", "datatype": "enum:nonidentity", "unit": "N/A", "nullable": false, "authority": "citlali-target-field-registry", "cardinality": "exactly-one", "identity_role": "field-identity-policy"}
+          ]
+        },
+        "source_artifact": {
+          "cardinality": "exactly-two-per-input-roles-raw-and-kmp",
+          "unknown_members": "reject",
+          "members": [
+            {"name": "source_key", "datatype": "int64-decimal", "unit": "N/A", "nullable": false, "authority": "canonical-issuer", "cardinality": "exactly-one", "identity_role": "artifact-local-row-key"},
+            {"name": "role", "datatype": "enum:raw|kmp", "unit": "N/A", "nullable": false, "authority": "citlali-contract", "cardinality": "exactly-one", "identity_role": "structural"},
+            {"name": "network", "datatype": "int64-decimal", "unit": "N/A", "nullable": false, "authority": "source-header", "cardinality": "exactly-one", "identity_role": "source-raw-relation"},
+            {"name": "interface", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "source-header", "cardinality": "exactly-one", "identity_role": "source-raw-relation"},
+            {"name": "channel_count", "datatype": "int64-decimal", "unit": "channel", "nullable": false, "authority": "source-header", "cardinality": "exactly-one", "identity_role": "source-raw-relation"},
+            {"name": "diagnostic_locator", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "tolproj", "cardinality": "exactly-one", "identity_role": "nonidentity-presentation"},
+            {"name": "content_sha256", "datatype": "sha256", "unit": "byte", "nullable": false, "authority": "canonical-issuer", "cardinality": "exactly-one", "identity_role": "content-identity"},
+            {"name": "byte_count", "datatype": "uint64-decimal", "unit": "byte", "nullable": false, "authority": "canonical-issuer", "cardinality": "exactly-one", "identity_role": "content-identity"},
+            {"name": "header_observation", "datatype": "record:observation_identity", "unit": "N/A", "nullable": false, "authority": "source-header", "cardinality": "exactly-one", "identity_role": "source-context"}
+          ]
+        },
+        "target_input": {
+          "cardinality": "one-or-more",
+          "unknown_members": "reject",
+          "members": [
+            {"name": "input_key", "datatype": "int64-decimal", "unit": "N/A", "nullable": false, "authority": "canonical-issuer", "cardinality": "exactly-one", "identity_role": "artifact-local-row-key"},
+            {"name": "network", "datatype": "int64-decimal", "unit": "N/A", "nullable": false, "authority": "raw/kmp-binding", "cardinality": "exactly-one", "identity_role": "raw-channel-relation"},
+            {"name": "interface", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "raw/kmp-binding", "cardinality": "exactly-one", "identity_role": "raw-channel-relation"},
+            {"name": "channel_count", "datatype": "int64-decimal", "unit": "channel", "nullable": false, "authority": "raw/kmp-binding", "cardinality": "exactly-one", "identity_role": "raw-channel-relation"},
+            {"name": "raw_source", "datatype": "record:source_artifact", "unit": "N/A", "nullable": false, "authority": "raw-source", "cardinality": "exactly-one", "identity_role": "immutable-source"},
+            {"name": "kmp_source", "datatype": "record:source_artifact", "unit": "N/A", "nullable": false, "authority": "kmp-source", "cardinality": "exactly-one", "identity_role": "immutable-source"}
+          ]
+        },
+        "target_row": {
+          "cardinality": "one-per-selected-raw-channel",
+          "unknown_members": "reject",
+          "members": [
+            {"name": "row_key", "datatype": "int64-decimal", "unit": "N/A", "nullable": false, "authority": "canonical-issuer", "cardinality": "exactly-one", "identity_role": "artifact-local-row-key"},
+            {"name": "input_key", "datatype": "int64-decimal", "unit": "N/A", "nullable": false, "authority": "canonical-issuer", "cardinality": "exactly-one", "identity_role": "local-reference"},
+            {"name": "kmp_source_key", "datatype": "int64-decimal", "unit": "N/A", "nullable": false, "authority": "canonical-issuer", "cardinality": "exact-selected-input-kmp-source", "identity_role": "immutable-source-reference"},
+            {"name": "kmp_row_index", "datatype": "int64-decimal", "unit": "N/A", "nullable": false, "authority": "kmp-source", "cardinality": "exact-target-channel", "identity_role": "immutable-source-row-reference"},
+            {"name": "matching_frequency_hz", "datatype": "float64-bits", "unit": "Hz", "nullable": false, "authority": "kids:model-params-v1", "cardinality": "exact-bits-alias-of-kids_fr-from-kmp-fr", "identity_role": "nonidentity-value"},
+            {"name": "output_tone_frequency_hz", "datatype": "float64-bits", "unit": "Hz", "nullable": false, "authority": "kids:model-params-v1", "cardinality": "exact-bits-alias-of-kids_f_out-from-kmp-f_out", "identity_role": "nonidentity-value"},
+            {"name": "array", "datatype": "int64-decimal", "unit": "N/A", "nullable": false, "authority": "network-map", "cardinality": "exactly-one", "identity_role": "nonidentity-attribute"},
+            {"name": "network", "datatype": "int64-decimal", "unit": "N/A", "nullable": false, "authority": "raw/kmp-binding", "cardinality": "exactly-one", "identity_role": "raw-channel-relation"},
+            {"name": "channel", "datatype": "int64-decimal", "unit": "N/A", "nullable": false, "authority": "raw/kmp-binding", "cardinality": "exactly-one", "identity_role": "raw-channel-relation"},
+            {"name": "fields", "datatype": "closed-field-map", "unit": "field-declared", "nullable": false, "authority": "citlali-target-field-registry", "cardinality": "exactly-declared-target-fields", "identity_role": "nonidentity-values"}
+          ]
+        },
+        "target_manifest": {
+          "cardinality": "exactly-one",
+          "unknown_members": "reject",
+          "members": [
+            {"name": "schema_version", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "citlali-contract", "cardinality": "exactly-one", "identity_role": "structural"},
+            {"name": "contract_authority", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "citlali-contract", "cardinality": "exactly-one", "identity_role": "structural"},
+            {"name": "observation_value_issuer", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "citlali-contract", "cardinality": "exactly-one", "identity_role": "structural"},
+            {"name": "envelope", "datatype": "record:issuance_envelope", "unit": "N/A", "nullable": false, "authority": "tolproj", "cardinality": "exactly-one", "identity_role": "envelope"},
+            {"name": "observation", "datatype": "record:observation_identity", "unit": "N/A", "nullable": false, "authority": "raw-header", "cardinality": "exactly-one", "identity_role": "observation-context"},
+            {"name": "inputs", "datatype": "list:target_input", "unit": "N/A", "nullable": false, "authority": "tolproj-selected-sources", "cardinality": "one-or-more", "identity_role": "content"},
+            {"name": "registered_fields", "datatype": "list:typed_field", "unit": "N/A", "nullable": false, "authority": "citlali-target-field-registry", "cardinality": "three-required-plus-optional-kids-flag", "identity_role": "structural"},
+            {"name": "rows", "datatype": "list:target_row", "unit": "N/A", "nullable": false, "authority": "tolproj-values/citlali-encoding", "cardinality": "one-or-more", "identity_role": "content"},
+            {"name": "target_source_sequence", "datatype": "permutation:int64-local-key", "unit": "N/A", "nullable": false, "authority": "tolproj", "cardinality": "exactly-all-targets", "identity_role": "explicit-order-nonidentity"},
+            {"name": "target_application_sequence", "datatype": "permutation:int64-local-key", "unit": "N/A", "nullable": false, "authority": "tolproj", "cardinality": "exactly-all-targets", "identity_role": "explicit-order-nonidentity"}
+          ]
+        }
+      },
+      "typed_scalar_encoding": {
+        "int64": "canonical decimal string in signed 64-bit range",
+        "uint64": "canonical decimal string in unsigned 64-bit range",
+        "float64": "exact lowercase 16-hex IEEE-754 binary64 bits; every NaN canonicalized to 7ff8000000000000",
+        "null": "typed null token",
+        "utf8": "canonical single-line UTF-8 with labelled byte length"
+      },
+      "authority_contract": "Citlali owns schema, encoding, and validation; TolProj supplies actual selected observation/KMP/raw/network/channel values and source provenance only",
+      "source_diagnostic_boundary": "unknown KMP diagnostic columns may remain in the immutable bound source and its content hash, but no unknown column can be requested as identity, matching evidence, transformation input, output, or authority and none is serialized in the canonical target",
+      "publication_state": "embedded complete logical record only inside the final matched observation APT; no independent suffix, transport, receipt, publication, profile, accepted-run, or ingestion activation"
+    },
+    "apt-prod-002-match-dispositions-v1": {
+      "artifact_contract_id": "apt-prod-002-match-dispositions-v1",
+      "contract_schema_version": "citlali-canonical-observation-artifact-contract-v1",
+      "schema_version": "citlali-apt-match-dispositions-v1",
+      "activation_state": "unactivated",
+      "artifact_kind": "canonical_apt_match_dispositions",
+      "validator": "citlali-apt-match-dispositions-v1",
+      "persistence_state": "embedded-logical-record-v1",
+      "contract_authority": "citlali",
+      "observation_value_issuer": "tolproj",
+      "mapping_domain": "tolproj-observation-tone-to-beammap-seed-v1",
+      "framing_encoding": "citlali-labelled-type-length-v1",
+      "semantic_scope": "citlali-apt-match-dispositions-semantic-sha256-v1",
+      "envelope_scope": "citlali-apt-match-dispositions-envelope-sha256-v1",
+      "occurrence_contract": "opaque issuer-provided artifact occurrence; distinct from content and all parent occurrences",
+      "local_key_contract": "one global relation-artifact-local key namespace covers every pair and every target/seed disposition record; all keys are unique across all three collections, disposition keys remain present for unmatched/unused records while pair endpoints remain absent, and no key is detector identity",
+      "parent_contract": ["verified immutable Beammap baseline occurrence", "verified observation target occurrence"],
+      "coverage_contract": "every target is exactly matched or unmatched and every baseline seed member is exactly matched or unused; every pair is reciprocally named by both endpoint dispositions; unmatched/unused dispositions have no fabricated pair endpoint",
+      "cardinality_contract": "pair-key sets support 1-to-0, 1-to-1, 1-to-many, and many-to-1 without imposing matcher policy",
+      "sequence_contract": ["seed_source_sequence"],
+      "record_schemas": {
+        "issuance_envelope": {
+          "cardinality": "exactly-one",
+          "unknown_members": "reject",
+          "members": [
+            {"name": "occurrence", "datatype": "opaque", "unit": "N/A", "nullable": false, "authority": "tolproj", "cardinality": "exactly-one", "identity_role": "artifact-occurrence"},
+            {"name": "event_reference", "datatype": "opaque", "unit": "N/A", "nullable": false, "authority": "tolproj", "cardinality": "exactly-one", "identity_role": "event-reference"},
+            {"name": "software_revision", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "tolproj", "cardinality": "exactly-one", "identity_role": "envelope-context"},
+            {"name": "configuration_reference", "datatype": "opaque", "unit": "N/A", "nullable": false, "authority": "tolproj", "cardinality": "exactly-one", "identity_role": "envelope-context"},
+            {"name": "event_time_utc", "datatype": "utc-timestamp", "unit": "UTC", "nullable": false, "authority": "tolproj", "cardinality": "exactly-one", "identity_role": "envelope-context"}
+          ]
+        },
+        "artifact_identity": {
+          "cardinality": "exactly-one-per-parent",
+          "unknown_members": "reject",
+          "members": [
+            {"name": "schema", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "parent-contract", "cardinality": "exactly-one", "identity_role": "artifact-schema"},
+            {"name": "occurrence", "datatype": "opaque", "unit": "N/A", "nullable": false, "authority": "parent-issuer", "cardinality": "exactly-one", "identity_role": "artifact-occurrence"},
+            {"name": "semantic_sha256", "datatype": "sha256", "unit": "byte", "nullable": false, "authority": "citlali-canonicalizer", "cardinality": "exactly-one", "identity_role": "content-identity"},
+            {"name": "envelope_sha256", "datatype": "sha256", "unit": "byte", "nullable": false, "authority": "citlali-canonicalizer", "cardinality": "exactly-one", "identity_role": "envelope-identity"}
+          ]
+        },
+        "verified_baseline_reference": {
+          "cardinality": "exactly-one",
+          "unknown_members": "reject",
+          "members": [
+            {"name": "artifact", "datatype": "record:artifact_identity", "unit": "N/A", "nullable": false, "authority": "verified-baseline", "cardinality": "exactly-one", "identity_role": "baseline-artifact-identity"},
+            {"name": "profile", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "verified-baseline", "cardinality": "exactly-one", "identity_role": "baseline-profile"},
+            {"name": "descriptor_sha256", "datatype": "sha256", "unit": "byte", "nullable": false, "authority": "citlali-canonicalizer", "cardinality": "exactly-one", "identity_role": "descriptor-representation-binding"},
+            {"name": "transport_scope", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "citlali-contract", "cardinality": "exactly-one", "identity_role": "transport-identity"},
+            {"name": "transport_sha256", "datatype": "sha256", "unit": "byte", "nullable": false, "authority": "citlali-canonicalizer", "cardinality": "exactly-one", "identity_role": "transport-identity"},
+            {"name": "byte_count", "datatype": "uint64-decimal", "unit": "byte", "nullable": false, "authority": "citlali-canonicalizer", "cardinality": "exactly-one", "identity_role": "transport-identity"},
+            {"name": "receipt_sha256", "datatype": "sha256", "unit": "byte", "nullable": false, "authority": "citlali-canonicalizer", "cardinality": "exactly-one", "identity_role": "receipt-identity"},
+            {"name": "receipt_byte_count", "datatype": "uint64-decimal", "unit": "byte", "nullable": false, "authority": "citlali-canonicalizer", "cardinality": "exactly-one", "identity_role": "receipt-identity"}
+          ]
+        },
+        "row_reference": {
+          "cardinality": "exactly-one-per-endpoint",
+          "unknown_members": "reject",
+          "members": [
+            {"name": "artifact_schema", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "parent-contract", "cardinality": "exactly-one", "identity_role": "artifact-schema"},
+            {"name": "occurrence", "datatype": "opaque", "unit": "N/A", "nullable": false, "authority": "parent-issuer", "cardinality": "exactly-one", "identity_role": "artifact-occurrence"},
+            {"name": "envelope_sha256", "datatype": "sha256", "unit": "byte", "nullable": false, "authority": "citlali-canonicalizer", "cardinality": "exactly-one", "identity_role": "envelope-identity"},
+            {"name": "local_key", "datatype": "int64-decimal", "unit": "N/A", "nullable": false, "authority": "parent-canonical-issuer", "cardinality": "exactly-one", "identity_role": "parent-artifact-local-reference"}
+          ]
+        },
+        "match_pair": {
+          "cardinality": "zero-or-more",
+          "unknown_members": "reject",
+          "members": [
+            {"name": "pair_key", "datatype": "int64-decimal", "unit": "N/A", "nullable": false, "authority": "canonical-issuer", "cardinality": "exactly-one", "identity_role": "artifact-local-row-key"},
+            {"name": "target", "datatype": "record:row_reference", "unit": "N/A", "nullable": false, "authority": "target-parent", "cardinality": "exactly-one", "identity_role": "relation-endpoint"},
+            {"name": "seed", "datatype": "record:row_reference", "unit": "N/A", "nullable": false, "authority": "baseline-parent", "cardinality": "exactly-one", "identity_role": "relation-endpoint"},
+            {"name": "separation_hz", "datatype": "float64-bits", "unit": "Hz", "nullable": false, "authority": "tolproj-matcher", "cardinality": "exactly-one", "identity_role": "nonidentity-evidence"},
+            {"name": "is_good_match", "datatype": "bool", "unit": "N/A", "nullable": false, "authority": "tolproj-matcher", "cardinality": "exactly-one", "identity_role": "nonidentity-evidence"}
+          ]
+        },
+        "matcher_evidence": {
+          "cardinality": "exactly-one",
+          "unknown_members": "reject",
+          "members": [
+            {"name": "matcher_run_occurrence", "datatype": "opaque", "unit": "N/A", "nullable": false, "authority": "tolproj", "cardinality": "exactly-one", "identity_role": "matcher-occurrence"},
+            {"name": "implementation_revision", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "tolproj", "cardinality": "exactly-one", "identity_role": "nonidentity-provenance"},
+            {"name": "configuration_reference", "datatype": "opaque", "unit": "N/A", "nullable": false, "authority": "tolproj", "cardinality": "exactly-one", "identity_role": "nonidentity-provenance"},
+            {"name": "target_frequency_field", "datatype": "enum:kids_fr", "unit": "N/A", "nullable": false, "authority": "citlali-target-field-registry", "cardinality": "exactly-one", "identity_role": "matching-input-contract"},
+            {"name": "target_quality_factor_field", "datatype": "enum:kids_Qr", "unit": "N/A", "nullable": false, "authority": "citlali-target-field-registry", "cardinality": "exactly-one", "identity_role": "matching-input-contract"},
+            {"name": "method", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "tolproj", "cardinality": "exactly-one", "identity_role": "nonidentity-provenance"},
+            {"name": "backend", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "tolproj", "cardinality": "exactly-one", "identity_role": "nonidentity-provenance"}
+          ]
+        },
+        "network_match_evidence": {
+          "cardinality": "exactly-one-per-target-network",
+          "unknown_members": "reject",
+          "members": [
+            {"name": "network", "datatype": "int64-decimal", "unit": "N/A", "nullable": false, "authority": "target-raw-relation", "cardinality": "exactly-one", "identity_role": "network-context"},
+            {"name": "frequency_shift_hz", "datatype": "float64-bits", "unit": "Hz", "nullable": false, "authority": "tolproj-matcher", "cardinality": "exactly-one", "identity_role": "nonidentity-evidence"},
+            {"name": "gate_hz", "datatype": "float64-bits", "unit": "Hz", "nullable": false, "authority": "tolproj-matcher", "cardinality": "exactly-one", "identity_role": "nonidentity-evidence"},
+            {"name": "quality_factor", "datatype": "float64-bits", "unit": "N/A", "nullable": false, "authority": "tolproj-realized-matcher-evidence", "cardinality": "exactly-one", "identity_role": "nonidentity-evidence"},
+            {"name": "quality_factor_field", "datatype": "enum:kids_Qr", "unit": "N/A", "nullable": false, "authority": "citlali-target-field-registry", "cardinality": "exactly-one", "identity_role": "matching-input-contract"},
+            {"name": "quality_factor_authority_reference", "datatype": "enum:kids:model-params-v1", "unit": "N/A", "nullable": false, "authority": "citlali-target-field-registry", "cardinality": "exactly-one", "identity_role": "field-authority"}
+          ]
+        },
+        "endpoint_disposition": {
+          "cardinality": "exactly-one-per-parent-endpoint",
+          "unknown_members": "reject",
+          "members": [
+            {"name": "disposition_key", "datatype": "int64-decimal", "unit": "N/A", "nullable": false, "authority": "canonical-issuer", "cardinality": "exactly-one", "identity_role": "artifact-local-row-key"},
+            {"name": "endpoint", "datatype": "record:row_reference", "unit": "N/A", "nullable": false, "authority": "parent-artifact", "cardinality": "exactly-one", "identity_role": "relation-endpoint"},
+            {"name": "state", "datatype": "enum:matched|unmatched|unused", "unit": "N/A", "nullable": false, "authority": "tolproj-matcher", "cardinality": "exactly-one", "identity_role": "disposition"},
+            {"name": "pair_keys", "datatype": "sorted-set:int64-local-key", "unit": "N/A", "nullable": false, "authority": "tolproj-matcher/citlali-validation", "cardinality": "zero-or-more", "identity_role": "relation-local-reference-set"},
+            {"name": "reason", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "tolproj-matcher", "cardinality": "exactly-one", "identity_role": "nonidentity-evidence"}
+          ]
+        },
+        "match_relation": {
+          "cardinality": "exactly-one",
+          "unknown_members": "reject",
+          "members": [
+            {"name": "schema_version", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "citlali-contract", "cardinality": "exactly-one", "identity_role": "structural"},
+            {"name": "contract_authority", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "citlali-contract", "cardinality": "exactly-one", "identity_role": "structural"},
+            {"name": "observation_value_issuer", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "citlali-contract", "cardinality": "exactly-one", "identity_role": "structural"},
+            {"name": "mapping_domain", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "citlali-contract", "cardinality": "exactly-one", "identity_role": "structural"},
+            {"name": "envelope", "datatype": "record:issuance_envelope", "unit": "N/A", "nullable": false, "authority": "tolproj", "cardinality": "exactly-one", "identity_role": "envelope"},
+            {"name": "baseline_parent", "datatype": "record:verified_baseline_reference", "unit": "N/A", "nullable": false, "authority": "verified-baseline-descriptor", "cardinality": "exactly-one", "identity_role": "parent-identity"},
+            {"name": "target_parent", "datatype": "record:artifact_identity", "unit": "N/A", "nullable": false, "authority": "verified-target", "cardinality": "exactly-one", "identity_role": "parent-identity"},
+            {"name": "matcher", "datatype": "record:matcher_evidence", "unit": "N/A", "nullable": false, "authority": "tolproj", "cardinality": "exactly-one", "identity_role": "nonidentity-provenance"},
+            {"name": "network_evidence", "datatype": "list:network_match_evidence", "unit": "N/A", "nullable": false, "authority": "tolproj", "cardinality": "one-per-target-network", "identity_role": "nonidentity-evidence"},
+            {"name": "pairs", "datatype": "list:match_pair", "unit": "N/A", "nullable": false, "authority": "tolproj-values/citlali-encoding", "cardinality": "zero-or-more", "identity_role": "relation-content"},
+            {"name": "target_dispositions", "datatype": "list:endpoint_disposition", "unit": "N/A", "nullable": false, "authority": "tolproj-values/citlali-validation", "cardinality": "exactly-all-targets", "identity_role": "relation-content"},
+            {"name": "seed_dispositions", "datatype": "list:endpoint_disposition", "unit": "N/A", "nullable": false, "authority": "tolproj-values/citlali-validation", "cardinality": "exactly-all-seeds", "identity_role": "relation-content"},
+            {"name": "seed_source_sequence", "datatype": "permutation:int64-local-key", "unit": "N/A", "nullable": false, "authority": "tolproj", "cardinality": "exactly-all-seeds", "identity_role": "explicit-order-nonidentity"}
+          ]
+        }
+      },
+      "authority_contract": "Citlali owns schema, encoding, and validation; TolProj supplies selected pairs, dispositions, matcher evidence, and observation-specific provenance without transferring matcher policy",
+      "publication_state": "embedded complete logical record only inside the final matched observation APT; no independent suffix, transport, receipt, publication, profile, accepted-run, or ingestion activation"
+    },
+    "apt-prod-002-observation-matched-apt-v1": {
+      "artifact_contract_id": "apt-prod-002-observation-matched-apt-v1",
+      "contract_schema_version": "citlali-canonical-observation-artifact-contract-v1",
+      "schema_version": "citlali-observation-matched-apt-v1",
+      "activation_state": "unactivated",
+      "artifact_kind": "canonical_observation_matched_apt",
+      "validator": "citlali-observation-matched-apt-v1",
+      "artifact_suffix": ".apt.ecsv",
+      "persistence_state": "persisted-final-artifact-v1",
+      "physical_encoding": "canonical-ecsv-1.0-v1",
+      "receipt_schema": "citlali-canonical-apt-publication-receipt-v1",
+      "embedded_logical_records": [
+        "apt-prod-002-observation-target-manifest-v1",
+        "apt-prod-002-match-dispositions-v1"
+      ],
+      "contract_authority": "citlali",
+      "observation_value_issuer": "tolproj",
+      "framing_encoding": "citlali-labelled-type-length-v1",
+      "semantic_scope": "citlali-observation-matched-apt-semantic-sha256-v1",
+      "envelope_scope": "citlali-observation-matched-apt-envelope-sha256-v1",
+      "byte_transport_scope": "citlali-observation-matched-apt-byte-transport-sha256-v1",
+      "transformation_registry": "citlali-observation-apt-field-transformations-v1",
+      "allowed_transformations": ["preserve-target", "copy-baseline-when-matched-null-when-unmatched"],
+      "field_operation_authorization_registry": {
+        "registry": "citlali-observation-matched-output-fields-v1",
+        "target_catalog_source_artifact_contract_id": "apt-prod-002-observation-target-manifest-v1",
+        "target_catalog_source_registry": "citlali-observation-target-fields-v1",
+        "target_catalog_derivation": "preserve every exact target registered field and its immutable raw source_column under preserve-target; kids_flag is optional at target artifact level and reserved against any baseline field of the same name",
+        "baseline_catalog_source_artifact_contract_id": "apt-prod-001-canonical-baseline-apt-v1",
+        "baseline_catalog_source_contract_sha256": "eb343ced3d4c8f303095b53f3fdca087bb478bd53d675b12958b47df244173b9",
+        "baseline_catalog_derivation": "every verified baseline registered field except all reserved target names; copy exact name/datatype/unit/nonfinite/authority/authority_reference/description, set source_column null and output registry, widen nullable true, and authorize copy-baseline-when-matched-null-when-unmatched",
+        "reserved_target_names": ["kids_Qr", "kids_f_out", "kids_flag", "kids_fr"],
+        "authorized_operations": ["preserve-target", "copy-baseline-when-matched-null-when-unmatched"],
+        "issuer_declared_fields": [],
+        "artifact_self_registration": "reject"
+      },
+      "occurrence_contract": "opaque Citlali-issued matched-output occurrence; new and distinct from baseline, target, relation, content, path, time, uid, and table order; the caller cannot assert or derive it",
+      "local_key_contract": "opaque output-artifact-local row key; unique within one output occurrence and never persistent detector identity",
+      "parent_contract": ["verified immutable Beammap baseline occurrence", "verified observation target occurrence", "verified complete relation occurrence"],
+      "relation_contract": "one output row per target; relation_pair_keys are the complete pair set for that target, every target field preserves the exact bound KMP value/source row, and every baseline-sourced transformation names one exact source pair and seed row",
+      "kids_flag_collision_contract": "target kids_flag, when declared, is preserved from its bound KMP report; baseline optional kids_flag is always excluded from the derived baseline catalog and can never overwrite or supply the target field",
+      "sequence_contract": ["output_presentation_sequence"],
+      "protected_structural_fields": ["uid", "row_key", "input_key", "source_key", "kmp_source_key", "kmp_row_index", "target_input_key", "tone_frequency_hz", "matching_frequency_hz", "output_tone_frequency_hz", "array", "network", "interface", "channel", "channel_count", "content_sha256", "byte_count", "raw_source", "kmp_source", "target_source_sequence", "target_application_sequence", "seed_source_sequence", "output_presentation_sequence", "pair_key", "pair_keys", "relation_pair_keys", "target", "seed", "baseline_parent", "target_parent", "relation_parent", "contract_authority", "observation_value_issuer", "mapping_domain", "transformation_registry", "before", "after", "operation", "value_source", "source_pair_key", "disposition_key"],
+      "issuer_declared_contract": "forbidden for structural/raw fields and unauthorized for every v1 field; a future use requires a successor immutable Citlali field authorization plus datatype, explicit typed before/after values, source authority, and source reference",
+      "record_schemas": {
+        "artifact_identity": {
+          "cardinality": "target-and-relation-parents",
+          "unknown_members": "reject",
+          "members": [
+            {"name": "schema", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "parent-contract", "cardinality": "exactly-one", "identity_role": "artifact-schema"},
+            {"name": "occurrence", "datatype": "opaque", "unit": "N/A", "nullable": false, "authority": "parent-issuer", "cardinality": "exactly-one", "identity_role": "artifact-occurrence"},
+            {"name": "semantic_sha256", "datatype": "sha256", "unit": "byte", "nullable": false, "authority": "citlali-canonicalizer", "cardinality": "exactly-one", "identity_role": "content-identity"},
+            {"name": "envelope_sha256", "datatype": "sha256", "unit": "byte", "nullable": false, "authority": "citlali-canonicalizer", "cardinality": "exactly-one", "identity_role": "envelope-identity"}
+          ]
+        },
+        "verified_baseline_reference": {
+          "cardinality": "exactly-one",
+          "unknown_members": "reject",
+          "members": [
+            {"name": "artifact", "datatype": "record:artifact_identity", "unit": "N/A", "nullable": false, "authority": "verified-baseline", "cardinality": "exactly-one", "identity_role": "baseline-artifact-identity"},
+            {"name": "profile", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "verified-baseline", "cardinality": "exactly-one", "identity_role": "baseline-profile"},
+            {"name": "descriptor_sha256", "datatype": "sha256", "unit": "byte", "nullable": false, "authority": "citlali-canonicalizer", "cardinality": "exactly-one", "identity_role": "descriptor-representation-binding"},
+            {"name": "transport_scope", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "citlali-contract", "cardinality": "exactly-one", "identity_role": "transport-identity"},
+            {"name": "transport_sha256", "datatype": "sha256", "unit": "byte", "nullable": false, "authority": "citlali-canonicalizer", "cardinality": "exactly-one", "identity_role": "transport-identity"},
+            {"name": "byte_count", "datatype": "uint64-decimal", "unit": "byte", "nullable": false, "authority": "citlali-canonicalizer", "cardinality": "exactly-one", "identity_role": "transport-identity"},
+            {"name": "receipt_sha256", "datatype": "sha256", "unit": "byte", "nullable": false, "authority": "citlali-canonicalizer", "cardinality": "exactly-one", "identity_role": "receipt-identity"},
+            {"name": "receipt_byte_count", "datatype": "uint64-decimal", "unit": "byte", "nullable": false, "authority": "citlali-canonicalizer", "cardinality": "exactly-one", "identity_role": "receipt-identity"}
+          ]
+        },
+        "issuance_envelope": {
+          "cardinality": "exactly-one",
+          "unknown_members": "reject",
+          "members": [
+            {"name": "occurrence", "datatype": "opaque", "unit": "N/A", "nullable": false, "authority": "citlali-canonical-issuer", "cardinality": "exactly-one", "identity_role": "artifact-occurrence"},
+            {"name": "event_reference", "datatype": "opaque", "unit": "N/A", "nullable": false, "authority": "citlali-canonical-issuer", "cardinality": "exactly-one", "identity_role": "event-reference"},
+            {"name": "software_revision", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "citlali-build-authority", "cardinality": "exactly-one", "identity_role": "envelope-context"},
+            {"name": "configuration_reference", "datatype": "opaque", "unit": "N/A", "nullable": false, "authority": "tolproj-request", "cardinality": "exactly-one", "identity_role": "envelope-context"},
+            {"name": "event_time_utc", "datatype": "utc-timestamp", "unit": "UTC", "nullable": false, "authority": "tolproj-request", "cardinality": "exactly-one", "identity_role": "envelope-context"}
+          ]
+        },
+        "typed_field": {
+          "cardinality": "exactly-one-per-target-field-plus-each-nonreserved-verified-baseline-field",
+          "unknown_members": "reject",
+          "members": [
+            {"name": "name", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "target-or-verified-baseline-field-catalog", "cardinality": "exactly-one", "identity_role": "field-name"},
+            {"name": "source_column", "datatype": "utf8", "unit": "N/A", "nullable": true, "authority": "citlali-output-registry", "cardinality": "target-exactly-one-baseline-zero", "identity_role": "immutable-source-column-relation"},
+            {"name": "datatype", "datatype": "enum:int64|float64", "unit": "N/A", "nullable": false, "authority": "target-or-verified-baseline-field-catalog", "cardinality": "exactly-one", "identity_role": "field-schema"},
+            {"name": "unit", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "target-or-verified-baseline-field-catalog", "cardinality": "exactly-one", "identity_role": "field-schema"},
+            {"name": "nullable", "datatype": "bool", "unit": "N/A", "nullable": false, "authority": "citlali-output-registry", "cardinality": "target-exact-source-nullability-baseline-exactly-true", "identity_role": "field-schema"},
+            {"name": "nonfinite", "datatype": "enum:reject|nan-token", "unit": "N/A", "nullable": false, "authority": "target-or-verified-baseline-field-catalog", "cardinality": "exactly-one", "identity_role": "field-schema"},
+            {"name": "authority", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "target-or-verified-baseline-field-catalog", "cardinality": "exactly-one", "identity_role": "field-authority"},
+            {"name": "authority_reference", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "target-or-verified-baseline-field-catalog", "cardinality": "exactly-one", "identity_role": "field-authority"},
+            {"name": "registry", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "citlali-output-registry", "cardinality": "exactly-one", "identity_role": "field-schema"},
+            {"name": "description", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "target-or-verified-baseline-field-catalog", "cardinality": "exactly-one", "identity_role": "nonidentity-description"},
+            {"name": "identity_role", "datatype": "enum:nonidentity", "unit": "N/A", "nullable": false, "authority": "citlali-output-registry", "cardinality": "exactly-one", "identity_role": "field-identity-policy"}
+          ]
+        },
+        "row_reference": {
+          "cardinality": "as-required",
+          "unknown_members": "reject",
+          "members": [
+            {"name": "artifact_schema", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "parent-contract", "cardinality": "exactly-one", "identity_role": "artifact-schema"},
+            {"name": "occurrence", "datatype": "opaque", "unit": "N/A", "nullable": false, "authority": "parent-issuer", "cardinality": "exactly-one", "identity_role": "artifact-occurrence"},
+            {"name": "envelope_sha256", "datatype": "sha256", "unit": "byte", "nullable": false, "authority": "citlali-canonicalizer", "cardinality": "exactly-one", "identity_role": "envelope-identity"},
+            {"name": "local_key", "datatype": "int64-decimal", "unit": "N/A", "nullable": false, "authority": "parent-canonical-issuer", "cardinality": "exactly-one", "identity_role": "parent-artifact-local-reference"}
+          ]
+        },
+        "derived_output_field_contract": {
+          "cardinality": "exactly-every-declared-target-field-plus-every-nonreserved-verified-baseline-field",
+          "unknown_members": "reject",
+          "members": [
+            {"name": "field", "datatype": "record:typed_field", "unit": "field-declared", "nullable": false, "authority": "target-or-verified-baseline-field-catalog", "cardinality": "exactly-one", "identity_role": "nonidentity-field-schema"},
+            {"name": "authorized_operation", "datatype": "enum:preserve-target|copy-baseline-when-matched-null-when-unmatched", "unit": "N/A", "nullable": false, "authority": "citlali-operation-registry", "cardinality": "exactly-one", "identity_role": "structural"},
+            {"name": "issuer_authority_reference", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "citlali-operation-registry", "cardinality": "exactly-one-empty-v1", "identity_role": "structural"}
+          ]
+        },
+        "field_transformation": {
+          "cardinality": "exactly-one-per-output-field-per-row",
+          "unknown_members": "reject",
+          "members": [
+            {"name": "field_name", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "derived-output-field-registry", "cardinality": "exactly-one", "identity_role": "local-field-reference"},
+            {"name": "operation", "datatype": "enum:preserve-target|copy-baseline-when-matched-null-when-unmatched", "unit": "N/A", "nullable": false, "authority": "citlali-operation-registry", "cardinality": "exactly-one", "identity_role": "structural"},
+            {"name": "before", "datatype": "typed-value", "unit": "field-declared", "nullable": true, "authority": "target-field-or-citlali-operation-registry", "cardinality": "exactly-one", "identity_role": "explicit-before-value"},
+            {"name": "after", "datatype": "typed-value", "unit": "field-declared", "nullable": true, "authority": "target-field-or-verified-baseline-or-canonical-null", "cardinality": "exactly-one", "identity_role": "explicit-after-value"},
+            {"name": "value_source", "datatype": "enum:target-row|baseline-seed-row|canonical-null", "unit": "N/A", "nullable": false, "authority": "citlali-operation-registry", "cardinality": "exactly-one", "identity_role": "source-provenance"},
+            {"name": "source_pair_key", "datatype": "int64-decimal", "unit": "N/A", "nullable": true, "authority": "relation-artifact", "cardinality": "baseline-matched-exactly-one-target-preserve-and-unmatched-zero", "identity_role": "relation-local-reference"},
+            {"name": "source_row", "datatype": "record:row_reference", "unit": "N/A", "nullable": true, "authority": "target-or-baseline-parent", "cardinality": "target-preserve-or-matched-baseline-exactly-one-unmatched-zero", "identity_role": "source-row-reference"},
+            {"name": "authority_reference", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "target-or-verified-baseline-field-catalog-or-citlali-typed-missing", "cardinality": "exactly-one", "identity_role": "source-provenance"},
+            {"name": "provenance_reference", "datatype": "opaque", "unit": "N/A", "nullable": false, "authority": "tolproj", "cardinality": "exactly-one", "identity_role": "nonidentity-provenance"}
+          ]
+        },
+        "matched_output_row": {
+          "cardinality": "exactly-one-per-target",
+          "unknown_members": "reject",
+          "members": [
+            {"name": "uid", "datatype": "int64-decimal", "unit": "N/A", "nullable": false, "authority": "canonical-issuer", "cardinality": "exactly-one", "identity_role": "artifact-local-row-key"},
+            {"name": "target", "datatype": "record:row_reference", "unit": "N/A", "nullable": false, "authority": "target-parent", "cardinality": "exactly-one", "identity_role": "target-row-reference"},
+            {"name": "target_input_key", "datatype": "int64-decimal", "unit": "N/A", "nullable": false, "authority": "target-parent", "cardinality": "exactly-one", "identity_role": "target-input-reference"},
+            {"name": "tone_frequency_hz", "datatype": "float64-bits", "unit": "Hz", "nullable": false, "authority": "target-parent", "cardinality": "exactly-one", "identity_role": "nonidentity-value"},
+            {"name": "array", "datatype": "int64-decimal", "unit": "N/A", "nullable": false, "authority": "target-parent", "cardinality": "exactly-one", "identity_role": "nonidentity-attribute"},
+            {"name": "network", "datatype": "int64-decimal", "unit": "N/A", "nullable": false, "authority": "target-parent", "cardinality": "exactly-one", "identity_role": "raw-channel-relation"},
+            {"name": "channel", "datatype": "int64-decimal", "unit": "N/A", "nullable": false, "authority": "target-parent", "cardinality": "exactly-one", "identity_role": "raw-channel-relation"},
+            {"name": "relation_pair_keys", "datatype": "sorted-set:int64-local-key", "unit": "N/A", "nullable": false, "authority": "relation-parent", "cardinality": "complete-target-pair-set", "identity_role": "relation-local-reference-set"},
+            {"name": "fields", "datatype": "closed-derived-field-map", "unit": "field-declared", "nullable": false, "authority": "target-field-or-verified-baseline-or-canonical-null", "cardinality": "exactly-all-derived-fields", "identity_role": "nonidentity-values"},
+            {"name": "transformations", "datatype": "list:field_transformation", "unit": "N/A", "nullable": false, "authority": "citlali-operation-registry/tolproj-provenance", "cardinality": "exactly-all-derived-fields", "identity_role": "transformation-provenance"}
+          ]
+        },
+        "matched_output": {
+          "cardinality": "exactly-one",
+          "unknown_members": "reject",
+          "members": [
+            {"name": "schema_version", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "citlali-contract", "cardinality": "exactly-one", "identity_role": "structural"},
+            {"name": "contract_authority", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "citlali-contract", "cardinality": "exactly-one", "identity_role": "structural"},
+            {"name": "observation_value_issuer", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "citlali-contract", "cardinality": "exactly-one", "identity_role": "structural"},
+            {"name": "transformation_registry", "datatype": "utf8", "unit": "N/A", "nullable": false, "authority": "citlali-contract", "cardinality": "exactly-one", "identity_role": "structural"},
+            {"name": "envelope", "datatype": "record:issuance_envelope", "unit": "N/A", "nullable": false, "authority": "field-specific-citlali-issuance", "cardinality": "exactly-one", "identity_role": "envelope"},
+            {"name": "baseline_parent", "datatype": "record:verified_baseline_reference", "unit": "N/A", "nullable": false, "authority": "verified-baseline", "cardinality": "exactly-one", "identity_role": "parent-identity"},
+            {"name": "target_parent", "datatype": "record:artifact_identity", "unit": "N/A", "nullable": false, "authority": "verified-target", "cardinality": "exactly-one", "identity_role": "parent-identity"},
+            {"name": "relation_parent", "datatype": "record:artifact_identity", "unit": "N/A", "nullable": false, "authority": "verified-relation", "cardinality": "exactly-one", "identity_role": "parent-identity"},
+            {"name": "registered_fields", "datatype": "list:derived_output_field_contract", "unit": "field-declared", "nullable": false, "authority": "citlali-operation-registry", "cardinality": "exactly-target-plus-collision-filtered-baseline-catalog", "identity_role": "structural"},
+            {"name": "rows", "datatype": "list:matched_output_row", "unit": "N/A", "nullable": false, "authority": "tolproj-values/citlali-encoding", "cardinality": "exactly-all-targets", "identity_role": "content"},
+            {"name": "output_presentation_sequence", "datatype": "permutation:int64-local-key", "unit": "N/A", "nullable": false, "authority": "tolproj", "cardinality": "exactly-all-output-rows", "identity_role": "explicit-order-nonidentity"}
+          ]
+        }
+      },
+      "authority_contract": "Citlali owns schema, encoding, validation, occurrence and event issuance, software-revision authority, receipt, and publication; TolProj supplies legitimate observation values, selected relation, transformation provenance, configuration reference, and event time",
+      "publication_state": "bounded machine-callable issuer and no-replace receipt-last publisher authorized; registry remains absent from profiles, accepted runs, ingestion, and production activation"
     }
   },
   "global_conventions": {

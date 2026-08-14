@@ -72,10 +72,78 @@ remain outside this package.
 
 The normative contract is
 [`CANONICAL_APT_V1.md`](CANONICAL_APT_V1.md), with durable rationale in
-[ADR 0010](adr/0010-canonical-baseline-apt-v1.md). Final required gate results,
-the coherent implementation commit and its parent/tree/patch identities,
-independent verification, owner-controlled push/integration, and any later
-downstream admission are intentionally not claimed by this candidate record.
+[ADR 0010](adr/0010-canonical-baseline-apt-v1.md). The coherent producer
+candidate was committed and pushed as
+`d4a808c59f383a5f77059b83083af2a69802a12a`, with parent
+`46ad23888a40f5102cdfd50c06e49a549bdf8a20`, tree
+`f77150abe863de73585d37a91485ea0e8a1951d0`, and full-index binary patch
+SHA-256 `ab40312b4de4844e0fcc5d7bd646787a83e4e1b7dbbc00002911f7493d385ffd`.
+That accepted producer artifact remains unactivated; push of the bounded
+candidate did not authorize application-mainline integration or downstream
+admission.
+
+## 2026-08-14 APT-PROD-002 Observation-Specific APT v1 Candidate
+
+APT-PROD-002 is a bounded Citlali-only successor to the pushed APT-PROD-001
+producer. Its branch `codex/repair-apt-prod-002-observation-contract` starts at
+exact baseline commit `d4a808c59f383a5f77059b83083af2a69802a12a`; the frozen
+APT-E2E-001 audit `6cf83a21169516303db1fa30d26f4be32a813844` remains the
+governing architecture authority. The independently accepted Phase-B
+checkpoint changed exactly twelve authorized implementation, contract, and
+test paths, with full-index binary patch SHA-256
+`8f452e9775a5a74b688ef3766ec31ae327e80ba50359953eebb436a006114cb8`.
+
+The candidate closes the row-position correspondence defect without inventing
+a persistent detector namespace. A verified immutable Beammap baseline row is
+referenced by its baseline occurrence and artifact-local `uid`; target,
+relation, and output local keys are scoped to their own opaque occurrences.
+Citlali reconstructs digest-bearing references from those scoped facts. Source,
+application, seed-source, and output-presentation sequences remain explicit
+complete permutations and are never identity.
+
+The accepted persisted product is deliberately small: exactly one
+observation-specific canonical APT-family ECSV and its adjacent
+envelope-bound completion receipt. The complete target manifest and generalized
+match relation remain typed logical records embedded in the final ECSV's
+normative metadata and row evidence; they are not separately published files.
+The relation retains every target matched/unmatched disposition, every baseline
+seed matched/unused disposition, complete pair sets, network/matcher evidence,
+and per-field transformation lineage. Unmatched targets have no fabricated
+seed endpoint and use the contract's typed-missing transformation state.
+
+JSON is used only by the explicit versioned machine request/response protocol.
+It is not an APT scientific-data encoding. The protocol describes and verifies
+the immutable baseline, accepts TolProj-issued observation and realized-match
+facts as occurrence-scoped values, and lets Citlali own the fixed schemas,
+canonicalization, identities, output-local UIDs, ECSV bytes, validation,
+receipt, and no-replace publication. It does not implement or change matcher
+policy.
+
+The observation-specific KMP authority is closed to required `kids_fr`,
+`kids_f_out`, and `kids_Qr`, plus artifact-optional `kids_flag`. Other
+`kids_*` diagnostics remain transitively integrity-bound by their selected
+source artifact SHA-256 and byte count but acquire no canonical field,
+identity, matcher, transformation, output, unit, or authority meaning. Adding
+one requires a separately reviewed field-specific successor authority.
+
+The final publisher stages, rereads, recomputes, and validates the ECSV, refuses
+replacement, publishes the artifact first, and makes the receipt visible last.
+The accepted limitations remain explicit: the protocol is not fsync/crash-
+durable before receipt; stdout failure after a successful receipt can yield a
+false-negative acknowledgement recoverable through the validate operation;
+and stdin has no owner-specified absolute size quota. These limitations do not
+authorize policy accommodation in this package.
+
+All three executable artifact-contract entries remain `unactivated`. This
+candidate changes no validation profile, accepted run, ingestion path, CAL,
+ALIGN, Beammap numerics, detector membership/order, TolProj repository, or
+production state. The normative contract is
+[`CANONICAL_APT_OBSERVATION_V1.md`](CANONICAL_APT_OBSERVATION_V1.md), with
+durable rationale in
+[ADR 0011](adr/0011-canonical-observation-apt-contract.md). The containing
+coherent candidate commit is eligible for owner push only after the complete
+Phase-C broad and retained gates pass; this record does not authorize that
+push, downstream launch, or production use.
 
 ## 2026-08-05 SCI-MAP-001 Application Integration Candidate
 

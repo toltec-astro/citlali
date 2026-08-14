@@ -12,7 +12,8 @@ ADRs, and validation records.
 | Refactored application | `codex/refactor-mainline` | Canonical source, tests, configuration, operational behavior, and validation history | Normal application changes land here after their affected gates | Active |
 | SCI-MAP-001 application integration | `codex/refactor-mainline` at `d5015fe716971bf8ea617e8a187311bf5af05185`, containing exact application source `af0c849ce59a5f80e5efc8db435bb6662863052f` followed only by its documentation-only integration record | Accepted bounded implementation, product/provenance contract, truth suites, owner-amended evidence, and frozen campaign/closeout history | Preserve as the application base for subsequent audited integrations; do not merge MAP audit or coordination branches | Integrated; bounded MAP contract accepted; production remains `existing_use_only` |
 | SCI-NOI-002 application integration | `codex/refactor-mainline` at `4846fa4db39bd2f7d4ddc41f693836834cbc5ff4`, containing exact audited application source `5b29e13548a6fec884c67b192dec20c92f0bbb62` followed only by its documentation-only integration record | Accepted bounded conditional-stack, package-provenance, truthful-labeling/count, writer/finalizer, and validator contracts | Preserve as the application base; do not merge repair, audit, or coordination branches | Integrated; production remains `existing_use_only`; F005/F006 remain external |
-| APT-PROD-001 canonical baseline APT v1 | `codex/repair-apt-prod-001-canonical-baseline-v1`, created from exact application base `46ad23888a40f5102cdfd50c06e49a549bdf8a20`; frozen audit authority `6cf83a21169516303db1fa30d26f4be32a813844`; exact candidate commit pending | Typed Citlali-only Beammap baseline APT producer, embedded raw relation, semantic/envelope/transport identities, executable artifact contract, and receipt-last publication | Verify and integrate only the coherent exact candidate after owner disposition; never merge the audit branch or infer downstream activation | Active bounded candidate; artifact contract unactivated; no production/downstream admission |
+| APT-PROD-001 canonical baseline APT v1 | `codex/repair-apt-prod-001-canonical-baseline-v1` at pushed commit `d4a808c59f383a5f77059b83083af2a69802a12a`, parent `46ad23888a40f5102cdfd50c06e49a549bdf8a20`, tree `f77150abe863de73585d37a91485ea0e8a1951d0`; frozen audit authority `6cf83a21169516303db1fa30d26f4be32a813844` | Typed Citlali-only Beammap baseline APT producer, embedded raw relation, semantic/envelope/transport identities, executable artifact contract, and receipt-last publication | Preserve as the exact APT-PROD-002 base; integration or downstream admission requires a separate owner decision | Pushed bounded producer; artifact contract unactivated; no application-mainline or production/downstream admission |
+| APT-PROD-002 observation-specific APT v1 | `codex/repair-apt-prod-002-observation-contract`, created from exact pushed APT-PROD-001 base `d4a808c59f383a5f77059b83083af2a69802a12a`; frozen audit authority `6cf83a21169516303db1fa30d26f4be32a813844`; accepted Phase-B full-index patch SHA-256 `8f452e9775a5a74b688ef3766ec31ae327e80ba50359953eebb436a006114cb8` | Citlali-owned observation APT contract, canonical ECSV codec, strict JSON protocol, complete embedded target/relation provenance, and reusable receipt-last publisher | Admit only one coherent exact candidate after all broad gates; owner controls push and any later integration; never infer TolProj/downstream or production activation | Active bounded Phase-C candidate; all contracts unactivated; no downstream launch or production admission |
 | Conan 2 adaptation | `codex/conan2-adaptation` | Port the full application into the accepted Tula/Conan 2 architecture | Incorporate mainline regularly; return only after all build-integration gates pass | Active in `/Users/gwilson/GitHub/citlali-refactor-conan2` |
 | Historical structural refactor | `codex/structural-refactor` at `171487196` | Forensic pointer to the pre-follow-on integration tree | Do not resume as an application authority | Frozen |
 | Historical fruit-loop/raw-IQ topic | `codex/fruit-loop-calibration-reference` at `b02fef613` | Forensic pointer to the topic-named branch before mainline normalization | Do not resume as an application authority | Frozen locally; its existing remote remains historical |
@@ -72,6 +73,48 @@ new exact commits before importing subsequent upstream work.
   expansion, external-repository change, or audit/coordination branch movement
   follows from this candidate. Owner-controlled push/integration and any later
   downstream admission are separate decisions.
+
+### APT-PROD-002 Observation-Specific APT v1 Candidate
+
+- Persist exactly one observation-specific canonical APT-family ECSV and its
+  adjacent envelope-bound receipt. The complete target manifest and generalized
+  match relation are embedded logical records, not separately published
+  artifacts or a public bundle chain. JSON is protocol representation only.
+- Every baseline, target, relation-pair, and output reference is occurrence-
+  scoped and artifact-local. UID or sequence equality never creates persistent
+  detector identity. Source, application, seed-source, and presentation
+  sequences remain explicit nonidentity permutations.
+- Relation coverage remains complete and generalized: every target is matched
+  or unmatched, every seed is matched or unused, pair sets are reciprocal, and
+  per-field source selection may name different valid pairs. An unmatched
+  target has no fabricated seed endpoint and carries typed missing state for
+  unavailable seed-derived values.
+- Citlali owns the schemas, field registry, canonical framing and ECSV bytes,
+  semantic/envelope/transport identities, validation, opaque output issuance,
+  output-local UIDs, receipt, and no-replace receipt-last publication. TolProj
+  remains the legitimate issuer of observation-specific target values and
+  realized matcher provenance; the protocol implements no matcher policy.
+- The closed KMP value authority admits only required `kids_fr`, `kids_f_out`,
+  and `kids_Qr`, plus artifact-optional exact signed `kids_flag`. Unknown
+  diagnostics remain covered only by selected-source SHA-256/count and cannot
+  be requested for canonical identity, matching, transformation, output,
+  units, or authority.
+- Required candidate gates are the four named local build targets, complete
+  CTest with only the established disabled test, full baseline-tool discovery,
+  config preflight, both validation ledgers, retained focused C++/Python/
+  protocol/vector/header gates, exact 20-path and patch/commit/tree identity,
+  `git diff --check`, and a clean post-commit worktree/index. A required skip,
+  identity drift, science/detector/order drift, or unexpected error result
+  stops the package.
+- The accepted limitations are not repaired here: publication is not
+  fsync/crash-durable before receipt; a post-publication stdout failure can
+  cause a false-negative acknowledgement recoverable through validation; and
+  protocol stdin has no owner-specified absolute byte quota.
+- All successor contracts remain `unactivated`. No validation profile,
+  accepted run, ingestion, CAL, ALIGN, TolProj, sibling repository, Unity,
+  downstream, or production state changes in this candidate. The containing
+  coherent commit and owner push remain distinct from later integration or
+  admission decisions.
 
 ### SCI-MAP-001 Application Integration
 

@@ -97,6 +97,52 @@ failure cleanup, raw-source equality, and unchanged science. Historical APTs
 remain historical/test-only and are neither migrated nor admitted through this
 mode.
 
+## Observation-Specific Canonical APT v1
+
+APT-PROD-002 adds a separate, still-unactivated successor contract for making
+one observation-specific canonical APT from a verified immutable Beammap
+baseline. The persisted product is exactly one `*.apt.ecsv` plus its adjacent
+`*.apt.ecsv.sha256` completion receipt. The complete observation target and
+match relation remain independently canonicalized logical records, but they
+are embedded in the final APT metadata: v1 does not publish `.target.ecsv`,
+`.relation.ecsv`, a bundle manifest, or JSON APT data.
+
+The supported machine boundary is the Citlali CLI's strict JSON-line protocol:
+
+```bash
+printf '%s\n' \
+  '{"protocol":"citlali-canonical-apt-protocol-v1","request_id":"describe-1","operation":"describe-baseline-v1","payload":{"baseline_ecsv":"/path/to/baseline.ecsv"}}' \
+  | build/bin/citlali --canonical-apt-contract-v1
+```
+
+The option must be the only CLI argument. It consumes exactly one
+LF-terminated JSON request and returns exactly one JSON response line. Its
+three operations are:
+
+- `describe-baseline-v1`: reread and verify a canonical baseline ECSV/receipt
+  pair and return the complete typed descriptor and immutable reference;
+- `issue-observation-apt-v1`: verify the baseline and bound raw/KMP sources,
+  materialize caller-supplied occurrence-scoped target and relation facts,
+  construct and reread the final ECSV, then publish it no-replace with the
+  receipt visible last; and
+- `validate-observation-apt-v1`: reread an already published final
+  ECSV/receipt pair against its verified baseline and return the complete
+  typed target, relation, output, identity, and transport result.
+
+The request supplies legitimate observation values, selected match facts, and
+provenance. It does not supply Citlali's schemas, field catalog, digests,
+output-local keys, or final occurrence. Exact request and response examples,
+including generalized per-field source selection, live in
+`test_validate_product_contract.py`; the normative boundary is documented in
+[`../../doc/CANONICAL_APT_OBSERVATION_V1.md`](../../doc/CANONICAL_APT_OBSERVATION_V1.md).
+
+The Python artifact selector intentionally rejects all APT-PROD-002 contract
+IDs. Target and relation are not standalone artifacts, and final issuance and
+validation are available only through the versioned Citlali protocol. A
+successful protocol validation proves conformance to an unactivated contract;
+it is not validation-profile admission, accepted-run evidence, downstream
+ingestion authority, or production activation.
+
 Accepted profiles are versioned snapshots. Future intentional product changes
 create successor validation epochs with a predecessor comparison and recorded
 scientific rationale; they do not rewrite or loosen an old profile.

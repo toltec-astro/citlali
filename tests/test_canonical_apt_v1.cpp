@@ -3,6 +3,7 @@
 #include <citlali/core/engine/calib.h>
 #include <citlali/core/engine/detail/beammap_apt_table_output_helpers.h>
 #include <citlali/core/pipeline/canonical_apt_ecsv.h>
+#include <citlali/core/pipeline/canonical_apt_observation_v1.h>
 #include <citlali/core/pipeline/canonical_apt_v1.h>
 #include <citlali/core/pipeline/rawobs_detector_inventory.h>
 #include <citlali/core/utils/sha256.h>
@@ -28,6 +29,10 @@
 namespace {
 
 namespace apt = citlali::pipeline::canonical_apt_v1;
+namespace observation_apt =
+    citlali::pipeline::canonical_apt_observation_v1;
+namespace artifact_publication =
+    citlali::pipeline::canonical_artifact_publication;
 namespace apt_producer = beammap_apt_table_output_helpers;
 
 apt::RegisteredField extension_spec(std::string_view name) {
@@ -208,6 +213,1097 @@ protected:
     char do_thousands_sep() const override { return '_'; }
     std::string do_grouping() const override { return "\1"; }
 };
+
+std::string sha256_reference(char digit) {
+    return "sha256:" + std::string(64, digit);
+}
+
+std::string target_catalog_signature(
+    const std::vector<observation_apt::TypedField> &fields) {
+    std::string result;
+    for (const auto &field : fields) {
+        result += field.name + "|" +
+            std::string(apt::value_type_token(field.type)) + "|" +
+            field.unit + "|" +
+            (field.nullable ? "nullable" : "required") + "|" +
+            field.authority + "|" + field.authority_reference + "|" +
+            std::string(apt::nonfinite_policy_token(field.nonfinite)) + "|" +
+            field.registry + "|" + field.description + "|" +
+            (field.source_column ? *field.source_column : "<none>") + "|" +
+            field.identity_role + "\n";
+    }
+    return result;
+}
+
+observation_apt::SourceArtifact make_observation_source(
+    std::int64_t source_key, std::string role, char digest_digit,
+    apt::ObservationIdentity header, std::int64_t network,
+    std::int64_t channel_count) {
+    return {source_key,
+            std::move(role),
+            "fixture/café/toltec" + std::to_string(network),
+            sha256_reference(digest_digit),
+            static_cast<std::uint64_t>(1000 + source_key),
+            header,
+            network,
+            "toltec" + std::to_string(network),
+            channel_count};
+}
+
+struct ObservationContractFixture {
+    observation_apt::VerifiedBaselineDescriptor baseline;
+    observation_apt::TargetManifest target;
+    observation_apt::MatchRelation relation;
+    observation_apt::MatchedOutput output;
+};
+
+ObservationContractFixture make_observation_contract_fixture(
+    bool include_target_kids_flag = true) {
+    auto baseline_document = make_document();
+    baseline_document.registered_fields.push_back(extension_spec("kids_flag"));
+    baseline_document.rows[0].fields["kids_flag"] = std::int64_t{91};
+    baseline_document.rows[1].fields["kids_flag"] = std::int64_t{-5};
+    baseline_document.rows[2].fields["kids_flag"] = std::int64_t{77};
+    const auto baseline_serialized = apt::serialize_ecsv(baseline_document);
+    const auto receipt = observation_apt::canonical_baseline_receipt_bytes(
+        baseline_serialized.transport);
+    auto descriptor = observation_apt::verify_baseline_descriptor(
+        baseline_serialized.bytes, receipt);
+
+    observation_apt::TargetManifest target;
+    target.envelope = {
+        "occurrence:tolproj/target#opaque-A",
+        "event:tolproj/observation-target#A",
+        "tolproj-clean-fixture-revision",
+        "tolproj-config:sha256:fixture",
+        "2026-08-14T01:02:03Z",
+    };
+    target.observation = {152390, 0, 1};
+    target.inputs = {
+        {70,
+         7,
+         "toltec7",
+         1,
+         make_observation_source(700, "raw", '7', target.observation, 7, 1),
+         make_observation_source(701, "kmp", '8', {152300, 0, 0}, 7,
+                                 1)},
+        {10,
+         0,
+         "toltec0",
+         2,
+         make_observation_source(100, "raw", '1', target.observation, 0, 2),
+         make_observation_source(101, "kmp", '2', {152300, 0, 0}, 0,
+                                 2)},
+    };
+    target.registered_fields = observation_apt::canonical_target_fields_v1();
+    if (!include_target_kids_flag) {
+        target.registered_fields.pop_back();
+    }
+    target.rows = {
+        {701, 70, 701, 0, 2.5e9, 2.5001e9, 1, 7, 0, {}},
+        {11, 10, 101, 1, -0.0, -0.0, 0, 0, 1, {}},
+        {5,
+         10,
+         101,
+         0,
+         std::numeric_limits<double>::denorm_min(),
+         1.2501e9,
+         0,
+         0,
+         0,
+         {}},
+    };
+    for (auto &row : target.rows) {
+        row.fields["kids_fr"] = row.matching_frequency_hz;
+        row.fields["kids_f_out"] = row.output_tone_frequency_hz;
+        if (row.row_key == 701) {
+            row.fields["kids_Qr"] = 42000.0;
+            if (include_target_kids_flag) {
+                row.fields["kids_flag"] = std::int64_t{-7};
+            }
+        } else if (row.row_key == 11) {
+            // No positivity policy is silently added for imported Qr.
+            row.fields["kids_Qr"] = -3.0;
+            if (include_target_kids_flag) {
+                row.fields["kids_flag"] = std::int64_t{3};
+            }
+        } else {
+            row.fields["kids_Qr"] =
+                std::numeric_limits<double>::denorm_min();
+            if (include_target_kids_flag) {
+                row.fields["kids_flag"] = std::int64_t{42};
+            }
+        }
+    }
+    target.target_source_sequence = {11, 701, 5};
+    target.target_application_sequence = {5, 11, 701};
+    observation_apt::validate(target);
+
+    const auto target_identity = observation_apt::artifact_identity(target);
+    const auto seed_identity = observation_apt::artifact_identity(descriptor);
+    observation_apt::MatchRelation relation;
+    relation.envelope = {
+        "occurrence:tolproj/relation#opaque-B",
+        "event:tolproj/matcher-run#B",
+        "tolproj-clean-fixture-revision",
+        "tolproj-match-config:sha256:fixture",
+        "2026-08-14T01:03:04Z",
+    };
+    relation.baseline_parent = observation_apt::baseline_reference(descriptor);
+    relation.target_parent = target_identity;
+    relation.matcher = {
+        "occurrence:tolproj/matcher-policy-run#opaque",
+        "tolproj-clean-fixture-revision",
+        "tolproj-match-config:sha256:fixture",
+        "astropy",
+        "join-distance-v1",
+    };
+    relation.network_evidence = {
+        {7, -0.0, 200000.0, 42000.0},
+        {0, std::numeric_limits<double>::denorm_min(), 200000.0, 20000.0},
+    };
+    const auto target_ref = [&](std::int64_t key) {
+        return observation_apt::row_reference(target_identity, key);
+    };
+    const auto seed_ref = [&](std::int64_t key) {
+        return observation_apt::row_reference(seed_identity, key);
+    };
+    // Deliberately exercise 1:many and many:1 without making either a
+    // persistent detector identity or a Citlali matcher policy.
+    relation.pairs = {
+        {902, target_ref(11), seed_ref(42), 3.0, true},
+        {900, target_ref(5), seed_ref(0), -0.0, true},
+        {901, target_ref(5), seed_ref(42),
+         std::numeric_limits<double>::denorm_min(), false},
+    };
+    relation.target_dispositions = {
+        {1000, target_ref(701),
+         observation_apt::EndpointDispositionState::unmatched, {},
+         "no selected seed endpoint"},
+        {1002, target_ref(5),
+         observation_apt::EndpointDispositionState::matched, {900, 901},
+         "two realized candidate endpoints retained"},
+        {1001, target_ref(11),
+         observation_apt::EndpointDispositionState::matched, {902},
+         "one realized endpoint"},
+    };
+    relation.seed_dispositions = {
+        {2000, seed_ref(apt::uid_v1_max),
+         observation_apt::EndpointDispositionState::unused, {},
+         "seed not used"},
+        {2002, seed_ref(0),
+         observation_apt::EndpointDispositionState::matched, {900},
+         "one target endpoint"},
+        {2001, seed_ref(42),
+         observation_apt::EndpointDispositionState::matched, {901, 902},
+         "two target endpoints"},
+    };
+    relation.seed_source_sequence = {42, apt::uid_v1_max, 0};
+    observation_apt::validate(relation, descriptor, target);
+
+    observation_apt::MatchedOutput output;
+    output.envelope = {
+        "occurrence:tolproj/matched-output#opaque-C",
+        "event:tolproj/observation-output#C",
+        "tolproj-clean-fixture-revision",
+        "tolproj-output-config:sha256:fixture",
+        "2026-08-14T01:04:05Z",
+    };
+    output.baseline_parent = observation_apt::baseline_reference(descriptor);
+    output.target_parent = target_identity;
+    output.relation_parent =
+        observation_apt::artifact_identity(relation, descriptor, target);
+    output.registered_fields =
+        observation_apt::canonical_output_field_contracts_v1(descriptor,
+                                                              target);
+
+    std::map<std::int64_t, const apt::Row *> baseline_rows;
+    for (const auto &row : descriptor.document().rows) {
+        baseline_rows.emplace(row.uid, &row);
+    }
+    const auto make_output_row = [&](std::int64_t uid,
+                                     const observation_apt::TargetRow &source,
+                                     std::vector<std::int64_t> pair_keys,
+                                     std::optional<std::int64_t> source_pair,
+                                     std::optional<std::int64_t> seed_uid) {
+        observation_apt::MatchedOutputRow row;
+        row.uid = uid;
+        row.target = target_ref(source.row_key);
+        row.target_input_key = source.input_key;
+        row.tone_frequency_hz = source.output_tone_frequency_hz;
+        row.array = source.array;
+        row.network = source.network;
+        row.channel = source.channel;
+        row.relation_pair_keys = std::move(pair_keys);
+        for (const auto &contract : output.registered_fields) {
+            observation_apt::FieldTransformation transformation;
+            transformation.field_name = contract.field.name;
+            transformation.operation = contract.authorized_operation;
+            if (contract.authorized_operation ==
+                observation_apt::TransformationOperation::preserve_target) {
+                const auto value = source.fields.at(contract.field.name);
+                row.fields.emplace(contract.field.name, value);
+                transformation.before = value;
+                transformation.after = value;
+                transformation.value_source = observation_apt::
+                    TransformationValueSource::target_row;
+                transformation.source_row = target_ref(source.row_key);
+                transformation.authority_reference =
+                    contract.field.authority_reference;
+                transformation.provenance_reference =
+                    "target-kmp-source:" +
+                    std::to_string(source.kmp_source_key) + ":row:" +
+                    std::to_string(source.kmp_row_index) + ":column:" +
+                    *contract.field.source_column;
+            } else if (seed_uid) {
+                transformation.before = apt::NullValue{};
+                const auto &seed = *baseline_rows.at(*seed_uid);
+                const auto value = seed.fields.at(contract.field.name);
+                row.fields.emplace(contract.field.name, value);
+                transformation.after = value;
+                transformation.value_source = observation_apt::
+                    TransformationValueSource::baseline_seed_row;
+                transformation.source_pair_key = source_pair;
+                transformation.source_row = seed_ref(*seed_uid);
+                const auto source_contract = std::find_if(
+                    descriptor.document().registered_fields.begin(),
+                    descriptor.document().registered_fields.end(),
+                    [&](const auto &field) {
+                        return field.name == contract.field.name;
+                    });
+                transformation.authority_reference =
+                    source_contract->authority_reference;
+                transformation.provenance_reference =
+                    "relation-pair:" + std::to_string(*source_pair);
+            } else {
+                transformation.before = apt::NullValue{};
+                row.fields.emplace(contract.field.name, apt::NullValue{});
+                transformation.after = apt::NullValue{};
+                transformation.value_source = observation_apt::
+                    TransformationValueSource::canonical_null;
+                transformation.authority_reference =
+                    observation_apt::unmatched_missing_authority_v1;
+                transformation.provenance_reference =
+                    "target-unmatched:no-fabricated-seed";
+            }
+            row.transformations.push_back(std::move(transformation));
+        }
+        return row;
+    };
+    const auto target_by_key = [&](std::int64_t key) -> const auto & {
+        return *std::find_if(target.rows.begin(), target.rows.end(),
+                             [&](const auto &row) {
+                                 return row.row_key == key;
+                             });
+    };
+    output.rows = {
+        make_output_row(888, target_by_key(701), {}, std::nullopt,
+                        std::nullopt),
+        make_output_row(4, target_by_key(5), {900, 901}, 900, 0),
+        make_output_row(apt::uid_v1_max - 1, target_by_key(11), {902}, 902,
+                        42),
+    };
+    output.output_presentation_sequence = {apt::uid_v1_max - 1, 888, 4};
+    observation_apt::validate(output, descriptor, target, relation);
+    return {std::move(descriptor), std::move(target), std::move(relation),
+            std::move(output)};
+}
+
+TEST(canonical_apt_observation_v1,
+     exact_successor_schema_and_authority_tokens_are_pinned) {
+    EXPECT_EQ(observation_apt::framing_encoding_v1,
+              apt::framing_encoding_v1);
+    EXPECT_EQ(observation_apt::contract_authority_v1, "citlali");
+    EXPECT_EQ(observation_apt::observation_value_issuer_v1, "tolproj");
+    EXPECT_EQ(observation_apt::baseline_descriptor_schema_v1,
+              "citlali-verified-beammap-baseline-descriptor-v1");
+    EXPECT_EQ(observation_apt::target_manifest_schema_v1,
+              "citlali-observation-target-manifest-v1");
+    EXPECT_EQ(observation_apt::relation_schema_v1,
+              "citlali-apt-match-dispositions-v1");
+    EXPECT_EQ(observation_apt::matched_output_schema_v1,
+              "citlali-observation-matched-apt-v1");
+    EXPECT_EQ(observation_apt::target_artifact_contract_id_v1,
+              "apt-prod-002-observation-target-manifest-v1");
+    EXPECT_EQ(observation_apt::relation_artifact_contract_id_v1,
+              "apt-prod-002-match-dispositions-v1");
+    EXPECT_EQ(observation_apt::matched_output_artifact_contract_id_v1,
+              "apt-prod-002-observation-matched-apt-v1");
+    EXPECT_EQ(observation_apt::kmp_source_field_map_profile_v1,
+              "citlali-kmp-source-field-map-v1");
+    EXPECT_EQ(observation_apt::canonical_kmp_field_bindings_v1(),
+              (std::vector<observation_apt::KmpFieldBinding>{
+                  {"fr", "kids_fr", true},
+                  {"f_out", "kids_f_out", true},
+                  {"Qr", "kids_Qr", true},
+                  {"flag", "kids_flag", false}}));
+    ASSERT_EQ(observation_apt::canonical_target_fields_v1().size(), 4U);
+    EXPECT_EQ(observation_apt::canonical_target_fields_v1()[0].name,
+              "kids_fr");
+    EXPECT_EQ(observation_apt::canonical_target_fields_v1()[1].name,
+              "kids_f_out");
+    EXPECT_EQ(observation_apt::canonical_target_fields_v1()[2].name,
+              "kids_Qr");
+    EXPECT_EQ(observation_apt::canonical_target_fields_v1()[3].name,
+              "kids_flag");
+    EXPECT_EQ(
+        target_catalog_signature(
+            observation_apt::canonical_target_fields_v1()),
+        R"(kids_fr|float64|Hz|required|copied-declared|kids:model-params-v1|reject|citlali-observation-target-fields-v1|imported KIDs resonant frequency; finite, nonidentity|fr|nonidentity
+kids_f_out|float64|Hz|required|copied-declared|kids:model-params-v1|reject|citlali-observation-target-fields-v1|imported KIDs output tone frequency; finite, nonidentity|f_out|nonidentity
+kids_Qr|float64|N/A|required|copied-declared|kids:model-params-v1|reject|citlali-observation-target-fields-v1|imported KIDs resonator Qr; finite with no positivity rule, nonidentity|Qr|nonidentity
+kids_flag|int64|N/A|required|copied-declared|kids:fit-report-v1|reject|citlali-observation-target-fields-v1|imported KIDs model-fit flag; exact signed integral values, nonidentity|flag|nonidentity
+)"
+    );
+    static_assert(!std::is_default_constructible_v<
+                  observation_apt::VerifiedBaselineDescriptor>);
+    static_assert(!std::is_aggregate_v<
+                  observation_apt::VerifiedBaselineDescriptor>);
+}
+
+TEST(canonical_apt_observation_v1,
+     kmp_source_boundary_ignores_unrequested_diagnostics_and_closes_uses) {
+    const std::vector<std::string> columns{
+        "fr", "f_out", "Qr", "flag", "kids_fr", "kids_flag",
+        "diagnostic_snr", "fit_residual_private"};
+    const std::vector<observation_apt::KmpFieldUseRequest> requests{
+        {"kids_fr", observation_apt::KmpFieldUseRole::matching,
+         "kids:model-params-v1"},
+        {"kids_fr", observation_apt::KmpFieldUseRole::output,
+         "kids:model-params-v1"},
+        {"kids_fr", observation_apt::KmpFieldUseRole::authority,
+         "kids:model-params-v1"},
+        {"kids_f_out", observation_apt::KmpFieldUseRole::application,
+         "kids:model-params-v1"},
+        {"kids_f_out", observation_apt::KmpFieldUseRole::output,
+         "kids:model-params-v1"},
+        {"kids_Qr", observation_apt::KmpFieldUseRole::matching,
+         "kids:model-params-v1"},
+        {"kids_Qr", observation_apt::KmpFieldUseRole::output,
+         "kids:model-params-v1"},
+        {"kids_flag", observation_apt::KmpFieldUseRole::output,
+         "kids:fit-report-v1"},
+        {"kids_flag", observation_apt::KmpFieldUseRole::authority,
+         "kids:fit-report-v1"},
+    };
+    const auto selected = observation_apt::select_canonical_kmp_fields_v1(
+        columns, requests);
+    EXPECT_EQ(selected, observation_apt::canonical_target_fields_v1());
+
+    auto more_diagnostics = columns;
+    more_diagnostics.push_back("unrequested_source_note");
+    EXPECT_EQ(observation_apt::select_canonical_kmp_fields_v1(
+                  more_diagnostics, requests),
+              selected);
+
+    const std::vector<std::string> required_only{
+        "fr", "f_out", "Qr", "kids_flag"};
+    const std::vector<observation_apt::KmpFieldUseRequest>
+        required_requests(requests.begin(), requests.begin() + 7);
+    EXPECT_EQ(observation_apt::select_canonical_kmp_fields_v1(
+                  required_only, required_requests),
+              observation_apt::canonical_required_target_fields_v1());
+    EXPECT_THROW(observation_apt::select_canonical_kmp_fields_v1(
+                     required_only,
+                     {{"kids_flag", observation_apt::KmpFieldUseRole::output,
+                       "kids:fit-report-v1"}}),
+                 apt::ContractError);
+
+    const auto expect_rejected = [&](std::string field,
+                                     observation_apt::KmpFieldUseRole role,
+                                     std::string authority) {
+        EXPECT_THROW(observation_apt::select_canonical_kmp_fields_v1(
+                         columns, {{std::move(field), role,
+                                    std::move(authority)}}),
+                     apt::ContractError);
+    };
+    expect_rejected("diagnostic_snr",
+                    observation_apt::KmpFieldUseRole::output,
+                    "kids:model-params-v1");
+    expect_rejected("kids_fr", observation_apt::KmpFieldUseRole::identity,
+                    "kids:model-params-v1");
+    expect_rejected("kids_f_out",
+                    observation_apt::KmpFieldUseRole::matching,
+                    "kids:model-params-v1");
+    expect_rejected("kids_fr",
+                    observation_apt::KmpFieldUseRole::transformation,
+                    "kids:model-params-v1");
+    expect_rejected("kids_Qr", observation_apt::KmpFieldUseRole::matching,
+                    "caller:self-authorized");
+}
+
+TEST(canonical_apt_observation_v1,
+     exact_successor_scalar_and_utf8_frames_are_pinned) {
+    std::string frames;
+    frames += observation_apt::canonical_int64_frame(
+        "i64-min", std::numeric_limits<std::int64_t>::min());
+    frames += observation_apt::canonical_uint64_frame(
+        "u64-max", std::numeric_limits<std::uint64_t>::max());
+    frames += observation_apt::canonical_binary64_frame("negative-zero",
+                                                         -0.0);
+    frames += observation_apt::canonical_binary64_frame(
+        "denorm-min", std::numeric_limits<double>::denorm_min());
+    frames += observation_apt::canonical_binary64_frame(
+        "canonical-nan", std::bit_cast<double>(0xfff8000000000042ULL));
+    frames += observation_apt::canonical_null_frame(
+        "missing-float", apt::ValueType::float64);
+    frames += apt::canonical_frame("text", "utf8", "Jupiter α");
+    EXPECT_EQ(
+        frames,
+        "F7:i64-minT5:int64V20:-9223372036854775808;"
+        "F7:u64-maxT6:uint64V20:18446744073709551615;"
+        "F13:negative-zeroT15:float64-ieee754V16:8000000000000000;"
+        "F10:denorm-minT15:float64-ieee754V16:0000000000000001;"
+        "F13:canonical-nanT15:float64-ieee754V16:7ff8000000000000;"
+        "F13:missing-floatT12:null-float64V4:null;"
+        "F4:textT4:utf8V10:Jupiter α;");
+    EXPECT_EQ(citlali::utils::sha256(frames),
+              "a97e7c29a17da562d44108968d120c393428577f9f218154bc5147e8f32029ec");
+}
+
+TEST(canonical_apt_observation_v1,
+     baseline_descriptor_is_factory_verified_and_preserves_baseline_identity) {
+    const auto fixture = make_observation_contract_fixture();
+    const auto identity = observation_apt::artifact_identity(fixture.baseline);
+    EXPECT_EQ(identity.schema, apt::schema_version_v1);
+    EXPECT_EQ(identity.occurrence,
+              fixture.baseline.document().envelope.occurrence);
+    EXPECT_EQ(identity.semantic_sha256,
+              fixture.baseline.digests().semantic_sha256);
+    EXPECT_EQ(fixture.relation.baseline_parent.artifact, identity);
+    EXPECT_EQ(fixture.relation.baseline_parent.transport_sha256,
+              fixture.baseline.transport().sha256);
+    EXPECT_EQ(fixture.relation.baseline_parent.receipt_sha256,
+              fixture.baseline.receipt_sha256());
+
+    auto bad_bytes = std::string(fixture.baseline.baseline_bytes());
+    bad_bytes[bad_bytes.find("Jupiter")] = 'X';
+    EXPECT_THROW(observation_apt::verify_baseline_descriptor(
+                     bad_bytes, fixture.baseline.receipt_bytes()),
+                 apt::ContractError);
+    auto bad_receipt = std::string(fixture.baseline.receipt_bytes());
+    const auto digest = bad_receipt.find("byte_sha256=sha256:");
+    ASSERT_NE(digest, std::string::npos);
+    bad_receipt[digest + std::string("byte_sha256=sha256:").size()] = 'f';
+    EXPECT_THROW(observation_apt::verify_baseline_descriptor(
+                     fixture.baseline.baseline_bytes(), bad_receipt),
+                 apt::ContractError);
+
+    auto changed_document = fixture.baseline.document();
+    changed_document.context.source_name = "Saturn β";
+    const auto changed = apt::serialize_ecsv(changed_document);
+    const auto changed_descriptor =
+        observation_apt::verify_baseline_descriptor(
+            changed.bytes,
+            observation_apt::canonical_baseline_receipt_bytes(
+                changed.transport));
+    EXPECT_NE(observation_apt::baseline_descriptor_sha256(fixture.baseline),
+              observation_apt::baseline_descriptor_sha256(
+                  changed_descriptor));
+
+    auto changed_raw = fixture.baseline.document();
+    changed_raw.rows[1].channel = 0;
+    changed_raw.rows[2].channel = 1;
+    const auto changed_raw_bytes = apt::serialize_ecsv(changed_raw);
+    const auto changed_raw_descriptor =
+        observation_apt::verify_baseline_descriptor(
+            changed_raw_bytes.bytes,
+            observation_apt::canonical_baseline_receipt_bytes(
+                changed_raw_bytes.transport));
+    EXPECT_NE(observation_apt::baseline_descriptor_sha256(fixture.baseline),
+              observation_apt::baseline_descriptor_sha256(
+                  changed_raw_descriptor));
+
+    auto changed_value = fixture.baseline.document();
+    changed_value.rows[0].fields["amp"] = 99.0;
+    const auto changed_value_bytes = apt::serialize_ecsv(changed_value);
+    const auto changed_value_descriptor =
+        observation_apt::verify_baseline_descriptor(
+            changed_value_bytes.bytes,
+            observation_apt::canonical_baseline_receipt_bytes(
+                changed_value_bytes.transport));
+    EXPECT_NE(observation_apt::baseline_descriptor_sha256(fixture.baseline),
+              observation_apt::baseline_descriptor_sha256(
+                  changed_value_descriptor));
+}
+
+TEST(canonical_apt_observation_v1,
+     target_manifest_closes_sources_relation_and_explicit_orders) {
+    const auto fixture = make_observation_contract_fixture();
+    EXPECT_NO_THROW(observation_apt::validate(fixture.target));
+    EXPECT_FALSE(fixture.target.inputs[0].kmp_source.header_observation ==
+                 fixture.target.observation);
+    EXPECT_EQ(std::get<double>(fixture.target.rows[1].fields.at("kids_Qr")),
+              -3.0);
+
+    auto reordered = fixture.target;
+    std::reverse(reordered.inputs.begin(), reordered.inputs.end());
+    std::reverse(reordered.rows.begin(), reordered.rows.end());
+    std::reverse(reordered.registered_fields.begin(),
+                 reordered.registered_fields.end());
+    EXPECT_EQ(observation_apt::target_semantic_sha256(reordered),
+              observation_apt::target_semantic_sha256(fixture.target));
+
+    auto presentation_only = fixture.target;
+    presentation_only.inputs[0].raw_source.diagnostic_locator =
+        "different/nonidentity/locator";
+    EXPECT_EQ(observation_apt::target_semantic_sha256(presentation_only),
+              observation_apt::target_semantic_sha256(fixture.target));
+    EXPECT_NE(observation_apt::target_envelope_sha256(presentation_only),
+              observation_apt::target_envelope_sha256(fixture.target));
+    EXPECT_THROW(observation_apt::validate(
+                     fixture.relation, fixture.baseline, presentation_only),
+                 apt::ContractError);
+
+    auto changed_source_bytes = fixture.target;
+    changed_source_bytes.inputs[0].kmp_source.content_sha256 =
+        sha256_reference('e');
+    EXPECT_NE(observation_apt::target_semantic_sha256(changed_source_bytes),
+              observation_apt::target_semantic_sha256(fixture.target));
+
+    auto changed_sequence = fixture.target;
+    std::swap(changed_sequence.target_application_sequence[0],
+              changed_sequence.target_application_sequence[1]);
+    EXPECT_NE(observation_apt::target_semantic_sha256(changed_sequence),
+              observation_apt::target_semantic_sha256(fixture.target));
+
+    auto other_occurrence = fixture.target;
+    other_occurrence.envelope.occurrence = "occurrence:target/other";
+    EXPECT_EQ(observation_apt::target_semantic_sha256(other_occurrence),
+              observation_apt::target_semantic_sha256(fixture.target));
+    EXPECT_NE(observation_apt::target_envelope_sha256(other_occurrence),
+              observation_apt::target_envelope_sha256(fixture.target));
+
+    auto conflicting_raw = fixture.target;
+    conflicting_raw.inputs[0].raw_source.network = 0;
+    EXPECT_THROW(observation_apt::validate(conflicting_raw),
+                 apt::ContractError);
+    auto conflicting_kmp = fixture.target;
+    conflicting_kmp.inputs[1].kmp_source.channel_count = 1;
+    EXPECT_THROW(observation_apt::validate(conflicting_kmp),
+                 apt::ContractError);
+    auto duplicate_source = fixture.target;
+    duplicate_source.inputs[1].kmp_source.source_key =
+        duplicate_source.inputs[1].raw_source.source_key;
+    EXPECT_THROW(observation_apt::validate(duplicate_source),
+                 apt::ContractError);
+    auto wrong_kmp_source = fixture.target;
+    wrong_kmp_source.rows[0].kmp_source_key = 101;
+    EXPECT_THROW(observation_apt::validate(wrong_kmp_source),
+                 apt::ContractError);
+    auto wrong_kmp_row = fixture.target;
+    wrong_kmp_row.rows[1].kmp_row_index = 0;
+    EXPECT_THROW(observation_apt::validate(wrong_kmp_row),
+                 apt::ContractError);
+    auto mismatched_fr_alias = fixture.target;
+    mismatched_fr_alias.rows[0].matching_frequency_hz = 2.6e9;
+    EXPECT_THROW(observation_apt::validate(mismatched_fr_alias),
+                 apt::ContractError);
+    auto mismatched_f_out_alias = fixture.target;
+    mismatched_f_out_alias.rows[0].output_tone_frequency_hz = 2.6e9;
+    EXPECT_THROW(observation_apt::validate(mismatched_f_out_alias),
+                 apt::ContractError);
+    auto incomplete_sequence = fixture.target;
+    incomplete_sequence.target_source_sequence.pop_back();
+    EXPECT_THROW(observation_apt::validate(incomplete_sequence),
+                 apt::ContractError);
+    auto rogue_field = fixture.target;
+    rogue_field.registered_fields.push_back(
+        {"invented_truth", apt::ValueType::int64, "N/A", false,
+         apt::NonFinitePolicy::reject, "tolproj", "caller:self-authorized",
+         std::string(observation_apt::target_field_registry_v1),
+         "not in the Citlali registry"});
+    EXPECT_THROW(observation_apt::validate(rogue_field), apt::ContractError);
+    auto wrong_authority = fixture.target;
+    wrong_authority.registered_fields[0].authority_reference =
+        "caller:self-authorized";
+    EXPECT_THROW(observation_apt::validate(wrong_authority),
+                 apt::ContractError);
+    auto swapped_source_column = fixture.target;
+    swapped_source_column.registered_fields[0].source_column = "f_out";
+    EXPECT_THROW(observation_apt::validate(swapped_source_column),
+                 apt::ContractError);
+    auto invented_identity_role = fixture.target;
+    invented_identity_role.registered_fields[0].identity_role = "detector-id";
+    EXPECT_THROW(observation_apt::validate(invented_identity_role),
+                 apt::ContractError);
+    auto missing_required = fixture.target;
+    missing_required.registered_fields.erase(
+        missing_required.registered_fields.begin() + 2);
+    for (auto &row : missing_required.rows) {
+        row.fields.erase("kids_Qr");
+    }
+    EXPECT_THROW(observation_apt::validate(missing_required),
+                 apt::ContractError);
+    auto null_flag = fixture.target;
+    null_flag.rows[0].fields["kids_flag"] = apt::NullValue{};
+    EXPECT_THROW(observation_apt::validate(null_flag), apt::ContractError);
+    auto nonintegral_flag = fixture.target;
+    nonintegral_flag.rows[0].fields["kids_flag"] = 3.0;
+    EXPECT_THROW(observation_apt::validate(nonintegral_flag),
+                 apt::ContractError);
+    auto nonfinite_qr = fixture.target;
+    nonfinite_qr.rows[0].fields["kids_Qr"] =
+        std::numeric_limits<double>::quiet_NaN();
+    EXPECT_THROW(observation_apt::validate(nonfinite_qr),
+                 apt::ContractError);
+}
+
+TEST(canonical_apt_observation_v1,
+     kids_flag_is_optional_per_artifact_and_nonbinary_when_present) {
+    const auto with_flag = make_observation_contract_fixture(true);
+    const auto without_flag = make_observation_contract_fixture(false);
+    EXPECT_NO_THROW(observation_apt::validate(with_flag.target));
+    EXPECT_NO_THROW(observation_apt::validate(without_flag.target));
+    EXPECT_EQ(std::get<std::int64_t>(
+                  with_flag.target.rows[0].fields.at("kids_flag")),
+              -7);
+    EXPECT_FALSE(without_flag.target.rows[0].fields.contains("kids_flag"));
+    EXPECT_TRUE(std::none_of(
+        without_flag.output.registered_fields.begin(),
+        without_flag.output.registered_fields.end(), [](const auto &field) {
+            return field.field.name == "kids_flag";
+        }));
+    EXPECT_NO_THROW(observation_apt::validate(
+        without_flag.output, without_flag.baseline, without_flag.target,
+        without_flag.relation));
+}
+
+TEST(canonical_apt_observation_v1,
+     relation_has_complete_reciprocal_set_cardinality_and_local_keys) {
+    const auto fixture = make_observation_contract_fixture();
+    EXPECT_NO_THROW(observation_apt::validate(
+        fixture.relation, fixture.baseline, fixture.target));
+    EXPECT_EQ(fixture.relation.target_dispositions[1].pair_keys.size(), 2U);
+    EXPECT_EQ(fixture.relation.seed_dispositions[2].pair_keys.size(), 2U);
+    EXPECT_TRUE(fixture.relation.target_dispositions[0].pair_keys.empty());
+    EXPECT_TRUE(fixture.relation.seed_dispositions[0].pair_keys.empty());
+    EXPECT_EQ(fixture.relation.network_evidence[0].quality_factor, 42000.0);
+    EXPECT_EQ(fixture.relation.network_evidence[0].quality_factor_field,
+              "kids_Qr");
+    EXPECT_EQ(fixture.relation.network_evidence[0]
+                  .quality_factor_authority_reference,
+              "kids:model-params-v1");
+
+    auto reordered = fixture.relation;
+    std::reverse(reordered.pairs.begin(), reordered.pairs.end());
+    std::reverse(reordered.target_dispositions.begin(),
+                 reordered.target_dispositions.end());
+    std::reverse(reordered.seed_dispositions.begin(),
+                 reordered.seed_dispositions.end());
+    std::reverse(reordered.network_evidence.begin(),
+                 reordered.network_evidence.end());
+    EXPECT_EQ(observation_apt::relation_semantic_sha256(
+                  reordered, fixture.baseline, fixture.target),
+              observation_apt::relation_semantic_sha256(
+                  fixture.relation, fixture.baseline, fixture.target));
+
+    auto missing_target = fixture.relation;
+    missing_target.target_dispositions.pop_back();
+    EXPECT_THROW(observation_apt::validate(
+                     missing_target, fixture.baseline, fixture.target),
+                 apt::ContractError);
+    auto fabricated_endpoint = fixture.relation;
+    fabricated_endpoint.target_dispositions[0].state =
+        observation_apt::EndpointDispositionState::matched;
+    fabricated_endpoint.target_dispositions[0].pair_keys = {900};
+    EXPECT_THROW(observation_apt::validate(
+                     fabricated_endpoint, fixture.baseline, fixture.target),
+                 apt::ContractError);
+    auto row_key_collision = fixture.relation;
+    row_key_collision.target_dispositions[0].disposition_key = 900;
+    EXPECT_THROW(observation_apt::validate(
+                     row_key_collision, fixture.baseline, fixture.target),
+                 apt::ContractError);
+    auto bad_seed_sequence = fixture.relation;
+    bad_seed_sequence.seed_source_sequence[0] = 0;
+    EXPECT_THROW(observation_apt::validate(
+                     bad_seed_sequence, fixture.baseline, fixture.target),
+                 apt::ContractError);
+    auto reused_occurrence = fixture.relation;
+    reused_occurrence.envelope.occurrence =
+        fixture.target.envelope.occurrence;
+    EXPECT_THROW(observation_apt::validate(
+                     reused_occurrence, fixture.baseline, fixture.target),
+                 apt::ContractError);
+    auto unknown_mapping_domain = fixture.relation;
+    unknown_mapping_domain.mapping_domain = "caller:other-matcher-domain";
+    EXPECT_THROW(observation_apt::validate(
+                     unknown_mapping_domain, fixture.baseline, fixture.target),
+                 apt::ContractError);
+    auto unknown_matching_field = fixture.relation;
+    unknown_matching_field.matcher.target_frequency_field = "kids_f_out";
+    EXPECT_THROW(observation_apt::validate(
+                     unknown_matching_field, fixture.baseline, fixture.target),
+                 apt::ContractError);
+    auto wrong_quality_authority = fixture.relation;
+    wrong_quality_authority.network_evidence[0]
+        .quality_factor_authority_reference = "caller:self-authorized";
+    EXPECT_THROW(observation_apt::validate(
+                     wrong_quality_authority, fixture.baseline,
+                     fixture.target),
+                 apt::ContractError);
+    auto nonfinite_quality = fixture.relation;
+    nonfinite_quality.network_evidence[0].quality_factor =
+        std::numeric_limits<double>::infinity();
+    EXPECT_THROW(observation_apt::validate(
+                     nonfinite_quality, fixture.baseline, fixture.target),
+                 apt::ContractError);
+}
+
+TEST(canonical_apt_observation_v1,
+     matched_output_registry_is_closed_and_unmatched_is_typed_missing) {
+    const auto fixture = make_observation_contract_fixture();
+    EXPECT_NO_THROW(observation_apt::validate(
+        fixture.output, fixture.baseline, fixture.target, fixture.relation));
+    ASSERT_EQ(fixture.output.registered_fields.size(),
+              fixture.baseline.document().registered_fields.size() - 1U +
+                  fixture.target.registered_fields.size());
+    for (const auto &contract : fixture.output.registered_fields) {
+        const bool target_field = std::any_of(
+            fixture.target.registered_fields.begin(),
+            fixture.target.registered_fields.end(), [&](const auto &field) {
+                return field.name == contract.field.name;
+            });
+        EXPECT_EQ(contract.field.nullable, !target_field);
+        EXPECT_EQ(
+            contract.authorized_operation,
+            target_field
+                ? observation_apt::TransformationOperation::preserve_target
+                : observation_apt::TransformationOperation::
+                      copy_baseline_when_matched_null_when_unmatched);
+        EXPECT_EQ(contract.field.source_column.has_value(), target_field);
+        EXPECT_TRUE(contract.issuer_authority_reference.empty());
+    }
+    const auto unmatched = std::find_if(
+        fixture.output.rows.begin(), fixture.output.rows.end(),
+        [](const auto &row) { return row.relation_pair_keys.empty(); });
+    ASSERT_NE(unmatched, fixture.output.rows.end());
+    for (const auto &[name, value] : unmatched->fields) {
+        const bool target_field =
+            name == "kids_fr" || name == "kids_f_out" ||
+            name == "kids_Qr" || name == "kids_flag";
+        EXPECT_EQ(std::holds_alternative<apt::NullValue>(value),
+                  !target_field)
+            << name;
+    }
+    for (const auto &change : unmatched->transformations) {
+        const bool target_field =
+            change.field_name == "kids_fr" ||
+            change.field_name == "kids_f_out" ||
+            change.field_name == "kids_Qr" ||
+            change.field_name == "kids_flag";
+        EXPECT_EQ(
+            change.value_source,
+            target_field
+                ? observation_apt::TransformationValueSource::target_row
+                : observation_apt::TransformationValueSource::canonical_null);
+        EXPECT_FALSE(change.source_pair_key);
+        EXPECT_EQ(change.source_row.has_value(), target_field);
+    }
+    EXPECT_EQ(std::get<std::int64_t>(unmatched->fields.at("kids_flag")), -7);
+
+    const auto matched = std::find_if(
+        fixture.output.rows.begin(), fixture.output.rows.end(),
+        [](const auto &row) { return row.target.local_key == 5; });
+    ASSERT_NE(matched, fixture.output.rows.end());
+    EXPECT_EQ(std::get<std::int64_t>(matched->fields.at("kids_flag")), 42);
+    const auto baseline_seed = std::find_if(
+        fixture.baseline.document().rows.begin(),
+        fixture.baseline.document().rows.end(),
+        [](const auto &row) { return row.uid == 0; });
+    ASSERT_NE(baseline_seed, fixture.baseline.document().rows.end());
+    EXPECT_EQ(std::get<std::int64_t>(baseline_seed->fields.at("kids_flag")),
+              77);
+
+    auto rogue_contract = fixture.output;
+    auto rogue = rogue_contract.registered_fields.front();
+    rogue.field.name = "caller_field";
+    rogue_contract.registered_fields.push_back(std::move(rogue));
+    EXPECT_THROW(observation_apt::validate(
+                     rogue_contract, fixture.baseline, fixture.target,
+                     fixture.relation),
+                 apt::ContractError);
+    auto self_authorized = fixture.output;
+    self_authorized.registered_fields.front().authorized_operation =
+        observation_apt::TransformationOperation::issuer_declared;
+    self_authorized.registered_fields.front().issuer_authority_reference =
+        "caller:self-authorized";
+    EXPECT_THROW(observation_apt::validate(
+                     self_authorized, fixture.baseline, fixture.target,
+                     fixture.relation),
+                 apt::ContractError);
+    auto changed_structure = fixture.output;
+    changed_structure.rows[0].network = 0;
+    EXPECT_THROW(observation_apt::validate(
+                     changed_structure, fixture.baseline, fixture.target,
+                     fixture.relation),
+                 apt::ContractError);
+    auto wrong_source = fixture.output;
+    wrong_source.rows[1].transformations[0].source_pair_key = 901;
+    EXPECT_THROW(observation_apt::validate(
+                     wrong_source, fixture.baseline, fixture.target,
+                     fixture.relation),
+                 apt::ContractError);
+    auto seed_flag_collision = fixture.output;
+    auto &collision_row = *std::find_if(
+        seed_flag_collision.rows.begin(), seed_flag_collision.rows.end(),
+        [](const auto &row) { return row.target.local_key == 5; });
+    collision_row.fields["kids_flag"] = std::int64_t{77};
+    auto &collision_change = *std::find_if(
+        collision_row.transformations.begin(),
+        collision_row.transformations.end(), [](const auto &change) {
+            return change.field_name == "kids_flag";
+        });
+    collision_change.after = std::int64_t{77};
+    EXPECT_THROW(observation_apt::validate(
+                     seed_flag_collision, fixture.baseline, fixture.target,
+                     fixture.relation),
+                 apt::ContractError);
+    auto wrong_target_provenance = fixture.output;
+    auto &target_change = *std::find_if(
+        wrong_target_provenance.rows[0].transformations.begin(),
+        wrong_target_provenance.rows[0].transformations.end(),
+        [](const auto &change) { return change.field_name == "kids_Qr"; });
+    target_change.provenance_reference = "caller:unbound-target-value";
+    EXPECT_THROW(observation_apt::validate(
+                     wrong_target_provenance, fixture.baseline,
+                     fixture.target, fixture.relation),
+                 apt::ContractError);
+    auto reused_occurrence = fixture.output;
+    reused_occurrence.envelope.occurrence =
+        fixture.relation.envelope.occurrence;
+    EXPECT_THROW(observation_apt::validate(
+                     reused_occurrence, fixture.baseline, fixture.target,
+                     fixture.relation),
+                 apt::ContractError);
+}
+
+TEST(canonical_apt_observation_v1,
+     complete_successor_semantic_and_envelope_vectors_are_fixed) {
+    const auto fixture = make_observation_contract_fixture();
+    const auto target = observation_apt::compute_digests(fixture.target);
+    const auto relation = observation_apt::compute_digests(
+        fixture.relation, fixture.baseline, fixture.target);
+    const auto output = observation_apt::compute_digests(
+        fixture.output, fixture.baseline, fixture.target, fixture.relation);
+    const auto baseline =
+        observation_apt::baseline_reference(fixture.baseline);
+    EXPECT_EQ(baseline.profile, "citlali-beammap-baseline-apt-v1");
+    EXPECT_EQ(baseline.artifact.semantic_sha256,
+              "sha256:8ac14aca51f660b015e6427483e05968d1443a33d812a28ef46ed027261f0a37");
+    EXPECT_EQ(baseline.artifact.envelope_sha256,
+              "sha256:f44e40ae8604b85ea82f783212eb785561fbbd6b478ab1311f406bc63a1d2838");
+    EXPECT_EQ(baseline.transport_sha256,
+              "sha256:b4cfecf45c611ba6378bd7b88d78978b8004aa0ee8db499367499c75db05f34b");
+    EXPECT_EQ(baseline.byte_count, 19327U);
+    EXPECT_EQ(baseline.receipt_sha256,
+              "sha256:536f689f3325e5a1d298a69bba277ef686971c97152034a1bb1bc861d1acbe30");
+    EXPECT_EQ(baseline.receipt_byte_count, 287U);
+    EXPECT_EQ(observation_apt::baseline_descriptor_sha256(fixture.baseline),
+              "sha256:b801161d65dfea02b3c579ac5766154900b82e92de6945537caae2691d2707af");
+    EXPECT_EQ(target.semantic_sha256,
+              "sha256:8ad86d382b31eed82deab3118bbd5efe1fc5ce41389eac561ad2aef7e24cb30b");
+    EXPECT_EQ(target.envelope_sha256,
+              "sha256:3dca742ac86f93666762e33557ab91b4d061be178b936d17d379077233bd6fc5");
+    EXPECT_EQ(relation.semantic_sha256,
+              "sha256:7555c3f35ef57db23d32ef833d635c06cd06690ca1543cb635272328f29c93a4");
+    EXPECT_EQ(relation.envelope_sha256,
+              "sha256:25cd94197f41b3ec6132adfde525eeb1baae9b2dbeae7d47af38966817f5e8dc");
+    EXPECT_EQ(output.semantic_sha256,
+              "sha256:cac3fabbb34907013b7558c5db855c3c861e370bb05ff0ff15051dd9f4e44dba");
+    EXPECT_EQ(output.envelope_sha256,
+              "sha256:96fe37adc1b743dbcd7d907bb0f63b4859ff44102cc1be8556914f7978212dce");
+
+    auto reordered = fixture.output;
+    std::reverse(reordered.rows.begin(), reordered.rows.end());
+    std::reverse(reordered.registered_fields.begin(),
+                 reordered.registered_fields.end());
+    for (auto &row : reordered.rows) {
+        std::reverse(row.transformations.begin(), row.transformations.end());
+    }
+    EXPECT_EQ(observation_apt::matched_output_semantic_sha256(
+                  reordered, fixture.baseline, fixture.target,
+                  fixture.relation),
+              output.semantic_sha256);
+    auto other_occurrence = fixture.output;
+    other_occurrence.envelope.occurrence = "occurrence:output/other";
+    EXPECT_EQ(observation_apt::matched_output_semantic_sha256(
+                  other_occurrence, fixture.baseline, fixture.target,
+                  fixture.relation),
+              output.semantic_sha256);
+    EXPECT_NE(observation_apt::matched_output_envelope_sha256(
+                  other_occurrence, fixture.baseline, fixture.target,
+                  fixture.relation),
+              output.envelope_sha256);
+}
+
+TEST(canonical_apt_observation_v1,
+     matched_observation_ecsv_embeds_and_revalidates_complete_logical_bundle) {
+    const auto fixture = make_observation_contract_fixture();
+    const auto serialized =
+        observation_apt::serialize_matched_observation_ecsv(
+            fixture.output, fixture.baseline, fixture.target,
+            fixture.relation);
+    EXPECT_TRUE(serialized.bytes.starts_with("# %ECSV 1.0\n"));
+    const auto expected_digests = observation_apt::compute_digests(
+        fixture.output, fixture.baseline, fixture.target, fixture.relation);
+    EXPECT_EQ(serialized.digests.semantic_sha256,
+              expected_digests.semantic_sha256);
+    EXPECT_EQ(serialized.digests.envelope_sha256,
+              expected_digests.envelope_sha256);
+    EXPECT_EQ(serialized.transport.scope,
+              observation_apt::matched_output_byte_transport_scope_v1);
+    EXPECT_EQ(serialized.transport.sha256,
+              "sha256:a4016feb82b2d7b007ea6ae3dbbfbbf18022f25f467e50bb0fd324552bff6ded");
+    EXPECT_EQ(serialized.transport.byte_count, 125302U);
+    const auto receipt_binding = artifact_publication::make_receipt_binding(
+        std::string(artifact_publication::receipt_schema_v1),
+        std::string(observation_apt::matched_output_byte_transport_scope_v1),
+        serialized.digests.envelope_sha256, serialized.bytes);
+    const auto receipt_bytes =
+        artifact_publication::canonical_receipt_bytes(receipt_binding);
+    EXPECT_EQ(receipt_bytes.size(), 298U);
+    EXPECT_EQ("sha256:" + citlali::utils::sha256(receipt_bytes),
+              "sha256:fa48cca9fc8218712ac0be2e3e86bd9ed2dbd3877d2af436677c880c9a90e1e8");
+
+    const auto parsed =
+        observation_apt::parse_matched_observation_ecsv_with_receipt(
+            serialized.bytes, receipt_bytes, fixture.baseline);
+    const auto parsed_target = observation_apt::compute_digests(parsed.target);
+    const auto fixture_target =
+        observation_apt::compute_digests(fixture.target);
+    EXPECT_EQ(parsed_target.semantic_sha256, fixture_target.semantic_sha256);
+    EXPECT_EQ(parsed_target.envelope_sha256, fixture_target.envelope_sha256);
+    const auto parsed_relation = observation_apt::compute_digests(
+        parsed.relation, fixture.baseline, parsed.target);
+    const auto fixture_relation = observation_apt::compute_digests(
+        fixture.relation, fixture.baseline, fixture.target);
+    EXPECT_EQ(parsed_relation.semantic_sha256,
+              fixture_relation.semantic_sha256);
+    EXPECT_EQ(parsed_relation.envelope_sha256,
+              fixture_relation.envelope_sha256);
+    const auto parsed_output = observation_apt::compute_digests(
+        parsed.output, fixture.baseline, parsed.target, parsed.relation);
+    EXPECT_EQ(parsed_output.semantic_sha256,
+              serialized.digests.semantic_sha256);
+    EXPECT_EQ(parsed_output.envelope_sha256,
+              serialized.digests.envelope_sha256);
+    EXPECT_EQ(observation_apt::serialize_matched_observation_ecsv(
+                  parsed.output, fixture.baseline, parsed.target,
+                  parsed.relation)
+                  .bytes,
+              serialized.bytes);
+}
+
+TEST(canonical_apt_observation_v1,
+     matched_observation_builder_and_wire_fail_closed_without_matcher_policy) {
+    const auto fixture = make_observation_contract_fixture();
+    std::map<std::int64_t, std::vector<std::int64_t>> pairs_for_target;
+    for (const auto &disposition : fixture.relation.target_dispositions) {
+        pairs_for_target.emplace(disposition.endpoint.local_key,
+                                 disposition.pair_keys);
+    }
+    std::vector<observation_apt::MatchedOutputFieldSource> selections;
+    for (const auto &target : fixture.target.rows) {
+        for (const auto &contract : fixture.output.registered_fields) {
+            if (contract.authorized_operation !=
+                observation_apt::TransformationOperation::
+                    copy_baseline_when_matched_null_when_unmatched) {
+                continue;
+            }
+            const auto &pair_keys = pairs_for_target.at(target.row_key);
+            selections.push_back(
+                {target.row_key, contract.field.name,
+                 pair_keys.empty()
+                     ? std::optional<std::int64_t>{}
+                     : std::optional<std::int64_t>{pair_keys.front()}});
+        }
+    }
+    const auto built = observation_apt::make_matched_observation_output_v1(
+        fixture.output.envelope, fixture.baseline, fixture.target,
+        fixture.relation, selections);
+    ASSERT_EQ(built.rows.size(), fixture.target.rows.size());
+    for (std::size_t index = 0; index < built.rows.size(); ++index) {
+        EXPECT_EQ(built.rows[index].uid, static_cast<std::int64_t>(index));
+    }
+    EXPECT_EQ(built.output_presentation_sequence,
+              (std::vector<std::int64_t>{0, 1, 2}));
+    std::map<std::int64_t, const observation_apt::MatchedOutputRow *> built_rows;
+    std::map<std::int64_t, const observation_apt::MatchedOutputRow *> fixture_rows;
+    for (const auto &row : built.rows) {
+        built_rows.emplace(row.target.local_key, &row);
+    }
+    for (const auto &row : fixture.output.rows) {
+        fixture_rows.emplace(row.target.local_key, &row);
+    }
+    for (const auto &[key, row] : built_rows) {
+        const auto *expected = fixture_rows.at(key);
+        EXPECT_EQ(row->target_input_key, expected->target_input_key);
+        EXPECT_EQ(observation_apt::canonical_binary64_payload(
+                      row->tone_frequency_hz),
+                  observation_apt::canonical_binary64_payload(
+                      expected->tone_frequency_hz));
+        EXPECT_EQ(row->array, expected->array);
+        EXPECT_EQ(row->network, expected->network);
+        EXPECT_EQ(row->channel, expected->channel);
+        EXPECT_EQ(row->relation_pair_keys, expected->relation_pair_keys);
+        EXPECT_EQ(row->fields, expected->fields);
+    }
+
+    auto reordered_target = fixture.target;
+    auto reordered_relation = fixture.relation;
+    auto reordered_output = fixture.output;
+    std::reverse(reordered_target.inputs.begin(), reordered_target.inputs.end());
+    std::reverse(reordered_target.rows.begin(), reordered_target.rows.end());
+    std::reverse(reordered_target.registered_fields.begin(),
+                 reordered_target.registered_fields.end());
+    std::reverse(reordered_relation.network_evidence.begin(),
+                 reordered_relation.network_evidence.end());
+    std::reverse(reordered_relation.pairs.begin(), reordered_relation.pairs.end());
+    std::reverse(reordered_relation.target_dispositions.begin(),
+                 reordered_relation.target_dispositions.end());
+    std::reverse(reordered_relation.seed_dispositions.begin(),
+                 reordered_relation.seed_dispositions.end());
+    reordered_relation.target_parent =
+        observation_apt::artifact_identity(reordered_target);
+    reordered_output.target_parent = reordered_relation.target_parent;
+    reordered_output.relation_parent = observation_apt::artifact_identity(
+        reordered_relation, fixture.baseline, reordered_target);
+    std::reverse(reordered_output.registered_fields.begin(),
+                 reordered_output.registered_fields.end());
+    std::reverse(reordered_output.rows.begin(), reordered_output.rows.end());
+    for (auto &row : reordered_output.rows) {
+        row.target = observation_apt::row_reference(
+            reordered_output.target_parent, row.target.local_key);
+        std::reverse(row.transformations.begin(), row.transformations.end());
+    }
+    const auto canonical = observation_apt::serialize_matched_observation_ecsv(
+        fixture.output, fixture.baseline, fixture.target, fixture.relation);
+    EXPECT_EQ(observation_apt::serialize_matched_observation_ecsv(
+                  reordered_output, fixture.baseline, reordered_target,
+                  reordered_relation)
+                  .bytes,
+              canonical.bytes);
+
+    auto tampered = canonical.bytes;
+    replace_once(tampered, "fixture/café/toltec7",
+                 "fixture/café/toltecX");
+    EXPECT_THROW(observation_apt::parse_matched_observation_ecsv(
+                     tampered, fixture.baseline),
+                 apt::ContractError);
+    tampered = canonical.bytes;
+    replace_once(tampered, "\"[900,901]\"", "\"[901,900]\"");
+    EXPECT_THROW(observation_apt::parse_matched_observation_ecsv(
+                     tampered, fixture.baseline),
+                 apt::ContractError);
+    auto missing_selection = selections;
+    missing_selection.pop_back();
+    EXPECT_THROW(observation_apt::make_matched_observation_output_v1(
+                     fixture.output.envelope, fixture.baseline,
+                     fixture.target, fixture.relation, missing_selection),
+                 apt::ContractError);
+}
 
 TEST(canonical_apt_v1, exact_labelled_type_length_digest_vectors) {
     const auto integer_frame = apt::canonical_frame(
@@ -1488,6 +2584,20 @@ TEST(canonical_apt_v1_phase_b,
     EXPECT_THROW(apt_producer::inject_issuance_context(
                      context, fixture.calib.canonical_apt_producer),
                  apt::ContractError);
+    fixture.calib.canonical_apt_producer.issuance_factory = {};
+    EXPECT_THROW(apt_producer::inject_issuance_context(
+                     context, fixture.calib.canonical_apt_producer),
+                 apt::ContractError);
+    calls = 0;
+    fixture.calib.canonical_apt_producer.issuance_factory = [&] {
+        ++calls;
+        return engine::CanonicalAptIssuance{"opaque\noccurrence",
+                                             "nonempty event"};
+    };
+    EXPECT_THROW(apt_producer::inject_issuance_context(
+                     context, fixture.calib.canonical_apt_producer),
+                 apt::ContractError);
+    EXPECT_EQ(calls, 1);
 
     const auto entropy_a = engine::make_canonical_apt_entropy_issuance();
     const auto entropy_b = engine::make_canonical_apt_entropy_issuance();
@@ -1606,6 +2716,35 @@ TEST(canonical_apt_v1_phase_b,
 
 TEST(canonical_apt_v1_phase_b,
      receipt_is_exact_envelope_bound_and_published_last) {
+    EXPECT_EQ(apt_producer::PublicationStage::artifact_staged,
+              apt_producer::PublicationStage::ecsv_staged);
+    EXPECT_EQ(apt_producer::PublicationStage::artifact_validated,
+              apt_producer::PublicationStage::ecsv_validated);
+    EXPECT_EQ(apt_producer::PublicationStage::before_artifact_publish,
+              apt_producer::PublicationStage::before_ecsv_publish);
+    EXPECT_EQ(apt_producer::PublicationStage::artifact_published,
+              apt_producer::PublicationStage::ecsv_published);
+    EXPECT_EQ(static_cast<int>(apt_producer::PublicationStage::ecsv_staged),
+              0);
+    EXPECT_EQ(static_cast<int>(
+                  apt_producer::PublicationStage::ecsv_validated),
+              1);
+    EXPECT_EQ(static_cast<int>(
+                  apt_producer::PublicationStage::receipt_staged),
+              2);
+    EXPECT_EQ(static_cast<int>(
+                  apt_producer::PublicationStage::receipt_validated),
+              3);
+    EXPECT_EQ(static_cast<int>(
+                  apt_producer::PublicationStage::before_ecsv_publish),
+              4);
+    EXPECT_EQ(static_cast<int>(
+                  apt_producer::PublicationStage::ecsv_published),
+              5);
+    EXPECT_EQ(static_cast<int>(
+                  apt_producer::PublicationStage::before_receipt_publish),
+              6);
+
     PhaseBTemporaryDirectory directory;
     const auto output = directory.path / "toltec_beammap_152389.ecsv";
     auto fixture = make_phase_b_legacy_fixture();
@@ -1698,6 +2837,17 @@ TEST(canonical_apt_v1_phase_b,
         };
     });
     run_failure([](const auto &, auto &hooks) {
+        hooks.on_stage = [](auto stage, const auto &,
+                            const auto &staged_receipt) {
+            if (stage ==
+                apt_producer::PublicationStage::before_ecsv_publish) {
+                std::filesystem::remove(staged_receipt);
+                write_phase_b_file(staged_receipt,
+                                   "replacement-receipt-stage-entry");
+            }
+        };
+    });
+    run_failure([](const auto &, auto &hooks) {
         hooks.on_stage = [](auto stage, const auto &staged_ecsv,
                             const auto &) {
             if (stage == apt_producer::PublicationStage::ecsv_staged) {
@@ -1707,6 +2857,22 @@ TEST(canonical_apt_v1_phase_b,
                     std::filesystem::perm_options::replace);
                 throw std::runtime_error(
                     "injected failure with inaccessible staging directory");
+            }
+        };
+    });
+    run_failure([](const auto &, auto &hooks) {
+        hooks.on_stage = [](auto stage, const auto &staged_ecsv,
+                            const auto &) {
+            if (stage == apt_producer::PublicationStage::ecsv_published) {
+                const auto owner =
+                    staged_ecsv.parent_path() / ".owner-artifact";
+                std::error_code error;
+                if (!std::filesystem::remove(owner, error) || error) {
+                    throw std::runtime_error(
+                        "failed to remove artifact owner proof in failpoint");
+                }
+                throw std::runtime_error(
+                    "injected failure after artifact owner unlink");
             }
         };
     });

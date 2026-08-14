@@ -1,20 +1,16 @@
 #pragma once
 
 #include <Eigen/Core>
-#include <array>
 #include <cstdint>
-#include <functional>
-#include <fstream>
-#include <iomanip>
-#include <locale>
+#include <map>
+#include <memory>
+#include <netcdf>
 #include <string>
 #include <string_view>
-#include <sstream>
-#include <stdexcept>
+#include <tuple>
 #include <vector>
-#include <map>
-#include <netcdf>
 
+#include <citlali/core/pipeline/canonical_artifact_publication.h>
 #include <citlali/core/pipeline/canonical_apt_v1.h>
 #include <citlali/core/utils/ecsv_io.h>
 #include <citlali/core/utils/netcdf_io.h>
@@ -32,51 +28,27 @@ struct CanonicalAptRawRowBinding {
                            const CanonicalAptRawRowBinding &) = default;
 };
 
-struct CanonicalAptIssuance {
-    std::string occurrence;
-    std::string event_reference;
-};
+using CanonicalAptIssuance =
+    citlali::pipeline::canonical_artifact_publication::OpaqueIssuance;
 
 inline std::string make_canonical_apt_entropy_reference(
     std::string_view prefix) {
-    // Occurrence issuance is explicitly injectable, and the production
-    // default draws from the operating-system CSPRNG. It is never derived
-    // from content, paths, clocks, or detector identity.
-    std::array<unsigned char, 32> bytes{};
-    std::ifstream entropy("/dev/urandom", std::ios::binary);
-    if (!entropy) {
-        throw std::runtime_error(
-            "canonical APT OS entropy source is unavailable");
-    }
-    entropy.read(reinterpret_cast<char *>(bytes.data()),
-                 static_cast<std::streamsize>(bytes.size()));
-    if (entropy.gcount() != static_cast<std::streamsize>(bytes.size()) ||
-        !entropy) {
-        throw std::runtime_error(
-            "canonical APT OS entropy source returned a short read");
-    }
-    std::ostringstream stream;
-    stream.imbue(std::locale::classic());
-    stream << prefix;
-    for (const auto byte : bytes) {
-        stream << std::hex << std::nouppercase << std::setfill('0')
-               << std::setw(2) << static_cast<unsigned int>(byte);
-    }
-    return stream.str();
+    return citlali::pipeline::canonical_artifact_publication::
+        make_entropy_reference(prefix);
 }
 
 inline CanonicalAptIssuance make_canonical_apt_entropy_issuance() {
-    return {
-        make_canonical_apt_entropy_reference("apt-occurrence:entropy/"),
-        make_canonical_apt_entropy_reference("apt-event:entropy/"),
-    };
+    return citlali::pipeline::canonical_artifact_publication::
+        make_entropy_issuance("apt-occurrence:entropy/",
+                              "apt-event:entropy/");
 }
 
 struct CanonicalAptProducerState {
     bool raw_inventory_ready = false;
     citlali::pipeline::canonical_apt_v1::RawManifest raw_manifest;
     std::vector<CanonicalAptRawRowBinding> rows;
-    std::function<CanonicalAptIssuance()> issuance_factory = [] {
+    citlali::pipeline::canonical_artifact_publication::IssuanceFactory
+        issuance_factory = [] {
         return make_canonical_apt_entropy_issuance();
     };
 };

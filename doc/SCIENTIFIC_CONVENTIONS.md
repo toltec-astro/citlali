@@ -32,6 +32,12 @@ artifact contract is present in `validation/product_contracts.json` with
 `activation_state: unactivated`; it is not yet part of an active validation
 profile or downstream input contract.
 
+The accepted observation-specific successor is specified in
+[`CANONICAL_APT_OBSERVATION_V1.md`](CANONICAL_APT_OBSERVATION_V1.md). Its three
+registry entries are likewise `unactivated`: the complete target and relation
+are embedded logical records, while exactly one canonical APT-family ECSV and
+its receipt form the persisted output.
+
 ## Capability Boundary
 
 | Reduction intent | Current execution status | Validated contract |
@@ -97,6 +103,15 @@ raw-channel relation, or other product-declared namespace; UID equality alone
 is insufficient. No persistent measured-detector namespace is currently
 authoritative.
 
+For canonical observation APT v1, every cross-occurrence reference binds its
+verified parent schema and semantic/envelope identities, then names the opaque
+parent occurrence and that parent's locally meaningful row key. Target-row,
+relation, pair/disposition, baseline-seed, and output `uid` values are each
+scoped to their own artifact occurrence. Equal local integers, matching
+ordinals, or equal row positions across those scopes do not identify a
+detector. The output has a new opaque occurrence and new output-local UIDs; no
+persistent detector identifier is invented.
+
 Beammap `det_N` FITS extension labels identify detector-map slots and are linked
 to detector UID fields in the Beammap APT/QC products. `N` is not itself a
 detector UID, and such within-output linkage does not grant UID persistence.
@@ -128,6 +143,91 @@ Semantic SHA-256 is independent of row, raw-input, and registered-declaration
 presentation order. A separate envelope SHA-256 binds semantic content to an
 opaque occurrence/event and producer provenance. A third SHA-256 covers exact
 ECSV transport bytes. None of those scopes promotes UID to persistent identity.
+
+### Canonical Observation APT v1
+
+The observation-specific successor has the simple scientific-product flow
+
+```text
+verified immutable canonical Beammap baseline APT
+  + selected observation raw/KMP facts and complete match relation
+  -> one observation-specific canonical APT ECSV + completion receipt
+```
+
+The baseline APT remains immutable and is reread and revalidated from its
+exact ECSV and receipt. For each target, the relation uses occurrence-scoped
+references rather than baseline or target row position. It covers every target
+as matched or unmatched and every baseline seed as matched or unused. Pair
+sets may be one-to-one, one-to-many, or many-to-one; every pair is reciprocally
+named by both endpoint dispositions, and unmatched/unused records contain no
+fabricated endpoint. Pair and disposition keys occupy one relation-local
+namespace and cannot collide. Matcher and per-network evidence are retained as
+nonidentity provenance. This contract validates supplied matching facts but
+does not define or execute matching policy.
+
+Source, application, and presentation order are separate facts. The complete
+`target_source_sequence`, `target_application_sequence`,
+`seed_source_sequence`, and `output_presentation_sequence` are validated
+permutations of their respective local keys. They neither alter semantic
+membership nor define identity.
+
+Only these observation-specific KMP quantities have v1 authority:
+
+| Canonical field | Type | Unit | Source authority | Authorized semantic use |
+| --- | --- | --- | --- | --- |
+| `kids_fr` | finite `float64` | Hz | copied-declared `fr` from `kids:model-params-v1` | matching and output |
+| `kids_f_out` | finite `float64` | Hz | copied-declared `f_out` from `kids:model-params-v1` | application and output |
+| `kids_Qr` | finite `float64` | `N/A` | copied-declared `Qr` from `kids:model-params-v1` | matching and output |
+| `kids_flag` | exact signed `int64` | `N/A` | optional artifact-level copied-declared `flag` from `kids:fit-report-v1` | output |
+
+All four are nonidentity values. An otherwise valid immutable KMP source may
+contain additional `kids_*` diagnostics. Its complete source bytes and digest
+remain bound, but an unregistered diagnostic does not enter typed semantic or
+output objects and acquires no unit or authority. Requesting one for identity,
+matching evidence, transformation, output, or authoritative provenance fails
+closed. Adding a field requires separately reviewed exact type, unit,
+nullability, source, cardinality, identity role, mutation rule, and vectors;
+there is no arbitrary diagnostic payload.
+
+Each selected raw/KMP source binding retains its artifact-local source key,
+diagnostic locator, exact content SHA-256 and byte count, source-header
+observation tuple, and network/interface/channel cardinality. Thus an ignored
+diagnostic can change the bound source identity without acquiring a typed
+field meaning or changing any registered field's typed value.
+
+Each output row preserves every authorized target value and records the
+complete set of relation pairs for that target. A baseline-derived field is
+copied exactly, with its declared type, unit, authority, and source seed/pair,
+or is typed null when the target is unmatched. Transformation records carry
+explicit typed before/after values, value source, source row and pair where
+applicable, authority reference, and lineage. Structural and raw-relation
+fields are not mutable, and v1 admits no issuer-declared field transformation.
+The baseline occurrence, semantic/envelope/transport and receipt identities,
+target and relation parent identities, and output lineage remain embedded and
+integrity-covered. A target `kids_flag`, when present, is authoritative for the
+output name; the optional baseline field of the same name is excluded from the
+derived baseline catalog and cannot overwrite or supply it.
+
+Embedding does not merge identity scopes: target and relation retain their
+accepted logical semantic and envelope preimages, while the final APT has its
+own semantic, envelope, and exact-byte transport identities.
+
+Citlali owns the canonical schemas and registries, scalar encoding and digest
+preimages, baseline verification, final ECSV codec, output occurrence/event
+and software-revision issuance, receipt, and publication protocol. TolProj
+owns the legitimate target/relation logical occurrences and envelope context,
+observation-specific selection, raw/KMP/network/channel values, match pairs
+and dispositions, matcher/network evidence, and associated configuration/time
+and transformation provenance. That value-issuer role does not grant schema,
+encoding, final-output issuance, publication, persistent detector-identity, or
+matching-policy authority.
+
+The strict JSON interface is only a machine request/response protocol. The
+scientific product remains canonical ECSV; target and relation have no
+separate published v1 files. Every registry entry remains unactivated and
+absent from profiles, accepted runs, ingestion, CAL, ALIGN, and production
+dispatch. The accepted candidate does not change the canonical Beammap
+baseline bytes, detector set/order, or scientific values.
 
 ### Maps And Stokes
 
@@ -568,6 +668,12 @@ unit/nullability/authority/non-finite registry in metadata. For each historical
 schema, current flags, finite-value rules, and existing metadata remain
 authoritative; callers must not silently assign a new sentinel interpretation.
 
+Canonical observation APT v1 also uses the declared typed null for an
+unmatched target's baseline-derived fields. It never fabricates a seed endpoint
+or substitutes a numeric sentinel. Its four authorized KMP fields are
+nonnullable when present; `kids_flag` is optional only at the complete target
+artifact level.
+
 ## Configuration And Provenance States
 
 TolTECA owns discovery, ordering, and merge behavior for numbered `NN*.yaml`
@@ -617,6 +723,17 @@ before the receipt is made visible last. The receipt does not substitute for
 embedded semantic identity or the raw-channel relation. A missing receipt means
 an incomplete publication, while a post-hoc valid pair cannot by itself prove
 the historical order of directory-entry visibility.
+
+Canonical observation APT v1 publishes one final `.apt.ecsv` without replacing
+an existing artifact or receipt, rereads and revalidates it, and exposes its
+envelope-bound receipt last. The embedded target and relation are provenance,
+not independent completion sidecars. This is not an `fsync`/crash-durable
+transaction before receipt visibility: interruption can leave a receipt-absent
+incomplete artifact. A stdout failure after successful receipt publication can
+produce a false-negative acknowledgement; the strict protocol's `validate`
+operation recovers the authoritative state. No owner-specified absolute stdin
+size quota exists. These are accepted unactivated limitations, not permission
+to weaken ECSV/receipt validation or publication completeness.
 
 ## Determinism And Numerical Acceptance
 
@@ -668,8 +785,9 @@ Plain R-derived modes must not clean the primary science stream by convenience.
 The following are not silently resolved by this document:
 
 - an authoritative persistent measured-detector namespace and lifecycle;
-  canonical APT v1 resolves this negatively by keeping `uid` artifact-local
-  only, so persistence requires separate proof and a successor contract;
+  canonical baseline and observation APT v1 resolve this negatively by keeping
+  every UID/local key occurrence-scoped only, so persistence requires separate
+  proof and a successor contract;
 - whether future instrument changes preserve the current network-ID mapping and
   ordering;
 - complete units and standardized missing-value metadata for diagnostic NetCDF
@@ -699,6 +817,7 @@ policy, and validation dataset before implementation relies on it.
 | Coadds, fruit loops, celestial WCS, or science post-processing | Science profile |
 | Beammap calibration, detector maps/TOD, fits, QC, or split outputs | Beammap profile |
 | Canonical baseline APT schema, field registry, raw relation, digests, ECSV bytes, or publication receipt | Focused C++ producer/codec tests plus the standalone executable artifact contract; any science or detector/order drift also requires the Beammap numerical profile and is a package stop |
+| Canonical observation APT target/relation coverage, KMP registry, occurrence-scoped references, transformations, ECSV bytes, strict protocol, or publication receipt | Focused C++ and independent Python contract/codec vectors, strict protocol cases, public-header isolation, publication failure injection, and retained canonical baseline tests; any Beammap science or detector/order drift is a package stop |
 | Product inventory, units, frames, indexing, or missing-data semantics | Product contract plus mode numerical profile; intentional changes require a successor contract |
 | Provenance state | Full relevant provenance audit and exact low-level config comparison |
 | Enabled polarimetry or R execution | No ordinary refactor gate is sufficient; approve the scientific contract and reference dataset first |

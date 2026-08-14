@@ -4,6 +4,8 @@ import copy
 import hashlib
 import io
 import json
+import struct
+import subprocess
 import tempfile
 import unittest
 import zlib
@@ -801,6 +803,457 @@ class CanonicalAptArtifactContractTest(unittest.TestCase):
             "byte_count=18759\n"
         ).encode("ascii")
 
+    @staticmethod
+    def bits(value: float) -> str:
+        return struct.pack(">d", value).hex()
+
+    def observation_fixture(
+        self, *, include_target_kids_flag: bool = True
+    ) -> dict[str, object]:
+        registry = product_contract.load_registry(self.registry_path)
+        contracts = {
+            contract_id: product_contract.artifact_contract_by_id(
+                registry, contract_id
+            )
+            for contract_id in (self.BASELINE_ID, *self.SUCCESSOR_IDS)
+        }
+        baseline_contract = contracts[self.BASELINE_ID]
+        baseline_document, _ = product_contract._parse_canonical_apt_v1_bytes(
+            self.apt_bytes, baseline_contract
+        )
+        # The retained APT-PROD-001 byte fixture deliberately pins canonical
+        # NaN.  APT-PROD-002's cross-language fixture starts from the ordinary
+        # C++ make_document() value so the exact immutable baseline bytes are
+        # independently reconstructed on both sides.
+        baseline_document["rows"][0]["fields"]["final_prior_d2"] = 0.25
+        seed_kids_flag = next(
+            field
+            for field in baseline_contract["optional_extensions"]
+            if field["name"] == "kids_flag"
+        )
+        baseline_document["registered_fields"].append(
+            copy.deepcopy(seed_kids_flag)
+        )
+        baseline_document["registered_fields"].sort(
+            key=lambda field: field["name"]
+        )
+        for row, value in zip(
+            baseline_document["rows"], [91, -5, 77], strict=True
+        ):
+            row["fields"]["kids_flag"] = value
+        baseline_bytes = product_contract._serialize_canonical_apt_document(
+            baseline_document, baseline_contract
+        )
+        baseline_digests = product_contract._canonical_apt_digests(
+            baseline_document, baseline_contract
+        )
+        baseline_transport = (
+            "sha256:" + hashlib.sha256(baseline_bytes).hexdigest()
+        )
+        baseline_receipt = (
+            baseline_contract["receipt_schema"]
+            + "\nscope="
+            + baseline_contract["byte_transport_scope"]
+            + "\nenvelope_sha256="
+            + baseline_digests["envelope_sha256"]
+            + "\nbyte_sha256="
+            + baseline_transport
+            + "\nbyte_count="
+            + str(len(baseline_bytes))
+            + "\n"
+        ).encode("ascii")
+        descriptor = product_contract.verified_baseline_descriptor_from_bytes(
+            baseline_bytes, baseline_receipt, baseline_contract
+        )
+
+        def source(
+            source_key: int,
+            role: str,
+            digest_digit: str,
+            header: dict[str, str],
+            network: int,
+            channel_count: int,
+        ) -> dict[str, object]:
+            return {
+                "source_key": str(source_key),
+                "role": role,
+                "diagnostic_locator": f"fixture/café/toltec{network}",
+                "content_sha256": "sha256:" + digest_digit * 64,
+                "byte_count": str(1000 + source_key),
+                "header_observation": copy.deepcopy(header),
+                "network": str(network),
+                "interface": f"toltec{network}",
+                "channel_count": str(channel_count),
+            }
+
+        observation = {
+            "observation": "152390",
+            "subobservation": "0",
+            "scan": "1",
+        }
+        kmp_observation = {
+            "observation": "152300",
+            "subobservation": "0",
+            "scan": "0",
+        }
+        target = {
+            "schema_version": "citlali-observation-target-manifest-v1",
+            "contract_authority": "citlali",
+            "observation_value_issuer": "tolproj",
+            "envelope": {
+                "occurrence": "occurrence:tolproj/target#opaque-A",
+                "event_reference": "event:tolproj/observation-target#A",
+                "software_revision": "tolproj-clean-fixture-revision",
+                "configuration_reference": "tolproj-config:sha256:fixture",
+                "event_time_utc": "2026-08-14T01:02:03Z",
+            },
+            "observation": observation,
+            "inputs": [
+                {
+                    "input_key": "70",
+                    "network": "7",
+                    "interface": "toltec7",
+                    "channel_count": "1",
+                    "raw_source": source(
+                        700, "raw", "7", observation, 7, 1
+                    ),
+                    "kmp_source": source(
+                        701, "kmp", "8", kmp_observation, 7, 1
+                    ),
+                },
+                {
+                    "input_key": "10",
+                    "network": "0",
+                    "interface": "toltec0",
+                    "channel_count": "2",
+                    "raw_source": source(
+                        100, "raw", "1", observation, 0, 2
+                    ),
+                    "kmp_source": source(
+                        101, "kmp", "2", kmp_observation, 0, 2
+                    ),
+                },
+            ],
+            "registered_fields": product_contract.canonical_target_fields_v1(
+                include_kids_flag=include_target_kids_flag
+            ),
+            "rows": [],
+            "target_source_sequence": ["11", "701", "5"],
+            "target_application_sequence": ["5", "11", "701"],
+        }
+        target_row_values = (
+            (
+                "701", "70", "701", "0", self.bits(2.5e9),
+                self.bits(2.5001e9), "1", "7", "0", self.bits(42000.0),
+                "-7",
+            ),
+            (
+                "11", "10", "101", "1", self.bits(-0.0),
+                self.bits(-0.0), "0", "0", "1", self.bits(-3.0), "3",
+            ),
+            (
+                "5", "10", "101", "0", "0000000000000001",
+                self.bits(1.2501e9), "0", "0", "0",
+                "0000000000000001", "42",
+            ),
+        )
+        for (
+            row_key,
+            input_key,
+            kmp_source_key,
+            kmp_row_index,
+            kids_fr,
+            kids_f_out,
+            array,
+            network,
+            channel,
+            kids_qr,
+            kids_flag,
+        ) in target_row_values:
+            fields: dict[str, object] = {
+                "kids_fr": kids_fr,
+                "kids_f_out": kids_f_out,
+                "kids_Qr": kids_qr,
+            }
+            if include_target_kids_flag:
+                fields["kids_flag"] = kids_flag
+            target["rows"].append(
+                {
+                    "row_key": row_key,
+                    "input_key": input_key,
+                    "kmp_source_key": kmp_source_key,
+                    "kmp_row_index": kmp_row_index,
+                    "matching_frequency_hz": kids_fr,
+                    "output_tone_frequency_hz": kids_f_out,
+                    "array": array,
+                    "network": network,
+                    "channel": channel,
+                    "fields": fields,
+                }
+            )
+        target_contract = contracts[self.SUCCESSOR_IDS[0]]
+        target_identity = product_contract.observation_target_identity(
+            target, target_contract
+        )
+        seed_identity = product_contract._baseline_artifact_identity(descriptor)
+
+        def row_reference(
+            identity: dict[str, object], local_key: str
+        ) -> dict[str, object]:
+            return product_contract._row_reference(identity, local_key)
+
+        relation = {
+            "schema_version": "citlali-apt-match-dispositions-v1",
+            "contract_authority": "citlali",
+            "observation_value_issuer": "tolproj",
+            "mapping_domain": "tolproj-observation-tone-to-beammap-seed-v1",
+            "envelope": {
+                "occurrence": "occurrence:tolproj/relation#opaque-B",
+                "event_reference": "event:tolproj/matcher-run#B",
+                "software_revision": "tolproj-clean-fixture-revision",
+                "configuration_reference": "tolproj-match-config:sha256:fixture",
+                "event_time_utc": "2026-08-14T01:03:04Z",
+            },
+            "baseline_parent": product_contract.verified_baseline_reference(
+                descriptor
+            ),
+            "target_parent": target_identity,
+            "matcher": {
+                "matcher_run_occurrence": "occurrence:tolproj/matcher-policy-run#opaque",
+                "implementation_revision": "tolproj-clean-fixture-revision",
+                "configuration_reference": "tolproj-match-config:sha256:fixture",
+                "target_frequency_field": "kids_fr",
+                "target_quality_factor_field": "kids_Qr",
+                "method": "astropy",
+                "backend": "join-distance-v1",
+            },
+            "network_evidence": [
+                {
+                    "network": "7",
+                    "frequency_shift_hz": self.bits(-0.0),
+                    "gate_hz": self.bits(200000.0),
+                    "quality_factor": self.bits(42000.0),
+                    "quality_factor_field": "kids_Qr",
+                    "quality_factor_authority_reference": "kids:model-params-v1",
+                },
+                {
+                    "network": "0",
+                    "frequency_shift_hz": "0000000000000001",
+                    "gate_hz": self.bits(200000.0),
+                    "quality_factor": self.bits(20000.0),
+                    "quality_factor_field": "kids_Qr",
+                    "quality_factor_authority_reference": "kids:model-params-v1",
+                },
+            ],
+            "pairs": [
+                {
+                    "pair_key": "902",
+                    "target": row_reference(target_identity, "11"),
+                    "seed": row_reference(seed_identity, "42"),
+                    "separation_hz": self.bits(3.0),
+                    "is_good_match": True,
+                },
+                {
+                    "pair_key": "900",
+                    "target": row_reference(target_identity, "5"),
+                    "seed": row_reference(seed_identity, "0"),
+                    "separation_hz": self.bits(-0.0),
+                    "is_good_match": True,
+                },
+                {
+                    "pair_key": "901",
+                    "target": row_reference(target_identity, "5"),
+                    "seed": row_reference(seed_identity, "42"),
+                    "separation_hz": "0000000000000001",
+                    "is_good_match": False,
+                },
+            ],
+            "target_dispositions": [
+                {
+                    "disposition_key": "1000",
+                    "endpoint": row_reference(target_identity, "701"),
+                    "state": "unmatched",
+                    "pair_keys": [],
+                    "reason": "no selected seed endpoint",
+                },
+                {
+                    "disposition_key": "1002",
+                    "endpoint": row_reference(target_identity, "5"),
+                    "state": "matched",
+                    "pair_keys": ["900", "901"],
+                    "reason": "two realized candidate endpoints retained",
+                },
+                {
+                    "disposition_key": "1001",
+                    "endpoint": row_reference(target_identity, "11"),
+                    "state": "matched",
+                    "pair_keys": ["902"],
+                    "reason": "one realized endpoint",
+                },
+            ],
+            "seed_dispositions": [
+                {
+                    "disposition_key": "2000",
+                    "endpoint": row_reference(
+                        seed_identity, str(product_contract.CANONICAL_APT_UID_MAX)
+                    ),
+                    "state": "unused",
+                    "pair_keys": [],
+                    "reason": "seed not used",
+                },
+                {
+                    "disposition_key": "2002",
+                    "endpoint": row_reference(seed_identity, "0"),
+                    "state": "matched",
+                    "pair_keys": ["900"],
+                    "reason": "one target endpoint",
+                },
+                {
+                    "disposition_key": "2001",
+                    "endpoint": row_reference(seed_identity, "42"),
+                    "state": "matched",
+                    "pair_keys": ["901", "902"],
+                    "reason": "two target endpoints",
+                },
+            ],
+            "seed_source_sequence": [
+                "42", str(product_contract.CANONICAL_APT_UID_MAX), "0"
+            ],
+        }
+        relation_contract = contracts[self.SUCCESSOR_IDS[1]]
+        relation_identity = product_contract.match_dispositions_identity(
+            relation, relation_contract, descriptor, target, target_contract
+        )
+        output_contract = contracts[self.SUCCESSOR_IDS[2]]
+        output_fields = product_contract.canonical_output_field_contracts_v1(
+            descriptor, target, target_contract
+        )
+        target_by_key = {row["row_key"]: row for row in target["rows"]}
+        baseline_by_key = {row["uid"]: row for row in descriptor["rows"]}
+        baseline_fields = {
+            field["name"]: field for field in descriptor["registered_fields"]
+        }
+
+        def output_row(
+            uid: str,
+            target_key: str,
+            pair_keys: list[str],
+            source_pair_key: str | None,
+            seed_key: str | None,
+        ) -> dict[str, object]:
+            target_row = target_by_key[target_key]
+            target_reference = row_reference(target_identity, target_key)
+            fields: dict[str, object] = {}
+            transformations: list[dict[str, object]] = []
+            for field_contract in output_fields:
+                field = field_contract["field"]
+                name = field["name"]
+                if field_contract["authorized_operation"] == "preserve-target":
+                    value = target_row["fields"][name]
+                    fields[name] = value
+                    transformations.append(
+                        {
+                            "field_name": name,
+                            "operation": "preserve-target",
+                            "before": value,
+                            "after": value,
+                            "value_source": "target-row",
+                            "source_pair_key": None,
+                            "source_row": target_reference,
+                            "authority_reference": field["authority_reference"],
+                            "provenance_reference": (
+                                f"target-kmp-source:{target_row['kmp_source_key']}:"
+                                f"row:{target_row['kmp_row_index']}:"
+                                f"column:{field['source_column']}"
+                            ),
+                        }
+                    )
+                elif seed_key is not None:
+                    value = baseline_by_key[seed_key]["fields"][name]["value"]
+                    fields[name] = value
+                    transformations.append(
+                        {
+                            "field_name": name,
+                            "operation": "copy-baseline-when-matched-null-when-unmatched",
+                            "before": None,
+                            "after": value,
+                            "value_source": "baseline-seed-row",
+                            "source_pair_key": source_pair_key,
+                            "source_row": row_reference(seed_identity, seed_key),
+                            "authority_reference": baseline_fields[name][
+                                "authority_reference"
+                            ],
+                            "provenance_reference": f"relation-pair:{source_pair_key}",
+                        }
+                    )
+                else:
+                    fields[name] = None
+                    transformations.append(
+                        {
+                            "field_name": name,
+                            "operation": "copy-baseline-when-matched-null-when-unmatched",
+                            "before": None,
+                            "after": None,
+                            "value_source": "canonical-null",
+                            "source_pair_key": None,
+                            "source_row": None,
+                            "authority_reference": "citlali:typed-missing-unmatched-v1",
+                            "provenance_reference": "target-unmatched:no-fabricated-seed",
+                        }
+                    )
+            return {
+                "uid": uid,
+                "target": target_reference,
+                "target_input_key": target_row["input_key"],
+                "tone_frequency_hz": target_row["output_tone_frequency_hz"],
+                "array": target_row["array"],
+                "network": target_row["network"],
+                "channel": target_row["channel"],
+                "relation_pair_keys": pair_keys,
+                "fields": fields,
+                "transformations": transformations,
+            }
+
+        output = {
+            "schema_version": "citlali-observation-matched-apt-v1",
+            "contract_authority": "citlali",
+            "observation_value_issuer": "tolproj",
+            "transformation_registry": "citlali-observation-apt-field-transformations-v1",
+            "envelope": {
+                "occurrence": "occurrence:tolproj/matched-output#opaque-C",
+                "event_reference": "event:tolproj/observation-output#C",
+                "software_revision": "tolproj-clean-fixture-revision",
+                "configuration_reference": "tolproj-output-config:sha256:fixture",
+                "event_time_utc": "2026-08-14T01:04:05Z",
+            },
+            "baseline_parent": product_contract.verified_baseline_reference(
+                descriptor
+            ),
+            "target_parent": target_identity,
+            "relation_parent": relation_identity,
+            "registered_fields": output_fields,
+            "rows": [
+                output_row("888", "701", [], None, None),
+                output_row("4", "5", ["900", "901"], "900", "0"),
+                output_row(
+                    str(product_contract.CANONICAL_APT_UID_MAX - 1),
+                    "11", ["902"], "902", "42",
+                ),
+            ],
+            "output_presentation_sequence": [
+                str(product_contract.CANONICAL_APT_UID_MAX - 1), "888", "4"
+            ],
+        }
+        return {
+            "contracts": contracts,
+            "baseline_bytes": baseline_bytes,
+            "baseline_receipt": baseline_receipt,
+            "descriptor": descriptor,
+            "target": target,
+            "relation": relation,
+            "output": output,
+        }
+
     def write_valid_pair(self) -> None:
         self.apt_path.write_bytes(self.apt_bytes)
         self.receipt_path.write_bytes(self.receipt_bytes())
@@ -1281,6 +1734,1585 @@ class CanonicalAptArtifactContractTest(unittest.TestCase):
             )
         self.assertEqual(status, 2)
         self.assertEqual(self.apt_path.read_bytes(), self.apt_bytes)
+
+
+class CanonicalAptProtocolV1Test(unittest.TestCase):
+    bits = staticmethod(CanonicalAptArtifactContractTest.bits)
+    BASELINE_ID = "apt-prod-001-canonical-baseline-apt-v1"
+    SEMANTIC = CanonicalAptArtifactContractTest.SEMANTIC
+    ENVELOPE = CanonicalAptArtifactContractTest.ENVELOPE
+    TRANSPORT = CanonicalAptArtifactContractTest.TRANSPORT
+    SUCCESSOR_IDS = (
+        "apt-prod-002-observation-target-manifest-v1",
+        "apt-prod-002-match-dispositions-v1",
+        "apt-prod-002-observation-matched-apt-v1",
+    )
+
+    def setUp(self) -> None:
+        self.directory = tempfile.TemporaryDirectory()
+        self.root = Path(self.directory.name)
+        self.registry_path = (
+            Path(__file__).resolve().parents[2]
+            / "validation/product_contracts.json"
+        )
+        self.apt_bytes = zlib.decompress(
+            base64.b64decode(
+                CanonicalAptArtifactContractTest.FIXTURE_ZLIB_BASE64
+            )
+        )
+        self.receipt_bytes = (
+            "citlali-canonical-apt-publication-receipt-v1\n"
+            "scope=citlali-canonical-apt-byte-transport-sha256-v1\n"
+            "envelope_sha256="
+            + CanonicalAptArtifactContractTest.ENVELOPE
+            + "\nbyte_sha256="
+            + CanonicalAptArtifactContractTest.TRANSPORT
+            + "\nbyte_count=18759\n"
+        ).encode("ascii")
+
+    def tearDown(self) -> None:
+        self.directory.cleanup()
+
+    def protocol_cli(self) -> Path:
+        path = Path(__file__).resolve().parents[2] / "build/bin/citlali"
+        self.assertTrue(
+            path.is_file(),
+            "Phase-B protocol tests require the focused citlali_cli build",
+        )
+        return path
+
+    def run_protocol(self, request: str | dict[str, object]) -> tuple[
+        subprocess.CompletedProcess[str], dict[str, object]
+    ]:
+        if isinstance(request, dict):
+            request = json.dumps(request, separators=(",", ":")) + "\n"
+        completed = subprocess.run(
+            [str(self.protocol_cli()), "--canonical-apt-contract-v1"],
+            input=request,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        self.assertEqual(completed.stderr, "")
+        self.assertEqual(len(completed.stdout.splitlines()), 1)
+        return completed, json.loads(completed.stdout)
+
+    def contracts(self) -> dict[str, object]:
+        registry = product_contract.load_registry(self.registry_path)
+        return {
+            contract_id: product_contract.artifact_contract_by_id(
+                registry, contract_id
+            )
+            for contract_id in (self.BASELINE_ID, *self.SUCCESSOR_IDS)
+        }
+
+    def expected_baseline_descriptor(self) -> dict[str, object]:
+        return product_contract.verified_baseline_descriptor_from_bytes(
+            self.apt_bytes,
+            self.receipt_bytes,
+            self.contracts()[self.BASELINE_ID],
+        )
+
+    def write_protocol_baseline(self) -> Path:
+        path = self.root / "baseline.ecsv"
+        path.write_bytes(self.apt_bytes)
+        Path(str(path) + ".sha256").write_bytes(self.receipt_bytes)
+        return path
+
+    def describe_protocol_baseline(
+        self, baseline_path: Path
+    ) -> dict[str, object]:
+        completed, response = self.run_protocol(
+            {
+                "protocol": "citlali-canonical-apt-protocol-v1",
+                "request_id": "python-bootstrap-describe",
+                "operation": "describe-baseline-v1",
+                "payload": {"baseline_ecsv": str(baseline_path)},
+            }
+        )
+        self.assertEqual(completed.returncode, 0, response)
+        return response["result"]
+
+    def protocol_issue_request(
+        self,
+    ) -> tuple[dict[str, object], dict[str, object], list[Path]]:
+        baseline_path = self.write_protocol_baseline()
+        described = self.describe_protocol_baseline(baseline_path)
+        descriptor = described["baseline"]
+        baseline_occurrence = descriptor["occurrence"]
+        seed_uids = [row["uid"] for row in descriptor["rows"]]
+        self.assertEqual(set(seed_uids), {"0", "42", "9007199254740991"})
+
+        observation = {
+            "observation": "152390", "subobservation": "0", "scan": "1"
+        }
+        source_paths: list[Path] = []
+
+        def source(source_key: str, role: str) -> dict[str, object]:
+            source_bytes = f"bound-{role}-network-0\n".encode("ascii")
+            source_path = self.root / f"source-{role}.bin"
+            source_path.write_bytes(source_bytes)
+            source_paths.append(source_path)
+            return {
+                "source_key": source_key,
+                "network": "0",
+                "interface": "toltec0",
+                "channel_count": "1",
+                "diagnostic_locator": str(source_path),
+                "content_sha256": (
+                    "sha256:" + hashlib.sha256(source_bytes).hexdigest()
+                ),
+                "byte_count": str(len(source_bytes)),
+                "header_observation": copy.deepcopy(observation),
+            }
+
+        target_occurrence = "occurrence:tolproj/target#opaque-A"
+        relation_occurrence = "occurrence:tolproj/relation#opaque-B"
+        target = {
+            "envelope": {
+                "occurrence": target_occurrence,
+                "event_reference": "event:tolproj/target#opaque-A",
+                "software_revision": "tolproj:test-revision",
+                "configuration_reference": "tolproj:test-config",
+                "event_time_utc": "2026-08-14T12:00:00Z",
+            },
+            "observation": observation,
+            "inputs": [{
+                "input_key": "10",
+                "network": "0",
+                "interface": "toltec0",
+                "channel_count": "1",
+                "raw_source": source("100", "raw"),
+                "kmp_source": source("101", "kmp"),
+            }],
+            "rows": [{
+                "row_key": "5",
+                "input_key": "10",
+                "kmp_source_key": "101",
+                "kmp_row_index": "0",
+                "array": "0",
+                "network": "0",
+                "channel": "0",
+                "fields": {
+                    "kids_fr": self.bits(1.25e9),
+                    "kids_f_out": self.bits(1.2501e9),
+                    "kids_Qr": self.bits(20000.0),
+                    "kids_flag": "42",
+                },
+            }],
+            "target_source_sequence": ["5"],
+            "target_application_sequence": ["5"],
+        }
+        scoped_target = {"occurrence": target_occurrence, "local_key": "5"}
+
+        def scoped_seed(uid: str) -> dict[str, str]:
+            return {"occurrence": baseline_occurrence, "local_key": uid}
+
+        pairs = [
+            {
+                "pair_key": "900",
+                "target": copy.deepcopy(scoped_target),
+                "seed": scoped_seed("0"),
+                "separation_hz": self.bits(1250.0),
+                "is_good_match": True,
+            },
+            {
+                "pair_key": "901",
+                "target": copy.deepcopy(scoped_target),
+                "seed": scoped_seed("42"),
+                "separation_hz": self.bits(2500.0),
+                "is_good_match": True,
+            },
+        ]
+        seed_pair_keys = {"0": ["900"], "42": ["901"]}
+        relation = {
+            "envelope": {
+                "occurrence": relation_occurrence,
+                "event_reference": "event:tolproj/relation#opaque-B",
+                "software_revision": "tolproj:test-revision",
+                "configuration_reference": "tolproj:test-config",
+                "event_time_utc": "2026-08-14T12:01:00Z",
+            },
+            "matcher": {
+                "matcher_run_occurrence": "occurrence:tolproj/matcher#A",
+                "implementation_revision": "tolproj-matcher:test-revision",
+                "configuration_reference": "tolproj-matcher:test-config",
+                "method": "issuer-selected-test-method",
+                "backend": "issuer-selected-test-backend",
+            },
+            "network_evidence": [{
+                "network": "0",
+                "frequency_shift_hz": self.bits(0.0),
+                "gate_hz": self.bits(1.0e6),
+                "quality_factor": self.bits(20000.0),
+            }],
+            "pairs": pairs,
+            "target_dispositions": [{
+                "disposition_key": "1000",
+                "endpoint": copy.deepcopy(scoped_target),
+                "state": "matched",
+                "pair_keys": ["900", "901"],
+                "reason": "issuer-declared complete candidate set",
+            }],
+            "seed_dispositions": [
+                {
+                    "disposition_key": str(2000 + index),
+                    "endpoint": scoped_seed(uid),
+                    "state": "matched" if uid in seed_pair_keys else "unused",
+                    "pair_keys": seed_pair_keys.get(uid, []),
+                    "reason": (
+                        "issuer-declared selected candidate"
+                        if uid in seed_pair_keys else "issuer-declared unused"
+                    ),
+                }
+                for index, uid in enumerate(sorted(seed_uids, key=int))
+            ],
+            "seed_source_sequence": seed_uids,
+        }
+        selections = [{
+            "target": copy.deepcopy(scoped_target),
+            "default_source_pair": {
+                "occurrence": relation_occurrence,
+                "local_key": "900",
+            },
+            "field_overrides": [{
+                "field_name": "amp",
+                "source_pair": {
+                    "occurrence": relation_occurrence,
+                    "local_key": "901",
+                },
+            }],
+        }]
+        output_path = self.root / "issued.apt.ecsv"
+        request = {
+            "protocol": "citlali-canonical-apt-protocol-v1",
+            "request_id": "python-direct-issue",
+            "operation": "issue-observation-apt-v1",
+            "payload": {
+                "baseline_ecsv": str(baseline_path),
+                "expected_baseline": copy.deepcopy(
+                    described["baseline_reference"]
+                ),
+                "target": target,
+                "relation": relation,
+                "field_source_selections": selections,
+                "publication": {
+                    "output_ecsv": str(output_path),
+                    "configuration_reference": "python-direct-config:opaque",
+                    "event_time_utc": "2026-08-14T12:34:56Z",
+                },
+            },
+        }
+        verifier = {
+            "contracts": self.contracts(),
+            "descriptor": self.expected_baseline_descriptor(),
+            "described": described,
+        }
+        return verifier, request, source_paths
+
+    def test_versioned_protocol_describes_complete_verified_baseline(self) -> None:
+        baseline_path = self.write_protocol_baseline()
+        descriptor = self.expected_baseline_descriptor()
+        completed, response = self.run_protocol(
+            {
+                "protocol": "citlali-canonical-apt-protocol-v1",
+                "request_id": "python-direct-describe",
+                "operation": "describe-baseline-v1",
+                "payload": {"baseline_ecsv": str(baseline_path)},
+            }
+        )
+        self.assertEqual(completed.returncode, 0)
+        self.assertEqual(
+            set(response),
+            {"protocol", "request_id", "status", "operation", "result"},
+        )
+        self.assertEqual(response["protocol"],
+                         "citlali-canonical-apt-protocol-v1")
+        self.assertEqual(response["request_id"], "python-direct-describe")
+        self.assertEqual(response["status"], "ok")
+        self.assertEqual(response["operation"], "describe-baseline-v1")
+        self.assertEqual(
+            set(response["result"]),
+            {"baseline", "baseline_reference", "baseline_ecsv", "receipt"},
+        )
+        self.assertEqual(response["result"]["baseline"], descriptor)
+        self.assertEqual(
+            response["result"]["baseline_reference"],
+            product_contract.verified_baseline_reference(descriptor),
+        )
+
+    def test_versioned_protocol_strict_json_and_receipts_fail_closed(self) -> None:
+        baseline_path = self.write_protocol_baseline()
+        descriptor = self.expected_baseline_descriptor()
+        protocol = "citlali-canonical-apt-protocol-v1"
+        good = {
+            "protocol": protocol,
+            "request_id": "strict-case",
+            "operation": "describe-baseline-v1",
+            "payload": {"baseline_ecsv": str(baseline_path)},
+        }
+        compact = json.dumps(good, separators=(",", ":"))
+        duplicate = (
+            '{"protocol":"' + protocol
+            + '","request_id":"a","request_id":"b",'
+            '"operation":"describe-baseline-v1","payload":'
+            '{"baseline_ecsv":"' + str(baseline_path) + '"}}\n'
+        )
+        unknown = copy.deepcopy(good)
+        unknown["payload"]["unknown"] = True
+        wrong_numeric = copy.deepcopy(good)
+        wrong_numeric["payload"]["baseline_ecsv"] = 1
+        negative_zero = copy.deepcopy(good)
+        negative_zero["payload"]["expected_baseline"] = (
+            product_contract.verified_baseline_reference(descriptor)
+        )
+        negative_zero["payload"]["expected_baseline"]["byte_count"] = "-0"
+        requests = (
+            duplicate,
+            json.dumps(unknown, separators=(",", ":")) + "\n",
+            json.dumps(wrong_numeric, separators=(",", ":")) + "\n",
+            json.dumps(negative_zero, separators=(",", ":")) + "\n",
+            compact + "{}\n",
+            compact.replace(
+                json.dumps(good["payload"], separators=(",", ":")),
+                "NaN",
+            ) + "\n",
+            compact + "\n{}\n",
+        )
+        for request in requests:
+            with self.subTest(request=request[:40]):
+                completed, response = self.run_protocol(request)
+                self.assertEqual(completed.returncode, 2)
+                self.assertEqual(
+                    set(response),
+                    {"protocol", "request_id", "status", "error"},
+                )
+                self.assertEqual(response["status"], "error")
+                self.assertEqual(response["error"]["category"], "protocol")
+
+        missing_path = self.root / "missing-receipt.ecsv"
+        missing_path.write_bytes(self.apt_bytes)
+        missing = copy.deepcopy(good)
+        missing["request_id"] = "missing-receipt"
+        missing["payload"]["baseline_ecsv"] = str(missing_path)
+        completed, response = self.run_protocol(missing)
+        self.assertEqual(completed.returncode, 1)
+        self.assertEqual(response["error"]["category"], "contract")
+
+        tampered_path = self.root / "tampered-receipt.ecsv"
+        tampered_path.write_bytes(self.apt_bytes)
+        receipt = self.receipt_bytes.decode("ascii")
+        Path(str(tampered_path) + ".sha256").write_text(
+            receipt.replace(
+                f"byte_count={len(self.apt_bytes)}",
+                f"byte_count={len(self.apt_bytes) - 1}",
+            ),
+            encoding="ascii",
+        )
+        tampered = copy.deepcopy(good)
+        tampered["request_id"] = "tampered-receipt"
+        tampered["payload"]["baseline_ecsv"] = str(tampered_path)
+        completed, response = self.run_protocol(tampered)
+        self.assertEqual(completed.returncode, 1)
+        self.assertEqual(response["error"]["category"], "contract")
+
+    def test_versioned_protocol_issues_validates_and_refuses_replacement(self) -> None:
+        verifier, request, source_paths = self.protocol_issue_request()
+        baseline_path = self.root / "baseline.ecsv"
+        baseline_receipt_path = Path(str(baseline_path) + ".sha256")
+        baseline_before = baseline_path.read_bytes()
+        baseline_receipt_before = baseline_receipt_path.read_bytes()
+
+        def assert_baseline_unchanged() -> None:
+            self.assertEqual(baseline_path.read_bytes(), baseline_before)
+            self.assertEqual(
+                baseline_receipt_path.read_bytes(), baseline_receipt_before
+            )
+
+        completed, issued = self.run_protocol(request)
+        self.assertEqual(completed.returncode, 0)
+        self.assertEqual(issued["status"], "ok")
+        assert_baseline_unchanged()
+        result = issued["result"]
+        self.assertEqual(
+            set(result),
+            {
+                "baseline", "target", "target_identity", "relation",
+                "relation_identity", "output", "artifact", "transport",
+                "observation_apt_ecsv", "receipt",
+            },
+        )
+        self.assertEqual(
+            product_contract.observation_target_identity(
+                result["target"], verifier["contracts"][self.SUCCESSOR_IDS[0]]
+            ),
+            result["target_identity"],
+        )
+        self.assertEqual(
+            product_contract.match_dispositions_identity(
+                result["relation"],
+                verifier["contracts"][self.SUCCESSOR_IDS[1]],
+                verifier["descriptor"],
+                result["target"],
+                verifier["contracts"][self.SUCCESSOR_IDS[0]],
+            ),
+            result["relation_identity"],
+        )
+        self.assertEqual(
+            product_contract.observation_matched_apt_identity(
+                result["output"],
+                verifier["contracts"][self.SUCCESSOR_IDS[2]],
+                verifier["descriptor"],
+                result["target"],
+                verifier["contracts"][self.SUCCESSOR_IDS[0]],
+                result["relation"],
+                verifier["contracts"][self.SUCCESSOR_IDS[1]],
+            ),
+            result["artifact"],
+        )
+        output_path = Path(
+            request["payload"]["publication"]["output_ecsv"]
+        )
+        output_bytes = output_path.read_bytes()
+        receipt_path = Path(str(output_path) + ".sha256")
+        receipt_bytes = receipt_path.read_bytes()
+        self.assertTrue(output_bytes.startswith(b"# %ECSV 1.0\n"))
+        self.assertTrue(receipt_bytes.startswith(
+            b"citlali-canonical-apt-publication-receipt-v1\n"
+        ))
+        transformations = {
+            item["field_name"]: item
+            for item in result["output"]["rows"][0]["transformations"]
+        }
+        self.assertEqual(transformations["amp"]["source_pair_key"], "901")
+        self.assertEqual(
+            transformations["amp_err"]["source_pair_key"], "900"
+        )
+
+        validate_request = {
+            "protocol": "citlali-canonical-apt-protocol-v1",
+            "request_id": "python-direct-validate",
+            "operation": "validate-observation-apt-v1",
+            "payload": {
+                "baseline_ecsv": str(self.root / "baseline.ecsv"),
+                "observation_apt_ecsv": str(output_path),
+                "expected_artifact": issued["result"]["artifact"],
+                "expected_transport": issued["result"]["transport"],
+            },
+        }
+        completed, validated = self.run_protocol(validate_request)
+        self.assertEqual(completed.returncode, 0)
+        assert_baseline_unchanged()
+        self.assertEqual(validated["result"]["artifact"],
+                         issued["result"]["artifact"])
+        self.assertEqual(validated["result"]["transport"],
+                         issued["result"]["transport"])
+        for key in (
+            "target", "target_identity", "relation", "relation_identity",
+            "output",
+        ):
+            self.assertEqual(validated["result"][key], result[key])
+
+        completed, rejected = self.run_protocol(request)
+        self.assertEqual(completed.returncode, 1)
+        assert_baseline_unchanged()
+        self.assertEqual(rejected["error"]["category"], "contract")
+        self.assertEqual(output_path.read_bytes(), output_bytes)
+        self.assertEqual(receipt_path.read_bytes(), receipt_bytes)
+
+        stale = copy.deepcopy(validate_request)
+        stale["request_id"] = "python-direct-stale-transport"
+        stale["payload"]["expected_transport"]["byte_sha256"] = (
+            "sha256:" + "0" * 64
+        )
+        completed, rejected = self.run_protocol(stale)
+        self.assertEqual(completed.returncode, 1)
+        self.assertEqual(rejected["error"]["category"], "contract")
+
+        caller_output = copy.deepcopy(request)
+        caller_output["request_id"] = "python-direct-caller-output"
+        caller_output["payload"]["output"] = {}
+        completed, rejected = self.run_protocol(caller_output)
+        self.assertEqual(completed.returncode, 2)
+        self.assertEqual(rejected["error"]["category"], "protocol")
+
+        swapped_source_request = copy.deepcopy(request)
+        swapped_source_request["request_id"] = "python-direct-source-swap"
+        swapped_source_request["payload"]["publication"]["output_ecsv"] = (
+            str(self.root / "source-swap.apt.ecsv")
+        )
+        swapped_target = swapped_source_request["payload"]["target"]
+        source_a = swapped_target["inputs"][0]["raw_source"]
+        source_b = swapped_target["inputs"][0]["kmp_source"]
+        source_a["diagnostic_locator"], source_b["diagnostic_locator"] = (
+            source_b["diagnostic_locator"], source_a["diagnostic_locator"]
+        )
+        completed, rejected = self.run_protocol(swapped_source_request)
+        self.assertEqual(completed.returncode, 1)
+        self.assertEqual(rejected["error"]["category"], "contract")
+        assert_baseline_unchanged()
+        self.assertFalse((self.root / "source-swap.apt.ecsv").exists())
+        self.assertFalse(
+            (self.root / "source-swap.apt.ecsv.sha256").exists()
+        )
+
+        tampered_source_request = copy.deepcopy(request)
+        tampered_source_request["request_id"] = "python-direct-source-tamper"
+        tampered_source_request["payload"]["publication"]["output_ecsv"] = (
+            str(self.root / "source-tamper.apt.ecsv")
+        )
+        source_paths[0].write_bytes(source_paths[0].read_bytes() + b"extra")
+        completed, rejected = self.run_protocol(tampered_source_request)
+        self.assertEqual(completed.returncode, 1)
+        assert_baseline_unchanged()
+        self.assertEqual(rejected["error"]["category"], "contract")
+        self.assertFalse((self.root / "source-tamper.apt.ecsv").exists())
+        self.assertFalse(
+            (self.root / "source-tamper.apt.ecsv.sha256").exists()
+        )
+
+    def test_issue_request_materializes_private_structure_and_scopes_refs(
+        self,
+    ) -> None:
+        verifier, request, _source_paths = self.protocol_issue_request()
+        baseline_path = self.root / "baseline.ecsv"
+        baseline_receipt_path = Path(str(baseline_path) + ".sha256")
+        baseline_before = baseline_path.read_bytes()
+        baseline_receipt_before = baseline_receipt_path.read_bytes()
+
+        self.assertNotIn("schema_version", request["payload"]["target"])
+        self.assertNotIn("registered_fields", request["payload"]["target"])
+        self.assertNotIn("target_parent", request["payload"]["relation"])
+        self.assertNotIn("baseline_parent", request["payload"]["relation"])
+        self.assertEqual(
+            set(request["payload"]["relation"]["pairs"][0]["target"]),
+            {"occurrence", "local_key"},
+        )
+
+        def assert_baseline_unchanged() -> None:
+            self.assertEqual(baseline_path.read_bytes(), baseline_before)
+            self.assertEqual(
+                baseline_receipt_path.read_bytes(), baseline_receipt_before
+            )
+
+        changed = copy.deepcopy(request)
+        changed["request_id"] = "python-target-fact-changed"
+        changed["payload"]["publication"]["output_ecsv"] = str(
+            self.root / "target-fact-changed.apt.ecsv"
+        )
+        changed["payload"]["target"]["rows"][0]["fields"][
+            "kids_flag"
+        ] = "43"
+        completed, response = self.run_protocol(changed)
+        self.assertEqual(completed.returncode, 0, response)
+        self.assertEqual(
+            response["result"]["target"]["rows"][0]["fields"]["kids_flag"],
+            "43",
+        )
+        target_identity = product_contract.observation_target_identity(
+            response["result"]["target"],
+            verifier["contracts"][self.SUCCESSOR_IDS[0]],
+        )
+        self.assertEqual(response["result"]["target_identity"], target_identity)
+        self.assertEqual(
+            response["result"]["relation"]["target_parent"], target_identity
+        )
+        self.assertEqual(
+            product_contract.match_dispositions_identity(
+                response["result"]["relation"],
+                verifier["contracts"][self.SUCCESSOR_IDS[1]],
+                verifier["descriptor"],
+                response["result"]["target"],
+                verifier["contracts"][self.SUCCESSOR_IDS[0]],
+            ),
+            response["result"]["relation_identity"],
+        )
+        assert_baseline_unchanged()
+
+        unmatched = copy.deepcopy(request)
+        unmatched["request_id"] = "python-materialize-unmatched-target"
+        unmatched["payload"]["publication"]["output_ecsv"] = str(
+            self.root / "unmatched-target.apt.ecsv"
+        )
+        target = unmatched["payload"]["target"]
+        target["inputs"][0]["channel_count"] = "2"
+        target["inputs"][0]["raw_source"]["channel_count"] = "2"
+        target["inputs"][0]["kmp_source"]["channel_count"] = "2"
+        second_row = copy.deepcopy(target["rows"][0])
+        second_row.update({
+            "row_key": "6", "kmp_row_index": "1", "channel": "1"
+        })
+        second_row["fields"].update({
+            "kids_fr": self.bits(1.26e9),
+            "kids_f_out": self.bits(1.2601e9),
+            "kids_Qr": self.bits(21000.0),
+            "kids_flag": "-7",
+        })
+        target["rows"].append(second_row)
+        target["target_source_sequence"] = ["5", "6"]
+        target["target_application_sequence"] = ["6", "5"]
+        target_occurrence = target["envelope"]["occurrence"]
+        unmatched["payload"]["relation"]["target_dispositions"].append({
+            "disposition_key": "1001",
+            "endpoint": {
+                "occurrence": target_occurrence, "local_key": "6"
+            },
+            "state": "unmatched",
+            "pair_keys": [],
+            "reason": "issuer-declared unmatched target",
+        })
+        unmatched["payload"]["field_source_selections"].append({
+            "target": {"occurrence": target_occurrence, "local_key": "6"},
+            "field_overrides": [],
+        })
+        completed, unmatched_response = self.run_protocol(unmatched)
+        self.assertEqual(completed.returncode, 0, unmatched_response)
+        output_document = unmatched_response["result"]["output"]
+        self.assertEqual(output_document["output_presentation_sequence"],
+                         ["1", "0"])
+        rows_by_target = {
+            row["target"]["local_key"]: row
+            for row in output_document["rows"]
+        }
+        self.assertEqual(set(rows_by_target), {"5", "6"})
+        self.assertEqual(rows_by_target["5"]["uid"], "0")
+        self.assertEqual(rows_by_target["6"]["uid"], "1")
+        self.assertEqual(rows_by_target["6"]["relation_pair_keys"], [])
+        unmatched_copies = [
+            item for item in rows_by_target["6"]["transformations"]
+            if item["operation"]
+            == "copy-baseline-when-matched-null-when-unmatched"
+        ]
+        self.assertTrue(unmatched_copies)
+        self.assertTrue(all(
+            item["source_pair_key"] is None
+            and item["source_row"] is None
+            and item["after"] is None
+            for item in unmatched_copies
+        ))
+        assert_baseline_unchanged()
+
+        def reject(
+            label: str,
+            mutate: object,
+            expected_returncode: int,
+            expected_category: str,
+        ) -> None:
+            candidate = copy.deepcopy(request)
+            candidate["request_id"] = f"python-reject-{label}"
+            output_path = self.root / f"reject-{label}.apt.ecsv"
+            candidate["payload"]["publication"]["output_ecsv"] = str(
+                output_path
+            )
+            mutate(candidate)
+            completed, rejected = self.run_protocol(candidate)
+            self.assertEqual(completed.returncode, expected_returncode, rejected)
+            self.assertEqual(rejected["error"]["category"], expected_category)
+            self.assertFalse(output_path.exists())
+            self.assertFalse(Path(str(output_path) + ".sha256").exists())
+            assert_baseline_unchanged()
+
+        protocol_mutations = {
+            "target-schema": lambda value: value["payload"]["target"].__setitem__(
+                "schema_version", "caller-forbidden"
+            ),
+            "target-registry": lambda value: value["payload"]["target"].__setitem__(
+                "registered_fields", []
+            ),
+            "source-role": lambda value: value["payload"]["target"]["inputs"][0][
+                "raw_source"
+            ].__setitem__("role", "raw"),
+            "baseline-parent": lambda value: value["payload"]["relation"].__setitem__(
+                "baseline_parent", {}
+            ),
+            "target-parent": lambda value: value["payload"]["relation"].__setitem__(
+                "target_parent", {}
+            ),
+            "digest-row-ref": lambda value: value["payload"]["relation"]["pairs"][0][
+                "target"
+            ].update({
+                "artifact_schema": "caller-forbidden",
+                "envelope_sha256": "sha256:" + "0" * 64,
+            }),
+        }
+        for label, mutate in protocol_mutations.items():
+            with self.subTest(label=label):
+                reject(label, mutate, 2, "protocol")
+
+        contract_mutations = {
+            "stale-baseline-pin": lambda value: value["payload"][
+                "expected_baseline"
+            ]["artifact"].__setitem__(
+                "envelope_sha256", "sha256:" + "0" * 64
+            ),
+            "foreign-target-endpoint": lambda value: value["payload"]["relation"][
+                "pairs"
+            ][0]["target"].__setitem__("occurrence", "occurrence:foreign/target"),
+            "foreign-seed-endpoint": lambda value: value["payload"]["relation"][
+                "pairs"
+            ][0]["seed"].__setitem__("occurrence", "occurrence:foreign/seed"),
+            "foreign-selection-target": lambda value: value["payload"][
+                "field_source_selections"
+            ][0]["target"].__setitem__("occurrence", "occurrence:foreign/target"),
+            "foreign-default-pair": lambda value: value["payload"][
+                "field_source_selections"
+            ][0]["default_source_pair"].__setitem__(
+                "occurrence", "occurrence:foreign/relation"
+            ),
+            "unknown-override": lambda value: value["payload"][
+                "field_source_selections"
+            ][0]["field_overrides"][0].__setitem__("field_name", "rogue"),
+            "missing-default": lambda value: value["payload"][
+                "field_source_selections"
+            ][0].pop("default_source_pair"),
+            "nonmember-pair": lambda value: value["payload"][
+                "field_source_selections"
+            ][0]["default_source_pair"].__setitem__("local_key", "902"),
+        }
+        for label, mutate in contract_mutations.items():
+            with self.subTest(label=label):
+                reject(label, mutate, 1, "contract")
+
+class CanonicalAptObservationContractTest(unittest.TestCase):
+    bits = staticmethod(CanonicalAptArtifactContractTest.bits)
+    observation_fixture = CanonicalAptArtifactContractTest.observation_fixture
+    BASELINE_ID = "apt-prod-001-canonical-baseline-apt-v1"
+    SEMANTIC = CanonicalAptArtifactContractTest.SEMANTIC
+    ENVELOPE = CanonicalAptArtifactContractTest.ENVELOPE
+    TRANSPORT = CanonicalAptArtifactContractTest.TRANSPORT
+    SUCCESSOR_IDS = (
+        "apt-prod-002-observation-target-manifest-v1",
+        "apt-prod-002-match-dispositions-v1",
+        "apt-prod-002-observation-matched-apt-v1",
+    )
+
+    def setUp(self) -> None:
+        self.registry_path = (
+            Path(__file__).resolve().parents[2]
+            / "validation/product_contracts.json"
+        )
+        self.apt_bytes = zlib.decompress(
+            base64.b64decode(
+                CanonicalAptArtifactContractTest.FIXTURE_ZLIB_BASE64
+            )
+        )
+        self.receipt_bytes = (
+            "citlali-canonical-apt-publication-receipt-v1\n"
+            "scope=citlali-canonical-apt-byte-transport-sha256-v1\n"
+            "envelope_sha256="
+            + CanonicalAptArtifactContractTest.ENVELOPE
+            + "\nbyte_sha256="
+            + CanonicalAptArtifactContractTest.TRANSPORT
+            + "\nbyte_count=18759\n"
+        ).encode("ascii")
+
+    def test_successor_contracts_are_exact_unactivated_and_unrouted(self) -> None:
+        registry = product_contract.load_registry(self.registry_path)
+        self.assertEqual(
+            product_contract._canonical_json_sha256(
+                registry["artifact_contracts"][self.BASELINE_ID]
+            ),
+            product_contract.CANONICAL_APT_ARTIFACT_CONTRACT_SHA256,
+        )
+        for contract_id in self.SUCCESSOR_IDS:
+            with self.subTest(contract_id=contract_id):
+                contract = product_contract.artifact_contract_by_id(
+                    registry, contract_id
+                )
+                self.assertEqual(contract["activation_state"], "unactivated")
+                self.assertEqual(contract["contract_authority"], "citlali")
+                self.assertEqual(
+                    contract["observation_value_issuer"], "tolproj"
+                )
+        target_contract = registry["artifact_contracts"][self.SUCCESSOR_IDS[0]]
+        relation_contract = registry["artifact_contracts"][self.SUCCESSOR_IDS[1]]
+        for logical in (target_contract, relation_contract):
+            self.assertEqual(
+                logical["persistence_state"], "embedded-logical-record-v1"
+            )
+            self.assertNotIn("artifact_suffix", logical)
+            self.assertNotIn("byte_transport_scope", logical)
+            self.assertNotIn("receipt_schema", logical)
+        output_contract = registry["artifact_contracts"][self.SUCCESSOR_IDS[2]]
+        self.assertEqual(
+            output_contract["persistence_state"], "persisted-final-artifact-v1"
+        )
+        self.assertEqual(output_contract["artifact_suffix"], ".apt.ecsv")
+        self.assertEqual(
+            output_contract["embedded_logical_records"],
+            list(self.SUCCESSOR_IDS[:2]),
+        )
+        envelope_authorities = {
+            member["name"]: member["authority"]
+            for member in output_contract["record_schemas"]
+            ["issuance_envelope"]["members"]
+        }
+        self.assertEqual(
+            envelope_authorities,
+            {
+                "occurrence": "citlali-canonical-issuer",
+                "event_reference": "citlali-canonical-issuer",
+                "software_revision": "citlali-build-authority",
+                "configuration_reference": "tolproj-request",
+                "event_time_utc": "tolproj-request",
+            },
+        )
+        routed = json.dumps(
+            {
+                "families": registry["families"],
+                "checks": registry["checks"],
+                "contracts": registry["contracts"],
+            },
+            sort_keys=True,
+        )
+        for contract_id in self.SUCCESSOR_IDS:
+            self.assertNotIn(contract_id, routed)
+
+    def test_successor_cli_dispatch_is_explicitly_unactivated(self) -> None:
+        missing_target = Path("/apt-prod-002-phase-a-must-not-be-read.ecsv")
+        for contract_id in self.SUCCESSOR_IDS:
+            stdout = io.StringIO()
+            stderr = io.StringIO()
+            with self.subTest(contract_id=contract_id), \
+                    contextlib.redirect_stdout(stdout), \
+                    contextlib.redirect_stderr(stderr):
+                status = product_contract.main(
+                    [
+                        str(missing_target),
+                        "--artifact-contract",
+                        contract_id,
+                        "--registry",
+                        str(self.registry_path),
+                    ]
+                )
+            self.assertEqual(status, 2)
+            self.assertEqual(stdout.getvalue(), "")
+            self.assertIn(
+                "target/relation are embedded logical records",
+                stderr.getvalue(),
+            )
+
+    def test_verified_descriptor_is_reconstructed_from_exact_bytes_and_receipt(
+        self,
+    ) -> None:
+        registry = product_contract.load_registry(self.registry_path)
+        baseline = product_contract.artifact_contract_by_id(
+            registry, self.BASELINE_ID
+        )
+        descriptor = product_contract.verified_baseline_descriptor_from_bytes(
+            self.apt_bytes, self.receipt_bytes, baseline
+        )
+        self.assertEqual(
+            descriptor["schema_version"],
+            "citlali-verified-beammap-baseline-descriptor-v1",
+        )
+        self.assertEqual(descriptor["contract_authority"], "citlali")
+        self.assertEqual(descriptor["semantic_sha256"], self.SEMANTIC)
+        self.assertEqual(descriptor["envelope_sha256"], self.ENVELOPE)
+        self.assertEqual(descriptor["byte_sha256"], self.TRANSPORT)
+        self.assertEqual(descriptor["byte_count"], "18759")
+        self.assertEqual(len(descriptor["rows"]), 3)
+        self.assertEqual(len(descriptor["raw_manifest"]), 2)
+        self.assertEqual(
+            set(descriptor["wire_presentation_sequence"]),
+            {"0", "42", "9007199254740991"},
+        )
+        self.assertEqual(
+            descriptor["receipt_sha256"],
+            "sha256:" + hashlib.sha256(self.receipt_bytes).hexdigest(),
+        )
+
+        for artifact_bytes, receipt_bytes in (
+            (self.apt_bytes.replace(b"Jupiter", b"Saturn", 1), self.receipt_bytes),
+            (self.apt_bytes, self.receipt_bytes.replace(b"18759", b"1")),
+        ):
+            with self.subTest():
+                with self.assertRaises(product_contract.ContractError):
+                    product_contract.verified_baseline_descriptor_from_bytes(
+                        artifact_bytes, receipt_bytes, baseline
+                    )
+
+    def test_successor_scalar_encoding_vectors_are_exact(self) -> None:
+        frames = b"".join(
+            [
+                product_contract.canonical_observation_scalar_frame(
+                    "i64-min", "int64", "-9223372036854775808"
+                ),
+                product_contract.canonical_observation_scalar_frame(
+                    "u64-max", "uint64", "18446744073709551615"
+                ),
+                product_contract.canonical_observation_scalar_frame(
+                    "negative-zero", "float64-ieee754", "8000000000000000"
+                ),
+                product_contract.canonical_observation_scalar_frame(
+                    "denorm-min", "float64-ieee754", "0000000000000001"
+                ),
+                product_contract.canonical_observation_scalar_frame(
+                    "canonical-nan", "float64-ieee754", "7ff8000000000000"
+                ),
+                product_contract.canonical_observation_scalar_frame(
+                    "missing-float", "null-float64", "null"
+                ),
+                product_contract.canonical_observation_scalar_frame(
+                    "text", "utf8", "Jupiter α"
+                ),
+            ]
+        )
+        self.assertEqual(
+            hashlib.sha256(frames).hexdigest(),
+            "a97e7c29a17da562d44108968d120c393428577f9f218154bc5147e8f32029ec",
+        )
+        invalid = [
+            ("int64", "+1"),
+            ("uint64", "-0"),
+            ("float64-ieee754", "7FF8000000000000"),
+            ("float64-ieee754", "7ff0000000000001"),
+            ("null-float64", "NULL"),
+            ("null-garbage", "null"),
+            ("utf8", "bad\ntext"),
+        ]
+        for datatype, value in invalid:
+            with self.subTest(datatype=datatype, value=value):
+                with self.assertRaises(product_contract.ContractError):
+                    product_contract.canonical_observation_scalar_frame(
+                        "bad", datatype, value
+                    )
+
+    def test_restrictive_kmp_catalog_requires_complete_successor_api(self) -> None:
+        registry = json.loads(self.registry_path.read_text(encoding="utf-8"))
+        target = registry["artifact_contracts"][self.SUCCESSOR_IDS[0]]
+        field_registry = target["field_authorization_registry"]
+        self.assertEqual(
+            [field["name"] for field in field_registry["registered_fields"]],
+            ["kids_Qr", "kids_f_out", "kids_flag", "kids_fr"],
+        )
+        self.assertEqual(
+            field_registry["required_field_names"],
+            ["kids_Qr", "kids_f_out", "kids_fr"],
+        )
+        self.assertEqual(field_registry["optional_field_names"], ["kids_flag"])
+        self.assertEqual(
+            field_registry["authorized_use_roles"],
+            product_contract.OBSERVATION_KMP_AUTHORIZED_USE_ROLES_V1,
+        )
+        observation_members = {
+            member["name"]: member
+            for member in target["record_schemas"]["observation_identity"][
+                "members"
+            ]
+        }
+        self.assertEqual(
+            {member["authority"] for member in observation_members.values()},
+            {"source-header"},
+        )
+        target_members = {
+            member["name"]: member
+            for member in target["record_schemas"]["target_manifest"][
+                "members"
+            ]
+        }
+        self.assertEqual(target_members["observation"]["authority"], "raw-header")
+        output = registry["artifact_contracts"][self.SUCCESSOR_IDS[2]]
+        transformation_members = {
+            member["name"]: member
+            for member in output["record_schemas"]["field_transformation"][
+                "members"
+            ]
+        }
+        self.assertEqual(
+            transformation_members["source_pair_key"]["cardinality"],
+            "baseline-matched-exactly-one-target-preserve-and-unmatched-zero",
+        )
+        self.assertEqual(
+            transformation_members["authority_reference"]["authority"],
+            "target-or-verified-baseline-field-catalog-or-citlali-typed-missing",
+        )
+        self.assertTrue(
+            callable(product_contract.validate_observation_matched_apt_v1)
+        )
+        self.assertTrue(
+            callable(product_contract.canonical_observation_matched_apt_preimage)
+        )
+
+    def test_full_successor_bundle_vectors_match_cpp(self) -> None:
+        fixture = self.observation_fixture()
+        contracts = fixture["contracts"]
+        target_contract = contracts[self.SUCCESSOR_IDS[0]]
+        relation_contract = contracts[self.SUCCESSOR_IDS[1]]
+        output_contract = contracts[self.SUCCESSOR_IDS[2]]
+        self.assertEqual(
+            {
+                key: fixture["descriptor"][key]
+                for key in (
+                    "semantic_sha256",
+                    "envelope_sha256",
+                    "byte_sha256",
+                    "byte_count",
+                    "receipt_sha256",
+                    "receipt_byte_count",
+                )
+            },
+            {
+                "semantic_sha256": "sha256:8ac14aca51f660b015e6427483e05968d1443a33d812a28ef46ed027261f0a37",
+                "envelope_sha256": "sha256:f44e40ae8604b85ea82f783212eb785561fbbd6b478ab1311f406bc63a1d2838",
+                "byte_sha256": "sha256:b4cfecf45c611ba6378bd7b88d78978b8004aa0ee8db499367499c75db05f34b",
+                "byte_count": "19327",
+                "receipt_sha256": "sha256:536f689f3325e5a1d298a69bba277ef686971c97152034a1bb1bc861d1acbe30",
+                "receipt_byte_count": "287",
+            },
+        )
+        self.assertEqual(
+            product_contract.baseline_descriptor_sha256(fixture["descriptor"]),
+            "sha256:b801161d65dfea02b3c579ac5766154900b82e92de6945537caae2691d2707af",
+        )
+        self.assertEqual(
+            product_contract.observation_target_digests(
+                fixture["target"], target_contract
+            ),
+            {
+                "semantic_sha256": "sha256:8ad86d382b31eed82deab3118bbd5efe1fc5ce41389eac561ad2aef7e24cb30b",
+                "envelope_sha256": "sha256:3dca742ac86f93666762e33557ab91b4d061be178b936d17d379077233bd6fc5",
+            },
+        )
+        self.assertEqual(
+            product_contract.match_dispositions_digests(
+                fixture["relation"], relation_contract,
+                fixture["descriptor"], fixture["target"], target_contract,
+            ),
+            {
+                "semantic_sha256": "sha256:7555c3f35ef57db23d32ef833d635c06cd06690ca1543cb635272328f29c93a4",
+                "envelope_sha256": "sha256:25cd94197f41b3ec6132adfde525eeb1baae9b2dbeae7d47af38966817f5e8dc",
+            },
+        )
+        self.assertEqual(
+            product_contract.observation_matched_apt_digests(
+                fixture["output"], output_contract, fixture["descriptor"],
+                fixture["target"], target_contract, fixture["relation"],
+                relation_contract,
+            ),
+            {
+                "semantic_sha256": "sha256:cac3fabbb34907013b7558c5db855c3c861e370bb05ff0ff15051dd9f4e44dba",
+                "envelope_sha256": "sha256:96fe37adc1b743dbcd7d907bb0f63b4859ff44102cc1be8556914f7978212dce",
+            },
+        )
+        for contract_id in self.SUCCESSOR_IDS:
+            self.assertEqual(
+                product_contract._canonical_json_sha256(
+                    contracts[contract_id]
+                ),
+                product_contract.OBSERVATION_ARTIFACT_CONTRACT_SHA256[
+                    contract_id
+                ],
+            )
+
+    def test_descriptor_revalidation_rejects_every_typed_mutation(self) -> None:
+        descriptor = self.observation_fixture()["descriptor"]
+        mutations = []
+        changed = copy.deepcopy(descriptor)
+        changed["rows"][0]["fields"]["amp"]["value"] = self.bits(123.0)
+        mutations.append(changed)
+        changed = copy.deepcopy(descriptor)
+        changed["raw_manifest"][0]["channel_count"] = "3"
+        mutations.append(changed)
+        changed = copy.deepcopy(descriptor)
+        changed["scientific_context"]["source_name"] = "Saturn β"
+        mutations.append(changed)
+        changed = copy.deepcopy(descriptor)
+        changed["wire_presentation_sequence"].reverse()
+        mutations.append(changed)
+        changed = copy.deepcopy(descriptor)
+        changed["envelope"]["event_reference"] = "event:forged"
+        mutations.append(changed)
+        changed = copy.deepcopy(descriptor)
+        changed["occurrence"] = "occurrence:forged"
+        mutations.append(changed)
+        for changed in mutations:
+            with self.subTest():
+                with self.assertRaises(product_contract.ContractError):
+                    product_contract.baseline_descriptor_sha256(changed)
+        with self.assertRaises(product_contract.ContractError):
+            product_contract.baseline_descriptor_sha256(dict(descriptor))
+
+    def test_target_source_field_and_order_counterexamples(self) -> None:
+        fixture = self.observation_fixture()
+        target = fixture["target"]
+        contract = fixture["contracts"][self.SUCCESSOR_IDS[0]]
+        original = product_contract.observation_target_digests(target, contract)
+
+        reordered = copy.deepcopy(target)
+        reordered["inputs"].reverse()
+        reordered["rows"].reverse()
+        reordered["registered_fields"].reverse()
+        self.assertEqual(
+            product_contract.observation_target_digests(reordered, contract),
+            original,
+        )
+        locator = copy.deepcopy(target)
+        locator["inputs"][0]["kmp_source"]["diagnostic_locator"] = "other/path"
+        locator_digests = product_contract.observation_target_digests(
+            locator, contract
+        )
+        self.assertEqual(locator_digests["semantic_sha256"], original["semantic_sha256"])
+        self.assertNotEqual(locator_digests["envelope_sha256"], original["envelope_sha256"])
+        changed_source = copy.deepcopy(target)
+        changed_source["inputs"][0]["kmp_source"]["content_sha256"] = (
+            "sha256:" + "9" * 64
+        )
+        changed_source_digests = product_contract.observation_target_digests(
+            changed_source, contract
+        )
+        self.assertNotEqual(
+            changed_source_digests["semantic_sha256"],
+            original["semantic_sha256"],
+        )
+        occurrence = copy.deepcopy(target)
+        occurrence["envelope"]["occurrence"] = "occurrence:target/other"
+        occurrence_digests = product_contract.observation_target_digests(
+            occurrence, contract
+        )
+        self.assertEqual(
+            occurrence_digests["semantic_sha256"], original["semantic_sha256"]
+        )
+        self.assertNotEqual(
+            occurrence_digests["envelope_sha256"], original["envelope_sha256"]
+        )
+        sequence = copy.deepcopy(target)
+        sequence["target_application_sequence"][0:2] = reversed(
+            sequence["target_application_sequence"][0:2]
+        )
+        self.assertNotEqual(
+            product_contract.observation_target_digests(sequence, contract)[
+                "semantic_sha256"
+            ],
+            original["semantic_sha256"],
+        )
+
+        mutations = []
+        changed = copy.deepcopy(target)
+        changed["rows"][0]["kmp_source_key"] = "101"
+        mutations.append(changed)
+        changed = copy.deepcopy(target)
+        changed["rows"][0]["kmp_row_index"] = "1"
+        mutations.append(changed)
+        changed = copy.deepcopy(target)
+        changed["rows"][0]["matching_frequency_hz"] = self.bits(1.0)
+        mutations.append(changed)
+        changed = copy.deepcopy(target)
+        changed["rows"][0]["fields"]["kids_Qr"] = "7ff0000000000000"
+        mutations.append(changed)
+        changed = copy.deepcopy(target)
+        changed["rows"][0]["fields"]["rogue"] = self.bits(1.0)
+        mutations.append(changed)
+        changed = copy.deepcopy(target)
+        changed["rows"].pop()
+        mutations.append(changed)
+        changed = copy.deepcopy(target)
+        changed["rows"][1]["row_key"] = changed["rows"][0]["row_key"]
+        mutations.append(changed)
+        changed = copy.deepcopy(target)
+        changed["rows"][0]["row_key"] = str(
+            product_contract.CANONICAL_APT_UID_MAX + 1
+        )
+        mutations.append(changed)
+        changed = copy.deepcopy(target)
+        changed["rows"][1]["channel"] = changed["rows"][2]["channel"]
+        changed["rows"][1]["kmp_row_index"] = changed["rows"][2][
+            "kmp_row_index"
+        ]
+        mutations.append(changed)
+        changed = copy.deepcopy(target)
+        changed["registered_fields"][0]["source_column"] = "f_out"
+        mutations.append(changed)
+        for member, value in (
+            ("datatype", "int64"),
+            ("unit", "N/A"),
+            ("nullable", True),
+            ("authority", "tolproj"),
+            ("authority_reference", "caller:self"),
+        ):
+            changed = copy.deepcopy(target)
+            changed["registered_fields"][0][member] = value
+            mutations.append(changed)
+        changed = copy.deepcopy(target)
+        changed["registered_fields"][0]["identity_role"] = "identity"
+        mutations.append(changed)
+        changed = copy.deepcopy(target)
+        changed["inputs"][0]["kmp_source"]["channel_count"] = "2"
+        mutations.append(changed)
+        changed = copy.deepcopy(target)
+        changed["inputs"][0]["raw_source"]["header_observation"]["scan"] = "2"
+        mutations.append(changed)
+        changed = copy.deepcopy(target)
+        changed["target_source_sequence"][0] = changed[
+            "target_source_sequence"
+        ][1]
+        mutations.append(changed)
+        changed = copy.deepcopy(target)
+        changed["target_application_sequence"].pop()
+        mutations.append(changed)
+        changed = copy.deepcopy(target)
+        changed["rows"][0]["fields"]["kids_flag"] = "9223372036854775808"
+        mutations.append(changed)
+        for changed in mutations:
+            with self.subTest():
+                with self.assertRaises(product_contract.ContractError):
+                    product_contract.validate_observation_target_manifest_v1(
+                        changed, contract
+                    )
+        kmp_fallback = copy.deepcopy(target)
+        kmp_fallback["inputs"][0]["kmp_source"]["header_observation"] = {
+            "observation": "1", "subobservation": "2", "scan": "3"
+        }
+        product_contract.validate_observation_target_manifest_v1(
+            kmp_fallback, contract
+        )
+        self.assertEqual(
+            [row["fields"]["kids_flag"] for row in target["rows"]],
+            ["-7", "3", "42"],
+        )
+
+    def test_kmp_source_boundary_is_closed_without_diagnostic_bag(self) -> None:
+        available = [
+            "fr", "f_out", "Qr", "flag", "diagnostic_chi2", "kids_flag"
+        ]
+        requested = {
+            "identity": [],
+            "matching": ["kids_fr", "kids_Qr"],
+            "application": ["kids_f_out"],
+            "transformation": [],
+            "output": ["kids_fr", "kids_f_out", "kids_Qr", "kids_flag"],
+            "authority": ["kids_fr", "kids_f_out", "kids_Qr", "kids_flag"],
+        }
+        self.assertEqual(
+            product_contract.validate_kmp_source_column_boundary_v1(
+                available, requested
+            ),
+            ("kids_Qr", "kids_f_out", "kids_flag", "kids_fr"),
+        )
+        no_flag = copy.deepcopy(requested)
+        no_flag["output"].remove("kids_flag")
+        no_flag["authority"].remove("kids_flag")
+        self.assertEqual(
+            product_contract.validate_kmp_source_column_boundary_v1(
+                ["fr", "f_out", "Qr", "unrelated", "kids_flag"], no_flag
+            ),
+            ("kids_Qr", "kids_f_out", "kids_fr"),
+        )
+        bad_requests = []
+        changed = copy.deepcopy(requested)
+        changed["identity"] = ["diagnostic_chi2"]
+        bad_requests.append(changed)
+        changed = copy.deepcopy(requested)
+        changed["matching"] = ["kids_f_out"]
+        bad_requests.append(changed)
+        changed = copy.deepcopy(requested)
+        changed["application"] = ["diagnostic_chi2"]
+        bad_requests.append(changed)
+        changed = copy.deepcopy(requested)
+        changed["transformation"] = ["kids_fr"]
+        bad_requests.append(changed)
+        changed = copy.deepcopy(requested)
+        changed["output"] = ["diagnostic_chi2"]
+        bad_requests.append(changed)
+        changed = copy.deepcopy(requested)
+        changed["authority"] = ["diagnostic_chi2"]
+        bad_requests.append(changed)
+        for changed in bad_requests:
+            with self.subTest():
+                with self.assertRaises(product_contract.ContractError):
+                    product_contract.validate_kmp_source_column_boundary_v1(
+                        available, changed
+                    )
+        with self.assertRaises(product_contract.ContractError):
+            product_contract.validate_kmp_source_column_boundary_v1(
+                ["kids_fr", "kids_f_out", "kids_Qr"], requested
+            )
+
+    def test_relation_coverage_cardinality_and_evidence_counterexamples(self) -> None:
+        fixture = self.observation_fixture()
+        contracts = fixture["contracts"]
+        target_contract = contracts[self.SUCCESSOR_IDS[0]]
+        relation_contract = contracts[self.SUCCESSOR_IDS[1]]
+        args = (
+            relation_contract, fixture["descriptor"], fixture["target"],
+            target_contract,
+        )
+        original = product_contract.match_dispositions_digests(
+            fixture["relation"], *args
+        )
+        reordered = copy.deepcopy(fixture["relation"])
+        for name in (
+            "network_evidence", "pairs", "target_dispositions",
+            "seed_dispositions",
+        ):
+            reordered[name].reverse()
+        self.assertEqual(
+            product_contract.match_dispositions_digests(reordered, *args),
+            original,
+        )
+        self.assertEqual(
+            next(
+                item for item in fixture["relation"]["target_dispositions"]
+                if item["endpoint"]["local_key"] == "5"
+            )["pair_keys"],
+            ["900", "901"],
+        )
+        self.assertEqual(
+            next(
+                item for item in fixture["relation"]["seed_dispositions"]
+                if item["endpoint"]["local_key"] == "42"
+            )["pair_keys"],
+            ["901", "902"],
+        )
+        mutations = []
+        changed = copy.deepcopy(fixture["relation"])
+        changed["target_dispositions"].pop()
+        mutations.append(changed)
+        changed = copy.deepcopy(fixture["relation"])
+        changed["seed_dispositions"][0]["disposition_key"] = "900"
+        mutations.append(changed)
+        changed = copy.deepcopy(fixture["relation"])
+        changed["target_dispositions"][1]["pair_keys"] = ["900"]
+        mutations.append(changed)
+        changed = copy.deepcopy(fixture["relation"])
+        changed["pairs"][0]["target"] = changed["pairs"][1]["target"]
+        mutations.append(changed)
+        changed = copy.deepcopy(fixture["relation"])
+        changed["network_evidence"][0]["quality_factor"] = "7ff8000000000000"
+        mutations.append(changed)
+        changed = copy.deepcopy(fixture["relation"])
+        changed["network_evidence"][0]["quality_factor_authority_reference"] = "caller:self"
+        mutations.append(changed)
+        changed = copy.deepcopy(fixture["relation"])
+        changed["matcher"]["target_frequency_field"] = "kids_f_out"
+        mutations.append(changed)
+        changed = copy.deepcopy(fixture["relation"])
+        changed["envelope"]["occurrence"] = fixture["target"]["envelope"]["occurrence"]
+        mutations.append(changed)
+        changed = copy.deepcopy(fixture["relation"])
+        changed["seed_source_sequence"][0] = changed[
+            "seed_source_sequence"
+        ][1]
+        mutations.append(changed)
+        for changed in mutations:
+            with self.subTest():
+                with self.assertRaises(product_contract.ContractError):
+                    product_contract.validate_match_dispositions_v1(
+                        changed, *args
+                    )
+
+    def test_output_union_collision_and_transformation_counterexamples(self) -> None:
+        fixture = self.observation_fixture()
+        contracts = fixture["contracts"]
+        args = (
+            contracts[self.SUCCESSOR_IDS[2]], fixture["descriptor"],
+            fixture["target"], contracts[self.SUCCESSOR_IDS[0]],
+            fixture["relation"], contracts[self.SUCCESSOR_IDS[1]],
+        )
+        original = product_contract.observation_matched_apt_digests(
+            fixture["output"], *args
+        )
+        reordered = copy.deepcopy(fixture["output"])
+        reordered["rows"].reverse()
+        reordered["registered_fields"].reverse()
+        for row in reordered["rows"]:
+            row["transformations"].reverse()
+        self.assertEqual(
+            product_contract.observation_matched_apt_digests(reordered, *args),
+            original,
+        )
+        field_names = {
+            item["field"]["name"]
+            for item in fixture["output"]["registered_fields"]
+        }
+        self.assertIn("kids_flag", field_names)
+        self.assertEqual(
+            [row["fields"]["kids_flag"] for row in fixture["output"]["rows"]],
+            ["-7", "42", "3"],
+        )
+        self.assertNotEqual(
+            fixture["output"]["rows"][1]["fields"]["kids_flag"], "91"
+        )
+        optional = self.observation_fixture(include_target_kids_flag=False)
+        self.assertNotIn(
+            "kids_flag",
+            {
+                item["field"]["name"]
+                for item in optional["output"]["registered_fields"]
+            },
+        )
+
+        def transformation(row: dict[str, object], name: str) -> dict[str, object]:
+            return next(
+                item for item in row["transformations"]
+                if item["field_name"] == name
+            )
+
+        mutations = []
+        changed = copy.deepcopy(fixture["output"])
+        changed["rows"].pop()
+        mutations.append(changed)
+        changed = copy.deepcopy(fixture["output"])
+        changed["rows"][0]["tone_frequency_hz"] = self.bits(1.0)
+        mutations.append(changed)
+        changed = copy.deepcopy(fixture["output"])
+        changed["rows"][1]["relation_pair_keys"] = ["900"]
+        mutations.append(changed)
+        changed = copy.deepcopy(fixture["output"])
+        transformation(changed["rows"][1], "kids_Qr")["operation"] = "issuer-declared"
+        mutations.append(changed)
+        changed = copy.deepcopy(fixture["output"])
+        change = transformation(changed["rows"][1], "kids_flag")
+        changed["rows"][1]["fields"]["kids_flag"] = "91"
+        change["after"] = "91"
+        mutations.append(changed)
+        changed = copy.deepcopy(fixture["output"])
+        transformation(changed["rows"][1], "amp")["source_pair_key"] = "901"
+        mutations.append(changed)
+        changed = copy.deepcopy(fixture["output"])
+        change = transformation(changed["rows"][0], "amp")
+        change["after"] = self.bits(1.0)
+        changed["rows"][0]["fields"]["amp"] = self.bits(1.0)
+        mutations.append(changed)
+        changed = copy.deepcopy(fixture["output"])
+        transformation(changed["rows"][1], "kids_fr")[
+            "provenance_reference"
+        ] = "target-kmp-source:101:row:0:column:rogue"
+        mutations.append(changed)
+        changed = copy.deepcopy(fixture["output"])
+        changed["envelope"]["occurrence"] = fixture["relation"]["envelope"]["occurrence"]
+        mutations.append(changed)
+        changed = copy.deepcopy(fixture["output"])
+        changed["rows"][1]["uid"] = changed["rows"][0]["uid"]
+        mutations.append(changed)
+        changed = copy.deepcopy(fixture["output"])
+        changed["output_presentation_sequence"].pop()
+        mutations.append(changed)
+        for changed in mutations:
+            with self.subTest():
+                with self.assertRaises(product_contract.ContractError):
+                    product_contract.validate_observation_matched_apt_v1(
+                        changed, *args
+                    )
+
+    def test_final_matched_ecsv_transport_matches_cpp_and_revalidates(self) -> None:
+        fixture = self.observation_fixture()
+        contracts = fixture["contracts"]
+        args = (
+            fixture["output"], contracts[self.SUCCESSOR_IDS[2]],
+            fixture["descriptor"], fixture["target"],
+            contracts[self.SUCCESSOR_IDS[0]], fixture["relation"],
+            contracts[self.SUCCESSOR_IDS[1]],
+        )
+        serialized = (
+            product_contract.serialize_observation_matched_apt_ecsv_v1(*args)
+        )
+        self.assertEqual(
+            serialized["semantic_sha256"],
+            "sha256:cac3fabbb34907013b7558c5db855c3c861e370bb05ff0ff15051dd9f4e44dba",
+        )
+        self.assertEqual(
+            serialized["envelope_sha256"],
+            "sha256:96fe37adc1b743dbcd7d907bb0f63b4859ff44102cc1be8556914f7978212dce",
+        )
+        self.assertEqual(
+            serialized["byte_sha256"],
+            "sha256:a4016feb82b2d7b007ea6ae3dbbfbbf18022f25f467e50bb0fd324552bff6ded",
+        )
+        self.assertEqual(serialized["byte_count"], 125302)
+        self.assertEqual(
+            serialized["receipt_sha256"],
+            "sha256:fa48cca9fc8218712ac0be2e3e86bd9ed2dbd3877d2af436677c880c9a90e1e8",
+        )
+        self.assertEqual(serialized["receipt_byte_count"], 298)
+        reparsed = product_contract.validate_observation_matched_apt_ecsv_bytes_v1(
+            serialized["bytes"], serialized["receipt_bytes"], *args
+        )
+        self.assertEqual(reparsed["bytes"], serialized["bytes"])
+
+        reordered = self.observation_fixture()
+        reordered["target"]["inputs"].reverse()
+        reordered["target"]["registered_fields"].reverse()
+        reordered["target"]["rows"].reverse()
+        reordered["relation"]["network_evidence"].reverse()
+        reordered["relation"]["pairs"].reverse()
+        reordered["relation"]["target_dispositions"].reverse()
+        reordered["relation"]["seed_dispositions"].reverse()
+        reordered["output"]["registered_fields"].reverse()
+        reordered["output"]["rows"].reverse()
+        for row in reordered["output"]["rows"]:
+            row["transformations"].reverse()
+        reordered_args = (
+            reordered["output"],
+            reordered["contracts"][self.SUCCESSOR_IDS[2]],
+            reordered["descriptor"], reordered["target"],
+            reordered["contracts"][self.SUCCESSOR_IDS[0]],
+            reordered["relation"],
+            reordered["contracts"][self.SUCCESSOR_IDS[1]],
+        )
+        self.assertEqual(
+            product_contract.serialize_observation_matched_apt_ecsv_v1(
+                *reordered_args
+            )["bytes"],
+            serialized["bytes"],
+        )
+
+        tampered = serialized["bytes"].replace(
+            b"fixture/caf\xc3\xa9/toltec7", b"fixture/caf\xc3\xa9/toltecX", 1
+        )
+        self.assertNotEqual(tampered, serialized["bytes"])
+        with self.assertRaisesRegex(
+            product_contract.ContractError, "tampered, stale, reordered"
+        ):
+            product_contract.validate_observation_matched_apt_ecsv_bytes_v1(
+                tampered, serialized["receipt_bytes"], *args
+            )
+        bad_receipt = serialized["receipt_bytes"].replace(
+            b"byte_count=125302", b"byte_count=125303", 1
+        )
+        with self.assertRaisesRegex(
+            product_contract.ContractError, "receipt is tampered"
+        ):
+            product_contract.validate_observation_matched_apt_ecsv_bytes_v1(
+                serialized["bytes"], bad_receipt, *args
+            )
+
+    def test_record_schema_references_and_catalogs_fail_closed(self) -> None:
+        registry = json.loads(self.registry_path.read_text(encoding="utf-8"))
+        target_id = self.SUCCESSOR_IDS[0]
+        target = copy.deepcopy(registry["artifact_contracts"][target_id])
+        target["record_schemas"]["target_manifest"]["members"][5][
+            "datatype"
+        ] = "list:missing_record"
+        old = product_contract.OBSERVATION_ARTIFACT_CONTRACT_SHA256[target_id]
+        try:
+            product_contract.OBSERVATION_ARTIFACT_CONTRACT_SHA256[target_id] = (
+                product_contract._canonical_json_sha256(target)
+            )
+            with self.assertRaisesRegex(
+                product_contract.ContractError, "unresolved record"
+            ):
+                product_contract._validate_observation_artifact_contract(
+                    target_id, target
+                )
+        finally:
+            product_contract.OBSERVATION_ARTIFACT_CONTRACT_SHA256[target_id] = old
+        target = copy.deepcopy(registry["artifact_contracts"][target_id])
+        target["field_authorization_registry"]["registered_fields"][0][
+            "authority"
+        ] = "caller-self-authorized"
+        try:
+            product_contract.OBSERVATION_ARTIFACT_CONTRACT_SHA256[target_id] = (
+                product_contract._canonical_json_sha256(target)
+            )
+            with self.assertRaisesRegex(
+                product_contract.ContractError, "closed v1 KMP catalog"
+            ):
+                product_contract._validate_observation_artifact_contract(
+                    target_id, target
+                )
+        finally:
+            product_contract.OBSERVATION_ARTIFACT_CONTRACT_SHA256[target_id] = old
 
 
 if __name__ == "__main__":

@@ -42,6 +42,67 @@ CANONICAL_APT_ARTIFACT_CONTRACT_ID = (
 CANONICAL_APT_ARTIFACT_CONTRACT_SHA256 = (
     "eb343ced3d4c8f303095b53f3fdca087bb478bd53d675b12958b47df244173b9"
 )
+OBSERVATION_TARGET_ARTIFACT_CONTRACT_ID = (
+    "apt-prod-002-observation-target-manifest-v1"
+)
+MATCH_DISPOSITIONS_ARTIFACT_CONTRACT_ID = (
+    "apt-prod-002-match-dispositions-v1"
+)
+OBSERVATION_MATCHED_APT_ARTIFACT_CONTRACT_ID = (
+    "apt-prod-002-observation-matched-apt-v1"
+)
+OBSERVATION_ARTIFACT_CONTRACT_SHA256 = {
+    OBSERVATION_TARGET_ARTIFACT_CONTRACT_ID: (
+        "139b76cf556384d34d1b1923694a008dc7b21f1f8022584ec49ff3f8bf2bb72c"
+    ),
+    MATCH_DISPOSITIONS_ARTIFACT_CONTRACT_ID: (
+        "acade470dbbb1ffd9327ada8db8a3df69e26ba02e7393864f1ad90de00d22785"
+    ),
+    OBSERVATION_MATCHED_APT_ARTIFACT_CONTRACT_ID: (
+        "3e51715484a17be7ebc8677fb51d3e2d54cd11602025c8bf6005c3e7f151d286"
+    ),
+}
+OBSERVATION_ARTIFACT_CONTRACT_IDS = frozenset(
+    OBSERVATION_ARTIFACT_CONTRACT_SHA256
+)
+BASELINE_DESCRIPTOR_SCHEMA_V1 = (
+    "citlali-verified-beammap-baseline-descriptor-v1"
+)
+OBSERVATION_TARGET_SCHEMA_V1 = "citlali-observation-target-manifest-v1"
+MATCH_DISPOSITIONS_SCHEMA_V1 = "citlali-apt-match-dispositions-v1"
+OBSERVATION_MATCHED_APT_SCHEMA_V1 = "citlali-observation-matched-apt-v1"
+OBSERVATION_CONTRACT_AUTHORITY_V1 = "citlali"
+OBSERVATION_VALUE_ISSUER_V1 = "tolproj"
+OBSERVATION_MAPPING_DOMAIN_V1 = (
+    "tolproj-observation-tone-to-beammap-seed-v1"
+)
+OBSERVATION_TRANSFORMATION_REGISTRY_V1 = (
+    "citlali-observation-apt-field-transformations-v1"
+)
+OBSERVATION_TARGET_FIELD_REGISTRY_V1 = (
+    "citlali-observation-target-fields-v1"
+)
+OBSERVATION_MATCHED_OUTPUT_FIELD_REGISTRY_V1 = (
+    "citlali-observation-matched-output-fields-v1"
+)
+OBSERVATION_KMP_SOURCE_FIELD_MAP_PROFILE_V1 = (
+    "citlali-kmp-source-field-map-v1"
+)
+OBSERVATION_UNMATCHED_MISSING_AUTHORITY_V1 = (
+    "citlali:typed-missing-unmatched-v1"
+)
+OBSERVATION_COPY_BASELINE_OR_NULL_OPERATION_V1 = (
+    "copy-baseline-when-matched-null-when-unmatched"
+)
+OBSERVATION_PRESERVE_TARGET_OPERATION_V1 = "preserve-target"
+OBSERVATION_KMP_AUTHORIZED_USE_ROLES_V1 = {
+    "identity": [],
+    "matching": ["kids_Qr", "kids_fr"],
+    "application": ["kids_f_out"],
+    "transformation": [],
+    "output": ["kids_Qr", "kids_f_out", "kids_flag", "kids_fr"],
+    "authority": ["kids_Qr", "kids_f_out", "kids_flag", "kids_fr"],
+}
 CANONICAL_APT_UID_MAX = 9007199254740991
 INT64_MIN = -(1 << 63)
 INT64_MAX = (1 << 63) - 1
@@ -206,6 +267,322 @@ def _validate_canonical_apt_artifact_contract(
     return artifact
 
 
+def _validate_observation_artifact_contract(
+    artifact_id: str, value: Any
+) -> dict[str, Any]:
+    context = f"artifact_contracts.{artifact_id}"
+    artifact = _mapping(value, context)
+    if artifact_id not in OBSERVATION_ARTIFACT_CONTRACT_SHA256:
+        raise ContractError(f"{context}: unsupported observation artifact contract")
+    if artifact.get("artifact_contract_id") != artifact_id:
+        raise ContractError(f"{context}.artifact_contract_id: mismatch")
+    digest = _canonical_json_sha256(artifact)
+    expected_digest = OBSERVATION_ARTIFACT_CONTRACT_SHA256[artifact_id]
+    if digest != expected_digest:
+        raise ContractError(
+            f"{context}: canonical observation contract/catalog drift "
+            f"({digest}; expected {expected_digest})"
+        )
+    if (
+        artifact.get("contract_schema_version")
+        != "citlali-canonical-observation-artifact-contract-v1"
+        or artifact.get("activation_state") != "unactivated"
+        or artifact.get("contract_authority")
+        != OBSERVATION_CONTRACT_AUTHORITY_V1
+        or artifact.get("observation_value_issuer")
+        != OBSERVATION_VALUE_ISSUER_V1
+        or artifact.get("framing_encoding")
+        != "citlali-labelled-type-length-v1"
+    ):
+        raise ContractError(
+            f"{context}: successor version/activation/authority/framing mismatch"
+        )
+    expected_schemas = {
+        OBSERVATION_TARGET_ARTIFACT_CONTRACT_ID: OBSERVATION_TARGET_SCHEMA_V1,
+        MATCH_DISPOSITIONS_ARTIFACT_CONTRACT_ID: MATCH_DISPOSITIONS_SCHEMA_V1,
+        OBSERVATION_MATCHED_APT_ARTIFACT_CONTRACT_ID:
+            OBSERVATION_MATCHED_APT_SCHEMA_V1,
+    }
+    schema = expected_schemas[artifact_id]
+    expected_scopes = {
+        OBSERVATION_TARGET_ARTIFACT_CONTRACT_ID: (
+            "citlali-observation-target-manifest-semantic-sha256-v1",
+            "citlali-observation-target-manifest-envelope-sha256-v1",
+        ),
+        MATCH_DISPOSITIONS_ARTIFACT_CONTRACT_ID: (
+            "citlali-apt-match-dispositions-semantic-sha256-v1",
+            "citlali-apt-match-dispositions-envelope-sha256-v1",
+        ),
+        OBSERVATION_MATCHED_APT_ARTIFACT_CONTRACT_ID: (
+            "citlali-observation-matched-apt-semantic-sha256-v1",
+            "citlali-observation-matched-apt-envelope-sha256-v1",
+        ),
+    }
+    semantic_scope, envelope_scope = expected_scopes[artifact_id]
+    if (
+        artifact.get("schema_version") != schema
+        or artifact.get("validator") != schema
+        or artifact.get("semantic_scope") != semantic_scope
+        or artifact.get("envelope_scope") != envelope_scope
+    ):
+        raise ContractError(f"{context}: successor schema/scope/state mismatch")
+    if artifact_id in {
+        OBSERVATION_TARGET_ARTIFACT_CONTRACT_ID,
+        MATCH_DISPOSITIONS_ARTIFACT_CONTRACT_ID,
+    }:
+        if (
+            artifact.get("persistence_state")
+            != "embedded-logical-record-v1"
+            or any(
+                key in artifact
+                for key in (
+                    "artifact_suffix",
+                    "byte_transport_scope",
+                    "receipt_schema",
+                )
+            )
+            or "no independent suffix, transport, receipt" not in
+                artifact.get("publication_state", "")
+        ):
+            raise ContractError(
+                f"{context}: logical record is falsely independently publishable"
+            )
+    else:
+        if (
+            artifact.get("persistence_state") != "persisted-final-artifact-v1"
+            or artifact.get("artifact_suffix") != ".apt.ecsv"
+            or artifact.get("physical_encoding")
+            != "canonical-ecsv-1.0-v1"
+            or artifact.get("receipt_schema")
+            != "citlali-canonical-apt-publication-receipt-v1"
+            or artifact.get("byte_transport_scope")
+            != "citlali-observation-matched-apt-byte-transport-sha256-v1"
+            or artifact.get("embedded_logical_records")
+            != [
+                OBSERVATION_TARGET_ARTIFACT_CONTRACT_ID,
+                MATCH_DISPOSITIONS_ARTIFACT_CONTRACT_ID,
+            ]
+            or artifact.get("activation_state") != "unactivated"
+        ):
+            raise ContractError(
+                f"{context}: final matched APT persistence/embedding mismatch"
+            )
+    if artifact_id == MATCH_DISPOSITIONS_ARTIFACT_CONTRACT_ID:
+        if artifact.get("mapping_domain") != OBSERVATION_MAPPING_DOMAIN_V1:
+            raise ContractError(f"{context}.mapping_domain: mismatch")
+    if artifact_id == OBSERVATION_MATCHED_APT_ARTIFACT_CONTRACT_ID:
+        if (
+            artifact.get("transformation_registry")
+            != OBSERVATION_TRANSFORMATION_REGISTRY_V1
+        ):
+            raise ContractError(f"{context}.transformation_registry: mismatch")
+    record_schemas = _mapping(
+        artifact.get("record_schemas"), f"{context}.record_schemas"
+    )
+    required_record_schemas = {
+        OBSERVATION_TARGET_ARTIFACT_CONTRACT_ID: {
+            "issuance_envelope",
+            "observation_identity",
+            "typed_field",
+            "source_artifact",
+            "target_input",
+            "target_row",
+            "target_manifest",
+        },
+        MATCH_DISPOSITIONS_ARTIFACT_CONTRACT_ID: {
+            "issuance_envelope",
+            "artifact_identity",
+            "verified_baseline_reference",
+            "row_reference",
+            "match_pair",
+            "matcher_evidence",
+            "network_match_evidence",
+            "endpoint_disposition",
+            "match_relation",
+        },
+        OBSERVATION_MATCHED_APT_ARTIFACT_CONTRACT_ID: {
+            "issuance_envelope",
+            "artifact_identity",
+            "verified_baseline_reference",
+            "row_reference",
+            "typed_field",
+            "derived_output_field_contract",
+            "field_transformation",
+            "matched_output_row",
+            "matched_output",
+        },
+    }
+    if set(record_schemas) != required_record_schemas[artifact_id]:
+        raise ContractError(f"{context}.record_schemas: incomplete/unknown records")
+    member_keys = {
+        "name",
+        "datatype",
+        "unit",
+        "nullable",
+        "authority",
+        "cardinality",
+        "identity_role",
+    }
+    for record_name, record_value in record_schemas.items():
+        record_context = f"{context}.record_schemas.{record_name}"
+        record = _mapping(record_value, record_context)
+        if set(record) != {"cardinality", "unknown_members", "members"}:
+            raise ContractError(f"{record_context}: unexpected record keys")
+        _text(record.get("cardinality"), f"{record_context}.cardinality")
+        if record.get("unknown_members") != "reject":
+            raise ContractError(f"{record_context}.unknown_members: must reject")
+        members = _list(record.get("members"), f"{record_context}.members")
+        if not members:
+            raise ContractError(f"{record_context}.members: must be nonempty")
+        names: list[str] = []
+        for index, member_value in enumerate(members):
+            member_context = f"{record_context}.members[{index}]"
+            member = _mapping(member_value, member_context)
+            if set(member) != member_keys:
+                raise ContractError(f"{member_context}: unexpected member keys")
+            names.append(_text(member.get("name"), f"{member_context}.name"))
+            for key in (
+                "datatype",
+                "unit",
+                "authority",
+                "cardinality",
+                "identity_role",
+            ):
+                _text(member.get(key), f"{member_context}.{key}")
+            if not isinstance(member.get("nullable"), bool):
+                raise ContractError(f"{member_context}.nullable: expected bool")
+            datatype = member["datatype"]
+            if datatype.startswith("record:") or datatype.startswith("list:"):
+                reference = datatype.split(":", 1)[1]
+                if reference not in record_schemas:
+                    raise ContractError(
+                        f"{member_context}.datatype: unresolved record {reference!r}"
+                    )
+        _unique(names, f"{record_context}.members.name")
+    if artifact_id == OBSERVATION_TARGET_ARTIFACT_CONTRACT_ID:
+        registry = _mapping(
+            artifact.get("field_authorization_registry"),
+            f"{context}.field_authorization_registry",
+        )
+        expected_registry_keys = {
+            "registry",
+            "source_field_map_profile",
+            "source_column_map",
+            "required_source_columns",
+            "optional_source_columns",
+            "required_field_names",
+            "optional_field_names",
+            "authorized_use_roles",
+            "registered_fields",
+            "unknown_source_diagnostics",
+            "artifact_self_registration",
+            "policy",
+        }
+        expected_fields = [
+            _target_field_catalog_v1()[name]
+            for name in sorted(_target_field_catalog_v1())
+        ]
+        if (
+            set(registry) != expected_registry_keys
+            or registry.get("registry") != OBSERVATION_TARGET_FIELD_REGISTRY_V1
+            or registry.get("source_field_map_profile")
+            != OBSERVATION_KMP_SOURCE_FIELD_MAP_PROFILE_V1
+            or registry.get("source_column_map")
+            != OBSERVATION_KMP_SOURCE_COLUMN_MAP_V1
+            or registry.get("required_source_columns") != ["fr", "f_out", "Qr"]
+            or registry.get("optional_source_columns") != ["flag"]
+            or registry.get("required_field_names")
+            != sorted(OBSERVATION_REQUIRED_TARGET_FIELDS_V1)
+            or registry.get("optional_field_names")
+            != sorted(OBSERVATION_OPTIONAL_TARGET_FIELDS_V1)
+            or registry.get("authorized_use_roles")
+            != OBSERVATION_KMP_AUTHORIZED_USE_ROLES_V1
+            or registry.get("registered_fields") != expected_fields
+            or registry.get("artifact_self_registration") != "reject"
+            or not isinstance(registry.get("unknown_source_diagnostics"), str)
+            or not isinstance(registry.get("policy"), str)
+        ):
+            raise ContractError(
+                f"{context}.field_authorization_registry: not the exact closed v1 KMP catalog"
+            )
+    if artifact_id == OBSERVATION_MATCHED_APT_ARTIFACT_CONTRACT_ID:
+        envelope_members = {
+            member["name"]: member
+            for member in record_schemas["issuance_envelope"]["members"]
+        }
+        if (
+            {name: member["authority"] for name, member in envelope_members.items()}
+            != {
+                "occurrence": "citlali-canonical-issuer",
+                "event_reference": "citlali-canonical-issuer",
+                "software_revision": "citlali-build-authority",
+                "configuration_reference": "tolproj-request",
+                "event_time_utc": "tolproj-request",
+            }
+            or next(
+                member
+                for member in record_schemas["matched_output"]["members"]
+                if member["name"] == "envelope"
+            )["authority"] != "field-specific-citlali-issuance"
+            or "occurrence and event issuance" not in artifact.get(
+                "authority_contract", ""
+            )
+        ):
+            raise ContractError(
+                f"{context}: output issuance envelope authority split mismatch"
+            )
+        registry = _mapping(
+            artifact.get("field_operation_authorization_registry"),
+            f"{context}.field_operation_authorization_registry",
+        )
+        if (
+            set(registry) != {
+                "registry",
+                "target_catalog_source_artifact_contract_id",
+                "target_catalog_source_registry",
+                "target_catalog_derivation",
+                "baseline_catalog_source_artifact_contract_id",
+                "baseline_catalog_source_contract_sha256",
+                "baseline_catalog_derivation",
+                "reserved_target_names",
+                "authorized_operations",
+                "issuer_declared_fields",
+                "artifact_self_registration",
+            }
+            or registry.get("registry")
+            != "citlali-observation-matched-output-fields-v1"
+            or registry.get("target_catalog_source_artifact_contract_id")
+            != OBSERVATION_TARGET_ARTIFACT_CONTRACT_ID
+            or registry.get("target_catalog_source_registry")
+            != OBSERVATION_TARGET_FIELD_REGISTRY_V1
+            or registry.get("baseline_catalog_source_artifact_contract_id")
+            != CANONICAL_APT_ARTIFACT_CONTRACT_ID
+            or registry.get("baseline_catalog_source_contract_sha256")
+            != CANONICAL_APT_ARTIFACT_CONTRACT_SHA256
+            or registry.get("reserved_target_names")
+            != sorted(_target_field_catalog_v1())
+            or registry.get("authorized_operations")
+            != [
+                OBSERVATION_PRESERVE_TARGET_OPERATION_V1,
+                OBSERVATION_COPY_BASELINE_OR_NULL_OPERATION_V1,
+            ]
+            or registry.get("issuer_declared_fields") != []
+            or registry.get("artifact_self_registration") != "reject"
+            or artifact.get("allowed_transformations")
+            != [
+                OBSERVATION_PRESERVE_TARGET_OPERATION_V1,
+                OBSERVATION_COPY_BASELINE_OR_NULL_OPERATION_V1,
+            ]
+            or not isinstance(registry.get("target_catalog_derivation"), str)
+            or not isinstance(registry.get("baseline_catalog_derivation"), str)
+        ):
+            raise ContractError(
+                f"{context}.field_operation_authorization_registry: "
+                "not the exact derived closed v1 registry"
+            )
+    return artifact
+
+
 def load_registry(path: Path) -> dict[str, Any]:
     with path.open(encoding="utf-8") as stream:
         registry = _mapping(
@@ -225,7 +602,14 @@ def load_registry(path: Path) -> dict[str, Any]:
     )
     for artifact_id, value in artifact_contracts.items():
         _text(artifact_id, "artifact_contracts key")
-        _validate_canonical_apt_artifact_contract(artifact_id, value)
+        if artifact_id == CANONICAL_APT_ARTIFACT_CONTRACT_ID:
+            _validate_canonical_apt_artifact_contract(artifact_id, value)
+        elif artifact_id in OBSERVATION_ARTIFACT_CONTRACT_IDS:
+            _validate_observation_artifact_contract(artifact_id, value)
+        else:
+            raise ContractError(
+                f"artifact_contracts.{artifact_id}: unsupported artifact contract"
+            )
 
     science_map_contracts = _mapping(
         registry.get("science_map_contracts", {}),
@@ -593,10 +977,20 @@ def load_registry(path: Path) -> dict[str, Any]:
             sort_keys=True,
             allow_nan=False,
         )
-        if CANONICAL_APT_ARTIFACT_CONTRACT_ID in routed:
+        routed_artifacts = {
+            CANONICAL_APT_ARTIFACT_CONTRACT_ID,
+            *OBSERVATION_ARTIFACT_CONTRACT_IDS,
+        }
+        routed_matches = sorted(
+            artifact_id
+            for artifact_id in routed_artifacts
+            if artifact_id in routed
+        )
+        if routed_matches:
             raise ContractError(
                 "unactivated canonical APT artifact contract is referenced "
-                "by a reduction family/check/contract"
+                "by a reduction family/check/contract: "
+                + ", ".join(routed_matches)
             )
     return registry
 
@@ -622,7 +1016,11 @@ def artifact_contract_by_id(
         raise ContractError(
             f"unknown artifact contract {artifact_contract_id!r}"
         )
-    return _validate_canonical_apt_artifact_contract(
+    if artifact_contract_id == CANONICAL_APT_ARTIFACT_CONTRACT_ID:
+        return _validate_canonical_apt_artifact_contract(
+            artifact_contract_id, artifact_contracts[artifact_contract_id]
+        )
+    return _validate_observation_artifact_contract(
         artifact_contract_id, artifact_contracts[artifact_contract_id]
     )
 
@@ -1191,6 +1589,68 @@ def canonical_frame(label: str, datatype: str, payload: str) -> bytes:
         + payload_bytes
         + b";"
     )
+
+
+def _parse_exact_uint64(value: str, label: str) -> int:
+    if not re.fullmatch(r"0|[1-9][0-9]*", value):
+        raise ContractError(f"invalid canonical exact uint64 {label}: {value!r}")
+    result = int(value)
+    if result > UINT64_MAX:
+        raise ContractError(f"canonical uint64 {label} is out of range")
+    return result
+
+
+def canonical_observation_scalar_frame(
+    label: str, datatype: str, payload: str
+) -> bytes:
+    """Return one exact successor-contract scalar frame.
+
+    JSON-facing exact integers remain decimal strings and binary64 values remain
+    exact bits.  This deliberately does not accept a Python number and therefore
+    cannot round a value before it enters the canonical contract.
+    """
+
+    _require_canonical_text("observation frame label", label)
+    _require_canonical_text("observation frame datatype", datatype)
+    if datatype == "int64":
+        _parse_exact_int64(payload, label)
+    elif datatype == "uint64":
+        _parse_exact_uint64(payload, label)
+    elif datatype == "float64-ieee754":
+        if re.fullmatch(r"[0-9a-f]{16}", payload) is None:
+            raise ContractError(
+                f"invalid exact IEEE-754 binary64 token {label}: {payload!r}"
+            )
+        bits = int(payload, 16)
+        exponent = (bits >> 52) & 0x7FF
+        significand = bits & ((1 << 52) - 1)
+        if exponent == 0x7FF and significand and payload != "7ff8000000000000":
+            raise ContractError(
+                f"noncanonical IEEE-754 binary64 NaN token {label}: {payload!r}"
+            )
+    elif datatype in {
+        "null-int64",
+        "null-uint64",
+        "null-float64",
+        "null-bool",
+        "null-string",
+        "null-utf8",
+        "null-opaque",
+        "null-sha256",
+    }:
+        if payload != "null":
+            raise ContractError(f"invalid typed null token {label}: {payload!r}")
+    elif datatype in {"utf8", "opaque", "sha256"}:
+        _require_canonical_text(label, payload, allow_empty=datatype == "utf8")
+        if datatype == "sha256" and SHA256_REFERENCE_RE.fullmatch(payload) is None:
+            raise ContractError(f"invalid SHA-256 reference {label}: {payload!r}")
+    elif datatype == "bool":
+        _parse_exact_bool(payload, label)
+    else:
+        raise ContractError(
+            f"unsupported observation scalar datatype {datatype!r} for {label}"
+        )
+    return canonical_frame(label, datatype, payload)
 
 
 def _canonical_text(value: str) -> bool:
@@ -2174,6 +2634,2708 @@ def _parse_canonical_apt_receipt(
     }
 
 
+def _float64_bits_token(value: float) -> str:
+    if math.isnan(value):
+        return "7ff8000000000000"
+    return struct.pack(">d", value).hex()
+
+
+def _descriptor_typed_value(datatype: str, value: Any) -> dict[str, Any]:
+    normalized_datatype = {
+        "float64": "float64-ieee754",
+        "int64": "int64",
+        "bool": "bool",
+        "string": "utf8",
+    }.get(datatype)
+    if normalized_datatype is None:
+        raise ContractError(
+            f"verified baseline descriptor: unsupported datatype {datatype!r}"
+        )
+    if value is None:
+        return {"datatype": normalized_datatype, "value": None}
+    if datatype == "float64":
+        token: Any = _float64_bits_token(value)
+    elif datatype == "int64":
+        token = str(value)
+    elif datatype == "bool":
+        token = value
+    else:
+        token = value
+    return {"datatype": normalized_datatype, "value": token}
+
+
+class VerifiedBaselineDescriptor(dict[str, Any]):
+    """Typed view whose trust root remains the exact immutable publication.
+
+    The C++ descriptor retains baseline and receipt bytes behind a private
+    constructor.  Python mirrors that property with slots rather than exposing
+    caller assertions as an ordinary serializable field.  Every identity or
+    canonicalization operation below reconstructs this mapping from these bytes
+    and the pinned APT-PROD-001 contract before trusting any typed member.
+    """
+
+    __slots__ = ("_artifact_bytes", "_receipt_bytes", "_artifact_contract")
+
+    def __init__(
+        self,
+        value: dict[str, Any],
+        artifact_bytes: bytes,
+        receipt_bytes: bytes,
+        artifact_contract: dict[str, Any],
+    ) -> None:
+        super().__init__(value)
+        self._artifact_bytes = bytes(artifact_bytes)
+        self._receipt_bytes = bytes(receipt_bytes)
+        self._artifact_contract = copy.deepcopy(artifact_contract)
+
+
+def verified_baseline_descriptor_from_bytes(
+    artifact_bytes: bytes,
+    receipt_bytes: bytes,
+    contract: dict[str, Any],
+) -> dict[str, Any]:
+    """Verify immutable baseline bytes and return their complete typed descriptor.
+
+    The descriptor accepts no caller-provided occurrence, row, raw relation, or
+    digest assertion.  Every returned fact is reconstructed from the canonical
+    ECSV bytes and the exact envelope-bound completion receipt.
+    """
+
+    _validate_canonical_apt_artifact_contract(
+        contract.get("artifact_contract_id", ""), contract
+    )
+    receipt = _parse_canonical_apt_receipt(receipt_bytes, contract)
+    actual_byte_sha = "sha256:" + hashlib.sha256(artifact_bytes).hexdigest()
+    if (
+        receipt["byte_count"] != len(artifact_bytes)
+        or receipt["byte_sha256"] != actual_byte_sha
+    ):
+        raise ContractError(
+            "verified baseline descriptor receipt byte SHA-256/count mismatch"
+        )
+    document, digests = _parse_canonical_apt_v1_bytes(artifact_bytes, contract)
+    if receipt["envelope_sha256"] != digests["envelope_sha256"]:
+        raise ContractError(
+            "verified baseline descriptor receipt envelope binding mismatch"
+        )
+
+    registered_fields = copy.deepcopy(document["registered_fields"])
+    field_by_name = {field["name"]: field for field in registered_fields}
+    rows: list[dict[str, Any]] = []
+    for row in document["rows"]:
+        fields = {
+            name: _descriptor_typed_value(field_by_name[name]["datatype"], value)
+            for name, value in sorted(row["fields"].items())
+        }
+        rows.append(
+            {
+                "uid": str(row["uid"]),
+                "tone_freq": _descriptor_typed_value(
+                    "float64", row["tone_freq"]
+                ),
+                "array": str(row["array"]),
+                "network": str(row["nw"]),
+                "channel": str(row["kids_tone"]),
+                "fields": fields,
+            }
+        )
+    raw_manifest = [
+        {
+            "network": str(raw_input["network"]),
+            "interface": raw_input["interface"],
+            "channel_count": str(raw_input["channel_count"]),
+        }
+        for raw_input in document["raw_inputs"]
+    ]
+    observation = {
+        key: str(value) for key, value in document["observation"].items()
+    }
+    value = {
+        "schema_version": BASELINE_DESCRIPTOR_SCHEMA_V1,
+        "contract_authority": OBSERVATION_CONTRACT_AUTHORITY_V1,
+        "baseline_value_issuer": OBSERVATION_CONTRACT_AUTHORITY_V1,
+        "artifact_contract_id": contract["artifact_contract_id"],
+        "artifact_contract_sha256": _canonical_json_sha256(contract),
+        "baseline_schema_version": contract["schema_version"],
+        "profile": document["profile"],
+        "field_registry": document["field_registry"],
+        "occurrence": document["envelope"]["occurrence"],
+        "event_reference": document["envelope"]["event_reference"],
+        "envelope": copy.deepcopy(document["envelope"]),
+        "scientific_context": copy.deepcopy(document["context"]),
+        "observation": observation,
+        "raw_manifest": raw_manifest,
+        "registered_fields": registered_fields,
+        "rows": rows,
+        "wire_presentation_sequence": [str(row["uid"]) for row in document["rows"]],
+        "semantic_sha256": digests["semantic_sha256"],
+        "envelope_sha256": digests["envelope_sha256"],
+        "byte_transport_scope": contract["byte_transport_scope"],
+        "byte_sha256": actual_byte_sha,
+        "byte_count": str(len(artifact_bytes)),
+        "receipt_sha256": "sha256:"
+        + hashlib.sha256(receipt_bytes).hexdigest(),
+        "receipt_byte_count": str(len(receipt_bytes)),
+    }
+    return VerifiedBaselineDescriptor(
+        value, artifact_bytes, receipt_bytes, contract
+    )
+
+
+def _observation_text(value: Any, label: str) -> str:
+    if not isinstance(value, str) or not value:
+        raise ContractError(f"{label}: expected non-empty canonical UTF-8 text")
+    _require_canonical_text(label, value)
+    return value
+
+
+def _observation_int64(value: Any, label: str, *, local_key: bool = False) -> int:
+    if not isinstance(value, str):
+        raise ContractError(f"{label}: exact int64 must be a decimal string")
+    result = _parse_exact_int64(value, label)
+    if local_key and (result < 0 or result > CANONICAL_APT_UID_MAX):
+        raise ContractError(f"{label}: local key is outside [0, 2^53-1]")
+    return result
+
+
+def _observation_uint64(value: Any, label: str) -> int:
+    if not isinstance(value, str):
+        raise ContractError(f"{label}: exact uint64 must be a decimal string")
+    return _parse_exact_uint64(value, label)
+
+
+def _observation_float64(value: Any, label: str) -> str:
+    if not isinstance(value, str):
+        raise ContractError(f"{label}: exact binary64 must be a string token")
+    canonical_observation_scalar_frame(label, "float64-ieee754", value)
+    return value
+
+
+def _float_token_is_finite(value: str) -> bool:
+    return ((int(value, 16) >> 52) & 0x7FF) != 0x7FF
+
+
+def _float_token_is_negative(value: str) -> bool:
+    return bool(int(value, 16) >> 63)
+
+
+def _require_exact_object(
+    value: Any, expected: set[str], context: str
+) -> dict[str, Any]:
+    result = _mapping(value, context)
+    if set(result) != expected:
+        raise ContractError(
+            f"{context}: expected exact keys {sorted(expected)}; "
+            f"found {sorted(result)}"
+        )
+    return result
+
+
+def _frame_text(frames: list[bytes], label: str, value: str) -> None:
+    frames.append(canonical_observation_scalar_frame(label, "utf8", value))
+
+
+def _frame_int64(frames: list[bytes], label: str, value: str) -> None:
+    frames.append(canonical_observation_scalar_frame(label, "int64", value))
+
+
+def _frame_uint64(frames: list[bytes], label: str, value: int | str) -> None:
+    frames.append(
+        canonical_observation_scalar_frame(label, "uint64", str(value))
+    )
+
+
+def _frame_float64(frames: list[bytes], label: str, value: str) -> None:
+    frames.append(
+        canonical_observation_scalar_frame(label, "float64-ieee754", value)
+    )
+
+
+def _frame_bool(frames: list[bytes], label: str, value: bool) -> None:
+    if not isinstance(value, bool):
+        raise ContractError(f"{label}: expected bool")
+    frames.append(
+        canonical_observation_scalar_frame(
+            label, "bool", "true" if value else "false"
+        )
+    )
+
+
+def _validate_observation_identity(value: Any, context: str) -> dict[str, Any]:
+    identity = _require_exact_object(
+        value, {"observation", "subobservation", "scan"}, context
+    )
+    for key in ("observation", "subobservation", "scan"):
+        if _observation_int64(identity[key], f"{context}.{key}") < 0:
+            raise ContractError(f"{context}.{key}: must be nonnegative")
+    return identity
+
+
+def _add_observation_identity(
+    frames: list[bytes], prefix: str, value: dict[str, Any]
+) -> None:
+    for key in ("observation", "subobservation", "scan"):
+        _frame_int64(frames, f"{prefix}.{key}", value[key])
+
+
+def _validate_issuance_envelope(value: Any, context: str) -> dict[str, Any]:
+    envelope = _require_exact_object(
+        value,
+        {
+            "occurrence",
+            "event_reference",
+            "software_revision",
+            "configuration_reference",
+            "event_time_utc",
+        },
+        context,
+    )
+    for key, item in envelope.items():
+        _observation_text(item, f"{context}.{key}")
+    if not _valid_utc_timestamp(envelope["event_time_utc"]):
+        raise ContractError(f"{context}.event_time_utc: not exact UTC")
+    return envelope
+
+
+def _add_envelope(
+    frames: list[bytes],
+    schema: str,
+    scope: str,
+    semantic_sha256: str,
+    envelope: dict[str, Any],
+) -> None:
+    values = (
+        ("encoding", "citlali-labelled-type-length-v1"),
+        ("scope", scope),
+        ("schema", schema),
+        ("contract-authority", OBSERVATION_CONTRACT_AUTHORITY_V1),
+        ("canonical-issuer", OBSERVATION_CONTRACT_AUTHORITY_V1),
+        ("observation-value-issuer", OBSERVATION_VALUE_ISSUER_V1),
+        ("semantic-sha256", semantic_sha256),
+        ("occurrence", envelope["occurrence"]),
+        ("event-reference", envelope["event_reference"]),
+        ("software-revision", envelope["software_revision"]),
+        ("configuration-reference", envelope["configuration_reference"]),
+        ("event-time-utc", envelope["event_time_utc"]),
+    )
+    for label, value in values:
+        _frame_text(frames, label, value)
+
+
+def _decode_descriptor_value(
+    cell: Any, field: dict[str, Any], context: str
+) -> Any:
+    cell = _require_exact_object(cell, {"datatype", "value"}, context)
+    expected_datatype = {
+        "int64": "int64",
+        "float64": "float64-ieee754",
+        "bool": "bool",
+        "string": "utf8",
+    }[field["datatype"]]
+    if cell["datatype"] != expected_datatype:
+        raise ContractError(f"{context}.datatype: mismatch")
+    value = cell["value"]
+    if value is None:
+        if not field["nullable"]:
+            raise ContractError(f"{context}: nonnullable value is null")
+        return None
+    if field["datatype"] == "int64":
+        return _observation_int64(value, context)
+    if field["datatype"] == "float64":
+        token = _observation_float64(value, context)
+        bits = int(token, 16)
+        if token == "7ff8000000000000":
+            return float("nan")
+        return struct.unpack(">d", bits.to_bytes(8, "big"))[0]
+    if field["datatype"] == "bool":
+        if not isinstance(value, bool):
+            raise ContractError(f"{context}: expected bool")
+        return value
+    return _observation_text(value, context)
+
+
+def _descriptor_baseline_document(descriptor: dict[str, Any]) -> dict[str, Any]:
+    envelope = _require_exact_object(
+        descriptor["envelope"],
+        {
+            "occurrence",
+            "event_reference",
+            "output_role",
+            "producer",
+            "software_revision",
+            "configuration_reference",
+            "event_time_utc",
+        },
+        "baseline descriptor.envelope",
+    )
+    if (
+        descriptor["occurrence"] != envelope["occurrence"]
+        or descriptor["event_reference"] != envelope["event_reference"]
+    ):
+        raise ContractError(
+            "baseline descriptor duplicates disagree with its exact envelope"
+        )
+    context = _require_exact_object(
+        descriptor["scientific_context"],
+        {"project_id", "source_name", "observation_time_utc", "coordinate_frame"},
+        "baseline descriptor.scientific_context",
+    )
+    for key, value in (*envelope.items(), *context.items()):
+        _observation_text(value, f"baseline descriptor {key}")
+    observation_value = _validate_observation_identity(
+        descriptor["observation"], "baseline descriptor.observation"
+    )
+    observation = {
+        key: _observation_int64(value, f"baseline descriptor.observation.{key}")
+        for key, value in observation_value.items()
+    }
+    raw_inputs: list[dict[str, Any]] = []
+    for index, raw_value in enumerate(_list(
+        descriptor["raw_manifest"], "baseline descriptor.raw_manifest"
+    )):
+        raw = _require_exact_object(
+            raw_value,
+            {"network", "interface", "channel_count"},
+            f"baseline descriptor.raw_manifest[{index}]",
+        )
+        raw_inputs.append(
+            {
+                "network": _observation_int64(
+                    raw["network"], f"baseline raw[{index}].network"
+                ),
+                "interface": _observation_text(
+                    raw["interface"], f"baseline raw[{index}].interface"
+                ),
+                "channel_count": _observation_int64(
+                    raw["channel_count"], f"baseline raw[{index}].channel_count"
+                ),
+            }
+        )
+    registered_fields = _list(
+        descriptor["registered_fields"], "baseline descriptor.registered_fields"
+    )
+    field_keys = {
+        "name",
+        "datatype",
+        "unit",
+        "nullable",
+        "authority",
+        "authority_reference",
+        "nonfinite",
+        "registry",
+        "description",
+        "identity_role",
+    }
+    fields: list[dict[str, Any]] = []
+    field_by_name: dict[str, dict[str, Any]] = {}
+    for index, field_value in enumerate(registered_fields):
+        field = _require_exact_object(
+            field_value, field_keys, f"baseline descriptor.registered_fields[{index}]"
+        )
+        if field["identity_role"] != "nonidentity":
+            raise ContractError("baseline descriptor registered field claims identity")
+        if field["name"] in field_by_name:
+            raise ContractError("baseline descriptor duplicate registered field")
+        field_by_name[field["name"]] = field
+        fields.append(copy.deepcopy(field))
+    rows: list[dict[str, Any]] = []
+    wire_sequence: list[str] = []
+    for index, row_value in enumerate(_list(
+        descriptor["rows"], "baseline descriptor.rows"
+    )):
+        row = _require_exact_object(
+            row_value,
+            {"uid", "tone_freq", "array", "network", "channel", "fields"},
+            f"baseline descriptor.rows[{index}]",
+        )
+        uid = _observation_int64(row["uid"], f"baseline row[{index}].uid", local_key=True)
+        wire_sequence.append(str(uid))
+        row_fields_value = _mapping(row["fields"], f"baseline row[{index}].fields")
+        if set(row_fields_value) != set(field_by_name):
+            raise ContractError("baseline descriptor row field catalog mismatch")
+        row_fields = {
+            name: _decode_descriptor_value(
+                row_fields_value[name], field_by_name[name],
+                f"baseline row[{index}].fields.{name}",
+            )
+            for name in field_by_name
+        }
+        tone_field = {"datatype": "float64", "nullable": False}
+        rows.append(
+            {
+                "uid": uid,
+                "tone_freq": _decode_descriptor_value(
+                    row["tone_freq"], tone_field,
+                    f"baseline row[{index}].tone_freq",
+                ),
+                "array": _observation_int64(row["array"], f"baseline row[{index}].array"),
+                "nw": _observation_int64(row["network"], f"baseline row[{index}].network"),
+                "kids_tone": _observation_int64(row["channel"], f"baseline row[{index}].channel"),
+                "fields": row_fields,
+            }
+        )
+    if descriptor["wire_presentation_sequence"] != wire_sequence:
+        raise ContractError(
+            "baseline descriptor wire presentation sequence is not its exact row order"
+        )
+    return {
+        "profile": descriptor["profile"],
+        "field_registry": descriptor["field_registry"],
+        "envelope": copy.deepcopy(envelope),
+        "context": copy.deepcopy(context),
+        "observation": observation,
+        "raw_inputs": raw_inputs,
+        "registered_fields": fields,
+        "rows": rows,
+    }
+
+
+def baseline_descriptor_preimage(descriptor: dict[str, Any]) -> bytes:
+    if not isinstance(descriptor, VerifiedBaselineDescriptor):
+        raise ContractError(
+            "baseline descriptor must be reconstructed from immutable "
+            "artifact and receipt bytes"
+        )
+    rebuilt = verified_baseline_descriptor_from_bytes(
+        descriptor._artifact_bytes,
+        descriptor._receipt_bytes,
+        descriptor._artifact_contract,
+    )
+    if dict(rebuilt) != dict(descriptor):
+        raise ContractError(
+            "baseline descriptor typed content differs from its retained "
+            "immutable artifact/receipt reconstruction"
+        )
+    expected = {
+        "schema_version",
+        "contract_authority",
+        "baseline_value_issuer",
+        "artifact_contract_id",
+        "artifact_contract_sha256",
+        "baseline_schema_version",
+        "profile",
+        "field_registry",
+        "occurrence",
+        "event_reference",
+        "envelope",
+        "scientific_context",
+        "observation",
+        "raw_manifest",
+        "registered_fields",
+        "rows",
+        "wire_presentation_sequence",
+        "semantic_sha256",
+        "envelope_sha256",
+        "byte_transport_scope",
+        "byte_sha256",
+        "byte_count",
+        "receipt_sha256",
+        "receipt_byte_count",
+    }
+    descriptor = _require_exact_object(descriptor, expected, "baseline descriptor")
+    if (
+        descriptor["schema_version"] != BASELINE_DESCRIPTOR_SCHEMA_V1
+        or descriptor["contract_authority"] != OBSERVATION_CONTRACT_AUTHORITY_V1
+        or descriptor["baseline_value_issuer"]
+        != OBSERVATION_CONTRACT_AUTHORITY_V1
+        or descriptor["artifact_contract_id"]
+        != CANONICAL_APT_ARTIFACT_CONTRACT_ID
+        or descriptor["baseline_schema_version"] != "citlali-canonical-apt-v1"
+        or descriptor["byte_transport_scope"]
+        != "citlali-canonical-apt-byte-transport-sha256-v1"
+    ):
+        raise ContractError("baseline descriptor schema/authority/scope mismatch")
+    for key in (
+        "artifact_contract_sha256",
+        "semantic_sha256",
+        "envelope_sha256",
+        "byte_sha256",
+        "receipt_sha256",
+    ):
+        if SHA256_REFERENCE_RE.fullmatch(descriptor[key]) is None and key != "artifact_contract_sha256":
+            raise ContractError(f"baseline descriptor {key}: invalid digest")
+    if re.fullmatch(r"[0-9a-f]{64}", descriptor["artifact_contract_sha256"]) is None:
+        raise ContractError("baseline descriptor artifact contract digest is invalid")
+    if descriptor["artifact_contract_sha256"] != CANONICAL_APT_ARTIFACT_CONTRACT_SHA256:
+        raise ContractError("baseline descriptor artifact contract digest drift")
+    _observation_uint64(descriptor["byte_count"], "baseline descriptor byte_count")
+    _observation_uint64(
+        descriptor["receipt_byte_count"], "baseline descriptor receipt_byte_count"
+    )
+    document = _descriptor_baseline_document(descriptor)
+    digest_contract = {
+        "framing_encoding": "citlali-labelled-type-length-v1",
+        "semantic_scope": "citlali-canonical-apt-semantic-sha256-v1",
+        "envelope_scope": "citlali-canonical-apt-envelope-sha256-v1",
+        "schema_version": "citlali-canonical-apt-v1",
+        "core_fields": [
+            {"name": "uid", "datatype": "int64", "unit": "N/A", "nullable": False, "authority": "canonical-issuer", "identity_role": "artifact-local-row-key"},
+            {"name": "tone_freq", "datatype": "float64", "unit": "Hz", "nullable": False, "authority": "raw-readout", "identity_role": "nonidentity-attribute"},
+            {"name": "array", "datatype": "int64", "unit": "N/A", "nullable": False, "authority": "network-map", "identity_role": "nonidentity-attribute"},
+            {"name": "nw", "datatype": "int64", "unit": "N/A", "nullable": False, "authority": "raw-manifest", "identity_role": "raw-channel-relation"},
+            {"name": "kids_tone", "datatype": "int64", "unit": "N/A", "nullable": False, "authority": "raw-manifest", "identity_role": "raw-channel-relation"},
+        ],
+    }
+    recomputed = _canonical_apt_digests(document, digest_contract)
+    if (
+        recomputed["semantic_sha256"] != descriptor["semantic_sha256"]
+        or recomputed["envelope_sha256"] != descriptor["envelope_sha256"]
+    ):
+        raise ContractError(
+            "baseline descriptor typed content does not reproduce its exact baseline identities"
+        )
+    frames: list[bytes] = []
+    for label, value in (
+        ("encoding", "citlali-labelled-type-length-v1"),
+        ("scope", "citlali-verified-beammap-baseline-descriptor-sha256-v1"),
+        ("schema", descriptor["schema_version"]),
+        ("contract-authority", descriptor["contract_authority"]),
+        ("baseline-value-issuer", descriptor["baseline_value_issuer"]),
+        ("baseline-schema", descriptor["baseline_schema_version"]),
+        ("baseline-profile", descriptor["profile"]),
+        ("baseline-occurrence", descriptor["occurrence"]),
+        ("baseline-semantic-sha256", descriptor["semantic_sha256"]),
+        ("baseline-envelope-sha256", descriptor["envelope_sha256"]),
+        ("baseline-transport-scope", descriptor["byte_transport_scope"]),
+        ("baseline-transport-sha256", descriptor["byte_sha256"]),
+    ):
+        _frame_text(frames, label, value)
+    _frame_uint64(frames, "baseline-byte-count", descriptor["byte_count"])
+    _frame_text(frames, "receipt-sha256", descriptor["receipt_sha256"])
+    _frame_uint64(
+        frames, "receipt-byte-count", descriptor["receipt_byte_count"]
+    )
+    return b"".join(frames)
+
+
+def baseline_descriptor_sha256(descriptor: dict[str, Any]) -> str:
+    return "sha256:" + hashlib.sha256(
+        baseline_descriptor_preimage(descriptor)
+    ).hexdigest()
+
+
+def _baseline_artifact_identity(descriptor: dict[str, Any]) -> dict[str, Any]:
+    baseline_descriptor_preimage(descriptor)
+    return {
+        "schema": descriptor["baseline_schema_version"],
+        "occurrence": descriptor["occurrence"],
+        "semantic_sha256": descriptor["semantic_sha256"],
+        "envelope_sha256": descriptor["envelope_sha256"],
+    }
+
+
+def verified_baseline_reference(descriptor: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "artifact": _baseline_artifact_identity(descriptor),
+        "profile": descriptor["profile"],
+        "descriptor_sha256": baseline_descriptor_sha256(descriptor),
+        "transport_scope": descriptor["byte_transport_scope"],
+        "transport_sha256": descriptor["byte_sha256"],
+        "byte_count": descriptor["byte_count"],
+        "receipt_sha256": descriptor["receipt_sha256"],
+        "receipt_byte_count": descriptor["receipt_byte_count"],
+    }
+
+
+def _validate_artifact_identity(value: Any, context: str) -> dict[str, Any]:
+    identity = _require_exact_object(
+        value,
+        {"schema", "occurrence", "semantic_sha256", "envelope_sha256"},
+        context,
+    )
+    _observation_text(identity["schema"], f"{context}.schema")
+    _observation_text(identity["occurrence"], f"{context}.occurrence")
+    for key in ("semantic_sha256", "envelope_sha256"):
+        if SHA256_REFERENCE_RE.fullmatch(identity[key]) is None:
+            raise ContractError(f"{context}.{key}: invalid SHA-256 reference")
+    return identity
+
+
+def _add_artifact_identity(
+    frames: list[bytes], prefix: str, identity: dict[str, Any]
+) -> None:
+    _frame_text(frames, f"{prefix}.schema", identity["schema"])
+    _frame_text(frames, f"{prefix}.occurrence", identity["occurrence"])
+    _frame_text(
+        frames, f"{prefix}.semantic-sha256", identity["semantic_sha256"]
+    )
+    _frame_text(
+        frames, f"{prefix}.envelope-sha256", identity["envelope_sha256"]
+    )
+
+
+def _validate_baseline_reference(
+    value: Any, descriptor: dict[str, Any], context: str
+) -> dict[str, Any]:
+    reference = _require_exact_object(
+        value,
+        {
+            "artifact",
+            "profile",
+            "descriptor_sha256",
+            "transport_scope",
+            "transport_sha256",
+            "byte_count",
+            "receipt_sha256",
+            "receipt_byte_count",
+        },
+        context,
+    )
+    _validate_artifact_identity(reference["artifact"], f"{context}.artifact")
+    if reference != verified_baseline_reference(descriptor):
+        raise ContractError(f"{context}: does not exactly bind verified baseline")
+    return reference
+
+
+def _add_baseline_reference(
+    frames: list[bytes], prefix: str, reference: dict[str, Any]
+) -> None:
+    _add_artifact_identity(frames, f"{prefix}.artifact", reference["artifact"])
+    _frame_text(frames, f"{prefix}.profile", reference["profile"])
+    _frame_text(
+        frames, f"{prefix}.descriptor-sha256", reference["descriptor_sha256"]
+    )
+    _frame_text(frames, f"{prefix}.transport-scope", reference["transport_scope"])
+    _frame_text(
+        frames, f"{prefix}.transport-sha256", reference["transport_sha256"]
+    )
+    _frame_uint64(frames, f"{prefix}.byte-count", reference["byte_count"])
+    _frame_text(frames, f"{prefix}.receipt-sha256", reference["receipt_sha256"])
+    _frame_uint64(
+        frames, f"{prefix}.receipt-byte-count", reference["receipt_byte_count"]
+    )
+
+
+def _validate_row_reference(value: Any, context: str) -> dict[str, Any]:
+    reference = _require_exact_object(
+        value,
+        {"artifact_schema", "occurrence", "envelope_sha256", "local_key"},
+        context,
+    )
+    _observation_text(reference["artifact_schema"], f"{context}.artifact_schema")
+    _observation_text(reference["occurrence"], f"{context}.occurrence")
+    if SHA256_REFERENCE_RE.fullmatch(reference["envelope_sha256"]) is None:
+        raise ContractError(f"{context}.envelope_sha256: invalid")
+    _observation_int64(reference["local_key"], f"{context}.local_key", local_key=True)
+    return reference
+
+
+def _row_reference(identity: dict[str, Any], local_key: str) -> dict[str, Any]:
+    _observation_int64(local_key, "row reference local key", local_key=True)
+    return {
+        "artifact_schema": identity["schema"],
+        "occurrence": identity["occurrence"],
+        "envelope_sha256": identity["envelope_sha256"],
+        "local_key": local_key,
+    }
+
+
+def _add_row_reference(
+    frames: list[bytes], prefix: str, reference: dict[str, Any]
+) -> None:
+    _frame_text(frames, f"{prefix}.artifact-schema", reference["artifact_schema"])
+    _frame_text(frames, f"{prefix}.occurrence", reference["occurrence"])
+    _frame_text(
+        frames, f"{prefix}.envelope-sha256", reference["envelope_sha256"]
+    )
+    _frame_int64(frames, f"{prefix}.local-key", reference["local_key"])
+
+
+def _expected_array(network: int) -> int:
+    if network < 0 or network > 12:
+        raise ContractError("network is outside 0..12")
+    return 0 if network <= 6 else 1 if network <= 10 else 2
+
+
+def _is_finite_binary64_token(token: str) -> bool:
+    return ((int(token, 16) >> 52) & 0x7FF) != 0x7FF
+
+
+def _binary64_value(token: str) -> float:
+    return struct.unpack(">d", int(token, 16).to_bytes(8, "big"))[0]
+
+
+def _target_field_catalog_v1() -> dict[str, dict[str, Any]]:
+    specifications = (
+        (
+            "kids_fr",
+            "fr",
+            "float64",
+            "Hz",
+            "kids:model-params-v1",
+            "imported KIDs resonant frequency; finite, nonidentity",
+        ),
+        (
+            "kids_f_out",
+            "f_out",
+            "float64",
+            "Hz",
+            "kids:model-params-v1",
+            "imported KIDs output tone frequency; finite, nonidentity",
+        ),
+        (
+            "kids_Qr",
+            "Qr",
+            "float64",
+            "N/A",
+            "kids:model-params-v1",
+            "imported KIDs resonator Qr; finite with no positivity rule, nonidentity",
+        ),
+        (
+            "kids_flag",
+            "flag",
+            "int64",
+            "N/A",
+            "kids:fit-report-v1",
+            "imported KIDs model-fit flag; exact signed integral values, nonidentity",
+        ),
+    )
+    return {
+        name: {
+            "name": name,
+            "source_column": source_column,
+            "datatype": datatype,
+            "unit": unit,
+            "nullable": False,
+            "nonfinite": "reject",
+            "authority": "copied-declared",
+            "authority_reference": authority_reference,
+            "registry": OBSERVATION_TARGET_FIELD_REGISTRY_V1,
+            "description": description,
+            "identity_role": "nonidentity",
+        }
+        for (
+            name,
+            source_column,
+            datatype,
+            unit,
+            authority_reference,
+            description,
+        ) in specifications
+    }
+
+
+OBSERVATION_REQUIRED_TARGET_FIELDS_V1 = frozenset(
+    {"kids_fr", "kids_f_out", "kids_Qr"}
+)
+OBSERVATION_OPTIONAL_TARGET_FIELDS_V1 = frozenset({"kids_flag"})
+OBSERVATION_KMP_SOURCE_COLUMN_MAP_V1 = {
+    "fr": "kids_fr",
+    "f_out": "kids_f_out",
+    "Qr": "kids_Qr",
+    "flag": "kids_flag",
+}
+
+
+def canonical_target_fields_v1(*, include_kids_flag: bool) -> list[dict[str, Any]]:
+    catalog = _target_field_catalog_v1()
+    names = ["kids_fr", "kids_f_out", "kids_Qr"]
+    if include_kids_flag:
+        names.append("kids_flag")
+    return [copy.deepcopy(catalog[name]) for name in names]
+
+
+def _validate_typed_field(
+    value: Any, expected_registry: str, context: str
+) -> dict[str, Any]:
+    field = _require_exact_object(
+        value,
+        {
+            "name",
+            "source_column",
+            "datatype",
+            "unit",
+            "nullable",
+            "nonfinite",
+            "authority",
+            "authority_reference",
+            "registry",
+            "description",
+            "identity_role",
+        },
+        context,
+    )
+    for key in (
+        "name",
+        "datatype",
+        "unit",
+        "nonfinite",
+        "authority",
+        "authority_reference",
+        "registry",
+        "description",
+        "identity_role",
+    ):
+        _observation_text(field[key], f"{context}.{key}")
+    if field["source_column"] is not None:
+        _observation_text(field["source_column"], f"{context}.source_column")
+    if (
+        field["datatype"] not in {"float64", "int64", "bool", "string"}
+        or not isinstance(field["nullable"], bool)
+        or field["nonfinite"] not in {"reject", "nan-token", "canonical-token"}
+        or field["registry"] != expected_registry
+        or field["identity_role"] != "nonidentity"
+        or (field["datatype"] != "float64" and field["nonfinite"] != "reject")
+    ):
+        raise ContractError(f"{context}: invalid typed-field declaration")
+    return field
+
+
+def _validate_successor_value(
+    value: Any, field: dict[str, Any], context: str
+) -> Any:
+    if value is None:
+        if not field["nullable"]:
+            raise ContractError(f"{context}: nonnullable field is null")
+        return None
+    datatype = field["datatype"]
+    if datatype == "float64":
+        token = _observation_float64(value, context)
+        finite = _is_finite_binary64_token(token)
+        bits = int(token, 16)
+        is_infinite = ((bits >> 52) & 0x7FF) == 0x7FF and not (
+            bits & ((1 << 52) - 1)
+        )
+        if (
+            (not finite and field["nonfinite"] == "reject")
+            or (is_infinite and field["nonfinite"] == "nan-token")
+        ):
+            raise ContractError(f"{context}: forbidden nonfinite value")
+        return token
+    if datatype == "int64":
+        _observation_int64(value, context)
+        return value
+    if datatype == "bool":
+        if not isinstance(value, bool):
+            raise ContractError(f"{context}: expected bool")
+        return value
+    return _observation_text(value, context)
+
+
+def _add_typed_field(
+    frames: list[bytes], prefix: str, field: dict[str, Any]
+) -> None:
+    for suffix, value in (
+        ("name", field["name"]),
+        (
+            "type",
+            "float64-ieee754"
+            if field["datatype"] == "float64"
+            else "utf8"
+            if field["datatype"] == "string"
+            else field["datatype"],
+        ),
+        ("unit", field["unit"]),
+    ):
+        _frame_text(frames, f"{prefix}.{suffix}", value)
+    _frame_bool(frames, f"{prefix}.nullable", field["nullable"])
+    for suffix, value in (
+        ("nonfinite", field["nonfinite"]),
+        ("authority", field["authority"]),
+        ("authority-reference", field["authority_reference"]),
+        ("registry", field["registry"]),
+        ("description", field["description"]),
+    ):
+        _frame_text(frames, f"{prefix}.{suffix}", value)
+    _frame_bool(
+        frames, f"{prefix}.has-source-column",
+        field["source_column"] is not None,
+    )
+    if field["source_column"] is not None:
+        _frame_text(
+            frames, f"{prefix}.source-column", field["source_column"]
+        )
+    _frame_text(frames, f"{prefix}.identity-role", field["identity_role"])
+
+
+def _add_successor_value(
+    frames: list[bytes], label: str, value: Any, field: dict[str, Any]
+) -> None:
+    if value is None:
+        frames.append(
+            canonical_observation_scalar_frame(
+                label, f"null-{field['datatype']}", "null"
+            )
+        )
+    elif field["datatype"] == "float64":
+        _frame_float64(frames, label, value)
+    elif field["datatype"] == "int64":
+        _frame_int64(frames, label, value)
+    elif field["datatype"] == "bool":
+        _frame_bool(frames, label, value)
+    else:
+        _frame_text(frames, label, value)
+
+
+def validate_kmp_source_column_boundary_v1(
+    available_columns: Any, requested_uses: Any
+) -> tuple[str, ...]:
+    """Validate uses without serializing unknown source diagnostics.
+
+    Extra KMP columns may exist in the source report.  They are deliberately
+    ignored unless a request tries to use one for a canonical role, at which
+    point the closed Citlali registry fails rather than granting authority.
+    """
+
+    available = _list(available_columns, "KMP available columns")
+    for index, name in enumerate(available):
+        _observation_text(name, f"KMP available columns[{index}]")
+    if len(available) != len(set(available)):
+        raise ContractError("KMP available columns contain a duplicate")
+    if not {"fr", "f_out", "Qr"}.issubset(available):
+        raise ContractError("KMP source lacks a required model-parameter column")
+    canonical_available = {
+        canonical
+        for source, canonical in OBSERVATION_KMP_SOURCE_COLUMN_MAP_V1.items()
+        if source in available
+    }
+    requests = _require_exact_object(
+        requested_uses,
+        {
+            "identity",
+            "matching",
+            "application",
+            "transformation",
+            "output",
+            "authority",
+        },
+        "KMP requested uses",
+    )
+    allowed = set(_target_field_catalog_v1())
+    role_allowed = {
+        role: set(names)
+        for role, names in OBSERVATION_KMP_AUTHORIZED_USE_ROLES_V1.items()
+    }
+    for role, names_value in requests.items():
+        names = _list(names_value, f"KMP requested uses.{role}")
+        for index, name in enumerate(names):
+            _observation_text(name, f"KMP requested uses.{role}[{index}]")
+        if (
+            len(names) != len(set(names))
+            or not set(names).issubset(canonical_available)
+            or not set(names).issubset(role_allowed[role])
+        ):
+            raise ContractError(
+                f"KMP requested uses.{role}: unknown or unauthorized source field"
+            )
+    return tuple(sorted(canonical_available.intersection(allowed)))
+
+
+def _validate_permutation(
+    value: Any, expected: set[str], context: str
+) -> list[str]:
+    sequence = _list(value, context)
+    for index, key in enumerate(sequence):
+        _observation_int64(key, f"{context}[{index}]", local_key=True)
+    if len(sequence) != len(expected) or set(sequence) != expected:
+        raise ContractError(f"{context}: not a complete permutation")
+    return sequence
+
+
+def validate_observation_target_manifest_v1(
+    document: Any, contract: dict[str, Any]
+) -> dict[str, Any]:
+    _validate_observation_artifact_contract(
+        contract.get("artifact_contract_id", ""), contract
+    )
+    if contract["artifact_contract_id"] != OBSERVATION_TARGET_ARTIFACT_CONTRACT_ID:
+        raise ContractError("target validator received the wrong artifact contract")
+    target = _require_exact_object(
+        document,
+        {
+            "schema_version",
+            "contract_authority",
+            "observation_value_issuer",
+            "envelope",
+            "observation",
+            "inputs",
+            "registered_fields",
+            "rows",
+            "target_source_sequence",
+            "target_application_sequence",
+        },
+        "target manifest",
+    )
+    if (
+        target["schema_version"] != OBSERVATION_TARGET_SCHEMA_V1
+        or target["contract_authority"] != OBSERVATION_CONTRACT_AUTHORITY_V1
+        or target["observation_value_issuer"] != OBSERVATION_VALUE_ISSUER_V1
+    ):
+        raise ContractError("target manifest schema/authority/value issuer mismatch")
+    _validate_issuance_envelope(target["envelope"], "target manifest.envelope")
+    observation = _validate_observation_identity(
+        target["observation"], "target manifest.observation"
+    )
+    registered_values = _list(
+        target["registered_fields"], "target manifest.registered_fields"
+    )
+    registered_fields: dict[str, dict[str, Any]] = {}
+    for index, field_value in enumerate(registered_values):
+        field = _validate_typed_field(
+            field_value,
+            OBSERVATION_TARGET_FIELD_REGISTRY_V1,
+            f"target manifest.registered_fields[{index}]",
+        )
+        if field["name"] in registered_fields:
+            raise ContractError("target manifest has a duplicate registered field")
+        registered_fields[field["name"]] = field
+    declared_names = set(registered_fields)
+    allowed_names = (
+        set(OBSERVATION_REQUIRED_TARGET_FIELDS_V1)
+        | set(OBSERVATION_OPTIONAL_TARGET_FIELDS_V1)
+    )
+    if (
+        not set(OBSERVATION_REQUIRED_TARGET_FIELDS_V1).issubset(declared_names)
+        or not declared_names.issubset(allowed_names)
+        or registered_fields
+        != {
+            name: copy.deepcopy(_target_field_catalog_v1()[name])
+            for name in declared_names
+        }
+    ):
+        raise ContractError(
+            "target manifest fields differ from the closed Citlali KMP registry"
+        )
+    inputs_value = _list(target["inputs"], "target manifest.inputs")
+    rows_value = _list(target["rows"], "target manifest.rows")
+    if not inputs_value or not rows_value:
+        raise ContractError("target manifest requires inputs and rows")
+    inputs: dict[str, dict[str, Any]] = {}
+    networks: set[str] = set()
+    interfaces: set[str] = set()
+    source_keys: set[str] = set()
+    expected_rows = 0
+    source_keys_expected = {
+        "source_key",
+        "role",
+        "diagnostic_locator",
+        "content_sha256",
+        "byte_count",
+        "header_observation",
+        "network",
+        "interface",
+        "channel_count",
+    }
+    input_keys_expected = {
+        "input_key",
+        "network",
+        "interface",
+        "channel_count",
+        "raw_source",
+        "kmp_source",
+    }
+    for index, input_value in enumerate(inputs_value):
+        context = f"target manifest.inputs[{index}]"
+        item = _require_exact_object(input_value, input_keys_expected, context)
+        input_key_int = _observation_int64(
+            item["input_key"], f"{context}.input_key", local_key=True
+        )
+        network_int = _observation_int64(item["network"], f"{context}.network")
+        channel_count = _observation_int64(
+            item["channel_count"], f"{context}.channel_count"
+        )
+        interface = _observation_text(item["interface"], f"{context}.interface")
+        if (
+            input_key_int < 0
+            or network_int < 0
+            or network_int > 12
+            or channel_count <= 0
+            or channel_count > CANONICAL_APT_UID_MAX + 1
+            or interface != f"toltec{network_int}"
+            or item["input_key"] in inputs
+            or item["network"] in networks
+            or interface in interfaces
+        ):
+            raise ContractError(f"{context}: invalid/duplicate input binding")
+        inputs[item["input_key"]] = item
+        networks.add(item["network"])
+        interfaces.add(interface)
+        expected_rows += channel_count
+        for role in ("raw", "kmp"):
+            source = _require_exact_object(
+                item[f"{role}_source"], source_keys_expected,
+                f"{context}.{role}_source",
+            )
+            source_key = source["source_key"]
+            _observation_int64(
+                source_key, f"{context}.{role}_source.source_key", local_key=True
+            )
+            if (
+                source["role"] != role
+                or source_key in source_keys
+                or source["network"] != item["network"]
+                or source["interface"] != item["interface"]
+                or source["channel_count"] != item["channel_count"]
+                or SHA256_REFERENCE_RE.fullmatch(source["content_sha256"]) is None
+                or _observation_uint64(
+                    source["byte_count"], f"{context}.{role}_source.byte_count"
+                ) == 0
+            ):
+                raise ContractError(f"{context}.{role}_source: invalid binding")
+            source_keys.add(source_key)
+            _observation_text(
+                source["diagnostic_locator"],
+                f"{context}.{role}_source.diagnostic_locator",
+            )
+            header = _validate_observation_identity(
+                source["header_observation"],
+                f"{context}.{role}_source.header_observation",
+            )
+            if role == "raw" and header != observation:
+                raise ContractError("raw source header does not bind target observation")
+    if expected_rows != len(rows_value):
+        raise ContractError("target channel inventory does not cover every row")
+    row_keys: set[str] = set()
+    relations: set[tuple[str, str]] = set()
+    counts: dict[str, int] = {}
+    for index, row_value in enumerate(rows_value):
+        context = f"target manifest.rows[{index}]"
+        row = _require_exact_object(
+            row_value,
+            {
+                "row_key",
+                "input_key",
+                "kmp_source_key",
+                "kmp_row_index",
+                "matching_frequency_hz",
+                "output_tone_frequency_hz",
+                "array",
+                "network",
+                "channel",
+                "fields",
+            },
+            context,
+        )
+        _observation_int64(row["row_key"], f"{context}.row_key", local_key=True)
+        if row["row_key"] in row_keys or row["input_key"] not in inputs:
+            raise ContractError(f"{context}: duplicate row key or foreign input")
+        row_keys.add(row["row_key"])
+        item = inputs[row["input_key"]]
+        channel = _observation_int64(row["channel"], f"{context}.channel")
+        kmp_row_index = _observation_int64(
+            row["kmp_row_index"], f"{context}.kmp_row_index"
+        )
+        _observation_int64(
+            row["kmp_source_key"],
+            f"{context}.kmp_source_key",
+            local_key=True,
+        )
+        network = _observation_int64(row["network"], f"{context}.network")
+        array = _observation_int64(row["array"], f"{context}.array")
+        channel_count = _observation_int64(
+            item["channel_count"], f"{context}.input.channel_count"
+        )
+        matching = _observation_float64(
+            row["matching_frequency_hz"], f"{context}.matching_frequency_hz"
+        )
+        output_tone = _observation_float64(
+            row["output_tone_frequency_hz"], f"{context}.output_tone_frequency_hz"
+        )
+        relation = (row["network"], row["channel"])
+        if (
+            row["network"] != item["network"]
+            or row["kmp_source_key"] != item["kmp_source"]["source_key"]
+            or kmp_row_index != channel
+            or channel < 0
+            or channel >= channel_count
+            or array != _expected_array(network)
+            or not _is_finite_binary64_token(matching)
+            or not _is_finite_binary64_token(output_tone)
+            or relation in relations
+        ):
+            raise ContractError(f"{context}: invalid target row/raw relation")
+        row_fields = _mapping(row["fields"], f"{context}.fields")
+        if set(row_fields) != declared_names:
+            raise ContractError(f"{context}: target field catalog is incomplete")
+        for name, field in registered_fields.items():
+            _validate_successor_value(
+                row_fields[name], field, f"{context}.fields.{name}"
+            )
+        if (
+            row_fields["kids_fr"] != matching
+            or row_fields["kids_f_out"] != output_tone
+        ):
+            raise ContractError(
+                f"{context}: structural frequency aliases differ from exact KMP fields"
+            )
+        relations.add(relation)
+        counts[row["input_key"]] = counts.get(row["input_key"], 0) + 1
+    for key, item in inputs.items():
+        if counts.get(key, 0) != _observation_int64(
+            item["channel_count"], "target input channel count"
+        ):
+            raise ContractError("target row/raw/KMP relation is not a complete bijection")
+    _validate_permutation(
+        target["target_source_sequence"], row_keys, "target source sequence"
+    )
+    _validate_permutation(
+        target["target_application_sequence"],
+        row_keys,
+        "target application sequence",
+    )
+    return target
+
+
+def canonical_observation_target_preimage(
+    document: Any, contract: dict[str, Any]
+) -> bytes:
+    target = validate_observation_target_manifest_v1(document, contract)
+    frames: list[bytes] = []
+    for label, value in (
+        ("encoding", "citlali-labelled-type-length-v1"),
+        ("scope", contract["semantic_scope"]),
+        ("schema", target["schema_version"]),
+        ("contract-authority", target["contract_authority"]),
+        ("observation-value-issuer", target["observation_value_issuer"]),
+    ):
+        _frame_text(frames, label, value)
+    _add_observation_identity(frames, "observation", target["observation"])
+    _frame_text(
+        frames,
+        "kmp-source-field-map.profile",
+        OBSERVATION_KMP_SOURCE_FIELD_MAP_PROFILE_V1,
+    )
+    source_field_map = (
+        ("fr", "kids_fr", True),
+        ("f_out", "kids_f_out", True),
+        ("Qr", "kids_Qr", True),
+        ("flag", "kids_flag", False),
+    )
+    _frame_uint64(frames, "kmp-source-field-map.count", len(source_field_map))
+    for index, (source_column, canonical_field, required) in enumerate(
+        source_field_map
+    ):
+        prefix = f"kmp-source-field-map.{index}"
+        _frame_text(frames, f"{prefix}.source-column", source_column)
+        _frame_text(frames, f"{prefix}.canonical-field", canonical_field)
+        _frame_bool(frames, f"{prefix}.required", required)
+    fields = sorted(target["registered_fields"], key=lambda field: field["name"])
+    _frame_uint64(frames, "field.count", len(fields))
+    for index, field in enumerate(fields):
+        _add_typed_field(frames, f"field.{index}", field)
+    inputs = sorted(
+        target["inputs"], key=lambda item: _observation_int64(item["input_key"], "input key")
+    )
+    _frame_uint64(frames, "input.count", len(inputs))
+    for index, item in enumerate(inputs):
+        prefix = f"input.{index}"
+        _frame_int64(frames, f"{prefix}.input-key", item["input_key"])
+        _frame_int64(frames, f"{prefix}.network", item["network"])
+        _frame_text(frames, f"{prefix}.interface", item["interface"])
+        _frame_int64(frames, f"{prefix}.channel-count", item["channel_count"])
+        for role in ("raw", "kmp"):
+            source = item[f"{role}_source"]
+            source_prefix = f"{prefix}.{role}"
+            _frame_int64(frames, f"{source_prefix}.source-key", source["source_key"])
+            _frame_text(frames, f"{source_prefix}.role", source["role"])
+            _frame_text(
+                frames, f"{source_prefix}.content-sha256", source["content_sha256"]
+            )
+            _frame_uint64(frames, f"{source_prefix}.byte-count", source["byte_count"])
+            _add_observation_identity(
+                frames, f"{source_prefix}.header", source["header_observation"]
+            )
+            _frame_int64(frames, f"{source_prefix}.network", source["network"])
+            _frame_text(frames, f"{source_prefix}.interface", source["interface"])
+            _frame_int64(
+                frames, f"{source_prefix}.channel-count", source["channel_count"]
+            )
+    rows = sorted(
+        target["rows"], key=lambda row: _observation_int64(row["row_key"], "row key")
+    )
+    _frame_uint64(frames, "row.count", len(rows))
+    for index, row in enumerate(rows):
+        prefix = f"row.{index}"
+        _frame_int64(frames, f"{prefix}.row-key", row["row_key"])
+        _frame_int64(frames, f"{prefix}.input-key", row["input_key"])
+        _frame_int64(frames, f"{prefix}.kmp-source-key", row["kmp_source_key"])
+        _frame_int64(frames, f"{prefix}.kmp-row-index", row["kmp_row_index"])
+        _frame_float64(
+            frames, f"{prefix}.matching-frequency-hz", row["matching_frequency_hz"]
+        )
+        _frame_float64(
+            frames,
+            f"{prefix}.output-tone-frequency-hz",
+            row["output_tone_frequency_hz"],
+        )
+        _frame_int64(frames, f"{prefix}.array", row["array"])
+        _frame_int64(frames, f"{prefix}.network", row["network"])
+        _frame_int64(frames, f"{prefix}.channel", row["channel"])
+        for field in fields:
+            _add_successor_value(
+                frames,
+                f"{prefix}.field.{field['name']}",
+                row["fields"][field["name"]],
+                field,
+            )
+    for name in ("target_source_sequence", "target_application_sequence"):
+        label = name.replace("_", "-")
+        sequence = target[name]
+        _frame_uint64(frames, f"{label}.count", len(sequence))
+        for index, key in enumerate(sequence):
+            _frame_int64(frames, f"{label}.{index}", key)
+    return b"".join(frames)
+
+
+def observation_target_digests(
+    document: Any, contract: dict[str, Any]
+) -> dict[str, str]:
+    semantic = "sha256:" + hashlib.sha256(
+        canonical_observation_target_preimage(document, contract)
+    ).hexdigest()
+    target = validate_observation_target_manifest_v1(document, contract)
+    frames: list[bytes] = []
+    _add_envelope(
+        frames,
+        target["schema_version"],
+        contract["envelope_scope"],
+        semantic,
+        target["envelope"],
+    )
+    sources = sorted(
+        (
+            source
+            for item in target["inputs"]
+            for source in (item["raw_source"], item["kmp_source"])
+        ),
+        key=lambda source: int(source["source_key"]),
+    )
+    _frame_uint64(frames, "source-locator.count", len(sources))
+    for index, source in enumerate(sources):
+        prefix = f"source-locator.{index}"
+        _frame_int64(frames, f"{prefix}.source-key", source["source_key"])
+        _frame_text(frames, f"{prefix}.role", source["role"])
+        _frame_text(
+            frames, f"{prefix}.diagnostic-locator",
+            source["diagnostic_locator"],
+        )
+    envelope = "sha256:" + hashlib.sha256(b"".join(frames)).hexdigest()
+    return {"semantic_sha256": semantic, "envelope_sha256": envelope}
+
+
+def observation_target_identity(
+    document: Any, contract: dict[str, Any]
+) -> dict[str, Any]:
+    target = validate_observation_target_manifest_v1(document, contract)
+    digests = observation_target_digests(target, contract)
+    return {
+        "schema": target["schema_version"],
+        "occurrence": target["envelope"]["occurrence"],
+        **digests,
+    }
+
+
+def validate_match_dispositions_v1(
+    document: Any,
+    contract: dict[str, Any],
+    baseline_descriptor: dict[str, Any],
+    target_document: dict[str, Any],
+    target_contract: dict[str, Any],
+) -> dict[str, Any]:
+    _validate_observation_artifact_contract(
+        contract.get("artifact_contract_id", ""), contract
+    )
+    if contract["artifact_contract_id"] != MATCH_DISPOSITIONS_ARTIFACT_CONTRACT_ID:
+        raise ContractError("relation validator received the wrong contract")
+    target = validate_observation_target_manifest_v1(
+        target_document, target_contract
+    )
+    relation = _require_exact_object(
+        document,
+        {
+            "schema_version",
+            "contract_authority",
+            "observation_value_issuer",
+            "mapping_domain",
+            "envelope",
+            "baseline_parent",
+            "target_parent",
+            "matcher",
+            "network_evidence",
+            "pairs",
+            "target_dispositions",
+            "seed_dispositions",
+            "seed_source_sequence",
+        },
+        "match relation",
+    )
+    if (
+        relation["schema_version"] != MATCH_DISPOSITIONS_SCHEMA_V1
+        or relation["contract_authority"] != OBSERVATION_CONTRACT_AUTHORITY_V1
+        or relation["observation_value_issuer"] != OBSERVATION_VALUE_ISSUER_V1
+        or relation["mapping_domain"] != OBSERVATION_MAPPING_DOMAIN_V1
+    ):
+        raise ContractError("relation schema/authority/mapping-domain mismatch")
+    envelope = _validate_issuance_envelope(
+        relation["envelope"], "match relation.envelope"
+    )
+    _validate_baseline_reference(
+        relation["baseline_parent"], baseline_descriptor,
+        "match relation.baseline_parent",
+    )
+    target_identity = observation_target_identity(target, target_contract)
+    if relation["target_parent"] != target_identity:
+        raise ContractError("match relation target parent mismatch")
+    baseline_identity = _baseline_artifact_identity(baseline_descriptor)
+    occurrences = {
+        baseline_identity["occurrence"],
+        target_identity["occurrence"],
+        envelope["occurrence"],
+    }
+    if len(occurrences) != 3:
+        raise ContractError("baseline, target, and relation occurrences must differ")
+    matcher = _require_exact_object(
+        relation["matcher"],
+        {
+            "matcher_run_occurrence",
+            "implementation_revision",
+            "configuration_reference",
+            "target_frequency_field",
+            "target_quality_factor_field",
+            "method",
+            "backend",
+        },
+        "match relation.matcher",
+    )
+    for key, value in matcher.items():
+        _observation_text(value, f"match relation.matcher.{key}")
+    if (
+        matcher["target_frequency_field"] != "kids_fr"
+        or matcher["target_quality_factor_field"] != "kids_Qr"
+    ):
+        raise ContractError("match relation matcher field registry mismatch")
+    target_keys = {row["row_key"] for row in target["rows"]}
+    seed_keys = {row["uid"] for row in baseline_descriptor["rows"]}
+    _validate_permutation(
+        relation["seed_source_sequence"], seed_keys, "seed source sequence"
+    )
+    pairs_by_key: dict[str, dict[str, Any]] = {}
+    target_pairs: dict[str, set[str]] = {}
+    seed_pairs: dict[str, set[str]] = {}
+    endpoints: set[tuple[str, str]] = set()
+    relation_row_keys: set[str] = set()
+    pair_keys_exact = {
+        "pair_key",
+        "target",
+        "seed",
+        "separation_hz",
+        "is_good_match",
+    }
+    for index, pair_value in enumerate(_list(relation["pairs"], "match relation.pairs")):
+        context = f"match relation.pairs[{index}]"
+        pair = _require_exact_object(pair_value, pair_keys_exact, context)
+        key = pair["pair_key"]
+        _observation_int64(key, f"{context}.pair_key", local_key=True)
+        target_ref = _validate_row_reference(pair["target"], f"{context}.target")
+        seed_ref = _validate_row_reference(pair["seed"], f"{context}.seed")
+        expected_target = _row_reference(target_identity, target_ref["local_key"])
+        expected_seed = _row_reference(baseline_identity, seed_ref["local_key"])
+        separation = _observation_float64(
+            pair["separation_hz"], f"{context}.separation_hz"
+        )
+        endpoint = (target_ref["local_key"], seed_ref["local_key"])
+        if (
+            key in relation_row_keys
+            or target_ref != expected_target
+            or seed_ref != expected_seed
+            or target_ref["local_key"] not in target_keys
+            or seed_ref["local_key"] not in seed_keys
+            or not _is_finite_binary64_token(separation)
+            or _binary64_value(separation) < 0.0
+            or endpoint in endpoints
+            or not isinstance(pair["is_good_match"], bool)
+        ):
+            raise ContractError(f"{context}: invalid pair key/endpoints/evidence")
+        relation_row_keys.add(key)
+        pairs_by_key[key] = pair
+        endpoints.add(endpoint)
+        target_pairs.setdefault(endpoint[0], set()).add(key)
+        seed_pairs.setdefault(endpoint[1], set()).add(key)
+    target_networks = {row["network"] for row in target["rows"]}
+    evidence_networks: set[str] = set()
+    for index, evidence_value in enumerate(_list(
+        relation["network_evidence"], "match relation.network_evidence"
+    )):
+        context = f"match relation.network_evidence[{index}]"
+        evidence = _require_exact_object(
+            evidence_value,
+            {
+                "network",
+                "frequency_shift_hz",
+                "gate_hz",
+                "quality_factor",
+                "quality_factor_field",
+                "quality_factor_authority_reference",
+            },
+            context,
+        )
+        shift = _observation_float64(
+            evidence["frequency_shift_hz"], f"{context}.frequency_shift_hz"
+        )
+        gate = _observation_float64(evidence["gate_hz"], f"{context}.gate_hz")
+        quality_factor = _observation_float64(
+            evidence["quality_factor"], f"{context}.quality_factor"
+        )
+        if (
+            evidence["network"] not in target_networks
+            or evidence["network"] in evidence_networks
+            or not _is_finite_binary64_token(shift)
+            or not _is_finite_binary64_token(gate)
+            or not _is_finite_binary64_token(quality_factor)
+            or _binary64_value(gate) < 0.0
+            or evidence["quality_factor_field"] != "kids_Qr"
+            or evidence["quality_factor_authority_reference"]
+            != "kids:model-params-v1"
+        ):
+            raise ContractError(f"{context}: invalid/incomplete network evidence")
+        evidence_networks.add(evidence["network"])
+    if evidence_networks != target_networks:
+        raise ContractError("relation requires evidence for every target network")
+    disposition_keys_exact = {
+        "disposition_key",
+        "endpoint",
+        "state",
+        "pair_keys",
+        "reason",
+    }
+
+    def validate_dispositions(
+        values: Any,
+        expected_keys: set[str],
+        expected_pairs: dict[str, set[str]],
+        identity: dict[str, Any],
+        target_side: bool,
+        context: str,
+    ) -> None:
+        seen: set[str] = set()
+        for index, disposition_value in enumerate(_list(values, context)):
+            row_context = f"{context}[{index}]"
+            disposition = _require_exact_object(
+                disposition_value, disposition_keys_exact, row_context
+            )
+            disposition_key = disposition["disposition_key"]
+            _observation_int64(
+                disposition_key, f"{row_context}.disposition_key", local_key=True
+            )
+            endpoint = _validate_row_reference(
+                disposition["endpoint"], f"{row_context}.endpoint"
+            )
+            endpoint_key = endpoint["local_key"]
+            pair_keys = _list(disposition["pair_keys"], f"{row_context}.pair_keys")
+            for pair_index, pair_key in enumerate(pair_keys):
+                _observation_int64(
+                    pair_key,
+                    f"{row_context}.pair_keys[{pair_index}]",
+                    local_key=True,
+                )
+            if pair_keys != sorted(pair_keys, key=int) or len(pair_keys) != len(set(pair_keys)):
+                raise ContractError(f"{row_context}.pair_keys: not a sorted unique set")
+            expected = expected_pairs.get(endpoint_key, set())
+            expected_state = "matched" if expected else "unmatched" if target_side else "unused"
+            if (
+                disposition_key in relation_row_keys
+                or endpoint_key not in expected_keys
+                or endpoint_key in seen
+                or endpoint != _row_reference(identity, endpoint_key)
+                or set(pair_keys) != expected
+                or disposition["state"] != expected_state
+            ):
+                raise ContractError(f"{row_context}: incomplete/nonreciprocal disposition")
+            _observation_text(disposition["reason"], f"{row_context}.reason")
+            relation_row_keys.add(disposition_key)
+            seen.add(endpoint_key)
+        if seen != expected_keys:
+            raise ContractError(f"{context}: does not cover every endpoint")
+
+    validate_dispositions(
+        relation["target_dispositions"],
+        target_keys,
+        target_pairs,
+        target_identity,
+        True,
+        "match relation.target_dispositions",
+    )
+    validate_dispositions(
+        relation["seed_dispositions"],
+        seed_keys,
+        seed_pairs,
+        baseline_identity,
+        False,
+        "match relation.seed_dispositions",
+    )
+    return relation
+
+
+def canonical_match_dispositions_preimage(
+    document: Any,
+    contract: dict[str, Any],
+    baseline_descriptor: dict[str, Any],
+    target_document: dict[str, Any],
+    target_contract: dict[str, Any],
+) -> bytes:
+    relation = validate_match_dispositions_v1(
+        document, contract, baseline_descriptor, target_document, target_contract
+    )
+    frames: list[bytes] = []
+    for label, value in (
+        ("encoding", "citlali-labelled-type-length-v1"),
+        ("scope", contract["semantic_scope"]),
+        ("schema", relation["schema_version"]),
+        ("contract-authority", relation["contract_authority"]),
+        ("observation-value-issuer", relation["observation_value_issuer"]),
+        ("mapping-domain", relation["mapping_domain"]),
+    ):
+        _frame_text(frames, label, value)
+    _add_baseline_reference(frames, "baseline-parent", relation["baseline_parent"])
+    _add_artifact_identity(frames, "target-parent", relation["target_parent"])
+    matcher = relation["matcher"]
+    for label, key in (
+        ("matcher.run-occurrence", "matcher_run_occurrence"),
+        ("matcher.implementation-revision", "implementation_revision"),
+        ("matcher.configuration-reference", "configuration_reference"),
+        ("matcher.target-frequency-field", "target_frequency_field"),
+        ("matcher.target-quality-factor-field", "target_quality_factor_field"),
+        ("matcher.method", "method"),
+        ("matcher.backend", "backend"),
+    ):
+        _frame_text(frames, label, matcher[key])
+    evidence = sorted(relation["network_evidence"], key=lambda item: int(item["network"]))
+    _frame_uint64(frames, "network-evidence.count", len(evidence))
+    for index, item in enumerate(evidence):
+        prefix = f"network-evidence.{index}"
+        _frame_int64(frames, f"{prefix}.network", item["network"])
+        _frame_float64(frames, f"{prefix}.frequency-shift-hz", item["frequency_shift_hz"])
+        _frame_float64(frames, f"{prefix}.gate-hz", item["gate_hz"])
+        _frame_float64(frames, f"{prefix}.quality-factor", item["quality_factor"])
+        _frame_text(
+            frames, f"{prefix}.quality-factor-field",
+            item["quality_factor_field"],
+        )
+        _frame_text(
+            frames, f"{prefix}.quality-factor-authority-reference",
+            item["quality_factor_authority_reference"],
+        )
+    pairs = sorted(relation["pairs"], key=lambda item: int(item["pair_key"]))
+    _frame_uint64(frames, "pair.count", len(pairs))
+    for index, pair in enumerate(pairs):
+        prefix = f"pair.{index}"
+        _frame_int64(frames, f"{prefix}.pair-key", pair["pair_key"])
+        _add_row_reference(frames, f"{prefix}.target", pair["target"])
+        _add_row_reference(frames, f"{prefix}.seed", pair["seed"])
+        _frame_float64(frames, f"{prefix}.separation-hz", pair["separation_hz"])
+        _frame_bool(frames, f"{prefix}.is-good-match", pair["is_good_match"])
+    for label, key in (
+        ("target-disposition", "target_dispositions"),
+        ("seed-disposition", "seed_dispositions"),
+    ):
+        dispositions = sorted(
+            relation[key], key=lambda item: int(item["disposition_key"])
+        )
+        _frame_uint64(frames, f"{label}.count", len(dispositions))
+        for index, disposition in enumerate(dispositions):
+            prefix = f"{label}.{index}"
+            _frame_int64(
+                frames, f"{prefix}.disposition-key", disposition["disposition_key"]
+            )
+            _add_row_reference(frames, f"{prefix}.endpoint", disposition["endpoint"])
+            _frame_text(frames, f"{prefix}.state", disposition["state"])
+            _frame_uint64(frames, f"{prefix}.pair-key.count", len(disposition["pair_keys"]))
+            for pair_index, pair_key in enumerate(disposition["pair_keys"]):
+                _frame_int64(frames, f"{prefix}.pair-key.{pair_index}", pair_key)
+            _frame_text(frames, f"{prefix}.reason", disposition["reason"])
+    sequence = relation["seed_source_sequence"]
+    _frame_uint64(frames, "seed-source-sequence.count", len(sequence))
+    for index, key in enumerate(sequence):
+        _frame_int64(frames, f"seed-source-sequence.{index}", key)
+    return b"".join(frames)
+
+
+def match_dispositions_digests(
+    document: Any,
+    contract: dict[str, Any],
+    baseline_descriptor: dict[str, Any],
+    target_document: dict[str, Any],
+    target_contract: dict[str, Any],
+) -> dict[str, str]:
+    semantic = "sha256:" + hashlib.sha256(
+        canonical_match_dispositions_preimage(
+            document, contract, baseline_descriptor, target_document, target_contract
+        )
+    ).hexdigest()
+    relation = validate_match_dispositions_v1(
+        document, contract, baseline_descriptor, target_document, target_contract
+    )
+    frames: list[bytes] = []
+    _add_envelope(
+        frames,
+        relation["schema_version"],
+        contract["envelope_scope"],
+        semantic,
+        relation["envelope"],
+    )
+    return {
+        "semantic_sha256": semantic,
+        "envelope_sha256": "sha256:" + hashlib.sha256(b"".join(frames)).hexdigest(),
+    }
+
+
+def match_dispositions_identity(
+    document: Any,
+    contract: dict[str, Any],
+    baseline_descriptor: dict[str, Any],
+    target_document: dict[str, Any],
+    target_contract: dict[str, Any],
+) -> dict[str, Any]:
+    relation = validate_match_dispositions_v1(
+        document, contract, baseline_descriptor, target_document, target_contract
+    )
+    digests = match_dispositions_digests(
+        relation, contract, baseline_descriptor, target_document, target_contract
+    )
+    return {
+        "schema": relation["schema_version"],
+        "occurrence": relation["envelope"]["occurrence"],
+        **digests,
+    }
+
+
+def canonical_output_field_contracts_v1(
+    baseline_descriptor: dict[str, Any],
+    target_document: dict[str, Any],
+    target_contract: dict[str, Any],
+) -> list[dict[str, Any]]:
+    baseline_descriptor_preimage(baseline_descriptor)
+    target = validate_observation_target_manifest_v1(
+        target_document, target_contract
+    )
+    result: dict[str, dict[str, Any]] = {}
+    for source in target["registered_fields"]:
+        field = copy.deepcopy(source)
+        field["registry"] = OBSERVATION_MATCHED_OUTPUT_FIELD_REGISTRY_V1
+        result[field["name"]] = {
+            "field": field,
+            "authorized_operation": OBSERVATION_PRESERVE_TARGET_OPERATION_V1,
+            "issuer_authority_reference": "",
+        }
+    for source in baseline_descriptor["registered_fields"]:
+        if source["name"] in _target_field_catalog_v1():
+            continue
+        field = {
+            key: copy.deepcopy(source[key])
+            for key in (
+                "name",
+                "datatype",
+                "unit",
+                "nullable",
+                "nonfinite",
+                "authority",
+                "authority_reference",
+                "registry",
+                "description",
+                "identity_role",
+            )
+        }
+        field["source_column"] = None
+        field["nullable"] = True
+        field["registry"] = OBSERVATION_MATCHED_OUTPUT_FIELD_REGISTRY_V1
+        if field["name"] in result:
+            raise ContractError(
+                "verified baseline field collides with a reserved target field"
+            )
+        result[field["name"]] = {
+            "field": field,
+            "authorized_operation": OBSERVATION_COPY_BASELINE_OR_NULL_OPERATION_V1,
+            "issuer_authority_reference": "",
+        }
+    return [result[name] for name in sorted(result)]
+
+
+def _output_contract_map(
+    value: Any,
+    expected: list[dict[str, Any]],
+    context: str,
+) -> dict[str, dict[str, Any]]:
+    values = _list(value, context)
+    result: dict[str, dict[str, Any]] = {}
+    for index, contract_value in enumerate(values):
+        item_context = f"{context}[{index}]"
+        item = _require_exact_object(
+            contract_value,
+            {"field", "authorized_operation", "issuer_authority_reference"},
+            item_context,
+        )
+        field = _validate_typed_field(
+            item["field"], OBSERVATION_MATCHED_OUTPUT_FIELD_REGISTRY_V1,
+            f"{item_context}.field",
+        )
+        if field["name"] in result:
+            raise ContractError(f"{context}: duplicate output field")
+        if item["authorized_operation"] not in {
+            OBSERVATION_PRESERVE_TARGET_OPERATION_V1,
+            OBSERVATION_COPY_BASELINE_OR_NULL_OPERATION_V1,
+        } or item["issuer_authority_reference"] != "":
+            raise ContractError(f"{item_context}: unauthorized operation")
+        result[field["name"]] = item
+    expected_map = {item["field"]["name"]: item for item in expected}
+    if result != expected_map:
+        raise ContractError(
+            f"{context}: differs from immutable target/baseline-derived registry"
+        )
+    return result
+
+
+def _descriptor_row_map(
+    descriptor: dict[str, Any],
+) -> dict[str, dict[str, Any]]:
+    return {row["uid"]: row for row in descriptor["rows"]}
+
+
+def validate_observation_matched_apt_v1(
+    document: Any,
+    contract: dict[str, Any],
+    baseline_descriptor: dict[str, Any],
+    target_document: dict[str, Any],
+    target_contract: dict[str, Any],
+    relation_document: dict[str, Any],
+    relation_contract: dict[str, Any],
+) -> dict[str, Any]:
+    _validate_observation_artifact_contract(
+        contract.get("artifact_contract_id", ""), contract
+    )
+    if contract["artifact_contract_id"] != OBSERVATION_MATCHED_APT_ARTIFACT_CONTRACT_ID:
+        raise ContractError("matched-output validator received the wrong contract")
+    target = validate_observation_target_manifest_v1(
+        target_document, target_contract
+    )
+    relation = validate_match_dispositions_v1(
+        relation_document,
+        relation_contract,
+        baseline_descriptor,
+        target,
+        target_contract,
+    )
+    output = _require_exact_object(
+        document,
+        {
+            "schema_version",
+            "contract_authority",
+            "observation_value_issuer",
+            "transformation_registry",
+            "envelope",
+            "baseline_parent",
+            "target_parent",
+            "relation_parent",
+            "registered_fields",
+            "rows",
+            "output_presentation_sequence",
+        },
+        "matched output",
+    )
+    if (
+        output["schema_version"] != OBSERVATION_MATCHED_APT_SCHEMA_V1
+        or output["contract_authority"] != OBSERVATION_CONTRACT_AUTHORITY_V1
+        or output["observation_value_issuer"] != OBSERVATION_VALUE_ISSUER_V1
+        or output["transformation_registry"]
+        != OBSERVATION_TRANSFORMATION_REGISTRY_V1
+    ):
+        raise ContractError("matched output schema/authority/registry mismatch")
+    envelope = _validate_issuance_envelope(
+        output["envelope"], "matched output.envelope"
+    )
+    _validate_baseline_reference(
+        output["baseline_parent"], baseline_descriptor,
+        "matched output.baseline_parent",
+    )
+    target_identity = observation_target_identity(target, target_contract)
+    relation_identity = match_dispositions_identity(
+        relation,
+        relation_contract,
+        baseline_descriptor,
+        target,
+        target_contract,
+    )
+    if output["target_parent"] != target_identity:
+        raise ContractError("matched output target parent mismatch")
+    if output["relation_parent"] != relation_identity:
+        raise ContractError("matched output relation parent mismatch")
+    baseline_identity = _baseline_artifact_identity(baseline_descriptor)
+    if len({
+        baseline_identity["occurrence"],
+        target_identity["occurrence"],
+        relation_identity["occurrence"],
+        envelope["occurrence"],
+    }) != 4:
+        raise ContractError(
+            "matched-output occurrence must differ from every parent occurrence"
+        )
+    expected_contracts = canonical_output_field_contracts_v1(
+        baseline_descriptor, target, target_contract
+    )
+    output_fields = _output_contract_map(
+        output["registered_fields"], expected_contracts,
+        "matched output.registered_fields",
+    )
+    target_fields = {
+        field["name"]: field for field in target["registered_fields"]
+    }
+    baseline_fields = {
+        field["name"]: field
+        for field in baseline_descriptor["registered_fields"]
+        if field["name"] not in _target_field_catalog_v1()
+    }
+    target_rows = {row["row_key"]: row for row in target["rows"]}
+    baseline_rows = _descriptor_row_map(baseline_descriptor)
+    pairs = {pair["pair_key"]: pair for pair in relation["pairs"]}
+    dispositions = {
+        item["endpoint"]["local_key"]: item
+        for item in relation["target_dispositions"]
+    }
+    output_keys: set[str] = set()
+    covered_targets: set[str] = set()
+    transformation_keys = {
+        "field_name",
+        "operation",
+        "before",
+        "after",
+        "value_source",
+        "source_pair_key",
+        "source_row",
+        "authority_reference",
+        "provenance_reference",
+    }
+    row_keys = {
+        "uid",
+        "target",
+        "target_input_key",
+        "tone_frequency_hz",
+        "array",
+        "network",
+        "channel",
+        "relation_pair_keys",
+        "fields",
+        "transformations",
+    }
+    for index, row_value in enumerate(_list(output["rows"], "matched output.rows")):
+        context = f"matched output.rows[{index}]"
+        row = _require_exact_object(row_value, row_keys, context)
+        _observation_int64(row["uid"], f"{context}.uid", local_key=True)
+        target_reference = _validate_row_reference(
+            row["target"], f"{context}.target"
+        )
+        target_key = target_reference["local_key"]
+        if (
+            row["uid"] in output_keys
+            or target_key in covered_targets
+            or target_key not in target_rows
+            or target_reference != _row_reference(target_identity, target_key)
+        ):
+            raise ContractError(f"{context}: duplicate/foreign local reference")
+        output_keys.add(row["uid"])
+        covered_targets.add(target_key)
+        target_row = target_rows[target_key]
+        tone = _observation_float64(
+            row["tone_frequency_hz"], f"{context}.tone_frequency_hz"
+        )
+        for key in ("target_input_key", "array", "network", "channel"):
+            _observation_int64(row[key], f"{context}.{key}")
+        if (
+            row["target_input_key"] != target_row["input_key"]
+            or tone != target_row["output_tone_frequency_hz"]
+            or row["array"] != target_row["array"]
+            or row["network"] != target_row["network"]
+            or row["channel"] != target_row["channel"]
+        ):
+            raise ContractError(f"{context}: structural/raw target values changed")
+        pair_keys = _list(
+            row["relation_pair_keys"], f"{context}.relation_pair_keys"
+        )
+        for pair_index, pair_key in enumerate(pair_keys):
+            _observation_int64(
+                pair_key,
+                f"{context}.relation_pair_keys[{pair_index}]",
+                local_key=True,
+            )
+        if (
+            pair_keys != sorted(pair_keys, key=int)
+            or len(pair_keys) != len(set(pair_keys))
+            or pair_keys != dispositions[target_key]["pair_keys"]
+        ):
+            raise ContractError(f"{context}: incomplete/reordered relation pair set")
+        row_fields = _mapping(row["fields"], f"{context}.fields")
+        if set(row_fields) != set(output_fields):
+            raise ContractError(f"{context}: incomplete output field map")
+        transformations: dict[str, dict[str, Any]] = {}
+        for transform_index, transform_value in enumerate(
+            _list(row["transformations"], f"{context}.transformations")
+        ):
+            transform_context = f"{context}.transformations[{transform_index}]"
+            transform = _require_exact_object(
+                transform_value, transformation_keys, transform_context
+            )
+            field_name = _observation_text(
+                transform["field_name"], f"{transform_context}.field_name"
+            )
+            if field_name in transformations or field_name not in output_fields:
+                raise ContractError(f"{transform_context}: unknown/duplicate field")
+            transformations[field_name] = transform
+        if set(transformations) != set(output_fields):
+            raise ContractError(f"{context}: incomplete transformation set")
+        for name, field_contract in output_fields.items():
+            field = field_contract["field"]
+            value = _validate_successor_value(
+                row_fields[name], field, f"{context}.fields.{name}"
+            )
+            change = transformations[name]
+            before = _validate_successor_value(
+                change["before"],
+                {**field, "nullable": True},
+                f"{context}.transformations.{name}.before",
+            )
+            after = _validate_successor_value(
+                change["after"], field,
+                f"{context}.transformations.{name}.after",
+            )
+            if (
+                change["operation"] != field_contract["authorized_operation"]
+                or after != value
+            ):
+                raise ContractError(f"{context}: unauthorized transformation for {name}")
+            _observation_text(
+                change["authority_reference"],
+                f"{context}.transformations.{name}.authority_reference",
+            )
+            provenance = _observation_text(
+                change["provenance_reference"],
+                f"{context}.transformations.{name}.provenance_reference",
+            )
+            if name in target_fields:
+                expected_provenance = (
+                    f"target-kmp-source:{target_row['kmp_source_key']}:"
+                    f"row:{target_row['kmp_row_index']}:"
+                    f"column:{target_fields[name]['source_column']}"
+                )
+                if (
+                    before != target_row["fields"][name]
+                    or after != target_row["fields"][name]
+                    or change["value_source"] != "target-row"
+                    or change["source_pair_key"] is not None
+                    or change["source_row"] != target_reference
+                    or change["authority_reference"]
+                    != target_fields[name]["authority_reference"]
+                    or provenance != expected_provenance
+                ):
+                    raise ContractError(
+                        f"{context}: target field is not exact KMP-preserved {name}"
+                    )
+                continue
+            if before is not None:
+                raise ContractError(f"{context}: baseline field before must be typed null")
+            if pair_keys:
+                if change["source_pair_key"] not in pair_keys:
+                    raise ContractError(f"{context}: baseline source pair is absent")
+                _observation_int64(
+                    change["source_pair_key"],
+                    f"{context}.transformations.{name}.source_pair_key",
+                    local_key=True,
+                )
+                pair = pairs[change["source_pair_key"]]
+                source_row = _validate_row_reference(
+                    change["source_row"],
+                    f"{context}.transformations.{name}.source_row",
+                )
+                seed_key = pair["seed"]["local_key"]
+                expected_cell = baseline_rows[seed_key]["fields"][name]["value"]
+                if (
+                    pair["target"] != target_reference
+                    or source_row != pair["seed"]
+                    or after != expected_cell
+                    or change["value_source"] != "baseline-seed-row"
+                    or change["authority_reference"]
+                    != baseline_fields[name]["authority_reference"]
+                    or provenance != f"relation-pair:{change['source_pair_key']}"
+                ):
+                    raise ContractError(f"{context}: baseline source mismatch for {name}")
+            elif (
+                after is not None
+                or change["value_source"] != "canonical-null"
+                or change["source_pair_key"] is not None
+                or change["source_row"] is not None
+                or change["authority_reference"]
+                != OBSERVATION_UNMATCHED_MISSING_AUTHORITY_V1
+                or provenance != "target-unmatched:no-fabricated-seed"
+            ):
+                raise ContractError(f"{context}: unmatched field is not typed missing")
+    if covered_targets != set(target_rows):
+        raise ContractError("matched output does not cover every target exactly once")
+    _validate_permutation(
+        output["output_presentation_sequence"],
+        output_keys,
+        "matched output presentation sequence",
+    )
+    return output
+
+
+def canonical_observation_matched_apt_preimage(
+    document: Any,
+    contract: dict[str, Any],
+    baseline_descriptor: dict[str, Any],
+    target_document: dict[str, Any],
+    target_contract: dict[str, Any],
+    relation_document: dict[str, Any],
+    relation_contract: dict[str, Any],
+) -> bytes:
+    output = validate_observation_matched_apt_v1(
+        document, contract, baseline_descriptor, target_document,
+        target_contract, relation_document, relation_contract
+    )
+    frames: list[bytes] = []
+    for label, value in (
+        ("encoding", "citlali-labelled-type-length-v1"),
+        ("scope", contract["semantic_scope"]),
+        ("schema", output["schema_version"]),
+        ("contract-authority", output["contract_authority"]),
+        ("observation-value-issuer", output["observation_value_issuer"]),
+        ("transformation-registry", output["transformation_registry"]),
+    ):
+        _frame_text(frames, label, value)
+    _add_baseline_reference(frames, "baseline-parent", output["baseline_parent"])
+    _add_artifact_identity(frames, "target-parent", output["target_parent"])
+    _add_artifact_identity(frames, "relation-parent", output["relation_parent"])
+    fields = sorted(output["registered_fields"], key=lambda item: item["field"]["name"])
+    field_map = {item["field"]["name"]: item["field"] for item in fields}
+    _frame_uint64(frames, "field.count", len(fields))
+    for index, field_contract in enumerate(fields):
+        prefix = f"field.{index}"
+        _add_typed_field(frames, prefix, field_contract["field"])
+        _frame_text(
+            frames, f"{prefix}.authorized-operation",
+            field_contract["authorized_operation"],
+        )
+        _frame_text(
+            frames, f"{prefix}.issuer-authority-reference",
+            field_contract["issuer_authority_reference"],
+        )
+    rows = sorted(output["rows"], key=lambda row: int(row["uid"]))
+    _frame_uint64(frames, "row.count", len(rows))
+    for index, row in enumerate(rows):
+        prefix = f"row.{index}"
+        _frame_int64(frames, f"{prefix}.uid", row["uid"])
+        _add_row_reference(frames, f"{prefix}.target", row["target"])
+        _frame_int64(frames, f"{prefix}.target-input-key", row["target_input_key"])
+        _frame_float64(frames, f"{prefix}.tone-frequency-hz", row["tone_frequency_hz"])
+        _frame_int64(frames, f"{prefix}.array", row["array"])
+        _frame_int64(frames, f"{prefix}.network", row["network"])
+        _frame_int64(frames, f"{prefix}.channel", row["channel"])
+        _frame_uint64(
+            frames, f"{prefix}.relation-pair-key.count",
+            len(row["relation_pair_keys"]),
+        )
+        for pair_index, pair_key in enumerate(row["relation_pair_keys"]):
+            _frame_int64(
+                frames, f"{prefix}.relation-pair-key.{pair_index}", pair_key
+            )
+        for field_contract in fields:
+            name = field_contract["field"]["name"]
+            _add_successor_value(
+                frames, f"{prefix}.field.{name}", row["fields"][name],
+                field_contract["field"],
+            )
+        transformations = sorted(
+            row["transformations"], key=lambda item: item["field_name"]
+        )
+        _frame_uint64(frames, f"{prefix}.transformation.count", len(transformations))
+        for transform_index, change in enumerate(transformations):
+            transform_prefix = f"{prefix}.transformation.{transform_index}"
+            field = field_map[change["field_name"]]
+            _frame_text(frames, f"{transform_prefix}.field-name", change["field_name"])
+            _frame_text(frames, f"{transform_prefix}.operation", change["operation"])
+            _add_successor_value(
+                frames, f"{transform_prefix}.before", change["before"], field
+            )
+            _add_successor_value(
+                frames, f"{transform_prefix}.after", change["after"], field
+            )
+            _frame_text(frames, f"{transform_prefix}.value-source", change["value_source"])
+            _frame_bool(
+                frames, f"{transform_prefix}.has-source-pair-key",
+                change["source_pair_key"] is not None,
+            )
+            if change["source_pair_key"] is not None:
+                _frame_int64(
+                    frames, f"{transform_prefix}.source-pair-key",
+                    change["source_pair_key"],
+                )
+            _frame_bool(
+                frames, f"{transform_prefix}.has-source-row",
+                change["source_row"] is not None,
+            )
+            if change["source_row"] is not None:
+                _add_row_reference(
+                    frames, f"{transform_prefix}.source-row", change["source_row"]
+                )
+            _frame_text(
+                frames, f"{transform_prefix}.authority-reference",
+                change["authority_reference"],
+            )
+            _frame_text(
+                frames, f"{transform_prefix}.provenance-reference",
+                change["provenance_reference"],
+            )
+    sequence = output["output_presentation_sequence"]
+    _frame_uint64(frames, "output-presentation-sequence.count", len(sequence))
+    for index, key in enumerate(sequence):
+        _frame_int64(frames, f"output-presentation-sequence.{index}", key)
+    return b"".join(frames)
+
+
+def observation_matched_apt_digests(
+    document: Any,
+    contract: dict[str, Any],
+    baseline_descriptor: dict[str, Any],
+    target_document: dict[str, Any],
+    target_contract: dict[str, Any],
+    relation_document: dict[str, Any],
+    relation_contract: dict[str, Any],
+) -> dict[str, str]:
+    preimage = canonical_observation_matched_apt_preimage(
+        document, contract, baseline_descriptor, target_document,
+        target_contract, relation_document, relation_contract
+    )
+    semantic = "sha256:" + hashlib.sha256(preimage).hexdigest()
+    output = validate_observation_matched_apt_v1(
+        document, contract, baseline_descriptor, target_document,
+        target_contract, relation_document, relation_contract
+    )
+    frames: list[bytes] = []
+    _add_envelope(
+        frames, output["schema_version"], contract["envelope_scope"],
+        semantic, output["envelope"],
+    )
+    return {
+        "semantic_sha256": semantic,
+        "envelope_sha256": "sha256:" + hashlib.sha256(b"".join(frames)).hexdigest(),
+    }
+
+
+def observation_matched_apt_identity(
+    document: Any,
+    contract: dict[str, Any],
+    baseline_descriptor: dict[str, Any],
+    target_document: dict[str, Any],
+    target_contract: dict[str, Any],
+    relation_document: dict[str, Any],
+    relation_contract: dict[str, Any],
+) -> dict[str, Any]:
+    output = validate_observation_matched_apt_v1(
+        document, contract, baseline_descriptor, target_document,
+        target_contract, relation_document, relation_contract
+    )
+    return {
+        "schema": output["schema_version"],
+        "occurrence": output["envelope"]["occurrence"],
+        **observation_matched_apt_digests(
+            output, contract, baseline_descriptor, target_document,
+            target_contract, relation_document, relation_contract
+        ),
+    }
+
+
+def serialize_observation_matched_apt_ecsv_v1(
+    document: Any,
+    contract: dict[str, Any],
+    baseline_descriptor: dict[str, Any],
+    target_document: Any,
+    target_contract: dict[str, Any],
+    relation_document: Any,
+    relation_contract: dict[str, Any],
+) -> dict[str, Any]:
+    """Independently serialize the single persisted APT-PROD-002 ECSV."""
+    target = validate_observation_target_manifest_v1(
+        target_document, target_contract
+    )
+    relation = validate_match_dispositions_v1(
+        relation_document, relation_contract, baseline_descriptor, target,
+        target_contract
+    )
+    output = validate_observation_matched_apt_v1(
+        document, contract, baseline_descriptor, target, target_contract,
+        relation, relation_contract
+    )
+    target_digests = observation_target_digests(target, target_contract)
+    relation_digests = match_dispositions_digests(
+        relation, relation_contract, baseline_descriptor, target,
+        target_contract
+    )
+    output_digests = observation_matched_apt_digests(
+        output, contract, baseline_descriptor, target, target_contract,
+        relation, relation_contract
+    )
+    fields = sorted(output["registered_fields"], key=lambda item: item["field"]["name"])
+
+    columns = [
+        ("uid", "int64", "N/A", "exact nonnegative output-artifact-local row key; never persistent detector identity"),
+        ("target_row_key", "int64", "N/A", "exact target-parent artifact-local row reference"),
+        ("target_input_key", "int64", "N/A", "exact target-parent input binding reference"),
+        ("tone_freq", "float64", "Hz", "exact target kids_f_out application value; not identity"),
+        ("array", "int64", "N/A", "canonical TolTEC array enum; not row identity"),
+        ("nw", "int64", "N/A", "target raw-manifest network key"),
+        ("kids_tone", "int64", "N/A", "zero-based target raw channel key within network"),
+        ("relation_pair_keys", "string", "N/A", "complete sorted relation-local pair-key set using bracketed-int64-set-v1"),
+    ]
+    columns.extend(
+        (
+            item["field"]["name"], item["field"]["datatype"],
+            item["field"]["unit"], item["field"]["description"],
+        )
+        for item in fields
+    )
+    lines: list[str] = ["# %ECSV 1.0", "# ---", "# datatype:"]
+
+    def quoted(prefix: str, value: Any) -> None:
+        lines.append(prefix + _yaml_quote(str(value)))
+
+    def integer(prefix: str, value: Any) -> None:
+        lines.append(prefix + str(value))
+
+    def boolean(prefix: str, value: bool) -> None:
+        lines.append(prefix + ("true" if value else "false"))
+
+    def emit_envelope(indent: str, value: dict[str, Any]) -> None:
+        for key in (
+            "occurrence", "event_reference", "software_revision",
+            "configuration_reference", "event_time_utc",
+        ):
+            quoted(f"{indent}{key}: ", value[key])
+
+    def emit_identity(indent: str, value: dict[str, Any]) -> None:
+        for key in ("schema", "occurrence", "semantic_sha256", "envelope_sha256"):
+            quoted(f"{indent}{key}: ", value[key])
+
+    def emit_baseline(indent: str, value: dict[str, Any]) -> None:
+        lines.append(f"{indent}artifact:")
+        emit_identity(indent + "  ", value["artifact"])
+        for key in ("profile", "descriptor_sha256", "transport_scope", "transport_sha256"):
+            quoted(f"{indent}{key}: ", value[key])
+        integer(f"{indent}byte_count: ", value["byte_count"])
+        quoted(f"{indent}receipt_sha256: ", value["receipt_sha256"])
+        integer(f"{indent}receipt_byte_count: ", value["receipt_byte_count"])
+
+    def emit_row_reference(indent: str, value: dict[str, Any]) -> None:
+        for key in ("artifact_schema", "occurrence", "envelope_sha256"):
+            quoted(f"{indent}{key}: ", value[key])
+        integer(f"{indent}local_key: ", value["local_key"])
+
+    def emit_typed_field(first: str, indent: str, field: dict[str, Any]) -> None:
+        quoted(first + "- name: ", field["name"])
+        quoted(indent + "datatype: ", field["datatype"])
+        quoted(indent + "unit: ", field["unit"])
+        boolean(indent + "nullable: ", field["nullable"])
+        quoted(indent + "nonfinite: ", field["nonfinite"])
+        quoted(indent + "authority: ", field["authority"])
+        quoted(indent + "authority_reference: ", field["authority_reference"])
+        quoted(indent + "registry: ", field["registry"])
+        quoted(indent + "description: ", field["description"])
+        boolean(indent + "has_source_column: ", field["source_column"] is not None)
+        if field["source_column"] is not None:
+            quoted(indent + "source_column: ", field["source_column"])
+        quoted(indent + "identity_role: ", field["identity_role"])
+
+    def emit_source(heading: str, indent: str, name: str, value: dict[str, Any]) -> None:
+        lines.append(f"{heading}{name}:")
+        integer(indent + "source_key: ", value["source_key"])
+        quoted(indent + "role: ", value["role"])
+        quoted(indent + "diagnostic_locator: ", value["diagnostic_locator"])
+        quoted(indent + "content_sha256: ", value["content_sha256"])
+        integer(indent + "byte_count: ", value["byte_count"])
+        lines.append(indent + "header_observation:")
+        for key in ("observation", "subobservation", "scan"):
+            integer(indent + "  " + key + ": ", value["header_observation"][key])
+        integer(indent + "network: ", value["network"])
+        quoted(indent + "interface: ", value["interface"])
+        integer(indent + "channel_count: ", value["channel_count"])
+
+    def value_token(value: Any, datatype: str) -> str:
+        if value is None:
+            return "null"
+        if datatype == "bool":
+            return "true" if value else "false"
+        return str(value)
+
+    for name, datatype, unit, description in columns:
+        quoted("# - name: ", name)
+        quoted("#   datatype: ", datatype)
+        if unit not in ("", "N/A"):
+            quoted("#   unit: ", unit)
+        quoted("#   description: ", description)
+    lines.extend(["# meta:", "#   canonical_apt_observation_v1:"])
+    for prefix, value in (
+        ("schema_version", OBSERVATION_MATCHED_APT_SCHEMA_V1),
+        ("artifact_contract_id", OBSERVATION_MATCHED_APT_ARTIFACT_CONTRACT_ID),
+        ("contract_authority", OBSERVATION_CONTRACT_AUTHORITY_V1),
+        ("observation_value_issuer", OBSERVATION_VALUE_ISSUER_V1),
+        ("field_registry", OBSERVATION_MATCHED_OUTPUT_FIELD_REGISTRY_V1),
+        ("transformation_registry", OBSERVATION_TRANSFORMATION_REGISTRY_V1),
+        ("framing_encoding", "citlali-labelled-type-length-v1"),
+        ("semantic_scope", contract["semantic_scope"]),
+        ("semantic_sha256", output_digests["semantic_sha256"]),
+        ("envelope_scope", contract["envelope_scope"]),
+        ("envelope_sha256", output_digests["envelope_sha256"]),
+        ("byte_transport_scope", contract["byte_transport_scope"]),
+        ("target_semantic_scope", target_contract["semantic_scope"]),
+        ("target_semantic_sha256", target_digests["semantic_sha256"]),
+        ("target_envelope_scope", target_contract["envelope_scope"]),
+        ("target_envelope_sha256", target_digests["envelope_sha256"]),
+        ("relation_semantic_scope", relation_contract["semantic_scope"]),
+        ("relation_semantic_sha256", relation_digests["semantic_sha256"]),
+        ("relation_envelope_scope", relation_contract["envelope_scope"]),
+        ("relation_envelope_sha256", relation_digests["envelope_sha256"]),
+    ):
+        quoted(f"#     {prefix}: ", value)
+
+    lines.append("#     output:")
+    for key in ("schema_version", "contract_authority", "observation_value_issuer", "transformation_registry"):
+        label = "schema" if key == "schema_version" else key
+        quoted(f"#       {label}: ", output[key])
+    lines.append("#       envelope:")
+    emit_envelope("#         ", output["envelope"])
+    lines.append("#       baseline_parent:")
+    emit_baseline("#         ", output["baseline_parent"])
+    lines.append("#       target_parent:")
+    emit_identity("#         ", output["target_parent"])
+    lines.append("#       relation_parent:")
+    emit_identity("#         ", output["relation_parent"])
+    integer("#       registered_field_count: ", len(fields))
+    lines.append("#       registered_fields:")
+    for item in fields:
+        emit_typed_field("#         ", "#           ", item["field"])
+        quoted("#           authorized_operation: ", item["authorized_operation"])
+        quoted("#           issuer_authority_reference: ", item["issuer_authority_reference"])
+    integer("#       output_presentation_sequence_count: ", len(output["output_presentation_sequence"]))
+    lines.append("#       output_presentation_sequence:")
+    for uid in output["output_presentation_sequence"]:
+        integer("#         - ", uid)
+    output_rows = sorted(output["rows"], key=lambda row: int(row["uid"]))
+    integer("#       transformation_row_count: ", len(output_rows))
+    lines.append("#       transformations:")
+    field_by_name = {item["field"]["name"]: item["field"] for item in fields}
+    for row in output_rows:
+        integer("#         - uid: ", row["uid"])
+        changes = sorted(row["transformations"], key=lambda item: item["field_name"])
+        integer("#           transformation_count: ", len(changes))
+        lines.append("#           fields:")
+        for change in changes:
+            datatype = field_by_name[change["field_name"]]["datatype"]
+            quoted("#             - field_name: ", change["field_name"])
+            quoted("#               operation: ", change["operation"])
+            boolean("#               before_is_null: ", change["before"] is None)
+            quoted("#               before: ", value_token(change["before"], datatype))
+            boolean("#               after_is_null: ", change["after"] is None)
+            quoted("#               after: ", value_token(change["after"], datatype))
+            quoted("#               value_source: ", change["value_source"])
+            boolean("#               has_source_pair_key: ", change["source_pair_key"] is not None)
+            if change["source_pair_key"] is not None:
+                integer("#               source_pair_key: ", change["source_pair_key"])
+            boolean("#               has_source_row: ", change["source_row"] is not None)
+            if change["source_row"] is not None:
+                lines.append("#               source_row:")
+                emit_row_reference("#                 ", change["source_row"])
+            quoted("#               authority_reference: ", change["authority_reference"])
+            quoted("#               provenance_reference: ", change["provenance_reference"])
+
+    target_fields = sorted(target["registered_fields"], key=lambda item: item["name"])
+    lines.append("#     embedded_target:")
+    for key in ("schema_version", "contract_authority", "observation_value_issuer"):
+        quoted(f"#       {'schema' if key == 'schema_version' else key}: ", target[key])
+    lines.append("#       envelope:")
+    emit_envelope("#         ", target["envelope"])
+    lines.append("#       observation:")
+    for key in ("observation", "subobservation", "scan"):
+        integer(f"#         {key}: ", target["observation"][key])
+    integer("#       registered_field_count: ", len(target_fields))
+    lines.append("#       registered_fields:")
+    for field in target_fields:
+        emit_typed_field("#         ", "#           ", field)
+    target_inputs = sorted(target["inputs"], key=lambda item: int(item["input_key"]))
+    integer("#       input_count: ", len(target_inputs))
+    lines.append("#       inputs:")
+    for item in target_inputs:
+        integer("#         - input_key: ", item["input_key"])
+        integer("#           network: ", item["network"])
+        quoted("#           interface: ", item["interface"])
+        integer("#           channel_count: ", item["channel_count"])
+        emit_source("#           ", "#             ", "raw_source", item["raw_source"])
+        emit_source("#           ", "#             ", "kmp_source", item["kmp_source"])
+    target_rows = sorted(target["rows"], key=lambda row: int(row["row_key"]))
+    integer("#       row_count: ", len(target_rows))
+    lines.append("#       rows:")
+    for row in target_rows:
+        for label, key in (
+            ("row_key", "row_key"), ("input_key", "input_key"),
+            ("kmp_source_key", "kmp_source_key"), ("kmp_row_index", "kmp_row_index"),
+        ):
+            integer(("#         - " if label == "row_key" else "#           ") + label + ": ", row[key])
+        quoted("#           matching_frequency_hz: ", row["matching_frequency_hz"])
+        quoted("#           output_tone_frequency_hz: ", row["output_tone_frequency_hz"])
+        for key in ("array", "network", "channel"):
+            integer(f"#           {key}: ", row[key])
+        lines.append("#           fields:")
+        for field in target_fields:
+            quoted(f"#             {field['name']}: ", value_token(row["fields"][field["name"]], field["datatype"]))
+    for sequence_name in ("target_source_sequence", "target_application_sequence"):
+        integer(f"#       {sequence_name}_count: ", len(target[sequence_name]))
+        lines.append(f"#       {sequence_name}:")
+        for key in target[sequence_name]:
+            integer("#         - ", key)
+
+    lines.append("#     embedded_relation:")
+    for key in ("schema_version", "contract_authority", "observation_value_issuer", "mapping_domain"):
+        quoted(f"#       {'schema' if key == 'schema_version' else key}: ", relation[key])
+    lines.append("#       envelope:")
+    emit_envelope("#         ", relation["envelope"])
+    lines.append("#       baseline_parent:")
+    emit_baseline("#         ", relation["baseline_parent"])
+    lines.append("#       target_parent:")
+    emit_identity("#         ", relation["target_parent"])
+    lines.append("#       matcher:")
+    for key in ("matcher_run_occurrence", "implementation_revision", "configuration_reference", "method", "backend", "target_frequency_field", "target_quality_factor_field"):
+        quoted(f"#         {key}: ", relation["matcher"][key])
+    evidence = sorted(relation["network_evidence"], key=lambda item: int(item["network"]))
+    integer("#       network_evidence_count: ", len(evidence))
+    lines.append("#       network_evidence:")
+    for item in evidence:
+        integer("#         - network: ", item["network"])
+        for key in ("frequency_shift_hz", "gate_hz", "quality_factor"):
+            quoted(f"#           {key}: ", item[key])
+        quoted("#           quality_factor_field: ", item["quality_factor_field"])
+        quoted("#           quality_factor_authority_reference: ", item["quality_factor_authority_reference"])
+    relation_pairs = sorted(relation["pairs"], key=lambda item: int(item["pair_key"]))
+    integer("#       pair_count: ", len(relation_pairs))
+    lines.append("#       pairs:")
+    for pair in relation_pairs:
+        integer("#         - pair_key: ", pair["pair_key"])
+        lines.append("#           target:")
+        emit_row_reference("#             ", pair["target"])
+        lines.append("#           seed:")
+        emit_row_reference("#             ", pair["seed"])
+        quoted("#           separation_hz: ", pair["separation_hz"])
+        boolean("#           is_good_match: ", pair["is_good_match"])
+    for collection in ("target_dispositions", "seed_dispositions"):
+        dispositions = sorted(relation[collection], key=lambda item: int(item["disposition_key"]))
+        integer(f"#       {collection}_count: ", len(dispositions))
+        lines.append(f"#       {collection}:")
+        for item in dispositions:
+            integer("#         - disposition_key: ", item["disposition_key"])
+            lines.append("#           endpoint:")
+            emit_row_reference("#             ", item["endpoint"])
+            quoted("#           state: ", item["state"])
+            quoted("#           pair_keys: ", "[" + ",".join(item["pair_keys"]) + "]")
+            quoted("#           reason: ", item["reason"])
+    integer("#       seed_source_sequence_count: ", len(relation["seed_source_sequence"]))
+    lines.append("#       seed_source_sequence:")
+    for key in relation["seed_source_sequence"]:
+        integer("#         - ", key)
+    lines.extend([
+        '#     null_cell: "unquoted-empty-v1"',
+        '#     string_cell: "quoted-utf8-single-line-v1"',
+        '#     pair_key_set_cell: "quoted-bracketed-int64-set-v1"',
+        '#     metadata_float64: "quoted-ieee754-bits-v1"',
+        '# delimiter: ","', '# schema: "astropy-2.0"',
+        ",".join(name for name, _, _, _ in columns),
+    ])
+
+    def float_from_token(token: str) -> float:
+        if token == "nan":
+            return float("nan")
+        if token == "+inf":
+            return float("inf")
+        if token == "-inf":
+            return -float("inf")
+        return struct.unpack(">d", bytes.fromhex(token))[0]
+
+    def csv_value(value: Any, datatype: str) -> str:
+        if value is None:
+            return ""
+        if datatype == "float64":
+            return _format_float64(float_from_token(str(value)))
+        if datatype == "int64":
+            return str(value)
+        if datatype == "bool":
+            return "True" if value else "False"
+        return _csv_quote(str(value))
+
+    for row in output_rows:
+        cells = [
+            str(row["uid"]), str(row["target"]["local_key"]),
+            str(row["target_input_key"]),
+            _format_float64(float_from_token(row["tone_frequency_hz"])),
+            str(row["array"]), str(row["network"]), str(row["channel"]),
+            _csv_quote("[" + ",".join(row["relation_pair_keys"]) + "]"),
+        ]
+        cells.extend(
+            csv_value(row["fields"][item["field"]["name"]], item["field"]["datatype"])
+            for item in fields
+        )
+        lines.append(",".join(cells))
+    artifact_bytes = ("\n".join(lines) + "\n").encode("utf-8")
+    byte_sha256 = "sha256:" + hashlib.sha256(artifact_bytes).hexdigest()
+    receipt = (
+        "citlali-canonical-apt-publication-receipt-v1\n"
+        f"scope={contract['byte_transport_scope']}\n"
+        f"envelope_sha256={output_digests['envelope_sha256']}\n"
+        f"byte_sha256={byte_sha256}\n"
+        f"byte_count={len(artifact_bytes)}\n"
+    ).encode("ascii")
+    return {
+        "bytes": artifact_bytes,
+        "semantic_sha256": output_digests["semantic_sha256"],
+        "envelope_sha256": output_digests["envelope_sha256"],
+        "byte_transport_scope": contract["byte_transport_scope"],
+        "byte_sha256": byte_sha256,
+        "byte_count": len(artifact_bytes),
+        "receipt_bytes": receipt,
+        "receipt_sha256": "sha256:" + hashlib.sha256(receipt).hexdigest(),
+        "receipt_byte_count": len(receipt),
+    }
+
+
+def validate_observation_matched_apt_ecsv_bytes_v1(
+    artifact_bytes: bytes,
+    receipt_bytes: bytes,
+    document: Any,
+    contract: dict[str, Any],
+    baseline_descriptor: dict[str, Any],
+    target_document: Any,
+    target_contract: dict[str, Any],
+    relation_document: Any,
+    relation_contract: dict[str, Any],
+) -> dict[str, Any]:
+    """Strict independent reserialization and ordinary ECSV readability gate."""
+    expected = serialize_observation_matched_apt_ecsv_v1(
+        document, contract, baseline_descriptor, target_document,
+        target_contract, relation_document, relation_contract
+    )
+    if artifact_bytes != expected["bytes"]:
+        raise ContractError(
+            "matched observation ECSV is tampered, stale, reordered, or noncanonical"
+        )
+    if receipt_bytes != expected["receipt_bytes"]:
+        raise ContractError(
+            "matched observation ECSV receipt is tampered or binds foreign bytes"
+        )
+    if Table is None:
+        raise ContractError("Astropy is required for matched observation ECSV parity")
+    try:
+        table = Table.read(artifact_bytes.decode("utf-8").splitlines(), format="ascii.ecsv")
+    except Exception as error:
+        raise ContractError(f"matched observation ECSV is not Astropy-readable: {error}") from error
+    if len(table) != len(document["rows"]):
+        raise ContractError("matched observation ECSV row count mismatch")
+    root = table.meta.get("canonical_apt_observation_v1")
+    if not isinstance(root, dict) or not isinstance(root.get("embedded_target"), dict) or not isinstance(root.get("embedded_relation"), dict):
+        raise ContractError("matched observation ECSV lacks complete embedded logical records")
+    return expected
+
+
 def validate_canonical_apt_v1_artifact(
     path: Path, contract: dict[str, Any]
 ) -> dict[str, Any]:
@@ -2524,6 +5686,13 @@ def main(argv: list[str]) -> int:
             if args.json_out or args.report_out:
                 raise ContractError(
                     "artifact mode is stdout-only; report outputs are forbidden"
+                )
+            if args.artifact_contract in OBSERVATION_ARTIFACT_CONTRACT_IDS:
+                raise ContractError(
+                    "APT-PROD-002 remains unactivated in product profiles; "
+                    "target/relation are embedded logical records and matched "
+                    "APT issuance is available only through the versioned "
+                    "Citlali machine protocol"
                 )
             artifact_contract = artifact_contract_by_id(
                 registry, args.artifact_contract
