@@ -119,8 +119,11 @@ the effective C++23 standard; the Tula metadata defect remains upstream debt.
   277.38 seconds respectively. This closes the formal build-timing gate and
   confirms the CLI translation unit as the dominant development cost on both
   hosts.
-- Promote the checked development revision manifest into immutable release
-  sources and a portable release lock.
+- The Citlali-owned release schema, validator, bundle layout, source-build
+  fallback, and signed-buildcache policy are accepted in ADR 0010. The checked
+  development candidate passes, but release production remains open: publish
+  immutable archives/checksums and one source-based, host-path-free lock for
+  each supported profile, then close its remaining acceptance evidence.
 
 ### Spack Adaptation Exit
 

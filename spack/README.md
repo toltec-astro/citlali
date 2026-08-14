@@ -27,6 +27,24 @@ This lane does not invoke, modify, or vendor `tolteca_deploy`. That repository
 may later consume an accepted Citlali release, but Citlali owns this adaptation,
 its pinned source manifest, and its Mac/Unity acceptance profiles.
 
+## Release Composition
+
+The environments in this directory are development profiles. Their local
+`develop` source bindings make their ignored locks host-specific, so those
+locks must not be published as releases. The versioned release contract,
+development-candidate record, validator, and final bundle layout are described
+in [`release/README.md`](release/README.md).
+
+Run the candidate gate with:
+
+```console
+$HOME/tolteca/bin/python tools/build/validate_release_manifest.py
+```
+
+The stricter `--require-release` gate remains intentionally blocked until
+immutable source archives, source-based profile environments and locks,
+deployment propagation, and the frozen same-SHA four-mode matrix are accepted.
+
 ## Prerequisite Check
 
 Run:

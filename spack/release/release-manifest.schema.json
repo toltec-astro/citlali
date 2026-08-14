@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://toltec-astro.github.io/citlali/schemas/release-manifest-v1.json",
+  "title": "Citlali release manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "manifest_state",
+    "release_id",
+    "created_at",
+    "sources",
+    "spack",
+    "profiles",
+    "buildcache",
+    "acceptance"
+  ],
+  "properties": {
+    "schema_version": {"const": "citlali-release-manifest-v1"},
+    "manifest_state": {
+      "enum": ["development-candidate", "release"]
+    },
+    "release_id": {"type": "string", "minLength": 1},
+    "created_at": {"type": "string", "format": "date-time"},
+    "sources": {
+      "type": "object",
+      "required": ["citlali", "tula_cmake", "tula", "kidscpp"],
+      "additionalProperties": false,
+      "properties": {
+        "citlali": {"$ref": "#/$defs/source"},
+        "tula_cmake": {"$ref": "#/$defs/source"},
+        "tula": {"$ref": "#/$defs/source"},
+        "kidscpp": {"$ref": "#/$defs/source"}
+      }
+    },
+    "spack": {
+      "type": "object",
+      "required": ["version", "commit"],
+      "additionalProperties": false,
+      "properties": {
+        "version": {"type": "string", "minLength": 1},
+        "commit": {"$ref": "#/$defs/gitCommit"}
+      }
+    },
+    "profiles": {
+      "type": "object",
+      "required": ["macos-llvm20", "unity-gcc13"],
+      "additionalProperties": false,
+      "properties": {
+        "macos-llvm20": {"$ref": "#/$defs/profile"},
+        "unity-gcc13": {"$ref": "#/$defs/profile"}
+      }
+    },
+    "buildcache": {
+      "type": "object",
+      "required": [
+        "mode",
+        "source_build_fallback",
+        "mirrors",
+        "trusted_signing_key_fingerprints"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "enum": [
+            "source-build-default",
+            "signed-buildcache-optional",
+            "signed-buildcache-required"
+          ]
+        },
+        "source_build_fallback": {"const": true},
+        "mirrors": {"type": "array", "items": {"type": "string"}},
+        "trusted_signing_key_fingerprints": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    },
+    "acceptance": {
+      "type": "object",
+      "required": ["status", "evidence", "remaining"],
+      "additionalProperties": false,
+      "properties": {
+        "status": {"enum": ["incomplete", "accepted"]},
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string"}
+        },
+        "remaining": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  },
+  "$defs": {
+    "gitCommit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "checkedFile": {
+      "type": "object",
+      "required": ["path", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "archive": {
+      "type": ["object", "null"],
+      "required": ["path", "url", "sha256", "immutable"],
+      "additionalProperties": false,
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "url": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "immutable": {"const": true}
+      }
+    },
+    "source": {
+      "type": "object",
+      "required": ["repository_url", "review_branch", "commit", "archive"],
+      "additionalProperties": false,
+      "properties": {
+        "repository_url": {"type": "string", "minLength": 1},
+        "review_branch": {"type": "string", "minLength": 1},
+        "commit": {"$ref": "#/$defs/gitCommit"},
+        "archive": {"$ref": "#/$defs/archive"}
+      }
+    },
+    "observedLock": {
+      "type": "object",
+      "required": ["sha256", "root_dag_hash", "portable"],
+      "additionalProperties": false,
+      "properties": {
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "root_dag_hash": {
+          "type": "string",
+          "pattern": "^[a-z0-9]{32}$"
+        },
+        "portable": {"const": false}
+      }
+    },
+    "releaseLock": {
+      "type": ["object", "null"],
+      "required": ["path", "sha256", "root_dag_hash"],
+      "additionalProperties": false,
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "root_dag_hash": {
+          "type": "string",
+          "pattern": "^[a-z0-9]{32}$"
+        }
+      }
+    },
+    "profile": {
+      "type": "object",
+      "required": [
+        "platform",
+        "compiler",
+        "development_environment",
+        "observed_development_lock",
+        "release_environment",
+        "release_lock"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "platform": {"type": "string", "minLength": 1},
+        "compiler": {"type": "string", "minLength": 1},
+        "development_environment": {"$ref": "#/$defs/checkedFile"},
+        "observed_development_lock": {"$ref": "#/$defs/observedLock"},
+        "release_environment": {
+          "anyOf": [{"$ref": "#/$defs/checkedFile"}, {"type": "null"}]
+        },
+        "release_lock": {"$ref": "#/$defs/releaseLock"}
+      }
+    }
+  }
+}

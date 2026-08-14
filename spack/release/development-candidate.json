@@ -1,0 +1,90 @@
+{
+  "schema_version": "citlali-release-manifest-v1",
+  "manifest_state": "development-candidate",
+  "release_id": "citlali-spack-adaptation-candidate-2026-08-14",
+  "created_at": "2026-08-14T16:00:00Z",
+  "sources": {
+    "citlali": {
+      "repository_url": "https://github.com/toltec-astro/citlali.git",
+      "review_branch": "codex/build-adaptation",
+      "commit": "6d497fc31d47054db791eead9aa0894d6ab0362a",
+      "archive": null
+    },
+    "tula_cmake": {
+      "repository_url": "https://github.com/toltec-astro/tula_cmake.git",
+      "review_branch": "v3.x_spack",
+      "commit": "6433cdabe7010d0af2d0ba69da7af27510391b80",
+      "archive": null
+    },
+    "tula": {
+      "repository_url": "https://github.com/toltec-astro/tula.git",
+      "review_branch": "v3.x_spack",
+      "commit": "aa16c853c6b596c04ccdc90dc3acc4ce2006d947",
+      "archive": null
+    },
+    "kidscpp": {
+      "repository_url": "https://github.com/toltec-astro/kidscpp.git",
+      "review_branch": "v3.x_spack",
+      "commit": "498ece1113001ae2d42d96d9fc29152aea3eaaef",
+      "archive": null
+    }
+  },
+  "spack": {
+    "version": "1.2.2",
+    "commit": "3e19345b6e12f5ff1b874f4059622fc6a1fd804a"
+  },
+  "profiles": {
+    "macos-llvm20": {
+      "platform": "macOS Apple Silicon",
+      "compiler": "Homebrew LLVM 20.1.8, C++23",
+      "development_environment": {
+        "path": "spack/environments/citlali-macos-llvm20/spack.yaml",
+        "sha256": "41acfc8a753fc7deca10a79d8fdffed8b516d594fe7d50fb1fe00a126475af0b"
+      },
+      "observed_development_lock": {
+        "sha256": "032230231d771dc9d718fe179a42fa4c09d22435e91e65323ebe02f9eeb8898a",
+        "root_dag_hash": "u2qcns6o5rtnzzzblqvqsnbdr7uldxgf",
+        "portable": false
+      },
+      "release_environment": null,
+      "release_lock": null
+    },
+    "unity-gcc13": {
+      "platform": "Unity Ubuntu 24.04 x86_64",
+      "compiler": "GNU 13.3.0, C++23",
+      "development_environment": {
+        "path": "spack/environments/citlali-unity-gcc13/spack.yaml",
+        "sha256": "d0ea4f244ea4b4b04cef78e83ef3c6c0e7e58fcc21cab0fbd94529d0b1cfcccd"
+      },
+      "observed_development_lock": {
+        "sha256": "d2204524bc170cf9e9458a9f83f2730f4e44c78fe628eb01f7d9f8dee0c52f72",
+        "root_dag_hash": "elcot6ah6jtv3onjjmqerxaznnshumqh",
+        "portable": false
+      },
+      "release_environment": null,
+      "release_lock": null
+    }
+  },
+  "buildcache": {
+    "mode": "source-build-default",
+    "source_build_fallback": true,
+    "mirrors": [],
+    "trusted_signing_key_fingerprints": []
+  },
+  "acceptance": {
+    "status": "incomplete",
+    "evidence": [
+      "doc/BUILD_TIMING_BASELINE_2026-08-14.md",
+      "doc/TOLTECA_SPACK_BUILD_INTEGRATION_REVIEW_2026-07-31.md",
+      "validation/build_timing/20260814T111058-0400-macos-llvm20/build-timing.json",
+      "validation/build_timing/20260814T152240+0000-unity-gcc13/build-timing.json",
+      "validation/fixtures/kidscpp_real_reader_pointing_152389_v1.json"
+    ],
+    "remaining": [
+      "publish immutable source archives and SHA-256 values",
+      "generate source-based release environments and committed profile locks",
+      "propagate managed deployment identity through the TolTECA launch boundary",
+      "accept one frozen same-SHA point, OOF, science, and Beammap matrix"
+    ]
+  }
+}
