@@ -214,6 +214,26 @@ separate owner decision. The
 [phase-independent RTC repair handoff](packages/SCI-RTC-001_PHASE_INDEPENDENT_BOUNDED_REPAIR_HANDOFF_2026-08-09.md)
 is also prepared but unlaunched. BEAM remains held.
 
+### Registered OOF residual-transfer product
+
+On 2026-08-14 the project owner approved the
+[`SCI-MAP-003` product registration](packages/SCI-MAP-003_PRODUCT_REGISTRATION_2026-08-14.md),
+**OOF residual transfer-function estimation and product**, as a Tier A
+independent audit -> separately authorized bounded repair -> separately
+launched fresh independent re-audit product. It is queued after
+`SCI-MAP-002` and before any `SCI-MODE-001` LMTOOF consumer admission without
+preempting active CAL, ALIGN, RTC, or PTC work.
+
+The selected governing application source is the exact pushed mainline
+`origin/codex/refactor-mainline` at
+`46ad23888a40f5102cdfd50c06e49a549bdf8a20`. A separate launch must
+revalidate that exact authority and refreeze the packet if it changes. The
+registration preserves existing OOF as `existing_use_only`; the new transfer
+product and every LMTOOF use remain unauthorized. No audit, handoff packet,
+manifest, prompt, numerical study, application or LMTOOF edit, repair,
+re-audit, integration, production expansion, merge, rebase, or push is
+launched by this record.
+
 ## Purpose and non-goals
 
 The program exists to make the claimed estimator, its uncertainty and
@@ -735,6 +755,7 @@ package but does not define their estimators.
 | `SCI-PTC-001` | B | Mature correlated-mode cleaning, selection, and detector-weight interface | `SCI-RTC-001`, identified assigned grid; physical event timing unavailable | D001--D006 approved; contract complete; implementation nonconformant; repair and optional response characterization unlaunched |
 | `SCI-VAL-001` | A | Cross-stage flags, detector/sample eligibility, non-finite policy, and map support | `SCI-ALIGN-001`, `SCI-RTC-001`, `SCI-PTC-001` | Foundation wave 2 |
 | `SCI-MAP-002` | B | Mature JINC gridding interface, normalization, support, and response | approved/shared `SCI-MAP-001` product contract | Third successor owner-accepted `accept`; bounded findings closed; `existing_use_only`; no merge or downstream launch |
+| `SCI-MAP-003` | A | OOF residual transfer-function estimator, validity domain, persisted response, and LMTOOF admission boundary | `SCI-MAP-001`, `SCI-MAP-002`, `SCI-RTC-001`, `SCI-PTC-001`, `SCI-VAL-001`, `SCI-AST-001`, `SCI-FRUIT-001`, `SCI-MODE-001` | Registered, unlaunched; after MAP-002 and before MODE LMTOOF admission; new product and consumer fail closed |
 | `SCI-NOI-001` | A | Jackknife/noise randomization and propagation through selected operators | `SCI-PTC-001`, `SCI-VAL-001`, `SCI-MAP-001` | Uncertainty wave 3 |
 | `SCI-NOI-002` | A | Empirical variance/covariance, global calibration, statistical weight, and S/N semantics | `SCI-NOI-001`, `SCI-MAP-001` | Uncertainty wave 3 |
 | `SCI-FLT-001` | A | Fixed map-domain `convolve` signal, uncertainty, response, and support | `SCI-MAP-001`, `SCI-NOI-002`, `SCI-CAL-001` | Existing audit; amend/re-audit wave 4 |

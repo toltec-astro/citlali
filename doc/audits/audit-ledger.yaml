@@ -6,7 +6,7 @@ inventory_governing_sha: 9aae0e669384c5c0c0dda93debc194d6b8dac787
 inventory_date: 2026-07-31
 current_program_checkpoint:
   record_date: 2026-08-09
-  coordination_update_date: 2026-08-12
+  coordination_update_date: 2026-08-14
   record_path: >-
     doc/audits/packages/SCIENTIFIC_AUDIT_PROGRAM_CHECKPOINT_2026-08-08.md
   record_sha256: >-
@@ -35,6 +35,7 @@ current_program_checkpoint:
     SCI-AST-001: phase_independent_math_permitted_no_launch_absolute_placement_unavailable
     SCI-RTC-001: core_phase_independent_and_stage_a_separate_stage_a_successor_3_authorized_not_launched
     ENG-STATE-001: static_package_accepted_F001_F002_open
+    SCI-MAP-003: tier_A_registered_unlaunched_first_artifact_only
   queue:
     - SCI-CAL-001_successor_7_bounded_technical_repair_authorized_pending_role_separated_READY_and_launch
     - SCI-RTC-001_phase_independent_repair_handoff_ready_not_launched
@@ -43,6 +44,7 @@ current_program_checkpoint:
     - SCI-VAL-001_unlaunched_PTC_D002_successor_handoff_pending_recipient_review
     - SCI-BEAM-001_held
     - SCI-TEL-INPUT-001_audit_owner_accepted_repair_scope_unresolved
+    - SCI-MAP-003_registered_after_MAP_002_before_MODE_LMTOOF_admission_unlaunched
   held_readiness:
     SCI-FLT-001: exact_repair_base_unresolved_until_integrated_CAL_successor
   integration_sequence:
@@ -7401,6 +7403,231 @@ packages:
           11f6d5b173ce9980910a1970835c33098ee89bb89c9df0ec8e1b3170ed3e050f
         exact_sha_unity_evidence_status: proposed_not_requested
         repair_authorized: false
+
+  - id: SCI-MAP-003
+    name: OOF residual transfer-function estimation and product
+    tier: A
+    queue_wave: map_product_after_SCI_MAP_002_before_SCI_MODE_001_LMTOOF_admission
+    registration_status: registered_not_dispatched
+    registration_date: 2026-08-14
+    registration_record: >-
+      doc/audits/packages/SCI-MAP-003_PRODUCT_REGISTRATION_2026-08-14.md
+    registration_record_sha256: b3c81a9186e3fb68e0209654427b14dcf81793a832bba47e8357d262c0072ae8
+    registration_authority: project_owner
+    registration_coordination_base:
+      branch: codex/coordinate-rtc-ptc-queue
+      commit: 8fc3b3dc549532f254bc814ef76f9a606c2a8059
+      parent: 87af719885fe73c1f292c97efb92026c4405ba05
+      tree: 401c0b0e7c9da0577c7164d636030cfffed1fdf7
+    scientific_scope: >-
+      Exact discrete APT-Gaussian reference plus the final normalized OOF/JINC
+      kernel and exact parent/configuration/iteration identity to a complex
+      two-dimensional residual transfer, validity domain, persisted product,
+      and fail-closed LMTOOF forward-model consumer boundary.
+    claimed_starting_estimator: >-
+      G=FFT2(g); K=FFT2(k); H=conj(G)*K/abs(G)^2 only on an admitted
+      denominator domain; P_pred(theta)=IFFT2(H*FFT2(P_opt(theta))). This is
+      system identification from a known tracer and response, not observed-map
+      deconvolution.
+    ordinary_claim: >-
+      Map-center linearized residual transfer for one exact OOF/JINC product
+      cell, retaining complex two-dimensional phase and measured DC/amplitude
+      unless a later audit and owner decision authorize a narrower derived
+      representation.
+    known_code_areas:
+      - include/citlali/core/timestream/rtc/kernel.h
+      - include/citlali/core/timestream/rtc/rtcproc.h
+      - include/citlali/core/timestream/ptc/ptcproc.h
+      - include/citlali/core/mapmaking/jinc_mm.h
+      - src/citlali/core/mapmaking/map.cpp
+      - include/citlali/core/engine/detail/lali_fruitloop_impl.h
+      - include/citlali/core/engine/detail/pointing_fruitloop_impl.h
+      - include/citlali/core/pipeline/reduction_iteration_loop.h
+      - include/citlali/core/engine/detail/map_image_output_impl.h
+      - include/citlali/core/engine/detail/lali_output_impl.h
+      - include/citlali/core/engine/detail/pointing_output_impl.h
+      - include/citlali/core/engine/detail/map_phdu_output_impl.h
+      - include/citlali/core/pipeline/phdu_oof.h
+    inputs:
+      - exact discrete APT-Gaussian tracer identity and array/detector mixture
+      - final normalized OOF/JINC kernel and its validity
+      - exact map, WCS, configuration, parent, and iteration identities
+    outputs:
+      - complex two-dimensional residual transfer representation
+      - admitted frequency-domain validity and denominator policy
+      - persisted parentage, provenance, typed status, and failure semantics
+      - declared fail-closed LMTOOF forward-model consumer interface
+    upstream_dependencies:
+      - package_id: SCI-MAP-001
+        status: open
+        required_fact: >-
+          Shared map-product identity, WCS/unit/validity, parentage,
+          required-output, and publication vocabulary for the exact OOF cell.
+        consequence: >-
+          Product identity, units, validity, parent binding, and publication
+          admission remain conditional; the new product and consumer stay
+          fail closed.
+      - package_id: SCI-MAP-002
+        status: conditioned
+        required_fact: >-
+          Owner-approved final normalized JINC K/C kernel identity under
+          SCI-MAP-002-D003-KERNEL-001 and conformity of the exact consumed
+          implementation/product.
+        consequence: >-
+          The D003 contract may define the numerator, but the unintegrated
+          accepted successor may not be imputed to governing source 46ad2388;
+          exact implementation conformity must be audited.
+      - package_id: SCI-RTC-001
+        status: open
+        required_fact: >-
+          Exact discrete source-kernel construction and complete conditioned
+          RTC response or an honest unavailable state, with immutable stage
+          identity and parentage.
+        consequence: >-
+          Reference g and the RTC contribution to k cannot be declared exact
+          or complete; transfer production and LMTOOF consumption fail closed.
+      - package_id: SCI-PTC-001
+        status: conditioned
+        required_fact: >-
+          D003 estimated-map-center point-source response identity plus exact
+          cleaning, selection, mask, realization, and response-family limits.
+        consequence: >-
+          The bounded response abstraction may inform the core, but current
+          implementation nonconformance and unmeasured extensions prohibit a
+          broader transfer claim.
+      - package_id: SCI-VAL-001
+        status: open
+        required_fact: >-
+          Sample/detector and final map/kernel eligibility, non-finite,
+          support, and validity semantics applicable to the response product.
+        consequence: >-
+          Input, denominator-domain, parent, and output validity remain open;
+          invalid or unavailable cases must fail closed.
+      - package_id: SCI-AST-001
+        status: conditioned
+        required_fact: >-
+          Approved map axes, center, WCS, orientation, pixel scale, and
+          coordinate validity for the exact OOF product.
+        consequence: >-
+          Approved bounded coordinate facts may be authority, but open ALIGN
+          and implementation conditions prohibit assumed absolute placement or
+          silent axis/centering choices.
+      - package_id: SCI-FRUIT-001
+        status: open
+        required_fact: >-
+          Final iteration/pass identity and the relation between delivered
+          map/kernel and realized feedback state.
+        consequence: >-
+          The final parent response cannot be bound to a unique terminal
+          iteration, and transfer construction remains unavailable.
+      - package_id: SCI-MODE-001
+        status: open
+        required_fact: >-
+          OOF product association and LMTOOF consumer policy, including
+          fixed-within-solve and recomputed-between-OOF-cycles identity.
+        consequence: >-
+          No LMTOOF consumer is admitted and no new transfer interpretation is
+          authorized.
+    downstream_consumers:
+      - SCI-MODE-001
+      - LMTOOF_forward_model_not_authorized
+    governing_sha: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    governing_sha_role: exact_pushed_application_mainline_selected_at_registration
+    governing_source_rule: >-
+      Revalidate origin/codex/refactor-mainline at separate launch. If the ref
+      or exact SHA changes, stop for a coordinator amendment and refreeze;
+      never substitute silently.
+    contract_status: not_started
+    implementation_status: not_assessed
+    validation_status: not_started
+    production_status: existing_use_only
+    verdict: pending
+    tier_promotion:
+      initial_proposal: B
+      approved_tier: A
+      authority: project_owner
+      decision_date: 2026-08-14
+      reason: >-
+        Exact reference/response identity, complex phase and amplitude,
+        denominator conditioning/domain, morphology/linearity limits, and
+        fruit-loop/iteration identity are consequential unresolved scientific
+        questions.
+    product_status_policy:
+      required_states:
+        - computed_published
+        - not_computed_or_not_requested_for_this_product
+        - invalid
+        - unavailable
+      existing_oof: existing_use_only
+      new_transfer_product: fail_closed_not_authorized
+      LMTOOF_consumer: fail_closed_not_authorized
+      fixed_within_lmtoof_solve: required_contract_fact_not_implemented
+      recomputed_between_oof_cycles: required_contract_fact_not_implemented
+    incoming_handoffs: []
+    frozen_inbox_manifest:
+      status: not_created_mandatory_checkpoint
+      path: null
+      sha256: null
+    audit_dispatch:
+      status: not_created_not_launched
+      prompt_path: null
+      audit_branch: null
+      audit_worktree: null
+      independent_core: not_started
+    resource_plan:
+      registration_and_dispatch_preparation: Terra_High
+      launch_checkpoint_and_source_inventory: Terra_High
+      independent_scientific_core: Sol_Max
+      implementation_product_consumer_trace: Sol_XHigh
+      scientific_decision_synthesis: Sol_XHigh
+      mechanical_validation_if_authorized: Terra_Medium
+      validation_interpretation_if_authorized: Terra_High_or_Sol_High
+      ultra_authorized: false
+      delegation_authorized: false
+      parallelism_authorized: false
+    numerical_studies:
+      - id: SCI-MAP-003-LOCAL-ANALYTIC-SYNTHETIC-PLAN
+        status: proposed_not_executed
+        cost_classification: not_costly
+        basis: >-
+          Small fixed analytic/synthetic arrays with no Citlali reduction,
+          external scheduling, scarce data, or material storage; scope change
+          requires reclassification.
+      - id: SCI-MAP-003-REDUCTION-LMTOOF-TELESCOPE-PLAN
+        status: held_not_authorized
+        cost_classification: costly
+        basis: >-
+          Any local Citlali reduction, broad injection campaign, LMTOOF run,
+          Unity evidence, telescope correction, or iteration-to-gain study
+          exposes material compute, scheduling, data, or human operational
+          cost and requires FRAMEWORK-NUM-001 plus separate authorization.
+    prototype_evidence:
+      review_phase: post_core_evidence
+      imported: false
+      files:
+        - path: /Users/gwilson/foo/transfer_function/test_kernel_jinc.py
+          sha256: 65d5f1ee95f09ca290594bbf239950bce932e56d6186f9818102beee6311d1dd
+        - path: /Users/gwilson/foo/transfer_function/test_kernel_2.py
+          sha256: b16ba174cbd75dc6685332f7187f33038cad537a845befd4c52ef98d08f91824
+    lifecycle:
+      audit: not_launched_separate_owner_authority_required
+      repair: not_authorized
+      re_audit: not_started_separate_fresh_launch_required
+      integration: not_authorized
+      production_adoption: not_authorized
+    exclusions:
+      - observed_map_deconvolution
+      - LMTOOF_optics_or_aberration_implementation
+      - trial_aberration_dependent_transfer_construction
+      - mature_RTC_PTC_JINC_or_fruit_algorithm_change
+      - automatic_real_radial_or_unity_normalized_projection
+      - unmeasured_high_frequency_extrapolation
+      - cross_band_or_cross_mode_substitution
+      - new_production_default_or_consumer_authorization
+    next_checkpoint: >-
+      Stop after the committed and verified registration record plus README and
+      ledger updates. Do not create handoff records, a frozen authority
+      manifest, or an independent-audit prompt before coordinator acceptance.
 
   - id: SCI-NOI-001
     name: Noise and jackknife realization construction and propagation
