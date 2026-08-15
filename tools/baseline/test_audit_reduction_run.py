@@ -644,6 +644,299 @@ def selected_calibration_fixture_path() -> Path:
     )
 
 
+def _test_apt_bytes(
+    rows: list[str], *, uid_datatype: str = "int64",
+    nw_datatype: str = "int64", tone_datatype: str = "float64",
+    flxscale_datatype: str = "float64", det_id: bool = False,
+) -> bytes:
+    lines = selected_calibration_fixture_path().read_text(
+        encoding="utf-8"
+    ).splitlines()
+    lines[3] = lines[3].replace(
+        "datatype: int64", f"datatype: {uid_datatype}"
+    )
+    lines[4] = lines[4].replace(
+        "datatype: int64", f"datatype: {nw_datatype}"
+    )
+    lines[5] = lines[5].replace(
+        "datatype: float64", f"datatype: {tone_datatype}"
+    )
+    lines[7] = lines[7].replace(
+        "datatype: float64", f"datatype: {flxscale_datatype}"
+    )
+    if det_id:
+        lines.insert(13, "# - {name: det_id, datatype: float64}")
+        lines[-2] += " det_id"
+    return ("\n".join(lines[:-1] + rows) + "\n").encode("utf-8")
+
+
+def _test_stable_row_association(row: dict) -> str:
+    stable = "selected-apt-ordered-row-v2"
+    for name, kind, item in (
+        ("ordered_detector_index", "index", str(row["ordered_detector_index"])),
+        (
+            "selected_source_row_index", "index",
+            str(row["selected_apt_source_row_index"]),
+        ),
+    ):
+        stable += audit.typed_calibration_identity_field(name, kind, item)
+    for field in row["retained_fields"]:
+        stable += audit.typed_calibration_identity_field(
+            field["name"], field["ecsv_datatype"], field["value"]
+        )
+    stable += audit.typed_calibration_identity_field(
+        "eligible", "bool", "true" if row["eligible"] else "false"
+    )
+    stable += audit.typed_calibration_identity_field(
+        "validity_basis", "string", row["validity_basis"]
+    )
+    return stable
+
+
+def _rebuild_v4_package_identities(document: dict, apt_bytes: bytes) -> None:
+    """Recompute every declared v4 identity after a test-only mutation."""
+    value = document["calibration_lineage"]["value"]
+    selected = value["selected_apt"]
+    stable_joins = value["stable_joins"]
+    acquisition = value["raw_acquisition"]
+    factors = value["factor_operator_state"]
+    components = value["component_identities"]
+
+    selected_digest = hashlib.sha256(apt_bytes).hexdigest()
+    selected["source_sha256"] = selected_digest
+    selected["package_local_sha256"] = selected_digest
+    components["selected_apt_sha256"] = selected_digest
+
+    row_preimage = "selected-apt-row-association-v2"
+    row_preimage += audit.typed_calibration_identity_field(
+        "apt_sha256", "sha256", selected_digest
+    )
+    for row in stable_joins["ordered_detector_apt_rows"]:
+        row["stable_association"] = _test_stable_row_association(row)
+        row_preimage += audit.typed_calibration_identity_field(
+            "ordered_row", "typed_row_association",
+            row["stable_association"],
+        )
+    row_digest = hashlib.sha256(row_preimage.encode("utf-8")).hexdigest()
+    stable_joins["ordered_row_association_sha256"] = row_digest
+    components["selected_apt_row_association_sha256"] = row_digest
+
+    raw_identity = "raw-observation-acquisition-identity-v2"
+    for artifact in acquisition["artifacts"]:
+        artifact_identity = "raw-artifact-v1"
+        for name, kind, item in (
+            ("path", "string", artifact["path"]),
+            ("sha256", "sha256", artifact["sha256"]),
+            ("interface", "string", artifact["interface"]),
+            ("network", "int", str(artifact["roach_index"])),
+        ):
+            artifact_identity += audit.typed_calibration_identity_field(
+                name, kind, item
+            )
+        for tone in artifact["absolute_tone_frequency_hz"]:
+            artifact_identity += audit.typed_calibration_identity_field(
+                "absolute_tone_frequency_hz", "float64",
+                format(float(tone), ".17g"),
+            )
+        raw_identity += audit.typed_calibration_identity_field(
+            "artifact", "typed_raw_artifact", artifact_identity
+        )
+    acquisition["raw_observation_identity"] = raw_identity
+
+    binding = "apt-acquisition-binding-v2"
+    for name, kind, item in (
+        ("apt_sha256", "sha256", selected_digest),
+        ("raw_identity", "typed_raw_identity", raw_identity),
+        ("selected_row_association_sha256", "sha256", row_digest),
+    ):
+        binding += audit.typed_calibration_identity_field(name, kind, item)
+    for row in stable_joins["ordered_detector_apt_rows"]:
+        join = "apt-raw-ordered-join-v1"
+        for name, kind, item in (
+            ("network", "int", str(row.get("raw_network"))),
+            (
+                "network_local_tone", "index",
+                str(row.get("raw_network_local_tone")),
+            ),
+            (
+                "absolute_tone_frequency_hz", "float64",
+                format(float(row.get("absolute_tone_frequency_hz")), ".17g"),
+            ),
+            ("uid", "int64", str(row.get("uid"))),
+        ):
+            join += audit.typed_calibration_identity_field(name, kind, item)
+        binding += audit.typed_calibration_identity_field(
+            "ordered_join", "typed_join", join
+        )
+    acquisition_digest = hashlib.sha256(binding.encode("utf-8")).hexdigest()
+    acquisition["binding_sha256"] = acquisition_digest
+    components["raw_acquisition_binding_sha256"] = acquisition_digest
+
+    basis = factors["identity_basis"]
+    target_digest, _ = audit.calibration_vector_identity_from_basis(
+        basis["target_unit_factor"], "target unit factor"
+    )
+    flxscale_digest, _ = audit.calibration_vector_identity_from_basis(
+        basis["detector_flxscale"], "detector flxscale"
+    )
+    minimum_digest, _ = audit.calibration_vector_identity_from_basis(
+        basis["minimum_extinction_correction"], "minimum extinction correction"
+    )
+    maximum_digest, _ = audit.calibration_vector_identity_from_basis(
+        basis["maximum_extinction_correction"], "maximum extinction correction"
+    )
+    extinction_digest, _ = audit.recompute_applied_extinction_state(
+        basis["applied_sample_extinction_state"]
+    )
+    factor_preimage = "sci-cal-001-admitted-factor-state-v1"
+    for name, item in (
+        ("target_unit_factor_sha256", target_digest),
+        (
+            "observation_flxscale_correction_applied",
+            "true" if factors["observation_flxscale_correction_applied"]
+            else "false",
+        ),
+        (
+            "applied_observation_flxscale_correction",
+            audit.cxx_hexfloat(
+                float(factors["applied_observation_flxscale_correction"])
+            ),
+        ),
+        (
+            "observation_flxscale_correction_state",
+            factors["observation_flxscale_correction_state"],
+        ),
+        (
+            "observation_flxscale_correction_source_identity",
+            factors["observation_flxscale_correction_source_identity"],
+        ),
+        (
+            "observation_flxscale_correction_recipient_identity",
+            factors["observation_flxscale_correction_recipient_identity"],
+        ),
+        ("detector_flxscale_sha256", flxscale_digest),
+        ("minimum_extinction_correction_sha256", minimum_digest),
+        ("maximum_extinction_correction_sha256", maximum_digest),
+        ("applied_sample_extinction_state_sha256", extinction_digest),
+    ):
+        factor_preimage += audit.calibration_identity_field(name, item)
+    factor_digest = hashlib.sha256(
+        factor_preimage.encode("utf-8")
+    ).hexdigest()
+    factors["factor_state_sha256"] = factor_digest
+    components["admitted_factor_state_sha256"] = factor_digest
+
+    manifest_digest = audit.recompute_tolapt_manifest_association(
+        selected, selected_digest
+    )
+    components["tolapt_manifest_association_sha256"] = manifest_digest
+    reference_state = (
+        audit.cxx_hexfloat(float(factors["reference_spectral_index_alpha"]))
+        + ";default="
+        + (
+            "true" if factors["reference_spectral_index_default_applied"]
+            else "false"
+        )
+        + ";tau225=" + audit.cxx_hexfloat(float(factors["tau225"]))
+    )
+    calibration_preimage = "sci-cal-001-canonical-calibration-identity-v1"
+    for name, item in (
+        ("selected_apt_source_path", selected["source_path"]),
+        ("selected_apt_sha256", selected_digest),
+        ("apt_row_association_sha256", row_digest),
+        ("apt_observation_identity", selected["observation_identity"]),
+        (
+            "apt_matched_observation_identity",
+            selected["matched_observation_identity"],
+        ),
+        ("apt_selected_source", selected["selected_source"]),
+        ("tolapt_manifest_association_sha256", manifest_digest),
+        ("acquisition_binding_sha256", acquisition_digest),
+        ("raw_observation_identity", raw_identity),
+        ("target_unit", factors["target_unit"]),
+        ("factor_composition", factors["factor_composition"]),
+        ("factor_provenance", factors["factor_provenance"]),
+        ("factor_state_sha256", factor_digest),
+        ("atmosphere_operator_id", factors["atmosphere_operator_id"]),
+        (
+            "atmosphere_operator_contract_sha256",
+            factors["atmosphere_operator_contract_sha256"],
+        ),
+        (
+            "atmosphere_node_table_sha256",
+            factors["atmosphere_node_table_sha256"],
+        ),
+        ("passband_set_id", factors["passband_set_id"]),
+        ("reference_profile_id", factors["reference_profile_id"]),
+        ("reference_and_tau_state", reference_state),
+        ("response_basis_provenance", value["response_basis"]["provenance"]),
+        ("validity", "valid_complete_product"),
+    ):
+        calibration_preimage += audit.calibration_identity_field(name, item)
+    calibration_digest = hashlib.sha256(
+        calibration_preimage.encode("utf-8")
+    ).hexdigest()
+    package_digest = audit.recompute_calibration_package_identity(
+        calibration_digest, selected_digest, acquisition_digest
+    )
+    value["calibration_identity"] = calibration_digest
+    value["package_identity"] = package_digest
+
+    state_updates = {
+        "calibration_apt_artifact_sha256": selected_digest,
+        "calibration_acquisition_binding_sha256": acquisition_digest,
+        "calibration_identity": calibration_digest,
+        "calibration_package_identity": package_digest,
+        "calibration_factor_state_sha256": factor_digest,
+        "calibration_raw_observation_identity": raw_identity,
+        "calibration_response_identity": value["response_basis"]["provenance"],
+    }
+    for section in (document["observation"]["value"], document["realized"]):
+        for name, item in state_updates.items():
+            section[name] = {"available": True, "value": item}
+
+
+def _two_row_v4_package(*, permuted: bool = False) -> tuple[dict, bytes]:
+    document = valid_raw_v4_document("000042")
+    rows = [
+        "42 0 500000000.0 0 1.0 2.0 10.0 9.0 0.0 0",
+        "43 0 600000000.0 0 1.0 2.0 10.0 9.0 0.0 0",
+    ]
+    source_indices = (0, 1)
+    if permuted:
+        rows.reverse()
+        source_indices = (1, 0)
+    apt_bytes = _test_apt_bytes(rows)
+    value = document["calibration_lineage"]["value"]
+    first = value["stable_joins"]["ordered_detector_apt_rows"][0]
+    second = yaml.safe_load(yaml.safe_dump(first))
+    first["selected_apt_source_row_index"] = source_indices[0]
+    second.update({
+        "ordered_detector_index": 1,
+        "selected_apt_source_row_index": source_indices[1],
+        "raw_network_local_tone": 1,
+        "absolute_tone_frequency_hz": 600000000.0,
+        "uid": "43",
+    })
+    second["retained_fields"][0]["value"] = "43"
+    value["stable_joins"]["ordered_detector_apt_rows"] = [first, second]
+    value["raw_acquisition"]["artifacts"][0][
+        "absolute_tone_frequency_hz"
+    ] = [500000000.0, 600000000.0]
+    correction = math.exp(0.1)
+    basis = value["factor_operator_state"]["identity_basis"]
+    basis["target_unit_factor"] = _vector_basis([1.0, 1.0])
+    basis["detector_flxscale"] = _vector_basis([1.0, 1.0])
+    basis["minimum_extinction_correction"] = _vector_basis(
+        [correction, correction]
+    )
+    basis["maximum_extinction_correction"] = _vector_basis(
+        [correction, correction]
+    )
+    _rebuild_v4_package_identities(document, apt_bytes)
+    return document, apt_bytes
+
+
 def write_raw_v4_observation(
     reduction: Path,
     obsnum: str,
@@ -3652,6 +3945,7 @@ class ProvenanceAuditTest(unittest.TestCase):
                     selected_apt,
                     value["stable_joins"],
                     value["factor_operator_state"],
+                    value["raw_acquisition"],
                 )
 
     def test_requested_yaml_comparison_is_recursive_type_and_value_exact(
@@ -3718,14 +4012,21 @@ class ProvenanceAuditTest(unittest.TestCase):
         base_factors["identity_basis"]["detector_flxscale"] = (
             _vector_basis([1.0, 1.0])
         )
+        base_acquisition = yaml.safe_load(
+            yaml.safe_dump(value["raw_acquisition"])
+        )
+        base_acquisition["artifacts"][0][
+            "absolute_tone_frequency_hz"
+        ] = [500000000.0, 600000000.0]
 
         cases = (
             "exact",
+            "permuted",
             "extra",
             "missing",
             "duplicate",
             "out-of-range",
-            "reordered",
+            "stale-source-indices",
             "partial",
             "conflicting",
             "tampered",
@@ -3735,11 +4036,21 @@ class ProvenanceAuditTest(unittest.TestCase):
                     tempfile.TemporaryDirectory() as directory:
                 joins = yaml.safe_load(yaml.safe_dump(base_joins))
                 factors = yaml.safe_load(yaml.safe_dump(base_factors))
+                acquisition = yaml.safe_load(yaml.safe_dump(base_acquisition))
                 apt_rows = [first_row, second_row]
                 expected_error = None
-                if case == "extra":
+                if case == "permuted":
+                    apt_rows.reverse()
+                    joins["ordered_detector_apt_rows"][0][
+                        "selected_apt_source_row_index"
+                    ] = 1
+                    joins["ordered_detector_apt_rows"][1][
+                        "selected_apt_source_row_index"
+                    ] = 0
+                elif case == "extra":
                     joins = value["stable_joins"]
                     factors = value["factor_operator_state"]
+                    acquisition = value["raw_acquisition"]
                     expected_error = "source row coverage is incomplete"
                 elif case == "missing":
                     apt_rows = [first_row]
@@ -3754,16 +4065,16 @@ class ProvenanceAuditTest(unittest.TestCase):
                         "selected_apt_source_row_index"
                     ] = 2
                     expected_error = "source row binding is invalid"
-                elif case == "reordered":
+                elif case == "stale-source-indices":
                     apt_rows.reverse()
-                    expected_error = "row differs from serialized detector join"
+                    expected_error = "occurrence differs from raw relation"
                 elif case == "partial":
                     joins["ordered_detector_apt_rows"][0][
                         "retained_fields"
                     ] = joins["ordered_detector_apt_rows"][0][
                         "retained_fields"
                     ][1:]
-                    expected_error = "row differs from serialized detector join"
+                    expected_error = "retained fields are incomplete or conflicting"
                 elif case == "conflicting":
                     joins["ordered_detector_apt_rows"][0]["uid"] = "99"
                     expected_error = "row differs from serialized detector join"
@@ -3778,13 +4089,269 @@ class ProvenanceAuditTest(unittest.TestCase):
                 )
                 if expected_error is None:
                     audit.validate_selected_apt_factor_binding(
-                        selected_apt, joins, factors
+                        selected_apt, joins, factors, acquisition
                     )
                 else:
                     with self.assertRaisesRegex(ValueError, expected_error):
                         audit.validate_selected_apt_factor_binding(
-                            selected_apt, joins, factors
+                            selected_apt, joins, factors, acquisition
                         )
+
+    def test_selected_apt_full_semantic_relation_matrix(self) -> None:
+        first_row = "42 0 500000000.0 0 1.0 2.0 10.0 9.0 0.0 0"
+        second_row = "43 0 600000000.0 0 1.0 2.0 10.0 9.0 0.0 0"
+
+        def semantic_errors(document: dict, apt_bytes: bytes | None) -> list[str]:
+            with tempfile.TemporaryDirectory() as directory:
+                path = write_raw_v4_observation(
+                    Path(directory), "000042", document,
+                    write_member=apt_bytes is not None,
+                )
+                if apt_bytes is not None:
+                    (path.parent / audit.SELECTED_CALIBRATION_APT_FILENAME).write_bytes(
+                        apt_bytes
+                    )
+                return audit.raw_provenance_semantic_errors(document, path)
+
+        accepted: dict[str, tuple[dict, bytes]] = {
+            "exact": _two_row_v4_package(),
+            "same-network-permutation-source-indices-1-0": (
+                _two_row_v4_package(permuted=True)
+            ),
+        }
+        det_id_document = valid_raw_v4_document("000042")
+        det_id_document["calibration_lineage"]["value"]["stable_joins"][
+            "ordered_detector_apt_rows"
+        ][0]["retained_fields"].append({
+            "name": "det_id", "ecsv_datatype": "float64", "value": "99",
+        })
+        det_id_apt = _test_apt_bytes([first_row + " 99.0"], det_id=True)
+        _rebuild_v4_package_identities(det_id_document, det_id_apt)
+        accepted["optional-det-id"] = (det_id_document, det_id_apt)
+
+        for name, (document, apt_bytes) in accepted.items():
+            with self.subTest(case=name):
+                self.assertEqual(semantic_errors(document, apt_bytes), [])
+
+        rejected: dict[str, tuple[dict, bytes | None, str]] = {}
+
+        missing_member = valid_raw_v4_document("000042")
+        rejected["missing-member"] = (
+            missing_member, None, "v4 selected APT sibling member is missing",
+        )
+
+        extra_row = valid_raw_v4_document("000042")
+        extra_row_apt = _test_apt_bytes([first_row, second_row])
+        _rebuild_v4_package_identities(extra_row, extra_row_apt)
+        rejected["extra-package-occurrence"] = (
+            extra_row, extra_row_apt,
+            "v4 selected-APT source row coverage is incomplete",
+        )
+
+        missing_row, _ = _two_row_v4_package()
+        missing_row_apt = _test_apt_bytes([first_row])
+        _rebuild_v4_package_identities(missing_row, missing_row_apt)
+        rejected["missing-associated-source-row"] = (
+            missing_row, missing_row_apt,
+            "v4 selected-APT source row binding is invalid",
+        )
+
+        duplicate, duplicate_apt = _two_row_v4_package()
+        duplicate["calibration_lineage"]["value"]["stable_joins"][
+            "ordered_detector_apt_rows"
+        ][1]["selected_apt_source_row_index"] = 0
+        _rebuild_v4_package_identities(duplicate, duplicate_apt)
+        rejected["duplicate-source-binding"] = (
+            duplicate, duplicate_apt,
+            "v4 selected-APT source row binding is invalid",
+        )
+
+        out_of_range, out_of_range_apt = _two_row_v4_package()
+        out_of_range["calibration_lineage"]["value"]["stable_joins"][
+            "ordered_detector_apt_rows"
+        ][1]["selected_apt_source_row_index"] = 2
+        _rebuild_v4_package_identities(out_of_range, out_of_range_apt)
+        rejected["out-of-range-source-binding"] = (
+            out_of_range, out_of_range_apt,
+            "v4 selected-APT source row binding is invalid",
+        )
+
+        stale_relation, _ = _two_row_v4_package()
+        stale_relation_apt = _test_apt_bytes([second_row, first_row])
+        _rebuild_v4_package_identities(stale_relation, stale_relation_apt)
+        rejected["stale-source-index-lineage"] = (
+            stale_relation, stale_relation_apt,
+            "v4 selected APT sibling occurrence differs from raw relation",
+        )
+
+        forged_uid = valid_raw_v4_document("000042")
+        forged_uid_apt = _test_apt_bytes([
+            first_row.replace("42 ", "99 ", 1)
+        ])
+        _rebuild_v4_package_identities(forged_uid, forged_uid_apt)
+        rejected["forged-occurrence-uid"] = (
+            forged_uid, forged_uid_apt,
+            "v4 selected APT sibling retained field differs from typed lineage",
+        )
+
+        uid_datatype = valid_raw_v4_document("000042")
+        uid_datatype_apt = _test_apt_bytes(
+            [first_row], uid_datatype="int32"
+        )
+        _rebuild_v4_package_identities(uid_datatype, uid_datatype_apt)
+        rejected["uid-datatype-mismatch"] = (
+            uid_datatype, uid_datatype_apt,
+            "v4 selected APT sibling retained field differs from typed lineage",
+        )
+
+        nw_datatype = valid_raw_v4_document("000042")
+        nw_datatype_apt = _test_apt_bytes(
+            [first_row.replace("42 0 ", "42 0.0 ", 1)],
+            nw_datatype="float64",
+        )
+        _rebuild_v4_package_identities(nw_datatype, nw_datatype_apt)
+        rejected["network-datatype-mismatch"] = (
+            nw_datatype, nw_datatype_apt,
+            "v4 selected APT sibling acquisition datatypes conflict with producer schema",
+        )
+
+        tone_datatype = valid_raw_v4_document("000042")
+        tone_datatype_apt = _test_apt_bytes(
+            [first_row.replace("500000000.0", "500000000", 1)],
+            tone_datatype="int64",
+        )
+        _rebuild_v4_package_identities(tone_datatype, tone_datatype_apt)
+        rejected["tone-datatype-mismatch"] = (
+            tone_datatype, tone_datatype_apt,
+            "v4 selected APT sibling acquisition datatypes conflict with producer schema",
+        )
+
+        flxscale_datatype = valid_raw_v4_document("000042")
+        flxscale_datatype_apt = _test_apt_bytes(
+            [first_row], flxscale_datatype="float32"
+        )
+        _rebuild_v4_package_identities(
+            flxscale_datatype, flxscale_datatype_apt
+        )
+        rejected["flxscale-datatype-mismatch"] = (
+            flxscale_datatype, flxscale_datatype_apt,
+            "v4 selected APT sibling acquisition datatypes conflict with producer schema",
+        )
+
+        adjacent_tone = valid_raw_v4_document("000042")
+        adjacent_tone_value = math.nextafter(500000000.0, math.inf)
+        adjacent_tone_apt = _test_apt_bytes([
+            first_row.replace(
+                "500000000.0", format(adjacent_tone_value, ".17g"), 1
+            )
+        ])
+        _rebuild_v4_package_identities(adjacent_tone, adjacent_tone_apt)
+        rejected["adjacent-binary64-tone"] = (
+            adjacent_tone, adjacent_tone_apt,
+            "v4 selected APT sibling occurrence differs from raw relation",
+        )
+
+        det_id_mismatch = valid_raw_v4_document("000042")
+        det_id_mismatch["calibration_lineage"]["value"]["stable_joins"][
+            "ordered_detector_apt_rows"
+        ][0]["retained_fields"].append({
+            "name": "det_id", "ecsv_datatype": "float64", "value": "98",
+        })
+        det_id_mismatch_apt = _test_apt_bytes(
+            [first_row + " 99.0"], det_id=True
+        )
+        _rebuild_v4_package_identities(
+            det_id_mismatch, det_id_mismatch_apt
+        )
+        rejected["optional-det-id-mismatch"] = (
+            det_id_mismatch, det_id_mismatch_apt,
+            "v4 selected APT sibling retained field differs from typed lineage",
+        )
+
+        incomplete_retained = valid_raw_v4_document("000042")
+        incomplete_retained["calibration_lineage"]["value"]["stable_joins"][
+            "ordered_detector_apt_rows"
+        ][0]["retained_fields"].append({
+            "name": "invented", "ecsv_datatype": "int64", "value": "7",
+        })
+        incomplete_retained_apt = _test_apt_bytes([first_row])
+        _rebuild_v4_package_identities(
+            incomplete_retained, incomplete_retained_apt
+        )
+        rejected["extra-retained-lineage"] = (
+            incomplete_retained, incomplete_retained_apt,
+            "v4 selected APT sibling retained fields are incomplete or conflicting",
+        )
+
+        conflicting_raw = valid_raw_v4_document("000042")
+        conflicting_raw["calibration_lineage"]["value"]["stable_joins"][
+            "ordered_detector_apt_rows"
+        ][0]["raw_network"] = 1
+        conflicting_raw_apt = _test_apt_bytes([first_row])
+        _rebuild_v4_package_identities(conflicting_raw, conflicting_raw_apt)
+        rejected["conflicting-raw-network"] = (
+            conflicting_raw, conflicting_raw_apt,
+            "v4 selected-APT detector row differs from raw occurrence relation",
+        )
+
+        incomplete_raw = valid_raw_v4_document("000042")
+        incomplete_raw["calibration_lineage"]["value"]["stable_joins"][
+            "ordered_detector_apt_rows"
+        ][0]["raw_network_local_tone"] = None
+        incomplete_raw_apt = _test_apt_bytes([first_row])
+        _rebuild_v4_package_identities(incomplete_raw, incomplete_raw_apt)
+        rejected["incomplete-network-local-tone"] = (
+            incomplete_raw, incomplete_raw_apt,
+            "v4 selected-APT detector row differs from raw occurrence relation",
+        )
+
+        duplicate_tone, duplicate_tone_apt = _two_row_v4_package()
+        duplicate_tone["calibration_lineage"]["value"]["raw_acquisition"][
+            "artifacts"
+        ][0]["absolute_tone_frequency_hz"] = [500000000.0, 500000000.0]
+        _rebuild_v4_package_identities(duplicate_tone, duplicate_tone_apt)
+        rejected["duplicate-raw-tone-relation"] = (
+            duplicate_tone, duplicate_tone_apt,
+            "v4 selected-APT/raw tone relation is duplicated",
+        )
+
+        partial_ecsv = valid_raw_v4_document("000042")
+        partial_lines = selected_calibration_fixture_path().read_text(
+            encoding="utf-8"
+        ).splitlines()
+        partial_lines = [
+            line for line in partial_lines if "{name: flxscale," not in line
+        ]
+        header_fields = partial_lines[-2].split()
+        row_fields = partial_lines[-1].split()
+        flxscale_index = header_fields.index("flxscale")
+        del header_fields[flxscale_index]
+        del row_fields[flxscale_index]
+        partial_lines[-2] = " ".join(header_fields)
+        partial_lines[-1] = " ".join(row_fields)
+        partial_apt = ("\n".join(partial_lines) + "\n").encode("utf-8")
+        _rebuild_v4_package_identities(partial_ecsv, partial_apt)
+        rejected["partial-ecsv"] = (
+            partial_ecsv, partial_apt,
+            "v4 selected APT sibling columns are incomplete",
+        )
+
+        conflicting_component, conflicting_component_apt = (
+            _two_row_v4_package()
+        )
+        conflicting_component["calibration_lineage"]["value"][
+            "component_identities"
+        ]["selected_apt_sha256"] = "3" * 64
+        rejected["conflicting-component"] = (
+            conflicting_component, conflicting_component_apt,
+            "v4 selected APT source/package/component digests differ",
+        )
+
+        for name, (document, apt_bytes, expected_error) in rejected.items():
+            with self.subTest(case=name):
+                self.assertIn(
+                    expected_error, semantic_errors(document, apt_bytes)
+                )
 
     def test_rejects_copied_package_and_material_state_mismatches(self) -> None:
         copied = valid_raw_v4_document("000042")

@@ -3008,6 +3008,16 @@ enum class F008PublicationFailure {
     replace
 };
 
+int fail_f008_native_close_after_real_close(fitsfile *file, int *status) {
+    const int result = fits_close_file(file, status);
+    constexpr int injected_status = 999;
+    if (status != nullptr) {
+        *status = injected_status;
+    }
+    static_cast<void>(result);
+    return injected_status;
+}
+
 const char *f008_failure_name(F008PublicationFailure failure) {
     switch (failure) {
         case F008PublicationFailure::write:
@@ -3171,7 +3181,7 @@ void exercise_f008_owner_lifecycle_matrix(
                     output.publish_atomically();
                     return;
                 }
-                output.publish_atomically(
+                const auto checkpoint =
                     [&](F008FitsOutput::PublicationCheckpoint checkpoint) {
                         if (failure == F008PublicationFailure::write &&
                             checkpoint == F008FitsOutput::
@@ -3186,12 +3196,6 @@ void exercise_f008_owner_lifecycle_matrix(
                             std::filesystem::remove(
                                 output.staged_path(), ignored);
                         }
-                        if (failure == F008PublicationFailure::close &&
-                            checkpoint == F008FitsOutput::
-                                PublicationCheckpoint::after_close) {
-                            throw std::runtime_error(
-                                "injected required FITS close failure");
-                        }
                         if (failure == F008PublicationFailure::reopen &&
                             checkpoint == F008FitsOutput::
                                 PublicationCheckpoint::before_reopen) {
@@ -3205,7 +3209,14 @@ void exercise_f008_owner_lifecycle_matrix(
                             invalidate_f008_calibration_join(
                                 output.staged_path());
                         }
-                    });
+                    };
+                if (failure == F008PublicationFailure::close) {
+                    output.publish_atomically(
+                        checkpoint, fail_f008_native_close_after_real_close);
+                }
+                else {
+                    output.publish_atomically(checkpoint);
+                }
             };
             const auto invoke_owner = [&](auto &&publisher) {
                 if (science_wiener_owner) {

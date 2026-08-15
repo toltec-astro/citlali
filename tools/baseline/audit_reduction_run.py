@@ -866,11 +866,12 @@ def recompute_admitted_factor_state(factors: Any) -> str:
 
 
 def validate_selected_apt_factor_binding(
-    path: Path, stable_joins: Any, factors: Any,
+    path: Path, stable_joins: Any, factors: Any, raw_acquisition: Any,
 ) -> None:
     from astropy.table import Table
 
-    if not isinstance(stable_joins, dict) or not isinstance(factors, dict):
+    if not isinstance(stable_joins, dict) or not isinstance(factors, dict) or \
+            not isinstance(raw_acquisition, dict):
         raise ValueError("v4 selected-APT factor binding is incomplete")
     try:
         table = Table.read(path, format="ascii.ecsv")
@@ -879,6 +880,34 @@ def validate_selected_apt_factor_binding(
     required_columns = {"uid", "nw", "tone_freq", "flag", "flxscale"}
     if not required_columns.issubset(table.colnames):
         raise ValueError("v4 selected APT sibling columns are incomplete")
+
+    def ecsv_datatype(name: str) -> str:
+        datatype = table[name].dtype
+        if datatype.kind in {"O", "S", "U"}:
+            return "string"
+        return datatype.name
+
+    producer_datatypes = {
+        "nw": "int64",
+        "tone_freq": "float64",
+        "flxscale": "float64",
+    }
+    if any(
+        ecsv_datatype(name) != expected
+        for name, expected in producer_datatypes.items()
+    ):
+        raise ValueError(
+            "v4 selected APT sibling acquisition datatypes conflict with producer schema"
+        )
+
+    def binary64_identity(value: Any, label: str) -> str:
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise ValueError(f"v4 selected-APT {label} is not binary64")
+        numeric = float(value)
+        if not math.isfinite(numeric):
+            raise ValueError(f"v4 selected-APT {label} is not finite binary64")
+        return format(numeric, ".17g")
+
     rows = stable_joins.get("ordered_detector_apt_rows")
     basis = factors.get("identity_basis")
     if not isinstance(rows, list) or not isinstance(basis, dict):
@@ -886,51 +915,149 @@ def validate_selected_apt_factor_binding(
     _, flxscale = calibration_vector_identity_from_basis(
         basis.get("detector_flxscale"), "detector flxscale"
     )
-    if len(rows) != len(flxscale):
+    if raw_acquisition.get("binding_mode") != \
+            "explicit_network_local_tone_frequency_join_v1" or \
+            raw_acquisition.get("key_schema") != \
+            "raw_observation_artifact+network+network_local_tone_frequency":
+        raise ValueError("v4 selected-APT/raw relation mode is invalid")
+    artifacts = raw_acquisition.get("artifacts")
+    if not isinstance(artifacts, list) or not artifacts:
+        raise ValueError("v4 selected-APT/raw relation is incomplete")
+
+    raw_occurrences: list[tuple[int, int, str]] = []
+    seen_networks: set[int] = set()
+    for artifact in artifacts:
+        if not isinstance(artifact, dict):
+            raise ValueError("v4 selected-APT/raw artifact relation is invalid")
+        network = artifact.get("roach_index")
+        tones = artifact.get("absolute_tone_frequency_hz")
+        if isinstance(network, bool) or not isinstance(network, int) or \
+                network < 0 or network in seen_networks or \
+                artifact.get("interface") != f"toltec{network}" or \
+                not isinstance(tones, list) or not tones:
+            raise ValueError("v4 selected-APT/raw artifact relation is invalid")
+        seen_networks.add(network)
+        network_tones: set[str] = set()
+        for local_tone, tone in enumerate(tones):
+            if not isinstance(tone, float):
+                raise ValueError("v4 selected-APT/raw tone relation is invalid")
+            tone_identity = binary64_identity(tone, "raw tone relation")
+            if tone_identity in network_tones:
+                raise ValueError("v4 selected-APT/raw tone relation is duplicated")
+            network_tones.add(tone_identity)
+            raw_occurrences.append((network, local_tone, tone_identity))
+
+    if len(rows) != len(flxscale) or len(rows) != len(raw_occurrences):
         raise ValueError("v4 selected-APT/factor detector cardinalities differ")
+
+    retained_names_in_producer_order = (
+        "uid", "flag", "det_id", "det_id_right", "meas_idx",
+        "design_idx", "match_id", "measured_id", "matched_design_id",
+        "match_status",
+    )
+    expected_retained_names = [
+        name for name in retained_names_in_producer_order
+        if name in table.colnames
+    ]
+
+    def retained_value(value: Any, datatype: str) -> str:
+        if datatype == "string":
+            return str(value)
+        try:
+            numeric = float(value)
+        except (TypeError, ValueError) as error:
+            raise ValueError(
+                "v4 selected APT sibling retained value is invalid"
+            ) from error
+        return "nonfinite" if not math.isfinite(numeric) else format(numeric, ".17g")
+
     source_indices: set[int] = set()
+    apt_occurrences: set[tuple[int, str]] = set()
     for detector_index, row in enumerate(rows):
+        if not isinstance(row, dict):
+            raise ValueError("v4 selected-APT detector relation is invalid")
+        ordered_index = row.get("ordered_detector_index")
         source_index = row.get("selected_apt_source_row_index")
-        if isinstance(source_index, bool) or not isinstance(source_index, int) or \
+        if isinstance(ordered_index, bool) or \
+                not isinstance(ordered_index, int) or \
+                ordered_index != detector_index or \
+                isinstance(source_index, bool) or not isinstance(source_index, int) or \
                 not 0 <= source_index < len(table) or \
                 source_index in source_indices:
             raise ValueError("v4 selected-APT source row binding is invalid")
         source_indices.add(source_index)
         apt_row = table[source_index]
+        raw_network, raw_local_tone, raw_tone_identity = raw_occurrences[
+            detector_index
+        ]
+        row_network = row.get("raw_network")
+        row_local_tone = row.get("raw_network_local_tone")
+        row_tone_frequency = row.get("absolute_tone_frequency_hz")
+        if isinstance(row_network, bool) or not isinstance(row_network, int) or \
+                isinstance(row_local_tone, bool) or \
+                not isinstance(row_local_tone, int) or \
+                not isinstance(row_tone_frequency, float) or \
+                row_network != raw_network or \
+                row_local_tone != raw_local_tone or \
+                binary64_identity(
+                    row_tone_frequency, "ordered detector absolute tone"
+                ) != raw_tone_identity:
+            raise ValueError(
+                "v4 selected-APT detector row differs from raw occurrence relation"
+            )
         try:
-            uid = str(apt_row["uid"])
             network = int(apt_row["nw"])
-            tone_frequency = float(apt_row["tone_freq"])
-            flag = int(apt_row["flag"])
-            apt_flxscale = float(apt_row["flxscale"])
+            tone_identity = binary64_identity(
+                float(apt_row["tone_freq"]), "ECSV absolute tone"
+            )
+            flag = float(apt_row["flag"])
+            apt_flxscale_identity = binary64_identity(
+                float(apt_row["flxscale"]), "ECSV flxscale"
+            )
         except (TypeError, ValueError) as error:
             raise ValueError(
                 "v4 selected APT sibling row values are invalid"
             ) from error
-        if not math.isfinite(tone_frequency) or not math.isfinite(apt_flxscale):
-            raise ValueError("v4 selected APT sibling row values are non-finite")
-        retained = {
-            field.get("name"): field.get("value")
-            for field in row.get("retained_fields", [])
-            if isinstance(field, dict)
-        }
-        if uid != row.get("uid") or uid != retained.get("uid") or \
-                str(flag) != retained.get("flag") or \
-                network != row.get("raw_network") or \
-                tone_frequency != row.get("absolute_tone_frequency_hz") or \
+        if network != raw_network or tone_identity != raw_tone_identity:
+            raise ValueError(
+                "v4 selected APT sibling occurrence differs from raw relation"
+            )
+        apt_occurrence = (network, tone_identity)
+        if apt_occurrence in apt_occurrences:
+            raise ValueError("v4 selected APT sibling occurrence is duplicated")
+        apt_occurrences.add(apt_occurrence)
+
+        retained_fields = row.get("retained_fields")
+        if not isinstance(retained_fields, list) or any(
+            not isinstance(field, dict) for field in retained_fields
+        ):
+            raise ValueError("v4 selected APT sibling retained fields are incomplete")
+        retained = {field.get("name"): field for field in retained_fields}
+        if list(retained) != expected_retained_names or \
+                len(retained) != len(retained_fields):
+            raise ValueError(
+                "v4 selected APT sibling retained fields are incomplete or conflicting"
+            )
+        for name in expected_retained_names:
+            field = retained[name]
+            datatype = ecsv_datatype(name)
+            if field.get("ecsv_datatype") != datatype or \
+                    field.get("value") != retained_value(
+                        apt_row[name], datatype
+                    ):
+                raise ValueError(
+                    "v4 selected APT sibling retained field differs from typed lineage"
+                )
+
+        uid = retained["uid"]["value"]
+        if not isinstance(row.get("uid"), str) or row["uid"] != uid or \
                 (flag == 0) != row.get("eligible"):
             raise ValueError(
                 "v4 selected APT sibling row differs from serialized detector join"
             )
-        local_tone = sum(
-            int(table[index]["nw"]) == network
-            for index in range(source_index)
-        )
-        if local_tone != row.get("raw_network_local_tone"):
-            raise ValueError(
-                "v4 selected APT sibling row order differs from detector join"
-            )
-        if apt_flxscale != flxscale[detector_index]:
+        if apt_flxscale_identity != binary64_identity(
+            flxscale[detector_index], "admitted detector flxscale"
+        ):
             raise ValueError(
                 "v4 selected APT flxscale differs from admitted factor state"
             )
@@ -1678,7 +1805,8 @@ def raw_provenance_semantic_errors(
                         )
                         if sibling_path is not None and sibling_path.is_file():
                             validate_selected_apt_factor_binding(
-                                sibling_path, stable_joins, factor_state
+                                sibling_path, stable_joins, factor_state,
+                                raw_acquisition,
                             )
                         if factor_digest != components.get(
                             "admitted_factor_state_sha256"

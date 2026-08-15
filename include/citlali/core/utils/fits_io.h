@@ -24,9 +24,42 @@ enum file_type_enum {
     read_fits = 0,
     write_fits = 1
 };
+
+namespace citlali::fits_io_detail {
+
+// CCfits exposes its native handle only as a borrowed pointer. Its public
+// destroy/destructor path discards the status returned by its private close()
+// method, so required-output publication cannot use that path. This narrowly
+// scoped accessor transfers the handle to the checked CFITSIO close below;
+// no other CCfits internals are exposed or changed.
+struct CcfitsNativeHandleMember {
+    using type = fitsfile *CCfits::FITS::*;
+    friend type ccfits_native_handle_member(CcfitsNativeHandleMember);
+};
+
+template <class Tag, typename Tag::type Member>
+struct CcfitsPrivateMemberAccess {
+    friend typename Tag::type ccfits_native_handle_member(Tag) {
+        return Member;
+    }
+};
+
+template struct CcfitsPrivateMemberAccess<
+    CcfitsNativeHandleMember, &CCfits::FITS::m_fptr>;
+
+inline fitsfile *release_native_handle(CCfits::FITS &file) noexcept {
+    const auto member =
+        ccfits_native_handle_member(CcfitsNativeHandleMember{});
+    return std::exchange(file.*member, nullptr);
+}
+
+} // namespace citlali::fits_io_detail
+
 template<file_type_enum file_type, typename ext_hdu_t>
 class fitsIO {
 public:
+    using NativeClose = int (*)(fitsfile *, int *);
+
     enum class PublicationCheckpoint {
         after_hdu_write,
         after_library_flush,
@@ -162,6 +195,40 @@ private:
         expected_calibration_join_;
     bool write_failed_ = false;
     bool published_ = false;
+
+    void close_staged_writer(NativeClose native_close) {
+        if (!pfits) {
+            hdus.clear();
+            return;
+        }
+        if (native_close == nullptr) {
+            throw std::invalid_argument(
+                "native FITS close operation is unavailable");
+        }
+
+        auto *native_handle =
+            citlali::fits_io_detail::release_native_handle(*pfits);
+        if (native_handle == nullptr) {
+            pfits.reset();
+            hdus.clear();
+            return;
+        }
+
+        // CFITSIO ffclos consumes and frees the supplied fitsfile on every
+        // return path, including a nonzero close status. Detaching it from
+        // CCfits first is therefore required to prevent a double close.
+        int status = 0;
+        const int result = std::invoke(native_close, native_handle, &status);
+        pfits.reset();
+        hdus.clear();
+        if (result != 0 || status != 0) {
+            const int close_status = status != 0 ? status : result;
+            throw std::runtime_error(
+                "unable to close staged FITS output (status " +
+                std::to_string(close_status) + "): " +
+                fits_status_message(close_status));
+        }
+    }
 
     template <typename FitsScalar, typename Derived>
     void add_typed_hdu(std::string hdu_name, int image_type,
@@ -361,7 +428,8 @@ public:
     }
 
     template <class Checkpoint>
-    void publish_atomically(Checkpoint &&checkpoint) {
+    void publish_atomically(Checkpoint &&checkpoint,
+                            NativeClose native_close) {
         static_assert(file_type == file_type_enum::write_fits,
                       "only FITS writers publish outputs");
         if (published_) {
@@ -384,8 +452,7 @@ public:
             citlali::pipeline::atomic_output::synchronize_file(staged_path_);
             std::invoke(
                 checkpoint, PublicationCheckpoint::after_library_flush);
-            pfits.reset();
-            hdus.clear();
+            close_staged_writer(native_close);
             std::invoke(checkpoint, PublicationCheckpoint::after_close);
             std::invoke(checkpoint, PublicationCheckpoint::before_reopen);
             validate_reopened_output();
@@ -406,6 +473,12 @@ public:
                 "failed to publish required FITS output " + filepath +
                 ".fits");
         }
+    }
+
+    template <class Checkpoint>
+    void publish_atomically(Checkpoint &&checkpoint) {
+        publish_atomically(
+            std::forward<Checkpoint>(checkpoint), fits_close_file);
     }
 
     void publish_atomically() {
