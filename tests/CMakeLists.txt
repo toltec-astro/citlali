@@ -52,6 +52,29 @@ gtest_discover_tests(
         DISCOVERY_MODE PRE_TEST
     )
 
+add_executable(citlali_sci_map_003_contract_test EXCLUDE_FROM_ALL
+    rtc_response_manifest_header.cpp
+    oof_transfer_reference_header.cpp
+    test_sci_map_003_contract.cpp
+)
+set_target_properties(citlali_sci_map_003_contract_test
+    PROPERTIES
+        DISABLE_PRECOMPILE_HEADERS ON
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+)
+target_link_libraries(citlali_sci_map_003_contract_test
+    PRIVATE
+        citlali::citlali
+        GTest::gtest_main
+)
+add_dependencies(check citlali_sci_map_003_contract_test)
+gtest_discover_tests(
+    citlali_sci_map_003_contract_test
+        WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+        TEST_PREFIX "citlali::sci_map_003::"
+        DISCOVERY_MODE PRE_TEST
+    )
+
 add_executable(citlali_science_map_truth_test EXCLUDE_FROM_ALL
     test_science_map_contract.cpp
     test_science_map_provenance.cpp
