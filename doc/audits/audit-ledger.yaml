@@ -30,12 +30,12 @@ current_program_checkpoint:
       restriction: exact_application_mainline_record_only
   active_lanes:
     SCI-CAL-001: successor_6_return_accepted_successor_7_authorized_not_launched
-    SCI-MAP-002: third_successor_86f1582_owner_accepted_ownership_001_e6c8d126_committed_awaiting_owner_push_not_integrated
+    SCI-MAP-002: ownership_001_e6c8d126_reaudit_f541d81a_owner_pushed_remotely_frozen_proved_disjoint_F003_closed_not_integrated_or_production_authorized
     SCI-ALIGN-001: assigned_grid_compatibility_policy_active_producer_authority_request_pending
     SCI-AST-001: phase_independent_math_permitted_no_launch_absolute_placement_unavailable
     SCI-RTC-001: core_phase_independent_and_stage_a_separate_stage_a_successor_3_authorized_not_launched
     ENG-STATE-001: static_package_accepted_F001_F002_open
-    SCI-MAP-003: completed_audit_disposition_registered_amend_F001_F010_open_phase_2_handoffs_registered_not_delivered
+    SCI-MAP-003: completed_audit_amend_F003_closed_F001_contract_frozen_F002_RTC_contract_frozen_response_unavailable_F004_F010_open_handoffs_not_delivered
   queue:
     - SCI-CAL-001_successor_7_bounded_technical_repair_authorized_pending_role_separated_READY_and_launch
     - SCI-RTC-001_phase_independent_repair_handoff_ready_not_launched
@@ -44,7 +44,7 @@ current_program_checkpoint:
     - SCI-VAL-001_unlaunched_PTC_D002_successor_handoff_pending_recipient_review
     - SCI-BEAM-001_held
     - SCI-TEL-INPUT-001_audit_owner_accepted_repair_scope_unresolved
-    - SCI-MAP-003_completed_audit_registered_amend_after_MAP_002_before_MODE_LMTOOF_admission_phase_2_registered_not_delivered
+    - SCI-MAP-003_contract_freeze_registered_after_F003_closure_F001_and_F002_remain_open_after_MAP_002_before_MODE_LMTOOF_admission_handoffs_not_delivered
   held_readiness:
     SCI-FLT-001: exact_repair_base_unresolved_until_integrated_CAL_successor
   integration_sequence:
@@ -7476,7 +7476,7 @@ packages:
     name: OOF residual transfer-function estimation and product
     tier: A
     queue_wave: map_product_after_SCI_MAP_002_before_SCI_MODE_001_LMTOOF_admission
-    registration_status: completed_audit_disposition_registered_phase_2_registered_not_delivered
+    registration_status: completed_audit_disposition_and_RTC_tracer_parent_contract_freeze_registered_phase_2_handoffs_not_delivered
     registration_date: 2026-08-14
     registration_record: >-
       doc/audits/packages/SCI-MAP-003_PRODUCT_REGISTRATION_2026-08-14.md
@@ -7757,7 +7757,7 @@ packages:
           functional_phase_1_checkpoint: coordinator_accepted
           valid_path_matrix: 1_2_4_8_24_of_24
           worker_arithmetic: unchanged
-          tsan_disposition: superseded_not_passed_not_waived
+          tsan_disposition: superseded_non_applicable_not_run
           apple_tsan_cross_region_stack_lifetime_reports: 91
           alternate_llvm: unusable
           implementation_commit:
@@ -7778,10 +7778,24 @@ packages:
             config: 127_of_127_passed
             ledgers: valid
             scope: clean
-          lifecycle: committed_awaiting_owner_push
-          pushed: false
+          independent_reaudit:
+            ref: origin/codex/reaudit-sci-map-002-ownership-001
+            commit: f541d81a266fce0f7baed58e9ec275dadba260ee
+            parent: e6c8d126157674a9990abc8d1e96ce2dd69f9374
+            tree: 5d48f8efe8fe5fe44db102af4061fc181d3a668c
+            standard_binary_patch_sha256: >-
+              db3c028517aa67fa4f5701f745e57acfad308263514e90c8b464860873d654ec
+            report_object: >-
+              f541d81a266fce0f7baed58e9ec275dadba260ee:doc/audits/packages/SCI-MAP-002_OWNERSHIP_001_REAUDIT_2026-08-14.md
+            report_sha256: >-
+              99be1488d4714ee8ad1e22910c00a520ecad68eace45325855e7888012272d7a
+            closure: proved_disjoint_ownership_alternative
+            original_production_race_premise: false_not_demonstrated
+            lifecycle: owner_pushed_remotely_frozen
+          lifecycle: reaudit_owner_pushed_remotely_frozen_F003_closed
+          pushed: true
           integrated: false
-          accepted: false
+          accepted: true
           promoted: false
           production_ready: false
           later_independent_review: conditioned_only_where_frozen_package_requires
@@ -7801,6 +7815,259 @@ packages:
       repair_authorized: false
       phase_2_registry_integrated: true
       phase_2_dispatched: false
+    rtc_tracer_parent_contract_freeze:
+      id: SCI-MAP-003-RTC-TRACER-PARENT-FREEZE-001
+      date: 2026-08-14
+      status: owner_approved_contract_frozen_implementation_not_authorized
+      scope_effect:
+        owner_approved_scientific_contract_content_added: true
+        application_scientific_behavior_change: false
+        frozen_core_or_audit_content_modified: false
+        package_axes_change: false
+        numerical_implementation_or_production_change: false
+      record_path: >-
+        doc/audits/packages/SCI-MAP-003_RTC_TRACER_PARENT_CONTRACT_FREEZE_2026-08-14.md
+      proposal_path: >-
+        doc/audits/proposals/SCI-MAP-003_RTC_TRACER_PARENT_CONTRACT_FREEZE_2026-08-14.yaml
+      coordination_base:
+        ref: origin/codex/register-sci-map-003-audit-disposition
+        commit: 8c581bfb26f01b187f4f1e0565f4457bcc25f099
+        parent: f2ba74bd62f3d88c328935683c7908e5fb327aa2
+        tree: 8051ac955e76a32335dbeb69c04a340023638bbe
+        standard_binary_patch_sha256: >-
+          ad389405627c3fb914d1f34566a324d9a442449c0e51405da6f2f1d7324d9979
+        branch: codex/freeze-sci-map-003-rtc-tracer-parent-contract
+      authority_boundary:
+        decision_classification: >-
+          approved_post_audit_owner_contract_authority_for_future_work
+        independent_core_effect: none
+        map003_audit_and_implementation_observations: post_core_evidence
+        rtc_audit_and_implementation_observations: post_core_evidence
+        post_core_evidence_promoted_to_pre_core_authority: false
+        bounded_pre_core_RTC_authority:
+          - SCI-RTC-001-D002
+          - SCI-RTC-001-D003
+          - SCI-MAP-003-XAUD-003
+        map003_frozen_report_sha256: >-
+          2cbad1fd11ff8851b66202197f881c48f8c0f5cc5d08f376256d6dfdb8eb1764
+        map003_predecessor_core_sha256: >-
+          d6eac8499191f65396d3bc743d5aea70e055ad6342dd812e67d68d31d436073e
+        map003_operative_core_sha256: >-
+          5fb256b18566d725267d25737163f97dd1d5bbd463ba77ed33960e977a5dfed4
+        RTC_inbound_handoff_sha256: >-
+          1db43ab766d4f80ec691fdffac4f32b064b76f196a2ad25df030a62b69b2f884
+      owner_decision_count: 12
+      owner_decisions:
+        - id: D01_detector_population_and_weights
+          rule: >-
+            Exact immutable terminal_parent APT rows detectors realized
+            eligibility and contribution weights; persist identities weights
+            and selection digest; no nominal detector unweighted average new
+            reweighting cross_scan pooling or marginalization.
+        - id: D02_construction_route
+          rule: >-
+            Render directly on the exact retained terminal_parent WCS grid;
+            no larger intermediate grid crop reprojection interpolation
+            resampling or independent recentering.
+        - id: D03_gaussian_family_and_width
+          rule: >-
+            Circular symmetric per_detector Gaussian using the exact realized
+            positive finite FWHM and its source identity; no precedence rerun,
+            nominal band width, ellipticity, or angle.
+        - id: D04_pixelization
+          rule: >-
+            Full_precision two_dimensional WCS pixel_center_sampled evaluation;
+            no supersampling footprint integration interpolation area
+            correction or center snapping.
+        - id: D05_truncation
+          rule: >-
+            Per_component inclusive tangent_plane rho <= 3 sigma; outside
+            values are intentional valid zeros.
+        - id: D06_amplitude_units_and_normalization
+          rule: >-
+            Peak 1.0 mJy/beam components, exact realized weights, and one
+            division by the identical persisted terminal_parent C; no later
+            peak integral DC or global_sum normalization; invalid C fails.
+        - id: D07_center_and_lifecycle
+          rule: >-
+            One common terminal_parent full_precision WCS reference center at
+            fractional CRPIX, frozen when the parent becomes realized; no fit,
+            snap, detector_specific prior center, or independent recentering.
+        - id: D08_support_masks_and_validity
+          rule: >-
+            Complete finite valid rectangular terminal grid, no additional
+            spatial mask, no zero_fill interpolation inpainting crop or silent
+            shrink; g construction validity remains separate from k validity.
+        - id: D09_admissible_rtc_terminal_stage
+          rule: >-
+            Sole parent rtc_conditioned_inner_terminal immediately before PTC
+            after every enabled signal_change, inner crop, phase_zero
+            downsampling, and support resolution; no outer pre_crop diagnostic
+            mini_TOD or generic RTC substitute.
+        - id: D10_governing_complete_response_availability
+          rule: >-
+            Complete response at governing 46ad2388 is unavailable because
+            donor_replacement and enabled altaz_projection response are
+            omitted and complete response provenance is insufficient.
+        - id: D11_digest_serialization
+          rule: >-
+            SHA_256 exact persisted bytes with byte count and sha256 lowercase
+            hex form; no canonicalization reserialization decompression
+            rounding newline conversion or metadata removal; bundle paths use
+            UTF_8 lexical order and the exact manifest is hashed.
+        - id: D12_unavailable_reason_vocabulary
+          rule: >-
+            Unavailable has a nonempty controlled reason list with exact
+            affected object and evidence; free text cannot replace a code;
+            unlisted cause stops for owner amendment.
+      g_contract:
+        schema_status: frozen
+        realization_status: unavailable_no_realization_registered
+        formula: >-
+          g(r,c)=(1.0 mJy/beam)*sum_d(w_d(r,c)*phi_d(r,c))/C(r,c),
+          phi_d=exp(-rho_d^2/(2*sigma_d^2)) for rho_d<=3*sigma_d else 0,
+          sigma_d=FWHM_d/(2*sqrt(2*ln(2)))
+        unit: mJy/beam
+        construction: direct_retained_grid_pixel_center_sampled_no_g_crop
+        validity: complete_rectangular_fail_closed
+        normalization: exact_terminal_parent_C_once_only
+        field_group_count: 14
+        field_groups:
+          - G01_source_identity
+          - G02_construction_route
+          - G03_units_and_amplitude
+          - G04_WCS_and_pixelization
+          - G05_center
+          - G06_grid_shape
+          - G07_masks_support_and_validity
+          - G08_Gaussian_family_and_parameters
+          - G09_truncation
+          - G10_APT_rows_detector_mixture_and_weights
+          - G11_normalization_and_denominator
+          - G12_crop
+          - G13_lifecycle_stage
+          - G14_digests
+        independent_reconstruction_gate:
+          required: true
+          count: 2
+          passed: false
+      RTC_complete_response_manifest:
+        sole_terminal_stage: rtc_conditioned_inner_terminal
+        terminal_position: immediately_before_PTC_consumption
+        exact_realized_order_required: true
+        partial_kernel_is_complete_response: false
+        top_level_required_field_count: 26
+        top_level_required_fields:
+          - input_observation_identity_and_digest
+          - input_reduction_identity_and_digest
+          - detector_identity_and_digest
+          - cohort_identity_and_digest
+          - scan_identity_and_digest
+          - sample_origin_identity_and_digest
+          - native_time_origin_identity_and_digest
+          - grid_identity_and_digest
+          - WCS_identity_and_digest
+          - support_identity_and_digest
+          - validity_identity_and_digest
+          - input_parent_identities_and_digests
+          - requested_state
+          - effective_state
+          - observation_resolved_state
+          - realized_state
+          - exact_output_stage_identity
+          - response_state_complete_or_unavailable
+          - controlled_unavailable_reasons_when_unavailable
+          - normalization_state_at_RTC_terminal_PTC_boundary
+          - normalization_state_before_JINC_consumption
+          - final_manifest_exact_persisted_byte_SHA_256
+          - final_manifest_exact_byte_count
+          - final_manifest_bundle_identities
+          - final_manifest_member_identities
+          - final_manifest_completion_or_failure_state
+        top_level_response_state_vocabulary: [complete, unavailable]
+        unavailable_requires_controlled_reasons: true
+        manifest_object_state_vocabulary: [complete, failed]
+        failed_manifest_is_admissible_parent: false
+        final_manifest_digest_rule: exact_persisted_bytes_SHA_256_with_byte_count
+        coverage_count: 15
+        ordered_coverage:
+          - {order: 1, slot: enabled_pre_calibration_response_changes}
+          - {order: 2, slot: calibration_and_extinction}
+          - {order: 3, slot: reference_kernel_realization}
+          - {order: 4, slot: donor_replacement}
+          - {order: 5, slot: pre_filter_response_changes}
+          - {order: 6, slot: primary_FIR_and_configured_notch}
+          - {order: 7, slot: highpass_and_detector_local_filtering}
+          - {order: 8, slot: edge_support_eligibility}
+          - {order: 9, slot: inner_crop}
+          - {order: 10, slot: phase_zero_downsampling}
+          - {order: 11, slot: post_downsampling_response_changes}
+          - {order: 12, slot: post_downsampling_masks_and_eligibility}
+          - {order: 13, slot: altaz_projection_when_enabled}
+          - {order: 14, slot: rtc_conditioned_inner_terminal}
+          - {order: 15, slot: PTC_consumer_boundary_link}
+        unavailable_reason_vocabulary:
+          - missing_or_mismatched_artifact_identity
+          - incompatible_grid_wcs_or_units
+          - invalid_detector_selection_or_weight
+          - invalid_gaussian_parameter
+          - invalid_support_denominator
+          - incomplete_rectangular_support
+          - missing_stage_identity
+          - omitted_enabled_response_stage
+          - incomplete_response_provenance
+        governing_disposition:
+          application_commit: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+          availability: unavailable
+          reasons:
+            - {code: omitted_enabled_response_stage, stage: donor_replacement}
+            - {code: omitted_enabled_response_stage, stage: altaz_projection, condition: enabled}
+            - {code: incomplete_response_provenance, affected: support_eligibility_causes_and_realized_response_identity}
+          evidence_classification: post_core_evidence
+          repair_launched: false
+      finding_effect:
+        F001: open_contract_frozen_reconstruction_evidence_pending
+        F002: open_RTC_contract_frozen_current_complete_response_unavailable
+        F003: closed_proved_disjoint_ownership_alternative
+        F004_F010: open_unchanged
+      F003_closure:
+        repair_commit: e6c8d126157674a9990abc8d1e96ce2dd69f9374
+        repair_parent: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+        repair_tree: c69aa1718178d892a4c9d71fbeb931b55ed2d607
+        repair_standard_binary_patch_sha256: >-
+          d20cf7cde7e6397e9876e048f9401217dcc7592414e1dc94cbd669043ecb55aa
+        reaudit_ref: origin/codex/reaudit-sci-map-002-ownership-001
+        reaudit_commit: f541d81a266fce0f7baed58e9ec275dadba260ee
+        reaudit_parent: e6c8d126157674a9990abc8d1e96ce2dd69f9374
+        reaudit_tree: 5d48f8efe8fe5fe44db102af4061fc181d3a668c
+        reaudit_standard_binary_patch_sha256: >-
+          db3c028517aa67fa4f5701f745e57acfad308263514e90c8b464860873d654ec
+        report_sha256: >-
+          99be1488d4714ee8ad1e22910c00a520ecad68eace45325855e7888012272d7a
+        closure: proved_disjoint_ownership_alternative
+        lifecycle: owner_pushed_remotely_frozen
+        TSan: superseded_non_applicable_not_run
+        production_authorization: false
+        overall_MAP002_dependency_closed: false
+      RTC_outgoing_handoff_preservation:
+        id: SCI-RTC-001-XAUD-004
+        path: doc/audits/handoffs/SCI-RTC-001/SCI-RTC-001-XAUD-004.yaml
+        sha256: >-
+          5428ea02ce1fe25b97daef4167675143cb4590a0d6ea2dd828796c2e69a4d1db
+        review_phase: post_core_evidence
+        status: submitted
+        recipient_disposition: pending
+        late_arrival_route: held_for_reaudit
+        delivery: false
+        content_changed: false
+      not_authorized:
+        - application_test_build_config_or_validation_product_edit
+        - evidence_request_or_handoff_delivery
+        - repair_audit_reaudit_or_numerical_execution
+        - task_or_package_launch
+        - unity_or_reduction
+        - integration_merge_rebase_or_push
+        - transfer_publication_LMTOOF_or_production_action
     contract_status: proposed
     implementation_status: nonconformant
     validation_status: not_started
@@ -7811,6 +8078,7 @@ packages:
         class: contract_gap
         priority: P1
         status: open
+        contract_freeze_state: contract_frozen_reconstruction_evidence_pending
         finding: No exact discrete g
         owner: SCI-RTC-001 and SCI-MAP-003 owners
         closure_gate: >-
@@ -7822,6 +8090,8 @@ packages:
         class: dependency_gap
         priority: P0
         status: open
+        contract_freeze_state: >-
+          RTC_contract_frozen_current_complete_response_unavailable
         finding: No admissible complete final k parent
         owner: >-
           SCI-RTC-001, SCI-PTC-001, SCI-MAP-002, SCI-VAL-001, and
@@ -7831,18 +8101,6 @@ packages:
           contracts close; the exact serial pre-crop normalized kernel and
           once-cropped k have immutable parent/stage/digest identity at the
           governing application SHA.
-      - id: SCI-MAP-003-F003
-        class: implementation_defect
-        priority: P0
-        status: open
-        finding: Parallel JINC shared-array data races
-        owner: SCI-MAP-002 / Citlali mapmaker owner
-        closure_gate: >-
-          An authorized repair provides race-free private/deterministic
-          reduction or proved disjoint writes; thread-sanitizer evidence and
-          preregistered serial-versus-parallel byte/tolerance equivalence pass
-          for all accumulators, then a fresh independent audit accepts the
-          exact repair SHA.
       - id: SCI-MAP-003-F004
         class: contract_gap
         priority: P1
@@ -7921,6 +8179,27 @@ packages:
           authorized preregistered studies pass unchanged under
           FRAMEWORK-NUM-001 controls, followed by independent review and an
           explicit production decision.
+    closed_findings:
+      - id: SCI-MAP-003-F003
+        class: implementation_defect
+        priority: P0
+        status: closed
+        frozen_finding: Parallel JINC shared-array data races
+        owner: SCI-MAP-002 / Citlali mapmaker owner
+        frozen_closure_gate: >-
+          An authorized repair provides race-free private/deterministic
+          reduction or proved disjoint writes; thread-sanitizer evidence and
+          preregistered serial-versus-parallel byte/tolerance equivalence pass
+          for all accumulators, then a fresh independent audit accepts the
+          exact repair SHA.
+        accepted_closure: proved_disjoint_ownership_alternative
+        production_race_premise: false_not_demonstrated
+        repair_commit: e6c8d126157674a9990abc8d1e96ce2dd69f9374
+        reaudit_commit: f541d81a266fce0f7baed58e9ec275dadba260ee
+        reaudit_report_sha256: >-
+          99be1488d4714ee8ad1e22910c00a520ecad68eace45325855e7888012272d7a
+        TSan: superseded_non_applicable_not_run
+        production_authorization: false
     tier_promotion:
       initial_proposal: B
       approved_tier: A

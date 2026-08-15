@@ -1,0 +1,444 @@
+format_version: 1
+record_id: SCI-MAP-003-RTC-TRACER-PARENT-FREEZE-001
+record_type: owner_approved_documentation_contract_freeze
+package_id: SCI-MAP-003
+date: 2026-08-14
+status: owner_approved_contract_frozen_implementation_not_authorized
+
+coordination_authority:
+  base_ref: origin/codex/register-sci-map-003-audit-disposition
+  base_commit: 8c581bfb26f01b187f4f1e0565f4457bcc25f099
+  base_parent: f2ba74bd62f3d88c328935683c7908e5fb327aa2
+  base_tree: 8051ac955e76a32335dbeb69c04a340023638bbe
+  base_standard_binary_patch_sha256: >-
+    ad389405627c3fb914d1f34566a324d9a442449c0e51405da6f2f1d7324d9979
+  branch: codex/freeze-sci-map-003-rtc-tracer-parent-contract
+  worktree: /private/tmp/citlali-freeze-sci-map-003-rtc-tracer-parent-contract
+  governing_application:
+    commit: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    parent: 4846fa4db39bd2f7d4ddc41f693836834cbc5ff4
+    tree: ab230a93b8fb310d58aefd7ac5da92e5d5e0f408
+    role: exact_implementation_assessment_point_not_scientific_authority
+
+scope_effect:
+  documentation_only: true
+  owner_approved_scientific_contract_content_added: true
+  application_scientific_behavior_change: false
+  frozen_core_or_audit_content_modified: false
+  package_axes_change: false
+  queue_semantics_change: false
+  handoff_delivery: false
+  task_or_package_launch: false
+  numerical_execution: false
+  application_or_validation_product_change: false
+  findings:
+    SCI-MAP-003-F001:
+      status: open
+      contract_freeze_state: contract_frozen_reconstruction_evidence_pending
+      effect: exact_g_construction_contract_frozen_no_realization_registered
+    SCI-MAP-003-F002:
+      status: open
+      effect: >-
+        RTC_owned_complete_response_or_unavailable_contract_frozen_current
+        complete_response_unavailable_other_parent_dependencies_unresolved
+    SCI-MAP-003-F003:
+      status: closed
+      effect: proved_disjoint_ownership_alternative_accepted
+    SCI-MAP-003-F004: {status: open, effect: unchanged}
+    SCI-MAP-003-F005: {status: open, effect: unchanged}
+    SCI-MAP-003-F006: {status: open, effect: unchanged}
+    SCI-MAP-003-F007: {status: open, effect: unchanged}
+    SCI-MAP-003-F008: {status: open, effect: unchanged}
+    SCI-MAP-003-F009: {status: open, effect: unchanged}
+    SCI-MAP-003-F010: {status: open, effect: unchanged}
+  exact_axes:
+    contract_status: proposed
+    implementation_status: nonconformant
+    validation_status: not_started
+    production_status: existing_use_only
+    verdict: amend
+
+authority_boundary:
+  approved_owner_contract_authority:
+    classification: approved_post_audit_owner_contract_authority_for_future_work
+    independent_core_effect: none
+    implementation_authorization: false
+    decisions: 12
+  map003_frozen_authority:
+    predecessor_core:
+      object: >-
+        3eecd9f4c6ccf9c9a5c509908b2689a8a0e1a80a:doc/audits/packages/SCI-MAP-003_INDEPENDENT_CORE.tex
+      sha256: d6eac8499191f65396d3bc743d5aea70e055ad6342dd812e67d68d31d436073e
+      classification: frozen_pre_core_authority
+    operative_successor_core:
+      object: >-
+        c0bd689598c8bc1c20114248a45822b13d6ba2f2:doc/audits/packages/SCI-MAP-003_INDEPENDENT_CORE_SUCCESSOR_001.tex
+      sha256: 5fb256b18566d725267d25737163f97dd1d5bbd463ba77ed33960e977a5dfed4
+      classification: accepted_operative_pre_core_authority
+    audit:
+      commit: 65d1abb88b6d8fa0c3235a3d62ef9a2ab3122839
+      parent: c0bd689598c8bc1c20114248a45822b13d6ba2f2
+      tree: 782a3fbed69a3b729ec20fafa6dfa6d4c20a283b
+      standard_binary_patch_sha256: >-
+        d0709105113d9604d15b2940b2a6af087280fa95d3f2c068a2ab7f940207792e
+      report_object: >-
+        65d1abb88b6d8fa0c3235a3d62ef9a2ab3122839:doc/audits/packages/SCI-MAP-003_SCIENTIFIC_CONTRACT_AUDIT.tex
+      report_sha256: 2cbad1fd11ff8851b66202197f881c48f8c0f5cc5d08f376256d6dfdb8eb1764
+      classification: immutable_post_core_evidence
+      promoted_to_pre_core_authority: false
+  rtc_bounded_authority:
+    independent_core:
+      commit: 3620434eb988662210b2466ee357ffc8f891aa58
+      parent: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+      tree: 3cafe771e15e0c6159e323f357ce3a5c76b01efa
+      report_sha256: d6cf49d1a5e17754c55cc4f2c8f4b4f5e276755f247496df888581d890be80b7
+      classification: frozen_pre_core_authority
+    owner_decision:
+      commit: 47c4632008c4fd78f2ab88106372d7ee11ee7711
+      parent: e13509d85f7eb2a87b0b0e330ac5fd777f380aec
+      tree: 189a3e4d878a5d5db7153ff6a59030c98e36dad0
+      artifact_path: doc/audits/packages/SCI-RTC-001_OWNER_DECISION_2026-08-08.md
+      artifact_sha256: 5f5ebb52735a70510d75f5a6954ef825fc425c00e43ab0aadf2363f2e0609723
+      admitted_decisions: [SCI-RTC-001-D002, SCI-RTC-001-D003]
+      classification: approved_bounded_owner_authority
+    inbound_handoff:
+      id: SCI-MAP-003-XAUD-003
+      path: doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-003.yaml
+      sha256: 1db43ab766d4f80ec691fdffac4f32b064b76f196a2ad25df030a62b69b2f884
+      review_phase: pre_core_authority
+      bounded_role: D002_D003_only
+    completed_audit:
+      commit: 3319d7424c732c1c9fc300c336e4d428e6f91068
+      parent: 3620434eb988662210b2466ee357ffc8f891aa58
+      tree: 8b01ee4d8117816904d7f078682c0c62a2ea88ac
+      report_path: doc/audits/packages/SCI-RTC-001_SCIENTIFIC_CONTRACT_AUDIT.tex
+      report_sha256: 169a0b6e013e727d5d04c25da5234e29def4ef79bc6f25a3f343bc675000301a
+      classification: immutable_post_core_evidence
+      promoted_to_pre_core_authority: false
+  implementation_observations:
+    classification: post_core_evidence
+    promoted_to_pre_core_authority: false
+    accepted_as_scientific_meaning: false
+
+owner_decisions:
+  - decision: D01_detector_population_and_weights
+    status: approved
+    rule: >-
+      Use exactly the immutable APT rows and detectors contributing to the
+      terminal k parent, with identical realized eligibility and contribution
+      weights; persist identities, weights, and selection digest; never
+      substitute a nominal detector, unweighted average, new reweighting,
+      cross_scan pooling, or marginalized mixture.
+    unavailable_if: exact_population_or_weights_not_reconstructible
+  - decision: D02_construction_route
+    status: approved
+    rule: >-
+      Render g directly on the exact retained terminal_parent grid using its
+      full_precision WCS; no intermediate larger grid, crop, reprojection,
+      interpolation, resampling, or independent recentering.
+  - decision: D03_gaussian_family_and_width
+    status: approved
+    rule: >-
+      Use a circular symmetric Gaussian per detector with the exact realized
+      positive finite per_detector FWHM used by the parent reduction; persist
+      value, units, source class, source artifact and field; MAP003 does not
+      rerun precedence or substitute nominal band width; ellipticity and angle
+      are not applicable.
+  - decision: D04_pixelization
+    status: approved
+    rule: >-
+      Evaluate at WCS_defined pixel centers under the full two_dimensional WCS;
+      persist pixel_center_sampled; do not supersample, footprint_integrate,
+      interpolate, pixel_area_correct, or snap fractional centers.
+  - decision: D05_truncation
+    status: approved
+    rule: >-
+      Truncate each detector Gaussian independently at inclusive rho <= 3 sigma
+      in parent tangent_plane angular coordinates; pixels outside are
+      intentional valid zeros; persist sigma_limit 3.0 and comparator <=.
+  - decision: D06_amplitude_units_and_normalization
+    status: approved
+    rule: >-
+      Give each component peak amplitude exactly 1.0 mJy/beam, combine with
+      approved realized weights, and divide once by the exact persisted formal
+      support denominator C used by terminal k=K/C; no later peak, integral,
+      DC, or global_sum normalization; C <= 0 or nonfinite C is invalid.
+  - decision: D07_center_and_lifecycle
+    status: approved
+    rule: >-
+      Use one common terminal_parent full_precision WCS reference center for
+      every component at exact fractional CRPIX; persist CRVAL, frame, epoch,
+      and pixel coordinates; freeze when the terminal parent becomes realized;
+      never fit, snap, independently recenter, or use detector_specific prior
+      centers.
+  - decision: D08_support_masks_and_validity
+    status: approved
+    rule: >-
+      Admit g only when finite and valid over the entire exact rectangular
+      terminal_parent grid; apply no additional spatial mask; truncation zeros
+      are valid; any invalid pixel makes the complete realization unavailable;
+      no zero_fill, interpolation, inpainting, crop, or silent shrink; preserve
+      g construction validity separately from k observational validity.
+  - decision: D09_admissible_rtc_terminal_stage
+    status: approved
+    rule: >-
+      The sole RTC response parent is rtc_conditioned_inner_terminal
+      immediately before PTC, after every enabled signal_changing stage, inner
+      crop, phase_zero downsampling, and relevant support eligibility; outer,
+      pre_crop, diagnostic, mini_TOD, or generic RTC products are not
+      substitutes.
+  - decision: D10_governing_complete_response_availability
+    status: approved
+    rule: >-
+      At governing application 46ad2388 the complete response for
+      rtc_conditioned_inner_terminal is unavailable because donor_replacement
+      response and enabled altaz_projection response are omitted and complete
+      support, eligibility causes, and realized response provenance are
+      insufficient; partial kernels remain explicitly partial.
+  - decision: D11_digest_serialization
+    status: approved
+    rule: >-
+      Use SHA_256 over exact persisted artifact bytes, formatted sha256 plus 64
+      lowercase hexadecimal digits and accompanied by byte length; perform no
+      canonicalization, reserialization, decompression, rounding, newline
+      conversion, or metadata removal; bundle members use UTF_8 lexical path
+      order and the exact persisted bundle manifest is also hashed.
+  - decision: D12_unavailable_reason_vocabulary
+    status: approved
+    rule: >-
+      Availability unavailable requires a nonempty controlled reason list;
+      every entry identifies the affected object and exact evidence; free text
+      cannot replace a code and an unlisted cause stops for owner amendment.
+
+g_contract:
+  schema_status: frozen
+  realization_status: unavailable_no_realization_registered
+  symbol: g
+  family: weighted_circular_symmetric_APT_Gaussian_mixture
+  component_formula: >-
+    phi_d(r,c)=exp(-rho_d(r,c)^2/(2*sigma_d^2)) for rho_d<=3*sigma_d,
+    otherwise phi_d(r,c)=0; sigma_d=FWHM_d/(2*sqrt(2*ln(2)))
+  mixture_formula: >-
+    g(r,c)=(1.0 mJy/beam)*sum_d(w_d(r,c)*phi_d(r,c))/C(r,c)
+  unit: mJy/beam
+  output_type: real_two_dimensional_plane
+  construction_route: direct_on_exact_retained_terminal_parent_grid
+  pixelization: pixel_center_sampled
+  crop: none_g_rendered_on_already_retained_grid
+  whole_grid_policy: complete_rectangular_fail_closed
+  normalization: exact_terminal_parent_C_once_only
+  field_group_count: 14
+  field_groups:
+    - id: G01_source_identity
+      required: >-
+        observation reduction product_cell band_array mode map_slot Stokes
+        terminal_k_parent source_APT source_kernel identities and digests
+    - id: G02_construction_route
+      required: direct_final_grid_algorithm_and_route_identity
+    - id: G03_units_and_amplitude
+      required: exact_1.0_mJy_per_beam_reference_injection_and_beam_convention
+    - id: G04_WCS_and_pixelization
+      required: >-
+        full_precision_WCS_axes_frame_epoch_handedness_rotation_scale_indexing
+        and_pixel_center_sampled_rule
+    - id: G05_center
+      required: full_precision_CRVAL_frame_epoch_and_fractional_CRPIX
+    - id: G06_grid_shape
+      required: exact_Ny_Nx_row_column_order_map_slot_and_Stokes_cell
+    - id: G07_masks_support_and_validity
+      required: >-
+        detector_exclusions_causes_WCS_validity_C_validity_complete_rectangular
+        support_and_separate_g_construction_validity
+    - id: G08_Gaussian_family_and_parameters
+      required: >-
+        circular_symmetric_family_realized_per_detector_FWHM_units_source_class
+        artifact_field_and_digest
+    - id: G09_truncation
+      required: sigma_limit_3.0_inclusive_comparator_tangent_plane_metric_units
+    - id: G10_APT_rows_detector_mixture_and_weights
+      required: >-
+        immutable_APT_digest_row_ids_detector_ids_realized_eligibility_exact
+        contribution_weights_and_selection_digest
+    - id: G11_normalization_and_denominator
+      required: exact_terminal_parent_C_artifact_plane_units_values_validity
+    - id: G12_crop
+      required: no_g_crop_and_exact_relation_to_retained_terminal_parent
+    - id: G13_lifecycle_stage
+      required: >-
+        requested_effective_observation_resolved_realized_identities_and
+        immutable_terminal_parent_link
+    - id: G14_digests
+      required: >-
+        SHA_256_algorithm_exact_path_object_HDU_plane_byte_count_artifact_and
+        lexical_bundle_manifest_digests
+  unavailable_if_any_required_group_missing: true
+  independent_reconstruction_gate:
+    required: true
+    count: 2
+    protocol: preregistered_byte_or_arithmetic_identity
+    passed: false
+
+rtc_complete_response_contract:
+  inherited_owner_rules: [SCI-RTC-001-D002, SCI-RTC-001-D003]
+  sole_admissible_terminal_stage: rtc_conditioned_inner_terminal
+  terminal_position: immediately_before_PTC_consumption
+  partial_kernel_is_complete_response: false
+  stage_order_rule: exact_realized_call_order_every_enabled_stage
+  top_level_required_field_count: 26
+  top_level_required_fields:
+    - input_observation_identity_and_digest
+    - input_reduction_identity_and_digest
+    - detector_identity_and_digest
+    - cohort_identity_and_digest
+    - scan_identity_and_digest
+    - sample_origin_identity_and_digest
+    - native_time_origin_identity_and_digest
+    - grid_identity_and_digest
+    - WCS_identity_and_digest
+    - support_identity_and_digest
+    - validity_identity_and_digest
+    - input_parent_identities_and_digests
+    - requested_state
+    - effective_state
+    - observation_resolved_state
+    - realized_state
+    - exact_output_stage_identity
+    - response_state_complete_or_unavailable
+    - controlled_unavailable_reasons_when_unavailable
+    - normalization_state_at_RTC_terminal_PTC_boundary
+    - normalization_state_before_JINC_consumption
+    - final_manifest_exact_persisted_byte_SHA_256
+    - final_manifest_exact_byte_count
+    - final_manifest_bundle_identities
+    - final_manifest_member_identities
+    - final_manifest_completion_or_failure_state
+  top_level_response_state_vocabulary: [complete, unavailable]
+  unavailable_requires_controlled_reasons: true
+  manifest_object_state_vocabulary: [complete, failed]
+  failed_manifest_is_admissible_parent: false
+  final_manifest_digest_rule: exact_persisted_bytes_SHA_256_with_byte_count
+  required_coverage_count: 15
+  required_ordered_coverage:
+    - {order: 1, slot: enabled_pre_calibration_response_changes}
+    - {order: 2, slot: calibration_and_extinction}
+    - {order: 3, slot: reference_kernel_realization}
+    - {order: 4, slot: donor_replacement}
+    - {order: 5, slot: pre_filter_response_changes}
+    - {order: 6, slot: primary_FIR_and_configured_notch}
+    - {order: 7, slot: highpass_and_detector_local_filtering}
+    - {order: 8, slot: edge_support_eligibility}
+    - {order: 9, slot: inner_crop}
+    - {order: 10, slot: phase_zero_downsampling}
+    - {order: 11, slot: post_downsampling_response_changes}
+    - {order: 12, slot: post_downsampling_masks_and_eligibility}
+    - {order: 13, slot: altaz_projection_when_enabled}
+    - {order: 14, slot: rtc_conditioned_inner_terminal}
+    - {order: 15, slot: PTC_consumer_boundary_link}
+  stage_required_fields:
+    - immutable_stage_id_and_version
+    - enabled_and_applicable_state
+    - exact_ordered_position
+    - response_role
+    - input_and_output_parent_ids_and_digests
+    - operator_factor_coefficient_identity
+    - normalization_state
+    - WCS_and_grid_identity_where_applicable
+    - support_mask_validity_and_causes
+    - response_availability
+    - exact_artifact_digest_and_byte_count
+  unavailable_reason_vocabulary:
+    - missing_or_mismatched_artifact_identity
+    - incompatible_grid_wcs_or_units
+    - invalid_detector_selection_or_weight
+    - invalid_gaussian_parameter
+    - invalid_support_denominator
+    - incomplete_rectangular_support
+    - missing_stage_identity
+    - omitted_enabled_response_stage
+    - incomplete_response_provenance
+  governing_implementation_disposition:
+    application_commit: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    stage: rtc_conditioned_inner_terminal
+    availability: unavailable
+    reason_instances:
+      - code: omitted_enabled_response_stage
+        stage: donor_replacement
+        classification: post_core_evidence_supporting_owner_disposition
+      - code: omitted_enabled_response_stage
+        stage: altaz_projection
+        condition: enabled
+        classification: post_core_evidence_supporting_owner_disposition
+      - code: incomplete_response_provenance
+        affected: support_eligibility_causes_and_realized_response_identity
+        classification: post_core_evidence_supporting_owner_disposition
+    repair_launched: false
+
+F003_closure:
+  finding_id: SCI-MAP-003-F003
+  status: closed
+  closure: proved_disjoint_ownership_alternative
+  original_production_race_premise: false_not_demonstrated
+  production_authorization: false
+  repair:
+    commit: e6c8d126157674a9990abc8d1e96ce2dd69f9374
+    parent_base: 46ad23888a40f5102cdfd50c06e49a549bdf8a20
+    tree: c69aa1718178d892a4c9d71fbeb931b55ed2d607
+    standard_binary_patch_sha256: >-
+      d20cf7cde7e6397e9876e048f9401217dcc7592414e1dc94cbd669043ecb55aa
+    paths:
+      - include/citlali/core/mapmaking/jinc_mm.h
+      - tests/test_jinc_parallel_ownership.cpp
+      - tests/CMakeLists.txt
+  reaudit:
+    ref: origin/codex/reaudit-sci-map-002-ownership-001
+    commit: f541d81a266fce0f7baed58e9ec275dadba260ee
+    parent: e6c8d126157674a9990abc8d1e96ce2dd69f9374
+    tree: 5d48f8efe8fe5fe44db102af4061fc181d3a668c
+    standard_binary_patch_sha256: >-
+      db3c028517aa67fa4f5701f745e57acfad308263514e90c8b464860873d654ec
+    report_object: >-
+      f541d81a266fce0f7baed58e9ec275dadba260ee:doc/audits/packages/SCI-MAP-002_OWNERSHIP_001_REAUDIT_2026-08-14.md
+    report_sha256: 99be1488d4714ee8ad1e22910c00a520ecad68eace45325855e7888012272d7a
+    lifecycle: owner_pushed_remotely_frozen
+    classification: post_core_closure_evidence
+  gates:
+    ownership_matrix: 24_of_24_across_1_2_4_8
+    focused: 6_of_6
+    retained_science_map: 22_of_22
+    parent: 31_of_31
+    FITS: 32_of_32
+    ctest_runnable: 629_of_629_passed
+    established_disabled_test: 1
+    config: 127_of_127_passed
+    ledgers: both_valid
+  tsan: superseded_non_applicable_not_run
+  overall_MAP002_dependency_closed: false
+
+handoff_preservation:
+  canonical_id: SCI-RTC-001-XAUD-004
+  frozen_source_proposal_label: SCI-MAP-003-XAUD-010
+  path: doc/audits/handoffs/SCI-RTC-001/SCI-RTC-001-XAUD-004.yaml
+  sha256: 5428ea02ce1fe25b97daef4167675143cb4590a0d6ea2dd828796c2e69a4d1db
+  review_phase: post_core_evidence
+  status: submitted
+  status_meaning: canonical_registration_only
+  recipient_disposition: pending
+  late_arrival_route: held_for_reaudit
+  delivery: false
+  acknowledgment: false
+  acceptance: false
+  recipient_package_launch: false
+  content_changed: false
+
+not_authorized:
+  - stage_or_commit_without_coordinator_checkpoint_acceptance
+  - handoff_delivery_or_recipient_contact
+  - evidence_request
+  - application_test_build_config_or_validation_product_edit
+  - repair_audit_or_reaudit
+  - numerical_execution
+  - unity_or_reduction
+  - task_or_package_launch
+  - integration_merge_rebase_or_push
+  - transfer_publication_or_LMTOOF_consumption
+  - production_action
