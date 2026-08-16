@@ -1,6 +1,8 @@
-# SCI-MAP v0.1 — Draft Supersession Cover For Reusable MAP Core
+# SCI-MAP v0.1 — Supersession Cover For Reusable MAP Core
 
-Status: draft for owner review; not authorized for an author packet
+Status: owner-approved author reference
+
+Approval date: `2026-08-16`
 
 This cover accompanies only:
 
@@ -15,7 +17,7 @@ claims, and production status are not author references.
 
 ## Binding v0.1 Specializations
 
-If Grant approves this cover, the following later decisions control whenever
+The following owner-approved decisions control whenever
 the reusable core is broader or ambiguous:
 
 1. **Ordinary estimator only.** V0.1 selects finite positive-coefficient
@@ -90,5 +92,5 @@ The author may not:
 - infer unresolved CAL, ALIGN/AST, PTC, VAL, or NOI facts; or
 - weaken an adopted owner decision to match a remembered implementation.
 
-An owner-approved, content-hashed version of this cover will be listed in the
-author-packet manifest before authorship begins.
+This owner-approved cover is content-bound in
+[`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md).

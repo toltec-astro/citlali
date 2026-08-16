@@ -1,17 +1,17 @@
 # SCI-MAP — Ordinary Mapmaking And Observation Coaddition
 
-Status: Stage A prior-work recovery complete; sanitized Scope Brief draft
-awaiting owner review; scientific authorship not authorized
+Status: Stage A complete; Scope Brief and exact author packet owner-approved;
+Stage B implementation-blind authorship authorized
 
-Scientific contract version: `v0.1` draft (`2026-08-16`)
+Scientific contract scope: `v0.1`, owner-approved (`2026-08-16`)
 
 ## Program Adherence And Prior-Work Recovery
 
 This package is governed by the
 [Citlali Scientific Contract Library Program](../../../README.md). Work began
 with the package's [`PRIOR_WORK.md`](PRIOR_WORK.md) recovery record. The
-draft [`SCOPE_BRIEF.md`](SCOPE_BRIEF.md) identifies the scientific work
-already available, the proposed package boundary, the exact proposed author
+owner-approved [`SCOPE_BRIEF.md`](SCOPE_BRIEF.md) identifies the scientific
+work already available, the package boundary, the exact approved author
 references, and the information-firewall exclusions.
 
 The recovery reuses the frozen implementation-independent SCI-MAP-001 core,
@@ -20,12 +20,13 @@ weighted-normalization reasoning. It does not repeat the prior derivation or
 promote the SCI-MAP-001/002/003 audits, repairs, tests, reductions, or
 validation results into scientific authority.
 
-Do not commission a scientific author until Grant has reviewed this opening,
-approved the Scope Brief, and approved the exact author packet.
+Grant approved this opening, `MAP-SCOPE-D001--D006`, and the exact three-part
+author packet on `2026-08-16`. The approved packet is content-bound in
+[`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md).
 
-## Proposed v0.1 Boundary
+## Approved v0.1 Boundary
 
-The proposed package covers:
+The package covers:
 
 - ordinary positive-coefficient normalized gridding of admitted Stokes-I
   detector samples into an observation map;
@@ -40,33 +41,28 @@ maximum-likelihood mapmaking, RTC/PTC estimation, calibration, validity-policy
 production, astrometry, empirical-noise construction, map filtering, source
 fitting, Beammap inference, and fruit-loop feedback.
 
-## Stage A Contents
+## Stage A And Author-Packet Contents
 
 - [`PRIOR_WORK.md`](PRIOR_WORK.md): verified discovery, classification,
   disposition, and anti-repetition record
 - [`INTERNAL_DOSSIER.md`](INTERNAL_DOSSIER.md): implementation-informed
   scope and dependency evidence; permanently excluded from authorship
-- [`SCOPE_BRIEF.md`](SCOPE_BRIEF.md): sanitized owner-review draft
-- [`AUTHOR_SUPERSESSION_COVER.md`](AUTHOR_SUPERSESSION_COVER.md): draft
+- [`SCOPE_BRIEF.md`](SCOPE_BRIEF.md): owner-approved author input
+- [`AUTHOR_SUPERSESSION_COVER.md`](AUTHOR_SUPERSESSION_COVER.md): approved
   cover limiting and updating the reusable SCI-MAP-001 core
 - [`AUTHOR_CONVENTIONS_AND_OWNERSHIP.md`](AUTHOR_CONVENTIONS_AND_OWNERSHIP.md):
-  draft sanitized convention and responsibility extract
+  approved sanitized convention and responsibility extract
+- [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md): exact allowed
+  inputs, hashes, firewall, and deliverables
+- [`DECISION_LOG.md`](DECISION_LOG.md): concise record of the six approved
+  scope decisions
 
 No scientific rationale, engineering conformance contract, crosswalk, or PDF
-has been commissioned or created.
+has yet been accepted. Scope approval does not approve the resulting contract.
 
 ## Next Gate
 
-Grant must review:
-
-1. the ordinary-positive-coefficient and centered-integer-coadd boundary;
-2. the explicit exclusion of JINC and OOF residual transfer from v0.1;
-3. reuse of the frozen SCI-MAP-001 core instead of re-derivation;
-4. adoption of the nonprecision coefficient, atomic bundle, support, validity,
-   and provenance decisions;
-5. the remaining upstream CAL, ALIGN/AST, PTC, VAL, and NOI conditions; and
-6. the proposed three-part author packet in the Scope Brief.
-
-Owner approval freezes only the author task input. It does not approve the
-eventual contract substance, assess implementation conformity, run validation,
-or change production status.
+Dispatch a fresh implementation-blind scientific author using only the exact
+manifested packet. The next owner-facing gate is a manager-reviewed two-view
+draft or a precise scientific decision that blocks one. This work does not
+assess implementation conformity, run validation, or change production status.

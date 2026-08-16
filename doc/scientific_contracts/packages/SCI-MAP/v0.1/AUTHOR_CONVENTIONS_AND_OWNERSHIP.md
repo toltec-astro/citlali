@@ -1,13 +1,15 @@
-# SCI-MAP v0.1 — Draft Sanitized Conventions And Ownership
+# SCI-MAP v0.1 — Sanitized Conventions And Ownership
 
-Status: draft for owner review; not authorized for an author packet
+Status: owner-approved author reference
+
+Approval date: `2026-08-16`
 
 This document contains only stable scientific conventions and abstract
 producer/transformer/consumer boundaries relevant to ordinary mapmaking and
 observation coaddition. It contains no Citlali source behavior, audit finding,
 repair, test, validation result, or production-status claim.
 
-Proposed sources:
+Approved sources:
 
 - `origin/codex/refactor-mainline@46ad23888a40f5102cdfd50c06e49a549bdf8a20:doc/SCIENTIFIC_CONVENTIONS.md`,
   content SHA-256
@@ -150,5 +152,5 @@ Proposed sources:
   fitting, Beammap inference, and feedback require their own scientific
   authority.
 
-After owner approval this extract will be content-hashed and listed in the
-author-packet manifest. Until then it is a review draft only.
+This owner-approved extract is content-bound in
+[`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md).

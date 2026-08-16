@@ -164,11 +164,15 @@ separate scientific estimators and are not silently absorbed into ordinary
 SCI-MAP v0.1.
 
 The SCI-MAP package now contains the charter-linked recovery record, an
-internal dossier, a sanitized draft Scope Brief, and draft author-only
-supersession/convention extracts. No scientific author has been commissioned,
-no fresh derivation has been repeated, and no implementation, audit, repair,
-validation, Unity, or production action occurred. The next gate is Grant's
-review of MAP-SCOPE-D001--D006 and the exact proposed three-part author packet.
+internal dossier, a sanitized Scope Brief, and author-only
+supersession/convention extracts. Grant approved MAP-SCOPE-D001--D006 and the
+exact three-part author packet on 2026-08-16. The approved packet reuses the
+frozen MAP-001 core rather than repeating its derivation and keeps all
+implementation, audit, repair, validation, Unity, MAP-002, MAP-003, and
+production material outside the author channel. The next gate is a fresh
+implementation-blind GPT-5.6 Ultra scientific-author draft from the exact
+content-bound packet. Scope approval does not approve contract substance,
+implementation conformity, validation, or production use.
 
 The previously approved `DOC-MAP-001` deliverable is the first queued user
 guide. It will combine a canonical map dictionary with a compact per-reduction

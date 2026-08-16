@@ -1,12 +1,13 @@
 # SCI-MAP — Ordinary Mapmaking And Observation Coaddition Scope Brief
 
-Status: `draft`; scientific-owner review required
+Status: owner-approved Stage B author input
 
 Scientific owner: Grant Wilson
 
-Version/date: `v0.1 draft`, `2026-08-16`
+Version/date: `v0.1`, approved `2026-08-16`
 
-Approved source identifier: pending owner approval
+Approved source identifier: content-bound in
+[`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md)
 
 ## Program Adherence And Prior-Work Recovery
 
@@ -14,12 +15,12 @@ This package follows the
 [Citlali Scientific Contract Library Program](../../../README.md).
 
 - Prior-work record: [`PRIOR_WORK.md`](PRIOR_WORK.md)
-- Recovery reviewed by: Codex manager, `2026-08-16`; owner review pending
-- Existing material proposed for adoption: the bounded owner decisions for
+- Recovery reviewed by: Codex manager and scientific owner, `2026-08-16`
+- Existing material adopted: the bounded owner decisions for
   atomic map-bundle admission, ordinary nonprecision normalization, centered
   integer coaddition, distinct support/validity facts, and immutable raw-parent
   identity
-- Existing material proposed for citation: frozen implementation-independent
+- Existing material approved for citation: frozen implementation-independent
   `SCI-MAP-001_INDEPENDENT_CORE.tex`, content SHA-256
   `13dd5922bd492e381afcc3b015284216dde1ccc2199ece3d070ee577c7324381`
 - Existing material abstracted: stable identity, frame, unit, validity,
@@ -32,7 +33,7 @@ This package follows the
   ordinary estimator under the later owner specializations; define its
   conditional response/covariance/output boundary; expose unresolved
   dependency and policy questions without inventing answers
-- Proposed author references: this brief; the frozen independent core with
+- Approved author references: this brief; the frozen independent core with
   [`AUTHOR_SUPERSESSION_COVER.md`](AUTHOR_SUPERSESSION_COVER.md); and
   [`AUTHOR_CONVENTIONS_AND_OWNERSHIP.md`](AUTHOR_CONVENTIONS_AND_OWNERSHIP.md)
 - Author-packet exclusions: [`INTERNAL_DOSSIER.md`](INTERNAL_DOSSIER.md),
@@ -40,7 +41,8 @@ This package follows the
   validation, MAP-002/MAP-003 evidence, and current production state
 
 Confirm that this opening was reviewed before launching scientific authorship:
-`no — owner approval is the next gate`.
+`yes — Grant Wilson approved MAP-SCOPE-D001--D006 and the exact three-part
+author packet on 2026-08-16`.
 
 ## 1. Package Name And Scientific Purpose
 
@@ -57,7 +59,7 @@ a stronger scientific meaning than its producer established.
 
 ## 2. Scientific Boundary
 
-The proposed v0.1 operation begins with:
+The approved v0.1 operation begins with:
 
 - calibrated ordinary-`xs` detector samples supplied under SCI-CAL, arranged
   on an externally supplied common sample axis;
@@ -206,8 +208,7 @@ view may bind them to canonical product identities after owner approval.
 
 ## 6. Externally Imposed Conventions
 
-The following recovered decisions are proposed as binding unless Grant reopens
-them:
+The following recovered decisions are binding unless Grant reopens them:
 
 1. **Ordinary normalized estimator.** For admitted finite positive
    coefficients `u_i`, accumulate `Q=sum(u_i)`,
@@ -381,7 +382,7 @@ SCI-MAP v0.1 does not:
 
 ## 9. Allowed References
 
-Proposed for Grant's approval:
+Approved by Grant Wilson on `2026-08-16`:
 
 1. this Scope Brief after owner approval and content hashing;
 2. `SCI-MAP-001_INDEPENDENT_CORE.tex` at
@@ -404,9 +405,9 @@ re-frozen brief or an explicit owner answer.
 
 ## 10. Owner Decisions And Remaining Ambiguities
 
-### Recovered decisions proposed for confirmation
+### Approved recovered decisions
 
-Grant is asked to confirm:
+Grant confirmed on `2026-08-16`:
 
 1. **MAP-SCOPE-D001 — included estimator.** V0.1 covers ordinary
    positive-coefficient normalized mapmaking plus compatible centered-integer
