@@ -52,8 +52,7 @@ scientific question to the manager. It may not search for an answer.
 ## Author Deliverables
 
 The author writes only within this package's `src/`, `pdf/`, `CROSSWALK.md`,
-and a draft scientific-substance section appended to `DECISION_LOG.md`. It
-must produce:
+and a new `AUTHOR_DRAFT_DECISIONS.md`. It must produce:
 
 - shared canonical LaTeX modules for notation, definitions, equations,
   assumptions, requirements, and edge cases as needed;
@@ -62,7 +61,7 @@ must produce:
   the same authority without implementation-specific mappings;
 - stable `SCI-CAL-REQ-NNN` requirements and a complete crosswalk;
 - rendered PDFs for both views;
-- explicit unresolved owner decisions; and
+- explicit unresolved owner decisions in `AUTHOR_DRAFT_DECISIONS.md`; and
 - scientifically meaningful validation predictions, without running
   scientific validation.
 
