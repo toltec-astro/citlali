@@ -1,0 +1,51 @@
+\section{Notation and typed quantities}
+\label{sec:notation}
+
+The contract uses occurrence-scoped identities. An index is never, by itself,
+a persistent physical identity. Let $o$ denote an observation or Tune
+context, $t$ a location on its approved common sample axis, $d$ a selected
+detector occurrence, $a(d)$ its TolTEC array, and $j=(o,t,d)$ a compound
+sample occurrence. The three arrays are $a1100$, $a1400$, and $a2000$.
+Networks 0 through 6 belong to $a1100$, 7 through 10 to $a1400$, and 11
+through 12 to $a2000$.
+
+\begin{longtable}{L{0.16\linewidth}L{0.26\linewidth}L{0.18\linewidth}L{0.32\linewidth}}
+\caption{Canonical symbols and types.}\label{tab:notation}\\
+\toprule
+Symbol & Identity and support & Unit & Meaning \\
+\midrule
+\endfirsthead
+\toprule
+Symbol & Identity and support & Unit & Meaning \\
+\midrule
+\endhead
+
+\(x^{xs}_{j}\) & acquisition sample occurrence & declared pre-CAL unit \(U_{x,d}\) & admitted ordinary \code{xs} detector sample \\
+\(b_j\) & same recipient/support as \(x_j\) & \(U_{x,d}\) & explicitly authorized offset or baseline; ``not applicable'' is distinct from missing \\
+\(z_j=x^{xs}_j-b_j\) & valid sample support & \(U_{x,d}\) & CAL input after the declared affine convention \\
+\(K^{\rm acq}_{od}\) & target acquisition occurrence & identity only & observation/Tune, network or interface, and network-local tone or row slot \\
+\(R^{\rm APT}_{sd}\) & selected source-row occurrence & identity only & immutable APT identity plus source observation/network context and artifact-local row key \\
+\(E^{\rm assoc}_{od,sd}\) & target-to-source occurrence edge & identity only & matcher method/version, disposition, and available quality evidence \\
+\(F^{\rm sel}_{od}\) & selected APT row occurrence & \(\mjybeam/U_{x,d}\) & authoritative absolute \code{flxscale} for this selected lineage \\
+\(P_{od}\) & lineage event, if applicable & dimensionless & TolProj pointing-derived correction already embodied in \(F^{\rm sel}\); never an additional CAL runtime factor \\
+\(r_{od}\) & selected APT row occurrence & declared relative-response unit & \code{responsivity}; a relative quantity, not absolute flux calibration \\
+\(s_{od}\) & selected APT row occurrence & declared sensitivity unit & Beammap \code{sens}; sensitivity or approximate-weight input only \\
+\(\tau_{225,o}(t)\) & declared time support & dimensionless & zenith optical depth at 225 GHz \\
+\(X_{ot}\) & eligible sample occurrence & dimensionless & full sample airmass supplied under approved upstream meaning \\
+\(\ell_{ot}=\tau_{225,o}(t)X_{ot}\) & eligible sample occurrence & dimensionless & line-of-sight 225 GHz optical-depth coordinate relative to \(X_{\rm ref}=0\) \\
+\(\mathcal O_a\) & content-bound operator for array \(a\) & identity plus nodes & retained \code{am12_fixed_djf25_piecewise_linear_los_tau_v1} structural operator \\
+\(H_a(\ell)\) & operator node support & dimensionless & authoritative piecewise-linear ordinate, whose orientation must be declared as transmission or correction \\
+\(T_a(\ell)\) & operator support & dimensionless & band transmission implied by \(H_a\) and its declared orientation \\
+\(C_a(\ell)=T_a(\ell)^{-1}\) & operator support & dimensionless & positive correction from the eligible sample plane to top of atmosphere \\
+\(M_j\) & valid sample occurrence & \(\mjybeam/U_{x,d}\) & exact realized once-only multiplier \\
+\(y_j\) & valid sample occurrence & \(\mjybeam\) & calibrated top-of-atmosphere, point-source-peak detector sample \\
+\(C_{x\mid\theta}\) & valid input vector support & \(U_x^2\) with typed blocks & conditional measurement covariance at fixed calibration state \(\theta\) \\
+\(C_{y\mid\theta}\) & identical valid output support & \((\mjybeam)^2\) & transformed conditional measurement covariance \\
+\(v^{(x)}_j,w^{(x)}_j\) & scalar sample occurrence & \(U_x^2,U_x^{-2}\) & diagonal conditional variance and inverse variance, when supplied \\
+\(\theta\) & named detector, array, observation, cohort, or global scope & parameter-specific & calibration, atmosphere, and response nuisance state \\
+\bottomrule
+\end{longtable}
+
+Bold symbols stack only the declared valid occurrences; they do not insert
+numeric zeros for invalid samples. A locator such as a global column, table
+row, or map index may find an occurrence, but cannot establish its identity.

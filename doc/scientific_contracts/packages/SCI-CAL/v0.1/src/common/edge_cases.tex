@@ -1,0 +1,223 @@
+\section{Limiting cases, pathologies, and falsifiable predictions}
+\label{sec:edge-cases}
+
+The following predictions are consequences of the common authority. They are
+pre-validation statements, not reports of executed evidence. ``No output''
+means no value carrying a calibrated SCI-CAL unit label; a diagnostic or
+explicitly uncalibrated passthrough may exist only as a different product
+state.
+
+\small
+\begin{longtable}{L{0.14\linewidth}L{0.25\linewidth}L{0.51\linewidth}}
+\caption{Required limiting and pathological outcomes.}\label{tab:edge-cases}\\
+\toprule
+ID & Challenge & Falsifiable prediction \\
+\midrule
+\endfirsthead
+\toprule
+ID & Challenge & Falsifiable prediction \\
+\midrule
+\endhead
+
+\Edge{001} & Zero opacity & For every supported array and finite admitted
+airmass, \(\ell=0\), \(T=C=1\), and atmosphere correction changes neither
+signal nor conditional uncertainty. With every other structural condition
+satisfied, this may establish only \code{science-qualification-eligible}; it
+does not establish an achieved \code{science-qualified} or
+\code{calibrated-science} claim without the separately accepted evidence in
+\Req{049}. \\
+
+\Edge{002} & Increasing opacity & At fixed admitted \(X>0\), increasing
+positive \(\tau_{225}\) strictly decreases \(T\) and increases \(C\) while
+remaining finite. Any finite positive-opacity unity plateau is a failure. \\
+
+\Edge{003} & Zenith and airmass & At zenith \(X=1\), \(\ell=\tau_{225}\).
+At fixed positive opacity, a larger admitted airmass gives larger \(\ell\) and
+larger correction. At zero opacity the result is independent of airmass. \\
+
+\Edge{004} & Exact atmosphere node & Evaluation at \(\ell_{a,k}\) returns the
+declared authoritative ordinate exactly, followed by the one declared
+orientation mapping. Interpolation of the reciprocal instead is detectable
+at nontrivial intervals. \\
+
+\Edge{005} & Operator seam & Left and right values agree at every node. Slopes
+may differ; a derivative or linear covariance claim exactly at, or spanning,
+a seam is unavailable and requires nonlinear propagation. \\
+
+\Edge{006} & Invalid operator domain & A value outside numeric node support,
+outside the upstream airmass model, or outside declared time support yields no
+calibrated output. Clamping, extrapolation, and a legacy fallback are
+detectable failures. \\
+
+\Edge{007} & Bracketed opacity series & A sample between two valid source
+states is admissible only if the named source interpolation rule authorizes
+that bracket and its gap. Its lineage resolves both endpoints, method, and
+validity interval. \\
+
+\Edge{008} & Unbracketed opacity series & A sample before the first state,
+after the last state, across a disallowed gap, or covered by only one endpoint
+is outside temporal support. It yields no calibrated output rather than an
+endpoint hold or extrapolation. \\
+
+\Edge{009} & Engineering opacity & Any unsplit segment containing
+\(0.15<\tau_{225}\leq0.25\) is \code{engineering-only} \code{unavailable}; v0.1
+emits no calibrated signal for that segment. \\
+
+\Edge{010} & Outside or malformed opacity & Negative or non-finite opacity is
+invalid. Opacity above 0.25 or absent opacity is outside supported
+calibration. Neither case is silently clamped or relabeled. \\
+
+\Edge{011} & Unity factor & Replacing one required factor value by numeric
+unity leaves values unchanged only when unity is the intended value; the
+factor role and application count remain present and auditable. \\
+
+\Edge{012} & Omitted, duplicated, or inverted factor & For an isolated
+nonzero factor \(f\), output ratios are exactly those in
+Equation~\eqref{eq:factor-challenges}. Signal and uncertainty discrepancies
+identify the challenged role. \\
+
+\Edge{013} & Corrected-APT double application & With
+\(F^{\rm sel}=P F^{\rm parent}\), applying \(P\) again changes the result by
+\(P\) and violates application count. Using the parent without the embodied
+event changes it by \(P^{-1}\). \\
+
+\Edge{014} & Keyed row permutation & Arbitrarily permuting selected APT rows
+while preserving row occurrence keys and the explicit keyed relation leaves
+every output, validity state, and nuisance recipient invariant. \\
+
+\Edge{015} & Ordered-row permutation & Permuting rows under an ordered-row
+binding without supplying a new proof invalidates the binding. A newly proven
+permutation may be admitted and then gives the keyed-equivalent result. \\
+
+\Edge{016} & Network or column reorder & Reordering network containers or
+sample columns while preserving acquisition keys and bindings leaves results
+invariant after restoring occurrence order. Inferring identity from the new
+position produces a detectable mismatch or failure. \\
+
+\Edge{017} & Missing or duplicate key & A missing acquisition/APT key,
+duplicate keyed candidate, inconsistent array/network constraint, or multiple
+sample columns for one selected occurrence invalidates the affected declared
+scope. No first-row or nearest-row choice is allowed. \\
+
+\Edge{018} & Association disposition & A unique admitted match may calibrate.
+Abstained, ambiguous, rejected, and missing associations produce no calibrated
+value for the endpoint; aggregate matcher performance cannot convert one into
+a match. \\
+
+\Edge{019} & Irrelevant design identity & Adding, removing, or changing a
+design-ID match while measured occurrence endpoints, association, selected
+APT values, and all other state remain fixed leaves the SCI-CAL result
+unchanged. \\
+
+\Edge{020} & Scalar conditional uncertainty & Multiplying signal by \(M\)
+multiplies variance by \(M^2\) and divides inverse variance by \(M^2\),
+including for a signed \(F^{\rm sel}\). Support and validity do not change. \\
+
+\Edge{021} & Vector conditional covariance & For a dense positive-definite
+input covariance, the output equals \(A C_xA^{\mathsf T}\), including all
+off-diagonal signs and magnitudes. Replacing it with a diagonal is not the
+same claim. \\
+
+\Edge{022} & Unavailable uncertainty & Removing a conditional uncertainty
+input leaves it unavailable, not zero. Removing any required nuisance entry
+marks total calibrated uncertainty unavailable while a separately valid
+signal may remain. \\
+
+\Edge{023} & Common systematic and sample count & A shared fractional scale
+term gives Equation~\eqref{eq:common-rank-one}. Repeating or averaging
+identically affected samples does not reduce that fractional term as
+\(N^{-1/2}\). \\
+
+\Edge{024} & Nonlinear nuisance case & Large/asymmetric factor uncertainty,
+uncertainty crossing an operator seam, or uncertain discrete association
+causes first-order propagation to be withheld. Posterior sampling or a bounded
+sensitivity calculation need not agree with a local linearization. \\
+
+\Edge{025} & Unresolved point source & Under a unit-peak originating beam and
+a realized response with \(\rho_L=1\), an unresolved source of flux density
+\(S\) mJy has ideal peak \(S\ \mjybeam\). This is a response prediction, not
+an integrated-flux claim. \\
+
+\Edge{026} & Response-changing kernel & If a downstream kernel changes
+\(\rho_L\) to \(r\), the unrenormalized ideal peak is \(rS\ \mjybeam\). A
+literal peak claim requires recorded renormalization by \(r^{-1}\) and an
+updated response basis. \\
+
+\Edge{027} & Circularized beam & Replacing available elliptical axes by a
+circular beam without an explicit rule is nonconformant. With a declared
+circularization, the result is labeled approximate and does not erase the
+originating ellipse. \\
+
+\Edge{028} & Unsupported stream or target & A non-\code{xs} stream, or a
+request for surface brightness, per-pixel flux, temperature, extended-source
+calibration, or integrated photometry, yields an unsupported no-output state
+without a calibrated v0.1 label. \\
+
+\Edge{029} & Zero signal and affine convention & With an explicit
+not-applicable baseline and \(x=0\), every finite multiplier gives \(y=0\):
+CAL creates no additive offset. With a declared nonzero \(b\), the result is
+\(-Mb\), exposing the affine convention rather than hiding it. \\
+
+\Edge{030} & Observation-order replay & Two observations with distinct APT,
+association, atmosphere, and response identities give identical per-
+observation results in either processing order. No state or factor from one
+appears in the other's canonical lineage. \\
+
+\bottomrule
+\end{longtable}
+\normalsize
+
+\subsection{Proposed evidence, separated by claim}
+\label{sec:validation-evidence}
+
+No scientific validation is executed by this authorship task. The following
+evidence is proposed for a future, separately authorized campaign.
+
+\begin{enumerate}[label=\textbf{V\arabic*.},leftmargin=*]
+\item \Term{Analytic structural fixtures.} Use small scalar and dense-vector
+  cases to evaluate Equations~\eqref{eq:affine-input},
+  \eqref{eq:piecewise-operator}, \eqref{eq:multiplier},
+  \eqref{eq:conditional-covariance}, and \eqref{eq:variance-weight}; include
+  every edge in Table~\ref{tab:edge-cases}. Exact identities and metadata are
+  compared exactly; numeric tolerances are preregistered for the arithmetic
+  precision and never absorb a semantic mismatch.
+
+\item \Term{Metamorphic identity and lineage fixtures.} Permute keyed rows,
+  sample columns, and network containers; vary irrelevant design identity;
+  challenge missing/duplicate keys and every association disposition; process
+  observations in both orders; and inject omitted, duplicated, and inverted
+  factor instances. Expected invariants and ratios are fixed by
+  Equations~\eqref{eq:once-only} and \eqref{eq:factor-challenges}.
+
+\item \Term{Atmosphere structural fixtures.} Once the missing content-bound
+  operator record is supplied, verify its digest, exact nodes, analytic zero
+  anchor, positivity, strict direction, seam continuity, and support rejection
+  without using observational data. This establishes structural correctness
+  only.
+
+\item \Term{Atmosphere representation study.} Compare the finite retained
+  operator with its named higher-fidelity generating calculation on a dense,
+  preregistered grid over the exact declared support, using the exact selected
+  passband identity and a fully declared weighting convention. Report maximum
+  and distributional error separately by array, opacity, and airmass. The
+  prior one-percent target is a falsification threshold, not a guaranteed
+  outcome. Unknown passband uncertainty remains a limitation even if the
+  numeric approximation passes.
+
+\item \Term{Synthetic response and uncertainty study.} Inject a point-source
+  template through an independently declared beam and downstream response;
+  test Equation~\eqref{eq:peak-response} before and after a response-changing
+  kernel. Inject detector, array, observation, and global nuisances and recover
+  the dense covariance predicted by Equations~\eqref{eq:nuisance-covariance}
+  and \eqref{eq:common-rank-one}. Blank inputs test the absence of additive
+  offsets or residual airmass trend.
+
+\item \Term{Observational performance study.} Only after structural and
+  representation evidence exists, use independent standard-source predictions
+  with epoch, spectrum, passband, beam/template, and full covariance. Estimate
+  relative repeatability and absolute recovery separately by array and over
+  declared atmosphere support; test residual trend with airmass. The prior
+  approximate five-percent repeatability and five-to-ten-percent absolute
+  goals are study targets, not acceptance by assertion. Correlated standards
+  are not counted as independent.
+\end{enumerate}

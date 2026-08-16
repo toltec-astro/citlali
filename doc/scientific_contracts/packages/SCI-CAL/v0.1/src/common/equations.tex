@@ -1,0 +1,297 @@
+\section{Canonical equations and invariants}
+\label{sec:equations}
+
+\subsection{Admission and valid support}
+
+Let \(\mathsf A_j\) be the conjunction of the scientific admission predicates:
+the sample is upstream-eligible \code{xs}; its acquisition key and sample
+column binding are resolved; its selected APT row and unique admitted
+association are resolved; units and factor directions are declared; the
+sample, baseline state, factor, opacity, airmass, time support, operator, and
+response basis are valid for the requested operation; and the effective mode
+is enabled. The mathematical domain is
+\begin{equation}
+  \valid=\{j:\mathsf A_j=\mathrm{true}\}.
+  \label{eq:valid-support}
+\end{equation}
+Restriction to \(\valid\) is not multiplication by a Boolean mask. Invalid
+occurrences do not become scientific zeros and do not contribute hits or
+coverage.
+
+The explicitly declared affine input is
+\begin{equation}
+  z_j=x^{xs}_j-b_j,\qquad j\in\valid.
+  \label{eq:affine-input}
+\end{equation}
+If the upstream convention has no subtraction, its record says that the
+baseline operation is not applicable and Equation~\eqref{eq:affine-input}
+reduces explicitly to \(z_j=x^{xs}_j\). Missing baseline meaning is not that
+state.
+
+\subsection{Retained structural atmosphere operator}
+\label{sec:atmos-equations}
+
+The line-of-sight coordinate at the top-of-atmosphere pivot is
+\begin{equation}
+  \ell_{ot}=\tau_{225,o}(t)\,[X_{ot}-X_{\rm ref}]
+  =\tau_{225,o}(t)X_{ot},\qquad X_{\rm ref}=0.
+  \label{eq:los-coordinate}
+\end{equation}
+This is a coordinate for the retained operator, not a claim that a TolTEC
+band opacity equals \(\tau_{225}\), nor permission to replace the retained
+operator by an unapproved monochromatic exponential.
+
+For each array, a complete content-bound record for \(\mathcal O_a\) must
+declare strictly ordered nodes
+\begin{equation}
+  0=\ell_{a,0}<\ell_{a,1}<\cdots<\ell_{a,K_a},
+  \qquad H_{a,0}=1,
+  \label{eq:operator-nodes}
+\end{equation}
+their dimensionless ordinates \(H_{a,k}\), and one orientation
+\(\sigma_a\in\{\mathrm{transmission},\mathrm{correction}\}\). On a closed
+node interval,
+\begin{align}
+ u&=\frac{\ell-\ell_{a,k}}{\ell_{a,k+1}-\ell_{a,k}},
+ \label{eq:operator-fraction}\\
+ H_a(\ell)&=(1-u)H_{a,k}+uH_{a,k+1},
+ \quad \ell\in[\ell_{a,k},\ell_{a,k+1}].
+ \label{eq:piecewise-operator}
+\end{align}
+The canonical transmission and correction are then
+\begin{equation}
+ (T_a,C_a)=
+ \begin{cases}
+   (H_a,H_a^{-1}),&\sigma_a=\mathrm{transmission},\\
+   (H_a^{-1},H_a),&\sigma_a=\mathrm{correction}.
+ \end{cases}
+ \label{eq:operator-orientation}
+\end{equation}
+Interpolation is applied to the authoritative ordinate before taking a
+reciprocal. Interpolating the reciprocal instead is, in general, a different
+operator and is not conformant.
+
+The structural invariants are
+\begin{equation}
+ T_a(0)=C_a(0)=1,\qquad
+ 0<T_a(\ell)<1,\quad 1<C_a(\ell)<\infty
+ \quad\text{for }0<\ell\leq\ell_{a,K_a},
+ \label{eq:atmos-invariants}
+\end{equation}
+with \(T_a\) strictly decreasing and \(C_a\) strictly increasing on declared
+support. Thus there is no positive-opacity unity plateau. Exact node values
+are reproduced and the operator is continuous at every seam. Its derivative
+may change discontinuously at a seam.
+
+The authorized structural domain for a sample is the intersection
+\begin{equation}
+ \mathcal D_{otd}=\left\{
+ 0\leq\tau_{225,o}(t)\leq0.15,\quad
+ X_{ot}\in\mathcal D_X,\quad
+ 0\leq\ell_{ot}\leq\ell_{a(d),K_{a(d)}},\quad
+ t\in\mathcal D_\tau
+ \right\},
+ \label{eq:atmos-domain}
+\end{equation}
+where \(\mathcal D_X\) is the declared upstream airmass-model domain and
+\(\mathcal D_\tau\) is the opacity source's declared time support. A
+time-resolved opacity at a sample is admissible only when measured at that
+time or obtained by a source-authorized interpolation between bracketing
+states whose declared validity covers the sample. No extrapolation from an
+unbracketed endpoint is allowed. Equation~\eqref{eq:atmos-domain} is exact as a
+support intersection, but cannot be numerically instantiated until the
+operator record in \Assump{011} is supplied.
+
+\subsection{Once-only signal factorization}
+\label{sec:factor-equations}
+
+The selected APT is the value boundary for absolute calibration. If TolProj
+has materialized a pointing-derived correction, its causal ancestry may be
+written
+\begin{equation}
+  F^{\rm sel}_{od}=P_{od}F^{\rm parent}_{od}
+  \quad\text{(lineage identity only)}.
+  \label{eq:embodied-pointing}
+\end{equation}
+The right-hand factors are not separately applied to the target signal.
+Admissible correction dispositions are \code{not_applicable} and
+\code{embodied_once}, with the parent and event identities present for the
+latter. \code{required_but_unresolved} is not an admissible calibrated state.
+
+Because v0.1 has only the target unit \(\mjybeam\), its unit-transfer factor is
+the explicit identity \(Q_{\mjybeam}=1\). The exact realized multiplier and
+signal are
+\begin{align}
+ M_j &= F^{\rm sel}_{od}\,C_{a(d)}(\ell_{ot})\,Q_{\mjybeam},
+ \label{eq:multiplier}\\
+ y_j &= M_j z_j,\qquad j\in\valid.
+ \label{eq:signal}
+\end{align}
+No independent \code{responsivity}, \code{sens}, parent \code{flxscale},
+pointing-derived correction, or opaque \code{fcf} appears in
+Equation~\eqref{eq:multiplier}. Any such quantity used upstream may be named in
+lineage or a nuisance model, but does not become another signal factor.
+
+Numeric multiplication in Equation~\eqref{eq:multiplier} is commutative.
+Causal provenance is not: the selected APT must exist before its row factor is
+bound, and target atmosphere state is applied at the target sample. For each
+factor role \(\rho\in\{\mathrm{absolute\ flxscale},
+\mathrm{target\ atmosphere},\mathrm{unit\ identity}\}\), define the realized
+application count \(n_{j\rho}\). The once-only invariant is
+\begin{equation}
+  n_{j\rho}=1\quad\text{for every required role and }j\in\valid,
+  \label{eq:once-only}
+\end{equation}
+and zero for roles not in the canonical multiplier. The factor-instance
+identities, not merely their numeric values, establish this count.
+
+For a nonzero intended factor \(f\), challenge results relative to the correct
+output obey
+\begin{equation}
+ \frac{y_{\rm omitted}}{y_{\rm correct}}=f^{-1},\qquad
+ \frac{y_{\rm duplicated}}{y_{\rm correct}}=f,\qquad
+ \frac{y_{\rm inverted}}{y_{\rm correct}}=f^{-2},
+ \label{eq:factor-challenges}
+\end{equation}
+when all other quantities are fixed and the inverse replaces the intended
+factor. A unity factor leaves values unchanged but must still retain its role
+and instance identity when the role is required.
+
+\subsection{Conditional measurement uncertainty}
+\label{sec:conditional-uncertainty}
+
+Stack the valid samples and let \(A=\diag(M_j)\). Conditioned on fixed state
+\(\theta\),
+\begin{align}
+ \E[\boldsymbol y\mid\theta]
+   &=A\{\E[\boldsymbol x^{xs}\mid\theta]-\boldsymbol b\},
+ \label{eq:conditional-mean}\\
+ C_{y\mid\theta}&=A C_{x\mid\theta}A^{\mathsf T}.
+ \label{eq:conditional-covariance}
+\end{align}
+This transformation preserves every supplied sample, detector, and
+observation correlation. For a diagonal conditional representation,
+\begin{equation}
+ v^{(y)}_j=M_j^2v^{(x)}_j,\qquad
+ w^{(y)}_j=\frac{w^{(x)}_j}{M_j^2}.
+ \label{eq:variance-weight}
+\end{equation}
+The valid support is identical to the signal support. If the corresponding
+input uncertainty is absent, the output state is unavailable rather than a
+zero variance or infinite weight.
+
+Every synthetic injection, conditional noise realization, or genuine
+raw-domain Jacobian companion \(k_{jr}=\partial x_j/\partial\alpha_r\) that is
+declared to share the signal response obeys
+\begin{equation}
+ k^{(y)}_{jr}=M_j k^{(x)}_{jr}.
+ \label{eq:companion-transfer}
+\end{equation}
+This equation does not authorize relabeling a physically distinct measured
+stream as a response companion.
+
+\subsection{Calibration and response nuisance covariance}
+\label{sec:nuisance-equations}
+
+For a fixed factor sign, let
+\begin{equation}
+ H_{jr}=\frac{\partial\ln|M_j|}{\partial\theta_r}.
+ \label{eq:nuisance-jacobian}
+\end{equation}
+Within one atmosphere interpolation interval define
+\begin{equation}
+ \gamma_a(\ell)=\frac{d\ln C_a}{d\ell}
+ =\begin{cases}
+   -H'_a(\ell)/H_a(\ell),&\sigma_a=\mathrm{transmission},\\
+   \phantom{-}H'_a(\ell)/H_a(\ell),&\sigma_a=\mathrm{correction}.
+  \end{cases}
+ \label{eq:atmos-log-slope}
+\end{equation}
+Hence, away from seams,
+\begin{equation}
+ \frac{\partial\ln C_a}{\partial\tau_{225}}=\gamma_a X,
+ \qquad
+ \frac{\partial\ln C_a}{\partial X}=\gamma_a\tau_{225}.
+ \label{eq:atmos-derivatives}
+\end{equation}
+For mean calibrated signal \(\boldsymbol\mu\), the first-order nuisance term is
+\begin{equation}
+ C_{\rm nuis}\simeq
+ \diag(\boldsymbol\mu)H C_\theta H^{\mathsf T}
+ \diag(\boldsymbol\mu).
+ \label{eq:nuisance-covariance}
+\end{equation}
+It is generally dense. A common fractional absolute-scale uncertainty \(s\)
+gives
+\begin{equation}
+ C_{\rm common}=s^2\boldsymbol\mu\boldsymbol\mu^{\mathsf T},
+ \label{eq:common-rank-one}
+\end{equation}
+a rank-one contribution that does not decrease merely because more affected
+samples are averaged.
+
+If fitted calibration state or baseline depends on the same data, a first-
+order total covariance also contains cross terms:
+\begin{align}
+ C_y\simeq{}& A C_x A^{\mathsf T}
+ +J_\theta C_\theta J_\theta^{\mathsf T}
+ +J_b C_bJ_b^{\mathsf T}
+ +A C_{x\theta}J_\theta^{\mathsf T}
+ +J_\theta C_{\theta x}A^{\mathsf T}
+ +\text{other declared cross terms},
+ \label{eq:full-covariance}
+\end{align}
+where \(J_b=-A\). Independence can remove a cross term only when justified.
+Linearization is unavailable at an operator seam, for uncertainty spanning
+multiple intervals, for large or asymmetric multiplicative uncertainty, or
+for discrete association and selection uncertainty. Those cases require
+nonlinear samples, a joint posterior, or a bounded sensitivity study.
+
+\subsection{Response condition for the unit label}
+\label{sec:response-equations}
+
+Let \(P_B(\boldsymbol\omega)\) be the originating Beammap response template,
+with declared coordinates and unit peak,
+\begin{equation}
+ P_B(\boldsymbol 0)=1.
+ \label{eq:beam-peak}
+\end{equation}
+For an unresolved source of top-of-atmosphere flux density \(S\) mJy, a
+downstream realized linear response \(L\) has ideal map peak
+\begin{equation}
+ m_{\rm peak}=S\rho_L\ \mjybeam,
+ \qquad \rho_L=[L P_B](\boldsymbol 0).
+ \label{eq:peak-response}
+\end{equation}
+The original point-source-peak label remains scientifically literal only when
+\(\rho_L=1\) on the declared support. If a kernel or filter changes
+\(\rho_L\), the consumer must either propagate an explicit response
+renormalization and update the response-basis provenance, or withhold the
+literal peak-calibration claim. SCI-CAL does not estimate \(\rho_L\).
+
+For an explicitly selected elliptical Gaussian approximation, the originating
+solid angle would be
+\begin{equation}
+ \Omega_B=\frac{\pi\theta_{\rm maj}\theta_{\rm min}}{4\ln 2},
+ \label{eq:elliptical-solid-angle}
+\end{equation}
+with angle units, frame, position angle, and approximation label retained.
+Equation~\eqref{eq:elliptical-solid-angle} records response basis only. It does
+not authorize a surface-brightness conversion or integrated photometry in
+v0.1.
+
+\subsection{Canonical lineage reconstructibility}
+
+Let \(\mathcal L_o\) denote one canonical calibration-lineage record per
+coherent reduction package. For every valid occurrence, it must be possible to
+resolve
+\begin{equation}
+ \mathcal L_o\longrightarrow
+ \{x^{xs}_j,b_j,K^{\rm acq},R^{\rm APT},E^{\rm assoc},F^{\rm sel},
+ \mathcal O_a,\tau_{225},X,C_a,Q,\mathcal V,\theta,P_B,L\}
+ \longrightarrow M_j\longrightarrow y_j.
+ \label{eq:reconstruction}
+\end{equation}
+The arrows mean resolvable scientific lineage, not a required file layout.
+Compact product links may point to the canonical record and immutable APT;
+they need not duplicate dense tables in every product.

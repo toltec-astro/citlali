@@ -75,6 +75,35 @@ scientific-author draft from that packet. Scope approval does not approve the
 contract substance, establish implementation conformity, authorize
 validation, or change production status.
 
+The content-bound author packet was committed and a fresh GPT-5.6 Ultra
+implementation-blind author was dispatched on 2026-08-16. The author is
+restricted to the approved Scope Brief, independent core plus supersession
+cover, exact passband manifest, and sanitized conventions/ownership extract.
+The internal dossier, implementation, audits, repairs, tests, validation,
+Unity evidence, and active ALIGN work are excluded. The next owner-facing
+milestone is a manager-reviewed two-view contract draft or a precise scientific
+decision that prevents one.
+
+The implementation-blind author returned the first SCI-CAL two-view draft on
+2026-08-16. The package contains one shared LaTeX authority, a 24-page
+scientist-facing rationale, a 21-page engineering conformance view, 50 shared
+numbered requirements, 30 shared limiting/pathological predictions, and a
+complete 50-row crosswalk. The manager verified that the engineering view adds
+no independent normative science and corrected one draft ambiguity so
+`science-qualification-eligible` cannot be mistaken for an achieved
+`science-qualified` or `calibrated-science` claim. Both PDFs passed mechanical
+coverage checks and visual inspection. No scientific validation was run.
+
+The draft is not frozen. `SCI-CAL-OWNER-Q001` remains open because the approved
+packet does not contain the retained atmosphere operator's exact content-bound
+nodes and ordinates, ordinate orientation, numeric support/seam rules, or
+generating-model/passband provenance. Until one immutable record supplies
+those facts, numeric atmosphere evaluation, calibrated numeric output,
+representation-fidelity claims, and numeric science-qualification eligibility
+remain unavailable. The next gate is owner scientific review; an independent
+implementation-blind two-view consistency review follows only after the
+science is approved.
+
 The previously approved `DOC-MAP-001` deliverable is the first queued user
 guide. It will combine a canonical map dictionary with a compact per-reduction
 rendering driven by effective and realized state, explaining what each emitted

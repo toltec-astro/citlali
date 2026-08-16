@@ -1,0 +1,349 @@
+\section{Normative scientific requirements}
+\label{sec:requirements}
+
+The words ``must'', ``must not'', ``required'', and ``invalid'' are normative.
+These requirements define scientific conformance without prescribing a file,
+class, function, language, or storage layout.
+
+\subsection{Scope, state, and input typing}
+
+\begin{description}[style=nextline]
+\item[\Req{001}: measured-channel scope.]
+  The v0.1 operation must accept only the ordinary \code{xs} measured stream.
+  A physically distinct measured stream must be rejected as unsupported and
+  must not inherit the \code{xs} factor, unit, response, or uncertainty label.
+
+\item[\Req{002}: target-unit scope.]
+  The only calibrated target is top-of-atmosphere point-source-peak
+  \(\mjybeam\) at \(X_{\rm ref}=0\). An unsupported unit or photometric meaning
+  must yield no calibrated SCI-CAL output, not a relabeled numeric array.
+
+\item[\Req{003}: complete signal declaration.]
+  Each admitted signal must declare its acquisition identity, pre-CAL unit,
+  sample and detector shape, time/support, upstream eligibility, and any
+  authorized offset/baseline convention. Missing or incompatible declarations
+  invalidate the affected scope.
+
+\item[\Req{004}: explicit semantic states.]
+  Missing, disabled, automatic, unavailable, invalid, engineering-only, and
+  science-qualification-eligible states must be represented explicitly. None
+  may be encoded solely as a zero, unity, negative, non-finite, stale, or
+  undocumented sentinel.
+
+\item[\Req{005}: one-way resolution.]
+  Requested, effective, observation-resolved, and realized calibration states
+  must remain distinct and flow one way. Realized or compatibility state must
+  not mutate the accepted request, and a new observation must replace its
+  resolved state in full.
+\end{description}
+
+\subsection{Occurrence-scoped identity and association}
+
+\begin{description}[style=nextline]
+\item[\Req{006}: acquisition key.]
+  Every selected detector occurrence must have an observation-local key
+  containing observation/Tune context, network or interface, and the
+  network-local channel/tone slot. A global column is only a locator.
+
+\item[\Req{007}: binding evidence.]
+  A sample column may be bound to an acquisition occurrence and selected APT
+  row only by an explicit keyed relation or a verified ordered-row contract
+  that records scope, order definition, cardinality, and proof. Row position
+  without that evidence is invalid.
+
+\item[\Req{008}: unique coverage.]
+  On the declared selected support, binding and target-to-source association
+  must be single-valued and complete. Missing, duplicate, ambiguous, or
+  contradictory keys must invalidate exactly the affected detector or the
+  predeclared required support; no arbitrary choice is permitted.
+
+\item[\Req{009}: immutable selected APT identity.]
+  The selected APT must be identified as one immutable artifact by resolvable
+  artifact identity and digest. Each used row must also carry its artifact-
+  local key and source observation/network occurrence context.
+
+\item[\Req{010}: association evidence.]
+  Each admitted target-to-source edge must name both occurrence-scoped
+  endpoints, matcher method/version, disposition, and available quality
+  evidence. Only an admitted unique match may calibrate; abstained, ambiguous,
+  rejected, or missing edges must not.
+
+\item[\Req{011}: layered identity.]
+  Acquisition, measured-APT, association, and design identities, as well as
+  occurrence, semantic-content, and byte-transport identities, must remain
+  distinct. A design match is not required for ordinary measured Beammap
+  calibration, and a design-ID change alone must not change a valid result.
+
+\item[\Req{012}: array/network consistency and lifetime.]
+  Network-to-array membership and target/source network context must be
+  checked as declared constraints. Reordering is harmless only when the
+  binding proof remains valid. No identity or row state may leak from another
+  observation.
+\end{description}
+
+\subsection{Factor authority, causality, and reconstructibility}
+
+\begin{description}[style=nextline]
+\item[\Req{013}: absolute factor.]
+  The sole absolute detector factor must be the selected APT row's finite,
+  nonzero \code{flxscale}, with direction \(\mjybeam/U_x\), detector recipient,
+  validity, reference plane, uncertainty status, and selected-artifact lineage
+  declared. Reciprocal or sign convention must never be inferred.
+
+\item[\Req{014}: pointing-correction disposition.]
+  The selected lineage must classify any TolProj pointing-derived correction
+  as \code{not_applicable}, \code{embodied_once}, or
+  \code{required_but_unresolved}. An embodied correction must name its parent
+  and event and must not be applied again; an unresolved required correction
+  prohibits calibrated output.
+
+\item[\Req{015}: once-only application.]
+  Absolute \code{flxscale}, target atmosphere correction, and the explicit
+  target-unit identity must each have realized application count one on every
+  valid occurrence. Parent factors and already embodied events must have
+  runtime count zero.
+
+\item[\Req{016}: canonical multiplier.]
+  The signal must obey Equations~\eqref{eq:multiplier} and
+  \eqref{eq:signal} on exactly \(\valid\). Scalar multiplication order may
+  change without changing values, but the causal lineage and factor-instance
+  identities must be preserved.
+
+\item[\Req{017}: responsivity boundary.]
+  \code{responsivity} must not be presented or applied as an independent
+  absolute \(\mjybeam\) factor. Any use must have a distinct relative role,
+  unit, normalization/recipient, support, and lineage, and must not duplicate
+  information already embodied in \code{flxscale}.
+
+\item[\Req{018}: sensitivity boundary.]
+  Beammap \code{sens} must not multiply the calibrated signal or masquerade as
+  atmosphere correction or total uncertainty. If used for an approximate
+  weight, that role, units, estimator identity, approximation, support, and
+  exclusions must be explicit.
+
+\item[\Req{019}: compatibility factor boundary.]
+  An \code{fcf} or other compatibility aggregate may be admitted only after
+  exact decomposition into the canonical role, unit, direction, constituent
+  instance identities, and exclusions. An opaque aggregate has no calibration
+  authority.
+
+\item[\Req{020}: factor and package lineage.]
+  Every realized factor must record definition, role, unit, direction,
+  recipient/support, reference plane, application stage, validity,
+  uncertainty status, and parent lineage. One canonical record per coherent
+  reduction package must reconstruct Equation~\eqref{eq:reconstruction};
+  product-level links may resolve it without duplicating the complete APT.
+\end{description}
+
+\subsection{Atmosphere operator, support, and quality}
+
+\begin{description}[style=nextline]
+\item[\Req{021}: opacity and airmass meaning.]
+  \(\tau_{225}\) must be finite nonnegative zenith optical depth with source
+  and time support. \(X\) must be the full eligible-sample airmass with model
+  identity/domain. Equation~\eqref{eq:los-coordinate} and
+  \(X_{\rm ref}=0\) must be used; a zenith value alone is not a line-of-sight
+  correction.
+
+\item[\Req{022}: temporal support.]
+  Every calibrated sample must be covered by an exact opacity state or a
+  source-authorized interpolation between valid bracketing states. Method,
+  version, endpoints, validity interval, and any maximum gap must be recorded.
+  Unbracketed interpolation, endpoint extrapolation, and inherited prior-
+  observation opacity are prohibited.
+
+\item[\Req{023}: complete operator identity.]
+  A numeric atmosphere evaluation requires the exact operator name, content
+  digest, array assignment, ordered coordinate/ordinate nodes with units,
+  ordinate orientation, interpolation rule, numeric support, generating model
+  provenance, and passband identity when used. A name without these facts is
+  insufficient.
+
+\item[\Req{024}: structural evaluation.]
+  The retained operator must obey Equations~\eqref{eq:operator-nodes} through
+  \eqref{eq:operator-orientation}: analytic zero anchor, interpolation of the
+  authoritative ordinate, exact node recovery, and continuity at seams.
+
+\item[\Req{025}: physical-direction invariants.]
+  On declared positive-opacity support, transmission and correction must be
+  finite and positive, transmission must be strictly below unity and
+  decreasing, and correction must be strictly above unity and increasing.
+  A finite unity plateau, sign change, non-finite value, or direction reversal
+  is invalid.
+
+\item[\Req{026}: domain intersection.]
+  A calibrated sample must satisfy Equation~\eqref{eq:atmos-domain}. No
+  opacity, elevation/airmass, line-of-sight coordinate, or time request may be
+  silently clamped, extrapolated, or replaced by a legacy selector/fallback.
+
+\item[\Req{027}: science-qualification eligibility policy.]
+  A coherent segment may receive the
+  \code{science-qualification-eligible} structural-policy class only when all
+  its admitted opacity support lies in \(0\leq\tau_{225}\leq0.15\) and every
+  other structural admission condition holds. This class records eligibility
+  to seek separately accepted qualification evidence; it is not an
+  atmosphere-fidelity, observational-performance, \code{science-qualified},
+  or \code{calibrated-science} claim.
+
+\item[\Req{028}]
+  \Term{Engineering-opacity restriction.} If any part of an unsplit coherent segment has
+  \(0.15<\tau_{225}\leq0.25\), its class must be
+  \code{engineering-only} \code{unavailable} and v0.1 must emit no calibrated
+  SCI-CAL signal. It must not extrapolate, fall back, or preserve a calibrated
+  unit label.
+
+\item[\Req{029}: invalid and outside-supported opacity.]
+  Negative or non-finite opacity is invalid input. Opacity above 0.25, absent
+  opacity, invalid airmass/elevation meaning, or a request beyond any operator
+  node/time/model support is outside supported calibration and must yield no
+  calibrated output.
+
+\item[\Req{030}: coherent quality state.]
+  One predeclared observation or segment must receive one opacity quality
+  class. It must take the most restrictive applicable state across its
+  support; sample-by-sample class switching is prohibited. A separately
+  declared split creates separate lineage-bearing segments.
+
+\item[\Req{031}: passband limits.]
+  Where the operator depends on a passband, it must bind the exact selected
+  TolTECA v1 passband-set identity and record all known unknowns in
+  Section~\ref{sec:definitions}. No detector/network/telescope measurement,
+  normalization, uncertainty, covariance, or photon/energy semantics may be
+  inferred from the array-named curves.
+\end{description}
+
+\subsection{Conditional and nuisance uncertainty}
+
+\begin{description}[style=nextline]
+\item[\Req{032}: full conditional covariance.]
+  A supplied conditional covariance must transform by
+  Equation~\eqref{eq:conditional-covariance} on the identical ordered valid
+  support. Existing off-diagonal correlations must be preserved.
+
+\item[\Req{033}: scalar variance and weight.]
+  Supplied diagonal conditional variance or inverse variance must transform by
+  Equation~\eqref{eq:variance-weight}, with output units
+  \((\mjybeam)^2\) or \((\mjybeam)^{-2}\). Weight is not support, validity,
+  hits, response, confidence, or total uncertainty.
+
+\item[\Req{034}: unavailable conditional uncertainty.]
+  If no admissible variance, weight, or covariance exists for a valid signal,
+  conditional uncertainty must be marked unavailable on that same support.
+  It must not be synthesized as zero variance, infinite weight, or a value
+  derived from \code{sens} without a separately approved estimator.
+
+\item[\Req{035}: nuisance completeness ledger.]
+  The lineage must carry an entry for detector \code{flxscale}, common
+  absolute calibrator scale, any TolProj pointing-derived correction,
+  WVR/atmosphere model, Beammap \code{sens} when used for approximate weights,
+  and beam/template response. Each entry must be \code{quantified},
+  \code{not_applicable} with justification, or \code{unavailable}, and name
+  detector, array, observation, cohort, or global correlation scope when
+  known.
+
+\item[\Req{036}: correlation preservation.]
+  Nuisance covariance must preserve declared common and cross terms. Shared
+  calibrator, array, opacity, pointing, passband, or beam terms must not be
+  treated as independent per sample or counted down solely with sample or
+  detector number.
+
+\item[\Req{037}: total-uncertainty claim.]
+  Total calibrated uncertainty or significance is available only when every
+  required nuisance category and material cross-covariance is quantified or
+  explicitly shown not applicable. Otherwise it must be labeled unavailable,
+  even when conditional weight exists.
+
+\item[\Req{038}: propagation regime.]
+  Linear nuisance propagation may be claimed only inside one differentiable
+  operator interval with sufficiently small approximately symmetric
+  uncertainties and justified dependence assumptions. Seam-spanning, large,
+  asymmetric, selection, association, or same-data fitted-state uncertainty
+  requires nonlinear or joint propagation; missing cross terms may not be set
+  to zero without justification.
+
+\item[\Req{039}: shared realized operator.]
+  Signal, conditional covariance/weights, admitted synthetic injections,
+  conditional noise realizations, and genuine Jacobian companions must use
+  the identical realized multiplier, valid support, and factor lineage. A
+  different measured stream must not be substituted as a companion.
+\end{description}
+
+\subsection{Response basis, validity, and claims}
+
+\begin{description}[style=nextline]
+\item[\Req{040}: originating response basis.]
+  Every calibrated result must resolve its selected Beammap source and per-
+  detector beam/template occurrence. Available elliptical major/minor axes,
+  position angle, units, coordinate frame, epoch/support, fit identity, and
+  uncertainty status must be retained.
+
+\item[\Req{041}: realized response distinction.]
+  Originating Beammap response and realized mapmaker/kernel/filter response
+  must remain separate provenance objects. Circularization must be explicitly
+  labeled with its rule and cannot silently replace available elliptical
+  information.
+
+\item[\Req{042}: point-source-peak condition.]
+  A downstream result may claim literal point-source-peak \(\mjybeam\) only
+  when its realized response satisfies Equation~\eqref{eq:peak-response} with
+  \(\rho_L=1\) for the declared beam/template and support, or when an explicit
+  response renormalization establishes and records that condition.
+
+\item[\Req{043}: response-changing operations.]
+  A kernel, filter, or map operation that changes peak response must propagate
+  the response basis and factor. Without a separately established
+  renormalization it must withhold the literal peak-calibration claim; SCI-CAL
+  itself must not certify the downstream response.
+
+\item[\Req{044}: excluded photometric meanings.]
+  V0.1 must not emit or authorize \(\mathrm{MJy/sr}\), \(\mathrm{Jy/pixel}\),
+  Rayleigh-Jeans or thermodynamic temperature, extended-source calibration,
+  integrated photometry, or a resolved-source recovery claim.
+
+\item[\Req{045}: validity tuple and causes.]
+  Every coherent result must publish the tuple in
+  Equation~\eqref{eq:validity-tuple} and machine-distinguishable reason codes
+  for missing identity, unsupported stream/unit, invalid or out-of-domain
+  atmosphere, intentionally disabled calibration, unavailable conditional or
+  nuisance uncertainty, incomplete response basis, and any required output
+  failure.
+
+\item[\Req{046}: truthful no-output states.]
+  Disabled/uncalibrated, invalid, engineering-only unavailable, outside-
+  supported calibration, and uncertainty-unavailable states must remain
+  distinguishable. A failure in a required factor or identity must not emit a
+  calibrated number; a missing non-signal uncertainty may leave the signal
+  valid only with the corresponding claim explicitly unavailable.
+
+\item[\Req{047}: canonical lineage record.]
+  One resolvable canonical record per coherent reduction package must include
+  raw observation identity, selected APT and digest, acquisition and selected
+  row occurrences, association edge, factor definitions and ancestry,
+  atmosphere/operator/passband identities and support, reference plane,
+  target unit, state tuple, uncertainty ledger, and response basis.
+
+\item[\Req{048}: compact product links.]
+  Every calibrated product must contain links and occurrence keys sufficient
+  to resolve its canonical lineage and exact selected APT. It need not and
+  should not duplicate the entire APT or dense per-detector lineage table in
+  every product.
+
+\item[\Req{049}: separated claim status.]
+  Structural correctness, atmosphere representation fidelity, relative
+  repeatability, and absolute flux performance must be reported as separate
+  claims with separate evidence and support. A pass in one layer must not be
+  promoted to another. In particular,
+  \code{science-qualification-eligible} must not be promoted to an achieved
+  \code{science-qualified} or \code{calibrated-science} claim. Unless the owner
+  later defines a different explicit threshold, either achieved claim requires
+  separately accepted atmosphere-representation-fidelity and
+  observational-performance evidence over the same declared identity and
+  support in addition to structural correctness.
+
+\item[\Req{050}: falsifiability before qualification.]
+  Any conformance or performance claim must identify evidence capable of
+  falsifying the relevant equations, assumptions, edge cases, identity
+  invariants, uncertainty correlations, and response condition. Skipped
+  required evidence is unavailable, not a pass; the provisional one-percent,
+  five-percent, and five-to-ten-percent targets are not guarantees.
+\end{description}

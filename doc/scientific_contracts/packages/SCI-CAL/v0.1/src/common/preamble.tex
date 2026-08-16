@@ -1,0 +1,93 @@
+\usepackage[letterpaper,margin=0.82in,headheight=14pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs,longtable,tabularx,array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+
+\definecolor{calblue}{HTML}{244B6B}
+\definecolor{calteal}{HTML}{287A78}
+\definecolor{calgray}{HTML}{4D5963}
+\definecolor{callight}{HTML}{EEF3F6}
+\definecolor{calwarn}{HTML}{8A4B08}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=calblue,
+  urlcolor=calteal,
+  citecolor=calblue,
+  pdftitle={\DocPdfTitle},
+  pdfauthor={SCI-CAL independent scientific author},
+  pdfsubject={SCI-CAL v0.1 scientific contract draft}
+}
+
+\setlength{\emergencystretch}{3em}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.52em}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.18}
+\setlist{nosep,leftmargin=*}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{calgray}SCI-CAL v0.1 DRAFT}
+\fancyhead[R]{\small\color{calgray}\DocShortTitle}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.35pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\newcommand{\code}[1]{\nolinkurl{#1}}
+\newcommand{\Req}[1]{\texttt{SCI-CAL-REQ-#1}}
+\newcommand{\Assump}[1]{\texttt{SCI-CAL-ASM-#1}}
+\newcommand{\Edge}[1]{{\scriptsize\texttt{SCI-CAL-EDGE-#1}}}
+\newcommand{\Term}[1]{\textbf{#1}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\TOA}{\mathrm{TOA}}
+\newcommand{\valid}{\mathcal{J}_{\mathrm{valid}}}
+\newcommand{\mjybeam}{\mathrm{mJy\,beam^{-1}}}
+
+\newcommand{\DraftNotice}{%
+  \begin{center}
+  \fcolorbox{calblue}{callight}{%
+    \begin{minipage}{0.91\linewidth}
+    \small\textbf{Draft authority boundary.}
+    This is an implementation-blind scientific contract draft. It defines
+    proposed scientific meaning and falsifiable conformance conditions. It is
+    not evidence of implementation conformity, atmosphere-model fidelity,
+    observational repeatability, absolute flux accuracy, production readiness,
+    or completed validation.
+    \end{minipage}}
+  \end{center}
+}
+
+\newcommand{\MakeContractTitle}[2]{%
+  \hypersetup{pageanchor=false}%
+  \begin{titlepage}
+  \centering
+  \vspace*{0.55in}
+  {\Large\color{calteal}\textbf{SCI-CAL}}\\[0.15in]
+  {\huge\color{calblue}\textbf{Detector Calibration, Atmospheric Extinction,\\[0.08in]
+  and Signal Transfer}}\\[0.32in]
+  {\LARGE\textbf{#1}}\\[0.22in]
+  {\large Version 0.1 - DRAFT}\\[0.12in]
+  {\large 2026-08-16}\\[0.48in]
+  \fcolorbox{calblue}{callight}{%
+    \begin{minipage}{0.78\linewidth}
+    \centering\small
+    #2
+    \end{minipage}}
+  \vfill
+  {\large Scientific owner: Grant Wilson}\\[0.08in]
+  {\normalsize Independent, implementation-blind authorship}\par
+  \end{titlepage}
+  \hypersetup{pageanchor=true}%
+}

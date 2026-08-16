@@ -8,7 +8,7 @@ without replacing package-specific review.
 
 | Package | Scope status | Contract status | Owner decision needed | Next action |
 | --- | --- | --- | --- | --- |
-| [SCI-CAL — detector calibration, extinction, and signal transfer](packages/SCI-CAL/v0.1/README.md) | Owner-approved v0.1 scope | Author packet preparation | None at scope gate | Freeze packet identifiers and dispatch the implementation-blind Ultra author |
+| [SCI-CAL — detector calibration, extinction, and signal transfer](packages/SCI-CAL/v0.1/README.md) | Owner-approved v0.1 scope | Two-view draft ready; not frozen | Approve/amend derived science and bind the numeric atmosphere-operator authority (`SCI-CAL-OWNER-Q001`) | Grant reviews the scientist-facing PDF; consistency review follows scientific approval |
 | MAP — mapmaking and observation coaddition | Proposed pilot 2 | Not started | Confirm boundary after CAL scope | Begin prior-work recovery after CAL pilot review |
 | BEAM — Beammap inference and products | Proposed pilot 3; held separate from active ALIGN | Not started | Confirm boundary and timing | Begin only after pilot process review and without absorbing ALIGN |
 | ALIGN/AST — sample alignment and astrometry | Inventoried | Not started | None yet | Hold for tranche planning |

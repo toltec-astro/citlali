@@ -1,0 +1,185 @@
+\section{Authoritative definitions and claim boundaries}
+\label{sec:definitions}
+
+\subsection{Operation and endpoint}
+
+\Term{SCI-CAL v0.1 operation.} On admitted \code{xs} support, SCI-CAL binds
+each target acquisition occurrence to one row occurrence in one exact selected
+immutable measured APT, applies that row's absolute \code{flxscale} once,
+applies one supported target-observation atmosphere correction to the
+top-of-atmosphere plane, and propagates conditional measurement uncertainty.
+It ends at calibrated detector samples, not at a map, fitted source, or
+integrated photometric estimate.
+
+\Term{Point-source-peak \(\mjybeam\).} The label denotes a peak-normalized
+response convention. For an unresolved source of top-of-atmosphere flux
+density $S$ mJy, a downstream map whose realized beam, mapmaker, kernel, and
+filter response has unit peak for the declared response basis has ideal peak
+$S\ \mjybeam$. This definition does not authorize surface-brightness,
+per-pixel, temperature, extended-source, or integrated-flux interpretation.
+
+\Term{Reference plane.} The target is top of atmosphere with
+$X_{\rm ref}=0$. A target sample at airmass $X_{ot}$ is corrected from its
+observing plane to that reference. Atmosphere corrections used while deriving
+the selected source APT belong to that APT's ancestry; they do not replace or
+duplicate the target-observation correction.
+
+\subsection{Identity and immutable selection}
+
+\Term{Acquisition occurrence.} The tuple of observation/Tune context,
+network or interface, and network-local channel/tone slot. It identifies the
+target measured occurrence to which a sample column is bound.
+
+\Term{Measured-APT row occurrence.} The tuple of immutable selected-artifact
+identity, its artifact-local row key, and source observation/network context.
+A UID is local to that immutable artifact. It is not a universal detector
+name.
+
+\Term{Association edge.} A separate, directed target-to-source relation that
+names both occurrence-scoped endpoints, matcher method and version,
+disposition, and available quality evidence. Only a unique admitted match is
+sufficient for calibration. Aggregate matcher performance is not a per-row
+match probability.
+
+\Term{Identity layers.} Acquisition identity, measured-APT identity,
+cross-observation association, and optional design identity answer different
+questions. Occurrence identity, order-independent semantic-content identity,
+and exact byte-transport identity are also distinct. Equal row numbers, local
+keys, paths, timestamps, or integer spellings do not prove correspondence.
+
+\Term{Binding.} Either an explicit keyed relation or a verified ordered-row
+contract may bind acquisition occurrences to sample columns and selected APT
+rows. An ordered relation is valid only with recorded scope, cardinality,
+ordering definition, and proof. Row position alone is not identity.
+
+\subsection{Factors and once-only lineage}
+
+\Term{Factor instance.} A value together with a stable instance identity,
+scientific role, direction, unit, recipient identity, support, reference
+plane, validity, application stage, uncertainty status, and parent lineage.
+Numerically equal values with different roles are not interchangeable.
+
+\Term{Selected absolute factor.} $F^{\rm sel}_{od}$ is the selected APT
+row's \code{flxscale}, oriented as \(\mjybeam/U_{x,d}\). It is the sole
+absolute detector factor in the v0.1 signal multiplier. If TolProj created a
+corrected child APT, its pointing-derived correction is an ancestry event
+already embodied in this value.
+
+\Term{Relative responsivity.} \code{responsivity} may support a separately
+declared relative-response, diagnostic, normalization, or nuisance role. It
+does not independently establish an absolute \(\mjybeam\) scale and is not an
+additional v0.1 signal multiplier.
+
+\Term{Sensitivity.} Beammap \code{sens} is a separately typed sensitivity or
+approximate-weight quantity. It is neither atmospheric extinction nor an
+absolute signal factor nor a general total uncertainty.
+
+\Term{Opaque total factor.} An unqualified \code{fcf} is not authoritative.
+A compatibility value can be admitted only when its exact contents, units,
+direction, exclusions, and constituent instance identities reproduce the
+canonical factorization without omission or duplication.
+
+\Term{Once-only composition.} Each required physical role contributes once
+to a realized multiplier. Causal derivation order is recorded in lineage;
+numeric multiplication of admitted scalar factors is order independent. A
+factor already materialized into a selected artifact is not multiplied again
+at execution.
+
+\subsection{Atmosphere operator and passband status}
+
+\Term{Structural operator.} The retained operator identity
+\code{am12_fixed_djf25_piecewise_linear_los_tau_v1} is adopted only as a
+piecewise-linear function of line-of-sight optical depth with an analytic zero
+anchor, exact declared nodes, continuity, and positive finite transmission and
+correction. Its content-bound node record, ordinate orientation, and numeric
+support are not present in the author packet and therefore remain unresolved
+for operational evaluation in this draft.
+
+\Term{Passband reference.} The only selected passband identity is
+\begin{center}
+\small\code{toltec-passband-set-v1:sha256:}\\
+\code{5e6f38f14bcae93a29ffe8362c52b15209f51aee4e48373b23aaa5ec2f8a6433}.
+\end{center}
+It binds one array-named modeled curve for each TolTEC array and an index. The
+frequency coordinate is in GHz and the supplied throughput is dimensionless.
+The curves are neither peak-normalized nor area-normalized. Detector or
+network aggregation, telescope measurement, uncertainty and covariance,
+normalization semantics, original generation recipe, and photon-versus-energy
+physical convention are not established. The passband identity can identify
+an input to a declared operator; it cannot, by itself, establish that
+operator's physical truth.
+
+\subsection{Uncertainty and response}
+
+\Term{Conditional measurement uncertainty.} Variance, inverse variance, or
+covariance of the admitted measurement conditional on fixed factor,
+atmosphere, identity, selection, and response state. Its propagation is exact
+for the fixed affine operator.
+
+\Term{Nuisance uncertainty.} Uncertainty in calibration, atmosphere, or
+response state, with named correlation scope. It is not included in a
+conditional weight unless explicitly incorporated through a documented joint
+covariance. Missing nuisance uncertainty is unavailable, not zero.
+
+\Term{Response basis.} The originating Beammap APT beam/template occurrence,
+including elliptical parameters and their units/frame when available,
+together with the separately supplied realized mapmaker, kernel, and filter
+response required to interpret a downstream point-source peak. A
+circularization is a labeled approximation, never silent replacement.
+
+\subsection{Validity and quality tuple}
+
+Every coherent observation or explicitly declared segment has a state tuple
+\begin{equation}
+ \mathcal V=(R,E,S,Q,U_c,U_n,B),
+ \label{eq:validity-tuple}
+\end{equation}
+where $R$ is requested mode, $E$ effective mode, $S$ calibrated-signal
+validity, $Q$ one segment-level opacity quality class, $U_c$ conditional
+uncertainty availability, $U_n$ nuisance/total-uncertainty completeness, and
+$B$ response-basis completeness. Required reason codes accompany every
+non-success state. In particular:
+
+\begin{itemize}
+\item \Term{science-qualification-eligible} means structurally admissible
+  under the v0.1 policy with fully resolved scientific inputs. It is an
+  eligibility state, not an achieved \code{science-qualified} or
+  \code{calibrated-science} claim. Unless the owner later defines a different
+  explicit threshold, either achieved claim additionally requires separately
+  accepted atmosphere-representation-fidelity and observational-performance
+  evidence over the same declared identity and support;
+\item \Term{engineering-only unavailable} means the opacity is in
+  $0.15<\tau_{225}\leq0.25$, for which no calibrated SCI-CAL output is
+  authorized in v0.1;
+\item \Term{outside-supported calibration} means the request lies outside an
+  admitted domain or lacks a required operator/input identity;
+\item \Term{disabled/uncalibrated} records an intentional effective no-op and
+  never relabels uncalibrated numbers; and
+\item \Term{uncertainty unavailable} may coexist with a valid calibrated
+  signal when the missing item is not required to define the signal, but it
+  prohibits the corresponding uncertainty or significance claim.
+\end{itemize}
+
+\subsection{Three claim layers}
+\label{sec:claim-layers}
+
+\begin{longtable}{L{0.22\linewidth}L{0.34\linewidth}L{0.36\linewidth}}
+\caption{Claims that must not be conflated.}\label{tab:claim-layers}\\
+\toprule
+Claim & What it establishes & What it does not establish \\
+\midrule
+\endfirsthead
+\toprule
+Claim & What it establishes & What it does not establish \\
+\midrule
+\endhead
+Structural calibration correctness & typed inputs, valid association, exact factor algebra, once-only lineage, supported operator evaluation, uncertainty transform, and reconstructible output & truth of the atmosphere model, telescope response, repeatability, absolute flux accuracy, or production readiness \\
+Atmosphere representation fidelity & agreement of the declared finite operator with a named higher-fidelity atmosphere calculation over declared support & agreement with the actual atmosphere, WVR accuracy, telescope passband truth, or source recovery \\
+Observational calibration performance & repeatability and absolute recovery against independent astronomical evidence with full covariance & structural correctness by itself or universal performance outside the studied population and support \\
+\bottomrule
+\end{longtable}
+
+The prior goals of at most about one-percent atmosphere representation error,
+about five-percent relative repeatability, and about five-to-ten-percent
+absolute accuracy per band are validation targets only. They are not
+guarantees and are not used to fill missing evidence.

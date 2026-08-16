@@ -1,7 +1,7 @@
 # SCI-CAL — Detector Calibration, Atmospheric Extinction, And Signal Transfer
 
-Status: owner-approved scope; implementation-blind scientific authorship
-authorized
+Status: implementation-blind contract draft ready for owner scientific review;
+not frozen
 
 Version: `0.1` scope (`2026-08-16`)
 
@@ -44,14 +44,32 @@ four-item author-reference packet on `2026-08-16`.
   limitations and supersessions for the reusable independent core
 - [`AUTHOR_CONVENTIONS_AND_OWNERSHIP.md`](AUTHOR_CONVENTIONS_AND_OWNERSHIP.md):
   sanitized stable conventions and inter-package responsibilities
-
-Contract sources, crosswalks, decisions, and PDFs do not yet exist. Their
-absence is intentional at this lifecycle stage.
+- [`AUTHOR_DRAFT_DECISIONS.md`](AUTHOR_DRAFT_DECISIONS.md): ten derived
+  scientific decisions and one unresolved owner question
+- [`CROSSWALK.md`](CROSSWALK.md): all 50 requirements traced to the
+  scientist-facing authority and implementation-independent observables
+- `src/common/`: shared notation, definitions, assumptions, equations,
+  requirements, and edge predictions
+- [`src/scientific-rationale.tex`](src/scientific-rationale.tex): canonical
+  source for the scientist-facing view
+- [`src/engineering-conformance.tex`](src/engineering-conformance.tex):
+  canonical source for the engineering-facing view
+- [`pdf/SCI-CAL-SCIENTIFIC-RATIONALE-v0.1-DRAFT.pdf`](pdf/SCI-CAL-SCIENTIFIC-RATIONALE-v0.1-DRAFT.pdf):
+  24-page scientist-facing draft
+- [`pdf/SCI-CAL-ENGINEERING-CONFORMANCE-v0.1-DRAFT.pdf`](pdf/SCI-CAL-ENGINEERING-CONFORMANCE-v0.1-DRAFT.pdf):
+  21-page engineering-facing draft
 
 ## Next Gate
 
-A fresh GPT-5.6 Ultra scientific author works only from the approved packet and
-returns the shared canonical LaTeX core, scientist-facing and engineering-
-facing views, requirement crosswalk, unresolved scientific decisions, and
-rendered PDFs. Grant then reviews scientific substance. This stage does not
-approve an implementation, run validation, or change production status.
+Grant reviews the scientist-facing draft as the primary artifact, the ten
+derived scientific decisions, and `SCI-CAL-OWNER-Q001`: whether to approve one
+content-bound atmosphere-operator record with exact nodes, ordinate
+orientation, closed numeric support/seam rules, and model/passband provenance.
+Until that record is supplied, numeric atmosphere evaluation, calibrated
+numeric output, and even a numeric science-qualification-eligible disposition
+remain unavailable.
+
+After owner scientific review and revision, a fresh implementation-blind
+consistency review must compare the two views and crosswalk before freezing.
+This draft does not approve an implementation, run validation, or change
+production status.

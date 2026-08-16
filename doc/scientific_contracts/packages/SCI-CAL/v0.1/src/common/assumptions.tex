@@ -1,0 +1,72 @@
+\section{Assumptions, conditions, and unavailable authority}
+\label{sec:assumptions}
+
+The equations are conditional on the following explicit statements. They are
+not permissions to replace missing information with defaults.
+
+\begin{description}[style=nextline]
+\item[\Assump{001}: upstream sample authority.]
+  The supplied sample axis, time, eligibility, original/synthesized state,
+  elevation/airmass meaning, and acquisition-column binding are correct under
+  approved upstream authority. SCI-CAL neither chooses nor rederives them.
+
+\item[\Assump{002}: ordinary measured channel.]
+  The admitted signal is the ordinary \code{xs} stream. A distinct measured
+  stream is a distinct physical observable and does not inherit this factor.
+
+\item[\Assump{003}: selected immutable APT.]
+  TolProj has selected and bound one immutable measured APT to the target
+  observation, and the supplied target-to-source associations are admitted
+  TolAPT/TolProj results. SCI-CAL does not choose the artifact or matcher.
+
+\item[\Assump{004}: explicit affine convention.]
+  Any baseline or offset operation preceding the multiplier is named, typed,
+  and already authorized. ``No baseline subtraction'' is an explicit
+  not-applicable state, not an inferred zero.
+
+\item[\Assump{005}: coefficient direction and reference plane.]
+  The selected \code{flxscale} is finite, nonzero, oriented as
+  \(\mjybeam/U_x\), and refers to the top-of-atmosphere calibration plane. Its
+  lineage states the disposition of any TolProj pointing-derived correction.
+
+\item[\Assump{006}: atmosphere inputs.]
+  \(\tau_{225}\) is zenith optical depth; $X$ is the full eligible-sample
+  airmass; the target pivot is $X_{\rm ref}=0$; and every value carries
+  declared time and model support. SCI-CAL does not infer $X$ from elevation
+  or choose an opacity estimator.
+
+\item[\Assump{007}: fixed conditional state.]
+  Conditional covariance equations hold at fixed identities, factor values,
+  atmosphere state, selection, and response state. Dependence of fitted state
+  on the same signal requires cross-covariance or joint propagation.
+
+\item[\Assump{008}: response ownership.]
+  Beam/Beammap supplies the originating beam/template identity; MAP/FLT
+  supplies the realized mapmaker/kernel/filter response. SCI-CAL records and
+  conditions on those identities but does not certify their empirical
+  fidelity.
+
+\item[\Assump{009}: coherent segment.]
+  A segment is declared before quality classification and is internally
+  coherent in selected APT, atmosphere/operator identity, requested/effective
+  mode, target unit, and response basis. Splitting a segment is a provenance
+  event, not a sample-by-sample quality switch.
+
+\item[\Assump{010}: passband limitation.]
+  The selected TolTECA v1 passband set is a modeled array-named reference with
+  the recorded unknowns in Section~\ref{sec:definitions}. Any atmosphere
+  result using it is conditional on the declared, presently unestablished
+  response weighting and carries unavailable passband uncertainty.
+
+\item[\Assump{011}: unresolved numeric operator authority.]
+  The packet does not contain the exact nodes, node ordinate orientation,
+  content digest, or numeric line-of-sight support of
+  \code{am12_fixed_djf25_piecewise_linear_los_tau_v1}. Consequently this draft
+  defines the strongest structural operator contract but does not authorize a
+  numeric atmosphere evaluation, calibrated numeric output, or numeric
+  \code{science-qualification-eligible} disposition until the owner supplies
+  one content-bound operator record answering the question in the draft
+  decision register. Resolving that question can enable structural evaluation
+  only; it does not establish an achieved \code{science-qualified} or
+  \code{calibrated-science} claim.
+\end{description}
