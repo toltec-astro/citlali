@@ -4,7 +4,7 @@ This recovery record follows the
 [Citlali Scientific Contract Library Program](../../../README.md). It is an
 internal Stage A artifact and is not part of the scientific-author packet.
 
-Status: reviewed for Scope Brief drafting; owner disposition pending
+Status: reviewed and owner-approved for the v0.1 author packet
 
 Investigator/date: Codex manager, `2026-08-16`
 
@@ -149,9 +149,9 @@ It is suitable for the author packet only with a cover sheet stating that:
 4. Prior quality-class policy names opacity ranges but does not by itself
    establish the final elevation support, continuous engineering operator, or
    product behavior for an unsupported calibration request.
-5. The recovered authority does not yet settle whether v0.1 calibrates only
-   the ordinary `xs` detector stream or gives any other measured channel the
-   same scientific meaning.
+5. Grant resolved measured-channel scope on 2026-08-16: v0.1 calibrates only
+   the ordinary `xs` detector stream, and no other stream inherits that
+   meaning.
 
 These are stated as owner/author questions in the Scope Brief rather than
 being silently resolved from current code.
@@ -183,12 +183,12 @@ remaining scientific work is to:
 4. derive falsifiable predictions and limiting cases for the adopted domain
    and unavailable claims.
 
-## Proposed Author Reference Packet
+## Owner-Approved Author Reference Packet
 
-The following minimal packet is proposed for owner approval:
+Grant approved the following minimal packet on `2026-08-16`:
 
 1. the owner-approved successor of [`SCOPE_BRIEF.md`](SCOPE_BRIEF.md), which
-   will itself contain the binding sanitized decision digest;
+   contains the binding sanitized decision digest;
 2. the frozen `SCI-CAL-001_INDEPENDENT_CORE.tex` identified above, accompanied
    by a one-page supersession cover sheet for identity, initial unit scope,
    and authority limits;
@@ -200,10 +200,10 @@ The following minimal packet is proposed for owner approval:
    and inter-package responsibilities only, including owner-approved
    abstractions from APT ADRs 0010 and 0011.
 
-The raw owner-decision files need not enter the packet because their binding
+The raw owner-decision files do not enter the packet because their binding
 scientific content will be consolidated in the approved Scope Brief. The
 audit, implementation, repair, validation, and internal dossier are expressly
-not proposed references.
+not approved references.
 
 ## Investigator Attestation
 

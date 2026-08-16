@@ -68,10 +68,12 @@ completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.
 The recovery reuses the frozen implementation-independent CAL core and later
 owner decisions, incorporates the layered APT-identity supersessions, and
 keeps implementation, audit, repair, validation, Unity, and active ALIGN B3c
-material outside authorship. The contract remains unstarted. The next gate is
-project-owner review of the v0.1 Scope Brief, its five named scope decisions,
-and its four-item proposed author-reference packet; no scientific author is
-authorized before that review.
+material outside authorship. Grant approved the v0.1 Scope Brief, its five
+named scope decisions, and the four-item sanitized author-reference packet on
+2026-08-16. The next gate is a fresh implementation-blind GPT-5.6 Ultra
+scientific-author draft from that packet. Scope approval does not approve the
+contract substance, establish implementation conformity, authorize
+validation, or change production status.
 
 The previously approved `DOC-MAP-001` deliverable is the first queued user
 guide. It will combine a canonical map dictionary with a compact per-reduction

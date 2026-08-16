@@ -1,12 +1,13 @@
 # SCI-CAL — Detector Calibration, Atmospheric Extinction, And Signal Transfer Scope Brief
 
-Status: `draft for owner review`; scientific authorship not authorized
+Status: `owner-approved`; scientific authorship authorized
 
 Scientific owner: Grant Wilson
 
-Version/date: `0.1-draft`, `2026-08-16`
+Version/date: `0.1`, approved `2026-08-16`
 
-Approved source identifier: not assigned
+Approved source identifier: recorded in
+[`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md)
 
 ## Program Adherence And Prior-Work Recovery
 
@@ -14,7 +15,7 @@ This package follows the
 [Citlali Scientific Contract Library Program](../../../README.md).
 
 - Prior-work record: [`PRIOR_WORK.md`](PRIOR_WORK.md)
-- Recovery reviewed by: Codex manager, `2026-08-16`; Grant review pending
+- Recovery reviewed by: Codex manager and Grant Wilson, `2026-08-16`
 - Existing material adopted: CAL-D001--D004 as amended; BAND-001 passband
   identity and limitations; CAL-ATM-D006 quality-class distinction
 - Existing material cited: frozen implementation-independent CAL core,
@@ -32,9 +33,8 @@ This package follows the
 - Genuinely new scientific work: reconcile the retained structural atmosphere
   operator with its authority limits; finish the once-only factor/lineage
   model at the selected-APT boundary; define minimum validity, uncertainty,
-  response-basis, and provenance products; settle measured-channel scope;
-  derive falsifiable predictions
-- Proposed owner-approved author references: this brief after approval; the
+  response-basis, and provenance products; derive falsifiable predictions
+- Owner-approved author references: this brief; the
   frozen independent core with a supersession cover sheet; the exact v1
   passband authority manifest; one sanitized CAL convention/ownership extract
 - Author-packet exclusions: [`INTERNAL_DOSSIER.md`](INTERNAL_DOSSIER.md), all
@@ -42,7 +42,7 @@ This package follows the
   active ALIGN B3c, and historical conformity claims
 
 Confirm that this opening was reviewed before launching scientific authorship:
-`no — Grant approval pending`.
+`yes — Grant approved the brief and all five scope decisions on 2026-08-16`.
 
 ## 1. Package Name And Scientific Purpose
 
@@ -89,7 +89,7 @@ for each of these scientifically legitimate inputs:
    its measured-channel identity, pre-CAL unit, any already-authorized
    offset/baseline convention, time, support, and conditional validity. CAL
    may consume the state but may not choose the upstream conditioning
-   estimator. Whether v0.1 is restricted to `xs` is an owner decision.
+   estimator. V0.1 is restricted to the ordinary `xs` detector stream.
 2. **Acquisition identity:** observation/Tune identity, network/interface, and
    network-local tone or row slot. A global column is only a locator. A proven
    ordered-row contract or an explicit keyed mapping may bind the acquisition.
@@ -253,9 +253,8 @@ implementation:
 
 - What admission predicate proves the target acquisition-to-selected-source
   association without claiming perfect design identity?
-- Which measured detector channel(s) have an approved calibration meaning in
-  v0.1, and what prevents an `xs` calibration factor from being relabeled for
-  a physically distinct stream?
+- What contract rule prevents the v0.1 `xs` calibration factor from being
+  relabeled for a physically distinct measured stream?
 - What is the minimum calibration validity/quality state, and how do causes
   such as missing identity, unsupported unit, out-of-domain atmosphere,
   disabled calibration, and unavailable uncertainty differ scientifically?
@@ -302,7 +301,7 @@ SCI-CAL v0.1 does not:
 
 ## 9. Allowed References
 
-The author packet is proposed to contain only:
+The owner-approved author packet contains only:
 
 1. this Scope Brief after owner approval and content hashing;
 2. `SCI-CAL-001_INDEPENDENT_CORE.tex` from
@@ -325,39 +324,39 @@ restricted to top-of-atmosphere `mJy/beam`, and that no associated audit,
 repair, validation, or implementation material is admitted.
 
 No other reference may be opened without Grant's approval and an updated,
-re-frozen Scope Brief or explicit owner answer.
+re-frozen Scope Brief or explicit owner answer. Exact packet identities and
+hashes are recorded in [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md).
 
 ## 10. Owner Decisions And Remaining Ambiguities
 
-### Decisions proposed as already made
+### Prior decisions confirmed
 
-Grant is asked to confirm, not rederive, the nine conventions in section 6,
-the layered identity amendment, the once-only factor principle, conditional
-variance/weight scaling, package-level reconstructibility, and the separation
-of structural atmosphere correctness from physical and observational claims.
+Grant confirmed the nine conventions in section 6, the layered identity
+amendment, the once-only factor principle, conditional variance/weight
+scaling, package-level reconstructibility, and the separation of structural
+atmosphere correctness from physical and observational claims.
 
-### Five owner decisions required for scope approval
+### Five scope decisions approved on 2026-08-16
 
-1. **CAL-SCOPE-D001 — included endpoint.** Approve SCI-CAL ending at
+1. **CAL-SCOPE-D001 — included endpoint.** SCI-CAL ends at
    calibrated detector samples plus their conditional uncertainty, quality,
    and canonical lineage; downstream maps are consumers, not CAL estimators.
-2. **CAL-SCOPE-D002 — atmosphere authority.** Approve carrying the retained
-   fixed line-of-sight-optical-depth operator into authorship as structurally
+2. **CAL-SCOPE-D002 — atmosphere authority.** The retained fixed
+   line-of-sight-optical-depth operator enters authorship as structurally
    adopted but physically/observationally qualified, with exact operational
    support still to be stated by the scientific contract.
-3. **CAL-SCOPE-D003 — engineering-only behavior.** Decide whether v0.1 must
-   define an explicit scientifically labeled uncalibrated/unavailable outcome
-   for `0.15 < tau225 <= 0.25`, or merely state that no calibrated SCI-CAL
-   output is authorized until a continuous engineering operator is separately
-   adopted.
-4. **CAL-SCOPE-D004 — reference packet.** Approve the four-item author packet
-   in section 9 and authorize preparation of the two sanitized cover/extract
-   documents after scope approval.
-5. **CAL-SCOPE-D005 — measured-channel scope.** Decide whether v0.1 calibrates
-   only `xs` or whether any other measured detector stream has the same
-   scientifically declared calibration transformation.
+3. **CAL-SCOPE-D003 — engineering-only behavior.** No calibrated SCI-CAL
+   output is authorized for `0.15 < tau225 <= 0.25` until a continuous
+   engineering operator is separately adopted. The contract must represent
+   the outcome truthfully as unavailable/uncalibrated rather than silently
+   extrapolating or relabeling it.
+4. **CAL-SCOPE-D004 — reference packet.** The four-item author packet in
+   section 9 is approved, including preparation of the sanitized cover and
+   convention/ownership extract.
+5. **CAL-SCOPE-D005 — measured-channel scope.** V0.1 calibrates only `xs`.
+   No other measured detector stream inherits the same scientific meaning.
 
-No implementation choice is being presented for owner approval here.
+These decisions approve scientific scope, not an implementation choice.
 
 ## 11. Independence Statement
 
@@ -369,7 +368,7 @@ brief, the exact references in section 9, and later owner answers.
 
 The author will not receive Citlali source, current interfaces, audits,
 findings, repairs, tests, numerical execution evidence, Unity material,
-validation state, or active ALIGN B3c context. Approval of this Scope Brief
-authorizes preparation of the bounded author packet and subsequent author
-dispatch only; it does not itself approve scientific contract substance or
-any implementation.
+validation state, or active ALIGN B3c context. Grant's 2026-08-16 approval
+authorizes the bounded author packet and implementation-blind author dispatch;
+it does not itself approve the resulting scientific contract substance or any
+implementation.
