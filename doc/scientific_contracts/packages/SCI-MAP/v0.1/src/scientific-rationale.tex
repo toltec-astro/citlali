@@ -17,7 +17,7 @@
 \definecolor{MapGoldPale}{HTML}{FFF7E6}
 \definecolor{MapGray}{HTML}{53606B}
 \hypersetup{colorlinks=true,linkcolor=MapBlue,urlcolor=MapBlue,citecolor=MapBlue,
-  pdftitle={SCI-MAP v0.1 TolTEC Ordinary Mapmaking and Observation Coaddition - Science-Team Rationale r0.2 Draft},
+  pdftitle={SCI-MAP v0.1 TolTEC Ordinary Mapmaking and Observation Coaddition - Science-Team Rationale r0.3 Draft},
   pdfauthor={SCI-MAP scientific-owner review revision}}
 \setlength{\emergencystretch}{3em}
 \setlength{\parindent}{0pt}
@@ -37,8 +37,8 @@
 
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\small\color{MapGray}SCI-MAP v0.1 -- Science-Team Rationale r0.2 DRAFT}
-\fancyfoot[L]{\small\color{MapGray}Scientific-owner review | no conformance or performance claim}
+\fancyhead[L]{\small\color{MapGray}SCI-MAP v0.1 -- Science-Team Rationale r0.3 DRAFT}
+\fancyfoot[L]{\small\color{MapGray}Science-team circulation | DRAFT}
 \fancyfoot[R]{\small\color{MapGray}Page \thepage}
 
 \begin{document}
@@ -49,8 +49,8 @@
 {\LARGE\color{MapNavy}\textbf{and Observation Coaddition}}\\[0.10in]
 {\Large\color{MapBlue}\textbf{Scientific Basis, Response, and Validity}}\\[0.38in]
 {\large Scientific contract version: v0.1}\\[0.06in]
-{\large Science-team rationale revision: r0.2}\\[0.06in]
-{\large Status: draft for scientific-owner review}\\[0.08in]
+{\large Science-team rationale revision: r0.3}\\[0.06in]
+{\large Status: house rationale frozen; scientific authority draft}\\[0.08in]
 {\large 2026-08-16}\\[0.42in]
 \fcolorbox{MapBlue}{MapPale}{\begin{minipage}{0.80\linewidth}\centering\small
 This document explains the map estimator, its response and uncertainty, the
@@ -84,9 +84,10 @@ For compatible observation maps on one common grid, the v0.1 coadd is
  \label{eq:coadd}
 \end{equation}
 where every admitted observation coefficient \(u_{op}\) is finite and
-positive. An observation is not partly coadded: its signal, coordinates,
-response, uncertainty, validity, and provenance must be mutually compatible
-before it contributes.
+positive. An observation bundle is admitted atomically: its signal,
+coordinates, response, uncertainty, validity, and provenance must be mutually
+compatible before any of its valid pixels contribute. Pixel-level support
+then determines where the admitted observation contributes.
 
 Both equations are linear only \emph{conditional on fixed} sample and detector
 membership, projection, coefficients, support policy, response state,
@@ -122,7 +123,8 @@ the declared processing chain is incomplete. The same caution applies to
 extended-source fidelity, integrated flux, and absolute offsets.
 
 The map response is the full upstream sky-to-sample response followed by the
-map operator. In compact notation,
+map operator. Writing the selected processed-sample vector as
+\(\boldsymbol y=(x_i)\), the map and its response are
 \begin{equation}
  \widehat{\boldsymbol x}=A\boldsymbol y,\qquad R=AH,
  \label{eq:response}
@@ -207,18 +209,21 @@ noise into each recipient pixel, correlating them.
 \label{fig:split}
 \end{figure}
 
-For a concrete calculation, take two independent samples of equal variance,
-each split equally into the same two pixels, with \(\omega_i=1\). In either
+For a concrete calculation, take two independent unit-variance samples and,
+for this example, let \(\omega_i=1\) be their true inverse-variance
+coefficients. Split each sample equally into the same two pixels. In either
 pixel, \(Q=1/2+1/2=1\), but
 \begin{equation}
  \operatorname{Var}(\widehat x_p)=
  \frac{(1/2)^2+(1/2)^2}{Q^2}=\frac12,
  \qquad \phi_p=\operatorname{Var}(\widehat x_p)^{-1}=2.
 \end{equation}
-Thus normalization is 1 while formal marginal inverse variance is 2. The two
-pixels are also correlated because each contains both sample errors. This is
-why projection, normalization, formal precision, and full covariance must be
-separate products.
+Thus normalization is 1 while formal marginal inverse variance is 2. In this
+deliberately symmetric example, the two pixel estimates are identical, their
+covariance is \(1/2\), and their correlation is unity: the second pixel does
+not constitute independent information. This is why projection,
+normalization, formal precision, and full covariance must be separate
+products.
 
 \clearpage
 \section{Weights and uncertainty}\label{sec:uncertainty}
@@ -307,12 +312,12 @@ the local samples near a particular pixel are unchanged. That global behavior
 must be justified and validated for the intended use.
 
 The formal equations compare \(Q_p\) with \(Q_\star c/10\) and \(Q_\star c\).
-Dimensional consistency therefore forces \(c=\texttt{coverage\_cut}\) to be
-dimensionless. The current normative r0.1 clauses incorrectly leave its unit
-status open. SCI-MAP-CI-001 records the inconsistency and proposes the exact
-owner amendment; no normative clause is changed before approval. The allowed
-numeric domain and behavior for negative, zero, non-finite, or greater-than-one
-values remain open in SCI-MAP-OD-007.
+The scientific owner has therefore fixed
+\(c=\texttt{coverage\_cut}\) as a dimensionless support-policy scalar.
+SCI-MAP-CI-001 records the resolved dimensional correction. This disposition
+does not determine the allowed numerical domain or the behavior for negative,
+zero, non-finite, or greater-than-one values; those questions remain open in
+SCI-MAP-OD-007.
 
 \clearpage
 \section{Observation coaddition}\label{sec:coadd}
@@ -341,7 +346,7 @@ recentering in this ordinary branch.
 \fcolorbox{MapNavy}{white}{\parbox[c][1.18in][c]{0.15\linewidth}{\centering centered\\integer\\common grid}}
 \hfill\(\longrightarrow\)\hfill
 \fcolorbox{MapBlue}{MapPale}{\parbox[c][1.18in][c]{0.20\linewidth}{\centering coadd signal/response\\covariance/exposure\\validity/observation count}}
-\caption{Complete-bundle admission and centered-integer placement. Any failed compatibility check rejects the observation before it contributes.}
+\caption{Complete-bundle admission and centered-integer placement. Any failed compatibility check rejects the observation bundle from the coadd before any of its valid pixels contribute.}
 \label{fig:coadd}
 \end{figure}
 
@@ -377,17 +382,18 @@ must agree with the lossless authority within 0.1 arcsec maximum sky
 separation. The bound is cited from that owner-approved representation
 authority; this rationale does not invent a physical justification for it.
 
-The FITS product remains scientifically self-describing at its declared
-serialization fidelity, while the sidecar retains exact identity for
-conformance, provenance, and coadd admission. A tolerance never authorizes a
-different sky grid, fractional shift, interpolation, or reprojection.
+The FITS WCS is sufficient for ordinary pixel-to-sky use at its declared
+serialization fidelity, while the sidecar retains the exact WCS identity used
+for admission, conformance, provenance, and coadd comparison. A tolerance
+never authorizes a different sky grid, fractional shift, interpolation, or
+reprojection.
 
 \begin{longtable}{L{0.36\linewidth}L{0.54\linewidth}}
 \toprule Science-user state & Interpretation and required action \\
 \midrule
 Valid map; response available & Use only for the response class and processing lineage actually declared.\\
 Valid numerical map; response unavailable & Restrict to owner-approved response-independent uses; response-dependent consumers fail closed.\\
-Formal weight; empirical significance unavailable & Use as declared formal normalization/precision only; do not call it significance.\\
+Formal weight; empirical significance unavailable & Use only according to its declared role---normalization or formal precision---and do not call it significance.\\
 Covariance summarized or unavailable & Do not make a claim that needs missing correlations or nuisance terms.\\
 Unsupported pixel & Unavailable, not zero sky.\\
 Raw-invalid pixel & No downstream finite value may promote it to raw-valid.\\
@@ -428,19 +434,20 @@ was executed for this authorship revision.
 
 \section{Open scientific decisions}\label{sec:decisions}
 The compact register in Appendix~\ref{app:decisions} preserves OD-001 through
-OD-007 and appends OD-008 and OD-009. The new items expose genuine upstream
-gaps rather than asking implementation questions. SCI-MAP-CI-001 separately
-records the pending dimensional correction for \code{coverage_cut}; approval
-would narrow OD-007 to numerical domain and failure behavior.
+OD-009. SCI-MAP-CI-001 is resolved: \code{coverage_cut} is dimensionless.
+OD-007 remains open only for its numerical domain and failure behavior. The
+other open items expose genuine upstream gaps rather than asking
+implementation questions.
 
-After r0.2, the planned remaining editorial work is one scientific-owner and
-voice review. Further revisions should follow an owner decision, a normative
-contract change, new validation evidence, or a newly identified scientific
-inconsistency--not stylistic churn.
+Rationale r0.3 is the frozen SCI-MAP house version. Further revisions should
+follow an owner decision, a normative contract change, new validation
+evidence, or a newly identified scientific inconsistency--not stylistic
+churn.
 
-\section*{References}\addcontentsline{toc}{section}{References}
+\addtocontents{toc}{\protect\setcounter{tocdepth}{-1}}
+\section*{References}
 \begin{enumerate}[label={[\arabic*]},leftmargin=*]
-\item \emph{SCI-MAP v0.1 Formal Scientific/Engineering Contract}, canonical shared authority r0.1 and preserved r0.2 formal view.
+\item \emph{SCI-MAP v0.1 Formal Scientific/Engineering Contract}, canonical shared authority and amended r0.3 formal view.
 \item \emph{SCI-CAL v0.1 Science-Team Rationale}, revision r0.3.
 \item \emph{SCI-PTC-001 D004 Owner Amendment}, approved 2026-08-09, for scalar coefficient and covariance semantics.
 \item \emph{Citlali Scientific Conventions}, map-bundle and ownership authority.
@@ -449,7 +456,7 @@ inconsistency--not stylistic churn.
 
 \clearpage\appendix
 \section{Compact rationale-to-contract crosswalk}\label{app:crosswalk}
-The separate \code{SCIENTIST_CROSSWALK_R0.2.md} carries the same grouped
+The separate \code{SCIENTIST_CROSSWALK_R0.3.md} carries the same grouped
 routing. The formal contract remains normative; this appendix does not replace
 or paraphrase any requirement or prediction as authority.
 
@@ -465,7 +472,7 @@ REQ-043--048 & Section~\ref{sec:products} & Product identity, WCS, provenance, f
 REQ-049--052 & Sections~\ref{sec:products}--\ref{sec:validation} & Raw parent, consumer boundary, fixed realization operator, claim layers.\\
 PRED-001--025 & Section~\ref{sec:validation} & Full formal prediction inventory and exact evidence classes.\\
 OD-001--009 & Section~\ref{sec:decisions}; Appendix~\ref{app:decisions} & External scientific-owner decision ledger.\\
-SCI-MAP-CI-001 & Section~\ref{sec:validity} & Inconsistency and proposed amendment record.\\
+SCI-MAP-CI-001 & Section~\ref{sec:validity} & Resolved dimensionless classification and bounded normative amendment.\\
 \bottomrule
 \end{longtable}
 
@@ -483,18 +490,20 @@ OD-003 & Response-unavailable use & Response state remains explicit; response-de
 OD-004 & Covariance persistence & Representation and omissions are explicit; stronger consumers fail closed.\\
 OD-005 & Observation-map publication & Follow the effective required-output policy; infer no universal storage mandate.\\
 OD-006 & Pointing/OOF reuse & No mode-specific authority follows from ordinary arithmetic alone.\\
-OD-007 & \code{coverage_cut} numeric domain & No domain or boundary behavior is inferred. Unit-status wording awaits SCI-MAP-CI-001 disposition.\\
+OD-007 & \code{coverage_cut} numeric domain & Dimensionless status is fixed; no numerical domain or boundary behavior is inferred.\\
 OD-008 & Projection normalization and boundaries & Declare the actual class and boundary convention; assume no unapproved conservation property.\\
 OD-009 & Common-grid preparation and future mosaicking & Odd-difference inputs reject; MAP performs no crop, pad, reprojection, or mosaic absent new authority.\\
 \bottomrule
 \end{longtable}
 
 \section{Document authority}
-Rationale revision r0.2 changes genre, teaching order, and ownership clarity.
-It does not change the 52 canonical requirements, 25 canonical predictions,
-or the v0.1 estimator. The exact threshold equations and \code{coverage_cut}
-clauses remain unchanged pending owner approval of SCI-MAP-CI-001. The formal
-contract and engineering conformance specification remain the normative
-authorities for audit, repair, re-audit, and exact product behavior.
+Rationale revision r0.3 freezes the scientist-facing house form and records
+the scientific-owner disposition of SCI-MAP-CI-001. The scientific contract
+remains v0.1, with 52 canonical requirement IDs and 25 canonical prediction
+IDs unchanged. Their bounded amended clauses now classify
+\code{coverage_cut} as dimensionless while leaving its numerical domain and
+failure behavior open under OD-007. The formal contract and engineering
+conformance specification remain the normative authorities for audit,
+repair, re-audit, and exact product behavior.
 
 \end{document}

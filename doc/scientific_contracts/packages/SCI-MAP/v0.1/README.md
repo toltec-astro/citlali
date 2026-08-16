@@ -1,8 +1,7 @@
 # SCI-MAP — Ordinary Mapmaking And Observation Coaddition
 
-Status: science-team rationale r0.2 first editing pass complete; formal
-contract preserved; scientific-owner/voice review required; scientific
-authority not frozen
+Status: science-team rationale r0.3 house version frozen; CI-001 resolved and
+normatively incorporated; scientific authority not frozen
 
 Scientific contract scope: `v0.1`, owner-approved (`2026-08-16`)
 
@@ -62,22 +61,22 @@ A fresh implementation-blind GPT-5.6 Ultra author was dispatched from the
 content-bound packet on `2026-08-16`. Scope approval did not approve the
 resulting contract.
 
-## Preserved Formal Contract And Science-Team Rationale r0.2
+## Formal Contract And Frozen Science-Team Rationale r0.3
 
 The manager-reviewed r0.1 draft supplied one shared canonical LaTeX authority
 and two rendered views. The first scientific editing round found the formal
 science strong but required the SCI-CAL house-model genre separation. The
 package now exposes:
 
-- [formal scientific/engineering contract](pdf/SCI-MAP-FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT-v0.1.pdf),
+- [formal scientific/engineering contract r0.3](pdf/SCI-MAP-v0.1_FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT_r0.3-DRAFT.pdf),
   preserving all canonical equations, 52 requirements, 25 predictions, exact
   support/state semantics, provenance, decision register, and conformance
   routing;
-- [science-team rationale r0.2](pdf/SCI-MAP-SCIENTIFIC-RATIONALE-v0.1.pdf),
+- [science-team rationale r0.3](pdf/SCI-MAP-v0.1_SCIENCE-TEAM-RATIONALE_r0.3-DRAFT.pdf),
   a scientist-facing account of the estimator, response, uncertainty,
   support/validity, coaddition, WCS, products, and validation without the full
   requirement or prediction inventories;
-- [engineering conformance specification](pdf/SCI-MAP-ENGINEERING-CONFORMANCE-v0.1.pdf)
+- [engineering conformance specification r0.2](pdf/SCI-MAP-v0.1_ENGINEERING-CONFORMANCE_r0.2-DRAFT.pdf)
   (18 pages);
 - [`src/common/`](src/common/), containing the required canonical
   `notation`, `definitions`, `equations`, `assumptions`, `requirements`, and
@@ -89,12 +88,12 @@ package now exposes:
 - [`src/formal-scientific-engineering-contract.tex`](src/formal-scientific-engineering-contract.tex),
   the preserved complete formal view created by the first editing round;
 - [`CONTRACT_INCONSISTENCY_AND_PROPOSED_AMENDMENT_R0.2.md`](CONTRACT_INCONSISTENCY_AND_PROPOSED_AMENDMENT_R0.2.md),
-  recording `SCI-MAP-CI-001` and the pending dimensionless `coverage_cut`
-  correction without changing normative text;
-- [`SCIENTIST_CROSSWALK_R0.2.md`](SCIENTIST_CROSSWALK_R0.2.md), the grouped
+  recording `SCI-MAP-CI-001` as resolved by the scientific owner and
+  incorporated in the shared authority;
+- [`SCIENTIST_CROSSWALK_R0.3.md`](SCIENTIST_CROSSWALK_R0.3.md), the grouped
   rationale/formal routing;
-- [`SCIENCE_TEAM_RATIONALE_R0.2_CHANGELOG.md`](SCIENCE_TEAM_RATIONALE_R0.2_CHANGELOG.md);
-- [`SCIENTIFIC_FORMAL_CONSISTENCY_R0.2.md`](SCIENTIFIC_FORMAL_CONSISTENCY_R0.2.md);
+- [`SCIENCE_TEAM_RATIONALE_R0.3_CHANGELOG.md`](SCIENCE_TEAM_RATIONALE_R0.3_CHANGELOG.md);
+- [`SCIENTIFIC_FORMAL_CONSISTENCY_R0.3.md`](SCIENTIFIC_FORMAL_CONSISTENCY_R0.3.md);
 - [`CROSSWALK.md`](CROSSWALK.md), with complete requirement and prediction
   routing;
 - [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md),
@@ -110,7 +109,7 @@ not promoted to zero-valued scientific output. The engineering view imports
 all normative science from the shared authority and adds only evidence,
 execution, traceability, and result procedure.
 
-The r0.2 pass consulted only approved scientific ownership and representation
+The r0.2/r0.3 passes consulted only approved scientific ownership and representation
 authorities needed to avoid reopening resolved work. Approved PTC D004 fixes
 the ordinary coefficient as a declared scalar analysis/gridding coefficient,
 not precision by default. Accepted ADR 0009 and its 2026-08-05 owner amendment
@@ -121,11 +120,12 @@ reprojection/mosaicking owner remain genuine gaps, now OD-008 and OD-009.
 No implementation candidate was selected or inspected, and no validation,
 reduction, Unity execution, or production-status decision was performed.
 
-## Next Gate
+## Stopping Rule And Next Gate
 
-The next gate is one scientific-owner and voice review for rationale r0.3,
-including disposition of `SCI-MAP-CI-001` and any decisions the owner is ready
-to answer in `SCI-MAP-OD-001--009`. Later revision requires an owner decision,
-a normative contract change, new validation evidence, or a newly identified
+The r0.3 scientist-facing house form is frozen. `SCI-MAP-CI-001` is resolved:
+`coverage_cut` is dimensionless. `SCI-MAP-OD-007` remains open only for
+numerical-domain and failure-policy questions, and OD-001--009 otherwise
+remain open as recorded. Later revision requires an owner decision, a
+normative contract change, new validation evidence, or a newly identified
 scientific inconsistency. Implementation conformance and validation remain
 later, separate gates.

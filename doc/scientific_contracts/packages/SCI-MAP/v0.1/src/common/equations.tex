@@ -1,4 +1,4 @@
-% Canonical SCI-MAP equations; normative r0.1 text is preserved.
+% Canonical SCI-MAP v0.1 equations; CI-001 dimensional amendment incorporated 2026-08-16.
 % Canonical equations. They are typeset in the scientist-facing view only.
 \newcommand{\SCIMapObservationEquations}{%
 \begin{align}
@@ -64,9 +64,8 @@
  k&=\left\lfloor\frac{\lfloor0.75N\rfloor+N}{2}\right\rfloor,
  &Q_\star&=\begin{cases}\mathcal P_{(k)},&N>0,\\0,&N=0,\end{cases}
  \label{eq:threshold-selector}\\
- c&=\texttt{coverage\_cut},
- &\operatorname{admit}_{\Pi_{\rm eff}}
-   \bigl(c,\operatorname{unit\_status}(c)\bigr)&=1,
+ c&=\texttt{coverage\_cut}\text{ (dimensionless scalar)},
+ &\operatorname{admit}_{\Pi_{\rm eff}}(c)&=1,
  \label{eq:coverage-cut-admission}\\
  T_{\rm norm}&=Q_\star c/10,
  &T_{\rm sci}&=Q_\star c,

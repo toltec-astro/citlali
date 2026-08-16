@@ -15,7 +15,7 @@
 \definecolor{MapPale}{HTML}{EAF3F8}
 \definecolor{MapGray}{HTML}{53606B}
 \hypersetup{colorlinks=true,linkcolor=MapBlue,urlcolor=MapBlue,citecolor=MapBlue,
-  pdftitle={SCI-MAP v0.1 Formal Scientific/Engineering Contract, r0.2},
+  pdftitle={SCI-MAP v0.1 Formal Scientific/Engineering Contract, r0.3},
   pdfauthor={Independent Stage B scientific-contract author}}
 \setlength{\emergencystretch}{3em}
 \setlength{\parindent}{0pt}
@@ -31,12 +31,12 @@
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[L]{\small\color{MapGray}SCI-MAP v0.1 | Formal Scientific/Engineering Contract}
-\fancyhead[R]{\small\color{MapGray}Document r0.2}
+\fancyhead[R]{\small\color{MapGray}Document r0.3}
 \fancyfoot[L]{\small\color{MapGray}Author draft | no conformity or performance claim}
 \fancyfoot[R]{\small\color{MapGray}Page \thepage}
 
 \input{SCI-MAP-v0.1_SHARED_AUTHORITY_r0.1.tex}
-\renewcommand{\SCIMapDocumentRevision}{r0.2}
+\renewcommand{\SCIMapDocumentRevision}{r0.3}
 
 \newcommand{\StatusBox}[1]{%
   \begin{center}\fcolorbox{MapBlue}{MapPale}{\parbox{0.92\linewidth}{#1}}\end{center}}
@@ -61,7 +61,7 @@ Author-packet approval: & \SCIMapApprovalDate
 the implementation-independent scientific contract. It preserves the
 canonical equations, 52 requirements, 25 predictions, exact state and support
 semantics, provenance, and conformance routing. The separate science-team
-rationale r0.2 explains the same science without replacing this authority.
+rationale r0.3 explains the same science without replacing this authority.
 This document does not claim implementation conformity, representation
 fidelity, scientific validation, observational performance, or production
 readiness.}
@@ -304,18 +304,15 @@ operator row set \(\mathcal S_{\rm out}\) is the exact intersection of the
 predicate row sets designated applicable by \(\Pi_{\rm eff}\); it is not a
 full-grid mask with zero semantics.
 
-The admitted packet supplies no numeric domain or range for \(c\). The r0.1
-shared authority also leaves its unit status open, but dimensional review now
-shows that Equations~\eqref{eq:support-thresholds} require
-\(c=\texttt{coverage\_cut}\) to be dimensionless because \(Q_p\), \(Q_\star\),
-and both thresholds are directly compared in the same coefficient unit.
-\code{SCI-MAP-CI-001} records the formal inconsistency and an exact proposed
-owner amendment. Until that amendment is approved, the canonical equations,
-REQ-031/032, PRED-012, and OD-007 remain normative as written; this narrative
-does not silently repair them. The numerical domain, including negative,
-zero, non-finite, and greater-than-one values, and the failure scope remain
-SCI-MAP-OD-007. Threshold rationale and future change authority remain
-SCI-MAP-OD-001 and SCI-MAP-OD-002.
+The scientific owner has fixed \(c=\texttt{coverage\_cut}\) as a
+dimensionless support-policy scalar because \(Q_p\), \(Q_\star\), and both
+thresholds are directly compared in the same coefficient unit.
+\code{SCI-MAP-CI-001} records the resolved inconsistency and the bounded
+amendment to the canonical equations, REQ-031/032, and PRED-012. This
+disposition does not establish a numerical domain. Negative, zero,
+non-finite, and greater-than-one values, the recommended range, policy
+authority, and failure behavior remain SCI-MAP-OD-007. Threshold rationale
+and future change authority remain SCI-MAP-OD-001 and SCI-MAP-OD-002.
 
 \clearpage
 \section{Observation coaddition on one common grid}
@@ -482,13 +479,13 @@ representation that must persist rather than remain lineage-resolvable; (5)
 whether physical observation-map publication is an abstract obligation beyond
 the effective v0.1 required-product rule; (6) whether Pointing/OOF ordinary
 arithmetic is a registered reuse of this operator; and (7) the admissible
-numeric domain, unit status, boundary-case dispositions, and failure behavior
-for \(c=\texttt{coverage\_cut}\); (8) authorized projection classes,
+numeric domain, boundary-case dispositions, and failure behavior for the
+dimensionless \(c=\texttt{coverage\_cut}\); (8) authorized projection classes,
 normalization, boundaries, and ownership; and (9) canonical-grid preparation
 and future reprojection/mosaicking ownership. Appendix~\ref{app:owner-decisions}
 reproduces the exact questions and conservative interim behavior from the
-owner ledger. SCI-MAP-CI-001 is the separate proposed correction that would
-narrow OD-007 after approval.
+owner ledger. SCI-MAP-CI-001 is resolved and OD-007 is correspondingly
+narrowed without renumbering.
 
 Pending those decisions, the scientific contract is coherent at its stated
 conditional boundary. It authorizes ordinary positive-coefficient normalized
@@ -543,8 +540,8 @@ PRED-001--025 & Analytic consequences and conformance/representation challenges
 & Sections 3, 9; Appendix~\ref{app:predictions}; not executed\\
 OD-001--009 & Exact unresolved scientific-owner questions & Section 10;
 Appendix~\ref{app:owner-decisions}; all OPEN\\
-SCI-MAP-CI-001 & Dimensional inconsistency and proposed owner amendment &
-Section 5; normative clauses unchanged pending approval\\
+SCI-MAP-CI-001 & Resolved dimensionless classification and bounded amendment &
+Section 5; equations, REQ-031/032, and PRED-012 amended in place\\
 \bottomrule
 \end{longtable}
 

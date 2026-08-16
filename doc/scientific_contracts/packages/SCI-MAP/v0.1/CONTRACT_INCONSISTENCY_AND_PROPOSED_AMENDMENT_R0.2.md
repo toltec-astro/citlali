@@ -4,7 +4,7 @@ Record ID: `SCI-MAP-CI-001`
 
 Date: `2026-08-16`
 
-Status: **OPEN — owner approval required before normative incorporation**
+Status: **RESOLVED — owner-approved and normatively incorporated in r0.3**
 
 ## Inconsistency
 
@@ -49,13 +49,18 @@ After approval, make only these bounded normative changes:
 5. update the formal crosswalk and generated decision register without
    changing any requirement or decision ID.
 
-## Explicit non-changes before approval
+## Owner disposition and incorporation
 
-This r0.2 authorship pass does **not** alter the shared equations, canonical
-requirements, prediction, generated formal decision register wording, or
-engineering contract. It records the inconsistency, teaches the dimensional
-consequence in the non-normative science rationale, and awaits owner action.
+Scientific owner Grant Wilson approved the bounded amendment on `2026-08-16`:
+
+> `coverage_cut` is a dimensionless support-policy scalar. This decision does
+> not determine its admissible numerical range or the handling of negative,
+> zero, non-finite, or greater-than-one values.
+
+Rationale/formal revision r0.3 incorporates the correction in the shared
+equations, `SCI-MAP-REQ-031`, `SCI-MAP-REQ-032`, and
+`SCI-MAP-PRED-012`. `SCI-MAP-OD-007` remains open only for numerical-domain,
+boundary-case, recommended-range, policy-authority, and failure questions.
 
 No range is inferred for negative, zero, non-finite, or greater-than-one
-values. No validation or implementation claim follows from this proposal.
-
+values. No validation or implementation claim follows from this disposition.

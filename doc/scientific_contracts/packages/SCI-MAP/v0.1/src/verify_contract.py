@@ -31,12 +31,15 @@ ENG_TEX = SRC / "engineering-conformance.tex"
 FORMAL_PDF = PDF / "SCI-MAP-FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT-v0.1.pdf"
 RATIONALE_PDF = PDF / "SCI-MAP-SCIENTIFIC-RATIONALE-v0.1.pdf"
 ENG_PDF = PDF / "SCI-MAP-ENGINEERING-CONFORMANCE-v0.1.pdf"
+FORMAL_REV_PDF = PDF / "SCI-MAP-v0.1_FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT_r0.3-DRAFT.pdf"
+RATIONALE_REV_PDF = PDF / "SCI-MAP-v0.1_SCIENCE-TEAM-RATIONALE_r0.3-DRAFT.pdf"
+ENG_REV_PDF = PDF / "SCI-MAP-v0.1_ENGINEERING-CONFORMANCE_r0.2-DRAFT.pdf"
 CROSSWALK = ROOT / "CROSSWALK.md"
-SCIENTIST_CROSSWALK = ROOT / "SCIENTIST_CROSSWALK_R0.2.md"
+SCIENTIST_CROSSWALK = ROOT / "SCIENTIST_CROSSWALK_R0.3.md"
 OWNER_LEDGER = ROOT / "SCIENTIFIC_OWNER_DECISION_LEDGER.md"
 AUTHOR_DECISIONS = ROOT / "AUTHOR_DRAFT_DECISIONS.md"
 INCONSISTENCY = ROOT / "CONTRACT_INCONSISTENCY_AND_PROPOSED_AMENDMENT_R0.2.md"
-CONSISTENCY = ROOT / "SCIENTIFIC_FORMAL_CONSISTENCY_R0.2.md"
+CONSISTENCY = ROOT / "SCIENTIFIC_FORMAL_CONSISTENCY_R0.3.md"
 OWNER_REGISTER = SRC / "SCI-MAP-v0.1_OWNER_DECISION_REGISTER_r0.1.tex"
 OWNER_REGISTER_GENERATOR = SRC / "generate_owner_decision_register.py"
 
@@ -133,8 +136,11 @@ for decision in owner_decisions:
 
 assert "SCI-MAP-CI-001" in inconsistency
 assert "dimensionless" in inconsistency
-assert "owner approval required" in inconsistency.lower()
-assert "normative clauses remain unchanged" in consistency
+assert "RESOLVED" in inconsistency
+assert "RESOLVED" in ledger
+assert "SCI-MAP-CI-001" in consistency
+assert "dimensionless" in shared
+assert r"\operatorname{unit\_status}(c)" not in shared
 assert "SCI-MAP-CI-001" in rationale_tex
 for decision in ("OD-001", "OD-007", "OD-008", "OD-009"):
     assert decision in rationale_tex, f"compact decision coverage missing: {decision}"
@@ -157,6 +163,15 @@ for authority_range in (
 formal_reader, formal_pages = pdf_text(FORMAL_PDF)
 rationale_reader, rationale_pages = pdf_text(RATIONALE_PDF)
 eng_reader, eng_pages = pdf_text(ENG_PDF)
+for canonical, revisioned in (
+    (FORMAL_PDF, FORMAL_REV_PDF),
+    (RATIONALE_PDF, RATIONALE_REV_PDF),
+    (ENG_PDF, ENG_REV_PDF),
+):
+    assert revisioned.is_file(), f"missing revision-bearing PDF: {revisioned.name}"
+    assert canonical.read_bytes() == revisioned.read_bytes(), (
+        f"stable and revision-bearing PDFs differ: {canonical.name}"
+    )
 for reader, pages, label in (
     (formal_reader, formal_pages, "formal"),
     (eng_reader, eng_pages, "engineering"),
@@ -187,6 +202,7 @@ assert 8 <= narrative_pages <= 10, f"main narrative is {narrative_pages} pages"
 rationale_joined = "\n".join(rationale_pages)
 for required_text in (
     "SCI-MAP-CI-001",
+    "dimensionless",
     "Q = 1",
     "variance",
     "OD-008",
@@ -225,4 +241,6 @@ print(f"engineering_pdf_pages={len(eng_reader.pages)}")
 print("formal_engineering_shared_requirement_prediction_coverage=PASS")
 print("rationale_inventory_separation=PASS")
 print("dimensional_inconsistency_record=PASS")
+print("ci_001_owner_resolution_and_amendment=PASS")
+print("revision_bearing_pdf_aliases=PASS")
 print("latex_warning_check=PASS")

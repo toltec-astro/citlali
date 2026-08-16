@@ -15,7 +15,7 @@
 \definecolor{EngPale}{HTML}{EAF5F3}
 \definecolor{EngGray}{HTML}{58636D}
 \hypersetup{colorlinks=true,linkcolor=EngTeal,urlcolor=EngTeal,
-  pdftitle={SCI-MAP v0.1 Engineering Conformance Specification, r0.1},
+  pdftitle={SCI-MAP v0.1 Engineering Conformance Specification, r0.2},
   pdfauthor={Independent Stage B scientific-contract author}}
 \setlength{\emergencystretch}{3em}
 \setlength{\parindent}{0pt}
@@ -26,11 +26,12 @@
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[L]{\small\color{EngGray}SCI-MAP v0.1 | Engineering Conformance Specification}
-\fancyhead[R]{\small\color{EngGray}Document r0.1}
+\fancyhead[R]{\small\color{EngGray}Document r0.2}
 \fancyfoot[L]{\small\color{EngGray}Procedure only | conformance unassessed}
 \fancyfoot[R]{\small\color{EngGray}Page \thepage}
 
 \input{SCI-MAP-v0.1_SHARED_AUTHORITY_r0.1.tex}
+\renewcommand{\SCIMapDocumentRevision}{r0.2}
 
 \newcommand{\ProcedureBox}[1]{%
   \begin{center}\fcolorbox{EngTeal}{EngPale}{\parbox{0.92\linewidth}{#1}}\end{center}}
@@ -65,7 +66,7 @@
 Scientific contract version: & \textbf{\SCIMapContractVersion}\\
 Document revision: & \textbf{\SCIMapDocumentRevision}\\
 Status: & \textbf{Unassessed conformance procedure}\\
-Canonical science source: & \textbf{Shared Authority r0.1}\\
+Canonical science source: & \textbf{SCI-MAP v0.1 shared authority}\\
 Target implementation: & \textbf{Not selected in this document}
 \end{tabular}
 \end{center}
@@ -240,7 +241,8 @@ Before a conformance verdict, automated checks shall establish:
 the shared authority, with no gaps or duplicates;
 \item every requirement appears in this specification and in
 \texttt{CROSSWALK.md}; every prediction is linked to at least one requirement;
-\item both rendered PDFs identify contract v0.1 and document r0.1 separately;
+\item each rendered PDF identifies contract v0.1 and its current document
+revision separately;
 \item no unresolved LaTeX reference, citation, overfull box, clipped glyph,
 broken table, or unreadable page remains;
 \item every required artifact reopens successfully, has the expected page

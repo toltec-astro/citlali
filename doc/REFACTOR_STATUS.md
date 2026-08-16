@@ -215,17 +215,19 @@ and complete-bundle coadd teaching figures, translates the eight map facts for
 science users, and makes upstream ownership and claim layers explicit.
 
 Dimensional review found `SCI-MAP-CI-001`: the accepted threshold equations
-force `coverage_cut` to be dimensionless, while the unchanged r0.1 normative
-clauses leave its unit status open. An exact owner amendment is prepared but
-not incorporated. Existing OD-001--007 remain stable; OD-008 appends the
+force `coverage_cut` to be dimensionless, while the r0.1 normative clauses
+left its unit status open. On 2026-08-16 the scientific owner approved the
+bounded amendment, and r0.3 incorporates it in the shared equations,
+REQ-031/032, and PRED-012. OD-007 now remains open only for numerical-domain
+and failure-policy questions. Existing OD-001--007 remain stable in identity; OD-008 appends the
 unresolved projection-normalization/boundary authority and OD-009 appends the
 unresolved canonical-grid preparation and future reprojection/mosaicking
 ownership. Approved PTC D004 supplies coefficient meaning, and accepted ADR
 0009 plus its 2026-08-05 amendment supplies WCS/FITS and the 0.1-arcsec
-serialization authority, so neither resolved issue was reopened. The next
-editorial gate is one scientific-owner and voice review for r0.3. No
-implementation inspection, validation, reduction, Unity execution, or
-production decision occurred.
+serialization authority, so neither resolved issue was reopened. The r0.3
+science-team rationale is now the frozen SCI-MAP house version; it receives no
+further stylistic round. No implementation inspection, validation, reduction,
+Unity execution, or production decision occurred.
 
 The contract-library package layout was normalized in the same documentation
 pass after the project owner identified drift from the required bundle shape.

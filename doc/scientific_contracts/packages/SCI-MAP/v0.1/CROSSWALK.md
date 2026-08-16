@@ -1,6 +1,6 @@
 # SCI-MAP v0.1 Contract Crosswalk
 
-Document revision: `r0.2`
+Document revision: `r0.3`
 
 Status: author-draft traceability aid; it does not assert implementation,
 validation, or production status.
@@ -28,13 +28,14 @@ full inventories.
 Section names below are navigation aids, not a second normative wording.
 
 Nine owner decisions remain `OPEN` in
-`SCIENTIFIC_OWNER_DECISION_LEDGER.md`. `SCI-MAP-CI-001` records that the
-threshold equations dimensionally require `c=coverage_cut` to be
-dimensionless even though the unchanged r0.1 clauses leave unit status open.
-Pending owner approval of that correction, SCI-MAP-OD-007 retains its exact
-wording and no numerical range is inferred. OD-008 covers projection
-normalization and boundaries; OD-009 covers canonical-grid preparation and
-future reprojection/mosaicking ownership.
+`SCIENTIFIC_OWNER_DECISION_LEDGER.md`. `SCI-MAP-CI-001` is `RESOLVED` by the
+2026-08-16 scientific-owner disposition fixing `c=coverage_cut` as a
+dimensionless support-policy scalar. The shared equations, REQ-031/032, and
+PRED-012 incorporate that bounded amendment. SCI-MAP-OD-007 remains open only
+for numerical-domain and failure-policy questions; no numerical range is
+inferred. OD-008 covers projection normalization and boundaries; OD-009
+covers canonical-grid preparation and future reprojection/mosaicking
+ownership.
 
 ## Requirement crosswalk
 
