@@ -51,6 +51,18 @@ must update the applicable documentation before final acceptance, but no note
 or guide is created solely to populate the framework. Existing dated reports
 remain historical evidence and are not being reorganized wholesale.
 
+On 2026-08-16 the project added the
+[`Scientific Contract Library Program`](scientific_contracts/README.md) as the
+governing process for new implementation-independent scientific contracts.
+Every package must begin by linking to that charter and completing a prior-work
+recovery record before fresh derivation is commissioned. The recovery step
+adopts, cites, abstracts, supersedes, defers, or excludes earlier material so
+approved scientific reasoning is not needlessly repeated while implementation
+behavior, audit findings, repairs, and validation evidence remain outside the
+independent author channel. The initial proposed pilot order is CAL, shared
+mapmaking/coaddition, then Beammap; Beammap contract work remains separate from
+active ALIGN work.
+
 The previously approved `DOC-MAP-001` deliverable is the first queued user
 guide. It will combine a canonical map dictionary with a compact per-reduction
 rendering driven by effective and realized state, explaining what each emitted

@@ -26,6 +26,23 @@ Read these documents before making architectural changes:
 The living status document governs sequencing when these documents differ.
 Durable architecture decisions are indexed in `doc/adr/README.md`.
 
+## Scientific Contract Packages
+
+Before beginning any new scientific-contract package, read and follow
+`doc/scientific_contracts/README.md`. Every package must start with the
+charter-linked **Program adherence and prior-work recovery** section and a
+reviewed `PRIOR_WORK.md` record. Use
+`doc/scientific_contracts/PRIOR_WORK_REGISTRY.md` as the discovery seed,
+search for later package-specific material, and disposition recovered work as
+adopt, cite, abstract, supersede, defer, or exclude.
+
+Do not commission fresh scientific derivation until the recovery record and
+sanitized Scope Brief identify what is already authoritative, what may enter
+the implementation-blind author packet, what must remain outside it, and what
+genuinely new scientific work remains. Historical implementation, audit,
+repair, re-audit, and validation material may inform Stage A scope but is not
+scientific authority and must not leak into Stage B authorship.
+
 ## Current Direction
 
 The refactor follows the roadmap in `doc/REFACTOR_STATUS.md`. Project-owner

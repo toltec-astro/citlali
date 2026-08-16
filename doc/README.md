@@ -10,6 +10,7 @@ repeating it.
 | --- | --- | --- |
 | Use and interpret Citlali | [`user/`](user/README.md) | What a reduction or product does, why one would use it, relevant configuration, and interpretation limits |
 | Understand a reusable scientific method | [`science/`](science/README.md) | Equations, assumptions, estimator properties, limitations, and the products or stages that use the method |
+| Define intended scientific behavior | [`scientific_contracts/`](scientific_contracts/README.md) | Owner-approved package boundaries, scientific rationale, binding requirements, edge cases, and implementation-independent conformance obligations |
 | Apply project-wide scientific conventions | [`SCIENTIFIC_CONVENTIONS.md`](SCIENTIFIC_CONVENTIONS.md) | Identities, units, coordinate frames, indexing, validity, and provenance semantics |
 | Understand software structure | [`ARCHITECTURE.md`](ARCHITECTURE.md) and [`adr/`](adr/README.md) | Ownership, boundaries, lifecycle, and durable design decisions |
 | Verify a scientific or engineering claim | [`../validation/`](../validation/README.md) | Executable contracts, profiles, accepted evidence, and frozen campaigns |
@@ -17,6 +18,12 @@ repeating it.
 
 Existing dated reports and plans remain valid historical records. They do not
 need to be moved merely to match this organization.
+
+Every new scientific-contract package begins with the governing
+[`scientific_contracts/README.md`](scientific_contracts/README.md) charter and
+a prior-work recovery record. Earlier scientific reasoning is adopted, cited,
+or explicitly superseded where possible; implementation audits and repair
+history are preserved without entering implementation-blind derivation.
 
 ## Authoring Rule
 
