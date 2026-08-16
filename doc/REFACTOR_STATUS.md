@@ -63,6 +63,16 @@ independent author channel. The initial proposed pilot order is CAL, shared
 mapmaking/coaddition, then Beammap; Beammap contract work remains separate from
 active ALIGN work.
 
+The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
+completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.
+The recovery reuses the frozen implementation-independent CAL core and later
+owner decisions, incorporates the layered APT-identity supersessions, and
+keeps implementation, audit, repair, validation, Unity, and active ALIGN B3c
+material outside authorship. The contract remains unstarted. The next gate is
+project-owner review of the v0.1 Scope Brief, its five named scope decisions,
+and its four-item proposed author-reference packet; no scientific author is
+authorized before that review.
+
 The previously approved `DOC-MAP-001` deliverable is the first queued user
 guide. It will combine a canonical map dictionary with a compact per-reduction
 rendering driven by effective and realized state, explaining what each emitted

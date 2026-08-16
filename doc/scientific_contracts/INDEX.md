@@ -8,7 +8,7 @@ without replacing package-specific review.
 
 | Package | Scope status | Contract status | Owner decision needed | Next action |
 | --- | --- | --- | --- | --- |
-| CAL — detector calibration, extinction, and unit transfer | Stage A investigation selected | Not started | Approve sanitized Scope Brief and allowed references | Recover prior CAL work and draft Scope Brief |
+| [SCI-CAL — detector calibration, extinction, and signal transfer](packages/SCI-CAL/v0.1/README.md) | Stage A scope drafted | Not started | Approve v0.1 Scope Brief, five scope decisions, and allowed references | Owner reviews the sanitized Scope Brief; do not dispatch an author yet |
 | MAP — mapmaking and observation coaddition | Proposed pilot 2 | Not started | Confirm boundary after CAL scope | Begin prior-work recovery after CAL pilot review |
 | BEAM — Beammap inference and products | Proposed pilot 3; held separate from active ALIGN | Not started | Confirm boundary and timing | Begin only after pilot process review and without absorbing ALIGN |
 | ALIGN/AST — sample alignment and astrometry | Inventoried | Not started | None yet | Hold for tranche planning |

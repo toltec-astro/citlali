@@ -43,6 +43,12 @@ and cross-package handoffs are valuable recovery inputs.
 
 ### CAL
 
+- Package-specific recovery:
+  [`packages/SCI-CAL/v0.1/PRIOR_WORK.md`](packages/SCI-CAL/v0.1/PRIOR_WORK.md)
+  at `2026-08-16`. It records the later layered-identity supersession,
+  accuracy hierarchy, passband decision, opacity quality policy, and the
+  distinction between the retained structural atmosphere operator and its
+  unestablished physical/observational authority.
 - Current shared authority: `MAIN:doc/SCIENTIFIC_CONVENTIONS.md`,
   `MAIN:validation/product_contracts.json`, and
   `MAIN:tools/config/config_leaf_contract_resolved.json`.
