@@ -1,10 +1,12 @@
 # SCI-CAL — Detector Calibration, Atmospheric Extinction, And Signal Transfer
 
-Status: scientist-facing v0.3 surgical revision ready for final owner voice
-review; rationale architecture frozen as the package template; engineering
-v0.1 unchanged; scientific authority not frozen
+Status: science-team rationale r0.3 final cleanup complete; rationale
+architecture frozen as the package template; scientific contract v0.1 and
+engineering conformance v0.1 unchanged; scientific authority not frozen
 
-Version: `0.1` scope (`2026-08-16`)
+Scientific contract version: `v0.1` (`2026-08-16`)
+
+Active science-rationale revision: `r0.3`
 
 ## Program Adherence And Prior-Work Recovery
 
@@ -70,20 +72,23 @@ four-item author-reference packet on `2026-08-16`.
 - [`pdf/SCI-CAL-ENGINEERING-CONFORMANCE-v0.1-DRAFT.pdf`](pdf/SCI-CAL-ENGINEERING-CONFORMANCE-v0.1-DRAFT.pdf):
   21-page engineering-facing draft
 
-## v0.3 Correction Artifacts
+The archived r0.1/r0.2 filenames above predate the adopted contract/document
+version-axis rule and are retained as historical artifact names. They do not
+identify contract versions later than v0.1.
 
-- [`SCIENTIFIC_RATIONALE_V0.3_CHANGELOG.md`](SCIENTIFIC_RATIONALE_V0.3_CHANGELOG.md): bounded ownership, ordering, atmosphere, terminology, and governance corrections
-- [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md): active Q01--Q09 ownership, state, evidence, blocked-claim, and resolution ledger
-- [`SCIENTIFIC_ENGINEERING_CONSISTENCY_V0.3.md`](SCIENTIFIC_ENGINEERING_CONSISTENCY_V0.3.md): ownership, factor direction, orientation, units, ordering, and claim-layer consistency
-- [`SCIENTIST_CROSSWALK_V0.3.md`](SCIENTIST_CROSSWALK_V0.3.md): refreshed grouped routing of every assumption, requirement, and edge prediction
-- [`pdf/SCI-CAL-SCIENTIFIC-RATIONALE-v0.3-DRAFT.pdf`](pdf/SCI-CAL-SCIENTIFIC-RATIONALE-v0.3-DRAFT.pdf): owner-directed surgical correction and package-template candidate
+## r0.3 Correction Artifacts
+
+- [`SCIENTIFIC_RATIONALE_R0.3_CHANGELOG.md`](SCIENTIFIC_RATIONALE_R0.3_CHANGELOG.md): bounded ownership, ordering, atmosphere, terminology, versioning, and governance corrections
+- [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md): active Q01--Q09 authority, status, evidence, blocked-product, resolution, and affected-document ledger
+- [`SCIENTIFIC_ENGINEERING_CONSISTENCY_R0.3.md`](SCIENTIFIC_ENGINEERING_CONSISTENCY_R0.3.md): ownership, factor direction, orientation, units, ordering, claim-layer, and version-axis consistency
+- [`SCIENTIST_CROSSWALK_R0.3.md`](SCIENTIST_CROSSWALK_R0.3.md): refreshed grouped routing of every assumption, requirement, and edge prediction
+- [`pdf/SCI-CAL-SCIENTIFIC-RATIONALE-v0.1-r0.3-DRAFT.pdf`](pdf/SCI-CAL-SCIENTIFIC-RATIONALE-v0.1-r0.3-DRAFT.pdf): final-form science-team rationale and frozen package-template model
 
 ## Next Gate
 
-Grant performs the final v0.3 voice-only review and dispositions the active
-Q01--Q09 ledger as evidence becomes available. The rationale architecture is
-already frozen under `CAL-SCI-D008`; further architectural change requires an
-owner decision or engineering-contract change.
+There is no further stylistic review. The active work is to disposition
+Q01--Q09 as approved authority or evidence becomes available. A later
+rationale revision requires one of the four triggers in `CAL-GOV-D010`.
 
 After scientific-substance approval, an implementation-blind consistency
 review must compare the two views, crosswalk, and ledger before freezing the

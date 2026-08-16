@@ -1,4 +1,4 @@
-# SCI-CAL v0.3 Scientist/Engineering Crosswalk
+# SCI-CAL v0.1 Rationale r0.3 Scientist/Engineering Crosswalk
 
 Status: complete grouped routing of all formal items; the unchanged
 engineering contract remains normative
@@ -49,6 +49,7 @@ engineering contract remains normative
 | EDGE-030 | Factor association and validity | Observation-order state replay |
 
 The PDF appendix carries the same map. The detailed one-row-per-requirement
-draft crosswalk remains in CROSSWALK.md. The v0.3 ownership clarification
+draft crosswalk remains in CROSSWALK.md. The r0.3 ownership clarification
 changes the scientific producer/transformer/consumer explanation; it does not
-delete or weaken any engineering requirement.
+delete or weaken any engineering requirement. The PDF's Table 4 decision
+snapshot is checked against SCIENTIFIC_OWNER_DECISION_LEDGER.md.

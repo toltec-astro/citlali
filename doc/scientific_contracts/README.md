@@ -207,8 +207,8 @@ packages/<PACKAGE-ID>/v<MAJOR>.<MINOR>/
     scientific-rationale.tex
     engineering-conformance.tex
   pdf/
-    <PACKAGE-ID>-SCIENTIFIC-RATIONALE-v<MAJOR>.<MINOR>.pdf
-    <PACKAGE-ID>-ENGINEERING-CONFORMANCE-v<MAJOR>.<MINOR>.pdf
+    <PACKAGE-ID>-SCIENTIFIC-RATIONALE-v<CONTRACT>-r<DOCUMENT>.pdf
+    <PACKAGE-ID>-ENGINEERING-CONFORMANCE-v<CONTRACT>-r<DOCUMENT>.pdf
 ```
 
 Use only the common modules the package needs. The layout is a convention, not
@@ -229,6 +229,15 @@ explain the physical model before formal machinery, and omit hashes, internal
 identifiers, and code-level detail. Formal states, exact requirements,
 identity mechanics, and audit-oriented detail belong in appendices or the
 engineering contract.
+
+Version axes are never conflated:
+
+- v identifies the scientific contract or package version;
+- r identifies the revision of one document representing that contract.
+
+Titles, running headers, metadata, filenames, package indexes, change logs,
+and crosswalks must carry both axes when ambiguity is possible. A prose edit
+advances r, not v.
 
 Every scientific quantity follows the producer--transformer--consumer rule:
 the producer owns its meaning; a transformer owns only an explicitly approved
@@ -252,15 +261,19 @@ performance, and production readiness.
 
 The companion owner-decision ledger records, for every question: stable ID,
 owning scientific authority or package, state (open, decided, deferred, or
-superseded), evidence or decision required, exact blocked claim or output, and
-resolution source and date. An unnamed owner is recorded as unnamed; authority
-is never manufactured by inference.
+superseded), evidence or decision required, exact blocked claim or output,
+resolution authority, resolution date, and affected documents. An unnamed
+owner is recorded as unnamed; authority is never manufactured by inference.
+The PDF decision register is generated from or explicitly checked against
+this ledger.
 
 Rationale drafting is limited to three substantive review rounds unless the
 scientific owner explicitly reopens the process. Freeze is based on scientific
 accuracy, explicit uncertainty, and traceability rather than artificial
-completeness. After freeze, a rationale architecture changes only by recorded
-owner decision or an engineering-contract change.
+completeness. After the final cleanup there is no further stylistic round.
+A frozen rationale is revised only when an open decision is formally resolved,
+the normative engineering contract changes, validation evidence changes an
+evidentiary status, or a genuine scientific inconsistency is found.
 
 ## Requirement Identity And Crosswalk
 

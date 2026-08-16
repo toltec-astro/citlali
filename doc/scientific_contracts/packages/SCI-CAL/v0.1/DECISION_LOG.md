@@ -1,7 +1,7 @@
 # SCI-CAL v0.1 — Scientific Decision Log
 
-Status: scope and v0.3 boundary decisions approved; unresolved scientific
-substance remains pending
+Status: scope and rationale r0.3 boundary decisions approved; unresolved
+scientific substance remains pending
 
 Scientific owner: Grant Wilson
 
@@ -17,9 +17,11 @@ author task live in [`SCOPE_BRIEF.md`](SCOPE_BRIEF.md).
 | `CAL-SCOPE-D003` | For `0.15 < tau225 <= 0.25`, no calibrated SCI-CAL output is authorized until a continuous engineering operator is separately adopted. The state must be truthfully unavailable/uncalibrated, with no silent extrapolation. |
 | `CAL-SCOPE-D004` | Approve the exact four-item author packet and its sanitized supersession and convention/ownership documents. |
 | `CAL-SCOPE-D005` | SCI-CAL v0.1 calibrates only the ordinary `xs` detector stream. No other measured stream inherits that meaning. |
-| `CAL-SCI-D006` | For the v0.3 rationale, Beammap calibration/source-APT production owns the calibrator model, source atmosphere, Beammap amplitude and beam/template fit, pointing treatment in source calibration, and source-APT `flxscale` derivation. TolProj owns target-to-source association, the observation-specific child APT, and only approved child transformations. SCI-CAL applies the selected child factor once and target atmosphere. MAP/FLT owns realized downstream response. This owner clarification supersedes any broader earlier statement assigning source-calibration meaning to TolProj. |
+| `CAL-SCI-D006` | For rationale r0.3, Beammap calibration/source-APT production owns the calibrator model, source atmosphere, Beammap amplitude and beam/template fit, pointing treatment in source calibration, and source-APT `flxscale` derivation. TolProj owns target-to-source association, the observation-specific child APT, and only approved child transformations. SCI-CAL applies the selected child factor once and target atmosphere. MAP/FLT owns realized downstream response. This owner clarification supersedes any broader earlier statement assigning source-calibration meaning to TolProj. |
 | `CAL-SCI-D007` | Adopt producer--transformer--consumer as the package boundary rule: the producer owns meaning, the transformer owns only an explicitly approved transformation and lineage, and the consumer applies without reinterpretation. |
-| `CAL-SCI-D008` | Adopt the v0.3 three-artifact science-rationale architecture and the library house standard as the template for subsequent packages. Accuracy, explicit gaps, and traceability govern freeze; completeness by invention does not. Further rationale changes require an owner decision or engineering-contract change. |
+| `CAL-SCI-D008` | Adopt the r0.3 three-artifact science-rationale architecture and the library house standard as the template for subsequent packages. Accuracy, explicit gaps, and traceability govern freeze; completeness by invention does not. |
+| `CAL-GOV-D009` | The prefix `v` identifies the scientific-contract/package version; `r` identifies the revision of a particular representing document. SCI-CAL remains contract v0.1 while the present science rationale is revision r0.3. |
+| `CAL-GOV-D010` | After the r0.3 cleanup there is no further stylistic round. A later rationale revision requires formal resolution of Q01--Q09, a normative engineering-contract change, validation evidence that changes an evidentiary status, or a genuine scientific inconsistency. |
 
 Grant also confirmed the previously recovered CAL scientific decisions named
 in Scope Brief section 6, including the layered APT identity model, once-only
@@ -28,7 +30,7 @@ reconstructibility, and the separation of structural atmosphere correctness
 from physical and observational performance.
 
 The original scope decisions authorized implementation-blind scientific
-authorship. Decisions D006--D008 approve the v0.3 ownership boundary,
-producer--transformer--consumer rule, and reusable rationale architecture.
-They do not resolve Q01--Q09, establish implementation conformity, authorize
-validation, or change production state.
+authorship. Decisions D006--D010 approve the r0.3 ownership boundary,
+producer--transformer--consumer rule, reusable rationale architecture,
+version axes, and stopping rule. They do not resolve Q01--Q09, establish
+implementation conformity, authorize validation, or change production state.

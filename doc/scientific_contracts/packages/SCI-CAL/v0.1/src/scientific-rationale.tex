@@ -1,9 +1,10 @@
 \documentclass[11pt]{article}
-\newcommand{\DocShortTitle}{Science-Team Rationale}
-\newcommand{\DocPdfTitle}{SCI-CAL v0.3 TolTEC Timestream Calibration Draft}
+\newcommand{\DocShortTitle}{Science-Team Rationale r0.3}
+\newcommand{\DocPdfTitle}{SCI-CAL v0.1 TolTEC Timestream Calibration - Science-Team Rationale r0.3 Draft}
 \input{common/preamble.tex}
-\fancyhead[L]{\small\color{calgray}SCI-CAL v0.3 DRAFT}
-\hypersetup{pdftitle={SCI-CAL v0.3 TolTEC Timestream Calibration Draft},pdfauthor={SCI-CAL scientific owner review revision},pdfsubject={Scientist-facing calibration rationale}}
+\fancyhead[L]{\small\color{calgray}SCI-CAL v0.1 -- Science-Team Rationale r0.3 DRAFT}
+\fancyhead[R]{}
+\hypersetup{pdftitle={SCI-CAL v0.1 TolTEC Timestream Calibration - Science-Team Rationale r0.3 Draft},pdfauthor={SCI-CAL scientific owner review revision},pdfsubject={SCI-CAL v0.1 scientist-facing rationale r0.3}}
 
 \newcommand{\DecisionBox}[2]{\begin{center}\fcolorbox{calwarn}{white}{\begin{minipage}{0.91\linewidth}\small\textbf{Open Scientific Decision: #1}\par #2\end{minipage}}\end{center}}
 \newcommand{\StatusBox}[1]{\begin{center}\fcolorbox{calblue}{callight}{\begin{minipage}{0.91\linewidth}\small #1\end{minipage}}\end{center}}
@@ -16,24 +17,24 @@
 {\Large\color{calteal}\textbf{SCI-CAL}}\\[0.18in]
 {\huge\color{calblue}\textbf{TolTEC Timestream Calibration}}\\[0.08in]
 {\LARGE\color{calblue}\textbf{Scientific Basis, Assumptions, and Validation}}\\[0.38in]
-{\large Scientist-facing rationale, revision 0.3 - DRAFT}\\[0.10in]
+{\large Scientific contract version 0.1}\\[0.06in]
+{\large Rationale revision 0.3 -- DRAFT}\\[0.10in]
 {\large 2026-08-16}\\[0.50in]
 \fcolorbox{calblue}{callight}{\begin{minipage}{0.78\linewidth}\centering\small
 A science-team explanation of the calibration chain, its physical meaning,
 uncertainty model, validity limits, and evidence still required. The separate
 SCI-CAL engineering contract remains the normative conformance authority.
 \end{minipage}}
-\vfill {\large Scientific owner: Grant Wilson}\\[0.08in]
-{\normalsize Surgical correction prepared from the owner assessment of v0.2}
+\vfill {\large Scientific owner: Grant Wilson}
 \end{titlepage}
 
 \section*{Executive summary}
 \addcontentsline{toc}{section}{Executive summary}
 A TolTEC detector timestream is placed on a top-of-atmosphere,
 point-source-equivalent flux-density scale by applying one detector-specific
-calibration factor from the selected observation-specific APT, whose
-calibration descends from Beammap calibration evidence, and one atmospheric
-correction for the target sample. For detector (d), time
+calibration factor from the selected observation-specific array property table
+(APT), whose calibration descends from Beammap calibration evidence, and one
+atmospheric correction for the target sample. For detector (d), time
 (t), observation (o), and array (a(d)), the organizing equation is
 \begin{equation}
  d^{\rm cal}_d(t)=F^{\rm APT}_{od}\,
@@ -54,10 +55,9 @@ mapping is discussed in Section~\ref{sec:atmosphere}.
 The selected \code{flxscale} is applied exactly once. If an explicitly
 approved TolProj child transformation has already embodied a pointing-derived
 correction in the selected child APT, that ancestry is recorded but the
-correction is not multiplied again. \code{responsivity} is a relative
-detector-response quantity, and Beammap \code{sens} is a sensitivity or
-approximate-weight quantity; neither, a parent \code{flxscale}, nor an opaque
-\code{fcf} is an additional absolute signal multiplier.
+correction is not multiplied again. None of \code{responsivity}, \code{sens},
+a parent \code{flxscale}, or an opaque \code{fcf} is an additional absolute
+signal multiplier.
 
 \StatusBox{\begin{tabularx}{\linewidth}{@{}L{0.28\linewidth}Y@{}}
 \textbf{Intended science model} & Equation~\eqref{eq:science-central}, with one selected detector factor and the target sample's atmospheric correction.\\
@@ -77,10 +77,9 @@ engineering contract and are traced in the appendices.
 
 \section{What is being calibrated?}\label{sec:input}
 SCI-CAL v0.1 is restricted to the ordinary \code{xs} detector stream. The
-selected observation-specific APT records the target-to-source detector
-association. Each supported target detector has one corresponding
-source-calibration row; an ambiguous or unsupported match produces no
-calibrated value for that detector.
+selected observation-specific APT and its associated calibration lineage
+identify the source-calibration row used for each target detector. An
+ambiguous or unsupported match produces no calibrated value for that detector.
 
 The contract begins with \(d^{\rm in}_d(t)\), the signal after every upstream
 additive operation that defines the calibration input. SCI-CAL does not
@@ -263,10 +262,11 @@ The calibration path defined by the present contract applies only for
 \(0\le\tau_{225}\le0.15\). A coherent segment entering
 \(0.15<\tau_{225}\le0.25\) is outside the v0.1 science-calibration range and
 is retained only for explicitly uncalibrated engineering use. Larger,
-malformed, or unsupported values are outside scope. These are owner-approved
-policy limits, not laws of atmospheric physics or the numeric support of the
-missing operator. Their rationale, segment owner, and split policy are not in
-the materials reviewed and remain owner decisions.
+malformed, or unsupported values are outside scope. The thresholds are adopted
+v0.1 policy limits, not laws of atmospheric physics and not the numerical
+support of the missing operator. The materials reviewed do not document their
+scientific rationale, the authority that defines coherent segments, or the
+split policy; those matters remain open under Q07.
 
 \section{Photometric convention and downstream response}\label{sec:response}
 The intended output is a top-of-atmosphere, point-source-equivalent,
@@ -274,8 +274,8 @@ beam-peak-normalized amplitude. ``Beam'' denotes the originating Beammap
 response normalization; it is neither pixel area nor an approved definition of
 surface brightness or integrated flux.
 
-For source flux density \(S\), originating unit-peak template \(P_B\), and
-realized mapmaker/gridding/filter response (L),
+For a source whose flux density is \(S\) mJy, originating unit-peak template
+\(P_B\), and realized mapmaker/gridding/filter response (L),
 \begin{equation}
  m_{\rm peak}=\rho_L S\ \mjybeam,\qquad
  \rho_L=[L P_B](\boldsymbol 0).
@@ -321,7 +321,7 @@ averaged.
 \begin{table}[ht]\centering\small
 \caption{Science-facing uncertainty budget. ``Not established'' means the materials available for this draft do not state a present numerical product.}\label{tab:uncertainty-budget}
 \begin{tabularx}{\linewidth}{@{}L{0.21\linewidth}L{0.24\linewidth}L{0.13\linewidth}L{0.15\linewidth}Y@{}}
-\toprule Quantity & Typical correlation scope & In sample weight? & Numeric status & Interpretation \\
+\toprule Quantity & Typical correlation scope & In sample weight? & Current status & Interpretation \\
 \midrule
 Measurement noise & Sample/detector, possibly correlated & Yes, if supplied & Conditional input allowed & Propagated by \(A C A^T\) \\
 Detector \code{flxscale} fit & Detector/Beammap cohort & No by default & Not established & Calibration systematic \\
@@ -383,7 +383,7 @@ one layer never supplies evidence for another.
 
 \section{Scientific owner decisions required}\label{sec:decisions}
 \begin{longtable}{L{0.06\linewidth}L{0.22\linewidth}L{0.32\linewidth}L{0.31\linewidth}}
-\caption{Decision register for the v0.3 science rationale.}\label{tab:decisions}\\
+\caption{Decision register for science-rationale revision r0.3.}\label{tab:decisions}\\
 \toprule ID & Issue & Evidence or decision needed & Consequence while open \\
 \midrule\endfirsthead
 \toprule ID & Issue & Evidence or decision needed & Consequence while open \\
@@ -393,7 +393,7 @@ Q02 & Baseline and ordering & Affine convention and order relative to common-mod
 Q03 & \code{flxscale} derivation & Calibrator model/epoch, estimator, atmosphere, pointing, beam, spectrum, direction, uncertainty & Factor ancestry incomplete \\
 Q04 & Calibrator-target transfer & Time, tune, loading, focus, detector validity, and role of child factor or \code{xs} & Transferability unestablished \\
 Q05 & Broadband convention & Reference frequency/spectrum, calibrator and color treatment, passband weighting/variation & Monochromatic mJy incomplete \\
-Q06 & Atmosphere operator & Nodes, ordinates, orientation, support, weighting, model, content identity; classify project-wide versus reviewed-material absence & Blocks calibrated numbers \\
+Q06 & Atmosphere operator & Nodes, ordinates, orientation, support, weighting, model, content identity; classify project-wide versus reviewed-material absence & Blocks contract-supported numerical calibration \\
 Q07 & Opacity/segment policy & Rationale for 0.15/0.25, segment owner, split policy, evidence for change & Policy unexplained \\
 Q08 & Numerical uncertainty & Which conditional/systematic terms are quantified and propagated & Total error unavailable \\
 Q09 & Criteria for validated science use & Evidence thresholds and population/support for fidelity, repeatability, absolute recovery & No achieved science claim \\
@@ -476,9 +476,9 @@ The approved input content digests are:
 \item conventions/ownership: {\footnotesize\code{7e9a630fd183ca04bc3d8bbd21b5e801776b9aad7bd084d48fa7f2c572766520}}.
 \end{itemize}
 The engineering contract remains normative for requirements 001--050,
-assumptions 001--011, and edge predictions 001--030. This v0.3 changes genre
-and presentation, not their algebra.
+assumptions 001--011, and edge predictions 001--030. Rationale revision r0.3
+changes genre and presentation, not the governed v0.1 algebra.
 
 \section{Crosswalk to the engineering contract}\label{app:crosswalk}
-\input{scientific-crosswalk-v0.3.tex}
+\input{scientific-crosswalk-r0.3.tex}
 \end{document}

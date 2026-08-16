@@ -115,7 +115,7 @@ formal routing to appendices; and leaves the engineering v0.1 contract
 unchanged as normative conformance authority.
 
 The review exposed additional upstream scientific authority gaps rather than
-authorizing invented answers. The v0.2 register now contains Q01--Q09:
+authorizing invented answers. The rationale r0.2 register contains Q01--Q09:
 physical `xs` meaning; baseline and pipeline ordering; `flxscale` derivation;
 calibrator-to-target transfer; broadband photometric convention; the complete
 numeric atmosphere operator (formerly Q001); opacity/segment policy rationale;
@@ -127,7 +127,7 @@ conflict for owner action. No implementation audit or scientific validation
 was run. The package remains not frozen pending owner science decisions and a
 subsequent fresh implementation-blind consistency review.
 
-Grant then returned bounded v0.3 corrections on 2026-08-16. The revised
+Grant then returned bounded rationale r0.3 corrections on 2026-08-16. The revised
 rationale assigns source-calibration meaning to Beammap/source-APT
 production, limits TolProj to target/source association and explicitly
 approved child-APT transformations, limits SCI-CAL to applying the selected
@@ -136,12 +136,21 @@ mapmaker/filter response to MAP/FLT. It distinguishes scalar temporal
 commutation, detector-mixing operations, and sample-dependent atmosphere;
 uses an orientation-neutral atmosphere ordinate; removes unsupported `xs`
 scope/layout claims; and adds the required Q01--Q09 owner-decision ledger,
-v0.3 crosswalk, change log, and six-axis consistency report. No engineering
+r0.3 crosswalk, change log, and consistency report. No engineering
 requirements, numerical science, implementation assessment, or validation
-claim changed. The rationale architecture and library house standard are now
-frozen as the template for later packages; SCI-CAL scientific authority
-remains a draft pending owner disposition of the open scientific questions
-and the final consistency gate.
+claim changed.
+
+The final owner voice review judged r0.3 essentially finished and authorized
+only a five-item cleanup: separate contract v0.1 from rationale r0.3; remove
+the title-page production note; apply three sentence-level clarifications;
+clarify the adopted opacity thresholds and Q06 consequence; and rename the
+uncertainty table's status column. The live decision ledger now separates
+resolution authority and date and records affected documents, and the PDF
+decision snapshot is checked against it. The rationale architecture and
+library house standard are frozen as the model for later packages, including
+the v/r version-axis rule. There is no further stylistic round. SCI-CAL
+scientific authority remains a draft pending owner disposition of the open
+scientific questions and the final consistency gate.
 
 The previously approved `DOC-MAP-001` deliverable is the first queued user
 guide. It will combine a canonical map dictionary with a compact per-reduction
