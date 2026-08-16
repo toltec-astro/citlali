@@ -47,7 +47,7 @@ def ledger_rows() -> list[tuple[str, str, str, str]]:
         assert len(cells) == 6, f"unexpected owner-ledger row: {line}"
         decision_id, status, question, _, interim, _ = cells
         rows.append((decision_id, status.replace("**", ""), question, interim))
-    expected = [f"SCI-MAP-OD-{number:03d}" for number in range(1, 8)]
+    expected = [f"SCI-MAP-OD-{number:03d}" for number in range(1, 10)]
     assert [row[0] for row in rows] == expected, "owner-decision sequence mismatch"
     assert all(row[1] == "OPEN" for row in rows), "non-OPEN owner decision present"
     return rows

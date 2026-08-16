@@ -1,6 +1,6 @@
 # SCI-MAP v0.1 Contract Crosswalk
 
-Document revision: `r0.1`
+Document revision: `r0.2`
 
 Status: author-draft traceability aid; it does not assert implementation,
 validation, or production status.
@@ -19,15 +19,22 @@ validation, or production status.
   `2d478cb6c5e897308d19614b8b01663318744971850c67459f84c7ddcd57c5c9`.
 
 The canonical requirement and prediction text lives only in
-`src/SCI-MAP-v0.1_SHARED_AUTHORITY_r0.1.tex`. Both PDFs render that same source.
+`src/common/requirements.tex` and `src/common/edge_cases.tex`, with notation,
+definitions, equations, and assumptions in the adjacent common modules. The
+retained `src/SCI-MAP-v0.1_SHARED_AUTHORITY_r0.1.tex` is only a compatibility
+wrapper. The formal and engineering PDFs render the full common authority;
+the science-team rationale imports the same authority but does not expand the
+full inventories.
 Section names below are navigation aids, not a second normative wording.
 
-Seven owner decisions remain `OPEN` in
-`SCIENTIFIC_OWNER_DECISION_LEDGER.md`. In particular, SCI-MAP-OD-007 governs
-the currently unspecified numeric domain, units or dimensionless status, and
-failure disposition of `c=coverage_cut`. A crosswalk gate naming OD-007 never
-supplies a range: pending an owner answer, the exact state must be explicitly
-admitted by the owner-authorized effective support policy or fail closed.
+Nine owner decisions remain `OPEN` in
+`SCIENTIFIC_OWNER_DECISION_LEDGER.md`. `SCI-MAP-CI-001` records that the
+threshold equations dimensionally require `c=coverage_cut` to be
+dimensionless even though the unchanged r0.1 clauses leave unit status open.
+Pending owner approval of that correction, SCI-MAP-OD-007 retains its exact
+wording and no numerical range is inferred. OD-008 covers projection
+normalization and boundaries; OD-009 covers canonical-grid preparation and
+future reprojection/mosaicking ownership.
 
 ## Requirement crosswalk
 
@@ -125,8 +132,9 @@ admitted by the owner-authorized effective support policy or fail closed.
 - Every requirement appears once in the requirement table above.
 - Every prediction appears once in the prediction table above and is linked to
   at least one requirement.
-- Open owner decisions: **7**, `SCI-MAP-OD-001` through
-  `SCI-MAP-OD-007`, with no gaps. The scientist-facing PDF carries a register
-  generated from the ledger and a compact requirement/crosswalk summary.
-- The engineering PDF renders the same canonical requirement and prediction
-  declarations as the scientist-facing PDF; it adds no independent science.
+- Open owner decisions: **9**, `SCI-MAP-OD-001` through
+  `SCI-MAP-OD-009`, with no gaps. The formal PDF carries the exact generated
+  register; the science-team rationale carries a compact register and grouped
+  crosswalk.
+- The formal and engineering PDFs render the same canonical requirement and
+  prediction declarations; the engineering view adds no independent science.

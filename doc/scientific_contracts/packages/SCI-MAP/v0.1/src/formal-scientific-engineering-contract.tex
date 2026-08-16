@@ -15,7 +15,7 @@
 \definecolor{MapPale}{HTML}{EAF3F8}
 \definecolor{MapGray}{HTML}{53606B}
 \hypersetup{colorlinks=true,linkcolor=MapBlue,urlcolor=MapBlue,citecolor=MapBlue,
-  pdftitle={SCI-MAP v0.1 Scientific Rationale and Contract, r0.1},
+  pdftitle={SCI-MAP v0.1 Formal Scientific/Engineering Contract, r0.2},
   pdfauthor={Independent Stage B scientific-contract author}}
 \setlength{\emergencystretch}{3em}
 \setlength{\parindent}{0pt}
@@ -30,12 +30,13 @@
 
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\small\color{MapGray}SCI-MAP v0.1 | Scientific Rationale and Contract}
-\fancyhead[R]{\small\color{MapGray}Document r0.1}
+\fancyhead[L]{\small\color{MapGray}SCI-MAP v0.1 | Formal Scientific/Engineering Contract}
+\fancyhead[R]{\small\color{MapGray}Document r0.2}
 \fancyfoot[L]{\small\color{MapGray}Author draft | no conformity or performance claim}
 \fancyfoot[R]{\small\color{MapGray}Page \thepage}
 
 \input{SCI-MAP-v0.1_SHARED_AUTHORITY_r0.1.tex}
+\renewcommand{\SCIMapDocumentRevision}{r0.2}
 
 \newcommand{\StatusBox}[1]{%
   \begin{center}\fcolorbox{MapBlue}{MapPale}{\parbox{0.92\linewidth}{#1}}\end{center}}
@@ -46,7 +47,7 @@
 \begin{center}
 {\color{MapNavy}\LARGE\bfseries SCI-MAP}\\[0.25em]
 {\Large Ordinary Mapmaking and Observation Coaddition}\\[0.45em]
-{\large Scientific Rationale and Contract}\\[0.8em]
+{\large Formal Scientific/Engineering Contract}\\[0.8em]
 \begin{tabular}{rl}
 Scientific contract version: & \textbf{\SCIMapContractVersion}\\
 Document revision: & \textbf{\SCIMapDocumentRevision}\\
@@ -56,11 +57,14 @@ Author-packet approval: & \SCIMapApprovalDate
 \end{tabular}
 \end{center}
 
-\StatusBox{\textbf{Authority boundary.} This document specifies an
-implementation-independent scientific contract. It consolidates the admitted
-frozen ordinary-map derivation under later owner specializations. It does not
-claim implementation conformity, representation fidelity, scientific
-validation, observational performance, or production readiness.}
+\StatusBox{\textbf{Authority boundary.} This is the normative formal view of
+the implementation-independent scientific contract. It preserves the
+canonical equations, 52 requirements, 25 predictions, exact state and support
+semantics, provenance, and conformance routing. The separate science-team
+rationale r0.2 explains the same science without replacing this authority.
+This document does not claim implementation conformity, representation
+fidelity, scientific validation, observational performance, or production
+readiness.}
 
 \section*{Physical model and contract at a glance}
 \addcontentsline{toc}{section}{Physical model and contract at a glance}
@@ -300,16 +304,18 @@ operator row set \(\mathcal S_{\rm out}\) is the exact intersection of the
 predicate row sets designated applicable by \(\Pi_{\rm eff}\); it is not a
 full-grid mask with zero semantics.
 
-The admitted packet supplies no numeric domain, range, or unit status for
-\(c\). Equation~\eqref{eq:coverage-cut-admission} is therefore a precondition,
-not a claimed range: the owner-authorized effective policy must explicitly
-admit the exact value and its unit or dimensionless status. Any other state
-fails closed before support rows or a required product are constructed. In
-particular, this author draft does not decide negative, zero, non-finite, or
-greater-than-one values. Their disposition and the failure scope are
-SCI-MAP-OD-007. The physical rationale, future change authority, and evidence
-for replacing the policy remain SCI-MAP-OD-001 and SCI-MAP-OD-002. This
-contract records the admitted algorithm without inventing those answers.
+The admitted packet supplies no numeric domain or range for \(c\). The r0.1
+shared authority also leaves its unit status open, but dimensional review now
+shows that Equations~\eqref{eq:support-thresholds} require
+\(c=\texttt{coverage\_cut}\) to be dimensionless because \(Q_p\), \(Q_\star\),
+and both thresholds are directly compared in the same coefficient unit.
+\code{SCI-MAP-CI-001} records the formal inconsistency and an exact proposed
+owner amendment. Until that amendment is approved, the canonical equations,
+REQ-031/032, PRED-012, and OD-007 remain normative as written; this narrative
+does not silently repair them. The numerical domain, including negative,
+zero, non-finite, and greater-than-one values, and the failure scope remain
+SCI-MAP-OD-007. Threshold rationale and future change authority remain
+SCI-MAP-OD-001 and SCI-MAP-OD-002.
 
 \clearpage
 \section{Observation coaddition on one common grid}
@@ -468,7 +474,7 @@ scientific authorship stage.
 \clearpage
 \section{Open owner decisions and scientific disposition}
 
-Seven decisions remain intentionally unresolved: (1) the physical rationale
+Nine decisions remain intentionally unresolved: (1) the physical rationale
 for the adopted support thresholds; (2) future threshold change authority and
 evidence; (3) whether a typed unavailable response permits a scientifically
 usable bundle for restricted consumers; (4) the minimum covariance
@@ -477,8 +483,12 @@ whether physical observation-map publication is an abstract obligation beyond
 the effective v0.1 required-product rule; (6) whether Pointing/OOF ordinary
 arithmetic is a registered reuse of this operator; and (7) the admissible
 numeric domain, unit status, boundary-case dispositions, and failure behavior
-for \(c=\texttt{coverage\_cut}\). Appendix~\ref{app:owner-decisions} reproduces
-the exact questions and conservative interim behavior from the owner ledger.
+for \(c=\texttt{coverage\_cut}\); (8) authorized projection classes,
+normalization, boundaries, and ownership; and (9) canonical-grid preparation
+and future reprojection/mosaicking ownership. Appendix~\ref{app:owner-decisions}
+reproduces the exact questions and conservative interim behavior from the
+owner ledger. SCI-MAP-CI-001 is the separate proposed correction that would
+narrow OD-007 after approval.
 
 Pending those decisions, the scientific contract is coherent at its stated
 conditional boundary. It authorizes ordinary positive-coefficient normalized
@@ -531,8 +541,10 @@ operator, and claim separation & Sections 8--9; OD-003, OD-004, OD-006,
 OD-007\\
 PRED-001--025 & Analytic consequences and conformance/representation challenges
 & Sections 3, 9; Appendix~\ref{app:predictions}; not executed\\
-OD-001--007 & Exact unresolved scientific-owner questions & Section 10;
+OD-001--009 & Exact unresolved scientific-owner questions & Section 10;
 Appendix~\ref{app:owner-decisions}; all OPEN\\
+SCI-MAP-CI-001 & Dimensional inconsistency and proposed owner amendment &
+Section 5; normative clauses unchanged pending approval\\
 \bottomrule
 \end{longtable}
 

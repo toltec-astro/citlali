@@ -1,0 +1,104 @@
+% Canonical SCI-MAP equations; normative r0.1 text is preserved.
+% Canonical equations. They are typeset in the scientist-facing view only.
+\newcommand{\SCIMapObservationEquations}{%
+\begin{align}
+ a_{pi} &= G_{pi}\,\omega_i,
+ \label{eq:effective-coefficient}\\
+ \mathcal C_p&=\{i:\text{all declared contribution predicates pass and }a_{pi}>0\},
+ \label{eq:contribution-set}\\
+ \mathcal S_{\rm out}(\Pi_{\rm eff})
+ &=\{p:\operatorname{authorize}_{\Pi_{\rm eff}}(p)=1\},
+ \label{eq:support-authorized-row-set}\\
+ N_p &= \sum_{i\in\mathcal C_p} a_{pi}x_i, &
+ Q_p &= \sum_{i\in\mathcal C_p} a_{pi},
+ \label{eq:ordinary-accumulators}\\
+ K_p&=\sum_{i\in\mathcal C_p}a_{pi}k_i,
+ \label{eq:response-accumulator}\\
+ \widehat x_p &= N_p/Q_p, &
+ \widehat k_p&=K_p/Q_p, \qquad p\in\mathcal S_{\rm out},
+ \label{eq:ordinary-products}
+\end{align}}
+
+\newcommand{\SCIMapOperatorEquations}{%
+\begin{align}
+ D_Q&=\operatorname{diag}(G\Omega\boldsymbol 1),
+ &J_{\rm out}\boldsymbol z&=(z_p)_{p\in\mathcal S_{\rm out}},
+ &D_{Q,{\rm out}}&=J_{\rm out}D_QJ_{\rm out}^{\mathsf T},
+ \label{eq:output-row-selection}\\
+ A_{\rm out}&=D_{Q,{\rm out}}^{-1}J_{\rm out}G\Omega,
+ &\widehat{\boldsymbol x}_{\rm out}&=A_{\rm out}\boldsymbol y,
+ \label{eq:map-operator}\\
+ R_{\rm out}&=A_{\rm out}H,
+ &\mathbb E[\widehat{\boldsymbol x}_{\rm out}\mid\Theta]
+   &=R_{\rm out}\boldsymbol s+A_{\rm out}\boldsymbol\mu_0,
+ &C_{x,{\rm out}}&=A_{\rm out} N A_{\rm out}^{\mathsf T}.
+ \label{eq:response-covariance}
+\end{align}}
+
+\newcommand{\SCIMapFormalWeightEquations}{%
+\begin{align}
+ \operatorname{Var}(\widehat x_p\mid\Theta)
+ &=\frac{\sum_iG_{pi}^{2}\omega_i}
+         {(\sum_iG_{pi}\omega_i)^2},
+ &
+ \operatorname{Cov}(\widehat x_p,\widehat x_r\mid\Theta)
+ &=\frac{\sum_iG_{pi}G_{ri}\omega_i}{Q_pQ_r},
+ \qquad p,r\in\mathcal S_{\rm out},
+ \label{eq:fractional-covariance}\\
+ \phi_p&=\frac{Q_p^2}{\sum_iG_{pi}^{2}\omega_i},
+ &
+ \phi_p=Q_p&\Longleftrightarrow
+ \sum_i\omega_i(G_{pi}^{2}-G_{pi})=0,
+ \qquad p\in\mathcal S_{\rm out},
+ \label{eq:formal-weight}
+\end{align}}
+
+\newcommand{\SCIMapThresholdEquations}{%
+\begin{align}
+ \mathcal I_{\Pi_{\rm eff}}&=\text{the declared support-policy population},
+ \label{eq:threshold-population-identity}\\
+ \mathcal P&=\{Q_p:\operatorname{finite}(Q_p),\ Q_p>0,\
+                     p\in\mathcal I_{\Pi_{\rm eff}}\},
+ &N&=|\mathcal P|,
+ \label{eq:threshold-population}\\
+ k&=\left\lfloor\frac{\lfloor0.75N\rfloor+N}{2}\right\rfloor,
+ &Q_\star&=\begin{cases}\mathcal P_{(k)},&N>0,\\0,&N=0,\end{cases}
+ \label{eq:threshold-selector}\\
+ c&=\texttt{coverage\_cut},
+ &\operatorname{admit}_{\Pi_{\rm eff}}
+   \bigl(c,\operatorname{unit\_status}(c)\bigr)&=1,
+ \label{eq:coverage-cut-admission}\\
+ T_{\rm norm}&=Q_\star c/10,
+ &T_{\rm sci}&=Q_\star c,
+ \label{eq:support-thresholds}\\
+ S_p^{\rm norm}&=\boldsymbol 1[\operatorname{finite}(Q_p),\ Q_p>0,\
+                                  Q_p\ge T_{\rm norm}],
+ \label{eq:normalization-support}\\
+ S_p^{\rm sci}&=\boldsymbol 1[\operatorname{finite}(Q_p),\ Q_p>0,\
+                                 Q_p\ge T_{\rm sci}].
+ \label{eq:support-predicates}
+\end{align}}
+
+\newcommand{\SCIMapCoaddEquations}{%
+\begin{align}
+ \mathcal S^c_{\rm out}
+ &=\{p:\operatorname{authorize}_{\Pi^c_{\rm eff}}(p)=1\},
+ \label{eq:coadd-support-authorized-row-set}\\
+ N^c_p&=\sum_{o\in\mathcal O_p}u_{op}\widehat x_{op},
+ &Q^c_p&=\sum_{o\in\mathcal O_p}u_{op},
+ \label{eq:coadd-accumulators}\\
+ \widehat s_p&=N^c_p/Q^c_p, \qquad p\in\mathcal S^c_{\rm out},
+ \label{eq:coadd-ordinary}\\
+ J^c_{\rm out}\boldsymbol z&=(z_p)_{p\in\mathcal S^c_{\rm out}},
+ \label{eq:coadd-output-row-selection}\\
+ \widehat{\boldsymbol s}_{\rm out}
+   &=(\widehat s_p)_{p\in\mathcal S^c_{\rm out}}
+     =B_{\rm out}\widehat{\boldsymbol x}_{\rm obs},
+ \label{eq:coadd-map-operator}\\
+ \widehat k^c_p&=\frac{\sum_{o\in\mathcal O_p}u_{op}\widehat k_{op}}{Q^c_p},
+ \qquad p\in\mathcal S^c_{\rm out}.
+ \label{eq:coadd-response-product}\\
+ C_{c,{\rm out}}&=B_{\rm out} C_{\rm obs}B_{\rm out}^{\mathsf T},
+ &R_{c,{\rm out}}&=B_{\rm out}T.
+ \label{eq:coadd-companions}
+\end{align}}

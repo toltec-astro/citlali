@@ -206,6 +206,37 @@ boundary cases, and failure behavior of `coverage_cut`. The next gate is owner
 scientific review; a fresh implementation-blind two-view consistency review
 follows only after the science is approved.
 
+The first SCI-MAP scientific editing round was integrated on 2026-08-16. The
+r0.1 combined rationale/contract was preserved as a formal
+scientific/engineering contract, while a separate science-team rationale r0.2
+now follows the SCI-CAL house model and omits the full 52-requirement and
+25-prediction inventories. The r0.2 rationale adds the fractional-projection
+and complete-bundle coadd teaching figures, translates the eight map facts for
+science users, and makes upstream ownership and claim layers explicit.
+
+Dimensional review found `SCI-MAP-CI-001`: the accepted threshold equations
+force `coverage_cut` to be dimensionless, while the unchanged r0.1 normative
+clauses leave its unit status open. An exact owner amendment is prepared but
+not incorporated. Existing OD-001--007 remain stable; OD-008 appends the
+unresolved projection-normalization/boundary authority and OD-009 appends the
+unresolved canonical-grid preparation and future reprojection/mosaicking
+ownership. Approved PTC D004 supplies coefficient meaning, and accepted ADR
+0009 plus its 2026-08-05 amendment supplies WCS/FITS and the 0.1-arcsec
+serialization authority, so neither resolved issue was reopened. The next
+editorial gate is one scientific-owner and voice review for r0.3. No
+implementation inspection, validation, reduction, Unity execution, or
+production decision occurred.
+
+The contract-library package layout was normalized in the same documentation
+pass after the project owner identified drift from the required bundle shape.
+SCI-CAL and SCI-MAP now both expose `README.md`, `SCOPE_BRIEF.md`,
+`DECISION_LOG.md`, `CROSSWALK.md`, all six canonical `src/common/` modules,
+stable `src/scientific-rationale.tex` and
+`src/engineering-conformance.tex` entry points, and stable versioned PDF
+filenames. A small `doc/scientific_contracts/verify_layout.py` check prevents
+future structural drift. The packages remain scientific contract v0.1;
+filesystem normalization does not silently create v1.0 authority.
+
 The previously approved `DOC-MAP-001` deliverable is the first queued user
 guide. It will combine a canonical map dictionary with a compact per-reduction
 rendering driven by effective and realized state, explaining what each emitted

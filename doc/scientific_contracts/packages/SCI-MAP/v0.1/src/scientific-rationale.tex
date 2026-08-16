@@ -1,0 +1,500 @@
+\documentclass[10pt]{article}
+\usepackage[margin=0.72in,headheight=15pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,longtable,array,tabularx}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+
+\definecolor{MapNavy}{HTML}{17324D}
+\definecolor{MapBlue}{HTML}{2A6F97}
+\definecolor{MapPale}{HTML}{EAF3F8}
+\definecolor{MapGold}{HTML}{B7791F}
+\definecolor{MapGoldPale}{HTML}{FFF7E6}
+\definecolor{MapGray}{HTML}{53606B}
+\hypersetup{colorlinks=true,linkcolor=MapBlue,urlcolor=MapBlue,citecolor=MapBlue,
+  pdftitle={SCI-MAP v0.1 TolTEC Ordinary Mapmaking and Observation Coaddition - Science-Team Rationale r0.2 Draft},
+  pdfauthor={SCI-MAP scientific-owner review revision}}
+\setlength{\emergencystretch}{3em}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.42em}
+\setlist{nosep,leftmargin=1.45em}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcommand{\code}[1]{\nolinkurl{#1}}
+\newcommand{\mjybeam}{\mathrm{mJy\,beam^{-1}}}
+\newcommand{\StatusBox}[1]{\begin{center}\fcolorbox{MapBlue}{MapPale}{\begin{minipage}{0.93\linewidth}\small #1\end{minipage}}\end{center}}
+\newcommand{\PolicyBox}[1]{\begin{center}\fcolorbox{MapGold}{MapGoldPale}{\begin{minipage}{0.93\linewidth}\small #1\end{minipage}}\end{center}}
+
+% Import the same canonical core as the formal and engineering views. This
+% rationale renders only the scientist-facing equations and grouped crosswalk;
+% it does not expand the full requirement or prediction inventories.
+\input{SCI-MAP-v0.1_SHARED_AUTHORITY_r0.1.tex}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{MapGray}SCI-MAP v0.1 -- Science-Team Rationale r0.2 DRAFT}
+\fancyfoot[L]{\small\color{MapGray}Scientific-owner review | no conformance or performance claim}
+\fancyfoot[R]{\small\color{MapGray}Page \thepage}
+
+\begin{document}
+\begin{titlepage}
+\centering\vspace*{0.48in}
+{\Large\color{MapBlue}\textbf{SCI-MAP}}\\[0.18in]
+{\huge\color{MapNavy}\textbf{TolTEC Ordinary Mapmaking}}\\[0.08in]
+{\LARGE\color{MapNavy}\textbf{and Observation Coaddition}}\\[0.10in]
+{\Large\color{MapBlue}\textbf{Scientific Basis, Response, and Validity}}\\[0.38in]
+{\large Scientific contract version: v0.1}\\[0.06in]
+{\large Science-team rationale revision: r0.2}\\[0.06in]
+{\large Status: draft for scientific-owner review}\\[0.08in]
+{\large 2026-08-16}\\[0.42in]
+\fcolorbox{MapBlue}{MapPale}{\begin{minipage}{0.80\linewidth}\centering\small
+This document explains the map estimator, its response and uncertainty, the
+meaning of support and validity, and the scope of observation coaddition for
+TolTEC scientists. The separate formal contract remains the normative
+authority for the 52 requirements, 25 predictions, exact states, provenance,
+and conformance procedure.
+\end{minipage}}
+\vfill {\large Scientific owner: Grant Wilson}
+\end{titlepage}
+
+\section*{Executive summary and current status}
+\addcontentsline{toc}{section}{Executive summary and current status}
+For a map pixel \(p\), SCI-MAP forms the coefficient-weighted average
+\begin{equation}
+ \widehat x_p=\frac{\sum_iG_{pi}\omega_i x_i}
+                         {\sum_iG_{pi}\omega_i}
+ =\frac{N_p}{Q_p},
+ \label{eq:map}
+\end{equation}
+using only calibrated samples with valid coordinates, upstream eligibility,
+and finite positive effective coefficients. Here \(G_{pi}\) describes how
+sample \(i\) is assigned or divided among pixels, and \(\omega_i\) is the
+upstream-declared analysis coefficient. Pixels without adequate valid support
+are unavailable; they are not measurements of zero sky brightness.
+
+For compatible observation maps on one common grid, the v0.1 coadd is
+\begin{equation}
+ \widehat s_p=\frac{\sum_o u_{op}\widehat x_{op}}
+                         {\sum_o u_{op}},
+ \label{eq:coadd}
+\end{equation}
+where every admitted observation coefficient \(u_{op}\) is finite and
+positive. An observation is not partly coadded: its signal, coordinates,
+response, uncertainty, validity, and provenance must be mutually compatible
+before it contributes.
+
+Both equations are linear only \emph{conditional on fixed} sample and detector
+membership, projection, coefficients, support policy, response state,
+geometry/WCS, calibration, and upstream processing. If any of those states is
+estimated from the same data, unconditional bias or covariance requires a
+joint model or resampling result.
+
+\StatusBox{\begin{tabularx}{\linewidth}{@{}L{0.31\linewidth}Y@{}}
+\textbf{Intended scientific estimator} & Positive-coefficient ordinary map and compatible common-grid observation coadd, Equations~\eqref{eq:map}--\eqref{eq:coadd}.\\
+\textbf{Upstream input status} & Inherited conditionally from SCI-CAL, ALIGN/AST, PTC, and VAL; unresolved \code{xs}, broadband, calibration, response, or uncertainty status is not repaired by MAP.\\
+\textbf{Implementation conformance} & Not assessed in this authorship revision.\\
+\textbf{Response/representation validation} & Not established; response injections and WCS round trips remain required evidence.\\
+\textbf{Observational validation} & Not established; amplitude, shape, position, covariance, and repeatability require astronomical controls.\\
+\textbf{Production readiness} & Not claimed and cannot be inferred from the algebraic contract.\\
+\end{tabularx}}
+
+\tableofcontents
+
+\clearpage
+\section{What SCI-MAP estimates}\label{sec:estimand}
+SCI-MAP estimates a map-domain average of the \emph{calibrated, processed}
+sample quantity. It does not estimate unconvolved sky truth. The physical
+meaning of the result is therefore inherited from the complete upstream
+chain: what the ordinary \code{xs} sample represents, how it was calibrated
+and conditioned, what sky coordinate it has, and which samples are eligible.
+
+The numerical signal scale may be the declared point-source-equivalent
+\(\mjybeam\) convention inherited from SCI-CAL. MAP does not create absolute
+calibration, choose a beam convention, or complete an unresolved broadband
+photometric definition. A numerical map may consequently exist while literal
+point-source-peak interpretation remains unavailable because the response for
+the declared processing chain is incomplete. The same caution applies to
+extended-source fidelity, integrated flux, and absolute offsets.
+
+The map response is the full upstream sky-to-sample response followed by the
+map operator. In compact notation,
+\begin{equation}
+ \widehat{\boldsymbol x}=A\boldsymbol y,\qquad R=AH,
+ \label{eq:response}
+\end{equation}
+where \(H\) maps a declared sky model into processed samples and \(A\) maps
+those samples into valid pixels. Preserving a constant \emph{sample vector}
+does not prove preservation of a constant sky mode: an upstream baseline,
+common-mode removal, or filter may already have removed it.
+
+A stored kernel is a realized response only when its template, sample-domain
+parent, and processing lineage prove the relation in Equation~\eqref{eq:response}.
+Otherwise it is a tracer or has an explicit unavailable status. Every
+response-dependent consumer must retain that distinction.
+
+\begin{figure}[h]
+\centering
+\fcolorbox{MapBlue}{MapPale}{\parbox[c][0.82in][c]{0.25\linewidth}{\centering\footnotesize SCI-CAL: scale/unit/response\\ALIGN/AST: coordinates\\PTC: samples/coefficients\\VAL: eligibility}}
+\hfill\(\longrightarrow\)\hfill
+\fcolorbox{MapNavy}{white}{\parbox[c][0.82in][c]{0.20\linewidth}{\centering\footnotesize SCI-MAP\\projection and weighted accumulation}}
+\hfill\(\longrightarrow\)\hfill
+\fcolorbox{MapBlue}{MapPale}{\parbox[c][0.82in][c]{0.27\linewidth}{\centering\footnotesize signal/normalization\\response/covariance\\exposure/support/validity}}
+\caption{SCI-MAP transforms declared upstream quantities; it does not repair or reinterpret them.}
+\label{fig:flow}
+\end{figure}
+
+\clearpage
+\section{From samples to pixels}\label{sec:samples}
+For each candidate sample \(i\), the projection coefficient \(G_{pi}\) is the
+assignment or fraction by which that sample contributes to pixel \(p\).
+One-hot projection has one nonzero \(G_{pi}=1\). Fractional projection may
+divide a sample among neighboring pixels. Any other projection class must be
+explicitly authorized rather than inferred from array shape or a software
+default.
+
+The coefficient \(\omega_i\) comes from PTC. The approved PTC authority calls
+these scalar analysis and gridding coefficients and requires their family,
+units, normalization scope, lifecycle, and applied factors to be declared.
+They may be uniform, detector-based, sample-based, sensitivity-derived, or
+another named family. They are not inverse variances merely because their
+stored unit is inverse-square signal. A stronger precision interpretation
+requires separate calibration and covariance/independence evidence.
+
+The effective contribution is \(G_{pi}\omega_i\). SCI-MAP first selects the
+samples whose calibration, coordinates, flags, signal, projection, and
+required companions are valid, then accumulates
+\begin{equation}
+ N_p=\sum_iG_{pi}\omega_i x_i,\qquad
+ Q_p=\sum_iG_{pi}\omega_i.
+\end{equation}
+The numerator is not yet a sky estimate, and the denominator is a gridding
+normalization by default. Division occurs only where the adopted support
+policy permits a scientific map value.
+
+Whether a fractional projection must conserve every interior sample through
+\(\sum_pG_{pi}=1\), how boundary loss is represented, and which non-one-hot
+classes are allowed are not fixed by the admitted upstream authority. They
+are therefore recorded as SCI-MAP-OD-008 rather than hidden behind the symbol
+\(G\). Until resolved, every product must declare its actual projection and
+boundary convention, and no unrecorded conservation property may be assumed.
+
+\section{Projection, response, and correlated pixels}\label{sec:projection}
+Fractional projection is useful because a sample can represent support that
+overlaps more than one pixel. The same operation also carries the sample's
+noise into each recipient pixel, correlating them.
+
+\begin{figure}[h]
+\centering
+\fcolorbox{MapNavy}{MapPale}{\parbox[c][0.52in][c]{0.14\linewidth}{\centering\small sample}}
+\quad
+\begin{minipage}[c]{0.24\linewidth}\centering
+\(G_{p1}=1/2\;\nearrow\)\\[0.30em]
+\(G_{r1}=1/2\;\searrow\)
+\end{minipage}
+\quad
+\begin{minipage}[c]{0.18\linewidth}\centering
+\fcolorbox{MapBlue}{white}{\parbox[c][0.35in][c]{0.82\linewidth}{\centering pixel \(p\)}}\\[0.18em]
+\fcolorbox{MapBlue}{white}{\parbox[c][0.35in][c]{0.82\linewidth}{\centering pixel \(r\)}}
+\end{minipage}
+\quad
+\parbox[c]{0.28\linewidth}{\small The same noise realization enters both pixels, so \(\operatorname{Cov}(\widehat x_p,\widehat x_r)\ne0\).}
+\caption{A fractionally projected sample creates shared noise support.}
+\label{fig:split}
+\end{figure}
+
+For a concrete calculation, take two independent samples of equal variance,
+each split equally into the same two pixels, with \(\omega_i=1\). In either
+pixel, \(Q=1/2+1/2=1\), but
+\begin{equation}
+ \operatorname{Var}(\widehat x_p)=
+ \frac{(1/2)^2+(1/2)^2}{Q^2}=\frac12,
+ \qquad \phi_p=\operatorname{Var}(\widehat x_p)^{-1}=2.
+\end{equation}
+Thus normalization is 1 while formal marginal inverse variance is 2. The two
+pixels are also correlated because each contains both sample errors. This is
+why projection, normalization, formal precision, and full covariance must be
+separate products.
+
+\clearpage
+\section{Weights and uncertainty}\label{sec:uncertainty}
+For fixed upstream and map state, uncertainty propagates through the same map
+operator as the signal:
+\begin{equation}
+ C_x=A N A^{\mathsf T},
+ \label{eq:cov}
+\end{equation}
+where \(N\) is the processed-sample noise covariance. Equation~\eqref{eq:cov}
+retains cross-pixel terms created by shared samples and any correlations
+already present in the timestream.
+
+Four quantities answer different questions:
+\begin{enumerate}
+\item \(Q\): the gridding denominator that normalizes the map;
+\item a formal marginal inverse variance: valid only under its stated
+coefficient and covariance assumptions;
+\item the full conditional map covariance or precision, including correlated
+pixels when available; and
+\item empirical covariance, weights, or statistical significance calibrated
+by NOI from admitted realizations or data.
+\end{enumerate}
+
+The raw map bundle must say whether covariance is persisted, recoverable from
+lineage, summarized, or unavailable. It must not turn missing correlations,
+calibration uncertainty, astrometric uncertainty, response uncertainty, or
+additive-bias uncertainty into zeros. A signal multiplied by the square root
+of a merely formal weight is a \emph{formal standardized signal}, not an
+empirical significance map.
+
+The distinction is especially important when sample membership, weights,
+projection, response, or support is estimated from the same observation. The
+linear equations remain useful conditional descriptions, but they do not
+include selection uncertainty. A joint model, resampling study, or other
+separately justified treatment is needed for an unconditional statement.
+
+\begin{table}[h]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}L{0.26\linewidth}L{0.20\linewidth}Y@{}}
+\toprule Quantity & Owner/status & Science interpretation \\
+\midrule
+Analysis coefficient \(\omega\) & PTC, declared scalar family & Gridding/analysis coefficient; precision only if separately proved.\\
+Normalization \(Q\) & MAP & Denominator of the ordinary estimator; not automatically uncertainty.\\
+Conditional covariance & PTC input, MAP propagation & Fixed-state error covariance through projection and normalization.\\
+Empirical weight/significance & NOI & Requires declared realizations, calibration, and validity evidence.\\
+Calibration/response nuisance & SCI-CAL and response owner & Retained as quantified, lineage-resolvable, or unavailable; never silently zero.\\
+\bottomrule
+\end{tabularx}
+\caption{Ownership prevents a convenient numerical product from acquiring a stronger statistical meaning.}
+\end{table}
+
+\clearpage
+\section{Coverage, support, and validity}\label{sec:validity}
+The formal contract keeps eight facts separate. For science users they answer
+the following questions:
+\begin{longtable}{L{0.43\linewidth}L{0.25\linewidth}L{0.23\linewidth}}
+\toprule Science question & Product & Interpretation \\
+\midrule
+Did projected samples geometrically reach this pixel? & Geometric hits & Geometry, not estimator admission.\\
+How many valid weighted samples entered the estimator? & Accepted estimator hits & Exact contribution count.\\
+How many complete observations entered this coadd pixel? & Contributing observation count & Observation bundles, not samples.\\
+What detector-time was available before estimator-specific rejection? & Upstream-eligible exposure & Eligible detector-time accounting.\\
+How much detector-time was retained by the estimator? & Retained exposure & Retained accounting, not precision.\\
+Was the denominator large enough to normalize? & Numerical support & Lower support threshold.\\
+Is the pixel inside the adopted science region? & Science-policy support & Stricter policy threshold.\\
+Is the complete raw map value scientifically usable? & Final map validity & Required conjunction of identity, support, finite value, companions, and no product failure.\\
+\bottomrule
+\end{longtable}
+
+Hits are not validity, exposure is not precision, and positive normalization
+is not sufficient for final validity. A rectangular FITS image may contain
+storage values outside the scientific domain; the explicit support and
+validity products determine which pixels are measurements. Unsupported pixels
+are unavailable, not zero sky.
+
+\PolicyBox{\textbf{Provisional two-threshold policy.} A lower threshold permits
+numerically safe normalization; a stricter threshold defines the adopted
+science region. Both are scaled from an order statistic of the finite positive
+normalizations in a declared map population. This is adopted policy, not a law
+of mapmaking or a proof of completeness, response, or noise quality.}
+
+Because the reference normalization is computed from a declared population,
+changing the map extent or population can change the science mask even when
+the local samples near a particular pixel are unchanged. That global behavior
+must be justified and validated for the intended use.
+
+The formal equations compare \(Q_p\) with \(Q_\star c/10\) and \(Q_\star c\).
+Dimensional consistency therefore forces \(c=\texttt{coverage\_cut}\) to be
+dimensionless. The current normative r0.1 clauses incorrectly leave its unit
+status open. SCI-MAP-CI-001 records the inconsistency and proposes the exact
+owner amendment; no normative clause is changed before approval. The allowed
+numeric domain and behavior for negative, zero, non-finite, or greater-than-one
+values remain open in SCI-MAP-OD-007.
+
+\clearpage
+\section{Observation coaddition}\label{sec:coadd}
+V0.1 combines observation maps only when they already represent the same
+responded quantity on the same pixel grid. Each observation contributes as a
+complete bundle: signal, normalization, response state, covariance status,
+exposure, support, validity, WCS, and provenance are checked together.
+
+The permitted placement is a centered integer embedding. A smaller map may
+sit inside a larger common grid only when each dimension differs by a
+nonnegative even number of pixels; half the difference is the integer offset.
+The shifted reference pixel must identify the same world coordinate. An odd
+shape difference is incompatible and the complete observation is rejected.
+There is no fractional shift, interpolation, reprojection, or implicit
+recentering in this ordinary branch.
+
+\begin{figure}[h]
+\centering
+\begin{minipage}[c]{0.18\linewidth}\centering
+\fcolorbox{MapBlue}{MapPale}{\parbox[c][0.48in][c]{0.82\linewidth}{\centering observation 1\\complete bundle}}\\[0.22em]
+\fcolorbox{MapBlue}{MapPale}{\parbox[c][0.48in][c]{0.82\linewidth}{\centering observation 2\\complete bundle}}
+\end{minipage}
+\hfill\(\longrightarrow\)\hfill
+\fcolorbox{MapGold}{MapGoldPale}{\parbox[c][1.18in][c]{0.22\linewidth}{\centering identity, WCS, shape\\unit, response, validity\\uncertainty, provenance}}
+\hfill\(\longrightarrow\)\hfill
+\fcolorbox{MapNavy}{white}{\parbox[c][1.18in][c]{0.15\linewidth}{\centering centered\\integer\\common grid}}
+\hfill\(\longrightarrow\)\hfill
+\fcolorbox{MapBlue}{MapPale}{\parbox[c][1.18in][c]{0.20\linewidth}{\centering coadd signal/response\\covariance/exposure\\validity/observation count}}
+\caption{Complete-bundle admission and centered-integer placement. Any failed compatibility check rejects the observation before it contributes.}
+\label{fig:coadd}
+\end{figure}
+
+This restriction is the declared scope of the ordinary v0.1 coadd, not a
+general scientific argument against mosaicking. Whether observation maps are
+cropped or padded upstream to a canonical grid, and which future package owns
+reprojection or mosaicking, are not fixed by the admitted authority and are
+recorded as SCI-MAP-OD-009. Until then, SCI-MAP performs neither operation.
+
+The coadd propagates response and conditional covariance through the same
+observation membership and placement. Its denominator is again normalization,
+not automatically precision. Correlated generalized least squares, which may
+need negative coefficients and a full cross-observation covariance, belongs
+outside this positive-coefficient branch.
+
+\clearpage
+\section{Units, WCS, products, and downstream use}\label{sec:products}
+SCI-MAP preserves the scale, unit convention, response basis, validity, and
+uncertainty status supplied by SCI-CAL. It preserves the coordinates, exact
+frame metadata, geometry, and coordinate validity supplied by ALIGN/AST; it
+does not replace that authority with the shorthand phrase ``J2000.'' PTC owns
+the processed sample and coefficient/covariance inputs, and VAL owns upstream
+sample and detector eligibility. MAP transforms these inputs but does not
+complete, repair, reinterpret, or validate them.
+
+The accepted map-bundle authority is ADR~0009 and its 2026-08-05 owner
+amendment. The full binary64 typed or sidecar WCS is the lossless identity used
+for admission, common-grid comparison, and provenance. The WCS serialized in
+the FITS product is the representation ordinary scientific tools are expected
+to use for pixel-to-sky conversion. It must preserve axis sign, handedness,
+orientation, and the exact centered-integer reference-pixel relations, and
+must agree with the lossless authority within 0.1 arcsec maximum sky
+separation. The bound is cited from that owner-approved representation
+authority; this rationale does not invent a physical justification for it.
+
+The FITS product remains scientifically self-describing at its declared
+serialization fidelity, while the sidecar retains exact identity for
+conformance, provenance, and coadd admission. A tolerance never authorizes a
+different sky grid, fractional shift, interpolation, or reprojection.
+
+\begin{longtable}{L{0.36\linewidth}L{0.54\linewidth}}
+\toprule Science-user state & Interpretation and required action \\
+\midrule
+Valid map; response available & Use only for the response class and processing lineage actually declared.\\
+Valid numerical map; response unavailable & Restrict to owner-approved response-independent uses; response-dependent consumers fail closed.\\
+Formal weight; empirical significance unavailable & Use as declared formal normalization/precision only; do not call it significance.\\
+Covariance summarized or unavailable & Do not make a claim that needs missing correlations or nuisance terms.\\
+Unsupported pixel & Unavailable, not zero sky.\\
+Raw-invalid pixel & No downstream finite value may promote it to raw-valid.\\
+Coadd-incompatible observation & Entire observation bundle is excluded; no partial coadd.\\
+WCS or unit incompatibility & Reject combination rather than silently convert, recenter, or relabel.\\
+\bottomrule
+\end{longtable}
+
+Downstream packages inherit the raw unit, response, covariance, validity, WCS,
+and provenance. NOI owns empirical noise and significance; FLT owns filtered
+response, covariance, and validity while preserving the immutable raw parent;
+source, Pointing/OOF, and Beammap packages own their scientific inference.
+
+\clearpage
+\section{Validation}\label{sec:validation}
+Validation must keep algebra, software conformance, representation fidelity,
+observational performance, and production readiness separate. The required
+science program is:
+\begin{enumerate}[label=\textbf{\arabic*.},leftmargin=*]
+\item analytic estimator tests for constants, unequal coefficients, and exact
+hand calculations;
+\item one-hot and fractional projection tests for response, formal variance,
+and cross-pixel covariance;
+\item support, boundary, global-population, and unsupported-pixel tests;
+\item complete-bundle compatibility and centered-integer coadd placement
+tests;
+\item sequential/parallel conformance: floating results agree within a
+preregistered bound appropriate to operation count and conditioning, while
+identities, counts, masks, support, offsets, and product cardinality agree
+exactly;
+\item synthetic point, extended, gradient, edge, and variable-coverage
+response tests; and
+\item observational amplitude, shape, position, covariance, and repeatability
+checks against independent references.
+\end{enumerate}
+No test, implementation inspection, reduction, or production qualification
+was executed for this authorship revision.
+
+\section{Open scientific decisions}\label{sec:decisions}
+The compact register in Appendix~\ref{app:decisions} preserves OD-001 through
+OD-007 and appends OD-008 and OD-009. The new items expose genuine upstream
+gaps rather than asking implementation questions. SCI-MAP-CI-001 separately
+records the pending dimensional correction for \code{coverage_cut}; approval
+would narrow OD-007 to numerical domain and failure behavior.
+
+After r0.2, the planned remaining editorial work is one scientific-owner and
+voice review. Further revisions should follow an owner decision, a normative
+contract change, new validation evidence, or a newly identified scientific
+inconsistency--not stylistic churn.
+
+\section*{References}\addcontentsline{toc}{section}{References}
+\begin{enumerate}[label={[\arabic*]},leftmargin=*]
+\item \emph{SCI-MAP v0.1 Formal Scientific/Engineering Contract}, canonical shared authority r0.1 and preserved r0.2 formal view.
+\item \emph{SCI-CAL v0.1 Science-Team Rationale}, revision r0.3.
+\item \emph{SCI-PTC-001 D004 Owner Amendment}, approved 2026-08-09, for scalar coefficient and covariance semantics.
+\item \emph{Citlali Scientific Conventions}, map-bundle and ownership authority.
+\item ADR 0009, \emph{Science-Map Bundle Admission and Validity}, including the 2026-08-05 WCS/FITS persistence amendment.
+\end{enumerate}
+
+\clearpage\appendix
+\section{Compact rationale-to-contract crosswalk}\label{app:crosswalk}
+The separate \code{SCIENTIST_CROSSWALK_R0.2.md} carries the same grouped
+routing. The formal contract remains normative; this appendix does not replace
+or paraphrase any requirement or prediction as authority.
+
+\begin{longtable}{L{0.20\linewidth}L{0.38\linewidth}L{0.32\linewidth}}
+\toprule Formal authority & Science-team location & Continuing formal home \\
+\midrule
+REQ-001--010 & Executive summary; Sections~\ref{sec:estimand}--\ref{sec:samples} & Version, input, identity, projection, coefficient, lifecycle, admission.\\
+REQ-011--018 & Sections~\ref{sec:samples}--\ref{sec:projection} & Accumulators, valid-domain publication, response, absolute mode.\\
+REQ-019--024 & Section~\ref{sec:uncertainty} & Conditional covariance, formal weight, nuisance state, statistical labels.\\
+REQ-025--035 & Section~\ref{sec:validity} & Eight facts, exact threshold selector, support, raw validity.\\
+REQ-036--042 & Section~\ref{sec:coadd} & Complete bundles, centered-integer coadd, response/covariance, GLS boundary.\\
+REQ-043--048 & Section~\ref{sec:products} & Product identity, WCS, provenance, failure, publication.\\
+REQ-049--052 & Sections~\ref{sec:products}--\ref{sec:validation} & Raw parent, consumer boundary, fixed realization operator, claim layers.\\
+PRED-001--025 & Section~\ref{sec:validation} & Full formal prediction inventory and exact evidence classes.\\
+OD-001--009 & Section~\ref{sec:decisions}; Appendix~\ref{app:decisions} & External scientific-owner decision ledger.\\
+SCI-MAP-CI-001 & Section~\ref{sec:validity} & Inconsistency and proposed amendment record.\\
+\bottomrule
+\end{longtable}
+
+\clearpage
+\section{Compact scientific-owner decision register}\label{app:decisions}
+All items are open. The exact questions, interim behavior, authority needed,
+and affected clauses live in \code{SCIENTIFIC_OWNER_DECISION_LEDGER.md}.
+
+\begin{longtable}{L{0.12\linewidth}L{0.30\linewidth}L{0.48\linewidth}}
+\toprule ID & Issue & Conservative status while open \\
+\midrule
+OD-001 & Threshold rationale & Adopted policy only; no physical optimality or completeness claim.\\
+OD-002 & Threshold change authority & Formula and population are frozen until an owner-approved successor.\\
+OD-003 & Response-unavailable use & Response state remains explicit; response-dependent consumers fail closed.\\
+OD-004 & Covariance persistence & Representation and omissions are explicit; stronger consumers fail closed.\\
+OD-005 & Observation-map publication & Follow the effective required-output policy; infer no universal storage mandate.\\
+OD-006 & Pointing/OOF reuse & No mode-specific authority follows from ordinary arithmetic alone.\\
+OD-007 & \code{coverage_cut} numeric domain & No domain or boundary behavior is inferred. Unit-status wording awaits SCI-MAP-CI-001 disposition.\\
+OD-008 & Projection normalization and boundaries & Declare the actual class and boundary convention; assume no unapproved conservation property.\\
+OD-009 & Common-grid preparation and future mosaicking & Odd-difference inputs reject; MAP performs no crop, pad, reprojection, or mosaic absent new authority.\\
+\bottomrule
+\end{longtable}
+
+\section{Document authority}
+Rationale revision r0.2 changes genre, teaching order, and ownership clarity.
+It does not change the 52 canonical requirements, 25 canonical predictions,
+or the v0.1 estimator. The exact threshold equations and \code{coverage_cut}
+clauses remain unchanged pending owner approval of SCI-MAP-CI-001. The formal
+contract and engineering conformance specification remain the normative
+authorities for audit, repair, re-audit, and exact product behavior.
+
+\end{document}

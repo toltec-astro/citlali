@@ -207,12 +207,24 @@ packages/<PACKAGE-ID>/v<MAJOR>.<MINOR>/
     scientific-rationale.tex
     engineering-conformance.tex
   pdf/
-    <PACKAGE-ID>-SCIENTIFIC-RATIONALE-v<CONTRACT>-r<DOCUMENT>.pdf
-    <PACKAGE-ID>-ENGINEERING-CONFORMANCE-v<CONTRACT>-r<DOCUMENT>.pdf
+    <PACKAGE-ID>-SCIENTIFIC-RATIONALE-v<CONTRACT>.pdf
+    <PACKAGE-ID>-ENGINEERING-CONFORMANCE-v<CONTRACT>.pdf
 ```
 
-Use only the common modules the package needs. The layout is a convention, not
-a requirement to create empty files.
+All six common-module paths are required for every package. A module may be
+short when the package has no independent content of that class, but the path
+must exist so readers never have to discover a package-specific source
+layout. The two stable PDF filenames identify the active views of the package
+version; document revision remains explicit in PDF metadata, title, running
+header, package README, and change log. Revision-bearing predecessor PDFs may
+be retained as clearly labeled history, but they are not the canonical entry
+points.
+
+The directory version is the actual scientific-contract version. The present
+pilot packages therefore remain under `v0.1`; a `v1.0` directory is created
+only when the scientific owner promotes or freezes that package as contract
+version 1.0. Filesystem normalization alone never changes the scientific
+version.
 
 ## Science-Team Rationale House Standard
 

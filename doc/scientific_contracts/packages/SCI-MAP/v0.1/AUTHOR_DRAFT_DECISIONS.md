@@ -1,6 +1,6 @@
 # SCI-MAP v0.1 Author-Draft Decisions
 
-Document revision: `r0.1`
+Document revision: `r0.2`
 
 Status: Stage B author record. These choices organize or conservatively bound
 the draft; they are not scientific-owner approvals and do not resolve any item
@@ -22,11 +22,16 @@ in `SCIENTIFIC_OWNER_DECISION_LEDGER.md`.
 | MAP-AUTH-D012 | Record validation only as preregistered predictions and evidence routes; run none during Stage B authorship. | The author packet expressly excludes implementation and validation evidence. | All achieved validation and readiness claims remain open. |
 | MAP-AUTH-D013 | Define scientific signal, response, and covariance on the exact output-row set authorized by the effective support policy, using an explicit row-selection operator rather than a full-grid pseudoinverse or zero-filled semantic substitute. | Raw accumulators and storage slots may exist outside support, but they do not become normalized scientific values; the same domain restriction is carried through observation and coadd operators. | This resolves a notation/semantic inconsistency without choosing a new support rule or answering any owner question. |
 | MAP-AUTH-D014 | Infer no numeric range or units for `c=coverage_cut`; require the exact value and unit or dimensionless status to be explicitly admitted by the owner-authorized effective support policy and fail closed otherwise. | The admitted formula names `c` but supplies no domain. A guessed range would silently change support membership. | The admissible domain, units, boundary dispositions, and failure authority remain SCI-MAP-OD-007. |
+| MAP-AUTH-D015 | Separate the r0.2 science-team rationale from the preserved formal contract. | The first science editing round found the r0.1 mathematics strong but the combined genre unsuitable for astronomers. | Editorial architecture only; the 52 requirements and 25 predictions remain normative and unchanged. |
+| MAP-AUTH-D016 | Inherit the approved PTC D004 meaning of `omega_i` as a declared scalar analysis/gridding coefficient, not precision by default. | This uses existing owner-approved authority and avoids repeating or reopening resolved coefficient work. | No new owner decision is needed for `omega_i`; stronger statistical meaning remains evidence-gated. |
+| MAP-AUTH-D017 | Cite ADR 0009 and its 2026-08-05 owner amendment for lossless typed/sidecar WCS, FITS use, and the 0.1-arcsec serialization bound. | The first edit requested exact authority rather than an invented rationale. | No new WCS owner decision is introduced. |
+| MAP-AUTH-D018 | Record `SCI-MAP-CI-001`: the threshold equations force `coverage_cut` to be dimensionless, contrary to r0.1 open-unit wording. | This is a dimensional inconsistency, not an optional scientific convention. | Normative equations, REQ-031/032, PRED-012, and OD-007 remain unchanged until owner approval of the proposed correction. |
+| MAP-AUTH-D019 | Append OD-008 and OD-009 without renumbering existing decisions. | PTC resolves coefficient semantics but not projection conservation/boundaries; accepted coadd authority rejects incompatible grids but does not authorize canonical-grid preparation or assign future reprojection/mosaicking. | The owner must resolve only the genuine remaining gaps; no implementation observation is promoted to science. |
 
 ## Draft-disposition summary
 
 The author finds the bounded ordinary estimator and atomic common-grid coadd
 scientifically coherent as a conditional draft. This is not a verdict on an
-implementation and not an owner approval. The seven unresolved owner decisions
-remain visible, and every stronger upstream fact is fail-closed rather than
-inferred.
+implementation and not an owner approval. The nine unresolved owner decisions
+remain visible, the dimensional inconsistency is separately recorded, and
+every stronger upstream fact is fail-closed rather than inferred.

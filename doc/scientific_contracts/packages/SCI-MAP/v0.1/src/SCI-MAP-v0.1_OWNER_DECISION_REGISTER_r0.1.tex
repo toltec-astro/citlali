@@ -39,6 +39,14 @@ State only that reuse is conditional on a fully conforming input bundle; grant n
 What numeric domain and unit status are authoritative for \texttt{c=coverage\_cut}, including the required disposition of negative, zero, non-finite, and greater-than-one values, and what failure behavior applies when the state is not authorized? &
 Assert no general domain or units. Require the exact value and unit or dimensionless status to be explicitly admitted by the owner-authorized effective support policy; otherwise fail closed before constructing support-authorized output rows or mutating a required product.\\
 \addlinespace[0.35em]
+\texttt{SCI-MAP-OD-008}\\\textbf{OPEN} &
+Which sample-to-pixel projection classes are authorized for ordinary SCI-MAP v0.1, what normalization applies to \texttt{G\_pi} (including whether and where \texttt{sum\_p G\_pi=1} is required), how is boundary loss represented, and which upstream authority owns those facts? &
+Require every product to declare its actual projection class, normalization, extent, and boundary convention. Permit the existing one-hot and fractional contract examples, but assert no unrecorded conservation property or additional projection class.\\
+\addlinespace[0.35em]
+\texttt{SCI-MAP-OD-009}\\\textbf{OPEN} &
+Is upstream crop or pad to a canonical common grid an authorized preparation for v0.1 observation coaddition, which package owns it, and which future package owns reprojection or mosaicking beyond centered-integer placement? &
+Reject every odd-difference or otherwise incompatible observation bundle. SCI-MAP performs no crop, pad, fractional shift, reprojection, interpolation, or mosaic; no other package is named as authorized until the owner decides.\\
+\addlinespace[0.35em]
 \bottomrule
 \end{longtable}
 \endgroup

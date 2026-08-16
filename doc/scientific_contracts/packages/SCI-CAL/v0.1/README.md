@@ -65,6 +65,10 @@ four-item author-reference packet on `2026-08-16`.
   source for the scientist-facing view
 - [`src/engineering-conformance.tex`](src/engineering-conformance.tex):
   canonical source for the engineering-facing view
+- [`pdf/SCI-CAL-SCIENTIFIC-RATIONALE-v0.1.pdf`](pdf/SCI-CAL-SCIENTIFIC-RATIONALE-v0.1.pdf):
+  stable canonical filename for the active scientist-facing PDF
+- [`pdf/SCI-CAL-ENGINEERING-CONFORMANCE-v0.1.pdf`](pdf/SCI-CAL-ENGINEERING-CONFORMANCE-v0.1.pdf):
+  stable canonical filename for the engineering-facing PDF
 - [`pdf/SCI-CAL-SCIENTIFIC-RATIONALE-v0.1-DRAFT.pdf`](pdf/SCI-CAL-SCIENTIFIC-RATIONALE-v0.1-DRAFT.pdf):
   archived 24-page scientist-facing predecessor reviewed by Grant
 - [`pdf/SCI-CAL-SCIENTIFIC-RATIONALE-v0.2-DRAFT.pdf`](pdf/SCI-CAL-SCIENTIFIC-RATIONALE-v0.2-DRAFT.pdf):
