@@ -195,6 +195,7 @@ packages/<PACKAGE-ID>/v<MAJOR>.<MINOR>/
   SCOPE_BRIEF.md
   DECISION_LOG.md
   CROSSWALK.md
+  SCIENTIFIC_OWNER_DECISION_LEDGER.md
   src/
     common/
       notation.tex
@@ -212,6 +213,54 @@ packages/<PACKAGE-ID>/v<MAJOR>.<MINOR>/
 
 Use only the common modules the package needs. The layout is a convention, not
 a requirement to create empty files.
+
+## Science-Team Rationale House Standard
+
+Every new package begins by referring to this section and the prior-work
+recovery above. The package must preserve three mutually consistent artifacts:
+
+1. the normative engineering conformance contract;
+2. the science-team rationale; and
+3. the crosswalk plus scientific-owner decision ledger.
+
+The science rationale opens with a compact input/output/equation/source/status
+block. Its main narrative should ordinarily fit in eight to twelve pages,
+explain the physical model before formal machinery, and omit hashes, internal
+identifiers, and code-level detail. Formal states, exact requirements,
+identity mechanics, and audit-oriented detail belong in appendices or the
+engineering contract.
+
+Every scientific quantity follows the producer--transformer--consumer rule:
+the producer owns its meaning; a transformer owns only an explicitly approved
+transformation and its lineage; a consumer applies the selected value without
+reinterpretation. Package boundaries and figures must show those roles
+directly.
+
+Every missing fact is classified as exactly one of:
+
+- approved;
+- known but not supplied;
+- unresolved decision;
+- implementation unassessed; or
+- validation not performed.
+
+The rationale must not infer across those classes. It includes a validity
+table, uncertainty budget, an explanation of what each validation layer would
+establish, the owner decisions, and the crosswalk. Claims remain separated
+into engineering conformance, representation fidelity, observational
+performance, and production readiness.
+
+The companion owner-decision ledger records, for every question: stable ID,
+owning scientific authority or package, state (open, decided, deferred, or
+superseded), evidence or decision required, exact blocked claim or output, and
+resolution source and date. An unnamed owner is recorded as unnamed; authority
+is never manufactured by inference.
+
+Rationale drafting is limited to three substantive review rounds unless the
+scientific owner explicitly reopens the process. Freeze is based on scientific
+accuracy, explicit uncertainty, and traceability rather than artificial
+completeness. After freeze, a rationale architecture changes only by recorded
+owner decision or an engineering-contract change.
 
 ## Requirement Identity And Crosswalk
 
@@ -231,7 +280,8 @@ both views or removed.
 2. Investigate the implementation-informed scientific scope.
 3. Produce and obtain owner approval of the sanitized Scope Brief.
 4. Dispatch a fresh implementation-blind scientific author.
-5. Iterate on scientific substance and owner decisions.
+5. Iterate on scientific substance and owner decisions for no more than three
+   substantive rounds unless the owner explicitly reopens review.
 6. Commission an implementation-blind consistency review.
 7. Freeze the approved brief, canonical sources, two PDFs, crosswalk, decision
    log, version/date, and exact file identifiers together.

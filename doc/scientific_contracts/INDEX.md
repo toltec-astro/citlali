@@ -8,7 +8,7 @@ without replacing package-specific review.
 
 | Package | Scope status | Contract status | Owner decision needed | Next action |
 | --- | --- | --- | --- | --- |
-| [SCI-CAL — detector calibration, extinction, and signal transfer](packages/SCI-CAL/v0.1/README.md) | Owner-approved v0.1 scope | Scientist-facing v0.2 major revision ready; engineering v0.1 unchanged; not frozen | Resolve or disposition Q01--Q09, including `xs`, `flxscale` transfer, broadband convention, and numeric atmosphere authority | Grant reviews the v0.2 rationale; fresh blind consistency review follows scientific approval |
+| [SCI-CAL — detector calibration, extinction, and signal transfer](packages/SCI-CAL/v0.1/README.md) | Owner-approved v0.1 scope | Scientist-facing v0.3 ready for final voice review; rationale architecture frozen; engineering v0.1 unchanged; authority not frozen | Resolve or disposition Q01--Q09, including `xs`, `flxscale` transfer, broadband convention, and numeric atmosphere authority | Grant performs the final voice review; fresh blind consistency review follows scientific approval |
 | MAP — mapmaking and observation coaddition | Proposed pilot 2 | Not started | Confirm boundary after CAL scope | Begin prior-work recovery after CAL pilot review |
 | BEAM — Beammap inference and products | Proposed pilot 3; held separate from active ALIGN | Not started | Confirm boundary and timing | Begin only after pilot process review and without absorbing ALIGN |
 | ALIGN/AST — sample alignment and astrometry | Inventoried | Not started | None yet | Hold for tranche planning |

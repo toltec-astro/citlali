@@ -127,6 +127,22 @@ conflict for owner action. No implementation audit or scientific validation
 was run. The package remains not frozen pending owner science decisions and a
 subsequent fresh implementation-blind consistency review.
 
+Grant then returned bounded v0.3 corrections on 2026-08-16. The revised
+rationale assigns source-calibration meaning to Beammap/source-APT
+production, limits TolProj to target/source association and explicitly
+approved child-APT transformations, limits SCI-CAL to applying the selected
+child `flxscale` once plus target atmosphere, and assigns realized
+mapmaker/filter response to MAP/FLT. It distinguishes scalar temporal
+commutation, detector-mixing operations, and sample-dependent atmosphere;
+uses an orientation-neutral atmosphere ordinate; removes unsupported `xs`
+scope/layout claims; and adds the required Q01--Q09 owner-decision ledger,
+v0.3 crosswalk, change log, and six-axis consistency report. No engineering
+requirements, numerical science, implementation assessment, or validation
+claim changed. The rationale architecture and library house standard are now
+frozen as the template for later packages; SCI-CAL scientific authority
+remains a draft pending owner disposition of the open scientific questions
+and the final consistency gate.
+
 The previously approved `DOC-MAP-001` deliverable is the first queued user
 guide. It will combine a canonical map dictionary with a compact per-reduction
 rendering driven by effective and realized state, explaining what each emitted

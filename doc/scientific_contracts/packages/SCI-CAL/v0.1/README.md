@@ -1,7 +1,8 @@
 # SCI-CAL — Detector Calibration, Atmospheric Extinction, And Signal Transfer
 
-Status: scientist-facing v0.2 major revision ready for owner scientific
-review; engineering v0.1 unchanged; not frozen
+Status: scientist-facing v0.3 surgical revision ready for final owner voice
+review; rationale architecture frozen as the package template; engineering
+v0.1 unchanged; scientific authority not frozen
 
 Version: `0.1` scope (`2026-08-16`)
 
@@ -69,16 +70,23 @@ four-item author-reference packet on `2026-08-16`.
 - [`pdf/SCI-CAL-ENGINEERING-CONFORMANCE-v0.1-DRAFT.pdf`](pdf/SCI-CAL-ENGINEERING-CONFORMANCE-v0.1-DRAFT.pdf):
   21-page engineering-facing draft
 
+## v0.3 Correction Artifacts
+
+- [`SCIENTIFIC_RATIONALE_V0.3_CHANGELOG.md`](SCIENTIFIC_RATIONALE_V0.3_CHANGELOG.md): bounded ownership, ordering, atmosphere, terminology, and governance corrections
+- [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md): active Q01--Q09 ownership, state, evidence, blocked-claim, and resolution ledger
+- [`SCIENTIFIC_ENGINEERING_CONSISTENCY_V0.3.md`](SCIENTIFIC_ENGINEERING_CONSISTENCY_V0.3.md): ownership, factor direction, orientation, units, ordering, and claim-layer consistency
+- [`SCIENTIST_CROSSWALK_V0.3.md`](SCIENTIST_CROSSWALK_V0.3.md): refreshed grouped routing of every assumption, requirement, and edge prediction
+- [`pdf/SCI-CAL-SCIENTIFIC-RATIONALE-v0.3-DRAFT.pdf`](pdf/SCI-CAL-SCIENTIFIC-RATIONALE-v0.3-DRAFT.pdf): owner-directed surgical correction and package-template candidate
+
 ## Next Gate
 
-Grant reviews the v0.2 scientist-facing rationale and the nine-item scientific
-owner-decision register. The former `SCI-CAL-OWNER-Q001` is preserved as
-`SCI-CAL-OWNER-Q06`; the review also exposed missing authority for the physical
-definition of `xs`, baseline and pipeline ordering, `flxscale` derivation and
-transfer, broadband photometric convention, opacity-policy rationale,
-numerical uncertainty products, and science-qualification criteria.
+Grant performs the final v0.3 voice-only review and dispositions the active
+Q01--Q09 ledger as evidence becomes available. The rationale architecture is
+already frozen under `CAL-SCI-D008`; further architectural change requires an
+owner decision or engineering-contract change.
 
-After owner scientific approval, a fresh implementation-blind consistency
-review must compare the two views and crosswalk before freezing.
+After scientific-substance approval, an implementation-blind consistency
+review must compare the two views, crosswalk, and ledger before freezing the
+scientific authority.
 This draft does not approve an implementation, run validation, or change
 production status.
