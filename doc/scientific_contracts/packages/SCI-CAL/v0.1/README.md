@@ -1,7 +1,7 @@
 # SCI-CAL — Detector Calibration, Atmospheric Extinction, And Signal Transfer
 
-Status: implementation-blind contract draft ready for owner scientific review;
-not frozen
+Status: scientist-facing v0.2 major revision ready for owner scientific
+review; engineering v0.1 unchanged; not frozen
 
 Version: `0.1` scope (`2026-08-16`)
 
@@ -46,6 +46,14 @@ four-item author-reference packet on `2026-08-16`.
   sanitized stable conventions and inter-package responsibilities
 - [`AUTHOR_DRAFT_DECISIONS.md`](AUTHOR_DRAFT_DECISIONS.md): ten derived
   scientific decisions and one unresolved owner question
+- [`SCIENTIFIC_RATIONALE_V0.2_CHANGELOG.md`](SCIENTIFIC_RATIONALE_V0.2_CHANGELOG.md):
+  major narrative and scientific-clarification changes from v0.1
+- [`SCIENTIFIC_OWNER_DECISIONS_V0.2.md`](SCIENTIFIC_OWNER_DECISIONS_V0.2.md):
+  nine unresolved scientific-owner decisions exposed by the review
+- [`SCIENTIFIC_ENGINEERING_CONSISTENCY_V0.2.md`](SCIENTIFIC_ENGINEERING_CONSISTENCY_V0.2.md):
+  manager consistency check and `nw10` authority finding
+- [`SCIENTIST_CROSSWALK_V0.2.md`](SCIENTIST_CROSSWALK_V0.2.md): grouped routing
+  of every assumption, requirement, and edge prediction
 - [`CROSSWALK.md`](CROSSWALK.md): all 50 requirements traced to the
   scientist-facing authority and implementation-independent observables
 - `src/common/`: shared notation, definitions, assumptions, equations,
@@ -55,21 +63,22 @@ four-item author-reference packet on `2026-08-16`.
 - [`src/engineering-conformance.tex`](src/engineering-conformance.tex):
   canonical source for the engineering-facing view
 - [`pdf/SCI-CAL-SCIENTIFIC-RATIONALE-v0.1-DRAFT.pdf`](pdf/SCI-CAL-SCIENTIFIC-RATIONALE-v0.1-DRAFT.pdf):
-  24-page scientist-facing draft
+  archived 24-page scientist-facing predecessor reviewed by Grant
+- [`pdf/SCI-CAL-SCIENTIFIC-RATIONALE-v0.2-DRAFT.pdf`](pdf/SCI-CAL-SCIENTIFIC-RATIONALE-v0.2-DRAFT.pdf):
+  revised 14-page science-team rationale, including formal appendices
 - [`pdf/SCI-CAL-ENGINEERING-CONFORMANCE-v0.1-DRAFT.pdf`](pdf/SCI-CAL-ENGINEERING-CONFORMANCE-v0.1-DRAFT.pdf):
   21-page engineering-facing draft
 
 ## Next Gate
 
-Grant reviews the scientist-facing draft as the primary artifact, the ten
-derived scientific decisions, and `SCI-CAL-OWNER-Q001`: whether to approve one
-content-bound atmosphere-operator record with exact nodes, ordinate
-orientation, closed numeric support/seam rules, and model/passband provenance.
-Until that record is supplied, numeric atmosphere evaluation, calibrated
-numeric output, and even a numeric science-qualification-eligible disposition
-remain unavailable.
+Grant reviews the v0.2 scientist-facing rationale and the nine-item scientific
+owner-decision register. The former `SCI-CAL-OWNER-Q001` is preserved as
+`SCI-CAL-OWNER-Q06`; the review also exposed missing authority for the physical
+definition of `xs`, baseline and pipeline ordering, `flxscale` derivation and
+transfer, broadband photometric convention, opacity-policy rationale,
+numerical uncertainty products, and science-qualification criteria.
 
-After owner scientific review and revision, a fresh implementation-blind
-consistency review must compare the two views and crosswalk before freezing.
+After owner scientific approval, a fresh implementation-blind consistency
+review must compare the two views and crosswalk before freezing.
 This draft does not approve an implementation, run validation, or change
 production status.

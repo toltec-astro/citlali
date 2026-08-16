@@ -1,256 +1,445 @@
 \documentclass[11pt]{article}
-\newcommand{\DocShortTitle}{Scientific Rationale}
-\newcommand{\DocPdfTitle}{SCI-CAL v0.1 Scientific Rationale Draft}
+\newcommand{\DocShortTitle}{Science-Team Rationale}
+\newcommand{\DocPdfTitle}{SCI-CAL v0.2 TolTEC Timestream Calibration Draft}
 \input{common/preamble.tex}
+\fancyhead[L]{\small\color{calgray}SCI-CAL v0.2 DRAFT}
+\hypersetup{pdftitle={SCI-CAL v0.2 TolTEC Timestream Calibration Draft},pdfauthor={SCI-CAL scientific owner review revision},pdfsubject={Scientist-facing calibration rationale}}
+
+\newcommand{\DecisionBox}[2]{\begin{center}\fcolorbox{calwarn}{white}{\begin{minipage}{0.91\linewidth}\small\textbf{Open Scientific Decision: #1}\par #2\end{minipage}}\end{center}}
+\newcommand{\StatusBox}[1]{\begin{center}\fcolorbox{calblue}{callight}{\begin{minipage}{0.91\linewidth}\small #1\end{minipage}}\end{center}}
+\newcommand{\flowbox}[1]{\fcolorbox{calteal}{callight}{\parbox[c][0.48in][c]{0.20\linewidth}{\centering\small #1}}}
 
 \begin{document}
+\begin{titlepage}
+\centering\vspace*{0.55in}
+{\Large\color{calteal}\textbf{SCI-CAL}}\\[0.18in]
+{\huge\color{calblue}\textbf{TolTEC Timestream Calibration}}\\[0.08in]
+{\LARGE\color{calblue}\textbf{Scientific Basis, Assumptions, and Validation}}\\[0.38in]
+{\large Scientist-facing rationale, revision 0.2 - DRAFT}\\[0.10in]
+{\large 2026-08-16}\\[0.50in]
+\fcolorbox{calblue}{callight}{\begin{minipage}{0.78\linewidth}\centering\small
+A science-team explanation of the calibration chain, its physical meaning,
+uncertainty model, validity limits, and evidence still required. The separate
+SCI-CAL engineering contract remains the normative conformance authority.
+\end{minipage}}
+\vfill {\large Scientific owner: Grant Wilson}\\[0.08in]
+{\normalsize Major revision prepared from the owner assessment of v0.1}
+\end{titlepage}
 
-\MakeContractTitle{Scientific Rationale}{%
-  A rigorous astronomer-facing derivation of the v0.1 detector-sample
-  transformation, its atmosphere and response conditions, its uncertainty
-  meaning, and the claims that available authority does and does not support.}
+\section*{Executive summary}
+\addcontentsline{toc}{section}{Executive summary}
+A TolTEC detector timestream is placed on a top-of-atmosphere,
+point-source-equivalent flux-density scale by applying one detector-specific
+calibration factor from the selected Beammap array property table (APT) and
+one atmospheric correction for the target sample. For detector (d), time
+(t), observation (o), and array (a(d)), the organizing equation is
+\begin{equation}
+ d^{\rm cal}_d(t)=F^{\rm APT}_{od}\,
+ C_{a(d)}\!\left[\tau_{225,o}(t),X_o(t)\right]d^{\rm in}_d(t).
+ \label{eq:science-central}
+\end{equation}
+Here \(d^{\rm in}\) is the upstream-defined ordinary \code{xs} calibration
+input, \(F^{\rm APT}\) is the selected row's \code{flxscale}, and \(C_a\) is
+the inverse atmospheric transmission for the target observation. The result
+is a point-source-equivalent, beam-peak-normalized amplitude intended to
+produce \(\mjybeam\) when the downstream map and filtering response has unit
+peak, or has been explicitly renormalized to unit peak.
 
-\DraftNotice
+The quantity \(\tau_{225}\) is dimensionless zenith optical depth measured at
+225 GHz, and \(X\) is the sample airmass. Their broadband, array-dependent
+mapping is discussed in Section~\ref{sec:atmosphere}.
 
-\begin{abstract}
-SCI-CAL v0.1 calibrates an admitted ordinary \code{xs} detector sample to a
-top-of-atmosphere point-source-peak \(\mjybeam\) convention. The absolute
-factor is the selected immutable measured APT row's \code{flxscale}, applied
-once. Any TolProj pointing-derived correction is either already embodied in
-that selected factor or unresolved; it is never blindly multiplied again.
-The target-observation atmosphere correction is a distinct positive factor at
-the full eligible-sample airmass and top-of-atmosphere pivot. Conditional
-measurement covariance transforms with the same realized operator, while
-calibration, atmosphere, and response systematics remain separate correlated
-nuisance terms. The point-source-peak label remains conditional on the
-originating Beammap response and separately realized downstream response.
+The selected \code{flxscale} is applied exactly once. If TolProj, the upstream
+project and calibration-selection workflow, has already embodied a
+pointing-derived correction in a child APT, that ancestry is recorded but the
+correction is not multiplied again. \code{responsivity} is a relative
+detector-response quantity, and Beammap \code{sens} is a sensitivity or
+approximate-weight quantity; neither, a parent \code{flxscale}, nor an opaque
+\code{fcf} is an additional absolute signal multiplier.
 
-The retained atmosphere operator is structurally adopted, but the authorized
-packet does not supply its content-bound numeric nodes, ordinate orientation,
-or numeric support. This document therefore fixes the structural mathematics
-and truthful no-output behavior while withholding numeric atmosphere and
-calibrated numeric output authorization until one precise owner decision is
-resolved. Even after that decision, a structural pass is only
-\code{science-qualification-eligible}; any achieved
-\code{science-qualified} or \code{calibrated-science} claim remains subject to
-the separate evidence threshold in this authority.
-\end{abstract}
+\StatusBox{\begin{tabularx}{\linewidth}{@{}L{0.28\linewidth}Y@{}}
+\textbf{Intended science model} & Equation~\eqref{eq:science-central}, with one selected detector factor and the target sample's atmospheric correction.\\
+\textbf{Numerical atmosphere status} & The approved authorship material does not contain the operator nodes, ordinate orientation, or numeric support. Numerical atmosphere evaluation and calibrated numerical output are not authorized by this draft.\\
+\textbf{Implementation status} & Not assessed. This rationale neither audits nor certifies a Citlali implementation.\\
+\textbf{Observational status} & Not validated here. Atmosphere fidelity, repeatability, and absolute source recovery require separate evidence.\\
+\end{tabularx}}
 
-\tableofcontents
-\clearpage
+Sample weights describe measurement uncertainty conditional on a fixed
+calibration state unless a documented joint covariance includes calibration,
+atmosphere, pointing, passband, beam, and response systematics. Common terms
+generally do not average down as independent samples. Formal machine states,
+identity mechanics, exact requirements, and pathological tests remain in the
+engineering contract and are traced in the appendices.
 
-\section{Scientific purpose and authority boundary}
-\label{sec:sci-purpose}
+\tableofcontents\clearpage
 
-The scientific problem is not merely to multiply a timestream by a number. It
-is to state which detector occurrence the number belongs to, what physical
-role it has, where its calibration reference plane lies, which atmosphere
-state applies at the target sample, what response gives meaning to
-\(\mjybeam\), which uncertainty is transformed, and which claims remain
-unsupported.
+\section{What is being calibrated?}\label{sec:input}
+SCI-CAL v0.1 is restricted to the ordinary total-intensity \code{xs}
+detector stream, with samples on rows and detectors on columns. The selected
+APT connects each target detector channel to one corresponding measured
+Beammap detector row; an ambiguous or unsupported match produces no calibrated
+value for that detector.
 
-The admitted author packet consists only of the approved SCI-CAL v0.1 Scope
-Brief; its approved independent-core supersession cover together with the
-frozen independent mathematical core at exact Git blob
-\code{27b0916e725696597c3ba84fb6a82bf6cf0ea356}; the exact TolTECA v1 passband
-authority manifest at Git blob
-\code{8c581bfb26f01b187f4f1e0565f4457bcc25f099}; and the approved sanitized
-conventions and ownership extract. No implementation, executable contract,
-audit finding, repair, test, numerical execution, validation, Unity material,
-or active ALIGN material informs this draft.
+The contract begins with \(d^{\rm in}_d(t)\), the signal after every upstream
+additive operation that defines the calibration input. SCI-CAL does not
+estimate a baseline. If the governing upstream convention is
+\(d^{\rm in}=x^{xs}-b\), then \(b\), its units, support, and uncertainty belong
+to that definition. This ordering matters because time-dependent
+multiplication need not commute with baseline estimation or filtering.
 
-Later scope and cover decisions supersede the frozen core where they differ.
-In particular, v0.1 is \code{xs}-only and \(\mjybeam\)-only; measured and
-design identity are layered; a proven row relation is admissible; the retained
-atmosphere result is structural rather than an empirical guarantee; and the
-engineering-opacity class does not produce calibrated output.
+The approved material calls \code{xs} the ordinary science stream but does
+not state its detector observable, physical unit, sign, normalization,
+preprocessing history, or linear operating domain. This draft therefore does
+not invent a frequency-shift interpretation, sign, or universal responsivity
+transfer.
 
-\section{Boundary of the estimator}
-\label{sec:sci-boundary}
+\DecisionBox{Input signal and baseline}{The owner must bind a scientific
+definition of ordinary \code{xs}: physical observable, unit, sign, prior
+normalization and additive processing, total-intensity scope, and the loading,
+tune, and signal domain over which a multiplicative calibration is valid. The
+same decision must say whether an upstream baseline is not applicable,
+already removed, or supplied explicitly.}
 
-Upstream authorities provide the admitted signal and sample eligibility,
-target acquisition identity, exact selected measured APT and association,
-calibration quantities and lineage, opacity and airmass inputs, requested mode,
-conditional measurement uncertainty when available, and response identities.
-SCI-CAL does not select an APT, perform matching, infer a beam, estimate
-pointing, choose an atmosphere estimator, make a map, design a filter, or
-validate empirical response.
+Polarization calibration, auxiliary measured streams, surface-brightness or
+temperature calibration, extended-source calibration, and integrated
+photometry do not inherit Equation~\eqref{eq:science-central}; they are outside
+v0.1.
 
-The endpoint is a calibrated detector sample on valid support, transformed
-conditional variance/weight or covariance where one exists, a coherent
-validity/quality state, a nuisance-completeness ledger, and resolvable canonical
-lineage. Maps and fitted source products are downstream consumers.
+\section{The physical calibration model and reduction chain}\label{sec:model}
+A minimal generative picture separates detector response from atmospheric
+attenuation. For a point-source-equivalent top-of-atmosphere signal \(s_d(t)\),
+the input can be represented schematically as
+\begin{equation}
+ d^{\rm in}_d(t)=G_{od}^{-1}T_{a(d)}(t)s_d(t)+n_d(t),
+ \label{eq:generative}
+\end{equation}
+where \(G^{-1}\) denotes detector response in input units per \(\mjybeam\),
+\(T_a\) is transmission, and \(n\) is measurement noise. The central equation
+is the inverse operation when \(F^{\rm APT}=G\) and \(C_a=T_a^{-1}\). This
+motivates factor direction; it does not establish the missing physical
+definition of \code{xs} or the derivation of (G).
 
-The central causal distinction is:
-\begin{equation*}
- \underbrace{\text{source Beammap evidence}\longrightarrow
- F^{\rm sel}}_{\text{selected immutable APT ancestry}}
- \qquad\text{and}\qquad
- \underbrace{(\tau_{225},X,\mathcal O_a)\longrightarrow C_a}_{
- \text{target-observation atmosphere}}
- \qquad\longrightarrow\qquad y.
-\end{equation*}
-The first branch establishes the detector's selected absolute scale. The
-second corrects the current target sample to the same top-of-atmosphere plane.
-Their provenance and uncertainty remain distinct even though their scalar
-values multiply.
+\begin{figure}[ht]\centering
+\flowbox{Calibrator model\\and epoch}\(\longrightarrow\)
+\flowbox{Beammap measurement,\\atmosphere, beam, pointing}\(\longrightarrow\)
+\flowbox{Measured APT\\\code{flxscale}}\\[0.22in]
+\flowbox{Target \code{xs}\\timestream}\(\longrightarrow\)
+\flowbox{Selected APT row +\\target atmosphere}\(\longrightarrow\)
+\flowbox{Calibrated stream\\then filtering/mapmaking}
+\caption{Scientific lineage from calibrator evidence to target-observation calibration. TolProj selects or produces the observation-specific APT; SCI-CAL consumes its selected \code{flxscale} and applies target atmosphere once.}\label{fig:lineage}
+\end{figure}
 
-\input{common/notation.tex}
-\input{common/definitions.tex}
-\input{common/assumptions.tex}
-\input{common/equations.tex}
+SCI-CAL lies between upstream definition of the signal, APT, opacity, and
+airmass and downstream filtering, weighting, mapmaking, and inference. A
+constant detector factor commutes with a linear temporal operator acting on
+that detector, but sample-dependent atmosphere generally does not:
+\begin{equation}L[C(t)x(t)]\ne C(t)L[x(t)].\label{eq:noncommute}\end{equation}
+The approved packet does not state the complete governed ordering relative to
+common-mode removal, PCA, temporal filtering, or baseline estimation. It does
+establish that conditional uncertainty, synthetic injections, and legitimate
+response companions transform on the same support with the same realized
+multiplier. Exact pipeline ordering requires an owner-approved boundary
+statement before observational transfer functions can be interpreted.
 
-\section{Scientific interpretation of the factor algebra}
-\label{sec:sci-factor-interpretation}
+\section{From a calibrator Beammap to the target observation}\label{sec:flxscale}
+Beammap analysis measures detector response to a calibrator whose
+top-of-atmosphere flux model is adopted for the relevant epoch and photometric
+convention. Conceptually,
+\begin{equation}
+ F^{\rm APT}_{od}\sim
+ \frac{\text{adopted top-of-atmosphere calibrator flux density}}
+      {\text{measured calibrator response of detector }d}.
+ \label{eq:flxscale-concept}
+\end{equation}
+The exact amplitude estimator, atmosphere treatment, beam/template
+normalization, pointing correction, spectral convention, and unit direction
+must be specified by the factor's generating lineage; this explanatory
+relation is not a substitute for that contract.
 
-Equation~\eqref{eq:signal} is affine only because the upstream baseline state
-is explicit. After conditioning on that state and the calibration state, the
-operator is diagonal in sample and detector occurrence. It creates no time
-convolution, spatial remapping, or additive sky signal. A time-dependent
-atmosphere factor is amplitude modulation; it is not a stationary transfer
-function.
+TolProj owns calibrator interpretation, APT curation, pointing-derived flux
+correction, and binding the selected APT to the target observation. SCI-CAL
+uses the selected child row as the value boundary. If
+\(F^{\rm child}=P F^{\rm parent}\), the right side records ancestry; neither
+\(P\) nor \(F^{\rm parent}\) is then applied to the target signal.
 
-The selected APT row is deliberately the absolute-factor boundary. If a
-pointing-derived correction produced a child artifact, the value in that
-child is the value used by SCI-CAL. Equation~\eqref{eq:embodied-pointing}
-explains its ancestry, while Equation~\eqref{eq:once-only} prevents both using
-the parent without the correction and multiplying the correction twice.
-Relative \code{responsivity} and Beammap \code{sens} remain scientifically
-useful quantities, but their names do not make them additional absolute flux
-factors.
+\begin{table}[ht]\centering\small
+\caption{Roles of calibration-related quantities.}\label{tab:factor-roles}
+\begin{tabularx}{\linewidth}{@{}L{0.17\linewidth}L{0.27\linewidth}L{0.18\linewidth}L{0.12\linewidth}Y@{}}
+\toprule Quantity & Physical role & Source & Signal factor? & Correlation or uncertainty scope \\
+\midrule
+\code{flxscale} & Selected absolute detector scale & Observation-specific measured APT & Yes, once & Detector plus shared calibrator ancestry \\
+Pointing correction & Correction in APT ancestry & TolProj/Beammap lineage & No, if embodied & Detector/observation correlated \\
+\code{responsivity} & Relative response or diagnostic & Selected APT lineage & No & Transfer role unresolved \\
+\code{sens} & Sensitivity or approximate weight & Beammap analysis & No & Detector/cohort; not total error \\
+Target \(C_a\) & Inverse transmission for target sample & Opacity, airmass, array operator & Yes, once & Time, observation, and array correlated \\
+Compatibility \code{fcf} & Declared decomposition of known roles & Compatibility boundary & Not independently & Inherits constituent scopes \\
+\bottomrule\end{tabularx}\end{table}
 
-The multiplication is order independent only after factor roles have been
-resolved. A list of anonymous scalars is not an equivalent representation:
-two equal values can have different recipients, reference planes, correlation
-scopes, and ancestry. Reconstructibility therefore depends on factor-instance
-identity and causal lineage, not just the product \(M_j\).
+Every target detector needs one unique, traceable, observation-valid match to
+one measured APT row. Exact mechanics remain in the engineering contract; an
+unmatched or ambiguous detector is excluded rather than calibrated from row
+position or a plausible default.
 
-\section{Atmosphere meaning and the limit of present authority}
-\label{sec:sci-atmosphere}
+\DecisionBox{Calibration derivation and transfer}{The approved packet does
+not state the exact construction of \code{flxscale}, calibrator model and
+epoch, embodied source-atmosphere/beam/pointing/spectral operations, or how
+tune state, loading, focus, time, and detector responsivity transfer from
+calibrator to target. The owner must bind the generating contract and decide
+whether transfer is embodied in the selected child \code{flxscale}, made
+unnecessary by \code{xs}, negligible over a declared domain, or retained as a
+correlated systematic.}
 
-The atmosphere portion uses zenith \(\tau_{225}\) and full sample airmass to
-form the line-of-sight coordinate in Equation~\eqref{eq:los-coordinate}. The
-retained operator, rather than an assumed generic exponential, supplies a
-band-dependent transmission or correction. The node orientation matters:
-linear interpolation of transmission followed by inversion is not generally
-equal to linear interpolation of correction. That is why
-Equation~\eqref{eq:operator-orientation} makes the missing orientation an
-authority field rather than a software choice.
+\section{Atmospheric extinction correction}\label{sec:atmosphere}
+The atmosphere attenuates the astronomical signal. Zenith optical depth at
+225 GHz, \(\tau_{225}\), and sample airmass \(X(t)\) locate each sample within
+an adopted per-array atmosphere/passband model:
+\begin{equation}
+ \ell_o(t)=\tau_{225,o}(t)X_o(t),\qquad
+ T_a(t)=\mathcal O_a[\ell_o(t)],\qquad C_a(t)=T_a(t)^{-1}.
+ \label{eq:atmos-essential}
+\end{equation}
+The quantity \(\tau_{225}\) is not itself the TolTEC-band opacity. The
+operator performs the declared broadband mapping. If it instead tabulates
+correction, that declared ordinate is interpolated first and transmission is
+its reciprocal; interpolating transmission and correction are different
+approximations.
 
-The structural adoption is strong: zero opacity is exactly unity, positive
-opacity has no unity plateau, direction is monotonic, node values are exact,
-and seams are continuous. It is also deliberately bounded. A sample must lie
-in the intersection of opacity policy, upstream airmass validity, operator
-node support, and opacity time support. Bracketing permits only a named source-
-authorized interpolation; it never licenses endpoint extrapolation.
+The opacity source owns temporal validity and any interpolation between valid
+bracketing measurements. ALIGN/AST owns sample airmass and its domain.
+SCI-CAL uses the intersection with operator support; it does not extrapolate
+or invent an elevation limit. Detailed equations are in
+Appendix~\ref{app:formal}.
 
-No calibrated numeric output or numeric
-\code{science-qualification-eligible} disposition can presently be derived
-from this packet because the actual node record, its orientation, and its
-numeric support are absent. Supplying those facts would enable structural
-evaluation only. Unless the owner later defines a different explicit
-threshold, an achieved \code{science-qualified} or
-\code{calibrated-science} claim additionally requires separately accepted
-atmosphere-representation-fidelity and observational-performance evidence over
-the same declared identity and support. The passband record is a content-bound
-modeled array reference, not a measured telescope response, and has no
-supplied uncertainty or settled photon-versus-energy semantics. Those
-limitations condition any future representation study and keep associated
-nuisance uncertainty unavailable.
+\DecisionBox{Authoritative atmosphere operator}{The approved author packet
+does not contain the per-array nodes and ordinates, ordinate orientation,
+units, numeric support, seam convention, passband identity, spectral and
+photon-versus-energy weighting, generating model, or content identifier. It
+also does not establish whether that record is absent project-wide or merely
+absent from the packet. The owner must classify the status and bind one
+complete immutable record. Until then no correction curves, numerical
+examples, approximation-error plot, numerical atmosphere evaluation, or
+calibrated numerical output can be authorized. Supplying the record enables
+structural evaluation; it does not validate atmospheric fidelity.}
 
-The segment opacity classes are policy states, not model claims. A fully
-admitted segment within \(0\leq\tau_{225}\leq0.15\) may attain only the
-structural state \code{science-qualification-eligible}. It does not thereby
-attain science qualification. A segment entering
-\(0.15<\tau_{225}\leq0.25\) has an engineering-availability label but no v0.1
-calibrated output because no continuous engineering operator is adopted.
-Larger, missing, malformed, or out-of-support inputs are outside calibrated
-scope.
+V0.1 permits the structural science-calibration path only for
+\(0\le\tau_{225}\le0.15\). A coherent segment entering
+\(0.15<\tau_{225}\le0.25\) is outside the v0.1 science-calibration range and
+is retained only for explicitly uncalibrated engineering use. Larger,
+malformed, or unsupported values are outside scope. These are owner-approved
+policy limits, not laws of atmospheric physics or the numeric support of the
+missing operator. Their rationale, segment owner, and split policy are not in
+the packet and remain owner decisions.
 
-\section{Uncertainty interpretation}
-\label{sec:sci-uncertainty}
+\section{Photometric convention and downstream response}\label{sec:response}
+The intended output is a top-of-atmosphere, point-source-equivalent,
+beam-peak-normalized amplitude. ``Beam'' denotes the originating Beammap
+response normalization; it is neither pixel area nor authorization for
+surface brightness or integrated flux.
 
-Equations~\eqref{eq:conditional-covariance} and
-\eqref{eq:variance-weight} are exact conditional transformations. They answer
-the question: if calibration, atmosphere, response, selection, and identity
-state were fixed, how would measurement noise transform? They do not answer
-how uncertain that state is.
+For source flux density \(S\), originating unit-peak template \(P_B\), and
+realized mapmaker/gridding/filter response (L),
+\begin{equation}
+ m_{\rm peak}=\rho_L S\ \mjybeam,\qquad
+ \rho_L=[L P_B](\boldsymbol 0).
+ \label{eq:response-main}
+\end{equation}
+The literal peak equals \(S\) only for \(\rho_L=1\), or after documented
+renormalization. A valid smoothing kernel can broaden a point source and
+reduce its peak; retaining the old label without response correction would
+then misstate flux.
 
-The nuisance model answers the second question. Detector \code{flxscale}, a
-common calibrator scale, any embodied pointing-derived correction, atmosphere
-and WVR modeling, approximate \code{sens}-based weights, passband limitations,
-and beam/template response have different recipients and correlation scopes.
-Equation~\eqref{eq:nuisance-covariance} preserves those scopes. In particular,
-Equation~\eqref{eq:common-rank-one} shows why a common systematic does not
-average down with the number of samples. A conditional inverse-variance weight
-therefore cannot be called total calibrated uncertainty or statistical
-significance while required nuisance terms are unavailable.
+TolTEC is broadband. Monochromatic mJy requires a reference frequency or
+wavelength, reference spectrum, calibrator-spectrum treatment, passband
+weighting, and color-correction convention. The approved modeled passband set
+does not establish normalization, detector/network variation, uncertainty,
+generation recipe, or photon-versus-energy weighting. The same spectral
+convention must connect \code{flxscale} and atmosphere consistently.
 
-First-order propagation is useful only locally. The atmosphere interpolant is
-continuous but may not be differentiable at its seams; large, asymmetric, or
-seam-spanning uncertainty cannot be summarized by one local derivative.
-Association and support are discrete. Fitted calibration state can share data
-with the signal. These cases require posterior samples, nonlinear propagation,
-or an explicit bounded sensitivity study rather than silent zero cross terms.
+\DecisionBox{Broadband photometric convention}{The owner must define the
+per-array reference frequency or wavelength, reference spectrum, calibrator
+treatment, color-correction scope, passband weighting, and whether the
+atmosphere operator is array-average, network-specific, or detector-specific.
+Until then the intended point-source convention is identified, but its
+complete monochromatic mJy meaning is unresolved.}
 
-\section{Response interpretation}
-\label{sec:sci-response}
+\section{Uncertainty: measurement noise is not total calibration error}\label{sec:uncertainty}
+For fixed calibration, atmosphere, detector association, and response, let
+\(A=\operatorname{diag}(M_j)\), with
+\(M_j=F^{\rm APT}_{od}C_{a(d)}(t)\). A supplied conditional covariance obeys
+\begin{equation}
+ C_{\rm cal\mid\theta}=A C_{\rm in\mid\theta}A^{\mathsf T},\qquad
+ \sigma^2_{{\rm cal},j}=M_j^2\sigma^2_{{\rm in},j},\quad
+ w_{{\rm cal},j}=w_{{\rm in},j}/M_j^2.
+ \label{eq:conditional-main}
+\end{equation}
+This preserves supplied correlations. Missing uncertainty is unavailable,
+never zero. Calibration-state uncertainty is different. A fractional scale
+uncertainty (s) common to affected samples contributes
+\begin{equation}C_{\rm common}=s^2\boldsymbol\mu\boldsymbol\mu^{\mathsf T},\label{eq:common-main}\end{equation}
+which does not decrease merely because more identically affected samples are
+averaged.
 
-The calibrated detector sample carries the originating Beammap beam/template
-identity so that a downstream consumer knows the response basis of its
-point-source-peak convention. It does not claim that a particular mapmaker,
-kernel, or filter realizes that basis. Equation~\eqref{eq:peak-response}
-exposes the conditional statement: the ideal peak is the source flux only
-when the downstream response has unit peak for the declared template.
+\begin{table}[ht]\centering\small
+\caption{Science-facing uncertainty budget. ``Not established'' means the approved authorship material does not state a present numerical product.}\label{tab:uncertainty-budget}
+\begin{tabularx}{\linewidth}{@{}L{0.21\linewidth}L{0.24\linewidth}L{0.13\linewidth}L{0.15\linewidth}Y@{}}
+\toprule Quantity & Typical correlation scope & In sample weight? & Numeric status & Interpretation \\
+\midrule
+Measurement noise & Sample/detector, possibly correlated & Yes, if supplied & Conditional input allowed & Propagated by \(A C A^T\) \\
+Detector \code{flxscale} fit & Detector/Beammap cohort & No by default & Not established & Calibration systematic \\
+Calibrator scale/model & Observations and/or band & No & Not established & Does not average down \\
+Pointing correction & Detector/observation & No & Not established & Embodied once \\
+Atmosphere, WVR, operator & Time, observation, array & No & Operator unresolved & Model systematic \\
+Passband/source spectrum & Array/network/detector & No & Convention unresolved & Broadband systematic \\
+Beam/filter response & Product/reduction state & No & Downstream-owned & Needed for literal peak \\
+\code{sens} approximation & Detector/cohort & Only if declared & Not established & Never total error \\
+\bottomrule\end{tabularx}\end{table}
 
-A response-changing kernel can be entirely valid engineering while changing
-the scientific meaning of the peak. The remedy is to measure or calculate its
-response under the owning downstream contract, propagate an explicit
-renormalization if appropriate, and update provenance. It is not to preserve
-the old label by assumption. Similarly, retaining elliptical parameters does
-not authorize surface-brightness or integrated-flux conversion; those are
-future contracts.
+The sources define compliant meaning but do not establish which numerical
+components a present Citlali product supplies. That is later implementation
+evidence, not a fact inferred here.
 
-\section{Validity and honest scientific claims}
-\label{sec:sci-validity}
+\section{Validity limits and what a science user sees}\label{sec:validity}
+\begin{longtable}{L{0.24\linewidth}L{0.14\linewidth}L{0.14\linewidth}L{0.39\linewidth}}
+\caption{Meaning of calibration status for science users.}\label{tab:user-states}\\
+\toprule Status & Calibrated value? & Conditional weight? & Interpretation and action \\
+\midrule\endfirsthead
+\toprule Status & Calibrated value? & Conditional weight? & Interpretation and action \\
+\midrule\endhead
+Structurally complete within nominal domain & Yes, once numeric inputs are authorized & If supplied & Algebra and inputs complete; atmosphere fidelity and on-sky performance remain separate. \\
+Calibration disabled & No & No calibrated weight & Intentional uncalibrated mode; do not relabel input. \\
+Unsupported stream or unit & No & No & A separate scientific contract is required. \\
+Invalid/missing atmosphere & No & No & Correct the owning input or exclude segment. \\
+Outside operator support & No & No & No extrapolation, clamp, or legacy fallback. \\
+Engineering-only opacity & No v0.1 value & No & Retained only for explicitly uncalibrated engineering use. \\
+Conditional uncertainty unavailable & Signal may exist & No & Do not interpret missing uncertainty as zero. \\
+Total uncertainty incomplete & Signal may exist & Conditional only & Report noise separately from systematics. \\
+Response basis incomplete & Signal may exist & Conditional only & Withhold literal peak meaning. \\
+\bottomrule\end{longtable}
+The engineering state \code{science-qualification-eligible} is rendered here
+as ``structurally complete but not yet scientifically validated.''
 
-The tuple in Equation~\eqref{eq:validity-tuple} prevents one failure mode from
-being hidden inside another. Intentional disablement is not invalid input.
-Valid signal with missing nuisance uncertainty is not zero uncertainty.
-Engineering-only opacity is not science-qualification-eligible. Eligibility
-itself is not achieved science qualification. Structurally correct calibration
-is not proof of atmosphere truth or telescope performance. A machine-readable
-reason must make each distinction visible to downstream scientists.
+\section{What has to be validated, and what each validation establishes}\label{sec:validation}
+\begin{enumerate}[label=\textbf{\arabic*.},leftmargin=*]
+\item \textbf{Structural calibration correctness.} Factor direction and
+once-only challenges; unit and support checks; unique detector to APT association;
+zero opacity, node, seam, monotonicity, and no extrapolation behavior;
+conditional covariance scaling; and response bookkeeping. Software-oriented
+permutation, duplicate-key, replay, sentinel, and application-count tests
+remain in the engineering contract.
+\item \textbf{Atmosphere-model representation fidelity.} Compare the finite
+operator with its named higher-fidelity generating calculation over each
+array's declared opacity, airmass, spectral, and passband domain. The prior
+approximately one-percent figure is a proposed target, not an achieved result.
+\item \textbf{Observational calibration performance.} Recover repeated
+calibrators and independent sources by array; separate repeatability from
+absolute recovery; test residuals versus opacity, airmass, elevation, time,
+Beammap age, tune state, loading, detector, and network; inject sources through
+the realized response; and retain correlated calibrator covariance. Prior
+approximately five-percent repeatability and five-to-ten-percent absolute
+figures are proposed targets only.
+\end{enumerate}
+Any claim must identify source population, atmosphere domain, array coverage,
+response configuration, covariance model, sample size, and criterion. Passing
+one layer never supplies evidence for another.
 
-The canonical lineage record makes these claims reproducible. It identifies
-the raw observation, selected APT bytes and semantics, occurrence association,
-factor ancestry, atmosphere/passband/operator, reference plane, units,
-uncertainty states, and response basis. Compact products can point to that
-record, but the linkage must resolve all inputs needed to reconstruct
-Equation~\eqref{eq:reconstruction}.
+\section{Scientific owner decisions required}\label{sec:decisions}
+\begin{longtable}{L{0.06\linewidth}L{0.22\linewidth}L{0.32\linewidth}L{0.31\linewidth}}
+\caption{Decision register for the v0.2 science rationale.}\label{tab:decisions}\\
+\toprule ID & Issue & Evidence or decision needed & Consequence while open \\
+\midrule\endfirsthead
+\toprule ID & Issue & Evidence or decision needed & Consequence while open \\
+\midrule\endhead
+Q01 & Physical \code{xs} definition & Observable, unit, sign, preprocessing, normalization, scope, and linear domain & Input/factor units incomplete \\
+Q02 & Baseline and ordering & Affine convention and order relative to common-mode/PCA/filtering & Noncommuting operations ambiguous \\
+Q03 & \code{flxscale} derivation & Calibrator model/epoch, estimator, atmosphere, pointing, beam, spectrum, direction, uncertainty & Factor ancestry incomplete \\
+Q04 & Calibrator-target transfer & Time, tune, loading, focus, detector validity, and role of child factor or \code{xs} & Transferability unestablished \\
+Q05 & Broadband convention & Reference frequency/spectrum, calibrator and color treatment, passband weighting/variation & Monochromatic mJy incomplete \\
+Q06 & Atmosphere operator & Nodes, ordinates, orientation, support, weighting, model, content identity; classify project versus packet absence & Blocks calibrated numbers \\
+Q07 & Opacity/segment policy & Rationale for 0.15/0.25, segment owner, split policy, evidence for change & Policy unexplained \\
+Q08 & Numerical uncertainty & Which conditional/systematic terms are quantified and propagated & Total error unavailable \\
+Q09 & Science qualification & Evidence thresholds and population/support for fidelity, repeatability, absolute recovery & No achieved science claim \\
+\bottomrule\end{longtable}
 
-\input{common/requirements.tex}
-\input{common/edge_cases.tex}
+\section*{References}\addcontentsline{toc}{section}{References}
+\begin{enumerate}[label={[\arabic*]},leftmargin=*]
+\item \emph{SCI-CAL Detector Calibration, Atmospheric Extinction, and Signal Transfer Scope Brief}, owner-approved 2026-08-16.
+\item \emph{SCI-CAL Independent Scientific Core}, with v0.1 supersession cover.
+\item \emph{SCI-CAL Sanitized Conventions and Ownership}, owner-approved 2026-08-16.
+\item \emph{TolTEC v1 Modeled Array Passband Authority Manifest}, bounded reference with unresolved semantics.
+\item \emph{Citlali Scientific Conventions}, living authority for array identity, units, validity, and ownership.
+\end{enumerate}
+No calibrator-model, atmosphere-model, \code{xs}-definition, or broadband
+photometric-convention source was supplied as approved authority. Those are
+decisions Q01 and Q03--Q06 rather than unnamed citations.
 
-\section{Scientific conclusion}
-\label{sec:sci-conclusion}
+\clearpage\appendix
+\section{Notation and formal derivations}\label{app:formal}
+\begin{longtable}{L{0.20\linewidth}L{0.70\linewidth}}
+\caption{Notation retained for formal traceability.}\\
+\toprule Symbol & Meaning \\
+\midrule\endfirsthead\toprule Symbol & Meaning \\
+\midrule\endhead
+(o,d,t,a(d)) & Observation, detector, sample time, detector array \\
+\(d^{\rm in},d^{\rm cal}\) & Upstream-defined input and calibrated output \\
+\(F^{\rm APT}_{od}\) & Selected row's oriented absolute \code{flxscale} \\
+\(\tau_{225},X,\ell\) & Zenith opacity, airmass, line-of-sight coordinate \\
+\(H_a,T_a,C_a\) & Interpolated ordinate, transmission, correction \\
+\(M_j,A\) & Realized scalar multiplier and diagonal operator \\
+\(C_{\rm in},C_{\rm cal},C_\theta\) & Conditional input/output and nuisance covariance \\
+\(P_B,L,\rho_L\) & Beammap template, downstream response, peak response \\
+\bottomrule\end{longtable}
+If upstream signal definition includes a baseline,
+\begin{equation}d^{\rm in}_j=x^{xs}_j-b_j.\label{eq:appendix-affine}\end{equation}
+SCI-CAL does not estimate \(b_j\). On a declared atmosphere interval,
+\begin{align}
+u&=\frac{\ell-\ell_{a,k}}{\ell_{a,k+1}-\ell_{a,k}},\\
+H_a(\ell)&=(1-u)H_{a,k}+uH_{a,k+1},\\
+(T_a,C_a)&=\begin{cases}(H_a,H_a^{-1}),&H_a\text{ is transmission},\\(H_a^{-1},H_a),&H_a\text{ is correction}.\end{cases}
+\label{eq:appendix-atmos}
+\end{align}
+The declared ordinate is interpolated before reciprocal. Exact nodes are
+recovered, seams continuous, \(T_a(0)=C_a(0)=1\), transmission decreases,
+correction increases, and extrapolation is unauthorized.
 
-The v0.1 scientific operation is the once-only transformation in
-Equations~\eqref{eq:multiplier} and \eqref{eq:signal}, conditioned on the
-layered identity, support, and response definitions above. It preserves a
-sharp separation between conditional measurement noise and correlated
-calibration/response systematics, and between structural correctness,
-atmosphere representation fidelity, and observational performance.
+For fixed state \(\theta\),
+\begin{equation}
+\mathbb E[\boldsymbol d^{\rm cal}\mid\theta]=A\mathbb E[\boldsymbol d^{\rm in}\mid\theta],\qquad C_{\rm cal\mid\theta}=A C_{\rm in\mid\theta}A^{\mathsf T}.
+\end{equation}
+For small nuisance uncertainty with
+\(H_{jr}=\partial\ln|M_j|/\partial\theta_r\),
+\begin{equation}C_{\rm nuis}\simeq\operatorname{diag}(\boldsymbol\mu)H C_\theta H^{\mathsf T}\operatorname{diag}(\boldsymbol\mu).\end{equation}
+Shared-data calibration or baseline estimation also requires material cross
+covariances. Large, asymmetric, seam-spanning, or discrete uncertainty
+requires nonlinear samples, a joint posterior, or bounded sensitivity study.
 
-The strongest defensible draft stops short of numeric atmosphere
-authorization. One content-bound operator decision is required before a
-calibrated numeric sample or numeric \Term{science-qualification-eligible}
-disposition can be produced. Even after that decision, actual
-\code{science-qualified} or \code{calibrated-science} status requires the
-separately accepted representation-fidelity and observational-performance
-evidence stated in \Req{049}, unless the owner later defines a different
-explicit threshold. The present limitation is a scientific result of the
-information boundary, not an invitation to select a legacy fallback or infer
-missing nodes.
+\section{Exact machine states and formal conformance routing}\label{app:states}
+The engineering authority distinguishes requested, effective,
+observation-resolved, and realized states and valid signal. Its exact named
+states include:
+\begin{itemize}
+\item \code{disabled/uncalibrated};
+\item \code{outside-supported-calibration};
+\item \code{engineering-only-unavailable}; and
+\item \code{science-qualification-eligible}.
+\end{itemize}
+It separately records conditional-uncertainty availability,
+total-uncertainty completeness, and response completeness.
+Table~\ref{tab:user-states} translates these for users; it does not replace
+them. Appendix~\ref{app:crosswalk} maps every formal item to this rationale and
+its continuing engineering home.
 
+\section{Provenance and document authority}\label{app:provenance}
+The approved input content digests are:
+\begin{itemize}
+\item Scope Brief: {\footnotesize\code{a3d6332dcc98bfbb638a45aea9be830edca693a4fe7e65d831b5880603c16578}};
+\item independent core: {\footnotesize\code{106755520b048f601bc60fd04e7b6020e6fa470480ac3105fa7ba269c730a4fe}};
+\item passband manifest: {\footnotesize\code{2756908181cc466550399ec0a869e6671de7912bd3a935f9aeebf63e3e826617}};
+\item conventions/ownership: {\footnotesize\code{7e9a630fd183ca04bc3d8bbd21b5e801776b9aad7bd084d48fa7f2c572766520}}.
+\end{itemize}
+The engineering contract remains normative for requirements 001--050,
+assumptions 001--011, and edge predictions 001--030. This v0.2 changes genre
+and presentation, not their algebra.
+
+\section{Crosswalk to the engineering contract}\label{app:crosswalk}
+\input{scientific-crosswalk-v0.2.tex}
 \end{document}

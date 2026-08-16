@@ -104,6 +104,29 @@ remain unavailable. The next gate is owner scientific review; an independent
 implementation-blind two-view consistency review follows only after the
 science is approved.
 
+Grant returned a complete science-team assessment of the 24-page rationale on
+2026-08-16: major revision required, scientific core strong. The manager
+rewrote the scientist-facing view as revision 0.2 rather than adding a summary
+to the formal document. The new 14-page PDF has an approximately ten-page
+physical narrative followed by formal appendices. It places the once-only
+calibration equation first; adds calibration-lineage, factor-role,
+uncertainty, validity, and validation explanations; moves exact hashes and
+formal routing to appendices; and leaves the engineering v0.1 contract
+unchanged as normative conformance authority.
+
+The review exposed additional upstream scientific authority gaps rather than
+authorizing invented answers. The v0.2 register now contains Q01--Q09:
+physical `xs` meaning; baseline and pipeline ordering; `flxscale` derivation;
+calibrator-to-target transfer; broadband photometric convention; the complete
+numeric atmosphere operator (formerly Q001); opacity/segment policy rationale;
+available numerical uncertainty products; and achieved-science evidence
+criteria. The current durable convention maps `nw10` to `a1400`; no stronger
+durable source classifying it as nonexistent or reserved was found, so the
+science narrative omits the unnecessary roster and records the evidence
+conflict for owner action. No implementation audit or scientific validation
+was run. The package remains not frozen pending owner science decisions and a
+subsequent fresh implementation-blind consistency review.
+
 The previously approved `DOC-MAP-001` deliverable is the first queued user
 guide. It will combine a canonical map dictionary with a compact per-reduction
 rendering driven by effective and realized state, explaining what each emitted
