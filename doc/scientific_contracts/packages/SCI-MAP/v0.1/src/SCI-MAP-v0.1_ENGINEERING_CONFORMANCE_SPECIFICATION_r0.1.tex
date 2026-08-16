@@ -1,0 +1,268 @@
+\documentclass[10pt]{article}
+\usepackage[margin=0.75in,headheight=15pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,longtable,array,tabularx}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+
+\definecolor{EngNavy}{HTML}{23374D}
+\definecolor{EngTeal}{HTML}{2A7F79}
+\definecolor{EngPale}{HTML}{EAF5F3}
+\definecolor{EngGray}{HTML}{58636D}
+\hypersetup{colorlinks=true,linkcolor=EngTeal,urlcolor=EngTeal,
+  pdftitle={SCI-MAP v0.1 Engineering Conformance Specification, r0.1},
+  pdfauthor={Independent Stage B scientific-contract author}}
+\setlength{\emergencystretch}{3em}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.45em}
+\setlist{nosep,leftmargin=1.5em}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{EngGray}SCI-MAP v0.1 | Engineering Conformance Specification}
+\fancyhead[R]{\small\color{EngGray}Document r0.1}
+\fancyfoot[L]{\small\color{EngGray}Procedure only | conformance unassessed}
+\fancyfoot[R]{\small\color{EngGray}Page \thepage}
+
+\input{SCI-MAP-v0.1_SHARED_AUTHORITY_r0.1.tex}
+
+\newcommand{\ProcedureBox}[1]{%
+  \begin{center}\fcolorbox{EngTeal}{EngPale}{\parbox{0.92\linewidth}{#1}}\end{center}}
+\newcommand{\MaybeRequirementBreak}[1]{%
+  \ifcsname SCIMapRequirementBreak#1\endcsname
+    \csname SCIMapRequirementBreak#1\endcsname
+  \fi}
+\newcommand{\MaybePredictionBreak}[1]{%
+  \ifcsname SCIMapPredictionBreak#1\endcsname
+    \csname SCIMapPredictionBreak#1\endcsname
+  \fi}
+\expandafter\def\csname SCIMapRequirementBreakSCI-MAP-REQ-007\endcsname{\clearpage}
+\expandafter\def\csname SCIMapRequirementBreakSCI-MAP-REQ-013\endcsname{\clearpage}
+\expandafter\def\csname SCIMapRequirementBreakSCI-MAP-REQ-019\endcsname{\clearpage}
+\expandafter\def\csname SCIMapRequirementBreakSCI-MAP-REQ-025\endcsname{\clearpage}
+\expandafter\def\csname SCIMapRequirementBreakSCI-MAP-REQ-031\endcsname{\clearpage}
+\expandafter\def\csname SCIMapRequirementBreakSCI-MAP-REQ-036\endcsname{\clearpage}
+\expandafter\def\csname SCIMapRequirementBreakSCI-MAP-REQ-040\endcsname{\clearpage}
+\expandafter\def\csname SCIMapRequirementBreakSCI-MAP-REQ-043\endcsname{\clearpage}
+\expandafter\def\csname SCIMapRequirementBreakSCI-MAP-REQ-049\endcsname{\clearpage}
+\expandafter\def\csname SCIMapPredictionBreakSCI-MAP-PRED-008\endcsname{\clearpage}
+\expandafter\def\csname SCIMapPredictionBreakSCI-MAP-PRED-015\endcsname{\clearpage}
+\expandafter\def\csname SCIMapPredictionBreakSCI-MAP-PRED-022\endcsname{\clearpage}
+
+\begin{document}
+
+\begin{center}
+{\color{EngNavy}\LARGE\bfseries SCI-MAP}\\[0.25em]
+{\Large Ordinary Mapmaking and Observation Coaddition}\\[0.45em]
+{\large Engineering Conformance Specification}\\[0.8em]
+\begin{tabular}{rl}
+Scientific contract version: & \textbf{\SCIMapContractVersion}\\
+Document revision: & \textbf{\SCIMapDocumentRevision}\\
+Status: & \textbf{Unassessed conformance procedure}\\
+Canonical science source: & \textbf{Shared Authority r0.1}\\
+Target implementation: & \textbf{Not selected in this document}
+\end{tabular}
+\end{center}
+
+\ProcedureBox{\textbf{No independent science.} Every normative scientific
+clause and every prediction printed here is rendered from
+\texttt{SCI-MAP-v0.1\_SHARED\_AUTHORITY\_r0.1.tex}. This document adds only
+evidence-recording, execution, traceability, and pass/fail procedure. If an
+engineering observation appears to require changing science, record a
+deviation and return it to scientific-owner review; do not edit the expected
+result in this view.}
+
+\tableofcontents
+
+\clearpage
+\section{Purpose and conformance target}
+
+This specification tells a reviewer how to decide whether one exact candidate
+conforms to SCI-MAP v0.1. It does not select a candidate, inspect an
+implementation, execute validation, or assert a result. Before work begins,
+the reviewer freezes:
+
+\begin{itemize}
+\item repository and immutable candidate identity;
+\item build profile, compiler/runtime identities, configuration, and enabled
+parallel modes;
+\item exact input fixtures and independent expected-value generators;
+\item numerical comparison policy and simultaneous statistical error policy;
+\item required product list, representation paths, log policy, and completion
+criteria; and
+\item the shared-authority digest, contract version, this document revision,
+and owner-decision ledger revision.
+\end{itemize}
+
+Evidence from a different candidate, configuration, or science-authority
+digest is not silently pooled. Each rerun keeps its own identity and reason.
+Historical operational acceptance does not substitute for conformance
+evidence.
+
+\section{Evidence record}
+
+Each requirement record contains at least:
+
+\begin{longtable}{L{0.24\linewidth}L{0.66\linewidth}}
+\toprule
+Field & Required content\\
+\midrule
+Requirement & Stable \texttt{SCI-MAP-REQ-NNN} and shared-authority digest.\\
+Candidate & Exact source/build identity and environment profile.\\
+Observable & Public product, typed state, API boundary, metadata, diagnostic,
+or failure transition under test.\\
+Fixture & Immutable input identity and independent expected-value calculation.\\
+Comparison & Exact predicate or preregistered numerical/statistical bound.\\
+Result & Pass, fail, blocked by named owner decision/dependency, or not
+applicable with owner-approved rationale. Skipped required evidence is not a
+pass.\\
+Artifacts & Machine-readable outputs, logs, traces, plots/tables where needed,
+and digest-addressed provenance.\\
+Reviewer & Independent reviewer identity, date, and deviation disposition.\\
+\bottomrule
+\end{longtable}
+
+Failures are retained as evidence. A tolerance, fixture, expected result, or
+applicability decision is not changed after viewing a failure without opening
+a new preregistered record.
+
+\clearpage
+\section{Claim-layer gates}
+
+Passing one layer grants no stronger layer automatically.
+
+\begin{longtable}{L{0.22\linewidth}L{0.31\linewidth}L{0.37\linewidth}}
+\toprule
+Layer & Minimum engineering record & Prohibited inference\\
+\midrule
+Algebraic contract & Owner-frozen shared authority and internally consistent
+independent expected values. & No claim that a candidate implements it.\\
+Engineering conformance & Every applicable requirement passes on one exact
+candidate; no required skip, unresolved deviation, or false completion. & No
+claim that persisted WCS/response is scientifically faithful in real data.\\
+Representation/response fidelity & Round-trip and injection evidence covers
+WCS, units, response classes, boundaries, and covariance representations with
+preregistered bounds. & No observational photometric, astrometric, or noise
+performance claim.\\
+Observational performance & Independent references and repeatability establish
+the named amplitude, shape, position, covariance, or false-rate metric. & No
+production-readiness claim.\\
+Production readiness & Operational profile, complete products, failure/log
+audit, dependency closure, release controls, and owner approval all pass. & No
+authority beyond the exact released profile and contract version.\\
+\bottomrule
+\end{longtable}
+
+An owner decision can block a claim without making the requirement disappear.
+Record the exact decision ID from the separate ledger and the conservative
+behavior observed.
+
+\section{Execution order and atomicity protocol}
+
+Run evidence in the following order so later evidence cannot mask an earlier
+contract failure:
+
+\begin{enumerate}
+\item Parse and freeze identity, units, lifecycle, support policy (including
+the exact admitted value and unit status of every policy parameter), WCS, and
+required-product plan.
+\item Verify input and effective-policy admission, including fail-closed
+handling of every non-authorized policy-parameter state, before arithmetic.
+\item Compare exact scientific output-row identity and cardinality, plus
+one-pixel, one-hot, fractional, covariance, response, and eight-fact
+observation outputs, to independent expected values; retained storage rows do
+not count as scientific output rows.
+\item Verify complete immutable observation-bundle construction.
+\item Snapshot coadd-owned state; test every compatibility failure; require
+atomic nonmutation.
+\item Exercise admitted centered-integer coaddition, exact coadd output-row
+identity, and companion placement.
+\item Round-trip all required representations and reconstruct each
+row-selected operator from provenance.
+\item Exercise consumer fail-closed boundaries and immutable raw parentage.
+\item Repeat supported execution modes under the preregistered floating-point
+policy, while requiring exact discrete facts.
+\item Only after deterministic gates pass, execute representation, external,
+observational, and operational evidence appropriate to the requested claim.
+\end{enumerate}
+
+For every failure-injection test, capture pre-state, attempted input, emitted
+diagnostic, post-state, publication/cardinality state, and completion state.
+No partial-state comparison may omit a coadd companion merely because its
+payload was not the injected failure target.
+
+\clearpage
+\section{Canonical requirement conformance clauses}\label{sec:requirements}
+
+The following clauses are generated from the shared authority. The first
+paragraph is the canonical science requirement; the second is its minimum
+conformance route. The result field intentionally remains unassessed.
+
+\renewcommand{\SCIMapRequirement}[4]{%
+  \MaybeRequirementBreak{#1}%
+  \phantomsection\label{engreq:#1}%
+  \noindent\textbf{\textcolor{EngNavy}{#1} -- #2}\par
+  \textbf{Canonical clause:} #3\par
+  \textbf{Minimum conformance evidence:} #4\par
+  \textbf{Result:} \textcolor{EngGray}{UNASSESSED}\par
+  \smallskip\hrule\smallskip}
+\SCIMapRequirements
+
+\clearpage
+\section{Prediction execution matrix}\label{sec:predictions}
+
+Predictions are also imported unchanged. Engineering records attach fixtures,
+bounds, artifacts, and results; they do not rewrite the prediction.
+
+\renewcommand{\SCIMapPrediction}[4]{%
+  \MaybePredictionBreak{#1}%
+  \phantomsection\label{engpred:#1}%
+  \noindent\textbf{\textcolor{EngNavy}{#1} -- #2}\par
+  \textbf{Canonical prediction:} #3\par
+  \textbf{Primary claim layer:} #4.\par
+  \textbf{Fixture / bound / result:} \textcolor{EngGray}{TO BE PREREGISTERED}\par
+  \smallskip\hrule\smallskip}
+\SCIMapPredictions
+
+\clearpage
+\section{Mechanical completeness checks}
+
+Before a conformance verdict, automated checks shall establish:
+
+\begin{itemize}
+\item exactly one declaration of each stable requirement and prediction ID in
+the shared authority, with no gaps or duplicates;
+\item every requirement appears in this specification and in
+\texttt{CROSSWALK.md}; every prediction is linked to at least one requirement;
+\item both rendered PDFs identify contract v0.1 and document r0.1 separately;
+\item no unresolved LaTeX reference, citation, overfull box, clipped glyph,
+broken table, or unreadable page remains;
+\item every required artifact reopens successfully, has the expected page
+count, and renders every page through an independent PDF renderer; and
+\item the owner-decision ledger and author-draft decision record contain no
+silent resolution of an open scientific question.
+\end{itemize}
+
+The conformance verdict is \textbf{pass} only when every applicable requirement
+has passing evidence on the exact candidate and all requested stronger claim
+layers have their own passing evidence. Otherwise the record is fail, blocked,
+or incomplete. This document itself records no verdict.
+
+\section{Required handoff contents}
+
+An engineering handoff contains the candidate and authority identities;
+requirement result table; prediction result table; exact commands and
+environment; independent expected-value artifacts; build/test/log outputs;
+representation and observational evidence where claimed; failure-injection
+snapshots; skipped/blocked items; deviations and owner dispositions; and an
+explicit statement for each claim layer. The handoff shall not collapse
+``conforms algebraically,'' ``represents faithfully,'' ``performs on sky,'' and
+``ready for production'' into one status word.
+
+\end{document}

@@ -1,7 +1,7 @@
 # SCI-MAP — Ordinary Mapmaking And Observation Coaddition
 
-Status: Stage A complete; Scope Brief and exact author packet owner-approved;
-fresh Stage B implementation-blind author dispatched
+Status: Stage B r0.1 two-view draft manager-reviewed; scientific-owner review
+required; scientific authority not frozen
 
 Scientific contract scope: `v0.1`, owner-approved (`2026-08-16`)
 
@@ -58,12 +58,43 @@ fitting, Beammap inference, and fruit-loop feedback.
   scope decisions
 
 A fresh implementation-blind GPT-5.6 Ultra author was dispatched from the
-content-bound packet on `2026-08-16`. No scientific rationale, engineering
-conformance contract, crosswalk, or PDF has yet been accepted. Scope approval
-does not approve the resulting contract.
+content-bound packet on `2026-08-16`. Scope approval did not approve the
+resulting contract.
+
+## Stage B r0.1 Draft
+
+The returned draft has one shared canonical LaTeX authority and two rendered
+views:
+
+- [scientist-facing rationale and contract](pdf/SCI-MAP-v0.1_SCIENTIFIC_RATIONALE_AND_CONTRACT_r0.1.pdf)
+  (22 pages, including a 12-page main narrative);
+- [engineering conformance specification](pdf/SCI-MAP-v0.1_ENGINEERING_CONFORMANCE_SPECIFICATION_r0.1.pdf)
+  (18 pages);
+- [`CROSSWALK.md`](CROSSWALK.md), with complete requirement and prediction
+  routing;
+- [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md),
+  containing the exact seven open owner questions; and
+- [`AUTHOR_DRAFT_DECISIONS.md`](AUTHOR_DRAFT_DECISIONS.md), recording bounded
+  author choices without silently resolving owner authority.
+
+The shared authority defines 52 stable requirements and 25 falsifiable
+predictions. Normalized map and coadd vectors contain exactly the rows
+authorized by the effective support policy; unsupported full-grid storage is
+not promoted to zero-valued scientific output. The engineering view imports
+all normative science from the shared authority and adds only evidence,
+execution, traceability, and result procedure.
+
+The manager verified exact packet hashes, sequential and complete identifiers,
+crosswalk and PDF coverage, the exact owner-decision register, support-row
+operator semantics, absence of independent engineering science, clean LaTeX
+logs, and all 40 rendered pages. No implementation candidate was selected or
+inspected, and no validation, reduction, Unity execution, or production-status
+decision was performed.
 
 ## Next Gate
 
-The next owner-facing gate is a manager-reviewed two-view draft or a precise
-scientific decision that blocks one. This work does not assess implementation
-conformity, run validation, or change production status.
+The next gate is scientific-owner review and disposition of
+`SCI-MAP-OD-001--007`. The r0.1 draft is not frozen. A fresh
+implementation-blind two-view consistency review follows only after the
+science is approved; implementation conformance and validation remain later,
+separate gates.

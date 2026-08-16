@@ -183,6 +183,29 @@ Unity evidence, MAP-002/MAP-003 evidence, and production state are excluded.
 The next owner-facing milestone is a manager-reviewed two-view contract draft
 or a precise scientific decision that prevents one.
 
+The implementation-blind author returned the SCI-MAP Stage B r0.1 draft on
+2026-08-16. It contains one shared canonical LaTeX authority, a 22-page
+scientist-facing rationale with a 12-page main narrative, an 18-page
+engineering conformance view, 52 shared numbered requirements, 25 shared
+falsifiable predictions, a complete crosswalk, and an exact seven-question
+owner-decision register. The manager required explicit support-authorized row
+selectors for map and coadd operators so unsupported storage rows cannot be
+misread as zero-valued scientific output, and required the exact owner register
+and compact traceability summary to appear in the scientist-facing PDF.
+
+Mechanical checks pass for sequential identifiers, crosswalk and PDF coverage,
+owner-ledger identity, support-row semantics, and absence of independent
+normative science in the engineering view. Both PDFs compile without LaTeX
+warnings, and all 40 rendered pages passed independent visual inspection. No
+implementation candidate was inspected, and no validation, reduction, Unity
+execution, or production decision occurred. The draft is not frozen.
+`SCI-MAP-OD-001--007` remain open for threshold rationale and change authority,
+response-unavailable use, covariance persistence, physical observation-map
+publication, registered Pointing/OOF reuse, and the numeric domain, unit status,
+boundary cases, and failure behavior of `coverage_cut`. The next gate is owner
+scientific review; a fresh implementation-blind two-view consistency review
+follows only after the science is approved.
+
 The previously approved `DOC-MAP-001` deliverable is the first queued user
 guide. It will combine a canonical map dictionary with a compact per-reduction
 rendering driven by effective and realized state, explaining what each emitted

@@ -1,0 +1,32 @@
+# SCI-MAP v0.1 Author-Draft Decisions
+
+Document revision: `r0.1`
+
+Status: Stage B author record. These choices organize or conservatively bound
+the draft; they are not scientific-owner approvals and do not resolve any item
+in `SCIENTIFIC_OWNER_DECISION_LEDGER.md`.
+
+| ID | Author-draft choice | Reason and effect | Owner impact |
+|---|---|---|---|
+| MAP-AUTH-D001 | Keep scientific contract version `v0.1` distinct from document revision `r0.1`. | Layout, exposition, or QA correction can revise the document without silently changing the scientific contract. | Owner freeze is still required. |
+| MAP-AUTH-D002 | Use one included LaTeX source as the canonical requirement and prediction authority. | Both audience views render identical `SCI-MAP-REQ-NNN` and `SCI-MAP-PRED-NNN` text; the engineering view cannot drift into independent science. | Editorial structure only. |
+| MAP-AUTH-D003 | Reuse the admitted frozen ordinary derivation and specialize it to the approved positive-coefficient, nonprecision, `L=I`, centered-integer choices. | This follows the supersession cover and avoids a cosmetic rederivation. | No new estimator is proposed. |
+| MAP-AUTH-D004 | Define the effective per-pixel coefficient as `a_pi = G_pi omega_i` and state the contribution set before arithmetic. | This compactly accommodates one-hot and fractional externally supplied projection while preserving the adopted `N`, `Q`, and `K` sums. | Scientific owner should confirm only if this notation obscures the intended support-policy population. |
+| MAP-AUTH-D005 | Treat the threshold population as the declared plane/policy population of finite, strictly positive ordinary normalization coefficients `Q_p`, and require that population identity in provenance. | The approved formula says which values and index to use but should not permit an implicit population boundary. | Does not supply the missing physical rationale or change authority; see OD-001 and OD-002. |
+| MAP-AUTH-D006 | For an unavailable response parent, require a typed unavailable state and make every response-dependent consumer fail closed. | This is the least-claim interim behavior consistent with the admitted packet. | Does not decide whether restricted response-independent use is scientifically admissible; see OD-003. |
+| MAP-AUTH-D007 | Permit covariance representation status to be `persisted`, `lineage-resolvable`, `summarized`, or `unavailable`, while requiring omissions and nuisance status to remain explicit. | The equations and boundary can be specified without inventing the minimum persistence form. | Minimum required persistence remains OD-004. |
+| MAP-AUTH-D008 | Distinguish logical production of a complete observation bundle from physical publication policy. Preserve the admitted v0.1 rule that required observation products remain required when coaddition is enabled. | This avoids weakening current authority while not extending it to a universal future storage mandate. | Abstract publication authority remains OD-005. |
+| MAP-AUTH-D009 | Describe Pointing/OOF arithmetic only conditionally: it may reuse the operator if its bundle satisfies this contract, while mode-specific meaning stays outside SCI-MAP. | This preserves the scope boundary without registering a use that the owner has not confirmed. | Registered-use decision remains OD-006. |
+| MAP-AUTH-D010 | Assign 52 stable requirements and 25 stable falsifiable predictions. | The granularity separates boundary, estimator, uncertainty, eight facts, coadd, persistence, failure, consumers, and claim discipline while keeping each clause testable. | Renumbering after owner freeze would require an explicit versioned mapping. |
+| MAP-AUTH-D011 | Separate algebraic contract, engineering conformance, representation/response fidelity, observational performance, and production readiness in both documents. | No stronger claim can be inferred from a weaker gate. | Owner may approve each layer independently. |
+| MAP-AUTH-D012 | Record validation only as preregistered predictions and evidence routes; run none during Stage B authorship. | The author packet expressly excludes implementation and validation evidence. | All achieved validation and readiness claims remain open. |
+| MAP-AUTH-D013 | Define scientific signal, response, and covariance on the exact output-row set authorized by the effective support policy, using an explicit row-selection operator rather than a full-grid pseudoinverse or zero-filled semantic substitute. | Raw accumulators and storage slots may exist outside support, but they do not become normalized scientific values; the same domain restriction is carried through observation and coadd operators. | This resolves a notation/semantic inconsistency without choosing a new support rule or answering any owner question. |
+| MAP-AUTH-D014 | Infer no numeric range or units for `c=coverage_cut`; require the exact value and unit or dimensionless status to be explicitly admitted by the owner-authorized effective support policy and fail closed otherwise. | The admitted formula names `c` but supplies no domain. A guessed range would silently change support membership. | The admissible domain, units, boundary dispositions, and failure authority remain SCI-MAP-OD-007. |
+
+## Draft-disposition summary
+
+The author finds the bounded ordinary estimator and atomic common-grid coadd
+scientifically coherent as a conditional draft. This is not a verdict on an
+implementation and not an owner approval. The seven unresolved owner decisions
+remain visible, and every stronger upstream fact is fail-closed rather than
+inferred.
