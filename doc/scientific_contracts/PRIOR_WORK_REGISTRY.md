@@ -64,6 +64,12 @@ and cross-package handoffs are valuable recovery inputs.
 
 ### MAP And Coaddition
 
+- Package-specific recovery:
+  [packages/SCI-MAP/v0.1/PRIOR_WORK.md](packages/SCI-MAP/v0.1/PRIOR_WORK.md)
+  at 2026-08-16. It separates the reusable ordinary MAP-001 core and later
+  owner decisions from the distinct JINC MAP-002 and OOF-transfer MAP-003
+  estimators, and it records post-registry MAP-002 ownership and MAP-003
+  tracer-parent work without promoting implementation evidence.
 - Current shared authority plus
   `MAIN:doc/adr/0009-science-map-bundle-admission-and-validity.md`.
 - Approved/integration decisions:
@@ -74,6 +80,14 @@ and cross-package handoffs are valuable recovery inputs.
   `doc/audits/packages/`.
 - Reusable method note:
   `codex/doc-map-001-phase-a@abf3ba2fd15e5941c571f41d495a58c78d6adf63:doc/science/SCI-METHOD-WEIGHTED-MAP-NORMALIZATION-001.md`.
+- Later material found by package-specific recovery includes
+  `codex/integrate-sci-map-002` at
+  `2917c5210cb131f0e7f952d9b04295e87e22718d`, the JINC
+  ownership-invariant re-audit at
+  `f541d81a266fce0f7baed58e9ec275dadba260ee`, the MAP-003 tracer-parent
+  freeze at `e639d367d280b72953f06ed270b81d7aec51d357`, and the retained-grid
+  implementation slice at `d0512362ba8666621f7622062fa51542ae76bfa1`.
+  These are recovery inputs, not automatic author references.
 - Scope maps: `MAIN:doc/ANALYSIS_FLOW_RAW_TO_SCIENCE_PRODUCTS_2026-07-01.md`
   and `MAIN:doc/MAPMAKING_CONFIG_AUTHORITY.md`.
 

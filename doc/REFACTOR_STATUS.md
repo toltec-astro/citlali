@@ -152,6 +152,24 @@ the v/r version-axis rule. There is no further stylistic round. SCI-CAL
 scientific authority remains a draft pending owner disposition of the open
 scientific questions and the final consistency gate.
 
+After the owner directed the program to proceed, the second pilot
+[`SCI-MAP`](scientific_contracts/packages/SCI-MAP/v0.1/README.md) completed
+Stage A prior-work recovery on 2026-08-16. The recovery reuses the frozen
+implementation-independent ordinary MAP-001 core and the later owner-approved
+whole-bundle, nonprecision-coefficient, centered-integer-coadd, support,
+validity, and raw-parent decisions. It also found and classified later
+MAP-002 integration/ownership work and MAP-003 tracer-parent/implementation
+work that postdate the initial registry. JINC and OOF residual transfer remain
+separate scientific estimators and are not silently absorbed into ordinary
+SCI-MAP v0.1.
+
+The SCI-MAP package now contains the charter-linked recovery record, an
+internal dossier, a sanitized draft Scope Brief, and draft author-only
+supersession/convention extracts. No scientific author has been commissioned,
+no fresh derivation has been repeated, and no implementation, audit, repair,
+validation, Unity, or production action occurred. The next gate is Grant's
+review of MAP-SCOPE-D001--D006 and the exact proposed three-part author packet.
+
 The previously approved `DOC-MAP-001` deliverable is the first queued user
 guide. It will combine a canonical map dictionary with a compact per-reduction
 rendering driven by effective and realized state, explaining what each emitted
